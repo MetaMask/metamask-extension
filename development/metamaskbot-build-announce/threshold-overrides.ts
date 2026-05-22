@@ -9,7 +9,8 @@
  * and must include a justification.
  *
  * Overrides apply only to the PR that declares them — the file should
- * not be merged to main.
+ * not be merged to main (enforced by the check-no-threshold-override
+ * workflow). Each entry may carry an `expires` date after which it lapses.
  */
 
 import { promises as fs } from 'fs';
@@ -40,6 +41,11 @@ export type ThresholdOverrideEntry = {
   fail?: number;
   /** Required: why the override is needed */
   justification: string;
+  /**
+   * Optional ISO date (YYYY-MM-DD) after which the override lapses.
+   * Applying an expired override throws — renew the date or remove it.
+   */
+  expires?: string;
 };
 
 /**
@@ -106,6 +112,16 @@ function validateEntry(entry: ThresholdOverrideEntry, index: number): void {
   if (!entry.justification || typeof entry.justification !== 'string') {
     throw new Error(`${prefix}: "justification" must be a non-empty string`);
   }
+  if (
+    entry.expires !== undefined &&
+    (typeof entry.expires !== 'string' ||
+      !/^\d{4}-\d{2}-\d{2}$/u.test(entry.expires) ||
+      Number.isNaN(Date.parse(entry.expires)))
+  ) {
+    throw new Error(
+      `${prefix}: "expires" must be an ISO date string (YYYY-MM-DD)`,
+    );
+  }
 }
 
 /**
@@ -170,7 +186,9 @@ export async function loadOverrides(
  * Applies overrides to a threshold registry, returning a new registry
  * with adjusted thresholds and a list of what was applied.
  *
- * Unknown benchmarks or metrics are skipped with a warning.
+ * Throws if an override targets an unknown benchmark/metric or has
+ * expired — a misconfigured override must fail loudly, not silently
+ * no-op while the author believes the threshold was relaxed.
  *
  * @param registry - The base threshold registry (not mutated).
  * @param overrides - Validated override file.
@@ -197,22 +215,29 @@ export function applyOverrides(
   }
 
   const applied: AppliedOverride[] = [];
+  const today = new Date().toISOString().slice(0, 10);
 
   for (const entry of overrides.overrides) {
+    const target = `${entry.benchmark}/${entry.metric} (${entry.percentile})`;
+
+    if (entry.expires !== undefined && entry.expires < today) {
+      throw new Error(
+        `Override for ${target} expired on ${entry.expires}; renew "expires" or remove the entry`,
+      );
+    }
+
     const benchConfig = effectiveRegistry[entry.benchmark];
     if (!benchConfig) {
-      console.warn(
-        `Override skipped: benchmark "${entry.benchmark}" not found in THRESHOLD_REGISTRY`,
+      throw new Error(
+        `Override for ${target}: benchmark "${entry.benchmark}" not found in THRESHOLD_REGISTRY`,
       );
-      continue;
     }
 
     const metricConfig = benchConfig[entry.metric];
     if (!metricConfig) {
-      console.warn(
-        `Override skipped: metric "${entry.metric}" not found in benchmark "${entry.benchmark}"`,
+      throw new Error(
+        `Override for ${target}: metric "${entry.metric}" not found in benchmark "${entry.benchmark}"`,
       );
-      continue;
     }
 
     const existing = metricConfig[entry.percentile];
@@ -269,7 +294,9 @@ export function formatOverrideSummary(applied: AppliedOverride[]): string {
     lines.push(
       `  ${o.benchmark}/${o.metric} (${o.percentile}): ${changes.join(', ')}`,
     );
-    lines.push(`    ↳ ${o.justification}`);
+    lines.push(
+      `    ↳ ${o.justification}${o.expires ? ` (expires ${o.expires})` : ''}`,
+    );
   }
 
   lines.push('───────────────────────────────────────');

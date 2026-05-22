@@ -219,6 +219,39 @@ describe('threshold-overrides', () => {
       ).toThrow('"justification" must be a non-empty string');
     });
 
+    it('accepts a valid ISO expires date', () => {
+      const result = validateOverrides({
+        overrides: [
+          {
+            benchmark: 'startupStandardHome',
+            metric: 'uiStartup',
+            percentile: 'p75',
+            warn: 2800,
+            justification: 'test',
+            expires: '2099-01-01',
+          },
+        ],
+      });
+      expect(result.overrides[0].expires).toBe('2099-01-01');
+    });
+
+    it('rejects a malformed expires date', () => {
+      expect(() =>
+        validateOverrides({
+          overrides: [
+            {
+              benchmark: 'startupStandardHome',
+              metric: 'uiStartup',
+              percentile: 'p75',
+              warn: 2800,
+              justification: 'test',
+              expires: '01-01-2099',
+            },
+          ],
+        }),
+      ).toThrow('"expires" must be an ISO date string (YYYY-MM-DD)');
+    });
+
     it('validates multiple entries and reports the first error', () => {
       expect(() =>
         validateOverrides({
@@ -383,18 +416,17 @@ describe('threshold-overrides', () => {
 
     it('does not mutate the original registry', () => {
       const registry = makeRegistry();
-      const { warn: originalWarn } =
-        registry.startupStandardHome.uiStartup.p75 as { warn: number };
+      const { warn: originalWarn } = registry.startupStandardHome.uiStartup
+        .p75 as { warn: number };
 
       applyOverrides(registry, validOverride);
 
-      const { warn: afterWarn } =
-        registry.startupStandardHome.uiStartup.p75 as { warn: number };
+      const { warn: afterWarn } = registry.startupStandardHome.uiStartup
+        .p75 as { warn: number };
       expect(afterWarn).toBe(originalWarn);
     });
 
-    it('skips unknown benchmarks with a warning', () => {
-      const warnSpy = jest.spyOn(console, 'warn').mockImplementation();
+    it('throws on an unknown benchmark', () => {
       const registry = makeRegistry();
       const overrides: ThresholdOverrideFile = {
         overrides: [
@@ -408,18 +440,12 @@ describe('threshold-overrides', () => {
         ],
       };
 
-      const { applied } = applyOverrides(registry, overrides);
-
-      expect(applied).toHaveLength(0);
-      expect(warnSpy).toHaveBeenCalledWith(
-        expect.stringContaining('benchmark "nonExistentBenchmark" not found'),
+      expect(() => applyOverrides(registry, overrides)).toThrow(
+        'benchmark "nonExistentBenchmark" not found',
       );
-
-      warnSpy.mockRestore();
     });
 
-    it('skips unknown metrics with a warning', () => {
-      const warnSpy = jest.spyOn(console, 'warn').mockImplementation();
+    it('throws on an unknown metric', () => {
       const registry = makeRegistry();
       const overrides: ThresholdOverrideFile = {
         overrides: [
@@ -433,14 +459,49 @@ describe('threshold-overrides', () => {
         ],
       };
 
-      const { applied } = applyOverrides(registry, overrides);
-
-      expect(applied).toHaveLength(0);
-      expect(warnSpy).toHaveBeenCalledWith(
-        expect.stringContaining('metric "nonExistentMetric" not found'),
+      expect(() => applyOverrides(registry, overrides)).toThrow(
+        'metric "nonExistentMetric" not found',
       );
+    });
 
-      warnSpy.mockRestore();
+    it('throws when an override has expired', () => {
+      const registry = makeRegistry();
+      const overrides: ThresholdOverrideFile = {
+        overrides: [
+          {
+            benchmark: 'startupStandardHome',
+            metric: 'uiStartup',
+            percentile: 'p75',
+            fail: 5000,
+            justification: 'test',
+            expires: '2000-01-01',
+          },
+        ],
+      };
+
+      expect(() => applyOverrides(registry, overrides)).toThrow(
+        'expired on 2000-01-01',
+      );
+    });
+
+    it('applies an override with a future expiry date', () => {
+      const registry = makeRegistry();
+      const overrides: ThresholdOverrideFile = {
+        overrides: [
+          {
+            benchmark: 'startupStandardHome',
+            metric: 'uiStartup',
+            percentile: 'p75',
+            fail: 5000,
+            justification: 'test',
+            expires: '2999-12-31',
+          },
+        ],
+      };
+
+      const { applied } = applyOverrides(registry, overrides);
+      expect(applied).toHaveLength(1);
+      expect(applied[0].expires).toBe('2999-12-31');
     });
 
     it('applies multiple overrides across benchmarks', () => {
