@@ -9,7 +9,7 @@ export const AssetChartLoading = () => {
       className="asset-chart__empty-or-loading-state-container"
       data-testid="asset-chart-loading"
     >
-      <Skeleton className="asset-chart__skeleton rounded-lg" />
+      <Skeleton hideChildren className="asset-chart__skeleton rounded-lg" />
     </Box>
   );
 };
