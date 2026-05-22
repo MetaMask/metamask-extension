@@ -21,10 +21,10 @@ This will create a `dist/chrome` directory containing the built extension. See u
 ### Dev server
 
 ```bash
-yarn dev
+yarn start
 ```
 
-`yarn dev` rebuilds on file changes and starts a [webpack dev server](https://webpack.js.org/configuration/dev-server/) on `localhost:8080` that auto-reloads the extension's UI pages (popup, home, notification, sidepanel). The service worker, background page, and content scripts are not auto-reloaded — reload the extension manually for changes to those.
+`yarn start` rebuilds on file changes and starts a [webpack dev server](https://webpack.js.org/configuration/dev-server/) on `localhost:8080` that auto-reloads the extension's UI pages (popup, home, notification, sidepanel). The service worker, background page, and content scripts are not auto-reloaded — reload the extension manually for changes to those.
 
 ### Set options using a `config.json` file
 
