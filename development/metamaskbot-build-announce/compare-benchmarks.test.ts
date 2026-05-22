@@ -4,7 +4,6 @@ import type {
   ThresholdConfig,
 } from '../../shared/constants/benchmarks';
 import { THRESHOLD_SEVERITY } from '../../shared/constants/benchmarks';
-import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/thresholds';
 import {
   runComparison,
   buildMetricLines,
@@ -798,12 +797,24 @@ describe('threshold override integration', () => {
   });
 
   it('passes a previously failing benchmark when overrides raise the threshold', () => {
-    // Value exceeds the default fail threshold (2500 for p75 uiStartup)
+    // Self-contained registry so the test does not depend on the live
+    // THRESHOLD_REGISTRY values, which drift as thresholds are retuned.
+    const registry: Record<string, ThresholdConfig> = {
+      startupStandardHome: {
+        uiStartup: {
+          p75: { warn: 2000, fail: 2500 },
+          p95: { warn: 2500, fail: 3200 },
+        },
+      },
+    };
+
+    // p75 (3200) exceeds its fail threshold (2500) and p95 (4000) exceeds
+    // its fail threshold (3200), so without overrides the benchmark fails.
     const benchmarks = [
       {
         name: 'benchmark-chrome-browserify-startupStandardHome',
         data: {
-          startupStandardHome: makeBenchmarkResults({
+          startupStandardHome: makeBenchmarkResults('uiStartup', {
             p75: { uiStartup: 3200 },
             p95: { uiStartup: 4000 },
             mean: { uiStartup: 2800 },
@@ -813,7 +824,7 @@ describe('threshold override integration', () => {
     ];
 
     // Without overrides: should fail
-    const resultWithoutOverrides = runComparison(benchmarks, {});
+    const resultWithoutOverrides = runComparison(benchmarks, {}, registry);
     expect(resultWithoutOverrides.anyFailed).toBe(true);
 
     // With overrides: raise thresholds so the value passes
@@ -838,7 +849,7 @@ describe('threshold override integration', () => {
       ],
     };
 
-    const { effectiveRegistry } = applyOverrides(THRESHOLD_REGISTRY, overrides);
+    const { effectiveRegistry } = applyOverrides(registry, overrides);
     const resultWithOverrides = runComparison(
       benchmarks,
       {},
@@ -861,7 +872,7 @@ describe('threshold override integration', () => {
       {
         name: 'custom-bench',
         data: {
-          customBenchmark: makeBenchmarkResults({
+          customBenchmark: makeBenchmarkResults('myMetric', {
             p75: { myMetric: 1500 },
             p95: { myMetric: 2500 },
             mean: { myMetric: 1200 },
