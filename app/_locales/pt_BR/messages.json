@@ -35,15 +35,6 @@
   "QRHardwareWalletImporterTitle": {
     "message": "Escanear QR code"
   },
-  "QRHardwareWalletSteps1Description": {
-    "message": "Conecte uma carteira de hardware com lacuna de ar que se comunique através de QR codes. As carteiras de hardware com lacuna de ar aceitas oficialmente incluem:"
-  },
-  "QRHardwareWalletSteps1Title": {
-    "message": "Carteira de hardware baseada em QR code"
-  },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
-  },
   "about": {
     "message": "Sobre"
   },
@@ -464,9 +455,6 @@
   "dontShowThisAgain": {
     "message": "Não mostrar isso novamente"
   },
-  "downloadGoogleChrome": {
-    "message": "Baixar o Google Chrome"
-  },
   "downloadStateLogs": {
     "message": "Baixar registros de estado"
   },
@@ -680,14 +668,8 @@
     "message": "(antigo)",
     "description": "Text representing the MEW path"
   },
-  "hardwareWalletSupportLinkConversion": {
-    "message": "clique aqui"
-  },
   "hardwareWallets": {
     "message": "Conecte uma carteira de hardware"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Selecione uma carteira de hardware que você gostaria de usar com a MetaMask."
   },
   "here": {
     "message": "aqui",
@@ -841,9 +823,6 @@
   },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Não foi possível abrir o dispositivo Ledger. Seu Ledger pode não estar conectado a outros softwares. Feche o Ledger Live ou outros aplicativos conectados ao seu dispositivo Ledger e tente reconectar."
-  },
-  "ledgerLiveApp": {
-    "message": "Aplicativo Ledger Live"
   },
   "ledgerLocked": {
     "message": "Não é possível conectar ao dispositivo Ledger. Certifique-se de que seu dispositivo esteja desbloqueado e que o aplicativo Ethereum esteja aberto."
@@ -1316,22 +1295,6 @@
   },
   "statusNotConnected": {
     "message": "Não conectado"
-  },
-  "step1LatticeWallet": {
-    "message": "Confirme que seu Lattice1 está pronto para se conectar"
-  },
-  "step1LedgerWallet": {
-    "message": "Baixar o aplicativo do Ledger"
-  },
-  "step1LedgerWalletMsg": {
-    "message": "Baixe, configure e insira sua senha para desbloquear $1.",
-    "description": "$1 represents the `ledgerLiveApp` localization value"
-  },
-  "step1TrezorWallet": {
-    "message": "Conecte a carteira Trezor"
-  },
-  "step2LedgerWallet": {
-    "message": "Conecte a carteira Ledger"
   },
   "submit": {
     "message": "Enviar"
