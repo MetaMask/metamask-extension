@@ -111,10 +111,18 @@ const MultichainBridgeTransactionListItem: React.FC<
     ? `${t('bridgeTo')} ${displayChainName}`
     : capitalize(type);
 
+  const activityRowDataTxStatus =
+    isBridgeFullyComplete && !isBridgeFailedOrSourceFailed
+      ? 'confirmed'
+      : undefined;
+
   return (
     <ActivityListItem
       className="multichain-bridge-transaction-list-item"
       data-testid="multichain-bridge-activity-item"
+      {...(activityRowDataTxStatus
+        ? { 'data-tx-status': activityRowDataTxStatus }
+        : {})}
       onClick={() => toggleShowDetails(transaction)}
       icon={
         <BadgeWrapper

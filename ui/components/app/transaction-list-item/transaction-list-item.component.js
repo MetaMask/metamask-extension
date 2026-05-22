@@ -186,6 +186,16 @@ function TransactionListItemInner({
     displayedStatusKey === TransactionStatus.submitted &&
     !isBridgeFailed &&
     !isBridgeComplete;
+  const showingBridgeActivitySegments =
+    !FINAL_NON_CONFIRMED_STATUSES.includes(status) &&
+    isBridgeTx &&
+    !(isBridgeComplete || isBridgeFailed) &&
+    bridgeTxHistoryItem;
+  const activityRowDataTxStatus =
+    displayedStatusKey === TransactionStatus.confirmed &&
+    !showingBridgeActivitySegments
+      ? 'confirmed'
+      : undefined;
   const isSignatureReq = category === TransactionGroupCategory.signatureRequest;
   const isApproval = category === TransactionGroupCategory.approval;
   const isUnapproved = status === TransactionStatus.unapproved;
@@ -291,6 +301,9 @@ function TransactionListItemInner({
     <>
       <ActivityListItem
         data-testid="activity-list-item"
+        {...(activityRowDataTxStatus
+          ? { 'data-tx-status': activityRowDataTxStatus }
+          : {})}
         onClick={
           isUnifiedSwapTx && showBridgeTxDetails
             ? showBridgeTxDetails
@@ -304,10 +317,7 @@ function TransactionListItemInner({
           </ChainBadge>
         }
         subtitle={
-          !FINAL_NON_CONFIRMED_STATUSES.includes(status) &&
-          isBridgeTx &&
-          !(isBridgeComplete || isBridgeFailed) &&
-          bridgeTxHistoryItem ? (
+          showingBridgeActivitySegments ? (
             <BridgeActivityItemTxSegments
               bridgeTxHistoryItem={bridgeTxHistoryItem}
               transactionGroup={transactionGroup}

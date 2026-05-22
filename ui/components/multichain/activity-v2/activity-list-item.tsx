@@ -41,6 +41,9 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
 
   const isProtected = isProtectedByEnforcedSimulations(transaction);
 
+  const showDataTxStatusConfirmed =
+    transactionStatus === TransactionStatus.confirmed && !isProtected;
+
   const failureMessage =
     transactionStatus === TransactionStatus.failed
       ? transaction.error?.message
@@ -52,6 +55,7 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
       className="px-4 py-3 bg-background-default cursor-pointer hover:bg-hover activity-list-item"
       onClick={onClick}
       data-testid="activity-list-item"
+      {...(showDataTxStatusConfirmed ? { 'data-tx-status': 'confirmed' } : {})}
     >
       <div className="flex gap-4 items-center">
         <div className="flex-shrink-0">

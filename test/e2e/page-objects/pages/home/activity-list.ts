@@ -27,10 +27,7 @@ class ActivityListPage {
 
   private readonly completedTransactions = '[data-testid="activity-list-item"]';
 
-  private readonly confirmedTransactions = {
-    text: 'Confirmed',
-    css: '.transaction-status-label--confirmed',
-  };
+  private readonly confirmedTransactions = '[data-tx-status="confirmed"]';
 
   private readonly copyTransactionHashButton = {
     text: 'Copy transaction ID',
@@ -551,6 +548,12 @@ class ActivityListPage {
   async checkWaitForTransactionStatus(
     status: 'confirmed' | 'cancelled' | 'pending',
   ) {
+    if (status === 'confirmed') {
+      await this.driver.waitForSelector('[data-tx-status="confirmed"]', {
+        timeout: 5000,
+      });
+      return;
+    }
     await this.driver.waitForSelector(`.transaction-status-label--${status}`, {
       timeout: 5000,
     });

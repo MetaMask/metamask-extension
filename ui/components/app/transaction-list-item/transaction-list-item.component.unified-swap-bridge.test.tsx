@@ -51,16 +51,16 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
   });
 
   it('should render confirmed unified swap tx summary', () => {
-    const { queryByTestId } = renderWithProvider(
+    const { container } = renderWithProvider(
       <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <TransactionListItem transactionGroup={mockUnifiedSwapTxGroup} />
       </MetaMetricsContext.Provider>,
       configureStore()(createBridgeMockStore()),
     );
 
-    expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Swap to Confirmed-0 ETH',
-    );
+    expect(
+      container.querySelector('[data-tx-status="confirmed"]'),
+    ).toHaveTextContent('?Swap to Confirmed-0 ETH');
   });
 
   it('should render failed unified swap tx summary', () => {

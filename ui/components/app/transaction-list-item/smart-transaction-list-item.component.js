@@ -49,6 +49,10 @@ export default function SmartTransactionListItem({
   }
   const showCancelSwapLink =
     smartTransaction.cancellable && !cancelSwapLinkClicked;
+  const activityRowDataTxStatus =
+    smartTransaction.status === SmartTransactionStatus.success
+      ? 'confirmed'
+      : undefined;
   const className = 'transaction-list-item transaction-list-item--unconfirmed';
   const senderAddress = transactionGroup.initialTransaction.txParams?.from;
 
@@ -56,6 +60,9 @@ export default function SmartTransactionListItem({
     <>
       <ActivityListItem
         className={className}
+        {...(activityRowDataTxStatus
+          ? { 'data-tx-status': activityRowDataTxStatus }
+          : {})}
         title={title}
         onClick={toggleShowDetails}
         icon={

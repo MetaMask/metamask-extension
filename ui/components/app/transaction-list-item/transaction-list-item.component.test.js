@@ -363,13 +363,13 @@ describe('TransactionListItem', () => {
 
   it('should render confirmed legacy swap tx summary', () => {
     useSelector.mockImplementation(generateUseSelectorRouter({}));
-    const { queryByTestId } = renderWithProvider(
+    const { container } = renderWithProvider(
       <TransactionListItem transactionGroup={mockLegacySwapTxGroup} />,
     );
 
-    expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Swap USDC to UNIConfirmed-2 USDC',
-    );
+    expect(
+      container.querySelector('[data-tx-status="confirmed"]'),
+    ).toHaveTextContent('?Swap USDC to UNIConfirmed-2 USDC');
   });
 
   it('should render failed legacy swap tx summary', () => {
