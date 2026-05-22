@@ -6,6 +6,7 @@ import process from 'node:process';
 import { join, resolve } from 'node:path';
 import {
   type Configuration,
+  type Stats,
   webpack,
   Compiler,
   WebpackPluginInstance,
@@ -23,6 +24,52 @@ function getWebpackInstance(config: Configuration) {
   // so we just delete the watch property.
   delete config.watch;
   return webpack(config);
+}
+
+async function runWebpack(config: Configuration): Promise<Stats> {
+  const compiler = webpack(config);
+
+  try {
+    const stats = await new Promise<Stats>((resolveStats, rejectStats) => {
+      compiler.run((error, result) => {
+        if (error) {
+          rejectStats(error);
+          return;
+        }
+
+        if (!result) {
+          rejectStats(
+            new Error('Webpack finished without returning compilation stats.'),
+          );
+          return;
+        }
+
+        if (result.hasErrors()) {
+          rejectStats(
+            new Error(
+              result.toString({ all: false, errors: true, errorDetails: true }),
+            ),
+          );
+          return;
+        }
+
+        resolveStats(result);
+      });
+    });
+
+    return stats;
+  } finally {
+    await new Promise<void>((resolveClose, rejectClose) => {
+      compiler.close((error) => {
+        if (error) {
+          rejectClose(error);
+          return;
+        }
+
+        resolveClose();
+      });
+    });
+  }
 }
 
 async function withWatching<T>(
@@ -122,6 +169,16 @@ ${Object.entries(env)
       return originalReadFileSync.call(fs, path, options);
     });
     return require('../webpack.config.ts').default;
+  }
+
+  function getSplitChunksConfig() {
+    const config: Configuration = getWebpackConfig();
+    assert(
+      config.optimization?.splitChunks,
+      'splitChunks should be configured',
+    );
+
+    return config.optimization.splitChunks;
   }
 
   it('should have the correct defaults', () => {
@@ -310,6 +367,172 @@ ${Object.entries(env)
       (plugin) => plugin && plugin.constructor.name === 'BundleAnalyzerPlugin',
     );
     assert.ok(bundleAnalyzerPlugin, 'BundleAnalyzerPlugin should be present');
+  });
+
+  it('should split lazy import modules out of the initial entrypoint', async () => {
+    using tempDirectory = fs.mkdtempDisposableSync(
+      join(tmpdir(), 'webpack-lazy-split-test-'),
+    );
+    const outputPath = join(tempDirectory.path, 'dist');
+    const entryPath = join(tempDirectory.path, 'index.js');
+    const eagerPath = join(tempDirectory.path, 'eager.js');
+    const lazyOnePath = join(tempDirectory.path, 'lazy-one.js');
+    const lazyTwoPath = join(tempDirectory.path, 'lazy-two.js');
+    const sharedAsyncPath = join(tempDirectory.path, 'shared-async.js');
+
+    fs.writeFileSync(
+      entryPath,
+      `
+        import { eagerMarker } from './eager';
+
+        console.log(eagerMarker);
+        void import('./lazy-one').then(({ lazyOneMarker }) => lazyOneMarker);
+        void import('./lazy-two').then(({ lazyTwoMarker }) => lazyTwoMarker);
+      `,
+    );
+    fs.writeFileSync(eagerPath, "export const eagerMarker = 'EAGER_MARKER';\n");
+    fs.writeFileSync(
+      lazyOnePath,
+      `
+        import { sharedAsyncMarker } from './shared-async';
+
+        export const lazyOneMarker = 'LAZY_ONE_MARKER:' + sharedAsyncMarker;
+      `,
+    );
+    fs.writeFileSync(
+      lazyTwoPath,
+      `
+        import { sharedAsyncMarker } from './shared-async';
+
+        export const lazyTwoMarker = 'LAZY_TWO_MARKER:' + sharedAsyncMarker;
+      `,
+    );
+    fs.writeFileSync(
+      sharedAsyncPath,
+      "export const sharedAsyncMarker = 'SHARED_ASYNC_MARKER';\n",
+    );
+
+    const baseConfig: Configuration = getWebpackConfig();
+    const stats = await runWebpack({
+      mode: 'development',
+      context: tempDirectory.path,
+      entry: { main: entryPath },
+      output: {
+        path: outputPath,
+        filename: '[name].js',
+        chunkFilename: '[name].js',
+        clean: true,
+      },
+      optimization: {
+        runtimeChunk: baseConfig.optimization?.runtimeChunk,
+        splitChunks: getSplitChunksConfig(),
+      },
+    });
+    const statsJson = stats.toJson({
+      all: false,
+      assets: true,
+      entrypoints: true,
+    });
+    const entrypoint = statsJson.entrypoints?.main;
+    assert(entrypoint, 'expected main entrypoint stats');
+    const entrypointAssets = (entrypoint.assets ?? [])
+      .map((asset) => (typeof asset === 'string' ? asset : asset.name))
+      .filter((assetName): assetName is string => Boolean(assetName))
+      .filter((assetName) => assetName.endsWith('.js'));
+    const entrypointAssetSet = new Set(entrypointAssets);
+    const allJsAssets = (statsJson.assets ?? [])
+      .map((asset) => asset.name)
+      .filter((assetName): assetName is string => Boolean(assetName))
+      .filter((assetName) => assetName.endsWith('.js'));
+    const asyncAssets = allJsAssets.filter(
+      (assetName) => !entrypointAssetSet.has(assetName),
+    );
+
+    assert(
+      asyncAssets.length > 0,
+      'expected dynamic imports to emit async JS assets',
+    );
+
+    const readAssets = (assetNames: string[]) =>
+      assetNames
+        .map((assetName) =>
+          fs.readFileSync(join(outputPath, assetName), 'utf8'),
+        )
+        .join('\n');
+    const entrypointSource = readAssets(entrypointAssets);
+    const asyncSource = readAssets(asyncAssets);
+
+    assert.match(entrypointSource, /EAGER_MARKER/u);
+    assert.doesNotMatch(entrypointSource, /LAZY_ONE_MARKER/u);
+    assert.doesNotMatch(entrypointSource, /LAZY_TWO_MARKER/u);
+    assert.doesNotMatch(entrypointSource, /SHARED_ASYNC_MARKER/u);
+    assert.match(asyncSource, /LAZY_ONE_MARKER/u);
+    assert.match(asyncSource, /LAZY_TWO_MARKER/u);
+    assert.match(asyncSource, /SHARED_ASYNC_MARKER/u);
+  });
+
+  it('should classify only initial app and vendor modules into named chunks', () => {
+    const splitChunks = getSplitChunksConfig();
+    const cacheGroups = splitChunks.cacheGroups as Record<
+      string,
+      {
+        test?: RegExp;
+        chunks?: (chunk: {
+          name?: string;
+          canBeInitial: () => boolean;
+        }) => boolean;
+        minChunks?: number;
+      }
+    >;
+    const { js, vendor, asyncJs } = cacheGroups;
+    const initialChunk = {
+      name: 'home.html',
+      canBeInitial: () => true,
+    };
+    const preloadRoutesChunk = {
+      name: 'preload-routes',
+      canBeInitial: () => true,
+    };
+    const asyncChunk = {
+      name: undefined,
+      canBeInitial: () => false,
+    };
+
+    assert(js.test, 'expected js cache group to have a test');
+    assert(vendor.test, 'expected vendor cache group to have a test');
+    assert(asyncJs.test, 'expected asyncJs cache group to have a test');
+    assert(js.chunks, 'expected js cache group to have a chunks function');
+    assert(
+      vendor.chunks,
+      'expected vendor cache group to have a chunks function',
+    );
+    assert(
+      asyncJs.chunks,
+      'expected asyncJs cache group to have a chunks function',
+    );
+
+    assert.strictEqual(js.test.test('/project/ui/pages/home/index.js'), true);
+    assert.strictEqual(
+      js.test.test('/project/node_modules/react/index.js'),
+      false,
+    );
+    assert.strictEqual(
+      vendor.test.test('/project/node_modules/react/index.js'),
+      true,
+    );
+    assert.strictEqual(
+      vendor.test.test('/project/ui/pages/home/index.js'),
+      false,
+    );
+    assert.strictEqual(js.chunks(initialChunk), true);
+    assert.strictEqual(js.chunks(preloadRoutesChunk), false);
+    assert.strictEqual(js.chunks(asyncChunk), false);
+    assert.strictEqual(vendor.chunks(initialChunk), true);
+    assert.strictEqual(vendor.chunks(preloadRoutesChunk), false);
+    assert.strictEqual(vendor.chunks(asyncChunk), false);
+    assert.strictEqual(asyncJs.chunks(initialChunk), false);
+    assert.strictEqual(asyncJs.chunks(asyncChunk), true);
+    assert.strictEqual(asyncJs.minChunks, 2);
   });
 
   it('should allow disabling source maps', () => {
