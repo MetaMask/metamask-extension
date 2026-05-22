@@ -76,7 +76,7 @@
         "buffer": true,
         "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>@ethereumjs/util>ethereum-cryptography": true,
         "webpack>events": true,
-        "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
+        "@metamask/eth-sig-util>@ethereumjs/util>micro-ftch": true
       }
     },
     "@metamask/eth-sig-util>@ethereumjs/util": {
@@ -94,7 +94,7 @@
         "buffer": true,
         "@metamask/eth-sig-util>ethereum-cryptography": true,
         "webpack>events": true,
-        "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
+        "@metamask/eth-sig-util>@ethereumjs/util>micro-ftch": true
       }
     },
     "@ethersproject/abi": {
@@ -2315,7 +2315,7 @@
         "define": true
       }
     },
-    "eth-lattice-keyring>gridplus-sdk>aes-js": {
+    "@metamask/keyring-controller>ethereumjs-wallet>aes-js": {
       "globals": {
         "define": true
       }
@@ -3086,7 +3086,7 @@
         "Buffer.isBuffer": true
       },
       "packages": {
-        "eth-lattice-keyring>gridplus-sdk>aes-js": true,
+        "@metamask/keyring-controller>ethereumjs-wallet>aes-js": true,
         "ethereumjs-util>ethereum-cryptography>bs58check": true,
         "buffer": true,
         "crypto-browserify": true,
@@ -3673,7 +3673,7 @@
         "react-markdown>unist-util-visit": true
       }
     },
-    "eth-lattice-keyring>@ethereumjs/util>micro-ftch": {
+    "@metamask/eth-sig-util>@ethereumjs/util>micro-ftch": {
       "globals": {
         "Buffer.concat": true,
         "Headers": true,

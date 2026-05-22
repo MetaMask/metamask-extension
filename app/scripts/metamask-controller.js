@@ -25,7 +25,7 @@ import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
 import { OneKeyKeyring, TrezorKeyring } from '@metamask/eth-trezor-keyring';
 import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
-import LatticeKeyring from 'eth-lattice-keyring';
+import { GridPlusKeyring } from '@gridplus/keyring';
 import { rawChainData } from 'eth-chainlist';
 import { QrKeyring } from '@metamask/eth-qr-keyring';
 import { nanoid } from 'nanoid';
@@ -9633,7 +9633,7 @@ export default class MetamaskController extends EventEmitter {
         keyringType = QrKeyring.type;
         break;
       case HardwareDeviceNames.lattice:
-        keyringType = keyringOverrides?.lattice?.type || LatticeKeyring.type;
+        keyringType = keyringOverrides?.lattice?.type || GridPlusKeyring.type;
         break;
       default:
         throw new Error(

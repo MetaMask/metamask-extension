@@ -1,12 +1,16 @@
+import { OffscreenCommunicationTarget } from '../../../shared/constants/offscreen-communication';
 import {
-  KnownOrigins,
-  OffscreenCommunicationTarget,
-} from '../../../shared/constants/offscreen-communication';
+  type GridPlusConnectResponse,
+  parseGridPlusConnectUrl,
+  validateGridPlusConnectMessage,
+} from '../../scripts/lib/gridplus-connect';
+
+const CONNECT_CLOSE_GRACE_PERIOD_MS = 1000;
 
 async function openConnectorTab(url: string) {
   const browserTab = window.open(url);
   if (!browserTab) {
-    throw new Error('Failed to open Lattice connector.');
+    throw new Error('Failed to open GridPlus Connect.');
   }
 
   return browserTab;
@@ -14,78 +18,125 @@ async function openConnectorTab(url: string) {
 
 export default function init() {
   /**
-   * The main element of the eth-lattice-keyring library that is impacted by MV3
-   * is the _openConnectorTab method which is responsible for opening a tab to
-   * the lattice connector. This method is called by the _getCreds method of the
-   * keyring. In the default keyring this would be attempted inside the service
-   * worker which has no DOM and therefore would fail. The solution is to split
-   * the functionality so that the openConnectorTab portion operates inside the
-   * offscreen document with its DOM. That is what this file is responsible for.
+   * Handles the GridPlus Connect flow for MV3 extensions.
    *
-   * When receiving a message from the service worker script targeting the
-   * lattice iframe, this listener will execute and open the new tab for
-   * connecting to the lattice device. The response from the lattice connector
-   * is then sent back to the offscreen bridge for lattice, which extends from
-   * the eth-lattice-keyring Keyring class.
+   * Service workers do not have DOM access, so the keyring bridge sends the
+   * Connect URL here and this offscreen document opens the tab, receives the
+   * v1 postMessage result, validates it, and forwards it back to the keyring.
    */
   chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     if (msg.target !== OffscreenCommunicationTarget.latticeOffscreen) {
       return;
     }
 
-    // Open the tab
-    openConnectorTab(msg.params.url).then((browserTab) => {
-      // Watch for the open window closing before creds are sent back
-      const listenInterval = setInterval(() => {
-        if (browserTab.closed) {
-          clearInterval(listenInterval);
-          sendResponse({
-            error: new Error('Lattice connector closed.'),
-          });
-        }
-      }, 500);
+    if (!msg.params?.url || typeof msg.params.url !== 'string') {
+      sendResponse({ error: 'Missing connect URL.' });
+      return;
+    }
 
-      // On a Chromium browser we can just listen for a window message from the
-      // lattice tab (using the event.origin property). When we get that it'll be
-      // the response from the lattice connector with the deviceID and password.
-      // We can then forward that response to the lattice-offscreen-keyring's
-      // _getCreds method using sendResponse API from the chrome runtime.
-      window.addEventListener(
-        'message',
-        (event) => {
-          // Ensure origin, source is the browser tab, and data is a string (JSON to be parsed)
-          if (
-            event.origin !== KnownOrigins.lattice ||
-            event.source !== browserTab ||
-            typeof event.data !== 'string'
-          ) {
+    let parsedConnectUrl: ReturnType<typeof parseGridPlusConnectUrl>;
+
+    try {
+      parsedConnectUrl = parseGridPlusConnectUrl(msg.params.url);
+    } catch (error) {
+      sendResponse({
+        error: error instanceof Error ? error.message : String(error),
+      });
+      return;
+    }
+
+    let finished = false;
+    let browserTab: Window | null = null;
+    let listenInterval: ReturnType<typeof setInterval> | null = null;
+    let closeGraceTimeout: ReturnType<typeof setTimeout> | null = null;
+    let handleMessage: ((event: MessageEvent) => void) | null = null;
+
+    const cleanup = () => {
+      if (listenInterval !== null) {
+        clearInterval(listenInterval);
+        listenInterval = null;
+      }
+
+      if (closeGraceTimeout !== null) {
+        clearTimeout(closeGraceTimeout);
+        closeGraceTimeout = null;
+      }
+
+      if (handleMessage) {
+        window.removeEventListener('message', handleMessage);
+        handleMessage = null;
+      }
+    };
+
+    const finish = (response: GridPlusConnectResponse) => {
+      if (finished) {
+        return;
+      }
+
+      finished = true;
+      cleanup();
+      sendResponse(response);
+    };
+
+    const fail = (error: string) => finish({ error });
+
+    const scheduleClosedFailure = () => {
+      if (closeGraceTimeout !== null) {
+        return;
+      }
+
+      closeGraceTimeout = setTimeout(() => {
+        fail('GridPlus Connect closed.');
+      }, CONNECT_CLOSE_GRACE_PERIOD_MS);
+    };
+
+    openConnectorTab(parsedConnectUrl.url.toString())
+      .then((openedTab) => {
+        browserTab = openedTab;
+
+        listenInterval = setInterval(() => {
+          if (browserTab?.closed) {
+            scheduleClosedFailure();
+          }
+        }, 500);
+
+        handleMessage = (event: MessageEvent) => {
+          if (event.origin !== parsedConnectUrl.expectedOrigin) {
             return;
           }
 
-          try {
-            // Stop the listener
-            clearInterval(listenInterval);
+          const validation = validateGridPlusConnectMessage(event.data, {
+            expectedClient: parsedConnectUrl.expectedClient,
+            expectedRequestId: parsedConnectUrl.expectedRequestId,
+          });
 
-            // Parse and return creds
-            const creds = JSON.parse(event.data);
-            if (!creds.deviceID || !creds.password) {
-              sendResponse({
-                error: new Error('Invalid credentials returned from Lattice.'),
-              });
-            }
-            sendResponse({
-              result: creds,
-            });
-          } catch (err) {
-            console.error('Error parsing Lattice credentials', err);
-            sendResponse({
-              error: err,
-            });
+          if (validation.status === 'ignore') {
+            return;
           }
-        },
-        false,
-      );
-    });
+
+          if (validation.status === 'error') {
+            fail(validation.error);
+            return;
+          }
+
+          // Chromium extension offscreen documents do not consistently preserve
+          // WindowProxy identity for messages from opened cross-origin tabs. The
+          // response is bound to this flow by origin plus the request id/client
+          // values validated above.
+          try {
+            browserTab?.close();
+          } catch {
+            // Ignore close errors.
+          }
+
+          finish({ result: validation.result });
+        };
+
+        window.addEventListener('message', handleMessage, false);
+      })
+      .catch((error) => {
+        fail(error instanceof Error ? error.message : String(error));
+      });
 
     // eslint-disable-next-line consistent-return
     return true;

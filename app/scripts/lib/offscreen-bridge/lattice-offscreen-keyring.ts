@@ -1,96 +1,95 @@
-import LatticeKeyring from 'eth-lattice-keyring';
+import {
+  GridPlusKeyring,
+  type KeyringOptions,
+  type OpenConnectCallback,
+} from '@gridplus/keyring';
 import {
   OffscreenCommunicationTarget,
-  KnownOrigins,
 } from '../../../../shared/constants/offscreen-communication';
+import {
+  getGridPlusConnectApiBaseUrl,
+  getGridPlusConnectPageUrl,
+  type GridPlusConnectResult,
+  prepareGridPlusConnectUrl,
+} from '../gridplus-connect';
+import { normalizeGridPlusKeyringState } from '../gridplus-keyring-state';
 
 /**
- * This keyring extends the default keyring but uses a overwritten _getCreds
- * method to alter the mechanism by which the device is connected to. The main
- * reason for this is because in MV3 the window method to open a new tab will
- * not execute in the service worker as there is no DOM. The original keyring
- * _getCreds method calls into window.open to open a new window for the lattice
- * connector. The solution here is to split the keyring execution so that the
- * portion that requires a normal functioning DOM is executed in the offscreen
- * document. The lattice.ts file in the offscreen directory is responsible for
- * the latter half of the original keyrings execution. The main difference in
- * the first half that this overwritten method is responsible for is just to
- * use the chrome.runtime.sendMessage method to send a message to the offscreen
- * document which picks up on the execution of opening the new window to the
- * lattice connector. Note that this file differs from the ledger and trezor
- * offscreen bridges because this keyring requires no bridge to function
- * appropriately.
+ * GridPlus keyring wrapper for MV3 service workers.
+ *
+ * MV3 service workers cannot open tabs through `window.open`, so this wrapper
+ * injects an `openConnect` callback that asks the offscreen document to run the
+ * browser-tab portion of the GridPlus Connect flow.
  */
-class LatticeKeyringOffscreen extends LatticeKeyring {
+class LatticeKeyringOffscreen extends GridPlusKeyring {
   static type: string;
 
-  constructor(opts = {}) {
-    super(opts);
+  constructor(opts: KeyringOptions = {}) {
+    super({
+      ...opts,
+      api: {
+        ...opts.api,
+        baseUrl: opts.api?.baseUrl ?? getGridPlusConnectApiBaseUrl(),
+      },
+      connectPageUrl: opts.connectPageUrl ?? getGridPlusConnectPageUrl(),
+      state: normalizeGridPlusKeyringState(opts.state),
+      openConnect: opts.openConnect ?? createOpenConnectCallback(),
+    });
   }
 
-  async _getCreds(): Promise<
-    | {
-        deviceID: string;
-        password: string;
-        endpoint?: string;
-      }
-    | undefined
-  > {
-    try {
-      // If we already have credentials cached
-      if (this._hasCreds()) {
-        return undefined;
-      }
+  async deserialize(opts?: KeyringOptions['state']): Promise<void> {
+    await super.deserialize(normalizeGridPlusKeyringState(opts));
+  }
+}
 
-      // If we are not aware of what Lattice we should be talking to,
-      // we need to open a window that lets the user go through the
-      // pairing or connection process.
-      const name = this.appName ? this.appName : 'Unknown';
-      const url = `${KnownOrigins.lattice}?keyring=${name}&forceLogin=true`;
+function createOpenConnectCallback(): OpenConnectCallback {
+  return async (connectUrl: string): Promise<GridPlusConnectResult> => {
+    const extensionOrigin = chrome.runtime.getURL('').replace(/\/$/u, '');
+    const { url } = prepareGridPlusConnectUrl(connectUrl, extensionOrigin);
 
-      // send a msg to the render process to open lattice connector
-      // and collect the credentials
-      const creds = await new Promise<{
-        deviceID: string;
-        password: string;
-        endpoint?: string;
-      }>((resolve, reject) => {
+    const result = await new Promise<GridPlusConnectResult>(
+      (resolve, reject) => {
         chrome.runtime.sendMessage(
           {
             target: OffscreenCommunicationTarget.latticeOffscreen,
             params: {
-              url,
+              url: url.toString(),
             },
           },
           (response) => {
             if (chrome.runtime.lastError) {
-              reject(chrome.runtime.lastError);
+              reject(new Error(chrome.runtime.lastError.message));
               return;
             }
 
             if (response?.error) {
-              reject(response.error);
+              reject(
+                response.error instanceof Error
+                  ? response.error
+                  : new Error(String(response.error)),
+              );
               return;
             }
 
-            resolve(response?.result);
+            if (!response?.result?.deviceId || !response.result.sessionKey) {
+              reject(new Error('Invalid credentials returned from Connect.'));
+              return;
+            }
+
+            resolve(response.result);
           },
         );
-      });
+      },
+    );
 
-      if (!creds?.deviceID || !creds?.password) {
-        throw new Error('Invalid credentials returned from Lattice.');
-      }
-
-      return creds;
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      throw new Error(err);
+    if (!result.deviceId || !result.sessionKey) {
+      throw new Error('Invalid credentials returned from Connect.');
     }
-  }
+
+    return result;
+  };
 }
 
-LatticeKeyringOffscreen.type = LatticeKeyring.type;
+LatticeKeyringOffscreen.type = GridPlusKeyring.type;
 
 export { LatticeKeyringOffscreen };
