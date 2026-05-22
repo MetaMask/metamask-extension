@@ -3,6 +3,7 @@ import React, { useCallback, useEffect } from 'react';
 import {
   Box,
   BoxAlignItems,
+  BoxBackgroundColor,
   BoxFlexDirection,
 } from '@metamask/design-system-react';
 import {
