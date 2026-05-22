@@ -52,11 +52,26 @@ exports[`AssetPage should render a native asset 1`] = `
         >
           $123.00
         </h1>
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+        <div
+          aria-hidden="true"
+          class="relative overflow-hidden rounded-lg"
+          style="width: 33%;"
         >
-           
-        </p>
+          <div
+            aria-hidden="true"
+            class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+          />
+          <div
+            aria-hidden="true"
+            class="pointer-events-none invisible relative z-10"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+            >
+               
+            </p>
+          </div>
+        </div>
       </div>
       <div
         class="mm-box mm-box--margin-top-4 mm-box--display-flex mm-box--flex-direction-column mm-box--background-color-transparent mm-box--rounded-lg"
@@ -866,11 +881,26 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         >
           $15,129.00
         </h1>
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+        <div
+          aria-hidden="true"
+          class="relative overflow-hidden rounded-lg"
+          style="width: 33%;"
         >
-           
-        </p>
+          <div
+            aria-hidden="true"
+            class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+          />
+          <div
+            aria-hidden="true"
+            class="pointer-events-none invisible relative z-10"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+            >
+               
+            </p>
+          </div>
+        </div>
       </div>
       <div
         class="mm-box mm-box--margin-top-4 mm-box--display-flex mm-box--flex-direction-column mm-box--background-color-transparent mm-box--rounded-lg"
