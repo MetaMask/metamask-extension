@@ -307,6 +307,10 @@ ${Object.entries(env)
       'other',
     );
     assert.strictEqual(
+      manifestPlugin.options.stats.classifyEntrypoint('offscreen.1'),
+      'other',
+    );
+    assert.strictEqual(
       manifestPlugin.options.stats.classifyEntrypoint(
         'scripts/contentscript.js',
       ),

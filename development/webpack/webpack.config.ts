@@ -74,6 +74,7 @@ const bundleSizeOtherEntrypoints = new Set([
   'trezor-usb-permissions',
   'usb-permissions',
 ]);
+const bundleSizeOtherEntrypointPattern = /^offscreen\.\d+$/u;
 const bundleSizeContentScriptEntrypoints = new Set([
   'scripts/contentscript.js',
   'scripts/inpage.js',
@@ -98,7 +99,10 @@ const classifyBundleSizeEntrypoint = (
     return 'ui';
   }
 
-  if (bundleSizeOtherEntrypoints.has(entrypointName)) {
+  if (
+    bundleSizeOtherEntrypoints.has(entrypointName) ||
+    bundleSizeOtherEntrypointPattern.test(entrypointName)
+  ) {
     return 'other';
   }
 
