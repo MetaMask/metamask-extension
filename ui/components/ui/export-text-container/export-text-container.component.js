@@ -25,7 +25,7 @@ function ExportTextContainer({ text = '', onClickCopy = null }) {
 
   return (
     <Box
-      className="flex rounded-md"
+      className="flex rounded-md border border-solid"
       justifyContent={BoxJustifyContent.Center}
       flexDirection={BoxFlexDirection.Column}
       alignItems={BoxAlignItems.Center}
