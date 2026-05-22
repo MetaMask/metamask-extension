@@ -17,7 +17,10 @@ import { useSelector } from 'react-redux';
 import { brandColor } from '@metamask/design-tokens';
 import { Box } from '@metamask/design-system-react';
 import type { CandleData, CandleStick } from '@metamask/perps-controller';
-import { PRICE_THRESHOLD } from '../../../../../shared/lib/perps-formatters';
+import {
+  formatVolume,
+  PRICE_THRESHOLD,
+} from '../../../../../shared/lib/perps-formatters';
 import { CandlePeriod, ZOOM_CONFIG } from '../constants/chartConfig';
 import { useTheme } from '../../../../hooks/useTheme';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
@@ -179,6 +182,7 @@ const PerpsCandlestickChart = forwardRef<
       : 'rgba(0, 0, 0, 0.4)';
 
     const containerRef = useRef<HTMLDivElement>(null);
+    const volumeLabelRef = useRef<HTMLDivElement>(null);
     const chartRef = useRef<IChartApi | null>(null);
     const seriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
     const volumeSeriesRef = useRef<ISeriesApi<'Histogram'> | null>(null);
@@ -401,10 +405,45 @@ const PerpsCandlestickChart = forwardRef<
         }
       });
 
-      // Crosshair move: report hovered candle for OHLCV bar
+      // Crosshair move:
+      // 1. report hovered candle to the parent OHLCV bar (existing)
+      // 2. swap the right-side y-axis label to show the bar's volume when the
+      //    cursor is inside the volume pane — without this the price scale
+      //    extrapolates pane-0 prices into pane-1 and prints the chart's low.
       chart.subscribeCrosshairMove((param) => {
         // Skip during our own data updates to prevent loop: update/setData → crosshair → setState → re-render → effect → update
-        if (isApplyingDataUpdateRef.current || !onCrosshairMoveRef.current) {
+        if (isApplyingDataUpdateRef.current) {
+          return;
+        }
+
+        const volumeData = param.seriesData.get(volumeSeries);
+        const volumeValue =
+          volumeData && 'value' in volumeData ? volumeData.value : undefined;
+
+        const labelEl = volumeLabelRef.current;
+        if (labelEl) {
+          if (
+            param.paneIndex === 1 &&
+            param.point !== undefined &&
+            typeof volumeValue === 'number' &&
+            volumeValue > 0
+          ) {
+            // param.point.y is pane-local. Translate to chart-container coords by
+            // adding the cumulative height of preceding panes + 1px separator each.
+            const panes = chart.panes();
+            let paneTop = 0;
+            for (let i = 0; i < param.paneIndex; i += 1) {
+              paneTop += panes[i].getHeight() + 1;
+            }
+            labelEl.textContent = formatVolume(volumeValue, 1);
+            labelEl.style.top = `${paneTop + param.point.y}px`;
+            labelEl.style.display = 'block';
+          } else {
+            labelEl.style.display = 'none';
+          }
+        }
+
+        if (!onCrosshairMoveRef.current) {
           return;
         }
 
@@ -425,14 +464,8 @@ const PerpsCandlestickChart = forwardRef<
             high: String(candleSeriesData.high),
             low: String(candleSeriesData.low),
             close: String(candleSeriesData.close),
-            volume: '0', // Volume from histogram series if needed
+            volume: typeof volumeValue === 'number' ? String(volumeValue) : '0',
           };
-
-          // Try to get volume from the histogram series
-          const volumeData = param.seriesData.get(volumeSeries);
-          if (volumeData && 'value' in volumeData) {
-            hoveredCandle.volume = String(volumeData.value);
-          }
 
           onCrosshairMoveRef.current(hoveredCandle);
         }
@@ -650,16 +683,43 @@ const PerpsCandlestickChart = forwardRef<
 
     return (
       <Box
-        ref={containerRef}
-        className="perps-candlestick-chart"
         data-testid="perps-candlestick-chart"
         style={{
+          position: 'relative',
           width: '100%',
           height,
           borderRadius: '8px',
           overflow: 'hidden',
         }}
-      />
+      >
+        <Box
+          ref={containerRef}
+          className="perps-candlestick-chart"
+          style={{ width: '100%', height: '100%' }}
+        />
+        <div
+          ref={volumeLabelRef}
+          data-testid="perps-volume-axis-label"
+          style={{
+            position: 'absolute',
+            right: 0,
+            top: 0,
+            display: 'none',
+            transform: 'translateY(-50%)',
+            padding: '1px 4px',
+            fontSize: '11px',
+            lineHeight: '12px',
+            color: isDark ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.9)',
+            backgroundColor: isDark ? brandColor.grey800 : brandColor.white,
+            border: `1px solid ${crosshairColor}`,
+            borderRadius: '2px',
+            pointerEvents: 'none',
+            zIndex: 2,
+            whiteSpace: 'nowrap',
+            fontFamily: 'monospace',
+          }}
+        />
+      </Box>
     );
   },
 );
