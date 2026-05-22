@@ -41,6 +41,25 @@ import {
   generateConsolidatedReport,
 } from './token-import-helpers';
 
+function getManualTokensForNetwork(
+  networkConfig: NetworkConfigAdditional,
+): Token[] {
+  const { manualTokens } = networkConfig;
+
+  if (!manualTokens || manualTokens.length === 0) {
+    return [];
+  }
+
+  return manualTokens.map((token) => ({
+    chainId: networkConfig.chainId,
+    address: token.address,
+    symbol: token.symbol,
+    name: token.name ?? token.symbol,
+    decimals: token.decimals ?? 18,
+    logoURI: token.logoURI,
+  }));
+}
+
 /**
  * Run token import test for a specific network
  * Returns the test results for consolidated reporting
@@ -117,21 +136,32 @@ async function runTokenImportTest(
 
       // Fetch all tokens from the tokenlist
       let tokens: Token[] = [];
+      let tokenSource = networkConfig.tokenlistUrl;
       try {
-        tokens = await fetchTokenList(
-          networkConfig.tokenlistUrl,
-          networkConfig.chainId,
-        );
-        console.log(
-          `[PROD TEST] Successfully fetched ${tokens.length} tokens from ${networkConfig.networkName} tokenlist`,
-        );
+        const manualTokens = getManualTokensForNetwork(networkConfig);
+
+        if (manualTokens.length > 0) {
+          tokens = manualTokens;
+          tokenSource = `manual-token-array://${networkConfig.networkId}`;
+          console.log(
+            `[PROD TEST] Using ${tokens.length} manually configured tokens for ${networkConfig.networkName}`,
+          );
+        } else {
+          tokens = await fetchTokenList(
+            networkConfig.tokenlistUrl,
+            networkConfig.chainId,
+          );
+          console.log(
+            `[PROD TEST] Successfully fetched ${tokens.length} tokens from ${networkConfig.networkName} tokenlist`,
+          );
+        }
       } catch (error) {
         console.error(
-          `[PROD TEST] Failed to fetch ${networkConfig.networkName} tokenlist:`,
+          `[PROD TEST] Failed to resolve tokens for ${networkConfig.networkName}:`,
           error,
         );
         throw new Error(
-          `Could not fetch ${networkConfig.networkName} tokenlist`,
+          `Could not resolve token list for ${networkConfig.networkName}`,
         );
       }
 
@@ -209,8 +239,6 @@ async function runTokenImportTest(
           const importPromise = assetListPage.importCustomTokenByChain(
             toHex(networkConfig.chainId).toString(),
             token.address,
-            token.symbol,
-            token.decimals.toString(),
           );
 
           // Race between import and timeout

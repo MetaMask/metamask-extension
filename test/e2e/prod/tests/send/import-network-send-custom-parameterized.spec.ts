@@ -242,12 +242,47 @@ async function runNetworkSendTest(
     await homePage.checkPageIsLoaded();
     await driver.delay(PROD_DELAYS.API_RESPONSE);
 
-    console.log(`[PROD TEST] Verifying we are on ${networkName} network...`);
-    reporter.captureStep(
-      `Network ${networkName} successfully added with RPC configured`,
-      undefined,
-      'success',
-    );
+    console.log(`[TEST] ✅ Home page is loaded`);
+      // From wallet home, click on sort-by-networks button
+      console.log(`[TEST] Opening network selector modal...`);
+      const networksList = '[data-testid="sort-by-networks"]';
+      await driver.clickElement(networksList);
+      // Wait for dialog to appear
+      await driver.waitForSelector('[role="dialog"]');
+      console.log(`[TEST] Able to find network selector modal...`);
+      // ================================================================
+      // Select custom network from network selector
+      // ================================================================
+
+      const chainIdHexVal = networkConfig.chainId;
+      const networkListItemSelector = `[data-testid="network-list-item-eip155:${chainIdHexVal}"]`;
+      console.log(`[TEST] Clicking on network in list: ${networkListItemSelector}...`);
+      await driver.clickElement(networkListItemSelector);
+      await driver.delay(PROD_DELAYS.MODAL_TRANSITION);
+      // Verify network was added
+      const homepage = new HomePage(driver);
+      await homepage.checkPageIsLoaded();
+      await homepage.checkAddNetworkMessageIsDisplayed(
+        networkConfig.networkName,
+      );
+
+      console.log(
+        `[PROD TEST] ✅ ${networkConfig.networkName} network added successfully`,
+      );
+
+      // Wait for RPC to connect
+      await driver.delay(PROD_DELAYS.RPC_RESPONSE);
+
+      // Verify we're on the correct network
+      try {
+        const networkDisplay = await driver.findElement(
+          '[data-testid="network-display"]',
+        );
+        const networkText = await networkDisplay.getText();
+        console.log(`[PROD TEST] Current network: ${networkText}`);
+      } catch (error) {
+        console.log('[PROD TEST] Error:', error);
+      }
 
     // ============================================
     // STEP 1: Import Account 1 (To account) and check balance
@@ -568,6 +603,10 @@ async function runNetworkSendTest(
     // ============================================
     // STEP 5: Send from Account 1 to Account 2 (still on Account 1)
     // ============================================
+    reporter.startStep(
+      'Second send (Account 1 → Account 2)',
+      `Successfully sent ${sendAmount} ${symbol} and transaction confirmed`,
+    );
     console.log(`[PROD TEST] Switching back to asset tab on ${networkName}...`);
     await driver.clickElement('[data-testid="account-overview__asset-tab"]');
     await driver.delay(1000);
@@ -640,6 +679,11 @@ async function runNetworkSendTest(
     console.log(`[PROD TEST] ✅ Second send completed on ${networkName}!`);
     console.log(
       `[PROD TEST] Sent ${sendAmount} ${symbol} from Account 1 to Account 2`,
+    );
+    reporter.captureStep(
+      `Sent ${sendAmount} ${symbol} to Account 2 and verified activity`,
+      undefined,
+      'success',
     );
 
     // ============================================

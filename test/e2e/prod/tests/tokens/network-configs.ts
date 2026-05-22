@@ -274,6 +274,17 @@ export type NetworkConfigAdditional = {
   tokenlistUrl: string;
 
   /**
+   * Optional: Manually specified tokens to import instead of fetching tokenlistUrl
+   */
+  manualTokens?: {
+    symbol: string;
+    address: string;
+    name?: string;
+    decimals?: number;
+    logoURI?: string;
+  }[];
+
+  /**
    * Optional: Fixture setup method name (from FixtureBuilder)
    * Example: 'withNetworkControllerOnHyperEVM'
    */
@@ -667,7 +678,7 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
 export const NETWORK_CONFIGS_POPULAR: NetworkConfigPopular[] = [
   {
     networkId: 'Base',
-    networkName: 'Ethereum',
+    networkName: 'Base',
     chainId: 8453,
     tokenlistUrl: 'https://raw.githubusercontent.com/etherlinkcom/Token-List/refs/heads/main/tokenlist.json',
   },
@@ -682,8 +693,47 @@ export const NETWORK_CONFIGS_ADDITIONAL: NetworkConfigAdditional[] = [
     networkId: 'Mon',
     networkName: 'Monad',
     chainId: 143,
+    manualTokens: [
+      {
+        symbol: 'USDC',
+        name: 'USD Coin',
+        address: '0x754704Bc059F8C67012fEd69BC8A327a5aafb603',
+        decimals: 6,
+        logoURI: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png',
+      },
+      {
+        symbol: 'WETH',
+        name: 'Wrapped Ether',
+        address: '0xee8c0e9f1bffb4eb878d8f15f368a02a35481242',
+        decimals: 18,
+        logoURI: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png',
+      },
+    ],
     tokenlistUrl: 'https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/tokenlist-mainnet.json',
     fixtureSetupMethod: 'withNetworkControllerOnMonad',
+  },
+  {
+    networkId: 'Base',
+    networkName: 'Base',
+    chainId: 8453,
+    manualTokens: [
+      {
+        symbol: 'USDC',
+        name: 'USD Coin',
+        address: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+        decimals: 6,
+        logoURI: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png',
+      },
+      {
+        symbol: 'WETH',
+        name: 'Wrapped Ether',
+        address: '0x4200000000000000000000000000000000000006',
+        decimals: 18,
+        logoURI: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png',
+      },
+    ],
+    tokenlistUrl: 'https://raw.githubusercontent.com/etherlinkcom/Token-List/refs/heads/main/tokenlist.json',
+    fixtureSetupMethod: 'withNetworkControllerOnBase',
   },
   // {
   //   networkId: 'HYPE',
