@@ -530,9 +530,7 @@ describe('SnapUIDateTimePicker', () => {
         const rendered =
           typeof renderInput === 'function'
             ? (
-                renderInput as (p: {
-                  className?: string;
-                }) => React.ReactElement
+                renderInput as (p: { className?: string }) => React.ReactElement
               )({ className: 'test-class' })
             : null;
         return (
