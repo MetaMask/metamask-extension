@@ -7,7 +7,7 @@ const SEGMENT_WRITE_KEY = process.env.SEGMENT_WRITE_KEY ?? null;
 const SEGMENT_HOST = process.env.SEGMENT_HOST || undefined;
 
 // flushAt controls how many events are sent to segment at once. Segment will
-// hold onto a queue of events until it hits this number, then it sends them as
+// hold onto a queue of events until it hits this number, then sends them as
 // a batch. This setting defaults to 15 in `@segment/analytics-node`, but in
 // development we likely want to see events in real time for debugging, so this
 // is set to 1 to disable the queueing mechanism.
@@ -26,20 +26,15 @@ const SEGMENT_FLUSH_INTERVAL = SECOND * 5;
 /**
  * Callback invoked after an event has been flushed to Segment. The first
  * argument is an error (if any). The second argument is the Segment SDK
- * `Context` object; consumers in this codebase only inspect the error, so the
+ * `Context` object. Consumers in this codebase only inspect the error, so the
  * type is intentionally loose.
  */
 export type SegmentCallback = (err?: unknown, ctx?: unknown) => void;
 
 /**
- * Payload accepted by the segment client. Extension call sites pass partial
- * payloads (e.g. `#identify` only sets `userId` + `traits`, early-init events
- * omit `locale`/`chain_id`), so all fields are optional and `properties` /
- * `context` / `traits` are typed loosely; validation is left to Segment.
- *
- * The `timestamp` field accepts both `string` (as persisted in
- * `MetaMetricsController.state.segmentApiCalls` across service-worker
- * restarts) and `Date` (as produced when the event is first enqueued).
+ * Loose payload shape used by `custom-segment-tracking` and tests. The real
+ * `Analytics` SDK enforces stricter per-method types. We keep this lenient
+ * because early-init traffic and the mock both forward partial payloads.
  */
 export type SegmentTrackPayload = {
   userId?: string;
@@ -55,10 +50,9 @@ export type SegmentTrackPayload = {
 };
 
 /**
- * Thin interface exposed to the rest of the extension. This is the only
- * surface `MetaMetricsController` and `early-segment-tracking` interact with,
- * so swapping the underlying implementation (real SDK vs. mock) is confined
- * to this module.
+ * Safe Segment client exposed to the rest of the extension. The real
+ * implementation clones payloads before forwarding to `@segment/analytics-node`
+ * because the SDK mutates payloads during normalization.
  */
 export type SegmentClient = {
   track: (payload: SegmentTrackPayload, callback?: SegmentCallback) => void;
@@ -68,18 +62,14 @@ export type SegmentClient = {
 };
 
 /**
- * Create a segment client backed by the official `@segment/analytics-node`
- * SDK. The SDK uses `fetch` under the hood, so it is compatible with the MV3
- * service worker runtime (unlike the legacy `analytics-node` which relied on
- * `axios`/`XMLHttpRequest`).
+ * Constructs a `@segment/analytics-node` Analytics instance.
  *
  * @param writeKey - The Segment project write key.
  * @param host - Segment API host override (e.g. local mock).
- * @param flushAt - Queue batch size; `undefined` uses the SDK default.
+ * @param flushAt - Queue batch size. `undefined` uses the SDK default.
  * @param flushInterval - Periodic flush interval in milliseconds.
- * @returns A Segment client that forwards to the official Segment SDK.
  */
-function createSegmentClient(
+export function createSegmentClient(
   writeKey: string,
   host: string | undefined,
   flushAt: number | undefined,
@@ -92,38 +82,22 @@ function createSegmentClient(
     flushInterval,
   });
 
-  /**
-   * `MetaMetricsController.#submitSegmentAPICall` writes the same payload into
-   * `state.segmentApiCalls` (via `this.update`) before calling this client.
-   * BaseController uses immer with auto-freeze, so nested fields like
-   * `context`, `properties`, and `traits` that are shared by reference become
-   * non-extensible / frozen in place.
-   *
-   * `@segment/analytics-node`'s Segment.io plugin runs `normalizeEvent`, which
-   * uses `dset` to add `context.library` on the existing `context` object. That
-   * throws `TypeError: Cannot add property library, object is not extensible`.
-   * The error can be swallowed inside the SDK's plugin pipeline, so callbacks
-   * may still report success but no HTTP request is sent.
-   *
-   * `cloneDeep` on each SDK call gives a plain mutable copy so normalization
-   * can run.
-   */
   return {
     track(payload, callback) {
       analytics.track(
-        cloneDeep(payload) as Parameters<typeof analytics.track>[0],
+        cloneDeep(payload) as Parameters<Analytics['track']>[0],
         callback,
       );
     },
     identify(payload, callback) {
       analytics.identify(
-        cloneDeep(payload) as Parameters<typeof analytics.identify>[0],
+        cloneDeep(payload) as Parameters<Analytics['identify']>[0],
         callback,
       );
     },
     page(payload, callback) {
       analytics.page(
-        cloneDeep(payload) as Parameters<typeof analytics.page>[0],
+        cloneDeep(payload) as Parameters<Analytics['page']>[0],
         callback,
       );
     },
@@ -133,57 +107,63 @@ function createSegmentClient(
   };
 }
 
-/**
- * Mock segment client queue item: the payload and its completion callback.
- */
 type MockQueueItem = [SegmentTrackPayload, SegmentCallback];
 
 /**
- * Segment mock used in test environments. It preserves the shape of the real
- * client, exposes an internal `queue`, and lets tests drive flushes
- * synchronously via `flush()`. Used both by unit tests and by the app when
- * `SEGMENT_WRITE_KEY` is not provided (e.g. test builds).
+ * Segment mock used in test environments and in builds without
+ * `SEGMENT_WRITE_KEY`. Exposes an inspectable `queue` and lets tests drive
+ * flushes synchronously via `flush()`.
  *
  * @param flushAt - Number of events to queue before auto-flushing. When
  * undefined, events are only flushed when `flush()` is called explicitly.
- * @returns A Segment client with an inspectable queue.
  */
 export const createSegmentMock = (
   flushAt: number | undefined = SEGMENT_FLUSH_AT,
 ): SegmentClient & { queue: MockQueueItem[] } => {
-  const segmentMock: SegmentClient & { queue: MockQueueItem[] } = {
-    queue: [],
+  const noopCallback: SegmentCallback = () => undefined;
 
-    flush() {
-      segmentMock.queue.forEach(([, callback]) => {
-        callback();
-      });
-      segmentMock.queue = [];
-      return Promise.resolve();
-    },
+  const flushQueue = (queue: MockQueueItem[]) => {
+    queue.forEach(([, callback]) => {
+      callback();
+    });
+    queue.length = 0;
+  };
 
-    track(payload, callback = () => undefined) {
+  const segmentMock = {
+    queue: [] as MockQueueItem[],
+
+    track(payload: SegmentTrackPayload, callback: SegmentCallback = noopCallback) {
       segmentMock.queue.push([payload, callback]);
-
       if (flushAt !== undefined && segmentMock.queue.length >= flushAt) {
-        segmentMock.flush();
+        flushQueue(segmentMock.queue);
       }
     },
 
-    // These methods are either unused in tests or do not await their callback,
-    // so a NOOP implementation is sufficient. Tests still `spyOn` them to
-    // assert invocation.
-    page() {
-      // noop
+    flush() {
+      flushQueue(segmentMock.queue);
+      return Promise.resolve();
     },
-    identify() {
-      // noop
+
+    page(_payload?: SegmentTrackPayload, callback?: SegmentCallback): void {
+      callback?.();
+    },
+
+    identify(_payload?: SegmentTrackPayload, callback?: SegmentCallback): void {
+      callback?.();
     },
   };
 
-  return segmentMock;
+  return segmentMock as unknown as SegmentClient & { queue: MockQueueItem[] };
 };
 
+/**
+ * Shared Segment client used across the extension background. Real builds use
+ * the `@segment/analytics-node` SDK; test builds and CI without
+ * `SEGMENT_WRITE_KEY` fall back to createSegmentMock.
+ *
+ * Payload cloning lives in this module so every direct Segment caller receives
+ * the same protection from SDK payload mutation.
+ */
 export const segment: SegmentClient = SEGMENT_WRITE_KEY
   ? createSegmentClient(
       SEGMENT_WRITE_KEY,
@@ -191,4 +171,4 @@ export const segment: SegmentClient = SEGMENT_WRITE_KEY
       SEGMENT_FLUSH_AT,
       SEGMENT_FLUSH_INTERVAL,
     )
-  : createSegmentMock(SEGMENT_FLUSH_AT);
+  : (createSegmentMock(SEGMENT_FLUSH_AT) as unknown as SegmentClient);

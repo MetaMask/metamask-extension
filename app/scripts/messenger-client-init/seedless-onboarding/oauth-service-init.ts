@@ -1,3 +1,4 @@
+import { AnalyticsController } from '@metamask/analytics-controller';
 import { MessengerClientInitFunction } from '../types';
 import { OAuthService } from '../../services/oauth/oauth-service';
 import { webAuthenticatorFactory } from '../../services/oauth/web-authenticator-factory';
@@ -13,6 +14,9 @@ export const OAuthServiceInit: MessengerClientInitFunction<
   const metaMetricsController = getMessengerClient(
     'MetaMetricsController',
   ) as MetaMetricsController;
+  const analyticsController = getMessengerClient(
+    'AnalyticsController',
+  ) as AnalyticsController;
 
   const messengerClient = new OAuthService({
     messenger: controllerMessenger,
@@ -37,8 +41,7 @@ export const OAuthServiceInit: MessengerClientInitFunction<
         metaMetricsController,
       ),
 
-    getParticipateInMetaMetrics: () =>
-      metaMetricsController.state.participateInMetaMetrics,
+    getParticipateInMetaMetrics: () => analyticsController.state.optedIn,
   });
 
   return {

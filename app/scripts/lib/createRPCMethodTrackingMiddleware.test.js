@@ -2,7 +2,10 @@ import { errorCodes } from '@metamask/rpc-errors';
 import { detectSIWE } from '@metamask/controller-utils';
 import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 
-import { MetaMetricsController } from '../controllers/metametrics-controller';
+import {
+  MetaMetricsController,
+  getDefaultMetaMetricsControllerState,
+} from '../controllers/metametrics-controller';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -33,10 +36,8 @@ jest.mock('./snap-keyring/metrics', () => {
 const MockSnapKeyringMetrics = jest.mocked(snapKeyringMetrics);
 
 const MOCK_ID = '123';
-const expectedUniqueIdentifier = `signature-${MOCK_ID}`;
 
 const expectedMetametricsEventUndefinedProps = {
-  actionId: undefined,
   currency: undefined,
   environmentType: undefined,
   page: undefined,
@@ -82,6 +83,23 @@ messenger.registerActionHandler(
   }),
 );
 
+const analyticsControllerState = {
+  analyticsId: '00000000-0000-4000-8000-000000000001',
+  optedIn: false,
+};
+
+messenger.registerActionHandler('AnalyticsController:getState', () => ({
+  ...analyticsControllerState,
+}));
+
+messenger.registerActionHandler('AnalyticsController:optIn', () => {
+  analyticsControllerState.optedIn = true;
+});
+
+messenger.registerActionHandler('AnalyticsController:optOut', () => {
+  analyticsControllerState.optedIn = false;
+});
+
 const controllerMessenger = new Messenger({
   namespace: 'MetaMetricsController',
   parent: messenger,
@@ -90,6 +108,9 @@ const controllerMessenger = new Messenger({
 messenger.delegate({
   messenger: controllerMessenger,
   actions: [
+    'AnalyticsController:getState',
+    'AnalyticsController:optIn',
+    'AnalyticsController:optOut',
     'PreferencesController:getState',
     'NetworkController:getState',
     'NetworkController:getNetworkClientById',
@@ -100,12 +121,16 @@ messenger.delegate({
   ],
 });
 
+const analyticsController = {
+  get state() {
+    return analyticsControllerState;
+  },
+};
+
 const metaMetricsController = new MetaMetricsController({
   state: {
-    participateInMetaMetrics: null,
-    metaMetricsId: '0xabc',
+    ...getDefaultMetaMetricsControllerState(),
     fragments: {},
-    events: {},
   },
   messenger: controllerMessenger,
   segment: createSegmentMock(2),
@@ -127,6 +152,7 @@ const createHandler = (opts) =>
     globalRateLimitMaxAmount: 0,
     appStateController,
     metaMetricsController,
+    analyticsController,
     getHDEntropyIndex: jest.fn(),
     ...opts,
   });
@@ -373,7 +399,6 @@ describe('createRPCMethodTrackingMiddleware', () => {
           top_level_origin: null,
         },
         referrer: { url: 'some.dapp' },
-        uniqueIdentifier: expectedUniqueIdentifier,
       });
     });
 

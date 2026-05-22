@@ -4,8 +4,17 @@ import type { Backup } from '../../../shared/lib/stores/persistence-manager';
 
 type SentryAppStateSnapshot = Record<string, unknown>;
 
+type AnalyticsState = {
+  analyticsId?: unknown;
+  optedIn?: unknown;
+};
+
+type MetaMetricsState = {
+  completedMetaMetricsOnboarding?: unknown;
+};
+
 export type MetaMetricsParticipation = {
-  participateInMetaMetrics: boolean;
+  participateInMetaMetrics: boolean | null;
   metaMetricsId?: string;
 } | null;
 
@@ -65,26 +74,15 @@ export function getMetaMetricsStateFromAppState(
     const state = appState.state as Record<string, unknown>;
     if ('metamask' in state && state.metamask !== undefined) {
       const metamask = state.metamask as {
-        participateInMetaMetrics?: boolean;
+        participateInMetaMetrics?: boolean | null;
         metaMetricsId?: string;
       };
-      const enabled = Boolean(metamask.participateInMetaMetrics);
       return {
-        participateInMetaMetrics: enabled,
-        metaMetricsId: enabled ? metamask.metaMetricsId : undefined,
+        participateInMetaMetrics: metamask.participateInMetaMetrics ?? null,
+        metaMetricsId: metamask.metaMetricsId,
       };
     }
-    const controller = state.MetaMetricsController as
-      | {
-          participateInMetaMetrics?: boolean;
-          metaMetricsId?: string;
-        }
-      | undefined;
-    const enabled = Boolean(controller?.participateInMetaMetrics);
-    return {
-      participateInMetaMetrics: enabled,
-      metaMetricsId: enabled ? controller?.metaMetricsId : undefined,
-    };
+    return getMetaMetricsStateFromControllerState(state);
   }
   return null;
 }
@@ -99,17 +97,7 @@ function getMetaMetricsStateFromPersistedState(
   const data = (
     persistedState as { data?: Record<string, unknown> } | undefined
   )?.data;
-  const controller = data?.MetaMetricsController as
-    | {
-        participateInMetaMetrics?: boolean;
-        metaMetricsId?: string;
-      }
-    | undefined;
-  const enabled = Boolean(controller?.participateInMetaMetrics);
-  return {
-    participateInMetaMetrics: enabled,
-    metaMetricsId: enabled ? controller?.metaMetricsId : undefined,
-  };
+  return getMetaMetricsStateFromControllerState(data);
 }
 
 /**
@@ -119,15 +107,39 @@ function getMetaMetricsStateFromPersistedState(
 function getMetaMetricsStateFromBackupState(
   backupState: Backup | null,
 ): Exclude<MetaMetricsParticipation, null> {
-  const controller = backupState?.MetaMetricsController as
-    | {
-        participateInMetaMetrics?: boolean;
-        metaMetricsId?: string;
-      }
-    | undefined;
-  const enabled = Boolean(controller?.participateInMetaMetrics);
+  return getMetaMetricsStateFromControllerState(backupState);
+}
+
+function getMetaMetricsStateFromControllerState(
+  state: unknown,
+): Exclude<MetaMetricsParticipation, null> {
+  const controllerState = isRecord(state) ? state : {};
+  const analyticsController = getControllerState<AnalyticsState>(
+    controllerState.AnalyticsController,
+  );
+  const metaMetricsController = getControllerState<MetaMetricsState>(
+    controllerState.MetaMetricsController,
+  );
+
+  const { analyticsId } = analyticsController ?? {};
+  const participateInMetaMetrics =
+    analyticsController &&
+    metaMetricsController?.completedMetaMetricsOnboarding === true
+      ? analyticsController.optedIn === true
+      : null;
+
   return {
-    participateInMetaMetrics: enabled,
-    metaMetricsId: enabled ? controller?.metaMetricsId : undefined,
+    participateInMetaMetrics,
+    metaMetricsId: typeof analyticsId === 'string' ? analyticsId : undefined,
   };
+}
+
+function getControllerState<TControllerState>(
+  state: unknown,
+): TControllerState | undefined {
+  return isRecord(state) ? (state as TControllerState) : undefined;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === 'object';
 }

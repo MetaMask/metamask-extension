@@ -10,11 +10,6 @@ export type MetaMetricsControllerFinalizeAbandonedFragmentsAction = {
   handler: MetaMetricsController['finalizeAbandonedFragments'];
 };
 
-export type MetaMetricsControllerGenerateMetaMetricsIdAction = {
-  type: `MetaMetricsController:generateMetaMetricsId`;
-  handler: MetaMetricsController['generateMetaMetricsId'];
-};
-
 /**
  * Create an event fragment in state and returns the event fragment object.
  *
@@ -214,7 +209,6 @@ export type MetaMetricsControllerGetMetaMetricsIdAction = {
  */
 export type MetaMetricsControllerMethodActions =
   | MetaMetricsControllerFinalizeAbandonedFragmentsAction
-  | MetaMetricsControllerGenerateMetaMetricsIdAction
   | MetaMetricsControllerCreateEventFragmentAction
   | MetaMetricsControllerGetEventFragmentByIdAction
   | MetaMetricsControllerProcessAbandonedFragmentAction

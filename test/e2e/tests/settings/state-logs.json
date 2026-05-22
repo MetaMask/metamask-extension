@@ -1265,7 +1265,6 @@
     "securityAlertsEnabled": "boolean",
     "seedPhraseBackedUp": "null",
     "passkeyRecord": "null",
-    "segmentApiCalls": {},
     "selectedAccountGroup": "string",
     "selectedMultichainNetworkChainId": "string",
     "selectedPaymentToken": "null",

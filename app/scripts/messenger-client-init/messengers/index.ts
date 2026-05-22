@@ -1,4 +1,5 @@
 import { noop } from 'lodash';
+import { getAnalyticsControllerMessenger } from './analytics-controller-messenger';
 import {
   getPPOMControllerMessenger,
   getPPOMControllerInitMessenger,
@@ -280,6 +281,7 @@ export {
 } from './keyring-controller-messenger';
 export type { LoggingControllerMessenger } from './logging-controller-messenger';
 export { getLoggingControllerMessenger } from './logging-controller-messenger';
+export { getAnalyticsControllerMessenger } from './analytics-controller-messenger';
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
 export type { NetworkControllerInitMessenger } from './network-controller-messenger';
@@ -423,6 +425,10 @@ export const MESSENGER_FACTORIES = {
   },
   AppStateController: {
     getMessenger: getAppStateControllerMessenger,
+    getInitMessenger: noop,
+  },
+  AnalyticsController: {
+    getMessenger: getAnalyticsControllerMessenger,
     getInitMessenger: noop,
   },
   AssetsController: {

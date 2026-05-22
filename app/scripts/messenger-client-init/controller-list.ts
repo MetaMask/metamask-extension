@@ -96,6 +96,7 @@ import {
 } from '@metamask/geolocation-controller';
 import { PerpsController } from '@metamask/perps-controller';
 import { PasskeyController } from '@metamask/passkey-controller';
+import { AnalyticsController } from '@metamask/analytics-controller';
 import { OnboardingController } from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import { InstitutionalSnapController } from '../controllers/institutional-snap/InstitutionalSnapController';
@@ -127,6 +128,7 @@ export type MessengerClient =
   | AccountsController
   | AddressBookController
   | AlertController
+  | AnalyticsController
   | AnnouncementController
   | AppMetadataController
   | ApprovalController
@@ -238,6 +240,7 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   AppMetadataController['state'] &
   ApprovalController['state'] &
   AppStateController['state'] &
+  AnalyticsController['state'] &
   AssetsController['state'] &
   AuthenticationController['state'] &
   BridgeController['state'] &

@@ -21,7 +21,6 @@ jest.mock('../store/actions', () => ({
 }));
 
 jest.mock('../store/background-connection', () => ({
-  generateActionId: jest.fn(() => 'test-action-id'),
   submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
 }));
 
@@ -34,7 +33,8 @@ const renderProvider = ({
   event: MetaMetricsEventName;
   state: {
     metamask: {
-      participateInMetaMetrics: boolean | null;
+      completedMetaMetricsOnboarding: boolean;
+      optedIn: boolean;
       metaMetricsId: string | null;
     };
   };
@@ -90,7 +90,8 @@ describe('MetaMetricsProvider', () => {
       event: MetaMetricsEventName.AnalyticsPreferenceSelected,
       state: {
         metamask: {
-          participateInMetaMetrics: true,
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
           metaMetricsId: null,
         },
       },
@@ -101,7 +102,6 @@ describe('MetaMetricsProvider', () => {
         'addEventBeforeMetricsOptIn',
         [
           expect.objectContaining({
-            actionId: 'test-action-id',
             category: MetaMetricsEventCategory.Onboarding,
             event: MetaMetricsEventName.AnalyticsPreferenceSelected,
           }),
@@ -117,7 +117,8 @@ describe('MetaMetricsProvider', () => {
       event: MetaMetricsEventName.AnalyticsPreferenceSelected,
       state: {
         metamask: {
-          participateInMetaMetrics: true,
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
           metaMetricsId: '0x123',
         },
       },
@@ -141,7 +142,8 @@ describe('MetaMetricsProvider', () => {
       event: MetaMetricsEventName.MetricsOptOut,
       state: {
         metamask: {
-          participateInMetaMetrics: false,
+          completedMetaMetricsOnboarding: true,
+          optedIn: false,
           metaMetricsId: null,
         },
       },
@@ -165,7 +167,8 @@ describe('MetaMetricsProvider', () => {
       event: MetaMetricsEventName.AnalyticsPreferenceSelected,
       state: {
         metamask: {
-          participateInMetaMetrics: false,
+          completedMetaMetricsOnboarding: true,
+          optedIn: false,
           metaMetricsId: '0x123',
         },
       },

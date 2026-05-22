@@ -22,6 +22,7 @@ export const backedUpStateKeys = [
   'KeyringController',
   'AppMetadataController',
   'MetaMetricsController',
+  'AnalyticsController',
 ] as const;
 
 export type BackedUpStateKey = (typeof backedUpStateKeys)[number];

@@ -73,9 +73,12 @@ describe('sentry-get-state', () => {
         getSentryState: () => emptySentrySnapshot(),
         getPersistedState: async () => ({
           data: {
+            AnalyticsController: {
+              analyticsId: 'id-123',
+              optedIn: true,
+            },
             MetaMetricsController: {
-              participateInMetaMetrics: true,
-              metaMetricsId: 'id-123',
+              completedMetaMetricsOnboarding: true,
             },
           },
         }),
@@ -94,7 +97,13 @@ describe('sentry-get-state', () => {
         getSentryState: () => emptySentrySnapshot(),
         getPersistedState: async () => ({
           data: {
-            MetaMetricsController: { participateInMetaMetrics: false },
+            AnalyticsController: {
+              analyticsId: 'id-123',
+              optedIn: false,
+            },
+            MetaMetricsController: {
+              completedMetaMetricsOnboarding: true,
+            },
           },
         }),
         getBackupState: async () => ({}),
@@ -102,7 +111,7 @@ describe('sentry-get-state', () => {
 
       await expect(getMetaMetricsState()).resolves.toStrictEqual({
         participateInMetaMetrics: false,
-        metaMetricsId: undefined,
+        metaMetricsId: 'id-123',
       });
     });
 
@@ -115,7 +124,7 @@ describe('sentry-get-state', () => {
       };
 
       await expect(getMetaMetricsState()).resolves.toStrictEqual({
-        participateInMetaMetrics: false,
+        participateInMetaMetrics: null,
         metaMetricsId: undefined,
       });
 
@@ -127,7 +136,7 @@ describe('sentry-get-state', () => {
       };
 
       await expect(getMetaMetricsState()).resolves.toStrictEqual({
-        participateInMetaMetrics: false,
+        participateInMetaMetrics: null,
         metaMetricsId: undefined,
       });
     });
@@ -140,9 +149,12 @@ describe('sentry-get-state', () => {
           throw new Error('persisted unavailable');
         },
         getBackupState: async () => ({
+          AnalyticsController: {
+            analyticsId: 'backup-id',
+            optedIn: true,
+          },
           MetaMetricsController: {
-            participateInMetaMetrics: true,
-            metaMetricsId: 'backup-id',
+            completedMetaMetricsOnboarding: true,
           },
         }),
       };
@@ -161,13 +173,19 @@ describe('sentry-get-state', () => {
           throw new Error('persisted unavailable');
         },
         getBackupState: async () => ({
-          MetaMetricsController: { participateInMetaMetrics: false },
+          AnalyticsController: {
+            analyticsId: 'backup-id',
+            optedIn: false,
+          },
+          MetaMetricsController: {
+            completedMetaMetricsOnboarding: true,
+          },
         }),
       };
 
       await expect(getMetaMetricsState()).resolves.toStrictEqual({
         participateInMetaMetrics: false,
-        metaMetricsId: undefined,
+        metaMetricsId: 'backup-id',
       });
     });
 
@@ -182,7 +200,7 @@ describe('sentry-get-state', () => {
       };
 
       await expect(getMetaMetricsState()).resolves.toStrictEqual({
-        participateInMetaMetrics: false,
+        participateInMetaMetrics: null,
         metaMetricsId: undefined,
       });
 
@@ -196,7 +214,7 @@ describe('sentry-get-state', () => {
       };
 
       await expect(getMetaMetricsState()).resolves.toStrictEqual({
-        participateInMetaMetrics: false,
+        participateInMetaMetrics: null,
         metaMetricsId: undefined,
       });
     });
@@ -210,9 +228,12 @@ describe('sentry-get-state', () => {
     it('delegates to persisted state when persistedState is present', () => {
       const persistedState = {
         data: {
+          AnalyticsController: {
+            analyticsId: 'persisted-id',
+            optedIn: true,
+          },
           MetaMetricsController: {
-            participateInMetaMetrics: true,
-            metaMetricsId: 'persisted-id',
+            completedMetaMetricsOnboarding: true,
           },
         },
       };
@@ -240,13 +261,32 @@ describe('sentry-get-state', () => {
       });
     });
 
-    it('returns state from appState.state.MetaMetricsController when state has no metamask', () => {
+    it('returns null participation from appState.state.metamask before opt-in selection', () => {
       expect(
         getMetaMetricsStateFromAppState({
           state: {
+            metamask: {
+              participateInMetaMetrics: null,
+              metaMetricsId: 'metamask-id',
+            },
+          },
+        }),
+      ).toStrictEqual({
+        participateInMetaMetrics: null,
+        metaMetricsId: 'metamask-id',
+      });
+    });
+
+    it('returns state from controller state when state has no metamask', () => {
+      expect(
+        getMetaMetricsStateFromAppState({
+          state: {
+            AnalyticsController: {
+              analyticsId: 'controller-id',
+              optedIn: true,
+            },
             MetaMetricsController: {
-              participateInMetaMetrics: true,
-              metaMetricsId: 'controller-id',
+              completedMetaMetricsOnboarding: true,
             },
           },
         }),
@@ -260,12 +300,37 @@ describe('sentry-get-state', () => {
       expect(
         getMetaMetricsStateFromAppState({
           state: {
-            MetaMetricsController: { participateInMetaMetrics: false },
+            AnalyticsController: {
+              analyticsId: 'controller-id',
+              optedIn: false,
+            },
+            MetaMetricsController: {
+              completedMetaMetricsOnboarding: true,
+            },
           },
         }),
       ).toStrictEqual({
         participateInMetaMetrics: false,
-        metaMetricsId: undefined,
+        metaMetricsId: 'controller-id',
+      });
+    });
+
+    it('returns participateInMetaMetrics null when onboarding is incomplete', () => {
+      expect(
+        getMetaMetricsStateFromAppState({
+          state: {
+            AnalyticsController: {
+              analyticsId: 'controller-id',
+              optedIn: true,
+            },
+            MetaMetricsController: {
+              completedMetaMetricsOnboarding: false,
+            },
+          },
+        }),
+      ).toStrictEqual({
+        participateInMetaMetrics: null,
+        metaMetricsId: 'controller-id',
       });
     });
   });

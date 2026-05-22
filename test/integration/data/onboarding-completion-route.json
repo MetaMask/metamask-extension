@@ -293,21 +293,6 @@
   "recoveryPhraseReminderLastShown": 1715943225448,
   "securityAlertsEnabled": true,
   "seedPhraseBackedUp": true,
-  "segmentApiCalls": {
-    "6QHUuopP26ok11pDgrCt": {
-      "eventType": "identify",
-      "payload": {
-        "userId": "0x4d6d78a255217af6411a5bbd39e31b5e46e0e920bdf7e979470f316cbe8c00eb",
-        "traits": {
-          "address_book_entries": 1,
-          "number_of_accounts": 1,
-          "petname_addresses_count": 1
-        },
-        "messageId": "6QHUuopP26ok11pDgrCt",
-        "timestamp": "Fri May 17 2024 12:07:22 GMT+0100 (Western European Summer Time)"
-      }
-    }
-  },
   "selectedCurrency": "usd",
   "selectedMultichainNetworkChainId": "bip122:000000000019d6689c085ae165831e93",
   "selectedNetworkClientId": "sepolia",

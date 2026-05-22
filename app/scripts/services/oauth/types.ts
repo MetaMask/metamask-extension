@@ -175,7 +175,7 @@ export type OAuthServiceOptions = {
   /**
    * Get whether the user has opted into MetaMetrics
    */
-  getParticipateInMetaMetrics: () => boolean | null;
+  getParticipateInMetaMetrics: () => boolean;
 };
 
 /**

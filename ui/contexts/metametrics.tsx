@@ -42,10 +42,7 @@ import {
   getMetaMetricsId,
   getParticipateInMetaMetrics,
 } from '../selectors';
-import {
-  generateActionId,
-  submitRequestToBackground,
-} from '../store/background-connection';
+import { submitRequestToBackground } from '../store/background-connection';
 import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
 import type {
   TraceName,
@@ -196,7 +193,7 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
         trackMetaMetricsEvent(fullPayload as MetaMetricsEventPayload, options);
       } else if (canMaybeTrackLater) {
         await submitRequestToBackground('addEventBeforeMetricsOptIn', [
-          { ...fullPayload, actionId: generateActionId() },
+          fullPayload,
         ]);
       }
     },
@@ -282,9 +279,6 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
           environmentType: environmentType as EnvironmentType,
           page: context.page,
           referrer: context.referrer,
-        },
-        {
-          isOptInPath: location.pathname.startsWith('/initialize'),
         },
       );
     }
