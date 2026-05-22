@@ -3,6 +3,7 @@ import type { FeeCalculationResult } from '@metamask/perps-controller';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { getCurrentChainId } from '../../../shared/lib/selectors/networks';
+import { getIsVipProgramEnabled } from '../../selectors/perps/feature-flags';
 import { clearPerpsFeeDiscountCacheForTests } from './usePerpsMetamaskFeeDiscountBips';
 import { usePerpsOrderFees } from './usePerpsOrderFees';
 
@@ -34,6 +35,9 @@ function setSelectors(
     }
     if (selector === getCurrentChainId) {
       return chainId;
+    }
+    if (selector === getIsVipProgramEnabled) {
+      return true;
     }
     return undefined;
   });
