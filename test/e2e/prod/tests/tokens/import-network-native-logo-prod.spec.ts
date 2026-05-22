@@ -16,6 +16,70 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import { NETWORK_CONFIGS, NetworkConfig } from './network-configs';
 
 
+function getCliOptionValue(optionName: string): string | undefined {
+  const prefixedOption = `--${optionName}`;
+  const exactIndex = process.argv.findIndex((arg) => arg === prefixedOption);
+
+  if (exactIndex !== -1) {
+    const nextArg = process.argv[exactIndex + 1];
+    return nextArg && !nextArg.startsWith('--') ? nextArg : undefined;
+  }
+
+  const inlineOption = process.argv.find((arg) =>
+    arg.startsWith(`${prefixedOption}=`),
+  );
+
+  return inlineOption ? inlineOption.slice(prefixedOption.length + 1) : undefined;
+}
+
+
+function parseNetworkNames(value?: string): string[] {
+  if (!value) {
+    return [];
+  }
+
+  return value
+    .split(',')
+    .map((name) => name.trim())
+    .filter(Boolean);
+}
+
+
+function getSelectedNetworkConfigs(): NetworkConfig[] {
+  const networkNamesFromCli =
+    getCliOptionValue('networks') ?? getCliOptionValue('networkNames');
+  const selectedNetworkNames = parseNetworkNames(
+    networkNamesFromCli ?? process.env.NETWORKS,
+  );
+
+  if (selectedNetworkNames.length === 0) {
+    return NETWORK_CONFIGS;
+  }
+
+  const lowerCaseSelectedNames = selectedNetworkNames.map((name) =>
+    name.toLowerCase(),
+  );
+
+  const selectedNetworks = NETWORK_CONFIGS.filter((networkConfig) => {
+    const networkName = networkConfig.networkName.toLowerCase();
+    const networkId = networkConfig.networkId.toLowerCase();
+
+    return (
+      lowerCaseSelectedNames.includes(networkName) ||
+      lowerCaseSelectedNames.includes(networkId)
+    );
+  });
+
+  if (selectedNetworks.length === 0) {
+    throw new Error(
+      `No matching network configurations found for: ${selectedNetworkNames.join(', ')}`,
+    );
+  }
+
+  return selectedNetworks;
+}
+
+
 type NetworkNativeValidationResult = {
   networkId: string;
   networkName: string;
@@ -750,8 +814,9 @@ async function runNetworkImportNativeValidationTest(
 describe('Production E2E: Import Networks And Record Native Asset Validation', function (this: Suite) {
   this.timeout(14400000);
 
+  const selectedNetworks = getSelectedNetworkConfigs();
 
-  NETWORK_CONFIGS.forEach((networkConfig) => {
+  selectedNetworks.forEach((networkConfig) => {
     it(`imports ${networkConfig.networkName} and records native asset validation`, async function () {
       this.timeout(900000);
 

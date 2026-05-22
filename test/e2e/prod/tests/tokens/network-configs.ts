@@ -291,26 +291,26 @@ export type NetworkConfigAdditional = {
  * Add new networks here to automatically include them in tests
  */
 export const NETWORK_CONFIGS: NetworkConfig[] = [
-  // {
-  //   networkId: 'bob',
-  //   networkName: 'BOB',
-  //   chainId: 60808,
-  //   symbol: 'ETH',
-  //   rpcUrl: 'https://rpc.gobob.xyz',
-  //   rpcName: 'BOB RPC',
-  //   tokenlistUrl: 'https://raw.githubusercontent.com/bob-collective/bob/refs/heads/master/tokenlist/tokenlist-bob.json',
-  //   blockExplorerUrl: 'https://explorer.gobob.xyz',
-  // },
-  // {
-  //   networkId: 'etherlink',
-  //   networkName: 'Etherlink Mainnet',
-  //   chainId: 42793,
-  //   symbol: 'XTZ',
-  //   rpcUrl: 'https://node.mainnet.etherlink.com',
-  //   rpcName: 'Etherlink RPC',
-  //   tokenlistUrl: 'https://raw.githubusercontent.com/etherlinkcom/Token-List/refs/heads/main/tokenlist.json',
-  //   blockExplorerUrl: 'https://explorer.etherlink.com',
-  // },
+   {
+     networkId: 'bob',
+     networkName: 'BOB',
+     chainId: 60808,
+     symbol: 'ETH',
+     rpcUrl: 'https://rpc.gobob.xyz',
+     rpcName: 'BOB RPC',
+     tokenlistUrl: 'https://raw.githubusercontent.com/bob-collective/bob/refs/heads/master/tokenlist/tokenlist-bob.json',
+     blockExplorerUrl: 'https://explorer.gobob.xyz',
+   },
+   {
+     networkId: 'etherlink',
+     networkName: 'Etherlink Mainnet',
+     chainId: 42793,
+     symbol: 'XTZ',
+     rpcUrl: 'https://node.mainnet.etherlink.com',
+     rpcName: 'Etherlink RPC',
+     tokenlistUrl: 'https://raw.githubusercontent.com/etherlinkcom/Token-List/refs/heads/main/tokenlist.json',
+     blockExplorerUrl: 'https://explorer.etherlink.com',
+   },
   // {
   //   networkId: 'Injective',
   //   networkName: 'Injective',
@@ -628,26 +628,26 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
   //     'https://raw.githubusercontent.com/megaeth-labs/mega-tokenlist/main/megaeth.tokenlist.json',
   //   blockExplorerUrl: 'https://explorer.megaeth.io', // optional
   // },
-  // {
-  //   networkId: 'Ink',
-  //   networkName: 'Ink',
-  //   chainId: 57073,
-  //   symbol: 'ETH', // adjust if the native symbol differs
-  //   rpcUrl: 'https://ink.drpc.org', // placeholder, replace with real RPC
-  //   rpcName: 'Ink RPC',
-  //   tokenlistUrl: `file://${path.join(__dirname, 'tokenlist.json')}`,
-  //   blockExplorerUrl: 'https://explorer.inkonchain.com', // optional
-  // },
-  // {
-  //   networkId: 'Mantle',
-  //   networkName: 'Mantle',
-  //   chainId: 5000,
-  //   symbol: 'MNT',
-  //   rpcUrl: 'https://rpc.mantle.xyz',
-  //   rpcName: 'Mantle RPC',
-  //   tokenlistUrl: `file://${path.join(__dirname, 'tokenlist.json')}`,
-  //   blockExplorerUrl: 'https://mantlescan.xyz',
-  // },
+   {
+     networkId: 'Ink',
+     networkName: 'Ink',
+     chainId: 57073,
+     symbol: 'ETH', // adjust if the native symbol differs
+     rpcUrl: 'https://ink.drpc.org', // placeholder, replace with real RPC
+     rpcName: 'Ink RPC',
+     tokenlistUrl: `file://${path.join(__dirname, 'tokenlist.json')}`,
+     blockExplorerUrl: 'https://explorer.inkonchain.com', // optional
+   },
+  {
+    networkId: 'Mantle',
+     networkName: 'Mantle',
+     chainId: 5000,
+     symbol: 'MNT',
+     rpcUrl: 'https://rpc.mantle.xyz',
+     rpcName: 'Mantle RPC',
+     tokenlistUrl: `file://${path.join(__dirname, 'tokenlist.json')}`,
+     blockExplorerUrl: 'https://mantlescan.xyz',
+   },
 ];
 
 /**
