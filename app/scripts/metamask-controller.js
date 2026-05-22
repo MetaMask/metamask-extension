@@ -4503,7 +4503,7 @@ export default class MetamaskController extends EventEmitter {
     password,
   ) {
     const { completedOnboarding } = this.onboardingController.state;
-    if ( completedOnboarding ) {
+    if (completedOnboarding) {
       // password is required when onboarding is complete
       if (!password) {
         throw new Error('Password required to register passkey');
