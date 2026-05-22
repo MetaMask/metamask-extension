@@ -20,7 +20,7 @@ import { TokenFiatDisplayInfo } from '../../../../components/app/assets/types';
  * does not shift when switching from price-loading to price-available.
  */
 const AssetChartMainPriceLoading = () => (
-  <Skeleton width="25%" className="mb-1 rounded-lg">
+  <Skeleton hideChildren width="25%" className="mb-1 rounded-lg">
     <Text variant={TextVariant.displayMd}>{'\u00A0'}</Text>
   </Skeleton>
 );
@@ -43,7 +43,7 @@ const AssetChartMainPriceEmptyState = () => (
  * price-delta-available.
  */
 const AssetChartDeltaLoading = () => (
-  <Skeleton width="33%" className="rounded-lg">
+  <Skeleton hideChildren width="33%" className="rounded-lg">
     <Text variant={TextVariant.bodyMdMedium}>{'\u00A0'}</Text>
   </Skeleton>
 );
