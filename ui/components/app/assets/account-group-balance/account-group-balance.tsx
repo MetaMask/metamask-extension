@@ -129,6 +129,7 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
         (isZeroAmount(total) || currency === undefined)
       }
       className="mb-1"
+      data-testid="account-group-balance-skeleton"
     >
       <Box
         className={classnames(`${classPrefix}-overview__primary-balance`, {
