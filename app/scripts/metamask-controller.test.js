@@ -34,6 +34,7 @@ import {
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { TrezorKeyring } from '@metamask/eth-trezor-keyring';
 import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
+import { GridPlusKeyring } from '@gridplus/keyring';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -2473,6 +2474,27 @@ describe('MetaMaskController', () => {
             });
           },
         );
+
+        it('uses the GridPlus keyring type for Lattice devices', async () => {
+          const mockKeyring = {
+            isUnlocked: jest.fn().mockReturnValue(true),
+          };
+          const withKeyringSpy = jest
+            .spyOn(metamaskController.keyringController, 'withKeyring')
+            .mockImplementation(async (selector, callback, options) => {
+              expect(selector).toStrictEqual({ type: GridPlusKeyring.type });
+              expect(options).toStrictEqual({ createIfMissing: true });
+              return callback({ keyring: mockKeyring });
+            });
+
+          await expect(
+            metamaskController.checkHardwareStatus(HardwareDeviceNames.lattice),
+          ).resolves.toBe(true);
+
+          expect(withKeyringSpy).toHaveBeenCalledTimes(1);
+          expect(mockKeyring.appName).toBe('MetaMask');
+          expect(mockKeyring.network).toBeDefined();
+        });
       });
 
       describe('getLedgerAppConfiguration', () => {
