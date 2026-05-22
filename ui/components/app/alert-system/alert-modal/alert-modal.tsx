@@ -3,7 +3,6 @@ import React, { useCallback, useEffect } from 'react';
 import {
   Box,
   BoxAlignItems,
-  BoxBackgroundColor,
   BoxFlexDirection,
 } from '@metamask/design-system-react';
 import {
@@ -216,10 +215,10 @@ function AlertDetails({
       key={selectedAlert.key}
       className="inline-block w-full rounded-sm"
       padding={customDetails ? 0 : 2}
-      backgroundColor={
+      style={
         customDetails
           ? undefined
-          : (alertDetailsBackgroundColor as BoxBackgroundColor)
+          : { backgroundColor: `var(--color-${alertDetailsBackgroundColor})` }
       }
     >
       {customDetails ?? (

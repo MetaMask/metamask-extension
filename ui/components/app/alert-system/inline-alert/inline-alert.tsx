@@ -1,10 +1,6 @@
 import classnames from 'clsx';
 import React from 'react';
-import {
-  Box,
-  BoxAlignItems,
-  BoxBackgroundColor,
-} from '@metamask/design-system-react';
+import { Box, BoxAlignItems } from '@metamask/design-system-react';
 import {
   IconColor,
   Severity,
@@ -83,9 +79,11 @@ export default function InlineAlert({
           'inline-alert__transparent-background': !textOverride,
         })}
         alignItems={BoxAlignItems.Center}
-        backgroundColor={backgroundColor as unknown as BoxBackgroundColor}
         style={{
           cursor: onClick ? 'pointer' : 'default',
+          ...(backgroundColor && {
+            backgroundColor: `var(--color-${backgroundColor})`,
+          }),
           ...style,
         }}
         onClick={onClick}
