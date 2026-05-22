@@ -158,6 +158,7 @@ async function defineAndRunBuildTasks() {
       'ResizeObserver',
       'setTimeout',
       'clearTimeout',
+      'WebAssembly',
     ];
 
     if (
