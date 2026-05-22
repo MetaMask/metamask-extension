@@ -14,8 +14,11 @@ require('browserslist/node').getStat = noop;
  * @param onComplete
  */
 export function build(onComplete: () => void = noop) {
-  const compiler = webpack(config);
-  if (config.watch) {
+  // we need to strip `watch` from the options passed to webpack
+  // because webpack-dev-server calls `compiler.watch()` itself.
+  const { watch, ...options } = config;
+  const compiler = webpack(options);
+  if (watch) {
     const WebpackDevServer: typeof WebpackDevServerType = require('webpack-dev-server');
     const server = new WebpackDevServer(DEV_SERVER_OPTIONS, compiler);
     server
