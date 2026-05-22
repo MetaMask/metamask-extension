@@ -57,6 +57,7 @@ function RestoreVaultPage() {
   const [toggleSrpDetailsModal, setToggleSrpDetailsModal] = useState(false);
   const [showPasswordInput, setShowPasswordInput] = useState(false);
   const [showPasskeySetup, setShowPasskeySetup] = useState(false);
+  const [restorePassword, setRestorePassword] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(false);
 
   const handleImport = useCallback(
@@ -84,6 +85,8 @@ function RestoreVaultPage() {
           category: MetaMetricsEventCategory.Retention,
           event: MetaMetricsEventName.WalletRestored,
         });
+
+        setRestorePassword(password);
 
         if (isPasskeyFeatureAvailable) {
           setLoading(false);
@@ -137,7 +140,7 @@ function RestoreVaultPage() {
 
   let content;
   if (showPasskeySetup) {
-    content = <SetupPasskeyContent onNext={handlePasskeySetupComplete} />;
+    content = <SetupPasskeyContent onNext={handlePasskeySetupComplete} password={restorePassword} />;
   } else if (shouldShowPasswordForm) {
     content = (
       <CreatePasswordForm

@@ -65,7 +65,8 @@ const DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE: PasskeyEnrollmentStepStatus =
   'idle';
 
 export type SetupPasskeyContentProps = {
-  onNext: () => void;
+  readonly onNext: () => void;
+  readonly password?: string;
 };
 
 /**
@@ -73,9 +74,11 @@ export type SetupPasskeyContentProps = {
  *
  * @param options0 - Component props.
  * @param options0.onNext - Called after the passkey step is skipped or completed.
+ * @param options0.password - Wallet password when vault is restored.
  */
 export default function SetupPasskeyContent({
   onNext,
+  password,
 }: SetupPasskeyContentProps) {
   const dispatch = useDispatch();
   const { trackEvent } = useContext(MetaMetricsContext);
@@ -220,6 +223,7 @@ export default function SetupPasskeyContent({
       await protectVaultKeyWithPasskey(
         registrationResponse,
         postRegAuthenticationResponse,
+        password,
       );
 
       const newMetamaskState = await forceUpdateMetamaskState(dispatch);
