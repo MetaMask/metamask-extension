@@ -14,8 +14,7 @@ class ActivityListPage {
     xpath: "//div[contains(text(), 'Base fee')]",
   };
 
-  private readonly bridgeTransactionCompleted =
-    '.transaction-status-label--confirmed';
+  private readonly bridgeTransactionCompleted = '[data-tx-status="confirmed"]';
 
   private readonly bridgeTransactionPending =
     '.bridge-transaction-details__segment--pending';
@@ -27,10 +26,7 @@ class ActivityListPage {
 
   private readonly completedTransactions = '[data-testid="activity-list-item"]';
 
-  private readonly confirmedTransactions = {
-    text: 'Confirmed',
-    css: '.transaction-status-label--confirmed',
-  };
+  private readonly confirmedTransactions = '[data-tx-status="confirmed"]';
 
   private readonly copyTransactionHashButton = {
     text: 'Copy transaction ID',
@@ -551,7 +547,7 @@ class ActivityListPage {
   async checkWaitForTransactionStatus(
     status: 'confirmed' | 'cancelled' | 'pending',
   ) {
-    await this.driver.waitForSelector(`.transaction-status-label--${status}`, {
+    await this.driver.waitForSelector(`[data-tx-status="${status}"]`, {
       timeout: 5000,
     });
   }
