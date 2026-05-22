@@ -87,6 +87,7 @@ type MoreButtonsGroupProps<TagElem extends React.ElementType = 'div'> = {
     onClick: () => void;
     testId?: string;
     iconName: IconName;
+    iconClassName?: string;
     tagProps?: TagProps<TagElem>;
     enabled: boolean;
   }[];
@@ -113,6 +114,7 @@ const MoreButtonsGroup = ({
             name={onlyEnabledAction.iconName}
             color={IconColor.IconAlternative}
             size={IconSize.Md}
+            className={onlyEnabledAction.iconClassName}
           />
         }
         label={onlyEnabledAction.label}
@@ -151,6 +153,7 @@ const MoreButtonsGroup = ({
                 name={action.iconName}
                 color={IconColor.IconAlternative}
                 size={IconSize.Md}
+                className={action.iconClassName}
               />
               <Text
                 variant={TextVariant.BodyMd}
@@ -567,6 +570,7 @@ const CoinButtons = ({
             onClick: handleBatchSellOnClick,
             testId: `${classPrefix}-overview-batchSell`,
             iconName: IconName.Merge,
+            iconClassName: 'rotate-180',
             tagProps: {
               label: t('perpsFilterNew'),
               labelProps: {

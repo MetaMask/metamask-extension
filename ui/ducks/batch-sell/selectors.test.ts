@@ -15,8 +15,6 @@ import { getBridgeFeatureFlags } from '../bridge/selectors';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { getBridgeAssetsByAssetId } from '../bridge/asset-selectors';
 import {
-  getNetworksForSelectedAccount,
-  getNetworksWithPositiveBalanceForSelectedAccount,
   getAvailableBatchSellNetworks,
   getBatchSellDestStablecoinsForNetwork,
   getAvailableBatchSellSwapAssetsForNetwork,
@@ -161,91 +159,6 @@ describe('batch-sell selectors', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-  });
-
-  describe('getNetworksForSelectedAccount', () => {
-    it('returns empty object when no account is selected', () => {
-      mockGetAllMultichainNetworkConfigurations.mockReturnValue(ALL_NETWORKS);
-      mockGetSelectedInternalAccount.mockReturnValue(null as never);
-
-      const result = getNetworksForSelectedAccount(buildState());
-
-      expect(result).toStrictEqual({});
-    });
-
-    it('returns all EVM networks for an EVM account', () => {
-      mockGetAllMultichainNetworkConfigurations.mockReturnValue(ALL_NETWORKS);
-      mockGetSelectedInternalAccount.mockReturnValue(MOCK_EVM_ACCOUNT as never);
-
-      const result = getNetworksForSelectedAccount(buildState());
-
-      expect(result).toStrictEqual({
-        [CAIP_MAINNET]: MOCK_MAINNET_NETWORK,
-        [CAIP_BASE]: MOCK_BASE_NETWORK,
-        [CAIP_OPTIMISM]: MOCK_OPTIMISM_NETWORK,
-      });
-      expect(result).not.toHaveProperty(MOCK_SOLANA_NETWORK.chainId);
-    });
-
-    it('returns only scoped networks for a non-EVM account', () => {
-      mockGetAllMultichainNetworkConfigurations.mockReturnValue(ALL_NETWORKS);
-      mockGetSelectedInternalAccount.mockReturnValue(
-        MOCK_SOLANA_ACCOUNT as never,
-      );
-
-      const result = getNetworksForSelectedAccount(buildState());
-
-      expect(result).toStrictEqual({
-        [MOCK_SOLANA_NETWORK.chainId]: MOCK_SOLANA_NETWORK,
-      });
-    });
-
-    it('returns empty object when non-EVM account has no matching scopes', () => {
-      mockGetAllMultichainNetworkConfigurations.mockReturnValue(ALL_NETWORKS);
-      mockGetSelectedInternalAccount.mockReturnValue({
-        ...MOCK_SOLANA_ACCOUNT,
-        scopes: ['bitcoin:mainnet' as CaipChainId],
-      } as never);
-
-      const result = getNetworksForSelectedAccount(buildState());
-
-      expect(result).toStrictEqual({});
-    });
-  });
-
-  describe('getNetworksWithPositiveBalanceForSelectedAccount', () => {
-    it('returns only networks that have at least one asset with positive balance', () => {
-      mockGetAllMultichainNetworkConfigurations.mockReturnValue({
-        [CAIP_MAINNET]: MOCK_MAINNET_NETWORK,
-        [CAIP_BASE]: MOCK_BASE_NETWORK,
-      });
-      mockGetSelectedInternalAccount.mockReturnValue(MOCK_EVM_ACCOUNT as never);
-      mockGetAssetsBySelectedAccountGroup.mockReturnValue({
-        [CHAIN_IDS.MAINNET]: [{ rawBalance: '0x1', fiat: { balance: 100 } }],
-        [CHAIN_IDS.BASE]: [{ rawBalance: '0x0', fiat: { balance: 0 } }],
-      } as never);
-
-      const result =
-        getNetworksWithPositiveBalanceForSelectedAccount(buildState());
-
-      expect(result).toHaveProperty(CAIP_MAINNET);
-      expect(result).not.toHaveProperty(CAIP_BASE);
-    });
-
-    it('returns empty object when all balances are zero', () => {
-      mockGetAllMultichainNetworkConfigurations.mockReturnValue({
-        [CAIP_MAINNET]: MOCK_MAINNET_NETWORK,
-      });
-      mockGetSelectedInternalAccount.mockReturnValue(MOCK_EVM_ACCOUNT as never);
-      mockGetAssetsBySelectedAccountGroup.mockReturnValue({
-        [CHAIN_IDS.MAINNET]: [{ rawBalance: '0x0' }],
-      } as never);
-
-      const result =
-        getNetworksWithPositiveBalanceForSelectedAccount(buildState());
-
-      expect(result).toStrictEqual({});
-    });
   });
 
   describe('getAvailableBatchSellNetworksSelector', () => {
@@ -611,43 +524,6 @@ describe('batch-sell selectors', () => {
       expect(result).toHaveLength(1);
       expect(result[0].tokenFiatPrice).toBe(150);
       expect(result[0].percentageChange).toBe(3.5);
-    });
-  });
-
-  describe('selectChainsWithPositiveBalanceForSelectedAccount (non-EVM chain key)', () => {
-    it('includes a non-EVM chain id as-is when it has positive balance', () => {
-      const SOLANA_CHAIN_ID =
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' as CaipChainId;
-
-      mockGetAllMultichainNetworkConfigurations.mockReturnValue({
-        [SOLANA_CHAIN_ID]: MOCK_SOLANA_NETWORK,
-      });
-      mockGetSelectedInternalAccount.mockReturnValue(
-        MOCK_SOLANA_ACCOUNT as never,
-      );
-      // The key is already a CAIP chain id (non-hex), positive balance
-      mockGetAssetsBySelectedAccountGroup.mockReturnValue({
-        [SOLANA_CHAIN_ID]: [{ rawBalance: '0x1', fiat: { balance: 50 } }],
-      } as never);
-
-      const result =
-        getNetworksWithPositiveBalanceForSelectedAccount(buildState());
-
-      expect(result).toHaveProperty(SOLANA_CHAIN_ID);
-    });
-  });
-
-  describe('getNetworksForSelectedAccount (scopes nullish fallback)', () => {
-    it('treats undefined scopes as empty set for non-EVM accounts', () => {
-      mockGetAllMultichainNetworkConfigurations.mockReturnValue(ALL_NETWORKS);
-      mockGetSelectedInternalAccount.mockReturnValue({
-        ...MOCK_SOLANA_ACCOUNT,
-        scopes: undefined,
-      } as never);
-
-      const result = getNetworksForSelectedAccount(buildState());
-
-      expect(result).toStrictEqual({});
     });
   });
 

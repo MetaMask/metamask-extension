@@ -55,7 +55,7 @@ import { BatchSellAsset } from './types';
  * selected account. EVM accounts support all EVM networks; non-EVM accounts
  * only support the networks listed in their declared CAIP-2 scopes.
  */
-export const getNetworksForSelectedAccount = createSelector(
+const getNetworksForSelectedAccount = createSelector(
   getAllMultichainNetworkConfigurations,
   getSelectedInternalAccount,
   (
@@ -102,7 +102,7 @@ const getChainsWithPositiveBalanceForSelectedAccount = createSelector(
   },
 );
 
-export const getNetworksWithPositiveBalanceForSelectedAccount = createSelector(
+const getNetworksWithPositiveBalanceForSelectedAccount = createSelector(
   getNetworksForSelectedAccount,
   getChainsWithPositiveBalanceForSelectedAccount,
   (networksForAccount, chainsWithBalance) =>
