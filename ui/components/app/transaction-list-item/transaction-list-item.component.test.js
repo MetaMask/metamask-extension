@@ -367,7 +367,7 @@ describe('TransactionListItem', () => {
       <TransactionListItem transactionGroup={mockLegacySwapTxGroup} />,
     );
 
-    expect(queryByTestId('activity-list-item')).toHaveTextContent(
+    expect(queryByTestId('activity-list-item-confirmed')).toHaveTextContent(
       '?Swap USDC to UNIConfirmed-2 USDC',
     );
   });

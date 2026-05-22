@@ -114,7 +114,8 @@ const MultichainBridgeTransactionListItem: React.FC<
   return (
     <ActivityListItem
       className="multichain-bridge-transaction-list-item"
-      data-testid="multichain-bridge-activity-item"
+      activityListKind="bridge"
+      isConfirmed={isTerminalState && isBridgeFullyComplete}
       onClick={() => toggleShowDetails(transaction)}
       icon={
         <BadgeWrapper

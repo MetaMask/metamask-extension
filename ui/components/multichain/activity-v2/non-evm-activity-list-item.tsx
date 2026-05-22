@@ -2,6 +2,7 @@ import React from 'react';
 import type { Transaction } from '@metamask/keyring-api';
 import { TransactionType as KeyringTransactionType } from '@metamask/keyring-api';
 import { isCrossChain } from '@metamask/bridge-controller';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 import { Text } from '@metamask/design-system-react';
 import {
@@ -49,7 +50,7 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
   if (isRedeposit) {
     return (
       <LegacyActivityListItem
-        data-testid="activity-list-item"
+        isConfirmed={statusKey === TransactionStatus.confirmed}
         onClick={() => onClick(transaction)}
         icon={
           <ChainBadge chainId={transaction.chain}>
@@ -78,7 +79,7 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
 
   return (
     <LegacyActivityListItem
-      data-testid="activity-list-item"
+      isConfirmed={statusKey === TransactionStatus.confirmed}
       onClick={() => onClick(transaction)}
       icon={
         <ChainBadge chainId={transaction.chain}>

@@ -39,7 +39,7 @@ describe('ActivityListItem', () => {
 
   it('calls onClick when clicked', () => {
     const { getByTestId } = render(<ActivityListItem {...defaultProps} />);
-    fireEvent.click(getByTestId('test-id'));
+    fireEvent.click(getByTestId('activity-list-item'));
     expect(defaultProps.onClick).toHaveBeenCalled();
   });
 });

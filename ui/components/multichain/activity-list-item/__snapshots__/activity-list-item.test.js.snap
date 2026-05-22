@@ -4,6 +4,7 @@ exports[`ActivityListItem should match snapshot with no props 1`] = `
 <div>
   <div
     class="mm-box activity-list-item activity-list-item--single-content-row mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-wrap-wrap mm-box--width-full mm-box--background-color-background-default"
+    data-testid="activity-list-item"
     tabindex="0"
   >
     <div

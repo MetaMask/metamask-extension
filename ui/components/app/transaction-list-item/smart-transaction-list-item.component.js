@@ -56,6 +56,7 @@ export default function SmartTransactionListItem({
     <>
       <ActivityListItem
         className={className}
+        isConfirmed={status === SmartTransactionStatus.success}
         title={title}
         onClick={toggleShowDetails}
         icon={

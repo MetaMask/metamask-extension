@@ -58,7 +58,7 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
       configureStore()(createBridgeMockStore()),
     );
 
-    expect(queryByTestId('activity-list-item')).toHaveTextContent(
+    expect(queryByTestId('activity-list-item-confirmed')).toHaveTextContent(
       '?Swap to Confirmed-0 ETH',
     );
   });

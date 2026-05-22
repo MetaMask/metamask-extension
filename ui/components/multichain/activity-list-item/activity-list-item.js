@@ -16,6 +16,14 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Box, Text } from '../../component-library';
 
+function getActivityListItemRootTestId(activityListKind, isConfirmed) {
+  const base =
+    activityListKind === 'bridge'
+      ? 'multichain-bridge-activity-item'
+      : 'activity-list-item';
+  return isConfirmed ? `${base}-confirmed` : base;
+}
+
 export const ActivityListItem = ({
   topContent,
   icon,
@@ -26,11 +34,14 @@ export const ActivityListItem = ({
   rightContent,
   onClick,
   className,
-  'data-testid': dataTestId,
+  isConfirmed = false,
+  activityListKind = 'standard',
 }) => {
   const primaryClassName = classnames('activity-list-item', className, {
     'activity-list-item--single-content-row': !(subtitle || children),
   });
+
+  const rootTestId = getActivityListItemRootTestId(activityListKind, isConfirmed);
 
   return (
     <Box
@@ -43,7 +54,7 @@ export const ActivityListItem = ({
           onClick();
         }
       }}
-      data-testid={dataTestId}
+      data-testid={rootTestId}
       paddingInline={4}
       paddingTop={3}
       paddingBottom={3}
@@ -174,7 +185,11 @@ ActivityListItem.propTypes = {
    */
   className: PropTypes.string,
   /**
-   * Test ID for this component
+   * When true, root data-testid uses the `*-confirmed` suffix for E2E.
    */
-  'data-testid': PropTypes.string,
+  isConfirmed: PropTypes.bool,
+  /**
+   * `standard` (default) uses activity-list-item ids; `bridge` uses multichain-bridge-activity-item ids.
+   */
+  activityListKind: PropTypes.oneOf(['standard', 'bridge']),
 };
