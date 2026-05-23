@@ -200,6 +200,7 @@ export function GenericActivityCell({ data, onClick }: ActivityCellProps) {
             className={`text-sm font-medium ${
               primaryToken?.direction === 'in' ? 'text-success-default' : ''
             }`}
+            data-testid="transaction-list-item-primary-currency"
           >
             {primaryTokenAmount}
           </Text>
