@@ -132,7 +132,10 @@ export const createSegmentMock = (
   const segmentMock = {
     queue: [] as MockQueueItem[],
 
-    track(payload: SegmentTrackPayload, callback: SegmentCallback = noopCallback) {
+    track(
+      payload: SegmentTrackPayload,
+      callback: SegmentCallback = noopCallback,
+    ) {
       segmentMock.queue.push([payload, callback]);
       if (flushAt !== undefined && segmentMock.queue.length >= flushAt) {
         flushQueue(segmentMock.queue);

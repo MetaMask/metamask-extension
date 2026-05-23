@@ -267,20 +267,15 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
       const { pattern, params } = match;
       const { path } = pattern;
       const name = PATH_NAME_MAP.get(path as AppRoutes['path']);
-      trackMetaMetricsPage(
-        {
-          name,
-          // We do not want to send addresses or accounts in any events
-          // Some routes include these as params.
-          params: omit(params, ['account', 'address']) as Record<
-            string,
-            string
-          >,
-          environmentType: environmentType as EnvironmentType,
-          page: context.page,
-          referrer: context.referrer,
-        },
-      );
+      trackMetaMetricsPage({
+        name,
+        // We do not want to send addresses or accounts in any events
+        // Some routes include these as params.
+        params: omit(params, ['account', 'address']) as Record<string, string>,
+        environmentType: environmentType as EnvironmentType,
+        page: context.page,
+        referrer: context.referrer,
+      });
     }
     previousMatch.current = match?.pattern?.path;
   }, [

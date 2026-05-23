@@ -306,18 +306,16 @@ export default function CreationSuccessful() {
           ? `${baseAccountType}_${socialLoginType}`
           : baseAccountType;
 
-      trackEvent(
-        {
-          category: MetaMetricsEventCategory.Onboarding,
-          event: participateInMetaMetrics
-            ? MetaMetricsEventName.MetricsOptIn
-            : MetaMetricsEventName.MetricsOptOut,
-          properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            account_type: accountType,
-          },
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: participateInMetaMetrics
+          ? MetaMetricsEventName.MetricsOptIn
+          : MetaMetricsEventName.MetricsOptOut,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: accountType,
         },
-      );
+      });
     }
 
     // Side Panel - only if feature flag is enabled

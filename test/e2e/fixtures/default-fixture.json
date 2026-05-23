@@ -174,10 +174,10 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 211,
+      "currentMigrationVersion": 212,
       "firstTimeInfo": {},
       "previousAppVersion": "",
-      "previousMigrationVersion": 0
+      "previousMigrationVersion": 211
     },
     "AppStateController": {
       "browserEnvironment": {
@@ -315,7 +315,8 @@
     },
     "AnalyticsController": {
       "analyticsId": "897e4491-7257-4908-ae83-48013df43d80",
-      "optedIn": false
+      "eventQueue": {},
+      "optedIn": true
     },
     "MetaMetricsController": {
       "dataCollectionForMarketing": false,

@@ -93,8 +93,7 @@ export function createPlatformAdapter(): AnalyticsPlatformAdapter {
       context?: AnalyticsContext,
       options?: AnalyticsDeliveryOptions,
     ): void {
-      const isAnonymousEvent =
-        properties?.[ANONYMOUS_EVENT_PROPERTY] === true;
+      const isAnonymousEvent = properties?.[ANONYMOUS_EVENT_PROPERTY] === true;
       let payloadProperties = properties;
       if (isAnonymousEvent) {
         payloadProperties = { ...properties };

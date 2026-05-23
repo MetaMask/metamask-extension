@@ -549,13 +549,9 @@ describe('MetaMetricsController', function () {
           analyticsControllerState: { optedIn: false },
         },
         async ({ controller, controllerMessenger }) => {
-          expect(controller.state.completedMetaMetricsOnboarding).toBe(
-            false,
-          );
+          expect(controller.state.completedMetaMetricsOnboarding).toBe(false);
           await controller.setParticipateInMetaMetrics(true);
-          expect(controller.state.completedMetaMetricsOnboarding).toBe(
-            true,
-          );
+          expect(controller.state.completedMetaMetricsOnboarding).toBe(true);
           expect(
             controllerMessenger.call('AnalyticsController:getState').optedIn,
           ).toBe(true);
@@ -715,19 +711,17 @@ describe('MetaMetricsController', function () {
             },
           });
           expect(spy).toHaveBeenCalledTimes(1);
-          expect(spy).toHaveBeenCalledWith(
-            {
-              event: MetaMetricsEventName.MetricsOptOut,
-              userId: TEST_ANALYTICS_ID,
-              context: DEFAULT_TEST_CONTEXT,
-              properties: {
-                ...DEFAULT_EVENT_PROPERTIES,
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                chain_id: '1',
-              },
+          expect(spy).toHaveBeenCalledWith({
+            event: MetaMetricsEventName.MetricsOptOut,
+            userId: TEST_ANALYTICS_ID,
+            context: DEFAULT_TEST_CONTEXT,
+            properties: {
+              ...DEFAULT_EVENT_PROPERTIES,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              chain_id: '1',
             },
-          );
+          });
           expect(flushSpy).toHaveBeenCalledTimes(1);
         },
       );
@@ -759,8 +753,7 @@ describe('MetaMetricsController', function () {
         },
         ({ controller }) => {
           const spy = jest.spyOn(segmentMock, 'track');
-          controller.trackEvent(
-          {
+          controller.trackEvent({
             event: 'Fake Event',
             category: 'Unit Test',
             properties: {
@@ -768,8 +761,7 @@ describe('MetaMetricsController', function () {
               // eslint-disable-next-line @typescript-eslint/naming-convention
               chain_id: '1',
             },
-          },
-        );
+          });
           expect(spy).not.toHaveBeenCalled();
         },
       );
@@ -1432,7 +1424,9 @@ describe('MetaMetricsController', function () {
 
           expect(spy.mock.calls[0][0]).toMatchObject({
             event: eventType,
-            properties: expect.objectContaining({ ...DEFAULT_EVENT_PROPERTIES }),
+            properties: expect.objectContaining({
+              ...DEFAULT_EVENT_PROPERTIES,
+            }),
           });
           expect(spy.mock.calls[0][0].properties).not.toHaveProperty('foo');
 
@@ -1527,7 +1521,6 @@ describe('MetaMetricsController', function () {
         },
       );
     });
-
   });
 
   function buildStateWithAccounts(
@@ -2924,101 +2917,89 @@ async function withController<ReturnValue>(
     // Emulate the analytics platform adapter: every Segment payload is built
     // here and passed straight to `segmentMock`, preserving the existing
     // spy-based assertions in tests.
-    messenger.registerActionHandler(
-      'AnalyticsController:identify',
-      ((
-        traits?: AnalyticsUserTraits,
-        context?: AnalyticsContext,
-      ) => {
-        if (!traits) {
-          return;
-        }
+    messenger.registerActionHandler('AnalyticsController:identify', ((
+      traits?: AnalyticsUserTraits,
+      context?: AnalyticsContext,
+    ) => {
+      if (!traits) {
+        return;
+      }
+      const payload: Record<string, unknown> = {
+        userId: mockAnalyticsControllerState.analyticsId,
+        traits,
+      };
+      if (context) {
+        payload.context = context;
+      }
+      segmentMock.identify(payload as never, undefined);
+    }) as never);
+
+    messenger.registerActionHandler('AnalyticsController:trackEvent', ((
+      event: AnalyticsTrackingEventPayload,
+      context?: AnalyticsContext,
+    ) => {
+      if (!mockAnalyticsControllerState.optedIn) {
+        return;
+      }
+
+      const buildPayload = (properties?: Record<string, unknown>) => {
         const payload: Record<string, unknown> = {
           userId: mockAnalyticsControllerState.analyticsId,
-          traits,
+          event: event.name,
         };
-        if (context) {
-          payload.context = context;
-        }
-        segmentMock.identify(payload as never, undefined);
-      }) as never,
-    );
-
-    messenger.registerActionHandler(
-      'AnalyticsController:trackEvent',
-      ((
-        event: AnalyticsTrackingEventPayload,
-        context?: AnalyticsContext,
-      ) => {
-        if (!mockAnalyticsControllerState.optedIn) {
-          return;
-        }
-
-        const buildPayload = (properties?: Record<string, unknown>) => {
-          const payload: Record<string, unknown> = {
-            userId: mockAnalyticsControllerState.analyticsId,
-            event: event.name,
-          };
-          if (properties !== undefined) {
-            payload.properties = properties;
-          }
-          if (context) {
-            payload.context = context;
-          }
-          return payload;
-        };
-
-        if (!event.hasProperties) {
-          segmentMock.track(buildPayload() as never, undefined);
-          return;
-        }
-
-        const hasSensitiveProperties =
-          Object.keys(event.sensitiveProperties ?? {}).length > 0;
-
-        if (!hasSensitiveProperties) {
-          segmentMock.track(
-            buildPayload(event.properties) as never,
-            undefined,
-          );
-          return;
-        }
-
-        segmentMock.track(buildPayload(event.properties) as never, undefined);
-        segmentMock.track(
-          buildPayload({
-            ...event.properties,
-            ...event.sensitiveProperties,
-            anonymous: true,
-          }) as never,
-          undefined,
-        );
-      }) as never,
-    );
-
-    messenger.registerActionHandler(
-      'AnalyticsController:trackView',
-      ((
-        name: string,
-        properties?: Record<string, unknown>,
-        context?: AnalyticsContext,
-      ) => {
-        if (!mockAnalyticsControllerState.optedIn) {
-          return;
-        }
-        const payload: Record<string, unknown> = {
-          userId: mockAnalyticsControllerState.analyticsId,
-          name,
-        };
-        if (properties) {
+        if (properties !== undefined) {
           payload.properties = properties;
         }
         if (context) {
           payload.context = context;
         }
-        segmentMock.page(payload as never, undefined);
-      }) as never,
-    );
+        return payload;
+      };
+
+      if (!event.hasProperties) {
+        segmentMock.track(buildPayload() as never, undefined);
+        return;
+      }
+
+      const hasSensitiveProperties =
+        Object.keys(event.sensitiveProperties ?? {}).length > 0;
+
+      if (!hasSensitiveProperties) {
+        segmentMock.track(buildPayload(event.properties) as never, undefined);
+        return;
+      }
+
+      segmentMock.track(buildPayload(event.properties) as never, undefined);
+      segmentMock.track(
+        buildPayload({
+          ...event.properties,
+          ...event.sensitiveProperties,
+          anonymous: true,
+        }) as never,
+        undefined,
+      );
+    }) as never);
+
+    messenger.registerActionHandler('AnalyticsController:trackView', ((
+      name: string,
+      properties?: Record<string, unknown>,
+      context?: AnalyticsContext,
+    ) => {
+      if (!mockAnalyticsControllerState.optedIn) {
+        return;
+      }
+      const payload: Record<string, unknown> = {
+        userId: mockAnalyticsControllerState.analyticsId,
+        name,
+      };
+      if (properties) {
+        payload.properties = properties;
+      }
+      if (context) {
+        payload.context = context;
+      }
+      segmentMock.page(payload as never, undefined);
+    }) as never);
 
     const metaMetricsControllerMessenger = new Messenger<
       'MetaMetricsController',

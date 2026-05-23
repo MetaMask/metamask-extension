@@ -25,12 +25,17 @@
       "unconnectedAccountAlertShownOrigins": "object",
       "web3ShimUsageOrigins": "object"
     },
+    "AnalyticsController": {
+      "analyticsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
+      "eventQueue": "object",
+      "optedIn": true
+    },
     "AnnouncementController": { "announcements": "object" },
     "AppMetadataController": {
       "currentMigrationVersion": "number",
       "firstTimeInfo": "object",
       "previousAppVersion": "",
-      "previousMigrationVersion": 0
+      "previousMigrationVersion": 211
     },
     "AppStateController": {
       "browserEnvironment": { "browser": "string" },
@@ -108,12 +113,11 @@
     "KeyringController": { "vault": "string" },
     "LoggingController": { "logs": "object" },
     "MetaMetricsController": {
+      "completedMetaMetricsOnboarding": true,
       "dataCollectionForMarketing": "boolean",
       "eventsBeforeMetricsOptIn": "object",
       "fragments": "object",
       "marketingCampaignCookieId": null,
-      "metaMetricsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
-      "participateInMetaMetrics": true,
       "tracesBeforeMetricsOptIn": "object",
       "traits": "object"
     },

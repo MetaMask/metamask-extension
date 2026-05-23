@@ -152,7 +152,8 @@ export function selectShowSidePanelMigrationToast(
  * @returns Boolean indicating whether to show the banner
  */
 export function selectShowPna25Modal(state: Pick<State, 'metamask'>): boolean {
-  const { completedOnboarding, optedIn, pna25Acknowledged } = state.metamask || {};
+  const { completedOnboarding, optedIn, pna25Acknowledged } =
+    state.metamask || {};
 
   // Only show to users who have completed onboarding
   if (!completedOnboarding) {

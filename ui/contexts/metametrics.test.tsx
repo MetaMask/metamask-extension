@@ -35,6 +35,7 @@ const renderProvider = ({
     metamask: {
       completedMetaMetricsOnboarding: boolean;
       optedIn: boolean;
+      participateInMetaMetrics: boolean | null;
       metaMetricsId: string | null;
     };
   };
@@ -92,6 +93,7 @@ describe('MetaMetricsProvider', () => {
         metamask: {
           completedMetaMetricsOnboarding: true,
           optedIn: true,
+          participateInMetaMetrics: true,
           metaMetricsId: null,
         },
       },
@@ -119,6 +121,7 @@ describe('MetaMetricsProvider', () => {
         metamask: {
           completedMetaMetricsOnboarding: true,
           optedIn: true,
+          participateInMetaMetrics: true,
           metaMetricsId: '0x123',
         },
       },
@@ -144,6 +147,7 @@ describe('MetaMetricsProvider', () => {
         metamask: {
           completedMetaMetricsOnboarding: true,
           optedIn: false,
+          participateInMetaMetrics: false,
           metaMetricsId: null,
         },
       },
@@ -169,6 +173,7 @@ describe('MetaMetricsProvider', () => {
         metamask: {
           completedMetaMetricsOnboarding: true,
           optedIn: false,
+          participateInMetaMetrics: false,
           metaMetricsId: '0x123',
         },
       },

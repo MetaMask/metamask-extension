@@ -176,27 +176,21 @@ describe('segment module export', () => {
     });
     const traits = Object.freeze({ plan: 'pro' });
 
-    client.track(
-      {
-        event: 'e',
-        properties,
-        context,
-      },
-    );
-    client.identify(
-      {
-        userId: 'u',
-        traits,
-        context,
-      },
-    );
-    client.page(
-      {
-        name: 'n',
-        properties,
-        context,
-      },
-    );
+    client.track({
+      event: 'e',
+      properties,
+      context,
+    });
+    client.identify({
+      userId: 'u',
+      traits,
+      context,
+    });
+    client.page({
+      name: 'n',
+      properties,
+      context,
+    });
 
     const [trackCall] = analyticsInstance.track.mock.calls[0] ?? [];
     expect(trackCall.properties).toEqual(properties);

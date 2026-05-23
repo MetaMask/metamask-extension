@@ -238,7 +238,10 @@ const controllerMetadata: StateMetadata<MetaMetricsControllerState> = {
  * @property dataCollectionForMarketing - Flag to determine if data collection for marketing is enabled.
  * @property marketingCampaignCookieId - The marketing campaign cookie id.
  */
-type SegmentTrackPayload = Omit<SegmentEventPayload, 'properties' | 'timestamp'> & {
+type SegmentTrackPayload = Omit<
+  SegmentEventPayload,
+  'properties' | 'timestamp'
+> & {
   properties: AnalyticsEventProperties;
   sensitiveProperties?: Record<string, Json>;
 };
@@ -674,14 +677,10 @@ export class MetaMetricsController extends BaseController<
       throw new Error(`Event fragment with id ${id} does not exist.`);
     }
 
-    const updatedFragment = merge(
-      {} as MetaMetricsEventFragment,
-      fragment,
-      {
-        ...payload,
-        lastUpdated: Date.now(),
-      },
-    ) as MetaMetricsEventFragment;
+    const updatedFragment = merge({} as MetaMetricsEventFragment, fragment, {
+      ...payload,
+      lastUpdated: Date.now(),
+    }) as MetaMetricsEventFragment;
     this.update((state) => {
       Object.assign(state.fragments, { [id]: updatedFragment });
     });
@@ -796,8 +795,7 @@ export class MetaMetricsController extends BaseController<
     }
 
     this.update((state) => {
-      state.completedMetaMetricsOnboarding =
-        participateInMetaMetrics !== null;
+      state.completedMetaMetricsOnboarding = participateInMetaMetrics !== null;
     });
 
     if (participateInMetaMetrics) {

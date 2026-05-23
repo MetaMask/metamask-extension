@@ -105,10 +105,7 @@ describe('trackEarlySegmentEvent', () => {
         },
       },
     ],
-    [
-      'analyticsId is missing',
-      { AnalyticsController: { optedIn: true } },
-    ],
+    ['analyticsId is missing', { AnalyticsController: { optedIn: true } }],
   ])('does not track when %s', (_: string, state: EarlySegmentState | null) => {
     trackEarlySegmentEvent({
       state,
