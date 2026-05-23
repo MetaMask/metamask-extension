@@ -33,18 +33,14 @@ class ActivityListPage {
     tag: 'button',
   };
 
-  private readonly failedTransactions = {
-    text: 'Failed',
-    css: '.transaction-status-label--failed',
-  };
+  private readonly failedTransactions = '[data-tx-status="failed"]';
 
   private readonly feeValues = '.currency-display-component__text';
 
   private readonly gasPrice =
     '[data-testid="transaction-breakdown__gas-price"]';
 
-  private readonly pendingTransactionItems =
-    '.transaction-status-label--pending';
+  private readonly pendingTransactionItems = '[data-tx-status="pending"]';
 
   private readonly speedupInlineButton = '[data-testid="speed-up-button"]';
 
