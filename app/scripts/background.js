@@ -771,8 +771,10 @@ async function initialize(backup) {
           // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
           trezorBridge: require('../../test/stub/keyring-bridge')
             .FakeTrezorBridge,
-          // Ledger bridge removed: all Ledger E2E tests use Speculos with
-          // real APDU protocol via the offscreen WebHID mock.
+          // Ledger bridge is NOT overridden — tests that need Ledger must use
+          // Speculos (Docker) with the WebHID mock. This ensures real APDU
+          // protocol is exercised instead of a software mock.
+          // ledgerBridge: <uses real LedgerOffscreenBridge via navigator.hid>
           // Use `require` to make it easier to exclude this test code from the Browserify build.
           // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
           qrBridge: require('../../test/stub/keyring-bridge').FakeQrBridge,

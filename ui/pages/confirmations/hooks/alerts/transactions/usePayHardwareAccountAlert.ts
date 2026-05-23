@@ -12,6 +12,7 @@ import { AlertsName } from '../constants';
 import { useConfirmContext } from '../../../context/confirm';
 import { getInternalAccountByAddress } from '../../../../../selectors/accounts';
 import { isHardwareAccount } from '../../../../../../shared/lib/accounts/accounts';
+import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 
 export function usePayHardwareAccountAlert(): Alert[] {
   const t = useI18nContext();
@@ -25,8 +26,12 @@ export function usePayHardwareAccountAlert(): Alert[] {
 
   const isHardwareWallet = account ? isHardwareAccount(account) : false;
 
+  const { payToken } = useTransactionPayToken();
+
+  const showAlert = isHardwareWallet && Boolean(payToken);
+
   return useMemo(() => {
-    if (!isHardwareWallet) {
+    if (!showAlert) {
       return [];
     }
 
@@ -40,5 +45,5 @@ export function usePayHardwareAccountAlert(): Alert[] {
         isBlocking: true,
       },
     ];
-  }, [isHardwareWallet, t]);
+  }, [showAlert, t]);
 }

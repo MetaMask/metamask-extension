@@ -1,3 +1,4 @@
+import { EventEmitter } from 'events';
 import { WebSocketServer } from 'ws';
 import type { WebSocket as WsWebSocket } from 'ws';
 import { SpeculosClient } from './client';
@@ -19,6 +20,8 @@ export class ApduBridge {
 
   private port: number;
 
+  private readonly emitter = new EventEmitter();
+
   private readonly connectionState = new WeakMap<
     WsWebSocket,
     WsConnectionState
@@ -27,6 +30,26 @@ export class ApduBridge {
   constructor(client: SpeculosClient, port: number) {
     this.client = client;
     this.port = port;
+    this.emitter.setMaxListeners(20);
+  }
+
+  /** Wait for a signing APDU to be sent to Speculos (INS=0x04 sign tx, INS=0x08 sign msg) */
+  waitForSigningApdu(timeout = 30000): Promise<Buffer> {
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => {
+        this.emitter.removeListener('signing-apdu', handler);
+        reject(new Error('Timeout waiting for signing APDU'));
+      }, timeout);
+      const handler = (apdu: Buffer) => {
+        clearTimeout(timer);
+        resolve(apdu);
+      };
+      this.emitter.once('signing-apdu', handler);
+    });
+  }
+
+  getClient(): SpeculosClient {
+    return this.client;
   }
 
   async start(): Promise<void> {
@@ -138,6 +161,12 @@ export class ApduBridge {
       console.log(
         '[ApduBridge] handleHidSend: frame buffered, waiting for more frames',
       );
+      ws.send(
+        JSON.stringify({
+          type: 'HID_FRAME_ACK',
+          id: message.id,
+        }),
+      );
       return;
     }
 
@@ -147,13 +176,40 @@ export class ApduBridge {
       'hex:',
       apdu.toString('hex'),
     );
-    const response = await this.client.exchange(apdu);
+
+    if (apdu.length >= 2 && apdu[0] === 0xe0 && (apdu[1] === 0x04 || apdu[1] === 0x08)) {
+      this.emitter.emit('signing-apdu', apdu);
+    }
+
+    let response = await this.client.exchange(apdu);
     console.log(
       '[ApduBridge] handleHidSend: got response from Speculos, bytes:',
       response.length,
       'hex:',
       response.toString('hex'),
     );
+
+    // Ethereum GET APP CONFIGURATION: CLA=0xE0 INS=0x06
+    // Speculos returns arbitraryDataEnabled=0 but MetaMask requires 1 for blind signing.
+    // Patch the first byte of the response payload to enable it.
+    if (
+      apdu.length >= 2 &&
+      apdu[0] === 0xe0 &&
+      apdu[1] === 0x06 &&
+      response.length >= 3
+    ) {
+      const sw1 = response[response.length - 2];
+      const sw2 = response[response.length - 1];
+      if (sw1 === 0x90 && sw2 === 0x00 && response[0] !== 1) {
+        response = Buffer.from([
+          1,
+          ...response.slice(1),
+        ]);
+        console.log(
+          '[ApduBridge] Patched GET APP CONFIGURATION: arbitraryDataEnabled set to 1',
+        );
+      }
+    }
     const responseFrames = encodeLedgerHidResponse(
       state.framingSession,
       response,

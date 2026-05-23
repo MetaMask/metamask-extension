@@ -142,6 +142,19 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withAccountTracker(
+    data: Record<
+      string,
+      Record<string, { balance: string; stakedBalance?: string }>
+    >,
+  ): this {
+    if (!this.fixture.data.AccountTracker) {
+      this.fixture.data.AccountTracker = { accountsByChainId: {} };
+    }
+    merge(this.fixture.data.AccountTracker, { accountsByChainId: data });
+    return this;
+  }
+
   withCurrencyController(data: Partial<CurrencyRateState>): this {
     merge(this.fixture.data.CurrencyController, data);
     return this;
@@ -365,6 +378,7 @@ class FixtureBuilderV2 {
         selectedAccount: HARDWARE_WALLET_ACCOUNT_ID,
       },
     });
+
     return this;
   }
 

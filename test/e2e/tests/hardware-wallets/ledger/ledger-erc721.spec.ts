@@ -2,9 +2,15 @@ import { Suite } from 'mocha';
 import TestDappPage from '../../../page-objects/pages/test-dapp';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { WINDOW_TITLES } from '../../../constants';
-import { withFixtures } from '../../../helpers';
-import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
+import {
+  withSpeculosAutoApprove,
+  startSharedSpeculos,
+  stopSharedSpeculos,
+} from '../../../speculos/with-speculos-fixtures';
+import type { SharedSpeculosContext } from '../../../speculos/with-speculos-fixtures';
+import { SPECULOS_LEDGER_ADDRESS } from '../../../speculos/constants';
 import { login } from '../../../page-objects/flows/login.flow';
+import { switchToHardwareAccount } from '../../../page-objects/flows/account-list.flow';
 import CreateContractModal from '../../../page-objects/pages/dialog/create-contract';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
@@ -13,28 +19,47 @@ import SetApprovalForAllTransactionConfirmation from '../../../page-objects/page
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 
-describe('Ledger Hardware', function (this: Suite) {
+const LEDGER_SEED_BALANCE = [
+  {
+    address: SPECULOS_LEDGER_ADDRESS,
+    balance: '0x100000000000000000000',
+  },
+];
+
+describe('Ledger Hardware @speculos', function (this: Suite) {
+  this.timeout(120000);
+
+  let shared: SharedSpeculosContext;
+
+  before(async function () {
+    this.timeout(120000);
+    shared = await startSharedSpeculos();
+  });
+
+  after(async function () {
+    this.timeout(30000);
+    await stopSharedSpeculos(shared);
+  });
+
   const erc721 = SMART_CONTRACTS.NFTS;
   it('deploys an ERC-721 token', async function () {
-    await withFixtures(
+    await withSpeculosAutoApprove(
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
           .withLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
-            account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+            account: SPECULOS_LEDGER_ADDRESS,
           })
           .build(),
         title: this.test?.fullTitle(),
+        sharedContext: shared,
+        seedBalances: LEDGER_SEED_BALANCE,
       },
-      async ({ driver, localNodes }) => {
-        (await localNodes?.[0]?.setAccountBalance(
-          KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
-          '0x100000000000000000000',
-        )) ?? console.error('localNodes is undefined or empty');
-        await login(driver, { expectedBalance: '1.21M' });
+      async ({ driver }) => {
+        await login(driver, { validateBalance: false });
+        await switchToHardwareAccount(driver, 'Ledger 1');
 
-        // deploy action
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage();
         await testDappPage.checkPageIsLoaded();
@@ -51,39 +76,30 @@ describe('Ledger Hardware', function (this: Suite) {
     );
   });
   it('mints an ERC-721 token', async function () {
-    await withFixtures(
+    await withSpeculosAutoApprove(
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
           .withLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
-            account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+            account: SPECULOS_LEDGER_ADDRESS,
           })
           .build(),
         title: this.test?.fullTitle(),
+        sharedContext: shared,
+        seedBalances: LEDGER_SEED_BALANCE,
         smartContract: [
           {
             name: erc721,
             deployerOptions: {
-              fromAddress: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+              fromAddress: SPECULOS_LEDGER_ADDRESS,
             },
           },
         ],
       },
-      async ({ driver, localNodes, contractRegistry }) => {
-        (await localNodes?.[0]?.setAccountBalance(
-          KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
-          '0x100000000000000000000',
-        )) ?? console.error('localNodes is undefined or empty');
-        // mine block to ensure balance is updated in both browsers
-        await localNodes?.[0]?.mineBlock();
-        const balance = await localNodes?.[0]?.getBalance(
-          KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
-        );
-        await login(driver, {
-          expectedBalance:
-            `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
-        });
+      async ({ driver, contractRegistry }) => {
+        await login(driver, { validateBalance: false });
+        await switchToHardwareAccount(driver, 'Ledger 1');
 
         const contractAddress =
           await contractRegistry.getContractAddress(erc721);
@@ -105,7 +121,6 @@ describe('Ledger Hardware', function (this: Suite) {
         await activityListPage.checkTransactionActivityByText('Deposit');
         await activityListPage.checkWaitForTransactionStatus('confirmed');
 
-        // Check that NFT image is displayed in NFT tab on homepage
         await homePage.goToNftTab();
         const nftListPage = new NFTListPage(driver);
         await nftListPage.checkNftImageIsDisplayed();
@@ -113,39 +128,30 @@ describe('Ledger Hardware', function (this: Suite) {
     );
   });
   it('approves an ERC-721 token', async function () {
-    await withFixtures(
+    await withSpeculosAutoApprove(
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
           .withLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
-            account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+            account: SPECULOS_LEDGER_ADDRESS,
           })
           .build(),
         title: this.test?.fullTitle(),
+        sharedContext: shared,
+        seedBalances: LEDGER_SEED_BALANCE,
         smartContract: [
           {
             name: erc721,
             deployerOptions: {
-              fromAddress: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+              fromAddress: SPECULOS_LEDGER_ADDRESS,
             },
           },
         ],
       },
-      async ({ driver, localNodes, contractRegistry }) => {
-        (await localNodes?.[0]?.setAccountBalance(
-          KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
-          '0x100000000000000000000',
-        )) ?? console.error('localNodes is undefined or empty');
-        // mine block to ensure balance is updated in both browsers
-        await localNodes?.[0]?.mineBlock();
-        const balance = await localNodes?.[0]?.getBalance(
-          KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
-        );
-        await login(driver, {
-          expectedBalance:
-            `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
-        });
+      async ({ driver, contractRegistry }) => {
+        await login(driver, { validateBalance: false });
+        await switchToHardwareAccount(driver, 'Ledger 1');
 
         const contractAddress =
           await contractRegistry.getContractAddress(erc721);
@@ -172,39 +178,30 @@ describe('Ledger Hardware', function (this: Suite) {
     );
   });
   it('sets approval for all an ERC-721 token', async function () {
-    await withFixtures(
+    await withSpeculosAutoApprove(
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
           .withLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
-            account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+            account: SPECULOS_LEDGER_ADDRESS,
           })
           .build(),
         title: this.test?.fullTitle(),
+        sharedContext: shared,
+        seedBalances: LEDGER_SEED_BALANCE,
         smartContract: [
           {
             name: erc721,
             deployerOptions: {
-              fromAddress: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+              fromAddress: SPECULOS_LEDGER_ADDRESS,
             },
           },
         ],
       },
-      async ({ driver, localNodes, contractRegistry }) => {
-        (await localNodes?.[0]?.setAccountBalance(
-          KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
-          '0x100000000000000000000',
-        )) ?? console.error('localNodes is undefined or empty');
-        // mine block to ensure balance is updated in both browsers
-        await localNodes?.[0]?.mineBlock();
-        const balance = await localNodes?.[0]?.getBalance(
-          KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
-        );
-        await login(driver, {
-          expectedBalance:
-            `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
-        });
+      async ({ driver, contractRegistry }) => {
+        await login(driver, { validateBalance: false });
+        await switchToHardwareAccount(driver, 'Ledger 1');
 
         const contractAddress =
           await contractRegistry.getContractAddress(erc721);

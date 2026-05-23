@@ -28,3 +28,8 @@ export const SPECULOS_LEDGER_ADDRESSES = [
 ] as const;
 
 export const SPECULOS_LEDGER_ADDRESS = SPECULOS_LEDGER_ADDRESSES[0];
+
+/** All E2E ports that may need cleanup between runs. */
+export const SPECULOS_E2E_PORTS = [
+  8545, 8111, 8088, 8089, 8090, 9876, 9998, 5001,
+];

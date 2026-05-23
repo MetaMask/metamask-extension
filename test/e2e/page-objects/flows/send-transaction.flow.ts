@@ -34,7 +34,7 @@ export const sendRedesignedTransactionToAddress = async ({
 
   // confirm transaction when user lands on confirm transaction screen
   const transactionConfirmationPage = new TransactionConfirmation(driver);
-  await transactionConfirmationPage.clickFooterConfirmButton();
+  await transactionConfirmationPage.clickFooterConfirmButtonOrReconnect();
 };
 
 /**

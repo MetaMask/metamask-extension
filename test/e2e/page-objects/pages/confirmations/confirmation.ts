@@ -18,6 +18,9 @@ class Confirmation {
 
   private footerConfirmButton = '[data-testid="confirm-footer-button"]';
 
+  private reconnectHardwareWalletButton =
+    '[data-testid="reconnect-hardware-wallet-button"]';
+
   private formComboFieldInputSelector = '.form-combo-field input';
 
   private formComboFieldOptionPrimarySelector =
@@ -92,6 +95,91 @@ class Confirmation {
     await this.driver.clickElement(this.footerConfirmButton);
   }
 
+  async clickReconnectHardwareWalletButton() {
+    await this.driver.clickElement(this.reconnectHardwareWalletButton);
+  }
+
+  async clickFooterConfirmButtonOrReconnect() {
+    let lastDiag = '';
+    await this.driver.waitUntil(
+      async () => {
+        const result = await this.driver.executeScript(
+          `return JSON.stringify({
+            url: window.location.href,
+            hasConfirm: !!document.querySelector('[data-testid="confirm-footer-button"]'),
+            hasReconnect: !!document.querySelector('[data-testid="reconnect-hardware-wallet-button"]'),
+            testids: [...document.querySelectorAll('[data-testid]')].slice(0, 15).map(e => e.getAttribute('data-testid')),
+            bodyText: document.body?.innerText?.substring(0, 300)
+          })`,
+        );
+        lastDiag = result as string;
+        const parsed = JSON.parse(result as string);
+        return parsed.hasConfirm || parsed.hasReconnect;
+      },
+      { timeout: 30000, interval: 500 },
+    ).catch(() => {
+      console.log('[Speculos] clickFooterConfirmButtonOrReconnect diagnostic:', lastDiag);
+      throw new Error(`Timed out waiting for confirm/reconnect button. Last page state: ${lastDiag}`);
+    });
+
+    const diagInfo = await this.driver.executeScript(
+      `const btn = document.querySelector('[data-testid="confirm-footer-button"]');
+      const reconnect = document.querySelector('[data-testid="reconnect-hardware-wallet-button"]');
+      return JSON.stringify({
+        hasConfirm: !!btn,
+        confirmDisabled: btn?.disabled,
+        confirmAriaDisabled: btn?.getAttribute('aria-disabled'),
+        confirmClassDisabled: btn?.className?.includes('disabled'),
+        hasReconnect: !!reconnect,
+        url: window.location.href,
+        testids: [...document.querySelectorAll('[data-testid]')].slice(0, 10).map(e => e.getAttribute('data-testid')),
+      })`,
+    );
+    console.log('[Speculos] Page state after waitUntil:', diagInfo);
+
+    let hasReconnect = false;
+    try {
+      const reconnectElement = await this.driver.findElement(
+        this.reconnectHardwareWalletButton,
+        5000,
+      );
+      if (reconnectElement) {
+        hasReconnect = true;
+        await reconnectElement.click();
+        console.log('[Speculos] Clicked reconnect button');
+        await this.driver.waitForSelector(this.footerConfirmButton);
+        console.log('[Speculos] Confirm button appeared after reconnect');
+      }
+    } catch {
+      console.log('[Speculos] No reconnect button found, proceeding to confirm');
+    }
+
+    try {
+      await this.driver.waitUntil(
+        async () => {
+          const isEnabled = await this.driver.executeScript(
+            `const btn = document.querySelector('[data-testid="confirm-footer-button"]');
+            if (!btn) return 'not found';
+            return JSON.stringify({disabled: btn.disabled, classes: btn.className});`,
+          );
+          const result = isEnabled as string;
+          if (result === 'not found') return false;
+          const parsed = JSON.parse(result);
+          return !parsed.disabled;
+        },
+      { timeout: 30000, interval: 500 },
+      );
+      console.log('[Speculos] Confirm button is enabled, clicking...');
+      await this.driver.clickElement(this.footerConfirmButton);
+    } catch (e) {
+      console.log('[Speculos] Confirm button not enabled, force-clicking. Error:', (e as Error).message);
+      await this.driver.executeScript(
+        `document.querySelector('[data-testid="confirm-footer-button"]')?.click()`,
+      );
+    }
+    console.log('[Speculos] Confirm click completed, hasReconnect:', hasReconnect);
+  }
+
   async clickHeaderAccountDetailsButton() {
     const accountDetailsButton = await this.driver.findElement(
       this.headerAccountDetailsButton,
@@ -105,6 +193,18 @@ class Confirmation {
   }
 
   async clickFooterConfirmButtonAndAndWaitForWindowToClose() {
+    try {
+      const reconnectElement = await this.driver.findElement(
+        this.reconnectHardwareWalletButton,
+        5000,
+      );
+      if (reconnectElement) {
+        await reconnectElement.click();
+        await this.driver.waitForSelector(this.footerConfirmButton);
+      }
+    } catch {
+      // No reconnect button, proceed to confirm
+    }
     await this.driver.clickElementAndWaitForWindowToClose(
       this.footerConfirmButton,
     );

@@ -9,8 +9,6 @@ export function getWebHidMockScript(wsPort: number): string {
       if (window.__webHIDMockInjected) return;
       window.__webHIDMockInjected = true;
 
-      // Capture before LavaMoat lockdown scuttles globalThis.WebSocket.
-      // All subsequent code must use _WS instead of the global WebSocket.
       const _WS = WebSocket;
       const _WS_OPEN = WebSocket.OPEN;
       const _WS_CONNECTING = WebSocket.CONNECTING;
@@ -59,6 +57,11 @@ export function getWebHidMockScript(wsPort: number): string {
               pendingExchanges.delete(response.id);
               pending.resolve();
             }
+          } else if (response.type === 'HID_FRAME_ACK') {
+            const pending = pendingExchanges.get(response.id);
+            if (pending) {
+              pending.resolve();
+            }
           } else if (response.type === 'APDU_ERROR') {
             const pending = pendingExchanges.get(response.id);
             if (pending) {
@@ -81,7 +84,7 @@ export function getWebHidMockScript(wsPort: number): string {
       const runHidExchange = function(device, frameData) {
         return new Promise(function(resolve, reject) {
           const startSend = function() {
-            if (!ws || ws.readyState !== _WS.OPEN) {
+            if (!ws || ws.readyState !== _WS_OPEN) {
               reject(new Error('WebSocket not connected'));
               return;
             }
@@ -95,11 +98,11 @@ export function getWebHidMockScript(wsPort: number): string {
             }));
           };
 
-          if (ws && ws.readyState === _WS.OPEN) {
+          if (ws && ws.readyState === _WS_OPEN) {
             startSend();
             return;
           }
-          if (!ws || ws.readyState !== _WS.CONNECTING) {
+          if (!ws || ws.readyState !== _WS_CONNECTING) {
             connectWebSocket();
           }
           const socket = ws;

@@ -1,7 +1,12 @@
 import { Suite } from 'mocha';
 import { Browser } from 'selenium-webdriver';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
-import { withFixtures } from '../../../helpers';
+import {
+  withSpeculosAutoApprove,
+  startSharedSpeculos,
+  stopSharedSpeculos,
+} from '../../../speculos/with-speculos-fixtures';
+import type { SharedSpeculosContext } from '../../../speculos/with-speculos-fixtures';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { Driver } from '../../../webdriver/driver';
 
@@ -13,12 +18,29 @@ import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 
 const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
-describe('Ledger Hardware', function (this: Suite) {
+describe('Ledger Hardware @speculos', function (this: Suite) {
+  this.timeout(120000);
+
+  let shared: SharedSpeculosContext;
+
+  // eslint-disable-next-line mocha/no-hooks-for-single-case
+  before(async function () {
+    this.timeout(120000);
+    shared = await startSharedSpeculos();
+  });
+
+  // eslint-disable-next-line mocha/no-hooks-for-single-case
+  after(async function () {
+    this.timeout(30000);
+    await stopSharedSpeculos(shared);
+  });
+
   it('forgets device and checks if it is removed from the list', async function () {
-    await withFixtures(
+    await withSpeculosAutoApprove(
       {
         fixtures: new FixtureBuilderV2().withLedgerAccount().build(),
         title: this.test?.fullTitle(),
+        sharedContext: shared,
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
@@ -34,7 +56,6 @@ describe('Ledger Hardware', function (this: Suite) {
         await connectHardwareWalletPage.checkPageIsLoaded();
         await connectHardwareWalletPage.clickConnectLedgerButton();
 
-        // if browser is firefox
         if (isFirefox) {
           await connectHardwareWalletPage.checkFirefoxNotSupportedIsDisplayed();
           return;

@@ -1,7 +1,4 @@
-import { Suite } from 'mocha';
-import TestDappPage from '../../../page-objects/pages/test-dapp';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
-import { WINDOW_TITLES } from '../../../constants';
 import {
   withSpeculosAutoApprove,
   startSharedSpeculos,
@@ -9,6 +6,8 @@ import {
 } from '../../../speculos/with-speculos-fixtures';
 import type { SharedSpeculosContext } from '../../../speculos/with-speculos-fixtures';
 import { SPECULOS_LEDGER_ADDRESS } from '../../../speculos/constants';
+import TestDappPage from '../../../page-objects/pages/test-dapp';
+import { WINDOW_TITLES } from '../../../constants';
 import { login } from '../../../page-objects/flows/login.flow';
 import { switchToHardwareAccount } from '../../../page-objects/flows/account-list.flow';
 import CreateContractModal from '../../../page-objects/pages/dialog/create-contract';
@@ -19,14 +18,13 @@ import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 
+const erc20 = SMART_CONTRACTS.HST;
+
 const LEDGER_SEED_BALANCE = [
-  {
-    address: SPECULOS_LEDGER_ADDRESS,
-    balance: '0x100000000000000000000',
-  },
+  { address: SPECULOS_LEDGER_ADDRESS, balance: '0x100000000000000000000' },
 ];
 
-describe('Ledger Hardware @speculos', function (this: Suite) {
+describe('Ledger Hardware ERC20 - Speculos @speculos', function () {
   this.timeout(120000);
 
   let shared: SharedSpeculosContext;
@@ -59,22 +57,27 @@ describe('Ledger Hardware @speculos', function (this: Suite) {
         const symbol = 'TST';
         await login(driver, { validateBalance: false });
         await switchToHardwareAccount(driver, 'Ledger 1');
+
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage();
         await testDappPage.checkPageIsLoaded();
         await testDappPage.clickERC20CreateTokenButton();
+
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const createContractModal = new CreateContractModal(driver);
         await createContractModal.checkPageIsLoaded();
         await createContractModal.clickConfirm();
+
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDappPage.checkTokenAddressesValue(
           '0xcB17707e0623251182A654BEdaE16429C78A7424',
         );
+
         await testDappPage.clickERC20WatchAssetButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const watchAssetConfirmation = new WatchAssetConfirmation(driver);
         await watchAssetConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
@@ -84,8 +87,8 @@ describe('Ledger Hardware @speculos', function (this: Suite) {
       },
     );
   });
+
   it('can transfer an ERC20 token', async function () {
-    const erc20 = SMART_CONTRACTS.HST;
     await withSpeculosAutoApprove(
       {
         dappOptions: { numberOfTestDapps: 1 },
@@ -111,12 +114,12 @@ describe('Ledger Hardware @speculos', function (this: Suite) {
         const symbol = 'TST';
         await login(driver, { validateBalance: false });
         await switchToHardwareAccount(driver, 'Ledger 1');
+
         const contractAddress = contractRegistry.getContractAddress(erc20);
         const testDappPage = new TestDappPage(driver);
-        await testDappPage.openTestDappPage({
-          contractAddress,
-        });
+        await testDappPage.openTestDappPage({ contractAddress });
         await testDappPage.checkPageIsLoaded();
+
         await testDappPage.clickERC20WatchAssetButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const watchAssetConfirmation = new WatchAssetConfirmation(driver);
@@ -125,10 +128,11 @@ describe('Ledger Hardware @speculos', function (this: Suite) {
 
         await testDappPage.clickERC20TokenTransferButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const tokenTransferTransactionConfirmation =
+        const tokenTransferConfirmation =
           new TokenTransferTransactionConfirmation(driver);
-        await tokenTransferTransactionConfirmation.checkPageIsLoaded();
-        await tokenTransferTransactionConfirmation.clickConfirmButton();
+        await tokenTransferConfirmation.checkPageIsLoaded();
+        await tokenTransferConfirmation.clickConfirmButton();
+
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
@@ -141,8 +145,8 @@ describe('Ledger Hardware @speculos', function (this: Suite) {
       },
     );
   });
+
   it('can approve an ERC20 token', async function () {
-    const erc20 = SMART_CONTRACTS.HST;
     await withSpeculosAutoApprove(
       {
         dappOptions: { numberOfTestDapps: 1 },
@@ -168,17 +172,17 @@ describe('Ledger Hardware @speculos', function (this: Suite) {
         const symbol = 'TST';
         await login(driver, { validateBalance: false });
         await switchToHardwareAccount(driver, 'Ledger 1');
+
         const contractAddress = contractRegistry.getContractAddress(erc20);
         const testDappPage = new TestDappPage(driver);
-        await testDappPage.openTestDappPage({
-          contractAddress,
-        });
+        await testDappPage.openTestDappPage({ contractAddress });
         await testDappPage.checkPageIsLoaded();
 
         await testDappPage.clickApproveTokens();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const txConfirmation = new TransactionConfirmation(driver);
         await txConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
@@ -193,8 +197,8 @@ describe('Ledger Hardware @speculos', function (this: Suite) {
       },
     );
   });
+
   it('can increase token allowance', async function () {
-    const erc20 = SMART_CONTRACTS.HST;
     await withSpeculosAutoApprove(
       {
         dappOptions: { numberOfTestDapps: 1 },
@@ -220,22 +224,23 @@ describe('Ledger Hardware @speculos', function (this: Suite) {
         const symbol = 'TST';
         await login(driver, { validateBalance: false });
         await switchToHardwareAccount(driver, 'Ledger 1');
+
         const contractAddress = contractRegistry.getContractAddress(erc20);
         const testDappPage = new TestDappPage(driver);
-        await testDappPage.openTestDappPage({
-          contractAddress,
-        });
+        await testDappPage.openTestDappPage({ contractAddress });
         await testDappPage.checkPageIsLoaded();
 
-        const activityListPage = new ActivityListPage(driver);
-        const homePage = new HomePage(driver);
         await testDappPage.clickERC20IncreaseAllowanceButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const txConfirmation = new TransactionConfirmation(driver);
         await txConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
+
+        const homePage = new HomePage(driver);
+        const activityListPage = new ActivityListPage(driver);
         await homePage.goToActivityList();
         await activityListPage.checkTransactionActivityByText(
           `Increase ${symbol} spending cap`,

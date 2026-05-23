@@ -22,26 +22,20 @@ export class SpeculosAutomation {
       version: 1,
       rules: [
         {
-          // Auto-approve transactions
           text: 'Accept',
           actions: [
+            ['button', 1, true],
             ['button', 2, true],
+            ['button', 1, false],
             ['button', 2, false],
           ],
         },
         {
-          // Handle "Accept and send" text variation
           text: 'Accept and send',
           actions: [
+            ['button', 1, true],
             ['button', 2, true],
-            ['button', 2, false],
-          ],
-        },
-        {
-          // Auto-scroll through transaction details
-          text: 'Review',
-          actions: [
-            ['button', 2, true],
+            ['button', 1, false],
             ['button', 2, false],
           ],
         },

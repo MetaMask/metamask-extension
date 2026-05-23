@@ -10,6 +10,8 @@ export {
   withSpeculosFixtures,
   withSpeculosAutoApprove,
 } from './with-speculos-fixtures';
+export { startSharedSpeculos, stopSharedSpeculos } from './shared-context';
+export type { SharedSpeculosContext } from './shared-context';
 export { withRetry } from './resilience';
 export { ExponentialBackoff } from './resilience';
 export { isRetryableError } from './resilience';

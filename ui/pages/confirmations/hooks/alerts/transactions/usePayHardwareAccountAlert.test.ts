@@ -1,3 +1,4 @@
+import { merge } from 'lodash';
 import { Hex } from '@metamask/utils';
 import {
   getMockConfirmStateForTransaction,
@@ -11,7 +12,7 @@ import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib
 import { AlertsName } from '../constants';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { HardwareDeviceNames } from '../../../../../../shared/constants/hardware-wallets';
+import { HardwareKeyringType } from '../../../../../../shared/constants/hardware-wallets';
 import { usePayHardwareAccountAlert } from './usePayHardwareAccountAlert';
 
 const HARDWARE_ACCOUNT_ID = 'hardware-account-id';
@@ -53,7 +54,38 @@ function createHardwareAccountState(keyringType: string) {
   };
 }
 
-function runHookWithTransaction(keyringType: string = 'HD Key Tree') {
+function runHookWithPayToken(keyringType: string) {
+  const transaction = genUnapprovedContractInteractionConfirmation({
+    address: CONTRACT_INTERACTION_SENDER_ADDRESS as Hex,
+  });
+
+  const accountState = createHardwareAccountState(keyringType);
+  const payTokenState = {
+    metamask: {
+      transactionData: {
+        [transaction.id]: {
+          paymentToken: {
+            address: '0x1234' as Hex,
+            chainId: '0x5' as Hex,
+            balanceRaw: '0x0',
+            balanceUsd: '0',
+          },
+        },
+      },
+    },
+  };
+
+  const mergedArgs = merge({}, accountState, payTokenState);
+
+  const state = getMockConfirmStateForTransaction(transaction, mergedArgs);
+
+  return renderHookWithConfirmContextProvider(
+    () => usePayHardwareAccountAlert(),
+    state,
+  );
+}
+
+function runHookWithoutPayToken(keyringType: string = 'HD Key Tree') {
   const transaction = genUnapprovedContractInteractionConfirmation({
     address: CONTRACT_INTERACTION_SENDER_ADDRESS as Hex,
   });
@@ -79,8 +111,8 @@ function runHookWithoutTransaction() {
 }
 
 describe('usePayHardwareAccountAlert', () => {
-  it('returns alert if from address is a Ledger hardware wallet account', () => {
-    const { result } = runHookWithTransaction(HardwareDeviceNames.ledger);
+  it('returns alert if from address is a Ledger hardware wallet account with pay token', () => {
+    const { result } = runHookWithPayToken(HardwareKeyringType.ledger);
 
     expect(result.current).toStrictEqual([
       {
@@ -95,8 +127,8 @@ describe('usePayHardwareAccountAlert', () => {
     ]);
   });
 
-  it('returns alert if from address is a Trezor hardware wallet account', () => {
-    const { result } = runHookWithTransaction(HardwareDeviceNames.trezor);
+  it('returns alert if from address is a Trezor hardware wallet account with pay token', () => {
+    const { result } = runHookWithPayToken(HardwareKeyringType.trezor);
 
     expect(result.current).toStrictEqual([
       {
@@ -111,8 +143,8 @@ describe('usePayHardwareAccountAlert', () => {
     ]);
   });
 
-  it('returns alert if from address is a Lattice hardware wallet account', () => {
-    const { result } = runHookWithTransaction(HardwareDeviceNames.lattice);
+  it('returns alert if from address is a Lattice hardware wallet account with pay token', () => {
+    const { result } = runHookWithPayToken(HardwareKeyringType.lattice);
 
     expect(result.current).toStrictEqual([
       {
@@ -125,10 +157,16 @@ describe('usePayHardwareAccountAlert', () => {
         isBlocking: true,
       },
     ]);
+  });
+
+  it('returns no alert if from address is a hardware wallet account without pay token', () => {
+    const { result } = runHookWithoutPayToken(HardwareKeyringType.ledger);
+
+    expect(result.current).toStrictEqual([]);
   });
 
   it('returns no alert if from address is not a hardware wallet account', () => {
-    const { result } = runHookWithTransaction('HD Key Tree');
+    const { result } = runHookWithPayToken('HD Key Tree');
 
     expect(result.current).toStrictEqual([]);
   });
