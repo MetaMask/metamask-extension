@@ -51,11 +51,17 @@ function formatTokenAmount(tokenAmount: TokenAmount) {
 
 function getCellTokenAmounts(activity: ActivityCellProps['data']) {
   switch (activity.type) {
-    case 'swap':
+    case 'swap': {
+      // const { sourceToken, destinationToken } = activity.data;
+      // const tokens = [sourceToken, destinationToken];
+
       return {
         primaryToken: activity.data.destinationToken,
         secondaryToken: activity.data.sourceToken,
+        // primaryToken: tokens.find((token) => token?.direction === 'in'),
+        // secondaryToken: tokens.find((token) => token?.direction === 'out'),
       };
+    }
     case 'swapIncomplete':
       return {
         primaryToken: activity.data.sourceToken,
@@ -136,6 +142,8 @@ export function GenericActivityCell({ data, onClick }: ActivityCellProps) {
   const { description, title } = useGetLabel(data);
   const pendingStatusText =
     data.status === 'pending' ? t(data.status) : undefined;
+  const transactionStatus =
+    data.status === 'success' ? 'confirmed' : data.status;
   const { primaryToken, secondaryToken } = getCellTokenAmounts(data);
   const primaryTokenAmount = primaryToken
     ? formatTokenAmount(primaryToken)
@@ -169,6 +177,7 @@ export function GenericActivityCell({ data, onClick }: ActivityCellProps) {
       className="grid grid-cols-[32px_minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 transition-transform duration-200 ease-out hover:bg-hover cursor-pointer"
       role="button"
       data-testid="activity-list-item"
+      data-tx-status={transactionStatus}
       onClick={onClick}
     >
       <div className="relative flex items-center justify-center">
@@ -200,7 +209,6 @@ export function GenericActivityCell({ data, onClick }: ActivityCellProps) {
             {secondaryTokenAmount}
           </Text>
         ) : null}
-        {/* Debug type and hash are hidden while the amount UI is wired */}
       </div>
     </div>
   );
