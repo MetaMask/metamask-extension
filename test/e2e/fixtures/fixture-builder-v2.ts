@@ -383,7 +383,16 @@ class FixtureBuilderV2 {
   }
 
   withSpeculosLedgerAccount(): this {
-    return this.withLedgerAccount();
+    const ledgerAddressLower =
+      KNOWN_PUBLIC_KEY_ADDRESSES[0].address.toLowerCase();
+
+    return this.withLedgerAccount().withAccountTracker({
+      '0x539': {
+        [ledgerAddressLower]: {
+          balance: '0x100000000000000000000',
+        },
+      },
+    });
   }
 
   withNetworkControllerDoubleNode(): this {
