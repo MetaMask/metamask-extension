@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Box, Text } from '@metamask/design-system-react';
+import AssetListControlBar from '../../components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar';
 import { SectionHeader } from '../../components/ui/section-header';
 import { VirtualizedList } from '../../components/ui/virtualized-list/virtualized-list';
 import { useScrollContainer } from '../../contexts/scroll-container';
@@ -7,7 +8,6 @@ import { formatDateWithYearContext } from '../../helpers/utils/util';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useItemInView } from '../../hooks/useItemInView';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
-import { NetworkFilter } from './network-filter';
 import { LegacyDetails } from './legacy-details';
 import { ListItem } from './cells/list-item';
 import { dedupeItems, getItemKey, groupActivityListItems } from './helpers';
@@ -85,9 +85,11 @@ export function ActivityList() {
 
   return (
     <>
-      <Box className="p-3">
-        <NetworkFilter onSelect={setNetworks} />
-      </Box>
+      <AssetListControlBar
+        showSortControl={false}
+        showImportTokenButton={false}
+        onNetworkSelect={setNetworks}
+      />
 
       <VirtualizedList
         data={groupedItems}

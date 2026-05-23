@@ -22,6 +22,7 @@ import { selectAccountSupportsEnabledNetworks } from '../../../../../selectors/a
 import {
   getAllEnabledNetworksForAllNamespaces,
   getEnabledNetworksByNamespace,
+  selectEnabledNetworksAsCaipChainIds,
 } from '../../../../../selectors/multichain/networks';
 import {
   getAllNetworkConfigurationsByCaipChainId,
@@ -97,12 +98,14 @@ type AssetListControlBarProps = {
   showTokensLinks?: boolean;
   showImportTokenButton?: boolean;
   showSortControl?: boolean;
+  onNetworkSelect?: (networks: string[]) => void;
 };
 
 const AssetListControlBar = ({
   showTokensLinks,
   showImportTokenButton = true,
   showSortControl = true,
+  onNetworkSelect,
 }: AssetListControlBarProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -133,6 +136,7 @@ const AssetListControlBar = ({
   const allEnabledNetworksForAllNamespaces = useSelector(
     getAllEnabledNetworksForAllNamespaces,
   );
+  const selectedCaipChainIds = useSelector(selectEnabledNetworksAsCaipChainIds);
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const [isTokenSortPopoverOpen, setIsTokenSortPopoverOpen] = useState(false);
   const [isImportTokensPopoverOpen, setIsImportTokensPopoverOpen] =
@@ -166,6 +170,26 @@ const AssetListControlBar = ({
     () => !shouldShowRefreshButtons && !useNftDetection,
     [shouldShowRefreshButtons, useNftDetection],
   );
+
+  // Pseudo callback to update calling component with network selection
+  useEffect(() => {
+    if (totalEnabledNetworkCount === 1) {
+      const chainId = allEnabledNetworksForAllNamespaces[0];
+      const caipChainId = isStrictHexString(chainId)
+        ? toEvmCaipChainId(chainId)
+        : chainId;
+
+      onNetworkSelect?.([caipChainId]);
+      return;
+    }
+
+    onNetworkSelect?.(selectedCaipChainIds);
+  }, [
+    allEnabledNetworksForAllNamespaces,
+    totalEnabledNetworkCount,
+    selectedCaipChainIds,
+    onNetworkSelect,
+  ]);
 
   const isTestNetwork = useMemo(() => {
     return (TEST_CHAINS as string[]).includes(
