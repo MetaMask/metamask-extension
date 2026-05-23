@@ -29,13 +29,11 @@ async function approveLedgerAfterSigningApdu(
   apduBridge: ApduBridge,
   rightPresses: number,
 ) {
-  await apduBridge.waitForSigningApdu(30000);
-  await new Promise((r) => setTimeout(r, 1000));
-  for (let i = 0; i < rightPresses; i++) {
-    await speculosClient.pressButton('right');
-    await new Promise((r) => setTimeout(r, 300));
-  }
-  await speculosClient.pressButton('both');
+  await apduBridge.waitForSigningApduAndApprove(
+    speculosClient,
+    rightPresses,
+    30000,
+  );
 }
 
 describe('Ledger Hardware - Speculos Integration @speculos', function () {

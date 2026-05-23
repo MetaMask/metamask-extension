@@ -27,25 +27,66 @@ export class ApduBridge {
     WsConnectionState
   >();
 
+  private signingGateResolve: (() => void) | null = null;
+
+  private signingGatePromise: Promise<void> | null = null;
+
   constructor(client: SpeculosClient, port: number) {
     this.client = client;
     this.port = port;
     this.emitter.setMaxListeners(20);
   }
 
-  /** Wait for a signing APDU to be sent to Speculos (INS=0x04 sign tx, INS=0x08 sign msg) */
+  /**
+   * Wait for a signing APDU to be sent to Speculos (INS=0x04 sign tx, INS=0x08 sign msg)
+   * @param timeout
+   */
   waitForSigningApdu(timeout = 30000): Promise<Buffer> {
+    let timer: ReturnType<typeof setTimeout>;
     return new Promise((resolve, reject) => {
-      const timer = setTimeout(() => {
-        this.emitter.removeListener('signing-apdu', handler);
-        reject(new Error('Timeout waiting for signing APDU'));
-      }, timeout);
       const handler = (apdu: Buffer) => {
         clearTimeout(timer);
         resolve(apdu);
       };
+      timer = setTimeout(() => {
+        this.emitter.removeListener('signing-apdu', handler);
+        reject(new Error('Timeout waiting for signing APDU'));
+      }, timeout);
       this.emitter.once('signing-apdu', handler);
     });
+  }
+
+  /**
+   * Wait for a signing APDU, perform button presses, then release the gate
+   * @param speculosClient
+   * @param rightPresses
+   * @param timeout
+   */
+  async waitForSigningApduAndApprove(
+    speculosClient: SpeculosClient,
+    rightPresses: number,
+    timeout = 30000,
+  ): Promise<Buffer> {
+    const apdu = await this.waitForSigningApdu(timeout);
+    await new Promise((r) => setTimeout(r, 1000));
+    for (let i = 0; i < rightPresses; i++) {
+      await speculosClient.pressButton('right');
+      await new Promise((r) => setTimeout(r, 300));
+    }
+    await speculosClient.pressButton('both');
+    await new Promise((r) => setTimeout(r, 500));
+    this.releaseSigningGate();
+    return apdu;
+  }
+
+  /** Release the gate so the signing APDU can be forwarded to Speculos */
+  releaseSigningGate(): void {
+    if (this.signingGateResolve) {
+      console.log('[ApduBridge] Signing gate released');
+      this.signingGateResolve();
+      this.signingGateResolve = null;
+      this.signingGatePromise = null;
+    }
   }
 
   getClient(): SpeculosClient {
@@ -179,6 +220,11 @@ export class ApduBridge {
 
     if (apdu.length >= 2 && apdu[0] === 0xe0 && (apdu[1] === 0x04 || apdu[1] === 0x08)) {
       this.emitter.emit('signing-apdu', apdu);
+      console.log('[ApduBridge] Signing APDU detected, waiting for gate release...');
+      this.signingGatePromise = new Promise((resolve) => {
+        this.signingGateResolve = resolve;
+      });
+      await this.signingGatePromise;
     }
 
     let response = await this.client.exchange(apdu);
