@@ -2876,9 +2876,12 @@ describe('MetaMaskController', () => {
           encryptor: mockEncryptor,
           initState: {
             ...cloneDeep(firstTimeState),
+            AnalyticsController: {
+              analyticsId: 'MOCK_METRICS_ID',
+              optedIn: true,
+            },
             MetaMetricsController: {
-              metaMetricsId: 'MOCK_METRICS_ID',
-              participateInMetaMetrics: true,
+              completedMetaMetricsOnboarding: true,
               dataCollectionForMarketing: true,
             },
           },
