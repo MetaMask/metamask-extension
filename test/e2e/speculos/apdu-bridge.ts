@@ -38,10 +38,12 @@ export class ApduBridge {
   }
 
   /**
-   * Wait for a signing APDU to be sent to Speculos (INS=0x04 sign tx, INS=0x08 sign msg)
+   * Wait for a signing APDU to be sent to Speculos
+   * INS=0x04 sign tx, INS=0x08 sign msg, INS=0x1a sign EIP-712, INS=0x20 sign EIP-712 v2, INS=0x22 sign EIP-712 hashed
    * @param timeout
    */
   waitForSigningApdu(timeout = 30000): Promise<Buffer> {
+    console.log('[ApduBridge] waitForSigningApdu called');
     let timer: ReturnType<typeof setTimeout>;
     return new Promise((resolve, reject) => {
       const handler = (apdu: Buffer) => {
@@ -68,14 +70,13 @@ export class ApduBridge {
     timeout = 30000,
   ): Promise<Buffer> {
     const apdu = await this.waitForSigningApdu(timeout);
-    await new Promise((r) => setTimeout(r, 1000));
+    await new Promise((r) => setTimeout(r, 1500));
     for (let i = 0; i < rightPresses; i++) {
       await speculosClient.pressButton('right');
-      await new Promise((r) => setTimeout(r, 300));
+      await new Promise((r) => setTimeout(r, 500));
     }
     await speculosClient.pressButton('both');
     await new Promise((r) => setTimeout(r, 500));
-    this.releaseSigningGate();
     return apdu;
   }
 
@@ -218,13 +219,9 @@ export class ApduBridge {
       apdu.toString('hex'),
     );
 
-    if (apdu.length >= 2 && apdu[0] === 0xe0 && (apdu[1] === 0x04 || apdu[1] === 0x08)) {
+    if (apdu.length >= 2 && apdu[0] === 0xe0 && (apdu[1] === 0x04 || apdu[1] === 0x08 || apdu[1] === 0x1a || apdu[1] === 0x20 || apdu[1] === 0x22)) {
       this.emitter.emit('signing-apdu', apdu);
-      console.log('[ApduBridge] Signing APDU detected, waiting for gate release...');
-      this.signingGatePromise = new Promise((resolve) => {
-        this.signingGateResolve = resolve;
-      });
-      await this.signingGatePromise;
+      console.log('[ApduBridge] Signing APDU detected, forwarding to Speculos immediately');
     }
 
     let response = await this.client.exchange(apdu);

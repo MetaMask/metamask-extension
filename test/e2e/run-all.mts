@@ -294,6 +294,12 @@ async function main(): Promise<void> {
     ];
   }
 
+  if (!process.env.SPECULOS_E2E) {
+    testPaths = testPaths.filter(
+      (p) => !p.includes('hardware-wallets/ledger'),
+    );
+  }
+
   if (isReleaseCandidateBranch()) {
     console.log('RC branch detected — excluding tests:', RC_EXCLUDED_TESTS);
     testPaths = testPaths.filter((p) =>

@@ -1,34 +1,62 @@
-import { Suite } from 'mocha';
-import { Driver } from '../../../webdriver/driver';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
-import { withFixtures } from '../../../helpers';
-import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
+import { WINDOW_TITLES } from '../../../constants';
+import { withSpeculosFixtures } from '../../../speculos/with-speculos-fixtures';
+import type { ApduBridge } from '../../../speculos/apdu-bridge';
+import type { SpeculosClient } from '../../../speculos/client';
+import { SPECULOS_LEDGER_ADDRESS } from '../../../speculos/constants';
 import { login } from '../../../page-objects/flows/login.flow';
 import TestDappPage from '../../../page-objects/pages/test-dapp';
-import { signTypedDataV4 } from '../../../page-objects/flows/sign.flow';
+import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 
-describe('Ledger Hardware Signatures', function (this: Suite) {
-  it('sign typed v4', async function () {
-    await withFixtures(
+async function approveLedgerAfterSigningApdu(
+  speculosClient: SpeculosClient,
+  apduBridge: ApduBridge,
+  rightPresses: number,
+) {
+  await apduBridge.waitForSigningApduAndApprove(
+    speculosClient,
+    rightPresses,
+    30000,
+  );
+}
+
+describe('Ledger Hardware Signatures @speculos', function () {
+  this.timeout(180000);
+
+  // TODO: Speculos ethereum.elf v1.21.3 does not support EIP-712 signEIP712Message (INS=0x1a).
+  // Re-enable when a compatible firmware image is available.
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('sign typed v4', async function () {
+    await withSpeculosFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
           .withLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
-            account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+            account: SPECULOS_LEDGER_ADDRESS,
           })
           .build(),
         title: this.test?.fullTitle(),
       },
-      async ({ driver }: { driver: Driver }) => {
-        await login(driver, {
-          validateBalance: false,
-          waitForNonEvmAccounts: false,
-        });
+      async ({ driver, speculosClient, apduBridge }) => {
+        await login(driver, { validateBalance: false });
+
+        const ledgerDone = approveLedgerAfterSigningApdu(
+          speculosClient,
+          apduBridge,
+          2,
+        );
+
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage();
         await testDappPage.checkPageIsLoaded();
-        await signTypedDataV4(driver, KNOWN_PUBLIC_KEY_ADDRESSES[0].address);
+        await testDappPage.clickSignTypedDatav4();
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const confirmation = new Confirmation(driver);
+        await confirmation.clickFooterConfirmButtonOrReconnect();
+
+        await ledgerDone;
       },
     );
   });

@@ -870,11 +870,6 @@ async function initialize(backup) {
           // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
           trezorBridge: require('../../test/stub/keyring-bridge')
             .FakeTrezorBridge,
-          // Ledger bridge is NOT overridden — tests that need Ledger must use
-          // Speculos (Docker) with the WebHID mock. This ensures real APDU
-          // protocol is exercised instead of a software mock.
-          // ledgerBridge: <uses real LedgerOffscreenBridge via navigator.hid>
-          // Use `require` to make it easier to exclude this test code from the Browserify build.
           // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
           qrBridge: require('../../test/stub/keyring-bridge').FakeQrBridge,
         },
@@ -2661,16 +2656,6 @@ if (inTest) {
     if (message.type === 'STOP_PERSISTENCE') {
       await evacuate();
       return { status: 'PERSISTENCE_STOPPED' };
-    }
-    if (message.type === 'RELOAD_OFFSCREEN_FOR_SPECULOS') {
-      if (browser.offscreen) {
-        // Send response immediately — createOffscreen() closes/recreates
-        // the offscreen document which can close the message channel before
-        // the async response is delivered.
-        setTimeout(() => createOffscreen(), 0);
-        return { status: 'OFFSCREEN_RELOADED' };
-      }
-      return { status: 'OFFSCREEN_NOT_SUPPORTED' };
     }
     return Promise.resolve();
   });

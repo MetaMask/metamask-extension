@@ -117,52 +117,37 @@ export class LedgerOffscreenHandler {
       throw new Error('WebHID is not supported in this browser');
     }
 
-    // In Speculos E2E test mode, use the pre-configured mock device
-    // set by the CDP mock script (runs before lockdown, stores device on window).
-    // This avoids navigator.hid access issues within the LavaMoat compartment.
     if (process.env.IN_TEST) {
-      const speculosDevice =
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        (
-          window as unknown as {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            __speculosDevice?: HIDDevice;
-          }
-        ).__speculosDevice;
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      const speculosDevice = (window as unknown as { __speculosDevice?: HIDDevice }).__speculosDevice;
       if (speculosDevice) {
         return TransportWebHID.open(speculosDevice);
       }
+
+      return TransportWebHID.create();
     }
 
-    // First try to open an already-connected device (no gesture needed)
     const existingTransport = await TransportWebHID.openConnected();
     if (existingTransport) {
       return existingTransport;
     }
 
-    // Check if any Ledger devices are permitted
-    // In LavaMoat, navigator may not be directly accessible from this module;
-    // skip this check in test mode (the transport will handle it)
-    if (!process.env.IN_TEST) {
-      const devices = await navigator.hid.getDevices();
-      const ledgerDevices = devices.filter(
-        (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
-      );
+    const devices = await navigator.hid.getDevices();
+    const ledgerDevices = devices.filter(
+      (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
+    );
 
-      if (ledgerDevices.length === 0) {
-        const errorMessage =
-          'No permitted Ledger device found. User must grant permission from the UI first.';
-        throw new HardwareWalletError(errorMessage, {
-          code: ErrorCode.DeviceDisconnected,
-          severity: Severity.Err,
-          category: Category.Connection,
-          userMessage: errorMessage,
-        });
-      }
+    if (ledgerDevices.length === 0) {
+      const errorMessage =
+        'No permitted Ledger device found. User must grant permission from the UI first.';
+      throw new HardwareWalletError(errorMessage, {
+        code: ErrorCode.DeviceDisconnected,
+        severity: Severity.Err,
+        category: Category.Connection,
+        userMessage: errorMessage,
+      });
     }
 
-    // Try to create a transport with the permitted device
-    // This should work without a gesture since the device is already permitted
     return TransportWebHID.create();
   }
 

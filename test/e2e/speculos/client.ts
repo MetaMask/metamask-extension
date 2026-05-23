@@ -1,5 +1,4 @@
 import net from 'net';
-import axios, { AxiosInstance } from 'axios';
 import { withRetry, isRetryableError } from './resilience';
 import { SPECULOS_APDU_PORT, SPECULOS_API_PORT } from './constants';
 
@@ -12,13 +11,13 @@ export type SpeculosClientOptions = {
 };
 
 export type APDUResponse = {
-  data: string; // Hex string
+  data: string;
 };
 
 export class SpeculosClient {
   private apduSocket: net.Socket | null = null;
 
-  private api: AxiosInstance;
+  private baseUrl: string;
 
   private options: Required<SpeculosClientOptions>;
 
@@ -49,10 +48,7 @@ export class SpeculosClient {
       this.options.apiPort = Number(process.env.SPECULOS_API_PORT);
     }
 
-    this.api = axios.create({
-      baseURL: `http://${this.options.apiHost}:${this.options.apiPort}`,
-      timeout: this.options.timeout,
-    });
+    this.baseUrl = `http://${this.options.apiHost}:${this.options.apiPort}`;
   }
 
   async connect(): Promise<void> {
@@ -176,22 +172,50 @@ export class SpeculosClient {
     });
   }
 
+  private async fetch(
+    path: string,
+    options: RequestInit & { timeout?: number } = {},
+  ): Promise<Response> {
+    const { timeout: ms = this.options.timeout, ...init } = options;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), ms);
+    try {
+      const response = await fetch(`${this.baseUrl}${path}`, {
+        ...init,
+        signal: controller.signal,
+      });
+      if (!response.ok) {
+        throw new Error(
+          `Speculos API ${path} returned ${response.status}: ${await response.text().catch(() => '')}`,
+        );
+      }
+      return response;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
   async pressButton(button: 'left' | 'right' | 'both'): Promise<void> {
-    await this.api.post(`/button/${button}`, {
-      action: 'press-and-release',
+    await this.fetch(`/button/${button}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'press-and-release' }),
     });
   }
 
   async getScreenshot(): Promise<Buffer> {
-    const response = await this.api.get('/screenshot', {
-      responseType: 'arraybuffer',
-    });
-    return Buffer.from(response.data);
+    const response = await this.fetch('/screenshot');
+    const arrayBuffer = await response.arrayBuffer();
+    return Buffer.from(arrayBuffer);
   }
 
   async sendAPDU(data: string): Promise<APDUResponse> {
-    const response = await this.api.post<APDUResponse>('/apdu', { data });
-    return response.data;
+    const response = await this.fetch('/apdu', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ data }),
+    });
+    return response.json();
   }
 
   async disconnect(): Promise<void> {
@@ -249,20 +273,5 @@ export class SpeculosClient {
 
   isHealthy(): boolean {
     return this.isConnected && this._healthy;
-  }
-
-  /**
-   * Send automation rules to Speculos
-   * @param rules - Automation rules object
-   */
-  async sendAutomationRules(rules: object): Promise<void> {
-    await this.api.post('/automation', rules);
-  }
-
-  /**
-   * Clear all automation rules
-   */
-  async clearAutomationRules(): Promise<void> {
-    await this.api.delete('/automation');
   }
 }

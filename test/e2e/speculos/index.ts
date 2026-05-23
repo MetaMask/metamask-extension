@@ -1,15 +1,11 @@
 export { ApduBridge } from './apdu-bridge';
-export { SpeculosAutomation } from './automation';
 export { SpeculosClient } from './client';
 export { SpeculosTestHelper } from './test-helper';
 export type {
   WithSpeculosFixturesOptions,
   SpeculosFixturesTestSuiteArgs,
 } from './with-speculos-fixtures';
-export {
-  withSpeculosFixtures,
-  withSpeculosAutoApprove,
-} from './with-speculos-fixtures';
+export { withSpeculosFixtures } from './with-speculos-fixtures';
 export { startSharedSpeculos, stopSharedSpeculos } from './shared-context';
 export type { SharedSpeculosContext } from './shared-context';
 export { withRetry } from './resilience';

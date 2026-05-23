@@ -32,7 +32,7 @@ jobs:
     with:
       test-suite-name: 'Speculos Hardware Wallet'
       build-artifact: speculos-test-build
-      test-command: 'SPECULOS_E2E=1 SPECULOS_SKIP_DOCKER_START=1 yarn test:e2e:single test/e2e/tests/hardware-wallets/ledger/ledger-speculos.spec.ts --browser=chrome --grep @speculos'
+      test-command: 'SPECULOS_E2E=1 SPECULOS_SKIP_DOCKER_START=1 yarn test:e2e:single test/e2e/tests/hardware-wallets/ledger/ledger-happy-unhappy-paths.spec.ts --browser=chrome --grep @speculos'
       builds-from-run: ''
       services: test/e2e/speculos/docker-compose.yml
     secrets:

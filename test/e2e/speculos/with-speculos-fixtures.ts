@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import net from 'net';
 import fs from 'fs';
 import path from 'path';
 import { withFixtures } from '../helpers';
@@ -7,7 +6,6 @@ import { Anvil } from '../seeder/anvil';
 import { Driver } from '../webdriver/driver';
 import { SpeculosTestHelper } from './test-helper';
 import { SpeculosClient } from './client';
-import { SpeculosAutomation } from './automation';
 import { ApduBridge } from './apdu-bridge';
 import { validateSpeculosTestEnv } from './build-config';
 import { SPECULOS_COMPOSE_FILE, SPECULOS_WS_BRIDGE_PORT } from './constants';
@@ -39,9 +37,7 @@ function patchLockdownRunForSpeculos(wsPort: number): void {
   fs.writeFileSync(scriptPath, mockScript);
 
   const distDir = path.join('dist', 'chrome');
-  const htmlFiles = fs
-    .readdirSync(distDir)
-    .filter((f) => f.endsWith('.html'));
+  const htmlFiles = fs.readdirSync(distDir).filter((f) => f.endsWith('.html'));
 
   let patchedCount = 0;
   for (const htmlFile of htmlFiles) {
@@ -95,9 +91,7 @@ export type WithSpeculosFixturesOptions = {
     composeFile?: string;
     apduPort?: number;
     apiPort?: number;
-    autoApprove?: boolean;
     timeout?: number;
-    wsBridgePort?: number;
   };
 
   sharedContext?: SharedSpeculosContext;
@@ -110,7 +104,10 @@ export type WithSpeculosFixturesOptions = {
 
 export type SpeculosFixturesTestSuiteArgs = {
   bundlerServer?: unknown;
-  contractRegistry?: unknown;
+  contractRegistry: {
+    getContractAddress: (name: string) => string | undefined;
+    getAllDeployedContractAddresses: () => string[];
+  };
   driver: Driver;
   localNodes?: Anvil[];
   mockedEndpoint?: unknown[];
@@ -119,7 +116,6 @@ export type SpeculosFixturesTestSuiteArgs = {
   getNetworkReport?: () => unknown;
   clearNetworkReport?: () => unknown;
   speculosClient: SpeculosClient;
-  automation: SpeculosAutomation;
   speculosHelper: SpeculosTestHelper;
   apduBridge: ApduBridge;
   wsBridgePort: number;
@@ -142,51 +138,25 @@ export async function withSpeculosFixtures(
     composeFile = SPECULOS_COMPOSE_FILE,
     apduPort,
     apiPort,
-    autoApprove = false,
   } = speculosOptions;
-
-  // Find an available port
-  const findAvailablePort = async (startPort: number): Promise<number> => {
-    return new Promise((resolve, reject) => {
-      const server = net.createServer();
-      server.listen(startPort, () => {
-        const { port } = server.address() as net.AddressInfo;
-        server.close(() => resolve(port));
-      });
-      server.on('error', () => {
-        // Port in use, try next
-        findAvailablePort(startPort + 1)
-          .then(resolve)
-          .catch(reject);
-      });
-    });
-  };
 
   let speculosHelper: SpeculosTestHelper;
   let speculosClient: SpeculosClient;
-  let automation: SpeculosAutomation;
   let apduBridge: ApduBridge;
-  let wsBridgePort: number;
+  const wsBridgePort = SPECULOS_WS_BRIDGE_PORT;
   let ownsContainer = false;
 
   if (sharedContext) {
     speculosHelper = sharedContext.helper;
     speculosClient = sharedContext.client;
-    automation = sharedContext.automation;
     apduBridge = sharedContext.apduBridge;
-    wsBridgePort = sharedContext.wsBridgePort;
   } else {
-    wsBridgePort = await findAvailablePort(
-      speculosOptions.wsBridgePort ?? SPECULOS_WS_BRIDGE_PORT,
-    );
-
     speculosHelper = new SpeculosTestHelper({
       composeFile,
       apduPort,
       apiPort,
     });
     speculosClient = speculosHelper.getClient();
-    automation = new SpeculosAutomation(speculosClient);
     apduBridge = new ApduBridge(speculosClient, wsBridgePort);
     ownsContainer = true;
 
@@ -230,9 +200,6 @@ export async function withSpeculosFixtures(
         ...restOfOptions,
         ignoredConsoleErrors: mergedIgnored,
         seedBalances,
-        speculosOptions: {
-          wsBridgePort,
-        },
       },
       async ({ driver, ...restOfArgs }: any) => {
         // The pre-lockdown HTML patching (patchLockdownRunForSpeculos) injects
@@ -241,19 +208,6 @@ export async function withSpeculosFixtures(
         // executeScript injection methods are no longer needed and would
         // actually interfere by setting __webHIDMockInjected before the
         // pre-lockdown script gets a chance to run.
-
-        // shared context may have leftover automation rules from the previous test
-        if (sharedContext && !autoApprove) {
-          try {
-            await automation.disableAutoApprove();
-          } catch {
-            // ignore — rules may already be clear
-          }
-        }
-
-        if (autoApprove) {
-          console.log('[Speculos] Auto-approval mode requested (no-op with manual approval)');
-        }
 
         console.log('[Speculos] Ready for test execution');
 
@@ -264,7 +218,6 @@ export async function withSpeculosFixtures(
           driver,
           ...restOfArgs,
           speculosClient,
-          automation,
           speculosHelper,
           apduBridge,
           wsBridgePort,
@@ -283,22 +236,6 @@ export async function withSpeculosFixtures(
       await new Promise((resolve) => setTimeout(resolve, 2000));
     }
   }
-}
-
-export async function withSpeculosAutoApprove(
-  options: WithSpeculosFixturesOptions,
-  testSuite: (args: SpeculosFixturesTestSuiteArgs) => Promise<void>,
-): Promise<void> {
-  return withSpeculosFixtures(
-    {
-      ...options,
-      speculosOptions: {
-        ...options.speculosOptions,
-        autoApprove: true,
-      },
-    },
-    testSuite,
-  );
 }
 
 async function injectWebHIDMock(driver: Driver, wsPort: number): Promise<void> {

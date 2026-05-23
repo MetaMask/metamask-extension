@@ -2,11 +2,12 @@ import { Suite } from 'mocha';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import {
   withSpeculosFixtures,
-  withSpeculosAutoApprove,
   startSharedSpeculos,
   stopSharedSpeculos,
 } from '../../../speculos/with-speculos-fixtures';
 import type { SharedSpeculosContext } from '../../../speculos/with-speculos-fixtures';
+import type { ApduBridge } from '../../../speculos/apdu-bridge';
+import type { SpeculosClient } from '../../../speculos/client';
 import { SPECULOS_LEDGER_ADDRESS } from '../../../speculos/constants';
 import { WINDOW_TITLES } from '../../../constants';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
@@ -29,6 +30,18 @@ const LEDGER_SEED_BALANCE = [
   { address: SPECULOS_LEDGER_ADDRESS, balance: '0x100000000000000000000' },
 ];
 
+async function approveLedgerAfterSigningApdu(
+  speculosClient: SpeculosClient,
+  apduBridge: ApduBridge,
+  rightPresses: number,
+) {
+  await apduBridge.waitForSigningApduAndApprove(
+    speculosClient,
+    rightPresses,
+    30000,
+  );
+}
+
 describe('Ledger Hardware Wallet Happy & Unhappy Paths @speculos', function (this: Suite) {
   this.timeout(180000);
 
@@ -46,7 +59,7 @@ describe('Ledger Hardware Wallet Happy & Unhappy Paths @speculos', function (thi
 
   describe('Happy Path', function () {
     it('connects a Ledger device and unlocks an account', async function () {
-      await withSpeculosAutoApprove(
+      await withSpeculosFixtures(
         {
           fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
@@ -81,7 +94,7 @@ describe('Ledger Hardware Wallet Happy & Unhappy Paths @speculos', function (thi
     });
 
     it('sends ETH from a Ledger account', async function () {
-      await withSpeculosAutoApprove(
+      await withSpeculosFixtures(
         {
           fixtures: new FixtureBuilderV2().withLedgerAccount().build(),
           localNodeOptions: { hardfork: 'london' },
@@ -89,15 +102,21 @@ describe('Ledger Hardware Wallet Happy & Unhappy Paths @speculos', function (thi
           sharedContext: shared,
           seedBalances: LEDGER_SEED_BALANCE,
         },
-        async ({ driver }) => {
+        async ({ driver, speculosClient, apduBridge }) => {
           await login(driver, { validateBalance: false });
           await switchToHardwareAccount(driver, 'Ledger 1');
 
+          const ledgerDone = approveLedgerAfterSigningApdu(
+            speculosClient,
+            apduBridge,
+            6,
+          );
           await sendRedesignedTransactionToAddress({
             driver,
             recipientAddress: RECIPIENT,
             amount: '1',
           });
+          await ledgerDone;
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -109,7 +128,7 @@ describe('Ledger Hardware Wallet Happy & Unhappy Paths @speculos', function (thi
     });
 
     it('signs a personal message from a Ledger account', async function () {
-      await withSpeculosAutoApprove(
+      await withSpeculosFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilderV2()
@@ -121,8 +140,14 @@ describe('Ledger Hardware Wallet Happy & Unhappy Paths @speculos', function (thi
           title: this.test?.fullTitle(),
           sharedContext: shared,
         },
-        async ({ driver }) => {
+        async ({ driver, speculosClient, apduBridge }) => {
           await login(driver, { validateBalance: false });
+
+          const ledgerDone = approveLedgerAfterSigningApdu(
+            speculosClient,
+            apduBridge,
+            2,
+          );
 
           const testDappPage = new TestDappPage(driver);
           await testDappPage.openTestDappPage();
@@ -131,7 +156,9 @@ describe('Ledger Hardware Wallet Happy & Unhappy Paths @speculos', function (thi
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const confirmation = new Confirmation(driver);
-          await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+          await confirmation.clickFooterConfirmButtonOrReconnect();
+
+          await ledgerDone;
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
           await testDappPage.checkSuccessPersonalSign(SPECULOS_LEDGER_ADDRESS);
@@ -140,7 +167,7 @@ describe('Ledger Hardware Wallet Happy & Unhappy Paths @speculos', function (thi
     });
 
     it('deploys a contract from a Ledger account', async function () {
-      await withSpeculosAutoApprove(
+      await withSpeculosFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilderV2()
@@ -153,9 +180,15 @@ describe('Ledger Hardware Wallet Happy & Unhappy Paths @speculos', function (thi
           sharedContext: shared,
           seedBalances: LEDGER_SEED_BALANCE,
         },
-        async ({ driver }) => {
+        async ({ driver, speculosClient, apduBridge }) => {
           await login(driver, { validateBalance: false });
           await switchToHardwareAccount(driver, 'Ledger 1');
+
+          const ledgerDone = approveLedgerAfterSigningApdu(
+            speculosClient,
+            apduBridge,
+            6,
+          );
 
           const testDappPage = new TestDappPage(driver);
           await testDappPage.openTestDappPage();
@@ -164,7 +197,9 @@ describe('Ledger Hardware Wallet Happy & Unhappy Paths @speculos', function (thi
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const txConfirmation = new TransactionConfirmation(driver);
-          await txConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+          await txConfirmation.clickFooterConfirmButtonOrReconnect();
+
+          await ledgerDone;
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
           await testDappPage.checkTokenAddressesValue(
@@ -183,7 +218,7 @@ describe('Ledger Hardware Wallet Happy & Unhappy Paths @speculos', function (thi
           title: this.test?.fullTitle(),
           sharedContext: shared,
         },
-        async ({ driver, automation }) => {
+        async ({ driver, speculosClient }) => {
           await login(driver);
 
           const headerNavbar = new HeaderNavbar(driver);
@@ -200,7 +235,9 @@ describe('Ledger Hardware Wallet Happy & Unhappy Paths @speculos', function (thi
           const selectPage = new SelectHardwareWalletAccountPage(driver);
           await selectPage.checkPageIsLoaded();
 
-          await automation.reject();
+          await speculosClient.pressButton('right');
+          await new Promise((r) => setTimeout(r, 300));
+          await speculosClient.pressButton('both');
 
           await connectPage.checkPageIsLoaded();
         },
@@ -220,8 +257,14 @@ describe('Ledger Hardware Wallet Happy & Unhappy Paths @speculos', function (thi
           title: this.test?.fullTitle(),
           sharedContext: shared,
         },
-        async ({ driver, automation }) => {
+        async ({ driver, speculosClient, apduBridge }) => {
           await login(driver, { validateBalance: false });
+
+          const apdu = await apduBridge.waitForSigningApdu(30000);
+          await new Promise((r) => setTimeout(r, 1000));
+          await speculosClient.pressButton('right');
+          await new Promise((r) => setTimeout(r, 300));
+          await speculosClient.pressButton('both');
 
           const testDappPage = new TestDappPage(driver);
           await testDappPage.openTestDappPage();
@@ -231,8 +274,6 @@ describe('Ledger Hardware Wallet Happy & Unhappy Paths @speculos', function (thi
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const confirmation = new Confirmation(driver);
           await confirmation.checkPageIsLoaded();
-
-          await automation.reject();
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         },
@@ -248,23 +289,27 @@ describe('Ledger Hardware Wallet Happy & Unhappy Paths @speculos', function (thi
           sharedContext: shared,
           seedBalances: LEDGER_SEED_BALANCE,
         },
-        async ({ driver, automation }) => {
+        async ({ driver, speculosClient, apduBridge }) => {
           await login(driver, { validateBalance: false });
           await switchToHardwareAccount(driver, 'Ledger 1');
+
+          const apdu = await apduBridge.waitForSigningApdu(30000);
+          await new Promise((r) => setTimeout(r, 1000));
+          await speculosClient.pressButton('right');
+          await new Promise((r) => setTimeout(r, 300));
+          await speculosClient.pressButton('both');
 
           await sendRedesignedTransactionToAddress({
             driver,
             recipientAddress: RECIPIENT,
             amount: '1',
           });
-
-          await automation.reject();
         },
       );
     });
 
     it('shows reconnect button in confirmation footer when device is disconnected', async function () {
-      await withSpeculosAutoApprove(
+      await withSpeculosFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilderV2()
@@ -308,7 +353,7 @@ describe('Ledger Hardware Wallet Happy & Unhappy Paths @speculos', function (thi
     });
 
     it('recovers after device reconnect', async function () {
-      await withSpeculosAutoApprove(
+      await withSpeculosFixtures(
         {
           fixtures: new FixtureBuilderV2().withLedgerAccount().build(),
           localNodeOptions: { hardfork: 'london' },
@@ -316,7 +361,7 @@ describe('Ledger Hardware Wallet Happy & Unhappy Paths @speculos', function (thi
           sharedContext: shared,
           seedBalances: LEDGER_SEED_BALANCE,
         },
-        async ({ driver, apduBridge }) => {
+        async ({ driver, apduBridge, speculosClient }) => {
           await login(driver, { validateBalance: false });
           await switchToHardwareAccount(driver, 'Ledger 1');
 
@@ -336,11 +381,17 @@ describe('Ledger Hardware Wallet Happy & Unhappy Paths @speculos', function (thi
           await apduBridge.start();
           console.log('[Test] APDU bridge restarted for recovery');
 
+          const ledgerDone = approveLedgerAfterSigningApdu(
+            speculosClient,
+            apduBridge,
+            6,
+          );
           await sendRedesignedTransactionToAddress({
             driver,
             recipientAddress: RECIPIENT,
             amount: '1',
           });
+          await ledgerDone;
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -351,7 +402,7 @@ describe('Ledger Hardware Wallet Happy & Unhappy Paths @speculos', function (thi
     });
 
     it('forgets device and confirms removal from account list', async function () {
-      await withSpeculosAutoApprove(
+      await withSpeculosFixtures(
         {
           fixtures: new FixtureBuilderV2().withLedgerAccount().build(),
           title: this.test?.fullTitle(),

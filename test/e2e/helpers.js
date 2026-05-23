@@ -52,38 +52,6 @@ const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
 const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 
 /**
- * Recreate the offscreen document after Speculos WebSocket port is written to storage.
- * Ledger WebHID runs in offscreen; the first boot happens before E2E sets the port.
- *
- * @param {import('./webdriver/driver').Driver} driver
- */
-async function reloadOffscreenForSpeculos(driver) {
-  await driver.executeScript(() => {
-    /* eslint-disable no-undef -- extension page context */
-    return new Promise((resolve, reject) => {
-      chrome.runtime.sendMessage(
-        { type: 'RELOAD_OFFSCREEN_FOR_SPECULOS' },
-        (response) => {
-          if (chrome.runtime.lastError) {
-            reject(new Error(chrome.runtime.lastError.message));
-            return;
-          }
-          if (response?.status !== 'OFFSCREEN_RELOADED') {
-            reject(
-              new Error(
-                `Offscreen reload failed: ${JSON.stringify(response ?? null)}`,
-              ),
-            );
-            return;
-          }
-          resolve(undefined);
-        },
-      );
-    });
-  });
-}
-
-/**
  * Normalizes the localNodeOptions into a consistent format to handle different data structures.
  * Case 1: A string: localNodeOptions = 'anvil'
  * Case 2: Array of strings: localNodeOptions = ['anvil', 'bitcoin']
@@ -204,7 +172,6 @@ async function withFixtures(options, testSuite) {
     accountActivityWebSocketSpecificMocks = [],
     perpsWebSocketSpecificMocks = [],
     extendedTimeoutMultiplier = 1,
-    speculosOptions,
     seedBalances,
     unifiedEvmAccountsApiBalances,
     virtualAuthenticator,
@@ -434,34 +401,6 @@ async function withFixtures(options, testSuite) {
         : driver.timeout;
     extensionId = wd.extensionId;
     webDriver = driver.driver;
-
-    // Speculos: persist ApduBridge port, then reload offscreen so WebHID mock sees it.
-    if (speculosOptions?.wsBridgePort && extensionId) {
-      console.log(
-        `[Speculos] Setting chrome.storage.local with port ${speculosOptions.wsBridgePort}`,
-      );
-      await driver.navigate('home');
-      await driver.executeScript((port) => {
-        /* eslint-disable no-undef -- extension page context */
-        return new Promise((resolve, reject) => {
-          chrome.storage.local.set({ speculosWebSocketPort: port }, () => {
-            if (chrome.runtime.lastError) {
-              reject(new Error(chrome.runtime.lastError.message));
-            } else {
-              console.log(
-                `[Speculos] chrome.storage.local set with port ${port}`,
-              );
-              resolve(undefined);
-            }
-          });
-        });
-      }, speculosOptions.wsBridgePort);
-
-      console.log(
-        '[Speculos] Reloading offscreen document so Ledger WebHID mock initializes',
-      );
-      await reloadOffscreenForSpeculos(driver);
-    }
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       await driver.checkBrowserForExceptions(ignoredConsoleErrors);

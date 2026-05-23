@@ -13,13 +13,10 @@ Extension (offscreen) → @ledgerhq/hw-transport-webhid (HID frames)
 ## Quick Start
 
 ```bash
-# 1. Download Ethereum app (once)
-yarn speculos:download
-
-# 2. Test build
+# 1. Test build
 yarn build:test
 
-# 3. Run Speculos E2E tests (starts Docker + bridge automatically)
+# 2. Run Speculos E2E tests (starts Docker + bridge automatically)
 yarn test:e2e:speculos
 ```
 
@@ -36,7 +33,6 @@ yarn speculos:down
 
 | Script | Description |
 |--------|-------------|
-| `yarn speculos:download` | Download `ethereum.elf` into `apps/` |
 | `yarn speculos:up` | Start Docker container |
 | `yarn speculos:down` | Stop Docker container |
 | `yarn speculos:logs` | Follow container logs |
