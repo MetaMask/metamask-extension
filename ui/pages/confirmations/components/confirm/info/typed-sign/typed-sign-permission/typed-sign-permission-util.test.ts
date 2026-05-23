@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 import {
-  formatPeriodDuration,
   useErc20TokenDetails,
   useNativeTokenLabel,
 } from './typed-sign-permission-util';
@@ -14,78 +13,6 @@ const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
 describe('typed-sign-permission-util', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-  });
-
-  describe('formatPeriodDuration', () => {
-    it('returns translator literal for HOUR duration', () => {
-      const t = jest.fn().mockReturnValue('HOURLY_TRANSLATION');
-      const result = formatPeriodDuration(t, 3600);
-      expect(t).toHaveBeenCalledWith('confirmFieldPeriodDurationHourly');
-      expect(result).toEqual('HOURLY_TRANSLATION');
-    });
-
-    it('returns translator literal for WEEK duration', () => {
-      const t = jest.fn().mockReturnValue('WEEKLY_TRANSLATION');
-      const result = formatPeriodDuration(t, 604800);
-      expect(t).toHaveBeenCalledWith('confirmFieldPeriodDurationWeekly');
-      expect(result).toEqual('WEEKLY_TRANSLATION');
-    });
-
-    it('returns translator literal for DAY duration', () => {
-      const t = jest.fn().mockReturnValue('DAILY_TRANSLATION');
-      const result = formatPeriodDuration(t, 86400);
-      expect(t).toHaveBeenCalledWith('confirmFieldPeriodDurationDaily');
-      expect(result).toEqual('DAILY_TRANSLATION');
-    });
-
-    it('returns translator literal for FORTNIGHT duration', () => {
-      const t = jest.fn().mockReturnValue('BIWEEKLY_TRANSLATION');
-      const result = formatPeriodDuration(t, 1209600);
-      expect(t).toHaveBeenCalledWith('confirmFieldPeriodDurationBiWeekly');
-      expect(result).toEqual('BIWEEKLY_TRANSLATION');
-    });
-
-    it('formats multiple weeks correctly', () => {
-      const t = jest.fn().mockReturnValue('SECONDS_TRANSLATION');
-      const result = formatPeriodDuration(t, 1814400);
-      expect(t).toHaveBeenCalledWith('confirmFieldPeriodDurationSeconds');
-      expect(result).toEqual('1814400 SECONDS_TRANSLATION');
-    });
-
-    it('returns translator literal for MONTH duration', () => {
-      const t = jest.fn().mockReturnValue('MONTHLY_TRANSLATION');
-      const result = formatPeriodDuration(t, 2592000);
-      expect(t).toHaveBeenCalledWith('confirmFieldPeriodDurationMonthly');
-      expect(result).toEqual('MONTHLY_TRANSLATION');
-    });
-
-    it('returns translator literal for YEAR duration', () => {
-      const t = jest.fn().mockReturnValue('YEARLY_TRANSLATION');
-      const result = formatPeriodDuration(t, 31536000);
-      expect(t).toHaveBeenCalledWith('confirmFieldPeriodDurationYearly');
-      expect(result).toEqual('YEARLY_TRANSLATION');
-    });
-
-    it('returns seconds as fallback for non-standard duration', () => {
-      const t = jest.fn().mockReturnValue('SECONDS_TRANSLATION');
-      const result = formatPeriodDuration(t, 45);
-      expect(t).toHaveBeenCalledWith('confirmFieldPeriodDurationSeconds');
-      expect(result).toEqual('45 SECONDS_TRANSLATION');
-    });
-
-    it('throws an error when period duration is 0 seconds', () => {
-      const t = jest.fn();
-      expect(() => formatPeriodDuration(t, 0)).toThrow(
-        'Cannot format period duration of 0 seconds',
-      );
-    });
-
-    it('throws an error when period duration is negative', () => {
-      const t = jest.fn();
-      expect(() => formatPeriodDuration(t, -1)).toThrow(
-        'Cannot format negative period duration',
-      );
-    });
   });
 
   describe('useErc20TokenDetails', () => {

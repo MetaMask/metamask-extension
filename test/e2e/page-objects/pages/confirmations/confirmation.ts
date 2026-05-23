@@ -84,7 +84,12 @@ class Confirmation {
   }
 
   async checkSecurityProviderBannerAlertIsNotPresent(): Promise<void> {
-    await this.driver.assertElementNotPresent(this.securityProviderBannerAlert);
+    await this.driver.assertElementNotPresent(
+      this.securityProviderBannerAlert,
+      {
+        waitAtLeastGuard: 1000,
+      },
+    );
   }
 
   async checkSecurityProviderBannerAlertIsPresent(): Promise<void> {

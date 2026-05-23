@@ -147,7 +147,6 @@ describe('BasicFunctionalityOff', () => {
         pathname: '/basic-functionality-off',
         state: {
           blockedRoutePath: '/cross-chain/swaps/prepare-bridge-page',
-          openPageCtaMessageKey: I18N_KEYS.openSwapsPage,
         },
         key: '',
         search: '',

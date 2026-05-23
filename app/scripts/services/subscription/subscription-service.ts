@@ -5,6 +5,7 @@ import {
   PRODUCT_TYPES,
   StartSubscriptionRequest,
   Subscription,
+  type SubscriptionControllerSubmitShieldSubscriptionCryptoApprovalAction,
   SubscriptionServiceError,
   UpdatePaymentMethodOpts,
 } from '@metamask/subscription-controller';
@@ -43,15 +44,27 @@ import {
   SHIELD_ERROR,
 } from '../../../../shared/lib/shield';
 import {
-  SubscriptionServiceAction,
-  SubscriptionServiceEvent,
   SubscriptionServiceOptions,
   SERVICE_NAME,
   ServiceName,
+  SubscriptionServiceMessenger,
 } from './types';
 
 const SUBSCRIPTION_POLL_INTERVAL = 5 * SECOND;
 const SUBSCRIPTION_POLL_TIMEOUT = 60 * SECOND;
+
+const MESSENGER_EXPOSED_METHODS = [
+  'updateSubscriptionCardPaymentMethod',
+  'updateSubscriptionCryptoPaymentMethod',
+  'startSubscriptionWithCard',
+  'handlePostTransaction',
+  'submitSubscriptionSponsorshipIntent',
+  'linkRewardToExistingSubscription',
+] as const;
+
+type ShieldSubscriptionCryptoApprovalTransactionMeta = Parameters<
+  SubscriptionControllerSubmitShieldSubscriptionCryptoApprovalAction['handler']
+>[0];
 
 export class SubscriptionService {
   // Required for modular initialisation.
@@ -59,11 +72,7 @@ export class SubscriptionService {
 
   state = null;
 
-  #messenger: Messenger<
-    typeof SERVICE_NAME,
-    SubscriptionServiceAction,
-    SubscriptionServiceEvent
-  >;
+  #messenger: SubscriptionServiceMessenger;
 
   #platform: ExtensionPlatform;
 
@@ -78,16 +87,16 @@ export class SubscriptionService {
     this.#platform = platform;
     this.#webAuthenticator = webAuthenticator;
 
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:submitSubscriptionSponsorshipIntent`,
-      this.submitSubscriptionSponsorshipIntent.bind(this),
+    this.#messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
     );
   }
 
   async updateSubscriptionCardPaymentMethod(
     params: Extract<UpdatePaymentMethodOpts, { paymentType: 'card' }>,
     currentTabId?: number,
-  ) {
+  ): Promise<Subscription[]> {
     try {
       const { paymentType } = params;
       if (paymentType !== PAYMENT_TYPES.byCard) {
@@ -144,7 +153,7 @@ export class SubscriptionService {
 
   async updateSubscriptionCryptoPaymentMethod(
     params: Extract<UpdatePaymentMethodOpts, { paymentType: 'crypto' }>,
-  ) {
+  ): Promise<Subscription[]> {
     try {
       const { paymentType } = params;
       if (paymentType !== PAYMENT_TYPES.byCrypto) {
@@ -464,7 +473,7 @@ export class SubscriptionService {
 
       await this.#messenger.call(
         'SubscriptionController:submitShieldSubscriptionCryptoApproval',
-        txMeta,
+        txMeta as ShieldSubscriptionCryptoApprovalTransactionMeta,
         isSponsored,
         rewardAccountId,
       );

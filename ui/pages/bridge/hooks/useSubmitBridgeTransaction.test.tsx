@@ -17,9 +17,10 @@ import {
   CROSS_CHAIN_SWAP_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
-import * as sharedSelectors from '../../../../shared/lib/selectors';
+import * as keyringSelectors from '../../../../shared/lib/selectors/keyring';
 import * as sentry from '../../../../shared/lib/sentry';
 import * as bridgeStatusActions from '../../../ducks/bridge-status/actions';
+import * as bridgeActions from '../../../ducks/bridge/actions';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { HardwareWalletProvider } from '../../../contexts/hardware-wallets';
 import useSubmitBridgeTransaction from './useSubmitBridgeTransaction';
@@ -64,6 +65,39 @@ jest.mock('../../../store/actions', () => {
   };
 });
 
+const MOCK_NETWORK_CONFIGURATIONS_BY_CHAIN_ID = {
+  '0x1': {
+    blockExplorerUrls: ['https://etherscan.io'],
+    chainId: '0x1',
+    defaultBlockExplorerUrlIndex: 0,
+    defaultRpcEndpointIndex: 0,
+    name: 'Ethereum',
+    nativeCurrency: 'ETH',
+    rpcEndpoints: [
+      {
+        networkClientId: 'mainnet',
+        type: 'infura',
+        url: 'https://mainnet.infura.io/v3/infuraProjectId',
+      },
+    ],
+  },
+  '0xa4b1': {
+    blockExplorerUrls: ['https://explorer.arbitrum.io'],
+    chainId: '0xa4b1',
+    defaultBlockExplorerUrlIndex: 0,
+    defaultRpcEndpointIndex: 0,
+    name: 'Arbitrum',
+    nativeCurrency: 'ETH',
+    rpcEndpoints: [
+      {
+        networkClientId: '3725601d-f497-43aa-9afa-97c26e9033a3',
+        type: 'custom',
+        url: 'https://arbitrum-mainnet.infura.io/v3/infuraProjectId',
+      },
+    ],
+  },
+};
+
 jest.mock('../../../../shared/lib/selectors/networks', () => {
   const original = jest.requireActual(
     '../../../../shared/lib/selectors/networks',
@@ -71,49 +105,30 @@ jest.mock('../../../../shared/lib/selectors/networks', () => {
   return {
     ...original,
     getSelectedNetworkClientId: () => 'mainnet',
-    getNetworkConfigurationsByChainId: jest.fn(() => ({
-      '0x1': {
-        blockExplorerUrls: ['https://etherscan.io'],
-        chainId: '0x1',
-        defaultBlockExplorerUrlIndex: 0,
-        defaultRpcEndpointIndex: 0,
-        name: 'Ethereum',
-        nativeCurrency: 'ETH',
-        rpcEndpoints: [
-          {
-            networkClientId: 'mainnet',
-            type: 'infura',
-            url: 'https://mainnet.infura.io/v3/infuraProjectId',
-          },
-        ],
+    getNetworkConfigurationsByChainId: jest.fn(
+      () => MOCK_NETWORK_CONFIGURATIONS_BY_CHAIN_ID,
+    ),
+    // Override these too since they live in the same module — their
+    // closure-captured reference to `getNetworkConfigurationsByChainId`
+    // bypasses the mock above.
+    selectNetworkConfigurationByChainId: jest.fn(
+      (
+        _state: unknown,
+        chainId: keyof typeof MOCK_NETWORK_CONFIGURATIONS_BY_CHAIN_ID,
+      ) => MOCK_NETWORK_CONFIGURATIONS_BY_CHAIN_ID[chainId],
+    ),
+    selectDefaultRpcEndpointByChainId: jest.fn(
+      (
+        _state: unknown,
+        chainId: keyof typeof MOCK_NETWORK_CONFIGURATIONS_BY_CHAIN_ID,
+      ) => {
+        const config = MOCK_NETWORK_CONFIGURATIONS_BY_CHAIN_ID[chainId];
+        if (!config) {
+          return undefined;
+        }
+        return config.rpcEndpoints[config.defaultRpcEndpointIndex];
       },
-      '0xa4b1': {
-        blockExplorerUrls: ['https://explorer.arbitrum.io'],
-        chainId: '0xa4b1',
-        defaultBlockExplorerUrlIndex: 0,
-        defaultRpcEndpointIndex: 0,
-        name: 'Arbitrum',
-        nativeCurrency: 'ETH',
-        rpcEndpoints: [
-          {
-            networkClientId: '3725601d-f497-43aa-9afa-97c26e9033a3',
-            type: 'custom',
-            url: 'https://arbitrum-mainnet.infura.io/v3/infuraProjectId',
-          },
-        ],
-      },
-    })),
-  };
-});
-
-jest.mock('../../../../shared/lib/selectors', () => {
-  const smartTransactions = jest.requireActual(
-    '../../../../shared/lib/selectors/smart-transactions',
-  );
-  return {
-    ...smartTransactions,
-    getHardwareWalletType: jest.fn(() => undefined),
-    isHardwareWallet: jest.fn(() => false),
+    ),
   };
 });
 
@@ -126,6 +141,11 @@ jest.mock('../../../selectors', () => {
     checkNetworkAndAccountSupports1559: () => true,
   };
 });
+jest.mock('../../../../shared/lib/selectors/keyring', () => ({
+  ...jest.requireActual('../../../../shared/lib/selectors/keyring'),
+  getHardwareWalletType: jest.fn(() => undefined),
+  isHardwareWallet: jest.fn(() => false),
+}));
 
 const middleware = [thunk];
 
@@ -167,15 +187,10 @@ const makeWrapper = (store: ReturnType<typeof makeMockStore>) => {
 
 const submitTxSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeTx');
 const submitIntentSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeIntent');
-const isHardwareWalletSpy = sharedSelectors.isHardwareWallet as jest.Mock;
+const isHardwareWalletSpy = keyringSelectors.isHardwareWallet as jest.Mock;
 const captureExceptionSpy = jest.spyOn(sentry, 'captureException');
-
-setBackgroundConnection({
-  submitTx: submitTxSpy,
-  submitIntent: submitIntentSpy,
-  getStatePatches: jest.fn(),
-  setEnabledAllPopularNetworks: jest.fn(),
-} as never);
+const mockResetState = jest.fn();
+const resetBridgeStoreSpy = jest.spyOn(bridgeActions, 'resetInputFields');
 
 describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
   describe('submitBridgeTransaction', () => {
@@ -189,6 +204,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         submitIntent: submitIntentSpy,
         getStatePatches: jest.fn(),
         setEnabledAllPopularNetworks: jest.fn(),
+        resetState: () => mockResetState(),
       } as never);
     });
 
@@ -214,15 +230,15 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
             {
               "replace": true,
               "state": {
-                "bridgeState": null,
                 "stayOnHomePage": true,
-                "token": null,
               },
             },
           ],
         ]
       `);
       expect(result.current.isSubmitting).toBe(false);
+      expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
+      expect(mockResetState).not.toHaveBeenCalled();
     });
 
     it('executes EVM bridge transaction with no approval', async () => {
@@ -241,9 +257,11 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
 
       expect(submitTxSpy.mock.calls).toMatchSnapshot();
       expect(result.current.isSubmitting).toBe(false);
+      expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
+      expect(mockResetState).not.toHaveBeenCalled();
     });
 
-    it('routes to activity tab after EVM bridge transaction', async () => {
+    it('routes to default route after EVM bridge transaction', async () => {
       const store = makeMockStore();
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
@@ -265,9 +283,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
             {
               "replace": true,
               "state": {
-                "bridgeState": null,
                 "stayOnHomePage": true,
-                "token": null,
               },
             },
           ],
@@ -276,6 +292,8 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
 
       expect(result.current.isSubmitting).toBe(false);
       expect(submitTxSpy).toHaveBeenCalled();
+      expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
+      expect(mockResetState).not.toHaveBeenCalled();
     });
 
     it('routes to awaiting signatures for hardware wallets', async () => {
@@ -316,9 +334,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
             {
               "replace": true,
               "state": {
-                "bridgeState": null,
                 "stayOnHomePage": true,
-                "token": null,
               },
             },
           ],
@@ -326,6 +342,8 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       `);
       expect(result.current.isSubmitting).toBe(false);
       expect(submitTxSpy).toHaveBeenCalledTimes(1);
+      expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
+      expect(mockResetState).not.toHaveBeenCalled();
     });
 
     it('returns early if hardware device is not ready', async () => {
@@ -356,6 +374,8 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(result.current.isSubmitting).toBe(false);
       expect(submitTxSpy).not.toHaveBeenCalled();
       expect(mockUseNavigate).not.toHaveBeenCalled();
+      expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
+      expect(mockResetState).not.toHaveBeenCalled();
     });
 
     it('submits intent quotes via submitBridgeIntent', async () => {
@@ -386,6 +406,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(submitIntentSpy).toHaveBeenCalledWith({
         quoteResponse: quoteWithIntent,
         accountAddress: expect.any(String),
+        tokenSecurityTypeDestination: null,
       });
       expect(submitTxSpy).not.toHaveBeenCalled();
       expect(mockUseNavigate).toHaveBeenCalledWith(
@@ -393,65 +414,65 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         {
           replace: true,
           state: {
-            bridgeState: null,
             stayOnHomePage: true,
-            token: null,
           },
         },
       );
+      expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
+      expect(mockResetState).not.toHaveBeenCalled();
     });
 
-    it('routes to activity with replace when non-HW intent submission fails', async () => {
+    it('routes to default route with replace when non-HW intent submission fails', async () => {
       const store = makeMockStore();
       const consoleErrorSpy = jest
         .spyOn(console, 'error')
-        .mockImplementation(() => undefined);
-      try {
-        await setBackgroundConnection({
-          submitTx: submitTxSpy,
-          submitIntent: jest.fn().mockRejectedValue(new Error('submit failed')),
-          getStatePatches: jest.fn(),
-          setEnabledAllPopularNetworks: jest.fn(),
-        } as never);
-        const { result } = renderHook(() => useSubmitBridgeTransaction(), {
-          wrapper: makeWrapper(store),
-        });
+        .mockImplementationOnce(() => jest.fn());
+      submitIntentSpy.mockImplementationOnce((async () => {
+        throw new Error('submit failed');
+      }) as never);
+      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+        wrapper: makeWrapper(store),
+      });
 
-        const quoteWithIntent = {
-          ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
-          quote: {
-            ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0].quote,
-            intent: {
-              order: {},
-            },
+      const quoteWithIntent = {
+        ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
+        quote: {
+          ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0].quote,
+          intent: {
+            order: {},
           },
-        };
+        },
+      };
 
-        await act(async () => {
-          await result.current.submitBridgeTransaction(
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            quoteWithIntent as any,
-          );
-        });
-
-        expect(mockUseNavigate).toHaveBeenCalledWith(
-          `${DEFAULT_ROUTE}?tab=activity`,
-          {
-            replace: true,
-            state: {
-              bridgeState: null,
-              stayOnHomePage: true,
-              token: null,
-            },
-          },
+      await act(async () => {
+        await result.current.submitBridgeTransaction(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          quoteWithIntent as any,
         );
-      } finally {
-        consoleErrorSpy.mockRestore();
-      }
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        `${DEFAULT_ROUTE}?tab=activity`,
+        {
+          replace: true,
+          state: {
+            stayOnHomePage: true,
+          },
+        },
+      );
+      expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
+      expect(mockResetState).not.toHaveBeenCalled();
+      expect(consoleErrorSpy.mock.calls).toMatchInlineSnapshot(`
+              [
+                [
+                  [Error: submit failed],
+                ],
+              ]
+          `);
     });
 
-    it('routes hardware-wallet intent quotes to activity after submit', async () => {
+    it('routes hardware-wallet intent quotes to default route after submit', async () => {
       const store = makeMockStore();
       isHardwareWalletSpy.mockImplementation(() => true);
       submitIntentSpy.mockReturnValueOnce((async () => undefined) as never);
@@ -488,12 +509,12 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         {
           replace: true,
           state: {
-            bridgeState: null,
             stayOnHomePage: true,
-            token: null,
           },
         },
       );
+      expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
+      expect(mockResetState).not.toHaveBeenCalled();
     });
   });
 });

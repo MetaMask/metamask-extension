@@ -21,7 +21,6 @@ import { getIsRevokeSetApprovalForAll } from '../../utils';
 import { useIsNFT } from '../hooks/use-is-nft';
 import { useTokenTransactionData } from '../../hooks/useTokenTransactionData';
 import { NetworkRow } from '../../shared/network-row/network-row';
-import { useIsBIP44 } from '../../../../../hooks/useIsBIP44';
 
 const Spender = ({
   isSetApprovalForAll = false,
@@ -78,12 +77,10 @@ export const ApproveDetails = ({
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
   );
-  const isBIP44 = useIsBIP44();
-
   return (
     <ConfirmInfoSection data-testid="confirmation__approve-details">
       <Spender isSetApprovalForAll={isSetApprovalForAll} />
-      <NetworkRow isShownWithAlertsOnly={!isBIP44} />
+      <NetworkRow />
       <OriginRow />
       <SigningInWithRow />
       <RecipientRow />

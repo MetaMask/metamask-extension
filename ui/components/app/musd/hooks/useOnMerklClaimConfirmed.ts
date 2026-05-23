@@ -1,11 +1,11 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import {
   TransactionStatus,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import { getTransactions } from '../../../../selectors/transactions';
-import { MERKL_DISTRIBUTOR_ADDRESS } from '../constants';
+import { isMerklClaimTransaction } from '../utils';
 
 /**
  * Transaction statuses that indicate a claim is "in flight":
@@ -28,15 +28,6 @@ const IN_FLIGHT_STATUSES: string[] = [
 const RECENT_CLAIM_WINDOW_MS = 5 * 60 * 1000; // 5 minutes
 
 /**
- * Check if a transaction is a Merkl claim by matching the distributor address.
- *
- * @param tx - The transaction metadata
- * @returns Whether the transaction is a Merkl claim
- */
-const isMerklClaimTransaction = (tx: TransactionMeta): boolean =>
-  tx.txParams?.to?.toLowerCase() === MERKL_DISTRIBUTOR_ADDRESS.toLowerCase();
-
-/**
  * Watches Merkl claim transactions and fires a callback when one confirms.
  * Tracks in-flight claim IDs so it only fires for transitions from
  * pending to confirmed, not for transactions that were already confirmed.
@@ -48,9 +39,17 @@ const isMerklClaimTransaction = (tx: TransactionMeta): boolean =>
  * the callback if any are found within RECENT_CLAIM_WINDOW_MS.
  *
  * @param onConfirmed - Callback fired when a pending claim is confirmed
+ * @returns `isClaimInFlight` — true while a Merkl claim tx is approved, signed, or submitted
  */
-export const useOnMerklClaimConfirmed = (onConfirmed: () => void): void => {
+export const useOnMerklClaimConfirmed = (
+  onConfirmed: () => void,
+): { isClaimInFlight: boolean } => {
   const transactions = useSelector(getTransactions) as TransactionMeta[];
+
+  const isClaimInFlight = useMemo(() => {
+    const merklClaimTxs = transactions.filter(isMerklClaimTransaction);
+    return merklClaimTxs.some((tx) => IN_FLIGHT_STATUSES.includes(tx.status));
+  }, [transactions]);
 
   // Track IDs of pending claims we've seen
   const pendingClaimIdsRef = useRef<Set<string>>(new Set());
@@ -104,4 +103,6 @@ export const useOnMerklClaimConfirmed = (onConfirmed: () => void): void => {
       onConfirmedRef.current();
     }
   }, [transactions]);
+
+  return { isClaimInFlight };
 };

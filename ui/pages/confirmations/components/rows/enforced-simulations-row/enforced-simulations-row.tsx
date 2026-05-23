@@ -23,8 +23,8 @@ import {
 import Tooltip from '../../../../../components/ui/tooltip';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
-import { isEnforcedSimulationsEligible } from '../../../../../../shared/lib/transaction/enforced-simulations';
 import { applyTransactionContainersExisting } from '../../../../../store/actions';
+import { useIsEnforcedSimulationsEligible } from '../../../hooks/useIsEnforcedSimulationsEligible';
 
 const ADDED_PROTECTION_LEARN_MORE_URL =
   'https://support.metamask.io/privacy-and-security/staying-safe-in-web3/what-are-enforced-simulations/';
@@ -32,15 +32,28 @@ const ADDED_PROTECTION_LEARN_MORE_URL =
 export function EnforcedSimulationsRow() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
-  const isSupported = isEnforcedSimulationsEligible(currentConfirmation);
-
   const { containerTypes, id: transactionId } = currentConfirmation ?? {};
 
-  const isEnabled = containerTypes?.includes(
+  const isEligible = useIsEnforcedSimulationsEligible();
+
+  const hasAutoEnabled = containerTypes !== undefined;
+
+  const hasEnforcedSimulations = containerTypes?.includes(
     TransactionContainerType.EnforcedSimulations,
   );
 
-  if (!isSupported) {
+  useEffect(() => {
+    if (!isEligible || hasAutoEnabled || !transactionId) {
+      return;
+    }
+
+    applyTransactionContainersExisting(transactionId, [
+      ...(containerTypes ?? []),
+      TransactionContainerType.EnforcedSimulations,
+    ]).catch(console.error);
+  }, [isEligible, hasAutoEnabled, transactionId, containerTypes]);
+
+  if (!isEligible && !hasAutoEnabled) {
     return null;
   }
 
@@ -61,7 +74,8 @@ export function EnforcedSimulationsRow() {
         <TitleRow />
 
         <EnforcedSimulationsCheckbox
-          isEnabled={Boolean(isEnabled)}
+          isEnabled={Boolean(hasEnforcedSimulations)}
+          isInitializing={!hasAutoEnabled}
           containerTypes={containerTypes}
           transactionId={transactionId as string}
         />
@@ -74,10 +88,12 @@ export function EnforcedSimulationsRow() {
 
 function EnforcedSimulationsCheckbox({
   isEnabled,
+  isInitializing,
   containerTypes,
   transactionId,
 }: {
   isEnabled: boolean;
+  isInitializing: boolean;
   containerTypes?: TransactionContainerType[];
   transactionId: string;
 }) {
@@ -123,7 +139,7 @@ function EnforcedSimulationsCheckbox({
     }
   }, [containerTypes, isEnabled, transactionId]);
 
-  if (isToggling) {
+  if (isInitializing || isToggling) {
     return (
       <Icon
         name={IconName.Loading}

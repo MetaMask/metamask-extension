@@ -24,6 +24,9 @@ import configureStore from '../../../store/store';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
 import { BridgeInputGroup } from './bridge-input-group';
 
+/** Matches `data-testid` on asset rows: `bridge-asset--${caipAssetId}` */
+const BRIDGE_ASSET_ROW_TEST_ID = /^bridge-asset--/u;
+
 const mockUseVirtualizer = jest.fn();
 
 jest.mock('lodash/debounce', () => ({
@@ -220,7 +223,7 @@ describe('BridgeInputGroup', () => {
     expect(getByTestId('bridge-asset-picker-modal')).toMatchSnapshot();
     expect(
       screen
-        .getAllByTestId('bridge-asset')
+        .getAllByTestId(BRIDGE_ASSET_ROW_TEST_ID)
         .map(({ textContent }) => textContent),
     ).toMatchInlineSnapshot(`
       [
@@ -234,7 +237,7 @@ describe('BridgeInputGroup', () => {
     await waitFor(() => {
       expect(
         screen
-          .getAllByTestId('bridge-asset')
+          .getAllByTestId(BRIDGE_ASSET_ROW_TEST_ID)
           .map(({ textContent }) => textContent),
       ).toMatchInlineSnapshot(`
               [
@@ -268,7 +271,7 @@ describe('BridgeInputGroup', () => {
     await openAssetPicker();
     expect(
       screen
-        .getAllByTestId('bridge-asset')
+        .getAllByTestId(BRIDGE_ASSET_ROW_TEST_ID)
         .map(({ textContent }) => textContent),
     ).toMatchInlineSnapshot(`
       [
@@ -281,7 +284,7 @@ describe('BridgeInputGroup', () => {
     await waitFor(() => {
       expect(
         screen
-          .getAllByTestId('bridge-asset')
+          .getAllByTestId(BRIDGE_ASSET_ROW_TEST_ID)
           .map(({ textContent }) => textContent),
       ).toMatchInlineSnapshot(`
         [
@@ -318,7 +321,7 @@ describe('BridgeInputGroup', () => {
 
     expect(
       screen
-        .getAllByTestId('bridge-asset')
+        .getAllByTestId(BRIDGE_ASSET_ROW_TEST_ID)
         .map(({ textContent }) => textContent),
     ).toMatchInlineSnapshot(`
         [
@@ -375,7 +378,7 @@ describe('BridgeInputGroup', () => {
       undefined,
       getFromChains,
       false,
-      { expectedDefaultToken: 'ETH', expectedNetworkCount: 5 },
+      { expectedDefaultToken: 'ETH', expectedNetworkCount: 7 },
     ],
     [
       'destination',
@@ -467,7 +470,7 @@ describe('BridgeInputGroup', () => {
         expect(networkPickerPopover).not.toBeVisible();
         expect(mockUsePopularTokens.mock.lastCall).toStrictEqual([
           expect.objectContaining({
-            accountAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            accountGroupId: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
             assetsToInclude: [
               {
                 accountType: 'solana:data-account',
@@ -481,6 +484,8 @@ describe('BridgeInputGroup', () => {
                 rwaData: undefined,
                 symbol: 'SOL',
                 tokenFiatAmount: 210.8493,
+                isVerified: undefined,
+                securityData: undefined,
               },
               {
                 accountType: 'solana:data-account',
@@ -495,14 +500,16 @@ describe('BridgeInputGroup', () => {
                 rwaData: undefined,
                 symbol: 'USDC',
                 tokenFiatAmount: 2.04284978478,
+                isVerified: undefined,
+                securityData: undefined,
               },
             ],
-            chainIds: new Set(['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp']),
+            fetchTokens: expect.any(Function),
           }),
         ]);
         expect(mockUseTokenSearchResults.mock.lastCall).toStrictEqual([
           expect.objectContaining({
-            accountAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            accountGroupId: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
             assetsToInclude: [
               {
                 accountType: 'solana:data-account',

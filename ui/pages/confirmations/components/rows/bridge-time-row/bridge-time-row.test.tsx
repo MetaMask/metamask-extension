@@ -47,6 +47,7 @@ describe('BridgeTimeRow', () => {
       },
       isScrollToBottomCompleted: true,
       setIsScrollToBottomCompleted: jest.fn(),
+      goBackTo: undefined,
     } as ReturnType<typeof useConfirmContext>);
 
     useIsTransactionPayLoadingMock.mockReturnValue(false);

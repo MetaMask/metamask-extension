@@ -1,6 +1,6 @@
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import GeneralSettings from '../../page-objects/pages/settings/general-settings';
+import PreferencesAndDisplaySettings from '../../page-objects/pages/settings/preferences-and-display-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { login } from '../../page-objects/flows/login.flow';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
@@ -15,7 +15,9 @@ describe('Settings', function () {
       async ({ driver }: { driver: Driver }) => {
         // Initialize page objects
         const settingsPage = new SettingsPage(driver);
-        const generalSettings = new GeneralSettings(driver);
+        const preferencesAndDisplaySettings = new PreferencesAndDisplaySettings(
+          driver,
+        );
         const headerNavbar = new HeaderNavbar(driver);
 
         // Unlock wallet and navigate to settings
@@ -24,8 +26,8 @@ describe('Settings', function () {
         await settingsPage.checkPageIsLoaded();
 
         // Verify identicon options
-        await generalSettings.checkIdenticonOptionsAreDisplayed();
-        await generalSettings.checkIdenticonIsActive('maskicon');
+        await preferencesAndDisplaySettings.checkIdenticonOptionsAreDisplayed();
+        await preferencesAndDisplaySettings.checkIdenticonIsActive('maskicon');
       },
     );
   });

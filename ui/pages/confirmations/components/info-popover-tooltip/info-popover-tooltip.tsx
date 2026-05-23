@@ -3,17 +3,15 @@ import {
   Box,
   ButtonIcon,
   ButtonIconSize,
+  Icon,
   IconColor,
   IconName,
+  IconSize,
 } from '@metamask/design-system-react';
 import {
-  Icon,
-  IconName as LegacyIconName,
-  IconSize,
   Popover,
   PopoverPosition,
 } from '../../../../components/component-library';
-import { IconColor as LegacyIconColor } from '../../../../helpers/constants/design-system';
 
 const POPOVER_STYLE = {
   zIndex: 3,
@@ -22,7 +20,7 @@ const POPOVER_STYLE = {
   paddingBottom: '6px',
   paddingLeft: '16px',
   paddingRight: '16px',
-  maxWidth: 240,
+  maxWidth: 250,
 } as const;
 
 type InfoPopoverTooltipProps = {
@@ -30,7 +28,7 @@ type InfoPopoverTooltipProps = {
   position?: PopoverPosition;
   iconName?: IconName;
   iconSize?: ButtonIconSize;
-  iconColor?: IconColor | LegacyIconColor | string;
+  iconColor?: IconColor | string;
   iconMarginLeft?: number;
   /**
    * When true, renders a plain Icon instead of a ButtonIcon so the trigger
@@ -38,6 +36,8 @@ type InfoPopoverTooltipProps = {
    * question mark). The icon is still clickable.
    */
   plainIcon?: boolean;
+  /** Accessible name for the popover trigger (prefer context-specific copy). */
+  ariaLabel?: string;
   'data-testid'?: string;
 };
 
@@ -49,6 +49,7 @@ export function InfoPopoverTooltip({
   iconColor,
   iconMarginLeft,
   plainIcon = false,
+  ariaLabel,
   'data-testid': dataTestId,
 }: Readonly<InfoPopoverTooltipProps>) {
   const [isOpen, setIsOpen] = useState(false);
@@ -72,6 +73,7 @@ export function InfoPopoverTooltip({
         <button
           ref={triggerRef as React.Ref<HTMLButtonElement>}
           type="button"
+          aria-label={ariaLabel ?? 'info'}
           onClick={handleToggle}
           data-testid={dataTestId ? `${dataTestId}-button` : undefined}
           style={{
@@ -84,15 +86,15 @@ export function InfoPopoverTooltip({
           }}
         >
           <Icon
-            name={iconName as unknown as LegacyIconName}
+            name={iconName}
             size={IconSize.Sm}
-            color={iconColor as LegacyIconColor}
+            color={iconColor as IconColor}
           />
         </button>
       ) : (
         <ButtonIcon
           ref={triggerRef as React.Ref<HTMLButtonElement>}
-          ariaLabel="info"
+          ariaLabel={ariaLabel ?? 'info'}
           iconName={iconName}
           size={iconSize}
           onClick={handleToggle}

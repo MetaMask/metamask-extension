@@ -8,7 +8,6 @@ import * as da from '../app/_locales/da/messages.json';
 import * as de from '../app/_locales/de/messages.json';
 import * as el from '../app/_locales/el/messages.json';
 import * as en from '../app/_locales/en/messages.json';
-import * as es from '../app/_locales/es/messages.json';
 import * as es_419 from '../app/_locales/es_419/messages.json';
 import * as et from '../app/_locales/et/messages.json';
 import * as fa from '../app/_locales/fa/messages.json';
@@ -65,7 +64,6 @@ export {
   de,
   el,
   en,
-  es,
   es_419,
   et,
   fa,

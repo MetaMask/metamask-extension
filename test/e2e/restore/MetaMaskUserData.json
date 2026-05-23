@@ -39,7 +39,6 @@
       "smartTransactionsOptInStatus": true
     },
     "theme": "light",
-    "useBlockie": false,
     "useNftDetection": false,
     "usePhishDetect": true,
     "useTokenDetection": false,

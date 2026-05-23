@@ -9,20 +9,30 @@ import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import { userStorageHostMock } from '../../mocks/performance-mocks';
 import { mockNotificationServices } from '../../../tests/notifications/mocks';
-import type { BenchmarkResults } from '../../../../../shared/constants/benchmarks';
-import type { Metrics, PageLoadBenchmarkOptions } from '../../utils/types';
 import {
   BENCHMARK_PERSONA,
+  type BenchmarkResults,
+  type WebVitalsMetrics,
+} from '../../../../../shared/constants/benchmarks';
+import {
   WITH_STATE_POWER_USER,
+  POWER_USER_NUM_BROWSER_LOADS,
 } from '../../utils/constants';
-import { runPageLoadBenchmark, type MeasurePageResult } from '../../utils';
+import { runPageLoadBenchmark, collectWebVitals } from '../../utils';
+import type {
+  Metrics,
+  PageLoadBenchmarkOptions,
+  MeasurePageResult,
+} from '../../utils/types';
 
 async function measurePagePowerUser(
   pageName: string,
   pageLoads: number,
 ): Promise<MeasurePageResult> {
   const metrics: Metrics[] = [];
+  const webVitalsRuns: WebVitalsMetrics[] = [];
   const title = 'measurePagePowerUser';
   const persona = BENCHMARK_PERSONA.POWER_USER;
   await withFixtures(
@@ -33,7 +43,6 @@ async function measurePagePowerUser(
       ).build(),
       manifestFlags: {
         testing: {
-          disableSync: true,
           infuraProjectId: process.env.INFURA_PROJECT_ID,
         },
       },
@@ -42,6 +51,7 @@ async function measurePagePowerUser(
       extendedTimeoutMultiplier: 3,
       testSpecificMock: async (server: Mockttp) => {
         await mockNotificationServices(server);
+        await userStorageHostMock(server);
       },
     },
     async ({ driver, getNetworkReport, clearNetworkReport }) => {
@@ -54,6 +64,9 @@ async function measurePagePowerUser(
         // Confirm the number of accounts in the account list
         await new HeaderNavbar(driver).openAccountMenu();
         const accountListPage = new AccountListPage(driver);
+
+        // Wait for Account Sync to finish.
+        await accountListPage.waitUntilSyncingIsCompleted();
         await accountListPage.checkNumberOfAvailableAccounts(
           WITH_STATE_POWER_USER.withAccounts,
         );
@@ -63,21 +76,26 @@ async function measurePagePowerUser(
 
         await driver.delay(1000);
 
+        const metricsThisLoad = await driver.collectMetrics();
+        metricsThisLoad.numNetworkReqs = getNetworkReport().numNetworkReqs;
+        metrics.push(metricsThisLoad);
+
         try {
-          const metricsThisLoad = await driver.collectMetrics();
-          metricsThisLoad.numNetworkReqs = getNetworkReport().numNetworkReqs;
-          metrics.push(metricsThisLoad);
+          webVitalsRuns.push(await collectWebVitals(driver));
         } catch (error) {
-          console.error(`Error collecting metrics for ${pageName}:`, error);
+          console.error(`Error collecting web vitals for ${pageName}:`, error);
         }
       }
     },
   );
-  return { metrics, title, persona };
+  return { metrics, title, persona, webVitalsRuns };
 }
 
 export async function run(
   options: PageLoadBenchmarkOptions,
 ): Promise<BenchmarkResults> {
-  return runPageLoadBenchmark(measurePagePowerUser, options);
+  return runPageLoadBenchmark(measurePagePowerUser, {
+    ...options,
+    browserLoads: options.browserLoads ?? POWER_USER_NUM_BROWSER_LOADS,
+  });
 }

@@ -10,12 +10,13 @@ import {
 import {
   getRemoteFeatureFlags,
   type RemoteFeatureFlagsState,
-} from '../remote-feature-flags';
+} from '../../../shared/lib/selectors/remote-feature-flags';
 import {
   ASSETS_UNIFY_STATE_FLAG,
   ASSETS_UNIFY_STATE_VERSION_1,
   isAssetsUnifyStateFeatureEnabled,
 } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
+import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
 
 /**
  * Feature flag structure for assets-unify-state feature
@@ -65,6 +66,9 @@ export const getAssetsUnifyStateRemoteFeatureFlag = (
 export const getIsAssetsUnifyStateEnabled = (
   state: RemoteFeatureFlagsState,
 ): boolean => {
+  if (!getIsAssetsUnifiedStateIncludedInBuild()) {
+    return false;
+  }
   const remoteFlag = getAssetsUnifyStateRemoteFeatureFlag(state);
   return isAssetsUnifyStateFeatureEnabled(
     remoteFlag,

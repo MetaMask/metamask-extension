@@ -52,9 +52,12 @@ export const RecipientInput = ({
   const {
     recipientConfusableCharacters,
     recipientError,
+    recipientErrorAllowAcknowledge,
     recipientResolvedLookup,
     toAddressValidated,
   } = recipientValidationResult;
+  const isWarning = Boolean(recipientErrorAllowAcknowledge);
+  const isHardError = Boolean(recipientError) && !isWarning;
   const avatarSeedAddress =
     accountAddressSeedIconMap.get(to?.toLowerCase() as string) ||
     recipientResolvedLookup ||
@@ -149,7 +152,9 @@ export const RecipientInput = ({
         </Box>
       ) : (
         <TextField
-          error={Boolean(recipientError)}
+          error={isHardError}
+          // TODO: @MetaMask/design-system-engineers: This seems to be the only current use case for a TextField warning state; align on whether TextField should support warning styling (or if there’s a preferred DS pattern).
+          className={isWarning ? '!border-warning-default' : undefined}
           endAccessory={
             recipients.length > 0 ? (
               <ButtonIcon

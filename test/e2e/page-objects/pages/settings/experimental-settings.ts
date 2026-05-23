@@ -8,8 +8,8 @@ class ExperimentalSettings {
     '[data-testid="add-account-snap-toggle-div"]';
 
   private readonly experimentalPageTitle = {
-    text: 'Experimental',
-    tag: 'h4',
+    text: 'Enable "Add account Snap (Beta)"',
+    tag: 'p',
   };
 
   private readonly watchAccountToggleState =

@@ -1,110 +1,156 @@
+import { FIXTURE_STATE_METADATA_VERSION } from '../../constants';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import type { FixtureData } from './launcher-types';
-
-// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-const FixtureBuilderClass = require('../../fixtures/fixture-builder');
-/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
-const {
-  defaultFixture,
-  FIXTURE_STATE_METADATA_VERSION,
-} = require('../../fixtures/default-fixture');
-/* eslint-enable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 
 export type FixtureBuilderOptions = {
   onboarding?: boolean;
   inputChainId?: string;
 };
 
-export type FixtureBuilder = {
-  withAccountTracker(data: Record<string, unknown>): FixtureBuilder;
-  withAddressBookController(data: Record<string, unknown>): FixtureBuilder;
-  withPreferencesController(data: Record<string, unknown>): FixtureBuilder;
-  withNetworkController(data: Record<string, unknown>): FixtureBuilder;
-  withNetworkControllerOnMainnet(): FixtureBuilder;
-  withTokensController(data: Record<string, unknown>): FixtureBuilder;
-  withTokensControllerERC20(options?: { chainId?: number }): FixtureBuilder;
-  withTransactionController(data: Record<string, unknown>): FixtureBuilder;
-  withPermissionController(data: Record<string, unknown>): FixtureBuilder;
-  withPermissionControllerConnectedToTestDapp(options?: {
-    restrictReturnedAccounts?: boolean;
-    account?: string;
-  }): FixtureBuilder;
-  withKeyringController(data: Record<string, unknown>): FixtureBuilder;
-  withKeyringControllerAdditionalAccountVault(): FixtureBuilder;
-  withAccountsController(data: Record<string, unknown>): FixtureBuilder;
-  withAccountsControllerAdditionalAccountIdentities(): FixtureBuilder;
-  withConversionRateDisabled(): FixtureBuilder;
-  withShowFiatTestnetEnabled(): FixtureBuilder;
-  withPopularNetworks(): FixtureBuilder;
-  withNftController(data: Record<string, unknown>): FixtureBuilder;
-  withNftControllerERC721(): FixtureBuilder;
-  withNftControllerERC1155(): FixtureBuilder;
-  build(): FixtureData;
+/**
+ * Options accepted by fixture-building helpers that need to inject dynamic
+ * runtime values (e.g. the port Anvil is listening on).
+ */
+export type FixtureBuildOptions = {
+  /** When provided, the localhost network RPC URL is rewritten to use this port. */
+  anvilPort?: number;
 };
 
 export function createFixtureBuilder(
   options: FixtureBuilderOptions = {},
-): FixtureBuilder {
-  return new FixtureBuilderClass(options) as FixtureBuilder;
+): FixtureBuilderV2 {
+  return new FixtureBuilderV2({
+    onboarding: options.onboarding === true,
+  });
 }
 
-export function buildDefaultFixture(chainId?: string): FixtureData {
-  const fixture = defaultFixture(chainId);
-  fixture.meta = { version: FIXTURE_STATE_METADATA_VERSION };
-  return fixture as FixtureData;
+/**
+ * Applies the dynamic anvil port override to a {@link FixtureBuilderV2}.
+ *
+ * Patches the localhost network (`0x539`) RPC endpoint URL so the wallet
+ * connects to the actual Anvil instance rather than the hardcoded port in the
+ * static JSON fixture.
+ * @param builder
+ * @param anvilPort
+ */
+function applyAnvilPort(
+  builder: FixtureBuilderV2,
+  anvilPort: number,
+): FixtureBuilderV2 {
+  return builder.withNetworkController({
+    selectedNetworkClientId: 'localhost',
+    networkConfigurationsByChainId: {
+      '0x539': {
+        blockExplorerUrls: [],
+        chainId: '0x539',
+        defaultRpcEndpointIndex: 0,
+        name: `Localhost ${anvilPort}`,
+        nativeCurrency: 'ETH',
+        rpcEndpoints: [
+          {
+            networkClientId: 'localhost',
+            type: 'custom',
+            url: `http://localhost:${anvilPort}`,
+          },
+        ],
+      },
+    },
+  } as unknown as Parameters<FixtureBuilderV2['withNetworkController']>[0]);
 }
 
-export function buildOnboardingFixture(): FixtureData {
-  const builder = createFixtureBuilder({ onboarding: true });
+export function buildDefaultFixture(
+  options: FixtureBuildOptions = {},
+): FixtureData {
+  const builder = createFixtureBuilder();
+  if (options.anvilPort) {
+    applyAnvilPort(builder, options.anvilPort);
+  }
   return builder.build();
 }
 
-export const FixturePresets = {
-  default: (): FixtureData => buildDefaultFixture(),
+export function buildOnboardingFixture(
+  options: FixtureBuildOptions = {},
+): FixtureData {
+  const builder = createFixtureBuilder({ onboarding: true });
+  if (options.anvilPort) {
+    applyAnvilPort(builder, options.anvilPort);
+  }
+  return builder.build();
+}
 
-  onboarding: (): FixtureData => buildOnboardingFixture(),
+/**
+ * Creates fixture presets. When `anvilPort` is provided the localhost network
+ * RPC URL is rewritten in every preset that includes it.
+ * @param options
+ */
+export function createFixturePresets(options: FixtureBuildOptions = {}) {
+  return {
+    default: (): FixtureData => buildDefaultFixture(options),
 
-  withMultipleAccounts: (): FixtureData => {
-    const builder = createFixtureBuilder();
-    return builder
-      .withKeyringControllerAdditionalAccountVault()
-      .withAccountsControllerAdditionalAccountIdentities()
-      .build();
-  },
+    onboarding: (): FixtureData => buildOnboardingFixture(options),
 
-  withERC20Tokens: (chainId = 1337): FixtureData => {
-    const builder = createFixtureBuilder();
-    return builder.withTokensControllerERC20({ chainId }).build();
-  },
+    withMultipleAccounts: (): FixtureData => {
+      const builder = createFixtureBuilder();
+      if (options.anvilPort) {
+        applyAnvilPort(builder, options.anvilPort);
+      }
+      return builder
+        .withKeyringControllerAdditionalAccountVault()
+        .withAccountsControllerAdditionalAccountVault()
+        .build();
+    },
 
-  withConnectedDapp: (): FixtureData => {
-    const builder = createFixtureBuilder();
-    return builder.withPermissionControllerConnectedToTestDapp().build();
-  },
+    withERC20Tokens: (chainId = 1337): FixtureData => {
+      const builder = createFixtureBuilder();
+      if (options.anvilPort) {
+        applyAnvilPort(builder, options.anvilPort);
+      }
+      return builder.withTokensControllerERC20({ chainId }).build();
+    },
 
-  withPopularNetworks: (): FixtureData => {
-    const builder = createFixtureBuilder();
-    return builder.withPopularNetworks().build();
-  },
+    withConnectedDapp: (): FixtureData => {
+      const builder = createFixtureBuilder();
+      if (options.anvilPort) {
+        applyAnvilPort(builder, options.anvilPort);
+      }
+      return builder.withPermissionControllerConnectedToTestDapp().build();
+    },
 
-  withMainnet: (): FixtureData => {
-    const builder = createFixtureBuilder();
-    return builder.withNetworkControllerOnMainnet().build();
-  },
+    withMainnet: (): FixtureData => {
+      const builder = createFixtureBuilder();
+      // Mainnet preset doesn't use localhost — no anvil port override needed.
+      return builder
+        .withEnabledNetworks({ eip155: { '0x1': true } })
+        .withSelectedNetwork()
+        .build();
+    },
 
-  withNFTs: (): FixtureData => {
-    const builder = createFixtureBuilder();
-    return builder.withNftControllerERC721().build();
-  },
+    withNFTs: (): FixtureData => {
+      const builder = createFixtureBuilder();
+      if (options.anvilPort) {
+        applyAnvilPort(builder, options.anvilPort);
+      }
+      return builder.withNftControllerERC721().build();
+    },
 
-  withFiatDisabled: (): FixtureData => {
-    const builder = createFixtureBuilder();
-    return builder.withConversionRateDisabled().build();
-  },
+    withFiatDisabled: (): FixtureData => {
+      const builder = createFixtureBuilder();
+      if (options.anvilPort) {
+        applyAnvilPort(builder, options.anvilPort);
+      }
+      return builder.withConversionRateDisabled().build();
+    },
 
-  withHSTToken: (): FixtureData => {
-    const builder = createFixtureBuilder();
-    return builder.withTokensControllerERC20({ chainId: 1337 }).build();
-  },
-};
+    withHSTToken: (): FixtureData => {
+      const builder = createFixtureBuilder();
+      if (options.anvilPort) {
+        applyAnvilPort(builder, options.anvilPort);
+      }
+      return builder.withTokensControllerERC20({ chainId: 1337 }).build();
+    },
+  };
+}
+
+export const FixturePresets = createFixturePresets();
 
 export { FIXTURE_STATE_METADATA_VERSION };

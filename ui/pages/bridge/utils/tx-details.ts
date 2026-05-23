@@ -10,6 +10,7 @@ import { type BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
 import { MINUTE } from '../../../../shared/constants/time';
 import { TextColor } from '../../../helpers/constants/design-system';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
 
 export type ChainInfo =
@@ -128,17 +129,17 @@ export const getBridgeAmountReceivedFormatted = ({
  * @returns Whether the bridge history item is delayed
  */
 export const getIsDelayed = (
-  status: StatusTypes,
+  status: string,
   bridgeHistoryItem?: BridgeHistoryItem,
 ) => {
   const tenMinutesInMs = 10 * MINUTE;
   return Boolean(
     status === StatusTypes.PENDING &&
-      bridgeHistoryItem?.startTime &&
-      Date.now() >
-        bridgeHistoryItem.startTime +
-          tenMinutesInMs +
-          bridgeHistoryItem.estimatedProcessingTimeInSeconds * 1000,
+    bridgeHistoryItem?.startTime &&
+    Date.now() >
+      bridgeHistoryItem.startTime +
+        tenMinutesInMs +
+        bridgeHistoryItem.estimatedProcessingTimeInSeconds * 1000,
   );
 };
 

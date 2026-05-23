@@ -3,6 +3,10 @@
  */
 import React from 'react';
 import { render, fireEvent, screen } from '@testing-library/react';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { ClaimBonusBadge } from './claim-bonus-badge';
 
 const mockClaimRewards = jest.fn();
@@ -12,15 +16,17 @@ const mockUseMerklClaim = jest.fn().mockReturnValue({
   error: null,
 });
 
-const mockUseOnMerklClaimConfirmed = jest.fn();
+const mockUseOnMerklClaimConfirmed = jest.fn((_onConfirmed?: () => void) => ({
+  isClaimInFlight: false,
+}));
 
 jest.mock('./hooks/useMerklClaim', () => ({
   useMerklClaim: (...args: unknown[]) => mockUseMerklClaim(...args),
 }));
 
 jest.mock('./hooks/useOnMerklClaimConfirmed', () => ({
-  useOnMerklClaimConfirmed: (...args: unknown[]) =>
-    mockUseOnMerklClaimConfirmed(...args),
+  useOnMerklClaimConfirmed: (onConfirmed: () => void) =>
+    mockUseOnMerklClaimConfirmed(onConfirmed),
 }));
 
 jest.mock('../../../hooks/useI18nContext', () => ({
@@ -62,16 +68,28 @@ jest.mock('../../../contexts/metametrics', () => {
   };
 });
 
+const { __mockTrackEvent: mockTrackEvent } = jest.requireMock<{
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __mockTrackEvent: jest.Mock;
+}>('../../../contexts/metametrics');
+
 const defaultProps = {
   label: 'Claim 5% bonus',
   tokenAddress: '0xabc123',
   chainId: '0x1' as const,
   refetchRewards: jest.fn(),
+  analyticsLocation: 'token_list_item' as const,
+  assetSymbol: 'MUSD',
+  bonusAmountRange: '10.00 - 99.99',
+  hasClaimedBefore: false,
 };
 
 describe('ClaimBonusBadge', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseOnMerklClaimConfirmed.mockImplementation(() => ({
+      isClaimInFlight: false,
+    }));
     mockUseMerklClaim.mockReturnValue({
       claimRewards: mockClaimRewards,
       isClaiming: false,
@@ -87,6 +105,52 @@ describe('ClaimBonusBadge', () => {
     );
   });
 
+  it('fires MusdClaimBonusCtaDisplayed once when the claim button is shown', () => {
+    render(<ClaimBonusBadge {...defaultProps} />);
+
+    expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+    /* eslint-disable @typescript-eslint/naming-convention */
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      event: MetaMetricsEventName.MusdClaimBonusCtaDisplayed,
+      category: MetaMetricsEventCategory.MusdConversion,
+      properties: {
+        location: 'token_list_item',
+        view_trigger: 'component_mounted',
+        button_text: 'Claim 5% bonus',
+        network_chain_id: '0x1',
+        network_name: 'Ethereum Mainnet',
+        asset_symbol: 'MUSD',
+        bonus_amount_range: '10.00 - 99.99',
+        has_claimed_before: false,
+      },
+    });
+    /* eslint-enable @typescript-eslint/naming-convention */
+  });
+
+  it('does not fire MusdClaimBonusCtaDisplayed when showing spinner', () => {
+    mockUseMerklClaim.mockReturnValue({
+      claimRewards: mockClaimRewards,
+      isClaiming: true,
+      error: null,
+    });
+
+    render(<ClaimBonusBadge {...defaultProps} />);
+
+    expect(mockTrackEvent).not.toHaveBeenCalled();
+  });
+
+  it('does not fire MusdClaimBonusCtaDisplayed when showing error', () => {
+    mockUseMerklClaim.mockReturnValue({
+      claimRewards: mockClaimRewards,
+      isClaiming: false,
+      error: 'Something went wrong',
+    });
+
+    render(<ClaimBonusBadge {...defaultProps} />);
+
+    expect(mockTrackEvent).not.toHaveBeenCalled();
+  });
+
   it('calls claimRewards and stopPropagation on click', () => {
     render(<ClaimBonusBadge {...defaultProps} />);
 
@@ -97,18 +161,61 @@ describe('ClaimBonusBadge', () => {
     expect(mockClaimRewards).toHaveBeenCalledTimes(1);
   });
 
-  it('renders spinner when isClaiming is true', () => {
+  it('tracks claim click with token_list_item location', () => {
+    render(<ClaimBonusBadge {...defaultProps} />);
+
+    fireEvent.click(screen.getByRole('button'));
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        properties: expect.objectContaining({
+          location: 'token_list_item',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          network_chain_id: '0x1',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          network_name: 'Ethereum Mainnet',
+        }),
+      }),
+    );
+  });
+
+  it('tracks claim click with asset_overview location when provided', () => {
+    render(
+      <ClaimBonusBadge {...defaultProps} analyticsLocation="asset_overview" />,
+    );
+
+    fireEvent.click(screen.getByRole('button'));
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        properties: expect.objectContaining({ location: 'asset_overview' }),
+      }),
+    );
+  });
+
+  it('renders nothing when isClaiming is true', () => {
     mockUseMerklClaim.mockReturnValue({
       claimRewards: mockClaimRewards,
       isClaiming: true,
       error: null,
     });
 
-    render(<ClaimBonusBadge {...defaultProps} />);
+    const { container } = render(<ClaimBonusBadge {...defaultProps} />);
 
-    expect(screen.getByTestId('claim-bonus-spinner')).toBeInTheDocument();
+    expect(container.firstChild).toBeNull();
     expect(screen.queryByTestId('claim-bonus-badge')).not.toBeInTheDocument();
     expect(screen.queryByTestId('claim-bonus-error')).not.toBeInTheDocument();
+  });
+
+  it('renders nothing when a Merkl claim transaction is in flight', () => {
+    mockUseOnMerklClaimConfirmed.mockImplementation(() => ({
+      isClaimInFlight: true,
+    }));
+
+    const { container } = render(<ClaimBonusBadge {...defaultProps} />);
+
+    expect(container.firstChild).toBeNull();
+    expect(mockTrackEvent).not.toHaveBeenCalled();
   });
 
   it('renders error message when error is set', () => {

@@ -5,6 +5,12 @@ import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { StartTradeCta } from './start-trade-cta';
 
+const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
+
+jest.mock('../../../../hooks/perps', () => ({
+  usePerpsEligibility: () => mockUsePerpsEligibility(),
+}));
+
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,
@@ -12,6 +18,11 @@ const mockStore = configureStore({
 });
 
 describe('StartTradeCta', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
+  });
+
   it('renders the CTA button', () => {
     renderWithProvider(<StartTradeCta />, mockStore);
 
@@ -52,7 +63,6 @@ describe('StartTradeCta', () => {
   it('renders the plus icon', () => {
     renderWithProvider(<StartTradeCta />, mockStore);
 
-    // The button should contain an icon (plus/add icon)
     const cta = screen.getByTestId('start-new-trade-cta');
     expect(cta).toBeInTheDocument();
   });
@@ -67,5 +77,15 @@ describe('StartTradeCta', () => {
     fireEvent.click(button);
 
     expect(onPress).toHaveBeenCalledTimes(3);
+  });
+
+  it('shows geo-block modal and does not call onPress when geo-blocked', () => {
+    mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+    const onPress = jest.fn();
+    renderWithProvider(<StartTradeCta onPress={onPress} />, mockStore);
+
+    fireEvent.click(screen.getByTestId('start-new-trade-cta'));
+    expect(onPress).not.toHaveBeenCalled();
+    expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
   });
 });

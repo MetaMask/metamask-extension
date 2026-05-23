@@ -6,18 +6,24 @@ import { TrustSignalModal } from './trust-signal-modal';
 type ConnectionTrustSignalGateProps = {
   origin: string;
   children: React.ReactNode;
+  onCancel?: () => void;
 };
 
 export function ConnectionTrustSignalGate({
   origin,
   children,
+  onCancel,
 }: ConnectionTrustSignalGateProps) {
   const { state } = useOriginTrustSignals(origin);
   const [dismissed, setDismissed] = useState(false);
 
   if (!dismissed && state === TrustSignalDisplayState.Malicious) {
     return (
-      <TrustSignalModal origin={origin} onContinue={() => setDismissed(true)} />
+      <TrustSignalModal
+        origin={origin}
+        onContinue={() => setDismissed(true)}
+        onCancel={onCancel}
+      />
     );
   }
 

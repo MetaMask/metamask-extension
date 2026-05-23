@@ -54,6 +54,7 @@ describe('Loader', () => {
 
     expect(mockUseNavigate).toHaveBeenCalledWith(
       `${CONFIRMATION_V_NEXT_ROUTE}/test-id`,
+      { replace: true },
     );
   });
 
@@ -68,6 +69,7 @@ describe('Loader', () => {
 
     expect(mockUseNavigate).toHaveBeenCalledWith(
       `${CONFIRMATION_V_NEXT_ROUTE}/test-id-2`,
+      { replace: true },
     );
   });
 

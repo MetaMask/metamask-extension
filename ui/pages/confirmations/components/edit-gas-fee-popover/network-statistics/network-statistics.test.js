@@ -1,7 +1,6 @@
 import React from 'react';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../store/store';
-import { GasFeeContext } from '../../../../../contexts/gasFee';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { useGasFeeEstimates } from '../../../../../hooks/useGasFeeEstimates';
 import { useConfirmContext } from '../../../context/confirm';
@@ -18,14 +17,12 @@ jest.mock('../../../context/confirm', () => ({
 const mockUseGasFeeEstimates = jest.mocked(useGasFeeEstimates);
 const mockUseConfirmContext = jest.mocked(useConfirmContext);
 
-const renderComponent = ({ gasFeeContext = {}, state = {} } = {}) => {
-  const store = configureStore(state);
-  return renderWithProvider(
-    <GasFeeContext.Provider value={gasFeeContext}>
-      <NetworkStatistics />
-    </GasFeeContext.Provider>,
-    store,
-  );
+const renderComponent = ({ gasFeeEstimates } = {}) => {
+  mockUseGasFeeEstimates.mockReturnValue({
+    gasFeeEstimates: gasFeeEstimates ?? undefined,
+  });
+  const store = configureStore({});
+  return renderWithProvider(<NetworkStatistics />, store);
 };
 
 describe('NetworkStatistics', () => {
@@ -36,10 +33,8 @@ describe('NetworkStatistics', () => {
 
   it('should render the latest base fee rounded to no decimal places', () => {
     const { getByText } = renderComponent({
-      gasFeeContext: {
-        gasFeeEstimates: {
-          estimatedBaseFee: '50.0112',
-        },
+      gasFeeEstimates: {
+        estimatedBaseFee: '50.0112',
       },
     });
     expect(getByText('50 GWEI')).toBeInTheDocument();
@@ -47,10 +42,8 @@ describe('NetworkStatistics', () => {
 
   it('should not render the latest base fee if it is not present', () => {
     const { queryByTestId } = renderComponent({
-      gasFeeContext: {
-        gasFeeEstimates: {
-          estimatedBaseFee: null,
-        },
+      gasFeeEstimates: {
+        estimatedBaseFee: null,
       },
     });
     expect(queryByTestId('formatted-latest-base-fee')).not.toBeInTheDocument();
@@ -58,19 +51,15 @@ describe('NetworkStatistics', () => {
 
   it('should not render the latest base fee if no gas fee estimates are available', () => {
     const { queryByTestId } = renderComponent({
-      gasFeeContext: {
-        gasFeeEstimates: null,
-      },
+      gasFeeEstimates: null,
     });
     expect(queryByTestId('formatted-latest-base-fee')).not.toBeInTheDocument();
   });
 
   it('should render the latest priority fee range, with the low end of the range rounded to 1 decimal place and the high end rounded to no decimal places', () => {
     const { getByText } = renderComponent({
-      gasFeeContext: {
-        gasFeeEstimates: {
-          latestPriorityFeeRange: ['1.100001668', '2.5634234'],
-        },
+      gasFeeEstimates: {
+        latestPriorityFeeRange: ['1.100001668', '2.5634234'],
       },
     });
     expect(getByText('1.1 - 3 GWEI')).toBeInTheDocument();
@@ -78,10 +67,8 @@ describe('NetworkStatistics', () => {
 
   it('should not render the latest priority fee range if it is not present', () => {
     const { queryByTestId } = renderComponent({
-      gasFeeContext: {
-        gasFeeEstimates: {
-          latestPriorityFeeRange: null,
-        },
+      gasFeeEstimates: {
+        latestPriorityFeeRange: null,
       },
     });
     expect(
@@ -91,9 +78,7 @@ describe('NetworkStatistics', () => {
 
   it('should not render the latest priority fee range if no gas fee estimates are available', () => {
     const { queryByTestId } = renderComponent({
-      gasFeeContext: {
-        gasFeeEstimates: null,
-      },
+      gasFeeEstimates: null,
     });
     expect(
       queryByTestId('formatted-latest-priority-fee-range'),
@@ -102,10 +87,8 @@ describe('NetworkStatistics', () => {
 
   it('should render the network status slider', () => {
     const { getByText } = renderComponent({
-      gasFeeContext: {
-        gasFeeEstimates: {
-          networkCongestion: 0.5,
-        },
+      gasFeeEstimates: {
+        networkCongestion: 0.5,
       },
     });
     expect(getByText(messages.stable.message)).toBeInTheDocument();
@@ -113,10 +96,8 @@ describe('NetworkStatistics', () => {
 
   it('should not render the network status slider if the network congestion is not available', () => {
     const { queryByTestId } = renderComponent({
-      gasFeeContext: {
-        gasFeeEstimates: {
-          networkCongestion: null,
-        },
+      gasFeeEstimates: {
+        networkCongestion: null,
       },
     });
     expect(queryByTestId('status-slider-label')).not.toBeInTheDocument();
@@ -124,14 +105,12 @@ describe('NetworkStatistics', () => {
 
   it('should not render the network status slider if no gas fee estimates are available', () => {
     const { queryByTestId } = renderComponent({
-      gasFeeContext: {
-        gasFeeEstimates: null,
-      },
+      gasFeeEstimates: null,
     });
     expect(queryByTestId('status-slider-label')).not.toBeInTheDocument();
   });
 
-  it('uses fallback from useGasFeeEstimates when context has no gasFeeEstimates and confirm context provides networkClientId', () => {
+  it('passes networkClientId from confirm context to useGasFeeEstimates', () => {
     mockUseConfirmContext.mockReturnValue({
       currentConfirmation: { networkClientId: 'mainnet' },
     });
@@ -144,35 +123,11 @@ describe('NetworkStatistics', () => {
     });
 
     const store = configureStore({});
-    const { getByText } = renderWithProvider(
-      <GasFeeContext.Provider value={{}}>
-        <NetworkStatistics />
-      </GasFeeContext.Provider>,
-      store,
-    );
+    const { getByText } = renderWithProvider(<NetworkStatistics />, store);
 
+    expect(mockUseGasFeeEstimates).toHaveBeenCalledWith('mainnet');
     expect(getByText('50 GWEI')).toBeInTheDocument();
     expect(getByText('1 - 3 GWEI')).toBeInTheDocument();
     expect(getByText(messages.stable.message)).toBeInTheDocument();
-  });
-
-  it('uses context gasFeeEstimates when present and ignores fallback', () => {
-    mockUseGasFeeEstimates.mockReturnValue({
-      gasFeeEstimates: {
-        estimatedBaseFee: '50',
-        latestPriorityFeeRange: ['1', '3'],
-        networkCongestion: 0.5,
-      },
-    });
-
-    const { getByText } = renderComponent({
-      gasFeeContext: {
-        gasFeeEstimates: {
-          estimatedBaseFee: '99.5',
-        },
-      },
-    });
-
-    expect(getByText('100 GWEI')).toBeInTheDocument();
   });
 });

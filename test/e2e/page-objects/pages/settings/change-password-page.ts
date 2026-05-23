@@ -3,11 +3,6 @@ import { Driver } from '../../../webdriver/driver';
 export default class ChangePasswordPage {
   private readonly driver: Driver;
 
-  private readonly changePasswordPageTitle = {
-    text: 'Change password',
-    css: 'h4',
-  };
-
   private readonly currentPasswordInput =
     '[data-testid="verify-current-password-input"]';
 
@@ -37,7 +32,14 @@ export default class ChangePasswordPage {
 
   async checkPageIsLoaded(): Promise<void> {
     console.log('Check change password page is loaded');
-    await this.driver.waitForSelector(this.changePasswordPageTitle);
+    await this.driver.waitForSelector(this.currentPasswordInput);
+  }
+
+  async waitForPasskeyVerificationToComplete(): Promise<void> {
+    console.log(
+      'Waiting for passkey verification to complete and new password form to appear',
+    );
+    await this.driver.waitForSelector(this.newPasswordInput);
   }
 
   async confirmCurrentPassword(password: string): Promise<void> {

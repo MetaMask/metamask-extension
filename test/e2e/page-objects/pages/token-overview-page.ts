@@ -25,16 +25,36 @@ class TokenOverviewPage {
     tag: 'div',
   };
 
+  private readonly backButton = '.asset-page__back-button';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
   async checkPageIsLoaded(): Promise<void> {
+    // Try send button check
     try {
-      await this.driver.waitForMultipleSelectors([
+      const sendButtonFound = await this.driver.waitForSelector(
         this.sendButton,
-        // this.swapButton,
-      ]);
+      );
+
+      if (sendButtonFound) {
+        console.log('Token overview page is loaded');
+        return;
+      }
+    } catch (e) {
+      console.log('Failed to find send button, trying swap button', e);
+    }
+
+    // Fallback to swap button check
+    try {
+      const swapButtonFound = await this.driver.waitForSelector(
+        this.swapButton,
+      );
+
+      if (swapButtonFound) {
+        console.log('Token overview page is loaded');
+      }
     } catch (e) {
       console.log(
         'Timeout while waiting for Token overview page to be loaded',
@@ -42,7 +62,6 @@ class TokenOverviewPage {
       );
       throw e;
     }
-    console.log('Token overview page is loaded');
   }
 
   async clickReceive(): Promise<void> {
@@ -66,6 +85,10 @@ class TokenOverviewPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.viewAssetInExplorerButton,
     );
+  }
+
+  async clickBack(): Promise<void> {
+    await this.driver.clickElement(this.backButton);
   }
 }
 

@@ -5,7 +5,8 @@ on:
 
 jobs:
   extract:
-    if: ${{ github.ref_type == 'branch' && startsWith(github.ref, 'refs/heads/release/') }}
+    # Only run for release branch creation (not tags or other branches)
+    if: startsWith(github.ref, 'refs/heads/release/')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     outputs:

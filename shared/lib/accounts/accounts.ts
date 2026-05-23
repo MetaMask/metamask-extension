@@ -11,7 +11,7 @@ import {
 } from '@metamask/eth-snap-keyring';
 import { Messenger } from '@metamask/messenger';
 import { SnapId } from '@metamask/snaps-sdk';
-import { HandleSnapRequest as SnapControllerHandleRequest } from '@metamask/snaps-controllers';
+import { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
 import { MultichainNetworks } from '../../constants/multichain/networks';
 import { createSentryError } from '../error';
 import { captureException } from '../sentry';
@@ -111,7 +111,7 @@ export type WalletSnapClient = {
 
 export type MultichainWalletSnapClientMessenger = Messenger<
   'MultichainWalletSnapClient',
-  SnapControllerHandleRequest,
+  SnapControllerHandleRequestAction,
   never
 >;
 

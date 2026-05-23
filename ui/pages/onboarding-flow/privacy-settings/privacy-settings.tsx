@@ -70,8 +70,8 @@ import {
 } from '../../../../shared/constants/network';
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import { BackupAndSyncToggle } from '../../../components/app/identity/backup-and-sync-toggle/backup-and-sync-toggle';
-import DeleteMetaMetricsDataButton from '../../settings/security-tab/delete-metametrics-data-button';
-import MetametricsToggle from '../../settings/security-tab/metametrics-toggle/metametrics-toggle';
+import DeleteMetaMetricsDataButton from '../../../components/app/delete-metametrics-data-button';
+import MetametricsToggle from '../../../components/app/metametrics-toggle/metametrics-toggle';
 import { MetaMaskReduxState } from '../../../store/store';
 import { Setting } from './setting';
 

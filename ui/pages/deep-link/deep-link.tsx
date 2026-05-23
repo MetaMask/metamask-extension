@@ -29,7 +29,7 @@ import { Container } from '../../components/component-library/container/containe
 import { ButtonLink, Label } from '../../components/component-library';
 import { Checkbox } from '../../components/component-library/checkbox/checkbox';
 import { setSkipDeepLinkInterstitial } from '../../store/actions';
-import { getPreferences } from '../../selectors/selectors';
+import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import { MetaMaskReduxState } from '../../store/store';
 import { VALID, verify } from '../../../shared/lib/deep-links/verify';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';

@@ -15,6 +15,11 @@ import type {
 import { submitRequestToBackground } from '../../store/background-connection';
 import { useUserHistory } from './useUserHistory';
 import { usePerpsLiveFills } from './stream';
+import {
+  coalesceBackgroundRequest,
+  invalidateCoalescedRequest,
+} from './coalesceBackgroundRequest';
+import { usePerpsCacheKey } from './usePerpsCacheKey';
 
 /**
  * Parameters for the usePerpsTransactionHistory hook
@@ -28,6 +33,14 @@ export type UsePerpsTransactionHistoryParams = {
   accountId?: CaipAccountId;
   /** Skip the initial fetch on mount (default: false) */
   skipInitialFetch?: boolean;
+  /**
+   * Force a fresh fetch on mount, bypassing the coalesce TTL cache.
+   * Intended for top-level activity surfaces where correctness beats dedup
+   * (e.g. opening the activity page must not surface a stale snapshot taken
+   * by another hook consumer). Defaults to false so passive previews (e.g.
+   * "Recent activity" on the perps home) keep sharing the cached snapshot.
+   */
+  forceFreshOnMount?: boolean;
 };
 
 /**
@@ -56,6 +69,7 @@ export type UsePerpsTransactionHistoryResult = {
  * @param params.endTime - Optional end time for filtering history (Unix timestamp in ms)
  * @param params.accountId - Optional account ID to fetch history for
  * @param params.skipInitialFetch - Skip the initial fetch on mount (default: false)
+ * @param params.forceFreshOnMount - Force a fresh fetch on mount, bypassing the coalesce TTL cache (default: false)
  * @returns Object containing transactions array, loading state, error, and refetch function
  * @example
  * ```tsx
@@ -82,16 +96,44 @@ export function usePerpsTransactionHistory({
   endTime,
   accountId,
   skipInitialFetch = false,
+  forceFreshOnMount = false,
 }: UsePerpsTransactionHistoryParams = {}): UsePerpsTransactionHistoryResult {
   const [transactions, setTransactions] = useState<PerpsTransaction[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  // Start in loading state when the hook will auto-fetch on mount so consumers
+  // (e.g. Recent Activity) render a skeleton instead of the empty-state
+  // "No transactions yet" during the render cycle before the effect fires.
+  const [isLoading, setIsLoading] = useState(!skipInitialFetch);
   const [error, setError] = useState<string | null>(null);
+
+  // Scope coalesce keys to the active perps context (provider + testnet +
+  // selected address) so switching accounts or toggling testnet inside the
+  // 10s TTL does not surface the previous session's orders/fills/funding.
+  const perpsScopeKey = usePerpsCacheKey();
+
+  // Keep the coalesce cache keys in one place so fetch and invalidate can
+  // never drift; a mismatch would silently make `refetch()` bypass a stale
+  // entry on one side while still serving it on the other.
+  //
+  // Pipe-delimited: CaipAccountId ("eip155:1:0x...") and perpsScopeKey
+  // ("hyperliquid:mainnet:0x...") both contain ':' internally but never '|',
+  // so fields remain unambiguous without paying JSON.stringify on every
+  // render. If a future field can contain '|', switch to a length-prefix
+  // encoder rather than re-introducing delimiter collisions.
+  const coalesceKeys = useMemo(() => {
+    const accountKey = accountId ?? '';
+    return {
+      fills: `perpsGetOrderFills|${perpsScopeKey}|${accountKey}|false`,
+      orders: `perpsGetOrders|${perpsScopeKey}|${accountKey}`,
+      funding: `perpsGetFunding|${perpsScopeKey}|${accountKey}|${startTime ?? ''}|${endTime ?? ''}`,
+    };
+  }, [accountId, startTime, endTime, perpsScopeKey]);
 
   // Get user history (includes deposits/withdrawals) - single source of truth
   const {
     userHistory,
     isLoading: userHistoryLoading,
     error: userHistoryError,
+    fetch: fetchUserHistoryCached,
     refetch: refetchUserHistory,
   } = useUserHistory({ startTime, endTime, accountId });
 
@@ -101,27 +143,48 @@ export function usePerpsTransactionHistory({
 
   // Store userHistory in ref to avoid recreating fetchAllTransactions callback
   const userHistoryRef = useRef(userHistory);
-  // Track if initial fetch has been done to prevent duplicate fetches
-  const initialFetchDone = useRef(false);
+  // Last scope fingerprint we fetched for. Used to re-fire the initial/refresh
+  // fetch when the account, testnet flag, provider, or time range changes
+  // while the hook stays mounted — without this, switching accounts in-place
+  // would render the previous session's transactions.
+  const lastFetchedScopeRef = useRef<string | undefined>(undefined);
+  // Guards async state commits against scope-change races: if the user
+  // switches account / toggles testnet / changes time range while a fetch is
+  // mid-flight, its resolution must not overwrite state with the previous
+  // scope's data. Each fetch captures a generation at start and only commits
+  // if still current.
+  const fetchGenerationRef = useRef(0);
 
   useEffect(() => {
     userHistoryRef.current = userHistory;
   }, [userHistory]);
 
   const fetchAllTransactions = useCallback(async () => {
+    fetchGenerationRef.current += 1;
+    const generation = fetchGenerationRef.current;
     try {
       setIsLoading(true);
       setError(null);
 
       const [fillsResult, ordersResult, funding] = await Promise.all([
-        submitRequestToBackground<OrderFill[]>('perpsGetOrderFills', [
-          { accountId, aggregateByTime: false },
-        ]),
-        submitRequestToBackground<Order[]>('perpsGetOrders', [{ accountId }]),
-        submitRequestToBackground<Funding[]>('perpsGetFunding', [
-          { accountId, startTime, endTime },
-        ]),
+        coalesceBackgroundRequest<OrderFill[]>(coalesceKeys.fills, () =>
+          submitRequestToBackground<OrderFill[]>('perpsGetOrderFills', [
+            { accountId, aggregateByTime: false },
+          ]),
+        ),
+        coalesceBackgroundRequest<Order[]>(coalesceKeys.orders, () =>
+          submitRequestToBackground<Order[]>('perpsGetOrders', [{ accountId }]),
+        ),
+        coalesceBackgroundRequest<Funding[]>(coalesceKeys.funding, () =>
+          submitRequestToBackground<Funding[]>('perpsGetFunding', [
+            { accountId, startTime, endTime },
+          ]),
+        ),
       ]);
+
+      if (fetchGenerationRef.current !== generation) {
+        return;
+      }
 
       const fills: OrderFill[] = Array.isArray(fillsResult) ? fillsResult : [];
       const orders: Order[] = Array.isArray(ordersResult) ? ordersResult : [];
@@ -163,6 +226,9 @@ export function usePerpsTransactionHistory({
 
       setTransactions(uniqueTransactions);
     } catch (err) {
+      if (fetchGenerationRef.current !== generation) {
+        return;
+      }
       const errorMessage =
         err instanceof Error
           ? err.message
@@ -170,23 +236,65 @@ export function usePerpsTransactionHistory({
       setError(errorMessage);
       setTransactions([]);
     } finally {
-      setIsLoading(false);
+      if (fetchGenerationRef.current === generation) {
+        setIsLoading(false);
+      }
     }
-  }, [startTime, endTime, accountId]);
+  }, [startTime, endTime, accountId, coalesceKeys]);
+
+  const initialFetch = useCallback(async () => {
+    // Cache-respecting path — lets rapid re-mounts within the 10s TTL hit the
+    // coalesce cache instead of re-firing HL calls.
+    const freshUserHistory = await fetchUserHistoryCached();
+    userHistoryRef.current = freshUserHistory;
+    await fetchAllTransactions();
+  }, [fetchAllTransactions, fetchUserHistoryCached]);
 
   const refetch = useCallback(async () => {
-    // Fetch user history first, then fetch all transactions
+    // Pull-to-refresh must bypass the short-TTL coalesce cache. Drop the three
+    // keys fetchAllTransactions consumes (refetchUserHistory invalidates its
+    // own key internally).
+    invalidateCoalescedRequest(coalesceKeys.fills);
+    invalidateCoalescedRequest(coalesceKeys.orders);
+    invalidateCoalescedRequest(coalesceKeys.funding);
     const freshUserHistory = await refetchUserHistory();
     userHistoryRef.current = freshUserHistory;
     await fetchAllTransactions();
-  }, [fetchAllTransactions, refetchUserHistory]);
+  }, [fetchAllTransactions, refetchUserHistory, coalesceKeys]);
 
   useEffect(() => {
-    if (!skipInitialFetch && !initialFetchDone.current) {
-      initialFetchDone.current = true;
-      refetch();
+    if (skipInitialFetch) {
+      return;
     }
-  }, [skipInitialFetch, refetch]);
+    // Re-fire the initial fetch whenever the effective scope changes — account
+    // switch, testnet toggle, provider swap, or time-window change — so a hook
+    // that stays mounted across a scope transition never renders the previous
+    // session's transactions. The fingerprint gate keeps unrelated re-renders
+    // from triggering redundant fetches.
+    const scopeFingerprint = `${perpsScopeKey}:${accountId ?? ''}:${startTime ?? ''}:${endTime ?? ''}:${forceFreshOnMount ? '1' : '0'}`;
+    if (lastFetchedScopeRef.current === scopeFingerprint) {
+      return;
+    }
+    lastFetchedScopeRef.current = scopeFingerprint;
+    // Activity surfaces that open on user intent (e.g. PerpsActivityPage)
+    // must force a fresh fetch so they never surface a stale snapshot held
+    // by a sibling consumer inside the TTL window. Passive previews (e.g.
+    // Recent Activity on the perps home) still share the cached snapshot.
+    if (forceFreshOnMount) {
+      refetch();
+    } else {
+      initialFetch();
+    }
+  }, [
+    skipInitialFetch,
+    forceFreshOnMount,
+    perpsScopeKey,
+    accountId,
+    startTime,
+    endTime,
+    initialFetch,
+    refetch,
+  ]);
 
   // Combine loading states
   const combinedIsLoading = useMemo(

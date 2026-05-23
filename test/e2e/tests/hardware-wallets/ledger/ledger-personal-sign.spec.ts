@@ -44,7 +44,10 @@ describe('Ledger Hardware Signatures @speculos', function (this: Suite) {
         sharedContext: shared,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver, {
+          validateBalance: false,
+          waitForNonEvmAccounts: false,
+        });
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage();
         await testDappPage.checkPageIsLoaded();

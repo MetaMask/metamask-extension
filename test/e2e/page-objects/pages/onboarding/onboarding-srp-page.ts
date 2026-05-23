@@ -1,16 +1,26 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
-import { E2E_SRP } from '../../../fixtures/default-fixture';
+import { E2E_SRP } from '../../../constants';
 
 class OnboardingSrpPage {
   private driver: Driver;
 
+  private readonly clearAllButton = {
+    tag: 'span',
+    text: 'Clear all',
+  };
+
+  private readonly importDescription = {
+    tag: 'p',
+    text: 'Enter your Secret Recovery Phrase',
+  };
+
   private readonly srpConfirmButton = '[data-testid="import-srp-confirm"]';
 
-  private readonly srpDropdown = '.import-srp__number-of-words-dropdown';
+  private readonly srpError =
+    '[data-testid="srp-input-import__invalid-checksum-error"]';
 
-  private readonly srpDropdownOptions =
-    '.import-srp__number-of-words-dropdown option';
+  private readonly srpIndividualWord = '[data-testid="import-srp__srp-word-0"]';
 
   private readonly srpMessage = {
     text: 'Import a wallet',
@@ -18,16 +28,6 @@ class OnboardingSrpPage {
   };
 
   private readonly srpWord0 = '[data-testid="srp-input-import__srp-note"]';
-
-  private readonly srpWords = '.import-srp__srp-word';
-
-  private readonly wrongSrpWarningMessage = {
-    text: 'Secret Recovery Phrase not found.',
-    css: '.import-srp__banner-alert-text',
-  };
-
-  private readonly srpError =
-    '[data-testid="srp-input-import__invalid-checksum-error"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -38,7 +38,12 @@ class OnboardingSrpPage {
       await this.driver.waitForMultipleSelectors([
         this.srpMessage,
         this.srpWord0,
+        this.importDescription,
       ]);
+      // Continue button is initially disabled
+      await this.driver.waitForSelector(this.srpConfirmButton, {
+        state: 'disabled',
+      });
     } catch (e) {
       console.log(
         'Timeout while waiting for onboarding srp page to be loaded',
@@ -64,6 +69,8 @@ class OnboardingSrpPage {
    */
   async fillSrp(seedPhrase: string = E2E_SRP): Promise<void> {
     await this.driver.pasteIntoField(this.srpWord0, seedPhrase);
+    await this.driver.waitForSelector(this.srpIndividualWord);
+    await this.driver.waitForSelector(this.clearAllButton);
   }
 
   /**

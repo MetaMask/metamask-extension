@@ -17,10 +17,12 @@ import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   getRpcPrefsForCurrentProvider,
   getUSDConversionRate,
-  isHardwareWallet,
-  getHardwareWalletType,
   getFullTxData,
 } from '../../../selectors';
+import {
+  isHardwareWallet,
+  getHardwareWalletType,
+} from '../../../../shared/lib/selectors/keyring';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
 import {
   getSmartTransactionsEnabled,
@@ -343,9 +345,9 @@ export default function AwaitingSwap({
             isSwapsDefaultTokenSymbol(destinationTokenSymbol, chainId) ||
             swapComplete
           ) {
-            navigate(DEFAULT_ROUTE);
-          } else {
             navigate(`${DEFAULT_ROUTE}?tab=activity`);
+          } else {
+            navigate(DEFAULT_ROUTE);
           }
         }}
         onCancel={async () =>

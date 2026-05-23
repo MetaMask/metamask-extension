@@ -75,11 +75,6 @@ export const createInternalTransactionWithMaxAmount = async ({
   });
 };
 
-export const reviewTransaction = async (driver: Driver) => {
-  const transactionConfirmation = new TransactionConfirmation(driver);
-  await transactionConfirmation.validateSendFees('0.0004', '$0.75');
-};
-
 export const createDappTransaction = async (
   driver: Driver,
   override?: Partial<TransactionParams>,

@@ -1,9 +1,12 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import {
   rehydrateBridgeStore,
-  resetBridgeControllerAndCache,
+  resetBridgeController,
+  resetInputFields,
   restoreQuoteRequestFromState,
   setFromToken,
   setToToken,
@@ -27,10 +30,13 @@ export const usePrefillFromBridgeState = () => {
   const { resetLocationState, token, bridgeState } = useBridgeNavigation();
 
   const shouldRehydrateFromLocationState = bridgeState || token;
-  const shouldRestoreInputsFromQuote = !bridgeState && activeQuote;
+  const envType = getEnvironmentType();
+  const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
+  const shouldRestoreInputsFromQuote = !bridgeState && activeQuote && isPopup;
 
   const resetControllerAndCache = () => {
-    dispatch(resetBridgeControllerAndCache());
+    dispatch(resetBridgeController());
+    dispatch(resetInputFields());
   };
 
   useEffect(() => {
@@ -68,9 +74,6 @@ export const usePrefillFromBridgeState = () => {
       resetLocationState();
     } else if (shouldRestoreInputsFromQuote) {
       dispatch(restoreQuoteRequestFromState(activeQuote));
-    } else {
-      // Reset controller and cache on load if there's no restored active quote or token object
-      resetControllerAndCache();
     }
 
     // Reset controller and inputs before unloading the page

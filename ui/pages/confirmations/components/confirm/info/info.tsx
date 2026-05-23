@@ -1,7 +1,8 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import React, { useMemo } from 'react';
-import { getEnabledAdvancedPermissions } from '../../../../../../shared/lib/environment';
+import { useEnabledAdvancedPermissions } from '../../../../../hooks/gator-permissions/useEnabledAdvancedPermissions';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { useTrustSignalMetrics } from '../../../../trust-signals/hooks/useTrustSignalMetrics';
 import { useConfirmContext } from '../../../context/confirm';
 import { useSmartTransactionFeatureFlags } from '../../../hooks/useSmartTransactionFeatureFlags';
@@ -17,6 +18,7 @@ import { CustomAmountInfoSkeleton } from '../../info/custom-amount-info';
 import { MusdClaimInfo } from '../../info/musd-claim-info';
 import { MusdConversionInfo } from '../../info/musd-conversion-info';
 import { PerpsDepositInfo } from './perps-deposit-info';
+import { PerpsWithdrawInfo } from './perps-withdraw-info';
 import ApproveInfo from './approve/approve';
 import BaseTransactionInfo from './base-transaction-info/base-transaction-info';
 import NativeTransferInfo from './native-transfer/native-transfer';
@@ -106,6 +108,7 @@ export const InfoSkeleton = ({
 const Info = () => {
   const { currentConfirmation } = useConfirmContext();
   const { loader } = useConfirmationNavigationOptions();
+  const enabledPermissions = useEnabledAdvancedPermissions();
 
   useSmartTransactionFeatureFlags();
   useTransactionFocusEffect();
@@ -132,8 +135,6 @@ const Info = () => {
         if (signatureRequest?.decodedPermission) {
           const requestedPermissionType =
             signatureRequest.decodedPermission.permission.type;
-
-          const enabledPermissions = getEnabledAdvancedPermissions();
 
           if (!enabledPermissions.includes(requestedPermissionType)) {
             // This should never happen, as `wallet_requestExecutionPermissions`
@@ -162,8 +163,9 @@ const Info = () => {
       [TransactionType.musdClaim]: () => MusdClaimInfo,
       [TransactionType.musdConversion]: () => MusdConversionInfo,
       [TransactionType.perpsDeposit]: () => PerpsDepositInfo,
+      [TransactionType.perpsWithdraw]: () => PerpsWithdrawInfo,
     }),
-    [currentConfirmation],
+    [currentConfirmation, enabledPermissions],
   );
 
   if (!currentConfirmation?.type) {

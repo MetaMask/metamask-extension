@@ -27,7 +27,11 @@ import {
   SEVERITIES,
   BorderRadius,
 } from '../../../helpers/constants/design-system';
-import { getIsSolanaSwap, getSlippage } from '../../../ducks/bridge/selectors';
+import {
+  getIsSolanaSwap,
+  getIsRWASwap,
+  getSlippage,
+} from '../../../ducks/bridge/selectors';
 import { setSlippage } from '../../../ducks/bridge/actions';
 import { SlippageValue } from '../utils/slippage-service';
 import { Column, Row, Tooltip } from '../layout';
@@ -54,9 +58,11 @@ export const BridgeTransactionSettingsModal = ({
   const [inputValue, setInputValue] = useState<string>('');
 
   /**
-   * AUTO option should only show for Solana-to-Solana swaps
+   * AUTO option shows for Solana-to-Solana swaps and any swap involving an RWA token.
    */
-  const shouldShowAutoOption = useSelector(getIsSolanaSwap);
+  const isSolanaSwap = useSelector(getIsSolanaSwap);
+  const isRWASwap = useSelector(getIsRWASwap);
+  const shouldShowAutoOption = isSolanaSwap || isRWASwap;
 
   const [slippageValue, setSlippageValue] = useState<number | undefined>(
     undefined,

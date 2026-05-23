@@ -21,7 +21,7 @@ describe('Test Snap Background Events', function () {
         testSpecificMock: mockBackgroundEventsSnap,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
 

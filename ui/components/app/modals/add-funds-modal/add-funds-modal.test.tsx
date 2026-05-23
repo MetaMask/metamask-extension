@@ -10,9 +10,9 @@ describe('Add funds modal Component', () => {
   const defaultState = {
     metamask: {
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+      selectedAccountGroup: null,
       accountTree: {
         wallets: {},
-        selectedAccountGroup: null,
       },
       enabledNetworkMap: {
         eip155: {

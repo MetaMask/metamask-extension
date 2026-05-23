@@ -3,7 +3,10 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { PriorityLevels } from '../../../../shared/constants/gas';
 import * as gasUtils from '../../../helpers/utils/gas';
-import { useCancelSpeedupInitialGas } from './useCancelSpeedupInitialGas';
+import {
+  UseCancelSpeedupInitialGasParams,
+  useCancelSpeedupInitialGas,
+} from './useCancelSpeedupInitialGas';
 
 const mockGasFeeEstimatesWithMedium = {
   medium: { suggestedMaxFeePerGas: '0x2' },
@@ -54,33 +57,56 @@ describe('useCancelSpeedupInitialGas', () => {
   const mockUpdateTransactionToTenPercentIncreasedGasFee = jest.fn();
   const CANCEL_SPEEDUP_MODAL = 'cancelSpeedUpTransaction';
 
+  function buildHookParams(
+    overrides: Partial<UseCancelSpeedupInitialGasParams> = {},
+  ): UseCancelSpeedupInitialGasParams {
+    return {
+      effectiveTransaction: createMockTransaction(),
+      gasFeeEstimates: mockGasFeeEstimatesWithMedium,
+      isGasEstimatesLoading: false,
+      updateTransactionUsingEstimate: mockUpdateTransactionUsingEstimate,
+      updateTransactionToTenPercentIncreasedGasFee:
+        mockUpdateTransactionToTenPercentIncreasedGasFee,
+      appIsLoading: false,
+      currentModal: CANCEL_SPEEDUP_MODAL,
+      ...overrides,
+    };
+  }
+
   beforeEach(() => {
     jest.clearAllMocks();
     mockDispatch.mockClear();
   });
 
-  describe('when initial gas rule is skipped', () => {
-    it('does not call updates when effectiveTransaction.previousGas is set', () => {
-      const effectiveTransaction = createMockTransaction({
-        previousGas: {
-          maxFeePerGas: '0x1',
-          maxPriorityFeePerGas: '0x1',
-          gasLimit: '0x5208',
-        },
+  describe('isInitialGasReady', () => {
+    it('returns true when effectiveTransaction.previousGas is set', () => {
+      const params = buildHookParams({
+        effectiveTransaction: createMockTransaction({
+          previousGas: {
+            maxFeePerGas: '0x1',
+            maxPriorityFeePerGas: '0x1',
+            gasLimit: '0x5208',
+          },
+        }),
+        gasFeeEstimates: {},
       });
 
-      renderHook(() =>
-        useCancelSpeedupInitialGas({
-          effectiveTransaction,
-          gasFeeEstimates: {},
-          updateTransactionUsingEstimate: mockUpdateTransactionUsingEstimate,
-          updateTransactionToTenPercentIncreasedGasFee:
-            mockUpdateTransactionToTenPercentIncreasedGasFee,
-          appIsLoading: false,
-          currentModal: CANCEL_SPEEDUP_MODAL,
-        }),
+      const { result } = renderHook(() => useCancelSpeedupInitialGas(params));
+
+      expect(result.current.isInitialGasReady).toBe(true);
+    });
+
+    it('returns false when effectiveTransaction.previousGas is not set', () => {
+      const { result } = renderHook(() =>
+        useCancelSpeedupInitialGas(buildHookParams()),
       );
 
+      expect(result.current.isInitialGasReady).toBe(false);
+    });
+  });
+
+  describe('when initial gas rule is skipped', () => {
+    function expectNoUpdates() {
       expect(
         gasEstimateGreaterThanGasUsedPlusTenPercent,
       ).not.toHaveBeenCalled();
@@ -88,76 +114,63 @@ describe('useCancelSpeedupInitialGas', () => {
       expect(
         mockUpdateTransactionToTenPercentIncreasedGasFee,
       ).not.toHaveBeenCalled();
+    }
+
+    it('does not call updates when effectiveTransaction.previousGas is set', () => {
+      renderHook(() =>
+        useCancelSpeedupInitialGas(
+          buildHookParams({
+            effectiveTransaction: createMockTransaction({
+              previousGas: {
+                maxFeePerGas: '0x1',
+                maxPriorityFeePerGas: '0x1',
+                gasLimit: '0x5208',
+              },
+            }),
+            gasFeeEstimates: {},
+          }),
+        ),
+      );
+
+      expectNoUpdates();
     });
 
     it('does not call updates when appIsLoading is true', () => {
-      const effectiveTransaction = createMockTransaction();
-
       renderHook(() =>
-        useCancelSpeedupInitialGas({
-          effectiveTransaction,
-          gasFeeEstimates: mockGasFeeEstimatesWithMedium,
-          updateTransactionUsingEstimate: mockUpdateTransactionUsingEstimate,
-          updateTransactionToTenPercentIncreasedGasFee:
-            mockUpdateTransactionToTenPercentIncreasedGasFee,
-          appIsLoading: true,
-          currentModal: CANCEL_SPEEDUP_MODAL,
-        }),
+        useCancelSpeedupInitialGas(buildHookParams({ appIsLoading: true })),
       );
 
-      expect(
-        gasEstimateGreaterThanGasUsedPlusTenPercent,
-      ).not.toHaveBeenCalled();
-      expect(mockUpdateTransactionUsingEstimate).not.toHaveBeenCalled();
-      expect(
-        mockUpdateTransactionToTenPercentIncreasedGasFee,
-      ).not.toHaveBeenCalled();
+      expectNoUpdates();
+    });
+
+    it('does not call updates when isGasEstimatesLoading is true', () => {
+      renderHook(() =>
+        useCancelSpeedupInitialGas(
+          buildHookParams({ isGasEstimatesLoading: true }),
+        ),
+      );
+
+      expectNoUpdates();
     });
 
     it('does not call updates when currentModal is not cancelSpeedUpTransaction', () => {
-      const effectiveTransaction = createMockTransaction();
-
       renderHook(() =>
-        useCancelSpeedupInitialGas({
-          effectiveTransaction,
-          gasFeeEstimates: mockGasFeeEstimatesWithMedium,
-          updateTransactionUsingEstimate: mockUpdateTransactionUsingEstimate,
-          updateTransactionToTenPercentIncreasedGasFee:
-            mockUpdateTransactionToTenPercentIncreasedGasFee,
-          appIsLoading: false,
-          currentModal: 'other',
-        }),
+        useCancelSpeedupInitialGas(buildHookParams({ currentModal: 'other' })),
       );
 
-      expect(
-        gasEstimateGreaterThanGasUsedPlusTenPercent,
-      ).not.toHaveBeenCalled();
-      expect(mockUpdateTransactionUsingEstimate).not.toHaveBeenCalled();
-      expect(
-        mockUpdateTransactionToTenPercentIncreasedGasFee,
-      ).not.toHaveBeenCalled();
+      expectNoUpdates();
     });
   });
 
   describe('when initial gas rule runs', () => {
     it('calls updateTransactionUsingEstimate with medium when medium estimate is greater than gas used + 10%', () => {
-      const effectiveTransaction = createMockTransaction();
       gasEstimateGreaterThanGasUsedPlusTenPercent.mockReturnValue(true);
+      const params = buildHookParams();
 
-      renderHook(() =>
-        useCancelSpeedupInitialGas({
-          effectiveTransaction,
-          gasFeeEstimates: mockGasFeeEstimatesWithMedium,
-          updateTransactionUsingEstimate: mockUpdateTransactionUsingEstimate,
-          updateTransactionToTenPercentIncreasedGasFee:
-            mockUpdateTransactionToTenPercentIncreasedGasFee,
-          appIsLoading: false,
-          currentModal: CANCEL_SPEEDUP_MODAL,
-        }),
-      );
+      renderHook(() => useCancelSpeedupInitialGas(params));
 
       expect(gasEstimateGreaterThanGasUsedPlusTenPercent).toHaveBeenCalledWith(
-        effectiveTransaction.txParams,
+        params.effectiveTransaction.txParams,
         mockGasFeeEstimatesWithMedium,
         PriorityLevels.medium,
       );
@@ -170,23 +183,13 @@ describe('useCancelSpeedupInitialGas', () => {
     });
 
     it('calls updateTransactionToTenPercentIncreasedGasFee when medium estimate is not greater than gas used + 10%', () => {
-      const effectiveTransaction = createMockTransaction();
       gasEstimateGreaterThanGasUsedPlusTenPercent.mockReturnValue(false);
+      const params = buildHookParams();
 
-      renderHook(() =>
-        useCancelSpeedupInitialGas({
-          effectiveTransaction,
-          gasFeeEstimates: mockGasFeeEstimatesWithMedium,
-          updateTransactionUsingEstimate: mockUpdateTransactionUsingEstimate,
-          updateTransactionToTenPercentIncreasedGasFee:
-            mockUpdateTransactionToTenPercentIncreasedGasFee,
-          appIsLoading: false,
-          currentModal: CANCEL_SPEEDUP_MODAL,
-        }),
-      );
+      renderHook(() => useCancelSpeedupInitialGas(params));
 
       expect(gasEstimateGreaterThanGasUsedPlusTenPercent).toHaveBeenCalledWith(
-        effectiveTransaction.txParams,
+        params.effectiveTransaction.txParams,
         mockGasFeeEstimatesWithMedium,
         PriorityLevels.medium,
       );
@@ -197,18 +200,8 @@ describe('useCancelSpeedupInitialGas', () => {
     });
 
     it('calls updateTransactionToTenPercentIncreasedGasFee when gasFeeEstimates is null', () => {
-      const effectiveTransaction = createMockTransaction();
-
       renderHook(() =>
-        useCancelSpeedupInitialGas({
-          effectiveTransaction,
-          gasFeeEstimates: null,
-          updateTransactionUsingEstimate: mockUpdateTransactionUsingEstimate,
-          updateTransactionToTenPercentIncreasedGasFee:
-            mockUpdateTransactionToTenPercentIncreasedGasFee,
-          appIsLoading: false,
-          currentModal: CANCEL_SPEEDUP_MODAL,
-        }),
+        useCancelSpeedupInitialGas(buildHookParams({ gasFeeEstimates: null })),
       );
 
       expect(
@@ -221,22 +214,17 @@ describe('useCancelSpeedupInitialGas', () => {
     });
 
     it('does not call updates again when effect re-runs for same transaction (e.g. after gasFeeEstimates reference change)', () => {
-      const effectiveTransaction = createMockTransaction();
       gasEstimateGreaterThanGasUsedPlusTenPercent.mockReturnValue(true);
+      const baseParams = buildHookParams();
 
       const { rerender } = renderHook(
         ({ gasFeeEstimates }) =>
-          useCancelSpeedupInitialGas({
-            effectiveTransaction,
-            gasFeeEstimates,
-            updateTransactionUsingEstimate: mockUpdateTransactionUsingEstimate,
-            updateTransactionToTenPercentIncreasedGasFee:
-              mockUpdateTransactionToTenPercentIncreasedGasFee,
-            appIsLoading: false,
-            currentModal: CANCEL_SPEEDUP_MODAL,
-          }),
+          useCancelSpeedupInitialGas({ ...baseParams, gasFeeEstimates }),
         {
-          initialProps: { gasFeeEstimates: mockGasFeeEstimatesWithMedium },
+          initialProps: {
+            gasFeeEstimates:
+              mockGasFeeEstimatesWithMedium as UseCancelSpeedupInitialGasParams['gasFeeEstimates'],
+          },
         },
       );
 
@@ -254,31 +242,89 @@ describe('useCancelSpeedupInitialGas', () => {
     });
 
     it('dispatches updatePreviousGasParams once when modal opens and previousGas is not set', () => {
-      const effectiveTransaction = createMockTransaction();
       gasEstimateGreaterThanGasUsedPlusTenPercent.mockReturnValue(true);
+      const params = buildHookParams();
 
-      renderHook(() =>
-        useCancelSpeedupInitialGas({
-          effectiveTransaction,
-          gasFeeEstimates: mockGasFeeEstimatesWithMedium,
-          updateTransactionUsingEstimate: mockUpdateTransactionUsingEstimate,
-          updateTransactionToTenPercentIncreasedGasFee:
-            mockUpdateTransactionToTenPercentIncreasedGasFee,
-          appIsLoading: false,
-          currentModal: CANCEL_SPEEDUP_MODAL,
-        }),
-      );
+      renderHook(() => useCancelSpeedupInitialGas(params));
 
       expect(mockDispatch).toHaveBeenCalled();
       expect(mockUpdatePreviousGasParams).toHaveBeenCalledTimes(1);
       expect(mockUpdatePreviousGasParams).toHaveBeenCalledWith(
-        effectiveTransaction.id,
+        params.effectiveTransaction.id,
         {
           maxFeePerGas: '0x1',
           maxPriorityFeePerGas: '0x1',
           gasLimit: '0x5208',
         },
       );
+    });
+  });
+
+  describe('legacy transactions', () => {
+    function createLegacyTransaction(overrides: Partial<TransactionMeta> = {}) {
+      return {
+        id: 'legacy-tx-1',
+        txParams: {
+          gas: '0x5208',
+          gasLimit: '0x5208',
+          gasPrice: '0x2540be400',
+        },
+        ...overrides,
+      } as TransactionMeta;
+    }
+
+    it('dispatches updatePreviousGasParams with gasPrice and gasLimit for legacy tx', () => {
+      renderHook(() =>
+        useCancelSpeedupInitialGas(
+          buildHookParams({
+            effectiveTransaction: createLegacyTransaction(),
+          }),
+        ),
+      );
+
+      expect(mockDispatch).toHaveBeenCalled();
+      expect(mockUpdatePreviousGasParams).toHaveBeenCalledTimes(1);
+      expect(mockUpdatePreviousGasParams).toHaveBeenCalledWith('legacy-tx-1', {
+        gasPrice: '0x2540be400',
+        gasLimit: '0x5208',
+      });
+    });
+
+    it('does not store previousGas again on re-render for the same legacy transaction', () => {
+      const baseParams = buildHookParams({
+        effectiveTransaction: createLegacyTransaction(),
+      });
+
+      const { rerender } = renderHook(
+        ({ gasFeeEstimates }) =>
+          useCancelSpeedupInitialGas({ ...baseParams, gasFeeEstimates }),
+        {
+          initialProps: {
+            gasFeeEstimates:
+              mockGasFeeEstimatesWithMedium as UseCancelSpeedupInitialGasParams['gasFeeEstimates'],
+          },
+        },
+      );
+
+      expect(mockUpdatePreviousGasParams).toHaveBeenCalledTimes(1);
+
+      rerender({ gasFeeEstimates: { ...mockGasFeeEstimatesWithMedium } });
+
+      expect(mockUpdatePreviousGasParams).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not dispatch previousGas when legacy tx has no gasPrice', () => {
+      renderHook(() =>
+        useCancelSpeedupInitialGas(
+          buildHookParams({
+            effectiveTransaction: createLegacyTransaction({
+              txParams: { gas: '0x5208' } as TransactionMeta['txParams'],
+            }),
+          }),
+        ),
+      );
+
+      expect(mockUpdatePreviousGasParams).not.toHaveBeenCalled();
     });
   });
 });

@@ -130,35 +130,49 @@ export const fetchErc20Decimals = async (
  *
  * @param address - The ethereum token contract address. It is expected to be in hex format.
  * @param chainId - ChainId on which we need to check token. It is expected to be in hex format.
- * @throws Error if token decimals cannot be resolved
+ * @param config - Optional config.
+ * @param config.tries - The number of attempts before throwing. Default is 2.
+ * @throws Error if token decimals cannot be resolved after the specified number of tries
  */
 export const fetchErc20DecimalsOrThrow = async (
   address: Hex | string,
   chainId?: Hex | string,
+  config: { tries?: number } = {},
 ): Promise<number> => {
-  const result = await getTokenStandardAndDetailsByChain(
-    address,
-    undefined,
-    undefined,
-    chainId,
-  );
+  const { tries = 2 } = config;
+  let lastError: Error | undefined;
 
-  if (!result) {
-    throw new Error(
-      `Unable to resolve token decimals for address ${address} on chain ${chainId}`,
-    );
+  for (let attempt = 0; attempt < tries; attempt++) {
+    try {
+      const result = await getTokenStandardAndDetailsByChain(
+        address,
+        undefined,
+        undefined,
+        chainId,
+      );
+
+      if (!result) {
+        throw new Error(
+          `Unable to resolve token decimals for address ${address} on chain ${chainId}`,
+        );
+      }
+
+      const { decimals: decStr } = result;
+      const decimals = parseTokenDetailDecimals(decStr);
+
+      if (decimals === undefined) {
+        throw new Error(
+          `Unable to resolve token decimals for address ${address} on chain ${chainId}`,
+        );
+      }
+
+      return decimals;
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error));
+    }
   }
 
-  const { decimals: decStr } = result;
-  const decimals = parseTokenDetailDecimals(decStr);
-
-  if (decimals === undefined) {
-    throw new Error(
-      `Unable to resolve token decimals for address ${address} on chain ${chainId}`,
-    );
-  }
-
-  return decimals;
+  throw lastError ?? new Error('Unknown error fetching token decimals');
 };
 
 /**

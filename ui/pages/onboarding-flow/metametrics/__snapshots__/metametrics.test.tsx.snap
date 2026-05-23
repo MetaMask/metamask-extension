@@ -44,12 +44,12 @@ exports[`Onboarding Metametrics Component renders match snapshot 1`] = `
           <input
             aria-invalid="false"
             checked=""
-            class="absolute inset-0 size-full cursor-pointer opacity-0 disabled:cursor-not-allowed"
+            class="peer absolute inset-0 size-full cursor-pointer opacity-0 disabled:cursor-not-allowed"
             id="metametrics-opt-in"
             type="checkbox"
           />
           <div
-            class="relative flex size-6 items-center justify-center rounded border-2 p-0 transition-transform active:scale-95 bg-primary-default hover:bg-primary-default-hover active:bg-primary-default-pressed border-primary-default"
+            class="relative flex size-6 items-center justify-center rounded border-2 p-0 transition-transform active:scale-95 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary-default bg-primary-default hover:bg-primary-default-hover active:bg-primary-default-pressed border-primary-default"
           >
             <svg
               class="inline-block w-4 h-4 text-primary-inverse pointer-events-none transition-opacity opacity-100"
@@ -76,7 +76,7 @@ exports[`Onboarding Metametrics Component renders match snapshot 1`] = `
       <p
         class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default text-left"
       >
-        We’ll collect basic product usage data like general location, clicks, and views. No other information will be stored.
+        We’ll collect basic product usage data. We may associate this information with on-chain data.
       </p>
     </div>
     <div
@@ -95,12 +95,12 @@ exports[`Onboarding Metametrics Component renders match snapshot 1`] = `
         >
           <input
             aria-invalid="false"
-            class="absolute inset-0 size-full cursor-pointer opacity-0 disabled:cursor-not-allowed"
+            class="peer absolute inset-0 size-full cursor-pointer opacity-0 disabled:cursor-not-allowed"
             id="metametrics-datacollection-opt-in"
             type="checkbox"
           />
           <div
-            class="relative flex size-6 items-center justify-center rounded border-2 p-0 transition-transform active:scale-95 bg-default hover:bg-default-hover active:bg-default-pressed border-default"
+            class="relative flex size-6 items-center justify-center rounded border-2 p-0 transition-transform active:scale-95 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary-default bg-default hover:bg-default-hover active:bg-default-pressed border-default"
           >
             <svg
               class="inline-block w-4 h-4 text-primary-inverse pointer-events-none transition-opacity opacity-0"
@@ -193,12 +193,12 @@ exports[`Onboarding Metametrics Component renders match snapshot after new polic
           <input
             aria-invalid="false"
             checked=""
-            class="absolute inset-0 size-full cursor-pointer opacity-0 disabled:cursor-not-allowed"
+            class="peer absolute inset-0 size-full cursor-pointer opacity-0 disabled:cursor-not-allowed"
             id="metametrics-opt-in"
             type="checkbox"
           />
           <div
-            class="relative flex size-6 items-center justify-center rounded border-2 p-0 transition-transform active:scale-95 bg-primary-default hover:bg-primary-default-hover active:bg-primary-default-pressed border-primary-default"
+            class="relative flex size-6 items-center justify-center rounded border-2 p-0 transition-transform active:scale-95 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary-default bg-primary-default hover:bg-primary-default-hover active:bg-primary-default-pressed border-primary-default"
           >
             <svg
               class="inline-block w-4 h-4 text-primary-inverse pointer-events-none transition-opacity opacity-100"
@@ -225,7 +225,7 @@ exports[`Onboarding Metametrics Component renders match snapshot after new polic
       <p
         class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default text-left"
       >
-        We’ll collect basic product usage data like general location, clicks, and views. No other information will be stored.
+        We’ll collect basic product usage data. We may associate this information with on-chain data.
       </p>
     </div>
     <div
@@ -244,12 +244,12 @@ exports[`Onboarding Metametrics Component renders match snapshot after new polic
         >
           <input
             aria-invalid="false"
-            class="absolute inset-0 size-full cursor-pointer opacity-0 disabled:cursor-not-allowed"
+            class="peer absolute inset-0 size-full cursor-pointer opacity-0 disabled:cursor-not-allowed"
             id="metametrics-datacollection-opt-in"
             type="checkbox"
           />
           <div
-            class="relative flex size-6 items-center justify-center rounded border-2 p-0 transition-transform active:scale-95 bg-default hover:bg-default-hover active:bg-default-pressed border-default"
+            class="relative flex size-6 items-center justify-center rounded border-2 p-0 transition-transform active:scale-95 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary-default bg-default hover:bg-default-hover active:bg-default-pressed border-default"
           >
             <svg
               class="inline-block w-4 h-4 text-primary-inverse pointer-events-none transition-opacity opacity-0"

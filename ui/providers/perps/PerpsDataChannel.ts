@@ -113,6 +113,31 @@ export class PerpsDataChannel<TData> {
   }
 
   /**
+   * Reconnect to the data source without clearing subscribers or cache.
+   *
+   * Useful for background refreshes where the UI should keep showing the
+   * last known good data until the next fetch resolves.
+   */
+  refresh(): void {
+    if (!this.connectFn) {
+      return;
+    }
+
+    // Refresh is intentionally last-write-wins for channels backed by
+    // non-cancellable async work. For example, the markets channel reconnects
+    // by issuing a new RPC and its unsubscribe is a no-op, so an older in-flight
+    // request may still resolve after refresh. That is acceptable for the
+    // current idempotent market snapshot callers.
+    if (!this.isConnected) {
+      this.connect();
+      return;
+    }
+
+    this.disconnect();
+    this.connect();
+  }
+
+  /**
    * Manually push data into the channel (bypasses WebSocket).
    * Used after REST API calls to immediately reflect changes
    * while waiting for WebSocket to catch up.

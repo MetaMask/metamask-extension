@@ -1,24 +1,9 @@
 import React from 'react';
-import { act } from '@testing-library/react';
 import configureStore from '../../../../../store/store';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
-import { GasFeeContextProvider } from '../../../../../contexts/gasFee';
 import { mockNetworkState } from '../../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import EditGasToolTip from './edit-gas-tooltip';
-
-jest.mock('../../../../../store/actions', () => ({
-  gasFeeStartPollingByNetworkClientId: jest
-    .fn()
-    .mockResolvedValue('pollingToken'),
-  gasFeeStopPollingByPollingToken: jest.fn(),
-  getNetworkConfigurationByNetworkClientId: jest
-    .fn()
-    .mockResolvedValue({ chainId: '0x5' }),
-  getGasFeeTimeEstimate: jest
-    .fn()
-    .mockImplementation(() => Promise.resolve('unknown')),
-}));
 
 const LOW_GAS_OPTION = {
   maxFeePerGas: '2.010203381',
@@ -35,7 +20,7 @@ const HIGH_GAS_OPTION = {
   maxPriorityFeePerGas: '2',
 };
 
-const render = async (componentProps) => {
+const render = (componentProps) => {
   const mockStore = {
     metamask: {
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
@@ -81,24 +66,15 @@ const render = async (componentProps) => {
 
   const store = configureStore(mockStore);
 
-  let result;
-
-  await act(
-    async () =>
-      (result = renderWithProvider(
-        <GasFeeContextProvider transaction={{ txParams: { gas: '0x5208' } }}>
-          <EditGasToolTip {...componentProps} t={jest.fn()} gasLimit={21000} />
-        </GasFeeContextProvider>,
-        store,
-      )),
+  return renderWithProvider(
+    <EditGasToolTip {...componentProps} t={jest.fn()} gasLimit={21000} />,
+    store,
   );
-
-  return result;
 };
 
 describe('EditGasToolTip', () => {
-  it('should render correct values for priorityLevel low', async () => {
-    const { queryByText } = await render({
+  it('should render correct values for priorityLevel low', () => {
+    const { queryByText } = render({
       priorityLevel: 'low',
       ...LOW_GAS_OPTION,
     });
@@ -108,8 +84,8 @@ describe('EditGasToolTip', () => {
     expect(queryByText('21000')).toBeInTheDocument();
   });
 
-  it('should render correct values for priorityLevel medium', async () => {
-    const { queryByText } = await render({
+  it('should render correct values for priorityLevel medium', () => {
+    const { queryByText } = render({
       priorityLevel: 'medium',
       ...MEDIUM_GAS_OPTION,
     });
@@ -118,8 +94,8 @@ describe('EditGasToolTip', () => {
     expect(queryByText('21000')).toBeInTheDocument();
   });
 
-  it('should render correct values for priorityLevel high', async () => {
-    const { queryByText } = await render({
+  it('should render correct values for priorityLevel high', () => {
+    const { queryByText } = render({
       priorityLevel: 'high',
       ...HIGH_GAS_OPTION,
     });

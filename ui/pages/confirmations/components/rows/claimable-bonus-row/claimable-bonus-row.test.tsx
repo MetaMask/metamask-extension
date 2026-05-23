@@ -2,6 +2,7 @@ import React from 'react';
 import { act, fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import { getMockPersonalSignConfirmState } from '../../../../../../test/data/confirmations/helper';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import {
   MUSD_CONVERSION_APY,
@@ -79,6 +80,16 @@ describe('ClaimableBonusRow', () => {
     expect(getByTestId('claimable-bonus-value')).toHaveTextContent(
       `${MUSD_CONVERSION_APY}%`,
     );
+  });
+
+  it('exposes an accessible name on the claimable bonus info control', () => {
+    const { getByRole } = render();
+
+    expect(
+      getByRole('button', {
+        name: messages.musdClaimableBonusTooltipAria.message,
+      }),
+    ).toBeInTheDocument();
   });
 
   it('opens tooltip popover when info button is clicked', () => {

@@ -10,6 +10,7 @@ jobs:
   build-ts-migration-dashboard:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
     env:
       # For a `pull_request` event, the branch is `github.head_ref``.
       # For a `push` event, the branch is `github.ref_name`.
@@ -18,7 +19,7 @@ jobs:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
         with:
-          is-high-risk-environment: true
+          is-high-risk-environment: ${{ github.ref_name == 'main' || github.ref_name == 'stable' || startsWith(github.ref_name, 'release/') }}
           skip-allow-scripts: true
 
       - name: Build ts migration dashboard
@@ -38,7 +39,7 @@ jobs:
         env:
           TS_MIGRATION_DASHBOARD_TOKEN: ${{ secrets.TS_MIGRATION_DASHBOARD_TOKEN }}
         run: |
-          git remote add ts-migration-dashboard "https://${TS_MIGRATION_DASHBOARD_TOKEN}@github.com/MetaMask/metamask-extension-ts-migration-dashboard.git"
+          git remote add ts-migration-dashboard "https://x-access-token:${TS_MIGRATION_DASHBOARD_TOKEN}@github.com/MetaMask/metamask-extension-ts-migration-dashboard.git"
           git config user.name "MetaMask Bot"
           git config user.email metamaskbot@users.noreply.github.com
           yarn ts-migration:dashboard:deploy

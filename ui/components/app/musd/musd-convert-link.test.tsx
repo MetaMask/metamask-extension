@@ -53,10 +53,13 @@ const { __mockTrackEvent: mockTrackEvent } = jest.requireMock<{
 
 // Mock useMusdConversion
 const mockStartConversionFlow = jest.fn();
+let mockEducationSeen = false;
 jest.mock('../../../hooks/musd', () => ({
   useMusdConversion: () => ({
     startConversionFlow: mockStartConversionFlow,
-    educationSeen: false,
+    get educationSeen() {
+      return mockEducationSeen;
+    },
   }),
   useMusdGeoBlocking: () => ({
     isBlocked: false,
@@ -88,6 +91,7 @@ const mockStore = configureStore({
 describe('MusdConvertLink', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockEducationSeen = false;
   });
 
   it('renders the CTA text correctly', () => {
@@ -171,15 +175,47 @@ describe('MusdConvertLink', () => {
         properties: expect.objectContaining({
           location: 'token_list_item',
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: '0x1',
+          redirects_to: 'conversion_education_screen',
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_symbol: 'USDC',
+          network_chain_id: '0x1',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          network_name: 'Ethereum Mainnet',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          asset_symbol: 'USDC',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          cta_click_target: 'cta_text_link',
         }),
       }),
     );
   });
 
-  it('uses custom entry point when provided', async () => {
+  it('tracks redirects_to custom_amount_screen when conversion education was seen', async () => {
+    mockEducationSeen = true;
+    renderWithProvider(
+      <MusdConvertLink
+        tokenAddress="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+        chainId="0x1"
+        tokenSymbol="USDC"
+      />,
+      mockStore,
+    );
+
+    const ctaButton = screen.getByTestId('musd-convert-link-0x1');
+    await act(async () => {
+      fireEvent.click(ctaButton);
+    });
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        properties: expect.objectContaining({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          redirects_to: 'custom_amount_screen',
+        }),
+      }),
+    );
+  });
+
+  it('uses asset_overview entry point and matching analytics location when provided', async () => {
     renderWithProvider(
       <MusdConvertLink
         tokenAddress="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
@@ -198,6 +234,13 @@ describe('MusdConvertLink', () => {
     expect(mockStartConversionFlow).toHaveBeenCalledWith(
       expect.objectContaining({
         entryPoint: 'asset_overview',
+      }),
+    );
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        properties: expect.objectContaining({
+          location: 'asset_overview',
+        }),
       }),
     );
   });

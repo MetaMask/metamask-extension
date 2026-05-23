@@ -4,10 +4,8 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { sendMultichainTransaction } from '../../../../store/actions';
-import {
-  getMemoizedUnapprovedTemplatedConfirmations,
-  getSelectedInternalAccount,
-} from '../../../../selectors';
+import { getUnapprovedTemplatedConfirmations } from '../../../../selectors';
+import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { getSelectedMultichainNetworkConfiguration } from '../../../../selectors/multichain/networks';
 import { isMultichainWalletSnap } from '../../../../../shared/lib/accounts/snaps';
 import { CONFIRMATION_V_NEXT_ROUTE } from '../../../../helpers/constants/routes';
@@ -30,7 +28,7 @@ export const useHandleSendNonEvm = (caipAssetType?: CaipAssetType) => {
   const navigate = useNavigate();
 
   const unapprovedTemplatedConfirmations = useSelector(
-    getMemoizedUnapprovedTemplatedConfirmations,
+    getUnapprovedTemplatedConfirmations,
   );
 
   useEffect(() => {

@@ -12,7 +12,11 @@ import {
   AvatarTokenSize,
 } from '@metamask/design-system-react';
 import { PerpsTokenLogo } from '../perps-token-logo';
-import { getDisplayName } from '../utils';
+import {
+  formatSignedChangePercent,
+  getChangeColor,
+  getDisplayName,
+} from '../utils';
 
 const CARD_STYLES =
   'justify-start rounded-none min-w-0 h-[62px] gap-4 text-left cursor-pointer bg-default pt-2 pb-2 px-4 hover:bg-hover active:bg-pressed';
@@ -38,8 +42,8 @@ export const PerpsMarketCard: React.FC<PerpsMarketCardProps> = ({
 }) => {
   const displaySymbol = getDisplayName(symbol);
   const displayName = name ? getDisplayName(name) : displaySymbol;
-  const isPositiveChange =
-    change24hPercent.startsWith('+') || change24hPercent === '0.00%';
+  const displayChange24hPercent = formatSignedChangePercent(change24hPercent);
+  const changeColor = getChangeColor(displayChange24hPercent);
 
   return (
     <ButtonBase
@@ -60,9 +64,11 @@ export const PerpsMarketCard: React.FC<PerpsMarketCardProps> = ({
         gap={1}
       >
         <Text fontWeight={FontWeight.Medium}>{displayName}</Text>
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {displaySymbol}-USD
-        </Text>
+        {volume ? (
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {volume}
+          </Text>
+        ) : null}
       </Box>
       <Box
         className="shrink-0"
@@ -75,17 +81,11 @@ export const PerpsMarketCard: React.FC<PerpsMarketCardProps> = ({
         </Text>
         <Text
           variant={TextVariant.BodySm}
-          color={
-            isPositiveChange ? TextColor.SuccessDefault : TextColor.ErrorDefault
-          }
+          color={changeColor}
+          data-testid="perps-market-card-change"
         >
-          {change24hPercent}
+          {displayChange24hPercent}
         </Text>
-        {volume && (
-          <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
-            {volume}
-          </Text>
-        )}
       </Box>
     </ButtonBase>
   );

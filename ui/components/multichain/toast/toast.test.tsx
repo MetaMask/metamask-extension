@@ -51,6 +51,6 @@ describe('Toast', () => {
       fireEvent.click(closeButton);
     }
     expect(closeButton).toBeDefined();
-    expect(onActionClick).toHaveBeenCalled();
+    expect(onClose).toHaveBeenCalled();
   });
 });

@@ -1,11 +1,10 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { ButtonSize } from '@metamask/design-system-react';
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import TransactionIcon from '../transaction-icon';
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
-import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import {
   TransactionGroupStatus,
   SmartTransactionStatus,
@@ -26,6 +25,7 @@ import {
   Display,
 } from '../../../helpers/constants/design-system';
 import { getCurrentNetwork } from '../../../selectors';
+import { useBoolean } from '../../../hooks/useBoolean';
 
 export default function SmartTransactionListItem({
   smartTransaction,
@@ -35,13 +35,12 @@ export default function SmartTransactionListItem({
 }) {
   const dispatch = useDispatch();
   const [cancelSwapLinkClicked, setCancelSwapLinkClicked] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
+  const { value: showDetails, toggle: toggleShowDetails } = useBoolean();
   const { title, category, primaryCurrency, recipientAddress, isPending } =
     useTransactionDisplayData(transactionGroup);
   const currentChain = useSelector(getCurrentNetwork);
 
-  const { time, status } = smartTransaction;
-  const date = formatDateWithYearContext(time, 'MMM d, y', 'MMM d');
+  const { status } = smartTransaction;
   let displayedStatusKey;
   if (status === SmartTransactionStatus.pending) {
     displayedStatusKey = TransactionGroupStatus.pending;
@@ -51,9 +50,6 @@ export default function SmartTransactionListItem({
   const showCancelSwapLink =
     smartTransaction.cancellable && !cancelSwapLinkClicked;
   const className = 'transaction-list-item transaction-list-item--unconfirmed';
-  const toggleShowDetails = useCallback(() => {
-    setShowDetails((prev) => !prev);
-  }, []);
   const senderAddress = transactionGroup.initialTransaction.txParams?.from;
 
   return (
@@ -84,7 +80,6 @@ export default function SmartTransactionListItem({
           <TransactionStatusLabel
             isPending
             isEarliestNonce={isEarliestNonce}
-            date={date}
             status={displayedStatusKey}
           />
         }
@@ -116,9 +111,7 @@ export default function SmartTransactionListItem({
             <TransactionStatusLabel
               isPending={isPending}
               isEarliestNonce={isEarliestNonce}
-              date={date}
               status={displayedStatusKey}
-              statusOnly
             />
           )}
           chainId={chainId}

@@ -1,5 +1,8 @@
 import { merge } from 'lodash';
 import { Hex } from '@metamask/utils';
+import { KeyringTypes } from '@metamask/keyring-controller';
+import { TransactionType } from '@metamask/transaction-controller';
+import { waitFor } from '@testing-library/react';
 import {
   getMockConfirmStateForTransaction,
   getMockConfirmState,
@@ -12,10 +15,19 @@ import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib
 import { AlertsName } from '../constants';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { HardwareKeyringType } from '../../../../../../shared/constants/hardware-wallets';
+import * as useTransactionPayTokenModule from '../../pay/useTransactionPayToken';
 import { usePayHardwareAccountAlert } from './usePayHardwareAccountAlert';
 
+jest.mock('../../pay/useTransactionPayToken');
+
 const HARDWARE_ACCOUNT_ID = 'hardware-account-id';
+
+const PAY_TOKEN_MOCK = {
+  address: '0x1234' as Hex,
+  chainId: '0x5' as Hex,
+  balanceRaw: '0x0',
+  balanceUsd: '0',
+};
 
 function createHardwareAccountState(keyringType: string) {
   return {
@@ -54,30 +66,32 @@ function createHardwareAccountState(keyringType: string) {
   };
 }
 
-function runHookWithPayToken(keyringType: string) {
-  const transaction = genUnapprovedContractInteractionConfirmation({
-    address: CONTRACT_INTERACTION_SENDER_ADDRESS as Hex,
-  });
+function mockPayToken(payToken: object | null = PAY_TOKEN_MOCK) {
+  jest
+    .mocked(useTransactionPayTokenModule.useTransactionPayToken)
+    .mockReturnValue({
+      payToken,
+      setPayToken: jest.fn(),
+    } as ReturnType<typeof useTransactionPayTokenModule.useTransactionPayToken>);
+}
 
-  const accountState = createHardwareAccountState(keyringType);
-  const payTokenState = {
-    metamask: {
-      transactionData: {
-        [transaction.id]: {
-          paymentToken: {
-            address: '0x1234' as Hex,
-            chainId: '0x5' as Hex,
-            balanceRaw: '0x0',
-            balanceUsd: '0',
-          },
-        },
-      },
-    },
+function runHookWithMusdConversion(
+  keyringType: string = 'HD Key Tree',
+  payToken: object | null = PAY_TOKEN_MOCK,
+) {
+  mockPayToken(payToken);
+
+  const transaction = {
+    ...genUnapprovedContractInteractionConfirmation({
+      address: CONTRACT_INTERACTION_SENDER_ADDRESS as Hex,
+    }),
+    type: TransactionType.musdConversion,
   };
 
-  const mergedArgs = merge({}, accountState, payTokenState);
-
-  const state = getMockConfirmStateForTransaction(transaction, mergedArgs);
+  const state = getMockConfirmStateForTransaction(
+    transaction,
+    createHardwareAccountState(keyringType),
+  );
 
   return renderHookWithConfirmContextProvider(
     () => usePayHardwareAccountAlert(),
@@ -85,7 +99,9 @@ function runHookWithPayToken(keyringType: string) {
   );
 }
 
-function runHookWithoutPayToken(keyringType: string = 'HD Key Tree') {
+function runHookWithContractInteraction(keyringType: string) {
+  mockPayToken(PAY_TOKEN_MOCK);
+
   const transaction = genUnapprovedContractInteractionConfirmation({
     address: CONTRACT_INTERACTION_SENDER_ADDRESS as Hex,
   });
@@ -102,6 +118,8 @@ function runHookWithoutPayToken(keyringType: string = 'HD Key Tree') {
 }
 
 function runHookWithoutTransaction() {
+  mockPayToken(null);
+
   const state = getMockConfirmState();
 
   return renderHookWithConfirmContextProvider(
@@ -110,65 +128,61 @@ function runHookWithoutTransaction() {
   );
 }
 
+const EXPECTED_ALERT = {
+  key: AlertsName.PayHardwareAccount,
+  field: RowAlertKey.PayWith,
+  reason: 'Wallet not supported',
+  message: "Hardware wallets aren't supported.\nSwitch wallets to continue.",
+  severity: Severity.Danger,
+  isBlocking: true,
+};
+
 describe('usePayHardwareAccountAlert', () => {
-  it('returns alert if from address is a Ledger hardware wallet account with pay token', () => {
-    const { result } = runHookWithPayToken(HardwareKeyringType.ledger);
+  it('returns alert for Ledger account on musdConversion with pay token', async () => {
+    const { result } = runHookWithMusdConversion(KeyringTypes.ledger);
 
-    expect(result.current).toStrictEqual([
-      {
-        key: AlertsName.PayHardwareAccount,
-        field: RowAlertKey.PayWith,
-        reason: 'Wallet not supported',
-        message:
-          "Hardware wallets aren't supported.\nSwitch wallets to continue.",
-        severity: Severity.Danger,
-        isBlocking: true,
-      },
-    ]);
+    await waitFor(() => {
+      expect(result.current).toStrictEqual([EXPECTED_ALERT]);
+    });
   });
 
-  it('returns alert if from address is a Trezor hardware wallet account with pay token', () => {
-    const { result } = runHookWithPayToken(HardwareKeyringType.trezor);
+  it('returns alert for Trezor account on musdConversion with pay token', async () => {
+    const { result } = runHookWithMusdConversion(KeyringTypes.trezor);
 
-    expect(result.current).toStrictEqual([
-      {
-        key: AlertsName.PayHardwareAccount,
-        field: RowAlertKey.PayWith,
-        reason: 'Wallet not supported',
-        message:
-          "Hardware wallets aren't supported.\nSwitch wallets to continue.",
-        severity: Severity.Danger,
-        isBlocking: true,
-      },
-    ]);
+    await waitFor(() => {
+      expect(result.current).toStrictEqual([EXPECTED_ALERT]);
+    });
   });
 
-  it('returns alert if from address is a Lattice hardware wallet account with pay token', () => {
-    const { result } = runHookWithPayToken(HardwareKeyringType.lattice);
+  it('returns alert for Lattice account on musdConversion with pay token', async () => {
+    const { result } = runHookWithMusdConversion(KeyringTypes.lattice);
 
-    expect(result.current).toStrictEqual([
-      {
-        key: AlertsName.PayHardwareAccount,
-        field: RowAlertKey.PayWith,
-        reason: 'Wallet not supported',
-        message:
-          "Hardware wallets aren't supported.\nSwitch wallets to continue.",
-        severity: Severity.Danger,
-        isBlocking: true,
-      },
-    ]);
+    await waitFor(() => {
+      expect(result.current).toStrictEqual([EXPECTED_ALERT]);
+    });
   });
 
-  it('returns no alert if from address is a hardware wallet account without pay token', () => {
-    const { result } = runHookWithoutPayToken(HardwareKeyringType.ledger);
+  it('returns no alert for hardware wallet on musdConversion without pay token', () => {
+    const { result } = runHookWithMusdConversion(
+      KeyringTypes.ledger,
+      null,
+    );
 
     expect(result.current).toStrictEqual([]);
   });
 
-  it('returns no alert if from address is not a hardware wallet account', () => {
-    const { result } = runHookWithPayToken('HD Key Tree');
+  it('returns no alert for non-hardware wallet account on musdConversion', () => {
+    const { result } = runHookWithMusdConversion('HD Key Tree');
 
     expect(result.current).toStrictEqual([]);
+  });
+
+  it('returns no alert for hardware wallet on contractInteraction', async () => {
+    const { result } = runHookWithContractInteraction(KeyringTypes.ledger);
+
+    await waitFor(() => {
+      expect(result.current).toStrictEqual([]);
+    });
   });
 
   it('returns no alert if there is no current confirmation', () => {

@@ -4,15 +4,14 @@
       "hiddenAccountList": [],
       "pinnedAccountList": []
     },
-    "AccountTracker": {
-      "accountsByChainId": {
-        "0x1": {}
-      }
-    },
     "AccountTreeController": {
       "accountGroupsMetadata": {},
+      "accountTree": {
+        "wallets": {}
+      },
       "accountWalletsMetadata": {},
-      "hasAccountTreeSyncingSyncedAtLeastOnce": false
+      "hasAccountTreeSyncingSyncedAtLeastOnce": false,
+      "selectedAccountGroup": ""
     },
     "AccountsController": {
       "internalAccounts": {
@@ -36,7 +35,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 199,
+      "currentMigrationVersion": 211,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -54,7 +53,6 @@
       "defaultHomeActiveTabName": null,
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
       "hasShownMultichainAccountsIntroModal": false,
-      "isRampCardClosed": false,
       "isWalletResetInProgress": false,
       "lastUpdatedAt": null,
       "lastUpdatedFromVersion": null,
@@ -63,7 +61,6 @@
       "musdConversionEducationSeen": false,
       "newPrivacyPolicyToastClickedOrClosed": null,
       "newPrivacyPolicyToastShownDate": 1764061390419,
-      "nftsDetectionNoticeDismissed": false,
       "onboardingDate": 1764061390455,
       "outdatedBrowserWarningLastShown": null,
       "pendingShieldCohort": null,
@@ -74,18 +71,20 @@
       "recoveryPhraseReminderLastShown": 7952515200000,
       "shieldEndingToastLastClickedOrClosed": null,
       "shieldPausedToastLastClickedOrClosed": null,
-      "showAccountBanner": true,
-      "showBetaHeader": false,
       "showDownloadMobileAppSlide": true,
-      "showNetworkBanner": true,
-      "showPermissionsTour": true,
       "showShieldEntryModalOnce": null,
-      "showTestnetMessageInDropdown": true,
       "slides": [],
-      "surveyLinkLastClickedOrClosed": null,
       "timeoutMinutes": 0,
       "trezorModel": null,
       "updateModalLastDismissedAt": null
+    },
+    "AssetsController": {
+      "assetPreferences": {},
+      "assetsBalance": {},
+      "assetsInfo": {},
+      "assetsPrice": {},
+      "customAssets": {},
+      "selectedCurrency": "usd"
     },
     "AuthenticationController": {
       "isSignedIn": false
@@ -110,9 +109,6 @@
         }
       },
       "currentCurrency": "usd"
-    },
-    "DelegationController": {
-      "delegations": {}
     },
     "EnsController": {
       "ensEntries": {
@@ -421,6 +417,22 @@
             }
           ]
         },
+        "0x8f": {
+          "blockExplorerUrls": ["https://monadscan.com"],
+          "chainId": "0x8f",
+          "defaultBlockExplorerUrlIndex": 0,
+          "defaultRpcEndpointIndex": 0,
+          "name": "Monad",
+          "nativeCurrency": "MON",
+          "rpcEndpoints": [
+            {
+              "failoverUrls": [],
+              "networkClientId": "monad-mainnet",
+              "type": "infura",
+              "url": "https://monad-mainnet.infura.io/v3/{infuraProjectId}"
+            }
+          ]
+        },
         "0xa": {
           "blockExplorerUrls": ["https://optimistic.etherscan.io"],
           "chainId": "0xa",
@@ -532,6 +544,7 @@
           "0x279f": false,
           "0x38": true,
           "0x89": true,
+          "0x8f": true,
           "0xa": true,
           "0xa4b1": true,
           "0xaa36a7": false,
@@ -555,6 +568,7 @@
         "eip155:10143": "eip155:10143/slip44:60",
         "eip155:11155111": "eip155:11155111/slip44:60",
         "eip155:137": "eip155:137/slip44:60",
+        "eip155:143": "eip155:143/slip44:60",
         "eip155:42161": "eip155:42161/slip44:60",
         "eip155:56": "eip155:56/slip44:60",
         "eip155:59141": "eip155:59141/slip44:1",
@@ -591,6 +605,9 @@
     "PPOMController": {
       "storageMetadata": [],
       "versionInfo": []
+    },
+    "PasskeyController": {
+      "passkeyRecord": null
     },
     "PermissionController": {
       "subjects": {
@@ -651,6 +668,44 @@
             }
           }
         },
+        "https://app-beta.signer.cubist.dev": {
+          "origin": "https://app-beta.signer.cubist.dev",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389884,
+              "id": "Xm8kPqR3vDnYj2cAzBw4T",
+              "invoker": "https://app-beta.signer.cubist.dev",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://app-gamma.signer.cubist.dev": {
+          "origin": "https://app-gamma.signer.cubist.dev",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389884,
+              "id": "Lh6nWsQ9uEoYk5bCxDm7G",
+              "invoker": "https://app-gamma.signer.cubist.dev",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
         "https://app.bitgo-test.com": {
           "origin": "https://app.bitgo-test.com",
           "permissions": {
@@ -704,6 +759,25 @@
               "date": 1764061389877,
               "id": "fYsfFXNA_41cOKy-O4dN0",
               "invoker": "https://app.metamask.io",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://app.signer.cubist.dev": {
+          "origin": "https://app.signer.cubist.dev",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389884,
+              "id": "Tp4mNrJ7yFwZh8eBvCk2H",
+              "invoker": "https://app.signer.cubist.dev",
               "parentCapability": "wallet_snap"
             }
           }
@@ -1529,6 +1603,9 @@
                       "https://console.dev.mpcvault.com",
                       "https://saturn-custody-ui.metamask-institutional.io",
                       "https://console.mpcvault.com",
+                      "https://app-beta.signer.cubist.dev",
+                      "https://app-gamma.signer.cubist.dev",
+                      "https://app.signer.cubist.dev",
                       "https://app.bitgo.com",
                       "https://app.bitgo-test.com",
                       "https://apps-portal.safe.global",
@@ -1953,7 +2030,7 @@
         "hideZeroBalanceTokens": false,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
-        "showDefaultAddress": false,
+        "showDefaultAddress": true,
         "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
         "showMultiRpcModal": false,
@@ -1977,12 +2054,12 @@
         "hyperliquid": {}
       },
       "securityAlertsEnabled": true,
+      "showSidePanelMigrationToast": false,
       "snapRegistryList": {},
       "snapsAddSnapAccountModalDismissed": false,
       "theme": "os",
       "use4ByteResolution": true,
       "useAddressBarEnsResolution": true,
-      "useBlockie": false,
       "useCurrencyRateCheck": true,
       "useExternalNameSources": true,
       "useExternalServices": true,
@@ -2011,7 +2088,8 @@
       "rewardsSeasonStatuses": {},
       "rewardsSeasons": {},
       "rewardsSubscriptionTokens": {},
-      "rewardsSubscriptions": {}
+      "rewardsSubscriptions": {},
+      "rewardsVipPerpsFees": {}
     },
     "SeedlessOnboardingController": {
       "isSeedlessOnboardingUserAuthenticated": false,
@@ -2022,9 +2100,12 @@
         "http://localhost:3000": "mainnet",
         "http://localhost:8000": "mainnet",
         "https://alpha.mycactus.io": "mainnet",
+        "https://app-beta.signer.cubist.dev": "mainnet",
+        "https://app-gamma.signer.cubist.dev": "mainnet",
         "https://app.bitgo-test.com": "mainnet",
         "https://app.bitgo.com": "mainnet",
         "https://app.metamask.io": "mainnet",
+        "https://app.signer.cubist.dev": "mainnet",
         "https://apps-portal.safe.global": "mainnet",
         "https://console.dev.mpcvault.com": "mainnet",
         "https://console.fireblocks.io": "mainnet",
@@ -2074,7 +2155,7 @@
     "SnapInterfaceController": {
       "interfaces": {}
     },
-    "SnapsRegistry": {
+    "SnapRegistryController": {
       "database": null,
       "databaseUnavailable": false,
       "lastUpdated": null,
@@ -2186,6 +2267,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 199
+    "version": 211
   }
 }

@@ -79,6 +79,18 @@ describe('mapTransactionTypeToCategory', () => {
     );
   });
 
+  it('returns send category for perpsDeposit', () => {
+    expect(mapTransactionTypeToCategory(TransactionType.perpsDeposit)).toBe(
+      TransactionGroupCategory.send,
+    );
+  });
+
+  it('returns send category for perpsWithdraw', () => {
+    expect(mapTransactionTypeToCategory(TransactionType.perpsWithdraw)).toBe(
+      TransactionGroupCategory.send,
+    );
+  });
+
   it('returns send category for contractInteraction with Merkl distributor and claim method', () => {
     const resolved = resolveTransactionType(
       TransactionType.contractInteraction,

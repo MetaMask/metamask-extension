@@ -18,8 +18,8 @@ export default class SpeedUpAndCancelModal {
   private readonly modal: RawLocator =
     '[data-testid="speed-up-and-cancel-modal"]';
 
-  private readonly siteSuggestedText: RawLocator = {
-    text: 'Site suggested',
+  private readonly tenPercentText: RawLocator = {
+    text: '10% increase',
   };
 
   private readonly speedRow: RawLocator =
@@ -42,12 +42,12 @@ export default class SpeedUpAndCancelModal {
   }
 
   /**
-   * Checks that the Speed row in the modal displays "Site suggested".
+   * Checks that the Speed row in the modal displays "10% increased".
    */
-  async checkSpeedRowShowsSiteSuggested(): Promise<void> {
-    console.log('Checking Speed row shows Site suggested');
+  async checkSpeedRowShowsTenPercentIncreased(): Promise<void> {
+    console.log('Checking Speed row shows 10% increased');
     await this.driver.waitForSelector(this.speedRow);
-    await this.driver.waitForSelector(this.siteSuggestedText);
+    await this.driver.waitForSelector(this.tenPercentText);
   }
 
   /**

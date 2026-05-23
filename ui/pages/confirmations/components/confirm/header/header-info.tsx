@@ -56,7 +56,6 @@ const HeaderInfo = () => {
     senderAddress: fromAddress,
     senderName: fromName,
     walletName,
-    isBIP44,
     hasMoreThanOneWallet,
   } = useConfirmationRecipientInfo();
 
@@ -166,7 +165,7 @@ const HeaderInfo = () => {
                 >
                   {fromName}
                 </Text>
-                {isBIP44 && hasMoreThanOneWallet && (
+                {hasMoreThanOneWallet && (
                   <Text
                     variant={TextVariant.bodySm}
                     color={TextColor.textAlternative}

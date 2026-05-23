@@ -1,8 +1,8 @@
 /** Please import your files in alphabetical order **/
 @import 'account-list-item/index';
+@import 'activity-list-item-avatar/index';
 @import 'app-loading-spinner/index';
 @import 'alerts/alerts';
-@import 'cancel-speedup-popover/index';
 @import 'alert-system/alert-modal/index';
 @import 'alert-system/inline-alert/index';
 @import 'import-token/index';
@@ -11,6 +11,7 @@
 @import 'assets/nfts/nft-options/index';
 @import 'connected-accounts-list/index';
 @import 'connected-accounts-permissions/index';
+@import 'change-password/index';
 @import 'connected-sites-list/index';
 @import 'create-new-vault/create-new-vault.scss';
 @import 'flask/experimental-area/index';
@@ -45,6 +46,7 @@
 @import 'permissions-connect-permission-list/index';
 @import 'permission-cell/index';
 @import 'recovery-phrase-reminder/index';
+@import 'reveal-srp-list/index';
 @import 'rewards/onboarding/onboarding-modal';
 @import 'step-progress-bar/index.scss';
 @import 'selected-account/index';
@@ -57,7 +59,6 @@
 @import 'assets/asset-list/asset-list-control-bar/index';
 @import 'assets/asset-list/sort-control/index';
 @import 'assets/token-cell/token-cell';
-@import 'toast-master/index';
 @import 'transaction-breakdown/index';
 @import 'transaction-icon/transaction-icon';
 @import 'transaction-list-item-details/index';
@@ -66,10 +67,6 @@
 @import 'wallet-overview/index';
 @import 'terms-of-use-popup/index';
 @import 'currency-input/index';
-@import 'detected-token/detected-token-aggregators/index';
-@import 'detected-token/detected-token-values/index';
-@import 'detected-token/detected-token-details/index';
-@import 'detected-token/detected-token-selection-popover/index';
 @import 'network-account-balance-header/index';
 @import 'name/index';
 @import 'name/name-details/index';
