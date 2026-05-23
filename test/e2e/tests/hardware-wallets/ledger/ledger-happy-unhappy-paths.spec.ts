@@ -65,7 +65,6 @@ describe('Ledger Hardware Wallet Happy & Unhappy Paths @speculos', function (thi
           const connectPage = new ConnectHardwareWalletPage(driver);
           await connectPage.checkPageIsLoaded();
           await connectPage.clickConnectLedgerButton();
-          await connectPage.clickContinueButton(30000);
 
           const selectPage = new SelectHardwareWalletAccountPage(driver);
           await selectPage.checkPageIsLoaded();
@@ -197,7 +196,6 @@ describe('Ledger Hardware Wallet Happy & Unhappy Paths @speculos', function (thi
           const connectPage = new ConnectHardwareWalletPage(driver);
           await connectPage.checkPageIsLoaded();
           await connectPage.clickConnectLedgerButton();
-          await connectPage.clickContinueButton(30000);
 
           const selectPage = new SelectHardwareWalletAccountPage(driver);
           await selectPage.checkPageIsLoaded();
@@ -372,7 +370,6 @@ describe('Ledger Hardware Wallet Happy & Unhappy Paths @speculos', function (thi
           const connectPage = new ConnectHardwareWalletPage(driver);
           await connectPage.checkPageIsLoaded();
           await connectPage.clickConnectLedgerButton();
-          await connectPage.clickContinueButton();
 
           const selectPage = new SelectHardwareWalletAccountPage(driver);
           await selectPage.checkPageIsLoaded();

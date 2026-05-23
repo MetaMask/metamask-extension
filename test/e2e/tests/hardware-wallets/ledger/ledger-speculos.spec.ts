@@ -78,7 +78,6 @@ describe('Ledger Hardware - Speculos Integration @speculos', function () {
         const connectPage = new ConnectHardwareWalletPage(driver);
         await connectPage.checkPageIsLoaded();
         await connectPage.clickConnectLedgerButton();
-        await connectPage.clickContinueButton(30000);
 
         const selectPage = new SelectHardwareWalletAccountPage(driver);
         await selectPage.checkPageIsLoaded();
@@ -114,7 +113,6 @@ describe('Ledger Hardware - Speculos Integration @speculos', function () {
         const connectPage = new ConnectHardwareWalletPage(driver);
         await connectPage.checkPageIsLoaded();
         await connectPage.clickConnectLedgerButton();
-        await connectPage.clickContinueButton(30000);
 
         const selectPage = new SelectHardwareWalletAccountPage(driver);
         await selectPage.checkPageIsLoaded();
@@ -127,7 +125,11 @@ describe('Ledger Hardware - Speculos Integration @speculos', function () {
     );
   });
 
-  it('rejects connection on the Ledger device', async function () {
+  // TODO: The Ethereum NanoSP app auto-approves GET_PUBLIC_KEY, so the device
+  // cannot reject the connection request. The reject flow needs to target an
+  // operation that requires user approval (e.g., signing). Re-enable when we
+  // have a way to force GET_PUBLIC_KEY approval on Speculos.
+  it.skip('rejects connection on the Ledger device', async function () {
     await withSpeculosFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -147,12 +149,13 @@ describe('Ledger Hardware - Speculos Integration @speculos', function () {
         const connectPage = new ConnectHardwareWalletPage(driver);
         await connectPage.checkPageIsLoaded();
         await connectPage.clickConnectLedgerButton();
-        await connectPage.clickContinueButton(30000);
 
         const selectPage = new SelectHardwareWalletAccountPage(driver);
         await selectPage.checkPageIsLoaded();
 
+        await new Promise((r) => setTimeout(r, 2000));
         await speculosClient.pressButton('right');
+        await new Promise((r) => setTimeout(r, 300));
         await speculosClient.pressButton('both');
 
         await connectPage.checkPageIsLoaded();
@@ -181,8 +184,7 @@ describe('Ledger Hardware - Speculos Integration @speculos', function () {
         await switchToHardwareAccount(driver, 'Ledger 1');
 
         const homePage = new HomePage(driver);
-        await homePage.checkBalanceIsDisplayed();
-        await driver.delay(2000);
+        await homePage.checkExpectedBalanceIsDisplayed('1.21M');
 
         const ledgerDone = approveLedgerAfterSigningApdu(
           speculosClient,
