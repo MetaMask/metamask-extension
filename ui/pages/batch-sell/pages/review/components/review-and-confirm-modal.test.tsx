@@ -162,10 +162,10 @@ describe('ReviewAndConfirmModal', () => {
     expect(screen.getByText('networkFee')).toBeInTheDocument();
   });
 
-  it('renders the submit label when funds are sufficient', () => {
+  it('renders the Sell all label when funds are sufficient', () => {
     render(<ReviewAndConfirmModal {...defaultProps} />);
 
-    expect(screen.getByText('submit')).toBeInTheDocument();
+    expect(screen.getByText('sellAll')).toBeInTheDocument();
   });
 
   it('renders the insufficient balance label when funds are insufficient', () => {
@@ -176,7 +176,7 @@ describe('ReviewAndConfirmModal', () => {
     ).toBeInTheDocument();
   });
 
-  it('disables the submit button when funds are insufficient', () => {
+  it('disables the Sell all button when funds are insufficient', () => {
     render(<ReviewAndConfirmModal {...defaultProps} isInsufficientGasForFee />);
 
     expect(
@@ -184,7 +184,7 @@ describe('ReviewAndConfirmModal', () => {
     ).toBeDisabled();
   });
 
-  it('disables the submit button when the trade is unavailable', () => {
+  it('disables the Sell all button when the trade is unavailable', () => {
     render(
       <ReviewAndConfirmModal
         {...defaultProps}
@@ -192,23 +192,23 @@ describe('ReviewAndConfirmModal', () => {
       />,
     );
 
-    expect(screen.getByRole('button', { name: 'submit' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'sellAll' })).toBeDisabled();
   });
 
-  it('enables the submit button when funds are sufficient and trade is available', () => {
+  it('enables the Sell all button when funds are sufficient and trade is available', () => {
     render(<ReviewAndConfirmModal {...defaultProps} />);
 
-    expect(screen.getByRole('button', { name: 'submit' })).toBeEnabled();
+    expect(screen.getByRole('button', { name: 'sellAll' })).toBeEnabled();
   });
 
-  it('invokes the submit click handler without throwing when the submit button is clicked', () => {
+  it('invokes the submit click handler without throwing when the Sell all button is clicked', () => {
     const logSpy = jest
       .spyOn(console, 'log')
       .mockImplementation(() => undefined);
 
     render(<ReviewAndConfirmModal {...defaultProps} />);
 
-    fireEvent.click(screen.getByRole('button', { name: 'submit' }));
+    fireEvent.click(screen.getByRole('button', { name: 'sellAll' }));
 
     expect(logSpy).toHaveBeenCalled();
     logSpy.mockRestore();

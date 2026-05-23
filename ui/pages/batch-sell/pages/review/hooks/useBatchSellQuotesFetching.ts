@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { debounce } from 'lodash';
 import { CaipAssetType } from '@metamask/utils';
@@ -105,7 +105,7 @@ export const useBatchSellQuotesFetching = (
     ),
   );
 
-  useEffect(() => {
+  const refetch = useCallback(() => {
     if (!enabled || requestCount === 0 || !selectedAccount?.address) {
       return;
     }
@@ -150,6 +150,10 @@ export const useBatchSellQuotesFetching = (
     dispatch,
   ]);
 
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
   // Cancel pending dispatches and reset controller state on unmount so quotes
   // don't leak across navigations between batch-sell and other flows.
   useEffect(() => {
@@ -167,10 +171,19 @@ export const useBatchSellQuotesFetching = (
     requestCount > 0 &&
     (!hasEverFetched || controllerResult.isLoading);
 
+  const quotesHaveEverFetched = controllerResult.quotesLastFetchedMs !== null;
+  const areQuotesRefreshExpired =
+    !isLoading &&
+    quotesHaveEverFetched &&
+    !controllerResult.isQuoteGoingToRefresh;
+
   return {
     data,
     entries,
     isLoading,
     quotesLastFetchedMs: controllerResult.quotesLastFetchedMs,
+    isQuoteGoingToRefresh: controllerResult.isQuoteGoingToRefresh,
+    areQuotesRefreshExpired,
+    refetch,
   };
 };

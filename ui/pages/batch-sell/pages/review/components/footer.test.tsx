@@ -7,41 +7,133 @@ jest.mock('../../../../../hooks/useI18nContext', () => ({
 }));
 
 describe('Footer', () => {
-  it('renders the review label', () => {
-    render(<Footer reviewIsDisabled={false} onReviewClick={jest.fn()} />);
+  describe('review mode (default)', () => {
+    it('renders the review label', () => {
+      render(
+        <Footer
+          areQuotesRefreshExpired={false}
+          reviewIsDisabled={false}
+          onReviewClick={jest.fn()}
+        />,
+      );
 
-    expect(screen.getByText('review')).toBeInTheDocument();
+      expect(screen.getByText('review')).toBeInTheDocument();
+    });
+
+    it('renders an enabled button when reviewIsDisabled is false', () => {
+      render(
+        <Footer
+          areQuotesRefreshExpired={false}
+          reviewIsDisabled={false}
+          onReviewClick={jest.fn()}
+        />,
+      );
+
+      expect(screen.getByRole('button')).toBeEnabled();
+    });
+
+    it('renders a disabled button when reviewIsDisabled is true', () => {
+      render(
+        <Footer
+          areQuotesRefreshExpired={false}
+          reviewIsDisabled
+          onReviewClick={jest.fn()}
+        />,
+      );
+
+      expect(screen.getByRole('button')).toBeDisabled();
+    });
+
+    it('calls onReviewClick when the button is clicked', () => {
+      const onReviewClick = jest.fn();
+
+      render(
+        <Footer
+          areQuotesRefreshExpired={false}
+          reviewIsDisabled={false}
+          onReviewClick={onReviewClick}
+        />,
+      );
+
+      fireEvent.click(screen.getByRole('button'));
+
+      expect(onReviewClick).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not call onReviewClick when the disabled button is clicked', () => {
+      const onReviewClick = jest.fn();
+
+      render(
+        <Footer
+          areQuotesRefreshExpired={false}
+          reviewIsDisabled
+          onReviewClick={onReviewClick}
+        />,
+      );
+
+      fireEvent.click(screen.getByRole('button'));
+
+      expect(onReviewClick).not.toHaveBeenCalled();
+    });
   });
 
-  it('renders an enabled button when reviewIsDisabled is false', () => {
-    render(<Footer reviewIsDisabled={false} onReviewClick={jest.fn()} />);
+  describe('get new quotes mode (areQuotesRefreshExpired)', () => {
+    it('renders the get new quotes label when areQuotesRefreshExpired is true', () => {
+      render(
+        <Footer
+          reviewIsDisabled={false}
+          onReviewClick={jest.fn()}
+          areQuotesRefreshExpired
+          onGetNewQuotesClick={jest.fn()}
+        />,
+      );
 
-    expect(screen.getByRole('button')).toBeEnabled();
-  });
+      expect(screen.getByText('batchSellGetNewQuotes')).toBeInTheDocument();
+    });
 
-  it('renders a disabled button when reviewIsDisabled is true', () => {
-    render(<Footer reviewIsDisabled onReviewClick={jest.fn()} />);
+    it('does not render the review label when areQuotesRefreshExpired is true', () => {
+      render(
+        <Footer
+          reviewIsDisabled={false}
+          onReviewClick={jest.fn()}
+          areQuotesRefreshExpired
+          onGetNewQuotesClick={jest.fn()}
+        />,
+      );
 
-    expect(screen.getByRole('button')).toBeDisabled();
-  });
+      expect(screen.queryByText('review')).not.toBeInTheDocument();
+    });
 
-  it('calls onReviewClick when the button is clicked', () => {
-    const onReviewClick = jest.fn();
+    it('renders an enabled button when areQuotesRefreshExpired is true', () => {
+      render(
+        <Footer
+          reviewIsDisabled={false}
+          onReviewClick={jest.fn()}
+          areQuotesRefreshExpired
+          onGetNewQuotesClick={jest.fn()}
+        />,
+      );
 
-    render(<Footer reviewIsDisabled={false} onReviewClick={onReviewClick} />);
+      expect(screen.getByRole('button')).toBeEnabled();
+    });
 
-    fireEvent.click(screen.getByRole('button'));
+    it('calls onGetNewQuotesClick when the button is clicked', () => {
+      const onGetNewQuotesClick = jest.fn();
+      const onReviewClick = jest.fn();
 
-    expect(onReviewClick).toHaveBeenCalledTimes(1);
-  });
+      render(
+        <Footer
+          reviewIsDisabled={false}
+          onReviewClick={onReviewClick}
+          areQuotesRefreshExpired
+          onGetNewQuotesClick={onGetNewQuotesClick}
+        />,
+      );
 
-  it('does not call onReviewClick when the disabled button is clicked', () => {
-    const onReviewClick = jest.fn();
+      fireEvent.click(screen.getByRole('button'));
 
-    render(<Footer reviewIsDisabled onReviewClick={onReviewClick} />);
-
-    fireEvent.click(screen.getByRole('button'));
-
-    expect(onReviewClick).not.toHaveBeenCalled();
+      expect(onGetNewQuotesClick).toHaveBeenCalledTimes(1);
+      expect(onReviewClick).not.toHaveBeenCalled();
+    });
   });
 });

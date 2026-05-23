@@ -15,9 +15,16 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 type FooterProps = {
   reviewIsDisabled: boolean;
   onReviewClick: () => void;
+  areQuotesRefreshExpired: boolean;
+  onGetNewQuotesClick?: () => void;
 };
 
-export const Footer = ({ reviewIsDisabled, onReviewClick }: FooterProps) => {
+export const Footer = ({
+  reviewIsDisabled,
+  onReviewClick,
+  areQuotesRefreshExpired,
+  onGetNewQuotesClick,
+}: FooterProps) => {
   const t = useI18nContext();
 
   return (
@@ -26,7 +33,7 @@ export const Footer = ({ reviewIsDisabled, onReviewClick }: FooterProps) => {
         size={ButtonSize.Lg}
         variant={ButtonVariant.Primary}
         isFullWidth
-        onClick={onReviewClick}
+        onClick={areQuotesRefreshExpired ? onGetNewQuotesClick : onReviewClick}
         disabled={reviewIsDisabled}
       >
         <Text
@@ -35,7 +42,7 @@ export const Footer = ({ reviewIsDisabled, onReviewClick }: FooterProps) => {
           textAlign={TextAlign.Center}
           color={TextColor.PrimaryInverse}
         >
-          {t('review')}
+          {t(areQuotesRefreshExpired ? 'batchSellGetNewQuotes' : 'review')}
         </Text>
       </Button>
     </Box>

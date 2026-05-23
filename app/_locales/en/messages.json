@@ -1765,6 +1765,9 @@
   "batchSellEmptyStateDescription": {
     "message": "No tokens. No problem. Explore and buy tokens to batch sell."
   },
+  "batchSellGetNewQuotes": {
+    "message": "Get new quotes"
+  },
   "batchSellHighRateAlert": {
     "message": "High rate alert"
   },
@@ -8335,6 +8338,9 @@
   },
   "selectedAccountMismatch": {
     "message": "Different account selected"
+  },
+  "sellAll": {
+    "message": "Sell all"
   },
   "send": {
     "message": "Send"

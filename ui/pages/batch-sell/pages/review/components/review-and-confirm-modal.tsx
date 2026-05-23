@@ -269,7 +269,7 @@ export const ReviewAndConfirmModal = ({
   const [isYouSellExpanded, setIsYouSellExpanded] = useState(false);
   const submitLabel = isInsufficientGasForFee
     ? t('alertReasonInsufficientBalance')
-    : t('submit');
+    : t('sellAll');
   const isSubmitDisabled =
     isInsufficientGasForFee || !isBatchSellTradeAvailable;
 

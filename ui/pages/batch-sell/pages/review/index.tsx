@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
@@ -50,14 +50,20 @@ export const BatchSellReviewPage = () => {
     deleteAsset,
   } = useBatchSellQuotesConfig();
 
-  const { data, entries, isLoading, quotesLastFetchedMs } =
-    useBatchSellQuotesFetching(
-      {
-        sendAssetsConfig,
-        receivedAsset: selectedReceiveAsset,
-      },
-      { enabled: hasInitialSelection },
-    );
+  const {
+    data,
+    entries,
+    isLoading,
+    quotesLastFetchedMs,
+    areQuotesRefreshExpired,
+    refetch,
+  } = useBatchSellQuotesFetching(
+    {
+      sendAssetsConfig,
+      receivedAsset: selectedReceiveAsset,
+    },
+    { enabled: hasInitialSelection },
+  );
 
   useBatchSellTradesFetching(
     { data, entries, quotesLastFetchedMs },
@@ -72,6 +78,10 @@ export const BatchSellReviewPage = () => {
     quotes: data?.quotes,
     totalNetworkFee: batchFees?.amount,
   });
+
+  useEffect(() => {
+    setReviewAndConfirmModalIsOpen(false);
+  }, [areQuotesRefreshExpired]);
 
   if (!hasInitialSelection) {
     return <Navigate to={BATCH_SELL_SELECT_ROUTE} replace />;
@@ -111,6 +121,8 @@ export const BatchSellReviewPage = () => {
       <Footer
         onReviewClick={() => setReviewAndConfirmModalIsOpen(true)}
         reviewIsDisabled={isLoading || !data || validation.isNoQuotesAvailable}
+        areQuotesRefreshExpired={areQuotesRefreshExpired}
+        onGetNewQuotesClick={refetch}
       />
       <SelectReceivedAssetModal
         assets={receivedAssets}
