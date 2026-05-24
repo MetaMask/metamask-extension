@@ -59,8 +59,7 @@ export const AmountRecipient = () => {
     recipientHasHardError ||
     Boolean(hexDataError) ||
     Boolean(nonEVMSubmitError) ||
-    addressPoisoningDetectionResult.pending ||
-    addressPoisoningDetectionResult.isPoisoningSuspect;
+    addressPoisoningDetectionResult.pending;
   const isDisabled = hasBlockingError || !toResolved || isNetworkUnreliable;
 
   const proceedWithSubmit = useCallback(async () => {

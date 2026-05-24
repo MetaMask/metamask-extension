@@ -243,8 +243,29 @@ describe('AmountRecipient', () => {
     expect(mockHandleSubmit).not.toHaveBeenCalled();
   });
 
-  it('disables Continue when the recipient is an address poisoning suspect', async () => {
+  it('allows Continue when the recipient is an address poisoning suspect', async () => {
     const knownAddress = '0x111122223333444455556666777788889999aaaa';
+    const mockHandleSubmit = jest.fn();
+    const mockCaptureAmountSelected = jest.fn();
+    const mockCaptureRecipientSelected = jest.fn();
+    jest.spyOn(SendActions, 'useSendActions').mockReturnValue({
+      handleSubmit: mockHandleSubmit,
+    } as unknown as ReturnType<typeof SendActions.useSendActions>);
+    jest
+      .spyOn(AmountSelectionMetrics, 'useAmountSelectionMetrics')
+      .mockReturnValue({
+        captureAmountSelected: mockCaptureAmountSelected,
+      } as unknown as ReturnType<
+        typeof AmountSelectionMetrics.useAmountSelectionMetrics
+      >);
+    jest
+      .spyOn(RecipientSelectionMetrics, 'useRecipientSelectionMetrics')
+      .mockReturnValue({
+        captureRecipientSelected: mockCaptureRecipientSelected,
+        setRecipientInputMethodManual: jest.fn(),
+      } as unknown as ReturnType<
+        typeof RecipientSelectionMetrics.useRecipientSelectionMetrics
+      >);
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       to: MOCK_ADDRESS,
       toResolved: MOCK_ADDRESS,
@@ -282,6 +303,59 @@ describe('AmountRecipient', () => {
       },
       matches: [],
       pending: false,
+    });
+
+    const { getByRole } = render();
+
+    await act(async () => {
+      await new Promise(process.nextTick);
+    });
+
+    expect(mockUseAddressPoisoningDetection).toHaveBeenCalledWith(MOCK_ADDRESS);
+    const continueButton = getByRole('button', {
+      name: messages.continue.message,
+    });
+    expect(continueButton).not.toBeDisabled();
+
+    fireEvent.click(continueButton);
+
+    expect(mockHandleSubmit).toHaveBeenCalled();
+    expect(mockCaptureAmountSelected).toHaveBeenCalled();
+    expect(mockCaptureRecipientSelected).toHaveBeenCalled();
+  });
+
+  it('disables Continue while address poisoning detection is pending', async () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      to: MOCK_ADDRESS,
+      toResolved: MOCK_ADDRESS,
+      asset: EVM_ASSET,
+      chainId: '0x1',
+      from: 'from-address',
+      updateAsset: jest.fn(),
+      updateCurrentPage: jest.fn(),
+      updateTo: jest.fn(),
+      updateToResolved: jest.fn(),
+      updateValue: jest.fn(),
+      value: '1',
+    } as unknown as ReturnType<typeof SendContext.useSendContext>);
+    jest.spyOn(AmountValidation, 'useAmountValidation').mockReturnValue({
+      amountError: undefined,
+    } as unknown as ReturnType<typeof AmountValidation.useAmountValidation>);
+    jest.spyOn(RecipientValidation, 'useRecipientValidation').mockReturnValue({
+      recipientError: null,
+      recipientWarning: null,
+      recipientResolvedLookup: null,
+      recipientConfusableCharacters: [],
+      toAddressValidated: MOCK_ADDRESS,
+      validateRecipient: jest.fn(),
+    } as unknown as ReturnType<
+      typeof RecipientValidation.useRecipientValidation
+    >);
+    mockUseAddressPoisoningDetection.mockReturnValue({
+      isPoisoningSuspect: false,
+      bestMatch: null,
+      matches: [],
+      pending: true,
     });
 
     const { getByRole } = render();
