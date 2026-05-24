@@ -1,6 +1,7 @@
 name: Remove RCA-needed Label
 
 on:
+  workflow_dispatch:
   # Run every 6 hours
   schedule:
     - cron: '0 */6 * * *'
