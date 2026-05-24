@@ -16,11 +16,6 @@ class HeaderNavbar {
   private readonly allPermissionsButton =
     '[data-testid="global-menu-connected-sites"]';
 
-  private readonly connectedSitePopoverNetworkButton =
-    '[data-testid="connected-site-popover-network-button"]';
-
-  private readonly connectionMenu = '[data-testid="connection-menu"]';
-
   private readonly copyAddressButton = '[aria-label="Copy address"]';
 
   private readonly drawerBackButton = '[data-testid="drawer-close-button"]';
@@ -33,6 +28,12 @@ class HeaderNavbar {
 
   private readonly globalNetworksMenu = '[data-testid="global-menu-networks"]';
 
+  private readonly dappConnectionControlBar =
+    '[data-testid="dapp-connection-control-bar"]';
+
+  private readonly dappNetworkButton =
+    '[data-testid="dapp-connection-control-bar__network-button"]';
+
   private readonly lockMetaMaskButton = '[data-testid="global-menu-lock"]';
 
   private readonly networkAddressesLink =
@@ -40,6 +41,9 @@ class HeaderNavbar {
 
   private readonly networkOption = (networkId: string) =>
     `[data-testid="${networkId}"]`;
+
+  private readonly selectedNetworkItem = (networkName: string) =>
+    `.multichain-network-list-item--selected [data-testid="${networkName}"]`;
 
   private readonly networkPicker = '.mm-picker-network';
 
@@ -105,9 +109,15 @@ class HeaderNavbar {
     await this.driver.clickElement(this.openAccountDetailsButton);
   }
 
-  async openGlobalNetworksMenu(): Promise<void> {
-    console.log('Open global menu');
-    await this.openGlobalMenu();
+  async openGlobalNetworksMenu({
+    isDrawerOpen = false,
+  }: {
+    isDrawerOpen?: boolean;
+  } = {}): Promise<void> {
+    console.log('Open global menu networks Page');
+    if (!isDrawerOpen) {
+      await this.openGlobalMenu();
+    }
     await this.driver.clickElement(this.globalNetworksMenu);
   }
 
@@ -237,19 +247,59 @@ class HeaderNavbar {
   }
 
   /**
-   * Open the connection menu
+   * Open the dapp network selector from the connection control bar
    */
-  async openConnectionMenu(): Promise<void> {
-    console.log('Opening connection menu');
-    await this.driver.clickElement(this.connectionMenu);
+  async openDappNetworkMenu(): Promise<void> {
+    console.log('Opening dapp network menu from control bar');
+    await this.driver.clickElement(this.dappNetworkButton);
   }
 
   /**
-   * Click the connected site popover network button
+   * Opens the connection menu popover and verifies the network shown for the
+   * connected dapp matches the expected name.
+   *
+   * @param expectedNetwork - The network name expected to appear in the popover.
    */
-  async clickConnectedSitePopoverNetworkButton(): Promise<void> {
-    console.log('Clicking connected site popover network button');
-    await this.driver.clickElement(this.connectedSitePopoverNetworkButton);
+  async checkConnectedSitePopoverNetwork(
+    expectedNetwork: string,
+  ): Promise<void> {
+    console.log(
+      `Verify the connected site popover network is: ${expectedNetwork}`,
+    );
+    await this.openDappNetworkMenu();
+    await this.driver.waitForSelector(
+      this.selectedNetworkItem(expectedNetwork),
+    );
+  }
+
+  /**
+   * Assert that the dapp connection control bar is rendered and that the
+   * network picker button is NOT present for the currently active tab. Used
+   * to validate the gating on `sessionProperties['eip1193-compatible']` in
+   * the CAIP-25 caveat: pure Multichain API and non-EVM connections must not
+   * show a network picker even when the bar itself is visible.
+   */
+  async checkDappNetworkButtonNotVisible(): Promise<void> {
+    console.log(
+      'Verify the dapp connection control bar network picker is NOT visible',
+    );
+    await this.driver.waitForSelector(this.dappConnectionControlBar);
+    await this.driver.assertElementNotPresent(this.dappNetworkButton, {
+      waitAtLeastGuard: 500,
+    });
+  }
+
+  /**
+   * Assert that the dapp connection control bar network picker button is
+   * rendered for the currently active tab. Used to validate that EIP-1193
+   * compatible connections (legacy `window.ethereum` and
+   * `@metamask/connect-evm`) expose the network picker.
+   */
+  async checkDappNetworkButtonVisible(): Promise<void> {
+    console.log(
+      'Verify the dapp connection control bar network picker is visible',
+    );
+    await this.driver.waitForSelector(this.dappNetworkButton);
   }
 
   /**

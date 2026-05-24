@@ -6,7 +6,9 @@ import {
   isCrossChain,
 } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
-import { isHardwareWallet } from '../../../../shared/lib/selectors';
+import { useNavigate } from 'react-router-dom';
+import { getExtensionSkipTransactionStatusPage } from '../../../../shared/lib/selectors/smart-transactions';
+import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
 import { captureException } from '../../../../shared/lib/sentry';
 import {
   submitBridgeIntent,
@@ -18,6 +20,7 @@ import {
   getFromAccount,
   getFromTokenBalanceInUsd,
   getIsStxEnabled,
+  getToToken,
   getWarningLabels,
   type BridgeAppState,
 } from '../../../ducks/bridge/selectors';
@@ -27,6 +30,8 @@ import {
 } from '../../../contexts/hardware-wallets/HardwareWalletContext';
 import { isUserRejectedHardwareWalletError } from '../../../contexts/hardware-wallets/rpcErrorUtils';
 import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { type MetaMaskReduxDispatch } from '../../../store/store';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
@@ -60,16 +65,16 @@ const isHardwareWalletUserRejection = (error: unknown): boolean => {
 };
 
 export default function useSubmitBridgeTransaction() {
-  const {
-    navigateToBridgePage,
-    navigateToHwSigningPage,
-    navigateToActivityPage,
-  } = useBridgeNavigation();
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { navigateToBridgePage, navigateToHwSigningPage } =
+    useBridgeNavigation();
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
+  const toastEnabled = useSelector(getExtensionSkipTransactionStatusPage);
 
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
   const fromAccount = useSelector(getFromAccount);
+  const toToken = useSelector(getToToken);
   const { recommendedQuote } = useSelector(getBridgeQuotes);
   const warnings = useSelector(
     (state) => getWarningLabels(state as BridgeAppState, Date.now()),
@@ -128,27 +133,26 @@ export default function useSubmitBridgeTransaction() {
           submitBridgeIntent({
             quoteResponse,
             accountAddress: fromAccount.address,
+            tokenSecurityTypeDestination: toToken?.securityData?.type ?? null,
           }),
         );
-        navigateToActivityPage();
-        return;
-      }
-
-      await dispatch(
-        submitBridgeTx(
-          fromAccount.address,
-          quoteResponse,
-          smartTransactionsEnabled,
-          getQuotesReceivedProperties(
+      } else {
+        await dispatch(
+          submitBridgeTx(
+            fromAccount.address,
             quoteResponse,
-            // @ts-expect-error 'market_closed' will be added to QuoteWarning in the controller
-            warnings,
-            true,
-            recommendedQuote,
-            fromTokenBalanceInUsd,
+            smartTransactionsEnabled,
+            getQuotesReceivedProperties(
+              quoteResponse,
+              warnings,
+              true,
+              recommendedQuote,
+              fromTokenBalanceInUsd,
+            ),
+            toToken?.securityData?.type ?? null,
           ),
-        ),
-      );
+        );
+      }
     } catch (e) {
       captureException(e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
@@ -160,7 +164,11 @@ export default function useSubmitBridgeTransaction() {
       setIsSubmitting(false);
     }
 
-    navigateToActivityPage();
+    const to = toastEnabled ? DEFAULT_ROUTE : `${DEFAULT_ROUTE}?tab=activity`;
+    navigate(to, {
+      state: { stayOnHomePage: true },
+      replace: true,
+    });
   };
 
   return {

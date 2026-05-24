@@ -63,7 +63,9 @@ function serialize(obj: unknown): unknown {
 }
 
 export function useBridgeTxHistoryData({
+  // Used in legacy transaction list
   transactionGroup,
+  // Used in activity list v2
   transaction: transactionViewData,
 }: UseBridgeTxHistoryDataProps) {
   const navigate = useNavigate();

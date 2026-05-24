@@ -139,7 +139,7 @@ describe('useMerklClaim', () => {
     expect(txParams.data).toBe(expectedData);
   });
 
-  it('navigates to confirmation page with returnTo param', async () => {
+  it('navigates to confirmation page with goBackTo param', async () => {
     const { result } = renderHook(() =>
       useMerklClaim({
         tokenAddress: MOCK_TOKEN_ADDRESS,
@@ -153,7 +153,7 @@ describe('useMerklClaim', () => {
 
     expect(mockNavigate).toHaveBeenCalledWith({
       pathname: `/confirm-transaction/${MOCK_TX_ID}`,
-      search: 'returnTo=%2Fasset%2F0x1%2F0xtest',
+      search: 'goBackTo=%2Fasset%2F0x1%2F0xtest',
     });
   });
 

@@ -26,6 +26,7 @@ const createMockFactory = () => {
     pinned: false,
     hidden: false,
     entropy: { groupIndex },
+    lastSelected: 0,
   });
 
   // Account factory with common defaults

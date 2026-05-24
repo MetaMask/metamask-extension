@@ -4,6 +4,7 @@ import {
   Severity,
   Category,
   LEDGER_ERROR_MAPPINGS,
+  QR_WALLET_ERROR_MAPPINGS,
 } from '@metamask/hw-wallet-sdk';
 import { ConnectionState } from './connectionState';
 import {
@@ -86,6 +87,7 @@ const ERROR_PROPERTIES_MAP = (() => {
 
   // Extract from Ledger
   extractFromMappings(LEDGER_ERROR_MAPPINGS);
+  extractFromMappings(QR_WALLET_ERROR_MAPPINGS);
 
   return map;
 })();
@@ -176,6 +178,8 @@ export function isRetryableHardwareWalletError(error: HardwareWalletError) {
     case ErrorCode.ConnectionClosed:
     case ErrorCode.DeviceDisconnected:
     case ErrorCode.DeviceStateBlindSignNotSupported:
+    case ErrorCode.PermissionCameraDenied:
+    case ErrorCode.PermissionCameraPromptDismissed:
       return true;
     default:
       return false;

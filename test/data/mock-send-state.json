@@ -143,7 +143,6 @@
     "ensResolutionsByAddress": {},
     "isUnlocked": true,
     "completedOnboarding": true,
-    "showTestnetMessageInDropdown": true,
     "alertEnabledness": {
       "unconnectedAccount": true
     },
@@ -182,7 +181,8 @@
                   "groupIndex": 0
                 },
                 "hidden": false,
-                "pinned": false
+                "pinned": false,
+                "lastSelected": 0
               }
             }
           },

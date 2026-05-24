@@ -17,7 +17,7 @@ import { t } from '../../../../shared/lib/translate';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import { IconName } from '../../../../ui/components/component-library/icon';
-import MetaMetricsController from '../../controllers/metametrics-controller';
+import { MetaMetricsController } from '../../controllers/metametrics-controller';
 import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
 import {
   getSnapName,
@@ -218,7 +218,7 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     onceSaved: Promise<string>;
   }) {
     const learnMoreLink =
-      'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/how-to-add-accounts-in-your-wallet/';
+      'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/how-to-add-accounts-in-your-wallet/?utm_source=extension';
 
     const snapName = getSnapName(snapId, this.#messenger);
 
@@ -399,7 +399,7 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     );
 
     const learnMoreLink =
-      'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/how-to-remove-an-account-from-your-metamask-wallet/';
+      'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/how-to-remove-an-account-from-your-metamask-wallet/?utm_source=extension';
 
     const trackSnapAccountEvent = (event: MetaMetricsEventName) => {
       this.#trackEvent({

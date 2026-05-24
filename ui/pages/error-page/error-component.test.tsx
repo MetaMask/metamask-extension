@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import '@testing-library/jest-dom';
-import browser from 'webextension-polyfill';
 import { fireEvent } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import configureMockState from 'redux-mock-store';
@@ -13,16 +12,15 @@ import { getMessage } from '../../helpers/utils/i18n-helper';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { getUserSubscriptions } from '../../selectors/subscription';
 import mockState from '../../../test/data/mock-state.json';
+import { reloadExtensionFromUi } from '../../helpers/utils/reload-extension-from-ui';
 import ErrorPage from './error-page.component';
 
 jest.mock('../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn(),
 }));
 
-jest.mock('webextension-polyfill', () => ({
-  runtime: {
-    reload: jest.fn(),
-  },
+jest.mock('../../helpers/utils/reload-extension-from-ui', () => ({
+  reloadExtensionFromUi: jest.fn().mockResolvedValue(undefined),
 }));
 
 jest.mock('react-redux', () => ({
@@ -159,7 +157,7 @@ describe('ErrorPage', () => {
     expect(describeButton).toBeNull();
   });
 
-  it('should reload the extension when the "Try Again" button is clicked', () => {
+  it('reloads the extension when the "Try Again" button is clicked', () => {
     const { getByTestId } = renderWithProvider(
       <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <ErrorPage error={MockError} />
@@ -167,7 +165,7 @@ describe('ErrorPage', () => {
     );
     const tryAgainButton = getByTestId('error-page-try-again-button');
     fireEvent.click(tryAgainButton);
-    expect(browser.runtime.reload).toHaveBeenCalled();
+    expect(reloadExtensionFromUi).toHaveBeenCalledTimes(1);
   });
 
   it('should open the support consent modal when the "Contact Support" button is clicked', () => {

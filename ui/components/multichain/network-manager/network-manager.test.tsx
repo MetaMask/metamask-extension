@@ -3,16 +3,19 @@ import { screen, fireEvent } from '@testing-library/react';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { SolScope } from '@metamask/keyring-api';
 import { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
+import { useLocation } from 'react-router-dom';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { SOLANA_WALLET_SNAP_ID } from '../../../../shared/lib/accounts';
+import { TOKEN_MANAGEMENT_ROUTE } from '../../../helpers/constants/routes';
 import { NetworkManager } from './network-manager';
 
 // Mock the store actions
 jest.mock('../../../store/actions', () => ({
   hideModal: jest.fn(),
+  setEditedNetwork: jest.fn(),
 }));
 
 // Mock useDispatch
@@ -100,8 +103,19 @@ const mockNetworkConfigurations = {
   },
 };
 
+const LocationDisplay = () => {
+  const location = useLocation();
+
+  return (
+    <div data-testid="network-manager-current-route">
+      {location.pathname}
+      {location.search}
+    </div>
+  );
+};
+
 describe('NetworkManager Component', () => {
-  const renderNetworkManager = () => {
+  const renderNetworkManager = (pathname = '/') => {
     const store = configureStore({
       ...mockState,
       metamask: {
@@ -125,7 +139,68 @@ describe('NetworkManager Component', () => {
         },
       },
     });
-    return renderWithProvider(<NetworkManager />, store);
+    return renderWithProvider(<NetworkManager />, store, pathname);
+  };
+
+  const renderNetworkManagerWithLocationDisplay = (pathname: string) => {
+    const store = configureStore({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        networkConfigurationsByChainId: mockNetworkConfigurations,
+        selectedNetworkClientId: 'mainnet',
+        providerConfig: {
+          chainId: '0x1',
+          rpcUrl: 'https://mainnet.infura.io/v3/123',
+          type: 'rpc',
+          ticker: 'ETH',
+        },
+        enabledNetworkMap: {
+          eip155: {
+            '0x1': true,
+            '0xa': true,
+            '0xa4b1': true,
+            '0xa86a': true,
+            '0x2105': true,
+          },
+        },
+      },
+    });
+    return renderWithProvider(
+      <>
+        <NetworkManager />
+        <LocationDisplay />
+      </>,
+      store,
+      pathname,
+    );
+  };
+
+  const renderNetworkManagerWithEditedNetwork = (pathname = '/') => {
+    const store = configureStore({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        networkConfigurationsByChainId: mockNetworkConfigurations,
+        selectedNetworkClientId: 'mainnet',
+        providerConfig: {
+          chainId: '0x1',
+          rpcUrl: 'https://mainnet.infura.io/v3/123',
+          type: 'rpc',
+          ticker: 'ETH',
+        },
+        enabledNetworkMap: {
+          eip155: {
+            '0x1': true,
+          },
+        },
+      },
+      appState: {
+        ...mockState.appState,
+        editedNetwork: { chainId: '0x1', nickname: 'Ethereum' },
+      },
+    });
+    return renderWithProvider(<NetworkManager />, store, pathname);
   };
 
   const renderNetworkManagerWithNonEvmNetworkSelected = (stateOverrides?: {
@@ -237,5 +312,55 @@ describe('NetworkManager Component', () => {
     expect(
       screen.getByText(messages.addCustomNetwork.message),
     ).toBeInTheDocument();
+  });
+
+  it('keeps the current route when dismissed outside from token management', () => {
+    renderNetworkManagerWithLocationDisplay(TOKEN_MANAGEMENT_ROUTE);
+
+    expect(
+      screen.getByTestId('network-manager-current-route'),
+    ).toHaveTextContent(TOKEN_MANAGEMENT_ROUTE);
+
+    fireEvent.mouseDown(document.body);
+
+    expect(
+      screen.getByTestId('network-manager-current-route'),
+    ).toHaveTextContent(TOKEN_MANAGEMENT_ROUTE);
+  });
+
+  it('submitting a new RPC URL from add-rpc view switches to add view', async () => {
+    renderNetworkManager('/?view=add-rpc');
+    fireEvent.change(screen.getByTestId('rpc-url-input-test'), {
+      target: { value: 'https://new-rpc.example.com' },
+    });
+    fireEvent.click(screen.getByText(messages.addUrl.message));
+    expect(screen.getByText(messages.addNetwork.message)).toBeInTheDocument();
+  });
+
+  it('submitting a new RPC URL from edit-rpc view switches to edit view', async () => {
+    renderNetworkManagerWithEditedNetwork('/?view=edit-rpc');
+    fireEvent.change(screen.getByTestId('rpc-url-input-test'), {
+      target: { value: 'https://new-rpc.example.com' },
+    });
+    fireEvent.click(screen.getByText(messages.addUrl.message));
+    expect(screen.getByText(messages.editNetwork.message)).toBeInTheDocument();
+  });
+
+  it('submitting a block explorer URL from add-explorer-url view switches to add view', async () => {
+    renderNetworkManager('/?view=add-explorer-url');
+    fireEvent.change(screen.getByTestId('explorer-url-input'), {
+      target: { value: 'https://explorer.example.com' },
+    });
+    fireEvent.click(screen.getByText(messages.addUrl.message));
+    expect(screen.getByText(messages.addNetwork.message)).toBeInTheDocument();
+  });
+
+  it('submitting a block explorer URL from edit-explorer-url view switches to edit view', async () => {
+    renderNetworkManagerWithEditedNetwork('/?view=edit-explorer-url');
+    fireEvent.change(screen.getByTestId('explorer-url-input'), {
+      target: { value: 'https://explorer.example.com' },
+    });
+    fireEvent.click(screen.getByText(messages.addUrl.message));
+    expect(screen.getByText(messages.editNetwork.message)).toBeInTheDocument();
   });
 });

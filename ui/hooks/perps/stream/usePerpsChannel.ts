@@ -86,13 +86,18 @@ export function usePerpsChannel<TData>(
 
     const channel = getChannelRef.current(streamManager);
 
-    // Deliver cached data immediately
     if (channel.hasCachedData()) {
       setData(channel.getCachedData());
       if (!hasReceivedData.current) {
         hasReceivedData.current = true;
         setIsInitialLoading(false);
       }
+    } else {
+      // Channel was reset (e.g. account switch) — clear stale data
+      // so the component shows loading instead of the old account's data.
+      hasReceivedData.current = false;
+      setData(emptyValueRef.current);
+      setIsInitialLoading(true);
     }
 
     // Subscribe for live updates

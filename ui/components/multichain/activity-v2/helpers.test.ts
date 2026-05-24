@@ -13,6 +13,7 @@ import type {
   TransactionViewModel,
 } from '../../../../shared/lib/multichain/types';
 import {
+  enrichApiWithLocal,
   getPrimaryAmount,
   calculateFiatFromMarketRates,
   mergeAllTransactionsByTime,
@@ -230,6 +231,69 @@ describe('matchesLocalTransaction', () => {
       matchesLocalTransaction(group, { kind: 'token', tokenAddress: '0x123' }),
     ).toBe(false);
   });
+
+  it('matches a batched send when a nested transaction targets the token contract', () => {
+    const group = makeLocalGroup({
+      time: 1000,
+      type: TransactionType.tokenMethodTransfer,
+      txParams: {
+        to: '0xUSER',
+        nonce: '0x0',
+      } as TransactionMeta['txParams'],
+      nestedTransactions: [
+        {
+          to: '0xTokenContract' as `0x${string}`,
+          data: '0xa9059cbb' as `0x${string}`,
+        },
+      ],
+    });
+    expect(
+      matchesLocalTransaction(group, {
+        kind: 'token',
+        tokenAddress: '0xtokencontract',
+      }),
+    ).toBe(true);
+  });
+
+  it('does not match a batched send when no nested transaction targets the token', () => {
+    const group = makeLocalGroup({
+      time: 1000,
+      type: TransactionType.tokenMethodTransfer,
+      txParams: {
+        to: '0xUSER',
+        nonce: '0x0',
+      } as TransactionMeta['txParams'],
+      nestedTransactions: [
+        {
+          to: '0xOtherToken' as `0x${string}`,
+          data: '0xa9059cbb' as `0x${string}`,
+        },
+      ],
+    });
+    expect(
+      matchesLocalTransaction(group, {
+        kind: 'token',
+        tokenAddress: '0xUnrelatedToken',
+      }),
+    ).toBe(false);
+  });
+
+  it('returns false for token scope when txParams.to differs and there are no nested transactions', () => {
+    const group = makeLocalGroup({
+      time: 1000,
+      type: TransactionType.tokenMethodTransfer,
+      txParams: {
+        to: '0xUSER',
+        nonce: '0x0',
+      } as TransactionMeta['txParams'],
+    });
+    expect(
+      matchesLocalTransaction(group, {
+        kind: 'token',
+        tokenAddress: '0xSomeToken',
+      }),
+    ).toBe(false);
+  });
 });
 
 describe('matchesNonEvmTransaction', () => {
@@ -422,5 +486,68 @@ describe('resolveTransactionType', () => {
       }),
     );
     expect(result).toBe(TransactionType.swap);
+  });
+});
+
+describe('enrichApiWithLocal', () => {
+  function makeApi(
+    overrides: Partial<TransactionViewModel> & { id: string },
+  ): TransactionViewModel {
+    return overrides as TransactionViewModel;
+  }
+
+  it('overlays local error, revert, and txParams.data onto matching API entries', () => {
+    const apiTx = makeApi({
+      id: 'api-1',
+      hash: '0xABC',
+      error: { name: 'Error', message: 'Transaction failed' },
+      txParams: { data: '0x', from: '0x0', to: '0x0' },
+    });
+    const localGroup = makeLocalGroup({
+      time: 1,
+      hash: '0xabc',
+      error: {
+        name: 'OnChainFailureError',
+        message: 'Transaction failed on-chain: NativeBalanceChangeEnforcer:x',
+      },
+      revert: { receipt: { message: 'NativeBalanceChangeEnforcer:x' } },
+      txParams: {
+        data: '0xcef6d20900',
+        from: '0x0',
+        to: '0x0',
+        nonce: '0x0',
+      },
+    });
+
+    const [enriched] = enrichApiWithLocal([apiTx], [localGroup]);
+
+    expect(enriched.error?.message).toBe(
+      'Transaction failed on-chain: NativeBalanceChangeEnforcer:x',
+    );
+    expect(enriched.revert?.receipt?.message).toBe(
+      'NativeBalanceChangeEnforcer:x',
+    );
+    expect(enriched.txParams?.data).toBe('0xcef6d20900');
+  });
+
+  it('returns the API entry unchanged when no local match exists', () => {
+    const apiTx = makeApi({
+      id: 'api-1',
+      hash: '0xabc',
+      error: { name: 'Error', message: 'Transaction failed' },
+    });
+    const [enriched] = enrichApiWithLocal([apiTx], []);
+    expect(enriched).toBe(apiTx);
+  });
+
+  it('matches hashes case-insensitively', () => {
+    const apiTx = makeApi({ id: 'api-1', hash: '0xAbCdEf' });
+    const localGroup = makeLocalGroup({
+      time: 1,
+      hash: '0xabcdef',
+      error: { name: 'Error', message: 'rich' },
+    });
+    const [enriched] = enrichApiWithLocal([apiTx], [localGroup]);
+    expect(enriched.error?.message).toBe('rich');
   });
 });

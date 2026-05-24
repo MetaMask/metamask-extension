@@ -961,6 +961,8 @@ function setupBundlerDefaults(
             // Charting library (ESM-only)
             './**/node_modules/lightweight-charts',
             './**/node_modules/fancy-canvas',
+            // Web Vitals (ESM — "type": "module" in package.json)
+            './**/node_modules/web-vitals',
             // Perps controller ESM dependencies
             './**/node_modules/valibot',
             './**/node_modules/@nktkas',
@@ -979,6 +981,8 @@ function setupBundlerDefaults(
             './**/node_modules/@ledgerhq/hw-transport',
             './**/node_modules/@ledgerhq/hw-app-eth',
             './**/node_modules/@ledgerhq/devices',
+            // jose (via @segment/analytics-node) ships ESM under "browser". Transpile for browserify.
+            './**/node_modules/jose',
           ],
           global: true,
         },

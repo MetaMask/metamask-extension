@@ -10,7 +10,7 @@ import React from 'react';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 
-const mockSelectedAccountGroup = mockState.metamask.accountTree
+const mockSelectedAccountGroup = mockState.metamask
   .selectedAccountGroup as AccountGroupId;
 
 const defaultArgs: MultichainAccountListProps = {

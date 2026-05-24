@@ -461,6 +461,8 @@ describe('Transaction Transform Utilities', () => {
       expect(result[0].type).toBe('withdrawal');
       expect(result[0].title).toBe('Withdrew 250.00 USDC');
       expect(result[0].depositWithdrawal?.amount).toBe('-$250.00');
+      expect(result[0].depositWithdrawal?.amountNumber).toBe(-250);
+      expect(result[0].depositWithdrawal?.isPositive).toBe(false);
     });
 
     it('filters out non-completed withdrawal requests', () => {

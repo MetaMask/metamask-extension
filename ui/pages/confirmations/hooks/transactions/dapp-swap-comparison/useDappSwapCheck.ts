@@ -5,7 +5,7 @@ import {
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { getRemoteFeatureFlags } from '../../../../../selectors/remote-feature-flags';
+import { getRemoteFeatureFlags } from '../../../../../../shared/lib/selectors/remote-feature-flags';
 import { useConfirmContext } from '../../../context/confirm';
 
 export function useDappSwapCheck() {

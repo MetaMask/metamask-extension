@@ -1,4 +1,4 @@
-import type { MetaMaskStorageStructure } from '../lib/stores/base-store';
+import type { MetaMaskStorageStructure } from '../../../shared/lib/stores/base-store';
 
 /**
  * `Set` to track which controller keys were modified by a migration

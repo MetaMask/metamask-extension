@@ -60,8 +60,14 @@
       }
     },
     "^ background; v popup": {},
-    "axios": {
+    "wait-on>axios": {
       "globals": {
+        "Buffer": false,
+        "Buffer.alloc": true,
+        "Buffer.byteLength": true,
+        "Buffer.concat": true,
+        "Buffer.from": true,
+        "Buffer.isBuffer": true,
         "postMessage": true,
         "fetch": true,
         "Request": true,
@@ -254,6 +260,14 @@
         "__REACT_DEVTOOLS_GLOBAL_HOOK__": false,
         "document": false,
         "document.createElement": true
+      }
+    },
+    "@segment/analytics-node": {
+      "globals": {
+        "EdgeRuntime": false,
+        "WebSocketPair": false,
+        "WorkerGlobalScope": false,
+        "importScripts": false
       }
     }
   }

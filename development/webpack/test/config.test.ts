@@ -185,12 +185,15 @@ describe('./utils/config.ts', () => {
     it('should throw when production environment is missing required variables', () => {
       const rcVars: Record<string, string> = {};
       mockRc(rcVars);
-      // Some variables require more specific values
-      // because of additional validation happening in setEnvironmentVariables
+      // Some variables require more specific values because
+      // setEnvironmentVariables resolves them before webpack's generic
+      // production validation runs.
       rcVars.INFURA_PROD_PROJECT_ID = 'dd98248f370d4063b81c0299f919dc11';
       rcVars.INFURA_ENV_KEY_REF = 'INFURA_PROD_PROJECT_ID';
       rcVars.SEGMENT_WRITE_KEY_REF = 'SEGMENT_PROD_WRITE_KEY';
       rcVars.SEGMENT_PROD_WRITE_KEY = 'SEGMENT_PROD_WRITE_KEY';
+      rcVars.APPLE_PROD_CLIENT_ID = 'APPLE_PROD_CLIENT_ID';
+      rcVars.GOOGLE_PROD_CLIENT_ID = 'GOOGLE_PROD_CLIENT_ID';
 
       const buildTypes = loadBuildTypesConfig();
       const { args } = parseArgv(

@@ -13,15 +13,14 @@ import {
   updateCustomNonce,
 } from '../../../store/actions';
 import { useConfirmContext } from '../context/confirm';
-import { useConfirmationNavigationOptions } from './useConfirmationNavigation';
 import { useConfirmSendNavigation } from './useConfirmSendNavigation';
 
 export const useConfirmActions = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { currentConfirmation, goBackTo } =
+    useConfirmContext<TransactionMeta>();
   const { navigateBackIfSend } = useConfirmSendNavigation();
-  const { returnTo } = useConfirmationNavigationOptions();
   const { id: currentConfirmationId } = currentConfirmation || {};
 
   const rejectApproval = useCallback(
@@ -66,7 +65,7 @@ export const useConfirmActions = () => {
       await rejectApproval({ location });
       resetTransactionState();
       if (navigateBackToPreviousPage) {
-        navigate(returnTo || DEFAULT_ROUTE);
+        navigate(goBackTo ?? DEFAULT_ROUTE);
       }
     },
     [
@@ -75,7 +74,7 @@ export const useConfirmActions = () => {
       navigateBackIfSend,
       rejectApproval,
       resetTransactionState,
-      returnTo,
+      goBackTo,
     ],
   );
 

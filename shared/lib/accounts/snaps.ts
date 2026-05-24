@@ -45,7 +45,7 @@ export function getSnapName(
   messenger: SnapKeyringBuilderMessenger,
 ) {
   const { currentLocale } = messenger.call('PreferencesController:getState');
-  const snap = messenger.call('SnapController:get', snapId);
+  const snap = messenger.call('SnapController:getSnap', snapId);
 
   if (!snap) {
     return stripSnapPrefix(snapId);

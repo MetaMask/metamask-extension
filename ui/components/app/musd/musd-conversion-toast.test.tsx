@@ -12,7 +12,9 @@ jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string, values?: string[]) => {
     const translations: Record<string, string> = {
       musdConversionToastInProgress: `Converting ${values?.[0] ?? 'Token'}...`,
-      musdConversionToastSuccess: 'Conversion successful!',
+      musdConversionToastSuccess: 'mUSD conversion successful',
+      musdConversionToastSuccessDescription:
+        'Bonus will be claimable within a day.',
       musdConversionToastFailed: 'Conversion failed.',
     };
     return translations[key] ?? key;
@@ -99,7 +101,11 @@ describe('MusdConversionToast', () => {
     render(<MusdConversionToast />);
 
     expect(screen.getByTestId('musd-conversion-toast')).toHaveTextContent(
-      'Conversion successful!',
+      'mUSD conversion successful',
+    );
+    expect(capturedToastProps).toHaveProperty(
+      'description',
+      'Bonus will be claimable within a day.',
     );
     expect(capturedToastProps).toHaveProperty('autoHideTime', 5000);
     expect(capturedToastProps).toHaveProperty(

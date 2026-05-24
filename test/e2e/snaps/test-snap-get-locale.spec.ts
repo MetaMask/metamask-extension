@@ -2,7 +2,7 @@ import { Driver } from '../webdriver/driver';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import HomePage from '../page-objects/pages/home/homepage';
 import SettingsPage from '../page-objects/pages/settings/settings-page';
-import GeneralSettings from '../page-objects/pages/settings/general-settings';
+import PreferencesAndDisplaySettings from '../page-objects/pages/settings/preferences-and-display-settings';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { login } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
@@ -49,13 +49,15 @@ describe('Test Snap Get Locale', function () {
         );
         await homePage.headerNavbar.openSettingsPage();
 
-        const generalSettings = new GeneralSettings(driver);
-        await generalSettings.checkPageIsLoaded();
-        await generalSettings.changeLanguage('Dansk');
+        const preferencesAndDisplaySettings = new PreferencesAndDisplaySettings(
+          driver,
+        );
+        await preferencesAndDisplaySettings.checkPageIsLoaded();
+        await preferencesAndDisplaySettings.changeLanguage('Dansk');
 
-        await generalSettings.assertLoadingOverlayNotPresent();
+        await preferencesAndDisplaySettings.assertLoadingOverlayNotPresent();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.closeSettingsPage();
+        await settingsPage.clickBackButton();
 
         await homePage.headerNavbar.openSnapListPage();
         await driver.waitForSelector({

@@ -1,25 +1,26 @@
-import { AllProperties } from '../../../shared/lib/object.utils';
+import {
+  AllProperties,
+  type ObjectMask,
+} from '../../../shared/lib/object.utils';
 
-type SentryMaskValue =
-  | boolean
-  | { [key: string | symbol]: SentryMaskValue }
-  | SentryMaskValue[];
+/**
+ * Sentry “state” here means **masks** passed to `maskObject` (see
+ * `shared/lib/object.utils.ts`), not typed Redux or controller snapshots.
+ *
+ * Mask semantics match `ObjectMask`: `true` copies the value; `false` or `[]` replaces
+ * leaves with `typeof` strings; nested objects recurse; `[AllProperties]` masks dynamic keys.
+ *
+ * `SENTRY_BACKGROUND_STATE` is one mask per background controller (persisted / pre-init
+ * context in `setup-initial-state-hooks`). `SENTRY_UI_STATE` is the Redux root mask for
+ * the UI bundle; `metamask` merges flattened controller masks (not UI-only despite the name).
+ */
+type SentryBackgroundControllerMasks = Record<string, ObjectMask>;
 
-type StrictSentryMaskObject = {
-  [key: string]: SentryMaskValue;
-  [key: symbol]: never;
+type SentryReduxRootMask = ObjectMask & {
+  metamask: ObjectMask;
 };
 
-type SentryBackgroundStateMask = Record<string, StrictSentryMaskObject>;
-
-type SentryUiStateMask = StrictSentryMaskObject & {
-  metamask: StrictSentryMaskObject;
-};
-
-// This describes the subset of background controller state attached to errors
-// sent to Sentry These properties have some potential to be useful for
-// debugging, and they do not contain any identifiable information.
-export const SENTRY_BACKGROUND_STATE: SentryBackgroundStateMask = {
+export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   AccountTreeController: {
     accountTree: false,
   },
@@ -45,6 +46,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundStateMask = {
   },
   AuthenticationController: {
     isSignedIn: false,
+    needsProfilePairing: false,
     srpSessionData: false,
   },
   NetworkOrderController: {
@@ -80,8 +82,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundStateMask = {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     hadAdvancedGasFeesSetPriorToMigration92_3: true,
     canTrackWalletFundsObtained: true,
-    isRampCardClosed: true,
-    nftsDetectionNoticeDismissed: true,
     nftsDropdownState: true,
     notificationGasPollTokens: true,
     outdatedBrowserWarningLastShown: true,
@@ -89,14 +89,8 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundStateMask = {
     activeQrCodeScanRequest: true,
     recoveryPhraseReminderHasBeenShown: true,
     recoveryPhraseReminderLastShown: true,
-    showBetaHeader: true,
     productTour: true,
-    showPermissionsTour: true,
-    showNetworkBanner: true,
-    showAccountBanner: true,
-    showTestnetMessageInDropdown: true,
     sidePanelGasPollTokens: true,
-    surveyLinkLastClickedOrClosed: true,
     snapsInstallPrivacyWarningShown: true,
     termsOfUseLastAgreed: true,
     throttledOrigins: false,
@@ -126,15 +120,17 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundStateMask = {
   BridgeController: {
     assetExchangeRates: false,
     minimumBalanceForRentExemptionInLamports: false,
-    quoteRequest: {
-      walletAddress: false,
-      srcTokenAddress: true,
-      slippage: true,
-      srcChainId: true,
-      destChainId: true,
-      destTokenAddress: true,
-      srcTokenAmount: true,
-    },
+    quoteRequest: [
+      {
+        walletAddress: false,
+        srcTokenAddress: true,
+        slippage: true,
+        srcChainId: true,
+        destChainId: true,
+        destTokenAddress: true,
+        srcTokenAmount: true,
+      },
+    ],
     quotes: [],
     quotesInitialLoadTime: true,
     quotesLastFetched: true,
@@ -235,6 +231,9 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundStateMask = {
     storageMetadata: [],
     versionInfo: [],
   },
+  PasskeyController: {
+    passkeyRecord: false,
+  },
   PermissionController: {
     subjects: false,
   },
@@ -275,7 +274,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundStateMask = {
     addressSecurityAlertResponses: false,
     use4ByteResolution: true,
     useAddressBarEnsResolution: true,
-    useBlockie: true,
     useCurrencyRateCheck: true,
     useMultiAccountBalanceChecker: true,
     useNftDetection: true,
@@ -296,6 +294,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundStateMask = {
     rewardsSeasonStatuses: false,
     rewardsSubscriptionTokens: false,
     rewardsPointsEstimateHistory: false,
+    rewardsVipPerpsFees: false,
   },
   NotificationServicesPushController: {
     fcmToken: false,
@@ -333,7 +332,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundStateMask = {
   SnapInsightsController: {
     insights: false,
   },
-  SnapsRegistry: {
+  SnapRegistryController: {
     database: false,
     lastUpdated: false,
     databaseUnavailable: false,
@@ -388,7 +387,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundStateMask = {
   },
 };
 
-const flattenedBackgroundStateMask: StrictSentryMaskObject = {};
+const flattenedBackgroundStateMask: ObjectMask = {};
 
 for (const controllerState of Object.values(SENTRY_BACKGROUND_STATE)) {
   // Copy only string keys to avoid leaking symbol-only wildcard masks into
@@ -399,10 +398,7 @@ for (const controllerState of Object.values(SENTRY_BACKGROUND_STATE)) {
   }
 }
 
-// This describes the subset of Redux state attached to errors sent to Sentry
-// These properties have some potential to be useful for debugging, and they do
-// not contain any identifiable information.
-export const SENTRY_UI_STATE: SentryUiStateMask = {
+export const SENTRY_UI_STATE: SentryReduxRootMask = {
   gas: true,
   history: true,
   appState: {
@@ -410,7 +406,6 @@ export const SENTRY_UI_STATE: SentryUiStateMask = {
     isNetworkMenuOpen: true,
     nextNonce: true,
     pendingTokens: false,
-    welcomeScreenSeen: true,
     slides: false,
     confirmationExchangeRates: true,
   },

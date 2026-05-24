@@ -1,5 +1,6 @@
 import React, { type ReactNode } from 'react';
 import { usePerpsViewActive } from '../../../hooks/perps/stream/usePerpsViewActive';
+import { usePerpsLifecycleBreadcrumbs } from '../../../hooks/perps/usePerpsLifecycleBreadcrumbs';
 
 type PerpsViewStreamBoundaryProps = Readonly<{
   children: ReactNode;
@@ -15,5 +16,6 @@ export function PerpsViewStreamBoundary({
   children,
 }: PerpsViewStreamBoundaryProps) {
   usePerpsViewActive('PerpsViewStreamBoundary');
+  usePerpsLifecycleBreadcrumbs();
   return <>{children}</>;
 }

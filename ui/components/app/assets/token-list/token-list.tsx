@@ -5,11 +5,11 @@ import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import TokenCell from '../token-cell';
 import { ASSET_CELL_HEIGHT } from '../constants';
 import {
-  getPreferences,
   getShouldHideZeroBalanceTokens,
   getTokenSortConfig,
   getUseExternalServices,
 } from '../../../../selectors';
+import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { type TokenWithFiatAmount } from '../types';
 import {
@@ -26,13 +26,14 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { SafeChain } from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import { SafeChain } from '../../../multichain/networks-form/use-safe-chains';
 import {
   isEvmChainId,
   isTronSpecialAsset,
 } from '../../../../../shared/lib/asset-utils';
 import { sortAssetsWithPriority } from '../util/sortAssetsWithPriority';
 import { VirtualizedList } from '../../../ui/virtualized-list/virtualized-list';
+import { TOKEN_LIST_CELL_MUSD_OPTIONS } from '../../musd/musd-events';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -167,8 +168,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
               privacyMode={privacyMode}
               onClick={isNonEvmTestnet ? undefined : handleTokenClick(token)}
               safeChains={safeChains}
-              showMerklBadge
-              showMusdConvertCta
+              musd={TOKEN_LIST_CELL_MUSD_OPTIONS}
             />
           );
         })}
@@ -195,8 +195,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
             privacyMode={privacyMode}
             onClick={isNonEvmTestnet ? undefined : handleTokenClick(token)}
             safeChains={safeChains}
-            showMerklBadge
-            showMusdConvertCta
+            musd={TOKEN_LIST_CELL_MUSD_OPTIONS}
           />
         );
       }}

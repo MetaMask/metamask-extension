@@ -1,14 +1,12 @@
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import qrCode from 'qrcode-generator';
-import { connect } from 'react-redux';
 import { isHexPrefixed } from 'ethereumjs-util';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { Box, Icon, IconName, IconSize, Text } from '../../component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import type { MetaMaskReduxState } from '../../../store/store';
 import {
   AlignItems,
   Display,
@@ -24,27 +22,18 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 
-function mapStateToProps(state: Pick<MetaMaskReduxState, 'appState'>) {
-  const { buyView, warning } = state.appState;
-  return {
-    buyView,
-    warning,
-  };
-}
 const PREFIX_LEN = 6;
 const SUFFIX_LEN = 5;
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function QrCodeView({
   Qr,
-  warning,
   accountName,
   location = 'Account Details Modal',
 }: {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   Qr: { message?: string; data: string };
-  warning: string | null | undefined;
   accountName?: string;
   location?: string;
 }) {
@@ -87,7 +76,6 @@ function QrCodeView({
       ) : (
         header
       )}
-      {warning ? <span className="qr-code__error">{warning}</span> : null}
       <Box className="qr-code__wrapper" marginBottom={4}>
         <Box
           data-testid="qr-code-image"
@@ -158,7 +146,6 @@ function QrCodeView({
 }
 
 QrCodeView.propTypes = {
-  warning: PropTypes.node,
   Qr: PropTypes.shape({
     message: PropTypes.oneOfType([
       PropTypes.arrayOf(PropTypes.node),
@@ -169,4 +156,4 @@ QrCodeView.propTypes = {
   location: PropTypes.string,
 };
 
-export default connect(mapStateToProps)(QrCodeView);
+export default QrCodeView;

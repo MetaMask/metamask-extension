@@ -55,7 +55,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           await homePage.goToActivityList();
 
           const activityListPage = new ActivityListPage(driver);
-          await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
+          await activityListPage.checkPendingTxNumberDisplayedInActivity(1);
 
           await activityListPage.checkSpeedUpInlineButtonIsPresent();
           await activityListPage.clickTransactionListItem();
@@ -64,7 +64,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           const speedUpCancelModal = new SpeedUpAndCancelModal(driver);
           await speedUpCancelModal.waitForModal();
           await speedUpCancelModal.checkSpeedUpTitleVisible();
-          await speedUpCancelModal.checkSpeedRowShowsSiteSuggested();
+          await speedUpCancelModal.checkSpeedRowShowsTenPercentIncreased();
           await speedUpCancelModal.waitForConfirmEnabled();
           await speedUpCancelModal.clickConfirm();
           await driver.delay(3000); // Delay needed to ensure the transaction is updated before mining
@@ -114,14 +114,14 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           await homePage.goToActivityList();
 
           const activityListPage = new ActivityListPage(driver);
-          await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
+          await activityListPage.checkPendingTxNumberDisplayedInActivity(1);
 
           await activityListPage.clickCancelTransaction();
 
           const speedUpCancelModal = new SpeedUpAndCancelModal(driver);
           await speedUpCancelModal.waitForModal();
           await speedUpCancelModal.checkCancelTitleVisible();
-          await speedUpCancelModal.checkSpeedRowShowsSiteSuggested();
+          await speedUpCancelModal.checkSpeedRowShowsTenPercentIncreased();
           await speedUpCancelModal.waitForConfirmEnabled();
           await speedUpCancelModal.clickConfirm();
           await driver.delay(3000); // Delay needed to ensure the transaction updated before mining

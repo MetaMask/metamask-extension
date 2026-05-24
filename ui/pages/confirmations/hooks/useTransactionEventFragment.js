@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
 
-import { useGasFeeContext } from '../../../contexts/gasFee';
 import { upsertTransactionUIMetricsFragment } from '../../../store/actions';
+import { useConfirmContext } from '../context/confirm';
 
 export const useTransactionEventFragment = () => {
-  const { transaction } = useGasFeeContext();
-  const gasTransactionId = transaction?.id;
+  const { currentConfirmation } = useConfirmContext();
+  const gasTransactionId = currentConfirmation?.id;
 
   const updateTransactionEventFragment = useCallback(
     async (params, _transactionId) => {

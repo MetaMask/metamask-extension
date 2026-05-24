@@ -37,6 +37,18 @@ export function prependZero(num: number, maxLength: number): string {
  */
 export function toKebabCase(str: string): string {
   return str
-    .replace(/([A-Z])/gu, (char) => `-${char.toLowerCase()}`)
+    .replaceAll(/([A-Z])/gu, (char) => `-${char.toLowerCase()}`)
     .replace(/^-/u, '');
+}
+
+/**
+ * Converts a kebab-case string to camelCase.
+ * Used to convert filenames (e.g., 'onboarding-import-wallet')
+ * to benchmark names (e.g., 'onboardingImportWallet').
+ *
+ * @param str - Kebab-case string (e.g., 'load-new-account')
+ * @returns camelCase string (e.g., 'loadNewAccount')
+ */
+export function toCamelCase(str: string): string {
+  return str.replaceAll(/-([a-z])/gu, (_, letter) => letter.toUpperCase());
 }

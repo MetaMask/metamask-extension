@@ -3,7 +3,7 @@ import { EthScope } from '@metamask/keyring-api';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { type Hex } from '@metamask/utils';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP } from '../../../../../shared/constants/network';
 import {
   convertCaipToHexChainId,
@@ -16,15 +16,13 @@ import {
   getNetworkDiscoverButtonEnabled,
   getSelectedMultichainNetworkChainId,
 } from '../../../../selectors';
-import {
-  getCompletedOnboarding,
-  getIsUnlocked,
-} from '../../../../ducks/metamask/metamask';
+import { getCompletedOnboarding } from '../../../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../../../ducks/metamask/base-selectors';
 import { useAccountCreationOnNetworkChange } from '../../../../hooks/accounts/useAccountCreationOnNetworkChange';
 
 export const useNetworkItemCallbacks = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const [, setSearchParams] = useSearchParams();
   const isUnlocked = useSelector(getIsUnlocked);
   const currentChainId = useSelector(getSelectedMultichainNetworkChainId);
   const isNetworkDiscoverButtonEnabled = useSelector(
@@ -116,7 +114,7 @@ export const useNetworkItemCallbacks = () => {
               nickname: network.name,
             }),
           );
-          navigate('/edit');
+          setSearchParams({ view: 'edit' });
         },
         onDiscoverClick: isDiscoverBtnEnabled(hexChainId)
           ? () => {
@@ -128,7 +126,7 @@ export const useNetworkItemCallbacks = () => {
           : undefined,
         onRpcConfigEdit: hasMultiRpcOptions(network)
           ? () => {
-              navigate('/add-rpc');
+              setSearchParams({ view: 'add-rpc' });
               dispatch(
                 setEditedNetwork({
                   chainId: hexChainId,
@@ -142,7 +140,7 @@ export const useNetworkItemCallbacks = () => {
               chainId: hexChainId,
             }),
           );
-          navigate('/select-rpc');
+          setSearchParams({ view: 'select-rpc' });
         },
       };
     },
@@ -152,7 +150,7 @@ export const useNetworkItemCallbacks = () => {
       hasMultiRpcOptions,
       isUnlocked,
       isDiscoverBtnEnabled,
-      navigate,
+      setSearchParams,
     ],
   );
 

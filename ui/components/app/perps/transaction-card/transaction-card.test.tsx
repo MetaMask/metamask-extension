@@ -25,11 +25,11 @@ const createMockTransaction = (
   type: 'trade',
   category: 'position_open',
   symbol: 'ETH',
-  title: messages.perpsOpenedLong.message,
+  title: messages.perpsTransactionTitleOpenedLong.message,
   subtitle: '2.5 ETH @ $2,850.00',
   timestamp: Date.now() - 3600000,
   fill: {
-    shortTitle: 'Opened long',
+    shortTitle: messages.perpsTransactionTitleOpenedLong.message,
     amount: '+$7,125.00',
     amountNumber: 7125,
     isPositive: true,
@@ -58,7 +58,7 @@ describe('TransactionCard', () => {
 
   it('displays the transaction title', () => {
     const transaction = createMockTransaction({
-      title: messages.perpsOpenedLong.message,
+      title: messages.perpsTransactionTitleOpenedLong.message,
     });
     renderWithProvider(
       <TransactionCard transaction={transaction} />,
@@ -66,7 +66,7 @@ describe('TransactionCard', () => {
     );
 
     expect(
-      screen.getByText(messages.perpsOpenedLong.message),
+      screen.getByText(messages.perpsTransactionTitleOpenedLong.message),
     ).toBeInTheDocument();
   });
 
@@ -81,7 +81,7 @@ describe('TransactionCard', () => {
   });
 
   describe('Trade transactions', () => {
-    it('shows pnl with profit color for positive values', () => {
+    it('shows trade amount with profit color for positive values', () => {
       const transaction = createMockTransaction({
         type: 'trade',
         category: 'position_close',
@@ -105,10 +105,12 @@ describe('TransactionCard', () => {
         mockStore,
       );
 
-      expect(screen.getByText('+$125.00')).toBeInTheDocument();
+      const amountElement = screen.getByText('+$125.00');
+      expect(amountElement).toBeInTheDocument();
+      expect(amountElement).toHaveClass('text-success-default');
     });
 
-    it('shows pnl with loss color for negative values', () => {
+    it('shows trade amount with loss color for negative values', () => {
       const transaction = createMockTransaction({
         type: 'trade',
         category: 'position_close',
@@ -132,7 +134,38 @@ describe('TransactionCard', () => {
         mockStore,
       );
 
-      expect(screen.getByText('-$45.50')).toBeInTheDocument();
+      const amountElement = screen.getByText('-$45.50');
+      expect(amountElement).toBeInTheDocument();
+      expect(amountElement).toHaveClass('text-error-default');
+    });
+
+    it('uses amount polarity for color when pnl string is unsigned', () => {
+      const transaction = createMockTransaction({
+        type: 'trade',
+        category: 'position_close',
+        fill: {
+          shortTitle: 'Closed long',
+          amount: '+$125.00',
+          amountNumber: 125,
+          isPositive: true,
+          size: '0.5',
+          entryPrice: '45250.00',
+          points: '0',
+          pnl: '125.00',
+          fee: '22.63',
+          action: 'Closed',
+          feeToken: 'USDC',
+          fillType: FillType.Standard,
+        },
+      });
+      renderWithProvider(
+        <TransactionCard transaction={transaction} />,
+        mockStore,
+      );
+
+      const amountElement = screen.getByText('+$125.00');
+      expect(amountElement).toBeInTheDocument();
+      expect(amountElement).toHaveClass('text-success-default');
     });
 
     it('displays size and symbol in subtitle for trades', () => {
@@ -140,7 +173,7 @@ describe('TransactionCard', () => {
         type: 'trade',
         symbol: 'ETH',
         fill: {
-          shortTitle: 'Opened long',
+          shortTitle: messages.perpsTransactionTitleOpenedLong.message,
           amount: '+$7,125.00',
           amountNumber: 7125,
           isPositive: true,
@@ -172,7 +205,7 @@ describe('TransactionCard', () => {
         fill: undefined,
         fundingAmount: {
           isPositive: true,
-          fee: '+8.30',
+          fee: '+$8.30',
           feeNumber: 8.3,
           rate: '0.0001',
         },
@@ -193,7 +226,7 @@ describe('TransactionCard', () => {
         fill: undefined,
         fundingAmount: {
           isPositive: false,
-          fee: '-3.10',
+          fee: '-$3.10',
           feeNumber: -3.1,
           rate: '-0.00005',
         },
@@ -217,7 +250,7 @@ describe('TransactionCard', () => {
         title: 'Deposited 5000 USDC',
         fill: undefined,
         depositWithdrawal: {
-          amount: '5000.00',
+          amount: '+$5000.00',
           amountNumber: 5000,
           isPositive: true,
           asset: 'USDC',
@@ -231,7 +264,9 @@ describe('TransactionCard', () => {
         mockStore,
       );
 
-      expect(screen.getByText('+$5000.00')).toBeInTheDocument();
+      const amountElement = screen.getByText('+$5000.00');
+      expect(amountElement).toBeInTheDocument();
+      expect(amountElement).toHaveClass('text-success-default');
     });
 
     it('shows withdrawal amount with negative sign', () => {
@@ -243,7 +278,7 @@ describe('TransactionCard', () => {
         title: 'Withdrew 2000 USDC',
         fill: undefined,
         depositWithdrawal: {
-          amount: '2000.00',
+          amount: '-$2000.00',
           amountNumber: 2000,
           isPositive: false,
           asset: 'USDC',
@@ -257,7 +292,9 @@ describe('TransactionCard', () => {
         mockStore,
       );
 
-      expect(screen.getByText('-$2000.00')).toBeInTheDocument();
+      const amountElement = screen.getByText('-$2000.00');
+      expect(amountElement).toBeInTheDocument();
+      expect(amountElement).toHaveClass('text-error-default');
     });
 
     it('shows "Completed" status for deposits', () => {
@@ -268,7 +305,7 @@ describe('TransactionCard', () => {
         title: 'Deposited 5000 USDC',
         fill: undefined,
         depositWithdrawal: {
-          amount: '5000.00',
+          amount: '+$5000.00',
           amountNumber: 5000,
           isPositive: true,
           asset: 'USDC',
@@ -461,9 +498,9 @@ describe('TransactionCard', () => {
         type: 'trade',
         category: 'position_open',
         symbol: 'xyz:TSLA',
-        title: messages.perpsOpenedLong.message,
+        title: messages.perpsTransactionTitleOpenedLong.message,
         fill: {
-          shortTitle: 'Opened long',
+          shortTitle: messages.perpsTransactionTitleOpenedLong.message,
           amount: '+$2,400.00',
           amountNumber: 2400,
           isPositive: true,
@@ -484,6 +521,152 @@ describe('TransactionCard', () => {
 
       // Should display "TSLA" not "xyz:TSLA" in subtitle
       expect(screen.getByText('10 TSLA')).toBeInTheDocument();
+    });
+  });
+
+  describe('Fill tag badges', () => {
+    it('shows Take Profit badge for take profit fills', () => {
+      const transaction = createMockTransaction({
+        fill: {
+          shortTitle: 'Closed long',
+          amount: '+$125.00',
+          amountNumber: 125,
+          isPositive: true,
+          size: '0.5',
+          entryPrice: '2500.00',
+          points: '0',
+          pnl: '+125.00',
+          fee: '2.50',
+          action: 'Closed',
+          feeToken: 'USDC',
+          fillType: FillType.TakeProfit,
+        },
+      });
+      renderWithProvider(
+        <TransactionCard transaction={transaction} />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-fill-tag-take-profit'),
+      ).toBeInTheDocument();
+    });
+
+    it('shows Stop Loss badge for stop loss fills', () => {
+      const transaction = createMockTransaction({
+        fill: {
+          shortTitle: 'Closed long',
+          amount: '-$50.00',
+          amountNumber: -50,
+          isPositive: false,
+          size: '0.5',
+          entryPrice: '2500.00',
+          points: '0',
+          pnl: '-50.00',
+          fee: '2.50',
+          action: 'Closed',
+          feeToken: 'USDC',
+          fillType: FillType.StopLoss,
+        },
+      });
+      renderWithProvider(
+        <TransactionCard transaction={transaction} />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-fill-tag-stop-loss'),
+      ).toBeInTheDocument();
+    });
+
+    it('does not show badge for standard fills', () => {
+      const transaction = createMockTransaction();
+      renderWithProvider(
+        <TransactionCard transaction={transaction} />,
+        mockStore,
+      );
+
+      expect(
+        screen.queryByTestId('perps-fill-tag-take-profit'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('perps-fill-tag-stop-loss'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('perps-fill-tag-liquidated'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('perps-fill-tag-adl'),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('ADL badge accessibility', () => {
+    const createAdlTransaction = () =>
+      createMockTransaction({
+        fill: {
+          shortTitle: 'Closed long',
+          amount: '+$100',
+          amountNumber: 100,
+          isPositive: true,
+          size: '1.5',
+          entryPrice: '2000',
+          points: '0',
+          pnl: '+100',
+          fee: '1',
+          action: 'Closed',
+          feeToken: 'USDC',
+          fillType: FillType.AutoDeleveraging,
+        },
+      });
+
+    it('does not nest the ADL button inside another button when row is clickable', () => {
+      const transaction = createAdlTransaction();
+      renderWithProvider(
+        <TransactionCard transaction={transaction} onClick={jest.fn()} />,
+        mockStore,
+      );
+
+      const card = screen.getByTestId(`transaction-card-${transaction.id}`);
+      const adlButton = screen.getByTestId('perps-fill-tag-adl-button');
+
+      let ancestor = adlButton.parentElement;
+      while (ancestor && ancestor !== card) {
+        expect(ancestor.tagName).not.toBe('BUTTON');
+        ancestor = ancestor.parentElement;
+      }
+    });
+
+    it('fires row onClick from the row button when ADL badge is present', () => {
+      const handleClick = jest.fn();
+      globalThis.platform = { openTab: jest.fn() } as never;
+      const transaction = createAdlTransaction();
+
+      renderWithProvider(
+        <TransactionCard transaction={transaction} onClick={handleClick} />,
+        mockStore,
+      );
+
+      const card = screen.getByTestId(`transaction-card-${transaction.id}`);
+      const rowButton = card.querySelector(
+        'button:not([data-testid="perps-fill-tag-adl-button"])',
+      );
+      expect(rowButton).not.toBeNull();
+      fireEvent.click(rowButton as HTMLElement);
+      expect(handleClick).toHaveBeenCalledWith(transaction);
+    });
+
+    it('renders the ADL badge outside the row button area', () => {
+      const transaction = createAdlTransaction();
+      renderWithProvider(
+        <TransactionCard transaction={transaction} onClick={jest.fn()} />,
+        mockStore,
+      );
+
+      expect(screen.getByTestId('perps-fill-tag-adl')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-fill-tag-adl-button'),
+      ).toBeInTheDocument();
     });
   });
 });

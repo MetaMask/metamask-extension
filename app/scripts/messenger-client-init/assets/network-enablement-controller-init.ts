@@ -1,0 +1,235 @@
+import {
+  NetworkEnablementController,
+  NetworkEnablementControllerState,
+} from '@metamask/network-enablement-controller';
+import { NetworkState } from '@metamask/network-controller';
+import { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
+import {
+  BtcScope,
+  SolAccountType,
+  SolScope,
+  TrxScope,
+} from '@metamask/keyring-api';
+import {
+  CaipChainId,
+  CaipNamespace,
+  Hex,
+  KnownCaipNamespace,
+  parseCaipChainId,
+} from '@metamask/utils';
+import {
+  NetworkEnablementControllerMessenger,
+  NetworkEnablementControllerInitMessenger,
+} from '../messengers/assets';
+import { MessengerClientInitFunction } from '../types';
+import {
+  CHAIN_IDS,
+  FEATURED_NETWORK_CHAIN_IDS,
+} from '../../../../shared/constants/network';
+
+/**
+ * Generates a map of EVM chain IDs to their enabled status based on NetworkController state.
+ *
+ * @param networkConfigurationsByChainId - The network configurations from NetworkController
+ * @param enabledChainIds - Array of chain IDs that should be enabled
+ * @returns Record mapping chain IDs to boolean enabled status
+ */
+const generateEVMNetworkMap = (
+  networkConfigurationsByChainId: NetworkState['networkConfigurationsByChainId'],
+  enabledChainIds: string[],
+): Record<KnownCaipNamespace.Eip155, Record<Hex, boolean>> => {
+  const networkMap: Record<KnownCaipNamespace.Eip155, Record<Hex, boolean>> = {
+    [KnownCaipNamespace.Eip155]: {},
+  };
+
+  (Object.keys(networkConfigurationsByChainId) as Hex[]).forEach((chainId) => {
+    networkMap[KnownCaipNamespace.Eip155][chainId] =
+      enabledChainIds.includes(chainId);
+  });
+
+  return networkMap;
+};
+
+/**
+ * Generates a map of multichain networks organized by network type based on MultichainNetworkController state.
+ *
+ * @param multichainNetworkConfigurationsByChainId - The multichain network configurations
+ * @param enabledNetworks - Array of network IDs that should be enabled (empty by default)
+ * @returns Record mapping network types to their network maps
+ */
+const generateMultichainNetworkMaps = (
+  multichainNetworkConfigurationsByChainId: MultichainNetworkControllerState['multichainNetworkConfigurationsByChainId'],
+  enabledNetworks: string[] = [],
+): Record<CaipNamespace, Record<CaipChainId, boolean>> => {
+  const networkMaps: Record<CaipNamespace, Record<CaipChainId, boolean>> = {};
+
+  (
+    Object.keys(multichainNetworkConfigurationsByChainId) as CaipChainId[]
+  ).forEach((chainId) => {
+    const isEnabled = enabledNetworks.includes(chainId);
+    const { namespace } = parseCaipChainId(chainId);
+
+    (networkMaps[namespace] ??= {})[chainId] = isEnabled;
+  });
+
+  return networkMaps;
+};
+
+const generateDefaultNetworkEnablementControllerState = (
+  networkControllerState: NetworkState,
+  multichainNetworkControllerState: MultichainNetworkControllerState,
+): NetworkEnablementControllerState => {
+  const { networkConfigurationsByChainId } = networkControllerState;
+  const { multichainNetworkConfigurationsByChainId } =
+    multichainNetworkControllerState;
+
+  if (process.env.IN_TEST) {
+    return {
+      enabledNetworkMap: {
+        ...generateEVMNetworkMap(networkConfigurationsByChainId, [
+          CHAIN_IDS.LOCALHOST,
+        ]),
+        ...generateMultichainNetworkMaps(
+          multichainNetworkConfigurationsByChainId,
+          [],
+        ),
+      },
+      nativeAssetIdentifiers: {},
+    };
+  } else if (
+    process.env.METAMASK_DEBUG ||
+    process.env.METAMASK_ENVIRONMENT === 'test'
+  ) {
+    return {
+      enabledNetworkMap: {
+        ...generateEVMNetworkMap(networkConfigurationsByChainId, [
+          CHAIN_IDS.SEPOLIA,
+        ]),
+        ...generateMultichainNetworkMaps(
+          multichainNetworkConfigurationsByChainId,
+          [],
+        ),
+      },
+      nativeAssetIdentifiers: {},
+    };
+  }
+
+  const enabledMultichainNetworks: string[] = [SolScope.Mainnet];
+  enabledMultichainNetworks.push(BtcScope.Mainnet);
+  enabledMultichainNetworks.push(TrxScope.Mainnet);
+
+  return {
+    enabledNetworkMap: {
+      ...generateEVMNetworkMap(
+        networkConfigurationsByChainId,
+        FEATURED_NETWORK_CHAIN_IDS,
+      ),
+      ...generateMultichainNetworkMaps(
+        multichainNetworkConfigurationsByChainId,
+        enabledMultichainNetworks,
+      ),
+    },
+    nativeAssetIdentifiers: {},
+  };
+};
+
+export const NetworkEnablementControllerInit: MessengerClientInitFunction<
+  NetworkEnablementController,
+  NetworkEnablementControllerMessenger,
+  NetworkEnablementControllerInitMessenger
+> = ({
+  controllerMessenger,
+  initMessenger,
+  persistedState,
+  getMessengerClient,
+}) => {
+  const multichainNetworkControllerState = getMessengerClient(
+    'MultichainNetworkController',
+  ).state;
+
+  const networkControllerState = getMessengerClient('NetworkController').state;
+
+  const messengerClient = new NetworkEnablementController({
+    messenger: controllerMessenger,
+    state: {
+      ...generateDefaultNetworkEnablementControllerState(
+        networkControllerState,
+        multichainNetworkControllerState,
+      ),
+      ...persistedState.NetworkEnablementController,
+    },
+  });
+
+  // Initialize native asset identifiers from network configurations.
+  // This reads from NetworkController and MultichainNetworkController to populate
+  // the nativeAssetIdentifiers state with CAIP-19-like identifiers for each network.
+  // We intentionally don't await this - it will complete in the background.
+  messengerClient.init();
+
+  // TODO: Remove this after BIP-44 rollout.
+  initMessenger.subscribe(
+    'AccountsController:selectedAccountChange',
+    (account) => {
+      if (account.type === SolAccountType.DataAccount) {
+        messengerClient.enableNetworkInNamespace(
+          SolScope.Mainnet,
+          KnownCaipNamespace.Solana,
+        );
+      }
+    },
+  );
+
+  initMessenger.subscribe(
+    'AccountTreeController:selectedAccountGroupChange',
+    () => {
+      const solAccounts = initMessenger.call(
+        'AccountTreeController:getAccountsFromSelectedAccountGroup',
+        {
+          scopes: [SolScope.Mainnet],
+        },
+      );
+      const btcAccounts = initMessenger.call(
+        'AccountTreeController:getAccountsFromSelectedAccountGroup',
+        {
+          scopes: [BtcScope.Mainnet],
+        },
+      );
+      const trxAccounts = initMessenger.call(
+        'AccountTreeController:getAccountsFromSelectedAccountGroup',
+        {
+          scopes: [TrxScope.Mainnet],
+        },
+      );
+
+      const allEnabledNetworks = {};
+
+      for (const network of Object.values(
+        messengerClient.state.enabledNetworkMap,
+      )) {
+        Object.assign(allEnabledNetworks, network);
+      }
+
+      if (Object.keys(allEnabledNetworks).length === 1) {
+        const chainId = Object.keys(allEnabledNetworks)[0];
+
+        let shouldEnableMainnetNetworks = false;
+        if (chainId === SolScope.Mainnet && solAccounts.length === 0) {
+          shouldEnableMainnetNetworks = true;
+        }
+        if (chainId === BtcScope.Mainnet && btcAccounts.length === 0) {
+          shouldEnableMainnetNetworks = true;
+        }
+        if (chainId === TrxScope.Mainnet && trxAccounts.length === 0) {
+          shouldEnableMainnetNetworks = true;
+        }
+        if (shouldEnableMainnetNetworks) {
+          messengerClient.enableNetwork('0x1');
+        }
+      }
+    },
+  );
+
+  return {
+    messengerClient,
+  };
+};

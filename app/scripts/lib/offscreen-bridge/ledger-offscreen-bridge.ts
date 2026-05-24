@@ -34,9 +34,7 @@ type IFrameMessage<TAction extends LedgerAction> = {
  * Offscreen Document. Inside the Offscreen document the ledger script
  * communicates directly with the Ledger device via WebHID.
  */
-export class LedgerOffscreenBridge
-  implements LedgerBridge<LedgerOffscreenBridgeOptions>
-{
+export class LedgerOffscreenBridge implements LedgerBridge<LedgerOffscreenBridgeOptions> {
   isDeviceConnected = false;
 
   init() {

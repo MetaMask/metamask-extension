@@ -145,7 +145,11 @@ export async function mockBridgeFeatureFlags(mockServer: Mockttp) {
       return {
         ok: true,
         statusCode: 200,
-        json: [{ bridgeConfig: BTC_BRIDGE_FEATURE_FLAGS }],
+        json: [
+          {
+            bridgeConfig: BTC_BRIDGE_FEATURE_FLAGS,
+          },
+        ],
       };
     });
 }

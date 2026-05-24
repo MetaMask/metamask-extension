@@ -13,13 +13,17 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { PerpsTokenLogo } from '../perps-token-logo';
-import { getDisplayName, getTransactionAmountColor } from '../utils';
+import { PerpsFillTag } from '../perps-fill-tag';
+import { getDisplayName } from '../utils';
+import { FillType } from '../types';
 import type { PerpsTransaction } from '../types';
 
 export type TransactionCardProps = {
   transaction: PerpsTransaction;
   onClick?: (transaction: PerpsTransaction) => void;
   variant?: 'default' | 'muted';
+  showTopBorder?: boolean;
+  screenName?: string;
 };
 
 const ORDER_STATUS_TO_I18N_KEY: Record<string, string> = {
@@ -39,11 +43,15 @@ const ORDER_STATUS_TO_I18N_KEY: Record<string, string> = {
  * @param options0.transaction - The transaction data to display
  * @param options0.onClick - Optional click handler
  * @param options0.variant - Visual variant - 'default' for normal, 'muted' for subdued
+ * @param options0.showTopBorder
+ * @param options0.screenName - Forwarded to PerpsFillTag for analytics attribution
  */
 export const TransactionCard: React.FC<TransactionCardProps> = ({
   transaction,
   onClick,
   variant = 'default',
+  showTopBorder = false,
+  screenName,
 }) => {
   const t = useI18nContext();
   const displayName = getDisplayName(transaction.symbol);
@@ -61,25 +69,28 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
 
   // Determine the amount to display based on transaction type
   const getAmountDisplay = (): { text: string; color: TextColor } => {
-    if (transaction.fill?.pnl) {
+    if (transaction.fill) {
       return {
-        text: `${transaction.fill.pnl.startsWith('-') ? '-' : '+'}$${transaction.fill.pnl.replace(/^[+-]/u, '')}`,
-        color: getTransactionAmountColor(transaction.fill.pnl),
+        text: transaction.fill.amount,
+        color: transaction.fill.isPositive
+          ? TextColor.SuccessDefault
+          : TextColor.ErrorDefault,
       };
     }
     if (transaction.fundingAmount) {
-      const { fee } = transaction.fundingAmount;
-      const isNegative = fee.startsWith('-');
       return {
-        text: `${isNegative ? '-' : '+'}$${fee.replace(/^[+-]/u, '')}`,
-        color: isNegative ? TextColor.ErrorDefault : TextColor.SuccessDefault,
+        text: transaction.fundingAmount.fee,
+        color: transaction.fundingAmount.isPositive
+          ? TextColor.SuccessDefault
+          : TextColor.ErrorDefault,
       };
     }
     if (transaction.depositWithdrawal) {
-      const isWithdrawal = transaction.type === 'withdrawal';
       return {
-        text: `${isWithdrawal ? '-' : '+'}$${transaction.depositWithdrawal.amount}`,
-        color: isWithdrawal ? TextColor.ErrorDefault : TextColor.SuccessDefault,
+        text: transaction.depositWithdrawal.amount,
+        color: transaction.depositWithdrawal.isPositive
+          ? TextColor.SuccessDefault
+          : TextColor.ErrorDefault,
       };
     }
     // For trades without realized PnL, return empty (don't show symbol)
@@ -124,30 +135,38 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
   };
 
   const isClickable = Boolean(onClick);
+  const hasInteractiveBadge =
+    transaction.fill?.fillType === FillType.AutoDeleveraging;
 
   const content = (
     <>
-      {/* Token Logo */}
       <PerpsTokenLogo
         symbol={transaction.symbol}
         size={AvatarTokenSize.Md}
         className="shrink-0"
       />
 
-      {/* Left side: Title and subtitle */}
       <Box
         className="min-w-0 flex-1"
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.Start}
         gap={1}
       >
-        <Text fontWeight={FontWeight.Medium}>{transaction.title}</Text>
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={2}
+        >
+          <Text fontWeight={FontWeight.Medium}>{transaction.title}</Text>
+          {!(isClickable && hasInteractiveBadge) && (
+            <PerpsFillTag transaction={transaction} screenName={screenName} />
+          )}
+        </Box>
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
           {getSubtitleDisplay()}
         </Text>
       </Box>
 
-      {/* Right side: Amount and time */}
       <Box
         className="shrink-0"
         flexDirection={BoxFlexDirection.Column}
@@ -166,9 +185,34 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
   );
 
   const sharedClassName = twMerge(
-    'gap-4 pt-2 pb-2 px-4 h-[62px]',
+    'gap-4 px-4 py-3',
     variantStyles,
+    showTopBorder && 'border-t border-background-default',
   );
+
+  if (isClickable && hasInteractiveBadge) {
+    return (
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        className={twMerge(
+          variantStyles,
+          showTopBorder && 'border-t border-background-default',
+        )}
+        data-testid={`transaction-card-${transaction.id}`}
+      >
+        <ButtonBase
+          className="flex-1 justify-start rounded-none min-w-0 h-auto text-left cursor-pointer gap-4 px-4 py-3 bg-transparent"
+          onClick={handleClick}
+        >
+          {content}
+        </ButtonBase>
+        <Box className="pr-4 shrink-0">
+          <PerpsFillTag transaction={transaction} screenName={screenName} />
+        </Box>
+      </Box>
+    );
+  }
 
   if (isClickable) {
     return (

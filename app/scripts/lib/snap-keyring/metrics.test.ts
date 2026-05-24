@@ -138,7 +138,7 @@ describe('getSnapAndHardwareInfoForMetrics', () => {
       );
       expect(messenger.call).toHaveBeenNthCalledWith(
         2,
-        'SnapController:get',
+        'SnapController:getSnap',
         'snapId',
       );
       expect(messenger.call).toHaveBeenNthCalledWith(
@@ -209,7 +209,7 @@ describe('getSnapAndHardwareInfoForMetrics', () => {
       );
       expect(messenger.call).toHaveBeenNthCalledWith(
         2,
-        'SnapController:get',
+        'SnapController:getSnap',
         'snapId',
       );
       expect(messenger.call).toHaveBeenNthCalledWith(
@@ -333,7 +333,7 @@ describe('getSnapAndHardwareInfoForMetrics', () => {
       );
       expect(messenger.call).toHaveBeenNthCalledWith(
         2,
-        'SnapController:get',
+        'SnapController:getSnap',
         'snapId',
       );
       expect(messenger.call).toHaveBeenNthCalledWith(

@@ -11,8 +11,9 @@ import {
   setFeatureNotificationsEnabled,
   setWatchEthereumAccountEnabled,
 } from '../../../store/actions';
-import { SettingItemConfig } from '../../settings-v2/types';
-import { SettingsTab, createToggleItem } from '../../settings-v2/shared';
+import { SettingItemConfig } from '../types';
+import { SettingsTab, createToggleItem } from '../shared';
+import { EXPERIMENTAL_ITEMS } from '../search-config';
 
 const NotificationsItem = createToggleItem({
   name: 'NotificationsItem',
@@ -25,7 +26,7 @@ const NotificationsItem = createToggleItem({
 
 const KeyringSnapsItem = createToggleItem({
   name: 'KeyringSnapsItem',
-  titleKey: 'addSnapAccountToggle',
+  titleKey: EXPERIMENTAL_ITEMS['keyring-snaps'],
   descriptionKey: 'addSnapAccountsDescription',
   selector: getIsAddSnapAccountEnabled,
   action: setAddSnapAccountEnabled,
@@ -39,7 +40,7 @@ const KeyringSnapsItem = createToggleItem({
 
 const WatchAccountItem = createToggleItem({
   name: 'WatchAccountItem',
-  titleKey: 'watchEthereumAccountsToggle',
+  titleKey: EXPERIMENTAL_ITEMS['watch-account'],
   formatDescription: (t) =>
     t('watchEthereumAccountsDescription', [
       <a
@@ -78,7 +79,7 @@ const ExperimentalTab = () => {
     return result;
   }, []);
 
-  return <SettingsTab items={items} tabMessageKey="experimental" />;
+  return <SettingsTab items={items} />;
 };
 
 export default ExperimentalTab;

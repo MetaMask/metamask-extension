@@ -10,7 +10,6 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import { Anvil } from '../../seeder/anvil';
-import { Ganache } from '../../seeder/ganache';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { mockPriceApi } from '../tokens/utils/mocks';
@@ -57,7 +56,7 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         localNodes,
       }: {
         driver: Driver;
-        localNodes: Anvil[] | Ganache[] | undefined[];
+        localNodes: Anvil[] | undefined[];
       }) => {
         console.log('// Step 1: Log in and set up page objects');
         await login(driver, { localNode: localNodes[0] });
@@ -77,7 +76,7 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         console.log('Step 3: Enable fiat balance display in settings');
         await headerNavbar.openSettingsPage();
         await settingsPage.toggleBalanceSetting();
-        await settingsPage.exitSettings();
+        await settingsPage.clickBackButton();
 
         console.log('Step 4: Verify main balance on homepage and account menu');
         await homepage.checkExpectedBalanceIsDisplayed(
@@ -107,9 +106,9 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         console.log('Step 7: Enable fiat display on testnets in settings');
         await headerNavbar.openSettingsPage();
         await settingsPage.toggleBalanceSetting();
-        await settingsPage.clickAdvancedTab();
+        await settingsPage.goToDeveloperOptions();
         await settingsPage.toggleShowFiatOnTestnets();
-        await settingsPage.closeSettingsPage();
+        await settingsPage.clickBackButton();
 
         console.log('Step 8: Verify USD balance on Sepolia network');
         await homepage.checkExpectedBalanceIsDisplayed(

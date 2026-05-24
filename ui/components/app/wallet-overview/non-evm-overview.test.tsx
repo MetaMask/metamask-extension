@@ -27,6 +27,10 @@ jest.mock('../../../selectors/assets', () => ({
   selectAccountGroupBalanceForEmptyState: () => true,
 }));
 
+jest.mock('../../../hooks/rewards/useRewardsModal', () => ({
+  useRewardsModal: jest.fn(),
+}));
+
 // TODO: Remove this mock when multichain accounts feature flag is entirely removed.
 // TODO: Convert any old tests (UI/UX state 1) to its state 2 equivalent (if possible).
 jest.mock(
@@ -142,6 +146,7 @@ const mockMetamaskStore = {
     selectedAccount: mockNonEvmAccount.id,
   },
   // Account tree required by CoinOverview/AccountGroupBalance after BIP-44 refactor
+  selectedAccountGroup: 'entropy:wallet1/group1',
   accountTree: {
     wallets: {
       'entropy:wallet1': {
@@ -155,12 +160,12 @@ const mockMetamaskStore = {
               name: 'Account',
               hidden: false,
               pinned: false,
+              lastSelected: 0,
             },
           },
         },
       },
     },
-    selectedAccountGroup: 'entropy:wallet1/group1',
   },
   // MultichainBalancesController
   balances: {

@@ -1,9 +1,9 @@
 import { NameType } from '@metamask/name-controller';
 import { HandlerType, SnapCaveatType } from '@metamask/snaps-utils';
 import {
-  GetAllSnaps,
-  GetSnap,
-  HandleSnapRequest,
+  SnapControllerGetAllSnapsAction,
+  SnapControllerGetSnapAction,
+  SnapControllerHandleRequestAction,
 } from '@metamask/snaps-controllers';
 import { GetPermissionControllerState } from '@metamask/permission-controller';
 import {
@@ -52,9 +52,9 @@ function createMockMessenger({
   handleSnapRequest,
   getPermissionControllerState,
 }: {
-  getAllSnaps?: jest.Mocked<GetAllSnaps['handler']>;
-  getSnap?: jest.Mocked<GetSnap['handler']>;
-  handleSnapRequest?: jest.Mocked<HandleSnapRequest['handler']>;
+  getAllSnaps?: jest.Mocked<SnapControllerGetAllSnapsAction['handler']>;
+  getSnap?: jest.Mocked<SnapControllerGetSnapAction['handler']>;
+  handleSnapRequest?: jest.Mocked<SnapControllerHandleRequestAction['handler']>;
   getPermissionControllerState?: jest.Mocked<
     GetPermissionControllerState['handler']
   >;
@@ -110,9 +110,9 @@ function createMockMessenger({
 
   const callMock = jest.fn().mockImplementation((method, ...args) => {
     switch (method) {
-      case 'SnapController:getAll':
+      case 'SnapController:getAllSnaps':
         return getAllSnapsMock();
-      case 'SnapController:get':
+      case 'SnapController:getSnap':
         return getSnapMock(args[0]);
       case 'SnapController:handleRequest':
         return handleSnapRequestMock(args[0]);

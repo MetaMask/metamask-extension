@@ -19,3 +19,12 @@
   height: fit-content;
   color: var(--color-icon-alternative);
 }
+
+.bridge-selected-asset-button {
+  // SelectButton always renders a content Box for label/description slots.
+  // Since we put all content in startAccessory, hide it when empty to
+  // prevent it from adding extra width inside the flex row.
+  .mm-select-button__content:empty {
+    display: none;
+  }
+}

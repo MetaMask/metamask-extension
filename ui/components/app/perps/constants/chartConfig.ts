@@ -39,10 +39,10 @@ export const CANDLE_PERIODS = [
   { label: '4h', value: CandlePeriod.FourHours },
   { label: '8h', value: CandlePeriod.EightHours },
   { label: '12h', value: CandlePeriod.TwelveHours },
-  { label: '1D', value: CandlePeriod.OneDay },
-  { label: '3D', value: CandlePeriod.ThreeDays },
-  { label: '1W', value: CandlePeriod.OneWeek },
-  { label: '1M', value: CandlePeriod.OneMonth },
+  { label: '1d', value: CandlePeriod.OneDay },
+  { label: '3d', value: CandlePeriod.ThreeDays },
+  { label: '1w', value: CandlePeriod.OneWeek },
+  { label: '1m', value: CandlePeriod.OneMonth },
 ] as const;
 
 // Default periods shown in the selector (others available via "More")
@@ -51,20 +51,6 @@ export const DEFAULT_CANDLE_PERIODS = [
   { label: '3min', value: CandlePeriod.ThreeMinutes },
   { label: '5min', value: CandlePeriod.FiveMinutes },
   { label: '15min', value: CandlePeriod.FifteenMinutes },
-] as const;
-
-// More periods shown in the dropdown (not in default row)
-export const MORE_CANDLE_PERIODS = [
-  { label: '30min', value: CandlePeriod.ThirtyMinutes },
-  { label: '1h', value: CandlePeriod.OneHour },
-  { label: '2h', value: CandlePeriod.TwoHours },
-  { label: '4h', value: CandlePeriod.FourHours },
-  { label: '8h', value: CandlePeriod.EightHours },
-  { label: '12h', value: CandlePeriod.TwelveHours },
-  { label: '1D', value: CandlePeriod.OneDay },
-  { label: '3D', value: CandlePeriod.ThreeDays },
-  { label: '1W', value: CandlePeriod.OneWeek },
-  { label: '1M', value: CandlePeriod.OneMonth },
 ] as const;
 
 // Candle count configuration

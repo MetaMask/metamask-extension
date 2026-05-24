@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -8,29 +8,22 @@ import {
   FontWeight,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
+import type { PerpsMarketData } from '@metamask/perps-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { usePerpsLiveMarketData } from '../../../../hooks/perps/stream';
-import { mockWatchlist } from '../mocks';
 import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes';
 import { PerpsMarketCard } from '../perps-market-card';
 
 /**
- * PerpsWatchlist displays a list of watched markets (stubbed with mock symbols).
- * Cross-references mockWatchlist with usePerpsLiveMarketData for live price/volume.
+ * PerpsWatchlist displays a list of watched markets.
+ * Receives already-resolved markets from the Perps tab data hook.
  */
-export const PerpsWatchlist: React.FC = () => {
+export type PerpsWatchlistProps = {
+  markets: PerpsMarketData[];
+};
+
+export const PerpsWatchlist: React.FC<PerpsWatchlistProps> = ({ markets }) => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const { cryptoMarkets, hip3Markets } = usePerpsLiveMarketData();
-
-  const watchlistMarkets = useMemo(() => {
-    const allMarkets = [...cryptoMarkets, ...hip3Markets];
-    return mockWatchlist
-      .map((symbol) =>
-        allMarkets.find((m) => m.symbol.toUpperCase() === symbol.toUpperCase()),
-      )
-      .filter(Boolean) as typeof allMarkets;
-  }, [cryptoMarkets, hip3Markets]);
 
   const handleMarketClick = useCallback(
     (symbol: string) => {
@@ -39,7 +32,7 @@ export const PerpsWatchlist: React.FC = () => {
     [navigate],
   );
 
-  if (watchlistMarkets.length === 0) {
+  if (markets.length === 0) {
     return null;
   }
 
@@ -61,7 +54,7 @@ export const PerpsWatchlist: React.FC = () => {
         <Text fontWeight={FontWeight.Medium}>{t('perpsWatchlist')}</Text>
       </Box>
       <Box flexDirection={BoxFlexDirection.Column}>
-        {watchlistMarkets.map((market) => (
+        {markets.map((market) => (
           <PerpsMarketCard
             key={market.symbol}
             symbol={market.symbol}

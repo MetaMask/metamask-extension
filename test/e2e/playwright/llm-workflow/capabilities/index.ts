@@ -1,6 +1,3 @@
-export { MetaMaskBuildCapability } from './build';
-export type { MetaMaskBuildCapabilityOptions } from './build';
-
 export { MetaMaskFixtureCapability } from './fixture';
 export type { MetaMaskFixtureCapabilityOptions } from './fixture';
 

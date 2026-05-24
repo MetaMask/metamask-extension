@@ -13,6 +13,7 @@ import {
   TOGGLEABLE_ALERT_TYPES,
   Web3ShimUsageAlertStates,
 } from '../../../shared/constants/alerts';
+import type { AlertControllerMethodActions } from './alert-controller-method-action-types';
 
 const controllerName = 'AlertController';
 
@@ -27,7 +28,9 @@ export type AlertControllerGetStateAction = ControllerGetStateAction<
 /**
  * Actions exposed by the {@link AlertController}.
  */
-export type AlertControllerActions = AlertControllerGetStateAction;
+export type AlertControllerActions =
+  | AlertControllerGetStateAction
+  | AlertControllerMethodActions;
 
 /**
  * Event emitted when the state of the {@link AlertController} changes.
@@ -128,6 +131,17 @@ const controllerMetadata: StateMetadata<AlertControllerState> = {
 };
 
 /**
+ * Methods exposed by the {@link AlertController} messenger.
+ */
+const MESSENGER_EXPOSED_METHODS = [
+  'setAlertEnabledness',
+  'setUnconnectedAccountAlertShown',
+  'getWeb3ShimUsageState',
+  'setWeb3ShimUsageRecorded',
+  'setWeb3ShimUsageAlertDismissed',
+] as const;
+
+/**
  * Controller responsible for maintaining alert-related state.
  */
 export class AlertController extends BaseController<
@@ -166,6 +180,11 @@ export class AlertController extends BaseController<
           });
         }
       },
+    );
+
+    this.messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
     );
   }
 

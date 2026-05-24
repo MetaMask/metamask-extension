@@ -1,4 +1,5 @@
 import React from 'react';
+import { TokenApprovalRevocationPermission } from '@metamask/7715-permission-types';
 import { Hex } from '@metamask/utils';
 import {
   NativeTokenStreamPermission,
@@ -9,9 +10,13 @@ import {
 } from '@metamask/gator-permissions-controller';
 import { fireEvent } from '@testing-library/react';
 import { Settings } from 'luxon';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import {
+  en as messages,
+  renderWithProvider,
+} from '../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
+import { getPendingRevocations } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { ReviewGatorPermissionItem } from './review-gator-permission-item';
 
 const mockAccountAddress = '0x4f71DA06987BfeDE90aF0b33E1e3e4ffDCEE7a63';
@@ -44,6 +49,33 @@ const store = configureStore({
     accountIdByAddress: {
       ...mockState.metamask.accountIdByAddress,
       [mockAccountAddress]: 'test-account-id',
+    },
+    accountTree: {
+      ...mockState.metamask.accountTree,
+      wallets: {
+        ...mockState.metamask.accountTree.wallets,
+        'keyring:HD Key Tree:test': {
+          id: 'keyring:HD Key Tree:test',
+          type: 'keyring',
+          groups: {
+            [`keyring:HD Key Tree:test/${mockAccountAddress}`]: {
+              id: `keyring:HD Key Tree:test/${mockAccountAddress}`,
+              type: 'single-account',
+              accounts: ['test-account-id'],
+              metadata: {
+                name: mockAccountName,
+                hidden: false,
+                pinned: false,
+                lastSelected: 0,
+              },
+            },
+          },
+          metadata: {
+            name: 'HD Key Tree',
+            keyring: { type: 'HD Key Tree' },
+          },
+        },
+      },
     },
   },
 });
@@ -117,6 +149,7 @@ describe('Permission List Item', () => {
 
       const mockNativeTokenStreamPermission: PermissionInfoWithMetadata<NativeTokenStreamPermission> =
         {
+          status: 'Active',
           permissionResponse: {
             chainId: '0x1',
             from: mockAccountAddress,
@@ -146,6 +179,7 @@ describe('Permission List Item', () => {
 
       const mockNativeTokenPeriodicPermission: PermissionInfoWithMetadata<NativeTokenPeriodicPermission> =
         {
+          status: 'Active',
           permissionResponse: {
             chainId: '0x1',
             from: mockAccountAddress,
@@ -171,6 +205,158 @@ describe('Permission List Item', () => {
           },
           siteOrigin: 'http://localhost:8000',
         };
+
+      describe('permission status tag', () => {
+        it('shows an expired tag when permission status is Expired', () => {
+          const { getByTestId } = renderWithProvider(
+            <ReviewGatorPermissionItem
+              networkName={mockNetworkName}
+              gatorPermission={{
+                ...mockNativeTokenStreamPermission,
+                status: 'Expired',
+              }}
+              onRevokeClick={() => mockOnClick()}
+            />,
+            store,
+          );
+          expect(
+            getByTestId('review-gator-permission-status-tag'),
+          ).toHaveTextContent('Expired');
+        });
+
+        it('shows a revoked tag when permission status is Revoked', () => {
+          const { getByTestId } = renderWithProvider(
+            <ReviewGatorPermissionItem
+              networkName={mockNetworkName}
+              gatorPermission={{
+                ...mockNativeTokenStreamPermission,
+                status: 'Revoked',
+              }}
+              onRevokeClick={() => mockOnClick()}
+            />,
+            store,
+          );
+          expect(
+            getByTestId('review-gator-permission-status-tag'),
+          ).toHaveTextContent('Revoked');
+        });
+
+        it('does not show a status tag when permission status is Active', () => {
+          const { queryByTestId } = renderWithProvider(
+            <ReviewGatorPermissionItem
+              networkName={mockNetworkName}
+              gatorPermission={{
+                ...mockNativeTokenStreamPermission,
+                status: 'Active',
+              }}
+              onRevokeClick={() => mockOnClick()}
+            />,
+            store,
+          );
+          expect(
+            queryByTestId('review-gator-permission-status-tag'),
+          ).not.toBeInTheDocument();
+        });
+      });
+
+      describe('revoke button label', () => {
+        it('shows Revoke when permission status is Active', () => {
+          const { getByRole } = renderWithProvider(
+            <ReviewGatorPermissionItem
+              networkName={mockNetworkName}
+              gatorPermission={mockNativeTokenStreamPermission}
+              onRevokeClick={() => mockOnClick()}
+            />,
+            store,
+          );
+          expect(
+            getByRole('button', {
+              name: messages.gatorPermissionsRevoke.message,
+            }),
+          ).toBeInTheDocument();
+        });
+
+        it('shows Revoke when permission status is Expired', () => {
+          const { getByRole } = renderWithProvider(
+            <ReviewGatorPermissionItem
+              networkName={mockNetworkName}
+              gatorPermission={{
+                ...mockNativeTokenStreamPermission,
+                status: 'Expired',
+              }}
+              onRevokeClick={() => mockOnClick()}
+            />,
+            store,
+          );
+          expect(
+            getByRole('button', {
+              name: messages.gatorPermissionsRevoke.message,
+            }),
+          ).toBeInTheDocument();
+        });
+
+        it('shows Remove when permission status is Revoked', () => {
+          const { getByRole } = renderWithProvider(
+            <ReviewGatorPermissionItem
+              networkName={mockNetworkName}
+              gatorPermission={{
+                ...mockNativeTokenStreamPermission,
+                status: 'Revoked',
+              }}
+              onRevokeClick={() => mockOnClick()}
+            />,
+            store,
+          );
+          expect(
+            getByRole('button', { name: messages.remove.message }),
+          ).toBeInTheDocument();
+        });
+
+        it('shows Revocation pending when hasRevokeBeenClicked is true even if status is Expired', () => {
+          const { getByRole } = renderWithProvider(
+            <ReviewGatorPermissionItem
+              networkName={mockNetworkName}
+              gatorPermission={{
+                ...mockNativeTokenStreamPermission,
+                status: 'Expired',
+              }}
+              hasRevokeBeenClicked
+              onRevokeClick={() => mockOnClick()}
+            />,
+            store,
+          );
+          expect(
+            getByRole('button', {
+              name: messages.gatorPermissionsRevocationPending.message,
+            }),
+          ).toBeInTheDocument();
+        });
+
+        it('shows Revocation pending when permission context is in pending revocations', () => {
+          jest.mocked(getPendingRevocations).mockReturnValueOnce([
+            {
+              txId: '1',
+              permissionContext: '0x00000000',
+            },
+          ]);
+          const { getByRole } = renderWithProvider(
+            <ReviewGatorPermissionItem
+              networkName={mockNetworkName}
+              gatorPermission={{
+                ...mockNativeTokenStreamPermission,
+                status: 'Revoked',
+              }}
+              onRevokeClick={() => mockOnClick()}
+            />,
+            store,
+          );
+          expect(
+            getByRole('button', {
+              name: messages.gatorPermissionsRevocationPending.message,
+            }),
+          ).toBeInTheDocument();
+        });
+      });
 
       it('renders native token stream permission correctly', () => {
         const { container, getByTestId } = renderWithProvider(
@@ -371,6 +557,7 @@ describe('Permission List Item', () => {
 
       const mockErc20TokenPeriodicPermission: PermissionInfoWithMetadata<Erc20TokenPeriodicPermission> =
         {
+          status: 'Active',
           permissionResponse: {
             chainId: '0x5',
             from: mockAccountAddress,
@@ -400,6 +587,7 @@ describe('Permission List Item', () => {
 
       const mockErc20TokenStreamPermission: PermissionInfoWithMetadata<Erc20TokenStreamPermission> =
         {
+          status: 'Active',
           permissionResponse: {
             chainId: '0x5',
             from: mockAccountAddress,
@@ -567,6 +755,7 @@ describe('Permission List Item', () => {
               delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
             },
             siteOrigin: 'http://localhost:8000',
+            status: 'Active',
           };
 
         const { container, getByTestId } = renderWithProvider(
@@ -615,33 +804,36 @@ describe('Permission List Item', () => {
         expect(expandedSkeletons.length).toBeGreaterThan(skeletons.length);
       });
 
-      it('renders erc20 token revocation permission correctly without frequency row', () => {
-        const mockErc20TokenRevocationPermission: PermissionInfoWithMetadata<{
-          type: 'erc20-token-revocation';
-          isAdjustmentAllowed: boolean;
-          data: Record<string, unknown>;
-        }> = {
-          permissionResponse: {
-            chainId: '0x1',
-            from: mockAccountAddress,
-            permission: {
-              type: 'erc20-token-revocation',
-              isAdjustmentAllowed: false,
-              data: {
-                justification: 'Revoke all token approvals',
+      it('renders token approval revocation permission correctly without frequency row', () => {
+        const mockErc20TokenRevocationPermission: PermissionInfoWithMetadata<TokenApprovalRevocationPermission> =
+          {
+            permissionResponse: {
+              chainId: '0x1',
+              from: mockAccountAddress,
+              permission: {
+                type: 'token-approval-revocation',
+                isAdjustmentAllowed: false,
+                data: {
+                  erc20Approve: true,
+                  erc721Approve: true,
+                  erc721SetApprovalForAll: true,
+                  permit2Approve: true,
+                  permit2Lockdown: true,
+                  permit2InvalidateNonces: true,
+                },
               },
+              rules: [
+                {
+                  type: 'expiry',
+                  data: { timestamp: 1736358176 }, // January 8, 2025
+                },
+              ],
+              context: '0x00000000',
+              delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
             },
-            rules: [
-              {
-                type: 'expiry',
-                data: { timestamp: 1736358176 }, // January 8, 2025
-              },
-            ],
-            context: '0x00000000',
-            delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-          },
-          siteOrigin: 'http://localhost:8000',
-        };
+            siteOrigin: 'http://localhost:8000',
+            status: 'Active',
+          };
 
         const { container, getByTestId, queryByTestId } = renderWithProvider(
           <ReviewGatorPermissionItem
@@ -703,6 +895,7 @@ describe('Permission List Item', () => {
               // No rules array = no expiry
             },
             siteOrigin: 'http://localhost:8000',
+            status: 'Active',
           };
 
         const { container, getByTestId } = renderWithProvider(
@@ -758,6 +951,7 @@ describe('Permission List Item', () => {
               ],
             },
             siteOrigin: 'http://localhost:8000',
+            status: 'Active',
           };
 
         const { container, getByTestId } = renderWithProvider(
@@ -811,6 +1005,7 @@ describe('Permission List Item', () => {
               ],
             },
             siteOrigin: 'http://localhost:8000',
+            status: 'Active',
           };
 
         const { container, getByTestId } = renderWithProvider(

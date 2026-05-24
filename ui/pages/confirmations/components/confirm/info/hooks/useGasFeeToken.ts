@@ -16,12 +16,12 @@ import { useFiatFormatter } from '../../../../../../hooks/useFiatFormatter';
 import { useEthFiatAmount } from '../../../../../../hooks/useEthFiatAmount';
 import {
   getShouldShowFiat,
-  selectNetworkConfigurationByChainId,
   selectTransactionAvailableBalance,
 } from '../../../../../../selectors';
 import { formatAmount } from '../../../simulation-details/formatAmount';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useFeeCalculations } from './useFeeCalculations';
+import { useNativeCurrencySymbol } from './useNativeCurrencySymbol';
 
 export const RATE_WEI_NATIVE = '0xDE0B6B3A7640000'; // 1x10^18
 
@@ -31,8 +31,8 @@ export function useGasFeeToken({ tokenAddress }: { tokenAddress?: Hex }) {
 
   const locale = useSelector(getIntlLocale);
   const nativeFeeToken = useNativeGasFeeToken();
-  const { gasFeeTokens, chainId } = transactionMeta ?? {};
-
+  const { gasFeeTokens, chainId, excludeNativeTokenForFee } =
+    transactionMeta ?? {};
   let gasFeeToken = gasFeeTokens?.find(
     (token) => token.tokenAddress.toLowerCase() === tokenAddress?.toLowerCase(),
   );
@@ -40,8 +40,15 @@ export function useGasFeeToken({ tokenAddress }: { tokenAddress?: Hex }) {
   // This is just a legacy fallback for if `useGasFeeToken` were to be called
   // with no `tokenAddress`. Even if it's `NATIVE_TOKEN_ADDRESS` we don't rely
   // on `useNativeGasFeeToken`.
+  // This is now also necesary when `tokenAddress` corresponds to an unsupported
+  // gas fee token.
+  // If `excludeNativeTokenForFee` is set to true, we select any available fee token
+  // if available instead of the native token.
   if (!gasFeeToken) {
-    gasFeeToken = nativeFeeToken;
+    gasFeeToken =
+      excludeNativeTokenForFee && gasFeeTokens && gasFeeTokens.length > 0
+        ? gasFeeTokens[0]
+        : nativeFeeToken;
   }
 
   const { amount, decimals } = gasFeeToken ?? { amount: '0x0', decimals: 0 };
@@ -102,7 +109,7 @@ function useNativeGasFeeToken(): GasFeeToken {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const { id: transactionId, txParams } = transactionMeta ?? {};
+  const { id: transactionId, txParams, chainId } = transactionMeta ?? {};
 
   const { estimatedFeeNativeHex } = useFeeCalculations(
     transactionMeta?.txParams
@@ -110,15 +117,11 @@ function useNativeGasFeeToken(): GasFeeToken {
       : ({ txParams: {} } as TransactionMeta),
   );
 
-  const networkConfiguration = useSelector((state) =>
-    selectNetworkConfigurationByChainId(state, transactionMeta?.chainId),
-  );
-
   const balance = useSelector((state) =>
     selectTransactionAvailableBalance(state, transactionId),
   );
 
-  const { nativeCurrency } = networkConfiguration ?? {};
+  const { nativeCurrencySymbol } = useNativeCurrencySymbol(chainId);
   const { gas, maxFeePerGas, maxPriorityFeePerGas } = txParams ?? {};
 
   return {
@@ -131,7 +134,7 @@ function useNativeGasFeeToken(): GasFeeToken {
     maxPriorityFeePerGas: maxPriorityFeePerGas as Hex,
     rateWei: RATE_WEI_NATIVE,
     recipient: NATIVE_TOKEN_ADDRESS,
-    symbol: nativeCurrency,
+    symbol: nativeCurrencySymbol,
     tokenAddress: NATIVE_TOKEN_ADDRESS,
   };
 }

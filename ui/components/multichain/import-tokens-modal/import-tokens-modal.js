@@ -26,9 +26,9 @@ import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
 } from '../../../../shared/lib/selectors/networks';
+import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import {
   getInternalAccounts,
-  getSelectedInternalAccount,
   getTokenDetectionSupportNetworkByChainId,
   getTestNetworkBackgroundColor,
   getTokenExchangeRates,
@@ -379,7 +379,33 @@ export const ImportTokensModal = ({ onClose }) => {
           assetId,
           isHidden: isAssetIdHiddenInPreferencesMap(assetPreferences, assetId),
         }));
-        await dispatch(importCustomAssetsBatch(selectedAccount.id, assets));
+
+        // Build PendingTokenMetadata keyed by assetId for the batch call.
+        // Uses the same toAssetId call that produced assetsIds so keys match exactly.
+        const pendingMetadataByAssetId = Object.fromEntries(
+          Object.entries(pendingTokens).map(([tokenAddress, token]) => [
+            toAssetId(tokenAddress, selectedNetwork),
+            {
+              address: token.address,
+              symbol: token.symbol,
+              name: token.name ?? token.symbol,
+              decimals: token.decimals,
+              iconUrl: token.image,
+              aggregators: token.aggregators,
+              occurrences: token.occurrences,
+              chainId: token.chainId,
+              unlisted: token.unlisted,
+            },
+          ]),
+        );
+
+        await dispatch(
+          importCustomAssetsBatch(
+            selectedAccount.id,
+            assets,
+            pendingMetadataByAssetId,
+          ),
+        );
       }
 
       addedTokenValues.forEach((pendingToken) => {
@@ -458,19 +484,22 @@ export const ImportTokensModal = ({ onClose }) => {
     setCustomDecimals(initialCustomToken.decimals);
   }, [pendingTokens]);
 
+  const networkConfig = useMemo(() => {
+    // For non-EVM networks, check allNetworks first (they use CAIP chain IDs)
+    // For EVM networks, check networkConfigurations (they use hex chain IDs)
+    return (
+      allNetworks[selectedNetwork] || networkConfigurations[selectedNetwork]
+    );
+  }, [selectedNetwork, allNetworks, networkConfigurations]);
   useEffect(() => {
     if (selectedNetwork) {
-      // For non-EVM networks, check allNetworks first (they use CAIP chain IDs)
-      // For EVM networks, check networkConfigurations (they use hex chain IDs)
-      const networkConfig =
-        allNetworks[selectedNetwork] || networkConfigurations[selectedNetwork];
       if (networkConfig) {
         setNetworkFilter({
           [selectedNetwork]: networkConfig,
         });
       }
     }
-  }, [selectedNetwork, networkConfigurations, allNetworks]);
+  }, [networkConfig, selectedNetwork]);
 
   useEffect(() => {
     setSelectedTokens({});

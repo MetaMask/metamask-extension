@@ -60,6 +60,7 @@ const withMetamaskConnectedToMainnet = {
   ...mockMetaMaskState,
   participateInMetaMetrics: true,
   dataCollectionForMarketing: false,
+  metaMetricsId: 'test-metametrics-id',
   selectedNetworkClientId: 'testNetworkConfigurationId',
   preferences: {
     ...mockMetaMaskState.preferences,

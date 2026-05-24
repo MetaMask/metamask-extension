@@ -23,6 +23,11 @@ import type {
   NetworkControllerGetStateAction,
   NetworkControllerNetworkDidChangeEvent,
 } from '@metamask/network-controller';
+import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import type {
+  SeedlessOnboardingControllerGetStateAction,
+  SeedlessOnboardingControllerState,
+} from '@metamask/seedless-onboarding-controller';
 import type { Browser } from 'webextension-polyfill';
 import type { Nft } from '@metamask/assets-controllers';
 import {
@@ -33,6 +38,7 @@ import {
 } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
 import type { Json, Hex } from '@metamask/utils';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   ENVIRONMENT_TYPE_BACKGROUND,
   PLATFORM_FIREFOX,
@@ -40,6 +46,7 @@ import {
 import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
+  MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsUserTrait,
@@ -72,7 +79,8 @@ import {
   AnonymousTransactionMetaMetricsEvent,
   TransactionMetaMetricsEvent,
 } from '../../../shared/constants/transaction';
-import Analytics from '../lib/segment/analytics';
+import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import type { SegmentClient } from '../lib/segment';
 import {
   trace,
   endTrace,
@@ -84,12 +92,18 @@ import { ENVIRONMENT } from '../../../development/build/constants';
 import { KeyringType } from '../../../shared/constants/keyring';
 import type { captureException } from '../../../shared/lib/sentry';
 import type { FlattenedBackgroundStateProxy } from '../../../shared/types';
+import {
+  hasABTestAnalyticsMappingForEvent,
+  enrichWithABTests,
+  getRemoteFeatureFlagsWithManifestOverrides,
+} from '../../../shared/lib/ab-testing/ab-test-analytics';
 import { getTokensControllerAllTokens } from '../../../shared/lib/selectors/assets-migration';
 import { isMain } from '../../../shared/lib/build-types';
 import type {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from './preferences-controller';
+import { MetaMetricsControllerMethodActions } from './metametrics-controller-method-action-types';
 
 // Unique name for the controller
 const controllerName = 'MetaMetricsController';
@@ -187,6 +201,7 @@ export type MetaMaskState = Pick<
   | 'srpSessionData'
   | 'keyrings'
   | 'multichainNetworkConfigurationsByChainId'
+  | 'firstTimeFlowType'
   // TODO: Remove as this is no longer a top-level property of the flattened background state object.
   // | 'security_providers'
 > & {
@@ -311,53 +326,12 @@ export type MetaMetricsControllerGetStateAction = ControllerGetStateAction<
   MetaMetricsControllerState
 >;
 
-export type MetaMetricsControllerTrackEventAction = {
-  type: `${typeof controllerName}:trackEvent`;
-  handler: MetaMetricsController['trackEvent'];
-};
-
-export type MetaMetricsControllerGetMetaMetricsIdAction = {
-  type: `${typeof controllerName}:getMetaMetricsId`;
-  handler: MetaMetricsController['getMetaMetricsId'];
-};
-
-export type MetaMetricsControllerCreateEventFragmentAction = {
-  type: `${typeof controllerName}:createEventFragment`;
-  handler: MetaMetricsController['createEventFragment'];
-};
-
-export type MetaMetricsControllerGetEventFragmentByIdAction = {
-  type: `${typeof controllerName}:getEventFragmentById`;
-  handler: MetaMetricsController['getEventFragmentById'];
-};
-
-export type MetaMetricsControllerUpdateEventFragmentAction = {
-  type: `${typeof controllerName}:updateEventFragment`;
-  handler: MetaMetricsController['updateEventFragment'];
-};
-
-export type MetaMetricsControllerDeleteEventFragmentAction = {
-  type: `${typeof controllerName}:deleteEventFragment`;
-  handler: MetaMetricsController['deleteEventFragment'];
-};
-
-export type MetaMetricsControllerFinalizeEventFragmentAction = {
-  type: `${typeof controllerName}:finalizeEventFragment`;
-  handler: MetaMetricsController['finalizeEventFragment'];
-};
-
 /**
  * Actions exposed by the {@link MetaMetricsController}.
  */
 export type MetaMetricsControllerActions =
   | MetaMetricsControllerGetStateAction
-  | MetaMetricsControllerTrackEventAction
-  | MetaMetricsControllerGetMetaMetricsIdAction
-  | MetaMetricsControllerCreateEventFragmentAction
-  | MetaMetricsControllerGetEventFragmentByIdAction
-  | MetaMetricsControllerUpdateEventFragmentAction
-  | MetaMetricsControllerDeleteEventFragmentAction
-  | MetaMetricsControllerFinalizeEventFragmentAction;
+  | MetaMetricsControllerMethodActions;
 
 /**
  * Event emitted when the state of the {@link MetaMetricsController} changes.
@@ -375,7 +349,9 @@ export type MetaMetricsControllerEvents = MetaMetricsControllerStateChangeEvent;
 export type AllowedActions =
   | PreferencesControllerGetStateAction
   | NetworkControllerGetStateAction
-  | NetworkControllerGetNetworkClientByIdAction;
+  | NetworkControllerGetNetworkClientByIdAction
+  | RemoteFeatureFlagControllerGetStateAction
+  | SeedlessOnboardingControllerGetStateAction;
 
 /**
  * Events that this controller is allowed to subscribe.
@@ -398,7 +374,7 @@ type CaptureException = typeof captureException | ((err: unknown) => void);
 export type MetaMetricsControllerOptions = {
   state?: Partial<MetaMetricsControllerState>;
   messenger: MetaMetricsControllerMessenger;
-  segment: Analytics;
+  segment: SegmentClient;
   version: string;
   environment: string;
   extension: Browser;
@@ -422,7 +398,36 @@ export const getDefaultMetaMetricsControllerState =
     segmentApiCalls: {},
   });
 
-export default class MetaMetricsController extends BaseController<
+const MESSENGER_EXPOSED_METHODS = [
+  'addEventBeforeMetricsOptIn',
+  'addTraceBeforeMetricsOptIn',
+  'bufferedEndTrace',
+  'bufferedTrace',
+  'clearEventsAfterMetricsOptIn',
+  'clearTracesAfterMetricsOptIn',
+  'createEventFragment',
+  'deleteEventFragment',
+  'finalizeAbandonedFragments',
+  'finalizeEventFragment',
+  'generateMetaMetricsId',
+  'getEventFragmentById',
+  'getMetaMetricsId',
+  'handleMetaMaskStateUpdate',
+  'identify',
+  'processAbandonedFragment',
+  'setDataCollectionForMarketing',
+  'setMarketingCampaignCookieId',
+  'setParticipateInMetaMetrics',
+  'trackEvent',
+  'trackEventsAfterMetricsOptIn',
+  'trackPage',
+  'trackTracesAfterMetricsOptIn',
+  'updateEventFragment',
+  'updateExtensionUninstallUrl',
+  'updateTraits',
+] as const;
+
+export class MetaMetricsController extends BaseController<
   typeof controllerName,
   MetaMetricsControllerState,
   MetaMetricsControllerMessenger
@@ -491,39 +496,9 @@ export default class MetaMetricsController extends BaseController<
     this.#extension = extension;
     this.#environment = environment;
 
-    this.messenger.registerActionHandler(
-      'MetaMetricsController:trackEvent',
-      this.trackEvent.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      'MetaMetricsController:getMetaMetricsId',
-      this.getMetaMetricsId.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      'MetaMetricsController:createEventFragment',
-      this.createEventFragment.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      'MetaMetricsController:getEventFragmentById',
-      this.getEventFragmentById.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      'MetaMetricsController:updateEventFragment',
-      this.updateEventFragment.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      'MetaMetricsController:deleteEventFragment',
-      this.deleteEventFragment.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      'MetaMetricsController:finalizeEventFragment',
-      this.finalizeEventFragment.bind(this),
+    this.messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
     );
 
     const abandonedFragments = omitBy(state.fragments, 'persist');
@@ -691,15 +666,25 @@ export default class MetaMetricsController extends BaseController<
       options.initialEvent === TransactionMetaMetricsEvent.submitted &&
       fragments[id];
 
-    const additionalFragmentProps = hasExistingSubmittedFragment
-      ? {
-          ...fragments[id],
-          canDeleteIfAbandoned: false,
-        }
-      : {};
+    const additionalFragmentProps: Partial<MetaMetricsEventFragment> =
+      hasExistingSubmittedFragment
+        ? {
+            ...fragments[id],
+            canDeleteIfAbandoned: false,
+          }
+        : {};
+
+    const mergeEventFragment = merge as (
+      ...sources: unknown[]
+    ) => MetaMetricsEventFragment;
 
     this.update((state) => {
-      state.fragments[id] = merge({}, additionalFragmentProps, fragment);
+      const metaMetricsState = state as unknown as MetaMetricsControllerState;
+      metaMetricsState.fragments[id] = mergeEventFragment(
+        {},
+        additionalFragmentProps,
+        fragment,
+      );
     });
 
     if (fragment.initialEvent) {
@@ -769,25 +754,33 @@ export default class MetaMetricsController extends BaseController<
 
     if (createIfNotFound) {
       this.update((state) => {
-        state.fragments[id] = {
+        const metaMetricsState = state as unknown as MetaMetricsControllerState;
+        metaMetricsState.fragments[id] = {
           canDeleteIfAbandoned: true,
           category: MetaMetricsEventCategory.Transactions,
           successEvent: TransactionMetaMetricsEvent.finalized,
           id,
           ...payload,
           lastUpdated: Date.now(),
-        };
+        } as MetaMetricsEventFragment;
       });
       return;
     } else if (!fragment) {
       throw new Error(`Event fragment with id ${id} does not exist.`);
     }
 
+    const mergeEventFragment = merge as (
+      ...sources: unknown[]
+    ) => MetaMetricsEventFragment;
     this.update((state) => {
-      state.fragments[id] = merge(state.fragments[id], {
-        ...payload,
-        lastUpdated: Date.now(),
-      });
+      const metaMetricsState = state as unknown as MetaMetricsControllerState;
+      metaMetricsState.fragments[id] = mergeEventFragment(
+        metaMetricsState.fragments[id],
+        {
+          ...payload,
+          lastUpdated: Date.now(),
+        },
+      );
     });
   }
 
@@ -939,8 +932,15 @@ export default class MetaMetricsController extends BaseController<
       this.clearEventsAfterMetricsOptIn();
       this.trackTracesAfterMetricsOptIn();
       this.clearTracesAfterMetricsOptIn();
-    } else if (this.state.marketingCampaignCookieId) {
-      this.setMarketingCampaignCookieId(null);
+    } else {
+      if (participateInMetaMetrics === false) {
+        // Drop any UI-buffered pre-submit events/traces; they must not be sent after opt-out.
+        this.clearEventsAfterMetricsOptIn();
+        this.clearTracesAfterMetricsOptIn();
+      }
+      if (this.state.marketingCampaignCookieId) {
+        this.setMarketingCampaignCookieId(null);
+      }
     }
 
     if (
@@ -1076,6 +1076,36 @@ export default class MetaMetricsController extends BaseController<
       options.metaMetricsId = metaMetricsId ?? undefined;
     }
 
+    let identifiedPayload = payload;
+
+    const hasABTestAnalyticsMapping = hasABTestAnalyticsMappingForEvent(
+      payload.event,
+    );
+    const hasActiveABTests = payload.properties?.active_ab_tests !== undefined;
+
+    let normalizedPayload = payload;
+
+    if (hasActiveABTests) {
+      try {
+        normalizedPayload = enrichWithABTests(payload, null, []);
+      } catch {
+        normalizedPayload = payload;
+      }
+    }
+
+    identifiedPayload = normalizedPayload;
+
+    if (hasABTestAnalyticsMapping) {
+      try {
+        identifiedPayload = enrichWithABTests(
+          normalizedPayload,
+          this.#getRemoteFeatureFlags(),
+        );
+      } catch {
+        identifiedPayload = normalizedPayload;
+      }
+    }
+
     // We might track multiple events if sensitiveProperties is included, this array will hold
     // the promises returned from this._track.
     const events = [];
@@ -1095,7 +1125,7 @@ export default class MetaMetricsController extends BaseController<
         // @ts-expect-error This property may not exist. We check for it below.
         overrideAnonymousEventNames[`${payload.event}`];
       const anonymousPayload = {
-        ...payload,
+        ...normalizedPayload,
         event: anonymousEventName ?? payload.event,
       };
 
@@ -1116,7 +1146,9 @@ export default class MetaMetricsController extends BaseController<
       );
     }
 
-    events.push(this.#track(this.#buildEventPayload(payload), options));
+    events.push(
+      this.#track(this.#buildEventPayload(identifiedPayload), options),
+    );
 
     await Promise.all(events);
   }
@@ -1163,14 +1195,16 @@ export default class MetaMetricsController extends BaseController<
   // Once we track queued events after a user opts into metrics, we want to clear the event queue.
   clearEventsAfterMetricsOptIn(): void {
     this.update((state) => {
-      state.eventsBeforeMetricsOptIn = [];
+      const metaMetricsState = state as unknown as MetaMetricsControllerState;
+      metaMetricsState.eventsBeforeMetricsOptIn = [];
     });
   }
 
   // It adds an event into a queue, which is only tracked if a user opts into metrics.
   addEventBeforeMetricsOptIn(event: MetaMetricsEventPayload): void {
     this.update((state) => {
-      state.eventsBeforeMetricsOptIn.push(event);
+      const metaMetricsState = state as unknown as MetaMetricsControllerState;
+      metaMetricsState.eventsBeforeMetricsOptIn.push(event);
     });
   }
 
@@ -1189,14 +1223,16 @@ export default class MetaMetricsController extends BaseController<
   // Once we track queued traces after a user opts into metrics, we want to clear the trace queue.
   clearTracesAfterMetricsOptIn(): void {
     this.update((state) => {
-      state.tracesBeforeMetricsOptIn = [];
+      const metaMetricsState = state as unknown as MetaMetricsControllerState;
+      metaMetricsState.tracesBeforeMetricsOptIn = [];
     });
   }
 
   // It adds a trace into a queue, which is only tracked if a user opts into metrics.
   addTraceBeforeMetricsOptIn(traceData: BufferedTrace): void {
     this.update((state) => {
-      state.tracesBeforeMetricsOptIn.push(traceData);
+      const metaMetricsState = state as unknown as MetaMetricsControllerState;
+      metaMetricsState.tracesBeforeMetricsOptIn.push(traceData);
     });
   }
 
@@ -1304,6 +1340,13 @@ export default class MetaMetricsController extends BaseController<
     };
   }
 
+  #getRemoteFeatureFlags(): Record<string, unknown> {
+    return getRemoteFeatureFlagsWithManifestOverrides(
+      this.messenger.call('RemoteFeatureFlagController:getState')
+        ?.remoteFeatureFlags as Record<string, unknown> | undefined,
+    );
+  }
+
   /**
    * Build's the event payload, processing all fields into a format that can be
    * fed to Segment's track method
@@ -1385,8 +1428,10 @@ export default class MetaMetricsController extends BaseController<
   ): Partial<MetaMetricsUserTraits> | null {
     const { traits } = this.state;
     const storageKindTrait = traits[MetaMetricsUserTrait.StorageKind];
+    const cookieIdTrait = traits[MetaMetricsUserTrait.CookieId];
+    const gaClientIdTrait = traits[MetaMetricsUserTrait.GaClientId];
 
-    const currentTraits = {
+    const currentTraits: MetaMetricsUserTraits = {
       [MetaMetricsUserTrait.AddressBookEntries]: sum(
         Object.values(metamaskState.addressBook).map(size),
       ),
@@ -1429,9 +1474,6 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.NumberOfTokens]: this.#getNumberOfTokens(
         getTokensControllerAllTokens({ metamask: metamaskState }),
       ),
-      [MetaMetricsUserTrait.NumberOfHDEntropies]:
-        this.#getNumberOfHDEntropies(metamaskState) ??
-        this.previousUserTraits?.number_of_hd_entropies,
       [MetaMetricsUserTrait.OpenSeaApiEnabled]: metamaskState.openSeaEnabled,
       [MetaMetricsUserTrait.ThreeBoxEnabled]: false, // deprecated, hard-coded as false
       [MetaMetricsUserTrait.Theme]: metamaskState.theme || 'default',
@@ -1458,11 +1500,23 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.ProfileId]: Object.entries(
         metamaskState.srpSessionData || {},
       )?.[0]?.[1]?.profile?.profileId,
+      [MetaMetricsUserTrait.AccountType]: this.#getAccountTypeTrait(
+        metamaskState.firstTimeFlowType,
+      ),
       [MetaMetricsUserTrait.Platform]: getPlatform(),
       [MetaMetricsUserTrait.InstallType]: getInstallType(),
       [MetaMetricsUserTrait.DeviceType]: getDeviceType(),
       [MetaMetricsUserTrait.Os]: getOs(),
+      ...this.#getAccountCompositionTraits(metamaskState),
     };
+
+    if (cookieIdTrait !== undefined) {
+      currentTraits[MetaMetricsUserTrait.CookieId] = cookieIdTrait;
+    }
+
+    if (gaClientIdTrait !== undefined) {
+      currentTraits[MetaMetricsUserTrait.GaClientId] = gaClientIdTrait;
+    }
 
     if (!this.previousUserTraits && metamaskState.participateInMetaMetrics) {
       this.previousUserTraits = currentTraits;
@@ -1487,6 +1541,42 @@ export default class MetaMetricsController extends BaseController<
     }
 
     return null;
+  }
+
+  #getAccountTypeTrait(
+    firstTimeFlowType: MetaMaskState['firstTimeFlowType'],
+  ): NonNullable<MetaMetricsUserTraits[MetaMetricsUserTrait.AccountType]> {
+    switch (firstTimeFlowType) {
+      case FirstTimeFlowType.import:
+      case FirstTimeFlowType.restore:
+        return MetaMetricsEventAccountType.Imported;
+      case FirstTimeFlowType.socialImport:
+        return this.#getSocialAccountType(MetaMetricsEventAccountType.Imported);
+      case FirstTimeFlowType.socialCreate:
+        return this.#getSocialAccountType(MetaMetricsEventAccountType.Default);
+      case FirstTimeFlowType.create:
+      default:
+        return MetaMetricsEventAccountType.Default;
+    }
+  }
+
+  #getSocialAccountType(
+    baseType:
+      | MetaMetricsEventAccountType.Default
+      | MetaMetricsEventAccountType.Imported,
+  ): NonNullable<MetaMetricsUserTraits[MetaMetricsUserTrait.AccountType]> {
+    const authConnection = this.#getSeedlessOnboardingState()?.authConnection;
+    return authConnection ? `${baseType}_${authConnection}` : baseType;
+  }
+
+  #getSeedlessOnboardingState():
+    | Partial<SeedlessOnboardingControllerState>
+    | undefined {
+    try {
+      return this.messenger.call('SeedlessOnboardingController:getState');
+    } catch {
+      return undefined;
+    }
   }
 
   /**
@@ -1554,16 +1644,88 @@ export default class MetaMetricsController extends BaseController<
   }
 
   /**
-   * Returns the number of HD Entropies the user has.
+   * Computes wallet composition traits from internalAccounts, which is always
+   * available regardless of lock state (unlike keyrings).
+   *
+   * number_of_account_groups deduplicates BIP44 multichain accounts by their
+   * entropy source and group index so that EVM + BTC + SOL addresses derived
+   * from the same SRP slot count as one account group, matching what users see
+   * in the Account Management UI.
    *
    * @param metamaskState
    */
-  #getNumberOfHDEntropies(metamaskState: MetaMaskState): number {
-    return (
-      metamaskState.keyrings?.filter(
-        (keyring) => keyring.type === KeyringType.hdKeyTree,
-      ).length ?? 0
-    );
+  #getAccountCompositionTraits(
+    metamaskState: MetaMaskState,
+  ): Partial<MetaMetricsUserTraits> {
+    const accountGroupKeys = new Set<string>();
+    const hdEntropyIds = new Set<string>();
+    let numberOfImportedAccounts = 0;
+    let numberOfLedgerAccounts = 0;
+    let numberOfTrezorAccounts = 0;
+    let numberOfLatticeAccounts = 0;
+    let numberOfQrHardwareAccounts = 0;
+
+    for (const [accountId, account] of Object.entries(
+      metamaskState.internalAccounts.accounts,
+    )) {
+      const keyringType = account.metadata?.keyring?.type;
+
+      switch (keyringType) {
+        case KeyringType.imported:
+          numberOfImportedAccounts += 1;
+          break;
+        case KeyringType.ledger:
+          numberOfLedgerAccounts += 1;
+          break;
+        case KeyringType.trezor:
+          numberOfTrezorAccounts += 1;
+          break;
+        case KeyringType.lattice:
+          numberOfLatticeAccounts += 1;
+          break;
+        case KeyringType.qr:
+        case KeyringType.oneKey:
+          numberOfQrHardwareAccounts += 1;
+          break;
+        default:
+          break;
+      }
+
+      // BIP44 multichain accounts share an entropy source id and group index
+      // across all chains (EVM, BTC, SOL, …). Deduplicating on that key gives
+      // the count of account groups rather than individual chain addresses.
+      const entropy: InternalAccount['options']['entropy'] =
+        account.options?.entropy;
+
+      if (
+        entropy?.type === 'mnemonic' &&
+        'id' in entropy &&
+        'groupIndex' in entropy
+      ) {
+        accountGroupKeys.add(`${entropy.id}:${entropy.groupIndex}`);
+        hdEntropyIds.add(entropy.id);
+      } else {
+        accountGroupKeys.add(accountId);
+      }
+    }
+
+    return {
+      [MetaMetricsUserTrait.NumberOfHDEntropies]: hdEntropyIds.size,
+      [MetaMetricsUserTrait.NumberOfAccountGroups]: accountGroupKeys.size,
+      [MetaMetricsUserTrait.NumberOfImportedAccounts]: numberOfImportedAccounts,
+      [MetaMetricsUserTrait.NumberOfLedgerAccounts]: numberOfLedgerAccounts,
+      [MetaMetricsUserTrait.NumberOfTrezorAccounts]: numberOfTrezorAccounts,
+      [MetaMetricsUserTrait.NumberOfLatticeAccounts]: numberOfLatticeAccounts,
+      [MetaMetricsUserTrait.NumberOfQrHardwareAccounts]:
+        numberOfQrHardwareAccounts,
+      // MetaMask enforces one paired device per hardware wallet type, so
+      // "types in use" equals "distinct devices".
+      [MetaMetricsUserTrait.NumberOfHardwareWallets]:
+        (numberOfLedgerAccounts > 0 ? 1 : 0) +
+        (numberOfTrezorAccounts > 0 ? 1 : 0) +
+        (numberOfLatticeAccounts > 0 ? 1 : 0) +
+        (numberOfQrHardwareAccounts > 0 ? 1 : 0),
+    };
   }
 
   /**

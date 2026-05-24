@@ -268,6 +268,47 @@ describe('PerpsDataChannel', () => {
     });
   });
 
+  describe('refresh', () => {
+    it('reconnects an active channel and keeps subscribers attached', () => {
+      const firstUnsubscribe = jest.fn();
+      const secondUnsubscribe = jest.fn();
+      const connectFn = jest
+        .fn<() => void, [(data: TestData) => void]>()
+        .mockImplementationOnce((callback) => {
+          callback({ value: 1 });
+          return firstUnsubscribe;
+        })
+        .mockImplementationOnce((callback) => {
+          callback({ value: 2 });
+          return secondUnsubscribe;
+        });
+
+      const channel = createChannel(connectFn);
+      const subscriber = jest.fn();
+
+      channel.subscribe(subscriber);
+      channel.refresh();
+
+      expect(connectFn).toHaveBeenCalledTimes(2);
+      expect(firstUnsubscribe).toHaveBeenCalledTimes(1);
+      expect(subscriber).toHaveBeenNthCalledWith(1, { value: 1 });
+      expect(subscriber).toHaveBeenNthCalledWith(2, { value: 2 });
+      expect(channel.getCachedData()).toEqual({ value: 2 });
+    });
+
+    it('connects an idle channel without clearing cached data first', () => {
+      const connectFn = jest.fn<() => void, [(data: TestData) => void]>();
+      connectFn.mockImplementation(() => jest.fn());
+      const channel = createChannel(connectFn);
+
+      channel.pushData({ value: 7 });
+      channel.refresh();
+
+      expect(connectFn).toHaveBeenCalledTimes(1);
+      expect(channel.getCachedData()).toEqual({ value: 7 });
+    });
+  });
+
   describe('setConnectFn', () => {
     it('replaces the connect function used for new connections', () => {
       const connectFn1 = jest.fn(() => jest.fn());

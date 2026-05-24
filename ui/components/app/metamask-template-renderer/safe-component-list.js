@@ -27,7 +27,6 @@ import {
   ConfirmInfoRowAddress,
   ConfirmInfoRowValueDouble,
 } from '../confirm/info/row';
-import MetaMaskTranslation from '../metamask-translation';
 import { Copyable } from '../snaps/copyable';
 import { SnapDelineator } from '../snaps/snap-delineator';
 import { SnapUIAddress } from '../snaps/snap-ui-address';
@@ -61,8 +60,10 @@ import {
 } from '../../../pages/remove-snap-account';
 import { SnapAccountRedirect } from '../../../pages/snap-account-redirect';
 import SnapAuthorshipHeader from '../snaps/snap-authorship-header';
+import MetaMaskTranslation from '../metamask-translation/metamask-translation';
 import { Skeleton } from '../../component-library/skeleton';
 import { DefiReferralConsent } from '../../../pages/core/defi-referral-consent';
+import { Delineator } from '../../ui/delineator';
 
 export const safeComponentList = {
   a: 'a',
@@ -84,7 +85,6 @@ export const safeComponentList = {
   div: 'div',
   FormTextField,
   i: 'i',
-  MetaMaskTranslation,
   OriginPill,
   p: 'p',
   Popover,
@@ -130,4 +130,6 @@ export const safeComponentList = {
   SnapAccountRedirect,
   SnapAccountSuccessMessage,
   SnapAuthorshipHeader,
+  MetaMaskTranslation,
+  Delineator,
 };
