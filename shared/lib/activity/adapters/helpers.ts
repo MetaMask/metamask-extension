@@ -1,8 +1,20 @@
 import type { V1TransactionByHashResponse } from '@metamask/core-backend';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import type { CaipChainId } from '@metamask/utils';
-import { NATIVE_TOKEN_ADDRESS } from '../../../constants/transaction';
+import { CHAIN_IDS } from '../../../constants/network';
+import {
+  IN_PROGRESS_TRANSACTION_STATUSES,
+  NATIVE_TOKEN_ADDRESS,
+  SmartTransactionStatus,
+  TransactionGroupStatus,
+} from '../../../constants/transaction';
+import { STATIC_MAINNET_TOKEN_LIST } from '../../../constants/tokens';
 import { toAssetId } from '../../asset-utils';
-import type { TokenAmount } from '../types';
+import type { TransactionGroup } from '../../multichain/types';
+import type { Status, TokenAmount } from '../types';
 
 export type ValueTransfer = NonNullable<
   V1TransactionByHashResponse['valueTransfers']
@@ -28,6 +40,92 @@ const resolveAssetId = (
 
   return undefined;
 };
+
+function getTransactionStatusKey(
+  transaction: TransactionGroup['primaryTransaction'],
+): string {
+  const {
+    txReceipt: { status: receiptStatus } = {},
+    type,
+    status,
+  } = transaction;
+
+  if (receiptStatus === '0x0') {
+    return TransactionStatus.failed;
+  }
+
+  if (
+    status === TransactionStatus.confirmed &&
+    type === TransactionType.cancel
+  ) {
+    return TransactionGroupStatus.cancelled;
+  }
+
+  return transaction.status;
+}
+
+export function getLocalTransactionStatus({
+  primaryTransaction,
+  initialTransaction,
+}: {
+  primaryTransaction: TransactionGroup['primaryTransaction'];
+  initialTransaction: TransactionGroup['initialTransaction'];
+}): Status {
+  if (initialTransaction.isSmartTransaction) {
+    const smartStatus = initialTransaction.status as string | undefined;
+
+    if (smartStatus === SmartTransactionStatus.pending) {
+      return 'pending';
+    }
+
+    if (smartStatus === SmartTransactionStatus.success) {
+      return 'success';
+    }
+
+    if (smartStatus === SmartTransactionStatus.cancelled) {
+      return 'failed';
+    }
+
+    return 'pending';
+  }
+
+  const statusKey = getTransactionStatusKey(primaryTransaction);
+
+  if (statusKey === TransactionStatus.confirmed) {
+    return 'success';
+  }
+
+  if (
+    statusKey === TransactionStatus.cancelled ||
+    statusKey === TransactionGroupStatus.cancelled ||
+    statusKey === TransactionStatus.dropped ||
+    statusKey === TransactionStatus.failed ||
+    statusKey === TransactionStatus.rejected
+  ) {
+    return 'failed';
+  }
+
+  if (
+    IN_PROGRESS_TRANSACTION_STATUSES.includes(
+      statusKey as (typeof IN_PROGRESS_TRANSACTION_STATUSES)[number],
+    )
+  ) {
+    return 'pending';
+  }
+
+  return 'pending';
+}
+
+export function getMainnetTokenMetadata(
+  chainId: string,
+  contractAddress?: string,
+) {
+  if (contractAddress === undefined || chainId !== CHAIN_IDS.MAINNET) {
+    return undefined;
+  }
+
+  return STATIC_MAINNET_TOKEN_LIST[contractAddress.toLowerCase()];
+}
 
 export function getTokenAmountFromTransfer(
   transfer: ValueTransfer | undefined,

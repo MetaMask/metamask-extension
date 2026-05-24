@@ -1,5 +1,9 @@
 import { createSelector } from 'reselect';
-import { type TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
+import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { ResultType } from '../../shared/lib/trust-signals';
 import { EXCLUDED_TRANSACTION_TYPES } from '../helpers/constants/transactions';
 import {
@@ -34,7 +38,7 @@ import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 const selectBridgeHistory = (state: MetaMaskReduxState) =>
   (state.metamask.txHistory ?? EMPTY_OBJECT) as Record<
     string,
-    Record<string, unknown>
+    BridgeHistoryItem
   >;
 
 function isFromSelectedAccount(tx: TransactionMeta, selectedAddress: string) {
@@ -124,8 +128,14 @@ export const selectNonEvmActivityItems = createSelector(
     transactions.map((transaction) => mapKeyringTransaction({ transaction })),
 );
 
-function getBridgeHistoryTokenSymbols(
-  bridgeHistory: Record<string, Record<string, unknown>>,
+function normalizeBridgeHistoryLookupKey(value: unknown) {
+  return typeof value === 'string' || typeof value === 'number'
+    ? String(value).toLowerCase()
+    : undefined;
+}
+
+function getBridgeHistoryItem(
+  bridgeHistory: Record<string, BridgeHistoryItem>,
   transactionGroup: TransactionGroup,
 ) {
   const { initialTransaction, primaryTransaction } = transactionGroup;
@@ -136,50 +146,58 @@ function getBridgeHistoryTokenSymbols(
     primaryTransaction.hash,
     (initialTransaction as Record<string, unknown>).actionId,
     (primaryTransaction as Record<string, unknown>).actionId,
-  ].filter((value): value is string => typeof value === 'string');
-  const normalizedLookupValues = lookupValues.map((value) =>
-    value.toLowerCase(),
-  );
+  ].flatMap((value) => {
+    const normalizedValue = normalizeBridgeHistoryLookupKey(value);
+    return normalizedValue ? [normalizedValue] : [];
+  });
+  const lookupValueSet = new Set(lookupValues);
 
   const directEntry = lookupValues
-    .map((value) => bridgeHistory[value] ?? bridgeHistory[value.toLowerCase()])
+    .map((value) => bridgeHistory[value])
     .find(Boolean);
-  const matchedEntry =
+
+  return (
     directEntry ??
     Object.values(bridgeHistory).find((item) => {
-      const originalTransactionId =
-        typeof item.originalTransactionId === 'string'
-          ? item.originalTransactionId.toLowerCase()
-          : undefined;
-      const approvalTxId =
-        typeof item.approvalTxId === 'string'
-          ? item.approvalTxId.toLowerCase()
-          : undefined;
-      const status = item.status as
-        | { srcChain?: { txHash?: string }; destChain?: { txHash?: string } }
-        | undefined;
-      const srcHash = status?.srcChain?.txHash?.toLowerCase();
-      const destHash = status?.destChain?.txHash?.toLowerCase();
+      const itemLookupValues = [
+        item.txMetaId,
+        item.actionId,
+        item.originalTransactionId,
+        item.approvalTxId,
+        item.status.srcChain?.txHash,
+        item.status.destChain?.txHash,
+      ].flatMap((value) => {
+        const normalizedValue = normalizeBridgeHistoryLookupKey(value);
+        return normalizedValue ? [normalizedValue] : [];
+      });
 
-      return normalizedLookupValues.some(
-        (value) =>
-          value === originalTransactionId ||
-          value === approvalTxId ||
-          value === srcHash ||
-          value === destHash,
-      );
-    });
+      return itemLookupValues.some((value) => lookupValueSet.has(value));
+    })
+  );
+}
 
-  const quote = matchedEntry?.quote as
-    | {
-        srcAsset?: { symbol?: string; address?: string; chainId?: number };
-        destAsset?: { symbol?: string; address?: string; chainId?: number };
-      }
-    | undefined;
+function getSwapTokens(bridgeHistoryItem?: BridgeHistoryItem) {
+  if (bridgeHistoryItem === undefined) {
+    return undefined;
+  }
+
+  const { quote, status } = bridgeHistoryItem;
 
   return {
-    sourceTokenSymbol: quote?.srcAsset?.symbol,
-    destinationTokenSymbol: quote?.destAsset?.symbol,
+    sourceToken: {
+      amount: quote.srcTokenAmount,
+      assetId: quote.srcAsset.assetId,
+      decimals: quote.srcAsset.decimals,
+      direction: 'out' as const,
+      symbol: quote.srcAsset.symbol,
+    },
+    destinationToken: {
+      amount: status.destChain?.amount ?? quote.destTokenAmount,
+      assetId: quote.destAsset.assetId,
+      decimals: quote.destAsset.decimals,
+      direction: 'in' as const,
+      symbol: quote.destAsset.symbol,
+    },
   };
 }
 
@@ -188,15 +206,21 @@ export const selectLocalActivityItems = createSelector(
   selectBridgeHistory,
   (transactionGroups, bridgeHistory) =>
     transactionGroups.map((transactionGroup) => {
-      if (transactionGroup.initialTransaction.type === 'swap') {
+      const { type } = transactionGroup.initialTransaction;
+
+      if (
+        type === TransactionType.swap ||
+        type === TransactionType.swapAndSend
+      ) {
         return mapLocalTransaction({
-          transactionGroup,
-          // txHistory stores unified swap/bridge quote metadata, not the local transaction itself
-          ...getBridgeHistoryTokenSymbols(bridgeHistory, transactionGroup),
+          ...transactionGroup,
+          ...getSwapTokens(
+            getBridgeHistoryItem(bridgeHistory, transactionGroup),
+          ),
         });
       }
 
-      return mapLocalTransaction({ transactionGroup });
+      return mapLocalTransaction(transactionGroup);
     }),
 );
 

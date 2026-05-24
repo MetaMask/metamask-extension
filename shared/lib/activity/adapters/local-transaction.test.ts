@@ -33,9 +33,7 @@ describe('mapLocalTransaction', () => {
       transactions: [transaction],
     } as unknown as TransactionGroup;
 
-    const item = mapLocalTransaction({
-      transactionGroup,
-    });
+    const item = mapLocalTransaction(transactionGroup);
     const activity = { ...item };
     delete activity.raw;
 
@@ -90,9 +88,7 @@ describe('mapLocalTransaction', () => {
       transactions: [transaction],
     } as unknown as TransactionGroup;
 
-    const item = mapLocalTransaction({
-      transactionGroup,
-    });
+    const item = mapLocalTransaction(transactionGroup);
     const activity = { ...item };
     delete activity.raw;
 
@@ -142,9 +138,7 @@ describe('mapLocalTransaction', () => {
       transactions: [transaction],
     } as unknown as TransactionGroup;
 
-    const item = mapLocalTransaction({
-      transactionGroup,
-    });
+    const item = mapLocalTransaction(transactionGroup);
     const activity = { ...item };
     delete activity.raw;
 
@@ -193,9 +187,7 @@ describe('mapLocalTransaction', () => {
       transactions: [transaction],
     } as unknown as TransactionGroup;
 
-    const item = mapLocalTransaction({
-      transactionGroup,
-    });
+    const item = mapLocalTransaction(transactionGroup);
 
     expect(item.data.token).toStrictEqual({
       amount: '100000',
@@ -240,9 +232,7 @@ describe('mapLocalTransaction', () => {
       transactions: [initialTransaction, primaryTransaction],
     } as unknown as TransactionGroup;
 
-    const item = mapLocalTransaction({
-      transactionGroup,
-    });
+    const item = mapLocalTransaction(transactionGroup);
     const activity = { ...item };
     delete activity.raw;
 
@@ -258,6 +248,75 @@ describe('mapLocalTransaction', () => {
             'eip155:59144/erc20:0x239FD4B0c4DB49Fa8660E65B97619D43D0E0A79d',
           direction: 'out',
           symbol: 'TDN',
+        },
+      },
+    });
+  });
+
+  it('maps bridge history token data to a local swap', () => {
+    const transaction = {
+      chainId: CHAIN_IDS.MAINNET,
+      id: 'bridge-swap-id',
+      hash: '0xbridgeswap',
+      status: TransactionStatus.confirmed,
+      time: 1779392463306,
+      type: TransactionType.swap,
+      txParams: {
+        from,
+        to: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
+        value: '0x0',
+      },
+    };
+    const transactionGroup = {
+      hasCancelled: false,
+      hasRetried: false,
+      initialTransaction: transaction,
+      nonce: '0x3',
+      primaryTransaction: transaction,
+      transactions: [transaction],
+    } as unknown as TransactionGroup;
+
+    const item = mapLocalTransaction({
+      ...transactionGroup,
+      sourceToken: {
+        amount: '10000000000000',
+        assetId: 'eip155:1/slip44:60',
+        decimals: 18,
+        direction: 'out',
+        symbol: 'ETH',
+      },
+      destinationToken: {
+        amount: '19546',
+        assetId: 'eip155:1/erc20:0xACa92e438df0B2401fF60Da7E4337B687a2435dA',
+        decimals: 6,
+        direction: 'in',
+        symbol: 'MUSD',
+      },
+    });
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
+      type: 'swap',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1779392463306,
+      data: {
+        hash: '0xbridgeswap',
+        sourceToken: {
+          amount: '10000000000000',
+          assetId: 'eip155:1/slip44:60',
+          decimals: 18,
+          direction: 'out',
+          symbol: 'ETH',
+        },
+        destinationToken: {
+          amount: '19546',
+          assetId:
+            'eip155:1/erc20:0xACa92e438df0B2401fF60Da7E4337B687a2435dA',
+          decimals: 6,
+          direction: 'in',
+          symbol: 'MUSD',
         },
       },
     });
@@ -292,9 +351,7 @@ describe('mapLocalTransaction', () => {
       transactions: [transaction],
     } as unknown as TransactionGroup;
 
-    const item = mapLocalTransaction({
-      transactionGroup,
-    });
+    const item = mapLocalTransaction(transactionGroup);
     const activity = { ...item };
     delete activity.raw;
 
