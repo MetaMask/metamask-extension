@@ -34,6 +34,8 @@ export async function startSharedSpeculos(
   const apduBridge = new ApduBridge(client, wsBridgePort);
   await apduBridge.start();
 
+  await client.enableBlindSigning();
+
   const ctx: SharedSpeculosContext = {
     helper,
     client,

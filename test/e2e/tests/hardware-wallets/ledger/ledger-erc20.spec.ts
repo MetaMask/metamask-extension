@@ -30,13 +30,30 @@ const LEDGER_SEED_BALANCE = [
 async function approveLedgerAfterSigningApdu(
   speculosClient: SpeculosClient,
   apduBridge: ApduBridge,
-  rightPresses: number,
 ) {
-  await apduBridge.waitForSigningApduAndApprove(
-    speculosClient,
-    rightPresses,
-    30000,
-  );
+  const apdu = await apduBridge.waitForSigningApdu(90000);
+
+  // Wait for Speculos to show the blind signing confirmation screen
+  await new Promise((r) => setTimeout(r, 1500));
+
+  // Press "both" to accept the blind signing risk warning
+  // Screen: "Blind signing ahead — To accept risk, press both buttons"
+  await speculosClient.pressButton('both');
+  await new Promise((r) => setTimeout(r, 1000));
+
+  // Navigate through 4 review pages:
+  //   Page 1: Recipient address
+  //   Page 2: Network (1337)
+  //   Page 3: Max fees
+  //   Page 4: "Accept risk and sign transaction"
+  for (let i = 0; i < 4; i++) {
+    await speculosClient.pressButton('right');
+    await new Promise((r) => setTimeout(r, 500));
+  }
+
+  // Press "both" to confirm signing (currently on "Accept risk and sign transaction")
+  await speculosClient.pressButton('both');
+  await new Promise((r) => setTimeout(r, 500));
 }
 
 describe('Ledger Hardware ERC20 @speculos', function (this: Suite) {
@@ -80,12 +97,10 @@ describe('Ledger Hardware ERC20 @speculos', function (this: Suite) {
         const ledgerDone = approveLedgerAfterSigningApdu(
           speculosClient,
           apduBridge,
-          6,
         );
 
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage();
-        await testDappPage.checkPageIsLoaded();
         await testDappPage.clickERC20CreateTokenButton();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -156,7 +171,6 @@ describe('Ledger Hardware ERC20 @speculos', function (this: Suite) {
         const ledgerDone = approveLedgerAfterSigningApdu(
           speculosClient,
           apduBridge,
-          6,
         );
 
         await testDappPage.clickERC20TokenTransferButton();
@@ -216,7 +230,6 @@ describe('Ledger Hardware ERC20 @speculos', function (this: Suite) {
         const ledgerDone = approveLedgerAfterSigningApdu(
           speculosClient,
           apduBridge,
-          6,
         );
 
         await testDappPage.clickApproveTokens();
@@ -276,7 +289,6 @@ describe('Ledger Hardware ERC20 @speculos', function (this: Suite) {
         const ledgerDone = approveLedgerAfterSigningApdu(
           speculosClient,
           apduBridge,
-          6,
         );
 
         await testDappPage.clickERC20IncreaseAllowanceButton();

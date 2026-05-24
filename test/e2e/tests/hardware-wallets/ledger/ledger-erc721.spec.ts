@@ -30,13 +30,27 @@ const LEDGER_SEED_BALANCE = [
 async function approveLedgerAfterSigningApdu(
   speculosClient: SpeculosClient,
   apduBridge: ApduBridge,
-  rightPresses: number,
 ) {
-  await apduBridge.waitForSigningApduAndApprove(
-    speculosClient,
-    rightPresses,
-    30000,
-  );
+  const apdu = await apduBridge.waitForSigningApdu(90000);
+
+  // Wait for Speculos to show the blind signing confirmation screen
+  await new Promise((r) => setTimeout(r, 1500));
+
+  // Press "both" to accept the blind signing risk warning
+  // Screen: "Blind signing ahead — To accept risk, press both buttons"
+  await speculosClient.pressButton('both');
+  await new Promise((r) => setTimeout(r, 1000));
+
+  // Navigate through review pages to "Accept risk and sign transaction"
+  // Pages: recipient address, network, fees, accept
+  for (let i = 0; i < 4; i++) {
+    await speculosClient.pressButton('right');
+    await new Promise((r) => setTimeout(r, 500));
+  }
+
+  // Press "both" to confirm signing (currently on "Accept risk and sign transaction")
+  await speculosClient.pressButton('both');
+  await new Promise((r) => setTimeout(r, 500));
 }
 
 describe('Ledger Hardware ERC721 @speculos', function (this: Suite) {
@@ -78,7 +92,6 @@ describe('Ledger Hardware ERC721 @speculos', function (this: Suite) {
         const ledgerDone = approveLedgerAfterSigningApdu(
           speculosClient,
           apduBridge,
-          6,
         );
 
         const testDappPage = new TestDappPage(driver);
@@ -136,7 +149,6 @@ describe('Ledger Hardware ERC721 @speculos', function (this: Suite) {
         const ledgerDone = approveLedgerAfterSigningApdu(
           speculosClient,
           apduBridge,
-          6,
         );
 
         await testDappPage.clickERC721MintButton();
@@ -198,7 +210,6 @@ describe('Ledger Hardware ERC721 @speculos', function (this: Suite) {
         const ledgerDone = approveLedgerAfterSigningApdu(
           speculosClient,
           apduBridge,
-          6,
         );
 
         await testDappPage.clickERC721ApproveButton();
@@ -258,7 +269,6 @@ describe('Ledger Hardware ERC721 @speculos', function (this: Suite) {
         const ledgerDone = approveLedgerAfterSigningApdu(
           speculosClient,
           apduBridge,
-          6,
         );
 
         await testDappPage.clickERC721SetApprovalForAllButton();

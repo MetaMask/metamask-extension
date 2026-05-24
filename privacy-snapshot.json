@@ -35,6 +35,7 @@
   "bsc-mainnet.infura.io",
   "carrot.megaeth.com",
   "cdn.contentful.com",
+  "cdn.live.ledger.com",
   "cdn.segment.com",
   "cdn.segment.io",
   "cdnjs.cloudflare.com",
@@ -145,5 +146,6 @@
   "unresponsive-rpc.url",
   "user-storage.api.cx.metamask.io",
   "verify.walletconnect.com",
-  "www.4byte.directory"
+  "www.4byte.directory",
+  "yt3.googleusercontent.com"
 ]

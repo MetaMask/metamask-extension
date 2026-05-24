@@ -203,6 +203,38 @@ export class SpeculosClient {
     });
   }
 
+  async enableBlindSigning(): Promise<void> {
+    const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+    // Enter menu
+    await this.pressButton('both');
+    await delay(800);
+    // Navigate to "App settings"
+    await this.pressButton('right');
+    await delay(400);
+    // Select "App settings"
+    await this.pressButton('both');
+    await delay(800);
+    // "Blind signing" is first item — toggle it
+    await this.pressButton('both');
+    await delay(800);
+
+    // Navigate to "Back" in settings list (7 items)
+    for (let i = 0; i < 6; i++) {
+      await this.pressButton('right');
+      await delay(200);
+    }
+    // Select "Back" to return to main menu
+    await this.pressButton('both');
+    await delay(500);
+
+    // Press left to return to main screen
+    await this.pressButton('left');
+    await delay(400);
+
+    console.log('[SpeculosClient] Blind signing enabled');
+  }
+
   async getScreenshot(): Promise<Buffer> {
     const response = await this.fetch('/screenshot');
     const arrayBuffer = await response.arrayBuffer();

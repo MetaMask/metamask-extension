@@ -20,24 +20,24 @@ export async function cleanupSpeculosEnvironment(): Promise<void> {
 
   // 2. Kill orphaned chromedriver and Chrome for Testing processes
   try {
-    await killByPattern("chromedriver");
+    await killByPattern('chromedriver');
   } catch {
     // ignore
   }
   try {
-    await killByPattern("Google Chrome for Testing");
+    await killByPattern('Google Chrome for Testing');
   } catch {
     // ignore
   }
 
   // 3. Stop and remove Docker containers
   try {
-    await run("docker", ["stop", SPECULOS_CONTAINER_NAME], 10_000);
+    await run('docker', ['stop', SPECULOS_CONTAINER_NAME], 10_000);
   } catch {
     // container may not exist
   }
   try {
-    await run("docker", ["rm", "-f", SPECULOS_CONTAINER_NAME], 10_000);
+    await run('docker', ['rm', '-f', SPECULOS_CONTAINER_NAME], 10_000);
   } catch {
     // ignore
   }
@@ -45,14 +45,14 @@ export async function cleanupSpeculosEnvironment(): Promise<void> {
   // 4. Remove stale speculos networks (prune can leave ambiguous duplicates)
   try {
     const { stdout } = await runCapture(
-      "docker",
-      ["network", "ls", "--filter", "name=speculos", "-q"],
+      'docker',
+      ['network', 'ls', '--filter', 'name=speculos', '-q'],
       10_000,
     );
-    const networkIds = stdout.trim().split("\n").filter(Boolean);
+    const networkIds = stdout.trim().split('\n').filter(Boolean);
     for (const netId of networkIds) {
       try {
-        await run("docker", ["network", "rm", netId.trim()], 5_000);
+        await run('docker', ['network', 'rm', netId.trim()], 5_000);
       } catch {
         // may be in use
       }
@@ -67,11 +67,9 @@ export async function cleanupSpeculosEnvironment(): Promise<void> {
 
 function killByPattern(pattern: string): Promise<void> {
   return new Promise((resolve) => {
-    const cmd = process.platform === "win32" ? "taskkill" : "pkill";
+    const cmd = process.platform === 'win32' ? 'taskkill' : 'pkill';
     const args =
-      process.platform === "win32"
-        ? ["/F", "/IM", pattern]
-        : ["-f", pattern];
+      process.platform === 'win32' ? ['/F', '/IM', pattern] : ['-f', pattern];
     execFile(cmd, args, () => {
       resolve();
     });

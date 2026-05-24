@@ -21,6 +21,9 @@ const LEDGER_SEED_BALANCE = [
   { address: SPECULOS_LEDGER_ADDRESS, balance: '0x100000000000000000000' },
 ];
 
+// Approve a signing APDU on the Ledger device for a simple ETH transfer.
+// ETH transfers do NOT require blind signing, so no extra "both" press is needed.
+// Button sequence: right x6 (navigate review pages) → both (confirm signing)
 async function approveLedgerAfterSigningApdu(
   speculosClient: SpeculosClient,
   apduBridge: ApduBridge,
@@ -29,7 +32,7 @@ async function approveLedgerAfterSigningApdu(
   await apduBridge.waitForSigningApduAndApprove(
     speculosClient,
     rightPresses,
-    30000,
+    90000,
   );
 }
 

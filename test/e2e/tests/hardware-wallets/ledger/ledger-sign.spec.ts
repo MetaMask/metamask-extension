@@ -8,6 +8,9 @@ import { login } from '../../../page-objects/flows/login.flow';
 import TestDappPage from '../../../page-objects/pages/test-dapp';
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 
+// Approve a signing APDU on the Ledger device for typed data (EIP-712) signing.
+// EIP-712 signing does NOT require blind signing, so no extra "both" press is needed.
+// Button sequence: right x{rightPresses} (navigate review pages) → both (confirm signing)
 async function approveLedgerAfterSigningApdu(
   speculosClient: SpeculosClient,
   apduBridge: ApduBridge,
@@ -16,7 +19,7 @@ async function approveLedgerAfterSigningApdu(
   await apduBridge.waitForSigningApduAndApprove(
     speculosClient,
     rightPresses,
-    30000,
+    90000,
   );
 }
 

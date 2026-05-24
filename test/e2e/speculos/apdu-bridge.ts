@@ -31,6 +31,11 @@ export class ApduBridge {
 
   private signingGatePromise: Promise<void> | null = null;
 
+  // One-shot error injection: when set, the next APDU exchange returns this
+  // 2-byte status code instead of the real Speculos response.  Auto-clears
+  // after the first intercepted exchange so subsequent APDUs go through normally.
+  private injectedErrorStatusCode: number | null = null;
+
   constructor(client: SpeculosClient, port: number) {
     this.client = client;
     this.port = port;
@@ -70,11 +75,18 @@ export class ApduBridge {
     timeout = 30000,
   ): Promise<Buffer> {
     const apdu = await this.waitForSigningApdu(timeout);
+
+    // Wait for Speculos to render the transaction review screen
     await new Promise((r) => setTimeout(r, 1500));
+
+    // Navigate through review pages (amount, address, fees, network, etc.)
+    // to reach the "Approve" or "Accept" screen
     for (let i = 0; i < rightPresses; i++) {
       await speculosClient.pressButton('right');
       await new Promise((r) => setTimeout(r, 500));
     }
+
+    // Press "both" to confirm signing on the "Approve" screen
     await speculosClient.pressButton('both');
     await new Promise((r) => setTimeout(r, 500));
     return apdu;
@@ -92,6 +104,25 @@ export class ApduBridge {
 
   getClient(): SpeculosClient {
     return this.client;
+  }
+
+  /**
+   * Inject an error status code on the NEXT APDU exchange.
+   * The real Speculos response is discarded and only the 2-byte SW is returned.
+   * Auto-clears after one use.
+   *
+   * Useful for testing error modals:
+   * 0x6d00 = DeviceStateEthAppClosed ("Open Ethereum app")
+   * 0x5515 = AuthenticationDeviceLocked ("Ledger locked")
+   * 0x6985 = UserRejected (silently dismissed, no modal)
+   *
+   * @param statusCode - 16-bit APDU status word (e.g. 0x6d00)
+   */
+  injectNextErrorResponse(statusCode: number): void {
+    this.injectedErrorStatusCode = statusCode;
+    console.log(
+      `[ApduBridge] Will inject error 0x${statusCode.toString(16)} on next exchange`,
+    );
   }
 
   async start(): Promise<void> {
@@ -225,12 +256,25 @@ export class ApduBridge {
     }
 
     let response = await this.client.exchange(apdu);
-    console.log(
-      '[ApduBridge] handleHidSend: got response from Speculos, bytes:',
-      response.length,
-      'hex:',
-      response.toString('hex'),
-    );
+
+    // One-shot error injection: replace the real response with a 2-byte SW
+    const injectedCode = this.injectedErrorStatusCode;
+    this.injectedErrorStatusCode = null;
+    if (injectedCode === null) {
+      console.log(
+        '[ApduBridge] handleHidSend: got response from Speculos, bytes:',
+        response.length,
+        'hex:',
+        response.toString('hex'),
+      );
+    } else {
+      const sw1 = Math.floor(injectedCode / 256);
+      const sw2 = injectedCode % 256;
+      response = Buffer.from([sw1, sw2]);
+      console.log(
+        `[ApduBridge] Injected error response: 0x${injectedCode.toString(16)}`,
+      );
+    }
 
     // Ethereum GET APP CONFIGURATION: CLA=0xE0 INS=0x06
     // Speculos returns arbitraryDataEnabled=0 but MetaMask requires 1 for blind signing.
