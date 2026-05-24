@@ -61,7 +61,7 @@ describe('Ledger Hardware ERC20 @speculos', function (this: Suite) {
   // must wait until all chunks are received and the Ledger shows the
   // review UI. Requires chunk-aware signing approval to be implemented.
   // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('can create an ERC20 token', async function () {
+  it('can create an ERC20 token', async function () {
     await withSpeculosFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
@@ -80,7 +80,7 @@ describe('Ledger Hardware ERC20 @speculos', function (this: Suite) {
         await login(driver, { validateBalance: false });
         await switchToHardwareAccount(driver, 'Ledger 1');
 
-        const ledgerDone = approveLedgerBlindSigning(interaction, apduBridge);
+        const ledgerDone = approveLedgerBlindSigning(interaction, apduBridge, 7);
 
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage();

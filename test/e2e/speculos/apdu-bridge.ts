@@ -23,6 +23,8 @@ export class ApduBridge {
 
   private readonly emitter = new EventEmitter();
 
+  private readonly signingReadyEmitter = new EventEmitter();
+
   private readonly connectionState = new WeakMap<
     WsWebSocket,
     WsConnectionState
@@ -32,10 +34,11 @@ export class ApduBridge {
 
   private signingGatePromise: Promise<void> | null = null;
 
-  // One-shot error injection: when set, the next APDU exchange returns this
-  // 2-byte status code instead of the real Speculos response.  Auto-clears
-  // after the first intercepted exchange so subsequent APDUs go through normally.
   private injectedErrorStatusCode: number | null = null;
+
+  private signTxTotalDataLen: number | null = null;
+
+  private signTxDataSent: number = 0;
 
   constructor(client: SpeculosClient, port: number) {
     this.client = client;
@@ -89,9 +92,31 @@ export class ApduBridge {
     scrollCount?: number,
   ): Promise<Buffer> {
     const apdu = await this.waitForSigningApdu(timeout);
-    await new Promise((r) => setTimeout(r, 1500));
+    await this.waitForSigningReady(timeout);
     await interaction.approveBlindSigning(scrollCount);
     return apdu;
+  }
+
+  /**
+   * Wait for the Ledger to show the signing review UI (all APDU chunks received).
+   * Fires when a signing exchange takes longer than the acknowledgment threshold,
+   * meaning the device is waiting for user input rather than just acknowledging
+   * continuation chunks.
+   * @param timeout
+   */
+  waitForSigningReady(timeout = 30000): Promise<void> {
+    let timer: ReturnType<typeof setTimeout>;
+    return new Promise((resolve, reject) => {
+      const handler = () => {
+        clearTimeout(timer);
+        resolve();
+      };
+      timer = setTimeout(() => {
+        this.signingReadyEmitter.removeListener('signing-ready', handler);
+        reject(new Error('Timeout waiting for signing ready'));
+      }, timeout);
+      this.signingReadyEmitter.once('signing-ready', handler);
+    });
   }
 
   /** Release the gate so the signing APDU can be forwarded to Speculos */
@@ -252,12 +277,103 @@ export class ApduBridge {
       apdu.toString('hex'),
     );
 
-    if (apdu.length >= 2 && apdu[0] === 0xe0 && (apdu[1] === 0x04 || apdu[1] === 0x08 || apdu[1] === 0x1a || apdu[1] === 0x20 || apdu[1] === 0x22)) {
-      this.emitter.emit('signing-apdu', apdu);
-      console.log('[ApduBridge] Signing APDU detected, forwarding to Speculos immediately');
+    const isSignTx = apdu.length >= 2 && apdu[0] === 0xe0 && apdu[1] === 0x04;
+    const isSigningIns =
+      apdu.length >= 2 &&
+      apdu[0] === 0xe0 &&
+      (apdu[1] === 0x04 ||
+        apdu[1] === 0x08 ||
+        apdu[1] === 0x1a ||
+        apdu[1] === 0x20 ||
+        apdu[1] === 0x22);
+
+    const isSignTxFirst = isSignTx && apdu[2] === 0x00;
+    const isSignTxContinuation = isSignTx && apdu[2] === 0x80;
+    const dataLen = apdu.length > 5 ? apdu.length - 5 : 0;
+
+    // Track total expected data length from the first chunk to detect
+    // when the last chunk is ambiguous (exactly 255 bytes).
+    if (isSignTxFirst && apdu.length > 5) {
+      const totalPayloadLen = this.#parseTxPayloadLength(apdu.slice(5));
+      if (totalPayloadLen !== null) {
+        this.signTxTotalDataLen = totalPayloadLen;
+        this.signTxDataSent = dataLen;
+        console.log(
+          `[ApduBridge] Sign tx: totalPayload=${this.signTxTotalDataLen} firstChunkData=${dataLen} chunks=${Math.ceil(this.signTxTotalDataLen / 255)} lastChunkSize=${this.signTxTotalDataLen % 255}`,
+        );
+      }
+    } else if (isSignTxContinuation) {
+      this.signTxDataSent += dataLen;
     }
 
+    // For INS=0x04 (sign tx), only emit signing-apdu on the initial chunk
+    // (P1=0x00). Continuation chunks (P1=0x80) are acknowledgments and should
+    // not trigger the signing approval flow. For other signing INS values
+    // (personal sign, EIP-712) there is no chunking, so always emit.
+    const isSigningFirstChunk = isSigningIns && apdu[2] === 0x00;
+    const isOtherSigning = isSigningIns && apdu[1] !== 0x04;
+
+    if (isSigningFirstChunk || isOtherSigning) {
+      this.emitter.emit('signing-apdu', apdu);
+      console.log('[ApduBridge] Signing APDU detected, forwarding to Speculos');
+    }
+
+    // Detect when the exchange blocks (Ledger showing signing UI).
+    // Quick responses (<500ms) are continuation chunk acknowledgments.
+    // A blocking exchange means the device is waiting for user input.
+    let signingReadyFired = false;
+    const signingReadyTimer = isSigningIns
+      ? setTimeout(() => {
+          signingReadyFired = true;
+          this.signingReadyEmitter.emit('signing-ready');
+          console.log('[ApduBridge] Signing ready — Ledger showing review UI');
+        }, 500)
+      : null;
+
     let response = await this.client.exchange(apdu);
+
+    if (signingReadyTimer) {
+      clearTimeout(signingReadyTimer);
+    }
+
+    // Handle the "last chunk is exactly 255 bytes" edge case for INS=0x04.
+    // When the final chunk has dataLen === 255, the Ledger firmware cannot
+    // distinguish it from a non-final chunk and returns 0x9000 (expecting
+    // more data) instead of showing the signing UI.
+    // Detection: we tracked total payload size from the first chunk.
+    // When signTxDataSent === signTxTotalDataLen AND response is 0x9000,
+    // send an empty continuation chunk to signal end-of-data.
+    const isAmbiguousLastChunk =
+      isSignTxContinuation &&
+      this.signTxTotalDataLen !== null &&
+      this.signTxDataSent >= this.signTxTotalDataLen &&
+      dataLen === 255 &&
+      response.length === 2 &&
+      response[0] === 0x90 &&
+      response[1] === 0x00;
+
+    if (isAmbiguousLastChunk) {
+      console.log(
+        `[ApduBridge] Ambiguous last signing chunk detected (dataSent=${this.signTxDataSent} total=${this.signTxTotalDataLen}). Sending empty terminator.`,
+      );
+      const emptyChunk = Buffer.from([0xe0, 0x04, 0x80, 0x00, 0x00]);
+      const readyTimer = setTimeout(() => {
+        signingReadyFired = true;
+        this.signingReadyEmitter.emit('signing-ready');
+        console.log('[ApduBridge] Signing ready — Ledger showing review UI');
+      }, 500);
+      response = await this.client.exchange(emptyChunk);
+      clearTimeout(readyTimer);
+      console.log(
+        '[ApduBridge] Terminator response, bytes:',
+        response.length,
+      );
+      this.signTxTotalDataLen = null;
+      this.signTxDataSent = 0;
+    } else if (isSignTxFirst || !isSignTx) {
+      this.signTxTotalDataLen = null;
+      this.signTxDataSent = 0;
+    }
 
     // One-shot error injection: replace the real response with a 2-byte SW
     const injectedCode = this.injectedErrorStatusCode;
@@ -355,5 +471,93 @@ export class ApduBridge {
 
   getPort(): number {
     return this.port;
+  }
+
+  /**
+   * Parse the total transaction payload length from the first signing chunk.
+   * The first chunk contains: [derivation path bytes][tx data]
+   * For typed transactions (EIP-1559): tx data = [type byte][RLP list]
+   * For legacy transactions: tx data = [RLP list]
+   * We need the total tx data length to predict the last chunk.
+   * @param firstChunkData
+   */
+  #parseTxPayloadLength(firstChunkData: Buffer): number | null {
+    if (firstChunkData.length < 6) {
+      return null;
+    }
+    try {
+      const pathCount = firstChunkData[0];
+      const pathBytes = pathCount * 4;
+      const txStart = 1 + pathBytes;
+      if (txStart >= firstChunkData.length) {
+        return null;
+      }
+      const txData = firstChunkData.slice(txStart);
+      if (txData.length === 0) {
+        return null;
+      }
+      let rlpStart = 0;
+      if (txData[0] >= 0x01 && txData[0] <= 0x7f) {
+        rlpStart = 1;
+      }
+      if (rlpStart >= txData.length) {
+        return null;
+      }
+      const rlpResult = this.#decodeRlpLength(txData, rlpStart);
+      if (!rlpResult) {
+        return null;
+      }
+      return pathBytes + 1 + rlpStart + rlpResult.headerSize + rlpResult.length;
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Decode an RLP length prefix at the given offset.
+   * Returns { headerSize, length } where headerSize is the bytes consumed by
+   * the prefix and length is the decoded content length.
+   * @param data
+   * @param offset
+   */
+  #decodeRlpLength(
+    data: Buffer,
+    offset: number,
+  ): { headerSize: number; length: number } | null {
+    if (offset >= data.length) {
+      return null;
+    }
+    const prefix = data[offset];
+    if (prefix <= 0x7f) {
+      return { headerSize: 0, length: 1 };
+    }
+    if (prefix <= 0xb7) {
+      return { headerSize: 1, length: prefix - 0x80 };
+    }
+    if (prefix <= 0xbf) {
+      const lenOfLen = prefix - 0xb7;
+      if (offset + 1 + lenOfLen > data.length) {
+        return null;
+      }
+      let len = 0;
+      for (let i = 0; i < lenOfLen; i++) {
+        // eslint-disable-next-line no-bitwise
+        len = (len << 8) | data[offset + 1 + i];
+      }
+      return { headerSize: 1 + lenOfLen, length: len };
+    }
+    if (prefix <= 0xf7) {
+      return { headerSize: 1, length: prefix - 0xc0 };
+    }
+    const lenOfLen2 = prefix - 0xf7;
+    if (offset + 1 + lenOfLen2 > data.length) {
+      return null;
+    }
+    let len2 = 0;
+    for (let i = 0; i < lenOfLen2; i++) {
+      // eslint-disable-next-line no-bitwise
+      len2 = (len2 << 8) | data[offset + 1 + i];
+    }
+    return { headerSize: 1 + lenOfLen2, length: len2 };
   }
 }

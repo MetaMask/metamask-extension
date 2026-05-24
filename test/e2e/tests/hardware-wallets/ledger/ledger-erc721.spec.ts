@@ -49,10 +49,7 @@ describe('Ledger Hardware ERC721 @speculos', function (this: Suite) {
     await stopSharedSpeculos(shared);
   });
 
-  // Contract deployment sends a multi-chunk signing APDU (2000+ bytes).
-  // Requires chunk-aware signing approval (same as ERC20 deploy test).
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('deploys an ERC-721 token', async function () {
+  it('deploys an ERC-721 token', async function () {
     await withSpeculosFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
@@ -73,6 +70,7 @@ describe('Ledger Hardware ERC721 @speculos', function (this: Suite) {
         const ledgerDone = approveLedgerBlindSigning(
           interaction,
           apduBridge,
+          7,
         );
 
         const testDappPage = new TestDappPage(driver);
@@ -217,10 +215,7 @@ describe('Ledger Hardware ERC721 @speculos', function (this: Suite) {
     );
   });
 
-  // Confirmation page UI: .confirm-scroll-to-bottom__button not found.
-  // The setApprovalForAll confirmation layout may have changed in recent builds.
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('sets approval for all an ERC-721 token', async function () {
+  it('sets approval for all an ERC-721 token', async function () {
     await withSpeculosFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
