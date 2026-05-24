@@ -25,7 +25,10 @@ type Segment = {
   isDiff: boolean;
 };
 
-function getSegments(address: string, diffIndices: readonly number[]): Segment[] {
+function getSegments(
+  address: string,
+  diffIndices: readonly number[],
+): Segment[] {
   const diffSet = new Set(diffIndices);
   const segments: Segment[] = [];
 
