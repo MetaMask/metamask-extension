@@ -101,7 +101,9 @@ describe('Trezor Hardware', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.goToActivityList();
         const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkTransactionActivityByText('Deposit');
+        await activityListPage.checkTransactionActivityByText(
+          'Smart contract interaction',
+        );
         await activityListPage.checkWaitForTransactionStatus('confirmed');
         await homePage.goToNftTab();
         const nftListPage = new NFTListPage(driver);

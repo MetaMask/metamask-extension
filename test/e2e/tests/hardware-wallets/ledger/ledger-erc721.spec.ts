@@ -106,7 +106,9 @@ describe('Ledger Hardware', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.goToActivityList();
         const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkTransactionActivityByText('Deposit');
+        await activityListPage.checkTransactionActivityByText(
+          'Smart contract interaction',
+        );
         await activityListPage.checkWaitForTransactionStatus('confirmed');
 
         // Check that NFT image is displayed in NFT tab on homepage

@@ -162,7 +162,11 @@ export function GenericActivityCell({ data, onClick }: ActivityCellProps) {
           </Text>
         ) : null}
         {secondaryTokenAmount ? (
-          <Text variant="body-sm" className="text-alternative">
+          <Text
+            variant="body-sm"
+            className="text-alternative"
+            data-testid="transaction-list-item-secondary-currency"
+          >
             {secondaryTokenAmount}
           </Text>
         ) : null}

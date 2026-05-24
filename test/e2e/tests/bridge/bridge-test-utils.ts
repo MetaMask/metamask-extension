@@ -551,6 +551,10 @@ async function mockFeatureFlags(
     additionalFlags.extensionSkipTransactionStatusPage ??
     getRegistryEntry('extensionSkipTransactionStatusPage')?.productionDefault;
 
+  const extensionUxActivityListRedesign =
+    additionalFlags.extensionUxActivityListRedesign ??
+    getRegistryEntry('extensionUxActivityListRedesign')?.productionDefault;
+
   await mockServer
     .forGet('https://client-config.api.cx.metamask.io/v1/flags')
     .thenCallback(() => {
@@ -561,6 +565,7 @@ async function mockFeatureFlags(
           {
             bridgeConfig: featureFlags,
             extensionSkipTransactionStatusPage,
+            extensionUxActivityListRedesign,
             ...additionalFlags,
           },
         ],
