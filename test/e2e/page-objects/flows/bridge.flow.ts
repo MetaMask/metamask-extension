@@ -52,7 +52,7 @@ export const verifySubmittedSwapTransaction = async ({
       confirmedTx: expectedTransactionsCount,
     });
     await activityList.checkTxAction({
-      action: `Approve ${expectedSrcToken} for ${isBridge ? 'bridge' : 'swap'}`,
+      action: 'Approved spending cap',
       confirmedTx: expectedTransactionsCount,
       txIndex: 2,
     });

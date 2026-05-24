@@ -166,7 +166,7 @@ describe('Trezor Hardware', function (this: Suite) {
         const activityListPage = new ActivityListPage(driver);
         await homePage.goToActivityList();
         await activityListPage.checkTransactionActivityByText(
-          'Approve TDN spending cap',
+          'Approved spending cap',
         );
         await activityListPage.checkWaitForTransactionStatus('confirmed');
       },
@@ -227,7 +227,7 @@ describe('Trezor Hardware', function (this: Suite) {
         const activityListPage = new ActivityListPage(driver);
         await homePage.goToActivityList();
         await activityListPage.checkTransactionActivityByText(
-          'Approve TDN with no spend limit',
+          'Approved spending cap',
         );
         await activityListPage.checkWaitForTransactionStatus('confirmed');
       },
