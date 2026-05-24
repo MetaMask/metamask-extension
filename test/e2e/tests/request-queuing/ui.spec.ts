@@ -208,7 +208,7 @@ async function validateBalanceAndActivity(
   if (expectedActivityEntries) {
     const activityList = new ActivityListPage(driver);
     await activityList.openActivityTab();
-    await activityList.checkTxAction({ action: 'Sent' });
+    await activityList.checkTxAction({ action: 'Sent ETH' });
     await activityList.checkConfirmedTxNumberDisplayedInActivity(
       expectedActivityEntries,
     );

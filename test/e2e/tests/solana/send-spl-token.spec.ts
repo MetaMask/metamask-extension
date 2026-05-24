@@ -347,7 +347,7 @@ describe('Send flow - SPL Token', function (this: Suite) {
         await confirmation.clickFooterConfirmButton();
 
         const activityList = new ActivityListPage(driver);
-        await activityList.checkTxAction({ action: 'Sent' });
+        await activityList.checkTxAction({ action: 'Sent USDC' });
 
         if (isUnifiedAssetsEnabled) {
           await driver.waitForSelector({
