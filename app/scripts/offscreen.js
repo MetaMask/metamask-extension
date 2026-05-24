@@ -102,6 +102,35 @@ export async function createOffscreen() {
 }
 
 /**
+ * Ensures that the offscreen document exists and is ready.
+ * If the offscreen document was evicted by Chrome or failed to initialize,
+ * this function recreates it.
+ *
+ * @returns {Promise<boolean>} True if the offscreen document was recreated, false if it already existed.
+ */
+export async function ensureOffscreenDocument() {
+  const { chrome } = globalThis;
+  if (!chrome.offscreen) {
+    return false;
+  }
+
+  const exists = await hasOffscreenDocument();
+  if (exists) {
+    console.debug('[Offscreen] Document exists but Ledger handler may be unresponsive — closing and recreating');
+    try {
+      await chrome.offscreen.closeDocument();
+    } catch (closeError) {
+      console.warn('[Offscreen] Failed to close existing document', closeError);
+    }
+  }
+
+  console.debug('[Offscreen] Creating offscreen document...');
+  await createOffscreen();
+  console.debug('[Offscreen] Offscreen document created');
+  return true;
+}
+
+/**
  * Sets up a listener for connectivity status messages from the offscreen document.
  *
  * **Note:** This function is only used in Manifest V3 (MV3). In Manifest V2 (MV2),

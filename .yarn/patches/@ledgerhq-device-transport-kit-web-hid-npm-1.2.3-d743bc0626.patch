@@ -1,0 +1,12 @@
+diff --git a/package.json b/package.json
+index ed86a4cd288e0718ff7fee2d1887e7f9cb08b7fe..b313e1f95a8f6169d048e4a6895b03460323c48d 100644
+--- a/package.json
++++ b/package.json
+@@ -52,5 +52,6 @@
+     "typecheck": "tsc --noEmit",
+     "watch:builds": "pnpm ldmk-tool watch --entryPoints src/index.ts,src/**/*.ts --tsconfig tsconfig.prod.json --platform web",
+     "watch:types": "concurrently \"tsc --watch -p tsconfig.prod.json\" \"tsc-alias --watch -p tsconfig.prod.json\""
+-  }
++  },
++  "main": "./lib/esm/index.js"
+ }

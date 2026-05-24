@@ -301,7 +301,8 @@
     "@metamask/bridge-status-controller@npm:^71.1.0": "patch:@metamask/bridge-status-controller@npm%3A71.0.0#~/.yarn/patches/@metamask-bridge-status-controller-npm-71.0.0-541daf6bed.patch",
     "@metamask/permission-controller@npm:^12.2.0": "^13.0.0",
     "@metamask/permission-controller@npm:^12.2.1": "^13.0.0",
-    "@metamask/permission-controller@npm:^12.3.0": "^13.0.0"
+    "@metamask/permission-controller@npm:^12.3.0": "^13.0.0",
+    "@ledgerhq/signer-utils@npm:^1.2.0": "patch:@ledgerhq/signer-utils@npm%3A1.2.0#~/.yarn/patches/@ledgerhq-signer-utils-npm-1.2.0-f75a87f135.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -323,6 +324,10 @@
     "@lavamoat/lavadome-react": "0.0.20",
     "@lavamoat/snow": "^2.0.4",
     "@lavamoat/webpack": "2.2.0",
+    "@ledgerhq/context-module": "patch:@ledgerhq/context-module@npm%3A2.0.0#~/.yarn/patches/@ledgerhq-context-module-npm-2.0.0-1108e1c058.patch",
+    "@ledgerhq/device-management-kit": "patch:@ledgerhq/device-management-kit@npm%3A1.5.0#~/.yarn/patches/@ledgerhq-device-management-kit-npm-1.5.0-36bd0a7cf1.patch",
+    "@ledgerhq/device-signer-kit-ethereum": "patch:@ledgerhq/device-signer-kit-ethereum@npm%3A1.16.0#~/.yarn/patches/@ledgerhq-device-signer-kit-ethereum-npm-1.16.0-df4b883905.patch",
+    "@ledgerhq/device-transport-kit-web-hid": "patch:@ledgerhq/device-transport-kit-web-hid@npm%3A1.2.3#~/.yarn/patches/@ledgerhq-device-transport-kit-web-hid-npm-1.2.3-d743bc0626.patch",
     "@ledgerhq/errors": "^6.21.0",
     "@ledgerhq/hw-app-eth": "^6.42.0",
     "@ledgerhq/hw-transport": "^6.31.0",
@@ -526,6 +531,7 @@
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "reselect": "^5.1.1",
+    "rxjs": "7.8.2",
     "ses": "^1.1.0",
     "ts-mixer": "patch:ts-mixer@npm%3A6.0.4#~/.yarn/patches/ts-mixer-npm-6.0.4-5d9747bdf5.patch",
     "tslib": "~2.6.0",
@@ -837,6 +843,7 @@
       "@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false,
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>blake-hash": false,
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>tiny-secp256k1": false,
+      "@storybook/test-runner>@swc/core#1.13.2": true,
       "ethereumjs-util>ethereum-cryptography>keccak": false,
       "ganache>@trufflesuite/bigint-buffer": false,
       "ganache>@trufflesuite/uws-js-unofficial>bufferutil": false,
@@ -854,11 +861,13 @@
       "eth-lattice-keyring>gridplus-sdk>secp256k1": false,
       "eslint-import-resolver-typescript>unrs-resolver": false,
       "@sentry/cli#2.56.0": true,
-      "@swc/core#1.13.2": true,
       "core-js-pure#3.41.0": true,
       "react-devtools>electron#23.3.0": true,
       "sharp#0.34.2": true,
-      "tsx>esbuild#0.27.7": true
+      "tsx>esbuild#0.27.7": true,
+      "@swc/core#1.15.33": true,
+      "@metamask/notification-services-controller>firebase>@firebase/util#1.12.1": false,
+      "@storybook/react-webpack5>@storybook/builder-webpack5>@swc/core#1.13.2": false
     }
   },
   "packageManager": "yarn@4.14.1",

@@ -160,6 +160,12 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
       : []),
     {
       src: shouldIncludeLockdown
+        ? `./app/scripts/reflect-metadata-preload.js`
+        : EMPTY_JS_FILE,
+      dest: `scripts/reflect-metadata-preload.js`,
+    },
+    {
+      src: shouldIncludeLockdown
         ? getPathInsideNodeModules('ses', 'dist/lockdown.umd.min.js')
         : EMPTY_JS_FILE,
       dest: `scripts/lockdown-install.js`,

@@ -1,6 +1,8 @@
 import {
   GetAppNameAndVersionResponse,
   LedgerBridge,
+  LedgerSignEip7702AuthorizationParams,
+  LedgerSignEip7702AuthorizationResponse,
   LedgerSignTypedDataParams,
   LedgerSignTypedDataResponse,
   AppConfigurationResponse,
@@ -141,7 +143,67 @@ export class LedgerOffscreenBridge implements LedgerBridge<LedgerOffscreenBridge
     });
   }
 
+  deviceSignEip7702Authorization(
+    params: LedgerSignEip7702AuthorizationParams,
+  ): Promise<LedgerSignEip7702AuthorizationResponse> {
+    return this.#sendMessage({
+      action: LedgerAction.signEip7702Authorization,
+      params,
+    });
+  }
+
   async #sendMessage<TAction extends LedgerAction, ResponsePayload>(
+    message: IFrameMessage<TAction>,
+    { timeout }: { timeout?: number } = {},
+  ): Promise<ResponsePayload> {
+    const MAX_RETRIES = 2;
+    let lastError: Error | null = null;
+
+    console.debug('[LedgerBridge] #sendMessage', JSON.stringify({
+      action: message.action,
+      hasParams: Boolean(message.params),
+      timeout: timeout ?? 'none',
+    }));
+
+    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+      try {
+        const result = await this.#attemptSendMessage<TAction, ResponsePayload>(
+          message,
+          { timeout },
+        );
+        console.debug('[LedgerBridge] #sendMessage succeeded', JSON.stringify({
+          action: message.action,
+          attempt,
+        }));
+        return result;
+      } catch (error) {
+        lastError = error instanceof Error ? error : new Error(String(error));
+
+        const isOffscreenUnavailable =
+          lastError.message.includes('Receiving end does not exist') ||
+          lastError.message.includes('Could not establish connection');
+
+        console.warn('[LedgerBridge] #sendMessage attempt failed', JSON.stringify({
+          action: message.action,
+          attempt,
+          maxRetries: MAX_RETRIES,
+          errorMessage: lastError.message,
+          isOffscreenUnavailable,
+        }));
+
+        if (isOffscreenUnavailable && attempt < MAX_RETRIES) {
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          continue;
+        }
+
+        throw lastError;
+      }
+    }
+
+    throw lastError;
+  }
+
+  #attemptSendMessage<TAction extends LedgerAction, ResponsePayload>(
     message: IFrameMessage<TAction>,
     { timeout }: { timeout?: number } = {},
   ): Promise<ResponsePayload> {
@@ -150,6 +212,10 @@ export class LedgerOffscreenBridge implements LedgerBridge<LedgerOffscreenBridge
 
       if (timeout) {
         responseTimeout = setTimeout(() => {
+          console.warn('[LedgerBridge] message timed out', JSON.stringify({
+            action: message.action,
+            timeout,
+          }));
           reject(new Error('Ledger iframe timeout'));
         }, timeout);
       }
@@ -161,32 +227,38 @@ export class LedgerOffscreenBridge implements LedgerBridge<LedgerOffscreenBridge
         },
         (response) => {
           clearTimeout(responseTimeout);
+
+          if (chrome.runtime.lastError) {
+            const chromeError = chrome.runtime.lastError.message;
+            console.error('[LedgerBridge] chrome.runtime.lastError set', JSON.stringify({
+              action: message.action,
+              lastError: chromeError,
+              responseReceived: response !== undefined,
+            }));
+            reject(new Error(chromeError));
+            return;
+          }
+
           if (response?.success) {
             resolve(response.payload || response.success);
           } else {
-            // Need to process the payload to get the error
-            // and then reject with the error
             const error = response?.payload?.error;
-
+            console.error('[LedgerBridge] offscreen responded with error', JSON.stringify({
+              action: message.action,
+              hasResponse: response !== undefined,
+              responseSuccess: response?.success,
+              errorStatusCode: error?.statusCode ?? null,
+              errorMessage: error?.message ?? null,
+            }));
             if (
               error &&
               typeof error.statusCode === 'number' &&
               error.statusCode > 0
             ) {
-              // This is TransportStatusError, convert the SerializedLedgerError to a TransportStatusError
-              // TransportStatusError will regenerate the error message based on the statusCode
-              const transportStatusError = new TransportStatusError(
-                error.statusCode,
-              );
-              reject(transportStatusError);
+              reject(new TransportStatusError(error.statusCode));
             } else if (error?.message) {
-              // Regenerate the error based on the SerializedLedgerError
-              const newError = new Error(error.message, {
-                cause: error,
-              });
-              reject(newError);
+              reject(new Error(error.message, { cause: error }));
             } else {
-              // Fallback for unknown Ledger errors when error information is not available
               reject(new Error('Unknown Ledger error occurred'));
             }
           }

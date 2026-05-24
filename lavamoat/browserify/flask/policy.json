@@ -505,6 +505,21 @@
         "process": true
       }
     },
+    "@ledgerhq/context-module>inversify>@inversifyjs/container": {
+      "packages": {
+        "@ledgerhq/context-module>inversify>@inversifyjs/common": true,
+        "@ledgerhq/context-module>inversify>@inversifyjs/core": true,
+        "@ledgerhq/context-module>inversify>@inversifyjs/core>@inversifyjs/reflect-metadata-utils": true,
+        "@ledgerhq/context-module>reflect-metadata": true
+      }
+    },
+    "@ledgerhq/context-module>inversify>@inversifyjs/core": {
+      "packages": {
+        "@ledgerhq/context-module>inversify>@inversifyjs/common": true,
+        "@ledgerhq/context-module>inversify>@inversifyjs/core>@inversifyjs/prototype-utils": true,
+        "@ledgerhq/context-module>inversify>@inversifyjs/core>@inversifyjs/reflect-metadata-utils": true
+      }
+    },
     "@open-rpc/schema-utils-js>@json-schema-tools/dereferencer": {
       "packages": {
         "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver": true,
@@ -583,11 +598,615 @@
         "react": true
       }
     },
-    "@ledgerhq/hw-transport-webhid>@ledgerhq/devices": {
+    "@ledgerhq/context-module": {
+      "globals": {
+        "AccountOwnershipContextLoader": true,
+        "AccountOwnershipError": true,
+        "BlindSignReason": true,
+        "BlindSigningMethod": true,
+        "BlindSigningModelId": true,
+        "BlindSigningPlatform": true,
+        "CalldataContextLoader": true,
+        "ClearSignContextReferenceType": true,
+        "ClearSignContextType": true,
+        "ClearSigningType": true,
+        "ContainerPath": true,
+        "ContextModuleBuilder": true,
+        "ContextModuleChainID": true,
+        "DEFAULT_CONFIG": true,
+        "DYNAMIC_NETWORK_CONTEXT_TYPES": true,
+        "DataPathElementType": true,
+        "DataPathLeafType": true,
+        "DefaultBlindSigningReporter": true,
+        "DefaultCommandDecoderDataSource": true,
+        "DefaultContextModule": true,
+        "DefaultPkiCertificateLoader": true,
+        "DefaultTypedDataContextLoader": true,
+        "DynamicNetworkContextLoader": true,
+        "ERC20_SUPPORTED_SELECTORS": true,
+        "ETHEREUM_CLEAR_SIGN_CONTEXT_SUCCESS_TYPES": true,
+        "EthereumClearSignContextType": true,
+        "EthereumTransactionCheckLoader": true,
+        "EthereumTypedDataCheckLoader": true,
+        "EthersAbiDecoderDataSource": true,
+        "ExternalPluginContextLoader": true,
+        "GatedSigningContextLoader": true,
+        "GatedSigningTypedDataContextLoader": true,
+        "HexStringUtils": true,
+        "HttpAccountOwnershipDataSource": true,
+        "HttpBlindSigningReporterDatasource": true,
+        "HttpCalldataDescriptorDataSource": true,
+        "HttpDynamicNetworkDataSource": true,
+        "HttpExternalPluginDataSource": true,
+        "HttpGatedDescriptorDataSource": true,
+        "HttpLifiDataSource": true,
+        "HttpNftDataSource": true,
+        "HttpOwnerInfoDataSource": true,
+        "HttpPkiCertificateDataSource": true,
+        "HttpProxyDataSource": true,
+        "HttpSafeAccountDataSource": true,
+        "HttpSafeProxyDataSource": true,
+        "HttpTokenDataSource": true,
+        "HttpTransactionCheckDataSource": true,
+        "HttpTrustedNameDataSource": true,
+        "HttpTypedDataDataSource": true,
+        "INFO_SIGNATURE_TAG": true,
+        "KeyId": true,
+        "KeyUsage": true,
+        "KeyUsageMapper": true,
+        "LEDGER_CLIENT_VERSION_HEADER": true,
+        "LEDGER_ORIGIN_TOKEN_HEADER": true,
+        "LifiContextLoader": true,
+        "NftContextFieldLoader": true,
+        "NftContextLoader": true,
+        "OwnerInfoContextLoader": true,
+        "ProxyContextFieldLoader": true,
+        "SIGNATURE_TAG": true,
+        "SOLANA_CLEAR_SIGN_CONTEXT_SUCCESS_TYPES": true,
+        "SafeAddressLoader": true,
+        "SolanaContextType": true,
+        "SolanaTransactionCheckLoader": true,
+        "SolanaTransactionScanChainId": true,
+        "TokenContextFieldLoader": true,
+        "TokenContextLoader": true,
+        "TransactionCheckPaths": true,
+        "TrustedNameContextFieldLoader": true,
+        "TrustedNameContextLoader": true,
+        "TypedDataCalldataParamPresence": true,
+        "UNISWAP_COMMANDS": true,
+        "UNISWAP_EXECUTE_ABI": true,
+        "UNISWAP_EXECUTE_SELECTOR": true,
+        "UNISWAP_SWAP_COMMANDS": true,
+        "UniswapContextLoader": true,
+        "UniswapSupportedCommand": true,
+        "VERIFYING_CONTRACT_TOKEN_INDEX": true,
+        "WETHSupportedChainIds": true,
+        "WETH_ADDRESS_BY_CHAIN_ID": true,
+        "accountOwnershipModuleFactory": true,
+        "accountOwnershipTypes": true,
+        "calldataModuleFactory": true,
+        "calldataTypes": true,
+        "configModuleFactory": true,
+        "configTypes": true,
+        "dynamicNetworkModuleFactory": true,
+        "dynamicNetworkTypes": true,
+        "ethereumTransactionCheckModuleFactory": true,
+        "externalPluginModuleFactory": true,
+        "externalPluginTypes": true,
+        "gatedSigningModuleFactory": true,
+        "gatedSigningTypes": true,
+        "getSchemaHash": true,
+        "isEthereumClearSignContextSuccess": true,
+        "isSolanaContextSuccess": true,
+        "lifiModuleFactory": true,
+        "lifiTypes": true,
+        "makeContainer": true,
+        "mapDeviceModelId": true,
+        "nanoPkiModuleFactory": true,
+        "networkClientFactory": true,
+        "networkModuleFactory": true,
+        "networkTypes": true,
+        "nftModuleFactory": true,
+        "nftTypes": true,
+        "ownerInfoModuleFactory": true,
+        "ownerInfoTypes": true,
+        "pkiTypes": true,
+        "proxyModuleFactory": true,
+        "proxyTypes": true,
+        "reporterModuleFactory": true,
+        "reporterTypes": true,
+        "safeModuleFactory": true,
+        "safeTypes": true,
+        "solanaTransactionCheckModuleFactory": true,
+        "tokenModuleFactory": true,
+        "tokenTypes": true,
+        "transactionCheckTypes": true,
+        "trustedNameModuleFactory": true,
+        "trustedNameTypes": true,
+        "typedDataModuleFactory": true,
+        "typedDataTypes": true,
+        "uniswapModuleFactory": true,
+        "uniswapTypes": true,
+        "chrome": true,
+        "navigator": true
+      },
       "packages": {
-        "@ledgerhq/errors": true,
+        "@ledgerhq/device-management-kit": true,
+        "@ledgerhq/context-module>crypto-js": true,
+        "@ledgerhq/context-module>ethers": true,
+        "@ledgerhq/context-module>inversify": true,
+        "@ledgerhq/context-module>purify-ts": true,
+        "@ledgerhq/context-module>reflect-metadata": true
+      }
+    },
+    "@ledgerhq/device-management-kit": {
+      "globals": {
+        "APDU_DATA_LENGTH_LENGTH": true,
+        "APDU_MAX_PAYLOAD": true,
+        "APDU_MAX_SIZE": true,
+        "APDU_RESPONSE_STATUS_CODE_LENGTH": true,
+        "AbortSignal.any": true,
+        "AbortSignal.timeout": true,
+        "AlreadySendingApduError": true,
+        "Apdu": true,
+        "ApduBuilder": true,
+        "ApduParser": true,
+        "ApduResponse": true,
+        "ApiCallError": true,
+        "AppAlreadyInstalledDAError": true,
+        "AppType": true,
+        "AppTypeDto": true,
+        "ApplicationChecker": true,
+        "BACKUP_STORAGE_ERRORS": true,
+        "BackupAppStorageTask": true,
+        "BackupStorageCommand": true,
+        "BackupStorageCommandError": true,
+        "BatteryStatusType": true,
+        "BleDeviceInfos": true,
+        "Blob": true,
+        "BuildAppsInstallPlanTask": true,
+        "ByteArrayBuilder": true,
+        "ByteArrayParser": true,
+        "CHANNEL_LENGTH": true,
+        "CallTaskInAppDeviceAction": true,
+        "ChargingMode": true,
+        "CloseAppCommand": true,
+        "CloseSessionsUseCase": true,
+        "CommandResultFactory": true,
+        "CommandResultStatus": true,
+        "CommandUtils": true,
+        "ConnectToSecureChannelTask": true,
+        "ConnectUseCase": true,
+        "ConnectedDevice": true,
+        "ConsoleLogger": true,
+        "DEFAULT_FIRMWARE_DISTRIBUTION_SALT": true,
+        "DEFAULT_MANAGER_API_BASE_URL": true,
+        "DEFAULT_MOCK_SERVER_BASE_URL": true,
+        "DEFAULT_PROVIDER": true,
+        "DEFAULT_UNLOCK_TIMEOUT_MS": true,
+        "DEFAULT_WEB_SOCKET_BASE_URL": true,
+        "DEVICE_SESSION_REFRESHER_DEFAULT_OPTIONS": true,
+        "DEVICE_SESSION_REFRESHER_MINIMUM_POLLING_INTERVAL": true,
+        "DEVICE_SESSION_REFRESHER_POLLING_INTERVAL": true,
+        "DMK_STORAGE_PREFIX_KEY": true,
+        "DataOverflowError": true,
+        "DefaultApduReceiverService": true,
+        "DefaultApduSenderService": true,
+        "DefaultConfigService": true,
+        "DefaultDeviceSessionService": true,
+        "DefaultLogTagFormatter": true,
+        "DefaultLoggerPublisherService": true,
+        "DefaultManagerApiService": true,
+        "DefaultSecureChannelDataSource": true,
+        "DefaultSecureChannelService": true,
+        "DefaultTransportService": true,
+        "DeleteLanguagePackCommand": true,
+        "DeleteLanguagePackCommandError": true,
+        "DeleteLanguagePackDAError": true,
+        "DeviceActionStatus": true,
+        "DeviceAlreadyConnectedError": true,
+        "DeviceBusyError": true,
+        "DeviceConnectionStateMachine": true,
+        "DeviceDisconnectedBeforeSendingApdu": true,
+        "DeviceDisconnectedWhileSendingError": true,
+        "DeviceExchangeError": true,
+        "DeviceLockedError": true,
+        "DeviceManagementKit": true,
+        "DeviceManagementKitBuilder": true,
+        "DeviceModel": true,
+        "DeviceModelId": true,
+        "DeviceNotInitializedError": true,
+        "DeviceNotOnboardedError": true,
+        "DeviceNotRecognizedError": true,
+        "DevicePinger": true,
+        "DeviceSession": true,
+        "DeviceSessionEventDispatcher": true,
+        "DeviceSessionNotFound": true,
+        "DeviceSessionRefresher": true,
+        "DeviceSessionRefresherError": true,
+        "DeviceSessionStateHandler": true,
+        "DeviceSessionStateType": true,
+        "DeviceStatus": true,
+        "DisableDeviceSessionRefresherUseCase": true,
+        "DisconnectError": true,
+        "DisconnectUseCase": true,
+        "DmkNetworkClient": true,
+        "DmkNetworkClientError": true,
+        "DmkResultFactory": true,
+        "DmkResultStatus": true,
+        "ExecuteDeviceActionUseCase": true,
+        "FileLocalConfigDataSource": true,
+        "FormData": true,
+        "Frame": true,
+        "FrameHeader": true,
+        "FramerApduError": true,
+        "FramerOverflowError": true,
+        "FramerUtils": true,
+        "GENUINE_DEVICE_RESULT": true,
+        "GET_APP_STORAGE_INFO_ERRORS": true,
+        "GLOBAL_ERRORS": true,
+        "GeneralDmkError": true,
+        "GenuineCheckDeviceAction": true,
+        "GetAppAndVersionCommand": true,
+        "GetAppStorageInfoCommand": true,
+        "GetAppStorageInfoCommandError": true,
+        "GetApplicationsMetadataTask": true,
+        "GetApplicationsMetadataTaskError": true,
+        "GetBackgroundImageSizeCommand": true,
+        "GetBackgroundImageSizeCommandError": true,
+        "GetBatteryStatusCommand": true,
+        "GetConnectedDeviceUseCase": true,
+        "GetDeviceMetadataDeviceAction": true,
+        "GetDeviceSessionStateUseCase": true,
+        "GetDeviceStatusDeviceAction": true,
+        "GetDmkVersionUseCase": true,
+        "GetFirmwareMetadataTask": true,
+        "GetOsVersionCommand": true,
+        "GlobalCommandError": true,
+        "GlobalCommandErrorHandler": true,
+        "GoToDashboardDeviceAction": true,
+        "HEADER_LENGTH": true,
+        "HEAD_TAG": true,
+        "HEAD_TAG_LENGTH": true,
+        "HexaStringEncodeError": true,
+        "HttpFetchApiError": true,
+        "HttpManagerApiDataSource": true,
+        "INDEX_LENGTH": true,
+        "InMessageQueryEnum": true,
+        "InstallAppDeviceAction": true,
+        "InstallLanguagePackageDeviceAction": true,
+        "InstallLanguagePackageTask": true,
+        "InstallOrUpdateAppsDeviceAction": true,
+        "IntentQueueService": true,
+        "InvalidArgumentError": true,
+        "InvalidGetFirmwareMetadataResponseError": true,
+        "InvalidResponseFormatError": true,
+        "InvalidStatusWordError": true,
+        "JSONParseError": true,
+        "JSON_CONTENT_TYPE": true,
+        "LEDGER_VENDOR_ID": true,
+        "ListAppsCommand": true,
+        "ListAppsCommandError": true,
+        "ListAppsDeviceAction": true,
+        "ListAppsWithMetadataDeviceAction": true,
+        "ListConnectedDevicesUseCase": true,
+        "ListInstalledAppsDeviceAction": true,
+        "ListLanguagePackCommand": true,
+        "ListLanguagePackCommandError": true,
+        "ListenToAvailableDevicesUseCase": true,
+        "ListenToConnectedDeviceUseCase": true,
+        "LoadCertificateCommand": true,
+        "LoadCertificateCommandError": true,
+        "LogLevel": true,
+        "MissingLanguagePackageDAError": true,
+        "MissingLanguagePackagesForOSDAError": true,
+        "NetworkDAError": true,
+        "NoAccessibleDeviceError": true,
+        "NoTransportProvidedError": true,
+        "NoTransportsProvidedError": true,
+        "NobleCryptoService": true,
+        "OpenAppCommand": true,
+        "OpenAppCommandError": true,
+        "OpenAppDeviceAction": true,
+        "OpenAppWithDependenciesDeviceAction": true,
+        "OpeningConnectionError": true,
+        "OutMessageResponseEnum": true,
+        "OutOfMemoryDAError": true,
+        "PINGER_TIMEOUT": true,
+        "ParseResponseError": true,
+        "PredictOutOfMemoryTask": true,
+        "ReadFileError": true,
+        "ReadableStream": true,
+        "ReceiverApduError": true,
+        "ReconnectUseCase": true,
+        "ReconnectionFailedError": true,
+        "RefresherService": true,
+        "RefusedByUserDAError": true,
+        "RestRemoteConfigDataSource": true,
+        "SecureChannelError": true,
+        "SecureChannelErrorType": true,
+        "SecureChannelEventType": true,
+        "SecureChannelOperationEnum": true,
+        "SecureElementFlagsParser": true,
+        "SendApduConcurrencyError": true,
+        "SendApduEmptyResponseError": true,
+        "SendApduTimeoutError": true,
+        "SendApduUseCase": true,
+        "SendCommandInAppDeviceAction": true,
+        "SendCommandTimeoutError": true,
+        "SendCommandUseCase": true,
+        "SessionEvents": true,
+        "SetProviderUseCase": true,
+        "StartDiscoveringUseCase": true,
+        "StaticDeviceModelDataSource": true,
+        "StopDiscoveringUseCase": true,
+        "StubLocalConfigDataSource": true,
+        "StubRemoteConfigDataSource": true,
+        "StubUseCase": true,
+        "TextEncoder": true,
+        "TransportAlreadyExistsError": true,
+        "TransportConnectedDevice": true,
+        "TransportDeviceModel": true,
+        "TransportNotSupportedError": true,
+        "URL.createObjectURL": true,
+        "URLSearchParams": true,
+        "UninstallAppDeviceAction": true,
+        "UnknownDAError": true,
+        "UnknownDeviceError": true,
+        "UnknownDeviceExchangeError": true,
+        "UnsafeBypassIntentQueueUseCase": true,
+        "UnsupportedApplicationDAError": true,
+        "UnsupportedFirmwareDAError": true,
+        "UserInteractionRequired": true,
+        "ValueOverflowError": true,
+        "WebLogsExporterLogger": true,
+        "WebSocketConnectionError": true,
+        "XStateDeviceAction": true,
+        "atob": true,
+        "base64StringToBuffer": true,
+        "bufferToBase64String": true,
+        "bufferToHexaString": true,
+        "buildBodyAndHeaders": true,
+        "buildSignal": true,
+        "buildUrl": true,
+        "callTaskInAppDAStateStep": true,
+        "clearTimeout": true,
+        "commandModuleFactory": true,
+        "commandTypes": true,
+        "configModuleFactory": true,
+        "configTypes": true,
+        "connectedDeviceStubBuilder": true,
+        "console.debug": true,
+        "console.error": true,
+        "console.info": true,
+        "console.log": true,
+        "console.warn": true,
+        "defaultApduReceiverServiceStubBuilder": true,
+        "defaultApduResponseStubBuilder": true,
+        "defaultApduSenderServiceStubBuilder": true,
+        "deviceActionModuleFactory": true,
+        "deviceActionTypes": true,
+        "deviceModelModuleFactory": true,
+        "deviceModelStubBuilder": true,
+        "deviceModelTypes": true,
+        "deviceSessionModuleFactory": true,
+        "deviceSessionTypes": true,
+        "discoveryModuleFactory": true,
+        "discoveryTypes": true,
+        "document.createElement": true,
+        "extractPublicKey": true,
+        "fetch": true,
+        "formatApduReceivedLog": true,
+        "formatApduSendingLog": true,
+        "formatApduSentLog": true,
+        "getDeviceMetadataDAStateStep": true,
+        "getDeviceStatusDAStateStep": true,
+        "getJSONStringifyReplacer": true,
+        "goToDashboardDAStateStep": true,
+        "hasHeader": true,
+        "hexaStringToBuffer": true,
+        "installLanguagePackageDAStateStep": true,
+        "installOrUpdateAppsDAStateStep": true,
+        "installedAppResultGuard": true,
+        "isBase64String": true,
+        "isCommandErrorCode": true,
+        "isConfig": true,
+        "isDashboardName": true,
+        "isDeviceGenuine": true,
+        "isGetCertificateApdu": true,
+        "isHexaString": true,
+        "isRawBody": true,
+        "isSuccessCommandResult": true,
+        "isSuccessDmkResult": true,
+        "joinPath": true,
+        "listAppsDAStateStep": true,
+        "listAppsWithMetadataDAStateStep": true,
+        "loggerModuleFactory": true,
+        "loggerTypes": true,
+        "makeContainer": true,
+        "managerApiModuleFactory": true,
+        "managerApiTypes": true,
+        "noopLogger": true,
+        "noopLoggerFactory": true,
+        "openAppDAStateStep": true,
+        "openAppWithDependenciesDAStateStep": true,
+        "parseBody": true,
+        "safeReadText": true,
+        "sanitiseData": true,
+        "secureChannelModuleFactory": true,
+        "secureChannelTypes": true,
+        "sendCommandInAppDAStateStep": true,
+        "sendModuleFactory": true,
+        "sendTypes": true,
+        "setTimeout": true,
+        "stubFsReadFile": true,
+        "transportDiTypes": true,
+        "transportModuleFactory": true,
+        "vi.fn": true,
+        "willRequestPermission": true,
+        "wrapFetchError": true,
+        "chrome": true,
+        "navigator": true
+      },
+      "packages": {
+        "@noble/hashes": true,
         "browserify>buffer": true,
-        "@ledgerhq/hw-transport-webhid>@ledgerhq/devices>semver": true
+        "@ledgerhq/context-module>inversify": true,
+        "@ledgerhq/device-management-kit>isomorphic-ws": true,
+        "@ledgerhq/context-module>purify-ts": true,
+        "@ledgerhq/context-module>reflect-metadata": true,
+        "rxjs": true,
+        "@ledgerhq/device-management-kit>semver": true,
+        "browserify>url": true,
+        "@ledgerhq/device-management-kit>uuid": true,
+        "@ledgerhq/device-management-kit>xstate": true
+      }
+    },
+    "@ledgerhq/device-signer-kit-ethereum": {
+      "globals": {
+        "APP_NAME": true,
+        "ArrayType": true,
+        "BASE_CONTEXT_TYPES_FILTER": true,
+        "BlindSigningDetectionTask": true,
+        "BuildBaseContexts": true,
+        "BuildEIP712ContextTask": true,
+        "BuildFullContextsTask": true,
+        "BuildSafeAddressContextTask": true,
+        "BuildSubcontextsTask": true,
+        "CalldataParamPresence": true,
+        "ClearSigningType": true,
+        "DefaultSignerEth": true,
+        "DefaultTypedDataParserService": true,
+        "ETH_APP_ERRORS": true,
+        "Eip712FilterType": true,
+        "EthAppBinder": true,
+        "EthAppCommandError": true,
+        "EthAppCommandErrorFactory": true,
+        "EthereumApplicationResolver": true,
+        "EthersTransactionMapperService": true,
+        "GetAddressCommand": true,
+        "GetAddressDeviceActionFactory": true,
+        "GetAddressUseCase": true,
+        "GetAppConfiguration": true,
+        "GetChallengeCommand": true,
+        "MIN_ETH_APP_VERSION_FOR_GATED_SIGNING": true,
+        "MIN_ETH_APP_VERSION_FOR_GENERIC_PARSER": true,
+        "MIN_ETH_APP_VERSION_FOR_WEB3_CHECKS": true,
+        "NESTED_CALLDATA_CONTEXT_TYPES_FILTER": true,
+        "NetworkConfigurationType": true,
+        "PAYLOAD_LENGTH_BYTES": true,
+        "ParseNestedTransactionTask": true,
+        "ParseTransactionTask": true,
+        "PayloadUtils": true,
+        "PrimitiveType": true,
+        "ProvideContextTask": true,
+        "ProvideEIP712ContextTask": true,
+        "ProvideEnumCommand": true,
+        "ProvideGatedSigningCommand": true,
+        "ProvideNFTInformationCommand": true,
+        "ProvideNetworkConfigurationCommand": true,
+        "ProvideProxyInfoCommand": true,
+        "ProvideSafeAccountCommand": true,
+        "ProvideSafeAccountCommandType": true,
+        "ProvideTokenInformationCommand": true,
+        "ProvideTransactionContextsTask": true,
+        "ProvideTransactionFieldDescriptionCommand": true,
+        "ProvideTransactionInformationCommand": true,
+        "ProvideTrustedNameCommand": true,
+        "ProvideWeb3CheckCommand": true,
+        "SendCommandInChunksTask": true,
+        "SendEIP712FilteringCommand": true,
+        "SendEIP712StructDefinitionCommand": true,
+        "SendEIP712StructImplemCommand": true,
+        "SendEIP712StructImplemTask": true,
+        "SendGetAddressTask": true,
+        "SendPayloadInChunksTask": true,
+        "SendSignAuthorizationDelegationTask": true,
+        "SendSignPersonalMessageTask": true,
+        "SendSignTransactionTask": true,
+        "SetExternalPluginCommand": true,
+        "SetPluginCommand": true,
+        "SignDelegationAuthorizationUseCase": true,
+        "SignEIP712Command": true,
+        "SignEIP7702AuthorizationCommand": true,
+        "SignMessageUseCase": true,
+        "SignPersonalMessageCommand": true,
+        "SignPersonalMessageDeviceActionFactory": true,
+        "SignTransactionCommand": true,
+        "SignTransactionDAStep": true,
+        "SignTransactionDeviceAction": true,
+        "SignTransactionUseCase": true,
+        "SignTypedDataDAStateStep": true,
+        "SignTypedDataDeviceAction": true,
+        "SignTypedDataLegacyTask": true,
+        "SignTypedDataUseCase": true,
+        "SignerEthBuilder": true,
+        "StartTransactionCommand": true,
+        "StoreTransactionCommand": true,
+        "StructDefinitionCommand": true,
+        "StructImplemType": true,
+        "StructType": true,
+        "TextEncoder": true,
+        "TransactionParserService": true,
+        "TransactionType": true,
+        "TypedDataParser": true,
+        "TypedDataValueArray": true,
+        "TypedDataValueField": true,
+        "TypedDataValueRoot": true,
+        "VerifySafeAddressDAStep": true,
+        "VerifySafeAddressDeviceAction": true,
+        "VerifySafeAddressUseCase": true,
+        "Web3CheckOptInCommand": true,
+        "ZERO_ADDRESS": true,
+        "addressModuleFactory": true,
+        "addressTypes": true,
+        "appBinderTypes": true,
+        "appBindingModuleFactory": true,
+        "eip7702ModuleFactory": true,
+        "eip7702Types": true,
+        "encodeTypedDataValue": true,
+        "externalTypes": true,
+        "makeContainer": true,
+        "messageModuleFactory": true,
+        "messageTypes": true,
+        "normalizeChainId": true,
+        "safeModuleFactory": true,
+        "safeTypes": true,
+        "transactionModuleFactory": true,
+        "transactionTypes": true,
+        "typedDataModuleFactory": true,
+        "typedDataTypes": true,
+        "chrome": true,
+        "navigator": true
+      },
+      "packages": {
+        "@ledgerhq/context-module": true,
+        "@ledgerhq/device-management-kit": true,
+        "@ledgerhq/device-signer-kit-ethereum>@ledgerhq/signer-utils": true,
+        "@ledgerhq/device-signer-kit-ethereum>ethers": true,
+        "@ledgerhq/context-module>inversify": true,
+        "@ledgerhq/context-module>purify-ts": true,
+        "@ledgerhq/context-module>reflect-metadata": true,
+        "@ledgerhq/device-management-kit>xstate": true
+      }
+    },
+    "@ledgerhq/device-transport-kit-web-hid": {
+      "globals": {
+        "AbortController": true,
+        "DOMException": true,
+        "clearTimeout": true,
+        "event": true,
+        "navigator.hid": true,
+        "setTimeout": true,
+        "chrome": true,
+        "navigator": true
+      },
+      "packages": {
+        "@ledgerhq/device-management-kit": true,
+        "@ledgerhq/device-management-kit>@sentry/minimal": true,
+        "@ledgerhq/context-module>purify-ts": true,
+        "rxjs": true,
+        "@ledgerhq/device-transport-kit-web-hid>uuid": true
       }
     },
     "@ledgerhq/hw-app-eth>@ledgerhq/domain-service": {
@@ -608,7 +1227,7 @@
         "@ledgerhq/hw-app-eth>@ledgerhq/cryptoassets-evm-signatures": true,
         "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>@ledgerhq/live-env": true,
         "axios": true,
-        "@metamask/ppom-validator>crypto-js": true
+        "@ledgerhq/context-module>crypto-js": true
       }
     },
     "@ledgerhq/hw-app-eth": {
@@ -643,43 +1262,28 @@
         "webpack>events": true
       }
     },
-    "@ledgerhq/hw-transport-webhid": {
-      "globals": {
-        "navigator": true
-      },
-      "packages": {
-        "@ledgerhq/hw-transport-webhid>@ledgerhq/devices": true,
-        "@ledgerhq/errors": true,
-        "@ledgerhq/hw-transport-webhid>@ledgerhq/hw-transport": true,
-        "@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
-        "browserify>buffer": true
-      }
-    },
-    "@ledgerhq/hw-transport-webhid>@ledgerhq/hw-transport": {
-      "globals": {
-        "clearTimeout": true,
-        "console.warn": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@ledgerhq/errors": true,
-        "@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
-        "browserify>buffer": true,
-        "webpack>events": true
-      }
-    },
     "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>@ledgerhq/live-env": {
       "globals": {
         "console.warn": true
       },
       "packages": {
-        "wait-on>rxjs": true
+        "rxjs": true
       }
     },
     "@ledgerhq/hw-app-eth>@ledgerhq/logs": {
       "globals": {
         "__ledgerLogsListen": "write",
         "console.error": true
+      }
+    },
+    "@ledgerhq/device-signer-kit-ethereum>@ledgerhq/signer-utils": {
+      "globals": {
+        "CommandErrorHelper": true,
+        "DerivationPathUtils": true,
+        "generateSignatureId": true
+      },
+      "packages": {
+        "@ledgerhq/device-management-kit": true
       }
     },
     "@metamask/passkey-controller>@levischuck/tiny-cbor": {
@@ -2346,7 +2950,7 @@
         "@metamask/ppom-validator>@metamask/controller-utils": true,
         "@metamask/ppom-validator>await-semaphore": true,
         "browserify>buffer": true,
-        "@metamask/ppom-validator>crypto-js": true,
+        "@ledgerhq/context-module>crypto-js": true,
         "@toruslabs/eccrypto>elliptic": true,
         "@metamask/ppom-validator>json-rpc-random-id": true
       }
@@ -3116,6 +3720,22 @@
         "@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": true
       }
     },
+    "@ledgerhq/context-module>ethers>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@ledgerhq/context-module>ethers>@noble/hashes": true
+      }
+    },
+    "@ledgerhq/device-signer-kit-ethereum>ethers>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@ledgerhq/device-signer-kit-ethereum>ethers>@noble/hashes": true
+      }
+    },
     "eth-lattice-keyring>gridplus-sdk>ox>@noble/curves": {
       "globals": {
         "TextEncoder": true
@@ -3220,6 +3840,18 @@
       }
     },
     "@metamask/phishing-controller>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@ledgerhq/context-module>ethers>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@ledgerhq/device-signer-kit-ethereum>ethers>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
@@ -3451,6 +4083,48 @@
         "@segment/analytics-node>jose": true,
         "process": true,
         "tslib": true
+      }
+    },
+    "@ledgerhq/device-management-kit>@sentry/minimal>@sentry/hub": {
+      "globals": {
+        "__SENTRY_DEBUG__": true,
+        "clearInterval": true,
+        "setInterval": true
+      },
+      "packages": {
+        "@ledgerhq/device-management-kit>@sentry/minimal>@sentry/hub>@sentry/utils": true,
+        "@ledgerhq/device-management-kit>@sentry/minimal>@sentry/hub>tslib": true
+      }
+    },
+    "@ledgerhq/device-management-kit>@sentry/minimal": {
+      "packages": {
+        "@ledgerhq/device-management-kit>@sentry/minimal>@sentry/hub": true,
+        "@ledgerhq/device-management-kit>@sentry/minimal>tslib": true
+      }
+    },
+    "@ledgerhq/device-management-kit>@sentry/minimal>@sentry/hub>@sentry/utils": {
+      "globals": {
+        "CustomEvent": true,
+        "DOMError": true,
+        "DOMException": true,
+        "Element": true,
+        "ErrorEvent": true,
+        "Event": true,
+        "Headers": true,
+        "Request": true,
+        "Response": true,
+        "XMLHttpRequest.prototype": true,
+        "__SENTRY_BROWSER_BUNDLE__": true,
+        "__SENTRY_DEBUG__": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "document": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ledgerhq/device-management-kit>@sentry/minimal>@sentry/hub>@sentry/types": true,
+        "process": true,
+        "@ledgerhq/device-management-kit>@sentry/minimal>@sentry/hub>tslib": true
       }
     },
     "@simplewebauthn/browser": {
@@ -3909,6 +4583,11 @@
       }
     },
     "ethers>@ethersproject/json-wallets>aes-js": {
+      "globals": {
+        "define": true
+      }
+    },
+    "@metamask/keyring-controller>ethereumjs-wallet>aes-js": {
       "globals": {
         "define": true
       }
@@ -4500,7 +5179,7 @@
         "crypto-browserify>randomfill": true
       }
     },
-    "@metamask/ppom-validator>crypto-js": {
+    "@ledgerhq/context-module>crypto-js": {
       "globals": {
         "crypto": true,
         "define": true,
@@ -4845,7 +5524,7 @@
     },
     "@metamask/keyring-controller>ethereumjs-wallet": {
       "packages": {
-        "eth-lattice-keyring>gridplus-sdk>aes-js": true,
+        "@metamask/keyring-controller>ethereumjs-wallet>aes-js": true,
         "ethereumjs-util>ethereum-cryptography>bs58check": true,
         "browserify>buffer": true,
         "crypto-browserify": true,
@@ -4886,6 +5565,46 @@
         "ethers>@ethersproject/wallet": true,
         "ethers>@ethersproject/web": true,
         "ethers>@ethersproject/wordlists": true
+      }
+    },
+    "@ledgerhq/context-module>ethers": {
+      "globals": {
+        "AbortController": true,
+        "Event": true,
+        "Headers": true,
+        "atob": true,
+        "btoa": true,
+        "clearTimeout": true,
+        "console.log": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ledgerhq/context-module>ethers>@adraffy/ens-normalize": true,
+        "@ledgerhq/context-module>ethers>@noble/curves": true,
+        "@ledgerhq/context-module>ethers>@noble/hashes": true,
+        "@ledgerhq/context-module>ethers>aes-js": true,
+        "@ledgerhq/context-module>ethers>tslib": true
+      }
+    },
+    "@ledgerhq/device-signer-kit-ethereum>ethers": {
+      "globals": {
+        "AbortController": true,
+        "Event": true,
+        "Headers": true,
+        "atob": true,
+        "btoa": true,
+        "clearTimeout": true,
+        "console.log": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ledgerhq/device-signer-kit-ethereum>ethers>@adraffy/ens-normalize": true,
+        "@ledgerhq/device-signer-kit-ethereum>ethers>@noble/curves": true,
+        "@ledgerhq/device-signer-kit-ethereum>ethers>@noble/hashes": true,
+        "@ledgerhq/context-module>ethers>aes-js": true,
+        "@ledgerhq/device-signer-kit-ethereum>ethers>tslib": true
       }
     },
     "eth-method-registry>@metamask/ethjs-contract>ethjs-abi": {
@@ -5161,6 +5880,14 @@
         "string.prototype.matchall>side-channel": true
       }
     },
+    "@ledgerhq/context-module>inversify": {
+      "packages": {
+        "@ledgerhq/context-module>inversify>@inversifyjs/common": true,
+        "@ledgerhq/context-module>inversify>@inversifyjs/container": true,
+        "@ledgerhq/context-module>inversify>@inversifyjs/core": true,
+        "@ledgerhq/context-module>reflect-metadata": true
+      }
+    },
     "browserify>util>is-arguments": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
@@ -5259,6 +5986,12 @@
       },
       "packages": {
         "@open-rpc/test-coverage>isomorphic-fetch>whatwg-fetch": true
+      }
+    },
+    "@ledgerhq/device-management-kit>isomorphic-ws": {
+      "globals": {
+        "MozWebSocket": true,
+        "WebSocket": true
       }
     },
     "viem>isows": {
@@ -5858,6 +6591,11 @@
         "define": true
       }
     },
+    "@ledgerhq/context-module>purify-ts": {
+      "globals": {
+        "__values": true
+      }
+    },
     "qrcode-generator": {
       "globals": {
         "define": true
@@ -6403,6 +7141,13 @@
         "@babel/runtime": true
       }
     },
+    "@ledgerhq/context-module>reflect-metadata": {
+      "globals": {
+        "crypto": true,
+        "msCrypto": true,
+        "Reflect": false
+      }
+    },
     "string.prototype.matchall>regexp.prototype.flags": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
@@ -6476,7 +7221,7 @@
         "browserify>buffer": true
       }
     },
-    "wait-on>rxjs": {
+    "rxjs": {
       "globals": {
         "cancelAnimationFrame": true,
         "clearInterval": true,
@@ -6547,7 +7292,7 @@
         "process": true
       }
     },
-    "@ledgerhq/hw-transport-webhid>@ledgerhq/devices>semver": {
+    "@ledgerhq/device-management-kit>semver": {
       "globals": {
         "console.error": true
       },
@@ -6741,6 +7486,32 @@
         "define": true
       }
     },
+    "@ledgerhq/device-management-kit>@sentry/minimal>@sentry/hub>tslib": {
+      "globals": {
+        "define": true
+      }
+    },
+    "@ledgerhq/device-management-kit>@sentry/minimal>tslib": {
+      "globals": {
+        "define": true
+      }
+    },
+    "@ledgerhq/context-module>ethers>tslib": {
+      "globals": {
+        "AsyncIterator": true,
+        "Iterator": true,
+        "SuppressedError": true,
+        "define": true
+      }
+    },
+    "@ledgerhq/device-signer-kit-ethereum>ethers>tslib": {
+      "globals": {
+        "AsyncIterator": true,
+        "Iterator": true,
+        "SuppressedError": true,
+        "define": true
+      }
+    },
     "tweetnacl": {
       "globals": {
         "crypto": true,
@@ -6903,6 +7674,16 @@
       "globals": {
         "crypto": true,
         "msCrypto": true
+      }
+    },
+    "@ledgerhq/device-management-kit>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@ledgerhq/device-transport-kit-web-hid>uuid": {
+      "globals": {
+        "crypto": true
       }
     },
     "@metamask/eth-qr-keyring>uuid": {
@@ -7084,6 +7865,14 @@
         "string.prototype.matchall>es-abstract>get-proto": true,
         "string.prototype.matchall>gopd": true,
         "axios>form-data>es-set-tostringtag>has-tostringtag": true
+      }
+    },
+    "@ledgerhq/device-management-kit>xstate": {
+      "globals": {
+        "AbortController": true,
+        "clearTimeout": true,
+        "console": true,
+        "setTimeout": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk>zod": {

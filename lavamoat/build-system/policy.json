@@ -5652,7 +5652,7 @@
         "process.nextTick": true
       }
     },
-    "wait-on>rxjs": {
+    "rxjs": {
       "globals": {
         "cancelAnimationFrame": true,
         "clearInterval": true,
@@ -5885,7 +5885,7 @@
         "sass-embedded>@bufbuild/protobuf": true,
         "sass-embedded>buffer-builder": true,
         "sass-embedded>immutable": true,
-        "wait-on>rxjs": true,
+        "rxjs": true,
         "mocha>supports-color": true,
         "sass-embedded>varint": true
       }
@@ -6901,7 +6901,7 @@
         "process.versions.pnp": true
       },
       "packages": {
-        "eslint-import-resolver-typescript>unrs-resolver>@unrs/resolver-binding-linux-x64-gnu": true
+        "eslint-import-resolver-typescript>unrs-resolver>@unrs/resolver-binding-darwin-arm64": true
       }
     },
     "uri-js": {

@@ -2207,7 +2207,7 @@
         "@metamask/ppom-validator>@metamask/controller-utils": true,
         "@metamask/ppom-validator>await-semaphore": true,
         "buffer": true,
-        "@metamask/ppom-validator>crypto-js": true,
+        "@ledgerhq/context-module>crypto-js": true,
         "@toruslabs/eccrypto>elliptic": true,
         "@metamask/ppom-validator>json-rpc-random-id": true
       }
@@ -3674,6 +3674,11 @@
         "define": true
       }
     },
+    "@metamask/keyring-controller>ethereumjs-wallet>aes-js": {
+      "globals": {
+        "define": true
+      }
+    },
     "eth-lattice-keyring>gridplus-sdk>aes-js": {
       "globals": {
         "define": true
@@ -4255,7 +4260,7 @@
         "crypto-browserify>randomfill": true
       }
     },
-    "@metamask/ppom-validator>crypto-js": {
+    "@ledgerhq/context-module>crypto-js": {
       "globals": {
         "crypto": true,
         "define": true,
@@ -4617,7 +4622,7 @@
         "Buffer.isBuffer": true
       },
       "packages": {
-        "eth-lattice-keyring>gridplus-sdk>aes-js": true,
+        "@metamask/keyring-controller>ethereumjs-wallet>aes-js": true,
         "ethereumjs-util>ethereum-cryptography>bs58check": true,
         "buffer": true,
         "crypto-browserify": true,
