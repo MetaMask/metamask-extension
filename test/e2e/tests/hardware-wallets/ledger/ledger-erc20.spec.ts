@@ -1,3 +1,4 @@
+import assert from 'assert';
 import { Suite } from 'mocha';
 import TestDappPage from '../../../page-objects/pages/test-dapp';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
@@ -55,9 +56,10 @@ describe('Ledger Hardware ERC20 @speculos', function (this: Suite) {
     await stopSharedSpeculos(shared);
   });
 
-  // TODO: Contract deployment from Ledger account requires signing the deploy tx.
-  // The hardcoded token address 0xcB17707... is deterministic for the default account,
-  // not the Ledger account. Re-enable after implementing proper contract address detection.
+  // Contract deployment sends a multi-chunk signing APDU (2000+ bytes).
+  // The signing-apdu event fires on the first chunk, but button presses
+  // must wait until all chunks are received and the Ledger shows the
+  // review UI. Requires chunk-aware signing approval to be implemented.
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('can create an ERC20 token', async function () {
     await withSpeculosFixtures(
@@ -92,8 +94,10 @@ describe('Ledger Hardware ERC20 @speculos', function (this: Suite) {
         await ledgerDone;
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDappPage.checkTokenAddressesValue(
-          '0xcB17707e0623251182A654BEdaE16429C78A7424',
+        const tokenAddress = await testDappPage.getTokenAddressesText();
+        assert.ok(
+          tokenAddress.startsWith('0x'),
+          `Expected token address, got: ${tokenAddress}`,
         );
 
         await testDappPage.clickERC20WatchAssetButton();

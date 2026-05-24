@@ -18,10 +18,9 @@ async function approveLedgerSigning(
 describe('Ledger Hardware Signatures @speculos', function () {
   this.timeout(180000);
 
-  // TODO: Speculos ethereum.elf v1.21.3 does not support EIP-712 signEIP712Message (INS=0x1a).
-  // Re-enable when a compatible firmware image is available.
+  // v1.22.0 firmware supports EIP-712 signing (INS=0x0c for filtered, INS=0x1a for raw).
   // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('sign typed v4', async function () {
+  it('sign typed v4', async function () {
     await withSpeculosFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },

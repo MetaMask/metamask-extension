@@ -12,7 +12,8 @@ import { SPECULOS_LEDGER_ADDRESS } from 'test/e2e/speculos';
 
 const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
-// This test is skipped because it needs to be migrated to the new swap flow
+// Blocked: requires migration from withFixtures (Trezor mock bridge) to
+// withSpeculosFixtures (live Speculos), and the swap flow UI has been redesigned.
 // eslint-disable-next-line mocha/no-skipped-tests
 describe.skip('Ledger Swap', function () {
   it('swaps ETH to DAI', async function () {
