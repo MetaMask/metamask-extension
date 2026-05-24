@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import type { Hex } from 'viem';
 import {
   TransactionType,
   type TransactionMeta,
@@ -16,6 +17,7 @@ import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../shared/constants/network'
 import { NATIVE_TOKEN_ADDRESS } from '../../shared/constants/transaction';
 import type { MetaMaskReduxState } from '../store/store';
 import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
+import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { mapKeyringTransaction } from '../../shared/lib/activity/adapters/keyring-transaction';
 import { mapLocalTransaction } from '../../shared/lib/activity/adapters/local-transaction';
 import {
@@ -204,9 +206,12 @@ function getSwapTokens(bridgeHistoryItem?: BridgeHistoryItem) {
 export const selectLocalActivityItems = createSelector(
   selectLocalTransactions,
   selectBridgeHistory,
-  (transactionGroups, bridgeHistory) =>
+  getNetworkConfigurationsByChainId,
+  (transactionGroups, bridgeHistory, networkConfigurationsByChainId) =>
     transactionGroups.map((transactionGroup) => {
-      const { type } = transactionGroup.initialTransaction;
+      const { type, chainId } = transactionGroup.initialTransaction;
+      const nativeAssetSymbol =
+        networkConfigurationsByChainId[chainId as Hex]?.nativeCurrency;
 
       if (
         type === TransactionType.swap ||
@@ -217,10 +222,11 @@ export const selectLocalActivityItems = createSelector(
           ...getSwapTokens(
             getBridgeHistoryItem(bridgeHistory, transactionGroup),
           ),
+          nativeAssetSymbol,
         });
       }
 
-      return mapLocalTransaction(transactionGroup);
+      return mapLocalTransaction({ ...transactionGroup, nativeAssetSymbol });
     }),
 );
 

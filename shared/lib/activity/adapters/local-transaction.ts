@@ -5,16 +5,14 @@ import { toAssetId } from '../../asset-utils';
 import type { TransactionGroup } from '../../multichain/types';
 import { parseStandardTokenTransactionData } from '../../transaction.utils';
 import type { ActivityListItem, TokenAmount } from '../types';
-import {
-  getLocalTransactionStatus,
-  getMainnetTokenMetadata,
-} from './helpers';
+import { getLocalTransactionStatus, getMainnetTokenMetadata } from './helpers';
 
 // Converts local TransactionController groups into activity items
 export function mapLocalTransaction(
   transactionGroup: TransactionGroup & {
     sourceToken?: TokenAmount;
     destinationToken?: TokenAmount;
+    nativeAssetSymbol?: string;
   },
 ): ActivityListItem {
   const { initialTransaction, primaryTransaction } = transactionGroup;
@@ -23,7 +21,12 @@ export function mapLocalTransaction(
     Number.parseInt(initialTransaction.chainId, 16).toString(),
   );
   const nativeAsset = getNativeAssetForChainId(initialTransaction.chainId);
-  const nativeSymbol = nativeAsset?.symbol;
+  // Prefer the network-configured ticker (resolved by the selector from
+  // NetworkController state) over the bridge-controller swaps registry,
+  // which hard-codes synthetic symbols like `TESTETH` for chains such as
+  // Localhost (0x539) regardless of how the user configured the network.
+  const nativeSymbol =
+    transactionGroup.nativeAssetSymbol ?? nativeAsset?.symbol;
 
   const getNativeToken = (
     transaction: TransactionGroup['initialTransaction'],
@@ -167,8 +170,7 @@ export function mapLocalTransaction(
       const transactionData = initialTransaction.txParams.data
         ? parseStandardTokenTransactionData(initialTransaction.txParams.data)
         : undefined;
-      const recipient =
-        transactionData?.args?._to ?? transactionData?.args?.to;
+      const recipient = transactionData?.args?._to ?? transactionData?.args?.to;
       const amount =
         transactionData?.args?._value ?? transactionData?.args?.value;
 
