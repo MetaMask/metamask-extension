@@ -1,6 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { TransactionType } from '@metamask/transaction-controller';
 import type { V1TransactionByHashResponse } from '@metamask/core-backend';
+import { Navigate } from 'react-router-dom';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import {
   normalizeTransaction,
@@ -9,6 +11,8 @@ import {
 import { ActivityDetailsModalAdapter } from '../../components/multichain/activity-v2/activity-details-modal-adapter';
 import { LocalTransactionDetails } from '../../components/multichain/activity-v2/local-transaction-details';
 import { NonEvmDetailsModal } from '../../components/multichain/activity-v2/non-evm-details-modal';
+import { CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE } from '../../helpers/constants/routes';
+import { serialize } from '../../hooks/bridge/useBridgeTxHistoryData';
 import { getSelectedAddress } from '../../selectors/selectors';
 
 function getAccountAddress(transaction: V1TransactionByHashResponse) {
@@ -54,6 +58,28 @@ export function LegacyDetails({
   }
 
   if (raw.type === 'localTransaction') {
+    const { initialTransaction, primaryTransaction } = raw.data;
+
+    if (
+      initialTransaction.type === TransactionType.bridge ||
+      initialTransaction.type === TransactionType.swap
+    ) {
+      const txIdentifier =
+        primaryTransaction.hash ??
+        initialTransaction.hash ??
+        primaryTransaction.id ??
+        initialTransaction.id;
+
+      if (txIdentifier) {
+        return (
+          <Navigate
+            to={`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${txIdentifier}`}
+            state={{ transaction: serialize(primaryTransaction) }}
+          />
+        );
+      }
+    }
+
     return (
       <LocalTransactionDetails transactionGroup={raw.data} onClose={onClose} />
     );

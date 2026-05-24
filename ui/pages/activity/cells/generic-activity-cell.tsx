@@ -1,67 +1,24 @@
 import React, { useMemo } from 'react';
 import { Icon, IconName, IconSize, Text } from '@metamask/design-system-react';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
-import { formatUnits } from 'viem';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../shared/constants/multichain/networks';
-import type { TokenAmount } from '../../../../shared/lib/activity/types';
 import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ActivityListItemAvatar } from '../../../components/app/activity-list-item-avatar';
 import { ChainBadge } from '../../../components/app/chain-badge/chain-badge';
 import { getActivityListItemAvatarConfig } from '../resolve-activity-avatar-config';
+import { useFormatTokenAmount } from '../useFormatTokenAmount';
 import { useGetLabel } from '../useGetLabel';
 import type { ActivityCellProps } from './types';
 
-function trimDecimalZeroes(value: string) {
-  if (!value.includes('.')) {
-    return value;
-  }
-
-  return value.replace(/\.?0+$/u, '');
-}
-
-function formatTokenAmountValue({ amount, decimals }: TokenAmount) {
-  if (!amount) {
-    return undefined;
-  }
-
-  if (decimals === undefined) {
-    return trimDecimalZeroes(amount);
-  }
-
-  try {
-    return trimDecimalZeroes(formatUnits(BigInt(amount), decimals));
-  } catch {
-    return amount;
-  }
-}
-
-function formatTokenAmount(tokenAmount: TokenAmount) {
-  const value = formatTokenAmountValue(tokenAmount);
-
-  if (!value) {
-    return undefined;
-  }
-
-  const sign = tokenAmount.direction === 'in' ? '+' : '-';
-
-  return `${sign}${value}${tokenAmount.symbol ? ` ${tokenAmount.symbol}` : ''}`;
-}
-
 function getCellTokenAmounts(activity: ActivityCellProps['data']) {
   switch (activity.type) {
-    case 'swap': {
-      // const { sourceToken, destinationToken } = activity.data;
-      // const tokens = [sourceToken, destinationToken];
-
+    case 'swap':
       return {
         primaryToken: activity.data.destinationToken,
         secondaryToken: activity.data.sourceToken,
-        // primaryToken: tokens.find((token) => token?.direction === 'in'),
-        // secondaryToken: tokens.find((token) => token?.direction === 'out'),
       };
-    }
     case 'swapIncomplete':
       return {
         primaryToken: activity.data.sourceToken,
@@ -139,18 +96,17 @@ const renderDescriptionLine = (
 
 export function GenericActivityCell({ data, onClick }: ActivityCellProps) {
   const t = useI18nContext();
+  const formatTokenAmount = useFormatTokenAmount();
   const { description, title } = useGetLabel(data);
   const pendingStatusText =
     data.status === 'pending' ? t(data.status) : undefined;
   const transactionStatus =
     data.status === 'success' ? 'confirmed' : data.status;
   const { primaryToken, secondaryToken } = getCellTokenAmounts(data);
-  const primaryTokenAmount = primaryToken
-    ? formatTokenAmount(primaryToken)
-    : undefined;
-  const secondaryTokenAmount = secondaryToken
-    ? formatTokenAmount(secondaryToken)
-    : undefined;
+
+  const primaryTokenAmount = formatTokenAmount(primaryToken);
+  const secondaryTokenAmount = formatTokenAmount(secondaryToken);
+
   const { namespace } = parseCaipChainId(data.chainId);
   const chainId =
     namespace === KnownCaipNamespace.Eip155
