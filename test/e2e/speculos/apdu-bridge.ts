@@ -8,6 +8,7 @@ import {
   pushLedgerHidFrame,
   type LedgerHidFramingSession,
 } from './ledger-hid-framing';
+import type { DeviceInteraction } from './device-interaction';
 
 type WsConnectionState = {
   framingSession: LedgerHidFramingSession | null;
@@ -63,32 +64,13 @@ export class ApduBridge {
     });
   }
 
-  /**
-   * Wait for a signing APDU, perform button presses, then release the gate
-   * @param speculosClient
-   * @param rightPresses
-   * @param timeout
-   */
   async waitForSigningApduAndApprove(
-    speculosClient: SpeculosClient,
-    rightPresses: number,
+    interaction: DeviceInteraction,
     timeout = 30000,
   ): Promise<Buffer> {
     const apdu = await this.waitForSigningApdu(timeout);
-
-    // Wait for Speculos to render the transaction review screen
     await new Promise((r) => setTimeout(r, 1500));
-
-    // Navigate through review pages (amount, address, fees, network, etc.)
-    // to reach the "Approve" or "Accept" screen
-    for (let i = 0; i < rightPresses; i++) {
-      await speculosClient.pressButton('right');
-      await new Promise((r) => setTimeout(r, 500));
-    }
-
-    // Press "both" to confirm signing on the "Approve" screen
-    await speculosClient.pressButton('both');
-    await new Promise((r) => setTimeout(r, 500));
+    await interaction.approveTransaction();
     return apdu;
   }
 

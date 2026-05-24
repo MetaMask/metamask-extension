@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import net from 'net';
 import { withRetry, isRetryableError } from './resilience';
 import { SPECULOS_APDU_PORT, SPECULOS_API_PORT } from './constants';
@@ -173,20 +175,20 @@ export class SpeculosClient {
   }
 
   private async fetch(
-    path: string,
+    urlPath: string,
     options: RequestInit & { timeout?: number } = {},
   ): Promise<Response> {
     const { timeout: ms = this.options.timeout, ...init } = options;
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), ms);
     try {
-      const response = await fetch(`${this.baseUrl}${path}`, {
+      const response = await fetch(`${this.baseUrl}${urlPath}`, {
         ...init,
         signal: controller.signal,
       });
       if (!response.ok) {
         throw new Error(
-          `Speculos API ${path} returned ${response.status}: ${await response.text().catch(() => '')}`,
+          `Speculos API ${urlPath} returned ${response.status}: ${await response.text().catch(() => '')}`,
         );
       }
       return response;
@@ -200,6 +202,28 @@ export class SpeculosClient {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'press-and-release' }),
+    });
+  }
+
+  async fingerTap(x: number, y: number, delay = 0.1): Promise<void> {
+    await this.fetch('/finger', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'press-and-release', x, y, delay }),
+    });
+  }
+
+  async fingerSwipe(
+    x: number,
+    y: number,
+    x2: number,
+    y2: number,
+    delay = 0.3,
+  ): Promise<void> {
+    await this.fetch('/finger', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'press-and-release', x, y, x2, y2, delay }),
     });
   }
 
@@ -239,6 +263,17 @@ export class SpeculosClient {
     const response = await this.fetch('/screenshot');
     const arrayBuffer = await response.arrayBuffer();
     return Buffer.from(arrayBuffer);
+  }
+
+  async saveScreenshot(
+    name: string,
+    dir = 'test-artifacts/speculos-screenshots',
+  ): Promise<string> {
+    const screenshot = await this.getScreenshot();
+    await fs.promises.mkdir(dir, { recursive: true });
+    const filePath = path.join(dir, `${name}-${Date.now()}.png`);
+    await fs.promises.writeFile(filePath, screenshot);
+    return filePath;
   }
 
   async sendAPDU(data: string): Promise<APDUResponse> {

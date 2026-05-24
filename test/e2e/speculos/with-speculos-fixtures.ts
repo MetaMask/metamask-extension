@@ -8,9 +8,12 @@ import { SpeculosTestHelper } from './test-helper';
 import { SpeculosClient } from './client';
 import { ApduBridge } from './apdu-bridge';
 import { validateSpeculosTestEnv } from './build-config';
-import { SPECULOS_COMPOSE_FILE, SPECULOS_WS_BRIDGE_PORT } from './constants';
+import { SPECULOS_COMPOSE_FILE, SPECULOS_WS_BRIDGE_PORT, ensureDeviceEnv , getDeviceModel } from './constants';
 import { getWebHidMockScript } from './webhid-mock-script';
 import type { SharedSpeculosContext } from './shared-context';
+import type { DeviceInteraction } from './device-interaction';
+import type { DeviceModel } from './constants';
+import { createDeviceInteraction } from './device-interaction';
 
 export type { SharedSpeculosContext } from './shared-context';
 export { startSharedSpeculos, stopSharedSpeculos } from './shared-context';
@@ -119,6 +122,8 @@ export type SpeculosFixturesTestSuiteArgs = {
   speculosHelper: SpeculosTestHelper;
   apduBridge: ApduBridge;
   wsBridgePort: number;
+  interaction: DeviceInteraction;
+  deviceModel: DeviceModel;
 };
 
 export async function withSpeculosFixtures(
@@ -145,11 +150,15 @@ export async function withSpeculosFixtures(
   let apduBridge: ApduBridge;
   const wsBridgePort = SPECULOS_WS_BRIDGE_PORT;
   let ownsContainer = false;
+  let interaction: DeviceInteraction;
+  let deviceModel: DeviceModel;
 
   if (sharedContext) {
     speculosHelper = sharedContext.helper;
     speculosClient = sharedContext.client;
     apduBridge = sharedContext.apduBridge;
+    interaction = sharedContext.interaction;
+    deviceModel = sharedContext.deviceModel;
   } else {
     speculosHelper = new SpeculosTestHelper({
       composeFile,
@@ -159,6 +168,9 @@ export async function withSpeculosFixtures(
     speculosClient = speculosHelper.getClient();
     apduBridge = new ApduBridge(speculosClient, wsBridgePort);
     ownsContainer = true;
+    deviceModel = getDeviceModel();
+    interaction = createDeviceInteraction(speculosClient, deviceModel);
+    ensureDeviceEnv();
 
     console.log(`[Speculos] Starting container (compose: ${composeFile})...`);
 
@@ -166,6 +178,7 @@ export async function withSpeculosFixtures(
     console.log('[Speculos] Container started and ready');
 
     await apduBridge.start();
+    await interaction.enableBlindSigning();
     console.log(`[Speculos] APDU bridge listening on port ${wsBridgePort}`);
   }
 
@@ -221,6 +234,8 @@ export async function withSpeculosFixtures(
           speculosHelper,
           apduBridge,
           wsBridgePort,
+          interaction,
+          deviceModel,
         } as SpeculosFixturesTestSuiteArgs);
 
         console.log('[Speculos] Test execution completed');

@@ -11,8 +11,9 @@ services:
     environment:
       - DISPLAY=:99
     command: >
-      --model nanosp /speculos/apps/ethereum.elf
-      --seed "urban secret spare tunnel rubber rally ladder rally spatial feature elite success"
+      --model ${SPECULOS_DEVICE:-nanosp}
+      /speculos/apps/${SPECULOS_ELF:-ethereum-nanosp.elf}
+      --seed "urban secret spare tunnel rubber rally ladder spatial feature elite success"
       --display headless
       --apdu-port 9999
       --api-port 5000
@@ -28,3 +29,5 @@ services:
 # Note:
 # - APDU port mapped from host 9998 to container 9999 (9999 is used by PhishingWarningPageServer)
 # - REST API mapped from host 5001 to container 5000 (5000 used by macOS Control Center)
+# - SPECULOS_DEVICE and SPECULOS_ELF env vars select the device model and firmware binary
+# - Defaults to Nano S+ (nanosp) for local development without SPECULOS_DEVICE set

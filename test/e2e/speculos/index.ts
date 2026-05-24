@@ -22,4 +22,19 @@ export {
   SPECULOS_APDU_PORT,
   SPECULOS_API_PORT,
   SPECULOS_WS_BRIDGE_PORT,
+  SPECULOS_CONTAINER_NAME,
+  SPECULOS_COMPOSE_FILE,
+  DEFAULT_DEVICE,
+  DEVICE_PRESETS,
+  DEVICE_MODELS,
+  DEFAULT_DEVICE_MODEL,
+  getDeviceModel,
+  ensureDeviceEnv,
 } from './constants';
+export type { DeviceConfig, DeviceModel, InteractionType } from './constants';
+export {
+  type DeviceInteraction,
+  NanoInteraction,
+  TouchInteraction,
+  createDeviceInteraction,
+} from './device-interaction';

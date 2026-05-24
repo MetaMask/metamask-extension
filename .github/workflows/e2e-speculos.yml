@@ -8,7 +8,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  # First build the extension
   build:
     runs-on: ubuntu-latest
     steps:
@@ -26,13 +25,24 @@ jobs:
           path: dist/
           retention-days: 1
 
-  # Run Speculos tests with Docker
   speculos-tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        device:
+          - id: nanosp
+            elf: ethereum-nanosp.elf
+          - id: nanox
+            elf: ethereum-nanox.elf
+          - id: stax
+            elf: ethereum-stax.elf
+          - id: flex
+            elf: ethereum-flex.elf
     uses: ./.github/workflows/run-e2e.yml
     with:
-      test-suite-name: 'Speculos Hardware Wallet'
+      test-suite-name: 'Speculos ${{ matrix.device.id }}'
       build-artifact: speculos-test-build
-      test-command: 'SPECULOS_E2E=1 SPECULOS_SKIP_DOCKER_START=1 yarn test:e2e:single test/e2e/tests/hardware-wallets/ledger/ledger-happy-unhappy-paths.spec.ts --browser=chrome --grep @speculos'
+      test-command: 'SPECULOS_E2E=1 SPECULOS_SKIP_DOCKER_START=1 SPECULOS_DEVICE=${{ matrix.device.id }} SPECULOS_ELF=${{ matrix.device.elf }} yarn test:e2e:single "test/e2e/tests/hardware-wallets/ledger/ledger-account.spec.ts" "test/e2e/tests/hardware-wallets/ledger/ledger-send.spec.ts" "test/e2e/tests/hardware-wallets/ledger/ledger-error-modals.spec.ts" --browser=chrome --grep @speculos'
       builds-from-run: ''
       services: test/e2e/speculos/docker-compose.yml
     secrets:

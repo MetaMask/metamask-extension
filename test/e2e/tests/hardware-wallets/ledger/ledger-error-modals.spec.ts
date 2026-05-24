@@ -6,7 +6,7 @@ import {
   stopSharedSpeculos,
 } from '../../../speculos/with-speculos-fixtures';
 import type { SharedSpeculosContext } from '../../../speculos/with-speculos-fixtures';
-import type { SpeculosClient } from '../../../speculos/client';
+import type { DeviceInteraction } from '../../../speculos/device-interaction';
 import { SPECULOS_LEDGER_ADDRESS } from '../../../speculos/constants';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
@@ -22,10 +22,8 @@ const LEDGER_SEED_BALANCE = [
   { address: SPECULOS_LEDGER_ADDRESS, balance: '0x100000000000000000000' },
 ];
 
-async function rejectOnDevice(speculosClient: SpeculosClient): Promise<void> {
-  await speculosClient.pressButton('right');
-  await new Promise((r) => setTimeout(r, 300));
-  await speculosClient.pressButton('both');
+async function rejectOnDevice(interaction: DeviceInteraction): Promise<void> {
+  await interaction.rejectTransaction();
 }
 
 describe('Ledger Hardware Wallet Error Modals @speculos', function (this: Suite) {
@@ -53,14 +51,14 @@ describe('Ledger Hardware Wallet Error Modals @speculos', function (this: Suite)
           sharedContext: shared,
           seedBalances: LEDGER_SEED_BALANCE,
         },
-        async ({ driver, speculosClient, apduBridge }) => {
+        async ({ driver, interaction, apduBridge }) => {
           await login(driver, { validateBalance: false });
           await switchToHardwareAccount(driver, 'Ledger 1');
 
           const rejectPromise = (async () => {
             await apduBridge.waitForSigningApdu(90000);
             await new Promise((r) => setTimeout(r, 1000));
-            await rejectOnDevice(speculosClient);
+            await rejectOnDevice(interaction);
           })();
 
           await sendRedesignedTransactionToAddress({

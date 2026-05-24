@@ -2,7 +2,15 @@ import { SpeculosTestHelper } from './test-helper';
 import { SpeculosClient } from './client';
 import { ApduBridge } from './apdu-bridge';
 import { validateSpeculosTestEnv } from './build-config';
-import { SPECULOS_COMPOSE_FILE, SPECULOS_WS_BRIDGE_PORT } from './constants';
+import {
+  SPECULOS_COMPOSE_FILE,
+  DEFAULT_DEVICE,
+  type DeviceConfig,
+  getDeviceModel,
+  type DeviceModel,
+  ensureDeviceEnv,
+} from './constants';
+import { createDeviceInteraction, type DeviceInteraction } from './device-interaction';
 import { cleanupSpeculosEnvironment } from './cleanup';
 
 export type SharedSpeculosContext = {
@@ -10,6 +18,9 @@ export type SharedSpeculosContext = {
   client: SpeculosClient;
   apduBridge: ApduBridge;
   wsBridgePort: number;
+  device: DeviceConfig;
+  interaction: DeviceInteraction;
+  deviceModel: DeviceModel;
 };
 
 let registeredSignalHandlers = false;
@@ -19,28 +30,40 @@ export async function startSharedSpeculos(
     composeFile?: string;
     apduPort?: number;
     apiPort?: number;
+    device?: DeviceConfig;
   } = {},
 ): Promise<SharedSpeculosContext> {
   validateSpeculosTestEnv();
+  ensureDeviceEnv();
 
-  const { composeFile = SPECULOS_COMPOSE_FILE, apduPort, apiPort } = options;
+  const device = options.device ?? DEFAULT_DEVICE;
+  const {
+    composeFile = SPECULOS_COMPOSE_FILE,
+    apduPort = device.apduPort,
+    apiPort = device.apiPort,
+  } = options;
 
   const helper = new SpeculosTestHelper({ composeFile, apduPort, apiPort });
   await helper.start();
 
   const client = helper.getClient();
 
-  const wsBridgePort = SPECULOS_WS_BRIDGE_PORT;
+  const {wsBridgePort} = device;
   const apduBridge = new ApduBridge(client, wsBridgePort);
   await apduBridge.start();
 
-  await client.enableBlindSigning();
+  const deviceModel = getDeviceModel();
+  const interaction = createDeviceInteraction(client, deviceModel);
+  await interaction.enableBlindSigning();
 
   const ctx: SharedSpeculosContext = {
     helper,
     client,
     apduBridge,
     wsBridgePort,
+    device,
+    interaction,
+    deviceModel,
   };
 
   if (!registeredSignalHandlers) {
@@ -54,7 +77,9 @@ export async function startSharedSpeculos(
     process.on('SIGINT', cleanup);
   }
 
-  console.log(`[SharedSpeculos] Ready — bridge on :${wsBridgePort}`);
+  console.log(
+    `[SharedSpeculos] Device "${deviceModel.name}" (${deviceModel.id}) ready — bridge on :${wsBridgePort}`,
+  );
 
   return ctx;
 }

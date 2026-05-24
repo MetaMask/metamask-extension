@@ -7,7 +7,7 @@ import {
 } from '../../../speculos/with-speculos-fixtures';
 import type { SharedSpeculosContext } from '../../../speculos/with-speculos-fixtures';
 import type { ApduBridge } from '../../../speculos/apdu-bridge';
-import type { SpeculosClient } from '../../../speculos/client';
+import type { DeviceInteraction } from '../../../speculos/device-interaction';
 import { SPECULOS_LEDGER_ADDRESS } from '../../../speculos/constants';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
@@ -25,13 +25,11 @@ const LEDGER_SEED_BALANCE = [
 // ETH transfers do NOT require blind signing, so no extra "both" press is needed.
 // Button sequence: right x6 (navigate review pages) → both (confirm signing)
 async function approveLedgerAfterSigningApdu(
-  speculosClient: SpeculosClient,
+  interaction: DeviceInteraction,
   apduBridge: ApduBridge,
-  rightPresses: number,
 ) {
   await apduBridge.waitForSigningApduAndApprove(
-    speculosClient,
-    rightPresses,
+    interaction,
     90000,
   );
 }
@@ -62,7 +60,7 @@ describe('Ledger Hardware Send @speculos', function (this: Suite) {
         sharedContext: shared,
         seedBalances: LEDGER_SEED_BALANCE,
       },
-      async ({ driver, speculosClient, apduBridge }) => {
+      async ({ driver, interaction, apduBridge }) => {
         await login(driver, { validateBalance: false });
         await switchToHardwareAccount(driver, 'Ledger 1');
 
@@ -70,9 +68,8 @@ describe('Ledger Hardware Send @speculos', function (this: Suite) {
         await homePage.checkExpectedBalanceIsDisplayed('1.21M');
 
         const ledgerDone = approveLedgerAfterSigningApdu(
-          speculosClient,
+          interaction,
           apduBridge,
-          6,
         );
         await sendRedesignedTransactionToAddress({
           driver,
@@ -101,7 +98,7 @@ describe('Ledger Hardware Send @speculos', function (this: Suite) {
         sharedContext: shared,
         seedBalances: LEDGER_SEED_BALANCE,
       },
-      async ({ driver, speculosClient, apduBridge }) => {
+      async ({ driver, interaction, apduBridge }) => {
         await login(driver, { validateBalance: false });
         await switchToHardwareAccount(driver, 'Ledger 1');
 
@@ -109,9 +106,8 @@ describe('Ledger Hardware Send @speculos', function (this: Suite) {
         await homePage.checkExpectedBalanceIsDisplayed('1.21M');
 
         const ledgerDone = approveLedgerAfterSigningApdu(
-          speculosClient,
+          interaction,
           apduBridge,
-          6,
         );
         await sendRedesignedTransactionToAddress({
           driver,
