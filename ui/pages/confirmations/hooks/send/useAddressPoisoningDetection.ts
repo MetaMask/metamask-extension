@@ -15,6 +15,7 @@ export function useAddressPoisoningDetection(
   address: string | undefined,
 ): AddressPoisoningDetectionResult {
   const [matches, setMatches] = useState<SimilarAddressMatch[]>(EMPTY_MATCHES);
+  const [checkedAddress, setCheckedAddress] = useState<string>();
   const [pending, setPending] = useState(false);
 
   useEffect(() => {
@@ -22,6 +23,7 @@ export function useAddressPoisoningDetection(
 
     if (!address) {
       setMatches(EMPTY_MATCHES);
+      setCheckedAddress(undefined);
       setPending(false);
       return () => {
         cancelled = true;
@@ -29,17 +31,22 @@ export function useAddressPoisoningDetection(
     }
 
     setMatches(EMPTY_MATCHES);
+    setCheckedAddress(undefined);
     setPending(true);
 
     checkAddressPoisoning(address)
       .then((addressMatches) => {
         if (!cancelled) {
-          setMatches(addressMatches);
+          setMatches(
+            Array.isArray(addressMatches) ? addressMatches : EMPTY_MATCHES,
+          );
+          setCheckedAddress(address);
         }
       })
       .catch(() => {
         if (!cancelled) {
           setMatches(EMPTY_MATCHES);
+          setCheckedAddress(address);
         }
       })
       .finally(() => {
@@ -53,13 +60,18 @@ export function useAddressPoisoningDetection(
     };
   }, [address]);
 
+  const currentAddressMatches =
+    address && checkedAddress === address ? matches : EMPTY_MATCHES;
+  const isCheckingCurrentAddress =
+    Boolean(address) && (pending || checkedAddress !== address);
+
   return useMemo(
     () => ({
-      isPoisoningSuspect: matches.length > 0,
-      bestMatch: matches[0] ?? null,
-      matches,
-      pending,
+      isPoisoningSuspect: currentAddressMatches.length > 0,
+      bestMatch: currentAddressMatches[0] ?? null,
+      matches: currentAddressMatches,
+      pending: isCheckingCurrentAddress,
     }),
-    [matches, pending],
+    [currentAddressMatches, isCheckingCurrentAddress],
   );
 }

@@ -58,6 +58,25 @@ describe('useAddressPoisoningDetection', () => {
     });
   });
 
+  it('returns pending immediately for a new address before the effect starts', () => {
+    mockCheckAddressPoisoning.mockReturnValue(
+      new Promise<SimilarAddressMatch[]>(() => undefined),
+    );
+
+    const { result } = renderHook(() =>
+      useAddressPoisoningDetection(
+        '0x1111ffffffffffffffffffffffffffffffffaaaa',
+      ),
+    );
+
+    expect(result.current).toEqual({
+      isPoisoningSuspect: false,
+      bestMatch: null,
+      matches: [],
+      pending: true,
+    });
+  });
+
   it('clears stale matches while a new address check is pending', async () => {
     const firstAddress = '0x1111ffffffffffffffffffffffffffffffffaaaa';
     const secondAddress = '0x2222ffffffffffffffffffffffffffffffffbbbb';
@@ -85,7 +104,6 @@ describe('useAddressPoisoningDetection', () => {
 
     rerender({ address: secondAddress });
 
-    await waitFor(() => result.current.pending === true);
     expect(result.current).toEqual({
       isPoisoningSuspect: false,
       bestMatch: null,
@@ -108,6 +126,27 @@ describe('useAddressPoisoningDetection', () => {
     expect(result.current.isPoisoningSuspect).toBe(false);
     expect(result.current.bestMatch).toBeNull();
     expect(result.current.matches).toEqual([]);
+  });
+
+  it('fails closed when the background check returns an invalid response', async () => {
+    mockCheckAddressPoisoning.mockResolvedValue(
+      undefined as unknown as SimilarAddressMatch[],
+    );
+
+    const { result, waitFor } = renderHook(() =>
+      useAddressPoisoningDetection(
+        '0x22223333444455556666777788889999aaaabbbb',
+      ),
+    );
+
+    await waitFor(() => result.current.pending === false);
+
+    expect(result.current).toEqual({
+      isPoisoningSuspect: false,
+      bestMatch: null,
+      matches: [],
+      pending: false,
+    });
   });
 
   it('fails closed when the background check rejects', async () => {
