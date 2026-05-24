@@ -1,13 +1,12 @@
 'use no memo';
 
 import React, { useMemo } from 'react';
+import { Box, Text, TextVariant } from '@metamask/design-system-react';
 import {
   BackgroundColor,
   Severity,
-  TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
-import { Box, Text } from '../../../../../components/component-library';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AddressPoisoningAlertContent } from '../../../components/send/address-poisoning-alert-content/address-poisoning-alert-content';
@@ -33,7 +32,7 @@ export function useAddressPoisoningAlert(): Alert[] {
         reason: t('addressPoisoningTitle'),
         content: (
           <Box>
-            <Text variant={TextVariant.bodyMd}>
+            <Text variant={TextVariant.BodyMd}>
               {t('addressPoisoningMessage')}
             </Text>
             <Box marginTop={2}>

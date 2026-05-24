@@ -1,35 +1,37 @@
 import React, { useMemo } from 'react';
+import classnames from 'clsx';
 import {
-  BackgroundColor,
-  BorderRadius,
-  Display,
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
   FontWeight,
+  Text,
   TextColor,
   TextVariant,
-} from '../../../../../helpers/constants/design-system';
-import { Box, Text } from '../../../../../components/component-library';
+} from '@metamask/design-system-react';
 
-type DiffHighlightedAddressProps = {
+type DiffHighlightedAddressProps = Readonly<{
   address: string;
-  diffIndices: number[];
+  diffIndices: readonly number[];
   label: string;
-  dotBackgroundColor: BackgroundColor;
-  highlightBackgroundColor?: BackgroundColor;
+  dotBackgroundColor: BoxBackgroundColor;
+  highlightBackgroundColor?: BoxBackgroundColor;
   diffTextColor?: TextColor;
-};
+}>;
 
 type Segment = {
   text: string;
   isDiff: boolean;
 };
 
-function getSegments(address: string, diffIndices: number[]): Segment[] {
+function getSegments(address: string, diffIndices: readonly number[]): Segment[] {
   const diffSet = new Set(diffIndices);
   const segments: Segment[] = [];
 
   for (let i = 0; i < address.length; i++) {
     const isDiff = diffSet.has(i);
-    const previousSegment = segments[segments.length - 1];
+    const previousSegment = segments.at(-1);
 
     if (previousSegment?.isDiff === isDiff) {
       previousSegment.text += address[i];
@@ -46,8 +48,8 @@ export function DiffHighlightedAddress({
   diffIndices,
   label,
   dotBackgroundColor,
-  highlightBackgroundColor = BackgroundColor.errorMuted,
-  diffTextColor = TextColor.errorDefault,
+  highlightBackgroundColor = BoxBackgroundColor.ErrorMuted,
+  diffTextColor = TextColor.ErrorDefault,
 }: DiffHighlightedAddressProps) {
   const segments = useMemo(
     () => getSegments(address, diffIndices),
@@ -56,44 +58,47 @@ export function DiffHighlightedAddress({
 
   return (
     <Box
-      backgroundColor={BackgroundColor.backgroundAlternative}
-      borderRadius={BorderRadius.LG}
+      backgroundColor={BoxBackgroundColor.BackgroundAlternative}
+      className="rounded-lg"
       padding={3}
     >
-      <Box display={Display.Flex} className="items-center mb-2">
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        className="mb-2"
+      >
         <Box
           backgroundColor={dotBackgroundColor}
-          borderRadius={BorderRadius.full}
-          className="w-2 h-2 mr-2"
+          className="w-2 h-2 mr-2 rounded-full"
         />
         <Text
-          variant={TextVariant.bodySm}
+          variant={TextVariant.BodySm}
           fontWeight={FontWeight.Medium}
-          color={TextColor.textAlternative}
+          color={TextColor.TextAlternative}
         >
           {label}
         </Text>
       </Box>
       <Text
-        as="span"
-        variant={TextVariant.bodySm}
-        color={TextColor.textAlternative}
+        asChild
+        variant={TextVariant.BodySm}
+        color={TextColor.TextAlternative}
         className="break-all"
       >
-        {segments.map((segment, index) => (
-          <Text
-            as="span"
-            key={`${index}-${segment.isDiff}`}
-            variant={TextVariant.inherit}
-            color={segment.isDiff ? diffTextColor : TextColor.textAlternative}
-            backgroundColor={
-              segment.isDiff ? highlightBackgroundColor : undefined
-            }
-            fontWeight={segment.isDiff ? FontWeight.Bold : undefined}
-          >
-            {segment.text}
-          </Text>
-        ))}
+        <span>
+          {segments.map((segment, index) => (
+            <span
+              key={`${index}-${segment.isDiff}`}
+              className={classnames(
+                segment.isDiff
+                  ? [diffTextColor, highlightBackgroundColor, 'font-bold']
+                  : TextColor.TextAlternative,
+              )}
+            >
+              {segment.text}
+            </span>
+          ))}
+        </span>
       </Text>
     </Box>
   );

@@ -1,19 +1,19 @@
 import React from 'react';
 import {
-  BackgroundColor,
+  Box,
+  BoxBackgroundColor,
   TextColor,
-} from '../../../../../helpers/constants/design-system';
-import { Box } from '../../../../../components/component-library';
+} from '@metamask/design-system-react';
 import Disclosure from '../../../../../components/ui/disclosure';
 import { DisclosureVariant } from '../../../../../components/ui/disclosure/disclosure.constants';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { DiffHighlightedAddress } from '../diff-highlighted-address/diff-highlighted-address';
 
-type AddressPoisoningAlertContentProps = {
+type AddressPoisoningAlertContentProps = Readonly<{
   address: string;
   knownAddress: string;
-  diffIndices: number[];
-};
+  diffIndices: readonly number[];
+}>;
 
 export function AddressPoisoningAlertContent({
   address,
@@ -29,15 +29,15 @@ export function AddressPoisoningAlertContent({
           address={address}
           diffIndices={diffIndices}
           label={t('enteredMalicious')}
-          dotBackgroundColor={BackgroundColor.errorDefault}
+          dotBackgroundColor={BoxBackgroundColor.ErrorDefault}
         />
         <DiffHighlightedAddress
           address={knownAddress}
           diffIndices={diffIndices}
           label={t('knownSafeAddress')}
-          dotBackgroundColor={BackgroundColor.successDefault}
-          highlightBackgroundColor={BackgroundColor.successMuted}
-          diffTextColor={TextColor.successDefault}
+          dotBackgroundColor={BoxBackgroundColor.SuccessDefault}
+          highlightBackgroundColor={BoxBackgroundColor.SuccessMuted}
+          diffTextColor={TextColor.SuccessDefault}
         />
       </Box>
     </Disclosure>
