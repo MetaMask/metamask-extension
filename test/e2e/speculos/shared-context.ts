@@ -12,6 +12,8 @@ export type SharedSpeculosContext = {
   wsBridgePort: number;
 };
 
+let registeredSignalHandlers = false;
+
 export async function startSharedSpeculos(
   options: {
     composeFile?: string;
@@ -32,9 +34,27 @@ export async function startSharedSpeculos(
   const apduBridge = new ApduBridge(client, wsBridgePort);
   await apduBridge.start();
 
+  const ctx: SharedSpeculosContext = {
+    helper,
+    client,
+    apduBridge,
+    wsBridgePort,
+  };
+
+  if (!registeredSignalHandlers) {
+    registeredSignalHandlers = true;
+    const cleanup = async () => {
+      console.log('[SharedSpeculos] Signal received, cleaning up...');
+      await stopSharedSpeculos(ctx);
+      process.exit(1);
+    };
+    process.on('SIGTERM', cleanup);
+    process.on('SIGINT', cleanup);
+  }
+
   console.log(`[SharedSpeculos] Ready — bridge on :${wsBridgePort}`);
 
-  return { helper, client, apduBridge, wsBridgePort };
+  return ctx;
 }
 
 export async function stopSharedSpeculos(
