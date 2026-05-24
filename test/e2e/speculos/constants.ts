@@ -1,21 +1,16 @@
-/**
- * Speculos docker-compose defaults (host ports mapped in docker-compose.yml).
- */
-export const SPECULOS_COMPOSE_FILE = 'test/e2e/speculos/docker-compose.yml';
-
 export type DeviceConfig = {
   id: string;
-  containerName: string;
   apduPort: number;
   apiPort: number;
   wsBridgePort: number;
 };
 
+const IS_LINUX = process.platform === 'linux';
+
 export const DEFAULT_DEVICE: DeviceConfig = {
   id: 'default',
-  containerName: 'metamask-speculos',
-  apduPort: 9998,
-  apiPort: 5001,
+  apduPort: IS_LINUX ? 9999 : 9998,
+  apiPort: IS_LINUX ? 5000 : 5001,
   wsBridgePort: 9876,
 };
 
@@ -23,14 +18,12 @@ export const DEVICE_PRESETS: DeviceConfig[] = [
   DEFAULT_DEVICE,
   {
     id: 'second',
-    containerName: 'metamask-speculos-2',
-    apduPort: 9997,
-    apiPort: 5002,
+    apduPort: IS_LINUX ? 9998 : 9997,
+    apiPort: IS_LINUX ? 5000 : 5002,
     wsBridgePort: 9875,
   },
 ];
 
-export const SPECULOS_CONTAINER_NAME = DEFAULT_DEVICE.containerName;
 export const SPECULOS_APDU_PORT = DEFAULT_DEVICE.apduPort;
 export const SPECULOS_API_PORT = DEFAULT_DEVICE.apiPort;
 export const SPECULOS_WS_BRIDGE_PORT = DEFAULT_DEVICE.wsBridgePort;
@@ -53,7 +46,7 @@ export const SPECULOS_LEDGER_ADDRESS = SPECULOS_LEDGER_ADDRESSES[0];
 
 /** All E2E ports that may need cleanup between runs. */
 export const SPECULOS_E2E_PORTS = [
-  8545, 8111, 8088, 8089, 8090, 9876, 9998, 5001,
+  8545, 8111, 8088, 8089, 8090, 9876, 9998, 9999, 5000, 5001,
 ];
 
 export type InteractionType = 'button' | 'touch';

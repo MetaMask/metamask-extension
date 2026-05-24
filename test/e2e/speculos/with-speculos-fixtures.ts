@@ -8,7 +8,7 @@ import { SpeculosTestHelper } from './test-helper';
 import { SpeculosClient } from './client';
 import { ApduBridge } from './apdu-bridge';
 import { validateSpeculosTestEnv } from './build-config';
-import { SPECULOS_COMPOSE_FILE, SPECULOS_WS_BRIDGE_PORT, ensureDeviceEnv , getDeviceModel } from './constants';
+import { SPECULOS_WS_BRIDGE_PORT, ensureDeviceEnv, getDeviceModel } from './constants';
 import { getWebHidMockScript } from './webhid-mock-script';
 import type { SharedSpeculosContext } from './shared-context';
 import type { DeviceInteraction } from './device-interaction';
@@ -91,7 +91,6 @@ export type WithSpeculosFixturesOptions = {
   extendedTimeoutMultiplier?: number;
 
   speculosOptions?: {
-    composeFile?: string;
     apduPort?: number;
     apiPort?: number;
     timeout?: number;
@@ -140,7 +139,6 @@ export async function withSpeculosFixtures(
   } = options;
 
   const {
-    composeFile = SPECULOS_COMPOSE_FILE,
     apduPort,
     apiPort,
   } = speculosOptions;
@@ -161,7 +159,6 @@ export async function withSpeculosFixtures(
     deviceModel = sharedContext.deviceModel;
   } else {
     speculosHelper = new SpeculosTestHelper({
-      composeFile,
       apduPort,
       apiPort,
     });
@@ -172,10 +169,10 @@ export async function withSpeculosFixtures(
     interaction = createDeviceInteraction(speculosClient, deviceModel);
     ensureDeviceEnv();
 
-    console.log(`[Speculos] Starting container (compose: ${composeFile})...`);
+    console.log('[Speculos] Starting...');
 
     await speculosHelper.start();
-    console.log('[Speculos] Container started and ready');
+    console.log('[Speculos] Started and ready');
 
     await apduBridge.start();
     await interaction.enableBlindSigning();
@@ -192,7 +189,7 @@ export async function withSpeculosFixtures(
     }
     console.log('[Speculos] Stopping APDU bridge...');
     await apduBridge.stop();
-    console.log('[Speculos] Stopping container...');
+    console.log('[Speculos] Stopping...');
     await speculosHelper.stop();
   };
 

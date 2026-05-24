@@ -1,15 +1,17 @@
 import { execFile } from 'child_process';
-import { SPECULOS_E2E_PORTS, SPECULOS_CONTAINER_NAME } from './constants';
+import { SPECULOS_E2E_PORTS } from './constants';
+
+const SPECULOS_CONTAINER_NAME = 'metamask-speculos';
+const IS_LINUX = process.platform === 'linux';
 
 /**
- * Kill all processes on E2E test ports, stop Docker containers, and prune networks.
- * Safe to call multiple times. Designed for use in after()/afterEach() hooks
- * to guarantee cleanup even when tests fail mid-way.
+ * Kill all processes on E2E test ports and clean up.
+ * On Linux: kills native speculos processes.
+ * On non-Linux: also stops Docker containers.
  */
 export async function cleanupSpeculosEnvironment(): Promise<void> {
   const timeout = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-  // 1. Kill processes on all E2E ports
   for (const port of SPECULOS_E2E_PORTS) {
     try {
       await killPort(port);
@@ -18,50 +20,53 @@ export async function cleanupSpeculosEnvironment(): Promise<void> {
     }
   }
 
-  // 2. Kill orphaned chromedriver and Chrome for Testing processes
   try {
     await killByPattern('chromedriver');
   } catch {
-    // ignore
+    // may already be stopped
   }
   try {
     await killByPattern('Google Chrome for Testing');
   } catch {
-    // ignore
+    // may already be stopped
   }
 
-  // 3. Stop and remove Docker containers
-  try {
-    await run('docker', ['stop', SPECULOS_CONTAINER_NAME], 10_000);
-  } catch {
-    // container may not exist
-  }
-  try {
-    await run('docker', ['rm', '-f', SPECULOS_CONTAINER_NAME], 10_000);
-  } catch {
-    // ignore
-  }
-
-  // 4. Remove stale speculos networks (prune can leave ambiguous duplicates)
-  try {
-    const { stdout } = await runCapture(
-      'docker',
-      ['network', 'ls', '--filter', 'name=speculos', '-q'],
-      10_000,
-    );
-    const networkIds = stdout.trim().split('\n').filter(Boolean);
-    for (const netId of networkIds) {
-      try {
-        await run('docker', ['network', 'rm', netId.trim()], 5_000);
-      } catch {
-        // may be in use
-      }
+  if (IS_LINUX) {
+    try {
+      await killByPattern('speculos');
+    } catch {
+      // may already be stopped
     }
-  } catch {
-    // ignore
+  } else {
+    try {
+      await run('docker', ['stop', SPECULOS_CONTAINER_NAME], 10_000);
+    } catch {
+      // may already be stopped
+    }
+    try {
+      await run('docker', ['rm', '-f', SPECULOS_CONTAINER_NAME], 10_000);
+    } catch {
+      // may already be removed
+    }
+    try {
+      const { stdout } = await runCapture(
+        'docker',
+        ['network', 'ls', '--filter', 'name=speculos', '-q'],
+        10_000,
+      );
+      const networkIds = stdout.trim().split('\n').filter(Boolean);
+      for (const netId of networkIds) {
+        try {
+          await run('docker', ['network', 'rm', netId.trim()], 5_000);
+        } catch {
+          // may already be removed
+        }
+      }
+    } catch {
+      // no networks to clean
+    }
   }
 
-  // 5. Wait for OS to release sockets
   await timeout(2000);
 }
 

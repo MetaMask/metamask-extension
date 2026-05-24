@@ -3,7 +3,6 @@ import { SpeculosClient } from './client';
 import { ApduBridge } from './apdu-bridge';
 import { validateSpeculosTestEnv } from './build-config';
 import {
-  SPECULOS_COMPOSE_FILE,
   DEFAULT_DEVICE,
   type DeviceConfig,
   getDeviceModel,
@@ -27,7 +26,6 @@ let registeredSignalHandlers = false;
 
 export async function startSharedSpeculos(
   options: {
-    composeFile?: string;
     apduPort?: number;
     apiPort?: number;
     device?: DeviceConfig;
@@ -38,17 +36,16 @@ export async function startSharedSpeculos(
 
   const device = options.device ?? DEFAULT_DEVICE;
   const {
-    composeFile = SPECULOS_COMPOSE_FILE,
     apduPort = device.apduPort,
     apiPort = device.apiPort,
   } = options;
 
-  const helper = new SpeculosTestHelper({ composeFile, apduPort, apiPort });
+  const helper = new SpeculosTestHelper({ apduPort, apiPort });
   await helper.start();
 
   const client = helper.getClient();
 
-  const {wsBridgePort} = device;
+  const { wsBridgePort } = device;
   const apduBridge = new ApduBridge(client, wsBridgePort);
   await apduBridge.start();
 

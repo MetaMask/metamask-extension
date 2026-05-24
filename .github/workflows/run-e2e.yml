@@ -46,6 +46,11 @@ on:
         required: false
         default: ''
         type: string
+      pre-test-command:
+        description: 'Command to run before tests (e.g. installing native dependencies)'
+        required: false
+        default: ''
+        type: string
     secrets:
       INFURA_PROJECT_ID:
         required: false
@@ -148,6 +153,10 @@ jobs:
       - name: Start extra Docker services
         if: ${{ inputs.services != '' }}
         run: docker-compose -f ${{ inputs.services }} up -d
+
+      - name: Pre-test setup
+        if: ${{ inputs.pre-test-command != '' }}
+        run: ${{ inputs.pre-test-command }}
 
       - name: Run E2E tests
         timeout-minutes: ${{ inputs.test-timeout-minutes }}
