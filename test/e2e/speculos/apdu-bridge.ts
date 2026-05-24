@@ -74,6 +74,16 @@ export class ApduBridge {
     return apdu;
   }
 
+  async waitForSigningApduAndApproveBlindSigning(
+    interaction: DeviceInteraction,
+    timeout = 30000,
+  ): Promise<Buffer> {
+    const apdu = await this.waitForSigningApdu(timeout);
+    await new Promise((r) => setTimeout(r, 1500));
+    await interaction.approveBlindSigning();
+    return apdu;
+  }
+
   /** Release the gate so the signing APDU can be forwarded to Speculos */
   releaseSigningGate(): void {
     if (this.signingGateResolve) {

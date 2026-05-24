@@ -8,8 +8,6 @@ import {
   stopSharedSpeculos,
 } from '../../../speculos/with-speculos-fixtures';
 import type { SharedSpeculosContext } from '../../../speculos/with-speculos-fixtures';
-import type { ApduBridge } from '../../../speculos/apdu-bridge';
-import type { DeviceInteraction } from '../../../speculos/device-interaction';
 import { SPECULOS_LEDGER_ADDRESS } from '../../../speculos/constants';
 import { login } from '../../../page-objects/flows/login.flow';
 import { switchToHardwareAccount } from '../../../page-objects/flows/account-list.flow';
@@ -27,13 +25,11 @@ const LEDGER_SEED_BALANCE = [
   { address: SPECULOS_LEDGER_ADDRESS, balance: '0x100000000000000000000' },
 ];
 
-async function approveLedgerAfterSigningApdu(
-  interaction: DeviceInteraction,
-  apduBridge: ApduBridge,
+function approveLedgerBlindSigning(
+  interaction: import('../../../speculos/device-interaction').DeviceInteraction,
+  apduBridge: import('../../../speculos/apdu-bridge').ApduBridge,
 ) {
-  await apduBridge.waitForSigningApdu(90000);
-  await new Promise((r) => setTimeout(r, 1500));
-  await interaction.approveBlindSigning();
+  return apduBridge.waitForSigningApduAndApproveBlindSigning(interaction, 90000);
 }
 
 describe('Ledger Hardware ERC20 @speculos', function (this: Suite) {
@@ -74,7 +70,7 @@ describe('Ledger Hardware ERC20 @speculos', function (this: Suite) {
         await login(driver, { validateBalance: false });
         await switchToHardwareAccount(driver, 'Ledger 1');
 
-        const ledgerDone = approveLedgerAfterSigningApdu(
+        const ledgerDone = approveLedgerBlindSigning(
           interaction,
           apduBridge,
         );
@@ -148,7 +144,7 @@ describe('Ledger Hardware ERC20 @speculos', function (this: Suite) {
         await watchAssetConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        const ledgerDone = approveLedgerAfterSigningApdu(
+        const ledgerDone = approveLedgerBlindSigning(
           interaction,
           apduBridge,
         );
@@ -207,7 +203,7 @@ describe('Ledger Hardware ERC20 @speculos', function (this: Suite) {
         await testDappPage.openTestDappPage({ contractAddress });
         await testDappPage.checkPageIsLoaded();
 
-        const ledgerDone = approveLedgerAfterSigningApdu(
+        const ledgerDone = approveLedgerBlindSigning(
           interaction,
           apduBridge,
         );
@@ -266,7 +262,7 @@ describe('Ledger Hardware ERC20 @speculos', function (this: Suite) {
         await testDappPage.openTestDappPage({ contractAddress });
         await testDappPage.checkPageIsLoaded();
 
-        const ledgerDone = approveLedgerAfterSigningApdu(
+        const ledgerDone = approveLedgerBlindSigning(
           interaction,
           apduBridge,
         );

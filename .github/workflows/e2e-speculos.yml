@@ -42,7 +42,7 @@ jobs:
     with:
       test-suite-name: 'Speculos ${{ matrix.device.id }}'
       build-artifact: speculos-test-build
-      test-command: 'SPECULOS_E2E=1 SPECULOS_SKIP_DOCKER_START=1 SPECULOS_DEVICE=${{ matrix.device.id }} SPECULOS_ELF=${{ matrix.device.elf }} yarn test:e2e:single "test/e2e/tests/hardware-wallets/ledger/ledger-account.spec.ts" "test/e2e/tests/hardware-wallets/ledger/ledger-send.spec.ts" "test/e2e/tests/hardware-wallets/ledger/ledger-error-modals.spec.ts" --browser=chrome --grep @speculos'
+      test-command: 'SPECULOS_E2E=1 SPECULOS_SKIP_DOCKER_START=1 SPECULOS_DEVICE=${{ matrix.device.id }} SPECULOS_ELF=${{ matrix.device.elf }} yarn test:e2e:single "test/e2e/tests/hardware-wallets/ledger/ledger-account.spec.ts" "test/e2e/tests/hardware-wallets/ledger/ledger-send.spec.ts" "test/e2e/tests/hardware-wallets/ledger/ledger-error-modals.spec.ts" "test/e2e/tests/hardware-wallets/ledger/ledger-erc20.spec.ts" "test/e2e/tests/hardware-wallets/ledger/ledger-erc721.spec.ts" --browser=chrome --grep @speculos'
       builds-from-run: ''
       services: test/e2e/speculos/docker-compose.yml
     secrets:
