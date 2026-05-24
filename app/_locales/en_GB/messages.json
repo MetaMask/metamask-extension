@@ -1192,6 +1192,15 @@
     "message": "Punycode version: $1",
     "description": "$1 replaced by punycode version of the URL in confirmation request"
   },
+  "addressPoisoningBadge": {
+    "message": "Poisoned"
+  },
+  "addressPoisoningMessage": {
+    "message": "This address closely resembles one you've used before. It may have been designed to trick you into sending funds to the wrong recipient."
+  },
+  "addressPoisoningTitle": {
+    "message": "Address poisoning detected"
+  },
   "addressQrCodeModalDescription": {
     "message": "Use this address to receive tokens and collectibles on $1",
     "description": "$1 is the network name"
@@ -2646,6 +2655,9 @@
   "confirmTitleTransaction": {
     "message": "Transaction request"
   },
+  "compareAddresses": {
+    "message": "Compare addresses"
+  },
   "confirmationAlertDetails": {
     "message": "To protect your assets, we suggest you reject the request."
   },
@@ -3598,6 +3610,9 @@
   },
   "enterYourPasswordSocialLoginFlow": {
     "message": "Enter MetaMask password"
+  },
+  "enteredMalicious": {
+    "message": "The Address You Entered"
   },
   "errorCode": {
     "message": "Code: $1",
@@ -4567,6 +4582,9 @@
   },
   "knownAddressRecipient": {
     "message": "Known contract address."
+  },
+  "knownSafeAddress": {
+    "message": "Known Address"
   },
   "knownTokenWarning": {
     "message": "This action will edit tokens that are already listed in your wallet, which can be used to phish you. Only approve if you are certain that you mean to change what these tokens represent. Learn more about $1"
