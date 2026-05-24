@@ -74,6 +74,16 @@ export class ApduBridge {
     return apdu;
   }
 
+  async waitForSigningApduAndApproveSigning(
+    interaction: DeviceInteraction,
+    timeout = 30000,
+  ): Promise<Buffer> {
+    const apdu = await this.waitForSigningApdu(timeout);
+    await new Promise((r) => setTimeout(r, 1500));
+    await interaction.approveSigning();
+    return apdu;
+  }
+
   async waitForSigningApduAndApproveBlindSigning(
     interaction: DeviceInteraction,
     timeout = 30000,

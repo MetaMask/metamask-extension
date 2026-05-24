@@ -3,6 +3,7 @@ import type { DeviceModel } from './constants';
 
 export type DeviceInteraction = {
   approveTransaction(): Promise<void>;
+  approveSigning(): Promise<void>;
   rejectTransaction(): Promise<void>;
   approveBlindSigning(): Promise<void>;
   enableBlindSigning(): Promise<void>;
@@ -22,6 +23,15 @@ export class NanoInteraction implements DeviceInteraction {
 
   async approveTransaction(): Promise<void> {
     for (let i = 0; i < 6; i++) {
+      await this.client.pressButton('right');
+      await delay(500);
+    }
+    await this.client.pressButton('both');
+    await delay(500);
+  }
+
+  async approveSigning(): Promise<void> {
+    for (let i = 0; i < 2; i++) {
       await this.client.pressButton('right');
       await delay(500);
     }
@@ -94,6 +104,16 @@ export class TouchInteraction implements DeviceInteraction {
     await delay(500);
   }
 
+  async approveSigning(): Promise<void> {
+    const { height, width } = this.model.screenSize;
+    await this.client.fingerSwipe(width / 2, height * 0.7, width / 2, height * 0.3);
+    await delay(500);
+    if (this.model.confirmButton) {
+      await this.client.fingerTap(this.model.confirmButton.x, this.model.confirmButton.y);
+    }
+    await delay(500);
+  }
+
   async approveBlindSigning(): Promise<void> {
     if (this.model.confirmButton) {
       await this.client.fingerTap(this.model.confirmButton.x, this.model.confirmButton.y);
@@ -118,6 +138,18 @@ export class TouchInteraction implements DeviceInteraction {
   }
 
   async enableBlindSigning(): Promise<void> {
+    const { height, width } = this.model.screenSize;
+    const centerX = width / 2;
+    const settingsItemY = height * 0.35;
+    const toggleY = height * 0.3;
+    const backY = height * 0.9;
+
+    await this.client.fingerTap(centerX, settingsItemY);
+    await delay(800);
+    await this.client.fingerTap(centerX, toggleY);
+    await delay(800);
+    await this.client.fingerTap(centerX, backY);
+    await delay(500);
     await this.navigateToMainMenu();
   }
 
