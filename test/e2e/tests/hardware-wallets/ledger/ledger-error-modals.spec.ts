@@ -12,6 +12,7 @@ import AccountListPage from '../../../page-objects/pages/account-list-page';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
+import MultichainAccountDetailsPage from '../../../page-objects/pages/multichain/multichain-account-details-page';
 import { login } from '../../../page-objects/flows/login.flow';
 import { switchToHardwareAccount } from '../../../page-objects/flows/account-list.flow';
 import { sendRedesignedTransactionToAddress } from '../../../page-objects/flows/send-transaction.flow';
@@ -45,7 +46,7 @@ describe('Ledger Hardware Wallet Error Modals @speculos', function (this: Suite)
     it('rejects a transaction on the Ledger device and shows no confirmed tx', async function () {
       await withSpeculosFixtures(
         {
-          fixtures: new FixtureBuilderV2().withLedgerAccount().build(),
+          fixtures: new FixtureBuilderV2().withSpeculosLedgerAccount().build(),
           localNodeOptions: { hardfork: 'london' },
           title: this.test?.fullTitle(),
           sharedContext: shared,
@@ -89,7 +90,7 @@ describe('Ledger Hardware Wallet Error Modals @speculos', function (this: Suite)
     it('removes a Ledger account from the account list', async function () {
       await withSpeculosFixtures(
         {
-          fixtures: new FixtureBuilderV2().withLedgerAccount().build(),
+          fixtures: new FixtureBuilderV2().withSpeculosLedgerAccount().build(),
           title: this.test?.fullTitle(),
           sharedContext: shared,
         },
@@ -102,7 +103,14 @@ describe('Ledger Hardware Wallet Error Modals @speculos', function (this: Suite)
           const accountListPage = new AccountListPage(driver);
           await accountListPage.checkPageIsLoaded();
 
-          await accountListPage.removeAccount('Ledger 1');
+          await accountListPage.openMultichainAccountMenu({
+            accountLabel: 'Ledger 1',
+          });
+          await accountListPage.clickMultichainAccountMenuItem('Account details');
+          const accountDetailsPage = new MultichainAccountDetailsPage(driver);
+          await accountDetailsPage.checkPageIsLoaded();
+          await accountDetailsPage.clickRemoveAccountButton();
+          await accountDetailsPage.clickRemoveAccountConfirmButton();
 
           await accountListPage.checkAccountIsNotDisplayedInAccountList(
             'Ledger 1',

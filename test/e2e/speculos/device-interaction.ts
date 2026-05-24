@@ -5,7 +5,7 @@ export type DeviceInteraction = {
   approveTransaction(): Promise<void>;
   approveSigning(): Promise<void>;
   rejectTransaction(): Promise<void>;
-  approveBlindSigning(): Promise<void>;
+  approveBlindSigning(scrollCount?: number): Promise<void>;
   enableBlindSigning(): Promise<void>;
   navigateToMainMenu(): Promise<void>;
 }
@@ -39,10 +39,15 @@ export class NanoInteraction implements DeviceInteraction {
     await delay(500);
   }
 
-  async approveBlindSigning(): Promise<void> {
+  // Scroll count depends on the number of review screens the Ledger Ethereum app
+  // shows before the Accept/Reject screen. Known ERC20 methods (transfer, approve)
+  // have special parsing and show 4 screens (type, amount, fee, data summary).
+  // Unknown methods display raw hex data across multiple pages, requiring more
+  // scrolls (e.g. increaseAllowance needs 7 — amount, fee, data p1–p4, accept/reject).
+  async approveBlindSigning(scrollCount = 4): Promise<void> {
     await this.client.pressButton('both');
     await delay(800);
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < scrollCount; i++) {
       await this.client.pressButton('right');
       await delay(500);
     }

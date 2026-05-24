@@ -49,7 +49,6 @@ export class ApduBridge {
    * @param timeout
    */
   waitForSigningApdu(timeout = 30000): Promise<Buffer> {
-    console.log('[ApduBridge] waitForSigningApdu called');
     let timer: ReturnType<typeof setTimeout>;
     return new Promise((resolve, reject) => {
       const handler = (apdu: Buffer) => {
@@ -87,10 +86,11 @@ export class ApduBridge {
   async waitForSigningApduAndApproveBlindSigning(
     interaction: DeviceInteraction,
     timeout = 30000,
+    scrollCount?: number,
   ): Promise<Buffer> {
     const apdu = await this.waitForSigningApdu(timeout);
     await new Promise((r) => setTimeout(r, 1500));
-    await interaction.approveBlindSigning();
+    await interaction.approveBlindSigning(scrollCount);
     return apdu;
   }
 

@@ -52,7 +52,7 @@ describe('Ledger Hardware Send @speculos', function (this: Suite) {
   it('send ETH using an EIP1559 transaction', async function () {
     await withSpeculosFixtures(
       {
-        fixtures: new FixtureBuilderV2().withLedgerAccount().build(),
+        fixtures: new FixtureBuilderV2().withSpeculosLedgerAccount().build(),
         localNodeOptions: {
           hardfork: 'london',
         },
@@ -90,7 +90,7 @@ describe('Ledger Hardware Send @speculos', function (this: Suite) {
   it('send ETH using a legacy transaction', async function () {
     await withSpeculosFixtures(
       {
-        fixtures: new FixtureBuilderV2().withLedgerAccount().build(),
+        fixtures: new FixtureBuilderV2().withSpeculosLedgerAccount().build(),
         localNodeOptions: {
           hardfork: 'muirGlacier',
         },

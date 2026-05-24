@@ -55,7 +55,7 @@ describe('Ledger Hardware ERC721 @speculos', function (this: Suite) {
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
-          .withLedgerAccount()
+          .withSpeculosLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
             account: SPECULOS_LEDGER_ADDRESS,
           })
@@ -98,7 +98,7 @@ describe('Ledger Hardware ERC721 @speculos', function (this: Suite) {
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
-          .withLedgerAccount()
+          .withSpeculosLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
             account: SPECULOS_LEDGER_ADDRESS,
           })
@@ -159,7 +159,7 @@ describe('Ledger Hardware ERC721 @speculos', function (this: Suite) {
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
-          .withLedgerAccount()
+          .withSpeculosLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
             account: SPECULOS_LEDGER_ADDRESS,
           })
@@ -218,7 +218,7 @@ describe('Ledger Hardware ERC721 @speculos', function (this: Suite) {
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
-          .withLedgerAccount()
+          .withSpeculosLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
             account: SPECULOS_LEDGER_ADDRESS,
           })

@@ -63,10 +63,12 @@ import {
   NETWORK_CLIENT_ID,
   OLD_FIXTURE_VAULT,
   SECOND_NODE_NETWORK_CLIENT_ID,
+  SPECULOS_LEDGER_VAULT,
   THIRD_NODE_NETWORK_CLIENT_ID,
   TREZOR_ADDRESS,
   TREZOR_VAULT,
 } from '../constants';
+import { SPECULOS_LEDGER_ADDRESS } from '../speculos/constants';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../stub/keyring-bridge';
 import { SMART_CONTRACTS } from '../seeder/smart-contracts';
 import defaultFixtureJson from './default-fixture.json';
@@ -690,6 +692,63 @@ class FixtureBuilderV2 {
 
     this.withKeyringController({
       vault: LEDGER_FIXTURE_VAULT,
+    }).withAccountsController({
+      internalAccounts: {
+        accounts: {
+          'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+            id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+            address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+            options: {
+              entropySource: '01JWZDDDB45SRHTRE5KYWZJK9W',
+              derivationPath: "m/44'/60'/0'/0/0",
+              groupIndex: 0,
+              entropy: {
+                type: 'mnemonic',
+                id: '01JWZDDDB45SRHTRE5KYWZJK9W',
+                derivationPath: "m/44'/60'/0'/0/0",
+                groupIndex: 0,
+              },
+            },
+            methods: [...FIXTURE_HARDWARE_EOA_ACCOUNT_METHODS],
+            type: 'eip155:eoa',
+            scopes: ['eip155:0'],
+            metadata: {
+              name: 'Account 1',
+              importTime: 1724486724986,
+              lastSelected: 1665507600000,
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+          },
+          [HARDWARE_WALLET_ACCOUNT_ID]: {
+            id: HARDWARE_WALLET_ACCOUNT_ID,
+            address: ledgerAddressLower,
+            options: {},
+            methods: [...FIXTURE_HARDWARE_EOA_ACCOUNT_METHODS],
+            type: 'eip155:eoa',
+            scopes: ['eip155:0'],
+            metadata: {
+              name: 'Ledger 1',
+              importTime: 1724486729079,
+              keyring: {
+                type: 'Ledger Hardware',
+              },
+              lastSelected: 1724486729083,
+            },
+          },
+        },
+        selectedAccount: HARDWARE_WALLET_ACCOUNT_ID,
+      },
+    });
+    return this;
+  }
+
+  withSpeculosLedgerAccount(): this {
+    const ledgerAddressLower = SPECULOS_LEDGER_ADDRESS.toLowerCase();
+
+    this.withKeyringController({
+      vault: SPECULOS_LEDGER_VAULT,
     }).withAccountsController({
       internalAccounts: {
         accounts: {

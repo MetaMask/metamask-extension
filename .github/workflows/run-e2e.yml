@@ -41,6 +41,11 @@ on:
           ./test-artifacts
           ./test/test-results/e2e
         description: The path to the test artifacts
+      services:
+        description: 'Path to a docker-compose file for extra services (e.g. test/e2e/speculos/docker-compose.yml)'
+        required: false
+        default: ''
+        type: string
     secrets:
       INFURA_PROJECT_ID:
         required: false
@@ -166,9 +171,3 @@ jobs:
         with:
           name: ${{ env.JOB_NAME }}
           path: ${{ inputs.test-artifacts-path }}
-inputs:
-  # Existing inputs are preserved; add optional services for docker-based test infra
-  services:
-    description: 'Path to a docker-compose file for extra services (e.g. test/e2e/speculos/docker-compose.yml)'
-    required: false
-    default: ''

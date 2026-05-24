@@ -13,8 +13,31 @@ import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import SelectHardwareWalletAccountPage from '../../../page-objects/pages/hardware-wallet/select-hardware-wallet-account-page';
 import MultichainAccountDetailsPage from '../../../page-objects/pages/multichain/multichain-account-details-page';
+import AddressListModal from '../../../page-objects/pages/multichain/address-list-modal';
 import { login } from '../../../page-objects/flows/login.flow';
-import { checkAccountAddressDisplayedInAccountList } from '../../../page-objects/flows/account-list.flow';
+import { shortenAddress } from '../../../../../ui/helpers/utils/util';
+
+async function checkSpeculosAccountsInList(
+  driver: import('../../../webdriver/driver').Driver,
+  count: number,
+): Promise<void> {
+  const accountListPage = new AccountListPage(driver);
+  await accountListPage.checkPageIsLoaded();
+  const addressListModal = new AddressListModal(driver);
+  for (let index = 0; index < count; index++) {
+    const accountName = `Ledger Account ${index + 1}`;
+    await accountListPage.checkAccountDisplayedInAccountList(accountName);
+    await accountListPage.openMultichainAccountMenu({
+      accountLabel: accountName,
+    });
+    await accountListPage.checkMultiChainAccountMenuIsDisplayed();
+    await accountListPage.clickMultichainAccountMenuItem('Addresses');
+    await addressListModal.checkNetworkAddressIsDisplayed(
+      shortenAddress(SPECULOS_LEDGER_ADDRESSES[index]),
+    );
+    await addressListModal.goBack();
+  }
+}
 
 describe('Ledger Hardware Account Management @speculos', function (this: Suite) {
   this.timeout(120000);
@@ -73,7 +96,7 @@ describe('Ledger Hardware Account Management @speculos', function (this: Suite) 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await headerNavbar.openAccountMenu();
-        await checkAccountAddressDisplayedInAccountList(driver, 'Ledger', 1);
+        await checkSpeculosAccountsInList(driver, 1);
       },
     );
   });
@@ -112,7 +135,7 @@ describe('Ledger Hardware Account Management @speculos', function (this: Suite) 
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('0');
         await headerNavbar.openAccountMenu();
-        await checkAccountAddressDisplayedInAccountList(driver, 'Ledger', 5);
+        await checkSpeculosAccountsInList(driver, 5);
 
         await accountListPage.openMultichainAccountMenu({
           accountLabel: `Ledger Account 1`,

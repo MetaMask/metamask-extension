@@ -110,14 +110,9 @@ export class SpeculosClient {
   private async exchangeOnce(apdu: Buffer): Promise<Buffer> {
     return new Promise((resolve, reject) => {
       const chunks: Buffer[] = [];
-      // eslint-disable-next-line prefer-const
       let timeoutId: NodeJS.Timeout | undefined;
-      // eslint-disable-next-line @typescript-eslint/no-use-before-define, prefer-const
       let cleanup: () => void;
 
-      // Speculos TCP APDU wire format (speculos/mcu/apdu.py):
-      //   request:  [4-byte BE length][apdu]
-      //   response: [4-byte BE length=N][N payload bytes][2-byte SW]
       const onData = (data: Buffer) => {
         chunks.push(data);
         const combined = Buffer.concat(chunks);
@@ -135,7 +130,6 @@ export class SpeculosClient {
           clearTimeout(timeoutId);
         }
         cleanup();
-        // Return payload + SW; strip the 4-byte length prefix.
         resolve(combined.subarray(4, expectedTotal));
       };
 
@@ -161,13 +155,11 @@ export class SpeculosClient {
       this.apduSocket.on('data', onData);
       this.apduSocket.on('error', onError);
 
-      // Set timeout
       timeoutId = setTimeout(() => {
         cleanup();
         reject(new Error('APDU exchange timeout'));
       }, this.options.timeout);
 
-      // Send framed APDU: [4-byte BE length][apdu]
       const lengthHeader = Buffer.alloc(4);
       lengthHeader.writeUInt32BE(apdu.length, 0);
       this.apduSocket.write(Buffer.concat([lengthHeader, apdu]));

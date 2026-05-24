@@ -8,6 +8,7 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import SwapPage from '../../../page-objects/pages/swap/swap-page';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
 import { mockLedgerTransactionRequests } from './mocks';
+import { SPECULOS_LEDGER_ADDRESS } from 'test/e2e/speculos';
 
 const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
@@ -29,7 +30,7 @@ describe.skip('Ledger Swap', function () {
       },
       async ({ driver, localNodes }) => {
         (await localNodes?.[0]?.setAccountBalance(
-          KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+          SPECULOS_LEDGER_ADDRESS,
           '0x1158e460913d00000',
         )) ?? console.error('localNodes is undefined or empty');
 

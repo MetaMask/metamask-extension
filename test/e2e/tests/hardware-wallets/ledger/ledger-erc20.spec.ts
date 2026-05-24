@@ -25,11 +25,19 @@ const LEDGER_SEED_BALANCE = [
   { address: SPECULOS_LEDGER_ADDRESS, balance: '0x100000000000000000000' },
 ];
 
+// scrollCount: known methods (transfer/approve) use default 4; increaseAllowance
+// is an unrecognized selector so the Ledger shows raw hex data across 4 extra
+// screens, requiring scrollCount=7 to reach the Accept/Reject screen.
 function approveLedgerBlindSigning(
   interaction: import('../../../speculos/device-interaction').DeviceInteraction,
   apduBridge: import('../../../speculos/apdu-bridge').ApduBridge,
+  scrollCount?: number,
 ) {
-  return apduBridge.waitForSigningApduAndApproveBlindSigning(interaction, 90000);
+  return apduBridge.waitForSigningApduAndApproveBlindSigning(
+    interaction,
+    90000,
+    scrollCount,
+  );
 }
 
 describe('Ledger Hardware ERC20 @speculos', function (this: Suite) {
@@ -56,7 +64,7 @@ describe('Ledger Hardware ERC20 @speculos', function (this: Suite) {
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
-          .withLedgerAccount()
+          .withSpeculosLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
             account: SPECULOS_LEDGER_ADDRESS,
           })
@@ -70,10 +78,7 @@ describe('Ledger Hardware ERC20 @speculos', function (this: Suite) {
         await login(driver, { validateBalance: false });
         await switchToHardwareAccount(driver, 'Ledger 1');
 
-        const ledgerDone = approveLedgerBlindSigning(
-          interaction,
-          apduBridge,
-        );
+        const ledgerDone = approveLedgerBlindSigning(interaction, apduBridge);
 
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage();
@@ -111,7 +116,7 @@ describe('Ledger Hardware ERC20 @speculos', function (this: Suite) {
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
-          .withLedgerAccount()
+          .withSpeculosLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
             account: SPECULOS_LEDGER_ADDRESS,
           })
@@ -144,10 +149,7 @@ describe('Ledger Hardware ERC20 @speculos', function (this: Suite) {
         await watchAssetConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        const ledgerDone = approveLedgerBlindSigning(
-          interaction,
-          apduBridge,
-        );
+        const ledgerDone = approveLedgerBlindSigning(interaction, apduBridge);
 
         await testDappPage.clickERC20TokenTransferButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -176,7 +178,7 @@ describe('Ledger Hardware ERC20 @speculos', function (this: Suite) {
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
-          .withLedgerAccount()
+          .withSpeculosLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
             account: SPECULOS_LEDGER_ADDRESS,
           })
@@ -203,10 +205,7 @@ describe('Ledger Hardware ERC20 @speculos', function (this: Suite) {
         await testDappPage.openTestDappPage({ contractAddress });
         await testDappPage.checkPageIsLoaded();
 
-        const ledgerDone = approveLedgerBlindSigning(
-          interaction,
-          apduBridge,
-        );
+        const ledgerDone = approveLedgerBlindSigning(interaction, apduBridge);
 
         await testDappPage.clickApproveTokens();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -235,7 +234,7 @@ describe('Ledger Hardware ERC20 @speculos', function (this: Suite) {
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
-          .withLedgerAccount()
+          .withSpeculosLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
             account: SPECULOS_LEDGER_ADDRESS,
           })
@@ -262,10 +261,7 @@ describe('Ledger Hardware ERC20 @speculos', function (this: Suite) {
         await testDappPage.openTestDappPage({ contractAddress });
         await testDappPage.checkPageIsLoaded();
 
-        const ledgerDone = approveLedgerBlindSigning(
-          interaction,
-          apduBridge,
-        );
+        const ledgerDone = approveLedgerBlindSigning(interaction, apduBridge, 7);
 
         await testDappPage.clickERC20IncreaseAllowanceButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);

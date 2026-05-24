@@ -36,16 +36,17 @@ export const SPECULOS_API_PORT = DEFAULT_DEVICE.apiPort;
 export const SPECULOS_WS_BRIDGE_PORT = DEFAULT_DEVICE.wsBridgePort;
 
 /**
- * First Ethereum account for Speculos seed in docker-compose.yml:
- * "urban secret spare tunnel rubber rally ladder rally spatial feature elite success"
- * Path: m/44'/60'/0'/0/0 (verified via GET_PUBLIC_KEY APDU against running Speculos).
+ * Ethereum accounts derived from Speculos seed in docker-compose.yml:
+ * "urban secret spare tunnel rubber rally ladder spatial feature elite success"
+ * Paths: m/44'/60'/0'/0/{0..4}
+ * Verified via GET_PUBLIC_KEY APDU against running Speculos with ethereum-nanosp.elf.
  */
 export const SPECULOS_LEDGER_ADDRESSES = [
-  '0x3FB034C6a9F4Da3F61709dBe720033A66984caf1',
-  '0xFe20B747d3C303477ba25cA4F3D9355D7f70e859',
-  '0x137560Ff91A3c23Fec7358f7951Fcca54640286C',
-  '0x673092aEf16Fe80F1d70706542088bA70d56a958',
-  '0xE4A7f01F07f2480689dCe33B91689c60D49a3ebF',
+  '0x24fC293546A31F5Ce73bAfecE37969A95CCd1aBf',
+  '0x730A5c73bC3ACcf56daba2D5D897bEb10F852865',
+  '0x805c2797CCBa57887F5fA0DD95C017145d67604a',
+  '0x2Bf9972F600D8C3B3f0AEe8f1e17Fc4631242fF4',
+  '0xDc660e6D52F6f774d0879f99929711155Bc03902',
 ] as const;
 
 export const SPECULOS_LEDGER_ADDRESS = SPECULOS_LEDGER_ADDRESSES[0];
