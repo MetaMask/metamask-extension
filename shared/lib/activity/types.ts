@@ -98,6 +98,13 @@ export type ActivityListItem =
       }
     >
   | ActivityItem<
+      'bridge',
+      {
+        sourceToken?: TokenAmount;
+        destinationToken?: TokenAmount;
+      }
+    >
+  | ActivityItem<
       'buy' | 'lendingDeposit' | 'claim',
       {
         token?: TokenAmount;

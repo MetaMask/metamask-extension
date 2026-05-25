@@ -259,6 +259,25 @@ export function mapLocalTransaction(
       };
     }
 
+    case TransactionType.bridge: {
+      const {
+        sourceToken: enrichedSourceToken,
+        destinationToken: enrichedDestinationToken,
+      } = transactionGroup;
+      return {
+        type: 'bridge',
+        chainId,
+        status,
+        timestamp,
+        raw: { type: 'localTransaction', data: transactionGroup },
+        data: {
+          hash,
+          sourceToken: enrichedSourceToken,
+          destinationToken: enrichedDestinationToken,
+        },
+      };
+    }
+
     case TransactionType.bridgeApproval:
     case TransactionType.shieldSubscriptionApprove:
     case TransactionType.swapApproval:

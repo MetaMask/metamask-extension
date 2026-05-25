@@ -15,6 +15,7 @@ import type { ActivityCellProps } from './types';
 function getCellTokenAmounts(activity: ActivityCellProps['data']) {
   switch (activity.type) {
     case 'swap':
+    case 'bridge':
       return {
         primaryToken: activity.data.destinationToken,
         secondaryToken: activity.data.sourceToken,

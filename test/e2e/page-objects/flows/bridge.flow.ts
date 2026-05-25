@@ -17,6 +17,7 @@ export const verifySubmittedSwapTransaction = async ({
   expectedWalletBalance,
   expectedSwapTokens,
   expectedDestAmount,
+  expectedActivityAmount,
 }: {
   driver: Driver;
   quote: BridgeQuote;
@@ -25,6 +26,7 @@ export const verifySubmittedSwapTransaction = async ({
   expectedWalletBalance?: string;
   expectedSwapTokens?: Pick<BridgeQuote, 'tokenFrom' | 'tokenTo'>;
   expectedDestAmount?: string;
+  expectedActivityAmount?: string;
 }) => {
   const homePage = new HomePage(driver);
   await homePage.goToActivityList();
@@ -65,9 +67,9 @@ export const verifySubmittedSwapTransaction = async ({
       confirmedTx: expectedTransactionsCount,
     });
   }
-  // Check the amount of ETH deducted in the activity is correct
+  // v3 activity rows show the destination amount as the primary line
   await activityList.checkTxAmountInActivity(
-    `-${quote.amount} ${quote.tokenFrom ?? expectedSwapTokens?.tokenFrom}`,
+    `${expectedActivityAmount ?? expectedDestAmount} ${quote.tokenTo ?? expectedSwapTokens?.tokenTo}`,
   );
 
   await activityList.checkBridgeTransactionDetails(
@@ -111,6 +113,7 @@ export const bridgeTransaction = async ({
   expectedWalletBalance,
   expectedSwapTokens,
   expectedDestAmount,
+  expectedActivityAmount,
   submitDelay,
   skipStatusPage,
 }: {
@@ -121,6 +124,7 @@ export const bridgeTransaction = async ({
   expectedWalletBalance?: string;
   expectedSwapTokens?: Pick<BridgeQuote, 'tokenFrom' | 'tokenTo'>;
   expectedDestAmount: string;
+  expectedActivityAmount?: string;
   submitDelay?: number;
   skipStatusPage?: boolean;
 }) => {
@@ -153,6 +157,7 @@ export const bridgeTransaction = async ({
     expectedWalletBalance,
     expectedSwapTokens,
     expectedDestAmount,
+    expectedActivityAmount,
   });
 };
 

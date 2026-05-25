@@ -1,6 +1,7 @@
 import { getLabelKeys } from '../../../shared/lib/activity/label-keys';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import type { I18NSubstitution } from '../../../shared/lib/i18n';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';
 import { shortenAddress } from '../../helpers/utils/util';
 import { useI18nContext } from '../../hooks/useI18nContext';
 
@@ -31,6 +32,20 @@ function getSubstitutions(activity: ActivityListItem): LabelSubstitutions {
           activity.data.destinationToken?.symbol ?? '',
         ],
       };
+    // Destination chain in title, source token in description
+    case 'bridge': {
+      const destChainId =
+        activity.data.destinationToken?.assetId?.split('/')[0];
+      const destChainName = destChainId
+        ? NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+            destChainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
+          ]
+        : undefined;
+      return {
+        title: [destChainName ?? ''],
+        description: [activity.data.sourceToken?.symbol ?? ''],
+      };
+    }
     // Source in title
     case 'swapIncomplete':
       return {

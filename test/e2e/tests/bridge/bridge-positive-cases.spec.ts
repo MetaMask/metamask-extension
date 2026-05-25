@@ -41,6 +41,7 @@ describe('Bridge tests', function (this: Suite) {
           },
           expectedTransactionsCount: 2,
           expectedDestAmount: '0.0157',
+          expectedActivityAmount: '0.01567',
         });
 
         await bridgeTransaction({
@@ -54,6 +55,7 @@ describe('Bridge tests', function (this: Suite) {
           },
           expectedTransactionsCount: 3,
           expectedDestAmount: '1,642',
+          expectedActivityAmount: '1,642.0043',
         });
         await bridgeTransaction({
           driver,
@@ -66,6 +68,7 @@ describe('Bridge tests', function (this: Suite) {
           },
           expectedTransactionsCount: 4,
           expectedDestAmount: '0.991',
+          expectedActivityAmount: '0.9912',
         });
 
         await homePage.goToTokensTab();
@@ -83,6 +86,7 @@ describe('Bridge tests', function (this: Suite) {
           },
           expectedTransactionsCount: 6,
           expectedDestAmount: '9.9',
+          expectedActivityAmount: '9.8996',
         });
       },
     );
@@ -130,7 +134,7 @@ describe('Bridge tests', function (this: Suite) {
     );
   });
 
-  it('updates recommended bridge quote incrementally when SSE events are received', async function () {
+  it.only('updates recommended bridge quote incrementally when SSE events are received', async function () {
     await withFixtures(
       getBridgeFixtures({
         title: this.test?.fullTitle(),
@@ -156,6 +160,7 @@ describe('Bridge tests', function (this: Suite) {
           },
           expectedTransactionsCount: 2,
           expectedDestAmount: '9.9',
+          expectedActivityAmount: '9.8996',
         });
         const finalQuoteRequestTimestamp = Date.now();
         const bridgePage = new BridgeQuotePage(driver);

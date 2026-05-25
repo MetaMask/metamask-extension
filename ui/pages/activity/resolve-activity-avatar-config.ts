@@ -50,7 +50,7 @@ const isCrossTokenTransaction = (
     return false;
   }
 
-  return item.type === 'swap';
+  return item.type === 'swap' || item.type === 'bridge';
 };
 
 const getTokenImageUrl = (

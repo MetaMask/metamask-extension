@@ -204,16 +204,16 @@
     "description": "$1 is the token symbol"
   },
   "activity_bridge_pending_title": {
-    "message": "Bridging $1",
-    "description": "$1 is the token symbol"
+    "message": "Bridging to $1",
+    "description": "$1 is the destination chain name"
   },
   "activity_bridge_success_description": {
     "message": "Bridged $1",
     "description": "$1 is the token symbol"
   },
   "activity_bridge_success_title": {
-    "message": "Bridged $1",
-    "description": "$1 is the token symbol"
+    "message": "Bridged to $1",
+    "description": "$1 is the destination chain name"
   },
   "activity_buy_failed_description": {
     "message": "Buy failed"

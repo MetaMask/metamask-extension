@@ -251,7 +251,8 @@ export const selectLocalActivityItems = createSelector(
 
       if (
         type === TransactionType.swap ||
-        type === TransactionType.swapAndSend
+        type === TransactionType.swapAndSend ||
+        type === TransactionType.bridge
       ) {
         return mapLocalTransaction({
           ...transactionGroup,
