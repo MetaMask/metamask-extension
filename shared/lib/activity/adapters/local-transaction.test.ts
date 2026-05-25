@@ -57,6 +57,53 @@ describe('mapLocalTransaction', () => {
     });
   });
 
+  it('maps a custom network native send without bridge native asset metadata', () => {
+    const customChainId = '0x53a';
+    const transaction = {
+      chainId: customChainId,
+      id: 'custom-send-id',
+      hash: '0xcustomsend',
+      status: TransactionStatus.confirmed,
+      time: 1779392463306,
+      type: TransactionType.simpleSend,
+      txParams: {
+        from,
+        to,
+        value: '0x1',
+      },
+    };
+    const transactionGroup = {
+      hasCancelled: false,
+      hasRetried: false,
+      initialTransaction: transaction,
+      nativeAssetSymbol: 'ETH',
+      nonce: '0x1',
+      primaryTransaction: transaction,
+      transactions: [transaction],
+    } as unknown as TransactionGroup;
+
+    const item = mapLocalTransaction(transactionGroup);
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
+      type: 'send',
+      chainId: 'eip155:1338',
+      status: 'success',
+      timestamp: 1779392463306,
+      data: {
+        hash: '0xcustomsend',
+        from,
+        to,
+        token: {
+          amount: '0x1',
+          direction: 'out',
+          symbol: 'ETH',
+        },
+      },
+    });
+  });
+
   it('maps a USDC transfer with transferInformation', () => {
     const tokenContractAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
     const recipient = '0x50A9D56C2B8BA9A5c7f2C08C3d26E0499F23a706';

@@ -70,7 +70,24 @@ class ActivityListPage {
 
   async openActivityTab(): Promise<void> {
     console.log('Opening activity tab');
-    await this.driver.clickElement(this.activityTab);
+    const isActivityTabSelected = async () => {
+      const activityTab = await this.driver.findElement(this.activityTab);
+      return (await activityTab.getAttribute('aria-selected')) === 'true';
+    };
+
+    if (await isActivityTabSelected()) {
+      return;
+    }
+
+    try {
+      await this.driver.clickElement(this.activityTab);
+    } catch (error) {
+      if (await isActivityTabSelected()) {
+        return;
+      }
+
+      throw error;
+    }
   }
 
   /**
@@ -136,10 +153,14 @@ class ActivityListPage {
       `Wait for ${expectedNumber} confirmed transactions to be displayed in activity list`,
     );
     await this.driver.wait(async () => {
-      const confirmedTxs = await this.driver.findElements(
-        this.confirmedTransactions,
-      );
-      return confirmedTxs.length === expectedNumber;
+      try {
+        const confirmedTxs = await this.driver.findElements(
+          this.confirmedTransactions,
+        );
+        return confirmedTxs.length === expectedNumber;
+      } catch {
+        return false;
+      }
     }, 60000);
     console.log(
       `${expectedNumber} confirmed transactions found in activity list on homepage`,
@@ -267,13 +288,17 @@ class ActivityListPage {
     if (confirmedTx) {
       await this.checkConfirmedTxNumberDisplayedInActivity(confirmedTx);
     }
-    const transactionActions = await this.driver.findElements(
-      this.activityListAction,
-    );
     await this.driver.wait(async () => {
-      const transactionActionText =
-        await transactionActions[txIndex - 1].getText();
-      return transactionActionText === action;
+      try {
+        const transactionActions = await this.driver.findElements(
+          this.activityListAction,
+        );
+        const transactionActionText =
+          await transactionActions[txIndex - 1]?.getText();
+        return transactionActionText === action;
+      } catch {
+        return false;
+      }
     }, 60000);
     console.log(`Action for transaction ${txIndex} is displayed as ${action}`);
   }

@@ -7,6 +7,14 @@ import { parseStandardTokenTransactionData } from '../../transaction.utils';
 import type { ActivityListItem, TokenAmount } from '../types';
 import { getLocalTransactionStatus, getMainnetTokenMetadata } from './helpers';
 
+function getNativeAsset(chainId: string) {
+  try {
+    return getNativeAssetForChainId(chainId);
+  } catch {
+    return undefined;
+  }
+}
+
 // Converts local TransactionController groups into activity items
 export function mapLocalTransaction(
   transactionGroup: TransactionGroup & {
@@ -22,7 +30,7 @@ export function mapLocalTransaction(
     KnownCaipNamespace.Eip155,
     Number.parseInt(initialTransaction.chainId, 16).toString(),
   );
-  const nativeAsset = getNativeAssetForChainId(initialTransaction.chainId);
+  const nativeAsset = getNativeAsset(initialTransaction.chainId);
   // Prefer the network-configured ticker (resolved by the selector from
   // NetworkController state) over the bridge-controller swaps registry,
   // which hard-codes synthetic symbols like `TESTETH` for chains such as
