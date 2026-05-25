@@ -6,8 +6,6 @@ import {
   stopSharedSpeculos,
 } from '../../../speculos/with-speculos-fixtures';
 import type { SharedSpeculosContext } from '../../../speculos/with-speculos-fixtures';
-import type { DeviceInteraction } from '../../../speculos/device-interaction';
-import { SPECULOS_LEDGER_ADDRESS } from '../../../speculos/constants';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
@@ -16,16 +14,11 @@ import MultichainAccountDetailsPage from '../../../page-objects/pages/multichain
 import { login } from '../../../page-objects/flows/login.flow';
 import { switchToHardwareAccount } from '../../../page-objects/flows/account-list.flow';
 import { sendRedesignedTransactionToAddress } from '../../../page-objects/flows/send-transaction.flow';
-
-const RECIPIENT = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
-
-const LEDGER_SEED_BALANCE = [
-  { address: SPECULOS_LEDGER_ADDRESS, balance: '0x100000000000000000000' },
-];
-
-async function rejectOnDevice(interaction: DeviceInteraction): Promise<void> {
-  await interaction.rejectTransaction();
-}
+import {
+  LEDGER_SEED_BALANCE,
+  RECIPIENT,
+  rejectTransaction as rejectOnDevice,
+} from './ledger-helpers';
 
 describe('Ledger Hardware Wallet Error Modals @speculos', function (this: Suite) {
   this.timeout(180000);
@@ -56,11 +49,7 @@ describe('Ledger Hardware Wallet Error Modals @speculos', function (this: Suite)
           await login(driver, { validateBalance: false });
           await switchToHardwareAccount(driver, 'Ledger 1');
 
-          const rejectPromise = (async () => {
-            await apduBridge.waitForSigningApdu(90000);
-            await new Promise((r) => setTimeout(r, 1000));
-            await rejectOnDevice(interaction);
-          })();
+          const rejectPromise = rejectOnDevice(interaction, apduBridge);
 
           await sendRedesignedTransactionToAddress({
             driver,

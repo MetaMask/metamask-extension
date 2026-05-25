@@ -9,7 +9,7 @@ import {
   stopSharedSpeculos,
 } from '../../../speculos/with-speculos-fixtures';
 import type { SharedSpeculosContext } from '../../../speculos/with-speculos-fixtures';
-import { SPECULOS_LEDGER_ADDRESS } from '../../../speculos/constants';
+import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import { login } from '../../../page-objects/flows/login.flow';
 import { switchToHardwareAccount } from '../../../page-objects/flows/account-list.flow';
 import CreateContractModal from '../../../page-objects/pages/dialog/create-contract';
@@ -18,21 +18,13 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import NFTListPage from '../../../page-objects/pages/home/nft-list';
 import SetApprovalForAllTransactionConfirmation from '../../../page-objects/pages/confirmations/set-approval-for-all-transaction-confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
-import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
+import {
+  SPECULOS_LEDGER_ADDRESS,
+  LEDGER_SEED_BALANCE,
+  approveBlindSigning,
+} from './ledger-helpers';
 
 const erc721 = SMART_CONTRACTS.NFTS;
-
-const LEDGER_SEED_BALANCE = [
-  { address: SPECULOS_LEDGER_ADDRESS, balance: '0x100000000000000000000' },
-];
-
-function approveLedgerBlindSigning(
-  interaction: import('../../../speculos/device-interaction').DeviceInteraction,
-  apduBridge: import('../../../speculos/apdu-bridge').ApduBridge,
-  scrollCount?: number,
-) {
-  return apduBridge.waitForSigningApduAndApproveBlindSigning(interaction, 90000, scrollCount);
-}
 
 describe('Ledger Hardware ERC721 @speculos', function (this: Suite) {
   this.timeout(120000);
@@ -67,11 +59,7 @@ describe('Ledger Hardware ERC721 @speculos', function (this: Suite) {
         await login(driver, { validateBalance: false });
         await switchToHardwareAccount(driver, 'Ledger 1');
 
-        const ledgerDone = approveLedgerBlindSigning(
-          interaction,
-          apduBridge,
-          7,
-        );
+        const ledgerDone = approveBlindSigning(interaction, apduBridge, 7);
 
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage();
@@ -126,11 +114,7 @@ describe('Ledger Hardware ERC721 @speculos', function (this: Suite) {
         await testDappPage.openTestDappPage({ contractAddress });
         await testDappPage.checkPageIsLoaded();
 
-        const ledgerDone = approveLedgerBlindSigning(
-          interaction,
-          apduBridge,
-          7,
-        );
+        const ledgerDone = approveBlindSigning(interaction, apduBridge, 7);
 
         await testDappPage.clickERC721MintButton();
 
@@ -188,10 +172,7 @@ describe('Ledger Hardware ERC721 @speculos', function (this: Suite) {
         await testDappPage.openTestDappPage({ contractAddress });
         await testDappPage.checkPageIsLoaded();
 
-        const ledgerDone = approveLedgerBlindSigning(
-          interaction,
-          apduBridge,
-        );
+        const ledgerDone = approveBlindSigning(interaction, apduBridge);
 
         await testDappPage.clickERC721ApproveButton();
 
@@ -247,11 +228,7 @@ describe('Ledger Hardware ERC721 @speculos', function (this: Suite) {
         await testDappPage.openTestDappPage({ contractAddress });
         await testDappPage.checkPageIsLoaded();
 
-        const ledgerDone = approveLedgerBlindSigning(
-          interaction,
-          apduBridge,
-          7,
-        );
+        const ledgerDone = approveBlindSigning(interaction, apduBridge, 7);
 
         await testDappPage.clickERC721SetApprovalForAllButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
