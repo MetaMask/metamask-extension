@@ -179,4 +179,89 @@ describe('AssetsReceivedSummaryList', () => {
 
     expect(container).toBeEmptyDOMElement();
   });
+
+  it('hides a row whose quote has settled with no quote available', () => {
+    const quotes: BatchSellQuotesResults['quotes'] = {
+      [ASSET_A]: {
+        asset: {} as never,
+        quote: {} as never,
+        receivedAmount: 100,
+        hasQuote: true,
+        isLoadingQuote: false,
+      },
+      [ASSET_B]: {
+        asset: {} as never,
+        quote: null as never,
+        hasQuote: false,
+        isLoadingQuote: false,
+      },
+    };
+
+    render(
+      <AssetsReceivedSummaryList
+        receivedAsset={{ symbol: 'USDC' }}
+        sendAssetsConfig={makeSendAssetsConfig()}
+        quotes={quotes}
+      />,
+    );
+
+    expect(screen.getByText(/AAA/u)).toBeInTheDocument();
+    expect(screen.queryByText(/BBB/u)).not.toBeInTheDocument();
+  });
+
+  it('hides all rows when every quote has settled with no quote available', () => {
+    const quotes: BatchSellQuotesResults['quotes'] = {
+      [ASSET_A]: {
+        asset: {} as never,
+        quote: null as never,
+        hasQuote: false,
+        isLoadingQuote: false,
+      },
+      [ASSET_B]: {
+        asset: {} as never,
+        quote: null as never,
+        hasQuote: false,
+        isLoadingQuote: false,
+      },
+    };
+
+    const { container } = render(
+      <AssetsReceivedSummaryList
+        receivedAsset={{ symbol: 'USDC' }}
+        sendAssetsConfig={makeSendAssetsConfig()}
+        quotes={quotes}
+      />,
+    );
+
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it('keeps rendering rows whose quote is still loading even when another row has no quote', () => {
+    const quotes: BatchSellQuotesResults['quotes'] = {
+      [ASSET_A]: {
+        asset: {} as never,
+        quote: null as never,
+        hasQuote: false,
+        isLoadingQuote: true,
+      },
+      [ASSET_B]: {
+        asset: {} as never,
+        quote: null as never,
+        hasQuote: false,
+        isLoadingQuote: false,
+      },
+    };
+
+    const { container } = render(
+      <AssetsReceivedSummaryList
+        receivedAsset={{ symbol: 'USDC' }}
+        sendAssetsConfig={makeSendAssetsConfig()}
+        quotes={quotes}
+      />,
+    );
+
+    expect(screen.getByText(/AAA/u)).toBeInTheDocument();
+    expect(screen.queryByText(/BBB/u)).not.toBeInTheDocument();
+    expect(container.querySelector('.mm-skeleton')).not.toBeNull();
+  });
 });

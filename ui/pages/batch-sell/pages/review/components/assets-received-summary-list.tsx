@@ -47,6 +47,10 @@ const AssetsReceivedListItem = ({
   const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
 
+  if (quote && !quote.isLoadingQuote && !quote.hasQuote) {
+    return null;
+  }
+
   return (
     <Box
       padding={2}
