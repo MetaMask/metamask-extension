@@ -4,6 +4,7 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
+import { StatusTypes } from '@metamask/bridge-controller';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { ResultType } from '../../shared/lib/trust-signals';
 import { EXCLUDED_TRANSACTION_TYPES } from '../helpers/constants/transactions';
@@ -204,6 +205,25 @@ function getSwapTokens(bridgeHistoryItem?: BridgeHistoryItem) {
   };
 }
 
+function getBridgeActivityStatus(bridgeHistoryItem?: BridgeHistoryItem) {
+  if (bridgeHistoryItem?.status.status === StatusTypes.FAILED) {
+    return 'failed' as const;
+  }
+
+  if (bridgeHistoryItem?.status.status === StatusTypes.COMPLETE) {
+    return 'success' as const;
+  }
+
+  if (
+    bridgeHistoryItem?.status.status === StatusTypes.PENDING ||
+    bridgeHistoryItem?.status.status === StatusTypes.SUBMITTED
+  ) {
+    return 'pending' as const;
+  }
+
+  return undefined;
+}
+
 export const selectLocalActivityItems = createSelector(
   selectLocalTransactions,
   selectBridgeHistory,
@@ -254,11 +274,16 @@ export const selectLocalActivityItems = createSelector(
         type === TransactionType.swapAndSend ||
         type === TransactionType.bridge
       ) {
+        const bridgeHistoryItem = getBridgeHistoryItem(
+          bridgeHistory,
+          transactionGroup,
+        );
+        const activityStatus = getBridgeActivityStatus(bridgeHistoryItem);
+
         return mapLocalTransaction({
           ...transactionGroup,
-          ...getSwapTokens(
-            getBridgeHistoryItem(bridgeHistory, transactionGroup),
-          ),
+          ...getSwapTokens(bridgeHistoryItem),
+          ...(activityStatus ? { activityStatus } : {}),
           nativeAssetSymbol,
           contractTokenMetadata,
         });

@@ -32,6 +32,7 @@ function getCellTokenAmounts(activity: ActivityCellProps['data']) {
     case 'claimMusdBonus':
     case 'lendingDeposit':
     case 'nftMint':
+    case 'contractInteraction':
       return {
         primaryToken: activity.data.token,
         secondaryToken: undefined,

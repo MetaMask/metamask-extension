@@ -16,8 +16,7 @@ class ActivityListPage {
 
   private readonly bridgeTransactionCompleted = '[data-tx-status="confirmed"]';
 
-  private readonly bridgeTransactionPending =
-    '.bridge-transaction-details__segment--pending';
+  private readonly bridgeTransactionPending = '[data-tx-status="pending"]';
 
   private readonly cancelTransactionButton = '[data-testid="cancel-button"]';
 

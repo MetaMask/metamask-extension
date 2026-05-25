@@ -312,14 +312,44 @@ describe('mapLocalTransaction', () => {
         },
         destinationToken: {
           amount: '19546',
-          assetId:
-            'eip155:1/erc20:0xACa92e438df0B2401fF60Da7E4337B687a2435dA',
+          assetId: 'eip155:1/erc20:0xACa92e438df0B2401fF60Da7E4337B687a2435dA',
           decimals: 6,
           direction: 'in',
           symbol: 'MUSD',
         },
       },
     });
+  });
+
+  it('uses a bridge history activity status override', () => {
+    const transaction = {
+      chainId: CHAIN_IDS.MAINNET,
+      id: 'bridge-id',
+      hash: '0xbridge',
+      status: TransactionStatus.confirmed,
+      time: 1779392463306,
+      type: TransactionType.bridge,
+      txParams: {
+        from,
+        to,
+        value: '0x0',
+      },
+    };
+    const transactionGroup = {
+      hasCancelled: false,
+      hasRetried: false,
+      initialTransaction: transaction,
+      nonce: '0x3',
+      primaryTransaction: transaction,
+      transactions: [transaction],
+    } as unknown as TransactionGroup;
+
+    const item = mapLocalTransaction({
+      ...transactionGroup,
+      activityStatus: 'failed',
+    });
+
+    expect(item.status).toBe('failed');
   });
 
   it('maps swap metadata token symbols to a Swap activity', () => {
@@ -371,6 +401,56 @@ describe('mapLocalTransaction', () => {
           direction: 'in',
           symbol: 'USDC',
         },
+      },
+    });
+  });
+
+  it('maps a native value contract interaction with an outgoing token', () => {
+    const transaction = {
+      chainId: CHAIN_IDS.MAINNET,
+      id: 'contract-interaction-id',
+      hash: '0xcontract',
+      status: TransactionStatus.confirmed,
+      time: 1716367781000,
+      type: TransactionType.contractInteraction,
+      txParams: {
+        from,
+        to,
+        value: '0x3782dace9d900000',
+        data: '0xd0e30db0',
+      },
+    };
+    const transactionGroup = {
+      hasCancelled: false,
+      hasRetried: false,
+      initialTransaction: transaction,
+      nonce: '0x4',
+      primaryTransaction: transaction,
+      transactions: [transaction],
+    } as unknown as TransactionGroup;
+
+    const item = mapLocalTransaction(transactionGroup);
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
+      type: 'contractInteraction',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1716367781000,
+      data: {
+        hash: '0xcontract',
+        from,
+        to,
+        token: {
+          amount: '0x3782dace9d900000',
+          assetId: 'eip155:1/slip44:60',
+          decimals: 18,
+          direction: 'out',
+          symbol: 'ETH',
+        },
+        methodId: '0xd0e30db0',
+        transactionType: TransactionType.contractInteraction,
       },
     });
   });

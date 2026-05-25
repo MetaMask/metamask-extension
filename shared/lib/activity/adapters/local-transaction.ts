@@ -14,6 +14,7 @@ export function mapLocalTransaction(
     destinationToken?: TokenAmount;
     nativeAssetSymbol?: string;
     contractTokenMetadata?: { symbol?: string; decimals?: number };
+    activityStatus?: ActivityListItem['status'];
   },
 ): ActivityListItem {
   const { initialTransaction, primaryTransaction } = transactionGroup;
@@ -141,10 +142,12 @@ export function mapLocalTransaction(
     };
   };
 
-  const status = getLocalTransactionStatus({
-    primaryTransaction,
-    initialTransaction,
-  });
+  const status =
+    transactionGroup.activityStatus ??
+    getLocalTransactionStatus({
+      primaryTransaction,
+      initialTransaction,
+    });
   const timestamp = primaryTransaction.time ?? initialTransaction.time;
   const hash =
     primaryTransaction.hash ?? initialTransaction.hash ?? primaryTransaction.id;
@@ -346,7 +349,23 @@ export function mapLocalTransaction(
         },
       };
 
-    default:
+    default: {
+      const token = (() => {
+        const { value } = initialTransaction.txParams;
+
+        if (value === undefined || value === '') {
+          return undefined;
+        }
+
+        try {
+          return BigInt(value) > 0n
+            ? getNativeToken(initialTransaction, 'out')
+            : undefined;
+        } catch {
+          return undefined;
+        }
+      })();
+
       return {
         type: 'contractInteraction',
         chainId,
@@ -357,9 +376,11 @@ export function mapLocalTransaction(
           hash,
           from,
           to,
+          ...(token ? { token } : {}),
           methodId: initialTransaction.txParams.data?.slice(0, 10),
           transactionType: initialTransaction.type,
         },
       };
+    }
   }
 }

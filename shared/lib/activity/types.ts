@@ -135,6 +135,7 @@ export type ActivityListItem =
       {
         from: string;
         to: string;
+        token?: TokenAmount;
         methodId?: string;
         transactionCategory?: string;
         transactionProtocol?: string;
