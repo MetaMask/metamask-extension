@@ -60,7 +60,7 @@
       }
     },
     "^ background; v popup": {},
-    "axios": {
+    "wait-on>axios": {
       "globals": {
         "postMessage": true,
         "fetch": true,

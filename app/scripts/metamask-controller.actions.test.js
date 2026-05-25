@@ -108,9 +108,9 @@ jest.mock('webextension-polyfill', () => ({
 // shares the same mock instance
 const browserPolyfillMock = jest.mocked(browser);
 
-const { Ganache } = require('../../test/e2e/seeder/ganache');
+const { LocalNodeStub } = require('../../test/stub/local-node');
 
-const ganacheServer = new Ganache();
+const localNodeServer = new LocalNodeStub();
 
 let loggerMiddlewareMock;
 const initializeMockMiddlewareLog = () => {
@@ -165,7 +165,7 @@ describe('MetaMaskController', function () {
   const noop = () => undefined;
 
   beforeAll(async function () {
-    await ganacheServer.start({ port: 32545 });
+    await localNodeServer.start({ port: 32545 });
   });
 
   beforeEach(function () {
@@ -235,7 +235,7 @@ describe('MetaMaskController', function () {
   });
 
   afterAll(async function () {
-    await ganacheServer.quit();
+    await localNodeServer.quit();
   });
 
   describe('Phishing Detection Mock', function () {

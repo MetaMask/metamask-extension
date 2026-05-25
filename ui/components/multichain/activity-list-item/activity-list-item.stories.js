@@ -55,11 +55,9 @@ DefaultStory.args = {
   ),
   subtitle: (
     <TransactionStatusLabel
-      statusOnly
       isPending
       isEarliestNonce
       error={{}}
-      date={new Date().toDateString()}
       status="pending"
     />
   ),
