@@ -136,7 +136,7 @@ describe('BTC Account - Send', function (this: Suite) {
         await bitcoinReviewTxPage.clickConfirmButton();
 
         // Wait for the transaction to appear in the activity list
-        await activityListPage.checkTransactionActivityByText('Sent');
+        await activityListPage.checkTransactionActivityByText('Sending');
 
         // Note: Transaction shows as "Pending" immediately after broadcast.
         // The BTC snap stores it with "Unconfirmed" status when broadcast.
