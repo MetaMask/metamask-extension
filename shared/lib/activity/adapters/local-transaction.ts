@@ -13,6 +13,7 @@ export function mapLocalTransaction(
     sourceToken?: TokenAmount;
     destinationToken?: TokenAmount;
     nativeAssetSymbol?: string;
+    contractTokenMetadata?: { symbol?: string; decimals?: number };
   },
 ): ActivityListItem {
   const { initialTransaction, primaryTransaction } = transactionGroup;
@@ -70,11 +71,14 @@ export function mapLocalTransaction(
     );
     const decimals =
       transaction.transferInformation?.amount === undefined
-        ? tokenMetadata?.decimals
+        ? (tokenMetadata?.decimals ??
+          transactionGroup.contractTokenMetadata?.decimals)
         : transaction.transferInformation.decimals;
     const tokenAmount = transaction.transferInformation?.amount ?? amount;
     const symbol =
-      transaction.transferInformation?.symbol ?? tokenMetadata?.symbol;
+      transaction.transferInformation?.symbol ??
+      tokenMetadata?.symbol ??
+      transactionGroup.contractTokenMetadata?.symbol;
     const assetId = toAssetId(contractAddress, chainId);
 
     return {

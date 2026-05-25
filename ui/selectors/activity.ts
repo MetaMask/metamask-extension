@@ -18,6 +18,7 @@ import { NATIVE_TOKEN_ADDRESS } from '../../shared/constants/transaction';
 import type { MetaMaskReduxState } from '../store/store';
 import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
+import { getTokensControllerAllTokens } from '../../shared/lib/selectors/assets-migration';
 import { mapKeyringTransaction } from '../../shared/lib/activity/adapters/keyring-transaction';
 import { mapLocalTransaction } from '../../shared/lib/activity/adapters/local-transaction';
 import {
@@ -207,11 +208,46 @@ export const selectLocalActivityItems = createSelector(
   selectLocalTransactions,
   selectBridgeHistory,
   getNetworkConfigurationsByChainId,
-  (transactionGroups, bridgeHistory, networkConfigurationsByChainId) =>
-    transactionGroups.map((transactionGroup) => {
+  getSelectedInternalAccount,
+  getTokensControllerAllTokens,
+  (
+    transactionGroups,
+    bridgeHistory,
+    networkConfigurationsByChainId,
+    selectedAccount,
+    allTokens,
+  ) => {
+    const selectedAddress = selectedAccount?.address?.toLowerCase();
+
+    // Resolves symbol/decimals for an ERC-20 contract address from the user's
+    // watched-tokens list (TokensController). The static mainnet token list
+    // used inside the mapper only covers mainnet, so anything on Sepolia,
+    // localhost, custom RPC etc. needs this fallback to render correctly.
+    const resolveContractTokenMetadata = (
+      chainId: string,
+      contractAddress: string | undefined,
+    ) => {
+      if (!contractAddress || !selectedAddress) {
+        return undefined;
+      }
+      const userTokens = allTokens?.[chainId as Hex]?.[selectedAddress as Hex];
+      const lowered = contractAddress.toLowerCase();
+      const token = userTokens?.find(
+        (t) => t.address.toLowerCase() === lowered,
+      );
+      return token
+        ? { symbol: token.symbol, decimals: token.decimals }
+        : undefined;
+    };
+
+    return transactionGroups.map((transactionGroup) => {
       const { type, chainId } = transactionGroup.initialTransaction;
       const nativeAssetSymbol =
         networkConfigurationsByChainId[chainId as Hex]?.nativeCurrency;
+      const contractTokenMetadata = resolveContractTokenMetadata(
+        chainId,
+        transactionGroup.initialTransaction.txParams.to,
+      );
 
       if (
         type === TransactionType.swap ||
@@ -223,11 +259,17 @@ export const selectLocalActivityItems = createSelector(
             getBridgeHistoryItem(bridgeHistory, transactionGroup),
           ),
           nativeAssetSymbol,
+          contractTokenMetadata,
         });
       }
 
-      return mapLocalTransaction({ ...transactionGroup, nativeAssetSymbol });
-    }),
+      return mapLocalTransaction({
+        ...transactionGroup,
+        nativeAssetSymbol,
+        contractTokenMetadata,
+      });
+    });
+  },
 );
 
 export const selectMarketRates = createSelector(

@@ -209,7 +209,6 @@ describe('Ledger Hardware', function (this: Suite) {
         ],
       },
       async ({ driver, localNodes, contractRegistry }) => {
-        const symbol = 'TST';
         (await localNodes?.[0]?.setAccountBalance(
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x100000000000000000000',
@@ -237,7 +236,7 @@ describe('Ledger Hardware', function (this: Suite) {
         );
         await homePage.goToActivityList();
         await activityListPage.checkTransactionActivityByText(
-          `Increase ${symbol} spending cap`,
+          'Increased spending cap',
         );
         await activityListPage.checkWaitForTransactionStatus('confirmed');
       },

@@ -51,9 +51,6 @@ class ActivityListPage {
   private readonly transactionAmountsInActivity =
     '[data-testid="transaction-list-item-primary-currency"]';
 
-  private readonly transactionSecondaryAmountsInActivity =
-    '[data-testid="transaction-list-item-secondary-currency"]';
-
   private readonly transactionBreakdownAmount =
     '[data-testid="transaction-breakdown-value-amount"]';
 
