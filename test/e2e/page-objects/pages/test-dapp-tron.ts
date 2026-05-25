@@ -241,6 +241,18 @@ export class TestDappTron {
   }
 
   /**
+   * Get the TRX transaction hash.
+   *
+   * @returns The TRX transaction hash text.
+   */
+  async getTRXTransactionHash(): Promise<string> {
+    const transactionHash = await this.driver.findElement(
+      this.trxTransactionHashSelectorTestId,
+    );
+    return await transactionHash.getText();
+  }
+
+  /**
    * Find the signed TRX transaction.
    */
   async findSignedTRXTransaction() {
@@ -292,6 +304,18 @@ export class TestDappTron {
       css: this.usdtTransactionHashSelectorTestId,
       text: transactionHash,
     });
+  }
+
+  /**
+   * Get the USDT transaction hash.
+   *
+   * @returns The USDT transaction hash text.
+   */
+  async getUSDTTransactionHash(): Promise<string> {
+    const transactionHash = await this.driver.findElement(
+      this.usdtTransactionHashSelectorTestId,
+    );
+    return await transactionHash.getText();
   }
 
   /**

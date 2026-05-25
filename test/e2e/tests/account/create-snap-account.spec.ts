@@ -1,4 +1,5 @@
 import { Suite } from 'mocha';
+import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
@@ -20,7 +21,8 @@ describe('Create Snap Account', function (this: Suite) {
         fixtures: new FixtureBuilderV2()
           .withSnapsPrivacyWarningAlreadyShown()
           .build(),
-        testSpecificMock: mockSnapSimpleKeyringAndSite,
+        testSpecificMock: (mockServer: Mockttp) =>
+          mockSnapSimpleKeyringAndSite(mockServer, 8080),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -50,7 +52,8 @@ describe('Create Snap Account', function (this: Suite) {
         fixtures: new FixtureBuilderV2()
           .withSnapsPrivacyWarningAlreadyShown()
           .build(),
-        testSpecificMock: mockSnapSimpleKeyringAndSite,
+        testSpecificMock: (mockServer: Mockttp) =>
+          mockSnapSimpleKeyringAndSite(mockServer, 8080),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -93,7 +96,8 @@ describe('Create Snap Account', function (this: Suite) {
         fixtures: new FixtureBuilderV2()
           .withSnapsPrivacyWarningAlreadyShown()
           .build(),
-        testSpecificMock: mockSnapSimpleKeyringAndSite,
+        testSpecificMock: (mockServer: Mockttp) =>
+          mockSnapSimpleKeyringAndSite(mockServer, 8080),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

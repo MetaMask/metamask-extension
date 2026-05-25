@@ -53,6 +53,14 @@ class NonEvmHomepage extends HomePage {
   }
 
   /**
+   * Clicks the receive button on the non-EVM account homepage.
+   */
+  async clickOnReceiveButton(): Promise<void> {
+    await this.driver.waitForSelector(this.receiveButton);
+    await this.driver.clickElement(this.receiveButton);
+  }
+
+  /**
    * Checks if the expected balance is displayed on homepage.
    *
    * @param balance

@@ -567,6 +567,36 @@ class ActivityListPage {
   }
 
   /**
+   * Checks that a transaction activity item with matching text is absent.
+   *
+   * @param txnText - The text to search for within transaction activity items.
+   */
+  async checkTransactionActivityNotPresentByText(
+    txnText: string,
+  ): Promise<void> {
+    console.log(`Check transaction activity is absent with text: ${txnText}`);
+    await this.driver.assertElementNotPresent({
+      text: txnText,
+      css: this.activityListAction,
+    });
+  }
+
+  /**
+   * Checks that a transaction amount is absent from the activity list.
+   *
+   * @param transactionAmount - The amount text expected not to be displayed.
+   */
+  async checkTransactionAmountNotPresent(
+    transactionAmount: string,
+  ): Promise<void> {
+    console.log(`Check transaction amount is absent: ${transactionAmount}`);
+    await this.driver.assertElementNotPresent({
+      css: this.transactionAmountsInActivity,
+      text: transactionAmount,
+    });
+  }
+
+  /**
    * Waiting for the pending tx to clear from acitivity.
    *
    */

@@ -177,7 +177,8 @@ describe.skip('Snap Account Transfers', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
-        testSpecificMock: mockSnapSimpleKeyringAndSiteWithSpotPrices,
+        testSpecificMock: (mockServer: Mockttp) =>
+          mockSnapSimpleKeyringAndSiteWithSpotPrices(mockServer, 8080),
         dappOptions: {
           customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
         },

@@ -5563,6 +5563,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask-previews/java-tron-up@npm:0.0.0-preview-784cc181c":
+  version: 0.0.0-preview-784cc181c
+  resolution: "@metamask-previews/java-tron-up@npm:0.0.0-preview-784cc181c"
+  bin:
+    java-tron-up: ./dist/bin/java-tron-up.mjs
+  checksum: 10/09885cbf2b8160d247bdbb490069cc6df9385842dbab48cae59aa75964816329e8586d1b6cf99da4d8c406c1b52ed8a8a4299c1f58df3f4f757fd4dea1417e16
+  languageName: node
+  linkType: hard
+
 "@metamask/7715-permission-types@npm:^0.7.1":
   version: 0.7.1
   resolution: "@metamask/7715-permission-types@npm:0.7.1"
@@ -33392,6 +33401,7 @@ __metadata:
     "@lydell/node-pty": "npm:^1.1.0"
     "@material-ui/core": "npm:^4.12.4"
     "@material-ui/pickers": "npm:^3.3.11"
+    "@metamask-previews/java-tron-up": "npm:0.0.0-preview-784cc181c"
     "@metamask/7715-permission-types": "npm:^0.7.1"
     "@metamask/abi-utils": "npm:^3.0.0"
     "@metamask/account-api": "npm:^1.0.4"
