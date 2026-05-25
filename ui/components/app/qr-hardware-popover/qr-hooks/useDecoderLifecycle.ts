@@ -12,8 +12,9 @@ import {
  * Manages the URDecoder lifecycle: creating, receiving parts, tracking
  * progress, and forwarding complete URs to the parent handler.
  *
- * Uses {@link classifyScanResult} to produce granular error classifications
- * instead of generic error messages when scanning fails.
+ * The decoder is stored in a ref rather than state because its internal
+ * mutation (receivePart) shouldn't trigger re-renders — only the derived
+ * `scanProgress` needs to update the UI.
  *
  * @param props - Subset of BaseReader props needed for decoding.
  * @param callbacks - State dispatchers for progress and errors.
