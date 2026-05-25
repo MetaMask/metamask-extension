@@ -249,8 +249,7 @@ export const BackupAndSyncToggle = ({
 
   // Onboarding flips the intent flag synchronously so the controller's loading
   // flag is irrelevant there.
-  const showLoadingIndicator =
-    !isOnboarding && isBackupAndSyncUpdateLoading;
+  const showLoadingIndicator = !isOnboarding && isBackupAndSyncUpdateLoading;
 
   return (
     <Box
