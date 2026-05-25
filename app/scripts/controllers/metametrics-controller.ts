@@ -24,6 +24,10 @@ import type {
   NetworkControllerNetworkDidChangeEvent,
 } from '@metamask/network-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import type {
+  SeedlessOnboardingControllerGetStateAction,
+  SeedlessOnboardingControllerState,
+} from '@metamask/seedless-onboarding-controller';
 import type { Browser } from 'webextension-polyfill';
 import type { Nft } from '@metamask/assets-controllers';
 import {
@@ -42,6 +46,7 @@ import {
 import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
+  MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsUserTrait,
@@ -74,6 +79,7 @@ import {
   AnonymousTransactionMetaMetricsEvent,
   TransactionMetaMetricsEvent,
 } from '../../../shared/constants/transaction';
+import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import type { SegmentClient } from '../lib/segment';
 import {
   trace,
@@ -195,6 +201,7 @@ export type MetaMaskState = Pick<
   | 'srpSessionData'
   | 'keyrings'
   | 'multichainNetworkConfigurationsByChainId'
+  | 'firstTimeFlowType'
   // TODO: Remove as this is no longer a top-level property of the flattened background state object.
   // | 'security_providers'
 > & {
@@ -343,7 +350,8 @@ export type AllowedActions =
   | PreferencesControllerGetStateAction
   | NetworkControllerGetStateAction
   | NetworkControllerGetNetworkClientByIdAction
-  | RemoteFeatureFlagControllerGetStateAction;
+  | RemoteFeatureFlagControllerGetStateAction
+  | SeedlessOnboardingControllerGetStateAction;
 
 /**
  * Events that this controller is allowed to subscribe.
@@ -658,15 +666,25 @@ export class MetaMetricsController extends BaseController<
       options.initialEvent === TransactionMetaMetricsEvent.submitted &&
       fragments[id];
 
-    const additionalFragmentProps = hasExistingSubmittedFragment
-      ? {
-          ...fragments[id],
-          canDeleteIfAbandoned: false,
-        }
-      : {};
+    const additionalFragmentProps: Partial<MetaMetricsEventFragment> =
+      hasExistingSubmittedFragment
+        ? {
+            ...fragments[id],
+            canDeleteIfAbandoned: false,
+          }
+        : {};
+
+    const mergeEventFragment = merge as (
+      ...sources: unknown[]
+    ) => MetaMetricsEventFragment;
 
     this.update((state) => {
-      state.fragments[id] = merge({}, additionalFragmentProps, fragment);
+      const metaMetricsState = state as unknown as MetaMetricsControllerState;
+      metaMetricsState.fragments[id] = mergeEventFragment(
+        {},
+        additionalFragmentProps,
+        fragment,
+      );
     });
 
     if (fragment.initialEvent) {
@@ -736,25 +754,33 @@ export class MetaMetricsController extends BaseController<
 
     if (createIfNotFound) {
       this.update((state) => {
-        state.fragments[id] = {
+        const metaMetricsState = state as unknown as MetaMetricsControllerState;
+        metaMetricsState.fragments[id] = {
           canDeleteIfAbandoned: true,
           category: MetaMetricsEventCategory.Transactions,
           successEvent: TransactionMetaMetricsEvent.finalized,
           id,
           ...payload,
           lastUpdated: Date.now(),
-        };
+        } as MetaMetricsEventFragment;
       });
       return;
     } else if (!fragment) {
       throw new Error(`Event fragment with id ${id} does not exist.`);
     }
 
+    const mergeEventFragment = merge as (
+      ...sources: unknown[]
+    ) => MetaMetricsEventFragment;
     this.update((state) => {
-      state.fragments[id] = merge(state.fragments[id], {
-        ...payload,
-        lastUpdated: Date.now(),
-      });
+      const metaMetricsState = state as unknown as MetaMetricsControllerState;
+      metaMetricsState.fragments[id] = mergeEventFragment(
+        metaMetricsState.fragments[id],
+        {
+          ...payload,
+          lastUpdated: Date.now(),
+        },
+      );
     });
   }
 
@@ -1169,14 +1195,16 @@ export class MetaMetricsController extends BaseController<
   // Once we track queued events after a user opts into metrics, we want to clear the event queue.
   clearEventsAfterMetricsOptIn(): void {
     this.update((state) => {
-      state.eventsBeforeMetricsOptIn = [];
+      const metaMetricsState = state as unknown as MetaMetricsControllerState;
+      metaMetricsState.eventsBeforeMetricsOptIn = [];
     });
   }
 
   // It adds an event into a queue, which is only tracked if a user opts into metrics.
   addEventBeforeMetricsOptIn(event: MetaMetricsEventPayload): void {
     this.update((state) => {
-      state.eventsBeforeMetricsOptIn.push(event);
+      const metaMetricsState = state as unknown as MetaMetricsControllerState;
+      metaMetricsState.eventsBeforeMetricsOptIn.push(event);
     });
   }
 
@@ -1195,14 +1223,16 @@ export class MetaMetricsController extends BaseController<
   // Once we track queued traces after a user opts into metrics, we want to clear the trace queue.
   clearTracesAfterMetricsOptIn(): void {
     this.update((state) => {
-      state.tracesBeforeMetricsOptIn = [];
+      const metaMetricsState = state as unknown as MetaMetricsControllerState;
+      metaMetricsState.tracesBeforeMetricsOptIn = [];
     });
   }
 
   // It adds a trace into a queue, which is only tracked if a user opts into metrics.
   addTraceBeforeMetricsOptIn(traceData: BufferedTrace): void {
     this.update((state) => {
-      state.tracesBeforeMetricsOptIn.push(traceData);
+      const metaMetricsState = state as unknown as MetaMetricsControllerState;
+      metaMetricsState.tracesBeforeMetricsOptIn.push(traceData);
     });
   }
 
@@ -1398,8 +1428,10 @@ export class MetaMetricsController extends BaseController<
   ): Partial<MetaMetricsUserTraits> | null {
     const { traits } = this.state;
     const storageKindTrait = traits[MetaMetricsUserTrait.StorageKind];
+    const cookieIdTrait = traits[MetaMetricsUserTrait.CookieId];
+    const gaClientIdTrait = traits[MetaMetricsUserTrait.GaClientId];
 
-    const currentTraits = {
+    const currentTraits: MetaMetricsUserTraits = {
       [MetaMetricsUserTrait.AddressBookEntries]: sum(
         Object.values(metamaskState.addressBook).map(size),
       ),
@@ -1468,12 +1500,23 @@ export class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.ProfileId]: Object.entries(
         metamaskState.srpSessionData || {},
       )?.[0]?.[1]?.profile?.profileId,
+      [MetaMetricsUserTrait.AccountType]: this.#getAccountTypeTrait(
+        metamaskState.firstTimeFlowType,
+      ),
       [MetaMetricsUserTrait.Platform]: getPlatform(),
       [MetaMetricsUserTrait.InstallType]: getInstallType(),
       [MetaMetricsUserTrait.DeviceType]: getDeviceType(),
       [MetaMetricsUserTrait.Os]: getOs(),
       ...this.#getAccountCompositionTraits(metamaskState),
     };
+
+    if (cookieIdTrait !== undefined) {
+      currentTraits[MetaMetricsUserTrait.CookieId] = cookieIdTrait;
+    }
+
+    if (gaClientIdTrait !== undefined) {
+      currentTraits[MetaMetricsUserTrait.GaClientId] = gaClientIdTrait;
+    }
 
     if (!this.previousUserTraits && metamaskState.participateInMetaMetrics) {
       this.previousUserTraits = currentTraits;
@@ -1498,6 +1541,42 @@ export class MetaMetricsController extends BaseController<
     }
 
     return null;
+  }
+
+  #getAccountTypeTrait(
+    firstTimeFlowType: MetaMaskState['firstTimeFlowType'],
+  ): NonNullable<MetaMetricsUserTraits[MetaMetricsUserTrait.AccountType]> {
+    switch (firstTimeFlowType) {
+      case FirstTimeFlowType.import:
+      case FirstTimeFlowType.restore:
+        return MetaMetricsEventAccountType.Imported;
+      case FirstTimeFlowType.socialImport:
+        return this.#getSocialAccountType(MetaMetricsEventAccountType.Imported);
+      case FirstTimeFlowType.socialCreate:
+        return this.#getSocialAccountType(MetaMetricsEventAccountType.Default);
+      case FirstTimeFlowType.create:
+      default:
+        return MetaMetricsEventAccountType.Default;
+    }
+  }
+
+  #getSocialAccountType(
+    baseType:
+      | MetaMetricsEventAccountType.Default
+      | MetaMetricsEventAccountType.Imported,
+  ): NonNullable<MetaMetricsUserTraits[MetaMetricsUserTrait.AccountType]> {
+    const authConnection = this.#getSeedlessOnboardingState()?.authConnection;
+    return authConnection ? `${baseType}_${authConnection}` : baseType;
+  }
+
+  #getSeedlessOnboardingState():
+    | Partial<SeedlessOnboardingControllerState>
+    | undefined {
+    try {
+      return this.messenger.call('SeedlessOnboardingController:getState');
+    } catch {
+      return undefined;
+    }
   }
 
   /**

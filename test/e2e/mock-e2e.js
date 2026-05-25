@@ -1572,9 +1572,9 @@ async function setupMocking(
     .forPost(/^https:\/\/api\.hyperliquid\.xyz\/info$/u)
     .thenCallback(async (req) => {
       let type;
+      let parsed = null;
       const { body } = req;
       if (body) {
-        let parsed = null;
         const json = await body.getJson().catch(() => undefined);
         if (json !== undefined && json !== null && typeof json === 'object') {
           parsed = json;
@@ -1594,35 +1594,193 @@ async function setupMocking(
           type = parsedType ?? parsedMethod;
         }
       }
+      // Shared universe definition used by both 'meta' and 'metaAndAssetCtxs'
+      const mockUniverse = [
+        { name: 'BTC', szDecimals: 5, maxLeverage: 50 },
+        { name: 'ETH', szDecimals: 4, maxLeverage: 50 },
+        { name: 'AVAX', szDecimals: 2, maxLeverage: 20 },
+      ];
+      // Shared asset contexts (funding, volume, prices) — one entry per universe item
+      const mockAssetCtxs = [
+        {
+          funding: '0.0001',
+          openInterest: '1000',
+          prevDayPx: '48000',
+          dayNtlVlm: '50000000',
+          premium: '0.0002',
+          oraclePx: '50000',
+          markPx: '50010',
+          midPx: '50000',
+          impactPxs: ['49995', '50005'],
+        },
+        {
+          funding: '0.0001',
+          openInterest: '5000',
+          prevDayPx: '2900',
+          dayNtlVlm: '10000000',
+          premium: '0.0001',
+          oraclePx: '3000',
+          markPx: '3001',
+          midPx: '3000',
+          impactPxs: ['2995', '3005'],
+        },
+        {
+          funding: '0.0001',
+          openInterest: '200',
+          prevDayPx: '24',
+          dayNtlVlm: '500000',
+          premium: '0.00005',
+          oraclePx: '25',
+          markPx: '25.01',
+          midPx: '25',
+          impactPxs: ['24.95', '25.05'],
+        },
+      ];
       if (type === 'meta') {
         return {
           statusCode: 200,
-          json: {
-            universe: [
-              {
-                name: 'BTC',
-                szDecimals: 5,
-                maxLeverage: 50,
-              },
-            ],
-          },
+          json: { universe: mockUniverse },
+        };
+      }
+      if (type === 'metaAndAssetCtxs') {
+        // Two-element array: [metaInfo, assetCtxs[]]
+        return {
+          statusCode: 200,
+          json: [{ universe: mockUniverse }, mockAssetCtxs],
         };
       }
       if (type === 'allMids') {
         return {
           statusCode: 200,
-          json: { mids: { BTC: '50000', ETH: '3000' } },
+          json: { mids: { BTC: '50000', ETH: '3000', AVAX: '25' } },
         };
+      }
+      if (type === 'clearinghouseState') {
+        const emptySummary = {
+          accountValue: '0',
+          totalNtlPos: '0',
+          totalRawUsd: '0',
+          totalMarginUsed: '0',
+        };
+        // Align REST with Perps WS mocks (e.g. WS_USER_WITH_FUNDED_ACCOUNT): background
+        // `getAccountState` / withdraw use InfoClient, not only WebSocket stream data.
+        const e2ePerpsUser = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
+        const reqUser =
+          parsed && typeof parsed.user === 'string'
+            ? parsed.user.toLowerCase()
+            : '';
+        if (reqUser === e2ePerpsUser) {
+          return {
+            statusCode: 200,
+            json: {
+              marginSummary: {
+                accountValue: '10000.0',
+                totalNtlPos: '0.0',
+                totalRawUsd: '10000.0',
+                totalMarginUsed: '0.0',
+                withdrawable: '10000.0',
+                totalVaultEquity: '0.0',
+              },
+              crossMarginSummary: {
+                accountValue: '10000.0',
+                totalNtlPos: '0.0',
+                totalRawUsd: '10000.0',
+                totalMarginUsed: '0.0',
+                withdrawable: '10000.0',
+                totalVaultEquity: '0.0',
+              },
+              crossMaintenanceMarginUsed: '0.0',
+              withdrawable: '10000.0',
+              assetPositions: [],
+              time: Date.now(),
+            },
+          };
+        }
+        return {
+          statusCode: 200,
+          json: {
+            assetPositions: [],
+            crossMarginSummary: emptySummary,
+            marginSummary: emptySummary,
+            withdrawable: '0',
+            crossMaintenanceMarginUsed: '0',
+            time: Date.now(),
+          },
+        };
+      }
+      if (type === 'candleSnapshot') {
+        const coin = (parsed && parsed.req && parsed.req.coin) || 'BTC';
+        const prices = { BTC: '50000', ETH: '3000', AVAX: '25' };
+        const price = prices[coin] || '100';
+        const now = Date.now();
+        const interval = 300000; // 5m in ms
+        const candles = [];
+        for (let i = 4; i >= 0; i--) {
+          candles.push({
+            t: now - i * interval,
+            T: now - i * interval + interval - 1,
+            s: coin,
+            i: (parsed && parsed.req && parsed.req.interval) || '5m',
+            o: price,
+            c: price,
+            h: price,
+            l: price,
+            v: '1000.0',
+            n: 10,
+          });
+        }
+        return { statusCode: 200, json: candles };
+      }
+      if (type === 'openOrders') {
+        return { statusCode: 200, json: [] };
+      }
+      if (type === 'userFills') {
+        return { statusCode: 200, json: [] };
       }
       return { statusCode: 200, json: {} };
     });
 
   await server
     .forPost(/^https:\/\/api\.hyperliquid\.xyz\/exchange$/u)
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: { status: 'ok', response: { type: 'order', data: {} } },
-    }));
+    .thenCallback((request) => {
+      const body = request.body?.json ?? {};
+      const actionType = body.action?.type;
+
+      if (actionType === 'order') {
+        return {
+          statusCode: 200,
+          json: {
+            status: 'ok',
+            response: {
+              type: 'order',
+              data: {
+                statuses: [
+                  {
+                    filled: {
+                      totalSz: '4.0',
+                      avgPx: '25.05',
+                      oid: 100001,
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        };
+      }
+
+      if (actionType === 'withdraw3') {
+        return {
+          statusCode: 200,
+          json: { status: 'ok', response: { type: 'default' } },
+        };
+      }
+
+      return {
+        statusCode: 200,
+        json: { status: 'ok', response: { type: 'default' } },
+      };
+    });
 
   // Test Dapp Styles
   const TEST_DAPP_STYLES_1 = fs.readFileSync(TEST_DAPP_STYLES_1_PATH);

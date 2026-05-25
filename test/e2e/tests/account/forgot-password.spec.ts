@@ -1,9 +1,9 @@
+import { Browser } from 'selenium-webdriver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { E2E_SRP } from '../../constants';
 import { Anvil } from '../../seeder/anvil';
-import { Ganache } from '../../seeder/ganache';
 import HomePage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
 import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
@@ -11,6 +11,7 @@ import {
   lockAndWaitForLoginPage,
   login,
 } from '../../page-objects/flows/login.flow';
+import SetupPasskeyPage from '../../page-objects/pages/onboarding/setup-passkey-page';
 
 const newPassword = 'this is the best password ever';
 
@@ -33,7 +34,7 @@ describe('Forgot password', function () {
         localNodes,
       }: {
         driver: Driver;
-        localNodes: Anvil[] | Ganache[] | undefined[];
+        localNodes: Anvil[] | undefined[];
       }) => {
         await login(driver, { localNode: localNodes[0] });
         // Giving sometime for network calls to settle before locking metamask
@@ -51,6 +52,15 @@ describe('Forgot password', function () {
 
         await resetPasswordPage.resetPassword(E2E_SRP, newPassword);
         await resetPasswordPage.waitForPasswordInputToNotBeVisible();
+
+        // Assert passkey setup is shown for chrome
+        const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
+        if (!isFirefox) {
+          const setupPasskeyPage = new SetupPasskeyPage(driver);
+          await setupPasskeyPage.checkPageIsLoaded();
+          await setupPasskeyPage.skipPasskeySetup();
+        }
+
         await homePage.headerNavbar.checkPageIsLoaded();
         await driver.delay(1000); // to avoid a race condition where the wallet is not locked yet
         // Lock wallet again

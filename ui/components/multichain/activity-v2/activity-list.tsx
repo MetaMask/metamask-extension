@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useMemo,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useMemo, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { Box, Text } from '@metamask/design-system-react';
@@ -12,7 +6,7 @@ import type { Transaction } from '@metamask/keyring-api';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useScrollContainer } from '../../../contexts/scroll-container';
-import { useIntersectionObserver } from '../../../hooks/useIntersectionObserver';
+import { useItemInView } from '../../../hooks/useItemInView';
 import { TransactionActivityEmptyState } from '../../app/transaction-activity-empty-state';
 import { TabEmptyState } from '../../ui/tab-empty-state';
 import { PENDING_STATUS_HASH } from '../../../helpers/constants/transactions';
@@ -30,6 +24,7 @@ import { noAdjustmentsScroll } from '../../ui/virtualized-list/virtualized-list'
 import {
   mergeAllTransactionsByTime,
   groupAndFlattenMergedTransactions,
+  enrichApiWithLocal,
   filterLocalNotInApi,
   matchesApiTransaction,
   matchesLocalTransaction,
@@ -46,7 +41,6 @@ import { useTransactionsQuery } from './useTransactionsQuery';
 
 const ITEM_HEIGHT = 70;
 const HEADER_HEIGHT = 36;
-const EVM_PAGINATION_ROOT_MARGIN = '300px 0px';
 
 type Props = {
   filter?: ActivityListFilter;
@@ -91,7 +85,10 @@ export const ActivityList = ({ filter }: Props) => {
 
   // Prepare the filtered transaction sources before merging them for rendering.
   const transactionSources = useMemo(() => {
-    let evmTransactions = data?.pages?.flatMap((page) => page.data ?? []) ?? [];
+    let evmTransactions = enrichApiWithLocal(
+      data?.pages?.flatMap((page) => page.data ?? []) ?? [],
+      localTransactions,
+    );
 
     // Filter local transactions by converting hex chainId to CAIP-2
     let filteredLocalTransactions = filterLocalNotInApi(
@@ -185,33 +182,16 @@ export const ActivityList = ({ filter }: Props) => {
     }
   }, [scrollContainerRef, virtualizer]);
 
-  // Fetch more items when the last completed EVM transaction comes into view
-  const { ref: lastCompletedEvmItemRef } = useIntersectionObserver({
+  // Fetch more items when the last completed EVM transaction enters view
+  const observeLastCompletedEvmItem = useItemInView({
+    targetIndex: lastCompletedEvmItemIndex,
     root: scrollContainerRef?.current ?? null,
-    rootMargin: EVM_PAGINATION_ROOT_MARGIN,
-    onChange: (isIntersecting) => {
-      if (isIntersecting && hasNextPage && !isFetchingNextPage) {
+    onVisible: () => {
+      if (hasNextPage && !isFetchingNextPage) {
         fetchNextPage();
       }
     },
   });
-
-  const lastObservedCompletedEvmItemRef = useRef<HTMLDivElement | null>(null);
-
-  const observeLastCompletedEvmItem = useCallback(
-    (node: HTMLDivElement | null, isLastCompletedEvmItem: boolean) => {
-      virtualizer.measureElement(node);
-
-      if (isLastCompletedEvmItem) {
-        lastObservedCompletedEvmItemRef.current = node;
-        lastCompletedEvmItemRef(node);
-      } else if (node && lastObservedCompletedEvmItemRef.current === node) {
-        lastObservedCompletedEvmItemRef.current = null;
-        lastCompletedEvmItemRef(null);
-      }
-    },
-    [lastCompletedEvmItemRef, virtualizer],
-  );
 
   const earliestNonceByChain = useEarliestNonceByChain(localTransactions);
 
@@ -286,17 +266,18 @@ export const ActivityList = ({ filter }: Props) => {
               const item = flattenedItems[virtualItem.index];
               const translateY =
                 virtualItem.start - virtualizer.options.scrollMargin;
-              const isLastCompletedEvmItem =
-                virtualItem.index === lastCompletedEvmItemIndex;
 
               return (
                 <div
                   key={String(virtualItem.key)}
                   className="absolute top-0 left-0 w-full"
                   data-index={virtualItem.index}
-                  ref={(node) =>
-                    observeLastCompletedEvmItem(node, isLastCompletedEvmItem)
-                  }
+                  ref={(node) => {
+                    virtualizer.measureElement(node);
+                    observeLastCompletedEvmItem(node, {
+                      index: virtualItem.index,
+                    });
+                  }}
                   style={{
                     transform: `translateY(${translateY}px)`,
                   }}

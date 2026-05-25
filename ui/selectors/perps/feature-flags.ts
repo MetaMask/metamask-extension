@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
 import { isPerpsRemoteConfigSatisfied } from '../../../shared/lib/perps-feature-flags';
-import { getRemoteFeatureFlags } from '../remote-feature-flags';
+import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 
 /**
  * Default HIP-3 market sources when feature flag is not configured.
@@ -89,3 +89,7 @@ export const getHip3AllowedSourcesSet = createSelector(
   getHip3AllowedSources,
   (allowedSources): Set<string> => new Set(allowedSources),
 );
+
+// Re-export the VIP program flag so perps consumers can import from this
+// domain module without reaching into the rewards duck directly.
+export { selectVipProgramEnabled as getIsVipProgramEnabled } from '../../ducks/rewards/selectors';

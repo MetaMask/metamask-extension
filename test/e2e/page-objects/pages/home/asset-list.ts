@@ -5,12 +5,6 @@ import { veryLargeDelayMs } from '../../../helpers';
 class AssetListPage {
   private readonly driver: Driver;
 
-  private readonly allNetworksOption =
-    '[data-testid="network-filter-all__button"]';
-
-  private readonly allNetworksTotal =
-    '[data-testid="network-filter-all__total"]';
-
   private readonly assetOptionsButton = '[data-testid="asset-options__button"]';
 
   private readonly assetPriceInDetailsModal =
@@ -362,9 +356,10 @@ class AssetListPage {
     await this.driver.clickElement(this.importTokensButton);
     await this.driver.waitForSelector(this.importTokenModalTitle);
     await this.driver.waitForSelector(this.selectedNetwork(networkName));
-    await this.driver.fill(this.tokenSearchInput, tokenName);
+    await this.driver.pasteIntoField(this.tokenSearchInput, tokenName);
     // Wait until the token search matches 1 result to prevent flakiness with token result re-renders
     await this.waitUntilTokenSearchMatch(1);
+    await this.driver.waitForElementToStopMoving({ text: tokenName, tag: 'p' });
     await this.driver.clickElement({ text: tokenName, tag: 'p' });
     await this.driver.waitForSelector(this.tokenSearchSelected);
     await this.driver.clickElement(this.importTokensNextButton);

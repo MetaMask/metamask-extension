@@ -62,8 +62,8 @@ import {
 import { PendingRedirectRoute } from '../../../shared/lib/pending-redirect-state';
 import { ShieldSubscriptionError } from '../../../shared/lib/shield';
 import type { DeferredDeepLink } from '../../../shared/lib/deep-links/types';
+import type { Preferences } from '../../../shared/types/preferences';
 import type {
-  Preferences,
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from './preferences-controller';
@@ -1391,8 +1391,8 @@ export class AppStateController extends BaseController<
    */
   updateNftDropDownState(nftsDropdownState: Json): void {
     this.update((state) => {
-      // @ts-expect-error this is caused by a bug in Immer, not being able to handle recursive types like Json
-      state.nftsDropdownState = nftsDropdownState;
+      const appState = state as unknown as AppStateControllerState;
+      appState.nftsDropdownState = nftsDropdownState;
     });
   }
 

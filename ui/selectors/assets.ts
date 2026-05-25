@@ -74,7 +74,9 @@ import {
   getTokensControllerAllTokens,
 } from '../../shared/lib/selectors/assets-migration';
 import { traceAsControllerCallback } from '../../shared/lib/trace';
-import { getSelectedInternalAccount, getAccountIdByAddress } from './accounts';
+import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
+import { getPreferences } from '../../shared/lib/selectors/preferences';
+import { getAccountIdByAddress } from './accounts';
 import { getMultichainBalances, RatesState } from './multichain';
 import { EMPTY_OBJECT } from './shared';
 import {
@@ -84,7 +86,6 @@ import {
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getMarketData,
   getNativeTokenCachedBalanceByChainIdSelector,
-  getPreferences,
   getSelectedAccountTokensAcrossChains,
   getTokensAcrossChainsByAccountAddressSelector,
   getEnabledNetworks,
@@ -893,14 +894,6 @@ const selectCurrencyRateStateForBalances = createSelector(
 );
 
 /**
- * Returns the enabled network map as-is for filtering and eligibility checks.
- */
-const selectEnabledNetworkMapForBalances = createSelector(
-  [getEnabledNetworks],
-  (map) => map,
-);
-
-/**
  * Aggregates balances for all wallets and groups using core pure function.
  * Only the minimal controller state is composed to keep this selector lean.
  *
@@ -918,7 +911,7 @@ export const selectBalanceForAllWallets = createSelector(
     selectMultichainAssetsStateForBalances,
     selectTokensStateForBalances,
     selectCurrencyRateStateForBalances,
-    selectEnabledNetworkMapForBalances,
+    getEnabledNetworks,
     getNetworkConfigurationsByChainId,
   ],
   (
@@ -969,7 +962,7 @@ export const selectBalanceChangeForAllWallets = (period: BalanceChangePeriod) =>
       selectMultichainAssetsStateForBalances,
       selectTokensStateForBalances,
       selectCurrencyRateStateForBalances,
-      selectEnabledNetworkMapForBalances,
+      getEnabledNetworks,
     ],
     (
       accountTreeState,
@@ -1029,7 +1022,7 @@ export const selectBalanceChangeByAccountGroup = (
       selectMultichainAssetsStateForBalances,
       selectTokensStateForBalances,
       selectCurrencyRateStateForBalances,
-      selectEnabledNetworkMapForBalances,
+      getEnabledNetworks,
     ],
     (
       accountTreeState,
@@ -1089,7 +1082,7 @@ export const selectBalanceChangeBySelectedAccountGroup = (
       selectMultichainAssetsStateForBalances,
       selectTokensStateForBalances,
       selectCurrencyRateStateForBalances,
-      selectEnabledNetworkMapForBalances,
+      getEnabledNetworks,
     ],
     (
       accountTreeState,
