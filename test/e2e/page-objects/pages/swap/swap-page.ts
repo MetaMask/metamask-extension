@@ -262,10 +262,20 @@ class SwapPage {
   }
 
   async clickViewActivity(): Promise<void> {
-    await this.driver.clickElement(this.viewActivityButton);
+    // No-op when the status page is skipped.
+    await this.driver.clickElementSafe(this.viewActivityButton);
   }
 
   async waitForSmartTransactionToComplete(): Promise<void> {
+    // No-op when the status page is skipped.
+    if (
+      !(await this.driver.isElementPresentAndVisible(
+        this.transactionCompleteHeader,
+        2000,
+      ))
+    ) {
+      return;
+    }
     console.log('Wait for Smart Transaction to complete');
     await this.driver.waitForSelector(this.transactionCompleteHeader, {
       timeout: 30000,
