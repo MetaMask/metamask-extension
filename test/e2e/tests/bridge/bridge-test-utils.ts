@@ -1091,6 +1091,7 @@ const STX_LINEA_SENTINEL_URL =
   'https://tx-sentinel-linea-mainnet.api.cx.metamask.io';
 
 const STX_MAINNET_NETWORK_CONFIG = {
+  extensionSkipTransactionStatusPage: true,
   smartTransactionsNetworks: {
     '0x1': {
       extensionActive: true,
@@ -1102,6 +1103,7 @@ const STX_MAINNET_NETWORK_CONFIG = {
 };
 
 const STX_LINEA_NETWORK_CONFIG = {
+  extensionSkipTransactionStatusPage: true,
   smartTransactionsNetworks: {
     '0xe708': {
       extensionActive: true,
@@ -2007,6 +2009,7 @@ export const getGasless7702SwapFixtures = (title?: string) => {
     },
     manifestFlags: {
       remoteFeatureFlags: {
+        extensionSkipTransactionStatusPage: true,
         bridgeConfig: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
         smartTransactionsNetworks: {
           '0x1': {
