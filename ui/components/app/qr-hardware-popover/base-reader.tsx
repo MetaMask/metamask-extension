@@ -78,7 +78,13 @@ const BaseReader = ({
   const { trackEvent } = useContext(MetaMetricsContext);
 
   const {
-    state: { readyState, error, scanError, scanProgress, permissionActionLoading },
+    state: {
+      readyState,
+      error,
+      scanError,
+      scanProgress,
+      permissionActionLoading,
+    },
     setReady,
     setBlocked,
     setNeeded,
