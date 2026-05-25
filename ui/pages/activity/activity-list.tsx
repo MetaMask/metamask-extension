@@ -6,6 +6,7 @@ import { VirtualizedList } from '../../components/ui/virtualized-list/virtualize
 import { useScrollContainer } from '../../contexts/scroll-container';
 import { formatDateWithYearContext } from '../../helpers/utils/util';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { useEarliestNonceByChain } from '../../hooks/useEarliestNonceByChain';
 import { useItemInView } from '../../hooks/useItemInView';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import { LegacyDetails } from './legacy-details';
@@ -27,6 +28,14 @@ export function ActivityList() {
   );
   const localItems = useLocalTransactions({ networks });
   const nonEvmItems = useNonEvmTransactions({ networks });
+  const localTransactionGroups = useMemo(
+    () =>
+      localItems.flatMap((item) =>
+        item.raw?.type === 'localTransaction' ? [item.raw.data] : [],
+      ),
+    [localItems],
+  );
+  const earliestNonceByChain = useEarliestNonceByChain(localTransactionGroups);
 
   const {
     data,
@@ -114,7 +123,11 @@ export function ActivityList() {
           }
 
           return (
-            <ListItem data={row.item} onClick={() => handleClick(row.item)} />
+            <ListItem
+              data={row.item}
+              earliestNonceByChain={earliestNonceByChain}
+              onClick={() => handleClick(row.item)}
+            />
           );
         }}
         listFooterComponent={

@@ -1,5 +1,9 @@
 import React, { useMemo } from 'react';
 import { Icon, IconName, IconSize, Text } from '@metamask/design-system-react';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../shared/constants/multichain/networks';
@@ -96,14 +100,28 @@ const renderDescriptionLine = (
   return null;
 };
 
+function getTransactionStatus(data: ActivityCellProps['data']) {
+  const localTransaction =
+    data.raw?.type === 'localTransaction' ? data.raw.data : undefined;
+  const { primaryTransaction } = localTransaction ?? {};
+
+  if (
+    primaryTransaction?.status === TransactionStatus.confirmed &&
+    primaryTransaction.type === TransactionType.cancel
+  ) {
+    return 'cancelled';
+  }
+
+  return data.status === 'success' ? 'confirmed' : data.status;
+}
+
 export function GenericActivityCell({ data, onClick }: ActivityCellProps) {
   const t = useI18nContext();
   const formatTokenAmount = useFormatTokenAmount();
   const { description, title } = useGetLabel(data);
   const pendingStatusText =
     data.status === 'pending' ? t(data.status) : undefined;
-  const transactionStatus =
-    data.status === 'success' ? 'confirmed' : data.status;
+  const transactionStatus = getTransactionStatus(data);
   const { primaryToken, secondaryToken } = getCellTokenAmounts(data);
 
   const primaryTokenAmount = formatTokenAmount(primaryToken);

@@ -43,8 +43,6 @@ class ActivityListPage {
 
   private readonly speedupInlineButton = '[data-testid="speed-up-button"]';
 
-  private readonly speedupModalButton = '[data-testid="speedup-button"]';
-
   private readonly tooltip = '.tippy-tooltip-content';
 
   private readonly transactionAmountsInActivity =
@@ -448,22 +446,12 @@ class ActivityListPage {
     expectedAmount: string = '-1 ETH',
     expectedNumber: number = 1,
   ): Promise<void> {
-    let transactionAmountsText = '';
-    await this.driver.wait(async () => {
-      try {
-        const transactionAmounts = await this.driver.findElements(
-          this.transactionAmountsInActivity,
-        );
-        const transactionAmount = transactionAmounts[expectedNumber - 1];
-        if (!transactionAmount) {
-          return false;
-        }
-        transactionAmountsText = await transactionAmount.getText();
-        return transactionAmountsText === expectedAmount;
-      } catch {
-        return false;
-      }
-    }, 60000);
+    await this.driver.waitForSelector(this.transactionAmountsInActivity);
+    const transactionAmounts = await this.driver.findElements(
+      this.transactionAmountsInActivity,
+    );
+    const transactionAmountsText =
+      await transactionAmounts[expectedNumber - 1].getText();
     assert.equal(
       transactionAmountsText,
       expectedAmount,
@@ -564,7 +552,7 @@ class ActivityListPage {
   }
 
   async clickSpeedUpTransaction() {
-    await this.driver.clickElement(this.speedupModalButton);
+    await this.driver.clickElement(this.speedupInlineButton);
   }
 
   /**
