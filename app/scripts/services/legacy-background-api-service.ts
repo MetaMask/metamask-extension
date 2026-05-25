@@ -41,9 +41,7 @@ import { SmartTransactionsControllerWipeSmartTransactionsAction } from '@metamas
 import { BridgeStatusControllerWipeBridgeStatusAction } from '@metamask/bridge-status-controller';
 import {
   SecretType,
-  SeedlessOnboardingController,
   SeedlessOnboardingControllerAddNewSecretDataAction,
-  SeedlessOnboardingControllerCheckIsPasswordOutdatedAction,
   SeedlessOnboardingControllerUpdateBackupMetadataStateAction,
 } from '@metamask/seedless-onboarding-controller';
 import { PermissionControllerUpdatePermissionsByCaveatAction } from '@metamask/permission-controller';
@@ -70,8 +68,6 @@ import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../shared/constants/
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/onboarding-method-action-types';
 import { getAccountsBySnapId } from '../lib/snap-keyring';
-import { OnboardingControllerGetStateAction } from '../controllers/onboarding';
-import { createSentryError } from '../../../shared/lib/error';
 import { LegacyBackgroundApiServiceMethodActions } from './legacy-background-api-service-method-action-types';
 
 /**
