@@ -545,15 +545,17 @@ describe('Swap on Solana', function () {
 
         await homePage.goToActivityList();
         const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkTxAmountInActivity('-0.001 SOL', 1);
+        await activityListPage.checkTxAmountInActivity('0.1669 USDC', 1);
         await activityListPage.checkWaitForTransactionStatus('confirmed');
         if (isUnifiedAssetsEnabled) {
           // BUG: The activity text or amount may not fully reflect the swap details
           // under unified state (e.g. missing destination token name or incorrect fiat value).
-          await activityListPage.checkTransactionActivityByText('Swap SOL to');
+          await activityListPage.checkTransactionActivityByText(
+            'Swapped SOL to',
+          );
         } else {
           await activityListPage.checkTransactionActivityByText(
-            'Swap SOL to USDC',
+            'Swapped SOL to USDC',
           );
         }
       },
@@ -649,10 +651,10 @@ describe('Swap on Solana', function () {
 
         await homePage.goToActivityList();
         const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkTxAmountInActivity('-1 USDC', 1);
+        await activityListPage.checkTxAmountInActivity('0.005904 SOL', 1);
         await activityListPage.checkWaitForTransactionStatus('confirmed');
         await activityListPage.checkTransactionActivityByText(
-          'Swap USDC to SOL',
+          'Swapped USDC to SOL',
         );
       },
     );

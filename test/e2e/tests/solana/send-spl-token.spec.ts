@@ -432,7 +432,7 @@ describe('Send flow - SPL Token', function (this: Suite) {
         const activityList = new ActivityListPage(driver);
         await activityList.checkFailedTxNumberDisplayedInActivity();
         await activityList.checkTxAction({
-          action: 'Interaction',
+          action: 'Interaction failed',
           confirmedTx: 0,
         });
       },
