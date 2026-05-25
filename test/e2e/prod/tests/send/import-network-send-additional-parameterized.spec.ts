@@ -13,11 +13,37 @@ import { getRequiredE2EEnv } from '../../../helpers/e2e-env';
 import NetworkManager from '../../../page-objects/pages/network-manager';
 import {
   getAdditionalNetworksForTesting,
+  getNetworksByNames,
   NetworkTestConfig,
 } from './fixtures/network-config';
 import { SendTransactionReporter } from './send-transaction-reporter';
 import { generateSendConsolidatedReport } from './generate-send-report';
 import { SendTransactionResult } from './send-transaction-types';
+
+function getCliOptionValue(optionName: string): string | undefined {
+  const prefixedOption = `--${optionName}`;
+  const exactIndex = process.argv.findIndex((arg) => arg === prefixedOption);
+  if (exactIndex !== -1) {
+    const nextArg = process.argv[exactIndex + 1];
+    return nextArg && !nextArg.startsWith('--') ? nextArg : undefined;
+  }
+
+  const inlineOption = process.argv.find((arg) =>
+    arg.startsWith(`${prefixedOption}=`),
+  );
+  return inlineOption ? inlineOption.slice(prefixedOption.length + 1) : undefined;
+}
+
+function parseNetworkNames(value?: string): string[] {
+  if (!value) {
+    return [];
+  }
+
+  return value
+    .split(',')
+    .map((name) => name.trim())
+    .filter(Boolean);
+}
 
 /**
  * Production E2E Test: Additional Networks, Import Account, and Send
@@ -33,8 +59,23 @@ import { SendTransactionResult } from './send-transaction-types';
  * 2. Pass excludeIds parameter: getAdditionalNetworksForTesting(['network-id'])
  */
 describe('Production E2E: Additional Networks, Import Account and Send (Parameterized)', function (this: Suite) {
-  // Get all networks to test from configuration
-  const networks = getAdditionalNetworksForTesting();
+  // Accept networks from CLI (`--networks Base,Arbitrum`) or NETWORKS env var.
+  // If neither is provided, run all additional networks as before.
+  const networksFromCli =
+    getCliOptionValue('networks') ?? getCliOptionValue('networkNames');
+  const selectedNetworkNames = parseNetworkNames(
+    networksFromCli ?? process.env.NETWORKS,
+  );
+  const networks: NetworkTestConfig[] = selectedNetworkNames.length
+    ? getNetworksByNames(selectedNetworkNames)
+    : getAdditionalNetworksForTesting();
+
+  if (selectedNetworkNames.length > 0 && networks.length === 0) {
+    throw new Error(
+      `No matching network configurations found for: ${selectedNetworkNames.join(', ')}`,
+    );
+  }
+
   const allNetworkResults: SendTransactionResult[] = [];
 
   // Run test for each network

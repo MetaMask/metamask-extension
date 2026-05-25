@@ -260,31 +260,40 @@ class FixtureBuilder {
 
   withNetworkControllerOnOptimism() {
     return this.withNetworkController({
+      selectedNetworkClientId: 'optimism',
       networkConfigurations: {
-        networkConfigurationId: {
+        optimism: {
           chainId: CHAIN_IDS.OPTIMISM,
-          nickname: LOCALHOST_DISPLAY_NAME,
-          rpcPrefs: {},
-          rpcUrl: 'https://mainnet.infura.io',
+          nickname: 'OP',
+          rpcUrl: `https://optimism-mainnet.infura.io/v3/${getInfuraProjectId()}`,
           ticker: 'ETH',
-          networkConfigurationId: 'networkConfigurationId',
-          id: 'networkConfigurationId',
+          rpcPrefs: {
+            blockExplorerUrl: 'https://optimistic.etherscan.io/',
+          },
+          id: 'optimism',
+          type: 'rpc',
+          isCustom: true,
         },
       },
     });
   }
 
+
   withNetworkControllerOnPolygon() {
     return this.withNetworkController({
+      selectedNetworkClientId: 'polygon',
       networkConfigurations: {
-        networkConfigurationId: {
+        polygon: {
           chainId: CHAIN_IDS.POLYGON,
-          nickname: POLYGON_DISPLAY_NAME,
-          rpcPrefs: {},
-          rpcUrl: 'https://mainnet.infura.io',
-          ticker: 'ETH',
-          networkConfigurationId: 'networkConfigurationId',
-          id: 'networkConfigurationId',
+          nickname: 'POL',
+          rpcPrefs: {
+            blockExplorerUrl: 'https://polygonscan.com/',
+          },
+          rpcUrl: `https://polygon-mainnet.infura.io/v3/${getInfuraProjectId()}`,
+          ticker: 'MATIC',
+          id: 'polygon',
+          type: 'rpc',
+          isCustom: true,
         },
       },
     });
@@ -341,7 +350,7 @@ class FixtureBuilder {
     return this.withNetworkController({
       selectedNetworkClientId: 'monad',
       networkConfigurations: {
-        monad: {
+        'monad': {
           chainId: CHAIN_IDS.MONAD,
           nickname: 'Monad Mainnet',
           rpcUrl: `https://monad-mainnet.infura.io/v3/${getInfuraProjectId()}`,
@@ -417,7 +426,7 @@ class FixtureBuilder {
     });
   }
 
-  withNetworkControllerOnHyperEVM() {
+    withNetworkControllerOnHyperEVM() {
     return this.withNetworkController({
       selectedNetworkClientId: 'hyperevm',
       networkConfigurations: {
