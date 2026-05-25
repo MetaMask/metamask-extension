@@ -157,13 +157,11 @@ describe('useDecoderLifecycle', () => {
         result.current.handleScan('ur:eth-signature/complete-frame');
       });
 
-      expect(mockSetScanError).toHaveBeenCalledWith(
-        expect.objectContaining({
-          category: ScanErrorCategory.WrongUrType,
-          isUrFormat: true,
-          receivedUrType: 'eth-signature',
-        }),
-      );
+      expect(mockSetScanError).toHaveBeenCalledWith({
+        category: ScanErrorCategory.WrongUrType,
+        isUrFormat: true,
+        receivedUrType: 'eth-signature',
+      });
       expect(mockHandleSuccess).not.toHaveBeenCalled();
     });
 
@@ -190,13 +188,11 @@ describe('useDecoderLifecycle', () => {
         result.current.handleScan('ur:crypto-hdkey/complete-frame');
       });
 
-      expect(mockSetScanError).toHaveBeenCalledWith(
-        expect.objectContaining({
-          category: ScanErrorCategory.WrongUrType,
-          isUrFormat: true,
-          receivedUrType: 'crypto-hdkey',
-        }),
-      );
+      expect(mockSetScanError).toHaveBeenCalledWith({
+        category: ScanErrorCategory.WrongUrType,
+        isUrFormat: true,
+        receivedUrType: 'crypto-hdkey',
+      });
       expect(mockHandleSuccess).not.toHaveBeenCalled();
     });
 
@@ -222,12 +218,11 @@ describe('useDecoderLifecycle', () => {
         result.current.handleScan('bad-data');
       });
 
-      expect(mockSetScanError).toHaveBeenCalledWith(
-        expect.objectContaining({
-          category: ScanErrorCategory.NonUrQrScanned,
-          isUrFormat: false,
-        }),
-      );
+      expect(mockSetScanError).toHaveBeenCalledWith({
+        category: ScanErrorCategory.NonUrQrScanned,
+        isUrFormat: false,
+      });
+      expect(mockHandleSuccess).not.toHaveBeenCalled();
     });
 
     it('classifies non-UR data as NonUrQrScanned when isReadingWallet is false', () => {
@@ -252,12 +247,11 @@ describe('useDecoderLifecycle', () => {
         result.current.handleScan('bad-data');
       });
 
-      expect(mockSetScanError).toHaveBeenCalledWith(
-        expect.objectContaining({
-          category: ScanErrorCategory.NonUrQrScanned,
-          isUrFormat: false,
-        }),
-      );
+      expect(mockSetScanError).toHaveBeenCalledWith({
+        category: ScanErrorCategory.NonUrQrScanned,
+        isUrFormat: false,
+      });
+      expect(mockHandleSuccess).not.toHaveBeenCalled();
     });
 
     it('classifies UR-formatted data that throws as ScanException with isUrFormat true', () => {
@@ -279,13 +273,12 @@ describe('useDecoderLifecycle', () => {
         result.current.handleScan('ur:crypto-hdkey/corrupted-data');
       });
 
-      expect(mockSetScanError).toHaveBeenCalledWith(
-        expect.objectContaining({
-          category: ScanErrorCategory.ScanException,
-          isUrFormat: true,
-          rawMessage: 'cbor decode failure',
-        }),
-      );
+      expect(mockSetScanError).toHaveBeenCalledWith({
+        category: ScanErrorCategory.ScanException,
+        isUrFormat: true,
+        rawMessage: 'cbor decode failure',
+      });
+      expect(mockHandleSuccess).not.toHaveBeenCalled();
     });
 
     it('calls setError when handleSuccess rejects', async () => {
