@@ -5233,7 +5233,6 @@ export default class MetamaskController extends EventEmitter {
         // check if external services are enabled
         const { useExternalServices } = this.preferencesController.state;
         if (useExternalServices) {
-          await this.getSnapKeyring();
           await this.accountTreeController.syncWithUserStorageAtLeastOnce();
         }
         await this.discoverAndCreateAccounts(id);
