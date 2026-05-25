@@ -48,21 +48,21 @@ Do not open the page with `file://`. The RPC-only flow uses the injected provide
 | File | Change |
 |---|---|
 | `app/scripts/lib/rpc-method-middleware/handlers/get-state-logs.ts` | Added `metamask_getStateLogs` handler in the provider RPC pipeline |
-| `app/scripts/metamask-controller.js` | Added `handleGetStateLogsRequest()` — opens approval and returns the state payload |
+| `app/scripts/metamask-controller.js` | Added `handleGetStateLogsRequest()` — opens approval and returns the state log string from the approval UI |
+| `ui/pages/confirmations/confirmation/templates/state-log-export.ts` | Approval UI builds state logs via `window.logStateString()` (same as Settings export) |
 | `poc/state-log-export.html` | Mock support page — the UI a user would see in the chatbot flow |
 
 ## Security properties
 
 - Request flows through the provider RPC pipeline and native confirmation system
 - Approval is required before any state payload is returned
-- Routes through `controller.getState()` which excludes the encrypted vault; private keys and SRP are never present
+- State logs are built via `window.logStateString()` in the approval UI (same path as Settings → Download state logs), which excludes the encrypted vault; private keys and SRP are never present
 - No custom content-script or runtime-message bridge remains in the PoC
 
 ## What's different from production MVP
 
 | PoC | Production |
 |---|---|
-| Uses `controller.getState()` | Should use `logStateString()` path to include logs + platform metadata |
 | Local file page for demo/testing | Real chatbot widget on `support.metamask.io` |
 | No i18n | All strings go in `app/_locales/en/messages.json` |
 | No allowlisting on the custom method yet | Add explicit support-surface policy before production rollout |

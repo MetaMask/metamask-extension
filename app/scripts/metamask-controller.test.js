@@ -68,7 +68,10 @@ import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import { toAssetId } from '../../shared/lib/asset-utils';
-import { HYPERLIQUID_APPROVAL_TYPE } from '../../shared/constants/app';
+import {
+  HYPERLIQUID_APPROVAL_TYPE,
+  STATE_LOG_EXPORT_APPROVAL_TYPE,
+} from '../../shared/constants/app';
 import {
   DEFI_REFERRAL_PARTNERS,
   DefiReferralPartner,
@@ -611,6 +614,33 @@ describe('MetaMaskController', () => {
       it('in mv2, it should reset state without attempting to call browser storage', () => {
         expect(metamaskController.resetStates).toHaveBeenCalledTimes(1);
         expect(browserPolyfillMock.storage.session.set).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('#handleGetStateLogsRequest', () => {
+      it('returns the state log string from the approval UI', async () => {
+        const mockStateString = '{"metamask":{"isInitialized":true}}';
+        jest
+          .spyOn(
+            metamaskController.approvalController,
+            'addAndShowApprovalRequest',
+          )
+          .mockResolvedValue(mockStateString);
+
+        const result = await metamaskController.handleGetStateLogsRequest(
+          'https://support.metamask.io',
+        );
+
+        expect(result).toBe(mockStateString);
+        expect(
+          metamaskController.approvalController.addAndShowApprovalRequest,
+        ).toHaveBeenCalledWith(
+          expect.objectContaining({
+            origin: 'https://support.metamask.io',
+            type: STATE_LOG_EXPORT_APPROVAL_TYPE,
+            requestData: {},
+          }),
+        );
       });
     });
 

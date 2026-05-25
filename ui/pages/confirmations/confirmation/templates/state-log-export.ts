@@ -1,4 +1,6 @@
+import type { ApprovalRequest } from '@metamask/approval-controller';
 import { providerErrors } from '@metamask/rpc-errors';
+import type { Json } from '@metamask/utils';
 import {
   AlignItems,
   Display,
@@ -7,7 +9,19 @@ import {
   TypographyVariant,
 } from '../../../../helpers/constants/design-system';
 
-function getValues(pendingApproval, t, actions) {
+type StateLogExportActions = {
+  resolvePendingApproval: (id: string, value: string) => void;
+  rejectPendingApproval: (
+    id: string,
+    error: ReturnType<typeof providerErrors.userRejectedRequest>['serialize'],
+  ) => void;
+};
+
+function getValues(
+  pendingApproval: ApprovalRequest<Record<string, Json>>,
+  t: (key: string) => string,
+  actions: StateLogExportActions,
+) {
   return {
     content: [
       {
@@ -84,8 +98,10 @@ function getValues(pendingApproval, t, actions) {
     ],
     submitText: t('stateLogExportApprovalConfirm'),
     cancelText: t('cancel'),
-    onSubmit: () =>
-      actions.resolvePendingApproval(pendingApproval.id, true),
+    onSubmit: async () => {
+      const stateString = await window.logStateString();
+      actions.resolvePendingApproval(pendingApproval.id, stateString);
+    },
     onCancel: () =>
       actions.rejectPendingApproval(
         pendingApproval.id,
