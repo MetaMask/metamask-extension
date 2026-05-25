@@ -37,9 +37,6 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "Lỗi"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "Mã QR không hợp lệ. Vui lòng quét mã QR đồng bộ của ví cứng."
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "Quét mã QR"
   },
