@@ -386,6 +386,7 @@ export default function CreationSuccessful() {
     isOnboardingCompleted,
     dispatch,
     externalServicesOnboardingToggleState,
+    backupAndSyncOnboardingToggleState,
     isSidePanelEnabled,
     isSocialLoginFlow,
     socialLoginType,
