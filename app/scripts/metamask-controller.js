@@ -5795,7 +5795,10 @@ export default class MetamaskController extends EventEmitter {
   async forgetDevice(deviceName) {
     return this.#withKeyringForDevice({ name: deviceName }, async (keyring) => {
       for (const address of await keyring.getAccounts()) {
-        this._onAccountRemoved(address);
+        this.controllerMessenger.call(
+          'LegacyBackgroundApiService:onAccountRemoved',
+          address,
+        );
       }
 
       keyring.forgetDevice();
@@ -6661,7 +6664,8 @@ export default class MetamaskController extends EventEmitter {
       case ERC20: {
         const unifyWatchAsset = await this.controllerMessenger.call(
           'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
-        )();
+        );
+
         if (unifyWatchAsset) {
           this.#validateUnifiedWatchAssetRequest(asset, networkClientId);
         }

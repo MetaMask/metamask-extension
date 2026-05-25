@@ -110,6 +110,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'importAccountWithStrategy',
   'getSnapKeyring',
   'getAccountsBySnapId',
+  'onAccountRemoved',
 ] as const;
 
 /**
@@ -503,7 +504,7 @@ export class LegacyBackgroundApiService {
    * @param address - A hex address
    */
   async removeAccount(address: Hex): Promise<Hex> {
-    this.#onAccountRemoved(address);
+    this.onAccountRemoved(address);
     await this.#messenger.call('KeyringController:removeAccount', address);
 
     return address;
@@ -514,7 +515,7 @@ export class LegacyBackgroundApiService {
    *
    * @param address - The address of the account to remove.
    */
-  #onAccountRemoved(address: Hex): void {
+  onAccountRemoved(address: Hex): void {
     this.#messenger.call(
       'PermissionController:updatePermissionsByCaveat',
       Caip25CaveatType,

@@ -642,6 +642,30 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('onAccountRemoved', () => {
+    it('executes side effects of a removed account', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'PermissionController:updatePermissionsByCaveat',
+          jest.fn(),
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:onAccountRemoved',
+          '0x123',
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'PermissionController:updatePermissionsByCaveat',
+          Caip25CaveatType,
+          expect.any(Function),
+        );
+      });
+    });
+  });
+
   describe('importAccountWithStrategy', () => {
     it('imports an account without social login', async () => {
       await withService(async ({ rootMessenger, serviceMessenger }) => {

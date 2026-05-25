@@ -28,7 +28,6 @@ import { CHAIN_IDS } from '../../shared/constants/network';
 import { toAssetId } from '../../shared/lib/asset-utils';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../shared/lib/environment';
 import MetaMaskController from './metamask-controller';
-import NotificationManager from './lib/notification-manager';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
 // so unify-state tests can exercise real feature-flag gating via controller state.
