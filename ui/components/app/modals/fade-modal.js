@@ -152,27 +152,14 @@ class FadeModal extends Component {
 
   addTransitionListener = (node, handle) => {
     if (node) {
-      let fallbackTimer;
-      let endListener;
-      let complete = false;
-      const finish = () => {
-        if (complete) {
-          return;
-        }
-
-        complete = true;
-        removeEndEventListener(node, endListener);
-        clearTimeout(fallbackTimer);
-        handle();
-      };
-      endListener = function (e) {
+      const endListener = function (e) {
         if (e && e.target !== node) {
           return;
         }
-        finish();
+        removeEndEventListener(node, endListener);
+        handle();
       };
       addEndEventListener(node, endListener);
-      fallbackTimer = window.setTimeout(finish, 500);
     }
   };
 

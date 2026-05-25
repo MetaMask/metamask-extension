@@ -134,7 +134,7 @@ describe('Bridge tests', function (this: Suite) {
     );
   });
 
-  it.only('updates recommended bridge quote incrementally when SSE events are received', async function () {
+  it('updates recommended bridge quote incrementally when SSE events are received', async function () {
     await withFixtures(
       getBridgeFixtures({
         title: this.test?.fullTitle(),

@@ -448,12 +448,22 @@ class ActivityListPage {
     expectedAmount: string = '-1 ETH',
     expectedNumber: number = 1,
   ): Promise<void> {
-    await this.driver.waitForSelector(this.transactionAmountsInActivity);
-    const transactionAmounts = await this.driver.findElements(
-      this.transactionAmountsInActivity,
-    );
-    const transactionAmountsText =
-      await transactionAmounts[expectedNumber - 1].getText();
+    let transactionAmountsText = '';
+    await this.driver.wait(async () => {
+      try {
+        const transactionAmounts = await this.driver.findElements(
+          this.transactionAmountsInActivity,
+        );
+        const transactionAmount = transactionAmounts[expectedNumber - 1];
+        if (!transactionAmount) {
+          return false;
+        }
+        transactionAmountsText = await transactionAmount.getText();
+        return transactionAmountsText === expectedAmount;
+      } catch {
+        return false;
+      }
+    }, 60000);
     assert.equal(
       transactionAmountsText,
       expectedAmount,

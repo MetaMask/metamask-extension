@@ -101,6 +101,7 @@ export const verifySubmittedSwapTransaction = async ({
  * @param testParams.expectedWalletBalance - The expected wallet balance after the transaction
  * @param testParams.expectedSwapTokens - The expected swap tokens shown in the activity list
  * @param testParams.expectedDestAmount - The expected quoted destination amounts in the quote page
+ * @param testParams.expectedActivityAmount - The expected destination amount shown in the activity list
  * @param testParams.submitDelay - The delay to wait before submitting the transaction, must be less than the refresh interval of the stream
  * @param testParams.expectedStatus - The expected state of the transaction
  * @param testParams.skipStatusPage - Whether to skip the status page after submitting
