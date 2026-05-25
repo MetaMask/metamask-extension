@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
@@ -19,13 +19,9 @@ import { ReviewAndConfirmModal } from './components/review-and-confirm-modal';
 import { useBatchSellQuotesFetching } from './hooks/useBatchSellQuotesFetching';
 import { useBatchSellTradesFetching } from './hooks/useBatchSellTradesFetching';
 import { useBatchSellAggregateValidation } from './hooks/useBatchSellAggregateValidation';
+import { hasAtLeastOneQuoteAvailable } from './utils/hasAtLeastOneQuoteAvailable';
+import { hasAnyEnabledAsset } from './utils/hasAnyEnabledAsset';
 
-// CASE: no quotes available for any asset should disable the info button and review
-// CASE: no quotes available for some assets should not render row in review
-// TODO: add test ids
-// TODO: write tests
-// TODO: migrate hook tests to components
-// TODO: try to extract test configurations
 // TODO: add security warnings array
 
 export const BatchSellReviewPage = () => {
@@ -79,6 +75,16 @@ export const BatchSellReviewPage = () => {
     totalNetworkFee: batchFees?.amount,
   });
 
+  const atLeastOneQuoteAvailable = useMemo(
+    () => hasAtLeastOneQuoteAvailable(sendAssetsConfig, data?.quotes),
+    [sendAssetsConfig, data?.quotes],
+  );
+
+  const anyEnabledAsset = useMemo(
+    () => hasAnyEnabledAsset(sendAssetsConfig),
+    [sendAssetsConfig],
+  );
+
   useEffect(() => {
     setReviewAndConfirmModalIsOpen(false);
   }, [areQuotesRefreshExpired]);
@@ -94,8 +100,10 @@ export const BatchSellReviewPage = () => {
       data-testid="batch-sell-review-page"
     >
       <Header
+        quotesAreFetching={isLoading}
+        atLeastOneQuoteAvailable={atLeastOneQuoteAvailable}
+        anyEnabledAsset={anyEnabledAsset}
         totalReceivedFiat={data?.totalReceivedAmountFiat}
-        isLoading={isLoading}
         selectedAsset={{
           symbol: selectedReceiveAsset.symbol,
           image: selectedReceiveAsset.image,
@@ -110,7 +118,6 @@ export const BatchSellReviewPage = () => {
       <QuotesList
         sendAssetsConfig={sendAssetsConfig}
         quotes={data?.quotes}
-        isLoading={isLoading}
         onSendAmountPercentChange={setSendAmountPercent}
         onSlippagePercentChangeClick={(asset) =>
           setEditingSlippageAssetId(asset.assetId)
@@ -135,6 +142,8 @@ export const BatchSellReviewPage = () => {
         }}
       />
       <TotalReceivedModal
+        atLeastOneQuoteAvailable={atLeastOneQuoteAvailable}
+        anyEnabledAsset={anyEnabledAsset}
         sendAssetsConfig={sendAssetsConfig}
         quotes={data?.quotes}
         receivedAsset={{
@@ -144,6 +153,7 @@ export const BatchSellReviewPage = () => {
         minimumReceivedAmount={data?.minimumReceivedAmount}
         onClose={() => setTotalReceivedAssetModalIsOpen(false)}
         open={totalReceivedModalIsOpen}
+        quotesAreFetching={isLoading}
       />
       {editingSlippageAssetId !== null && (
         <SlippageModal

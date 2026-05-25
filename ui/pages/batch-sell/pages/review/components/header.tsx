@@ -25,8 +25,10 @@ import { formatCurrencyAmount } from '../../../../bridge/utils/quote';
 import { Skeleton } from '../../../../../components/component-library/skeleton';
 
 type HeaderProps = {
+  quotesAreFetching: boolean;
+  atLeastOneQuoteAvailable: boolean;
+  anyEnabledAsset: boolean;
   totalReceivedFiat?: number;
-  isLoading: boolean;
   selectedAsset: {
     symbol: string;
     image?: string | null;
@@ -36,21 +38,25 @@ type HeaderProps = {
 };
 
 export const Header = ({
+  quotesAreFetching,
+  atLeastOneQuoteAvailable,
+  anyEnabledAsset,
   totalReceivedFiat,
-  isLoading,
   selectedAsset,
   onSelectReceivedAssetClick: onSelectAssetClick,
   onTotalReceivedFiatIconClick,
 }: HeaderProps) => {
   const t = useI18nContext();
   const currency = useSelector(getCurrentCurrency);
-  const formattedTotalReceive = useMemo(
-    () =>
-      totalReceivedFiat === undefined
-        ? '12345678' // Hardcoded value to allow skeleton to render
-        : formatCurrencyAmount(totalReceivedFiat.toString(), currency, 2),
-    [totalReceivedFiat, currency],
-  );
+  const formattedTotalReceive = useMemo(() => {
+    if (!atLeastOneQuoteAvailable) {
+      return formatCurrencyAmount('0', currency, 2);
+    }
+
+    return totalReceivedFiat === undefined
+      ? '12345' // Hardcoded value to allow skeleton to render
+      : formatCurrencyAmount(totalReceivedFiat.toString(), currency, 2);
+  }, [totalReceivedFiat, currency, atLeastOneQuoteAvailable]);
 
   return (
     <Box paddingHorizontal={4} paddingBottom={6} gap={1}>
@@ -76,7 +82,11 @@ export const Header = ({
         justifyContent={BoxJustifyContent.Between}
         flexWrap={BoxFlexWrap.Wrap}
       >
-        <Skeleton isLoading={isLoading}>
+        <Skeleton
+          isLoading={
+            quotesAreFetching && anyEnabledAsset && !atLeastOneQuoteAvailable
+          }
+        >
           <Text
             variant={
               (formattedTotalReceive?.length ?? 0) > 10

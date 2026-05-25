@@ -80,6 +80,7 @@ const makeQuote = (
   asset: makeAsset(),
   quote: {} as never,
   hasQuote: true,
+  isLoadingQuote: false,
   receivedAmountFiat: 100,
   ...overrides,
 });
@@ -92,7 +93,6 @@ const defaultProps = {
   onAssetDeleteClick: jest.fn(),
   canDeleteAssets: true,
   quote: makeQuote(),
-  isLoading: false,
   enabled: true,
 };
 
@@ -114,8 +114,18 @@ describe('QuotesListItem', () => {
     expect(screen.getByText(/1,234/u)).toBeInTheDocument();
   });
 
-  it('renders the skeleton placeholder fiat amount when isLoading is true', () => {
-    render(<QuotesListItem {...defaultProps} isLoading quote={undefined} />);
+  it('renders the skeleton placeholder fiat amount when the quote is still loading for this slot', () => {
+    render(
+      <QuotesListItem
+        {...defaultProps}
+        quote={{
+          asset: makeAsset(),
+          quote: null as never,
+          hasQuote: false,
+          isLoadingQuote: true,
+        }}
+      />,
+    );
 
     expect(screen.getByText(/1,234/u)).toBeInTheDocument();
   });

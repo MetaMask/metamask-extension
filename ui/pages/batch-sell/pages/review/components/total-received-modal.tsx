@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   ModalFooter,
   Text,
@@ -14,6 +14,8 @@ import {
 } from '../../../../../components/component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { BatchSellQuotesConfig, BatchSellQuotesResults } from '../types';
+import { hasAnyEnabledAsset } from '../utils/hasAnyEnabledAsset';
+import { hasAtLeastOneQuoteAvailable } from '../utils/hasAtLeastOneQuoteAvailable';
 import { AssetsReceivedSummaryList } from './assets-received-summary-list';
 import { AssetsReceivedTotalAmountsSummary } from './assets-received-total-amounts-summary';
 
@@ -27,6 +29,9 @@ type TotalReceiveModalProps = {
   };
   totalReceivedAmount?: number;
   minimumReceivedAmount?: number;
+  quotesAreFetching: boolean;
+  atLeastOneQuoteAvailable: boolean;
+  anyEnabledAsset: boolean;
 };
 
 export const TotalReceivedModal = ({
@@ -37,6 +42,9 @@ export const TotalReceivedModal = ({
   receivedAsset,
   totalReceivedAmount,
   minimumReceivedAmount,
+  quotesAreFetching,
+  anyEnabledAsset,
+  atLeastOneQuoteAvailable,
 }: TotalReceiveModalProps) => {
   const t = useI18nContext();
 
@@ -66,6 +74,9 @@ export const TotalReceivedModal = ({
             minimumReceivedAmount={minimumReceivedAmount}
             totalReceivedAmount={totalReceivedAmount}
             receivedAsset={receivedAsset}
+            isLoading={
+              quotesAreFetching && anyEnabledAsset && !atLeastOneQuoteAvailable
+            }
           />
         </ModalFooter>
       </ModalContent>

@@ -25,9 +25,25 @@ jest.mock('./assets-received-summary-list', () => ({
 }));
 
 jest.mock('./assets-received-total-amounts-summary', () => ({
-  AssetsReceivedTotalAmountsSummary: () => (
-    <div data-testid="totals-summary">totals-summary</div>
+  AssetsReceivedTotalAmountsSummary: ({
+    isLoading,
+  }: {
+    isLoading?: boolean;
+  }) => (
+    <div data-testid="totals-summary">
+      totals-summary-loading:{String(isLoading)}
+    </div>
   ),
+}));
+
+jest.mock('../../../../../components/component-library/skeleton', () => ({
+  Skeleton: ({
+    isLoading,
+    children,
+  }: {
+    isLoading?: boolean;
+    children: React.ReactNode;
+  }) => (isLoading ? <div data-testid="skeleton-loading" /> : <>{children}</>),
 }));
 
 jest.mock('react-redux', () => ({
@@ -307,6 +323,7 @@ describe('ReviewAndConfirmModal', () => {
         asset: {} as never,
         quote: {} as never,
         hasQuote: true,
+        isLoadingQuote: false,
         quoteBpsFee: 100,
       },
     };
@@ -315,5 +332,114 @@ describe('ReviewAndConfirmModal', () => {
 
     // rateIncludesMMFee is rendered with a percentage as an arg.
     expect(screen.getByText(/rateIncludesMMFee/u)).toBeInTheDocument();
+  });
+
+  describe('AssetsReceivedTotalAmountsSummary isLoading prop', () => {
+    it('passes isLoading=true when minimumReceivedAmount is undefined', () => {
+      render(
+        <ReviewAndConfirmModal
+          {...defaultProps}
+          minimumReceivedAmount={undefined}
+        />,
+      );
+
+      expect(screen.getByTestId('totals-summary')).toHaveTextContent(
+        'totals-summary-loading:true',
+      );
+    });
+
+    it('passes isLoading=false when minimumReceivedAmount is defined', () => {
+      render(
+        <ReviewAndConfirmModal {...defaultProps} minimumReceivedAmount={95} />,
+      );
+
+      expect(screen.getByTestId('totals-summary')).toHaveTextContent(
+        'totals-summary-loading:false',
+      );
+    });
+  });
+
+  describe('NetworkFeeRow skeleton', () => {
+    it('shows the skeleton when totalNetworkFee is undefined', () => {
+      render(
+        <ReviewAndConfirmModal
+          {...defaultProps}
+          totalNetworkFee={undefined}
+          totalNetworkFeeFiat={undefined}
+        />,
+      );
+
+      expect(screen.getByTestId('skeleton-loading')).toBeInTheDocument();
+    });
+
+    it('shows the skeleton when totalNetworkFee is null', () => {
+      render(
+        <ReviewAndConfirmModal
+          {...defaultProps}
+          totalNetworkFee={null}
+          totalNetworkFeeFiat={null}
+        />,
+      );
+
+      expect(screen.getByTestId('skeleton-loading')).toBeInTheDocument();
+    });
+
+    it('does not show the skeleton when totalNetworkFee is provided', () => {
+      render(
+        <ReviewAndConfirmModal {...defaultProps} totalNetworkFee="0.01" />,
+      );
+
+      expect(screen.queryByTestId('skeleton-loading')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('NetworkFeeRow fiat amount', () => {
+    it('renders the fiat amount when totalNetworkFeeFiat is provided', () => {
+      render(
+        <ReviewAndConfirmModal
+          {...defaultProps}
+          totalNetworkFee="0.01"
+          totalNetworkFeeFiat="20"
+        />,
+      );
+
+      // formatCurrencyAmount('20', 'USD', 2) renders something like $20.00
+      expect(screen.getByText(/\$20/u)).toBeInTheDocument();
+    });
+
+    it('does not render the fiat amount when totalNetworkFeeFiat is null', () => {
+      render(
+        <ReviewAndConfirmModal
+          {...defaultProps}
+          totalNetworkFee="0.01"
+          totalNetworkFeeFiat={null}
+        />,
+      );
+
+      expect(screen.queryByText(/\$20/u)).not.toBeInTheDocument();
+    });
+  });
+
+  describe('YouSell expanded state', () => {
+    it('resets the expanded state when the modal is closed via the internal handler', () => {
+      const onClose = jest.fn();
+
+      render(<ReviewAndConfirmModal {...defaultProps} onClose={onClose} />);
+
+      // Expand the list.
+      fireEvent.click(screen.getByRole('button', { expanded: false }));
+      expect(screen.getByTestId('summary-list')).toBeInTheDocument();
+
+      // Close via the internal wrapper (which resets isYouSellExpanded).
+      const closeButton = screen
+        .getAllByRole('button')
+        .find((el) => el.getAttribute('aria-label')?.toLowerCase() === 'close');
+      expect(closeButton).toBeDefined();
+      if (closeButton) {
+        fireEvent.click(closeButton);
+      }
+
+      expect(onClose).toHaveBeenCalledTimes(1);
+    });
   });
 });

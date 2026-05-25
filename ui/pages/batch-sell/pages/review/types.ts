@@ -31,14 +31,15 @@ export type BatchSellQuotesResults = {
       receivedAmountFiat?: number;
       minimumReceivedAmount?: number;
       hasQuote: boolean;
+      isLoadingQuote: boolean;
       hasHighPriceImpactWarning?: boolean;
       quoteBpsFee?: string | number;
     };
   };
   receivedAsset: ReceivedAsset;
-  totalReceivedAmount: number;
-  totalReceivedAmountFiat: number;
-  minimumReceivedAmount: number;
+  totalReceivedAmount?: number;
+  totalReceivedAmountFiat?: number;
+  minimumReceivedAmount?: number;
 };
 
 export enum BatchSellReviewStateActionType {

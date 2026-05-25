@@ -68,6 +68,12 @@ export const useBatchSellQuotesFetching = (
     getBatchSellQuotesValidationErrors(state, { requestCount }),
   );
 
+  const hasEverFetched = controllerResult.quotesLastFetchedMs !== null;
+  const isLoading =
+    enabled &&
+    requestCount > 0 &&
+    (!hasEverFetched || controllerResult.isLoading);
+
   const data = useMemo<BatchSellQuotesResults | undefined>(() => {
     if (!enabled || requestCount === 0) {
       return undefined;
@@ -77,6 +83,7 @@ export const useBatchSellQuotesFetching = (
       entries,
       receivedAsset,
       validationErrorsByIndex,
+      isLoading,
     });
   }, [
     enabled,
@@ -85,6 +92,7 @@ export const useBatchSellQuotesFetching = (
     entries,
     receivedAsset,
     validationErrorsByIndex,
+    isLoading,
   ]);
 
   const debouncedDispatchQuoteRequests = useRef(
@@ -164,18 +172,8 @@ export const useBatchSellQuotesFetching = (
     };
   }, [dispatch]);
 
-  // Set loading to true on first render.
-  const hasEverFetched = controllerResult.quotesLastFetchedMs !== null;
-  const isLoading =
-    enabled &&
-    requestCount > 0 &&
-    (!hasEverFetched || controllerResult.isLoading);
-
-  const quotesHaveEverFetched = controllerResult.quotesLastFetchedMs !== null;
   const areQuotesRefreshExpired =
-    !isLoading &&
-    quotesHaveEverFetched &&
-    !controllerResult.isQuoteGoingToRefresh;
+    !isLoading && hasEverFetched && !controllerResult.isQuoteGoingToRefresh;
 
   return {
     data,

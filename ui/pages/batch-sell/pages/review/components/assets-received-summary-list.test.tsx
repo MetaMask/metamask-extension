@@ -119,6 +119,7 @@ describe('AssetsReceivedSummaryList', () => {
         quote: {} as never,
         receivedAmount: 100,
         hasQuote: true,
+        isLoadingQuote: false,
       },
     };
 
@@ -133,6 +134,35 @@ describe('AssetsReceivedSummaryList', () => {
     );
 
     expect(screen.getByText(/100/u)).toBeInTheDocument();
+  });
+
+  it('renders rows independently: a settled slot shows its amount while a still-loading slot shows the skeleton', () => {
+    const quotes: BatchSellQuotesResults['quotes'] = {
+      [ASSET_A]: {
+        asset: {} as never,
+        quote: {} as never,
+        receivedAmount: 42,
+        hasQuote: true,
+        isLoadingQuote: false,
+      },
+      [ASSET_B]: {
+        asset: {} as never,
+        quote: null as never,
+        hasQuote: false,
+        isLoadingQuote: true,
+      },
+    };
+
+    const { container } = render(
+      <AssetsReceivedSummaryList
+        receivedAsset={{ symbol: 'USDC' }}
+        sendAssetsConfig={makeSendAssetsConfig()}
+        quotes={quotes}
+      />,
+    );
+
+    expect(screen.getByText(/42/u)).toBeInTheDocument();
+    expect(container.querySelector('.mm-skeleton')).not.toBeNull();
   });
 
   it('renders nothing when all assets are disabled', () => {

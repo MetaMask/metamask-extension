@@ -70,7 +70,7 @@ const AssetsReceivedListItem = ({
         </Text>
       </Box>
       <Box>
-        <Skeleton isLoading={!quote} width={80}>
+        <Skeleton isLoading={!quote || quote?.isLoadingQuote} width={80}>
           <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
             {formatTokenAmount(
               locale,

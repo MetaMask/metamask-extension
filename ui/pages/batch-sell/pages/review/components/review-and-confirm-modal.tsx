@@ -317,6 +317,7 @@ export const ReviewAndConfirmModal = ({
             receivedAsset={receivedAsset}
             totalReceivedAmount={totalReceivedAmount}
             minimumReceivedAmount={minimumReceivedAmount}
+            isLoading={minimumReceivedAmount === undefined}
           />
           <NetworkFeeRow
             feeAssetSymbol={networkFeeAssetSymbol ?? receivedAsset.symbol}

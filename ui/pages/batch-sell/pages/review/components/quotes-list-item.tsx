@@ -40,7 +40,6 @@ import {
 type QuotesListItemProps = {
   asset: BatchSellAsset;
   quote?: BatchSellQuotesResults['quotes'][CaipAssetType];
-  isLoading: boolean;
   sendAmountPercent: number;
   canDeleteAssets: boolean;
   onSlippagePercentChangeClick: (asset: BatchSellAsset) => void;
@@ -60,19 +59,15 @@ export const QuotesListItem = ({
   onAssetDeleteClick,
   canDeleteAssets,
   quote,
-  isLoading,
   enabled,
 }: QuotesListItemProps) => {
   const t = useI18nContext();
   const currency = useSelector(getCurrentCurrency);
   const locale = useSelector(getIntlLocale);
 
-  // Show skeleton while quotes are being (re)fetched or before the first
-  // result lands. Only surface "no quote available" once we have a settled
-  // result with `hasQuote: false`.
-  const showSkeleton = (isLoading || !quote) && enabled;
+  const showSkeleton = enabled && (!quote || quote.isLoadingQuote);
   const showNoQuoteAvailable =
-    (!isLoading && quote && !quote.hasQuote) || !enabled;
+    (quote && !quote.isLoadingQuote && !quote.hasQuote) || !enabled;
 
   const quoteFiatAmount = useMemo(
     () =>

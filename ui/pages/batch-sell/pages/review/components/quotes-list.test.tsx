@@ -61,7 +61,6 @@ describe('QuotesList', () => {
     render(
       <QuotesList
         sendAssetsConfig={makeSendAssetsConfig()}
-        isLoading={false}
         canDeleteAssets
         onAssetDeleteClick={jest.fn()}
         onSlippagePercentChangeClick={jest.fn()}
@@ -77,7 +76,6 @@ describe('QuotesList', () => {
     render(
       <QuotesList
         sendAssetsConfig={makeSendAssetsConfig()}
-        isLoading={false}
         canDeleteAssets
         onAssetDeleteClick={jest.fn()}
         onSlippagePercentChangeClick={jest.fn()}
@@ -97,7 +95,6 @@ describe('QuotesList', () => {
     const { container } = render(
       <QuotesList
         sendAssetsConfig={{}}
-        isLoading={false}
         canDeleteAssets
         onAssetDeleteClick={jest.fn()}
         onSlippagePercentChangeClick={jest.fn()}

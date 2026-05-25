@@ -26,23 +26,27 @@ type AssetsReceivedTotalAmountsSummaryProps = {
   };
   totalReceivedAmount?: number;
   minimumReceivedAmount?: number;
+  isLoading: boolean;
 };
 
 export const AssetsReceivedTotalAmountsSummary = ({
   receivedAsset,
   totalReceivedAmount,
   minimumReceivedAmount,
+  isLoading,
 }: AssetsReceivedTotalAmountsSummaryProps) => {
   const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
 
   return (
     <Box>
-      <Box
-        margin={2}
-        borderWidth={1}
-        borderColor={BoxBorderColor.BorderMuted}
-      />
+      {totalReceivedAmount !== undefined && (
+        <Box
+          margin={2}
+          borderWidth={1}
+          borderColor={BoxBorderColor.BorderMuted}
+        />
+      )}
       <Box
         padding={2}
         flexDirection={BoxFlexDirection.Row}
@@ -63,7 +67,7 @@ export const AssetsReceivedTotalAmountsSummary = ({
           </Text>
         </Box>
         <Box>
-          <Skeleton isLoading={totalReceivedAmount === undefined} width={80}>
+          <Skeleton isLoading={isLoading} width={80}>
             <Text
               variant={TextVariant.BodyMd}
               fontWeight={FontWeight.Medium}
@@ -104,7 +108,7 @@ export const AssetsReceivedTotalAmountsSummary = ({
           </Tooltip>
         </Box>
         <Box>
-          <Skeleton isLoading={minimumReceivedAmount === undefined} width={80}>
+          <Skeleton isLoading={isLoading} width={80}>
             <Text
               variant={TextVariant.BodyMd}
               fontWeight={FontWeight.Medium}
