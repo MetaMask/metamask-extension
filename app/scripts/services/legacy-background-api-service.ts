@@ -1,4 +1,3 @@
-import { Buffer } from 'buffer';
 import log from 'loglevel';
 import { Messenger } from '@metamask/messenger';
 import {
@@ -382,10 +381,7 @@ export class LegacyBackgroundApiService {
    * @returns The seed phrase to be confirmed by the user,
    * encoded as an array of UTF-8 bytes.
    */
-  async getSeedPhrase(
-    password: string,
-    keyringId?: string,
-  ): Promise<Buffer<ArrayBuffer>> {
+  async getSeedPhrase(password: string, keyringId?: string): Promise<Buffer> {
     const seedPhrase = await this.#messenger.call(
       'KeyringController:exportSeedPhrase',
       password,
