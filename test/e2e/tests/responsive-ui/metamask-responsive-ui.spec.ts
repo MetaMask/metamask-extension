@@ -86,7 +86,6 @@ describe('MetaMask Responsive UI', function (this: Suite) {
         // may still have in-flight requests, causing them to be terminated.
         // See issues #37342 and #37498.
         ignoredConsoleErrors: [
-          'unable to proceed, wallet is locked',
           'npm:@metamask/message-signing-snap was stopped and the request was cancelled. This is likely because the Snap crashed.',
           'Unable to enable notifications',
         ],
