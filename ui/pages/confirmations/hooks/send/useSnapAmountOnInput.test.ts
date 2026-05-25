@@ -30,6 +30,8 @@ const MOCK_ASSET = {
   isNative: true,
 };
 
+const MOCK_RECIPIENT = 'TQCLD52qQXMmQGmS6U2YC5rBS6B9d3oZAw';
+
 describe('useSnapAmountOnInput', () => {
   let validateAmountMultichainMock: jest.SpyInstance;
 
@@ -47,6 +49,7 @@ describe('useSnapAmountOnInput', () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: MOCK_ASSET,
       fromAccount: MOCK_ACCOUNT,
+      to: MOCK_RECIPIENT,
       value: '1.5',
     } as unknown as SendContext.SendContextType);
 
@@ -56,10 +59,11 @@ describe('useSnapAmountOnInput', () => {
     expect(typeof result.current.validateAmountWithSnap).toBe('function');
   });
 
-  it('calls validateAmountMultichain with correct parameters', async () => {
+  it('calls validateAmountMultichain with amount validation parameters only', async () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: MOCK_ASSET,
       fromAccount: MOCK_ACCOUNT,
+      to: MOCK_RECIPIENT,
       value: '1.5',
     } as unknown as SendContext.SendContextType);
 

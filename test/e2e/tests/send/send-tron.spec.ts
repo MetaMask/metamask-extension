@@ -1,3 +1,4 @@
+import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
@@ -8,17 +9,57 @@ import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/
 import NetworkManager from '../../page-objects/pages/network-manager';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import {
-  mockTronApis,
+  mockTronFeatureFlags,
+  mockExchangeRates,
+  mockFiatExchangeRates,
+  mockTrxNativeSpotPrices,
+  mockTronAssets,
+  TRON_ACCOUNT_ADDRESS,
   TRON_RECIPIENT_ADDRESS,
 } from '../tron/mocks/common-tron';
+import { proxyTronBlockchainCalls } from '../tron/mocks/local-tron-node-mocks';
+import { TronNode } from '../../seeder/tron/node';
+import { createTronPortfolioNodeOptions } from '../../seeder/tron/profiles';
 
 describe('Send Tron', function () {
-  it('it should be possible to send TRX', async function () {
+  this.timeout(180_000);
+
+  it('sends TRX using a local Tron node', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockTronApis,
+        localNodeOptions: [
+          'anvil',
+          {
+            type: 'tron',
+            options: createTronPortfolioNodeOptions(TRON_ACCOUNT_ADDRESS),
+          },
+        ],
+        testSpecificMock: async (
+          mockServer: Mockttp,
+          { localNodes }: { localNodes: unknown[] },
+        ) => {
+          const tronNode = localNodes.find(
+            (node): node is TronNode => node instanceof TronNode,
+          );
+          if (!tronNode) {
+            throw new Error('Tron local node was not started');
+          }
+
+          return [
+            await mockTronFeatureFlags(mockServer),
+            await mockExchangeRates(mockServer),
+            await mockFiatExchangeRates(mockServer),
+            await mockTrxNativeSpotPrices(mockServer),
+            await mockTronAssets(mockServer, tronNode),
+            ...(await proxyTronBlockchainCalls(
+              mockServer,
+              tronNode,
+              TRON_ACCOUNT_ADDRESS,
+            )),
+          ];
+        },
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
@@ -49,7 +90,7 @@ describe('Send Tron', function () {
         await snapTransactionConfirmation.checkPageIsLoaded();
         await snapTransactionConfirmation.clickFooterConfirmButton();
         const activityList = new ActivityListPage(driver);
-        await activityList.checkTxAmountInActivity('-50,000 HTX', 1); // mocked activity
+        await activityList.checkTxAmountInActivity('-1 TRX', 1);
         await activityList.checkNoFailedTransactions();
       },
     );

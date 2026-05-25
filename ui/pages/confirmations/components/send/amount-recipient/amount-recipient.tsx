@@ -31,7 +31,7 @@ export const AmountRecipient = () => {
     useState(false);
   const [shouldSubmitOnAcknowledge, setShouldSubmitOnAcknowledge] =
     useState(false);
-  const { asset, toResolved, nonEVMSubmitError } = useSendContext();
+  const { asset, toResolved, to, nonEVMSubmitError } = useSendContext();
   const { amountError, validateNonEvmAmountAsync } = useAmountValidation();
   const { isNonEvmSendType } = useSendType();
   const { handleSubmit } = useSendActions();
@@ -49,7 +49,15 @@ export const AmountRecipient = () => {
       !recipientErrorAllowAcknowledge) ||
     Boolean(hexDataError) ||
     Boolean(nonEVMSubmitError);
-  const isDisabled = hasBlockingError || !toResolved || isNetworkUnreliable;
+
+  const isRecipientValidationPending =
+    Boolean(to) && recipientValidationResult.toAddressValidated !== to;
+
+  const isDisabled =
+    hasBlockingError ||
+    !toResolved ||
+    isNetworkUnreliable ||
+    isRecipientValidationPending;
 
   const proceedWithSubmit = useCallback(async () => {
     if (isNonEvmSendType) {

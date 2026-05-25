@@ -1,0 +1,277 @@
+Legend:
+
+- [x] Assertion has active test code.
+- [~] Test/helper code exists, but coverage is partial or skipped.
+- [ ] Assertion is missing test code.
+
+1. Confirm the direct java-tron node setup in E2E's seeder.
+
+- [x] Supports initializing TRC 10 assets given their parameters
+  - Context: `TronNode.initializeTrc10Balances` issues TRC10 test tokens and transfers seeded balances. `test/e2e/helpers/tron-fixtures.test.ts` verifies `buildTronNodeOptions` converts fixture assets into `trc10Balances`.
+- [x] Supports initializing TRC 20 assets given their parameters
+  - Context: `TronNode.initializeTrc20Balances` deploys permissive TRC20 contracts and transfers seeded balances. `test/e2e/helpers/tron-fixtures.test.ts` verifies fixture assets are converted into `trc20Balances`.
+- [x] Supports initializing a Staked TRX balance for a given account, exposed on `TronLocalNodeOptions` alongside the existing `initialBalances` / `trc10Balances` / `trc20Balances` fields
+  - Context: `TronLocalNodeOptions` includes `stakedTrxBalances`, `TronNode.initializeStakedTrxBalances` calls `freezeBalanceV2`, and `check-balance.spec.ts` verifies the frozen balance is exposed by `/wallet/getaccount`.
+- [x] Has placeholders for TRC721 and TRC1155 initializations but does nothing with them
+  - Context: `TronLocalNodeOptions` accepts `trc721Balances` and `trc1155Balances`; `TronNode.start` documents that these fields are accepted and ignored. There is no dedicated assertion beyond the type/runtime acceptance.
+- [x] Initialization `withFixtures` supports a type `tron`. Do we need `anvil` as well? Ideally not there
+  - Context: `test/e2e/helpers.js` supports `localNodeOptions` entries with `type: 'tron'`. The Tron fixture wrapper still includes Anvil by default because the extension continues polling EVM networks during Tron-only flows.
+
+2. Implement `test/e2e/tests/tron/account-derivation.spec.ts`
+
+- Comment: Tests addresses are derived correctly for a known SRP and present in the UIs
+- [x] Account's Tron addresses are derived correctly for each index (Account 1 to Account 8)
+  - Context: `derives Tron addresses while adding multichain accounts from Account 1 to Account 8` and `aligns Tron addresses for 8 existing multichain account groups` compare rows against `EXPECTED_TRON_ADDRESSES_BY_INDEX`.
+    - [~] Address is present and copiable on the Account's quick copy hoverable pop up
+      - Context: `Shows Account 1 Tron address on the quick-copy popup and copies it` checks display and clipboard copy for Account 1 only, not Accounts 2 through 8.
+    - [~] Check address is present and copiable on the Account's address list, "View all" click on the hoverable pop up
+      - Context: The Account 1 to Account 8 loops open the account Addresses view and assert the Tron address text, but they do not click the row copy button or verify clipboard contents there.
+    - [~] Address' QR code pop up exists with address, copy address link and View on Tronscan button
+      - Context: `Shows Account 1 QR popup with address, copy link, and View on Tronscan` has the intended assertions, but it is skipped because the address-list QR button currently opens the Ethereum QR modal for the Tron row.
+    - [~] Address is present and copiable on the "Receive" page
+      - Context: `Shows Account 1 Tron address on the Receive page and copies it` verifies display, copy action, and copy feedback for Account 1 only.
+
+3. Implement `test/e2e/tests/tron/network.spec.ts`
+
+- Comment: Tests that the new network is present on the "Networks" popup
+- Tron is present on the "Manage Networks" popup
+  - [x] Check Tron is part of the list
+    - Context: `shows Tron on the Manage Networks popup` opens Network Manager, selects the Popular tab, and asserts `Tron` is listed.
+  - [x] Check 3 dotted context menu displays "Discover"
+    - Context: `shows 'Discover' on Tron's context menu` enables the `neNetworkDiscoverButton` manifest flag for `TRON_CHAIN_ID` and asserts the context menu option.
+- Implement but skipped for now: Tron testnets are present on the "Manage Networks" popup
+  - [~] "Show test networks" can be toggled
+    - Context: The skipped Nile/Shasta tests call `toggleShowTestNetworks`, but comments note the new Network Manager modal does not expose the legacy test-network toggle yet.
+  - [~] Tron Nile is present on the test networks
+    - Context: `shows Tron Nile when test networks are enabled` contains the assertion, but the test is skipped until testnet support is wired through the Network Manager surface.
+  - [~] Tron Shasta is present on the test networks
+    - Context: `shows Tron Shasta when test networks are enabled` contains the assertion, but the test is skipped for the same missing-toggle reason.
+- [x] Tron is present on "Tokens" tab's Network selector
+  - Context: The `TAB_CASES` loop runs `shows Tron in the Tokens tab network selector` and checks Tron under the Popular tab after navigating to Tokens.
+- [x] Tron is present on "DeFi" tab's Network selector
+  - Context: The `TAB_CASES` loop runs the same Network Manager assertion after navigating to DeFi.
+- [x] Tron is present on "NFTs" tab's Network selector
+  - Context: The `TAB_CASES` loop runs the same Network Manager assertion after navigating to NFTs.
+- [x] Tron is present on "Activity" tab's Network selector
+  - Context: The `TAB_CASES` loop runs the same Network Manager assertion after navigating to Activity.
+
+4. Implement `test/e2e/tests/tron/assets.spec.ts`
+
+- Comment: Tests that TRX, TRC10 and TRC20 assets are listed and displayed correctly, and that asset details pages render the expected information
+- TRX is present, and the only asset for its chain, with 0 balance, for an account without assets
+  - [~] Logo, Name, Percentage price change, Fiat amount, Amount (as 0), Symbol, Precisions
+    - Context: `TRX is the only asset and shows 0 for an empty account` asserts the `Tron` asset row exists and the amount `0` is displayed. It does not explicitly assert logo, percentage price change, fiat amount, symbol text, or precision.
+  - [x] No other assets from the network are present
+    - Context: The same test uses `checkOnlyAssetsArePresent(['Tron'])`, which asserts the list contains exactly one asset row named `Tron`.
+
+- TRX is present and displayed correctly for an account with assets
+  - [~] Logo, Name, Percentage price change, Fiat amount, Amount, Symbol, Precisions
+    - Context: `Lists TRX, TRC10, TRC20 with name, symbol, amount, fiat for portfolio account` checks the `Tron` row and amount `6.072`, plus that price placeholders are absent. It does not explicitly check logo, percentage change, symbol, or precision.
+- TRC10 tokens are present and displayed correctly for an account with assets
+  - [~] Logo, Name, Percentage price change, Fiat amount, Amount, Symbol, Precisions
+    - Context: The portfolio test checks the TRC10 token name `GasFreeTransferSolution` and that prices are not unavailable, but it does not assert the token amount, logo, percentage change, symbol, or precision for TRC10 specifically.
+- TRC20 tokens are present and displayed correctly for an account with assets
+  - [~] Logo, Name, Percentage price change, Fiat amount, Amount, Symbol, Precisions
+    - Context: The portfolio test checks TRC20 token names `Tether`, `HTX DAO`, `USDD`, and `SEED`, plus price availability. It does not explicitly assert each token's logo, amount, percentage change, symbol, or precision.
+- Networks filter correctly filters assets
+  - [x] Selecting "Current network" while on Tron only shows Tron assets
+    - Context: `Current network filter shows only Tron assets` selects only Tron and asserts the exact Tron asset list while asserting `Ethereum` is absent.
+  - [x] Selecting "All networks" shows assets from other chains alongside Tron's
+    - Context: `All networks filter shows other chains alongside Tron` selects all networks and asserts `Tron`, `Tether`, and `Ethereum` are visible.
+- TRX's asset details are displayed correctly
+  - [~] Shows current price header
+    - Context: `TRX asset details: header, chart, action buttons, daily resource, sections` calls `checkPageIsLoaded`, but that helper waits for `Your balance`, not a current-price header.
+  - [x] Shows historical price graph
+    - Context: The TRX details test calls `checkPriceChart`, which waits for `asset-price-chart`.
+  - [x] Shows action buttons "Swap", "Send", "Receive"
+    - Context: The TRX details test calls `checkActionButtons({ swap: true, send: true, receive: true })`.
+  - [~] Shows "Daily resource" with Energy value and how many USDT transfers it covers
+    - Context: `checkDailyResourcesSection` asserts `Daily resource` and `Energy` are present. It does not assert the numeric Energy value or the USDT-transfer count text.
+  - [~] Shows "Daily resource" with Bandwidth value and how many TRX transfers it covers
+    - Context: `checkDailyResourcesSection` asserts `Daily resource` and `Bandwidth` are present. It does not assert the numeric Bandwidth value or the TRX-transfer count text.
+  - [x] Shows balance details
+    - Context: `checkAllStandardSections` asserts the `Your balance` section title.
+  - [x] Shows token details
+    - Context: `checkAllStandardSections` asserts the `Token details` section title.
+  - [x] Shows market details
+    - Context: `checkAllStandardSections` asserts the `Market details` section title.
+  - [x] Shows activity section
+    - Context: `checkAllStandardSections` asserts the `Your activity` section title.
+- TRC20 (USDT) asset details are displayed correctly
+  - [~] Shows current price header
+    - Context: `USDT asset details: header, chart, action buttons, sections - no daily resource` calls `checkPageIsLoaded`, but that helper waits for `Your balance`, not a current-price header.
+  - [x] Shows historical price graph
+    - Context: The USDT details test calls `checkPriceChart`, which waits for `asset-price-chart`.
+  - [~] Shows action buttons "Swap", "Send", "Receive"
+    - Context: `checkTokenActionButtons` asserts token Swap, Send, and Buy buttons, and asserts the native Receive button is absent. It does not match the requested Receive action assertion.
+  - [x] Shows balance details
+    - Context: `checkAllStandardSections` asserts the `Your balance` section title.
+  - [x] Shows token details
+    - Context: `checkAllStandardSections` asserts the `Token details` section title.
+  - [x] Shows market details
+    - Context: `checkAllStandardSections` asserts the `Market details` section title.
+  - [x] Shows activity section
+    - Context: `checkAllStandardSections` asserts the `Your activity` section title.
+- Staked TRX is displayed as a view-only asset (no stake/unstake actions)
+  - [ ] Staked TRX entry is present alongside TRX for an account with a staked balance
+    - Context: `TRON_STAKED_PORTFOLIO_ACCOUNT` exists in fixtures, but `assets.spec.ts` does not use it in an active test to assert a `Staked TRX` row is shown.
+  - [ ] Logo, Name ("Staked TRX"), Fiat amount, Amount, Symbol and precision are displayed correctly
+    - Context: There is no active asset-list or asset-details assertion for the displayed fields of a staked TRX row.
+  - [ ] No "Stake" / "Unstake" / "Swap" / "Send" action buttons are exposed
+    - Context: `TronAssetDetailsPage.checkActionButtons` can assert missing native action buttons, but no active staked TRX test calls it.
+  - [x] Staked TRX entry is not present for an account that has not staked
+    - Context: `Staked TRX entry is absent for an account that has not staked` opens the portfolio account and asserts `Staked TRX` is absent.
+
+5. Implement `test/e2e/tests/tron/activity.spec.ts`
+
+- Comment: Tests that Tron transactions of every type and status are displayed correctly in the activity list, and that the network filter and transaction details work as expected
+- Transaction history is listed and displayed correctly
+  - [~] Transactions of type "Approve" are displayed with the correct text, status and amount
+    - Context: `Approve transaction is rendered as Interaction` checks the confirmed counter and `Interaction` label. It does not assert an approve amount.
+  - [x] Transactions of type "Send" are displayed with the correct text, status and amount
+    - Context: `Send transaction is rendered with Send label and -amount` checks the confirmed counter, `Sent` label, and `-1 TRX`.
+  - [x] Transactions of type "Receive" are displayed with the correct text, status and amount
+    - Context: `Receive transaction is rendered with Receive label and +amount` checks the confirmed counter, `Received` label, and `2.5 TRX`.
+  - [x] Transactions of type "Swap" are displayed with the correct text, status and amount
+    - Context: `Swap transaction is rendered with Swap A to B label and -srcAmount` checks the confirmed counter, `Swap TRX to USDT`, and `-5 TRX`.
+  - [~] Transactions of type "Bridge" are displayed with the correct text, status and amount
+    - Context: `Bridge transaction is rendered as Interaction without bridge history` checks a completed bridge row and `Interaction` label. It does not assert the amount.
+  - [x] Transactions of type "Staking deposit" are displayed with the correct text, status and amount
+    - Context: `Staking deposit is rendered with Staking deposit label and -amount` checks the confirmed counter, `Staking deposit`, and `20 sTRX-ENERGY`.
+  - [x] Transactions of type "Staking withdrawal" are displayed with the correct text, status and amount
+    - Context: `Staking withdrawal is rendered with Staking withdrawal label and +amount` checks the confirmed counter, `Staking withdrawal`, and `20 TRX`.
+  - [~] Transactions of status "Pending" are displayed with the correct text, status and amount
+    - Context: `Pending status: shows pending counter` only checks the pending counter for a pending send transaction. It does not assert row text or amount in that status-specific test.
+  - [~] Transactions of status "Confirmed" are displayed with the correct text, status and amount
+    - Context: `Confirmed status: shows confirmed counter` only checks the confirmed counter for a confirmed send transaction. Other type tests cover text and amount for confirmed transactions.
+  - [~] Transactions of status "Failed" are displayed with the correct text, status and amount
+    - Context: `Failed status: shows failed counter` only checks the failed counter for a failed send transaction. It does not assert row text or amount.
+- Network filter correctly filters transactions
+  - [~] Selecting "Current network" while on Tron only shows Tron transactions
+    - Context: `Current network filter shows only Tron transactions` selects only Tron and checks one confirmed Tron transaction remains, but the setup does not include a non-Tron transaction to prove exclusion.
+  - [x] Selecting "All networks" shows transactions from other chains alongside Tron's
+    - Context: `All networks filter shows EVM and Tron transactions before filtering to Tron` mocks one ETH transaction, selects all networks, and asserts both ETH and TRX transactions are present.
+- Transaction details are displayed correctly
+  - [x] Title, Time, Status, Transaction ID, From, To, Amount, Network fee and "View details" link are all present
+    - Context: `Transaction details show Title / Time / Status / TXID / From / To / Amount / Network fee / View details` opens a send transaction and checks title, time, status, hash link, from/to addresses, amount, network fee, and View details link.
+
+6. Implement `test/e2e/tests/tron/swap.spec.ts`
+
+- Comment: Tests Tron swap flows for TRX <-> TRC20 and TRC20 <-> TRC20 pairs, for both partial and total balances. All post-swap balance assertions use a tolerance range to absorb fluctuating network fees and quote variations. The current `swap.spec.ts` suite is `describe.skip`, so every implemented swap assertion is currently non-running.
+- From TRX to a TRC20 (USDT), partial balance
+  - [~] Quotes are displayed after the input flow
+    - Context: `Swaps partial TRX -> USDT, balance deltas confirmed` calls `reviewQuote` with expected TRX/USDT values, but the whole suite is skipped.
+  - [~] Quotes are selectable and trigger a swap
+    - Context: The same skipped test calls `completeSwapAndWaitForActivity`, which submits the selected quote and navigates to activity.
+  - [~] Transaction is shown as pending in the Activity tab
+    - Context: The skipped partial TRX -> USDT test calls `checkPendingTxNumberDisplayedInActivity(1)`.
+  - [~] Transaction is shown as confirmed in the Activity tab
+    - Context: The skipped partial TRX -> USDT test calls `checkConfirmedTxNumberDisplayedInActivity(1)`.
+  - [~] Source TRX balance decreases by the swapped amount plus the network fee
+    - Context: The skipped test checks the post-swap `Tron` balance with `checkBalanceWithinTolerance`.
+  - [~] Destination USDT balance increases by the quoted amount
+    - Context: The skipped test checks the post-swap `Tether` balance with `checkBalanceWithinTolerance`.
+- From TRX to a TRC20 (USDT), total balance
+  - [~] "Maximum" balance is shown, leaving enough TRX for fees
+    - Context: `Swaps total TRX -> USDT, leaves only fee buffer` clicks Max and expects a remaining TRX buffer, but it does not explicitly assert the displayed maximum value before submitting. The suite is skipped.
+  - [~] Quotes are displayed after the input flow
+    - Context: The skipped total TRX -> USDT test follows the swap flow, but it does not call `reviewQuote`, so the quote display is only implicit.
+  - [~] Quotes are selectable and trigger a swap
+    - Context: The skipped test calls `completeSwapAndWaitForActivity`, which submits the selected quote.
+  - [ ] Transaction is shown as pending in the Activity tab
+    - Context: The total TRX -> USDT test checks confirmed activity only; no pending assertion is present.
+  - [~] Transaction is shown as confirmed in the Activity tab
+    - Context: The skipped total TRX -> USDT test calls `checkConfirmedTxNumberDisplayedInActivity(1)`.
+  - [~] Source TRX balance decreases by the swapped amount plus the network fee, leaving only the fee buffer
+    - Context: The skipped test checks the post-swap `Tron` balance is near `1.0`, representing the fee buffer.
+  - [~] Destination USDT balance increases by the quoted amount
+    - Context: The skipped test checks the post-swap `Tether` balance against the quoted raw amount.
+- From a TRC20 (USDT) to TRX, partial balance
+  - [~] Quotes are displayed after the input flow
+    - Context: `Swaps partial USDT -> TRX, balance deltas confirmed` calls `reviewQuote` with expected USDT/TRX values, but the suite is skipped.
+  - [~] Quotes are selectable and trigger a swap
+    - Context: The skipped test calls `completeSwapAndWaitForActivity`, which submits the selected quote.
+  - [~] Transaction is shown as pending in the Activity tab
+    - Context: The skipped partial USDT -> TRX test calls `checkPendingTxNumberDisplayedInActivity(1)`.
+  - [~] Transaction is shown as confirmed in the Activity tab
+    - Context: The skipped partial USDT -> TRX test calls `checkConfirmedTxNumberDisplayedInActivity(1)`.
+  - [~] Source USDT balance decreases by the swapped amount
+    - Context: The skipped test checks the post-swap `Tether` balance with `checkBalanceWithinTolerance`.
+  - [~] Destination TRX balance increases by the quoted amount minus the network fee
+    - Context: The skipped test checks the post-swap `Tron` balance with `checkBalanceWithinTolerance`.
+- From a TRC20 (USDT) to TRX, total balance
+  - [~] Quotes are displayed after the input flow
+    - Context: The skipped total USDT -> TRX test follows the swap flow, but it does not call `reviewQuote`, so the quote display is only implicit.
+  - [~] Quotes are selectable and trigger a swap
+    - Context: The skipped test calls `completeSwapAndWaitForActivity`, which submits the selected quote.
+  - [ ] Transaction is shown as pending in the Activity tab
+    - Context: The total USDT -> TRX test checks confirmed activity only; no pending assertion is present.
+  - [~] Transaction is shown as confirmed in the Activity tab
+    - Context: The skipped total USDT -> TRX test calls `checkConfirmedTxNumberDisplayedInActivity(1)`.
+  - [~] Source USDT balance is reduced to 0
+    - Context: The skipped test checks the post-swap `Tether` balance is `0`.
+  - [~] Destination TRX balance increases by the quoted amount minus the network fee
+    - Context: The skipped test checks the post-swap `Tron` balance after adding the quoted TRX amount.
+- From a TRC20 (USDT) to another TRC20 (USDD), partial balance
+  - [~] Quotes are displayed after the input flow
+    - Context: `Swaps partial USDT -> USDD, source -amount, dest +amount, TRX -fee` calls `reviewQuote` with expected USDT/USDD values, but the suite is skipped.
+  - [~] Quotes are selectable and trigger a swap
+    - Context: The skipped test calls `completeSwapAndWaitForActivity`, which submits the selected quote.
+  - [~] Transaction is shown as pending in the Activity tab
+    - Context: The skipped partial USDT -> USDD test calls `checkPendingTxNumberDisplayedInActivity(1)`.
+  - [~] Transaction is shown as confirmed in the Activity tab
+    - Context: The skipped partial USDT -> USDD test calls `checkConfirmedTxNumberDisplayedInActivity(1)`.
+  - [~] Source USDT balance decreases by the swapped amount
+    - Context: The skipped test checks the post-swap `Tether` balance.
+  - [~] Destination USDD balance increases by the quoted amount
+    - Context: The skipped test checks the post-swap `USDD` balance.
+  - [~] TRX balance decreases by the network fee
+    - Context: The skipped test checks the post-swap `Tron` balance after the mocked fee deduction.
+- From a TRC20 (USDT) to another TRC20 (USDD), total balance
+  - [~] Quotes are displayed after the input flow
+    - Context: The skipped total USDT -> USDD test follows the swap flow, but it does not call `reviewQuote`, so the quote display is only implicit.
+  - [~] Quotes are selectable and trigger a swap
+    - Context: The skipped test calls `completeSwapAndWaitForActivity`, which submits the selected quote.
+  - [ ] Transaction is shown as pending in the Activity tab
+    - Context: The total USDT -> USDD test checks confirmed activity only; no pending assertion is present.
+  - [~] Transaction is shown as confirmed in the Activity tab
+    - Context: The skipped total USDT -> USDD test calls `checkConfirmedTxNumberDisplayedInActivity(1)`.
+  - [~] Source USDT balance is reduced to 0
+    - Context: The skipped test checks the post-swap `Tether` balance is `0`.
+  - [~] Destination USDD balance increases by the quoted amount
+    - Context: The skipped test checks the post-swap `USDD` balance.
+  - [~] TRX balance decreases by the network fee
+    - Context: The skipped test checks the post-swap `Tron` balance after the mocked fee deduction.
+
+7. Implement `test/e2e/tests/tron/send.spec.ts`
+
+- Comment: Tests Tron send flows for TRX and TRC20 (USDT), including error scenarios for invalid addresses, invalid amounts and insufficient fee coverage
+- Invalid addresses block the flow
+  - [x] Check for "invalid address" error message
+    - Context: `blocks Continue when a bad address is entered` fills `not-a-valid-address`, checks the invalid-address error, and asserts Continue is disabled.
+- Invalid amounts block the flow
+  - [~] Check for "invalid amount" error message
+    - Context: `blocks Continue when amount is empty` checks the required-amount error and disabled Continue state. It does not exercise `checkInvalidAmountError` or a malformed/invalid non-empty amount.
+- Amounts that don't leave enough money for fees block the flow
+  - [x] Check for "insufficient balance to cover fee" error message
+    - Context: `blocks USDT send when TRX balance cannot cover energy fee` uses `TRON_LOW_TRX_WITH_USDT_ACCOUNT`, fills a USDT send, checks insufficient-fee error, and asserts Continue is disabled.
+- Part of TRX's balance can be sent
+  - [x] Transaction shows up in the Activity tab with `pending` state at first
+    - Context: `sends part of TRX balance and shows it pending then confirmed` submits a 1 TRX send and checks one pending transaction.
+  - [x] Once confirmed, transaction shows up in the Activity tab with `confirmed` state
+    - Context: The same TRX partial-send test checks one confirmed transaction, verifies `-1 TRX`, and asserts there are no failed transactions.
+- Total TRX balance can be sent
+  - [x] Transaction shows up in the Activity tab with `pending` state at first
+    - Context: `sends fee-buffered TRX balance via manual full-amount entry` sends the seeded TRX balance minus a fee buffer and checks one pending transaction.
+  - [x] Once confirmed, transaction shows up in the Activity tab with `confirmed` state
+    - Context: The same total-TRX test checks one confirmed transaction and asserts there are no failed transactions.
+- Part of TRC20's (USDT) balance can be sent
+  - [~] Transaction shows up in the Activity tab with `pending` state at first
+    - Context: `sends part of USDT balance and shows it pending then confirmed` contains the pending assertion, but the test is skipped while the TRC20 send confirmation flow is unstable against local Tron mocks.
+  - [~] Once confirmed, transaction shows up in the Activity tab with `confirmed` state
+    - Context: The same skipped partial-USDT test contains the confirmed assertion and `-1 USDT` amount check.
+- Total TRC20's (USDT) balance can be sent
+  - [~] Transaction shows up in the Activity tab with `pending` state at first
+    - Context: `sends total USDT balance via manual full-amount entry` contains the pending assertion, but the test is skipped while the TRC20 send confirmation flow is unstable against local Tron mocks.
+  - [~] Once confirmed, transaction shows up in the Activity tab with `confirmed` state
+    - Context: The same skipped total-USDT test contains the confirmed assertion and checks there are no failed transactions.
