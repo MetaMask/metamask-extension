@@ -8204,6 +8204,9 @@
     "message": "Search your accounts",
     "description": "Placeholder in a searchbar. Used on multichain account list page."
   },
+  "searchingForBestQuotes": {
+    "message": "Searching for best quotes"
+  },
   "second": {
     "message": "sec"
   },

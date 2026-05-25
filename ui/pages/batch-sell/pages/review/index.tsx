@@ -22,8 +22,6 @@ import { useBatchSellAggregateValidation } from './hooks/useBatchSellAggregateVa
 import { hasAtLeastOneQuoteAvailable } from './utils/hasAtLeastOneQuoteAvailable';
 import { hasAnyEnabledAsset } from './utils/hasAnyEnabledAsset';
 
-// TODO: add security warnings array
-
 export const BatchSellReviewPage = () => {
   const [selectReceivedAssetModalIsOpen, setSelectReceivedAssetModalIsOpen] =
     useState(false);
@@ -126,6 +124,7 @@ export const BatchSellReviewPage = () => {
         canDeleteAssets={canDeleteAssets}
       />
       <Footer
+        quotesAreLoading={isLoading}
         onReviewClick={() => setReviewAndConfirmModalIsOpen(true)}
         reviewIsDisabled={isLoading || !data || validation.isNoQuotesAvailable}
         areQuotesRefreshExpired={areQuotesRefreshExpired}

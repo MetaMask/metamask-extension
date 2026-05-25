@@ -9,7 +9,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 type FooterProps = {
@@ -17,6 +17,7 @@ type FooterProps = {
   onReviewClick: () => void;
   areQuotesRefreshExpired: boolean;
   onGetNewQuotesClick?: () => void;
+  quotesAreLoading: boolean;
 };
 
 export const Footer = ({
@@ -24,8 +25,16 @@ export const Footer = ({
   onReviewClick,
   areQuotesRefreshExpired,
   onGetNewQuotesClick,
+  quotesAreLoading,
 }: FooterProps) => {
   const t = useI18nContext();
+  const reviewButtonLabel = useMemo(() => {
+    if (quotesAreLoading) {
+      return 'searchingForBestQuotes';
+    }
+
+    return areQuotesRefreshExpired ? 'batchSellGetNewQuotes' : 'review';
+  }, [quotesAreLoading, areQuotesRefreshExpired]);
 
   return (
     <Box padding={4}>
@@ -42,7 +51,7 @@ export const Footer = ({
           textAlign={TextAlign.Center}
           color={TextColor.PrimaryInverse}
         >
-          {t(areQuotesRefreshExpired ? 'batchSellGetNewQuotes' : 'review')}
+          {t(reviewButtonLabel)}
         </Text>
       </Button>
     </Box>

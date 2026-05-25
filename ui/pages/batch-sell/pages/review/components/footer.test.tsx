@@ -12,6 +12,7 @@ describe('Footer', () => {
       render(
         <Footer
           areQuotesRefreshExpired={false}
+          quotesAreLoading={false}
           reviewIsDisabled={false}
           onReviewClick={jest.fn()}
         />,
@@ -24,6 +25,7 @@ describe('Footer', () => {
       render(
         <Footer
           areQuotesRefreshExpired={false}
+          quotesAreLoading={false}
           reviewIsDisabled={false}
           onReviewClick={jest.fn()}
         />,
@@ -36,6 +38,7 @@ describe('Footer', () => {
       render(
         <Footer
           areQuotesRefreshExpired={false}
+          quotesAreLoading={false}
           reviewIsDisabled
           onReviewClick={jest.fn()}
         />,
@@ -50,6 +53,7 @@ describe('Footer', () => {
       render(
         <Footer
           areQuotesRefreshExpired={false}
+          quotesAreLoading={false}
           reviewIsDisabled={false}
           onReviewClick={onReviewClick}
         />,
@@ -66,6 +70,7 @@ describe('Footer', () => {
       render(
         <Footer
           areQuotesRefreshExpired={false}
+          quotesAreLoading={false}
           reviewIsDisabled
           onReviewClick={onReviewClick}
         />,
@@ -82,6 +87,7 @@ describe('Footer', () => {
       render(
         <Footer
           reviewIsDisabled={false}
+          quotesAreLoading={false}
           onReviewClick={jest.fn()}
           areQuotesRefreshExpired
           onGetNewQuotesClick={jest.fn()}
@@ -95,6 +101,7 @@ describe('Footer', () => {
       render(
         <Footer
           reviewIsDisabled={false}
+          quotesAreLoading={false}
           onReviewClick={jest.fn()}
           areQuotesRefreshExpired
           onGetNewQuotesClick={jest.fn()}
@@ -108,6 +115,7 @@ describe('Footer', () => {
       render(
         <Footer
           reviewIsDisabled={false}
+          quotesAreLoading={false}
           onReviewClick={jest.fn()}
           areQuotesRefreshExpired
           onGetNewQuotesClick={jest.fn()}
@@ -124,6 +132,7 @@ describe('Footer', () => {
       render(
         <Footer
           reviewIsDisabled={false}
+          quotesAreLoading={false}
           onReviewClick={onReviewClick}
           areQuotesRefreshExpired
           onGetNewQuotesClick={onGetNewQuotesClick}
@@ -134,6 +143,51 @@ describe('Footer', () => {
 
       expect(onGetNewQuotesClick).toHaveBeenCalledTimes(1);
       expect(onReviewClick).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('loading mode (quotesAreLoading)', () => {
+    it('renders the searching label when quotesAreLoading is true', () => {
+      render(
+        <Footer
+          areQuotesRefreshExpired={false}
+          quotesAreLoading
+          reviewIsDisabled={false}
+          onReviewClick={jest.fn()}
+        />,
+      );
+
+      expect(screen.getByText('searchingForBestQuotes')).toBeInTheDocument();
+    });
+
+    it('does not render the review label when quotesAreLoading is true', () => {
+      render(
+        <Footer
+          areQuotesRefreshExpired={false}
+          quotesAreLoading
+          reviewIsDisabled={false}
+          onReviewClick={jest.fn()}
+        />,
+      );
+
+      expect(screen.queryByText('review')).not.toBeInTheDocument();
+    });
+
+    it('does not render the get new quotes label when quotesAreLoading is true even if areQuotesRefreshExpired is true', () => {
+      render(
+        <Footer
+          areQuotesRefreshExpired
+          quotesAreLoading
+          reviewIsDisabled={false}
+          onReviewClick={jest.fn()}
+          onGetNewQuotesClick={jest.fn()}
+        />,
+      );
+
+      expect(
+        screen.queryByText('batchSellGetNewQuotes'),
+      ).not.toBeInTheDocument();
+      expect(screen.getByText('searchingForBestQuotes')).toBeInTheDocument();
     });
   });
 });
