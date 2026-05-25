@@ -46,6 +46,7 @@ import {
 
 import { PAY_TRANSACTION_TYPES } from '../pages/confirmations/constants/pay';
 import { resolveTransactionType } from '../components/app/transaction-list-item/helpers';
+import { getErc7730Intent } from '../../shared/lib/erc7730';
 import { useI18nContext } from './useI18nContext';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
@@ -386,8 +387,14 @@ export function useTransactionDisplayData(transactionGroup) {
     type === TransactionType.batch ||
     type === TransactionType.revokeDelegation
   ) {
+    const erc7730Intent = getErc7730Intent(
+      initialTransaction?.chainId,
+      to,
+      transactionData,
+    );
     const transactionTypeTitle = getTransactionTypeTitle(t, type);
     title =
+      erc7730Intent ||
       (methodData?.name && camelCaseToCapitalize(methodData.name)) ||
       transactionTypeTitle;
   } else if (type === TransactionType.deployContract) {

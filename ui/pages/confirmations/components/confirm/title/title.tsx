@@ -36,6 +36,7 @@ import {
   ConfirmationLoader,
   useConfirmationNavigationOptions,
 } from '../../../hooks/useConfirmationNavigation';
+import { getErc7730Intent } from '../../../../../../shared/lib/erc7730';
 import { useCurrentSpendingCap } from './hooks/useCurrentSpendingCap';
 
 const TRANSACTION_TYPES_HIDE_BANNER: string[] = [
@@ -109,17 +110,20 @@ const getTitle = (
   primaryType?: keyof typeof TypedSignSignaturePrimaryTypes,
   tokenStandard?: string,
   isUpgradeOnly?: boolean,
+  erc7730Intent?: string,
 ): string | undefined => {
   let title: string;
 
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
-      title = t('confirmTitleTransaction');
+      title = erc7730Intent || t('confirmTitleTransaction');
       break;
     case TransactionType.batch:
-      title = isUpgradeOnly
-        ? t('confirmTitleAccountTypeSwitch')
-        : t('confirmTitleTransaction');
+      if (isUpgradeOnly) {
+        title = t('confirmTitleAccountTypeSwitch');
+      } else {
+        title = erc7730Intent || t('confirmTitleTransaction');
+      }
       break;
     case TransactionType.deployContract:
       title = t('confirmTitleDeployContract');
@@ -291,6 +295,15 @@ const ConfirmTitle: React.FC = memo(() => {
       TransactionType.tokenMethodSetApprovalForAll &&
     getIsRevokeSetApprovalForAll(parsedTransactionData);
 
+  const erc7730Intent = useMemo(() => {
+    const txMeta = currentConfirmation as TransactionMeta | undefined;
+    return getErc7730Intent(
+      txMeta?.chainId,
+      txMeta?.txParams?.to,
+      txMeta?.txParams?.data,
+    );
+  }, [currentConfirmation]);
+
   const title = useMemo(
     () =>
       getTitle(
@@ -303,6 +316,7 @@ const ConfirmTitle: React.FC = memo(() => {
         primaryType,
         tokenStandard,
         isUpgradeOnly,
+        erc7730Intent,
       ),
     [
       currentConfirmation,
@@ -314,6 +328,7 @@ const ConfirmTitle: React.FC = memo(() => {
       t,
       tokenStandard,
       isUpgradeOnly,
+      erc7730Intent,
     ],
   );
 
