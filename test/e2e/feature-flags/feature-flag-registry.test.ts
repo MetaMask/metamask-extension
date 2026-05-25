@@ -1,4 +1,8 @@
 import {
+  ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG,
+  getEnabledAdvancedPermissions,
+} from '../../../shared/lib/gator-permissions/feature-flags';
+import {
   FEATURE_FLAG_REGISTRY,
   FeatureFlagStatus,
   FeatureFlagType,
@@ -43,6 +47,63 @@ describe('Feature Flag Registry', () => {
     it('has productionDefault defined for every entry', () => {
       for (const entry of Object.values(FEATURE_FLAG_REGISTRY)) {
         expect(entry.productionDefault).toBeDefined();
+      }
+    });
+
+    it('registers the enabled advanced permissions remote flag', () => {
+      const originalGatorEnabledPermissionTypes =
+        process.env.GATOR_ENABLED_PERMISSION_TYPES;
+      process.env.GATOR_ENABLED_PERMISSION_TYPES =
+        'native-token-stream,native-token-periodic,erc20-token-stream,erc20-token-periodic,token-approval-revocation';
+
+      const entry =
+        FEATURE_FLAG_REGISTRY[ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG];
+      try {
+        if (!entry) {
+          throw new Error(
+            `${ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG} is not registered`,
+          );
+        }
+
+        expect(entry).toStrictEqual({
+          name: ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG,
+          type: FeatureFlagType.Remote,
+          inProd: true,
+          productionDefault: {
+            permissions: [
+              'native-token-stream',
+              'native-token-periodic',
+              'erc20-token-stream',
+              'erc20-token-periodic',
+              'token-approval-revocation',
+              'native-token-allowance',
+              'erc20-token-allowance',
+            ],
+          },
+          status: FeatureFlagStatus.Active,
+        });
+
+        expect(
+          getEnabledAdvancedPermissions({
+            remoteFeatureFlags: {
+              [ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG]:
+                entry.productionDefault,
+            },
+          }),
+        ).toStrictEqual([
+          'native-token-stream',
+          'native-token-periodic',
+          'erc20-token-stream',
+          'erc20-token-periodic',
+          'token-approval-revocation',
+        ]);
+      } finally {
+        if (originalGatorEnabledPermissionTypes === undefined) {
+          delete process.env.GATOR_ENABLED_PERMISSION_TYPES;
+        } else {
+          process.env.GATOR_ENABLED_PERMISSION_TYPES =
+            originalGatorEnabledPermissionTypes;
+        }
       }
     });
   });

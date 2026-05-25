@@ -77,6 +77,12 @@ export const PerpsControllerInit: MessengerClientInitFunction<
         key,
       ),
     isDisconnecting: () => isDisconnecting,
+    getPerpsDiscountForAccount: (caipAccountId, baseFeeBips) =>
+      controllerMessenger.call(
+        'RewardsController:getPerpsDiscountForAccount',
+        caipAccountId,
+        baseFeeBips,
+      ),
   });
   const fallbackBlockedRegions = getFallbackBlockedRegions();
   const hyperLiquidBuilderAddresses = getHyperLiquidBuilderAddresses();

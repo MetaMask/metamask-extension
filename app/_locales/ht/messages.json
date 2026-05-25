@@ -108,9 +108,6 @@
   "create": {
     "message": "Kreye"
   },
-  "currentLanguage": {
-    "message": "Lang Aktyèl"
-  },
   "customToken": {
     "message": "Koutim Token"
   },
@@ -125,9 +122,6 @@
   },
   "done": {
     "message": "Fini"
-  },
-  "downloadGoogleChrome": {
-    "message": "Telechaje Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Telechaje State Logs"
@@ -174,9 +168,6 @@
   },
   "hardwareWallets": {
     "message": "Materyèl Wallet konekte"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Chwazi yon Materyèl Wallet ou ta renmen itilize ak MetaMask"
   },
   "here": {
     "message": "isit la",
@@ -236,9 +227,6 @@
   "likeToImportTokens": {
     "message": "Èske ou ta renmen ajoute sa nan tokens?"
   },
-  "links": {
-    "message": "Lyen"
-  },
   "loading": {
     "message": "Telechaje..."
   },
@@ -269,9 +257,6 @@
   },
   "nevermind": {
     "message": "Pa pwoblèm"
-  },
-  "newAccount": {
-    "message": "Nouvo Kont"
   },
   "newAccountNumberName": {
     "message": "Kont $1",
@@ -360,9 +345,6 @@
   "restore": {
     "message": "Retabli"
   },
-  "revealSeedWords": {
-    "message": "Revele Seed Mo Yo"
-  },
   "revealSeedWordsWarning": {
     "message": "Yo ka itilize mo sa pou vòlè kont ou.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -420,9 +402,6 @@
   },
   "stateLogError": {
     "message": "Erè nan retwouve State Logs yo."
-  },
-  "stateLogsDescription": {
-    "message": "State logs gen adrès kont piblik ou yo epi tranzaksyon ou te voye yo."
   },
   "submitted": {
     "message": "Te Soumèt"

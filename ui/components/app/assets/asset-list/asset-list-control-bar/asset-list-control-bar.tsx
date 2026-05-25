@@ -422,7 +422,11 @@ const AssetListControlBar = ({
               />
             ) : (
               <Tooltip
-                title={t('importTokensCamelCase')}
+                title={
+                  isTokenManagementFilterEnabled
+                    ? t('manageTokens')
+                    : t('importTokensCamelCase')
+                }
                 position="bottom"
                 distance={20}
               >
@@ -430,9 +434,17 @@ const AssetListControlBar = ({
                   ref={importButtonRef}
                   data-testid="importTokens-button"
                   className="asset-list-control-bar__button"
-                  onClick={handleTokenImportModal}
+                  onClick={
+                    isTokenManagementFilterEnabled
+                      ? handleOpenTokenManagement
+                      : handleTokenImportModal
+                  }
                   size={ButtonBaseSize.Sm}
-                  startIconName={IconName.Add}
+                  startIconName={
+                    isTokenManagementFilterEnabled
+                      ? IconName.MoreVertical
+                      : IconName.Add
+                  }
                   startIconProps={{ marginInlineEnd: 0, size: IconSize.Md }}
                   backgroundColor={
                     isTokenSortPopoverOpen
