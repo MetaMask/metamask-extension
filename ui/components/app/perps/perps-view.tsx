@@ -203,6 +203,9 @@ export const PerpsView: React.FC = () => {
   }, [isEligible, applyOrdersSnapshot, orders.length, t]);
 
   const hasPositions = positions.length > 0;
+  // ADR58 POC (DO NOT MERGE): surface a debug banner whenever the account
+  // holds an open BTC perps position. Remove with this block.
+  const hasBtcPosition = positions.some((p) => p.symbol === 'BTC');
   // Only the single-position view can mirror a card-level RoE; for zero or
   // multiple positions, summary RoE remains the account aggregate.
   const singlePosition = positions.length === 1 ? positions[0] : undefined;
@@ -282,6 +285,21 @@ export const PerpsView: React.FC = () => {
         <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
           {batchActionError}
         </Text>
+      ) : null}
+
+      {hasBtcPosition ? (
+        <div
+          data-testid="adr58-btc-debug-banner"
+          style={{
+            backgroundColor: 'red',
+            color: 'white',
+            padding: '8px 12px',
+            fontWeight: 'bold',
+            textAlign: 'center',
+          }}
+        >
+          ADR58 POC: BTC POSITION DETECTED
+        </div>
       ) : null}
 
       <PerpsPositionsOrders
