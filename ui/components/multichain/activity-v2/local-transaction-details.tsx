@@ -29,7 +29,7 @@ export const LocalTransactionDetails = ({
   const { isBridgeFailed, showBridgeTxDetails } = useBridgeTxHistoryData({
     transactionGroup,
   });
-  const { isPending, primaryCurrency, recipientAddress, title } =
+  const { primaryCurrency, recipientAddress, title } =
     useTransactionDisplayData(transactionGroup);
 
   useEffect(() => {
@@ -68,11 +68,6 @@ export const LocalTransactionDetails = ({
     initialTransaction.type === TransactionType.bridge && isBridgeFailed
       ? TransactionStatus.failed
       : getStatusKey(primaryTransaction);
-  const date = formatDateWithYearContext(
-    primaryTransaction.time ?? 0,
-    'MMM d, y',
-    'MMM d',
-  );
 
   return (
     <LegacyTransactionListItemDetails
@@ -88,12 +83,9 @@ export const LocalTransactionDetails = ({
       onCancel={noop}
       transactionStatus={() => (
         <TransactionStatusLabel
-          isPending={isPending}
           isEarliestNonce={false}
           error={primaryTransaction.error}
-          date={date}
           status={displayedStatusKey}
-          statusOnly
         />
       )}
       chainId={initialTransaction.chainId}

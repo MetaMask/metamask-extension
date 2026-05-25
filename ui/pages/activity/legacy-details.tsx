@@ -15,12 +15,17 @@ import { CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE } from '../../helpers/constants/route
 import { serialize } from '../../hooks/bridge/useBridgeTxHistoryData';
 import { getSelectedAddress } from '../../selectors/selectors';
 
-function getAccountAddress(transaction: V1TransactionByHashResponse) {
+type ActivityEvmTransaction = V1TransactionByHashResponse & {
+  accountId?: string;
+  readable?: string;
+};
+
+function getAccountAddress(transaction: ActivityEvmTransaction) {
   const parts = transaction.accountId?.split(':');
   return parts?.[parts.length - 1] ?? transaction.from;
 }
 
-function toTransactionViewModel(transaction: V1TransactionByHashResponse) {
+function toTransactionViewModel(transaction: ActivityEvmTransaction) {
   const accountAddress = getAccountAddress(transaction);
   const normalizedTransaction = normalizeTransaction(
     accountAddress,
@@ -85,11 +90,14 @@ export function LegacyDetails({
     );
   }
 
+  const rawTransaction = raw.data as ActivityEvmTransaction;
   const transaction = toTransactionViewModel({
-    ...raw.data,
+    ...rawTransaction,
     accountId:
-      raw.data.accountId ??
-      `eip155:${raw.data.chainId}:${selectedAddress ?? raw.data.from}`,
+      rawTransaction.accountId ??
+      `eip155:${rawTransaction.chainId}:${
+        selectedAddress ?? rawTransaction.from
+      }`,
   });
 
   return (

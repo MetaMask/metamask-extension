@@ -171,6 +171,7 @@ describe('query filters', () => {
             count: 3,
             hasNextPage: false,
           },
+          unprocessedNetworks: [],
         },
       ],
       pageParams: [],

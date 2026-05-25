@@ -236,6 +236,11 @@ describe('mapLocalTransaction', () => {
 
     const item = mapLocalTransaction(transactionGroup);
 
+    expect(item.type).toBe('send');
+    if (item.type !== 'send') {
+      throw new Error(`Expected send item, got ${item.type}`);
+    }
+
     expect(item.data.token).toStrictEqual({
       amount: '100000',
       assetId: 'eip155:1/erc20:0x1111111111111111111111111111111111111111',
