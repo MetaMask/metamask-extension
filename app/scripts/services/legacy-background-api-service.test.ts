@@ -1,3 +1,4 @@
+import { Mutex } from 'async-mutex';
 import {
   Messenger,
   MessengerActions,
@@ -6,7 +7,6 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 import { SupportedCurrency } from '@metamask/core-backend';
-import { address } from '@solana/addresses';
 import {
   AccountImportStrategy,
   KeyringTypes,
@@ -17,12 +17,10 @@ import { Caip25CaveatType } from '@metamask/chain-agnostic-permission';
 import { SnapId } from '@metamask/snaps-sdk';
 import mockState from '../../../test/data/mock-state.json';
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../shared/constants/app';
-import { createSentryError } from '../../../shared/lib/error';
 import {
   LegacyBackgroundApiService,
   LegacyBackgroundApiServiceMessenger,
 } from './legacy-background-api-service';
-import { Mutex } from 'async-mutex';
 
 jest.unmock('../../../shared/lib/assets-unify-state/remote-feature-flag');
 

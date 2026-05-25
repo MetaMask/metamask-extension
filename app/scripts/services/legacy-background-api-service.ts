@@ -1,3 +1,4 @@
+import { Buffer } from 'buffer';
 import log from 'loglevel';
 import { Messenger } from '@metamask/messenger';
 import {
@@ -18,7 +19,6 @@ import {
   KeyringControllerWithKeyringAction,
   KeyringTypes,
 } from '@metamask/keyring-controller';
-import { Buffer } from 'buffer';
 import {
   AccountsControllerGetAccountByAddressAction,
   AccountsControllerGetSelectedAccountAction,
@@ -208,6 +208,7 @@ export class LegacyBackgroundApiService {
    * @param options.getOpenMetamaskTabsIds - A function that returns a record of open MetaMask tab IDs.
    * @param options.markPasswordForgotten - A function that marks the password as forgotten.
    * @param options.unMarkPasswordForgotten - A function that un-marks the password as forgotten.
+   * @param options.seedlessOperationMutex
    */
   constructor({
     messenger,

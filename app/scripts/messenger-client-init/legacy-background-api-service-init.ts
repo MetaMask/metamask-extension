@@ -14,6 +14,7 @@ import { MessengerClientInitFunction } from './types';
  * @param request.getOpenMetamaskTabsIds - A function that returns a record of open MetaMask tab IDs.
  * @param request.markPasswordForgotten - A function that marks the password as forgotten.
  * @param request.unMarkPasswordForgotten - A function that un-marks the password as forgotten.
+ * @param request.seedlessOperationMutex - A mutex to use for seedless operations.
  * @returns The initialized service.
  */
 export const LegacyBackgroundApiServiceInit: MessengerClientInitFunction<
