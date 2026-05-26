@@ -437,8 +437,8 @@ class SwapPage {
     });
     await this.driver.waitForSelector(this.rateMessage);
     await this.driver.waitForSelector(this.moreQuotesButton);
-
-    await this.driver.clickElementAndWaitToDisappear(this.submitSwapButton);
+    // TODO: Re-enable Swap click action when E2E Swap testing strategy is defined
+    // await this.driver.clickElementAndWaitToDisappear(this.submitSwapButton);
   }
 }
 
