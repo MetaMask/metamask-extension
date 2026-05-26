@@ -28,6 +28,7 @@ import { schema } from './schema';
 import type {
   BundleSizeCategory,
   BundleSizeEntrypoint,
+  BundleSizeStatsOptions,
   ManifestPluginOptions,
 } from './types';
 import { createBrowserZipBuilder, type ZipCompressionOptions } from './zip';
@@ -262,7 +263,7 @@ export class ManifestPlugin<Z extends boolean> {
   }
 
   private getBundleSizeCategories(
-    statsOptions: Exclude<ManifestPluginOptions<Z>['stats'], false | undefined>,
+    statsOptions: BundleSizeStatsOptions,
     name: string,
   ): Set<BundleSizeCategory> {
     const categories = new Set(this.bundleSizeCategories.get(name));
