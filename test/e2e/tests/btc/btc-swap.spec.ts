@@ -248,4 +248,48 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
       },
     );
   });
+
+  it('can complete a swap from the total BTC balance via Max to ETH', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2().build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockBtcSwapMocks,
+      },
+      async ({ driver }) => {
+        await login(driver);
+        const homePage = new BitcoinHomepage(driver);
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        await homePage.checkPageIsLoaded();
+        await homePage.checkIsExpectedBitcoinBalanceDisplayed(
+          DEFAULT_BTC_BALANCE,
+        );
+
+        await homePage.clickOnSwapButton();
+
+        const bridgePage = new BridgeQuotePage(driver);
+        await bridgePage.checkPageIsLoaded();
+
+        await bridgePage.enterBridgeQuote({
+          amount: '0.01',
+          tokenTo: 'ETH',
+          toChain: 'Ethereum',
+        });
+
+        await bridgePage.clickMaxButton();
+
+        await bridgePage.waitForQuote();
+        await bridgePage.checkExpectedNetworkFeeIsDisplayed();
+        await bridgePage.submitQuote();
+
+        await homePage.goToActivityList();
+        const activityListPage = new ActivityListPage(driver);
+        await activityListPage.checkPendingBridgeTransactionActivity(1);
+        await activityListPage.checkTxAction({
+          action: 'Bridge to Ethereum',
+          confirmedTx: 1,
+        });
+      },
+    );
+  });
 });
