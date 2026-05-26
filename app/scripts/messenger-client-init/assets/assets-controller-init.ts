@@ -2,7 +2,6 @@ import {
   AssetsController,
   type AssetsControllerMessenger,
   type AssetsControllerOptions,
-  AssetsControllerMessenger,
 } from '@metamask/assets-controller';
 import type { PreferencesState } from '@metamask/preferences-controller';
 import { createApiPlatformClient } from '@metamask/core-backend';
