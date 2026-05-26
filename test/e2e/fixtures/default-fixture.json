@@ -314,9 +314,9 @@
       "logs": {}
     },
     "AnalyticsController": {
-      "analyticsId": "897e4491-7257-4908-ae83-48013df43d80",
+      "analyticsId": null,
       "eventQueue": {},
-      "optedIn": true
+      "optedIn": false
     },
     "MetaMetricsController": {
       "dataCollectionForMarketing": false,
