@@ -357,7 +357,7 @@ export class LegacyBackgroundApiService {
   async resetAccount(): Promise<string> {
     const selectedAddress = this.#messenger.call(
       'AccountsController:getSelectedAccount',
-    )?.address;
+    ).address;
 
     const globalChainId = this.getGlobalChainId();
 
