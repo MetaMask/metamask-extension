@@ -31,17 +31,15 @@ import {
 } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  getAccountTypeForOnboardingMetrics,
   getFirstTimeFlowType,
   getIsParticipateInMetaMetricsSet,
   getIsPasskeyRegistered,
-  getIsSocialLoginFlow,
   getPasskeyDerivationMethod,
-  getSocialLoginType,
 } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import {
-  MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
@@ -96,20 +94,8 @@ export default function SetupPasskey() {
     getIsParticipateInMetaMetricsSet,
   );
   const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
-  const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
-  const socialLoginType = useSelector(getSocialLoginType);
+  const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
 
-  const accountTypeForMetrics = useMemo(() => {
-    const baseType =
-      firstTimeFlowType === FirstTimeFlowType.import
-        ? MetaMetricsEventAccountType.Imported
-        : MetaMetricsEventAccountType.Default;
-    if (isSocialLoginFlow && socialLoginType) {
-      const socialProvider = String(socialLoginType).toLowerCase();
-      return `${baseType}_${socialProvider}`;
-    }
-    return baseType;
-  }, [firstTimeFlowType, isSocialLoginFlow, socialLoginType]);
   const [isEnrollmentInProgress, setIsEnrollmentInProgress] = useState(false);
   const [registerStepPhase, setRegisterStepPhase] =
     useState<PasskeyEnrollmentStepStatus>(
