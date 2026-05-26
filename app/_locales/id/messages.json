@@ -2286,12 +2286,6 @@
   "dappConnections": {
     "message": "Koneksi Dapp"
   },
-  "dappScanMaliciousTitle": {
-    "message": "Situs web berbahaya terdeteksi"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "Situs web ini ditandai sebagai berpotensi berbahaya. Jika Anda mengungkapkan Frasa Pemulihan Rahasia, ada risiko dana Anda akan hilang."
-  },
   "dappSuggested": {
     "message": "Situs yang disarankan"
   },
