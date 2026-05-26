@@ -1793,6 +1793,10 @@ class Driver {
       // Null/empty URLs that Chrome blocks before reaching the proxy
       'net::ERR_BLOCKED_BY_CLIENT',
       'null is blocked',
+      // AuthenticationController race: in-flight auth (#snapSignMessage,
+      // performSignIn, getBearerToken, ...) can re-check #isUnlocked after
+      // a lock fires mid-flight. No user impact; tracked in #37459.
+      'unable to proceed, wallet is locked',
     ]);
 
     const cdpConnection = await this.driver.createCDPConnection('page');

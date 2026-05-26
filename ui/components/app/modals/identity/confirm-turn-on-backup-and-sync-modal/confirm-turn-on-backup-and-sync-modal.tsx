@@ -1,5 +1,4 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import {
   Box,
   BoxAlignItems,
@@ -21,8 +20,6 @@ import {
   ModalFooter,
 } from '../../../../component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { toggleExternalServices } from '../../../../../store/actions';
-import { onboardingToggleBasicFunctionalityOn } from '../../../../../ducks/app/app';
 
 export const CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME =
   'CONFIRM_TURN_ON_BACKUP_AND_SYNC';
@@ -38,21 +35,12 @@ export function ConfirmTurnOnBackupAndSyncModal() {
   const { props, hideModal } = useModalProps();
   const { enableBackupAndSync } = props;
   const t = useI18nContext();
-  const dispatch = useDispatch();
 
   const handleHideModal = () => {
     hideModal();
   };
 
-  const enableBasicFunctionality = async () => {
-    await Promise.all([
-      dispatch(onboardingToggleBasicFunctionalityOn()),
-      dispatch(toggleExternalServices(true)),
-    ]);
-  };
-
   const handleEnableBackupAndSync = async () => {
-    await enableBasicFunctionality();
     await enableBackupAndSync();
     hideModal();
   };
