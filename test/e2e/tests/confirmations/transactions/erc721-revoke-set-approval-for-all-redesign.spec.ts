@@ -8,8 +8,8 @@ import { TestSuiteArguments, mocked4BytesSetApprovalForAll } from './shared';
 
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
-describe('Confirmation Redesign ERC1155 setApprovalForAll', function () {
-  describe('Submit a transaction', function () {
+describe('Confirmation Redesign ERC721 Revoke setApprovalForAll', function () {
+  describe('Submit an revoke transaction', function () {
     it('Sends a type 0 transaction (Legacy)', async function () {
       await withTransactionEnvelopeTypeFixtures(
         this.test?.fullTitle(),
@@ -21,8 +21,8 @@ describe('Confirmation Redesign ERC1155 setApprovalForAll', function () {
         }: TestSuiteArguments) => {
           await login(driver, { localNode: localNodes?.[0] });
           await setTokenPermissions(driver, {
-            assetType: 'erc1155',
-            action: 'setApprovalForAll',
+            assetType: 'erc721',
+            action: 'revoke',
             contractRegistry,
           });
         },
@@ -42,8 +42,8 @@ describe('Confirmation Redesign ERC1155 setApprovalForAll', function () {
         }: TestSuiteArguments) => {
           await login(driver, { localNode: localNodes?.[0] });
           await setTokenPermissions(driver, {
-            assetType: 'erc1155',
-            action: 'setApprovalForAll',
+            assetType: 'erc721',
+            action: 'revoke',
             contractRegistry,
           });
         },
