@@ -42,8 +42,13 @@ import {
 } from '../../../../bridge/utils/quote';
 import { getIntlLocale } from '../../../../../ducks/locale/locale';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
-import { BatchSellQuotesConfig, BatchSellQuotesResults } from '../types';
+import {
+  BatchSellQuotesConfig,
+  BatchSellQuotesResults,
+  ReceivedAsset,
+} from '../types';
 import { IconColor } from '../../../../../helpers/constants/design-system';
+import useBatchSellSubmitQuotes from '../hooks/useBatchSellSubmitQuotes';
 import { AssetsReceivedSummaryList } from './assets-received-summary-list';
 import { AssetsReceivedTotalAmountsSummary } from './assets-received-total-amounts-summary';
 
@@ -52,9 +57,7 @@ type ReviewAndConfirmModalProps = {
   onClose: () => void;
   sendAssetsConfig: BatchSellQuotesConfig['sendAssetsConfig'];
   quotes?: BatchSellQuotesResults['quotes'];
-  receivedAsset: {
-    symbol: string;
-  };
+  receivedAsset: ReceivedAsset;
   totalReceivedAmount?: number;
   minimumReceivedAmount?: number;
   totalNetworkFee?: string | null;
@@ -267,11 +270,19 @@ export const ReviewAndConfirmModal = ({
 }: ReviewAndConfirmModalProps) => {
   const t = useI18nContext();
   const [isYouSellExpanded, setIsYouSellExpanded] = useState(false);
+  const quoteResponses = useMemo(
+    () => Object.values(quotes ?? {}).map(({ quote }) => quote),
+    [quotes],
+  );
+  const { submitBatchSellQuotes, isSubmitting } = useBatchSellSubmitQuotes({
+    quoteResponses,
+    receivedAsset,
+  });
   const submitLabel = isInsufficientGasForFee
     ? t('alertReasonInsufficientBalance')
     : t('sellAll');
   const isSubmitDisabled =
-    isInsufficientGasForFee || !isBatchSellTradeAvailable;
+    isInsufficientGasForFee || !isBatchSellTradeAvailable || isSubmitting;
 
   // All quotes in a batch share the same MM fee rate, so we read it from the
   // first quote that has one and fall back to the bridge default. Mirrors the
@@ -331,7 +342,8 @@ export const ReviewAndConfirmModal = ({
             isFullWidth
             size={ButtonHeroSize.Lg}
             disabled={isSubmitDisabled}
-            onClick={console.log}
+            isLoading={isSubmitting}
+            onClick={submitBatchSellQuotes}
           >
             <Text
               variant={TextVariant.ButtonLabelMd}

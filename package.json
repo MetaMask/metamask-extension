@@ -867,5 +867,15 @@
       }
     },
     "version": "v0.3.0"
+  },
+  "previewBuilds": {
+    "@metamask/bridge-status-controller": {
+      "type": "breaking",
+      "previewVersion": "71.2.0-preview-8751708e2"
+    },
+    "@metamask/bridge-controller": {
+      "type": "breaking",
+      "previewVersion": "73.0.1-preview-8751708e2"
+    }
   }
 }

@@ -33,6 +33,7 @@ export function getBridgeStatusControllerMessenger(
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getState',
       'KeyringController:signTypedMessage',
+      'BridgeController:getState',
       'BridgeController:trackUnifiedSwapBridgeEvent',
       'BridgeController:stopPollingForQuotes',
       'GasFeeController:getState',

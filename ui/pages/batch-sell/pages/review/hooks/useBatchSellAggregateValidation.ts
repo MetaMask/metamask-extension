@@ -15,12 +15,14 @@ type Args = {
   sendAssetsConfig: BatchSellQuotesConfig['sendAssetsConfig'];
   quotes?: BatchSellQuotesResults['quotes'];
   totalNetworkFee?: string | number;
+  feeAssetId?: string;
 };
 
 export const useBatchSellAggregateValidation = ({
   sendAssetsConfig,
   quotes,
   totalNetworkFee,
+  feeAssetId,
 }: Args): BatchSellValidationResult => {
   const sendAssetEntries = useMemo(
     () => Object.values(sendAssetsConfig),
@@ -50,6 +52,19 @@ export const useBatchSellAggregateValidation = ({
       return false;
     }
 
+    // When the fee is charged in a non-native token (e.g. USDC for STX 7702
+    // batch transactions on Polygon), it is deducted from the swap output —
+    // the user does not need to hold native gas for it. Comparing the fee
+    // amount against the native balance in this case would produce a false
+    // "Insufficient funds" error, so we skip the check entirely.
+    const nativeAssetId = getNativeAssetForChainId(sourceChainId)?.assetId;
+    const feeIsNative =
+      !feeAssetId || feeAssetId.toLowerCase() === nativeAssetId?.toLowerCase();
+
+    if (!feeIsNative) {
+      return false;
+    }
+
     // If the user is selling the native asset, subtract the amount they're
     // sending so we compare the fee against what would actually remain.
     // Note: BigNumber rejects raw numbers with > 15 significant digits, so all
@@ -72,7 +87,13 @@ export const useBatchSellAggregateValidation = ({
     ).minus(nativeBeingSent);
 
     return remainingNativeBalance.lt(new BigNumber(totalNetworkFee.toString()));
-  }, [totalNetworkFee, nativeAsset, sendAssetEntries]);
+  }, [
+    totalNetworkFee,
+    feeAssetId,
+    nativeAsset,
+    sourceChainId,
+    sendAssetEntries,
+  ]);
 
   return {
     isNoQuotesAvailable,

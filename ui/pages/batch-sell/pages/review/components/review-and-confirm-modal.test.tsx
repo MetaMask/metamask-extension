@@ -3,7 +3,12 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import type { CaipAssetType } from '@metamask/utils';
 import type { BatchSellQuotesConfig, BatchSellQuotesResults } from '../types';
+import useBatchSellSubmitQuotes from '../hooks/useBatchSellSubmitQuotes';
 import { ReviewAndConfirmModal } from './review-and-confirm-modal';
+
+jest.mock('../hooks/useBatchSellSubmitQuotes', () => jest.fn());
+
+const mockUseBatchSellSubmitQuotes = jest.mocked(useBatchSellSubmitQuotes);
 
 jest.mock('../../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string, args?: unknown[]) =>
@@ -54,6 +59,10 @@ jest.mock('react-redux', () => ({
 const mockUseSelector = jest.mocked(useSelector);
 
 beforeEach(() => {
+  mockUseBatchSellSubmitQuotes.mockReturnValue({
+    submitBatchSellQuotes: jest.fn(),
+    isSubmitting: false,
+  });
   mockUseSelector.mockReset();
   // Components inside the modal read currency and locale via useSelector.
   // Return USD for currency-shaped calls and en-US for locale-shaped calls
@@ -108,7 +117,10 @@ const defaultProps = {
   open: true,
   onClose: jest.fn(),
   sendAssetsConfig: makeSendAssetsConfig(),
-  receivedAsset: { symbol: 'USDC' },
+  receivedAsset: {
+    id: 'eip155:1/erc20:0xUSDC' as CaipAssetType,
+    symbol: 'USDC',
+  },
   totalReceivedAmount: 100,
   minimumReceivedAmount: 95,
   totalNetworkFee: '0.01',
@@ -217,17 +229,18 @@ describe('ReviewAndConfirmModal', () => {
     expect(screen.getByRole('button', { name: 'sellAll' })).toBeEnabled();
   });
 
-  it('invokes the submit click handler without throwing when the Sell all button is clicked', () => {
-    const logSpy = jest
-      .spyOn(console, 'log')
-      .mockImplementation(() => undefined);
+  it('calls submitBatchSellQuotes when the Sell all button is clicked', () => {
+    const mockSubmitBatchSellQuotes = jest.fn();
+    mockUseBatchSellSubmitQuotes.mockReturnValue({
+      submitBatchSellQuotes: mockSubmitBatchSellQuotes,
+      isSubmitting: false,
+    });
 
     render(<ReviewAndConfirmModal {...defaultProps} />);
 
     fireEvent.click(screen.getByRole('button', { name: 'sellAll' }));
 
-    expect(logSpy).toHaveBeenCalled();
-    logSpy.mockRestore();
+    expect(mockSubmitBatchSellQuotes).toHaveBeenCalled();
   });
 
   it('renders the rateIncludesMMFee text', () => {

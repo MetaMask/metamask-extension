@@ -71,6 +71,7 @@ export const BatchSellReviewPage = () => {
     sendAssetsConfig,
     quotes: data?.quotes,
     totalNetworkFee: batchFees?.amount,
+    feeAssetId: batchFees?.asset?.assetId,
   });
 
   const atLeastOneQuoteAvailable = useMemo(
@@ -169,9 +170,7 @@ export const BatchSellReviewPage = () => {
         onClose={() => setReviewAndConfirmModalIsOpen(false)}
         sendAssetsConfig={sendAssetsConfig}
         quotes={data?.quotes}
-        receivedAsset={{
-          symbol: selectedReceiveAsset.symbol,
-        }}
+        receivedAsset={selectedReceiveAsset}
         totalReceivedAmount={data?.totalReceivedAmount}
         minimumReceivedAmount={data?.minimumReceivedAmount}
         totalNetworkFee={batchFees?.amount}

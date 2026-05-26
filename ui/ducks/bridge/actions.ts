@@ -1,7 +1,7 @@
 import {
-  BridgeBackgroundAction,
+  BRIDGE_CONTROLLER_NAME,
   type BridgeController,
-  BridgeUserAction,
+  BridgeControllerActions,
   type RequiredEventContextFromClient,
   UnifiedSwapBridgeEventName,
   isCrossChain,
@@ -79,7 +79,7 @@ export {
 };
 
 const callBridgeControllerMethod = (
-  bridgeAction: BridgeUserAction | BridgeBackgroundAction | string,
+  bridgeAction: BridgeControllerActions['type'],
   ...args: unknown[]
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -91,7 +91,9 @@ const callBridgeControllerMethod = (
 // Background actions
 export const resetBridgeController = () => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(callBridgeControllerMethod(BridgeBackgroundAction.RESET_STATE));
+    dispatch(
+      callBridgeControllerMethod(`${BRIDGE_CONTROLLER_NAME}:resetState`),
+    );
     await clearAllBridgeCacheItems();
   };
 };
@@ -108,7 +110,7 @@ export const trackUnifiedSwapBridgeEvent = <
   return async (dispatch: MetaMaskReduxDispatch) => {
     await dispatch(
       callBridgeControllerMethod(
-        BridgeBackgroundAction.TRACK_METAMETRICS_EVENT,
+        `${BRIDGE_CONTROLLER_NAME}:trackUnifiedSwapBridgeEvent`,
         eventName,
         propertiesFromClient,
       ),
@@ -128,7 +130,7 @@ export const updateQuoteRequestParams = (
   return async (dispatch: MetaMaskReduxDispatch) => {
     await dispatch(
       callBridgeControllerMethod(
-        BridgeUserAction.UPDATE_QUOTE_PARAMS,
+        `${BRIDGE_CONTROLLER_NAME}:updateBridgeQuoteRequestParams`,
         params,
         context,
         quoteRequestIndex,
@@ -142,7 +144,12 @@ export const updateBatchSellTrades = (
   ...[quotes]: Parameters<BridgeController['updateBatchSellTrades']>
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await dispatch(callBridgeControllerMethod('updateBatchSellTrades', quotes));
+    await dispatch(
+      callBridgeControllerMethod(
+        `${BRIDGE_CONTROLLER_NAME}:updateBatchSellTrades`,
+        quotes,
+      ),
+    );
   };
 };
 
