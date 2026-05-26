@@ -23,7 +23,8 @@ export function useAutomaticGasFeeTokenSelect() {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const { hasInsufficientBalance } = useHasInsufficientBalance();
+  const { hasInsufficientBalance, isNativeBalanceKnown } =
+    useHasInsufficientBalance();
   const { updateTransactionEventFragment } = useTransactionEventFragment();
 
   const {
@@ -64,11 +65,15 @@ export function useAutomaticGasFeeTokenSelect() {
         selectedGasFeeToken.toLocaleLowerCase(),
     );
 
+  const shouldSelectForInsufficientNativeBalance =
+    isGaslessSupportedAndFinished &&
+    isNativeBalanceKnown &&
+    hasInsufficientBalance &&
+    !selectedGasFeeToken;
+
   const shouldSelect =
     Boolean(firstGasFeeTokenAddress) &&
-    ((isGaslessSupportedAndFinished &&
-      hasInsufficientBalance &&
-      !selectedGasFeeToken) ||
+    (shouldSelectForInsufficientNativeBalance ||
       hasSelectedGasFeeTokenNotInList);
 
   useAsyncResult(async () => {
@@ -84,6 +89,12 @@ export function useAutomaticGasFeeTokenSelect() {
       updateTransactionEventFragment(
         {
           properties: {
+            ...(shouldSelectForInsufficientNativeBalance
+              ? {
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  gas_insufficient_native_asset: true,
+                }
+              : {}),
             // eslint-disable-next-line @typescript-eslint/naming-convention
             gas_payment_token_default: true,
             // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -102,5 +113,6 @@ export function useAutomaticGasFeeTokenSelect() {
     transactionId,
     updateTransactionEventFragment,
     firstGasFeeTokenAddress,
+    shouldSelectForInsufficientNativeBalance,
   ]);
 }
