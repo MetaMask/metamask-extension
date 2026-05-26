@@ -119,6 +119,15 @@ class BitcoinHomepage extends HomePage {
     await this.driver.waitForSelector(this.swapButton);
     await this.driver.clickElement(this.swapButton);
   }
+
+  /**
+   * Clicks the receive button on bitcoin account homepage.
+   */
+  async clickOnReceiveButton(): Promise<void> {
+    console.log('Clicking receive button on Bitcoin homepage');
+    await this.driver.waitForSelector(this.receiveButton);
+    await this.driver.clickElement(this.receiveButton);
+  }
 }
 
 export default BitcoinHomepage;
