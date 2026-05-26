@@ -39,8 +39,9 @@ const renderLockContainer = async (isUnlocked = false) => {
     ...mockState,
     metamask: { ...mockState.metamask, isUnlocked },
   });
-  const { default: LockContainer } = await import('./lock.container');
-  return renderWithProvider(<LockContainer />, store);
+  const { default: LockContainer } = await import('./lock.container.js');
+  const TypedLockContainer = LockContainer as unknown as React.ComponentType;
+  return renderWithProvider(<TypedLockContainer />, store);
 };
 
 const getCapturedProps = () =>
