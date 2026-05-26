@@ -244,6 +244,7 @@ ${Object.entries(env)
         SEGMENT_PROD_WRITE_KEY: '-',
         GOOGLE_PROD_CLIENT_ID: '00000000000',
         APPLE_PROD_CLIENT_ID: '00000000000',
+        TELEGRAM_PROD_CLIENT_ID: '00000000000',
         METAMASK_REACT_REDUX_DEVTOOLS: 'true',
       },
     );
