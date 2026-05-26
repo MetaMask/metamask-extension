@@ -26,7 +26,6 @@ export function getLegacyBackgroundApiServiceMessenger(
   messenger.delegate({
     messenger: serviceMessenger,
     actions: [
-      'PreferencesController:setPreference',
       'NetworkController:getState',
       'NetworkController:getNetworkClientById',
       'KeyringController:getAccounts',

@@ -26,26 +26,6 @@ export type LegacyBackgroundApiServiceSetCurrentCurrencyAction = {
 };
 
 /**
- * Sets the avatar type preference.
- *
- * @param avatarType - The avatar type.
- */
-export type LegacyBackgroundApiServiceSetAvatarTypeAction = {
-  type: `LegacyBackgroundApiService:setAvatarType`;
-  handler: LegacyBackgroundApiService['setAvatarType'];
-};
-
-/**
- * Gets the provider configuration based on the current network state.
- *
- * @returns The provider configuration.
- */
-export type LegacyBackgroundApiServiceGetProviderConfigAction = {
-  type: `LegacyBackgroundApiService:getProviderConfig`;
-  handler: LegacyBackgroundApiService['getProviderConfig'];
-};
-
-/**
  * Determines if the given endpoint URL is a public endpoint URL.
  *
  * @param endpointUrl - The endpoint URL to check.
@@ -196,8 +176,6 @@ export type LegacyBackgroundApiServiceGetAccountsBySnapIdAction = {
 export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceIsAssetsUnifyStateEnabledAction
   | LegacyBackgroundApiServiceSetCurrentCurrencyAction
-  | LegacyBackgroundApiServiceSetAvatarTypeAction
-  | LegacyBackgroundApiServiceGetProviderConfigAction
   | LegacyBackgroundApiServiceIsPublicEndpointUrlAction
   | LegacyBackgroundApiServiceGetRequestAccountTabIdsAction
   | LegacyBackgroundApiServiceGetOpenMetamaskTabsIdsAction

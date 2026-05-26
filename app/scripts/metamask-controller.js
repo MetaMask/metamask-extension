@@ -2773,10 +2773,6 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:setCurrentCurrency',
       ),
-      setAvatarType: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:setAvatarType',
-      ),
       setUsePhishDetect: preferencesController.setUsePhishDetect.bind(
         preferencesController,
       ),
@@ -2803,10 +2799,6 @@ export default class MetamaskController extends EventEmitter {
         ),
       setOpenSeaEnabled: preferencesController.setOpenSeaEnabled.bind(
         preferencesController,
-      ),
-      getProviderConfig: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:getProviderConfig',
       ),
       isPublicEndpointUrl: this.controllerMessenger.call.bind(
         this.controllerMessenger,
@@ -9512,15 +9504,6 @@ export default class MetamaskController extends EventEmitter {
         createIfMissing: true,
       },
     );
-  }
-
-  /**
-   * @deprecated Avoid new references to the global network.
-   * Will be removed once multi-chain support is fully implemented.
-   * @returns {string} The network client ID of the currently selected network client.
-   */
-  #getGlobalNetworkClientId() {
-    return this.networkController.state.selectedNetworkClientId;
   }
 
   /**

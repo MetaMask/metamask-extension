@@ -88,8 +88,6 @@ const serviceName = 'LegacyBackgroundApiService';
  * This is currently empty, but it can be extended in the future to replace `MetaMaskController.getApi()`.
  */
 const MESSENGER_EXPOSED_METHODS = [
-  'setAvatarType',
-  'getProviderConfig',
   'isPublicEndpointUrl',
   'getRequestAccountTabIds',
   'getOpenMetamaskTabsIds',
@@ -116,7 +114,6 @@ export type LegacyBackgroundApiServiceActions =
   LegacyBackgroundApiServiceMethodActions;
 
 type AllowedActions =
-  | PreferencesControllerSetPreferenceAction
   | NetworkControllerGetStateAction
   | NetworkControllerGetNetworkClientByIdAction
   | KeyringControllerGetAccountsAction
@@ -268,42 +265,6 @@ export class LegacyBackgroundApiService {
         currencyCode,
       );
     }
-  }
-
-  /**
-   * Sets the avatar type preference.
-   *
-   * @param avatarType - The avatar type.
-   */
-  setAvatarType(avatarType: Preferences['avatarType']): void {
-    this.#messenger.call(
-      'PreferencesController:setPreference',
-      'avatarType',
-      avatarType,
-    );
-  }
-
-  /**
-   * Gets the provider configuration based on the current network state.
-   *
-   * @returns The provider configuration.
-   */
-  getProviderConfig(): {
-    id?: string;
-    nickname?: string;
-    rpcUrl?: string;
-    chainId: `0x${string}`;
-    ticker: string;
-    rpcPrefs: {
-      blockExplorerUrl?: string;
-    };
-    type: string;
-  } {
-    const networkControllerState = this.#messenger.call(
-      'NetworkController:getState',
-    );
-
-    return getProviderConfig({ metamask: networkControllerState });
   }
 
   /**

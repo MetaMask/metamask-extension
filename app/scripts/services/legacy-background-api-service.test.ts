@@ -239,60 +239,6 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
-  describe('setAvatarType', () => {
-    it('calls the messenger with the correct arguments', async () => {
-      const avatarType = 'jazzicon';
-
-      await withService(({ serviceMessenger, rootMessenger }) => {
-        rootMessenger.registerActionHandler(
-          'PreferencesController:setPreference',
-          jest.fn(),
-        );
-
-        const callSpy = jest.spyOn(serviceMessenger, 'call');
-
-        rootMessenger.call(
-          'LegacyBackgroundApiService:setAvatarType',
-          avatarType,
-        );
-
-        expect(callSpy).toHaveBeenCalledWith(
-          'PreferencesController:setPreference',
-          'avatarType',
-          avatarType,
-        );
-      });
-    });
-  });
-
-  describe('getProviderConfig', () => {
-    it('returns the provider config based on the current network state', async () => {
-      await withService(({ rootMessenger }) => {
-        rootMessenger.registerActionHandler(
-          'NetworkController:getState',
-          jest.fn().mockReturnValue({
-            networkConfigurationsByChainId:
-              mockState.metamask.networkConfigurationsByChainId,
-            selectedNetworkClientId: mockState.metamask.selectedNetworkClientId,
-          }),
-        );
-        const providerConfig = rootMessenger.call(
-          'LegacyBackgroundApiService:getProviderConfig',
-        );
-
-        expect(providerConfig).toEqual({
-          chainId: '0x5',
-          id: 'goerli',
-          nickname: 'Goerli',
-          rpcPrefs: {},
-          rpcUrl: 'https://goerli.com',
-          ticker: 'ETH',
-          type: 'rpc',
-        });
-      });
-    });
-  });
-
   describe('isPublicEndpointUrl', () => {
     it('returns true for a public endpoint URL', async () => {
       await withService(({ rootMessenger }) => {
@@ -1151,7 +1097,6 @@ function getMessenger(
   rootMessenger.delegate({
     messenger: serviceMessenger,
     actions: [
-      'PreferencesController:setPreference',
       'NetworkController:getState',
       'NetworkController:getNetworkClientById',
       'KeyringController:getAccounts',
