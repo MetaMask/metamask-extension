@@ -1,13 +1,8 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
-import { Anvil } from '../../../seeder/anvil';
-import { DAPP_URL, WINDOW_TITLES } from '../../../constants';
 import { Mockttp } from '../../../mock-e2e';
 import { login } from '../../../page-objects/flows/login.flow';
-import SetApprovalForAllTransactionConfirmation from '../../../page-objects/pages/confirmations/set-approval-for-all-transaction-confirmation';
-import TestDapp from '../../../page-objects/pages/test-dapp';
-import ContractAddressRegistry from '../../../seeder/contract-address-registry';
-import { Driver } from '../../../webdriver/driver';
+import { setTokenPermissions } from '../../../page-objects/flows/token-dapp-transactions.flow';
 import { withTransactionEnvelopeTypeFixtures } from '../helpers';
 import { TestSuiteArguments, mocked4BytesSetApprovalForAll } from './shared';
 
@@ -20,7 +15,12 @@ describe('Confirmation Redesign ERC721 Revoke setApprovalForAll', function () {
         this.test?.fullTitle(),
         TransactionEnvelopeType.legacy,
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await createTransactionAndAssertDetails(driver, contractRegistry);
+          await login(driver);
+          await setTokenPermissions(driver, {
+            assetType: 'erc721',
+            action: 'revoke',
+            contractRegistry,
+          });
         },
         mocks,
         SMART_CONTRACTS.NFTS,
@@ -32,7 +32,12 @@ describe('Confirmation Redesign ERC721 Revoke setApprovalForAll', function () {
         this.test?.fullTitle(),
         TransactionEnvelopeType.feeMarket,
         async ({ driver, contractRegistry, localNodes }: TestSuiteArguments) => {
-          await createTransactionAndAssertDetails(driver, contractRegistry, localNodes);
+          await login(driver, { localNode: localNodes?.[0] });
+          await setTokenPermissions(driver, {
+            assetType: 'erc721',
+            action: 'revoke',
+            contractRegistry,
+          });
         },
         mocks,
         SMART_CONTRACTS.NFTS,
@@ -43,32 +48,4 @@ describe('Confirmation Redesign ERC721 Revoke setApprovalForAll', function () {
 
 async function mocks(server: Mockttp) {
   return [await mocked4BytesSetApprovalForAll(server)];
-}
-
-async function createTransactionAndAssertDetails(
-  driver: Driver,
-  contractRegistry?: ContractAddressRegistry,
-  localNodes?: Anvil[],
-) {
-  await login(driver, { localNode: localNodes?.[0] });
-
-  const contractAddress = await (
-    contractRegistry as ContractAddressRegistry
-  ).getContractAddress(SMART_CONTRACTS.NFTS);
-
-  const testDapp = new TestDapp(driver);
-
-  await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
-
-  await testDapp.clickERC721RevokeSetApprovalForAllButton();
-
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-  const setApprovalForAllConfirmation =
-    new SetApprovalForAllTransactionConfirmation(driver);
-
-  await setApprovalForAllConfirmation.checkRevokeSetApprovalForAllTitle();
-
-  await setApprovalForAllConfirmation.clickScrollToBottomButton();
-  await setApprovalForAllConfirmation.clickFooterConfirmButton();
 }

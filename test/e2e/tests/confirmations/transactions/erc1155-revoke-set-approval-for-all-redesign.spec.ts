@@ -1,11 +1,8 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
-import { DAPP_URL, WINDOW_TITLES } from '../../../constants';
 import { Mockttp } from '../../../mock-e2e';
-import SetApprovalForAllTransactionConfirmation from '../../../page-objects/pages/confirmations/set-approval-for-all-transaction-confirmation';
-import TestDapp from '../../../page-objects/pages/test-dapp';
+import { setTokenPermissions } from '../../../page-objects/flows/token-dapp-transactions.flow';
 import { login } from '../../../page-objects/flows/login.flow';
-import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { withTransactionEnvelopeTypeFixtures } from '../helpers';
 import { TestSuiteArguments, mocked4BytesSetApprovalForAll } from './shared';
 
@@ -18,26 +15,11 @@ describe('Confirmation Redesign ERC1155 Revoke setApprovalForAll submit an revok
       TransactionEnvelopeType.legacy,
       async ({ driver, contractRegistry, localNodes }: TestSuiteArguments) => {
         await login(driver, { localNode: localNodes?.[0] });
-
-        const contractAddress = await (
-          contractRegistry as ContractAddressRegistry
-        ).getContractAddress(SMART_CONTRACTS.NFTS);
-
-        const testDapp = new TestDapp(driver);
-
-        await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
-
-        await testDapp.clickERC1155RevokeSetApprovalForAllButton();
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        const setApprovalForAllConfirmation =
-          new SetApprovalForAllTransactionConfirmation(driver);
-
-        await setApprovalForAllConfirmation.checkRevokeSetApprovalForAllTitle();
-
-        await setApprovalForAllConfirmation.clickScrollToBottomButton();
-        await setApprovalForAllConfirmation.clickFooterConfirmButton();
+        await setTokenPermissions(driver, {
+          assetType: 'erc1155',
+          action: 'revoke',
+          contractRegistry,
+        });
       },
       mocks,
       SMART_CONTRACTS.NFTS,
@@ -50,26 +32,11 @@ describe('Confirmation Redesign ERC1155 Revoke setApprovalForAll submit an revok
       TransactionEnvelopeType.feeMarket,
       async ({ driver, contractRegistry, localNodes }: TestSuiteArguments) => {
         await login(driver, { localNode: localNodes?.[0] });
-
-        const contractAddress = await (
-          contractRegistry as ContractAddressRegistry
-        ).getContractAddress(SMART_CONTRACTS.NFTS);
-
-        const testDapp = new TestDapp(driver);
-
-        await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
-
-        await testDapp.clickERC1155RevokeSetApprovalForAllButton();
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        const setApprovalForAllConfirmation =
-          new SetApprovalForAllTransactionConfirmation(driver);
-
-        await setApprovalForAllConfirmation.checkRevokeSetApprovalForAllTitle();
-
-        await setApprovalForAllConfirmation.clickScrollToBottomButton();
-        await setApprovalForAllConfirmation.clickFooterConfirmButton();
+        await setTokenPermissions(driver, {
+          assetType: 'erc1155',
+          action: 'revoke',
+          contractRegistry,
+        });
       },
       mocks,
       SMART_CONTRACTS.NFTS,
