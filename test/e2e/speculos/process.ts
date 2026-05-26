@@ -1,12 +1,18 @@
 import { spawn, ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
+import net from 'node:net';
 import { ensureSpeculosBinary } from './speculos-up';
-import { DEFAULT_DEVICE, type DeviceConfig } from './constants';
 
-const READINESS_STRINGS = [
-  'RESTful API available on',
-  'Server started on',
-];
+// Speculos 0.26.x deliberately suppresses Flask's startup banner
+// (`flask.cli.show_server_banner = lambda *a: None`) and disables the
+// Werkzeug logger when not running with `--verbose`, so the historical
+// stdout markers ("RESTful API available on", "Server started on") never
+// appear. We instead consider Speculos ready once both the APDU TCP port
+// and the REST API TCP port accept connections.
+const READINESS_POLL_INTERVAL_MS = 250;
+const READINESS_PROBE_TIMEOUT_MS = 1000;
+const DEFAULT_APDU_PORT = 9999;
+const DEFAULT_API_PORT = 5000;
 
 export type SpeculosProcessOptions = {
   app: string;
@@ -25,6 +31,30 @@ export type SpeculosProcess = {
   readonly status: 'idle' | 'starting' | 'listening' | 'stopping';
   readonly pid: number | undefined;
 };
+
+function isTcpReachable(
+  port: number,
+  host = '127.0.0.1',
+  timeoutMs = READINESS_PROBE_TIMEOUT_MS,
+): Promise<boolean> {
+  return new Promise((resolve) => {
+    const sock = new net.Socket();
+    let settled = false;
+    const finish = (ok: boolean) => {
+      if (settled) {
+        return;
+      }
+      settled = true;
+      sock.destroy();
+      resolve(ok);
+    };
+    sock.setTimeout(timeoutMs);
+    sock.once('connect', () => finish(true));
+    sock.once('timeout', () => finish(false));
+    sock.once('error', () => finish(false));
+    sock.connect(port, host);
+  });
+}
 
 export function createSpeculosProcess(
   options: SpeculosProcessOptions,
@@ -62,24 +92,51 @@ export function createSpeculosProcess(
 
     const binaryPath = await ensureSpeculosBinary();
     const args = buildArgs();
-    const timeout = options.startTimeout ?? 30_000;
+    const timeout = options.startTimeout ?? 60_000;
+    const apduPort = options.apduPort ?? DEFAULT_APDU_PORT;
+    const apiPort = options.apiPort ?? DEFAULT_API_PORT;
 
     console.log(`[Speculos] Starting: ${binaryPath} ${args.join(' ')}`);
 
     return new Promise((resolve, reject) => {
       let lastLog: string | undefined;
-      let exited = false;
+      let settled = false;
+      let pollHandle: NodeJS.Timeout | undefined;
+      let startTimer: NodeJS.Timeout | undefined;
 
       const onExit = (code: number | null) => {
-        exited = true;
+        if (settled) {
+          return;
+        }
         if (status === 'starting') {
+          settled = true;
           status = 'idle';
+          if (pollHandle) {
+            clearTimeout(pollHandle);
+            pollHandle = undefined;
+          }
+          if (startTimer) {
+            clearTimeout(startTimer);
+            startTimer = undefined;
+          }
           reject(
             new Error(
-              `Speculos exited during startup${lastLog ? `: ${lastLog}` : ''} (code ${code})`,
+              `Speculos exited during startup${lastLog ? `: ${lastLog.trim()}` : ''} (code ${code})`,
             ),
           );
         }
+      };
+
+      const cleanup = () => {
+        if (pollHandle) {
+          clearTimeout(pollHandle);
+          pollHandle = undefined;
+        }
+        if (startTimer) {
+          clearTimeout(startTimer);
+          startTimer = undefined;
+        }
+        proc?.removeListener('exit', onExit);
       };
 
       const onStdout = (data: Buffer) => {
@@ -87,29 +144,64 @@ export function createSpeculosProcess(
         emitter.emit('log', line);
         lastLog = line;
         console.log(`[Speculos] ${line.trimEnd()}`);
-
-        if (status === 'starting' && READINESS_STRINGS.some((s) => line.includes(s))) {
-          status = 'listening';
-          proc?.removeListener('exit', onExit);
-          resolve();
-        }
       };
 
-      const startTimer = setTimeout(() => {
+      startTimer = setTimeout(() => {
+        if (settled) {
+          return;
+        }
+        settled = true;
+        cleanup();
         proc?.kill('SIGTERM');
         status = 'idle';
         reject(new Error('Speculos failed to start within timeout'));
       }, timeout);
+
+      const pollReady = async () => {
+        if (settled) {
+          return;
+        }
+        try {
+          const [apduOk, apiOk] = await Promise.all([
+            isTcpReachable(apduPort),
+            isTcpReachable(apiPort),
+          ]);
+          if (apduOk && apiOk) {
+            if (settled) {
+              return;
+            }
+            settled = true;
+            status = 'listening';
+            cleanup();
+            console.log(
+              `[Speculos] Ready (APDU :${apduPort}, API :${apiPort})`,
+            );
+            resolve();
+            return;
+          }
+        } catch {
+          // probe failure is non-fatal; just keep polling
+        }
+        if (!settled) {
+          pollHandle = setTimeout(pollReady, READINESS_POLL_INTERVAL_MS);
+        }
+      };
 
       proc = spawn(binaryPath, args, { stdio: ['pipe', 'pipe', 'pipe'] });
       proc.stdout?.on('data', onStdout);
       proc.stderr?.on('data', onStdout);
       proc.on('exit', onExit);
       proc.on('error', (err) => {
-        clearTimeout(startTimer);
+        if (settled) {
+          return;
+        }
+        settled = true;
+        cleanup();
         status = 'idle';
         reject(err);
       });
+
+      pollHandle = setTimeout(pollReady, READINESS_POLL_INTERVAL_MS);
     });
   }
 
