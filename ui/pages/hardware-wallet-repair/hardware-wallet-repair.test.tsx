@@ -4,10 +4,7 @@ import { Provider } from 'react-redux';
 import { MemoryRouter, type MemoryRouterProps } from 'react-router-dom';
 import configureStore from '../../store/store';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import {
-  useHardwareWalletActions,
-  useHardwareWalletConfig,
-} from '../../contexts/hardware-wallets';
+import { useHardwareWalletConfig } from '../../contexts/hardware-wallets';
 import { HardwareWalletType } from '../../contexts/hardware-wallets/types';
 import { HardwareWalletRepair } from './hardware-wallet-repair';
 import * as hardwareWalletRepairPageModule from '.';
@@ -41,6 +38,8 @@ jest.mock(
 );
 
 const memoryRouterFuture = {
+  // MemoryRouterProps only exposes this flag after React Router's types split it
+  // by router component, but the runtime supports it and it keeps tests quiet.
   ['v7_startTransition' as keyof NonNullable<MemoryRouterProps['future']>]:
     true,
   ['v7_relativeSplatPath' as keyof NonNullable<MemoryRouterProps['future']>]:
@@ -91,9 +90,7 @@ describe('HardwareWalletRepair', () => {
     const { getByText } = renderRepairPage(HardwareWalletType.Ledger);
     expect(getByText(/hardwareWalletRepairStepOneTitle/u)).toBeInTheDocument();
     expect(getByText(/hardwareWalletRepairStepTwoTitle/u)).toBeInTheDocument();
-    expect(
-      getByText(/hardwareWalletRepairStepThreeTitle/u),
-    ).toBeInTheDocument();
+    expect(getByText(/hardwareWalletTitleEthAppNotOpen/u)).toBeInTheDocument();
   });
 
   it('renders Trezor-specific instructions (2 steps, no ETH app step)', () => {
@@ -103,20 +100,22 @@ describe('HardwareWalletRepair', () => {
     expect(getByText(/hardwareWalletRepairStepOneTitle/u)).toBeInTheDocument();
     expect(getByText(/hardwareWalletRepairStepTwoTitle/u)).toBeInTheDocument();
     expect(
-      queryByText(/hardwareWalletRepairStepThreeTitle/u),
+      queryByText(/hardwareWalletTitleEthAppNotOpen/u),
     ).not.toBeInTheDocument();
   });
 
-  // @ts-expect-error: each is a valid test function in jest
-  it.each([
+  const commonInstructionWalletTypes = [
     HardwareWalletType.OneKey,
     HardwareWalletType.Lattice,
     HardwareWalletType.Qr,
     HardwareWalletType.Unknown,
     null,
-  ])(
-    'does not render Ledger-specific Ethereum app instructions for %s',
-    (walletType: HardwareWalletType | null) => {
+  ];
+
+  for (const walletType of commonInstructionWalletTypes) {
+    it(`does not render Ledger-specific Ethereum app instructions for ${String(
+      walletType,
+    )}`, () => {
       const { getByText, queryByText } = renderRepairPage(walletType);
       expect(
         getByText(/hardwareWalletRepairStepOneTitle/u),
@@ -125,10 +124,10 @@ describe('HardwareWalletRepair', () => {
         getByText(/hardwareWalletRepairStepTwoTitle/u),
       ).toBeInTheDocument();
       expect(
-        queryByText(/hardwareWalletRepairStepThreeTitle/u),
+        queryByText(/hardwareWalletTitleEthAppNotOpen/u),
       ).not.toBeInTheDocument();
-    },
-  );
+    });
+  }
 
   it('renders instruction descriptions', () => {
     const { getByText } = renderRepairPage();
@@ -138,11 +137,24 @@ describe('HardwareWalletRepair', () => {
     expect(
       getByText('hardwareWalletRepairStepTwoDescription'),
     ).toBeInTheDocument();
+    expect(
+      getByText('hardwareWalletEthAppNotOpenDescription'),
+    ).toBeInTheDocument();
   });
 
   it('renders the connect button', () => {
     const { getByTestId } = renderRepairPage();
     expect(getByTestId('hardware-wallet-repair-reconnect')).toBeInTheDocument();
+  });
+
+  it('closes the repair page when the header close button is clicked', () => {
+    const closeSpy = jest.spyOn(window, 'close').mockImplementation();
+    const { getByTestId } = renderRepairPage();
+
+    fireEvent.click(getByTestId('hardware-wallet-repair-close-header'));
+
+    expect(closeSpy).toHaveBeenCalledTimes(1);
+    closeSpy.mockRestore();
   });
 
   it('requests device permission then connects on success', async () => {
@@ -212,7 +224,7 @@ describe('HardwareWalletRepair', () => {
     fireEvent.click(getByTestId('hardware-wallet-repair-reconnect'));
     expect(getByText('hardwareWalletRepairDetecting')).toBeInTheDocument();
     await act(async () => {
-      resolvePermission(true as never);
+      resolvePermission(true);
     });
     expect(
       queryByText('hardwareWalletRepairDetecting'),
@@ -230,7 +242,7 @@ describe('HardwareWalletRepair', () => {
     fireEvent.click(getByTestId('hardware-wallet-repair-reconnect'));
     expect(getByTestId('hardware-wallet-repair-reconnect')).toBeDisabled();
     await act(async () => {
-      resolvePermission(true as never);
+      resolvePermission(true);
     });
   });
 });

@@ -24,7 +24,6 @@ import {
   useHardwareWalletActions,
   useHardwareWalletConfig,
 } from '../../contexts/hardware-wallets';
-import { HardwareWalletType } from '../../contexts/hardware-wallets/types';
 import {
   Header,
   Page,
@@ -32,50 +31,7 @@ import {
   Footer,
 } from '../../components/multichain/pages/page';
 import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/multichain-meta-fox-logo';
-
-type InstructionStep = {
-  icon: IconName;
-  titleKey: string;
-  descriptionKey: string;
-};
-
-const COMMON_INSTRUCTIONS: InstructionStep[] = [
-  {
-    icon: IconName.Usb,
-    titleKey: 'hardwareWalletRepairStepOneTitle',
-    descriptionKey: 'hardwareWalletRepairStepOneDescription',
-  },
-  {
-    icon: IconName.Lock,
-    titleKey: 'hardwareWalletRepairStepTwoTitle',
-    descriptionKey: 'hardwareWalletRepairStepTwoDescription',
-  },
-];
-
-const LEDGER_INSTRUCTIONS: InstructionStep[] = [
-  ...COMMON_INSTRUCTIONS,
-  {
-    icon: IconName.Apps,
-    titleKey: 'hardwareWalletRepairStepThreeTitle',
-    descriptionKey: 'hardwareWalletRepairStepThreeDescription',
-  },
-];
-
-function getInstructionSteps(
-  walletType: HardwareWalletType | null,
-): InstructionStep[] {
-  switch (walletType) {
-    case HardwareWalletType.Ledger:
-      return LEDGER_INSTRUCTIONS;
-    case HardwareWalletType.Trezor:
-    case HardwareWalletType.OneKey:
-    case HardwareWalletType.Lattice:
-    case HardwareWalletType.Qr:
-    case HardwareWalletType.Unknown:
-    default:
-      return COMMON_INSTRUCTIONS;
-  }
-}
+import { getInstructionSteps } from './hardware-wallet-repair-utils';
 
 export const HardwareWalletRepair: React.FC = () => {
   const t = useI18nContext();
@@ -192,8 +148,7 @@ export const HardwareWalletRepair: React.FC = () => {
                     <Box
                       alignItems={BoxAlignItems.Center}
                       justifyContent={BoxJustifyContent.Center}
-                      className="flex"
-                      style={{ flexShrink: 0 }}
+                      className="flex shrink-0"
                     >
                       <Icon name={step.icon} size={IconSize.Lg} />
                     </Box>
@@ -235,7 +190,7 @@ export const HardwareWalletRepair: React.FC = () => {
                 className="w-full"
                 data-testid="hardware-wallet-repair-reconnect"
               >
-                {t('hardwareWalletRepairConnectButton')}
+                {t('connect')}
               </Button>
             </Box>
           )}
@@ -248,7 +203,7 @@ export const HardwareWalletRepair: React.FC = () => {
               className="w-full"
               data-testid="hardware-wallet-repair-close"
             >
-              {t('hardwareWalletRepairCloseButton')}
+              {t('close')}
             </Button>
           </Footer>
         )}

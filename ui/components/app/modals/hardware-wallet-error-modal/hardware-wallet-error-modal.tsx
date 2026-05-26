@@ -591,16 +591,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
                       >
                         {t('hardwareWalletErrorRecoveryTitle')}
                       </Text>
-                      <ul
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          gap: '8px',
-                          listStyle: 'disc',
-                          paddingLeft: '16px',
-                          margin: 0,
-                        }}
-                      >
+                      <ul className="m-0 flex list-disc flex-col gap-2 pl-4">
                         {standardErrorContent.recoveryInstructions.map(
                           (instruction, index) => (
                             <li key={`${instruction}-${index}`}>

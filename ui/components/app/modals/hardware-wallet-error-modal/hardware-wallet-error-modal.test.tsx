@@ -441,6 +441,24 @@ describe('HardwareWalletErrorModal', () => {
       ).toBe(false);
     });
 
+    it('does not render the repair link when onRepairDevice is not provided', () => {
+      const error = createTestError(
+        ErrorCode.DeviceDisconnected,
+        'Device disconnected',
+        'Device not found.',
+      );
+
+      const { queryByRole } = renderWithMetrics(
+        <HardwareWalletErrorModal error={error} />,
+      );
+
+      expect(
+        queryByRole('button', {
+          name: '[hardwareWalletRepairLink]',
+        }),
+      ).not.toBeInTheDocument();
+    });
+
     it('displays unlock instructions for ConnectionClosed', () => {
       const error = createTestError(
         ErrorCode.ConnectionClosed,
