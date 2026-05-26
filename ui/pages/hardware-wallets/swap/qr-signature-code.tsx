@@ -26,26 +26,42 @@ const QrSignatureCode = ({
 }: {
   payload: QrHardwareSignRequest['request']['payload'];
 }) => {
-  const urEncoder = useMemo(
-    () =>
-      new UREncoder(
-        new UR(Buffer.from(payload.cbor, 'hex'), payload.type),
-        QR_FRAGMENT_SIZE,
-      ),
-    [payload.cbor, payload.type],
-  );
-  const [currentQrCode, setCurrentQrCode] = useState(() =>
-    urEncoder.nextPart(),
-  );
+  const { initialQrCode, urEncoder } = useMemo(() => {
+    const encoder = new UREncoder(
+      new UR(Buffer.from(payload.cbor, 'hex'), payload.type),
+      QR_FRAGMENT_SIZE,
+    );
+
+    return {
+      initialQrCode: encoder.nextPart(),
+      urEncoder: encoder,
+    };
+  }, [payload.cbor, payload.type]);
+  const [qrCodeState, setQrCodeState] = useState(() => ({
+    currentQrCode: initialQrCode,
+    urEncoder,
+  }));
+  // Payload changes create a new encoder before effects run, so render its
+  // first fragment immediately instead of showing a stale QR code.
+  const currentQrCode =
+    qrCodeState.urEncoder === urEncoder
+      ? qrCodeState.currentQrCode
+      : initialQrCode;
 
   useEffect(() => {
-    setCurrentQrCode(urEncoder.nextPart());
+    setQrCodeState({
+      currentQrCode: initialQrCode,
+      urEncoder,
+    });
     const intervalId = setInterval(() => {
-      setCurrentQrCode(urEncoder.nextPart());
+      setQrCodeState({
+        currentQrCode: urEncoder.nextPart(),
+        urEncoder,
+      });
     }, QR_REFRESH_RATE);
 
     return () => clearInterval(intervalId);
-  }, [urEncoder]);
+  }, [initialQrCode, urEncoder]);
 
   return (
     <Box

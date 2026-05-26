@@ -1,6 +1,9 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
+import ReactDOM from 'react-dom';
 import QrSignatureCode from './qr-signature-code';
+
+const QR_REFRESH_RATE = 200;
 
 jest.mock('qrcode.react', () => ({
   QRCodeSVG: ({ value }: { value: string }) => (
@@ -10,29 +13,38 @@ jest.mock('qrcode.react', () => ({
 
 jest.mock('@ngraveio/bc-ur', () => ({
   UR: class MockUR {
-    mockBuf: Buffer;
+    mockBuffer: Buffer;
 
-    mockStr: string;
+    mockType: string;
 
-    constructor(mockBuffer: Buffer, mockString: string) {
-      this.mockBuf = mockBuffer;
-      this.mockStr = mockString;
+    constructor(mockBuffer: Buffer, mockType: string) {
+      this.mockBuffer = mockBuffer;
+      this.mockType = mockType;
     }
   },
   UREncoder: class MockUREncoder {
     private mockCount = 0;
 
-    // eslint-disable-next-line @typescript-eslint/no-useless-constructor, no-empty-function
-    constructor() {}
+    private readonly mockPayloadId: string;
+
+    constructor(mockUr: { mockBuffer: Buffer; mockType: string }) {
+      this.mockPayloadId = `${mockUr.mockType}-${mockUr.mockBuffer.toString(
+        'hex',
+      )}`;
+    }
 
     nextPart() {
       this.mockCount += 1;
-      return `qr-part-${this.mockCount}`;
+      return `${this.mockPayloadId}-qr-part-${this.mockCount}`;
     }
   },
 }));
 
 describe('QrSignatureCode', () => {
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   it('renders a QR code SVG', () => {
     const payload = {
       type: 'eth-sign-request',
@@ -52,6 +64,57 @@ describe('QrSignatureCode', () => {
 
     const { getByTestId } = render(<QrSignatureCode payload={payload} />);
 
-    expect(getByTestId('qr-code-svg').dataset.value).toBe('QR-PART-2');
+    expect(getByTestId('qr-code-svg').dataset.value).toBe(
+      'ETH-SIGN-REQUEST-A201010203-QR-PART-1',
+    );
+  });
+
+  it('rotates to the next QR fragment after the refresh delay', () => {
+    jest.useFakeTimers();
+    const payload = {
+      type: 'eth-sign-request',
+      cbor: 'a201010203',
+    };
+
+    const { getByTestId, unmount } = render(
+      <QrSignatureCode payload={payload} />,
+    );
+
+    expect(getByTestId('qr-code-svg').dataset.value).toBe(
+      'ETH-SIGN-REQUEST-A201010203-QR-PART-1',
+    );
+
+    act(() => {
+      jest.advanceTimersByTime(QR_REFRESH_RATE);
+    });
+
+    expect(getByTestId('qr-code-svg').dataset.value).toBe(
+      'ETH-SIGN-REQUEST-A201010203-QR-PART-2',
+    );
+
+    unmount();
+  });
+
+  it('does not render a stale QR code when the payload changes before effects run', () => {
+    const firstPayload = {
+      type: 'eth-sign-request',
+      cbor: 'a201010203',
+    };
+    const secondPayload = {
+      type: 'eth-sign-request',
+      cbor: 'b401010203',
+    };
+    const container = document.createElement('div');
+
+    ReactDOM.render(<QrSignatureCode payload={firstPayload} />, container);
+    ReactDOM.render(<QrSignatureCode payload={secondPayload} />, container);
+
+    expect(
+      container.querySelector('[data-testid="qr-code-svg"]')?.getAttribute(
+        'data-value',
+      ),
+    ).toBe('ETH-SIGN-REQUEST-B401010203-QR-PART-1');
+
+    ReactDOM.unmountComponentAtNode(container);
   });
 });

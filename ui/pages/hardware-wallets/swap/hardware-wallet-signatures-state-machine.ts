@@ -63,6 +63,11 @@ type HardwareWalletSignaturesAction =
       needsTwoConfirmations: boolean;
     };
 
+type ResetHardwareWalletSignaturesAction = Extract<
+  HardwareWalletSignaturesAction,
+  { type: typeof HardwareWalletSignatureEvent.Reset }
+>;
+
 /**
  * Returns the initial state for the hardware wallet signatures state machine.
  *
@@ -102,6 +107,36 @@ function handleResume(
     return { status: state.disconnectedSignature };
   }
   return state;
+}
+
+function handleFirstSignatureSubmitted(
+  state: HardwareWalletSignaturesState,
+): HardwareWalletSignaturesState {
+  if (state.status !== HardwareWalletSignatureStatus.AwaitingFirstSignature) {
+    return state;
+  }
+
+  return {
+    status: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+  };
+}
+
+function handleTransactionSubmitted(
+  state: HardwareWalletSignaturesState,
+): HardwareWalletSignaturesState {
+  if (!isSigningStatus(state.status)) {
+    return state;
+  }
+
+  return {
+    status: HardwareWalletSignatureStatus.Submitted,
+  };
+}
+
+function handleReset(
+  action: ResetHardwareWalletSignaturesAction,
+): HardwareWalletSignaturesState {
+  return getInitialHardwareWalletSignaturesState(action.needsTwoConfirmations);
 }
 
 function toSigningStatus(
@@ -164,21 +199,9 @@ export const hardwareWalletSignaturesReducer = (
 ): HardwareWalletSignaturesState => {
   switch (action.type) {
     case HardwareWalletSignatureEvent.FirstSignatureSubmitted:
-      if (
-        state.status === HardwareWalletSignatureStatus.AwaitingFirstSignature
-      ) {
-        return {
-          status: HardwareWalletSignatureStatus.AwaitingFinalSignature,
-        };
-      }
-      return state;
+      return handleFirstSignatureSubmitted(state);
     case HardwareWalletSignatureEvent.TransactionSubmitted:
-      if (isSigningStatus(state.status)) {
-        return {
-          status: HardwareWalletSignatureStatus.Submitted,
-        };
-      }
-      return state;
+      return handleTransactionSubmitted(state);
     case HardwareWalletSignatureEvent.TransactionRejected:
     case HardwareWalletSignatureEvent.TransactionFailed:
     case HardwareWalletSignatureEvent.DeviceDisconnected:
@@ -186,9 +209,7 @@ export const hardwareWalletSignaturesReducer = (
     case HardwareWalletSignatureEvent.Retry:
       return handleResume(state);
     case HardwareWalletSignatureEvent.Reset:
-      return getInitialHardwareWalletSignaturesState(
-        action.needsTwoConfirmations,
-      );
+      return handleReset(action);
     default:
       return state;
   }

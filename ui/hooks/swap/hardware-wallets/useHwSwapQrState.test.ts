@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
 import { HardwareWalletSignatureStatus } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
-import { createSignatureState } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine-test-helpers';
+import { createSignatureState } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine.test-helpers';
 import { useHwSwapQrState } from './useHwSwapQrState';
 
 jest.mock('react-redux', () => ({
@@ -241,7 +241,7 @@ describe('useHwSwapQrState', () => {
     mockGetActiveQrCodeScanRequest.mockReturnValue(mockQrSignRequest);
     mockIsQrHardwareSignRequest.mockReturnValue(true);
 
-    const { result } = renderHook(() =>
+    const { result, rerender } = renderHook(() =>
       useHwSwapQrState({
         signatureState: createSignatureState(
           HardwareWalletSignatureStatus.AwaitingFirstSignature,
@@ -266,7 +266,9 @@ describe('useHwSwapQrState', () => {
 
     mockGetActiveQrCodeScanRequest.mockReturnValue(newQrSignRequest);
 
-    expect(result.current.isReadingQrSignature).toBe(true);
+    rerender();
+
+    expect(result.current.isReadingQrSignature).toBe(false);
   });
 
   describe('handleQrScanSuccess', () => {
