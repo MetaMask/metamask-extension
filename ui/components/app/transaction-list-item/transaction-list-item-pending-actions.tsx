@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
+import React, { type MouseEvent as ReactMouseEvent } from 'react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import type { EditGasModes } from '../../../../shared/constants/gas';
 import type { TransactionGroup } from '../../../../shared/lib/multichain/types';
-import { EditGasModes } from '../../../../shared/constants/gas';
-import { TransactionModalContextProvider } from '../../../contexts/transaction-modal';
 import { isIntentBridgeActivity } from '../../../helpers/transactions/pending-transaction-actions';
 import { useBridgeTxHistoryData } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import { isTransactionEarliestNonce } from '../../../hooks/useEarliestNonceByChain';
 import { usePendingTransactionActions } from '../../../hooks/usePendingTransactionActions';
-import { CancelSpeedup } from '../../../pages/confirmations/cancel-speedup/cancel-speedup';
 import { PendingTransactionActionButtons } from '../pending-transaction-action-buttons/pending-transaction-action-buttons';
 
 type TransactionMetaWithSmartTransaction = TransactionMeta & {
@@ -17,18 +15,16 @@ type TransactionMetaWithSmartTransaction = TransactionMeta & {
 type TransactionListItemPendingActionsProps = {
   transactionGroup: TransactionGroup;
   earliestNonceByChain: Record<string, number>;
+  setEditGasMode: (mode: EditGasModes) => void;
+  onGasModalMetaId: (metaId: string) => void;
 };
 
-type TransactionListItemPendingActionButtonsProps =
-  TransactionListItemPendingActionsProps & {
-    setEditGasMode: (mode: EditGasModes) => void;
-  };
-
-const TransactionListItemPendingActionButtons = ({
+export const TransactionListItemPendingActions = ({
   transactionGroup,
   earliestNonceByChain,
   setEditGasMode,
-}: TransactionListItemPendingActionButtonsProps) => {
+  onGasModalMetaId,
+}: Readonly<TransactionListItemPendingActionsProps>) => {
   const { nonce, primaryTransaction, initialTransaction } = transactionGroup;
   const isEarliestNonce = isTransactionEarliestNonce(
     nonce,
@@ -55,35 +51,23 @@ const TransactionListItemPendingActionButtons = ({
     return null;
   }
 
+  const wrapHandler =
+    (handler: (event: ReactMouseEvent) => void) => (event: ReactMouseEvent) => {
+      onGasModalMetaId(primaryTransaction.id);
+      handler(event);
+    };
+
   return (
     <div className="px-4 pb-3">
       <PendingTransactionActionButtons
         showCancel={showCancel}
-        onCancel={onCancel}
-        speedUp={speedUp}
+        onCancel={wrapHandler(onCancel)}
+        speedUp={{
+          ...speedUp,
+          onClick: wrapHandler(speedUp.onClick),
+        }}
         primaryTransaction={primaryTransaction}
       />
     </div>
-  );
-};
-
-export const TransactionListItemPendingActions = ({
-  transactionGroup,
-  earliestNonceByChain,
-}: TransactionListItemPendingActionsProps) => {
-  const [editGasMode, setEditGasMode] = useState(EditGasModes.cancel);
-
-  return (
-    <TransactionModalContextProvider>
-      <TransactionListItemPendingActionButtons
-        transactionGroup={transactionGroup}
-        earliestNonceByChain={earliestNonceByChain}
-        setEditGasMode={setEditGasMode}
-      />
-      <CancelSpeedup
-        transaction={transactionGroup.primaryTransaction}
-        editGasMode={editGasMode}
-      />
-    </TransactionModalContextProvider>
   );
 };
