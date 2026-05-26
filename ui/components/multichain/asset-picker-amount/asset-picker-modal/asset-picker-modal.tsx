@@ -143,9 +143,10 @@ export function AssetPickerModal({
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
   const debouncedSetSearchQuery = useMemo(
-    () => debounce((value: string) => {
-      setDebouncedSearchQuery(value);
-    }, 200),
+    () =>
+      debounce((value: string) => {
+        setDebouncedSearchQuery(value);
+      }, 200),
     [],
   );
 

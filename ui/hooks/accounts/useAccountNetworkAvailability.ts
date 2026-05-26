@@ -11,11 +11,14 @@ export const useAccountNetworkAvailability =
   (): UseAccountNetworkAvailabilityReturn => {
     const accounts = useSelector(getMetaMaskAccountsOrdered);
 
-    const hasAnyAccountsInNetwork = useCallback((chainId: CaipChainId) => {
-      return accounts.some(({ scopes }: { scopes: CaipChainId[] }) =>
-        scopes.includes(chainId),
-      );
-    }, [accounts]);
+    const hasAnyAccountsInNetwork = useCallback(
+      (chainId: CaipChainId) => {
+        return accounts.some(({ scopes }: { scopes: CaipChainId[] }) =>
+          scopes.includes(chainId),
+        );
+      },
+      [accounts],
+    );
 
     return { hasAnyAccountsInNetwork };
   };
