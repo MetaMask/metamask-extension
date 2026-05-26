@@ -74,10 +74,10 @@ export function isSwapPageRenderComplete(): boolean {
 
   const hasEditableQuoteInput = Boolean(
     fromAmountInput &&
-      !fromAmountInput.disabled &&
-      !fromAmountInput.readOnly &&
-      (!fromAmountInput.hasAttribute('aria-disabled') ||
-        fromAmountInput.getAttribute('aria-disabled') === 'false'),
+    !fromAmountInput.disabled &&
+    !fromAmountInput.readOnly &&
+    (!fromAmountInput.hasAttribute('aria-disabled') ||
+      fromAmountInput.getAttribute('aria-disabled') === 'false'),
   );
 
   const hasRenderedQuoteDetails =
