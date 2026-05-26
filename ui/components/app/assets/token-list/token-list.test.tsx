@@ -198,7 +198,7 @@ describe('TokenList', () => {
       >);
     jest.mocked(getShouldHideZeroBalanceTokens).mockReturnValue(false);
     jest.mocked(getCurrencyRates).mockReturnValue({
-      ETH: { conversionRate: 1, usdConversionRate: 1 },
+      ETH: { conversionDate: null, conversionRate: 1, usdConversionRate: 1 },
     });
     jest.mocked(getTokenSortConfig).mockReturnValue({
       key: 'tokenFiatAmount',
@@ -241,7 +241,11 @@ describe('TokenList', () => {
 
   it('uses the current currency equivalent of one dollar for BTC balances', () => {
     jest.mocked(getCurrencyRates).mockReturnValue({
-      ETH: { conversionRate: 0.05, usdConversionRate: 2500 },
+      ETH: {
+        conversionDate: null,
+        conversionRate: 0.05,
+        usdConversionRate: 2500,
+      },
     });
     jest
       .mocked(getAssetsBySelectedAccountGroup)
@@ -261,7 +265,11 @@ describe('TokenList', () => {
 
   it('uses the current currency equivalent of one dollar for weak currency balances', () => {
     jest.mocked(getCurrencyRates).mockReturnValue({
-      ETH: { conversionRate: 250000, usdConversionRate: 2500 },
+      ETH: {
+        conversionDate: null,
+        conversionRate: 250000,
+        usdConversionRate: 2500,
+      },
     });
     jest
       .mocked(getAssetsBySelectedAccountGroup)
