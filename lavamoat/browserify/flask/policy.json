@@ -1813,6 +1813,7 @@
         "@ethereumjs/tx": true,
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-api": true,
+        "@metamask/keyring-utils": true,
         "@metamask/scure-bip39": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -2379,7 +2380,9 @@
     },
     "@metamask/snap-account-service": {
       "globals": {
-        "console.error": true
+        "clearTimeout": true,
+        "console.error": true,
+        "setTimeout": true
       },
       "packages": {
         "@metamask/eth-snap-keyring": true,
