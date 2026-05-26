@@ -50,9 +50,6 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import { SnapId } from '@metamask/snaps-sdk';
 import { SnapKeyring } from '@metamask/eth-snap-keyring';
-import { PreferencesControllerSetPreferenceAction } from '../controllers/preferences-controller-method-action-types';
-import type { Preferences } from '../../../shared/types/preferences';
-import { getProviderConfig } from '../../../shared/lib/selectors/networks';
 import {
   convertEnglishWordlistIndicesToCodepoints,
   isPublicEndpointUrl,
@@ -88,22 +85,22 @@ const serviceName = 'LegacyBackgroundApiService';
  * This is currently empty, but it can be extended in the future to replace `MetaMaskController.getApi()`.
  */
 const MESSENGER_EXPOSED_METHODS = [
-  'isPublicEndpointUrl',
-  'getRequestAccountTabIds',
-  'getOpenMetamaskTabsIds',
-  'markPasswordForgotten',
-  'unMarkPasswordForgotten',
-  'getCode',
-  'isAssetsUnifyStateEnabled',
-  'setCurrentCurrency',
-  'getSeedPhrase',
-  'resetAccount',
-  'getGlobalChainId',
-  'removeAccount',
-  'importAccountWithStrategy',
-  'getSnapKeyring',
   'getAccountsBySnapId',
+  'getCode',
+  'getGlobalChainId',
+  'getOpenMetamaskTabsIds',
+  'getRequestAccountTabIds',
+  'getSeedPhrase',
+  'getSnapKeyring',
+  'importAccountWithStrategy',
+  'isAssetsUnifyStateEnabled',
+  'isPublicEndpointUrl',
+  'markPasswordForgotten',
   'onAccountRemoved',
+  'removeAccount',
+  'resetAccount',
+  'setCurrentCurrency',
+  'unMarkPasswordForgotten',
 ] as const;
 
 /**
@@ -114,32 +111,32 @@ export type LegacyBackgroundApiServiceActions =
   LegacyBackgroundApiServiceMethodActions;
 
 type AllowedActions =
-  | NetworkControllerGetStateAction
-  | NetworkControllerGetNetworkClientByIdAction
-  | KeyringControllerGetAccountsAction
+  | AccountsControllerGetAccountByAddressAction
   | AccountsControllerGetSelectedAccountAction
-  | TransactionControllerWipeTransactionsAction
-  | CurrencyRateControllerSetCurrentCurrencyAction
-  | AssetsControllerSetSelectedCurrencyAction
-  | RemoteFeatureFlagControllerGetStateAction
-  | KeyringControllerExportSeedPhraseAction
+  | AccountsControllerSetSelectedAccountAction
   | ApprovalControllerGetStateAction
   | ApprovalControllerRejectRequestAction
-  | TransactionControllerGetStateAction
-  | SmartTransactionsControllerWipeSmartTransactionsAction
+  | AssetsControllerSetSelectedCurrencyAction
   | BridgeStatusControllerWipeBridgeStatusAction
-  | NetworkControllerResetConnectionAction
+  | CurrencyRateControllerSetCurrentCurrencyAction
+  | KeyringControllerAddNewKeyringAction
+  | KeyringControllerExportSeedPhraseAction
+  | KeyringControllerGetAccountsAction
+  | KeyringControllerGetKeyringsByTypeAction
   | KeyringControllerImportAccountWithStrategyAction
-  | OnboardingControllerGetIsSocialLoginFlowAction
-  | KeyringControllerWithKeyringAction
   | KeyringControllerRemoveAccountAction
-  | AccountsControllerGetAccountByAddressAction
-  | AccountsControllerSetSelectedAccountAction
+  | KeyringControllerWithKeyringAction
+  | NetworkControllerGetNetworkClientByIdAction
+  | NetworkControllerGetStateAction
+  | NetworkControllerResetConnectionAction
+  | OnboardingControllerGetIsSocialLoginFlowAction
+  | PermissionControllerUpdatePermissionsByCaveatAction
+  | RemoteFeatureFlagControllerGetStateAction
   | SeedlessOnboardingControllerAddNewSecretDataAction
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
-  | PermissionControllerUpdatePermissionsByCaveatAction
-  | KeyringControllerGetKeyringsByTypeAction
-  | KeyringControllerAddNewKeyringAction;
+  | SmartTransactionsControllerWipeSmartTransactionsAction
+  | TransactionControllerGetStateAction
+  | TransactionControllerWipeTransactionsAction;
 
 /**
  * The {@link LegacyBackgroundApiService} messenger.
