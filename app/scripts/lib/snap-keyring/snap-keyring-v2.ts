@@ -1,4 +1,7 @@
-import { SnapKeyringV1Adapter, SnapKeyring as SnapKeyringV2 } from '@metamask/eth-snap-keyring/v2';
+import {
+  SnapKeyringV1Adapter,
+  SnapKeyring as SnapKeyringV2,
+} from '@metamask/eth-snap-keyring/v2';
 import { KeyringV1Adapter } from '@metamask/keyring-sdk/v2';
 import { KeyringType } from '@metamask/keyring-api/v2';
 import { KeyringAccount } from '@metamask/keyring-api';
