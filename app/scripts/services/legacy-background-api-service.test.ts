@@ -887,7 +887,9 @@ describe('LegacyBackgroundApiService', () => {
           {
             keyringId: 'foo',
             data: hexToBytes(
-              '0000000000000000000000000000000000000000000000000000000000000001',
+              add0x(
+                '0000000000000000000000000000000000000000000000000000000000000001',
+              ),
             ),
             type: SecretType.PrivateKey,
           },
