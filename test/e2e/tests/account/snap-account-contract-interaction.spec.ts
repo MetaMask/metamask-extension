@@ -9,7 +9,6 @@ import {
   WINDOW_TITLES,
 } from '../../constants';
 import { Anvil } from '../../seeder/anvil';
-import { Ganache } from '../../seeder/ganache';
 import ContractAddressRegistry from '../../seeder/contract-address-registry';
 import { withFixtures } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
@@ -55,7 +54,7 @@ describe('Snap Account Contract interaction', function (this: Suite) {
       }: {
         driver: Driver;
         contractRegistry: ContractAddressRegistry;
-        localNodes: Anvil[] | Ganache[] | undefined[];
+        localNodes: Anvil[] | undefined[];
       }) => {
         await login(driver, { localNode: localNodes[0] });
         await installSnapSimpleKeyring(driver);

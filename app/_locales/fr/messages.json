@@ -43,15 +43,6 @@
   "QRHardwareWalletImporterTitle": {
     "message": "Scannez le code QR"
   },
-  "QRHardwareWalletSteps1Description": {
-    "message": "Vous pouvez choisir parmi une liste de partenaires officiels soutenant le code QR ci-dessous."
-  },
-  "QRHardwareWalletSteps1Title": {
-    "message": "Connectez votre portefeuille électronique QR"
-  },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
-  },
   "SrpListHideAccounts": {
     "message": "Masquer $1 comptes",
     "description": "$1 is the number of accounts"
@@ -555,9 +546,6 @@
   },
   "airDropPatternTitle": {
     "message": "Modèle de distribution gratuite de jetons"
-  },
-  "airgapVault": {
-    "message": "Coffre-fort AirGap"
   },
   "alert": {
     "message": "Alerte"
@@ -1612,9 +1600,6 @@
     "message": "Acheter plus de $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyNow": {
-    "message": "Achetez maintenant"
-  },
   "buyTabOpenedToastDescription": {
     "message": "Nous avons ouvert un nouvel onglet pour l’achat.",
     "description": "Toast description shown after opening the buy flow in a new tab"
@@ -1921,9 +1906,6 @@
   "confirmTitleDescERC20ApproveTransaction": {
     "message": "Ce site demande l’autorisation de retirer vos jetons"
   },
-  "confirmTitleDescERC20Revocation": {
-    "message": "Ce site demande l’autorisation de révoquer vos autorisations de jetons ERC-20."
-  },
   "confirmTitleDescPermission": {
     "message": "Ce site demande l’autorisation de dépenser vos jetons."
   },
@@ -2135,9 +2117,6 @@
   "convertTokenToNFTExistDescription": {
     "message": "Nous avons détecté que cet actif a été ajouté en tant que NFT. Souhaitez-vous le supprimer de votre liste de jetons ?"
   },
-  "coolWallet": {
-    "message": "CoolWallet"
-  },
   "copiedExclamation": {
     "message": "Copié."
   },
@@ -2301,12 +2280,6 @@
   "dappConnections": {
     "message": "Connexions aux dapps"
   },
-  "dappScanMaliciousTitle": {
-    "message": "Site web malveillant détecté"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "Ce site web est signalé comme potentiellement dangereux. Si vous divulguez votre phrase secrète de récupération, vous pourriez mettre vos fonds en danger."
-  },
   "dappSuggested": {
     "message": "Suggéré par le site"
   },
@@ -2355,9 +2328,6 @@
   },
   "dateCreated": {
     "message": "Date de création"
-  },
-  "dcent": {
-    "message": "D’Cent"
   },
   "debitCreditPurchaseOptions": {
     "message": "Options d’achat par carte de débit ou de crédit"
@@ -2683,9 +2653,6 @@
   "downloadAppTitle": {
     "message": "Scannez le code QR et téléchargez l’application"
   },
-  "downloadGoogleChrome": {
-    "message": "Télécharger Google Chrome"
-  },
   "downloadMetaMaskMobileDescription": {
     "message": "La fonction Face ID disponible sur notre application vous permet d’accéder à votre compte même si vous avez oublié votre mot de passe. Emportez MetaMask partout avec vous !"
   },
@@ -2694,9 +2661,6 @@
   },
   "downloadMetaMaskMobileTitle": {
     "message": "Téléchargez notre application mobile"
-  },
-  "downloadNow": {
-    "message": "Télécharger maintenant"
   },
   "downloadStateLogs": {
     "message": "Télécharger les journaux d’événements"
@@ -3461,9 +3425,6 @@
   "hardwareWalletSubmissionWarningTitle": {
     "message": "Avant de cliquer sur « Envoyer » :"
   },
-  "hardwareWalletSupportLinkConversion": {
-    "message": "cliquez ici"
-  },
   "hardwareWalletTitleEthAppNotOpen": {
     "message": "Ouvrir l’application Ethereum"
   },
@@ -3473,12 +3434,6 @@
   },
   "hardwareWallets": {
     "message": "Connecter un portefeuille matériel"
-  },
-  "hardwareWalletsInfo": {
-    "message": "Les intégrations de portefeuilles matériels utilisent des appels API vers des serveurs externes qui peuvent voir votre adresse IP et les adresses des contrats intelligents avec lesquels vous interagissez."
-  },
-  "hardwareWalletsMsg": {
-    "message": "Selectionnez le portefeuille matériel que vous voulez utiliser avec MetaMask"
   },
   "helpAndSettings": {
     "message": "Aide et paramètres"
@@ -3844,9 +3799,6 @@
     "message": "Fichier JSON",
     "description": "format for importing an account"
   },
-  "keycardShell": {
-    "message": "Keycard Shell"
-  },
   "keyringAccountName": {
     "message": "Nom du compte"
   },
@@ -3899,9 +3851,6 @@
   },
   "learnMoreAboutPrivacy": {
     "message": "En savoir plus sur les pratiques conseillées en matière de confidentialité."
-  },
-  "learnMoreKeystone": {
-    "message": "En savoir plus"
   },
   "learnMoreUpperCase": {
     "message": "En savoir plus"
@@ -3970,17 +3919,8 @@
   "ledgerFirefoxNotSupportedTitle": {
     "message": "Firefox non pris en charge"
   },
-  "ledgerLiveApp": {
-    "message": "Appli Ledger Live"
-  },
   "ledgerLocked": {
     "message": "Impossible de se connecter au dispositif Ledger. Veuillez vous assurer que votre périphérique est déverrouillé et que l’application Ethereum est ouverte."
-  },
-  "ledgerMultipleDevicesUnsupportedInfoDescription": {
-    "message": "Pour connecter un nouvel appareil, il faut déconnecter l’ancien appareil."
-  },
-  "ledgerMultipleDevicesUnsupportedInfoTitle": {
-    "message": "Vous ne pouvez connecter qu’un seul appareil Ledger à la fois"
   },
   "ledgerTimeout": {
     "message": "Ledger Live met trop de temps à répondre ou la connexion est interrompue. Assurez-vous que l’application Ledger Live est bien ouverte et que votre appareil est déverrouillé."
@@ -5265,10 +5205,6 @@
   },
   "onboardingMetametricsTitle": {
     "message": "Aidez-nous à améliorer MetaMask"
-  },
-  "onboardingOptionIcon": {
-    "message": "Icône $1",
-    "description": "$1 is the icon name"
   },
   "onboardingSignInWith": {
     "message": "Se connecter avec $1",
@@ -7513,11 +7449,11 @@
   },
   "securitySocialLoginEnabledDescription": {
     "message": "Utilisez votre identifiant $1 et votre mot de passe MetaMask pour récupérer votre compte et vos phrases secrètes de récupération.",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySocialLoginLabel": {
     "message": "RÉCUPÉRATION $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySrpLabel": {
     "message": "PHRASES SECRÈTES DE RÉCUPÉRATION"
@@ -8970,34 +8906,6 @@
   },
   "statusNotConnected": {
     "message": "Non connecté"
-  },
-  "step1LatticeWallet": {
-    "message": "Connectez votre Lattice1"
-  },
-  "step1LatticeWalletMsg": {
-    "message": "Vous pouvez connecter MetaMask à votre dispositif Lattice1 une fois qu’il est configuré et en ligne. Déverrouillez votre appareil et préparez son ID.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step1LedgerWallet": {
-    "message": "Télécharger l’application Ledger"
-  },
-  "step1LedgerWalletMsg": {
-    "message": "Téléchargez, configurez et saisissez votre mot de passe pour déverrouiller $1.",
-    "description": "$1 represents the `ledgerLiveApp` localization value"
-  },
-  "step1TrezorWallet": {
-    "message": "Connecter le portefeuille Trezor"
-  },
-  "step1TrezorWalletMsg": {
-    "message": "Connecter votre Trezor directement sur votre ordinateur et déverrouillez-le. Assurez-vous que vous utilisez la bonne phrase de chiffrement.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step2LedgerWallet": {
-    "message": "Connecter le portefeuille Ledger"
-  },
-  "step2LedgerWalletMsg": {
-    "message": "Connectez votre portefeuille directement à votre ordinateur. Déverrouillez votre Ledger et ouvrez l’application Ethereum.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "stillConnectingTo": {
     "message": "Toujours en cours de connexion à $1…",

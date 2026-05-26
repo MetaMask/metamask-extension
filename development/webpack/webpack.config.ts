@@ -7,6 +7,7 @@ import { join } from 'node:path';
 import { argv, exit } from 'node:process';
 import {
   ProvidePlugin,
+  type Chunk,
   type Configuration,
   type WebpackPluginInstance,
   type MemoryCacheOptions,
@@ -49,7 +50,7 @@ if (args.dryRun) {
 const context = join(__dirname, '../../app');
 const nodeModules = join(__dirname, '../../node_modules');
 const isDevelopment = args.mode === MODES.DEVELOPMENT;
-const MANIFEST_VERSION = args.manifest_version;
+const MANIFEST_VERSION = args.manifestVersion;
 const browsersListPath = join(context, '../.browserslistrc');
 // read .browserslist now to stop it from searching for the file over and over
 const browsersListQuery = readFileSync(browsersListPath, 'utf8');
@@ -249,6 +250,10 @@ const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
+const isChunkableInitial = (chunk: Chunk) =>
+  manifestPlugin.canBeChunked(chunk) && chunk.canBeInitial();
+const isChunkableAsync = (chunk: Chunk) =>
+  manifestPlugin.canBeChunked(chunk) && !chunk.canBeInitial();
 
 const threadLoader = getThreadLoader(args);
 const reactCompiler = getReactCompilerLoader({
@@ -539,7 +544,7 @@ const config = {
           // ts/mts/tsx/js/mjs/jsx files, including node_modules
           test: /\.(?:m?[tj]s|[tj]sx?)$/u,
           name: 'js',
-          chunks: manifestPlugin.canBeChunked,
+          chunks: isChunkableInitial,
         },
       },
     },

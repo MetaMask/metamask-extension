@@ -43,15 +43,6 @@
   "QRHardwareWalletImporterTitle": {
     "message": "QR कोड स्कैन करें"
   },
-  "QRHardwareWalletSteps1Description": {
-    "message": "आप QR कोड सपोर्ट करने वाले आधिकारिक पार्टनरों की नीचे दी गई लिस्ट में से चुन सकते हैं।"
-  },
-  "QRHardwareWalletSteps1Title": {
-    "message": "अपने QR hardware wallet को कनेक्ट करें"
-  },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave ज़ीरो"
-  },
   "SrpListHideAccounts": {
     "message": "$1 एकाउंट्स छिपाएं",
     "description": "$1 is the number of accounts"
@@ -555,9 +546,6 @@
   },
   "airDropPatternTitle": {
     "message": "एयरड्रॉप पैटर्न"
-  },
-  "airgapVault": {
-    "message": "AirGap Vault"
   },
   "alert": {
     "message": "एलर्ट"
@@ -1612,9 +1600,6 @@
     "message": "ज्यादा $1 खरीदें",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyNow": {
-    "message": "अभी खरीदें"
-  },
   "buyTabOpenedToastDescription": {
     "message": "हमने खरीदने के लिए एक नया टैब खोला है।",
     "description": "Toast description shown after opening the buy flow in a new tab"
@@ -1921,9 +1906,6 @@
   "confirmTitleDescERC20ApproveTransaction": {
     "message": "यह साइट आपके टोकन को निकालने की अनुमति चाहती है"
   },
-  "confirmTitleDescERC20Revocation": {
-    "message": "यह साइट आपके ERC-20 टोकन एप्रूवल को कैंसिल करने की अनुमति चाहती है।"
-  },
   "confirmTitleDescPermission": {
     "message": "यह साइट आपके टोकन खर्च करने की अनुमति चाहती है।"
   },
@@ -2135,9 +2117,6 @@
   "convertTokenToNFTExistDescription": {
     "message": "हमने पाया है कि इस संपत्ति को NFT के रूप में जोड़ा गया है। क्या आप इसे अपनी टोकन सूची से हटाना चाहेंगे?"
   },
-  "coolWallet": {
-    "message": "CoolWallet"
-  },
   "copiedExclamation": {
     "message": "कॉपी किया गया!"
   },
@@ -2301,12 +2280,6 @@
   "dappConnections": {
     "message": "Dapp कनेक्शन्स"
   },
-  "dappScanMaliciousTitle": {
-    "message": "बुरी नीयत वाली वेबसाइट का पता चला"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "इस वेबसाइट को खतरनाक माना गया है। अगर आप अपना सीक्रेट रिकवरी फ्रेज़ बताते हैं, तो आप अपने फंड्स को खतरे में डाल सकते हैं।"
-  },
   "dappSuggested": {
     "message": "सुझावित साइट"
   },
@@ -2355,9 +2328,6 @@
   },
   "dateCreated": {
     "message": "बनाने की तारीख"
-  },
-  "dcent": {
-    "message": "D'Cent"
   },
   "debitCreditPurchaseOptions": {
     "message": "डेबिट या क्रेडिट कार्ड से खरीदारी के विकल्प"
@@ -2683,9 +2653,6 @@
   "downloadAppTitle": {
     "message": "QR कोड स्कैन करें और ऐप डाउनलोड करें"
   },
-  "downloadGoogleChrome": {
-    "message": "Google Chrome डाउनलोड करें"
-  },
   "downloadMetaMaskMobileDescription": {
     "message": "हमारे ऐप में फेस ID से आप पासवर्ड भूल जाने पर भी लॉग इन कर सकते हैं। MetaMask को अपने साथ हर जगह लेकर जाएं!"
   },
@@ -2694,9 +2661,6 @@
   },
   "downloadMetaMaskMobileTitle": {
     "message": "हमारा मोबाइल ऐप प्राप्त करें"
-  },
-  "downloadNow": {
-    "message": "अभी डाउनलोड करें"
   },
   "downloadStateLogs": {
     "message": "स्टेट लॉग डाउनलोड करें"
@@ -3461,9 +3425,6 @@
   "hardwareWalletSubmissionWarningTitle": {
     "message": "सबमिट करें पर क्लिक करने से पहले:"
   },
-  "hardwareWalletSupportLinkConversion": {
-    "message": "यहां क्लिक करें"
-  },
   "hardwareWalletTitleEthAppNotOpen": {
     "message": "Ethereum ऐप खोलें"
   },
@@ -3473,12 +3434,6 @@
   },
   "hardwareWallets": {
     "message": "किसी hardware wallet को कनेक्ट करें"
-  },
-  "hardwareWalletsInfo": {
-    "message": "hardware wallet इंटीग्रेशन्स, एक्सटर्नल सर्वरों पर एपीआई कॉल्स की मदद लेते हैं, जो आपके आईपी एड्रेस और आपके द्वारा इंटरैक्ट किए गए स्मार्ट कॉन्ट्रैक्ट एड्रेस को देख सकता है।"
-  },
-  "hardwareWalletsMsg": {
-    "message": "किसी hardware wallet को चुनें, जिसे आप MetaMask के साथ इस्तेमाल करना चाहते हैं।"
   },
   "helpAndSettings": {
     "message": "सहायता और सेटिंग्स"
@@ -3844,9 +3799,6 @@
     "message": "JSON फाइल",
     "description": "format for importing an account"
   },
-  "keycardShell": {
-    "message": "कीकार्ड शैल"
-  },
   "keyringAccountName": {
     "message": "अकाउंट का नाम"
   },
@@ -3899,9 +3851,6 @@
   },
   "learnMoreAboutPrivacy": {
     "message": "गोपनीयता की सर्वोत्तम प्रथाओं के बारे में और जानें।"
-  },
-  "learnMoreKeystone": {
-    "message": "ज़्यादा जानें"
   },
   "learnMoreUpperCase": {
     "message": "ज़्यादा जानें"
@@ -3970,17 +3919,8 @@
   "ledgerFirefoxNotSupportedTitle": {
     "message": "Firefox सपोर्टेड नहीं है"
   },
-  "ledgerLiveApp": {
-    "message": "Ledger Live ऐप"
-  },
   "ledgerLocked": {
     "message": "Ledger डिवाइस से कनेक्ट नहीं हो सकता। कृपया पक्का करें कि आपका डिवाइस अनलॉक है और Ethereum ऐप खुला है।"
-  },
-  "ledgerMultipleDevicesUnsupportedInfoDescription": {
-    "message": "नया डिवाइस कनेक्ट करने के लिए, पिछले डिवाइस को डिस्कनेक्ट करें।"
-  },
-  "ledgerMultipleDevicesUnsupportedInfoTitle": {
-    "message": "आप एक समय में केवल एक ही Ledger कनेक्ट कर सकते हैं"
   },
   "ledgerTimeout": {
     "message": "Ledger Live जवाब देने में बहुत अधिक समय ले रहा है या कनेक्शन टाइमआउट हो गया है। पक्का करें कि Ledger Live ऐप खुला है और आपका डिवाइस अनलॉक है।"
@@ -5265,10 +5205,6 @@
   },
   "onboardingMetametricsTitle": {
     "message": "MetaMask को बेहतर बनाने में मदद करें"
-  },
-  "onboardingOptionIcon": {
-    "message": "$1 आइकन",
-    "description": "$1 is the icon name"
   },
   "onboardingSignInWith": {
     "message": "$1 के साथ साइन इन करें",
@@ -7513,11 +7449,11 @@
   },
   "securitySocialLoginEnabledDescription": {
     "message": "अपने अकाउंट और सीक्रेट रिकवरी फ्रेज़ को रिकवर करने के लिए अपने $1 लॉगिन और MetaMask पासवर्ड का उपयोग करें।",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySocialLoginLabel": {
     "message": "$1 रिकवरी",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySrpLabel": {
     "message": "सीक्रेट रिकवरी फ्रेज़"
@@ -8970,34 +8906,6 @@
   },
   "statusNotConnected": {
     "message": "कनेक्ट नहीं है"
-  },
-  "step1LatticeWallet": {
-    "message": "अपना Lattice1 कनेक्ट करें"
-  },
-  "step1LatticeWalletMsg": {
-    "message": "MetaMask के सेट अप और ऑनलाइन होने के बाद आप उसे अपने Lattice1 डिवाइस से कनेक्ट कर सकते हैं। अपना डिवाइस अनलॉक करें और अपनी डिवाइस ID तैयार रखें।",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step1LedgerWallet": {
-    "message": "Ledger ऐप डाउनलोड करें"
-  },
-  "step1LedgerWalletMsg": {
-    "message": "$1 अनलॉक करने के लिए डाउनलोड करें, सेट करें और अपना पासवर्ड डालें।",
-    "description": "$1 represents the `ledgerLiveApp` localization value"
-  },
-  "step1TrezorWallet": {
-    "message": "अपने Trezor को कनेक्ट करें"
-  },
-  "step1TrezorWalletMsg": {
-    "message": "अपने Trezor को सीधे अपने कंप्यूटर में प्लग करें और इसे अनलॉक करें। पक्का करें कि आप सही पासफ्रेज का इस्तेमाल कर रहे हैं।",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step2LedgerWallet": {
-    "message": "अपने Ledger को कनेक्ट करें"
-  },
-  "step2LedgerWalletMsg": {
-    "message": "अपने Ledger को सीधे अपने कंप्यूटर में प्लग करें, फिर इसे अनलॉक करें और Ethereum ऐप खोलें।",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "stillConnectingTo": {
     "message": "अब भी $1 से कनेक्ट किया जा रहा है...",

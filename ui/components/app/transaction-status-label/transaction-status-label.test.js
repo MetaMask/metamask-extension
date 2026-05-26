@@ -20,15 +20,9 @@ jest.mock('../../ui/tooltip', () => ({
 }));
 
 describe('TransactionStatusLabel Component', () => {
-  it('should render CONFIRMED status and date', () => {
-    const props = {
-      status: 'confirmed',
-      date: 'June 1',
-      statusOnly: false,
-    };
-
-    render(<TransactionStatusLabel {...props} />);
-    expect(screen.getByText('June 1')).toBeInTheDocument();
+  it('renders translated status text for confirmed transactions', () => {
+    render(<TransactionStatusLabel status={TransactionStatus.confirmed} />);
+    expect(screen.getByText(TransactionStatus.confirmed)).toBeInTheDocument();
   });
 
   it('should render PENDING status when submitted and isEarliestNonce is true', () => {
@@ -134,28 +128,6 @@ describe('TransactionStatusLabel Component', () => {
 
     render(<TransactionStatusLabel {...props} />);
     expect(screen.getByText('queued')).toBeInTheDocument();
-  });
-
-  it('should display date for confirmed transactions when not statusOnly', () => {
-    const props = {
-      status: TransactionStatus.confirmed,
-      date: 'June 1',
-      statusOnly: false,
-    };
-
-    render(<TransactionStatusLabel {...props} />);
-    expect(screen.getByText('June 1')).toBeInTheDocument();
-  });
-
-  it('should display status text for confirmed transactions when statusOnly is true', () => {
-    const props = {
-      status: TransactionStatus.confirmed,
-      date: 'June 1',
-      statusOnly: true,
-    };
-
-    render(<TransactionStatusLabel {...props} />);
-    expect(screen.getByText(TransactionStatus.confirmed)).toBeInTheDocument();
   });
 
   it('label overrides the displayed text', () => {
