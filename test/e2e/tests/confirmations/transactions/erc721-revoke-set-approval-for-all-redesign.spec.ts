@@ -31,7 +31,11 @@ describe('Confirmation Redesign ERC721 Revoke setApprovalForAll', function () {
       await withTransactionEnvelopeTypeFixtures(
         this.test?.fullTitle(),
         TransactionEnvelopeType.feeMarket,
-        async ({ driver, contractRegistry, localNodes }: TestSuiteArguments) => {
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
           await login(driver, { localNode: localNodes?.[0] });
           await setTokenPermissions(driver, {
             assetType: 'erc721',

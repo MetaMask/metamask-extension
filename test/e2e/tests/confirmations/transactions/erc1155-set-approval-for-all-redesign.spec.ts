@@ -14,7 +14,11 @@ describe('Confirmation Redesign ERC1155 setApprovalForAll', function () {
       await withTransactionEnvelopeTypeFixtures(
         this.test?.fullTitle(),
         TransactionEnvelopeType.legacy,
-        async ({ driver, contractRegistry, localNodes }: TestSuiteArguments) => {
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
           await login(driver, { localNode: localNodes?.[0] });
           await setTokenPermissions(driver, {
             assetType: 'erc1155',
