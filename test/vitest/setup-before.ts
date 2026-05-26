@@ -81,6 +81,18 @@ vi.mock('../../app/scripts/services/oauth/web-authenticator-factory', () => ({
     globalThis.chrome?.identity ?? globalThis.browser?.identity,
 }));
 
+vi.mock('@ledgerhq/hw-transport', () => ({
+  default: class Transport {},
+}));
+vi.mock('@ledgerhq/hw-transport/lib-es/Transport.js', () => ({
+  default: class Transport {},
+}));
+vi.mock('@metamask/eth-ledger-bridge-keyring', () => ({
+  LedgerIframeBridge: class LedgerIframeBridge {},
+  LedgerKeyring: class LedgerKeyring {},
+  getTransactionSelector: vi.fn(),
+}));
+
 (globalThis as typeof globalThis & { self?: typeof globalThis }).self ??=
   globalThis;
 

@@ -12,7 +12,10 @@ import {
   addTransactionAndRouteToConfirmationPage,
   getCode,
 } from '../../../store/actions';
-import { selectDefaultRpcEndpointByChainId } from '../../../selectors';
+import {
+  selectDefaultRpcEndpointByChainId,
+  type NetworkConfigurationsByChainIdState,
+} from '../../../../shared/lib/selectors/networks';
 import { useConfirmationNavigation } from './useConfirmationNavigation';
 
 export function useEIP7702Account(
@@ -23,8 +26,9 @@ export function useEIP7702Account(
   const dispatch = useDispatch();
   const [transactionId, setTransactionId] = useState<string | undefined>();
   const { confirmations, navigateToId } = useConfirmationNavigation();
-  const defaultRpcEndpoint = useSelector((state) =>
-    selectDefaultRpcEndpointByChainId(state, chainId),
+  const defaultRpcEndpoint = useSelector(
+    (state: NetworkConfigurationsByChainIdState) =>
+      selectDefaultRpcEndpointByChainId(state, chainId),
   ) ?? { defaultRpcEndpoint: {} };
   const { networkClientId } = defaultRpcEndpoint as { networkClientId: string };
 

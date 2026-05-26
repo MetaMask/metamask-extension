@@ -10,7 +10,7 @@ import { toast } from '../../ui/toast/toast';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { tEn } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import {
   SECURITY_ROUTE,
@@ -18,6 +18,8 @@ import {
 } from '../../../helpers/constants/routes';
 import * as selectors from '../../../selectors';
 import ChangePassword from './change-password';
+
+const PASSKEY_LABEL_BIOMETRICS = tEn('passkeyAuthMethodBiometrics');
 
 jest.mock('../../ui/toast/toast', () => {
   const actual = jest.requireActual<typeof import('../../ui/toast/toast')>(
@@ -212,7 +214,7 @@ describe('ChangePassword', () => {
 
       await waitFor(() => {
         expect(
-          getByText(messages.unlockPageIncorrectPassword.message),
+          getByText(tEn('unlockPageIncorrectPassword')),
         ).toBeInTheDocument();
       });
     });
@@ -449,7 +451,12 @@ describe('ChangePassword', () => {
         getByTestId('change-password-passkey-verifying'),
       ).toBeInTheDocument();
       expect(
-        getByText(messages.changePasswordPasskeyVerifyingTitle.message),
+        getByText(tEn('passkeyVerifyingTitle', [PASSKEY_LABEL_BIOMETRICS])),
+      ).toBeInTheDocument();
+      expect(
+        getByText(
+          tEn('passkeyVerifyingDescription', [PASSKEY_LABEL_BIOMETRICS]),
+        ),
       ).toBeInTheDocument();
     });
 
@@ -658,7 +665,6 @@ describe('ChangePassword', () => {
       await waitFor(() => {
         expect(openExtensionInBrowser).toHaveBeenCalledWith(
           SECURITY_PASSWORD_CHANGE_V2_ROUTE,
-          'from=sidepanel',
         );
       });
 
@@ -719,7 +725,6 @@ describe('ChangePassword', () => {
         expect(jest.mocked(cancelPasskeyCeremony)).toHaveBeenCalled();
         expect(openExtensionInBrowser).toHaveBeenCalledWith(
           SECURITY_PASSWORD_CHANGE_V2_ROUTE,
-          'from=sidepanel',
         );
 
         await act(async () => {
@@ -960,7 +965,9 @@ describe('ChangePassword', () => {
         props: { title: string };
       };
       expect(firstArg.props.title).toBe(
-        messages.securityChangePasswordToastPasskeyRenewalFailed.message,
+        tEn('securityChangePasswordToastPasskeyRenewalFailed', [
+          PASSKEY_LABEL_BIOMETRICS,
+        ]),
       );
       expect(mockForceUpdateMetamaskState).toHaveBeenCalled();
       expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);

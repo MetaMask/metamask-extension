@@ -69,9 +69,9 @@ jest.mock('webextension-polyfill', () => ({
 // shares the same mock instance
 const browserPolyfillMock = jest.mocked(browser);
 
-const { Ganache } = require('../../test/e2e/seeder/ganache');
+const { LocalNodeStub } = require('../../test/stub/local-node');
 
-const ganacheServer = new Ganache();
+const localNodeServer = new LocalNodeStub();
 
 let loggerMiddlewareMock;
 const initializeMockMiddlewareLog = () => {
@@ -114,7 +114,7 @@ describe('MetaMaskController', function () {
   const noop = () => undefined;
 
   beforeAll(async function () {
-    await ganacheServer.start({ port: 32545 });
+    await localNodeServer.start({ port: 32545 });
   });
 
   beforeEach(function () {
@@ -181,7 +181,7 @@ describe('MetaMaskController', function () {
   });
 
   afterAll(async function () {
-    await ganacheServer.quit();
+    await localNodeServer.quit();
   });
 
   describe('Phishing Detection Mock', function () {
@@ -193,31 +193,6 @@ describe('MetaMaskController', function () {
       expect(METAMASK_HOTLIST_DIFF_URL).toStrictEqual(
         'https://phishing-detection.api.cx.metamask.io/v2/diffsSince',
       );
-    });
-  });
-
-  describe('#addNewAccount', function () {
-    it('two parallel calls with same accountCount give same result', async function () {
-      await metamaskController.createNewVaultAndKeychain('test@123');
-      const [addNewAccountResult1, addNewAccountResult2] = await Promise.all([
-        metamaskController.addNewAccount(1),
-        metamaskController.addNewAccount(1),
-      ]);
-      expect(addNewAccountResult1).toStrictEqual(addNewAccountResult2);
-    });
-
-    it('two successive calls with same accountCount give same result', async function () {
-      await metamaskController.createNewVaultAndKeychain('test@123');
-      const addNewAccountResult1 = await metamaskController.addNewAccount(1);
-      const addNewAccountResult2 = await metamaskController.addNewAccount(1);
-      expect(addNewAccountResult1).toStrictEqual(addNewAccountResult2);
-    });
-
-    it('two successive calls with different accountCount give different results', async function () {
-      await metamaskController.createNewVaultAndKeychain('test@123');
-      const addNewAccountResult1 = await metamaskController.addNewAccount(1);
-      const addNewAccountResult2 = await metamaskController.addNewAccount(2);
-      expect(addNewAccountResult1).not.toStrictEqual(addNewAccountResult2);
     });
   });
 

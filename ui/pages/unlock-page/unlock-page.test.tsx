@@ -103,6 +103,28 @@ jest.mock('@metamask/logo', () => () => {
 describe('Unlock Page', () => {
   process.env.METAMASK_BUILD_TYPE = 'main';
 
+  /** So `UnlockPasskeySection` selectors (`getAccountType` → `getCurrentKeyring`) do not throw. */
+  const mockUnlockInternalAccounts = {
+    selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+    accounts: {
+      'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        metadata: {
+          importTime: 0,
+          name: 'Test Account',
+          keyring: {
+            type: 'HD Key Tree',
+          },
+        },
+        options: {},
+        methods: ['personal_sign', 'eth_signTransaction'],
+        scopes: ['eip155:0'],
+        type: 'eip155:eoa',
+      },
+    },
+  };
+
   const mockState = {
     metamask: { passkeyRecord: null },
   };
@@ -321,6 +343,7 @@ describe('Unlock Page', () => {
     const store = configureMockStore([thunk])({
       metamask: {
         completedOnboarding: true,
+        internalAccounts: mockUnlockInternalAccounts,
         passkeyRecord: {
           credentialId: 'cred',
           derivationMethod: 'prf',
@@ -347,6 +370,7 @@ describe('Unlock Page', () => {
     const store = configureMockStore([thunk])({
       metamask: {
         completedOnboarding: true,
+        internalAccounts: mockUnlockInternalAccounts,
         passkeyRecord: {
           credentialId: 'cred',
           derivationMethod: 'prf',
@@ -373,6 +397,7 @@ describe('Unlock Page', () => {
     const store = configureMockStore([thunk])({
       metamask: {
         completedOnboarding: false,
+        internalAccounts: mockUnlockInternalAccounts,
         passkeyRecord: {
           credentialId: 'cred',
           derivationMethod: 'prf',

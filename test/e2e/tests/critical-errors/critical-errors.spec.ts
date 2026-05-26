@@ -21,6 +21,7 @@ import {
 const BACKGROUND_CONNECTION_TIMEOUT = 15_000;
 
 describe('Critical errors', function (this: Suite) {
+  this.timeout(120_000);
   it('shows critical error screen when background is unresponsive', async function () {
     await withFixtures(
       {
@@ -43,6 +44,7 @@ describe('Critical errors', function (this: Suite) {
         const criticalErrorPage = new CriticalErrorPage(driver);
         await criticalErrorPage.checkPageIsLoaded();
         await criticalErrorPage.validateTroubleStartingDescription();
+        await criticalErrorPage.validateReinstallMetamaskLink();
         await criticalErrorPage.validateErrorMessage(
           'Background connection unresponsive',
         );
@@ -75,6 +77,7 @@ describe('Critical errors', function (this: Suite) {
         const criticalErrorPage = new CriticalErrorPage(driver);
         await criticalErrorPage.checkPageIsLoaded();
         await criticalErrorPage.validateTroubleStartingDescription();
+        await criticalErrorPage.validateReinstallMetamaskLink();
         await criticalErrorPage.validateErrorMessage(
           'Background connection unresponsive',
         );
@@ -83,7 +86,6 @@ describe('Critical errors', function (this: Suite) {
   });
 
   it('shows critical error screen when background takes over 16 seconds to initialize, and allows user to restore accounts', async function () {
-    this.timeout(120_000);
     await withFixtures(
       {
         ...getConfig(this.test?.fullTitle(), {
@@ -102,6 +104,7 @@ describe('Critical errors', function (this: Suite) {
         const criticalErrorPage = new CriticalErrorPage(driver);
         await criticalErrorPage.checkPageIsLoaded();
         await criticalErrorPage.validateTroubleStartingDescription();
+        await criticalErrorPage.validateReinstallMetamaskLink();
         await criticalErrorPage.validateErrorMessage(
           'Background initialization timeout',
         );
@@ -129,7 +132,6 @@ describe('Critical errors', function (this: Suite) {
   });
 
   it('shows critical error screen when background takes over 16 seconds to sync state, and allows user to restore accounts', async function () {
-    this.timeout(120_000);
     await withFixtures(
       {
         ...getConfig(this.test?.fullTitle(), {
@@ -148,6 +150,7 @@ describe('Critical errors', function (this: Suite) {
         const criticalErrorPage = new CriticalErrorPage(driver);
         await criticalErrorPage.checkPageIsLoaded();
         await criticalErrorPage.validateTroubleStartingDescription();
+        await criticalErrorPage.validateReinstallMetamaskLink();
         await criticalErrorPage.validateErrorMessage(
           'Background state sync timeout',
         );

@@ -33,7 +33,7 @@ const BASE_ENV: Record<string, string> = {
   RUN_ID: '99',
   PR_NUMBER: '42',
   HEAD_COMMIT_HASH: 'abc1234567',
-  MERGE_BASE_COMMIT_HASH: 'def7654321',
+  BUNDLE_SIZE_BASELINE_COMMIT_HASHES: 'def7654321',
   HOST_URL: 'https://ci.example.com',
   BUILDS_FROM_SHA: 'abc1234567',
   BUILDS_FROM_RUN: '99',
@@ -154,6 +154,18 @@ describe('start() entry point', () => {
         commentBody: expect.stringContaining('<p>artifacts</p>'),
       }),
     );
+  });
+
+  it('passes through missing bundle-size baseline hashes', async () => {
+    setEnv({ BUNDLE_SIZE_BASELINE_COMMIT_HASHES: undefined });
+
+    await import('.');
+    await flushPromises();
+
+    expect(
+      getMocks().bundleSize.buildBundleSizeDiffSection,
+    ).toHaveBeenCalledWith(expect.any(Object), undefined);
+    expect(getMocks().utils.postCommentWithMetamaskBot).toHaveBeenCalled();
   });
 
   it('includes test plan link when TEST_PLAN_VERSION is set', async () => {

@@ -1,5 +1,6 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -20,6 +21,7 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('../../../../hooks/perps', () => ({
   usePerpsMarketFills: jest.fn(),
+  usePerpsEventTracking: () => ({ track: jest.fn() }),
 }));
 
 jest.mock('../utils/transactionTransforms', () => ({
@@ -197,6 +199,9 @@ describe('PerpsMarketRecentActivity', () => {
       expect(
         screen.getByTestId('perps-market-detail-view-all-activity'),
       ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-market-detail-view-all-activity'),
+      ).toHaveStyle({ paddingLeft: '0px', paddingRight: '0px' });
     });
 
     it('"See All" navigates to PERPS_ACTIVITY_ROUTE', () => {
@@ -211,6 +216,37 @@ describe('PerpsMarketRecentActivity', () => {
       fireEvent.click(
         screen.getByTestId('perps-market-detail-view-all-activity'),
       );
+      expect(mockNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
+    });
+
+    it('navigates to PERPS_ACTIVITY_ROUTE when the Recent Activity header text is clicked', async () => {
+      const user = userEvent.setup();
+      mockUsePerpsMarketFills.mockReturnValue({
+        fills: [],
+        isInitialLoading: false,
+      });
+      mockTransformFills.mockReturnValue([createTransaction('tx-1')]);
+
+      renderWithProvider(<PerpsMarketRecentActivity symbol="BTC" />, mockStore);
+
+      await user.click(screen.getByText(messages.perpsRecentActivity.message));
+
+      expect(mockNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
+    });
+
+    it('navigates to PERPS_ACTIVITY_ROUTE when a transaction row is tapped', () => {
+      mockUsePerpsMarketFills.mockReturnValue({
+        fills: [],
+        isInitialLoading: false,
+      });
+      mockTransformFills.mockReturnValue([createTransaction('tx-1')]);
+
+      renderWithProvider(<PerpsMarketRecentActivity symbol="BTC" />, mockStore);
+
+      const card = screen.getByTestId('transaction-card-tx-1');
+      expect(card).toHaveClass('cursor-pointer');
+
+      fireEvent.click(card);
       expect(mockNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
     });
   });

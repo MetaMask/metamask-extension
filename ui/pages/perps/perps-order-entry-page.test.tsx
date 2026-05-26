@@ -15,7 +15,8 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import mockState from '../../../test/data/mock-state.json';
-import { enLocale as messages } from '../../../test/lib/i18n-helpers';
+import { enLocale as messages, tEn } from '../../../test/lib/i18n-helpers';
+import { PERPS_MIN_MARKET_ORDER_USD } from '../../components/app/perps/constants';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
@@ -425,6 +426,44 @@ describe('PerpsOrderEntryPage', () => {
 
       expect(screen.queryByTestId('auto-close-toggle')).not.toBeInTheDocument();
     });
+
+    it('renders the order-size input with the default 0.00 placeholder (no "min $10")', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      expect(amountInput?.placeholder).toBe('0.00');
+      expect(amountInput?.placeholder).not.toMatch(/min\s*\$/iu);
+    });
+
+    it('disables submit and shows the minimum-order message when no order size has been entered', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const submitButton = screen.getByTestId('submit-order-button');
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+
+      expect(amountInput?.value).toBe('');
+      expect(submitButton).toBeDisabled();
+      expect(submitButton).toHaveTextContent(
+        tEn('perpsMinOrderSize', [`$${PERPS_MIN_MARKET_ORDER_USD}`]),
+      );
+    });
+
+    it('disables submit when the user enters an amount below the $10 minimum', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('5');
+
+      const submitButton = screen.getByTestId('submit-order-button');
+      expect(submitButton).toBeDisabled();
+      expect(submitButton).toHaveTextContent(
+        tEn('perpsMinOrderSize', [`$${PERPS_MIN_MARKET_ORDER_USD}`]),
+      );
+    });
   });
 
   describe('redirects', () => {
@@ -566,8 +605,8 @@ describe('PerpsOrderEntryPage', () => {
       mockLiveAccount.mockReturnValue({
         account: {
           ...mockAccountState,
-          availableBalance: '0',
-          availableToTradeBalance: '0',
+          spendableBalance: '0',
+          withdrawableBalance: '0',
           totalBalance: '0',
         },
         isInitialLoading: false,
@@ -586,8 +625,8 @@ describe('PerpsOrderEntryPage', () => {
       mockLiveAccount.mockReturnValue({
         account: {
           ...mockAccountState,
-          availableBalance: '0',
-          availableToTradeBalance: '0',
+          spendableBalance: '0',
+          withdrawableBalance: '0',
           totalBalance: '0',
         },
         isInitialLoading: false,
@@ -628,8 +667,8 @@ describe('PerpsOrderEntryPage', () => {
       mockLiveAccount.mockReturnValue({
         account: {
           ...mockAccountState,
-          availableBalance: '0',
-          availableToTradeBalance: '0',
+          spendableBalance: '0',
+          withdrawableBalance: '0',
           totalBalance: '0',
         },
         isInitialLoading: true,
@@ -777,7 +816,7 @@ describe('PerpsOrderEntryPage', () => {
 
       const amountContainer = screen.getByTestId('amount-input-field');
       const amountInput = amountContainer.querySelector('input');
-      // availableBalance is 10125, default leverage is 3, so max amount = 30375
+      // spendableBalance is 10125, default leverage is 3, so max amount = 30375
       // Enter 50000 which requires margin of 50000/3 ≈ 16666 > 10125
       fireEvent.change(amountInput as HTMLInputElement, {
         target: { value: '50000' },
@@ -928,8 +967,8 @@ describe('PerpsOrderEntryPage', () => {
       mockLiveAccount.mockReturnValue({
         account: {
           ...mockAccountState,
-          availableBalance: '0',
-          availableToTradeBalance: '100',
+          spendableBalance: '0',
+          withdrawableBalance: '100',
         },
         isInitialLoading: false,
       });
@@ -939,12 +978,12 @@ describe('PerpsOrderEntryPage', () => {
       expect(hasPerpBalance).toBe(true);
     });
 
-    it('falls back to availableBalance when availableToTradeBalance is absent', () => {
+    it('uses withdrawableBalance when both balances are set', () => {
       mockLiveAccount.mockReturnValue({
         account: {
           ...mockAccountState,
-          availableBalance: '100',
-          availableToTradeBalance: undefined,
+          spendableBalance: '100',
+          withdrawableBalance: '100',
         },
         isInitialLoading: false,
       });
@@ -958,8 +997,8 @@ describe('PerpsOrderEntryPage', () => {
       mockLiveAccount.mockReturnValue({
         account: {
           ...mockAccountState,
-          availableBalance: '0',
-          availableToTradeBalance: '0',
+          spendableBalance: '0',
+          withdrawableBalance: '0',
           totalBalance: '0',
         },
         isInitialLoading: false,
@@ -1159,7 +1198,7 @@ describe('PerpsOrderEntryPage', () => {
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       const slider = within(
-        screen.getByTestId('close-amount-slider'),
+        screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
       slider.focus();
       fireEvent.keyDown(slider, { key: 'ArrowLeft' });
@@ -1457,6 +1496,89 @@ describe('PerpsOrderEntryPage', () => {
         expect.anything(),
       );
     });
+
+    it('routes market order with TP/SL on new position through two-step placeOrder + updatePositionTPSL', async () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('100');
+      fireEvent.click(screen.getByTestId('auto-close-toggle'));
+
+      const tpContainer = screen.getByTestId('tp-price-input');
+      fireEvent.change(tpContainer.querySelector('input') as HTMLInputElement, {
+        target: { value: '3300' },
+      });
+      const slContainer = screen.getByTestId('sl-price-input');
+      fireEvent.change(slContainer.querySelector('input') as HTMLInputElement, {
+        target: { value: '2800' },
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      const placeOrderCall = mockSubmitRequestToBackground.mock.calls.find(
+        ([method]) => method === 'perpsPlaceOrder',
+      );
+      expect(placeOrderCall).toBeTruthy();
+      expect(placeOrderCall?.[1][0]).not.toHaveProperty('takeProfitPrice');
+      expect(placeOrderCall?.[1][0]).not.toHaveProperty('stopLossPrice');
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsUpdatePositionTPSL',
+        [
+          expect.objectContaining({
+            symbol: 'ETH',
+            takeProfitPrice: '3300',
+            stopLossPrice: '2800',
+          }),
+        ],
+      );
+    });
+
+    it('reports TP/SL attach failure when the follow-up updatePositionTPSL call fails', async () => {
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsUpdatePositionTPSL') {
+          return Promise.resolve({
+            success: false,
+            error: 'TPSL attach failed',
+          });
+        }
+        return Promise.resolve({ success: true });
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('100');
+      fireEvent.click(screen.getByTestId('auto-close-toggle'));
+
+      const tpContainer = screen.getByTestId('tp-price-input');
+      fireEvent.change(tpContainer.querySelector('input') as HTMLInputElement, {
+        target: { value: '3300' },
+      });
+      const slContainer = screen.getByTestId('sl-price-input');
+      fireEvent.change(slContainer.querySelector('input') as HTMLInputElement, {
+        target: { value: '2800' },
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsUpdatePositionTPSL',
+        expect.anything(),
+      );
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'perpsToastUpdateFailed',
+        }),
+      );
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
+        replace: true,
+      });
+    });
   });
 
   describe('formStateToOrderParams', () => {
@@ -1698,7 +1820,7 @@ describe('PerpsOrderEntryPage', () => {
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       const slider = within(
-        screen.getByTestId('close-amount-slider'),
+        screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
       slider.focus();
       fireEvent.keyDown(slider, { key: 'ArrowLeft' });

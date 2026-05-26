@@ -3,8 +3,8 @@
 import { act, waitFor } from '@testing-library/react';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { getGaslessBridgeWith7702EnabledForChain } from '../../../../shared/lib/selectors';
+import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
 import { getIsStxEnabled } from '../../../ducks/bridge/selectors';
-import { isHardwareWallet } from '../../../selectors';
 import { isRelaySupported } from '../../../store/actions';
 import { isAtomicBatchSupported } from '../../../store/controller-actions/transaction-controller';
 import { useGasIncluded7702 } from './useGasIncluded7702';
@@ -26,6 +26,9 @@ jest.mock('../../../ducks/bridge/selectors', () => ({
 
 jest.mock('../../../selectors', () => ({
   ...jest.requireActual('../../../selectors'),
+}));
+jest.mock('../../../../shared/lib/selectors/keyring', () => ({
+  ...jest.requireActual('../../../../shared/lib/selectors/keyring'),
   isHardwareWallet: jest.fn().mockReturnValue(false),
 }));
 

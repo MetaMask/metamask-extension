@@ -39,13 +39,13 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import type { AssetsControllerState } from '@metamask/assets-controller';
+import type { PerpsControllerState } from '@metamask/perps-controller';
+import type { PasskeyControllerState } from '@metamask/passkey-controller';
 import type { AppStateControllerState } from '../../../app/scripts/controllers/app-state-controller';
 import type { MetaMetricsControllerState } from '../../../app/scripts/controllers/metametrics-controller';
 import type { OnboardingControllerState } from '../../../app/scripts/controllers/onboarding';
-import type {
-  Preferences,
-  PreferencesControllerState,
-} from '../../../app/scripts/controllers/preferences-controller';
+import type { Preferences } from '../../../shared/types/preferences';
+import type { PreferencesControllerState } from '../../../app/scripts/controllers/preferences-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   ACCOUNT_2,
@@ -307,10 +307,26 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withPasskeyController(data: Partial<PasskeyControllerState>): this {
+    merge(this.fixture.data.PasskeyController, data);
+    return this;
+  }
+
   withPermissionController(
     data: Partial<PermissionControllerState<PermissionConstraint>>,
   ): this {
     merge(this.fixture.data.PermissionController, data);
+    return this;
+  }
+
+  withPerpsController(data: Partial<PerpsControllerState>): this {
+    if (!(this.fixture.data as Record<string, unknown>).PerpsController) {
+      (this.fixture.data as Record<string, unknown>).PerpsController = {};
+    }
+    merge(
+      (this.fixture.data as Record<string, unknown>).PerpsController,
+      data as Record<string, unknown>,
+    );
     return this;
   }
 

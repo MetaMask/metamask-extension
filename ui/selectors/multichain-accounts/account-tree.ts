@@ -29,14 +29,11 @@ import {
   getOrderedConnectedAccountsForActiveTab,
   getPinnedAccountsList,
   getHiddenAccountsList,
-  getPreferences,
 } from '../selectors';
+import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import { MergedInternalAccount } from '../selectors.types';
-import {
-  getInternalAccounts,
-  getInternalAccountsObject,
-  getSelectedInternalAccount,
-} from '../accounts';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
+import { getInternalAccounts, getInternalAccountsObject } from '../accounts';
 
 import type { MetaMaskReduxState } from '../../store/store';
 import { getMultichainNetworkConfigurationsByChainId } from '../multichain/networks';

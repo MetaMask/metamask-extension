@@ -7,6 +7,7 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../../tes
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { isSendBundleSupported } from '../../../../store/actions';
+import { isHardwareWallet } from '../../../../../shared/lib/selectors/keyring';
 import { useGaslessSupportedSmartTransactions } from './useGaslessSupportedSmartTransactions';
 
 jest.mock('../../../../../shared/lib/selectors', () => ({
@@ -18,24 +19,23 @@ jest.mock('../../../../store/actions', () => ({
   isSendBundleSupported: jest.fn(),
 }));
 
+jest.mock('../../../../selectors', () => ({
+  ...jest.requireActual('../../../../selectors'),
+}));
+jest.mock('../../../../../shared/lib/selectors/keyring', () => ({
+  ...jest.requireActual('../../../../../shared/lib/selectors/keyring'),
+  isHardwareWallet: jest.fn(),
+}));
+
 const CHAIN_ID_MOCK = '0x5';
-async function runHook({
-  isHardwareWalletAccount = false,
-}: { isHardwareWalletAccount?: boolean } = {}) {
-  const state = getMockConfirmStateForTransaction(
-    genUnapprovedContractInteractionConfirmation({
-      chainId: CHAIN_ID_MOCK,
-    }),
-  );
-
-  if (isHardwareWalletAccount) {
-    const { selectedAccount, accounts } = state.metamask.internalAccounts;
-    accounts[selectedAccount].metadata.keyring.type = 'Ledger Hardware';
-  }
-
+async function runHook() {
   const { result } = renderHookWithConfirmContextProvider(
     useGaslessSupportedSmartTransactions,
-    state,
+    getMockConfirmStateForTransaction(
+      genUnapprovedContractInteractionConfirmation({
+        chainId: CHAIN_ID_MOCK,
+      }),
+    ),
   );
 
   await act(async () => {
@@ -48,11 +48,13 @@ async function runHook({
 describe('useGaslessSupportedSmartTransactions', () => {
   const getIsSmartTransactionMock = jest.mocked(getIsSmartTransaction);
   const isSendBundleSupportedMock = jest.mocked(isSendBundleSupported);
+  const isHardwareWalletMock = jest.mocked(isHardwareWallet);
 
   beforeEach(() => {
     jest.resetAllMocks();
     getIsSmartTransactionMock.mockReturnValue(false);
     isSendBundleSupportedMock.mockResolvedValue(false);
+    isHardwareWalletMock.mockReturnValue(false);
   });
 
   it('returns isSupported = true when smart transactions enabled and sendBundle supported', async () => {
@@ -156,10 +158,11 @@ describe('useGaslessSupportedSmartTransactions', () => {
   });
 
   it('returns isSupported false for hardware wallets even when smart transactions and sendBundle are supported', async () => {
+    isHardwareWalletMock.mockReturnValue(true);
     getIsSmartTransactionMock.mockReturnValue(true);
     isSendBundleSupportedMock.mockResolvedValue(true);
 
-    const result = await runHook({ isHardwareWalletAccount: true });
+    const result = await runHook();
 
     expect(result).toStrictEqual({
       isSmartTransaction: true,

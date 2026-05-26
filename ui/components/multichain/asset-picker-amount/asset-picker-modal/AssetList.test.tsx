@@ -3,9 +3,9 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import {
   getCurrentNetwork,
-  getPreferences,
   getSelectedAccountCachedBalance,
 } from '../../../../selectors';
+import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import {
   getNativeCurrency,
   getTokenBalances,
@@ -63,6 +63,10 @@ jest.mock('../../networks-form/use-safe-chains', () => ({
 
 const mockAsset = jest.fn((..._args) => <div>AssetComponent</div>);
 jest.mock('./Asset', () => jest.fn((...args) => mockAsset(...args)));
+jest.mock('../../../../../shared/lib/selectors/preferences', () => ({
+  ...jest.requireActual('../../../../../shared/lib/selectors/preferences'),
+  getPreferences: jest.fn(),
+}));
 
 describe('AssetList', () => {
   const handleAssetChangeMock = jest.fn();

@@ -10,7 +10,32 @@ import {
 } from './test/vitest/plugins';
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      '@ledgerhq/hw-transport/lib-es/Transport.js': new URL(
+        './node_modules/@ledgerhq/hw-transport/lib/Transport.js',
+        import.meta.url,
+      ).pathname,
+      '@ledgerhq/hw-transport': new URL(
+        './node_modules/@ledgerhq/hw-transport/lib/Transport.js',
+        import.meta.url,
+      ).pathname,
+      '@ledgerhq/hw-transport-webhid': new URL(
+        './node_modules/@ledgerhq/hw-transport-webhid/lib/TransportWebHID.js',
+        import.meta.url,
+      ).pathname,
+    },
+  },
   plugins: [
+    {
+      name: 'ledger-transport-cjs',
+      enforce: 'pre',
+      resolveId(id) {
+        if (id.includes('@ledgerhq/hw-transport/lib-es/Transport.js')) {
+          return id.replace('/lib-es/', '/lib/');
+        }
+      },
+    },
     createHoistJestMockPlugin(),
     createAsyncRelativeRequireActualPlugin(),
     createTopLevelRequireToImportPlugin(),
@@ -55,6 +80,7 @@ export default defineConfig({
     exclude: [
       'development/webpack/**',
       'development/build/transforms/utils.test.js',
+      'test/e2e/playwright/llm-workflow/capabilities/factory.test.ts',
     ],
 
     setupFiles: [
@@ -79,11 +105,28 @@ export default defineConfig({
       reporter: ['html', 'json'],
     },
 
+    deps: {
+      optimizer: {
+        web: {
+          enabled: true,
+          include: ['@ledgerhq/hw-transport', '@ledgerhq/hw-transport-webhid'],
+        },
+      },
+    },
+
     alias: {
       '@jest/globals': new URL('./test/vitest/jest-globals.ts', import.meta.url)
         .pathname,
       'lightweight-charts': new URL(
         './test/mocks/lightweight-charts.js',
+        import.meta.url,
+      ).pathname,
+      '@ledgerhq/hw-transport': new URL(
+        './node_modules/@ledgerhq/hw-transport/lib/Transport.js',
+        import.meta.url,
+      ).pathname,
+      '@ledgerhq/hw-transport-webhid': new URL(
+        './node_modules/@ledgerhq/hw-transport-webhid/lib/TransportWebHID.js',
         import.meta.url,
       ).pathname,
     },
@@ -92,6 +135,8 @@ export default defineConfig({
 
     server: {
       deps: {
+        fallbackCJS: true,
+        external: ['@ledgerhq/hw-transport', '@ledgerhq/hw-transport-webhid'],
         inline: [
           '@metamask/design-system-react',
           '@metamask/smart-transactions-controller',

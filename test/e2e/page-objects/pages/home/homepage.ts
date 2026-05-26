@@ -1,6 +1,5 @@
 import { WebElement } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
-import { Ganache } from '../../../seeder/ganache';
 import { Anvil } from '../../../seeder/anvil';
 import HeaderNavbar from '../header-navbar';
 import { getCleanAppState, regularDelayMs } from '../../../helpers';
@@ -104,7 +103,7 @@ class HomePage {
   private readonly srpAddedToast = '[data-testid="new-srp-added-toast"]';
 
   private readonly srpAddedToastCloseButton =
-    '[data-testid="new-srp-added-toast"] ~ button[aria-label="Close"]';
+    '.toast-container button[aria-label="Close"]';
 
   private readonly surveyToast = '[data-testid="survey-toast"]';
 
@@ -519,7 +518,7 @@ class HomePage {
   }
 
   async checkLocalNodeBalanceIsDisplayed(
-    localNode?: Ganache | Anvil,
+    localNode?: Anvil,
     address = null,
   ): Promise<void> {
     let expectedBalance: string;
@@ -564,7 +563,8 @@ class HomePage {
 
   async dismissSrpAddedToast(): Promise<void> {
     console.log('Dismiss SRP added toast');
-    await this.driver.clickElementSafe(this.srpAddedToastCloseButton, 3000);
+    // The toast can take some time to appear
+    await this.driver.clickElementSafe(this.srpAddedToastCloseButton, 15_000);
   }
 
   async checkNoSurveyToastIsDisplayed(): Promise<void> {
