@@ -5,12 +5,18 @@ export type DeviceConfig = {
   wsBridgePort: number;
 };
 
-const IS_LINUX = process.platform === 'linux';
-
+// Speculos APDU/API ports are kept off 9999/5000 on every platform:
+//   - 9999 is reserved for PhishingWarningPageServer (hardcoded in
+//     test/e2e/tests/phishing-controller/mock-page-with-disallowed-iframe/
+//     index.html and the extension's phishing flow).
+//   - 5000 collides with macOS Control Center.
+// On Linux native, the helper passes these ports to speculos via
+// --apdu-port/--api-port. On macOS the docker-compose maps host
+// 9998->container 9999 and host 5001->container 5000.
 export const DEFAULT_DEVICE: DeviceConfig = {
   id: 'default',
-  apduPort: IS_LINUX ? 9999 : 9998,
-  apiPort: IS_LINUX ? 5000 : 5001,
+  apduPort: 9998,
+  apiPort: 5001,
   wsBridgePort: 9876,
 };
 
@@ -18,8 +24,8 @@ export const DEVICE_PRESETS: DeviceConfig[] = [
   DEFAULT_DEVICE,
   {
     id: 'second',
-    apduPort: IS_LINUX ? 9998 : 9997,
-    apiPort: IS_LINUX ? 5000 : 5002,
+    apduPort: 9997,
+    apiPort: 5002,
     wsBridgePort: 9875,
   },
 ];
