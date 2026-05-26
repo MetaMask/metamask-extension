@@ -297,18 +297,16 @@ describe('TokenList', () => {
   });
 
   it('does not render zero-balance mUSD imported by token detection', () => {
-    jest
-      .mocked(getAssetsBySelectedAccountGroup)
-      .mockReturnValue(
-        createAccountGroupAssets([
-          createAsset({
-            symbol: 'MUSD',
-            address: MUSD_TOKEN_ADDRESS,
-            balance: '0',
-          }),
-          createAsset({ symbol: 'USDC', fiatBalance: 25 }),
-        ]),
-      );
+    jest.mocked(getAssetsBySelectedAccountGroup).mockReturnValue(
+      createAccountGroupAssets([
+        createAsset({
+          symbol: 'MUSD',
+          address: MUSD_TOKEN_ADDRESS,
+          balance: '0',
+        }),
+        createAsset({ symbol: 'USDC', fiatBalance: 25 }),
+      ]),
+    );
 
     render();
 
@@ -317,18 +315,16 @@ describe('TokenList', () => {
   });
 
   it('renders mUSD when it has a balance', () => {
-    jest
-      .mocked(getAssetsBySelectedAccountGroup)
-      .mockReturnValue(
-        createAccountGroupAssets([
-          createAsset({
-            symbol: 'MUSD',
-            address: MUSD_TOKEN_ADDRESS,
-            balance: '1',
-            fiatBalance: 1,
-          }),
-        ]),
-      );
+    jest.mocked(getAssetsBySelectedAccountGroup).mockReturnValue(
+      createAccountGroupAssets([
+        createAsset({
+          symbol: 'MUSD',
+          address: MUSD_TOKEN_ADDRESS,
+          balance: '1',
+          fiatBalance: 1,
+        }),
+      ]),
+    );
 
     render();
 
