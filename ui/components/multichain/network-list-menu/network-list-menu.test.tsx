@@ -299,7 +299,9 @@ describe('NetworkListMenu', () => {
   it('does not render the custom networks section when there are no custom networks', () => {
     const { queryByText } = render({ includeCustomNetworks: false });
 
-    expect(queryByText(messages.customNetworks.message)).not.toBeInTheDocument();
+    expect(
+      queryByText(messages.customNetworks.message),
+    ).not.toBeInTheDocument();
   });
 
   it('renders custom networks in a separate section when custom networks are available', () => {

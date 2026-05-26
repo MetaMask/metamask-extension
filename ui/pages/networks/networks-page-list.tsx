@@ -311,9 +311,7 @@ export const NetworksPageList = ({
             flexDirection={BoxFlexDirection.Row}
             justifyContent={BoxJustifyContent.Between}
           >
-            <Text color={TextColor.TextAlternative}>
-              {t('customNetworks')}
-            </Text>
+            <Text color={TextColor.TextAlternative}>{t('customNetworks')}</Text>
           </Box>
         ) : null}
 
