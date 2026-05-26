@@ -188,6 +188,10 @@ async function main(): Promise<void> {
             description: `run performance e2e tests`,
             type: 'boolean',
           })
+          .option('ledger', {
+            description: `run hardware wallet (Ledger/Speculos) e2e tests only`,
+            type: 'boolean',
+          })
           .option('build-type', {
             description: `Sets the build-type to test for. This may filter out tests.`,
             type: 'string',
@@ -225,6 +229,7 @@ async function main(): Promise<void> {
     updatePrivacySnapshot,
     multiProvider,
     performance: runPerformanceTests,
+    ledger: runLedgerTests,
   } = argv as {
     browser?: 'chrome' | 'firefox';
     debug?: boolean;
@@ -236,6 +241,7 @@ async function main(): Promise<void> {
     updatePrivacySnapshot?: boolean;
     multiProvider?: boolean;
     performance?: boolean;
+    ledger?: boolean;
   };
 
   let testPaths: string[];
@@ -282,6 +288,9 @@ async function main(): Promise<void> {
     testPaths = await getTestPathsForTestDir(testDir);
   } else if (runPerformanceTests) {
     const testDir = path.join(__dirname, '../performance-tests');
+    testPaths = await getTestPathsForTestDir(testDir);
+  } else if (runLedgerTests) {
+    const testDir = path.join(__dirname, 'tests/hardware-wallets/ledger');
     testPaths = await getTestPathsForTestDir(testDir);
   } else {
     const testDir = path.join(__dirname, 'tests');

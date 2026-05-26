@@ -68,6 +68,7 @@
     "test:integration:update-baseline:strict": "UPDATE_BASELINE=strict yarn test:integration",
     "test:integration:coverage": "yarn test:integration --coverage",
     "test:e2e:chrome": "SELENIUM_BROWSER=chrome tsx test/e2e/run-all.mts",
+    "test:e2e:chrome:ledger": "SELENIUM_BROWSER=chrome tsx test/e2e/run-all.mts --ledger",
     "test:e2e:chrome:dist": "SELENIUM_BROWSER=chrome tsx test/e2e/run-all.mts --dist",
     "test:e2e:chrome:flask": "SELENIUM_BROWSER=chrome tsx test/e2e/run-all.mts --build-type flask",
     "test:api-specs": "SELENIUM_BROWSER=chrome tsx test/e2e/run-openrpc-api-test-coverage.ts",

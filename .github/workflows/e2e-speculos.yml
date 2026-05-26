@@ -42,8 +42,9 @@ jobs:
     with:
       test-suite-name: 'Speculos ${{ matrix.device.id }}'
       build-artifact: speculos-test-build
-      test-command: 'SPECULOS_E2E=1 SPECULOS_DEVICE=${{ matrix.device.id }} SPECULOS_ELF=${{ matrix.device.elf }} yarn test:e2e:single "test/e2e/tests/hardware-wallets/ledger/ledger-account.spec.ts" "test/e2e/tests/hardware-wallets/ledger/ledger-send.spec.ts" "test/e2e/tests/hardware-wallets/ledger/ledger-error-modals.spec.ts" "test/e2e/tests/hardware-wallets/ledger/ledger-erc20.spec.ts" "test/e2e/tests/hardware-wallets/ledger/ledger-erc721.spec.ts" --browser=chrome'
+      test-command: >-
+        SPECULOS_E2E=1 SPECULOS_DEVICE=${{ matrix.device.id }} SPECULOS_ELF=${{ matrix.device.elf }} yarn test:e2e:chrome:ledger
       builds-from-run: ''
-      pre-test-command: 'pip install speculos==0.26.8'
+      install-speculos: 'speculos==0.26.8'
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}

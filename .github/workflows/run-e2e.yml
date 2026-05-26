@@ -41,13 +41,13 @@ on:
           ./test-artifacts
           ./test/test-results/e2e
         description: The path to the test artifacts
-      services:
-        description: 'Path to a docker-compose file for extra services (e.g. test/e2e/speculos/docker-compose.yml)'
+      pre-test-command:
+        description: 'Command to run before tests (e.g. installing native dependencies)'
         required: false
         default: ''
         type: string
-      pre-test-command:
-        description: 'Command to run before tests (e.g. installing native dependencies)'
+      install-speculos:
+        description: 'Speculos pip package spec to install (e.g. speculos==0.26.8)'
         required: false
         default: ''
         type: string
@@ -106,6 +106,10 @@ jobs:
         if: ${{ steps.restore-metamask.outputs.cache-hit != 'true'}}
         run: yarn mm-foundryup
 
+      - name: Install speculos
+        if: ${{ inputs.install-speculos != '' }}
+        run: pip install ${{ inputs.install-speculos }}
+
       - name: Download build artifact
         if: ${{ inputs.build-artifact != '' }}
         id: download-build-artifact
@@ -149,10 +153,6 @@ jobs:
         with:
           name: ${{ env.JOB_NAME }}
           path: ./previous-test-results/
-
-      - name: Start extra Docker services
-        if: ${{ inputs.services != '' }}
-        run: docker-compose -f ${{ inputs.services }} up -d
 
       - name: Pre-test setup
         if: ${{ inputs.pre-test-command != '' }}
