@@ -16,6 +16,24 @@ export const TRX_BALANCE = 6072392; // ~6.07 TRX
 export const TRX_TO_USD_RATE = 0.29469;
 export const SUN_PER_TRX = 1_000_000;
 
+const TRON_BLOCK_RESPONSE = {
+  blockID: '0000000004b6f733ff89d72ddc1ce1eabd6045d84cbc4eb0a7e88d9223c12c5e',
+  block_header: {
+    raw_data: {
+      number: 79099699,
+      txTrieRoot:
+        '82bee4864136cf3b1e8ca1f67dd8edba1cfcbf37169fd58d16e29223d5ec3425',
+      witness_address: '4162398d516b555ac64af24416e05c199c01823048',
+      parentHash:
+        '0000000004b6f732a48af7041c4e68a8f472c8072ed98c4a8126bc6d01a9dd0b',
+      version: 32,
+      timestamp: 1767962214000,
+    },
+    witness_signature:
+      'b93cc232e26d2a1751dbaea8985aac5bac9d64b2c644021e96343c14f59212eb359ff52a6d46464bf61d56275ea26e38f903ffc253fca4f55097d0824136271b00',
+  },
+};
+
 // Feature flags URL
 export const FEATURE_FLAGS_URL =
   'https://client-config.api.cx.metamask.io/v1/flags';
@@ -859,24 +877,29 @@ export async function mockTronGetBlock(
     .forPost(tronInfuraUrl('/wallet/getblock'))
     .thenCallback(() => ({
       statusCode: 200,
-      json: {
-        blockID:
-          '0000000004b6f733ff89d72ddc1ce1eabd6045d84cbc4eb0a7e88d9223c12c5e',
-        block_header: {
-          raw_data: {
-            number: 79099699,
-            txTrieRoot:
-              '82bee4864136cf3b1e8ca1f67dd8edba1cfcbf37169fd58d16e29223d5ec3425',
-            witness_address: '4162398d516b555ac64af24416e05c199c01823048',
-            parentHash:
-              '0000000004b6f732a48af7041c4e68a8f472c8072ed98c4a8126bc6d01a9dd0b',
-            version: 32,
-            timestamp: 1767962214000,
-          },
-          witness_signature:
-            'b93cc232e26d2a1751dbaea8985aac5bac9d64b2c644021e96343c14f59212eb359ff52a6d46464bf61d56275ea26e38f903ffc253fca4f55097d0824136271b00',
-        },
-      },
+      json: TRON_BLOCK_RESPONSE,
+    }));
+}
+
+export async function mockTronGetNowBlock(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forPost(tronInfuraUrl('/wallet/getnowblock'))
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: TRON_BLOCK_RESPONSE,
+    }));
+}
+
+export async function mockTronGetBlockByNum(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forPost(tronInfuraUrl('/wallet/getblockbynum'))
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: TRON_BLOCK_RESPONSE,
     }));
 }
 
@@ -1154,6 +1177,8 @@ export async function mockTronApis(
     await mockTokensV3Assets(mockServer),
     await mockTronFeatureFlags(mockServer),
     await mockTronGetBlock(mockServer),
+    await mockTronGetNowBlock(mockServer),
+    await mockTronGetBlockByNum(mockServer),
     await mockTronGetAccount(mockServer, mockZeroBalance),
     await mockTronGetAccountResource(mockServer),
     await mockTronGetTrc20Transactions(mockServer),
