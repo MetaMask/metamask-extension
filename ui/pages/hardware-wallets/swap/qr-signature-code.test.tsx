@@ -56,6 +56,23 @@ describe('QrSignatureCode', () => {
     expect(getByTestId('qr-code-svg')).toBeDefined();
   });
 
+  it('renders the QR code with a padded white background for scanning', () => {
+    const payload = {
+      type: 'eth-sign-request',
+      cbor: 'a201010203',
+    };
+
+    const { container } = render(<QrSignatureCode payload={payload} />);
+
+    expect(container.firstElementChild).toHaveStyle({
+      width: '280px',
+      height: '280px',
+      padding: '20px',
+      boxSizing: 'border-box',
+      backgroundColor: 'var(--qr-code-white-background)',
+    });
+  });
+
   it('renders the QR code value uppercase', () => {
     const payload = {
       type: 'eth-sign-request',

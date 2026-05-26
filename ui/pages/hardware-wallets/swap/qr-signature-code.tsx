@@ -12,6 +12,8 @@ import type { QrHardwareSignRequest } from './types';
 const QR_FRAGMENT_SIZE = 200;
 const QR_REFRESH_RATE = 200;
 const QR_CODE_SIZE = 240;
+const QR_CODE_PADDING = 20;
+const QR_CODE_CONTAINER_SIZE = QR_CODE_SIZE + QR_CODE_PADDING * 2;
 
 /**
  * Renders an animated QR code for QR hardware wallet signing. Displays a
@@ -68,7 +70,13 @@ const QrSignatureCode = ({
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Center}
       marginTop={4}
-      style={{ width: QR_CODE_SIZE, height: QR_CODE_SIZE }}
+      style={{
+        width: QR_CODE_CONTAINER_SIZE,
+        height: QR_CODE_CONTAINER_SIZE,
+        padding: QR_CODE_PADDING,
+        boxSizing: 'border-box',
+        backgroundColor: 'var(--qr-code-white-background)',
+      }}
     >
       <QRCodeSVG value={currentQrCode.toUpperCase()} size={QR_CODE_SIZE} />
     </Box>
