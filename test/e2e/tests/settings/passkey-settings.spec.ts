@@ -28,7 +28,6 @@ describe('Passkey settings', function () {
           .withPasskeyController({ passkeyRecord: DUMMY_PASSKEY_RECORD })
           .build(),
         title: this.test?.fullTitle(),
-        ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
         virtualAuthenticator: true,
       },
       async ({ driver }: { driver: Driver }) => {
@@ -69,7 +68,6 @@ describe('Passkey settings', function () {
       {
         fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
-        ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
         virtualAuthenticator: true,
       },
       async ({

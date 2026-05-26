@@ -14,8 +14,7 @@ class ActivityListPage {
     xpath: "//div[contains(text(), 'Base fee')]",
   };
 
-  private readonly bridgeTransactionCompleted =
-    '.transaction-status-label--confirmed';
+  private readonly bridgeTransactionCompleted = '[data-tx-status="confirmed"]';
 
   private readonly bridgeTransactionPending =
     '.bridge-transaction-details__segment--pending';
@@ -27,20 +26,14 @@ class ActivityListPage {
 
   private readonly completedTransactions = '[data-testid="activity-list-item"]';
 
-  private readonly confirmedTransactions = {
-    text: 'Confirmed',
-    css: '.transaction-status-label--confirmed',
-  };
+  private readonly confirmedTransactions = '[data-tx-status="confirmed"]';
 
   private readonly copyTransactionHashButton = {
     text: 'Copy transaction ID',
     tag: 'button',
   };
 
-  private readonly failedTransactions = {
-    text: 'Failed',
-    css: '.transaction-status-label--failed',
-  };
+  private readonly failedTransactions = '[data-tx-status="failed"]';
 
   private readonly feeValues = '.currency-display-component__text';
 
@@ -48,7 +41,7 @@ class ActivityListPage {
     '[data-testid="transaction-breakdown__gas-price"]';
 
   private readonly pendingTransactionItems =
-    '.transaction-status-label--pending';
+    '[data-tx-status="submitted"], [data-tx-status="approved"], [data-tx-status="unapproved"], [data-tx-status="pending"]';
 
   private readonly speedupInlineButton = '[data-testid="speed-up-button"]';
 
@@ -551,7 +544,7 @@ class ActivityListPage {
   async checkWaitForTransactionStatus(
     status: 'confirmed' | 'cancelled' | 'pending',
   ) {
-    await this.driver.waitForSelector(`.transaction-status-label--${status}`, {
+    await this.driver.waitForSelector(`[data-tx-status="${status}"]`, {
       timeout: 5000,
     });
   }
