@@ -101,7 +101,6 @@ export function useHwSwapConfirmationMonitoring({
     confirmationTxData?.id,
     signatureState.status,
     dispatchSignatureEvent,
-    retryGenerationRef,
     isDeviceDisconnectedRef,
   ]);
 
