@@ -549,7 +549,7 @@ async function mockFeatureFlags(
 ) {
   const extensionSkipTransactionStatusPage =
     additionalFlags.extensionSkipTransactionStatusPage ??
-    getRegistryEntry('extensionSkipTransactionStatusPage')?.productionDefault;
+    getRegistryBooleanFlag('extensionSkipTransactionStatusPage');
 
   await mockServer
     .forGet('https://client-config.api.cx.metamask.io/v1/flags')
