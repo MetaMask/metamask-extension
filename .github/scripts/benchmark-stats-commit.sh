@@ -197,8 +197,14 @@ fi
 
 TEMP_FILE="${STATS_FILE}.tmp"
 
-jq --arg sha "${HEAD_COMMIT_HASH}" --argjson data "${COMMIT_DATA}" \
-    '. + {($sha): $data}' "${STATS_FILE}" > "${TEMP_FILE}"
+# COMMIT_DATA wraps presets_json and is strictly larger, so it can exceed
+# ARG_MAX too. Read it via --slurpfile from a temp file rather than passing
+# the blob on argv.
+data_file="$(mktemp)"
+printf '%s' "${COMMIT_DATA}" >"${data_file}"
+jq --arg sha "${HEAD_COMMIT_HASH}" --slurpfile data "${data_file}" \
+    '. + {($sha): $data[0]}' "${STATS_FILE}" > "${TEMP_FILE}"
+rm -f "${data_file}"
 mv "${TEMP_FILE}" "${STATS_FILE}"
 
 git add "${STATS_FILE}"
