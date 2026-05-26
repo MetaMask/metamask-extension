@@ -60,7 +60,12 @@ export type UsePerpsOrderFormOptions = {
   mode: OrderMode;
   /** Existing position data for pre-population */
   existingPosition?: ExistingPositionData;
-  /** Available balance for trading (used to compute balancePercent) */
+  /**
+   * Tradeable balance for the active account (used to compute balancePercent).
+   * For HyperLiquid unified accounts this should be `withdrawableBalance`
+   * (withdrawable + unreserved spot USDC), falling back to `spendableBalance`.
+   * See `getTradeableBalance` helper.
+   */
   availableBalance?: number;
   /** Callback when form state changes */
   onFormStateChange?: (formState: OrderFormState) => void;
@@ -116,7 +121,7 @@ export type UsePerpsOrderFormReturn = {
     liquidationPrice: string | null;
     liquidationPriceRaw: number | null;
     orderValue: string | null;
-    estimatedFees: string | null;
+    estimatedFees: number | null;
   };
   /** Handler for amount changes */
   handleAmountChange: (amount: string) => void;
@@ -348,9 +353,7 @@ export function usePerpsOrderForm({
         orderValue: formatPerpsFiat(closeValueUsd, {
           ranges: PRICE_RANGES_UNIVERSAL,
         }),
-        estimatedFees: formatPerpsFiat(estimatedFees, {
-          ranges: PRICE_RANGES_MINIMAL_VIEW,
-        }),
+        estimatedFees,
       };
     }
 
@@ -444,9 +447,7 @@ export function usePerpsOrderForm({
       orderValue: formatPerpsFiat(amount, {
         ranges: PRICE_RANGES_UNIVERSAL,
       }),
-      estimatedFees: formatPerpsFiat(estimatedFees, {
-        ranges: PRICE_RANGES_MINIMAL_VIEW,
-      }),
+      estimatedFees,
     };
   }, [
     formState.leverage,

@@ -210,6 +210,10 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
       </div>
     </div>
     <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default"
+      data-testid="bridge-banner-alerts"
+    />
+    <div
       class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-bottom-4 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--justify-content-flex-end mm-box--width-full mm-box--height-full"
     >
       <div
@@ -222,10 +226,6 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
         </p>
       </div>
     </div>
-  </div>
-  <div
-    class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default"
-  >
     <div />
   </div>
 </div>
@@ -443,6 +443,10 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
       </div>
     </div>
     <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default"
+      data-testid="bridge-banner-alerts"
+    />
+    <div
       class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-bottom-4 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--justify-content-flex-end mm-box--width-full mm-box--height-full"
     >
       <div
@@ -455,10 +459,6 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
         </p>
       </div>
     </div>
-  </div>
-  <div
-    class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default"
-  >
     <div />
   </div>
 </div>

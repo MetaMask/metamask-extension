@@ -17,6 +17,7 @@
  */
 
 import type { Json } from '@metamask/utils';
+import { ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG } from '../../../shared/lib/gator-permissions/feature-flags';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 
 // ============================================================================
@@ -132,6 +133,24 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
       featureVersion: '2',
       minimumVersion: '13.5.0',
       enabled: true,
+    },
+    status: FeatureFlagStatus.Active,
+  },
+
+  [ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG]: {
+    name: ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG,
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: {
+      permissions: [
+        'native-token-stream',
+        'native-token-periodic',
+        'erc20-token-stream',
+        'erc20-token-periodic',
+        'token-approval-revocation',
+        'native-token-allowance',
+        'erc20-token-allowance',
+      ],
     },
     status: FeatureFlagStatus.Active,
   },
@@ -2125,16 +2144,33 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
-  extensionUxPna25: {
-    name: 'extensionUxPna25',
+  coreExtensionUxCeux1024AbtestReferralUi: {
+    name: 'coreExtensionUxCeux1024AbtestReferralUi',
     type: FeatureFlagType.Remote,
     inProd: true,
-    productionDefault: true,
+    productionDefault: [
+      {
+        name: 'control',
+        scope: { type: 'threshold', value: 1 },
+      },
+      {
+        name: 'treatment',
+        scope: { type: 'threshold', value: 0 },
+      },
+    ],
     status: FeatureFlagStatus.Active,
   },
 
   extensionUxSidepanel: {
     name: 'extensionUxSidepanel',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: false,
+    status: FeatureFlagStatus.Active,
+  },
+
+  extensionUxTokenManagementFilter: {
+    name: 'extensionUxTokenManagementFilter',
     type: FeatureFlagType.Remote,
     inProd: true,
     productionDefault: false,
@@ -2196,6 +2232,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
     inProd: true,
     productionDefault: 'xyz:*',
+    status: FeatureFlagStatus.Active,
+  },
+
+  vipProgramEnabled: {
+    name: 'vipProgramEnabled',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '0.0.0',
+    },
     status: FeatureFlagStatus.Active,
   },
   rewardsBitcoinEnabledExtension: {
@@ -2472,7 +2519,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     name: 'perpsHip3BlocklistMarkets',
     type: FeatureFlagType.Remote,
     inProd: true,
-    productionDefault: 'variation 2',
+    productionDefault: '',
     status: FeatureFlagStatus.Active,
   },
 };

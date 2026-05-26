@@ -32,7 +32,6 @@ export function getAccountsControllerMessenger(
       'KeyringController:getKeyringsByType',
     ],
     events: [
-      'SnapController:stateChange',
       'KeyringController:stateChange',
       'SnapKeyring:accountAssetListUpdated',
       'SnapKeyring:accountBalancesUpdated',

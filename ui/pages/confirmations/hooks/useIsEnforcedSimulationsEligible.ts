@@ -4,9 +4,11 @@ import { useSelector } from 'react-redux';
 import {
   EnforcedSimulationsState,
   isEnforcedSimulationsEligible,
+  isEnforcedSimulationsForceEnabled,
 } from '../../../../shared/lib/transaction/enforced-simulations';
 import { getEip7702SupportedChains } from '../../../../shared/lib/eip7702-support-utils';
 import { useConfirmContext } from '../context/confirm';
+import { selectIsEnforcedSimulationsEnabled } from '../selectors/feature-flags';
 
 const EMPTY_RESPONSES: EnforcedSimulationsState['addressSecurityAlertResponses'] =
   {};
@@ -24,7 +26,12 @@ export function useIsEnforcedSimulationsEligible(): boolean {
       getEip7702SupportedChains(state.metamask),
   );
 
-  if (!currentConfirmation) {
+  const enabled = useSelector(selectIsEnforcedSimulationsEnabled);
+
+  if (
+    (!enabled && !isEnforcedSimulationsForceEnabled()) ||
+    !currentConfirmation
+  ) {
     return false;
   }
 

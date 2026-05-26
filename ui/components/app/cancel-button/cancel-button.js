@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { Button, ButtonVariant } from '@metamask/design-system-react';
 import { getMaximumGasTotalInHexWei } from '../../../../shared/lib/gas.utils';
-import { getConversionRate } from '../../../ducks/metamask/metamask';
+import { getConversionRate } from '../../../ducks/metamask/base-selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useIncrementedGasFees } from '../../../pages/confirmations/hooks/useIncrementedGasFees';
 import { isBalanceSufficient } from '../../../pages/confirmations/send-utils/send.utils';

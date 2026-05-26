@@ -517,7 +517,35 @@ describe('Transaction.utils', function () {
         });
       });
 
-      describe('nested value spoofing protection', () => {
+      describe('value spoofing protection', () => {
+        it('uses the last message object when duplicate sibling message keys are present', () => {
+          const realValue = '100000000000000000000000000000';
+          const maliciousData = `{"message":{"value":100000000000000},"message":{"value":"${realValue}"}}`;
+          const result = parse(maliciousData);
+          expect(result.message.value).toBe(realValue);
+        });
+
+        it('uses JSON key decoding when duplicate sibling message keys are escaped', () => {
+          const realValue = '100000000000000000000000000000';
+          const maliciousData = `{"message":{"value":100000000000000},"messag\\u0065":{"value":"${realValue}"}}`;
+          const result = parse(maliciousData);
+          expect(result.message.value).toBe(realValue);
+        });
+
+        it('uses the last message.value when duplicate sibling value keys are present', () => {
+          const realValue = '100000000000000000000000000000';
+          const maliciousData = `{"message":{"value":100000000000000,"value":"${realValue}"}}`;
+          const result = parse(maliciousData);
+          expect(result.message.value).toBe(realValue);
+        });
+
+        it('uses JSON key decoding when duplicate sibling value keys are escaped', () => {
+          const realValue = '100000000000000000000000000000';
+          const maliciousData = `{"message":{"value":100000000000000,"valu\\u0065":"${realValue}"}}`;
+          const result = parse(maliciousData);
+          expect(result.message.value).toBe(realValue);
+        });
+
         it('ignores nested value fields and uses actual message.value (spoofing attack prevention)', () => {
           const maliciousData = JSON.stringify({
             message: {
@@ -586,6 +614,14 @@ describe('Transaction.utils', function () {
           });
           const result = parse(data);
           expect(result.message.value).toBe('123');
+        });
+
+        it('preserves bare large integers outside message.value', () => {
+          const largeAmount =
+            '1461501637330902918203684832716283019655932542975';
+          const data = `{"message":{"details":{"amount":${largeAmount}},"value":1}}`;
+          const result = parse(data);
+          expect(result.message.details.amount).toBe(largeAmount);
         });
       });
     });

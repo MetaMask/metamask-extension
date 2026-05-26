@@ -35,7 +35,7 @@ describe('Test Snap update via snaps component', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
         const testSnaps = new TestSnaps(driver);
         const headerNavbar = new HeaderNavbar(driver);
         const snapListPage = new SnapListPage(driver);

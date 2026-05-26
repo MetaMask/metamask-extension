@@ -14,7 +14,7 @@ type ProviderConfig = {
   flaskUatClientId: string;
 };
 
-type Provider = 'GOOGLE' | 'APPLE';
+type Provider = 'GOOGLE' | 'APPLE' | 'TELEGRAM';
 
 const PROVIDER_CONFIG: Record<Provider, ProviderConfig> = {
   GOOGLE: {
@@ -38,6 +38,17 @@ const PROVIDER_CONFIG: Record<Provider, ProviderConfig> = {
     uatClientId: 'apple-uat-client-id',
     flaskUatClientIdEnv: 'APPLE_CLIENT_ID_FLASK_UAT',
     flaskUatClientId: 'apple-flask-uat-client-id',
+  },
+  TELEGRAM: {
+    clientIdEnv: 'TELEGRAM_CLIENT_ID',
+    directClientId: 'telegram-dev-client-id',
+    clientIdRefEnv: 'TELEGRAM_CLIENT_ID_REF',
+    referencedClientIdEnv: 'TELEGRAM_PROD_CLIENT_ID',
+    referencedClientId: 'telegram-prod-client-id',
+    uatClientIdEnv: 'TELEGRAM_CLIENT_ID_UAT',
+    uatClientId: 'telegram-uat-client-id',
+    flaskUatClientIdEnv: 'TELEGRAM_CLIENT_ID_FLASK_UAT',
+    flaskUatClientId: 'telegram-flask-uat-client-id',
   },
 };
 

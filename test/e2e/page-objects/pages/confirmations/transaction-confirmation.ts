@@ -124,6 +124,15 @@ class TransactionConfirmation extends Confirmation {
     text: status,
   });
 
+  private readonly enforcedSimulationsRow: RawLocator =
+    '[data-testid="enforced-simulations-row"]';
+
+  private readonly enforcedSimulationsToggle: RawLocator =
+    '[data-testid="enforced-simulations-toggle"]';
+
+  private readonly enforcedSimulationsToggleUnchecked: RawLocator =
+    '[data-testid="enforced-simulations-toggle-input"]:not(:checked)';
+
   private readonly simulationDetailsLayout: RawLocator =
     '[data-testid="simulation-details-layout"]';
 
@@ -208,6 +217,17 @@ class TransactionConfirmation extends Confirmation {
       this.estimatedSimulationDetails(''),
       { waitAtLeastGuard },
     );
+  }
+
+  async checkEnforcedSimulationsRowIsDisplayed(): Promise<void> {
+    console.log(`Waiting for enforced simulations toggle to finish loading.`);
+    await this.driver.waitForSelector(this.enforcedSimulationsRow);
+    await this.driver.waitForSelector(this.enforcedSimulationsToggle);
+  }
+
+  async checkEnforcedSimulationsToggleUnchecked(): Promise<void> {
+    console.log(`Checking enforced simulations toggle is unchecked.`);
+    await this.driver.waitForSelector(this.enforcedSimulationsToggleUnchecked);
   }
 
   /**
@@ -403,6 +423,11 @@ class TransactionConfirmation extends Confirmation {
 
   async clickCustomNonceButton() {
     await this.driver.clickElement(this.customNonceButton);
+  }
+
+  async clickEnforcedSimulationsToggle(): Promise<void> {
+    console.log(`Clicking the enforced simulations toggle.`);
+    await this.driver.clickElement(this.enforcedSimulationsToggle);
   }
 
   async clickGasFeeTokenPill() {

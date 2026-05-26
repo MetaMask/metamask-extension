@@ -7,7 +7,7 @@ import * as useSubscriptionMetrics from '../../hooks/shield/metrics/useSubscript
 import * as selectors from '../../selectors';
 import * as authSelectors from '../../selectors/identity/authentication';
 import * as subscriptionSelectors from '../../selectors/subscription';
-import * as metamaskDucks from '../../ducks/metamask/metamask';
+import * as metamaskBaseSelectors from '../../ducks/metamask/base-selectors';
 import * as environment from '../../../shared/lib/environment';
 import {
   ShieldSubscriptionProvider,
@@ -37,7 +37,7 @@ describe('ShieldSubscriptionProvider', () => {
       if (selector === selectors.getUseExternalServices) {
         return true;
       }
-      if (selector === metamaskDucks.getIsUnlocked) {
+      if (selector === metamaskBaseSelectors.getIsUnlocked) {
         return true;
       }
       if (selector === authSelectors.selectIsSignedIn) {
@@ -240,7 +240,7 @@ describe('ShieldSubscriptionProvider', () => {
         if (selector === selectors.getUseExternalServices) {
           return isBasicFunctionalityEnabled;
         }
-        if (selector === metamaskDucks.getIsUnlocked) {
+        if (selector === metamaskBaseSelectors.getIsUnlocked) {
           return true;
         }
         if (selector === authSelectors.selectIsSignedIn) {

@@ -33,10 +33,10 @@ import {
   getSuggestedNfts,
   getIpfsGateway,
   getNetworkIdentifier,
-  getSelectedInternalAccount,
   getSelectedAccountCachedBalance,
   getAddressBookEntryOrAccountName,
 } from '../../selectors';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import NftDefaultImage from '../../components/app/assets/nfts/nft-default-image/nft-default-image';
 import { getAssetImageURL, shortenAddress } from '../../helpers/utils/util';
 import {
@@ -60,6 +60,7 @@ import { useUserPreferencedCurrency } from '../../hooks/useUserPreferencedCurren
 import { useCurrencyDisplay } from '../../hooks/useCurrencyDisplay';
 import { useOriginMetadata } from '../../hooks/useOriginMetadata';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { Nav } from '../confirmations/components/confirm/nav';
 import { hideAppHeader } from '../routes/utils';
 

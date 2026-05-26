@@ -77,7 +77,7 @@ globalThis.stateHooks.getPersistedState = async function () {
  * @returns The backup state, or null if unavailable.
  */
 globalThis.stateHooks.getBackupState = async function () {
-  return await persistenceManager.getBackup();
+  return (await persistenceManager.getBackup()) ?? null;
 };
 
 const persistedStateMask = {

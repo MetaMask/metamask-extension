@@ -26,6 +26,10 @@ const {
 } = require('./websocket/account-activity-mocks');
 const { perpsWebSocketConfig } = require('./websocket/perps-mocks');
 const { WEBSOCKET_SERVICES } = require('./websocket/constants');
+const {
+  addVirtualAuthenticator,
+  removeVirtualAuthenticator,
+} = require('./webdriver/virtual-authenticator');
 
 // Register each WebSocket service explicitly.
 WebSocketRegistry.register(solanaWebSocketConfig);
@@ -126,7 +130,7 @@ function normalizeSmartContracts(smartContract) {
  * @typedef {object} Fixtures
  * @property {import('./webdriver/driver').Driver} driver - The driver number.
  * @property {ContractAddressRegistry | undefined} contractRegistry - The contract registry.
- * @property {string | object | Array} localNodeOptions - The local node(s) and options chosen ('ganache', 'anvil'...).
+ * @property {string | object | Array} localNodeOptions - The local node(s) and options chosen ('anvil', 'none').
  * @property {mockttp.MockedEndpoint[]} mockedEndpoint - The mocked endpoint.
  * @property {Bundler} bundlerServer - The bundler server.
  * @property {mockttp.Mockttp} mockServer - The mock server.
@@ -169,6 +173,7 @@ async function withFixtures(options, testSuite) {
     perpsWebSocketSpecificMocks = [],
     extendedTimeoutMultiplier = 1,
     unifiedEvmAccountsApiBalances,
+    virtualAuthenticator,
   } = options;
 
   // Normalize localNodeOptions
@@ -220,14 +225,6 @@ async function withFixtures(options, testSuite) {
           localNodes.push(localNode);
           break;
 
-        case 'ganache':
-          // eslint-disable-next-line n/global-require, no-case-declarations -- load this module conditionally
-          const { Ganache } = require('./seeder/ganache');
-          localNode = new Ganache();
-          await localNode.start(nodeOptions);
-          localNodes.push(localNode);
-          break;
-
         case 'none':
           break;
 
@@ -250,12 +247,6 @@ async function withFixtures(options, testSuite) {
           // eslint-disable-next-line n/global-require, no-case-declarations -- load this module conditionally
           const AnvilSeeder = require('./seeder/anvil-seeder');
           seeder = new AnvilSeeder(localNodes[0].getProvider());
-          break;
-
-        case 'ganache':
-          // eslint-disable-next-line n/global-require, no-case-declarations -- load this module conditionally
-          const GanacheSeeder = require('./seeder/ganache-seeder');
-          seeder = new GanacheSeeder(localNodes[0].getProvider());
           break;
 
         default:
@@ -281,12 +272,7 @@ async function withFixtures(options, testSuite) {
     fixtureServer.loadJsonState(fixtures, contractRegistry);
 
     if (localNodes[0] && useBundler) {
-      await initBundler(
-        bundlerServer,
-        localNodes[0],
-        usePaymaster,
-        localNodeOptsNormalized,
-      );
+      await initBundler(bundlerServer, localNodes[0], usePaymaster);
     }
 
     await phishingPageServer.start();
@@ -439,18 +425,30 @@ async function withFixtures(options, testSuite) {
       });
     }
 
+    const effectiveDriver = driverProxy ?? driver;
+
+    if (virtualAuthenticator) {
+      await addVirtualAuthenticator(effectiveDriver);
+    }
+
     console.log(`\nExecuting testcase: '${title}'\n`);
 
     await testSuite({
       bundlerServer,
       contractRegistry,
-      driver: driverProxy ?? driver,
+      driver: effectiveDriver,
       localNodes,
       mockedEndpoint,
       mockServer,
       extensionId,
       getNetworkReport,
       clearNetworkReport,
+      ...(virtualAuthenticator && {
+        resetVirtualAuthenticator: async () => {
+          await removeVirtualAuthenticator(effectiveDriver);
+          await addVirtualAuthenticator(effectiveDriver);
+        },
+      }),
     });
 
     const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
@@ -735,26 +733,11 @@ async function getCleanAppState(driver) {
   );
 }
 
-async function initBundler(
-  bundlerServer,
-  localNodeServer,
-  usePaymaster,
-  localNodeOptsNormalized,
-) {
+async function initBundler(bundlerServer, localNodeServer, usePaymaster) {
   try {
-    const nodeType = localNodeOptsNormalized[0].type;
-
-    let seeder;
-
-    if (nodeType === 'ganache') {
-      // eslint-disable-next-line n/global-require -- load this module conditionally
-      const GanacheSeeder = require('./seeder/ganache-seeder');
-      seeder = new GanacheSeeder(localNodeServer.getProvider());
-    } else {
-      // eslint-disable-next-line n/global-require -- load this module conditionally
-      const AnvilSeeder = require('./seeder/anvil-seeder');
-      seeder = new AnvilSeeder(localNodeServer.getProvider());
-    }
+    // eslint-disable-next-line n/global-require -- load this module conditionally
+    const AnvilSeeder = require('./seeder/anvil-seeder');
+    const seeder = new AnvilSeeder(localNodeServer.getProvider());
 
     await seeder.deploySmartContract(SMART_CONTRACTS.ENTRYPOINT);
 

@@ -26,7 +26,7 @@ jest.mock('../activity-v2/activity-list', () => ({
   ActivityList: () => null,
 }));
 
-jest.mock('../activity-v2/hooks', () => ({
+jest.mock('../activity-v2/useTransactionsQuery', () => ({
   usePrefetchTransactions: () => jest.fn(),
 }));
 
@@ -40,6 +40,10 @@ jest.mock('../../app/assets/defi-list/defi-tab', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: () => null,
+}));
+
+jest.mock('../../app/perps/perps-tab', () => ({
+  PerpsTab: () => <div data-testid="perps-tab-mock">PerpsTab</div>,
 }));
 
 describe('AccountOverviewTabs - event metrics', () => {
