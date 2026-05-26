@@ -420,7 +420,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                 </div>
               </div>
               <div
-                class="mm-box mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
+                class="mm-box mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
@@ -1705,7 +1705,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                 </div>
               </div>
               <div
-                class="mm-box mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
+                class="mm-box mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"

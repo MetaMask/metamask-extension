@@ -178,9 +178,10 @@ export const NetworksPageList = ({
     selectAdditionalNetworksBlacklistFeatureFlag,
   );
 
-  const { nonTestNetworks, testNetworks } = useNetworkManagerState({
-    showDefaultNetworks: true,
-  });
+  const { nonTestNetworks, testNetworks, isNetworkInDefaultNetworkTab } =
+    useNetworkManagerState({
+      showDefaultNetworks: true,
+    });
   const { getItemCallbacks, hasMultiRpcOptions, isNetworkEnabled } =
     useNetworkItemCallbacks();
   const { handleNetworkChange } = useNetworkChangeHandlers();
@@ -192,6 +193,19 @@ export const NetworksPageList = ({
         searchQuery,
       ),
     [nonTestNetworks, orderedNetworksList, searchQuery],
+  );
+
+  const defaultNetworks = useMemo(
+    () => orderedNetworks.filter(isNetworkInDefaultNetworkTab),
+    [isNetworkInDefaultNetworkTab, orderedNetworks],
+  );
+
+  const customNetworks = useMemo(
+    () =>
+      orderedNetworks.filter(
+        (network) => !isNetworkInDefaultNetworkTab(network),
+      ),
+    [isNetworkInDefaultNetworkTab, orderedNetworks],
   );
 
   const featuredNetworksNotYetEnabled = useMemo(() => {
@@ -275,7 +289,7 @@ export const NetworksPageList = ({
       data-testid="networks-page-list"
     >
       <Box className="flex-1 overflow-y-auto pt-2">
-        {orderedNetworks.length > 0 ? (
+        {defaultNetworks.length > 0 ? (
           <Box
             padding={4}
             paddingBottom={2}
@@ -283,32 +297,37 @@ export const NetworksPageList = ({
             justifyContent={BoxJustifyContent.Between}
           >
             <Text color={TextColor.TextAlternative}>
-              {t('enabledNetworks')}
+              {t('defaultNetworks')}
             </Text>
           </Box>
         ) : null}
 
-        <Box>{orderedNetworks.map(renderNetworkListItem)}</Box>
+        <Box>{defaultNetworks.map(renderNetworkListItem)}</Box>
 
-        {featuredNetworksNotYetEnabled.length > 0 ? (
-          <>
-            <AdditionalNetworksInfo />
-            <Box>
-              {featuredNetworksNotYetEnabled.map((network) => (
-                <AdditionalNetworkRow key={network.chainId} network={network} />
-              ))}
-            </Box>
-          </>
+        {customNetworks.length > 0 ? (
+          <Box
+            padding={4}
+            paddingBottom={2}
+            flexDirection={BoxFlexDirection.Row}
+            justifyContent={BoxJustifyContent.Between}
+          >
+            <Text color={TextColor.TextAlternative}>
+              {t('customNetworks')}
+            </Text>
+          </Box>
         ) : null}
+
+        <Box>{customNetworks.map(renderNetworkListItem)}</Box>
 
         {sortedTestNetworks.length > 0 ? (
           <Box
             paddingBottom={4}
             paddingTop={4}
+            paddingLeft={4}
+            paddingRight={4}
             flexDirection={BoxFlexDirection.Row}
             justifyContent={BoxJustifyContent.Between}
             alignItems={BoxAlignItems.Center}
-            className="px-4"
           >
             <Text color={TextColor.TextAlternative}>
               {t('showTestnetNetworks')}
@@ -323,6 +342,17 @@ export const NetworksPageList = ({
 
         {showTestnets ? (
           <Box>{sortedTestNetworks.map(renderNetworkListItem)}</Box>
+        ) : null}
+
+        {featuredNetworksNotYetEnabled.length > 0 ? (
+          <>
+            <AdditionalNetworksInfo />
+            <Box>
+              {featuredNetworksNotYetEnabled.map((network) => (
+                <AdditionalNetworkRow key={network.chainId} network={network} />
+              ))}
+            </Box>
+          </>
         ) : null}
       </Box>
 
