@@ -425,7 +425,7 @@ export default function PrivacySettings() {
                     ])}
                   />
 
-                  <BackupAndSyncToggle />
+                  <BackupAndSyncToggle isOnboarding />
 
                   <Setting
                     title={t('onboardingAdvancedPrivacyNetworkTitle')}
