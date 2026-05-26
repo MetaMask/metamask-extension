@@ -558,7 +558,7 @@ function getOptions(
       group: toOrange('Build options:'),
       type: 'string',
     },
-    manifest_version: {
+    manifestVersion: {
       alias: 'v',
       array: false,
       choices: [2, 3] as Manifest['manifest_version'][],
@@ -709,7 +709,7 @@ Threads: ${args.threads}
 Jobs per thread: ${args.jobsPerThread}
 Free RAM: ${Math.floor(getAvailableMemoryMB())}MB
 Validate Env: ${args.validateEnv}
-Manifest version: ${args.manifest_version}
+Manifest version: ${args.manifestVersion}
 Release version: ${args.releaseVersion}
 Browsers: ${args.browser.join(', ')}
 Devtool: ${args.devtool}

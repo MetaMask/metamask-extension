@@ -1,4 +1,7 @@
-import { AssetsController } from '@metamask/assets-controller';
+import {
+  AssetsController,
+  AssetsControllerMessenger,
+} from '@metamask/assets-controller';
 import { createApiPlatformClient } from '@metamask/core-backend';
 import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
@@ -6,7 +9,6 @@ import { getRootMessenger } from '../../lib/messenger';
 import {
   getAssetsControllerMessenger,
   getAssetsControllerInitMessenger,
-  AssetsControllerMessenger,
   AssetsControllerInitMessenger,
 } from '../messengers/assets/assets-controller-messenger';
 import { AssetsControllerInit } from './assets-controller-init';
