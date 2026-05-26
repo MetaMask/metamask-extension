@@ -1,32 +1,18 @@
 name: E2E Speculos Tests
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-  workflow_dispatch:
+  workflow_call:
+    inputs:
+      builds-from-run:
+        required: true
+        type: string
+        description: The run ID to get builds from
+    secrets:
+      INFURA_PROJECT_ID:
+        required: false
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout and setup
-        uses: MetaMask/action-checkout-and-setup@v3
-        with:
-          is-high-risk-environment: 'true'
-
-      - name: Build test extension
-        run: yarn build:test
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: speculos-test-build
-          path: dist/
-          retention-days: 1
-
   speculos-tests:
-    needs: build
     strategy:
       fail-fast: false
       matrix:
@@ -42,11 +28,11 @@ jobs:
     uses: ./.github/workflows/run-e2e.yml
     with:
       test-suite-name: 'Speculos ${{ matrix.device.id }}'
-      build-artifact: speculos-test-build
+      build-artifact: build-test-browserify
       build-command: 'yarn build:test'
       test-command: >-
         SPECULOS_E2E=1 SPECULOS_DEVICE=${{ matrix.device.id }} SPECULOS_ELF=${{ matrix.device.elf }} yarn test:e2e:chrome:ledger
-      builds-from-run: ''
+      builds-from-run: ${{ inputs.builds-from-run }}
       install-speculos: 'speculos==0.26.8'
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}

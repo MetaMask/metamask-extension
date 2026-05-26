@@ -532,6 +532,18 @@ jobs:
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
+  e2e-speculos:
+    needs:
+      - get-requirements
+      - prep-e2e
+      - build-test-browserify
+    uses: ./.github/workflows/e2e-speculos.yml
+    if: ${{ !cancelled() && needs.get-requirements.outputs.needs-e2e == 'true' && !contains(needs.*.result, 'failure') }}
+    with:
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+    secrets:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+
   build-storybook:
     name: Build storybook
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
@@ -727,6 +739,7 @@ jobs:
       - prep-e2e
       - e2e-chrome
       - e2e-firefox
+      - e2e-speculos
       - build-storybook
       - build-ts-migration-dashboard
       - trigger-regression-validation
