@@ -8,7 +8,13 @@ import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../shared/constants/multichain/networks';
 import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
+import {
+  getStatusKey,
+  QUEUED_PSEUDO_STATUS,
+  SIGNING_PSUEDO_STATUS,
+} from '../../../components/app/transaction-status-label';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { isTransactionEarliestNonce } from '../../../hooks/useEarliestNonceByChain';
 import { ActivityListItemAvatar } from '../../../components/app/activity-list-item-avatar';
 import { ChainBadge } from '../../../components/app/chain-badge/chain-badge';
 import { getActivityListItemAvatarConfig } from '../resolve-activity-avatar-config';
@@ -100,28 +106,72 @@ const renderDescriptionLine = (
   return null;
 };
 
-function getTransactionStatus(data: ActivityCellProps['data']) {
-  const localTransaction =
-    data.raw?.type === 'localTransaction' ? data.raw.data : undefined;
-  const { primaryTransaction } = localTransaction ?? {};
+type ActivityTransactionStatus = {
+  txStatus: string;
+  pendingSubtitleKey?:
+    | typeof SIGNING_PSUEDO_STATUS
+    | typeof QUEUED_PSEUDO_STATUS;
+};
 
+function getTransactionStatus(
+  data: ActivityCellProps['data'],
+  earliestNonceByChain: ActivityCellProps['earliestNonceByChain'] = {},
+): ActivityTransactionStatus {
+  const transactionGroup =
+    data.raw?.type === 'localTransaction' ? data.raw.data : undefined;
+  const { primaryTransaction, nonce, initialTransaction } =
+    transactionGroup ?? {};
+
+  let txStatus: string;
   if (
     primaryTransaction?.status === TransactionStatus.confirmed &&
     primaryTransaction.type === TransactionType.cancel
   ) {
-    return 'cancelled';
+    txStatus = 'cancelled';
+  } else if (data.status === 'success') {
+    txStatus = 'confirmed';
+  } else {
+    txStatus = data.status;
   }
 
-  return data.status === 'success' ? 'confirmed' : data.status;
+  if (!primaryTransaction?.status) {
+    return { txStatus };
+  }
+
+  const pendingSubtitleKey = getStatusKey(
+    primaryTransaction.status,
+    isTransactionEarliestNonce(
+      nonce,
+      initialTransaction?.chainId,
+      earliestNonceByChain,
+    ),
+  );
+
+  if (
+    pendingSubtitleKey === SIGNING_PSUEDO_STATUS ||
+    pendingSubtitleKey === QUEUED_PSEUDO_STATUS
+  ) {
+    return { txStatus, pendingSubtitleKey };
+  }
+
+  return { txStatus };
 }
 
-export function GenericActivityCell({ data, onClick }: ActivityCellProps) {
+export function GenericActivityCell({
+  data,
+  onClick,
+  earliestNonceByChain = {},
+}: Readonly<ActivityCellProps>) {
   const t = useI18nContext();
   const formatTokenAmount = useFormatTokenAmount();
   const { description, title } = useGetLabel(data);
-  const pendingStatusText =
-    data.status === 'pending' ? t(data.status) : undefined;
-  const transactionStatus = getTransactionStatus(data);
+  const { txStatus, pendingSubtitleKey } = getTransactionStatus(
+    data,
+    earliestNonceByChain,
+  );
+  const pendingStatusText = pendingSubtitleKey
+    ? t(pendingSubtitleKey)
+    : undefined;
   const { primaryToken, secondaryToken } = getCellTokenAmounts(data);
 
   const primaryTokenAmount = formatTokenAmount(primaryToken);
@@ -153,7 +203,7 @@ export function GenericActivityCell({ data, onClick }: ActivityCellProps) {
       className="grid grid-cols-[32px_minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 transition-transform duration-200 ease-out hover:bg-hover cursor-pointer"
       role="button"
       data-testid="activity-list-item"
-      data-tx-status={transactionStatus}
+      data-tx-status={txStatus}
       onClick={onClick}
     >
       <div className="relative flex items-center justify-center">

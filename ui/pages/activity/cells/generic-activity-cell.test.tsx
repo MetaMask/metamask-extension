@@ -1,5 +1,7 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import { TransactionStatus } from '@metamask/transaction-controller';
+import type { TransactionGroup } from '../../../../shared/lib/multichain/types';
 import { GenericActivityCell } from './generic-activity-cell';
 
 const mockFormatTokenAmount = jest.fn();
@@ -44,6 +46,78 @@ describe('GenericActivityCell', () => {
       'data-tx-status',
       'confirmed',
     );
+  });
+
+  it('shows signing subtitle for approved local transactions', () => {
+    const transactionGroup = {
+      nonce: '0x1',
+      initialTransaction: {
+        id: 'tx-1',
+        chainId: '0x1',
+        status: TransactionStatus.approved,
+      },
+      primaryTransaction: {
+        id: 'tx-1',
+        chainId: '0x1',
+        status: TransactionStatus.approved,
+      },
+    } as unknown as TransactionGroup;
+
+    render(
+      <GenericActivityCell
+        data={{
+          type: 'send',
+          chainId: 'eip155:1',
+          status: 'pending',
+          timestamp: 0,
+          raw: { type: 'localTransaction', data: transactionGroup },
+          data: {
+            from: '0x1',
+            to: '0x2',
+          },
+        }}
+        earliestNonceByChain={{ '0x1': 1 }}
+      />,
+    );
+
+    expect(screen.getByText('signing')).toBeInTheDocument();
+    expect(screen.queryByText('pending')).not.toBeInTheDocument();
+  });
+
+  it('shows queued subtitle for non-earliest submitted transactions', () => {
+    const transactionGroup = {
+      nonce: '0x2',
+      initialTransaction: {
+        id: 'tx-2',
+        chainId: '0x1',
+        status: TransactionStatus.submitted,
+      },
+      primaryTransaction: {
+        id: 'tx-2',
+        chainId: '0x1',
+        status: TransactionStatus.submitted,
+      },
+    } as unknown as TransactionGroup;
+
+    render(
+      <GenericActivityCell
+        data={{
+          type: 'send',
+          chainId: 'eip155:1',
+          status: 'pending',
+          timestamp: 0,
+          raw: { type: 'localTransaction', data: transactionGroup },
+          data: {
+            from: '0x1',
+            to: '0x2',
+          },
+        }}
+        earliestNonceByChain={{ '0x1': 1 }}
+      />,
+    );
+
+    expect(screen.getByText('queued')).toBeInTheDocument();
+    expect(screen.queryByText('pending')).not.toBeInTheDocument();
   });
 
   it('renders contract interaction token amounts', () => {

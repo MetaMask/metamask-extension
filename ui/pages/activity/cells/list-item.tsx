@@ -14,12 +14,22 @@ export function ListItem({
   const { setEditGasMode, onGasModalMetaId } = usePendingTransactionGasModal();
 
   if (!transactionGroup) {
-    return <GenericActivityCell data={data} onClick={onClick} />;
+    return (
+      <GenericActivityCell
+        data={data}
+        onClick={onClick}
+        earliestNonceByChain={earliestNonceByChain}
+      />
+    );
   }
 
   return (
     <>
-      <GenericActivityCell data={data} onClick={onClick} />
+      <GenericActivityCell
+        data={data}
+        onClick={onClick}
+        earliestNonceByChain={earliestNonceByChain}
+      />
       <TransactionListItemPendingActions
         transactionGroup={transactionGroup}
         earliestNonceByChain={earliestNonceByChain}
