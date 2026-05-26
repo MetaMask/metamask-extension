@@ -6909,17 +6909,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/gator-permissions-snap@npm:^2.2.0":
-  version: 2.2.0
-  resolution: "@metamask/gator-permissions-snap@npm:2.2.0"
+"@metamask/gator-permissions-snap@npm:^2.3.0":
+  version: 2.3.0
+  resolution: "@metamask/gator-permissions-snap@npm:2.3.0"
   dependencies:
     "@metamask/abi-utils": "npm:3.0.0"
     "@metamask/delegation-core": "npm:^2.2.1"
+    "@metamask/delegation-deployments": "npm:^1.4.0"
     "@metamask/profile-sync-controller": "npm:28.1.0"
     "@metamask/snaps-sdk": "npm:11.1.0"
     "@metamask/utils": "npm:11.11.0"
     zod: "npm:3.25.76"
-  checksum: 10/ae3cbaed0f32068555cb790fd431e259b66e43aa9ca443ef76e8a8d3cd561b69f97fa45321b336a03d57e89d7d4961bfffa04ab8322995f6ae5a0974ac694737
+  checksum: 10/bf217362f4386f96a2481cd56ef27468e31673dbd28d9ed34ca371c1a31dffb28a66915df573d90f6aff9269b74c912fb0560d05fdc953aaafacb0a6d4809132
   languageName: node
   linkType: hard
 
@@ -33404,7 +33405,7 @@ __metadata:
     "@metamask/foundryup": "npm:^1.0.1"
     "@metamask/gas-fee-controller": "npm:^26.1.0"
     "@metamask/gator-permissions-controller": "npm:^4.2.0"
-    "@metamask/gator-permissions-snap": "npm:^2.2.0"
+    "@metamask/gator-permissions-snap": "npm:^2.3.0"
     "@metamask/geolocation-controller": "npm:^0.1.1"
     "@metamask/hw-wallet-sdk": "npm:^0.8.0"
     "@metamask/institutional-wallet-snap": "npm:1.5.0"
