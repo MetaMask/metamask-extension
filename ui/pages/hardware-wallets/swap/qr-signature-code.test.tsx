@@ -110,9 +110,9 @@ describe('QrSignatureCode', () => {
     ReactDOM.render(<QrSignatureCode payload={secondPayload} />, container);
 
     expect(
-      container.querySelector('[data-testid="qr-code-svg"]')?.getAttribute(
-        'data-value',
-      ),
+      container
+        .querySelector('[data-testid="qr-code-svg"]')
+        ?.getAttribute('data-value'),
     ).toBe('ETH-SIGN-REQUEST-B401010203-QR-PART-1');
 
     ReactDOM.unmountComponentAtNode(container);
