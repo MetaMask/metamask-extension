@@ -1,3 +1,5 @@
+import { strict as assert } from 'assert';
+import { WebElement } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 
 class AddressListModal {
@@ -5,6 +7,8 @@ class AddressListModal {
 
   private readonly accountAddress =
     '[data-testid="multichain-address-row-address"]';
+
+  private readonly addressRow = '[data-testid="multichain-address-row"]';
 
   private readonly copyButton =
     '[data-testid="multichain-address-row-copy-button"]';
@@ -43,12 +47,39 @@ class AddressListModal {
     console.log('Address list modal is loaded');
   }
 
+  async checkQuickCopyPopoverIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.addressRow);
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for quick-copy address popover to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('Quick-copy address popover is loaded');
+  }
+
   async checkNetworkNameisDisplayed(networkName: string): Promise<void> {
     console.log(`Check network "${networkName}" is displayed`);
     await this.driver.waitForSelector({
       text: networkName,
       tag: 'p',
     });
+  }
+
+  async checkQuickCopyAddressIsDisplayedForNetwork({
+    networkName,
+    networkAddress,
+  }: {
+    networkName: string;
+    networkAddress: string;
+  }): Promise<void> {
+    console.log(
+      `Check quick-copy ${networkName} address "${networkAddress}" is displayed`,
+    );
+    const row = await this.findQuickCopyAddressRowByNetworkName(networkName);
+    assert.ok((await row.getText()).includes(networkAddress));
   }
 
   async checkNetworkAddressIsDisplayed(networkAddress: string): Promise<void> {
@@ -89,6 +120,34 @@ class AddressListModal {
 
   async goBack(): Promise<void> {
     await this.driver.clickElementAndWaitToDisappear(this.backButton);
+  }
+
+  private async findQuickCopyAddressRowByNetworkName(
+    networkName: string,
+  ): Promise<WebElement> {
+    let matchingRow: WebElement | undefined;
+
+    await this.driver.waitUntil(
+      async () => {
+        const rows = await this.driver.findElements(this.addressRow);
+        for (const row of rows) {
+          if ((await row.getText()).includes(networkName)) {
+            matchingRow = row;
+            return true;
+          }
+        }
+        return false;
+      },
+      { timeout: 10000, interval: 500 },
+    );
+
+    if (!matchingRow) {
+      throw new Error(
+        `Could not find quick-copy address row for network ${networkName}`,
+      );
+    }
+
+    return matchingRow;
   }
 }
 
