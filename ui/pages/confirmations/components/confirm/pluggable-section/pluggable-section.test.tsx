@@ -31,9 +31,10 @@ describe('PluggableSection', () => {
     expect(() => render()).not.toThrow();
   });
 
+  // @ts-expect-error This is missing from the Mocha type definitions
   it.each(PAY_TRANSACTION_TYPES)(
     'returns null for pay transaction type: %s',
-    (transactionType) => {
+    (transactionType: TransactionType) => {
       const { container } = renderWithTransaction(transactionType);
       expect(container).toBeEmptyDOMElement();
     },
