@@ -268,7 +268,7 @@ class SwapPage {
   async waitForSmartTransactionToComplete(): Promise<void> {
     if (
       !(await this.driver.isElementPresentAndVisible(
-        this.transactionCompleteHeader,
+        this.transactionStatusHeader,
         2000,
       ))
     ) {
