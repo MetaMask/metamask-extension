@@ -65,7 +65,7 @@ function getSubstitutions(activity: ActivityListItem): LabelSubstitutions {
       };
     case 'contractInteraction':
       return {
-        description: [shortenAddress(activity.data.to ?? 'Contract')],
+        description: [shortenAddress(activity.data.to) || 'Contract'],
       };
     // Token in description
     case 'approveSpendingCap':
