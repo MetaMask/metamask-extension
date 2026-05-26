@@ -80,10 +80,7 @@ export const noop = () => undefined;
 type SignalListener = () => void;
 type SignalProcess = {
   on: (signal: NodeJS.Signals, listener: SignalListener) => unknown;
-  removeListener: (
-    signal: NodeJS.Signals,
-    listener: SignalListener,
-  ) => unknown;
+  removeListener: (signal: NodeJS.Signals, listener: SignalListener) => unknown;
 };
 
 type IgnoreCacheShutdownSignalsOptions = {
@@ -108,7 +105,7 @@ const CACHE_SHUTDOWN_SIGNALS = ['SIGINT', 'SIGTERM'] as const;
  * @returns A cleanup function that removes the installed listeners.
  */
 export function ignoreCacheShutdownSignals({
-  process: signalProcess = process,
+  process: signalProcess = process as unknown as SignalProcess,
   signals = CACHE_SHUTDOWN_SIGNALS,
 }: IgnoreCacheShutdownSignalsOptions = {}): () => void {
   const listener = () => {

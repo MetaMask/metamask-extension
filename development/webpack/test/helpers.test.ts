@@ -23,11 +23,9 @@ describe('./utils/helpers.ts', () => {
       const calls: unknown[] = [];
       const listeners = new Map<NodeJS.Signals, () => void>();
       const signalProcess = {
-        on: mock.fn(
-          (signal: NodeJS.Signals, listener: () => void) => {
-            listeners.set(signal, listener);
-          },
-        ),
+        on: mock.fn((signal: NodeJS.Signals, listener: () => void) => {
+          listeners.set(signal, listener);
+        }),
         removeListener: mock.fn(
           (signal: NodeJS.Signals, listener: () => void) => {
             if (listeners.get(signal) === listener) {
@@ -36,7 +34,7 @@ describe('./utils/helpers.ts', () => {
           },
         ),
       };
-      mock.method(console, 'error', (message) => {
+      mock.method(console, 'error', (message: unknown) => {
         calls.push(message);
       });
 
