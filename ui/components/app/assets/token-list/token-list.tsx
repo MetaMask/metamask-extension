@@ -53,6 +53,7 @@ import {
 } from '../../../../../shared/lib/asset-utils';
 import { sortAssetsWithPriority } from '../util/sortAssetsWithPriority';
 import { VirtualizedList } from '../../../ui/virtualized-list/virtualized-list';
+import { isMusdToken } from '../../musd/constants';
 import { TOKEN_LIST_CELL_MUSD_OPTIONS } from '../../musd/musd-events';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
@@ -224,6 +225,13 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
         // Mapping necessary to comply with the type. Fields will be overriden with useTokenDisplayInfo
         return assets.filter((asset) => {
           if (isTronSpecialAsset(asset.assetId)) {
+            return false;
+          }
+          if (
+            'address' in asset &&
+            isMusdToken(asset.address) &&
+            asset.balance === '0'
+          ) {
             return false;
           }
           if (shouldHideZeroBalanceTokens && asset.balance === '0') {

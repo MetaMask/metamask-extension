@@ -30,6 +30,7 @@ import {
   getAssetsBySelectedAccountGroup,
   selectAccountGroupBalanceForEmptyState,
 } from '../../../../selectors/assets';
+import { MUSD_TOKEN_ADDRESS } from '../../musd/constants';
 import TokenList from './token-list';
 
 jest.mock('../token-cell', () => {
@@ -130,22 +131,27 @@ const createAsset = ({
   symbol,
   fiatBalance,
   isNative = false,
+  address: addressOverride,
+  balance = '1',
+  rawBalance,
 }: {
   symbol: string;
   fiatBalance?: number;
   isNative?: boolean;
+  address?: Hex;
+  balance?: string;
+  rawBalance?: Hex;
 }): Asset => {
-  const address = `0x${symbol
-    .charCodeAt(0)
-    .toString(16)
-    .padEnd(40, '0')}` as Hex;
+  const address =
+    addressOverride ??
+    (`0x${symbol.charCodeAt(0).toString(16).padEnd(40, '0')}` as Hex);
 
   return {
     accountType: 'eip155:eoa',
     accountId: ACCOUNT_ID,
     assetId: address,
     address,
-    balance: '1',
+    balance,
     chainId: CHAIN_ID,
     decimals: 18,
     fiat:
@@ -159,7 +165,9 @@ const createAsset = ({
     image: '',
     isNative,
     name: symbol,
-    rawBalance: '0xde0b6b3a7640000' as Hex,
+    rawBalance:
+      rawBalance ??
+      (balance === '0' ? ('0x0' as Hex) : ('0xde0b6b3a7640000' as Hex)),
     symbol,
   };
 };
@@ -286,6 +294,45 @@ describe('TokenList', () => {
     expect(screen.getByTestId('token-cell-USDC')).toBeInTheDocument();
     expect(screen.getByTestId('token-cell-UNKNOWN')).toBeInTheDocument();
     expect(screen.queryByTestId('low-value-assets-toggle')).toBeNull();
+  });
+
+  it('does not render zero-balance mUSD imported by token detection', () => {
+    jest
+      .mocked(getAssetsBySelectedAccountGroup)
+      .mockReturnValue(
+        createAccountGroupAssets([
+          createAsset({
+            symbol: 'MUSD',
+            address: MUSD_TOKEN_ADDRESS,
+            balance: '0',
+          }),
+          createAsset({ symbol: 'USDC', fiatBalance: 25 }),
+        ]),
+      );
+
+    render();
+
+    expect(screen.getByTestId('token-cell-USDC')).toBeInTheDocument();
+    expect(screen.queryByTestId('token-cell-MUSD')).not.toBeInTheDocument();
+  });
+
+  it('renders mUSD when it has a balance', () => {
+    jest
+      .mocked(getAssetsBySelectedAccountGroup)
+      .mockReturnValue(
+        createAccountGroupAssets([
+          createAsset({
+            symbol: 'MUSD',
+            address: MUSD_TOKEN_ADDRESS,
+            balance: '1',
+            fiatBalance: 1,
+          }),
+        ]),
+      );
+
+    render();
+
+    expect(screen.getByTestId('token-cell-MUSD')).toBeInTheDocument();
   });
 
   it('renders low value tokens inline when sort is not declining balance', () => {
