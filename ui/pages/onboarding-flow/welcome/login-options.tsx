@@ -25,6 +25,7 @@ import classnames from 'clsx';
 import { PolymorphicRef } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ThemeType } from '../../../../shared/constants/preferences';
+import { getIsTelegramLoginFeatureEnabled } from '../../../../shared/lib/environment';
 import { useTheme } from '../../../hooks/useTheme';
 import { LOGIN_TYPE, LoginType, LoginOptionType, LOGIN_OPTION } from './types';
 
@@ -57,7 +58,7 @@ export const SocialButton = React.forwardRef(
           className="w-full"
           gap={2}
         >
-          {icon}
+          <span aria-hidden="true">{icon}</span>
           <Box>{label}</Box>
         </Box>
       </Button>
@@ -76,6 +77,7 @@ export default function LoginOptions({
 }) {
   const t = useI18nContext();
   const theme = useTheme();
+  const isTelegramLoginFeatureEnabled = getIsTelegramLoginFeatureEnabled();
 
   const backgroundColorForLoginOptions = useMemo(() => {
     return theme === ThemeType.light
@@ -83,55 +85,87 @@ export default function LoginOptions({
       : 'var(--color-accent02-dark)';
   }, [theme]);
 
+  const isExisting = useMemo(() => {
+    return loginOption === LOGIN_OPTION.EXISTING;
+  }, [loginOption]);
+
+  const socialOptions: {
+    name: string;
+    loginType: LoginType;
+    testIdSuffix: string;
+    icon: React.ReactNode;
+    btnClass: string;
+  }[] = [
+    {
+      name: 'Google',
+      loginType: LOGIN_TYPE.GOOGLE,
+      testIdSuffix: 'google',
+      icon: (
+        <img
+          src="images/icons/google.svg"
+          className="options-modal__social-icon"
+          alt=""
+        />
+      ),
+      btnClass: 'mb-4',
+    },
+    {
+      name: 'Apple',
+      loginType: LOGIN_TYPE.APPLE,
+      testIdSuffix: 'apple',
+      icon: (
+        <Icon
+          name={IconName.AppleLogo}
+          color={IconColor.InfoInverse}
+          size={IconSize.Lg}
+        />
+      ),
+      btnClass: 'mb-4',
+    },
+  ];
+
+  if (isTelegramLoginFeatureEnabled) {
+    socialOptions.push({
+      name: 'Telegram',
+      loginType: LOGIN_TYPE.TELEGRAM,
+      testIdSuffix: 'telegram',
+      icon: (
+        <img
+          src="images/icons/telegram.svg"
+          className="options-modal__social-icon"
+          alt=""
+        />
+      ),
+      btnClass: 'mb-2',
+    });
+  }
+
   return (
     <Box>
-      <SocialButton
-        data-testid={
-          loginOption === LOGIN_OPTION.EXISTING
-            ? 'onboarding-import-with-google-button'
-            : 'onboarding-create-with-google-button'
-        }
-        icon={
-          <img
-            src="images/icons/google.svg"
-            className="options-modal__social-icon"
-            alt={t('onboardingOptionIcon', ['Google'])}
+      {socialOptions.map(
+        ({ name, loginType, testIdSuffix, icon, btnClass }) => (
+          <SocialButton
+            key={loginType}
+            data-testid={`onboarding-${
+              isExisting ? 'import' : 'create'
+            }-with-${testIdSuffix}-button`}
+            icon={icon}
+            label={t(
+              isExisting ? 'onboardingSignInWith' : 'onboardingContinueWith',
+              [name],
+            )}
+            btnClass={btnClass}
+            onClick={() => handleLogin(loginType)}
           />
-        }
-        label={
-          loginOption === LOGIN_OPTION.EXISTING
-            ? t('onboardingSignInWith', ['Google'])
-            : t('onboardingContinueWith', ['Google'])
-        }
-        btnClass="mb-4"
-        onClick={() => handleLogin(LOGIN_TYPE.GOOGLE)}
-      />
-      <SocialButton
-        data-testid={
-          loginOption === LOGIN_OPTION.EXISTING
-            ? 'onboarding-import-with-apple-button'
-            : 'onboarding-create-with-apple-button'
-        }
-        icon={
-          <Icon
-            name={IconName.AppleLogo}
-            color={IconColor.InfoInverse}
-            size={IconSize.Lg}
-          />
-        }
-        label={
-          loginOption === LOGIN_OPTION.EXISTING
-            ? t('onboardingSignInWith', ['Apple'])
-            : t('onboardingContinueWith', ['Apple'])
-        }
-        btnClass="mb-2"
-        onClick={() => handleLogin(LOGIN_TYPE.APPLE)}
-      />
+        ),
+      )}
       <Box
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
         marginBottom={4}
         className="options-modal__or"
+        role="separator"
+        aria-orientation="horizontal"
       >
         <Text
           className="w-max px-2 mx-auto relative z-[1]"
@@ -148,19 +182,15 @@ export default function LoginOptions({
       </Box>
       <Button
         data-theme={theme === ThemeType.dark ? ThemeType.light : ThemeType.dark}
-        data-testid={
-          loginOption === LOGIN_OPTION.EXISTING
-            ? 'onboarding-import-with-srp-button'
-            : 'onboarding-create-with-srp-button'
-        }
+        data-testid={`onboarding-${
+          isExisting ? 'import' : 'create'
+        }-with-srp-button`}
         variant={ButtonVariant.Primary}
         className="w-full"
         size={ButtonSize.Lg}
         onClick={() => handleLogin(LOGIN_TYPE.SRP)}
       >
-        {loginOption === LOGIN_OPTION.EXISTING
-          ? t('onboardingSrpImport')
-          : t('onboardingSrpCreate')}
+        {t(isExisting ? 'onboardingSrpImport' : 'onboardingSrpCreate')}
       </Button>
       <Text
         variant={TextVariant.BodySm}
@@ -179,6 +209,9 @@ export default function LoginOptions({
               href="https://consensys.io/terms-of-use"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label={`${t('onboardingLoginFooterTermsOfUse')} (${t(
+                'opensInNewTab',
+              )})`}
             >
               {t('onboardingLoginFooterTermsOfUse')}
             </a>
@@ -192,6 +225,9 @@ export default function LoginOptions({
               href="https://consensys.io/privacy-notice"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label={`${t('onboardingLoginFooterPrivacyNotice')} (${t(
+                'opensInNewTab',
+              )})`}
             >
               {t('onboardingLoginFooterPrivacyNotice')}
             </a>
