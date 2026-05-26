@@ -4158,12 +4158,6 @@
     "message": "Looking for your $1...",
     "description": "$1 is the hardware wallet type"
   },
-  "hardwareWalletRepairCloseButton": {
-    "message": "Close"
-  },
-  "hardwareWalletRepairConnectButton": {
-    "message": "Connect"
-  },
   "hardwareWalletRepairDetecting": {
     "message": "Detecting device..."
   },
@@ -4181,12 +4175,6 @@
   },
   "hardwareWalletRepairStepOneTitle": {
     "message": "Check USB Connection"
-  },
-  "hardwareWalletRepairStepThreeDescription": {
-    "message": "Open the Ethereum (ETH) app on your device."
-  },
-  "hardwareWalletRepairStepThreeTitle": {
-    "message": "Open Ethereum App"
   },
   "hardwareWalletRepairStepTwoDescription": {
     "message": "Enter your PIN to unlock your hardware wallet."
