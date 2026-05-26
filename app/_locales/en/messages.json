@@ -4765,6 +4765,10 @@
   "lowLowercase": {
     "message": "low"
   },
+  "lowValueAssets": {
+    "message": "Low value tokens ($1)",
+    "description": "$1 is the number of low value assets in the collapsed home token list section."
+  },
   "mainnet": {
     "message": "Ethereum Mainnet"
   },
