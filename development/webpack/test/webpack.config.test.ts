@@ -48,9 +48,9 @@ async function getWebpackWarnings(config: Configuration): Promise<string[]> {
       });
     });
 
-    return stats
-      .toJson({ all: false, warnings: true })
-      .warnings.map((warning) => warning.message);
+    return (stats.toJson({ all: false, warnings: true }).warnings ?? []).map(
+      (warning) => warning.message,
+    );
   } finally {
     await new Promise<void>((resolveClose, rejectClose) =>
       compiler.close((error) => (error ? rejectClose(error) : resolveClose())),
