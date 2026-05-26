@@ -5,12 +5,6 @@ import { veryLargeDelayMs } from '../../../helpers';
 class AssetListPage {
   private readonly driver: Driver;
 
-  private readonly allNetworksOption =
-    '[data-testid="network-filter-all__button"]';
-
-  private readonly allNetworksTotal =
-    '[data-testid="network-filter-all__total"]';
-
   private readonly assetOptionsButton = '[data-testid="asset-options__button"]';
 
   private readonly assetPriceInDetailsModal =

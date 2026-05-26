@@ -18,10 +18,19 @@ import {
 import { ChooseNewWalletTypePage } from './choose-new-wallet-type-page';
 
 const mockUseNavigate = jest.fn();
+let mockLocationKey = 'default';
+let mockLocationState: Record<string, unknown> | null = null;
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockUseNavigate,
+  useLocation: () => ({
+    key: mockLocationKey,
+    pathname: '/',
+    search: '',
+    hash: '',
+    state: mockLocationState,
+  }),
 }));
 
 const mockGetEnvironmentType = jest.fn();
@@ -56,6 +65,8 @@ describe('ChooseNewWalletTypePage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetEnvironmentType.mockReturnValue('fullscreen');
+    mockLocationKey = 'default';
+    mockLocationState = null;
   });
 
   const renderComponent = (storeOverrides = {}) => {
@@ -152,12 +163,36 @@ describe('ChooseNewWalletTypePage', () => {
   });
 
   describe('navigation', () => {
-    it('navigates to account list when back button is clicked', () => {
-      renderComponent();
+    it('navigates back when arrived via in-app navigation', () => {
+      mockLocationKey = 'abc123';
 
+      renderComponent();
       fireEvent.click(screen.getByTestId('back-button'));
 
       expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+    });
+
+    it('navigates to account list when location.key is default', () => {
+      renderComponent();
+      fireEvent.click(screen.getByTestId('back-button'));
+
+      expect(mockUseNavigate).toHaveBeenCalledWith('/account-list', {
+        replace: true,
+        state: { fromFreshTab: true },
+      });
+    });
+
+    it('navigates to account list when arrived from fresh tab via state', () => {
+      mockLocationKey = 'abc123';
+      mockLocationState = { fromFreshTab: true };
+
+      renderComponent();
+      fireEvent.click(screen.getByTestId('back-button'));
+
+      expect(mockUseNavigate).toHaveBeenCalledWith('/account-list', {
+        replace: true,
+        state: { fromFreshTab: true },
+      });
     });
 
     it('navigates to import SRP route when import wallet is clicked', () => {
