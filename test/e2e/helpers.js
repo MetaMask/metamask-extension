@@ -174,6 +174,7 @@ async function withFixtures(options, testSuite) {
     extendedTimeoutMultiplier = 1,
     unifiedEvmAccountsApiBalances,
     virtualAuthenticator,
+    isBenchmark = false,
   } = options;
 
   // Normalize localNodeOptions
@@ -383,7 +384,7 @@ async function withFixtures(options, testSuite) {
     const wd = await buildWebDriver({
       ...driverOptions,
       disableServerMochaToBackground,
-      isBenchmark: title?.startsWith('benchmark-'),
+      isBenchmark,
     });
 
     driver = wd.driver;

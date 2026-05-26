@@ -42,6 +42,7 @@ async function measurePagePowerUser(
   await withFixtures(
     {
       title,
+      isBenchmark: true,
       fixtures: (
         await generateWalletState(WITH_STATE_POWER_USER, true)
       ).build(),
