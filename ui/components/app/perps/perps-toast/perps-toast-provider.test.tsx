@@ -281,6 +281,28 @@ describe('PerpsToastProvider', () => {
     expect(screen.queryByText('Submitting order...')).not.toBeInTheDocument();
   });
 
+  it('portals the toast container to the document body', () => {
+    renderWithProvider(
+      <div
+        data-testid="transformed-parent"
+        style={{ transform: 'translateZ(0)' }}
+      >
+        <PerpsToastProvider>
+          <ToastHarness />
+        </PerpsToastProvider>
+      </div>,
+      getStore(),
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Show Info' }));
+
+    const toastContainer = screen.getByTestId('perps-toast-container');
+    expect(toastContainer.parentElement).toBe(document.body);
+    expect(toastContainer.closest('[data-testid="transformed-parent"]')).toBe(
+      null,
+    );
+  });
+
   it('passes action options to the toast', () => {
     renderWithProvider(
       <PerpsToastProvider>

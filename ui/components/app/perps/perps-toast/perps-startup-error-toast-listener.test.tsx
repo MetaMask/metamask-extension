@@ -24,14 +24,21 @@ jest.mock('../hooks/usePerpsWithdrawNavigation', () => ({
   }),
 }));
 
-const renderStartupErrorToastListener = (
-  startupError: PerpsConfirmationStartupFlow,
-  extraState: Record<string, unknown> = {},
-) => {
+const renderStartupErrorToastListener = ({
+  initialEntry,
+}: {
+  initialEntry:
+    | string
+    | {
+        pathname: string;
+        search?: string;
+        state?: Record<string, unknown>;
+      };
+}) => {
   const router = createMemoryRouter(
     [
       {
-        path: '/perps/trade/:symbol',
+        path: '*',
         element: (
           <I18nProvider currentLocale="en" current={en} en={en}>
             <PerpsToastProvider>
@@ -43,15 +50,7 @@ const renderStartupErrorToastListener = (
       },
     ],
     {
-      initialEntries: [
-        {
-          pathname: '/perps/trade/BTC',
-          state: {
-            ...extraState,
-            [PERPS_STARTUP_ERROR_ROUTE_STATE_KEY]: startupError,
-          },
-        },
-      ],
+      initialEntries: [initialEntry],
       future: {
         /* eslint-disable @typescript-eslint/naming-convention */
         v7_relativeSplatPath: true,
@@ -74,6 +73,21 @@ const renderStartupErrorToastListener = (
   return router;
 };
 
+const renderStartupErrorToastListenerFromState = (
+  startupError: PerpsConfirmationStartupFlow,
+  extraState: Record<string, unknown> = {},
+) => {
+  return renderStartupErrorToastListener({
+    initialEntry: {
+      pathname: '/perps/trade/BTC',
+      state: {
+        ...extraState,
+        [PERPS_STARTUP_ERROR_ROUTE_STATE_KEY]: startupError,
+      },
+    },
+  });
+};
+
 describe('PerpsStartupErrorToastListener', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -83,9 +97,11 @@ describe('PerpsStartupErrorToastListener', () => {
   });
 
   it('shows deposit startup error toast and clears only the startup error route state', async () => {
-    const router = renderStartupErrorToastListener(
+    const router = renderStartupErrorToastListenerFromState(
       PERPS_CONFIRMATION_STARTUP_FLOW.DEPOSIT,
-      { preserved: 'state' },
+      {
+        preserved: 'state',
+      },
     );
 
     expect(
@@ -104,7 +120,7 @@ describe('PerpsStartupErrorToastListener', () => {
   });
 
   it('shows retryable withdraw startup error toast and clears route state', async () => {
-    const router = renderStartupErrorToastListener(
+    const router = renderStartupErrorToastListenerFromState(
       PERPS_CONFIRMATION_STARTUP_FLOW.WITHDRAW,
     );
 
@@ -124,6 +140,28 @@ describe('PerpsStartupErrorToastListener', () => {
           [PERPS_STARTUP_ERROR_ROUTE_STATE_KEY]: expect.any(String),
         }),
       );
+    });
+  });
+
+  it('shows withdraw startup error toast from home route state and preserves search params', async () => {
+    const router = renderStartupErrorToastListener({
+      initialEntry: {
+        pathname: '/',
+        search: '?tab=perps',
+        state: {
+          [PERPS_STARTUP_ERROR_ROUTE_STATE_KEY]:
+            PERPS_CONFIRMATION_STARTUP_FLOW.WITHDRAW,
+        },
+      },
+    });
+
+    expect(
+      await screen.findByText(tEn('perpsWithdrawStartErrorTitle')),
+    ).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(router.state.location.search).toBe('?tab=perps');
+      expect(router.state.location.state).toBeNull();
     });
   });
 });

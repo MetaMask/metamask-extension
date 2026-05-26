@@ -7,6 +7,7 @@ import React, {
   useState,
   type ReactNode,
 } from 'react';
+import { createPortal } from 'react-dom';
 import { Box } from '@metamask/design-system-react';
 import { Toast } from '../../../multichain/toast';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -169,27 +170,32 @@ export const PerpsToastProvider = ({ children }: PerpsToastProviderProps) => {
     ],
   );
 
+  const toast = activeToast ? (
+    <Box
+      className="toasts-container bottom-20 w-[calc(100%-32px)] max-w-[408px]"
+      data-testid="perps-toast-container"
+    >
+      <Toast
+        key={activeToast.id}
+        startAdornment={getPerpsToastIcon(activeToast.presentation)}
+        text={activeToast.message}
+        description={activeToast.description}
+        actionText={activeToast.actionText}
+        onActionClick={activeToast.onActionClick}
+        className="perps-toast"
+        contentProps={{ className: 'items-center' }}
+        autoHideTime={activeToast.autoHideTime}
+        onClose={hidePerpsToast}
+        onAutoHideToast={hidePerpsToast}
+        dataTestId={activeToast.dataTestId ?? 'perps-toast'}
+      />
+    </Box>
+  ) : null;
+
   return (
     <PerpsToastContext.Provider value={contextValue}>
       {children}
-      {activeToast ? (
-        <Box className="toasts-container bottom-20 w-[calc(100%-32px)] max-w-[408px]">
-          <Toast
-            key={activeToast.id}
-            startAdornment={getPerpsToastIcon(activeToast.presentation)}
-            text={activeToast.message}
-            description={activeToast.description}
-            actionText={activeToast.actionText}
-            onActionClick={activeToast.onActionClick}
-            className="perps-toast"
-            contentProps={{ className: 'items-center' }}
-            autoHideTime={activeToast.autoHideTime}
-            onClose={hidePerpsToast}
-            onAutoHideToast={hidePerpsToast}
-            dataTestId={activeToast.dataTestId ?? 'perps-toast'}
-          />
-        </Box>
-      ) : null}
+      {toast ? createPortal(toast, document.body) : null}
     </PerpsToastContext.Provider>
   );
 };
