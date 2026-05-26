@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import type { CaipChainId } from '@metamask/utils';
+import { isScopeEqualToAny } from '@metamask/keyring-utils';
 import { getMetaMaskAccountsOrdered } from '../../selectors';
 
 type UseAccountNetworkAvailabilityReturn = {
@@ -14,7 +15,7 @@ export const useAccountNetworkAvailability =
     const hasAnyAccountsInNetwork = useCallback(
       (chainId: CaipChainId) => {
         return accounts.some(({ scopes }: { scopes: CaipChainId[] }) =>
-          scopes.includes(chainId),
+          isScopeEqualToAny(chainId, scopes),
         );
       },
       [accounts],
