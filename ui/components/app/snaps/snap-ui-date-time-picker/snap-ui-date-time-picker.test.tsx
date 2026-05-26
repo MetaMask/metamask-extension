@@ -522,6 +522,8 @@ describe('SnapUIDateTimePicker', () => {
     /**
      * Renders the SnapUIDateTimePicker with the mock picker invoking
      * renderInput so the actual ReadOnlyPickerField is rendered in the DOM.
+     *
+     * @param props - Optional partial props to pass to the picker.
      */
     function renderWithField(
       props: Partial<React.ComponentProps<typeof SnapUIDateTimePicker>> = {},
@@ -534,7 +536,10 @@ describe('SnapUIDateTimePicker', () => {
               )({ className: 'test-class' })
             : null;
         return (
-          <div data-testid="mock-datetime-picker" data-on-open={!!onOpen}>
+          <div
+            data-testid="mock-datetime-picker"
+            data-on-open={Boolean(onOpen)}
+          >
             {rendered}
           </div>
         );
@@ -608,14 +613,8 @@ describe('SnapUIDateTimePicker', () => {
     });
 
     it('does not respond to click when disabled', () => {
-      let clickCount = 0;
-      mockDateTimePicker.mockImplementation(({ renderInput, onOpen }) => {
-        const originalOnOpen = onOpen;
-        const trackingOnOpen = () => {
-          clickCount += 1;
-          originalOnOpen?.();
-        };
-        void trackingOnOpen;
+      const onOpenSpy = jest.fn();
+      mockDateTimePicker.mockImplementation(({ renderInput }) => {
         const rendered =
           typeof renderInput === 'function'
             ? (renderInput as (p: object) => React.ReactElement)({})
@@ -629,7 +628,7 @@ describe('SnapUIDateTimePicker', () => {
       const field = screen.getByRole('textbox');
 
       fireEvent.click(field);
-      expect(clickCount).toBe(0);
+      expect(onOpenSpy).not.toHaveBeenCalled();
     });
 
     it('applies reduced opacity when disabled', () => {

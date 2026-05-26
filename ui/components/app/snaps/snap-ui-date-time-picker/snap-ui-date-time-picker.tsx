@@ -278,7 +278,7 @@ export const SnapUIDateTimePicker: FunctionComponent<
           disableFuture={disableFuture}
           toolbarTitle=""
           ampm={false}
-          renderInput={(params) => customFieldSlot(params)}
+          renderInput={customFieldSlot}
           componentsProps={{
             actionBar: {
               actions: PICKER_ACTION_BAR_ACTIONS,
@@ -299,7 +299,7 @@ export const SnapUIDateTimePicker: FunctionComponent<
           disablePast={disablePast}
           disableFuture={disableFuture}
           toolbarTitle=""
-          renderInput={(params) => customFieldSlot(params)}
+          renderInput={customFieldSlot}
           componentsProps={{
             actionBar: {
               actions: PICKER_ACTION_BAR_ACTIONS,
@@ -319,7 +319,7 @@ export const SnapUIDateTimePicker: FunctionComponent<
           disabled={disabled}
           ampm={false}
           toolbarTitle=""
-          renderInput={(params) => customFieldSlot(params)}
+          renderInput={customFieldSlot}
           componentsProps={{
             actionBar: {
               actions: PICKER_ACTION_BAR_ACTIONS,
