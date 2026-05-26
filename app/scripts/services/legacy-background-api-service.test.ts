@@ -15,6 +15,7 @@ import { add0x, hexToBytes } from '@metamask/utils';
 import { SecretType } from '@metamask/seedless-onboarding-controller';
 import { Caip25CaveatType } from '@metamask/chain-agnostic-permission';
 import { SnapId } from '@metamask/snaps-sdk';
+import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import mockState from '../../../test/data/mock-state.json';
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../shared/constants/app';
 import {
@@ -427,20 +428,16 @@ describe('LegacyBackgroundApiService', () => {
 
   describe('getSeedPhrase', () => {
     it('returns the seed phrase', async () => {
-      const mockSeedPhrase = new Uint8Array([
-        119, 97, 114, 114, 105, 111, 114, 32, 108, 97, 110, 103, 117, 97, 103,
-        101, 32, 106, 111, 107, 101, 32, 98, 111, 110, 117, 115, 32, 117, 110,
-        102, 97, 105, 114, 32, 97, 114, 116, 105, 115, 116, 32, 107, 97, 110,
-        103, 97, 114, 111, 111, 32, 99, 105, 114, 99, 108, 101, 32, 101, 120,
-        112, 97, 110, 100, 32, 104, 111, 112, 101, 32, 109, 105, 100, 100, 108,
-        101, 32, 103, 97, 117, 103, 101,
-      ]);
+      const mnemonic =
+        'test test test test test test test test test test test ball';
 
-      const encodedSeedPhrase = Buffer.from([
-        32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-        32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-        32, 32, 32, 32,
-      ]);
+      const mockSeedPhrase = new Uint8Array(
+        new Uint16Array(
+          mnemonic.split(' ').map((word) => wordlist.indexOf(word)),
+        ).buffer,
+      );
+
+      const encodedSeedPhrase = Buffer.from(mnemonic, 'utf8');
 
       await withService(async ({ rootMessenger }) => {
         rootMessenger.registerActionHandler(

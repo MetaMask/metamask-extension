@@ -412,7 +412,7 @@ export class LegacyBackgroundApiService {
     );
 
     const matchingSmartTransactionApprovals = Object.values(
-      pendingApprovals,
+      pendingApprovals ?? {},
     ).filter((approval) => {
       if (
         approval.type !==
