@@ -1,4 +1,4 @@
-import { SnapKeyring as SnapKeyringV2 } from '@metamask/eth-snap-keyring/v2';
+import { SnapKeyringV1Adapter, SnapKeyring as SnapKeyringV2 } from '@metamask/eth-snap-keyring/v2';
 import { KeyringV1Adapter } from '@metamask/keyring-sdk/v2';
 import { KeyringType } from '@metamask/keyring-api/v2';
 import { KeyringAccount } from '@metamask/keyring-api';
@@ -56,7 +56,7 @@ export function snapKeyringBuilderV2(
     // we only need it to satisfy the type requirements of the existing keyring controller
     // so it can be used for the usual keyrings lifecycles, it MUST NOT be used it with
     // the other v1 methods!
-    return new KeyringV1Adapter(v2) as unknown as Keyring;
+    return new SnapKeyringV1Adapter(v2) as unknown as Keyring;
   };
   SnapKeyringBuilderV2AdapterV1.type = KeyringType.Snap;
 
