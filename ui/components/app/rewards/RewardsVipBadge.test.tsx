@@ -12,6 +12,15 @@ setBackgroundConnection({
     mockGetVipTierForAccount(...args),
 } as never);
 
+const vipEnabledStore = () => {
+  const store = createBridgeMockStore();
+  store.metamask.remoteFeatureFlags.vipProgramEnabled = {
+    enabled: true,
+    minimumVersion: '0.0.0',
+  };
+  return store;
+};
+
 describe('RewardsVipBadge', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -22,7 +31,7 @@ describe('RewardsVipBadge', () => {
 
     const { container } = renderWithProvider(
       <RewardsVipBadge />,
-      configureStore(createBridgeMockStore()),
+      configureStore(vipEnabledStore()),
     );
 
     await waitFor(() => {
@@ -36,7 +45,7 @@ describe('RewardsVipBadge', () => {
 
     const { container } = renderWithProvider(
       <RewardsVipBadge />,
-      configureStore(createBridgeMockStore()),
+      configureStore(vipEnabledStore()),
     );
 
     await waitFor(() => {
@@ -50,7 +59,7 @@ describe('RewardsVipBadge', () => {
 
     const { container } = renderWithProvider(
       <RewardsVipBadge />,
-      configureStore(createBridgeMockStore()),
+      configureStore(vipEnabledStore()),
     );
 
     await waitFor(() => {
@@ -77,7 +86,7 @@ describe('RewardsVipBadge', () => {
                 <p
                   class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default"
                 >
-                  VIP Fox 5
+                  VIP 5
                 </p>
               </div>
             </div>
@@ -92,12 +101,24 @@ describe('RewardsVipBadge', () => {
 
     const { container } = renderWithProvider(
       <RewardsVipBadge />,
-      configureStore(createBridgeMockStore()),
+      configureStore(vipEnabledStore()),
     );
 
     await waitFor(() => {
       expect(mockGetVipTierForAccount).toHaveBeenCalledTimes(1);
       expect(container).toMatchInlineSnapshot(`<div />`);
     });
+  });
+
+  it('renders null and skips the lookup when vipProgramEnabled is false', () => {
+    mockGetVipTierForAccount.mockResolvedValueOnce(5);
+
+    const { container } = renderWithProvider(
+      <RewardsVipBadge />,
+      configureStore(createBridgeMockStore()),
+    );
+
+    expect(container).toMatchInlineSnapshot(`<div />`);
+    expect(mockGetVipTierForAccount).not.toHaveBeenCalled();
   });
 });

@@ -670,9 +670,9 @@ export default class MetamaskController extends EventEmitter {
         ? { PerpsController: PerpsControllerInit }
         : {}),
       PPOMController: PPOMControllerInit,
-      PhishingController: PhishingControllerInit,
       AccountTrackerController: AccountTrackerControllerInit,
       TransactionController: TransactionControllerInit,
+      PhishingController: PhishingControllerInit,
       TransactionPayController: TransactionPayControllerInit,
       SmartTransactionsController: SmartTransactionsControllerInit,
       BridgeController: BridgeControllerInit,
@@ -697,12 +697,12 @@ export default class MetamaskController extends EventEmitter {
       // FIXME: Must be init before `MultichainAccountService` to make sure account-tree is updated before
       // reacting to any `:multichainAccountGroup*` events.
       AccountTreeController: AccountTreeControllerInit,
+      SnapAccountService: SnapAccountServiceInit,
       MultichainAssetsController: MultichainAssetsControllerInit,
       MultichainAssetsRatesController: MultichainAssetsRatesControllerInit,
       MultichainBalancesController: MultichainBalancesControllerInit,
       MultichainTransactionsController: MultichainTransactionsControllerInit,
       MultichainAccountService: MultichainAccountServiceInit,
-      SnapAccountService: SnapAccountServiceInit,
       MultichainRoutingService: MultichainRoutingServiceInit,
       AuthenticationController: AuthenticationControllerInit,
       UserStorageController: UserStorageControllerInit,
@@ -4871,6 +4871,11 @@ export default class MetamaskController extends EventEmitter {
       // Then we can build the initial tree.
       this.accountTreeController.reinit();
 
+      // We "force-create" the Snap keyring right after now to ensure it is available as soon
+      // as possible after vault creation, and will (potentially) avoid locking up the
+      // `KeyringController` mutex.
+      await this.getSnapKeyring();
+
       return primaryKeyring;
     } finally {
       releaseLock();
@@ -5216,6 +5221,11 @@ export default class MetamaskController extends EventEmitter {
       // depends only on keyrings `:stateChange`.
       this.accountTreeController.reinit();
 
+      // We "force-create" the Snap keyring right after now to ensure it is available as soon
+      // as possible after vault creation, and will (potentially) avoid locking up the
+      // `KeyringController` mutex.
+      await this.getSnapKeyring();
+
       if (completedOnboarding) {
         // check if external services are enabled
         const { useExternalServices } = this.preferencesController.state;
@@ -5418,6 +5428,11 @@ export default class MetamaskController extends EventEmitter {
 
     // Force account-tree refresh after all accounts have been updated.
     this.accountTreeController.init();
+
+    // We "force-create" the Snap keyring right after unlocking the vault to ensure it is
+    // available as soon as possible, and will (potentially) avoid locking up the
+    // `KeyringController` mutex.
+    await this.getSnapKeyring();
 
     const resyncAndAlignAccounts = async () => {
       // READ THIS CAREFULLY:
