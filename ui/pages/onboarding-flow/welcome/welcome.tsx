@@ -379,7 +379,7 @@ export default function OnboardingWelcome() {
           navigate(ONBOARDING_ACCOUNT_EXIST, { replace: true });
         }
       } catch (error) {
-        handleSocialLoginError(error, socialConnectionType);
+        handleSocialLoginError(error as Error, socialConnectionType);
       } finally {
         setIsLoggingIn(false);
       }
@@ -433,7 +433,7 @@ export default function OnboardingWelcome() {
           navigate(ONBOARDING_UNLOCK_ROUTE, { replace: true });
         }
       } catch (error) {
-        handleSocialLoginError(error, socialConnectionType);
+        handleSocialLoginError(error as Error, socialConnectionType);
       } finally {
         setIsLoggingIn(false);
       }
