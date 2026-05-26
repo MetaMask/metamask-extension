@@ -58,15 +58,13 @@ export function build(onComplete: () => void = noop) {
     } else {
       compiler.run((err, stats) => {
         logStats(err ?? undefined, stats);
-        // `onComplete` must be called synchronously _before_ `compiler.close`
-        // or the caller might observe output from the `close` command.
         const removeCacheShutdownSignalHandlers =
-          options.cache !== null &&
-          typeof options.cache === 'object' &&
           options.cache.type === 'filesystem'
-            ? ignoreCacheShutdownSignals()
+            ? ignoreCacheShutdownSignals(process)
             : noop;
         try {
+          // `onComplete` must be called synchronously _before_ `compiler.close`
+          // or the caller might observe output from the `close` command.
           onComplete();
           compiler.close(removeCacheShutdownSignalHandlers);
         } catch (error) {

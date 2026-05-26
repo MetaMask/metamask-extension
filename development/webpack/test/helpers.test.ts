@@ -38,22 +38,25 @@ describe('./utils/helpers.ts', () => {
         calls.push(message);
       });
 
-      const cleanup = helpers.ignoreCacheShutdownSignals({
-        process: signalProcess,
-        signals: ['SIGINT'],
-      });
+      const cleanup = helpers.ignoreCacheShutdownSignals(signalProcess);
 
-      const listener = listeners.get('SIGINT');
-      assert(listener, 'SIGINT listener should be set');
-      listener();
+      const signals = ['SIGINT', 'SIGTERM'] as const;
+      signals.forEach((signal) => {
+        const listener = listeners.get(signal);
+        assert(listener, `${signal} listener should be set`);
+        listener();
+      });
       cleanup();
 
       assert.deepStrictEqual(calls, [
         '🦊 Still shutting down; waiting for webpack to finish writing its cache…',
+        '🦊 Still shutting down; waiting for webpack to finish writing its cache…',
       ]);
-      assert.strictEqual(signalProcess.on.mock.callCount(), 1);
-      assert.strictEqual(signalProcess.removeListener.mock.callCount(), 1);
-      assert.strictEqual(listeners.has('SIGINT'), false);
+      assert.strictEqual(signalProcess.on.mock.callCount(), 2);
+      assert.strictEqual(signalProcess.removeListener.mock.callCount(), 2);
+      signals.forEach((signal) =>
+        assert.strictEqual(listeners.has(signal), false),
+      );
     });
   });
 
