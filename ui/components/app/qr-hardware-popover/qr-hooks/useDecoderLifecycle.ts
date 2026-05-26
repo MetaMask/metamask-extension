@@ -65,6 +65,10 @@ export function useDecoderLifecycle(
    */
   const handleScan = useCallback(
     (data: string | null) => {
+      const expectedTypes = isReadingWallet
+        ? PAIRING_EXPECTED_TYPES
+        : SIGNING_EXPECTED_TYPES;
+
       try {
         const decoder = getDecoder();
         if (!data || decoder.isComplete()) {
@@ -75,9 +79,6 @@ export function useDecoderLifecycle(
         setScanProgress(decoder.estimatedPercentComplete());
         if (decoder.isComplete()) {
           const result = decoder.resultUR();
-          const expectedTypes = isReadingWallet
-            ? PAIRING_EXPECTED_TYPES
-            : SIGNING_EXPECTED_TYPES;
 
           const typeCheck = classifyScanResult({
             decodedType: result.type,
@@ -94,10 +95,6 @@ export function useDecoderLifecycle(
           );
         }
       } catch (exception) {
-        const expectedTypes = isReadingWallet
-          ? PAIRING_EXPECTED_TYPES
-          : SIGNING_EXPECTED_TYPES;
-
         const classification = classifyScanResult({
           text: lastScannedTextRef.current ?? undefined,
           expectedTypes,
