@@ -8,7 +8,11 @@ import { SpeculosTestHelper } from './test-helper';
 import { SpeculosClient } from './client';
 import { ApduBridge } from './apdu-bridge';
 import { validateSpeculosTestEnv } from './build-config';
-import { SPECULOS_WS_BRIDGE_PORT, ensureDeviceEnv, getDeviceModel } from './constants';
+import {
+  SPECULOS_WS_BRIDGE_PORT,
+  ensureDeviceEnv,
+  getDeviceModel,
+} from './constants';
 import { getWebHidMockScript } from './webhid-mock-script';
 import type { SharedSpeculosContext } from './shared-context';
 import type { DeviceInteraction } from './device-interaction';
@@ -138,10 +142,7 @@ export async function withSpeculosFixtures(
     ...restOfOptions
   } = options;
 
-  const {
-    apduPort,
-    apiPort,
-  } = speculosOptions;
+  const { apduPort, apiPort } = speculosOptions;
 
   let speculosHelper: SpeculosTestHelper;
   let speculosClient: SpeculosClient;
@@ -245,8 +246,8 @@ export async function withSpeculosFixtures(
     await cleanup();
     // Kill Anvil if still running on port 8545 — withFixtures may not clean
     // it up between tests within the same suite.
+    const { execFile } = await import('child_process');
     await new Promise<void>((resolve) => {
-      const { execFile } = await import('child_process');
       execFile('lsof', ['-ti', ':8545'], (_err: unknown, stdout: string) => {
         const pids = stdout?.trim().split('\n').filter(Boolean) ?? [];
         for (const pid of pids) {
