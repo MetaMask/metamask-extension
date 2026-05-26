@@ -249,9 +249,7 @@ export const MultichainAccountMenu = ({
         alignItems={BoxAlignItems.Center}
         justifyContent={BoxJustifyContent.Center}
         backgroundColor={
-          buttonBackgroundColor
-            ? (buttonBackgroundColor as unknown as BoxBackgroundColor)
-            : BoxBackgroundColor.BackgroundMuted
+          buttonBackgroundColor ?? BoxBackgroundColor.BackgroundMuted
         }
         padding={1}
         onClick={togglePopover}

@@ -712,7 +712,7 @@ export const MultichainAccountsConnectPage: React.FC<
           gap={4}
           className="flex w-full"
         >
-          <Box gap={4} className="w-full">
+          <Box gap={4} className="flex w-full">
             <Button
               block
               variant={ButtonVariant.Secondary}

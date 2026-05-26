@@ -223,7 +223,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
           class="flex-col gap-4 flex w-full"
         >
           <div
-            class="gap-4 w-full"
+            class="gap-4 flex w-full"
           >
             <button
               class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
@@ -468,7 +468,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
           class="flex-col gap-4 flex w-full"
         >
           <div
-            class="gap-4 w-full"
+            class="gap-4 flex w-full"
           >
             <button
               class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
@@ -713,7 +713,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
           class="flex-col gap-4 flex w-full"
         >
           <div
-            class="gap-4 w-full"
+            class="gap-4 flex w-full"
           >
             <button
               class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
