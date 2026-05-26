@@ -281,8 +281,8 @@ export const mockRewardsApi = async (server: Mockttp): Promise<void> => {
   await server
     .forPost('https://rewards.uat-api.cx.metamask.io/public/rewards/ois')
     .thenJson(200, {
-      ois: [true],
-      sids: ['019b2245-9533-7739-a89c-b4c839a3d53a'],
+      ois: [false],
+      sids: [null],
     });
 
   await server

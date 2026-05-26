@@ -16,11 +16,7 @@ import { transitionForward } from '../../ui/transition';
 
 import { I18nContext } from '../../../contexts/i18n';
 
-import { MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
-import {
-  AddressListQueryParams,
-  AddressListSource,
-} from '../../../pages/multichain-accounts/multichain-account-address-list-page';
+import { getMultichainAccountAddressListReceivePagePath } from '../../../pages/multichain-accounts/multichain-account-address-list-page';
 import {
   getUseExternalServices,
   getNetworkConfigurationIdByChainId,
@@ -331,7 +327,7 @@ const CoinButtons = ({
       // Navigate to the multichain address list page with receive source
       transitionForward(() =>
         navigate(
-          `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}?accountGroupId=${encodeURIComponent(selectedAccountGroup)}&${AddressListQueryParams.Source}=${AddressListSource.Receive}`,
+          getMultichainAccountAddressListReceivePagePath(selectedAccountGroup),
         ),
       );
     } else {

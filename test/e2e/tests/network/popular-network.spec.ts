@@ -8,6 +8,7 @@ import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-networ
 import AddNetworkRpcUrlModal from '../../page-objects/pages/dialog/add-network-rpc-url';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
@@ -64,7 +65,7 @@ const MOCK_CHAINLIST_RESPONSE = [
 ];
 
 describe('Popular Networks', function (this: Suite) {
-  it('add custom network and switch the network', async function () {
+  it('add custom network without switching the network filter', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -72,6 +73,9 @@ describe('Popular Networks', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
+        const assetListPage = new AssetListPage(driver);
+        const originalFilterLabel =
+          await assetListPage.getNetworksFilterLabel();
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
 
@@ -80,10 +84,14 @@ describe('Popular Networks', function (this: Suite) {
         await selectNetworkDialog.checkPageIsLoaded();
 
         await selectNetworkDialog.clickAddButtonForPopularNetwork('0xa86a');
+        await selectNetworkDialog.checkAddNetworkMessageIsDisplayed(
+          'Avalanche',
+        );
         await selectNetworkDialog.clickCloseButton();
 
-        // verify network is switched
+        // verify the additional network was added without switching the home filter
         await new Homepage(driver).checkPageIsLoaded();
+        await assetListPage.waitUntilFilterLabelIs(originalFilterLabel);
       },
     );
   });

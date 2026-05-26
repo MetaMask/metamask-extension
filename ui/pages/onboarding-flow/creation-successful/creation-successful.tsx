@@ -26,14 +26,15 @@ import {
   IconName,
   IconSize,
 } from '@metamask/design-system-react';
+import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
-  ONBOARDING_WELCOME_ROUTE,
   DEFAULT_ROUTE,
   SECURITY_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
+  getBackupAndSyncOnboardingToggleState,
   getExternalServicesOnboardingToggleState,
   getFirstTimeFlowType,
   getIsSocialLoginFlow,
@@ -52,6 +53,7 @@ import {
   getCompletedOnboarding,
   getIsInitialized,
   getIsPrimarySeedPhraseBackedUp,
+  getIsWalletResetInProgress,
 } from '../../../ducks/metamask/metamask';
 import {
   toggleExternalServices,
@@ -59,6 +61,7 @@ import {
   setCompletedOnboardingWithSidepanel,
   setUseSidePanelAsDefault,
   removeDeferredDeepLink,
+  setIsBackupAndSyncFeatureEnabled,
 } from '../../../store/actions';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
@@ -86,6 +89,9 @@ export default function CreationSuccessful() {
   const externalServicesOnboardingToggleState = useSelector(
     getExternalServicesOnboardingToggleState,
   );
+  const backupAndSyncOnboardingToggleState = useSelector(
+    getBackupAndSyncOnboardingToggleState,
+  );
   const { trackEvent } = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
@@ -97,6 +103,7 @@ export default function CreationSuccessful() {
     useSelector(getDeferredDeepLink);
 
   const isInitialized = useSelector(getIsInitialized);
+  const isResetWalletInProgress = useSelector(getIsWalletResetInProgress);
 
   const learnMoreLink = ZENDESK_URLS.BASIC_SAFETY_TIPS;
 
@@ -113,10 +120,10 @@ export default function CreationSuccessful() {
     if (isFromReminder) {
       return;
     }
-    if (!isInitialized) {
-      navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
+    if (!isInitialized || isResetWalletInProgress) {
+      navigate(DEFAULT_ROUTE, { replace: true });
     }
-  }, [isInitialized, isFromReminder, navigate]);
+  }, [isInitialized, isFromReminder, navigate, isResetWalletInProgress]);
 
   useEffect(() => {
     const browserWithSidePanel = browser as BrowserWithSidePanel;
@@ -252,6 +259,12 @@ export default function CreationSuccessful() {
       return;
     }
 
+    if (isResetWalletInProgress) {
+      // if the wallet reset is in progress, we navigate to the default route (i.e. onboarding start page)
+      navigate(DEFAULT_ROUTE);
+      return;
+    }
+
     const deferredDeepLinkResult =
       await getDeferredDeepLinkRoute(deferredDeepLink);
     const shouldOpenSidePanel =
@@ -281,6 +294,12 @@ export default function CreationSuccessful() {
     await dispatch(
       toggleExternalServices(externalServicesOnboardingToggleState),
     );
+
+    if (!backupAndSyncOnboardingToggleState) {
+      await dispatch(
+        setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, false),
+      );
+    }
 
     // NOTE: Metametrics Opt In/Out event tracking should be done after `toggleExternalServices` dispatch.
     // Since we will track the `Metrics Opt In/Out` event even when participateInMetaMetrics is false,
@@ -367,6 +386,7 @@ export default function CreationSuccessful() {
     isOnboardingCompleted,
     dispatch,
     externalServicesOnboardingToggleState,
+    backupAndSyncOnboardingToggleState,
     isSidePanelEnabled,
     isSocialLoginFlow,
     socialLoginType,
@@ -376,6 +396,7 @@ export default function CreationSuccessful() {
     trackEvent,
     participateInMetaMetrics,
     handleOnDoneNavigation,
+    isResetWalletInProgress,
   ]);
 
   const renderDoneButton = () => {

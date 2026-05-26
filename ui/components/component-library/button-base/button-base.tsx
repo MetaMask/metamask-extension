@@ -21,7 +21,9 @@ import {
 } from './button-base.types';
 
 /**
- * @deprecated Please update your code to use `ButtonBase` from `@metamask/design-system-react`
+ * @deprecated Please update your code to use `ButtonBase` from `@metamask/design-system-react`.
+ * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#buttonbase-component | Migration Guide}
+ * @see {@link https://metamask.github.io/metamask-design-system/?path=/docs/react-components-buttonbase--docs | Storybook Documentation}
  */
 export const ButtonBase: ButtonBaseComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

@@ -12,6 +12,7 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../../hooks/useFormatters';
 import { usePerpsLiveAccount } from '../../../../../hooks/perps/stream';
+import { getTradeableBalance } from '../../../../../hooks/perps/getTradeableBalance';
 
 export const PerpsWithdrawBalance = () => {
   const t = useI18nContext();
@@ -19,9 +20,9 @@ export const PerpsWithdrawBalance = () => {
   const { account } = usePerpsLiveAccount();
 
   const balanceFormatted = useMemo(() => {
-    const value = parseFloat(account?.availableBalance ?? '0') || 0;
+    const value = parseFloat(getTradeableBalance(account)) || 0;
     return formatCurrency(value, 'USD');
-  }, [account?.availableBalance, formatCurrency]);
+  }, [account, formatCurrency]);
 
   return (
     <Box

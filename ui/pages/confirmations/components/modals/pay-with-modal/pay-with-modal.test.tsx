@@ -1,25 +1,49 @@
 import React from 'react';
-import { screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
+import mockState from '../../../../../../test/data/mock-state.json';
+import configureStore from '../../../../../store/store';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
+import { usePostQuoteWithdrawTokenFilter } from '../../../hooks/pay/useWithdrawTokenFilter';
 import { getAvailableTokens } from '../../../utils/transaction-pay';
 import {
   useMusdConversionTokens,
   useMusdPaymentToken,
 } from '../../../../../hooks/musd';
 import { useConfirmContext } from '../../../context/confirm';
+import {
+  addToken,
+  findNetworkClientIdByChainId,
+} from '../../../../../store/actions';
 import { PayWithModal } from './pay-with-modal';
 
 jest.mock('../../../hooks/pay/useTransactionPayToken');
 jest.mock('../../../hooks/pay/useTransactionPayData');
+jest.mock('../../../hooks/pay/useWithdrawTokenFilter');
 jest.mock('../../../utils/transaction-pay');
 jest.mock('../../../../../hooks/musd');
 jest.mock('../../../context/confirm', () => ({
   useConfirmContext: jest.fn(),
 }));
+jest.mock('../../../../../store/actions', () => ({
+  addToken: jest.fn(),
+  findNetworkClientIdByChainId: jest.fn(),
+}));
+
+// Zero-balance non-native token used to exercise the perpsWithdraw addToken
+// import branch.
+const PERPS_WITHDRAW_TOKEN = {
+  address: '0xaaa0000000000000000000000000000000000aaa',
+  chainId: '0xa4b1',
+  isNative: false,
+  rawBalance: '0x0',
+  symbol: 'BNB',
+  decimals: 18,
+  image: './bnb.png',
+};
 
 jest.mock('../../send/asset', () => ({
   Asset: ({
@@ -28,11 +52,7 @@ jest.mock('../../send/asset', () => ({
     hideNfts,
     includeNoBalance,
   }: {
-    onAssetSelect?: (token: {
-      address: string;
-      chainId: string;
-      disabled?: boolean;
-    }) => void;
+    onAssetSelect?: (token: Record<string, unknown>) => void;
     tokenFilter?: (tokens: unknown[]) => unknown[];
     hideNfts?: boolean;
     includeNoBalance?: boolean;
@@ -63,12 +83,25 @@ jest.mock('../../send/asset', () => ({
         >
           Select Disabled Token
         </button>
+        <button
+          data-testid="select-perps-withdraw-token"
+          onClick={() => onAssetSelect?.(PERPS_WITHDRAW_TOKEN)}
+        >
+          Select Perps Withdraw Token
+        </button>
       </div>
     );
   },
 }));
 
 const CHAIN_ID_MOCK = '0x1';
+
+// `PayWithModal` calls `useDispatch()` for the perpsWithdraw `addToken`
+// import path, so the component needs a redux store at render time. The
+// non-perpsWithdraw test cases never actually dispatch — a default mock-state
+// store is enough to satisfy the hook.
+const renderModal = (props: { isOpen: boolean; onClose: () => void }) =>
+  renderWithProvider(<PayWithModal {...props} />, configureStore(mockState));
 
 describe('PayWithModal', () => {
   const setPayTokenMock = jest.fn();
@@ -82,6 +115,9 @@ describe('PayWithModal', () => {
   const useMusdConversionTokensMock = jest.mocked(useMusdConversionTokens);
   const useMusdPaymentTokenMock = jest.mocked(useMusdPaymentToken);
   const useConfirmContextMock = jest.mocked(useConfirmContext);
+  const usePostQuoteWithdrawTokenFilterMock = jest.mocked(
+    usePostQuoteWithdrawTokenFilter,
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -91,6 +127,11 @@ describe('PayWithModal', () => {
     } as ReturnType<typeof useConfirmContext>);
 
     getAvailableTokensMock.mockImplementation(({ tokens }) => tokens as never);
+    usePostQuoteWithdrawTokenFilterMock.mockReturnValue({
+      filterTokens: (tokens) => tokens,
+      isFilterApplied: false,
+      isTokenAllowed: () => false,
+    });
     useTransactionPayRequiredTokensMock.mockReturnValue([]);
     useMusdConversionTokensMock.mockReturnValue({
       filterTokens: (tokens) => tokens,
@@ -124,7 +165,7 @@ describe('PayWithModal', () => {
   });
 
   it('renders modal with header', () => {
-    renderWithProvider(<PayWithModal isOpen={true} onClose={onCloseMock} />);
+    renderModal({ isOpen: true, onClose: onCloseMock });
 
     expect(
       screen.getByText(messages.payWithModalTitle.message),
@@ -132,7 +173,7 @@ describe('PayWithModal', () => {
   });
 
   it('renders Asset component with correct props', () => {
-    renderWithProvider(<PayWithModal isOpen={true} onClose={onCloseMock} />);
+    renderModal({ isOpen: true, onClose: onCloseMock });
 
     expect(screen.getByTestId('asset-component')).toBeInTheDocument();
     expect(screen.getByTestId('hide-nfts')).toHaveTextContent('true');
@@ -140,7 +181,7 @@ describe('PayWithModal', () => {
   });
 
   it('calls onClose when close button is clicked', () => {
-    renderWithProvider(<PayWithModal isOpen={true} onClose={onCloseMock} />);
+    renderModal({ isOpen: true, onClose: onCloseMock });
 
     const closeButton = screen.getByLabelText(messages.close.message);
     fireEvent.click(closeButton);
@@ -149,7 +190,7 @@ describe('PayWithModal', () => {
   });
 
   it('calls setPayToken and closes modal when token is selected', () => {
-    renderWithProvider(<PayWithModal isOpen={true} onClose={onCloseMock} />);
+    renderModal({ isOpen: true, onClose: onCloseMock });
 
     const selectButton = screen.getByTestId('select-token');
     fireEvent.click(selectButton);
@@ -162,7 +203,7 @@ describe('PayWithModal', () => {
   });
 
   it('filters tokens using getAvailableTokens with payToken and requiredTokens', () => {
-    renderWithProvider(<PayWithModal isOpen={true} onClose={onCloseMock} />);
+    renderModal({ isOpen: true, onClose: onCloseMock });
 
     expect(getAvailableTokensMock).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -176,7 +217,7 @@ describe('PayWithModal', () => {
   });
 
   it('does not render when isOpen is false', () => {
-    renderWithProvider(<PayWithModal isOpen={false} onClose={onCloseMock} />);
+    renderModal({ isOpen: false, onClose: onCloseMock });
 
     expect(
       screen.queryByText(messages.payWith.message),
@@ -184,7 +225,7 @@ describe('PayWithModal', () => {
   });
 
   it('does not call setPayToken when disabled token is selected', () => {
-    renderWithProvider(<PayWithModal isOpen={true} onClose={onCloseMock} />);
+    renderModal({ isOpen: true, onClose: onCloseMock });
 
     const selectDisabledButton = screen.getByTestId('select-disabled-token');
     fireEvent.click(selectDisabledButton);
@@ -203,7 +244,7 @@ describe('PayWithModal', () => {
     });
 
     it('calls onMusdPaymentTokenChange instead of setPayToken for mUSD conversions', () => {
-      renderWithProvider(<PayWithModal isOpen={true} onClose={onCloseMock} />);
+      renderModal({ isOpen: true, onClose: onCloseMock });
 
       fireEvent.click(screen.getByTestId('select-token'));
 
@@ -215,7 +256,7 @@ describe('PayWithModal', () => {
     });
 
     it('closes modal after mUSD token selection', () => {
-      renderWithProvider(<PayWithModal isOpen={true} onClose={onCloseMock} />);
+      renderModal({ isOpen: true, onClose: onCloseMock });
 
       fireEvent.click(screen.getByTestId('select-token'));
 
@@ -223,7 +264,7 @@ describe('PayWithModal', () => {
     });
 
     it('does not call onMusdPaymentTokenChange when disabled token is selected', () => {
-      renderWithProvider(<PayWithModal isOpen={true} onClose={onCloseMock} />);
+      renderModal({ isOpen: true, onClose: onCloseMock });
 
       fireEvent.click(screen.getByTestId('select-disabled-token'));
 
@@ -234,7 +275,7 @@ describe('PayWithModal', () => {
 
   describe('non-mUSD token selection', () => {
     it('calls setPayToken and not onMusdPaymentTokenChange for non-mUSD transactions', () => {
-      renderWithProvider(<PayWithModal isOpen={true} onClose={onCloseMock} />);
+      renderModal({ isOpen: true, onClose: onCloseMock });
 
       fireEvent.click(screen.getByTestId('select-token'));
 
@@ -243,6 +284,97 @@ describe('PayWithModal', () => {
         chainId: '0x1',
       });
       expect(onMusdPaymentTokenChangeMock).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('perpsWithdraw destination token import', () => {
+    const addTokenMock = jest.mocked(addToken);
+    const findNetworkClientIdByChainIdMock = jest.mocked(
+      findNetworkClientIdByChainId,
+    );
+
+    beforeEach(() => {
+      useConfirmContextMock.mockReturnValue({
+        currentConfirmation: {
+          type: TransactionType.perpsWithdraw,
+        },
+      } as ReturnType<typeof useConfirmContext>);
+
+      findNetworkClientIdByChainIdMock.mockResolvedValue('arbitrum-client');
+      // `addToken` is a thunk; `dispatch(thunk)` returns whatever the thunk
+      // returns. The component awaits the dispatch, so a resolved jest.fn
+      // wrapped as a thunk-returning jest.fn is enough.
+      addTokenMock.mockReturnValue(jest.fn().mockResolvedValue(undefined));
+    });
+
+    it('imports a zero-balance non-native token before calling setPayToken', async () => {
+      renderModal({ isOpen: true, onClose: onCloseMock });
+
+      fireEvent.click(screen.getByTestId('select-perps-withdraw-token'));
+
+      await waitFor(() => {
+        expect(setPayTokenMock).toHaveBeenCalledWith({
+          address: PERPS_WITHDRAW_TOKEN.address,
+          chainId: PERPS_WITHDRAW_TOKEN.chainId,
+        });
+      });
+
+      expect(findNetworkClientIdByChainIdMock).toHaveBeenCalledWith(
+        PERPS_WITHDRAW_TOKEN.chainId,
+      );
+      expect(addTokenMock).toHaveBeenCalledWith(
+        {
+          address: PERPS_WITHDRAW_TOKEN.address,
+          symbol: PERPS_WITHDRAW_TOKEN.symbol,
+          decimals: PERPS_WITHDRAW_TOKEN.decimals,
+          networkClientId: 'arbitrum-client',
+          image: PERPS_WITHDRAW_TOKEN.image,
+        },
+        true,
+      );
+      expect(onCloseMock).toHaveBeenCalled();
+    });
+
+    it('uses the withdraw token filter without applying the regular available-token filter', () => {
+      const withdrawTokenFilterMock = jest
+        .fn()
+        .mockReturnValue([PERPS_WITHDRAW_TOKEN]);
+      usePostQuoteWithdrawTokenFilterMock.mockReturnValue({
+        filterTokens: withdrawTokenFilterMock,
+        isFilterApplied: true,
+        isTokenAllowed: () => true,
+      });
+
+      renderModal({ isOpen: true, onClose: onCloseMock });
+
+      expect(withdrawTokenFilterMock).toHaveBeenCalledWith([]);
+      expect(getAvailableTokensMock).not.toHaveBeenCalled();
+    });
+
+    it('keeps the modal open and skips setPayToken when token import fails', async () => {
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      addTokenMock.mockReturnValue(
+        jest.fn().mockRejectedValue(new Error('network down')),
+      );
+
+      renderModal({ isOpen: true, onClose: onCloseMock });
+
+      fireEvent.click(screen.getByTestId('select-perps-withdraw-token'));
+
+      await waitFor(() => {
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          'Failed to import withdraw destination token',
+          expect.any(Error),
+        );
+      });
+
+      expect(setPayTokenMock).not.toHaveBeenCalled();
+      expect(onCloseMock).not.toHaveBeenCalled();
+
+      consoleErrorSpy.mockRestore();
     });
   });
 });

@@ -28,7 +28,7 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
 
-jest.mock('../selectors/remote-feature-flags', () => ({
+jest.mock('../../shared/lib/selectors/remote-feature-flags', () => ({
   getRemoteFeatureFlags: jest.fn(),
 }));
 

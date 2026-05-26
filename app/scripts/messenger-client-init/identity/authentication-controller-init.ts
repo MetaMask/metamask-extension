@@ -35,6 +35,7 @@ export const AuthenticationControllerInit: MessengerClientInitFunction<
         'MetaMetricsController:getMetaMetricsId',
       ),
       agent: Platform.EXTENSION,
+      getAppVersion: () => process.env.METAMASK_VERSION,
     },
     config: {
       env,

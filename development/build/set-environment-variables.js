@@ -42,6 +42,10 @@ function setEnvironmentVariables({
     ? getOAuthClientId({ ...oauthClientIdOptions, provider: 'GOOGLE' })
     : '';
 
+  const TELEGRAM_CLIENT_ID = isSeedlessOnboardingEnabled
+    ? getOAuthClientId({ ...oauthClientIdOptions, provider: 'TELEGRAM' })
+    : '';
+
   variables.set({
     DEBUG: isDevBuild || isTestBuild ? variables.getMaybe('DEBUG') : undefined,
     EIP_4337_ENTRYPOINT: isTestBuild
@@ -55,6 +59,8 @@ function setEnvironmentVariables({
       testing: isTestBuild,
     }),
     METAMASK_DEBUG: isDevBuild || variables.getMaybe('METAMASK_DEBUG') === true,
+    SENTRY_DISTRIBUTED_TRACING_DISABLED:
+      variables.getMaybe('SENTRY_DISTRIBUTED_TRACING_DISABLED') === true,
     METAMASK_BUILD_NAME: buildName,
     METAMASK_BUILD_APP_ID: getBuildAppId({
       buildType,
@@ -91,6 +97,7 @@ function setEnvironmentVariables({
       : variables.getMaybe('ASSETS_UNIFIED_STATE_ENABLED') || 'false',
     GOOGLE_CLIENT_ID,
     APPLE_CLIENT_ID,
+    TELEGRAM_CLIENT_ID,
   });
 }
 
@@ -180,7 +187,7 @@ function getInfuraProjectId({ buildType, variables, environment, testing }) {
  * Get the OAuth client ID for the current build.
  *
  * @param {object} options - The OAuth client ID options.
- * @param {'APPLE' | 'GOOGLE'} options.provider - The OAuth provider.
+ * @param {'APPLE' | 'GOOGLE' | 'TELEGRAM'} options.provider - The OAuth provider.
  * @param {string} options.buildType - The current build type.
  * @param {ENVIRONMENT[keyof ENVIRONMENT]} options.environment - The current build environment.
  * @param {boolean} options.testing - Whether this is a test build or not.
@@ -281,7 +288,6 @@ function getPhishingWarningPageUrl({ variables, testing }) {
 
   let phishingWarningPageUrlObject;
   try {
-    // eslint-disable-next-line no-new
     phishingWarningPageUrlObject = new URL(phishingWarningPageUrl);
   } catch (error) {
     throw new Error(

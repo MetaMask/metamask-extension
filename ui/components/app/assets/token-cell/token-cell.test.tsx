@@ -9,12 +9,12 @@ import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import {
   getTokenList,
-  getPreferences,
   getCurrencyRates,
   getUseCurrencyRateCheck,
   getUseSafeChainsListValidation,
   getEnabledNetworksByNamespace,
 } from '../../../../selectors';
+import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import {
   getMultichainCurrentChainId,
   getMultichainIsEvm,

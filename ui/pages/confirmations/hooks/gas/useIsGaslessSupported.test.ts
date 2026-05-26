@@ -5,7 +5,7 @@ import { getMockConfirmStateForTransaction } from '../../../../../test/data/conf
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { EIP_7702_REVOKE_ADDRESS } from '../../../../../shared/lib/eip7702-utils';
 import { isRelaySupported } from '../../../../store/actions';
-import { isHardwareWallet } from '../../../../selectors';
+import { isHardwareWallet } from '../../../../../shared/lib/selectors/keyring';
 import { useIsGaslessSupported } from './useIsGaslessSupported';
 import { useGaslessSupportedSmartTransactions } from './useGaslessSupportedSmartTransactions';
 
@@ -19,10 +19,13 @@ jest.mock('../../../../store/actions', () => ({
 
 jest.mock('../../../../selectors', () => ({
   ...jest.requireActual('../../../../selectors'),
-  isHardwareWallet: jest.fn(),
 }));
 
 jest.mock('./useGaslessSupportedSmartTransactions');
+jest.mock('../../../../../shared/lib/selectors/keyring', () => ({
+  ...jest.requireActual('../../../../../shared/lib/selectors/keyring'),
+  isHardwareWallet: jest.fn(),
+}));
 
 async function runHook({
   authorizationList,

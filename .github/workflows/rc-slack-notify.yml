@@ -1,6 +1,6 @@
 # Posts a Slack Block Kit message after a successful Main workflow run on release/X.Y.Z,
 # when the release PR (into stable) has the `auto-rc-builds` label — parity with Mobile RC Slack.
-# See .github/scripts/slack-rc-notification.ts
+# See .github/scripts/slack-rc-notification.mts
 #
 # Test without waiting for Main:
 #   Actions → RC Slack notify → Run workflow → fill head_sha, semver, github_run_id, test_channel
@@ -122,4 +122,4 @@ jobs:
           SLACK_RC_CHANNEL: ${{ github.event_name == 'workflow_dispatch' && inputs.test_channel || vars.SLACK_RC_CHANNEL || '' }}
           # AWS_CLOUDFRONT_URL: full origin (https://…); if empty, artifact links are skipped.
           HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ steps.notif.outputs.run_id }}
-        run: yarn exec tsx ./.github/scripts/slack-rc-notification.ts
+        run: yarn exec tsx ./.github/scripts/slack-rc-notification.mts

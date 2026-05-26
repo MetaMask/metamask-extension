@@ -49,7 +49,16 @@ class TermsOfUseUpdateModal {
       console.log('The scroll button did not disappear, continuing...');
     }
 
-    await this.driver.clickElement(this.termsOfUseCheckbox);
+    // Checkbox stays disabled until scroll-to-bottom completes.
+    // Wait for the checkbox to be enabled before clicking it.
+    await this.driver.waitForSelector(this.termsOfUseCheckbox, {
+      state: 'enabled',
+    });
+    const checkbox = await this.driver.findClickableElement(
+      this.termsOfUseCheckbox,
+    );
+    await checkbox.click();
+
     // complete recovery flow takes time as multiple background requests are triggered
     // and can temporarily block the UI
     await this.driver.clickElementAndWaitToDisappear(this.acceptButton, 10000);

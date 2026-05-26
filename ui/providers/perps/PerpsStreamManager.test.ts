@@ -1299,4 +1299,96 @@ describe('PerpsStreamManager', () => {
       expect(manager.getLastStreamUpdateAt()).toBe(0);
     });
   });
+
+  describe('hydrateFromControllerCache', () => {
+    const ADDR = '0xABCDEF0000000000000000000000000000000001';
+
+    it('hydrates markets when channel has no cached data', () => {
+      const markets = [
+        { symbol: 'BTC', name: 'Bitcoin' } as unknown as Parameters<
+          typeof manager.markets.pushData
+        >[0][number],
+      ];
+
+      manager.hydrateFromControllerCache({ markets });
+
+      expect(manager.markets.hasCachedData()).toBe(true);
+      expect(manager.markets.getCachedData()).toEqual(markets);
+    });
+
+    it('does not hydrate markets when an empty array is provided', () => {
+      manager.hydrateFromControllerCache({ markets: [] });
+
+      expect(manager.markets.hasCachedData()).toBe(false);
+    });
+
+    it('is a no-op when the live stream already populated the channel', () => {
+      manager.markets.pushData([{ symbol: 'ETH' } as never]);
+      expect(manager.markets.hasCachedData()).toBe(true);
+
+      manager.hydrateFromControllerCache({
+        markets: [{ symbol: 'BTC' } as never],
+      });
+
+      expect(manager.markets.getCachedData()).toEqual([{ symbol: 'ETH' }]);
+    });
+
+    it('only hydrates user-scoped channels when the cache address matches the selected account', () => {
+      const positions = [makePosition('BTC')];
+
+      manager.hydrateFromControllerCache({ positions, address: ADDR }, ADDR);
+
+      expect(manager.positions.hasCachedData()).toBe(true);
+      expect(manager.positions.getCachedData()).toEqual(positions);
+    });
+
+    it('refuses to hydrate user-scoped channels when the cache address does not match', () => {
+      const positions = [makePosition('BTC')];
+      const OTHER = '0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF';
+
+      manager.hydrateFromControllerCache({ positions, address: OTHER }, ADDR);
+
+      expect(manager.positions.hasCachedData()).toBe(false);
+    });
+
+    it('refuses to hydrate user-scoped channels when no selected address is provided', () => {
+      manager.hydrateFromControllerCache({
+        positions: [makePosition('BTC')],
+        address: ADDR,
+      });
+
+      expect(manager.positions.hasCachedData()).toBe(false);
+    });
+
+    it('does not flip positions cache when an empty array is supplied', () => {
+      manager.hydrateFromControllerCache(
+        { positions: [], address: ADDR },
+        ADDR,
+      );
+
+      expect(manager.positions.hasCachedData()).toBe(false);
+    });
+
+    it('skips account hydration when the snapshot value is null', () => {
+      manager.hydrateFromControllerCache(
+        { account: null, address: ADDR },
+        ADDR,
+      );
+
+      expect(manager.account.hasCachedData()).toBe(false);
+    });
+
+    it('hydrates markets even when the user scope does not match', () => {
+      const markets = [{ symbol: 'BTC' } as never];
+      const positions = [makePosition('BTC')];
+
+      manager.hydrateFromControllerCache(
+        { markets, positions, address: '0xwrong' },
+        ADDR,
+      );
+
+      expect(manager.markets.hasCachedData()).toBe(true);
+      expect(manager.positions.hasCachedData()).toBe(false);
+    });
+  });
 });

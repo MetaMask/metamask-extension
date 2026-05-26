@@ -1,18 +1,23 @@
 import type {
   BenchmarkResults,
   ThresholdConfig,
+  ThresholdViolation,
 } from '../../shared/constants/benchmarks';
 import {
   BENCHMARK_PERSONA,
   DEFAULT_RELATIVE_THRESHOLDS,
+  THRESHOLD_SEVERITY,
 } from '../../shared/constants/benchmarks';
 import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/thresholds';
 
 import {
+  applyGatingPolicy,
   compareMetric,
   compareBenchmarkEntries,
   formatDeltaPercent,
+  scaleThresholdsForBrowser,
   COMPARISON_SEVERITY,
+  type BenchmarkEntryComparison,
 } from './comparison-utils';
 
 describe('benchmark-comparison', () => {
@@ -346,6 +351,152 @@ describe('benchmark-comparison', () => {
     });
   });
 
+  describe('applyGatingPolicy', () => {
+    const violation = (
+      metricId: string,
+      severity: ThresholdViolation['severity'],
+    ): ThresholdViolation => ({
+      metricId,
+      percentile: 'p75',
+      value: 1000,
+      threshold: 800,
+      severity,
+    });
+
+    const baseComparison = (
+      benchmarkName: string,
+      violations: ThresholdViolation[],
+    ): BenchmarkEntryComparison => ({
+      benchmarkName,
+      relativeMetrics: [],
+      absoluteViolations: violations,
+      hasRegression: false,
+      hasWarning: violations.some(
+        (v) => v.severity === THRESHOLD_SEVERITY.Warn,
+      ),
+      absoluteFailed: violations.some(
+        (v) => v.severity === THRESHOLD_SEVERITY.Fail,
+      ),
+    });
+
+    it('preserves Fail severity when metric is allowlisted', () => {
+      const input = baseComparison('startupStandardHome', [
+        violation('uiStartup', THRESHOLD_SEVERITY.Fail),
+      ]);
+      const allow = new Set(['startupStandardHome.uiStartup']);
+
+      const result = applyGatingPolicy(input, allow);
+
+      expect(result.absoluteViolations[0].severity).toBe(
+        THRESHOLD_SEVERITY.Fail,
+      );
+      expect(result.absoluteFailed).toBe(true);
+    });
+
+    it('downgrades Fail to Warn when metric is not allowlisted', () => {
+      const input = baseComparison('startupPowerUserHome', [
+        violation('uiStartup', THRESHOLD_SEVERITY.Fail),
+      ]);
+      const allow = new Set(['startupStandardHome.uiStartup']);
+
+      const result = applyGatingPolicy(input, allow);
+
+      expect(result.absoluteViolations[0].severity).toBe(
+        THRESHOLD_SEVERITY.Warn,
+      );
+      expect(result.absoluteFailed).toBe(false);
+      expect(result.hasWarning).toBe(true);
+    });
+
+    it('downgrades only non-allowlisted entries in mixed input', () => {
+      const input = baseComparison('startupStandardHome', [
+        violation('uiStartup', THRESHOLD_SEVERITY.Fail),
+        violation('domContentLoaded', THRESHOLD_SEVERITY.Fail),
+      ]);
+      const allow = new Set(['startupStandardHome.uiStartup']);
+
+      const result = applyGatingPolicy(input, allow);
+
+      const byMetric = Object.fromEntries(
+        result.absoluteViolations.map((v) => [v.metricId, v.severity]),
+      );
+      expect(byMetric.uiStartup).toBe(THRESHOLD_SEVERITY.Fail);
+      expect(byMetric.domContentLoaded).toBe(THRESHOLD_SEVERITY.Warn);
+      expect(result.absoluteFailed).toBe(true);
+    });
+
+    it('never modifies Warn-severity violations', () => {
+      const input = baseComparison('startupPowerUserHome', [
+        violation('uiStartup', THRESHOLD_SEVERITY.Warn),
+      ]);
+      const allow = new Set<string>();
+
+      const result = applyGatingPolicy(input, allow);
+
+      expect(result.absoluteViolations[0].severity).toBe(
+        THRESHOLD_SEVERITY.Warn,
+      );
+      expect(result.absoluteFailed).toBe(false);
+    });
+
+    it('downgrades all fails when allowlist is empty', () => {
+      const input = baseComparison('startupStandardHome', [
+        violation('uiStartup', THRESHOLD_SEVERITY.Fail),
+        violation('load', THRESHOLD_SEVERITY.Fail),
+      ]);
+
+      const result = applyGatingPolicy(input, new Set());
+
+      expect(
+        result.absoluteViolations.every(
+          (v) => v.severity === THRESHOLD_SEVERITY.Warn,
+        ),
+      ).toBe(true);
+      expect(result.absoluteFailed).toBe(false);
+      expect(result.hasWarning).toBe(true);
+    });
+
+    it('does not mutate the input comparison', () => {
+      const input = baseComparison('startupPowerUserHome', [
+        violation('uiStartup', THRESHOLD_SEVERITY.Fail),
+      ]);
+      const inputViolationsBefore = input.absoluteViolations.slice();
+      const inputSeverityBefore = input.absoluteViolations[0].severity;
+
+      applyGatingPolicy(input, new Set());
+
+      expect(input.absoluteViolations).toStrictEqual(inputViolationsBefore);
+      expect(input.absoluteViolations[0].severity).toBe(inputSeverityBefore);
+      expect(input.absoluteFailed).toBe(true);
+    });
+
+    it('preserves hasWarning derived from relativeMetrics', () => {
+      const input: BenchmarkEntryComparison = {
+        benchmarkName: 'startupStandardHome',
+        relativeMetrics: [
+          {
+            metric: 'uiStartup',
+            percentile: 'p75',
+            current: 1100,
+            baseline: 1000,
+            delta: 100,
+            deltaPercent: 0.1,
+            severity: COMPARISON_SEVERITY.Warn.value,
+            indication: COMPARISON_SEVERITY.Warn.icon,
+          },
+        ],
+        absoluteViolations: [],
+        hasRegression: false,
+        hasWarning: true,
+        absoluteFailed: false,
+      };
+
+      const result = applyGatingPolicy(input, new Set());
+
+      expect(result.hasWarning).toBe(true);
+    });
+  });
+
   describe('formatDeltaPercent', () => {
     it('formats a positive delta as +X%', () => {
       expect(formatDeltaPercent(0.15)).toBe('+15%');
@@ -361,17 +512,53 @@ describe('benchmark-comparison', () => {
   });
 });
 
+describe('scaleThresholdsForBrowser', () => {
+  const baseConfig: ThresholdConfig = {
+    someMetric: {
+      p75: { warn: 1000, fail: 1200 },
+      p95: { warn: 1100, fail: 1400 },
+      ciMultiplier: 1.5,
+    },
+    cls: {
+      p75: { warn: 0.1, fail: 0.25 },
+      ciMultiplier: 1, // CI_MULTIPLIER.NONE — unitless
+    },
+  };
+
+  it('returns config unchanged when no browser is provided', () => {
+    expect(scaleThresholdsForBrowser(baseConfig)).toBe(baseConfig);
+  });
+
+  it('returns config unchanged for chrome (no multiplier entry)', () => {
+    expect(scaleThresholdsForBrowser(baseConfig, 'chrome')).toBe(baseConfig);
+  });
+
+  it('scales p75/p95 for timed metrics on firefox', () => {
+    const scaled = scaleThresholdsForBrowser(baseConfig, 'firefox');
+    expect(scaled.someMetric.p75).toStrictEqual({ warn: 2000, fail: 2400 });
+    expect(scaled.someMetric.p95).toStrictEqual({ warn: 2200, fail: 2800 });
+  });
+
+  it('does not scale unitless metrics (ciMultiplier === 1) on firefox', () => {
+    const scaled = scaleThresholdsForBrowser(baseConfig, 'firefox');
+    expect(scaled.cls.p75).toStrictEqual({ warn: 0.1, fail: 0.25 });
+  });
+
+  it('preserves ciMultiplier on scaled metrics', () => {
+    const scaled = scaleThresholdsForBrowser(baseConfig, 'firefox');
+    expect(scaled.someMetric.ciMultiplier).toBe(1.5);
+  });
+});
+
 describe('THRESHOLD_REGISTRY', () => {
   it('has platform-agnostic keys for interaction (runs on 4 combos)', () => {
     expect(THRESHOLD_REGISTRY.loadNewAccount).toBeDefined();
     expect(THRESHOLD_REGISTRY.confirmTx).toBeDefined();
     expect(THRESHOLD_REGISTRY.bridgeUserActions).toBeDefined();
-    expect(
-      THRESHOLD_REGISTRY['chrome-browserify-loadNewAccount'],
-    ).toBeUndefined();
+    expect(THRESHOLD_REGISTRY['chrome-webpack-loadNewAccount']).toBeUndefined();
   });
 
-  it('has platform-agnostic keys for user journey (chrome-browserify + chrome-webpack)', () => {
+  it('has platform-agnostic keys for user journey (no per-platform threshold keys)', () => {
     expect(THRESHOLD_REGISTRY.onboardingImportWallet).toBeDefined();
     expect(THRESHOLD_REGISTRY.swap).toBeDefined();
     expect(THRESHOLD_REGISTRY['chrome-webpack-swap']).toBeUndefined();
@@ -381,7 +568,7 @@ describe('THRESHOLD_REGISTRY', () => {
     expect(THRESHOLD_REGISTRY.startupStandardHome).toBeDefined();
     expect(THRESHOLD_REGISTRY.startupPowerUserHome).toBeDefined();
     expect(
-      THRESHOLD_REGISTRY['chrome-browserify-startupStandardHome'],
+      THRESHOLD_REGISTRY['chrome-webpack-startupStandardHome'],
     ).toBeUndefined();
     expect(
       THRESHOLD_REGISTRY['firefox-webpack-startupPowerUserHome'],

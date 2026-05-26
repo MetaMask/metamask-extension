@@ -1,56 +1,56 @@
 import React from 'react';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
-import { TransactionType } from '@metamask/transaction-controller';
-import configureStore from '../../../../../store/store';
+import { Provider } from 'react-redux';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import mockState from '../../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
-import {
-  addTransaction,
-  findNetworkClientIdByChainId,
-} from '../../../../../store/actions';
-import { getSelectedInternalAccount } from '../../../../../selectors';
+import { createPerpsWithdrawTransaction } from '../../../../../components/app/perps/hooks/createPerpsWithdrawTransaction';
+import { getSelectedInternalAccount } from '../../../../../../shared/lib/selectors/accounts';
 import {
   ConfirmationLoader,
   useConfirmationNavigation,
 } from '../../../hooks/useConfirmationNavigation';
-import { ARBITRUM_USDC } from '../../../constants/perps';
-import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { PerpsWithdrawButton } from './perps-withdraw-button';
 
-jest.mock('../../../../../store/actions', () => ({
-  addTransaction: jest.fn(),
-  findNetworkClientIdByChainId: jest.fn(),
+jest.mock(
+  '../../../../../components/app/perps/hooks/createPerpsWithdrawTransaction',
+  () => ({
+    createPerpsWithdrawTransaction: jest.fn(),
+  }),
+);
+
+jest.mock('../../../../../../shared/lib/selectors/accounts', () => ({
+  getSelectedInternalAccount: jest.fn(),
 }));
 
-jest.mock('../../../../../selectors', () => {
-  const actual = jest.requireActual('../../../../../selectors');
-  return {
-    ...actual,
-    getSelectedInternalAccount: jest.fn(),
-  };
-});
+jest.mock('../../../hooks/useConfirmationNavigation', () => ({
+  ConfirmationLoader: {
+    CustomAmount: 'customAmount',
+  },
+  useConfirmationNavigation: jest.fn(),
+}));
 
-jest.mock('../../../hooks/useConfirmationNavigation', () => {
-  const actual = jest.requireActual('../../../hooks/useConfirmationNavigation');
-  return {
-    ...actual,
-    useConfirmationNavigation: jest.fn(),
-  };
-});
-
-const addTransactionMock = jest.mocked(addTransaction);
-const findNetworkClientIdByChainIdMock = jest.mocked(
-  findNetworkClientIdByChainId,
+const createPerpsWithdrawTransactionMock = jest.mocked(
+  createPerpsWithdrawTransaction,
 );
 const getSelectedInternalAccountMock = jest.mocked(getSelectedInternalAccount);
 const useConfirmationNavigationMock = jest.mocked(useConfirmationNavigation);
 
 const MOCK_ACCOUNT_ADDRESS = '0x1234567890123456789012345678901234567890';
-const MOCK_NETWORK_CLIENT_ID = 'arbitrum-mainnet';
 const MOCK_TX_ID = 'withdraw-tx-id';
 
+function createMockStore() {
+  return {
+    getState: () => mockState,
+    subscribe: jest.fn(() => jest.fn()),
+    dispatch: jest.fn(),
+  };
+}
+
 function renderButton() {
-  return renderWithProvider(<PerpsWithdrawButton />, configureStore(mockState));
+  return render(
+    <Provider store={createMockStore() as never}>
+      <PerpsWithdrawButton />
+    </Provider>,
+  );
 }
 
 describe('PerpsWithdrawButton', () => {
@@ -63,10 +63,9 @@ describe('PerpsWithdrawButton', () => {
     getSelectedInternalAccountMock.mockReturnValue({
       address: MOCK_ACCOUNT_ADDRESS,
     } as never);
-    findNetworkClientIdByChainIdMock.mockResolvedValue(
-      MOCK_NETWORK_CLIENT_ID as never,
-    );
-    addTransactionMock.mockResolvedValue({ id: MOCK_TX_ID } as never);
+    createPerpsWithdrawTransactionMock.mockResolvedValue({
+      transactionId: MOCK_TX_ID,
+    });
     useConfirmationNavigationMock.mockReturnValue({
       navigateToTransaction: navigateToTransactionMock,
       navigateToTransactions: navigateToTransactionsMock,
@@ -89,31 +88,19 @@ describe('PerpsWithdrawButton', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Trigger' }));
 
     await waitFor(() => {
-      expect(addTransactionMock).toHaveBeenCalledTimes(1);
+      expect(createPerpsWithdrawTransactionMock).toHaveBeenCalledTimes(1);
     });
 
-    expect(findNetworkClientIdByChainIdMock).toHaveBeenCalledWith(
-      CHAIN_IDS.ARBITRUM,
-    );
-
-    expect(addTransactionMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        from: MOCK_ACCOUNT_ADDRESS,
-        to: ARBITRUM_USDC.address,
-        value: '0x0',
-      }),
-      {
-        networkClientId: MOCK_NETWORK_CLIENT_ID,
-        type: TransactionType.perpsWithdraw,
-      },
-    );
+    expect(createPerpsWithdrawTransactionMock).toHaveBeenCalledWith({
+      accountAddress: MOCK_ACCOUNT_ADDRESS,
+    });
 
     expect(navigateToTransactionMock).toHaveBeenCalledWith(MOCK_TX_ID, {
       loader: ConfirmationLoader.CustomAmount,
     });
   });
 
-  it('does not call addTransaction when there is no selected account', () => {
+  it('does not create a transaction when there is no selected account', () => {
     getSelectedInternalAccountMock.mockReturnValue(undefined as never);
     const consoleErrorSpy = jest
       .spyOn(console, 'error')
@@ -123,7 +110,7 @@ describe('PerpsWithdrawButton', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Trigger' }));
 
-    expect(addTransactionMock).not.toHaveBeenCalled();
+    expect(createPerpsWithdrawTransactionMock).not.toHaveBeenCalled();
     expect(navigateToTransactionMock).not.toHaveBeenCalled();
 
     consoleErrorSpy.mockRestore();

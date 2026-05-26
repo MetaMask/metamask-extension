@@ -7,6 +7,7 @@ import { join } from 'node:path';
 import { argv, exit } from 'node:process';
 import {
   ProvidePlugin,
+  type Chunk,
   type Configuration,
   type WebpackPluginInstance,
   type MemoryCacheOptions,
@@ -16,9 +17,9 @@ import CopyPlugin from 'copy-webpack-plugin';
 import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
 import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
-import discardFonts from 'postcss-discard-font-face';
 import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
 import tailwindcss from 'tailwindcss';
+import { discardFontFace } from '../postcss-plugins/discard-font-face';
 import { loadBuildTypesConfig } from '../lib/build-type';
 import {
   getMinimizers,
@@ -49,7 +50,7 @@ if (args.dryRun) {
 const context = join(__dirname, '../../app');
 const nodeModules = join(__dirname, '../../node_modules');
 const isDevelopment = args.mode === MODES.DEVELOPMENT;
-const MANIFEST_VERSION = args.manifest_version;
+const MANIFEST_VERSION = args.manifestVersion;
 const browsersListPath = join(context, '../.browserslistrc');
 // read .browserslist now to stop it from searching for the file over and over
 const browsersListQuery = readFileSync(browsersListPath, 'utf8');
@@ -249,6 +250,10 @@ const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
+const isChunkableInitial = (chunk: Chunk) =>
+  manifestPlugin.canBeChunked(chunk) && chunk.canBeInitial();
+const isChunkableAsync = (chunk: Chunk) =>
+  manifestPlugin.canBeChunked(chunk) && !chunk.canBeInitial();
 
 const threadLoader = getThreadLoader(args);
 const reactCompiler = getReactCompilerLoader({
@@ -440,11 +445,12 @@ const config = {
             loader: 'postcss-loader',
             options: {
               postcssOptions: {
+                config: false,
                 plugins: [
                   tailwindcss(),
                   autoprefixer({ overrideBrowserslist: browsersListQuery }),
                   rtlCss({ processEnv: false }),
-                  discardFonts(['woff2']), // keep woff2 fonts
+                  discardFontFace(['woff2']), // keep woff2 fonts
                 ],
               },
             },
@@ -535,15 +541,23 @@ const config = {
       cacheGroups: {
         js: {
           // only our own ts/mts/tsx/js/mjs/jsx files (NOT in node_modules)
-          test: /(?!.*\/node_modules\/).+\.(?:m?[tj]s|[tj]sx?)?$/u,
+          test: /^(?!.*[\\/]node_modules[\\/]).+\.(?:m?[tj]s|[tj]sx?)?$/u,
           name: 'js',
-          chunks: manifestPlugin.canBeChunked,
+          chunks: isChunkableInitial,
         },
         vendor: {
           // js/mjs files in node_modules or subdirectories of node_modules
           test: /[\\/]node_modules[\\/].*?\.m?js$/u,
           name: 'vendor',
-          chunks: manifestPlugin.canBeChunked,
+          chunks: isChunkableInitial,
+        },
+        asyncJs: {
+          // only our own ts/mts/tsx/js/mjs/jsx files (NOT in node_modules)
+          test: /^(?!.*[\\/]node_modules[\\/]).+\.(?:m?[tj]s|[tj]sx?)?$/u,
+          chunks: isChunkableAsync,
+          // Avoid minChunks: 1: it creates extra single-use async chunks
+          // without reducing the initial entrypoint payload.
+          minChunks: 2,
         },
       },
     },

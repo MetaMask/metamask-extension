@@ -12,6 +12,7 @@ import { withFixtures } from '../../../helpers';
 import {
   handleSidepanelPostOnboarding,
   onboardingMetricsFlow,
+  skipPasskeySetup,
 } from '../../../page-objects/flows/onboarding.flow';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AssetListPage from '../../../page-objects/pages/home/asset-list';
@@ -32,6 +33,7 @@ import {
   getCommonMocks,
   benchmarkPassThroughInterceptor,
   mockBenchmarkEndpoints,
+  userStorageHostMock,
 } from '../../mocks/performance-mocks';
 import { shouldUseMockedRequests } from '../../utils/mock-config';
 import {
@@ -60,7 +62,6 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
         title: testTitle,
         manifestFlags: {
           testing: {
-            disableSync: true,
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
         },
@@ -72,9 +73,12 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
           .build(),
         testSpecificMock: async (server: Mockttp) => {
           if (shouldUseMockedRequests()) {
-            return mockBenchmarkEndpoints(server);
+            const endpoints = await mockBenchmarkEndpoints(server);
+            await userStorageHostMock(server);
+            return endpoints;
           }
           setPassThroughInterceptor(server, benchmarkPassThroughInterceptor);
+          await userStorageHostMock(server);
           return Promise.all(getCommonMocks(server));
         },
       },
@@ -140,12 +144,15 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
         await onboardingPasswordPage.createWalletPassword(WALLET_PASSWORD);
 
         // Measure: Password to Metrics (Chrome only)
-        if (!isFirefox) {
+        if (isFirefox) {
+          await skipPasskeySetup(driver);
+        } else {
           steps.push(
             await measureStepWithLongTasks(
               driver,
               'pwFormToMetricsScreen',
               async () => {
+                await skipPasskeySetup(driver);
                 const onboardingMetricsPage = new OnboardingMetricsPage(driver);
                 await onboardingMetricsPage.checkPageIsLoaded();
               },

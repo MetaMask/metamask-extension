@@ -7,10 +7,8 @@ import {
   selectIsBackupAndSyncEnabled,
 } from '../../../selectors/identity/backup-and-sync';
 import { getUseExternalServices } from '../../../selectors';
-import {
-  getCompletedOnboarding,
-  getIsUnlocked,
-} from '../../../ducks/metamask/metamask';
+import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import { selectIsSignedIn } from '../../../selectors/identity/authentication';
 
 /**
@@ -33,11 +31,11 @@ export const useShouldDispatchContactSyncing = () => {
 
   const shouldDispatchContactSyncing: boolean = Boolean(
     basicFunctionality &&
-      isBackupAndSyncEnabled &&
-      isContactSyncingEnabled &&
-      isUnlocked &&
-      isSignedIn &&
-      completedOnboarding,
+    isBackupAndSyncEnabled &&
+    isContactSyncingEnabled &&
+    isUnlocked &&
+    isSignedIn &&
+    completedOnboarding,
   );
 
   return shouldDispatchContactSyncing;

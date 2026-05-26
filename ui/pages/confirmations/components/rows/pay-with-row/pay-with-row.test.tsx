@@ -2,11 +2,13 @@ import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { TransactionType } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
 import { useSendTokens } from '../../../hooks/send/useSendTokens';
 import { useConfirmContext } from '../../../context/confirm';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { isHardwareAccount } from '../../../../multichain-accounts/account-details/account-type-utils';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
 import {
@@ -239,6 +241,51 @@ describe('PayWithRow', () => {
     fireEvent.click(screen.getByTestId('pay-with-pill'));
 
     expect(screen.queryByTestId('pay-with-modal')).not.toBeInTheDocument();
+  });
+
+  describe('perpsWithdraw fallback behaviour', () => {
+    beforeEach(() => {
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: undefined,
+        setPayToken: jest.fn(),
+        isNative: false,
+      });
+      useTransactionPayRequiredTokensMock.mockReturnValue([
+        MOCK_REQUIRED_TOKEN,
+      ]);
+      useConfirmContextMock.mockReturnValue({
+        currentConfirmation: {
+          id: 'test-id',
+          type: TransactionType.perpsWithdraw,
+          chainId: CHAIN_ID_MOCK,
+          txParams: { from: FROM_ADDRESS_MOCK },
+        },
+      } as never);
+    });
+
+    it('renders the skeleton (not the required token) until payToken resolves', () => {
+      const store = mockStore(getMockState());
+      renderWithProvider(<PayWithRow />, store);
+
+      expect(screen.getByTestId('pay-with-row-skeleton')).toBeInTheDocument();
+      expect(screen.queryByTestId('pay-with-symbol')).not.toBeInTheDocument();
+    });
+
+    it('renders the resolved payToken once it is set', () => {
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: MOCK_PAY_TOKEN,
+        setPayToken: jest.fn(),
+        isNative: true,
+      });
+
+      const store = mockStore(getMockState());
+      renderWithProvider(<PayWithRow />, store);
+
+      expect(
+        screen.queryByTestId('pay-with-row-skeleton'),
+      ).not.toBeInTheDocument();
+      expect(screen.getByTestId('pay-with-symbol')).toHaveTextContent('ETH');
+    });
   });
 
   describe('Default variant (inline row with pill selector)', () => {
