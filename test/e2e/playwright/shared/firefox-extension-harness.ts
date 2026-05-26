@@ -8,6 +8,7 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { firefox } from '@playwright/test';
 import type { BrowserContext, Page } from '@playwright/test';
+import { isHeadless } from '../../../helpers/env';
 import { getOrBuildXpi } from '../../helpers/xpi';
 
 const METAMASK_GECKO_ID = 'webextension@metamask.io';
@@ -410,7 +411,10 @@ export async function launchMetaMaskFirefoxExtension(
   const extensionDirectory =
     options.extensionDirectory ?? DEFAULT_FIREFOX_EXTENSION_DIR;
   const rdpPort = options.rdpPort ?? DEFAULT_FIREFOX_RDP_PORT;
-  const headless = options.headless ?? Boolean(process.env.CI);
+  // Resolution order matches chrome-extension-harness.ts: explicit option →
+  // PLAYWRIGHT_HEADLESS env var → CI detection.
+  const headless =
+    options.headless ?? (isHeadless('PLAYWRIGHT') || Boolean(process.env.CI));
 
   if (!existsSync(path.join(extensionDirectory, 'manifest.json'))) {
     throw new Error(

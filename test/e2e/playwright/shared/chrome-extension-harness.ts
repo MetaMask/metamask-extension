@@ -5,6 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { chromium } from '@playwright/test';
 import type { BrowserContext, Page } from '@playwright/test';
+import { isHeadless } from '../../../helpers/env';
 
 export type ChromeHarnessOptions = {
   extensionDirectory?: string;
@@ -65,10 +66,13 @@ export async function launchMetaMaskChromeExtension(
     args.push('--disable-gpu', '--no-sandbox');
   }
 
-  const headless = options.headless ?? false;
-  if (headless) {
-    args.push('--headless=new');
-  }
+  // PW 1.34+ uses `--headless=new` automatically when `headless: true`,
+  // which supports MV3 extensions. Don't push the flag manually — it
+  // duplicates / confuses PW's internal handling.
+  // Resolution order: explicit option → PLAYWRIGHT_HEADLESS env var → CI
+  // detection. Locally, defaults to headed for developer ergonomics.
+  const headless =
+    options.headless ?? (isHeadless('PLAYWRIGHT') || Boolean(process.env.CI));
 
   const context = await chromium.launchPersistentContext(userDataDir, {
     headless,
