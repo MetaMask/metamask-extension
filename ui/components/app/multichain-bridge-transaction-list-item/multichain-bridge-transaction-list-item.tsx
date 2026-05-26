@@ -37,7 +37,10 @@ import {
   MULTICHAIN_NETWORK_TO_NICKNAME,
   MULTICHAIN_TOKEN_IMAGE_MAP,
 } from '../../../../shared/constants/multichain/networks';
-import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
+import {
+  TransactionGroupCategory,
+  TransactionGroupStatus,
+} from '../../../../shared/constants/transaction';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import useBridgeChainInfo from '../../../hooks/bridge/useBridgeChainInfo';
 import { formatAmount } from '../../../pages/confirmations/components/simulation-details/formatAmount';
@@ -111,10 +114,17 @@ const MultichainBridgeTransactionListItem: React.FC<
     ? `${t('bridgeTo')} ${displayChainName}`
     : capitalize(type);
 
+  let status = TransactionStatus.Unconfirmed;
+  if (isBridgeFullyComplete) {
+    status = TransactionStatus.Confirmed;
+  } else if (isBridgeFailedOrSourceFailed) {
+    status = TransactionStatus.Failed;
+  }
+
   return (
     <ActivityListItem
       className="multichain-bridge-transaction-list-item"
-      data-testid="multichain-bridge-activity-item"
+      status={KEYRING_TRANSACTION_STATUS_KEY[status]}
       onClick={() => toggleShowDetails(transaction)}
       icon={
         <BadgeWrapper
