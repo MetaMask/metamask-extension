@@ -1,7 +1,5 @@
-import {
-  AuthConnection,
-  SeedlessOnboardingControllerState,
-} from '@metamask/seedless-onboarding-controller';
+import { SeedlessOnboardingControllerState } from '@metamask/seedless-onboarding-controller';
+import { AuthConnection } from '../../../shared/constants/onboarding';
 
 export type BackupState = {
   metamask: SeedlessOnboardingControllerState;
