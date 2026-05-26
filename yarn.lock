@@ -7998,13 +7998,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snap-account-service@npm:@metamask-previews/snap-account-service@0.2.0-preview-7fd8fb1b3":
-  version: 0.2.0-preview-7fd8fb1b3
-  resolution: "@metamask-previews/snap-account-service@npm:0.2.0-preview-7fd8fb1b3"
+"@metamask/snap-account-service@npm:@metamask-previews/snap-account-service@0.2.0-preview-8e8c4f6f5":
+  version: 0.2.0-preview-8e8c4f6f5
+  resolution: "@metamask-previews/snap-account-service@npm:0.2.0-preview-8e8c4f6f5"
   dependencies:
     "@metamask/account-api": "npm:^1.0.4"
     "@metamask/account-tree-controller": "npm:^7.4.0"
-    "@metamask/eth-snap-keyring": "npm:^22.0.1"
+    "@metamask/eth-snap-keyring": "npm:^22.1.0"
     "@metamask/keyring-api": "npm:^23.1.0"
     "@metamask/keyring-controller": "npm:^25.5.0"
     "@metamask/keyring-snap-sdk": "npm:^9.0.1"
@@ -8013,7 +8013,7 @@ __metadata:
     "@metamask/snaps-sdk": "npm:^11.0.0"
     "@metamask/utils": "npm:^11.9.0"
     lodash: "npm:^4.17.21"
-  checksum: 10/d5637af11877bbaf34e2bf18dd14a5d9a69edd6b93580fd6050bf5b41bdbc9561248fcbd48caea061ad3adc1e01a1e147c02a1c461caf032b417c71bc9923f49
+  checksum: 10/57771d43f0c23b42cc9d89eb4beee6471fc84c993da2c257939a1c0a7a02be951bd80c7a56e75bd4524ba47a559933fc9b5b07085561d6f0dab3781823e8f8e8
   languageName: node
   linkType: hard
 
