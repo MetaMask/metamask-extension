@@ -26,6 +26,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: pr-comment
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: read
     steps:
       - name: Checkout .github/ directory
         uses: actions/checkout@v6
@@ -45,5 +49,5 @@ jobs:
 
       - name: Identify codeowners
         env:
-          PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
+          PR_COMMENT_TOKEN: ${{ github.token }}
         run: node ./.github/scripts/identify-codeowners.mts
