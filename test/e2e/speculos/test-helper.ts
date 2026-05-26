@@ -165,6 +165,10 @@ export class SpeculosTestHelper {
   }
 
   private async attemptDockerStart(): Promise<void> {
+    const model = getDeviceModel();
+    process.env.SPECULOS_ELF_FILENAME = model.elfFile;
+    process.env.SPECULOS_DEVICE = model.id;
+
     for (const port of [this.apduPort, this.apiPort]) {
       const inUse = await this.isPortInUse(port);
       if (inUse) {

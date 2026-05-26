@@ -63,6 +63,20 @@ export class NanoInteraction implements DeviceInteraction {
   }
 
   async enableBlindSigning(): Promise<void> {
+    // DISABLED: REST /apdu check may conflict with socket APDU exchange
+    // try {
+    //   const config = await this.client.getAppConfiguration();
+    //   console.log(
+    //     `[DeviceInteraction] Ethereum app v${config.major}.${config.minor}.${config.patch} blind_signing=${config.blindSigningEnabled}`,
+    //   );
+    //   if (config.blindSigningEnabled) {
+    //     console.log('[DeviceInteraction] Blind signing already enabled, skipping');
+    //     return;
+    //   }
+    // } catch (e) {
+    //   console.warn('[DeviceInteraction] Could not query app configuration:', e);
+    // }
+
     await this.client.pressButton('both');
     await delay(800);
     await this.client.pressButton('right');
@@ -97,71 +111,127 @@ export class TouchInteraction implements DeviceInteraction {
     this.model = model;
   }
 
+  private async swipeLeft(): Promise<void> {
+    const { width, height } = this.model.screenSize;
+    const cx = width / 2;
+    const cy = height / 2;
+    await this.client.fingerSwipe(cx, cy, cx - 10, cy, 0.5);
+    await delay(800);
+  }
+
+  private async tapConfirm(holdSeconds = 3.0): Promise<void> {
+    if (this.model.reviewConfirmButton) {
+      await this.client.fingerTap(
+        this.model.reviewConfirmButton.x,
+        this.model.reviewConfirmButton.y,
+        holdSeconds,
+      );
+    }
+  }
+
+  private async tapReject(): Promise<void> {
+    if (this.model.reviewRejectButton) {
+      await this.client.fingerTap(
+        this.model.reviewRejectButton.x,
+        this.model.reviewRejectButton.y,
+        0.1,
+      );
+    }
+  }
+
+  private async tapBack(): Promise<void> {
+    if (this.model.backButton) {
+      await this.client.fingerTap(
+        this.model.backButton.x,
+        this.model.backButton.y,
+        0.1,
+      );
+    }
+  }
+
+  private async tapHome(): Promise<void> {
+    if (this.model.homeButton) {
+      await this.client.fingerTap(
+        this.model.homeButton.x,
+        this.model.homeButton.y,
+        0.1,
+      );
+    }
+  }
+
   async approveTransaction(): Promise<void> {
-    const { height, width } = this.model.screenSize;
     for (let i = 0; i < 3; i++) {
-      await this.client.fingerSwipe(width / 2, height * 0.7, width / 2, height * 0.3);
-      await delay(500);
+      await this.swipeLeft();
     }
-    if (this.model.confirmButton) {
-      await this.client.fingerTap(this.model.confirmButton.x, this.model.confirmButton.y);
-    }
+    await this.tapConfirm();
     await delay(500);
   }
 
   async approveSigning(): Promise<void> {
-    const { height, width } = this.model.screenSize;
-    await this.client.fingerSwipe(width / 2, height * 0.7, width / 2, height * 0.3);
-    await delay(500);
-    if (this.model.confirmButton) {
-      await this.client.fingerTap(this.model.confirmButton.x, this.model.confirmButton.y);
+    for (let i = 0; i < 2; i++) {
+      await this.swipeLeft();
     }
+    await this.tapConfirm();
     await delay(500);
   }
 
-  async approveBlindSigning(): Promise<void> {
-    if (this.model.confirmButton) {
-      await this.client.fingerTap(this.model.confirmButton.x, this.model.confirmButton.y);
-    }
+  async approveBlindSigning(scrollCount = 4): Promise<void> {
+    console.log(
+      `[DeviceInteraction] approveBlindSigning: tapping 'Accept risk and continue'`,
+    );
+    // Stage 1: Dismiss the "Blind signing ahead" warning by tapping
+    // "Accept risk and continue" at the bottom of the screen.
+    await this.client.fingerTap(
+      this.model.confirmButton?.x ?? 240,
+      this.model.confirmButton?.y ?? 530,
+      0.1,
+    );
     await delay(800);
-    const { height, width } = this.model.screenSize;
-    for (let i = 0; i < 2; i++) {
-      await this.client.fingerSwipe(width / 2, height * 0.7, width / 2, height * 0.3);
-      await delay(500);
+
+    // Stage 2: Navigate the review screens (e.g., "1 of 4", "2 of 4", ...)
+    // and hold the confirm button to sign.
+    console.log(
+      `[DeviceInteraction] approveBlindSigning: swiping ${scrollCount} review screens + hold confirm`,
+    );
+    for (let i = 0; i < scrollCount; i++) {
+      await this.swipeLeft();
+      await delay(300);
     }
-    if (this.model.confirmButton) {
-      await this.client.fingerTap(this.model.confirmButton.x, this.model.confirmButton.y);
-    }
+    await this.tapConfirm();
     await delay(500);
+    console.log('[DeviceInteraction] approveBlindSigning: done');
   }
 
   async rejectTransaction(): Promise<void> {
-    if (this.model.rejectButton) {
-      await this.client.fingerTap(this.model.rejectButton.x, this.model.rejectButton.y);
-    }
+    await this.tapReject();
     await delay(500);
   }
 
   async enableBlindSigning(): Promise<void> {
-    const { height, width } = this.model.screenSize;
-    const centerX = width / 2;
-    const settingsItemY = height * 0.35;
-    const toggleY = height * 0.3;
-    const backY = height * 0.9;
+    // NBGL devices (flex/stax) cannot toggle blind signing via the Speculos
+    // UI because the NBGL settings toggle is unresponsive to touch events in
+    // emulation. Instead, blind signing is pre-enabled via a NVRAM binary
+    // that is loaded with --load-nvram at container startup. Skip the UI
+    // navigation entirely.
+    console.log(
+      '[DeviceInteraction] Blind signing pre-enabled via NVRAM for NBGL device',
+    );
+  }
 
-    await this.client.fingerTap(centerX, settingsItemY);
-    await delay(800);
-    await this.client.fingerTap(centerX, toggleY);
-    await delay(800);
-    await this.client.fingerTap(centerX, backY);
-    await delay(500);
-    await this.navigateToMainMenu();
+  private async findTextPosition(
+    searchText: string,
+  ): Promise<{ x: number; y: number; w: number; h: number } | null> {
+    try {
+      const events = await this.client.getEvents();
+      const match = events.find((e) => e.text === searchText);
+      return match ?? null;
+    } catch {
+      return null;
+    }
   }
 
   async navigateToMainMenu(): Promise<void> {
-    if (this.model.backButton) {
-      await this.client.fingerTap(this.model.backButton.x, this.model.backButton.y);
-    }
+    await this.tapBack();
     await delay(400);
   }
 }

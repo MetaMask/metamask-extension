@@ -61,6 +61,9 @@ export type DeviceModel = {
   confirmButton?: { x: number; y: number };
   rejectButton?: { x: number; y: number };
   backButton?: { x: number; y: number };
+  reviewConfirmButton?: { x: number; y: number };
+  reviewRejectButton?: { x: number; y: number };
+  homeButton?: { x: number; y: number };
 };
 
 export const DEVICE_MODELS: Record<string, DeviceModel> = {
@@ -87,9 +90,12 @@ export const DEVICE_MODELS: Record<string, DeviceModel> = {
     interactionType: 'touch',
     elfFile: 'ethereum-stax.elf',
     screenSize: { width: 400, height: 672 },
-    confirmButton: { x: 200, y: 600 },
-    rejectButton: { x: 200, y: 60 },
-    backButton: { x: 30, y: 40 },
+    backButton: { x: 36, y: 36 },
+    confirmButton: { x: 200, y: 606 },
+    rejectButton: { x: 36, y: 606 },
+    reviewConfirmButton: { x: 200, y: 515 },
+    reviewRejectButton: { x: 36, y: 606 },
+    homeButton: { x: 200, y: 606 },
   },
   flex: {
     id: 'flex',
@@ -98,9 +104,12 @@ export const DEVICE_MODELS: Record<string, DeviceModel> = {
     interactionType: 'touch',
     elfFile: 'ethereum-flex.elf',
     screenSize: { width: 480, height: 600 },
-    confirmButton: { x: 240, y: 540 },
-    rejectButton: { x: 240, y: 60 },
-    backButton: { x: 30, y: 40 },
+    backButton: { x: 45, y: 45 },
+    confirmButton: { x: 240, y: 550 },
+    rejectButton: { x: 55, y: 530 },
+    reviewConfirmButton: { x: 240, y: 435 },
+    reviewRejectButton: { x: 55, y: 530 },
+    homeButton: { x: 240, y: 550 },
   },
 };
 
@@ -122,7 +131,10 @@ export function ensureDeviceEnv(): void {
   if (!process.env.SPECULOS_DEVICE) {
     process.env.SPECULOS_DEVICE = model.id;
   }
-  if (!process.env.SPECULOS_ELF) {
+  if (process.env.SPECULOS_ELF) {
+    const basename = process.env.SPECULOS_ELF.replace(/^.*[\\/]/u, '');
+    process.env.SPECULOS_ELF = basename;
+  } else {
     process.env.SPECULOS_ELF = model.elfFile;
   }
 }

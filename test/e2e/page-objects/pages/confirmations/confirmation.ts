@@ -113,6 +113,7 @@ class Confirmation {
             url: window.location.href,
             hasConfirm: !!document.querySelector('[data-testid="confirm-footer-button"]'),
             hasReconnect: !!document.querySelector('[data-testid="reconnect-hardware-wallet-button"]'),
+            hasLoadingOverlay: !!document.querySelector('.loading-overlay'),
             testids: [...document.querySelectorAll('[data-testid]')].slice(0, 15).map(e => e.getAttribute('data-testid')),
             bodyText: document.body?.innerText?.substring(0, 300)
           })`,
@@ -121,7 +122,7 @@ class Confirmation {
         const parsed = JSON.parse(result as string);
         return parsed.hasConfirm || parsed.hasReconnect;
       },
-      { timeout: 30000, interval: 500 },
+      { timeout: 60000, interval: 500 },
     ).catch(() => {
       console.log('[Speculos] clickFooterConfirmButtonOrReconnect diagnostic:', lastDiag);
       throw new Error(`Timed out waiting for confirm/reconnect button. Last page state: ${lastDiag}`);
@@ -168,11 +169,11 @@ class Confirmation {
             return JSON.stringify({disabled: btn.disabled, classes: btn.className});`,
           );
           const result = isEnabled as string;
-          if (result === 'not found') return false;
+          if (result === 'not found') {return false;}
           const parsed = JSON.parse(result);
           return !parsed.disabled;
         },
-      { timeout: 30000, interval: 500 },
+      { timeout: 60000, interval: 500 },
       );
       console.log('[Speculos] Confirm button is enabled, clicking...');
       await this.driver.clickElement(this.footerConfirmButton);

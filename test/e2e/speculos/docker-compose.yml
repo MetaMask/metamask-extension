@@ -7,16 +7,18 @@ services:
       - '9998:9999'
       - '5001:5000'
     volumes:
-      - ./apps:/speculos/apps:ro
+      - ./apps:/speculos/apps
+      - ./nvram/main_nvram.bin:/speculos/main_nvram.bin
     environment:
       - DISPLAY=:99
     command: >
       --model ${SPECULOS_DEVICE:-nanosp}
-      /speculos/apps/${SPECULOS_ELF:-ethereum-nanosp.elf}
+      /speculos/apps/${SPECULOS_ELF_FILENAME:-ethereum-nanosp.elf}
       --seed "urban secret spare tunnel rubber rally ladder spatial feature elite success"
       --display headless
       --apdu-port 9999
       --api-port 5000
+      --load-nvram
     healthcheck:
       test:
         - CMD-SHELL
@@ -29,5 +31,6 @@ services:
 # Note:
 # - APDU port mapped from host 9998 to container 9999 (9999 is used by PhishingWarningPageServer)
 # - REST API mapped from host 5001 to container 5000 (5000 used by macOS Control Center)
-# - SPECULOS_DEVICE and SPECULOS_ELF env vars select the device model and firmware binary
+# - SPECULOS_DEVICE selects the device model (nanosp, nanox, stax, flex)
+# - SPECULOS_ELF_FILENAME is the ELF filename inside /speculos/apps/ (NOT the host path)
 # - Defaults to Nano S+ (nanosp) for local development without SPECULOS_DEVICE set

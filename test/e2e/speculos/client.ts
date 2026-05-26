@@ -110,8 +110,8 @@ export class SpeculosClient {
   private async exchangeOnce(apdu: Buffer): Promise<Buffer> {
     return new Promise((resolve, reject) => {
       const chunks: Buffer[] = [];
-      let timeoutId: NodeJS.Timeout | undefined;
-      let cleanup: () => void;
+      let timeoutId: NodeJS.Timeout | undefined; // eslint-disable-line prefer-const
+      let cleanup: () => void; // eslint-disable-line prefer-const
 
       const onData = (data: Buffer) => {
         chunks.push(data);
@@ -223,6 +223,68 @@ export class SpeculosClient {
     const response = await this.fetch('/screenshot');
     const arrayBuffer = await response.arrayBuffer();
     return Buffer.from(arrayBuffer);
+  }
+
+  async getEvents(): Promise<
+    { text?: string; x: number; y: number; w: number; h: number }[]
+  > {
+    const response = await this.fetch('/events');
+    const data = (await response.json()) as {
+      events: { text?: string; x: number; y: number; w: number; h: number }[];
+    };
+    return data.events;
+  }
+
+  async setAutomation(rulesJson: string): Promise<void> {
+    await this.fetch('/automation', {
+      method: 'POST',
+      body: rulesJson,
+    });
+  }
+
+  async clearAutomation(): Promise<void> {
+    await this.fetch('/automation', {
+      method: 'POST',
+      body: JSON.stringify({ version: 1, rules: [] }),
+    });
+  }
+
+  /**
+   * Send GET_APP_CONFIGURATION APDU (CLA=0xE0, INS=0x06) and parse response.
+   * Byte 6 (0-indexed) contains flags where bit 0 = blind signing enabled.
+   */
+  async getAppConfiguration(): Promise<{
+    major: number;
+    minor: number;
+    patch: number;
+    blindSigningEnabled: boolean;
+  }> {
+    const apduHex = 'e006000000';
+    const resp = await this.sendAPDU(apduHex);
+    const bytes = Buffer.from(resp.data, 'hex');
+    // Response format varies by app version:
+    // v1.22+: [flags, major, minor, patch, SW1, SW2] (4 data bytes)
+    // Older:  [byte0, major, minor, patch, byte4, device_id, ext_state, flags, SW1, SW2]
+    // Last 2 bytes are always SW (0x9000 on success)
+    const payloadLen = bytes.length - 2;
+    if (payloadLen === 4) {
+      // New format: flags in byte 0
+      const flags = bytes[0];
+      return {
+        major: bytes[1],
+        minor: bytes[2],
+        patch: bytes[3],
+        blindSigningEnabled: (flags & 0x01) !== 0, // eslint-disable-line no-bitwise
+      };
+    }
+    // Old format: flags in byte 7
+    const flags = payloadLen > 7 ? bytes[7] : 0;
+    return {
+      major: payloadLen > 1 ? bytes[1] : 0,
+      minor: payloadLen > 2 ? bytes[2] : 0,
+      patch: payloadLen > 3 ? bytes[3] : 0,
+      blindSigningEnabled: (flags & 0x01) !== 0, // eslint-disable-line no-bitwise
+    };
   }
 
   async saveScreenshot(

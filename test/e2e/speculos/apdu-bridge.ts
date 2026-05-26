@@ -36,6 +36,16 @@ export class ApduBridge {
 
   private injectedErrorStatusCode: number | null = null;
 
+  private signingInProgress = false;
+
+  private signingResponse: Buffer | null = null;
+
+  private signingWaiters: {
+    apdu: Buffer;
+    resolve: (response: Buffer) => void;
+    reject: (error: Error) => void;
+  }[] = [];
+
   private signTxTotalDataLen: number | null = null;
 
   private signTxDataSent: number = 0;
@@ -321,40 +331,103 @@ export class ApduBridge {
     // Detect when the exchange blocks (Ledger showing signing UI).
     // Quick responses (<500ms) are continuation chunk acknowledgments.
     // A blocking exchange means the device is waiting for user input.
+    //
+    // For multi-chunk signing (INS=0x04), only start the timer on the
+    // last continuation chunk. Earlier chunks return 0x9000 immediately
+    // and would clear the timer before it fires.
+    // For non-chunked signing (personal sign, EIP-712), always start it.
+    const isLastSignTxChunk =
+      isSignTxContinuation &&
+      this.signTxTotalDataLen !== null &&
+      this.signTxDataSent >= this.signTxTotalDataLen;
+    const isSingleChunkSignTx =
+      isSignTxFirst &&
+      this.signTxTotalDataLen !== null &&
+      this.signTxDataSent >= this.signTxTotalDataLen;
+    // Start a timer to detect when the exchange blocks (Ledger showing signing UI).
+    // For multi-chunk signing (INS=0x04), the last continuation chunk's exchange
+    // blocks in Speculos because the device is waiting for user approval.
+    // For single-chunk signing (small tx fits in one APDU), the first chunk IS
+    // also the last — the exchange blocks waiting for approval on flex/stax.
+    // For non-chunked signing (personal sign, EIP-712), there's only one exchange
+    // that blocks until approval, so always start the timer.
+    const shouldStartSigningTimer =
+      isSigningIns &&
+      (!isSignTx || isLastSignTxChunk || isSingleChunkSignTx);
+    if (isSigningIns && isSignTx && (isLastSignTxChunk || isSingleChunkSignTx)) {
+      console.log(
+        `[ApduBridge] Last signing chunk: dataSent=${this.signTxDataSent} total=${this.signTxTotalDataLen}`,
+      );
+    }
     let signingReadyFired = false;
-    const signingReadyTimer = isSigningIns
+    const signingReadyTimer = shouldStartSigningTimer
       ? setTimeout(() => {
           signingReadyFired = true;
           this.signingReadyEmitter.emit('signing-ready');
-          console.log('[ApduBridge] Signing ready — Ledger showing review UI');
+          console.log('[ApduBridge] Signing ready — Ledger showing review UI (timer)');
         }, 500)
       : null;
+    // For multi-chunk signing where the last chunk returns quickly (Speculos),
+    // emit signing-ready immediately after the last chunk response.
+    const shouldEmitSigningReadyOnLastChunk =
+      (isLastSignTxChunk || isSingleChunkSignTx) && !signingReadyFired;
 
-    let response = await this.client.exchange(apdu);
-
-    if (signingReadyTimer) {
-      clearTimeout(signingReadyTimer);
+    const shouldQueueSigning = isSigningIns && this.signingInProgress;
+    if (isSigningIns && !this.signingInProgress) {
+      this.signingInProgress = true;
+      this.signingResponse = null;
     }
 
-    // Handle the "last chunk is exactly 255 bytes" edge case for INS=0x04.
-    // When the final chunk has dataLen === 255, the Ledger firmware cannot
-    // distinguish it from a non-final chunk and returns 0x9000 (expecting
-    // more data) instead of showing the signing UI.
-    // Detection: we tracked total payload size from the first chunk.
-    // When signTxDataSent === signTxTotalDataLen AND response is 0x9000,
-    // send an empty continuation chunk to signal end-of-data.
-    const isAmbiguousLastChunk =
-      isSignTxContinuation &&
+    let response: Buffer;
+
+    if (shouldQueueSigning) {
+      console.log(
+        '[ApduBridge] Signing exchange already in progress, waiting for completion',
+      );
+      response = await new Promise<Buffer>((resolve, reject) => {
+        this.signingWaiters.push({ apdu, resolve, reject });
+      });
+    } else {
+      response = await this.client.exchange(apdu);
+
+      if (signingReadyTimer) {
+        clearTimeout(signingReadyTimer);
+      }
+
+      if (isSigningIns) {
+        this.signingResponse = response;
+        this.signingInProgress = false;
+        for (const waiter of this.signingWaiters) {
+          waiter.resolve(response);
+        }
+        this.signingWaiters = [];
+      }
+
+      // For multi-chunk signing where the last chunk returns quickly,
+      // emit signing-ready since the Ledger is now showing the review UI.
+      if (shouldEmitSigningReadyOnLastChunk && !signingReadyFired) {
+        signingReadyFired = true;
+        this.signingReadyEmitter.emit('signing-ready');
+        console.log(
+          '[ApduBridge] Signing ready — last chunk received, Ledger showing review UI',
+        );
+      }
+    }
+
+    // Handle the "last chunk" edge case for INS=0x04 multi-chunk signing.
+    // On nanosp/nanox, all chunks return 9000 and a terminator is needed.
+    // On flex/stax, the last chunk blocks until user approval.
+    const isLastChunkWithAck =
+      (isSignTxContinuation || isSingleChunkSignTx) &&
       this.signTxTotalDataLen !== null &&
       this.signTxDataSent >= this.signTxTotalDataLen &&
-      dataLen === 255 &&
       response.length === 2 &&
       response[0] === 0x90 &&
       response[1] === 0x00;
 
-    if (isAmbiguousLastChunk) {
+    if (isLastChunkWithAck) {
       console.log(
-        `[ApduBridge] Ambiguous last signing chunk detected (dataSent=${this.signTxDataSent} total=${this.signTxTotalDataLen}). Sending empty terminator.`,
+        `[ApduBridge] Last chunk acknowledged (dataSent=${this.signTxDataSent} total=${this.signTxTotalDataLen}). Sending empty terminator.`,
       );
       const emptyChunk = Buffer.from([0xe0, 0x04, 0x80, 0x00, 0x00]);
       const readyTimer = setTimeout(() => {
@@ -370,7 +443,7 @@ export class ApduBridge {
       );
       this.signTxTotalDataLen = null;
       this.signTxDataSent = 0;
-    } else if (isSignTxFirst || !isSignTx) {
+    } else if (!isSignTx || (isSingleChunkSignTx && response.length > 2)) {
       this.signTxTotalDataLen = null;
       this.signTxDataSent = 0;
     }
