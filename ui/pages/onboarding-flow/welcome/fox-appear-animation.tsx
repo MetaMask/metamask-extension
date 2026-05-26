@@ -59,7 +59,7 @@ export default function FoxAppearAnimation({
     autoplay: false,
     layout: new Layout({
       fit: Fit.Contain,
-      alignment: Alignment.BottomCenter,
+      alignment: isLoader ? Alignment.Center : Alignment.BottomCenter,
     }),
   });
 
