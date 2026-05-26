@@ -126,11 +126,9 @@ type AllowedActions =
   | AssetsControllerSetSelectedCurrencyAction
   | RemoteFeatureFlagControllerGetStateAction
   | KeyringControllerExportSeedPhraseAction
-  | AccountsControllerGetSelectedAccountAction
   | ApprovalControllerGetStateAction
   | ApprovalControllerRejectRequestAction
   | TransactionControllerGetStateAction
-  | TransactionControllerWipeTransactionsAction
   | SmartTransactionsControllerWipeSmartTransactionsAction
   | BridgeStatusControllerWipeBridgeStatusAction
   | NetworkControllerResetConnectionAction
@@ -192,7 +190,7 @@ export class LegacyBackgroundApiService {
 
   readonly #unMarkPasswordForgotten: () => void;
 
-  #seedlessOperationMutex: Mutex;
+  readonly #seedlessOperationMutex: Mutex;
 
   /**
    * Creates a new instance of the LegacyBackgroundApiService.
@@ -521,13 +519,8 @@ export class LegacyBackgroundApiService {
   async importAccountWithStrategy(
     strategy: AccountImportStrategy,
     args: unknown[],
-    options = {
-      shouldCreateSocialBackup: true,
-      shouldSelectAccount: true,
-    },
+    { shouldCreateSocialBackup = true, shouldSelectAccount = true },
   ): Promise<void> {
-    const { shouldCreateSocialBackup, shouldSelectAccount } = options;
-
     const importedAccountAddress = (await this.#messenger.call(
       'KeyringController:importAccountWithStrategy',
       strategy,

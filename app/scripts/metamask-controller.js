@@ -4645,7 +4645,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Changes the wallet password using a verified passkey assertion, then either renewscheckIsSeedlessPasswordOutdated
+   * Changes the wallet password using a verified passkey assertion, then either renews
    * vault key protection for the new encryption key or removes the passkey enrollment.
    * Non-social-login only.
    *
