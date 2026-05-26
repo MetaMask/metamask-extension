@@ -250,8 +250,9 @@ describe('sentry-get-state', () => {
         getMetaMetricsStateFromAppState({
           state: {
             metamask: {
-              participateInMetaMetrics: true,
-              metaMetricsId: 'metamask-id',
+              analyticsId: 'metamask-id',
+              completedMetaMetricsOnboarding: true,
+              optedIn: true,
             },
           },
         }),
@@ -266,8 +267,9 @@ describe('sentry-get-state', () => {
         getMetaMetricsStateFromAppState({
           state: {
             metamask: {
-              participateInMetaMetrics: null,
-              metaMetricsId: 'metamask-id',
+              analyticsId: 'metamask-id',
+              completedMetaMetricsOnboarding: false,
+              optedIn: true,
             },
           },
         }),

@@ -73,13 +73,13 @@ export function getMetaMetricsStateFromAppState(
   if (appState.state) {
     const state = appState.state as Record<string, unknown>;
     if ('metamask' in state && state.metamask !== undefined) {
-      const metamask = state.metamask as {
-        participateInMetaMetrics?: boolean | null;
-        metaMetricsId?: string;
-      };
+      const metamask = state.metamask as AnalyticsState & MetaMetricsState;
+      const { analyticsId, completedMetaMetricsOnboarding, optedIn } = metamask;
       return {
-        participateInMetaMetrics: metamask.participateInMetaMetrics ?? null,
-        metaMetricsId: metamask.metaMetricsId,
+        participateInMetaMetrics:
+          completedMetaMetricsOnboarding === true ? optedIn === true : null,
+        metaMetricsId:
+          typeof analyticsId === 'string' ? analyticsId : undefined,
       };
     }
     return getMetaMetricsStateFromControllerState(state);

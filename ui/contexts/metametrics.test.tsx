@@ -33,10 +33,9 @@ const renderProvider = ({
   event: MetaMetricsEventName;
   state: {
     metamask: {
+      analyticsId: string | null;
       completedMetaMetricsOnboarding: boolean;
       optedIn: boolean;
-      participateInMetaMetrics: boolean | null;
-      metaMetricsId: string | null;
     };
   };
 }) => {
@@ -50,7 +49,7 @@ const renderProvider = ({
         category: MetaMetricsEventCategory.Onboarding,
         event,
       });
-    }, [event, trackEvent]);
+    }, [trackEvent]);
 
     return null;
   };
@@ -86,15 +85,14 @@ describe('MetaMetricsProvider', () => {
     jest.clearAllMocks();
   });
 
-  it('buffers events when participation is enabled but metaMetricsId is missing', async () => {
+  it('buffers events when participation is enabled but analyticsId is missing', async () => {
     renderProvider({
       event: MetaMetricsEventName.AnalyticsPreferenceSelected,
       state: {
         metamask: {
+          analyticsId: null,
           completedMetaMetricsOnboarding: true,
           optedIn: true,
-          participateInMetaMetrics: true,
-          metaMetricsId: null,
         },
       },
     });
@@ -114,15 +112,14 @@ describe('MetaMetricsProvider', () => {
     expect(mockedTrackMetaMetricsEvent).not.toHaveBeenCalled();
   });
 
-  it('tracks events immediately when participation is enabled and metaMetricsId exists', async () => {
+  it('tracks events immediately when participation is enabled and analyticsId exists', async () => {
     renderProvider({
       event: MetaMetricsEventName.AnalyticsPreferenceSelected,
       state: {
         metamask: {
+          analyticsId: '0x123',
           completedMetaMetricsOnboarding: true,
           optedIn: true,
-          participateInMetaMetrics: true,
-          metaMetricsId: '0x123',
         },
       },
     });
@@ -140,15 +137,14 @@ describe('MetaMetricsProvider', () => {
     expect(mockedSubmitRequestToBackground).not.toHaveBeenCalled();
   });
 
-  it('tracks metrics opt out immediately without a metaMetricsId', async () => {
+  it('tracks metrics opt out immediately without an analyticsId', async () => {
     renderProvider({
       event: MetaMetricsEventName.MetricsOptOut,
       state: {
         metamask: {
+          analyticsId: null,
           completedMetaMetricsOnboarding: true,
           optedIn: false,
-          participateInMetaMetrics: false,
-          metaMetricsId: null,
         },
       },
     });
@@ -171,10 +167,9 @@ describe('MetaMetricsProvider', () => {
       event: MetaMetricsEventName.AnalyticsPreferenceSelected,
       state: {
         metamask: {
+          analyticsId: '0x123',
           completedMetaMetricsOnboarding: true,
           optedIn: false,
-          participateInMetaMetrics: false,
-          metaMetricsId: '0x123',
         },
       },
     });

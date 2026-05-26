@@ -366,8 +366,8 @@ export function getNetworkIdentifier(state) {
 }
 
 export function getMetaMetricsId(state) {
-  const { metaMetricsId } = state.metamask;
-  return metaMetricsId;
+  const { analyticsId } = state.metamask;
+  return analyticsId;
 }
 
 export function isCurrentProviderCustom(state) {
