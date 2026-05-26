@@ -16,12 +16,9 @@ const selectors = {
   exampleDateTimePicker: '.snap-ui-renderer__date-time-picker--datetime',
   exampleDatePickerContainer: '.snap-ui-renderer__date-time-picker--date',
   exampleTimePicker: '.snap-ui-renderer__date-time-picker--time',
-  dateTimePickerField:
-    '.snap-ui-renderer__date-time-picker--datetime [role="textbox"]',
-  datePickerField:
-    '.snap-ui-renderer__date-time-picker--date [role="textbox"]',
-  timePickerField:
-    '.snap-ui-renderer__date-time-picker--time [role="textbox"]',
+  dateTimePickerField: '.snap-ui-renderer__date-time-picker--datetime',
+  datePickerField: '.snap-ui-renderer__date-time-picker--date',
+  timePickerField: '.snap-ui-renderer__date-time-picker--time',
   pickerDialogOk: '.MuiDialogActions-root button:last-child',
   pickerPrevMonthArrow:
     '.MuiPickersCalendarHeader-root .MuiPickersArrowSwitcher-root button:first-child',
@@ -119,7 +116,7 @@ class SnapInteractiveDialog {
   async #selectClockHour(hour: number): Promise<void> {
     const label = hour === 0 ? '00' : String(hour);
     await this.driver.clickPoint(
-      { text: label, tag: 'span', css: '.MuiPickersClockNumber-clockNumber' },
+      { text: label, tag: 'span', css: '.MuiClockNumber-root' },
       1,
       1,
     );
@@ -135,7 +132,7 @@ class SnapInteractiveDialog {
   async #selectClockMinute(minute: number): Promise<void> {
     const label = String(minute).padStart(2, '0');
     await this.driver.clickPoint(
-      { text: label, tag: 'span', css: '.MuiPickersClockNumber-clockNumber' },
+      { text: label, tag: 'span', css: '.MuiClockNumber-root' },
       1,
       1,
     );
