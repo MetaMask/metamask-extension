@@ -78,22 +78,25 @@ jest.mock('../util/sortAssetsWithPriority', () => ({
   sortAssetsWithPriority: jest.fn((assets) => assets),
 }));
 
-jest.mock('../../../../hooks/useI18nContext', () => ({
-  useI18nContext: () => (key: string, substitutions?: unknown[]) => {
-    const { enLocale } = jest.requireActual(
-      '../../../../../test/lib/i18n-helpers',
-    );
-    const message = enLocale[key]?.message ?? key;
+jest.mock('../../../../hooks/useI18nContext', async () => {
+  const { enLocale } = await jest.requireActual(
+    '../../../../../test/lib/i18n-helpers',
+  );
 
-    return (
-      substitutions?.reduce<string>(
-        (result, substitution, index) =>
-          result.replace(`$${index + 1}`, String(substitution)),
-        message,
-      ) ?? message
-    );
-  },
-}));
+  return {
+    useI18nContext: () => (key: string, substitutions?: unknown[]) => {
+      const message = enLocale[key]?.message ?? key;
+
+      return (
+        substitutions?.reduce<string>(
+          (result, substitution, index) =>
+            result.replace(`$${index + 1}`, String(substitution)),
+          message,
+        ) ?? message
+      );
+    },
+  };
+});
 
 jest.mock('../../../../selectors', () => ({
   getCurrencyRates: jest.fn(),
