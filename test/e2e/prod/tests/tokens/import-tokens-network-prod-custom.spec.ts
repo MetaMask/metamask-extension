@@ -338,9 +338,9 @@ async function runTokenImportTest(
         );
 
         try {
-          // Set a timeout for the import operation (15 seconds for symbol/decimals to load)
+          // Set a timeout for the import operation (15 seconds for address input/form to load)
           const importTimeout = 15000;
-          const importPromise = assetListPage.importCustomTokenByChain(
+          const importPromise = assetListPage.importCustomTokenFromManageTokensUI(
             toHex(networkConfig.chainId).toString(),
             token.address,
           );
@@ -351,7 +351,7 @@ async function runTokenImportTest(
               () =>
                 reject(
                   new Error(
-                    'Token import timed out - symbol/decimals may not have loaded',
+                    'Token import timed out - token management page may not have loaded',
                   ),
                 ),
               importTimeout,

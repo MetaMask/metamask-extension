@@ -412,6 +412,51 @@ class AssetListPage {
     await this.driver.waitForSelector(this.tokenImportedSuccessMessage);
   }
 
+  /**
+   * NEW TOKEN IMPORT FLOW: Import a custom token using Token Management page
+   * This replaces the old flow that used 3-dots menu
+   *
+   * Flow:
+   * 1. Click "Manage Tokens" button
+   * 2. Click "Add Custom Token" button
+   * 3. Enter token address
+   * 4. Click Submit
+   * 5. Verify on Token Management page
+   * 6. Click back to return to home
+   *
+   * @param chainId - The chain ID in hex format (e.g., 0x1)
+   * @param tokenAddress - The token address to import (e.g., 0x...)
+   */
+  async importCustomTokenFromManageTokensUI(
+    chainId: string,
+    tokenAddress: string,
+  ): Promise<void> {
+    console.log(
+      `[TOKEN-MANAGEMENT] Importing custom token ${tokenAddress} on chain ${chainId}`,
+    );
+
+    try {
+      // Import TokenManagementPage locally to avoid circular dependencies
+      const TokenManagementPage = (
+        await import('./token-management.js')
+      ).default;
+      const tokenManagementPage = new TokenManagementPage(this.driver);
+
+      // Execute the complete flow
+      await tokenManagementPage.addCustomToken(tokenAddress);
+
+      // Return to home page
+      await tokenManagementPage.goBackToHome();
+
+      console.log(`[TOKEN-MANAGEMENT] ✅ Token imported successfully`);
+    } catch (error) {
+      console.error(
+        `[TOKEN-MANAGEMENT] ❌ Failed to import token: ${error}`,
+      );
+      throw error;
+    }
+  }
+
   async importTokenBySearch({
     tokenName,
     networkName,
