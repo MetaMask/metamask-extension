@@ -108,7 +108,9 @@ jobs:
 
       - name: Install speculos
         if: ${{ inputs.install-speculos != '' }}
-        run: pip install ${{ inputs.install-speculos }}
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq qemu-user-static
+          pip install ${{ inputs.install-speculos }}
 
       - name: Download build artifact
         if: ${{ inputs.build-artifact != '' }}
