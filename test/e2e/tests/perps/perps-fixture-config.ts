@@ -5,6 +5,7 @@ import {
   getProductionRemoteFlagApiResponse,
   getProductionRemoteFlagDefaults,
 } from '../../feature-flags/feature-flag-registry';
+import { formatUnits } from '../../../../shared/lib/unit';
 import {
   MOCK_ETH_OPEN_LONG_FILL,
   MOCK_ETH_LIMIT_ORDER,
@@ -196,23 +197,6 @@ async function mockArbitrumUsdcPriceData(server: Mockttp): Promise<void> {
     }));
 }
 
-function formatUsdcRawAmount(rawAmount: string): string {
-  try {
-    const raw = BigInt(rawAmount);
-    const decimals = 1_000_000n;
-    const whole = raw / decimals;
-    const fraction = raw % decimals;
-    const fractionText = fraction.toString().padStart(6, '0');
-    const trimmedFraction = fractionText.replace(/0+$/u, '');
-
-    return trimmedFraction
-      ? `${whole.toString()}.${trimmedFraction}`
-      : whole.toString();
-  } catch {
-    return '0';
-  }
-}
-
 function getArbitrumUsdcRawAmount(sourceRawAmount: string): string {
   try {
     return (BigInt(sourceRawAmount) / 100n).toString();
@@ -242,7 +226,7 @@ async function mockRelayWithdrawData(server: Mockttp): Promise<void> {
       }
 
       const targetRawAmount = getArbitrumUsdcRawAmount(sourceRawAmount);
-      const formattedAmount = formatUsdcRawAmount(targetRawAmount);
+      const formattedAmount = formatUnits(BigInt(targetRawAmount), 6);
       const user =
         typeof body.user === 'string'
           ? body.user
@@ -372,7 +356,7 @@ async function mockRelayWithdrawData(server: Mockttp): Promise<void> {
     });
 
   await server
-    .forPost(/^https:\/\/api\.relay\.link\/authorize/u)
+    .forPost(`${RELAY_API_BASE_URL}/authorize`)
     .always()
     .thenCallback(() => ({
       statusCode: 200,
@@ -380,7 +364,8 @@ async function mockRelayWithdrawData(server: Mockttp): Promise<void> {
     }));
 
   await server
-    .forGet(/^https:\/\/api\.relay\.link\/intents\/status\/v3/u)
+    .forGet(`${RELAY_API_BASE_URL}/intents/status/v3`)
+    .withQuery({ requestId: RELAY_REQUEST_ID })
     .always()
     .thenCallback(() => ({
       statusCode: 200,
