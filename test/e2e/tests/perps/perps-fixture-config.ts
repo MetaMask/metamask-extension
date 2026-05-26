@@ -160,7 +160,12 @@ async function mockEligibleFeatureFlags(server: Mockttp): Promise<void> {
     { perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: [] } },
   ];
   await server
-    .forGet(/^https:\/\/client-config\.api\.cx\.metamask\.io\/v1\/flags/u)
+    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
+    .withQuery({
+      client: 'extension',
+      distribution: 'main',
+      environment: 'dev',
+    })
     .thenCallback(() => ({
       ok: true,
       statusCode: 200,
