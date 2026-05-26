@@ -290,7 +290,7 @@ function TransactionListItemInner({
   return (
     <>
       <ActivityListItem
-        data-testid="activity-list-item"
+        status={displayedStatusKey}
         onClick={
           isUnifiedSwapTx && showBridgeTxDetails
             ? showBridgeTxDetails
