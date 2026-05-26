@@ -17,6 +17,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isTransactionEarliestNonce } from '../../../hooks/useEarliestNonceByChain';
 import { ActivityListItemAvatar } from '../../../components/app/activity-list-item-avatar';
 import { ChainBadge } from '../../../components/app/chain-badge/chain-badge';
+import { StatusIcon } from '../../../components/ui/icon/status-icon';
 import { getActivityListItemAvatarConfig } from '../resolve-activity-avatar-config';
 import { useFormatTokenAmount } from '../useFormatTokenAmount';
 import { useGetLabel } from '../useGetLabel';
@@ -212,12 +213,22 @@ export function GenericActivityCell({
         </ChainBadge>
       </div>
       <div className="min-w-0">
-        <Text
-          className="font-medium truncate"
-          data-testid="activity-list-item-action"
-        >
-          {title}
-        </Text>
+        <div className="flex min-w-0 items-center gap-1">
+          <Text
+            className="min-w-0 truncate font-medium"
+            data-testid="activity-list-item-action"
+          >
+            {title}
+          </Text>
+          {data.status === 'pending' && !pendingStatusText ? (
+            <span
+              className="shrink-0"
+              data-testid="activity-list-item-pending-spinner"
+            >
+              <StatusIcon state="loading" className="w-5 h-5" />
+            </span>
+          ) : null}
+        </div>
         {renderDescriptionLine(pendingStatusText, description)}
       </div>
       <div className="text-right whitespace-nowrap">

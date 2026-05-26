@@ -14,6 +14,10 @@ jest.mock('../useFormatTokenAmount', () => ({
   useFormatTokenAmount: () => mockFormatTokenAmount,
 }));
 
+jest.mock('../../../components/ui/icon/status-icon', () => ({
+  StatusIcon: () => <div data-testid="status-icon-rive-mock" />,
+}));
+
 describe('GenericActivityCell', () => {
   beforeEach(() => {
     mockFormatTokenAmount.mockReturnValue(undefined);
@@ -46,6 +50,50 @@ describe('GenericActivityCell', () => {
       'data-tx-status',
       'confirmed',
     );
+  });
+
+  it('renders pending spinner when status is pending', () => {
+    render(
+      <GenericActivityCell
+        data={{
+          type: 'send',
+          chainId: 'eip155:1',
+          status: 'pending',
+          timestamp: 0,
+          data: {
+            from: '0x0000000000000000000000000000000000000001',
+            to: '0x0000000000000000000000000000000000000002',
+          },
+        }}
+        onClick={jest.fn()}
+      />,
+    );
+
+    expect(
+      screen.getByTestId('activity-list-item-pending-spinner'),
+    ).toContainElement(screen.getByTestId('status-icon-rive-mock'));
+  });
+
+  it('does not render pending spinner when status is success', () => {
+    render(
+      <GenericActivityCell
+        data={{
+          type: 'send',
+          chainId: 'eip155:1',
+          status: 'success',
+          timestamp: 0,
+          data: {
+            from: '0x0000000000000000000000000000000000000001',
+            to: '0x0000000000000000000000000000000000000002',
+          },
+        }}
+        onClick={jest.fn()}
+      />,
+    );
+
+    expect(
+      screen.queryByTestId('activity-list-item-pending-spinner'),
+    ).not.toBeInTheDocument();
   });
 
   it('shows signing subtitle for approved local transactions', () => {
