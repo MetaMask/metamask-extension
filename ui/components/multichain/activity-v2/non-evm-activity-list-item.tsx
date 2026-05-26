@@ -49,7 +49,7 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
   if (isRedeposit) {
     return (
       <LegacyActivityListItem
-        data-testid="activity-list-item"
+        status={statusKey}
         onClick={() => onClick(transaction)}
         icon={
           <ChainBadge chainId={transaction.chain}>
@@ -78,7 +78,7 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
 
   return (
     <LegacyActivityListItem
-      data-testid="activity-list-item"
+      status={statusKey}
       onClick={() => onClick(transaction)}
       icon={
         <ChainBadge chainId={transaction.chain}>
