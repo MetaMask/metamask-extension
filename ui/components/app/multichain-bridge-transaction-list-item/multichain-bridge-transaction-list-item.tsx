@@ -37,10 +37,7 @@ import {
   MULTICHAIN_NETWORK_TO_NICKNAME,
   MULTICHAIN_TOKEN_IMAGE_MAP,
 } from '../../../../shared/constants/multichain/networks';
-import {
-  TransactionGroupCategory,
-  TransactionGroupStatus,
-} from '../../../../shared/constants/transaction';
+import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import useBridgeChainInfo from '../../../hooks/bridge/useBridgeChainInfo';
 import { formatAmount } from '../../../pages/confirmations/components/simulation-details/formatAmount';

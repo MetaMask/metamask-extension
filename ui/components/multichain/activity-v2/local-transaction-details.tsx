@@ -12,7 +12,6 @@ import TransactionStatusLabel from '../../app/transaction-status-label/transacti
 import { useBridgeTxHistoryData } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
 import { getStatusKey } from '../../../helpers/utils/transactions.util';
-import { formatDateWithYearContext } from '../../../helpers/utils/util';
 
 const noop = () => undefined;
 

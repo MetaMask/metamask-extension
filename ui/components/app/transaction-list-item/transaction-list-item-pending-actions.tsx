@@ -35,9 +35,7 @@ const TransactionListItemPendingActionButtons = ({
 }: TransactionListItemPendingActionButtonsProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { openModal } = useTransactionModalContext() as {
-    openModal: (modalName: string) => void;
-  };
+  const { openModal } = useTransactionModalContext();
   const { hasCancelled, nonce, primaryTransaction, initialTransaction } =
     transactionGroup;
   const { id, status, selectedGasFeeToken } = primaryTransaction;
