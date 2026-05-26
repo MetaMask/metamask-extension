@@ -303,6 +303,8 @@
     "@metamask/account-tree-controller": "npm:@metamask-previews/account-tree-controller@7.4.0-preview-855431b",
     "@metamask/snap-account-service": "npm:@metamask-previews/snap-account-service@0.2.0-preview-8e8c4f6f5",
     "@metamask/multichain-account-service": "npm:@metamask-previews/multichain-account-service@10.0.0-preview-8e8c4f6f5",
+    "@metamask/eth-snap-keyring": "npm:@metamask-previews/eth-snap-keyring@22.1.0-bc99865",
+    "@metamask/keyring-sdk": "npm:@metamask-previews/keyring-sdk@2.1.1-bc99865",
     "@metamask/snaps-rpc-methods@npm:^16.0.0": "patch:@metamask/snaps-rpc-methods@npm%3A16.0.0#~/.yarn/patches/@metamask-snaps-rpc-methods-npm-16.0.0-f7dc424d0a.patch"
   },
   "dependencies": {
