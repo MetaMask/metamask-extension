@@ -1,16 +1,28 @@
 import { act } from '@testing-library/react-hooks';
 import mockState from '../../../../../test/data/mock-state.json';
+import { tEn } from '../../../../../test/lib/i18n-helpers';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  PERPS_CONFIRMATION_STARTUP_FLOW,
+  PERPS_CONFIRMATION_STARTUP_FLOW_PARAM,
+} from '../../../../pages/confirmations/constants/perps';
 import { ConfirmationLoader } from '../../../../pages/confirmations/hooks/useConfirmationNavigation';
 import { createPerpsDepositTransaction } from './createPerpsDepositTransaction';
 import { usePerpsDepositConfirmation } from './usePerpsDepositConfirmation';
 
 const mockNavigate = jest.fn();
+const mockReplacePerpsToast = jest.fn();
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
+}));
+
+jest.mock('../perps-toast', () => ({
+  usePerpsToast: () => ({
+    replacePerpsToast: mockReplacePerpsToast,
+  }),
 }));
 
 jest.mock('./createPerpsDepositTransaction', () => ({
@@ -46,7 +58,7 @@ describe('usePerpsDepositConfirmation', () => {
     expect(mockCreatePerpsDepositTransaction).toHaveBeenCalledTimes(1);
     expect(mockNavigate).toHaveBeenCalledWith({
       pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-123`,
-      search: `loader=${ConfirmationLoader.CustomAmount}`,
+      search: `loader=${ConfirmationLoader.CustomAmount}&${PERPS_CONFIRMATION_STARTUP_FLOW_PARAM}=${PERPS_CONFIRMATION_STARTUP_FLOW.DEPOSIT}`,
     });
     expect(triggerResult).toStrictEqual({ transactionId: 'tx-123' });
   });
@@ -68,7 +80,7 @@ describe('usePerpsDepositConfirmation', () => {
 
     expect(mockNavigate).toHaveBeenCalledWith({
       pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-return`,
-      search: `loader=${ConfirmationLoader.CustomAmount}&goBackTo=%2Fperps%2Ftrade%2FBTC`,
+      search: `loader=${ConfirmationLoader.CustomAmount}&${PERPS_CONFIRMATION_STARTUP_FLOW_PARAM}=${PERPS_CONFIRMATION_STARTUP_FLOW.DEPOSIT}&goBackTo=%2Fperps%2Ftrade%2FBTC`,
     });
   });
 
@@ -93,6 +105,35 @@ describe('usePerpsDepositConfirmation', () => {
 
     expect(mockNavigate).not.toHaveBeenCalled();
     expect(triggerResult).toStrictEqual({ transactionId: 'tx-456' });
+  });
+
+  it('shows the deposit error toast when transaction creation fails', async () => {
+    mockCreatePerpsDepositTransaction.mockRejectedValueOnce(
+      new Error('create failed'),
+    );
+    const consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+
+    const { result } = renderHookWithProvider(
+      () => usePerpsDepositConfirmation(),
+      mockState,
+    );
+
+    let triggerResult: Awaited<ReturnType<typeof result.current.trigger>> =
+      null;
+    await act(async () => {
+      triggerResult = await result.current.trigger();
+    });
+
+    expect(triggerResult).toBeNull();
+    expect(mockNavigate).not.toHaveBeenCalled();
+    expect(mockReplacePerpsToast).toHaveBeenCalledWith({
+      message: tEn('perpsDepositToastErrorTitle'),
+      description: tEn('perpsDepositToastErrorDescription'),
+      variant: 'error',
+    });
+    consoleErrorSpy.mockRestore();
   });
 
   it('invokes onCreated callback with transaction id', async () => {

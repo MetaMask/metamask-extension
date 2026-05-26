@@ -37,10 +37,12 @@ export type PerpsPendingOrder = {
 } | null;
 
 export type PerpsToastConfig = {
+  actionText?: string;
   autoHideTime?: number;
   dataTestId?: string;
   description?: string;
   message: string;
+  onActionClick?: () => void;
   variant?: PerpsToastVariant;
 };
 
@@ -177,6 +179,8 @@ export const PerpsToastProvider = ({ children }: PerpsToastProviderProps) => {
             startAdornment={getPerpsToastIcon(activeToast.presentation)}
             text={activeToast.message}
             description={activeToast.description}
+            actionText={activeToast.actionText}
+            onActionClick={activeToast.onActionClick}
             className="perps-toast"
             contentProps={{ className: 'items-center' }}
             autoHideTime={activeToast.autoHideTime}

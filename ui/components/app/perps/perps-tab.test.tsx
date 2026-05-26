@@ -23,6 +23,10 @@ jest.mock('./perps-toast', () => ({
   PerpsToastProvider: ({ children }: { children: React.ReactNode }) => children,
 }));
 
+jest.mock('./perps-toast/perps-startup-error-toast-listener', () => ({
+  PerpsStartupErrorToastListener: () => null,
+}));
+
 const mockSubmitRequestToBackground =
   submitRequestToBackground as jest.MockedFunction<
     typeof submitRequestToBackground

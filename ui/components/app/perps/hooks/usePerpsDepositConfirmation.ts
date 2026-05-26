@@ -4,7 +4,13 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import {
+  PERPS_CONFIRMATION_STARTUP_FLOW,
+  PERPS_CONFIRMATION_STARTUP_FLOW_PARAM,
+} from '../../../../pages/confirmations/constants/perps';
 import { ConfirmationLoader } from '../../../../pages/confirmations/hooks/useConfirmationNavigation';
+import { usePerpsToast } from '../perps-toast';
 import { createPerpsDepositTransaction } from './createPerpsDepositTransaction';
 
 export type PerpsDepositConfirmationResponse = {
@@ -36,6 +42,8 @@ export function usePerpsDepositConfirmation(
   const { onCreated, navigateOnCreate = true } = options;
   const navigate = useNavigate();
   const location = useLocation();
+  const t = useI18nContext();
+  const { replacePerpsToast } = usePerpsToast();
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -61,6 +69,8 @@ export function usePerpsDepositConfirmation(
       if (navigateOnCreate) {
         const params = new URLSearchParams({
           loader: ConfirmationLoader.CustomAmount,
+          [PERPS_CONFIRMATION_STARTUP_FLOW_PARAM]:
+            PERPS_CONFIRMATION_STARTUP_FLOW.DEPOSIT,
         });
 
         const goBackTo = location.pathname + location.search;
@@ -79,6 +89,11 @@ export function usePerpsDepositConfirmation(
       return { transactionId };
     } catch (error) {
       console.error('Failed to create perps deposit transaction', error);
+      replacePerpsToast({
+        message: t('perpsDepositToastErrorTitle'),
+        description: t('perpsDepositToastErrorDescription'),
+        variant: 'error',
+      });
       return null;
     } finally {
       isInFlightRef.current = false;
@@ -91,7 +106,9 @@ export function usePerpsDepositConfirmation(
     navigate,
     navigateOnCreate,
     onCreated,
+    replacePerpsToast,
     selectedAccount?.address,
+    t,
   ]);
 
   return {

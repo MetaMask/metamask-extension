@@ -4,6 +4,28 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 export const PERPS_CURRENCY = 'usd';
 export const PERPS_MINIMUM_DEPOSIT = 0.01;
 
+export const PERPS_CONFIRMATION_STARTUP_FLOW_PARAM = 'perpsStartupFlow';
+export const PERPS_STARTUP_ERROR_ROUTE_STATE_KEY = 'perpsStartupError';
+
+export const PERPS_CONFIRMATION_STARTUP_FLOW = {
+  DEPOSIT: 'deposit',
+  WITHDRAW: 'withdraw',
+} as const;
+
+export type PerpsConfirmationStartupFlow =
+  (typeof PERPS_CONFIRMATION_STARTUP_FLOW)[keyof typeof PERPS_CONFIRMATION_STARTUP_FLOW];
+
+const PERPS_CONFIRMATION_STARTUP_FLOW_VALUES = Object.values(
+  PERPS_CONFIRMATION_STARTUP_FLOW,
+);
+
+export const isPerpsConfirmationStartupFlow = (
+  value: unknown,
+): value is PerpsConfirmationStartupFlow =>
+  PERPS_CONFIRMATION_STARTUP_FLOW_VALUES.includes(
+    value as PerpsConfirmationStartupFlow,
+  );
+
 export const ARBITRUM_USDC = {
   address: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831' as Hex,
   decimals: 6,

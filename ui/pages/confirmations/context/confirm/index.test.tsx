@@ -1,10 +1,15 @@
 import React from 'react';
-import { renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react-hooks';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import mockState from '../../../../../test/data/mock-state.json';
+import {
+  PERPS_CONFIRMATION_STARTUP_FLOW,
+  PERPS_CONFIRMATION_STARTUP_FLOW_PARAM,
+  PERPS_STARTUP_ERROR_ROUTE_STATE_KEY,
+} from '../../constants/perps';
 import { ConfirmContextProvider, useConfirmContext } from '.';
 
 const mockNavigate = jest.fn();
@@ -77,6 +82,10 @@ describe('ConfirmContextProvider', () => {
     mockCurrentConfirmation = { id: 'test-id', type: 'transaction' };
   });
 
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   it('navigates to DEFAULT_ROUTE when confirmation disappears and no goBackTo', () => {
     const store = createStore();
     const { rerender } = renderContextProvider(store);
@@ -106,6 +115,48 @@ describe('ConfirmContextProvider', () => {
     const { rerender } = renderContextProvider(store);
 
     rerender();
+
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  it('redirects with perps startup error state when custom amount confirmation never appears', () => {
+    jest.useFakeTimers();
+    mockCurrentConfirmation = undefined;
+    mockWindowSearch = `?loader=customAmount&goBackTo=/perps/trade/BTC&${PERPS_CONFIRMATION_STARTUP_FLOW_PARAM}=withdraw`;
+    window.history.replaceState({}, '', mockWindowSearch);
+    const store = createStore();
+
+    renderContextProvider(store);
+
+    expect(mockNavigate).not.toHaveBeenCalled();
+
+    act(() => {
+      jest.runOnlyPendingTimers();
+    });
+
+    expect(mockNavigate).toHaveBeenCalledWith('/perps/trade/BTC', {
+      replace: true,
+      state: {
+        [PERPS_STARTUP_ERROR_ROUTE_STATE_KEY]:
+          PERPS_CONFIRMATION_STARTUP_FLOW.WITHDRAW,
+      },
+    });
+  });
+
+  it('does not redirect with perps startup error state when confirmation appears before timeout', () => {
+    jest.useFakeTimers();
+    mockCurrentConfirmation = undefined;
+    mockWindowSearch = `?loader=customAmount&goBackTo=/perps/trade/BTC&${PERPS_CONFIRMATION_STARTUP_FLOW_PARAM}=withdraw`;
+    window.history.replaceState({}, '', mockWindowSearch);
+    const store = createStore();
+    const { rerender } = renderContextProvider(store);
+
+    mockCurrentConfirmation = { id: 'test-id', type: 'transaction' };
+    rerender();
+
+    act(() => {
+      jest.runOnlyPendingTimers();
+    });
 
     expect(mockNavigate).not.toHaveBeenCalled();
   });

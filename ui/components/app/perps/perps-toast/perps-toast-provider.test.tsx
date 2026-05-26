@@ -10,6 +10,8 @@ import {
   usePerpsToast,
 } from './perps-toast-provider';
 
+const mockToastActionClick = jest.fn();
+
 const ToastHarness = () => {
   const { replacePerpsToast, replacePerpsToastByKey, hidePerpsToast } =
     usePerpsToast();
@@ -164,6 +166,20 @@ const ToastHarness = () => {
       <button
         type="button"
         onClick={() => {
+          replacePerpsToast({
+            message: 'Something went wrong',
+            description: 'Your withdrawal wasn’t started.',
+            actionText: 'Try again',
+            onActionClick: mockToastActionClick,
+            variant: 'error',
+          });
+        }}
+      >
+        Show Action Error
+      </button>
+      <button
+        type="button"
+        onClick={() => {
           replacePerpsToastByKey({
             key: PERPS_TOAST_KEYS.TRADE_SUCCESS,
           });
@@ -242,6 +258,10 @@ const expectErrorAvatarToastIcon = () => {
 };
 
 describe('PerpsToastProvider', () => {
+  beforeEach(() => {
+    mockToastActionClick.mockClear();
+  });
+
   afterEach(() => {
     jest.useRealTimers();
   });
@@ -259,6 +279,26 @@ describe('PerpsToastProvider', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Hide Toast' }));
     expect(screen.queryByText('Submitting order...')).not.toBeInTheDocument();
+  });
+
+  it('passes action options to the toast', () => {
+    renderWithProvider(
+      <PerpsToastProvider>
+        <ToastHarness />
+      </PerpsToastProvider>,
+      getStore(),
+    );
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Show Action Error' }),
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
+
+    expect(screen.getByText('Something went wrong')).toBeInTheDocument();
+    expect(
+      screen.getByText('Your withdrawal wasn’t started.'),
+    ).toBeInTheDocument();
+    expect(mockToastActionClick).toHaveBeenCalledTimes(1);
   });
 
   it('replaces the currently visible toast', () => {

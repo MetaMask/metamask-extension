@@ -8,15 +8,23 @@ import React, {
   useState,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { getIsHardwareWalletErrorModalVisible } from '../../../../selectors';
 import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
-import { useConfirmationNavigationOptions } from '../../hooks/useConfirmationNavigation';
+import {
+  ConfirmationLoader,
+  useConfirmationNavigationOptions,
+} from '../../hooks/useConfirmationNavigation';
 import useSyncConfirmPath from '../../hooks/useSyncConfirmPath';
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import { Confirmation } from '../../types/confirm';
+import {
+  isPerpsConfirmationStartupFlow,
+  PERPS_CONFIRMATION_STARTUP_FLOW_PARAM,
+  PERPS_STARTUP_ERROR_ROUTE_STATE_KEY,
+} from '../../constants/perps';
 
 export type ConfirmContextType = {
   /** @deprecated Use useTransactionMetadataRequest or useSignatureRequest hooks instead. */
@@ -37,8 +45,19 @@ export const ConfirmContextProvider: React.FC<{
   /** When provided, injects this as currentConfirmation (e.g. for gas modal opened from cancel-speedup). Skips route sync and navigation. */
   currentConfirmationOverride?: Confirmation;
 }> = ({ children, confirmationId, currentConfirmationOverride }) => {
-  const { goBackTo: goBackFromUrl } = useConfirmationNavigationOptions();
+  const { search } = useLocation();
+  const { goBackTo: goBackFromUrl, loader: loaderFromUrl } =
+    useConfirmationNavigationOptions();
   const [goBackTo] = useState(goBackFromUrl);
+  const [loader] = useState(loaderFromUrl);
+  const [perpsStartupFlow] = useState(() => {
+    const startupFlow = new URLSearchParams(search).get(
+      PERPS_CONFIRMATION_STARTUP_FLOW_PARAM,
+    );
+    return isPerpsConfirmationStartupFlow(startupFlow)
+      ? startupFlow
+      : undefined;
+  });
   const [isScrollToBottomCompleted, setIsScrollToBottomCompleted] =
     useState(true);
   const { currentConfirmation: currentConfirmationFromHook } =
@@ -65,6 +84,7 @@ export const ConfirmContextProvider: React.FC<{
     if (currentConfirmationOverride !== undefined) {
       return;
     }
+
     if (previousConfirmation && !currentConfirmation) {
       shouldNavigateHomeRef.current = true;
     }
@@ -80,6 +100,35 @@ export const ConfirmContextProvider: React.FC<{
     navigate,
     goBackTo,
     isHardwareWalletErrorModalVisible,
+  ]);
+
+  useEffect(() => {
+    if (
+      currentConfirmationOverride !== undefined ||
+      currentConfirmation ||
+      previousConfirmation ||
+      loader !== ConfirmationLoader.CustomAmount ||
+      !perpsStartupFlow
+    ) {
+      return undefined;
+    }
+
+    const timeoutId = setTimeout(() => {
+      navigate(goBackTo ?? DEFAULT_ROUTE, {
+        replace: true,
+        state: { [PERPS_STARTUP_ERROR_ROUTE_STATE_KEY]: perpsStartupFlow },
+      });
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
+  }, [
+    currentConfirmationOverride,
+    currentConfirmation,
+    previousConfirmation,
+    loader,
+    perpsStartupFlow,
+    navigate,
+    goBackTo,
   ]);
 
   const value = useMemo(

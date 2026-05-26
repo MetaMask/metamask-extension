@@ -36,6 +36,9 @@ jest.mock('./perps-toast', () => ({
   PerpsToastProvider: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="perps-toast-provider-mock">{children}</div>
   ),
+  usePerpsToast: () => ({
+    replacePerpsToast: jest.fn(),
+  }),
 }));
 
 jest.mock('../../../providers/perps', () => ({

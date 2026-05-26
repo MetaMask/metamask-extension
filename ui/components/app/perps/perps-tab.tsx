@@ -21,6 +21,7 @@ import ErrorBoundary from '../error-boundary/error-boundary';
 import { PerpsView } from './perps-view';
 import { PerpsViewStreamBoundary } from './perps-view-stream-boundary';
 import { PerpsToastProvider } from './perps-toast';
+import { PerpsStartupErrorToastListener } from './perps-toast/perps-startup-error-toast-listener';
 
 /**
  * Perps tab content for the account overview.
@@ -77,6 +78,7 @@ export function PerpsTab() {
 
   return (
     <PerpsToastProvider>
+      <PerpsStartupErrorToastListener />
       <ErrorBoundary key="perps">
         <PerpsViewStreamBoundary>
           <PerpsView />

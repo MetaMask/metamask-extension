@@ -10,8 +10,14 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   PERPS_WITHDRAW_ROUTE,
 } from '../../../../helpers/constants/routes';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import {
+  PERPS_CONFIRMATION_STARTUP_FLOW,
+  PERPS_CONFIRMATION_STARTUP_FLOW_PARAM,
+} from '../../../../pages/confirmations/constants/perps';
 import { ConfirmationLoader } from '../../../../pages/confirmations/hooks/useConfirmationNavigation';
 import { selectPayQuoteConfig } from '../../../../pages/confirmations/selectors/feature-flags';
+import { usePerpsToast } from '../perps-toast';
 import { createPerpsWithdrawTransaction } from './createPerpsWithdrawTransaction';
 
 export type PerpsWithdrawNavigationResponse = {
@@ -47,6 +53,8 @@ export function usePerpsWithdrawNavigation(
   const { navigateOnTrigger = true, onNavigated } = options;
   const navigate = useNavigate();
   const location = useLocation();
+  const t = useI18nContext();
+  const { replacePerpsToast } = usePerpsToast();
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const isConfirmationFlowEnabled = useSelector(
     (state: RemoteFeatureFlagsState) =>
@@ -57,7 +65,7 @@ export function usePerpsWithdrawNavigation(
 
   const isInFlightRef = useRef(false);
 
-  const trigger = useCallback(async () => {
+  const trigger = useCallback(async function triggerPerpsWithdrawNavigation() {
     if (isInFlightRef.current || isLoading) {
       return null;
     }
@@ -80,6 +88,8 @@ export function usePerpsWithdrawNavigation(
         if (navigateOnTrigger) {
           const params = new URLSearchParams({
             loader: ConfirmationLoader.CustomAmount,
+            [PERPS_CONFIRMATION_STARTUP_FLOW_PARAM]:
+              PERPS_CONFIRMATION_STARTUP_FLOW.WITHDRAW,
           });
 
           const goBackTo = location.pathname + location.search;
@@ -107,6 +117,15 @@ export function usePerpsWithdrawNavigation(
       return { route: PERPS_WITHDRAW_ROUTE };
     } catch (error) {
       console.error('Failed to open perps withdraw flow', error);
+      replacePerpsToast({
+        message: t('perpsWithdrawStartErrorTitle'),
+        description: t('perpsWithdrawStartErrorDescription'),
+        actionText: t('tryAgain'),
+        onActionClick: () => {
+          triggerPerpsWithdrawNavigation().catch(() => undefined);
+        },
+        variant: 'error',
+      });
       return null;
     } finally {
       isInFlightRef.current = false;
@@ -120,7 +139,9 @@ export function usePerpsWithdrawNavigation(
     navigate,
     navigateOnTrigger,
     onNavigated,
+    replacePerpsToast,
     selectedAccount?.address,
+    t,
   ]);
 
   return {

@@ -1,18 +1,26 @@
 import React from 'react';
+import { waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { act, renderHook } from '@testing-library/react-hooks';
 import { MemoryRouter } from 'react-router-dom';
 import mockState from '../../../../../test/data/mock-state.json';
+import { tEn } from '../../../../../test/lib/i18n-helpers';
 import {
   CONFIRM_TRANSACTION_ROUTE,
   PERPS_WITHDRAW_ROUTE,
 } from '../../../../helpers/constants/routes';
+import {
+  PERPS_CONFIRMATION_STARTUP_FLOW,
+  PERPS_CONFIRMATION_STARTUP_FLOW_PARAM,
+} from '../../../../pages/confirmations/constants/perps';
 import { ConfirmationLoader } from '../../../../pages/confirmations/hooks/useConfirmationNavigation';
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
+import { I18nContext } from '../../../../contexts/i18n';
 import { createPerpsWithdrawTransaction } from './createPerpsWithdrawTransaction';
 import { usePerpsWithdrawNavigation } from './usePerpsWithdrawNavigation';
 
 const mockNavigate = jest.fn();
+const mockReplacePerpsToast = jest.fn();
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -21,6 +29,12 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('../../../../../shared/lib/selectors/accounts', () => ({
   getSelectedInternalAccount: jest.fn(),
+}));
+
+jest.mock('../perps-toast', () => ({
+  usePerpsToast: () => ({
+    replacePerpsToast: mockReplacePerpsToast,
+  }),
 }));
 
 jest.mock(
@@ -90,7 +104,11 @@ function renderUsePerpsWithdrawNavigation(
             /* eslint-enable @typescript-eslint/naming-convention */
           },
         },
-        children,
+        React.createElement(
+          I18nContext.Provider,
+          { value: (key: string) => tEn(key) },
+          children,
+        ),
       ),
     );
 
@@ -174,7 +192,7 @@ describe('usePerpsWithdrawNavigation', () => {
     });
     expect(mockNavigate).toHaveBeenCalledWith({
       pathname: `${CONFIRM_TRANSACTION_ROUTE}/${MOCK_TX_ID}`,
-      search: `loader=${ConfirmationLoader.CustomAmount}`,
+      search: `loader=${ConfirmationLoader.CustomAmount}&${PERPS_CONFIRMATION_STARTUP_FLOW_PARAM}=${PERPS_CONFIRMATION_STARTUP_FLOW.WITHDRAW}`,
     });
     expect(triggerResult).toStrictEqual({
       route: `${CONFIRM_TRANSACTION_ROUTE}/${MOCK_TX_ID}`,
@@ -195,7 +213,7 @@ describe('usePerpsWithdrawNavigation', () => {
 
     expect(mockNavigate).toHaveBeenCalledWith({
       pathname: `${CONFIRM_TRANSACTION_ROUTE}/${MOCK_TX_ID}`,
-      search: `loader=${ConfirmationLoader.CustomAmount}&goBackTo=%2Fperps%2Ftrade%2FBTC`,
+      search: `loader=${ConfirmationLoader.CustomAmount}&${PERPS_CONFIRMATION_STARTUP_FLOW_PARAM}=${PERPS_CONFIRMATION_STARTUP_FLOW.WITHDRAW}&goBackTo=%2Fperps%2Ftrade%2FBTC`,
     });
   });
 
@@ -222,7 +240,7 @@ describe('usePerpsWithdrawNavigation', () => {
     });
   });
 
-  it('returns null when confirmation transaction creation fails', async () => {
+  it('shows a retryable error toast when confirmation transaction creation fails', async () => {
     mockCreatePerpsWithdrawTransaction.mockRejectedValueOnce(
       new Error('create failed'),
     );
@@ -243,6 +261,27 @@ describe('usePerpsWithdrawNavigation', () => {
 
     expect(triggerResult).toBeNull();
     expect(mockNavigate).not.toHaveBeenCalled();
+    expect(mockReplacePerpsToast).toHaveBeenCalledTimes(1);
+    expect(mockReplacePerpsToast).toHaveBeenCalledWith({
+      message: tEn('perpsWithdrawStartErrorTitle'),
+      description: tEn('perpsWithdrawStartErrorDescription'),
+      actionText: tEn('tryAgain'),
+      onActionClick: expect.any(Function),
+      variant: 'error',
+    });
+
+    await act(async () => {
+      mockReplacePerpsToast.mock.calls[0][0].onActionClick();
+      await Promise.resolve();
+    });
+
+    await waitFor(() => {
+      expect(mockCreatePerpsWithdrawTransaction).toHaveBeenCalledTimes(2);
+    });
+    expect(mockNavigate).toHaveBeenCalledWith({
+      pathname: `${CONFIRM_TRANSACTION_ROUTE}/${MOCK_TX_ID}`,
+      search: `loader=${ConfirmationLoader.CustomAmount}&${PERPS_CONFIRMATION_STARTUP_FLOW_PARAM}=${PERPS_CONFIRMATION_STARTUP_FLOW.WITHDRAW}`,
+    });
     expect(consoleErrorSpy).toHaveBeenCalled();
     consoleErrorSpy.mockRestore();
   });
