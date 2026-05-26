@@ -125,11 +125,11 @@ describe('SelectHardware', () => {
       );
     });
 
-    it('connects to OneKey', () => {
+    it('connects to OneKey via QR device onboarding flow', () => {
       render();
       fireEvent.click(screen.getByTestId('connect-hardware-wallet-onekey'));
       expect(mockConnectToHardwareWallet).toHaveBeenCalledWith(
-        HardwareDeviceNames.oneKey,
+        HardwareDeviceNames.qr,
       );
     });
 

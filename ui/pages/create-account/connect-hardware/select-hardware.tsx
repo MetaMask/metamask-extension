@@ -91,7 +91,7 @@ const WALLET_OPTIONS: WalletOption[] = [
     id: 'onekey',
     type: 'image',
     labelKey: 'oneKey',
-    device: HardwareDeviceNames.oneKey,
+    device: HardwareDeviceNames.qr,
     testId: 'connect-hardware-wallet-onekey',
     imageSrc: 'images/hardware-wallets/onekey.svg',
   },
