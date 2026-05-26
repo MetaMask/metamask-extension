@@ -3,7 +3,10 @@ import { EventEmitter } from 'node:events';
 import { ensureSpeculosBinary } from './speculos-up';
 import { DEFAULT_DEVICE, type DeviceConfig } from './constants';
 
-const READINESS_STRING = 'RESTful API available on';
+const READINESS_STRINGS = [
+  'RESTful API available on',
+  'Server started on',
+];
 
 export type SpeculosProcessOptions = {
   app: string;
@@ -85,7 +88,7 @@ export function createSpeculosProcess(
         lastLog = line;
         console.log(`[Speculos] ${line.trimEnd()}`);
 
-        if (status === 'starting' && line.includes(READINESS_STRING)) {
+        if (status === 'starting' && READINESS_STRINGS.some((s) => line.includes(s))) {
           status = 'listening';
           proc?.removeListener('exit', onExit);
           resolve();
