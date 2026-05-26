@@ -113,7 +113,7 @@ describe('MultichainRoutingServiceInit', () => {
     const mockRequest = {
       account: '0xabc',
       origin: 'test-origin',
-      scope: 'eip155:1',
+      scope: 'eip155:1' as const,
       method: 'eth_sendTransaction',
       params: [],
     };
