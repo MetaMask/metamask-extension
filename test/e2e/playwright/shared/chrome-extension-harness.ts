@@ -38,7 +38,8 @@ const DEFAULT_EXTENSION_DIR = path.join(process.cwd(), 'dist', 'chrome');
 export async function launchMetaMaskChromeExtension(
   options: ChromeHarnessOptions = {},
 ): Promise<ChromeHarnessSetup> {
-  const extensionDirectory = options.extensionDirectory ?? DEFAULT_EXTENSION_DIR;
+  const extensionDirectory =
+    options.extensionDirectory ?? DEFAULT_EXTENSION_DIR;
   if (!existsSync(path.join(extensionDirectory, 'manifest.json'))) {
     throw new Error(
       `[Chrome E2E] No manifest.json found at ${extensionDirectory}. ` +
@@ -46,9 +47,7 @@ export async function launchMetaMaskChromeExtension(
     );
   }
 
-  const userDataDir = await mkdtemp(
-    path.join(os.tmpdir(), 'mm-chrome-e2e-'),
-  );
+  const userDataDir = await mkdtemp(path.join(os.tmpdir(), 'mm-chrome-e2e-'));
   const downloadsDir = path.join(process.cwd(), 'test-artifacts', 'downloads');
 
   const args = [

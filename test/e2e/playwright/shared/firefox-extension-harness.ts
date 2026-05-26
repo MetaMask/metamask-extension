@@ -190,11 +190,7 @@ export async function ensurePatchedPlaywrightFirefox(): Promise<void> {
   try {
     execFileSync(
       'unzip',
-      [
-        '-q',
-        omniPath,
-        'chrome/juggler/content/content/JugglerFrameChild.jsm',
-      ],
+      ['-q', omniPath, 'chrome/juggler/content/content/JugglerFrameChild.jsm'],
       { cwd: tempDir },
     );
 
@@ -425,9 +421,7 @@ export async function launchMetaMaskFirefoxExtension(
 
   await ensurePatchedPlaywrightFirefox();
 
-  const userDataDir = await mkdtemp(
-    path.join(os.tmpdir(), 'mm-pw-firefox-'),
-  );
+  const userDataDir = await mkdtemp(path.join(os.tmpdir(), 'mm-pw-firefox-'));
 
   const context = await firefox.launchPersistentContext(userDataDir, {
     headless,

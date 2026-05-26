@@ -72,7 +72,12 @@ export type RawLocator =
       value?: string;
     };
 
-export type WaitState = 'visible' | 'detached' | 'enabled' | 'disabled' | 'hidden';
+export type WaitState =
+  | 'visible'
+  | 'detached'
+  | 'enabled'
+  | 'disabled'
+  | 'hidden';
 
 export type PlaywrightDriverBrowser = 'chrome' | 'firefox';
 
@@ -324,7 +329,10 @@ export class PlaywrightDriver {
     return this.buildLocatorOn(this.page, rawLocator);
   }
 
-  private buildLocatorOn(root: Page | Locator, rawLocator: RawLocator): Locator {
+  private buildLocatorOn(
+    root: Page | Locator,
+    rawLocator: RawLocator,
+  ): Locator {
     if (typeof rawLocator === 'string') {
       return root.locator(rawLocator);
     }
@@ -334,9 +342,9 @@ export class PlaywrightDriver {
     if (rawLocator.css && rawLocator.value !== undefined) {
       // {css, value} – find an element matching the CSS that also has a
       // matching @value attribute. Mirrors Selenium driver behaviour.
-      return root.locator(rawLocator.css).and(
-        root.locator(`[value="${rawLocator.value}"]`),
-      );
+      return root
+        .locator(rawLocator.css)
+        .and(root.locator(`[value="${rawLocator.value}"]`));
     }
     if (rawLocator.text !== undefined) {
       const { text, tag, testId, css } = rawLocator;
@@ -344,9 +352,7 @@ export class PlaywrightDriver {
         return root.locator(css, { hasText: text });
       }
       if (testId) {
-        return root
-          .getByTestId(testId)
-          .filter({ hasText: text });
+        return root.getByTestId(testId).filter({ hasText: text });
       }
       if (tag) {
         return root.locator(tag, { hasText: text });
@@ -389,7 +395,9 @@ export class PlaywrightDriver {
     >(
       ({ source, passedArgs }) => {
         // eslint-disable-next-line no-new-func, @typescript-eslint/no-implied-eval
-        const fn = new Function(`return (${source}).apply(null, [arguments[0]]);`);
+        const fn = new Function(
+          `return (${source}).apply(null, [arguments[0]]);`,
+        );
         return fn(passedArgs) as TResult;
       },
       { source: fnSource, passedArgs: args },
@@ -459,7 +467,10 @@ export class PlaywrightDriver {
     const elements = await this.findElements(rawLocator);
     await Promise.all(
       elements.map(async (element) => {
-        await element.locator.waitFor({ state: 'visible', timeout: this.timeout });
+        await element.locator.waitFor({
+          state: 'visible',
+          timeout: this.timeout,
+        });
         await this.waitUntil(async () => await element.locator.isEnabled(), {
           interval: 100,
           timeout: this.timeout,
@@ -482,7 +493,11 @@ export class PlaywrightDriver {
 
   async waitForSelector(
     rawLocator: RawLocator,
-    options: { timeout?: number; state?: WaitState; waitAtLeastGuard?: number } = {},
+    options: {
+      timeout?: number;
+      state?: WaitState;
+      waitAtLeastGuard?: number;
+    } = {},
   ): Promise<PlaywrightElement> {
     const {
       timeout = this.timeout,
@@ -514,7 +529,9 @@ export class PlaywrightDriver {
         timeout,
       });
     } else {
-      throw new Error(`Provided state selector ${state as string} is not supported`);
+      throw new Error(
+        `Provided state selector ${state as string} is not supported`,
+      );
     }
     return new PlaywrightElement(locator, this);
   }
@@ -524,15 +541,17 @@ export class PlaywrightDriver {
     options: { timeout?: number; state?: WaitState } = {},
   ): Promise<PlaywrightElement[]> {
     return await Promise.all(
-      rawLocators.map((rawLocator) => this.waitForSelector(rawLocator, options)),
+      rawLocators.map((rawLocator) =>
+        this.waitForSelector(rawLocator, options),
+      ),
     );
   }
 
   async waitForNonEmptyElement(element: PlaywrightElement): Promise<void> {
-    await this.waitUntil(
-      async () => (await element.getText()).length > 0,
-      { interval: 100, timeout: this.timeout },
-    );
+    await this.waitUntil(async () => (await element.getText()).length > 0, {
+      interval: 100,
+      timeout: this.timeout,
+    });
   }
 
   async elementCountBecomesN(
@@ -679,16 +698,16 @@ export class PlaywrightDriver {
     return element;
   }
 
-  async press(rawLocator: RawLocator, keys: string): Promise<PlaywrightElement> {
+  async press(
+    rawLocator: RawLocator,
+    keys: string,
+  ): Promise<PlaywrightElement> {
     const element = await this.findElement(rawLocator);
     await element.press(keys);
     return element;
   }
 
-  async clickElement(
-    rawLocator: RawLocator,
-    retries = 3,
-  ): Promise<void> {
+  async clickElement(rawLocator: RawLocator, retries = 3): Promise<void> {
     let lastError: unknown;
     for (let attempt = 0; attempt < retries; attempt += 1) {
       try {
@@ -718,7 +737,9 @@ export class PlaywrightDriver {
       await locator.waitFor({ state: 'visible', timeout });
       await locator.click({ timeout });
     } catch (error) {
-      console.log(`Element ${JSON.stringify(rawLocator)} not found (${String(error)})`);
+      console.log(
+        `Element ${JSON.stringify(rawLocator)} not found (${String(error)})`,
+      );
     }
   }
 
@@ -756,7 +777,9 @@ export class PlaywrightDriver {
 
   async navigate(page: string = PAGES.HOME): Promise<void> {
     const target =
-      this.browser === 'firefox' && page === PAGES.SIDEPANEL ? PAGES.HOME : page;
+      this.browser === 'firefox' && page === PAGES.SIDEPANEL
+        ? PAGES.HOME
+        : page;
     await this.page.goto(`${this.extensionUrl}/${target}.html`, {
       waitUntil: 'domcontentloaded',
     });
@@ -800,7 +823,9 @@ export class PlaywrightDriver {
   async switchToWindow(handle: string): Promise<void> {
     const target = this.pages.get(handle);
     if (!target) {
-      throw new Error(`PlaywrightDriver.switchToWindow: unknown handle ${handle}`);
+      throw new Error(
+        `PlaywrightDriver.switchToWindow: unknown handle ${handle}`,
+      );
     }
     this.currentPage = target;
     await target.bringToFront();
@@ -863,10 +888,10 @@ export class PlaywrightDriver {
     _delayStep = 1000,
     timeout = this.timeout,
   ): Promise<string[]> {
-    await this.waitUntil(
-      async () => this.context.pages().length === expected,
-      { interval: 250, timeout },
-    );
+    await this.waitUntil(async () => this.context.pages().length === expected, {
+      interval: 250,
+      timeout,
+    });
     return await this.getAllWindowHandles();
   }
 
@@ -901,7 +926,10 @@ export class PlaywrightDriver {
 
   // -- Diagnostics ----------------------------------------------------------
 
-  async takeScreenshot(testTitle: string, screenshotTitle: string): Promise<void> {
+  async takeScreenshot(
+    testTitle: string,
+    screenshotTitle: string,
+  ): Promise<void> {
     const artifactDir = path.join(
       './test-artifacts',
       this.browser,
@@ -937,7 +965,10 @@ export class PlaywrightDriver {
    * @param testTitle - Full mocha/playwright test title.
    * @param error - The error that triggered the failure (logged for context).
    */
-  async verboseReportOnFailure(testTitle: string, error: unknown): Promise<void> {
+  async verboseReportOnFailure(
+    testTitle: string,
+    error: unknown,
+  ): Promise<void> {
     console.error(
       `Failure on testcase: '${testTitle}', for more information see the ${
         process.env.CI ? 'artifacts tab in CI' : 'test-artifacts folder'
@@ -1024,7 +1055,10 @@ export class PlaywrightDriver {
   // Any uncovered API surface throws a clear error so migration gaps are
   // immediately visible. Fill these in as specs need them.
 
-  async pasteIntoField(_rawLocator: RawLocator, _content: string): Promise<void> {
+  async pasteIntoField(
+    _rawLocator: RawLocator,
+    _content: string,
+  ): Promise<void> {
     throw new Error('PlaywrightDriver.pasteIntoField is not yet implemented.');
   }
 
@@ -1032,7 +1066,9 @@ export class PlaywrightDriver {
     _rawLocator: RawLocator,
     _ms: number,
   ): Promise<void> {
-    throw new Error('PlaywrightDriver.holdMouseDownOnElement is not yet implemented.');
+    throw new Error(
+      'PlaywrightDriver.holdMouseDownOnElement is not yet implemented.',
+    );
   }
 
   async clickPoint(

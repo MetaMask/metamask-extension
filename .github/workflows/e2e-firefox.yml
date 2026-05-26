@@ -114,7 +114,7 @@ jobs:
       test-suite-name: test-e2e-firefox-playwright
       build-artifact: build-test-mv2-browserify
       build-command: yarn build:test:mv2
-      pre-test-command: yarn playwright install firefox
+      playwright-browsers: firefox
       test-command: PLAYWRIGHT_JUNIT_OUTPUT_FILE=test/test-results/e2e/junit-pw-firefox.xml PLAYWRIGHT_BROWSER=firefox yarn test:e2e:playwright:firefox
       builds-from-run: ${{ inputs.builds-from-run }}
 

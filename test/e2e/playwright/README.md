@@ -2,13 +2,13 @@
 
 This folder hosts the Playwright runner setup for E2E tests. Three flavors coexist here:
 
-| Folder            | Purpose                                                                                      |
-| ----------------- | -------------------------------------------------------------------------------------------- |
-| `swap/`           | Original Playwright swap tests (`yarn test:e2e:swap`)                                        |
-| `global/`         | Original Playwright global tests (`yarn test:e2e:global`)                                    |
-| `benchmark/`      | Performance benchmarks (`yarn test:e2e:benchmark`)                                           |
-| `shared/`         | Shared harnesses used by the Selenium-to-Playwright migration (Chrome + Firefox extension loaders) |
-| `llm-workflow/`   | MCP-driven test scaffolding helpers                                                          |
+| Folder          | Purpose                                                                                            |
+| --------------- | -------------------------------------------------------------------------------------------------- |
+| `swap/`         | Original Playwright swap tests (`yarn test:e2e:swap`)                                              |
+| `global/`       | Original Playwright global tests (`yarn test:e2e:global`)                                          |
+| `benchmark/`    | Performance benchmarks (`yarn test:e2e:benchmark`)                                                 |
+| `shared/`       | Shared harnesses used by the Selenium-to-Playwright migration (Chrome + Firefox extension loaders) |
+| `llm-workflow/` | MCP-driven test scaffolding helpers                                                                |
 
 The bulk of the existing E2E suite still lives under `test/e2e/tests/` and runs through Selenium. New Playwright migrations also live there with a `*.pw.spec.ts` suffix.
 

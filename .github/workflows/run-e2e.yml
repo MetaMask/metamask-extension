@@ -23,7 +23,17 @@ on:
         required: false
         type: string
         default: ''
-        description: Optional command to run before tests (for runner setup, e.g. `yarn playwright install firefox`).
+        description: Optional command to run before tests (for arbitrary runner setup that doesn't fit `playwright-browsers`).
+      playwright-browsers:
+        required: false
+        type: string
+        default: ''
+        description: >-
+          If set, installs the given space-separated Playwright browsers
+          (e.g. `chromium` or `firefox`) via the cached
+          `install-playwright-browsers` composite action before tests run.
+          Prefer this over `pre-test-command` for Playwright setup so all
+          jobs share the same browser-binary cache.
       builds-from-run:
         required: true
         type: string
@@ -144,6 +154,12 @@ jobs:
         with:
           name: ${{ env.JOB_NAME }}
           path: ./previous-test-results/
+
+      - name: Install Playwright browsers
+        if: ${{ inputs.playwright-browsers != '' }}
+        uses: ./.github/actions/install-playwright-browsers
+        with:
+          browsers: ${{ inputs.playwright-browsers }}
 
       - name: Run pre-test command
         if: ${{ inputs.pre-test-command != '' }}

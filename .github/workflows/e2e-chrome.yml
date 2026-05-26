@@ -192,6 +192,7 @@ jobs:
       test-suite-name: test-e2e-chrome-playwright
       build-artifact: build-test-browserify
       build-command: yarn build:test
+      playwright-browsers: chromium
       test-command: PLAYWRIGHT_JUNIT_OUTPUT_FILE=test/test-results/e2e/junit-pw-chrome.xml yarn test:e2e:playwright:chrome
       builds-from-run: ${{ inputs.builds-from-run }}
 

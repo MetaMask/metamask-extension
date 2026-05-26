@@ -8,38 +8,41 @@ import LoginPage from '../../page-objects/pages/login-page';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 
 pwTest.describe('Auto-Lock Timer', () => {
-  pwTest('automatically locks the wallet once the idle time has elapsed', async (
-    // Playwright runner requires the first arg to be a destructuring pattern.
-    // We don't use any built-in PW fixtures — withFixtures provides our own
-    // driver — so the destructured object is empty.
-    // eslint-disable-next-line no-empty-pattern
-    {},
-    testInfo,
-  ) => {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2().build(),
-        driverType: 'playwright',
-        title: testInfo.titlePath.join(' '),
-      },
-      async ({ driver }) => {
-        await login(driver);
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-        await homePage.headerNavbar.openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToSecurityAndPasswordSettings();
+  pwTest(
+    'automatically locks the wallet once the idle time has elapsed',
+    async (
+      // Playwright runner requires the first arg to be a destructuring pattern.
+      // We don't use any built-in PW fixtures — withFixtures provides our own
+      // driver — so the destructured object is empty.
+      // eslint-disable-next-line no-empty-pattern
+      {},
+      testInfo,
+    ) => {
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilderV2().build(),
+          driverType: 'playwright',
+          title: testInfo.titlePath.join(' '),
+        },
+        async ({ driver }) => {
+          await login(driver);
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
+          await homePage.headerNavbar.openSettingsPage();
+          const settingsPage = new SettingsPage(driver);
+          await settingsPage.checkPageIsLoaded();
+          await settingsPage.goToSecurityAndPasswordSettings();
 
-        await settingsPage.goToAutoLockSettings();
-        await settingsPage.waitForAutoLockOptionsList();
-        await settingsPage.selectQuarterMinuteAutoLockOption();
+          await settingsPage.goToAutoLockSettings();
+          await settingsPage.waitForAutoLockOptionsList();
+          await settingsPage.selectQuarterMinuteAutoLockOption();
 
-        await driver.delay(16000);
+          await driver.delay(16000);
 
-        const loginPage = new LoginPage(driver);
-        await loginPage.checkPageIsLoaded();
-      },
-    );
-  });
+          const loginPage = new LoginPage(driver);
+          await loginPage.checkPageIsLoaded();
+        },
+      );
+    },
+  );
 });
