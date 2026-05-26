@@ -3,6 +3,13 @@ import classnames from 'clsx';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { matchPath } from 'react-router-dom';
+import {
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -14,14 +21,6 @@ import {
   CROSS_CHAIN_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 
-import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  Display,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
-import { Box } from '../../component-library';
 import { getUnapprovedTransactions } from '../../../selectors';
 
 import { toggleNetworkMenu } from '../../../store/actions';
@@ -106,9 +105,8 @@ export const AppHeader = ({ location }) => {
   }, [chainId, dispatch, trackEvent]);
 
   const unlockedStyling = {
-    alignItems: AlignItems.center,
-    width: BlockSize.Full,
-    backgroundColor: BackgroundColor.backgroundDefault,
+    alignItems: BoxAlignItems.Center,
+    backgroundColor: BoxBackgroundColor.BackgroundDefault,
     padding: 2,
     paddingLeft: 2,
     paddingRight: 4,
@@ -116,11 +114,10 @@ export const AppHeader = ({ location }) => {
   };
 
   const lockStyling = {
-    display: Display.Flex,
-    alignItems: AlignItems.center,
-    width: BlockSize.Full,
-    justifyContent: JustifyContent.spaceBetween,
-    backgroundColor: BackgroundColor.backgroundDefault,
+    flexDirection: BoxFlexDirection.Row,
+    alignItems: BoxAlignItems.Center,
+    justifyContent: BoxJustifyContent.Between,
+    backgroundColor: BoxBackgroundColor.BackgroundDefault,
     padding: 2,
     gap: 2,
   };
@@ -134,6 +131,7 @@ export const AppHeader = ({ location }) => {
         <>
           <Box
             className={classnames(
+              'w-full',
               isUnlocked
                 ? 'multichain-app-header__contents flex'
                 : 'multichain-app-header__lock-contents',

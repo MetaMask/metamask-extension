@@ -1,12 +1,12 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
-import { ButtonBase, IconName, Box } from '../../component-library';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
+import { ButtonBase, IconName } from '../../component-library';
 import {
   AlignItems,
   BackgroundColor,
   BorderRadius,
-  Display,
   Size,
   TextColor,
   TextVariant,
@@ -54,7 +54,7 @@ function AddressCopyButton({ address, shorten = false, wrap = false }) {
         alignItems={AlignItems.center}
         data-testid="address-copy-button-text"
       >
-        <Box display={Display.Flex}>{displayAddress}</Box>
+        <Box flexDirection={BoxFlexDirection.Row}>{displayAddress}</Box>
       </ButtonBase>
     </Tooltip>
   );

@@ -1,16 +1,9 @@
 import React from 'react';
 import classnames from 'clsx';
-import { Box } from '../../../../../component-library';
-import {
-  BlockSize,
-  Display,
-} from '../../../../../../helpers/constants/design-system';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
+import type { BoxProps } from '@metamask/design-system-react';
 
-import type { StyleUtilityProps } from '../../../../../component-library/box';
-
-// TODO: Convert to a `type` in a future major version.
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-interface FooterProps extends StyleUtilityProps {
+type FooterProps = Omit<BoxProps, 'children'> & {
   /**
    * Elements that go in the page footer
    */
@@ -23,16 +16,15 @@ interface FooterProps extends StyleUtilityProps {
    * Additional CSS style provided to the footer
    */
   style?: React.CSSProperties;
-}
+};
 
 export const Footer = ({ children, className = '', ...props }: FooterProps) => {
   return (
     <Box
       padding={4}
-      display={Display.Flex}
-      width={BlockSize.Full}
+      flexDirection={BoxFlexDirection.Row}
       gap={4}
-      className={classnames('multichain-page-footer', className)}
+      className={classnames('multichain-page-footer w-full', className)}
       {...props}
     >
       {children}

@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import { isHexString } from 'ethereumjs-util';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import { Text, Box } from '../../../../component-library';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
+import { Text } from '../../../../component-library';
 import {
-  Display,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
@@ -35,7 +35,7 @@ export const renderPercentageWithNumber = (
   color: TextColor,
 ) => {
   return (
-    <Box display={Display.Flex} className="gap-1">
+    <Box flexDirection={BoxFlexDirection.Row} className="gap-1">
       <Text
         variant={TextVariant.bodyMdMedium}
         color={color}

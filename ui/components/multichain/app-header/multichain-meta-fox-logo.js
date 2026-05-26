@@ -1,15 +1,13 @@
 import React, { useCallback } from 'react';
 
 import { useNavigate } from 'react-router-dom';
+import {
+  Box,
+  BoxAlignItems,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useTheme } from '../../../hooks/useTheme';
-
-import {
-  AlignItems,
-  Display,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
-import { Box } from '../../component-library';
 
 import Logo from '../../ui/metafox-logo';
 
@@ -23,12 +21,11 @@ export const MultichainMetaFoxLogo = () => {
 
   return (
     <Box
-      display={[Display.None, Display.Flex]}
-      alignItems={AlignItems.center}
+      alignItems={BoxAlignItems.Center}
+      justifyContent={BoxJustifyContent.Center}
       margin={2}
-      className="multichain-app-header-logo"
+      className="multichain-app-header-logo hidden sm:flex"
       data-testid="app-header-logo"
-      justifyContent={JustifyContent.center}
     >
       <Logo unsetIconHeight onClick={onClick} theme={theme} />
     </Box>

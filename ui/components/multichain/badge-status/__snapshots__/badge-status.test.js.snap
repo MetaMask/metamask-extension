@@ -3,8 +3,9 @@
 exports[`Badge Status should not render the badge if showConnectedStatus is false 1`] = `
 <div>
   <button
-    class="mm-box multichain-badge-status pr-1 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-transparent"
+    class="flex flex-row items-center justify-center multichain-badge-status pr-1 bg-transparent"
     data-testid="multichain-badge-status"
+    type="button"
   >
     <div
       class="mm-box mm-badge-wrapper mm-box--display-inline-block"
@@ -63,8 +64,9 @@ exports[`Badge Status should not render the badge if showConnectedStatus is fals
 exports[`Badge Status should render correctly 1`] = `
 <div>
   <button
-    class="mm-box multichain-badge-status pr-1 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-transparent"
+    class="flex flex-row items-center justify-center multichain-badge-status pr-1 bg-transparent"
     data-testid="multichain-badge-status"
+    type="button"
   >
     <div>
       <div
@@ -126,7 +128,7 @@ exports[`Badge Status should render correctly 1`] = `
             style="bottom: -4%; right: -12%;"
           >
             <div
-              class="mm-box multichain-badge-status__badge multichain-badge-status__badge-not-connected mm-box--background-color-background-default mm-box--rounded-full mm-box--border-color-success-default mm-box--border-width-2 box--border-style-solid"
+              class="border-2 multichain-badge-status__badge rounded-full multichain-badge-status__badge-not-connected"
             />
           </div>
         </div>

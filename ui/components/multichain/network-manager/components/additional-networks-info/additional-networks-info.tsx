@@ -1,10 +1,13 @@
 import React, { memo, useCallback, useState } from 'react';
 import {
-  AlignItems,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   BackgroundColor,
-  Display,
   IconColor,
-  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
@@ -18,7 +21,6 @@ import {
   Popover,
   PopoverPosition,
 } from '../../../../component-library';
-import { Box } from '../../../../component-library/box';
 import { Icon } from '../../../../component-library/icon';
 import { Text } from '../../../../component-library/text';
 
@@ -63,12 +65,15 @@ export const AdditionalNetworksInfo = memo(() => {
       paddingLeft={4}
       onMouseLeave={handleMouseLeave}
     >
-      <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
+      >
         {/* Container for the "Additional Networks" text and info icon */}
         <Box
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.center}
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          justifyContent={BoxJustifyContent.Center}
           ref={setBoxRef}
         >
           {/* Label text - uses translation key "additionalNetworks" */}
@@ -81,9 +86,9 @@ export const AdditionalNetworksInfo = memo(() => {
 
           {/* Info icon with hover trigger for popover */}
           <Box
-            display={Display.Flex}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.center}
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            justifyContent={BoxJustifyContent.Center}
           >
             <Icon
               onMouseEnter={handleMouseEnter}

@@ -2,19 +2,22 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
 import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxFlexWrap,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   Display,
-  FlexDirection,
-  FlexWrap,
+  BlockSize,
   FontWeight,
-  JustifyContent,
   TextAlign,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Box, Text } from '../../component-library';
+import { Text } from '../../component-library';
 
 export const ActivityListItem = ({
   topContent,
@@ -35,8 +38,8 @@ export const ActivityListItem = ({
   return (
     <Box
       tabIndex={0}
-      backgroundColor={BackgroundColor.backgroundDefault}
-      className={primaryClassName}
+      backgroundColor={BoxBackgroundColor.BackgroundDefault}
+      className={`${primaryClassName} w-full`}
       onClick={onClick}
       onKeyPress={(event) => {
         if (event.key === 'Enter') {
@@ -44,12 +47,11 @@ export const ActivityListItem = ({
         }
       }}
       data-testid={dataTestId}
-      paddingInline={4}
+      paddingHorizontal={4}
       paddingTop={3}
       paddingBottom={3}
-      display={Display.Flex}
-      width={BlockSize.Full}
-      flexWrap={FlexWrap.Wrap}
+      flexDirection={BoxFlexDirection.Row}
+      flexWrap={BoxFlexWrap.Wrap}
       gap={4}
     >
       {topContent && (
@@ -62,29 +64,19 @@ export const ActivityListItem = ({
           {topContent}
         </Text>
       )}
-      <Box
-        display={Display.Flex}
-        width={BlockSize.Full}
-        flexDirection={FlexDirection.Row}
-        gap={4}
-      >
-        {icon && <Box display={Display.InlineFlex}>{icon}</Box>}
+      <Box flexDirection={BoxFlexDirection.Row} gap={4} className="w-full">
+        {icon && <Box className="inline-flex">{icon}</Box>}
         <Box
-          display={Display.InlineFlex}
-          width={BlockSize.Full}
-          justifyContent={JustifyContent.spaceBetween}
-          className="activity-list-item__content-container"
+          justifyContent={BoxJustifyContent.Between}
+          className="activity-list-item__content-container inline-flex w-full"
         >
           <Box
-            display={Display.InlineFlex}
-            flexDirection={FlexDirection.Column}
-            className="activity-list-item__detail-container"
-            minWidth="0"
+            flexDirection={BoxFlexDirection.Column}
+            className="activity-list-item__detail-container inline-flex min-w-0"
           >
             <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Row}
-              alignItems={AlignItems.center}
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
             >
               <Text
                 ellipsis
@@ -112,20 +104,15 @@ export const ActivityListItem = ({
           </Box>
 
           {midContent && (
-            <Box
-              display={Display.InlineFlex}
-              className="activity-list-item__mid-content"
-            >
+            <Box className="activity-list-item__mid-content inline-flex">
               {midContent}
             </Box>
           )}
           {rightContent && (
             <Box
-              display={Display.InlineFlex}
-              height={BlockSize.Min}
-              flexDirection={FlexDirection.Column}
-              alignItems={AlignItems.flexEnd}
-              className="activity-list-item__right-content"
+              flexDirection={BoxFlexDirection.Column}
+              alignItems={BoxAlignItems.End}
+              className="activity-list-item__right-content inline-flex h-min"
             >
               {rightContent}
             </Box>

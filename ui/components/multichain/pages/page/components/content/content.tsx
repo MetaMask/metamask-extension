@@ -1,16 +1,9 @@
 import React from 'react';
 import classnames from 'clsx';
-import { Box } from '../../../../../component-library';
-import {
-  BlockSize,
-  Display,
-  FlexDirection,
-} from '../../../../../../helpers/constants/design-system';
-import type { StyleUtilityProps } from '../../../../../component-library/box';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
+import type { BoxProps } from '@metamask/design-system-react';
 
-// TODO: Convert to a `type` in a future major version.
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-interface ContentProps extends StyleUtilityProps {
+type ContentProps = Omit<BoxProps, 'children'> & {
   /**
    * Elements that go in the page content section
    */
@@ -19,7 +12,7 @@ interface ContentProps extends StyleUtilityProps {
    * Additional CSS class provided to the content
    */
   className?: string;
-}
+};
 
 export const Content = ({
   children,
@@ -33,13 +26,10 @@ export const Content = ({
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      width={BlockSize.Full}
+      flexDirection={BoxFlexDirection.Column}
       padding={4}
       paddingTop={0}
-      height={BlockSize.Full}
-      className={classnames('multichain-page-content', className)}
+      className={classnames('multichain-page-content w-full h-full', className)}
       style={styles}
       {...props}
     >

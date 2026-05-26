@@ -5,7 +5,7 @@ import {
   CSSTransition as CSSTransitionComponent,
   TransitionGroup,
 } from 'react-transition-group';
-import { Box, BoxProps } from '../../component-library';
+import { Box } from '@metamask/design-system-react';
 import { getSelectedAccount } from '../../../selectors';
 import type { CarouselProps, CarouselState, NavigationAction } from './types';
 import { MAX_SLIDES } from './constants';
@@ -137,11 +137,7 @@ export const Carousel = React.forwardRef(
     // Loading state
     if (isLoading) {
       return (
-        <Box
-          className={`carousel-container ${className}`}
-          ref={ref}
-          {...(props as BoxProps<'div'>)}
-        >
+        <Box className={`carousel-container ${className}`} ref={ref} {...props}>
           <div className="carousel-cards-wrapper">
             {[...Array(3)].map((_, index) => (
               <div

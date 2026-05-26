@@ -6,17 +6,15 @@ import {
 } from '@metamask/network-controller';
 import { isStrictHexString, type CaipChainId } from '@metamask/utils';
 import { useSelector } from 'react-redux';
+import {
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexWrap,
+} from '@metamask/design-system-react';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { AssetType } from '../../../../../shared/constants/transaction';
-import { Box } from '../../../component-library';
 import { MarketClosedModal } from '../../../app/assets/market-closed-modal';
-import {
-  AlignItems,
-  BackgroundColor,
-  BorderRadius,
-  Display,
-  FlexWrap,
-} from '../../../../helpers/constants/design-system';
 import { TokenListItem } from '../../token-list-item';
 import LoadingScreen from '../../../ui/loading-screen';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -149,8 +147,8 @@ export default function AssetList({
             key={`${token.symbol}-${tokenAddress ?? ''}-${token.chainId}`}
             backgroundColor={
               isSelected
-                ? BackgroundColor.primaryMuted
-                : BackgroundColor.transparent
+                ? BoxBackgroundColor.PrimaryMuted
+                : BoxBackgroundColor.Transparent
             }
             className={classnames('multichain-asset-picker-list-item', {
               'multichain-asset-picker-list-item--selected': isSelected,
@@ -170,17 +168,16 @@ export default function AssetList({
           >
             {isSelected ? (
               <Box
-                className="multichain-asset-picker-list-item__selected-indicator"
-                borderRadius={BorderRadius.pill}
-                backgroundColor={BackgroundColor.primaryDefault}
+                className="multichain-asset-picker-list-item__selected-indicator rounded-full"
+                backgroundColor={BoxBackgroundColor.PrimaryDefault}
               />
             ) : null}
             <Box
               key={token.address}
               padding={0}
-              display={Display.Block}
-              flexWrap={FlexWrap.NoWrap}
-              alignItems={AlignItems.center}
+              flexWrap={BoxFlexWrap.NoWrap}
+              alignItems={BoxAlignItems.Center}
+              className="block"
             >
               <Box>
                 {token.type === AssetType.native &&

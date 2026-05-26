@@ -1,10 +1,9 @@
 import React from 'react';
-import { Box } from '../../../../components/component-library';
 import {
-  Display,
-  FlexDirection,
-  JustifyContent,
-} from '../../../../helpers/constants/design-system';
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import ToggleButton from '../../../../components/ui/toggle-button';
 
 const ToggleRow = ({
@@ -26,9 +25,8 @@ const ToggleRow = ({
     <Box
       ref={settingsRef}
       className="settings-page__content-row"
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      justifyContent={JustifyContent.spaceBetween}
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Between}
       gap={4}
     >
       <div className="settings-page__content-item">

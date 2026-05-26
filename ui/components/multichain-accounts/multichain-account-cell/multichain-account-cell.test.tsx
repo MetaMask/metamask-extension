@@ -227,9 +227,12 @@ describe('MultichainAccountCell', () => {
 
       // Should show the connection status badge with green background for connected
       const connectedBadge = document.querySelector(
-        '.multichain-badge-status__badge--bg-success-default, .mm-box--background-color-success-default',
+        '.multichain-badge-status__badge',
       );
       expect(connectedBadge).toBeInTheDocument();
+      expect(connectedBadge).toHaveStyle(
+        'background-color: var(--color-success-default)',
+      );
 
       // Should show tooltip with "Active" text
       const tooltipElement = document.querySelector(
@@ -253,9 +256,12 @@ describe('MultichainAccountCell', () => {
 
       // Should show the connection status badge with alternative background for connected to another
       const connectedBadge = document.querySelector(
-        '.multichain-badge-status__badge--bg-icon-alternative, .mm-box--background-color-icon-alternative',
+        '.multichain-badge-status__badge',
       );
       expect(connectedBadge).toBeInTheDocument();
+      expect(connectedBadge).toHaveStyle(
+        'background-color: var(--color-icon-alternative)',
+      );
 
       // Should show tooltip with "Not connected" text (since current account is not the active one)
       const tooltipElement = document.querySelector(

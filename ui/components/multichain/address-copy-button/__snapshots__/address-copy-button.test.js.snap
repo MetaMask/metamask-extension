@@ -19,7 +19,7 @@ exports[`AccountListItem should match snapshot 1`] = `
           class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex flex-row"
           >
             0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc
           </div>

@@ -1,12 +1,11 @@
 import React from 'react';
 import classnames from 'clsx';
 import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  Display,
-} from '../../../helpers/constants/design-system';
-import { Box } from '../../component-library';
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
 
 type AppHeaderContainerProps = {
   isUnlocked: boolean;
@@ -20,17 +19,16 @@ export const AppHeaderContainer = ({
 }: React.PropsWithChildren<AppHeaderContainerProps>) => {
   const backgroundColor =
     !isUnlocked || popupStatus
-      ? BackgroundColor.backgroundDefault
-      : BackgroundColor.backgroundAlternative;
+      ? BoxBackgroundColor.BackgroundDefault
+      : BoxBackgroundColor.BackgroundAlternative;
 
   return (
     <Box
-      display={Display.Flex}
-      className={classnames('multichain-app-header', {
+      flexDirection={BoxFlexDirection.Row}
+      className={classnames('multichain-app-header w-full', {
         'multichain-app-header-shadow': popupStatus,
       })}
-      alignItems={AlignItems.center}
-      width={BlockSize.Full}
+      alignItems={BoxAlignItems.Center}
       backgroundColor={backgroundColor}
     >
       {children}

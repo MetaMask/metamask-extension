@@ -1,14 +1,16 @@
 import React, { useMemo } from 'react';
 import classNames from 'clsx';
 import {
-  AlignItems,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   BackgroundColor,
   BorderColor,
-  BorderRadius,
-  Display,
-  JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { BadgeWrapper, Box, BoxProps } from '../../component-library';
+import { BadgeWrapper } from '../../component-library';
 import { PreferredAvatar } from '../../app/preferred-avatar';
 import Tooltip from '../../ui/tooltip';
 
@@ -41,14 +43,18 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
         badge={
           showConnectedStatus && (
             <Box
-              className={classNames('multichain-badge-status__badge', {
-                'multichain-badge-status__badge-not-connected':
-                  isConnectedAndNotActive,
-              })}
-              backgroundColor={badgeBackgroundColor}
-              borderRadius={BorderRadius.full}
-              borderColor={badgeBorderColor}
+              className={classNames(
+                'multichain-badge-status__badge rounded-full',
+                {
+                  'multichain-badge-status__badge-not-connected':
+                    isConnectedAndNotActive,
+                },
+              )}
               borderWidth={2}
+              style={{
+                backgroundColor: `var(--color-${badgeBackgroundColor})`,
+                borderColor: `var(--color-${badgeBorderColor})`,
+              }}
             />
           )
         }
@@ -66,27 +72,33 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
 
   return (
     <Box
-      className={classNames('multichain-badge-status pr-1', className)}
-      data-testid="multichain-badge-status"
-      as="button"
-      display={Display.Flex}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.center}
-      backgroundColor={BackgroundColor.transparent}
-      {...(props as BoxProps<'div'>)}
+      asChild
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      justifyContent={BoxJustifyContent.Center}
     >
-      {showConnectedStatus && !hideTooltip ? (
-        <Tooltip
-          style={TooltipStyle}
-          title={text}
-          data-testid="multichain-badge-status__tooltip"
-          position="bottom"
-        >
-          {tooltipContents}
-        </Tooltip>
-      ) : (
-        tooltipContents
-      )}
+      <button
+        type="button"
+        data-testid="multichain-badge-status"
+        className={classNames(
+          'multichain-badge-status pr-1 bg-transparent',
+          className,
+        )}
+        {...props}
+      >
+        {showConnectedStatus && !hideTooltip ? (
+          <Tooltip
+            style={TooltipStyle}
+            title={text}
+            data-testid="multichain-badge-status__tooltip"
+            position="bottom"
+          >
+            {tooltipContents}
+          </Tooltip>
+        ) : (
+          tooltipContents
+        )}
+      </button>
     </Box>
   );
 };
