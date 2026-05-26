@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import path from 'path';
 import { createWriteStream, promises as fs } from 'fs';
-import type { CDPSession, Page } from '@playwright/test';
+import type { CDPSession, Locator, Page } from '@playwright/test';
 import {
   allocatePort,
   KnowledgeStore,
@@ -23,6 +23,16 @@ const DEFAULT_PASSWORD = 'correct horse battery staple';
 const DEFAULT_ARTIFACT_DIR = 'test-artifacts/memory';
 const DEFAULT_ITERATIONS = 5;
 const DEFAULT_WAIT_AFTER_FLOW_MS = 500;
+const TEST_DAPP_URL = 'https://metamask.github.io/test-dapp/';
+const CONFIRMATION_WAIT_TIMEOUT_MS = 30000;
+const DEFAULT_SEND_RECIPIENT = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
+const DEFAULT_WALLET_SEND_AMOUNT = '0.000001';
+const WALLET_SIGNATURE_MESSAGE = 'MetaMask memory profiler wallet signature';
+const ETHEREUM_ADDRESS_REGEX = /0x[a-fA-F0-9]{40}/u;
+const WALLET_SIGNATURE_MESSAGE_HEX = `0x${Buffer.from(
+  WALLET_SIGNATURE_MESSAGE,
+  'utf8',
+).toString('hex')}`;
 
 export type MemoryFlow =
   | 'idle'
@@ -31,7 +41,11 @@ export type MemoryFlow =
   | 'send-open-back'
   | 'settings-route'
   | 'asset-route'
-  | 'route-cycle';
+  | 'route-cycle'
+  | 'dapp-initiated-transaction'
+  | 'dapp-initiated-signature'
+  | 'wallet-initiated-transaction'
+  | 'wallet-initiated-signature';
 
 export type HeapSnapshotMode = 'none' | 'baseline' | 'final' | 'both' | 'each';
 
@@ -145,6 +159,10 @@ const VALID_FLOWS: MemoryFlow[] = [
   'settings-route',
   'asset-route',
   'route-cycle',
+  'dapp-initiated-transaction',
+  'dapp-initiated-signature',
+  'wallet-initiated-transaction',
+  'wallet-initiated-signature',
 ];
 
 const VALID_SNAPSHOT_MODES: HeapSnapshotMode[] = [
@@ -632,6 +650,7 @@ export async function runMemoryProfiler(
 
     await runFlowIteration({
       page,
+      sessionManager,
       extensionId: launchResult.extensionId,
       flow: 'home',
       waitAfterFlowMs: options.waitAfterFlowMs,
@@ -655,6 +674,7 @@ export async function runMemoryProfiler(
     for (let iteration = 1; iteration <= options.iterations; iteration += 1) {
       await runFlowIteration({
         page,
+        sessionManager,
         extensionId: launchResult.extensionId,
         flow: options.flow,
         waitAfterFlowMs: options.waitAfterFlowMs,
@@ -737,7 +757,9 @@ Collect MetaMask extension memory telemetry through Chrome DevTools Protocol.
 
 Options:
   --iterations <n>              Number of flow iterations. Default: ${DEFAULT_ITERATIONS}
-  --flow <name>                 idle, home, send-route, send-open-back, settings-route, asset-route, route-cycle
+  --flow <name>                 idle, home, send-route, send-open-back, settings-route, asset-route, route-cycle,
+                                dapp-initiated-transaction, dapp-initiated-signature,
+                                wallet-initiated-transaction, wallet-initiated-signature
   --state <mode>                default, onboarding, custom. Default: default
   --preset <name>               Fixture preset when --state custom is used
   --extension-path <path>       Extension build path. Default: dist/chrome
@@ -763,6 +785,7 @@ Examples:
   yarn llm:memory -- --iterations 25 --flow route-cycle --snapshot final
   yarn llm:memory -- --iterations 50 --max-used-heap-growth 25MiB
   yarn llm:memory -- --iterations 50 --flow send-open-back --sample final --probe cdp
+  yarn llm:memory -- --iterations 25 --flow dapp-initiated-transaction
 `;
 }
 
@@ -1007,11 +1030,13 @@ async function unlockIfNeeded(page: Page, password: string): Promise<boolean> {
 
 async function runFlowIteration({
   page,
+  sessionManager,
   extensionId,
   flow,
   waitAfterFlowMs,
 }: {
   page: Page;
+  sessionManager: MetaMaskSessionManager;
   extensionId: string;
   flow: MemoryFlow;
   waitAfterFlowMs: number;
@@ -1044,6 +1069,18 @@ async function runFlowIteration({
       await navigateExtensionRoute(page, extensionId, `${ASSET_ROUTE}/0x539`);
       await navigateExtensionRoute(page, extensionId, DEFAULT_ROUTE);
       break;
+    case 'dapp-initiated-transaction':
+      await runDappInitiatedTransactionFlow(page, sessionManager, extensionId);
+      break;
+    case 'dapp-initiated-signature':
+      await runDappInitiatedSignatureFlow(page, sessionManager, extensionId);
+      break;
+    case 'wallet-initiated-transaction':
+      await runWalletInitiatedTransactionFlow(page, extensionId);
+      break;
+    case 'wallet-initiated-signature':
+      await runWalletInitiatedSignatureFlow(page, extensionId);
+      break;
     default:
       throw new Error('Unsupported memory flow');
   }
@@ -1064,6 +1101,261 @@ async function runSendOpenBackFlow(page: Page): Promise<void> {
   await backButton.waitFor({ state: 'visible', timeout: 30000 });
   await backButton.click();
   await sendButton.waitFor({ state: 'visible', timeout: 30000 });
+}
+
+async function runDappInitiatedTransactionFlow(
+  page: Page,
+  sessionManager: MetaMaskSessionManager,
+  extensionId: string,
+): Promise<void> {
+  const dappPage = await ensureTestDappConnected(
+    page,
+    sessionManager,
+    extensionId,
+  );
+
+  await dappPage.locator('#sendButton').waitFor({
+    state: 'visible',
+    timeout: CONFIRMATION_WAIT_TIMEOUT_MS,
+  });
+  await dappPage.locator('#sendButton').click();
+
+  const confirmationPage = await sessionManager.waitForNotificationPage(
+    CONFIRMATION_WAIT_TIMEOUT_MS,
+  );
+  await confirmCurrentApproval(confirmationPage);
+  await closeConfirmationPage(confirmationPage);
+  await navigateExtensionRoute(page, extensionId, DEFAULT_ROUTE);
+}
+
+async function runDappInitiatedSignatureFlow(
+  page: Page,
+  sessionManager: MetaMaskSessionManager,
+  extensionId: string,
+): Promise<void> {
+  const dappPage = await ensureTestDappConnected(
+    page,
+    sessionManager,
+    extensionId,
+  );
+
+  await dappPage.locator('#personalSign').waitFor({
+    state: 'visible',
+    timeout: CONFIRMATION_WAIT_TIMEOUT_MS,
+  });
+  await dappPage.locator('#personalSign').click();
+
+  const confirmationPage = await sessionManager.waitForNotificationPage(
+    CONFIRMATION_WAIT_TIMEOUT_MS,
+  );
+  await confirmCurrentApproval(confirmationPage);
+  await closeConfirmationPage(confirmationPage);
+  await navigateExtensionRoute(page, extensionId, DEFAULT_ROUTE);
+}
+
+async function runWalletInitiatedTransactionFlow(
+  page: Page,
+  extensionId: string,
+): Promise<void> {
+  await navigateExtensionRoute(page, extensionId, SEND_ROUTE);
+
+  await page
+    .locator('[data-testid="recipient-address-input"]')
+    .fill(DEFAULT_SEND_RECIPIENT);
+  await page
+    .locator('[data-testid="send-amount-input"]')
+    .fill(DEFAULT_WALLET_SEND_AMOUNT);
+  await page.locator('[data-testid="send-continue-button"]').click();
+
+  await confirmCurrentApproval(page);
+  await navigateExtensionRoute(page, extensionId, DEFAULT_ROUTE);
+}
+
+async function runWalletInitiatedSignatureFlow(
+  page: Page,
+  extensionId: string,
+): Promise<void> {
+  await navigateExtensionRoute(page, extensionId, DEFAULT_ROUTE);
+
+  const signature = await page.evaluate(async (messageHex) => {
+    type MemoryProfilerStateHooks = {
+      getCleanAppState?: () => Promise<{
+        metamask?: {
+          internalAccounts?: {
+            selectedAccount?: string;
+            accounts?: Record<string, { address?: string }>;
+          };
+        };
+      }>;
+      submitRequestToBackground?: (
+        method: string,
+        args?: unknown[],
+      ) => Promise<unknown>;
+    };
+
+    const hooks = (globalThis as typeof globalThis & {
+      stateHooks?: MemoryProfilerStateHooks;
+    }).stateHooks;
+
+    if (typeof hooks?.submitRequestToBackground !== 'function') {
+      return null;
+    }
+
+    const state = await hooks.getCleanAppState?.();
+    const selectedAccountId =
+      state?.metamask?.internalAccounts?.selectedAccount;
+    const selectedAccount =
+      selectedAccountId &&
+      state?.metamask?.internalAccounts?.accounts?.[selectedAccountId];
+    const from = selectedAccount?.address;
+
+    if (!from) {
+      throw new Error('Unable to resolve the selected wallet account');
+    }
+
+    return await hooks.submitRequestToBackground('messengerCall', [
+      'KeyringController:signPersonalMessage',
+      [
+        {
+          data: messageHex,
+          from,
+        },
+      ],
+    ]);
+  }, WALLET_SIGNATURE_MESSAGE_HEX);
+
+  if (!signature) {
+    throw new Error(
+      'wallet-initiated-signature requires a METAMASK_DEBUG build so the UI can call the internal background test hook',
+    );
+  }
+}
+
+async function ensureTestDappConnected(
+  page: Page,
+  sessionManager: MetaMaskSessionManager,
+  extensionId: string,
+): Promise<Page> {
+  const dappPage = await getOrCreateTestDappPage(page);
+  await dappPage.locator('#connectButton').waitFor({
+    state: 'visible',
+    timeout: CONFIRMATION_WAIT_TIMEOUT_MS,
+  });
+
+  if (await isTestDappConnected(dappPage)) {
+    return dappPage;
+  }
+
+  await dappPage.locator('#connectButton').click();
+
+  const confirmationPage = await sessionManager.waitForNotificationPage(
+    CONFIRMATION_WAIT_TIMEOUT_MS,
+  );
+  await confirmCurrentApproval(confirmationPage);
+  await closeConfirmationPage(confirmationPage);
+  await waitForTestDappConnection(dappPage);
+  await navigateExtensionRoute(page, extensionId, DEFAULT_ROUTE);
+
+  return dappPage;
+}
+
+async function getOrCreateTestDappPage(page: Page): Promise<Page> {
+  const existingPage = page
+    .context()
+    .pages()
+    .find((candidate) => candidate.url().startsWith(TEST_DAPP_URL));
+
+  if (existingPage && !existingPage.isClosed()) {
+    await existingPage.bringToFront();
+    await existingPage.waitForLoadState('domcontentloaded');
+    return existingPage;
+  }
+
+  const dappPage = await page.context().newPage();
+  await dappPage.goto(TEST_DAPP_URL);
+  await dappPage.waitForLoadState('domcontentloaded');
+  return dappPage;
+}
+
+async function isTestDappConnected(dappPage: Page): Promise<boolean> {
+  const accountsText = await dappPage
+    .locator('#accounts')
+    .textContent({ timeout: 1000 })
+    .catch(() => '');
+
+  return ETHEREUM_ADDRESS_REGEX.test(accountsText ?? '');
+}
+
+async function waitForTestDappConnection(dappPage: Page): Promise<void> {
+  await dappPage.waitForFunction(
+    () =>
+      /0x[a-fA-F0-9]{40}/u.test(
+        document.querySelector('#accounts')?.textContent ?? '',
+      ),
+    undefined,
+    { timeout: CONFIRMATION_WAIT_TIMEOUT_MS },
+  );
+}
+
+async function confirmCurrentApproval(page: Page): Promise<void> {
+  await clickScrollToBottomIfPresent(page);
+
+  const confirmButton = await findVisibleLocator(page, [
+    '[data-testid="confirm-footer-button"]',
+    '[data-testid="confirm-btn"]',
+    '[data-testid="confirmation-submit-button"]',
+    '[data-testid="page-container-footer-next"]',
+    'button:has-text("Connect")',
+    'button:has-text("Confirm")',
+    'button:has-text("Sign")',
+  ]);
+
+  await confirmButton.click();
+  await confirmButton.waitFor({ state: 'hidden', timeout: 10000 }).catch(() => {
+    // Some confirmation surfaces remain mounted while the background request
+    // finishes. The click is the important part for this profiler flow.
+  });
+}
+
+async function closeConfirmationPage(page: Page): Promise<void> {
+  await page.waitForTimeout(500);
+  await page.close().catch(() => undefined);
+}
+
+async function clickScrollToBottomIfPresent(page: Page): Promise<void> {
+  const scrollButton = page
+    .locator(
+      '[data-testid="confirm-scroll-to-bottom"], .confirm-scroll-to-bottom__button',
+    )
+    .first();
+  const isVisible = await scrollButton
+    .isVisible({ timeout: 1000 })
+    .catch(() => false);
+
+  if (isVisible) {
+    await scrollButton.click();
+  }
+}
+
+async function findVisibleLocator(
+  page: Page,
+  selectors: string[],
+): Promise<Locator> {
+  for (const selector of selectors) {
+    const locator = page.locator(selector).first();
+    const isVisible = await locator
+      .isVisible({ timeout: 1000 })
+      .catch(() => false);
+
+    if (isVisible) {
+      await locator.waitFor({ state: 'visible', timeout: 10000 });
+      return locator;
+    }
+  }
+
+  throw new Error(
+    `No visible confirmation action found: ${selectors.join(', ')}`,
+  );
 }
 
 export async function navigateExtensionRoute(
