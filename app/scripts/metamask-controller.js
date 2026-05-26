@@ -215,7 +215,6 @@ import {
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multichain/networks';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
-import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
 import {
@@ -3896,15 +3895,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       setName: this.nameController.setName.bind(this.nameController),
 
-      // SnapKeyring
-      createSnapAccount: async (snapId, options, internalOptions) => {
-        // NOTE: We should probably start using `withKeyring` with `createIfMissing: true`
-        // in this case.
-        const keyring = await this.getSnapKeyring();
-
-        return await keyring.createAccount(snapId, options, internalOptions);
-      },
-
       // Multichain Assets Controller
       multichainAddAssets: (assetIds, accountId) =>
         this.multichainAssetsController.addAssets(assetIds, accountId),
@@ -5346,13 +5336,6 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  async _getMultichainWalletSnapClient(snapId) {
-    const keyring = await this.getSnapKeyring();
-    const messenger = this.controllerMessenger;
-
-    return new MultichainWalletSnapClient(snapId, keyring, messenger);
-  }
-
   /**
    * Imports accounts with balances to the keyring.
    */
@@ -5373,43 +5356,6 @@ export default class MetamaskController extends EventEmitter {
         await this.accountTreeController.syncWithUserStorageAtLeastOnce();
         await this.discoverAndCreateAccounts(metadata.id);
       }
-    }
-  }
-
-  /**
-   * Adds Snap account to the keyring.
-   *
-   * @param {string} keyringId - The ID of the keyring to add the account to.
-   * @param {object} client - The Snap client instance.
-   * @param {object} options - The options to pass to the createAccount method.
-   */
-  async _addSnapAccount(keyringId, client, options = {}) {
-    let entropySource = keyringId;
-    try {
-      if (!entropySource) {
-        // Get the entropy source from the first HD keyring
-        const id = await this.keyringController.withKeyring(
-          { type: KeyringTypes.hd },
-          async ({ metadata }) => {
-            return metadata.id;
-          },
-        );
-        entropySource = id;
-      }
-
-      return await client.createAccount(
-        { ...options, entropySource },
-        {
-          displayConfirmation: false,
-          displayAccountNameSuggestion: false,
-          setSelectedAccount: false,
-        },
-      );
-    } catch (e) {
-      // Do not block the onboarding flow if this fails
-      log.warn(`Failed to add Snap account. Error: ${e}`);
-      captureException(e);
-      return null;
     }
   }
 

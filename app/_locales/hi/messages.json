@@ -1172,15 +1172,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "आपको अपने हार्डवेयर वॉलेट पर 2 ट्रांसेक्शन कन्फर्म करनी होगी:"
   },
-  "bridgeCreateSolanaAccount": {
-    "message": "Solana अकाउंट बनाएं"
-  },
-  "bridgeCreateSolanaAccountDescription": {
-    "message": "Solana नेटवर्क पर स्वैप करने के लिए, आपको एक अकाउंट और प्राप्त करने वाली एड्रेस की आवश्यकता होगी।"
-  },
-  "bridgeCreateSolanaAccountTitle": {
-    "message": "सबसे पहले आपको Solana अकाउंट की आवश्यकता होगी।"
-  },
   "bridgeDetailsTitle": {
     "message": "ब्रिज विवरण",
     "description": "Title for the modal showing details about a bridge transaction."
@@ -1455,9 +1446,6 @@
   },
   "bridgeSendLoading": {
     "message": "सोर्स चेन से भेज रहे हैं"
-  },
-  "bridgeSolanaAccountCreated": {
-    "message": "Solana अकाउंट बनाया गया"
   },
   "bridgeStatusComplete": {
     "message": "पूरा हुआ",

@@ -1178,15 +1178,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "Вам нужно будет подтвердить 2 транзакции в Вашем аппаратном кошельке:"
   },
-  "bridgeCreateSolanaAccount": {
-    "message": "Создать счет Solana"
-  },
-  "bridgeCreateSolanaAccountDescription": {
-    "message": "Для выполнения свопа в сеть Solana понадобится счет и принимающий адрес."
-  },
-  "bridgeCreateSolanaAccountTitle": {
-    "message": "Сначала вам понадобится счет Solana."
-  },
   "bridgeDetailsTitle": {
     "message": "Сведения о мосте",
     "description": "Title for the modal showing details about a bridge transaction."
@@ -1461,9 +1452,6 @@
   },
   "bridgeSendLoading": {
     "message": "Отправка из исходного блокчейна"
-  },
-  "bridgeSolanaAccountCreated": {
-    "message": "Создан счет Solana"
   },
   "bridgeStatusComplete": {
     "message": "Завершено",

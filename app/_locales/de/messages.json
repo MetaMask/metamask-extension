@@ -1172,15 +1172,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "Sie werden 2 Transaktionen auf Ihrer Hardware-Wallet bestätigen müssen:"
   },
-  "bridgeCreateSolanaAccount": {
-    "message": "Solana-Konto erstellen"
-  },
-  "bridgeCreateSolanaAccountDescription": {
-    "message": "Um zum Solana-Netzwerk zu swappen, benötigen Sie ein Konto und eine Empfangsadresse."
-  },
-  "bridgeCreateSolanaAccountTitle": {
-    "message": "Zunächst benötigen Sie ein Solana-Konto."
-  },
   "bridgeDetailsTitle": {
     "message": "Brigde-Details",
     "description": "Title for the modal showing details about a bridge transaction."
@@ -1455,9 +1446,6 @@
   },
   "bridgeSendLoading": {
     "message": "Senden von der Quellkette"
-  },
-  "bridgeSolanaAccountCreated": {
-    "message": "Solana-Konto erstellt"
   },
   "bridgeStatusComplete": {
     "message": "Vollständig",

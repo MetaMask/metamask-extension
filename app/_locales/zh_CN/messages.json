@@ -1172,15 +1172,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "您需要在您的硬件钱包上确认 2 笔交易："
   },
-  "bridgeCreateSolanaAccount": {
-    "message": "创建 Solana 账户"
-  },
-  "bridgeCreateSolanaAccountDescription": {
-    "message": "如要将资产转移至 Solana 网络，您需拥有一个账户及接收地址。"
-  },
-  "bridgeCreateSolanaAccountTitle": {
-    "message": "您需要先创建一个 Solana 账户。"
-  },
   "bridgeDetailsTitle": {
     "message": "桥接详情",
     "description": "Title for the modal showing details about a bridge transaction."
@@ -1455,9 +1446,6 @@
   },
   "bridgeSendLoading": {
     "message": "正从源链发送"
-  },
-  "bridgeSolanaAccountCreated": {
-    "message": "Solana 账户已创建"
   },
   "bridgeStatusComplete": {
     "message": "完成",

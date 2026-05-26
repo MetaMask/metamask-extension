@@ -1178,15 +1178,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "Bạn sẽ cần xác nhận 2 giao dịch trên ví cứng của mình:"
   },
-  "bridgeCreateSolanaAccount": {
-    "message": "Tạo tài khoản Solana"
-  },
-  "bridgeCreateSolanaAccountDescription": {
-    "message": "Để hoán đổi sang mạng Solana, bạn cần có tài khoản và địa chỉ nhận."
-  },
-  "bridgeCreateSolanaAccountTitle": {
-    "message": "Bạn sẽ cần có tài khoản Solana trước."
-  },
   "bridgeDetailsTitle": {
     "message": "Chi tiết cầu nối",
     "description": "Title for the modal showing details about a bridge transaction."
@@ -1461,9 +1452,6 @@
   },
   "bridgeSendLoading": {
     "message": "Đang gửi từ chuỗi nguồn"
-  },
-  "bridgeSolanaAccountCreated": {
-    "message": "Đã tạo tài khoản Solana"
   },
   "bridgeStatusComplete": {
     "message": "Hoàn tất",

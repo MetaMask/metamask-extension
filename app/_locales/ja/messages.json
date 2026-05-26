@@ -1178,15 +1178,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "ハードウェアウォレットで2つのトランザクションを確定する必要があります:"
   },
-  "bridgeCreateSolanaAccount": {
-    "message": "Solanaアカウントを作成"
-  },
-  "bridgeCreateSolanaAccountDescription": {
-    "message": "Solanaネットワークにスワップするには、アカウントと受取アドレスが必要です。"
-  },
-  "bridgeCreateSolanaAccountTitle": {
-    "message": "はじめにSolanaアカウントが必要です。"
-  },
   "bridgeDetailsTitle": {
     "message": "ブリッジの詳細",
     "description": "Title for the modal showing details about a bridge transaction."
@@ -1461,9 +1452,6 @@
   },
   "bridgeSendLoading": {
     "message": "ブリッジ元のチェーンから送金中"
-  },
-  "bridgeSolanaAccountCreated": {
-    "message": "Solanaアカウントが作成されました"
   },
   "bridgeStatusComplete": {
     "message": "完了",

@@ -802,15 +802,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "Beidh ort 2 idirbheart a dheimhniú ar do sparán crua-earraí:"
   },
-  "bridgeCreateSolanaAccount": {
-    "message": "Cruthaigh cuntas Solana"
-  },
-  "bridgeCreateSolanaAccountDescription": {
-    "message": "Chun aistriú chuig líonra Solana, beidh cuntas agus seoladh glactha ag teastáil uait."
-  },
-  "bridgeCreateSolanaAccountTitle": {
-    "message": "Beidh cuntas Solana ag teastáil uait ar dtús."
-  },
   "bridgeDetailsTitle": {
     "message": "Sonraí an droichid",
     "description": "Title for the modal showing details about a bridge transaction."
@@ -854,9 +845,6 @@
   },
   "bridgeSelectTokenAndAmount": {
     "message": "Roghnaigh comhartha agus méid"
-  },
-  "bridgeSolanaAccountCreated": {
-    "message": "Cruthaíodh cuntas Solana"
   },
   "bridgeStatusComplete": {
     "message": "Críochnaithe",

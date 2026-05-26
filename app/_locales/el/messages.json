@@ -1178,15 +1178,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "Θα πρέπει να επιβεβαιώσετε 2 συναλλαγές στο πορτοφόλι υλικού σας:"
   },
-  "bridgeCreateSolanaAccount": {
-    "message": "Δημιουργία λογαριασμού στο Solana"
-  },
-  "bridgeCreateSolanaAccountDescription": {
-    "message": "Για να αλλάξετε στο δίκτυο Solana, χρειάζεστε έναν λογαριασμό και μια διεύθυνση λήψης."
-  },
-  "bridgeCreateSolanaAccountTitle": {
-    "message": "Θα πρέπει πρώτα να δημιουργήσετε έναν λογαριασμό στο Solana."
-  },
   "bridgeDetailsTitle": {
     "message": "Λεπτομέρειες διασύνδεσης",
     "description": "Title for the modal showing details about a bridge transaction."
@@ -1461,9 +1452,6 @@
   },
   "bridgeSendLoading": {
     "message": "Αποστολή από το δίκτυο προέλευσης"
-  },
-  "bridgeSolanaAccountCreated": {
-    "message": "Δημιουργήθηκε λογαριασμός στη Solana"
   },
   "bridgeStatusComplete": {
     "message": "Ολοκληρώθηκε",
