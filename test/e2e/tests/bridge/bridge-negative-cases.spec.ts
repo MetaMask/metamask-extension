@@ -164,7 +164,6 @@ describe('Bridge functionality', function (this: Suite) {
 
         await bridgePage.submitQuote();
         await bridgePage.approveModalIfPresent();
-        // No-op when the status page is skipped.
         await driver.clickElementSafe({ text: 'View activity' });
         await homePage.goToActivityList();
 
