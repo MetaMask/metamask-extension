@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import classnames from 'clsx';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { CaipChainId, Hex, isCaipChainId } from '@metamask/utils';
+import { Skeleton } from '@metamask/design-system-react';
 import {
   getMultichainNativeTokenBalance,
   selectBalanceBySelectedAccountGroup,
@@ -22,7 +23,6 @@ import {
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
-import { Skeleton } from '@metamask/design-system-react';
 import { isZeroAmount } from '../../../../helpers/utils/number-utils';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import {

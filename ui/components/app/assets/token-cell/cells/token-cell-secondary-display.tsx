@@ -1,5 +1,6 @@
 import React, { CSSProperties } from 'react';
 import { useSelector } from 'react-redux';
+import { Skeleton } from '@metamask/design-system-react';
 import {
   BackgroundColor,
   FontWeight,
@@ -22,7 +23,6 @@ import { TokenFiatDisplayInfo } from '../../types';
 import { useIsOriginalNativeTokenSymbol } from '../../../../../hooks/useIsOriginalNativeTokenSymbol';
 import { getProviderConfig } from '../../../../../../shared/lib/selectors/networks';
 import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
-import { Skeleton } from '@metamask/design-system-react';
 import { isZeroAmount } from '../../../../../helpers/utils/number-utils';
 
 type TokenCellSecondaryDisplayProps = {

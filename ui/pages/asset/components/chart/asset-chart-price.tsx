@@ -1,4 +1,5 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
+import { Skeleton } from '@metamask/design-system-react';
 import {
   BorderRadius,
   Display,
@@ -10,7 +11,6 @@ import {
 import { Box, Text } from '../../../../components/component-library';
 import { loadingOpacity, getDynamicShortDate } from '../../util';
 import { useFormatters } from '../../../../hooks/useFormatters';
-import { Skeleton } from '@metamask/design-system-react';
 import { TokenCellPercentChange } from '../../../../components/app/assets/token-cell/cells';
 import { TokenFiatDisplayInfo } from '../../../../components/app/assets/types';
 
