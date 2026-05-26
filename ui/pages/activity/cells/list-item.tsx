@@ -7,7 +7,7 @@ export function ListItem({
   data,
   earliestNonceByChain = {},
   onClick,
-}: ActivityCellProps) {
+}: Readonly<ActivityCellProps>) {
   const transactionGroup =
     data.raw?.type === 'localTransaction' ? data.raw.data : undefined;
 

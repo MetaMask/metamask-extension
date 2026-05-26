@@ -161,8 +161,6 @@ export function mapLocalTransaction(
     primaryTransaction.hash ?? initialTransaction.hash ?? primaryTransaction.id;
   const from = initialTransaction.txParams.from ?? '';
   const to = initialTransaction.txParams.to ?? '';
-  const metaId = primaryTransaction.id;
-
   switch (initialTransaction.type) {
     case TransactionType.simpleSend: {
       return {
@@ -171,7 +169,6 @@ export function mapLocalTransaction(
         status,
         timestamp,
         raw: { type: 'localTransaction', data: transactionGroup },
-        metaId,
         data: {
           hash,
           from,
@@ -197,7 +194,6 @@ export function mapLocalTransaction(
         status,
         timestamp,
         raw: { type: 'localTransaction', data: transactionGroup },
-        metaId,
         data: {
           hash,
           from,
@@ -219,7 +215,6 @@ export function mapLocalTransaction(
         status,
         timestamp,
         raw: { type: 'localTransaction', data: transactionGroup },
-        metaId,
         data: {
           hash,
           from,
@@ -253,7 +248,6 @@ export function mapLocalTransaction(
           status,
           timestamp,
           raw: { type: 'localTransaction', data: transactionGroup },
-          metaId,
           data: {
             hash,
             sourceToken,
@@ -267,7 +261,6 @@ export function mapLocalTransaction(
         status,
         timestamp,
         raw: { type: 'localTransaction', data: transactionGroup },
-        metaId,
         data: {
           hash,
           sourceToken,
@@ -306,7 +299,6 @@ export function mapLocalTransaction(
         status,
         timestamp,
         raw: { type: 'localTransaction', data: transactionGroup },
-        metaId,
         data: {
           hash,
           token: getContractToken({
@@ -324,7 +316,6 @@ export function mapLocalTransaction(
         status,
         timestamp,
         raw: { type: 'localTransaction', data: transactionGroup },
-        metaId,
         data: {
           hash,
           token: getContractToken({
@@ -343,7 +334,6 @@ export function mapLocalTransaction(
         status,
         timestamp,
         raw: { type: 'localTransaction', data: transactionGroup },
-        metaId,
         data: {
           hash,
           token: getContractToken({
@@ -361,7 +351,6 @@ export function mapLocalTransaction(
         status,
         timestamp,
         raw: { type: 'localTransaction', data: transactionGroup },
-        metaId,
         data: {
           hash,
         },
@@ -390,7 +379,6 @@ export function mapLocalTransaction(
         status,
         timestamp,
         raw: { type: 'localTransaction', data: transactionGroup },
-        metaId,
         data: {
           hash,
           from,

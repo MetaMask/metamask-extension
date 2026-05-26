@@ -70,8 +70,6 @@ type ActivityItem<Type extends ActivityType, Data> = {
     | { type: 'apiEvmTransaction'; data: V1TransactionByHashResponse }
     | { type: 'keyringTransaction'; data: Transaction }
     | { type: 'localTransaction'; data: TransactionGroup };
-  /** TransactionController meta id used for cancel / speed up buttons */
-  metaId?: string;
   data: Data & {
     hash?: string;
   };

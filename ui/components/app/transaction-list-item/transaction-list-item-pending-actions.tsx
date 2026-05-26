@@ -1,22 +1,18 @@
-import React, { useCallback, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import {
-  TransactionStatus,
-  TransactionType,
-} from '@metamask/transaction-controller';
-import { Button, ButtonSize } from '@metamask/design-system-react';
+import React, { useState } from 'react';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { TransactionGroup } from '../../../../shared/lib/multichain/types';
 import { EditGasModes } from '../../../../shared/constants/gas';
-import CancelButton from '../cancel-button';
-import {
-  TransactionModalContextProvider,
-  useTransactionModalContext,
-} from '../../../contexts/transaction-modal';
-import { abortTransactionSigning } from '../../../store/actions';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+import { TransactionModalContextProvider } from '../../../contexts/transaction-modal';
+import { isIntentBridgeActivity } from '../../../helpers/transactions/pending-transaction-actions';
+import { useBridgeTxHistoryData } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import { isTransactionEarliestNonce } from '../../../hooks/useEarliestNonceByChain';
-import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
+import { usePendingTransactionActions } from '../../../hooks/usePendingTransactionActions';
 import { CancelSpeedup } from '../../../pages/confirmations/cancel-speedup/cancel-speedup';
+import { PendingTransactionActionButtons } from '../pending-transaction-action-buttons/pending-transaction-action-buttons';
+
+type TransactionMetaWithSmartTransaction = TransactionMeta & {
+  isSmartTransaction?: boolean;
+};
 
 type TransactionListItemPendingActionsProps = {
   transactionGroup: TransactionGroup;
@@ -33,99 +29,40 @@ const TransactionListItemPendingActionButtons = ({
   earliestNonceByChain,
   setEditGasMode,
 }: TransactionListItemPendingActionButtonsProps) => {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-  const { openModal } = useTransactionModalContext();
-  const { hasCancelled, nonce, primaryTransaction, initialTransaction } =
-    transactionGroup;
-  const { id, status, selectedGasFeeToken } = primaryTransaction;
-  const isPending = [
-    TransactionStatus.submitted,
-    TransactionStatus.approved,
-    TransactionStatus.signed,
-  ].includes(status);
-  const isUnapproved = status === TransactionStatus.unapproved;
-  const isSubmitting = status === TransactionStatus.signed;
-  const isSigning = status === TransactionStatus.approved;
-  const hasGasFeeTokenSelected = Boolean(selectedGasFeeToken);
-  const isBridgeTx = initialTransaction.type === TransactionType.bridge;
+  const { nonce, primaryTransaction, initialTransaction } = transactionGroup;
   const isEarliestNonce = isTransactionEarliestNonce(
     nonce,
     initialTransaction.chainId,
     earliestNonceByChain,
   );
-  const shouldShowSpeedUp = useShouldShowSpeedUp(
+  const { bridgeHistoryItem } = useBridgeTxHistoryData({ transactionGroup });
+  const { showCancel, onCancel, speedUp } = usePendingTransactionActions({
     transactionGroup,
     isEarliestNonce,
-  );
+    setEditGasMode,
+    hasIntentBridgeActivity: isIntentBridgeActivity(bridgeHistoryItem),
+  });
 
-  const openCancelSpeedupModal = useCallback(
-    (mode: EditGasModes) => {
-      setEditGasMode(mode);
-      openModal('cancelSpeedUpTransaction');
-    },
-    [openModal, setEditGasMode],
-  );
+  if (
+    initialTransaction.isSmartTransaction ||
+    (primaryTransaction as TransactionMetaWithSmartTransaction)
+      .isSmartTransaction
+  ) {
+    return null;
+  }
 
-  const retryTransaction = useCallback(
-    (event: React.MouseEvent) => {
-      event.stopPropagation();
-      openCancelSpeedupModal(EditGasModes.speedUp);
-    },
-    [openCancelSpeedupModal],
-  );
-
-  const cancelTransaction = useCallback(
-    (event: React.MouseEvent) => {
-      event.stopPropagation();
-      if (status === TransactionStatus.approved) {
-        dispatch(abortTransactionSigning(id));
-        return;
-      }
-
-      openCancelSpeedupModal(EditGasModes.cancel);
-    },
-    [dispatch, id, openCancelSpeedupModal, status],
-  );
-
-  const showSpeedUpButton =
-    shouldShowSpeedUp &&
-    isPending &&
-    !isUnapproved &&
-    !isSigning &&
-    !isSubmitting &&
-    !hasGasFeeTokenSelected;
-  const showCancelButton =
-    !hasCancelled &&
-    isPending &&
-    !isUnapproved &&
-    !isSubmitting &&
-    !isBridgeTx &&
-    !hasGasFeeTokenSelected;
-
-  if (!showCancelButton && !showSpeedUpButton) {
+  if (!showCancel && !speedUp.show) {
     return null;
   }
 
   return (
-    <div className="flex gap-2 px-4 pb-3">
-      {showCancelButton ? (
-        <CancelButton
-          size={ButtonSize.Sm}
-          transaction={primaryTransaction}
-          cancelTransaction={cancelTransaction}
-        />
-      ) : null}
-      {showSpeedUpButton ? (
-        <Button
-          className="whitespace-nowrap"
-          data-testid="speed-up-button"
-          size={ButtonSize.Sm}
-          onClick={hasCancelled ? cancelTransaction : retryTransaction}
-        >
-          {hasCancelled ? t('speedUpCancellation') : t('speedUp')}
-        </Button>
-      ) : null}
+    <div className="px-4 pb-3">
+      <PendingTransactionActionButtons
+        showCancel={showCancel}
+        onCancel={onCancel}
+        speedUp={speedUp}
+        primaryTransaction={primaryTransaction}
+      />
     </div>
   );
 };
