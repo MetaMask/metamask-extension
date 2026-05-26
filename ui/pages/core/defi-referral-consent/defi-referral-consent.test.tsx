@@ -5,9 +5,17 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import mockState from '../../../../test/data/mock-state.json';
 import { DEFI_REFERRAL_PARTNERS } from '../../../../shared/constants/defi-referrals';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { useABTest } from '../../../hooks/useABTest';
+import {
+  DefiReferralUIABTestVariant,
+  DEFI_REFERRAL_CONSENT_AB_TEST_VARIANTS,
+} from '../../../../shared/lib/ab-testing/configs/defi-referral-ui';
 import { DefiReferralConsent } from './defi-referral-consent';
 
+jest.mock('../../../hooks/useABTest');
+
 const mockStore = configureMockStore([]);
+const mockUseABTest = jest.mocked(useABTest);
 
 // Get all partners as test cases
 type PartnerTestCase = {
@@ -27,6 +35,11 @@ const partnerTestCases: PartnerTestCase[] = Object.values(
 describe('DefiReferralConsent', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseABTest.mockReturnValue({
+      variant: DEFI_REFERRAL_CONSENT_AB_TEST_VARIANTS.control,
+      variantName: DefiReferralUIABTestVariant.Control,
+      isActive: false,
+    });
   });
 
   // @ts-expect-error This function is missing from the Mocha type definitions
@@ -41,7 +54,7 @@ describe('DefiReferralConsent', () => {
         learnMoreUrl,
       };
 
-      it('renders the component with correct title and subtitle', () => {
+      it('renders control variant content with checkbox flow', () => {
         const store = mockStore(mockState);
 
         renderWithProvider(<DefiReferralConsent {...props} />, store);
@@ -51,8 +64,9 @@ describe('DefiReferralConsent', () => {
             messages.defiReferralTitle.message.replace('$1', partnerName),
           ),
         ).toBeInTheDocument();
+        expect(screen.getByRole('checkbox')).toBeChecked();
         expect(
-          screen.getByText('MetaMask referral code', { exact: false }),
+          screen.getByRole('button', { name: messages.confirm.message }),
         ).toBeInTheDocument();
       });
 
@@ -69,28 +83,20 @@ describe('DefiReferralConsent', () => {
         );
       });
 
-      it('renders the learn more link with correct URL', () => {
+      it('renders control variant link with correct URL', () => {
         const store = mockStore(mockState);
 
         renderWithProvider(<DefiReferralConsent {...props} />, store);
 
-        const learnMoreLink = screen.getByRole('link');
+        const learnMoreLink = screen.getByRole('link', {
+          name: `${messages.learnMoreUpperCase.message}.`,
+        });
         expect(learnMoreLink).toHaveAttribute('href', learnMoreUrl);
         expect(learnMoreLink).toHaveAttribute('target', '_blank');
         expect(learnMoreLink).toHaveAttribute('rel', 'noopener noreferrer');
       });
 
-      it('renders the checkbox with default checked state', () => {
-        const store = mockStore(mockState);
-
-        renderWithProvider(<DefiReferralConsent {...props} />, store);
-
-        const checkbox = screen.getByRole('checkbox');
-        expect(checkbox).toBeInTheDocument();
-        expect(checkbox).toBeChecked();
-      });
-
-      it('calls onActionComplete with approved=true when confirm is clicked and checkbox is checked', () => {
+      it('submits approved false in control when checkbox is unchecked', () => {
         const store = mockStore(mockState);
         const mockOnActionComplete = jest.fn();
 
@@ -102,8 +108,69 @@ describe('DefiReferralConsent', () => {
           store,
         );
 
+        fireEvent.click(screen.getByRole('checkbox'));
+        fireEvent.click(
+          screen.getByRole('button', { name: messages.confirm.message }),
+        );
+
+        expect(mockOnActionComplete).toHaveBeenCalledWith({
+          approved: false,
+          selectedAddress: '0x123',
+        });
+      });
+
+      it('renders treatment variant content with dual actions', () => {
+        mockUseABTest.mockReturnValue({
+          variant: DEFI_REFERRAL_CONSENT_AB_TEST_VARIANTS.treatment,
+          variantName: DefiReferralUIABTestVariant.Treatment,
+          isActive: true,
+        });
+        const store = mockStore(mockState);
+
+        renderWithProvider(<DefiReferralConsent {...props} />, store);
+
+        const titleKey = `${partnerId}ReferralTitle` as keyof typeof messages;
+        const confirmKey =
+          `${partnerId}ReferralConfirmText` as keyof typeof messages;
+        expect(
+          screen.getByText(messages[titleKey].message),
+        ).toBeInTheDocument();
+        expect(
+          screen.getByRole('link', {
+            name: messages.defiReferralTerms.message,
+          }),
+        ).toHaveAttribute('href', learnMoreUrl);
+        expect(
+          screen.getByRole('button', { name: messages[confirmKey].message }),
+        ).toBeInTheDocument();
+        expect(
+          screen.getByRole('button', {
+            name: messages.defiReferralNoThanks.message,
+          }),
+        ).toBeInTheDocument();
+      });
+
+      it('submits approved true in treatment when confirm is clicked', () => {
+        mockUseABTest.mockReturnValue({
+          variant: DEFI_REFERRAL_CONSENT_AB_TEST_VARIANTS.treatment,
+          variantName: DefiReferralUIABTestVariant.Treatment,
+          isActive: true,
+        });
+        const store = mockStore(mockState);
+        const mockOnActionComplete = jest.fn();
+
+        renderWithProvider(
+          <DefiReferralConsent
+            {...props}
+            onActionComplete={mockOnActionComplete}
+          />,
+          store,
+        );
+
+        const confirmKey =
+          `${partnerId}ReferralConfirmText` as keyof typeof messages;
         const confirmButton = screen.getByRole('button', {
-          name: messages.confirm.message,
+          name: messages[confirmKey].message,
         });
         fireEvent.click(confirmButton);
 
@@ -113,7 +180,12 @@ describe('DefiReferralConsent', () => {
         });
       });
 
-      it('calls onActionComplete with approved=false when confirm is clicked and checkbox is unchecked', () => {
+      it('submits approved false in treatment when no thanks is clicked', () => {
+        mockUseABTest.mockReturnValue({
+          variant: DEFI_REFERRAL_CONSENT_AB_TEST_VARIANTS.treatment,
+          variantName: DefiReferralUIABTestVariant.Treatment,
+          isActive: true,
+        });
         const store = mockStore(mockState);
         const mockOnActionComplete = jest.fn();
 
@@ -125,29 +197,15 @@ describe('DefiReferralConsent', () => {
           store,
         );
 
-        // Uncheck the checkbox first
-        const checkbox = screen.getByRole('checkbox');
-        fireEvent.click(checkbox);
-
-        const confirmButton = screen.getByRole('button', {
-          name: messages.confirm.message,
+        const cancelButton = screen.getByRole('button', {
+          name: messages.defiReferralNoThanks.message,
         });
-        fireEvent.click(confirmButton);
+        fireEvent.click(cancelButton);
 
         expect(mockOnActionComplete).toHaveBeenCalledWith({
           approved: false,
           selectedAddress: '0x123',
         });
-      });
-
-      it('renders the checkbox label', () => {
-        const store = mockStore(mockState);
-
-        renderWithProvider(<DefiReferralConsent {...props} />, store);
-
-        expect(
-          screen.getByText(messages.defiReferralCheckboxLabel.message),
-        ).toBeInTheDocument();
       });
     },
   );

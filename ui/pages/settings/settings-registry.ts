@@ -1,0 +1,403 @@
+/* eslint-disable import-x/no-useless-path-segments */
+/* eslint-disable import-x/extensions */
+import { type ComponentType } from 'react';
+import { IconName } from '@metamask/design-system-react';
+import { matchPath } from 'react-router-dom';
+import {
+  ACCOUNT_IDENTICON_ROUTE,
+  ABOUT_US_ROUTE,
+  ASSETS_ROUTE,
+  AUTO_LOCK_ROUTE,
+  BACKUPANDSYNC_ROUTE,
+  CURRENCY_ROUTE,
+  DEVELOPER_OPTIONS_ROUTE,
+  DEVELOPER_TOOLS_ROUTE,
+  MANAGE_WALLET_RECOVERY_ROUTE,
+  EXPERIMENTAL_ROUTE,
+  LANGUAGE_ROUTE,
+  NOTIFICATIONS_SETTINGS_ROUTE,
+  PREFERENCES_AND_DISPLAY_ROUTE,
+  SECURITY_AND_PASSWORD_ROUTE,
+  SECURITY_PASSWORD_CHANGE_V2_ROUTE,
+  SECURITY_REGISTER_PASSKEY_ROUTE,
+  SECURITY_TURN_OFF_PASSKEY_ROUTE,
+  SETTINGS_ROUTE,
+  SNAP_SETTINGS_ROUTE,
+  TRANSACTION_SHIELD_CLAIM_ROUTES,
+  TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE,
+  TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
+  TRANSACTIONS_ROUTE,
+  THEME_ROUTE,
+  PRIVACY_ROUTE,
+  THIRD_PARTY_APIS_ROUTE,
+} from '../../helpers/constants/routes';
+import { mmLazy } from '../../helpers/utils/mm-lazy';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
+import { CLAIMS_TAB_KEYS } from '../shield/transaction-shield/types';
+
+/**
+ * Route definition for a Settings page.
+ */
+export type SettingsRouteMeta = {
+  /** i18n key for the route label (used in header, breadcrumbs, TabBar) */
+  labelKey: string;
+  /** Parent path for back navigation; undefined = settings root */
+  parentPath?: string;
+  /** Lazy-loaded component to render for this route */
+  component?: ComponentType;
+  /** If true, this route appears as a tab in the TabBar */
+  isTab?: boolean;
+  /** Icon for TabBar (required if isTab is true) */
+  iconName?: IconName;
+};
+
+export const SETTINGS_ROOT_SECTIONS: readonly {
+  titleKeys: readonly string[];
+  paths: readonly string[];
+}[] = [
+  {
+    titleKeys: ['general'],
+    paths: [PREFERENCES_AND_DISPLAY_ROUTE, NOTIFICATIONS_SETTINGS_ROUTE],
+  },
+  {
+    titleKeys: ['securityAndPrivacy'],
+    paths: [SECURITY_AND_PASSWORD_ROUTE, PRIVACY_ROUTE, BACKUPANDSYNC_ROUTE],
+  },
+  {
+    titleKeys: ['transactionsAndAssets'],
+    paths: [TRANSACTION_SHIELD_ROUTE, ASSETS_ROUTE, TRANSACTIONS_ROUTE],
+  },
+  {
+    titleKeys: ['moreCapital'],
+    paths: [
+      EXPERIMENTAL_ROUTE,
+      DEVELOPER_OPTIONS_ROUTE,
+      DEVELOPER_TOOLS_ROUTE,
+      ABOUT_US_ROUTE,
+    ],
+  },
+] as const;
+
+const SHOW_DEBUG_SETTINGS = Boolean(
+  process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS || process.env.IN_TEST,
+);
+
+const TRANSACTION_SHIELD_CLAIMS_WILDCARD_ROUTE = `${TRANSACTION_SHIELD_CLAIM_ROUTES.BASE}/*`;
+const TRANSACTION_SHIELD_EDIT_DRAFT_ROUTE = `${TRANSACTION_SHIELD_CLAIM_ROUTES.EDIT_DRAFT.FULL}/:draftId`;
+const TRANSACTION_SHIELD_VIEW_PENDING_ROUTE = `${TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_PENDING.FULL}/:claimId`;
+const TRANSACTION_SHIELD_VIEW_HISTORY_ROUTE = `${TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_HISTORY.FULL}/:claimId`;
+
+/**
+ * Single source of truth for all Settings routes.
+ * Order of tabs in the TabBar is determined by declaration order of isTab entries.
+ */
+export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
+  // Settings root (no component - renders first tab content)
+  [SETTINGS_ROUTE]: {
+    labelKey: 'settings',
+  },
+
+  // --- Preferences and Display tab ---
+  [PREFERENCES_AND_DISPLAY_ROUTE]: {
+    labelKey: 'preferencesAndDisplay',
+    parentPath: SETTINGS_ROUTE,
+    component: mmLazy(() => import('./preferences-and-display-tab/index.ts')),
+    isTab: true,
+    iconName: IconName.Customize,
+  },
+  [THEME_ROUTE]: {
+    labelKey: 'theme',
+    parentPath: PREFERENCES_AND_DISPLAY_ROUTE,
+    component: mmLazy(
+      () => import('./preferences-and-display-tab/theme-sub-page.tsx'),
+    ),
+  },
+  [LANGUAGE_ROUTE]: {
+    labelKey: 'language',
+    parentPath: PREFERENCES_AND_DISPLAY_ROUTE,
+    component: mmLazy(
+      () => import('./preferences-and-display-tab/language-sub-page.tsx'),
+    ),
+  },
+  [ACCOUNT_IDENTICON_ROUTE]: {
+    labelKey: 'accountIdenticon',
+    parentPath: PREFERENCES_AND_DISPLAY_ROUTE,
+    component: mmLazy(
+      () =>
+        import('./preferences-and-display-tab/account-identicon-sub-page.tsx'),
+    ),
+  },
+  [CURRENCY_ROUTE]: {
+    labelKey: 'localCurrency',
+    parentPath: PREFERENCES_AND_DISPLAY_ROUTE,
+    component: mmLazy(() => import('./assets-tab/currency-sub-page.tsx')),
+  },
+
+  // --- Notifications tab ---
+  [NOTIFICATIONS_SETTINGS_ROUTE]: {
+    labelKey: 'notifications',
+    parentPath: SETTINGS_ROUTE,
+    component: mmLazy(() => import('./notifications-tab/index.ts')),
+    isTab: true,
+    iconName: IconName.Notification,
+  },
+
+  // --- Security and Password tab ---
+  [SECURITY_AND_PASSWORD_ROUTE]: {
+    labelKey: 'securityAndPassword',
+    parentPath: SETTINGS_ROUTE,
+    component: mmLazy(() => import('./security-and-password-tab/index.ts')),
+    isTab: true,
+    iconName: IconName.SecurityKey,
+  },
+  [AUTO_LOCK_ROUTE]: {
+    labelKey: 'autoLock',
+    parentPath: SECURITY_AND_PASSWORD_ROUTE,
+    component: mmLazy(
+      () => import('./security-and-password-tab/auto-lock-sub-page.tsx'),
+    ),
+  },
+  [MANAGE_WALLET_RECOVERY_ROUTE]: {
+    labelKey: 'manageWalletRecovery',
+    parentPath: SECURITY_AND_PASSWORD_ROUTE,
+    component: mmLazy(
+      () =>
+        import('./security-and-password-tab/manage-wallet-recovery-sub-page.tsx'),
+    ),
+  },
+  [SECURITY_PASSWORD_CHANGE_V2_ROUTE]: {
+    labelKey: 'password',
+    parentPath: SECURITY_AND_PASSWORD_ROUTE,
+    component: mmLazy(
+      () => import('./security-and-password-tab/password-sub-page.tsx'),
+    ),
+  },
+  [SECURITY_REGISTER_PASSKEY_ROUTE]: {
+    labelKey: 'setUpPasskey',
+    parentPath: SECURITY_AND_PASSWORD_ROUTE,
+    component: mmLazy(
+      () => import('./security-and-password-tab/passkey-register-sub-page.tsx'),
+    ),
+  },
+  [SECURITY_TURN_OFF_PASSKEY_ROUTE]: {
+    labelKey: 'turnOffPasskey',
+    parentPath: SECURITY_AND_PASSWORD_ROUTE,
+    component: mmLazy(
+      () => import('./security-and-password-tab/passkey-turn-off-sub-page.tsx'),
+    ),
+  },
+
+  // --- Privacy tab ---
+  [PRIVACY_ROUTE]: {
+    labelKey: 'privacy',
+    parentPath: SETTINGS_ROUTE,
+    component: mmLazy(() => import('./privacy-tab/index.ts')),
+    isTab: true,
+    iconName: IconName.Lock,
+  },
+  [THIRD_PARTY_APIS_ROUTE]: {
+    labelKey: 'thirdPartyApis',
+    parentPath: PRIVACY_ROUTE,
+    component: mmLazy(
+      () => import('./privacy-tab/third-party-apis-sub-page.tsx'),
+    ),
+  },
+
+  // --- Backup and sync tab ---
+  [BACKUPANDSYNC_ROUTE]: {
+    labelKey: 'backupAndSync',
+    parentPath: SETTINGS_ROUTE,
+    component: mmLazy(
+      () => import('./backup-and-sync-tab/backup-and-sync-tab.tsx'),
+    ),
+    isTab: true,
+    iconName: IconName.SecurityTime,
+  },
+
+  // --- Transaction Shield tab ---
+  [TRANSACTION_SHIELD_ROUTE]: {
+    labelKey: 'shieldTx',
+    parentPath: SETTINGS_ROUTE,
+    // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
+    component: mmLazy(() => import('../shield/transaction-shield/index.ts')),
+    isTab: true,
+    iconName: IconName.ShieldLock,
+  },
+  [TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE]: {
+    labelKey: 'shieldManagePlan',
+    parentPath: TRANSACTION_SHIELD_ROUTE,
+    component: mmLazy(
+      () => import('./transaction-shield-tab/manage-plan-sub-page.tsx'),
+    ),
+  },
+  [TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE]: {
+    labelKey: 'shieldPastPlansTitle',
+    parentPath: TRANSACTION_SHIELD_ROUTE,
+    component: mmLazy(
+      () => import('./transaction-shield-tab/manage-past-plan-sub-page.tsx'),
+    ),
+  },
+  [TRANSACTION_SHIELD_CLAIM_ROUTES.BASE]: {
+    labelKey: 'shieldClaimsListTitle',
+    parentPath: TRANSACTION_SHIELD_ROUTE,
+  },
+  [TRANSACTION_SHIELD_CLAIMS_WILDCARD_ROUTE]: {
+    labelKey: 'shieldClaimsListTitle',
+    parentPath: TRANSACTION_SHIELD_ROUTE,
+    component: mmLazy(
+      // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
+      () => import('../shield/transaction-shield/claims-area/index.ts'),
+    ),
+  },
+  [TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL]: {
+    labelKey: 'shieldClaim',
+    parentPath: TRANSACTION_SHIELD_CLAIM_ROUTES.BASE,
+  },
+  [TRANSACTION_SHIELD_EDIT_DRAFT_ROUTE]: {
+    labelKey: 'shieldClaimsListTitle',
+    parentPath: `${TRANSACTION_SHIELD_CLAIM_ROUTES.BASE}?tab=${CLAIMS_TAB_KEYS.PENDING}`,
+  },
+  [TRANSACTION_SHIELD_VIEW_PENDING_ROUTE]: {
+    labelKey: 'shieldClaimsListTitle',
+    parentPath: `${TRANSACTION_SHIELD_CLAIM_ROUTES.BASE}?tab=${CLAIMS_TAB_KEYS.PENDING}`,
+  },
+  [TRANSACTION_SHIELD_VIEW_HISTORY_ROUTE]: {
+    labelKey: 'shieldClaimsListTitle',
+    parentPath: `${TRANSACTION_SHIELD_CLAIM_ROUTES.BASE}?tab=${CLAIMS_TAB_KEYS.HISTORY}`,
+  },
+
+  // --- Assets tab ---
+  [ASSETS_ROUTE]: {
+    labelKey: 'assets',
+    parentPath: SETTINGS_ROUTE,
+    component: mmLazy(() => import('./assets-tab/index.ts')),
+    isTab: true,
+    iconName: IconName.Coin,
+  },
+
+  // --- Transactions tab ---
+  [TRANSACTIONS_ROUTE]: {
+    labelKey: 'transactions',
+    parentPath: SETTINGS_ROUTE,
+    component: mmLazy(() => import('./transactions-tab/index.ts')),
+    isTab: true,
+    iconName: IconName.SwapVertical,
+  },
+
+  // --- Experimental tab ---
+  [EXPERIMENTAL_ROUTE]: {
+    labelKey: 'experimental',
+    parentPath: SETTINGS_ROUTE,
+    component: mmLazy(() => import('./experimental-tab/experimental-tab.tsx')),
+    isTab: true,
+    iconName: IconName.Flask,
+  },
+
+  // --- Debug (internal) tab ---
+  ...(SHOW_DEBUG_SETTINGS
+    ? {
+        [DEVELOPER_OPTIONS_ROUTE]: {
+          labelKey: 'debug',
+          parentPath: SETTINGS_ROUTE,
+          component: mmLazy(() => import('./debug-tab/index.ts')),
+          isTab: true,
+          iconName: IconName.Sparkle,
+        },
+      }
+    : {}),
+
+  // --- Developer Tools tab ---
+  [DEVELOPER_TOOLS_ROUTE]: {
+    labelKey: 'developerTools',
+    parentPath: SETTINGS_ROUTE,
+    component: mmLazy(() => import('./developer-tools-tab/index.ts')),
+    isTab: true,
+    iconName: IconName.Code,
+  },
+
+  // --- About tab ---
+  [ABOUT_US_ROUTE]: {
+    labelKey: 'aboutMetaMask',
+    parentPath: SETTINGS_ROUTE,
+    component: mmLazy(() => import('./about-tab/index.ts')),
+    isTab: true,
+    iconName: IconName.Info,
+  },
+
+  // --- Snap settings (navigated via URL, not shown as a tab) ---
+  [SNAP_SETTINGS_ROUTE]: {
+    labelKey: 'snaps',
+    parentPath: SETTINGS_ROUTE,
+  },
+};
+
+/**
+ * Returns route definition for the given pathname, or null if not found.
+ *
+ * @param pathname - The route pathname to look up
+ */
+export function getSettingsRouteMeta(
+  pathname: string,
+): SettingsRouteMeta | null {
+  if (!pathname) {
+    return null;
+  }
+
+  const exactMeta = SETTINGS_ROUTES[pathname];
+  if (exactMeta) {
+    return exactMeta;
+  }
+
+  const matchingRoute = Object.keys(SETTINGS_ROUTES)
+    .filter((routePath) => routePath.includes('*') || routePath.includes(':'))
+    .sort((routeA, routeB) => routeB.length - routeA.length)
+    .find((routePath) =>
+      Boolean(
+        matchPath(
+          {
+            path: routePath,
+            end: true,
+          },
+          pathname,
+        ),
+      ),
+    );
+
+  return matchingRoute ? SETTINGS_ROUTES[matchingRoute] : null;
+}
+
+type TabRouteMeta = SettingsRouteMeta &
+  Required<Pick<SettingsRouteMeta, 'iconName' | 'component'>>;
+
+type RenderableRouteMeta = SettingsRouteMeta &
+  Required<Pick<SettingsRouteMeta, 'component'>>;
+
+/**
+ * Derived list of tabs for the TabBar, in order of declaration.
+ */
+export const SETTINGS_TABS = Object.entries(SETTINGS_ROUTES)
+  .filter((entry): entry is [string, TabRouteMeta] => {
+    const [, meta] = entry;
+    return Boolean(meta.isTab && meta.iconName && meta.component);
+  })
+  .map(([path, meta]) => ({
+    id: path.split('/').pop() || path,
+    path,
+    labelKey: meta.labelKey,
+    iconName: meta.iconName,
+    component: meta.component,
+  }));
+
+/**
+ * All routes that have a component (for generating Route elements).
+ */
+export const SETTINGS_RENDERABLE_ROUTES = Object.entries(SETTINGS_ROUTES)
+  .filter((entry): entry is [string, RenderableRouteMeta] => {
+    const [, meta] = entry;
+    return Boolean(meta.component);
+  })
+  .map(([path, meta]) => ({
+    path,
+    component: meta.component,
+  }));

@@ -78,9 +78,6 @@
   "autoLockTimeLimit": {
     "message": "Automaattisen uloskirjautumisen ajastin (minuuttia)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "Määritä, montako minuuttia MetaMask on ollut joutilaana ennen kuin sinut kirjataan automaattisesti ulos"
-  },
   "average": {
     "message": "Keskiverto"
   },
@@ -181,12 +178,6 @@
   "createPassword": {
     "message": "Luo salasana"
   },
-  "currencyConversion": {
-    "message": "Valuuttamuunnin"
-  },
-  "currentLanguage": {
-    "message": "Nykyinen kieli"
-  },
   "custom": {
     "message": "Lisäasetukset"
   },
@@ -207,9 +198,6 @@
   },
   "done": {
     "message": "Valmis"
-  },
-  "downloadGoogleChrome": {
-    "message": "Lataa Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Lataa tilalokit"
@@ -268,9 +256,6 @@
   },
   "hardwareWallets": {
     "message": "Yhdistä kiinteän laitteiston lompakko"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Valitse laitteistokukkaro, jota haluaisit käyttää MetaMaskilla"
   },
   "here": {
     "message": "tässä",
@@ -339,12 +324,6 @@
   "likeToImportTokens": {
     "message": "Haluaisitko lisätä nämä poletit?"
   },
-  "lineaGoerli": {
-    "message": "Linea-testiverkko"
-  },
-  "links": {
-    "message": "Linkit"
-  },
   "loading": {
     "message": "Ladataan..."
   },
@@ -384,9 +363,6 @@
   },
   "nevermind": {
     "message": "Antaa olla"
-  },
-  "newAccount": {
-    "message": "Uusi tili"
   },
   "newAccountNumberName": {
     "message": "Tili $1",
@@ -490,9 +466,6 @@
   "restore": {
     "message": "Palauta"
   },
-  "revealSeedWords": {
-    "message": "Paljasta salaussanat"
-  },
   "revealSeedWordsWarning": {
     "message": "Näitä sanoja voidaan käyttää kaikkien tiliesi ryöstämiseen.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -539,9 +512,6 @@
   "showFiatConversionInTestnets": {
     "message": "Näytä vaihtokurssi koeverkoissa"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Valitse tämä näyttääksesi fiat-vaihtokurssin koeverkoissa"
-  },
   "showHexData": {
     "message": "Näytä Hex-tiedot"
   },
@@ -571,9 +541,6 @@
   },
   "stateLogs": {
     "message": "Tilaloki"
-  },
-  "stateLogsDescription": {
-    "message": "Tilalokeista löydät julkiset tiliosoitteesi sekä lähetetyt maksusiirtosi."
   },
   "submitted": {
     "message": "Lähetetty"

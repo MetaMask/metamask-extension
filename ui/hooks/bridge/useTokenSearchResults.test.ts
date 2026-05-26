@@ -6,9 +6,11 @@ import {
   MOCK_EVM_ACCOUNT,
   MOCK_EXTERNAL_SOLANA_ADDRESS,
 } from '../../../test/data/bridge/mock-bridge-store';
+import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
 import { useTokenSearchResults } from './useTokenSearchResults';
 
 jest.mock('../../pages/bridge/utils/tokens', () => ({
+  ...jest.requireActual('../../pages/bridge/utils/tokens'),
   fetchTokensBySearchQuery: jest.fn().mockResolvedValue({
     tokens: [],
     endCursor: undefined,
@@ -39,12 +41,15 @@ describe('useTokenSearchResults', () => {
       },
     });
 
+    const accountGroupId = getAccountGroupsByAddress(mockStoreState, [
+      MOCK_EXTERNAL_SOLANA_ADDRESS,
+    ])?.[0]?.id;
     const { result } = renderHookWithProvider(
       () =>
         useTokenSearchResults({
           searchQuery: '',
           assetsToInclude: [],
-          accountAddress: MOCK_EXTERNAL_SOLANA_ADDRESS,
+          accountGroupId,
           chainIds: new Set([formatChainIdToCaip(CHAIN_IDS.MAINNET)]),
         }),
       mockStoreState,
@@ -73,12 +78,16 @@ describe('useTokenSearchResults', () => {
       },
     });
 
+    const accountGroupId = getAccountGroupsByAddress(mockStoreState, [
+      MOCK_EVM_ACCOUNT.address,
+    ])[0].id;
+
     const { result } = renderHookWithProvider(
       () =>
         useTokenSearchResults({
           searchQuery: '',
           assetsToInclude: [],
-          accountAddress: MOCK_EVM_ACCOUNT.address,
+          accountGroupId,
           chainIds: new Set([formatChainIdToCaip(CHAIN_IDS.MAINNET)]),
         }),
       mockStoreState,

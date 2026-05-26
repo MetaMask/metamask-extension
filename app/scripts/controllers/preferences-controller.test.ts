@@ -73,7 +73,6 @@ const setupController = ({
     messenger: accountsControllerMessenger,
     events: [
       'KeyringController:stateChange',
-      'SnapController:stateChange',
       'SnapKeyring:accountAssetListUpdated',
       'SnapKeyring:accountBalancesUpdated',
       'SnapKeyring:accountTransactionsUpdated',
@@ -523,6 +522,12 @@ describe('preferences controller', () => {
       expect(controller.getPreferences().showExtensionInFullSizeView).toBe(
         false,
       );
+    });
+
+    it('stores perpsSelectedCandlePeriod as a string preference', () => {
+      const { controller } = setupController({});
+      controller.setPreference('perpsSelectedCandlePeriod', '1h');
+      expect(controller.getPreferences().perpsSelectedCandlePeriod).toBe('1h');
     });
 
     it('enables side panel default when disabling full screen view', () => {

@@ -30,7 +30,8 @@ const meta: Meta<typeof SnapUICheckbox> = {
   parameters: {
     docs: {
       description: {
-        component: 'A customizable checkbox component that supports both checkbox and toggle variants.',
+        component:
+          'A customizable checkbox component that supports both checkbox and toggle variants.',
       },
     },
   },

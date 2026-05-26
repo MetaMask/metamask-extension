@@ -2,6 +2,7 @@ import * as BackgroundConnectionModule from '../background-connection';
 import {
   updateTransactionPaymentToken,
   setIsMaxAmount,
+  setPostQuote,
 } from './transaction-pay-controller';
 
 jest.mock('../background-connection');
@@ -78,6 +79,27 @@ describe('transaction-pay-controller actions', () => {
       const result = await setIsMaxAmount('tx-123', true);
 
       expect(result).toBeUndefined();
+    });
+  });
+
+  describe('setPostQuote', () => {
+    it('forwards transactionId and options to submitRequestToBackground', async () => {
+      await setPostQuote('tx-99', { isHyperliquidSource: true });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'setTransactionPayPostQuote',
+        ['tx-99', { isHyperliquidSource: true }],
+      );
+    });
+
+    it('defaults options to an empty object when omitted', async () => {
+      await setPostQuote('tx-100');
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'setTransactionPayPostQuote',
+        ['tx-100', {}],
+      );
     });
   });
 });

@@ -21,6 +21,7 @@ import { ShieldSubscriptionProvider } from '../contexts/shield/shield-subscripti
 import RiveWasmProvider from '../contexts/rive-wasm';
 import { queryClient } from '../contexts/query-client';
 import { HardwareWalletErrorProvider } from '../contexts/hardware-wallets';
+import { UIMessengerProvider } from '../contexts/ui-messenger';
 import ErrorPageBase from './error-page/error-page.component';
 
 import Routes, { routeConfig } from './routes';
@@ -95,7 +96,7 @@ class Index extends PureComponent {
 
   render() {
     const { error } = this.state;
-    const { store } = this.props;
+    const { store, uiMessenger } = this.props;
 
     if (error) {
       return (
@@ -109,7 +110,9 @@ class Index extends PureComponent {
 
     return (
       <Provider store={store}>
-        <RouterProvider router={router} />
+        <UIMessengerProvider value={uiMessenger}>
+          <RouterProvider router={router} />
+        </UIMessengerProvider>
       </Provider>
     );
   }
@@ -117,6 +120,7 @@ class Index extends PureComponent {
 
 Index.propTypes = {
   store: PropTypes.object,
+  uiMessenger: PropTypes.object,
 };
 
 export default Index;

@@ -8,7 +8,6 @@ import {
   selectBridgeQuotes,
 } from '@metamask/bridge-controller';
 import { type CaipAccountId } from '@metamask/utils';
-import log from 'loglevel';
 import { debounce } from 'lodash';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
@@ -21,15 +20,9 @@ import { usePrevious } from '../usePrevious';
 import { useMultichainSelector } from '../useMultichainSelector';
 import {
   getRewardsHasAccountOptedIn,
-  estimateRewardsPoints,
   rewardsIsOptInSupported,
   getRewardsCandidateSubscriptionId,
 } from '../../store/actions';
-import {
-  EstimateAssetDto,
-  EstimatePointsDto,
-  EstimatedPointsDto,
-} from '../../../shared/types/rewards';
 import { formatAccountToCaipAccountId } from '../../helpers/utils/rewards-utils';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import {
@@ -37,6 +30,9 @@ import {
   selectRewardsEnabled,
 } from '../../ducks/rewards/selectors';
 import { usePrimaryWalletGroupAccounts } from '../rewards/usePrimaryWalletGroupAccounts';
+
+// Set to true when a rewards season is active and points estimation should run.
+const REWARDS_SEASON_ACTIVE = false;
 
 /**
  *
@@ -137,84 +133,17 @@ export const useRewardsWithQuote = ({
     // eslint-disable-next-line react-compiler/react-compiler
     debounce(
       async (
-        estimationQuoteArg:
+        _estimationQuoteArg:
           | NonNullable<
               ReturnType<typeof selectBridgeQuotes>['activeQuote']
             >['quote']
           | null,
-        caipAccountArg: CaipAccountId | null,
+        _caipAccountArg: CaipAccountId | null,
       ) => {
-        // Skip if no active quote or missing required data
-        if (!estimationQuoteArg || !caipAccountArg) {
-          setEstimatedPoints(null);
-          setShouldShowRewardsRow(false);
-          setIsLoading(false);
-          setHasError(false);
-          return;
-        }
-
-        try {
-          // Convert source amount to atomic unit
-          const atomicSourceAmount = estimationQuoteArg.srcTokenAmount;
-
-          // Get destination amount from quote
-          const atomicDestAmount = estimationQuoteArg.destTokenAmount;
-
-          // Prepare source asset
-          const srcAsset: EstimateAssetDto = {
-            id: estimationQuoteArg.srcAsset.assetId,
-            amount: atomicSourceAmount,
-          };
-
-          // Prepare destination asset
-          const destAsset: EstimateAssetDto = {
-            id: estimationQuoteArg.destAsset.assetId,
-            amount: atomicDestAmount,
-          };
-
-          // Prepare fee asset (using MetaMask fee from quote data)
-          const feeAsset: EstimateAssetDto = {
-            id: estimationQuoteArg.feeData.metabridge.asset.assetId,
-            amount: estimationQuoteArg.feeData.metabridge.amount || '0',
-          };
-
-          const usdPricePerToken = getUsdPricePerToken(
-            estimationQuoteArg.priceData?.totalFeeAmountUsd || '0',
-            feeAsset.amount,
-            estimationQuoteArg.feeData.metabridge.asset.decimals,
-          );
-
-          const feeAssetWithUsdPrice: EstimateAssetDto = {
-            ...feeAsset,
-            ...(usdPricePerToken ? { usdPrice: usdPricePerToken } : {}),
-          };
-
-          // Create estimate request
-          const estimateRequest: EstimatePointsDto = {
-            activityType: 'SWAP',
-            account: caipAccountArg,
-            activityContext: {
-              swapContext: {
-                srcAsset,
-                destAsset,
-                feeAsset: feeAssetWithUsdPrice,
-              },
-            },
-          };
-
-          // Call rewards controller to estimate points
-          const result = (await dispatch(
-            estimateRewardsPoints(estimateRequest),
-          )) as unknown as EstimatedPointsDto;
-
-          setEstimatedPoints(result.pointsEstimate);
-        } catch (error) {
-          log.error('[useRewardsWithQuote] Error estimating points:', error);
-          setEstimatedPoints(null);
-          setHasError(true);
-        } finally {
-          setIsLoading(false);
-        }
+        setEstimatedPoints(null);
+        setShouldShowRewardsRow(false);
+        setIsLoading(false);
+        setHasError(false);
       },
       750,
     ),
@@ -229,8 +158,14 @@ export const useRewardsWithQuote = ({
           >['quote']
         | null,
     ) => {
-      // Skip if no active quote or missing required data
-      if (!estimationQuoteArg || !fromAddress || !chainId || !rewardsEnabled) {
+      // Skip if no active quote or missing required data, or if no season is active
+      if (
+        !REWARDS_SEASON_ACTIVE ||
+        !estimationQuoteArg ||
+        !fromAddress ||
+        !chainId ||
+        !rewardsEnabled
+      ) {
         setEstimatedPoints(null);
         setShouldShowRewardsRow(false);
         setAccountOptedIn(null);

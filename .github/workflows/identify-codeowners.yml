@@ -14,11 +14,11 @@ concurrency:
 
 jobs:
   identify-codeowners:
-    # Avoid running on forks since we need to write a PR comment
+    # Avoid running on cross-repo PRs since we need to write a PR comment
     # Avoid running on release branches and bot PRs
     if: >-
       ${{
-        !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
+        github.event.pull_request.head.repo.full_name == github.repository
         && !startsWith(github.head_ref, 'release/')
         && github.event.pull_request.user.login != 'metamaskbot'
         && github.event.pull_request.user.login != 'runway-github[bot]'
@@ -27,13 +27,23 @@ jobs:
     timeout-minutes: 30
     environment: pr-comment
     steps:
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+      - name: Checkout .github/ directory
+        uses: actions/checkout@v6
         with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
+          sparse-checkout: |
+            .github
+            .nvmrc
+          sparse-checkout-cone-mode: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install script dependencies
+        run: npm install --no-save @actions/core@^3.0.1 @actions/github@^9.1.1 micromatch@^4.0.8
 
       - name: Identify codeowners
         env:
           PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
-        run: yarn tsx ./.github/scripts/identify-codeowners.ts
+        run: node ./.github/scripts/identify-codeowners.mts

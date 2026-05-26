@@ -3,6 +3,7 @@ import {
   isErrorWithMessage,
   logErrorWithMessage,
   createErrorFromNetworkRequest,
+  getErrorBodyMessage,
 } from './error';
 
 jest.mock('loglevel');
@@ -31,6 +32,20 @@ describe('error module', () => {
     it('calls loglevel.error with string representation of parameter passed in when parameter is not an instance of Error', () => {
       logErrorWithMessage({ test: 'test' });
       expect(log.error).toHaveBeenCalledWith({ test: 'test' });
+    });
+  });
+
+  describe('getErrorBodyMessage', () => {
+    it('returns the message from an error body', () => {
+      expect(getErrorBodyMessage({ message: 'Bad request' })).toBe(
+        'Bad request',
+      );
+    });
+
+    it('returns undefined when the body has no message string', () => {
+      expect(getErrorBodyMessage({ message: 400 })).toBeUndefined();
+      expect(getErrorBodyMessage({ error: 'Bad request' })).toBeUndefined();
+      expect(getErrorBodyMessage(undefined)).toBeUndefined();
     });
   });
 
