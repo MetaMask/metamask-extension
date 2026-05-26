@@ -1,0 +1,1081 @@
+/* eslint-disable jsdoc/require-jsdoc, jsdoc/require-param -- shim file mirrors the Selenium Driver public API */
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import type { BrowserContext, Locator, Page } from '@playwright/test';
+
+/**
+ * PlaywrightDriver — drop-in replacement for `webdriver/driver.js`'s `Driver`
+ * class, backed by Playwright. The public method signatures and the `Key`
+ * constants mirror the Selenium driver so existing page objects and flows
+ * keep working without modification.
+ *
+ * The shim is intentionally incremental: methods that the easiest migrated
+ * specs need are fully implemented; less common methods throw a clear error
+ * pointing at the gap. As more specs migrate, gaps get filled in-place.
+ *
+ * See `docs/superpowers/specs/2026-05-26-selenium-to-playwright-e2e-migration-design.md`
+ * for the migration plan and §3.1 for shim design notes.
+ */
+
+const SELENIUM_KEY = {
+  BACK_SPACE: '\uE003',
+  ENTER: '\uE007',
+  SPACE: '\uE00D',
+  CONTROL: '\uE009',
+  COMMAND: '\uE03D',
+  TAB: '\uE004',
+  ESCAPE: '\uE00C',
+  ARROW_DOWN: '\uE015',
+  ARROW_UP: '\uE013',
+  ARROW_LEFT: '\uE012',
+  ARROW_RIGHT: '\uE014',
+} as const;
+
+const SELENIUM_TO_PW_KEY: Record<string, string> = {
+  [SELENIUM_KEY.BACK_SPACE]: 'Backspace',
+  [SELENIUM_KEY.ENTER]: 'Enter',
+  [SELENIUM_KEY.SPACE]: 'Space',
+  [SELENIUM_KEY.CONTROL]: 'Control',
+  [SELENIUM_KEY.COMMAND]: 'Meta',
+  [SELENIUM_KEY.TAB]: 'Tab',
+  [SELENIUM_KEY.ESCAPE]: 'Escape',
+  [SELENIUM_KEY.ARROW_DOWN]: 'ArrowDown',
+  [SELENIUM_KEY.ARROW_UP]: 'ArrowUp',
+  [SELENIUM_KEY.ARROW_LEFT]: 'ArrowLeft',
+  [SELENIUM_KEY.ARROW_RIGHT]: 'ArrowRight',
+};
+
+function translateKey(key: string): string {
+  if (key in SELENIUM_TO_PW_KEY) {
+    return SELENIUM_TO_PW_KEY[key];
+  }
+  return key;
+}
+
+export const PAGES = {
+  BACKGROUND: 'background',
+  HOME: 'home',
+  NOTIFICATION: 'notification',
+  OFFSCREEN: 'offscreen',
+  POPUP: 'popup',
+  SIDEPANEL: 'sidepanel',
+} as const;
+
+export type RawLocator =
+  | string
+  | {
+      css?: string;
+      xpath?: string;
+      text?: string;
+      tag?: string;
+      testId?: string;
+      value?: string;
+    };
+
+export type WaitState = 'visible' | 'detached' | 'enabled' | 'disabled' | 'hidden';
+
+export type PlaywrightDriverBrowser = 'chrome' | 'firefox';
+
+export type PlaywrightDriverOptions = {
+  context: BrowserContext;
+  page: Page;
+  browser: PlaywrightDriverBrowser;
+  extensionId: string;
+  extensionUrl: string;
+  timeout?: number;
+  disableServerMochaToBackground?: boolean;
+};
+
+function sanitizeTestTitle(title: string): string {
+  return title.replace(/[^a-zA-Z0-9-_]/gu, '_');
+}
+
+/**
+ * Wraps a Playwright `Locator` with the same surface as the Selenium-flavored
+ * elements returned by `wrapElementWithAPI` in `webdriver/driver.js`. Page
+ * objects rely on this surface (`element.fill`, `element.click`,
+ * `element.getText`, `element.waitForElementState`, …).
+ */
+export class PlaywrightElement {
+  public readonly locator: Locator;
+
+  protected readonly driver: PlaywrightDriver;
+
+  constructor(locator: Locator, driver: PlaywrightDriver) {
+    this.locator = locator;
+    this.driver = driver;
+  }
+
+  // Selenium's wrapElementWithAPI exposes `originalClick`. Preserve it for
+  // call sites that bypass the loading-overlay retry logic.
+  async originalClick(): Promise<void> {
+    await this.locator.click();
+  }
+
+  async click(): Promise<void> {
+    await this.locator.click();
+  }
+
+  async fill(input: string): Promise<void> {
+    await this.locator.fill(input);
+  }
+
+  async clear(): Promise<void> {
+    await this.locator.clear();
+  }
+
+  async press(keys: string): Promise<void> {
+    await this.locator.press(translateKey(keys));
+  }
+
+  async sendKeys(input: string): Promise<void> {
+    if (input.length === 1 && input in SELENIUM_TO_PW_KEY) {
+      await this.locator.press(translateKey(input));
+      return;
+    }
+    await this.locator.pressSequentially(input);
+  }
+
+  async getText(): Promise<string> {
+    return (await this.locator.innerText()).trim();
+  }
+
+  async getAttribute(name: string): Promise<string | null> {
+    return await this.locator.getAttribute(name);
+  }
+
+  async getProperty(name: string): Promise<unknown> {
+    return await this.locator.evaluate(
+      (element, propertyName) =>
+        (element as unknown as Record<string, unknown>)[propertyName],
+      name,
+    );
+  }
+
+  async getRect(): Promise<{
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }> {
+    const box = await this.locator.boundingBox();
+    return box ?? { x: 0, y: 0, width: 0, height: 0 };
+  }
+
+  async isDisplayed(): Promise<boolean> {
+    return await this.locator.isVisible();
+  }
+
+  async isEnabled(): Promise<boolean> {
+    return await this.locator.isEnabled();
+  }
+
+  async waitForElementState(state: WaitState, timeout?: number): Promise<void> {
+    switch (state) {
+      case 'visible':
+        await this.locator.waitFor({ state: 'visible', timeout });
+        return;
+      case 'hidden':
+      case 'detached':
+        await this.locator.waitFor({ state: 'hidden', timeout });
+        return;
+      case 'enabled':
+        await this.locator.waitFor({ state: 'visible', timeout });
+        await this.driver.waitUntil(
+          async () => await this.locator.isEnabled(),
+          { interval: 100, timeout: timeout ?? this.driver.timeout },
+        );
+        return;
+      case 'disabled':
+        await this.locator.waitFor({ state: 'visible', timeout });
+        await this.driver.waitUntil(
+          async () => await this.locator.isDisabled(),
+          { interval: 100, timeout: timeout ?? this.driver.timeout },
+        );
+        return;
+      default:
+        throw new Error(
+          `PlaywrightElement.waitForElementState: unsupported state '${String(state)}'`,
+        );
+    }
+  }
+}
+
+export class PlaywrightDriver {
+  // Public properties mirroring the Selenium Driver shape.
+  public driver: BrowserContext;
+
+  public browser: PlaywrightDriverBrowser;
+
+  public extensionUrl: string;
+
+  public extensionId: string;
+
+  public timeout: number;
+
+  // Mirrors the Selenium driver's public `Key` constants. The PascalCase
+  // property name and UPPER_CASE keys are part of the public API contract
+  // that page objects (e.g. `driver.Key.ENTER`, `driver.Key.MODIFIER`) rely
+  // on; renaming them would break the migration goal of leaving page
+  // objects unchanged.
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  public Key: typeof SELENIUM_KEY & { MODIFIER: string };
+
+  public exceptions: unknown[] = [];
+
+  public errors: unknown[] = [];
+
+  public eventProcessingStack: unknown[] = [];
+
+  // Selenium driver lazily creates `WindowHandles` from the
+  // background-socket. We keep this hook as `null` until the integration
+  // layer wires it up.
+  public windowHandles: unknown = null;
+
+  // Internals
+  private readonly context: BrowserContext;
+
+  private currentPage: Page;
+
+  private readonly pages: Map<string, Page> = new Map();
+
+  private handleCounter = 0;
+
+  constructor({
+    context,
+    page,
+    browser,
+    extensionId,
+    extensionUrl,
+    timeout = 10 * 1000,
+  }: PlaywrightDriverOptions) {
+    this.context = context;
+    this.currentPage = page;
+    this.driver = context;
+    this.browser = browser;
+    this.extensionId = extensionId;
+    this.extensionUrl = extensionUrl;
+    this.timeout = timeout;
+
+    this.Key = {
+      ...SELENIUM_KEY,
+      MODIFIER: process.platform === 'darwin' ? 'Meta' : 'Control',
+    };
+
+    this.registerPage(page);
+    this.context.on('page', (newPage) => {
+      this.registerPage(newPage);
+    });
+    this.context.on('weberror', (webError) => {
+      this.errors.push(webError.error());
+    });
+  }
+
+  // -- Internal helpers -----------------------------------------------------
+
+  private registerPage(page: Page): string {
+    for (const [existingHandle, existingPage] of this.pages.entries()) {
+      if (existingPage === page) {
+        return existingHandle;
+      }
+    }
+    this.handleCounter += 1;
+    const handle = `pw-handle-${this.handleCounter}`;
+    this.pages.set(handle, page);
+    page.on('close', () => {
+      this.pages.delete(handle);
+      if (this.currentPage === page) {
+        const next = this.pages.values().next();
+        if (!next.done) {
+          this.currentPage = next.value;
+        }
+      }
+    });
+    return handle;
+  }
+
+  private handleFor(page: Page): string {
+    for (const [handle, candidate] of this.pages.entries()) {
+      if (candidate === page) {
+        return handle;
+      }
+    }
+    return this.registerPage(page);
+  }
+
+  private get page(): Page {
+    if (!this.currentPage || this.currentPage.isClosed()) {
+      const next = this.pages.values().next();
+      if (!next.done) {
+        this.currentPage = next.value;
+      }
+    }
+    return this.currentPage;
+  }
+
+  // -- Locator construction --------------------------------------------------
+
+  /**
+   * Translates a Selenium-flavored `rawLocator` (string CSS, `{ css }`,
+   * `{ xpath }`, `{ testId }`, `{ text, tag }`, `{ css, text }`,
+   * `{ css, value }`) into a Playwright `Locator` rooted at the current page.
+   */
+  buildLocator(rawLocator: RawLocator): Locator {
+    return this.buildLocatorOn(this.page, rawLocator);
+  }
+
+  private buildLocatorOn(root: Page | Locator, rawLocator: RawLocator): Locator {
+    if (typeof rawLocator === 'string') {
+      return root.locator(rawLocator);
+    }
+    if (rawLocator.xpath) {
+      return root.locator(`xpath=${rawLocator.xpath}`);
+    }
+    if (rawLocator.css && rawLocator.value !== undefined) {
+      // {css, value} – find an element matching the CSS that also has a
+      // matching @value attribute. Mirrors Selenium driver behaviour.
+      return root.locator(rawLocator.css).and(
+        root.locator(`[value="${rawLocator.value}"]`),
+      );
+    }
+    if (rawLocator.text !== undefined) {
+      const { text, tag, testId, css } = rawLocator;
+      if (css) {
+        return root.locator(css, { hasText: text });
+      }
+      if (testId) {
+        return root
+          .getByTestId(testId)
+          .filter({ hasText: text });
+      }
+      if (tag) {
+        return root.locator(tag, { hasText: text });
+      }
+      return root.locator(`*:has-text("${text}")`);
+    }
+    if (rawLocator.testId) {
+      return root.getByTestId(rawLocator.testId);
+    }
+    if (rawLocator.css) {
+      return root.locator(rawLocator.css);
+    }
+    throw new Error(
+      `PlaywrightDriver.buildLocator: unsupported locator ${JSON.stringify(rawLocator)}`,
+    );
+  }
+
+  // -- Script execution ------------------------------------------------------
+
+  /**
+   * Selenium-compatible executeScript. Accepts either a string of JS code
+   * (where `arguments[0]`, `arguments[1]`, … bind to the trailing varargs)
+   * or a function (in which case the varargs become its arguments).
+   *
+   * For element-targeted scripts, prefer `element.locator.evaluate((el, arg)
+   * => ..., arg)` directly — it is type-safe and avoids the function
+   * serialization roundtrip.
+   */
+  async executeScript<TResult = unknown>(
+    script: string | ((...args: unknown[]) => unknown),
+    ...args: unknown[]
+  ): Promise<TResult> {
+    const fnSource =
+      typeof script === 'string'
+        ? `function() { return (function() { ${script} }).apply(null, arguments[0]); }`
+        : `function() { return (${script.toString()}).apply(null, arguments[0]); }`;
+    return (await this.page.evaluate<
+      TResult,
+      { source: string; passedArgs: unknown[] }
+    >(
+      ({ source, passedArgs }) => {
+        // eslint-disable-next-line no-new-func, @typescript-eslint/no-implied-eval
+        const fn = new Function(`return (${source}).apply(null, [arguments[0]]);`);
+        return fn(passedArgs) as TResult;
+      },
+      { source: fnSource, passedArgs: args },
+    )) as TResult;
+  }
+
+  async executeAsyncScript<TResult = unknown>(
+    script: string | ((...args: unknown[]) => unknown),
+    ...args: unknown[]
+  ): Promise<TResult> {
+    return await this.executeScript<TResult>(script, ...args);
+  }
+
+  // -- Element finders -------------------------------------------------------
+
+  async findElement(
+    rawLocator: RawLocator,
+    timeout: number = this.timeout,
+  ): Promise<PlaywrightElement> {
+    const locator = this.buildLocator(rawLocator).first();
+    await locator.waitFor({ state: 'attached', timeout });
+    return new PlaywrightElement(locator, this);
+  }
+
+  async findElements(rawLocator: RawLocator): Promise<PlaywrightElement[]> {
+    const locator = this.buildLocator(rawLocator);
+    const count = await locator.count();
+    const result: PlaywrightElement[] = [];
+    for (let index = 0; index < count; index += 1) {
+      result.push(new PlaywrightElement(locator.nth(index), this));
+    }
+    return result;
+  }
+
+  async findVisibleElement(
+    rawLocator: RawLocator,
+    timeout: number = this.timeout,
+  ): Promise<PlaywrightElement> {
+    const locator = this.buildLocator(rawLocator).first();
+    await locator.waitFor({ state: 'visible', timeout });
+    return new PlaywrightElement(locator, this);
+  }
+
+  async findClickableElement(
+    rawLocator: RawLocator,
+    options: { waitAtLeastGuard?: number; timeout?: number } = {},
+  ): Promise<PlaywrightElement> {
+    const { waitAtLeastGuard = 0, timeout = this.timeout } = options;
+    if (timeout <= waitAtLeastGuard) {
+      throw new Error('timeout must be greater than waitAtLeastGuard');
+    }
+    if (waitAtLeastGuard > 0) {
+      await this.delay(waitAtLeastGuard);
+    }
+    const locator = this.buildLocator(rawLocator).first();
+    await locator.waitFor({ state: 'visible', timeout });
+    await this.waitUntil(async () => await locator.isEnabled(), {
+      interval: 100,
+      timeout,
+    });
+    return new PlaywrightElement(locator, this);
+  }
+
+  async findClickableElements(
+    rawLocator: RawLocator,
+  ): Promise<PlaywrightElement[]> {
+    const elements = await this.findElements(rawLocator);
+    await Promise.all(
+      elements.map(async (element) => {
+        await element.locator.waitFor({ state: 'visible', timeout: this.timeout });
+        await this.waitUntil(async () => await element.locator.isEnabled(), {
+          interval: 100,
+          timeout: this.timeout,
+        });
+      }),
+    );
+    return elements;
+  }
+
+  async findNestedElement(
+    parent: PlaywrightElement,
+    nestedLocator: RawLocator,
+  ): Promise<PlaywrightElement> {
+    const locator = this.buildLocatorOn(parent.locator, nestedLocator).first();
+    await locator.waitFor({ state: 'attached', timeout: this.timeout });
+    return new PlaywrightElement(locator, this);
+  }
+
+  // -- Waits ----------------------------------------------------------------
+
+  async waitForSelector(
+    rawLocator: RawLocator,
+    options: { timeout?: number; state?: WaitState; waitAtLeastGuard?: number } = {},
+  ): Promise<PlaywrightElement> {
+    const {
+      timeout = this.timeout,
+      state = 'visible',
+      waitAtLeastGuard = 0,
+    } = options;
+    if (timeout <= waitAtLeastGuard) {
+      throw new Error('timeout must be greater than waitAtLeastGuard');
+    }
+    if (waitAtLeastGuard > 0) {
+      await this.delay(waitAtLeastGuard);
+    }
+
+    const locator = this.buildLocator(rawLocator).first();
+    if (state === 'visible' || state === 'hidden') {
+      await locator.waitFor({ state, timeout });
+    } else if (state === 'detached') {
+      await locator.waitFor({ state: 'detached', timeout });
+    } else if (state === 'enabled') {
+      await locator.waitFor({ state: 'visible', timeout });
+      await this.waitUntil(async () => await locator.isEnabled(), {
+        interval: 100,
+        timeout,
+      });
+    } else if (state === 'disabled') {
+      await locator.waitFor({ state: 'visible', timeout });
+      await this.waitUntil(async () => await locator.isDisabled(), {
+        interval: 100,
+        timeout,
+      });
+    } else {
+      throw new Error(`Provided state selector ${state as string} is not supported`);
+    }
+    return new PlaywrightElement(locator, this);
+  }
+
+  async waitForMultipleSelectors(
+    rawLocators: RawLocator[],
+    options: { timeout?: number; state?: WaitState } = {},
+  ): Promise<PlaywrightElement[]> {
+    return await Promise.all(
+      rawLocators.map((rawLocator) => this.waitForSelector(rawLocator, options)),
+    );
+  }
+
+  async waitForNonEmptyElement(element: PlaywrightElement): Promise<void> {
+    await this.waitUntil(
+      async () => (await element.getText()).length > 0,
+      { interval: 100, timeout: this.timeout },
+    );
+  }
+
+  async elementCountBecomesN(
+    rawLocator: RawLocator,
+    expectedCount: number,
+    timeout: number = this.timeout,
+  ): Promise<boolean> {
+    const locator = this.buildLocator(rawLocator);
+    try {
+      await this.waitUntil(
+        async () => (await locator.count()) === expectedCount,
+        { interval: 100, timeout },
+      );
+      return true;
+    } catch {
+      const actual = await locator.count();
+      console.error(
+        `Waiting for count of ${JSON.stringify(rawLocator)} elements to be ${expectedCount}, but it is ${actual}`,
+      );
+      return false;
+    }
+  }
+
+  async wait(
+    condition: () => Promise<boolean | unknown>,
+    timeout: number = this.timeout,
+    catchError = false,
+  ): Promise<void> {
+    try {
+      await this.waitUntil(async () => Boolean(await condition()), {
+        interval: 100,
+        timeout,
+      });
+    } catch (error) {
+      if (!catchError) {
+        throw error;
+      }
+      console.log('Caught error waiting for condition:', error);
+    }
+  }
+
+  async waitUntil(
+    condition: () => Promise<boolean>,
+    options: { interval?: number; timeout?: number; stableFor?: number } = {},
+  ): Promise<void> {
+    const { interval = 100, timeout = this.timeout, stableFor } = options;
+    const deadline = Date.now() + timeout;
+    while (Date.now() < deadline) {
+      if (await condition()) {
+        if (stableFor) {
+          await this.delay(stableFor);
+          if (await condition()) {
+            return;
+          }
+        } else {
+          return;
+        }
+      }
+      await this.delay(interval);
+    }
+    throw new Error(`waitUntil: condition not met within ${timeout}ms`);
+  }
+
+  async assertElementNotPresent(
+    rawLocator: RawLocator,
+    options: {
+      findElementGuard?: RawLocator | '';
+      waitAtLeastGuard?: number;
+      timeout?: number;
+    } = {},
+  ): Promise<void> {
+    const {
+      findElementGuard = '',
+      waitAtLeastGuard = 0,
+      timeout = this.timeout,
+    } = options;
+    if (timeout <= waitAtLeastGuard) {
+      throw new Error('timeout must be greater than waitAtLeastGuard');
+    }
+    if (waitAtLeastGuard > 0) {
+      await this.delay(waitAtLeastGuard);
+    }
+    if (findElementGuard) {
+      await this.findElement(findElementGuard);
+    }
+    const locator = this.buildLocator(rawLocator);
+    try {
+      await this.waitUntil(async () => (await locator.count()) === 0, {
+        interval: 100,
+        timeout: timeout - waitAtLeastGuard,
+      });
+    } catch {
+      throw new Error(
+        `Found element ${JSON.stringify(rawLocator)} that should not be present`,
+      );
+    }
+  }
+
+  // -- Predicates -----------------------------------------------------------
+
+  async isElementPresent(rawLocator: RawLocator): Promise<boolean> {
+    return (await this.buildLocator(rawLocator).count()) > 0;
+  }
+
+  async isElementPresentAndVisible(rawLocator: RawLocator): Promise<boolean> {
+    const locator = this.buildLocator(rawLocator).first();
+    if ((await locator.count()) === 0) {
+      return false;
+    }
+    return await locator.isVisible();
+  }
+
+  // -- Interactions ---------------------------------------------------------
+
+  async fill(
+    rawLocator: RawLocator,
+    input: string,
+    options: { retries?: number } = {},
+  ): Promise<PlaywrightElement> {
+    const { retries = 0 } = options;
+    const element = await this.findElement(rawLocator);
+    if (retries === 0) {
+      await element.fill(input);
+      return element;
+    }
+    for (let attempt = 0; attempt < retries; attempt += 1) {
+      await element.fill(input);
+      try {
+        await this.waitUntil(
+          async () => (await element.getAttribute('value')) === input,
+          { interval: 50, timeout: 1000 },
+        );
+        return element;
+      } catch {
+        // retry
+      }
+    }
+    const current = await element.getAttribute('value');
+    if (current !== input) {
+      throw new Error(
+        `Failed to set exact value after ${retries} attempts. Expected '${input}', got '${current ?? ''}'.`,
+      );
+    }
+    return element;
+  }
+
+  async press(rawLocator: RawLocator, keys: string): Promise<PlaywrightElement> {
+    const element = await this.findElement(rawLocator);
+    await element.press(keys);
+    return element;
+  }
+
+  async clickElement(
+    rawLocator: RawLocator,
+    retries = 3,
+  ): Promise<void> {
+    let lastError: unknown;
+    for (let attempt = 0; attempt < retries; attempt += 1) {
+      try {
+        const element = await this.findClickableElement(rawLocator);
+        await element.click();
+        return;
+      } catch (error) {
+        lastError = error;
+        if (attempt < retries - 1) {
+          console.warn(
+            `Retrying click (attempt ${attempt + 1}/${retries}) due to:`,
+            error,
+          );
+          await this.delay(1000);
+        }
+      }
+    }
+    throw lastError;
+  }
+
+  async clickElementSafe(
+    rawLocator: RawLocator,
+    timeout = 2000,
+  ): Promise<void> {
+    try {
+      const locator = this.buildLocator(rawLocator).first();
+      await locator.waitFor({ state: 'visible', timeout });
+      await locator.click({ timeout });
+    } catch (error) {
+      console.log(`Element ${JSON.stringify(rawLocator)} not found (${String(error)})`);
+    }
+  }
+
+  async clickElementAndWaitToDisappear(
+    rawLocator: RawLocator,
+    timeout = 3000,
+  ): Promise<void> {
+    const element = await this.findClickableElement(rawLocator);
+    await element.click();
+    await element.waitForElementState('hidden', timeout);
+  }
+
+  async findScrollToAndClickElement(rawLocator: RawLocator): Promise<void> {
+    const locator = this.buildLocator(rawLocator).first();
+    await locator.scrollIntoViewIfNeeded();
+    await locator.click();
+  }
+
+  async scrollToElement(element: PlaywrightElement): Promise<void> {
+    await element.locator.scrollIntoViewIfNeeded();
+  }
+
+  async hoverElement(element: PlaywrightElement): Promise<void> {
+    await element.locator.hover();
+  }
+
+  async clickElementUsingMouseMove(rawLocator: RawLocator): Promise<void> {
+    const element = await this.findClickableElement(rawLocator);
+    await element.locator.scrollIntoViewIfNeeded();
+    await element.locator.hover();
+    await element.locator.click();
+  }
+
+  // -- Navigation -----------------------------------------------------------
+
+  async navigate(page: string = PAGES.HOME): Promise<void> {
+    const target =
+      this.browser === 'firefox' && page === PAGES.SIDEPANEL ? PAGES.HOME : page;
+    await this.page.goto(`${this.extensionUrl}/${target}.html`, {
+      waitUntil: 'domcontentloaded',
+    });
+  }
+
+  async openNewPage(url: string): Promise<string> {
+    const page = await this.context.newPage();
+    await page.goto(url, { waitUntil: 'domcontentloaded' });
+    this.currentPage = page;
+    return this.handleFor(page);
+  }
+
+  async openNewURL(url: string): Promise<void> {
+    await this.page.goto(url, { waitUntil: 'domcontentloaded' });
+  }
+
+  async getCurrentUrl(): Promise<string> {
+    return this.page.url();
+  }
+
+  async refresh(): Promise<void> {
+    await this.page.reload({ waitUntil: 'domcontentloaded' });
+  }
+
+  async delay(ms: number): Promise<void> {
+    await new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  async delayFirefox(ms: number): Promise<void> {
+    if (this.browser === 'firefox') {
+      await this.delay(ms);
+    }
+  }
+
+  // -- Window / tab management ---------------------------------------------
+
+  async getAllWindowHandles(): Promise<string[]> {
+    return Array.from(this.pages.keys());
+  }
+
+  async switchToWindow(handle: string): Promise<void> {
+    const target = this.pages.get(handle);
+    if (!target) {
+      throw new Error(`PlaywrightDriver.switchToWindow: unknown handle ${handle}`);
+    }
+    this.currentPage = target;
+    await target.bringToFront();
+  }
+
+  async switchToNewWindow(): Promise<void> {
+    const newPage = await this.context.waitForEvent('page', {
+      timeout: this.timeout,
+    });
+    this.currentPage = newPage;
+  }
+
+  async switchToWindowWithUrl(
+    url: string,
+    _initialHandles?: string[],
+    _delayStep = 1000,
+    timeout = this.timeout,
+  ): Promise<void> {
+    await this.waitUntil(
+      async () => {
+        for (const page of this.context.pages()) {
+          if (page.url() === url) {
+            this.currentPage = page;
+            return true;
+          }
+        }
+        return false;
+      },
+      { interval: 250, timeout },
+    );
+  }
+
+  async switchToWindowWithTitle(
+    title: string,
+    _initialHandles?: string[],
+    _delayStep = 1000,
+    timeout = this.timeout,
+  ): Promise<void> {
+    await this.waitUntil(
+      async () => {
+        for (const page of this.context.pages()) {
+          try {
+            const pageTitle = await page.title();
+            if (pageTitle === title) {
+              this.currentPage = page;
+              return true;
+            }
+          } catch {
+            // Page may have been closed mid-iteration; ignore.
+          }
+        }
+        return false;
+      },
+      { interval: 250, timeout },
+    );
+  }
+
+  async waitUntilXWindowHandles(
+    expected: number,
+    _delayStep = 1000,
+    timeout = this.timeout,
+  ): Promise<string[]> {
+    await this.waitUntil(
+      async () => this.context.pages().length === expected,
+      { interval: 250, timeout },
+    );
+    return await this.getAllWindowHandles();
+  }
+
+  async closeWindow(): Promise<void> {
+    await this.page.close();
+  }
+
+  async closeWindowHandle(handle: string): Promise<void> {
+    const target = this.pages.get(handle);
+    if (target) {
+      await target.close();
+    }
+  }
+
+  async switchToFrame(frame: PlaywrightElement | string): Promise<void> {
+    throw new Error(
+      `PlaywrightDriver.switchToFrame is not yet implemented. ` +
+        `Frame target: ${typeof frame === 'string' ? frame : 'PlaywrightElement'}. ` +
+        `Implement when migrating a spec that needs it.`,
+    );
+  }
+
+  // -- Alerts ---------------------------------------------------------------
+
+  async closeAlertPopup(): Promise<void> {
+    // PW dialogs are handled via `page.on('dialog', …)`. The Selenium-style
+    // closeAlertPopup is rarely needed in tests; stub for now.
+    this.page.once('dialog', async (dialog) => {
+      await dialog.dismiss();
+    });
+  }
+
+  // -- Diagnostics ----------------------------------------------------------
+
+  async takeScreenshot(testTitle: string, screenshotTitle: string): Promise<void> {
+    const artifactDir = path.join(
+      './test-artifacts',
+      this.browser,
+      sanitizeTestTitle(testTitle),
+    );
+    await fs.mkdir(artifactDir, { recursive: true });
+    const buffer = await this.page.screenshot();
+    await fs.writeFile(
+      path.join(artifactDir, `${screenshotTitle}.png`),
+      buffer,
+    );
+  }
+
+  /**
+   * Returns a newline-joined dump of recorded page errors and exceptions.
+   * Mirrors the Selenium driver's synchronous signature so the call site
+   * `if (driver.summarizeErrorsAndExceptions()) { throw new Error(...) }`
+   * keeps working without modification.
+   */
+  summarizeErrorsAndExceptions(): string {
+    return [...this.errors, ...this.exceptions]
+      .map((value) =>
+        value instanceof Error ? (value.stack ?? value.message) : String(value),
+      )
+      .join('\n');
+  }
+
+  /**
+   * Best-effort capture of test-failure artifacts: screenshots and DOM
+   * snapshots for every open page. Mirrors the Selenium driver's
+   * `verboseReportOnFailure` so `withFixtures` can call it uniformly.
+   *
+   * @param testTitle - Full mocha/playwright test title.
+   * @param error - The error that triggered the failure (logged for context).
+   */
+  async verboseReportOnFailure(testTitle: string, error: unknown): Promise<void> {
+    console.error(
+      `Failure on testcase: '${testTitle}', for more information see the ${
+        process.env.CI ? 'artifacts tab in CI' : 'test-artifacts folder'
+      }\n`,
+    );
+    console.error(`${String(error)}\n`);
+
+    const artifactDir = path.join(
+      './test-artifacts',
+      this.browser,
+      sanitizeTestTitle(testTitle),
+    );
+    await fs.mkdir(artifactDir, { recursive: true });
+
+    const pages = this.context.pages();
+    for (let index = 0; index < pages.length; index += 1) {
+      const targetPage = pages[index];
+      const suffix = index + 1;
+      try {
+        const title = await targetPage.title();
+        if (title !== 'MetaMask Offscreen Page') {
+          const buffer = await targetPage.screenshot();
+          await fs.writeFile(
+            path.join(artifactDir, `test-failure-screenshot-${suffix}.png`),
+            buffer,
+          );
+        }
+      } catch (screenshotError) {
+        console.error('Failed to take screenshot', screenshotError);
+      }
+      try {
+        const html = await targetPage.content();
+        await fs.writeFile(
+          path.join(artifactDir, `test-failure-dom-${suffix}.html`),
+          html,
+        );
+      } catch (domError) {
+        console.error('Failed to capture DOM snapshot', domError);
+      }
+    }
+  }
+
+  /**
+   * Selenium-only hook for CDP exception streaming. The Playwright shim
+   * already records `weberror` events into `this.errors` via the
+   * constructor, so this method is a no-op kept for API parity.
+   *
+   * @param _ignoredConsoleErrors - Unused on the Playwright path.
+   */
+  async checkBrowserForExceptions(
+    _ignoredConsoleErrors: string[] = [],
+  ): Promise<void> {
+    // no-op; see method docstring
+  }
+
+  /**
+   * Selenium-only hook for CDP console.error streaming. No-op on
+   * Playwright; surfaced errors should be added to `this.errors` via
+   * `page.on('pageerror', ...)` integration if needed by a future spec.
+   *
+   * @param _ignoredConsoleErrors - Unused on the Playwright path.
+   */
+  async checkBrowserForConsoleErrors(
+    _ignoredConsoleErrors: string[] = [],
+  ): Promise<void> {
+    // no-op; see method docstring
+  }
+
+  // -- Teardown -------------------------------------------------------------
+
+  async quit(): Promise<void> {
+    try {
+      await this.context.close();
+    } catch (error) {
+      console.warn(
+        'PlaywrightDriver: failed to close context cleanly; continuing.',
+        error,
+      );
+    }
+  }
+
+  // -- Stubs for methods not yet implemented -------------------------------
+  //
+  // Any uncovered API surface throws a clear error so migration gaps are
+  // immediately visible. Fill these in as specs need them.
+
+  async pasteIntoField(_rawLocator: RawLocator, _content: string): Promise<void> {
+    throw new Error('PlaywrightDriver.pasteIntoField is not yet implemented.');
+  }
+
+  async holdMouseDownOnElement(
+    _rawLocator: RawLocator,
+    _ms: number,
+  ): Promise<void> {
+    throw new Error('PlaywrightDriver.holdMouseDownOnElement is not yet implemented.');
+  }
+
+  async clickPoint(
+    _rawLocator: RawLocator,
+    _x: number,
+    _y: number,
+  ): Promise<void> {
+    throw new Error('PlaywrightDriver.clickPoint is not yet implemented.');
+  }
+
+  /**
+   * Returns true if the element's bounding box moves between two
+   * 500ms-apart samples. Mirrors the Selenium driver's implementation.
+   *
+   * @param rawLocator - Element locator.
+   */
+  async isElementMoving(rawLocator: RawLocator): Promise<boolean> {
+    const element = await this.findElement(rawLocator);
+    const initial = await element.getRect();
+    await this.delay(500);
+    const next = await element.getRect();
+    return initial.x !== next.x || initial.y !== next.y;
+  }
+
+  /**
+   * Polls `isElementMoving` every 500ms until the element settles or the
+   * timeout elapses. Used by page objects after opening menus/popovers
+   * that have an open-animation (e.g. `HeaderNavbar.openGlobalMenu`).
+   *
+   * @param rawLocator - Element locator.
+   * @param timeout - Maximum total wait time in milliseconds (default 6000).
+   */
+  async waitForElementToStopMoving(
+    rawLocator: RawLocator,
+    timeout = 6000,
+  ): Promise<void> {
+    const startTime = Date.now();
+    while (Date.now() - startTime < timeout) {
+      if (!(await this.isElementMoving(rawLocator))) {
+        return;
+      }
+      await this.delay(500);
+    }
+    throw new Error('Element did not stop moving within the timeout period');
+  }
+}

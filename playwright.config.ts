@@ -33,7 +33,14 @@ const config: PlaywrightTestConfig = {
         outputFolder: `${logOutputFolder}/html/`,
       },
     ],
-    ['junit', { outputFile: `${logOutputFolder}/junit/test-results.xml` }],
+    [
+      'junit',
+      {
+        outputFile:
+          process.env.PLAYWRIGHT_JUNIT_OUTPUT_FILE ||
+          `${logOutputFolder}/junit/test-results.xml`,
+      },
+    ],
   ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
@@ -76,6 +83,24 @@ const config: PlaywrightTestConfig = {
       },
       fullyParallel: false,
       timeout: 600 * 1000, // 10 minutes
+    },
+    // Migrated Selenium specs running through the PlaywrightDriver shim.
+    // See docs/superpowers/specs/2026-05-26-selenium-to-playwright-e2e-migration-design.md.
+    // The browser fixtures from `use` are inert here — withFixtures spawns
+    // its own Playwright context via buildPlaywrightDriver.
+    {
+      name: 'chrome-e2e',
+      testDir: 'test/e2e/tests',
+      testMatch: '**/*.pw.spec.ts',
+      fullyParallel: false,
+      timeout: 5 * 60 * 1000,
+    },
+    {
+      name: 'firefox-e2e',
+      testDir: 'test/e2e/tests',
+      testMatch: '**/*.pw.spec.ts',
+      fullyParallel: false,
+      timeout: 5 * 60 * 1000,
     },
   ],
 

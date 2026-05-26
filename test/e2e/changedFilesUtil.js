@@ -36,7 +36,11 @@ function filterE2eChangedFiles(changedFilesPaths) {
   const e2eChangedFiles = changedFilesPaths.filter(
     (file) =>
       file.startsWith('test/e2e/') &&
-      (file.endsWith('.spec.js') || file.endsWith('.spec.ts')),
+      (file.endsWith('.spec.js') || file.endsWith('.spec.ts')) &&
+      // `*.pw.spec.ts` files are Playwright specs. They are discovered and
+      // executed by the Playwright runner, not Mocha. See migration
+      // design doc §4.
+      !file.endsWith('.pw.spec.ts'),
   );
   return e2eChangedFiles;
 }

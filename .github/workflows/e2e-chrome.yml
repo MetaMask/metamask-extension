@@ -179,6 +179,22 @@ jobs:
       test-artifacts-path: html-report-multichain
       builds-from-run: ${{ inputs.builds-from-run }}
 
+  # Playwright-driven Chrome E2E job. Mirrors the structure of the
+  # Selenium browserify job above but runs the `chrome-e2e` Playwright
+  # project (test/e2e/tests/**/*.pw.spec.ts). See
+  # docs/superpowers/specs/2026-05-26-selenium-to-playwright-e2e-migration-design.md
+  # for the migration plan and §4.3 for the CI rollout.
+  test-e2e-chrome-playwright:
+    uses: ./.github/workflows/run-e2e.yml
+    secrets:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+    with:
+      test-suite-name: test-e2e-chrome-playwright
+      build-artifact: build-test-browserify
+      build-command: yarn build:test
+      test-command: PLAYWRIGHT_JUNIT_OUTPUT_FILE=test/test-results/e2e/junit-pw-chrome.xml yarn test:e2e:playwright:chrome
+      builds-from-run: ${{ inputs.builds-from-run }}
+
   test-e2e-chrome-report:
     needs:
       - test-e2e-chrome-browserify
@@ -195,6 +211,7 @@ jobs:
       - test-e2e-chrome-dist-webpack
       - test-e2e-chrome-api-specs-webpack
       - test-e2e-chrome-api-specs-multichain-webpack
+      - test-e2e-chrome-playwright
     runs-on: ubuntu-latest
     if: ${{ !cancelled() }}
     env:

@@ -101,6 +101,23 @@ jobs:
       test-command: yarn test:e2e:firefox:dist
       builds-from-run: ${{ inputs.builds-from-run }}
 
+  # Playwright-driven Firefox E2E job. The `pre-test-command` installs
+  # the Playwright-bundled Firefox so the Firefox extension harness can
+  # patch its `omni.ja` for Juggler-compatible moz-extension targets. See
+  # docs/superpowers/specs/2026-05-26-selenium-to-playwright-e2e-migration-design.md
+  # for the migration plan and §4.3 for the CI rollout.
+  test-e2e-firefox-playwright:
+    uses: ./.github/workflows/run-e2e.yml
+    secrets:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+    with:
+      test-suite-name: test-e2e-firefox-playwright
+      build-artifact: build-test-mv2-browserify
+      build-command: yarn build:test:mv2
+      pre-test-command: yarn playwright install firefox
+      test-command: PLAYWRIGHT_JUNIT_OUTPUT_FILE=test/test-results/e2e/junit-pw-firefox.xml PLAYWRIGHT_BROWSER=firefox yarn test:e2e:playwright:firefox
+      builds-from-run: ${{ inputs.builds-from-run }}
+
   test-e2e-firefox-report:
     needs:
       - test-e2e-firefox-browserify
@@ -109,6 +126,7 @@ jobs:
       - test-e2e-firefox-webpack
       - test-e2e-firefox-flask-webpack
       - test-e2e-firefox-dist-webpack
+      - test-e2e-firefox-playwright
     runs-on: ubuntu-latest
     timeout-minutes: 30
     if: ${{ !cancelled() }}
