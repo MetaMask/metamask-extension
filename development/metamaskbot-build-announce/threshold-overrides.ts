@@ -1,16 +1,17 @@
 /**
  * Threshold Override Mechanism
  *
- * Allows PRs that intentionally increase metrics to temporarily adjust
- * the constant thresholds used by compare-benchmarks.ts.
+ * Adjusts the constant thresholds used by compare-benchmarks.ts for
+ * specific benchmark/metric/percentile combinations.
  *
  * Overrides are declared in a `.threshold-overrides.json` file at the
  * repo root. Each override targets a specific benchmark/metric/percentile
- * and must include a justification.
+ * and must include a justification. CODEOWNERS gates the file with the
+ * same owners as `thresholds.ts`, so applying or removing an override
+ * requires the same review as editing the underlying registry.
  *
- * Overrides apply only to the PR that declares them — the file should
- * not be merged to main (enforced by the check-no-threshold-override
- * workflow). Each entry may carry an `expires` date after which it lapses.
+ * Each entry may carry an `expires` date; applying an expired entry
+ * throws, forcing the threshold to be renewed or removed.
  */
 
 import { promises as fs } from 'fs';
