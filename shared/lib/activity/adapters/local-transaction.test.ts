@@ -42,6 +42,7 @@ describe('mapLocalTransaction', () => {
       chainId: 'eip155:1',
       status: 'pending',
       timestamp: 1716367781000,
+      metaId: 'send-id',
       data: {
         hash: '0xsend',
         from,
@@ -144,6 +145,7 @@ describe('mapLocalTransaction', () => {
       chainId: 'eip155:1',
       status: 'pending',
       timestamp: 1716367781000,
+      metaId: 'token-send-id',
       data: {
         hash: '0xtokensend',
         from,
@@ -293,6 +295,7 @@ describe('mapLocalTransaction', () => {
       chainId: 'eip155:59144',
       status: 'pending',
       timestamp: 1716367881000,
+      metaId: 'retry-id',
       data: {
         hash: '0xretry',
         token: {
@@ -442,6 +445,7 @@ describe('mapLocalTransaction', () => {
       chainId: 'eip155:8453',
       status: 'success',
       timestamp: 1716367781000,
+      metaId: 'swap-id',
       data: {
         hash: '0xswap',
         sourceToken: {

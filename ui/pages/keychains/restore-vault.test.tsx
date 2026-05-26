@@ -7,6 +7,10 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import * as actions from '../../store/actions';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import {
+  getIsPasskeyFeatureAvailable,
+  getIsSocialLoginFlow,
+} from '../../selectors';
 import RestoreVaultPage from './restore-vault';
 
 const mockUseNavigate = jest.fn();
@@ -14,6 +18,12 @@ const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockUseNavigate,
+}));
+
+jest.mock('../../selectors', () => ({
+  ...jest.requireActual('../../selectors'),
+  getIsPasskeyFeatureAvailable: jest.fn(),
+  getIsSocialLoginFlow: jest.fn(),
 }));
 
 const TEST_SEED =
@@ -24,6 +34,12 @@ describe('Restore vault Component', () => {
 
   beforeEach(() => {
     mockUseNavigate.mockClear();
+    jest.mocked(getIsPasskeyFeatureAvailable).mockReturnValue(false);
+    jest.mocked(getIsSocialLoginFlow).mockReturnValue(false);
+  });
+
+  afterEach(() => {
+    sinon.restore();
   });
 
   it('renders match snapshot', () => {
@@ -174,13 +190,99 @@ describe('Restore vault Component', () => {
       true,
     );
 
-    // Restore the stubs
-    (actions.unMarkPasswordForgotten as sinon.SinonStub).restore();
-    (actions.createNewVaultAndRestore as sinon.SinonStub).restore();
-    (actions.setFirstTimeFlowType as sinon.SinonStub).restore();
-    (actions.resetWallet as sinon.SinonStub).restore();
-
     // Verify navigation to default route
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+      replace: true,
+    });
+  });
+
+  it('renders passkey setup inline after restoring when passkeys are available', async () => {
+    jest.mocked(getIsPasskeyFeatureAvailable).mockReturnValue(true);
+
+    const mockCreateNewVaultAndRestore = sinon.stub().resolves();
+    const mockSetFirstTimeFlowType = sinon.stub().resolves();
+    const mockUnMarkPasswordForgotten = sinon.stub().returns({ type: 'MOCK' });
+    const mockResetWallet = sinon.stub().resolves();
+
+    const testStore = mockStore({
+      metamask: { currentLocale: 'en' },
+      appState: { isLoading: false },
+    });
+
+    sinon
+      .stub(actions, 'unMarkPasswordForgotten')
+      .returns(
+        mockUnMarkPasswordForgotten as ReturnType<
+          typeof actions.unMarkPasswordForgotten
+        >,
+      );
+    sinon.stub(actions, 'createNewVaultAndRestore').callsFake(((
+      pw: string,
+      seed: string,
+    ) => {
+      return () => {
+        mockCreateNewVaultAndRestore(pw, seed);
+        return Promise.resolve();
+      };
+    }) as typeof actions.createNewVaultAndRestore);
+    sinon.stub(actions, 'setFirstTimeFlowType').callsFake(((type) => {
+      return () => {
+        mockSetFirstTimeFlowType(type);
+        return Promise.resolve();
+      };
+    }) as typeof actions.setFirstTimeFlowType);
+    sinon.stub(actions, 'resetWallet').callsFake(((restoreOnly?: boolean) => {
+      return () => {
+        mockResetWallet(restoreOnly);
+        return Promise.resolve();
+      };
+    }) as typeof actions.resetWallet);
+
+    const { queryByTestId } = renderWithProvider(
+      <RestoreVaultPage />,
+      testStore,
+    );
+
+    const srpNote = queryByTestId('srp-input-import__srp-note');
+    expect(srpNote).toBeInTheDocument();
+
+    (srpNote as HTMLElement).focus();
+    await userEvent.paste(TEST_SEED);
+
+    fireEvent.click(queryByTestId('import-srp-confirm') as HTMLElement);
+
+    await waitFor(() => {
+      expect(queryByTestId('create-password')).toBeInTheDocument();
+    });
+
+    fireEvent.change(
+      queryByTestId('create-password-new-input') as HTMLElement,
+      {
+        target: { value: '12345678' },
+      },
+    );
+    fireEvent.change(
+      queryByTestId('create-password-confirm-input') as HTMLElement,
+      {
+        target: { value: '12345678' },
+      },
+    );
+
+    fireEvent.click(queryByTestId('create-password-terms') as HTMLElement);
+    fireEvent.submit(queryByTestId('create-password') as HTMLElement);
+
+    await waitFor(() => {
+      expect(mockCreateNewVaultAndRestore.calledOnce).toBe(true);
+    });
+
+    await waitFor(() => {
+      expect(queryByTestId('passkey-set-up-button')).toBeInTheDocument();
+    });
+
+    expect(mockUseNavigate).not.toHaveBeenCalled();
+
+    fireEvent.click(queryByTestId('passkey-maybe-later-button') as HTMLElement);
+
     expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
       replace: true,
     });

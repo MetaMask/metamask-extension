@@ -39,7 +39,8 @@ class ActivityListPage {
   private readonly gasPrice =
     '[data-testid="transaction-breakdown__gas-price"]';
 
-  private readonly pendingTransactionItems = '[data-tx-status="pending"]';
+  private readonly pendingTransactionItems =
+    '[data-tx-status="submitted"], [data-tx-status="approved"], [data-tx-status="unapproved"], [data-tx-status="pending"]';
 
   private readonly speedupInlineButton = '[data-testid="speed-up-button"]';
 
