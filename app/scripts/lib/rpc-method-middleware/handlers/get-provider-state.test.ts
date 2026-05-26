@@ -1,8 +1,7 @@
 import { PendingJsonRpcResponse } from '@metamask/utils';
 import { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
-import {
-  getProviderStateHandler,
-  type GetProviderState,
+import getProviderState, {
+  GetProviderState,
   ProviderStateHandlerRequest,
   ProviderStateHandlerResult,
 } from './get-provider-state';
@@ -43,7 +42,7 @@ describe('getProviderState', () => {
       },
     };
 
-    await getProviderStateHandler.implementation(req, res, jest.fn(), mockEnd, {
+    await getProviderState.implementation(req, res, jest.fn(), mockEnd, {
       getProviderState: mockGetProviderState,
     });
 

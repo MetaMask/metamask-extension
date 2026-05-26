@@ -9,8 +9,10 @@ import { isAddress as isEvmAddress } from 'ethers/lib/utils';
 import { useSelector } from 'react-redux';
 
 import { isEqualCaseInsensitive } from '../../../../../shared/lib/string-utils';
-import { getInternalAccounts } from '../../../../selectors';
-import { getAccountTypeForKeyring } from '../../../../../shared/lib/selectors/keyring';
+import {
+  getAccountTypeForKeyring,
+  getInternalAccounts,
+} from '../../../../selectors';
 import { useSendContext } from '../send';
 
 export const AssetFilterMethod = {

@@ -10,7 +10,6 @@ import {
   createERC20BalanceChangeTerms,
   createERC721BalanceChangeTerms,
   createNativeBalanceChangeTerms,
-  BalanceChangeType,
 } from '@metamask/delegation-core';
 import { TransactionControllerInitMessenger } from '../../../messenger-client-init/messengers/transaction-controller-messenger';
 import { getEnforcedSimulationsSlippage } from '../../../../../shared/lib/transaction/enforced-simulations';
@@ -53,11 +52,7 @@ export async function enforceSimulations({
   const from = txParams.from as Hex;
   const chainIdDecimal = hexToNumber(chainId);
   const delegationEnvironment = getDeleGatorEnvironment(chainIdDecimal);
-
-  const remoteFeatureFlagState = messenger.call(
-    'RemoteFeatureFlagController:getState',
-  );
-  const slippage = getEnforcedSimulationsSlippage(remoteFeatureFlagState);
+  const slippage = getEnforcedSimulationsSlippage();
 
   const caveats = generateCaveats(
     from,
@@ -212,10 +207,15 @@ function generateCaveats(
   return caveats;
 }
 
+enum BalanceChangeType {
+  DECREASE = 0,
+  INCREASE = 1,
+}
+
 function getBalanceChangeType(enforceDecrease: boolean): BalanceChangeType {
   return enforceDecrease
-    ? BalanceChangeType.Decrease
-    : BalanceChangeType.Increase;
+    ? BalanceChangeType.DECREASE
+    : BalanceChangeType.INCREASE;
 }
 
 function applySlippage(

@@ -7,49 +7,38 @@ import { useTokenSearchResults } from '../../../../../hooks/bridge/useTokenSearc
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Column } from '../../../layout';
-import { useInitialBridgeTokens } from '../../../../../hooks/bridge/useInitialBridgeTokens';
-import { usePopularTokens } from '../../../../../hooks/bridge/usePopularTokens';
 import { BridgeAsset } from './asset';
 import { LoadingSkeleton } from './loading-skeleton';
 
 export const BridgeAssetList = ({
+  popularTokensList,
+  isPopularTokensLoading,
   onAssetChange,
   selectedAssetId,
   isDestination,
-  searchQuery,
-  chainIds,
-  accountGroupId,
+  ...searchResultsProps
 }: {
+  popularTokensList: BridgeToken[];
+  isPopularTokensLoading: boolean;
+  assetsToInclude: BridgeToken[];
   onAssetChange: (asset: BridgeToken) => void;
   selectedAssetId: CaipAssetType;
 } & React.ComponentProps<typeof Column> &
   Pick<React.ComponentProps<typeof BridgeAsset>, 'isDestination'> &
   Pick<
     Parameters<typeof useTokenSearchResults>[0],
-    'searchQuery' | 'accountGroupId' | 'chainIds'
+    'searchQuery' | 'accountAddress' | 'chainIds'
   >) => {
   const t = useI18nContext();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-
-  const { fetchTokens, assetsToInclude } = useInitialBridgeTokens(chainIds);
-  const { popularTokensList, isLoading: isPopularTokensLoading } =
-    usePopularTokens({
-      fetchTokens,
-      assetsToInclude,
-      accountGroupId,
-    });
+  const { searchQuery } = searchResultsProps;
 
   const {
     searchResults,
     isSearchResultsLoading,
     onFetchMoreResults,
     hasMoreResults,
-  } = useTokenSearchResults({
-    searchQuery,
-    accountGroupId,
-    chainIds,
-    assetsToInclude,
-  });
+  } = useTokenSearchResults(searchResultsProps);
 
   /**
    * If there is a search query, use the search results, otherwise use the popular token list

@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import { waitFor } from '@testing-library/react';
 import { useSelector } from 'react-redux';
-import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
+import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import {
   getPerpsStreamManager,
   resetPerpsStreamManager,
@@ -15,7 +15,7 @@ jest.mock('../../../store/background-connection', () => ({
     mockSubmitRequestToBackground(...args),
 }));
 
-jest.mock('../../../../shared/lib/selectors/accounts', () => ({
+jest.mock('../../../selectors/accounts', () => ({
   getSelectedInternalAccount: jest.fn(),
 }));
 

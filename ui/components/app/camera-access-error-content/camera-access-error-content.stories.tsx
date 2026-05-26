@@ -60,8 +60,7 @@ Locale copy lives inside the component (\`useI18nContext\`).
     },
     onContinue: {
       action: 'onContinue',
-      description:
-        'Primary button handler. Label is always the `continue` locale string.',
+      description: 'Primary button handler. Label is always the `continue` locale string.',
     },
     continueLoading: {
       control: 'boolean',

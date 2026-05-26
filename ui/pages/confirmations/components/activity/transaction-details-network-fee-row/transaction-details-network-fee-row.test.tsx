@@ -9,7 +9,7 @@ const mockStore = configureMockStore([]);
 
 const mockState = {
   metamask: {
-    currentCurrency: 'brl',
+    currentCurrency: 'usd',
     currencyRates: {
       ETH: { conversionRate: 2000 },
     },
@@ -55,8 +55,7 @@ describe('TransactionDetailsNetworkFeeRow', () => {
   });
 
   it('renders formatted fee when networkFeeFiat is provided', () => {
-    const { queryByText, getByText } = render('5.25');
+    const { queryByText } = render('5.25');
     expect(queryByText('-')).not.toBeInTheDocument();
-    expect(getByText(/\$5[.,]25/u)).toBeInTheDocument();
   });
 });

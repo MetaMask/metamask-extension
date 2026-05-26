@@ -8,7 +8,7 @@ import {
   addTransaction,
   findNetworkClientIdByChainId,
 } from '../../../../../store/actions';
-import { getSelectedInternalAccount } from '../../../../../../shared/lib/selectors/accounts';
+import { getSelectedInternalAccount } from '../../../../../selectors';
 import {
   ConfirmationLoader,
   useConfirmationNavigation,
@@ -22,9 +22,13 @@ jest.mock('../../../../../store/actions', () => ({
   findNetworkClientIdByChainId: jest.fn(),
 }));
 
-jest.mock('../../../../../../shared/lib/selectors/accounts', () => ({
-  getSelectedInternalAccount: jest.fn(),
-}));
+jest.mock('../../../../../selectors', () => {
+  const actual = jest.requireActual('../../../../../selectors');
+  return {
+    ...actual,
+    getSelectedInternalAccount: jest.fn(),
+  };
+});
 
 jest.mock('../../../hooks/useConfirmationNavigation', () => {
   const actual = jest.requireActual('../../../hooks/useConfirmationNavigation');

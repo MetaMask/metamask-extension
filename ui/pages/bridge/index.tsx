@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
 import { isNonEvmChainId } from '@metamask/bridge-controller';
@@ -32,13 +32,11 @@ import { usePrefillFromSearchQuery } from '../../hooks/bridge/usePrefillFromSear
 import { usePrefillFromBridgeState } from '../../hooks/bridge/usePrefillFromBridgeState';
 import { useSmartSlippage } from '../../hooks/bridge/useSmartSlippage';
 import { transitionBack } from '../../components/ui/transition';
-import { useInitialBridgeTokens } from '../../hooks/bridge/useInitialBridgeTokens';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
 import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
 import { useRefreshSmartTransactionsLiveness } from './hooks/useRefreshSmartTransactionsLiveness';
-import { clearAllBridgeCacheItems } from './utils/cache';
 
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
@@ -74,15 +72,6 @@ const CrossChainSwap = () => {
   useTxAlerts();
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
-
-  // Pre-fetch the popular tokens list
-  const { fetchTokens } = useInitialBridgeTokens();
-  useEffect(() => {
-    fetchTokens();
-    return () => {
-      clearAllBridgeCacheItems();
-    };
-  }, [fetchTokens]);
 
   const handleBack = () => {
     transitionBack(() => navigateToDefaultRoute());

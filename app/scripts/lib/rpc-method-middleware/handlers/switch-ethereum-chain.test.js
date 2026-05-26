@@ -3,7 +3,7 @@ import {
   CHAIN_IDS,
   NETWORK_TYPES,
 } from '../../../../../shared/constants/network';
-import { switchEthereumChainHandler } from './switch-ethereum-chain';
+import switchEthereumChain from './switch-ethereum-chain';
 import EthChainUtils from './ethereum-chain-utils';
 
 jest.mock('./ethereum-chain-utils', () => ({
@@ -52,13 +52,7 @@ const createMockedHandler = () => {
   };
   const response = {};
   const handler = (request) =>
-    switchEthereumChainHandler.implementation(
-      request,
-      response,
-      next,
-      end,
-      mocks,
-    );
+    switchEthereumChain.implementation(request, response, next, end, mocks);
 
   return {
     mocks,
@@ -209,9 +203,8 @@ describe('switchEthereumChainHandler', () => {
   it('calls `switchChain` with `autoApprove: true` if the origin is a Snap', async () => {
     const { mocks } = createMockedHandler();
 
-    const switchEthereumChainImplementation =
-      switchEthereumChainHandler.implementation;
-    await switchEthereumChainImplementation(
+    const switchEthereumChainHandler = switchEthereumChain.implementation;
+    await switchEthereumChainHandler(
       {
         origin: 'npm:foo-snap',
         params: [{ chainId: CHAIN_IDS.MAINNET }],

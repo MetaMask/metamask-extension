@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import {
   ApprovalsMetaMaskState,
-  internalSelectPendingApproval,
+  selectPendingApproval,
 } from '../../../selectors';
 import { useConfirmationId } from './useConfirmationId';
 
@@ -10,7 +10,7 @@ export function useApprovalRequest() {
   const confirmationId = useConfirmationId();
 
   return useSelector((state) =>
-    internalSelectPendingApproval(
+    selectPendingApproval(
       state as ApprovalsMetaMaskState,
       confirmationId ?? '',
     ),

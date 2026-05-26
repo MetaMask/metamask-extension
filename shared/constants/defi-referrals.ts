@@ -26,7 +26,7 @@ export type DefiReferralPartnerConfig = {
   origin: string;
   /** Full referral URL including the referral code */
   referralUrl: string;
-  /** URL for link in the consent UI description */
+  /** URL for "Learn more" link in the consent UI */
   learnMoreUrl: string;
   /** Approval type string for ApprovalController */
   approvalType: string;

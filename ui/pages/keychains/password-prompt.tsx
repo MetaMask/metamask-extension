@@ -92,7 +92,7 @@ export function PasswordPrompt({
       <Box
         gap={4}
         data-testid="reveal-seed-password-footer"
-        className="w-full mt-auto cta-footer"
+        className="w-full mt-auto"
       >
         <Button
           size={ButtonSize.Lg}

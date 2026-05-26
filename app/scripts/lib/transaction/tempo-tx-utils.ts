@@ -26,6 +26,12 @@ const TEMPO_CONFIG: TempoConfig = {
         symbol: 'pathUSD',
       },
     },
+    '0xa5bf': {
+      defaultFeeToken: {
+        address: '0x20c0000000000000000000000000000000000000',
+        symbol: 'pathUSD',
+      },
+    },
   },
 } as const;
 

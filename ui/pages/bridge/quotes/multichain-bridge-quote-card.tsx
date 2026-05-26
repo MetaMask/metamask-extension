@@ -22,7 +22,6 @@ import {
   getFromToken,
   getSlippage,
   getIsSolanaSwap,
-  getIsRWASwap,
   getQuoteRequest,
   getIsToOrFromNonEvm,
   getIsStxEnabled,
@@ -47,8 +46,10 @@ import { useRewards } from '../../../hooks/bridge/useRewards';
 import { RewardsBadge } from '../../../components/app/rewards/RewardsBadge';
 import AddRewardsAccount from '../../../components/app/rewards/AddRewardsAccount';
 import { Skeleton } from '../../../components/component-library/skeleton';
-import { getGasFeesSponsoredNetworkEnabled } from '../../../selectors/selectors';
-import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
+import {
+  getGasFeesSponsoredNetworkEnabled,
+  isHardwareWallet,
+} from '../../../selectors/selectors';
 import { PriceImpactQuoteDetailsRow } from '../components/price-impact-quote-details-row';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
@@ -93,7 +94,6 @@ export const MultichainBridgeQuoteCard = ({
   const toToken = useSelector(getToToken);
   const slippage = useSelector(getSlippage);
   const isSolanaSwap = useSelector(getIsSolanaSwap);
-  const isRWASwap = useSelector(getIsRWASwap);
   const dispatch = useDispatch();
   const { isEstimatedReturnLow } = useSelector(
     getValidationErrors,
@@ -112,8 +112,8 @@ export const MultichainBridgeQuoteCard = ({
   const gasSponsored = activeQuote?.quote?.gasSponsored ?? false;
   const isCrossChainBridge = Boolean(
     fromToken?.chainId &&
-    toToken?.chainId &&
-    fromToken.chainId !== toToken.chainId,
+      toToken?.chainId &&
+      fromToken.chainId !== toToken.chainId,
   );
 
   const isCurrentNetworkGasSponsored = useMemo(() => {
@@ -378,7 +378,7 @@ export const MultichainBridgeQuoteCard = ({
               variant={TextVariant.bodySm}
               color={TextColor.textAlternative}
             >
-              {slippage === undefined && (isSolanaSwap || isRWASwap)
+              {slippage === undefined && isSolanaSwap
                 ? t('slippageAuto')
                 : `${slippage}%`}
             </Text>

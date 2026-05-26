@@ -267,10 +267,6 @@ export function mapHardwareWalletRecoveryErrorType(
       return MetaMetricsHardwareWalletRecoveryErrorType.EthereumAppNotOpened;
     case ErrorCode.DeviceStateBlindSignNotSupported:
       return MetaMetricsHardwareWalletRecoveryErrorType.BlindSigningNotEnabled;
-    case ErrorCode.PermissionCameraDenied:
-      return MetaMetricsHardwareWalletRecoveryErrorType.CameraPermissionDenied;
-    case ErrorCode.PermissionCameraPromptDismissed:
-      return MetaMetricsHardwareWalletRecoveryErrorType.CameraPermissionPromptDismissed;
     default:
       return MetaMetricsHardwareWalletRecoveryErrorType.GenericError;
   }

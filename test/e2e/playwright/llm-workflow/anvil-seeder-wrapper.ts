@@ -1,7 +1,10 @@
 import type { SmartContractName, Hardfork } from '@metamask/client-mcp-core';
 import type { Anvil } from '../../seeder/anvil';
-import AnvilSeeder from '../../seeder/anvil-seeder';
-import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+const AnvilSeeder = require('../../seeder/anvil-seeder');
+// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 
 export type { SmartContractName, Hardfork };
 
@@ -22,7 +25,7 @@ export type DeployedContract = {
 };
 
 /**
- * TypeScript wrapper around the existing JS AnvilSeeder for daemon integration.
+ * TypeScript wrapper around the existing JS AnvilSeeder for MCP server integration.
  * Provides typed contract deployment and tracking for LLM agents.
  */
 export class AnvilSeederWrapper {

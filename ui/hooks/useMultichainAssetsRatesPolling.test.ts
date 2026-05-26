@@ -5,11 +5,11 @@ import {
   getCompletedOnboarding,
   getIsUnlocked,
 } from '../ducks/metamask/metamask';
-import { getUseCurrencyRateCheck } from '../selectors';
 import {
-  type AccountsState,
+  AccountsState,
   getSelectedInternalAccount,
-} from '../../shared/lib/selectors/accounts';
+  getUseCurrencyRateCheck,
+} from '../selectors';
 import usePolling from './usePolling';
 import useMultichainAssetsRatesPolling from './useMultichainAssetsRatesPolling';
 
@@ -21,7 +21,6 @@ jest.mock('react-redux');
 jest.mock('./usePolling');
 jest.mock('../ducks/metamask/metamask');
 jest.mock('../selectors');
-jest.mock('../../shared/lib/selectors/accounts');
 
 const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
 const mockUsePolling = usePolling as jest.MockedFunction<typeof usePolling>;

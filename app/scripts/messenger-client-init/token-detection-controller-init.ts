@@ -5,7 +5,6 @@ import {
   TokenDetectionControllerMessenger,
   TokenDetectionControllerInitMessenger,
 } from './messengers';
-import { tokenListService } from './token-list-service';
 
 export const TokenDetectionControllerInit: MessengerClientInitFunction<
   TokenDetectionController,
@@ -31,7 +30,6 @@ export const TokenDetectionControllerInit: MessengerClientInitFunction<
     useTokenDetection: () => Boolean(getRetypedPrefState().useTokenDetection),
     useExternalServices: () =>
       Boolean(getRetypedPrefState().useExternalServices),
-    tokenListService,
   });
 
   return {

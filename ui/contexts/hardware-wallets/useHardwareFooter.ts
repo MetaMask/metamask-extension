@@ -4,7 +4,6 @@ import {
 } from '@metamask/transaction-controller';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { isCorrectDeveloperTransactionType } from '../../../shared/lib/confirmation.utils';
-import { isFirefoxBrowser } from '../../../shared/lib/browser-runtime.utils';
 import { isSignatureTransactionType } from '../../pages/confirmations/utils';
 import {
   useHardwareWalletActions,
@@ -16,11 +15,7 @@ import {
   isHardwareWalletError,
   isUserRejectedHardwareWalletError,
 } from './rpcErrorUtils';
-import {
-  ConnectionStatus,
-  HardwareWalletType,
-  type EnsureDeviceReadyOptions,
-} from './types';
+import { ConnectionStatus, type EnsureDeviceReadyOptions } from './types';
 import { useHardwareWalletMetrics } from './useHardwareWalletMetrics';
 
 type UseHardwareFooterArgs = {
@@ -28,21 +23,6 @@ type UseHardwareFooterArgs = {
   currentConfirmationId?: string;
   onUserRejectedHardwareWalletError: () => Promise<void>;
 };
-
-/**
- * Returns true when the transport is established (`Connected`) or when a full
- * readiness probe has succeeded (`Ready`). `Connected` alone is enough to show
- * the primary "Confirm" CTA: `ensureDeviceReady` still runs on submit before signing.
- *
- * @param status - Current `ConnectionStatus` from hardware wallet context.
- */
-export function isHardwareConnectionReadyForConfirmFooter(
-  status: ConnectionStatus,
-): boolean {
-  return (
-    status === ConnectionStatus.Ready || status === ConnectionStatus.Connected
-  );
-}
 
 export type SubmitPreflightCheckOptions = {
   /**
@@ -129,27 +109,12 @@ export const useHardwareFooter = ({
       return true;
     }
 
-    // QR wallets don't need a physical device connection before showing the
-    // primary footer CTA. The Confirm action still runs ensureDeviceReady,
-    // which handles camera permission before signing.
-    if (walletType === HardwareWalletType.Qr) {
-      return true;
-    }
-
-    // Trezor on Firefox uses a different connection flow and does not require
-    // the "Connect Trezor" preflight step before the Confirm CTA.
-    // ensureDeviceReady still runs on submit to establish the session.
-    if (walletType === HardwareWalletType.Trezor && isFirefoxBrowser()) {
-      return true;
-    }
-
-    return isHardwareConnectionReadyForConfirmFooter(connectionState.status);
+    return ConnectionStatus.Ready === connectionState.status;
   }, [
     connectionState.status,
     hasPreflightSucceeded,
     inE2e,
     isHardwareWalletAccount,
-    walletType,
   ]);
 
   const onSubmitPreflightCheck = useCallback(

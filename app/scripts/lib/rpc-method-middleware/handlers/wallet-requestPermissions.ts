@@ -19,9 +19,8 @@ import type {
   PendingJsonRpcResponse,
 } from '@metamask/utils';
 import type {
+  AsyncJsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,
-  JsonRpcEngineNextCallback,
-  MethodHandler,
 } from '@metamask/json-rpc-engine';
 import {
   CaveatTypes,
@@ -31,37 +30,19 @@ import { PermissionNames } from '../../../controllers/permissions';
 import type {
   GetAccounts,
   GetCaip25PermissionFromLegacyPermissionsForOrigin,
+  GrantedPermissions,
   RequestPermissionsForOrigin,
 } from './types';
 
-export type RequestPermissionsHooks = {
-  getAccounts: GetAccounts;
-  requestPermissionsForOrigin: RequestPermissionsForOrigin;
-  getCaip25PermissionFromLegacyPermissionsForOrigin: GetCaip25PermissionFromLegacyPermissionsForOrigin;
-};
-
-type RequestPermissionsConstraint = MethodHandler<
-  RequestPermissionsHooks,
-  never,
-  [RequestedPermissions],
-  Json,
-  { origin: string }
->;
-
 export const requestPermissionsHandler = {
+  methodNames: [MethodNames.RequestPermissions],
   implementation: requestPermissionsImplementation,
   hookNames: {
     getAccounts: true,
     requestPermissionsForOrigin: true,
     getCaip25PermissionFromLegacyPermissionsForOrigin: true,
   },
-} satisfies RequestPermissionsConstraint;
-
-const requestPermissionsHandlers = {
-  [MethodNames.RequestPermissions]: requestPermissionsHandler,
 };
-
-export default requestPermissionsHandlers;
 
 /**
  * Request Permissions implementation to be used in JsonRpcEngine middleware.
@@ -79,7 +60,7 @@ export default requestPermissionsHandlers;
 async function requestPermissionsImplementation(
   req: JsonRpcRequest<[RequestedPermissions]> & { origin: string },
   res: PendingJsonRpcResponse<Json>,
-  _next: JsonRpcEngineNextCallback,
+  _next: AsyncJsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
   {
     getAccounts,
@@ -122,8 +103,7 @@ async function requestPermissionsImplementation(
     };
   }
 
-  let grantedPermissions: Awaited<ReturnType<RequestPermissionsForOrigin>>[0] =
-    {};
+  let grantedPermissions: GrantedPermissions = {};
 
   const [frozenGrantedPermissions] =
     await requestPermissionsForOrigin(requestedPermissions);

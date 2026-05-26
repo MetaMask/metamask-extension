@@ -1,9 +1,5 @@
-// Polyfill setImmediate which jsdom removes but tsx/cjs needs
-globalThis.setImmediate =
-  globalThis.setImmediate || ((fn, ...args) => setTimeout(fn, 0, ...args));
-
 require('@babel/register');
-require('tsx/cjs');
+require('ts-node').register({ transpileOnly: true });
 
 require('./helpers/setup-helper');
 

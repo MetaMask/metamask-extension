@@ -8,6 +8,7 @@ import {
   hideLoadingIndication,
 } from '../store/actions';
 import { getPna25Acknowledged } from '../selectors/metametrics';
+import { getRemoteFeatureFlags } from '../selectors/remote-feature-flags';
 
 /**
  * Provides a hook to enable MetaMetrics tracking.
@@ -25,6 +26,7 @@ export function useEnableMetametrics(): {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const pna25Acknowledged = useSelector(getPna25Acknowledged);
+  const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
 
   const enableMetametrics = useCallback(async () => {
     setLoading(true);
@@ -33,7 +35,8 @@ export function useEnableMetametrics(): {
 
     try {
       await dispatch(setParticipateInMetaMetrics(true));
-      if (pna25Acknowledged === false) {
+      const isPna25Enabled = remoteFeatureFlags?.extensionUxPna25;
+      if (isPna25Enabled && pna25Acknowledged === false) {
         await dispatch(setPna25Acknowledged(true));
       }
     } catch (e) {
@@ -46,7 +49,7 @@ export function useEnableMetametrics(): {
     }
 
     dispatch(hideLoadingIndication());
-  }, [dispatch, pna25Acknowledged]);
+  }, [dispatch, pna25Acknowledged, remoteFeatureFlags]);
 
   return {
     enableMetametrics,

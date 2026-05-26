@@ -54,6 +54,7 @@ export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
           .build(),
         manifestFlags: {
           testing: {
+            disableSync: true,
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
         },

@@ -9,7 +9,6 @@ import {
   Caip25EndowmentPermissionName,
   setNonSCACaipAccountIdsInCaip25CaveatValue,
   getCaipAccountIdsFromCaip25CaveatValue,
-  isCaipAccountIdInPermittedAccountIds,
   isInternalAccountInPermittedAccountIds,
   getAllScopesFromCaip25CaveatValue,
   setChainIdsInCaip25CaveatValue,
@@ -20,21 +19,14 @@ import {
   type CaipChainId,
   parseCaipAccountId,
   parseCaipChainId,
-  toCaipAccountId,
 } from '@metamask/utils';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type { NetworkState } from '@metamask/network-controller';
 import type { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
-import log from 'loglevel';
 import { getNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
 
 export type PermissionBackgroundApiOptions = {
-  // Invoked after permitted accounts are extended for an origin
-  onPermittedAccountsAdded?: (payload: {
-    origin: string;
-    newCaipAccountIds: CaipAccountId[];
-  }) => void;
   permissionController: {
     getCaveat(
       origin: string,
@@ -80,11 +72,6 @@ export type PermissionBackgroundApiOptions = {
       multichainNetworkConfigurationsByChainId: MultichainNetworkControllerState['multichainNetworkConfigurationsByChainId'];
     };
   };
-  snapController: {
-    state: {
-      snaps: Record<string, { enabled: boolean }>;
-    };
-  };
 };
 
 export function getPermissionBackgroundApiMethods({
@@ -93,8 +80,6 @@ export function getPermissionBackgroundApiMethods({
   accountsController,
   networkController,
   multichainNetworkController,
-  snapController,
-  onPermittedAccountsAdded,
 }: PermissionBackgroundApiOptions) {
   // Returns the CAIP-25 caveat or undefined if it does not exist
   const getCaip25Caveat = (
@@ -153,7 +138,6 @@ export function getPermissionBackgroundApiMethods({
           multichainNetworkController.state
             .multichainNetworkConfigurationsByChainId,
         internalAccounts: accountsController.state.internalAccounts,
-        snaps: snapController.state.snaps,
       }),
     );
 
@@ -268,10 +252,7 @@ export function getPermissionBackgroundApiMethods({
     // setPermittedAccounts currently sets accounts on all matching
     // namespaces, not just the exact CaipChainId.
     const caipAccountIds = internalAccounts.map((internalAccount) => {
-      const { namespace, reference } = parseCaipChainId(
-        internalAccount.scopes[0],
-      );
-      return toCaipAccountId(namespace, reference, internalAccount.address);
+      return `${internalAccount.scopes[0]}:${internalAccount.address}`;
     });
 
     const existingPermittedAccountIds = getCaipAccountIdsFromCaip25CaveatValue(
@@ -279,32 +260,10 @@ export function getPermissionBackgroundApiMethods({
     );
 
     const updatedAccountIds = Array.from(
-      new Set<CaipAccountId>([
-        ...existingPermittedAccountIds,
-        ...caipAccountIds,
-      ]),
+      new Set([...existingPermittedAccountIds, ...caipAccountIds]),
     );
 
-    const newCaipAccountIds = caipAccountIds.filter(
-      (id) =>
-        !isCaipAccountIdInPermittedAccountIds(id, existingPermittedAccountIds),
-    );
-
-    setPermittedAccounts(origin, updatedAccountIds);
-
-    if (newCaipAccountIds.length > 0) {
-      try {
-        onPermittedAccountsAdded?.({
-          origin,
-          newCaipAccountIds,
-        });
-      } catch (error) {
-        log.error(
-          'PermissionBackgroundApi onPermittedAccountsAdded callback threw:',
-          error,
-        );
-      }
-    }
+    setPermittedAccounts(origin, updatedAccountIds as CaipAccountId[]);
   };
 
   const addMoreChains = (origin: string, chainIds: string[]): void => {

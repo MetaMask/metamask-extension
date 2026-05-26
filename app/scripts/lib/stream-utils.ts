@@ -1,5 +1,5 @@
 import ObjectMultiplex from '@metamask/object-multiplex';
-// @ts-expect-error @types/readable-stream does not export pipeline or Duplex
+// @ts-expect-error types/readable-stream.d.ts does not get picked up by ts-node
 import { pipeline, Duplex } from 'readable-stream';
 
 /**

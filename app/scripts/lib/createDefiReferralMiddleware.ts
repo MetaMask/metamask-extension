@@ -29,13 +29,7 @@ const WAIT_AFTER_FIRST_REQUEST_MS = SECOND * 10;
 export enum ReferralTriggerType {
   NewConnection = 'new_connection',
   OnNavigateConnectedTab = 'on_navigate_connected_tab',
-  // Permitted accounts were extended for the origin via the permission background API
-  PermittedAccountAdded = 'permitted_account_added',
 }
-
-type HandleDefiReferralOptions = {
-  activePermittedAddressOverride?: string;
-};
 
 function isExtendedJSONRPCRequest(
   req: JsonRpcRequest,
@@ -110,7 +104,6 @@ export function createDefiReferralMiddleware(
     partner: DefiReferralPartnerConfig,
     tabId: number,
     triggerType: ReferralTriggerType,
-    options?: HandleDefiReferralOptions,
   ) => Promise<void>,
 ) {
   return createAsyncMiddleware(

@@ -32,6 +32,7 @@ import {
   mockTokenApiAssets,
   simulateSolanaTransaction,
   buildSolanaTestSpecificMock,
+  mockSecurityAlertBulkScan,
 } from './common-solana';
 import succeededSplTokenTransaction from './mocks/succeededSplTokenTransaction.json';
 
@@ -228,6 +229,7 @@ const mockSendWithUSDCVisible = isUnifiedAssetsEnabled
           })),
         await mockGetTokenAccountsUSDCOnly(mockServer),
         await mockGetMintAccountInfo(mockServer),
+        await mockSecurityAlertBulkScan(mockServer),
       ],
     })
   : async (mockServer: Mockttp): Promise<MockedEndpoint[]> => [
@@ -247,6 +249,7 @@ const mockSendWithUSDCVisible = isUnifiedAssetsEnabled
       await mockGetSuccessSplTokenTransaction(mockServer),
       await mockGetMintAccountInfo(mockServer),
       await mockTokenApiAssets(mockServer),
+      await mockSecurityAlertBulkScan(mockServer),
     ];
 
 async function mockSendSPLTokenFailed(
@@ -274,6 +277,7 @@ async function mockSendSPLTokenFailed(
     await mockGetFailedSignaturesForAddress(mockServer),
     await mockGetFailedTransaction(mockServer),
     await mockGetMintAccountInfo(mockServer),
+    await mockSecurityAlertBulkScan(mockServer),
     isUnifiedAssetsEnabled
       ? await mockSolanaTokenApiAssets(mockServer)
       : await mockTokenApiAssets(mockServer),

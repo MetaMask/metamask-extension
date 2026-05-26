@@ -7,7 +7,7 @@ import {
   findNetworkClientIdByChainId,
 } from '../../../../store/actions';
 import { getAllTokens } from '../../../../selectors/selectors';
-import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
+import { getSelectedInternalAccount } from '../../../../selectors/accounts';
 
 const log = createProjectLogger('add-token');
 

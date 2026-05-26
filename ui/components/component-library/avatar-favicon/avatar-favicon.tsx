@@ -46,9 +46,7 @@ const Favicon = (props: { src?: string; name: string }) => {
 };
 
 /**
- * @deprecated Please update your code to use `AvatarFavicon` from `@metamask/design-system-react`.
- * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#from-extension-component-library | Migration Guide}
- * @see {@link https://metamask.github.io/metamask-design-system/?path=/docs/react-components-avatarfavicon--docs | Storybook Documentation}
+ * @deprecated Please update your code to use `AvatarFavicon` from `@metamask/design-system-react`
  */
 export const AvatarFavicon: AvatarFaviconComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

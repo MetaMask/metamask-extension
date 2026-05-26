@@ -13,6 +13,10 @@ import { MetaMaskMockServerCapability } from './mock-server';
 
 export type CreateMetaMaskContextOptions = {
   config?: Partial<E2EEnvironmentConfig>;
+  ports?: {
+    anvil?: number;
+    fixtureServer?: number;
+  };
   mockServer?: {
     enabled?: boolean;
     port?: number;
@@ -29,6 +33,7 @@ export type CreateMetaMaskContextOptions = {
 const DEFAULT_BASE_CONFIG: BaseEnvironmentConfig = {
   extensionName: 'MetaMask',
   defaultPassword: 'correct horse battery staple',
+  toolPrefix: 'mm',
   artifactsDir: 'test-artifacts',
 };
 
@@ -53,12 +58,11 @@ export function createMetaMaskE2EContext(
   };
 
   const fixture = new MetaMaskFixtureCapability({
-    port: config.ports?.fixtureServer,
-    anvilPort: config.ports?.anvil,
+    port: options.ports?.fixtureServer,
   });
 
   const chain = new MetaMaskChainCapability({
-    port: config.ports?.anvil,
+    port: options.ports?.anvil,
     chainId: config.defaultChainId,
     forkUrl: options.forkUrl,
     forkBlockNumber: options.forkBlockNumber,

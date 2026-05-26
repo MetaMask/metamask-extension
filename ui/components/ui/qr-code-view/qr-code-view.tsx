@@ -25,8 +25,9 @@ import {
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 
 function mapStateToProps(state: Pick<MetaMaskReduxState, 'appState'>) {
-  const { warning } = state.appState;
+  const { buyView, warning } = state.appState;
   return {
+    buyView,
     warning,
   };
 }

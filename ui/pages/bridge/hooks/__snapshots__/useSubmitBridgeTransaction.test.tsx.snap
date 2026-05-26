@@ -156,10 +156,6 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
       "usd_quoted_return": 12,
       "warnings": [],
     },
-    undefined,
-    undefined,
-    undefined,
-    null,
   ],
 ]
 `;
@@ -312,10 +308,6 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
       "usd_quoted_return": 12,
       "warnings": [],
     },
-    undefined,
-    undefined,
-    undefined,
-    null,
   ],
 ]
 `;

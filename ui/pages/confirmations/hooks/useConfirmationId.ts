@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { firstPendingConfirmationSelector } from '../selectors/confirm';
+import { oldestPendingConfirmationSelector } from '../selectors/confirm';
 
 /**
  * Resolves the current confirmation ID from URL params or the oldest pending
@@ -12,7 +12,7 @@ import { firstPendingConfirmationSelector } from '../selectors/confirm';
  */
 export function useConfirmationId(): string | undefined {
   const { id: paramsConfirmationId } = useParams<{ id: string }>();
-  const oldestPendingApproval = useSelector(firstPendingConfirmationSelector);
+  const oldestPendingApproval = useSelector(oldestPendingConfirmationSelector);
 
   return paramsConfirmationId ?? oldestPendingApproval?.id;
 }

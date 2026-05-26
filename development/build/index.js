@@ -63,7 +63,7 @@ if (false) {
   require('eslint-plugin-import-x');
   require('eslint-plugin-jsdoc');
   require('eslint-plugin-n');
-  // eslint-plugin-prettier require removed — formatting handled by oxfmt
+  require('eslint-plugin-prettier');
   require('eslint-plugin-react');
   require('eslint-plugin-react-hooks');
   require('eslint-plugin-jest');

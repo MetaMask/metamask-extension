@@ -27,8 +27,8 @@ import {
   createShallowEqualInputAndResultSelector,
   createParameterizedShallowEqualSelector,
 } from '../../shared/lib/selectors/selector-creators';
-import { firstPendingConfirmationSelector } from '../pages/confirmations/selectors/confirm';
-import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
+import { oldestPendingConfirmationSelector } from '../pages/confirmations/selectors/confirm';
+import { getSelectedInternalAccount } from './accounts';
 import {
   hasPendingApprovals,
   getApprovalRequestsByType,
@@ -779,11 +779,11 @@ const selectIsTransactionTypeRedesigned = createSelector(
 
 export const selectIsRedesignedConfirmationType = createSelector(
   (state, paramsId) => {
-    const id = paramsId ?? firstPendingConfirmationSelector(state)?.id;
+    const id = paramsId ?? oldestPendingConfirmationSelector(state)?.id;
     return selectIsTransactionTypeRedesigned(state, id);
   },
   (state, paramsId) => {
-    const id = paramsId ?? firstPendingConfirmationSelector(state)?.id;
+    const id = paramsId ?? oldestPendingConfirmationSelector(state)?.id;
     return getPendingApprovals(state).find((a) => a.id === id)?.type;
   },
   (isRedesignedTx, approvalType) =>

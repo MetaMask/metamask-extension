@@ -28,18 +28,9 @@ export const SrpList = ({
   return (
     <Box
       className={classnames('srp-list__container', {
-        'min-h-0': isSettingsPage,
+        'srp-list__container--settings': isSettingsPage,
       })}
       padding={isSettingsPage ? 0 : 4}
-      style={
-        isSettingsPage
-          ? {
-              maxHeight: '100%',
-              minHeight: 0,
-              overflowY: 'auto',
-            }
-          : undefined
-      }
       data-testid="srp-list"
     >
       {entropyWalletIds.map((walletId, index) => {

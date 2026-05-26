@@ -178,8 +178,6 @@ export function isRetryableHardwareWalletError(error: HardwareWalletError) {
     case ErrorCode.ConnectionClosed:
     case ErrorCode.DeviceDisconnected:
     case ErrorCode.DeviceStateBlindSignNotSupported:
-    case ErrorCode.PermissionCameraDenied:
-    case ErrorCode.PermissionCameraPromptDismissed:
       return true;
     default:
       return false;

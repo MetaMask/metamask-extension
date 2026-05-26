@@ -4,15 +4,6 @@ import type { BridgeToken } from '../../../ducks/bridge/types';
 import { STABLECOIN_ASSET_IDS } from './stablecoins';
 
 /**
- * Returns true when a token is an RWA token (has rwaData present).
- *
- * @param token
- */
-function isRWAToken(token?: BridgeToken | null): boolean {
-  return Boolean(token?.rwaData);
-}
-
-/**
  * Slippage values for different scenarios
  */
 export enum SlippageValue {
@@ -27,8 +18,6 @@ export enum SlippageValue {
 export type SlippageContext = {
   fromToken?: BridgeToken;
   toToken?: BridgeToken;
-  /** Whether the RWA tokens feature flag is currently enabled */
-  isRWAEnabled?: boolean;
 };
 
 /**
@@ -63,7 +52,6 @@ function isStablecoinPair(
  * Rules:
  * - Bridge (cross-chain): Always 2%
  * - Swap on Solana: Always undefined (AUTO mode)
- * - Swap where source or destination is an RWA token (and RWA feature is enabled): Always undefined (AUTO mode)
  * - Swap on EVM stablecoin pairs (same chain only): 0.5%
  * - Swap on EVM other pairs: 2%
  *
@@ -72,7 +60,7 @@ function isStablecoinPair(
 export function calculateSlippage(
   context: SlippageContext,
 ): number | undefined {
-  const { fromToken, toToken, isRWAEnabled } = context;
+  const { fromToken, toToken } = context;
 
   // If no source chain, we can't determine the type
   if (!fromToken?.chainId || !toToken?.chainId) {
@@ -89,12 +77,7 @@ export function calculateSlippage(
     return undefined;
   }
 
-  // 3. RWA token on either side → undefined (AUTO mode) — only when RWA feature is enabled
-  if (isRWAEnabled && (isRWAToken(fromToken) || isRWAToken(toToken))) {
-    return undefined;
-  }
-
-  // 4. EVM swap → check for stablecoin pair
+  // 3. EVM swap → check for stablecoin pair
   if (isStablecoinPair(fromToken, toToken)) {
     return SlippageValue.EvmStablecoin; // 0.5%
   }
@@ -110,7 +93,7 @@ export function calculateSlippage(
  * @param context
  */
 export function getSlippageReason(context: SlippageContext): string {
-  const { fromToken, toToken, isRWAEnabled } = context;
+  const { fromToken, toToken } = context;
 
   if (!fromToken?.chainId || !toToken?.chainId) {
     return 'Incomplete chain setup - using bridge default';
@@ -122,10 +105,6 @@ export function getSlippageReason(context: SlippageContext): string {
 
   if (isSolanaChainId(fromToken.chainId)) {
     return 'Solana swap (AUTO mode)';
-  }
-
-  if (isRWAEnabled && (isRWAToken(fromToken) || isRWAToken(toToken))) {
-    return 'RWA token swap (AUTO mode)';
   }
 
   if (isStablecoinPair(fromToken, toToken)) {

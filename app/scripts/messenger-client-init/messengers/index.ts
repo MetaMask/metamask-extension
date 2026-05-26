@@ -141,7 +141,6 @@ import {
   getAccountTrackerControllerMessenger,
 } from './account-tracker-controller-messenger';
 import { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
-import { getPasskeyControllerMessenger } from './passkey-controller-messenger';
 import {
   getRemoteFeatureFlagControllerInitMessenger,
   getRemoteFeatureFlagControllerMessenger,
@@ -308,8 +307,6 @@ export {
   getNameControllerInitMessenger,
 } from './name-controller-messenger';
 export { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
-export type { PasskeyControllerMessenger } from './passkey-controller-messenger';
-export { getPasskeyControllerMessenger } from './passkey-controller-messenger';
 export { getPreferencesControllerMessenger } from './preferences-controller-messenger';
 export type {
   PermissionControllerMessenger,
@@ -356,7 +353,10 @@ export {
   getTokenBalancesControllerMessenger,
   getTokenBalancesControllerInitMessenger,
 } from './token-balances-controller-messenger';
-export type { StaticAssetsControllerInitMessenger } from './static-assets-controller-messenger';
+export type {
+  StaticAssetsControllerMessenger,
+  StaticAssetsControllerInitMessenger,
+} from './static-assets-controller-messenger';
 export {
   getStaticAssetsControllerMessenger,
   getStaticAssetsControllerInitMessenger,
@@ -604,10 +604,6 @@ export const MESSENGER_FACTORIES = {
   },
   OnboardingController: {
     getMessenger: getOnboardingControllerMessenger,
-    getInitMessenger: noop,
-  },
-  PasskeyController: {
-    getMessenger: getPasskeyControllerMessenger,
     getInitMessenger: noop,
   },
   PermissionController: {

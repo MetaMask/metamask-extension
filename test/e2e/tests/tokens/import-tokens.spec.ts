@@ -200,7 +200,7 @@ async function mockSpotPricesV3(mockServer: Mockttp) {
 async function mockTokens(mockServer: Mockttp) {
   return [
     await mockServer
-      .forGet(/^https:\/\/token\.api\.cx\.metamask\.io\/tokens\/1(\?.*)?$/u)
+      .forGet('https://token.api.cx.metamask.io/tokens/1')
       .thenCallback(() => {
         return {
           statusCode: 200,
@@ -272,7 +272,7 @@ async function mockTokens(mockServer: Mockttp) {
         };
       }),
     await mockServer
-      .forGet(/^https:\/\/token\.api\.cx\.metamask\.io\/tokens\/137(\?.*)?$/u)
+      .forGet('https://token.api.cx.metamask.io/tokens/137')
       .thenCallback(() => {
         return {
           statusCode: 200,
@@ -510,8 +510,7 @@ describe('Import flow', function () {
 
         // Native Tokens: Ethereum ETH, Linea ETH, Base ETH
         // ERC20 Tokens: Chain Games, Chai, ChangeX
-        // Plus mUSD now added by default
-        await tokenList.checkTokenItemNumber(7);
+        await tokenList.checkTokenItemNumber(6);
         await tokenList.checkTokenExistsInList('Ethereum');
         await tokenList.checkTokenExistsInList('Chain Games');
         await tokenList.checkTokenExistsInList('ChangeX');

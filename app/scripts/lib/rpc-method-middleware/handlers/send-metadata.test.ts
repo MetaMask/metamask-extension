@@ -1,7 +1,8 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
-import { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
+import { PendingJsonRpcResponse } from '@metamask/utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import { sendMetadataHandler, SubjectMetadataToAdd } from './send-metadata';
+import { HandlerRequestType as SendMetadataHandlerRequest } from './types';
+import sendMetadata, { SubjectMetadataToAdd } from './send-metadata';
 
 describe('SendMetaData', () => {
   const paramsData = {
@@ -11,13 +12,13 @@ describe('SendMetaData', () => {
   };
 
   it('should do nothing and return true', async () => {
-    const req = {
+    const req: SendMetadataHandlerRequest<SubjectMetadataToAdd> = {
       origin: 'testOrigin',
       params: paramsData,
       id: '22',
       jsonrpc: '2.0',
       method: MESSAGE_TYPE.SEND_METADATA,
-    } satisfies JsonRpcRequest<SubjectMetadataToAdd> & { origin: string };
+    };
 
     const res: PendingJsonRpcResponse<true> = {
       id: '22',
@@ -26,7 +27,7 @@ describe('SendMetaData', () => {
     };
 
     const mockEnd: JsonRpcEngineEndCallback = jest.fn();
-    sendMetadataHandler.implementation(req, res, jest.fn(), mockEnd);
+    sendMetadata.implementation(req, res, jest.fn(), mockEnd);
     expect(res.result).toStrictEqual(true);
     expect(mockEnd).toHaveBeenCalled();
   });

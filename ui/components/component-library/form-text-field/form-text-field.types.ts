@@ -15,10 +15,8 @@ export enum FormTextFieldSize {
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export interface FormTextFieldStyleUtilityProps extends Omit<
-  TextFieldStyleUtilityProps,
-  'size'
-> {
+export interface FormTextFieldStyleUtilityProps
+  extends Omit<TextFieldStyleUtilityProps, 'size'> {
   /*
    * Additional classNames to be added to the FormTextField component
    */
@@ -43,7 +41,8 @@ export interface FormTextFieldStyleUtilityProps extends Omit<
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export interface FormTextFieldWithLabelProps extends FormTextFieldStyleUtilityProps {
+export interface FormTextFieldWithLabelProps
+  extends FormTextFieldStyleUtilityProps {
   /*
    * label to be rendered above the FormTextField
    * if label is provided, id is required
@@ -58,7 +57,8 @@ export interface FormTextFieldWithLabelProps extends FormTextFieldStyleUtilityPr
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export interface FormTextFieldWithoutLabelProps extends FormTextFieldStyleUtilityProps {
+export interface FormTextFieldWithoutLabelProps
+  extends FormTextFieldStyleUtilityProps {
   /*
    * This is for when label is not provided, that way we can optionally still pass an id
    */

@@ -11,10 +11,6 @@ import {
   type TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import {
-  SignatureRequestStatus,
-  SignatureRequestType as SignatureControllerRequestType,
-} from '@metamask/signature-controller';
 import configureStore from '../store/store';
 import {
   getMockContractInteractionConfirmState,
@@ -108,24 +104,7 @@ describe('useHardwareWalletRecoveryLocation', () => {
       ...unapprovedPersonalSignMsg,
       id: 'sig-1',
     } as SignatureRequestType;
-    const state = getMockPersonalSignConfirmStateForRequest(msg, {
-      metamask: {
-        signatureRequests: {
-          'sig-1': {
-            id: 'sig-1',
-            chainId: unapprovedPersonalSignMsg.chainId,
-            networkClientId: 'mainnet',
-            status: SignatureRequestStatus.Unapproved,
-            time: Date.now(),
-            type: SignatureControllerRequestType.PersonalSign,
-            messageParams: {
-              from: unapprovedPersonalSignMsg.msgParams?.from ?? '0x0',
-              data: unapprovedPersonalSignMsg.msgParams?.data ?? '0x',
-            },
-          },
-        },
-      },
-    });
+    const state = getMockPersonalSignConfirmStateForRequest(msg);
     const store = configureStore(state);
     const { result } = renderHook(() => useHardwareWalletRecoveryLocation(), {
       wrapper: createHookWrapper(

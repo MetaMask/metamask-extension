@@ -1,7 +1,9 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
-import { getGasFeesSponsoredNetworkEnabled } from '../selectors';
-import { isHardwareWallet } from '../../shared/lib/selectors/keyring';
+import {
+  getGasFeesSponsoredNetworkEnabled,
+  isHardwareWallet,
+} from '../selectors';
 import { useIsNetworkGasSponsored } from './useIsNetworkGasSponsored';
 
 jest.mock('react-redux', () => ({
@@ -10,9 +12,6 @@ jest.mock('react-redux', () => ({
 
 jest.mock('../selectors', () => ({
   getGasFeesSponsoredNetworkEnabled: jest.fn(),
-}));
-jest.mock('../../shared/lib/selectors/keyring', () => ({
-  ...jest.requireActual('../../shared/lib/selectors/keyring'),
   isHardwareWallet: jest.fn(),
 }));
 

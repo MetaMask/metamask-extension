@@ -23,7 +23,7 @@ const createMockedHandler = () => {
   const revokePermissionsForOrigin = jest.fn();
   const rejectApprovalRequestsForOrigin = jest.fn();
 
-  const response: PendingJsonRpcResponse<null> = {
+  const response: PendingJsonRpcResponse<Json> = {
     jsonrpc: '2.0' as const,
     id: 0,
   };

@@ -96,7 +96,3 @@ export const getIsSidePanelFeatureEnabled = (): boolean => {
 
   return true;
 };
-
-export const getIsPasskeyFeatureEnabled = (): boolean => {
-  return process.env.PASSKEY_ENABLED?.toString() === 'true';
-};

@@ -6,8 +6,8 @@ import { useParams } from 'react-router-dom';
 import {
   ApprovalsMetaMaskState,
   getUnapprovedTransaction,
-  firstPendingConfirmationSelector,
-  internalSelectPendingApproval,
+  oldestPendingConfirmationSelector,
+  selectPendingApproval,
 } from '../../../selectors';
 import { selectUnapprovedMessage } from '../../../selectors/signatures';
 import {
@@ -26,29 +26,22 @@ import {
  */
 const useCurrentConfirmation = (providedConfirmationId?: string) => {
   const { id: paramsConfirmationId } = useParams<{ id: string }>();
-  const oldestPendingApproval = useSelector(firstPendingConfirmationSelector);
+  const oldestPendingApproval = useSelector(oldestPendingConfirmationSelector);
   const confirmationId =
     providedConfirmationId ?? paramsConfirmationId ?? oldestPendingApproval?.id;
-  const confirmationIdForSelectors = confirmationId ?? '';
 
   const pendingApproval = useSelector((state) =>
-    internalSelectPendingApproval(
-      state as ApprovalsMetaMaskState,
-      confirmationIdForSelectors,
-    ),
+    selectPendingApproval(state as ApprovalsMetaMaskState, confirmationId),
   );
 
   const transactionMetadata = useSelector((state) =>
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (getUnapprovedTransaction as any)(state, confirmationIdForSelectors),
+    (getUnapprovedTransaction as any)(state, confirmationId),
   ) as TransactionMeta | undefined;
 
-  // TODO: Migrate to selectUnapprovedSignatureRequestById once all consumers
-  // of currentConfirmation are updated from msgParams to messageParams.
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
   const signatureMessage = useSelector((state) =>
-    selectUnapprovedMessage(state, confirmationIdForSelectors),
+    selectUnapprovedMessage(state, confirmationId),
   );
 
   const useRedesignedForSignatures = shouldUseRedesignForSignatures({

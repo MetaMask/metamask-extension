@@ -2,8 +2,11 @@ import React, { useContext, useState, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { removeSlide, setSelectedAccount } from '../../../store/actions';
 import { CarouselWithEmptyState } from '../carousel';
-import { getAppIsLoading, hasCreatedSolanaAccount } from '../../../selectors';
-import { getRemoteFeatureFlags } from '../../../../shared/lib/selectors/remote-feature-flags';
+import {
+  getAppIsLoading,
+  getRemoteFeatureFlags,
+  hasCreatedSolanaAccount,
+} from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventName,

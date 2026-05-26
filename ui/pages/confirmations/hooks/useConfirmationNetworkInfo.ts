@@ -8,19 +8,15 @@ import {
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useConfirmContext } from '../context/confirm';
-import {
-  selectNetworkConfigurationByChainId,
-  type NetworkConfigurationsByChainIdState,
-} from '../../../../shared/lib/selectors/networks';
+import { selectNetworkConfigurationByChainId } from '../../../selectors';
 
 function useConfirmationNetworkInfo() {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
   const chainId = currentConfirmation?.chainId as Hex;
 
-  const networkConfiguration = useSelector(
-    (state: NetworkConfigurationsByChainIdState) =>
-      selectNetworkConfigurationByChainId(state, chainId),
+  const networkConfiguration = useSelector((state) =>
+    selectNetworkConfigurationByChainId(state, chainId),
   );
 
   let networkDisplayName = '';

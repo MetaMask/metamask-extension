@@ -270,18 +270,15 @@ describe('PerpsRecentActivity', () => {
     );
   });
 
-  it('navigates to activity route when a row is tapped and no onTransactionClick is provided', () => {
+  it('renders transaction cards without onClick when onTransactionClick is not provided', () => {
     renderWithProvider(
       <PerpsRecentActivity transactions={mockTransactions} />,
       mockStore,
     );
 
     const card = screen.getByTestId('transaction-card-tx-001');
-    expect(card).toHaveClass('cursor-pointer');
-
-    fireEvent.click(card);
-
-    expect(mockNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
+    // Without onClick, the card should not have cursor-pointer class
+    expect(card).not.toHaveClass('cursor-pointer');
   });
 });
 

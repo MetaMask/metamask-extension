@@ -141,7 +141,7 @@ export const FIXTURES_NETWORKS = {
       ticker: CURRENCY_SYMBOLS.SEI,
       nickname: SEI_DISPLAY_NAME,
       rpcPrefs: {
-        blockExplorerUrl: 'https://seiscan.io/',
+        blockExplorerUrl: 'https://seitrace.com/',
         imageUrl: './images/sei.svg',
       },
     },

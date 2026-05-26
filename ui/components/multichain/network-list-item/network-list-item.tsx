@@ -114,21 +114,6 @@ export const NetworkListItem = ({
     setIsMenuClosing(true);
   }, []);
 
-  const handleMenuItemClick = useCallback(
-    (callback?: () => void) => {
-      if (!callback) {
-        return undefined;
-      }
-      return () => {
-        prepareMenuClose();
-        setNetworkOptionsMenuOpen(false);
-        setTimeout(() => setIsMenuClosing(false), 0);
-        callback();
-      };
-    },
-    [prepareMenuClose],
-  );
-
   const { isNetworkGasSponsored } = useIsNetworkGasSponsored(chainId);
 
   const renderButton = useCallback(() => {
@@ -305,9 +290,9 @@ export const NetworkListItem = ({
             <NetworkListItemMenu
               anchorElement={networkListItemMenuElement}
               isOpen={networkOptionsMenuOpen}
-              onDeleteClick={handleMenuItemClick(onDeleteClick)}
-              onEditClick={handleMenuItemClick(onEditClick)}
-              onDiscoverClick={handleMenuItemClick(onDiscoverClick)}
+              onDeleteClick={onDeleteClick}
+              onEditClick={onEditClick}
+              onDiscoverClick={onDiscoverClick}
               onClose={() => {
                 // When closing via click-outside: prepare close and update state
                 prepareMenuClose();

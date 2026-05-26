@@ -6,15 +6,8 @@ import { Json } from '@metamask/utils';
 import { ApprovalType } from '@metamask/controller-utils';
 import { providerErrors } from '@metamask/rpc-errors';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
-import {
-  SMART_TRANSACTION_CONFIRMATION_TYPES,
-  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
-} from '../../../../shared/constants/app';
-import {
-  getAttentionRequiredApprovalCount,
-  rejectAllApprovals,
-  rejectOriginApprovals,
-} from './utils';
+import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
+import { rejectAllApprovals, rejectOriginApprovals } from './utils';
 
 const ID_MOCK = '123';
 const ID_MOCK_2 = '456';
@@ -38,24 +31,6 @@ function createApprovalControllerMock(
 }
 
 describe('Approval Utils', () => {
-  describe('getAttentionRequiredApprovalCount', () => {
-    it('excludes smart transaction status page approvals', () => {
-      const approvalController = createApprovalControllerMock([
-        { id: ID_MOCK, type: ApprovalType.Transaction },
-        {
-          id: ID_MOCK_2,
-          type: SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
-        },
-      ]);
-
-      expect(
-        getAttentionRequiredApprovalCount({
-          approvalController,
-        }),
-      ).toBe(1);
-    });
-  });
-
   describe('rejectAllApprovals', () => {
     it('rejects approval requests with rejected error', () => {
       const approvalController = createApprovalControllerMock([

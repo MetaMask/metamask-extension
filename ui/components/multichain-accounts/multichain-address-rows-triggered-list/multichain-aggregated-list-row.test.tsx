@@ -153,14 +153,11 @@ const createMockState = () => ({
             importTime: Date.now(),
             lastSelected: Date.now(),
             snap: {
-              id: 'npm:@metamask/solana-wallet-snap',
+              enabled: true,
             },
           },
         },
       },
-    },
-    snaps: {
-      'npm:@metamask/solana-wallet-snap': { enabled: true },
     },
   },
 });

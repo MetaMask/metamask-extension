@@ -14,9 +14,7 @@ import {
 } from './button-secondary.types';
 
 /**
- * @deprecated Please update your code to use `Button` from `@metamask/design-system-react` with `variant={ButtonVariant.Secondary}`.
- * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#button-component | Migration Guide}
- * @see {@link https://metamask.github.io/metamask-design-system/?path=/docs/react-components-button--docs | Storybook Documentation}
+ * @deprecated Please update your code to use `Button` from `@metamask/design-system-react` with variant `ButtonVariant.Secondary`
  */
 export const ButtonSecondary: ButtonSecondaryComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

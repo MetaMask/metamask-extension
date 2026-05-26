@@ -4,8 +4,11 @@ import { getMultichainSelectedAccountCachedBalance } from '../../../selectors/mu
 import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
 
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
-import { getIsSwapsChain, getIsBridgeChain } from '../../../selectors';
-import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
+import {
+  getIsSwapsChain,
+  getIsBridgeChain,
+  getSelectedInternalAccount,
+} from '../../../selectors';
 import { CoinOverview } from './coin-overview';
 
 type NonEvmOverviewProps = {

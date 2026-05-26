@@ -39,9 +39,10 @@ import {
 import {
   checkAndUpdateSingleNftOwnershipStatus,
   removeAndIgnoreNft,
+  setRemoveNftMessage,
+  setNewNftAddedMessage,
   setActiveNetworkWithError,
 } from '../../../../../store/actions';
-import { toast, ToastContent } from '../../../../ui/toast/toast';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import NftOptions from '../nft-options/nft-options';
 import InfoTooltip from '../../../../ui/info-tooltip';
@@ -163,7 +164,7 @@ export function NftDetailsComponent({
 
   const hasFloorAskPrice = Boolean(
     collection?.floorAsk?.price?.amount?.usd &&
-    collection?.floorAsk?.price?.amount?.native,
+      collection?.floorAsk?.price?.amount?.native,
   );
   const hasLastSalePrice = Boolean(
     lastSale?.price?.amount?.usd && lastSale?.price?.amount?.native,
@@ -232,19 +233,11 @@ export function NftDetailsComponent({
   const onRemove = async () => {
     try {
       await dispatch(removeAndIgnoreNft(address, tokenId, nftNetworkClientId));
-      toast.success(
-        <ToastContent
-          dataTestId="nft-remove-success-toast"
-          title={t('removeNftMessage')}
-        />,
-      );
-    } catch {
-      toast.error(
-        <ToastContent
-          dataTestId="nft-remove-error-toast"
-          title={t('removeNftErrorMessage')}
-        />,
-      );
+      dispatch(setNewNftAddedMessage(''));
+      dispatch(setRemoveNftMessage('success'));
+    } catch (err) {
+      dispatch(setNewNftAddedMessage(''));
+      dispatch(setRemoveNftMessage('error'));
     } finally {
       navigate(DEFAULT_ROUTE);
     }

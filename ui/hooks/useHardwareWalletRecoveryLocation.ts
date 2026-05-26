@@ -9,7 +9,7 @@ import {
   SIGNATURE_REQUEST_PATH,
 } from '../helpers/constants/routes';
 import { getUnapprovedTransaction } from '../selectors';
-import { selectUnapprovedSignatureRequestById } from '../selectors/signatures';
+import { selectUnapprovedMessage } from '../selectors/signatures';
 
 const SWAP_FLOW_TRANSACTION_TYPES: ReadonlySet<TransactionType> = new Set([
   TransactionType.swap,
@@ -34,9 +34,7 @@ export function useHardwareWalletRecoveryLocation(): MetaMetricsHardwareWalletRe
       : undefined,
   );
   const message = useSelector((state) =>
-    confirmationId
-      ? selectUnapprovedSignatureRequestById(state, confirmationId)
-      : undefined,
+    confirmationId ? selectUnapprovedMessage(state, confirmationId) : undefined,
   );
 
   if (

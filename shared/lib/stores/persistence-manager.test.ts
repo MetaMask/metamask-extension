@@ -6,7 +6,6 @@ import log from 'loglevel';
 import { captureException, captureMessage } from '../sentry';
 import { MISSING_VAULT_ERROR } from '../../constants/errors';
 import { PersistenceManager } from './persistence-manager';
-import { IndexedDBStore } from './indexeddb-store';
 import ExtensionStore from './extension-store';
 import { MetaMaskStateType } from './base-store';
 
@@ -49,15 +48,6 @@ describe('PersistenceManager', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     manager = new PersistenceManager({ localStore: new ExtensionStore() });
-  });
-
-  describe('open', () => {
-    it('serializes concurrent open calls so the backup IndexedDB open runs once', async () => {
-      const openSpy = jest.spyOn(IndexedDBStore.prototype, 'open');
-      await Promise.all([manager.open(), manager.open(), manager.open()]);
-      expect(openSpy).toHaveBeenCalledTimes(1);
-      openSpy.mockRestore();
-    });
   });
 
   describe('events', () => {

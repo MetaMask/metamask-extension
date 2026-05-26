@@ -12,7 +12,7 @@ import {
 import {
   isHardwareWallet,
   getHardwareWalletType,
-} from '../../../../shared/lib/selectors/keyring';
+} from '../../../selectors/selectors';
 import {
   getSmartTransactionsEnabled,
   getSmartTransactionsOptInStatusForMetrics,

@@ -6,7 +6,7 @@ import {
 } from '@metamask/accounts-controller';
 import {
   CurrencyRateStateChange,
-  CurrencyRateControllerGetStateAction,
+  GetCurrencyRateState,
   MultichainAssetsControllerAccountAssetListUpdatedEvent,
   MultichainAssetsControllerGetStateAction,
 } from '@metamask/assets-controllers';
@@ -20,7 +20,7 @@ import { RootMessenger } from '../../../lib/messenger';
 type Actions =
   | SnapControllerHandleRequestAction
   | AccountsControllerListMultichainAccountsAction
-  | CurrencyRateControllerGetStateAction
+  | GetCurrencyRateState
   | MultichainAssetsControllerGetStateAction
   | AccountsControllerGetSelectedMultichainAccountAction;
 

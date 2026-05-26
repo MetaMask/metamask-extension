@@ -22,7 +22,7 @@ import { useNestedTransactionLabels } from '../../hooks/useNestedTransactionLabe
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function NestedTransactionData() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { chainId, nestedTransactions } = currentConfirmation ?? {};
+  const { nestedTransactions } = currentConfirmation ?? {};
   const { isQuotedSwapDisplayedInInfo } = useDappSwapContext();
 
   if (!nestedTransactions?.length || isQuotedSwapDisplayedInInfo) {
@@ -36,7 +36,6 @@ export function NestedTransactionData() {
           key={index}
           index={index}
           nestedTransaction={nestedTransaction}
-          chainId={chainId}
         />
       ))}
     </Box>
@@ -48,11 +47,9 @@ export function NestedTransactionData() {
 function NestedTransaction({
   index,
   nestedTransaction,
-  chainId,
 }: {
   index: number;
   nestedTransaction: BatchTransactionParams;
-  chainId: string;
 }) {
   const t = useI18nContext();
   const { data, to, value } = nestedTransaction;
@@ -71,7 +68,7 @@ function NestedTransaction({
             {to && <RecipientRow recipient={to} />}
             {value && (
               <ConfirmInfoRow label={t('amount')}>
-                <ConfirmInfoRowCurrency value={value} chainId={chainId} />
+                <ConfirmInfoRowCurrency value={value} />
               </ConfirmInfoRow>
             )}
             {data && to && (

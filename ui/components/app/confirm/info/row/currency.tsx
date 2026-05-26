@@ -50,7 +50,6 @@ export const ConfirmInfoRowCurrency = ({
         showNative
         value={`${value}`}
         className={className}
-        chainId={chainId}
       />
     )}
   </Box>

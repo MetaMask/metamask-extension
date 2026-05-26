@@ -246,10 +246,6 @@ const mockLivePositions = jest.fn(() => ({
   positions: mockPositions,
   isInitialLoading: false,
 }));
-const mockLiveMarketData = jest.fn(() => ({
-  markets: [...mockCryptoMarkets, ...mockHip3Markets],
-  isInitialLoading: false,
-}));
 
 // Mock the perps stream hooks
 jest.mock('../../hooks/perps/stream', () => ({
@@ -259,7 +255,10 @@ jest.mock('../../hooks/perps/stream', () => ({
     isInitialLoading: false,
   }),
   usePerpsLiveAccount: () => mockLiveAccount(),
-  usePerpsLiveMarketData: () => mockLiveMarketData(),
+  usePerpsLiveMarketData: () => ({
+    markets: [...mockCryptoMarkets, ...mockHip3Markets],
+    isInitialLoading: false,
+  }),
   usePerpsLiveCandles: () => ({
     candleData: {
       symbol: 'ETH',
@@ -383,10 +382,6 @@ describe('PerpsMarketDetailPage', () => {
     });
     mockLivePositions.mockReturnValue({
       positions: mockPositions,
-      isInitialLoading: false,
-    });
-    mockLiveMarketData.mockReturnValue({
-      markets: [...mockCryptoMarkets, ...mockHip3Markets],
       isInitialLoading: false,
     });
     mockUsePerpsMarketFills.mockReturnValue({
@@ -563,33 +558,6 @@ describe('PerpsMarketDetailPage', () => {
       expect(getByText('ETH-USD')).toBeInTheDocument();
     });
 
-    it('displays the market max leverage pill in the header', async () => {
-      const store = mockStore(createMockState(true));
-
-      const { getByTestId } = await renderPage(store);
-
-      expect(getByTestId('perps-market-max-leverage')).toHaveTextContent('20x');
-    });
-
-    it('omits the market max leverage pill when max leverage is unavailable', async () => {
-      mockLiveMarketData.mockReturnValue({
-        markets: [
-          {
-            ...mockCryptoMarkets[1],
-            maxLeverage: '',
-          },
-        ],
-        isInitialLoading: false,
-      });
-      const store = mockStore(createMockState(true));
-
-      await renderPage(store);
-
-      expect(
-        screen.queryByTestId('perps-market-max-leverage'),
-      ).not.toBeInTheDocument();
-    });
-
     it('renders market detail page for BTC', async () => {
       mockUseParams.mockReturnValue({ symbol: 'BTC' });
       const store = mockStore(createMockState(true));
@@ -610,7 +578,7 @@ describe('PerpsMarketDetailPage', () => {
       ).toBeInTheDocument();
     });
 
-    it('navigates to wallet Perps tab when back button is clicked', async () => {
+    it('navigates back in history when back button is clicked', async () => {
       const store = mockStore(createMockState(true));
 
       const { getByTestId } = await renderPage(store);
@@ -618,10 +586,7 @@ describe('PerpsMarketDetailPage', () => {
       const backButton = getByTestId('perps-market-detail-back-button');
       backButton.click();
 
-      expect(mockUseNavigate).toHaveBeenCalledWith({
-        pathname: '/',
-        search: 'tab=perps',
-      });
+      expect(mockUseNavigate).toHaveBeenCalledWith(-1);
     });
 
     it('uses market 24h change as fallback when no live percent update exists', async () => {
@@ -864,7 +829,7 @@ describe('PerpsMarketDetailPage', () => {
       expect(getByText(messages.perpsLearnBasics.message)).toBeInTheDocument();
     });
 
-    it('opens Modify menu with Add exposure and Reduce exposure when Modify button is clicked', async () => {
+    it('opens Modify menu with Add margin, Remove margin, and Reverse position when Modify button is clicked', async () => {
       const store = mockStore(createMockState(true));
 
       await renderPage(store);
@@ -881,13 +846,16 @@ describe('PerpsMarketDetailPage', () => {
         screen.getByTestId('perps-modify-menu-reduce-exposure'),
       ).toBeInTheDocument();
       expect(
-        screen.queryByTestId('perps-modify-menu-reverse-position'),
-      ).not.toBeInTheDocument();
+        screen.getByTestId('perps-modify-menu-reverse-position'),
+      ).toBeInTheDocument();
       expect(
         screen.getByText(messages.perpsAddExposure.message),
       ).toBeInTheDocument();
       expect(
         screen.getByText(messages.perpsReduceExposure.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsReversePosition.message),
       ).toBeInTheDocument();
     });
 
@@ -979,19 +947,17 @@ describe('PerpsMarketDetailPage', () => {
       ).toBeInTheDocument();
     });
 
-    it('does not show Reverse position option in Modify menu (temporarily disabled)', async () => {
+    it('opens Reverse position modal when Reverse position is clicked', async () => {
       const store = mockStore(createMockState(true));
 
       await renderPage(store);
 
       fireEvent.click(screen.getByTestId('perps-modify-cta-button'));
+      fireEvent.click(screen.getByTestId('perps-modify-menu-reverse-position'));
 
       expect(
-        screen.queryByTestId('perps-modify-menu-reverse-position'),
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByTestId('perps-reverse-position-modal'),
-      ).not.toBeInTheDocument();
+        screen.getByTestId('perps-reverse-position-modal'),
+      ).toBeInTheDocument();
     });
 
     it('opens Add margin modal from Margin menu', async () => {
@@ -1062,133 +1028,13 @@ describe('PerpsMarketDetailPage', () => {
       fireEvent.click(screen.getByTestId('perps-candle-period-more'));
       fireEvent.click(screen.getByTestId('perps-candle-period-modal-1M'));
 
-      expect(screen.getByText('1m')).toBeInTheDocument();
+      expect(screen.getByText('1M')).toBeInTheDocument();
       expect(screen.getByTestId('perps-candle-period-more')).toHaveClass(
         'bg-muted',
       );
       expect(screen.getByTestId('perps-candle-period-1m')).not.toHaveClass(
         'bg-muted',
       );
-    });
-
-    it('restores persisted candle period from preferences on mount', async () => {
-      const state = createMockState(true);
-      const store = mockStore({
-        ...state,
-        metamask: {
-          ...state.metamask,
-          preferences: {
-            ...state.metamask.preferences,
-            perpsSelectedCandlePeriod: '15m',
-          },
-        },
-      });
-
-      await renderPage(store);
-
-      expect(screen.getByTestId('perps-candle-period-15m')).toHaveClass(
-        'bg-muted',
-      );
-      expect(screen.getByTestId('perps-candle-period-5m')).not.toHaveClass(
-        'bg-muted',
-      );
-    });
-
-    it('restores a non-default persisted period and highlights More button', async () => {
-      const state = createMockState(true);
-      const store = mockStore({
-        ...state,
-        metamask: {
-          ...state.metamask,
-          preferences: {
-            ...state.metamask.preferences,
-            perpsSelectedCandlePeriod: '1h',
-          },
-        },
-      });
-
-      await renderPage(store);
-
-      expect(screen.getByTestId('perps-candle-period-more')).toHaveClass(
-        'bg-muted',
-      );
-      expect(screen.getByTestId('perps-candle-period-5m')).not.toHaveClass(
-        'bg-muted',
-      );
-    });
-
-    it('defaults to 5min when persisted candle period is invalid', async () => {
-      const state = createMockState(true);
-      const store = mockStore({
-        ...state,
-        metamask: {
-          ...state.metamask,
-          preferences: {
-            ...state.metamask.preferences,
-            perpsSelectedCandlePeriod: 'invalid-period',
-          },
-        },
-      });
-
-      await renderPage(store);
-
-      expect(screen.getByTestId('perps-candle-period-5m')).toHaveClass(
-        'bg-muted',
-      );
-    });
-
-    it('defaults to 5min when perpsSelectedCandlePeriod is not set', async () => {
-      const store = mockStore(createMockState(true));
-
-      await renderPage(store);
-
-      expect(screen.getByTestId('perps-candle-period-5m')).toHaveClass(
-        'bg-muted',
-      );
-    });
-
-    it('persists candle period selection via setPreference background call', async () => {
-      const store = mockStore(createMockState(true));
-
-      await renderPage(store);
-
-      fireEvent.click(screen.getByTestId('perps-candle-period-more'));
-      fireEvent.click(screen.getByTestId('perps-candle-period-modal-30m'));
-
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'setPreference',
-        ['perpsSelectedCandlePeriod', '30m'],
-      );
-    });
-
-    it('persists candle period when selecting a default period button', async () => {
-      const store = mockStore(createMockState(true));
-
-      await renderPage(store);
-
-      fireEvent.click(screen.getByTestId('perps-candle-period-15m'));
-
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'setPreference',
-        ['perpsSelectedCandlePeriod', '15m'],
-      );
-    });
-
-    it('updates chart even if preference save fails', async () => {
-      mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'setPreference') {
-          return Promise.reject(new Error('save failed'));
-        }
-        return Promise.resolve({ success: true });
-      });
-      const store = mockStore(createMockState(true));
-
-      await renderPage(store);
-
-      fireEvent.click(screen.getByTestId('perps-candle-period-more'));
-      fireEvent.click(screen.getByTestId('perps-candle-period-modal-30m'));
-
-      expect(screen.getByText('30min')).toBeInTheDocument();
     });
 
     it('closes the candle period modal when the close button is clicked', async () => {
@@ -1238,6 +1084,9 @@ describe('PerpsMarketDetailPage', () => {
       ).toBeInTheDocument();
       expect(
         screen.getByText(messages.perpsReduceExposureDescriptionShort.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsReversePositionDescriptionShort.message),
       ).toBeInTheDocument();
     });
 
@@ -1421,8 +1270,7 @@ describe('PerpsMarketDetailPage', () => {
       mockLiveAccount.mockReturnValue({
         account: {
           ...mockAccountState,
-          spendableBalance: '0',
-          withdrawableBalance: '0',
+          availableBalance: '0',
           totalBalance: '0',
         },
         isInitialLoading: false,

@@ -9,6 +9,9 @@ const storeMock = configureStore({
     completedOnboarding: true,
     participateInMetaMetrics: true,
     pna25Acknowledged: false,
+    remoteFeatureFlags: {
+      extensionUxPna25: true,
+    },
   },
 });
 

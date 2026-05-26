@@ -1,6 +1,5 @@
-import React from 'react';
-import { renderHook, cleanup } from '@testing-library/react-hooks';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { renderHook } from '@testing-library/react-hooks';
 import { CaipAssetId } from '@metamask/keyring-api';
 import { Asset } from '@metamask/assets-controllers';
 import { InternalAccount } from '@metamask/keyring-internal-api';
@@ -8,20 +7,7 @@ import { MultichainNetworks } from '../../../../shared/constants/multichain/netw
 import { TRON_SPECIAL_ASSET_CAIP_TYPES } from '../../../../shared/constants/multichain/assets';
 import * as assetsSelectors from '../../../selectors/assets';
 import * as multichainSelectors from '../../../selectors/multichain';
-import * as assetsUnifyStateSelectors from '../../../selectors/assets-unify-state';
 import { useTronResources } from './useTronResources';
-
-const mockGetAccountBalances = jest.fn();
-
-jest.mock('@metamask/keyring-snap-client', () => ({
-  KeyringClient: jest.fn().mockImplementation(() => ({
-    getAccountBalances: mockGetAccountBalances,
-  })),
-}));
-
-jest.mock('../../../hooks/accounts/useMultichainWalletSnapClient', () => ({
-  MultichainWalletSnapSender: jest.fn(),
-}));
 
 // Mock the selectors
 jest.mock('../../../selectors/assets', () => ({
@@ -34,30 +20,10 @@ jest.mock('../../../selectors/multichain', () => ({
   getMultichainBalances: jest.fn(),
 }));
 
-jest.mock('../../../selectors/assets-unify-state', () => ({
-  ...jest.requireActual('../../../selectors/assets-unify-state'),
-  getIsAssetsUnifyStateEnabled: jest.fn(),
-}));
-
+// Mock react-redux
 jest.mock('react-redux', () => ({
-  useSelector: <State, Result>(selector: (state: State) => Result): Result =>
-    selector({} as State),
+  useSelector: (selector: any) => selector(),
 }));
-
-let queryClient: QueryClient;
-
-const createWrapper = () => {
-  return ({ children }: { children: React.ReactNode }) =>
-    React.createElement(QueryClientProvider, { client: queryClient }, children);
-};
-
-const renderTronResourcesHook = (
-  account: InternalAccount | undefined,
-  chainId: string,
-) =>
-  renderHook(() => useTronResources(account, chainId), {
-    wrapper: createWrapper(),
-  });
 
 describe('useTronResources', () => {
   const mockAccount: InternalAccount = {
@@ -70,18 +36,6 @@ describe('useTronResources', () => {
       keyring: { type: 'HD Key Tree' },
     },
     methods: [],
-  } as unknown as InternalAccount;
-
-  const mockSnapAccount: InternalAccount = {
-    ...mockAccount,
-    metadata: {
-      ...mockAccount.metadata,
-      snap: {
-        id: 'npm:@metamask/tron-wallet-snap',
-        enabled: true,
-        name: 'Tron',
-      },
-    },
   } as unknown as InternalAccount;
 
   const chainId = MultichainNetworks.TRON;
@@ -102,7 +56,6 @@ describe('useTronResources', () => {
   const mockSelector = (
     assets: Record<string, Asset[]>,
     balances: Record<string, Record<string, { amount: string; unit: string }>>,
-    isAssetsUnifyStateEnabled = false,
   ) => {
     (
       assetsSelectors.getAssetsBySelectedAccountGroupWithTronSpecialAssets as unknown as jest.Mock
@@ -111,31 +64,10 @@ describe('useTronResources', () => {
     (multichainSelectors.getMultichainBalances as jest.Mock).mockReturnValue(
       balances,
     );
-
-    (
-      assetsUnifyStateSelectors.getIsAssetsUnifyStateEnabled as unknown as jest.Mock
-    ).mockReturnValue(isAssetsUnifyStateEnabled);
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetAccountBalances.mockReset();
-    queryClient = new QueryClient({
-      defaultOptions: {
-        queries: { retry: false },
-      },
-      logger: {
-        log: () => undefined,
-        warn: () => undefined,
-        // Silence expected error output from rejected snap queries.
-        error: () => undefined,
-      },
-    });
-  });
-
-  afterEach(() => {
-    cleanup();
-    queryClient.clear();
   });
 
   describe('when account and chainId are provided', () => {
@@ -168,7 +100,9 @@ describe('useTronResources', () => {
         },
       );
 
-      const { result } = renderTronResourcesHook(mockAccount, chainId);
+      const { result } = renderHook(() =>
+        useTronResources(mockAccount, chainId),
+      );
 
       expect(result.current.energy).toEqual({
         type: 'energy',
@@ -201,7 +135,9 @@ describe('useTronResources', () => {
         { [mockAccount.id]: {} },
       );
 
-      const { result } = renderTronResourcesHook(mockAccount, chainId);
+      const { result } = renderHook(() =>
+        useTronResources(mockAccount, chainId),
+      );
 
       expect(result.current.energy).toEqual({
         type: 'energy',
@@ -239,7 +175,9 @@ describe('useTronResources', () => {
         },
       );
 
-      const { result } = renderTronResourcesHook(mockAccount, chainId);
+      const { result } = renderHook(() =>
+        useTronResources(mockAccount, chainId),
+      );
 
       expect(result.current.energy).toEqual({
         type: 'energy',
@@ -277,7 +215,9 @@ describe('useTronResources', () => {
         },
       );
 
-      const { result } = renderTronResourcesHook(mockAccount, chainId);
+      const { result } = renderHook(() =>
+        useTronResources(mockAccount, chainId),
+      );
 
       expect(result.current.energy).toEqual({
         type: 'energy',
@@ -322,7 +262,9 @@ describe('useTronResources', () => {
         },
       );
 
-      const { result } = renderTronResourcesHook(mockAccount, chainId);
+      const { result } = renderHook(() =>
+        useTronResources(mockAccount, chainId),
+      );
 
       expect(result.current.energy).toEqual({
         type: 'energy',
@@ -371,7 +313,9 @@ describe('useTronResources', () => {
         },
       );
 
-      const { result } = renderTronResourcesHook(mockAccount, chainId);
+      const { result } = renderHook(() =>
+        useTronResources(mockAccount, chainId),
+      );
 
       // Staking state assets are included in the special assets filter
       // but should not affect energy/bandwidth output
@@ -393,7 +337,9 @@ describe('useTronResources', () => {
     it('handles empty assets array', () => {
       mockSelector({ [chainId]: [] }, { [mockAccount.id]: {} });
 
-      const { result } = renderTronResourcesHook(mockAccount, chainId);
+      const { result } = renderHook(() =>
+        useTronResources(mockAccount, chainId),
+      );
 
       expect(result.current.energy).toEqual({
         type: 'energy',
@@ -413,7 +359,9 @@ describe('useTronResources', () => {
     it('handles chainId with no assets', () => {
       mockSelector({}, { [mockAccount.id]: {} });
 
-      const { result } = renderTronResourcesHook(mockAccount, chainId);
+      const { result } = renderHook(() =>
+        useTronResources(mockAccount, chainId),
+      );
 
       expect(result.current.energy).toEqual({
         type: 'energy',
@@ -459,7 +407,9 @@ describe('useTronResources', () => {
         },
       );
 
-      const { result } = renderTronResourcesHook(mockAccount, chainId);
+      const { result } = renderHook(() =>
+        useTronResources(mockAccount, chainId),
+      );
 
       expect(result.current.energy.percentage).toBe(100);
       expect(result.current.bandwidth.percentage).toBe(100);
@@ -470,7 +420,7 @@ describe('useTronResources', () => {
     it('returns default values', () => {
       mockSelector({}, {});
 
-      const { result } = renderTronResourcesHook(undefined, chainId);
+      const { result } = renderHook(() => useTronResources(undefined, chainId));
 
       expect(result.current.energy).toEqual({
         type: 'energy',
@@ -492,7 +442,7 @@ describe('useTronResources', () => {
     it('returns default values', () => {
       mockSelector({}, { [mockAccount.id]: {} });
 
-      const { result } = renderTronResourcesHook(mockAccount, '');
+      const { result } = renderHook(() => useTronResources(mockAccount, ''));
 
       expect(result.current.energy).toEqual({
         type: 'energy',
@@ -527,7 +477,9 @@ describe('useTronResources', () => {
         {},
       );
 
-      const { result } = renderTronResourcesHook(mockAccount, chainId);
+      const { result } = renderHook(() =>
+        useTronResources(mockAccount, chainId),
+      );
 
       expect(result.current.energy).toEqual({
         type: 'energy',
@@ -561,125 +513,12 @@ describe('useTronResources', () => {
         },
       );
 
-      const { result } = renderTronResourcesHook(mockAccount, chainId);
+      const { result } = renderHook(() =>
+        useTronResources(mockAccount, chainId),
+      );
 
       expect(result.current.energy.current).toBeNaN();
       expect(result.current.energy.percentage).toBeNaN();
-    });
-  });
-
-  describe('when the unified AssetsController state is enabled', () => {
-    const energyAssetId =
-      `${chainId}/${TRON_SPECIAL_ASSET_CAIP_TYPES.ENERGY}` as CaipAssetId;
-    const maxEnergyAssetId =
-      `${chainId}/${TRON_SPECIAL_ASSET_CAIP_TYPES.MAXIMUM_ENERGY}` as CaipAssetId;
-    const bandwidthAssetId =
-      `${chainId}/${TRON_SPECIAL_ASSET_CAIP_TYPES.BANDWIDTH}` as CaipAssetId;
-    const maxBandwidthAssetId =
-      `${chainId}/${TRON_SPECIAL_ASSET_CAIP_TYPES.MAXIMUM_BANDWIDTH}` as CaipAssetId;
-
-    it('falls back to fetching balances directly from the snap', async () => {
-      // Redux state is empty because the new AssetsController strips assets
-      // without metadata. The hook should still surface values fetched from
-      // the snap directly.
-      mockSelector({}, {}, true);
-
-      mockGetAccountBalances.mockResolvedValue({
-        [energyAssetId]: { amount: '500', unit: 'energy' },
-        [maxEnergyAssetId]: { amount: '1000', unit: 'energy' },
-        [bandwidthAssetId]: { amount: '300', unit: 'bandwidth' },
-        [maxBandwidthAssetId]: { amount: '600', unit: 'bandwidth' },
-      });
-
-      const { result, waitFor } = renderTronResourcesHook(
-        mockSnapAccount,
-        chainId,
-      );
-
-      await waitFor(() => expect(result.current.energy.current).toBe(500));
-
-      expect(mockGetAccountBalances).toHaveBeenCalledWith(mockSnapAccount.id, [
-        energyAssetId,
-        maxEnergyAssetId,
-        bandwidthAssetId,
-        maxBandwidthAssetId,
-      ]);
-
-      expect(result.current.energy).toEqual({
-        type: 'energy',
-        current: 500,
-        max: 1000,
-        percentage: 50,
-      });
-
-      expect(result.current.bandwidth).toEqual({
-        type: 'bandwidth',
-        current: 300,
-        max: 600,
-        percentage: 50,
-      });
-    });
-
-    it('does not call the snap when the account has no snap metadata', () => {
-      mockSelector({}, {}, true);
-
-      renderTronResourcesHook(mockAccount, chainId);
-
-      expect(mockGetAccountBalances).not.toHaveBeenCalled();
-    });
-
-    it('returns zero values when the snap call fails', async () => {
-      mockSelector({}, {}, true);
-
-      mockGetAccountBalances.mockRejectedValue(new Error('snap blew up'));
-
-      const { result, waitFor } = renderTronResourcesHook(
-        mockSnapAccount,
-        chainId,
-      );
-
-      await waitFor(() => expect(mockGetAccountBalances).toHaveBeenCalled());
-
-      expect(result.current.energy).toEqual({
-        type: 'energy',
-        current: 0,
-        max: 0,
-        percentage: 0,
-      });
-
-      expect(result.current.bandwidth).toEqual({
-        type: 'bandwidth',
-        current: 0,
-        max: 0,
-        percentage: 0,
-      });
-    });
-
-    it('does not call the snap when the feature flag is disabled', () => {
-      mockSelector({}, {}, false);
-
-      renderTronResourcesHook(mockSnapAccount, chainId);
-
-      expect(mockGetAccountBalances).not.toHaveBeenCalled();
-    });
-
-    it('does not call the snap when the chainId is not a Tron chain', () => {
-      mockSelector({}, {}, true);
-
-      renderTronResourcesHook(
-        mockSnapAccount,
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-      );
-
-      expect(mockGetAccountBalances).not.toHaveBeenCalled();
-    });
-
-    it('does not call the snap when the chainId is empty', () => {
-      mockSelector({}, {}, true);
-
-      renderTronResourcesHook(mockSnapAccount, '');
-
-      expect(mockGetAccountBalances).not.toHaveBeenCalled();
     });
   });
 });

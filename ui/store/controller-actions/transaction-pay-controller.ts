@@ -28,13 +28,3 @@ export async function setIsMaxAmount(
     isMaxAmount,
   ]);
 }
-
-export async function setPostQuote(
-  transactionId: string,
-  options: { isHyperliquidSource?: boolean } = {},
-): Promise<void> {
-  return await submitRequestToBackground('setTransactionPayPostQuote', [
-    transactionId,
-    options,
-  ]);
-}

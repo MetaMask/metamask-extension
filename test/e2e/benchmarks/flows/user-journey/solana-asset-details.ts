@@ -44,6 +44,7 @@ export async function runSolanaAssetDetailsBenchmark(): Promise<BenchmarkRunResu
           .build(),
         manifestFlags: {
           testing: {
+            disableSync: true,
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
         },

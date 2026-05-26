@@ -470,7 +470,7 @@ describe('BridgeInputGroup', () => {
         expect(networkPickerPopover).not.toBeVisible();
         expect(mockUsePopularTokens.mock.lastCall).toStrictEqual([
           expect.objectContaining({
-            accountGroupId: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
+            accountAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
             assetsToInclude: [
               {
                 accountType: 'solana:data-account',
@@ -484,8 +484,6 @@ describe('BridgeInputGroup', () => {
                 rwaData: undefined,
                 symbol: 'SOL',
                 tokenFiatAmount: 210.8493,
-                isVerified: undefined,
-                securityData: undefined,
               },
               {
                 accountType: 'solana:data-account',
@@ -500,16 +498,14 @@ describe('BridgeInputGroup', () => {
                 rwaData: undefined,
                 symbol: 'USDC',
                 tokenFiatAmount: 2.04284978478,
-                isVerified: undefined,
-                securityData: undefined,
               },
             ],
-            fetchTokens: expect.any(Function),
+            chainIds: new Set(['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp']),
           }),
         ]);
         expect(mockUseTokenSearchResults.mock.lastCall).toStrictEqual([
           expect.objectContaining({
-            accountGroupId: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
+            accountAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
             assetsToInclude: [
               {
                 accountType: 'solana:data-account',

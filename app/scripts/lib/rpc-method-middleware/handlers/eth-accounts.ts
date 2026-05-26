@@ -1,7 +1,6 @@
 import type {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
-  MethodHandler,
 } from '@metamask/json-rpc-engine';
 import type {
   JsonRpcRequest,
@@ -9,33 +8,33 @@ import type {
   PendingJsonRpcResponse,
 } from '@metamask/utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
+import { HandlerWrapper } from './types';
 
-export type EthAccountsHooks = {
+type EthAccountsHandlerOptions = {
   getAccounts: () => string[];
 };
 
-type EthAccountsConstraint = MethodHandler<
-  EthAccountsHooks,
-  never,
-  JsonRpcParams,
-  string[]
->;
+type EthAccountsConstraint<Params extends JsonRpcParams = JsonRpcParams> = {
+  implementation: (
+    _req: JsonRpcRequest<Params>,
+    res: PendingJsonRpcResponse<string[]>,
+    _next: JsonRpcEngineNextCallback,
+    end: JsonRpcEngineEndCallback,
+    { getAccounts }: EthAccountsHandlerOptions,
+  ) => Promise<void>;
+} & HandlerWrapper;
 
 /**
  * A wrapper for `eth_accounts` that returns an empty array when permission is denied.
  */
-export const ethAccountsHandler = {
-  implementation: ethAccountsImplementation,
+const ethAccounts = {
+  methodNames: [MESSAGE_TYPE.ETH_ACCOUNTS],
+  implementation: ethAccountsHandler,
   hookNames: {
     getAccounts: true,
   },
 } satisfies EthAccountsConstraint;
-
-const ethAccountsHandlers = {
-  [MESSAGE_TYPE.ETH_ACCOUNTS]: ethAccountsHandler,
-};
-
-export default ethAccountsHandlers;
+export default ethAccounts;
 
 /**
  *
@@ -46,12 +45,12 @@ export default ethAccountsHandlers;
  * @param options - The RPC method hooks.
  * @param options.getAccounts - A hook that returns the permitted eth accounts for the origin sorted by lastSelected.
  */
-async function ethAccountsImplementation(
-  _req: JsonRpcRequest,
+async function ethAccountsHandler<Params extends JsonRpcParams = JsonRpcParams>(
+  _req: JsonRpcRequest<Params>,
   res: PendingJsonRpcResponse<string[]>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
-  { getAccounts }: EthAccountsHooks,
+  { getAccounts }: EthAccountsHandlerOptions,
 ): Promise<void> {
   res.result = getAccounts();
   return end();

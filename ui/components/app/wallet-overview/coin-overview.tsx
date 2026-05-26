@@ -26,6 +26,7 @@ import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { trace, TraceName } from '../../../../shared/lib/trace';
 import {
+  getPreferences,
   getShouldHideZeroBalanceTokens,
   getIsTestnet,
   getIsTokenNetworkFilterEqualCurrentNetwork,
@@ -36,7 +37,6 @@ import {
   getEnabledNetworksByNamespace,
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../selectors';
-import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 
 import { AccountGroupBalance } from '../assets/account-group-balance/account-group-balance';
 import { AccountGroupBalanceChange } from '../assets/account-group-balance-change/account-group-balance-change';

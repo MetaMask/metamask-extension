@@ -1,12 +1,32 @@
+import type { ControllerGetStateAction } from '@metamask/base-controller';
+import { Messenger, MessengerEvents } from '@metamask/messenger';
+import type { NetworkControllerFindNetworkClientIdByChainIdAction } from '@metamask/network-controller';
+import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import {
-  Messenger,
-  type MessengerActions,
-  MessengerEvents,
-} from '@metamask/messenger';
+  TokensControllerState,
+  TokensControllerAddTokensAction,
+} from '@metamask/assets-controllers';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 
 import { RootMessenger } from '../../lib/messenger';
-import { type StaticAssetsControllerMessenger } from '../../controllers/static-assets-controller';
+import { type StaticAssetsControllerMessenger as StaticAssetsControllerMessengerType } from '../../controllers/static-assets-controller';
+
+type TokensControllerGetStateAction = ControllerGetStateAction<
+  'TokensController',
+  TokensControllerState
+>;
+
+type AllowedActions =
+  | AccountsControllerGetSelectedAccountAction
+  | NetworkControllerFindNetworkClientIdByChainIdAction
+  | TokensControllerGetStateAction
+  | TokensControllerAddTokensAction;
+
+type AllowedEvents = MessengerEvents<StaticAssetsControllerMessengerType>;
+
+export type StaticAssetsControllerMessenger = ReturnType<
+  typeof getStaticAssetsControllerMessenger
+>;
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
@@ -16,12 +36,14 @@ import { type StaticAssetsControllerMessenger } from '../../controllers/static-a
  * messenger.
  */
 export function getStaticAssetsControllerMessenger(
-  messenger: RootMessenger<
-    MessengerActions<StaticAssetsControllerMessenger>,
-    MessengerEvents<StaticAssetsControllerMessenger>
-  >,
+  messenger: RootMessenger<AllowedActions, AllowedEvents>,
 ) {
-  const controllerMessenger: StaticAssetsControllerMessenger = new Messenger({
+  const controllerMessenger = new Messenger<
+    'StaticAssetsController',
+    AllowedActions,
+    AllowedEvents,
+    typeof messenger
+  >({
     namespace: 'StaticAssetsController',
     parent: messenger,
   });

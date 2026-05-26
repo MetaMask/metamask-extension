@@ -35,7 +35,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 209,
+      "currentMigrationVersion": 206,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -53,6 +53,7 @@
       "defaultHomeActiveTabName": null,
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
       "hasShownMultichainAccountsIntroModal": false,
+      "isRampCardClosed": false,
       "isWalletResetInProgress": false,
       "lastUpdatedAt": null,
       "lastUpdatedFromVersion": null,
@@ -61,6 +62,7 @@
       "musdConversionEducationSeen": false,
       "newPrivacyPolicyToastClickedOrClosed": null,
       "newPrivacyPolicyToastShownDate": 1764061390419,
+      "nftsDetectionNoticeDismissed": false,
       "onboardingDate": 1764061390455,
       "outdatedBrowserWarningLastShown": null,
       "pendingShieldCohort": null,
@@ -71,9 +73,15 @@
       "recoveryPhraseReminderLastShown": 7952515200000,
       "shieldEndingToastLastClickedOrClosed": null,
       "shieldPausedToastLastClickedOrClosed": null,
+      "showAccountBanner": true,
+      "showBetaHeader": false,
       "showDownloadMobileAppSlide": true,
+      "showNetworkBanner": true,
+      "showPermissionsTour": true,
       "showShieldEntryModalOnce": null,
+      "showTestnetMessageInDropdown": true,
       "slides": [],
+      "surveyLinkLastClickedOrClosed": null,
       "timeoutMinutes": 0,
       "trezorModel": null,
       "updateModalLastDismissedAt": null
@@ -590,9 +598,6 @@
     "PPOMController": {
       "storageMetadata": [],
       "versionInfo": []
-    },
-    "PasskeyController": {
-      "passkeyRecord": null
     },
     "PermissionController": {
       "subjects": {
@@ -2251,6 +2256,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 209
+    "version": 206
   }
 }

@@ -4,17 +4,19 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   createBridgeMockStore,
   MOCK_EVM_ACCOUNT,
+  MOCK_EXTERNAL_SOLANA_ADDRESS,
 } from '../../../test/data/bridge/mock-bridge-store';
-import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
 import { usePopularTokens } from './usePopularTokens';
 
-const mockFetchPopularTokens = jest.fn().mockResolvedValue([]);
+jest.mock('../../pages/bridge/utils/tokens', () => ({
+  fetchPopularTokens: jest.fn().mockResolvedValue([]),
+}));
+
+jest.mock('../../store/actions', () => ({
+  getBearerToken: jest.fn().mockResolvedValue('mock-jwt'),
+}));
 
 describe('usePopularTokens', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   it('does not crash when accountAddress is an external address with no matching account group', () => {
     const mockStoreState = createBridgeMockStore({
       featureFlagOverrides: {
@@ -36,16 +38,15 @@ describe('usePopularTokens', () => {
     const { result } = renderHookWithProvider(
       () =>
         usePopularTokens({
-          fetchTokens: mockFetchPopularTokens,
           assetsToInclude: [],
-          accountGroupId: undefined,
+          accountAddress: MOCK_EXTERNAL_SOLANA_ADDRESS,
+          chainIds: new Set([formatChainIdToCaip(CHAIN_IDS.MAINNET)]),
         }),
       mockStoreState,
     );
 
     expect(result.current.popularTokensList).toEqual([]);
     expect(result.current.isLoading).toBe(true);
-    expect(mockFetchPopularTokens).toHaveBeenCalledTimes(1);
   });
 
   it('returns owned assets when accountAddress belongs to a known account group', () => {
@@ -66,16 +67,12 @@ describe('usePopularTokens', () => {
       },
     });
 
-    const accountGroupId = getAccountGroupsByAddress(mockStoreState, [
-      MOCK_EVM_ACCOUNT.address,
-    ])[0].id;
-
     const { result } = renderHookWithProvider(
       () =>
         usePopularTokens({
-          fetchTokens: mockFetchPopularTokens,
           assetsToInclude: [],
-          accountGroupId,
+          accountAddress: MOCK_EVM_ACCOUNT.address,
+          chainIds: new Set([formatChainIdToCaip(CHAIN_IDS.MAINNET)]),
         }),
       mockStoreState,
     );
@@ -85,6 +82,5 @@ describe('usePopularTokens', () => {
     // popularTokensList falls back to assetsToInclude while token list loads
     expect(result.current.popularTokensList).toEqual([]);
     expect(result.current.isLoading).toBe(true);
-    expect(mockFetchPopularTokens).toHaveBeenCalledTimes(1);
   });
 });

@@ -65,8 +65,6 @@ export const PerpsRecentActivity: React.FC<PerpsRecentActivityProps> = ({
     navigate(PERPS_ACTIVITY_ROUTE);
   };
 
-  const handleRowClick = onTransactionClick ?? handleSeeAll;
-
   if (showLoadingSkeleton) {
     return (
       <Box
@@ -162,7 +160,7 @@ export const PerpsRecentActivity: React.FC<PerpsRecentActivityProps> = ({
           <TransactionCard
             key={transaction.id}
             transaction={transaction}
-            onClick={handleRowClick}
+            onClick={onTransactionClick}
           />
         ))}
       </Box>

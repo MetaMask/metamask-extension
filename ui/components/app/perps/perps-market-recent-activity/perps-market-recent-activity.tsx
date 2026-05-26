@@ -48,10 +48,9 @@ const RecentActivityEmpty: React.FC = () => {
   );
 };
 
-const RecentActivityList: React.FC<{
-  transactions: PerpsTransaction[];
-  onTransactionClick: () => void;
-}> = ({ transactions, onTransactionClick }) => (
+const RecentActivityList: React.FC<{ transactions: PerpsTransaction[] }> = ({
+  transactions,
+}) => (
   <Box
     flexDirection={BoxFlexDirection.Column}
     className="overflow-hidden rounded-xl"
@@ -62,7 +61,6 @@ const RecentActivityList: React.FC<{
         transaction={transaction}
         variant="muted"
         showTopBorder={index > 0}
-        onClick={onTransactionClick}
       />
     ))}
   </Box>
@@ -93,8 +91,6 @@ export const PerpsMarketRecentActivity: React.FC<
   const hasTransactions = transactions.length > 0;
   const showSkeleton = isInitialLoading && !hasTransactions;
 
-  const handleSeeAll = () => navigate(PERPS_ACTIVITY_ROUTE);
-
   return (
     <>
       <Box
@@ -109,7 +105,7 @@ export const PerpsMarketRecentActivity: React.FC<
         </Text>
         {hasTransactions && (
           <ButtonBase
-            onClick={handleSeeAll}
+            onClick={() => navigate(PERPS_ACTIVITY_ROUTE)}
             className="bg-transparent hover:bg-transparent active:bg-transparent p-0 min-w-0 h-auto"
             data-testid="perps-market-detail-view-all-activity"
             aria-label={t('perpsSeeAll')}
@@ -125,10 +121,7 @@ export const PerpsMarketRecentActivity: React.FC<
       {showSkeleton && <RecentActivitySkeleton />}
       {!showSkeleton && !hasTransactions && <RecentActivityEmpty />}
       {!showSkeleton && hasTransactions && (
-        <RecentActivityList
-          transactions={transactions}
-          onTransactionClick={handleSeeAll}
-        />
+        <RecentActivityList transactions={transactions} />
       )}
     </>
   );

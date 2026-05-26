@@ -24,7 +24,7 @@ jest.mock('react-redux', () => ({
     selector(),
   ),
 }));
-jest.mock('../../../shared/lib/selectors/accounts', () => ({
+jest.mock('../../selectors/accounts', () => ({
   getSelectedInternalAccount: () => mockGetSelectedInternalAccount(),
 }));
 jest.mock('../../selectors/perps-controller', () => ({

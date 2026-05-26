@@ -266,13 +266,10 @@ async function initializeUiWithTab(
       global.platform.openExtensionInBrowser();
     }
   } catch (error) {
-    // No port: by the time launchMetamaskUi throws, startSendingPatches may have already
-    // run and removed the repair listener, so a restore link would be non-functional.
     await displayCriticalErrorMessage(
       container,
       CriticalErrorTranslationKey.TroubleStarting,
       error,
-      undefined,
     );
   }
 }

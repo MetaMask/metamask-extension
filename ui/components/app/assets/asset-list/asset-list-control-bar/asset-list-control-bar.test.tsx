@@ -6,11 +6,7 @@ import type { NetworkConfiguration } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../../test/data/mock-state.json';
 import * as actions from '../../../../../store/actions';
-import { setBackgroundConnection } from '../../../../../store/background-connection';
-import {
-  SECURITY_ROUTE,
-  TOKEN_MANAGEMENT_ROUTE,
-} from '../../../../../helpers/constants/routes';
+import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
 import AssetListControlBar from './asset-list-control-bar';
 
 type TooltipProps = {
@@ -40,13 +36,6 @@ jest.mock('react-router-dom', () => {
     useNavigate: () => mockUseNavigate,
   };
 });
-
-const backgroundConnectionMock = new Proxy(
-  {},
-  {
-    get: () => jest.fn().mockResolvedValue(undefined),
-  },
-);
 
 const createMockState = () => ({
   ...mockState,
@@ -191,59 +180,5 @@ describe('NFTs options', () => {
 
     fireEvent.click(autodetectButton);
     expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
-  });
-
-  it('shows Manage tokens instead of Import tokens when the token management feature flag is enabled', async () => {
-    setBackgroundConnection(backgroundConnectionMock as never);
-    const state = createMockState();
-    state.metamask.remoteFeatureFlags = {
-      ...state.metamask.remoteFeatureFlags,
-      extensionUxTokenManagementFilter: true,
-    };
-    const store = configureMockStore([thunk])(state);
-
-    const { findByTestId, queryByTestId } = renderWithProvider(
-      <AssetListControlBar showTokensLinks />,
-      store,
-    );
-
-    const actionButton = await findByTestId(
-      'asset-list-control-bar-action-button',
-    );
-    fireEvent.click(actionButton);
-
-    const manageTokensButton = await findByTestId('manageTokens__button');
-
-    expect(manageTokensButton).toHaveTextContent('Manage tokens');
-    expect(queryByTestId('importTokens__button')).not.toBeInTheDocument();
-
-    fireEvent.click(manageTokensButton);
-
-    expect(mockUseNavigate).toHaveBeenCalledWith(TOKEN_MANAGEMENT_ROUTE);
-  });
-
-  it('shows Import tokens when the token management feature flag is disabled', async () => {
-    setBackgroundConnection(backgroundConnectionMock as never);
-    const state = createMockState();
-    state.metamask.remoteFeatureFlags = {
-      ...state.metamask.remoteFeatureFlags,
-      extensionUxTokenManagementFilter: false,
-    };
-    const store = configureMockStore([thunk])(state);
-
-    const { findByTestId, queryByTestId } = renderWithProvider(
-      <AssetListControlBar showTokensLinks />,
-      store,
-    );
-
-    const actionButton = await findByTestId(
-      'asset-list-control-bar-action-button',
-    );
-    fireEvent.click(actionButton);
-
-    expect(await findByTestId('importTokens__button')).toHaveTextContent(
-      'Import tokens',
-    );
-    expect(queryByTestId('manageTokens__button')).not.toBeInTheDocument();
   });
 });

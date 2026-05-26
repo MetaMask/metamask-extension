@@ -53,7 +53,7 @@ import { signTronRewardsMessage } from './utils/tron-snap';
 import { sortAccounts } from './utils/sortAccounts';
 import { isHardwareAccount } from './utils/isHardwareAccount';
 
-export const DEFAULT_BLOCKED_REGIONS = ['UK', 'GB', 'GI'];
+export const DEFAULT_BLOCKED_REGIONS = ['UK'];
 
 const controllerName = 'RewardsController';
 
@@ -412,14 +412,9 @@ export class RewardsController extends BaseController<
     // Find current tier
     const currentTier = sortedTiers.find((tier) => tier.id === currentTierId);
     if (!currentTier) {
-      log.warn(
-        `Current tier ${currentTierId} not found in season tiers, skip calculating tier status`,
+      throw new Error(
+        `Current tier ${currentTierId} not found in season tiers`,
       );
-      return {
-        currentTier: null,
-        nextTier: null,
-        nextTierPointsNeeded: null,
-      };
     }
 
     // Find next tier (first tier with more points needed than current tier)
@@ -768,7 +763,6 @@ export class RewardsController extends BaseController<
             );
             if (subscriptionId && !successAccount) {
               successAccount = account;
-              break;
             }
           } catch {
             // Continue to next account
@@ -1137,7 +1131,6 @@ export class RewardsController extends BaseController<
           subscriptionId: subscription?.id || null,
           perpsFeeDiscount: null, // Default value, will be updated when fetched
           lastPerpsDiscountRateFetched: null,
-          lastFreshOptInStatusCheck: Date.now(),
         };
         state.rewardsAccounts[account] = accountState;
         if (shouldBecomeActiveAccount) {
@@ -1211,7 +1204,11 @@ export class RewardsController extends BaseController<
               !accountState.lastFreshOptInStatusCheck ||
               Date.now() - accountState.lastFreshOptInStatusCheck >
                 NOT_OPTED_IN_OIS_STALE_CACHE_THRESHOLD_MS;
-            if (accountState.hasOptedIn === false && shouldRecheckFresh) {
+            if (
+              (accountState.hasOptedIn === false ||
+                (accountState.hasOptedIn && !accountState.subscriptionId)) &&
+              shouldRecheckFresh
+            ) {
               // Force a fresh check for this not-opted-in account
               addressesNeedingFresh.push(address);
               continue;

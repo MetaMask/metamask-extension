@@ -69,30 +69,6 @@ export const getNetworkConfigurationsByChainId = (
   state: NetworkConfigurationsByChainIdState,
 ) => state.metamask.networkConfigurationsByChainId;
 
-// Routed through `getNetworkConfigurationsByChainId` (rather than reading
-// `state` directly) so jest mocks of that selector flow through to consumers
-// of these selectors.
-export const selectNetworkConfigurationByChainId = createSelector(
-  [
-    (state: NetworkConfigurationsByChainIdState) =>
-      getNetworkConfigurationsByChainId(state),
-    (_state: NetworkConfigurationsByChainIdState, chainId: string) => chainId,
-  ],
-  (networkConfigurationsByChainId, chainId) =>
-    networkConfigurationsByChainId[chainId as Hex],
-);
-
-export const selectDefaultRpcEndpointByChainId = createSelector(
-  selectNetworkConfigurationByChainId,
-  (networkConfiguration) => {
-    if (!networkConfiguration) {
-      return undefined;
-    }
-    const { defaultRpcEndpointIndex, rpcEndpoints } = networkConfiguration;
-    return rpcEndpoints[defaultRpcEndpointIndex];
-  },
-);
-
 export const selectDefaultNetworkClientIdsByChainId = createSelector(
   getNetworkConfigurationsByChainId,
   (networkConfigurationsByChainId) => {
@@ -124,14 +100,12 @@ export function getSelectedNetworkClientId(
  * @param params.multichainNetworkConfigurationsByChainId - network configurations by caip chain id from the MultichainNetworkController state.
  * @param params.networkConfigurationsByChainId - network configurations by hex chain id from the NetworkController state.
  * @param params.internalAccounts - InternalAccounts object from the AccountController state.
- * @param params.snaps - Snaps object from the SnapController state.
  * @returns A consolidated object containing all available network configurations by caip chain id.
  */
 export const getNetworkConfigurationsByCaipChainId = ({
   multichainNetworkConfigurationsByChainId,
   networkConfigurationsByChainId,
   internalAccounts,
-  snaps,
 }: {
   multichainNetworkConfigurationsByChainId: Record<
     CaipChainId,
@@ -139,7 +113,6 @@ export const getNetworkConfigurationsByCaipChainId = ({
   >;
   networkConfigurationsByChainId: Record<string, InternalNetworkConfiguration>;
   internalAccounts: AccountsControllerState['internalAccounts'];
-  snaps: Record<string, { enabled: boolean }>;
 }) => {
   const caipFormattedEvmNetworkConfigurations: Record<
     string,
@@ -164,10 +137,7 @@ export const getNetworkConfigurationsByCaipChainId = ({
             return scope === caipChainId;
           });
 
-          const snapId = account.metadata.snap?.id;
-          const isSnapEnabled = snapId
-            ? Boolean(snaps[snapId]?.enabled)
-            : false;
+          const isSnapEnabled = account.metadata.snap?.enabled;
 
           return Boolean(matchesScope && isSnapEnabled);
         },
@@ -196,13 +166,10 @@ export const getAllNetworkConfigurationsByCaipChainId = createSelector(
   (state: {
     metamask: { internalAccounts: AccountsControllerState['internalAccounts'] };
   }) => state.metamask.internalAccounts,
-  (state: { metamask: { snaps: Record<string, { enabled: boolean }> } }) =>
-    state.metamask.snaps,
   (
     networkConfigurationsByChainId,
     multichainNetworkConfigurationsByChainId,
     internalAccounts,
-    snaps,
   ) => {
     // We have this logic here to filter out non EVM test networks
     // to properly handle this we should use the selector from
@@ -252,7 +219,6 @@ export const getAllNetworkConfigurationsByCaipChainId = createSelector(
       },
       networkConfigurationsByChainId,
       internalAccounts,
-      snaps,
     });
   },
 );

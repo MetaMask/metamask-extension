@@ -10,10 +10,7 @@ import {
   getLastInteractedConfirmationInfo,
   setLastInteractedConfirmationInfo,
 } from '../../../../store/actions';
-import {
-  selectNetworkConfigurationByChainId,
-  type NetworkConfigurationsByChainIdState,
-} from '../../../../../shared/lib/selectors/networks';
+import { selectNetworkConfigurationByChainId } from '../../../../selectors';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../context/confirm';
 import { SignatureRequestType } from '../../types/confirm';
@@ -30,7 +27,7 @@ export const useNetworkAndOriginSwitchingAlerts = (): Alert[] => {
     (currentConfirmation as TransactionMeta)?.origin ??
     (currentConfirmation as SignatureRequestType)?.msgParams?.origin ??
     '';
-  const newNetwork = useSelector((state: NetworkConfigurationsByChainIdState) =>
+  const newNetwork = useSelector((state) =>
     selectNetworkConfigurationByChainId(state, newChainId),
   );
   const [lastInteractedConfirmationInfo, updateLastInteractedConfirmationInfo] =

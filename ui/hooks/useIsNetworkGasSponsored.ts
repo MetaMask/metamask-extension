@@ -1,8 +1,10 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { CaipChainId } from '@metamask/utils';
-import { getGasFeesSponsoredNetworkEnabled } from '../selectors';
-import { isHardwareWallet } from '../../shared/lib/selectors/keyring';
+import {
+  getGasFeesSponsoredNetworkEnabled,
+  isHardwareWallet,
+} from '../selectors';
 import { convertCaipToHexChainId } from '../../shared/lib/network.utils';
 
 export const useIsNetworkGasSponsored = (

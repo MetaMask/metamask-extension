@@ -15,11 +15,9 @@ import {
 } from '../../test/data/mock-accounts';
 import mockState from '../../test/data/mock-state.json';
 import {
-  type AccountsState,
-  getSelectedInternalAccount,
-} from '../../shared/lib/selectors/accounts';
-import {
+  AccountsState,
   isSelectedInternalAccountEth,
+  getSelectedInternalAccount,
   getInternalAccounts,
   getInternalAccountsObject,
   getInternalAccountsByScope,

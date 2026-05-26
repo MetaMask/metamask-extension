@@ -21,6 +21,17 @@ export const getFullAddressBook = (state: AddressBookMetaMaskState) =>
   state.metamask.addressBook;
 
 /**
+ * Get the memoized full address book.
+ *
+ * @param state - The Metamask state for the address book controller.
+ * @returns The full address book.
+ */
+export const getMemoizedFullAddressBook = createDeepEqualSelector(
+  [getFullAddressBook],
+  (addressBook) => addressBook,
+);
+
+/**
  * Get the address book for a network.
  *
  * @param _state - The Metamask state for the address book controller.
@@ -29,7 +40,7 @@ export const getFullAddressBook = (state: AddressBookMetaMaskState) =>
  */
 export const getAddressBookByNetwork = createDeepEqualSelector(
   [
-    getFullAddressBook,
+    getMemoizedFullAddressBook,
     (_state: AddressBookMetaMaskState, chainId: `0x${string}`) => chainId,
   ],
   (addressBook, chainId) => {

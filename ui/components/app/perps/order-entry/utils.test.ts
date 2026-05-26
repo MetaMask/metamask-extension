@@ -1,6 +1,7 @@
 import {
   formatNumberForInput,
   isDigitsOnlyInput,
+  isSignedDecimalInput,
   isUnsignedDecimalInput,
 } from './utils';
 
@@ -53,6 +54,32 @@ describe('order-entry utils', () => {
       expect(isUnsignedDecimalInput('10..2')).toBe(false);
       expect(isUnsignedDecimalInput('1-0')).toBe(false);
       expect(isUnsignedDecimalInput('a10')).toBe(false);
+    });
+  });
+
+  describe('isSignedDecimalInput', () => {
+    it('accepts signed decimal typing states', () => {
+      expect(isSignedDecimalInput('')).toBe(true);
+      expect(isSignedDecimalInput('-')).toBe(true);
+      expect(isSignedDecimalInput('-.')).toBe(true);
+      expect(isSignedDecimalInput('.')).toBe(true);
+      expect(isSignedDecimalInput('-12.5')).toBe(true);
+      expect(isSignedDecimalInput('12.5')).toBe(true);
+    });
+
+    it('accepts + prefix and intermediate states', () => {
+      expect(isSignedDecimalInput('+')).toBe(true);
+      expect(isSignedDecimalInput('+.')).toBe(true);
+      expect(isSignedDecimalInput('+12.5')).toBe(true);
+      expect(isSignedDecimalInput('+15')).toBe(true);
+    });
+
+    it('rejects invalid signed decimal values', () => {
+      expect(isSignedDecimalInput('--1')).toBe(false);
+      expect(isSignedDecimalInput('-1-2')).toBe(false);
+      expect(isSignedDecimalInput('1.2.3')).toBe(false);
+      expect(isSignedDecimalInput('1a')).toBe(false);
+      expect(isSignedDecimalInput('++1')).toBe(false);
     });
   });
 });

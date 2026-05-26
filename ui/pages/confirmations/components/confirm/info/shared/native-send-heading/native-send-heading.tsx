@@ -19,8 +19,10 @@ import { getNetworkConfigurationsByChainId } from '../../../../../../../../share
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
 import { useFiatFormatter } from '../../../../../../../hooks/useFiatFormatter';
-import { selectConversionRateByChainId } from '../../../../../../../selectors';
-import { getPreferences } from '../../../../../../../../shared/lib/selectors/preferences';
+import {
+  getPreferences,
+  selectConversionRateByChainId,
+} from '../../../../../../../selectors';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { formatAmount } from '../../../../simulation-details/formatAmount';
 import { useSendingValueMetric } from '../../hooks/useSendingValueMetric';

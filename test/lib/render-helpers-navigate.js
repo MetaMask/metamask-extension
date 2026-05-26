@@ -17,12 +17,6 @@ import {
 } from '../../ui/contexts/metametrics';
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
 import * as enLocaleMessages from '../../app/_locales/en/messages.json';
-import {
-  LegacyRouteMessengerProvider,
-  RouteMessengerContext,
-} from '../../ui/contexts/route-messenger';
-import { UIMessengerProvider } from '../../ui/contexts/ui-messenger';
-import { createMockUIMessenger } from './mock-ui-messenger';
 
 // Re-export en messages for tests that need direct access
 export const en = enLocaleMessages;
@@ -97,8 +91,6 @@ export function createProviderWrapper(
   store,
   pathname = '/',
   getMockTrackEvent = () => jest.fn().mockResolvedValue(undefined),
-  uiMessenger = createMockUIMessenger(),
-  routeMessenger = null,
 ) {
   const mockMetaMetricsContext =
     createMockMetaMetricsContext(getMockTrackEvent);
@@ -113,27 +105,17 @@ export function createProviderWrapper(
   });
 
   function Wrapper({ children }) {
-    const content = routeMessenger ? (
-      <RouteMessengerContext.Provider value={routeMessenger}>
-        <LegacyRouteMessengerProvider>{children}</LegacyRouteMessengerProvider>
-      </RouteMessengerContext.Provider>
-    ) : (
-      children
-    );
-
     return (
       <MemoryRouter>
         <I18nProvider currentLocale="en" current={en} en={en}>
           <LegacyI18nProvider>
-            <UIMessengerProvider value={uiMessenger}>
-              <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-                <LegacyMetaMetricsProvider>
-                  <QueryClientProvider client={queryClient}>
-                    {content}
-                  </QueryClientProvider>
-                </LegacyMetaMetricsProvider>
-              </MetaMetricsContext.Provider>
-            </UIMessengerProvider>
+            <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+              <LegacyMetaMetricsProvider>
+                <QueryClientProvider client={queryClient}>
+                  {children}
+                </QueryClientProvider>
+              </LegacyMetaMetricsProvider>
+            </MetaMetricsContext.Provider>
           </LegacyI18nProvider>
         </I18nProvider>
       </MemoryRouter>
@@ -152,15 +134,11 @@ export function renderWithProvider(
   pathname = '/',
   renderer = render,
   getMockTrackEvent,
-  uiMessenger = createMockUIMessenger(),
-  routeMessenger = null,
 ) {
   const wrapper = createProviderWrapper(
     store,
     pathname,
     getMockTrackEvent ?? (() => jest.fn().mockResolvedValue(undefined)),
-    uiMessenger,
-    routeMessenger,
   );
 
   return renderer(component, { wrapper });
@@ -172,8 +150,6 @@ export function renderHookWithProvider(
   pathname = '/',
   Container,
   getMockTrackEvent = () => jest.fn().mockResolvedValue(undefined),
-  uiMessenger = createMockUIMessenger(),
-  routeMessenger = null,
 ) {
   const store = state ? configureStore(state) : undefined;
 
@@ -181,8 +157,6 @@ export function renderHookWithProvider(
     store,
     pathname,
     getMockTrackEvent,
-    uiMessenger,
-    routeMessenger,
   );
 
   const wrapper = Container
@@ -213,8 +187,6 @@ export function renderHookWithProvider(
  * @param [pathname] - The initial pathname for the history.
  * @param [Container] - An optional container component.
  * @param {() => () => Promise<void>} [getMockTrackEvent] - A placeholder function for tracking a MetaMetrics event.
- * @param {UIMessenger} [uiMessenger] - An optional mock UI messenger instance.
- * @param {RouteMessenger | null} [routeMessenger] - An optional mock route messenger instance. If not provided, the RouteMessengerContext will not be included in the provider tree.
  * @returns {RenderHookResult & { history: History }} The result of the rendered hook and the history object.
  */
 export const renderHookWithProviderTyped = (
@@ -223,18 +195,8 @@ export const renderHookWithProviderTyped = (
   pathname = '/',
   Container,
   getMockTrackEvent = () => jest.fn().mockResolvedValue(undefined),
-  uiMessenger = createMockUIMessenger(),
-  routeMessenger = null,
 ) =>
-  renderHookWithProvider(
-    hook,
-    state,
-    pathname,
-    Container,
-    getMockTrackEvent,
-    uiMessenger,
-    routeMessenger,
-  );
+  renderHookWithProvider(hook, state, pathname, Container, getMockTrackEvent);
 
 export function renderWithLocalization(component) {
   const Wrapper = ({ children }) => (

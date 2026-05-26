@@ -1530,6 +1530,7 @@ export const QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME = {
   'optimism-mainnet': () => process.env.QUICKNODE_OPTIMISM_URL,
   'polygon-mainnet': () => process.env.QUICKNODE_POLYGON_URL,
   'base-mainnet': () => process.env.QUICKNODE_BASE_URL,
+  'bsc-mainnet': () => process.env.QUICKNODE_BSC_URL,
   'sei-mainnet': () => process.env.QUICKNODE_SEI_URL,
   'monad-mainnet': () => process.env.QUICKNODE_MONAD_URL,
   'hyperevm-mainnet': () => process.env.QUICKNODE_HYPEREVM_URL,
@@ -1598,7 +1599,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://bsc-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: [],
+        failoverUrls: getFailoverUrlsForInfuraNetwork('bsc-mainnet'),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1663,7 +1664,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
       },
     ],
     defaultRpcEndpointIndex: 0,
-    blockExplorerUrls: ['https://seiscan.io/'],
+    blockExplorerUrls: ['https://seitrace.com/'],
     defaultBlockExplorerUrlIndex: 0,
   },
   {
@@ -1724,21 +1725,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     ],
     defaultRpcEndpointIndex: 0,
     blockExplorerUrls: ['https://megaeth.blockscout.com/'],
-    defaultBlockExplorerUrlIndex: 0,
-  },
-  {
-    chainId: CHAIN_IDS.TEMPO_MAINNET,
-    name: TEMPO_MAINNET_DISPLAY_NAME,
-    nativeCurrency: CURRENCY_SYMBOLS.TEMPO_MAINNET,
-    rpcEndpoints: [
-      {
-        url: `https://rpc.tempo.xyz/`,
-        failoverUrls: [],
-        type: RpcEndpointType.Custom,
-      },
-    ],
-    defaultRpcEndpointIndex: 0,
-    blockExplorerUrls: ['https://explore.tempo.xyz/'],
     defaultBlockExplorerUrlIndex: 0,
   },
 ];

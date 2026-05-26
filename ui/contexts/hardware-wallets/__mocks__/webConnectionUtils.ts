@@ -25,9 +25,6 @@ export const getConnectedDevices = jest.fn();
 export const subscribeToWebHidEvents = jest.fn();
 export const subscribeToWebUsbEvents = jest.fn();
 export const subscribeToHardwareWalletEvents = jest.fn();
-export const isRestrictedCameraEnvironment = jest.fn();
-export const redirectToFullscreen = jest.fn();
-export const handleContinueWithPermissionCheck = jest.fn();
 
 // Default mock implementations
 isWebHidAvailable.mockReturnValue(true);
@@ -76,16 +73,6 @@ getConnectedDevices.mockResolvedValue([]);
 subscribeToWebHidEvents.mockReturnValue(jest.fn());
 subscribeToWebUsbEvents.mockReturnValue(jest.fn());
 subscribeToHardwareWalletEvents.mockReturnValue(jest.fn());
-isRestrictedCameraEnvironment.mockReturnValue(false);
-redirectToFullscreen.mockImplementation(() => undefined);
-handleContinueWithPermissionCheck.mockImplementation(
-  async (
-    onRetry: () => Promise<void>,
-    _redirectQueryString?: string | null,
-  ) => {
-    await onRetry();
-  },
-);
 
 // Reset all mocks to defaults
 export const resetwebConnectionUtilsMocks = () => {
@@ -134,16 +121,6 @@ export const resetwebConnectionUtilsMocks = () => {
   subscribeToWebHidEvents.mockReturnValue(jest.fn());
   subscribeToWebUsbEvents.mockReturnValue(jest.fn());
   subscribeToHardwareWalletEvents.mockReturnValue(jest.fn());
-  isRestrictedCameraEnvironment.mockReturnValue(false);
-  redirectToFullscreen.mockImplementation(() => undefined);
-  handleContinueWithPermissionCheck.mockImplementation(
-    async (
-      onRetry: () => Promise<void>,
-      _redirectQueryString?: string | null,
-    ) => {
-      await onRetry();
-    },
-  );
 };
 
 // Helper to setup common test scenarios

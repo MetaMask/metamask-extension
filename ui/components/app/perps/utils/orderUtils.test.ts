@@ -146,7 +146,7 @@ describe('orderUtils', () => {
       ).toBe(true);
     });
 
-    it('excludes full-position reduce-only and isPositionTpsl orders', () => {
+    it('includes full-position reduce-only and isPositionTpsl orders', () => {
       const fullClose = makeOrder({
         reduceOnly: true,
         symbol: 'ETH',
@@ -156,14 +156,14 @@ describe('orderUtils', () => {
       });
       const position = makePosition({ symbol: 'ETH', size: '1.0' });
       expect(shouldDisplayOrderInMarketDetailsOrders(fullClose, position)).toBe(
-        false,
+        true,
       );
 
       const positionTpsl = makeOrder({
         reduceOnly: true,
         isPositionTpsl: true,
       });
-      expect(shouldDisplayOrderInMarketDetailsOrders(positionTpsl)).toBe(false);
+      expect(shouldDisplayOrderInMarketDetailsOrders(positionTpsl)).toBe(true);
     });
   });
 
@@ -285,7 +285,7 @@ describe('orderUtils', () => {
       expect(result).toHaveLength(1);
     });
 
-    it('excludes full-position TP/SL reduce-only orders flagged as positionTpsl', () => {
+    it('includes full-position TP/SL reduce-only orders', () => {
       const tpslOrder = makeOrder({
         reduceOnly: true,
         isPositionTpsl: true,
@@ -294,26 +294,8 @@ describe('orderUtils', () => {
         detailedOrderType: 'Take Profit Limit',
       });
       const result = normalizeMarketDetailsOrders({ orders: [tpslOrder] });
-      expect(result).toHaveLength(0);
-    });
-
-    it('excludes reduce-only TP/SL whose size matches the full position', () => {
-      const tpslOrder = makeOrder({
-        reduceOnly: true,
-        symbol: 'ETH',
-        side: 'sell',
-        size: '1.0',
-        originalSize: '1.0',
-        isTrigger: true,
-        triggerPrice: '3200.00',
-        detailedOrderType: 'Take Profit Limit',
-      });
-      const position = makePosition({ symbol: 'ETH', size: '1.0' });
-      const result = normalizeMarketDetailsOrders({
-        orders: [tpslOrder],
-        existingPosition: position,
-      });
-      expect(result).toHaveLength(0);
+      expect(result).toHaveLength(1);
+      expect(result[0].orderId).toBe('order-1');
     });
 
     it('shows partial-close reduce-only orders', () => {

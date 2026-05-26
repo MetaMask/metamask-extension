@@ -8,6 +8,7 @@ import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
   DEFAULT_ROUTE,
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
   DEEP_LINK_ROUTE,
 } from '../../../helpers/constants/routes';
 import { DeferredDeepLinkRouteType } from '../../../../shared/lib/deep-links/types';
@@ -181,7 +182,7 @@ describe('Wallet Ready Page', () => {
     });
   });
 
-  it('redirects to default route when wallet is not initialized', () => {
+  it('redirects to welcome page when wallet is not initialized', () => {
     const mockStore = configureMockStore([thunk])({
       ...mockState,
       metamask: {
@@ -191,7 +192,7 @@ describe('Wallet Ready Page', () => {
       },
     });
     renderWithProvider(<CreationSuccessful />, mockStore);
-    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+    expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE, {
       replace: true,
     });
   });

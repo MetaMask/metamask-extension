@@ -393,11 +393,6 @@ export type SeasonMetadataDto = {
    * The tiers for the season
    */
   tiers: SeasonTierDto[];
-
-  /**
-   * The activity types that earn points in this season
-   */
-  activityTypes: string[];
 };
 
 /**

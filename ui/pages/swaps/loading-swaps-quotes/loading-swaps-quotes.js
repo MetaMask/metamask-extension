@@ -11,11 +11,11 @@ import {
   getQuotesFetchStartTime,
   getCurrentSmartTransactionsEnabled,
 } from '../../../ducks/swaps/swaps';
-import { getHDEntropyIndex } from '../../../selectors/selectors';
 import {
   isHardwareWallet,
   getHardwareWalletType,
-} from '../../../../shared/lib/selectors/keyring';
+  getHDEntropyIndex,
+} from '../../../selectors/selectors';
 import {
   getSmartTransactionsEnabled,
   getSmartTransactionsOptInStatusForMetrics,

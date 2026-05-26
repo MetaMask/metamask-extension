@@ -7,6 +7,7 @@ export * from './selectors';
 export * from './transactions';
 export * from './approvals';
 export * from './accounts';
+export * from './remote-feature-flags';
 export * from './origin-throttling';
 export * from './multichain/networks';
 export * from './seedless-onboarding';

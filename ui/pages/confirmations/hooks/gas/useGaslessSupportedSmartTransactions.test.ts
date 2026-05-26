@@ -5,7 +5,7 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../../tes
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { isSendBundleSupported } from '../../../../store/actions';
-import { isHardwareWallet } from '../../../../../shared/lib/selectors/keyring';
+import { isHardwareWallet } from '../../../../selectors';
 import { useGaslessSupportedSmartTransactions } from './useGaslessSupportedSmartTransactions';
 
 jest.mock('../../../../../shared/lib/selectors');
@@ -16,9 +16,6 @@ jest.mock('../../../../store/actions', () => ({
 
 jest.mock('../../../../selectors', () => ({
   ...jest.requireActual('../../../../selectors'),
-}));
-jest.mock('../../../../../shared/lib/selectors/keyring', () => ({
-  ...jest.requireActual('../../../../../shared/lib/selectors/keyring'),
   isHardwareWallet: jest.fn(),
 }));
 

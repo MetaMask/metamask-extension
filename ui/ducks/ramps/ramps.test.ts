@@ -26,8 +26,6 @@ jest.mock('../../../shared/lib/selectors/networks', () => ({
   selectDefaultNetworkClientIdsByChainId: jest.fn(),
   getNetworksMetadata: jest.fn(),
   getProviderConfig: jest.fn(() => ({ chainId: '0x1' })),
-  selectNetworkConfigurationByChainId: jest.fn(),
-  selectDefaultRpcEndpointByChainId: jest.fn(),
 }));
 
 jest.mock('../../selectors', () => ({

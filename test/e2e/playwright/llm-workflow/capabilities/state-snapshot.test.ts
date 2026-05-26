@@ -1,12 +1,11 @@
 import type { Page } from '@playwright/test';
 import { MetaMaskStateSnapshotCapability } from './state-snapshot';
 
-const mockGetBaseExtensionState = jest.fn();
+const mockGetExtensionState = jest.fn();
 const mockDetectCurrentScreen = jest.fn();
 
 jest.mock('../launcher/state-inspector', () => ({
-  getBaseExtensionState: (...args: unknown[]) =>
-    mockGetBaseExtensionState(...args),
+  getExtensionState: (...args: unknown[]) => mockGetExtensionState(...args),
   detectCurrentScreen: (...args: unknown[]) => mockDetectCurrentScreen(...args),
 }));
 
@@ -26,7 +25,7 @@ describe('MetaMaskStateSnapshotCapability', () => {
     });
 
     it('uses custom chain ID when provided', async () => {
-      mockGetBaseExtensionState.mockResolvedValue({
+      mockGetExtensionState.mockResolvedValue({
         isLoaded: true,
         currentScreen: 'home',
       });
@@ -37,7 +36,7 @@ describe('MetaMaskStateSnapshotCapability', () => {
 
       await capability.getState(mockPage, {});
 
-      expect(mockGetBaseExtensionState).toHaveBeenCalledWith(
+      expect(mockGetExtensionState).toHaveBeenCalledWith(
         mockPage,
         expect.objectContaining({ chainId: 1 }),
       );
@@ -57,7 +56,7 @@ describe('MetaMaskStateSnapshotCapability', () => {
         chainId: 1337,
         balance: '25 ETH',
       };
-      mockGetBaseExtensionState.mockResolvedValue(mockState);
+      mockGetExtensionState.mockResolvedValue(mockState);
 
       const capability = new MetaMaskStateSnapshotCapability();
       const result = await capability.getState(mockPage, { chainId: 1337 });
@@ -66,7 +65,7 @@ describe('MetaMaskStateSnapshotCapability', () => {
     });
 
     it('passes extension ID to state inspector', async () => {
-      mockGetBaseExtensionState.mockResolvedValue({});
+      mockGetExtensionState.mockResolvedValue({});
 
       const capability = new MetaMaskStateSnapshotCapability();
       await capability.getState(mockPage, {
@@ -74,35 +73,35 @@ describe('MetaMaskStateSnapshotCapability', () => {
         chainId: 1337,
       });
 
-      expect(mockGetBaseExtensionState).toHaveBeenCalledWith(
+      expect(mockGetExtensionState).toHaveBeenCalledWith(
         mockPage,
         expect.objectContaining({ extensionId: 'abc123' }),
       );
     });
 
     it('uses provided chain ID over default', async () => {
-      mockGetBaseExtensionState.mockResolvedValue({});
+      mockGetExtensionState.mockResolvedValue({});
 
       const capability = new MetaMaskStateSnapshotCapability({
         defaultChainId: 1,
       });
       await capability.getState(mockPage, { chainId: 5 });
 
-      expect(mockGetBaseExtensionState).toHaveBeenCalledWith(
+      expect(mockGetExtensionState).toHaveBeenCalledWith(
         mockPage,
         expect.objectContaining({ chainId: 5 }),
       );
     });
 
     it('uses default chain ID when not provided in options', async () => {
-      mockGetBaseExtensionState.mockResolvedValue({});
+      mockGetExtensionState.mockResolvedValue({});
 
       const capability = new MetaMaskStateSnapshotCapability({
         defaultChainId: 42,
       });
       await capability.getState(mockPage, {});
 
-      expect(mockGetBaseExtensionState).toHaveBeenCalledWith(
+      expect(mockGetExtensionState).toHaveBeenCalledWith(
         mockPage,
         expect.objectContaining({ chainId: 42 }),
       );

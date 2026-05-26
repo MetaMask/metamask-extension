@@ -4,10 +4,8 @@ import type {
   PendingJsonRpcResponse,
 } from '@metamask/utils';
 import * as Util from '../../util';
-import {
-  requestEthereumAccountsHandler,
-  type RequestEthereumAccountsHooks,
-} from './request-accounts';
+import requestEthereumAccounts from './request-accounts';
+import type { RequestEthereumAccountsOptions } from './request-accounts';
 
 jest.mock('../../util', () => ({
   ...jest.requireActual('../../util'),
@@ -37,7 +35,7 @@ const createMockedHandler = () => {
         '0x01': { address: '0x01' },
         '0x02': { address: '0x02' },
         '0x03': { address: '0x03' },
-      } as unknown as RequestEthereumAccountsHooks['metamaskState']['internalAccounts']['accounts'],
+      } as unknown as RequestEthereumAccountsOptions['metamaskState']['internalAccounts']['accounts'],
       selectedAccount: '',
     },
   };
@@ -53,19 +51,13 @@ const createMockedHandler = () => {
   const handler = (
     request: JsonRpcRequest<JsonRpcParams> & { origin: string },
   ) =>
-    requestEthereumAccountsHandler.implementation(
-      request,
-      response,
-      next,
-      end,
-      {
-        getAccounts,
-        sendMetrics,
-        metamaskState,
-        getCaip25PermissionFromLegacyPermissionsForOrigin,
-        requestPermissionsForOrigin,
-      },
-    );
+    requestEthereumAccounts.implementation(request, response, next, end, {
+      getAccounts,
+      sendMetrics,
+      metamaskState,
+      getCaip25PermissionFromLegacyPermissionsForOrigin,
+      requestPermissionsForOrigin,
+    });
 
   return {
     response,

@@ -45,6 +45,7 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
         ).build(),
         manifestFlags: {
           testing: {
+            disableSync: true,
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
         },
@@ -61,9 +62,6 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
-
-        // Wait for Account Sync to finish.
-        await accountListPage.waitUntilSyncingIsCompleted();
         await accountListPage.checkNumberOfAvailableAccounts(
           WITH_STATE_POWER_USER.withAccounts,
         );

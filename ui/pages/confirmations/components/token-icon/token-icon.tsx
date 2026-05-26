@@ -9,10 +9,7 @@ import {
   AvatarTokenSize,
   BadgeWrapper,
 } from '../../../../components/component-library';
-import {
-  selectNetworkConfigurationByChainId,
-  type NetworkConfigurationsByChainIdState,
-} from '../../../../../shared/lib/selectors/networks';
+import { selectNetworkConfigurationByChainId } from '../../../../selectors';
 import { useSendTokens } from '../../hooks/send/useSendTokens';
 
 export type TokenIconSize = 'xs' | 'sm' | 'md';
@@ -49,9 +46,8 @@ export function TokenIcon({
 }: TokenIconProps) {
   const sendTokens = useSendTokens({ includeNoBalance: true });
 
-  const networkConfiguration = useSelector(
-    (state: NetworkConfigurationsByChainIdState) =>
-      selectNetworkConfigurationByChainId(state, chainId),
+  const networkConfiguration = useSelector((state) =>
+    selectNetworkConfigurationByChainId(state, chainId),
   );
 
   const matchedToken = useMemo(() => {

@@ -27,7 +27,9 @@ export type MetaMaskContractSeedingCapabilityOptions = {
   chainCapability: MetaMaskChainCapability;
 };
 
-export class MetaMaskContractSeedingCapability implements ContractSeedingCapability {
+export class MetaMaskContractSeedingCapability
+  implements ContractSeedingCapability
+{
   private seeder: AnvilSeederWrapper | undefined;
 
   private readonly chainCapability: MetaMaskChainCapability;

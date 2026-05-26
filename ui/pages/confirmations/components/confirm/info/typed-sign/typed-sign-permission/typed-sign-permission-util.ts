@@ -2,10 +2,7 @@
 
 import { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
-import {
-  selectNetworkConfigurationByChainId,
-  type NetworkConfigurationsByChainIdState,
-} from '../../../../../../../../shared/lib/selectors/networks';
+import { selectNetworkConfigurationByChainId } from '../../../../../../../selectors';
 import { getTokenByAccountAndAddressAndChainId } from '../../../../../../../selectors/assets';
 import type { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 
@@ -56,7 +53,7 @@ export const useErc20TokenDetails = ({
  * @returns The native token label (symbol or name), or undefined if not found.
  */
 export const useNativeTokenLabel = (chainId: Hex): string => {
-  const config = useSelector((state: NetworkConfigurationsByChainIdState) =>
+  const config = useSelector((state) =>
     selectNetworkConfigurationByChainId(state, chainId),
   );
 

@@ -105,18 +105,6 @@ function continueButtonTestId(
 }
 
 /**
- * Determines header icon above the title: camera when access is still requestable; no-photography when blocked.
- *
- * @param variant - Needed vs blocked UI branch.
- * @returns Design-system icon name for the header glyph.
- */
-function headerIconName(variant: CameraAccessErrorContentVariant): IconName {
-  return variant === CameraAccessErrorContentVariant.Needed
-    ? IconName.Camera
-    : IconName.NoPhotography;
-}
-
-/**
  * Renders the Firefox blocked-state numbered instruction list.
  *
  * @param params - List props.
@@ -130,17 +118,18 @@ function renderFirefoxCameraInstructions(params: {
     <Box
       data-testid="qr-camera-firefox-instructions"
       flexDirection={BoxFlexDirection.Column}
+      gap={2}
       marginTop={2}
       padding={3}
       backgroundColor={BoxBackgroundColor.BackgroundAlternative}
-      style={{ borderRadius: 16 }}
+      style={{ borderRadius: 8 }}
     >
       {steps.map((step) => (
         <Text
           key={step.id}
-          variant={TextVariant.BodySm}
+          variant={TextVariant.BodyMd}
           textAlign={TextAlign.Left}
-          color={TextColor.TextAlternative}
+          color={TextColor.TextDefault}
         >
           {`${step.order}. ${step.text}`}
         </Text>
@@ -192,9 +181,9 @@ function renderChromiumCameraHint(params: { hintText: string }) {
         </Box>
         <Box style={{ flex: 1, minWidth: 0 }}>
           <Text
-            variant={TextVariant.BodySm}
+            variant={TextVariant.BodyMd}
             textAlign={TextAlign.Left}
-            color={TextColor.TextAlternative}
+            color={TextColor.TextDefault}
           >
             {hintText}
           </Text>
@@ -250,7 +239,7 @@ export const CameraAccessErrorContent = (
         paddingBottom={2}
       >
         <Icon
-          name={headerIconName(variant)}
+          name={IconName.Camera}
           color={IconColor.IconDefault}
           size={IconSize.Xl}
         />
@@ -269,7 +258,7 @@ export const CameraAccessErrorContent = (
         <Text
           variant={TextVariant.BodyMd}
           textAlign={TextAlign.Center}
-          color={TextColor.TextAlternative}
+          color={TextColor.TextDefault}
         >
           {body}
         </Text>

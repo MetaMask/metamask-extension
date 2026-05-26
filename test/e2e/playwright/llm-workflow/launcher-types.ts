@@ -1,5 +1,4 @@
 import type { Page, BrowserContext } from '@playwright/test';
-import type { ManifestFlags } from '../../../../shared/lib/manifestFlags';
 
 export type StateMode = 'default' | 'onboarding' | 'custom';
 
@@ -34,7 +33,6 @@ export type LaunchOptions = {
   network?: NetworkConfig;
   fixture?: FixtureData;
   proxyServer?: string;
-  manifestFlags?: Partial<ManifestFlags>;
 };
 
 export type LauncherLaunchOptions = LaunchOptions;
@@ -65,7 +63,6 @@ export type ScreenName =
   | 'onboarding-password'
   | 'onboarding-complete'
   | 'onboarding-metametrics'
-  | 'onboarding-privacy'
   | 'settings'
   | 'send'
   | 'swap'
@@ -87,11 +84,6 @@ export type ExtensionState = {
   networkName: string | null;
   chainId: number | null;
   balance: string | null;
-  activeTab?: {
-    role: string;
-    url: string;
-    title?: string;
-  };
 };
 
 export type LauncherContext = {

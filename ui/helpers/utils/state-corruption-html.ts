@@ -5,10 +5,7 @@ import {
   SUPPORT_LINK,
   VAULT_RECOVERY_LINK,
 } from '../../../shared/lib/ui-utils';
-import {
-  criticalErrorWarningIconMarkup,
-  getErrorHtmlBase,
-} from '../../../shared/lib/error-utils';
+import { getErrorHtmlBase } from '../../../shared/lib/error-utils';
 import type { ErrorLike } from '../../../shared/constants/errors';
 import { switchDirectionForPreferredLocale } from '../../../shared/lib/switch-direction';
 import getFirstPreferredLangCode from '../../../shared/lib/get-first-preferred-lang-code';
@@ -57,11 +54,16 @@ export async function getStateCorruptionErrorHtml(
   }
 
   const header = `
-    <div class="critical-error__header">
-      ${criticalErrorWarningIconMarkup()}
-      <h1 class="critical-error__title">${t('stateCorruptionMetamaskDatabaseCannotBeAccessed')}</h1>
-    </div>
+    <h1>${t('stateCorruptionMetamaskDatabaseCannotBeAccessed')}</h1>
   `;
+  const body = `
+    <p>${lodashEscape(corruptionDetectedMessage)}</p>
+    <p>${copyAndRestoreMessage}</p>
+    <button disabled id="critical-error-button" class="critical-error__button-restore button btn-primary">
+      ${restoreOrResetMessage}
+    </button>
+  `;
+
   const footer = supportLink
     ? `<p class="critical-error__footer small">${lodashEscape(
         t('unexpectedBehavior') ?? '',
@@ -75,22 +77,10 @@ export async function getStateCorruptionErrorHtml(
     </p>`
     : '';
 
-  const body = `
-    <div class="critical-error__body">
-      <p>${lodashEscape(corruptionDetectedMessage)}</p>
-      <p>${copyAndRestoreMessage}</p>
-    </div>
-    <div class="critical-error__footer-actions">
-      <button disabled id="critical-error-button" class="critical-error__button-restore button btn-primary">
-        ${restoreOrResetMessage}
-      </button>
-      ${footer}
-    </div>
-  `;
-
   return getErrorHtmlBase(`
     ${header}
     ${body}
+    ${footer}
   `);
 }
 

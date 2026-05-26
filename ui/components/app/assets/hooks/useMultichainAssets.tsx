@@ -2,8 +2,10 @@ import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import { useMemo } from 'react';
 import { getMultichainSelectedAccountCachedBalance } from '../../../../selectors/multichain';
-import { getEnabledNetworksByNamespace } from '../../../../selectors';
-import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
+import {
+  getEnabledNetworksByNamespace,
+  getSelectedInternalAccount,
+} from '../../../../selectors';
 import {
   TranslateFunction,
   networkTitleOverrides,

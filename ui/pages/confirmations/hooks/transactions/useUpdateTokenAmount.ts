@@ -50,7 +50,7 @@ export function useUpdateTokenAmount() {
 
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
 
-  const decimals = primaryRequiredToken?.decimals;
+  const decimals = primaryRequiredToken?.decimals ?? 18;
 
   const amountRaw = useMemo(() => {
     if (!data) {
@@ -75,7 +75,7 @@ export function useUpdateTokenAmount() {
 
   const updateTokenAmount = useCallback(
     (amountHuman: string) => {
-      if (!data || !to || decimals === undefined) {
+      if (!data || !to) {
         return;
       }
 

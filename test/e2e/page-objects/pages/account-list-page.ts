@@ -65,7 +65,7 @@ class AccountListPage {
     '[data-testid="multichain-account-menu-popover-add-watch-only-account"]';
 
   private readonly addHardwareWalletButton =
-    '[data-testid="choose-wallet-type-hardware-wallet"]';
+    '[data-testid="add-wallet-modal-hardware-wallet"]';
 
   private readonly addImportedAccountButton =
     '[data-testid="multichain-account-menu-popover-add-imported-account"]';
@@ -76,7 +76,7 @@ class AccountListPage {
   };
 
   private readonly addSnapAccountButton =
-    '[data-testid="choose-wallet-type-snap-account"]';
+    '[data-testid="add-wallet-modal-snap-account"]';
 
   private readonly walletDetailsButton = {
     text: 'Details',
@@ -86,8 +86,6 @@ class AccountListPage {
   private readonly closeAccountModalButton =
     'header button[aria-label="Close"]';
 
-  private readonly chooseWalletTypeBackButton = '[data-testid="back-button"]';
-
   private readonly closeMultichainAccountsPageButton =
     '.multichain-page-header button[aria-label="Back"]';
 
@@ -95,10 +93,10 @@ class AccountListPage {
     '[data-testid="account-list-add-wallet-button"]';
 
   private readonly importWalletFromMultichainWalletModalButton =
-    '[data-testid="choose-wallet-type-import-wallet"]';
+    '[data-testid="add-wallet-modal-import-wallet"]';
 
   private readonly importAccountFromMultichainWalletModalButton =
-    '[data-testid="choose-wallet-type-import-account"]';
+    '[data-testid="add-wallet-modal-import-account"]';
 
   private readonly multichainAccountMenuItem =
     '.multichain-account-cell-menu-item';
@@ -252,13 +250,16 @@ class AccountListPage {
     this.driver = driver;
   }
 
-  async checkPageIsLoaded(
-    timeout: number = 10000,
-    { waitForSync = true }: { waitForSync?: boolean } = {},
-  ): Promise<void> {
+  async checkPageIsLoaded(timeout: number = 10000): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors(
-        [this.addMultichainAccountButton, this.addMultichainWalletButton],
+        [
+          {
+            css: this.addMultichainAccountButton,
+            text: 'Add account',
+          },
+          this.addMultichainWalletButton,
+        ],
         { timeout },
       );
     } catch (e) {
@@ -266,9 +267,7 @@ class AccountListPage {
       throw e;
     }
 
-    if (waitForSync) {
-      await this.waitUntilSyncingIsCompleted();
-    }
+    await this.waitUntilSyncingIsCompleted();
     console.log('Account list is loaded');
   }
 
@@ -335,7 +334,6 @@ class AccountListPage {
         await this.driver.clickElementAndWaitToDisappear(
           this.importAccountConfirmButton,
         );
-        await this.closeChooseWalletTypePage();
       }
       return;
     }
@@ -417,8 +415,10 @@ class AccountListPage {
    */
   async waitUntilSyncingIsCompleted(): Promise<void> {
     console.log(`Check that account syncing not displayed in account list`);
-    await this.checkAddWalletButtonIsDisplayed();
-    await this.driver.assertElementNotPresent(this.syncingMessage);
+    await this.driver.assertElementNotPresent({
+      css: this.addMultichainAccountButton,
+      text: 'Syncing',
+    });
   }
 
   /**
@@ -536,11 +536,6 @@ class AccountListPage {
     );
   }
 
-  async closeChooseWalletTypePage(): Promise<void> {
-    console.log(`Navigate back from choose wallet type page`);
-    await this.driver.clickElement(this.chooseWalletTypeBackButton);
-  }
-
   async closeMultichainAccountsPage(): Promise<void> {
     console.log(`Close multichain accounts page`);
     await this.driver.clickElementAndWaitToDisappear(
@@ -582,7 +577,6 @@ class AccountListPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.importAccountConfirmButton,
     );
-    await this.closeChooseWalletTypePage();
   }
 
   async isBtcAccountCreationButtonEnabled(): Promise<boolean> {
@@ -920,7 +914,7 @@ class AccountListPage {
     await this.driver.waitForSelector(this.walletDetailsButton);
   }
 
-  async checkAddWalletButtonIsDisplayed(): Promise<void> {
+  async checkAddWalletButttonIsDisplayed(): Promise<void> {
     console.log('Check add wallet button is displayed');
     await this.driver.waitForSelector(this.addMultichainWalletButton);
   }

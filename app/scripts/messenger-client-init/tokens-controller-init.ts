@@ -6,7 +6,6 @@ import {
   TokensControllerInitMessenger,
 } from './messengers';
 import { getGlobalChainId } from './init-utils';
-import { tokenListService } from './token-list-service';
 
 export const TokensControllerInit: MessengerClientInitFunction<
   TokensController,
@@ -24,7 +23,6 @@ export const TokensControllerInit: MessengerClientInitFunction<
     state: persistedState.TokensController,
     provider,
     chainId: getGlobalChainId(initMessenger),
-    tokenListService,
   });
 
   return {

@@ -8,6 +8,7 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
   addNftVerifyOwnership,
   ignoreTokens,
+  setNewNftAddedMessage,
   updateNftDropDownState,
 } from '../../../store/actions';
 import { mockNetworkState } from '../../../../test/stub/networks';
@@ -20,27 +21,19 @@ const INVALID_ADDRESS = 'aoinsafasdfa';
 const VALID_TOKENID = '1201';
 const INVALID_TOKENID = 'abcde';
 
-const mockToastSuccess = jest.fn();
-const mockToastError = jest.fn();
-
 jest.mock('../../../store/actions.ts', () => ({
   addNftVerifyOwnership: jest
     .fn()
     .mockReturnValue(jest.fn().mockResolvedValue()),
   getTokenStandardAndDetails: jest.fn().mockResolvedValue(),
   ignoreTokens: jest.fn().mockReturnValue(jest.fn().mockResolvedValue()),
+  setNewNftAddedMessage: jest
+    .fn()
+    .mockReturnValue(jest.fn().mockResolvedValue()),
   updateNftDropDownState: jest
     .fn()
     .mockReturnValue(jest.fn().mockResolvedValue()),
   hideImportNftsModal: jest.fn().mockReturnValue(jest.fn().mockResolvedValue()),
-}));
-
-jest.mock('../../ui/toast/toast', () => ({
-  toast: {
-    success: (...args) => mockToastSuccess(...args),
-    error: (...args) => mockToastError(...args),
-  },
-  ToastContent: ({ title }) => title,
 }));
 
 const mockUseNavigate = jest.fn();
@@ -56,8 +49,6 @@ describe('ImportNftsModal', () => {
 
   beforeEach(() => {
     jest.restoreAllMocks();
-    mockToastSuccess.mockClear();
-    mockToastError.mockClear();
   });
 
   it('should enable the "Import" button when valid entries are input into both Address and TokenId fields and a network is selected', () => {
@@ -152,7 +143,7 @@ describe('ImportNftsModal', () => {
     expect(getByText(messages.import.message)).not.toBeEnabled(); // Valid token address, invalid token id
   });
 
-  it('should call addNftVerifyOwnership, updateNftDropDownState, show success toast, and ignoreTokens action with correct values (tokenId should not be in scientific notation)', async () => {
+  it('should call addNftVerifyOwnership, updateNftDropDownState, setNewNftAddedMessage, and ignoreTokens action with correct values (tokenId should not be in scientific notation)', async () => {
     store = configureMockStore([thunk])({
       ...mockState,
       appState: { importNftsModal: { ignoreErc20Token: true } },
@@ -204,7 +195,7 @@ describe('ImportNftsModal', () => {
         },
       });
 
-      expect(mockToastSuccess).toHaveBeenCalled();
+      expect(setNewNftAddedMessage).toHaveBeenCalledWith('success');
 
       expect(ignoreTokens).toHaveBeenCalledWith({
         dontShowLoadingIndicator: true,
@@ -214,7 +205,7 @@ describe('ImportNftsModal', () => {
     });
   });
 
-  it('should show error toast on import failure', async () => {
+  it('should throw error message and click close on failure message', async () => {
     addNftVerifyOwnership.mockImplementation(() =>
       jest.fn().mockRejectedValue(new Error('error')),
     );
@@ -247,8 +238,12 @@ describe('ImportNftsModal', () => {
     fireEvent.click(getByText(messages.import.message));
 
     await waitFor(() => {
-      expect(mockToastError).toHaveBeenCalled();
+      expect(setNewNftAddedMessage).toHaveBeenCalledWith('error');
     });
+
+    const addNftClose = getByTestId('add-nft-error-close');
+
+    fireEvent.click(addNftClose);
   });
 
   it('should set error message when address invalid', () => {

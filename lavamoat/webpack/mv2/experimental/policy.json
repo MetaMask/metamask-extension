@@ -600,9 +600,47 @@
         "react": true
       }
     },
+    "@ledgerhq/hw-app-eth>@ledgerhq/domain-service": {
+      "packages": {
+        "@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
+        "axios": true
+      }
+    },
     "@ledgerhq/errors": {
       "globals": {
         "console.warn": true
+      }
+    },
+    "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools": {
+      "packages": {
+        "ethers>@ethersproject/constants": true,
+        "ethers>@ethersproject/hash": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/cryptoassets-evm-signatures": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>@ledgerhq/live-env": true,
+        "axios": true,
+        "@metamask/ppom-validator>crypto-js": true
+      }
+    },
+    "@ledgerhq/hw-app-eth": {
+      "globals": {
+        "Buffer.alloc": true,
+        "Buffer.concat": true,
+        "Buffer.from": true,
+        "console.warn": true
+      },
+      "packages": {
+        "@ethersproject/abi": true,
+        "ethers>@ethersproject/rlp": true,
+        "@ethersproject/transactions": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/cryptoassets-evm-signatures": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/domain-service": true,
+        "@ledgerhq/errors": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
+        "axios": true,
+        "@ledgerhq/hw-app-eth>bignumber.js": true,
+        "buffer": true,
+        "semver": true
       }
     },
     "@ledgerhq/hw-transport": {
@@ -621,16 +659,18 @@
         "webpack>events": true
       }
     },
+    "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>@ledgerhq/live-env": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "wait-on>rxjs": true
+      }
+    },
     "@ledgerhq/hw-app-eth>@ledgerhq/logs": {
       "globals": {
         "__ledgerLogsListen": "write",
         "console.error": true
-      }
-    },
-    "@metamask/passkey-controller>@levischuck/tiny-cbor": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
       }
     },
     "@material-ui/core": {
@@ -731,6 +771,12 @@
         "@metamask/assets-controllers>@metamask/abi-utils>@metamask/utils": true
       }
     },
+    "@metamask/gator-permissions-controller>@metamask/delegation-core>@metamask/abi-utils": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/gator-permissions-controller>@metamask/abi-utils": {
       "packages": {
         "@metamask/superstruct": true,
@@ -772,7 +818,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/eth-snap-keyring": true,
+        "@metamask/accounts-controller>@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
         "@metamask/keyring-utils": true,
@@ -780,18 +826,6 @@
         "@metamask/utils": true,
         "@metamask/accounts-controller>ethereum-cryptography": true,
         "lodash": true,
-        "uuid": true
-      }
-    },
-    "@metamask/multichain-account-service>@metamask/accounts-controller": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "@metamask/keyring-controller": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "@metamask/multichain-account-service>@metamask/accounts-controller>ethereum-cryptography": true,
         "uuid": true
       }
     },
@@ -819,12 +853,10 @@
     "@metamask/assets-controller": {
       "globals": {
         "clearInterval": true,
-        "clearTimeout": true,
         "console.error": true,
         "fetch.bind": true,
         "performance.now": true,
-        "setInterval": true,
-        "setTimeout": true
+        "setInterval": true
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
@@ -872,7 +904,7 @@
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/keyring-api": true,
+        "@metamask/assets-controllers>@metamask/keyring-api": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/phishing-controller": true,
@@ -880,7 +912,6 @@
         "@metamask/rpc-errors": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
-        "@metamask/assets-controllers>@tanstack/query-core": true,
         "mockttp>async-mutex": true,
         "ethereumjs-util>bn.js": true,
         "immer": true,
@@ -1077,6 +1108,13 @@
         "@noble/hashes": true
       }
     },
+    "@metamask/gator-permissions-controller>@metamask/delegation-core": {
+      "packages": {
+        "@metamask/gator-permissions-controller>@metamask/delegation-core>@metamask/abi-utils": true,
+        "@metamask/utils": true,
+        "@noble/hashes": true
+      }
+    },
     "@metamask/design-system-react": {
       "globals": {
         "console.warn": true
@@ -1100,7 +1138,7 @@
         "@metamask/keyring-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
-        "@metamask/eip-5792-middleware>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "lodash": true,
         "uuid": true
@@ -1163,7 +1201,6 @@
         "@metamask/eth-sig-util": true,
         "@metamask/snaps-sdk>@metamask/key-tree": true,
         "@metamask/keyring-api": true,
-        "@metamask/eth-hd-keyring>@metamask/keyring-sdk": true,
         "@metamask/scure-bip39": true,
         "@metamask/utils": true,
         "@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32": true,
@@ -1226,6 +1263,7 @@
     "@metamask/eth-ledger-bridge-keyring": {
       "globals": {
         "addEventListener": true,
+        "console.error": true,
         "document.createElement": true,
         "document.head.appendChild": true,
         "fetch": true,
@@ -1236,9 +1274,12 @@
         "@ethereumjs/tx>@ethereumjs/rlp": true,
         "@ethereumjs/tx": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
+        "@ledgerhq/hw-app-eth": true,
         "@ledgerhq/hw-transport": true,
         "@metamask/eth-sig-util": true,
         "@metamask/hw-wallet-sdk": true,
+        "@metamask/eth-ledger-bridge-keyring>@metamask/keyring-api": true,
+        "@metamask/eth-ledger-bridge-keyring>@metamask/keyring-sdk": true,
         "@metamask/utils": true,
         "buffer": true,
         "@metamask/eth-qr-keyring>hdkey": true
@@ -1255,6 +1296,7 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth": true,
         "@metamask/utils": true,
+        "mockttp>async-mutex": true,
         "buffer": true,
         "@metamask/eth-qr-keyring>hdkey": true,
         "@metamask/eth-qr-keyring>uuid": true
@@ -1291,8 +1333,6 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-sig-util": true,
-        "@metamask/keyring-api": true,
-        "@metamask/eth-hd-keyring>@metamask/keyring-sdk": true,
         "@metamask/utils": true,
         "buffer": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring>ethereum-cryptography": true,
@@ -1312,13 +1352,33 @@
         "@metamask/keyring-api": true,
         "@metamask/keyring-internal-api": true,
         "@metamask/keyring-internal-snap-client": true,
-        "@metamask/eth-hd-keyring>@metamask/keyring-sdk": true,
         "@metamask/eth-snap-keyring>@metamask/keyring-snap-sdk": true,
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "mockttp>async-mutex": true,
         "@metamask/eth-snap-keyring>uuid": true
+      }
+    },
+    "@metamask/accounts-controller>@metamask/eth-snap-keyring": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "console.info": true,
+        "console.warn": true
+      },
+      "packages": {
+        "@ethereumjs/tx": true,
+        "@metamask/eth-sig-util": true,
+        "@metamask/keyring-api": true,
+        "@metamask/keyring-internal-api": true,
+        "@metamask/keyring-internal-snap-client": true,
+        "@metamask/accounts-controller>@metamask/eth-snap-keyring>@metamask/keyring-snap-sdk": true,
+        "@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "mockttp>async-mutex": true,
+        "@metamask/accounts-controller>@metamask/eth-snap-keyring>uuid": true
       }
     },
     "@metamask/eth-token-tracker": {
@@ -1346,7 +1406,8 @@
         "@ethereumjs/tx": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-sig-util": true,
-        "@metamask/hw-wallet-sdk": true,
+        "@metamask/eth-trezor-keyring>@metamask/hw-wallet-sdk": true,
+        "@metamask/keyring-api": true,
         "@metamask/utils": true,
         "@metamask/eth-trezor-keyring>@trezor/connect-plugin-ethereum": true,
         "@trezor/connect-web": true,
@@ -1437,8 +1498,8 @@
       "packages": {
         "@metamask/gator-permissions-controller>@metamask/abi-utils": true,
         "@metamask/base-controller": true,
-        "@metamask/delegation-core": true,
-        "@metamask/delegation-deployments": true,
+        "@metamask/gator-permissions-controller>@metamask/delegation-core": true,
+        "@metamask/gator-permissions-controller>@metamask/delegation-deployments": true,
         "@metamask/snaps-utils": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true
@@ -1465,7 +1526,6 @@
     },
     "@metamask/json-rpc-engine": {
       "packages": {
-        "@metamask/messenger": true,
         "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
         "@metamask/utils": true,
@@ -1501,22 +1561,6 @@
     },
     "@metamask/keyring-api": {
       "packages": {
-        "@metamask/keyring-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "bitcoin-address-validation": true
-      }
-    },
-    "@metamask/multichain-account-service>@metamask/keyring-snap-client>@metamask/keyring-api": {
-      "packages": {
-        "@metamask/keyring-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "bitcoin-address-validation": true
-      }
-    },
-    "@metamask/multichain-account-service>@metamask/keyring-api": {
-      "packages": {
         "@ethereumjs/tx": true,
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-utils": true,
@@ -1524,7 +1568,46 @@
         "@metamask/utils": true,
         "mockttp>async-mutex": true,
         "bitcoin-address-validation": true,
-        "@metamask/multichain-account-service>@metamask/keyring-api>uuid": true
+        "@metamask/keyring-api>uuid": true
+      }
+    },
+    "@metamask/assets-controllers>@metamask/keyring-api": {
+      "packages": {
+        "@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/eth-ledger-bridge-keyring>@metamask/keyring-api": {
+      "packages": {
+        "@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "bitcoin-address-validation": true
+      }
+    },
+    "@metamask/keyring-internal-snap-client>@metamask/keyring-api": {
+      "packages": {
+        "@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "bitcoin-address-validation": true
+      }
+    },
+    "@metamask/eth-ledger-bridge-keyring>@metamask/keyring-sdk>@metamask/keyring-api": {
+      "packages": {
+        "@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "bitcoin-address-validation": true
+      }
+    },
+    "@metamask/keyring-snap-client>@metamask/keyring-api": {
+      "packages": {
+        "@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "bitcoin-address-validation": true
       }
     },
     "@metamask/keyring-controller": {
@@ -1547,47 +1630,54 @@
     "@metamask/keyring-internal-api": {
       "packages": {
         "@metamask/keyring-api": true,
+        "@metamask/keyring-utils": true,
         "@metamask/superstruct": true
       }
     },
     "@metamask/keyring-internal-snap-client": {
       "packages": {
-        "@metamask/keyring-api": true,
+        "@metamask/keyring-internal-snap-client>@metamask/keyring-api": true,
         "@metamask/keyring-internal-api": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/keyring-utils": true
       }
     },
-    "@metamask/eth-hd-keyring>@metamask/keyring-sdk": {
+    "@metamask/eth-ledger-bridge-keyring>@metamask/keyring-sdk": {
+      "globals": {
+        "TextEncoder": true
+      },
       "packages": {
         "@ethereumjs/tx": true,
         "@metamask/eth-sig-util": true,
-        "@metamask/keyring-api": true,
+        "@metamask/eth-ledger-bridge-keyring>@metamask/keyring-sdk>@metamask/keyring-api": true,
+        "@metamask/scure-bip39": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "mockttp>async-mutex": true,
-        "@metamask/eth-hd-keyring>@metamask/keyring-sdk>ethereum-cryptography": true,
-        "@metamask/eth-hd-keyring>@metamask/keyring-sdk>uuid": true
+        "@metamask/eth-ledger-bridge-keyring>@metamask/keyring-sdk>ethereum-cryptography": true,
+        "@metamask/eth-ledger-bridge-keyring>@metamask/keyring-sdk>uuid": true
       }
     },
     "@metamask/keyring-snap-client": {
       "packages": {
-        "@metamask/keyring-api": true,
+        "@metamask/keyring-snap-client>@metamask/keyring-api": true,
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/keyring-snap-client>uuid": true
       }
     },
-    "@metamask/multichain-account-service>@metamask/keyring-snap-client": {
-      "packages": {
-        "@metamask/multichain-account-service>@metamask/keyring-snap-client>@metamask/keyring-api": true,
-        "@metamask/keyring-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/multichain-account-service>@metamask/keyring-snap-client>uuid": true
-      }
-    },
     "@metamask/eth-snap-keyring>@metamask/keyring-snap-sdk": {
       "packages": {
+        "@metamask/keyring-api": true,
+        "@metamask/keyring-utils": true,
+        "@metamask/snaps-sdk": true,
+        "@metamask/superstruct": true
+      }
+    },
+    "@metamask/accounts-controller>@metamask/eth-snap-keyring>@metamask/keyring-snap-sdk": {
+      "packages": {
+        "@metamask/keyring-api": true,
+        "@metamask/keyring-utils": true,
         "@metamask/superstruct": true
       }
     },
@@ -1650,10 +1740,10 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/account-api": true,
-        "@metamask/multichain-account-service>@metamask/accounts-controller": true,
-        "@metamask/multichain-account-service>@metamask/keyring-api": true,
+        "@metamask/accounts-controller": true,
+        "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
-        "@metamask/multichain-account-service>@metamask/keyring-snap-client": true,
+        "@metamask/keyring-snap-client": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
         "mockttp>async-mutex": true,
@@ -1805,22 +1895,6 @@
       "packages": {
         "@metamask/safe-event-emitter": true,
         "@metamask/obs-store>readable-stream": true
-      }
-    },
-    "@metamask/passkey-controller": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true,
-        "crypto.subtle.importKey": true,
-        "crypto.subtle.verify": true
-      },
-      "packages": {
-        "@metamask/passkey-controller>@levischuck/tiny-cbor": true,
-        "@metamask/base-controller": true,
-        "@metamask/utils": true,
-        "@noble/ciphers": true,
-        "@noble/curves": true,
-        "@noble/hashes": true
       }
     },
     "@metamask/permission-controller": {
@@ -1979,14 +2053,6 @@
         "@metamask/providers>readable-stream": true
       }
     },
-    "@metamask/transaction-pay-controller>@metamask/ramps-controller": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@metamask/controller-utils": true
-      }
-    },
     "@metamask/rate-limit-controller": {
       "globals": {
         "setTimeout": true
@@ -2109,7 +2175,7 @@
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/polling-controller": true,
         "@metamask/superstruct": true,
-        "@metamask/smart-transactions-controller>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
         "lodash": true,
@@ -2247,7 +2313,7 @@
       },
       "packages": {
         "@metamask/polling-controller": true,
-        "@metamask/subscription-controller>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/subscription-controller>bignumber.js": true
       }
@@ -2306,10 +2372,8 @@
     },
     "@metamask/transaction-pay-controller": {
       "globals": {
-        "AbortController": true,
         "URLSearchParams": true,
         "clearTimeout": true,
-        "fetch": true,
         "setTimeout": true
       },
       "packages": {
@@ -2321,7 +2385,6 @@
         "@metamask/controller-utils": true,
         "@metamask/keyring-controller": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/transaction-pay-controller>@metamask/ramps-controller": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/transaction-pay-controller>bignumber.js": true,
@@ -2340,7 +2403,7 @@
         "@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
-        "@metamask/user-operation-controller>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "ethereumjs-util>bn.js": true,
         "webpack>events": true,
@@ -2458,11 +2521,9 @@
     "@metamask/perps-controller>@nktkas/hyperliquid>@nktkas/rews": {
       "globals": {
         "AbortController": true,
-        "CloseEvent": true,
+        "AbortSignal.timeout": true,
         "CustomEvent": true,
-        "Event": true,
-        "EventTarget": true,
-        "MessageEvent": true,
+        "DOMException": true,
         "WebSocket": true,
         "clearTimeout": true,
         "setTimeout": true
@@ -2567,11 +2628,6 @@
         "TextEncoder": true
       }
     },
-    "@metamask/multichain-account-service>@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true
-      }
-    },
     "@metamask/eth-hd-keyring>ethereum-cryptography>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
@@ -2589,7 +2645,7 @@
         "TextEncoder": true
       }
     },
-    "@metamask/eth-hd-keyring>@metamask/keyring-sdk>ethereum-cryptography>@noble/hashes": {
+    "@metamask/eth-ledger-bridge-keyring>@metamask/keyring-sdk>ethereum-cryptography>@noble/hashes": {
       "globals": {
         "TextEncoder": true
       }
@@ -2769,44 +2825,15 @@
         "@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32>@scure/base": true
       }
     },
-    "@segment/analytics-node>@segment/analytics-core": {
+    "@segment/loosely-validate-event": {
       "globals": {
-        "clearTimeout": true,
-        "console": true,
-        "setTimeout": true
+        "Buffer.byteLength": true
       },
       "packages": {
-        "@segment/analytics-node>@lukeed/uuid": true,
-        "@segment/analytics-node>@segment/analytics-generic-utils": true,
-        "@segment/analytics-node>@segment/analytics-core>dset": true,
-        "tslib": true
-      }
-    },
-    "@segment/analytics-node>@segment/analytics-generic-utils": {
-      "globals": {
-        "console.warn": true
-      }
-    },
-    "@segment/analytics-node": {
-      "globals": {
-        "AbortController": true,
-        "EdgeRuntime": true,
-        "URL": true,
-        "WebSocketPair": true,
-        "WorkerGlobalScope": true,
-        "clearTimeout": true,
-        "console.warn": true,
-        "fetch": true,
-        "importScripts": true,
-        "process": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@segment/analytics-node>@lukeed/uuid": true,
-        "@segment/analytics-node>@segment/analytics-core": true,
-        "@segment/analytics-node>@segment/analytics-generic-utils": true,
-        "@segment/analytics-node>jose": true,
-        "process": true
+        "@ngraveio/bc-ur>assert": true,
+        "buffer": true,
+        "@segment/loosely-validate-event>component-type": true,
+        "@segment/loosely-validate-event>join-component": true
       }
     },
     "@sentry/browser>@sentry-internal/browser-utils": {
@@ -2987,20 +3014,6 @@
         "process": true
       }
     },
-    "@simplewebauthn/browser": {
-      "globals": {
-        "AbortController": true,
-        "AbortSignal": true,
-        "PublicKeyCredential": true,
-        "atob": true,
-        "btoa": true,
-        "console.warn": true,
-        "document.querySelectorAll": true,
-        "location.hostname": true,
-        "navigator.credentials.create": true,
-        "navigator.credentials.get": true
-      }
-    },
     "@solana/addresses": {
       "globals": {
         "Intl.Collator": true,
@@ -3070,19 +3083,6 @@
       "packages": {
         "@metamask/profile-sync-controller>siwe>@stablelib/random>@stablelib/binary": true,
         "@metamask/profile-sync-controller>siwe>@stablelib/random>@stablelib/wipe": true
-      }
-    },
-    "@metamask/assets-controllers>@tanstack/query-core": {
-      "globals": {
-        "AbortController": true,
-        "addEventListener": true,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "document.visibilityState": true,
-        "removeEventListener": true,
-        "setInterval": true,
-        "setTimeout": true
       }
     },
     "@metamask/core-backend>@tanstack/query-core": {
@@ -3477,6 +3477,36 @@
         "process": true
       }
     },
+    "axios": {
+      "globals": {
+        "AbortController": true,
+        "Blob": true,
+        "Buffer.from": true,
+        "FormData": true,
+        "ReadableStream": true,
+        "URL": true,
+        "URLSearchParams": true,
+        "WorkerGlobalScope": true,
+        "XMLHttpRequest": true,
+        "btoa": true,
+        "clearTimeout": true,
+        "console.warn": true,
+        "document": true,
+        "fetch": true,
+        "importScripts": true,
+        "location.href": true,
+        "navigator": true,
+        "process": true,
+        "queueMicrotask": true,
+        "setImmediate": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "buffer": true,
+        "core-js-pure": true,
+        "process": true
+      }
+    },
     "@metamask/snaps-controllers>tar-stream>b4a": {
       "globals": {
         "TextDecoder": true,
@@ -3485,7 +3515,7 @@
     },
     "@ensdomains/content-hash>multihashes>multibase>base-x": {
       "packages": {
-        "mockttp>express>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "base32-encode": {
@@ -3497,6 +3527,11 @@
       "globals": {
         "crypto": true,
         "define": true
+      }
+    },
+    "@ledgerhq/hw-app-eth>bignumber.js": {
+      "globals": {
+        "crypto": true
       }
     },
     "@metamask/assets-controller>bignumber.js": {
@@ -3588,7 +3623,7 @@
         "ethereumjs-util>create-hash>cipher-base": true,
         "crypto-browserify>browserify-cipher>evp_bytestokey": true,
         "pumpify>inherits": true,
-        "mockttp>express>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "crypto-browserify>browserify-cipher": {
@@ -3613,7 +3648,7 @@
       "packages": {
         "ethereumjs-util>bn.js": true,
         "crypto-browserify>randombytes": true,
-        "mockttp>express>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "crypto-browserify>browserify-sign": {
@@ -3626,7 +3661,7 @@
         "pumpify>inherits": true,
         "crypto-browserify>public-encrypt>parse-asn1": true,
         "crypto-browserify>browserify-sign>readable-stream": true,
-        "mockttp>express>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "bs58": {
@@ -3643,7 +3678,7 @@
       "packages": {
         "ethereumjs-util>ethereum-cryptography>bs58check>bs58": true,
         "ethereumjs-util>create-hash": true,
-        "mockttp>express>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk>bs58check": {
@@ -3799,7 +3834,7 @@
     "ethereumjs-util>create-hash>cipher-base": {
       "packages": {
         "pumpify>inherits": true,
-        "mockttp>express>safe-buffer": true,
+        "koa>content-disposition>safe-buffer": true,
         "stream-browserify": true,
         "browserify>string_decoder": true
       }
@@ -3947,7 +3982,7 @@
         "ethereumjs-util>create-hash": true,
         "pumpify>inherits": true,
         "ethereumjs-util>create-hash>ripemd160": true,
-        "mockttp>express>safe-buffer": true,
+        "koa>content-disposition>safe-buffer": true,
         "@ngraveio/bc-ur>sha.js": true
       }
     },
@@ -4209,16 +4244,6 @@
         "@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": true
       }
     },
-    "@metamask/multichain-account-service>@metamask/accounts-controller>ethereum-cryptography": {
-      "globals": {
-        "TextDecoder": true,
-        "crypto": true,
-        "module": true
-      },
-      "packages": {
-        "@metamask/multichain-account-service>@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": true
-      }
-    },
     "@metamask/eth-hd-keyring>ethereum-cryptography": {
       "globals": {
         "TextDecoder": true,
@@ -4249,14 +4274,14 @@
         "@metamask/keyring-controller>@metamask/eth-simple-keyring>ethereum-cryptography>@noble/hashes": true
       }
     },
-    "@metamask/eth-hd-keyring>@metamask/keyring-sdk>ethereum-cryptography": {
+    "@metamask/eth-ledger-bridge-keyring>@metamask/keyring-sdk>ethereum-cryptography": {
       "globals": {
         "TextDecoder": true,
         "crypto": true,
         "module": true
       },
       "packages": {
-        "@metamask/eth-hd-keyring>@metamask/keyring-sdk>ethereum-cryptography>@noble/hashes": true
+        "@metamask/eth-ledger-bridge-keyring>@metamask/keyring-sdk>ethereum-cryptography>@noble/hashes": true
       }
     },
     "@metamask/phishing-controller>ethereum-cryptography": {
@@ -4294,7 +4319,7 @@
         "ethers>@ethersproject/sha2>hash.js": true,
         "ethereumjs-util>ethereum-cryptography>keccak": true,
         "crypto-browserify>randombytes": true,
-        "mockttp>express>safe-buffer": true,
+        "koa>content-disposition>safe-buffer": true,
         "ganache>secp256k1": true
       }
     },
@@ -4394,7 +4419,7 @@
     "crypto-browserify>browserify-cipher>evp_bytestokey": {
       "packages": {
         "ethereumjs-util>create-hash>md5.js": true,
-        "mockttp>express>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "extension-port-stream": {
@@ -4552,7 +4577,7 @@
         "eth-lattice-keyring>gridplus-sdk>secp256k1": true,
         "uuid": true,
         "viem": true,
-        "eth-lattice-keyring>gridplus-sdk>zod": true
+        "openai>zod": true
       }
     },
     "eslint-plugin-react>es-iterator-helpers>has-property-descriptors": {
@@ -4569,14 +4594,14 @@
       "packages": {
         "pumpify>inherits": true,
         "ethereumjs-util>create-hash>md5.js>hash-base>readable-stream": true,
-        "mockttp>express>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "ethereumjs-util>create-hash>ripemd160>hash-base": {
       "packages": {
         "pumpify>inherits": true,
         "ethereumjs-util>create-hash>ripemd160>hash-base>readable-stream": true,
-        "mockttp>express>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "crypto-browserify>pbkdf2>ripemd160>hash-base": {
@@ -4606,7 +4631,7 @@
         "ethereumjs-util>ethereum-cryptography>bs58check": true,
         "crypto-browserify": true,
         "ethereumjs-util>create-hash>ripemd160": true,
-        "mockttp>express>safe-buffer": true,
+        "koa>content-disposition>safe-buffer": true,
         "ganache>secp256k1": true
       }
     },
@@ -4770,16 +4795,6 @@
       },
       "packages": {
         "@open-rpc/test-coverage>isomorphic-fetch>whatwg-fetch": true
-      }
-    },
-    "@segment/analytics-node>jose": {
-      "globals": {
-        "CryptoKey": true,
-        "TextDecoder": true,
-        "TextEncoder": true,
-        "atob": true,
-        "btoa": true,
-        "crypto": true
       }
     },
     "@ensdomains/content-hash>js-base64": {
@@ -5007,7 +5022,7 @@
       "packages": {
         "ethereumjs-util>create-hash>md5.js>hash-base": true,
         "pumpify>inherits": true,
-        "mockttp>express>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "@storybook/addon-docs>remark-external-links>mdast-util-definitions": {
@@ -5180,7 +5195,7 @@
         "ethereumjs-util>ethereum-cryptography>browserify-aes": true,
         "crypto-browserify>browserify-cipher>evp_bytestokey": true,
         "crypto-browserify>pbkdf2": true,
-        "mockttp>express>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "react-syntax-highlighter>refractor>parse-entities": {
@@ -5208,7 +5223,7 @@
         "crypto-browserify>pbkdf2>create-hash": true,
         "process": true,
         "crypto-browserify>pbkdf2>ripemd160": true,
-        "mockttp>express>safe-buffer": true,
+        "koa>content-disposition>safe-buffer": true,
         "@ngraveio/bc-ur>sha.js": true,
         "@ngraveio/bc-ur>sha.js>to-buffer": true
       }
@@ -5295,7 +5310,7 @@
         "ethereumjs-util>create-hash": true,
         "crypto-browserify>public-encrypt>parse-asn1": true,
         "crypto-browserify>randombytes": true,
-        "mockttp>express>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "browserify>url>punycode": {
@@ -5336,7 +5351,7 @@
       },
       "packages": {
         "process": true,
-        "mockttp>express>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "crypto-browserify>randomfill": {
@@ -5349,7 +5364,7 @@
       "packages": {
         "process": true,
         "crypto-browserify>randombytes": true,
-        "mockttp>express>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "react": {
@@ -6038,7 +6053,16 @@
         "console": true
       }
     },
-    "mockttp>express>safe-buffer": {
+    "wait-on>rxjs": {
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout.apply": true
+      },
+      "packages": {
+        "tslib": true
+      }
+    },
+    "koa>content-disposition>safe-buffer": {
       "packages": {
         "buffer": true
       }
@@ -6139,7 +6163,7 @@
     "@ngraveio/bc-ur>sha.js": {
       "packages": {
         "pumpify>inherits": true,
-        "mockttp>express>safe-buffer": true,
+        "koa>content-disposition>safe-buffer": true,
         "@ngraveio/bc-ur>sha.js>to-buffer": true
       }
     },
@@ -6262,7 +6286,7 @@
     },
     "browserify>string_decoder": {
       "packages": {
-        "mockttp>express>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "crypto-browserify>browserify-sign>readable-stream>string_decoder": {
@@ -6295,7 +6319,7 @@
     "@ngraveio/bc-ur>sha.js>to-buffer": {
       "packages": {
         "@lavamoat/webpack>json-stable-stringify>isarray": true,
-        "mockttp>express>safe-buffer": true,
+        "koa>content-disposition>safe-buffer": true,
         "string.prototype.matchall>es-abstract>typed-array-buffer": true
       }
     },
@@ -6461,17 +6485,22 @@
         "crypto": true
       }
     },
-    "@metamask/eth-hd-keyring>@metamask/keyring-sdk>uuid": {
+    "@metamask/accounts-controller>@metamask/eth-snap-keyring>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/keyring-api>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/eth-ledger-bridge-keyring>@metamask/keyring-sdk>uuid": {
       "globals": {
         "crypto": true
       }
     },
     "@metamask/keyring-snap-client>uuid": {
-      "globals": {
-        "crypto": true
-      }
-    },
-    "@metamask/multichain-account-service>@metamask/keyring-snap-client>uuid": {
       "globals": {
         "crypto": true
       }
@@ -6597,7 +6626,7 @@
         "axios>form-data>es-set-tostringtag>has-tostringtag": true
       }
     },
-    "eth-lattice-keyring>gridplus-sdk>zod": {
+    "openai>zod": {
       "globals": {
         "File": true,
         "JSONSchema": true,

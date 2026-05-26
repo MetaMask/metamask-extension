@@ -1,15 +1,8 @@
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
-import { IconName, IconColor } from '@metamask/design-system-react';
-import {
-  getHardwareWalletErrorCode,
-  HardwareWalletType,
-} from '../../../../contexts/hardware-wallets';
-
-/** Discriminant values for {@link ErrorContent}; use for comparisons and `buildErrorContent` returns. */
-export const HardwareWalletErrorContentVariant = {
-  Recovery: 'recovery',
-  Description: 'description',
-} as const;
+import { IconName } from '../../../component-library';
+import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
+import { IconColor } from '../../../../helpers/constants/design-system';
+import { getHardwareWalletErrorCode } from '../../../../contexts/hardware-wallets';
 
 /**
  * Error content structure
@@ -19,7 +12,7 @@ type ErrorContentBase = {
 };
 
 type ErrorContentWithRecovery = ErrorContentBase & {
-  variant: typeof HardwareWalletErrorContentVariant.Recovery;
+  variant: 'recovery';
   recoveryInstructions: string[];
 };
 
@@ -34,7 +27,7 @@ type ErrorContentWithoutIcon = ErrorContentWithRecovery & {
 };
 
 type ErrorContentWithDescription = ErrorContentBase & {
-  variant: typeof HardwareWalletErrorContentVariant.Description;
+  variant: 'description';
   description: string;
   icon: IconName;
   iconColor: IconColor;
@@ -80,9 +73,9 @@ export function buildErrorContent(
     // Locked device errors
     case ErrorCode.AuthenticationDeviceLocked:
       return {
-        variant: HardwareWalletErrorContentVariant.Recovery,
+        variant: 'recovery',
         icon: IconName.Lock,
-        iconColor: IconColor.IconDefault,
+        iconColor: IconColor.iconDefault,
         title: t('hardwareWalletErrorTitleDeviceLocked', [t(walletType)]),
         recoveryInstructions: addRecoveryInstruction(
           [t('hardwareWalletErrorRecoveryUnlock1', [t(walletType)])],
@@ -94,14 +87,14 @@ export function buildErrorContent(
     // Device state - Wrong app
     case ErrorCode.DeviceStateEthAppClosed:
       return {
-        variant: HardwareWalletErrorContentVariant.Recovery,
+        variant: 'recovery',
         title: t('hardwareWalletTitleEthAppNotOpen'),
         recoveryInstructions: [t('hardwareWalletEthAppNotOpenDescription')],
       };
 
     case ErrorCode.DeviceStateBlindSignNotSupported:
       return {
-        variant: HardwareWalletErrorContentVariant.Recovery,
+        variant: 'recovery',
         title: t('hardwareWalletErrorTitleBlindSignNotSupported'),
         recoveryInstructions: [
           t('hardwareWalletErrorTitleBlindSignNotSupportedInstruction1'),
@@ -112,7 +105,7 @@ export function buildErrorContent(
     // Device state - Disconnected/Connection issues
     case ErrorCode.DeviceDisconnected:
       return {
-        variant: HardwareWalletErrorContentVariant.Recovery,
+        variant: 'recovery',
         title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),
         recoveryInstructions: addRecoveryInstruction(
           [
@@ -128,7 +121,7 @@ export function buildErrorContent(
     // Usually bolos will yield this result
     case ErrorCode.ConnectionClosed:
       return {
-        variant: HardwareWalletErrorContentVariant.Recovery,
+        variant: 'recovery',
         title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),
         recoveryInstructions: addRecoveryInstruction(
           [t('hardwareWalletErrorRecoveryUnlock1', [t(walletType)])],
@@ -140,9 +133,9 @@ export function buildErrorContent(
     // Unknown/default
     default:
       return {
-        variant: HardwareWalletErrorContentVariant.Description,
+        variant: 'description',
         icon: IconName.Danger,
-        iconColor: IconColor.WarningDefault,
+        iconColor: IconColor.warningDefault,
         title: t('hardwareWalletErrorUnknownErrorTitle'),
         description: t('hardwareWalletErrorUnknownErrorDescription', [
           t(walletType),

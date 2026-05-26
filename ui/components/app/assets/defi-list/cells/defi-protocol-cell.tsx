@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import GenericAssetCellLayout from '../../asset-list/cells/generic-asset-cell-layout';
-import { getPreferences } from '../../../../../../shared/lib/selectors/preferences';
+import { getPreferences } from '../../../../../selectors';
 import { TextVariant } from '../../../../../helpers/constants/design-system';
 import { SensitiveText } from '../../../../component-library';
 import { AvatarType } from '../../../../multichain/avatar-group/avatar-group.types';

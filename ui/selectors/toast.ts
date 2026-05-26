@@ -1,6 +1,5 @@
 import {
   TransactionStatus,
-  type TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
 import { createSelector } from 'reselect';
@@ -8,7 +7,6 @@ import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-cre
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../shared/constants/app';
 import type { MetaMaskReduxState } from '../store/store';
 import {
-  TOAST_EXCLUDED_NESTED_TRANSACTION_TYPES,
   TOAST_EXCLUDED_TRANSACTION_TYPES,
   TOAST_EXCLUDED_NON_EVM_TRANSACTION_TYPES,
 } from '../helpers/constants/transactions';
@@ -148,21 +146,6 @@ type TxRequest = {
   evmStatus: string | undefined;
 };
 
-function isTransactionTypeExcluded(transaction: TransactionMeta | undefined) {
-  const type = transaction?.type;
-  const isExcludedType = Boolean(
-    type && TOAST_EXCLUDED_TRANSACTION_TYPES.has(type),
-  );
-  const isExcludedNestedType = Boolean(
-    transaction?.nestedTransactions?.some(
-      (nested) =>
-        nested.type && TOAST_EXCLUDED_NESTED_TRANSACTION_TYPES.has(nested.type),
-    ),
-  );
-
-  return isExcludedType || isExcludedNestedType;
-}
-
 function getEffectiveEvmStatus(
   txId: string,
   transactions: ReturnType<typeof selectTransactions>,
@@ -208,11 +191,6 @@ export const selectSmartTransactions = createDeepEqualSelector(
       };
 
       if (!txId) {
-        continue;
-      }
-
-      const transaction = transactions.find((tx) => tx.id === txId);
-      if (isTransactionTypeExcluded(transaction)) {
         continue;
       }
 

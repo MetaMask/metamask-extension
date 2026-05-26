@@ -1,6 +1,5 @@
 import React from 'react';
 import { Hex } from '@metamask/utils';
-import { TransactionType } from '@metamask/transaction-controller';
 import { Text, Box } from '../../../../../components/component-library';
 import {
   Display,
@@ -13,7 +12,6 @@ import { TransactionDetailsRow } from '../transaction-details-row';
 import { useTransactionDetails } from '../transaction-details-context';
 import { useTokenWithBalance } from '../../../hooks/tokens/useTokenWithBalance';
 import { TokenIcon } from '../../token-icon';
-import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function TransactionDetailsPaidWithRow() {
@@ -32,14 +30,9 @@ export function TransactionDetailsPaidWithRow() {
     return null;
   }
 
-  const isWithdraw = hasTransactionType(transactionMeta, [
-    TransactionType.perpsWithdraw,
-  ]);
-  const label = isWithdraw ? t('receiveToken') : t('paidWith');
-
   return (
     <TransactionDetailsRow
-      label={label}
+      label={t('paidWith')}
       data-testid="transaction-details-paid-with-row"
     >
       <Box

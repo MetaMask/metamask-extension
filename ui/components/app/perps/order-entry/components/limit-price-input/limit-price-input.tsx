@@ -45,8 +45,6 @@ export type LimitPriceInputProps = {
   direction: OrderDirection;
   /** Raw estimated liquidation price (for proximity warning) */
   liquidationPrice?: number | null;
-  /** Auto-focus the input on mount (used for keyboard-first order entry) */
-  autoFocus?: boolean;
 };
 
 /**
@@ -58,7 +56,6 @@ export type LimitPriceInputProps = {
  * @param options0.midPrice
  * @param options0.direction
  * @param options0.liquidationPrice
- * @param options0.autoFocus
  */
 export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
   limitPrice,
@@ -67,7 +64,6 @@ export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
   midPrice: midPriceProp,
   direction,
   liquidationPrice,
-  autoFocus = false,
 }) => {
   const t = useI18nContext();
   const midPrice = midPriceProp ?? currentPrice;
@@ -137,9 +133,6 @@ export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
         size={TextFieldSize.Md}
         value={limitPrice}
         onChange={handlePriceChange}
-        onFocus={(event: React.FocusEvent<HTMLInputElement>) =>
-          event.target.select()
-        }
         onBlur={handlePriceBlur}
         placeholder="0.00"
         borderRadius={BorderRadius.MD}
@@ -147,7 +140,6 @@ export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
         backgroundColor={BackgroundColor.backgroundMuted}
         className="w-full"
         data-testid="limit-price-input"
-        autoFocus={autoFocus}
         inputProps={{ inputMode: 'decimal' }}
         startAccessory={
           <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
@@ -156,7 +148,6 @@ export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
         }
         endAccessory={
           <ButtonBase
-            type="button"
             size={ButtonBaseSize.Sm}
             onClick={handleMidClick}
             className="bg-transparent rounded-none px-2 min-w-0 h-auto"

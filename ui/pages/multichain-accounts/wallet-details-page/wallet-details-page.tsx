@@ -45,7 +45,7 @@ import {
   useSingleWalletAccountsBalanceCallback,
   useSingleWalletDisplayBalance,
 } from '../../../hooks/multichain-accounts/useWalletBalance';
-import { getPreferences } from '../../../../shared/lib/selectors/preferences';
+import { getPreferences } from '../../../selectors';
 
 type WalletDetailsPageProps = {
   params?: { id: string };

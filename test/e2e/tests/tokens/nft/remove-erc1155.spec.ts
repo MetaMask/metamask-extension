@@ -86,8 +86,12 @@ describe('Remove ERC1155 NFT', function () {
         await nftDetailsPage.checkPageIsLoaded();
 
         await nftDetailsPage.removeNFT();
+        await driver.delay(5000);
+
+        // Remove NFT
         await nftListPage.checkSuccessRemoveNftMessageIsDisplayed();
         await nftListPage.checkNoNftInfoIsDisplayed();
+        await driver.delay(5000);
       },
     );
   });

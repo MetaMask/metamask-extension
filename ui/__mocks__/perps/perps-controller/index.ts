@@ -891,8 +891,7 @@ export type Position = {
 
 // Using 'type' instead of 'interface' for BaseController Json compatibility
 export type AccountState = {
-  spendableBalance: string; // Max collateral available for a new position (provider-normalised)
-  withdrawableBalance: string; // Max collateral that can leave the venue (provider-normalised)
+  availableBalance: string; // Based on HyperLiquid: withdrawable
   totalBalance: string; // Based on HyperLiquid: accountValue
   marginUsed: string; // Based on HyperLiquid: marginUsed
   unrealizedPnl: string; // Based on HyperLiquid: unrealizedPnl
@@ -912,7 +911,7 @@ export type AccountState = {
   subAccountBreakdown?: Record<
     string,
     {
-      spendableBalance: string;
+      availableBalance: string;
       totalBalance: string;
     }
   >;

@@ -16,32 +16,31 @@ import {
   getBridgeQuotes,
   getValidationErrors,
   getWasTxDeclined,
+  getIsQuoteExpired,
   BridgeAppState,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import {
   ConnectionStatus,
-  HardwareWalletType,
   useHardwareWalletConfig,
   useHardwareWalletState,
 } from '../../../contexts/hardware-wallets';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { trackHardwareWalletRecoveryConnectCtaClicked } from '../../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked';
-import { isFirefoxBrowser } from '../../../../shared/lib/browser-runtime.utils';
 import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
 
 export const BridgeCTAButton = ({
   onFetchNewQuotes,
   needsDestinationAddress = false,
   onOpenRecipientModal,
-  onOpenAlertModals,
+  onOpenPriceImpactWarningModal,
   onOpenMarketClosedModal,
 }: {
   onFetchNewQuotes: () => void;
   needsDestinationAddress?: boolean;
   onOpenRecipientModal: () => void;
-  onOpenAlertModals?: () => void;
+  onOpenPriceImpactWarningModal: () => void;
   onOpenMarketClosedModal: () => void;
 }) => {
   const t = useI18nContext();
@@ -52,6 +51,9 @@ export const BridgeCTAButton = ({
 
   const { isLoading, activeQuote } = useSelector(getBridgeQuotes);
 
+  const isQuoteExpired = useSelector((state) =>
+    getIsQuoteExpired(state as BridgeAppState, Date.now()),
+  );
   const { submitBridgeTransaction, isSubmitting } =
     useSubmitBridgeTransaction();
 
@@ -60,9 +62,8 @@ export const BridgeCTAButton = ({
     isInsufficientBalance,
     isInsufficientGasBalance,
     isInsufficientGasForQuote,
-    isInsufficientNativeReserve,
     isStockMarketClosed: isMarketClosed,
-    isQuoteExpired,
+    isPriceImpactError,
   } = useSelector(
     (state) => getValidationErrors(state as BridgeAppState, Date.now()),
     shallowEqual,
@@ -86,21 +87,10 @@ export const BridgeCTAButton = ({
     if (!isHardwareWalletAccount) {
       return true;
     }
-    // QR wallets don't need a physical device connection before showing the
-    // primary CTA. Submitting still runs ensureDeviceReady, which handles
-    // camera permission before signing.
-    if (walletType === HardwareWalletType.Qr) {
-      return true;
-    }
-    // Trezor on Firefox uses a different connection flow and does not require
-    // the "Connect Trezor" preflight step before the CTA.
-    if (walletType === HardwareWalletType.Trezor && isFirefoxBrowser()) {
-      return true;
-    }
     return [ConnectionStatus.Connected, ConnectionStatus.Ready].includes(
       connectionState.status,
     );
-  }, [connectionState.status, isHardwareWalletAccount, walletType]);
+  }, [connectionState.status, isHardwareWalletAccount]);
 
   /**
    * Defines the behavior of the CTA button based on the current state
@@ -137,8 +127,7 @@ export const BridgeCTAButton = ({
     if (
       isInsufficientBalance ||
       isInsufficientGasForQuote ||
-      isInsufficientGasBalance ||
-      isInsufficientNativeReserve
+      isInsufficientGasBalance
     ) {
       return {
         disabled: true,
@@ -147,9 +136,12 @@ export const BridgeCTAButton = ({
     }
 
     const submitHandler = async () => {
-      if (onOpenAlertModals) {
-        onOpenAlertModals?.();
-        return;
+      if (isHardwareWalletAccount && !isHardwareWalletReady) {
+        trackHardwareWalletRecoveryConnectCtaClicked(trackEvent, {
+          location: MetaMetricsHardwareWalletRecoveryLocation.Swaps,
+          walletType,
+          connectionState,
+        });
       }
       await submitBridgeTransaction(activeQuote);
     };
@@ -157,14 +149,7 @@ export const BridgeCTAButton = ({
     if (isHardwareWalletAccount && !isHardwareWalletReady) {
       return {
         disabled: false,
-        onClick: async () => {
-          trackHardwareWalletRecoveryConnectCtaClicked(trackEvent, {
-            location: MetaMetricsHardwareWalletRecoveryLocation.Swaps,
-            walletType,
-            connectionState,
-          });
-          await submitHandler();
-        },
+        onClick: submitHandler,
         children: hardwareWalletName
           ? t('connectHardwareDevice', [hardwareWalletName])
           : t('connect'),
@@ -173,7 +158,9 @@ export const BridgeCTAButton = ({
 
     return {
       disabled: !isTxSubmittable || isSubmitting,
-      onClick: submitHandler,
+      onClick: isPriceImpactError
+        ? onOpenPriceImpactWarningModal
+        : submitHandler,
       children: t('swap'),
     };
   }, [
@@ -190,12 +177,12 @@ export const BridgeCTAButton = ({
     isInsufficientBalance,
     isInsufficientGasBalance,
     isInsufficientGasForQuote,
-    isInsufficientNativeReserve,
+    isPriceImpactError,
     isSubmitting,
     isTxSubmittable,
     onFetchNewQuotes,
     onOpenMarketClosedModal,
-    onOpenAlertModals,
+    onOpenPriceImpactWarningModal,
     submitBridgeTransaction,
     t,
     trackEvent,

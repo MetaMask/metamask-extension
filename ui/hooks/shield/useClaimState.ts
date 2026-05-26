@@ -6,7 +6,7 @@ import { generateClaimSignature } from '../../store/actions';
 import {
   CLAIMS_FORM_MODES,
   ClaimsFormMode,
-} from '../../pages/shield/transaction-shield/types';
+} from '../../pages/settings/transaction-shield-tab/types';
 import { useClaimDraft } from './useClaimDraft';
 
 export const useClaimState = (mode: ClaimsFormMode = CLAIMS_FORM_MODES.NEW) => {

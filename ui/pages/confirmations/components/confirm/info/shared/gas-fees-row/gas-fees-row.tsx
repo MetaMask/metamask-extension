@@ -16,7 +16,7 @@ import {
   TextAlign,
   TextColor,
 } from '../../../../../../../helpers/constants/design-system';
-import { getPreferences } from '../../../../../../../../shared/lib/selectors/preferences';
+import { getPreferences } from '../../../../../../../selectors';
 import { useConfirmContext } from '../../../../../context/confirm';
 
 export const GasFeesRow = ({

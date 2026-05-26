@@ -45,6 +45,11 @@ async function testSpecificMock(mockServer: Mockttp) {
       return {
         ok: true,
         statusCode: 200,
+        json: [
+          {
+            extensionUxPna25: true,
+          },
+        ],
       };
     });
 

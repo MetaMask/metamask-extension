@@ -44,10 +44,6 @@ jest.mock('../../../selectors', () => {
 jest.mock('../../../selectors/multi-srp/multi-srp', () => ({
   getShouldShowSeedPhraseReminder: () => false,
 }));
-jest.mock('../../../../shared/lib/selectors/keyring', () => ({
-  ...jest.requireActual('../../../../shared/lib/selectors/keyring'),
-  getAccountType: jest.fn(),
-}));
 
 describe('SelectedAccount Component', () => {
   const mockStore = configureMockStore()(mockState);

@@ -1,3 +1,4 @@
+/* eslint-disable no-empty-function */
 import { fetchWithTimeout, retryUntil } from '@metamask/client-mcp-core';
 import type { ChainCapability } from '@metamask/client-mcp-core';
 import { Anvil } from '../../../seeder/anvil';
@@ -17,6 +18,7 @@ export type MetaMaskChainCapabilityOptions = {
 export type NoOpChainCapabilityOptions = {
   rpcUrl: string;
   chainId?: number;
+  port?: number;
 };
 
 /**
@@ -29,12 +31,15 @@ export class NoOpChainCapability implements ChainCapability {
 
   private readonly chainId: number;
 
+  private port: number;
+
   constructor(options: NoOpChainCapabilityOptions) {
     if (!options.rpcUrl) {
       throw new Error('NoOpChainCapability requires rpcUrl to be provided');
     }
     this.rpcUrl = options.rpcUrl;
     this.chainId = options.chainId ?? 1;
+    this.port = options.port ?? 0;
   }
 
   async start(): Promise<void> {
@@ -43,17 +48,14 @@ export class NoOpChainCapability implements ChainCapability {
     );
   }
 
-  async stop(): Promise<void> {
-    // No-op: production mode does not manage a local chain process.
-  }
+  async stop(): Promise<void> {}
 
   isRunning(): boolean {
     return true;
   }
 
-  // TODO - REMOVE
-  setPort(_port: number): void {
-    // No-op: production mode does not manage a local chain process.
+  setPort(port: number): void {
+    this.port = port;
   }
 }
 
@@ -127,7 +129,6 @@ export class MetaMaskChainCapability implements ChainCapability {
     return this.anvil;
   }
 
-  // TODO - REMOVE
   setPort(port: number): void {
     this.port = port;
   }

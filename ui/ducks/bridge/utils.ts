@@ -21,7 +21,6 @@ import {
   BRIDGE_CHAINID_COMMON_TOKEN_PAIR,
 } from '../../../shared/constants/bridge';
 import { getAssetImageUrl } from '../../../shared/lib/asset-utils';
-import { BridgeAssetSecurityDataType } from '../../pages/bridge/utils/tokens';
 import type { TokenPayload, BridgeToken } from './types';
 
 // Re-export isNonEvmChainId from bridge-controller for backward compatibility
@@ -213,7 +212,6 @@ export const toBridgeToken = (
     accountType,
     rwaData,
     isVerified,
-    securityData,
   } = payload;
   const { chainId } = parseCaipAssetType(assetId);
   return {
@@ -227,12 +225,7 @@ export const toBridgeToken = (
     tokenFiatAmount: tokenMetadata?.tokenFiatAmount ?? tokenFiatAmount,
     accountType: tokenMetadata?.accountType ?? accountType,
     rwaData: tokenMetadata?.rwaData ?? rwaData,
-    isVerified:
-      (tokenMetadata?.securityData?.type ===
-        BridgeAssetSecurityDataType.VERIFIED ||
-        tokenMetadata?.isVerified) ??
-      isVerified,
-    securityData: tokenMetadata?.securityData ?? securityData,
+    isVerified: tokenMetadata?.isVerified ?? isVerified,
   };
 };
 

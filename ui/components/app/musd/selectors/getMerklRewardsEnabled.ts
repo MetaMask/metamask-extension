@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import { MERKL_FEATURE_FLAG_KEY } from '../constants';
-import { getRemoteFeatureFlags } from '../../../../../shared/lib/selectors/remote-feature-flags';
+import { getRemoteFeatureFlags } from '../../../../selectors';
 import {
   validatedVersionGatedFeatureFlag,
   VersionGatedFeatureFlag,

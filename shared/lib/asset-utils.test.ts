@@ -75,16 +75,14 @@ describe('asset-utils', () => {
       ]);
     });
 
-    it('should return erc20:0x... format if getNativeAssetForChainId returns undefined for unsupported chain', () => {
+    it('should return undefined if getNativeAssetForChainId returns undefined for unsupported chain', () => {
       const nativeAddress = '0x0000000000000000000000000000000000000000';
       const chainId = 'eip155:1231' as CaipChainId;
 
       // getNativeAssetForChainId returns undefined (not throws) for chains not in the swaps map
       // Format normalization in isEvmChainId should prevent conversion errors
       const result = toAssetId(nativeAddress, chainId);
-      expect(result).toStrictEqual(
-        'eip155:1231/erc20:0x0000000000000000000000000000000000000000',
-      );
+      expect(result).toBeUndefined();
     });
 
     it('should create Solana token asset ID correctly', () => {

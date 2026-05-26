@@ -1,11 +1,15 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { type AccountGroupId } from '@metamask/account-api';
+import { type CaipChainId } from '@metamask/utils';
+import { BridgeClientId } from '@metamask/bridge-controller';
 import { useSelector } from 'react-redux';
+import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
+import { getBearerToken } from '../../store/actions';
 import { BridgeToken } from '../../ducks/bridge/types';
 import { toBridgeToken } from '../../ducks/bridge/utils';
 import { type BridgeAppState } from '../../ducks/bridge/selectors';
 import { getBridgeAssetsByAssetId } from '../../ducks/bridge/asset-selectors';
-import { type BridgeAssetV2 } from '../../pages/bridge/utils/tokens';
+import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
+import { fetchPopularTokens } from '../../pages/bridge/utils/tokens';
 import { useAsyncResult } from '../useAsync';
 
 /**
@@ -16,30 +20,50 @@ import { useAsyncResult } from '../useAsync';
  * - all other tokens
  *
  * @param params
- * @param params.accountGroupId - the account group id used for balances
+ * @param params.chainIds - enabled src/dest chainIds to return tokens for
+ * @param params.accountAddress - the account address used for balances
  * @param params.assetsToInclude - the assets to show at the top of the list
- * @param params.fetchTokens - a function to fetch the popular tokens list
  */
 export const usePopularTokens = ({
-  fetchTokens,
   assetsToInclude,
-  accountGroupId,
+  accountAddress,
+  chainIds,
 }: {
-  fetchTokens: (signal?: AbortSignal) => Promise<BridgeAssetV2[]>;
+  chainIds: Set<CaipChainId>;
   assetsToInclude: BridgeToken[];
-  accountGroupId?: AccountGroupId;
+  accountAddress: string;
 }) => {
-  const ownedAssetsByAssetId = useSelector((state: BridgeAppState) =>
-    getBridgeAssetsByAssetId(state, accountGroupId),
+  const [accountGroup] = useSelector((state: BridgeAppState) =>
+    getAccountGroupsByAddress(state, [accountAddress]),
   );
+  const ownedAssetsByAssetId = useSelector((state: BridgeAppState) =>
+    getBridgeAssetsByAssetId(state, accountGroup?.id),
+  );
+
   const abortControllerRef = useRef<AbortController | null>(null);
+
+  const { value: jwt } = useAsyncResult(async () => {
+    return await getBearerToken();
+  }, []);
 
   const { value: tokenList, pending: isTokenListLoading } =
     useAsyncResult(async () => {
-      abortControllerRef.current?.abort('ChainIds or asset balances changed');
+      if (!jwt) {
+        return assetsToInclude;
+      }
+      abortControllerRef.current?.abort('Asset balances changed');
       abortControllerRef.current = new AbortController();
-      return await fetchTokens(abortControllerRef.current?.signal);
-    }, [fetchTokens]);
+      const response = await fetchPopularTokens({
+        jwt,
+        chainIds: Array.from(chainIds),
+        assetsWithBalances: assetsToInclude,
+        clientId: BridgeClientId.EXTENSION,
+        clientVersion: process.env.METAMASK_VERSION,
+        signal: abortControllerRef.current?.signal,
+        bridgeApiBaseUrl: BRIDGE_API_BASE_URL,
+      });
+      return response;
+    }, [assetsToInclude, jwt]);
 
   const tokenListWithBalance = useMemo(() => {
     return tokenList?.map((token) =>
@@ -51,11 +75,11 @@ export const usePopularTokens = ({
         ],
       ),
     );
-  }, [tokenList, ownedAssetsByAssetId]);
+  }, [tokenList, assetsToInclude, ownedAssetsByAssetId]);
 
   useEffect(() => {
     return () => {
-      abortControllerRef.current?.abort('Component unmounted');
+      abortControllerRef.current?.abort('Page unmounted');
     };
   }, []);
 

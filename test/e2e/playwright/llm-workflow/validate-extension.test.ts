@@ -1,10 +1,8 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 import { validateExtensionBuilt } from './validate-extension';
-import { resolveRepoRoot } from './resolve-repo-root';
 
 jest.mock('fs', () => ({
-  ...jest.requireActual('fs'),
   promises: {
     access: jest.fn(),
   },
@@ -33,7 +31,7 @@ describe('validateExtensionBuilt', () => {
 
     const result = await validateExtensionBuilt();
 
-    const expectedDefault = path.join(resolveRepoRoot(), 'dist', 'chrome');
+    const expectedDefault = path.join(process.cwd(), 'dist', 'chrome');
     expect(result).toBe(expectedDefault);
     expect(mockAccess).toHaveBeenCalledWith(
       path.join(expectedDefault, 'manifest.json'),

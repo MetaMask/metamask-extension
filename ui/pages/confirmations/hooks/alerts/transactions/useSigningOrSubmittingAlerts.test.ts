@@ -98,7 +98,7 @@ describe('useSigningOrSubmittingAlerts', () => {
     ).toEqual([]);
   });
 
-  it('returns no alerts if transaction is on a different chain', () => {
+  it('returns alerts if transaction on different chain', () => {
     expect(
       runHook({
         currentConfirmation: CONFIRMATION_MOCK,
@@ -110,22 +110,7 @@ describe('useSigningOrSubmittingAlerts', () => {
           },
         ],
       }),
-    ).toEqual([]);
-  });
-
-  it('returns no alerts if transaction is from a different account', () => {
-    expect(
-      runHook({
-        currentConfirmation: CONFIRMATION_MOCK,
-        transactions: [
-          {
-            ...TRANSACTION_META_MOCK,
-            status: TransactionStatus.approved,
-            txParams: { from: '0xdifferentaccount' },
-          },
-        ],
-      }),
-    ).toEqual([]);
+    ).toEqual([EXPECTED_ALERT]);
   });
 
   it('returns no alerts if transaction has alternate status', () => {

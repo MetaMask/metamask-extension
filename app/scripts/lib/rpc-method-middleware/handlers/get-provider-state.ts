@@ -1,7 +1,6 @@
 import type {
   JsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,
-  MethodHandler,
 } from '@metamask/json-rpc-engine';
 import type {
   PendingJsonRpcResponse,
@@ -9,12 +8,11 @@ import type {
   JsonRpcRequest,
 } from '@metamask/utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
+import { HandlerWrapper } from './types';
 
-type Params = {
+export type ProviderStateHandlerRequest = JsonRpcRequest<{
   isInitializingStreamProvider?: boolean;
-};
-
-export type ProviderStateHandlerRequest = JsonRpcRequest<Params> & {
+}> & {
   origin: string;
 };
 
@@ -36,35 +34,30 @@ export type GetProviderState = (
   options?: { isInitializingStreamProvider?: boolean },
 ) => Promise<ProviderStateHandlerResult>;
 
-export type GetProviderStateHooks = {
-  getProviderState: GetProviderState;
-};
-
-type GetProviderStateConstraint = MethodHandler<
-  GetProviderStateHooks,
-  never,
-  Params,
-  ProviderStateHandlerResult,
-  { origin: string }
->;
+type GetProviderStateConstraint = {
+  implementation: (
+    _req: ProviderStateHandlerRequest,
+    res: PendingJsonRpcResponse<ProviderStateHandlerResult>,
+    _next: JsonRpcEngineNextCallback,
+    end: JsonRpcEngineEndCallback,
+    { _getProviderState }: Record<string, GetProviderState>,
+  ) => Promise<void>;
+} & HandlerWrapper;
 
 /**
  * This RPC method gets background state relevant to the provider.
  * The background sends RPC notifications on state changes, but the provider
  * first requests state on initialization.
  */
-export const getProviderStateHandler = {
-  implementation: getProviderStateImplementation,
+const getProviderState = {
+  methodNames: [MESSAGE_TYPE.GET_PROVIDER_STATE],
+  implementation: getProviderStateHandler,
   hookNames: {
     getProviderState: true,
   },
 } satisfies GetProviderStateConstraint;
 
-const getProviderStateHandlers = {
-  [MESSAGE_TYPE.GET_PROVIDER_STATE]: getProviderStateHandler,
-};
-
-export default getProviderStateHandlers;
+export default getProviderState;
 
 /**
  * @param req - The JSON-RPC request object.
@@ -74,16 +67,16 @@ export default getProviderStateHandlers;
  * @param options
  * @param options.getProviderState - An async function that gets the current provider state.
  */
-async function getProviderStateImplementation(
+async function getProviderStateHandler(
   req: ProviderStateHandlerRequest,
   res: PendingJsonRpcResponse<ProviderStateHandlerResult>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
-  { getProviderState }: GetProviderStateHooks,
+  { getProviderState: _getProviderState }: Record<string, GetProviderState>,
 ): Promise<void> {
   const isInitializingStreamProvider = req.params?.isInitializingStreamProvider;
   res.result = {
-    ...(await getProviderState(req.origin, { isInitializingStreamProvider })),
+    ...(await _getProviderState(req.origin, { isInitializingStreamProvider })),
   };
   return end();
 }

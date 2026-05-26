@@ -52,7 +52,8 @@ class BridgeQuotePage {
 
   private maxButton = { text: 'Max' };
 
-  private moreETHneededForGas = '[data-testid="bridge-insufficient-gas"]';
+  private moreETHneededForGas =
+    '[data-testid="bridge-insufficient-gas-for-quote"]';
 
   private networkFees = '[data-testid="network-fees"]';
 
@@ -61,7 +62,7 @@ class BridgeQuotePage {
 
   private networkSelector = '[data-testid="multichain-asset-picker__network"]';
 
-  private noOptionAvailable = '[data-testid="bridge-no-quotes"]';
+  private noOptionAvailable = '[data-testid="bridge-no-options-available"]';
 
   private slippageCustomButton =
     '[data-testid="bridge__tx-settings-modal-custom-button"]';
@@ -83,22 +84,6 @@ class BridgeQuotePage {
   private switchTokensButton = '[data-testid="switch-tokens"]';
 
   public tokenButton = '[data-testid^="bridge-asset--"]';
-
-  private warningModal = '[data-testid="bridge-alert-modal"]';
-
-  private warningModalProceedButton =
-    '[data-testid="bridge-alert-modal-proceed-button"]';
-
-  private warningModalCancelButton =
-    '[data-testid="bridge-alert-modal-cancel-button"]';
-
-  private closeButton = '[aria-label="Close"]';
-
-  private tokenWarningAlert =
-    '[data-testid="bridge-banner-alerts"] > [data-testid^="bridge-"]';
-
-  private priceImpactQuoteCardButton =
-    '[data-testid="price-impact-warning-button"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -242,69 +227,8 @@ class BridgeQuotePage {
     await this.driver.clickElement(this.submitButton);
   };
 
-  checkPriceImpactModalIsDisplayed = async () => {
-    await this.driver.clickElement(this.priceImpactQuoteCardButton);
-    await this.driver.waitForSelector(this.warningModal);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.warningModalCancelButton,
-    );
-  };
-
-  dismissTokenAlert = async (expectedNumberOfAlerts?: number) => {
-    await this.closeModal();
-    if (expectedNumberOfAlerts) {
-      await this.driver.elementCountBecomesN(
-        this.tokenWarningAlert,
-        expectedNumberOfAlerts,
-      );
-    }
-  };
-
-  submitQuoteWithWarning = async (warningCount: number = 0) => {
-    if (warningCount) {
-      await this.driver.elementCountBecomesN(
-        this.tokenWarningAlert,
-        warningCount,
-      );
-    }
-    await this.submitQuote();
-    await this.driver.waitForSelector(this.warningModal);
-  };
-
-  approveModal = async () => {
-    await this.driver.clickElement(this.warningModalProceedButton);
-  };
-
-  approveModalIfPresent = async () => {
-    try {
-      // Wait for an *enabled* proceed button. Using :not([disabled]) means:
-      // - No modal present           → no match → 3 s timeout → catch (no-op)
-      // - Modal open, tx in-flight   → button has [disabled] attr → no match
-      //                              → 3 s timeout → catch (no-op)
-      // - Modal open, tx not yet submitted → button is enabled → match → click
-      await this.driver.waitForSelector(
-        `${this.warningModalProceedButton}:not([disabled])`,
-      );
-      await this.driver.clickElement(this.warningModalProceedButton);
-    } catch {
-      // No confirmation modal with an enabled proceed button — nothing to do
-    }
-  };
-
-  rejectModal = async () => {
-    await this.driver.clickElement(this.warningModalCancelButton);
-  };
-
-  closeModal = async () => {
-    await this.driver.clickElement(this.closeButton);
-  };
-
   submitQuoteAndDismiss = async () => {
     await this.submitQuote();
-
-    // If no price data is available a confirmation modal appears before submission.
-    // Dismiss it so the transaction can proceed to the status page.
-    await this.approveModalIfPresent();
 
     await this.dismissStatusPageIfPresent();
   };
@@ -318,12 +242,7 @@ class BridgeQuotePage {
       return;
     }
 
-    try {
-      await this.driver.waitForSelector(this.statusPageCloseButton);
-      await this.driver.clickElement(this.statusPageCloseButton);
-    } catch {
-      // Status page may have auto-closed or not appeared
-    }
+    await this.driver.clickElement(this.statusPageCloseButton);
   };
 
   confirmBridgeTransaction = async () => {
@@ -440,31 +359,12 @@ class BridgeQuotePage {
     await this.driver.clickElement(this.switchTokensButton);
   }
 
-  /**
-   * Asserts the destination-token security banner is shown (malicious or suspicious).
-   * The banner title is localized with the token symbol (e.g. "MUSD is a malicious token."),
-   * so we scope by data-testid and match a stable substring of the title.
-   *
-   * @param titleSubstring - Text that must appear in the banner (title is token-specific).
-   * @param descriptionSubstring - When provided, text that must also appear in the same banner.
-   */
   async checkTokenRiskWarningIsDisplayed(
-    titleSubstring: string,
-    descriptionSubstring?: string,
+    title: string,
+    description: string,
   ): Promise<void> {
-    await this.driver.waitForSelector(
-      {
-        testId: 'bridge-token-security',
-        text: titleSubstring,
-      },
-      { timeout: 30000 },
-    );
-    if (descriptionSubstring) {
-      await this.driver.waitForSelector({
-        testId: 'bridge-token-security',
-        text: descriptionSubstring,
-      });
-    }
+    await this.driver.waitForSelector({ text: title });
+    await this.driver.waitForSelector({ text: description });
   }
 
   async setCustomSlippage(value: string): Promise<void> {

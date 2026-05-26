@@ -1,14 +1,17 @@
-import type {
+import {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
-  MethodHandler,
 } from '@metamask/json-rpc-engine';
-import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
-import type {
+import type { PendingJsonRpcResponse } from '@metamask/utils';
+import {
   PermissionSubjectMetadata,
   SubjectType,
 } from '@metamask/permission-controller';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
+import {
+  HandlerWrapper,
+  HandlerRequestType as SendMetadataHandlerRequest,
+} from './types';
 
 export type SubjectMetadataToAdd = PermissionSubjectMetadata & {
   name?: string | null;
@@ -17,22 +20,23 @@ export type SubjectMetadataToAdd = PermissionSubjectMetadata & {
   iconUrl?: string | null;
 };
 
-type SendMetadataConstraint = MethodHandler<
-  never,
-  never,
-  SubjectMetadataToAdd,
-  true
->;
+type SendMetadataConstraint<
+  Params extends SubjectMetadataToAdd = SubjectMetadataToAdd,
+> = {
+  implementation: (
+    req: SendMetadataHandlerRequest<Params>,
+    res: PendingJsonRpcResponse<true>,
+    _next: JsonRpcEngineNextCallback,
+    end: JsonRpcEngineEndCallback,
+  ) => void;
+} & HandlerWrapper;
 
-export const sendMetadataHandler = {
-  implementation: sendMetadataImplementation,
+const sendMetadata = {
+  methodNames: [MESSAGE_TYPE.SEND_METADATA],
+  implementation: sendMetadataHandler,
+  hookNames: {},
 } satisfies SendMetadataConstraint;
-
-const sendMetadataHandlers = {
-  [MESSAGE_TYPE.SEND_METADATA]: sendMetadataHandler,
-};
-
-export default sendMetadataHandlers;
+export default sendMetadata;
 
 /**
  * @param _req - The JSON-RPC request object.
@@ -40,8 +44,10 @@ export default sendMetadataHandlers;
  * @param _next - The json-rpc-engine 'next' callback.
  * @param end - The json-rpc-engine 'end' callback.
  */
-function sendMetadataImplementation(
-  _req: JsonRpcRequest<SubjectMetadataToAdd>,
+function sendMetadataHandler<
+  Params extends SubjectMetadataToAdd = SubjectMetadataToAdd,
+>(
+  _req: SendMetadataHandlerRequest<Params>,
   res: PendingJsonRpcResponse<true>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,

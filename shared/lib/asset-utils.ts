@@ -56,9 +56,10 @@ export const toAssetId = (
     try {
       return getNativeAssetForChainId(chainIdToUse)?.assetId;
     } catch {
-      // Skip error for unsupported chains (e.g., custom networks) so we obtain the assetId in another way
+      // Return undefined for unsupported chains (e.g., custom networks)
       // This allows the send flow to work for custom networks even if they're not in the swaps map
       // Format normalization in isEvmChainId should prevent most errors, but this is a defensive fallback
+      return undefined;
     }
   }
   if (chainIdToUse === MultichainNetworks.SOLANA) {

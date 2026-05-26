@@ -3,7 +3,7 @@ import {
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from '@metamask/utils';
-import { ethAccountsHandler } from './eth-accounts';
+import ethereumAccounts from './eth-accounts';
 
 const baseRequest = {
   jsonrpc: '2.0' as const,
@@ -21,7 +21,7 @@ const createMockedHandler = () => {
     id: 0,
   };
   const handler = (request: JsonRpcRequest<JsonRpcParams>) =>
-    ethAccountsHandler.implementation(request, response, next, end, {
+    ethereumAccounts.implementation(request, response, next, end, {
       getAccounts,
     });
 

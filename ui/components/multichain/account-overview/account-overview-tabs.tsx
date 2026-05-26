@@ -16,7 +16,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTabState } from '../../../hooks/useTabState';
-import { useSafeChains } from '../networks-form/use-safe-chains';
+import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import {
   getDefaultHomeActiveTabName,
   getEnabledChainIds,
@@ -30,11 +30,13 @@ import {
 import AssetList from '../../app/assets/asset-list';
 import DeFiTab from '../../app/assets/defi-list/defi-tab';
 import NftsTab from '../../app/assets/nfts/nfts-tab';
-import { PerpsTab } from '../../app/perps/perps-tab';
+import { PerpsView } from '../../app/perps/perps-view';
+import { PerpsViewStreamBoundary } from '../../app/perps/perps-view-stream-boundary';
+import { PerpsToastProvider } from '../../app/perps/perps-toast';
 import { Tab, Tabs } from '../../ui/tabs';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { ActivityList } from '../activity-v2/activity-list';
-import { usePrefetchTransactions } from '../activity-v2/useTransactionsQuery';
+import { usePrefetchTransactions } from '../activity-v2/hooks';
 import { transitionForward } from '../../ui/transition';
 import { AccountOverviewCommonProps } from './common';
 
@@ -138,9 +140,7 @@ export const AccountOverviewTabs = ({
   );
   const onClickDeFi = useCallback(
     (chainId: string, protocolId: string) =>
-      transitionForward(() =>
-        navigate(`${DEFI_ROUTE}/${chainId}/${encodeURIComponent(protocolId)}`),
-      ),
+      navigate(`${DEFI_ROUTE}/${chainId}/${encodeURIComponent(protocolId)}`),
     [navigate],
   );
 
@@ -179,7 +179,13 @@ export const AccountOverviewTabs = ({
           tabKey={AccountOverviewTabKey.Perps}
           data-testid="account-overview__perps-tab"
         >
-          <PerpsTab />
+          <PerpsToastProvider>
+            <ErrorBoundary key="perps">
+              <PerpsViewStreamBoundary>
+                <PerpsView />
+              </PerpsViewStreamBoundary>
+            </ErrorBoundary>
+          </PerpsToastProvider>
         </Tab>
       )}
 

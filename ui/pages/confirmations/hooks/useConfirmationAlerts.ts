@@ -11,7 +11,6 @@ import { useGasTooLowAlerts } from './alerts/transactions/useGasTooLowAlerts';
 import { useSuggestedGasFeeHighAlert } from './alerts/transactions/useSuggestedGasFeeHighAlert';
 import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
 import { useInsufficientPayTokenBalanceAlert } from './alerts/transactions/useInsufficientPayTokenBalanceAlert';
-import { usePerpsWithdrawInsufficientBalanceAlert } from './alerts/transactions/usePerpsWithdrawInsufficientBalanceAlert';
 import { useMultipleApprovalsAlerts } from './alerts/transactions/useMultipleApprovalsAlerts';
 import { useNoGasPriceAlerts } from './alerts/transactions/useNoGasPriceAlerts';
 import { useNoPayTokenQuotesAlert } from './alerts/transactions/useNoPayTokenQuotesAlert';
@@ -54,8 +53,6 @@ function useTransactionAlerts(): Alert[] {
   const insufficientBalanceAlerts = useInsufficientBalanceAlerts();
   const insufficientPayTokenBalanceAlerts =
     useInsufficientPayTokenBalanceAlert();
-  const perpsWithdrawInsufficientBalanceAlerts =
-    usePerpsWithdrawInsufficientBalanceAlert();
   const multipleApprovalAlerts = useMultipleApprovalsAlerts();
   const noGasPriceAlerts = useNoGasPriceAlerts();
   const noPayTokenQuotesAlerts = useNoPayTokenQuotesAlert();
@@ -80,7 +77,6 @@ function useTransactionAlerts(): Alert[] {
       ...gasTooLowAlerts,
       ...insufficientBalanceAlerts,
       ...insufficientPayTokenBalanceAlerts,
-      ...perpsWithdrawInsufficientBalanceAlerts,
       ...multipleApprovalAlerts,
       ...noGasPriceAlerts,
       ...noPayTokenQuotesAlerts,
@@ -104,7 +100,6 @@ function useTransactionAlerts(): Alert[] {
       gasTooLowAlerts,
       insufficientBalanceAlerts,
       insufficientPayTokenBalanceAlerts,
-      perpsWithdrawInsufficientBalanceAlerts,
       multipleApprovalAlerts,
       noGasPriceAlerts,
       noPayTokenQuotesAlerts,

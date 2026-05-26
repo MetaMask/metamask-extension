@@ -36,8 +36,6 @@ export type PermissionRenderContext = {
   };
   /** Expiry timestamp in Unix seconds, or null if no expiry. */
   expiry: number | null;
-  redeemerAddresses?: string[] | null;
-  payeeAddresses?: string[] | null;
   /** Chain ID in hex format. */
   chainId: Hex;
   /** The origin URL of the request. Only required for confirmation views. */
@@ -68,37 +66,53 @@ export type TokenVariant = 'native' | 'erc20';
 // Field types — view-agnostic, describe WHAT to show, not HOW
 // ---------------------------------------------------------------------------
 
-/** Shared config for schema rows that read a value from render context. */
-export type BaseField<TType extends string, TValueType> = {
-  type: TType;
+/** An amount field (native or ERC20). Renderers decide formatting. */
+export type AmountField = {
+  type: 'amount';
   labelKey: string;
   testId: string;
-  getValue: (ctx: PermissionRenderContext) => TValueType;
+  /** BigNumber value. Each renderer formats this for its view. */
+  getValue: (ctx: PermissionRenderContext) => BigNumber;
+  /** For ERC20 amounts, returns the token contract address. */
+  getTokenAddress?: (ctx: PermissionRenderContext) => Hex;
+  tooltip?: string;
+  isVisible: (ctx: PermissionRenderContext) => boolean;
+  includeInViews: FieldView[];
+  /** If true, the review renderer appends "/sec" to the formatted value. */
+  isRatePerSecond?: boolean;
+};
+
+/** A plain text row. */
+export type TextField = {
+  type: 'text';
+  labelKey: string;
+  testId: string;
+  getValue: (ctx: PermissionRenderContext) => I18nValue;
+  tooltip?: string;
   isVisible: (ctx: PermissionRenderContext) => boolean;
   includeInViews: FieldView[];
 };
 
-type TooltipFieldConfig = {
+/** A date/time row. */
+export type DateField = {
+  type: 'date';
+  labelKey: string;
+  testId: string;
+  getValue: (ctx: PermissionRenderContext) => number;
   tooltip?: string;
+  isVisible: (ctx: PermissionRenderContext) => boolean;
+  includeInViews: FieldView[];
 };
 
-/** An amount field (native or ERC20). Renderers decide formatting. */
-export type AmountField = BaseField<'amount', BigNumber> &
-  TooltipFieldConfig & {
-    /** For ERC20 amounts, returns the token contract address. */
-    getTokenAddress?: (ctx: PermissionRenderContext) => Hex;
-    /** If true, the review renderer appends "/sec" to the formatted value. */
-    isRatePerSecond?: boolean;
-  };
-
-/** A plain text row. */
-export type TextField = BaseField<'text', I18nValue> & TooltipFieldConfig;
-
-/** A date/time row. */
-export type DateField = BaseField<'date', number> & TooltipFieldConfig;
-
 /** An expiry row. Renderers handle the "never expires" case. */
-export type ExpiryField = BaseField<'expiry', number | null>;
+export type ExpiryField = {
+  type: 'expiry';
+  labelKey: string;
+  testId: string;
+  getValue: (ctx: PermissionRenderContext) => number | null;
+  isVisible: (ctx: PermissionRenderContext) => boolean;
+  includeInViews: FieldView[];
+};
 
 /** A visual divider between rows. */
 export type DividerElement = {
@@ -111,20 +125,45 @@ export type DividerElement = {
 // ---------------------------------------------------------------------------
 
 /** Displays the justification text. */
-export type JustificationField = BaseField<'justification', string | I18nValue>;
+export type JustificationField = {
+  type: 'justification';
+  labelKey: string;
+  testId: string;
+  getValue: (ctx: PermissionRenderContext) => string | I18nValue;
+  isVisible: (ctx: PermissionRenderContext) => boolean;
+  includeInViews: FieldView[];
+};
 
 /** Displays the account row (account selector). */
-export type AccountField = BaseField<'account', undefined>;
+export type AccountField = {
+  type: 'account';
+  labelKey: string;
+  testId: string;
+  getValue: (ctx: PermissionRenderContext) => undefined;
+  isVisible: (ctx: PermissionRenderContext) => boolean;
+  includeInViews: FieldView[];
+};
 
 /** Displays the request origin URL. */
-export type OriginField = BaseField<'origin', string | undefined> &
-  TooltipFieldConfig;
+export type OriginField = {
+  type: 'origin';
+  labelKey: string;
+  testId: string;
+  getValue: (ctx: PermissionRenderContext) => string | undefined;
+  tooltip?: string;
+  isVisible: (ctx: PermissionRenderContext) => boolean;
+  includeInViews: FieldView[];
+};
 
 /** Displays a recipient / delegate address. */
-export type AddressField = BaseField<'address', string | undefined>;
-
-/** Displays addresses extracted from permission rules. */
-export type RuleAddressField = BaseField<'rule-address', string[] | undefined>;
+export type AddressField = {
+  type: 'address';
+  labelKey: string;
+  testId: string;
+  getValue: (ctx: PermissionRenderContext) => string | undefined;
+  isVisible: (ctx: PermissionRenderContext) => boolean;
+  includeInViews: FieldView[];
+};
 
 /** Displays the network row. */
 export type NetworkField = {
@@ -143,8 +182,7 @@ export type SchemaElement =
   | AccountField
   | OriginField
   | AddressField
-  | NetworkField
-  | RuleAddressField;
+  | NetworkField;
 
 /** A section groups elements visually. */
 export type SchemaSection = {

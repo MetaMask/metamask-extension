@@ -36,7 +36,6 @@ export function getBridgeStatusControllerMessenger(
       'BridgeController:trackUnifiedSwapBridgeEvent',
       'BridgeController:stopPollingForQuotes',
       'GasFeeController:getState',
-      'RemoteFeatureFlagController:getState',
       'SnapController:handleRequest',
       'TransactionController:getState',
       'TransactionController:isAtomicBatchSupported',
@@ -44,7 +43,10 @@ export function getBridgeStatusControllerMessenger(
       'TransactionController:estimateGasFee',
       'TransactionController:updateTransaction',
     ],
-    events: ['TransactionController:transactionStatusUpdated'],
+    events: [
+      'TransactionController:transactionFailed',
+      'TransactionController:transactionConfirmed',
+    ],
   });
   return controllerMessenger;
 }

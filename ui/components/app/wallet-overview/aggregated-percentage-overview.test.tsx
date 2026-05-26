@@ -7,9 +7,9 @@ import {
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
   getTokensMarketData,
+  getPreferences,
+  getSelectedInternalAccount,
 } from '../../../selectors';
-import { getPreferences } from '../../../../shared/lib/selectors/preferences';
-import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { getHistoricalMultichainAggregatedBalance } from '../../../selectors/assets';
@@ -32,13 +32,11 @@ jest.mock('../../../ducks/metamask/metamask', () => ({
 
 jest.mock('../../../selectors', () => ({
   getSelectedAccount: jest.fn(),
+  getPreferences: jest.fn(),
   getShouldHideZeroBalanceTokens: jest.fn(),
   getTokensMarketData: jest.fn(),
-  selectAnyEnabledNetworksAreAvailable: jest.fn(),
-}));
-
-jest.mock('../../../../shared/lib/selectors/accounts', () => ({
   getSelectedInternalAccount: jest.fn(),
+  selectAnyEnabledNetworksAreAvailable: jest.fn(),
 }));
 
 jest.mock('../../../../shared/lib/selectors/networks', () => ({
@@ -51,10 +49,6 @@ jest.mock('../../../hooks/useAccountTotalFiatBalance', () => ({
 
 jest.mock('../../../selectors/assets', () => ({
   getHistoricalMultichainAggregatedBalance: jest.fn(),
-}));
-jest.mock('../../../../shared/lib/selectors/preferences', () => ({
-  ...jest.requireActual('../../../../shared/lib/selectors/preferences'),
-  getPreferences: jest.fn(),
 }));
 
 const mockGetIntlLocale = jest.mocked(getIntlLocale);
@@ -192,9 +186,7 @@ describe('AggregatedPercentageOverview', () => {
   beforeEach(() => {
     mockGetIntlLocale.mockReturnValue('en-US');
     mockGetCurrentCurrency.mockReturnValue('USD');
-    mockGetPreferences.mockReturnValue({
-      privacyMode: false,
-    } as ReturnType<typeof mockGetPreferences>);
+    mockGetPreferences.mockReturnValue({ privacyMode: false });
     mockGetSelectedAccount.mockReturnValue(selectedAccountMock);
     mockGetShouldHideZeroBalanceTokens.mockReturnValue(false);
     mockGetTokensMarketData.mockReturnValue(marketDataMock);

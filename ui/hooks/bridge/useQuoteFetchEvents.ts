@@ -39,6 +39,7 @@ export const useQuoteFetchEvents = () => {
           UnifiedSwapBridgeEventName.QuotesReceived,
           getQuotesReceivedProperties(
             activeQuote ?? null,
+            // @ts-expect-error 'market_closed' will be added to QuoteWarning in the controller
             warnings,
             isTxSubmittable,
             recommendedQuote,
