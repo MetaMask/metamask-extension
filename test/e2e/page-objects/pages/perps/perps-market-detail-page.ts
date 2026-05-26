@@ -511,7 +511,12 @@ export class PerpsMarketDetailPage {
     }
     await this.driver.waitForSelector(this.closeAmountSliderInCloseModal);
     const handleCss = this.closeAmountSliderRoleInCloseModal;
-    await this.driver.clickElement(handleCss);
+    // MUI v5 Slider renders a visually-hidden input that Selenium cannot
+    // click or scroll into view. Focus it via JS so keyboard events work.
+    await this.driver.executeScript(
+      `document.querySelector(arguments[0]).focus()`,
+      handleCss,
+    );
     await this.driver.press(handleCss, Key.END);
     await this.driver.wait(
       async () => (await this.getCloseAmountSliderPercentInModal()) === 100,
