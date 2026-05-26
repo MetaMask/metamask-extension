@@ -81,8 +81,8 @@ export const PerpsRecentActivity = ({
           alignItems={BoxAlignItems.Center}
           paddingLeft={4}
           paddingRight={4}
-          paddingTop={4}
-          marginBottom={2}
+          paddingTop={3}
+          paddingBottom={3}
         >
           <Skeleton className="h-5 w-36" borderRadius={BorderRadius.SM} />
           <Skeleton className="h-4 w-14" borderRadius={BorderRadius.SM} />
@@ -109,8 +109,8 @@ export const PerpsRecentActivity = ({
           alignItems={BoxAlignItems.Center}
           paddingLeft={4}
           paddingRight={4}
-          paddingTop={4}
-          marginBottom={2}
+          paddingTop={3}
+          paddingBottom={3}
         >
           <Text fontWeight={FontWeight.Medium}>{t('perpsRecentActivity')}</Text>
         </Box>
@@ -134,7 +134,7 @@ export const PerpsRecentActivity = ({
     >
       {/* Section Header */}
       <ButtonBase
-        className="w-full flex flex-row justify-between items-center px-4 pt-4 mb-2 bg-transparent rounded-none hover:bg-hover active:bg-pressed"
+        className="w-full flex flex-row justify-between items-center px-4 py-3 bg-transparent rounded-none hover:bg-hover active:bg-pressed"
         onClick={handleSeeAll}
         data-testid="perps-recent-activity-see-all"
         aria-label={`${t('perpsRecentActivity')}, ${t('perpsSeeAll')}`}

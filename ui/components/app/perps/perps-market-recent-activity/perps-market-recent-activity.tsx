@@ -99,12 +99,11 @@ export const PerpsMarketRecentActivity = ({
   const handleSeeAll = () => navigate(PERPS_ACTIVITY_ROUTE);
 
   return (
-    <>
+    <Box flexDirection={BoxFlexDirection.Column} gap={3}>
       {hasTransactions ? (
         <ButtonBase
           onClick={handleSeeAll}
-          className="w-full flex flex-row justify-between items-center pt-4 pb-2 bg-transparent rounded-none hover:bg-hover active:bg-pressed"
-          style={{ paddingLeft: 0, paddingRight: 0 }}
+          className="w-full flex flex-row justify-between items-center px-4 py-2 bg-transparent rounded-none hover:bg-hover active:bg-pressed"
           data-testid="perps-market-detail-view-all-activity"
           aria-label={`${t('perpsRecentActivity')}, ${t('perpsSeeAll')}`}
         >
@@ -118,20 +117,22 @@ export const PerpsMarketRecentActivity = ({
           />
         </ButtonBase>
       ) : (
-        <Box paddingTop={4} paddingBottom={2}>
+        <Box paddingLeft={4} paddingRight={4} paddingTop={2} paddingBottom={2}>
           <Text variant={TextVariant.HeadingSm} fontWeight={FontWeight.Medium}>
             {t('perpsRecentActivity')}
           </Text>
         </Box>
       )}
-      {showSkeleton && <RecentActivitySkeleton />}
-      {!showSkeleton && !hasTransactions && <RecentActivityEmpty />}
-      {!showSkeleton && hasTransactions && (
-        <RecentActivityList
-          transactions={transactions}
-          onTransactionClick={handleSeeAll}
-        />
-      )}
-    </>
+      <Box paddingLeft={4} paddingRight={4}>
+        {showSkeleton && <RecentActivitySkeleton />}
+        {!showSkeleton && !hasTransactions && <RecentActivityEmpty />}
+        {!showSkeleton && hasTransactions && (
+          <RecentActivityList
+            transactions={transactions}
+            onTransactionClick={handleSeeAll}
+          />
+        )}
+      </Box>
+    </Box>
   );
 };

@@ -49,7 +49,7 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
   if (isRedeposit) {
     return (
       <LegacyActivityListItem
-        data-testid="activity-list-item"
+        status={statusKey}
         onClick={() => onClick(transaction)}
         // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
         icon={
@@ -80,7 +80,7 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
 
   return (
     <LegacyActivityListItem
-      data-testid="activity-list-item"
+      status={statusKey}
       onClick={() => onClick(transaction)}
       // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
       icon={
