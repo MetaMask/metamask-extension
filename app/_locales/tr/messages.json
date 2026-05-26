@@ -43,15 +43,6 @@
   "QRHardwareWalletImporterTitle": {
     "message": "QR kodunu tara"
   },
-  "QRHardwareWalletSteps1Description": {
-    "message": "Resmi olarak QR kod destekleyen ortakların listesinden aşağıda seçim yapabilirsiniz."
-  },
-  "QRHardwareWalletSteps1Title": {
-    "message": "QR donanım cüzdanınızı bağlayın"
-  },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
-  },
   "SrpListHideAccounts": {
     "message": "$1 hesabı gizle",
     "description": "$1 is the number of accounts"
@@ -175,8 +166,139 @@
   "activity": {
     "message": "İşlem Geçmişi"
   },
-  "activityEmptyDescription": {
-    "message": "Gösterilecek bir şey yok. İlk token takası işleminizi bugün yapın."
+  "activity_bridge_failed_description": {
+    "message": "Köprü işlemi başarısız oldu"
+  },
+  "activity_bridge_failed_title": {
+    "message": "Köprü işlemi başarısız oldu"
+  },
+  "activity_buy_success_description": {
+    "message": "$1 satın alındı",
+    "description": "$1 is the token symbol"
+  },
+  "activity_buy_success_title": {
+    "message": "$1 satın alındı",
+    "description": "$1 is the token symbol"
+  },
+  "activity_contractInteraction_success_title": {
+    "message": "Akıllı sözleşme etkileşimi"
+  },
+  "activity_deposit_failed_description": {
+    "message": "Para yatırma işlemi başarısız oldu"
+  },
+  "activity_deposit_failed_title": {
+    "message": "Para yatırma işlemi başarısız oldu"
+  },
+  "activity_fallback_description": {
+    "message": "İşlem"
+  },
+  "activity_fallback_title": {
+    "message": "İşlem"
+  },
+  "activity_lendingDeposit_failed_title": {
+    "message": "Para yatırma işlemi başarısız oldu"
+  },
+  "activity_lendingWithdrawal_failed_description": {
+    "message": "Para çekme işlemi başarısız"
+  },
+  "activity_lendingWithdrawal_failed_title": {
+    "message": "Para çekme işlemi başarısız"
+  },
+  "activity_lendingWithdrawal_success_description": {
+    "message": "Borç verme para çekme işlemi"
+  },
+  "activity_lendingWithdrawal_success_title": {
+    "message": "Borç verme para çekme işlemi"
+  },
+  "activity_nftMint_success_title": {
+    "message": "$1 mint edildi",
+    "description": "$1 is the NFT token symbol"
+  },
+  "activity_perpsCloseShort_success_description": {
+    "message": "Short pozisyon kapatıldı"
+  },
+  "activity_perpsCloseShort_success_title": {
+    "message": "Short pozisyon kapatıldı"
+  },
+  "activity_perpsOpenLong_success_description": {
+    "message": "Long pozisyon açıldı"
+  },
+  "activity_perpsOpenLong_success_title": {
+    "message": "Long pozisyon açıldı"
+  },
+  "activity_perpsWithdrawFunds_failed_description": {
+    "message": "Para çekme işlemi başarısız"
+  },
+  "activity_perpsWithdrawFunds_failed_title": {
+    "message": "Para çekme işlemi başarısız"
+  },
+  "activity_predictionCashedOut_pending_description": {
+    "message": "Paraya çevriliyor"
+  },
+  "activity_predictionCashedOut_pending_title": {
+    "message": "Paraya çevriliyor"
+  },
+  "activity_predictionCashedOut_success_description": {
+    "message": "Nakit çıkışı yapıldı"
+  },
+  "activity_predictionCashedOut_success_title": {
+    "message": "Nakit çıkışı yapıldı"
+  },
+  "activity_predictionPlaced_success_description": {
+    "message": "Tahmin yapıldı"
+  },
+  "activity_predictionPlaced_success_title": {
+    "message": "Tahmin yapıldı"
+  },
+  "activity_predictionsWithdrawFunds_failed_description": {
+    "message": "Para çekme işlemi başarısız"
+  },
+  "activity_predictionsWithdrawFunds_failed_title": {
+    "message": "Para çekme işlemi başarısız"
+  },
+  "activity_predictionsWithdrawFunds_pending_description": {
+    "message": "Çekiliyor"
+  },
+  "activity_predictionsWithdrawFunds_pending_title": {
+    "message": "Çekiliyor"
+  },
+  "activity_receive_failed_description": {
+    "message": "Kimden: $1",
+    "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_pending_description": {
+    "message": "Kimden: $1",
+    "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_success_description": {
+    "message": "Kimden: $1",
+    "description": "$1 is the shortened sender address"
+  },
+  "activity_send_failed_description": {
+    "message": "Alıcı: $1",
+    "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_pending_description": {
+    "message": "Alıcı: $1",
+    "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_pending_title": {
+    "message": "$1 gönderiliyor",
+    "description": "$1 is the token symbol"
+  },
+  "activity_send_success_description": {
+    "message": "Alıcı: $1",
+    "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_success_title": {
+    "message": "$1 gönderildi",
+    "description": "$1 is the token symbol"
+  },
+  "activity_swapIncomplete_failed_title": {
+    "message": "Takas başarısız oldu"
+  },
+  "activity_swap_failed_title": {
+    "message": "Takas başarısız oldu"
   },
   "add": {
     "message": "Ekle"
@@ -216,6 +338,9 @@
   },
   "addCustomNetwork": {
     "message": "Özel ağ ekle"
+  },
+  "addCustomToken": {
+    "message": "Özel bir token ekle"
   },
   "addEthereumChainWarningModalHeader": {
     "message": "Bu RPC sağlayıcısını sadece ona güvenebileceğinizden eminseniz ekleyin. $1",
@@ -392,9 +517,6 @@
   "airDropPatternTitle": {
     "message": "Airdrop modeli"
   },
-  "airgapVault": {
-    "message": "AirGap Vault"
-  },
   "alert": {
     "message": "Uyarı"
   },
@@ -492,6 +614,9 @@
   "alertMessageTokenTrustSignalWarning": {
     "message": "Bu token kötü amaçlı davranışa yönelik güçlü işaretler gösteriyor. Devam etmek fon kaybına neden olabilir."
   },
+  "alertMinimumReserve": {
+    "message": "Rezerv bakiyesi gerekli"
+  },
   "alertModalAcknowledge": {
     "message": "Riski biliyor ve yine de ilerlemek istiyorum"
   },
@@ -572,6 +697,9 @@
   },
   "all": {
     "message": "Tümü"
+  },
+  "allDefaultNetworks": {
+    "message": "Tüm varsayılan ağlar"
   },
   "allNetworks": {
     "message": "Tüm ağlar"
@@ -1413,7 +1541,7 @@
     "message": "Gaz için daha fazla $1 gerekli"
   },
   "bridgeValidationInsufficientNativeReserveMessage": {
-    "message": "Bu ağ için hesabınızda minimum $1 $3 rezerv bulundurulması gerekiyor. Güncel bakiyenizle maksimum $2 $3 kullanabilirsiniz",
+    "message": "Bu ağ için hesabınızda minimum $1 $3 rezerv bulunmalıdır. Güncel bakiyenizle maksimum $2 $3 kullanabilirsiniz",
     "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
   },
   "bridgeValidationInsufficientNativeReserveTitle": {
@@ -1441,9 +1569,6 @@
   "buyMoreAsset": {
     "message": "Daha fazla $1 satın al",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyNow": {
-    "message": "Şimdi satın al"
   },
   "buyTabOpenedToastDescription": {
     "message": "Satın alma işleminiz için yeni bir sekme açtık.",
@@ -1751,9 +1876,6 @@
   "confirmTitleDescERC20ApproveTransaction": {
     "message": "Bu site tokenlarınızı çekmek için izin istiyor"
   },
-  "confirmTitleDescERC20Revocation": {
-    "message": "Bu site, ERC-20 token onaylarınızı iptal etmek için izin istiyor."
-  },
   "confirmTitleDescPermission": {
     "message": "Bu site token'larınızı harcamak için izin istiyor."
   },
@@ -1964,9 +2086,6 @@
   },
   "convertTokenToNFTExistDescription": {
     "message": "Bu varlığın bir NFT olarak eklendiğini tespit ettik. Token listenizden çıkarmak ister misiniz?"
-  },
-  "coolWallet": {
-    "message": "CoolWallet"
   },
   "copiedExclamation": {
     "message": "Kopyalandı."
@@ -2185,9 +2304,6 @@
   },
   "dateCreated": {
     "message": "Oluşturulma tarihi"
-  },
-  "dcent": {
-    "message": "D'Cent"
   },
   "debitCreditPurchaseOptions": {
     "message": "Banka kartı veya kredi kartı ile satın alma seçenekleri"
@@ -2513,9 +2629,6 @@
   "downloadAppTitle": {
     "message": "QR kodunu tarayın ve uygulamayı indirin"
   },
-  "downloadGoogleChrome": {
-    "message": "Google Chrome'u indir"
-  },
   "downloadMetaMaskMobileDescription": {
     "message": "Face ID ile şifrenizi unutsanız bile uygulamamıza giriş yapabilirsiniz. MetaMask'i gittiğiniz her yere yanınızda götürün!"
   },
@@ -2524,9 +2637,6 @@
   },
   "downloadMetaMaskMobileTitle": {
     "message": "Mobil uygulamamızı edinin"
-  },
-  "downloadNow": {
-    "message": "Şimdi indir"
   },
   "downloadStateLogs": {
     "message": "Durum Günlüklerini İndir"
@@ -2737,8 +2847,14 @@
   "enterSymbol": {
     "message": "Sembol girin"
   },
+  "enterTokenAddress": {
+    "message": "Token adresini girin"
+  },
   "enterTokenNameOrAddress": {
     "message": "Token adı girin veya adresi yapıştırın"
+  },
+  "enterTokenNameOrAddressManageTokens": {
+    "message": "Token adını veya adresini girin"
   },
   "enterYourPassword": {
     "message": "Şifrenizi girin"
@@ -3038,7 +3154,7 @@
     "message": "Gaz fiyatı tahmini ağ hatası nedeniyle başarısız oldu."
   },
   "gasSponsorshipReserveBalanceWarning": {
-    "message": "Gaz sponsorluğu bu işlem için kullanılamıyor. Hesabınızda en az $1 $2 tutmanız gerekecek.",
+    "message": "Bu ağ için hesabınızda $1 $2 rezerv bulunmalıdır.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
   "gasTimingHoursShort": {
@@ -3285,9 +3401,6 @@
   "hardwareWalletSubmissionWarningTitle": {
     "message": "Gönder düğmesine tıklamadan önce:"
   },
-  "hardwareWalletSupportLinkConversion": {
-    "message": "buraya tıklayın"
-  },
   "hardwareWalletTitleEthAppNotOpen": {
     "message": "Ethereum uygulamasını aç"
   },
@@ -3297,12 +3410,6 @@
   },
   "hardwareWallets": {
     "message": "Bir donanım cüzdanı bağlayın"
-  },
-  "hardwareWalletsInfo": {
-    "message": "Donanım cüzdanı entegrasyonları, IP adresinizi ve etkileşimde bulunduğunuz akıllı sözleşme adreslerini görebilen harici sunucular için API aramalarını kullanır."
-  },
-  "hardwareWalletsMsg": {
-    "message": "MetaMask ile kullanmak istediğiniz donanım cüzdanını seçin."
   },
   "helpAndSettings": {
     "message": "Yardım ve ayarlar"
@@ -3668,9 +3775,6 @@
     "message": "JSON Dosyası",
     "description": "format for importing an account"
   },
-  "keycardShell": {
-    "message": "Keycard Shell"
-  },
   "keyringAccountName": {
     "message": "Hesap adı"
   },
@@ -3723,9 +3827,6 @@
   },
   "learnMoreAboutPrivacy": {
     "message": "En iyi gizlilik uygulamaları hakkında daha fazla bilgi edinin."
-  },
-  "learnMoreKeystone": {
-    "message": "Daha fazla bilgi edin"
   },
   "learnMoreUpperCase": {
     "message": "Daha fazla bilgi edin"
@@ -3794,17 +3895,8 @@
   "ledgerFirefoxNotSupportedTitle": {
     "message": "Firefox Desteklenmiyor"
   },
-  "ledgerLiveApp": {
-    "message": "Ledger Live Uygulaması"
-  },
   "ledgerLocked": {
     "message": "Ledger cihazına bağlanılamıyor. Lütfen cihazınızın kilidinin açık ve Ethereum uygulamasının açık olduğundan emin olun."
-  },
-  "ledgerMultipleDevicesUnsupportedInfoDescription": {
-    "message": "Yeni bir cihaz bağlamak için önceki cihazın bağlantısını kesin."
-  },
-  "ledgerMultipleDevicesUnsupportedInfoTitle": {
-    "message": "Aynı anda yalnızca bir Ledger bağlayabilirsiniz"
   },
   "ledgerTimeout": {
     "message": "Ledger Live'ın yanıt vermesi çok uzun sürdü ya da bağlantı zaman aşımına uğradı. Ledger Live uygulamasının açık olduğundan ve cihazınızın kilidinin açık olduğundan emin olun."
@@ -3936,6 +4028,9 @@
   },
   "managePermissions": {
     "message": "İzinleri yönet"
+  },
+  "manageTokens": {
+    "message": "Tokenları yönet"
   },
   "manageWalletRecovery": {
     "message": "Cüzdan kurtarmayı yönet"
@@ -4632,6 +4727,9 @@
   "newContract": {
     "message": "Yeni sözleşme"
   },
+  "newCustomTokenAdded": {
+    "message": "\"$1\" başarılı bir şekilde eklendi!"
+  },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "Ayarlar > Güvenlik ve gizlilik"
   },
@@ -4767,8 +4865,14 @@
   "noSnaps": {
     "message": "Yüklü snapiniz yok."
   },
+  "noTokensMatchSearch": {
+    "message": "Aramanızla eşleşen token yok"
+  },
   "noTokensMatchingYourFilters": {
     "message": "Filtrelerinizle eşleşen token yok"
+  },
+  "noTokensToManage": {
+    "message": "Henüz tokenınız yok. Popüler tokenları keşfetmek için ada veya adrese göre arama yapın."
   },
   "noWebcamFound": {
     "message": "Bilgisayarınızın web kamerası bulunamadı. Lütfen tekrar deneyin."
@@ -5078,10 +5182,6 @@
   "onboardingMetametricsTitle": {
     "message": "MetaMask'in iyileştirilmesine yardımcı olun"
   },
-  "onboardingOptionIcon": {
-    "message": "$1 simgesi",
-    "description": "$1 is the icon name"
-  },
   "onboardingSignInWith": {
     "message": "$1 ile giriş yap",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -5355,6 +5455,9 @@
     "message": "ile öde",
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
   },
+  "payee": {
+    "message": "Alıcı"
+  },
   "pending": {
     "message": "Bekliyor"
   },
@@ -5376,6 +5479,9 @@
   },
   "perSecond": {
     "message": "saniye başına"
+  },
+  "percent": {
+    "message": "%$1"
   },
   "percentChange": {
     "message": "Yüzde değişikliği"
@@ -5705,6 +5811,10 @@
   "perpsAutoClose": {
     "message": "Otomatik kapat"
   },
+  "perpsAutoDeleveraging": {
+    "message": "Otomatik kaldıraç azaltma",
+    "description": "Badge label for trades executed via auto-deleveraging (ADL)"
+  },
   "perpsAvailable": {
     "message": "kullanılabilir",
     "description": "is the available balance amount"
@@ -5797,6 +5907,9 @@
   "perpsDepositActivityTitle": {
     "message": "Fonlanan Sürekli Vadeli İşlem Sözleşmeleri"
   },
+  "perpsDepositErrorBridgeFailed": {
+    "message": "Köprü işlemi başarısız oldu"
+  },
   "perpsDepositFailed": {
     "message": "Para yatırma işlemi tamamlanamadı. Tekrar deneyin."
   },
@@ -5819,10 +5932,10 @@
     "message": "Sürekli Vadeli İşlem Sözleşmelerine fon ekleniyor"
   },
   "perpsDepositToastSuccessDescription": {
-    "message": "Fonlarınız işleme hazır."
+    "message": "Fonlar işlem için hazır"
   },
   "perpsDepositToastSuccessTitle": {
-    "message": "Fonlar Perps'e eklendi"
+    "message": "Sürekli Vadeli İşlem Sözleşmelerinize fon yatırıldı"
   },
   "perpsDeposits": {
     "message": "Yatırma İşlemleri"
@@ -5927,6 +6040,10 @@
   },
   "perpsLimitPriceNearLiquidation": {
     "message": "Güncel fiyat tahmini likidasyon fiyatına yakın"
+  },
+  "perpsLiquidated": {
+    "message": "Likide edildi",
+    "description": "Badge label for trades that were liquidated"
   },
   "perpsLiquidationDistance": {
     "message": "Likidasyon mesafesi"
@@ -6111,11 +6228,14 @@
   "perpsSortByPriceChange": {
     "message": "Fiyat değişikliği"
   },
+  "perpsSortByRank": {
+    "message": "Sıralama"
+  },
   "perpsSortBySection": {
     "message": "Şuna göre sırala"
   },
   "perpsSortByTitle": {
-    "message": "Sırala"
+    "message": "Filtrele"
   },
   "perpsSortByVolume": {
     "message": "Hacim"
@@ -6291,6 +6411,9 @@
   "perpsTrades": {
     "message": "İşlemler"
   },
+  "perpsTransactionTitleOpenedLong": {
+    "message": "Long pozisyon açıldı"
+  },
   "perpsTriggerPrice": {
     "message": "Tetikleme fiyatı"
   },
@@ -6389,6 +6512,28 @@
   },
   "perpsWithdrawNoAccount": {
     "message": "Hesap seçilmedi. Bir hesap seçin ve tekrar deneyin."
+  },
+  "perpsWithdrawPostQuoteToastErrorDescription": {
+    "message": "Para çekme işlemine ilerlenemedi"
+  },
+  "perpsWithdrawPostQuoteToastErrorTitle": {
+    "message": "Bir şeyler ters gitti"
+  },
+  "perpsWithdrawPostQuoteToastPendingDescription": {
+    "message": "Yaklaşık 1 dakika sonra kullanılabilir"
+  },
+  "perpsWithdrawPostQuoteToastPendingTitle": {
+    "message": "Para çekme işlemi sürüyor"
+  },
+  "perpsWithdrawPostQuoteToastSuccessDescription": {
+    "message": "$1 $2 cüzdanınıza taşındı",
+    "description": "$1 is the formatted USD amount, e.g. '$20.73'. $2 is the destination token symbol, e.g. 'BNB'."
+  },
+  "perpsWithdrawPostQuoteToastSuccessGenericDescription": {
+    "message": "Para cüzdanınıza taşındı"
+  },
+  "perpsWithdrawPostQuoteToastSuccessTitle": {
+    "message": "Çekme işlemi tamamlandı"
   },
   "perpsWithdrawReceive": {
     "message": "Al"
@@ -6721,6 +6866,46 @@
     "message": "Kamera erişimine ihtiyaç var",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
+  "qrErrorNonUrPairingBody": {
+    "message": "Donanım cüzdanınıza geri dönün ve hesaplarınızı paylaşma veya dışa aktarma seçeneğini bulun, MetaMask seçeneğini seçin, ardından QR kodunu tarayın.",
+    "description": "Body text for the non-UR QR code error during pairing."
+  },
+  "qrErrorNonUrPairingTitle": {
+    "message": "Cüzdan eşitleme QR kodunu tara",
+    "description": "Title shown when scanned QR data is not a UR code during the pairing/import flow."
+  },
+  "qrErrorNonUrSigningBody": {
+    "message": "Donanım cüzdanınıza geri dönün ve işlemi onaylayın, ardından orada gösterilen QR kodunu tarayın.",
+    "description": "Body text for the non-UR QR code error during signing."
+  },
+  "qrErrorNonUrSigningTitle": {
+    "message": "İmza QR kodunu tara",
+    "description": "Title shown when scanned QR data is not a UR code during the signing flow."
+  },
+  "qrErrorUrDecodeBody": {
+    "message": "QR kodunun tamamen görünür olduğundan ve iyi aydınlatılmış olduğundan emin olup tekrar deneyin. Sorun devam ederse donanım cüzdanınızın yazılımını güncellemeniz gerekebilir.",
+    "description": "Body text for the UR decode error (universal for pairing and signing)."
+  },
+  "qrErrorUrDecodeTitle": {
+    "message": "QR kodu okunamadı",
+    "description": "Title shown when the UR decoder encounters an error (universal for pairing and signing)."
+  },
+  "qrErrorWrongUrTypePairingBody": {
+    "message": "Donanım cüzdanınıza geri dönün, cüzdan türü olarak MetaMask'i seçin, ardından yeni bir QR kodu oluşturun ve tarayın.",
+    "description": "Body text for the wrong UR type error during pairing."
+  },
+  "qrErrorWrongUrTypePairingTitle": {
+    "message": "QR kodu yanlış",
+    "description": "Title shown when the UR type does not match what is expected during pairing."
+  },
+  "qrErrorWrongUrTypeSigningBody": {
+    "message": "Donanım cüzdanınıza geri dönün ve işlemi onaylayın, ardından orada gösterilen QR kodunu tarayın.",
+    "description": "Body text for the wrong UR type error during signing."
+  },
+  "qrErrorWrongUrTypeSigningTitle": {
+    "message": "QR kodu yanlış",
+    "description": "Title shown when the UR type does not match what is expected during signing."
+  },
   "queued": {
     "message": "Kuyruğa alındı"
   },
@@ -6783,6 +6968,9 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Cüzdanınızı koruyun"
+  },
+  "redeemer": {
+    "message": "Hak Sahibi"
   },
   "redeposit": {
     "message": "Tekrar yatırın"
@@ -7033,6 +7221,12 @@
   "rewardsLinkAccountError": {
     "message": "Hesap eklenemedi"
   },
+  "rewardsOnboardingCheckingRegion": {
+    "message": "Bölge kontrol ediliyor..."
+  },
+  "rewardsOnboardingDescription": {
+    "message": "Sadece MetaMask kullanarak ödül kazanın, avantajlardan yararlanın ve daha fazla kazanç yolu keşfedin."
+  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "Ülkenizin ödüller programına katılıma izin verip vermediğini belirleyemiyoruz. Lütfen bağlantınızı kontrol edin ve tekrar deneyin."
   },
@@ -7051,6 +7245,46 @@
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "Bölge desteklenmiyor"
   },
+  "rewardsOnboardingLegalDisclaimer": {
+    "message": "Katılarak $1 bölümümüzü kabul etmiş olursunuz. Ödülünüzü otomatik olarak vermek için bu cihazdaki tüm hesapları dahil edeceğiz ve zincir içi faaliyetleri takip edeceğiz. $2",
+    "description": "$1 is the Terms and Privacy Notice link, $2 is the Learn more link"
+  },
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
+    "message": "Daha fazla bilgi edin"
+  },
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
+    "message": "Şartlar ve Gizlilik Bildirimi"
+  },
+  "rewardsOnboardingOptInError": {
+    "message": "Katılım başarısız oldu"
+  },
+  "rewardsOnboardingReferralCodeError": {
+    "message": "Geçersiz referans kodu"
+  },
+  "rewardsOnboardingReferralCodePlaceholder": {
+    "message": "Referans kodu (isteğe bağlı)"
+  },
+  "rewardsOnboardingReferralCodeUnknownError": {
+    "message": "Referans kodu doğrulanamadı."
+  },
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
+    "message": "Bağlantınızı kontrol edin ve tekrar deneyin."
+  },
+  "rewardsOnboardingReferralHide": {
+    "message": "Kodu gizle"
+  },
+  "rewardsOnboardingReferralPrompt": {
+    "message": "Referans kodunuz var mı?"
+  },
+  "rewardsOnboardingSignUp": {
+    "message": "Ödüllere Katılın"
+  },
+  "rewardsOnboardingSignUpLoading": {
+    "message": "Katılım sağlanıyor..."
+  },
+  "rewardsOnboardingTitle": {
+    "message": "Ödül kazanmaya başlayın"
+  },
   "rewardsOptInVerifyingReferralCode": {
     "message": "Referans kodu doğrulanıyor...",
     "description": "Text shown while verifying a referral code during rewards opt-in"
@@ -7066,6 +7300,12 @@
   "rewardsPointsIcon": {
     "message": "Ödül puanları",
     "description": "Alt text for the rewards points icon"
+  },
+  "rewardsQRCodeDescription": {
+    "message": "MetaMask Ödülleri programına erişim sağlamak için mobil cihazınızda QR kodunu tarayın."
+  },
+  "rewardsQRCodeTitle": {
+    "message": "Mobilde devam et"
   },
   "rewardsSignInFailed": {
     "message": "Giriş yapılamadı",
@@ -7189,11 +7429,11 @@
   },
   "securitySocialLoginEnabledDescription": {
     "message": "$1 oturumunuzu ve MetaMask şifrenizi kullanarak hesabınızı ve Gizli Kurtarma İfadelerini kurtarabilirsiniz.",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySocialLoginLabel": {
     "message": "$1 KURTARMA",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySrpLabel": {
     "message": "GİZLİ KURTARMA İFADELERİ"
@@ -8647,34 +8887,6 @@
   "statusNotConnected": {
     "message": "Bağlanmadı"
   },
-  "step1LatticeWallet": {
-    "message": "Lattice1'inizi bağlayın"
-  },
-  "step1LatticeWalletMsg": {
-    "message": "Kurulduktan ve çevrimiçi olduktan sonra MetaMask'i Lattice1 cihazınıza bağlayabilirsiniz. Cihazınızın kilidini açın ve Cihaz Kimlliğinizi hazırlayın.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step1LedgerWallet": {
-    "message": "Ledger uygulamasını indir"
-  },
-  "step1LedgerWalletMsg": {
-    "message": "$1 kilidini açmak için indirin, kurun ve şifrenizi girin.",
-    "description": "$1 represents the `ledgerLiveApp` localization value"
-  },
-  "step1TrezorWallet": {
-    "message": "Trezor'unuzu bağlayın"
-  },
-  "step1TrezorWalletMsg": {
-    "message": "Cüzdanınızı doğrudan bilgisayara bağlayın ve kilidini açın. Doğru parolayı kullandığınızdan emin olun.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step2LedgerWallet": {
-    "message": "Ledger'ınızı bağlayın"
-  },
-  "step2LedgerWalletMsg": {
-    "message": "Ledger'ınızı doğrudan bilgisayara bağlayın, ardından kilidini açın ve Ethereum uygulamasını açın.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "stillConnectingTo": {
     "message": "Halen $1 ağına bağlanılıyor...",
     "description": "Message shown when network connection is slow. $1 is the network name."
@@ -9170,6 +9382,9 @@
   "tokenAddress": {
     "message": "Token Adresi"
   },
+  "tokenAllowance": {
+    "message": "Token harcama izni"
+  },
   "tokenAlreadyAdded": {
     "message": "Token zaten eklenmiş."
   },
@@ -9211,6 +9426,9 @@
   "tokenPermissionsCount": {
     "message": "$1 token izni",
     "description": "$1 is the count of token permissions (plural form)"
+  },
+  "tokenSearchError": {
+    "message": "Arama sonuçları yüklenemedi. Lütfen tekrar deneyin."
   },
   "tokenStandard": {
     "message": "Token standardı"

@@ -146,6 +146,17 @@ export type RewardsDataServiceGetSeasonMetadataAction = {
 };
 
 /**
+ * Get the VIP fee table for the current subscription.
+ *
+ * @param subscriptionToken - The subscription token used for authentication.
+ * @returns The VIP fee response (tier 0 will have `fees=null`).
+ */
+export type RewardsDataServiceGetVipFeesAction = {
+  type: `RewardsDataService:getVipFees`;
+  handler: RewardsDataService['getVipFees'];
+};
+
+/**
  * Generate a challenge for SIWE (Sign-In with Ethereum) authentication.
  *
  * @param body - The challenge generation request body containing address.
@@ -173,4 +184,5 @@ export type RewardsDataServiceMethodActions =
   | RewardsDataServiceGetOptInStatusAction
   | RewardsDataServiceGetDiscoverSeasonsAction
   | RewardsDataServiceGetSeasonMetadataAction
+  | RewardsDataServiceGetVipFeesAction
   | RewardsDataServiceGenerateChallengeAction;

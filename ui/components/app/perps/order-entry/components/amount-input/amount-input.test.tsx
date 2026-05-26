@@ -40,6 +40,28 @@ describe('AmountInput', () => {
       expect(screen.getByText(/USDC/u)).toBeInTheDocument();
     });
 
+    it('renders current position size when provided', () => {
+      renderWithProvider(
+        <AmountInput {...defaultProps} currentPositionSize="2.5" />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-current-position-size-row'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-current-position-size-value'),
+      ).toHaveTextContent('2.5 BTC');
+    });
+
+    it('does not render current position size when omitted', () => {
+      renderWithProvider(<AmountInput {...defaultProps} />, mockStore);
+
+      expect(
+        screen.queryByTestId('perps-current-position-size-row'),
+      ).not.toBeInTheDocument();
+    });
+
     it('renders the amount input field', () => {
       renderWithProvider(<AmountInput {...defaultProps} />, mockStore);
 

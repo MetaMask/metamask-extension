@@ -94,6 +94,12 @@ export type AmountField = BaseField<'amount', BigNumber> &
 /** A plain text row. */
 export type TextField = BaseField<'text', I18nValue> & TooltipFieldConfig;
 
+/** A plain text row whose value is rendered verbatim (no i18n lookup). */
+export type RawTextField = BaseField<'raw-text', string> & TooltipFieldConfig;
+
+/** A list row whose values are i18n keys. */
+export type ListField = BaseField<'list', string[]> & TooltipFieldConfig;
+
 /** A date/time row. */
 export type DateField = BaseField<'date', number> & TooltipFieldConfig;
 
@@ -136,6 +142,8 @@ export type NetworkField = {
 export type SchemaElement =
   | AmountField
   | TextField
+  | RawTextField
+  | ListField
   | DateField
   | ExpiryField
   | DividerElement

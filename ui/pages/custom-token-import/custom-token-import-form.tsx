@@ -60,6 +60,7 @@ export type CustomTokenImportFormProps = {
   onAddressChange: (value: string) => void;
   onSymbolChange: (value: string) => void;
   onDecimalsChange: (value: string) => void;
+  onSecurityLinkClick: () => void;
   onSubmit: () => void;
 };
 
@@ -68,7 +69,9 @@ type SubmitBarProps = Pick<CustomTokenImportFormProps, 'onSubmit'> & {
   isLoading: boolean;
 };
 
-const CustomTokenWarningBanner = () => {
+const CustomTokenWarningBanner = ({
+  onSecurityLinkClick,
+}: Pick<CustomTokenImportFormProps, 'onSecurityLinkClick'>) => {
   const t = useI18nContext();
 
   return (
@@ -87,6 +90,7 @@ const CustomTokenWarningBanner = () => {
               href={ZENDESK_URLS.TOKEN_SAFETY_PRACTICES}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={onSecurityLinkClick}
             >
               {t('learnScamRisk')}
             </a>
@@ -278,6 +282,7 @@ export const CustomTokenImportForm = ({
   onAddressChange,
   onSymbolChange,
   onDecimalsChange,
+  onSecurityLinkClick,
   onSubmit,
 }: CustomTokenImportFormProps) => {
   const [isNetworkSelectorOpen, setIsNetworkSelectorOpen] = useState(false);
@@ -307,7 +312,7 @@ export const CustomTokenImportForm = ({
           gap={6}
           className="flex flex-1 flex-col overflow-auto min-h-0"
         >
-          <CustomTokenWarningBanner />
+          <CustomTokenWarningBanner onSecurityLinkClick={onSecurityLinkClick} />
           <NetworkPickerField
             networkName={networkName}
             selectedNetwork={selectedNetwork}
