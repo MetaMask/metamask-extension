@@ -10,6 +10,7 @@ import type {
   MultichainAssetsRatesControllerState,
   NftControllerState,
   RatesControllerState,
+  TokenRatesControllerState,
   TokenBalancesControllerState,
   TokenListMap,
   TokenListState,
@@ -356,6 +357,11 @@ class FixtureBuilderV2 {
     data: Partial<TokenBalancesControllerState>,
   ): this {
     merge(this.fixture.data.TokenBalancesController, data);
+    return this;
+  }
+
+  withTokenRatesController(data: Partial<TokenRatesControllerState>): this {
+    merge(this.fixture.data.TokenRatesController, data);
     return this;
   }
 

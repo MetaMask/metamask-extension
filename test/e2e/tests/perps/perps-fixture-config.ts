@@ -1,5 +1,6 @@
 import type { Mockttp } from 'mockttp';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
 import {
   getProductionRemoteFlagApiResponse,
   getProductionRemoteFlagDefaults,
@@ -17,6 +18,46 @@ import {
  * automatically included without having to update this file.
  */
 const PROD_REMOTE_FLAGS = getProductionRemoteFlagDefaults();
+
+const ARBITRUM_CHAIN_ID = '0xa4b1';
+const ARBITRUM_CHAIN_ID_DECIMAL = Number(ARBITRUM_CHAIN_ID);
+const ARBITRUM_USDC_ADDRESS = '0xaf88d065e77c8cC2239327C5EDb3A432268e5831';
+const ARBITRUM_USDC_PRICE_IN_ETH = 1 / 1700;
+const HYPERCORE_CHAIN_ID = '0x539';
+const HYPERCORE_CHAIN_ID_DECIMAL = Number(HYPERCORE_CHAIN_ID);
+const PRICE_API_BASE_URL = 'https://price.api.cx.metamask.io';
+const RELAY_API_BASE_URL = 'https://api.relay.link';
+const RELAY_REQUEST_ID = 'perps-withdraw-e2e-request-id';
+const RELAY_TRANSACTION_HASH =
+  '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef';
+
+const ARBITRUM_USDC_MARKET_DATA = {
+  tokenAddress: ARBITRUM_USDC_ADDRESS,
+  currency: 'ETH',
+  allTimeHigh: 1,
+  allTimeLow: 1,
+  circulatingSupply: 0,
+  dilutedMarketCap: 0,
+  high1d: 1,
+  low1d: 1,
+  marketCap: 0,
+  marketCapPercentChange1d: 0,
+  price: ARBITRUM_USDC_PRICE_IN_ETH,
+  priceChange1d: 0,
+  pricePercentChange1d: 0,
+  pricePercentChange1h: 0,
+  pricePercentChange1y: 0,
+  pricePercentChange7d: 0,
+  pricePercentChange14d: 0,
+  pricePercentChange30d: 0,
+  pricePercentChange200d: 0,
+  totalVolume: 0,
+};
+
+type RelayQuoteRequestBody = {
+  amount?: string;
+  user?: string;
+};
 
 /**
  * Remote feature flags for eligible (non-geo-blocked) users.
@@ -119,12 +160,233 @@ async function mockEligibleFeatureFlags(server: Mockttp): Promise<void> {
     { perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: [] } },
   ];
   await server
-    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
-    .withQuery({ client: 'extension', distribution: 'main' })
+    .forGet(/^https:\/\/client-config\.api\.cx\.metamask\.io\/v1\/flags/u)
     .thenCallback(() => ({
       ok: true,
       statusCode: 200,
       json: eligibleFlags,
+    }));
+}
+
+async function mockArbitrumUsdcPriceData(server: Mockttp): Promise<void> {
+  await server
+    .forGet(`${PRICE_API_BASE_URL}/v1/exchange-rates`)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        eth: {
+          name: 'Ether',
+          ticker: 'eth',
+          value: ARBITRUM_USDC_PRICE_IN_ETH,
+          currencyType: 'crypto',
+        },
+        usd: {
+          name: 'US Dollar',
+          ticker: 'usd',
+          value: 1,
+          currencyType: 'fiat',
+        },
+      },
+    }));
+}
+
+function formatUsdcRawAmount(rawAmount: string): string {
+  try {
+    const raw = BigInt(rawAmount);
+    const decimals = 1_000_000n;
+    const whole = raw / decimals;
+    const fraction = raw % decimals;
+    const fractionText = fraction.toString().padStart(6, '0');
+    const trimmedFraction = fractionText.replace(/0+$/u, '');
+
+    return trimmedFraction
+      ? `${whole.toString()}.${trimmedFraction}`
+      : whole.toString();
+  } catch {
+    return '0';
+  }
+}
+
+function getArbitrumUsdcRawAmount(sourceRawAmount: string): string {
+  try {
+    return (BigInt(sourceRawAmount) / 100n).toString();
+  } catch {
+    return '0';
+  }
+}
+
+async function mockRelayWithdrawData(server: Mockttp): Promise<void> {
+  await server
+    .forPost(`${RELAY_API_BASE_URL}/quote`)
+    .always()
+    .thenCallback(async (request) => {
+      const body =
+        ((await request.body.getJson()) as RelayQuoteRequestBody | undefined) ??
+        {};
+      const sourceRawAmount =
+        typeof body.amount === 'string' ? body.amount : '0';
+
+      if (sourceRawAmount === '0') {
+        return {
+          statusCode: 400,
+          json: {
+            message: 'Amount is required',
+          },
+        };
+      }
+
+      const targetRawAmount = getArbitrumUsdcRawAmount(sourceRawAmount);
+      const formattedAmount = formatUsdcRawAmount(targetRawAmount);
+      const user =
+        typeof body.user === 'string'
+          ? body.user
+          : DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
+
+      return {
+        statusCode: 200,
+        json: {
+          details: {
+            currencyIn: {
+              amount: sourceRawAmount,
+              amountFormatted: formattedAmount,
+              amountUsd: formattedAmount,
+              currency: {
+                chainId: HYPERCORE_CHAIN_ID_DECIMAL,
+                decimals: 8,
+              },
+            },
+            currencyOut: {
+              amount: targetRawAmount,
+              amountFormatted: formattedAmount,
+              amountUsd: formattedAmount,
+              currency: {
+                chainId: ARBITRUM_CHAIN_ID_DECIMAL,
+                decimals: 6,
+              },
+              minimumAmount: targetRawAmount,
+            },
+            timeEstimate: 60,
+            totalImpact: {
+              usd: '0',
+            },
+          },
+          fees: {
+            app: {
+              amountUsd: '0',
+            },
+            relayer: {
+              amountUsd: '0',
+            },
+          },
+          metamask: {
+            gasLimits: [],
+            is7702: false,
+          },
+          steps: [
+            {
+              id: 'authorize',
+              items: [
+                {
+                  data: {
+                    sign: {
+                      signatureKind: 'eip712',
+                      domain: {
+                        name: 'Relay',
+                        version: '1',
+                        chainId: ARBITRUM_CHAIN_ID_DECIMAL,
+                        verifyingContract:
+                          '0x0000000000000000000000000000000000000000',
+                      },
+                      types: {
+                        Authorize: [
+                          { name: 'nonce', type: 'uint256' },
+                          { name: 'user', type: 'address' },
+                        ],
+                      },
+                      value: {
+                        nonce: '1',
+                        user,
+                      },
+                      primaryType: 'Authorize',
+                    },
+                    post: {
+                      endpoint: `${RELAY_API_BASE_URL}/authorize`,
+                      method: 'POST',
+                      body: {
+                        requestId: RELAY_REQUEST_ID,
+                      },
+                    },
+                  },
+                  status: 'incomplete',
+                },
+              ],
+              kind: 'signature',
+              requestId: RELAY_REQUEST_ID,
+            },
+            {
+              id: 'deposit',
+              items: [
+                {
+                  check: {
+                    endpoint: 'https://api.hyperliquid.xyz/exchange',
+                    method: 'POST',
+                  },
+                  data: {
+                    action: {
+                      type: 'sendAsset',
+                      parameters: {
+                        destination: user,
+                        token: 'USDC',
+                        amount: formattedAmount,
+                        time: '1',
+                      },
+                    },
+                    nonce: 1,
+                    eip712PrimaryType: 'HyperliquidTransaction',
+                    eip712Types: {
+                      HyperliquidTransaction: [
+                        { name: 'destination', type: 'address' },
+                        { name: 'token', type: 'string' },
+                        { name: 'amount', type: 'string' },
+                        { name: 'time', type: 'string' },
+                        { name: 'type', type: 'string' },
+                        { name: 'signatureChainId', type: 'string' },
+                      ],
+                    },
+                  },
+                  status: 'incomplete',
+                },
+              ],
+              kind: 'transaction',
+              requestId: RELAY_REQUEST_ID,
+            },
+          ],
+        },
+      };
+    });
+
+  await server
+    .forPost(/^https:\/\/api\.relay\.link\/authorize/u)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: { status: 'ok' },
+    }));
+
+  await server
+    .forGet(/^https:\/\/api\.relay\.link\/intents\/status\/v3/u)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        status: 'success',
+        inTxHashes: [RELAY_TRANSACTION_HASH],
+        txHashes: [RELAY_TRANSACTION_HASH],
+        updatedAt: Date.now(),
+        originChainId: HYPERCORE_CHAIN_ID_DECIMAL,
+        destinationChainId: ARBITRUM_CHAIN_ID_DECIMAL,
+      },
     }));
 }
 
@@ -151,6 +413,67 @@ export function getPerpsConfigEligible(title?: string) {
     title,
     manifestFlags: PERPS_ELIGIBLE_FLAG,
     testSpecificMock: (server: Mockttp) => mockEligibleFeatureFlags(server),
+  };
+}
+
+/**
+ * Eligible Perps fixture for the Withdraw confirmation flow.
+ *
+ * The confirmation selects Arbitrum USDC as its destination token immediately
+ * on load. Pre-seeding token metadata and rates avoids depending on async token
+ * discovery before `TransactionPayController` resolves that token.
+ *
+ * @param title - The test title for debugging.
+ * @returns Partial withFixtures config to spread into withFixtures().
+ */
+export function getPerpsConfigEligibleWithArbitrumUsdc(title?: string) {
+  return {
+    fixtures: new FixtureBuilderV2()
+      .withPerpsController({
+        isEligible: true,
+        isFirstTimeUser: { mainnet: false, testnet: false },
+      })
+      .withTokensController({
+        allTokens: {
+          [ARBITRUM_CHAIN_ID]: {
+            [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: [
+              {
+                address: ARBITRUM_USDC_ADDRESS,
+                symbol: 'USDC',
+                image: `https://static.cx.metamask.io/api/v1/tokenIcons/42161/${ARBITRUM_USDC_ADDRESS.toLowerCase()}.png`,
+                isERC721: false,
+                decimals: 6,
+                aggregators: ['metamask'],
+                name: 'USD Coin',
+              },
+            ],
+          },
+        },
+      })
+      .withTokenRatesController({
+        marketData: {
+          [ARBITRUM_CHAIN_ID]: {
+            [ARBITRUM_USDC_ADDRESS]: ARBITRUM_USDC_MARKET_DATA,
+          },
+        },
+      })
+      .withCurrencyController({
+        currencyRates: {
+          ETH: {
+            conversionDate: 0,
+            conversionRate: 1700,
+            usdConversionRate: 1700,
+          },
+        },
+      })
+      .build(),
+    title,
+    manifestFlags: PERPS_ELIGIBLE_FLAG,
+    testSpecificMock: async (server: Mockttp) => {
+      await mockEligibleFeatureFlags(server);
+      await mockArbitrumUsdcPriceData(server);
+      await mockRelayWithdrawData(server);
+    },
   };
 }
 
