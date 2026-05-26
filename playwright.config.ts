@@ -36,11 +36,15 @@ const config: PlaywrightTestConfig = {
     [
       'junit',
       {
-        outputFile:
-          process.env.PLAYWRIGHT_JUNIT_OUTPUT_FILE ||
-          `${logOutputFolder}/junit/test-results.xml`,
+        outputFile: `${logOutputFolder}/junit/test-results.xml`,
       },
     ],
+    // Mocha-compatible JUnit reporter used by the central e2e test
+    // report (`.github/scripts/create-e2e-test-report.mts`). Activates
+    // only when `PLAYWRIGHT_JUNIT_OUTPUT_FILE` is set, which the
+    // Playwright e2e CI jobs (chrome-e2e / firefox-e2e) export.
+    // See: test/e2e/playwright/shared/mocha-compat-junit-reporter.ts
+    ['./test/e2e/playwright/shared/mocha-compat-junit-reporter.ts'],
   ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
