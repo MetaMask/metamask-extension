@@ -355,6 +355,13 @@ class Driver {
         ? allowedUrlPatterns
         : DEFAULT_BENCHMARK_CDP_URL_PATTERNS;
 
+    // Compile the allowlist patterns once here, not per-request inside the
+    // CDP message handler — ~25 patterns × every `Network.requestWillBeSent`
+    // event is enough RegExp churn to perturb benchmark numbers.
+    const normalizedAllowedUrlRegexes = normalizedAllowedUrlPatterns.map(
+      wildcardPatternToRegExp,
+    );
+
     // createCDPConnection initializes _cdpWsConnection on the Selenium driver.
     await this.getCdpConnection();
     let cdpWsConnection;
@@ -388,7 +395,7 @@ class Driver {
 
       const url = params.params?.request?.url || '';
 
-      if (!isAllowedBenchmarkCdpRequest(url, normalizedAllowedUrlPatterns)) {
+      if (!normalizedAllowedUrlRegexes.some((regex) => regex.test(url))) {
         const errorMessage = buildBlockedBenchmarkRequestError(
           url,
           normalizedAllowedUrlPatterns,
