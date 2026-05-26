@@ -34,6 +34,8 @@ import { IndividualFiatDisplay } from './fiat-display';
  * @param props.isFirstRow
  * @param props.hasIncomingTokens
  * @param props.confirmationId
+ * @param props.labelAlertKey
+ * @param props.labelAlertOwnerId
  */
 export const BalanceChangeRow: React.FC<{
   label?: string;
@@ -43,6 +45,8 @@ export const BalanceChangeRow: React.FC<{
   isFirstRow?: boolean;
   hasIncomingTokens?: boolean;
   confirmationId?: string;
+  labelAlertKey?: string;
+  labelAlertOwnerId?: string;
 }> = ({
   label,
   showFiat,
@@ -51,6 +55,8 @@ export const BalanceChangeRow: React.FC<{
   isFirstRow,
   hasIncomingTokens,
   confirmationId,
+  labelAlertKey,
+  labelAlertOwnerId,
 }) => {
   const t = useI18nContext();
 
@@ -69,18 +75,34 @@ export const BalanceChangeRow: React.FC<{
       return null;
     }
 
-    if (hasIncomingTokens && isFirstRow && confirmationId) {
-      return (
-        <ConfirmInfoAlertRow
-          alertKey={RowAlertKey.IncomingTokens}
-          ownerId={confirmationId}
-          label={label}
-          style={{
-            margin: 0,
-            padding: 0,
-          }}
-        />
-      );
+    if (isFirstRow && confirmationId) {
+      if (hasIncomingTokens) {
+        return (
+          <ConfirmInfoAlertRow
+            alertKey={RowAlertKey.IncomingTokens}
+            ownerId={confirmationId}
+            label={label}
+            style={{
+              margin: 0,
+              padding: 0,
+            }}
+          />
+        );
+      }
+
+      if (labelAlertKey && labelAlertOwnerId) {
+        return (
+          <ConfirmInfoAlertRow
+            alertKey={labelAlertKey}
+            ownerId={labelAlertOwnerId}
+            label={label}
+            style={{
+              margin: 0,
+              padding: 0,
+            }}
+          />
+        );
+      }
     }
 
     return (
