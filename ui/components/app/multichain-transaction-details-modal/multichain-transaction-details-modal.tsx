@@ -8,7 +8,6 @@ import {
 import { useSelector } from 'react-redux';
 import {
   Box,
-  BoxFlexDirection,
   BoxAlignItems,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
