@@ -34,6 +34,7 @@ import {
   selectBalanceChangeBySelectedAccountGroup,
   selectAccountGroupBalanceForEmptyState,
   getAssetsBySelectedAccountGroup,
+  getAssetsBySelectedAccountGroupIncludingHidden,
   getAsset,
   getAllIgnoredAssets,
   selectAggregatedBalanceForSelectedAccount,
@@ -1604,6 +1605,48 @@ describe('getAssetsBySelectedAccountGroup', () => {
     const result = getAssetsBySelectedAccountGroup(mockState);
 
     expect(selectorMock).toHaveBeenCalledWith(mockState.metamask);
+    expect(result).toStrictEqual(selectorMockResult);
+  });
+});
+
+describe('getAssetsBySelectedAccountGroupIncludingHidden', () => {
+  beforeEach(() => {
+    getAssetsBySelectedAccountGroupIncludingHidden.clearCache();
+    getAssetsBySelectedAccountGroupIncludingHidden.memoizedResultFunc.clearCache();
+  });
+
+  const mockState = {
+    metamask: {
+      accountTree: 'mockAccountTree',
+      internalAccounts: 'mockInternalAccounts',
+      allTokens: 'mockAllTokens',
+      allIgnoredTokens: 'mockAllIgnoredTokens',
+      tokenBalances: 'mockTokenBalances',
+      marketData: 'mockMarketData',
+      currencyRates: 'mockCurrencyRates',
+      currentCurrency: 'mockCurrentCurrency',
+      networkConfigurationsByChainId: 'mockNetworkConfigurationsByChainId',
+      accountsByChainId: 'mockAccountsByChainId',
+      accountsAssets: 'mockAccountsAssets',
+      assetsMetadata: 'mockAssetsMetadata',
+      allIgnoredAssets: 'mockAllIgnoredAssets',
+      balances: 'mockBalances',
+      conversionRates: 'mockConversionRates',
+    },
+  };
+
+  it('calls the imported selector with ignored assets cleared', () => {
+    const selectorMock = jest.mocked(selectAssetsBySelectedAccountGroup);
+    const selectorMockResult = {};
+    selectorMock.mockReturnValueOnce(selectorMockResult);
+
+    const result = getAssetsBySelectedAccountGroupIncludingHidden(mockState);
+
+    expect(selectorMock).toHaveBeenCalledWith({
+      ...mockState.metamask,
+      allIgnoredTokens: {},
+      allIgnoredAssets: {},
+    });
     expect(result).toStrictEqual(selectorMockResult);
   });
 });
