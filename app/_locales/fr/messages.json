@@ -2280,12 +2280,6 @@
   "dappConnections": {
     "message": "Connexions aux dapps"
   },
-  "dappScanMaliciousTitle": {
-    "message": "Site web malveillant détecté"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "Ce site web est signalé comme potentiellement dangereux. Si vous divulguez votre phrase secrète de récupération, vous pourriez mettre vos fonds en danger."
-  },
   "dappSuggested": {
     "message": "Suggéré par le site"
   },

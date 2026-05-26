@@ -2280,12 +2280,6 @@
   "dappConnections": {
     "message": "dApp-Verbindungen"
   },
-  "dappScanMaliciousTitle": {
-    "message": "Schädliche Website erkannt"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "Diese Website ist als potenziell gefährlich gekennzeichnet. Wenn Sie Ihre geheime Wiederherstellungsphrase preisgeben, gefährden Sie Ihr Guthaben."
-  },
   "dappSuggested": {
     "message": "Website vorgeschlagen"
   },
