@@ -1,10 +1,10 @@
 import { CaipAssetType, CaipChainId } from '@metamask/utils';
+import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
+import { SendAssetEntry } from '../types';
 import {
   buildSrcTokenAmountSmallestUnit,
   buildQuoteRequestForEntry,
 } from './buildQuoteRequest';
-import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
-import { SendAssetEntry } from '../types';
 
 const CHAIN_ID = 'eip155:1' as CaipChainId;
 const ASSET_ID =

@@ -1,6 +1,6 @@
 import { CaipAssetType } from '@metamask/utils';
-import { hasAnyEnabledAsset } from './hasAnyEnabledAsset';
 import { BatchSellQuotesConfig } from '../types';
+import { hasAnyEnabledAsset } from './hasAnyEnabledAsset';
 
 type SendAssetsConfig = BatchSellQuotesConfig['sendAssetsConfig'];
 type AssetConfig = SendAssetsConfig[CaipAssetType];

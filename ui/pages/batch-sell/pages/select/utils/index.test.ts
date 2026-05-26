@@ -1,6 +1,6 @@
 import { CaipAssetType, CaipChainId } from '@metamask/utils';
-import { getSourceTokenAddress } from '.';
 import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
+import { getSourceTokenAddress } from '.';
 
 const EVM_NATIVE_ASSET_ADDRESS = '0x0000000000000000000000000000000000000000';
 

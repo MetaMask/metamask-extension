@@ -1,11 +1,11 @@
 import { CaipAssetType } from '@metamask/utils';
+import { BatchSellAsset } from '../../../../ducks/batch-sell/types';
 import { batchSellReviewStateReducer } from './reducers';
 import {
   BatchSellReviewState,
   BatchSellReviewStateActionType,
   ReceivedAsset,
 } from './types';
-import { BatchSellAsset } from '../../../../ducks/batch-sell/types';
 
 const ASSET_ID_A =
   'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' as CaipAssetType;

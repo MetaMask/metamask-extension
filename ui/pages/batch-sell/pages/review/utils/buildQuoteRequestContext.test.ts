@@ -1,10 +1,10 @@
 import { CaipAssetType } from '@metamask/utils';
+import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
+import { ReceivedAsset } from '../types';
 import {
   buildQuoteRequestContext,
   computeUsdAmountSource,
 } from './buildQuoteRequestContext';
-import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
-import { ReceivedAsset } from '../types';
 
 const buildAsset = (
   overrides: Partial<BatchSellAsset> = {},
