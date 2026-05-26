@@ -146,24 +146,6 @@ describe('memory-profiler', () => {
 
       expect(options.flow).toBe('send-open-back');
     });
-
-    it('accepts dapp and wallet initiated flows', () => {
-      expect(
-        parseMemoryProfilerArgs(['--flow', 'dapp-initiated-transaction'])
-          .flow,
-      ).toBe('dapp-initiated-transaction');
-      expect(
-        parseMemoryProfilerArgs(['--flow', 'dapp-initiated-signature']).flow,
-      ).toBe('dapp-initiated-signature');
-      expect(
-        parseMemoryProfilerArgs(['--flow', 'wallet-initiated-transaction'])
-          .flow,
-      ).toBe('wallet-initiated-transaction');
-      expect(
-        parseMemoryProfilerArgs(['--flow', 'wallet-initiated-signature'])
-          .flow,
-      ).toBe('wallet-initiated-signature');
-    });
   });
 
   describe('parseByteSize', () => {

@@ -150,16 +150,6 @@ yarn llm:memory -- --iterations 50 --max-used-heap-growth 25MiB
 # Send-flow profile with only baseline/final samples and no Playwright DOM count
 yarn llm:memory -- --iterations 50 --flow send-open-back --sample final --probe cdp
 
-# Hosted test dapp initiated confirmation flows
-yarn llm:memory -- --iterations 25 --flow dapp-initiated-transaction
-yarn llm:memory -- --iterations 25 --flow dapp-initiated-signature
-
-# Wallet initiated send flow
-yarn llm:memory -- --iterations 25 --flow wallet-initiated-transaction
-
-# Wallet initiated signing through the internal debug/test background hook
-yarn llm:memory -- --iterations 25 --flow wallet-initiated-signature
-
 # Fail when DOM counters regress past known budgets
 yarn llm:memory -- --iterations 50 --flow send-open-back \
   --max-dom-nodes-growth 1000 \
@@ -177,11 +167,6 @@ retention; it records the baseline and final samples only. The default
 Use `--probe cdp` to skip the Playwright live-DOM locator count while keeping
 CDP heap and DOM counters. Use `--probe heap` to skip DOM counters too, which is
 useful when isolating app heap growth from DOM-counter observer effects.
-
-The dapp-initiated flows use the hosted MetaMask test dapp at
-`https://metamask.github.io/test-dapp/`. The `wallet-initiated-signature` flow
-requires an extension build with `METAMASK_DEBUG` enabled so the script can call
-the internal background signing hook from the wallet UI.
 
 ---
 
