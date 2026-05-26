@@ -295,7 +295,6 @@
     "protobufjs": "^7.5.8",
     "postcss-loader/jiti": "npm:npm-empty-package@1.0.0",
     "@metamask/snaps-controllers": "^20.0.5",
-    "@metamask/bridge-status-controller@npm:71.2.0": "patch:@metamask/bridge-status-controller@npm%3A71.2.0#~/.yarn/patches/@metamask-bridge-status-controller-npm-71.2.0-bridge-controller-v73.patch",
     "@metamask/permission-controller@npm:^12.2.0": "^13.0.0",
     "@metamask/permission-controller@npm:^12.2.1": "^13.0.0",
     "@metamask/permission-controller@npm:^12.3.0": "^13.0.0"
