@@ -139,10 +139,24 @@ export default class MochaCompatJunitReporter implements Reporter {
     bucket.total += 1;
     bucket.totalDurationMs += result.duration;
 
-    // titlePath() yields [project, file, ...describes, test]. Drop the
-    // first two so the emitted name reads like a mocha "describe > it".
+    // titlePath() yields [project, file, ...describes, test]. We want
+    // just the describe-chain + the test, matching mocha-junit-reporter's
+    // `test.fullTitle()`. Filter out empties, the project name, and any
+    // segment that looks like a spec file path. This is more robust than
+    // a fixed slice index since PW's titlePath shape has shifted between
+    // versions.
+    const projectName = test.parent.project()?.name;
     const fullName =
-      test.titlePath().slice(2).join(' ').trim() || test.title;
+      test
+        .titlePath()
+        .filter(
+          (segment) =>
+            Boolean(segment) &&
+            !segment.endsWith('.spec.ts') &&
+            segment !== projectName,
+        )
+        .join(' ')
+        .trim() || test.title;
 
     if (result.status === 'skipped') {
       bucket.skipped += 1;

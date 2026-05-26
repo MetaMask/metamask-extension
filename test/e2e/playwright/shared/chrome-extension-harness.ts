@@ -66,29 +66,49 @@ export async function launchMetaMaskChromeExtension(
     args.push('--disable-gpu', '--no-sandbox');
   }
 
-  // PW 1.34+ uses `--headless=new` automatically when `headless: true`,
-  // which supports MV3 extensions. Don't push the flag manually — it
-  // duplicates / confuses PW's internal handling.
   // Resolution order: explicit option → PLAYWRIGHT_HEADLESS env var → CI
-  // detection. Locally, defaults to headed for developer ergonomics.
+  // detection. Locally both are unset, so dev gets a headed window.
   const headless =
     options.headless ?? (isHeadless('PLAYWRIGHT') || Boolean(process.env.CI));
 
+  // CRITICAL: Playwright's `headless: true` does two things in 1.54.x:
+  //  (1) selects the `chromium-headless-shell` binary, and
+  //  (2) adds the legacy `--headless` flag.
+  // The `chromium-headless-shell` binary is a stripped-down build that
+  // does NOT support extensions — MV3 service workers never attach and
+  // any navigation to `chrome-extension://<id>/...` fails with
+  // `net::ERR_ABORTED`. To mirror Selenium's working behavior (full
+  // Chrome + `--headless=new`), we tell Playwright `headless: false` so
+  // it picks the full Chromium binary, then opt into headless rendering
+  // ourselves via the explicit `--headless=new` arg. This matches the
+  // `chrome.js` Selenium driver one-for-one.
+  if (headless) {
+    args.push('--headless=new');
+  }
+
   const context = await chromium.launchPersistentContext(userDataDir, {
-    headless,
+    headless: false,
     args,
     acceptDownloads: true,
     downloadsPath: downloadsDir,
     viewport: null,
   });
 
-  let extensionId =
-    computeExtensionIdFromManifest(extensionDirectory) ??
-    (await resolveExtensionIdFromServiceWorker(context));
+  // Wait for the MV3 service worker before returning so the first
+  // `chrome-extension://<id>/...` navigation doesn't race the worker's
+  // attachment. The manifest-key derivation gives us the correct ID even
+  // before the worker is up, but the URL isn't serviceable until the
+  // worker registers — surfacing as `net::ERR_ABORTED` downstream. This
+  // wait is cheap when the worker is already up; if it times out we
+  // fall through to the manifest ID and let the caller see the navigation
+  // failure with the real error message.
+  const serviceWorkerExtensionId =
+    await resolveExtensionIdFromServiceWorker(context);
 
-  if (!extensionId) {
-    extensionId = await resolveExtensionIdFromContextPages(context);
-  }
+  const extensionId =
+    computeExtensionIdFromManifest(extensionDirectory) ??
+    serviceWorkerExtensionId ??
+    (await resolveExtensionIdFromContextPages(context));
 
   if (!extensionId) {
     await context.close().catch(() => undefined);
