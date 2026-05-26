@@ -34,7 +34,6 @@ import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { SECOND } from '../../../../shared/constants/time';
 import {
   HardwareDeviceNames,
-  LedgerTransportTypes,
   U2F_ERROR,
   LEDGER_ERRORS_CODES,
   LEDGER_LIVE_PATH,
@@ -139,11 +138,6 @@ const ConnectHardwareForm = () => {
   );
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
-  const ledgerTransportType = useSelector(
-    (state: {
-      metamask: { ledgerTransportType?: LedgerTransportTypes | 'live' };
-    }) => state.metamask.ledgerTransportType,
-  );
   const keyrings = useSelector(
     (state: { metamask: { keyrings: KeyringObject[] } }) =>
       state.metamask.keyrings,
@@ -675,8 +669,7 @@ const ConnectHardwareForm = () => {
         <SelectHardware
           connectToHardwareWallet={connectToHardwareWallet}
           browserSupported={browserSupported}
-          onCancel={onCancel}
-          ledgerTransportType={ledgerTransportType}
+          isFirefox={isFirefox}
         />
       );
     }

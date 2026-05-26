@@ -7,6 +7,7 @@ import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { getCurrentChainId } from '../../../shared/lib/selectors/networks';
+import { getIsVipProgramEnabled } from '../../selectors/perps/feature-flags';
 
 /**
  * Cache TTL for the per-address fee discount lookup. Mirrors mobile's
@@ -91,6 +92,7 @@ export function usePerpsMetamaskFeeDiscountBips(
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
   const currentChainId = useSelector(getCurrentChainId);
+  const isVipProgramEnabled = useSelector(getIsVipProgramEnabled);
 
   const [discountBips, setDiscountBips] = useState<number | undefined>(
     undefined,
@@ -98,7 +100,7 @@ export function usePerpsMetamaskFeeDiscountBips(
 
   useEffect(() => {
     let cancelled = false;
-    if (!selectedAddress) {
+    if (!isVipProgramEnabled || !selectedAddress) {
       setDiscountBips(undefined);
       return undefined;
     }
@@ -155,7 +157,7 @@ export function usePerpsMetamaskFeeDiscountBips(
     return () => {
       cancelled = true;
     };
-  }, [selectedAddress, currentChainId, baseFeeBips]);
+  }, [isVipProgramEnabled, selectedAddress, currentChainId, baseFeeBips]);
 
   return discountBips !== undefined && discountBips > 0
     ? Math.min(discountBips, MAX_DISCOUNT_BIPS)

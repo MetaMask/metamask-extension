@@ -43,15 +43,6 @@
   "QRHardwareWalletImporterTitle": {
     "message": "Scan QR code"
   },
-  "QRHardwareWalletSteps1Description": {
-    "message": "You can choose from a list of official QR-code supporting partners below."
-  },
-  "QRHardwareWalletSteps1Title": {
-    "message": "Connect your QR hardware wallet"
-  },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
-  },
   "SrpListHideAccounts": {
     "message": "Hide $1 accounts",
     "description": "$1 is the number of accounts"
@@ -1257,9 +1248,6 @@
   "airDropPatternTitle": {
     "message": "Airdrop pattern"
   },
-  "airgapVault": {
-    "message": "AirGap Vault"
-  },
   "alert": {
     "message": "Alert"
   },
@@ -2313,9 +2301,6 @@
     "message": "Buy more $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyNow": {
-    "message": "Buy now"
-  },
   "buyTabOpenedToastDescription": {
     "message": "We've opened a new tab for buying.",
     "description": "Toast description shown after opening the buy flow in a new tab"
@@ -2622,9 +2607,6 @@
   "confirmTitleDescERC20ApproveTransaction": {
     "message": "This site wants permission to withdraw your tokens"
   },
-  "confirmTitleDescERC20Revocation": {
-    "message": "This site wants permissions to revoke your ERC-20 token approvals."
-  },
   "confirmTitleDescPermission": {
     "message": "This site wants permissions to spend your tokens."
   },
@@ -2636,6 +2618,9 @@
   },
   "confirmTitleDescSign": {
     "message": "Review request details before you confirm."
+  },
+  "confirmTitleDescTokenApprovalRevocation": {
+    "message": "This site wants permissions to revoke your token approvals."
   },
   "confirmTitlePermission": {
     "message": "Permission request"
@@ -2835,9 +2820,6 @@
   },
   "convertTokenToNFTExistDescription": {
     "message": "We’ve detected that this asset has been added as an NFT. Would you like to remove it from your token list?"
-  },
-  "coolWallet": {
-    "message": "CoolWallet"
   },
   "copiedExclamation": {
     "message": "Copied."
@@ -3056,9 +3038,6 @@
   },
   "dateCreated": {
     "message": "Date created"
-  },
-  "dcent": {
-    "message": "D'Cent"
   },
   "debitCreditPurchaseOptions": {
     "message": "Debit or credit card purchase options"
@@ -3384,9 +3363,6 @@
   "downloadAppTitle": {
     "message": "Scan QR code and download the app"
   },
-  "downloadGoogleChrome": {
-    "message": "Download Google Chrome"
-  },
   "downloadMetaMaskMobileDescription": {
     "message": "Face ID on our app lets you in even if you forget your password. Take MetaMask everywhere you go!"
   },
@@ -3395,9 +3371,6 @@
   },
   "downloadMetaMaskMobileTitle": {
     "message": "Get our mobile app"
-  },
-  "downloadNow": {
-    "message": "Download now"
   },
   "downloadStateLogs": {
     "message": "Download state logs"
@@ -3975,6 +3948,18 @@
     "message": "Weekly",
     "description": "Time period for weekly recurring permissions redemption"
   },
+  "gatorPermissionsAllTokenApprovalRevocationPrimitives": {
+    "message": "All revocation primitives for ERC-20, ERC-1155, ERC-721.",
+    "description": "Text shown when all token approval revocation primitives are enabled"
+  },
+  "gatorPermissionsErc20ApproveRevocation": {
+    "message": "ERC-20 approve(spender, 0)",
+    "description": "Token approval revocation method for ERC-20 approve reset"
+  },
+  "gatorPermissionsErc721ApproveRevocation": {
+    "message": "ERC-721 approve(address(0), tokenId)",
+    "description": "Token approval revocation method for ERC-721 single-token approve reset"
+  },
   "gatorPermissionsExpirationDate": {
     "message": "Expiration date",
     "description": "Label for the expiration date of a permission"
@@ -3995,6 +3980,22 @@
     "message": "Max allowance",
     "description": "Label for the max allowance of a permission"
   },
+  "gatorPermissionsPermit2ApproveRevocation": {
+    "message": "Permit2 approve(token, spender, 0, 0)",
+    "description": "Token approval revocation method for Permit2 approve reset"
+  },
+  "gatorPermissionsPermit2InvalidateNonces": {
+    "message": "Permit2 invalidate nonces",
+    "description": "Token approval revocation method for Permit2 nonce invalidation"
+  },
+  "gatorPermissionsPermit2Lockdown": {
+    "message": "Permit2 lockdown",
+    "description": "Token approval revocation method for Permit2 lockdown"
+  },
+  "gatorPermissionsRevocationMethods": {
+    "message": "Revocation methods",
+    "description": "Label for the enabled token approval revocation methods"
+  },
   "gatorPermissionsRevocationPending": {
     "message": "Revocation pending",
     "description": "Label for a gator permission that is pending a revocation transaction"
@@ -4002,6 +4003,10 @@
   "gatorPermissionsRevoke": {
     "message": "Revoke",
     "description": "Label for the revoke button of a gator permission"
+  },
+  "gatorPermissionsSetApprovalForAllRevocation": {
+    "message": "ERC-721/ERC-1155 setApprovalForAll(false)",
+    "description": "Token approval revocation method for setApprovalForAll reset"
   },
   "gatorPermissionsShowDetails": {
     "message": "Show details",
@@ -4162,9 +4167,6 @@
   "hardwareWalletSubmissionWarningTitle": {
     "message": "Prior to clicking Submit:"
   },
-  "hardwareWalletSupportLinkConversion": {
-    "message": "click here"
-  },
   "hardwareWalletTitleEthAppNotOpen": {
     "message": "Open Ethereum app"
   },
@@ -4174,12 +4176,6 @@
   },
   "hardwareWallets": {
     "message": "Connect a hardware wallet"
-  },
-  "hardwareWalletsInfo": {
-    "message": "Hardware wallet integrations use API calls to external servers, which can see your IP address and the smart contract addresses you interact with."
-  },
-  "hardwareWalletsMsg": {
-    "message": "Select a hardware wallet you would like to use with MetaMask."
   },
   "helpAndSettings": {
     "message": "Help and settings"
@@ -4548,9 +4544,6 @@
     "message": "JSON File",
     "description": "format for importing an account"
   },
-  "keycardShell": {
-    "message": "Keycard Shell"
-  },
   "keyringAccountName": {
     "message": "Account name"
   },
@@ -4603,9 +4596,6 @@
   },
   "learnMoreAboutPrivacy": {
     "message": "Learn more about privacy best practices."
-  },
-  "learnMoreKeystone": {
-    "message": "Learn more"
   },
   "learnMoreUpperCase": {
     "message": "Learn more"
@@ -4674,17 +4664,8 @@
   "ledgerFirefoxNotSupportedTitle": {
     "message": "Firefox Not Supported"
   },
-  "ledgerLiveApp": {
-    "message": "Ledger Live App"
-  },
   "ledgerLocked": {
     "message": "Cannot connect to Ledger device. Please make sure your device is unlocked and Ethereum app is opened."
-  },
-  "ledgerMultipleDevicesUnsupportedInfoDescription": {
-    "message": "To connect a new device, disconnect the previous one."
-  },
-  "ledgerMultipleDevicesUnsupportedInfoTitle": {
-    "message": "You can only connect one Ledger at a time"
   },
   "ledgerTimeout": {
     "message": "Ledger Live is taking too long to respond or connection timeout. Make sure Ledger Live app is opened and your device is unlocked."
@@ -6059,6 +6040,9 @@
   },
   "otherPermissionsOnSiteTitle": {
     "message": "Other permissions on this site"
+  },
+  "otherQrWallet": {
+    "message": "Other QR wallet"
   },
   "otherSnaps": {
     "message": "other snaps",
@@ -9707,34 +9691,6 @@
   "statusNotConnected": {
     "message": "Not connected"
   },
-  "step1LatticeWallet": {
-    "message": "Connect your Lattice1"
-  },
-  "step1LatticeWalletMsg": {
-    "message": "You can connect MetaMask to your Lattice1 device once it is set up and online. Unlock your device and have your Device ID ready.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step1LedgerWallet": {
-    "message": "Download Ledger app"
-  },
-  "step1LedgerWalletMsg": {
-    "message": "Download, set up, and enter your password to unlock $1.",
-    "description": "$1 represents the `ledgerLiveApp` localization value"
-  },
-  "step1TrezorWallet": {
-    "message": "Connect your Trezor"
-  },
-  "step1TrezorWalletMsg": {
-    "message": "Plug your Trezor directly into your computer and unlock it. Make sure you use the correct passphrase.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step2LedgerWallet": {
-    "message": "Connect your Ledger"
-  },
-  "step2LedgerWalletMsg": {
-    "message": "Plug your Ledger directly into your computer, then  unlock it and open the Ethereum app.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "stillConnectingTo": {
     "message": "Still connecting to $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."
@@ -10578,6 +10534,9 @@
     "message": "Unknown network",
     "description": "Displayed on places like Snap install warning when regular name is not available."
   },
+  "unknownPermissionType": {
+    "message": "Unknown permission type"
+  },
   "unknownQrCode": {
     "message": "Error: We couldn't identify that QR code"
   },
@@ -10756,7 +10715,7 @@
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
   },
   "vip": {
-    "message": "VIP Fox $1",
+    "message": "VIP $1",
     "description": "$1 is the VIP tier number"
   },
   "visitSite": {
