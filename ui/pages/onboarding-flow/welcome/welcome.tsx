@@ -278,12 +278,12 @@ export default function OnboardingWelcome() {
   );
 
   const handleSocialLoginError = useCallback(
-    (error, loginType) => {
+    (error: Error | undefined, loginType: LoginType) => {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
 
       // Map raw OAuth error messages to UI modal-friendly constants
-      if (isUserCancelledLoginError(error as Error | undefined)) {
+      if (isUserCancelledLoginError(error)) {
         setLoginError(null);
         return;
       }
