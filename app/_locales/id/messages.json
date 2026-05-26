@@ -5218,10 +5218,6 @@
   "onboardingMetametricsTitle": {
     "message": "Bantu tingkatkan MetaMask"
   },
-  "onboardingOptionIcon": {
-    "message": "Ikon $1",
-    "description": "$1 is the icon name"
-  },
   "onboardingSignInWith": {
     "message": "Masuk dengan $1",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -7469,11 +7465,11 @@
   },
   "securitySocialLoginEnabledDescription": {
     "message": "Gunakan login $1 dan kata sandi MetaMask untuk memulihkan akun dan Frasa Pemulihan Rahasia.",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySocialLoginLabel": {
     "message": "PEMULIHAN $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySrpLabel": {
     "message": "FRASA PEMULIHAN RAHASIA"
