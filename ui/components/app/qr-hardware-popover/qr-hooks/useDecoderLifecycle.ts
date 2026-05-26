@@ -80,13 +80,13 @@ export function useDecoderLifecycle(
         if (decoder.isComplete()) {
           const result = decoder.resultUR();
 
-          const typeCheck = classifyScanResult({
+          const detectedError = classifyScanResult({
             decodedType: result.type,
             expectedTypes,
           });
 
-          if (typeCheck) {
-            setScanError(typeCheck);
+          if (detectedError) {
+            setScanError(detectedError);
             return;
           }
 
@@ -95,14 +95,14 @@ export function useDecoderLifecycle(
           );
         }
       } catch (exception) {
-        const classification = classifyScanResult({
+        const detectedError = classifyScanResult({
           text: lastScannedTextRef.current ?? undefined,
           expectedTypes,
           exception,
         });
 
-        if (classification) {
-          setScanError(classification);
+        if (detectedError) {
+          setScanError(detectedError);
         }
       }
     },
