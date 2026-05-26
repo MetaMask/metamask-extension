@@ -31,8 +31,8 @@ describe('Confirmation Redesign ERC721 Revoke setApprovalForAll', function () {
       await withTransactionEnvelopeTypeFixtures(
         this.test?.fullTitle(),
         TransactionEnvelopeType.feeMarket,
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await createTransactionAndAssertDetails(driver, contractRegistry);
+        async ({ driver, contractRegistry, localNodes }: TestSuiteArguments) => {
+          await createTransactionAndAssertDetails(driver, contractRegistry, localNodes);
         },
         mocks,
         SMART_CONTRACTS.NFTS,
