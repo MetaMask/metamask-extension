@@ -159,6 +159,7 @@ export class SpeculosTestHelper {
       apduPort: this.apduPort,
       apiPort: this.apiPort,
       display: 'headless',
+      startTimeout: 60_000,
     });
 
     await this.server.start();

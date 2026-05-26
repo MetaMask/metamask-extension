@@ -61,6 +61,8 @@ export function createSpeculosProcess(
     const args = buildArgs();
     const timeout = options.startTimeout ?? 30_000;
 
+    console.log(`[Speculos] Starting: ${binaryPath} ${args.join(' ')}`);
+
     return new Promise((resolve, reject) => {
       let lastLog: string | undefined;
       let exited = false;
@@ -81,6 +83,7 @@ export function createSpeculosProcess(
         const line = data.toString();
         emitter.emit('log', line);
         lastLog = line;
+        console.log(`[Speculos] ${line.trimEnd()}`);
 
         if (status === 'starting' && line.includes(READINESS_STRING)) {
           status = 'listening';
