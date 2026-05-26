@@ -78,9 +78,6 @@
   "autoLockTimeLimit": {
     "message": "Automatinio atjungimo laikmatis (minutės)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "Nustatykite laukimo  trukmę minutėmis iki „MetaMask“ automatinio atsijungimo"
-  },
   "average": {
     "message": "Vidurkis"
   },
@@ -181,12 +178,6 @@
   "createPassword": {
     "message": "Sukurti slaptažodį"
   },
-  "currencyConversion": {
-    "message": "Valiutos keitimas"
-  },
-  "currentLanguage": {
-    "message": "Dabartinė kalba"
-  },
   "custom": {
     "message": "Išplėstiniai"
   },
@@ -207,9 +198,6 @@
   },
   "done": {
     "message": "Atlikta"
-  },
-  "downloadGoogleChrome": {
-    "message": "Atsiunčiama „Google Chrome“"
   },
   "downloadStateLogs": {
     "message": "Atsisiųsti būsenos žurnalus"
@@ -268,9 +256,6 @@
   },
   "hardwareWallets": {
     "message": "Susieti aparatinės įrangos slaptažodinę"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Pasirinkite aparatinės įrangos slaptažodinę, kurią pageidaujate naudoti su „MetaTask“"
   },
   "here": {
     "message": "čia",
@@ -339,12 +324,6 @@
   "likeToImportTokens": {
     "message": "Ar norėtumėte pridėti šiuos žetonus?"
   },
-  "lineaGoerli": {
-    "message": "„Linea“ bandomasis tinklas"
-  },
-  "links": {
-    "message": "Nuorodos"
-  },
   "loading": {
     "message": "Įkeliama..."
   },
@@ -384,9 +363,6 @@
   },
   "nevermind": {
     "message": "Nekreipti dėmesio"
-  },
-  "newAccount": {
-    "message": "Nauja paskyra"
   },
   "newAccountNumberName": {
     "message": "Paskyra $1",
@@ -493,9 +469,6 @@
   "restore": {
     "message": "Atkurti"
   },
-  "revealSeedWords": {
-    "message": "Atskleisti atkūrimo žodžius"
-  },
   "revealSeedWordsWarning": {
     "message": "Šiuos žodžius galima panaudoti visoms jūsų paskyroms pavogti.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -542,9 +515,6 @@
   "showFiatConversionInTestnets": {
     "message": "Rodyti keitimą „Testnet“"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Pasirinkite tai, kad būtų rodomas standartinės valiutos keitimas „Testnet“ programoje"
-  },
   "showHexData": {
     "message": "Rodyti šešioliktainius duomenis"
   },
@@ -574,9 +544,6 @@
   },
   "stateLogs": {
     "message": "Būsenos žurnalai"
-  },
-  "stateLogsDescription": {
-    "message": "Būsenos žurnaluose yra jūsų viešos paskyros adresų ir išsiųstų operacijų."
   },
   "submitted": {
     "message": "Pateikta"

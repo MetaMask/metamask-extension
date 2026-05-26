@@ -1,6 +1,5 @@
 import { WebElement } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
-import { Ganache } from '../../../seeder/ganache';
 import { Anvil } from '../../../seeder/anvil';
 import HeaderNavbar from '../header-navbar';
 import { getCleanAppState, regularDelayMs } from '../../../helpers';
@@ -64,6 +63,11 @@ class HomePage {
     text: 'Connecting to Localhost 8545',
   };
 
+  private readonly lowValueAssetsToggle =
+    '[data-testid="low-value-assets-toggle"]';
+
+  private readonly lowValueAssetsToggleExpanded = `${this.lowValueAssetsToggle}[aria-expanded="true"]`;
+
   private readonly nftTab = {
     testId: 'account-overview__nfts-tab',
   };
@@ -104,7 +108,7 @@ class HomePage {
   private readonly srpAddedToast = '[data-testid="new-srp-added-toast"]';
 
   private readonly srpAddedToastCloseButton =
-    '[data-testid="new-srp-added-toast"] ~ button[aria-label="Close"]';
+    '.toast-container button[aria-label="Close"]';
 
   private readonly surveyToast = '[data-testid="survey-toast"]';
 
@@ -151,6 +155,25 @@ class HomePage {
       throw e;
     }
     console.log('Home page is loaded');
+  }
+
+  private async expandLowValueAssetsIfPresent(): Promise<void> {
+    let toggle;
+
+    try {
+      toggle = await this.driver.findElement(this.lowValueAssetsToggle, 1000);
+    } catch {
+      return;
+    }
+
+    if ((await toggle.getAttribute('aria-expanded')) === 'true') {
+      return;
+    }
+
+    await this.driver.clickElement(this.lowValueAssetsToggle);
+    await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded, {
+      timeout: 5000,
+    });
   }
 
   async waitForNetworkAndDOMReady(): Promise<void> {
@@ -461,6 +484,7 @@ class HomePage {
     expectedTokenBalance: string,
     symbol: string,
   ): Promise<void> {
+    await this.expandLowValueAssetsIfPresent();
     await this.driver.waitForSelector({
       css: '[data-testid="multichain-token-list-item-value"]',
       text: `${expectedTokenBalance} ${symbol}`,
@@ -519,7 +543,7 @@ class HomePage {
   }
 
   async checkLocalNodeBalanceIsDisplayed(
-    localNode?: Ganache | Anvil,
+    localNode?: Anvil,
     address = null,
   ): Promise<void> {
     let expectedBalance: string;

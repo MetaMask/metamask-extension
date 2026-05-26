@@ -7,14 +7,6 @@ import { ShieldControllerMessenger } from '@metamask/shield-controller';
 import { AuthenticationController } from '@metamask/profile-sync-controller';
 import { RootMessenger } from '../../../lib/messenger';
 
-type AllowedActions = MessengerActions<ShieldControllerMessenger>;
-
-type AllowedEvents = MessengerEvents<ShieldControllerMessenger>;
-
-export type ShieldControllerMessengerType = ReturnType<
-  typeof getShieldControllerMessenger
->;
-
 /**
  * Get a restricted messenger for the Shield controller. This is scoped to the
  * actions and events that the Shield controller is allowed to handle.
@@ -23,14 +15,12 @@ export type ShieldControllerMessengerType = ReturnType<
  * @returns The restricted messenger.
  */
 export function getShieldControllerMessenger(
-  messenger: RootMessenger<AllowedActions, AllowedEvents>,
-): ShieldControllerMessenger {
-  const controllerMessenger = new Messenger<
-    'ShieldController',
-    AllowedActions,
-    AllowedEvents,
-    typeof messenger
-  >({
+  messenger: RootMessenger<
+    MessengerActions<ShieldControllerMessenger>,
+    MessengerEvents<ShieldControllerMessenger>
+  >,
+) {
+  const controllerMessenger: ShieldControllerMessenger = new Messenger({
     namespace: 'ShieldController',
     parent: messenger,
   });
@@ -46,7 +36,12 @@ export function getShieldControllerMessenger(
 
 type InitActions =
   AuthenticationController.AuthenticationControllerGetBearerTokenAction;
+
 type InitEvents = never;
+
+export type ShieldControllerInitMessenger = ReturnType<
+  typeof getShieldControllerInitMessenger
+>;
 
 export function getShieldControllerInitMessenger(
   messenger: RootMessenger<InitActions, InitEvents>,
@@ -66,7 +61,3 @@ export function getShieldControllerInitMessenger(
   });
   return controllerInitMessenger;
 }
-
-export type ShieldControllerInitMessenger = ReturnType<
-  typeof getShieldControllerInitMessenger
->;

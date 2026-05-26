@@ -15,7 +15,6 @@ describe('ActivityListItem', () => {
   const defaultProps = {
     className: CLASSNAME,
     title: TITLE,
-    'data-testid': 'test-id',
     subtitle: SUBTITLE,
     rightContent: RIGHT_CONTENT,
     midContent: MID_CONTENT,
@@ -39,7 +38,18 @@ describe('ActivityListItem', () => {
 
   it('calls onClick when clicked', () => {
     const { getByTestId } = render(<ActivityListItem {...defaultProps} />);
-    fireEvent.click(getByTestId('test-id'));
+    fireEvent.click(getByTestId('activity-list-item'));
     expect(defaultProps.onClick).toHaveBeenCalled();
+  });
+
+  it('renders the transaction status attribute when status is provided', () => {
+    const { getByTestId } = render(
+      <ActivityListItem {...defaultProps} status="confirmed" />,
+    );
+
+    expect(getByTestId('activity-list-item')).toHaveAttribute(
+      'data-tx-status',
+      'confirmed',
+    );
   });
 });

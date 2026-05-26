@@ -15,7 +15,12 @@ import {
 } from '../../../../shared/constants/app';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
-import type { BaseReaderProps } from './base-reader.types';
+import { CameraPermissionState } from '../../../contexts/hardware-wallets/constants';
+import {
+  DOMExceptionName,
+  WebcamErrorType,
+  type BaseReaderProps,
+} from './base-reader.types';
 import BaseReader from './base-reader';
 import EnhancedReader from './enhanced-reader';
 
@@ -69,7 +74,7 @@ function setupWebcamUtilsSuccess() {
     environmentReady: true,
   });
   mockQueryCameraPermission.mockResolvedValue({
-    state: 'prompt',
+    state: CameraPermissionState.Prompt,
     permissionStatus: null,
   });
   mockRequestVideoStream.mockResolvedValue(
@@ -158,7 +163,7 @@ describe('BaseReader', () => {
       environmentReady: true,
     });
     mockQueryCameraPermission.mockResolvedValue({
-      state: 'granted',
+      state: CameraPermissionState.Granted,
       permissionStatus: null,
     });
 
@@ -183,9 +188,9 @@ describe('BaseReader', () => {
       environmentReady: true,
     });
     mockQueryCameraPermission.mockResolvedValue({
-      state: 'denied',
+      state: CameraPermissionState.Denied,
       permissionStatus: {
-        state: 'denied',
+        state: CameraPermissionState.Denied,
         addEventListener: jest.fn(),
       } as unknown as PermissionStatus,
     });
@@ -207,9 +212,9 @@ describe('BaseReader', () => {
       environmentReady: true,
     });
     mockQueryCameraPermission.mockResolvedValue({
-      state: 'denied',
+      state: CameraPermissionState.Denied,
       permissionStatus: {
-        state: 'denied',
+        state: CameraPermissionState.Denied,
         addEventListener: jest.fn(),
       } as unknown as PermissionStatus,
     });
@@ -234,14 +239,14 @@ describe('BaseReader', () => {
 
     let capturedChangeHandler: (() => void) | null = null;
     const mockPermissionStatus = {
-      state: 'denied' as PermissionState,
+      state: CameraPermissionState.Denied as PermissionState,
       addEventListener: jest.fn((_event: string, handler: () => void) => {
         capturedChangeHandler = handler;
       }),
     } as unknown as PermissionStatus;
 
     mockQueryCameraPermission.mockResolvedValue({
-      state: 'denied',
+      state: CameraPermissionState.Denied,
       permissionStatus: mockPermissionStatus,
     });
 
@@ -274,14 +279,14 @@ describe('BaseReader', () => {
 
     let capturedChangeHandler: (() => void) | null = null;
     const mockPermissionStatus = {
-      state: 'denied' as PermissionState,
+      state: CameraPermissionState.Denied as PermissionState,
       addEventListener: jest.fn((_event: string, handler: () => void) => {
         capturedChangeHandler = handler;
       }),
     } as unknown as PermissionStatus;
 
     mockQueryCameraPermission.mockResolvedValue({
-      state: 'denied',
+      state: CameraPermissionState.Denied,
       permissionStatus: mockPermissionStatus,
     });
 
@@ -317,9 +322,9 @@ describe('BaseReader', () => {
       environmentReady: true,
     });
     mockQueryCameraPermission.mockResolvedValue({
-      state: 'denied',
+      state: CameraPermissionState.Denied,
       permissionStatus: {
-        state: 'denied',
+        state: CameraPermissionState.Denied,
         addEventListener: jest.fn(),
       } as unknown as PermissionStatus,
     });
@@ -346,9 +351,9 @@ describe('BaseReader', () => {
     });
     mockIsFirefoxBrowser.mockReturnValue(true);
     mockQueryCameraPermission.mockResolvedValue({
-      state: 'denied',
+      state: CameraPermissionState.Denied,
       permissionStatus: {
-        state: 'denied',
+        state: CameraPermissionState.Denied,
         addEventListener: jest.fn(),
       } as unknown as PermissionStatus,
     });
@@ -373,7 +378,7 @@ describe('BaseReader', () => {
         environmentReady: true,
       });
       mockQueryCameraPermission.mockResolvedValue({
-        state: 'prompt',
+        state: CameraPermissionState.Prompt,
         permissionStatus: null,
       });
       mockRequestVideoStream.mockResolvedValue(
@@ -400,14 +405,14 @@ describe('BaseReader', () => {
         environmentReady: true,
       });
       mockQueryCameraPermission.mockResolvedValue({
-        state: 'prompt',
+        state: CameraPermissionState.Prompt,
         permissionStatus: {
-          state: 'prompt',
+          state: CameraPermissionState.Prompt,
           addEventListener: jest.fn(),
         } as unknown as PermissionStatus,
       });
       const notAllowed = new Error('denied');
-      notAllowed.name = 'NotAllowedError';
+      notAllowed.name = DOMExceptionName.NotAllowed;
       mockRequestVideoStream.mockRejectedValueOnce(notAllowed);
 
       renderWithProvider(<BaseReader {...defaultProps} />);
@@ -427,7 +432,7 @@ describe('BaseReader', () => {
         environmentReady: true,
       });
       mockQueryCameraPermission.mockResolvedValue({
-        state: 'prompt',
+        state: CameraPermissionState.Prompt,
         permissionStatus: null,
       });
       const notReadable = new Error('Could not start video source');
@@ -456,14 +461,14 @@ describe('BaseReader', () => {
         environmentReady: true,
       });
       mockQueryCameraPermission.mockResolvedValue({
-        state: 'prompt',
+        state: CameraPermissionState.Prompt,
         permissionStatus: {
-          state: 'prompt',
+          state: CameraPermissionState.Prompt,
           addEventListener: jest.fn(),
         } as unknown as PermissionStatus,
       });
       const notAllowed = new Error('denied');
-      notAllowed.name = 'NotAllowedError';
+      notAllowed.name = DOMExceptionName.NotAllowed;
       mockRequestVideoStream.mockRejectedValueOnce(notAllowed);
 
       renderWithProvider(<BaseReader {...defaultProps} />);
@@ -488,18 +493,18 @@ describe('BaseReader', () => {
       // second call (from reconcileNotAllowedPermission) returns denied
       mockQueryCameraPermission
         .mockResolvedValueOnce({
-          state: 'prompt',
+          state: CameraPermissionState.Prompt,
           permissionStatus: null,
         })
         .mockResolvedValueOnce({
-          state: 'denied',
+          state: CameraPermissionState.Denied,
           permissionStatus: {
-            state: 'denied',
+            state: CameraPermissionState.Denied,
             addEventListener: jest.fn(),
           } as unknown as PermissionStatus,
         });
       const notAllowed = new Error('denied');
-      notAllowed.name = 'NotAllowedError';
+      notAllowed.name = DOMExceptionName.NotAllowed;
       mockRequestVideoStream.mockRejectedValueOnce(notAllowed);
 
       renderWithProvider(<BaseReader {...defaultProps} />);
@@ -519,14 +524,14 @@ describe('BaseReader', () => {
         environmentReady: true,
       });
       mockQueryCameraPermission.mockResolvedValue({
-        state: 'prompt',
+        state: CameraPermissionState.Prompt,
         permissionStatus: {
-          state: 'prompt',
+          state: CameraPermissionState.Prompt,
           addEventListener: jest.fn(),
         } as unknown as PermissionStatus,
       });
       const notAllowed = new Error('denied');
-      notAllowed.name = 'NotAllowedError';
+      notAllowed.name = DOMExceptionName.NotAllowed;
       mockRequestVideoStream.mockRejectedValueOnce(notAllowed);
 
       renderWithProvider(<BaseReader {...defaultProps} />);
@@ -551,14 +556,14 @@ describe('BaseReader', () => {
       environmentReady: true,
     });
     mockQueryCameraPermission.mockResolvedValue({
-      state: 'prompt',
+      state: CameraPermissionState.Prompt,
       permissionStatus: {
-        state: 'prompt',
+        state: CameraPermissionState.Prompt,
         addEventListener: jest.fn(),
       } as unknown as PermissionStatus,
     });
     const notAllowed = new Error('denied');
-    notAllowed.name = 'NotAllowedError';
+    notAllowed.name = DOMExceptionName.NotAllowed;
     mockRequestVideoStream.mockRejectedValueOnce(notAllowed);
 
     renderWithProvider(<BaseReader {...defaultProps} />);
@@ -587,14 +592,14 @@ describe('BaseReader', () => {
       environmentReady: true,
     });
     mockQueryCameraPermission.mockResolvedValue({
-      state: 'prompt',
+      state: CameraPermissionState.Prompt,
       permissionStatus: {
-        state: 'prompt',
+        state: CameraPermissionState.Prompt,
         addEventListener: jest.fn(),
       } as unknown as PermissionStatus,
     });
     const notAllowed = new Error('denied');
-    notAllowed.name = 'NotAllowedError';
+    notAllowed.name = DOMExceptionName.NotAllowed;
     mockRequestVideoStream.mockRejectedValueOnce(notAllowed);
 
     renderWithProvider(<BaseReader {...defaultProps} />);
@@ -602,9 +607,9 @@ describe('BaseReader', () => {
 
     mockRequestVideoStream.mockRejectedValueOnce(notAllowed);
     mockQueryCameraPermission.mockResolvedValueOnce({
-      state: 'denied',
+      state: CameraPermissionState.Denied,
       permissionStatus: {
-        state: 'denied',
+        state: CameraPermissionState.Denied,
         addEventListener: jest.fn(),
       } as unknown as PermissionStatus,
     });
@@ -628,9 +633,9 @@ describe('BaseReader', () => {
       environmentReady: true,
     });
     mockQueryCameraPermission.mockResolvedValue({
-      state: 'denied',
+      state: CameraPermissionState.Denied,
       permissionStatus: {
-        state: 'denied',
+        state: CameraPermissionState.Denied,
         addEventListener: jest.fn(),
       } as unknown as PermissionStatus,
     });
@@ -639,7 +644,7 @@ describe('BaseReader', () => {
     await screen.findByTestId('qr-camera-access-blocked');
 
     mockQueryCameraPermission.mockResolvedValueOnce({
-      state: 'granted',
+      state: CameraPermissionState.Granted,
       permissionStatus: null,
     });
     mockRequestVideoStream.mockResolvedValueOnce(
@@ -663,9 +668,9 @@ describe('BaseReader', () => {
       environmentReady: true,
     });
     mockQueryCameraPermission.mockResolvedValue({
-      state: 'denied',
+      state: CameraPermissionState.Denied,
       permissionStatus: {
-        state: 'denied',
+        state: CameraPermissionState.Denied,
         addEventListener: jest.fn(),
       } as unknown as PermissionStatus,
     });
@@ -690,7 +695,7 @@ describe('BaseReader', () => {
     const webcamError = new Error('No webcam found') as Error & {
       type?: string;
     };
-    webcamError.type = 'NO_WEBCAM_FOUND';
+    webcamError.type = WebcamErrorType.NoWebcamFound;
     mockCheckStatus.mockRejectedValue(webcamError);
 
     renderWithProvider(<BaseReader {...defaultProps} />);
@@ -759,7 +764,7 @@ describe('BaseReader', () => {
     const webcamError = new Error('No webcam found') as Error & {
       type?: string;
     };
-    webcamError.type = 'NO_WEBCAM_FOUND';
+    webcamError.type = WebcamErrorType.NoWebcamFound;
     mockCheckStatus.mockRejectedValue(webcamError);
 
     renderWithProvider(<BaseReader {...defaultProps} />);
@@ -778,7 +783,7 @@ describe('BaseReader', () => {
     const webcamError = new Error('No webcam found') as Error & {
       type?: string;
     };
-    webcamError.type = 'NO_WEBCAM_FOUND';
+    webcamError.type = WebcamErrorType.NoWebcamFound;
     mockCheckStatus.mockRejectedValueOnce(webcamError);
 
     renderWithProvider(<BaseReader {...defaultProps} />);
@@ -826,9 +831,9 @@ describe('BaseReader', () => {
         environmentReady: true,
       });
       mockQueryCameraPermission.mockResolvedValue({
-        state: 'denied',
+        state: CameraPermissionState.Denied,
         permissionStatus: {
-          state: 'denied',
+          state: CameraPermissionState.Denied,
           addEventListener: jest.fn(),
         } as unknown as PermissionStatus,
       });
@@ -855,14 +860,14 @@ describe('BaseReader', () => {
         environmentReady: true,
       });
       mockQueryCameraPermission.mockResolvedValue({
-        state: 'prompt',
+        state: CameraPermissionState.Prompt,
         permissionStatus: {
-          state: 'prompt',
+          state: CameraPermissionState.Prompt,
           addEventListener: jest.fn(),
         } as unknown as PermissionStatus,
       });
       const notAllowed = new Error('denied');
-      notAllowed.name = 'NotAllowedError';
+      notAllowed.name = DOMExceptionName.NotAllowed;
       mockRequestVideoStream.mockRejectedValueOnce(notAllowed);
 
       await act(async () => {
@@ -887,9 +892,9 @@ describe('BaseReader', () => {
         environmentReady: true,
       });
       mockQueryCameraPermission.mockResolvedValue({
-        state: 'denied',
+        state: CameraPermissionState.Denied,
         permissionStatus: {
-          state: 'denied',
+          state: CameraPermissionState.Denied,
           addEventListener: jest.fn(),
         } as unknown as PermissionStatus,
       });
@@ -919,14 +924,14 @@ describe('BaseReader', () => {
         environmentReady: true,
       });
       mockQueryCameraPermission.mockResolvedValue({
-        state: 'prompt',
+        state: CameraPermissionState.Prompt,
         permissionStatus: {
-          state: 'prompt',
+          state: CameraPermissionState.Prompt,
           addEventListener: jest.fn(),
         } as unknown as PermissionStatus,
       });
       const notAllowed = new Error('denied');
-      notAllowed.name = 'NotAllowedError';
+      notAllowed.name = DOMExceptionName.NotAllowed;
       mockRequestVideoStream.mockRejectedValueOnce(notAllowed);
 
       await act(async () => {
@@ -957,9 +962,9 @@ describe('BaseReader', () => {
         environmentReady: true,
       });
       mockQueryCameraPermission.mockResolvedValue({
-        state: 'denied',
+        state: CameraPermissionState.Denied,
         permissionStatus: {
-          state: 'denied',
+          state: CameraPermissionState.Denied,
           addEventListener: jest.fn(),
         } as unknown as PermissionStatus,
       });
@@ -969,7 +974,7 @@ describe('BaseReader', () => {
       });
 
       mockQueryCameraPermission.mockResolvedValueOnce({
-        state: 'granted',
+        state: CameraPermissionState.Granted,
         permissionStatus: null,
       });
       mockRequestVideoStream.mockResolvedValueOnce(
@@ -1002,14 +1007,14 @@ describe('BaseReader', () => {
         environmentReady: true,
       });
       mockQueryCameraPermission.mockResolvedValue({
-        state: 'prompt',
+        state: CameraPermissionState.Prompt,
         permissionStatus: {
-          state: 'prompt',
+          state: CameraPermissionState.Prompt,
           addEventListener: jest.fn(),
         } as unknown as PermissionStatus,
       });
       const notAllowed = new Error('denied');
-      notAllowed.name = 'NotAllowedError';
+      notAllowed.name = DOMExceptionName.NotAllowed;
       mockRequestVideoStream.mockRejectedValueOnce(notAllowed);
 
       await act(async () => {
@@ -1018,9 +1023,9 @@ describe('BaseReader', () => {
 
       mockRequestVideoStream.mockRejectedValueOnce(notAllowed);
       mockQueryCameraPermission.mockResolvedValueOnce({
-        state: 'denied',
+        state: CameraPermissionState.Denied,
         permissionStatus: {
-          state: 'denied',
+          state: CameraPermissionState.Denied,
           addEventListener: jest.fn(),
         } as unknown as PermissionStatus,
       });
@@ -1051,7 +1056,7 @@ describe('BaseReader', () => {
         environmentReady: true,
       });
       mockQueryCameraPermission.mockResolvedValue({
-        state: 'granted',
+        state: CameraPermissionState.Granted,
         permissionStatus: null,
       });
 

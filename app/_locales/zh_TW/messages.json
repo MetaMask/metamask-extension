@@ -103,9 +103,6 @@
   "autoLockTimeLimit": {
     "message": "自動登出計時器（分）"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "設定閒置分鐘上限，時間到時 MetaMask 將自動登出"
-  },
   "average": {
     "message": "平均"
   },
@@ -269,9 +266,6 @@
   "createPassword": {
     "message": "建立密碼"
   },
-  "currencyConversion": {
-    "message": "轉換匯率"
-  },
   "currencySymbol": {
     "message": "貨幣代碼"
   },
@@ -283,9 +277,6 @@
   },
   "currentExtension": {
     "message": "目前擴充功能頁面"
-  },
-  "currentLanguage": {
-    "message": "目前語言"
   },
   "customToken": {
     "message": "自訂代幣"
@@ -340,12 +331,6 @@
   "dismiss": {
     "message": "忽略"
   },
-  "dismissReminderDescriptionField": {
-    "message": "把這個選項打開來忽略備份助憶詞的提醒。我們強烈建議您備份助憶詞，避免資金遺失"
-  },
-  "dismissReminderField": {
-    "message": "忽略備份助憶詞的提醒"
-  },
   "domain": {
     "message": "網域"
   },
@@ -354,9 +339,6 @@
   },
   "dontShowThisAgain": {
     "message": "不要再顯示"
-  },
-  "downloadGoogleChrome": {
-    "message": "下載 Google Chrome 瀏覽器"
   },
   "downloadStateLogs": {
     "message": "下載狀態紀錄"
@@ -481,14 +463,8 @@
     "message": "(舊版)",
     "description": "Text representing the MEW path"
   },
-  "hardwareWalletSupportLinkConversion": {
-    "message": "點選這裡"
-  },
   "hardwareWallets": {
     "message": "連線硬體錢包"
-  },
-  "hardwareWalletsMsg": {
-    "message": "選擇要連線到 MetaMask 的硬體錢包"
   },
   "here": {
     "message": "這裡",
@@ -609,12 +585,6 @@
   "likeToImportTokens": {
     "message": "確定要加入代幣？"
   },
-  "lineaGoerli": {
-    "message": "Linea Goerli 測試網路"
-  },
-  "links": {
-    "message": "連結"
-  },
   "loading": {
     "message": "載入..."
   },
@@ -692,9 +662,6 @@
   },
   "nevermind": {
     "message": "算了"
-  },
-  "newAccount": {
-    "message": "新帳戶"
   },
   "newAccountNumberName": {
     "message": "帳戶 $1",
@@ -838,9 +805,6 @@
   "reusedTokenNameWarning": {
     "message": "這裡的其中一個代幣重複使用了您關注的另一個代幣的符號，這可能會造成混淆甚至讓您被誤導。"
   },
-  "revealSeedWords": {
-    "message": "顯示助憶詞"
-  },
   "revealSeedWordsWarning": {
     "message": "絕對不要在公共場合輸入助憶詞！這可被用來竊取您的帳戶。",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -899,9 +863,6 @@
   "showFiatConversionInTestnets": {
     "message": "在測試網上顯示匯率"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "選擇此來在測試網上顯示法定貨幣匯率"
-  },
   "showHexData": {
     "message": "顯示十六進位資料"
   },
@@ -938,28 +899,8 @@
   "stateLogs": {
     "message": "狀態紀錄"
   },
-  "stateLogsDescription": {
-    "message": "狀態紀錄包含您的公開帳戶位址和已傳送的交易資訊"
-  },
   "statusNotConnected": {
     "message": "未連結"
-  },
-  "step1LedgerWallet": {
-    "message": "下載 Ledger 應用程式"
-  },
-  "step1LedgerWalletMsg": {
-    "message": "下載、安裝、然後輸入密碼來解鎖 $1。",
-    "description": "$1 represents the `ledgerLiveApp` localization value"
-  },
-  "step1TrezorWallet": {
-    "message": "插入 Trezor 錢包"
-  },
-  "step1TrezorWalletMsg": {
-    "message": "直接將錢包連接到電腦上。關於更多使用您的硬體錢包的詳細資訊，$1",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step2LedgerWallet": {
-    "message": "插入 Ledger 錢包"
   },
   "submit": {
     "message": "傳送"
@@ -1060,10 +1001,6 @@
   },
   "unlock": {
     "message": "解鎖"
-  },
-  "unrecognizedChain": {
-    "message": "無法辨識這個自訂網路。我們建議您先$1再繼續。",
-    "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
   },
   "urlErrorMsg": {
     "message": "URL 需要以適當的 HTTP/HTTPS 作為開頭"

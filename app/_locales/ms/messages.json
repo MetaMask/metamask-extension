@@ -78,9 +78,6 @@
   "autoLockTimeLimit": {
     "message": "Pemasa Logout Automatik (minit)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "Tetapkan masa melahu dalam minit sebelum MetaMask log keluar secara automatik"
-  },
   "average": {
     "message": "Purata"
   },
@@ -181,12 +178,6 @@
   "createPassword": {
     "message": "Cipta Kata Laluan"
   },
-  "currencyConversion": {
-    "message": "Penukaran Mata Wang"
-  },
-  "currentLanguage": {
-    "message": "Bahasa Semasa"
-  },
   "custom": {
     "message": "Lanjutan"
   },
@@ -207,9 +198,6 @@
   },
   "done": {
     "message": "Selesai"
-  },
-  "downloadGoogleChrome": {
-    "message": "Muat Turun Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Muat Turun Log Keadaan"
@@ -265,9 +253,6 @@
   },
   "hardwareWallets": {
     "message": "Sambungkan dompet perkakasan"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Pilih dompet perkakasan yang anda ingin gunakan dengan MetaMask"
   },
   "here": {
     "message": "di sini",
@@ -332,12 +317,6 @@
   "likeToImportTokens": {
     "message": "Adakah anda ingin menambah token ini?"
   },
-  "lineaGoerli": {
-    "message": "Rangkaian Ujian Linea Goerli"
-  },
-  "links": {
-    "message": "Pautan"
-  },
   "loading": {
     "message": "Memuatkan..."
   },
@@ -371,9 +350,6 @@
   },
   "nevermind": {
     "message": "Tidak mengapa"
-  },
-  "newAccount": {
-    "message": "Akaun Baru"
   },
   "newAccountNumberName": {
     "message": "Akaun $1",
@@ -477,9 +453,6 @@
   "restore": {
     "message": "Pulihkan"
   },
-  "revealSeedWords": {
-    "message": "Dedahkan Ungkapan Benih"
-  },
   "revealSeedWordsWarning": {
     "message": "Perkataan ini boleh digunakan untuk mencuri kesemua akaun anda.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -526,9 +499,6 @@
   "showFiatConversionInTestnets": {
     "message": "Tunjukkan Penukaran di Testnets"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Pilih ini untuk menunjukkan penukaran fiat di Testnets"
-  },
   "showHexData": {
     "message": "Tunjukkan Data Heks"
   },
@@ -558,9 +528,6 @@
   },
   "stateLogs": {
     "message": "Log Keadaan"
-  },
-  "stateLogsDescription": {
-    "message": "Log keadaan mengandungi alamat akaun awam anda dan transaksi dihantar."
   },
   "submitted": {
     "message": "Dihantar"

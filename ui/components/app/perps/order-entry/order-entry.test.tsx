@@ -312,6 +312,21 @@ describe('OrderEntry', () => {
       expect(screen.getByTestId('amount-input-field')).toBeInTheDocument();
     });
 
+    it('shows current position size in modify mode', () => {
+      renderWithProvider(
+        <OrderEntry
+          {...defaultProps}
+          mode="modify"
+          existingPosition={existingPosition}
+        />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-current-position-size-value'),
+      ).toHaveTextContent('2.5 BTC');
+    });
+
     it('shows leverage slider in modify mode', () => {
       renderWithProvider(
         <OrderEntry

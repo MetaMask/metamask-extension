@@ -5,10 +5,8 @@ import {
   tokenDetectionStartPolling,
   tokenDetectionStopPollingByPollingToken,
 } from '../store/actions';
-import {
-  getCompletedOnboarding,
-  getIsUnlocked,
-} from '../ducks/metamask/metamask';
+import { getCompletedOnboarding } from '../ducks/metamask/metamask';
+import { getIsUnlocked } from '../ducks/metamask/base-selectors';
 import useMultiPolling from './useMultiPolling';
 
 const useTokenDetectionPolling = () => {
