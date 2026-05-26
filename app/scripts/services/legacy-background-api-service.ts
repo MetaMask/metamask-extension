@@ -519,7 +519,7 @@ export class LegacyBackgroundApiService {
   async importAccountWithStrategy(
     strategy: AccountImportStrategy,
     args: unknown[],
-    { shouldCreateSocialBackup = true, shouldSelectAccount = true },
+    { shouldCreateSocialBackup = true, shouldSelectAccount = true } = {},
   ): Promise<void> {
     const importedAccountAddress = (await this.#messenger.call(
       'KeyringController:importAccountWithStrategy',

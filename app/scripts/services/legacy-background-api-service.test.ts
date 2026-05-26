@@ -691,7 +691,6 @@ describe('LegacyBackgroundApiService', () => {
             'LegacyBackgroundApiService:importAccountWithStrategy',
             AccountImportStrategy.privateKey,
             ['foo', 'bar', 'baz'],
-            { shouldCreateSocialBackup: true, shouldSelectAccount: true },
           ),
         ).resolves.toBeUndefined();
 
@@ -762,7 +761,6 @@ describe('LegacyBackgroundApiService', () => {
             'LegacyBackgroundApiService:importAccountWithStrategy',
             AccountImportStrategy.privateKey,
             ['foo', 'bar', 'baz'],
-            { shouldCreateSocialBackup: true, shouldSelectAccount: true },
           ),
         ).resolves.toBeUndefined();
 
@@ -820,7 +818,6 @@ describe('LegacyBackgroundApiService', () => {
             'LegacyBackgroundApiService:importAccountWithStrategy',
             AccountImportStrategy.privateKey,
             ['foo', 'bar', 'baz'],
-            { shouldCreateSocialBackup: true, shouldSelectAccount: true },
           ),
         ).rejects.toThrow('No account found for address: 0x123');
       });
@@ -878,7 +875,6 @@ describe('LegacyBackgroundApiService', () => {
             'LegacyBackgroundApiService:importAccountWithStrategy',
             AccountImportStrategy.privateKey,
             ['foo', 'bar', 'baz'],
-            { shouldCreateSocialBackup: true, shouldSelectAccount: true },
           ),
         ).rejects.toThrow(mockError);
 
