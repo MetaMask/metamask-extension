@@ -26,6 +26,7 @@ jobs:
           retention-days: 1
 
   speculos-tests:
+    needs: build
     strategy:
       fail-fast: false
       matrix:
@@ -42,6 +43,7 @@ jobs:
     with:
       test-suite-name: 'Speculos ${{ matrix.device.id }}'
       build-artifact: speculos-test-build
+      build-command: 'yarn build:test'
       test-command: >-
         SPECULOS_E2E=1 SPECULOS_DEVICE=${{ matrix.device.id }} SPECULOS_ELF=${{ matrix.device.elf }} yarn test:e2e:chrome:ledger
       builds-from-run: ''
