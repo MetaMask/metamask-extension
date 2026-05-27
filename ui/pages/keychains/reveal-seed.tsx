@@ -6,10 +6,8 @@ import {
   TextButton,
   Text,
   Box,
-  Checkbox,
   TextVariant,
   TextColor,
-  BoxBackgroundColor,
 } from '@metamask/design-system-react';
 import {
   RecommendedAction,
@@ -36,6 +34,7 @@ import { useBoolean } from '../../hooks/useBoolean';
 import type { RevealSeedScreen, RevealSeedLocationState } from './types';
 import { RevealSeedPageHeader } from './reveal-seed-page-header';
 import { RevealSeedWarning } from './reveal-seed-warning';
+import { RevealSeedMaliciousBlock } from './reveal-seed-malicious-block';
 import { QuizIntroduction } from './quiz-introduction';
 import { QuizQuestion } from './quiz-question';
 import { PasswordPrompt } from './password-prompt';
@@ -72,12 +71,10 @@ function RevealSeedPage() {
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const [scanResult, setScanResult] =
     useState<PhishingDetectionScanResult | null>(null);
-  const [dangerAcknowledged, setDangerAcknowledged] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
     setScanResult(null);
-    setDangerAcknowledged(false);
 
     if (activeTabOrigin) {
       const originToScan = activeTabOrigin;
@@ -354,6 +351,14 @@ function RevealSeedPage() {
       );
     }
     if (screen === PASSWORD_PROMPT_SCREEN) {
+      if (isMalicious) {
+        return (
+          <RevealSeedMaliciousBlock
+            onDismiss={handleBack}
+            hostname={scanResult?.hostname ?? undefined}
+          />
+        );
+      }
       return (
         <PasswordPrompt
           password={password}
@@ -363,8 +368,6 @@ function RevealSeedPage() {
           onTogglePasswordVisibility={togglePasswordVisibility}
           onSubmit={handleSubmit}
           onContinueClick={handlePasswordContinueClick}
-          isMalicious={isMalicious}
-          dangerAcknowledged={dangerAcknowledged}
         />
       );
     }
@@ -403,7 +406,7 @@ function RevealSeedPage() {
         title={t('revealSecretRecoveryPhraseSettings')}
         backButtonAriaLabel={t('back')}
       />
-      {screen === PASSWORD_PROMPT_SCREEN && (
+      {screen === PASSWORD_PROMPT_SCREEN && !isMalicious && (
         <>
           <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
             {t('revealSeedWordsDescription1', [
@@ -416,31 +419,7 @@ function RevealSeedPage() {
               </TextButton>,
             ])}
           </Text>
-          {isMalicious ? (
-            <>
-              <RevealSeedWarning
-                message={t('dappScanMaliciousWarning')}
-                title={t('dappScanMaliciousTitle')}
-                data-testid="dapp-scan-warning"
-              />
-              <Box
-                className="flex w-full p-4 rounded-lg border-l-4 border-l-[var(--color-error-default)]"
-                backgroundColor={BoxBackgroundColor.ErrorMuted}
-              >
-                <Checkbox
-                  id="dapp-scan-acknowledge-checkbox"
-                  label={t('alertModalAcknowledge')}
-                  isSelected={dangerAcknowledged}
-                  onChange={() => setDangerAcknowledged(!dangerAcknowledged)}
-                  inputProps={{
-                    'data-testid': 'dapp-scan-acknowledge-checkbox',
-                  }}
-                />
-              </Box>
-            </>
-          ) : (
-            <RevealSeedWarning message={t('revealSeedWordsWarning')} />
-          )}
+          <RevealSeedWarning message={t('revealSeedWordsWarning')} />
         </>
       )}
       {renderContent()}

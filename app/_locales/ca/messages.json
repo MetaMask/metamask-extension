@@ -78,9 +78,6 @@
   "autoLockTimeLimit": {
     "message": "Temporitzador de tancament de sessió automàtic (minuts)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "Configura el temps de repòs com minuts abans que MetaMask tanqui la sessió automàticament"
-  },
   "average": {
     "message": "Mitjana"
   },
@@ -178,12 +175,6 @@
   "createPassword": {
     "message": "Crear Contrasenya"
   },
-  "currencyConversion": {
-    "message": "Conversió de divisa"
-  },
-  "currentLanguage": {
-    "message": "Llengua Actual"
-  },
   "custom": {
     "message": "Configuració avançada"
   },
@@ -204,9 +195,6 @@
   },
   "done": {
     "message": "Fet"
-  },
-  "downloadGoogleChrome": {
-    "message": "Descarrega Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Descarregar Registres d'Estat"
@@ -259,9 +247,6 @@
   },
   "hardwareWallets": {
     "message": "Connectar un moneder hardware"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Selecciona una cartera de hardware que t'agradaria utilizar amb MetaMask"
   },
   "here": {
     "message": "aquí",
@@ -330,12 +315,6 @@
   "likeToImportTokens": {
     "message": "T'agradaria afegir aquestes fitxes?"
   },
-  "lineaGoerli": {
-    "message": "Xarxa de test Linea Goerli"
-  },
-  "links": {
-    "message": "Enllaços"
-  },
   "loading": {
     "message": "S'està carregant..."
   },
@@ -372,9 +351,6 @@
   },
   "nevermind": {
     "message": "No importa"
-  },
-  "newAccount": {
-    "message": "Nou compte"
   },
   "newAccountNumberName": {
     "message": "Compte $1",
@@ -478,9 +454,6 @@
   "restore": {
     "message": "Restaura"
   },
-  "revealSeedWords": {
-    "message": "Revelar Paraules de Recuperació"
-  },
   "revealSeedWordsWarning": {
     "message": "Aquestes paraules poden ser utilitzades per a robar tots els teus comptes.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -527,9 +500,6 @@
   "showFiatConversionInTestnets": {
     "message": "Mostra Conversió a Testnets"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Selecciona aquest per mostrar conversió Fiat a Testnets"
-  },
   "showHexData": {
     "message": "Mostra les dades Hex"
   },
@@ -559,9 +529,6 @@
   },
   "stateLogs": {
     "message": "Registres d'estat"
-  },
-  "stateLogsDescription": {
-    "message": "Els registres d'estat contenen les teves adreces de compte públiques i les transaccions enviades."
   },
   "submitted": {
     "message": "Enviat"

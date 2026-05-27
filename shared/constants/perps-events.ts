@@ -44,6 +44,9 @@ export const PERPS_EVENT_PROPERTY = {
   MAX_SLIPPAGE_PCT: 'max_slippage_pct',
   MAX_SLIPPAGE_SOURCE: 'max_slippage_source',
   ESTIMATED_SLIPPAGE_PCT: 'estimated_slippage_pct',
+  SCREEN_NAME: 'screen_name',
+  ACTION_TYPE: 'action_type',
+  ORDER_TIMESTAMP: 'order_timestamp',
 } as const;
 
 export const PERPS_EVENT_VALUE = {
@@ -134,6 +137,20 @@ export const PERPS_EVENT_VALUE = {
     MARKET_LIST: 'market_list',
     TRADING: 'trading',
     WALLET_HOME_PERPS_TAB: 'wallet_home_perps_tab',
+  },
+  SCREEN_NAME: {
+    PERPS_ACTIVITY_HISTORY: 'perps_activity_history',
+    WALLET_HOME_PERPS_TAB: 'wallet_home_perps_tab',
+    MARKET_DETAIL: 'market_detail',
+  },
+  ACTION_TYPE: {
+    ADL_LEARN_MORE: 'adl_learn_more',
+  },
+  PERPS_HISTORY_TABS: {
+    TRADES: 'trades',
+    ORDERS: 'orders',
+    FUNDING: 'funding',
+    DEPOSITS: 'deposits',
   },
 } as const;
 

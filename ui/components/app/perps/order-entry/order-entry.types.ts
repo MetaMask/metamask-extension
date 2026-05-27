@@ -85,8 +85,8 @@ export type OrderCalculations = {
   liquidationPriceRaw: number | null;
   /** Total order value in USD */
   orderValue: string | null;
-  /** Estimated trading fees */
-  estimatedFees: string | null;
+  /** Estimated trading fees (raw USD amount) */
+  estimatedFees: number | null;
 };
 
 /**
@@ -180,6 +180,8 @@ export type AmountInputProps = {
    * of the previous hard-coded 6.
    */
   szDecimals?: number;
+  /** Current open position size in asset units, shown when increasing exposure */
+  currentPositionSize?: string;
   /** Callback when add-funds icon is pressed */
   onAddFunds?: () => void;
   /** Auto-focus the USD input on mount (used for keyboard-first order entry) */
@@ -212,8 +214,10 @@ export type LeverageSliderProps = {
 export type OrderSummaryProps = {
   /** Margin required for the position */
   marginRequired: string | null;
-  /** Estimated trading fees */
-  estimatedFees: string | null;
+  /** Estimated trading fees (raw USD amount, after discount) */
+  estimatedFees: number | null;
+  /** Estimated trading fees before any VIP discount (raw USD amount) */
+  originalEstimatedFees?: number | null;
   /** Estimated liquidation price */
   liquidationPrice: string | null;
   /**
@@ -226,6 +230,11 @@ export type OrderSummaryProps = {
     maxSlippagePct: number;
     onMaxSlippageClick: () => void;
   };
+  /**
+   * MetaMask fee discount percentage (whole numbers). When provided and
+   * positive, the fees row renders a VIP badge alongside the fee value.
+   */
+  metamaskFeeRateDiscountPercentage?: number;
 };
 
 /**

@@ -49,8 +49,8 @@ describe('Edit Networks Permissions', function () {
         // EIP-1193 connects with no specific chains default to EVM popular
         // networks only (Bitcoin/Solana/Tron are no longer silently granted).
         // After disconnecting Mainnet the remaining defaults are:
-        // Linea, Base, Arbitrum, BSC, Optimism, Polygon, Localhost
-        await sitePermissionPage.checkConnectedNetworksNumber(7);
+        // Linea, Base, Arbitrum, BSC, Optimism, Polygon, Monad, Localhost
+        await sitePermissionPage.checkConnectedNetworksNumber(8);
       },
     );
   });

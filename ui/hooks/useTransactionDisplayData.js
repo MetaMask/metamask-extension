@@ -14,10 +14,8 @@ import {
 } from '../selectors';
 import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
-import {
-  getStatusKey,
-  getTransactionTypeTitle,
-} from '../helpers/utils/transactions.util';
+import { getTransactionTypeTitle } from '../helpers/utils/transactions.util';
+import { isTransactionPending } from '../helpers/transactions/is-transaction-pending';
 import { camelCaseToCapitalize } from '../helpers/utils/common.util';
 import { PRIMARY, SECONDARY } from '../helpers/constants/common';
 import {
@@ -26,10 +24,7 @@ import {
   getTokenIdParam,
 } from '../helpers/utils/token-util';
 
-import {
-  PENDING_STATUS_HASH,
-  TOKEN_CATEGORY_HASH,
-} from '../helpers/constants/transactions';
+import { TOKEN_CATEGORY_HASH } from '../helpers/constants/transactions';
 import { getNfts } from '../ducks/metamask/metamask';
 import { captureSingleException } from '../store/actions';
 import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
@@ -161,8 +156,7 @@ export function useTransactionDisplayData(transactionGroup) {
       getKnownMethodData(state, initialTransaction?.txParams?.data),
     ) || {};
 
-  const displayedStatusKey = getStatusKey(primaryTransaction);
-  const isPending = displayedStatusKey in PENDING_STATUS_HASH;
+  const isPending = isTransactionPending(primaryTransaction);
   const mounted = useRef(true);
 
   const primaryValue = primaryTransaction.txParams?.value;

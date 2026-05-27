@@ -79,6 +79,11 @@
           "conversionRate": 1700,
           "usdConversionRate": null
         },
+        "MON": {
+          "conversionDate": "object",
+          "conversionRate": null,
+          "usdConversionRate": null
+        },
         "POL": {
           "conversionDate": null,
           "conversionRate": null,
@@ -255,7 +260,8 @@
       "rewardsSeasonStatuses": "object",
       "rewardsSeasons": "object",
       "rewardsSubscriptionTokens": "object",
-      "rewardsSubscriptions": "object"
+      "rewardsSubscriptions": "object",
+      "rewardsVipPerpsFees": "object"
     },
     "SeedlessOnboardingController": "object",
     "SelectedNetworkController": { "domains": "object" },

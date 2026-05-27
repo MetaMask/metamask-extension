@@ -11,7 +11,6 @@ import {
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import TransactionIcon from '../../app/transaction-icon/transaction-icon';
 import TransactionStatusLabel from '../../app/transaction-status-label/transaction-status-label';
-import { formatTimestamp } from '../../app/multichain-transaction-details-modal/helpers';
 import { ActivityListItem as LegacyActivityListItem } from '../activity-list-item';
 import { ChainBadge } from '../../app/chain-badge/chain-badge';
 import { selectBridgeHistoryForAccountGroup } from '../../../ducks/bridge-status/selectors';
@@ -50,7 +49,7 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
   if (isRedeposit) {
     return (
       <LegacyActivityListItem
-        data-testid="activity-list-item"
+        status={statusKey}
         onClick={() => onClick(transaction)}
         icon={
           <ChainBadge chainId={transaction.chain}>
@@ -61,14 +60,7 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
           </ChainBadge>
         }
         title="Redeposit"
-        subtitle={
-          <TransactionStatusLabel
-            date={formatTimestamp(timestamp)}
-            error={{}}
-            status={statusKey}
-            statusOnly
-          />
-        }
+        subtitle={<TransactionStatusLabel error={{}} status={statusKey} />}
       />
     );
   }
@@ -86,7 +78,7 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
 
   return (
     <LegacyActivityListItem
-      data-testid="activity-list-item"
+      status={statusKey}
       onClick={() => onClick(transaction)}
       icon={
         <ChainBadge chainId={transaction.chain}>
@@ -103,14 +95,7 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
         </Text>
       }
       title={title}
-      subtitle={
-        <TransactionStatusLabel
-          date={formatTimestamp(transaction.timestamp)}
-          error={{}}
-          status={statusKey}
-          statusOnly
-        />
-      }
+      subtitle={<TransactionStatusLabel error={{}} status={statusKey} />}
     />
   );
 };
