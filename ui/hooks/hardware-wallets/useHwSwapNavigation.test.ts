@@ -98,6 +98,37 @@ describe('useHwSwapNavigation', () => {
     expect(mockNavigateToDefaultRoute).toHaveBeenCalledTimes(1);
   });
 
+  it('reschedules navigation when the navigation callback changes before the timeout fires', async () => {
+    const updatedNavigateToDefaultRoute = jest.fn();
+    mockUseBridgeNavigation
+      .mockReturnValueOnce({
+        navigateToDefaultRoute: mockNavigateToDefaultRoute,
+      })
+      .mockReturnValue({
+        navigateToDefaultRoute: updatedNavigateToDefaultRoute,
+      });
+
+    const { rerender } = renderHookWithProvider(
+      () =>
+        useHwSwapNavigation({
+          signatureState: createSignatureState(
+            HardwareWalletSignatureStatus.Submitted,
+          ),
+        }),
+      {},
+    );
+
+    rerender();
+
+    await act(async () => {
+      jest.advanceTimersByTime(1000);
+    });
+
+    expect(mockShowSuccessToast).toHaveBeenCalledTimes(1);
+    expect(mockNavigateToDefaultRoute).not.toHaveBeenCalled();
+    expect(updatedNavigateToDefaultRoute).toHaveBeenCalledTimes(1);
+  });
+
   it('clears timeout on unmount', () => {
     const { unmount } = renderHookWithProvider(
       () =>

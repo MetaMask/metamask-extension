@@ -38,12 +38,12 @@ export function useHwSwapNavigation({
     console.log(
       '[HW-Batch] useHwSwapNavigation: Submitted → scheduling toast + navigate in 1s',
     );
-    hasNavigatedAfterSubmission.current = true;
 
     const toastId = `bridge-hw-submitted-${Date.now()}`;
     const timer = setTimeout(async () => {
       showSuccessToast(toastId);
       await navigateToDefaultRoute();
+      hasNavigatedAfterSubmission.current = true;
     }, 1000);
 
     return () => clearTimeout(timer);
