@@ -18,7 +18,6 @@ import {
   KeyringControllerWithKeyringAction,
   KeyringTypes,
 } from '@metamask/keyring-controller';
-import { HdKeyring } from '@metamask/eth-hd-keyring';
 import {
   AccountsControllerGetAccountByAddressAction,
   AccountsControllerGetSelectedAccountAction,
@@ -486,7 +485,7 @@ export class LegacyBackgroundApiService {
           'KeyringController:withKeyring',
           { address: importedAccountAddress },
           async ({ keyring, metadata }) => {
-            const privateKey = await (keyring as HdKeyring).exportAccount(
+            const privateKey = await keyring.exportAccount!(
               importedAccountAddress,
             );
             return { id: metadata.id, privateKey };
