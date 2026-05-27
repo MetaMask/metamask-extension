@@ -274,6 +274,17 @@ export type NetworkConfigAdditional = {
   tokenlistUrl: string;
 
   /**
+   * Optional: Manually specified tokens to import instead of fetching tokenlistUrl
+   */
+  manualTokens?: {
+    symbol: string;
+    address: string;
+    name?: string;
+    decimals?: number;
+    logoURI?: string;
+  }[];
+
+  /**
    * Optional: Fixture setup method name (from FixtureBuilder)
    * Example: 'withNetworkControllerOnHyperEVM'
    */
@@ -667,7 +678,7 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
 export const NETWORK_CONFIGS_POPULAR: NetworkConfigPopular[] = [
   {
     networkId: 'Base',
-    networkName: 'Ethereum',
+    networkName: 'Base',
     chainId: 8453,
     tokenlistUrl: 'https://raw.githubusercontent.com/etherlinkcom/Token-List/refs/heads/main/tokenlist.json',
   },
@@ -682,8 +693,137 @@ export const NETWORK_CONFIGS_ADDITIONAL: NetworkConfigAdditional[] = [
     networkId: 'Mon',
     networkName: 'Monad',
     chainId: 143,
+    manualTokens: [
+      {
+        symbol: 'USDC',
+        name: 'USD Coin',
+        address: '0x754704Bc059F8C67012fEd69BC8A327a5aafb603',
+        decimals: 6,
+        logoURI: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png',
+      },
+      {
+        symbol: 'WETH',
+        name: 'Wrapped Ether',
+        address: '0xee8c0e9f1bffb4eb878d8f15f368a02a35481242',
+        decimals: 18,
+        logoURI: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png',
+      },
+    ],
     tokenlistUrl: 'https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/tokenlist-mainnet.json',
     fixtureSetupMethod: 'withNetworkControllerOnMonad',
+  },
+  {
+    networkId: 'Base',
+    networkName: 'Base',
+    chainId: 8453,
+    manualTokens: [
+      {
+        symbol: 'USDC',
+        name: 'USD Coin',
+        address: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+        decimals: 6,
+        logoURI: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png',
+      },
+      {
+        symbol: 'WETH',
+        name: 'Wrapped Ether',
+        address: '0x4200000000000000000000000000000000000006',
+        decimals: 18,
+        logoURI: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png',
+      },
+    ],
+    tokenlistUrl: 'https://raw.githubusercontent.com/etherlinkcom/Token-List/refs/heads/main/tokenlist.json',
+    fixtureSetupMethod: 'withNetworkControllerOnBase',
+  },
+  {
+    networkId: 'Ethereum',
+    networkName: 'Ethereum',
+    chainId: 1,
+    manualTokens: [
+      {
+        symbol: 'USDT',
+        name: 'Tether USD',
+        address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+        decimals: 6,
+        logoURI: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png',
+      },
+      {
+        symbol: 'WBTC',
+        name: 'Wrapped Bitcoin',
+        address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
+        decimals: 8,
+        logoURI: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2260fac5e5542a773aa44fbcfedf7c193bc2c599/logo.png',
+      },
+      {
+        symbol: 'CRVUSD',
+        name: 'Curve.Fi USD Stablecoin',
+        address: '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e',
+        decimals: 8,
+        logoURI: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xf939e0a03fb07f59a73314e73794be0e57ac1b4e/logo.png',
+      },
+    ],
+    tokenlistUrl: 'https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/tokenlist-mainnet.json',
+    fixtureSetupMethod: 'withNetworkControllerOnEthereum',
+  },
+  {
+    networkId: 'Arbitrum',
+    networkName: 'Arbitrum',
+    chainId: 42161,
+    manualTokens: [
+      {
+        symbol: 'WBTC',
+        name: 'Wrapped BTC',
+        address: '0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f',
+        decimals: 8,
+        logoURI: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f/logo.png',
+      },
+      {
+        symbol: 'WETH',
+        name: 'Wrapped Ether',
+        address: '0x82af49447d8a07e3bd95bd0d56f35241523fbab1',
+        decimals: 18,
+        logoURI: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x82af49447d8a07e3bd95bd0d56f35241523fbab1/logo.png',
+      },
+      {
+        symbol: 'CBBTC',
+        name: 'Coinbase Wrapped BTC',
+        address: '0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf',
+        decimals: 8,
+        logoURI: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf/logo.png',
+      },
+    ],
+    tokenlistUrl: 'https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/tokenlist-mainnet.json',
+    fixtureSetupMethod: 'withNetworkControllerOnArbitrum',
+  },
+  {
+    networkId: 'Arbitrum',
+    networkName: 'Arbitrum',
+    chainId: 42161,
+    manualTokens: [
+      {
+        symbol: 'WBTC',
+        name: 'Wrapped BTC',
+        address: '0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f',
+        decimals: 8,
+        logoURI: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f/logo.png',
+      },
+      {
+        symbol: 'WETH',
+        name: 'Wrapped Ether',
+        address: '0x82af49447d8a07e3bd95bd0d56f35241523fbab1',
+        decimals: 18,
+        logoURI: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x82af49447d8a07e3bd95bd0d56f35241523fbab1/logo.png',
+      },
+      {
+        symbol: 'CBBTC',
+        name: 'Coinbase Wrapped BTC',
+        address: '0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf',
+        decimals: 8,
+        logoURI: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf/logo.png',
+      },
+    ],
+    tokenlistUrl: 'https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/tokenlist-mainnet.json',
+    fixtureSetupMethod: 'withNetworkControllerOnArbitrum',
   },
   // {
   //   networkId: 'HYPE',

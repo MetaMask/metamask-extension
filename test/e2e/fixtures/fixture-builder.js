@@ -446,6 +446,26 @@ class FixtureBuilder {
     });
   }
 
+    withNetworkControllerOnEthereum() {
+    return this.withNetworkController({
+      selectedNetworkClientId: 'ethereum',
+      networkConfigurations: {
+        'ethereum-mainnet': {
+          chainId: CHAIN_IDS.ETHEREUM,
+          nickname: 'Ethereum Mainnet',
+          rpcUrl: `https://rpc.fullsend.to/v3/${getInfuraProjectId()}`,
+          ticker: 'ETH',
+          rpcPrefs: {
+            blockExplorerUrl: 'https://etherscan.io',
+          },
+          id: 'ethereum-mainnet',
+          type: 'rpc',
+          isCustom: true,
+        },
+      },
+    });
+  }
+
   withNftController(data) {
     merge(
       this.fixture.data.NftController
