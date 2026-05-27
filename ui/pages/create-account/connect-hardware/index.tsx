@@ -602,6 +602,7 @@ const ConnectHardwareForm = () => {
     latestPendingDevice.current = null;
     setHardwareAccounts([]);
     setCurrentDevice(null);
+    setUnlocked(false);
   }, [setCurrentDevice]);
 
   const renderError = () => {
