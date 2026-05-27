@@ -31,6 +31,18 @@ class AccountDetailsModal extends Confirmation {
       '[data-testid="confirmation-account-details-modal__close-button"]';
   }
 
+  async checkPageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.accountBalanceInfo,
+        this.addressCopyButton,
+        this.accountDetailsModalCloseButton,
+      ]);
+    } catch (error) {
+      console.error('Error checking if account details modal is loaded:', error);
+    }
+  }
+
   async clickAddressCopyButton() {
     await this.driver.clickElement(this.addressCopyButton);
   }
