@@ -600,6 +600,7 @@ const ConnectHardwareForm = () => {
     setSelectedAccounts([]);
     latestGetPageRequestId.current += 1;
     latestPendingDevice.current = null;
+    latestHardwareAccounts.current = [];
     setHardwareAccounts([]);
     setCurrentDevice(null);
     setUnlocked(false);
