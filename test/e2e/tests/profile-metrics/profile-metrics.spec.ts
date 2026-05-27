@@ -64,41 +64,67 @@ async function waitForEndpointToBeCalled(
   }, timeout);
 }
 
-type DebuggableSeenRequest = {
-  method?: string;
-  url?: string;
-  body?: { getJson?: () => Promise<unknown>; getText?: () => Promise<string> };
-};
+type ProfileAccount = { address: string; scopes: string[] };
+type ProfileAccountsPayload = { accounts: ProfileAccount[] };
 
-async function getRequestPayload(request: DebuggableSeenRequest) {
-  try {
-    return await request.body?.getJson?.();
-  } catch {
-    try {
-      return await request.body?.getText?.();
-    } catch {
-      return '[unreadable request body]';
-    }
+function isProfileAccountsPayload(
+  payload: unknown,
+): payload is ProfileAccountsPayload {
+  if (
+    !payload ||
+    typeof payload !== 'object' ||
+    !('accounts' in payload) ||
+    !Array.isArray(payload.accounts)
+  ) {
+    return false;
   }
+
+  return payload.accounts.every(
+    (account: unknown) =>
+      account &&
+      typeof account === 'object' &&
+      'address' in account &&
+      typeof account.address === 'string' &&
+      'scopes' in account &&
+      Array.isArray(account.scopes) &&
+      account.scopes.every((scope: unknown) => typeof scope === 'string'),
+  );
 }
 
-async function logAuthRequests(requests: unknown[]) {
-  const debugRequests = await Promise.all(
-    requests.map(async (request, index) => {
-      const requestWithBody = request as DebuggableSeenRequest;
-      return {
-        index,
-        method: requestWithBody.method ?? '[unknown method]',
-        url: requestWithBody.url ?? '[unknown url]',
-        payload: await getRequestPayload(requestWithBody),
-      };
-    }),
-  );
+async function getSeenAuthScopes(
+  mockedEndpoint: MockedEndpoint,
+): Promise<Set<string>> {
+  const scopes = new Set<string>();
+  const requests = await mockedEndpoint.getSeenRequests();
 
-  console.log(
-    'Profile metrics auth request debug payloads:',
-    JSON.stringify(debugRequests, null, 2),
-  );
+  for (const request of requests) {
+    const payload = await request.body.getJson();
+    if (!isProfileAccountsPayload(payload)) {
+      continue;
+    }
+
+    for (const account of payload.accounts) {
+      for (const scope of account.scopes) {
+        scopes.add(scope);
+      }
+    }
+  }
+
+  return scopes;
+}
+
+async function waitForScopesToBeSynced(
+  driver: Driver,
+  mockedEndpoint: MockedEndpoint,
+  requiredScopePrefixes: string[],
+  timeout = 10000,
+) {
+  return driver.wait(async () => {
+    const seenScopes = await getSeenAuthScopes(mockedEndpoint);
+    return requiredScopePrefixes.every((requiredPrefix) =>
+      [...seenScopes].some((scope) => scope.startsWith(requiredPrefix)),
+    );
+  }, timeout);
 }
 
 describe('Profile Metrics', function () {
@@ -125,20 +151,17 @@ describe('Profile Metrics', function () {
           mockedEndpoint: MockedEndpoint[];
         }) => {
           await login(driver);
-          await driver.delay(1000);
 
           const [authCall] = mockedEndpoint;
-          // There are 2 PUT requests:
-          // 1. One for default EVM Account 1 alone
-          // 2. One for default Solana Account 1 (which is generated after the EVM Account is added)
-          await waitForEndpointToBeCalled(driver, authCall, 2);
-
-          const requests = await authCall.getSeenRequests();
-          await logAuthRequests(requests);
-          assert.equal(
-            requests.length,
-            2,
-            'Expected one request to the auth API.',
+          // The auth sync sends PUT /profile/accounts payloads shaped as:
+          // { metametrics_id, accounts: [{ address, scopes: string[] }, ...] }.
+          // Depending on controller timing, account groups can be split across
+          // multiple PUTs (e.g. EVM/Solana then Tron/Bitcoin) or consolidated,
+          // so this test asserts scope coverage instead of exact request count.
+          await waitForScopesToBeSynced(
+            driver,
+            authCall,
+            ['eip155:', 'solana:', 'tron:', 'bip122:'],
           );
         },
       );
@@ -169,8 +192,14 @@ describe('Profile Metrics', function () {
 
           const [authCall] = mockedEndpoint;
 
-          // Wait for the initial 2 PUT requests before creating a new account
-          await waitForEndpointToBeCalled(driver, authCall, 2);
+          // Wait for existing accounts to be synced before creating a new account.
+          await waitForScopesToBeSynced(
+            driver,
+            authCall,
+            ['eip155:', 'solana:', 'tron:', 'bip122:'],
+          );
+          const requestsBeforeAddingAccount =
+            (await authCall.getSeenRequests()).length;
 
           const headerNavbar = new HeaderNavbar(driver);
           await headerNavbar.openAccountMenu();
@@ -180,14 +209,16 @@ describe('Profile Metrics', function () {
           await accountListPage.checkAccountDisplayedInAccountList('Account 2');
           await accountListPage.closeMultichainAccountsPage();
 
-          // 3rd PUT request for the newly created Account 2
-          await waitForEndpointToBeCalled(driver, authCall, 3, 10000);
+          await waitForEndpointToBeCalled(
+            driver,
+            authCall,
+            requestsBeforeAddingAccount + 1,
+          );
 
           const requests = await authCall.getSeenRequests();
-          assert.equal(
-            requests.length,
-            3,
-            'Expected two requests to the auth API.',
+          assert.ok(
+            requests.length > requestsBeforeAddingAccount,
+            'Expected at least one additional auth API request after creating a new account.',
           );
         },
       );
