@@ -1,10 +1,10 @@
-import { TokensController } from '@metamask/assets-controllers';
+import {
+  TokensController,
+  TokensControllerMessenger,
+} from '@metamask/assets-controllers';
 import { assert } from '@metamask/utils';
 import { MessengerClientInitFunction } from './types';
-import {
-  TokensControllerMessenger,
-  TokensControllerInitMessenger,
-} from './messengers';
+import { TokensControllerInitMessenger } from './messengers';
 import { getGlobalChainId } from './init-utils';
 import { tokenListService } from './token-list-service';
 

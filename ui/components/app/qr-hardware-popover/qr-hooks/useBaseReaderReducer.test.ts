@@ -5,6 +5,8 @@ import {
   getInitialState,
   ActionType,
 } from '../base-reader-reducer';
+import { ScanErrorCategory } from '../qr-utils/qr-utils';
+import type { ScanErrorClassification } from '../qr-utils/qr-utils';
 import { useBaseReaderReducer } from './useBaseReaderReducer';
 
 describe('baseReaderReducer', () => {
@@ -14,6 +16,7 @@ describe('baseReaderReducer', () => {
       expect(state).toStrictEqual({
         readyState: CameraReadyState.AccessingCamera,
         error: null,
+        scanError: null,
         scanProgress: 0,
         permissionActionLoading: false,
       });
@@ -88,6 +91,20 @@ describe('baseReaderReducer', () => {
     });
   });
 
+  describe('SetScanError', () => {
+    it('stores the scan error classification', () => {
+      const scanError: ScanErrorClassification = {
+        category: ScanErrorCategory.NonUrQrScanned,
+        isUrFormat: false,
+      };
+      const next = baseReaderReducer(getInitialState(), {
+        type: ActionType.SetScanError,
+        payload: scanError,
+      });
+      expect(next.scanError).toBe(scanError);
+    });
+  });
+
   describe('SetScanProgress', () => {
     it('updates scanProgress', () => {
       const next = baseReaderReducer(getInitialState(), {
@@ -113,6 +130,11 @@ describe('baseReaderReducer', () => {
       const dirty = {
         readyState: CameraReadyState.Ready,
         error: new Error('whoops'),
+        scanError: {
+          category: ScanErrorCategory.ScanException,
+          isUrFormat: false,
+          rawMessage: 'crash',
+        } as ScanErrorClassification,
         scanProgress: 0.5,
         permissionActionLoading: true,
       };
@@ -164,6 +186,14 @@ describe('useBaseReaderReducer', () => {
 
     act(() => result.current.clearError());
     expect(result.current.state.error).toBeNull();
+
+    const scanError: ScanErrorClassification = {
+      category: ScanErrorCategory.WrongUrType,
+      isUrFormat: true,
+      receivedUrType: 'crypto-psbt',
+    };
+    act(() => result.current.setScanError(scanError));
+    expect(result.current.state.scanError).toBe(scanError);
 
     act(() => result.current.setScanProgress(0.42));
     expect(result.current.state.scanProgress).toBe(0.42);
