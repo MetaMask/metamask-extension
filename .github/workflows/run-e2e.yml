@@ -112,31 +112,6 @@ jobs:
           sudo apt-get update -qq && sudo apt-get install -y -qq qemu-user-static
           pip install ${{ inputs.install-speculos }}
 
-      # The Speculos matrix runs Chrome + chromedriver + Speculos QEMU + Anvil
-      # + mocha + Mockttp + several static servers concurrently. ubuntu-latest
-      # only has ~7 GB RAM and ~4 GB swap, so peak memory can trip the OOM
-      # killer (exit code 137). Free unused tooling and add ~8 GB swap so the
-      # kernel can page idle Chrome/QEMU pages instead of killing the test
-      # process. Gated to the Speculos matrix so it does not affect other E2E
-      # workflows. See SPECULOS_HANDOFF.md ("Docker Desktop OOM").
-      - name: Maximize available memory (Speculos matrix only)
-        if: ${{ runner.os == 'Linux' && inputs.install-speculos != '' }}
-        run: |
-          set -euxo pipefail
-          # Reclaim ~10 GB of preinstalled toolchains we never use here.
-          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL || true
-          df -h
-          # Add an 8 GB swap file (GH runners ship with only ~4 GB).
-          if [ ! -f /mnt/extra-swapfile ]; then
-            sudo fallocate -l 8G /mnt/extra-swapfile
-            sudo chmod 600 /mnt/extra-swapfile
-            sudo mkswap /mnt/extra-swapfile
-            sudo swapon /mnt/extra-swapfile
-          fi
-          # Encourage the kernel to actually use the new swap under pressure.
-          echo 60 | sudo tee /proc/sys/vm/swappiness
-          free -h
-
       - name: Download build artifact
         if: ${{ inputs.build-artifact != '' }}
         id: download-build-artifact
