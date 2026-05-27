@@ -134,7 +134,10 @@ jobs:
         with:
           is-high-risk-environment: ${{ github.ref_name == 'main' || github.ref_name == 'stable' || startsWith(github.ref_name, 'release/') }}
           skip-allow-scripts: true
-          fetch-depth: 0 # Required for git log history (cherry-picks section)
+
+      - name: Fetch full history for cherry-picks section
+        if: ${{ startsWith(env.BRANCH, 'release/') }}
+        run: git fetch --unshallow --tags
 
       - name: Find the associated PR
         if: ${{ startsWith(env.BRANCH, 'release/') && (!env.PR_NUMBER || !env.BASE_COMMIT_HASH || !env.HEAD_COMMIT_HASH) }}
