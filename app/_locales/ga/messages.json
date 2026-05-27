@@ -37,9 +37,6 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "Earráid"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "Cód QR neamhbhailí. Scanáil an cód QR sioncrónaithe den sparán crua-earraí le do thoil."
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "Scanáil cód QR"
   },
