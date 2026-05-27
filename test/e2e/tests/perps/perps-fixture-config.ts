@@ -15,8 +15,8 @@ import {
 } from './mocks/websocketActivityMocks';
 
 /**
- * Production remote flag defaults used as the base for all perps manifest flag
- * overrides. Starting from these ensures any flag added to the registry is
+ * Production remote flag defaults used as the base for Perps remote flag state
+ * and HTTP mocks. Starting from these ensures any flag added to the registry is
  * automatically included without having to update this file.
  */
 const PROD_REMOTE_FLAGS = getProductionRemoteFlagDefaults();
@@ -95,12 +95,18 @@ const PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS = {
 };
 
 /**
- * Remote feature flags for eligible (non-geo-blocked) users.
- * Starts from production defaults, enables perps, and clears the geo-block list
- * so US-TX (the E2E geolocation mock) remains eligible.
+ * Keep the manifest override small for Firefox's manifest size limit. The full
+ * production-default flag set is seeded into RemoteFeatureFlagController state.
  */
 export const PERPS_ELIGIBLE_FLAG = {
-  remoteFeatureFlags: PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS,
+  remoteFeatureFlags: {
+    perpsEnabledVersion: PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS.perpsEnabledVersion,
+    perpsPerpTradingGeoBlockedCountriesV2:
+      PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS.perpsPerpTradingGeoBlockedCountriesV2,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    confirmations_pay_post_quote:
+      PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS.confirmations_pay_post_quote,
+  },
 };
 
 export const PERPS_WITHDRAW_CONFIRMATION_FLAG = {
@@ -134,11 +140,27 @@ const PERPS_WITHDRAW_CONFIRMATION_MANIFEST_FLAG = {
  * The geolocation mock returns 'US-TX', so blocking 'US' makes the user ineligible.
  * EligibilityService.checkEligibility checks geoLocation.startsWith(blockedRegion).
  */
+const PERPS_GEO_BLOCKED_REMOTE_FEATURE_FLAGS = {
+  ...PROD_REMOTE_FLAGS,
+  // Keep existing Perps E2E coverage on the legacy withdraw page unless a test
+  // explicitly opts into the confirmation flow.
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  confirmations_pay_post_quote:
+    PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS.confirmations_pay_post_quote,
+  perpsEnabledVersion: { enabled: true, minimumVersion: '0.0.0' },
+  perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: ['US'] },
+};
+
 const PERPS_GEO_BLOCKED_FLAG = {
   remoteFeatureFlags: {
-    ...PROD_REMOTE_FLAGS,
-    perpsEnabledVersion: { enabled: true, minimumVersion: '0.0.0' },
-    perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: ['US'] },
+    perpsEnabledVersion:
+      PERPS_GEO_BLOCKED_REMOTE_FEATURE_FLAGS.perpsEnabledVersion,
+    perpsPerpTradingGeoBlockedCountriesV2:
+      PERPS_GEO_BLOCKED_REMOTE_FEATURE_FLAGS
+        .perpsPerpTradingGeoBlockedCountriesV2,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    confirmations_pay_post_quote:
+      PERPS_GEO_BLOCKED_REMOTE_FEATURE_FLAGS.confirmations_pay_post_quote,
   },
 };
 
@@ -163,6 +185,9 @@ export function getPerpsGeoBlockConfig(title?: string) {
       .withPerpsController({
         isFirstTimeUser: { mainnet: false, testnet: false },
         isEligible: false,
+      })
+      .withRemoteFeatureFlagController({
+        remoteFeatureFlags: PERPS_GEO_BLOCKED_REMOTE_FEATURE_FLAGS,
       })
       .build(),
     title,
@@ -469,6 +494,9 @@ export function getPerpsConfigEligible(title?: string) {
         isEligible: true,
         isFirstTimeUser: { mainnet: false, testnet: false },
       })
+      .withRemoteFeatureFlagController({
+        remoteFeatureFlags: PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS,
+      })
       .build(),
     title,
     manifestFlags: PERPS_ELIGIBLE_FLAG,
@@ -563,6 +591,9 @@ export function getPerpsConfigEligibleWithActivity(title?: string) {
       .withPerpsController({
         isEligible: true,
         isFirstTimeUser: { mainnet: false, testnet: false },
+      })
+      .withRemoteFeatureFlagController({
+        remoteFeatureFlags: PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS,
       })
       .build(),
     title,
