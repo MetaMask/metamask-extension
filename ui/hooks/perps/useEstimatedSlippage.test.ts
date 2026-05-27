@@ -26,13 +26,12 @@ jest.mock('../../providers/perps', () => {
   };
 });
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const { mockInternals: streamInternal } = require('../../providers/perps') as {
+const { mockInternals: streamInternal } = jest.requireMock<{
   mockInternals: {
     subscribers: Set<(book: OrderBookData | null) => void>;
     unsubscribeSpy: jest.Mock;
   };
-};
+}>('../../providers/perps');
 
 function emit(snapshot: OrderBookData | null) {
   for (const cb of Array.from(streamInternal.subscribers)) {

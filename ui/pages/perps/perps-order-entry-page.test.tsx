@@ -237,6 +237,14 @@ jest.mock('../../hooks/perps/useUserHistory', () => ({
   }),
 }));
 
+const mockEstimatedSlippage = jest.fn().mockReturnValue({
+  estimatedSlippagePct: null,
+  insufficientLiquidity: false,
+});
+jest.mock('../../hooks/perps/useEstimatedSlippage', () => ({
+  useEstimatedSlippage: (...args: unknown[]) => mockEstimatedSlippage(...args),
+}));
+
 jest.mock('../../hooks/perps/usePerpsTransactionHistory', () => ({
   usePerpsTransactionHistory: () => ({
     transactions: [],
@@ -1627,6 +1635,86 @@ describe('PerpsOrderEntryPage', () => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsClosePosition',
         expect.any(Array),
+      );
+    });
+  });
+
+  describe('slippage blocking', () => {
+    afterEach(() => {
+      mockEstimatedSlippage.mockReturnValue({
+        estimatedSlippagePct: null,
+        insufficientLiquidity: false,
+      });
+    });
+
+    it('disables submit when estimated slippage exceeds max', () => {
+      mockEstimatedSlippage.mockReturnValue({
+        estimatedSlippagePct: 5,
+        insufficientLiquidity: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('100');
+
+      expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+    });
+
+    it('disables submit on insufficient liquidity', () => {
+      mockEstimatedSlippage.mockReturnValue({
+        estimatedSlippagePct: null,
+        insufficientLiquidity: true,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('100');
+
+      expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+    });
+
+    it('shows blocked error text when slippage exceeds max', () => {
+      mockEstimatedSlippage.mockReturnValue({
+        estimatedSlippagePct: 5,
+        insufficientLiquidity: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('100');
+
+      expect(
+        screen.getByTestId('perps-slippage-blocked-error'),
+      ).toBeInTheDocument();
+    });
+
+    it('calls perpsSetMaxSlippage when saving slippage config', async () => {
+      mockEstimatedSlippage.mockReturnValue({
+        estimatedSlippagePct: 0.1,
+        insufficientLiquidity: false,
+      });
+      mockSubmitRequestToBackground.mockResolvedValue({ success: true });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('100');
+
+      await act(async () => {
+        fireEvent.click(
+          screen.getByTestId('perps-order-summary-max-slippage-button'),
+        );
+      });
+
+      const input = screen.getByTestId('perps-slippage-config-input');
+      fireEvent.change(input, { target: { value: '5' } });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('perps-slippage-config-save'));
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsSetMaxSlippage',
+        [500],
       );
     });
   });

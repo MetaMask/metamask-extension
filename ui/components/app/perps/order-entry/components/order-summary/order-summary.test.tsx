@@ -181,4 +181,83 @@ describe('OrderSummary', () => {
       ).toHaveTextContent('-');
     });
   });
+
+  describe('slippage row', () => {
+    const slippageProps = {
+      estimatedPct: 0.15,
+      insufficientLiquidity: false,
+      maxSlippagePct: 3,
+      onMaxSlippageClick: jest.fn(),
+    };
+
+    it('renders slippage row when slippage prop is provided', () => {
+      renderWithProvider(
+        <OrderSummary
+          marginRequired={null}
+          estimatedFees={null}
+          liquidationPrice={null}
+          slippage={slippageProps}
+        />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-order-summary-slippage-row'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-order-summary-estimated-slippage'),
+      ).toHaveTextContent('0.15%');
+    });
+
+    it('does not render slippage row when slippage prop is omitted', () => {
+      renderWithProvider(
+        <OrderSummary
+          marginRequired={null}
+          estimatedFees={null}
+          liquidationPrice={null}
+        />,
+        mockStore,
+      );
+
+      expect(
+        screen.queryByTestId('perps-order-summary-slippage-row'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('renders max slippage button with formatted value', () => {
+      renderWithProvider(
+        <OrderSummary
+          marginRequired={null}
+          estimatedFees={null}
+          liquidationPrice={null}
+          slippage={slippageProps}
+        />,
+        mockStore,
+      );
+
+      const button = screen.getByTestId(
+        'perps-order-summary-max-slippage-button',
+      );
+      expect(button).toBeInTheDocument();
+      expect(button).toHaveTextContent('3.0%');
+    });
+
+    it('calls onMaxSlippageClick when button is clicked', () => {
+      const onClick = jest.fn();
+      renderWithProvider(
+        <OrderSummary
+          marginRequired={null}
+          estimatedFees={null}
+          liquidationPrice={null}
+          slippage={{ ...slippageProps, onMaxSlippageClick: onClick }}
+        />,
+        mockStore,
+      );
+
+      screen
+        .getByTestId('perps-order-summary-max-slippage-button')
+        .click();
+      expect(onClick).toHaveBeenCalledTimes(1);
+    });
+  });
 });

@@ -143,6 +143,7 @@ export function useEstimatedSlippage({
     // same symbol; activating again here (and deactivating on unmount with
     // no symbol arg) would race the page's lifecycle and tear the stream
     // down mid-render.
+    setOrderBook(null);
     lastSampleAtRef.current = 0;
     const stream = getPerpsStreamManager();
     const unsubscribe = stream.orderBook.subscribe((book) => {
