@@ -603,6 +603,7 @@ class AssetListPage {
     expectedTokenBalance: string,
     symbol: string,
   ): Promise<void> {
+    await this.expandLowValueAssetsIfPresent();
     await this.checkTokenAmountIsDisplayed(`${expectedTokenBalance} ${symbol}`);
   }
 
