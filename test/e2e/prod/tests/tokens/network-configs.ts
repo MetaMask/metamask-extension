@@ -672,20 +672,7 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
 ];
 
 /**
- * Popular network configurations (pre-built networks in MetaMask)
- * These networks don't require custom RPC setup - they're already configured in MetaMask
- */
-export const NETWORK_CONFIGS_POPULAR: NetworkConfigPopular[] = [
-  {
-    networkId: 'Base',
-    networkName: 'Base',
-    chainId: 8453,
-    tokenlistUrl: 'https://raw.githubusercontent.com/etherlinkcom/Token-List/refs/heads/main/tokenlist.json',
-  },
-];
-
-/**
- * Additional network configurations (pre-built networks in MetaMask)
+ * Popular and Additional network configurations (pre-built networks in MetaMask)
  * These networks don't require custom RPC setup - they're already configured in MetaMask
  */
 export const NETWORK_CONFIGS_ADDITIONAL: NetworkConfigAdditional[] = [
@@ -764,36 +751,6 @@ export const NETWORK_CONFIGS_ADDITIONAL: NetworkConfigAdditional[] = [
     ],
     tokenlistUrl: 'https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/tokenlist-mainnet.json',
     fixtureSetupMethod: 'withNetworkControllerOnEthereum',
-  },
-  {
-    networkId: 'Arbitrum',
-    networkName: 'Arbitrum',
-    chainId: 42161,
-    manualTokens: [
-      {
-        symbol: 'WBTC',
-        name: 'Wrapped BTC',
-        address: '0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f',
-        decimals: 8,
-        logoURI: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f/logo.png',
-      },
-      {
-        symbol: 'WETH',
-        name: 'Wrapped Ether',
-        address: '0x82af49447d8a07e3bd95bd0d56f35241523fbab1',
-        decimals: 18,
-        logoURI: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x82af49447d8a07e3bd95bd0d56f35241523fbab1/logo.png',
-      },
-      {
-        symbol: 'CBBTC',
-        name: 'Coinbase Wrapped BTC',
-        address: '0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf',
-        decimals: 8,
-        logoURI: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf/logo.png',
-      },
-    ],
-    tokenlistUrl: 'https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/tokenlist-mainnet.json',
-    fixtureSetupMethod: 'withNetworkControllerOnArbitrum',
   },
   {
     networkId: 'Arbitrum',
