@@ -275,7 +275,6 @@
     },
     "AnalyticsController": {
       "analyticsId": null,
-      "eventQueue": {},
       "optedIn": false
     },
     "MetaMetricsController": {
