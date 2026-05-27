@@ -7,12 +7,8 @@ import { GenericActivityCell } from './generic-activity-cell';
 const mockFormatTokenAmount = jest.fn();
 
 jest.mock('../../../hooks/useI18nContext', () => ({
-  useI18nContext:
-    () =>
-    (key: string, values?: string[]) =>
-      key === 'activity_convert_success_title'
-        ? `Converted ${values?.[0]}`
-        : key,
+  useI18nContext: () => (key: string, values?: string[]) =>
+    key === 'activity_convert_success_title' ? `Converted ${values?.[0]}` : key,
 }));
 
 jest.mock('../useFormatTokenAmount', () => ({
@@ -22,8 +18,7 @@ jest.mock('../useFormatTokenAmount', () => ({
 const mockUseFormatFiatAmount = jest.fn();
 
 jest.mock('../useFormatFiatAmount', () => ({
-  useFormatFiatAmount: (...args: unknown[]) =>
-    mockUseFormatFiatAmount(...args),
+  useFormatFiatAmount: (...args: unknown[]) => mockUseFormatFiatAmount(...args),
 }));
 
 jest.mock('../../../components/ui/icon/status-icon', () => ({

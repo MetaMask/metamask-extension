@@ -4,30 +4,19 @@ import { TransactionListItemPendingActions } from '../../../components/app/trans
 import { GenericActivityCell } from './generic-activity-cell';
 import type { ActivityCellProps } from './types';
 
-export function ListItem({
-  data,
-  onClick,
-}: Readonly<ActivityCellProps>) {
+export function ListItem({ data, onClick }: Readonly<ActivityCellProps>) {
   const transactionGroup =
     data.raw?.type === 'localTransaction' ? data.raw.data : undefined;
   const isEarliestNonce = data.isEarliestNonce ?? false;
   const { setEditGasMode, onGasModalMetaId } = usePendingTransactionGasModal();
 
   if (!transactionGroup) {
-    return (
-      <GenericActivityCell
-        data={data}
-        onClick={onClick}
-      />
-    );
+    return <GenericActivityCell data={data} onClick={onClick} />;
   }
 
   return (
     <>
-      <GenericActivityCell
-        data={data}
-        onClick={onClick}
-      />
+      <GenericActivityCell data={data} onClick={onClick} />
       <TransactionListItemPendingActions
         transactionGroup={transactionGroup}
         isEarliestNonce={isEarliestNonce}

@@ -22,10 +22,7 @@ import { getCurrentCurrency } from '../../ducks/metamask/metamask';
 import { useFormatters } from '../../hooks/useFormatters';
 import { selectMarketRates } from '../../selectors/activity';
 import { getMultichainShouldShowFiat } from '../../selectors/multichain';
-import {
-  getActivityTypeSignOptions,
-  shouldShowFiatDisplay,
-} from './helpers';
+import { getActivityTypeSignOptions, shouldShowFiatDisplay } from './helpers';
 
 function resolveHexChainId(
   chainIdForFiat: Hex | CaipChainId | undefined,

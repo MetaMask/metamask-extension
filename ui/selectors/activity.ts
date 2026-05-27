@@ -283,9 +283,8 @@ export const selectLocalActivityItems = createSelector(
         }
 
         const { metamaskPay } = transactionGroup.initialTransaction;
-        const transactionPay = transactionPayData[
-          transactionGroup.initialTransaction.id
-        ];
+        const transactionPay =
+          transactionPayData[transactionGroup.initialTransaction.id];
         const paymentToken = transactionPay?.paymentToken;
         const payTokenAddress =
           metamaskPay?.tokenAddress ?? paymentToken?.address;

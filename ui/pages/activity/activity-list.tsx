@@ -118,10 +118,7 @@ export function ActivityList() {
           }
 
           return (
-            <ListItem
-              data={row.item}
-              onClick={() => handleClick(row.item)}
-            />
+            <ListItem data={row.item} onClick={() => handleClick(row.item)} />
           );
         }}
         listFooterComponent={

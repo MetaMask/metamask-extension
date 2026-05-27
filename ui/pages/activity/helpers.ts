@@ -18,7 +18,9 @@ const APPROVAL_ACTIVITY_TYPES = new Set<ActivityListItem['type']>([
   'revokeSpendingCap',
 ]);
 
-export function isApprovalActivityType(type: ActivityListItem['type']): boolean {
+export function isApprovalActivityType(
+  type: ActivityListItem['type'],
+): boolean {
   return APPROVAL_ACTIVITY_TYPES.has(type);
 }
 
