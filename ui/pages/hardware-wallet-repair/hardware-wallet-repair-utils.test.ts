@@ -1,6 +1,14 @@
 import { IconName } from '@metamask/design-system-react';
 import { HardwareWalletType } from '../../contexts/hardware-wallets/types';
-import { getInstructionSteps } from './hardware-wallet-repair-utils';
+import { createAdapterForHardwareWalletType } from '../../contexts/hardware-wallets/adapters/factory';
+import {
+  ensureRepairDeviceReady,
+  getInstructionSteps,
+} from './hardware-wallet-repair-utils';
+
+jest.mock('../../contexts/hardware-wallets/adapters/factory', () => ({
+  createAdapterForHardwareWalletType: jest.fn(),
+}));
 
 describe('getInstructionSteps', () => {
   it('returns the Ledger-specific Ethereum app instruction for Ledger', () => {
@@ -48,4 +56,52 @@ describe('getInstructionSteps', () => {
       ]);
     });
   }
+});
+
+describe('ensureRepairDeviceReady', () => {
+  const mockAdapter = {
+    connect: jest.fn(),
+    disconnect: jest.fn(),
+    isConnected: jest.fn(),
+    destroy: jest.fn(),
+    ensureDeviceReady: jest.fn(),
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    (createAdapterForHardwareWalletType as jest.Mock).mockReturnValue(
+      mockAdapter,
+    );
+  });
+
+  it('creates an adapter for the route wallet type and verifies readiness', async () => {
+    mockAdapter.connect.mockResolvedValue(undefined);
+    mockAdapter.ensureDeviceReady.mockResolvedValue(true);
+
+    await expect(
+      ensureRepairDeviceReady(HardwareWalletType.Trezor),
+    ).resolves.toBe(true);
+
+    expect(createAdapterForHardwareWalletType).toHaveBeenCalledWith(
+      HardwareWalletType.Trezor,
+      expect.objectContaining({
+        onDisconnect: expect.any(Function),
+        onDeviceEvent: expect.any(Function),
+      }),
+    );
+    expect(mockAdapter.connect).toHaveBeenCalled();
+    expect(mockAdapter.ensureDeviceReady).toHaveBeenCalled();
+    expect(mockAdapter.destroy).toHaveBeenCalled();
+  });
+
+  it('destroys the adapter when readiness verification throws', async () => {
+    mockAdapter.connect.mockResolvedValue(undefined);
+    mockAdapter.ensureDeviceReady.mockRejectedValue(new Error('not ready'));
+
+    await expect(
+      ensureRepairDeviceReady(HardwareWalletType.Ledger),
+    ).rejects.toThrow('not ready');
+
+    expect(mockAdapter.destroy).toHaveBeenCalled();
+  });
 });

@@ -34,7 +34,10 @@ import {
   Footer,
 } from '../../components/multichain/pages/page';
 import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/multichain-meta-fox-logo';
-import { getInstructionSteps } from './hardware-wallet-repair-utils';
+import {
+  ensureRepairDeviceReady,
+  getInstructionSteps,
+} from './hardware-wallet-repair-utils';
 
 export const HardwareWalletRepair: React.FC = () => {
   const t = useI18nContext();
@@ -86,7 +89,11 @@ export const HardwareWalletRepair: React.FC = () => {
         }
       }
 
-      const ready = await ensureDeviceReady();
+      const shouldUseRouteReadinessCheck =
+        routeWalletType && routeWalletType !== walletType;
+      const ready = shouldUseRouteReadinessCheck
+        ? await ensureRepairDeviceReady(routeWalletType)
+        : await ensureDeviceReady();
       if (ready) {
         setConnectionReady();
         setIsSuccess(true);
@@ -107,7 +114,9 @@ export const HardwareWalletRepair: React.FC = () => {
     setConnectionReady,
     requestHardwareWalletPermission,
     repairWalletType,
+    routeWalletType,
     t,
+    walletType,
   ]);
 
   return (

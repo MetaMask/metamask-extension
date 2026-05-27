@@ -7,6 +7,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { useHardwareWalletConfig } from '../../contexts/hardware-wallets';
 import { HardwareWalletType } from '../../contexts/hardware-wallets/types';
 import { HardwareWalletRepair } from './hardware-wallet-repair';
+import * as hardwareWalletRepairUtils from './hardware-wallet-repair-utils';
 import * as hardwareWalletRepairPageModule from '.';
 
 jest.mock('../../hooks/useI18nContext', () => ({
@@ -71,6 +72,13 @@ describe('HardwareWalletRepair', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (useI18nContext as jest.Mock).mockReturnValue((key: string) => key);
+    jest
+      .spyOn(hardwareWalletRepairUtils, 'ensureRepairDeviceReady')
+      .mockResolvedValue(true);
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   it('exports the repair page as the default route module export', () => {
@@ -173,6 +181,9 @@ describe('HardwareWalletRepair', () => {
       HardwareWalletType.Ledger,
     );
     expect(mockEnsureDeviceReady).toHaveBeenCalled();
+    expect(
+      hardwareWalletRepairUtils.ensureRepairDeviceReady,
+    ).not.toHaveBeenCalled();
     expect(mockSetConnectionReady).toHaveBeenCalled();
   });
 
@@ -191,7 +202,10 @@ describe('HardwareWalletRepair', () => {
     expect(mockRequestHardwareWalletPermission).toHaveBeenCalledWith(
       HardwareWalletType.Trezor,
     );
-    expect(mockEnsureDeviceReady).toHaveBeenCalled();
+    expect(mockEnsureDeviceReady).not.toHaveBeenCalled();
+    expect(hardwareWalletRepairUtils.ensureRepairDeviceReady).toHaveBeenCalledWith(
+      HardwareWalletType.Trezor,
+    );
     expect(mockSetConnectionReady).toHaveBeenCalled();
   });
 
@@ -209,6 +223,10 @@ describe('HardwareWalletRepair', () => {
       await findByText('hardwareWalletRepairSuccessTitle'),
     ).toBeInTheDocument();
     expect(mockRequestHardwareWalletPermission).toHaveBeenCalledWith(
+      HardwareWalletType.Trezor,
+    );
+    expect(mockEnsureDeviceReady).not.toHaveBeenCalled();
+    expect(hardwareWalletRepairUtils.ensureRepairDeviceReady).toHaveBeenCalledWith(
       HardwareWalletType.Trezor,
     );
   });

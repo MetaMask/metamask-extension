@@ -6,6 +6,7 @@ import { KeyringTypes } from '@metamask/keyring-controller';
 import configureStore from '../../store/store';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { HardwareWalletErrorProvider } from '../../contexts/hardware-wallets';
+import { HardwareWalletType } from '../../contexts/hardware-wallets/types';
 import { HardwareWalletRepair } from './hardware-wallet-repair';
 
 const memoryRouterFuture = {
@@ -71,7 +72,9 @@ jest.mock('../../contexts/hardware-wallets/useHardwareWalletAutoConnect', () => 
   useHardwareWalletAutoConnect: jest.fn(),
 }));
 
-function renderRepairPageWithProvider() {
+function renderRepairPageWithProvider(
+  initialEntries = ['/hardware-wallet-repair'],
+) {
   const store = configureStore({
     metamask: {
       internalAccounts: {
@@ -101,7 +104,7 @@ function renderRepairPageWithProvider() {
   return render(
     <Provider store={store}>
       <MemoryRouter
-        initialEntries={['/hardware-wallet-repair']}
+        initialEntries={initialEntries}
         future={memoryRouterFuture}
       >
         <HardwareWalletErrorProvider>
@@ -128,5 +131,15 @@ describe('HardwareWalletRepair provider integration', () => {
     const { getByText } = renderRepairPageWithProvider();
 
     expect(getByText(/hardwareWalletTitleEthAppNotOpen/u)).toBeInTheDocument();
+  });
+
+  it('uses the route wallet type instead of the selected account wallet type on the repair route', () => {
+    const { queryByText } = renderRepairPageWithProvider([
+      `/hardware-wallet-repair?walletType=${HardwareWalletType.Trezor}`,
+    ]);
+
+    expect(
+      queryByText(/hardwareWalletTitleEthAppNotOpen/u),
+    ).not.toBeInTheDocument();
   });
 });
