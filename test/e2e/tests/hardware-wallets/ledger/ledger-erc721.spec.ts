@@ -13,9 +13,10 @@ import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import { login } from '../../../page-objects/flows/login.flow';
 import { switchToHardwareAccount } from '../../../page-objects/flows/account-list.flow';
 import CreateContractModal from '../../../page-objects/pages/dialog/create-contract';
-import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
+import HardwareWalletTransactionConfirmation from '../../../page-objects/pages/hardware-wallet/hardware-wallet-transaction-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import NFTListPage from '../../../page-objects/pages/home/nft-list';
+import { confirmOrReconnect } from '../../../page-objects/pages/hardware-wallet/hardware-wallet-helpers';
 import SetApprovalForAllTransactionConfirmation from '../../../page-objects/pages/confirmations/set-approval-for-all-transaction-confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import {
@@ -119,7 +120,7 @@ describe('Ledger Hardware ERC721 @speculos', function (this: Suite) {
         await testDappPage.clickERC721MintButton();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const mintConfirmation = new TransactionConfirmation(driver);
+        const mintConfirmation = new HardwareWalletTransactionConfirmation(driver);
         await mintConfirmation.clickFooterConfirmButtonOrReconnect();
 
         await ledgerDone;
@@ -177,7 +178,7 @@ describe('Ledger Hardware ERC721 @speculos', function (this: Suite) {
         await testDappPage.clickERC721ApproveButton();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const approveConfirmation = new TransactionConfirmation(driver);
+        const approveConfirmation = new HardwareWalletTransactionConfirmation(driver);
         await approveConfirmation.clickFooterConfirmButtonOrReconnect();
 
         await ledgerDone;
@@ -237,7 +238,7 @@ describe('Ledger Hardware ERC721 @speculos', function (this: Suite) {
         await setApprovalForAllConfirmation.checkSetApprovalForAllTitle();
         await setApprovalForAllConfirmation.checkSetApprovalForAllSubHeading();
         await setApprovalForAllConfirmation.clickScrollToBottomButton();
-        await setApprovalForAllConfirmation.clickFooterConfirmButtonOrReconnect();
+        await confirmOrReconnect(driver);
 
         await ledgerDone;
 

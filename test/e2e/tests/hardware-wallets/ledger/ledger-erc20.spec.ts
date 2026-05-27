@@ -15,7 +15,7 @@ import WatchAssetConfirmation from '../../../page-objects/pages/confirmations/wa
 import HomePage from '../../../page-objects/pages/home/homepage';
 import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/token-transfer-confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
-import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
+import HardwareWalletTransactionConfirmation from '../../../page-objects/pages/hardware-wallet/hardware-wallet-transaction-confirmation';
 import { login } from '../../../page-objects/flows/login.flow';
 import { switchToHardwareAccount } from '../../../page-objects/flows/account-list.flow';
 import {
@@ -193,7 +193,7 @@ describe('Ledger Hardware ERC20 @speculos', function (this: Suite) {
 
         await testDappPage.clickApproveTokens();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const txConfirmation = new TransactionConfirmation(driver);
+        const txConfirmation = new HardwareWalletTransactionConfirmation(driver);
         await txConfirmation.clickFooterConfirmButtonOrReconnect();
 
         await ledgerDone;
@@ -249,7 +249,7 @@ describe('Ledger Hardware ERC20 @speculos', function (this: Suite) {
 
         await testDappPage.clickERC20IncreaseAllowanceButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const txConfirmation = new TransactionConfirmation(driver);
+        const txConfirmation = new HardwareWalletTransactionConfirmation(driver);
         await txConfirmation.clickFooterConfirmButtonOrReconnect();
 
         await ledgerDone;

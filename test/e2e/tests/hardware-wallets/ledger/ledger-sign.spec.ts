@@ -3,7 +3,7 @@ import { WINDOW_TITLES } from '../../../constants';
 import { withSpeculosFixtures } from '../../../speculos/with-speculos-fixtures';
 import { login } from '../../../page-objects/flows/login.flow';
 import TestDappPage from '../../../page-objects/pages/test-dapp';
-import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
+import HardwareWalletConfirmation from '../../../page-objects/pages/hardware-wallet/hardware-wallet-confirmation';
 import { SPECULOS_LEDGER_ADDRESS, approveSigning } from './ledger-helpers';
 
 describe('Ledger Hardware Signatures @speculos', function () {
@@ -32,7 +32,7 @@ describe('Ledger Hardware Signatures @speculos', function () {
         await testDappPage.clickSignTypedDatav4();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const confirmation = new Confirmation(driver);
+        const confirmation = new HardwareWalletConfirmation(driver);
         await confirmation.clickFooterConfirmButtonOrReconnect();
 
         await ledgerDone;
