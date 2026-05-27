@@ -8,7 +8,7 @@ import { login } from '../../../page-objects/flows/login.flow';
 import CreateContractModal from '../../../page-objects/pages/dialog/create-contract';
 import WatchAssetConfirmation from '../../../page-objects/pages/confirmations/watch-asset-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/token-transfer-confirmation';
+import HardwareWalletTokenTransferConfirmation from '../../../page-objects/pages/hardware-wallet/hardware-wallet-token-transfer-confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
@@ -112,7 +112,7 @@ describe('Trezor Hardware', function (this: Suite) {
         await testDappPage.clickERC20TokenTransferButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const tokenTransferTransactionConfirmation =
-          new TokenTransferTransactionConfirmation(driver);
+          new HardwareWalletTokenTransferConfirmation(driver);
         await tokenTransferTransactionConfirmation.checkPageIsLoaded();
         await tokenTransferTransactionConfirmation.clickConfirmButton();
         await driver.switchToWindowWithTitle(

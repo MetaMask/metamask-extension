@@ -29,38 +29,38 @@ export const CHAIN_CODE =
 
 export const KNOWN_PUBLIC_KEY_ADDRESSES = [
   {
-    address: '0x3FB034C6a9F4Da3F61709dBe720033A66984caf1',
+    address: '0xF68464152d7289D7eA9a2bEC2E0035c45188223c',
     balance: null,
     index: 0,
   },
   {
-    address: '0xFe20B747d3C303477ba25cA4F3D9355D7f70e859',
+    address: '0x9EE70472c9D1B1679A33f2f0549Ab5BFFCE118eF',
     balance: null,
     index: 1,
   },
   {
-    address: '0x137560Ff91A3c23Fec7358f7951Fcca54640286C',
+    address: '0x3185aC9266D3DF3D95dC847e2B88b52F12A34C21',
     balance: null,
     index: 2,
   },
   {
-    address: '0x673092aEf16Fe80F1d70706542088bA70d56a958',
+    address: '0x49EED7a86c1C404e2666Ac12BF00Af63804AC78d',
     balance: null,
     index: 3,
   },
   {
-    address: '0xE4A7f01F07f2480689dCe33B91689c60D49a3ebF',
+    address: '0x1d374341feBd02C2F30929d2B4a767676799E1f2',
     balance: null,
     index: 4,
   },
 ];
 
 export const KNOWN_PRIVATE_KEYS = [
-  '94fcd35a5158e20887c16da639e57ef396f0bbb556f77b77521e554e66706315',
-  'da082fa089ff95e6ceeb08b43e1d9bf95704e8576918c8ad6a04a66e6487bda4',
-  '95302f091c3a0727e089a474cba5af3556853176d2058dfac35e4a9287ba38af',
-  'bf34ba46c7bcedf2c5f9a6831fba4f17d0cd698ba03c8c81d197f40d94df9a35',
-  'd8d0f0366be34ed439cc93992c46c6ded69b06f1888e9bc727545aba7732f2a2',
+  'd41051826c32a548e55aa3e0dee93e96425b0f355df1e06d1595ed69385f8dc3',
+  '780f45733fe48f03ab993b071a11e77147ca959d417e048c7da5ac06b8283e51',
+  'daf3144f471e0531e5efd6e81b4907a4154fec5fdb53cf4f94c4b4195e6473fb',
+  '841f90906439526b3771c0aa51f93f6aae5c5ee0fdc73d0d8ff7f8a9b28754d7',
+  '7df6c85f059939631c05e72b6fc3c54423754a5162ae4a69b14b38219c430665',
 ];
 
 const KNOWN_QR_CBOR =

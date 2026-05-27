@@ -1,6 +1,7 @@
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import net from 'net';
+import fs from 'fs';
 import { join } from 'path';
 import { SpeculosClient, type SpeculosClientOptions } from './client';
 import { withRetry } from './resilience';
@@ -84,7 +85,7 @@ export class SpeculosTestHelper {
       this.server = undefined;
     } else {
       console.log('[Speculos] Stopping container...');
-      await execAsync(`docker-compose -f ${SPECULOS_COMPOSE_FILE} down`).catch(
+      await execAsync(`docker stop ${SPECULOS_CONTAINER_NAME}`).catch(
         () => undefined,
       );
     }
@@ -142,14 +143,17 @@ export class SpeculosTestHelper {
     ensureDeviceEnv();
     const model = getDeviceModel();
 
-    const appPath = join(
-      process.cwd(),
-      'test',
-      'e2e',
-      'speculos',
-      'apps',
-      model.elfFile,
-    );
+    const speculosDir = join(process.cwd(), 'test', 'e2e', 'speculos');
+    const appPath = join(speculosDir, 'apps', model.elfFile);
+    const isTouch = model.interactionType === 'touch';
+
+    if (isTouch) {
+      const nvramSrc = join(speculosDir, 'nvram', 'main_nvram.bin');
+      const nvramDst = join(speculosDir, 'apps', 'main_nvram.bin');
+      if (!fs.existsSync(nvramDst)) {
+        fs.copyFileSync(nvramSrc, nvramDst);
+      }
+    }
 
     this.server = createSpeculosProcess({
       app: appPath,
@@ -159,6 +163,8 @@ export class SpeculosTestHelper {
       apduPort: this.apduPort,
       apiPort: this.apiPort,
       display: 'headless',
+      loadNvram: isTouch,
+      cwd: join(speculosDir, 'apps'),
       startTimeout: 60_000,
     });
 

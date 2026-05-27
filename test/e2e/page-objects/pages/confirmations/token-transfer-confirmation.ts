@@ -5,24 +5,21 @@ import TransactionConfirmation from './transaction-confirmation';
 class TokenTransferTransactionConfirmation extends TransactionConfirmation {
   private readonly confirmButton = '[data-testid="confirm-footer-button"]';
 
-  private readonly reconnectButton =
-    '[data-testid="reconnect-hardware-wallet-button"]';
-
   private readonly interactingWithParagraph = {
     css: 'p',
-    text: tEn('interactingWith'),
+    text: tEn('interactingWith') as string,
   };
 
   private readonly networkFee = '[data-testid="first-gas-field"]';
 
   private readonly networkFeeParagraph = {
     css: 'p',
-    text: tEn('networkFee'),
+    text: tEn('networkFee') as string,
   };
 
   private readonly networkParagraph = {
     css: 'p',
-    text: tEn('transactionFlowNetwork'),
+    text: tEn('transactionFlowNetwork') as string,
   };
 
   private readonly networkTextElement = (networkText: string) => ({
@@ -39,13 +36,6 @@ class TokenTransferTransactionConfirmation extends TransactionConfirmation {
 
   async clickConfirmButton(): Promise<void> {
     console.log('Click confirm button to confirm transaction');
-    const hasReconnect = await this.driver.isElementPresent(
-      this.reconnectButton,
-    );
-    if (hasReconnect) {
-      await this.driver.clickElement(this.reconnectButton);
-      await this.driver.waitForSelector(this.confirmButton);
-    }
     await this.driver.clickElement(this.confirmButton);
   }
 

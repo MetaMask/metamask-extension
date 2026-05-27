@@ -24,6 +24,8 @@ export type SpeculosProcessOptions = {
   apduPort?: number;
   apiPort?: number;
   display?: string;
+  loadNvram?: boolean;
+  cwd?: string;
   startTimeout?: number;
   stopTimeout?: number;
 };
@@ -82,6 +84,9 @@ export function createSpeculosProcess(
     }
     if (options.display) {
       args.push('--display', options.display);
+    }
+    if (options.loadNvram) {
+      args.push('--load-nvram');
     }
     args.push(options.app);
     return args;
@@ -192,7 +197,13 @@ export function createSpeculosProcess(
         }
       };
 
-      proc = spawn(binaryPath, args, { stdio: ['pipe', 'pipe', 'pipe'] });
+      const spawnOpts: import('node:child_process').SpawnOptions = {
+        stdio: ['pipe', 'pipe', 'pipe'],
+      };
+      if (options.cwd) {
+        spawnOpts.cwd = options.cwd;
+      }
+      proc = spawn(binaryPath, args, spawnOpts);
       proc.stdout?.on('data', onStdout);
       proc.stderr?.on('data', onStdout);
       proc.on('exit', onExit);

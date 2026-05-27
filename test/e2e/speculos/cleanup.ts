@@ -43,28 +43,6 @@ export async function cleanupSpeculosEnvironment(): Promise<void> {
     } catch {
       // may already be stopped
     }
-    try {
-      await run('docker', ['rm', '-f', SPECULOS_CONTAINER_NAME], 10_000);
-    } catch {
-      // may already be removed
-    }
-    try {
-      const { stdout } = await runCapture(
-        'docker',
-        ['network', 'ls', '--filter', 'name=speculos', '-q'],
-        10_000,
-      );
-      const networkIds = stdout.trim().split('\n').filter(Boolean);
-      for (const netId of networkIds) {
-        try {
-          await run('docker', ['network', 'rm', netId.trim()], 5_000);
-        } catch {
-          // may already be removed
-        }
-      }
-    } catch {
-      // no networks to clean
-    }
   }
 
   await timeout(2000);

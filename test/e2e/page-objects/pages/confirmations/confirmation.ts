@@ -5,18 +5,11 @@ import { RawLocator } from '../../common';
 class Confirmation {
   protected driver: Driver;
 
-  private accountAddressDetails: RawLocator = {
-    tag: 'p',
-    text: 'Account address',
-  };
+  private confirmationHeadingTitle: RawLocator;
 
-  private confirmationHeadingTitle: RawLocator = {
-    text: 'Confirmation Dialog',
-  };
+  private footerCancelButton: RawLocator;
 
-  private footerCancelButton = '[data-testid="confirm-footer-cancel-button"]';
-
-  protected footerConfirmButton = '[data-testid="confirm-footer-button"]';
+  private footerConfirmButton: RawLocator;
 
   private formComboFieldInputSelector = '.form-combo-field input';
 
@@ -28,36 +21,40 @@ class Confirmation {
 
   private formComboFieldSelector = '.form-combo-field';
 
-  private headerAccountDetailsButton =
-    '[data-testid="header-info__account-details-button"]';
+  private headerAccountDetailsButton: RawLocator;
 
   private inlineAlertButton = '[data-testid="inline-alert"]';
 
-  private addressDisplaySelector =
-    '[data-testid="recipient-address"] [data-testid="confirm-info-row-display-name"]';
-
   private nameSelector = '.name';
 
-  private navigationTitle = '[data-testid="confirm-page-nav-position"]';
+  private navigationTitle: RawLocator;
 
-  private nextPageButton = '[data-testid="confirm-nav__next-confirmation"]';
+  private nextPageButton: RawLocator;
 
-  private previousPageButton =
-    '[data-testid="confirm-nav__previous-confirmation"]';
+  private previousPageButton: RawLocator;
 
-  private rejectAllButton = '[data-testid="confirm-nav__reject-all"]';
+  private rejectAllButton: RawLocator;
 
   private saveButtonSelector = { text: 'Save', tag: 'button' };
 
-  private scrollToBottomButton = '.confirm-scroll-to-bottom__button';
-
-  private securityProviderBannerAlert =
-    '[data-testid="security-provider-banner-alert"]';
+  private scrollToBottomButton: RawLocator;
 
   private sectionCollapseButton = '[data-testid="sectionCollapseButton"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
+
+    this.confirmationHeadingTitle = { text: 'Confirmation Dialog' };
+    this.footerCancelButton = '[data-testid="confirm-footer-cancel-button"]';
+    this.footerConfirmButton = '[data-testid="confirm-footer-button"]';
+    this.headerAccountDetailsButton =
+      '[data-testid="header-info__account-details-button"]';
+    this.navigationTitle = '[data-testid="confirm-page-nav-position"]';
+    this.nextPageButton = '[data-testid="confirm-nav__next-confirmation"]';
+    this.previousPageButton =
+      '[data-testid="confirm-nav__previous-confirmation"]';
+    this.rejectAllButton = '[data-testid="confirm-nav__reject-all"]';
+    this.scrollToBottomButton = '.confirm-scroll-to-bottom__button';
   }
 
   async checkPageIsLoaded(): Promise<void> {
@@ -80,19 +77,6 @@ class Confirmation {
     await this.driver.clickElementSafe(this.scrollToBottomButton);
   }
 
-  async checkSecurityProviderBannerAlertIsNotPresent(): Promise<void> {
-    await this.driver.assertElementNotPresent(
-      this.securityProviderBannerAlert,
-      {
-        waitAtLeastGuard: 1000,
-      },
-    );
-  }
-
-  async checkSecurityProviderBannerAlertIsPresent(): Promise<void> {
-    await this.driver.waitForSelector(this.securityProviderBannerAlert);
-  }
-
   async clickFooterConfirmButton() {
     await this.driver.clickElement(this.footerConfirmButton);
   }
@@ -102,7 +86,6 @@ class Confirmation {
       this.headerAccountDetailsButton,
     );
     await accountDetailsButton.sendKeys(Key.RETURN);
-    await this.driver.waitForSelector(this.accountAddressDetails);
   }
 
   async clickFooterCancelButton() {
@@ -135,12 +118,6 @@ class Confirmation {
 
   async clickInlineAlert() {
     await this.driver.clickElement(this.inlineAlertButton);
-  }
-
-  async checkNavigationIsNotPresent(): Promise<void> {
-    await this.driver.assertElementNotPresent(this.navigationTitle, {
-      waitAtLeastGuard: 1000,
-    });
   }
 
   async clickNextPage(): Promise<void> {
@@ -201,13 +178,6 @@ class Confirmation {
     });
   }
 
-  async checkAddressIsDisplayed(address: string): Promise<void> {
-    await this.driver.findElement({
-      css: '[data-testid="confirm-info-row-display-name"]',
-      text: address,
-    });
-  }
-
   async clickName(value: string): Promise<void> {
     console.log(`Clicking on name: ${value}`);
     await this.driver.clickElement({
@@ -221,19 +191,16 @@ class Confirmation {
     name,
     proposedName,
   }: {
-    value?: string;
+    value: string;
     name?: string;
     proposedName?: string;
   }): Promise<void> {
-    if (value) {
-      await this.driver.clickElement({
-        text: value,
-      });
-    } else {
-      await this.driver.clickElement(this.addressDisplaySelector);
-    }
-    console.log(`Saving name: ${name}, proposedName: ${proposedName}`);
+    await this.clickName(value);
+    console.log(
+      `Saving name for value: ${value}, name: ${name}, proposedName: ${proposedName}`,
+    );
     await this.driver.clickElement(this.formComboFieldSelector);
+
     if (proposedName) {
       await this.driver.clickElement({
         css: this.formComboFieldOptionPrimarySelector,

@@ -31,6 +31,11 @@ function patchLockdownRunForSpeculos(wsPort: number): void {
   // navigator.hid is already available when the app code checks for it.
   // This must be done for ALL extension HTML pages (popup, notification
   // dialog, home, sidepanel, offscreen) — not just offscreen.
+  //
+  // Supports two build types:
+  //   - Browserify / LavaMoat production build: HTML references
+  //     ./scripts/runtime-lavamoat.js
+  //   - Webpack dev/test build: HTML references bootstrap.js or runtime.js
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const webhidMockModule = require('./webhid-mock-script');
   const mockScript = webhidMockModule.getWebHidMockScript(wsPort);
@@ -46,6 +51,29 @@ function patchLockdownRunForSpeculos(wsPort: number): void {
   const distDir = path.join('dist', 'chrome');
   const htmlFiles = fs.readdirSync(distDir).filter((f) => f.endsWith('.html'));
 
+  // Injection anchors, in priority order — first match wins per file.
+  const injectionAnchors = [
+    // Browserify / LavaMoat production build
+    {
+      pattern: '<script src="./scripts/runtime-lavamoat.js"',
+      replacement:
+        '<script src="./scripts/speculos-webhid-mock.js"></script>\n    <script src="./scripts/runtime-lavamoat.js"',
+    },
+    // Webpack dev/test build — inject before bootstrap.js
+    {
+      pattern: '<script src="bootstrap.js"',
+      replacement:
+        '<script src="scripts/speculos-webhid-mock.js"></script>\n<script src="bootstrap.js"',
+    },
+    // Webpack dev/test build — inject before runtime.js (fallback for
+    // pages like offscreen.html that have no bootstrap.js)
+    {
+      pattern: '<script src="runtime.js"',
+      replacement:
+        '<script src="scripts/speculos-webhid-mock.js"></script>\n<script src="runtime.js"',
+    },
+  ];
+
   let patchedCount = 0;
   for (const htmlFile of htmlFiles) {
     const htmlPath = path.join(distDir, htmlFile);
@@ -55,14 +83,18 @@ function patchLockdownRunForSpeculos(wsPort: number): void {
       continue;
     }
 
-    if (!html.includes('runtime-lavamoat.js')) {
-      continue;
+    let patched = false;
+    for (const anchor of injectionAnchors) {
+      if (html.includes(anchor.pattern)) {
+        html = html.replace(anchor.pattern, anchor.replacement);
+        patched = true;
+        break;
+      }
     }
 
-    html = html.replace(
-      '<script src="./scripts/runtime-lavamoat.js"',
-      '<script src="./scripts/speculos-webhid-mock.js"></script>\n    <script src="./scripts/runtime-lavamoat.js"',
-    );
+    if (!patched) {
+      continue;
+    }
 
     fs.writeFileSync(htmlPath, html);
     patchedCount += 1;
