@@ -2250,12 +2250,6 @@
   "dappConnections": {
     "message": "Dapp Bağlantıları"
   },
-  "dappScanMaliciousTitle": {
-    "message": "Kötü amaçlı web sitesi algılandı"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "Bu web sitesi potansiyel tehlike olarak işaretlenmiş. Gizli Kurtarma İfadenizi açığa çıkarırsanız paranızı riske atabilirsiniz."
-  },
   "dappSuggested": {
     "message": "Önerilen site"
   },
