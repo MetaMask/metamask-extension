@@ -2,23 +2,14 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
-import { isHardwareWallet } from '../../../../../../shared/lib/selectors/keyring';
 import { captureException } from '../../../../../../shared/lib/sentry';
 import { submitBatchSellTrade } from '../../../../../ducks/bridge-status/actions';
-import { setWasTxDeclined } from '../../../../../ducks/bridge/actions';
 import {
   getFromAccount,
   getIsStxEnabled,
 } from '../../../../../ducks/bridge/selectors';
-import {
-  useHardwareWalletActions,
-  useHardwareWalletConfig,
-} from '../../../../../contexts/hardware-wallets/HardwareWalletContext';
-import { useBridgeNavigation } from '../../../../../hooks/bridge/useBridgeNavigation';
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import type { MetaMaskReduxDispatch } from '../../../../../store/store';
-// eslint-disable-next-line import-x/no-restricted-paths
-import { isHardwareWalletUserRejection } from '../../../../bridge/utils/hardware-wallet-errors';
 import type { ReceivedAsset } from '../types';
 
 type UseBatchSellSubmitQuotesArgs = {
@@ -44,42 +35,17 @@ export default function useBatchSellSubmitQuotes({
   receivedAsset,
 }: UseBatchSellSubmitQuotesArgs) {
   const navigate = useNavigate();
-  const { navigateToBridgePage, navigateToHwSigningPage } =
-    useBridgeNavigation();
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
-  const hardwareWalletUsed = useSelector(isHardwareWallet);
-
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
   const fromAccount = useSelector(getFromAccount);
-  const { isHardwareWalletAccount } = useHardwareWalletConfig();
-  const { ensureDeviceReady } = useHardwareWalletActions();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const submitBatchSellQuotes = async () => {
-    setIsSubmitting(true);
-
-    try {
-      if (isHardwareWalletAccount) {
-        const isDeviceReady = await ensureDeviceReady();
-        if (!isDeviceReady) {
-          throw new Error('Hardware wallet device is not ready');
-        }
-      }
-
-      if (!fromAccount) {
-        throw new Error(
-          'Failed to submit batch-sell transaction: No selected account',
-        );
-      }
-    } catch {
-      setIsSubmitting(false);
+    if (!fromAccount) {
       return;
     }
 
-    if (hardwareWalletUsed) {
-      navigateToHwSigningPage();
-      setIsSubmitting(false);
-    }
+    setIsSubmitting(true);
 
     try {
       await dispatch(
@@ -93,11 +59,6 @@ export default function useBatchSellSubmitQuotes({
       );
     } catch (e) {
       captureException(e);
-      if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
-        dispatch(setWasTxDeclined(true));
-        navigateToBridgePage();
-        return;
-      }
     } finally {
       setIsSubmitting(false);
     }
