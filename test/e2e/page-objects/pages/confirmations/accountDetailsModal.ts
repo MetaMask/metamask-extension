@@ -39,7 +39,10 @@ class AccountDetailsModal extends Confirmation {
         this.accountDetailsModalCloseButton,
       ]);
     } catch (error) {
-      console.error('Error checking if account details modal is loaded:', error);
+      console.error(
+        'Error checking if account details modal is loaded:',
+        error,
+      );
     }
   }
 
