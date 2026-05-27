@@ -61,30 +61,41 @@ type RelayQuoteRequestBody = {
   user?: string;
 };
 
+const PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS = {
+  ...PROD_REMOTE_FLAGS,
+  perpsEnabledVersion: { enabled: true, minimumVersion: '0.0.0' },
+  perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: [] },
+};
+
 /**
  * Remote feature flags for eligible (non-geo-blocked) users.
  * Starts from production defaults, enables perps, and clears the geo-block list
  * so US-TX (the E2E geolocation mock) remains eligible.
  */
 export const PERPS_ELIGIBLE_FLAG = {
-  remoteFeatureFlags: {
-    ...PROD_REMOTE_FLAGS,
-    perpsEnabledVersion: { enabled: true, minimumVersion: '0.0.0' },
-    perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: [] },
-  },
+  remoteFeatureFlags: PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS,
 };
 
 export const PERPS_WITHDRAW_CONFIRMATION_FLAG = {
   remoteFeatureFlags: {
-    perpsEnabledVersion:
-      PERPS_ELIGIBLE_FLAG.remoteFeatureFlags.perpsEnabledVersion,
-    perpsPerpTradingGeoBlockedCountriesV2:
-      PERPS_ELIGIBLE_FLAG.remoteFeatureFlags
-        .perpsPerpTradingGeoBlockedCountriesV2,
+    ...PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS,
     // eslint-disable-next-line @typescript-eslint/naming-convention
     confirmations_pay_post_quote: {
       perpsWithdraw: { enabled: true },
     },
+  },
+};
+
+/**
+ * Keep the manifest override small for Firefox's manifest size limit. The full
+ * production-default flag set is seeded into RemoteFeatureFlagController state.
+ */
+const PERPS_WITHDRAW_CONFIRMATION_MANIFEST_FLAG = {
+  remoteFeatureFlags: {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    confirmations_pay_post_quote:
+      PERPS_WITHDRAW_CONFIRMATION_FLAG.remoteFeatureFlags
+        .confirmations_pay_post_quote,
   },
 };
 
@@ -438,6 +449,9 @@ export function getPerpsConfigEligibleWithArbitrumUsdc(title?: string) {
         isEligible: true,
         isFirstTimeUser: { mainnet: false, testnet: false },
       })
+      .withRemoteFeatureFlagController({
+        remoteFeatureFlags: PERPS_WITHDRAW_CONFIRMATION_FLAG.remoteFeatureFlags,
+      })
       .withTokensController({
         allTokens: {
           [ARBITRUM_CHAIN_ID]: {
@@ -473,7 +487,7 @@ export function getPerpsConfigEligibleWithArbitrumUsdc(title?: string) {
       })
       .build(),
     title,
-    manifestFlags: PERPS_ELIGIBLE_FLAG,
+    manifestFlags: PERPS_WITHDRAW_CONFIRMATION_MANIFEST_FLAG,
     testSpecificMock: async (server: Mockttp) => {
       await mockEligibleFeatureFlags(server);
       await mockArbitrumUsdcPriceData(server);

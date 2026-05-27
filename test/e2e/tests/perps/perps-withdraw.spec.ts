@@ -29,7 +29,6 @@ import { PerpsWithdrawPage } from '../../page-objects/pages/perps/perps-withdraw
 import {
   getPerpsConfigEligible,
   getPerpsConfigEligibleWithArbitrumUsdc,
-  PERPS_WITHDRAW_CONFIRMATION_FLAG,
 } from './perps-fixture-config';
 import { WS_USER_WITH_FUNDED_ACCOUNT } from './mocks/websocketPositionMocks';
 
@@ -46,7 +45,6 @@ const withdrawConfirmationFixtures = (title?: string) => {
 
   return {
     ...fixtures,
-    manifestFlags: PERPS_WITHDRAW_CONFIRMATION_FLAG,
   };
 };
 

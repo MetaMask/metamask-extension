@@ -21,6 +21,7 @@ import { type NameControllerState, NameType } from '@metamask/name-controller';
 import type { PersistedSnapControllerState } from '@metamask/snaps-controllers';
 import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
+import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import type { SelectedNetworkControllerState } from '@metamask/selected-network-controller';
 import type {
   PermissionConstraint,
@@ -328,6 +329,13 @@ class FixtureBuilderV2 {
       (this.fixture.data as Record<string, unknown>).PerpsController,
       data as Record<string, unknown>,
     );
+    return this;
+  }
+
+  withRemoteFeatureFlagController(
+    data: Partial<RemoteFeatureFlagControllerState>,
+  ): this {
+    merge(this.fixture.data.RemoteFeatureFlagController, data);
     return this;
   }
 
