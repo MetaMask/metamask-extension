@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { Box, Text } from '@metamask/design-system-react';
 import { PendingTransactionCancelSpeedUpProvider } from '../../components/app/pending-transaction-action-buttons/pending-transaction-cancel-speed-up-provider';
 import AssetListControlBar from '../../components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar';
+import { TransactionActivityEmptyState } from '../../components/app/transaction-activity-empty-state';
 import { SectionHeader } from '../../components/ui/section-header';
 import { VirtualizedList } from '../../components/ui/virtualized-list/virtualized-list';
 import { useScrollContainer } from '../../contexts/scroll-container';
@@ -106,6 +107,9 @@ export function ActivityList() {
         estimatedItemSize={itemHeight}
         keyExtractor={getItemKey}
         itemRef={itemRef}
+        listEmptyComponent={
+          <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
+        }
         renderItem={({ item: row }) => {
           if (row.type === 'pending-header') {
             return <SectionHeader label={t('pending')} />;
