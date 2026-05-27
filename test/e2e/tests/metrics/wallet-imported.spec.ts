@@ -15,6 +15,7 @@ describe('Wallet Created Events - Imported Account', function () {
   it('are sent when onboarding user who chooses to opt in metrics', async function () {
     // We need to distinguish between browsers, because routes differ (MetaMetrics screen)
     const expectedEvents = [
+      MetaMetricsEventName.AppOpened,
       MetaMetricsEventName.AppInstalled,
       MetaMetricsEventName.AppInstalled,
       MetaMetricsEventName.AppInstalled,
