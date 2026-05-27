@@ -399,10 +399,7 @@ describe('ReversePositionModal', () => {
         metamaskFeeRateDiscountPercentage: 50,
       });
 
-      renderWithProvider(
-        <ReversePositionModal {...defaultProps} />,
-        mockStore,
-      );
+      renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
 
       fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
 
