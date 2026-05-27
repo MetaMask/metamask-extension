@@ -908,7 +908,7 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
 
-    it('Does not select the account if shouldSelectAccount is false', async () => {
+    it('does not select the account if shouldSelectAccount is false', async () => {
       await withService(async ({ rootMessenger, serviceMessenger }) => {
         rootMessenger.registerActionHandler(
           'KeyringController:importAccountWithStrategy',
