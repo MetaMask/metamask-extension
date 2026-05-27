@@ -2286,12 +2286,6 @@
   "dappConnections": {
     "message": "DAppの接続"
   },
-  "dappScanMaliciousTitle": {
-    "message": "悪質なWebサイトが検出されました"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "このWebサイトは、危険な可能性があるとフラグ付けされています。シークレットリカバリーフレーズを明かした場合、資金が危険に晒される可能性があります。"
-  },
   "dappSuggested": {
     "message": "おすすめのサイト"
   },
@@ -5218,10 +5212,6 @@
   "onboardingMetametricsTitle": {
     "message": "MetaMaskの改善にご協力ください"
   },
-  "onboardingOptionIcon": {
-    "message": "$1アイコン",
-    "description": "$1 is the icon name"
-  },
   "onboardingSignInWith": {
     "message": "$1でサインイン",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -7465,11 +7455,11 @@
   },
   "securitySocialLoginEnabledDescription": {
     "message": "$1のログイン情報とMetaMaskのパスワードを使って、アカウントとシークレットリカバリーフレーズを復元することができます。",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySocialLoginLabel": {
     "message": "$1の復元",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySrpLabel": {
     "message": "シークレットリカバリーフレーズ"

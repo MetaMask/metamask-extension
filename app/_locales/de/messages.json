@@ -2280,12 +2280,6 @@
   "dappConnections": {
     "message": "dApp-Verbindungen"
   },
-  "dappScanMaliciousTitle": {
-    "message": "Schädliche Website erkannt"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "Diese Website ist als potenziell gefährlich gekennzeichnet. Wenn Sie Ihre geheime Wiederherstellungsphrase preisgeben, gefährden Sie Ihr Guthaben."
-  },
   "dappSuggested": {
     "message": "Website vorgeschlagen"
   },
@@ -5212,10 +5206,6 @@
   "onboardingMetametricsTitle": {
     "message": "Helfen Sie dabei, MetaMask zu verbessern"
   },
-  "onboardingOptionIcon": {
-    "message": "$1-Symbol",
-    "description": "$1 is the icon name"
-  },
   "onboardingSignInWith": {
     "message": "Mit $1 anmelden",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -7459,11 +7449,11 @@
   },
   "securitySocialLoginEnabledDescription": {
     "message": "Verwenden Sie Ihre $1-Anmeldung und Ihr MetaMask-Passwort, um Ihr Konto und Ihre geheimen Wiederherstellungsphrasen wiederherzustellen.",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySocialLoginLabel": {
     "message": "$1 WIEDERHERSTELLUNG",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySrpLabel": {
     "message": "GEHEIME WIEDERHERSTELLUNGSPHRASEN"

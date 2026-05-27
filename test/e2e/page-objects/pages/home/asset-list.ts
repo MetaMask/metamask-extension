@@ -53,6 +53,11 @@ class AssetListPage {
   private readonly importTokensNextButton =
     '[data-testid="import-tokens-button-next"]';
 
+  private readonly lowValueAssetsToggle =
+    '[data-testid="low-value-assets-toggle"]';
+
+  private readonly lowValueAssetsToggleExpanded = `${this.lowValueAssetsToggle}[aria-expanded="true"]`;
+
   private readonly multichainTokenListButton = {
     testId: 'multichain-token-list-button',
   };
@@ -199,6 +204,7 @@ class AssetListPage {
 
   async clickOnAsset(assetName: string): Promise<void> {
     console.log(`Clicking on the token name `);
+    await this.expandLowValueAssetsIfPresent();
     await this.driver.clickElement({
       css: this.tokenName,
       text: assetName,
@@ -222,6 +228,25 @@ class AssetListPage {
     console.log('Dismissing token imported success message');
     await this.driver.clickElement(this.tokenImportedMessageCloseButton);
     await this.driver.assertElementNotPresent(this.tokenImportedSuccessMessage);
+  }
+
+  private async expandLowValueAssetsIfPresent(): Promise<void> {
+    let toggle;
+
+    try {
+      toggle = await this.driver.findElement(this.lowValueAssetsToggle, 1000);
+    } catch {
+      return;
+    }
+
+    if ((await toggle.getAttribute('aria-expanded')) === 'true') {
+      return;
+    }
+
+    await this.driver.clickElement(this.lowValueAssetsToggle);
+    await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded, {
+      timeout: 5000,
+    });
   }
 
   async getCurrentNetworksOptionTotal(): Promise<string> {
@@ -414,6 +439,7 @@ class AssetListPage {
    */
   async openTokenDetails(tokenSymbol: string): Promise<void> {
     console.log(`Opening token details for ${tokenSymbol}`);
+    await this.expandLowValueAssetsIfPresent();
     await this.driver.clickElement({
       text: tokenSymbol,
       css: this.tokenNameInDetails,
@@ -576,6 +602,7 @@ class AssetListPage {
     console.log(
       `Check that token amount ${tokenAmount} is displayed in token details modal for token ${tokenName}`,
     );
+    await this.expandLowValueAssetsIfPresent();
     await this.driver.clickElement({
       testId: 'multichain-token-list-item-token-name',
       text: tokenName,
@@ -616,6 +643,7 @@ class AssetListPage {
   ): Promise<void> {
     const { timeout, amountTimeout } = options;
     console.log(`Checking if token ${tokenName} exists in token list`);
+    await this.expandLowValueAssetsIfPresent();
     await this.driver.waitForSelector(
       {
         css: this.tokenName,
@@ -656,6 +684,7 @@ class AssetListPage {
     console.log(
       `Waiting for token at position ${position} to be "${tokenName}"`,
     );
+    await this.expandLowValueAssetsIfPresent();
     const index = position - 1;
     await this.driver.waitUntil(
       async () => {
@@ -678,6 +707,7 @@ class AssetListPage {
    */
   async checkTokenItemNumber(expectedNumber: number = 1): Promise<void> {
     console.log(`Waiting for ${expectedNumber} token items to be displayed`);
+    await this.expandLowValueAssetsIfPresent();
     await this.driver.wait(async () => {
       const tokenItemsNumber = await this.getNumberOfAssets();
       return tokenItemsNumber === expectedNumber;
@@ -701,6 +731,7 @@ class AssetListPage {
       console.log(
         `Checking token general change percentage for address ${address}`,
       );
+      await this.expandLowValueAssetsIfPresent();
       await this.driver.waitForSelector({
         css: this.tokenPercentage(address),
         text: expectedChange,

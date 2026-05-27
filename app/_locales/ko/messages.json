@@ -2286,12 +2286,6 @@
   "dappConnections": {
     "message": "디앱 연결"
   },
-  "dappScanMaliciousTitle": {
-    "message": "악성 웹사이트 감지됨"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "이 사이트는 위험할 수 있는 사이트로 표시되었습니다. 비밀복구구문을 공개하면 자산이 탈취될 수 있습니다."
-  },
   "dappSuggested": {
     "message": "사이트 제안"
   },
@@ -5218,10 +5212,6 @@
   "onboardingMetametricsTitle": {
     "message": "MetaMask 개선에 도움을 주세요"
   },
-  "onboardingOptionIcon": {
-    "message": "$1 아이콘",
-    "description": "$1 is the icon name"
-  },
   "onboardingSignInWith": {
     "message": "$1(으)로 로그인",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -7469,11 +7459,11 @@
   },
   "securitySocialLoginEnabledDescription": {
     "message": "$1 로그인과 MetaMask 비밀번호를 사용하여 계정과 비밀복구구문을 복구하세요.",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySocialLoginLabel": {
     "message": "$1 복구",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySrpLabel": {
     "message": "비밀복구구문"

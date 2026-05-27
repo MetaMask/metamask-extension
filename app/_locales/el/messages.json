@@ -2286,12 +2286,6 @@
   "dappConnections": {
     "message": "Συνδέσεις με Αποκεντρωμένες Εφαρμογές (Dapps)"
   },
-  "dappScanMaliciousTitle": {
-    "message": "Εντοπίστηκε κακόβουλος ιστότοπος"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "Αυτός ο ιστότοπος έχει επισημανθεί ως πιθανώς επικίνδυνος. Αν αποκαλύψετε τη Μυστική Φράση Ανάκτησής σας, ενδέχεται να θέσετε τα χρήματά σας σε κίνδυνο."
-  },
   "dappSuggested": {
     "message": "Υπόδειξη ιστότοπου"
   },
@@ -5218,10 +5212,6 @@
   "onboardingMetametricsTitle": {
     "message": "Βοηθήστε στη βελτίωση του MetaMask"
   },
-  "onboardingOptionIcon": {
-    "message": "εικονίδιο $1",
-    "description": "$1 is the icon name"
-  },
   "onboardingSignInWith": {
     "message": "Συνδεθείτε με το $1",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -7465,11 +7455,11 @@
   },
   "securitySocialLoginEnabledDescription": {
     "message": "Χρησιμοποιήστε τα στοιχεία σύνδεσης στο $1 και τον κωδικό πρόσβασης στο MetaMask για να ανακτήσετε τον λογαριασμό σας και τη Μυστική Φράση Ανάκτησης.",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySocialLoginLabel": {
     "message": "ΑΝΑΚΤΗΣΗ ΜΕΣΩ $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySrpLabel": {
     "message": "ΜΥΣΤΙΚΕΣ ΦΡΑΣΕΙΣ ΑΝΑΚΤΗΣΗΣ"

@@ -2280,12 +2280,6 @@
   "dappConnections": {
     "message": "Connexions aux dapps"
   },
-  "dappScanMaliciousTitle": {
-    "message": "Site web malveillant détecté"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "Ce site web est signalé comme potentiellement dangereux. Si vous divulguez votre phrase secrète de récupération, vous pourriez mettre vos fonds en danger."
-  },
   "dappSuggested": {
     "message": "Suggéré par le site"
   },
@@ -5212,10 +5206,6 @@
   "onboardingMetametricsTitle": {
     "message": "Aidez-nous à améliorer MetaMask"
   },
-  "onboardingOptionIcon": {
-    "message": "Icône $1",
-    "description": "$1 is the icon name"
-  },
   "onboardingSignInWith": {
     "message": "Se connecter avec $1",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -7459,11 +7449,11 @@
   },
   "securitySocialLoginEnabledDescription": {
     "message": "Utilisez votre identifiant $1 et votre mot de passe MetaMask pour récupérer votre compte et vos phrases secrètes de récupération.",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySocialLoginLabel": {
     "message": "RÉCUPÉRATION $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySrpLabel": {
     "message": "PHRASES SECRÈTES DE RÉCUPÉRATION"
