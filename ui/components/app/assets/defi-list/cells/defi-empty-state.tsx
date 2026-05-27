@@ -30,8 +30,8 @@ export const DeFiEmptyStateMessage: FC = () => {
       'explore/tokens',
       'ext_defi_empty_state_button',
       metaMetricsId,
-      isMetaMetricsEnabled,
-      isMarketingEnabled,
+      isMetaMetricsEnabled === true,
+      isMarketingEnabled === true,
     );
     global.platform.openTab({ url });
     trackEvent({

@@ -81,8 +81,8 @@ export const FundingMethodModal: React.FC<FundingMethodModalProps> = ({
       'transfer',
       'ext_funding_method_modal',
       metaMetricsId,
-      isMetaMetricsEnabled,
-      isMarketingEnabled,
+      isMetaMetricsEnabled === true,
+      isMarketingEnabled === true,
       accountAddress,
       'transfer',
     );

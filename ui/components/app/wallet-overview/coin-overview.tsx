@@ -219,8 +219,8 @@ export const CoinOverview = ({
       'explore/tokens',
       'ext_portfolio_button',
       metaMetricsId,
-      isMetaMetricsEnabled,
-      isMarketingEnabled,
+      isMetaMetricsEnabled === true,
+      isMarketingEnabled === true,
     );
     global.platform.openTab({ url });
     trackEvent({
