@@ -4,6 +4,7 @@ export async function confirmOrReconnect(driver: Driver): Promise<void> {
   const footerConfirmButton = '[data-testid="confirm-footer-button"]';
   const reconnectButton =
     '[data-testid="reconnect-hardware-wallet-button"]';
+  const dialogHandle = await driver.getCurrentWindowHandle();
 
   await driver.waitUntil(
     async () => {
@@ -23,6 +24,7 @@ export async function confirmOrReconnect(driver: Driver): Promise<void> {
   }
 
   await driver.clickElement(footerConfirmButton);
+  await driver.waitForWindowToClose(dialogHandle, 90000);
   console.log('[HardwareWallet] Confirm click completed');
 }
 
@@ -38,5 +40,7 @@ export async function confirmOrReconnectAndWaitForWindowToClose(
     await driver.clickElement(reconnectButton);
     await driver.waitForSelector(footerConfirmButton);
   }
-  await driver.clickElementAndWaitForWindowToClose(footerConfirmButton);
+  const dialogHandle = await driver.getCurrentWindowHandle();
+  await driver.clickElement(footerConfirmButton);
+  await driver.waitForWindowToClose(dialogHandle, 90000);
 }

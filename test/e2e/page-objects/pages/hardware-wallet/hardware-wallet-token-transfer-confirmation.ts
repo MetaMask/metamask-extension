@@ -13,6 +13,7 @@ class HardwareWalletTokenTransferConfirmation extends TokenTransferTransactionCo
     console.log(
       '[HardwareWallet] Click confirm button for token transfer transaction',
     );
+    const dialogHandle = await this.driver.getCurrentWindowHandle();
     const hasReconnect = await this.driver.isElementPresent(
       this.reconnectButton,
     );
@@ -21,6 +22,7 @@ class HardwareWalletTokenTransferConfirmation extends TokenTransferTransactionCo
       await this.driver.waitForSelector(this.hardwareWalletConfirmButton);
     }
     await this.driver.clickElement(this.hardwareWalletConfirmButton);
+    await this.driver.waitForWindowToClose(dialogHandle, 90000);
   }
 
   async clickConfirmButtonOrReconnect(): Promise<void> {
