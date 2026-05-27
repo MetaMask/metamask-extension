@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import {
   Box,
@@ -24,6 +25,8 @@ import {
   useHardwareWalletActions,
   useHardwareWalletConfig,
 } from '../../contexts/hardware-wallets';
+import { HARDWARE_WALLET_REPAIR_WALLET_TYPE_PARAM } from '../../contexts/hardware-wallets/constants';
+import { HardwareWalletType } from '../../contexts/hardware-wallets/types';
 import {
   Header,
   Page,
@@ -35,6 +38,7 @@ import { getInstructionSteps } from './hardware-wallet-repair-utils';
 
 export const HardwareWalletRepair: React.FC = () => {
   const t = useI18nContext();
+  const { search } = useLocation();
   const {
     ensureDeviceReady,
     setConnectionReady,
@@ -46,7 +50,24 @@ export const HardwareWalletRepair: React.FC = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const steps = useMemo(() => getInstructionSteps(walletType), [walletType]);
+  const routeWalletType = useMemo(() => {
+    const routeWalletTypeParam = new URLSearchParams(search).get(
+      HARDWARE_WALLET_REPAIR_WALLET_TYPE_PARAM,
+    );
+
+    return Object.values(HardwareWalletType).includes(
+      routeWalletTypeParam as HardwareWalletType,
+    )
+      ? (routeWalletTypeParam as HardwareWalletType)
+      : null;
+  }, [search]);
+
+  const repairWalletType = routeWalletType ?? walletType;
+
+  const steps = useMemo(
+    () => getInstructionSteps(repairWalletType),
+    [repairWalletType],
+  );
 
   const handleClose = useCallback(() => {
     window.close();
@@ -56,9 +77,9 @@ export const HardwareWalletRepair: React.FC = () => {
     setIsConnecting(true);
     setError(null);
     try {
-      if (walletType) {
+      if (repairWalletType) {
         const permissionGranted =
-          await requestHardwareWalletPermission(walletType);
+          await requestHardwareWalletPermission(repairWalletType);
         if (!permissionGranted) {
           setError(t('hardwareWalletRepairDeviceNotDetected'));
           return;
@@ -85,7 +106,7 @@ export const HardwareWalletRepair: React.FC = () => {
     ensureDeviceReady,
     setConnectionReady,
     requestHardwareWalletPermission,
-    walletType,
+    repairWalletType,
     t,
   ]);
 
@@ -190,7 +211,7 @@ export const HardwareWalletRepair: React.FC = () => {
                 className="w-full"
                 data-testid="hardware-wallet-repair-reconnect"
               >
-                {t('connect')}
+                {t('hardwareWalletRepairConnectButton')}
               </Button>
             </Box>
           )}
@@ -203,7 +224,7 @@ export const HardwareWalletRepair: React.FC = () => {
               className="w-full"
               data-testid="hardware-wallet-repair-close"
             >
-              {t('close')}
+              {t('hardwareWalletRepairCloseButton')}
             </Button>
           </Footer>
         )}

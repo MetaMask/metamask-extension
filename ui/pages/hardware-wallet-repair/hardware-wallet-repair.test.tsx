@@ -48,6 +48,7 @@ const memoryRouterFuture = {
 
 function renderRepairPage(
   walletType: HardwareWalletType | null = HardwareWalletType.Ledger,
+  initialEntries = ['/hardware-wallet-repair'],
 ) {
   (useHardwareWalletConfig as jest.Mock).mockReturnValue({
     walletType,
@@ -56,7 +57,10 @@ function renderRepairPage(
   const store = configureStore({ metamask: {} });
   return render(
     <Provider store={store}>
-      <MemoryRouter future={memoryRouterFuture}>
+      <MemoryRouter
+        initialEntries={initialEntries}
+        future={memoryRouterFuture}
+      >
         <HardwareWalletRepair />
       </MemoryRouter>
     </Provider>,
@@ -170,6 +174,43 @@ describe('HardwareWalletRepair', () => {
     );
     expect(mockEnsureDeviceReady).toHaveBeenCalled();
     expect(mockSetConnectionReady).toHaveBeenCalled();
+  });
+
+  it('requests permission using the route wallet type when selected account wallet type is unavailable', async () => {
+    mockRequestHardwareWalletPermission.mockResolvedValue(true);
+    mockEnsureDeviceReady.mockResolvedValue(true);
+    const { getByTestId, findByText } = renderRepairPage(null, [
+      `/hardware-wallet-repair?walletType=${HardwareWalletType.Trezor}`,
+    ]);
+
+    fireEvent.click(getByTestId('hardware-wallet-repair-reconnect'));
+
+    expect(
+      await findByText('hardwareWalletRepairSuccessTitle'),
+    ).toBeInTheDocument();
+    expect(mockRequestHardwareWalletPermission).toHaveBeenCalledWith(
+      HardwareWalletType.Trezor,
+    );
+    expect(mockEnsureDeviceReady).toHaveBeenCalled();
+    expect(mockSetConnectionReady).toHaveBeenCalled();
+  });
+
+  it('prefers the route wallet type when selected account wallet type differs', async () => {
+    mockRequestHardwareWalletPermission.mockResolvedValue(true);
+    mockEnsureDeviceReady.mockResolvedValue(true);
+    const { getByTestId, findByText } = renderRepairPage(
+      HardwareWalletType.Ledger,
+      [`/hardware-wallet-repair?walletType=${HardwareWalletType.Trezor}`],
+    );
+
+    fireEvent.click(getByTestId('hardware-wallet-repair-reconnect'));
+
+    expect(
+      await findByText('hardwareWalletRepairSuccessTitle'),
+    ).toBeInTheDocument();
+    expect(mockRequestHardwareWalletPermission).toHaveBeenCalledWith(
+      HardwareWalletType.Trezor,
+    );
   });
 
   it('shows error when permission is not granted', async () => {

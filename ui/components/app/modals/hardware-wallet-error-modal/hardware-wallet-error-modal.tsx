@@ -165,7 +165,7 @@ type HardwareWalletErrorModalProps = {
   onCancel?: () => void;
   onClose?: () => void;
   onRetry?: () => void;
-  onRepairDevice?: () => void;
+  onRepairDevice?: (walletType: HardwareWalletType) => void;
 };
 
 const RECOVERY_SUCCESS_AUTO_DISMISS_MS = 3000;
@@ -366,8 +366,9 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
           }),
         });
       }
-      onRepairDevice?.();
+      onRepairDevice?.(displayWalletType);
     }, [
+      displayWalletType,
       error,
       onRepairDevice,
       recoveryLocation,

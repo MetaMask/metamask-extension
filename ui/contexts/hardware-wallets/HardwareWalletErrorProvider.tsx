@@ -24,8 +24,11 @@ import {
   useHardwareWalletState,
   useHardwareWalletActions,
 } from './HardwareWalletContext';
-import { ConnectionStatus } from './types';
-import { HARDWARE_WALLET_ERROR_MODAL_NAME } from './constants';
+import { ConnectionStatus, HardwareWalletType } from './types';
+import {
+  HARDWARE_WALLET_ERROR_MODAL_NAME,
+  HARDWARE_WALLET_REPAIR_WALLET_TYPE_PARAM,
+} from './constants';
 import {
   getHardwareWalletErrorCode,
   isUserRejectedHardwareWalletError,
@@ -139,10 +142,16 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
     dispatch(closeCurrentNotificationWindow());
   }, [clearError, dispatch, resetModalState]);
 
-  const openRepairPage = useCallback(() => {
+  const openRepairPage = useCallback((walletType?: HardwareWalletType) => {
+    const queryString = walletType
+      ? new URLSearchParams({
+          [HARDWARE_WALLET_REPAIR_WALLET_TYPE_PARAM]: walletType,
+        }).toString()
+      : null;
+
     globalThis.platform.openExtensionInBrowser(
       HARDWARE_WALLET_REPAIR_ROUTE,
-      null,
+      queryString,
     );
   }, []);
 

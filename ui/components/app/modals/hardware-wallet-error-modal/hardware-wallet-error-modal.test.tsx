@@ -425,6 +425,7 @@ describe('HardwareWalletErrorModal', () => {
       });
 
       expect(onRepairDevice).toHaveBeenCalledTimes(1);
+      expect(onRepairDevice).toHaveBeenCalledWith(HardwareWalletType.Ledger);
       expect(
         mockTrackEvent.mock.calls.some(
           (call) =>
