@@ -123,7 +123,9 @@ export function buildWhatsInRcSection(result: WhatsInRcResult): string {
 `;
 
   if (cherryPicks.length === 0 && changelog.length === 0) {
-    return section + `<p><i>No cherry-picks or changelog commits found.</i></p>\n\n`;
+    return (
+      section + `<p><i>No cherry-picks or changelog commits found.</i></p>\n\n`
+    );
   }
 
   if (cherryPicks.length > 0) {
@@ -159,7 +161,7 @@ export function buildWhatsInRcFailureSection(error?: string): string {
 if (process.argv[1]?.endsWith('cherry-picks-section.ts')) {
   try {
     const result = extractWhatsInRc();
-    console.log('=== What\'s in this RC ===');
+    console.log("=== What's in this RC ===");
     console.log(`Merge base: ${result.mergeBase}`);
     console.log(`Previous tag: ${result.previousTag ?? 'none'}`);
     console.log(`Cherry-picks: ${result.cherryPicks.length}`);
