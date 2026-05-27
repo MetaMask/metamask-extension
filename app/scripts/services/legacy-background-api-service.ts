@@ -65,6 +65,7 @@ import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/onboarding-method-action-types';
 import { getAccountsBySnapId } from '../lib/snap-keyring';
 import { LegacyBackgroundApiServiceMethodActions } from './legacy-background-api-service-method-action-types';
+import { getSnapKeyring } from '../lib/snap-keyring/utils/getSnapKeyring';
 
 const serviceName = 'LegacyBackgroundApiService';
 
@@ -79,7 +80,6 @@ const MESSENGER_EXPOSED_METHODS = [
   'getOpenMetamaskTabsIds',
   'getRequestAccountTabIds',
   'getSeedPhrase',
-  'getSnapKeyring',
   'importAccountWithStrategy',
   'isAssetsUnifyStateEnabled',
   'isPublicEndpointUrl',
@@ -571,40 +571,12 @@ export class LegacyBackgroundApiService {
   }
 
   /**
-   * Initialize the snap keyring if it is not present.
-   *
-   * @returns The snap keyring instance.
-   */
-  async getSnapKeyring(): Promise<SnapKeyring> {
-    // TODO: Use `withKeyring` instead
-    let [snapKeyring] = this.#messenger.call(
-      'KeyringController:getKeyringsByType',
-      KeyringTypes.snap,
-    );
-
-    if (!snapKeyring) {
-      await this.#messenger.call(
-        'KeyringController:addNewKeyring',
-        KeyringTypes.snap,
-      );
-
-      // TODO: Use `withKeyring` instead
-      [snapKeyring] = this.#messenger.call(
-        'KeyringController:getKeyringsByType',
-        KeyringTypes.snap,
-      );
-    }
-
-    return snapKeyring as SnapKeyring;
-  }
-
-  /**
    * Gets the accounts of a given snap ID from the snap keyring.
    *
    * @param snapId - The snap ID to get accounts for.
    * @returns The addresses of the accounts managed by the snap.
    */
   async getAccountsBySnapId(snapId: SnapId): Promise<string[]> {
-    return getAccountsBySnapId(this.getSnapKeyring.bind(this), snapId);
+    return getAccountsBySnapId(() => getSnapKeyring(this.#messenger), snapId);
   }
 }

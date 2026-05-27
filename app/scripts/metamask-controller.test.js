@@ -94,6 +94,7 @@ import {
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
 import MetaMaskController from './metamask-controller';
+import * as getSnapKeyringUtil from './lib/snap-keyring/utils/getSnapKeyring';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
 // so these tests exercise the real feature-flag gating logic via state.
@@ -6323,12 +6324,9 @@ describe('MetaMaskController', () => {
       });
 
       // Avoid KC.addNewKeyring side-effects and AccountTracker sync touching NetworkController
-      jest
-        .spyOn(metamaskController.legacyBackgroundApiService, 'getSnapKeyring')
-        .mockResolvedValue({
-          // Now required, since it's invoked automatically when new account groups get added.
-          setSelectedAccounts: jest.fn(),
-        });
+      jest.spyOn(getSnapKeyringUtil, 'getSnapKeyring').mockReturnValue({
+        setSelectedAccounts: jest.fn(),
+      });
 
       await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
     });
@@ -6582,12 +6580,9 @@ describe('MetaMaskController', () => {
       });
 
       // Avoid KC.addNewKeyring side-effects and AccountTracker sync touching NetworkController
-      jest
-        .spyOn(metamaskController.legacyBackgroundApiService, 'getSnapKeyring')
-        .mockResolvedValue({
-          // Now required, since it's invoked automatically when new account groups get added.
-          setSelectedAccounts: jest.fn(),
-        });
+      jest.spyOn(getSnapKeyringUtil, 'getSnapKeyring').mockReturnValue({
+        setSelectedAccounts: jest.fn(),
+      });
 
       await metamaskController.createNewVaultAndRestore('foo', TEST_SEED);
     });

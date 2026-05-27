@@ -150,16 +150,6 @@ export type LegacyBackgroundApiServiceImportAccountWithStrategyAction = {
 };
 
 /**
- * Initialize the snap keyring if it is not present.
- *
- * @returns The snap keyring instance.
- */
-export type LegacyBackgroundApiServiceGetSnapKeyringAction = {
-  type: `LegacyBackgroundApiService:getSnapKeyring`;
-  handler: LegacyBackgroundApiService['getSnapKeyring'];
-};
-
-/**
  * Gets the accounts of a given snap ID from the snap keyring.
  *
  * @param snapId - The snap ID to get accounts for.
@@ -188,5 +178,4 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceRemoveAccountAction
   | LegacyBackgroundApiServiceOnAccountRemovedAction
   | LegacyBackgroundApiServiceImportAccountWithStrategyAction
-  | LegacyBackgroundApiServiceGetSnapKeyringAction
   | LegacyBackgroundApiServiceGetAccountsBySnapIdAction;

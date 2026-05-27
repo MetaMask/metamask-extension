@@ -943,9 +943,13 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
-  describe('getSnapKeyring', () => {
-    it('returns the snap keyring', async () => {
-      const snapKeyring = { id: 'foo', type: KeyringTypes.snap };
+  describe('getAccountsBySnapId', () => {
+    it('returns the address from the snap keyring', async () => {
+      const snapKeyring = {
+        id: 'foo',
+        type: KeyringTypes.snap,
+        getAccountsBySnapId: jest.fn().mockReturnValue(['0x123']),
+      };
 
       await withService(async ({ rootMessenger }) => {
         rootMessenger.registerActionHandler(
@@ -953,76 +957,11 @@ describe('LegacyBackgroundApiService', () => {
           jest.fn().mockReturnValue([snapKeyring]),
         );
 
-        rootMessenger.registerActionHandler(
-          'KeyringController:addNewKeyring',
-          jest.fn(),
-        );
-
-        const result = await rootMessenger.call(
-          'LegacyBackgroundApiService:getSnapKeyring',
-        );
-
-        expect(result).toStrictEqual(snapKeyring);
-      });
-    });
-
-    it('creates and returns a snap keyring if one does not already exist', async () => {
-      const snapKeyring = { id: 'foo', type: KeyringTypes.snap };
-
-      const mockGetKeyringsByType = jest
-        .fn()
-        .mockReturnValueOnce([])
-        .mockReturnValueOnce([snapKeyring]);
-
-      await withService(async ({ rootMessenger, serviceMessenger }) => {
-        const callSpy = jest.spyOn(serviceMessenger, 'call');
-
-        rootMessenger.registerActionHandler(
-          'KeyringController:getKeyringsByType',
-          mockGetKeyringsByType,
-        );
-
-        rootMessenger.registerActionHandler(
-          'KeyringController:addNewKeyring',
-          jest.fn(),
-        );
-
-        const result = await rootMessenger.call(
-          'LegacyBackgroundApiService:getSnapKeyring',
-        );
-
-        expect(result).toStrictEqual(snapKeyring);
-
-        expect(callSpy).toHaveBeenCalledWith(
-          'KeyringController:addNewKeyring',
-          KeyringTypes.snap,
-        );
-      });
-    });
-  });
-
-  describe('getAccountsBySnapId', () => {
-    it('calls getSnapKeyring and returns the address from the snap keyring', async () => {
-      const snapKeyring = {
-        id: 'foo',
-        type: KeyringTypes.snap,
-        getAccountsBySnapId: jest.fn().mockReturnValue(['0x123']),
-      };
-
-      await withService(async ({ rootMessenger, service }) => {
-        rootMessenger.registerActionHandler(
-          'KeyringController:getKeyringsByType',
-          jest.fn().mockReturnValue([snapKeyring]),
-        );
-
-        const callSpy = jest.spyOn(service, 'getSnapKeyring');
-
         const result = await rootMessenger.call(
           'LegacyBackgroundApiService:getAccountsBySnapId',
           'snapId' as SnapId,
         );
 
-        expect(callSpy).toHaveBeenCalled();
         expect(result).toStrictEqual(['0x123']);
       });
     });
