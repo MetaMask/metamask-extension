@@ -43,6 +43,7 @@ class AccountDetailsModal extends Confirmation {
         'Error checking if account details modal is loaded:',
         error,
       );
+      throw error;
     }
   }
 
