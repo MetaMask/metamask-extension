@@ -338,14 +338,18 @@ describe('ReversePositionModal', () => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'perpsFlipPosition',
           [
-            {
+            expect.objectContaining({
               symbol: 'ETH',
               position: expect.objectContaining({
                 symbol: 'ETH',
                 size: '2.5',
                 leverage: expect.objectContaining({ value: 3 }),
               }),
-            },
+              trackingData: expect.objectContaining({
+                totalFee: expect.any(Number),
+                marketPrice: 2900,
+              }),
+            }),
           ],
         );
       });
@@ -395,14 +399,18 @@ describe('ReversePositionModal', () => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'perpsFlipPosition',
           [
-            {
+            expect.objectContaining({
               symbol: 'BTC',
               position: expect.objectContaining({
                 symbol: 'BTC',
                 size: '-0.5',
                 leverage: expect.objectContaining({ value: 15 }),
               }),
-            },
+              trackingData: expect.objectContaining({
+                totalFee: expect.any(Number),
+                marketPrice: 45000,
+              }),
+            }),
           ],
         );
       });
@@ -615,12 +623,16 @@ describe('ReversePositionModal', () => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'perpsFlipPosition',
           [
-            {
+            expect.objectContaining({
               symbol: 'ETH',
               position: expect.objectContaining({
                 leverage: { type: 'cross', value: 5 },
               }),
-            },
+              trackingData: expect.objectContaining({
+                totalFee: expect.any(Number),
+                marketPrice: expect.any(Number),
+              }),
+            }),
           ],
         );
       });

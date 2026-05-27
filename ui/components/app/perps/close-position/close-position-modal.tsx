@@ -58,6 +58,7 @@ import {
 } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import type { Position } from '../types';
+import { useVipTier } from '../../../../hooks/rewards/useVipTier';
 
 type ClosePositionParams = {
   symbol: string;
@@ -65,6 +66,12 @@ type ClosePositionParams = {
   currentPrice: number;
   size?: string;
   position?: Position;
+  trackingData?: {
+    totalFee: number;
+    marketPrice: number;
+    vipTier?: number;
+    vipDiscount?: number;
+  };
 };
 
 type CloseToastConfig = Pick<PerpsToastKeyConfig, 'key' | 'description'>;
@@ -277,6 +284,8 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     [],
   );
 
+  const vipTier = useVipTier();
+
   const [closePercent, setClosePercent] = useState(100);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -401,18 +410,23 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
 
     try {
       onClose();
+      const closeRequestParams = buildCloseRequestParams({
+        symbol: position.symbol,
+        currentPrice,
+        isPartialClose,
+        closeSize,
+        position,
+      });
+      closeRequestParams.trackingData = {
+        totalFee: estimatedFees,
+        marketPrice: currentPrice,
+        ...(vipTier === null ? {} : { vipTier }),
+        vipDiscount: metamaskFeeRateDiscountPercentage,
+      };
       const result = await submitRequestToBackground<{
         success: boolean;
         error?: string;
-      }>('perpsClosePosition', [
-        buildCloseRequestParams({
-          symbol: position.symbol,
-          currentPrice,
-          isPartialClose,
-          closeSize,
-          position,
-        }),
-      ]);
+      }>('perpsClosePosition', [closeRequestParams]);
       if (!result.success) {
         const message = result.error || 'Failed to close position';
         track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
@@ -498,6 +512,8 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     onClose,
     formatPercentWithMinThreshold,
     formatFiat,
+    vipTier,
+    metamaskFeeRateDiscountPercentage,
   ]);
 
   const handlePercentChange = useCallback((percent: number) => {

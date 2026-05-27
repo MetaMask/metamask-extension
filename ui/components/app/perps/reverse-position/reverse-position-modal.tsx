@@ -43,6 +43,7 @@ import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import { PerpsFeesDisplay } from '../perps-fees-display';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import type { Position } from '../types';
+import { useVipTier } from '../../../../hooks/rewards/useVipTier';
 
 export type ReversePositionModalProps = {
   isOpen: boolean;
@@ -92,6 +93,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
     },
   });
   const { replacePerpsToastByKey } = usePerpsToast();
+  const vipTier = useVipTier();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -152,7 +154,16 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
         success: boolean;
         error?: string;
       }>('perpsFlipPosition', [
-        { symbol: position.symbol, position: positionForFlip },
+        {
+          symbol: position.symbol,
+          position: positionForFlip,
+          trackingData: {
+            totalFee: estimatedFees ?? 0,
+            marketPrice: currentPrice,
+            ...(vipTier === null ? {} : { vipTier }),
+            vipDiscount: metamaskFeeRateDiscountPercentage,
+          },
+        },
       ]);
       if (flipResult?.success !== true) {
         throw new Error(flipResult?.error || 'Failed to flip position');
@@ -190,6 +201,10 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
     replacePerpsToastByKey,
     track,
     t,
+    estimatedFees,
+    currentPrice,
+    vipTier,
+    metamaskFeeRateDiscountPercentage,
   ]);
 
   return (
