@@ -12,6 +12,12 @@ const FIAT_DISPLAY_ACTIVITY_TYPES = new Set<ActivityListItem['type']>([
   'swapIncomplete',
 ]);
 
+const SECONDARY_TOKEN_ACTIVITY_TYPES = new Set<ActivityListItem['type']>([
+  'swap',
+  'bridge',
+  'convert',
+]);
+
 const APPROVAL_ACTIVITY_TYPES = new Set<ActivityListItem['type']>([
   'approveSpendingCap',
   'increaseSpendingCap',
@@ -26,6 +32,12 @@ export function isApprovalActivityType(
 
 export function shouldShowFiatDisplay(item: ActivityListItem): boolean {
   return FIAT_DISPLAY_ACTIVITY_TYPES.has(item.type);
+}
+
+export function shouldShowSecondaryTokenAmount(
+  type: ActivityListItem['type'],
+): boolean {
+  return SECONDARY_TOKEN_ACTIVITY_TYPES.has(type);
 }
 
 export function getActivityTypeSignOptions(

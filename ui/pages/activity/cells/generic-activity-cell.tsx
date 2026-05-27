@@ -20,6 +20,7 @@ import { StatusIcon } from '../../../components/ui/icon/status-icon';
 import { getActivityListItemAvatarConfig } from '../resolve-activity-avatar-config';
 import { useFormatFiatAmount } from '../useFormatFiatAmount';
 import { useFormatTokenAmount } from '../useFormatTokenAmount';
+import { shouldShowSecondaryTokenAmount } from '../helpers';
 import { useGetLabel } from '../useGetLabel';
 import type { ActivityCellProps } from './types';
 
@@ -181,7 +182,9 @@ export function GenericActivityCell({
   const fiatAmount = useFormatFiatAmount(data, primaryToken, chainId);
   const primaryTokenAmount = formatTokenAmount(primaryToken, data.type);
   const secondaryTokenAmount = formatTokenAmount(secondaryToken, data.type);
-  const secondaryDisplay = fiatAmount ?? secondaryTokenAmount;
+  const secondaryDisplay = shouldShowSecondaryTokenAmount(data.type)
+    ? secondaryTokenAmount
+    : (fiatAmount ?? secondaryTokenAmount);
 
   const avatarConfig = useMemo(
     () =>
