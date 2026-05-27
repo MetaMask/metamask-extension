@@ -84,6 +84,7 @@ type UnlockPageProps = {
   loginWithDifferentMethod: () => Promise<void>;
   firstTimeFlowType: string | null;
   isPopup: boolean;
+  accountTypeForMetrics: string;
   isWalletResetInProgress: boolean;
   passkeyAutoUnlockSuppressed: boolean;
   /** When true, passkey ceremony must run in a browser tab (sidepanel + incompatible AAGUID). */
@@ -192,6 +193,10 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
      */
     isPopup: PropTypes.bool,
     /**
+     * Indicates the account type for onboarding metrics
+     */
+    accountTypeForMetrics: PropTypes.string,
+    /**
      * Indicates if the wallet is reset in progress
      */
     isWalletResetInProgress: PropTypes.bool,
@@ -292,7 +297,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     event.stopPropagation();
 
     const { password, isSubmitting } = this.state;
-    const { onSubmit, isOnboardingCompleted } = this.props;
+    const { onSubmit, isOnboardingCompleted, accountTypeForMetrics } = this.props;
 
     if (password === '' || isSubmitting) {
       return;
@@ -311,7 +316,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
         properties: {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: 'social',
+          account_type: accountTypeForMetrics,
           biometrics: false,
         },
       });
@@ -334,7 +339,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
           properties: {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            account_type: 'social',
+            account_type: accountTypeForMetrics,
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             biometrics: false,
@@ -385,7 +390,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
   handleLoginError = async (error: LoginError, isRehydrationFlow = false) => {
     const { t } = this.context as UnlockPageContext;
     const { message, data } = error;
-    const { isOnboardingCompleted } = this.props;
+    const { isOnboardingCompleted, accountTypeForMetrics } = this.props;
 
     // Sync failed_attempts with numberOfAttempts from error data
     if (data?.numberOfAttempts !== undefined) {
@@ -446,7 +451,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
           properties: {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            account_type: 'social',
+            account_type: accountTypeForMetrics,
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             failed_attempts: this.failed_attempts,
@@ -564,7 +569,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
   };
 
   onForgotPasswordOrLoginWithDiffMethods = async () => {
-    const { isSocialLoginFlow, navigate, isOnboardingCompleted } = this.props;
+    const { isSocialLoginFlow, navigate, isOnboardingCompleted, accountTypeForMetrics } = this.props;
 
     // in `onboarding_unlock` route, if the user is on a social login flow and onboarding is not completed,
     // we can redirect to `onboarding_welcome` route to select a different login method
@@ -576,7 +581,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
         properties: {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: 'social',
+          account_type: accountTypeForMetrics,
         },
       });
 
@@ -592,7 +597,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
       properties: {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: isSocialLoginFlow ? 'social' : 'metamask',
+        account_type: accountTypeForMetrics,
       },
     });
 

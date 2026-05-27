@@ -5,7 +5,7 @@ import { MetaMetricsEventAccountType } from 'shared/constants/metametrics';
 import { getIsSocialLoginFlow } from '../first-time-flow';
 
 export type OnboardingState = {
-  metamask: SeedlessOnboardingControllerState & OnboardingControllerState;
+  metamask: Partial<SeedlessOnboardingControllerState> & OnboardingControllerState;
 };
 
 export function getSocialLoginType(
@@ -29,7 +29,7 @@ export function getIsSocialLoginUserAuthenticated(state: OnboardingState): boole
   const hasSocialLoginEmail = Boolean(getSocialLoginEmail(state));
 
   return (
-    state.metamask.isSeedlessOnboardingUserAuthenticated &&
+    Boolean(state.metamask.isSeedlessOnboardingUserAuthenticated) &&
     hasSocialLoginType &&
     hasSocialLoginEmail
   );

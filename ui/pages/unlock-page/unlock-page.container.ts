@@ -25,6 +25,8 @@ import {
   getIsPasskeyFeatureAvailable,
   getIsPasskeyRegistered,
   getIsEnrolledPasskeyIncompatibleWithSidepanel,
+  getAccountTypeForOnboardingMetrics,
+  OnboardingState,
 } from '../../selectors';
 import {
   getCompletedOnboarding,
@@ -56,11 +58,13 @@ const mapStateToProps = (state: MetaMaskReduxState) => {
     getIsPasskeyRegistered(state) &&
     !isSocialLoginFlow &&
     isOnboardingCompleted;
+  const firstTimeFlowType = getFirstTimeFlowType(state);
+  const accountTypeForMetrics = getAccountTypeForOnboardingMetrics(state);
   return {
     isUnlocked,
     isSocialLoginFlow,
     isOnboardingCompleted,
-    firstTimeFlowType: getFirstTimeFlowType(state),
+    firstTimeFlowType,
     isWalletResetInProgress: getIsWalletResetInProgress(state),
     isPasskeyActive,
     mustDeferPasskeyToBrowserTab:
@@ -68,6 +72,7 @@ const mapStateToProps = (state: MetaMaskReduxState) => {
       getIsEnrolledPasskeyIncompatibleWithSidepanel(state) &&
       isPasskeyActive,
     passkeyAutoUnlockSuppressed: getPasskeyAutoUnlockSuppressed(state),
+    accountTypeForMetrics,
   };
 };
 

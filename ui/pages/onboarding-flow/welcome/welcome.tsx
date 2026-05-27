@@ -27,6 +27,7 @@ import {
   ONBOARDING_SETUP_PASSKEY_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
+  getAccountTypeForOnboardingMetrics,
   getFirstTimeFlowType,
   getIsParticipateInMetaMetricsSet,
   getIsPasskeyFeatureAvailable,
@@ -100,6 +101,7 @@ export default function OnboardingWelcome() {
     getIsParticipateInMetaMetricsSet,
   );
   const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
+  const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
   const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
     useState(false);
 
@@ -202,7 +204,7 @@ export default function OnboardingWelcome() {
       event: MetaMetricsEventName.WalletSetupStarted,
       properties: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: MetaMetricsEventAccountType.Default,
+        account_type: accountTypeForMetrics,
       },
     });
     bufferedTrace?.({
@@ -212,7 +214,7 @@ export default function OnboardingWelcome() {
     });
 
     navigate(ONBOARDING_CREATE_PASSWORD_ROUTE);
-  }, [dispatch, navigate, trackEvent, onboardingParentContext, bufferedTrace]);
+  }, [dispatch, navigate, trackEvent, onboardingParentContext, bufferedTrace, accountTypeForMetrics]);
 
   const onImportClick = useCallback(async () => {
     setIsLoggingIn(true);
@@ -222,7 +224,7 @@ export default function OnboardingWelcome() {
       event: MetaMetricsEventName.WalletImportStarted,
       properties: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: MetaMetricsEventAccountType.Imported,
+        account_type: accountTypeForMetrics,
       },
     });
     bufferedTrace?.({
@@ -232,7 +234,7 @@ export default function OnboardingWelcome() {
     });
 
     navigate(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
-  }, [dispatch, navigate, trackEvent, onboardingParentContext, bufferedTrace]);
+  }, [dispatch, navigate, trackEvent, onboardingParentContext, bufferedTrace, accountTypeForMetrics]);
 
   const handleSocialLogin = useCallback(
     async (socialConnectionType) => {
@@ -305,7 +307,7 @@ export default function OnboardingWelcome() {
             event: MetaMetricsEventName.SocialLoginFailed,
             properties: {
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              account_type: `${MetaMetricsEventAccountType.Default}_${LOGIN_TYPE.TELEGRAM}`,
+              account_type: accountTypeForMetrics,
               // eslint-disable-next-line @typescript-eslint/naming-convention
               is_rehydration: 'unknown',
               // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -326,7 +328,7 @@ export default function OnboardingWelcome() {
 
       setLoginError(LOGIN_ERROR.GENERIC);
     },
-    [bufferedEndTrace, trackEvent],
+    [bufferedEndTrace, trackEvent, accountTypeForMetrics],
   );
 
   const onSocialLoginCreateClick = useCallback(
@@ -339,7 +341,7 @@ export default function OnboardingWelcome() {
         event: MetaMetricsEventName.WalletSetupStarted,
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: `${MetaMetricsEventAccountType.Default}_${socialConnectionType}`,
+          account_type: accountTypeForMetrics,
         },
       });
 
@@ -352,7 +354,7 @@ export default function OnboardingWelcome() {
           event: MetaMetricsEventName.SocialLoginCompleted,
           properties: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            account_type: `${MetaMetricsEventAccountType.Default}_${socialConnectionType}`,
+            account_type: accountTypeForMetrics,
           },
         });
         if (isNewUser) {
@@ -381,6 +383,7 @@ export default function OnboardingWelcome() {
       onboardingParentContext,
       handleSocialLoginError,
       bufferedTrace,
+      accountTypeForMetrics,
     ],
   );
 
@@ -392,7 +395,7 @@ export default function OnboardingWelcome() {
         event: MetaMetricsEventName.WalletImportStarted,
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: `${MetaMetricsEventAccountType.Imported}_${socialConnectionType}`,
+          account_type: accountTypeForMetrics,
         },
       });
 
@@ -405,7 +408,7 @@ export default function OnboardingWelcome() {
           event: MetaMetricsEventName.SocialLoginCompleted,
           properties: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            account_type: `${MetaMetricsEventAccountType.Imported}_${socialConnectionType}`,
+            account_type: accountTypeForMetrics,
           },
         });
 
@@ -435,6 +438,7 @@ export default function OnboardingWelcome() {
       handleSocialLoginError,
       bufferedTrace,
       dispatch,
+      accountTypeForMetrics,
     ],
   );
 
