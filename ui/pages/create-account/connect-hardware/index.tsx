@@ -599,6 +599,7 @@ const ConnectHardwareForm = () => {
     setError(null);
     setSelectedAccounts([]);
     latestGetPageRequestId.current += 1;
+    latestPendingDevice.current = null;
     setHardwareAccounts([]);
     setCurrentDevice(null);
   }, [setCurrentDevice]);
