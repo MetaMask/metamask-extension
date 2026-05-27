@@ -106,20 +106,27 @@ export async function setBackgroundConnection(
 }
 
 /**
- * Subscribe to a given messenger event emitted by the background.
+ * Subscribe to a given event emitted by the background via the root messenger.
  *
- * Subscriptions are deduplicated by event name: multiple local subscribers to
- * the same event share a single upstream `messengerSubscribe` IPC and a single
- * `background.onNotification` listener. The upstream `messengerUnsubscribe` IPC
- * is only sent when the last local subscriber to an event unsubscribes.
+ * Because callbacks cannot be sent to the background, we create the
+ * subscription in two steps:
  *
- * Callbacks are identified by reference: subscribing the same function object
- * twice to the same event collapses to a single slot, and the first
- * unsubscribe removes it for both callers.
+ * 1. First, we send a `messengerSubscribe` request to the background, which
+ * will attach an event listener to the root messenger. When the event occurs,
+ * it will send a notification.
+ * 2. Second, we use `onNotification` on the background client to wait for the
+ * notification. When it arrives, it will call the given callback.
+ *
+ * To prevent unnecessary calls to the background, if this function is called
+ * more than once for the same pending event, callbacks will be consolidated;
+ * when the event occurs, they will be called in the order they were defined.
  *
  * @param event - The event name.
  * @param callback - The callback to invoke when the event is emitted.
- * @returns A cleanup function that can be invoked to unsubscribe.
+ * @returns A cleanup function that can be invoked to remove the subscription on
+ * the messenger event. If multiple subscriptions exist for the same messenger
+ * event, the unsubscribe function will only take effect once there is only one
+ * subscriber left.
  */
 export async function subscribeToMessengerEvent<Data extends Json>(
   event: NamespacedName,
