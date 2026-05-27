@@ -1,3 +1,4 @@
+import type { Hex } from '@metamask/utils';
 import type { Mockttp } from 'mockttp';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
@@ -22,7 +23,8 @@ const PROD_REMOTE_FLAGS = getProductionRemoteFlagDefaults();
 
 const ARBITRUM_CHAIN_ID = '0xa4b1';
 const ARBITRUM_CHAIN_ID_DECIMAL = Number(ARBITRUM_CHAIN_ID);
-const ARBITRUM_USDC_ADDRESS = '0xaf88d065e77c8cC2239327C5EDb3A432268e5831';
+const ARBITRUM_USDC_ADDRESS: Hex =
+  '0xaf88d065e77c8cC2239327C5EDb3A432268e5831';
 const ARBITRUM_USDC_PRICE_IN_ETH = 1 / 1700;
 const HYPERCORE_CHAIN_ID = '0x539';
 const HYPERCORE_CHAIN_ID_DECIMAL = Number(HYPERCORE_CHAIN_ID);
