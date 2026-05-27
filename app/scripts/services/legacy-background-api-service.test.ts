@@ -828,7 +828,7 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
 
-    it('Does not sync with server if shouldCreateSocialBackup is false', async () => {
+    it('does not sync with server if shouldCreateSocialBackup is false', async () => {
       await withService(async ({ rootMessenger, serviceMessenger }) => {
         rootMessenger.registerActionHandler(
           'KeyringController:importAccountWithStrategy',
