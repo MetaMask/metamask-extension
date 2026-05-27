@@ -1,6 +1,9 @@
 import { Variables } from '../lib/variables';
 import { ENVIRONMENT } from './constants';
-import { getOAuthClientId, setEnvironmentVariables } from './set-environment-variables';
+import {
+  getOAuthClientId,
+  setEnvironmentVariables,
+} from './set-environment-variables';
 
 type ProviderConfig = {
   clientIdEnv: string;
@@ -324,33 +327,33 @@ describe('setEnvironmentVariables', () => {
   it('forces TELEGRAM_LOGIN_ENABLED to false for production builds', () => {
     const variables = getVariablesForSetEnvironmentVariables();
 
-      setEnvironmentVariables({
-        buildName: 'MetaMask',
-        buildType: 'main',
-        environment: ENVIRONMENT.PRODUCTION,
-        isDevBuild: false,
-        isTestBuild: false,
-        variables,
-        version: '1.0.0',
-      });
+    setEnvironmentVariables({
+      buildName: 'MetaMask',
+      buildType: 'main',
+      environment: ENVIRONMENT.PRODUCTION,
+      isDevBuild: false,
+      isTestBuild: false,
+      variables,
+      version: '1.0.0',
+    });
 
-      expect(variables.get('TELEGRAM_LOGIN_ENABLED')).toBe('false');
+    expect(variables.get('TELEGRAM_LOGIN_ENABLED')).toBe('false');
   });
 
   it('forces TELEGRAM_LOGIN_ENABLED to false for release candidate builds', () => {
     const variables = getVariablesForSetEnvironmentVariables();
 
-      setEnvironmentVariables({
-        buildName: 'MetaMask',
-        buildType: 'main',
-        environment: ENVIRONMENT.RELEASE_CANDIDATE,
-        isDevBuild: false,
-        isTestBuild: false,
-        variables,
-        version: '1.0.0',
-      });
+    setEnvironmentVariables({
+      buildName: 'MetaMask',
+      buildType: 'main',
+      environment: ENVIRONMENT.RELEASE_CANDIDATE,
+      isDevBuild: false,
+      isTestBuild: false,
+      variables,
+      version: '1.0.0',
+    });
 
-      expect(variables.get('TELEGRAM_LOGIN_ENABLED')).toBe('false');
+    expect(variables.get('TELEGRAM_LOGIN_ENABLED')).toBe('false');
   });
 
   it('preserves TELEGRAM_LOGIN_ENABLED outside production and release builds', () => {

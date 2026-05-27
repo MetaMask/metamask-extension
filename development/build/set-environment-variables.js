@@ -3,8 +3,10 @@ const assert = require('node:assert');
 const { ENVIRONMENT } = require('./constants');
 
 function isProductionOrReleaseCandidateBuild(environment) {
-  return environment === ENVIRONMENT.PRODUCTION ||
-    environment === ENVIRONMENT.RELEASE_CANDIDATE;
+  return (
+    environment === ENVIRONMENT.PRODUCTION ||
+    environment === ENVIRONMENT.RELEASE_CANDIDATE
+  );
 }
 
 /**
