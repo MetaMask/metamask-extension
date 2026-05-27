@@ -567,7 +567,7 @@ describe('Reveal Seed Page', () => {
       );
       expect(
         queryByTestId('reveal-seed-malicious-block-dismiss'),
-      ).toHaveTextContent(messages.srpRevealMaliciousBlockDismiss.message);
+      ).toHaveTextContent(messages.gotIt.message);
 
       expect(queryByTestId('input-password')).not.toBeInTheDocument();
       expect(
