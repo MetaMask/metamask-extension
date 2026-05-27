@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`SmartContractAccountToggleSection Disabled State Handling disables all toggles when requests are pending 1`] = `
+exports[`SmartContractAccountToggleSection > Disabled State Handling > disables all toggles when requests are pending 1`] = `
 <div>
   <div
     class="pt-3 pr-2 pb-4 pl-4 bg-section w-full"
@@ -121,7 +121,7 @@ exports[`SmartContractAccountToggleSection Disabled State Handling disables all 
 </div>
 `;
 
-exports[`SmartContractAccountToggleSection Learn More Button opens Zendesk article when clicked 1`] = `
+exports[`SmartContractAccountToggleSection > Learn More Button > opens Zendesk article when clicked 1`] = `
 <div>
   <div
     class="pt-3 pr-2 pb-4 pl-4 bg-section w-full"
@@ -161,7 +161,7 @@ exports[`SmartContractAccountToggleSection Learn More Button opens Zendesk artic
 </div>
 `;
 
-exports[`SmartContractAccountToggleSection Loading State shows loading spinner while fetching networks 1`] = `
+exports[`SmartContractAccountToggleSection > Loading State > shows loading spinner while fetching networks 1`] = `
 <div>
   <div
     class="pt-3 pr-2 pb-4 pl-4 bg-section w-full"
@@ -242,7 +242,7 @@ exports[`SmartContractAccountToggleSection Loading State shows loading spinner w
 </div>
 `;
 
-exports[`SmartContractAccountToggleSection Network Integration displays toggle for each available network 1`] = `
+exports[`SmartContractAccountToggleSection > Network Integration > displays toggle for each available network 1`] = `
 <div>
   <div
     class="pt-3 pr-2 pb-4 pl-4 bg-section w-full"

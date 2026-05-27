@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`HelpText should match snapshot 1`] = `
+exports[`HelpText > should match snapshot 1`] = `
 <div>
   <p
     class="mm-box mm-text mm-help-text mm-text--body-sm mm-box--color-text-default"

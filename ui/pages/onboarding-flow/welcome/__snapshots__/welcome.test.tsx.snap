@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Welcome Page render matches snapshot 1`] = `
+exports[`Welcome Page > render matches snapshot 1`] = `
 <div>
   <div
     class="flex flex-col items-center justify-center welcome-container h-full w-full"

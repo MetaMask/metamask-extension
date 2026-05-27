@@ -445,6 +445,12 @@ describe('NetworkForm Component', () => {
   });
 
   it('should call updateNetwork when saving an existing network', async () => {
+    nock('https://mainnet.infura.io:443', {
+      encodedQueryParams: true,
+    })
+      .post('/v3/')
+      .reply(200, { jsonrpc: '2.0', result: '0x64' });
+
     const { getByText } = renderComponent({
       ...propNetworkDisplay,
       existingNetwork: {},

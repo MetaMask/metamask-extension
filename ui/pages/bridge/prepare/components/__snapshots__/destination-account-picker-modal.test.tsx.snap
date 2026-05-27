@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`DestinationAccountPickerModal should render the modal when an account is selected 1`] = `
+exports[`DestinationAccountPickerModal > should render the modal when an account is selected 1`] = `
 <div
   class="mm-modal"
   data-testid="destination-account-picker-modal"
@@ -404,7 +404,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
 </div>
 `;
 
-exports[`DestinationAccountPickerModal should render the modal when no account is selected 1`] = `
+exports[`DestinationAccountPickerModal > should render the modal when no account is selected 1`] = `
 <div
   class="mm-modal"
   data-testid="destination-account-picker-modal"

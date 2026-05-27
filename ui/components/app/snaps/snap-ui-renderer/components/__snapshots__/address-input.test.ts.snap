@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`SnapUIAddressInput renders the matched address info in a disabled state 1`] = `
+exports[`SnapUIAddressInput > renders the matched address info in a disabled state 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
@@ -98,7 +98,7 @@ exports[`SnapUIAddressInput renders the matched address info in a disabled state
 </div>
 `;
 
-exports[`SnapUIAddressInput renders with an invalid CAIP Account ID 1`] = `
+exports[`SnapUIAddressInput > renders with an invalid CAIP Account ID 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
@@ -140,7 +140,7 @@ exports[`SnapUIAddressInput renders with an invalid CAIP Account ID 1`] = `
 </div>
 `;
 
-exports[`SnapUIAddressInput will not render avatar when displayAvatar is false 1`] = `
+exports[`SnapUIAddressInput > will not render avatar when displayAvatar is false 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
@@ -182,7 +182,7 @@ exports[`SnapUIAddressInput will not render avatar when displayAvatar is false 1
 </div>
 `;
 
-exports[`SnapUIAddressInput will render 1`] = `
+exports[`SnapUIAddressInput > will render 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
@@ -220,7 +220,7 @@ exports[`SnapUIAddressInput will render 1`] = `
 </div>
 `;
 
-exports[`SnapUIAddressInput will render a matched address name 1`] = `
+exports[`SnapUIAddressInput > will render a matched address name 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
@@ -318,7 +318,7 @@ exports[`SnapUIAddressInput will render a matched address name 1`] = `
 </div>
 `;
 
-exports[`SnapUIAddressInput will render avatar when displayAvatar is true 1`] = `
+exports[`SnapUIAddressInput > will render avatar when displayAvatar is true 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"

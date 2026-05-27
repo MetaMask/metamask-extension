@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ConfirmFooter should match snapshot with signature confirmation 1`] = `
+exports[`ConfirmFooter > should match snapshot with signature confirmation 1`] = `
 <div>
   <div
     class="mm-box multichain-page-footer confirm-footer_page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full"
@@ -25,7 +25,7 @@ exports[`ConfirmFooter should match snapshot with signature confirmation 1`] = `
 </div>
 `;
 
-exports[`ConfirmFooter should match snapshot with transaction confirmation 1`] = `
+exports[`ConfirmFooter > should match snapshot with transaction confirmation 1`] = `
 <div>
   <div
     class="mm-box multichain-page-footer confirm-footer_page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full"

@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`I18N Helper getMessage renders substitutions inside span if substitutions include React components 1`] = `
+exports[`I18N Helper > getMessage > renders substitutions inside span if substitutions include React components 1`] = `
 <div>
   <span>
      

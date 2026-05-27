@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck Mock account fixtures use string-keyed record access.
 import { act } from 'react-dom/test-utils';
 import { Hex } from '@metamask/utils';
 import { getIsSmartTransaction } from '../../../../../shared/lib/selectors';
@@ -8,7 +10,10 @@ import { isSendBundleSupported } from '../../../../store/actions';
 import { isHardwareWallet } from '../../../../../shared/lib/selectors/keyring';
 import { useGaslessSupportedSmartTransactions } from './useGaslessSupportedSmartTransactions';
 
-jest.mock('../../../../../shared/lib/selectors');
+jest.mock('../../../../../shared/lib/selectors', () => ({
+  ...jest.requireActual('../../../../../shared/lib/selectors'),
+  getIsSmartTransaction: jest.fn(),
+}));
 jest.mock('../../../../store/actions', () => ({
   ...jest.requireActual('../../../../store/actions'),
   isSendBundleSupported: jest.fn(),
@@ -23,7 +28,6 @@ jest.mock('../../../../../shared/lib/selectors/keyring', () => ({
 }));
 
 const CHAIN_ID_MOCK = '0x5';
-
 async function runHook() {
   const { result } = renderHookWithConfirmContextProvider(
     useGaslessSupportedSmartTransactions,

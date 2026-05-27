@@ -51,6 +51,12 @@ jest.mock('../../../shared/lib/stores/persistence-manager', () => ({
   }),
 }));
 
+async function getFixtureExtensionStoreMock() {
+  const { FixtureExtensionStore } =
+    await import('../../../shared/lib/stores/fixture-extension-store.js');
+  return jest.mocked(FixtureExtensionStore);
+}
+
 /**
  * Re-imports the module with a fresh module registry so top-level code
  * re-runs with the current `globalThis.self.location.href`.
@@ -93,65 +99,50 @@ describe('setup-initial-state-hooks', () => {
   describe('isBackgroundContext (via module behavior)', () => {
     it('detects browserify MV3 background (app-init.js)', async () => {
       setSelfHref('chrome-extension://abc123/scripts/app-init.js');
-      const { FixtureExtensionStore } = jest.requireMock(
-        '../../../shared/lib/stores/fixture-extension-store',
-      );
 
       await importFresh();
 
-      expect(FixtureExtensionStore).toHaveBeenCalledWith({
+      expect(await getFixtureExtensionStoreMock()).toHaveBeenCalledWith({
         initialize: true,
       });
     });
 
     it('detects webpack MV3 background (service-worker.js)', async () => {
       setSelfHref('chrome-extension://abc123/service-worker.js');
-      const { FixtureExtensionStore } = jest.requireMock(
-        '../../../shared/lib/stores/fixture-extension-store',
-      );
 
       await importFresh();
 
-      expect(FixtureExtensionStore).toHaveBeenCalledWith({
+      expect(await getFixtureExtensionStoreMock()).toHaveBeenCalledWith({
         initialize: true,
       });
     });
 
     it('detects Firefox MV2 background (background.html)', async () => {
       setSelfHref('moz-extension://abc123/background.html');
-      const { FixtureExtensionStore } = jest.requireMock(
-        '../../../shared/lib/stores/fixture-extension-store',
-      );
 
       await importFresh();
 
-      expect(FixtureExtensionStore).toHaveBeenCalledWith({
+      expect(await getFixtureExtensionStoreMock()).toHaveBeenCalledWith({
         initialize: true,
       });
     });
 
     it('returns false for UI context (home.html)', async () => {
       setSelfHref('chrome-extension://abc123/home.html');
-      const { FixtureExtensionStore } = jest.requireMock(
-        '../../../shared/lib/stores/fixture-extension-store',
-      );
 
       await importFresh();
 
-      expect(FixtureExtensionStore).toHaveBeenCalledWith({
+      expect(await getFixtureExtensionStoreMock()).toHaveBeenCalledWith({
         initialize: false,
       });
     });
 
     it('returns false for popup UI (popup.html)', async () => {
       setSelfHref('chrome-extension://abc123/popup.html');
-      const { FixtureExtensionStore } = jest.requireMock(
-        '../../../shared/lib/stores/fixture-extension-store',
-      );
 
       await importFresh();
 
-      expect(FixtureExtensionStore).toHaveBeenCalledWith({
+      expect(await getFixtureExtensionStoreMock()).toHaveBeenCalledWith({
         initialize: false,
       });
     });

@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`SnapUIRenderer prefills interactive inputs with existing state 1`] = `
+exports[`SnapUIRenderer > prefills interactive inputs with existing state 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
@@ -38,7 +38,7 @@ exports[`SnapUIRenderer prefills interactive inputs with existing state 1`] = `
 </div>
 `;
 
-exports[`SnapUIRenderer re-focuses input after re-render 1`] = `
+exports[`SnapUIRenderer > re-focuses input after re-render 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
@@ -92,7 +92,7 @@ exports[`SnapUIRenderer re-focuses input after re-render 1`] = `
 </div>
 `;
 
-exports[`SnapUIRenderer re-renders when the interface changes 1`] = `
+exports[`SnapUIRenderer > re-renders when the interface changes 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
@@ -146,7 +146,7 @@ exports[`SnapUIRenderer re-renders when the interface changes 1`] = `
 </div>
 `;
 
-exports[`SnapUIRenderer re-syncs state when the interface changes 1`] = `
+exports[`SnapUIRenderer > re-syncs state when the interface changes 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
@@ -200,7 +200,7 @@ exports[`SnapUIRenderer re-syncs state when the interface changes 1`] = `
 </div>
 `;
 
-exports[`SnapUIRenderer renders basic UI 1`] = `
+exports[`SnapUIRenderer > renders basic UI 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
@@ -227,7 +227,7 @@ exports[`SnapUIRenderer renders basic UI 1`] = `
 </div>
 `;
 
-exports[`SnapUIRenderer renders footers 1`] = `
+exports[`SnapUIRenderer > renders footers 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
@@ -275,7 +275,7 @@ exports[`SnapUIRenderer renders footers 1`] = `
 </div>
 `;
 
-exports[`SnapUIRenderer renders loading state 1`] = `
+exports[`SnapUIRenderer > renders loading state 1`] = `
 <div>
   <div
     class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--height-full"
@@ -298,7 +298,7 @@ exports[`SnapUIRenderer renders loading state 1`] = `
 </div>
 `;
 
-exports[`SnapUIRenderer supports container backgrounds 1`] = `
+exports[`SnapUIRenderer > supports container backgrounds 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-default"
@@ -346,7 +346,7 @@ exports[`SnapUIRenderer supports container backgrounds 1`] = `
 </div>
 `;
 
-exports[`SnapUIRenderer supports interactive inputs 1`] = `
+exports[`SnapUIRenderer > supports interactive inputs 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
@@ -384,7 +384,7 @@ exports[`SnapUIRenderer supports interactive inputs 1`] = `
 </div>
 `;
 
-exports[`SnapUIRenderer supports the contentBackgroundColor prop 1`] = `
+exports[`SnapUIRenderer > supports the contentBackgroundColor prop 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-default"
@@ -432,7 +432,7 @@ exports[`SnapUIRenderer supports the contentBackgroundColor prop 1`] = `
 </div>
 `;
 
-exports[`SnapUIRenderer supports the onCancel prop 1`] = `
+exports[`SnapUIRenderer > supports the onCancel prop 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"

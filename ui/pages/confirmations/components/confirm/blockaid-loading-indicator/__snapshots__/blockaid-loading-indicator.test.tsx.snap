@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`BlockaidLoadingIndicator returns spinner when there blockaid validation is in progress for signature 1`] = `
+exports[`BlockaidLoadingIndicator > returns spinner when there blockaid validation is in progress for signature 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-top-4 mm-box--margin-inline-auto"

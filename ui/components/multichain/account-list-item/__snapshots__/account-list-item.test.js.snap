@@ -1,240 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`AccountListItem renders AccountListItem component and shows account name, address, and balance for non-EVM account: non-EVM-account-list-item 1`] = `
-<div>
-  <div
-    class="p-4 bg-transparent multichain-account-list-item flex items-center multichain-account-list-item--clickable"
-    data-testid="account-item"
-  >
-    <div
-      class="flex w-full gap-2 items-center"
-    >
-      <div
-        class="flex sm:hidden"
-        data-testid="account-list-item-badge"
-      >
-        <button
-          class="mm-box multichain-badge-status pr-1 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-transparent"
-          data-testid="multichain-badge-status"
-        >
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-3"
-              class=""
-              data-original-title="Not connected"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <div
-                class="mm-box mm-badge-wrapper mm-box--display-inline-block"
-              >
-                <div
-                  class="shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
-                >
-                  <div
-                    class="flex [&>div]:!rounded-none"
-                  >
-                    <div
-                      style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(200, 20, 47);"
-                    >
-                      <svg
-                        height="32"
-                        width="32"
-                        x="0"
-                        y="0"
-                      >
-                        <rect
-                          fill="#F2C602"
-                          height="32"
-                          transform="translate(5.02062044750432 0.81039489042363) rotate(161.5 16.00000000000000 16.00000000000000)"
-                          width="32"
-                          x="0"
-                          y="0"
-                        />
-                        <rect
-                          fill="#F5ED00"
-                          height="32"
-                          transform="translate(-9.40812135399240 -10.30504258407245) rotate(246.0 16.00000000000000 16.00000000000000)"
-                          width="32"
-                          x="0"
-                          y="0"
-                        />
-                        <rect
-                          fill="#FB183A"
-                          height="32"
-                          transform="translate(9.19255526987956 26.91416082088715) rotate(215.5 16.00000000000000 16.00000000000000)"
-                          width="32"
-                          x="0"
-                          y="0"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="mm-box mm-badge-wrapper__badge-container"
-                  style="bottom: -10%; right: -20%;"
-                >
-                  <div
-                    class="mm-box multichain-badge-status__badge mm-box--background-color-icon-alternative mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </button>
-      </div>
-      <div
-        class="hidden sm:flex"
-      >
-        <div
-          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
-        >
-          <div
-            class="flex [&>div]:!rounded-none"
-          >
-            <div
-              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(200, 20, 47);"
-            >
-              <svg
-                height="32"
-                width="32"
-                x="0"
-                y="0"
-              >
-                <rect
-                  fill="#F2C602"
-                  height="32"
-                  transform="translate(5.02062044750432 0.81039489042363) rotate(161.5 16.00000000000000 16.00000000000000)"
-                  width="32"
-                  x="0"
-                  y="0"
-                />
-                <rect
-                  fill="#F5ED00"
-                  height="32"
-                  transform="translate(-9.40812135399240 -10.30504258407245) rotate(246.0 16.00000000000000 16.00000000000000)"
-                  width="32"
-                  x="0"
-                  y="0"
-                />
-                <rect
-                  fill="#FB183A"
-                  height="32"
-                  transform="translate(9.19255526987956 26.91416082088715) rotate(215.5 16.00000000000000 16.00000000000000)"
-                  width="32"
-                  x="0"
-                  y="0"
-                />
-              </svg>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        class="flex-col multichain-account-list-item__content flex"
-      >
-        <div
-          class="flex-col flex"
-        >
-          <div
-            class="justify-between flex"
-          >
-            <div
-              class="gap-2 items-center multichain-account-list-item__account-name flex me-2"
-            >
-              <button
-                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate multichain-account-list-item__account-name__button p-0 bg-transparent w-full text-left"
-                type="button"
-              >
-                Test Account
-              </button>
-            </div>
-            <div
-              class="flex-row items-center justify-end multichain-account-list-item__asset flex overflow-hidden"
-            >
-              <div
-                class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-                data-testid="first-currency-display"
-                title="$100,000.00"
-              >
-                <span
-                  class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-                  data-testid="account-value-and-suffix"
-                >
-                  $100,000.00
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="justify-between flex"
-        >
-          <div
-            class="items-center flex"
-          >
-            <p
-              class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
-              data-testid="account-list-address"
-            >
-              bc1qn3s...5eker
-            </p>
-          </div>
-          <div
-            class="network-indicator"
-          >
-            <div
-              class="mm-box"
-              data-testid="account-network-indicator"
-            >
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-4"
-                  class=""
-                  data-original-title="This can be changed in "Settings > Alerts""
-                  data-tooltipped=""
-                  style="display: inline;"
-                  tabindex="0"
-                >
-                  <div
-                    class="mm-box multichain-avatar-group mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
-                    data-testid="avatar-group"
-                  >
-                    <div
-                      class="mm-box mm-box--display-flex mm-box--align-items-center"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="flex-row flex"
-        >
-          <div
-            class="mm-box mm-tag mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-section mm-box--rounded-sm"
-            data-testid="account-list-item-tag-b7893c59-e376-4cc0-93ad-05ddaab574a6-Native SegWit"
-          >
-            <p
-              class="text-alternative text-s-body-xs leading-s-body-xs tracking-s-body-xs md:text-l-body-xs md:leading-l-body-xs md:tracking-l-body-xs font-regular font-default"
-            >
-              Native SegWit
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="items-center justify-center flex"
-    />
-  </div>
-</div>
-`;
-
-exports[`AccountListItem renders AccountListItem component and shows account name, address, and balance: evm-account-list-item 1`] = `
+exports[`AccountListItem > renders AccountListItem component and shows account name, address, and balance > evm-account-list-item 1`] = `
 <div>
   <div
     class="p-4 bg-transparent multichain-account-list-item flex items-center multichain-account-list-item--clickable"
@@ -510,6 +276,240 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="items-center justify-center flex"
+    />
+  </div>
+</div>
+`;
+
+exports[`AccountListItem > renders AccountListItem component and shows account name, address, and balance for non-EVM account > non-EVM-account-list-item 1`] = `
+<div>
+  <div
+    class="p-4 bg-transparent multichain-account-list-item flex items-center multichain-account-list-item--clickable"
+    data-testid="account-item"
+  >
+    <div
+      class="flex w-full gap-2 items-center"
+    >
+      <div
+        class="flex sm:hidden"
+        data-testid="account-list-item-badge"
+      >
+        <button
+          class="mm-box multichain-badge-status pr-1 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-transparent"
+          data-testid="multichain-badge-status"
+        >
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-3"
+              class=""
+              data-original-title="Not connected"
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <div
+                class="mm-box mm-badge-wrapper mm-box--display-inline-block"
+              >
+                <div
+                  class="shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
+                >
+                  <div
+                    class="flex [&>div]:!rounded-none"
+                  >
+                    <div
+                      style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(200, 20, 47);"
+                    >
+                      <svg
+                        height="32"
+                        width="32"
+                        x="0"
+                        y="0"
+                      >
+                        <rect
+                          fill="#F2C602"
+                          height="32"
+                          transform="translate(5.02062044750432 0.81039489042363) rotate(161.5 16.00000000000000 16.00000000000000)"
+                          width="32"
+                          x="0"
+                          y="0"
+                        />
+                        <rect
+                          fill="#F5ED00"
+                          height="32"
+                          transform="translate(-9.40812135399240 -10.30504258407245) rotate(246.0 16.00000000000000 16.00000000000000)"
+                          width="32"
+                          x="0"
+                          y="0"
+                        />
+                        <rect
+                          fill="#FB183A"
+                          height="32"
+                          transform="translate(9.19255526987956 26.91416082088715) rotate(215.5 16.00000000000000 16.00000000000000)"
+                          width="32"
+                          x="0"
+                          y="0"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="mm-box mm-badge-wrapper__badge-container"
+                  style="bottom: -10%; right: -20%;"
+                >
+                  <div
+                    class="mm-box multichain-badge-status__badge mm-box--background-color-icon-alternative mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </button>
+      </div>
+      <div
+        class="hidden sm:flex"
+      >
+        <div
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+        >
+          <div
+            class="flex [&>div]:!rounded-none"
+          >
+            <div
+              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(200, 20, 47);"
+            >
+              <svg
+                height="32"
+                width="32"
+                x="0"
+                y="0"
+              >
+                <rect
+                  fill="#F2C602"
+                  height="32"
+                  transform="translate(5.02062044750432 0.81039489042363) rotate(161.5 16.00000000000000 16.00000000000000)"
+                  width="32"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#F5ED00"
+                  height="32"
+                  transform="translate(-9.40812135399240 -10.30504258407245) rotate(246.0 16.00000000000000 16.00000000000000)"
+                  width="32"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#FB183A"
+                  height="32"
+                  transform="translate(9.19255526987956 26.91416082088715) rotate(215.5 16.00000000000000 16.00000000000000)"
+                  width="32"
+                  x="0"
+                  y="0"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="flex-col multichain-account-list-item__content flex"
+      >
+        <div
+          class="flex-col flex"
+        >
+          <div
+            class="justify-between flex"
+          >
+            <div
+              class="gap-2 items-center multichain-account-list-item__account-name flex me-2"
+            >
+              <button
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate multichain-account-list-item__account-name__button p-0 bg-transparent w-full text-left"
+                type="button"
+              >
+                Test Account
+              </button>
+            </div>
+            <div
+              class="flex-row items-center justify-end multichain-account-list-item__asset flex overflow-hidden"
+            >
+              <div
+                class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                data-testid="first-currency-display"
+                title="$100,000.00"
+              >
+                <span
+                  class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                  data-testid="account-value-and-suffix"
+                >
+                  $100,000.00
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="justify-between flex"
+        >
+          <div
+            class="items-center flex"
+          >
+            <p
+              class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+              data-testid="account-list-address"
+            >
+              bc1qn3s...5eker
+            </p>
+          </div>
+          <div
+            class="network-indicator"
+          >
+            <div
+              class="mm-box"
+              data-testid="account-network-indicator"
+            >
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-4"
+                  class=""
+                  data-original-title="This can be changed in "Settings > Alerts""
+                  data-tooltipped=""
+                  style="display: inline;"
+                  tabindex="0"
+                >
+                  <div
+                    class="mm-box multichain-avatar-group mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
+                    data-testid="avatar-group"
+                  >
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="flex-row flex"
+        >
+          <div
+            class="mm-box mm-tag mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-section mm-box--rounded-sm"
+            data-testid="account-list-item-tag-b7893c59-e376-4cc0-93ad-05ddaab574a6-Native SegWit"
+          >
+            <p
+              class="text-alternative text-s-body-xs leading-s-body-xs tracking-s-body-xs md:text-l-body-xs md:leading-l-body-xs md:tracking-l-body-xs font-regular font-default"
+            >
+              Native SegWit
+            </p>
           </div>
         </div>
       </div>

@@ -5,6 +5,7 @@ import {
 } from './network-utils';
 
 jest.mock('../constants/network', () => ({
+  CHAIN_SPEC_URL: 'https://chainid.network/chains.json',
   FEATURED_RPCS: [
     {
       chainId: '0x111',

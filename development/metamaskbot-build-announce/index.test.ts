@@ -1,7 +1,30 @@
-jest.mock('./artifacts');
-jest.mock('./bundle-size');
-jest.mock('./performance-benchmarks');
-jest.mock('./utils');
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck Vitest hoisted mocks and dynamic entry imports are runtime-only here.
+const mockModules = vi.hoisted(() => ({
+  artifacts: {
+    buildArtifactsBody: vi.fn(),
+    getArtifactLinks: vi.fn(),
+  },
+  bundleSize: {
+    buildBundleSizeDiffSection: vi.fn(),
+  },
+  perf: {
+    buildPerformanceBenchmarksSection: vi.fn(),
+  },
+  testPlan: {
+    buildTestPlanSection: vi.fn(),
+  },
+  utils: {
+    buildSectionWithFallback: vi.fn(),
+    postCommentWithMetamaskBot: vi.fn(),
+  },
+}));
+
+jest.mock('./artifacts', () => mockModules.artifacts);
+jest.mock('./bundle-size', () => mockModules.bundleSize);
+jest.mock('./performance-benchmarks', () => mockModules.perf);
+jest.mock('./test-plan', () => mockModules.testPlan);
+jest.mock('./utils', () => mockModules.utils);
 
 const BASE_ENV: Record<string, string> = {
   PR_COMMENT_TOKEN: 'token',
@@ -38,16 +61,11 @@ async function flushPromises(): Promise<void> {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getMocks(): Record<string, any> {
-  return {
-    artifacts: jest.requireMock('./artifacts'),
-    bundleSize: jest.requireMock('./bundle-size'),
-    perf: jest.requireMock('./performance-benchmarks'),
-    utils: jest.requireMock('./utils'),
-  };
+  return mockModules;
 }
 
 function configureMocks(): void {
-  const { artifacts, bundleSize, perf, utils } = getMocks();
+  const { artifacts, bundleSize, perf, testPlan, utils } = getMocks();
 
   artifacts.getArtifactLinks.mockReturnValue({
     link: () => '<a href="#">link</a>',
@@ -65,6 +83,9 @@ function configureMocks(): void {
   artifacts.buildArtifactsBody.mockReturnValue('<p>artifacts</p>');
   perf.buildPerformanceBenchmarksSection.mockResolvedValue('<p>perf</p>');
   bundleSize.buildBundleSizeDiffSection.mockResolvedValue('<p>bundle</p>');
+  testPlan.buildTestPlanSection.mockResolvedValue(
+    '<p>AI generated test plan test-plan-99.0.0.json</p>',
+  );
   utils.buildSectionWithFallback.mockImplementation(
     (fn: () => Promise<string | null | undefined>) =>
       fn().then((r: string | null | undefined) => r ?? ''),
@@ -78,6 +99,7 @@ describe('start() entry point', () => {
 
   beforeEach(() => {
     jest.resetModules();
+    jest.clearAllMocks();
     warnSpy = jest.spyOn(console, 'warn').mockImplementation();
     errorSpy = jest.spyOn(console, 'error').mockImplementation();
     configureMocks();
@@ -93,8 +115,7 @@ describe('start() entry point', () => {
   it('logs a warning and returns early when PR_NUMBER is not set', async () => {
     setEnv({ PR_NUMBER: undefined });
 
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    require('.');
+    await import('.');
     await flushPromises();
 
     expect(warnSpy).toHaveBeenCalledWith(
@@ -106,8 +127,7 @@ describe('start() entry point', () => {
   it('invokes console.error when required env vars are missing', async () => {
     setEnv({ HOST_URL: undefined });
 
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    require('.');
+    await import('.');
     await flushPromises();
 
     expect(errorSpy).toHaveBeenCalledWith(
@@ -122,8 +142,7 @@ describe('start() entry point', () => {
   it('calls postCommentWithMetamaskBot with assembled comment body', async () => {
     setEnv();
 
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    require('.');
+    await import('.');
     await flushPromises();
 
     expect(getMocks().utils.postCommentWithMetamaskBot).toHaveBeenCalledWith(
@@ -140,8 +159,7 @@ describe('start() entry point', () => {
   it('passes through missing bundle-size baseline hashes', async () => {
     setEnv({ BUNDLE_SIZE_BASELINE_COMMIT_HASHES: undefined });
 
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    require('.');
+    await import('.');
     await flushPromises();
 
     expect(
@@ -153,8 +171,7 @@ describe('start() entry point', () => {
   it('includes test plan link when TEST_PLAN_VERSION is set', async () => {
     setEnv({ TEST_PLAN_VERSION: '99.0.0' });
 
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    require('.');
+    await import('.');
     await flushPromises();
 
     const { commentBody } =
@@ -166,8 +183,7 @@ describe('start() entry point', () => {
   it('does not include test plan link when TEST_PLAN_VERSION is not set', async () => {
     setEnv();
 
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    require('.');
+    await import('.');
     await flushPromises();
 
     const { commentBody } =
@@ -178,8 +194,7 @@ describe('start() entry point', () => {
   it('falls back to HEAD_COMMIT_HASH when BUILDS_FROM_SHA is empty string', async () => {
     setEnv({ BUILDS_FROM_SHA: '' });
 
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    require('.');
+    await import('.');
     await flushPromises();
 
     const { artifacts } = getMocks();
@@ -193,8 +208,7 @@ describe('start() entry point', () => {
   it('falls back to HEAD_COMMIT_HASH when BUILDS_FROM_SHA is not set', async () => {
     setEnv({ BUILDS_FROM_SHA: undefined });
 
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    require('.');
+    await import('.');
     await flushPromises();
 
     const { artifacts } = getMocks();
@@ -208,8 +222,7 @@ describe('start() entry point', () => {
   it('falls back to RUN_ID when BUILDS_FROM_RUN is not set', async () => {
     setEnv({ BUILDS_FROM_RUN: undefined });
 
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    require('.');
+    await import('.');
     await flushPromises();
 
     const { artifacts } = getMocks();
@@ -224,8 +237,7 @@ describe('start() entry point', () => {
   it('uses BUILDS_FROM_RUN for artifact links when set', async () => {
     setEnv({ BUILDS_FROM_RUN: '55' });
 
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    require('.');
+    await import('.');
     await flushPromises();
 
     const { artifacts } = getMocks();

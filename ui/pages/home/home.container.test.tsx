@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck Dynamic container import uses runtime module resolution.
 import React from 'react';
 import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
@@ -27,7 +29,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => jest.fn(),
 }));
 
-const renderHome = () => {
+const renderHome = async () => {
   const store = configureStore({
     ...mockState,
     metamask: {
@@ -37,20 +39,19 @@ const renderHome = () => {
     },
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-  const HomeContainer = require('./home.container').default;
+  const HomeContainer = (await import('./home.container')).default;
   return renderWithProvider(<HomeContainer />, store);
 };
 
 describe('HomeWithRouter', () => {
-  it('renders AppHeader and DappConnectionControlBar', () => {
-    const { getByTestId } = renderHome();
+  it('renders AppHeader and DappConnectionControlBar', async () => {
+    const { getByTestId } = await renderHome();
     expect(getByTestId('mock-app-header')).toBeInTheDocument();
     expect(getByTestId('dapp-control-bar-bottom')).toBeInTheDocument();
   });
 
-  it('renders DappConnectionControlBar after Home content', () => {
-    const { getByTestId } = renderHome();
+  it('renders DappConnectionControlBar after Home content', async () => {
+    const { getByTestId } = await renderHome();
     const home = getByTestId('mock-home');
     const bar = getByTestId('dapp-control-bar-bottom');
     const position = home.compareDocumentPosition(bar);

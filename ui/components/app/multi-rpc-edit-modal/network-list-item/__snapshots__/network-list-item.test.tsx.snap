@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`NetworkListItem renders correctly with required props 1`] = `
+exports[`NetworkListItem > renders correctly with required props 1`] = `
 <div>
   <div
     class="mm-box mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center"

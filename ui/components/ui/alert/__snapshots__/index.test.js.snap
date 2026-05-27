@@ -1,8 +1,8 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Alert renders nothing with no visible boolean in state 1`] = `<div />`;
+exports[`Alert > renders nothing with no visible boolean in state 1`] = `<div />`;
 
-exports[`Alert renders with visible boolean in state 1`] = `
+exports[`Alert > renders with visible boolean in state 1`] = `
 <div>
   <div
     class="global-alert visible"

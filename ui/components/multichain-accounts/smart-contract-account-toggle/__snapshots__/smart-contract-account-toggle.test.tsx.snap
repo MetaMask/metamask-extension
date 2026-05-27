@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`SmartContractAccountToggle Basic Rendering shows toggle as OFF for unsupported networks 1`] = `
+exports[`SmartContractAccountToggle > Basic Rendering > shows toggle as OFF for unsupported networks 1`] = `
 <div>
   <div
     class="flex flex-row justify-between mt-4"
@@ -45,7 +45,7 @@ exports[`SmartContractAccountToggle Basic Rendering shows toggle as OFF for unsu
 </div>
 `;
 
-exports[`SmartContractAccountToggle Basic Rendering shows toggle as enabled for supported networks 1`] = `
+exports[`SmartContractAccountToggle > Basic Rendering > shows toggle as enabled for supported networks 1`] = `
 <div>
   <div
     class="flex flex-row justify-between mt-4"
@@ -90,7 +90,7 @@ exports[`SmartContractAccountToggle Basic Rendering shows toggle as enabled for 
 </div>
 `;
 
-exports[`SmartContractAccountToggle Disabled State disables toggle during pending requests 1`] = `
+exports[`SmartContractAccountToggle > Disabled State > disables toggle during pending requests 1`] = `
 <div>
   <div
     class="flex flex-row justify-between mt-4"

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck Vitest partial mocks use runtime globals.
 import { Interface } from '@ethersproject/abi';
 import { renderHook, act } from '@testing-library/react-hooks';
 import { TransactionStatus } from '@metamask/transaction-controller';
@@ -14,8 +16,8 @@ import { useMerklClaimStatus } from './useMerklClaimStatus';
 const MOCK_USER = '0x1234567890abcdef1234567890abcdef12345678';
 
 const mockResolveClaimAmount = jest.fn();
-jest.mock('./transaction-amount-utils', () => {
-  const actual = jest.requireActual<
+jest.mock('./transaction-amount-utils', async () => {
+  const actual = await vi.importActual<
     typeof import('./transaction-amount-utils')
   >('./transaction-amount-utils');
   return {

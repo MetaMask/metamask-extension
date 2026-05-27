@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Restore vault Component renders match snapshot 1`] = `
+exports[`Restore vault Component > renders match snapshot 1`] = `
 <div>
   <div
     class="flex flex-col gap-4 justify-between border-muted bg-default import-srp-restore-vault h-full rounded-lg border border-solid"

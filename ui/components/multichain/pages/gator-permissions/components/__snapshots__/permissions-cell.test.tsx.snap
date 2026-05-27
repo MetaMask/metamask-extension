@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`PermissionsCell renders correctly with required props 1`] = `
+exports[`PermissionsCell > renders correctly with required props 1`] = `
 <div>
   <div
     class="gap-4 p-4 pt-0 bg-default"

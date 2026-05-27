@@ -10,7 +10,7 @@ const alternateLocaleDataMock = { [keyMock]: { message: messageMock2 } };
 
 jest.mock('./i18n');
 jest.mock('../../app/_locales/en/messages.json', () => ({
-  [keyMock]: { message: messageMock },
+  testKey: { message: 'testMessage' },
 }));
 
 describe('Translate', () => {

@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`NFTTokenTransferInfo renders correctly 1`] = `
+exports[`NFTTokenTransferInfo > renders correctly 1`] = `
 <div>
   <div
     class="flex flex-col mb-2 pb-3 px-0"

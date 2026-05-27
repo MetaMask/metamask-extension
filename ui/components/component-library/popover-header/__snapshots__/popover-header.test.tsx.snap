@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`PopoverHeader should render PopoverHeader correctly 1`] = `
+exports[`PopoverHeader > should render PopoverHeader correctly 1`] = `
 <div>
   <div
     class="mm-box mm-header-base mm-popover-header mm-box--display-flex mm-box--justify-content-space-between"

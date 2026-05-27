@@ -326,13 +326,15 @@ describe('Defi positions list', () => {
     await waitForElementByText('AaveV3 Mainnet');
     await clickElementByText('AaveV3 Mainnet');
 
-    const title = screen.getByTestId('defi-details-page-title');
+    const title = await screen.findByTestId('defi-details-page-title');
     expect(title).toHaveTextContent('AaveV3 Mainnet');
 
-    const marketValue = screen.getByTestId('defi-details-page-market-value');
+    const marketValue = await screen.findByTestId(
+      'defi-details-page-market-value',
+    );
     expect(marketValue).toHaveTextContent('$4,650.38');
 
-    const supplyPosition = screen.getByTestId(
+    const supplyPosition = await screen.findByTestId(
       'defi-details-list-supply-position',
     );
     expect(supplyPosition).toHaveTextContent('Supplied');
@@ -340,7 +342,7 @@ describe('Defi positions list', () => {
     expect(supplyPosition.parentElement).toHaveTextContent('1.5 Wrapped Ether');
     expect(supplyPosition.parentElement).toHaveTextContent('$4,650.38');
 
-    const borrowPosition = screen.getByTestId(
+    const borrowPosition = await screen.findByTestId(
       'defi-details-list-borrow-position',
     );
     expect(borrowPosition).toHaveTextContent('Borrowed');
@@ -353,15 +355,15 @@ describe('Defi positions list', () => {
     await waitForElementByText('MetaMask Staking');
     await clickElementByText('MetaMask Staking');
 
-    const titleStaking = screen.getByTestId('defi-details-page-title');
+    const titleStaking = await screen.findByTestId('defi-details-page-title');
     expect(titleStaking).toHaveTextContent('MetaMask Staking');
 
-    const marketValueStaking = screen.getByTestId(
+    const marketValueStaking = await screen.findByTestId(
       'defi-details-page-market-value',
     );
     expect(marketValueStaking).toHaveTextContent('$6,522.67');
 
-    const stakingPosition = screen.getByTestId(
+    const stakingPosition = await screen.findByTestId(
       'defi-details-list-stake-position',
     );
     expect(stakingPosition).toHaveTextContent('Staked');

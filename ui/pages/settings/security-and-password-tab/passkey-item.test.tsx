@@ -18,6 +18,7 @@ jest.mock('../../../../shared/lib/environment', () => ({
 
 jest.mock('../../../../shared/lib/passkey', () => ({
   ...jest.requireActual('../../../../shared/lib/passkey'),
+  getPasskeyAuthMethodKey: jest.fn(() => 'passkeyAuthMethodBiometrics'),
   isWebAuthnSupported: jest.fn().mockReturnValue(true),
   cancelPasskeyCeremony: jest.fn(),
 }));

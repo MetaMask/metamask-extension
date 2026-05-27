@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Permission List Item render renders correctly 1`] = `
+exports[`Permission List Item > render > renders correctly 1`] = `
 <div>
   <div
     class="mm-box mm-box--width-full mm-box--background-color-background-default"

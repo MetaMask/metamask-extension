@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`VisitSupportDataConsentModal renders the modal correctly when open 1`] = `
+exports[`VisitSupportDataConsentModal > renders the modal correctly when open 1`] = `
 <div
   class="mm-modal visit-support-data-consent-modal"
   data-testid="visit-support-data-consent-modal"

@@ -8,7 +8,7 @@ describe('FormattedCounter', () => {
   let setIntervalSpy: jest.SpyInstance;
   beforeEach(() => {
     jest.useFakeTimers();
-    setIntervalSpy = jest.spyOn(global, 'setInterval');
+    setIntervalSpy = jest.spyOn(window, 'setInterval');
   });
 
   afterEach(() => {
@@ -16,17 +16,17 @@ describe('FormattedCounter', () => {
   });
 
   it('should render and start triggering the countdown', async () => {
-    await act(async () => {
-      render(
-        <FormattedCounter startFrom={10} onCountdownEnd={mockUnlockCallback} />,
-      );
+    render(
+      <FormattedCounter startFrom={10} onCountdownEnd={mockUnlockCallback} />,
+    );
 
+    await act(async () => {
       // speed up the countdown
       jest.advanceTimersByTime(12 * 1000);
-
-      expect(setIntervalSpy).toHaveBeenCalledWith(expect.any(Function), 1000);
-
-      expect(mockUnlockCallback).toHaveBeenCalled();
     });
+
+    expect(setIntervalSpy).toHaveBeenCalledWith(expect.any(Function), 1000);
+
+    expect(mockUnlockCallback).toHaveBeenCalled();
   });
 });

@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Name renders address with image 1`] = `
+exports[`Name > renders address with image 1`] = `
 <div>
   <div
     class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -22,7 +22,7 @@ exports[`Name renders address with image 1`] = `
 </div>
 `;
 
-exports[`Name renders address with long saved name 1`] = `
+exports[`Name > renders address with long saved name 1`] = `
 <div>
   <div
     class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -44,7 +44,7 @@ exports[`Name renders address with long saved name 1`] = `
 </div>
 `;
 
-exports[`Name renders address with no saved name 1`] = `
+exports[`Name > renders address with no saved name 1`] = `
 <div>
   <div
     class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -66,7 +66,7 @@ exports[`Name renders address with no saved name 1`] = `
 </div>
 `;
 
-exports[`Name renders address with saved name 1`] = `
+exports[`Name > renders address with saved name 1`] = `
 <div>
   <div
     class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -88,7 +88,7 @@ exports[`Name renders address with saved name 1`] = `
 </div>
 `;
 
-exports[`Name renders when no address value is passed 1`] = `
+exports[`Name > renders when no address value is passed 1`] = `
 <div>
   <div
     class="mm-box mm-box--display-flex mm-box--flex-direction-column"

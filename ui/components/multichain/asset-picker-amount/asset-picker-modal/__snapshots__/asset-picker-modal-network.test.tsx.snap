@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`AssetPickerModalNetwork renders modal with no network list by default 1`] = `
+exports[`AssetPickerModalNetwork > renders modal with no network list by default 1`] = `
 <body>
   <div
     id="popover-content"
@@ -75,7 +75,7 @@ exports[`AssetPickerModalNetwork renders modal with no network list by default 1
 </body>
 `;
 
-exports[`AssetPickerModalNetwork should not show selected network when network prop is not passed in 1`] = `
+exports[`AssetPickerModalNetwork > should not show selected network when network prop is not passed in 1`] = `
 <body>
   <div
     id="popover-content"
@@ -233,7 +233,7 @@ exports[`AssetPickerModalNetwork should not show selected network when network p
 </body>
 `;
 
-exports[`AssetPickerModalNetwork should use passed in network as default when network prop is passed in 1`] = `
+exports[`AssetPickerModalNetwork > should use passed in network as default when network prop is passed in 1`] = `
 <body>
   <div
     id="popover-content"

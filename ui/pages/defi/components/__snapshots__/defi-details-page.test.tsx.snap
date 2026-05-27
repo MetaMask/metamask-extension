@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`DeFiDetailsPage renders defi asset page 1`] = `
+exports[`DeFiDetailsPage > renders defi asset page 1`] = `
 <div>
   <div
     class="mm-box main-container asset__container"

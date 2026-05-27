@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`TypedSignInfo correctly renders permit sign type 1`] = `
+exports[`TypedSignInfo > correctly renders permit sign type 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
@@ -368,7 +368,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
 </div>
 `;
 
-exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] = `
+exports[`TypedSignInfo > correctly renders permit sign type with no deadline 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
@@ -736,9 +736,9 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
 </div>
 `;
 
-exports[`TypedSignInfo does not render if required data is not present in the transaction 1`] = `<div />`;
+exports[`TypedSignInfo > does not render if required data is not present in the transaction 1`] = `<div />`;
 
-exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
+exports[`TypedSignInfo > renders origin for typed sign data request 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
@@ -1432,7 +1432,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
 </div>
 `;
 
-exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
+exports[`TypedSignInfo > should render message for typed sign v3 request 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
@@ -1883,7 +1883,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
 </div>
 `;
 
-exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
+exports[`TypedSignInfo > should render message for typed sign v4 request 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"

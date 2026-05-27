@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ArrowIcon renders the ArrowIcon component 1`] = `
+exports[`ArrowIcon > renders the ArrowIcon component 1`] = `
 <div>
   <svg
     fill="none"

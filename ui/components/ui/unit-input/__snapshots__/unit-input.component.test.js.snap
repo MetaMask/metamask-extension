@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`UnitInput Component rendering should match snapshot of error class when props.error === true 1`] = `
+exports[`UnitInput Component > rendering > should match snapshot of error class when props.error === true 1`] = `
 <div>
   <div
     class="unit-input unit-input--error"
@@ -29,7 +29,7 @@ exports[`UnitInput Component rendering should match snapshot of error class when
 </div>
 `;
 
-exports[`UnitInput Component rendering should match snapshot with a child component 1`] = `
+exports[`UnitInput Component > rendering > should match snapshot with a child component 1`] = `
 <div>
   <div
     class="unit-input"
@@ -63,7 +63,7 @@ exports[`UnitInput Component rendering should match snapshot with a child compon
 </div>
 `;
 
-exports[`UnitInput Component rendering should match snapshot with a suffix 1`] = `
+exports[`UnitInput Component > rendering > should match snapshot with a suffix 1`] = `
 <div>
   <div
     class="unit-input"
@@ -97,7 +97,7 @@ exports[`UnitInput Component rendering should match snapshot with a suffix 1`] =
 </div>
 `;
 
-exports[`UnitInput Component rendering should match snapshot without a suffix 1`] = `
+exports[`UnitInput Component > rendering > should match snapshot without a suffix 1`] = `
 <div>
   <div
     class="unit-input"

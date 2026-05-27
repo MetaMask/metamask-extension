@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ModalFooter should match snapshot 1`] = `
+exports[`ModalFooter > should match snapshot 1`] = `
 <div>
   <div
     class="mm-box mm-modal-footer mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4"

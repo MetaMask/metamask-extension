@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`RevertedIcon renders the RevertedIcon component 1`] = `
+exports[`RevertedIcon > renders the RevertedIcon component 1`] = `
 <div>
   <svg
     fill="none"

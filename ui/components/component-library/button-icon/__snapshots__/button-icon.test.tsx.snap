@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ButtonIcon should render button element correctly 1`] = `
+exports[`ButtonIcon > should render button element correctly 1`] = `
 <div>
   <button
     aria-label="add"

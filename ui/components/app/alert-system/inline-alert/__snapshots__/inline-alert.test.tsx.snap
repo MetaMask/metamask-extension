@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Inline Alert renders alert with danger severity 1`] = `
+exports[`Inline Alert > renders alert with danger severity 1`] = `
 <div>
   <div
     class="mm-box mm-box--display-flex"
@@ -23,7 +23,7 @@ exports[`Inline Alert renders alert with danger severity 1`] = `
 </div>
 `;
 
-exports[`Inline Alert renders alert with informative severity 1`] = `
+exports[`Inline Alert > renders alert with informative severity 1`] = `
 <div>
   <div
     class="mm-box mm-box--display-flex"
@@ -46,7 +46,7 @@ exports[`Inline Alert renders alert with informative severity 1`] = `
 </div>
 `;
 
-exports[`Inline Alert renders alert with warning severity 1`] = `
+exports[`Inline Alert > renders alert with warning severity 1`] = `
 <div>
   <div
     class="mm-box mm-box--display-flex"

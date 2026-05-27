@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`NftGrid matches the snapshot 1`] = `
+exports[`NftGrid > matches the snapshot 1`] = `
 <DocumentFragment>
   <div
     class="mm-box"
@@ -9,7 +9,110 @@ exports[`NftGrid matches the snapshot 1`] = `
     <div>
       <div
         class="mm-box grid gap-4 pb-4 grid-cols-3"
-      />
+      >
+        <div
+          class="mm-box nft-items__image-wrapper"
+          data-testid="nft-wrapper"
+        >
+          <div
+            class="mm-box nft-item__card"
+          >
+            <button
+              class="mm-box nft-item__container"
+              data-testid="nft-item"
+            >
+              <div
+                class="mm-box mm-badge-wrapper nft-item__badge-wrapper nft-item__badge-wrapper__clickable mm-box--display-block"
+              >
+                <div
+                  class="mm-box nft-item__default-image nft-default mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-lg"
+                  data-testid="nft-default-image"
+                  tabindex="0"
+                />
+                <div
+                  class="mm-box mm-badge-wrapper__badge-container"
+                  style="bottom: 4px; right: 4px;"
+                >
+                  <div
+                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network nft-item__network-badge mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+                    data-testid="nft-network-badge"
+                  >
+                    ?
+                  </div>
+                </div>
+              </div>
+            </button>
+            <div>
+              <div
+                class=""
+                style="display: inline;"
+                tabindex="0"
+                title=""
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+                >
+                  NFT 1
+                </p>
+                <p
+                  class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box nft-items__image-wrapper"
+          data-testid="nft-wrapper"
+        >
+          <div
+            class="mm-box nft-item__card"
+          >
+            <button
+              class="mm-box nft-item__container"
+              data-testid="nft-item"
+            >
+              <div
+                class="mm-box mm-badge-wrapper nft-item__badge-wrapper nft-item__badge-wrapper__clickable mm-box--display-block"
+              >
+                <div
+                  class="mm-box nft-item__default-image nft-default mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-lg"
+                  data-testid="nft-default-image"
+                  tabindex="0"
+                />
+                <div
+                  class="mm-box mm-badge-wrapper__badge-container"
+                  style="bottom: 4px; right: 4px;"
+                >
+                  <div
+                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network nft-item__network-badge mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+                    data-testid="nft-network-badge"
+                  >
+                    ?
+                  </div>
+                </div>
+              </div>
+            </button>
+            <div>
+              <div
+                class=""
+                style="display: inline;"
+                tabindex="0"
+                title=""
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+                >
+                  NFT 2
+                </p>
+                <p
+                  class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </DocumentFragment>

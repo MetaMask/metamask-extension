@@ -1,8 +1,12 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck Promise mocks intentionally model async boolean responses.
 import { act, waitFor } from '@testing-library/react';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { getGaslessBridgeWith7702EnabledForChain } from '../../../../shared/lib/selectors';
 import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
 import { getIsStxEnabled } from '../../../ducks/bridge/selectors';
+import { isRelaySupported } from '../../../store/actions';
+import { isAtomicBatchSupported } from '../../../store/controller-actions/transaction-controller';
 import { useGasIncluded7702 } from './useGasIncluded7702';
 
 jest.mock('../../../store/actions', () => ({
@@ -41,12 +45,8 @@ const renderUseGasIncluded7702 = (
 };
 
 describe('useGasIncluded7702', () => {
-  const mockIsRelaySupported = jest.requireMock(
-    '../../../store/actions',
-  ).isRelaySupported;
-  const mockIsAtomicBatchSupported = jest.requireMock(
-    '../../../store/controller-actions/transaction-controller',
-  ).isAtomicBatchSupported;
+  const mockIsRelaySupported = jest.mocked(isRelaySupported);
+  const mockIsAtomicBatchSupported = jest.mocked(isAtomicBatchSupported);
   const mockGetIsStxEnabled = jest.mocked(getIsStxEnabled);
   const mockGetGaslessBridgeWith7702Enabled = jest.mocked(
     getGaslessBridgeWith7702EnabledForChain,

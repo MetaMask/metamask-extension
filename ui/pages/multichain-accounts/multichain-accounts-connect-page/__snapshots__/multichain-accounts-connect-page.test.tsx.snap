@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`MultichainConnectPage renders correctly 1`] = `
+exports[`MultichainConnectPage > renders correctly 1`] = `
 <div>
   <div
     class="mm-box multichain-page multichain-page--has-app-header mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
@@ -245,7 +245,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
 </div>
 `;
 
-exports[`MultichainConnectPage renders with existing permissions correctly 1`] = `
+exports[`MultichainConnectPage > renders with existing permissions correctly 1`] = `
 <div>
   <div
     class="mm-box multichain-page multichain-page--has-app-header mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
@@ -490,7 +490,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
 </div>
 `;
 
-exports[`MultichainConnectPage renders with multichain origin request correctly 1`] = `
+exports[`MultichainConnectPage > renders with multichain origin request correctly 1`] = `
 <div>
   <div
     class="mm-box multichain-page multichain-page--has-app-header mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-default"

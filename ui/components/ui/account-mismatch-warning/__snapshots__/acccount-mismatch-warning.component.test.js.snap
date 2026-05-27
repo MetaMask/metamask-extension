@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`AccountMismatchWarning should match snapshot of mismatch address warning 1`] = `
+exports[`AccountMismatchWarning > should match snapshot of mismatch address warning 1`] = `
 <div>
   <div
     class="account-mismatch-warning__tooltip-wrapper"
@@ -34,4 +34,4 @@ exports[`AccountMismatchWarning should match snapshot of mismatch address warnin
 </div>
 `;
 
-exports[`AccountMismatchWarning should match snapshot of no warning with same address and selected address 1`] = `<div />`;
+exports[`AccountMismatchWarning > should match snapshot of no warning with same address and selected address 1`] = `<div />`;

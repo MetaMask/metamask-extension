@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`NetworkFilterImportToken should match snapshot 1`] = `
+exports[`NetworkFilterImportToken > should match snapshot 1`] = `
 <div>
   <div
     class="mm-box"
@@ -50,7 +50,7 @@ exports[`NetworkFilterImportToken should match snapshot 1`] = `
 </div>
 `;
 
-exports[`NetworkFilterImportToken should renders "popular networks" text when isTokenNetworkFilterEqualCurrentNetwork is true 1`] = `
+exports[`NetworkFilterImportToken > should renders "popular networks" text when isTokenNetworkFilterEqualCurrentNetwork is true 1`] = `
 <div>
   <div
     class="mm-box"

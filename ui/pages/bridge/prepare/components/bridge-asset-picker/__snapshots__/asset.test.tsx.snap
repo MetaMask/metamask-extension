@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`BridgeAsset should render ERC20 asset 1`] = `
+exports[`BridgeAsset > should render ERC20 asset 1`] = `
 <div
   class="mm-box mm-container mm-container--max-width-undefined cursor-pointer bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
   data-testid="bridge-asset--eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA"
@@ -95,7 +95,7 @@ exports[`BridgeAsset should render ERC20 asset 1`] = `
 </div>
 `;
 
-exports[`BridgeAsset should render asset with accountType 1`] = `
+exports[`BridgeAsset > should render asset with accountType 1`] = `
 <div
   class="mm-box mm-container mm-container--max-width-undefined cursor-pointer bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
   data-testid="bridge-asset--bip122:000000000019d6689c085ae165831e93/slip44:0"
@@ -199,7 +199,7 @@ exports[`BridgeAsset should render asset with accountType 1`] = `
 </div>
 `;
 
-exports[`BridgeAsset should render asset with balance 1`] = `
+exports[`BridgeAsset > should render asset with balance 1`] = `
 <div
   class="mm-box mm-container mm-container--max-width-undefined cursor-pointer bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
   data-testid="bridge-asset--eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA"
@@ -298,7 +298,7 @@ exports[`BridgeAsset should render asset with balance 1`] = `
 </div>
 `;
 
-exports[`BridgeAsset should render native asset 1`] = `
+exports[`BridgeAsset > should render native asset 1`] = `
 <div
   class="mm-box mm-container mm-container--max-width-undefined cursor-pointer bridge-asset--selected mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-primary-muted mm-box--rounded-none"
   data-testid="bridge-asset--eip155:1/slip44:60"

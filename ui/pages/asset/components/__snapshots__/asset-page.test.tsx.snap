@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`AssetPage should render a native asset 1`] = `
+exports[`AssetPage > should render a native asset 1`] = `
 <div>
   <div
     class="asset__content"
@@ -418,7 +418,7 @@ exports[`AssetPage should render a native asset 1`] = `
 </div>
 `;
 
-exports[`AssetPage should render an ERC20 asset without prices 1`] = `
+exports[`AssetPage > should render an ERC20 asset without prices 1`] = `
 <div>
   <div
     class="asset__content"
@@ -829,7 +829,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
 </div>
 `;
 
-exports[`AssetPage should render an ERC20 token with prices 1`] = `
+exports[`AssetPage > should render an ERC20 token with prices 1`] = `
 <div>
   <div
     class="asset__content"

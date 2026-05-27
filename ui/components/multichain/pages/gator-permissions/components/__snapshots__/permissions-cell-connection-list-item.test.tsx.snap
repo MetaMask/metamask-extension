@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`PermissionsCellConnectionListItem renders correctly with required props 1`] = `
+exports[`PermissionsCellConnectionListItem > renders correctly with required props 1`] = `
 <div>
   <div
     class="flex flex-row gap-4 items-center pt-0 pb-2 bg-default multichain-permissions-list-item"

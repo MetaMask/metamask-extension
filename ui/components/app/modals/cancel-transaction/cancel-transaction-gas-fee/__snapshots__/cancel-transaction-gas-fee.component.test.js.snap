@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`CancelTransactionGasFee Component should render 1`] = `
+exports[`CancelTransactionGasFee Component > should render 1`] = `
 <div>
   <div
     class="cancel-transaction-gas-fee"

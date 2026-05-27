@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ConfirmInfoRowCurrency should display in currency passed 1`] = `
+exports[`ConfirmInfoRowCurrency > should display in currency passed 1`] = `
 <div>
   <div
     class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
@@ -21,7 +21,7 @@ exports[`ConfirmInfoRowCurrency should display in currency passed 1`] = `
 </div>
 `;
 
-exports[`ConfirmInfoRowCurrency should display value in user preferred currency by default 1`] = `
+exports[`ConfirmInfoRowCurrency > should display value in user preferred currency by default 1`] = `
 <div>
   <div
     class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
@@ -46,4 +46,3 @@ exports[`ConfirmInfoRowCurrency should display value in user preferred currency 
   </div>
 </div>
 `;
-

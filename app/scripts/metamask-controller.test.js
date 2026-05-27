@@ -206,17 +206,19 @@ const tearDownMockMiddlewareLog = () => {
   loggerMiddlewareMock = undefined;
 };
 
-const createLoggerMiddlewareMock = () => (req, res, next) => {
-  if (loggerMiddlewareMock) {
-    loggerMiddlewareMock.requests.push(req);
-    next((cb) => {
-      loggerMiddlewareMock.responses.push(res);
-      cb();
-    });
-    return;
-  }
-  next();
-};
+function createLoggerMiddlewareMock() {
+  return (req, res, next) => {
+    if (loggerMiddlewareMock) {
+      loggerMiddlewareMock.requests.push(req);
+      next((cb) => {
+        loggerMiddlewareMock.responses.push(res);
+        cb();
+      });
+      return;
+    }
+    next();
+  };
+}
 
 jest.mock('./controllers/permissions/specifications', () => ({
   ...jest.requireActual('./controllers/permissions/specifications'),
@@ -255,9 +257,6 @@ jest.mock('../../shared/lib/trace', () => ({
   endTrace: jest.fn(),
 }));
 
-const KNOWN_PUBLIC_KEY =
-  '02065bc80d3d12b3688e4ad5ab1e9eda6adf24aec2518bfc21b87c99d4c5077ab0';
-
 const KNOWN_PUBLIC_KEY_ADDRESSES = [
   {
     address: '0x0e122670701207DB7c6d7ba9aE07868a4572dB3f',
@@ -286,7 +285,7 @@ const KNOWN_PUBLIC_KEY_ADDRESSES = [
   },
 ];
 
-const buildMockKeyringBridge = (
+function buildMockKeyringBridge(
   publicKeyPayload,
   appConfiguration = {
     arbitraryDataEnabled: 1,
@@ -295,8 +294,8 @@ const buildMockKeyringBridge = (
     starkv2Supported: 0,
     version: '1.0.0',
   },
-) =>
-  jest.fn(() => ({
+) {
+  return jest.fn(() => ({
     init: jest.fn(),
     dispose: jest.fn(),
     destroy: jest.fn(),
@@ -304,13 +303,15 @@ const buildMockKeyringBridge = (
     getPublicKey: jest.fn(async () => publicKeyPayload),
     getAppConfiguration: jest.fn(async () => appConfiguration),
   }));
+}
 
 jest.mock('@metamask/eth-trezor-keyring', () => ({
   ...jest.requireActual('@metamask/eth-trezor-keyring'),
   TrezorConnectBridge: buildMockKeyringBridge({
     success: true,
     payload: {
-      publicKey: KNOWN_PUBLIC_KEY,
+      publicKey:
+        '02065bc80d3d12b3688e4ad5ab1e9eda6adf24aec2518bfc21b87c99d4c5077ab0',
       chainCode: '0x1',
     },
   }),
@@ -319,8 +320,9 @@ jest.mock('@metamask/eth-trezor-keyring', () => ({
 jest.mock('@metamask/eth-ledger-bridge-keyring', () => ({
   ...jest.requireActual('@metamask/eth-ledger-bridge-keyring'),
   LedgerIframeBridge: buildMockKeyringBridge({
-    publicKey: KNOWN_PUBLIC_KEY,
-    address: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+    publicKey:
+      '02065bc80d3d12b3688e4ad5ab1e9eda6adf24aec2518bfc21b87c99d4c5077ab0',
+    address: '0x0e122670701207DB7c6d7ba9aE07868a4572dB3f',
     chainCode: '0x1',
   }),
 }));
@@ -640,6 +642,10 @@ describe('MetaMaskController', () => {
           namespace: MOCK_ANY_NAMESPACE,
         }),
       });
+      Object.assign(metamaskController.messengerClientApi, {
+        perpsDisconnect: jest.fn().mockResolvedValue(undefined),
+        perpsGetConnectionState: jest.fn().mockReturnValue('disconnected'),
+      });
 
       // Mock RemoteFeatureFlagController to prevent network requests in tests
       jest
@@ -701,6 +707,7 @@ describe('MetaMaskController', () => {
 
       // These tests require isAssetsUnifyStateFeatureEnabled to return true.
       // The flag is currently hardcoded to false, so skip the entire block.
+      // eslint-disable-next-line jest/no-disabled-tests
       describe.skip('with assets-unify state enabled', () => {
         let unifyMetamaskController;
 

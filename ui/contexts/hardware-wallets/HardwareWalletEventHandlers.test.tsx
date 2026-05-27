@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck Hardware wallet state unions are narrowed by assertions in these tests.
 import { renderHook } from '@testing-library/react-hooks';
 import {
   HardwareWalletError,
@@ -33,6 +35,23 @@ describe('useDeviceEventHandlers', () => {
     cleanupAdapter: jest.Mock;
     abortAndCleanupController: jest.Mock;
     resetConnectionRefs: jest.Mock;
+  };
+
+  const expectHardwareWalletErrorState = (
+    resultState: ReturnType<typeof ConnectionState.error>,
+    expectedError: {
+      message: string;
+      code: ErrorCode;
+      severity: Severity;
+      category: Category;
+      userMessage: string;
+    },
+  ) => {
+    expect(resultState).toStrictEqual({
+      status: 'error',
+      error: expect.objectContaining(expectedError),
+    });
+    expect(resultState.error).toBeInstanceOf(HardwareWalletError);
   };
 
   beforeEach(() => {
@@ -174,16 +193,13 @@ describe('useDeviceEventHandlers', () => {
       const prevState = ConnectionState.disconnected();
       const resultState = updater(prevState);
 
-      expect(resultState).toEqual(
-        ConnectionState.error(
-          new HardwareWalletError('Device is locked', {
-            code: ErrorCode.AuthenticationDeviceLocked,
-            severity: Severity.Err,
-            category: Category.Authentication,
-            userMessage: 'Device is locked',
-          }),
-        ),
-      );
+      expectHardwareWalletErrorState(resultState, {
+        message: 'Device is locked',
+        code: ErrorCode.AuthenticationDeviceLocked,
+        severity: Severity.Err,
+        category: Category.Authentication,
+        userMessage: 'Device is locked',
+      });
     });
 
     it('handles AppNotOpen event with error', () => {
@@ -351,16 +367,13 @@ describe('useDeviceEventHandlers', () => {
       const prevState = ConnectionState.disconnected();
       const resultState = updater(prevState);
 
-      expect(resultState).toEqual(
-        ConnectionState.error(
-          new HardwareWalletError('Hardware wallet connection failed', {
-            code: ErrorCode.ConnectionTransportMissing,
-            severity: Severity.Err,
-            category: Category.Connection,
-            userMessage: 'Hardware wallet connection failed',
-          }),
-        ),
-      );
+      expectHardwareWalletErrorState(resultState, {
+        message: 'Hardware wallet connection failed',
+        code: ErrorCode.ConnectionTransportMissing,
+        severity: Severity.Err,
+        category: Category.Connection,
+        userMessage: 'Hardware wallet connection failed',
+      });
     });
 
     it('handles OperationTimeout event with error', () => {
@@ -403,16 +416,13 @@ describe('useDeviceEventHandlers', () => {
       const prevState = ConnectionState.disconnected();
       const resultState = updater(prevState);
 
-      expect(resultState).toStrictEqual(
-        ConnectionState.error(
-          new HardwareWalletError('Operation timed out', {
-            code: ErrorCode.ConnectionTimeout,
-            severity: Severity.Err,
-            category: Category.Protocol,
-            userMessage: 'Operation timed out',
-          }),
-        ),
-      );
+      expectHardwareWalletErrorState(resultState, {
+        message: 'Operation timed out',
+        code: ErrorCode.ConnectionTimeout,
+        severity: Severity.Err,
+        category: Category.Protocol,
+        userMessage: 'Operation timed out',
+      });
     });
 
     it('ignores unknown events', () => {

@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`NetworkListSearch renders search list component 1`] = `
+exports[`NetworkListSearch > renders search list component 1`] = `
 <div>
   <div
     class="mm-box mm-box--padding-top-0 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4"

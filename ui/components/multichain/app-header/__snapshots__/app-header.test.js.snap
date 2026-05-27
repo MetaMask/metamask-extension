@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`App Header locked state matches snapshot: locked 1`] = `
+exports[`App Header > locked state matches snapshot > locked 1`] = `
 <div>
   <div
     class="mm-box multichain-app-header mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default"
@@ -59,7 +59,7 @@ exports[`App Header locked state matches snapshot: locked 1`] = `
 </div>
 `;
 
-exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
+exports[`App Header > unlocked state matches snapshot > unlocked 1`] = `
 <div>
   <div
     class="mm-box multichain-app-header-logo mm-box--margin-2 mm-box--display-none mm-box--sm:display-flex mm-box--justify-content-center mm-box--align-items-center"

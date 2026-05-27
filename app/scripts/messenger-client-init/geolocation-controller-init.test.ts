@@ -4,27 +4,46 @@ import {
   type GeolocationControllerMessenger,
   type GeolocationControllerState,
 } from '@metamask/geolocation-controller';
+import { vi } from 'vitest';
 import type { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import { GeolocationControllerInit } from './geolocation-controller-init';
 
-const DEFAULT_STATE: GeolocationControllerState = {
-  location: '',
-  status: 'idle',
-  lastFetchedAt: null,
-  error: null,
-};
+const geolocationControllerMocks = vi.hoisted(() => {
+  const defaultState = {
+    location: '',
+    status: 'idle' as const,
+    lastFetchedAt: null,
+    error: null,
+  };
 
-jest.mock('@metamask/geolocation-controller', () => ({
-  ...jest.requireActual('@metamask/geolocation-controller'),
-  getDefaultGeolocationControllerState: jest
-    .fn()
-    .mockReturnValue({ ...DEFAULT_STATE }),
-  GeolocationController: jest.fn().mockImplementation(() => ({
-    getGeolocation: jest.fn().mockResolvedValue('US'),
-    refreshGeolocation: jest.fn().mockResolvedValue('US'),
-  })),
-}));
+  return {
+    defaultState,
+    getDefaultGeolocationControllerState: vi
+      .fn()
+      .mockReturnValue({ ...defaultState }),
+    GeolocationController: vi.fn().mockImplementation(() => ({
+      getGeolocation: vi.fn().mockResolvedValue('US'),
+      refreshGeolocation: vi.fn().mockResolvedValue('US'),
+    })),
+  };
+});
+
+const DEFAULT_STATE =
+  geolocationControllerMocks.defaultState as GeolocationControllerState;
+
+jest.mock('@metamask/geolocation-controller', async () => {
+  const actual = await vi.importActual<
+    typeof import('@metamask/geolocation-controller')
+  >('@metamask/geolocation-controller');
+
+  return {
+    ...actual,
+    getDefaultGeolocationControllerState:
+      geolocationControllerMocks.getDefaultGeolocationControllerState,
+    GeolocationController: geolocationControllerMocks.GeolocationController,
+  };
+});
 
 function getInitRequestMock(): jest.Mocked<
   MessengerClientInitRequest<GeolocationControllerMessenger>

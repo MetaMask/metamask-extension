@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`AggregatedMultichainPercentageOverview render renders correctly with negative values 1`] = `
+exports[`AggregatedMultichainPercentageOverview > render > renders correctly with negative values 1`] = `
 <div>
   <div
     class="mm-box mm-box--display-flex"
@@ -27,7 +27,7 @@ exports[`AggregatedMultichainPercentageOverview render renders correctly with ne
 </div>
 `;
 
-exports[`AggregatedMultichainPercentageOverview render renders correctly with positive values 1`] = `
+exports[`AggregatedMultichainPercentageOverview > render > renders correctly with positive values 1`] = `
 <div>
   <div
     class="mm-box mm-box--display-flex"
@@ -54,7 +54,7 @@ exports[`AggregatedMultichainPercentageOverview render renders correctly with po
 </div>
 `;
 
-exports[`AggregatedMultichainPercentageOverview render renders correctly with zero values 1`] = `
+exports[`AggregatedMultichainPercentageOverview > render > renders correctly with zero values 1`] = `
 <div>
   <div
     class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
@@ -85,7 +85,7 @@ exports[`AggregatedMultichainPercentageOverview render renders correctly with ze
 </div>
 `;
 
-exports[`AggregatedPercentageOverview render renders correctly 1`] = `
+exports[`AggregatedPercentageOverview > render > renders correctly 1`] = `
 <div>
   <div
     class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck Vitest constructor mocks intentionally omit private fields.
 import { NetworkController } from '@metamask/network-controller';
 // Mocha type definitions are conflicting with Jest
 import { it as jestIt } from '@jest/globals';
@@ -100,6 +102,17 @@ function buildInitRequestMock(): jest.Mocked<
   return requestMock;
 }
 
+function setControllerTransactions(
+  controller: TransactionController,
+  transactions: TransactionMeta[],
+) {
+  Object.defineProperty(controller, 'state', {
+    configurable: true,
+    value: { transactions },
+    writable: true,
+  });
+}
+
 describe('Transaction Controller Init', () => {
   const transactionControllerClassMock = jest.mocked(TransactionController);
   const transactionPayPublishHookClassMock = jest.mocked(
@@ -134,9 +147,15 @@ describe('Transaction Controller Init', () => {
   beforeEach(() => {
     jest.resetAllMocks();
 
-    transactionPayPublishHookClassMock.mockReturnValue({
-      getHook: () => payHookMock,
-    } as unknown as TransactionPayPublishHook);
+    transactionPayPublishHookClassMock.mockImplementation(
+      function transactionPayPublishHookMock() {
+        return {
+          getHook() {
+            return payHookMock;
+          },
+        } as InstanceType<typeof TransactionPayPublishHook>;
+      },
+    );
 
     payHookMock.mockResolvedValue({
       transactionHash: undefined,
@@ -162,12 +181,13 @@ describe('Transaction Controller Init', () => {
 
     const delegation7702HookMock: jest.MockedFn<PublishHook> = jest.fn();
     delegation7702HookMock.mockResolvedValue({ transactionHash: undefined });
-    jest.mocked(Delegation7702PublishHook).mockImplementation(
-      () =>
-        ({
+    jest
+      .mocked(Delegation7702PublishHook)
+      .mockImplementation(function delegation7702PublishHookMock() {
+        return {
           getHook: () => delegation7702HookMock,
-        }) as unknown as Delegation7702PublishHook,
-    );
+        } as InstanceType<typeof Delegation7702PublishHook>;
+      });
   });
 
   it('returns controller instance', () => {
@@ -514,12 +534,13 @@ describe('Transaction Controller Init', () => {
     it('records sentinel_relay submission via metrics fragment on delegation hook success', async () => {
       const delegation7702HookFn: jest.MockedFn<PublishHook> = jest.fn();
       delegation7702HookFn.mockResolvedValue({ transactionHash: '0xdelHash' });
-      jest.mocked(Delegation7702PublishHook).mockImplementation(
-        () =>
-          ({
+      jest
+        .mocked(Delegation7702PublishHook)
+        .mockImplementation(function delegation7702PublishHookMock() {
+          return {
             getHook: () => delegation7702HookFn,
-          }) as unknown as Delegation7702PublishHook,
-      );
+          } as InstanceType<typeof Delegation7702PublishHook>;
+        });
 
       const upsertFragmentMock = jest.fn();
 
@@ -608,12 +629,13 @@ describe('Transaction Controller Init', () => {
     it('returns transaction hash even if upsertTransactionUIMetricsFragment throws on sentinel_relay path', async () => {
       const delegation7702HookFn: jest.MockedFn<PublishHook> = jest.fn();
       delegation7702HookFn.mockResolvedValue({ transactionHash: '0xdelHash' });
-      jest.mocked(Delegation7702PublishHook).mockImplementation(
-        () =>
-          ({
+      jest
+        .mocked(Delegation7702PublishHook)
+        .mockImplementation(function delegation7702PublishHookMock() {
+          return {
             getHook: () => delegation7702HookFn,
-          }) as unknown as Delegation7702PublishHook,
-      );
+          } as InstanceType<typeof Delegation7702PublishHook>;
+        });
 
       type PHArgs = Parameters<typeof publishHook>[0];
       const result = await publishHook({
@@ -795,15 +817,10 @@ describe('Transaction Controller Init', () => {
         typeof requestMock.getTransactionMetricsRequest
       >);
 
-      TransactionControllerInit(requestMock);
+      const { messengerClient } = TransactionControllerInit(requestMock);
 
       const { hooks } = transactionControllerClassMock.mock.calls[0][0];
-      const controllerInstance =
-        transactionControllerClassMock.mock.instances[0];
-      // @ts-expect-error Partial mock state
-      controllerInstance.state = {
-        transactions: [mockTransactionMeta],
-      };
+      setControllerTransactions(messengerClient, [mockTransactionMeta]);
 
       await hooks?.publishBatch?.({
         transactions: [
@@ -850,15 +867,10 @@ describe('Transaction Controller Init', () => {
         typeof requestMock.getTransactionMetricsRequest
       >);
 
-      TransactionControllerInit(requestMock);
+      const { messengerClient } = TransactionControllerInit(requestMock);
 
       const { hooks } = transactionControllerClassMock.mock.calls[0][0];
-      const controllerInstance =
-        transactionControllerClassMock.mock.instances[0];
-      // @ts-expect-error Partial mock state
-      controllerInstance.state = {
-        transactions: [mockTransactionMeta],
-      };
+      setControllerTransactions(messengerClient, [mockTransactionMeta]);
 
       await hooks?.publishBatch?.({
         transactions: [
@@ -897,15 +909,10 @@ describe('Transaction Controller Init', () => {
         typeof requestMock.getTransactionMetricsRequest
       >);
 
-      TransactionControllerInit(requestMock);
+      const { messengerClient } = TransactionControllerInit(requestMock);
 
       const { hooks } = transactionControllerClassMock.mock.calls[0][0];
-      const controllerInstance =
-        transactionControllerClassMock.mock.instances[0];
-      // @ts-expect-error Partial mock state
-      controllerInstance.state = {
-        transactions: [mockTransactionMeta],
-      };
+      setControllerTransactions(messengerClient, [mockTransactionMeta]);
 
       await hooks?.publishBatch?.({
         transactions: [
@@ -950,15 +957,10 @@ describe('Transaction Controller Init', () => {
           throw new Error('metrics request error');
         });
 
-      TransactionControllerInit(requestMock);
+      const { messengerClient } = TransactionControllerInit(requestMock);
 
       const { hooks } = transactionControllerClassMock.mock.calls[0][0];
-      const controllerInstance =
-        transactionControllerClassMock.mock.instances[0];
-      // @ts-expect-error Partial mock state
-      controllerInstance.state = {
-        transactions: [mockTransactionMeta],
-      };
+      setControllerTransactions(messengerClient, [mockTransactionMeta]);
 
       const result = await hooks?.publishBatch?.({
         transactions: [
@@ -998,15 +1000,10 @@ describe('Transaction Controller Init', () => {
         typeof requestMock.getTransactionMetricsRequest
       >);
 
-      TransactionControllerInit(requestMock);
+      const { messengerClient } = TransactionControllerInit(requestMock);
 
       const { hooks } = transactionControllerClassMock.mock.calls[0][0];
-      const controllerInstance =
-        transactionControllerClassMock.mock.instances[0];
-      // @ts-expect-error Partial mock state
-      controllerInstance.state = {
-        transactions: [mockTransactionMeta],
-      };
+      setControllerTransactions(messengerClient, [mockTransactionMeta]);
 
       const result = await hooks?.publishBatch?.({
         transactions: [

@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Token Cell should match snapshot 1`] = `
+exports[`Token Cell > should match snapshot 1`] = `
 <div>
   <div
     class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full mm-box--height-full"

@@ -61,6 +61,7 @@ jest.mock('../../../../shared/lib/passkey', () => ({
   ...jest.requireActual<typeof import('../../../../shared/lib/passkey')>(
     '../../../../shared/lib/passkey',
   ),
+  getPasskeyAuthMethodKey: jest.fn(() => 'passkeyAuthMethodBiometrics'),
   startPasskeyRegistration: jest.fn().mockResolvedValue({
     id: 'AQ',
     rawId: 'AQ',
@@ -82,6 +83,10 @@ jest.mock('../../../../shared/lib/passkey', () => ({
     },
     clientExtensionResults: {},
   }),
+  cancelPasskeyCeremony: jest.fn(),
+  isPasskeyCeremonySilentError: (error: unknown) =>
+    error instanceof Error && error.name === 'NotAllowedError',
+  translatePasskeyError: () => undefined,
 }));
 
 const mockVerifyPassword = jest.fn().mockResolvedValue(undefined);

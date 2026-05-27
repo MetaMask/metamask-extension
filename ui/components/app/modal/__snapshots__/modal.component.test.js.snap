@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Modal Component should render a modal with a cancel and a submit button 1`] = `
+exports[`Modal Component > should render a modal with a cancel and a submit button 1`] = `
 <div>
   <div
     class="modal-container"
@@ -26,7 +26,7 @@ exports[`Modal Component should render a modal with a cancel and a submit button
 </div>
 `;
 
-exports[`Modal Component should render a modal with a header 1`] = `
+exports[`Modal Component > should render a modal with a header 1`] = `
 <div>
   <div
     class="modal-container"
@@ -65,7 +65,7 @@ exports[`Modal Component should render a modal with a header 1`] = `
 </div>
 `;
 
-exports[`Modal Component should render a modal with a submit button 1`] = `
+exports[`Modal Component > should render a modal with a submit button 1`] = `
 <div>
   <div
     class="modal-container"
@@ -84,7 +84,7 @@ exports[`Modal Component should render a modal with a submit button 1`] = `
 </div>
 `;
 
-exports[`Modal Component should render a modal with children 1`] = `
+exports[`Modal Component > should render a modal with children 1`] = `
 <div>
   <div
     class="modal-container"
@@ -114,7 +114,7 @@ exports[`Modal Component should render a modal with children 1`] = `
 </div>
 `;
 
-exports[`Modal Component should render a modal with different button types 1`] = `
+exports[`Modal Component > should render a modal with different button types 1`] = `
 <div>
   <div
     class="modal-container"

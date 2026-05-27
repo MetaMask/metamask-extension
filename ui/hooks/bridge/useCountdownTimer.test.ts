@@ -28,16 +28,19 @@ describe('useCountdownTimer', () => {
       }),
     );
 
-    await act(async () => {
-      let i = 0;
-      while (i <= 40) {
-        const secondsLeft = Math.min(41, 40 - i + 1);
-        expect(result.current).toStrictEqual(secondsLeft);
-        i += 10;
-        jest.advanceTimersByTime(10000);
+    expect(result.current).toStrictEqual(41);
+
+    for (let secondsElapsed = 1; secondsElapsed <= 50; secondsElapsed += 1) {
+      await act(async () => {
+        jest.advanceTimersByTime(1000);
         await flushPromises();
+      });
+
+      if (secondsElapsed % 10 === 0 && secondsElapsed <= 40) {
+        expect(result.current).toStrictEqual(41 - secondsElapsed);
       }
-    });
+    }
+
     expect(result.current).toStrictEqual(0);
   });
 });

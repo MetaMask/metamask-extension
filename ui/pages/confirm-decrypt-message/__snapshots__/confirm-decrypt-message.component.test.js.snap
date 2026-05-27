@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ConfirmDecryptMessage Component matches snapshot 1`] = `
+exports[`ConfirmDecryptMessage Component > matches snapshot 1`] = `
 <div>
   <div
     class="request-decrypt-message__container"
@@ -189,9 +189,9 @@ exports[`ConfirmDecryptMessage Component matches snapshot 1`] = `
 </div>
 `;
 
-exports[`ConfirmDecryptMessage Component matches snapshot if no unapproved decrypt messages 1`] = `<div />`;
+exports[`ConfirmDecryptMessage Component > matches snapshot if no unapproved decrypt messages 1`] = `<div />`;
 
-exports[`ConfirmDecryptMessage Component shows error on decrypt inline error 1`] = `
+exports[`ConfirmDecryptMessage Component > shows error on decrypt inline error 1`] = `
 <div>
   <div
     class="request-decrypt-message__container"
@@ -380,7 +380,7 @@ exports[`ConfirmDecryptMessage Component shows error on decrypt inline error 1`]
 </div>
 `;
 
-exports[`ConfirmDecryptMessage Component shows the correct message data 1`] = `
+exports[`ConfirmDecryptMessage Component > shows the correct message data 1`] = `
 <div>
   <div
     class="request-decrypt-message__container"

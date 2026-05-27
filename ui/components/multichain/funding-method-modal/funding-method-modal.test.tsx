@@ -13,6 +13,9 @@ jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn(),
+  RampsMetaMaskEntry: {
+    TokensBanner: 'ext_buy_banner_tokens',
+  },
 }));
 
 const mockStore = configureMockStore([thunk]);

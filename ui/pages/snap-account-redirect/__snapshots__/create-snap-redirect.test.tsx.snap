@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`<SnapAccountRedirect /> renders the url and message when provided and isBlockedUrl is false 1`] = `
+exports[`<SnapAccountRedirect /> > renders the url and message when provided and isBlockedUrl is false 1`] = `
 <div>
   <div
     class="mm-box create-snap-account-page mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full mm-box--height-full mm-box--border-style-none"

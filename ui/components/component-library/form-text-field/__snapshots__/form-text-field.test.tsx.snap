@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`FormTextField should render correctly 1`] = `
+exports[`FormTextField > should render correctly 1`] = `
 <div>
   <div
     class="mm-box mm-form-text-field mm-box--display-flex mm-box--flex-direction-column"

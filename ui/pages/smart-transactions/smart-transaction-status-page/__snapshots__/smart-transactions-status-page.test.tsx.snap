@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`SmartTransactionStatusPage renders the "failed" STX status: smart-transaction-status-failed 1`] = `
+exports[`SmartTransactionStatusPage > renders the "failed" STX status > smart-transaction-status-failed 1`] = `
 <div>
   <div
     class="mm-box smart-transaction-status-page mm-box--margin-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full mm-box--height-full mm-box--border-style-none"
@@ -56,7 +56,7 @@ exports[`SmartTransactionStatusPage renders the "failed" STX status: smart-trans
 </div>
 `;
 
-exports[`SmartTransactionStatusPage renders the "pending" STX status: smart-transaction-status-pending 1`] = `
+exports[`SmartTransactionStatusPage > renders the "pending" STX status > smart-transaction-status-pending 1`] = `
 <div>
   <div
     class="mm-box smart-transaction-status-page mm-box--margin-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full mm-box--height-full mm-box--border-style-none"
@@ -103,7 +103,7 @@ exports[`SmartTransactionStatusPage renders the "pending" STX status: smart-tran
 </div>
 `;
 
-exports[`SmartTransactionStatusPage renders the "success" STX status: smart-transaction-status-success 1`] = `
+exports[`SmartTransactionStatusPage > renders the "success" STX status > smart-transaction-status-success 1`] = `
 <div>
   <div
     class="mm-box smart-transaction-status-page mm-box--margin-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full mm-box--height-full mm-box--border-style-none"

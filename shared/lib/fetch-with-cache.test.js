@@ -8,7 +8,7 @@ jest.mock('./storage-helpers', () => ({
   setStorageItem: jest.fn(),
 }));
 
-const fetchWithCache = require('./fetch-with-cache').default;
+const { default: fetchWithCache } = await import('./fetch-with-cache');
 
 describe('Fetch with cache', () => {
   afterEach(() => {
@@ -76,16 +76,13 @@ describe('Fetch with cache', () => {
       .delay(100)
       .reply(200, '{"average": 4}');
 
-    await expect(() =>
+    await expect(
       fetchWithCache({
         url: 'https://fetchwithcache.metamask.io/price',
         cacheOptions: { timeout: 20 },
         functionName: 'fetchPrice',
       }),
-    ).rejects.toThrow({
-      name: 'AbortError',
-      message: 'The user aborted a request.',
-    });
+    ).rejects.toThrow('The user aborted a request.');
   });
 
   it('throws when the response is unsuccessful', async () => {
@@ -93,12 +90,14 @@ describe('Fetch with cache', () => {
       .get('/price')
       .reply(500, '{"average": 6}');
 
-    await expect(() =>
+    await expect(
       fetchWithCache({
         url: 'https://fetchwithcache.metamask.io/price',
         functionName: 'fetchPrice',
       }),
-    ).rejects.toThrow('');
+    ).rejects.toThrow(
+      "Fetch with cache failed within function fetchPrice with status'500': 'Internal Server Error'",
+    );
   });
 
   it('throws when a POST request is attempted', async () => {
@@ -106,13 +105,13 @@ describe('Fetch with cache', () => {
       .post('/price')
       .reply(200, '{"average": 7}');
 
-    await expect(() =>
+    await expect(
       fetchWithCache({
         url: 'https://fetchwithcache.metamask.io/price',
         fetchOptions: { method: 'POST' },
         functionName: 'fetchPrice',
       }),
-    ).rejects.toThrow('');
+    ).rejects.toThrow('fetchWithCache only supports GET requests');
   });
 
   it('throws when the request has a truthy body', async () => {
@@ -120,13 +119,13 @@ describe('Fetch with cache', () => {
       .get('/price')
       .reply(200, '{"average": 8}');
 
-    await expect(() =>
+    await expect(
       fetchWithCache({
         url: 'https://fetchwithcache.metamask.io/price',
         fetchOptions: { body: 1 },
         functionName: 'fetchPrice',
       }),
-    ).rejects.toThrow('');
+    ).rejects.toThrow('fetchWithCache only supports GET requests');
   });
 
   it('throws when the request has an invalid Content-Type header', async () => {
@@ -134,15 +133,13 @@ describe('Fetch with cache', () => {
       .get('/price')
       .reply(200, '{"average": 9}');
 
-    await expect(() =>
+    await expect(
       fetchWithCache({
         url: 'https://fetchwithcache.metamask.io/price',
         fetchOptions: { headers: { 'Content-Type': 'text/plain' } },
         functionName: 'fetchPrice',
       }),
-    ).rejects.toThrow({
-      message: 'fetchWithCache only supports JSON responses',
-    });
+    ).rejects.toThrow('fetchWithCache only supports JSON responses');
   });
 
   it('should correctly cache responses from interwoven requests', async () => {

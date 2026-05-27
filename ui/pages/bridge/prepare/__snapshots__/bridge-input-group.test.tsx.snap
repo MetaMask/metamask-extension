@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`BridgeInputGroup should render destination networks 1`] = `
+exports[`BridgeInputGroup > should render destination networks 1`] = `
 <div
   class="mm-box mm-popover mm-popover--open mm-popover--reference-hidden bridge-network-list-popover mm-box--margin-inline-3 mm-box--padding-4 mm-box--background-color-background-subsection mm-box--rounded-xl mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
   data-popper-escaped="true"
@@ -356,7 +356,7 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
 </div>
 `;
 
-exports[`BridgeInputGroup should render popular tokens 2`] = `
+exports[`BridgeInputGroup > should render popular tokens 2`] = `
 [
   {
     "accountGroupId": "entropy:01K2FF18CTTXJYD34R78X4N1N1/0",
@@ -409,7 +409,7 @@ exports[`BridgeInputGroup should render popular tokens 2`] = `
 ]
 `;
 
-exports[`BridgeInputGroup should render source networks 1`] = `
+exports[`BridgeInputGroup > should render source networks 1`] = `
 <div
   class="mm-box mm-popover mm-popover--open mm-popover--reference-hidden bridge-network-list-popover mm-box--margin-inline-3 mm-box--padding-4 mm-box--background-color-background-subsection mm-box--rounded-xl mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
   data-popper-escaped="true"
@@ -724,7 +724,7 @@ exports[`BridgeInputGroup should render source networks 1`] = `
 </div>
 `;
 
-exports[`BridgeInputGroup should search for tokens 1`] = `
+exports[`BridgeInputGroup > should search for tokens 1`] = `
 <div
   class="mm-modal"
   data-testid="bridge-asset-picker-modal"
@@ -1053,7 +1053,7 @@ exports[`BridgeInputGroup should search for tokens 1`] = `
 </div>
 `;
 
-exports[`BridgeInputGroup should search for tokens 4`] = `
+exports[`BridgeInputGroup > should search for tokens 4`] = `
 [
   {
     "accountGroupId": "entropy:01K2FF18CTTXJYD34R78X4N1N1/0",
@@ -1109,7 +1109,7 @@ exports[`BridgeInputGroup should search for tokens 4`] = `
 ]
 `;
 
-exports[`BridgeInputGroup should search for tokens 5`] = `
+exports[`BridgeInputGroup > should search for tokens 5`] = `
 <div
   class="mm-modal"
   data-testid="bridge-asset-picker-modal"
@@ -1509,7 +1509,7 @@ exports[`BridgeInputGroup should search for tokens 5`] = `
 </div>
 `;
 
-exports[`BridgeInputGroup should search for tokens with hasNextPage 3`] = `
+exports[`BridgeInputGroup > should search for tokens with hasNextPage 3`] = `
 [
   {
     "accountGroupId": "entropy:01K2FF18CTTXJYD34R78X4N1N1/0",

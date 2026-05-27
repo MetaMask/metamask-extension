@@ -1,5 +1,4 @@
 import { renderHook } from '@testing-library/react-hooks';
-import sinon from 'sinon';
 import * as txUtil from '../../shared/lib/transaction.utils';
 import * as metamaskControllerUtils from '../../shared/lib/metamask-controller-utils';
 import { useTokenDisplayValue } from './useTokenDisplayValue';
@@ -129,25 +128,23 @@ const tests = [
 ];
 
 describe('useTokenDisplayValue', () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   tests.forEach(({ displayValue, token, tokenData, tokenValue }, idx) => {
     describe(`when input is decimals: ${token.decimals} and value: ${tokenValue}`, () => {
       it(`should return ${displayValue} as displayValue`, () => {
-        const getTokenValueStub = sinon.stub(
-          metamaskControllerUtils,
-          'getTokenValueParam',
-        );
-        const parseStandardTokenTransactionDataStub = sinon.stub(
-          txUtil,
-          'parseStandardTokenTransactionData',
-        );
-
-        parseStandardTokenTransactionDataStub.callsFake(() => tokenData);
-        getTokenValueStub.callsFake(() => tokenValue);
+        jest
+          .spyOn(txUtil, 'parseStandardTokenTransactionData')
+          .mockReturnValue(tokenData);
+        jest
+          .spyOn(metamaskControllerUtils, 'getTokenValueParam')
+          .mockReturnValue(tokenValue);
 
         const { result } = renderHook(() =>
           useTokenDisplayValue(`${idx}-fakestring`, token),
         );
-        sinon.restore();
         expect(result.current).toStrictEqual(displayValue);
       });
     });

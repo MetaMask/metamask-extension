@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`SnapUIAccountSelector renders an account selector 1`] = `
+exports[`SnapUIAccountSelector > renders an account selector 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
@@ -306,7 +306,7 @@ exports[`SnapUIAccountSelector renders an account selector 1`] = `
 </div>
 `;
 
-exports[`SnapUIAccountSelector renders inside a field 1`] = `
+exports[`SnapUIAccountSelector > renders inside a field 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"

@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
+exports[`Recovery Phrase Chips Component > should match snapshot 1`] = `
 <div>
   <div
     class="flex flex-col gap-4"
@@ -212,7 +212,7 @@ exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
 </div>
 `;
 
-exports[`Recovery Phrase Chips Component should match snapshot of confirm recovery phrase with inputs of indicies to check 1`] = `
+exports[`Recovery Phrase Chips Component > should match snapshot of confirm recovery phrase with inputs of indicies to check 1`] = `
 <div>
   <div
     class="flex flex-col gap-4"

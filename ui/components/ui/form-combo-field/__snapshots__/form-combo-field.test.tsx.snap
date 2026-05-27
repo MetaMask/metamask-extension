@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`FormComboField renders with no options 1`] = `
+exports[`FormComboField > renders with no options 1`] = `
 <body>
   <div
     id="popover-content"
@@ -56,7 +56,7 @@ exports[`FormComboField renders with no options 1`] = `
 </body>
 `;
 
-exports[`FormComboField renders with options 1`] = `
+exports[`FormComboField > renders with options 1`] = `
 <body>
   <div
     id="popover-content"
@@ -132,7 +132,7 @@ exports[`FormComboField renders with options 1`] = `
 </body>
 `;
 
-exports[`FormComboField should not render "no options" if hideDropdownIfNoOptions is specified 1`] = `
+exports[`FormComboField > should not render "no options" if hideDropdownIfNoOptions is specified 1`] = `
 <body>
   <div
     id="popover-content"
