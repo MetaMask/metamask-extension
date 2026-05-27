@@ -37,9 +37,6 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "Ошибка"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "Недействительный QR-код. Отсканируйте QR-код синхронизации аппаратного кошелька."
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "Сканировать QR-код"
   },

@@ -238,24 +238,29 @@ describe('classifyScanResult', () => {
       expect(result).toBeNull();
     });
 
-    it('infers isUrFormat from text when exception is present', () => {
-      const withUrText = classifyScanResult({
+    it('returns ScanException with isUrFormat true when text is UR-formatted', () => {
+      const result = classifyScanResult({
         text: 'ur:crypto-hdkey/1-2/bad-payload',
         expectedTypes: PAIRING_EXPECTED_TYPES,
         exception: new Error('fail'),
       });
-      expect(withUrText).toStrictEqual(
-        expect.objectContaining({ isUrFormat: true }),
-      );
+      expect(result).toStrictEqual({
+        category: ScanErrorCategory.ScanException,
+        isUrFormat: true,
+        rawMessage: 'fail',
+      });
+    });
 
-      const withNonUrText = classifyScanResult({
+    it('returns NonUrQrScanned when text is non-UR and exception is present', () => {
+      const result = classifyScanResult({
         text: 'https://example.com',
         expectedTypes: PAIRING_EXPECTED_TYPES,
         exception: new Error('fail'),
       });
-      expect(withNonUrText).toStrictEqual(
-        expect.objectContaining({ isUrFormat: false }),
-      );
+      expect(result).toStrictEqual({
+        category: ScanErrorCategory.NonUrQrScanned,
+        isUrFormat: false,
+      });
     });
 
     it('defaults isUrFormat to false when text is absent', () => {

@@ -49,8 +49,10 @@ type AllowedEvents =
   | RemoteFeatureFlagControllerStateChangeEvent
   | AccountTreeControllerSelectedAccountGroupChangeEvent;
 
-export type PerpsControllerMessenger = ReturnType<
-  typeof getPerpsControllerMessenger
+export type PerpsControllerMessenger = Messenger<
+  'PerpsController',
+  AllowedActions,
+  AllowedEvents
 >;
 
 /**
@@ -63,13 +65,8 @@ export type PerpsControllerMessenger = ReturnType<
  */
 export function getPerpsControllerMessenger(
   messenger: RootMessenger<AllowedActions, AllowedEvents>,
-) {
-  const perpsControllerMessenger = new Messenger<
-    'PerpsController',
-    AllowedActions,
-    AllowedEvents,
-    typeof messenger
-  >({
+): PerpsControllerMessenger {
+  const perpsControllerMessenger: PerpsControllerMessenger = new Messenger({
     namespace: 'PerpsController',
     parent: messenger,
   });
