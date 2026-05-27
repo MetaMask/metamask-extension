@@ -14,7 +14,16 @@ const STABLECOIN_ASSET_ID =
   'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' as CaipAssetType;
 
 const makeAsset = (overrides: Record<string, unknown> = {}) =>
-  buildBatchSellAsset({ assetId: NATIVE_ASSET_ID, name: 'Ether', symbol: 'ETH', iconUrl: '', balance: '1.0', tokenFiatAmount: 2000, chainId: CHAIN_ID, ...overrides });
+  buildBatchSellAsset({
+    assetId: NATIVE_ASSET_ID,
+    name: 'Ether',
+    symbol: 'ETH',
+    iconUrl: '',
+    balance: '1.0',
+    tokenFiatAmount: 2000,
+    chainId: CHAIN_ID,
+    ...overrides,
+  });
 
 // State controlled per-test. Both objects are prefixed with `mock` so they
 // can be referenced from inside `jest.mock(..)` factories (which only permit

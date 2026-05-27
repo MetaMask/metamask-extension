@@ -45,7 +45,12 @@ const ASSET_A = 'eip155:1/erc20:0xAAA' as CaipAssetType;
 
 const sendAssetsConfig: BatchSellQuotesConfig['sendAssetsConfig'] = {
   [ASSET_A]: {
-    asset: buildBatchSellAsset({ assetId: ASSET_A, symbol: 'AAA', name: 'Token A', balance: '1' }) as never,
+    asset: buildBatchSellAsset({
+      assetId: ASSET_A,
+      symbol: 'AAA',
+      name: 'Token A',
+      balance: '1',
+    }) as never,
     sendAmountPercent: 100,
     slippagePercent: 0.5,
     enabled: true,

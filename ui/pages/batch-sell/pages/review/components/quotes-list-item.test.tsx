@@ -58,7 +58,13 @@ const mockUseSelector = jest.mocked(useSelector);
 const ASSET_ID = 'eip155:1/erc20:0xAAA' as CaipAssetType;
 
 const makeAsset = (overrides = {}) =>
-  buildBatchSellAsset({ assetId: ASSET_ID, symbol: 'AAA', name: 'Token A', balance: '10', ...overrides });
+  buildBatchSellAsset({
+    assetId: ASSET_ID,
+    symbol: 'AAA',
+    name: 'Token A',
+    balance: '10',
+    ...overrides,
+  });
 
 const makeQuote = (
   overrides: Partial<BatchSellQuotesResults['quotes'][CaipAssetType]> = {},

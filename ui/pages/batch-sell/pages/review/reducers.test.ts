@@ -4,10 +4,7 @@ import {
   buildSendAssetConfigEntry,
 } from '../../../../../test/data/batch-sell';
 import { batchSellReviewStateReducer } from './reducers';
-import {
-  BatchSellReviewState,
-  BatchSellReviewStateActionType,
-} from './types';
+import { BatchSellReviewState, BatchSellReviewStateActionType } from './types';
 
 const ASSET_ID_A = BATCH_SELL_ASSET_IDS.USDC;
 const ASSET_ID_B = BATCH_SELL_ASSET_IDS.DAI;
@@ -16,8 +13,14 @@ const buildState = (
   overrides: Partial<BatchSellReviewState> = {},
 ): BatchSellReviewState => ({
   sendAssetsConfig: {
-    [ASSET_ID_A]: buildSendAssetConfigEntry(true, { sendAmountPercent: 100, slippagePercent: 0.5 }),
-    [ASSET_ID_B]: buildSendAssetConfigEntry(false, { sendAmountPercent: 50, slippagePercent: 1 }),
+    [ASSET_ID_A]: buildSendAssetConfigEntry(true, {
+      sendAmountPercent: 100,
+      slippagePercent: 0.5,
+    }),
+    [ASSET_ID_B]: buildSendAssetConfigEntry(false, {
+      sendAmountPercent: 50,
+      slippagePercent: 1,
+    }),
   },
   selectedReceiveAsset: buildReceivedAsset(),
   editingSlippageAssetId: null,

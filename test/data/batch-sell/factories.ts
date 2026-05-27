@@ -11,7 +11,9 @@ import { BATCH_SELL_ASSET_IDS, BATCH_SELL_CHAIN_ID } from './constants';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyOverrides = Record<string, any>;
 
-export function buildBatchSellAsset(overrides: AnyOverrides = {}): BatchSellAsset {
+export function buildBatchSellAsset(
+  overrides: AnyOverrides = {},
+): BatchSellAsset {
   return {
     assetId: BATCH_SELL_ASSET_IDS.USDC,
     symbol: 'USDC',
@@ -24,7 +26,9 @@ export function buildBatchSellAsset(overrides: AnyOverrides = {}): BatchSellAsse
   } as unknown as BatchSellAsset;
 }
 
-export function buildSendAssetEntry(overrides: AnyOverrides = {}): SendAssetEntry {
+export function buildSendAssetEntry(
+  overrides: AnyOverrides = {},
+): SendAssetEntry {
   return {
     assetId: BATCH_SELL_ASSET_IDS.USDC,
     asset: buildBatchSellAsset(),
@@ -40,7 +44,9 @@ export function buildSendAssetEntry(overrides: AnyOverrides = {}): SendAssetEntr
  *
  * @param overrides - Fields to override on the default asset.
  */
-export function buildReceivedAsset(overrides: AnyOverrides = {}): ReceivedAsset {
+export function buildReceivedAsset(
+  overrides: AnyOverrides = {},
+): ReceivedAsset {
   return {
     id: BATCH_SELL_ASSET_IDS.ETH_NATIVE,
     symbol: 'ETH',

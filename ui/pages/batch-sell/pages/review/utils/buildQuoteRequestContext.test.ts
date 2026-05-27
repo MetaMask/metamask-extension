@@ -160,7 +160,9 @@ describe('buildQuoteRequestContext', () => {
     const result = buildQuoteRequestContext({
       sourceAsset: buildAsset(),
       receivedAsset: buildReceivedAsset({
-        securityData: { type: 'VERIFIED' } as unknown as ReceivedAsset['securityData'],
+        securityData: {
+          type: 'VERIFIED',
+        } as unknown as ReceivedAsset['securityData'],
       }),
       sendAmountPercent: 100,
       smartTransactionsEnabled: false,

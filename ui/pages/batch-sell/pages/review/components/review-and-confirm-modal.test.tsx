@@ -84,13 +84,23 @@ const ASSET_B = 'eip155:1/erc20:0xBBB' as CaipAssetType;
 function makeSendAssetsConfig(): BatchSellQuotesConfig['sendAssetsConfig'] {
   return {
     [ASSET_A]: {
-      asset: buildBatchSellAsset({ assetId: ASSET_A, symbol: 'AAA', name: 'Token A', balance: '1' }) as never,
+      asset: buildBatchSellAsset({
+        assetId: ASSET_A,
+        symbol: 'AAA',
+        name: 'Token A',
+        balance: '1',
+      }) as never,
       sendAmountPercent: 100,
       slippagePercent: 0.5,
       enabled: true,
     },
     [ASSET_B]: {
-      asset: buildBatchSellAsset({ assetId: ASSET_B, symbol: 'BBB', name: 'Token B', balance: '1' }) as never,
+      asset: buildBatchSellAsset({
+        assetId: ASSET_B,
+        symbol: 'BBB',
+        name: 'Token B',
+        balance: '1',
+      }) as never,
       sendAmountPercent: 100,
       slippagePercent: 2,
       enabled: false,

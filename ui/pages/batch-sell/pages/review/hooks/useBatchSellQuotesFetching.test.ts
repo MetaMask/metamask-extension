@@ -115,7 +115,12 @@ const MOCK_PARAMS = { srcChainId: 'eip155:1' } as never;
 const MOCK_CONTEXT = { slippage: 0.5 } as never;
 
 function makeAsset(assetId: CaipAssetType) {
-  return buildBatchSellAsset({ assetId, chainId: ETH_CHAIN_ID, symbol: 'TKN', name: 'Token' });
+  return buildBatchSellAsset({
+    assetId,
+    chainId: ETH_CHAIN_ID,
+    symbol: 'TKN',
+    name: 'Token',
+  });
 }
 
 const sendAssetsConfig: BatchSellQuotesConfig['sendAssetsConfig'] = {

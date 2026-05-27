@@ -14,9 +14,13 @@ const ASSET_ID_B = BATCH_SELL_ASSET_IDS.DAI;
 describe('buildResults', () => {
   describe('individual quote entries', () => {
     it('marks a disabled entry as hasQuote:false with isLoadingQuote:false', () => {
-      const entries = [buildSendAssetEntry({ assetId: ASSET_ID_A, enabled: false })];
+      const entries = [
+        buildSendAssetEntry({ assetId: ASSET_ID_A, enabled: false }),
+      ];
       const result = buildResults({
-        controllerResult: buildBatchSellControllerResult([buildRecommendedQuote()]),
+        controllerResult: buildBatchSellControllerResult([
+          buildRecommendedQuote(),
+        ]),
         entries,
         receivedAsset: buildReceivedAsset(),
         validationErrorsByIndex: [noValidationErrors],
@@ -30,7 +34,9 @@ describe('buildResults', () => {
     });
 
     it('marks an enabled entry with no recommendedQuote as hasQuote:false', () => {
-      const entries = [buildSendAssetEntry({ assetId: ASSET_ID_A, enabled: true })];
+      const entries = [
+        buildSendAssetEntry({ assetId: ASSET_ID_A, enabled: true }),
+      ];
       const result = buildResults({
         controllerResult: buildBatchSellControllerResult([]),
         entries,
@@ -46,7 +52,9 @@ describe('buildResults', () => {
     });
 
     it('sets isLoadingQuote:true for an enabled entry with no quote when isLoading is true', () => {
-      const entries = [buildSendAssetEntry({ assetId: ASSET_ID_A, enabled: true })];
+      const entries = [
+        buildSendAssetEntry({ assetId: ASSET_ID_A, enabled: true }),
+      ];
       const result = buildResults({
         controllerResult: buildBatchSellControllerResult([]),
         entries,
@@ -61,7 +69,9 @@ describe('buildResults', () => {
     it('marks an enabled entry with a recommendedQuote as hasQuote:true', () => {
       const entries = [buildSendAssetEntry({ assetId: ASSET_ID_A })];
       const result = buildResults({
-        controllerResult: buildBatchSellControllerResult([buildRecommendedQuote()]),
+        controllerResult: buildBatchSellControllerResult([
+          buildRecommendedQuote(),
+        ]),
         entries,
         receivedAsset: buildReceivedAsset(),
         validationErrorsByIndex: [noValidationErrors],
@@ -113,9 +123,13 @@ describe('buildResults', () => {
     });
 
     it('sets slippagePercent from the entry', () => {
-      const entries = [buildSendAssetEntry({ assetId: ASSET_ID_A, slippagePercent: 2.5 })];
+      const entries = [
+        buildSendAssetEntry({ assetId: ASSET_ID_A, slippagePercent: 2.5 }),
+      ];
       const result = buildResults({
-        controllerResult: buildBatchSellControllerResult([buildRecommendedQuote()]),
+        controllerResult: buildBatchSellControllerResult([
+          buildRecommendedQuote(),
+        ]),
         entries,
         receivedAsset: buildReceivedAsset(),
         validationErrorsByIndex: [noValidationErrors],
@@ -128,7 +142,9 @@ describe('buildResults', () => {
     it('sets hasHighPriceImpactWarning when isPriceImpactWarning is true', () => {
       const entries = [buildSendAssetEntry({ assetId: ASSET_ID_A })];
       const result = buildResults({
-        controllerResult: buildBatchSellControllerResult([buildRecommendedQuote()]),
+        controllerResult: buildBatchSellControllerResult([
+          buildRecommendedQuote(),
+        ]),
         entries,
         receivedAsset: buildReceivedAsset(),
         validationErrorsByIndex: [
@@ -143,7 +159,9 @@ describe('buildResults', () => {
     it('sets hasHighPriceImpactWarning when isPriceImpactError is true', () => {
       const entries = [buildSendAssetEntry({ assetId: ASSET_ID_A })];
       const result = buildResults({
-        controllerResult: buildBatchSellControllerResult([buildRecommendedQuote()]),
+        controllerResult: buildBatchSellControllerResult([
+          buildRecommendedQuote(),
+        ]),
         entries,
         receivedAsset: buildReceivedAsset(),
         validationErrorsByIndex: [
@@ -158,7 +176,9 @@ describe('buildResults', () => {
     it('sets hasHighPriceImpactWarning to false when no price-impact flags are set', () => {
       const entries = [buildSendAssetEntry({ assetId: ASSET_ID_A })];
       const result = buildResults({
-        controllerResult: buildBatchSellControllerResult([buildRecommendedQuote()]),
+        controllerResult: buildBatchSellControllerResult([
+          buildRecommendedQuote(),
+        ]),
         entries,
         receivedAsset: buildReceivedAsset(),
         validationErrorsByIndex: [noValidationErrors],
@@ -171,7 +191,9 @@ describe('buildResults', () => {
 
   describe('totals', () => {
     it('returns undefined totals when no enabled entries have quotes', () => {
-      const entries = [buildSendAssetEntry({ assetId: ASSET_ID_A, enabled: true })];
+      const entries = [
+        buildSendAssetEntry({ assetId: ASSET_ID_A, enabled: true }),
+      ];
       const result = buildResults({
         controllerResult: buildBatchSellControllerResult([]),
         entries,

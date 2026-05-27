@@ -27,7 +27,13 @@ jest.mock('./asset-list-item', () => ({
 }));
 
 const makeAsset = (symbol: string): BatchSellAsset =>
-  buildBatchSellAsset({ assetId: `eip155:1/erc20:0x${symbol}`, name: symbol, symbol, iconUrl: '', balance: '1' });
+  buildBatchSellAsset({
+    assetId: `eip155:1/erc20:0x${symbol}`,
+    name: symbol,
+    symbol,
+    iconUrl: '',
+    balance: '1',
+  });
 
 const ETH = makeAsset('ETH');
 const USDC = makeAsset('USDC');
