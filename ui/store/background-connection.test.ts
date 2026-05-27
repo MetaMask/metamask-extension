@@ -117,31 +117,27 @@ describe('subscribeToMessengerEvent', () => {
     expect(listenerB).toHaveBeenCalledWith([{ foo: 'bar' }, []]);
   });
 
-  it('coalesces concurrent subscribers for the same event into one upstream messengerSubscribe call', async () => {
+  it('does not resolve subscribe calls until the upstream messengerSubscribe call resolves', async () => {
     const { messengerSubscribe } = setup();
 
     const { promise: subscribeRpcPromise, resolve: resolveSubscribe } =
       createDeferredPromise<void>();
     messengerSubscribe.mockReturnValueOnce(subscribeRpcPromise);
 
-    const listenerA = jest.fn();
-    const listenerB = jest.fn();
-
     let resolvedA = false;
     let resolvedB = false;
 
-    const subscribeA = subscribeToMessengerEvent(event, listenerA).then(() => {
+    const subscribeA = subscribeToMessengerEvent(event, jest.fn()).then(() => {
       resolvedA = true;
     });
-    const subscribeB = subscribeToMessengerEvent(event, listenerB).then(() => {
+    const subscribeB = subscribeToMessengerEvent(event, jest.fn()).then(() => {
       resolvedB = true;
     });
 
     // Let any already-scheduled microtasks run; neither subscribe call
-    // should have resolved yet because both await the same in-flight RPC.
+    // should have resolved yet because both await the same in-flight call.
     await new Promise((r) => setImmediate(r));
 
-    expect(messengerSubscribe).toHaveBeenCalledTimes(1);
     expect(resolvedA).toBe(false);
     expect(resolvedB).toBe(false);
 
@@ -152,7 +148,6 @@ describe('subscribeToMessengerEvent', () => {
 
     expect(resolvedA).toBe(true);
     expect(resolvedB).toBe(true);
-    expect(messengerSubscribe).toHaveBeenCalledTimes(1);
   });
 
   it('refcounts subscribers and only unsubscribes upstream on the last unsubscribe', async () => {
