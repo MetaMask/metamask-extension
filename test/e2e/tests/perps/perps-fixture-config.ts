@@ -20,6 +20,13 @@ import {
  * automatically included without having to update this file.
  */
 const PROD_REMOTE_FLAGS = getProductionRemoteFlagDefaults();
+const {
+  // Omitted from generic Perps manifest flags because the production payload is
+  // large and the withdraw confirmation tests provide a small explicit override.
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  confirmations_pay_post_quote: _confirmationsPayPostQuote,
+  ...PERPS_PROD_REMOTE_FLAGS
+} = PROD_REMOTE_FLAGS;
 
 const ARBITRUM_CHAIN_ID = '0xa4b1';
 const ARBITRUM_CHAIN_ID_DECIMAL = Number(ARBITRUM_CHAIN_ID);
@@ -62,7 +69,7 @@ type RelayQuoteRequestBody = {
 };
 
 const PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS = {
-  ...PROD_REMOTE_FLAGS,
+  ...PERPS_PROD_REMOTE_FLAGS,
   perpsEnabledVersion: { enabled: true, minimumVersion: '0.0.0' },
   perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: [] },
 };
