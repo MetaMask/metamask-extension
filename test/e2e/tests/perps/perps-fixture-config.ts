@@ -74,6 +74,20 @@ export const PERPS_ELIGIBLE_FLAG = {
   },
 };
 
+export const PERPS_WITHDRAW_CONFIRMATION_FLAG = {
+  remoteFeatureFlags: {
+    perpsEnabledVersion:
+      PERPS_ELIGIBLE_FLAG.remoteFeatureFlags.perpsEnabledVersion,
+    perpsPerpTradingGeoBlockedCountriesV2:
+      PERPS_ELIGIBLE_FLAG.remoteFeatureFlags
+        .perpsPerpTradingGeoBlockedCountriesV2,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    confirmations_pay_post_quote: {
+      perpsWithdraw: { enabled: true },
+    },
+  },
+};
+
 /**
  * Remote feature flags for geo-blocked (ineligible) users.
  * The geolocation mock returns 'US-TX', so blocking 'US' makes the user ineligible.
