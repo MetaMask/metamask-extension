@@ -779,7 +779,7 @@
         "react-redux>react-is": true
       }
     },
-    "@metamask-previews/wallet": {
+    "@metamask/wallet": {
       "packages": {
         "@metamask/browser-passworder": true,
         "@metamask/keyring-controller": true,

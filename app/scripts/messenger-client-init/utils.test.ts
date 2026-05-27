@@ -4,7 +4,7 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 import { PPOMController } from '@metamask/ppom-validator';
-import { Wallet } from '@metamask-previews/wallet';
+import { Wallet } from '@metamask/wallet';
 
 import { buildControllerInitRequestMock } from './test/utils';
 import { MessengerClientApi, MessengerClientName } from './types';
