@@ -41,6 +41,67 @@ import {
   generateConsolidatedReport,
 } from './token-import-helpers';
 
+function getCliOptionValue(optionName: string): string | undefined {
+  const prefixedOption = `--${optionName}`;
+  const exactIndex = process.argv.findIndex((arg) => arg === prefixedOption);
+
+  if (exactIndex !== -1) {
+    const nextArg = process.argv[exactIndex + 1];
+    return nextArg && !nextArg.startsWith('--') ? nextArg : undefined;
+  }
+
+  const inlineOption = process.argv.find((arg) =>
+    arg.startsWith(`${prefixedOption}=`),
+  );
+
+  return inlineOption ? inlineOption.slice(prefixedOption.length + 1) : undefined;
+}
+
+function parseNetworkNames(value?: string): string[] {
+  if (!value) {
+    return [];
+  }
+
+  return value
+    .split(',')
+    .map((name) => name.trim())
+    .filter(Boolean);
+}
+
+function getSelectedNetworkConfigs(): NetworkConfigAdditional[] {
+  const networkNamesFromCli =
+    getCliOptionValue('networks') ?? getCliOptionValue('networkNames');
+  const selectedNetworkNames = parseNetworkNames(
+    networkNamesFromCli ?? process.env.NETWORKS,
+  );
+
+  if (selectedNetworkNames.length === 0) {
+    return NETWORK_CONFIGS_ADDITIONAL;
+  }
+
+  const lowerCaseSelectedNames = selectedNetworkNames.map((name) =>
+    name.toLowerCase(),
+  );
+
+  const selectedNetworks = NETWORK_CONFIGS_ADDITIONAL.filter((networkConfig) => {
+    const networkName = networkConfig.networkName.toLowerCase();
+    const networkId = networkConfig.networkId.toLowerCase();
+
+    return (
+      lowerCaseSelectedNames.includes(networkName) ||
+      lowerCaseSelectedNames.includes(networkId)
+    );
+  });
+
+  if (selectedNetworks.length === 0) {
+    throw new Error(
+      `No matching network configurations found for: ${selectedNetworkNames.join(', ')}`,
+    );
+  }
+
+  return selectedNetworks;
+}
+
 function getManualTokensForNetwork(
   networkConfig: NetworkConfigAdditional,
 ): Token[] {
@@ -819,8 +880,10 @@ const allNetworkResults: NetworkTestResult[] = [];
 describe('Production E2E: Import Tokens for Additional Networks', function (this: Suite) {
   this.timeout(14400000); // 4 hours for importing many tokens across all networks
 
+  const selectedNetworks = getSelectedNetworkConfigs();
+
   // Generate a test for each additional network in the configuration
-  NETWORK_CONFIGS_ADDITIONAL.forEach((networkConfig: NetworkConfigAdditional) => {
+  selectedNetworks.forEach((networkConfig: NetworkConfigAdditional) => {
     it(`imports all tokens from ${networkConfig.networkName} (Chain ID: ${networkConfig.chainId})`, async function () {
       // Set per-test timeout to 60 minutes per network
       this.timeout(3600000);
@@ -835,7 +898,7 @@ describe('Production E2E: Import Tokens for Additional Networks', function (this
       // Add a small delay between tests to ensure proper cleanup
       await new Promise((resolve) => setTimeout(resolve, 2000));
     });
-    });
+  });
 
   // Cleanup hook to ensure all browsers are closed
   afterEach(async function () {
