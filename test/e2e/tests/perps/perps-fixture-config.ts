@@ -92,6 +92,11 @@ export const PERPS_WITHDRAW_CONFIRMATION_FLAG = {
  */
 const PERPS_WITHDRAW_CONFIRMATION_MANIFEST_FLAG = {
   remoteFeatureFlags: {
+    perpsEnabledVersion:
+      PERPS_WITHDRAW_CONFIRMATION_FLAG.remoteFeatureFlags.perpsEnabledVersion,
+    perpsPerpTradingGeoBlockedCountriesV2:
+      PERPS_WITHDRAW_CONFIRMATION_FLAG.remoteFeatureFlags
+        .perpsPerpTradingGeoBlockedCountriesV2,
     // eslint-disable-next-line @typescript-eslint/naming-convention
     confirmations_pay_post_quote:
       PERPS_WITHDRAW_CONFIRMATION_FLAG.remoteFeatureFlags
