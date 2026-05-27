@@ -115,6 +115,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
 
           const activityListPage = new ActivityListPage(driver);
           await activityListPage.checkPendingTxNumberDisplayedInActivity(1);
+          await activityListPage.checkSpeedUpInlineButtonIsPresent();
 
           await activityListPage.clickCancelTransaction();
 
