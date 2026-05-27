@@ -124,12 +124,12 @@ describe('AssetsControllerInit', () => {
       queryApiClient: expect.any(Object),
       rpcDataSourceConfig: {
         tokenDetectionEnabled: expect.any(Function),
-        balanceInterval: 30_000,
-        detectionInterval: 180_000,
+        balanceInterval: 86400000,
+        detectionInterval: 86400000,
       },
-      priceDataSourceConfig: { pollInterval: 180_000 },
+      priceDataSourceConfig: { pollInterval: 86400000 },
       stakedBalanceDataSourceConfig: {
-        pollInterval: 30_000,
+        pollInterval: 86400000,
         enabled: false,
       },
       trace: expect.any(Function),
@@ -160,12 +160,12 @@ describe('AssetsControllerInit', () => {
       queryApiClient: expect.any(Object),
       rpcDataSourceConfig: {
         tokenDetectionEnabled: expect.any(Function),
-        balanceInterval: 30_000,
-        detectionInterval: 180_000,
+        balanceInterval: 86400000,
+        detectionInterval: 86400000,
       },
-      priceDataSourceConfig: { pollInterval: 180_000 },
+      priceDataSourceConfig: { pollInterval: 86400000 },
       stakedBalanceDataSourceConfig: {
-        pollInterval: 30_000,
+        pollInterval: 86400000,
         enabled: false,
       },
       trace: expect.any(Function),
@@ -250,7 +250,7 @@ describe('AssetsControllerInit', () => {
       const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
       const isEnabled = constructorCall.isEnabled as () => boolean;
 
-      expect(isEnabled()).toBe(true);
+      expect(isEnabled()).toBe(false);
     });
   });
 
