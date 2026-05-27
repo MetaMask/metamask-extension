@@ -441,22 +441,38 @@ describe('HardwareWalletErrorModal', () => {
       ).toBe(false);
     });
 
-    it('does not render the repair link when onRepairDevice is not provided', () => {
+    it('does not render or track the repair link when onRepairDevice is not provided', async () => {
       const error = createTestError(
         ErrorCode.DeviceDisconnected,
         'Device disconnected',
         'Device not found.',
       );
 
-      const { queryByRole } = renderWithMetrics(
+      const { getByText, queryByRole } = renderWithMetrics(
         <HardwareWalletErrorModal error={error} />,
       );
 
+      expect(
+        getByText('[hardwareWalletErrorRecoveryConnection1]'),
+      ).toBeInTheDocument();
       expect(
         queryByRole('button', {
           name: '[hardwareWalletRepairLink]',
         }),
       ).not.toBeInTheDocument();
+
+      await act(async () => {
+        fireEvent.click(getByText('[hardwareWalletErrorContinueButton]'));
+      });
+
+      expect(mockEnsureDeviceReady).toHaveBeenCalledTimes(1);
+      expect(
+        mockTrackEvent.mock.calls.some(
+          (call) =>
+            call[0].event ===
+            MetaMetricsEventName.HardwareWalletRecoveryRepairCtaClicked,
+        ),
+      ).toBe(false);
     });
 
     it('displays unlock instructions for ConnectionClosed', () => {
