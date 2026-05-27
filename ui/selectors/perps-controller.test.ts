@@ -29,6 +29,7 @@ import {
   selectPerpsPerpsBalances,
   selectPerpsMarketFilterPreferences,
   selectPerpsShouldShowDepositToast,
+  selectPerpsMaxSlippageBps,
 } from './perps-controller';
 
 function buildState(overrides: Record<string, unknown> = {}) {
@@ -785,6 +786,16 @@ describe('perps-controller selectors', () => {
 
     it('defaults to null', () => {
       expect(selectPerpsMarketFilterPreferences(buildState())).toBeNull();
+    });
+  });
+
+  describe('selectPerpsMaxSlippageBps', () => {
+    it('returns persisted bps from controller state', () => {
+      expect(selectPerpsMaxSlippageBps(buildState({ maxSlippageBps: 500 }))).toBe(500);
+    });
+
+    it('returns undefined when not configured', () => {
+      expect(selectPerpsMaxSlippageBps(buildState())).toBeUndefined();
     });
   });
 });
