@@ -76,15 +76,22 @@ async function runningOnGitHubActions(fullTestList: string[]) {
     changedOrNewTests = readChangedAndFilterE2eChangedFiles();
   }
 
-  console.log('Changed or new test list:', changedOrNewTests);
-  console.log('Full test list:', fullTestList);
-
   // Determine the test matrix division
   // GitHub Actions uses matrix.index (0-based) and matrix.total values for test splitting
   const matrixIndex = parseInt(process.env.MATRIX_INDEX || '0', 10);
   const matrixTotal = parseInt(process.env.MATRIX_TOTAL || '1', 10);
   const runAttempt = parseInt(process.env.RUN_ATTEMPT || '1', 10);
   const previousResultsPath = process.env.PREVIOUS_RESULTS_PATH;
+
+  if (process.env.SPECULOS_E2E === '1' && matrixTotal > 1) {
+    console.log(
+      'Speculos sharded run detected; disabling changed-test repetition so each spec runs once across shards.',
+    );
+    changedOrNewTests = [];
+  }
+
+  console.log('Changed or new test list:', changedOrNewTests);
+  console.log('Full test list:', fullTestList);
 
   console.log(
     `GitHub Actions matrix: index ${matrixIndex} of ${matrixTotal} total jobs (attempt ${runAttempt})`,
