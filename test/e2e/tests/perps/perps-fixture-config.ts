@@ -1,4 +1,4 @@
-import type { Hex } from '@metamask/utils';
+import type { Hex, Json } from '@metamask/utils';
 import type { Mockttp } from 'mockttp';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
@@ -40,6 +40,22 @@ const RELAY_REQUEST_ID = 'perps-withdraw-e2e-request-id';
 const RELAY_TRANSACTION_HASH =
   '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef';
 
+const PERPS_WITHDRAW_CONFIRMATION_DISABLED_FLAG = {
+  overrides: {
+    perpsWithdraw: {
+      enabled: false,
+    },
+  },
+};
+
+const PERPS_WITHDRAW_CONFIRMATION_ENABLED_FLAG = {
+  overrides: {
+    perpsWithdraw: {
+      enabled: true,
+    },
+  },
+};
+
 const ARBITRUM_USDC_MARKET_DATA = {
   tokenAddress: ARBITRUM_USDC_ADDRESS,
   currency: 'ETH',
@@ -70,6 +86,10 @@ type RelayQuoteRequestBody = {
 
 const PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS = {
   ...PERPS_PROD_REMOTE_FLAGS,
+  // Keep existing Perps E2E coverage on the legacy withdraw page unless a test
+  // explicitly opts into the confirmation flow.
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  confirmations_pay_post_quote: PERPS_WITHDRAW_CONFIRMATION_DISABLED_FLAG,
   perpsEnabledVersion: { enabled: true, minimumVersion: '0.0.0' },
   perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: [] },
 };
@@ -87,9 +107,7 @@ export const PERPS_WITHDRAW_CONFIRMATION_FLAG = {
   remoteFeatureFlags: {
     ...PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS,
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    confirmations_pay_post_quote: {
-      perpsWithdraw: { enabled: true },
-    },
+    confirmations_pay_post_quote: PERPS_WITHDRAW_CONFIRMATION_ENABLED_FLAG,
   },
 };
 
@@ -160,13 +178,12 @@ export function getPerpsGeoBlockConfig(title?: string) {
      * @param server
      */
     testSpecificMock: async (server: Mockttp) => {
-      const geoBlockedFlags = [
-        ...getProductionRemoteFlagApiResponse().filter(
-          (entry) =>
-            !('perpsPerpTradingGeoBlockedCountriesV2' in (entry as object)),
-        ),
-        { perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: ['US'] } },
-      ];
+      const geoBlockedFlags = getProductionRemoteFlagApiResponseWithOverrides({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        confirmations_pay_post_quote:
+          PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS.confirmations_pay_post_quote,
+        perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: ['US'] },
+      });
       await server
         .forGet('https://client-config.api.cx.metamask.io/v1/flags')
         .withQuery({ client: 'extension', distribution: 'main' })
@@ -177,6 +194,22 @@ export function getPerpsGeoBlockConfig(title?: string) {
         }));
     },
   };
+}
+
+function getProductionRemoteFlagApiResponseWithOverrides(
+  overrides: Record<string, Json>,
+): Json[] {
+  const overrideNames = new Set(Object.keys(overrides));
+
+  return [
+    ...getProductionRemoteFlagApiResponse().filter(
+      (entry) =>
+        !Object.keys(entry as Record<string, Json>).some((name) =>
+          overrideNames.has(name),
+        ),
+    ),
+    ...Object.entries(overrides).map(([name, value]) => ({ [name]: value })),
+  ];
 }
 
 /**
@@ -191,13 +224,12 @@ export function getPerpsGeoBlockConfig(title?: string) {
  * @param server - The Mockttp server instance to register the mock on.
  */
 async function mockEligibleFeatureFlags(server: Mockttp): Promise<void> {
-  const eligibleFlags = [
-    ...getProductionRemoteFlagApiResponse().filter(
-      (entry) =>
-        !('perpsPerpTradingGeoBlockedCountriesV2' in (entry as object)),
-    ),
-    { perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: [] } },
-  ];
+  const eligibleFlags = getProductionRemoteFlagApiResponseWithOverrides({
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    confirmations_pay_post_quote:
+      PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS.confirmations_pay_post_quote,
+    perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: [] },
+  });
   await server
     .forGet('https://client-config.api.cx.metamask.io/v1/flags')
     .withQuery({
