@@ -1,72 +1,23 @@
-export const HardwareWalletSignatureStatus = {
-  AwaitingFirstSignature: 'awaiting-first-signature',
-  AwaitingFinalSignature: 'awaiting-final-signature',
-  Submitted: 'submitted',
-  Rejected: 'rejected',
-  Failed: 'failed',
-  Disconnected: 'disconnected',
-} as const;
-
-export type HardwareWalletSignatureStatus =
-  (typeof HardwareWalletSignatureStatus)[keyof typeof HardwareWalletSignatureStatus];
-
-export const HardwareWalletSignatureEvent = {
-  FirstSignatureSubmitted: 'first-signature-submitted',
-  TransactionSubmitted: 'transaction-submitted',
-  TransactionRejected: 'transaction-rejected',
-  TransactionFailed: 'transaction-failed',
-  DeviceDisconnected: 'device-disconnected',
-  Retry: 'retry',
-  Reset: 'reset',
-} as const;
-
-export type HardwareWalletSignatureEvent =
-  (typeof HardwareWalletSignatureEvent)[keyof typeof HardwareWalletSignatureEvent];
-
-type SigningStatus =
-  | typeof HardwareWalletSignatureStatus.AwaitingFirstSignature
-  | typeof HardwareWalletSignatureStatus.AwaitingFinalSignature;
-
-type InterruptedSignatureEvent =
-  | typeof HardwareWalletSignatureEvent.TransactionRejected
-  | typeof HardwareWalletSignatureEvent.TransactionFailed
-  | typeof HardwareWalletSignatureEvent.DeviceDisconnected;
-
-type HardwareWalletSignatureEventWithoutPayload = Exclude<
+import {
   HardwareWalletSignatureEvent,
-  typeof HardwareWalletSignatureEvent.Reset
->;
+  HardwareWalletSignatureStatus,
+  type HardwareWalletSignaturesAction,
+  type HardwareWalletSignaturesState,
+  type InterruptedSignatureEvent,
+  type ResetHardwareWalletSignaturesAction,
+  type SigningStatus,
+} from './types';
 
-export type HardwareWalletSignaturesState =
-  | {
-      status: SigningStatus | typeof HardwareWalletSignatureStatus.Submitted;
-    }
-  | {
-      status: typeof HardwareWalletSignatureStatus.Rejected;
-      rejectedSignature: SigningStatus;
-    }
-  | {
-      status: typeof HardwareWalletSignatureStatus.Failed;
-      failedSignature: SigningStatus;
-    }
-  | {
-      status: typeof HardwareWalletSignatureStatus.Disconnected;
-      disconnectedSignature: SigningStatus;
-    };
-
-type HardwareWalletSignaturesAction =
-  | {
-      type: HardwareWalletSignatureEventWithoutPayload;
-    }
-  | {
-      type: typeof HardwareWalletSignatureEvent.Reset;
-      needsTwoConfirmations: boolean;
-    };
-
-type ResetHardwareWalletSignaturesAction = Extract<
-  HardwareWalletSignaturesAction,
-  { type: typeof HardwareWalletSignatureEvent.Reset }
->;
+export {
+  HardwareWalletSignatureEvent,
+  HardwareWalletSignatureStatus,
+  type HardwareWalletSignatureEventWithoutPayload,
+  type HardwareWalletSignaturesAction,
+  type HardwareWalletSignaturesState,
+  type InterruptedSignatureEvent,
+  type ResetHardwareWalletSignaturesAction,
+  type SigningStatus,
+} from './types';
 
 /**
  * Returns the initial state for the hardware wallet signatures state machine.
@@ -85,13 +36,6 @@ export const getInitialHardwareWalletSignaturesState = (
     : HardwareWalletSignatureStatus.AwaitingFinalSignature,
 });
 
-/**
- * Checks whether the current status is actively waiting for a hardware wallet
- * signature.
- *
- * @param status - The state machine status to check.
- * @returns `true` when the status represents a pending signature.
- */
 function isSigningStatus(
   status: HardwareWalletSignaturesState['status'],
 ): status is SigningStatus {
@@ -101,12 +45,6 @@ function isSigningStatus(
   );
 }
 
-/**
- * Resumes the signing flow after a recoverable interruption.
- *
- * @param state - The current hardware wallet signatures state.
- * @returns The interrupted signing status, or the original state if it cannot resume.
- */
 function handleResume(
   state: HardwareWalletSignaturesState,
 ): HardwareWalletSignaturesState {
@@ -123,11 +61,11 @@ function handleResume(
 }
 
 /**
- * Advances a two-confirmation flow after the first hardware wallet signature is
- * submitted.
+ * Advances from the approval signature to the final transaction signature when
+ * the current flow requires two hardware wallet confirmations.
  *
  * @param state - The current hardware wallet signatures state.
- * @returns The state waiting for the final signature, or the original state.
+ * @returns The next state, or the current state when the event is not applicable.
  */
 function handleFirstSignatureSubmitted(
   state: HardwareWalletSignaturesState,
@@ -142,10 +80,11 @@ function handleFirstSignatureSubmitted(
 }
 
 /**
- * Marks the transaction as submitted once the current signing step completes.
+ * Marks the signing flow as submitted after the final transaction signature has
+ * been completed.
  *
  * @param state - The current hardware wallet signatures state.
- * @returns The submitted state, or the original state if signing is not active.
+ * @returns The submitted state, or the current state when no signature is active.
  */
 function handleTransactionSubmitted(
   state: HardwareWalletSignaturesState,
@@ -159,25 +98,12 @@ function handleTransactionSubmitted(
   };
 }
 
-/**
- * Resets the state machine back to the first required signing step.
- *
- * @param action - The reset action containing the confirmation-count requirement.
- * @returns The initial hardware wallet signatures state.
- */
 function handleReset(
   action: ResetHardwareWalletSignaturesAction,
 ): HardwareWalletSignaturesState {
   return getInitialHardwareWalletSignaturesState(action.needsTwoConfirmations);
 }
 
-/**
- * Extracts the signing step that should be restored or recorded for an
- * interrupted flow.
- *
- * @param state - The current hardware wallet signatures state.
- * @returns The active or disconnected signing status, or `null` when unavailable.
- */
 function toSigningStatus(
   state: HardwareWalletSignaturesState,
 ): SigningStatus | null {
@@ -190,14 +116,6 @@ function toSigningStatus(
   return null;
 }
 
-/**
- * Records a rejected, failed, or disconnected signing step so the flow can
- * resume from the same signature when appropriate.
- *
- * @param state - The current hardware wallet signatures state.
- * @param event - The interruption event to apply.
- * @returns The interrupted state, or the original state when no signing step exists.
- */
 function handleInterruptedSignature(
   state: HardwareWalletSignaturesState,
   event: InterruptedSignatureEvent,
