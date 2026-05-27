@@ -1,0 +1,11 @@
+rules:
+  dependabot-cooldown:
+    ignore:
+      - dependabot.yml:6
+      # as long as we're only using dependabot for MetaMask/* dependencies no cooldown is needed.
+  unpinned-uses:
+    config:
+      policies:
+        "MetaMask/*": any
+        "actions/*": any
+        "github/*": any
