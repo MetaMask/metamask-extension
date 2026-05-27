@@ -25,6 +25,7 @@ jobs:
           # Use PAT to ensure that the commit later can trigger status check workflows
           token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
           ref: ${{ github.event.pull_request.head.ref }}
+          persist-credentials: false
 
       # Prevent loops on this action by checking if the last commit author is the bot itself
       - name: Prevent loops

@@ -123,6 +123,7 @@ jobs:
             .github
             .nvmrc
           sparse-checkout-cone-mode: false
+          persist-credentials: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -157,7 +158,7 @@ jobs:
         id: retry
         if: ${{ steps.classify.outputs.will-retry == 'true' }}
         run: |
-          PR="${{ steps.classify.outputs.pr-number }}"
+          PR="${STEPS_CLASSIFY_OUTPUTS_PR_NUMBER}"
 
           echo "Rerunning failed jobs..."
           gh run rerun "$MAIN_RUN_ID" --failed --repo "$REPO"
@@ -166,6 +167,8 @@ jobs:
           echo "Removing retry-ci label from PR #$PR..."
           gh pr edit "$PR" --repo "$REPO" --remove-label "retry-ci" \
             || echo "::warning::Failed to remove retry-ci label from PR #$PR — label stays"
+        env:
+          STEPS_CLASSIFY_OUTPUTS_PR_NUMBER: ${{ steps.classify.outputs.pr-number }}
 
       # -- Rescue: post deferred failure status when triage job fails --
       #

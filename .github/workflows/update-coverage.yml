@@ -26,6 +26,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          persist-credentials: false
 
       - name: Update coverage
         run: |

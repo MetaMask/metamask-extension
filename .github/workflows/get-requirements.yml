@@ -86,6 +86,7 @@ jobs:
         if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
         with:
           fetch-depth: 1
+          persist-credentials: false
 
       - name: Fetch HEAD commit for message checks
         if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}

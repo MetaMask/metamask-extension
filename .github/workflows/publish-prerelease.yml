@@ -91,7 +91,9 @@ jobs:
         if: ${{ steps.generate-test-plan.outputs.test_plan_generated == 'true' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
         run: |
           mkdir -p build-test-plan/builds
-          cp "test-plan-${{ steps.generate-test-plan.outputs.test_plan_version }}.json" build-test-plan/builds/
+          cp "test-plan-${STEPS_GENERATE_TEST_PLAN_OUTPUTS_TEST_PLAN_VERSION}.json" build-test-plan/builds/
+        env:
+          STEPS_GENERATE_TEST_PLAN_OUTPUTS_TEST_PLAN_VERSION: ${{ steps.generate-test-plan.outputs.test_plan_version }}
 
       - name: Upload test plan to S3
         if: ${{ steps.generate-test-plan.outputs.test_plan_generated == 'true' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}

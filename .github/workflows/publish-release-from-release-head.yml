@@ -29,6 +29,7 @@ jobs:
           ref: ${{ github.sha }}
           sparse-checkout: .github/scripts
           sparse-checkout-cone-mode: false
+          persist-credentials: false
 
       - name: Extract and validate semver from branch
         id: extract-semver

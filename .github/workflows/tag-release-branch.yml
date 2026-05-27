@@ -63,6 +63,7 @@ jobs:
           ref: ${{ steps.determine-branch.outputs.branch }}
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: false
 
       - name: Handle existing tag
         id: check-existing-tag
