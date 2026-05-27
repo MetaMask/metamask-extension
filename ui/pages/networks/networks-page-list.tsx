@@ -155,6 +155,8 @@ const AdditionalNetworkRow = ({ network }: { network: AddNetworkFields }) => {
   );
 };
 
+const SectionDivider = () => <Box className="mx-4 border-t border-muted" />;
+
 type NetworksPageListProps = {
   searchQuery: string;
   footerContent?: React.ReactNode;
@@ -305,45 +307,54 @@ export const NetworksPageList = ({
         <Box>{defaultNetworks.map(renderNetworkListItem)}</Box>
 
         {customNetworks.length > 0 ? (
-          <Box
-            padding={4}
-            paddingBottom={2}
-            flexDirection={BoxFlexDirection.Row}
-            justifyContent={BoxJustifyContent.Between}
-          >
-            <Text color={TextColor.TextAlternative}>{t('customNetworks')}</Text>
-          </Box>
+          <>
+            <SectionDivider />
+            <Box
+              padding={4}
+              paddingBottom={2}
+              flexDirection={BoxFlexDirection.Row}
+              justifyContent={BoxJustifyContent.Between}
+            >
+              <Text color={TextColor.TextAlternative}>
+                {t('customNetworks')}
+              </Text>
+            </Box>
+          </>
         ) : null}
 
         <Box>{customNetworks.map(renderNetworkListItem)}</Box>
 
         {sortedTestNetworks.length > 0 ? (
-          <Box
-            paddingBottom={4}
-            paddingTop={4}
-            paddingLeft={4}
-            paddingRight={4}
-            flexDirection={BoxFlexDirection.Row}
-            justifyContent={BoxJustifyContent.Between}
-            alignItems={BoxAlignItems.Center}
-          >
-            <Text color={TextColor.TextAlternative}>
-              {t('showTestnetNetworks')}
-            </Text>
-            <ToggleButton
-              dataTestId="networks-page-show-test-networks"
-              value={showTestnets}
-              onToggle={handleToggleTestNetworks}
-            />
-          </Box>
+          <>
+            <SectionDivider />
+            <Box
+              paddingBottom={4}
+              paddingTop={4}
+              paddingLeft={4}
+              paddingRight={4}
+              flexDirection={BoxFlexDirection.Row}
+              justifyContent={BoxJustifyContent.Between}
+              alignItems={BoxAlignItems.Center}
+            >
+              <Text color={TextColor.TextAlternative}>
+                {t('showTestnetNetworks')}
+              </Text>
+              <ToggleButton
+                dataTestId="networks-page-show-test-networks"
+                value={showTestnets}
+                onToggle={handleToggleTestNetworks}
+              />
+            </Box>
+          </>
         ) : null}
 
         {showTestnets ? (
-          <Box>{sortedTestNetworks.map(renderNetworkListItem)}</Box>
+          <>{sortedTestNetworks.map(renderNetworkListItem)}</>
         ) : null}
 
         {featuredNetworksNotYetEnabled.length > 0 ? (
           <>
+            <SectionDivider />
             <AdditionalNetworksInfo />
             <Box>
               {featuredNetworksNotYetEnabled.map((network) => (
