@@ -40,6 +40,7 @@ import {
 } from '@metamask/transaction-controller';
 import type { AssetsControllerState } from '@metamask/assets-controller';
 import type { PerpsControllerState } from '@metamask/perps-controller';
+import type { PasskeyControllerState } from '@metamask/passkey-controller';
 import type { AppStateControllerState } from '../../../app/scripts/controllers/app-state-controller';
 import type { MetaMetricsControllerState } from '../../../app/scripts/controllers/metametrics-controller';
 import type { OnboardingControllerState } from '../../../app/scripts/controllers/onboarding';
@@ -322,6 +323,11 @@ class FixtureBuilderV2 {
 
   withOnboardingController(data: Partial<OnboardingControllerState>): this {
     merge(this.fixture.data.OnboardingController, data);
+    return this;
+  }
+
+  withPasskeyController(data: Partial<PasskeyControllerState>): this {
+    merge(this.fixture.data.PasskeyController, data);
     return this;
   }
 

@@ -172,8 +172,10 @@ export default class TransactionListItemDetails extends PureComponent {
     const {
       primaryTransaction: transaction,
       initialTransaction: { type },
+      hasCancelled,
     } = transactionGroup;
     const { chainId, hash } = transaction;
+    const speedUpLabel = hasCancelled ? 'speedUpCancellation' : 'speedUp';
 
     return (
       <Popover title={title} onClose={onClose}>
@@ -197,7 +199,7 @@ export default class TransactionListItemDetails extends PureComponent {
                   onClick={this.handleRetry}
                   data-testid="speedup-button"
                 >
-                  {t('speedUp')}
+                  {t(speedUpLabel)}
                 </Button>
               )}
               {showCancel && (
@@ -231,7 +233,6 @@ export default class TransactionListItemDetails extends PureComponent {
               <div>
                 {isProtectedByEnforcedSimulations ? (
                   <TransactionStatusLabel
-                    statusOnly
                     label={t('cancelled')}
                     tooltip={t('transactionProtectedByEnforcedSimulations')}
                   />

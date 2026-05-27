@@ -18,6 +18,7 @@ import { getMetamaskNotificationById } from '../../selectors/metamask-notificati
 import {
   NotificationComponents,
   hasNotificationComponents,
+  // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 } from '../notifications/notification-components';
 import { useSnapNotificationTimeouts } from '../../hooks/useNotificationTimeouts';
 import { useAppSelector } from '../../store/store';

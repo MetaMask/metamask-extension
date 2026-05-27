@@ -444,6 +444,62 @@ export const completeCreateNewWalletOnboardingFlow = async ({
 };
 
 /**
+ * Complete create new wallet onboarding flow with passkey enrollment.
+ * Uses the real WebAuthn enrollment flow (requires a virtual authenticator
+ * to be attached to the browser before calling this).
+ *
+ * @param options - The options object.
+ * @param options.driver - The WebDriver instance.
+ * @param [options.password] - The password to use. Defaults to WALLET_PASSWORD.
+ */
+export const completeOnboardingWithPasskey = async ({
+  driver,
+  password = WALLET_PASSWORD,
+}: {
+  driver: Driver;
+  password?: string;
+}): Promise<void> => {
+  console.log('Starting onboarding with passkey enrollment');
+
+  const startOnboardingPage = await goToOnboardingWelcomeLoginPage({
+    driver,
+    participateInMetaMetrics: false,
+    needNavigateToNewPage: true,
+    dataCollectionForMarketing: false,
+  });
+  await startOnboardingPage.createWalletWithSrp();
+
+  const onboardingPasswordPage = new OnboardingPasswordPage(driver);
+  await onboardingPasswordPage.checkPageIsLoaded();
+  await onboardingPasswordPage.createWalletPassword(password);
+
+  const setupPasskeyPage = new SetupPasskeyPage(driver);
+  await setupPasskeyPage.checkPageIsLoaded();
+  await setupPasskeyPage.clickSetUpPasskey();
+  await setupPasskeyPage.waitForEnrollmentSteps();
+  await setupPasskeyPage.waitForEnrollmentSuccess();
+
+  const secureWalletPage = new SecureWalletPage(driver);
+  await secureWalletPage.checkPageIsLoaded();
+  await secureWalletPage.revealAndConfirmSRP();
+
+  if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
+    await onboardingMetricsFlow(driver);
+  }
+
+  const onboardingCompletePage = new OnboardingCompletePage(driver);
+  await onboardingCompletePage.checkPageIsLoaded();
+  await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
+  await onboardingCompletePage.completeOnboarding();
+
+  await handleSidepanelPostOnboarding(driver);
+
+  const homePage = new HomePage(driver);
+  await homePage.checkPageIsLoaded();
+  await homePage.waitForLoadingOverlayToDisappear();
+};
+
+/**
  * Complete import SRP onboarding flow
  *
  * @param options - The options object.
