@@ -6,6 +6,7 @@ rules:
   unpinned-uses:
     config:
       policies:
+        "metamask/github-tools/*": any
         "MetaMask/*": any
         "actions/*": any
         "github/*": any
