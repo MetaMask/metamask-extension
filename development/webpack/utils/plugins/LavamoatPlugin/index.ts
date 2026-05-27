@@ -123,6 +123,8 @@ export const lavamoatPlugin = (args: Args) =>
         'Promise',
         'JSON',
         'Date',
+        // Selenium atoms construct regexes while locating elements.
+        'RegExp',
         // globals sentry needs to function
         '__SENTRY__',
         'appState',
