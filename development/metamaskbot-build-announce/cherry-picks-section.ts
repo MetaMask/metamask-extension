@@ -117,14 +117,14 @@ ${rows}
 export function buildWhatsInRcSection(result: WhatsInRcResult): string {
   const { cherryPicks, changelog } = result;
 
-  if (cherryPicks.length === 0 && changelog.length === 0) {
-    return '';
-  }
-
   let section = `<a id="whats-in-this-rc"></a>
 ### :cherries: What's in this RC
 
 `;
+
+  if (cherryPicks.length === 0 && changelog.length === 0) {
+    return section + `<p><i>No cherry-picks or changelog commits found.</i></p>\n\n`;
+  }
 
   if (cherryPicks.length > 0) {
     section += buildCommitsTable(
