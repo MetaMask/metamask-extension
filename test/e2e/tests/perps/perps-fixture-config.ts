@@ -100,7 +100,8 @@ const PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS = {
  */
 export const PERPS_ELIGIBLE_FLAG = {
   remoteFeatureFlags: {
-    perpsEnabledVersion: PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS.perpsEnabledVersion,
+    perpsEnabledVersion:
+      PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS.perpsEnabledVersion,
     perpsPerpTradingGeoBlockedCountriesV2:
       PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS.perpsPerpTradingGeoBlockedCountriesV2,
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -156,8 +157,7 @@ const PERPS_GEO_BLOCKED_FLAG = {
     perpsEnabledVersion:
       PERPS_GEO_BLOCKED_REMOTE_FEATURE_FLAGS.perpsEnabledVersion,
     perpsPerpTradingGeoBlockedCountriesV2:
-      PERPS_GEO_BLOCKED_REMOTE_FEATURE_FLAGS
-        .perpsPerpTradingGeoBlockedCountriesV2,
+      PERPS_GEO_BLOCKED_REMOTE_FEATURE_FLAGS.perpsPerpTradingGeoBlockedCountriesV2,
     // eslint-disable-next-line @typescript-eslint/naming-convention
     confirmations_pay_post_quote:
       PERPS_GEO_BLOCKED_REMOTE_FEATURE_FLAGS.confirmations_pay_post_quote,
