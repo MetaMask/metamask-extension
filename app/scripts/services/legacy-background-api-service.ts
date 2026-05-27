@@ -18,6 +18,7 @@ import {
   KeyringControllerWithKeyringAction,
   KeyringTypes,
 } from '@metamask/keyring-controller';
+import { HdKeyring } from '@metamask/eth-hd-keyring';
 import {
   AccountsControllerGetAccountByAddressAction,
   AccountsControllerGetSelectedAccountAction,
@@ -485,7 +486,7 @@ export class LegacyBackgroundApiService {
           'KeyringController:withKeyring',
           { address: importedAccountAddress },
           async ({ keyring, metadata }) => {
-            const privateKey = await keyring.exportAccount?.(
+            const privateKey = await (keyring as HdKeyring).exportAccount(
               importedAccountAddress,
             );
             return { id: metadata.id, privateKey };
@@ -543,14 +544,14 @@ export class LegacyBackgroundApiService {
     keyringId: string,
     syncWithSocial = true,
   ): Promise<void> {
-    const bufferedPrivateKey = hexToBytes(add0x(privateKey));
+    const privateKeyBytes = hexToBytes(add0x(privateKey));
 
     if (syncWithSocial) {
       await withLock(this.#seedlessOperationMutex, async () => {
         try {
           await this.#messenger.call(
             'SeedlessOnboardingController:addNewSecretData',
-            bufferedPrivateKey,
+            privateKeyBytes,
             SecretType.PrivateKey,
             { keyringId },
           );
@@ -565,7 +566,7 @@ export class LegacyBackgroundApiService {
         'SeedlessOnboardingController:updateBackupMetadataState',
         {
           keyringId,
-          data: bufferedPrivateKey,
+          data: privateKeyBytes,
           type: SecretType.PrivateKey,
         },
       );
