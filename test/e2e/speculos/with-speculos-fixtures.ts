@@ -24,6 +24,50 @@ export { startSharedSpeculos, stopSharedSpeculos } from './shared-context';
 
 const SPECULOS_LOCKDOWN_MARKER = '/* __SPECULOS_MOCK__ */';
 
+function revertLockdownRunPatches(): void {
+  const distDir = path.join('dist', 'chrome');
+  const htmlFiles = fs.readdirSync(distDir).filter((f) => f.endsWith('.html'));
+
+  const mockScriptTag =
+    '<script src="./scripts/speculos-webhid-mock.js"></script>\n    ';
+  const mockScriptTagAlt =
+    '<script src="scripts/speculos-webhid-mock.js"></script>\n<script ';
+
+  let revertedCount = 0;
+  for (const htmlFile of htmlFiles) {
+    const htmlPath = path.join(distDir, htmlFile);
+    let html = fs.readFileSync(htmlPath, 'utf-8');
+
+    if (!html.includes('speculos-webhid-mock.js')) {
+      continue;
+    }
+
+    html = html.replace(mockScriptTag, '');
+    html = html.replace(mockScriptTagAlt, '<script ');
+
+    fs.writeFileSync(htmlPath, html);
+    revertedCount += 1;
+  }
+
+  const mockScriptPath = path.join(
+    'dist',
+    'chrome',
+    'scripts',
+    'speculos-webhid-mock.js',
+  );
+  try {
+    fs.unlinkSync(mockScriptPath);
+  } catch {
+    // file may not exist
+  }
+
+  if (revertedCount > 0) {
+    console.log(
+      `[Speculos] Reverted WebHID mock script from ${revertedCount} HTML files`,
+    );
+  }
+}
+
 function patchLockdownRunForSpeculos(wsPort: number): void {
   // LavaMoat lockdown scuttles navigator.hid (and WebSocket) in every
   // extension page's SES compartment.  We inject a pre-lockdown script
@@ -217,6 +261,7 @@ export async function withSpeculosFixtures(
   patchLockdownRunForSpeculos(wsBridgePort);
 
   const cleanup = async () => {
+    revertLockdownRunPatches();
     if (!ownsContainer) {
       return;
     }
