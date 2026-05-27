@@ -58,7 +58,7 @@ describe('Trezor Hardware', function () {
     );
   });
 
-  it('unlocks multiple accounts at once and removes one', async function () {
+  it('unlocks multiple accounts at once and removes one TEST', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -87,6 +87,11 @@ describe('Trezor Hardware', function () {
         for (let i = 1; i <= 5; i++) {
           await selectTrezorAccountPage.selectAccount(i);
         }
+        await driver.delay(90000)
+                await driver.delay(90000)
+        await driver.delay(90000)
+        await driver.delay(90000)
+
         await selectTrezorAccountPage.clickUnlockButton();
 
         // Check that all 5 Trezor accounts are displayed in account list

@@ -1,4 +1,5 @@
 import { Driver } from '../../../webdriver/driver';
+import { regularDelayMs } from 'test/e2e/helpers';
 
 /**
  * Represents the select hardware wallet account page.
@@ -9,6 +10,11 @@ class SelectHardwareWalletAccountPage {
 
   protected readonly cancelButton = {
     testId: 'connect-hardware-account-list-cancel-btn',
+  };
+
+  private readonly connectedBanner = {
+    tag: 'p',
+    text: 'Hardware wallet connected',
   };
 
   protected readonly selectAccountPageTitle = {
@@ -35,6 +41,9 @@ class SelectHardwareWalletAccountPage {
         this.selectAccountPageTitle,
         this.cancelButton,
       ]);
+      await this.driver.assertElementNotPresent(this.connectedBanner, {
+        waitAtLeastGuard: regularDelayMs,
+      });
     } catch (e) {
       console.log(
         'Timeout while waiting for select account page to be loaded',
