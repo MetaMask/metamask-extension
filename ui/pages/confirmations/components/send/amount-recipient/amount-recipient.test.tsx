@@ -16,6 +16,7 @@ import * as SendContext from '../../../context/send';
 import * as RecipientValidation from '../../../hooks/send/useRecipientValidation';
 import * as RecipientSelectionMetrics from '../../../hooks/send/metrics/useRecipientSelectionMetrics';
 import * as SendType from '../../../hooks/send/useSendType';
+import * as UnreliableNetworkRpcHook from '../../../hooks/send/useUnreliableNetworkRpc';
 import { AmountRecipient } from './amount-recipient';
 
 const MOCK_ADDRESS = '0xdB055877e6c13b6A6B25aBcAA29B393777dD0a73';
@@ -479,6 +480,37 @@ describe('AmountRecipient', () => {
 
       expect(mockAcknowledgeError).toHaveBeenCalled();
       expect(mockHandleSubmit).toHaveBeenCalled();
+    });
+
+    it('disables the Continue button when the asset network RPC is unreliable', async () => {
+      jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+        toResolved: MOCK_ADDRESS,
+        asset: EVM_ASSET,
+        chainId: '0x1',
+        from: 'from-address',
+        updateAsset: jest.fn(),
+        updateCurrentPage: jest.fn(),
+        updateTo: jest.fn(),
+        updateToResolved: jest.fn(),
+        updateValue: jest.fn(),
+        value: '1',
+      } as unknown as ReturnType<typeof SendContext.useSendContext>);
+      jest.spyOn(AmountValidation, 'useAmountValidation').mockReturnValue({
+        amountError: undefined,
+      } as unknown as ReturnType<typeof AmountValidation.useAmountValidation>);
+      jest
+        .spyOn(UnreliableNetworkRpcHook, 'useUnreliableNetworkRpc')
+        .mockReturnValue({
+          isUnreliable: true,
+          networkName: 'Ethereum',
+          navigateToEditNetwork: jest.fn(),
+        });
+
+      const { findByRole } = render();
+
+      expect(
+        await findByRole('button', { name: messages.continue.message }),
+      ).toBeDisabled();
     });
 
     it('does not submit when acknowledging from icon-triggered modal', async () => {
