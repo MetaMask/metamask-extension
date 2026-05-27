@@ -9,6 +9,8 @@ import { mapLocalTransaction } from './local-transaction';
 
 const from = '0x9bed78535d6a03a955f1504aadba974d9a29e292';
 const to = '0x80181d3ba89220cdb80234fc7aa19d5cc56229cc';
+const baseUsdc = '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913';
+const baseAavePool = '0xa238dd80c259a72e81d7e4664a9801593f98d1c5';
 const lineaDai = '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5';
 const lineaMusd = '0xaca92e438df0b2401ff60da7e4337b687a2435da';
 
@@ -363,6 +365,72 @@ describe('mapLocalTransaction', () => {
           decimals: 6,
           direction: 'in',
           symbol: 'mUSD',
+        },
+      },
+    });
+  });
+
+  it('maps an Aave supply contract interaction to a Lending deposit activity', () => {
+    const transaction = {
+      chainId: CHAIN_IDS.BASE,
+      id: 'aave-supply-id',
+      hash: '0x093844dd6200984f0e27d3c3a76b7a63b360bfb2136213237d693afd2cd69740',
+      status: TransactionStatus.confirmed,
+      time: 1779892154611,
+      type: TransactionType.contractInteraction,
+      txParams: {
+        from,
+        to: baseAavePool,
+        value: '0x0',
+        data: '0x617ba037000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda0291300000000000000000000000000000000000000000000000000000000000186a00000000000000000000000009bed78535d6a03a955f1504aadba974d9a29e2920000000000000000000000000000000000000000000000000000000000000000',
+      },
+      simulationData: {
+        tokenBalanceChanges: [
+          {
+            address: baseUsdc,
+            difference: '0x186a0',
+            isDecrease: true,
+            newBalance: '0x11284f',
+            previousBalance: '0x12aeef',
+            standard: 'erc20',
+          },
+          {
+            address: '0x4e65fe4dba92790696d040ac24aa414708f5c0ab',
+            difference: '0x1869f',
+            isDecrease: false,
+            newBalance: '0x65101',
+            previousBalance: '0x4ca62',
+            standard: 'erc20',
+          },
+        ],
+      },
+    };
+    const transactionGroup = {
+      hasCancelled: false,
+      hasRetried: false,
+      initialTransaction: transaction,
+      nonce: '0x210',
+      primaryTransaction: transaction,
+      transactions: [transaction],
+    } as unknown as TransactionGroup;
+
+    const item = mapLocalTransaction(transactionGroup);
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
+      type: 'lendingDeposit',
+      chainId: 'eip155:8453',
+      status: 'success',
+      timestamp: 1779892154611,
+      data: {
+        hash: '0x093844dd6200984f0e27d3c3a76b7a63b360bfb2136213237d693afd2cd69740',
+        token: {
+          amount: '100000',
+          assetId: toAssetId(baseUsdc, 'eip155:8453'),
+          decimals: 6,
+          direction: 'out',
+          symbol: 'USDC',
         },
       },
     });

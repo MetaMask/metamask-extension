@@ -6,6 +6,7 @@ import { toAssetId } from '../../asset-utils';
 import type { TransactionGroup } from '../../multichain/types';
 import { parseStandardTokenTransactionData } from '../../transaction.utils';
 import type { ActivityListItem, TokenAmount } from '../types';
+import { supplyMethodIds } from './constants';
 import { getLocalTransactionStatus, getMainnetTokenMetadata } from './helpers';
 
 function getNativeAsset(chainId: string) {
@@ -171,6 +172,7 @@ export function mapLocalTransaction(
     primaryTransaction.hash ?? initialTransaction.hash ?? primaryTransaction.id;
   const from = initialTransaction.txParams.from ?? '';
   const to = initialTransaction.txParams.to ?? '';
+  const methodId = initialTransaction.txParams.data?.slice(0, 10);
   switch (initialTransaction.type) {
     case TransactionType.simpleSend: {
       return {
@@ -393,6 +395,36 @@ export function mapLocalTransaction(
       };
 
     default: {
+      const isSupplyContractInteraction =
+        initialTransaction.type === TransactionType.contractInteraction &&
+        methodId &&
+        supplyMethodIds.has(methodId.toLowerCase());
+
+      const suppliedTokenBalanceChange =
+        isSupplyContractInteraction &&
+        initialTransaction.simulationData?.tokenBalanceChanges?.find(
+          ({ isDecrease, standard }) => isDecrease && standard === 'erc20',
+        );
+
+      if (suppliedTokenBalanceChange) {
+        return {
+          type: 'lendingDeposit',
+          chainId,
+          status,
+          timestamp,
+          raw: { type: 'localTransaction', data: transactionGroup },
+          data: {
+            hash,
+            token: getContractToken({
+              amount: BigInt(suppliedTokenBalanceChange.difference).toString(),
+              transaction: initialTransaction,
+              direction: 'out',
+              contractAddress: suppliedTokenBalanceChange.address,
+            }),
+          },
+        };
+      }
+
       const token = (() => {
         const { value } = initialTransaction.txParams;
 
@@ -420,7 +452,7 @@ export function mapLocalTransaction(
           from,
           to,
           ...(token ? { token } : {}),
-          methodId: initialTransaction.txParams.data?.slice(0, 10),
+          methodId,
           transactionType: initialTransaction.type,
         },
       };
