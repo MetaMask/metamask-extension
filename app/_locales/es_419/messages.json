@@ -37,9 +37,6 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "Error"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "Código QR no válido. Escanee el QR sincronizado del monedero físico."
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "Escanear código QR"
   },

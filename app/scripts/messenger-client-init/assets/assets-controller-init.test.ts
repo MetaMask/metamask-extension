@@ -1,6 +1,6 @@
 import {
   AssetsController,
-  AssetsControllerMessenger,
+  type AssetsControllerMessenger,
 } from '@metamask/assets-controller';
 import { createApiPlatformClient } from '@metamask/core-backend';
 import { MessengerClientInitRequest } from '../types';
