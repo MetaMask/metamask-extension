@@ -60,6 +60,32 @@ describe('GenericActivityCell', () => {
     );
   });
 
+  it('renders failed activity title in error color', () => {
+    render(
+      <GenericActivityCell
+        data={{
+          type: 'send',
+          chainId: 'eip155:1',
+          status: 'failed',
+          timestamp: 0,
+          data: {
+            from: '0x0000000000000000000000000000000000000001',
+            to: '0x0000000000000000000000000000000000000002',
+            token: {
+              direction: 'out',
+              symbol: 'ETH',
+            },
+          },
+        }}
+        onClick={jest.fn()}
+      />,
+    );
+
+    expect(screen.getByTestId('activity-list-item-action')).toHaveClass(
+      'text-error-default',
+    );
+  });
+
   it('renders pending spinner when status is pending', () => {
     render(
       <GenericActivityCell

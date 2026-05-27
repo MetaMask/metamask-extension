@@ -212,7 +212,9 @@ export function GenericActivityCell({
       <div className="min-w-0">
         <div className="flex min-w-0 items-center gap-1">
           <Text
-            className="min-w-0 truncate font-medium"
+            className={`min-w-0 truncate font-medium ${
+              data.status === 'failed' ? 'text-error-default' : ''
+            }`}
             data-testid="activity-list-item-action"
           >
             {title}
