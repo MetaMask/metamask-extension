@@ -41,9 +41,9 @@ export function useHwSwapNavigation({
 
     const toastId = `bridge-hw-submitted-${Date.now()}`;
     const timer = setTimeout(async () => {
+      hasNavigatedAfterSubmission.current = true;
       showSuccessToast(toastId);
       await navigateToDefaultRoute();
-      hasNavigatedAfterSubmission.current = true;
     }, 1000);
 
     return () => clearTimeout(timer);
