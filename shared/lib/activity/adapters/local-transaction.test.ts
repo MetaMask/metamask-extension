@@ -3,11 +3,14 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { CHAIN_IDS } from '../../../constants/network';
+import { toAssetId } from '../../asset-utils';
 import type { TransactionGroup } from '../../multichain/types';
 import { mapLocalTransaction } from './local-transaction';
 
 const from = '0x9bed78535d6a03a955f1504aadba974d9a29e292';
 const to = '0x80181d3ba89220cdb80234fc7aa19d5cc56229cc';
+const lineaDai = '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5';
+const lineaMusd = '0xaca92e438df0b2401ff60da7e4337b687a2435da';
 
 describe('mapLocalTransaction', () => {
   it('maps a pending native send to a Send activity', () => {
@@ -300,6 +303,66 @@ describe('mapLocalTransaction', () => {
             'eip155:59144/erc20:0x239FD4B0c4DB49Fa8660E65B97619D43D0E0A79d',
           direction: 'out',
           symbol: 'TDN',
+        },
+      },
+    });
+  });
+
+  it('maps an mUSD conversion to a Convert activity', () => {
+    const transaction = {
+      chainId: CHAIN_IDS.LINEA_MAINNET,
+      id: 'musd-conversion-id',
+      hash: '0xmusdconversion',
+      status: TransactionStatus.confirmed,
+      time: 1779805800000,
+      type: TransactionType.musdConversion,
+      txParams: {
+        from,
+        to: lineaMusd,
+        value: '0x0',
+        data: '0xa9059cbb0000000000000000000000009bed78535d6a03a955f1504aadba974d9a29e2920000000000000000000000000000000000000000000000000000000000018703',
+      },
+    };
+    const transactionGroup = {
+      hasCancelled: false,
+      hasRetried: false,
+      initialTransaction: transaction,
+      nonce: '0x3',
+      primaryTransaction: transaction,
+      transactions: [transaction],
+    } as unknown as TransactionGroup;
+
+    const item = mapLocalTransaction({
+      ...transactionGroup,
+      sourceToken: {
+        assetId: toAssetId(lineaDai, 'eip155:59144'),
+        decimals: 18,
+        direction: 'out',
+        symbol: 'DAI',
+      },
+    });
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
+      type: 'convert',
+      chainId: 'eip155:59144',
+      status: 'success',
+      timestamp: 1779805800000,
+      data: {
+        hash: '0xmusdconversion',
+        sourceToken: {
+          assetId: toAssetId(lineaDai, 'eip155:59144'),
+          decimals: 18,
+          direction: 'out',
+          symbol: 'DAI',
+        },
+        destinationToken: {
+          amount: '100099',
+          assetId: toAssetId(lineaMusd, 'eip155:59144'),
+          decimals: 6,
+          direction: 'in',
+          symbol: 'mUSD',
         },
       },
     });

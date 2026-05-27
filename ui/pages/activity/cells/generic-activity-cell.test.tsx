@@ -7,7 +7,12 @@ import { GenericActivityCell } from './generic-activity-cell';
 const mockFormatTokenAmount = jest.fn();
 
 jest.mock('../../../hooks/useI18nContext', () => ({
-  useI18nContext: () => (key: string) => key,
+  useI18nContext:
+    () =>
+    (key: string, values?: string[]) =>
+      key === 'activity_convert_success_title'
+        ? `Converted ${values?.[0]}`
+        : key,
 }));
 
 jest.mock('../useFormatTokenAmount', () => ({
@@ -196,5 +201,78 @@ describe('GenericActivityCell', () => {
     expect(
       getByTestId('transaction-list-item-primary-currency'),
     ).toHaveTextContent('-4 ETH');
+  });
+
+  it('prefixes plus for incoming non-convert primary amounts', () => {
+    mockFormatTokenAmount.mockReturnValue('4 ETH');
+
+    render(
+      <GenericActivityCell
+        data={{
+          type: 'receive',
+          chainId: 'eip155:1',
+          status: 'success',
+          timestamp: 0,
+          data: {
+            from: '0x0000000000000000000000000000000000000001',
+            to: '0x0000000000000000000000000000000000000002',
+            token: {
+              amount: '4000000000000000000',
+              decimals: 18,
+              direction: 'in',
+              symbol: 'ETH',
+            },
+          },
+        }}
+        onClick={jest.fn()}
+      />,
+    );
+
+    expect(
+      screen.getByTestId('transaction-list-item-primary-currency'),
+    ).toHaveTextContent('+4 ETH');
+  });
+
+  it('renders convert title, token pair, and signed token amounts', () => {
+    mockFormatTokenAmount.mockImplementation((token) =>
+      token?.symbol === 'mUSD' ? '0.100099 MUSD' : '-0.1 USDT',
+    );
+
+    render(
+      <GenericActivityCell
+        data={{
+          type: 'convert',
+          chainId: 'eip155:59144',
+          status: 'success',
+          timestamp: 0,
+          data: {
+            sourceToken: {
+              amount: '100000',
+              decimals: 6,
+              direction: 'out',
+              symbol: 'USDT',
+            },
+            destinationToken: {
+              amount: '100099',
+              decimals: 6,
+              direction: 'in',
+              symbol: 'mUSD',
+            },
+          },
+        }}
+        onClick={jest.fn()}
+      />,
+    );
+
+    expect(screen.getByTestId('activity-list-item-action')).toHaveTextContent(
+      'Converted mUSD',
+    );
+    expect(screen.getByText('USDT → mUSD')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('transaction-list-item-primary-currency'),
+    ).toHaveTextContent('+0.100099 MUSD');
+    expect(
+      screen.getByTestId('transaction-list-item-secondary-currency'),
+    ).toHaveTextContent('-0.1 USDT');
   });
 });

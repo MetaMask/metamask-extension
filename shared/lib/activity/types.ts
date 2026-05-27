@@ -86,7 +86,7 @@ export type ActivityListItem =
       }
     >
   | ActivityItem<
-      'swap',
+      'swap' | 'convert',
       {
         sourceToken?: TokenAmount;
         destinationToken?: TokenAmount;

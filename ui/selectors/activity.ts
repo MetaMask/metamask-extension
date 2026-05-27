@@ -6,6 +6,8 @@ import {
 } from '@metamask/transaction-controller';
 import { StatusTypes } from '@metamask/bridge-controller';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
+import type { TransactionPayControllerState } from '@metamask/transaction-pay-controller';
+import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
 import { ResultType } from '../../shared/lib/trust-signals';
 import { EXCLUDED_TRANSACTION_TYPES } from '../helpers/constants/transactions';
 import {
@@ -20,6 +22,7 @@ import type { MetaMaskReduxState } from '../store/store';
 import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { getTokensControllerAllTokens } from '../../shared/lib/selectors/assets-migration';
+import { toAssetId } from '../../shared/lib/asset-utils';
 import { mapKeyringTransaction } from '../../shared/lib/activity/adapters/keyring-transaction';
 import { mapLocalTransaction } from '../../shared/lib/activity/adapters/local-transaction';
 import {
@@ -44,6 +47,10 @@ const selectBridgeHistory = (state: MetaMaskReduxState) =>
     string,
     BridgeHistoryItem
   >;
+
+const selectTransactionPayData = (state: MetaMaskReduxState) =>
+  (state.metamask as TransactionPayControllerState).transactionData ??
+  (EMPTY_OBJECT as TransactionPayControllerState['transactionData']);
 
 function isFromSelectedAccount(tx: TransactionMeta, selectedAddress: string) {
   // Ported from selectedAddressTxListSelector
@@ -227,12 +234,14 @@ function getBridgeActivityStatus(bridgeHistoryItem?: BridgeHistoryItem) {
 export const selectLocalActivityItems = createSelector(
   selectLocalTransactions,
   selectBridgeHistory,
+  selectTransactionPayData,
   getNetworkConfigurationsByChainId,
   getSelectedInternalAccount,
   getTokensControllerAllTokens,
   (
     transactionGroups,
     bridgeHistory,
+    transactionPayData,
     networkConfigurationsByChainId,
     selectedAccount,
     allTokens,
@@ -244,10 +253,10 @@ export const selectLocalActivityItems = createSelector(
     // used inside the mapper only covers mainnet, so anything on Sepolia,
     // localhost, custom RPC etc. needs this fallback to render correctly.
     const resolveContractTokenMetadata = (
-      chainId: string,
+      chainId: string | undefined,
       contractAddress: string | undefined,
     ) => {
-      if (!contractAddress || !selectedAddress) {
+      if (!chainId || !contractAddress || !selectedAddress) {
         return undefined;
       }
       const userTokens = allTokens?.[chainId as Hex]?.[selectedAddress as Hex];
@@ -268,6 +277,63 @@ export const selectLocalActivityItems = createSelector(
         chainId,
         transactionGroup.initialTransaction.txParams.to,
       );
+      const sourceToken = (() => {
+        if (type !== TransactionType.musdConversion) {
+          return undefined;
+        }
+
+        const { metamaskPay } = transactionGroup.initialTransaction;
+        const transactionPay = transactionPayData[
+          transactionGroup.initialTransaction.id
+        ];
+        const paymentToken = transactionPay?.paymentToken;
+        const payTokenAddress =
+          metamaskPay?.tokenAddress ?? paymentToken?.address;
+        const payTokenChainId = metamaskPay?.chainId ?? paymentToken?.chainId;
+        const sourceTokenMetadata = resolveContractTokenMetadata(
+          payTokenChainId,
+          payTokenAddress,
+        );
+        const sourceAmount =
+          transactionPay?.totals?.sourceAmount.raw ??
+          transactionPay?.sourceAmounts?.find((sourceAmountData) => {
+            const targetTokenAddress =
+              transactionGroup.initialTransaction.txParams.to;
+
+            return (
+              targetTokenAddress &&
+              sourceAmountData.targetTokenAddress.toLowerCase() ===
+                targetTokenAddress.toLowerCase()
+            );
+          })?.sourceAmountRaw ??
+          transactionPay?.sourceAmounts?.[0]?.sourceAmountRaw;
+        const sourceTokenCaipChainId = payTokenChainId
+          ? toCaipChainId(
+              KnownCaipNamespace.Eip155,
+              Number.parseInt(payTokenChainId, 16).toString(),
+            )
+          : undefined;
+        const sourceTokenAssetId =
+          payTokenAddress && sourceTokenCaipChainId
+            ? toAssetId(payTokenAddress, sourceTokenCaipChainId)
+            : undefined;
+        const sourceTokenSymbol =
+          sourceTokenMetadata?.symbol ?? paymentToken?.symbol;
+        const sourceTokenDecimals =
+          sourceTokenMetadata?.decimals ?? paymentToken?.decimals;
+
+        return sourceTokenMetadata || paymentToken || sourceTokenAssetId
+          ? {
+              direction: 'out' as const,
+              ...(sourceAmount ? { amount: sourceAmount } : {}),
+              ...(sourceTokenSymbol ? { symbol: sourceTokenSymbol } : {}),
+              ...(sourceTokenDecimals === undefined
+                ? {}
+                : { decimals: sourceTokenDecimals }),
+              ...(sourceTokenAssetId ? { assetId: sourceTokenAssetId } : {}),
+            }
+          : undefined;
+      })();
 
       if (
         type === TransactionType.swap ||
@@ -293,6 +359,7 @@ export const selectLocalActivityItems = createSelector(
         ...transactionGroup,
         nativeAssetSymbol,
         contractTokenMetadata,
+        ...(sourceToken ? { sourceToken } : {}),
       });
     });
   },

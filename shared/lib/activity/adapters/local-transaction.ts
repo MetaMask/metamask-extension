@@ -1,6 +1,7 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
+import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../constants/bridge';
 import { toAssetId } from '../../asset-utils';
 import type { TransactionGroup } from '../../multichain/types';
 import { parseStandardTokenTransactionData } from '../../transaction.utils';
@@ -78,16 +79,25 @@ export function mapLocalTransaction(
       transaction.chainId,
       contractAddress,
     );
+    const fallbackTokenMetadata = Object.values(
+      BRIDGE_CHAINID_COMMON_TOKEN_PAIR,
+    ).find(
+      (token) =>
+        token?.assetId.startsWith(`${chainId}/`) &&
+        token.address.toLowerCase() === contractAddress.toLowerCase(),
+    );
     const decimals =
       transaction.transferInformation?.amount === undefined
         ? (tokenMetadata?.decimals ??
-          transactionGroup.contractTokenMetadata?.decimals)
+          transactionGroup.contractTokenMetadata?.decimals ??
+          fallbackTokenMetadata?.decimals)
         : transaction.transferInformation.decimals;
     const tokenAmount = transaction.transferInformation?.amount ?? amount;
     const symbol =
       transaction.transferInformation?.symbol ??
       tokenMetadata?.symbol ??
-      transactionGroup.contractTokenMetadata?.symbol;
+      transactionGroup.contractTokenMetadata?.symbol ??
+      fallbackTokenMetadata?.symbol;
     const assetId = toAssetId(contractAddress, chainId);
 
     return {
@@ -284,6 +294,32 @@ export function mapLocalTransaction(
           hash,
           sourceToken: enrichedSourceToken,
           destinationToken: enrichedDestinationToken,
+        },
+      };
+    }
+
+    case TransactionType.musdConversion: {
+      const transactionData = initialTransaction.txParams.data
+        ? parseStandardTokenTransactionData(initialTransaction.txParams.data)
+        : undefined;
+      const amount =
+        transactionData?.args?._value ?? transactionData?.args?.value;
+
+      return {
+        type: 'convert',
+        chainId,
+        status,
+        timestamp,
+        raw: { type: 'localTransaction', data: transactionGroup },
+        data: {
+          hash,
+          sourceToken: transactionGroup.sourceToken,
+          destinationToken: getContractToken({
+            amount: amount?.toString(),
+            transaction: initialTransaction,
+            direction: 'in',
+            contractAddress: initialTransaction.txParams.to,
+          }),
         },
       };
     }

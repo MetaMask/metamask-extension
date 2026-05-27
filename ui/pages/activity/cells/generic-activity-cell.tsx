@@ -26,6 +26,7 @@ function getCellTokenAmounts(activity: ActivityCellProps['data']) {
   switch (activity.type) {
     case 'swap':
     case 'bridge':
+    case 'convert':
       return {
         primaryToken: activity.data.destinationToken,
         secondaryToken: activity.data.sourceToken,
@@ -167,6 +168,13 @@ export function GenericActivityCell({
 
   const primaryTokenAmount = formatTokenAmount(primaryToken);
   const secondaryTokenAmount = formatTokenAmount(secondaryToken);
+  const shouldPrefixPrimaryAmount =
+    primaryToken?.direction === 'in' &&
+    primaryTokenAmount;
+  const primaryTokenAmountLabel =
+    shouldPrefixPrimaryAmount
+      ? `+${primaryTokenAmount}`
+      : primaryTokenAmount;
 
   const { namespace } = parseCaipChainId(data.chainId);
   const chainId =
@@ -222,14 +230,14 @@ export function GenericActivityCell({
         {renderDescriptionLine(pendingStatusText, description)}
       </div>
       <div className="text-right whitespace-nowrap">
-        {primaryTokenAmount ? (
+        {primaryTokenAmountLabel ? (
           <Text
             className={`text-sm font-medium ${
               primaryToken?.direction === 'in' ? 'text-success-default' : ''
             }`}
             data-testid="transaction-list-item-primary-currency"
           >
-            {primaryTokenAmount}
+            {primaryTokenAmountLabel}
           </Text>
         ) : null}
         {secondaryTokenAmount ? (

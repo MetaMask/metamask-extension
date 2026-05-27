@@ -335,7 +335,7 @@
     "description": "$1 is the token symbol"
   },
   "activity_convert_success_title": {
-    "message": "Converted to $1",
+    "message": "Converted $1",
     "description": "$1 is the token symbol"
   },
   "activity_deposit_failed_description": {

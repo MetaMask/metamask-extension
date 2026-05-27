@@ -32,6 +32,10 @@ function getSubstitutions(activity: ActivityListItem): LabelSubstitutions {
           activity.data.destinationToken?.symbol ?? '',
         ],
       };
+    case 'convert':
+      return {
+        title: [activity.data.destinationToken?.symbol ?? ''],
+      };
     // Destination chain in title, source token in description
     case 'bridge': {
       const destChainId =
@@ -87,6 +91,19 @@ export function useGetLabel(activity: ActivityListItem) {
     status: activity.status,
   });
   const substitutions = getSubstitutions(activity);
+
+  if (activity.type === 'convert') {
+    const sourceSymbol = activity.data.sourceToken?.symbol;
+    const destinationSymbol = activity.data.destinationToken?.symbol;
+
+    return {
+      title: t(labelKeys.title.key, substitutions.title),
+      description:
+        sourceSymbol && destinationSymbol
+          ? `${sourceSymbol} → ${destinationSymbol}`
+          : t(labelKeys.description.key, substitutions.title),
+    };
+  }
 
   return {
     title: t(labelKeys.title.key, substitutions.title),
