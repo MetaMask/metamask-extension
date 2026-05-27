@@ -171,10 +171,12 @@ const AssetListControlBar = ({
     [shouldShowRefreshButtons, useNftDetection],
   );
 
-  // Pseudo callback to update calling component with network selection
   useEffect(() => {
-    onNetworkSelect?.(selectedCaipChainIds);
-  }, [selectedCaipChainIds, onNetworkSelect]);
+    if (!onNetworkSelect) {
+      return;
+    }
+    onNetworkSelect(selectedCaipChainIds);
+  }, [onNetworkSelect, selectedCaipChainIds]);
 
   const isTestNetwork = useMemo(() => {
     return (TEST_CHAINS as string[]).includes(
