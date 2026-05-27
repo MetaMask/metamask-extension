@@ -129,7 +129,7 @@ describe('Account Tracker API Usage', function () {
         testSpecificMock: mockInfura,
       },
       async ({ driver, mockedEndpoint }) => {
-        await driver.delay(veryLargeDelayMs);
+        await driver.delay(veryLargeDelayMs * 2);
         let allInfuraJsonRpcRequests =
           await getAllInfuraJsonRpcRequests(mockedEndpoint);
         let rpcMethodsToTestRequests = getSpecifiedJsonRpcRequests(
