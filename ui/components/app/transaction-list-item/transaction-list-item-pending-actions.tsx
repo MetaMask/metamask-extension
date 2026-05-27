@@ -52,16 +52,15 @@ export const TransactionListItemPendingActions = ({
     };
 
   return (
-    <div className="px-4 pb-3">
-      <PendingTransactionActionButtons
-        showCancel={showCancel}
-        onCancel={wrapHandler(onCancel)}
-        speedUp={{
-          ...speedUp,
-          onClick: wrapHandler(speedUp.onClick),
-        }}
-        primaryTransaction={primaryTransaction}
-      />
-    </div>
+    <PendingTransactionActionButtons
+      showCancel={showCancel}
+      onCancel={wrapHandler(onCancel)}
+      speedUp={{
+        ...speedUp,
+        onClick: wrapHandler(speedUp.onClick),
+      }}
+      primaryTransaction={primaryTransaction}
+      className="px-[60px] pb-2"
+    />
   );
 };
