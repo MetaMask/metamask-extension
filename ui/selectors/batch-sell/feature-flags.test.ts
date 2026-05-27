@@ -14,10 +14,7 @@ type MockState = {
       batchSell?: BatchSellFeatureFlag;
     };
     internalAccounts: {
-      accounts: Record<
-        string,
-        { metadata: { keyring: { type: string } } }
-      >;
+      accounts: Record<string, { metadata: { keyring: { type: string } } }>;
       selectedAccount: string;
     };
   };
@@ -87,13 +84,19 @@ describe('getIsBatchSellEnabled', () => {
 
   it('returns false when a hardware wallet account is selected, even if flag is enabled', () => {
     semverGteMock.mockReturnValue(true);
-    const state = getMockState({ minimumVersion: '14.0.0' }, KeyringType.ledger);
+    const state = getMockState(
+      { minimumVersion: '14.0.0' },
+      KeyringType.ledger,
+    );
     expect(getIsBatchSellEnabled(state)).toBe(false);
   });
 
   it('returns false when a Trezor hardware wallet account is selected', () => {
     semverGteMock.mockReturnValue(true);
-    const state = getMockState({ minimumVersion: '14.0.0' }, KeyringType.trezor);
+    const state = getMockState(
+      { minimumVersion: '14.0.0' },
+      KeyringType.trezor,
+    );
     expect(getIsBatchSellEnabled(state)).toBe(false);
   });
 
