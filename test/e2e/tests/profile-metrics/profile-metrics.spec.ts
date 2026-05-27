@@ -158,11 +158,12 @@ describe('Profile Metrics', function () {
           // Depending on controller timing, account groups can be split across
           // multiple PUTs (e.g. EVM/Solana then Tron/Bitcoin) or consolidated,
           // so this test asserts scope coverage instead of exact request count.
-          await waitForScopesToBeSynced(
-            driver,
-            authCall,
-            ['eip155:', 'solana:', 'tron:', 'bip122:'],
-          );
+          await waitForScopesToBeSynced(driver, authCall, [
+            'eip155:',
+            'solana:',
+            'tron:',
+            'bip122:',
+          ]);
         },
       );
     });
@@ -193,13 +194,14 @@ describe('Profile Metrics', function () {
           const [authCall] = mockedEndpoint;
 
           // Wait for existing accounts to be synced before creating a new account.
-          await waitForScopesToBeSynced(
-            driver,
-            authCall,
-            ['eip155:', 'solana:', 'tron:', 'bip122:'],
-          );
-          const requestsBeforeAddingAccount =
-            (await authCall.getSeenRequests()).length;
+          await waitForScopesToBeSynced(driver, authCall, [
+            'eip155:',
+            'solana:',
+            'tron:',
+            'bip122:',
+          ]);
+          const requestsBeforeAddingAccount = (await authCall.getSeenRequests())
+            .length;
 
           const headerNavbar = new HeaderNavbar(driver);
           await headerNavbar.openAccountMenu();
