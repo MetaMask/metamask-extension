@@ -276,7 +276,7 @@
     "AnalyticsController": {
       "analyticsId": null,
       "eventQueue": {},
-      "optedIn": true
+      "optedIn": false
     },
     "MetaMetricsController": {
       "dataCollectionForMarketing": false,
