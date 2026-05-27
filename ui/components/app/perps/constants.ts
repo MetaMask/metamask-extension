@@ -60,22 +60,21 @@ export const PERPS_CONSTANTS = {
  */
 export const PERPS_MIN_MARKET_ORDER_USD = 10;
 
-// Slippage configuration bounds for the perps order entry surface.
-// Default 3% matches HyperLiquid's `DefaultMarketSlippageBps = 300`, so a
-// user who never opens the config sheet gets the same protection the
-// controller already enforces. Range 0.1%–10% in 0.1% steps covers tight
-// (deep-book major) and loose (illiquid HIP-3) trading without inviting
-// unsafe values.
-export const PERPS_SLIPPAGE_DEFAULT_PCT = 3;
-export const PERPS_SLIPPAGE_MIN_PCT = 0.1;
-export const PERPS_SLIPPAGE_MAX_PCT = 10;
-export const PERPS_SLIPPAGE_STEP_PCT = 0.1;
+// Slippage constants mirror @metamask/perps-controller v6.3+
+// ORDER_SLIPPAGE_CONFIG and MAX_SLIPPAGE_BOUNDS. Can't import directly
+// because the controller pulls ESM-only transitive deps that break Jest.
+// Keep in sync with the canonical values in perpsConfig.ts.
+export const PERPS_SLIPPAGE_DEFAULT_BPS = 300; // ORDER_SLIPPAGE_CONFIG.DefaultMarketSlippageBps
+export const PERPS_SLIPPAGE_MIN_BPS = 10; // MAX_SLIPPAGE_BOUNDS.MinBps
+export const PERPS_SLIPPAGE_MAX_BPS = 1000; // MAX_SLIPPAGE_BOUNDS.MaxBps
+export const PERPS_SLIPPAGE_STEP_BPS = 10; // MAX_SLIPPAGE_BOUNDS.StepBps
+export const PERPS_LIMIT_ORDER_SLIPPAGE_BPS = 100; // ORDER_SLIPPAGE_CONFIG.DefaultLimitSlippageBps
 
-// Limit-order slippage in basis points. Mirrors mobile's
-// `ORDER_SLIPPAGE_CONFIG.DefaultLimitSlippageBps = 100` and keeps the
-// user-configured max-slippage cap scoped to market orders, where it
-// actually affects fill price.
-export const PERPS_LIMIT_ORDER_SLIPPAGE_BPS = 100;
+// Convenience percent conversions for UI display
+export const PERPS_SLIPPAGE_DEFAULT_PCT = PERPS_SLIPPAGE_DEFAULT_BPS / 100;
+export const PERPS_SLIPPAGE_MIN_PCT = PERPS_SLIPPAGE_MIN_BPS / 100;
+export const PERPS_SLIPPAGE_MAX_PCT = PERPS_SLIPPAGE_MAX_BPS / 100;
+export const PERPS_SLIPPAGE_STEP_PCT = PERPS_SLIPPAGE_STEP_BPS / 100;
 
 /**
  * Market sorting configuration

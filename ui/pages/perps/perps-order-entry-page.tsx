@@ -64,7 +64,7 @@ import {
   selectPerpsDepositPending,
   selectPerpsTradeConfigurations,
   selectPerpsIsTestnet,
-  selectPerpsMaxSlippagePct,
+  selectPerpsMaxSlippageBps,
 } from '../../selectors/perps-controller';
 import { useEstimatedSlippage } from '../../hooks/perps/useEstimatedSlippage';
 import { SlippageConfigModal } from '../../components/app/perps/slippage-config-modal';
@@ -262,10 +262,13 @@ const PerpsOrderEntryPage: React.FC = () => {
   trackRef.current = track;
   const tradeConfigurations = useSelector(selectPerpsTradeConfigurations);
   const isTestnet = useSelector(selectPerpsIsTestnet);
-  const persistedMaxSlippagePct = useSelector(selectPerpsMaxSlippagePct);
-  const maxSlippagePct = persistedMaxSlippagePct ?? PERPS_SLIPPAGE_DEFAULT_PCT;
+  const persistedMaxSlippageBps = useSelector(selectPerpsMaxSlippageBps);
+  const maxSlippagePct =
+    persistedMaxSlippageBps === undefined
+      ? PERPS_SLIPPAGE_DEFAULT_PCT
+      : persistedMaxSlippageBps / 100;
   const maxSlippageSource: 'default' | 'user_configured' =
-    persistedMaxSlippagePct === undefined ? 'default' : 'user_configured';
+    persistedMaxSlippageBps === undefined ? 'default' : 'user_configured';
   const [isSlippageConfigOpen, setIsSlippageConfigOpen] = useState(false);
   const hasPendingPerpsDeposit = useSelector(selectPerpsDepositPending);
   const { trigger: triggerDeposit, isLoading: isDepositLoading } =
@@ -391,11 +394,10 @@ const PerpsOrderEntryPage: React.FC = () => {
 
   const handleSaveSlippageConfig = useCallback(
     (valuePct: number) => {
-      submitRequestToBackground('setPreference', [
-        'perpsMaxSlippagePct',
-        valuePct,
+      submitRequestToBackground('perpsSetMaxSlippage', [
+        Math.round(valuePct * 100),
       ]).catch((error) => {
-        log.error('[Perps] Save max-slippage preference failed:', error);
+        log.error('[Perps] Save max-slippage failed:', error);
       });
       track(MetaMetricsEventName.PerpsUiInteraction, {
         [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:

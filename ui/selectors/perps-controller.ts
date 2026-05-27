@@ -213,18 +213,15 @@ export const selectPerpsTradeConfigurations = (state: PerpsState) =>
   state.metamask.tradeConfigurations ?? EMPTY_TRADE_CONFIGURATIONS;
 
 /**
- * Persisted max-slippage percent. Lives in PreferencesController so it
- * survives across sessions and applies to every future trade until the user
- * explicitly changes it.
+ * Persisted max-slippage in basis points. Stored in PerpsController state
+ * via `setMaxSlippage` / `getMaxSlippage` (controller v6.3+).
  *
- * Returns the raw stored value (may be undefined when the user has never
- * configured a value). Callers should fall back to PERPS_SLIPPAGE_DEFAULT_PCT
- * for display/order math — keeping the raw shape lets callers also emit the
- * `max_slippage_source` analytics property accurately.
+ * Returns the raw bps value (undefined when user never configured).
+ * Callers convert to percent (bps / 100) and fall back to
+ * ORDER_SLIPPAGE_CONFIG.DefaultMarketSlippageBps / 100 for display.
+ *
+ * @param state - Redux state with flattened PerpsController fields.
  */
-type PreferencesSelectorState = {
-  metamask: { preferences?: { perpsMaxSlippagePct?: number } };
-};
-export const selectPerpsMaxSlippagePct = (
-  state: PreferencesSelectorState,
-): number | undefined => state.metamask.preferences?.perpsMaxSlippagePct;
+export const selectPerpsMaxSlippageBps = (
+  state: PerpsState,
+): number | undefined => state.metamask.maxSlippageBps;
