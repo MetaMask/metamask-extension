@@ -227,6 +227,7 @@ function buildSlackMessage(options: {
   changelogText: string;
   hasChangelog: boolean;
   actionsRunUrl: string | undefined;
+  prNumber?: string;
 }): SlackPayload {
   const {
     semver,
@@ -236,6 +237,7 @@ function buildSlackMessage(options: {
     changelogText,
     hasChangelog,
     actionsRunUrl,
+    prNumber,
   } = options;
 
   const buildIdLabel = `run ${runId}`;
@@ -336,9 +338,22 @@ function buildSlackMessage(options: {
     });
   }
 
+  if (prNumber) {
+    blocks.push(
+      { type: 'divider' },
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `*:cherries: Cherry-picks:* <${REPO_URL}/pull/${prNumber}#cherry-picks|View cherry-picks>`,
+        },
+      },
+    );
+  }
+
   const footerBits = [
-    actionsRunUrl ? `<${actionsRunUrl}|GitHub Actions run>` : null,
-    `<${REPO_URL}/blob/release/${semver}/CHANGELOG.md|CHANGELOG.md on release/${semver}>`,
+    actionsRunUrl ? `<${actionsRunUrl}|View Build Pipeline>` : null,
+    `<${REPO_URL}/blob/release/${semver}/CHANGELOG.md|View full release notes>`,
   ].filter(Boolean);
 
   blocks.push(
@@ -421,6 +436,7 @@ async function main(): Promise<void> {
 
   const semver = process.env.SEMVER;
   const runId = process.env.GITHUB_RUN_ID;
+  const prNumber = process.env.PR_NUMBER || '';
 
   if (!semver) {
     console.warn('⚠️ SEMVER is required');
@@ -517,6 +533,7 @@ async function main(): Promise<void> {
     changelogText,
     hasChangelog,
     actionsRunUrl,
+    prNumber,
   });
 
   if (dryRun) {

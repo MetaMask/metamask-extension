@@ -74,8 +74,10 @@ jobs:
             echo "PR exists but missing auto-rc-builds label — skipping Slack."
             exit 0
           fi
+          PR_NUMBER=$(echo "$PR_JSON" | jq -r '.number')
           echo "skip=false" >> "$GITHUB_OUTPUT"
           echo "semver=${BRANCH#release/}" >> "$GITHUB_OUTPUT"
+          echo "pr_number=${PR_NUMBER}" >> "$GITHUB_OUTPUT"
           echo "Proceeding: release PR has auto-rc-builds."
 
       - name: Set notification variables
@@ -122,4 +124,5 @@ jobs:
           SLACK_RC_CHANNEL: ${{ github.event_name == 'workflow_dispatch' && inputs.test_channel || vars.SLACK_RC_CHANNEL || '' }}
           # AWS_CLOUDFRONT_URL: full origin (https://…); if empty, artifact links are skipped.
           HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ steps.notif.outputs.run_id }}
+          PR_NUMBER: ${{ steps.gate.outputs.pr_number || '' }}
         run: yarn exec tsx ./.github/scripts/slack-rc-notification.mts

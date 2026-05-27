@@ -1,6 +1,11 @@
 import { version as VERSION } from '../../package.json';
 import { getArtifactLinks, buildArtifactsBody } from './artifacts';
 import { buildBundleSizeDiffSection } from './bundle-size';
+import {
+  extractWhatsInRc,
+  buildWhatsInRcSection,
+  buildWhatsInRcFailureSection,
+} from './cherry-picks-section';
 import { buildPerformanceBenchmarksSection } from './performance-benchmarks';
 import { buildTestPlanSection } from './test-plan';
 import { buildSectionWithFallback, postCommentWithMetamaskBot } from './utils';
@@ -23,6 +28,7 @@ async function start(): Promise<void> {
     BUILDS_FROM_SHA,
     BUILDS_FROM_RUN,
     TEST_PLAN_VERSION,
+    BRANCH,
   } = process.env;
 
   if (!PR_NUMBER) {
@@ -74,6 +80,20 @@ async function start(): Promise<void> {
       buildBundleSizeDiffSection(artifacts, BUNDLE_SIZE_BASELINE_COMMIT_HASHES),
     'Bundle size diffs',
   );
+
+  // Add "What's in this RC" section for release branches
+  const isReleaseBranch = BRANCH?.startsWith('release/');
+  if (isReleaseBranch) {
+    commentBody += await buildSectionWithFallback(async () => {
+      try {
+        const result = extractWhatsInRc();
+        return buildWhatsInRcSection(result) || null;
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        return buildWhatsInRcFailureSection(message);
+      }
+    }, "What's in this RC");
+  }
 
   // Add AI-generated test plan section when a test plan was generated.
   if (TEST_PLAN_VERSION) {
