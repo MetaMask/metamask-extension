@@ -244,22 +244,6 @@ export async function withSpeculosFixtures(
     throw error;
   } finally {
     await cleanup();
-    // Kill Anvil if still running on port 8545 — withFixtures may not clean
-    // it up between tests within the same suite.
-    const { execFile } = await import('child_process');
-    await new Promise<void>((resolve) => {
-      execFile('lsof', ['-ti', ':8545'], (_err: unknown, stdout: string) => {
-        const pids = stdout?.trim().split('\n').filter(Boolean) ?? [];
-        for (const pid of pids) {
-          try {
-            process.kill(Number(pid), 'SIGKILL');
-          } catch {
-            // already dead
-          }
-        }
-        resolve();
-      });
-    });
     // Give Docker and the OS time to release ports before the next test starts
     if (ownsContainer) {
       await new Promise((resolve) => setTimeout(resolve, 3000));
