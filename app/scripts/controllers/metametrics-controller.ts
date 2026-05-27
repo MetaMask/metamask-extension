@@ -588,13 +588,17 @@ export class MetaMetricsController extends BaseController<
           }
         : {};
 
-    const mergedFragment = merge(
-      {},
-      additionalFragmentProps,
-      fragment,
-    ) as MetaMetricsEventFragment;
+    const mergeEventFragment = merge as (
+      ...sources: unknown[]
+    ) => MetaMetricsEventFragment;
+
     this.update((state) => {
-      Object.assign(state.fragments, { [id]: mergedFragment });
+      const metaMetricsState = state as unknown as MetaMetricsControllerState;
+      metaMetricsState.fragments[id] = mergeEventFragment(
+        {},
+        additionalFragmentProps,
+        fragment,
+      );
     });
 
     if (fragment.initialEvent) {
@@ -661,28 +665,34 @@ export class MetaMetricsController extends BaseController<
     const createIfNotFound = !fragment && id.includes('transaction-submitted-');
 
     if (createIfNotFound) {
-      const newFragment: MetaMetricsEventFragment = {
-        canDeleteIfAbandoned: true,
-        category: MetaMetricsEventCategory.Transactions,
-        successEvent: TransactionMetaMetricsEvent.finalized,
-        id,
-        ...payload,
-        lastUpdated: Date.now(),
-      };
       this.update((state) => {
-        Object.assign(state.fragments, { [id]: newFragment });
+        const metaMetricsState = state as unknown as MetaMetricsControllerState;
+        metaMetricsState.fragments[id] = {
+          canDeleteIfAbandoned: true,
+          category: MetaMetricsEventCategory.Transactions,
+          successEvent: TransactionMetaMetricsEvent.finalized,
+          id,
+          ...payload,
+          lastUpdated: Date.now(),
+        } as MetaMetricsEventFragment;
       });
       return;
     } else if (!fragment) {
       throw new Error(`Event fragment with id ${id} does not exist.`);
     }
 
-    const updatedFragment = merge({} as MetaMetricsEventFragment, fragment, {
-      ...payload,
-      lastUpdated: Date.now(),
-    }) as MetaMetricsEventFragment;
+    const mergeEventFragment = merge as (
+      ...sources: unknown[]
+    ) => MetaMetricsEventFragment;
     this.update((state) => {
-      Object.assign(state.fragments, { [id]: updatedFragment });
+      const metaMetricsState = state as unknown as MetaMetricsControllerState;
+      metaMetricsState.fragments[id] = mergeEventFragment(
+        metaMetricsState.fragments[id],
+        {
+          ...payload,
+          lastUpdated: Date.now(),
+        },
+      );
     });
   }
 
@@ -1134,9 +1144,8 @@ export class MetaMetricsController extends BaseController<
   // It adds an event into a queue, which is only tracked if a user opts into metrics.
   addEventBeforeMetricsOptIn(event: MetaMetricsEventPayload): void {
     this.update((state) => {
-      const queue =
-        state.eventsBeforeMetricsOptIn as unknown as MetaMetricsEventPayload[];
-      queue.push(event);
+      const metaMetricsState = state as unknown as MetaMetricsControllerState;
+      metaMetricsState.eventsBeforeMetricsOptIn.push(event);
     });
   }
 
@@ -1163,9 +1172,8 @@ export class MetaMetricsController extends BaseController<
   // It adds a trace into a queue, which is only tracked if a user opts into metrics.
   addTraceBeforeMetricsOptIn(traceData: BufferedTrace): void {
     this.update((state) => {
-      const queue =
-        state.tracesBeforeMetricsOptIn as unknown as BufferedTrace[];
-      queue.push(traceData);
+      const metaMetricsState = state as unknown as MetaMetricsControllerState;
+      metaMetricsState.tracesBeforeMetricsOptIn.push(traceData);
     });
   }
 
