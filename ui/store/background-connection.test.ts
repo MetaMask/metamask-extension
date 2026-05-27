@@ -94,7 +94,7 @@ describe('subscribeToMessengerEvent', () => {
     expect(messengerUnsubscribe).toHaveBeenCalledWith(event);
   });
 
-  it('sends only one messengerSubscribe IPC for multiple subscribers to the same event', async () => {
+  it('only calls messengerSubscribe once if there are multiple subscriptions for the same event requested', async () => {
     const { submitNotification, messengerSubscribe, onNotification } = setup();
 
     const listenerA = jest.fn();
@@ -117,7 +117,7 @@ describe('subscribeToMessengerEvent', () => {
     expect(listenerB).toHaveBeenCalledWith([{ foo: 'bar' }, []]);
   });
 
-  it('coalesces concurrent subscribers for the same event into one upstream IPC', async () => {
+  it('coalesces concurrent subscribers for the same event into one upstream messengerSubscribe call', async () => {
     const { messengerSubscribe } = setup();
 
     const { promise: subscribeRpcPromise, resolve: resolveSubscribe } =
@@ -199,7 +199,7 @@ describe('subscribeToMessengerEvent', () => {
     expect(listener).not.toHaveBeenCalled();
   });
 
-  it('clears the entry when the upstream messengerSubscribe IPC rejects, allowing retry', async () => {
+  it('clears the entry when the upstream messengerSubscribe call rejects, allowing retry', async () => {
     const { messengerSubscribe } = setup();
 
     messengerSubscribe.mockRejectedValueOnce(new Error('subscribe failed'));
@@ -211,8 +211,8 @@ describe('subscribeToMessengerEvent', () => {
       'subscribe failed',
     );
 
-    // A fresh subscribe attempt should send a new IPC, not silently reuse a
-    // rejected entry.
+    // A fresh subscribe attempt should send a new messengerSubscribe call,
+    // not silently reuse a rejected entry.
     await subscribeToMessengerEvent(event, listener);
 
     expect(messengerSubscribe).toHaveBeenCalledTimes(2);
@@ -234,7 +234,7 @@ describe('subscribeToMessengerEvent', () => {
     await expect(subscribeA).rejects.toThrow('subscribe failed');
     await expect(subscribeB).rejects.toThrow('subscribe failed');
 
-    // Entry is cleared, so a retry sends a fresh IPC.
+    // Entry is cleared, so a retry sends a fresh messengerSubscribe call.
     messengerSubscribe.mockResolvedValueOnce(undefined);
     await subscribeToMessengerEvent(event, listenerA);
     expect(messengerSubscribe).toHaveBeenCalledTimes(2);
@@ -321,7 +321,7 @@ describe('subscribeToMessengerEvent', () => {
     // not once per subscribe call.
     expect(listener).toHaveBeenCalledTimes(1);
 
-    // The first unsubscribe empties the set, so the upstream IPC is sent.
+    // The first unsubscribe empties the set, so the upstream messengerUnsubscribe call is sent.
     await unsubscribeFirst();
     expect(messengerUnsubscribe).toHaveBeenCalledTimes(1);
 
@@ -345,7 +345,7 @@ describe('subscribeToMessengerEvent', () => {
     expect(listener).not.toHaveBeenCalled();
   });
 
-  it('propagates messengerUnsubscribe IPC rejection to the awaiter', async () => {
+  it('propagates messengerUnsubscribe rejection to the awaiter', async () => {
     const { messengerUnsubscribe } = setup();
 
     messengerUnsubscribe.mockRejectedValueOnce(new Error('unsubscribe failed'));
@@ -392,8 +392,8 @@ describe('subscribeToMessengerEvent', () => {
 
     // Replace the background connection. The new connection should start
     // with no in-memory subscription state — a subscribe for the same
-    // event must send a fresh upstream IPC and attach a fresh notification
-    // router.
+    // event must send a fresh upstream messengerSubscribe call and attach a
+    // fresh notification router.
     const secondConnection = setup();
 
     const secondListener = jest.fn();
