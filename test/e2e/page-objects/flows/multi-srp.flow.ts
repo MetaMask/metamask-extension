@@ -29,6 +29,7 @@ export async function importAdditionalSecretRecoveryPhrase(
   await homePage.checkNewSrpAddedToastIsDisplayed();
   await homePage.dismissSrpAddedToast();
   await homePage.checkPageIsLoaded();
+  await homePage.checkExpectedTokenBalanceIsDisplayed('0', 'ETH');
 }
 
 export async function verifySrp(
