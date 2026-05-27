@@ -37,9 +37,6 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "エラー"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "QRコードが無効です。ハードウェアウォレットの同期QRコードをスキャンしてください。"
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "QRコードをスキャン"
   },
@@ -2285,12 +2282,6 @@
   },
   "dappConnections": {
     "message": "DAppの接続"
-  },
-  "dappScanMaliciousTitle": {
-    "message": "悪質なWebサイトが検出されました"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "このWebサイトは、危険な可能性があるとフラグ付けされています。シークレットリカバリーフレーズを明かした場合、資金が危険に晒される可能性があります。"
   },
   "dappSuggested": {
     "message": "おすすめのサイト"

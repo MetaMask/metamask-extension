@@ -164,7 +164,8 @@ describe('Bridge functionality', function (this: Suite) {
 
         await bridgePage.submitQuote();
         await bridgePage.approveModalIfPresent();
-        await driver.clickElement({ text: 'View activity' });
+        await driver.clickElementSafe({ text: 'View activity' });
+        await homePage.goToActivityList();
 
         const activityList = new ActivityListPage(driver);
         await activityList.checkPendingBridgeTransactionActivity();

@@ -82,6 +82,14 @@ export function classifyScanResult(
 
   if (exception !== undefined && exception !== null) {
     const isUrFormat = text === undefined ? false : looksLikeUr(text);
+
+    // The scanned text is clearly not UR-encoded (e.g. a plain address or URL).
+    // The exception is merely a side-effect of feeding non-UR data into the
+    // decoder, so the root cause is "wrong QR type" rather than a decode failure.
+    if (!isUrFormat && text !== undefined && text.length > 0) {
+      return { category: ScanErrorCategory.NonUrQrScanned, isUrFormat: false };
+    }
+
     return {
       category: ScanErrorCategory.ScanException,
       isUrFormat,

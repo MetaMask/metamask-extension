@@ -35,6 +35,8 @@ import {
   useDecoderLifecycle,
   useCameraPermission,
 } from './qr-hooks';
+import { QrErrorContent, QrErrorFlowContext } from './qr-error-content';
+import { scanCategoryToQrErrorType } from './qr-utils/qr-utils';
 import EnhancedReader from './enhanced-reader';
 
 /**
@@ -76,11 +78,18 @@ const BaseReader = ({
   const { trackEvent } = useContext(MetaMetricsContext);
 
   const {
-    state: { readyState, error, scanProgress, permissionActionLoading },
+    state: {
+      readyState,
+      error,
+      scanError,
+      scanProgress,
+      permissionActionLoading,
+    },
     setReady,
     setBlocked,
     setNeeded,
     setError,
+    setScanError,
     setScanProgress,
     setPermissionActionLoading,
     reset,
@@ -154,9 +163,8 @@ const BaseReader = ({
   // ---- Decoder lifecycle --------------------------------------------------
 
   const { handleScan, resetDecoder } = useDecoderLifecycle(
-    { handleSuccess, isReadingWallet, setErrorTitle },
-    { setScanProgress, setError },
-    t,
+    { handleSuccess, isReadingWallet },
+    { setScanProgress, setScanError, setError },
   );
 
   // ---- Camera permission lifecycle ----------------------------------------
@@ -196,7 +204,29 @@ const BaseReader = ({
     });
   }, []);
 
-  // ---- Render: error UI ---------------------------------------------------
+  // ---- Render: classified scan error UI ------------------------------------
+
+  if (scanError) {
+    const flowContext = isReadingWallet
+      ? QrErrorFlowContext.Pairing
+      : QrErrorFlowContext.Signing;
+
+    return (
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Center}
+        className="qr-scanner"
+      >
+        <QrErrorContent
+          errorType={scanCategoryToQrErrorType(scanError.category)}
+          flowContext={flowContext}
+          onTryAgain={tryAgain}
+        />
+      </Box>
+    );
+  }
+
+  // ---- Render: legacy error UI (webcam / handleSuccess rejection) ---------
 
   if (error) {
     let title: string | undefined;
@@ -205,10 +235,6 @@ const BaseReader = ({
     if (error.type === WebcamErrorType.NoWebcamFound) {
       title = t('noWebcamFoundTitle');
       message = t('noWebcamFound');
-    } else if (error.message === t('unknownQrCode')) {
-      message = isReadingWallet
-        ? t('QRHardwareUnknownWalletQRCode')
-        : t('unknownQrCode');
     } else if (error.message === t('QRHardwareMismatchedSignId')) {
       message = t('QRHardwareMismatchedSignId');
     } else {
