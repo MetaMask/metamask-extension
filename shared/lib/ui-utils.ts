@@ -21,6 +21,9 @@ export const SECURITY_ALERTS_LEARN_MORE_LINK =
 export const TRANSACTION_SIMULATIONS_LEARN_MORE_LINK =
   'https://support.metamask.io/transactions-and-gas/transactions/simulations/?utm_source=extension';
 
+export const ENFORCED_SIMULATIONS_LEARN_MORE_LINK =
+  'https://support.metamask.io/transactions-and-gas/transactions/simulations/?utm_source=extension';
+
 export const GAS_FEES_LEARN_MORE_URL =
   'https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172';
 
