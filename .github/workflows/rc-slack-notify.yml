@@ -75,9 +75,11 @@ jobs:
             exit 0
           fi
           PR_NUMBER=$(echo "$PR_JSON" | jq -r '.number')
-          echo "skip=false" >> "$GITHUB_OUTPUT"
-          echo "semver=${BRANCH#release/}" >> "$GITHUB_OUTPUT"
-          echo "pr_number=${PR_NUMBER}" >> "$GITHUB_OUTPUT"
+          {
+            echo "skip=false"
+            echo "semver=${BRANCH#release/}"
+            echo "pr_number=${PR_NUMBER}"
+          } >> "$GITHUB_OUTPUT"
           echo "Proceeding: release PR has auto-rc-builds."
 
       - name: Set notification variables
