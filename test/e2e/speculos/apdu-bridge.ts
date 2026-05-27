@@ -10,6 +10,12 @@ import {
 } from './ledger-hid-framing';
 import type { DeviceInteraction } from './device-interaction';
 
+function logSpeculosVerbose(...args: unknown[]): void {
+  if (process.env.SPECULOS_VERBOSE === 'true') {
+    console.log(...args);
+  }
+}
+
 type WsConnectionState = {
   framingSession: LedgerHidFramingSession | null;
 };
@@ -172,7 +178,7 @@ export class ApduBridge {
 
         ws.on('message', async (data) => {
           const msgStr = data.toString();
-          console.log(
+          logSpeculosVerbose(
             '[ApduBridge] Received message from client:',
             msgStr.substring(0, 200),
           );
@@ -180,7 +186,7 @@ export class ApduBridge {
           try {
             const parsed = JSON.parse(msgStr);
             if (parsed.type === 'DEBUG') {
-              console.log(
+              logSpeculosVerbose(
                 '[ApduBridge] DEBUG:',
                 parsed.msg,
                 parsed.action || '',
@@ -249,7 +255,7 @@ export class ApduBridge {
     ws: WsWebSocket,
     message: { id?: number; data: number[] },
   ): Promise<void> {
-    console.log(
+    logSpeculosVerbose(
       '[ApduBridge] handleHidSend: processing HID frame id=',
       message.id,
       'bytes:',
@@ -268,7 +274,7 @@ export class ApduBridge {
 
     const apdu = pushLedgerHidFrame(state.framingSession, frame);
     if (!apdu) {
-      console.log(
+      logSpeculosVerbose(
         '[ApduBridge] handleHidSend: frame buffered, waiting for more frames',
       );
       ws.send(
@@ -280,7 +286,7 @@ export class ApduBridge {
       return;
     }
 
-    console.log(
+    logSpeculosVerbose(
       '[ApduBridge] handleHidSend: APDU reassembled, sending to Speculos, bytes:',
       apdu.length,
       'hex:',
@@ -308,7 +314,7 @@ export class ApduBridge {
       if (totalPayloadLen !== null) {
         this.signTxTotalDataLen = totalPayloadLen;
         this.signTxDataSent = dataLen;
-        console.log(
+        logSpeculosVerbose(
           `[ApduBridge] Sign tx: totalPayload=${this.signTxTotalDataLen} firstChunkData=${dataLen} chunks=${Math.ceil(this.signTxTotalDataLen / 255)} lastChunkSize=${this.signTxTotalDataLen % 255}`,
         );
       }
@@ -325,7 +331,9 @@ export class ApduBridge {
 
     if (isSigningFirstChunk || isOtherSigning) {
       this.emitter.emit('signing-apdu', apdu);
-      console.log('[ApduBridge] Signing APDU detected, forwarding to Speculos');
+      logSpeculosVerbose(
+        '[ApduBridge] Signing APDU detected, forwarding to Speculos',
+      );
     }
 
     // Detect when the exchange blocks (Ledger showing signing UI).
@@ -355,7 +363,7 @@ export class ApduBridge {
       isSigningIns &&
       (!isSignTx || isLastSignTxChunk || isSingleChunkSignTx);
     if (isSigningIns && isSignTx && (isLastSignTxChunk || isSingleChunkSignTx)) {
-      console.log(
+      logSpeculosVerbose(
         `[ApduBridge] Last signing chunk: dataSent=${this.signTxDataSent} total=${this.signTxTotalDataLen}`,
       );
     }
@@ -364,7 +372,9 @@ export class ApduBridge {
       ? setTimeout(() => {
           signingReadyFired = true;
           this.signingReadyEmitter.emit('signing-ready');
-          console.log('[ApduBridge] Signing ready — Ledger showing review UI (timer)');
+          logSpeculosVerbose(
+            '[ApduBridge] Signing ready — Ledger showing review UI (timer)',
+          );
         }, 500)
       : null;
     // For multi-chunk signing where the last chunk returns quickly (Speculos),
@@ -381,7 +391,7 @@ export class ApduBridge {
     let response: Buffer;
 
     if (shouldQueueSigning) {
-      console.log(
+      logSpeculosVerbose(
         '[ApduBridge] Signing exchange already in progress, waiting for completion',
       );
       response = await new Promise<Buffer>((resolve, reject) => {
@@ -408,7 +418,7 @@ export class ApduBridge {
       if (shouldEmitSigningReadyOnLastChunk && !signingReadyFired) {
         signingReadyFired = true;
         this.signingReadyEmitter.emit('signing-ready');
-        console.log(
+        logSpeculosVerbose(
           '[ApduBridge] Signing ready — last chunk received, Ledger showing review UI',
         );
       }
@@ -426,18 +436,18 @@ export class ApduBridge {
       response[1] === 0x00;
 
     if (isLastChunkWithAck) {
-      console.log(
+      logSpeculosVerbose(
         `[ApduBridge] Last chunk acknowledged (dataSent=${this.signTxDataSent} total=${this.signTxTotalDataLen}). Sending empty terminator.`,
       );
       const emptyChunk = Buffer.from([0xe0, 0x04, 0x80, 0x00, 0x00]);
       const readyTimer = setTimeout(() => {
         signingReadyFired = true;
         this.signingReadyEmitter.emit('signing-ready');
-        console.log('[ApduBridge] Signing ready — Ledger showing review UI');
+        logSpeculosVerbose('[ApduBridge] Signing ready — Ledger showing review UI');
       }, 500);
       response = await this.client.exchange(emptyChunk);
       clearTimeout(readyTimer);
-      console.log(
+      logSpeculosVerbose(
         '[ApduBridge] Terminator response, bytes:',
         response.length,
       );
@@ -452,7 +462,7 @@ export class ApduBridge {
     const injectedCode = this.injectedErrorStatusCode;
     this.injectedErrorStatusCode = null;
     if (injectedCode === null) {
-      console.log(
+      logSpeculosVerbose(
         '[ApduBridge] handleHidSend: got response from Speculos, bytes:',
         response.length,
         'hex:',
@@ -483,7 +493,7 @@ export class ApduBridge {
           1,
           ...response.slice(1),
         ]);
-        console.log(
+        logSpeculosVerbose(
           '[ApduBridge] Patched GET APP CONFIGURATION: arbitraryDataEnabled set to 1',
         );
       }

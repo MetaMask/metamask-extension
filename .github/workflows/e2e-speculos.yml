@@ -25,14 +25,19 @@ jobs:
             elf: ethereum-stax.elf
           - id: flex
             elf: ethereum-flex.elf
+        shard:
+          - 0
+          - 1
     uses: ./.github/workflows/run-e2e.yml
     with:
       test-suite-name: 'Speculos ${{ matrix.device.id }}'
       build-artifact: build-test-browserify
       build-command: 'yarn build:test'
       test-command: >-
-        SPECULOS_E2E=1 SPECULOS_DEVICE=${{ matrix.device.id }} SPECULOS_ELF=${{ matrix.device.elf }} yarn test:e2e:chrome:ledger
+        SPECULOS_E2E=1 SPECULOS_DEVICE=${{ matrix.device.id }} SPECULOS_ELF=${{ matrix.device.elf }} ENABLE_CHROME_LOGGING=false yarn test:e2e:chrome:ledger --debug=false
       builds-from-run: ${{ inputs.builds-from-run }}
+      matrix-index: ${{ matrix.shard }}
+      matrix-total: 2
       install-speculos: 'speculos==0.26.8'
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}

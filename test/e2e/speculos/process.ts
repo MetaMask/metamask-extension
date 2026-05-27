@@ -13,6 +13,9 @@ const READINESS_POLL_INTERVAL_MS = 250;
 const READINESS_PROBE_TIMEOUT_MS = 1000;
 const DEFAULT_APDU_PORT = 9999;
 const DEFAULT_API_PORT = 5000;
+const LOG_SPECULOS_STDIO =
+  process.env.SPECULOS_LOG_STDIO === 'true' ||
+  process.env.SPECULOS_VERBOSE === 'true';
 
 export type SpeculosProcessOptions = {
   app: string;
@@ -143,7 +146,9 @@ export function createSpeculosProcess(
         const line = data.toString();
         emitter.emit('log', line);
         lastLog = line;
-        console.log(`[Speculos] ${line.trimEnd()}`);
+        if (LOG_SPECULOS_STDIO) {
+          console.log(`[Speculos] ${line.trimEnd()}`);
+        }
       };
 
       startTimer = setTimeout(() => {
