@@ -25,6 +25,7 @@
     },
     "deprecatedNetworkModalOpen": "boolean",
     "errorInSettings": "null",
+    "backupAndSyncOnboardingToggleState": "boolean",
     "externalServicesOnboardingToggleState": "boolean",
     "gasLoadingAnimationIsShowing": "boolean",
     "importNftsModal": {
