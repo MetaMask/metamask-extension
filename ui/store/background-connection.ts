@@ -138,8 +138,9 @@ export async function subscribeToMessengerEvent<Data extends Json>(
       notificationRouterAttached = true;
     }
 
-    const subscribePromise = Promise.resolve(
-      submitRequestToBackground<void>('messengerSubscribe', [event]),
+    const subscribePromise = submitRequestToBackground<void>(
+      'messengerSubscribe',
+      [event],
     );
 
     entry = {

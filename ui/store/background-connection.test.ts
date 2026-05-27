@@ -24,9 +24,9 @@ function setup() {
     notificationListeners.forEach((listener) => listener(notification));
   };
 
-  const messengerSubscribe = jest.fn();
+  const messengerSubscribe = jest.fn().mockResolvedValue(undefined);
 
-  const messengerUnsubscribe = jest.fn();
+  const messengerUnsubscribe = jest.fn().mockResolvedValue(undefined);
 
   // @ts-expect-error Partial mock.
   setBackgroundConnection({
