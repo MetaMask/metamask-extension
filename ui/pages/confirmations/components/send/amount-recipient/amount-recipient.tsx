@@ -16,6 +16,7 @@ import { useSendContext } from '../../../context/send';
 import { useRecipientValidation } from '../../../hooks/send/useRecipientValidation';
 import { useRecipientSelectionMetrics } from '../../../hooks/send/metrics/useRecipientSelectionMetrics';
 import { useAmountValidation } from '../../../hooks/send/useAmountValidation';
+import { useAddressPoisoningDetection } from '../../../hooks/send/useAddressPoisoningDetection';
 import { useSendType } from '../../../hooks/send/useSendType';
 import { useUnreliableNetworkRpc } from '../../../hooks/send/useUnreliableNetworkRpc';
 import { SendHero } from '../../UI/send-hero';
@@ -31,7 +32,7 @@ export const AmountRecipient = () => {
     useState(false);
   const [shouldSubmitOnAcknowledge, setShouldSubmitOnAcknowledge] =
     useState(false);
-  const { asset, toResolved, nonEVMSubmitError } = useSendContext();
+  const { asset, to, toResolved, nonEVMSubmitError } = useSendContext();
   const { amountError, validateNonEvmAmountAsync } = useAmountValidation();
   const { isNonEvmSendType } = useSendType();
   const { handleSubmit } = useSendActions();
@@ -42,13 +43,23 @@ export const AmountRecipient = () => {
 
   const { recipientErrorAllowAcknowledge, acknowledgeError } =
     recipientValidationResult;
+  const recipientHasHardError =
+    Boolean(recipientValidationResult.recipientError) &&
+    !recipientErrorAllowAcknowledge;
+  const recipientCandidateAddress =
+    to && to === recipientValidationResult.toAddressValidated
+      ? toResolved
+      : undefined;
+  const addressPoisoningDetectionResult = useAddressPoisoningDetection(
+    recipientHasHardError ? undefined : recipientCandidateAddress,
+  );
 
   const hasBlockingError =
     Boolean(amountError) ||
-    (Boolean(recipientValidationResult.recipientError) &&
-      !recipientErrorAllowAcknowledge) ||
+    recipientHasHardError ||
     Boolean(hexDataError) ||
-    Boolean(nonEVMSubmitError);
+    Boolean(nonEVMSubmitError) ||
+    addressPoisoningDetectionResult.pending;
   const isDisabled = hasBlockingError || !toResolved || isNetworkUnreliable;
 
   const proceedWithSubmit = useCallback(async () => {
@@ -111,6 +122,8 @@ export const AmountRecipient = () => {
       <Box>
         <SendHero asset={asset as Asset} />
         <Recipient
+          addressPoisoningDetectionResult={addressPoisoningDetectionResult}
+          recipientCandidateAddress={recipientCandidateAddress}
           recipientValidationResult={recipientValidationResult}
           onAlertIconClick={openSmartContractAlert}
         />
