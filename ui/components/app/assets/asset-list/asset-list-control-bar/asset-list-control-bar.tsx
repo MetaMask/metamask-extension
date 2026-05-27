@@ -173,23 +173,8 @@ const AssetListControlBar = ({
 
   // Pseudo callback to update calling component with network selection
   useEffect(() => {
-    if (totalEnabledNetworkCount === 1) {
-      const chainId = allEnabledNetworksForAllNamespaces[0];
-      const caipChainId = isStrictHexString(chainId)
-        ? toEvmCaipChainId(chainId)
-        : chainId;
-
-      onNetworkSelect?.([caipChainId]);
-      return;
-    }
-
     onNetworkSelect?.(selectedCaipChainIds);
-  }, [
-    allEnabledNetworksForAllNamespaces,
-    totalEnabledNetworkCount,
-    selectedCaipChainIds,
-    onNetworkSelect,
-  ]);
+  }, [selectedCaipChainIds, onNetworkSelect]);
 
   const isTestNetwork = useMemo(() => {
     return (TEST_CHAINS as string[]).includes(
