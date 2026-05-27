@@ -191,23 +191,10 @@ export const PerpsView: React.FC = () => {
         'perpsClosePositions',
         [{ closeAll: true }],
       );
-      if (!result?.success) {
-        setBatchActionError(t('somethingWentWrong'));
-        track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
-          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-          [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]:
-            result?.successCount ?? 0,
-        });
-        replacePerpsToastByKey({
-          key: PERPS_TOAST_KEYS.CLOSE_ALL_FAILED,
-        });
-        return;
-      }
-
-      const successCount = result?.successCount ?? positionCount;
+      const successCount = result?.successCount ?? 0;
       const failureCount = result?.failureCount ?? 0;
 
-      if (failureCount > 0) {
+      if (successCount > 0 && failureCount > 0) {
         setBatchActionError(t('somethingWentWrong'));
         track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
           [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
@@ -217,10 +204,21 @@ export const PerpsView: React.FC = () => {
           key: PERPS_TOAST_KEYS.CLOSE_ALL_PARTIAL,
           messageParams: [successCount, positionCount],
         });
+      } else if (!result?.success || failureCount > 0) {
+        setBatchActionError(t('somethingWentWrong'));
+        track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+          [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: successCount,
+        });
+        replacePerpsToastByKey({
+          key: PERPS_TOAST_KEYS.CLOSE_ALL_FAILED,
+        });
+        return;
       } else {
         track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
           [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
-          [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: successCount,
+          [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]:
+            successCount || positionCount,
         });
         replacePerpsToastByKey({
           key: PERPS_TOAST_KEYS.CLOSE_ALL_SUCCESS,
