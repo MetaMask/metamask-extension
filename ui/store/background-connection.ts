@@ -126,12 +126,12 @@ export async function subscribeToMessengerEvent<Data extends Json>(
   callback: (data: Data) => void,
 ): Promise<() => Promise<void>> {
   // `Data extends Json` but `(data: Data) => void` is not assignable to `(data: Json) => void` due to contravariant function parameters; the cast is safe because all callbacks receive `Json`-shaped data at runtime.
-  const typedCallback = callback as (data: Json) => void;
+  const looselyTypedCallback = callback as (data: Json) => void;
 
   let entry = eventEntries.get(event);
 
   if (entry) {
-    entry.callbacks.add(typedCallback);
+    entry.callbacks.add(looselyTypedCallback);
   } else {
     if (!notificationRouterAttached) {
       background.onNotification(notificationRouter);
@@ -143,7 +143,7 @@ export async function subscribeToMessengerEvent<Data extends Json>(
     );
 
     entry = {
-      callbacks: new Set([typedCallback]),
+      callbacks: new Set([looselyTypedCallback]),
       subscribePromise,
     };
     eventEntries.set(event, entry);
@@ -165,7 +165,7 @@ export async function subscribeToMessengerEvent<Data extends Json>(
       return;
     }
 
-    const removed = currentEntry.callbacks.delete(typedCallback);
+    const removed = currentEntry.callbacks.delete(looselyTypedCallback);
     if (!removed) {
       return;
     }
