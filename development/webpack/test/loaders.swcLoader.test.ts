@@ -20,10 +20,7 @@ describe('swcLoader', () => {
     // swc doesn't use node's fs module, so we can't mock
     const resourcePath = 'test.ts';
 
-    // `withResolvers` is supported by Node.js LTS. It's optional in global type due to older
-    // browser support.
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const { promise, resolve } = Promise.withResolvers!<CallbackArgs>();
+    const { promise, resolve } = Promise.withResolvers<CallbackArgs>();
     const mockContext = {
       mode: 'production',
       sourceMap: true,

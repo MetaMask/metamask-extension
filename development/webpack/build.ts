@@ -4,7 +4,7 @@ import {
   noop,
   logStats,
   __HMR_READY__,
-  ignoreCacheShutdownSignals,
+  ignoreCacheShutdownSignal,
 } from './utils/helpers';
 import config from './webpack.config';
 import { MODES } from './utils/constants';
@@ -58,15 +58,17 @@ export function build(onComplete: () => void = noop) {
     } else {
       compiler.run((err, stats) => {
         logStats(err ?? undefined, stats);
+        // Install before `onComplete` signals the parent process so a Ctrl+C
+        // forwarded during that handoff cannot interrupt cache shutdown.
         const removeCacheShutdownSignalHandlers =
           options.cache.type === 'filesystem'
-            ? ignoreCacheShutdownSignals(process)
+            ? ignoreCacheShutdownSignal(process)
             : noop;
         try {
           // `onComplete` must be called synchronously _before_ `compiler.close`
           // or the caller might observe output from the `close` command.
           onComplete();
-          compiler.close(removeCacheShutdownSignalHandlers);
+          compiler.close(() => removeCacheShutdownSignalHandlers());
         } catch (error) {
           removeCacheShutdownSignalHandlers();
           throw error;

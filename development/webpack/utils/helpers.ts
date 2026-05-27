@@ -77,42 +77,23 @@ export const UI_COMPONENT_RE = new RegExp(
  */
 export const noop = () => undefined;
 
-type SignalListener = () => void;
-type SignalProcess = {
-  on: (signal: NodeJS.Signals, listener: SignalListener) => unknown;
-  removeListener: (signal: NodeJS.Signals, listener: SignalListener) => unknown;
-};
-
-const CACHE_SHUTDOWN_SIGNALS = ['SIGINT', 'SIGTERM'] as const;
-
 /**
- * Temporarily ignores shutdown signals while webpack closes its filesystem
- * cache.
+ * Temporarily ignores Ctrl+C while webpack closes its filesystem cache.
  *
  * Non-watch builds hand the terminal back before `compiler.close()` completes
  * so webpack can persist the cache in the background. If the process receives
- * another shutdown signal during that close window, Node's default handling
- * would terminate the process and can leave the cache partially written.
+ * a forwarded Ctrl+C during that close window, Node's default handling would
+ * terminate the process and can leave the cache partially written.
  *
  * @param signalProcess - The process to install listeners on.
  * @returns A cleanup function that removes the installed listeners.
  */
-export function ignoreCacheShutdownSignals(signalProcess: SignalProcess) {
-  const listener = () => {
-    console.error(
-      '🦊 Still shutting down; waiting for webpack to finish writing its cache…',
-    );
-  };
-
-  for (const signal of CACHE_SHUTDOWN_SIGNALS) {
-    signalProcess.on(signal, listener);
-  }
-
-  return () => {
-    for (const signal of CACHE_SHUTDOWN_SIGNALS) {
-      signalProcess.removeListener(signal, listener);
-    }
-  };
+export function ignoreCacheShutdownSignal(signalProcess: NodeJS.Process) {
+  signalProcess.on('SIGINT', noop);
+  // @ts-expect-error - `removeListener` is the correct method, but TypeScript's
+  // types don't allow it because our tsconfig is importing electron types which
+  // aren't correct for Node.
+  return () => signalProcess.removeListener('SIGINT', noop);
 }
 
 /**

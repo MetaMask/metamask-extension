@@ -18,9 +18,8 @@ describe('./utils/helpers.ts', () => {
     assert.strictEqual(nothing, undefined);
   });
 
-  describe('ignoreCacheShutdownSignals', () => {
-    it('ignores shutdown signals until cleanup', () => {
-      const calls: unknown[] = [];
+  describe('ignoreCacheShutdownSignal', () => {
+    it('silently ignores SIGINT until cleanup', () => {
       const listeners = new Map<NodeJS.Signals, () => void>();
       const signalProcess = {
         on: mock.fn((signal: NodeJS.Signals, listener: () => void) => {
@@ -33,30 +32,21 @@ describe('./utils/helpers.ts', () => {
             }
           },
         ),
-      };
-      mock.method(console, 'error', (message: unknown) => {
-        calls.push(message);
-      });
+      } as unknown as NodeJS.Process;
+      const { mock: error } = mock.method(console, 'error', helpers.noop);
 
-      const cleanup = helpers.ignoreCacheShutdownSignals(signalProcess);
+      const cleanup = helpers.ignoreCacheShutdownSignal(signalProcess);
 
-      const signals = ['SIGINT', 'SIGTERM'] as const;
-      signals.forEach((signal) => {
-        const listener = listeners.get(signal);
-        assert(listener, `${signal} listener should be set`);
-        listener();
-      });
+      const listener = listeners.get('SIGINT');
+      assert(listener, 'SIGINT listener should be set');
+      listener();
       cleanup();
 
-      assert.deepStrictEqual(calls, [
-        '🦊 Still shutting down; waiting for webpack to finish writing its cache…',
-        '🦊 Still shutting down; waiting for webpack to finish writing its cache…',
-      ]);
-      assert.strictEqual(signalProcess.on.mock.callCount(), 2);
-      assert.strictEqual(signalProcess.removeListener.mock.callCount(), 2);
-      signals.forEach((signal) =>
-        assert.strictEqual(listeners.has(signal), false),
-      );
+      assert.strictEqual(error.callCount(), 0);
+      assert.strictEqual(signalProcess.on.mock.callCount(), 1);
+      assert.strictEqual(signalProcess.removeListener.mock.callCount(), 1);
+      assert.strictEqual(listeners.has('SIGINT'), false);
+      assert.strictEqual(listeners.has('SIGTERM'), false);
     });
   });
 
