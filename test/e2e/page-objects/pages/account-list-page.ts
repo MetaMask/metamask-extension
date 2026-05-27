@@ -544,17 +544,9 @@ class AccountListPage {
   async openConnectHardwareWalletModal(): Promise<void> {
     console.log(`Open connect hardware wallet modal`);
     await this.driver.clickElement(this.addMultichainWalletButton);
-    await this.driver.waitForSelector(this.addHardwareWalletButton);
-    // Use executeScript instead of clickElement for the hardware wallet button.
-    // The onClick handler calls navigate() before onClose(), which changes
-    // window.location.hash during the same tick. ChromeDriver's element.click()
-    // hangs when the element's DOM context is invalidated mid-click by the
-    // navigation. A native JS click dispatches synchronously and returns
-    // before ChromeDriver needs to track the element lifecycle.
+    await this.driver.clickElement(this.addHardwareWalletButton);
+    // This delay is needed to mitigate an existing bug
     // See https://github.com/metamask/metamask-extension/issues/25851
-    await this.driver.executeScript(
-      `document.querySelector('${this.addHardwareWalletButton}').click()`,
-    );
     await this.driver.delay(largeDelayMs);
   }
 
