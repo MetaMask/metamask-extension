@@ -86,7 +86,7 @@ export type ActivityListItem =
       }
     >
   | ActivityItem<
-      'swap' | 'convert' | 'lendingWithdrawal',
+      'swap' | 'convert' | 'lendingDeposit' | 'lendingWithdrawal',
       {
         sourceToken?: TokenAmount;
         destinationToken?: TokenAmount;
@@ -106,7 +106,7 @@ export type ActivityListItem =
       }
     >
   | ActivityItem<
-      'buy' | 'lendingDeposit' | 'claim',
+      'buy' | 'claim' | 'deposit',
       {
         token?: TokenAmount;
       }

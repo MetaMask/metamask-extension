@@ -63,7 +63,7 @@ function getSubstitutions(activity: ActivityListItem): LabelSubstitutions {
     // Token in title, token in description
     case 'buy':
     case 'claim':
-    case 'lendingDeposit':
+    case 'deposit':
       return {
         title: [activity.data.token?.symbol ?? ''],
         description: [activity.data.token?.symbol ?? ''],

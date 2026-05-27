@@ -4,9 +4,9 @@ const FIAT_DISPLAY_ACTIVITY_TYPES = new Set<ActivityListItem['type']>([
   'send',
   'receive',
   'buy',
+  'deposit',
   'claim',
   'claimMusdBonus',
-  'lendingDeposit',
   'lendingWithdrawal',
   'nftMint',
   'contractInteraction',
@@ -17,6 +17,7 @@ const SECONDARY_TOKEN_ACTIVITY_TYPES = new Set<ActivityListItem['type']>([
   'swap',
   'bridge',
   'convert',
+  'lendingDeposit',
   'lendingWithdrawal',
 ]);
 

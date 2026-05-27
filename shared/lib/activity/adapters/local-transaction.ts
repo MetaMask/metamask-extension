@@ -366,9 +366,25 @@ export function mapLocalTransaction(
       };
 
     case TransactionType.lendingDeposit:
-    case TransactionType.stakingDeposit:
       return {
         type: 'lendingDeposit',
+        chainId,
+        status,
+        timestamp,
+        raw: { type: 'localTransaction', data: transactionGroup },
+        data: {
+          hash,
+          sourceToken: getContractToken({
+            transaction: initialTransaction,
+            direction: 'out',
+            contractAddress: initialTransaction.txParams.to,
+          }),
+        },
+      };
+
+    case TransactionType.stakingDeposit:
+      return {
+        type: 'deposit',
         chainId,
         status,
         timestamp,
@@ -420,7 +436,7 @@ export function mapLocalTransaction(
           raw: { type: 'localTransaction', data: transactionGroup },
           data: {
             hash,
-            token: getContractToken({
+            sourceToken: getContractToken({
               amount: BigInt(suppliedTokenBalanceChange.difference).toString(),
               transaction: initialTransaction,
               direction: 'out',

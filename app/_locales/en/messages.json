@@ -401,15 +401,13 @@
     "message": ""
   },
   "activity_lendingDeposit_pending_title": {
-    "message": "Depositing $1",
-    "description": "$1 is the token symbol"
+    "message": "Lending deposit"
   },
   "activity_lendingDeposit_success_description": {
     "message": ""
   },
   "activity_lendingDeposit_success_title": {
-    "message": "Deposited $1",
-    "description": "$1 is the token symbol"
+    "message": "Lending deposit"
   },
   "activity_lendingWithdrawal_failed_description": {
     "message": "Withdrawal failed"

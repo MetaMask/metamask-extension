@@ -256,12 +256,16 @@ describe('mapEvmTransactions', () => {
         {
           from: '0x0000000000000000000000000000000000000000',
           to: subjectAddress,
+          amount: '99999',
+          decimal: 6,
           contractAddress: baseAaveUsdc,
           symbol: 'aBasUSDC',
         },
         {
           from: subjectAddress,
           to: baseAaveUsdc,
+          amount: '100000',
+          decimal: 6,
           contractAddress: baseUsdc,
           symbol: 'USDC',
         },
@@ -282,10 +286,19 @@ describe('mapEvmTransactions', () => {
       timestamp: 1778643089000,
       data: {
         hash: '0x08d14578168f22001e95503469c63613bd9f3d3f60e81dbbf204fbd21f484bd9',
-        token: {
+        sourceToken: {
+          amount: '100000',
+          decimals: 6,
           direction: 'out',
           symbol: 'USDC',
           assetId: toAssetId(baseUsdc, 'eip155:8453'),
+        },
+        destinationToken: {
+          amount: '99999',
+          decimals: 6,
+          direction: 'in',
+          symbol: 'aBasUSDC',
+          assetId: toAssetId(baseAaveUsdc, 'eip155:8453'),
         },
       },
     });

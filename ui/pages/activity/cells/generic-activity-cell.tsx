@@ -34,6 +34,14 @@ function getCellTokenAmounts(activity: ActivityCellProps['data']) {
         primaryToken: activity.data.destinationToken,
         secondaryToken: activity.data.sourceToken,
       };
+    case 'lendingDeposit':
+      return {
+        primaryToken:
+          activity.data.destinationToken ?? activity.data.sourceToken,
+        secondaryToken: activity.data.destinationToken
+          ? activity.data.sourceToken
+          : undefined,
+      };
     case 'swapIncomplete':
       return {
         primaryToken: activity.data.sourceToken,
@@ -43,8 +51,8 @@ function getCellTokenAmounts(activity: ActivityCellProps['data']) {
     case 'receive':
     case 'buy':
     case 'claim':
+    case 'deposit':
     case 'claimMusdBonus':
-    case 'lendingDeposit':
     case 'nftMint':
     case 'contractInteraction':
       return {
