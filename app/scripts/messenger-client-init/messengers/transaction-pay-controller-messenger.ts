@@ -15,14 +15,12 @@ import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../shared/lib/e
 import { getAssetsControllerMessenger } from './assets/assets-controller-messenger';
 
 export function getTransactionPayControllerMessenger(
-  messenger: RootMessenger,
-): TransactionPayControllerMessenger {
-  const controllerMessenger = new Messenger<
-    'TransactionPayController',
+  messenger: RootMessenger<
     MessengerActions<TransactionPayControllerMessenger>,
-    MessengerEvents<TransactionPayControllerMessenger>,
-    typeof messenger
-  >({
+    MessengerEvents<TransactionPayControllerMessenger>
+  >,
+): TransactionPayControllerMessenger {
+  const controllerMessenger: TransactionPayControllerMessenger = new Messenger({
     namespace: 'TransactionPayController',
     parent: messenger,
   });

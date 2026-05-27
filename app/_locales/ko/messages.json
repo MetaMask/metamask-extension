@@ -37,9 +37,6 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "오류"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "잘못된 QR 코드입니다. 하드웨어 지갑의 동기화 QR 코드를 스캔하세요."
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "QR 코드 스캔"
   },
