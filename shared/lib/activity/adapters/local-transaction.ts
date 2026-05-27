@@ -5,8 +5,9 @@ import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../constants/bridge';
 import { toAssetId } from '../../asset-utils';
 import type { TransactionGroup } from '../../multichain/types';
 import { parseStandardTokenTransactionData } from '../../transaction.utils';
+import { TOKEN_TRANSFER_LOG_TOPIC_HASH } from '../../transactions-controller-utils';
 import type { ActivityListItem, TokenAmount } from '../types';
-import { supplyMethodIds } from './constants';
+import { supplyMethodIds, withdrawMethodIds } from './constants';
 import { getLocalTransactionStatus, getMainnetTokenMetadata } from './helpers';
 
 function getNativeAsset(chainId: string) {
@@ -399,6 +400,10 @@ export function mapLocalTransaction(
         initialTransaction.type === TransactionType.contractInteraction &&
         methodId &&
         supplyMethodIds.has(methodId.toLowerCase());
+      const isWithdrawContractInteraction =
+        initialTransaction.type === TransactionType.contractInteraction &&
+        methodId &&
+        withdrawMethodIds.has(methodId.toLowerCase());
 
       const suppliedTokenBalanceChange =
         isSupplyContractInteraction &&
@@ -421,6 +426,42 @@ export function mapLocalTransaction(
               direction: 'out',
               contractAddress: suppliedTokenBalanceChange.address,
             }),
+          },
+        };
+      }
+
+      if (isWithdrawContractInteraction) {
+        const fromAddress = from.toLowerCase();
+        const receivedTokenLog = (initialTransaction.txReceipt?.logs ?? []).find(
+          ({ topics: [eventTopic, , logTo] = [] }) => {
+            const toAddress = logTo
+              ? `0x${logTo.slice(-40)}`.toLowerCase()
+              : undefined;
+
+            return (
+              eventTopic?.toLowerCase() === TOKEN_TRANSFER_LOG_TOPIC_HASH &&
+              toAddress === fromAddress
+            );
+          },
+        );
+        const destinationToken = receivedTokenLog
+          ? getContractToken({
+              amount: BigInt(String(receivedTokenLog.data)).toString(),
+              transaction: initialTransaction,
+              direction: 'in',
+              contractAddress: receivedTokenLog.address,
+            })
+          : undefined;
+
+        return {
+          type: 'lendingWithdrawal',
+          chainId,
+          status,
+          timestamp,
+          raw: { type: 'localTransaction', data: transactionGroup },
+          data: {
+            hash,
+            destinationToken,
           },
         };
       }
