@@ -15,6 +15,7 @@ const metamaskBonusContract = '0x3ef3d8ba38ebe18db133cec108f4d14ce00dd9ae';
 const bscContractCallerAddress = '0xf70da97812cb96acdf810712aa562db8dfa3dbef';
 const bscUniversalRouter = '0xca11bde05977b3631167028862be2a173976ca11';
 const bscRecipientAddress = '0xb92fe925dc43a0ecde6c8b1a2709c170ec4fff4f';
+const polygonRecipientAddress = '0x2cd071562a1688b3e9f31be39c92aa140a1acc94';
 
 describe('mapEvmTransactions', () => {
   it('maps an ERC-20 transfer sent by the account to a Send activity', () => {
@@ -53,6 +54,56 @@ describe('mapEvmTransactions', () => {
           direction: 'out',
           symbol: 'USDC',
           assetId: toAssetId(baseUsdc, 'eip155:8453'),
+        },
+      },
+    });
+  });
+
+  it('maps a native value contract call without method data to a Send activity', () => {
+    const transaction = {
+      hash: '0x64d2f26c261178252fcad9dbb665cf40337b827a582066553dd6634eaeea9f0a',
+      timestamp: '2026-05-19T19:27:12.000Z',
+      chainId: Number(CHAIN_IDS.POLYGON),
+      from: subjectAddress,
+      to: polygonRecipientAddress,
+      methodId: null,
+      transactionCategory: 'CONTRACT_CALL',
+      transactionType: 'GENERIC_CONTRACT_CALL',
+      value: '100000000000000000',
+      valueTransfers: [
+        {
+          from: subjectAddress,
+          to: polygonRecipientAddress,
+          amount: '100000000000000000',
+          decimal: 18,
+          symbol: 'MATIC',
+          transferType: 'normal',
+        },
+      ],
+    } as unknown as V1TransactionByHashResponse;
+
+    const item = mapApiEvmTransactions({
+      subjectAddress,
+      transaction,
+    });
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
+      type: 'send',
+      chainId: 'eip155:137',
+      status: 'success',
+      timestamp: 1779218832000,
+      data: {
+        from: subjectAddress,
+        hash: '0x64d2f26c261178252fcad9dbb665cf40337b827a582066553dd6634eaeea9f0a',
+        to: polygonRecipientAddress,
+        token: {
+          amount: '100000000000000000',
+          assetId: 'eip155:137/slip44:966',
+          decimals: 18,
+          direction: 'out',
+          symbol: 'MATIC',
         },
       },
     });

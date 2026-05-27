@@ -50,6 +50,10 @@ export function mapApiEvmTransactions({
     ({ from, transferType }) =>
       equalsIgnoreCase(from, subjectAddress) && transferType === 'normal',
   );
+  const hasNativeTransferWithoutMethod =
+    transactionCategory === 'CONTRACT_CALL' &&
+    !transaction.methodId &&
+    valueTransfers?.some(({ transferType }) => transferType === 'normal');
   const hasSupplyMethodId =
     transaction.methodId && supplyMethodIds.has(transaction.methodId);
 
@@ -166,7 +170,8 @@ export function mapApiEvmTransactions({
 
   if (
     transactionCategory === 'TRANSFER' ||
-    transactionCategory === 'STANDARD'
+    transactionCategory === 'STANDARD' ||
+    hasNativeTransferWithoutMethod
   ) {
     const isReceive =
       Boolean(receivedTransfer) ||
