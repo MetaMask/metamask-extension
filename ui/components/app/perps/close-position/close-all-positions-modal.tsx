@@ -101,7 +101,7 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
 
   const [rawProtocolFees, setRawProtocolFees] = useState(0);
   const [rawMetamaskFees, setRawMetamaskFees] = useState(0);
-  const [isLoadingFees, setIsLoadingFees] = useState(false);
+  const [isLoadingFees, setIsLoadingFees] = useState(positions.length > 0);
   const feeRequestId = useRef(0);
 
   const metamaskFeeDiscountBips = usePerpsMetamaskFeeDiscountBips(
@@ -110,8 +110,10 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
 
   useEffect(() => {
     if (!isOpen) {
-      return;
+      return undefined;
     }
+
+    let cancelled = false;
 
     setRawProtocolFees(0);
     setRawMetamaskFees(0);
@@ -123,7 +125,7 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
 
     if (entries.length === 0) {
       setIsLoadingFees(false);
-      return;
+      return undefined;
     }
 
     setIsLoadingFees(true);
@@ -148,17 +150,27 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
             metamaskFee: notional * PERPS_FALLBACK_FEE_RATES.metamaskFeeRate,
           })),
       ),
-    ).then((perSymbolFees) => {
-      if (currentId === feeRequestId.current) {
-        setRawProtocolFees(
-          perSymbolFees.reduce((sum, f) => sum + f.protocolFee, 0),
-        );
-        setRawMetamaskFees(
-          perSymbolFees.reduce((sum, f) => sum + f.metamaskFee, 0),
-        );
-        setIsLoadingFees(false);
-      }
-    });
+    )
+      .then((perSymbolFees) => {
+        if (!cancelled && currentId === feeRequestId.current) {
+          setRawProtocolFees(
+            perSymbolFees.reduce((sum, f) => sum + f.protocolFee, 0),
+          );
+          setRawMetamaskFees(
+            perSymbolFees.reduce((sum, f) => sum + f.metamaskFee, 0),
+          );
+          setIsLoadingFees(false);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setIsLoadingFees(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [isOpen, symbolNotionalKey]);
 
   const estimatedFees = useMemo(() => {
