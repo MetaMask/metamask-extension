@@ -12,7 +12,10 @@ import {
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { PerpsFeesDisplay } from '../../../perps-fees-display';
 import type { OrderSummaryProps } from '../../order-entry.types';
-import { formatSlippagePct } from '../../../utils/slippageFormat';
+import {
+  formatSlippagePct,
+  formatMaxSlippagePct,
+} from '../../../utils/slippageFormat';
 
 /**
  * OrderSummary - Displays calculated order values (margin, fees, liquidation price, slippage)
@@ -131,7 +134,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
           >
             <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
               {t('perpsSlippageMaxLabel', [
-                `${slippage.maxSlippagePct.toFixed(1)}%`,
+                formatMaxSlippagePct(slippage.maxSlippagePct),
               ])}
             </Text>
           </ButtonBase>

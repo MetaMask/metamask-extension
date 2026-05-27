@@ -67,6 +67,7 @@ import {
   selectPerpsMaxSlippageBps,
 } from '../../selectors/perps-controller';
 import { useEstimatedSlippage } from '../../hooks/perps/useEstimatedSlippage';
+import { formatMaxSlippagePct } from '../../components/app/perps/utils/slippageFormat';
 import { SlippageConfigModal } from '../../components/app/perps/slippage-config-modal';
 import {
   PERPS_LIMIT_ORDER_SLIPPAGE_BPS,
@@ -1701,7 +1702,7 @@ const PerpsOrderEntryPage: React.FC = () => {
             {insufficientLiquidity
               ? t('perpsSlippageBlockedInsufficientLiquidity')
               : t('perpsSlippageBlockedError', [
-                  `${maxSlippagePct.toFixed(1)}%`,
+                  formatMaxSlippagePct(maxSlippagePct),
                 ])}
           </Text>
         )}

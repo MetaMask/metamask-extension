@@ -1,4 +1,4 @@
-import { formatSlippagePct } from './slippageFormat';
+import { formatSlippagePct, formatMaxSlippagePct } from './slippageFormat';
 
 describe('formatSlippagePct', () => {
   it('returns ">10%" when liquidity is insufficient', () => {
@@ -23,5 +23,14 @@ describe('formatSlippagePct', () => {
     expect(formatSlippagePct(0.01, false)).toBe('0.01%');
     expect(formatSlippagePct(3, false)).toBe('3.00%');
     expect(formatSlippagePct(9.876, false)).toBe('9.88%');
+  });
+});
+
+describe('formatMaxSlippagePct', () => {
+  it('formats with one decimal place', () => {
+    expect(formatMaxSlippagePct(3)).toBe('3.0%');
+    expect(formatMaxSlippagePct(0.1)).toBe('0.1%');
+    expect(formatMaxSlippagePct(5)).toBe('5.0%');
+    expect(formatMaxSlippagePct(1.2)).toBe('1.2%');
   });
 });

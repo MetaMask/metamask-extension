@@ -14,6 +14,10 @@ const SLIPPAGE_DISPLAY_FLOOR_PCT = 0.01;
 // from `PERPS_SLIPPAGE_MAX_PCT`) so the cap-blocked AC5 path still has a
 // label when the book cannot fill, and bumping the bound in constants.ts
 // propagates here without a silent display drift.
+export function formatMaxSlippagePct(pct: number): string {
+  return `${pct.toFixed(1)}%`;
+}
+
 export function formatSlippagePct(
   estimatedPct: number | null,
   insufficientLiquidity: boolean,
