@@ -51,11 +51,11 @@ export async function run(): Promise<BenchmarkRunResult> {
         );
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
-            '.transaction-status-label--confirmed',
+            '[data-tx-status="confirmed"]',
           );
           return confirmedTxes.length === 1;
         }, 10000);
-        await driver.waitForSelector('.transaction-status-label--confirmed');
+        await driver.waitForSelector('[data-tx-status="confirmed"]');
         const timestampAfterAction = new Date();
         loadingTimes =
           timestampAfterAction.getTime() - timestampBeforeAction.getTime();

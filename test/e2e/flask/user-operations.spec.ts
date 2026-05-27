@@ -116,10 +116,7 @@ async function openConfirmedTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
   await driver.clickElement('[data-testid="account-overview__activity-tab"]');
 
-  await driver.clickElement({
-    css: '[data-testid="activity-list-item"]',
-    text: 'Confirmed',
-  });
+  await driver.clickElement('[data-tx-status="confirmed"]');
 }
 
 async function expectTransactionDetail(
@@ -307,7 +304,7 @@ describe.skip('User Operations', function () {
         paymaster: VERIFYING_PAYMASTER,
         localNodeOptions: [
           {
-            type: 'ganache',
+            type: 'anvil',
             options: {
               hardfork: 'london',
               mnemonic:

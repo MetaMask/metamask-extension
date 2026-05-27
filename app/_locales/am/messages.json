@@ -190,9 +190,6 @@
   "done": {
     "message": "ተጠናቅቋል"
   },
-  "downloadGoogleChrome": {
-    "message": "Google Chrome አውርድ"
-  },
   "downloadStateLogs": {
     "message": "የስቴት መዛግብትን አውርድ"
   },
@@ -250,9 +247,6 @@
   },
   "hardwareWallets": {
     "message": "ከሃርድዌር ቋት ጋር ይገናኙ"
-  },
-  "hardwareWalletsMsg": {
-    "message": "ከ MetaMask ጋር ሊጠቀሙበት የሚፈልጉትን የሃርድዌር ቋት ይምረጡ"
   },
   "here": {
     "message": "እዚህ",

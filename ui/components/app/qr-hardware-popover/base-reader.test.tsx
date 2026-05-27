@@ -705,7 +705,7 @@ describe('BaseReader', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders unknown QR code error when scan throws during wallet read', async () => {
+  it('renders QrErrorContent when scan throws during wallet read', async () => {
     setupWebcamUtilsSuccess();
     mockEnhancedReader.mockImplementation((({
       onFrame,
@@ -722,14 +722,11 @@ describe('BaseReader', () => {
     renderWithProvider(<BaseReader {...defaultProps} isReadingWallet />);
 
     expect(
-      await screen.findByText(messages.QRHardwareUnknownWalletQRCode.message),
+      await screen.findByTestId('qr-error-nonUrQrCode-pairing'),
     ).toBeInTheDocument();
-    expect(defaultProps.setErrorTitle).toHaveBeenCalledWith(
-      messages.QRHardwareUnknownQRCodeTitle.message,
-    );
   });
 
-  it('renders unknown QR code error for signing flow when scan throws', async () => {
+  it('renders QrErrorContent for signing flow when scan throws', async () => {
     setupWebcamUtilsSuccess();
     mockEnhancedReader.mockImplementation((({
       onFrame,
@@ -748,11 +745,8 @@ describe('BaseReader', () => {
     );
 
     expect(
-      await screen.findByText(messages.unknownQrCode.message),
+      await screen.findByTestId('qr-error-nonUrQrCode-signing'),
     ).toBeInTheDocument();
-    expect(defaultProps.setErrorTitle).toHaveBeenCalledWith(
-      messages.QRHardwareInvalidTransactionTitle.message,
-    );
   });
 
   // ---- Cancel & Try Again on error UI ------------------------------------

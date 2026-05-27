@@ -26,14 +26,12 @@ import { RootMessenger } from '../../lib/messenger';
  * @returns The restricted messenger.
  */
 export function getNetworkControllerMessenger(
-  messenger: RootMessenger,
-): NetworkControllerMessenger {
-  const controllerMessenger = new Messenger<
-    'NetworkController',
+  messenger: RootMessenger<
     MessengerActions<NetworkControllerMessenger>,
-    MessengerEvents<NetworkControllerMessenger>,
-    RootMessenger
-  >({
+    MessengerEvents<NetworkControllerMessenger>
+  >,
+): NetworkControllerMessenger {
+  const controllerMessenger: NetworkControllerMessenger = new Messenger({
     namespace: 'NetworkController',
     parent: messenger,
   });

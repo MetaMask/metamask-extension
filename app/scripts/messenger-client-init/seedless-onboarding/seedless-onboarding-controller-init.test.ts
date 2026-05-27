@@ -1,13 +1,13 @@
 import {
   SeedlessOnboardingController,
   Web3AuthNetwork,
+  SeedlessOnboardingControllerMessenger,
 } from '@metamask/seedless-onboarding-controller';
 import { MessengerClientInitRequest } from '../types';
 import {
   getSeedlessOnboardingControllerInitMessenger,
   getSeedlessOnboardingControllerMessenger,
   SeedlessOnboardingControllerInitMessenger,
-  SeedlessOnboardingControllerMessenger,
 } from '../messengers/seedless-onboarding';
 import { getRootMessenger } from '../../lib/messenger';
 import { buildControllerInitRequestMock } from '../test/utils';
