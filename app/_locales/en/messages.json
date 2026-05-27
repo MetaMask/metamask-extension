@@ -2991,12 +2991,6 @@
   "dappConnections": {
     "message": "Dapp Connections"
   },
-  "dappScanMaliciousTitle": {
-    "message": "Malicious website detected"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "This website is flagged as potentially dangerous. If you reveal your Secret Recovery Phrase, you could put your funds at risk."
-  },
   "dappSuggested": {
     "message": "Site suggested"
   },
@@ -9540,6 +9534,19 @@
   "srpPasteTip": {
     "message": "You can paste your entire Secret Recovery Phrase into any field.",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpRevealMaliciousBlockBody": {
+    "message": "Attackers on $1 are trying to trick you into sharing your Secret Recovery Phrase. Anyone with your phrase can steal everything from your wallet.",
+    "description": "Warning message shown when a malicious site is detected. $1 is the hostname of the current tab."
+  },
+  "srpRevealMaliciousBlockDismiss": {
+    "message": "Back to safety"
+  },
+  "srpRevealMaliciousBlockHeading": {
+    "message": "You might be getting scammed right now"
+  },
+  "srpRevealMaliciousBlockIconAriaLabel": {
+    "message": "Danger"
   },
   "srpSecurityQuizGetStarted": {
     "message": "Get started"
