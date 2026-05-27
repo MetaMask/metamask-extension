@@ -33,19 +33,6 @@ describe('LegacyBackgroundApiService', () => {
   });
 
   describe('isAssetsUnifyStateEnabled', () => {
-    const originalEnv = process.env;
-
-    beforeEach(() => {
-      // Clear the require cache and resets process.env before each test to ensure a clean environment.
-      jest.resetModules();
-      process.env = { ...originalEnv };
-    });
-
-    afterEach(() => {
-      // Restore original environment
-      process.env = originalEnv;
-    });
-
     it('returns false when the feature flag is undefined', async () => {
       await withService(({ rootMessenger }) => {
         rootMessenger.registerActionHandler(

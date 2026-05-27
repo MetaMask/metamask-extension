@@ -53,6 +53,7 @@ import { SnapKeyring } from '@metamask/eth-snap-keyring';
 import {
   convertEnglishWordlistIndicesToCodepoints,
   isPublicEndpointUrl,
+  withLock,
 } from '../lib/util';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
 import {
@@ -65,18 +66,6 @@ import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/onboarding-method-action-types';
 import { getAccountsBySnapId } from '../lib/snap-keyring';
 import { LegacyBackgroundApiServiceMethodActions } from './legacy-background-api-service-method-action-types';
-
-/**
- * A function executed within a mutually exclusive lock, with
- * a mutex releaser in its option bag.
- *
- * @param releaseLock - A function to release the lock.
- */
-type MutuallyExclusiveCallback<Result> = ({
-  releaseLock,
-}: {
-  releaseLock: MutexInterface.Releaser;
-}) => Promise<Result>;
 
 const serviceName = 'LegacyBackgroundApiService';
 
@@ -619,27 +608,5 @@ export class LegacyBackgroundApiService {
    */
   async getAccountsBySnapId(snapId: SnapId): Promise<string[]> {
     return getAccountsBySnapId(this.getSnapKeyring.bind(this), snapId);
-  }
-}
-
-/**
- * Lock the given mutex before executing the given function,
- * and release it after the function is resolved or after an
- * error is thrown.
- *
- * @param mutex - The mutex to lock.
- * @param callback - The function to execute while the mutex is locked.
- * @returns The result of the function.
- */
-async function withLock<Result>(
-  mutex: Mutex,
-  callback: MutuallyExclusiveCallback<Result>,
-): Promise<Result> {
-  const releaseLock = await mutex.acquire();
-
-  try {
-    return await callback({ releaseLock });
-  } finally {
-    releaseLock();
   }
 }
