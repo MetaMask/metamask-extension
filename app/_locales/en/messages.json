@@ -426,10 +426,10 @@
     "description": "$1 is the token symbol"
   },
   "activity_lendingWithdrawal_success_description": {
-    "message": "Lending withdrawal"
+    "message": ""
   },
   "activity_lendingWithdrawal_success_title": {
-    "message": "Lending withdrawal"
+    "message": "Lending withdraw"
   },
   "activity_marketCloseShort_failed_description": {
     "message": "Close short failed"

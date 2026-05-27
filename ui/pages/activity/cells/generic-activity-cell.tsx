@@ -29,6 +29,7 @@ function getCellTokenAmounts(activity: ActivityCellProps['data']) {
     case 'swap':
     case 'bridge':
     case 'convert':
+    case 'lendingWithdrawal':
       return {
         primaryToken: activity.data.destinationToken,
         secondaryToken: activity.data.sourceToken,

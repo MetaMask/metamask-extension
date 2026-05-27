@@ -36,6 +36,11 @@ function getSubstitutions(activity: ActivityListItem): LabelSubstitutions {
       return {
         title: [activity.data.destinationToken?.symbol ?? ''],
       };
+    case 'lendingWithdrawal':
+      return {
+        title: [activity.data.destinationToken?.symbol ?? ''],
+        description: [activity.data.destinationToken?.symbol ?? ''],
+      };
     // Destination chain in title, source token in description
     case 'bridge': {
       const destChainId =
