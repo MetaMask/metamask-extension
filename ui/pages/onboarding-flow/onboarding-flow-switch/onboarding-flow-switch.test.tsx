@@ -61,6 +61,7 @@ describe('Onboaring Flow Switch Component', () => {
     const mockState = {
       metamask: {
         seedPhraseBackedUp: false,
+        completedMetaMetricsOnboarding: true,
       },
     };
 
