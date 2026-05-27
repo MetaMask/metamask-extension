@@ -1,6 +1,7 @@
 import {
   ClientConfigApiService,
   RemoteFeatureFlagController,
+  RemoteFeatureFlagControllerMessenger,
 } from '@metamask/remote-feature-flag-controller';
 import {
   ActionConstraint,
@@ -20,7 +21,6 @@ import {
   getRemoteFeatureFlagControllerInitMessenger,
   getRemoteFeatureFlagControllerMessenger,
   RemoteFeatureFlagControllerInitMessenger,
-  RemoteFeatureFlagControllerMessenger,
 } from './messengers';
 import { buildControllerInitRequestMock } from './test/utils';
 

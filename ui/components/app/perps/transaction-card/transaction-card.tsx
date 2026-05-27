@@ -13,7 +13,9 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { PerpsTokenLogo } from '../perps-token-logo';
+import { PerpsFillTag } from '../perps-fill-tag';
 import { getDisplayName } from '../utils';
+import { FillType } from '../types';
 import type { PerpsTransaction } from '../types';
 
 export type TransactionCardProps = {
@@ -21,6 +23,7 @@ export type TransactionCardProps = {
   onClick?: (transaction: PerpsTransaction) => void;
   variant?: 'default' | 'muted';
   showTopBorder?: boolean;
+  screenName?: string;
 };
 
 const ORDER_STATUS_TO_I18N_KEY: Record<string, string> = {
@@ -41,12 +44,14 @@ const ORDER_STATUS_TO_I18N_KEY: Record<string, string> = {
  * @param options0.onClick - Optional click handler
  * @param options0.variant - Visual variant - 'default' for normal, 'muted' for subdued
  * @param options0.showTopBorder
+ * @param options0.screenName - Forwarded to PerpsFillTag for analytics attribution
  */
 export const TransactionCard: React.FC<TransactionCardProps> = ({
   transaction,
   onClick,
   variant = 'default',
   showTopBorder = false,
+  screenName,
 }) => {
   const t = useI18nContext();
   const displayName = getDisplayName(transaction.symbol);
@@ -130,30 +135,38 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
   };
 
   const isClickable = Boolean(onClick);
+  const hasInteractiveBadge =
+    transaction.fill?.fillType === FillType.AutoDeleveraging;
 
   const content = (
     <>
-      {/* Token Logo */}
       <PerpsTokenLogo
         symbol={transaction.symbol}
         size={AvatarTokenSize.Md}
         className="shrink-0"
       />
 
-      {/* Left side: Title and subtitle */}
       <Box
         className="min-w-0 flex-1"
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.Start}
         gap={1}
       >
-        <Text fontWeight={FontWeight.Medium}>{transaction.title}</Text>
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={2}
+        >
+          <Text fontWeight={FontWeight.Medium}>{transaction.title}</Text>
+          {!(isClickable && hasInteractiveBadge) && (
+            <PerpsFillTag transaction={transaction} screenName={screenName} />
+          )}
+        </Box>
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
           {getSubtitleDisplay()}
         </Text>
       </Box>
 
-      {/* Right side: Amount and time */}
       <Box
         className="shrink-0"
         flexDirection={BoxFlexDirection.Column}
@@ -176,6 +189,30 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
     variantStyles,
     showTopBorder && 'border-t border-background-default',
   );
+
+  if (isClickable && hasInteractiveBadge) {
+    return (
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        className={twMerge(
+          variantStyles,
+          showTopBorder && 'border-t border-background-default',
+        )}
+        data-testid={`transaction-card-${transaction.id}`}
+      >
+        <ButtonBase
+          className="flex-1 justify-start rounded-none min-w-0 h-auto text-left cursor-pointer gap-4 px-4 py-3 bg-transparent"
+          onClick={handleClick}
+        >
+          {content}
+        </ButtonBase>
+        <Box className="pr-4 shrink-0">
+          <PerpsFillTag transaction={transaction} screenName={screenName} />
+        </Box>
+      </Box>
+    );
+  }
 
   if (isClickable) {
     return (

@@ -60,6 +60,8 @@ type ActivityItem<Type extends ActivityType, Data> = {
   chainId: CaipChainId;
   status: Status;
   timestamp: number;
+  /** TransactionController meta id used for cancel / speed up buttons */
+  metaId?: string;
   data: Data & {
     hash?: string;
   };

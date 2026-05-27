@@ -36,6 +36,7 @@ function runHook({
   disableUpdate = false,
   tokenFiatRate = 1,
   payTokenBalanceUsd = 100,
+  balanceUsdOverride,
   isMaxAmount = false,
   requiredTokens = [],
   updateTokenAmountMock = jest.fn(),
@@ -44,6 +45,7 @@ function runHook({
   disableUpdate?: boolean;
   tokenFiatRate?: number;
   payTokenBalanceUsd?: number;
+  balanceUsdOverride?: number;
   isMaxAmount?: boolean;
   requiredTokens?: { amountUsd?: string; skipIfBalance?: boolean }[];
   updateTokenAmountMock?: jest.Mock;
@@ -85,7 +87,12 @@ function runHook({
   });
 
   return renderHookWithConfirmContextProvider(
-    () => useTransactionCustomAmount({ currency, disableUpdate }),
+    () =>
+      useTransactionCustomAmount({
+        balanceUsdOverride,
+        currency,
+        disableUpdate,
+      }),
     DEFAULT_MOCK_STATE,
   );
 }
@@ -148,6 +155,19 @@ describe('useTransactionCustomAmount', () => {
       });
 
       expect(result.current.amountHuman).toBe('0');
+    });
+
+    it('uses the fiat amount directly when balanceUsdOverride is provided', () => {
+      const { result } = runHook({
+        balanceUsdOverride: 7.863083,
+        tokenFiatRate: 0.999692,
+      });
+
+      act(() => {
+        result.current.updatePendingAmount('7.86308329211399939404');
+      });
+
+      expect(result.current.amountHuman).toBe('7.86308329211399939404');
     });
   });
 
@@ -270,6 +290,23 @@ describe('useTransactionCustomAmount', () => {
 
       // 33% of 100 = 33, rounded down to 2 decimals
       expect(result.current.amountFiat).toBe('33');
+    });
+
+    it('does not inflate max amount with token fiat rate when balanceUsdOverride is provided', () => {
+      const updateTokenAmountMock = jest.fn();
+      const { result } = runHook({
+        balanceUsdOverride: 7.863083,
+        tokenFiatRate: 0.999692,
+        updateTokenAmountMock,
+      });
+
+      act(() => {
+        result.current.updatePendingAmountPercentage(100);
+      });
+
+      expect(result.current.amountFiat).toBe('7.863083');
+      expect(result.current.amountHuman).toBe('7.863083');
+      expect(updateTokenAmountMock).toHaveBeenCalledWith('7.863083');
     });
   });
 

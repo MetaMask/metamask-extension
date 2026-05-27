@@ -4,6 +4,8 @@ import {
   getIsPasskeyFeatureEnabled,
   getIsAssetsUnifiedStateIncludedInBuild,
   getIsNewHardwareWalletOnboardingEnabled,
+  getIsSeedlessOnboardingFeatureEnabled,
+  getIsTelegramLoginFeatureEnabled,
   isProduction,
   isGatorPermissionsRevocationFeatureEnabled,
 } from './environment';
@@ -32,6 +34,69 @@ describe('isProduction', () => {
   it('should return false when ENVIRONMENT is "testing"', () => {
     process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.TESTING;
     expect(isProduction()).toBe(false);
+  });
+});
+
+describe('getIsSeedlessOnboardingFeatureEnabled', () => {
+  let originalValue: string | undefined;
+
+  beforeAll(() => {
+    originalValue = process.env.SEEDLESS_ONBOARDING_ENABLED;
+  });
+
+  afterAll(() => {
+    process.env.SEEDLESS_ONBOARDING_ENABLED = originalValue;
+  });
+
+  it('returns true when SEEDLESS_ONBOARDING_ENABLED is "true"', () => {
+    process.env.SEEDLESS_ONBOARDING_ENABLED = 'true';
+    expect(getIsSeedlessOnboardingFeatureEnabled()).toBe(true);
+  });
+
+  it('returns false when SEEDLESS_ONBOARDING_ENABLED is "false"', () => {
+    process.env.SEEDLESS_ONBOARDING_ENABLED = 'false';
+    expect(getIsSeedlessOnboardingFeatureEnabled()).toBe(false);
+  });
+
+  it('returns false when SEEDLESS_ONBOARDING_ENABLED is undefined', () => {
+    delete process.env.SEEDLESS_ONBOARDING_ENABLED;
+    expect(getIsSeedlessOnboardingFeatureEnabled()).toBe(false);
+  });
+});
+
+describe('getIsTelegramLoginFeatureEnabled', () => {
+  let originalSeedlessOnboardingEnabled: string | undefined;
+  let originalTelegramLoginEnabled: string | undefined;
+
+  beforeAll(() => {
+    originalSeedlessOnboardingEnabled = process.env.SEEDLESS_ONBOARDING_ENABLED;
+    originalTelegramLoginEnabled = process.env.TELEGRAM_LOGIN_ENABLED;
+  });
+
+  afterAll(() => {
+    process.env.SEEDLESS_ONBOARDING_ENABLED = originalSeedlessOnboardingEnabled;
+    process.env.TELEGRAM_LOGIN_ENABLED = originalTelegramLoginEnabled;
+  });
+
+  it('returns true when both seedless onboarding and Telegram login are enabled', () => {
+    process.env.SEEDLESS_ONBOARDING_ENABLED = 'true';
+    process.env.TELEGRAM_LOGIN_ENABLED = 'true';
+
+    expect(getIsTelegramLoginFeatureEnabled()).toBe(true);
+  });
+
+  it('returns false when Telegram login is enabled but seedless onboarding is disabled', () => {
+    process.env.SEEDLESS_ONBOARDING_ENABLED = 'false';
+    process.env.TELEGRAM_LOGIN_ENABLED = 'true';
+
+    expect(getIsTelegramLoginFeatureEnabled()).toBe(false);
+  });
+
+  it('returns false when seedless onboarding is enabled but Telegram login is disabled', () => {
+    process.env.SEEDLESS_ONBOARDING_ENABLED = 'true';
+    process.env.TELEGRAM_LOGIN_ENABLED = 'false';
+
+    expect(getIsTelegramLoginFeatureEnabled()).toBe(false);
   });
 });
 

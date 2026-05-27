@@ -2,12 +2,8 @@ import * as React from 'react';
 import { screen, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
-import {
-  createBridgeMockStore,
-  MOCK_EVM_ACCOUNT,
-} from '../../../../test/data/bridge/mock-bridge-store';
+import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { setBackgroundConnection } from '../../../store/background-connection';
-import { formatAccountToCaipAccountId } from '../../../helpers/utils/rewards-utils';
 import { RewardsVipBadge } from './RewardsVipBadge';
 
 const mockGetVipTierForAccount = jest.fn();
@@ -15,6 +11,15 @@ setBackgroundConnection({
   rewardsGetVipTierForAccount: async (...args: unknown[]) =>
     mockGetVipTierForAccount(...args),
 } as never);
+
+const vipEnabledStore = () => {
+  const store = createBridgeMockStore();
+  store.metamask.remoteFeatureFlags.vipProgramEnabled = {
+    enabled: true,
+    minimumVersion: '0.0.0',
+  };
+  return store;
+};
 
 describe('RewardsVipBadge', () => {
   beforeEach(() => {
@@ -25,18 +30,12 @@ describe('RewardsVipBadge', () => {
     mockGetVipTierForAccount.mockResolvedValueOnce(0);
 
     const { container } = renderWithProvider(
-      // @ts-expect-error 123 is not a valid caip account id
-      <RewardsVipBadge accountId="123" />,
-      configureStore(createBridgeMockStore()),
+      <RewardsVipBadge />,
+      configureStore(vipEnabledStore()),
     );
 
     await waitFor(() => {
       expect(mockGetVipTierForAccount).toHaveBeenCalledTimes(1);
-      expect(mockGetVipTierForAccount.mock.calls[0]).toMatchInlineSnapshot(`
-      [
-        "123",
-      ]
-    `);
       expect(container).toMatchInlineSnapshot(`<div />`);
     });
   });
@@ -45,18 +44,12 @@ describe('RewardsVipBadge', () => {
     mockGetVipTierForAccount.mockResolvedValueOnce(null);
 
     const { container } = renderWithProvider(
-      // @ts-expect-error 123 is not a valid caip account id
-      <RewardsVipBadge accountId="123" />,
-      configureStore(createBridgeMockStore()),
+      <RewardsVipBadge />,
+      configureStore(vipEnabledStore()),
     );
 
     await waitFor(() => {
       expect(mockGetVipTierForAccount).toHaveBeenCalledTimes(1);
-      expect(mockGetVipTierForAccount.mock.calls[0]).toMatchInlineSnapshot(`
-      [
-        "123",
-      ]
-    `);
       expect(container).toMatchInlineSnapshot(`<div />`);
     });
   });
@@ -64,15 +57,9 @@ describe('RewardsVipBadge', () => {
   it('renders the vip badge when tier is found', async () => {
     mockGetVipTierForAccount.mockResolvedValueOnce(5);
 
-    const accountId = formatAccountToCaipAccountId(
-      MOCK_EVM_ACCOUNT.address,
-      'eip155:1',
-    );
-    expect(accountId).toBeDefined();
     const { container } = renderWithProvider(
-      // @ts-expect-error accountId is a valid caip account id
-      <RewardsVipBadge accountId={accountId} />,
-      configureStore(createBridgeMockStore()),
+      <RewardsVipBadge />,
+      configureStore(vipEnabledStore()),
     );
 
     await waitFor(() => {
@@ -106,35 +93,32 @@ describe('RewardsVipBadge', () => {
           </div>
         </div>
       `);
-      expect(mockGetVipTierForAccount.mock.calls[0]).toMatchInlineSnapshot(`
-              [
-                "eip155:1:0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc",
-              ]
-          `);
     });
   });
 
   it('renders null when vip tier fetch throws an error', async () => {
-    jest.spyOn(console, 'warn').mockImplementationOnce(() => {
-      // noop
-    });
     mockGetVipTierForAccount.mockRejectedValueOnce(new Error('test'));
 
     const { container } = renderWithProvider(
-      // @ts-expect-error 123 is not a valid caip account id
-      <RewardsVipBadge accountId="123" />,
-      configureStore(createBridgeMockStore()),
+      <RewardsVipBadge />,
+      configureStore(vipEnabledStore()),
     );
 
     await waitFor(() => {
       expect(mockGetVipTierForAccount).toHaveBeenCalledTimes(1);
-      expect(mockGetVipTierForAccount.mock.calls[0]).toMatchInlineSnapshot(`
-      [
-        "123",
-      ]
-    `);
       expect(container).toMatchInlineSnapshot(`<div />`);
-      expect(console.warn).toHaveBeenCalledTimes(1);
     });
+  });
+
+  it('renders null and skips the lookup when vipProgramEnabled is false', () => {
+    mockGetVipTierForAccount.mockResolvedValueOnce(5);
+
+    const { container } = renderWithProvider(
+      <RewardsVipBadge />,
+      configureStore(createBridgeMockStore()),
+    );
+
+    expect(container).toMatchInlineSnapshot(`<div />`);
+    expect(mockGetVipTierForAccount).not.toHaveBeenCalled();
   });
 });
