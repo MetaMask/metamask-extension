@@ -41,7 +41,7 @@
         "version": "13.17.0"
       },
       "previousAppVersion": "",
-      "previousMigrationVersion": 211
+      "previousMigrationVersion": 0
     },
     "AppStateController": {
       "browserEnvironment": {
@@ -174,7 +174,6 @@
     },
     "AnalyticsController": {
       "analyticsId": null,
-      "eventQueue": {},
       "optedIn": false
     },
     "MetaMetricsController": {

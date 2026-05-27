@@ -137,7 +137,7 @@
       "currentMigrationVersion": 212,
       "firstTimeInfo": {},
       "previousAppVersion": "",
-      "previousMigrationVersion": 211
+      "previousMigrationVersion": 0
     },
     "AppStateController": {
       "browserEnvironment": {
@@ -276,7 +276,7 @@
     "AnalyticsController": {
       "analyticsId": null,
       "eventQueue": {},
-      "optedIn": false
+      "optedIn": true
     },
     "MetaMetricsController": {
       "dataCollectionForMarketing": false,
