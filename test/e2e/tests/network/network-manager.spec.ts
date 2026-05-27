@@ -257,18 +257,18 @@ describe('Network Manager', function (this: Suite) {
         const assetListPage = new AssetListPage(driver);
         const networkManager = new NetworkManager(driver);
 
-        // Only Ethereum native token and mUSD token visible
-        await assetListPage.checkTokenItemNumber(2);
+        // Only Ethereum native token
+        await assetListPage.checkTokenItemNumber(1);
 
         // Change to Linea, only Linea native token visible
         await networkManager.openNetworkManager();
         await networkManager.selectNetworkByChainId(NetworkId.LINEA);
-        await assetListPage.checkTokenItemNumber(2);
+        await assetListPage.checkTokenItemNumber(1);
 
         // Change to Ethereum, only Ethereum native token visible
         await networkManager.openNetworkManager();
         await networkManager.selectNetworkByChainId(NetworkId.ETHEREUM);
-        await assetListPage.checkTokenItemNumber(2);
+        await assetListPage.checkTokenItemNumber(1);
       },
     );
   });
