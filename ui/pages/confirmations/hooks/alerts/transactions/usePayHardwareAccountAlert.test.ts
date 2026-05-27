@@ -21,6 +21,8 @@ import { usePayHardwareAccountAlert } from './usePayHardwareAccountAlert';
 jest.mock('../../pay/useTransactionPayToken');
 
 const HARDWARE_ACCOUNT_ID = 'hardware-account-id';
+const SELECTED_ACCOUNT_ID = 'selected-account-id';
+const SELECTED_ACCOUNT_ADDRESS = '0x2';
 
 const PAY_TOKEN_MOCK = {
   address: '0x1234' as Hex,
@@ -56,8 +58,30 @@ function createHardwareAccountState(keyringType: string) {
             scopes: ['eip155:0'],
             type: 'eip155:eoa',
           },
+          [SELECTED_ACCOUNT_ID]: {
+            address: SELECTED_ACCOUNT_ADDRESS,
+            id: SELECTED_ACCOUNT_ID,
+            metadata: {
+              importTime: 0,
+              name: 'Selected Account',
+              keyring: {
+                type: 'HD Key Tree',
+              },
+              lastSelected: 0,
+            },
+            options: {},
+            methods: [
+              'personal_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            scopes: ['eip155:0'],
+            type: 'eip155:eoa',
+          },
         },
-        selectedAccount: HARDWARE_ACCOUNT_ID,
+        selectedAccount: SELECTED_ACCOUNT_ID,
       },
       accountIdByAddress: {
         [CONTRACT_INTERACTION_SENDER_ADDRESS]: HARDWARE_ACCOUNT_ID,
