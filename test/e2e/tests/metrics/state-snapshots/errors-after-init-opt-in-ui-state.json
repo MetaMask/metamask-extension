@@ -5,6 +5,7 @@
     "accountDetail": "object",
     "alertMessage": null,
     "alertOpen": "boolean",
+    "backupAndSyncOnboardingToggleState": "boolean",
     "confirmationExchangeRates": {},
     "customNonceValue": "",
     "customTokenAmount": "string",
