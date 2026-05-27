@@ -158,7 +158,6 @@ export const AssetsControllerInit: MessengerClientInitFunction<
 
   // Create the controller - it now creates all data sources internally.
   // queryApiClient is cast to the package's type to avoid duplicate @metamask/core-backend type conflicts.
-  const TWENTY_FOUR_HOURS = 1000 * 60 * 60 * 24;
   const messengerClient = new AssetsController({
     messenger: controllerMessenger,
     state: persistedState.AssetsController,
