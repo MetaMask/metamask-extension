@@ -2,6 +2,7 @@ import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { EthAccountType } from '@metamask/keyring-api';
 import type { CaipChainId } from '@metamask/utils';
 import { setGlobalDevModeChecks } from 'reselect';
+import { BATCH_SELL_ASSET_IDS } from '../../../test/data/batch-sell';
 import {
   getAssetsBySelectedAccountGroup,
   getAssetsRates,
@@ -244,8 +245,7 @@ describe('batch-sell selectors', () => {
   });
 
   describe('selectBatchSellDestStablecoins', () => {
-    const USDC_ASSET_ID =
-      'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' as CaipChainId;
+    const USDC_ASSET_ID = BATCH_SELL_ASSET_IDS.USDC as unknown as CaipChainId;
 
     it('returns empty array when chainId is undefined', () => {
       mockGetBridgeFeatureFlags.mockReturnValue({

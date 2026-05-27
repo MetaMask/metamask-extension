@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import type { CaipAssetType } from '@metamask/utils';
 import type { BatchSellQuotesConfig, BatchSellQuotesResults } from '../types';
+import { buildBatchSellAsset } from '../../../../../../test/data/batch-sell';
 import { AssetsReceivedSummaryList } from './assets-received-summary-list';
 
 jest.mock('../../../../../hooks/useI18nContext', () => ({
@@ -38,30 +39,14 @@ function makeSendAssetsConfig(
 ): BatchSellQuotesConfig['sendAssetsConfig'] {
   return {
     [ASSET_A]: {
-      asset: {
-        assetId: ASSET_A,
-        symbol: 'AAA',
-        name: 'Token A',
-        chainId: 'eip155:1',
-        balance: '1',
-        decimals: 18,
-        iconUrl: '',
-      } as never,
+      asset: buildBatchSellAsset({ assetId: ASSET_A, symbol: 'AAA', name: 'Token A', balance: '1' }) as never,
       sendAmountPercent: 100,
       slippagePercent: 0.5,
       enabled: true,
       ...overrides[ASSET_A],
     },
     [ASSET_B]: {
-      asset: {
-        assetId: ASSET_B,
-        symbol: 'BBB',
-        name: 'Token B',
-        chainId: 'eip155:1',
-        balance: '1',
-        decimals: 18,
-        iconUrl: '',
-      } as never,
+      asset: buildBatchSellAsset({ assetId: ASSET_B, symbol: 'BBB', name: 'Token B', balance: '1' }) as never,
       sendAmountPercent: 100,
       slippagePercent: 2,
       enabled: true,

@@ -1,20 +1,16 @@
 import { renderHook } from '@testing-library/react-hooks';
-import type { BatchSellAsset } from '../../ducks/batch-sell/types';
+import { buildBatchSellAsset } from '../../../test/data/batch-sell';
 import { useSortBatchSellAssetsByBalance } from './useSortBatchSellAssetsByBalance';
 
-const makeAsset = (
-  symbol: string,
-  tokenFiatAmount: number | undefined,
-): BatchSellAsset => ({
-  assetId: `eip155:1/erc20:0x${symbol}`,
-  name: symbol,
-  symbol,
-  iconUrl: '',
-  balance: '1',
-  decimals: 18,
-  tokenFiatAmount,
-  chainId: 'eip155:1',
-});
+const makeAsset = (symbol: string, tokenFiatAmount: number | undefined) =>
+  buildBatchSellAsset({
+    assetId: `eip155:1/erc20:0x${symbol}`,
+    name: symbol,
+    symbol,
+    iconUrl: '',
+    balance: '1',
+    tokenFiatAmount,
+  });
 
 const ETH = makeAsset('ETH', 3000);
 const USDC = makeAsset('USDC', 500);

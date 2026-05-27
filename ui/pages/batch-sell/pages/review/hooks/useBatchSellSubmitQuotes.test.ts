@@ -7,6 +7,7 @@ import {
   getIsStxEnabled,
 } from '../../../../../ducks/bridge/selectors';
 import type { ReceivedAsset } from '../types';
+import { mockUseSelectorPassthrough } from '../../../../../../test/data/batch-sell';
 import useBatchSellSubmitQuotes from './useBatchSellSubmitQuotes';
 
 const mockNavigate = jest.fn();
@@ -88,9 +89,7 @@ describe('useBatchSellSubmitQuotes', () => {
     mockGetFromAccount.mockReturnValue(MOCK_ACCOUNT as never);
     mockGetIsStxEnabled.mockReturnValue(true as never);
 
-    mockUseSelector.mockImplementation(
-      (selectorFn: (state: unknown) => unknown) => selectorFn({}),
-    );
+    mockUseSelectorPassthrough(mockUseSelector);
   });
 
   describe('initial state', () => {

@@ -3,6 +3,10 @@ import { useSelector } from 'react-redux';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import type { CaipAssetType } from '@metamask/utils';
 import type { BatchSellQuotesConfig, BatchSellQuotesResults } from '../types';
+import {
+  BATCH_SELL_ASSET_IDS,
+  BATCH_SELL_CHAIN_ID,
+} from '../../../../../../test/data/batch-sell';
 import { useBatchSellAggregateValidation } from './useBatchSellAggregateValidation';
 
 jest.mock('react-redux', () => ({
@@ -21,8 +25,8 @@ jest.mock('../../../../../ducks/batch-sell/selectors', () => ({
 const mockUseSelector = jest.mocked(useSelector);
 const mockGetNativeAssetForChainId = jest.mocked(getNativeAssetForChainId);
 
-const ETH_CHAIN_ID = 'eip155:1';
-const ETH_NATIVE_ASSET_ID = 'eip155:1/slip44:60' as CaipAssetType;
+const ETH_CHAIN_ID = BATCH_SELL_CHAIN_ID;
+const ETH_NATIVE_ASSET_ID = BATCH_SELL_ASSET_IDS.ETH_NATIVE;
 const TOKEN_ASSET_ID = 'eip155:1/erc20:0xabc' as CaipAssetType;
 
 const MOCK_NATIVE_ASSET = {

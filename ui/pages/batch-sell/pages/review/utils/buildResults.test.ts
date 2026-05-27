@@ -1,60 +1,24 @@
-import { CaipAssetType } from '@metamask/utils';
-import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
-import { QuoteValidationErrors } from '../../../../../ducks/bridge/types';
-import { BatchSellQuotesConfig, ReceivedAsset, SendAssetEntry } from '../types';
+import {
+  BATCH_SELL_ASSET_IDS,
+  noValidationErrors,
+  buildSendAssetEntry,
+  buildReceivedAsset,
+  buildRecommendedQuote,
+  buildBatchSellControllerResult,
+} from '../../../../../../test/data/batch-sell';
 import { buildResults } from './buildResults';
 
-const ASSET_ID_A =
-  'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' as CaipAssetType;
-const ASSET_ID_B =
-  'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F' as CaipAssetType;
-
-const buildEntry = (
-  assetId: CaipAssetType,
-  overrides: Partial<SendAssetEntry> = {},
-): SendAssetEntry => ({
-  assetId,
-  asset: { assetId } as BatchSellAsset,
-  sendAmountPercent: 100,
-  slippagePercent: 0.5,
-  enabled: true,
-  ...overrides,
-});
-
-const buildRecommendedQuote = (overrides: Record<string, unknown> = {}) => ({
-  toTokenAmount: { amount: 10, valueInCurrency: 100 },
-  minToTokenAmount: { amount: 9 },
-  ...overrides,
-});
-
-const noValidationErrors: QuoteValidationErrors = {
-  isInsufficientGasBalance: false,
-  isInsufficientNativeReserve: false,
-  isNetworkFeeUnavailable: false,
-  isInsufficientGasForQuote: false,
-  isInsufficientBalance: false,
-  isEstimatedReturnLow: false,
-  isPriceImpactWarning: false,
-  isPriceImpactError: false,
-};
-
-const receivedAsset: ReceivedAsset = {
-  id: 'eip155:1/slip44:60' as CaipAssetType,
-  symbol: 'ETH',
-};
-
-const buildControllerResult = (
-  recommendedQuotes: ReturnType<typeof buildRecommendedQuote>[],
-) => ({ recommendedQuotes }) as never;
+const ASSET_ID_A = BATCH_SELL_ASSET_IDS.USDC;
+const ASSET_ID_B = BATCH_SELL_ASSET_IDS.DAI;
 
 describe('buildResults', () => {
   describe('individual quote entries', () => {
     it('marks a disabled entry as hasQuote:false with isLoadingQuote:false', () => {
-      const entries = [buildEntry(ASSET_ID_A, { enabled: false })];
+      const entries = [buildSendAssetEntry({ assetId: ASSET_ID_A, enabled: false })];
       const result = buildResults({
-        controllerResult: buildControllerResult([buildRecommendedQuote()]),
+        controllerResult: buildBatchSellControllerResult([buildRecommendedQuote()]),
         entries,
-        receivedAsset,
+        receivedAsset: buildReceivedAsset(),
         validationErrorsByIndex: [noValidationErrors],
         isLoading: true,
       });
@@ -66,11 +30,11 @@ describe('buildResults', () => {
     });
 
     it('marks an enabled entry with no recommendedQuote as hasQuote:false', () => {
-      const entries = [buildEntry(ASSET_ID_A, { enabled: true })];
+      const entries = [buildSendAssetEntry({ assetId: ASSET_ID_A, enabled: true })];
       const result = buildResults({
-        controllerResult: buildControllerResult([]),
+        controllerResult: buildBatchSellControllerResult([]),
         entries,
-        receivedAsset,
+        receivedAsset: buildReceivedAsset(),
         validationErrorsByIndex: [noValidationErrors],
         isLoading: false,
       });
@@ -82,11 +46,11 @@ describe('buildResults', () => {
     });
 
     it('sets isLoadingQuote:true for an enabled entry with no quote when isLoading is true', () => {
-      const entries = [buildEntry(ASSET_ID_A, { enabled: true })];
+      const entries = [buildSendAssetEntry({ assetId: ASSET_ID_A, enabled: true })];
       const result = buildResults({
-        controllerResult: buildControllerResult([]),
+        controllerResult: buildBatchSellControllerResult([]),
         entries,
-        receivedAsset,
+        receivedAsset: buildReceivedAsset(),
         validationErrorsByIndex: [noValidationErrors],
         isLoading: true,
       });
@@ -95,11 +59,11 @@ describe('buildResults', () => {
     });
 
     it('marks an enabled entry with a recommendedQuote as hasQuote:true', () => {
-      const entries = [buildEntry(ASSET_ID_A)];
+      const entries = [buildSendAssetEntry({ assetId: ASSET_ID_A })];
       const result = buildResults({
-        controllerResult: buildControllerResult([buildRecommendedQuote()]),
+        controllerResult: buildBatchSellControllerResult([buildRecommendedQuote()]),
         entries,
-        receivedAsset,
+        receivedAsset: buildReceivedAsset(),
         validationErrorsByIndex: [noValidationErrors],
         isLoading: false,
       });
@@ -111,15 +75,15 @@ describe('buildResults', () => {
     });
 
     it('populates receivedAmount, receivedAmountFiat, and minimumReceivedAmount from the quote', () => {
-      const entries = [buildEntry(ASSET_ID_A)];
+      const entries = [buildSendAssetEntry({ assetId: ASSET_ID_A })];
       const quote = buildRecommendedQuote({
         toTokenAmount: { amount: 42, valueInCurrency: 420 },
         minToTokenAmount: { amount: 38 },
       });
       const result = buildResults({
-        controllerResult: buildControllerResult([quote]),
+        controllerResult: buildBatchSellControllerResult([quote]),
         entries,
-        receivedAsset,
+        receivedAsset: buildReceivedAsset(),
         validationErrorsByIndex: [noValidationErrors],
         isLoading: false,
       });
@@ -130,15 +94,15 @@ describe('buildResults', () => {
     });
 
     it('treats missing token amounts as 0 via toFinite', () => {
-      const entries = [buildEntry(ASSET_ID_A)];
+      const entries = [buildSendAssetEntry({ assetId: ASSET_ID_A })];
       const quote = buildRecommendedQuote({
         toTokenAmount: undefined,
         minToTokenAmount: undefined,
       });
       const result = buildResults({
-        controllerResult: buildControllerResult([quote]),
+        controllerResult: buildBatchSellControllerResult([quote]),
         entries,
-        receivedAsset,
+        receivedAsset: buildReceivedAsset(),
         validationErrorsByIndex: [noValidationErrors],
         isLoading: false,
       });
@@ -149,11 +113,11 @@ describe('buildResults', () => {
     });
 
     it('sets slippagePercent from the entry', () => {
-      const entries = [buildEntry(ASSET_ID_A, { slippagePercent: 2.5 })];
+      const entries = [buildSendAssetEntry({ assetId: ASSET_ID_A, slippagePercent: 2.5 })];
       const result = buildResults({
-        controllerResult: buildControllerResult([buildRecommendedQuote()]),
+        controllerResult: buildBatchSellControllerResult([buildRecommendedQuote()]),
         entries,
-        receivedAsset,
+        receivedAsset: buildReceivedAsset(),
         validationErrorsByIndex: [noValidationErrors],
         isLoading: false,
       });
@@ -162,11 +126,11 @@ describe('buildResults', () => {
     });
 
     it('sets hasHighPriceImpactWarning when isPriceImpactWarning is true', () => {
-      const entries = [buildEntry(ASSET_ID_A)];
+      const entries = [buildSendAssetEntry({ assetId: ASSET_ID_A })];
       const result = buildResults({
-        controllerResult: buildControllerResult([buildRecommendedQuote()]),
+        controllerResult: buildBatchSellControllerResult([buildRecommendedQuote()]),
         entries,
-        receivedAsset,
+        receivedAsset: buildReceivedAsset(),
         validationErrorsByIndex: [
           { ...noValidationErrors, isPriceImpactWarning: true },
         ],
@@ -177,11 +141,11 @@ describe('buildResults', () => {
     });
 
     it('sets hasHighPriceImpactWarning when isPriceImpactError is true', () => {
-      const entries = [buildEntry(ASSET_ID_A)];
+      const entries = [buildSendAssetEntry({ assetId: ASSET_ID_A })];
       const result = buildResults({
-        controllerResult: buildControllerResult([buildRecommendedQuote()]),
+        controllerResult: buildBatchSellControllerResult([buildRecommendedQuote()]),
         entries,
-        receivedAsset,
+        receivedAsset: buildReceivedAsset(),
         validationErrorsByIndex: [
           { ...noValidationErrors, isPriceImpactError: true },
         ],
@@ -192,11 +156,11 @@ describe('buildResults', () => {
     });
 
     it('sets hasHighPriceImpactWarning to false when no price-impact flags are set', () => {
-      const entries = [buildEntry(ASSET_ID_A)];
+      const entries = [buildSendAssetEntry({ assetId: ASSET_ID_A })];
       const result = buildResults({
-        controllerResult: buildControllerResult([buildRecommendedQuote()]),
+        controllerResult: buildBatchSellControllerResult([buildRecommendedQuote()]),
         entries,
-        receivedAsset,
+        receivedAsset: buildReceivedAsset(),
         validationErrorsByIndex: [noValidationErrors],
         isLoading: false,
       });
@@ -207,11 +171,11 @@ describe('buildResults', () => {
 
   describe('totals', () => {
     it('returns undefined totals when no enabled entries have quotes', () => {
-      const entries = [buildEntry(ASSET_ID_A, { enabled: true })];
+      const entries = [buildSendAssetEntry({ assetId: ASSET_ID_A, enabled: true })];
       const result = buildResults({
-        controllerResult: buildControllerResult([]),
+        controllerResult: buildBatchSellControllerResult([]),
         entries,
-        receivedAsset,
+        receivedAsset: buildReceivedAsset(),
         validationErrorsByIndex: [noValidationErrors],
         isLoading: false,
       });
@@ -222,7 +186,10 @@ describe('buildResults', () => {
     });
 
     it('sums totals across all enabled quotes', () => {
-      const entries = [buildEntry(ASSET_ID_A), buildEntry(ASSET_ID_B)];
+      const entries = [
+        buildSendAssetEntry({ assetId: ASSET_ID_A }),
+        buildSendAssetEntry({ assetId: ASSET_ID_B }),
+      ];
       const quotes = [
         buildRecommendedQuote({
           toTokenAmount: { amount: 10, valueInCurrency: 100 },
@@ -234,9 +201,9 @@ describe('buildResults', () => {
         }),
       ];
       const result = buildResults({
-        controllerResult: buildControllerResult(quotes),
+        controllerResult: buildBatchSellControllerResult(quotes),
         entries,
-        receivedAsset,
+        receivedAsset: buildReceivedAsset(),
         validationErrorsByIndex: [noValidationErrors, noValidationErrors],
         isLoading: false,
       });
@@ -248,8 +215,8 @@ describe('buildResults', () => {
 
     it('excludes disabled entries from the totals', () => {
       const entries = [
-        buildEntry(ASSET_ID_A, { enabled: true }),
-        buildEntry(ASSET_ID_B, { enabled: false }),
+        buildSendAssetEntry({ assetId: ASSET_ID_A, enabled: true }),
+        buildSendAssetEntry({ assetId: ASSET_ID_B, enabled: false }),
       ];
       const quotes = [
         buildRecommendedQuote({
@@ -262,9 +229,9 @@ describe('buildResults', () => {
         }),
       ];
       const result = buildResults({
-        controllerResult: buildControllerResult(quotes),
+        controllerResult: buildBatchSellControllerResult(quotes),
         entries,
-        receivedAsset,
+        receivedAsset: buildReceivedAsset(),
         validationErrorsByIndex: [noValidationErrors, noValidationErrors],
         isLoading: false,
       });
@@ -277,8 +244,9 @@ describe('buildResults', () => {
 
   describe('top-level shape', () => {
     it('passes receivedAsset through unchanged', () => {
+      const receivedAsset = buildReceivedAsset();
       const result = buildResults({
-        controllerResult: buildControllerResult([]),
+        controllerResult: buildBatchSellControllerResult([]),
         entries: [],
         receivedAsset,
         validationErrorsByIndex: [],
@@ -289,14 +257,17 @@ describe('buildResults', () => {
     });
 
     it('returns an entry in quotes for every entry in the input', () => {
-      const entries = [buildEntry(ASSET_ID_A), buildEntry(ASSET_ID_B)];
+      const entries = [
+        buildSendAssetEntry({ assetId: ASSET_ID_A }),
+        buildSendAssetEntry({ assetId: ASSET_ID_B }),
+      ];
       const result = buildResults({
-        controllerResult: buildControllerResult([
+        controllerResult: buildBatchSellControllerResult([
           buildRecommendedQuote(),
           buildRecommendedQuote(),
         ]),
         entries,
-        receivedAsset,
+        receivedAsset: buildReceivedAsset(),
         validationErrorsByIndex: [noValidationErrors, noValidationErrors],
         isLoading: false,
       });

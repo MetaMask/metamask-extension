@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import type { CaipAssetType } from '@metamask/utils';
 import type { BatchSellQuotesConfig } from '../types';
+import { buildBatchSellAsset } from '../../../../../../test/data/batch-sell';
 import { QuotesList } from './quotes-list';
 
 jest.mock('./quotes-list-item', () => ({
@@ -26,29 +27,13 @@ const ASSET_B = 'eip155:1/erc20:0xBBB' as CaipAssetType;
 function makeSendAssetsConfig(): BatchSellQuotesConfig['sendAssetsConfig'] {
   return {
     [ASSET_A]: {
-      asset: {
-        assetId: ASSET_A,
-        symbol: 'AAA',
-        name: 'Token A',
-        chainId: 'eip155:1',
-        balance: '1',
-        decimals: 18,
-        iconUrl: '',
-      } as never,
+      asset: buildBatchSellAsset({ assetId: ASSET_A, symbol: 'AAA', name: 'Token A', balance: '1' }) as never,
       sendAmountPercent: 50,
       slippagePercent: 0.5,
       enabled: true,
     },
     [ASSET_B]: {
-      asset: {
-        assetId: ASSET_B,
-        symbol: 'BBB',
-        name: 'Token B',
-        chainId: 'eip155:1',
-        balance: '1',
-        decimals: 18,
-        iconUrl: '',
-      } as never,
+      asset: buildBatchSellAsset({ assetId: ASSET_B, symbol: 'BBB', name: 'Token B', balance: '1' }) as never,
       sendAmountPercent: 75,
       slippagePercent: 2,
       enabled: false,

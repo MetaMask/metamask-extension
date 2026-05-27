@@ -1,33 +1,27 @@
 import { CaipAssetType } from '@metamask/utils';
 import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
 import { ReceivedAsset } from '../types';
+import { buildReceivedAsset } from '../../../../../../test/data/batch-sell';
 import {
   buildQuoteRequestContext,
   computeUsdAmountSource,
 } from './buildQuoteRequestContext';
 
-const buildAsset = (
-  overrides: Partial<BatchSellAsset> = {},
-): BatchSellAsset => ({
-  assetId:
-    'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' as CaipAssetType,
-  symbol: 'USDC',
-  name: 'USD Coin',
-  decimals: 6,
-  address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-  chainId: 1,
-  balance: '1000',
-  tokenFiatPrice: 1,
-  ...overrides,
-});
-
-const buildReceivedAsset = (
-  overrides: Partial<ReceivedAsset> = {},
-): ReceivedAsset => ({
-  id: 'eip155:1/slip44:60' as CaipAssetType,
-  symbol: 'ETH',
-  ...overrides,
-});
+// This local buildAsset uses address + numeric chainId as required by
+// buildQuoteRequestContext internals and differs from the shared factory.
+const buildAsset = (overrides: Record<string, unknown> = {}): BatchSellAsset =>
+  ({
+    assetId:
+      'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' as CaipAssetType,
+    symbol: 'USDC',
+    name: 'USD Coin',
+    decimals: 6,
+    address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+    chainId: 1,
+    balance: '1000',
+    tokenFiatPrice: 1,
+    ...overrides,
+  }) as unknown as BatchSellAsset;
 
 describe('computeUsdAmountSource', () => {
   it('returns 0 when balance is missing', () => {
@@ -166,7 +160,7 @@ describe('buildQuoteRequestContext', () => {
     const result = buildQuoteRequestContext({
       sourceAsset: buildAsset(),
       receivedAsset: buildReceivedAsset({
-        securityData: { type: 'VERIFIED' } as ReceivedAsset['securityData'],
+        securityData: { type: 'VERIFIED' } as unknown as ReceivedAsset['securityData'],
       }),
       sendAmountPercent: 100,
       smartTransactionsEnabled: false,

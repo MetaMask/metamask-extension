@@ -1,38 +1,22 @@
-import { CaipAssetType, CaipChainId } from '@metamask/utils';
-import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
-import { SendAssetEntry } from '../types';
+import { CaipChainId } from '@metamask/utils';
+import {
+  BATCH_SELL_ASSET_IDS,
+  BATCH_SELL_CHAIN_ID,
+  buildBatchSellAsset,
+  buildSendAssetEntry,
+} from '../../../../../../test/data/batch-sell';
 import {
   buildSrcTokenAmountSmallestUnit,
   buildQuoteRequestForEntry,
 } from './buildQuoteRequest';
 
-const CHAIN_ID = 'eip155:1' as CaipChainId;
-const ASSET_ID =
-  'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' as CaipAssetType;
-const DEST_ASSET_ID = 'eip155:1/slip44:60';
+const CHAIN_ID = BATCH_SELL_CHAIN_ID as unknown as CaipChainId;
+const ASSET_ID = BATCH_SELL_ASSET_IDS.USDC;
+const DEST_ASSET_ID = BATCH_SELL_ASSET_IDS.ETH_NATIVE;
 const WALLET_ADDRESS = '0xWalletAddress';
 
-const buildAsset = (overrides: Partial<BatchSellAsset> = {}): BatchSellAsset =>
-  ({
-    assetId: ASSET_ID,
-    symbol: 'USDC',
-    name: 'USD Coin',
-    decimals: 6,
-    chainId: CHAIN_ID,
-    balance: '100',
-    ...overrides,
-  }) as BatchSellAsset;
-
-const buildEntry = (
-  overrides: Partial<SendAssetEntry> = {},
-): SendAssetEntry => ({
-  assetId: ASSET_ID,
-  asset: buildAsset(),
-  sendAmountPercent: 100,
-  slippagePercent: 0.5,
-  enabled: true,
-  ...overrides,
-});
+const buildAsset = buildBatchSellAsset;
+const buildEntry = buildSendAssetEntry;
 
 describe('buildSrcTokenAmountSmallestUnit', () => {
   it('returns undefined when balance is missing', () => {

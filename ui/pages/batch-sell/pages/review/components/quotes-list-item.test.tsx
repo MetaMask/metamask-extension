@@ -2,8 +2,11 @@ import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import type { CaipAssetType } from '@metamask/utils';
-import type { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
 import type { BatchSellQuotesResults } from '../types';
+import {
+  buildBatchSellAsset,
+  seedCurrencyLocaleSelectors,
+} from '../../../../../../test/data/batch-sell';
 import { QuotesListItem } from './quotes-list-item';
 
 jest.mock('../../../../../hooks/useI18nContext', () => ({
@@ -52,27 +55,10 @@ jest.mock('react-redux', () => ({
 
 const mockUseSelector = jest.mocked(useSelector);
 
-function seedSelectors() {
-  mockUseSelector.mockReset();
-  // The component calls useSelector twice: getCurrentCurrency, getIntlLocale
-  mockUseSelector
-    .mockReturnValueOnce('USD' as never)
-    .mockReturnValueOnce('en-US' as never);
-}
-
 const ASSET_ID = 'eip155:1/erc20:0xAAA' as CaipAssetType;
 
-const makeAsset = (overrides: Partial<BatchSellAsset> = {}): BatchSellAsset =>
-  ({
-    assetId: ASSET_ID,
-    symbol: 'AAA',
-    name: 'Token A',
-    chainId: 'eip155:1',
-    balance: '10',
-    decimals: 18,
-    iconUrl: '',
-    ...overrides,
-  }) as BatchSellAsset;
+const makeAsset = (overrides = {}) =>
+  buildBatchSellAsset({ assetId: ASSET_ID, symbol: 'AAA', name: 'Token A', balance: '10', ...overrides });
 
 const makeQuote = (
   overrides: Partial<BatchSellQuotesResults['quotes'][CaipAssetType]> = {},
@@ -98,7 +84,7 @@ const defaultProps = {
 
 describe('QuotesListItem', () => {
   beforeEach(() => {
-    seedSelectors();
+    seedCurrencyLocaleSelectors(mockUseSelector);
   });
 
   it('renders the formatted fiat amount when quote is available', () => {
@@ -131,7 +117,7 @@ describe('QuotesListItem', () => {
   });
 
   it('handles assets with no balance by treating it as 0', () => {
-    seedSelectors();
+    seedCurrencyLocaleSelectors(mockUseSelector);
     render(
       <QuotesListItem
         {...defaultProps}
@@ -145,7 +131,7 @@ describe('QuotesListItem', () => {
   });
 
   it('renders the noQuoteAvailable text when quote is settled but has no quote', () => {
-    seedSelectors();
+    seedCurrencyLocaleSelectors(mockUseSelector);
     render(
       <QuotesListItem
         {...defaultProps}
@@ -157,14 +143,14 @@ describe('QuotesListItem', () => {
   });
 
   it('renders the noQuoteAvailable text when the asset is disabled', () => {
-    seedSelectors();
+    seedCurrencyLocaleSelectors(mockUseSelector);
     render(<QuotesListItem {...defaultProps} enabled={false} />);
 
     expect(screen.getByText('noQuoteAvailable')).toBeInTheDocument();
   });
 
   it('renders the high price impact warning tag when flagged', () => {
-    seedSelectors();
+    seedCurrencyLocaleSelectors(mockUseSelector);
     render(
       <QuotesListItem
         {...defaultProps}
@@ -176,14 +162,14 @@ describe('QuotesListItem', () => {
   });
 
   it('does not render the high price impact warning when not flagged', () => {
-    seedSelectors();
+    seedCurrencyLocaleSelectors(mockUseSelector);
     render(<QuotesListItem {...defaultProps} />);
 
     expect(screen.queryByText('bridgePriceImpactHigh')).not.toBeInTheDocument();
   });
 
   it('renders the selected native amount with send percent', () => {
-    seedSelectors();
+    seedCurrencyLocaleSelectors(mockUseSelector);
     render(
       <QuotesListItem
         {...defaultProps}
@@ -197,7 +183,7 @@ describe('QuotesListItem', () => {
   });
 
   it('calls onSlippagePercentChangeClick with the asset when the slippage button is clicked', () => {
-    seedSelectors();
+    seedCurrencyLocaleSelectors(mockUseSelector);
     const onSlippagePercentChangeClick = jest.fn();
     const asset = makeAsset();
 
@@ -215,7 +201,7 @@ describe('QuotesListItem', () => {
   });
 
   it('calls onAssetDeleteClick with the asset when the delete button is clicked', () => {
-    seedSelectors();
+    seedCurrencyLocaleSelectors(mockUseSelector);
     const onAssetDeleteClick = jest.fn();
     const asset = makeAsset();
 
@@ -233,14 +219,14 @@ describe('QuotesListItem', () => {
   });
 
   it('disables the delete button when canDeleteAssets is false', () => {
-    seedSelectors();
+    seedCurrencyLocaleSelectors(mockUseSelector);
     render(<QuotesListItem {...defaultProps} canDeleteAssets={false} />);
 
     expect(screen.getByRole('button', { name: 'delete' })).toBeDisabled();
   });
 
   it('forwards slider changes to onSendAmountPercentChange with the asset', () => {
-    seedSelectors();
+    seedCurrencyLocaleSelectors(mockUseSelector);
     const onSendAmountPercentChange = jest.fn();
     const asset = makeAsset();
 
@@ -260,7 +246,7 @@ describe('QuotesListItem', () => {
   });
 
   it('handles array value from slider by picking the first element', () => {
-    seedSelectors();
+    seedCurrencyLocaleSelectors(mockUseSelector);
     const onSendAmountPercentChange = jest.fn();
     const asset = makeAsset();
 

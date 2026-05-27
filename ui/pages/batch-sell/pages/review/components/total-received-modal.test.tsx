@@ -2,6 +2,7 @@ import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import type { CaipAssetType } from '@metamask/utils';
 import type { BatchSellQuotesConfig, BatchSellQuotesResults } from '../types';
+import { buildBatchSellAsset } from '../../../../../../test/data/batch-sell';
 import { TotalReceivedModal } from './total-received-modal';
 
 jest.mock('../../../../../hooks/useI18nContext', () => ({
@@ -44,15 +45,7 @@ const ASSET_A = 'eip155:1/erc20:0xAAA' as CaipAssetType;
 
 const sendAssetsConfig: BatchSellQuotesConfig['sendAssetsConfig'] = {
   [ASSET_A]: {
-    asset: {
-      assetId: ASSET_A,
-      symbol: 'AAA',
-      name: 'Token A',
-      chainId: 'eip155:1',
-      balance: '1',
-      decimals: 18,
-      iconUrl: '',
-    } as never,
+    asset: buildBatchSellAsset({ assetId: ASSET_A, symbol: 'AAA', name: 'Token A', balance: '1' }) as never,
     sendAmountPercent: 100,
     slippagePercent: 0.5,
     enabled: true,

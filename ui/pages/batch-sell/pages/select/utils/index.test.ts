@@ -1,18 +1,11 @@
 import { CaipAssetType, CaipChainId } from '@metamask/utils';
-import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
+import { buildBatchSellAsset } from '../../../../../../test/data/batch-sell';
 import { getSourceTokenAddress } from '.';
 
 const EVM_NATIVE_ASSET_ADDRESS = '0x0000000000000000000000000000000000000000';
 
-const buildAsset = (overrides: Partial<BatchSellAsset> = {}): BatchSellAsset =>
-  ({
-    symbol: 'TOKEN',
-    name: 'Token',
-    decimals: 18,
-    address: '0xTokenAddress',
-    chainId: 'eip155:1' as CaipChainId,
-    ...overrides,
-  }) as BatchSellAsset;
+const buildAsset = (overrides: Record<string, unknown> = {}) =>
+  buildBatchSellAsset({ symbol: 'TOKEN', name: 'Token', ...overrides });
 
 describe('getSourceTokenAddress', () => {
   describe('native assets', () => {

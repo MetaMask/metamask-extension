@@ -5,7 +5,11 @@ import {
   getAvailableBatchSellReceiveAssetsForNetwork,
   getAvailableBatchSellSwapAssetsForNetwork,
 } from '../../../../../ducks/batch-sell/selectors';
-import type { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
+import {
+  buildBatchSellAsset,
+  BATCH_SELL_CHAIN_ID,
+  mockUseSelectorPassthrough,
+} from '../../../../../../test/data/batch-sell';
 import { useBatchSellQuotesConfig } from './useBatchSellQuotesConfig';
 
 // Overridden per test via mockLocationState
@@ -35,23 +39,20 @@ const mockGetSwapAssets = jest.mocked(
   getAvailableBatchSellSwapAssetsForNetwork,
 );
 
-const ETH_CHAIN_ID = 'eip155:1' as CaipChainId;
+const ETH_CHAIN_ID = BATCH_SELL_CHAIN_ID as unknown as CaipChainId;
 const ASSET_A_ID = 'eip155:1/erc20:0xaaa' as CaipAssetType;
 const ASSET_B_ID = 'eip155:1/erc20:0xbbb' as CaipAssetType;
 const ASSET_C_ID = 'eip155:1/erc20:0xccc' as CaipAssetType;
 const RECEIVE_ASSET_A_ID = 'eip155:1/erc20:0xusdc' as CaipAssetType;
 const RECEIVE_ASSET_B_ID = 'eip155:1/erc20:0xdai' as CaipAssetType;
 
-const makeSwapAsset = (assetId: CaipAssetType): BatchSellAsset =>
-  ({
+const makeSwapAsset = (assetId: CaipAssetType) =>
+  buildBatchSellAsset({
     assetId,
     chainId: ETH_CHAIN_ID,
     symbol: assetId.slice(-3).toUpperCase(),
     name: `Token ${assetId.slice(-3)}`,
-    decimals: 18,
-    balance: '100',
-    iconUrl: '',
-  }) as never;
+  });
 
 const MOCK_RECEIVED_ASSET_RAW_A = {
   assetId: RECEIVE_ASSET_A_ID,
@@ -93,9 +94,7 @@ describe('useBatchSellQuotesConfig', () => {
       makeSwapAsset(ASSET_B_ID),
     ] as never);
 
-    mockUseSelector.mockImplementation(
-      (selectorFn: (state: unknown) => unknown) => selectorFn({}),
-    );
+    mockUseSelectorPassthrough(mockUseSelector);
   });
 
   afterEach(() => {

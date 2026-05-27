@@ -2,6 +2,7 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import type { CaipChainId, CaipAssetType } from '@metamask/utils';
 import * as useBridgingModule from '../../../../hooks/bridge/useBridging';
+import { buildBatchSellAsset } from '../../../../../test/data/batch-sell';
 import { BatchSellSelectPage } from '.';
 
 const CHAIN_ID = 'eip155:1' as CaipChainId;
@@ -12,17 +13,8 @@ const ERC20_ASSET_ID = `eip155:1/erc20:${ERC20_TOKEN_ADDRESS}` as CaipAssetType;
 const STABLECOIN_ASSET_ID =
   'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' as CaipAssetType;
 
-const makeAsset = (overrides: Record<string, unknown> = {}) => ({
-  assetId: NATIVE_ASSET_ID,
-  name: 'Ether',
-  symbol: 'ETH',
-  iconUrl: '',
-  balance: '1.0',
-  decimals: 18,
-  tokenFiatAmount: 2000,
-  chainId: CHAIN_ID,
-  ...overrides,
-});
+const makeAsset = (overrides: Record<string, unknown> = {}) =>
+  buildBatchSellAsset({ assetId: NATIVE_ASSET_ID, name: 'Ether', symbol: 'ETH', iconUrl: '', balance: '1.0', tokenFiatAmount: 2000, chainId: CHAIN_ID, ...overrides });
 
 // State controlled per-test. Both objects are prefixed with `mock` so they
 // can be referenced from inside `jest.mock(..)` factories (which only permit

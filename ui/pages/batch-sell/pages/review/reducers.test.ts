@@ -1,41 +1,23 @@
-import { CaipAssetType } from '@metamask/utils';
-import { BatchSellAsset } from '../../../../ducks/batch-sell/types';
+import {
+  BATCH_SELL_ASSET_IDS,
+  buildReceivedAsset,
+  buildSendAssetConfigEntry,
+} from '../../../../../test/data/batch-sell';
 import { batchSellReviewStateReducer } from './reducers';
 import {
   BatchSellReviewState,
   BatchSellReviewStateActionType,
-  ReceivedAsset,
 } from './types';
 
-const ASSET_ID_A =
-  'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' as CaipAssetType;
-const ASSET_ID_B =
-  'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F' as CaipAssetType;
-
-const buildReceivedAsset = (
-  overrides: Partial<ReceivedAsset> = {},
-): ReceivedAsset => ({
-  id: 'eip155:1/slip44:60' as CaipAssetType,
-  symbol: 'ETH',
-  ...overrides,
-});
+const ASSET_ID_A = BATCH_SELL_ASSET_IDS.USDC;
+const ASSET_ID_B = BATCH_SELL_ASSET_IDS.DAI;
 
 const buildState = (
   overrides: Partial<BatchSellReviewState> = {},
 ): BatchSellReviewState => ({
   sendAssetsConfig: {
-    [ASSET_ID_A]: {
-      asset: {} as BatchSellAsset,
-      sendAmountPercent: 100,
-      slippagePercent: 0.5,
-      enabled: true,
-    },
-    [ASSET_ID_B]: {
-      asset: {} as BatchSellAsset,
-      sendAmountPercent: 50,
-      slippagePercent: 1,
-      enabled: false,
-    },
+    [ASSET_ID_A]: buildSendAssetConfigEntry(true, { sendAmountPercent: 100, slippagePercent: 0.5 }),
+    [ASSET_ID_B]: buildSendAssetConfigEntry(false, { sendAmountPercent: 50, slippagePercent: 1 }),
   },
   selectedReceiveAsset: buildReceivedAsset(),
   editingSlippageAssetId: null,

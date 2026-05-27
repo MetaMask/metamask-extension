@@ -18,7 +18,12 @@ import { buildResults } from '../utils/buildResults';
 import { buildQuoteRequestForEntry } from '../utils/buildQuoteRequest';
 import { buildQuoteRequestContext } from '../utils/buildQuoteRequestContext';
 import type { BatchSellQuotesConfig } from '../types';
-import type { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
+import {
+  noValidationErrors,
+  buildBatchSellAsset,
+  mockUseSelectorPassthrough,
+  BATCH_SELL_CHAIN_ID,
+} from '../../../../../../test/data/batch-sell';
 import { useBatchSellQuotesFetching } from './useBatchSellQuotesFetching';
 
 jest.mock('react-redux', () => ({
@@ -77,7 +82,7 @@ const mockBuildResults = jest.mocked(buildResults);
 const mockBuildQuoteRequestForEntry = jest.mocked(buildQuoteRequestForEntry);
 const mockBuildQuoteRequestContext = jest.mocked(buildQuoteRequestContext);
 
-const ETH_CHAIN_ID = 'eip155:1';
+const ETH_CHAIN_ID = BATCH_SELL_CHAIN_ID;
 const ASSET_A_ID = 'eip155:1/erc20:0xaaa' as CaipAssetType;
 const ASSET_B_ID = 'eip155:1/erc20:0xbbb' as CaipAssetType;
 const RECEIVE_ASSET_ID = 'eip155:1/erc20:0xusdc' as CaipAssetType;
@@ -101,17 +106,6 @@ const MOCK_CONTROLLER_RESULT_FETCHED = {
   quotesLastFetchedMs: 1234567890,
 };
 
-const MOCK_NO_VALIDATION_ERRORS = {
-  isInsufficientGasBalance: false,
-  isInsufficientNativeReserve: false,
-  isNetworkFeeUnavailable: false,
-  isInsufficientGasForQuote: false,
-  isInsufficientBalance: false,
-  isEstimatedReturnLow: false,
-  isPriceImpactWarning: false,
-  isPriceImpactError: false,
-};
-
 const MOCK_BUILD_RESULT = {
   quotes: {},
   receivedAsset: { id: RECEIVE_ASSET_ID, symbol: 'USDC' },
@@ -120,16 +114,8 @@ const MOCK_BUILD_RESULT = {
 const MOCK_PARAMS = { srcChainId: 'eip155:1' } as never;
 const MOCK_CONTEXT = { slippage: 0.5 } as never;
 
-function makeAsset(assetId: CaipAssetType): BatchSellAsset {
-  return {
-    assetId,
-    chainId: ETH_CHAIN_ID,
-    symbol: 'TKN',
-    name: 'Token',
-    decimals: 18,
-    balance: '100',
-    iconUrl: '',
-  } as never;
+function makeAsset(assetId: CaipAssetType) {
+  return buildBatchSellAsset({ assetId, chainId: ETH_CHAIN_ID, symbol: 'TKN', name: 'Token' });
 }
 
 const sendAssetsConfig: BatchSellQuotesConfig['sendAssetsConfig'] = {
@@ -179,15 +165,13 @@ describe('useBatchSellQuotesFetching', () => {
       MOCK_CONTROLLER_RESULT_NOT_FETCHED as never,
     );
     mockGetBatchSellQuotesValidationErrors.mockReturnValue([
-      MOCK_NO_VALIDATION_ERRORS,
-      MOCK_NO_VALIDATION_ERRORS,
+      noValidationErrors,
+      noValidationErrors,
     ] as never);
 
     // useSelector calls the inline selector with an empty state object.
     // Each inline selector calls the appropriate mocked batch-sell selector.
-    mockUseSelector.mockImplementation(
-      (selectorFn: (state: unknown) => unknown) => selectorFn({}),
-    );
+    mockUseSelectorPassthrough(mockUseSelector);
 
     mockBuildResults.mockReturnValue(MOCK_BUILD_RESULT);
     mockBuildQuoteRequestForEntry.mockReturnValue(MOCK_PARAMS);

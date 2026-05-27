@@ -1,36 +1,22 @@
-import { CaipAssetType } from '@metamask/utils';
-import { BatchSellQuotesConfig, BatchSellQuotesResults } from '../types';
+import {
+  BATCH_SELL_ASSET_IDS,
+  buildSendAssetConfigEntry,
+  buildQuoteEntry,
+} from '../../../../../../test/data/batch-sell';
+import type { BatchSellQuotesConfig, BatchSellQuotesResults } from '../types';
 import { hasAtLeastOneQuoteAvailable } from './hasAtLeastOneQuoteAvailable';
 
 type SendAssetsConfig = BatchSellQuotesConfig['sendAssetsConfig'];
-type AssetConfig = SendAssetsConfig[CaipAssetType];
 type Quotes = BatchSellQuotesResults['quotes'];
-type QuoteEntry = Quotes[CaipAssetType];
 
-const ASSET_ID_A =
-  'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' as CaipAssetType;
-const ASSET_ID_B =
-  'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F' as CaipAssetType;
-
-const buildAssetConfig = (enabled: boolean): AssetConfig => ({
-  asset: {} as AssetConfig['asset'],
-  sendAmountPercent: 100,
-  slippagePercent: 0.5,
-  enabled,
-});
-
-const buildQuoteEntry = (hasQuote: boolean): QuoteEntry => ({
-  asset: {} as QuoteEntry['asset'],
-  quote: {} as QuoteEntry['quote'],
-  hasQuote,
-  isLoadingQuote: false,
-});
+const ASSET_ID_A = BATCH_SELL_ASSET_IDS.USDC;
+const ASSET_ID_B = BATCH_SELL_ASSET_IDS.DAI;
 
 describe('hasAtLeastOneQuoteAvailable', () => {
   describe('when there are no enabled assets', () => {
     it('returns false even when a quote is available', () => {
       const sendAssetsConfig: SendAssetsConfig = {
-        [ASSET_ID_A]: buildAssetConfig(false),
+        [ASSET_ID_A]: buildSendAssetConfigEntry(false),
       };
       const quotes: Quotes = {
         [ASSET_ID_A]: buildQuoteEntry(true),
@@ -41,7 +27,7 @@ describe('hasAtLeastOneQuoteAvailable', () => {
 
     it('returns false when quotes is undefined', () => {
       const sendAssetsConfig: SendAssetsConfig = {
-        [ASSET_ID_A]: buildAssetConfig(false),
+        [ASSET_ID_A]: buildSendAssetConfigEntry(false),
       };
 
       expect(hasAtLeastOneQuoteAvailable(sendAssetsConfig, undefined)).toBe(
@@ -53,7 +39,7 @@ describe('hasAtLeastOneQuoteAvailable', () => {
   describe('when there is at least one enabled asset', () => {
     it('returns true when a quote is available for an enabled asset', () => {
       const sendAssetsConfig: SendAssetsConfig = {
-        [ASSET_ID_A]: buildAssetConfig(true),
+        [ASSET_ID_A]: buildSendAssetConfigEntry(true),
       };
       const quotes: Quotes = {
         [ASSET_ID_A]: buildQuoteEntry(true),
@@ -64,7 +50,7 @@ describe('hasAtLeastOneQuoteAvailable', () => {
 
     it('returns false when no quotes are available', () => {
       const sendAssetsConfig: SendAssetsConfig = {
-        [ASSET_ID_A]: buildAssetConfig(true),
+        [ASSET_ID_A]: buildSendAssetConfigEntry(true),
       };
       const quotes: Quotes = {
         [ASSET_ID_A]: buildQuoteEntry(false),
@@ -75,7 +61,7 @@ describe('hasAtLeastOneQuoteAvailable', () => {
 
     it('returns false when quotes is undefined', () => {
       const sendAssetsConfig: SendAssetsConfig = {
-        [ASSET_ID_A]: buildAssetConfig(true),
+        [ASSET_ID_A]: buildSendAssetConfigEntry(true),
       };
 
       expect(hasAtLeastOneQuoteAvailable(sendAssetsConfig, undefined)).toBe(
@@ -85,7 +71,7 @@ describe('hasAtLeastOneQuoteAvailable', () => {
 
     it('returns false when quotes is empty', () => {
       const sendAssetsConfig: SendAssetsConfig = {
-        [ASSET_ID_A]: buildAssetConfig(true),
+        [ASSET_ID_A]: buildSendAssetConfigEntry(true),
       };
 
       expect(hasAtLeastOneQuoteAvailable(sendAssetsConfig, {})).toBe(false);
@@ -93,8 +79,8 @@ describe('hasAtLeastOneQuoteAvailable', () => {
 
     it('returns true when at least one of multiple quotes is available', () => {
       const sendAssetsConfig: SendAssetsConfig = {
-        [ASSET_ID_A]: buildAssetConfig(true),
-        [ASSET_ID_B]: buildAssetConfig(true),
+        [ASSET_ID_A]: buildSendAssetConfigEntry(true),
+        [ASSET_ID_B]: buildSendAssetConfigEntry(true),
       };
       const quotes: Quotes = {
         [ASSET_ID_A]: buildQuoteEntry(false),
@@ -106,8 +92,8 @@ describe('hasAtLeastOneQuoteAvailable', () => {
 
     it('returns false when all quotes are unavailable', () => {
       const sendAssetsConfig: SendAssetsConfig = {
-        [ASSET_ID_A]: buildAssetConfig(true),
-        [ASSET_ID_B]: buildAssetConfig(true),
+        [ASSET_ID_A]: buildSendAssetConfigEntry(true),
+        [ASSET_ID_B]: buildSendAssetConfigEntry(true),
       };
       const quotes: Quotes = {
         [ASSET_ID_A]: buildQuoteEntry(false),
@@ -119,8 +105,8 @@ describe('hasAtLeastOneQuoteAvailable', () => {
 
     it('returns true when a quote is available even if another asset is disabled', () => {
       const sendAssetsConfig: SendAssetsConfig = {
-        [ASSET_ID_A]: buildAssetConfig(true),
-        [ASSET_ID_B]: buildAssetConfig(false),
+        [ASSET_ID_A]: buildSendAssetConfigEntry(true),
+        [ASSET_ID_B]: buildSendAssetConfigEntry(false),
       };
       const quotes: Quotes = {
         [ASSET_ID_A]: buildQuoteEntry(true),

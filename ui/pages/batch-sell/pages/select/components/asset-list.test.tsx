@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import type { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
+import { buildBatchSellAsset } from '../../../../../../test/data/batch-sell';
 import { AssetList } from './asset-list';
 
 // Stub AssetListItem so AssetList tests don't need Redux
@@ -25,15 +26,8 @@ jest.mock('./asset-list-item', () => ({
   ),
 }));
 
-const makeAsset = (symbol: string): BatchSellAsset => ({
-  assetId: `eip155:1/erc20:0x${symbol}`,
-  name: symbol,
-  symbol,
-  iconUrl: '',
-  balance: '1',
-  decimals: 18,
-  chainId: 'eip155:1',
-});
+const makeAsset = (symbol: string): BatchSellAsset =>
+  buildBatchSellAsset({ assetId: `eip155:1/erc20:0x${symbol}`, name: symbol, symbol, iconUrl: '', balance: '1' });
 
 const ETH = makeAsset('ETH');
 const USDC = makeAsset('USDC');

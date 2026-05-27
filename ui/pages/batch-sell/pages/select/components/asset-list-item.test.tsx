@@ -1,7 +1,10 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { useSelector } from 'react-redux';
-import type { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
+import {
+  buildBatchSellAsset,
+  seedCurrencyLocaleSelectors,
+} from '../../../../../../test/data/batch-sell';
 import { AssetListItem } from './asset-list-item';
 
 // Provide stub selectors that simply read from whatever state object is passed.
@@ -22,33 +25,19 @@ jest.mock('react-redux', () => ({
 
 const mockUseSelector = jest.mocked(useSelector);
 
-// AssetListItem calls useSelector twice:
-// 1st call → getCurrentCurrency → currency string (e.g. "USD")
-// 2nd call → getIntlLocale      → locale string  (e.g. "en-US")
-// Reset the mock before each render helper call so the order is always fresh.
-function seedSelectors(currency = 'USD', locale = 'en-US') {
-  mockUseSelector.mockReset();
-  mockUseSelector
-    .mockReturnValueOnce(currency as never)
-    .mockReturnValueOnce(locale as never);
-}
-
-const makeAsset = (
-  overrides: Partial<BatchSellAsset> = {},
-): BatchSellAsset => ({
-  assetId: 'eip155:1/erc20:0xToken',
-  name: 'Ether',
-  symbol: 'ETH',
-  iconUrl: 'https://example.com/eth.png',
-  balance: '1.5',
-  decimals: 18,
-  chainId: 'eip155:1',
-  ...overrides,
-});
+const makeAsset = (overrides = {}) =>
+  buildBatchSellAsset({
+    assetId: 'eip155:1/erc20:0xToken',
+    name: 'Ether',
+    symbol: 'ETH',
+    iconUrl: 'https://example.com/eth.png',
+    balance: '1.5',
+    ...overrides,
+  });
 
 describe('AssetListItem', () => {
   beforeEach(() => {
-    seedSelectors();
+    seedCurrencyLocaleSelectors(mockUseSelector);
   });
 
   it('renders the item container with the correct test id', () => {

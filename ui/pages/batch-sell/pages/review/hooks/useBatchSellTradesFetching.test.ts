@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import type { CaipAssetType } from '@metamask/utils';
 import { updateBatchSellTrades } from '../../../../../ducks/bridge/actions';
 import type { SendAssetEntry } from '../types';
-import type { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
+import { buildBatchSellAsset } from '../../../../../../test/data/batch-sell';
 import { useBatchSellTradesFetching } from './useBatchSellTradesFetching';
 
 jest.mock('react-redux', () => ({
@@ -36,7 +36,7 @@ const MOCK_QUOTE_B = { requestId: 'req-b' } as never;
 function makeEntry(assetId: CaipAssetType, enabled = true): SendAssetEntry {
   return {
     assetId,
-    asset: { assetId } as BatchSellAsset,
+    asset: buildBatchSellAsset({ assetId }),
     sendAmountPercent: 100,
     slippagePercent: 0.5,
     enabled,
