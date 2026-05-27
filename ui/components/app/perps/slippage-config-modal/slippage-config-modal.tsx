@@ -245,5 +245,3 @@ export const SlippageConfigModal: React.FC<SlippageConfigModalProps> = ({
     </Modal>
   );
 };
-
-export default SlippageConfigModal;
