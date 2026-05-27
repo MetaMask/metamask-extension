@@ -1,0 +1,18 @@
+{
+  "name": "@gridplus/types",
+  "version": "1.0.0-local",
+  "type": "module",
+  "description": "Shared GridPlus protocol constants used by the local keyring package",
+  "main": "./index.cjs",
+  "module": "./index.mjs",
+  "types": "./index.d.cts",
+  "exports": {
+    ".": {
+      "types": "./index.d.cts",
+      "import": "./index.mjs",
+      "require": "./index.cjs",
+      "default": "./index.mjs"
+    }
+  },
+  "license": "MIT"
+}

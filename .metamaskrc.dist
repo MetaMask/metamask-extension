@@ -44,6 +44,8 @@ INFURA_STORYBOOK_PROJECT_ID=
 ;ANALYTICS_DATA_DELETION_ENDPOINT=
 ;SWAPS_USE_DEV_APIS=
 ;PORTFOLIO_URL=
+;GRIDPLUS_CONNECT_PAGE_URL=https://app.gridplus.io/connect
+;GRIDPLUS_CONNECT_API_URL=https://api.gridplus.io
 ;TRANSACTION_SECURITY_PROVIDER=
 
 ; Set this to test changes to the phishing warning page.

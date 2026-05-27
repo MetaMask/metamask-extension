@@ -945,9 +945,9 @@ function setupBundlerDefaults(
             './**/node_modules/@firebase',
             './**/node_modules/marked',
             './**/node_modules/@solana',
-            // Lattice hardware wallet deps (gridplus-sdk@4 pulls in modern syntax, e.g. `??=` in viem)
-            './**/node_modules/eth-lattice-keyring',
-            './**/node_modules/gridplus-sdk',
+            // GridPlus hardware wallet deps
+            './**/node_modules/@gridplus/keyring',
+            './**/node_modules/@gridplus/types',
             './**/node_modules/viem',
             './**/node_modules/ox',
             './**/node_modules/uuid',

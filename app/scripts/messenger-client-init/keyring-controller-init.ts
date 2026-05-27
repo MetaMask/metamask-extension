@@ -4,7 +4,6 @@ import {
 } from '@metamask/keyring-controller';
 import { QrKeyring, QrKeyringScannerBridge } from '@metamask/eth-qr-keyring';
 import { KeyringClass } from '@metamask/keyring-utils';
-import LatticeKeyring from 'eth-lattice-keyring';
 import {
   OneKeyKeyring,
   TrezorConnectBridge,
@@ -15,6 +14,7 @@ import {
   LedgerKeyring,
 } from '@metamask/eth-ledger-bridge-keyring';
 import { hardwareKeyringBuilderFactory } from '../lib/hardware-keyring-builder-factory';
+import { GridPlusKeyringMV2 } from '../lib/gridplus-keyring-mv2';
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
 import { qrKeyringBuilderFactory } from '../lib/qr-keyring-builder-factory';
 import { encryptorFactory } from '../lib/encryptor-factory';
@@ -69,7 +69,7 @@ export const KeyringControllerInit: MessengerClientInitFunction<
     additionalKeyrings.push(
       keyringBuilderFactory(
         keyringOverrides?.lattice ||
-          (LatticeKeyring as unknown as KeyringClass),
+          (GridPlusKeyringMV2 as unknown as KeyringClass),
       ),
       hardwareKeyringBuilderFactory(
         TrezorKeyring as unknown as KeyringClass,
