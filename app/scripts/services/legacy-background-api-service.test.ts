@@ -1088,7 +1088,6 @@ function getMessenger(
     actions: [
       'NetworkController:getState',
       'NetworkController:getNetworkClientById',
-      'KeyringController:getAccounts',
       'RemoteFeatureFlagController:getState',
       'CurrencyRateController:setCurrentCurrency',
       'AssetsController:setSelectedCurrency',

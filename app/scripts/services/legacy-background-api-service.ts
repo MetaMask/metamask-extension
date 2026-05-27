@@ -11,7 +11,6 @@ import {
   AccountImportStrategy,
   KeyringControllerAddNewKeyringAction,
   KeyringControllerExportSeedPhraseAction,
-  KeyringControllerGetAccountsAction,
   KeyringControllerGetKeyringsByTypeAction,
   KeyringControllerImportAccountWithStrategyAction,
   KeyringControllerRemoveAccountAction,
@@ -110,7 +109,6 @@ type AllowedActions =
   | CurrencyRateControllerSetCurrentCurrencyAction
   | KeyringControllerAddNewKeyringAction
   | KeyringControllerExportSeedPhraseAction
-  | KeyringControllerGetAccountsAction
   | KeyringControllerGetKeyringsByTypeAction
   | KeyringControllerImportAccountWithStrategyAction
   | KeyringControllerRemoveAccountAction
