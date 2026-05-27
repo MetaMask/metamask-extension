@@ -175,24 +175,8 @@ const AssetListControlBar = ({
     if (!onNetworkSelect) {
       return;
     }
-
-    if (totalEnabledNetworkCount === 1) {
-      const chainId = allEnabledNetworksForAllNamespaces[0];
-      const caipChainId = isStrictHexString(chainId)
-        ? toEvmCaipChainId(chainId)
-        : chainId;
-
-      onNetworkSelect([caipChainId]);
-      return;
-    }
-
     onNetworkSelect(selectedCaipChainIds);
-  }, [
-    allEnabledNetworksForAllNamespaces,
-    onNetworkSelect,
-    selectedCaipChainIds,
-    totalEnabledNetworkCount,
-  ]);
+  }, [onNetworkSelect, selectedCaipChainIds]);
 
   const isTestNetwork = useMemo(() => {
     return (TEST_CHAINS as string[]).includes(
