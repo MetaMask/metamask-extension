@@ -345,7 +345,7 @@ function buildSlackMessage(options: {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `*:cherries: Cherry-picks:* <${REPO_URL}/pull/${prNumber}#cherry-picks|View cherry-picks>`,
+          text: `*:cherries: What's in this RC:* <${REPO_URL}/pull/${prNumber}#whats-in-this-rc|View details>`,
         },
       },
     );

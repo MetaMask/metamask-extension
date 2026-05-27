@@ -5,9 +5,9 @@
 
 import { execFileSync } from 'child_process';
 
-const REPO_URL =
-  process.env.GITHUB_REPOSITORY_URL ||
-  'https://github.com/MetaMask/metamask-extension';
+const REPO_URL = process.env.GITHUB_REPOSITORY
+  ? `https://github.com/${process.env.GITHUB_REPOSITORY}`
+  : 'https://github.com/MetaMask/metamask-extension';
 
 type CommitInfo = {
   hash: string;

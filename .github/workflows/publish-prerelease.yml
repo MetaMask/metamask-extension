@@ -129,19 +129,12 @@ jobs:
       BUILDS_FROM_RUN: ${{ inputs.builds-from-run }}
       TEST_PLAN_VERSION: ${{ needs.generate-test-plan.outputs.test_plan_version }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
+          is-high-risk-environment: ${{ github.ref_name == 'main' || github.ref_name == 'stable' || startsWith(github.ref_name, 'release/') }}
+          skip-allow-scripts: true
           fetch-depth: 0 # Required for git log history (cherry-picks section)
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'yarn'
-
-      - name: Install dependencies
-        run: yarn install --immutable
 
       - name: Find the associated PR
         if: ${{ startsWith(env.BRANCH, 'release/') && (!env.PR_NUMBER || !env.BASE_COMMIT_HASH || !env.HEAD_COMMIT_HASH) }}
