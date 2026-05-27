@@ -198,7 +198,7 @@ export function GenericActivityCell({
 
   return (
     <div
-      className="grid grid-cols-[32px_minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 transition-transform duration-200 ease-out hover:bg-hover cursor-pointer"
+      className="grid min-h-[70px] grid-cols-[32px_minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 transition-transform duration-200 ease-out hover:bg-hover cursor-pointer"
       role="button"
       data-testid="activity-list-item"
       data-tx-status={txStatus}
