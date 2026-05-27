@@ -85,7 +85,7 @@
     "test:e2e:firefox:flask": "SELENIUM_BROWSER=firefox tsx test/e2e/run-all.mts --build-type flask",
     "test:e2e:single": "node test/e2e/run-e2e-test.js",
     "test:e2e:speculos": "SPECULOS_E2E=1 yarn env:e2e test:e2e:single test/e2e/tests/hardware-wallets/ledger/ledger-happy-unhappy-paths.spec.ts --browser=chrome",
-"speculos:up": "docker-compose -f test/e2e/speculos/docker-compose.yml up -d",
+    "speculos:up": "docker-compose -f test/e2e/speculos/docker-compose.yml up -d",
     "speculos:down": "docker-compose -f test/e2e/speculos/docker-compose.yml down",
     "speculos:logs": "docker-compose -f test/e2e/speculos/docker-compose.yml logs -f",
     "sentry:publish": "node ./development/sentry-publish.js",
