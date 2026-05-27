@@ -118,13 +118,13 @@ describe('GenericActivityCell', () => {
           chainId: 'eip155:1',
           status: 'pending',
           timestamp: 0,
+          isEarliestNonce: true,
           raw: { type: 'localTransaction', data: transactionGroup },
           data: {
             from: '0x1',
             to: '0x2',
           },
         }}
-        earliestNonceByChain={{ '0x1': 1 }}
       />,
     );
 
@@ -154,13 +154,13 @@ describe('GenericActivityCell', () => {
           chainId: 'eip155:1',
           status: 'pending',
           timestamp: 0,
+          isEarliestNonce: false,
           raw: { type: 'localTransaction', data: transactionGroup },
           data: {
             from: '0x1',
             to: '0x2',
           },
         }}
-        earliestNonceByChain={{ '0x1': 1 }}
       />,
     );
 

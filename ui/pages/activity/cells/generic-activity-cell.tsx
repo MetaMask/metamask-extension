@@ -14,7 +14,6 @@ import {
   SIGNING_PSUEDO_STATUS,
 } from '../../../components/app/transaction-status-label';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { isTransactionEarliestNonce } from '../../../hooks/useEarliestNonceByChain';
 import { ActivityListItemAvatar } from '../../../components/app/activity-list-item-avatar';
 import { ChainBadge } from '../../../components/app/chain-badge/chain-badge';
 import { StatusIcon } from '../../../components/ui/icon/status-icon';
@@ -116,12 +115,11 @@ type ActivityTransactionStatus = {
 
 function getTransactionStatus(
   data: ActivityCellProps['data'],
-  earliestNonceByChain: ActivityCellProps['earliestNonceByChain'] = {},
 ): ActivityTransactionStatus {
   const transactionGroup =
     data.raw?.type === 'localTransaction' ? data.raw.data : undefined;
-  const { primaryTransaction, nonce, initialTransaction } =
-    transactionGroup ?? {};
+  const { primaryTransaction } = transactionGroup ?? {};
+  const isEarliestNonce = data.isEarliestNonce ?? false;
 
   let txStatus: string;
   if (
@@ -141,11 +139,7 @@ function getTransactionStatus(
 
   const pendingSubtitleKey = getStatusKey(
     primaryTransaction.status,
-    isTransactionEarliestNonce(
-      nonce,
-      initialTransaction?.chainId,
-      earliestNonceByChain,
-    ),
+    isEarliestNonce,
   );
 
   if (
@@ -161,15 +155,11 @@ function getTransactionStatus(
 export function GenericActivityCell({
   data,
   onClick,
-  earliestNonceByChain = {},
 }: Readonly<ActivityCellProps>) {
   const t = useI18nContext();
   const formatTokenAmount = useFormatTokenAmount();
   const { description, title } = useGetLabel(data);
-  const { txStatus, pendingSubtitleKey } = getTransactionStatus(
-    data,
-    earliestNonceByChain,
-  );
+  const { txStatus, pendingSubtitleKey } = getTransactionStatus(data);
   const pendingStatusText = pendingSubtitleKey
     ? t(pendingSubtitleKey)
     : undefined;

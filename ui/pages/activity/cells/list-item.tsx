@@ -6,11 +6,11 @@ import type { ActivityCellProps } from './types';
 
 export function ListItem({
   data,
-  earliestNonceByChain = {},
   onClick,
 }: Readonly<ActivityCellProps>) {
   const transactionGroup =
     data.raw?.type === 'localTransaction' ? data.raw.data : undefined;
+  const isEarliestNonce = data.isEarliestNonce ?? false;
   const { setEditGasMode, onGasModalMetaId } = usePendingTransactionGasModal();
 
   if (!transactionGroup) {
@@ -18,7 +18,6 @@ export function ListItem({
       <GenericActivityCell
         data={data}
         onClick={onClick}
-        earliestNonceByChain={earliestNonceByChain}
       />
     );
   }
@@ -28,11 +27,10 @@ export function ListItem({
       <GenericActivityCell
         data={data}
         onClick={onClick}
-        earliestNonceByChain={earliestNonceByChain}
       />
       <TransactionListItemPendingActions
         transactionGroup={transactionGroup}
-        earliestNonceByChain={earliestNonceByChain}
+        isEarliestNonce={isEarliestNonce}
         setEditGasMode={setEditGasMode}
         onGasModalMetaId={onGasModalMetaId}
       />
