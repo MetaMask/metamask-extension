@@ -106,13 +106,21 @@ function getApiClient(
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.persistedState - The persisted state of the extension.
  * @param request.initMessenger - The init messenger to use for the controller.
+ * @param request.getMessengerClient - The function to get a messenger client.
  * @returns The initialized controller.
  */
 export const AssetsControllerInit: MessengerClientInitFunction<
   AssetsController,
   AssetsControllerMessenger,
   AssetsControllerInitMessenger
-> = ({ controllerMessenger, persistedState, initMessenger }) => {
+> = ({
+  controllerMessenger,
+  persistedState,
+  initMessenger,
+  getMessengerClient,
+}) => {
+  const clientController = () => getMessengerClient('ClientController');
+
   // Get token detection preference
   const tokenDetectionEnabled = safeGetTokenDetectionEnabled(initMessenger);
 
@@ -150,24 +158,23 @@ export const AssetsControllerInit: MessengerClientInitFunction<
 
   // Create the controller - it now creates all data sources internally.
   // queryApiClient is cast to the package's type to avoid duplicate @metamask/core-backend type conflicts.
-  const TWENTY_FOUR_HOURS = 1000 * 60 * 60 * 24;
   const messengerClient = new AssetsController({
     messenger: controllerMessenger,
     state: persistedState.AssetsController,
-    isEnabled: () => false,
+    isEnabled: () => clientController().state.isUiOpen,
     isBasicFunctionality,
     subscribeToBasicFunctionalityChange,
     queryApiClient: getApiClient(initMessenger),
     rpcDataSourceConfig: {
       tokenDetectionEnabled: () => tokenDetectionEnabled,
-      balanceInterval: TWENTY_FOUR_HOURS,
-      detectionInterval: TWENTY_FOUR_HOURS,
+      balanceInterval: 30_000,
+      detectionInterval: 180_000,
     },
     priceDataSourceConfig: {
-      pollInterval: TWENTY_FOUR_HOURS,
+      pollInterval: 180_000,
     },
     stakedBalanceDataSourceConfig: {
-      pollInterval: TWENTY_FOUR_HOURS,
+      pollInterval: 30_000,
       enabled: false,
     },
     trace: traceAsControllerCallback,
