@@ -8571,10 +8571,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/tron-wallet-snap@npm:@metamask-previews/tron-wallet-snap@1.25.6-preview-8b1573f":
-  version: 1.25.6-preview-8b1573f
-  resolution: "@metamask-previews/tron-wallet-snap@npm:1.25.6-preview-8b1573f"
-  checksum: 10/9a0db25266045a19f320bb7d02441b37837721c6956a5dc1b199410a8d05459f5a6636da5014a184d2bd920df536cad990960a6742ad65ae741297e658cc3659
+"@metamask/tron-wallet-snap@npm:@metamask-previews/tron-wallet-snap@1.25.6-preview-8440b2d":
+  version: 1.25.6-preview-8440b2d
+  resolution: "@metamask-previews/tron-wallet-snap@npm:1.25.6-preview-8440b2d"
+  checksum: 10/84135b5ff08e88366aae323755e7c4783d6b03608cf6cd7b4012bdc477c24bde3ba4042d1fea26c90fbc34e405c3f3b2efaf4ae8e96c57d6b85628667a5de3e7
   languageName: node
   linkType: hard
 
@@ -33482,7 +33482,7 @@ __metadata:
     "@metamask/test-snaps": "npm:^3.4.2"
     "@metamask/transaction-controller": "patch:@metamask/transaction-controller@npm%3A66.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-66.0.0-23fe4d7dfe.patch"
     "@metamask/transaction-pay-controller": "npm:^22.6.0"
-    "@metamask/tron-wallet-snap": "npm:@metamask-previews/tron-wallet-snap@1.25.6-preview-8b1573f"
+    "@metamask/tron-wallet-snap": "npm:@metamask-previews/tron-wallet-snap@1.25.6-preview-8440b2d"
     "@metamask/user-operation-controller": "npm:^41.2.0"
     "@metamask/utils": "npm:^11.11.0"
     "@mui/material": "npm:^5.18.0"
