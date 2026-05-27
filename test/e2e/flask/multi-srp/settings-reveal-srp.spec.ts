@@ -10,7 +10,7 @@ import {
 } from '../../page-objects/flows/multi-srp.flow';
 import { mockActiveNetworks } from './common-multi-srp';
 
-describe('Multi SRP - Reveal Imported SR TEST', function (this: Suite) {
+describe('Multi SRP - Reveal Imported SRP', function (this: Suite) {
   const firstSrpIndex = 1;
   const secondSrpIndex = 2;
 
