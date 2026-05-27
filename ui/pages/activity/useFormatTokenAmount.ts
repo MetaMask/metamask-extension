@@ -1,31 +1,47 @@
 import { useCallback } from 'react';
-import { formatUnits } from '../../../shared/lib/unit';
-import type { TokenAmount } from '../../../shared/lib/activity/types';
+import {
+  applyDisplaySign,
+  getHumanReadableTokenAmount,
+  getDisplaySignPrefix,
+} from '../../../shared/lib/activity/fiat';
+import type {
+  ActivityListItem,
+  TokenAmount,
+} from '../../../shared/lib/activity/types';
 import { useFormatters } from '../../hooks/useFormatters';
+import { getActivityTypeSignOptions } from './helpers';
 
 export function useFormatTokenAmount() {
   const { formatTokenAmount } = useFormatters();
 
   return useCallback(
-    (token: TokenAmount | undefined) => {
-      if (!token?.amount) {
+    (
+      token: TokenAmount | undefined,
+      activityType?: ActivityListItem['type'],
+    ) => {
+      if (!token) {
         return undefined;
       }
 
-      let value: string;
-      try {
-        value = formatUnits(BigInt(token.amount), token.decimals ?? 0);
-      } catch {
-        value = token.amount;
+      const humanAmount = getHumanReadableTokenAmount(token);
+
+      if (humanAmount === undefined) {
+        return undefined;
       }
 
-      const sign = token.direction === 'in' ? '' : '-';
-      const unsigned = value.startsWith('-') ? value.slice(1) : value;
+      const signOptions = activityType
+        ? getActivityTypeSignOptions(activityType)
+        : undefined;
+      const signPrefix = getDisplaySignPrefix(token.direction, {
+        showPlus: signOptions?.showPlus ?? true,
+      });
 
-      return formatTokenAmount(
-        `${sign}${unsigned}` as `${number}`,
+      const formatted = formatTokenAmount(
+        humanAmount as `${number}`,
         token.symbol ?? '',
       );
+
+      return applyDisplaySign(formatted, signPrefix);
     },
     [formatTokenAmount],
   );

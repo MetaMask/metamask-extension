@@ -1,5 +1,37 @@
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 
+const FIAT_DISPLAY_ACTIVITY_TYPES = new Set<ActivityListItem['type']>([
+  'send',
+  'receive',
+  'buy',
+  'claim',
+  'claimMusdBonus',
+  'lendingDeposit',
+  'nftMint',
+  'contractInteraction',
+  'swapIncomplete',
+]);
+
+const APPROVAL_ACTIVITY_TYPES = new Set<ActivityListItem['type']>([
+  'approveSpendingCap',
+  'increaseSpendingCap',
+  'revokeSpendingCap',
+]);
+
+export function isApprovalActivityType(type: ActivityListItem['type']): boolean {
+  return APPROVAL_ACTIVITY_TYPES.has(type);
+}
+
+export function shouldShowFiatDisplay(item: ActivityListItem): boolean {
+  return FIAT_DISPLAY_ACTIVITY_TYPES.has(item.type);
+}
+
+export function getActivityTypeSignOptions(
+  activityType: ActivityListItem['type'],
+): { showPlus: boolean } {
+  return { showPlus: !isApprovalActivityType(activityType) };
+}
+
 export type GroupedItem =
   | { type: 'pending-header' }
   | { type: 'date-header'; date: number }

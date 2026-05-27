@@ -1,5 +1,9 @@
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
-import { groupActivityListItems, isActivityPendingListItem } from './helpers';
+import {
+  getActivityTypeSignOptions,
+  groupActivityListItems,
+  isActivityPendingListItem,
+} from './helpers';
 
 function makeItem(
   overrides: Partial<ActivityListItem> & {
@@ -18,6 +22,20 @@ function makeItem(
     ...overrides,
   } as ActivityListItem;
 }
+
+describe('getActivityTypeSignOptions', () => {
+  it('disables plus for approval activities', () => {
+    expect(getActivityTypeSignOptions('approveSpendingCap')).toStrictEqual({
+      showPlus: false,
+    });
+  });
+
+  it('enables plus for send activities', () => {
+    expect(getActivityTypeSignOptions('send')).toStrictEqual({
+      showPlus: true,
+    });
+  });
+});
 
 describe('isActivityPendingListItem', () => {
   it('returns true when status is pending', () => {

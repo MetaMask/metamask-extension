@@ -18,6 +18,7 @@ import { ActivityListItemAvatar } from '../../../components/app/activity-list-it
 import { ChainBadge } from '../../../components/app/chain-badge/chain-badge';
 import { StatusIcon } from '../../../components/ui/icon/status-icon';
 import { getActivityListItemAvatarConfig } from '../resolve-activity-avatar-config';
+import { useFormatFiatAmount } from '../useFormatFiatAmount';
 import { useFormatTokenAmount } from '../useFormatTokenAmount';
 import { useGetLabel } from '../useGetLabel';
 import type { ActivityCellProps } from './types';
@@ -166,16 +167,6 @@ export function GenericActivityCell({
     : undefined;
   const { primaryToken, secondaryToken } = getCellTokenAmounts(data);
 
-  const primaryTokenAmount = formatTokenAmount(primaryToken);
-  const secondaryTokenAmount = formatTokenAmount(secondaryToken);
-  const shouldPrefixPrimaryAmount =
-    primaryToken?.direction === 'in' &&
-    primaryTokenAmount;
-  const primaryTokenAmountLabel =
-    shouldPrefixPrimaryAmount
-      ? `+${primaryTokenAmount}`
-      : primaryTokenAmount;
-
   const { namespace } = parseCaipChainId(data.chainId);
   const chainId =
     namespace === KnownCaipNamespace.Eip155
@@ -187,6 +178,11 @@ export function GenericActivityCell({
       data.chainId as keyof typeof MULTICHAIN_NETWORK_TO_NICKNAME
     ] ??
     data.chainId;
+  const fiatAmount = useFormatFiatAmount(data, primaryToken, chainId);
+  const primaryTokenAmount = formatTokenAmount(primaryToken, data.type);
+  const secondaryTokenAmount = formatTokenAmount(secondaryToken, data.type);
+  const secondaryDisplay = fiatAmount ?? secondaryTokenAmount;
+
   const avatarConfig = useMemo(
     () =>
       getActivityListItemAvatarConfig(data, primaryToken, secondaryToken, {
@@ -230,23 +226,23 @@ export function GenericActivityCell({
         {renderDescriptionLine(pendingStatusText, description)}
       </div>
       <div className="text-right whitespace-nowrap">
-        {primaryTokenAmountLabel ? (
+        {primaryTokenAmount ? (
           <Text
             className={`text-sm font-medium ${
               primaryToken?.direction === 'in' ? 'text-success-default' : ''
             }`}
             data-testid="transaction-list-item-primary-currency"
           >
-            {primaryTokenAmountLabel}
+            {primaryTokenAmount}
           </Text>
         ) : null}
-        {secondaryTokenAmount ? (
+        {secondaryDisplay ? (
           <Text
             variant="body-sm"
             className="text-alternative"
             data-testid="transaction-list-item-secondary-currency"
           >
-            {secondaryTokenAmount}
+            {secondaryDisplay}
           </Text>
         ) : null}
       </div>

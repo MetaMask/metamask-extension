@@ -19,6 +19,13 @@ jest.mock('../useFormatTokenAmount', () => ({
   useFormatTokenAmount: () => mockFormatTokenAmount,
 }));
 
+const mockUseFormatFiatAmount = jest.fn();
+
+jest.mock('../useFormatFiatAmount', () => ({
+  useFormatFiatAmount: (...args: unknown[]) =>
+    mockUseFormatFiatAmount(...args),
+}));
+
 jest.mock('../../../components/ui/icon/status-icon', () => ({
   StatusIcon: () => <div data-testid="status-icon-rive-mock" />,
 }));
@@ -26,6 +33,7 @@ jest.mock('../../../components/ui/icon/status-icon', () => ({
 describe('GenericActivityCell', () => {
   beforeEach(() => {
     mockFormatTokenAmount.mockReturnValue(undefined);
+    mockUseFormatFiatAmount.mockReturnValue(undefined);
   });
 
   it('renders successful activity with the confirmed transaction status hook', () => {
@@ -173,6 +181,38 @@ describe('GenericActivityCell', () => {
     expect(screen.queryByText('pending')).not.toBeInTheDocument();
   });
 
+  it('renders fiat on the secondary line when available', () => {
+    mockFormatTokenAmount.mockReturnValue('-1 ETH');
+    mockUseFormatFiatAmount.mockReturnValue('$2,500.00');
+
+    const { getByTestId } = render(
+      <GenericActivityCell
+        data={{
+          type: 'send',
+          chainId: 'eip155:1',
+          status: 'success',
+          timestamp: 0,
+          data: {
+            from: '0x1',
+            to: '0x2',
+            token: {
+              amount: '1000000000000000000',
+              decimals: 18,
+              direction: 'out',
+              symbol: 'ETH',
+              assetId: 'eip155:1/slip44:60',
+            },
+          },
+        }}
+        onClick={jest.fn()}
+      />,
+    );
+
+    expect(
+      getByTestId('transaction-list-item-secondary-currency'),
+    ).toHaveTextContent('$2,500.00');
+  });
+
   it('renders contract interaction token amounts', () => {
     mockFormatTokenAmount.mockReturnValue('-4 ETH');
 
@@ -203,8 +243,8 @@ describe('GenericActivityCell', () => {
     ).toHaveTextContent('-4 ETH');
   });
 
-  it('prefixes plus for incoming non-convert primary amounts', () => {
-    mockFormatTokenAmount.mockReturnValue('4 ETH');
+  it('uses signed incoming amount from formatter hook', () => {
+    mockFormatTokenAmount.mockReturnValue('+4 ETH');
 
     render(
       <GenericActivityCell
@@ -235,7 +275,7 @@ describe('GenericActivityCell', () => {
 
   it('renders convert title, token pair, and signed token amounts', () => {
     mockFormatTokenAmount.mockImplementation((token) =>
-      token?.symbol === 'mUSD' ? '0.100099 MUSD' : '-0.1 USDT',
+      token?.symbol === 'mUSD' ? '+0.100099 MUSD' : '-0.1 USDT',
     );
 
     render(
