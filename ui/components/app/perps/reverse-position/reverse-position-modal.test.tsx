@@ -117,6 +117,11 @@ jest.mock('../../rewards/RewardsVipBadge', () => ({
   RewardsVipBadge: () => null,
 }));
 
+const mockUseVipTier = jest.fn<number | null, []>(() => null);
+jest.mock('../../../../hooks/rewards/useVipTier', () => ({
+  useVipTier: () => mockUseVipTier(),
+}));
+
 jest.mock('../../../../providers/perps', () => ({
   getPerpsStreamManager: () => mockGetPerpsStreamManager(),
 }));
@@ -153,6 +158,7 @@ describe('ReversePositionModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
+    mockUseVipTier.mockReturnValue(null);
     mockUsePerpsOrderFees.mockReturnValue({
       feeRate: 0.0001,
       undiscountedFeeRate: 0.0001,
@@ -380,6 +386,40 @@ describe('ReversePositionModal', () => {
 
       await waitFor(() => {
         expect(pushPositionsWithOverrides).toHaveBeenCalledWith(mockPositions);
+      });
+    });
+
+    it('includes vipTier and vipDiscount in trackingData when VIP tier is active', async () => {
+      mockUseVipTier.mockReturnValue(2);
+      mockUsePerpsOrderFees.mockReturnValue({
+        feeRate: 0.0001,
+        undiscountedFeeRate: 0.0002,
+        isLoading: false,
+        hasError: false,
+        metamaskFeeRateDiscountPercentage: 50,
+      });
+
+      renderWithProvider(
+        <ReversePositionModal {...defaultProps} />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsFlipPosition',
+          [
+            expect.objectContaining({
+              trackingData: expect.objectContaining({
+                totalFee: expect.any(Number),
+                marketPrice: 2900,
+                vipTier: 2,
+                vipDiscount: 50,
+              }),
+            }),
+          ],
+        );
       });
     });
 
