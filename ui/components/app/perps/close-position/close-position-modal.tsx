@@ -15,6 +15,7 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
+import type { ClosePositionParams } from '@metamask/perps-controller';
 import {
   formatPerpsFiat,
   formatPnl,
@@ -45,6 +46,7 @@ import {
   getDisplayName,
   getPositionDirection,
   getPositionPnlRatio,
+  buildPerpsVipTrackingData,
 } from '../utils';
 import { handlePerpsError } from '../utils/translate-perps-error';
 import { PERPS_MIN_MARKET_ORDER_USD } from '../constants';
@@ -59,20 +61,6 @@ import {
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import type { Position } from '../types';
 import { useVipTier } from '../../../../hooks/rewards/useVipTier';
-
-type ClosePositionParams = {
-  symbol: string;
-  orderType: 'market';
-  currentPrice: number;
-  size?: string;
-  position?: Position;
-  trackingData?: {
-    totalFee: number;
-    marketPrice: number;
-    vipTier?: number;
-    vipDiscount?: number;
-  };
-};
 
 type CloseToastConfig = Pick<PerpsToastKeyConfig, 'key' | 'description'>;
 
@@ -417,12 +405,12 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
         closeSize,
         position,
       });
-      closeRequestParams.trackingData = {
+      closeRequestParams.trackingData = buildPerpsVipTrackingData({
         totalFee: estimatedFees,
         marketPrice: currentPrice,
-        ...(vipTier === null ? {} : { vipTier }),
+        vipTier,
         vipDiscount: metamaskFeeRateDiscountPercentage,
-      };
+      });
       const result = await submitRequestToBackground<{
         success: boolean;
         error?: string;

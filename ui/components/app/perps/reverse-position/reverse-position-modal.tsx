@@ -36,7 +36,7 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
-import { getPositionDirection } from '../utils';
+import { getPositionDirection, buildPerpsVipTrackingData } from '../utils';
 import { handlePerpsError } from '../utils/translate-perps-error';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
@@ -157,12 +157,12 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
         {
           symbol: position.symbol,
           position: positionForFlip,
-          trackingData: {
+          trackingData: buildPerpsVipTrackingData({
             totalFee: estimatedFees ?? 0,
             marketPrice: currentPrice,
-            ...(vipTier === null ? {} : { vipTier }),
+            vipTier,
             vipDiscount: metamaskFeeRateDiscountPercentage,
-          },
+          }),
         },
       ]);
       if (flipResult?.success !== true) {

@@ -88,6 +88,7 @@ import {
   safeDecodeURIComponent,
   formatSignedChangePercent,
   willFlipPosition,
+  buildPerpsVipTrackingData,
 } from '../../components/app/perps/utils';
 import {
   parsePerpsDisplayPrice,
@@ -980,13 +981,12 @@ const PerpsOrderEntryPage: React.FC = () => {
           position.size,
           marketInfo?.szDecimals,
         );
-        const closeTrackingData = {
+        closeParams.trackingData = buildPerpsVipTrackingData({
           totalFee: closeEstimatedFees,
           marketPrice: currentPrice,
-          ...(vipTier === null ? {} : { vipTier }),
+          vipTier,
           vipDiscount: metamaskFeeRateDiscountPercentage,
-        };
-        closeParams.trackingData = closeTrackingData;
+        });
         const result = await submitRequestToBackground<PerpsBackgroundResult>(
           'perpsClosePosition',
           [closeParams],
@@ -1033,13 +1033,12 @@ const PerpsOrderEntryPage: React.FC = () => {
             orderMode,
             position?.size,
           );
-          const modifyTrackingData = {
+          orderParams.trackingData = buildPerpsVipTrackingData({
             totalFee: orderCalculations?.estimatedFees ?? 0,
             marketPrice: currentPrice,
-            ...(vipTier === null ? {} : { vipTier }),
+            vipTier,
             vipDiscount: metamaskFeeRateDiscountPercentage,
-          };
-          orderParams.trackingData = modifyTrackingData;
+          });
           // Emit the submit-in-progress toast here (not via route state).
           replacePerpsToastByKey({
             key: PERPS_TOAST_KEYS.SUBMIT_IN_PROGRESS,
@@ -1139,13 +1138,12 @@ const PerpsOrderEntryPage: React.FC = () => {
         orderMode,
         position?.size,
       );
-      const newOrderTrackingData = {
+      orderParams.trackingData = buildPerpsVipTrackingData({
         totalFee: orderCalculations?.estimatedFees ?? 0,
         marketPrice: currentPrice,
-        ...(vipTier === null ? {} : { vipTier }),
+        vipTier,
         vipDiscount: metamaskFeeRateDiscountPercentage,
-      };
-      orderParams.trackingData = newOrderTrackingData;
+      });
       // Do not re-emit SUBMIT_IN_PROGRESS via route state — it was already
       // emitted above by replacePerpsToastByKey. Re-emitting from the
       // market-detail useEffect races with the ORDER_SUBMITTED replace below
