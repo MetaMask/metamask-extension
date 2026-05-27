@@ -37,9 +37,6 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "Erro"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "Código QR inválido. Leia o código QR de sincronização da carteira de hardware."
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "Ler código QR"
   },

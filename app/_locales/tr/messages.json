@@ -37,9 +37,6 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "Hata"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "Geçersiz QR kodu. Lütfen donanım cüzdanının senkronizasyon QR kodunu tarayın."
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "QR kodunu tara"
   },

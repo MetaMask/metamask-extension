@@ -5,12 +5,14 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 import { NetworkControllerGetSelectedNetworkClientAction } from '@metamask/network-controller';
-import { KeyringController } from '@metamask/keyring-controller';
+import {
+  KeyringController,
+  KeyringControllerMessenger,
+} from '@metamask/keyring-controller';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getKeyringControllerMessenger,
-  KeyringControllerMessenger,
   getKeyringControllerInitMessenger,
   KeyringControllerInitMessenger,
 } from './messengers';
