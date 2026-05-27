@@ -219,6 +219,8 @@ function formStateToOrderParams(
 
 const FULL_CLOSE_PERCENT = 100;
 
+// maxSlippageBps intentionally omitted — close orders use the controller's
+// DefaultMarketSlippageBps (300), matching mobile's PerpsClosePositionView.
 function buildClosePositionParams(
   formState: OrderFormState,
   currentPrice: number,
@@ -268,8 +270,10 @@ const PerpsOrderEntryPage: React.FC = () => {
     persistedMaxSlippageBps === undefined
       ? PERPS_SLIPPAGE_DEFAULT_PCT
       : persistedMaxSlippageBps / 100;
-  const maxSlippageSource: 'default' | 'user_configured' =
-    persistedMaxSlippageBps === undefined ? 'default' : 'user_configured';
+  const maxSlippageSource =
+    persistedMaxSlippageBps === undefined
+      ? PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE.DEFAULT
+      : PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE.USER_CONFIGURED;
   const [isSlippageConfigOpen, setIsSlippageConfigOpen] = useState(false);
   const hasPendingPerpsDeposit = useSelector(selectPerpsDepositPending);
   const { trigger: triggerDeposit, isLoading: isDepositLoading } =

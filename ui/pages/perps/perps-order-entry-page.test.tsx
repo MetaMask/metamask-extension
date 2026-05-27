@@ -1567,6 +1567,48 @@ describe('PerpsOrderEntryPage', () => {
   });
 
   describe('formStateToOrderParams', () => {
+    it('sets maxSlippageBps to default 300 for market orders', async () => {
+      mockSubmitRequestToBackground.mockResolvedValue({ success: true });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('100');
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      const placeOrderCall = mockSubmitRequestToBackground.mock.calls.find(
+        ([method]) => method === 'perpsPlaceOrder',
+      );
+      expect(placeOrderCall).toBeTruthy();
+      expect(placeOrderCall?.[1][0]).toHaveProperty('maxSlippageBps', 300);
+    });
+
+    it('sets maxSlippageBps to 100 for limit orders', async () => {
+      mockSearchParams.set('orderType', 'limit');
+      mockSubmitRequestToBackground.mockResolvedValue({ success: true });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('100');
+      const limitInput = screen.getByTestId('limit-price-input');
+      fireEvent.change(
+        limitInput.querySelector('input') as HTMLInputElement,
+        { target: { value: '2900' } },
+      );
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      const placeOrderCall = mockSubmitRequestToBackground.mock.calls.find(
+        ([method]) => method === 'perpsPlaceOrder',
+      );
+      expect(placeOrderCall).toBeTruthy();
+      expect(placeOrderCall?.[1][0]).toHaveProperty('maxSlippageBps', 100);
+    });
+
     it('sets reduceOnly and isFullClose for close mode', async () => {
       mockSearchParams.set('mode', 'close');
       mockLivePositions.mockReturnValue({
