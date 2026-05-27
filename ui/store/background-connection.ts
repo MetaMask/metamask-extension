@@ -166,11 +166,7 @@ export async function subscribeToMessengerEvent<Data extends Json>(
     }
 
     const removed = currentEntry.callbacks.delete(looselyTypedCallback);
-    if (!removed) {
-      return;
-    }
-
-    if (currentEntry.callbacks.size > 0) {
+    if (!removed || currentEntry.callbacks.size > 0) {
       return;
     }
 
