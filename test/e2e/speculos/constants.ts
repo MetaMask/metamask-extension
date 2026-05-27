@@ -52,7 +52,11 @@ export const SPECULOS_LEDGER_ADDRESS = SPECULOS_LEDGER_ADDRESSES[0];
 
 /** All E2E ports that may need cleanup between runs. */
 export const SPECULOS_E2E_PORTS = [
-  8111, 8088, 8089, 8090, 9876, 9998, 9999, 5000, 5001,
+  9876, // WebHID bridge WebSocket used by the browser mock.
+  9998, // Host APDU TCP port for the default Speculos device.
+  5001, // Host REST API port for the default Speculos device.
+  9999, // Speculos' default APDU TCP port; used inside Docker/local defaults.
+  5000, // Speculos' default REST API port; used inside Docker/local defaults.
 ];
 
 export type InteractionType = 'button' | 'touch';
