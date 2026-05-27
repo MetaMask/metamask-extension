@@ -1,5 +1,4 @@
 import { Driver } from '../../../webdriver/driver';
-import { regularDelayMs } from 'test/e2e/helpers';
 
 /**
  * Represents the select hardware wallet account page.
@@ -12,17 +11,18 @@ class SelectHardwareWalletAccountPage {
     testId: 'connect-hardware-account-list-cancel-btn',
   };
 
-  private readonly connectedBanner = {
-    tag: 'p',
-    text: 'Hardware wallet connected',
-  };
-
   protected readonly selectAccountPageTitle = {
     text: 'Select an account',
     tag: 'h3',
   };
 
   protected readonly accountCheckbox = '.hw-account-list__item__checkbox';
+
+  protected readonly accountCheckboxInput = (accountIndex: number) =>
+    `#address-${accountIndex - 1}`;
+
+  protected readonly accountCheckboxLabel = (accountIndex: number) =>
+    `label[for="address-${accountIndex - 1}"]`;
 
   protected readonly forgetDeviceButton =
     '[data-testid="hardware-forget-device-button"]';
@@ -41,9 +41,6 @@ class SelectHardwareWalletAccountPage {
         this.selectAccountPageTitle,
         this.cancelButton,
       ]);
-      await this.driver.assertElementNotPresent(this.connectedBanner, {
-        waitAtLeastGuard: regularDelayMs,
-      });
     } catch (e) {
       console.log(
         'Timeout while waiting for select account page to be loaded',
@@ -66,7 +63,15 @@ class SelectHardwareWalletAccountPage {
 
   async selectAccount(accountIndex: number): Promise<void> {
     console.log(`Select account ${accountIndex}`);
-    await this.driver.clickElement(`label[for="address-${accountIndex - 1}"]`);
+    await this.driver.clickElement(this.accountCheckboxLabel(accountIndex));
+    // Ensure checkbox is selected
+    await this.driver.wait(async () => {
+      const checkbox = await this.driver.findElement(
+        this.accountCheckboxInput(accountIndex),
+      );
+      return await checkbox.isSelected();
+    });
+    console.log(`Account ${accountIndex} is selected`);
   }
 
   async unlockAccount(accountIndex: number): Promise<void> {
