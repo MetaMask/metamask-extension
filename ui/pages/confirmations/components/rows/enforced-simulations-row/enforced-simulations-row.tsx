@@ -25,7 +25,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 import { applyTransactionContainersExisting } from '../../../../../store/actions';
 import { useIsEnforcedSimulationsEligible } from '../../../hooks/useIsEnforcedSimulationsEligible';
-import { ENFORCED_SIMULATIONS_LEARN_MORE_LINK } from '../../../../../../shared/lib/ui-utils';
+import { TRANSACTION_SIMULATIONS_LEARN_MORE_LINK } from '../../../../../../shared/lib/ui-utils';
 
 export function EnforcedSimulationsRow() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -221,7 +221,7 @@ function Description() {
     <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
       {t('addedProtectionDescription')}{' '}
       <a
-        href={ENFORCED_SIMULATIONS_LEARN_MORE_LINK}
+        href={TRANSACTION_SIMULATIONS_LEARN_MORE_LINK}
         target="_blank"
         rel="noopener noreferrer"
         data-testid="enforced-simulations-learn-more"
