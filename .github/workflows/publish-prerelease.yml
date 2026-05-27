@@ -137,6 +137,7 @@ jobs:
 
       - name: Fetch full history for cherry-picks section
         if: ${{ startsWith(env.BRANCH, 'release/') }}
+        continue-on-error: true
         run: |
           git fetch --unshallow
           git fetch origin main:refs/remotes/origin/main --tags
