@@ -34,8 +34,8 @@ jest.mock('../../shared/lib/selectors/networks', () => ({
   ...jest.requireActual('../../shared/lib/selectors/networks'),
 }));
 
-jest.mock('../../app/scripts/lib/util', () => ({
-  ...jest.requireActual('../../app/scripts/lib/util'),
+jest.mock('../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../shared/lib/environment-type'),
   getEnvironmentType: jest.fn().mockReturnValue('popup'),
 }));
 
