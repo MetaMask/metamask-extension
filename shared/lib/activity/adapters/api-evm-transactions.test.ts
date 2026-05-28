@@ -16,6 +16,7 @@ const bscContractCallerAddress = '0xf70da97812cb96acdf810712aa562db8dfa3dbef';
 const bscUniversalRouter = '0xca11bde05977b3631167028862be2a173976ca11';
 const bscRecipientAddress = '0xb92fe925dc43a0ecde6c8b1a2709c170ec4fff4f';
 const polygonRecipientAddress = '0x2cd071562a1688b3e9f31be39c92aa140a1acc94';
+const wethContractAddress = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
 
 describe('mapEvmTransactions', () => {
   it('maps an ERC-20 transfer sent by the account to a Send activity', () => {
@@ -350,6 +351,70 @@ describe('mapEvmTransactions', () => {
           direction: 'in',
           symbol: 'aBasUSDC',
           assetId: toAssetId(baseAaveUsdc, 'eip155:8453'),
+        },
+      },
+    });
+  });
+
+  it('maps a WETH deposit to a Wrap activity', () => {
+    const transaction = {
+      hash: '0x6e448f5b8cf55534507770c1cb90ba14e723d03b4a46b4919a5847eb8d13b7b5',
+      timestamp: '2026-05-28T13:42:23.000Z',
+      chainId: Number(CHAIN_IDS.MAINNET),
+      from: subjectAddress,
+      to: wethContractAddress,
+      methodId: '0xd0e30db0',
+      transactionCategory: 'DEPOSIT',
+      transactionProtocol: 'WETH',
+      transactionType: 'WETH_DEPOSIT',
+      valueTransfers: [
+        {
+          from: '0x0000000000000000000000000000000000000000',
+          to: subjectAddress,
+          amount: '1000000000000',
+          decimal: 18,
+          contractAddress: wethContractAddress,
+          symbol: 'WETH',
+          transferType: 'erc20',
+        },
+        {
+          from: subjectAddress,
+          to: wethContractAddress,
+          amount: '1000000000000',
+          decimal: 18,
+          symbol: 'ETH',
+          transferType: 'normal',
+        },
+      ],
+    } as V1TransactionByHashResponse;
+
+    const item = mapApiEvmTransactions({
+      subjectAddress,
+      transaction,
+    });
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
+      type: 'wrap',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1779975743000,
+      data: {
+        hash: '0x6e448f5b8cf55534507770c1cb90ba14e723d03b4a46b4919a5847eb8d13b7b5',
+        sourceToken: {
+          amount: '1000000000000',
+          decimals: 18,
+          direction: 'out',
+          symbol: 'ETH',
+          assetId: toAssetId('0x0000000000000000000000000000000000000000', 'eip155:1'),
+        },
+        destinationToken: {
+          amount: '1000000000000',
+          decimals: 18,
+          direction: 'in',
+          symbol: 'WETH',
+          assetId: toAssetId(wethContractAddress, 'eip155:1'),
         },
       },
     });

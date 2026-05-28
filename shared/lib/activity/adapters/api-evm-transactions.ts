@@ -238,6 +238,23 @@ export function mapApiEvmTransactions({
     };
   }
 
+  if (
+    (transactionCategory === 'DEPOSIT' && receivedTransfer)
+  ) {
+    return {
+      type: 'wrap',
+      chainId,
+      status,
+      timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
+      data: {
+        hash,
+        sourceToken: getToken(sentTransfer, 'out'),
+        destinationToken: getToken(receivedTransfer, 'in'),
+      },
+    };
+  }
+
   if (transactionCategory === 'WITHDRAW') {
     return {
       type: 'lendingWithdrawal',
