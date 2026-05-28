@@ -6,12 +6,11 @@ import {
   MetaMetricsContext,
   type MetaMetricsContextValue,
 } from '../../../../contexts/metametrics';
-import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { ExternalLinkButton } from './annonucement-footer-buttons';
 import type { FeatureAnnouncementNotification } from './types';
 
 const mockTrackEvent = jest.fn();
-const linkText = messages.bridgeMarketClosedModalLearnMore.message;
+const linkText = 'Learn more';
 
 const metametricsContext = {
   trackEvent: mockTrackEvent,
