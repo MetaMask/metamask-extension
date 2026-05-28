@@ -102,6 +102,9 @@ function getSelectorWithLegacyFallback(tx: string): string | undefined {
  * Manages transport and app state as instance variables.
  */
 export class LedgerOffscreenHandler {
+  private static readonly clearSignRejectionCodes: ReadonlySet<number> =
+    new Set([0x6808, 0x6a80]);
+
   private transport: Transport | null = null;
 
   private ethApp: LedgerEth | null = null;
@@ -330,15 +333,16 @@ export class LedgerOffscreenHandler {
    * (signEIP712HashedMessage) — which shows only the domain and message hashes —
    * in two situations:
    *
-   * 1. The device rejects clear signing with a status code that indicates the
-   *    payload cannot be parsed/displayed (INS_NOT_SUPPORTED on older firmware
-   *    like Nano S; 0x6808 / 0x6a80 on newer firmware rejecting oversized or
-   *    unparseable payloads). 0x6985 is explicitly NOT treated as a fallback
-   *    trigger — it is Ledger's standard user-rejection code and must
-   *    propagate to the caller.
-   * 2. The clear-sign call returns a signature that does not recover to the
-   *    expected address for the HD path. This guards against firmware that
-   *    silently signs a truncated representation of an oversized EIP-712 payload.
+   * The device rejects clear signing with a status code that indicates the
+   * payload cannot be parsed/displayed (INS_NOT_SUPPORTED on older firmware
+   * like Nano S; 0x6808 / 0x6a80 on newer firmware rejecting oversized or
+   * unparseable payloads). 0x6985 is explicitly NOT treated as a fallback
+   * trigger — it is Ledger's standard user-rejection code and must propagate
+   * to the caller.
+   *
+   * The clear-sign call returns a signature that does not recover to the
+   * expected address for the HD path. This guards against firmware that
+   * silently signs a truncated representation of an oversized EIP-712 payload.
    *
    * Matches Ledger Live's approach:
    * https://github.com/LedgerHQ/ledger-live/blob/c49f4d4d34f82ac74a4237cfe3b31ce3c0f73403/libs/coin-modules/coin-evm/src/hw-signMessage.ts#L80-L113
@@ -352,15 +356,24 @@ export class LedgerOffscreenHandler {
     params: LedgerSignTypedDataParams,
   ): Promise<{ v: number; r: string; s: string }> {
     const app = await this.ensureApp();
-    const { address: expectedAddress } = await app.getAddress(
-      params.hdPath,
-      false,
-    );
+
+    let expectedAddress: string | undefined;
+    const getExpectedAddress = async (): Promise<string> => {
+      if (expectedAddress === undefined) {
+        const { address } = await app.getAddress(params.hdPath, false);
+        expectedAddress = address;
+      }
+      return expectedAddress;
+    };
 
     try {
       const sig = await app.signEIP712Message(params.hdPath, params.message);
       if (
-        this.#verifyTypedDataSignature(params.message, sig, expectedAddress)
+        await this.#verifyTypedDataSignature(
+          params.message,
+          sig,
+          getExpectedAddress,
+        )
       ) {
         return sig;
       }
@@ -385,7 +398,13 @@ export class LedgerOffscreenHandler {
       domainSeparatorHex,
       hashStructMessageHex,
     );
-    if (!this.#verifyTypedDataSignature(params.message, sig, expectedAddress)) {
+    if (
+      !(await this.#verifyTypedDataSignature(
+        params.message,
+        sig,
+        getExpectedAddress,
+      ))
+    ) {
       const message =
         'Ledger signature does not match the expected address for the HD path.';
       throw new HardwareWalletError(message, {
@@ -428,24 +447,28 @@ export class LedgerOffscreenHandler {
   // the expected address for the HD path. Guards against devices that silently
   // return a signature for a truncated payload when blind-signing an oversized
   // message.
-  #verifyTypedDataSignature(
+  async #verifyTypedDataSignature(
     message: LedgerSignTypedDataParams['message'],
     sig: { v: number; r: string; s: string },
-    expectedAddress: string,
-  ): boolean {
+    getExpectedAddress: () => Promise<string>,
+  ): Promise<boolean> {
+    let recovered: string;
     try {
       const signature = add0x(
         sig.r.replace(/^0x/u, '').padStart(64, '0') +
           sig.s.replace(/^0x/u, '').padStart(64, '0') +
           sig.v.toString(16).padStart(2, '0'),
       );
-      const recovered = recoverTypedSignature({
+      recovered = recoverTypedSignature({
         data: message as TypedMessage<MessageTypes>,
         signature,
         version: SignTypedDataVersion.V4,
       });
-      return recovered.toLowerCase() === expectedAddress.toLowerCase();
-    } catch {
+    } catch (error) {
+      console.error(
+        'Ledger EIP-712 signature verification failed:',
+        error instanceof Error ? error.message : String(error),
+      );
       // A signature we cannot recover from is, for our purposes, a signature
       // that does not match the expected address — both route to the hashed-
       // signing fallback. Catching here also prevents a malformed clear-sign
@@ -453,6 +476,8 @@ export class LedgerOffscreenHandler {
       // be misclassified as a non-Ledger error and re-thrown.
       return false;
     }
+    const expectedAddress = await getExpectedAddress();
+    return recovered.toLowerCase() === expectedAddress.toLowerCase();
   }
 
   // Clear-signing errors that indicate the device cannot parse/display the
@@ -480,10 +505,9 @@ export class LedgerOffscreenHandler {
     if (statusText === 'INS_NOT_SUPPORTED') {
       return true;
     }
-    const CLEAR_SIGN_REJECTION_CODES = new Set([0x6808, 0x6a80]);
     if (
       typeof statusCode === 'number' &&
-      CLEAR_SIGN_REJECTION_CODES.has(statusCode)
+      LedgerOffscreenHandler.clearSignRejectionCodes.has(statusCode)
     ) {
       return true;
     }

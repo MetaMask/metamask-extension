@@ -753,6 +753,7 @@ describe('Ledger Offscreen', () => {
             message: 'Device locked',
           }),
         });
+        expect(mockGetAddress).not.toHaveBeenCalled();
         expect(mockSignEIP712HashedMessage).not.toHaveBeenCalled();
         consoleSpy.mockRestore();
       });
@@ -841,9 +842,13 @@ describe('Ledger Offscreen', () => {
         expect(response.payload).toEqual(validSignature);
         expect(mockSignEIP712Message).toHaveBeenCalled();
         expect(mockSignEIP712HashedMessage).toHaveBeenCalled();
+        expect(mockGetAddress).toHaveBeenCalledTimes(1);
       });
 
       it('falls back to hashed signing when clear-signed signature is unrecoverable (verifier throws)', async () => {
+        const consoleSpy = jest
+          .spyOn(console, 'error')
+          .mockImplementation(() => undefined);
         // Firmware returns bytes that can't be decoded as a signature —
         // recoverTypedSignature throws. Must still fall through to hashed
         // signing rather than re-throwing as an unhandled error.
@@ -864,6 +869,12 @@ describe('Ledger Offscreen', () => {
         expect(response.payload).toEqual(validSignature);
         expect(mockSignEIP712Message).toHaveBeenCalled();
         expect(mockSignEIP712HashedMessage).toHaveBeenCalled();
+        expect(mockGetAddress).toHaveBeenCalledTimes(1);
+        expect(consoleSpy).toHaveBeenCalledWith(
+          'Ledger EIP-712 signature verification failed:',
+          expect.any(String),
+        );
+        consoleSpy.mockRestore();
       });
 
       it('throws HardwareWalletError when hashed signature also fails verification', async () => {
