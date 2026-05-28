@@ -170,7 +170,7 @@ describe('Bridge functionality', function (this: Suite) {
         const activityList = new ActivityListPage(driver);
         await activityList.checkPendingBridgeTransactionActivity();
         await activityList.checkBridgeTransactionDetails(
-          'Bridging to Linea',
+          'Bridging ETH',
           true,
           'pending',
           '1',
