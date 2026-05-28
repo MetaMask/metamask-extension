@@ -1,7 +1,4 @@
-import {
-  KeyringControllerWithKeyringV2Action,
-  KeyringTypes,
-} from '@metamask/keyring-controller';
+import { KeyringControllerWithKeyringV2Action } from '@metamask/keyring-controller';
 import type { HdKeyring } from '@metamask/eth-hd-keyring/v2';
 import { KeyringType } from '@metamask/keyring-api/v2';
 import { RootMessenger } from '../../../lib/messenger';
@@ -22,9 +19,7 @@ export async function getMnemonicSeed(
     const seed = (await messenger.call(
       'KeyringController:withKeyringV2',
       {
-        // withKeyringV2's type selector still filters against the V1 keyring's
-        // `.type` ('HD Key Tree'), not the V2 wrapper's value.
-        type: KeyringTypes.hd,
+        type: KeyringType.Hd,
         index: 0,
       },
       async ({ keyring }) => (keyring as HdKeyring).seed,

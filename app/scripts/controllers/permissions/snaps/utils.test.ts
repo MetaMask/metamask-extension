@@ -1,4 +1,3 @@
-import { KeyringTypes } from '@metamask/keyring-controller';
 import { KeyringType } from '@metamask/keyring-api/v2';
 import { getMnemonicSeed } from './utils';
 
@@ -12,10 +11,10 @@ function buildMessenger(callImpl: (...args: unknown[]) => unknown) {
 
 describe('getMnemonicSeed', () => {
   describe('without a source', () => {
-    it('returns the primary HD keyring seed via the V1 type selector', async () => {
+    it('returns the primary HD keyring seed via the V2 type selector', async () => {
       const messenger = buildMessenger(async (_action, selector, operation) => {
         expect(selector).toStrictEqual({
-          type: KeyringTypes.hd,
+          type: KeyringType.Hd,
           index: 0,
         });
         return (

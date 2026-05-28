@@ -9704,21 +9704,27 @@ export default class MetamaskController extends EventEmitter {
   async #withKeyringForDevice(options, callback) {
     const keyringOverrides = this.opts.overrides?.keyrings;
     let keyringType = null;
+    let v2KeyringType = null;
     switch (options.name) {
       case HardwareDeviceNames.trezor:
         keyringType = keyringOverrides?.trezor?.type || TrezorKeyring.type;
+        v2KeyringType = KeyringType.Trezor;
         break;
       case HardwareDeviceNames.oneKey:
         keyringType = keyringOverrides?.oneKey?.type || OneKeyKeyring?.type;
+        v2KeyringType = KeyringType.OneKey;
         break;
       case HardwareDeviceNames.ledger:
         keyringType = keyringOverrides?.ledger?.type || LedgerKeyring.type;
+        v2KeyringType = KeyringType.Ledger;
         break;
       case HardwareDeviceNames.qr:
         keyringType = QrKeyring.type;
+        v2KeyringType = KeyringType.Qr;
         break;
       case HardwareDeviceNames.lattice:
         keyringType = keyringOverrides?.lattice?.type || LatticeKeyring.type;
+        v2KeyringType = KeyringType.Lattice;
         break;
       default:
         throw new Error(
@@ -9741,7 +9747,7 @@ export default class MetamaskController extends EventEmitter {
     }
 
     return this.keyringController.withKeyringV2(
-      { type: keyringType },
+      { type: v2KeyringType },
       async ({ keyring }) => {
         if (options.hdPath && keyring.setHdPath) {
           keyring.setHdPath(options.hdPath);
