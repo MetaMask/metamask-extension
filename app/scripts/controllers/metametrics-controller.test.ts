@@ -562,6 +562,39 @@ describe('MetaMetricsController', function () {
         },
       );
     });
+    it('does not opt out of AnalyticsController when participation is reset to null', async function () {
+      const eventQueue = {
+        queuedEvent: {
+          type: 'track',
+          eventName: 'Queued Event',
+          messageId: 'queuedEvent',
+          timestamp: '2026-05-28T00:00:00.000Z',
+        },
+      };
+
+      await withController(
+        {
+          options: {
+            state: { completedMetaMetricsOnboarding: true },
+          },
+          analyticsControllerState: {
+            optedIn: true,
+            eventQueue,
+          },
+        },
+        async ({ controller, controllerMessenger }) => {
+          await controller.setParticipateInMetaMetrics(null);
+
+          expect(controller.state.completedMetaMetricsOnboarding).toBe(false);
+          expect(
+            controllerMessenger.call('AnalyticsController:getState').optedIn,
+          ).toBe(true);
+          expect(
+            controllerMessenger.call('AnalyticsController:getState').eventQueue,
+          ).toStrictEqual(eventQueue);
+        },
+      );
+    });
     it('should not nullify the metaMetricsId when set to false', async function () {
       await withController(async ({ controller }) => {
         await controller.setParticipateInMetaMetrics(false);
@@ -2912,6 +2945,7 @@ async function withController<ReturnValue>(
 
     messenger.registerActionHandler('AnalyticsController:optOut', () => {
       mockAnalyticsControllerState.optedIn = false;
+      mockAnalyticsControllerState.eventQueue = {};
     });
 
     // Emulate the analytics platform adapter: every Segment payload is built

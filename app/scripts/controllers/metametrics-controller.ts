@@ -796,7 +796,7 @@ export class MetaMetricsController extends BaseController<
 
     if (participateInMetaMetrics === true) {
       this.messenger.call('AnalyticsController:optIn');
-    } else {
+    } else if (participateInMetaMetrics === false) {
       this.messenger.call('AnalyticsController:optOut');
     }
 
