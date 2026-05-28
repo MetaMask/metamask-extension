@@ -1,11 +1,9 @@
 import React from 'react';
 import cn from 'clsx';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
-import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';
 import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../shared/constants/multichain/networks';
 import { getLabelKeys } from '../../../shared/lib/activity/label-keys';
-import type { TokenAmount } from '../../../shared/lib/activity/types';
 import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
 import { ActivityListItemAvatar } from '../../components/app/activity-list-item-avatar';
 import { ChainBadge } from '../../components/app/chain-badge/chain-badge';
@@ -30,16 +28,6 @@ function getChainDisplay(activity: ActivityCellProps['data']) {
     activity.chainId;
 
   return { chainId, networkName };
-}
-
-function getDestinationChainName(destinationToken: TokenAmount | undefined) {
-  const destChainId = destinationToken?.assetId?.split('/')[0];
-
-  return destChainId
-    ? NETWORK_TO_SHORT_NETWORK_NAME_MAP[
-        destChainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
-      ]
-    : undefined;
 }
 
 export function useActivityCellPresentation(
@@ -111,17 +99,16 @@ export function useActivityCellPresentation(
           secondaryToken: sourceToken,
         };
       }
-      // Destination chain in title, source token in description.
+      // Token in title. API bridge rows may only include the source leg.
       case 'bridge': {
         const { sourceToken, destinationToken } = activity.data;
-        const destinationChainName =
-          getDestinationChainName(destinationToken) ?? '';
+        const symbol = destinationToken?.symbol ?? sourceToken?.symbol ?? '';
 
         return {
-          title: t(labelKeys.title.key, [destinationChainName]),
-          subtitle: t(labelKeys.description.key, [sourceToken?.symbol ?? '']),
-          primaryToken: destinationToken,
-          secondaryToken: sourceToken,
+          title: t(labelKeys.title.key, [symbol]),
+          subtitle: undefined,
+          primaryToken: destinationToken ?? sourceToken,
+          secondaryToken: destinationToken ? sourceToken : undefined,
         };
       }
       case 'swapIncomplete':

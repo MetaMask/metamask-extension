@@ -253,6 +253,20 @@ export function mapApiEvmTransactions({
     };
   }
 
+  if (transactionCategory === 'BRIDGE_WITHDRAW') {
+    return {
+      type: 'bridge',
+      chainId,
+      status,
+      timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
+      data: {
+        hash,
+        sourceToken: getToken(sentTransfer, 'out'),
+      },
+    };
+  }
+
   // TODO: Categorize Deposit/Stake in the backend
   if (sentTransfer && hasSupplyMethodId) {
     return {

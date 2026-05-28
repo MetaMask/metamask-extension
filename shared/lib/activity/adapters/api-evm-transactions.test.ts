@@ -396,6 +396,71 @@ describe('mapEvmTransactions', () => {
     });
   });
 
+  it('maps a bridge withdraw to a Bridge activity', () => {
+    const transaction = {
+      hash: '0x9f81163d00374094411f44732738c6dea194551e4500bde9fd7ee60319aac766',
+      timestamp: '2026-05-28T04:13:31.000Z',
+      chainId: 8453,
+      accountId: 'eip155:8453:0x9bed78535d6a03a955f1504aadba974d9a29e292',
+      blockNumber: 46576132,
+      blockHash:
+        '0x0c591fa154c6e1f2afdef55a5da25a49173b1a6126e6a98a90ec86c5e9952843',
+      gas: 277734,
+      gasUsed: 151663,
+      gasPrice: '29184149',
+      effectiveGasPrice: '29184149',
+      nonce: 530,
+      cumulativeGasUsed: 15490950,
+      methodId: '0xe9ae5c53',
+      value: '0',
+      to: '0x9bed78535d6a03a955f1504aadba974d9a29e292',
+      from: '0x9bed78535d6a03a955f1504aadba974d9a29e292',
+      isError: false,
+      valueTransfers: [
+        {
+          from: '0x9bed78535d6a03a955f1504aadba974d9a29e292',
+          to: '0xa5c1ce365ddb5a91ff466774ec4bdf8f97cb9f55',
+          amount: '100000',
+          decimal: 6,
+          contractAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+          symbol: 'USDC',
+          name: 'USD Coin',
+          transferType: 'erc20',
+        },
+      ],
+      logs: [],
+      transactionCategory: 'BRIDGE_WITHDRAW',
+      transactionProtocol: 'ACROSS',
+      transactionType: 'ACROSS_BRIDGE_WITHDRAW',
+      readable: 'Withdrew',
+      readableExtended: 'Withdrew',
+    } as V1TransactionByHashResponse;
+
+    const item = mapApiEvmTransactions({
+      subjectAddress,
+      transaction,
+    });
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
+      type: 'bridge',
+      chainId: 'eip155:8453',
+      status: 'success',
+      timestamp: 1779941611000,
+      data: {
+        hash: '0x9f81163d00374094411f44732738c6dea194551e4500bde9fd7ee60319aac766',
+        sourceToken: {
+          amount: '100000',
+          decimals: 6,
+          direction: 'out',
+          symbol: 'USDC',
+          assetId: toAssetId(baseUsdc, 'eip155:8453'),
+        },
+      },
+    });
+  });
+
   it('maps an unrecognized transaction category to a contract interaction activity', () => {
     const transaction = {
       timestamp: '2026-05-12T16:04:40.000Z',
