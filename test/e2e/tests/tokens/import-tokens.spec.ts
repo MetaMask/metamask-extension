@@ -395,7 +395,7 @@ async function mockAssetsV3(mockServer: Mockttp) {
 }
 
 describe('Import flow', function () {
-  it.only('allows importing multiple tokens from search', async function () {
+  it('allows importing multiple tokens from search', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
