@@ -1,14 +1,13 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
-import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../constants/bridge';
 import { toAssetId } from '../../asset-utils';
 import type { TransactionGroup } from '../../multichain/types';
 import { parseStandardTokenTransactionData } from '../../transaction.utils';
 import { TOKEN_TRANSFER_LOG_TOPIC_HASH } from '../../transactions-controller-utils';
 import type { ActivityListItem, TokenAmount } from '../types';
 import { supplyMethodIds, withdrawMethodIds } from './constants';
-import { getLocalTransactionStatus, getMainnetTokenMetadata } from './helpers';
+import { getKnownTokenMetadata, getLocalTransactionStatus } from './helpers';
 
 function getNativeAsset(chainId: string) {
   try {
@@ -77,29 +76,17 @@ export function mapLocalTransaction(
       return undefined;
     }
 
-    const tokenMetadata = getMainnetTokenMetadata(
-      transaction.chainId,
-      contractAddress,
-    );
-    const fallbackTokenMetadata = Object.values(
-      BRIDGE_CHAINID_COMMON_TOKEN_PAIR,
-    ).find(
-      (token) =>
-        token?.assetId.startsWith(`${chainId}/`) &&
-        token.address.toLowerCase() === contractAddress.toLowerCase(),
-    );
+    const tokenMetadata = getKnownTokenMetadata(chainId, contractAddress);
     const decimals =
       transaction.transferInformation?.amount === undefined
         ? (tokenMetadata?.decimals ??
-          transactionGroup.contractTokenMetadata?.decimals ??
-          fallbackTokenMetadata?.decimals)
+          transactionGroup.contractTokenMetadata?.decimals)
         : transaction.transferInformation.decimals;
     const tokenAmount = transaction.transferInformation?.amount ?? amount;
     const symbol =
       transaction.transferInformation?.symbol ??
       tokenMetadata?.symbol ??
-      transactionGroup.contractTokenMetadata?.symbol ??
-      fallbackTokenMetadata?.symbol;
+      transactionGroup.contractTokenMetadata?.symbol;
     const assetId = toAssetId(contractAddress, chainId);
 
     return {

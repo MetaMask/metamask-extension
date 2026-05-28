@@ -109,6 +109,57 @@ describe('mapEvmTransactions', () => {
     });
   });
 
+  it('maps an approval without value transfers to an Approve spending cap activity with token metadata', () => {
+    const transaction = {
+      hash: '0x91f89897197afcc09ad98ec4282366fd7938d8a9609e4fc2a0aa2d070664bc27',
+      timestamp: '2026-05-27T13:20:27.000Z',
+      chainId: Number(CHAIN_IDS.BASE),
+      accountId: `eip155:8453:${subjectAddress}`,
+      blockNumber: 46549340,
+      blockHash:
+        '0xabb0026aa96f71b005cfe09262a870ff1e71b68c1649e58516aa60a67039fc79',
+      gas: 38764,
+      gasUsed: 33441,
+      gasPrice: '33295732',
+      effectiveGasPrice: '33295732',
+      nonce: 527,
+      cumulativeGasUsed: 3704697,
+      methodId: '0x095ea7b3',
+      value: '0',
+      to: baseUsdc,
+      from: subjectAddress,
+      isError: false,
+      valueTransfers: [],
+      logs: [],
+      transactionProtocol: 'ERC_20',
+      transactionCategory: 'APPROVE',
+      transactionType: 'ERC_20_APPROVE',
+    } as unknown as V1TransactionByHashResponse;
+
+    const item = mapApiEvmTransactions({
+      subjectAddress,
+      transaction,
+    });
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
+      type: 'approveSpendingCap',
+      chainId: 'eip155:8453',
+      status: 'success',
+      timestamp: 1779888027000,
+      data: {
+        hash: '0x91f89897197afcc09ad98ec4282366fd7938d8a9609e4fc2a0aa2d070664bc27',
+        token: {
+          direction: 'out',
+          symbol: 'USDC',
+          decimals: 6,
+          assetId: toAssetId(baseUsdc, 'eip155:8453'),
+        },
+      },
+    });
+  });
+
   it('maps an ERC-20 transfer received by the account to a Receive activity', () => {
     const transaction = {
       timestamp: '2026-05-05T12:15:27.000Z',

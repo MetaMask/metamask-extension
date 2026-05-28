@@ -4,6 +4,8 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import type { CaipChainId } from '@metamask/utils';
+import type { Hex } from 'viem';
+import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../constants/bridge';
 import { CHAIN_IDS } from '../../../constants/network';
 import {
   IN_PROGRESS_TRANSACTION_STATUSES,
@@ -116,15 +118,47 @@ export function getLocalTransactionStatus({
   return 'pending';
 }
 
-export function getMainnetTokenMetadata(
-  chainId: string,
+export function getKnownTokenMetadata(
+  chainId: CaipChainId | Hex,
   contractAddress?: string,
 ) {
-  if (contractAddress === undefined || chainId !== CHAIN_IDS.MAINNET) {
+  if (contractAddress === undefined) {
     return undefined;
   }
 
-  return STATIC_MAINNET_TOKEN_LIST[contractAddress.toLowerCase()];
+  const assetId = toAssetId(contractAddress, chainId);
+  const tokenMetadata =
+    (chainId === CHAIN_IDS.MAINNET || assetId?.startsWith('eip155:1/')
+      ? STATIC_MAINNET_TOKEN_LIST[contractAddress.toLowerCase()]
+      : undefined) ??
+    Object.values(BRIDGE_CHAINID_COMMON_TOKEN_PAIR).find(
+      (token) => token?.assetId === assetId,
+    );
+
+  return tokenMetadata
+    ? { ...tokenMetadata, ...(assetId ? { assetId } : {}) }
+    : undefined;
+}
+
+export function getTokenMetadataFromKnownToken(
+  contractAddress: string | undefined,
+  direction: TokenAmount['direction'],
+  chainId: CaipChainId | Hex,
+) {
+  const tokenMetadata = getKnownTokenMetadata(chainId, contractAddress);
+
+  if (!tokenMetadata) {
+    return undefined;
+  }
+
+  return {
+    direction,
+    ...(tokenMetadata.symbol ? { symbol: tokenMetadata.symbol } : {}),
+    ...(tokenMetadata.decimals === undefined
+      ? {}
+      : { decimals: tokenMetadata.decimals }),
+    ...(tokenMetadata.assetId ? { assetId: tokenMetadata.assetId } : {}),
+  };
 }
 
 export function getTokenAmountFromTransfer(
