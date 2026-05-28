@@ -142,6 +142,27 @@ type NetworkListMenuProps = {
   onClose: () => void;
 };
 
+const isCustomNetworkConfiguration = (
+  network: MultichainNetworkConfiguration,
+): boolean => {
+  const chainId = network.isEvm
+    ? convertCaipToHexChainId(network.chainId)
+    : network.chainId;
+
+  const isBuiltInNetwork = Object.values(BUILT_IN_NETWORKS).some(
+    (builtInNetwork) => builtInNetwork.chainId === chainId,
+  );
+  const isFeaturedRpc = FEATURED_RPCS.some(
+    (featuredRpc) => featuredRpc.chainId === chainId,
+  );
+  const isMultichainProviderConfig = Object.values(MultichainNetworks).some(
+    (multichainNetwork) =>
+      multichainNetwork === network.chainId || multichainNetwork === chainId,
+  );
+
+  return !isBuiltInNetwork && !isFeaturedRpc && !isMultichainProviderConfig;
+};
+
 export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -262,17 +283,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     [nonTestNetworks, orderedNetworksList],
   );
 
-  // Re-orders networks when the user drag + drops them
-  const onDragEnd = (result: DropResult) => {
-    if (result.destination) {
-      const newOrderedNetworks = [...orderedNetworks];
-      const [removed] = newOrderedNetworks.splice(result.source.index, 1);
-      newOrderedNetworks.splice(result.destination.index, 0, removed);
-      dispatch(updateNetworksList(newOrderedNetworks.map((n) => n.chainId)));
-      setOrderedNetworks(newOrderedNetworks);
-    }
-  };
-
   const featuredNetworksNotYetEnabled = useMemo(() => {
     // Filter out networks that are already enabled
     const availableNetworks = FEATURED_RPCS.filter(
@@ -317,6 +327,39 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     Object.values(testNetworks),
     searchQuery,
   );
+  const searchedDefaultNetworks = searchedEnabledNetworks.filter(
+    (network) => !isCustomNetworkConfiguration(network),
+  );
+  const searchedCustomNetworks = searchedEnabledNetworks.filter(
+    isCustomNetworkConfiguration,
+  );
+  const searchedEnabledNetworkSections = [
+    {
+      title: t('defaultNetworks'),
+      networks: searchedDefaultNetworks,
+    },
+    {
+      title: t('customNetworks'),
+      networks: searchedCustomNetworks,
+    },
+  ].filter(({ networks }) => networks.length > 0);
+  const displayedEnabledNetworks = searchedEnabledNetworkSections.flatMap(
+    ({ networks }) => networks,
+  );
+  const hasEnabledNetworkResults =
+    searchedDefaultNetworks.length > 0 || searchedCustomNetworks.length > 0;
+
+  // Re-orders networks when the user drag + drops them.
+  const onDragEnd = (result: DropResult) => {
+    if (result.destination) {
+      const newOrderedNetworks = [...displayedEnabledNetworks];
+      const [removed] = newOrderedNetworks.splice(result.source.index, 1);
+      newOrderedNetworks.splice(result.destination.index, 0, removed);
+      dispatch(updateNetworksList(newOrderedNetworks.map((n) => n.chainId)));
+      setOrderedNetworks(newOrderedNetworks);
+    }
+  };
+
   // A sorted list of test networks that put Sepolia first then Linea Sepolia at the top
   // and the rest of the test networks in alphabetical order.
   const sortedTestNetworks = useMemo(() => {
@@ -405,28 +448,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
       ? convertCaipToHexChainId(currentChainId)
       : currentChainId;
 
-    // Check if the destination network is custom (not built-in, featured, or multichain)
-    const hexChainId = chain.isEvm
-      ? convertCaipToHexChainId(chain.chainId)
-      : chain.chainId;
-
-    const isBuiltInNetwork = Object.values(BUILT_IN_NETWORKS).some(
-      (builtInNetwork) => builtInNetwork.chainId === hexChainId,
-    );
-    const isFeaturedRpc = FEATURED_RPCS.some(
-      (featuredRpc) => featuredRpc.chainId === hexChainId,
-    );
-    const isMultichainProviderConfig = Object.values(MultichainNetworks).some(
-      (multichainNetwork) =>
-        multichainNetwork === chain.chainId ||
-        (chain.isEvm
-          ? convertCaipToHexChainId(chain.chainId)
-          : chain.chainId) === multichainNetwork,
-    );
-
-    const isCustomNetwork =
-      !isBuiltInNetwork && !isFeaturedRpc && !isMultichainProviderConfig;
-
     trackEvent({
       event: MetaMetricsEventName.NavNetworkSwitched,
       category: MetaMetricsEventCategory.Network,
@@ -443,7 +464,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
         to_network: chainIdToTrack,
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        custom_network: isCustomNetwork,
+        custom_network: isCustomNetworkConfiguration(chain),
       },
     });
   };
@@ -610,6 +631,8 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
 
   const render = () => {
     if (actionMode === ACTION_MODE.LIST) {
+      let draggableIndex = 0;
+
       return (
         <>
           <Box className="multichain-network-list-menu">
@@ -619,19 +642,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
               setFocusSearch={setFocusSearch}
             />
             <Box>
-              {searchedEnabledNetworks.length > 0 && (
-                <Box
-                  padding={4}
-                  display={Display.Flex}
-                  justifyContent={JustifyContent.spaceBetween}
-                >
-                  <Text color={TextColor.textAlternative}>
-                    {t('enabledNetworks')}
-                  </Text>
-                </Box>
-              )}
-
-              {searchedEnabledNetworks.length === 0 &&
+              {!hasEnabledNetworkResults &&
               searchedFeaturedNetworks.length === 0 &&
               searchedTestNetworks.length === 0 &&
               focusSearch ? (
@@ -652,25 +663,46 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
                         {...provided.droppableProps}
                         ref={provided.innerRef}
                       >
-                        {searchedEnabledNetworks.map((network, index) => {
-                          return (
-                            <Draggable
-                              key={network.chainId}
-                              draggableId={network.chainId}
-                              index={index}
-                            >
-                              {(providedDrag) => (
-                                <Box
-                                  ref={providedDrag.innerRef}
-                                  {...providedDrag.draggableProps}
-                                  {...providedDrag.dragHandleProps}
-                                >
-                                  {generateMultichainNetworkListItem(network)}
-                                </Box>
-                              )}
-                            </Draggable>
-                          );
-                        })}
+                        {searchedEnabledNetworkSections.map(
+                          ({ title: sectionTitle, networks }) => (
+                            <React.Fragment key={sectionTitle}>
+                              <Box
+                                padding={4}
+                                display={Display.Flex}
+                                justifyContent={JustifyContent.spaceBetween}
+                              >
+                                <Text color={TextColor.textAlternative}>
+                                  {sectionTitle}
+                                </Text>
+                              </Box>
+                              {networks.map((network) => {
+                                const index = draggableIndex;
+                                draggableIndex += 1;
+
+                                return (
+                                  <Draggable
+                                    key={network.chainId}
+                                    draggableId={network.chainId}
+                                    index={index}
+                                    isDragDisabled={searchQuery !== ''}
+                                  >
+                                    {(providedDrag) => (
+                                      <Box
+                                        ref={providedDrag.innerRef}
+                                        {...providedDrag.draggableProps}
+                                        {...providedDrag.dragHandleProps}
+                                      >
+                                        {generateMultichainNetworkListItem(
+                                          network,
+                                        )}
+                                      </Box>
+                                    )}
+                                  </Draggable>
+                                );
+                              })}
+                            </React.Fragment>
+                          ),
+                        )}
                         {provided.placeholder}
                       </Box>
                     )}
@@ -678,15 +710,12 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
                 </DragDropContext>
               )}
 
-              <PopularNetworkList
-                searchAddNetworkResults={searchedFeaturedNetworks}
-                data-testid="add-popular-network-view"
-              />
               {searchedTestNetworks.length > 0 ? (
                 <Box
                   paddingBottom={4}
                   paddingTop={4}
                   paddingLeft={4}
+                  paddingRight={4}
                   display={Display.Flex}
                   justifyContent={JustifyContent.spaceBetween}
                 >
@@ -719,6 +748,11 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
                   )}
                 </Box>
               ) : null}
+
+              <PopularNetworkList
+                searchAddNetworkResults={searchedFeaturedNetworks}
+                data-testid="add-popular-network-view"
+              />
             </Box>
           </Box>
 
