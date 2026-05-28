@@ -70,8 +70,8 @@ jobs:
               exit 1
             fi
           done
-          if [[ "${TARGET}" == "production" && "${{ github.ref }}" != "refs/heads/main" ]]; then
-            echo "::error::Production uploads must run from the main branch (current: ${{ github.ref }})"
+          if [[ "${TARGET}" == "production" && "${GITHUB_REF}" != "refs/heads/main" ]]; then
+            echo "::error::Production uploads must run from the main branch (current: ${GITHUB_REF})"
             exit 1
           fi
           if [[ "${TARGET}" == "beta" ]]; then
@@ -232,6 +232,10 @@ jobs:
 
       - name: Summary
         if: always()
+        env:
+          HTTP_CODE: ${{ steps.cws-upload.outputs.http_code || 'n/a' }}
+          UPLOAD_STATE: ${{ steps.cws-upload.outputs.upload_state || 'n/a' }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           {
             echo ""
@@ -239,8 +243,8 @@ jobs:
             echo ""
             echo "| Field | Value |"
             echo "|-------|-------|"
-            echo "| HTTP status | \`${{ steps.cws-upload.outputs.http_code || 'n/a' }}\` |"
-            echo "| CWS uploadState | \`${{ steps.cws-upload.outputs.upload_state || 'n/a' }}\` |"
+            echo "| HTTP status | \`${HTTP_CODE}\` |"
+            echo "| CWS uploadState | \`${UPLOAD_STATE}\` |"
             echo "| Published to users | no (upload only) |"
-            echo "| Workflow run | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |"
+            echo "| Workflow run | ${RUN_URL} |"
           } >> "${GITHUB_STEP_SUMMARY}"
