@@ -239,9 +239,7 @@ export default class MochaCompatJunitReporter implements Reporter {
           lines.push(
             `    <testcase name="${escapeXml(testCase.name)}" time="${testCase.durationSeconds}">`,
           );
-          lines.push(
-            `      <failure>${escapeXml(testCase.failure)}</failure>`,
-          );
+          lines.push(`      <failure>${escapeXml(testCase.failure)}</failure>`);
           lines.push('    </testcase>');
         }
       }
