@@ -64,7 +64,9 @@ export function useActivityCellPresentation(
 
         return {
           title: t(labelKeys.title.key, [symbol]),
-          subtitle: t(labelKeys.description.key, [shortenAddress(address)]),
+          subtitle: t(labelKeys.description.key, [
+            shortenAddress(address) || t('unknown'),
+          ]),
           primaryToken: token,
           secondaryToken: undefined,
         };

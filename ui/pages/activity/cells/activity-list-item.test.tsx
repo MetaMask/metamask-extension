@@ -7,8 +7,21 @@ import { ActivityListItem } from './activity-list-item';
 const mockFormatTokenAmount = jest.fn();
 
 jest.mock('../../../hooks/useI18nContext', () => ({
-  useI18nContext: () => (key: string, values?: string[]) =>
-    key === 'activity_convert_success_title' ? `Converted ${values?.[0]}` : key,
+  useI18nContext: () => (key: string, values?: string[]) => {
+    if (key === 'activity_convert_success_title') {
+      return `Converted ${values?.[0]}`;
+    }
+
+    if (key === 'activity_receive_success_description') {
+      return `From: ${values?.[0] ?? ''}`;
+    }
+
+    if (key === 'unknown') {
+      return 'Unknown';
+    }
+
+    return key;
+  },
 }));
 
 jest.mock('../useFormatTokenAmount', () => ({
@@ -311,6 +324,30 @@ describe('ActivityListItem', () => {
     expect(
       screen.getByTestId('transaction-list-item-primary-currency'),
     ).toHaveTextContent('+4 ETH');
+  });
+
+  it('renders Unknown for receive subtitle when from is empty', () => {
+    render(
+      <ActivityListItem
+        data={{
+          type: 'receive',
+          chainId: 'bip122:000000000019d6689c085ae165831e93',
+          status: 'success',
+          timestamp: 0,
+          data: {
+            from: '',
+            to: 'bc1recipient',
+            token: {
+              direction: 'in',
+              symbol: 'BTC',
+            },
+          },
+        }}
+        onClick={jest.fn()}
+      />,
+    );
+
+    expect(screen.getByText('From: Unknown')).toBeInTheDocument();
   });
 
   it('renders convert title, token pair, and signed token amounts', () => {
