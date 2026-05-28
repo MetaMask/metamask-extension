@@ -159,11 +159,7 @@ export type MetaMaskState = Pick<
     | 'tokenSortConfig'
   >;
 } & {
-  // TODO: Remove `participateInMetaMetrics` / `metaMetricsId` here once the codebase and
-  // `FlattenedBackgroundStateProxy` use `completedMetaMetricsOnboarding`, `optedIn`, and
-  // `analyticsId` as the source of truth (and `MetamaskController.getState()` stops injecting the legacy
-  // fields). Update `_buildUserTraitsObject` and any other `MetaMaskState` consumers accordingly.
-  /** Populated by `MetamaskController.getState()` from analytics + metrics prompt completion. */
+  /** Legacy fields derived by `MetamaskController.getState()`. */
   participateInMetaMetrics: boolean | null;
   metaMetricsId: string | null;
 };

@@ -5,6 +5,7 @@ import { useLocation } from 'react-router-dom';
 import {
   DEFAULT_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_METAMETRICS,
   ONBOARDING_UNLOCK_ROUTE,
   LOCK_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
@@ -34,7 +35,7 @@ LocationCapture.propTypes = {
 describe('Onboaring Flow Switch Component', () => {
   let currentPath: string;
 
-  it('should route to default route when completed onboarding', () => {
+  it('routes to default route when completed onboarding', () => {
     const mockState = {
       metamask: {
         completedOnboarding: true,
@@ -57,7 +58,7 @@ describe('Onboaring Flow Switch Component', () => {
     expect(currentPath).toStrictEqual(DEFAULT_ROUTE);
   });
 
-  it('should route to completed onboarding route when seed phrase is other than null', () => {
+  it('routes to completed onboarding route when seed phrase is other than null', () => {
     const mockState = {
       metamask: {
         seedPhraseBackedUp: false,
@@ -81,7 +82,31 @@ describe('Onboaring Flow Switch Component', () => {
     expect(currentPath).toStrictEqual(ONBOARDING_COMPLETION_ROUTE);
   });
 
-  it('should route to lock when seedPhrase is not backed up and unlocked', () => {
+  it('routes to metametrics route when seed phrase is other than null and metrics onboarding is incomplete', () => {
+    const mockState = {
+      metamask: {
+        seedPhraseBackedUp: false,
+        completedMetaMetricsOnboarding: false,
+      },
+    };
+
+    const mockStore = configureMockStore()(mockState);
+    renderWithProvider(
+      <>
+        <OnboardingFlowSwitch />
+        <LocationCapture
+          onLocationChange={(path) => {
+            currentPath = path;
+          }}
+        />
+      </>,
+      mockStore,
+    );
+
+    expect(currentPath).toStrictEqual(ONBOARDING_METAMETRICS);
+  });
+
+  it('routes to lock when seedPhrase is not backed up and unlocked', () => {
     const mockState = {
       metamask: {
         seedPhraseBackedUp: null,
@@ -105,7 +130,7 @@ describe('Onboaring Flow Switch Component', () => {
     expect(currentPath).toStrictEqual(LOCK_ROUTE);
   });
 
-  it('should route to unlock when with appropriate state', () => {
+  it('routes to unlock when with appropriate state', () => {
     const mockState = {
       metamask: {
         seedPhraseBackedUp: null,
@@ -130,7 +155,7 @@ describe('Onboaring Flow Switch Component', () => {
     expect(currentPath).toStrictEqual(ONBOARDING_UNLOCK_ROUTE);
   });
 
-  it('should route to welcome route when not initialized', () => {
+  it('routes to welcome route when not initialized', () => {
     const mockState = {
       metamask: {
         seedPhraseBackedUp: null,

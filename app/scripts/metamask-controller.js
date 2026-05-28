@@ -7075,8 +7075,8 @@ export default class MetamaskController extends EventEmitter {
   setUpCookieHandlerCommunication({ connectionStream }) {
     const {
       metaMetricsId,
-      participateInMetaMetrics,
       dataCollectionForMarketing,
+      participateInMetaMetrics,
     } = this.getState();
 
     if (
