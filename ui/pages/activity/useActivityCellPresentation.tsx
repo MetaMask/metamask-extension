@@ -70,7 +70,22 @@ export function useActivityCellPresentation(
           secondaryToken: sourceToken,
         };
       }
-      case 'wrap':
+      case 'wrap': {
+        const { sourceToken, destinationToken } = activity.data;
+        const sourceSymbol = sourceToken?.symbol;
+        const destinationSymbol = destinationToken?.symbol;
+        const subtitle =
+          sourceSymbol && destinationSymbol
+            ? `${sourceSymbol} → ${destinationSymbol}`
+            : t(labelKeys.description.key, [destinationSymbol ?? '']);
+
+        return {
+          title: t(labelKeys.title.key, [sourceSymbol ?? '']),
+          subtitle,
+          primaryToken: destinationToken,
+          secondaryToken: sourceToken,
+        };
+      }
       case 'unwrap':
       case 'convert': {
         const { sourceToken, destinationToken } = activity.data;
