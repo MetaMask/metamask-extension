@@ -171,6 +171,36 @@ describe('ClosePositionModal', () => {
     mockSubmitRequestToBackground.mockResolvedValue({ success: true });
   });
 
+  describe('perpsClosePosition call', () => {
+    it('includes trackingData with totalFee and marketPrice', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsClosePosition',
+          [
+            expect.objectContaining({
+              trackingData: expect.objectContaining({
+                totalFee: expect.any(Number),
+                marketPrice: 2900,
+              }),
+            }),
+          ],
+        );
+      });
+    });
+  });
+
   describe('auto-focus', () => {
     it('auto-focuses the Close Position submit button on mount', async () => {
       renderWithProvider(
