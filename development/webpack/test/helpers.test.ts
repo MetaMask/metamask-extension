@@ -21,17 +21,19 @@ describe('./utils/helpers.ts', () => {
   describe('ignoreCacheShutdownSignal', () => {
     it('silently ignores SIGINT until cleanup', () => {
       const listeners = new Map<NodeJS.Signals, () => void>();
+      const on = mock.fn((signal: NodeJS.Signals, listener: () => void) => {
+        listeners.set(signal, listener);
+      });
+      const removeListener = mock.fn(
+        (signal: NodeJS.Signals, listener: () => void) => {
+          if (listeners.get(signal) === listener) {
+            listeners.delete(signal);
+          }
+        },
+      );
       const signalProcess = {
-        on: mock.fn((signal: NodeJS.Signals, listener: () => void) => {
-          listeners.set(signal, listener);
-        }),
-        removeListener: mock.fn(
-          (signal: NodeJS.Signals, listener: () => void) => {
-            if (listeners.get(signal) === listener) {
-              listeners.delete(signal);
-            }
-          },
-        ),
+        on,
+        removeListener,
       } as unknown as NodeJS.Process;
       const { mock: error } = mock.method(console, 'error', helpers.noop);
 
@@ -43,8 +45,8 @@ describe('./utils/helpers.ts', () => {
       cleanup();
 
       assert.strictEqual(error.callCount(), 0);
-      assert.strictEqual(signalProcess.on.mock.callCount(), 1);
-      assert.strictEqual(signalProcess.removeListener.mock.callCount(), 1);
+      assert.strictEqual(on.mock.callCount(), 1);
+      assert.strictEqual(removeListener.mock.callCount(), 1);
       assert.strictEqual(listeners.has('SIGINT'), false);
       assert.strictEqual(listeners.has('SIGTERM'), false);
     });
