@@ -6308,7 +6308,7 @@ describe('MetaMaskController', () => {
       });
 
       // Avoid KC.addNewKeyring side-effects and AccountTracker sync touching NetworkController
-      jest.spyOn(getSnapKeyringUtil, 'getSnapKeyring').mockReturnValue({
+      jest.spyOn(getSnapKeyringUtil, 'getSnapKeyring').mockResolvedValue({
         setSelectedAccounts: jest.fn(),
       });
 
@@ -6564,7 +6564,7 @@ describe('MetaMaskController', () => {
       });
 
       // Avoid KC.addNewKeyring side-effects and AccountTracker sync touching NetworkController
-      jest.spyOn(getSnapKeyringUtil, 'getSnapKeyring').mockReturnValue({
+      jest.spyOn(getSnapKeyringUtil, 'getSnapKeyring').mockResolvedValue({
         setSelectedAccounts: jest.fn(),
       });
 
