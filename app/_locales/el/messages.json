@@ -37,9 +37,6 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "Σφάλμα"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "Μη έγκυρος κωδικός QR. Σαρώστε τον κωδικό QR του πορτοφολιού υλικού."
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "Σάρωση κωδικού QR"
   },

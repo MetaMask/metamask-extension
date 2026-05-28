@@ -37,9 +37,6 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "错误"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "二维码无效。请扫描硬件钱包的同步二维码。"
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "扫描二维码"
   },
