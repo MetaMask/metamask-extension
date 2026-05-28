@@ -18,7 +18,7 @@ describe('Swap', function () {
       },
       expectedTransactionsCount: 2,
       expectedDestAmount: '0.0157',
-      expectedActivityAmount: '0.01567',
+      expectedActivityAmount: '+0.01567',
     },
     {
       name: 'should swap USDC to DAI',
@@ -32,7 +32,7 @@ describe('Swap', function () {
       },
       expectedTransactionsCount: 2,
       expectedDestAmount: '9.9',
-      expectedActivityAmount: '9.8996',
+      expectedActivityAmount: '+9.8996',
     },
   ];
 

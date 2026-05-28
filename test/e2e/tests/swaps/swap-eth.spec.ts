@@ -28,7 +28,7 @@ describe('Swap Eth for another Token', function () {
           },
           // The expected amount in destination token can vary as upstream quote data changes.
           expectedDestAmount: '',
-          expectedActivityAmount: '0.3695',
+          expectedActivityAmount: '+0.3695',
           skipStatusPage: true,
         });
       },
