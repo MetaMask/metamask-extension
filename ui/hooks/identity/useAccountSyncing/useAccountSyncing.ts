@@ -10,10 +10,8 @@ import {
   selectIsBackupAndSyncEnabled,
 } from '../../../selectors/identity/backup-and-sync';
 import { getUseExternalServices } from '../../../selectors';
-import {
-  getCompletedOnboarding,
-  getIsUnlocked,
-} from '../../../ducks/metamask/metamask';
+import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import { selectIsSignedIn } from '../../../selectors/identity/authentication';
 
 /**

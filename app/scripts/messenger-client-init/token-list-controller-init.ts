@@ -1,9 +1,9 @@
-import { TokenListController } from '@metamask/assets-controllers';
-import { MessengerClientInitFunction } from './types';
 import {
+  TokenListController,
   TokenListControllerMessenger,
-  TokenListControllerInitMessenger,
-} from './messengers';
+} from '@metamask/assets-controllers';
+import { MessengerClientInitFunction } from './types';
+import { TokenListControllerInitMessenger } from './messengers';
 import { getGlobalChainId } from './init-utils';
 
 export const TokenListControllerInit: MessengerClientInitFunction<

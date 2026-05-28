@@ -30,7 +30,7 @@ export function useTransactionPayMetrics() {
   const totals = useTransactionPayTotals();
   const tokens = useTransactionPayAvailableTokens();
 
-  const hasQuotes = (quotes?.length ?? 0) > 0;
+  const hasQuotes = Boolean(quotes?.length);
   if (hasQuotes && !hasLoadedQuoteRef.current) {
     hasLoadedQuoteRef.current = true;
   }

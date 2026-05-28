@@ -403,10 +403,23 @@ jobs:
 
             try {
               const baseBranch = process.env.BASE_BRANCH;
-              // Try same branch first, then fall back to base branch
-              if (!(await findMatchingRun(branch))) {
+              const runEverythingBranches = new Set(['main', 'stable']);
+              // Try same branch first, then fall back to base branch.
+              // Track which branch provided the match — only run-everything
+              // base branches (main/stable) have fully validated builds (all
+              // tests always run), so only those enable the 2×2 test-skip
+              // matrix. PRs into other branches still reuse builds but must
+              // run all tests.
+              if (await findMatchingRun(branch)) {
+                core.setOutput('builds-from-base-branch', 'false');
+                core.info(`-> builds-from-base-branch=false (matched on same branch '${branch}')`);
+              } else {
                 core.info(`No match on '${branch}', trying '${baseBranch}'...`);
-                if (!(await findMatchingRun(baseBranch))) {
+                if (await findMatchingRun(baseBranch)) {
+                  const isValidated = runEverythingBranches.has(baseBranch);
+                  core.setOutput('builds-from-base-branch', String(isValidated));
+                  core.info(`-> builds-from-base-branch=${isValidated} (matched on base branch '${baseBranch}'${isValidated ? '' : ' — not a run-everything branch'})`);
+                } else {
                   core.info('No reusable builds found. Builds will run fresh.');
                 }
               }
@@ -523,18 +536,20 @@ jobs:
         if: ${{ steps.set-skip-everything.outputs.skip-everything != 'true' }}
         run: echo "needs-lint=true" >> "$GITHUB_OUTPUT"
 
-      # Uses the build-reuse 2x2 matrix: skip only when builds are reused AND
-      # no unit/integration test files changed. Always runs on main/stable.
+      # Uses the build-reuse 2x2 matrix: skip only when builds come from the
+      # base branch (fully validated) AND no unit/integration test files changed.
+      # Same-branch build reuse still skips builds but NOT tests, because we
+      # can't guarantee the donor run's tests passed. Always runs on main/stable.
       - name: Compute needs-unit-and-integration flag
         id: set-needs-unit-and-integration
         if: ${{ steps.set-skip-everything.outputs.skip-everything != 'true' }}
         env:
-          BUILDS_REUSED: ${{ steps.find-reusable-builds.outputs.builds-from-run != '' }}
+          BUILDS_FROM_BASE_BRANCH: ${{ steps.find-reusable-builds.outputs.builds-from-base-branch }}
           FILTER_UNIT_INTEGRATION_COUNT: ${{ steps.filter.outputs.unit_integration_test_files_count }}
         run: |
           echo "=== Unit/integration skip decision ==="
           echo "  Run-everything branch: $IS_RUN_EVERYTHING_BRANCH"
-          echo "  Builds reused: $BUILDS_REUSED"
+          echo "  Builds from base branch: $BUILDS_FROM_BASE_BRANCH"
           echo "  Unit/integration test files changed: $FILTER_UNIT_INTEGRATION_COUNT"
 
           NEEDS=true
@@ -544,10 +559,10 @@ jobs:
           if [[ "$IS_RUN_EVERYTHING_BRANCH" == "true" ]]; then
             REASON="run-everything branch"
 
-          # Build-reuse 2x2 matrix: builds reused AND no test files changed
-          elif [[ "$BUILDS_REUSED" == "true" && "$FILTER_UNIT_INTEGRATION_COUNT" == "0" ]]; then
+          # Build-reuse 2x2 matrix: builds from base branch AND no test files changed
+          elif [[ "$BUILDS_FROM_BASE_BRANCH" == "true" && "$FILTER_UNIT_INTEGRATION_COUNT" == "0" ]]; then
             NEEDS=false
-            REASON="builds reused and no unit/integration test files changed (2x2 matrix)"
+            REASON="builds from base branch and no unit/integration test files changed (2x2 matrix)"
           fi
 
           echo "needs-unit-and-integration=$NEEDS" >> "$GITHUB_OUTPUT"
@@ -558,20 +573,21 @@ jobs:
             echo "-> needs-unit-and-integration=false (reason: $REASON)"
           fi
 
-      # Uses the build-reuse 2x2 matrix: skip only when builds are reused AND
-      # no storybook files changed. Storybook config (.storybook/**), story files
-      # (*.stories.*), and snapshots (*.snap) are excluded from the build hash,
-      # so a storybook-only PR has builds reused but still needs storybook tests.
+      # Uses the build-reuse 2x2 matrix: skip only when builds come from the
+      # base branch (fully validated) AND no storybook files changed. Storybook
+      # config (.storybook/**), story files (*.stories.*), and snapshots (*.snap)
+      # are excluded from the build hash, so a storybook-only PR has builds
+      # reused but still needs storybook tests.
       - name: Compute needs-storybook flag
         id: set-needs-storybook
         if: ${{ steps.set-skip-everything.outputs.skip-everything != 'true' }}
         env:
-          BUILDS_REUSED: ${{ steps.find-reusable-builds.outputs.builds-from-run != '' }}
+          BUILDS_FROM_BASE_BRANCH: ${{ steps.find-reusable-builds.outputs.builds-from-base-branch }}
           FILTER_STORYBOOK_COUNT: ${{ steps.filter.outputs.storybook_files_count }}
         run: |
           echo "=== Storybook skip decision ==="
           echo "  Run-everything branch: $IS_RUN_EVERYTHING_BRANCH"
-          echo "  Builds reused: $BUILDS_REUSED"
+          echo "  Builds from base branch: $BUILDS_FROM_BASE_BRANCH"
           echo "  Storybook files changed: $FILTER_STORYBOOK_COUNT"
 
           NEEDS=true
@@ -581,10 +597,10 @@ jobs:
           if [[ "$IS_RUN_EVERYTHING_BRANCH" == "true" ]]; then
             REASON="run-everything branch"
 
-          # Build-reuse 2x2 matrix: builds reused AND no storybook files changed
-          elif [[ "$BUILDS_REUSED" == "true" && "$FILTER_STORYBOOK_COUNT" == "0" ]]; then
+          # Build-reuse 2x2 matrix: builds from base branch AND no storybook files changed
+          elif [[ "$BUILDS_FROM_BASE_BRANCH" == "true" && "$FILTER_STORYBOOK_COUNT" == "0" ]]; then
             NEEDS=false
-            REASON="builds reused and no storybook files changed (2x2 matrix)"
+            REASON="builds from base branch and no storybook files changed (2x2 matrix)"
           fi
 
           echo "needs-storybook=$NEEDS" >> "$GITHUB_OUTPUT"
@@ -620,13 +636,13 @@ jobs:
             steps.set-skip-everything.outputs.skip-everything != 'true'
           }}
         env:
-          BUILDS_REUSED: ${{ steps.find-reusable-builds.outputs.builds-from-run != '' }}
+          BUILDS_FROM_BASE_BRANCH: ${{ steps.find-reusable-builds.outputs.builds-from-base-branch }}
         run: |
           echo "=== Benchmarks skip decision ==="
-          echo "  Builds reused: $BUILDS_REUSED"
+          echo "  Builds from base branch: $BUILDS_FROM_BASE_BRANCH"
 
-          if [[ "$BUILDS_REUSED" == "true" ]]; then
-            echo "-> needs-benchmarks=false (builds reused — identical output)"
+          if [[ "$BUILDS_FROM_BASE_BRANCH" == "true" ]]; then
+            echo "-> needs-benchmarks=false (builds from base branch — identical output)"
           else
             echo "needs-benchmarks=true" >> "$GITHUB_OUTPUT"
             echo "-> needs-benchmarks=true (fresh builds)"
@@ -638,7 +654,7 @@ jobs:
         env:
           SKIP_E2E: ${{ steps.e2e-override.outputs.skip }}
           FORCE_E2E: ${{ steps.e2e-override.outputs.force }}
-          BUILDS_REUSED: ${{ steps.find-reusable-builds.outputs.builds-from-run != '' }}
+          BUILDS_FROM_BASE_BRANCH: ${{ steps.find-reusable-builds.outputs.builds-from-base-branch }}
           FILTER_E2E_TEST_FILES_COUNT: ${{ steps.filter.outputs.e2e_test_files_count }}
           FILTER_NON_E2E_RELATED_FILES_COUNT: ${{ steps.filter.outputs.non_e2e_related_files_count }}
           FILTER_BUILD_AFFECTING_CI_COUNT: ${{ steps.filter.outputs.build_affecting_ci_files_count }}
@@ -648,7 +664,7 @@ jobs:
           echo "  Run-everything branch: $IS_RUN_EVERYTHING_BRANCH"
           echo "  Manual skip (skip-e2e tag/label): $SKIP_E2E"
           echo "  Manual force (force-e2e tag/label): $FORCE_E2E"
-          echo "  Builds reused: $BUILDS_REUSED"
+          echo "  Builds from base branch: $BUILDS_FROM_BASE_BRANCH"
           echo "  E2E test files changed: $FILTER_E2E_TEST_FILES_COUNT"
           echo "  Non-E2E-related files: $FILTER_NON_E2E_RELATED_FILES_COUNT / $FILTER_ALL_CHANGES_COUNT total"
           echo "  Build-affecting CI files changed: $FILTER_BUILD_AFFECTING_CI_COUNT"
@@ -675,10 +691,10 @@ jobs:
             NEEDS_E2E=false
             REASON="manual override ([skip-e2e] tag or skip-e2e label)"
 
-          # 2. Build-reuse 2x2 matrix: builds reused AND no E2E test files changed
-          elif [[ "$BUILDS_REUSED" == "true" && "$FILTER_E2E_TEST_FILES_COUNT" == "0" ]]; then
+          # 2. Build-reuse 2x2 matrix: builds from base branch AND no E2E test files changed
+          elif [[ "$BUILDS_FROM_BASE_BRANCH" == "true" && "$FILTER_E2E_TEST_FILES_COUNT" == "0" ]]; then
             NEEDS_E2E=false
-            REASON="builds reused and no E2E test files changed (2x2 matrix)"
+            REASON="builds from base branch and no E2E test files changed (2x2 matrix)"
 
           # 3. Existing filter: ALL changed files are non-E2E-related AND none
           #    are build-affecting CI files (e.g. run-build.yml is under .github/

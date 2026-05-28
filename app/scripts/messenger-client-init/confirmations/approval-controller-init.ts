@@ -1,8 +1,10 @@
-import { ApprovalController } from '@metamask/approval-controller';
+import {
+  ApprovalController,
+  ApprovalControllerMessenger,
+} from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { MessengerClientInitFunction } from '../types';
-import { ApprovalControllerMessenger } from '../messengers';
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 
 /**

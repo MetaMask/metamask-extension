@@ -36,6 +36,20 @@ export type BaseReaderProps = {
 };
 
 /**
+ * Known webcam error type discriminants produced by `WebcamUtils`.
+ */
+export const WebcamErrorType = {
+  NoWebcamFound: 'NO_WEBCAM_FOUND',
+} as const;
+
+/**
+ * DOMException names thrown by `getUserMedia` that require special handling.
+ */
+export const DOMExceptionName = {
+  NotAllowed: 'NotAllowedError',
+} as const;
+
+/**
  * Typed webcam error with an optional `type` discriminant used by
  * `WebcamUtils.checkStatus` for the `NO_WEBCAM_FOUND` case.
  */

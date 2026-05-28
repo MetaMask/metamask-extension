@@ -1,14 +1,12 @@
 import {
   MultichainAccountService,
+  MultichainAccountServiceMessenger,
   SOL_ACCOUNT_PROVIDER_NAME,
   TRX_ACCOUNT_PROVIDER_NAME,
   BTC_ACCOUNT_PROVIDER_NAME,
 } from '@metamask/multichain-account-service';
 import { MessengerClientInitFunction } from '../types';
-import {
-  MultichainAccountServiceMessenger,
-  MultichainAccountServiceInitMessenger,
-} from '../messengers/accounts';
+import { MultichainAccountServiceInitMessenger } from '../messengers/accounts';
 import { previousValueComparator } from '../../lib/util';
 import { trace } from '../../../../shared/lib/trace';
 

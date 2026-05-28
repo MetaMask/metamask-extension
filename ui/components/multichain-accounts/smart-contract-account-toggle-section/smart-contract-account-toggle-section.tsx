@@ -1,14 +1,15 @@
 import React, { useMemo } from 'react';
 import { Hex } from '@metamask/utils';
-import { Box, ButtonLink, ButtonLinkSize, Text } from '../../component-library';
 import {
-  AlignItems,
-  Display,
-  JustifyContent,
-  BlockSize,
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import { ButtonLink, ButtonLinkSize, Text } from '../../component-library';
+import {
   TextVariant,
   TextColor,
-  BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
@@ -32,11 +33,11 @@ export const SmartContractAccountToggleSection = ({
     if (pending) {
       return (
         <Box
+          className="flex"
           paddingTop={12}
           paddingBottom={12}
-          display={Display.Flex}
-          justifyContent={JustifyContent.center}
-          alignItems={AlignItems.center}
+          justifyContent={BoxJustifyContent.Center}
+          alignItems={BoxAlignItems.Center}
           data-testid="network-loader"
         >
           <Preloader size={24} />
@@ -60,8 +61,8 @@ export const SmartContractAccountToggleSection = ({
 
   return (
     <Box
-      width={BlockSize.Full}
-      backgroundColor={BackgroundColor.backgroundSection}
+      className="w-full"
+      backgroundColor={BoxBackgroundColor.BackgroundSection}
       paddingTop={3}
       paddingBottom={4}
       paddingLeft={4}

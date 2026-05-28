@@ -52,12 +52,14 @@ import {
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   HardwareWalletType,
+  handleContinueWithPermissionCheck,
   getHardwareWalletErrorCode,
   isUserRejectedHardwareWalletError,
   isRetryableHardwareWalletError,
   useHardwareWalletActions,
   useHardwareWalletConfig,
 } from '../../../../contexts/hardware-wallets';
+import { useBridgeRedirectQueryString } from '../../../../contexts/hardware-wallets/useBridgeRedirectQueryString';
 import {
   getChromiumExtensionCameraSiteSettingsUrl,
   getMozExtensionOriginForDisplay,
@@ -105,26 +107,39 @@ function shouldShowQrCameraBlockedVariant(
  * Renders the appropriate `CameraAccessErrorContent` variant for QR camera
  * permission errors (blocked vs. needed).
  *
+ * Clicking Continue checks the live permission state before acting:
+ * - If granted: retries camera access directly (works in any context).
+ * - If prompt + side panel: redirects to fullscreen for native prompt.
+ * - If prompt + fullscreen/popup: retries (browser will show native prompt).
+ * - If denied: does nothing (user must change settings first).
+ *
  * @param params - Render parameters.
  * @param params.errorCode - The hardware wallet error code.
  * @param params.onRetry - Callback invoked when the user clicks Continue.
  * @param params.isLoading - Whether the retry action is in progress.
+ * @param params.redirectQueryString - Optional query string forwarded to the
+ * fullscreen tab for restoring Swap / Bridge form parameters.
  * @returns The camera-access error content element.
  */
 function renderQrCameraFlowContent({
   errorCode,
   onRetry,
   isLoading,
+  redirectQueryString,
 }: {
   errorCode: ErrorCode | undefined;
   onRetry: () => Promise<void>;
   isLoading: boolean;
+  redirectQueryString?: string | null;
 }): React.JSX.Element {
   const handleOpenSettings = () => {
     globalThis.platform.openTab({
       url: getChromiumExtensionCameraSiteSettingsUrl(),
     });
   };
+
+  const handleContinue = () =>
+    handleContinueWithPermissionCheck(onRetry, redirectQueryString);
 
   if (shouldShowQrCameraBlockedVariant(errorCode)) {
     return (
@@ -133,7 +148,7 @@ function renderQrCameraFlowContent({
         isFirefox={isFirefoxBrowser()}
         mozExtensionDisplay={getMozExtensionOriginForDisplay()}
         onOpenSettings={handleOpenSettings}
-        onContinue={onRetry}
+        onContinue={handleContinue}
         continueLoading={isLoading}
         rootPaddingHorizontal={0}
         rootPaddingBottom={0}
@@ -144,7 +159,7 @@ function renderQrCameraFlowContent({
   return (
     <CameraAccessErrorContent
       variant={CameraAccessErrorContentVariant.Needed}
-      onContinue={onRetry}
+      onContinue={handleContinue}
       continueLoading={isLoading}
       rootPaddingHorizontal={0}
       rootPaddingBottom={0}
@@ -187,6 +202,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
     const { walletType: selectedAccountWalletType } = useHardwareWalletConfig();
     const { ensureDeviceReady, clearError, setConnectionReady } =
       useHardwareWalletActions();
+    const getRedirectQueryString = useBridgeRedirectQueryString();
 
     // Prefer `walletType` from error metadata first (e.g. signature flows where the signing
     // account may differ from the selected account). Read both top-level `metadata` and RPC-style
@@ -538,6 +554,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
                   errorCode: error.code,
                   onRetry: handleRetry,
                   isLoading,
+                  redirectQueryString: getRedirectQueryString(),
                 })}
               {!isQrCameraFlow && standardErrorContent ? (
                 <>

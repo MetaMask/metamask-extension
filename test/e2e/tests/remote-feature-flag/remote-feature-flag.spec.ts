@@ -6,7 +6,7 @@ import { TestSuiteArguments } from '../confirmations/transactions/shared';
 import { login } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import DeveloperOptionsPage from '../../page-objects/pages/developer-options-page';
+import DeveloperOptionsPage from '../../page-objects/pages/debug-page';
 import {
   MOCK_CUSTOMIZED_REMOTE_FEATURE_FLAGS,
   MOCK_META_METRICS_ID,

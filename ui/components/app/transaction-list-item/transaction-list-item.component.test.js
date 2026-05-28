@@ -29,13 +29,13 @@ import {
   getConversionRate,
   getCurrentNetwork,
   getNames,
-  getPreferences,
   getSelectedAccount,
   getShouldShowFiat,
   getTokenExchangeRates,
-  getSelectedInternalAccount,
   getMarketData,
 } from '../../../selectors';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
+import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { getNftContractsByAddressByChain } from '../../../selectors/nft';
 import { abortTransactionSigning } from '../../../store/actions';
 import { setBackgroundConnection } from '../../../store/background-connection';
@@ -116,10 +116,13 @@ jest.mock('../../../store/actions.ts', () => ({
   abortTransactionSigning: jest.fn(),
   getGasFeeTimeEstimate: jest.fn().mockResolvedValue({}),
   updatePreviousGasParams: jest.fn().mockReturnValue({ type: 'TYPE' }),
-  updateTransactionGasFees: jest.fn().mockReturnValue({ type: 'TYPE' }),
   createCancelTransaction: jest.fn().mockReturnValue({ type: 'TYPE' }),
   createSpeedUpTransaction: jest.fn().mockReturnValue({ type: 'TYPE' }),
   captureSingleException: jest.fn().mockReturnValue({ type: 'TYPE' }),
+}));
+
+jest.mock('../../../store/actions/update-transaction-gas-fees', () => ({
+  updateTransactionGasFees: jest.fn().mockReturnValue({ type: 'TYPE' }),
 }));
 
 const mockStore = configureStore();

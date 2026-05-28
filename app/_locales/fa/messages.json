@@ -78,9 +78,6 @@
   "autoLockTimeLimit": {
     "message": "زمان سنج خروج-خودکار (دقایق)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "زمان های بیکار را به شکل دقیقه قبل از خروج MetaMask تنظیم کنید"
-  },
   "average": {
     "message": "اوسط"
   },
@@ -181,12 +178,6 @@
   "createPassword": {
     "message": "ایجاد رمز عبور"
   },
-  "currencyConversion": {
-    "message": "تبادل واحد پول"
-  },
-  "currentLanguage": {
-    "message": "زبان فعلی"
-  },
   "custom": {
     "message": "پیشرفته"
   },
@@ -207,9 +198,6 @@
   },
   "done": {
     "message": "تمام"
-  },
-  "downloadGoogleChrome": {
-    "message": "دانلود گوگل کروم"
   },
   "downloadStateLogs": {
     "message": "دانلود دفترچه وضعیت"
@@ -268,9 +256,6 @@
   },
   "hardwareWallets": {
     "message": "به کیف سخت افزار وصل کنید"
-  },
-  "hardwareWalletsMsg": {
-    "message": "یک کیف سخت افزار را که میخواهید با MetaMast استفاده نمایید، انتخاب کنید"
   },
   "here": {
     "message": "اینجا",
@@ -339,12 +324,6 @@
   "likeToImportTokens": {
     "message": "آیا میخواهید این رمزیاب ها را اضافه نمایید؟"
   },
-  "lineaGoerli": {
-    "message": "شبکه آزمایشی Linea Goerli"
-  },
-  "links": {
-    "message": "لینک ها"
-  },
   "loading": {
     "message": "در حال بارکردن…"
   },
@@ -384,9 +363,6 @@
   },
   "nevermind": {
     "message": "توجه نکنید"
-  },
-  "newAccount": {
-    "message": "حساب جدید"
   },
   "newAccountNumberName": {
     "message": "حساب $1",
@@ -493,9 +469,6 @@
   "restore": {
     "message": "بازیابی"
   },
-  "revealSeedWords": {
-    "message": "کلمات بازیاب را آشکار کنید"
-  },
   "revealSeedWordsWarning": {
     "message": "این کلمات را میتوان جهت سرقت همه حساب های تان استفاده نمود.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -542,9 +515,6 @@
   "showFiatConversionInTestnets": {
     "message": "نمایش تغییرات Testnets"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "این را جهت تبادل فیات بر تیست نیت ها انتخاب نمایید"
-  },
   "showHexData": {
     "message": "نمایش اطلاعات Hex"
   },
@@ -574,9 +544,6 @@
   },
   "stateLogs": {
     "message": "دفترچه وضعیت"
-  },
-  "stateLogsDescription": {
-    "message": "دفترچه وضعیت شامل آدرس های حساب عمومی و معاملات فرستاده شده تان میباشد."
   },
   "submitted": {
     "message": "ارائه شد"

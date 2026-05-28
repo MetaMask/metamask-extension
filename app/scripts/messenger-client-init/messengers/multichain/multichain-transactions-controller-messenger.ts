@@ -1,27 +1,10 @@
-import { Messenger } from '@metamask/messenger';
 import {
-  AccountsControllerAccountAddedEvent,
-  AccountsControllerAccountRemovedEvent,
-  AccountsControllerListMultichainAccountsAction,
-  AccountsControllerAccountTransactionsUpdatedEvent,
-} from '@metamask/accounts-controller';
-import { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
-import { KeyringControllerGetStateAction } from '@metamask/keyring-controller';
+  Messenger,
+  type MessengerActions,
+  type MessengerEvents,
+} from '@metamask/messenger';
+import { MultichainTransactionsControllerMessenger } from '@metamask/multichain-transactions-controller';
 import { RootMessenger } from '../../../lib/messenger';
-
-type Actions =
-  | AccountsControllerListMultichainAccountsAction
-  | SnapControllerHandleRequestAction
-  | KeyringControllerGetStateAction;
-
-type Events =
-  | AccountsControllerAccountAddedEvent
-  | AccountsControllerAccountRemovedEvent
-  | AccountsControllerAccountTransactionsUpdatedEvent;
-
-export type MultichainTransactionsControllerMessenger = ReturnType<
-  typeof getMultichainTransactionsControllerMessenger
->;
 
 /**
  * Get a restricted messenger for the Multichain Transactions controller. This is scoped to the
@@ -31,17 +14,16 @@ export type MultichainTransactionsControllerMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getMultichainTransactionsControllerMessenger(
-  messenger: RootMessenger<Actions, Events>,
-) {
-  const controllerMessenger = new Messenger<
-    'MultichainTransactionsController',
-    Actions,
-    Events,
-    typeof messenger
-  >({
-    namespace: 'MultichainTransactionsController',
-    parent: messenger,
-  });
+  messenger: RootMessenger<
+    MessengerActions<MultichainTransactionsControllerMessenger>,
+    MessengerEvents<MultichainTransactionsControllerMessenger>
+  >,
+): MultichainTransactionsControllerMessenger {
+  const controllerMessenger: MultichainTransactionsControllerMessenger =
+    new Messenger({
+      namespace: 'MultichainTransactionsController',
+      parent: messenger,
+    });
   messenger.delegate({
     messenger: controllerMessenger,
     events: [

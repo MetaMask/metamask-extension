@@ -1,6 +1,7 @@
 /**
  * @jest-environment node
  */
+import { Duplex } from 'stream';
 import { cloneDeep } from 'lodash';
 import nock from 'nock';
 import { obj as createThroughStream } from 'through2';
@@ -45,7 +46,11 @@ import browser from 'webextension-polyfill';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { errorCodes } from '@metamask/rpc-errors';
 import { ERC20 } from '@metamask/controller-utils';
-import { parseCaipAccountId } from '@metamask/utils';
+import {
+  parseCaipAccountId,
+  parseCaipChainId,
+  toCaipAccountId,
+} from '@metamask/utils';
 
 import { createTestProviderTools } from '../../test/stub/provider';
 import {
@@ -70,6 +75,7 @@ import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import { toAssetId } from '../../shared/lib/asset-utils';
 import { HYPERLIQUID_APPROVAL_TYPE } from '../../shared/constants/app';
+import * as gatorPermissionFeatureFlags from '../../shared/lib/gator-permissions/feature-flags';
 import {
   DEFI_REFERRAL_PARTNERS,
   DefiReferralPartner,
@@ -85,6 +91,7 @@ import {
   getPermittedAccountsForScopesByOrigin,
 } from './controllers/permissions';
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
+import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
 import MetaMaskController from './metamask-controller';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
@@ -141,9 +148,9 @@ jest.mock('webextension-polyfill', () => ({
 // shares the same mock instance
 const browserPolyfillMock = jest.mocked(browser);
 
-const { Ganache } = require('../../test/e2e/seeder/ganache');
+const { LocalNodeStub } = require('../../test/stub/local-node');
 
-const ganacheServer = new Ganache();
+const localNodeServer = new LocalNodeStub();
 
 const mockULIDs = [
   '01JKAF3DSGM3AB87EM9N0K41AJ',
@@ -227,7 +234,14 @@ jest.mock('./lib/rpc-method-middleware', () => ({
   createEthAccountsMethodMiddleware: () => (_req, _res, next, _end) => {
     next();
   },
-  createMultichainMethodMiddleware: () => (_req, _res, next, _end) => {
+  createMultichainApiMethodMiddleware: () => (req, res, next, end) => {
+    if (req.method?.startsWith('wallet_')) {
+      res.result = null;
+      return end();
+    }
+    return next();
+  },
+  createMultichainInvokedMethodMiddleware: () => (_req, _res, next, _end) => {
     next();
   },
   createUnsupportedMethodMiddleware: () => (_req, _res, next, _end) => {
@@ -346,6 +360,10 @@ jest.mock('@metamask/core-backend', () => ({
 
 jest.mock('../../shared/lib/environment', () => ({
   ...jest.requireActual('../../shared/lib/environment'),
+}));
+
+jest.mock('../../shared/lib/gator-permissions/feature-flags', () => ({
+  ...jest.requireActual('../../shared/lib/gator-permissions/feature-flags'),
   getEnabledAdvancedPermissions: jest.fn(() => []),
 }));
 
@@ -445,7 +463,7 @@ function createMockCronjobControllerStorageManager() {
 
 describe('MetaMaskController', () => {
   beforeAll(async () => {
-    await ganacheServer.start();
+    await localNodeServer.start();
   });
 
   beforeEach(() => {
@@ -528,7 +546,7 @@ describe('MetaMaskController', () => {
   });
 
   afterAll(async () => {
-    await ganacheServer.quit();
+    await localNodeServer.quit();
   });
 
   describe('Phishing Detection Mock', () => {
@@ -1786,8 +1804,8 @@ describe('MetaMaskController', () => {
     describe('wallet_requestExecutionPermissions (processRequestExecutionPermissions)', () => {
       beforeEach(() => {
         jest
-          .mocked(environment.getEnabledAdvancedPermissions)
-          .mockReturnValue(['erc20-token-revocation']);
+          .mocked(gatorPermissionFeatureFlags.getEnabledAdvancedPermissions)
+          .mockReturnValue(['token-approval-revocation']);
         jest.mocked(forwardRequestToSnap).mockResolvedValue({});
       });
 
@@ -1816,9 +1834,14 @@ describe('MetaMaskController', () => {
           chainId,
           to: '0x0000000000000000000000000000000000000000',
           permission: {
-            type: 'erc20-token-revocation',
+            type: 'token-approval-revocation',
             data: {
-              justification: 'A test permission request',
+              erc20Approve: true,
+              erc721Approve: true,
+              erc721SetApprovalForAll: true,
+              permit2Approve: true,
+              permit2Lockdown: true,
+              permit2InvalidateNonces: true,
             },
             isAdjustmentAllowed: true,
           },
@@ -1933,8 +1956,8 @@ describe('MetaMaskController', () => {
             cacheTimestamp: 0,
           });
         jest
-          .mocked(environment.getEnabledAdvancedPermissions)
-          .mockReturnValue(['erc20-token-revocation']);
+          .mocked(gatorPermissionFeatureFlags.getEnabledAdvancedPermissions)
+          .mockReturnValue(['token-approval-revocation']);
       });
 
       /**
@@ -1974,8 +1997,8 @@ describe('MetaMaskController', () => {
 
       it('omits permission types that are not enabled in the environment', async () => {
         jest.mocked(forwardRequestToSnap).mockResolvedValue({
-          'erc20-token-revocation': {
-            ruleTypes: ['a'],
+          'token-approval-revocation': {
+            ruleTypes: ['expiry'],
           },
           'some-other-permission': {
             ruleTypes: ['b'],
@@ -1985,8 +2008,8 @@ describe('MetaMaskController', () => {
         const response = await getSupportedExecutionPermissions();
 
         expect(response.result).toStrictEqual({
-          'erc20-token-revocation': {
-            ruleTypes: ['a'],
+          'token-approval-revocation': {
+            ruleTypes: ['expiry'],
             chainIds: ['0x1', '0x5'],
           },
         });
@@ -1994,16 +2017,16 @@ describe('MetaMaskController', () => {
 
       it('fills chainIds from EIP-7702 supported chains when the kernel omits chainIds', async () => {
         jest.mocked(forwardRequestToSnap).mockResolvedValue({
-          'erc20-token-revocation': {
-            ruleTypes: ['revoke'],
+          'token-approval-revocation': {
+            ruleTypes: ['expiry'],
           },
         });
 
         const response = await getSupportedExecutionPermissions();
 
         expect(response.result).toStrictEqual({
-          'erc20-token-revocation': {
-            ruleTypes: ['revoke'],
+          'token-approval-revocation': {
+            ruleTypes: ['expiry'],
             chainIds: ['0x1', '0x5'],
           },
         });
@@ -2011,8 +2034,8 @@ describe('MetaMaskController', () => {
 
       it('lowercases and filters kernel chainIds to EIP-7702 supported chains', async () => {
         jest.mocked(forwardRequestToSnap).mockResolvedValue({
-          'erc20-token-revocation': {
-            ruleTypes: ['revoke'],
+          'token-approval-revocation': {
+            ruleTypes: ['expiry'],
             chainIds: ['0x1', '0X5', '0x99', '0xAA'],
           },
         });
@@ -2020,8 +2043,8 @@ describe('MetaMaskController', () => {
         const response = await getSupportedExecutionPermissions();
 
         expect(response.result).toStrictEqual({
-          'erc20-token-revocation': {
-            ruleTypes: ['revoke'],
+          'token-approval-revocation': {
+            ruleTypes: ['expiry'],
             chainIds: ['0x1', '0x5'],
           },
         });
@@ -2029,8 +2052,8 @@ describe('MetaMaskController', () => {
 
       it('keeps chainIds empty when the kernel sends an empty chainIds array', async () => {
         jest.mocked(forwardRequestToSnap).mockResolvedValue({
-          'erc20-token-revocation': {
-            ruleTypes: ['revoke'],
+          'token-approval-revocation': {
+            ruleTypes: ['expiry'],
             chainIds: [],
           },
         });
@@ -2038,8 +2061,8 @@ describe('MetaMaskController', () => {
         const response = await getSupportedExecutionPermissions();
 
         expect(response.result).toStrictEqual({
-          'erc20-token-revocation': {
-            ruleTypes: ['revoke'],
+          'token-approval-revocation': {
+            ruleTypes: ['expiry'],
             chainIds: [],
           },
         });
@@ -2047,8 +2070,8 @@ describe('MetaMaskController', () => {
 
       it('uses EIP-7702 supported chains when kernel chainIds is null', async () => {
         jest.mocked(forwardRequestToSnap).mockResolvedValue({
-          'erc20-token-revocation': {
-            ruleTypes: ['revoke'],
+          'token-approval-revocation': {
+            ruleTypes: ['expiry'],
             chainIds: null,
           },
         });
@@ -2056,8 +2079,8 @@ describe('MetaMaskController', () => {
         const response = await getSupportedExecutionPermissions();
 
         expect(response.result).toStrictEqual({
-          'erc20-token-revocation': {
-            ruleTypes: ['revoke'],
+          'token-approval-revocation': {
+            ruleTypes: ['expiry'],
             chainIds: ['0x1', '0x5'],
           },
         });
@@ -2622,65 +2645,11 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('#addNewAccount', () => {
-      it('throws an error if the keyring controller is locked', async () => {
-        const addNewAccount = metamaskController.addNewAccount();
-        await expect(addNewAccount).rejects.toThrow(
-          'KeyringController - The operation cannot be completed while the controller is locked.',
-        );
-      });
-
-      it('returns an existing account if the accountCount is less than the number of accounts in the keyring', async () => {
-        await metamaskController.createNewVaultAndKeychain('password');
-        const secondAccount = await metamaskController.addNewAccount(1);
-        await metamaskController.addNewAccount(2);
-        await metamaskController.addNewAccount(3);
-
-        const numberOfAccount =
-          metamaskController.keyringController.state.keyrings[0].accounts
-            .length;
-        expect(numberOfAccount).toStrictEqual(4);
-
-        const result = await metamaskController.addNewAccount(1);
-        expect(result).toStrictEqual(secondAccount);
-      });
-
-      it('only checks for accounts in the keyring when comparing accountCount', async () => {
-        await metamaskController.createNewVaultAndKeychain('password');
-        // add a new hd keyring vault to simulate having multiple accounts from different keyrings
-        await metamaskController.importMnemonicToVault(TEST_SEED_ALT);
-
-        const numberOfAccounts = (
-          await metamaskController.keyringController.getAccounts()
-        ).length;
-        expect(numberOfAccounts).toStrictEqual(2);
-
-        await metamaskController.addNewAccount(1);
-
-        const numberOfAccountsForPrimaryKeyring =
-          metamaskController.keyringController.state.keyrings[0].accounts
-            .length;
-        const updatedNumberOfAccounts = (
-          await metamaskController.keyringController.getAccounts()
-        ).length;
-        expect(numberOfAccountsForPrimaryKeyring).toStrictEqual(2);
-        expect(updatedNumberOfAccounts).toStrictEqual(3);
-      });
-    });
-
     describe('#getSeedPhrase', () => {
       it('throws error if keyring controller is locked', async () => {
         await expect(metamaskController.getSeedPhrase()).rejects.toThrow(
           'KeyringController - The operation cannot be completed while the controller is locked.',
         );
-      });
-
-      it('#addNewAccount', async () => {
-        await metamaskController.createNewVaultAndKeychain('password');
-        await metamaskController.addNewAccount(1);
-        const getAccounts =
-          await metamaskController.keyringController.getAccounts();
-        expect(getAccounts).toHaveLength(2);
       });
     });
 
@@ -3838,9 +3807,60 @@ describe('MetaMaskController', () => {
       });
     });
 
+    describe('#setupPatchStoreConnection', () => {
+      it('resolves patchesPromise when the UI sends StartSendingPatches', async () => {
+        // Duplex must not echo writes back or the handler can loop (methodNotFound, etc.).
+        const stream = new Duplex({
+          objectMode: true,
+          read(_size) {
+            this.push(null);
+          },
+          write(_chunk, _enc, cb) {
+            cb();
+          },
+        });
+
+        const { patchesPromise } =
+          metamaskController.setupPatchStoreConnection(stream);
+
+        stream.push({
+          jsonrpc: '2.0',
+          method: PATCH_STORE_SUBSTREAM_METHODS.StartSendingPatches,
+        });
+
+        await flushPromises();
+
+        await expect(patchesPromise).resolves.toBeUndefined();
+        stream.end();
+      });
+
+      it('resolves patchesPromise when the patch-store stream closes before StartSendingPatches', async () => {
+        const stream = new Duplex({
+          objectMode: true,
+          read(_size) {
+            this.push(null);
+          },
+          write(_chunk, _enc, cb) {
+            cb();
+          },
+        });
+
+        const { patchesPromise } =
+          metamaskController.setupPatchStoreConnection(stream);
+
+        stream.end();
+        await flushPromises();
+
+        await expect(patchesPromise).resolves.toBeUndefined();
+      });
+    });
+
     describe('patch store connection', () => {
+      const activeMuxes = [];
+
       function setupPatchStoreConnection({ startUISync = true } = {}) {
         const mux = new ObjectMultiplex();
+        activeMuxes.push(mux);
         mux.createStream('controller');
 
         const patchStream = mux.createStream('patch-store');
@@ -3852,6 +3872,18 @@ describe('MetaMaskController', () => {
 
         return { mux, patchStream, messages };
       }
+
+      afterEach(async () => {
+        for (const mux of activeMuxes) {
+          try {
+            mux.end();
+          } catch {
+            // ignore double-close
+          }
+        }
+        activeMuxes.length = 0;
+        await flushPromises();
+      });
 
       // Wrap `flushPromises` to reframe why we are using this function
       async function flushBufferedWrites() {
@@ -4969,7 +5001,6 @@ describe('MetaMaskController', () => {
           CHAIN_IDS.LINEA_MAINNET,
           CHAIN_IDS.BASE,
           CHAIN_IDS.ARBITRUM,
-          CHAIN_IDS.BSC,
           CHAIN_IDS.POLYGON,
           CHAIN_IDS.OPTIMISM,
           CHAIN_IDS.SEI,
@@ -4977,9 +5008,11 @@ describe('MetaMaskController', () => {
         const networksWithoutFailoverUrls = [
           CHAIN_IDS.SEPOLIA,
           CHAIN_IDS.LINEA_SEPOLIA,
+          CHAIN_IDS.BSC,
           '0x18c7', // MegaETH Testnet
           '0x279f', // Monad Testnet
           '0x539', // Localhost
+          '0x8f', // Monad Mainnet
         ];
 
         // Assert - ensure networks with failovers have failovers, and other networks do not have failovers
@@ -5675,6 +5708,79 @@ describe('MetaMaskController', () => {
         });
       });
 
+      it('uses activePermittedAddressOverride for approval when it matches a later permitted account', async () => {
+        jest
+          .spyOn(metamaskController, 'getPermittedAccounts')
+          .mockReturnValueOnce(mockPermittedAccounts);
+        jest
+          .spyOn(metamaskController.approvalController, 'add')
+          .mockResolvedValueOnce({ approved: true });
+
+        await metamaskController.handleDefiReferral(
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
+          mockTabId,
+          mockNewConnectionTriggerType,
+          { activePermittedAddressOverride: '0x456' },
+        );
+        expect(metamaskController.approvalController.add).toHaveBeenCalledWith({
+          origin: HYPERLIQUID_ORIGIN,
+          type: HYPERLIQUID_APPROVAL_TYPE,
+          requestData: {
+            learnMoreUrl: HYPERLIQUID_LEARN_MORE_URL,
+            partnerId: DefiReferralPartner.Hyperliquid,
+            partnerName: HYPERLIQUID_NAME,
+            selectedAddress: '0x456',
+          },
+          shouldShowRequest: true,
+        });
+        expect(
+          metamaskController._handleDefiReferralApprovedAccount,
+        ).toHaveBeenCalledWith(
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
+          '0x456',
+          mockPermittedAccounts,
+          [],
+        );
+        expect(
+          metamaskController._handleDefiReferralRedirect,
+        ).toHaveBeenCalledWith(
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
+          mockTabId,
+          '0x456',
+        );
+      });
+
+      it('uses caveat address casing when activePermittedAddressOverride matches case-insensitively', async () => {
+        const caveatAddress = '0xAbCdEf0000000000000000000000000000000001';
+        const permittedAccountsForCasing = [caveatAddress, '0x456'];
+        jest
+          .spyOn(metamaskController, 'getPermittedAccounts')
+          .mockReturnValueOnce(permittedAccountsForCasing);
+        jest
+          .spyOn(metamaskController.approvalController, 'add')
+          .mockResolvedValueOnce({});
+
+        await metamaskController.handleDefiReferral(
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
+          mockTabId,
+          mockNewConnectionTriggerType,
+          {
+            activePermittedAddressOverride: caveatAddress.toLowerCase(),
+          },
+        );
+        expect(metamaskController.approvalController.add).toHaveBeenCalledWith({
+          origin: HYPERLIQUID_ORIGIN,
+          type: HYPERLIQUID_APPROVAL_TYPE,
+          requestData: {
+            learnMoreUrl: HYPERLIQUID_LEARN_MORE_URL,
+            partnerId: DefiReferralPartner.Hyperliquid,
+            partnerName: HYPERLIQUID_NAME,
+            selectedAddress: caveatAddress,
+          },
+          shouldShowRequest: true,
+        });
+      });
+
       it('triggers approval without pop-up for a new unprocessed account on navigate to connected tab', async () => {
         jest
           .spyOn(metamaskController, 'getPermittedAccounts')
@@ -5698,6 +5804,32 @@ describe('MetaMaskController', () => {
             selectedAddress: mockPermittedAccount,
           },
           shouldShowRequest: false, // false because triggerType is navigate to connected tab
+        });
+      });
+
+      it('triggers approval without pop-up when permitted account was added via background API', async () => {
+        jest
+          .spyOn(metamaskController, 'getPermittedAccounts')
+          .mockReturnValueOnce(mockPermittedAccounts);
+        jest
+          .spyOn(metamaskController.approvalController, 'add')
+          .mockResolvedValueOnce({});
+
+        await metamaskController.handleDefiReferral(
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
+          mockTabId,
+          ReferralTriggerType.PermittedAccountAdded,
+        );
+        expect(metamaskController.approvalController.add).toHaveBeenCalledWith({
+          origin: HYPERLIQUID_ORIGIN,
+          type: HYPERLIQUID_APPROVAL_TYPE,
+          requestData: {
+            learnMoreUrl: HYPERLIQUID_LEARN_MORE_URL,
+            partnerId: DefiReferralPartner.Hyperliquid,
+            partnerName: HYPERLIQUID_NAME,
+            selectedAddress: mockPermittedAccount,
+          },
+          shouldShowRequest: false,
         });
       });
 
@@ -5984,6 +6116,176 @@ describe('MetaMaskController', () => {
             mockPermittedAccount,
           );
         });
+      });
+    });
+
+    describe('_handleDefiReferralOnPermittedAccountsAdded', () => {
+      const HL_ORIGIN =
+        DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid].origin;
+
+      let mockEvmAccount;
+      let mockCaipAccountId;
+      let handleDefiReferralSpy;
+
+      beforeEach(() => {
+        jest
+          .mocked(parseCaipAccountId)
+          .mockImplementation(
+            jest.requireActual('@metamask/utils').parseCaipAccountId,
+          );
+
+        mockEvmAccount = createMockInternalAccount({
+          address: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
+        });
+        const { namespace, reference } = parseCaipChainId(
+          mockEvmAccount.scopes[0],
+        );
+        mockCaipAccountId = toCaipAccountId(
+          namespace,
+          reference,
+          mockEvmAccount.address,
+        );
+
+        handleDefiReferralSpy = jest
+          .spyOn(metamaskController, 'handleDefiReferral')
+          .mockResolvedValue(undefined);
+
+        metamaskController.accountsController.update((state) => {
+          state.internalAccounts.accounts[mockEvmAccount.id] = mockEvmAccount;
+          state.internalAccounts.selectedAccount = mockEvmAccount.id;
+        });
+
+        metamaskController.appStateController.update((state) => {
+          state.appActiveTab = {
+            id: 914,
+            title: 'Hyperliquid',
+            origin: HL_ORIGIN,
+            protocol: 'https:',
+            url: `${HL_ORIGIN}/trade`,
+            host: 'app.hyperliquid.xyz',
+            href: `${HL_ORIGIN}/trade`,
+          };
+        });
+      });
+
+      afterEach(() => {
+        handleDefiReferralSpy.mockRestore();
+        jest.mocked(parseCaipAccountId).mockReset();
+      });
+
+      it('calls handleDefiReferral when the selected EVM account matches a new permitted CAIP id and appActiveTab matches', () => {
+        metamaskController._handleDefiReferralOnPermittedAccountsAdded({
+          origin: HL_ORIGIN,
+          newCaipAccountIds: [mockCaipAccountId],
+        });
+
+        expect(handleDefiReferralSpy).toHaveBeenCalledTimes(1);
+        expect(handleDefiReferralSpy).toHaveBeenCalledWith(
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
+          914,
+          ReferralTriggerType.PermittedAccountAdded,
+          {
+            activePermittedAddressOverride: mockEvmAccount.address,
+          },
+        );
+      });
+
+      it('does nothing when origin is not Hyperliquid', () => {
+        metamaskController._handleDefiReferralOnPermittedAccountsAdded({
+          origin: DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX].origin,
+          newCaipAccountIds: [mockCaipAccountId],
+        });
+
+        expect(handleDefiReferralSpy).not.toHaveBeenCalled();
+      });
+
+      it('does nothing when the selected account is not EVM', () => {
+        const solAccount = createMockInternalAccount({
+          type: SolAccountType.DataAccount,
+        });
+        metamaskController.accountsController.update((state) => {
+          state.internalAccounts.accounts = {
+            [solAccount.id]: solAccount,
+          };
+          state.internalAccounts.selectedAccount = solAccount.id;
+        });
+
+        metamaskController._handleDefiReferralOnPermittedAccountsAdded({
+          origin: HL_ORIGIN,
+          newCaipAccountIds: [mockCaipAccountId],
+        });
+
+        expect(handleDefiReferralSpy).not.toHaveBeenCalled();
+      });
+
+      it('does nothing when newly permitted ids do not include the selected account address', () => {
+        const otherCaipId = toCaipAccountId(
+          'eip155',
+          '1',
+          '0x0000000000000000000000000000000000000001',
+        );
+
+        metamaskController._handleDefiReferralOnPermittedAccountsAdded({
+          origin: HL_ORIGIN,
+          newCaipAccountIds: [otherCaipId],
+        });
+
+        expect(handleDefiReferralSpy).not.toHaveBeenCalled();
+      });
+
+      it('does nothing when appActiveTab origin does not match', () => {
+        metamaskController.appStateController.update((state) => {
+          state.appActiveTab = {
+            id: 914,
+            title: 'Other',
+            origin: 'https://example.com',
+            protocol: 'https:',
+            url: 'https://example.com/',
+            host: 'example.com',
+            href: 'https://example.com/',
+          };
+        });
+
+        metamaskController._handleDefiReferralOnPermittedAccountsAdded({
+          origin: HL_ORIGIN,
+          newCaipAccountIds: [mockCaipAccountId],
+        });
+
+        expect(handleDefiReferralSpy).not.toHaveBeenCalled();
+      });
+
+      it('does nothing when appActiveTab has no numeric id', () => {
+        metamaskController.appStateController.update((state) => {
+          state.appActiveTab = {
+            id: 'not-a-number',
+            title: 'Hyperliquid',
+            origin: HL_ORIGIN,
+            protocol: 'https:',
+            url: `${HL_ORIGIN}/`,
+            host: 'app.hyperliquid.xyz',
+            href: `${HL_ORIGIN}/`,
+          };
+        });
+
+        metamaskController._handleDefiReferralOnPermittedAccountsAdded({
+          origin: HL_ORIGIN,
+          newCaipAccountIds: [mockCaipAccountId],
+        });
+
+        expect(handleDefiReferralSpy).not.toHaveBeenCalled();
+      });
+
+      it('does nothing when appActiveTab is undefined', () => {
+        metamaskController.appStateController.update((state) => {
+          state.appActiveTab = undefined;
+        });
+
+        metamaskController._handleDefiReferralOnPermittedAccountsAdded({
+          origin: HL_ORIGIN,
+          newCaipAccountIds: [mockCaipAccountId],
+        });
+
+        expect(handleDefiReferralSpy).not.toHaveBeenCalled();
       });
     });
   });
