@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added COTI mainnet and testnet network logos and native COTI token logo
+
 ## [13.32.0]
 
 ### Added
