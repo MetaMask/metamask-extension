@@ -42,6 +42,8 @@ describe('BridgeStatusControllerInit', () => {
     expect(controllerMock).toHaveBeenCalledWith({
       messenger: expect.any(Object),
       clientId: 'extension',
+      clientProduct: 'metamask-extension',
+      clientVersion: 'MOCK_VERSION',
       state: undefined,
       config: {
         customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,

@@ -33,6 +33,8 @@ export const BridgeStatusControllerInit: MessengerClientInitFunction<
     messenger: controllerMessenger,
     state: persistedState.BridgeStatusController,
     clientId: BridgeClientId.EXTENSION,
+    clientProduct: 'metamask-extension',
+    clientVersion: process.env.METAMASK_VERSION,
     fetchFn: async (url, requestOptions) => {
       return await handleFetch(url, {
         method: 'GET',
@@ -65,8 +67,12 @@ export const BridgeStatusControllerInit: MessengerClientInitFunction<
 
     // @ts-expect-error: `trace` function type does not match the expected type.
     traceFn: (...args) => trace(...args),
-    onQuoteStatusUpdateError: (error: Error) => captureException(error),
+    onQuoteStatusUpdateError: (error: Error) => {
+      console.error(error)
+      captureException(error)
+    },
     isQuoteStatusUpdateEnabled: () => {
+      return true
       const { remoteFeatureFlags } = remoteFeatureFlagController.state;
       return remoteFeatureFlags.bridgeQuoteStatusUpdateEnabled === true;
     },
