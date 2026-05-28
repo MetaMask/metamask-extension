@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.32.1]
 
+### Uncategorized
+
+- Bump version to 13.32.1 (#42985)
+
 ## [13.32.0]
 
 ### Added
