@@ -1,70 +1,65 @@
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
+import {
+  getStatusKey,
+  QUEUED_PSEUDO_STATUS,
+  SIGNING_PSUEDO_STATUS,
+} from '../../components/app/transaction-status-label';
 
-const FIAT_DISPLAY_ACTIVITY_TYPES = new Set<ActivityListItem['type']>([
-  'send',
-  'receive',
-  'buy',
-  'deposit',
-  'claim',
-  'claimMusdBonus',
-  'lendingWithdrawal',
-  'nftMint',
-  'contractInteraction',
-  'swapIncomplete',
-]);
-
-const SECONDARY_TOKEN_ACTIVITY_TYPES = new Set<ActivityListItem['type']>([
-  'swap',
-  'bridge',
-  'convert',
-  'lendingDeposit',
-  'lendingWithdrawal',
-]);
-
-const APPROVAL_ACTIVITY_TYPES = new Set<ActivityListItem['type']>([
+const hidePlusSignActivityTypes = new Set<ActivityListItem['type']>([
   'approveSpendingCap',
   'increaseSpendingCap',
   'revokeSpendingCap',
 ]);
 
-export function isApprovalActivityType(
-  type: ActivityListItem['type'],
-): boolean {
-  return APPROVAL_ACTIVITY_TYPES.has(type);
+export function shouldShowPlusSign(activityType: ActivityListItem['type']) {
+  return !hidePlusSignActivityTypes.has(activityType);
 }
 
-export function shouldShowFiatDisplay(item: ActivityListItem): boolean {
-  return FIAT_DISPLAY_ACTIVITY_TYPES.has(item.type);
-}
+export function getActivityCellStatus(data: ActivityListItem) {
+  const transactionGroup =
+    data.raw?.type === 'localTransaction' ? data.raw.data : undefined;
+  const { primaryTransaction } = transactionGroup ?? {};
+  const isEarliestNonce = data.isEarliestNonce ?? false;
 
-export function shouldShowSecondaryTokenAmount(
-  type: ActivityListItem['type'],
-): boolean {
-  return SECONDARY_TOKEN_ACTIVITY_TYPES.has(type);
-}
+  let txStatus: string;
+  if (
+    primaryTransaction?.status === TransactionStatus.confirmed &&
+    primaryTransaction.type === TransactionType.cancel
+  ) {
+    txStatus = 'cancelled';
+  } else if (data.status === 'success') {
+    txStatus = 'confirmed';
+  } else {
+    txStatus = data.status;
+  }
 
-export function getActivityTypeSignOptions(
-  activityType: ActivityListItem['type'],
-): { showPlus: boolean } {
-  return { showPlus: !isApprovalActivityType(activityType) };
+  if (!primaryTransaction?.status) {
+    return { txStatus };
+  }
+
+  const pendingSubtitleKey = getStatusKey(
+    primaryTransaction.status,
+    isEarliestNonce,
+  );
+
+  if (
+    pendingSubtitleKey === SIGNING_PSUEDO_STATUS ||
+    pendingSubtitleKey === QUEUED_PSEUDO_STATUS
+  ) {
+    return { txStatus, pendingSubtitleKey };
+  }
+
+  return { txStatus };
 }
 
 export type GroupedItem =
   | { type: 'pending-header' }
   | { type: 'date-header'; date: number }
   | { type: 'item'; item: ActivityListItem };
-
-/**
- * Whether an activity row belongs in the Pending section.
- * Aligns with activity-v2 `isActivityPendingMergedItem`: adapters map
- * in-flight local, smart-transaction, and non-EVM keyring states to `pending`.
- *
- * @param item - A normalized activity list item.
- * @returns True if the row should appear under the Pending header.
- */
-export function isActivityPendingListItem(item: ActivityListItem): boolean {
-  return item.status === 'pending';
-}
 
 function getItemHash(item: ActivityListItem) {
   return item.data.hash?.toLowerCase();
@@ -130,7 +125,7 @@ export function groupActivityListItems(
   const historical: ActivityListItem[] = [];
 
   for (const item of items) {
-    if (isActivityPendingListItem(item)) {
+    if (item.status === 'pending') {
       pending.push(item);
     } else {
       historical.push(item);

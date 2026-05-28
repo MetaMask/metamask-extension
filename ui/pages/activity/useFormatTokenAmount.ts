@@ -9,7 +9,7 @@ import type {
   TokenAmount,
 } from '../../../shared/lib/activity/types';
 import { useFormatters } from '../../hooks/useFormatters';
-import { getActivityTypeSignOptions } from './helpers';
+import { shouldShowPlusSign } from './helpers';
 
 export function useFormatTokenAmount() {
   const { formatTokenAmount } = useFormatters();
@@ -29,11 +29,8 @@ export function useFormatTokenAmount() {
         return undefined;
       }
 
-      const signOptions = activityType
-        ? getActivityTypeSignOptions(activityType)
-        : undefined;
       const signPrefix = getDisplaySignPrefix(token.direction, {
-        showPlus: signOptions?.showPlus ?? true,
+        showPlus: activityType ? shouldShowPlusSign(activityType) : true,
       });
 
       const formatted = formatTokenAmount(

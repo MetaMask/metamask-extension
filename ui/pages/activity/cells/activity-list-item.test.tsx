@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import type { TransactionGroup } from '../../../../shared/lib/multichain/types';
-import { GenericActivityCell } from './generic-activity-cell';
+import { ActivityListItem } from './activity-list-item';
 
 const mockFormatTokenAmount = jest.fn();
 
@@ -22,10 +22,27 @@ jest.mock('../useFormatFiatAmount', () => ({
 }));
 
 jest.mock('../../../components/ui/icon/status-icon', () => ({
-  StatusIcon: () => <div data-testid="status-icon-rive-mock" />,
+  StatusIcon: () => <span data-testid="status-icon-rive-mock" />,
 }));
 
-describe('GenericActivityCell', () => {
+jest.mock(
+  '../../../components/app/pending-transaction-action-buttons/pending-transaction-cancel-speed-up-provider',
+  () => ({
+    usePendingTransactionGasModal: () => ({
+      setEditGasMode: jest.fn(),
+      onGasModalMetaId: jest.fn(),
+    }),
+  }),
+);
+
+jest.mock(
+  '../../../components/app/transaction-list-item/transaction-list-item-pending-actions',
+  () => ({
+    TransactionListItemPendingActions: () => null,
+  }),
+);
+
+describe('ActivityListItem', () => {
   beforeEach(() => {
     mockFormatTokenAmount.mockReturnValue(undefined);
     mockUseFormatFiatAmount.mockReturnValue(undefined);
@@ -33,7 +50,7 @@ describe('GenericActivityCell', () => {
 
   it('renders successful activity with the confirmed transaction status hook', () => {
     const { getByTestId } = render(
-      <GenericActivityCell
+      <ActivityListItem
         data={{
           type: 'send',
           chainId: 'eip155:1',
@@ -62,7 +79,7 @@ describe('GenericActivityCell', () => {
 
   it('renders failed activity title in error color', () => {
     render(
-      <GenericActivityCell
+      <ActivityListItem
         data={{
           type: 'send',
           chainId: 'eip155:1',
@@ -88,7 +105,7 @@ describe('GenericActivityCell', () => {
 
   it('renders pending spinner when status is pending', () => {
     render(
-      <GenericActivityCell
+      <ActivityListItem
         data={{
           type: 'send',
           chainId: 'eip155:1',
@@ -110,7 +127,7 @@ describe('GenericActivityCell', () => {
 
   it('does not render pending spinner when status is success', () => {
     render(
-      <GenericActivityCell
+      <ActivityListItem
         data={{
           type: 'send',
           chainId: 'eip155:1',
@@ -146,7 +163,7 @@ describe('GenericActivityCell', () => {
     } as unknown as TransactionGroup;
 
     render(
-      <GenericActivityCell
+      <ActivityListItem
         data={{
           type: 'send',
           chainId: 'eip155:1',
@@ -182,7 +199,7 @@ describe('GenericActivityCell', () => {
     } as unknown as TransactionGroup;
 
     render(
-      <GenericActivityCell
+      <ActivityListItem
         data={{
           type: 'send',
           chainId: 'eip155:1',
@@ -207,7 +224,7 @@ describe('GenericActivityCell', () => {
     mockUseFormatFiatAmount.mockReturnValue('$2,500.00');
 
     const { getByTestId } = render(
-      <GenericActivityCell
+      <ActivityListItem
         data={{
           type: 'send',
           chainId: 'eip155:1',
@@ -238,7 +255,7 @@ describe('GenericActivityCell', () => {
     mockFormatTokenAmount.mockReturnValue('-4 ETH');
 
     const { getByTestId } = render(
-      <GenericActivityCell
+      <ActivityListItem
         data={{
           type: 'contractInteraction',
           chainId: 'eip155:1',
@@ -268,7 +285,7 @@ describe('GenericActivityCell', () => {
     mockFormatTokenAmount.mockReturnValue('+4 ETH');
 
     render(
-      <GenericActivityCell
+      <ActivityListItem
         data={{
           type: 'receive',
           chainId: 'eip155:1',
@@ -300,7 +317,7 @@ describe('GenericActivityCell', () => {
     );
 
     render(
-      <GenericActivityCell
+      <ActivityListItem
         data={{
           type: 'convert',
           chainId: 'eip155:59144',

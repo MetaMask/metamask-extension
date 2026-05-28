@@ -11,7 +11,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { useItemInView } from '../../hooks/useItemInView';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import { LegacyDetails } from './legacy-details';
-import { ListItem } from './cells/list-item';
+import { ActivityListItem as ActivityListItemCell } from './cells/activity-list-item';
 import { dedupeItems, getItemKey, groupActivityListItems } from './helpers';
 import { useLocalTransactions } from './useLocalTransactions';
 import { useNonEvmTransactions } from './useNonEvmTransactions';
@@ -118,7 +118,10 @@ export function ActivityList() {
           }
 
           return (
-            <ListItem data={row.item} onClick={() => handleClick(row.item)} />
+            <ActivityListItemCell
+              data={row.item}
+              onClick={() => handleClick(row.item)}
+            />
           );
         }}
         listFooterComponent={

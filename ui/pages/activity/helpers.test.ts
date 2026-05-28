@@ -1,8 +1,7 @@
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import {
-  getActivityTypeSignOptions,
   groupActivityListItems,
-  isActivityPendingListItem,
+  shouldShowPlusSign,
 } from './helpers';
 
 function makeItem(
@@ -23,40 +22,13 @@ function makeItem(
   } as ActivityListItem;
 }
 
-describe('getActivityTypeSignOptions', () => {
+describe('shouldShowPlusSign', () => {
   it('disables plus for approval activities', () => {
-    expect(getActivityTypeSignOptions('approveSpendingCap')).toStrictEqual({
-      showPlus: false,
-    });
+    expect(shouldShowPlusSign('approveSpendingCap')).toBe(false);
   });
 
   it('enables plus for send activities', () => {
-    expect(getActivityTypeSignOptions('send')).toStrictEqual({
-      showPlus: true,
-    });
-  });
-});
-
-describe('isActivityPendingListItem', () => {
-  it('returns true when status is pending', () => {
-    expect(
-      isActivityPendingListItem(
-        makeItem({ timestamp: 1000, status: 'pending' }),
-      ),
-    ).toBe(true);
-  });
-
-  it('returns false when status is success or failed', () => {
-    expect(
-      isActivityPendingListItem(
-        makeItem({ timestamp: 1000, status: 'success' }),
-      ),
-    ).toBe(false);
-    expect(
-      isActivityPendingListItem(
-        makeItem({ timestamp: 1000, status: 'failed' }),
-      ),
-    ).toBe(false);
+    expect(shouldShowPlusSign('send')).toBe(true);
   });
 });
 
