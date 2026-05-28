@@ -819,26 +819,30 @@ describe('Actions', () => {
     it('calls createNewVaultAndRestore', async () => {
       const store = mockStore();
 
-      const createNewVaultAndRestore =
-        background.createNewVaultAndRestore.resolves();
+      const createNewVaultAndRestoreStub = sinon.stub().resolves();
 
-      background.unMarkPasswordForgotten.resolves();
+      background.getApi.returns({
+        createNewVaultAndRestore: createNewVaultAndRestoreStub,
+        unMarkPasswordForgotten: sinon.stub().resolves(),
+      });
 
-      setBackgroundConnection(background);
+      setBackgroundConnection(background.getApi());
 
       await store.dispatch(
         actions.createNewVaultAndRestore('password', 'test'),
       );
-      expect(createNewVaultAndRestore.callCount).toStrictEqual(1);
+      expect(createNewVaultAndRestoreStub.callCount).toStrictEqual(1);
     });
 
     it('calls the expected actions', async () => {
       const store = mockStore();
 
-      background.createNewVaultAndRestore.resolves();
-      background.unMarkPasswordForgotten.resolves();
+      background.getApi.returns({
+        createNewVaultAndRestore: sinon.stub().resolves(),
+        unMarkPasswordForgotten: sinon.stub().resolves(),
+      });
 
-      setBackgroundConnection(background);
+      setBackgroundConnection(background.getApi());
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -3341,21 +3345,31 @@ describe('Actions', () => {
     it('calls markPasswordForgotten', async () => {
       const store = mockStore();
 
-      background.markPasswordForgotten.resolves();
+      const markPasswordForgottenStub = sinon.stub().resolves();
 
-      setBackgroundConnection(background);
+      background.getApi.returns({
+        markPasswordForgotten: markPasswordForgottenStub,
+      });
+
+      setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.markPasswordForgotten());
 
-      expect(background.markPasswordForgotten.callCount).toStrictEqual(1);
+      expect(markPasswordForgottenStub.callCount).toStrictEqual(1);
     });
 
     it('errors when markPasswordForgotten throws', async () => {
       const store = mockStore();
 
-      background.markPasswordForgotten.rejects(new Error('error'));
+      const markPasswordForgottenStub = sinon
+        .stub()
+        .rejects(new Error('error'));
 
-      setBackgroundConnection(background);
+      background.getApi.returns({
+        markPasswordForgotten: markPasswordForgottenStub,
+      });
+
+      setBackgroundConnection(background.getApi());
 
       const expectedActions = [{ type: 'HIDE_LOADING_INDICATION' }];
 
@@ -3371,13 +3385,17 @@ describe('Actions', () => {
     it('calls unMarkPasswordForgotten', async () => {
       const store = mockStore();
 
-      background.unMarkPasswordForgotten.resolves();
+      const unMarkPasswordForgottenStub = sinon.stub().resolves();
 
-      setBackgroundConnection(background);
+      background.getApi.returns({
+        unMarkPasswordForgotten: unMarkPasswordForgottenStub,
+      });
+
+      setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.unMarkPasswordForgotten());
 
-      expect(background.unMarkPasswordForgotten.callCount).toStrictEqual(1);
+      expect(unMarkPasswordForgottenStub.callCount).toStrictEqual(1);
     });
   });
 
