@@ -466,6 +466,70 @@ describe('mapEvmTransactions', () => {
     });
   });
 
+  it('maps a WETH withdrawal to an Unwrap activity', () => {
+    const transaction = {
+      hash: '0x8f2a1c9e4b7d30651234567890abcdef1234567890abcdef1234567890abcdef',
+      timestamp: '2026-05-28T14:15:00.000Z',
+      chainId: Number(CHAIN_IDS.MAINNET),
+      from: subjectAddress,
+      to: wethContractAddress,
+      methodId: '0x2e1a7d4d',
+      transactionCategory: 'UNWRAP',
+      transactionProtocol: 'WETH',
+      transactionType: 'WETH_WITHDRAW',
+      valueTransfers: [
+        {
+          from: subjectAddress,
+          to: wethContractAddress,
+          amount: '1000000000000',
+          decimal: 18,
+          contractAddress: wethContractAddress,
+          symbol: 'WETH',
+          transferType: 'erc20',
+        },
+        {
+          from: wethContractAddress,
+          to: subjectAddress,
+          amount: '1000000000000',
+          decimal: 18,
+          symbol: 'ETH',
+          transferType: 'normal',
+        },
+      ],
+    } as V1TransactionByHashResponse;
+
+    const item = mapApiEvmTransactions({
+      subjectAddress,
+      transaction,
+    });
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
+      type: 'unwrap',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1779977700000,
+      data: {
+        hash: '0x8f2a1c9e4b7d30651234567890abcdef1234567890abcdef1234567890abcdef',
+        sourceToken: {
+          amount: '1000000000000',
+          decimals: 18,
+          direction: 'out',
+          symbol: 'WETH',
+          assetId: toAssetId(wethContractAddress, 'eip155:1'),
+        },
+        destinationToken: {
+          amount: '1000000000000',
+          decimals: 18,
+          direction: 'in',
+          symbol: 'ETH',
+          assetId: toAssetId('0x0000000000000000000000000000000000000000', 'eip155:1'),
+        },
+      },
+    });
+  });
+
   it('maps a MetaMask mUSD bonus claim to a Claim mUSD bonus activity', () => {
     const transaction = {
       hash: '0x875ded271a40278391fca5d71892231afd0cb9592f31bdf3b7c949906cb982c4',

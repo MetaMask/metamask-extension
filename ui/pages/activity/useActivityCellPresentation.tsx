@@ -72,6 +72,8 @@ export function useActivityCellPresentation(
           secondaryToken: sourceToken,
         };
       }
+      case 'wrap':
+      case 'unwrap':
       case 'convert': {
         const { sourceToken, destinationToken } = activity.data;
         const sourceSymbol = sourceToken?.symbol;
@@ -171,20 +173,6 @@ export function useActivityCellPresentation(
             ? activity.data.sourceToken
             : undefined,
         };
-      case 'wrap': {
-        const { sourceToken, destinationToken } = activity.data;
-        const sourceSymbol = sourceToken?.symbol;
-        const destinationSymbol = destinationToken?.symbol;
-
-        return {
-          title: t(labelKeys.title.key, [sourceSymbol]),
-          subtitle: sourceSymbol && destinationSymbol
-          ? `${sourceSymbol} → ${destinationSymbol}`
-          : t(labelKeys.description.key, [sourceSymbol ?? 'Unknown']),
-          primaryToken: destinationToken,
-          secondaryToken: sourceToken,
-        };
-      }
       case 'claimMusdBonus':
         return {
           title,

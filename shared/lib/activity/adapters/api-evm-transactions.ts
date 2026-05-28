@@ -321,6 +321,22 @@ export function mapApiEvmTransactions({
       },
     };
   }
+  if (
+    (transactionCategory === 'UNWRAP')
+  ) {
+    return {
+      type: 'unwrap',
+      chainId,
+      status,
+      timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
+      data: {
+        hash,
+        sourceToken: getToken(sentTransfer, 'out'),
+        destinationToken: getToken(receivedTransfer, 'in'),
+      },
+    };
+  }
 
   if (
     (transactionCategory === 'DEPOSIT')
