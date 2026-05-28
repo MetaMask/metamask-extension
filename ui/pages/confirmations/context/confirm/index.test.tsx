@@ -143,6 +143,28 @@ describe('ConfirmContextProvider', () => {
     });
   });
 
+  it('redirects with deposit startup error state when perps deposit confirmation never appears', () => {
+    jest.useFakeTimers();
+    mockCurrentConfirmation = undefined;
+    mockWindowSearch = `?loader=customAmount&goBackTo=/perps/trade/BTC&${PERPS_CONFIRMATION_STARTUP_FLOW_PARAM}=deposit`;
+    window.history.replaceState({}, '', mockWindowSearch);
+    const store = createStore();
+
+    renderContextProvider(store);
+
+    act(() => {
+      jest.runOnlyPendingTimers();
+    });
+
+    expect(mockNavigate).toHaveBeenCalledWith('/perps/trade/BTC', {
+      replace: true,
+      state: {
+        [PERPS_STARTUP_ERROR_ROUTE_STATE_KEY]:
+          PERPS_CONFIRMATION_STARTUP_FLOW.DEPOSIT,
+      },
+    });
+  });
+
   it('does not redirect with perps startup error state when confirmation appears before timeout', () => {
     jest.useFakeTimers();
     mockCurrentConfirmation = undefined;

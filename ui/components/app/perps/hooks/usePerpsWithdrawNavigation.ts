@@ -117,15 +117,17 @@ export function usePerpsWithdrawNavigation(
       return { route: PERPS_WITHDRAW_ROUTE };
     } catch (error) {
       console.error('Failed to open perps withdraw flow', error);
-      replacePerpsToast({
-        message: t('perpsWithdrawStartErrorTitle'),
-        description: t('perpsWithdrawStartErrorDescription'),
-        actionText: t('tryAgain'),
-        onActionClick: () => {
-          triggerPerpsWithdrawNavigation().catch(() => undefined);
-        },
-        variant: 'error',
-      });
+      if (isConfirmationFlowEnabled) {
+        replacePerpsToast({
+          message: t('perpsWithdrawStartErrorTitle'),
+          description: t('perpsWithdrawStartErrorDescription'),
+          actionText: t('tryAgain'),
+          onActionClick: () => {
+            triggerPerpsWithdrawNavigation().catch(() => undefined);
+          },
+          variant: 'error',
+        });
+      }
       return null;
     } finally {
       isInFlightRef.current = false;

@@ -346,6 +346,7 @@ describe('usePerpsWithdrawNavigation', () => {
 
     expect(triggerResult).toBeNull();
     expect(consoleErrorSpy).toHaveBeenCalled();
+    expect(mockReplacePerpsToast).not.toHaveBeenCalled();
     consoleErrorSpy.mockRestore();
   });
 });
