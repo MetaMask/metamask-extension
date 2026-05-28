@@ -7351,6 +7351,12 @@
   "perpsWithdrawRoutesError": {
     "message": "Could not load withdrawal limits. Try again later."
   },
+  "perpsWithdrawStartErrorDescription": {
+    "message": "Your withdrawal wasn’t started."
+  },
+  "perpsWithdrawStartErrorTitle": {
+    "message": "Something went wrong"
+  },
   "perpsWithdrawToastErrorTitle": {
     "message": "Withdrawal failed"
   },
