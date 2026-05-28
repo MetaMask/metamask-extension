@@ -35,6 +35,10 @@ const EMPTY_RESULT = {
   transactionHash: undefined,
 };
 
+type RelayTransactionTxType = NonNullable<
+  RelaySubmitRequest['metadata']
+>['txType'];
+
 const log = createProjectLogger('delegation-7702-publish-hook');
 
 export class Delegation7702PublishHook {
@@ -165,7 +169,7 @@ export class Delegation7702PublishHook {
       data,
       to,
       metadata: {
-        txType: transactionMeta.type,
+        txType: transactionMeta.type as RelayTransactionTxType,
         client: getClientForTransactionMetadata(),
         origin: sanitizeOrigin(transactionMeta.origin),
       },

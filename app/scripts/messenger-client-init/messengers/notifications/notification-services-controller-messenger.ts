@@ -6,22 +6,17 @@ import {
 import { type NotificationServicesControllerMessenger } from '@metamask/notification-services-controller/notification-services';
 import { RootMessenger } from '../../../lib/messenger';
 
-type Actions = MessengerActions<NotificationServicesControllerMessenger>;
-
-type Events = MessengerEvents<NotificationServicesControllerMessenger>;
-
 export function getNotificationServicesControllerMessenger(
-  messenger: RootMessenger<Actions, Events>,
+  messenger: RootMessenger<
+    MessengerActions<NotificationServicesControllerMessenger>,
+    MessengerEvents<NotificationServicesControllerMessenger>
+  >,
 ): NotificationServicesControllerMessenger {
-  const controllerMessenger = new Messenger<
-    'NotificationServicesController',
-    Actions,
-    Events,
-    typeof messenger
-  >({
-    namespace: 'NotificationServicesController',
-    parent: messenger,
-  });
+  const controllerMessenger: NotificationServicesControllerMessenger =
+    new Messenger({
+      namespace: 'NotificationServicesController',
+      parent: messenger,
+    });
   messenger.delegate({
     messenger: controllerMessenger,
     actions: [

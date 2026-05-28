@@ -104,7 +104,7 @@ async function confirmMintTransaction(driver: Driver) {
   // Verify Mint Transaction is Confirmed before proceeding
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
   await driver.clickElement('[data-testid="account-overview__activity-tab"]');
-  await driver.waitForSelector('.transaction-status-label--confirmed');
+  await driver.waitForSelector('[data-tx-status="confirmed"]');
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 }
 
@@ -170,7 +170,5 @@ async function confirmApproveTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 
   await driver.clickElement({ text: 'Activity', tag: 'button' });
-  await driver.waitForSelector(
-    '.transaction-status-label--confirmed:nth-of-type(1)',
-  );
+  await driver.waitForSelector('[data-tx-status="confirmed"]');
 }
