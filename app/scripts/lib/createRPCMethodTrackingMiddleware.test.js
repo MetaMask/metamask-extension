@@ -24,7 +24,6 @@ import {
   orderSignatureMsg,
 } from '../../../test/data/confirmations/typed_sign';
 import { getDefaultPreferencesControllerState } from '../controllers/preferences-controller';
-import { createSegmentMock } from './segment';
 import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
 import * as snapKeyringMetrics from './snap-keyring/metrics';
 
@@ -133,7 +132,6 @@ const metaMetricsController = new MetaMetricsController({
     fragments: {},
   },
   messenger: controllerMessenger,
-  segment: createSegmentMock(2),
   version: '0.0.1',
   environment: 'test',
   extension: {

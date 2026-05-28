@@ -123,10 +123,6 @@ type TransactionControllerFixtureInput = Partial<
   transactions?: TransactionMeta[];
 };
 
-/**
- * TODO: Migrate E2E fixtures to patch AnalyticsController directly.
- * For now, many tests still pass legacy MetaMetrics keys through this helper.
- */
 type MetaMetricsControllerFixturePatch = Partial<MetaMetricsControllerState> & {
   participateInMetaMetrics?: boolean | null;
   metaMetricsId?: string | null;

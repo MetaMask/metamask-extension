@@ -111,7 +111,7 @@ export class OAuthService {
     payload: MetaMetricsEventPayload,
     options?: MetaMetricsEventOptions,
   ): void {
-    const isMetricsEnabled = this.#getParticipateInMetaMetrics();
+    const isMetricsEnabled = Boolean(this.#getParticipateInMetaMetrics());
 
     if (isMetricsEnabled) {
       this.#trackEvent(payload, options);
