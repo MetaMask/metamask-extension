@@ -238,39 +238,6 @@ export function mapApiEvmTransactions({
     };
   }
 
-  if (
-    (transactionCategory === 'DEPOSIT' && receivedTransfer)
-  ) {
-    return {
-      type: 'wrap',
-      chainId,
-      status,
-      timestamp,
-      raw: { type: 'apiEvmTransaction', data: transaction },
-      data: {
-        hash,
-        sourceToken: getToken(sentTransfer, 'out'),
-        destinationToken: getToken(receivedTransfer, 'in'),
-      },
-    };
-  }
-
-  if (
-    (transactionCategory === 'DEPOSIT')
-  ) {
-    return {
-      type: 'deposit',
-      chainId,
-      status,
-      timestamp,
-      raw: { type: 'apiEvmTransaction', data: transaction },
-      data: {
-        hash,
-        token: getToken(sentTransfer, 'in'),
-      },
-    };
-  }
-
   if (transactionCategory === 'WITHDRAW') {
     return {
       type: 'lendingWithdrawal',
@@ -333,6 +300,40 @@ export function mapApiEvmTransactions({
         sourceToken: getToken(sentTransfer, 'out'),
         destinationToken: getToken(receivedTransfer, 'in'),
         hash,
+      },
+    };
+  }
+
+  // TODO: Not sure if this is specific enough, may need separate category in backend
+  if (
+    (transactionCategory === 'DEPOSIT' && receivedTransfer && !hasSupplyMethodId)
+  ) {
+    return {
+      type: 'wrap',
+      chainId,
+      status,
+      timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
+      data: {
+        hash,
+        sourceToken: getToken(sentTransfer, 'out'),
+        destinationToken: getToken(receivedTransfer, 'in'),
+      },
+    };
+  }
+
+  if (
+    (transactionCategory === 'DEPOSIT')
+  ) {
+    return {
+      type: 'deposit',
+      chainId,
+      status,
+      timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
+      data: {
+        hash,
+        token: getToken(sentTransfer, 'in'),
       },
     };
   }
