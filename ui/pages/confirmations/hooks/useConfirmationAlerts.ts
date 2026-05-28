@@ -8,11 +8,9 @@ import { useGasEstimateFailedAlerts } from './alerts/transactions/useGasEstimate
 import { useGasFeeLowAlerts } from './alerts/transactions/useGasFeeLowAlerts';
 import { useGasSponsorshipWarningAlerts } from './alerts/transactions/useGasSponsorshipWarningAlerts';
 import { useGasTooLowAlerts } from './alerts/transactions/useGasTooLowAlerts';
-import { useAddressPoisoningAlert } from './alerts/transactions/useAddressPoisoningAlert';
 import { useSuggestedGasFeeHighAlert } from './alerts/transactions/useSuggestedGasFeeHighAlert';
 import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
 import { useInsufficientPayTokenBalanceAlert } from './alerts/transactions/useInsufficientPayTokenBalanceAlert';
-import { usePerpsWithdrawInsufficientBalanceAlert } from './alerts/transactions/usePerpsWithdrawInsufficientBalanceAlert';
 import { useMultipleApprovalsAlerts } from './alerts/transactions/useMultipleApprovalsAlerts';
 import { useNoGasPriceAlerts } from './alerts/transactions/useNoGasPriceAlerts';
 import { useNoPayTokenQuotesAlert } from './alerts/transactions/useNoPayTokenQuotesAlert';
@@ -33,6 +31,7 @@ import { useShieldCoverageAlert } from './alerts/useShieldCoverageAlert';
 import { useAddEthereumChainAlerts } from './alerts/useAddEthereumChainAlerts';
 import { useBurnAddressAlert } from './alerts/transactions/useBurnAddressAlert';
 import { useTokenContractAlert } from './alerts/transactions/useTokenContractAlert';
+import { getVisualTestOnlyAlertId } from './visual-test-alert-override';
 
 function useSignatureAlerts(): Alert[] {
   const accountMismatchAlerts = useAccountMismatchAlerts();
@@ -46,7 +45,6 @@ function useSignatureAlerts(): Alert[] {
 
 function useTransactionAlerts(): Alert[] {
   const accountTypeUpgradeAlerts = useAccountTypeUpgrade();
-  const addressPoisoningAlert = useAddressPoisoningAlert();
   const burnAddressAlert = useBurnAddressAlert();
   const firstTimeInteractionAlert = useFirstTimeInteractionAlert();
   const gasEstimateFailedAlerts = useGasEstimateFailedAlerts();
@@ -56,8 +54,6 @@ function useTransactionAlerts(): Alert[] {
   const insufficientBalanceAlerts = useInsufficientBalanceAlerts();
   const insufficientPayTokenBalanceAlerts =
     useInsufficientPayTokenBalanceAlert();
-  const perpsWithdrawInsufficientBalanceAlerts =
-    usePerpsWithdrawInsufficientBalanceAlert();
   const multipleApprovalAlerts = useMultipleApprovalsAlerts();
   const noGasPriceAlerts = useNoGasPriceAlerts();
   const noPayTokenQuotesAlerts = useNoPayTokenQuotesAlert();
@@ -74,7 +70,6 @@ function useTransactionAlerts(): Alert[] {
   return useMemo(
     () => [
       ...accountTypeUpgradeAlerts,
-      ...addressPoisoningAlert,
       ...burnAddressAlert,
       ...firstTimeInteractionAlert,
       ...gasEstimateFailedAlerts,
@@ -83,7 +78,6 @@ function useTransactionAlerts(): Alert[] {
       ...gasTooLowAlerts,
       ...insufficientBalanceAlerts,
       ...insufficientPayTokenBalanceAlerts,
-      ...perpsWithdrawInsufficientBalanceAlerts,
       ...multipleApprovalAlerts,
       ...noGasPriceAlerts,
       ...noPayTokenQuotesAlerts,
@@ -99,7 +93,6 @@ function useTransactionAlerts(): Alert[] {
     ],
     [
       accountTypeUpgradeAlerts,
-      addressPoisoningAlert,
       burnAddressAlert,
       firstTimeInteractionAlert,
       gasEstimateFailedAlerts,
@@ -108,7 +101,6 @@ function useTransactionAlerts(): Alert[] {
       gasTooLowAlerts,
       insufficientBalanceAlerts,
       insufficientPayTokenBalanceAlerts,
-      perpsWithdrawInsufficientBalanceAlerts,
       multipleApprovalAlerts,
       noGasPriceAlerts,
       noPayTokenQuotesAlerts,
@@ -135,32 +127,60 @@ export default function useConfirmationAlerts(): Alert[] {
   const addressTrustSignalAlerts = useAddressTrustSignalAlerts();
   const originTrustSignalAlerts = useOriginTrustSignalAlerts();
   const spenderAlerts = useSpenderAlerts();
+  const tokenTrustSignalAlerts = useTokenTrustSignalAlerts();
   const addEthereumChainAlerts = useAddEthereumChainAlerts();
 
-  return useMemo(
-    () => [
-      ...blockaidAlerts,
-      ...confirmationOriginAlerts,
-      ...signatureAlerts,
-      ...transactionAlerts,
-      ...selectedAccountAlerts,
-      ...networkAndOriginSwitchingAlerts,
-      ...addressTrustSignalAlerts,
-      ...originTrustSignalAlerts,
-      ...spenderAlerts,
-      ...addEthereumChainAlerts,
-    ],
-    [
-      blockaidAlerts,
-      confirmationOriginAlerts,
-      signatureAlerts,
-      transactionAlerts,
-      selectedAccountAlerts,
-      networkAndOriginSwitchingAlerts,
-      addressTrustSignalAlerts,
-      originTrustSignalAlerts,
-      spenderAlerts,
-      addEthereumChainAlerts,
-    ],
-  );
+  return useMemo(() => {
+    const onlyAlertId = getVisualTestOnlyAlertId();
+    if (!onlyAlertId) {
+      return [
+        ...blockaidAlerts,
+        ...confirmationOriginAlerts,
+        ...signatureAlerts,
+        ...transactionAlerts,
+        ...selectedAccountAlerts,
+        ...networkAndOriginSwitchingAlerts,
+        ...addressTrustSignalAlerts,
+        ...originTrustSignalAlerts,
+        ...spenderAlerts,
+        ...addEthereumChainAlerts,
+      ];
+    }
+
+    if (onlyAlertId.startsWith('blockaid-')) {
+      return blockaidAlerts;
+    }
+    if (onlyAlertId.startsWith('trustSignal')) {
+      return addressTrustSignalAlerts;
+    }
+    if (onlyAlertId.startsWith('originTrustSignal')) {
+      return originTrustSignalAlerts;
+    }
+    if (onlyAlertId.startsWith('spenderTrustSignal')) {
+      return spenderAlerts;
+    }
+    if (onlyAlertId.startsWith('tokenTrustSignal')) {
+      return tokenTrustSignalAlerts;
+    }
+    if (onlyAlertId === 'simulationDetailsTitle-resimulation') {
+      return transactionAlerts.filter((a) => a.key === 'simulationDetailsTitle');
+    }
+    if (onlyAlertId === 'multipleApprovals') {
+      return transactionAlerts.filter((a) => a.key === 'multipleApprovals');
+    }
+
+    return [];
+  }, [
+    blockaidAlerts,
+    confirmationOriginAlerts,
+    signatureAlerts,
+    transactionAlerts,
+    selectedAccountAlerts,
+    networkAndOriginSwitchingAlerts,
+    addressTrustSignalAlerts,
+    originTrustSignalAlerts,
+    spenderAlerts,
+    tokenTrustSignalAlerts,
+    addEthereumChainAlerts,
+  ]);
 }

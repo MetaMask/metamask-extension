@@ -23,6 +23,10 @@ import { DAI_CONTRACT_ADDRESS } from '../../components/confirm/info/shared/const
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { getTokenStandardAndDetailsByChain } from '../../../../store/actions';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
+import {
+  getVisualTestOnlyAlertId,
+  getVisualTestTrustSignalAlerts,
+} from '../visual-test-alert-override';
 
 function isZeroAmount(amount: string | number | undefined): boolean {
   return amount === '0' || amount === 0;
@@ -97,6 +101,14 @@ function getAlertSkipReason(
 export function useSpenderAlerts(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
+
+  const visualTestAlerts = getVisualTestTrustSignalAlerts(
+    getVisualTestOnlyAlertId(),
+    t,
+  );
+  if (visualTestAlerts) {
+    return visualTestAlerts;
+  }
 
   const { alertSkipReason, tokenAddressOverride } = useMemo(() => {
     const reason = getAlertSkipReason(currentConfirmation);

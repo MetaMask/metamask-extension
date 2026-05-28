@@ -13,10 +13,22 @@ import { SignatureRequestType } from '../../types/confirm';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { isSecurityAlertsAPIEnabled } from '../../../../../app/scripts/lib/ppom/security-alerts-api';
+import {
+  getVisualTestOnlyAlertId,
+  getVisualTestTrustSignalAlerts,
+} from '../visual-test-alert-override';
 
 export function useAddressTrustSignalAlerts(): Alert[] {
   const { currentConfirmation } = useConfirmContext();
   const t = useI18nContext();
+
+  const visualTestAlerts = getVisualTestTrustSignalAlerts(
+    getVisualTestOnlyAlertId(),
+    t,
+  );
+  if (visualTestAlerts) {
+    return visualTestAlerts;
+  }
 
   const addressToCheck = useMemo(() => {
     if (!currentConfirmation) {

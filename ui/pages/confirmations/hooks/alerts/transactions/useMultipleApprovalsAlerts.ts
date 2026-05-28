@@ -24,6 +24,10 @@ import {
   getUseTransactionSimulations,
   selectNonZeroUnusedApprovalsAllowList,
 } from '../../../../../selectors';
+import {
+  getVisualTestOnlyAlertId,
+  getVisualTestTransactionAlerts,
+} from '../../visual-test-alert-override';
 
 type ApprovalInfo = {
   tokenAddress: Hex;
@@ -234,6 +238,13 @@ async function fetchTokenStandards(
 
 export function useMultipleApprovalsAlerts(): Alert[] {
   const t = useI18nContext();
+  const visualTestAlerts = getVisualTestTransactionAlerts(
+    getVisualTestOnlyAlertId(),
+    t,
+  );
+  if (visualTestAlerts) {
+    return visualTestAlerts;
+  }
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { value: approveBalanceChanges } =
     useBatchApproveBalanceChanges() ?? {};

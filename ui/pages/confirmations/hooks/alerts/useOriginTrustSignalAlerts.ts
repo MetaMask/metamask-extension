@@ -8,10 +8,22 @@ import { useConfirmContext } from '../../context/confirm';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
 import { useOriginTrustSignals } from '../../../../hooks/useOriginTrustSignals';
 import { SignatureRequestType } from '../../types/confirm';
+import {
+  getVisualTestOnlyAlertId,
+  getVisualTestTrustSignalAlerts,
+} from '../visual-test-alert-override';
 
 export function useOriginTrustSignalAlerts(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
+
+  const visualTestAlerts = getVisualTestTrustSignalAlerts(
+    getVisualTestOnlyAlertId(),
+    t,
+  );
+  if (visualTestAlerts) {
+    return visualTestAlerts;
+  }
 
   const origin =
     (currentConfirmation as TransactionMeta)?.origin ??
