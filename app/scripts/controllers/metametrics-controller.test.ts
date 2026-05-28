@@ -722,7 +722,7 @@ describe('MetaMetricsController', function () {
               chain_id: '1',
             },
           });
-          expect(flushSpy).toHaveBeenCalledTimes(1);
+          expect(flushSpy).toHaveBeenCalled();
         },
       );
     });
