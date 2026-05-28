@@ -199,9 +199,6 @@
   "done": {
     "message": "סיום"
   },
-  "downloadGoogleChrome": {
-    "message": "הורד/י את גוגל כרום"
-  },
   "downloadStateLogs": {
     "message": "הורדת יומני מצב"
   },
@@ -259,9 +256,6 @@
   },
   "hardwareWallets": {
     "message": "חבר ארנק חומרה"
-  },
-  "hardwareWalletsMsg": {
-    "message": "בחר/י ארנק חומרה שבו תרצה להשתמש עם MetaMask"
   },
   "here": {
     "message": "כאן",
@@ -366,9 +360,6 @@
   },
   "nevermind": {
     "message": "לא משנה"
-  },
-  "newAccount": {
-    "message": "חשבון חדש"
   },
   "newAccountNumberName": {
     "message": "חשבון $1",

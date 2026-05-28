@@ -78,14 +78,14 @@
     }
 
     &--loader {
+      position: relative;
       height: 550px;
       width: 550px;
       max-width: 550px;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
-      margin-top: -250px;
+      margin-top: -150px;
     }
   }
 
@@ -95,9 +95,12 @@
   }
 
   &__spinner {
+    position: absolute;
+    top: 70%;
+    left: 50%;
+    transform: translateX(-50%);
     width: 2rem;
     height: 2rem;
-    align-self: center;
   }
 }
 

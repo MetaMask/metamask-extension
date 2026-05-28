@@ -75,8 +75,8 @@ export const getPermissionDescription = (
   permissionType?: string,
 ): string => {
   switch (permissionType) {
-    case 'erc20-token-revocation':
-      return i18nContext('confirmTitleDescERC20Revocation');
+    case 'token-approval-revocation':
+      return i18nContext('confirmTitleDescTokenApprovalRevocation');
     default:
       return i18nContext('confirmTitleDescPermission');
   }

@@ -58,7 +58,8 @@ export const AdditionalNetworksInfo = memo(() => {
 
   return (
     <Box
-      paddingTop={2}
+      paddingTop={4}
+      paddingBottom={4}
       paddingRight={4}
       paddingLeft={4}
       onMouseLeave={handleMouseLeave}

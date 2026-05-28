@@ -1,11 +1,12 @@
-import { LoggingController, LogType } from '@metamask/logging-controller';
+import {
+  LoggingController,
+  LogType,
+  LoggingControllerMessenger,
+} from '@metamask/logging-controller';
 import { getRootMessenger } from '../lib/messenger';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
-import {
-  getLoggingControllerMessenger,
-  LoggingControllerMessenger,
-} from './messengers';
+import { getLoggingControllerMessenger } from './messengers';
 import { LoggingControllerInit } from './logging-controller-init';
 
 jest.mock('@metamask/logging-controller');

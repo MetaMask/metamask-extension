@@ -12,6 +12,12 @@ import {
   PERPS_CONSTANTS,
 } from './constants';
 
+// Re-exported here because callers importing `'../../components/app/perps/utils'`
+// resolve to this file (TypeScript prefers sibling `utils.ts` over the
+// `utils/index.ts` barrel). Keep the surface area in sync with `utils/index.ts`.
+export { willFlipPosition } from './utils/orderUtils';
+export { buildPerpsVipTrackingData } from './utils/trackingData';
+
 /**
  * Extract display name from symbol (strips DEX prefix for HIP-3 markets)
  * e.g., "xyz:TSLA" -> "TSLA", "BTC" -> "BTC"

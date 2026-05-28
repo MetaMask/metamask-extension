@@ -225,9 +225,6 @@
   "networks": {
     "message": "நெட்வொர்க்ஸ்"
   },
-  "newAccount": {
-    "message": "புதிய கணக்கு"
-  },
   "newAccountNumberName": {
     "message": "கணக்கு $1",
     "description": "Default name of next account to be created on create account screen"
