@@ -24,13 +24,11 @@ describe('./utils/helpers.ts', () => {
       const on = mock.fn((signal: NodeJS.Signals, listener: () => void) => {
         listeners.set(signal, listener);
       });
-      const off = mock.fn(
-        (signal: NodeJS.Signals, listener: () => void) => {
-          if (listeners.get(signal) === listener) {
-            listeners.delete(signal);
-          }
-        },
-      );
+      const off = mock.fn((signal: NodeJS.Signals, listener: () => void) => {
+        if (listeners.get(signal) === listener) {
+          listeners.delete(signal);
+        }
+      });
       const signalProcess = {
         on,
         off,
