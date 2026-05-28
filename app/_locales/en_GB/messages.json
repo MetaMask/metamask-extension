@@ -37,9 +37,6 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "Error"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "Invalid QR code. Please scan the sync QR code of the hardware wallet."
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "Scan QR code"
   },
@@ -1198,6 +1195,15 @@
   "addressMismatchPunycode": {
     "message": "Punycode version: $1",
     "description": "$1 replaced by punycode version of the URL in confirmation request"
+  },
+  "addressPoisoningBadge": {
+    "message": "Poisoned"
+  },
+  "addressPoisoningMessage": {
+    "message": "This address closely resembles one you've used before. It may have been designed to trick you into sending funds to the wrong recipient."
+  },
+  "addressPoisoningTitle": {
+    "message": "Address poisoning detected"
   },
   "addressQrCodeModalDescription": {
     "message": "Use this address to receive tokens and collectibles on $1",
@@ -2433,6 +2439,9 @@
     "message": "Community contributed",
     "description": "Section heading on the language settings screen for locales maintained by community contributors."
   },
+  "compareAddresses": {
+    "message": "Compare addresses"
+  },
   "completed": {
     "message": "Completed"
   },
@@ -2991,12 +3000,6 @@
   "dappConnections": {
     "message": "Dapp Connections"
   },
-  "dappScanMaliciousTitle": {
-    "message": "Malicious website detected"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "This website is flagged as potentially dangerous. If you reveal your Secret Recovery Phrase, you could put your funds at risk."
-  },
   "dappSuggested": {
     "message": "Site suggested"
   },
@@ -3171,6 +3174,9 @@
   },
   "default": {
     "message": "Default"
+  },
+  "defaultNetworks": {
+    "message": "Default networks"
   },
   "defaultRpcUrl": {
     "message": "Default RPC URL"
@@ -3605,6 +3611,9 @@
   },
   "enterYourPasswordSocialLoginFlow": {
     "message": "Enter MetaMask password"
+  },
+  "enteredMalicious": {
+    "message": "The Address You Entered"
   },
   "errorCode": {
     "message": "Code: $1",
@@ -4574,6 +4583,9 @@
   },
   "knownAddressRecipient": {
     "message": "Known contract address."
+  },
+  "knownSafeAddress": {
+    "message": "Known Address"
   },
   "knownTokenWarning": {
     "message": "This action will edit tokens that are already listed in your wallet, which can be used to phish you. Only approve if you are certain that you mean to change what these tokens represent. Learn more about $1"
@@ -9540,6 +9552,19 @@
   "srpPasteTip": {
     "message": "You can paste your entire Secret Recovery Phrase into any field.",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpRevealMaliciousBlockBody": {
+    "message": "Attackers on $1 are trying to trick you into sharing your Secret Recovery Phrase. Anyone with your phrase can steal everything from your wallet.",
+    "description": "Warning message shown when a malicious site is detected. $1 is the hostname of the current tab."
+  },
+  "srpRevealMaliciousBlockDismiss": {
+    "message": "Back to safety"
+  },
+  "srpRevealMaliciousBlockHeading": {
+    "message": "You might be getting scammed right now"
+  },
+  "srpRevealMaliciousBlockIconAriaLabel": {
+    "message": "Danger"
   },
   "srpSecurityQuizGetStarted": {
     "message": "Get started"

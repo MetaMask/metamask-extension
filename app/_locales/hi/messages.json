@@ -37,9 +37,6 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "गड़बड़ी"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "QR कोड ग़लत है। कृपया hardware wallet के सिंक QR कोड को स्कैन करें।"
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "QR कोड स्कैन करें"
   },
@@ -2279,12 +2276,6 @@
   },
   "dappConnections": {
     "message": "Dapp कनेक्शन्स"
-  },
-  "dappScanMaliciousTitle": {
-    "message": "बुरी नीयत वाली वेबसाइट का पता चला"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "इस वेबसाइट को खतरनाक माना गया है। अगर आप अपना सीक्रेट रिकवरी फ्रेज़ बताते हैं, तो आप अपने फंड्स को खतरे में डाल सकते हैं।"
   },
   "dappSuggested": {
     "message": "सुझावित साइट"

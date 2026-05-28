@@ -5,15 +5,13 @@ import {
   DistributionType,
   EnvironmentType,
   RemoteFeatureFlagController,
+  RemoteFeatureFlagControllerMessenger,
 } from '@metamask/remote-feature-flag-controller';
-import { ENVIRONMENT } from '../../../development/build/constants';
+import { ENVIRONMENT } from '../../../shared/constants/build';
 import { previousValueComparator } from '../lib/util';
 import { getBaseSemVerVersion } from '../../../shared/lib/feature-flags/version-gating';
 import { MessengerClientInitFunction } from './types';
-import {
-  RemoteFeatureFlagControllerInitMessenger,
-  RemoteFeatureFlagControllerMessenger,
-} from './messengers';
+import { RemoteFeatureFlagControllerInitMessenger } from './messengers';
 
 const BUILD_TYPE_MAPPING = {
   flask: DistributionType.Flask,
