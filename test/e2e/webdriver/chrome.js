@@ -66,6 +66,13 @@ class ChromeDriver {
       args.push('--disable-gpu');
     }
 
+    if (process.env.SPECULOS_E2E === '1') {
+      args.push(
+        '--enable-features=WebHID',
+        '--disable-features=WebHidBlocklist',
+      );
+    }
+
     if (isHeadless('SELENIUM')) {
       // TODO: Remove notice and consider non-experimental when results are consistent
       console.warn(
@@ -79,6 +86,13 @@ class ChromeDriver {
     options.setUserPreferences({
       'download.default_directory': `${process.cwd()}/test-artifacts/downloads`,
       'profile.content_settings.exceptions.clipboard': {
+        '[*.]': {
+          last_modified: Date.now(),
+          setting: 1, // 1 = allow
+        },
+      },
+      // Grant WebHID permission for Ledger devices (vendorId: 0x2c97)
+      'profile.content_settings.exceptions.hid_guard_permission': {
         '[*.]': {
           last_modified: Date.now(),
           setting: 1, // 1 = allow

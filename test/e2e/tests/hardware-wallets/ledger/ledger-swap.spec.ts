@@ -1,87 +1,89 @@
-import { Browser } from 'selenium-webdriver';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
-import { WINDOW_TITLES } from '../../../constants';
-import { withFixtures } from '../../../helpers';
+import {
+  withSpeculosFixtures,
+  startSharedSpeculos,
+  stopSharedSpeculos,
+} from '../../../speculos/with-speculos-fixtures';
+import type { SharedSpeculosContext } from '../../../speculos/with-speculos-fixtures';
+import { getBridgeFixtures } from '../../bridge/bridge-test-utils';
+import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED, MOCK_CURRENCY_RATES } from '../../bridge/constants';
 import { login } from '../../../page-objects/flows/login.flow';
-import { checkActivityTransaction } from '../../swaps/shared';
+import { switchToHardwareAccount } from '../../../page-objects/flows/account-list.flow';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import SwapPage from '../../../page-objects/pages/swap/swap-page';
-import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
-import { mockLedgerTransactionRequests } from './mocks';
+import BridgeQuotePage from '../../../page-objects/pages/bridge/quote-page';
+import { WINDOW_TITLES } from '../../../constants';
+import { LEDGER_SEED_BALANCE } from './ledger-helpers';
 
-const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
+const bridgeFixtures = getBridgeFixtures({
+  featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+});
 
-// This test is skipped because it needs to be migrated to the new swap flow
-// eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('Ledger Swap', function () {
-  it('swaps ETH to DAI', async function () {
-    await withFixtures(
+describe('Ledger Swap @speculos', function () {
+  this.timeout(240000);
+
+  let shared: SharedSpeculosContext;
+
+  // eslint-disable-next-line mocha/no-hooks-for-single-case
+  before(async function () {
+    this.timeout(120000);
+    shared = await startSharedSpeculos();
+  });
+
+  // eslint-disable-next-line mocha/no-hooks-for-single-case
+  after(async function () {
+    this.timeout(30000);
+    await stopSharedSpeculos(shared);
+  });
+
+  it('completes a swap from ETH to mUSD with a Ledger account', async function () {
+    await withSpeculosFixtures(
       {
         fixtures: new FixtureBuilderV2()
-          .withSmartTransactionsOptedOut()
-          .withLedgerAccount()
+          .withSpeculosLedgerAccount()
+          .withNetworkRpcUrlOnLocalhost('0x1')
+          .withCurrencyController(MOCK_CURRENCY_RATES)
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+              '0xe708': true,
+              '0xa4b1': true,
+            },
+          })
           .build(),
         localNodeOptions: {
-          loadState: './test/e2e/seeder/network-states/with50Dai.json',
+          hardfork: 'london',
+          chainId: 1,
         },
         title: this.test?.fullTitle(),
-        testSpecificMock: mockLedgerTransactionRequests,
+        testSpecificMock: bridgeFixtures.testSpecificMock,
+        sharedContext: shared,
+        seedBalances: LEDGER_SEED_BALANCE,
       },
-      async ({ driver, localNodes }) => {
-        (await localNodes?.[0]?.setAccountBalance(
-          KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
-          '0x1158e460913d00000',
-        )) ?? console.error('localNodes is undefined or empty');
-
-        await login(driver, {
-          expectedBalance: '20',
-          waitForNonEvmAccounts: false,
-        });
+      async ({ driver }) => {
+        await login(driver, { validateBalance: false });
+        await switchToHardwareAccount(driver, 'Ledger 1');
 
         const homePage = new HomePage(driver);
-        await homePage.checkIfSwapButtonIsClickable();
-
+        await homePage.checkPageIsLoaded();
         await homePage.startSwapFlow();
 
-        if (isFirefox) {
-          // firefox will open swap page in another tab with same name, so we need to close it
-          await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.ExtensionInFullScreenView,
-          );
-          await driver.closeWindow();
-        }
-
-        // switch to the swap page tab
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        const swapPage = new SwapPage(driver);
-        await swapPage.checkPageIsLoaded();
+        const bridgePage = new BridgeQuotePage(driver);
+        await bridgePage.checkPageIsLoaded();
 
-        //  Occasionally, source token is not set automatically in e2e tests for some reason, so we need to do it manually
-        await swapPage.selectSourceToken('TESTETH');
+        await bridgePage.enterBridgeQuote({
+          amount: '1',
+          tokenTo: 'mUSD',
+        });
+        await bridgePage.waitForQuote();
 
-        await swapPage.enterSwapAmount('2');
-        await swapPage.selectDestinationToken('DAI');
-
-        await swapPage.dismissManualTokenWarning();
-        await swapPage.checkSwapButtonIsEnabled();
-        // To mitigate flakiness where the Swap page is re-rendered after submitting the swap (#36501)
-        await driver.delay(5000);
-        await swapPage.submitSwap();
-        await swapPage.waitForTransactionToComplete();
+        await bridgePage.submitQuote();
+        await bridgePage.approveModalIfPresent();
 
         await homePage.checkPageIsLoaded();
-        // check activity list
-        await homePage.goToActivityList();
-
-        await checkActivityTransaction(driver, {
-          index: 0,
-          amount: '2',
-          swapFrom: 'TESTETH',
-          swapTo: 'DAI',
-        });
       },
     );
   });

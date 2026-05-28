@@ -1,3 +1,4 @@
+import { merge } from 'lodash';
 import { Hex } from '@metamask/utils';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { TransactionType } from '@metamask/transaction-controller';
@@ -14,9 +15,21 @@ import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib
 import { AlertsName } from '../constants';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
+import * as useTransactionPayTokenModule from '../../pay/useTransactionPayToken';
 import { usePayHardwareAccountAlert } from './usePayHardwareAccountAlert';
 
+jest.mock('../../pay/useTransactionPayToken');
+
 const HARDWARE_ACCOUNT_ID = 'hardware-account-id';
+const SELECTED_ACCOUNT_ID = 'selected-account-id';
+const SELECTED_ACCOUNT_ADDRESS = '0x2';
+
+const PAY_TOKEN_MOCK = {
+  address: '0x1234' as Hex,
+  chainId: '0x5' as Hex,
+  balanceRaw: '0x0',
+  balanceUsd: '0',
+};
 
 function createHardwareAccountState(keyringType: string) {
   return {
@@ -45,8 +58,30 @@ function createHardwareAccountState(keyringType: string) {
             scopes: ['eip155:0'],
             type: 'eip155:eoa',
           },
+          [SELECTED_ACCOUNT_ID]: {
+            address: SELECTED_ACCOUNT_ADDRESS,
+            id: SELECTED_ACCOUNT_ID,
+            metadata: {
+              importTime: 0,
+              name: 'Selected Account',
+              keyring: {
+                type: 'HD Key Tree',
+              },
+              lastSelected: 0,
+            },
+            options: {},
+            methods: [
+              'personal_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            scopes: ['eip155:0'],
+            type: 'eip155:eoa',
+          },
         },
-        selectedAccount: HARDWARE_ACCOUNT_ID,
+        selectedAccount: SELECTED_ACCOUNT_ID,
       },
       accountIdByAddress: {
         [CONTRACT_INTERACTION_SENDER_ADDRESS]: HARDWARE_ACCOUNT_ID,
@@ -55,7 +90,21 @@ function createHardwareAccountState(keyringType: string) {
   };
 }
 
-function runHookWithMusdConversion(keyringType: string = 'HD Key Tree') {
+function mockPayToken(payToken: object | null = PAY_TOKEN_MOCK) {
+  jest
+    .mocked(useTransactionPayTokenModule.useTransactionPayToken)
+    .mockReturnValue({
+      payToken,
+      setPayToken: jest.fn(),
+    } as ReturnType<typeof useTransactionPayTokenModule.useTransactionPayToken>);
+}
+
+function runHookWithMusdConversion(
+  keyringType: string = 'HD Key Tree',
+  payToken: object | null = PAY_TOKEN_MOCK,
+) {
+  mockPayToken(payToken);
+
   const transaction = {
     ...genUnapprovedContractInteractionConfirmation({
       address: CONTRACT_INTERACTION_SENDER_ADDRESS as Hex,
@@ -75,6 +124,8 @@ function runHookWithMusdConversion(keyringType: string = 'HD Key Tree') {
 }
 
 function runHookWithContractInteraction(keyringType: string) {
+  mockPayToken(PAY_TOKEN_MOCK);
+
   const transaction = genUnapprovedContractInteractionConfirmation({
     address: CONTRACT_INTERACTION_SENDER_ADDRESS as Hex,
   });
@@ -91,6 +142,8 @@ function runHookWithContractInteraction(keyringType: string) {
 }
 
 function runHookWithoutTransaction() {
+  mockPayToken(null);
+
   const state = getMockConfirmState();
 
   return renderHookWithConfirmContextProvider(
@@ -109,7 +162,7 @@ const EXPECTED_ALERT = {
 };
 
 describe('usePayHardwareAccountAlert', () => {
-  it('returns alert for Ledger account on musdConversion', async () => {
+  it('returns alert for Ledger account on musdConversion with pay token', async () => {
     const { result } = runHookWithMusdConversion(KeyringTypes.ledger);
 
     await waitFor(() => {
@@ -117,7 +170,7 @@ describe('usePayHardwareAccountAlert', () => {
     });
   });
 
-  it('returns alert for Trezor account on musdConversion', async () => {
+  it('returns alert for Trezor account on musdConversion with pay token', async () => {
     const { result } = runHookWithMusdConversion(KeyringTypes.trezor);
 
     await waitFor(() => {
@@ -125,12 +178,21 @@ describe('usePayHardwareAccountAlert', () => {
     });
   });
 
-  it('returns alert for Lattice account on musdConversion', async () => {
+  it('returns alert for Lattice account on musdConversion with pay token', async () => {
     const { result } = runHookWithMusdConversion(KeyringTypes.lattice);
 
     await waitFor(() => {
       expect(result.current).toStrictEqual([EXPECTED_ALERT]);
     });
+  });
+
+  it('returns no alert for hardware wallet on musdConversion without pay token', () => {
+    const { result } = runHookWithMusdConversion(
+      KeyringTypes.ledger,
+      null,
+    );
+
+    expect(result.current).toStrictEqual([]);
   });
 
   it('returns no alert for non-hardware wallet account on musdConversion', () => {

@@ -470,3 +470,7 @@ env:
 
   # Passkey / Biometrics unlock
   - PASSKEY_ENABLED: true
+
+  # Speculos E2E testing (device model and firmware binary)
+  - SPECULOS_DEVICE: ''
+  - SPECULOS_ELF: ''

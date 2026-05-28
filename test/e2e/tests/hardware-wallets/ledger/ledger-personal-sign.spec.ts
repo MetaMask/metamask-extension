@@ -1,42 +1,45 @@
 import { Suite } from 'mocha';
-import { Driver } from '../../../webdriver/driver';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
-import { withFixtures } from '../../../helpers';
+import { withSpeculosFixtures } from '../../../speculos/with-speculos-fixtures';
 import { WINDOW_TITLES } from '../../../constants';
-import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
 import { login } from '../../../page-objects/flows/login.flow';
 import TestDappPage from '../../../page-objects/pages/test-dapp';
-import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
+import HardwareWalletConfirmation from '../../../page-objects/pages/hardware-wallet/hardware-wallet-confirmation';
+import { SPECULOS_LEDGER_ADDRESS, approveSigning } from './ledger-helpers';
 
-describe('Ledger Hardware Signatures', function (this: Suite) {
+describe('Ledger Hardware Signatures @speculos', function (this: Suite) {
+  this.timeout(180000);
+
   it('personal sign', async function () {
-    await withFixtures(
+    await withSpeculosFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
-          .withLedgerAccount()
+          .withSpeculosLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
-            account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+            account: SPECULOS_LEDGER_ADDRESS,
           })
           .build(),
         title: this.test?.fullTitle(),
       },
-      async ({ driver }: { driver: Driver }) => {
-        await login(driver, {
-          validateBalance: false,
-          waitForNonEvmAccounts: false,
-        });
+      async ({ driver, interaction, apduBridge }) => {
+        await login(driver, { validateBalance: false });
+
+        const ledgerDone = approveSigning(interaction, apduBridge);
+
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage();
         await testDappPage.checkPageIsLoaded();
         await testDappPage.personalSign();
+
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const confirmation = new Confirmation(driver);
-        await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        const confirmation = new HardwareWalletConfirmation(driver);
+        await confirmation.clickFooterConfirmButtonOrReconnect();
+
+        await ledgerDone;
+
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDappPage.checkSuccessPersonalSign(
-          KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
-        );
+        await testDappPage.checkSuccessPersonalSign(SPECULOS_LEDGER_ADDRESS);
       },
     );
   });

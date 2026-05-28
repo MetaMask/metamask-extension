@@ -687,6 +687,24 @@ class TestDapp {
     }, 10000);
   }
 
+  async getTokenAddressesText(): Promise<string> {
+    await this.driver.waitForSelector({
+      css: this.erc20TokenAddresses,
+      text: '0x',
+    });
+    const el = await this.driver.findElement(this.erc20TokenAddresses);
+    return el.getText();
+  }
+
+  async getERC721TokenAddressesText(): Promise<string> {
+    await this.driver.waitForSelector({
+      css: this.erc721TokenAddresses,
+      text: '0x',
+    });
+    const el = await this.driver.findElement(this.erc721TokenAddresses);
+    return el.getText();
+  }
+
   /**
    * Checks the value of a ERC-721 token address once created.
    *

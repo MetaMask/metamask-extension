@@ -88,6 +88,7 @@ const blocklistedHosts = [
   'bsc-dataseed.binance.org',
   'bsc-mainnet.infura.io',
   'carrot.megaeth.com',
+  'cdn.live.ledger.com',
   'linea-mainnet.infura.io',
   'linea-sepolia.infura.io',
   'mainnet.infura.io',
@@ -96,6 +97,7 @@ const blocklistedHosts = [
   'sei-mainnet.infura.io',
   'sepolia.infura.io',
   'testnet-rpc.monad.xyz',
+  'yt3.googleusercontent.com',
 ];
 const {
   mockEmptyStalelistAndHotlist,

@@ -76,15 +76,22 @@ async function runningOnGitHubActions(fullTestList: string[]) {
     changedOrNewTests = readChangedAndFilterE2eChangedFiles();
   }
 
-  console.log('Changed or new test list:', changedOrNewTests);
-  console.log('Full test list:', fullTestList);
-
   // Determine the test matrix division
   // GitHub Actions uses matrix.index (0-based) and matrix.total values for test splitting
   const matrixIndex = parseInt(process.env.MATRIX_INDEX || '0', 10);
   const matrixTotal = parseInt(process.env.MATRIX_TOTAL || '1', 10);
   const runAttempt = parseInt(process.env.RUN_ATTEMPT || '1', 10);
   const previousResultsPath = process.env.PREVIOUS_RESULTS_PATH;
+
+  if (process.env.SPECULOS_E2E === '1' && matrixTotal > 1) {
+    console.log(
+      'Speculos sharded run detected; disabling changed-test repetition so each spec runs once across shards.',
+    );
+    changedOrNewTests = [];
+  }
+
+  console.log('Changed or new test list:', changedOrNewTests);
+  console.log('Full test list:', fullTestList);
 
   console.log(
     `GitHub Actions matrix: index ${matrixIndex} of ${matrixTotal} total jobs (attempt ${runAttempt})`,
@@ -188,6 +195,10 @@ async function main(): Promise<void> {
             description: `run performance e2e tests`,
             type: 'boolean',
           })
+          .option('ledger', {
+            description: `run hardware wallet (Ledger/Speculos) e2e tests only`,
+            type: 'boolean',
+          })
           .option('build-type', {
             description: `Sets the build-type to test for. This may filter out tests.`,
             type: 'string',
@@ -225,6 +236,7 @@ async function main(): Promise<void> {
     updatePrivacySnapshot,
     multiProvider,
     performance: runPerformanceTests,
+    ledger: runLedgerTests,
   } = argv as {
     browser?: 'chrome' | 'firefox';
     debug?: boolean;
@@ -236,6 +248,7 @@ async function main(): Promise<void> {
     updatePrivacySnapshot?: boolean;
     multiProvider?: boolean;
     performance?: boolean;
+    ledger?: boolean;
   };
 
   let testPaths: string[];
@@ -283,6 +296,9 @@ async function main(): Promise<void> {
   } else if (runPerformanceTests) {
     const testDir = path.join(__dirname, '../performance-tests');
     testPaths = await getTestPathsForTestDir(testDir);
+  } else if (runLedgerTests) {
+    const testDir = path.join(__dirname, 'tests/hardware-wallets/ledger');
+    testPaths = await getTestPathsForTestDir(testDir);
   } else {
     const testDir = path.join(__dirname, 'tests');
     const filteredFlaskAndMainTests = featureTestsOnMain.filter((p) =>
@@ -292,6 +308,12 @@ async function main(): Promise<void> {
       ...(await getTestPathsForTestDir(testDir)),
       ...filteredFlaskAndMainTests,
     ];
+  }
+
+  if (!process.env.SPECULOS_E2E) {
+    testPaths = testPaths.filter(
+      (p) => !p.includes('hardware-wallets/ledger'),
+    );
   }
 
   if (isReleaseCandidateBranch()) {

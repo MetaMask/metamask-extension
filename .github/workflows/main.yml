@@ -351,6 +351,17 @@ jobs:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
+  build-test-speculos-webpack:
+    needs:
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-test-speculos-webpack
+      build-command: yarn build:test:speculos --zip
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
+    secrets: inherit
+
   build-test-mv2-webpack:
     needs:
       - get-requirements
@@ -529,6 +540,18 @@ jobs:
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
       use-matrix: ${{ needs.prep-e2e.outputs.use-matrix }}
+    secrets:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+
+  e2e-speculos:
+    needs:
+      - get-requirements
+      - prep-e2e
+      - build-test-speculos-webpack
+    uses: ./.github/workflows/e2e-speculos.yml
+    if: ${{ !cancelled() && needs.get-requirements.outputs.needs-e2e == 'true' && !contains(needs.*.result, 'failure') }}
+    with:
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
@@ -727,6 +750,7 @@ jobs:
       - prep-e2e
       - e2e-chrome
       - e2e-firefox
+      - e2e-speculos
       - build-storybook
       - build-ts-migration-dashboard
       - trigger-regression-validation

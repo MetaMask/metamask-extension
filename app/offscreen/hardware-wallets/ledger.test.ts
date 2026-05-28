@@ -305,6 +305,8 @@ describe('Ledger Offscreen', () => {
         const consoleSpy = jest
           .spyOn(console, 'error')
           .mockImplementation(() => undefined);
+        const originalInTest = process.env.IN_TEST;
+        delete process.env.IN_TEST;
         mockOpenConnected.mockResolvedValue(null);
         mockGetDevices.mockResolvedValue([]);
 
@@ -316,6 +318,7 @@ describe('Ledger Offscreen', () => {
             message: expect.stringContaining('No permitted Ledger device'),
           }),
         });
+        process.env.IN_TEST = originalInTest;
         consoleSpy.mockRestore();
       });
     });

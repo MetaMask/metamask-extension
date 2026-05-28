@@ -1,30 +1,72 @@
-import { Browser } from 'selenium-webdriver';
+import { Suite } from 'mocha';
+import { SPECULOS_LEDGER_ADDRESSES } from '@metamask/hw-emulator';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
-import { withFixtures } from '../../../helpers';
-import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
+import {
+  withSpeculosFixtures,
+  startSharedSpeculos,
+  stopSharedSpeculos,
+} from '../../../speculos/with-speculos-fixtures';
+import type { SharedSpeculosContext } from '../../../speculos/with-speculos-fixtures';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import ConnectHardwareWalletPage from '../../../page-objects/pages/hardware-wallet/connect-hardware-wallet-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import SelectHardwareWalletAccountPage from '../../../page-objects/pages/hardware-wallet/select-hardware-wallet-account-page';
 import MultichainAccountDetailsPage from '../../../page-objects/pages/multichain/multichain-account-details-page';
+import AddressListModal from '../../../page-objects/pages/multichain/address-list-modal';
 import { login } from '../../../page-objects/flows/login.flow';
-import { checkAccountAddressDisplayedInAccountList } from '../../../page-objects/flows/account-list.flow';
+import { shortenAddress } from '../../../../../ui/helpers/utils/util';
 
-describe('Ledger Hardware', function () {
+async function checkSpeculosAccountsInList(
+  driver: import('../../../webdriver/driver').Driver,
+  count: number,
+): Promise<void> {
+  const accountListPage = new AccountListPage(driver);
+  await accountListPage.checkPageIsLoaded();
+  const addressListModal = new AddressListModal(driver);
+  for (let index = 0; index < count; index++) {
+    const accountName = `Ledger Account ${index + 1}`;
+    await accountListPage.checkAccountDisplayedInAccountList(accountName);
+    await accountListPage.openMultichainAccountMenu({
+      accountLabel: accountName,
+    });
+    await accountListPage.checkMultiChainAccountMenuIsDisplayed();
+    await accountListPage.clickMultichainAccountMenuItem('Addresses');
+    await addressListModal.checkNetworkAddressIsDisplayed(
+      shortenAddress(SPECULOS_LEDGER_ADDRESSES[index]),
+    );
+    await addressListModal.goBack();
+  }
+}
+
+describe('Ledger Hardware Account Management @speculos', function (this: Suite) {
+  this.timeout(120000);
+
+  let shared: SharedSpeculosContext;
+
+  before(async function () {
+    this.timeout(120000);
+    shared = await startSharedSpeculos();
+  });
+
+  after(async function () {
+    this.timeout(30000);
+    await stopSharedSpeculos(shared);
+  });
+
   it('derives the correct accounts and unlocks the first account', async function () {
-    await withFixtures(
+    await withSpeculosFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
+        sharedContext: shared,
       },
       async ({ driver }) => {
-        await login(driver, { waitForNonEvmAccounts: false });
+        await login(driver);
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
-        // Choose connect hardware wallet from the account menu
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
         await accountListPage.openConnectHardwareWalletModal();
@@ -33,24 +75,13 @@ describe('Ledger Hardware', function () {
         await connectHardwareWalletPage.checkPageIsLoaded();
         await connectHardwareWalletPage.clickConnectLedgerButton();
 
-        // Check if browser is Firefox
-        const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
-
-        if (isFirefox) {
-          // In Firefox, we expect to see "Firefox Not Supported" message
-          await connectHardwareWalletPage.checkFirefoxNotSupportedIsDisplayed();
-          return; // Exit early for Firefox
-        }
-
-        // For non-Firefox browsers, continue with the existing test flow
         const selectLedgerAccountPage = new SelectHardwareWalletAccountPage(
           driver,
         );
         await selectLedgerAccountPage.checkPageIsLoaded();
 
-        // Check that the first page of accounts is correct
         await selectLedgerAccountPage.checkAccountNumber();
-        for (const { address } of KNOWN_PUBLIC_KEY_ADDRESSES.slice(0, 4)) {
+        for (const address of SPECULOS_LEDGER_ADDRESSES.slice(0, 4)) {
           const shortenedAddress = `${address.slice(0, 4)}...${address.slice(
             -4,
           )}`;
@@ -59,34 +90,29 @@ describe('Ledger Hardware', function () {
           );
         }
 
-        // Unlock first account of first page and check that the correct account has been added
         await selectLedgerAccountPage.selectAccount(1);
-        // Brief pause to ensure React has fully committed the state update from
-        // account selection. Without this, the unlock handler may execute with a
-        // stale selectedAccounts closure on slower CI environments.
         await driver.delay(1000);
         await selectLedgerAccountPage.clickUnlockButton();
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('0');
         await headerNavbar.openAccountMenu();
-        await checkAccountAddressDisplayedInAccountList(driver, 'Ledger', 1);
+        await checkSpeculosAccountsInList(driver, 1);
       },
     );
   });
 
   it('unlocks multiple accounts at once and removes one', async function () {
-    await withFixtures(
+    await withSpeculosFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
+        sharedContext: shared,
       },
       async ({ driver }) => {
-        await login(driver, { waitForNonEvmAccounts: false });
+        await login(driver);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
-        // Choose connect hardware wallet from the account menu
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
         await accountListPage.openConnectHardwareWalletModal();
@@ -95,17 +121,6 @@ describe('Ledger Hardware', function () {
         await connectHardwareWalletPage.checkPageIsLoaded();
         await connectHardwareWalletPage.clickConnectLedgerButton();
 
-        // Check if browser is Firefox
-        const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
-
-        if (isFirefox) {
-          // In Firefox, we expect to see "Firefox Not Supported" message
-          await connectHardwareWalletPage.checkFirefoxNotSupportedIsDisplayed();
-          return; // Exit early for Firefox
-        }
-
-        // For non-Firefox browsers, continue with the existing test flow
-        // Unlock 5 Ledger accounts
         const selectLedgerAccountPage = new SelectHardwareWalletAccountPage(
           driver,
         );
@@ -116,14 +131,12 @@ describe('Ledger Hardware', function () {
         }
         await selectLedgerAccountPage.clickUnlockButton();
 
-        // Check that all 5 Ledger accounts are displayed in account list
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('0');
         await headerNavbar.openAccountMenu();
-        await checkAccountAddressDisplayedInAccountList(driver, 'Ledger', 5);
+        await checkSpeculosAccountsInList(driver, 5);
 
-        // Remove Ledger 1 account and check Ledger 1 account is removed
         await accountListPage.openMultichainAccountMenu({
           accountLabel: `Ledger Account 1`,
         });

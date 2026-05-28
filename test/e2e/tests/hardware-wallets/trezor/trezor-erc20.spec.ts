@@ -8,10 +8,11 @@ import { login } from '../../../page-objects/flows/login.flow';
 import CreateContractModal from '../../../page-objects/pages/dialog/create-contract';
 import WatchAssetConfirmation from '../../../page-objects/pages/confirmations/watch-asset-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/token-transfer-confirmation';
+import HardwareWalletTokenTransferConfirmation from '../../../page-objects/pages/hardware-wallet/hardware-wallet-token-transfer-confirmation';
+import HardwareWalletTransactionConfirmation from '../../../page-objects/pages/hardware-wallet/hardware-wallet-transaction-confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
-import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
+import { confirmOrReconnect } from '../../../page-objects/pages/hardware-wallet/hardware-wallet-helpers';
 
 describe('Trezor Hardware', function (this: Suite) {
   it('can create an ERC20 token', async function () {
@@ -44,7 +45,7 @@ describe('Trezor Hardware', function (this: Suite) {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const createContractModal = new CreateContractModal(driver);
         await createContractModal.checkPageIsLoaded();
-        await createContractModal.clickConfirm();
+        await confirmOrReconnect(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDappPage.checkTokenAddressesValue(
           '0xcB17707e0623251182A654BEdaE16429C78A7424',
@@ -112,7 +113,7 @@ describe('Trezor Hardware', function (this: Suite) {
         await testDappPage.clickERC20TokenTransferButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const tokenTransferTransactionConfirmation =
-          new TokenTransferTransactionConfirmation(driver);
+          new HardwareWalletTokenTransferConfirmation(driver);
         await tokenTransferTransactionConfirmation.checkPageIsLoaded();
         await tokenTransferTransactionConfirmation.clickConfirmButton();
         await driver.switchToWindowWithTitle(
@@ -168,8 +169,8 @@ describe('Trezor Hardware', function (this: Suite) {
         // Approve token
         await testDappPage.clickApproveTokens();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const txConfirmation = new TransactionConfirmation(driver);
-        await txConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        const txConfirmation = new HardwareWalletTransactionConfirmation(driver);
+        await txConfirmation.clickFooterConfirmButtonOrReconnect();
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
@@ -227,8 +228,8 @@ describe('Trezor Hardware', function (this: Suite) {
         // Increase token allowance
         await testDappPage.clickERC20IncreaseAllowanceButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const txConfirmation = new TransactionConfirmation(driver);
-        await txConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        const txConfirmation = new HardwareWalletTransactionConfirmation(driver);
+        await txConfirmation.clickFooterConfirmButtonOrReconnect();
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );

@@ -10,6 +10,7 @@ import initLedger from './hardware-wallets/ledger';
 import initTrezor from './hardware-wallets/trezor';
 import initLattice from './hardware-wallets/lattice';
 import initConnectivityDetection from './connectivity';
+import { initWebHIDMockForSpeculos } from './speculos-init';
 
 /**
  * Initialize a post message stream with the parent window that is initialized
@@ -31,6 +32,10 @@ function initializePostMessageStream() {
  * post message stream for the Snaps environment.
  */
 async function init(): Promise<void> {
+  if (process.env.IN_TEST) {
+    await initWebHIDMockForSpeculos();
+  }
+
   initializePostMessageStream();
   initTrezor();
   initLattice();

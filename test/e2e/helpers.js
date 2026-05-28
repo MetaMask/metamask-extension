@@ -172,6 +172,7 @@ async function withFixtures(options, testSuite) {
     accountActivityWebSocketSpecificMocks = [],
     perpsWebSocketSpecificMocks = [],
     extendedTimeoutMultiplier = 1,
+    seedBalances,
     unifiedEvmAccountsApiBalances,
     virtualAuthenticator,
   } = options;
@@ -232,6 +233,14 @@ async function withFixtures(options, testSuite) {
           throw new Error(
             `Unsupported localNode: '${nodeType}'. Cannot start the server.`,
           );
+      }
+    }
+
+    // Seed balances on local nodes before extension loads so
+    // AccountTrackerController picks them up on its first fetch.
+    if (seedBalances && localNodes.length > 0) {
+      for (const { address, balance } of seedBalances) {
+        await localNodes[0].setAccountBalance(address, balance);
       }
     }
 

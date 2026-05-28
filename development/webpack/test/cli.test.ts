@@ -34,6 +34,7 @@ describe('./utils/cli.ts', () => {
     dryRun: false,
     stats: false,
     bundleAnalyzer: false,
+    speculos: false,
   };
 
   it('should return defaults', () => {

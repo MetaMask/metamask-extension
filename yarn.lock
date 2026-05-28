@@ -5099,6 +5099,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ledgerhq/devices@npm:^7.0.0":
+  version: 7.0.7
+  resolution: "@ledgerhq/devices@npm:7.0.7"
+  dependencies:
+    "@ledgerhq/errors": "npm:^6.12.3"
+    "@ledgerhq/logs": "npm:^6.10.1"
+    rxjs: "npm:6"
+    semver: "npm:^7.3.5"
+  checksum: 10/b243a2d1dd41a6d3dba7427866bebb2be8351348df765c12354cb46f0b24ce278cae3724f5c591e96b3804c1bf2ed5512e75f07f0a210c9856e906b808e8b907
+  languageName: node
+  linkType: hard
+
 "@ledgerhq/domain-service@npm:^1.2.15":
   version: 1.2.15
   resolution: "@ledgerhq/domain-service@npm:1.2.15"
@@ -5262,7 +5274,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/logs@npm:^6.12.0, @ledgerhq/logs@npm:^6.14.0, @ledgerhq/logs@npm:^6.17.0":
+"@ledgerhq/logs@npm:^6.10.1, @ledgerhq/logs@npm:^6.12.0, @ledgerhq/logs@npm:^6.14.0, @ledgerhq/logs@npm:^6.17.0":
   version: 6.17.0
   resolution: "@ledgerhq/logs@npm:6.17.0"
   checksum: 10/81332b4db29e1e76ee24f8d741d30152b5c0676e58feedebfde93c7ef4bd641813596d9402d734af779fe3cb6e28599b91b6e6f57ac0017d1231f7d2dad49404
@@ -6895,6 +6907,16 @@ __metadata:
     "@metamask/controller-utils": "npm:^11.19.0"
     "@metamask/messenger": "npm:^1.0.0"
   checksum: 10/f11c22450ca97b688c075c705c3ca0196af6a2532522060c74c156a52f4eecba3216a5c3d63a18d1efa8d09cba0af03ef8dd9d74a892633a62995a6666889aa4
+  languageName: node
+  linkType: hard
+
+"@metamask/hw-emulator@npm:@metamask-previews/hw-emulator@0.1.0-4bf3baf":
+  version: 0.1.0-4bf3baf
+  resolution: "@metamask-previews/hw-emulator@npm:0.1.0-4bf3baf"
+  dependencies:
+    "@ledgerhq/devices": "npm:^7.0.0"
+    ws: "npm:^8.18.0"
+  checksum: 10/349972731144425023de8ceda7adb971e6d531e5e1d3761c989a175047d9a2151d2c5b4ecef1950aa4b19676600b6f77e9d4ab214d136be7c0966a7a837bf946
   languageName: node
   linkType: hard
 
@@ -33370,6 +33392,7 @@ __metadata:
     "@metamask/gator-permissions-controller": "npm:^4.2.0"
     "@metamask/gator-permissions-snap": "npm:^2.3.0"
     "@metamask/geolocation-controller": "npm:^0.1.1"
+    "@metamask/hw-emulator": "npm:@metamask-previews/hw-emulator@0.1.0-4bf3baf"
     "@metamask/hw-wallet-sdk": "npm:^0.8.0"
     "@metamask/institutional-wallet-snap": "npm:1.5.0"
     "@metamask/jazzicon": "patch:@metamask/jazzicon@npm%3A2.0.0#~/.yarn/patches/@metamask-jazzicon-npm-2.0.0-36957be38d.patch"
@@ -39584,21 +39607,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"rxjs@npm:6, rxjs@npm:^6.6.3":
+  version: 6.6.7
+  resolution: "rxjs@npm:6.6.7"
+  dependencies:
+    tslib: "npm:^1.9.0"
+  checksum: 10/c8263ebb20da80dd7a91c452b9e96a178331f402344bbb40bc772b56340fcd48d13d1f545a1e3d8e464893008c5e306cc42a1552afe0d562b1a6d4e1e6262b03
+  languageName: node
+  linkType: hard
+
 "rxjs@npm:7.8.2, rxjs@npm:^7.4.0, rxjs@npm:^7.8.1, rxjs@npm:^7.8.2":
   version: 7.8.2
   resolution: "rxjs@npm:7.8.2"
   dependencies:
     tslib: "npm:^2.1.0"
   checksum: 10/03dff09191356b2b87d94fbc1e97c4e9eb3c09d4452399dddd451b09c2f1ba8d56925a40af114282d7bc0c6fe7514a2236ca09f903cf70e4bbf156650dddb49d
-  languageName: node
-  linkType: hard
-
-"rxjs@npm:^6.6.3":
-  version: 6.6.7
-  resolution: "rxjs@npm:6.6.7"
-  dependencies:
-    tslib: "npm:^1.9.0"
-  checksum: 10/c8263ebb20da80dd7a91c452b9e96a178331f402344bbb40bc772b56340fcd48d13d1f545a1e3d8e464893008c5e306cc42a1552afe0d562b1a6d4e1e6262b03
   languageName: node
   linkType: hard
 

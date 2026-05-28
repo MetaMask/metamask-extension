@@ -13,6 +13,7 @@ import { AlertsName } from '../constants';
 import { useConfirmContext } from '../../../context/confirm';
 import { getInternalAccountByAddress } from '../../../../../selectors/accounts';
 import { isHardwareAccount } from '../../../../../components/app/rewards/utils/isHardwareAccount';
+import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 
 const PAY_HARDWARE_ALERT_TRANSACTION_TYPES: TransactionType[] = [
   TransactionType.musdConversion,
@@ -39,8 +40,12 @@ export function usePayHardwareAccountAlert(): Alert[] {
     transactionType !== undefined &&
     PAY_HARDWARE_ALERT_TRANSACTION_TYPES.includes(transactionType);
 
+  const { payToken } = useTransactionPayToken();
+
+  const showAlert = isApplicableType && isHardwareWallet && Boolean(payToken);
+
   return useMemo(() => {
-    if (!isApplicableType || !isHardwareWallet) {
+    if (!showAlert) {
       return [];
     }
 
@@ -54,5 +59,5 @@ export function usePayHardwareAccountAlert(): Alert[] {
         isBlocking: true,
       },
     ];
-  }, [isApplicableType, isHardwareWallet, t]);
+  }, [showAlert, t]);
 }

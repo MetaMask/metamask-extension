@@ -5,7 +5,23 @@ import {
 } from '../../../stub/keyring-bridge';
 import AccountListPage from '../pages/account-list-page';
 import AddressListModal from '../pages/multichain/address-list-modal';
+import HeaderNavbar from '../pages/header-navbar';
+import HomePage from '../pages/home/homepage';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
+
+export async function switchToHardwareAccount(
+  driver: Driver,
+  accountLabel: string,
+): Promise<HomePage> {
+  const headerNavbar = new HeaderNavbar(driver);
+  await headerNavbar.openAccountMenu();
+  const accountListPage = new AccountListPage(driver);
+  await accountListPage.checkPageIsLoaded();
+  await accountListPage.selectAccount(accountLabel);
+  const homePage = new HomePage(driver);
+  await homePage.checkPageIsLoaded();
+  return homePage;
+}
 
 export async function checkAccountAddressDisplayedInAccountList(
   driver: Driver,

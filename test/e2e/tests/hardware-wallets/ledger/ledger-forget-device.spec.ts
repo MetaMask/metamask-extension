@@ -1,26 +1,23 @@
 import { Suite } from 'mocha';
-import { Browser } from 'selenium-webdriver';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
-import { withFixtures } from '../../../helpers';
+import { withSpeculosFixtures } from '../../../speculos/with-speculos-fixtures';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import { Driver } from '../../../webdriver/driver';
-
 import { login } from '../../../page-objects/flows/login.flow';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import ConnectHardwareWalletPage from '../../../page-objects/pages/hardware-wallet/connect-hardware-wallet-page';
 import SelectHardwareWalletAccountPage from '../../../page-objects/pages/hardware-wallet/select-hardware-wallet-account-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 
-const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
+describe('Ledger Hardware @speculos', function (this: Suite) {
+  this.timeout(180000);
 
-describe('Ledger Hardware', function (this: Suite) {
   it('forgets device and checks if it is removed from the list', async function () {
-    await withFixtures(
+    await withSpeculosFixtures(
       {
-        fixtures: new FixtureBuilderV2().withLedgerAccount().build(),
+        fixtures: new FixtureBuilderV2().withSpeculosLedgerAccount().build(),
         title: this.test?.fullTitle(),
       },
-      async ({ driver }: { driver: Driver }) => {
+      async ({ driver }) => {
         await login(driver, {
           validateBalance: false,
           waitForNonEvmAccounts: false,
@@ -37,12 +34,6 @@ describe('Ledger Hardware', function (this: Suite) {
         await connectHardwareWalletPage.checkPageIsLoaded();
         await connectHardwareWalletPage.clickConnectLedgerButton();
 
-        // if browser is firefox
-        if (isFirefox) {
-          await connectHardwareWalletPage.checkFirefoxNotSupportedIsDisplayed();
-          return;
-        }
-
         const selectLedgerAccountPage = new SelectHardwareWalletAccountPage(
           driver,
         );
@@ -56,7 +47,7 @@ describe('Ledger Hardware', function (this: Suite) {
         await accountListPage.closeChooseWalletTypePage();
         await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountIsNotDisplayedInAccountList(
-          'Ledger Account 1',
+          'Ledger 1',
         );
       },
     );
