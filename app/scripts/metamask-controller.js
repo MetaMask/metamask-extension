@@ -3128,7 +3128,46 @@ export default class MetamaskController extends EventEmitter {
         }
       },
       toggleExternalServices: this.toggleExternalServices.bind(this),
-      addToken: tokensController.addToken.bind(tokensController),
+      addToken: async ({
+        address,
+        symbol,
+        decimals,
+        image,
+        networkClientId,
+      }) => {
+        if (this.#isAssetsUnifyStateEnabled()) {
+          const selectedAccount = this.accountsController.getSelectedAccount();
+          const chainId =
+            this.networkController.getNetworkClientById(networkClientId)
+              ?.configuration?.chainId;
+          const assetId = toAssetId(address, chainId);
+          if (!assetId) {
+            throw new Error(
+              `MetaMask - Cannot build assetId for token ${address} on ${chainId}`,
+            );
+          }
+          await this.assetsController.addCustomAsset(
+            selectedAccount.id,
+            assetId,
+            {
+              address,
+              symbol,
+              name: symbol,
+              decimals,
+              chainId,
+              ...(image ? { iconUrl: image } : {}),
+            },
+          );
+        } else {
+          await tokensController.addToken({
+            address,
+            symbol,
+            decimals,
+            image,
+            networkClientId,
+          });
+        }
+      },
       updateTokenType: tokensController.updateTokenType.bind(tokensController),
       setFeatureFlag: preferencesController.setFeatureFlag.bind(
         preferencesController,
@@ -3555,6 +3594,9 @@ export default class MetamaskController extends EventEmitter {
         await phishingController.maybeUpdateState();
 
         return phishingController.test(website);
+      },
+      checkAddressPoisoning: (address) => {
+        return phishingController.checkAddressPoisoning(address);
       },
       scanUrlForPhishing: async (origin) => {
         return phishingController.scanUrl(origin);
