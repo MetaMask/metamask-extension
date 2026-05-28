@@ -14,14 +14,15 @@ import {
   getAllChainsToPoll,
   getIsLineaMainnet,
   getIsMainnet,
-  getSelectedInternalAccount,
   getTokenNetworkFilter,
   getUseNftDetection,
 } from '../../../../../selectors';
+import { getSelectedInternalAccount } from '../../../../../../shared/lib/selectors/accounts';
 import { selectAccountSupportsEnabledNetworks } from '../../../../../selectors/assets';
 import {
   getAllEnabledNetworksForAllNamespaces,
   getEnabledNetworksByNamespace,
+  selectEnabledNetworksAsCaipChainIds,
 } from '../../../../../selectors/multichain/networks';
 import {
   getAllNetworkConfigurationsByCaipChainId,
@@ -86,19 +87,25 @@ import {
   getMultichainNetwork,
 } from '../../../../../selectors/multichain';
 import { useNftsCollections } from '../../../../../hooks/useNftsCollections';
-import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
+import {
+  SECURITY_ROUTE,
+  TOKEN_MANAGEMENT_ROUTE,
+} from '../../../../../helpers/constants/routes';
 import { getIsAssetsUnifyStateEnabled } from '../../../../../selectors/assets-unify-state/feature-flags';
+import { getIsTokenManagementFilterEnabled } from '../../../../../selectors/multichain/feature-flags';
 
 type AssetListControlBarProps = {
   showTokensLinks?: boolean;
   showImportTokenButton?: boolean;
   showSortControl?: boolean;
+  onNetworkSelect?: (networks: string[]) => void;
 };
 
 const AssetListControlBar = ({
   showTokensLinks,
   showImportTokenButton = true,
   showSortControl = true,
+  onNetworkSelect,
 }: AssetListControlBarProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -118,6 +125,9 @@ const AssetListControlBar = ({
     selectAccountSupportsEnabledNetworks,
   );
   const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
+  const isTokenManagementFilterEnabled = useSelector(
+    getIsTokenManagementFilterEnabled,
+  );
   const selectedInternalAccount = useSelector(getSelectedInternalAccount);
 
   const { collections } = useNftsCollections();
@@ -126,6 +136,7 @@ const AssetListControlBar = ({
   const allEnabledNetworksForAllNamespaces = useSelector(
     getAllEnabledNetworksForAllNamespaces,
   );
+  const selectedCaipChainIds = useSelector(selectEnabledNetworksAsCaipChainIds);
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const [isTokenSortPopoverOpen, setIsTokenSortPopoverOpen] = useState(false);
   const [isImportTokensPopoverOpen, setIsImportTokensPopoverOpen] =
@@ -159,6 +170,13 @@ const AssetListControlBar = ({
     () => !shouldShowRefreshButtons && !useNftDetection,
     [shouldShowRefreshButtons, useNftDetection],
   );
+
+  useEffect(() => {
+    if (!onNetworkSelect) {
+      return;
+    }
+    onNetworkSelect(selectedCaipChainIds);
+  }, [onNetworkSelect, selectedCaipChainIds]);
 
   const isTestNetwork = useMemo(() => {
     return (TEST_CHAINS as string[]).includes(
@@ -249,6 +267,20 @@ const AssetListControlBar = ({
     });
     closePopover();
   };
+
+  const handleOpenTokenManagement = useCallback(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.TokenImportButtonClicked,
+      properties: {
+        location: 'HOME',
+      },
+    });
+    setIsTokenSortPopoverOpen(false);
+    setIsImportTokensPopoverOpen(false);
+    setIsImportNftPopoverOpen(false);
+    navigate(TOKEN_MANAGEMENT_ROUTE);
+  }, [navigate, trackEvent]);
 
   const handleNftImportModal = () => {
     dispatch(showImportNftsModal({}));
@@ -401,7 +433,11 @@ const AssetListControlBar = ({
               />
             ) : (
               <Tooltip
-                title={t('importTokensCamelCase')}
+                title={
+                  isTokenManagementFilterEnabled
+                    ? t('manageTokens')
+                    : t('importTokensCamelCase')
+                }
                 position="bottom"
                 distance={20}
               >
@@ -409,9 +445,17 @@ const AssetListControlBar = ({
                   ref={importButtonRef}
                   data-testid="importTokens-button"
                   className="asset-list-control-bar__button"
-                  onClick={handleTokenImportModal}
+                  onClick={
+                    isTokenManagementFilterEnabled
+                      ? handleOpenTokenManagement
+                      : handleTokenImportModal
+                  }
                   size={ButtonBaseSize.Sm}
-                  startIconName={IconName.Add}
+                  startIconName={
+                    isTokenManagementFilterEnabled
+                      ? IconName.MoreVertical
+                      : IconName.Add
+                  }
                   startIconProps={{ marginInlineEnd: 0, size: IconSize.Md }}
                   backgroundColor={
                     isTokenSortPopoverOpen
@@ -458,13 +502,27 @@ const AssetListControlBar = ({
           minWidth: isFullScreen ? '158px' : '',
         }}
       >
-        <SelectableListItem
-          onClick={handleTokenImportModal}
-          testId="importTokens"
-        >
-          <Icon name={IconName.Add} size={IconSize.Sm} marginInlineEnd={2} />
-          {t('importTokensCamelCase')}
-        </SelectableListItem>
+        {isTokenManagementFilterEnabled ? (
+          <SelectableListItem
+            onClick={handleOpenTokenManagement}
+            testId="manageTokens"
+          >
+            <Icon
+              name={IconName.Setting}
+              size={IconSize.Sm}
+              marginInlineEnd={2}
+            />
+            {t('manageTokens')}
+          </SelectableListItem>
+        ) : (
+          <SelectableListItem
+            onClick={handleTokenImportModal}
+            testId="importTokens"
+          >
+            <Icon name={IconName.Add} size={IconSize.Sm} marginInlineEnd={2} />
+            {t('importTokensCamelCase')}
+          </SelectableListItem>
+        )}
         <SelectableListItem onClick={handleRefresh} testId="refreshList">
           <Icon
             name={IconName.Refresh}

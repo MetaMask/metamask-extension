@@ -41,18 +41,22 @@ import Mascot from '../../components/ui/mascot';
 import {
   DEFAULT_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
+  UNLOCK_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { cancelPasskeyCeremony } from '../../../shared/lib/passkey';
 import { isFlask, isBeta } from '../../../shared/lib/build-types';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { withMetaMetrics } from '../../contexts/metametrics';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import LoginErrorModal from '../onboarding-flow/welcome/login-error-modal';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { LOGIN_ERROR } from '../onboarding-flow/welcome/types';
 import ConnectionsRemovedModal from '../../components/app/connections-removed-modal';
 import { captureException } from '../../../shared/lib/sentry';
@@ -82,6 +86,8 @@ type UnlockPageProps = {
   isPopup: boolean;
   isWalletResetInProgress: boolean;
   passkeyAutoUnlockSuppressed: boolean;
+  /** When true, passkey ceremony must run in a browser tab (sidepanel + incompatible AAGUID). */
+  mustDeferPasskeyToBrowserTab: boolean;
 };
 
 type UnlockPageState = {
@@ -114,6 +120,7 @@ type LoginError = {
 const FoxAppearAnimation = lazy(
   () =>
     // @ts-expect-error - Build system resolves without extension, but TS wants .js
+    // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
     import('../onboarding-flow/welcome/fox-appear-animation') as Promise<{
       default: ComponentType<{
         isLoader?: boolean;
@@ -196,6 +203,10 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
      * When true, do not auto-start WebAuthn (after UI-initiated lock; background + timer).
      */
     passkeyAutoUnlockSuppressed: PropTypes.bool,
+    /**
+     * When true, passkey unlock UI defers ceremony to a full extension tab (sidepanel + incompatible AAGUID).
+     */
+    mustDeferPasskeyToBrowserTab: PropTypes.bool,
     /**
      * Completes passkey unlock and navigates after success (same redirect rules as password onSubmit).
      */
@@ -354,6 +365,10 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             failed_attempts: this.failed_attempts,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            unlock_type: 'password',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            passkey_enabled: this.props.isPasskeyActive,
           },
         },
         {
@@ -449,6 +464,10 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           failed_attempts: this.failed_attempts,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          unlock_type: 'password',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          passkey_enabled: this.props.isPasskeyActive,
         },
       });
     }
@@ -533,6 +552,15 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
 
   setPasswordUnlockMode = (isPasswordUnlockMode: boolean) => {
     this.setState({ isPasswordUnlockMode, error: null });
+  };
+
+  handleUnlockPasskeyFromPasswordForm = () => {
+    if (this.props.mustDeferPasskeyToBrowserTab) {
+      cancelPasskeyCeremony();
+      globalThis.platform?.openExtensionInBrowser?.(UNLOCK_ROUTE);
+      return;
+    }
+    this.setPasswordUnlockMode(false);
   };
 
   onForgotPasswordOrLoginWithDiffMethods = async () => {
@@ -705,7 +733,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
                   {this.props.isPasskeyActive ? (
                     <UnlockPasskeyIconButton
                       disabled={isLocked || isSubmitting}
-                      onClick={() => this.setPasswordUnlockMode(false)}
+                      onClick={this.handleUnlockPasskeyFromPasswordForm}
                     />
                   ) : null}
                 </Box>
@@ -783,6 +811,9 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
               isPasskeyActive={this.props.isPasskeyActive}
               passkeyAutoUnlockSuppressed={
                 this.props.passkeyAutoUnlockSuppressed
+              }
+              mustDeferPasskeyToBrowserTab={
+                this.props.mustDeferPasskeyToBrowserTab
               }
               isPasswordInProgress={isSubmitting}
               onUnlockWithPasskey={this.props.onUnlockWithPasskey}

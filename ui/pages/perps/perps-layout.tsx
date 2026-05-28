@@ -12,7 +12,7 @@ import { getPerpsStreamManager } from '../../providers/perps/PerpsStreamManager'
 import {
   getSelectedInternalAccount,
   type AccountsState,
-} from '../../selectors/accounts';
+} from '../../../shared/lib/selectors/accounts';
 import { markPerpsUnmountInApp } from '../../helpers/perps/in-app-leave-marker';
 
 const MIN_HIDDEN_DURATION_MS = 30_000;

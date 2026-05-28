@@ -17,10 +17,6 @@ const Reader = ({
   };
 
   const handleSuccess = async (ur) => {
-    if (ur.type !== 'eth-signature') {
-      setErrorTitle(t('QRHardwareInvalidTransactionTitle'));
-      throw new Error(t('unknownQrCode'));
-    }
     const ethSignature = ETHSignature.fromCBOR(ur.cbor);
     const buffer = ethSignature.getRequestId();
     const signId = uuid.stringify(buffer);

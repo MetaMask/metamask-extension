@@ -1,6 +1,6 @@
 import type * as Sentry from '@sentry/browser';
 import { MeasurementUnit, Span, StartSpanOptions } from '@sentry/types';
-import { createModuleLogger } from '@metamask/utils';
+import { createModuleLogger, hasProperty, isObject } from '@metamask/utils';
 import type {
   TraceCallback as ControllerTraceCallback,
   TraceRequest as ControllerTraceRequest,
@@ -93,8 +93,6 @@ export enum TraceName {
   MusdConversionNavigation = 'mUSD Conversion Navigation',
   MusdConversionQuote = 'mUSD Conversion Quote',
   MusdConversionConfirm = 'mUSD Conversion Confirm',
-  BackgroundRpc = 'Background RPC',
-  MessengerCall = 'Messenger Call',
 }
 
 /**
@@ -173,9 +171,10 @@ export type TraceRequest = {
   id?: string;
 
   /**
-   * The name of the trace.
+   * The name of the trace. Accepts a `TraceName` enum value
+   * or the name of a RPC method or messenger action.
    */
-  name: TraceName;
+  name: TraceName | `${'Background RPC' | 'Messenger Call'}: ${string}`;
 
   /**
    * The parent context of the trace.
@@ -313,12 +312,19 @@ export function endTrace(request: EndTraceRequest): void {
 /**
  * Get the serialized trace context from the currently active Sentry span.
  * Used by cross-boundary wrappers to propagate trace context over RPC.
+ * Always propagates when an active span exists, so background-side spans
+ * (auto-instrumented `http.client`, core-package `trace()` callers, etc.)
+ * are correctly nested under the originating UI trace regardless of whether
+ * wrapper spans themselves are sub-sampled in.
  *
- * @returns Serialized context with traceId/spanId, or undefined if no active span.
+ * @returns Serialized context with traceId/spanId, or undefined if no active span or kill switch is set.
  */
 export function getSerializedTraceContext():
   | SerializedTraceContext
   | undefined {
+  if (process.env.SENTRY_DISTRIBUTED_TRACING_DISABLED) {
+    return undefined;
+  }
   const activeSpan = sentryGetActiveSpan();
   if (!activeSpan) {
     return undefined;
@@ -330,6 +336,65 @@ export function getSerializedTraceContext():
   } catch {
     return undefined;
   }
+}
+
+/**
+ * Extract trace context appended by submitRequestToBackground from RPC params.
+ * Returns the clean params (without trace context) and the trace context if present.
+ * Only strips when the last param has `_traceContext` with our expected shape
+ * (`_traceId`, `_spanId`) to avoid eating legitimate params.
+ *
+ * @param params - RPC call parameters.
+ * @returns Clean params (without the trace wrapper) and the extracted context
+ * if present, or `undefined` if no valid trace context was found.
+ */
+export function extractTraceContext(
+  params: unknown,
+):
+  | { cleanParams: unknown[]; traceContext: SerializedTraceContext }
+  | { cleanParams: unknown; traceContext: undefined } {
+  if (!Array.isArray(params) || params.length === 0) {
+    return { cleanParams: params, traceContext: undefined };
+  }
+
+  const lastParam = params[params.length - 1];
+  if (
+    isObject(lastParam) &&
+    hasProperty(lastParam, '_traceContext') &&
+    hasDistributedTraceIds(lastParam._traceContext)
+  ) {
+    return {
+      cleanParams: params.slice(0, -1),
+      traceContext: lastParam._traceContext,
+    };
+  }
+
+  return { cleanParams: params, traceContext: undefined };
+}
+
+/**
+ * Run a callback with cross-process trace context active, without creating
+ * a span. Auto-instrumented spans (e.g. `http.client`) and any `trace()`
+ * callers that fire during the callback will be attached to the propagated
+ * trace. Used when the caller wants context propagation but not the wrapper
+ * span itself (e.g. when `shouldSampleWrappers` rejects the wrapper but
+ * trace continuity for downstream spans is still desired).
+ *
+ * @param parentContext - Serialized trace context with `_traceId` / `_spanId`.
+ * @param fn - Callback to run within the propagated trace scope.
+ * @returns The callback's return value.
+ */
+export function continueTraceContext<ResultType>(
+  parentContext: SerializedTraceContext | undefined,
+  fn: () => ResultType,
+): ResultType {
+  if (!hasDistributedTraceIds(parentContext)) {
+    return fn();
+  }
+  const sentryTrace = `${parentContext._traceId}-${parentContext._spanId}-1`;
+  return sentryContinueTrace(sentryTrace, () =>
+    sentryWithIsolationScope(() => fn()),
+  );
 }
 
 /**
@@ -475,10 +540,11 @@ function hasDistributedTraceIds(
   value: unknown,
 ): value is { _traceId: string; _spanId: string } {
   return (
-    typeof value === 'object' &&
-    value !== null &&
-    typeof (value as Record<string, unknown>)._traceId === 'string' &&
-    typeof (value as Record<string, unknown>)._spanId === 'string'
+    isObject(value) &&
+    hasProperty(value, '_traceId') &&
+    hasProperty(value, '_spanId') &&
+    typeof value._traceId === 'string' &&
+    typeof value._spanId === 'string'
   );
 }
 
@@ -689,7 +755,13 @@ function sentrySetMeasurement(
   actual(key, value, unit);
 }
 
-function sentryGetActiveSpan(): Sentry.Span | null {
+/**
+ * Get the currently active Sentry span, if any.
+ * Used by wrappers to avoid trace overhead when no span is active.
+ *
+ * @returns The active span or null.
+ */
+export function sentryGetActiveSpan(): Sentry.Span | null {
   const actual = globalThis.sentry?.getActiveSpan;
 
   if (!actual) {

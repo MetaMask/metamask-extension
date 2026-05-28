@@ -1,8 +1,10 @@
 import React from 'react';
+import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { act, fireEvent, waitFor } from '@testing-library/react';
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as actionsModule from '../../../store/actions';
 import * as passkeyCeremony from '../../../../shared/lib/passkey/passkey-ceremony';
@@ -36,13 +38,37 @@ beforeAll(() => {
   } as unknown as typeof globalThis.platform;
 });
 
-const mockStore = configureMockStore([thunk])({ metamask: {} });
+const selectedTestAccountId = 'test-unlock-passkey-section-account-id';
+
+const mockStore = configureMockStore([thunk])({
+  metamask: {
+    passkeyRecord: null,
+    internalAccounts: {
+      selectedAccount: selectedTestAccountId,
+      accounts: {
+        [selectedTestAccountId]: {
+          address: '0x0000000000000000000000000000000000000001',
+          id: selectedTestAccountId,
+          metadata: {
+            name: 'Test',
+            keyring: { type: 'HD Key Tree' },
+          },
+          options: {},
+          methods: ETH_EOA_METHODS,
+          type: EthAccountType.Eoa,
+          scopes: [EthScope.Eoa],
+        },
+      },
+    },
+  },
+});
 
 describe('UnlockPasskeySection', () => {
   const baseProps = {
     logoSection: <div data-testid="logo-mock" />,
     isPasskeyActive: true,
     passkeyAutoUnlockSuppressed: true,
+    mustDeferPasskeyToBrowserTab: false,
     isPasswordInProgress: false,
     onUnlockWithPasskey: jest.fn().mockResolvedValue(undefined),
     onUsePassword: jest.fn(),
@@ -216,10 +242,7 @@ describe('UnlockPasskeySection', () => {
       getByTestId('passkey-troubleshoot-open-full-screen-button'),
     );
 
-    expect(mockOpenExtensionInBrowser).toHaveBeenCalledWith(
-      UNLOCK_ROUTE,
-      'from=sidepanel',
-    );
+    expect(mockOpenExtensionInBrowser).toHaveBeenCalledWith(UNLOCK_ROUTE);
 
     await act(async () => {
       resolveCeremony({
@@ -234,6 +257,62 @@ describe('UnlockPasskeySection', () => {
         clientExtensionResults: {},
       });
       await Promise.resolve();
+    });
+  });
+
+  describe('when mustDeferPasskeyToBrowserTab', () => {
+    const openExtensionInBrowser = jest.fn();
+
+    beforeEach(() => {
+      globalThis.platform = {
+        openExtensionInBrowser,
+      } as never;
+    });
+
+    afterEach(() => {
+      delete (globalThis as { platform?: unknown }).platform;
+    });
+
+    it('does not start passkey ceremony on mount when auto unlock is not suppressed', async () => {
+      const onUnlockWithPasskey = jest.fn().mockResolvedValue(undefined);
+
+      renderWithProvider(
+        <UnlockPasskeySection
+          {...baseProps}
+          passkeyAutoUnlockSuppressed={false}
+          mustDeferPasskeyToBrowserTab
+          onUnlockWithPasskey={onUnlockWithPasskey}
+        />,
+        mockStore,
+        '/unlock',
+      );
+
+      await act(async () => {
+        await Promise.resolve();
+        await Promise.resolve();
+      });
+
+      expect(onUnlockWithPasskey).not.toHaveBeenCalled();
+      expect(openExtensionInBrowser).not.toHaveBeenCalled();
+    });
+
+    it('opens extension in browser when primary passkey button is clicked', async () => {
+      const onUnlockWithPasskey = jest.fn().mockResolvedValue(undefined);
+
+      const { getByTestId } = renderWithProvider(
+        <UnlockPasskeySection
+          {...baseProps}
+          mustDeferPasskeyToBrowserTab
+          onUnlockWithPasskey={onUnlockWithPasskey}
+        />,
+        mockStore,
+        '/unlock',
+      );
+
+      fireEvent.click(getByTestId('unlock-passkey-button'));
+
+      expect(openExtensionInBrowser).toHaveBeenCalledWith(UNLOCK_ROUTE);
+      expect(onUnlockWithPasskey).not.toHaveBeenCalled();
     });
   });
 });

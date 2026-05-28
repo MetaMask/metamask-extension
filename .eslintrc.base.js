@@ -1,3 +1,9 @@
+const {
+  architecturalZones,
+  buildSystemZones,
+  routeIsolationZones,
+} = require('./development/eslint-restricted-paths-zones');
+
 module.exports = {
   extends: ['@metamask/eslint-config'],
 
@@ -100,28 +106,9 @@ module.exports = {
       {
         basePath: './',
         zones: [
-          {
-            target: './app',
-            from: './ui',
-            message:
-              'Should not import from UI in background, use shared directory instead',
-          },
-          {
-            target: './ui',
-            from: './app',
-            message:
-              'Should not import from background in UI, use shared directory instead',
-          },
-          {
-            target: './shared',
-            from: './app',
-            message: 'Should not import from background in shared',
-          },
-          {
-            target: './shared',
-            from: './ui',
-            message: 'Should not import from UI in shared',
-          },
+          ...architecturalZones,
+          ...buildSystemZones,
+          ...routeIsolationZones,
         ],
       },
     ],
