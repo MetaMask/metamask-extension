@@ -31,8 +31,8 @@ jobs:
     uses: ./.github/workflows/run-e2e.yml
     with:
       test-suite-name: 'Speculos ${{ matrix.device.id }}'
-      build-artifact: build-test-browserify
-      build-command: 'yarn build:test'
+      build-artifact: build-test-speculos-webpack
+      build-command: 'yarn build:test:speculos'
       test-command: >-
         SPECULOS_E2E=1 SPECULOS_DEVICE=${{ matrix.device.id }} SPECULOS_ELF=${{ matrix.device.elf }} ENABLE_CHROME_LOGGING=false yarn test:e2e:chrome:ledger --debug=false
       builds-from-run: ${{ inputs.builds-from-run }}

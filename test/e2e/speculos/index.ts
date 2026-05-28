@@ -15,6 +15,7 @@ export {
   getSpeculosBuildConfig,
   getChromeFlags,
   validateSpeculosTestEnv,
+  isSpeculosMockInBuild,
 } from './build-config';
 export {
   SPECULOS_LEDGER_ADDRESS,

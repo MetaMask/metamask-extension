@@ -38,6 +38,8 @@
     "start:test:mv2:flask": "yarn start:test --type flask --browser firefox --manifestVersion 2",
     "start:test:mv2": "BLOCKAID_FILE_CDN=static.cx.metamask.io/api/v1/confirmations/ppom yarn start:test --browser firefox --manifestVersion 2",
     "build:test": "yarn env:e2e build test",
+    "build:test:speculos": "BLOCKAID_FILE_CDN=static.cx.metamask.io/api/v1/confirmations/ppom yarn env:e2e webpack:lavamoat:build --test --speculos",
+    "start:test:speculos": "yarn start:test --speculos",
     "build:test:dev": "yarn env:e2e build:dev testDev --apply-lavamoat=false",
     "build:test:beta": "yarn build:test --build-type beta",
     "build:test:flask": "yarn build:test --build-type flask",

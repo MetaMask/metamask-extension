@@ -37,6 +37,7 @@ import { getVariables } from './utils/config';
 import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader';
 import { getThreadLoader } from './utils/loaders/threadLoader';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
+import { SpeculosPlugin } from './utils/plugins/SpeculosPlugin';
 import { getLatestCommit } from './utils/git';
 import { MODES } from './utils/constants';
 
@@ -241,6 +242,10 @@ if (args.bundleAnalyzer) {
   plugins.push(
     new BundleAnalyzerPlugin({ analyzerMode: 'static', openAnalyzer: false }),
   );
+}
+
+if (args.speculos) {
+  plugins.push(new SpeculosPlugin());
 }
 
 // #endregion plugins

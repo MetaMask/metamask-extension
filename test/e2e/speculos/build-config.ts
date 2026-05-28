@@ -53,3 +53,30 @@ export function validateSpeculosTestEnv(): void {
     );
   }
 }
+
+/**
+ * Detects whether the speculos WebHID mock was injected by the webpack build
+ * (as opposed to post-build patching at test time).
+ */
+export function isSpeculosMockInBuild(): boolean {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const fs = require('fs');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const path = require('path');
+    const distDir = path.join('dist', 'chrome');
+    const htmlFiles = fs
+      .readdirSync(distDir)
+      .filter((f: string) => f.endsWith('.html'));
+    if (htmlFiles.length === 0) {
+      return false;
+    }
+    const sampleHtml = fs.readFileSync(
+      path.join(distDir, htmlFiles[0]),
+      'utf-8',
+    );
+    return sampleHtml.includes('speculos-webhid-mock');
+  } catch {
+    return false;
+  }
+}

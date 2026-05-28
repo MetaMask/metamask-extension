@@ -679,6 +679,14 @@ function getOptions(
       group: toOrange('Options:'),
       type: 'boolean',
     },
+    speculos: {
+      array: false,
+      default: false,
+      description:
+        'Inject Speculos WebHID mock into all extension HTML pages (for Ledger E2E testing)',
+      group: toOrange('Developer assistance:'),
+      type: 'boolean',
+    },
   } as const satisfies YargsOptionsMap;
 }
 
@@ -716,5 +724,6 @@ Devtool: ${args.devtool}
 Build type: ${args.type}
 Features: ${[...features.active].join(', ')}
 Test: ${args.test}
+Speculos: ${args.speculos}
 `;
 }
