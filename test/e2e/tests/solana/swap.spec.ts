@@ -554,6 +554,7 @@ describe('Swap on Solana', function () {
   // The test is skipped because it is not a critical test and it is not
   // blocking the release.
   // The test should be removed once the USDC token is discovered by the snap.
+  // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('Completes a Swap between USDC and SOL', async function () {
     await withFixtures(
       {
