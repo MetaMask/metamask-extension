@@ -332,11 +332,7 @@ describe('useHwSwapQrState', () => {
       const latestTxData = { id: 'tx-456' };
 
       const { result, rerender } = renderHook(
-        ({
-          confirmationTxData,
-        }: {
-          confirmationTxData: { id: string };
-        }) =>
+        ({ confirmationTxData }: { confirmationTxData: { id: string } }) =>
           useHwSwapQrState({
             signatureState: createSignatureState(
               HardwareWalletSignatureStatus.AwaitingFirstSignature,
