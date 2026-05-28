@@ -553,7 +553,7 @@ async function mockFeatureFlags(
 
   const extensionUxActivityListRedesign =
     additionalFlags.extensionUxActivityListRedesign ??
-    getRegistryEntry('extensionUxActivityListRedesign')?.productionDefault;
+    getRegistryBooleanFlag('extensionUxActivityListRedesign');
 
   await mockServer
     .forGet('https://client-config.api.cx.metamask.io/v1/flags')
