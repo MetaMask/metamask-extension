@@ -39,8 +39,6 @@ export function useActivityCellPresentation(
     type: activity.type,
     status: activity.status,
   });
-  const title = t(labelKeys.title.key);
-  const subtitle = t(labelKeys.description.key);
 
   const getContent = () => {
     switch (activity.type) {
@@ -67,7 +65,7 @@ export function useActivityCellPresentation(
 
         return {
           title: t(labelKeys.title.key, [sourceSymbol, destinationSymbol]),
-          subtitle,
+          subtitle: t(labelKeys.description.key),
           primaryToken: destinationToken,
           secondaryToken: sourceToken,
         };
@@ -118,7 +116,7 @@ export function useActivityCellPresentation(
           title: t(labelKeys.title.key, [
             activity.data.sourceToken?.symbol ?? '',
           ]),
-          subtitle,
+          subtitle: t(labelKeys.description.key),
           primaryToken: activity.data.sourceToken,
           secondaryToken: undefined,
         };
@@ -137,13 +135,13 @@ export function useActivityCellPresentation(
       case 'nftMint':
         return {
           title: t(labelKeys.title.key, [activity.data.token?.symbol ?? 'NFT']),
-          subtitle,
+          subtitle: t(labelKeys.description.key),
           primaryToken: activity.data.token,
           secondaryToken: undefined,
         };
       case 'contractInteraction':
         return {
-          title,
+          title: t(labelKeys.title.key),
           subtitle: t(labelKeys.description.key, [
             shortenAddress(activity.data.to) || 'Contract',
           ]),
@@ -154,7 +152,7 @@ export function useActivityCellPresentation(
       case 'increaseSpendingCap':
       case 'revokeSpendingCap':
         return {
-          title,
+          title: t(labelKeys.title.key),
           subtitle: t(labelKeys.description.key, [
             activity.data.token?.symbol ?? '',
           ]),
@@ -165,8 +163,8 @@ export function useActivityCellPresentation(
         };
       case 'lendingDeposit':
         return {
-          title,
-          subtitle,
+          title: t(labelKeys.title.key),
+          subtitle: t(labelKeys.description.key),
           primaryToken:
             activity.data.destinationToken ?? activity.data.sourceToken,
           secondaryToken: activity.data.destinationToken
@@ -175,15 +173,15 @@ export function useActivityCellPresentation(
         };
       case 'claimMusdBonus':
         return {
-          title,
-          subtitle,
+          title: t(labelKeys.title.key),
+          subtitle: t(labelKeys.description.key),
           primaryToken: activity.data.token,
           secondaryToken: undefined,
         };
       default:
         return {
-          title,
-          subtitle,
+          title: t(labelKeys.title.key),
+          subtitle: t(labelKeys.description.key),
           primaryToken: undefined,
           secondaryToken: undefined,
         };
