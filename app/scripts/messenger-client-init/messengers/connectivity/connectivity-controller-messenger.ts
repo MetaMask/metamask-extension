@@ -18,13 +18,9 @@ export function getConnectivityControllerMessenger(
     MessengerEvents<ConnectivityControllerMessenger>
   >,
 ): ConnectivityControllerMessenger {
-  return new Messenger<
-    'ConnectivityController',
-    MessengerActions<ConnectivityControllerMessenger>,
-    MessengerEvents<ConnectivityControllerMessenger>,
-    typeof messenger
-  >({
+  const controllerMessenger: ConnectivityControllerMessenger = new Messenger({
     namespace: 'ConnectivityController',
     parent: messenger,
   });
+  return controllerMessenger;
 }

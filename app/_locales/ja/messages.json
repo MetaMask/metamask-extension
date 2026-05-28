@@ -37,9 +37,6 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "エラー"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "QRコードが無効です。ハードウェアウォレットの同期QRコードをスキャンしてください。"
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "QRコードをスキャン"
   },
