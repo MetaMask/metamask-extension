@@ -1,6 +1,25 @@
-import { FIXTURE_STATE_METADATA_VERSION } from '../../constants';
+import {
+  FIXTURE_STATE_METADATA_VERSION,
+  NETWORK_CLIENT_ID,
+} from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import type { FixtureData } from './launcher-types';
+
+type ForkedChainPreset = {
+  chainIdHex: string;
+  networkClientId: string;
+};
+
+const FORKED_CHAIN_PRESETS = {
+  sepolia: {
+    chainIdHex: '0xaa36a7',
+    networkClientId: NETWORK_CLIENT_ID.SEPOLIA,
+  },
+  base: {
+    chainIdHex: '0x2105',
+    networkClientId: NETWORK_CLIENT_ID.BASE_MAINNET,
+  },
+} as const satisfies Record<string, ForkedChainPreset>;
 
 export type FixtureBuilderOptions = {
   onboarding?: boolean;
@@ -38,24 +57,68 @@ function applyAnvilPort(
   anvilPort: number,
 ): FixtureBuilderV2 {
   return builder.withNetworkController({
-    selectedNetworkClientId: 'localhost',
     networkConfigurationsByChainId: {
       '0x539': {
-        blockExplorerUrls: [],
-        chainId: '0x539',
-        defaultRpcEndpointIndex: 0,
         name: `Localhost ${anvilPort}`,
-        nativeCurrency: 'ETH',
         rpcEndpoints: [
           {
-            networkClientId: 'localhost',
-            type: 'custom',
             url: `http://localhost:${anvilPort}`,
           },
         ],
       },
     },
   } as unknown as Parameters<FixtureBuilderV2['withNetworkController']>[0]);
+}
+
+/**
+ * Routes a forked mainnet/testnet chain through the local Anvil fork and selects
+ * it as the active network (Sepolia or Base).
+ */
+function applyForkedChainPort(
+  builder: FixtureBuilderV2,
+  preset: ForkedChainPreset,
+  anvilPort: number,
+): FixtureBuilderV2 {
+  return builder
+    .withNetworkController({
+      networkConfigurationsByChainId: {
+        [preset.chainIdHex]: {
+          rpcEndpoints: [
+            {
+              url: `http://localhost:${anvilPort}`,
+            },
+          ],
+        },
+      },
+      selectedNetworkClientId: preset.networkClientId,
+    } as unknown as Parameters<FixtureBuilderV2['withNetworkController']>[0])
+    .withEnabledNetworks({
+      eip155: { [preset.chainIdHex]: true },
+    });
+}
+
+function buildForkedChainFixture(
+  forkKey: keyof typeof FORKED_CHAIN_PRESETS,
+  options: FixtureBuildOptions,
+): FixtureData {
+  if (!options.anvilPort) {
+    throw new Error(
+      `withForked${forkKey[0].toUpperCase()}${forkKey.slice(1)} requires anvilPort`,
+    );
+  }
+  const preset = FORKED_CHAIN_PRESETS[forkKey];
+  const chainIdNum = parseInt(preset.chainIdHex, 16);
+  const builder = createFixtureBuilder();
+  applyForkedChainPort(builder, preset, options.anvilPort);
+  // Named "Account 1" in the account tree (same address as default e2e account).
+  builder
+    .withKeyringControllerAdditionalAccountVault()
+    .withAccountsControllerAdditionalAccountVault()
+    .withCaptureFriendlyAccountLabels()
+    .withPermissionControllerConnectedToTestDapp({
+      chainIds: [chainIdNum],
+    });
+  return builder.build();
 }
 
 export function buildDefaultFixture(
@@ -148,6 +211,11 @@ export function createFixturePresets(options: FixtureBuildOptions = {}) {
       }
       return builder.withTokensControllerERC20({ chainId: 1337 }).build();
     },
+
+    withForkedSepolia: (): FixtureData =>
+      buildForkedChainFixture('sepolia', options),
+
+    withForkedBase: (): FixtureData => buildForkedChainFixture('base', options),
   };
 }
 

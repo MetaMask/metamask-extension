@@ -25,7 +25,6 @@ import type {
   PermissionConstraint,
   PermissionControllerState,
 } from '@metamask/permission-controller';
-import type { UserStorageControllerState } from '@metamask/profile-sync-controller/user-storage';
 import {
   type NetworkMetadata,
   type NetworkState,
@@ -39,13 +38,13 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import type { AssetsControllerState } from '@metamask/assets-controller';
-import type { PerpsControllerState } from '@metamask/perps-controller';
-import type { PasskeyControllerState } from '@metamask/passkey-controller';
 import type { AppStateControllerState } from '../../../app/scripts/controllers/app-state-controller';
 import type { MetaMetricsControllerState } from '../../../app/scripts/controllers/metametrics-controller';
 import type { OnboardingControllerState } from '../../../app/scripts/controllers/onboarding';
-import type { Preferences } from '../../../shared/types/preferences';
-import type { PreferencesControllerState } from '../../../app/scripts/controllers/preferences-controller';
+import type {
+  Preferences,
+  PreferencesControllerState,
+} from '../../../app/scripts/controllers/preferences-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   ACCOUNT_2,
@@ -188,6 +187,25 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  /**
+   * Disables backup/sync so cloud metadata cannot overwrite account labels
+   * during visual capture runs. Pair with `withAccountsControllerAdditionalAccountVault`
+   * for stable "Account 1" group names on the additional-account HD wallet.
+   */
+  withCaptureFriendlyAccountLabels(): this {
+    merge(this.fixture.data.UserStorageController, {
+      isAccountSyncingEnabled: false,
+      isBackupAndSyncEnabled: false,
+      isContactSyncingEnabled: false,
+    });
+
+    merge(this.fixture.data.PreferencesController, {
+      isBackupAndSyncEnabled: false,
+    });
+
+    return this;
+  }
+
   withAddressBookController(data: Partial<AddressBookControllerState>): this {
     if (!this.fixture.data.AddressBookController) {
       (this.fixture.data as Record<string, unknown>).AddressBookController = {
@@ -307,26 +325,10 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  withPasskeyController(data: Partial<PasskeyControllerState>): this {
-    merge(this.fixture.data.PasskeyController, data);
-    return this;
-  }
-
   withPermissionController(
     data: Partial<PermissionControllerState<PermissionConstraint>>,
   ): this {
     merge(this.fixture.data.PermissionController, data);
-    return this;
-  }
-
-  withPerpsController(data: Partial<PerpsControllerState>): this {
-    if (!(this.fixture.data as Record<string, unknown>).PerpsController) {
-      (this.fixture.data as Record<string, unknown>).PerpsController = {};
-    }
-    merge(
-      (this.fixture.data as Record<string, unknown>).PerpsController,
-      data as Record<string, unknown>,
-    );
     return this;
   }
 
@@ -394,11 +396,6 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  withUserStorageController(data: Partial<UserStorageControllerState>): this {
-    merge(this.fixture.data.UserStorageController, data);
-    return this;
-  }
-
   /* ==================================================================
                               CUSTOM METHODS
      ==================================================================
@@ -419,7 +416,9 @@ class FixtureBuilderV2 {
     //
     // Without (2), `getAccountContext` returns undefined pre-unlock and
     // `sortAddressesByLastSelected` degrades to caveat order.
-    const entropyWalletId = 'entropy:01KGHBJCECE5PTNHY84ZAE2V9Y';
+    // Must match runtime entropy id for ADDITIONAL_ACCOUNT_FIXTURE_VAULT (same as default e2e HD).
+    const entropyId = '01KGPGYE2JJGMXDJPEVXKPJ1JG';
+    const entropyWalletId = `entropy:${entropyId}`;
     const account1GroupId = `${entropyWalletId}/0` as const;
     const account2GroupId = `${entropyWalletId}/1` as const;
     const account1Id = 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4';
@@ -429,8 +428,14 @@ class FixtureBuilderV2 {
 
     this.withAccountTreeController({
       accountGroupsMetadata: {
-        [account1GroupId]: { lastSelected: account1LastSelected },
-        [account2GroupId]: { lastSelected: account2LastSelected },
+        [account1GroupId]: {
+          lastSelected: account1LastSelected,
+          name: { value: 'Account 1', lastUpdatedAt: account1LastSelected },
+        },
+        [account2GroupId]: {
+          lastSelected: account2LastSelected,
+          name: { value: 'Account 2', lastUpdatedAt: account2LastSelected },
+        },
       },
       accountTree: {
         wallets: {
@@ -466,11 +471,12 @@ class FixtureBuilderV2 {
             },
             metadata: {
               name: 'Wallet 1',
-              entropy: { id: '01KGHBJCECE5PTNHY84ZAE2V9Y' },
+              entropy: { id: entropyId },
             },
           },
         },
       },
+      selectedAccountGroup: account1GroupId,
     } as Partial<AccountTreeControllerState>);
 
     return this.withAccountsController({
@@ -481,12 +487,12 @@ class FixtureBuilderV2 {
             id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
             address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
             options: {
-              entropySource: '01KGHBJCECE5PTNHY84ZAE2V9Y',
+              entropySource: entropyId,
               derivationPath: "m/44'/60'/0'/0/0",
               groupIndex: 0,
               entropy: {
                 type: 'mnemonic',
-                id: '01KGHBJCECE5PTNHY84ZAE2V9Y',
+                id: entropyId,
                 derivationPath: "m/44'/60'/0'/0/0",
                 groupIndex: 0,
               },
@@ -507,12 +513,12 @@ class FixtureBuilderV2 {
             id: 'e9976a84-110e-46c3-9811-e2da7b5528d3',
             address: ACCOUNT_2,
             options: {
-              entropySource: '01KGHBJCECE5PTNHY84ZAE2V9Y',
+              entropySource: entropyId,
               derivationPath: "m/44'/60'/0'/0/1",
               groupIndex: 1,
               entropy: {
                 type: 'mnemonic',
-                id: '01KGHBJCECE5PTNHY84ZAE2V9Y',
+                id: entropyId,
                 derivationPath: "m/44'/60'/0'/0/1",
                 groupIndex: 1,
               },
@@ -821,7 +827,7 @@ class FixtureBuilderV2 {
       selectedNetworkClientId: seiClientId,
       networkConfigurationsByChainId: {
         [seiChainId]: {
-          blockExplorerUrls: ['https://seiscan.io'],
+          blockExplorerUrls: ['https://seitrace.com'],
           chainId: seiChainId,
           defaultBlockExplorerUrlIndex: 0,
           defaultRpcEndpointIndex: 0,
@@ -1235,14 +1241,6 @@ class FixtureBuilderV2 {
       preferences: {
         smartTransactionsOptInStatus: false,
       },
-    });
-  }
-
-  withSyncDisabled(): this {
-    return this.withUserStorageController({
-      isAccountSyncingEnabled: false,
-      isBackupAndSyncEnabled: false,
-      isContactSyncingEnabled: false,
     });
   }
 

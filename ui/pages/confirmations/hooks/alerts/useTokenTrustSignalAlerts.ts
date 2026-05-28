@@ -10,6 +10,10 @@ import { useConfirmContext } from '../../context/confirm';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTokenTrustSignalsForAddresses } from '../../../../hooks/useTokenTrustSignals';
+import {
+  getVisualTestOnlyAlertId,
+  getVisualTestTrustSignalAlerts,
+} from '../visual-test-alert-override';
 
 const EMPTY_ALERTS: Alert[] = [];
 const EMPTY_ACTIONS: Alert['actions'] = [];
@@ -17,6 +21,14 @@ const EMPTY_ACTIONS: Alert['actions'] = [];
 export function useTokenTrustSignalAlerts(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
+
+  const visualTestAlerts = getVisualTestTrustSignalAlerts(
+    getVisualTestOnlyAlertId(),
+    t,
+  );
+  if (visualTestAlerts) {
+    return visualTestAlerts;
+  }
 
   const txMeta = currentConfirmation as TransactionMeta | undefined;
   const chainId = txMeta?.chainId;

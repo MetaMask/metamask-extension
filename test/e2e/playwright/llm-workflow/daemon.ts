@@ -38,16 +38,26 @@ const server = createServer({
       releasePort(fixtureAlloc),
       releasePort(mockAlloc),
     ]);
+    const forkUrl = process.env.MM_FORK_URL;
+    const forkBlockNumber = process.env.MM_FORK_BLOCK_NUMBER
+      ? Number.parseInt(process.env.MM_FORK_BLOCK_NUMBER, 10)
+      : undefined;
+    const defaultChainId = process.env.MM_DEFAULT_CHAIN_ID
+      ? Number.parseInt(process.env.MM_DEFAULT_CHAIN_ID, 10)
+      : undefined;
+
     const context = createMetaMaskE2EContext({
       config: {
         ports: {
           anvil: anvilAlloc.port,
           fixtureServer: fixtureAlloc.port,
         },
+        ...(defaultChainId ? { defaultChainId } : {}),
       },
       mockServer: {
         port: mockAlloc.port,
       },
+      ...(forkUrl ? { forkUrl, forkBlockNumber } : {}),
     });
     return {
       ...context,

@@ -5,10 +5,11 @@ import {
   TransactionMeta,
   TransactionStatus,
 } from '@metamask/transaction-controller';
+import { Hex } from '@metamask/utils';
+import { BigNumber } from 'bignumber.js';
 import React, { Fragment, useState } from 'react';
+import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { useSelector } from 'react-redux';
-import { RevertReason } from '../revert-reason/revert-reason';
-import { selectConfirmationAdvancedDetailsOpen } from '../../selectors/preferences';
 import { useAlertMetrics } from '../../../../components/app/alert-system/contexts/alertMetricsContext';
 import InlineAlert from '../../../../components/app/alert-system/inline-alert';
 import { MultipleAlertModal } from '../../../../components/app/alert-system/multiple-alert-modal';
@@ -47,19 +48,21 @@ import { BalanceChangeList } from './balance-change-list';
 import { BalanceChange } from './types';
 import { useBalanceChanges } from './useBalanceChanges';
 import { useSimulationMetrics } from './useSimulationMetrics';
+import { getVisualTestOnlyAlertId } from '../../hooks/visual-test-alert-override';
+import { FIAT_UNAVAILABLE } from './types';
 
 export type StaticRow = {
-  readonly label: string;
-  readonly balanceChanges: BalanceChange[];
+  label: string;
+  balanceChanges: BalanceChange[];
 };
 
 export type SimulationDetailsProps = {
-  readonly enableMetrics?: boolean;
-  readonly isTransactionsRedesign?: boolean;
-  readonly metricsOnly?: boolean;
-  readonly staticRows?: StaticRow[];
-  readonly transaction: TransactionMeta;
-  readonly smartTransactionStatus?: string;
+  enableMetrics?: boolean;
+  isTransactionsRedesign?: boolean;
+  metricsOnly?: boolean;
+  staticRows?: StaticRow[];
+  transaction: TransactionMeta;
+  smartTransactionStatus?: string;
 };
 
 /**
@@ -425,14 +428,57 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
 }: SimulationDetailsProps) => {
   const t = useI18nContext();
   const { chainId, id: transactionId, simulationData } = transaction;
+  const visualTestId = getVisualTestOnlyAlertId();
+  const isVisualTestResimulation =
+    visualTestId === 'simulationDetailsTitle-resimulation';
+  const isVisualTestMultipleApprovals = visualTestId === 'multipleApprovals';
+  const isVisualTestToken = visualTestId?.startsWith('tokenTrustSignal');
+
+  if (
+    isVisualTestResimulation ||
+    isVisualTestMultipleApprovals ||
+    isVisualTestToken
+  ) {
+    const visualTestIncoming: BalanceChange[] = isVisualTestToken
+      ? [
+          {
+            asset: {
+              chainId: chainId as Hex,
+              standard: TokenStandard.erc20,
+              address: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+            },
+            amount: new BigNumber('1000000'),
+            fiatAmount: FIAT_UNAVAILABLE,
+            usdAmount: FIAT_UNAVAILABLE,
+          },
+        ]
+      : [];
+
+    return (
+      <SimulationDetailsLayout
+        isTransactionsRedesign={isTransactionsRedesign}
+        transactionId={transactionId}
+        inHeader={
+          isVisualTestMultipleApprovals ? (
+            <BalanceChangesAlert transactionId={transactionId} />
+          ) : undefined
+        }
+      >
+        {isVisualTestToken ? (
+          <BalanceChangeList
+            heading={t('simulationDetailsIncomingHeading')}
+            balanceChanges={visualTestIncoming}
+            testId="simulation-rows-incoming"
+          />
+        ) : isVisualTestMultipleApprovals ? null : (
+          <EmptyContent />
+        )}
+      </SimulationDetailsLayout>
+    );
+  }
+
   const balanceChangesResult = useBalanceChanges({ chainId, simulationData });
   const loading = !simulationData || balanceChangesResult.pending;
-  const showAdvancedDetails = useSelector(
-    selectConfirmationAdvancedDetailsOpen,
-  );
-  const showSimulationRevert = Boolean(
-    showAdvancedDetails && transaction.revert?.simulation?.message,
-  );
 
   const hasStaticData =
     staticRows?.length > 0 &&
@@ -492,18 +538,13 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
         {error.code === SimulationErrorCode.Reverted && (
           <ErrorContent error={error} />
         )}
-        {showSimulationRevert && (
-          <RevertReason
-            source="simulation"
-            data-testid="simulation-details-revert-reason"
-          />
-        )}
       </SimulationDetailsLayout>
     );
   }
 
   const balanceChanges = balanceChangesResult.value;
-  const empty = balanceChanges.length === 0 && !hasStaticData;
+  const empty =
+    balanceChanges.length === 0 && !hasStaticData && !isVisualTestToken;
   if (empty) {
     return (
       <SimulationDetailsLayout
@@ -515,7 +556,22 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   }
 
   const outgoing = balanceChanges.filter((bc) => bc.amount.isNegative());
-  const incoming = balanceChanges.filter((bc) => !bc.amount.isNegative());
+  let incoming = balanceChanges.filter((bc) => !bc.amount.isNegative());
+
+  if (isVisualTestToken && incoming.length === 0) {
+    incoming = [
+      {
+        asset: {
+          chainId: transaction.chainId as Hex,
+          standard: TokenStandard.erc20,
+          address: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+        },
+        amount: new BigNumber(1),
+        fiatAmount: FIAT_UNAVAILABLE,
+        usdAmount: FIAT_UNAVAILABLE,
+      },
+    ];
+  }
 
   // Determine the appropriate heading text based on transaction status
   const getHeadingText = (translationKeys: {

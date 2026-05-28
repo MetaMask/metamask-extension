@@ -10,9 +10,20 @@ import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { useConfirmContext } from '../../../context/confirm';
 import { useDappSwapContext } from '../../../context/dapp-swap';
+import {
+  getVisualTestOnlyAlertId,
+  getVisualTestTransactionAlerts,
+} from '../../visual-test-alert-override';
 
 export function useResimulationAlert(): Alert[] {
   const t = useI18nContext();
+  const visualTestAlerts = getVisualTestTransactionAlerts(
+    getVisualTestOnlyAlertId(),
+    t,
+  );
+  if (visualTestAlerts) {
+    return visualTestAlerts;
+  }
   const { currentConfirmation } = useConfirmContext();
   const { isQuotedSwapDisplayedInInfo } = useDappSwapContext();
 

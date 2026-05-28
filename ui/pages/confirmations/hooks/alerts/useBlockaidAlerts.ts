@@ -24,6 +24,10 @@ import {
 import { useConfirmContext } from '../../context/confirm';
 import useCurrentSignatureSecurityAlertResponse from '../useCurrentSignatureSecurityAlertResponse';
 import { normalizeProviderAlert } from './utils';
+import {
+  getVisualTestBlockaidMock,
+  isVisualTestOnlyAlertMode,
+} from '../visual-test-alert-override';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const zlib = require('zlib');
@@ -65,10 +69,16 @@ const useBlockaidAlerts = (): Alert[] => {
       )?.securityAlertResponse,
   );
 
+  const visualTestMock = isVisualTestOnlyAlertMode()
+    ? getVisualTestBlockaidMock()
+    : null;
+
   const securityAlertResponse =
+    visualTestMock ||
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    signatureSecurityAlertResponse || transactionSecurityAlertResponse;
+    signatureSecurityAlertResponse ||
+    transactionSecurityAlertResponse;
 
   const isTransactionTypeSupported =
     isCorrectDeveloperTransactionType(transactionType) ||
