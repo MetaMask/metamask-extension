@@ -89,7 +89,7 @@ function buildAnalyticsEventQueue(
   for (const [messageId, segmentApiCall] of Object.entries(segmentApiCalls)) {
     const queuedEvent = buildAnalyticsQueuedEvent(messageId, segmentApiCall);
     if (queuedEvent) {
-      eventQueue[queuedEvent.messageId] = queuedEvent;
+      eventQueue[messageId] = queuedEvent;
     }
   }
 
