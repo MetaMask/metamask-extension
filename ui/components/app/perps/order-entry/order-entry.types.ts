@@ -228,6 +228,7 @@ export type OrderSummaryProps = {
     estimatedPct: number | null;
     insufficientLiquidity: boolean;
     maxSlippagePct: number;
+    exceedsMax: boolean;
     onMaxSlippageClick: () => void;
   };
   /**

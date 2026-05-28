@@ -1,28 +1,38 @@
-import { formatSlippagePct, formatMaxSlippagePct } from './slippageFormat';
+import { formatSlippageRowValue, formatMaxSlippagePct } from './slippageFormat';
 
-describe('formatSlippagePct', () => {
-  it('returns ">10%" when liquidity is insufficient', () => {
-    expect(formatSlippagePct(null, true)).toBe('>10%');
-    expect(formatSlippagePct(5, true)).toBe('>10%');
+describe('formatSlippageRowValue', () => {
+  it('shows "Est: --" when estimate is null', () => {
+    expect(formatSlippageRowValue(null, 3, false)).toBe(
+      'Est: -- / Max: 3.0%',
+    );
   });
 
-  it('returns "—" when estimate is null and liquidity is sufficient', () => {
-    expect(formatSlippagePct(null, false)).toBe('—');
+  it('shows ">max" when liquidity is insufficient', () => {
+    expect(formatSlippageRowValue(null, 3, true)).toBe(
+      'Est: >max / Max: 3.0%',
+    );
+    expect(formatSlippageRowValue(5, 3, true)).toBe('Est: >max / Max: 3.0%');
   });
 
-  it('returns "<0.01%" for sub-rounding-threshold non-zero estimates', () => {
-    expect(formatSlippagePct(0.0001, false)).toBe('<0.01%');
-    expect(formatSlippagePct(0.0099, false)).toBe('<0.01%');
+  it('formats estimated percent with two decimals', () => {
+    expect(formatSlippageRowValue(0.15, 3, false)).toBe(
+      'Est: 0.15% / Max: 3.0%',
+    );
+    expect(formatSlippageRowValue(0, 3, false)).toBe(
+      'Est: 0.00% / Max: 3.0%',
+    );
+    expect(formatSlippageRowValue(2.567, 5, false)).toBe(
+      'Est: 2.57% / Max: 5.0%',
+    );
   });
 
-  it('returns "0.00%" for an exact-zero estimate', () => {
-    expect(formatSlippagePct(0, false)).toBe('0.00%');
-  });
-
-  it('returns two-decimal percent for in-range estimates', () => {
-    expect(formatSlippagePct(0.01, false)).toBe('0.01%');
-    expect(formatSlippagePct(3, false)).toBe('3.00%');
-    expect(formatSlippagePct(9.876, false)).toBe('9.88%');
+  it('formats max with one decimal', () => {
+    expect(formatSlippageRowValue(0.1, 0.1, false)).toBe(
+      'Est: 0.10% / Max: 0.1%',
+    );
+    expect(formatSlippageRowValue(1, 10, false)).toBe(
+      'Est: 1.00% / Max: 10.0%',
+    );
   });
 });
 

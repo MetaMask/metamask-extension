@@ -4,7 +4,9 @@ import {
   BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
-  ButtonBase,
+  Icon,
+  IconName,
+  IconSize,
   Text,
   TextColor,
   TextVariant,
@@ -13,8 +15,7 @@ import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { PerpsFeesDisplay } from '../../../perps-fees-display';
 import type { OrderSummaryProps } from '../../order-entry.types';
 import {
-  formatSlippagePct,
-  formatMaxSlippagePct,
+  formatSlippageRowValue,
 } from '../../../utils/slippageFormat';
 
 /**
@@ -99,11 +100,18 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
 
       {slippage && (
         <Box
+          as="button"
+          type="button"
           flexDirection={BoxFlexDirection.Row}
           justifyContent={BoxJustifyContent.Between}
           alignItems={BoxAlignItems.Center}
+          onClick={slippage.onMaxSlippageClick}
           data-testid="perps-order-summary-slippage-row"
+          className="cursor-pointer bg-transparent border-0 p-0"
         >
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {t('perpsSlippage')}
+          </Text>
           <Box
             flexDirection={BoxFlexDirection.Row}
             alignItems={BoxAlignItems.Center}
@@ -111,33 +119,25 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
           >
             <Text
               variant={TextVariant.BodySm}
-              color={TextColor.TextAlternative}
+              color={
+                slippage.exceedsMax
+                  ? TextColor.ErrorDefault
+                  : TextColor.TextDefault
+              }
+              data-testid="perps-order-summary-slippage-value"
             >
-              {t('perpsSlippageEstimated')}
-            </Text>
-            <Text
-              variant={TextVariant.BodySm}
-              color={TextColor.TextDefault}
-              data-testid="perps-order-summary-estimated-slippage"
-            >
-              {formatSlippagePct(
+              {formatSlippageRowValue(
                 slippage.estimatedPct,
+                slippage.maxSlippagePct,
                 slippage.insufficientLiquidity,
               )}
             </Text>
+            <Icon
+              name={IconName.Edit}
+              size={IconSize.Xs}
+              color={TextColor.TextAlternative}
+            />
           </Box>
-          <ButtonBase
-            type="button"
-            onClick={slippage.onMaxSlippageClick}
-            data-testid="perps-order-summary-max-slippage-button"
-            className="h-7 rounded-md bg-muted px-2 py-0"
-          >
-            <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
-              {t('perpsSlippageMaxLabel', [
-                formatMaxSlippagePct(slippage.maxSlippagePct),
-              ])}
-            </Text>
-          </ButtonBase>
         </Box>
       )}
     </Box>

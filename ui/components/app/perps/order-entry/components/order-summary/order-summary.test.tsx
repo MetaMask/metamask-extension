@@ -187,10 +187,11 @@ describe('OrderSummary', () => {
       estimatedPct: 0.15,
       insufficientLiquidity: false,
       maxSlippagePct: 3,
+      exceedsMax: false,
       onMaxSlippageClick: jest.fn(),
     };
 
-    it('renders slippage row when slippage prop is provided', () => {
+    it('renders slippage row with combined Est/Max format', () => {
       renderWithProvider(
         <OrderSummary
           marginRequired={null}
@@ -205,8 +206,24 @@ describe('OrderSummary', () => {
         screen.getByTestId('perps-order-summary-slippage-row'),
       ).toBeInTheDocument();
       expect(
-        screen.getByTestId('perps-order-summary-estimated-slippage'),
-      ).toHaveTextContent('0.15%');
+        screen.getByTestId('perps-order-summary-slippage-value'),
+      ).toHaveTextContent('Est: 0.15% / Max: 3.0%');
+    });
+
+    it('shows pending format when estimate is null', () => {
+      renderWithProvider(
+        <OrderSummary
+          marginRequired={null}
+          estimatedFees={null}
+          liquidationPrice={null}
+          slippage={{ ...slippageProps, estimatedPct: null }}
+        />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-order-summary-slippage-value'),
+      ).toHaveTextContent('Est: -- / Max: 3.0%');
     });
 
     it('does not render slippage row when slippage prop is omitted', () => {
@@ -224,25 +241,7 @@ describe('OrderSummary', () => {
       ).not.toBeInTheDocument();
     });
 
-    it('renders max slippage button with formatted value', () => {
-      renderWithProvider(
-        <OrderSummary
-          marginRequired={null}
-          estimatedFees={null}
-          liquidationPrice={null}
-          slippage={slippageProps}
-        />,
-        mockStore,
-      );
-
-      const button = screen.getByTestId(
-        'perps-order-summary-max-slippage-button',
-      );
-      expect(button).toBeInTheDocument();
-      expect(button).toHaveTextContent('3.0%');
-    });
-
-    it('calls onMaxSlippageClick when button is clicked', () => {
+    it('opens config on row click', () => {
       const onClick = jest.fn();
       renderWithProvider(
         <OrderSummary
@@ -254,9 +253,7 @@ describe('OrderSummary', () => {
         mockStore,
       );
 
-      screen
-        .getByTestId('perps-order-summary-max-slippage-button')
-        .click();
+      screen.getByTestId('perps-order-summary-slippage-row').click();
       expect(onClick).toHaveBeenCalledTimes(1);
     });
   });

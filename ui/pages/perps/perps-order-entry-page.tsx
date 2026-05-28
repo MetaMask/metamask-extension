@@ -1688,6 +1688,7 @@ const PerpsOrderEntryPage: React.FC = () => {
                     estimatedPct: estimatedSlippagePct,
                     insufficientLiquidity,
                     maxSlippagePct,
+                    exceedsMax: exceedsMaxSlippage,
                     onMaxSlippageClick: handleOpenSlippageConfig,
                   }
                 : undefined
@@ -1703,11 +1704,10 @@ const PerpsOrderEntryPage: React.FC = () => {
             color={TextColor.ErrorDefault}
             data-testid="perps-slippage-blocked-error"
           >
-            {insufficientLiquidity
-              ? t('perpsSlippageBlockedInsufficientLiquidity')
-              : t('perpsSlippageBlockedError', [
-                  formatMaxSlippagePct(maxSlippagePct),
-                ])}
+            {t('perpsSlippageExceedsMax', [
+              estimatedSlippagePct?.toFixed(2) ?? '--',
+              formatMaxSlippagePct(maxSlippagePct),
+            ])}
           </Text>
         )}
         {submitError && (

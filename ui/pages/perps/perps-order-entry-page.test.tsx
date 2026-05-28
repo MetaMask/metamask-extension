@@ -1701,7 +1701,7 @@ describe('PerpsOrderEntryPage', () => {
 
       await act(async () => {
         fireEvent.click(
-          screen.getByTestId('perps-order-summary-max-slippage-button'),
+          screen.getByTestId('perps-order-summary-slippage-row'),
         );
       });
 
