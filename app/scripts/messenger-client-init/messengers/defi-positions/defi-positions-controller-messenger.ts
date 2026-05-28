@@ -1,24 +1,12 @@
-import { Messenger } from '@metamask/messenger';
-import { TransactionControllerTransactionConfirmedEvent } from '@metamask/transaction-controller';
-import { KeyringControllerLockEvent } from '@metamask/keyring-controller';
-import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import {
-  AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
-  AccountTreeControllerSelectedAccountGroupChangeEvent,
-} from '@metamask/account-tree-controller';
+  Messenger,
+  type MessengerActions,
+  type MessengerEvents,
+} from '@metamask/messenger';
+import { DeFiPositionsControllerMessenger } from '@metamask/assets-controllers';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller-method-action-types';
 import { RootMessenger } from '../../../lib/messenger';
-
-type Actions = AccountTreeControllerGetAccountsFromSelectedAccountGroupAction;
-
-type Events =
-  | KeyringControllerLockEvent
-  | TransactionControllerTransactionConfirmedEvent
-  | AccountTreeControllerSelectedAccountGroupChangeEvent;
-
-export type DeFiPositionsControllerMessenger = ReturnType<
-  typeof getDeFiPositionsControllerMessenger
->;
 
 /**
  * Get a restricted messenger for the Defi Positions controller. This is scoped to the
@@ -28,14 +16,12 @@ export type DeFiPositionsControllerMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getDeFiPositionsControllerMessenger(
-  messenger: RootMessenger<Actions, Events>,
-) {
-  const controllerMessenger = new Messenger<
-    'DeFiPositionsController',
-    Actions,
-    Events,
-    typeof messenger
-  >({
+  messenger: RootMessenger<
+    MessengerActions<DeFiPositionsControllerMessenger>,
+    MessengerEvents<DeFiPositionsControllerMessenger>
+  >,
+): DeFiPositionsControllerMessenger {
+  const controllerMessenger: DeFiPositionsControllerMessenger = new Messenger({
     namespace: 'DeFiPositionsController',
     parent: messenger,
   });
