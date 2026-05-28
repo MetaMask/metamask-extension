@@ -1405,35 +1405,52 @@ describe('MetaMetricsController', function () {
   });
 
   describe('Sensitive transaction and signature events', function () {
-    it('keeps the original event name and marks anonymous-only tracks', async function () {
-      await withController(({ controller }) => {
-        const spy = jest.spyOn(segmentMock, 'track');
-        const currentTimestamp = new Date('2024-02-01T00:00:00.000Z').getTime();
-        jest.setSystemTime(currentTimestamp);
-        controller.trackEvent(
-          {
-            event: 'Signature Requested',
-            category: 'Unit Test',
-            properties: DEFAULT_EVENT_PROPERTIES,
-          },
-          { excludeMetaMetricsId: true },
-        );
+    it('keeps the original event name, marks anonymous-only tracks, and preserves the latest non-anonymous timestamp', async function () {
+      const previousTimestamp = new Date('2024-01-01T00:00:00.000Z').getTime();
 
-        expect(spy).toHaveBeenCalledTimes(1);
-        expect(spy).toHaveBeenCalledWith(
-          expect.objectContaining({
-            event: 'Signature Requested',
-            properties: expect.objectContaining({
-              ...DEFAULT_EVENT_PROPERTIES,
-              [ANONYMOUS_EVENT_PROPERTY]: true,
+      await withController(
+        {
+          options: {
+            state: {
+              fragments: {},
+              latestNonAnonymousEventTimestamp: previousTimestamp,
+            },
+          },
+        },
+        ({ controller }) => {
+          const spy = jest.spyOn(segmentMock, 'track');
+          expect(controller.state.latestNonAnonymousEventTimestamp).toBe(
+            previousTimestamp,
+          );
+          const currentTimestamp = new Date(
+            '2024-02-01T00:00:00.000Z',
+          ).getTime();
+          jest.setSystemTime(currentTimestamp);
+          controller.trackEvent(
+            {
+              event: 'Signature Requested',
+              category: 'Unit Test',
+              properties: DEFAULT_EVENT_PROPERTIES,
+            },
+            { excludeMetaMetricsId: true },
+          );
+
+          expect(spy).toHaveBeenCalledTimes(1);
+          expect(spy).toHaveBeenCalledWith(
+            expect.objectContaining({
+              event: 'Signature Requested',
+              properties: expect.objectContaining({
+                ...DEFAULT_EVENT_PROPERTIES,
+                [ANONYMOUS_EVENT_PROPERTY]: true,
+              }),
             }),
-          }),
-          undefined,
-        );
-        expect(controller.state.latestNonAnonymousEventTimestamp).toBe(
-          currentTimestamp,
-        );
-      });
+            undefined,
+          );
+          expect(controller.state.latestNonAnonymousEventTimestamp).toBe(
+            previousTimestamp,
+          );
+        },
+      );
     });
 
     // @ts-expect-error This function is missing from the Mocha type definitions

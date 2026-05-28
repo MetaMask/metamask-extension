@@ -882,7 +882,10 @@ export class MetaMetricsController extends BaseController<
       this.#applyAnonymousEventOptions(eventPayload, options);
       this.#applyLegacyEventOptions(eventPayload, options);
 
-      this.#updateLatestAnalyticsEventTimestamp();
+      if (!this.#isAnonymousTrackEvent(eventPayload)) {
+        this.#updateLatestAnalyticsEventTimestamp();
+      }
+
       const sensitiveProperties = eventPayload.sensitiveProperties ?? {};
 
       this.messenger.call(
@@ -901,6 +904,10 @@ export class MetaMetricsController extends BaseController<
     } catch (err) {
       this.#captureException(err);
     }
+  }
+
+  #isAnonymousTrackEvent(eventPayload: SegmentTrackPayload): boolean {
+    return eventPayload.properties[ANONYMOUS_EVENT_PROPERTY] === true;
   }
 
   /**
