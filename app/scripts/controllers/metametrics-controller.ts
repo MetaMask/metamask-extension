@@ -1107,16 +1107,19 @@ export class MetaMetricsController extends BaseController<
 
     return {
       name: name ?? '',
-      properties: pickBy({
-        params,
-        locale: this.locale,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: this.chainId,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        environment_type: environmentType,
-      }) as AnalyticsEventProperties,
+      properties: omitBy(
+        {
+          params,
+          locale: this.locale,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: this.chainId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          environment_type: environmentType,
+        },
+        (propertyValue) => propertyValue === undefined,
+      ) as AnalyticsEventProperties,
       context: this.#buildContext(referrer, page) as AnalyticsContext,
     };
   }

@@ -1555,6 +1555,33 @@ describe('MetaMetricsController', function () {
       });
     });
 
+    it('preserves falsy page view properties except undefined', async function () {
+      await withController(
+        {
+          currentLocale: '',
+        },
+        ({ controller }) => {
+          const spy = jest.spyOn(segmentMock, 'page');
+          controller.trackPage({
+            name: 'home',
+            page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
+          });
+
+          expect(spy).toHaveBeenCalledTimes(1);
+          expect(spy).toHaveBeenCalledWith(
+            expect.objectContaining({
+              properties: {
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                chain_id: DEFAULT_CHAIN_ID,
+                locale: '',
+              },
+            }),
+            spy.mock.calls[0][1],
+          );
+        },
+      );
+    });
+
     it('should not track a page view if user is not participating in metametrics', async function () {
       await withController(
         {
