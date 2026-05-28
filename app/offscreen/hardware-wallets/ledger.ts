@@ -70,6 +70,22 @@ function serializeError(error: unknown): {
 }
 
 /**
+ * Normalizes a Ledger signature component to an unprefixed 32-byte hex string.
+ * Ledger can return `r` and `s` with or without a hex prefix.
+ *
+ * @param component - The Ledger signature component.
+ * @returns The unprefixed, left-padded signature component.
+ */
+function normalizeLedgerSignatureComponent(component: string): string {
+  const unprefixed =
+    component.slice(0, 2).toLowerCase() === '0x'
+      ? component.slice(2)
+      : component;
+
+  return unprefixed.padStart(64, '0');
+}
+
+/**
  * Returns the 4-byte selector for transactions that expose calldata in `data`.
  * Falls back to parsing the transaction directly for legacy unsigned payloads
  * that the shared Ledger selector helper does not currently recognize.
@@ -455,8 +471,8 @@ export class LedgerOffscreenHandler {
     let recovered: string;
     try {
       const signature = add0x(
-        sig.r.replace(/^0x/u, '').padStart(64, '0') +
-          sig.s.replace(/^0x/u, '').padStart(64, '0') +
+        normalizeLedgerSignatureComponent(sig.r) +
+          normalizeLedgerSignatureComponent(sig.s) +
           sig.v.toString(16).padStart(2, '0'),
       );
       recovered = recoverTypedSignature({

@@ -659,6 +659,10 @@ describe('Ledger Offscreen', () => {
         primaryType: 'Test',
         message: { value: 'test' },
       };
+      const paddedTypedDataMessage = {
+        ...typedDataMessage,
+        message: { value: 'test0' },
+      };
 
       const testPrivateKey = Buffer.from(
         '4af1bceebf7f3634ec3cff8a2c38e51178d5d4ce585c52d6043e5e2cc3418bb0',
@@ -681,6 +685,13 @@ describe('Ledger Offscreen', () => {
         signTypedData({
           privateKey: testPrivateKey,
           data: typedDataMessage as TypedMessage<MessageTypes>,
+          version: SignTypedDataVersion.V4,
+        }),
+      );
+      const leadingZeroSignature = splitSignatureHex(
+        signTypedData({
+          privateKey: testPrivateKey,
+          data: paddedTypedDataMessage as TypedMessage<MessageTypes>,
           version: SignTypedDataVersion.V4,
         }),
       );
@@ -712,6 +723,42 @@ describe('Ledger Offscreen', () => {
           "m/44'/60'/0'/0/0",
           typedDataMessage,
         );
+        expect(mockSignEIP712HashedMessage).not.toHaveBeenCalled();
+      });
+
+      it('verifies clear-signed signature components with hex prefixes', async () => {
+        const prefixedSignature = {
+          ...validSignature,
+          r: `0x${validSignature.r}`,
+          s: `0X${validSignature.s}`,
+        };
+        mockSignEIP712Message.mockResolvedValue(prefixedSignature);
+
+        const response = await sendAction(LedgerAction.signTypedData, {
+          hdPath: "m/44'/60'/0'/0/0",
+          message: typedDataMessage,
+        });
+
+        expect(response.success).toBe(true);
+        expect(response.payload).toEqual(prefixedSignature);
+        expect(mockSignEIP712HashedMessage).not.toHaveBeenCalled();
+      });
+
+      it('verifies clear-signed signature components without leading zeroes', async () => {
+        expect(leadingZeroSignature.r.startsWith('0')).toBe(true);
+        const unpaddedSignature = {
+          ...leadingZeroSignature,
+          r: leadingZeroSignature.r.slice(1),
+        };
+        mockSignEIP712Message.mockResolvedValue(unpaddedSignature);
+
+        const response = await sendAction(LedgerAction.signTypedData, {
+          hdPath: "m/44'/60'/0'/0/0",
+          message: paddedTypedDataMessage,
+        });
+
+        expect(response.success).toBe(true);
+        expect(response.payload).toEqual(unpaddedSignature);
         expect(mockSignEIP712HashedMessage).not.toHaveBeenCalled();
       });
 
