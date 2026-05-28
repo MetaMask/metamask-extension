@@ -11,9 +11,6 @@ import {
   type QrHardwareSignRequest,
 } from './types';
 
-// Re-export for backward compatibility with existing consumers
-export { SignatureStepStatus };
-
 /**
  * Type guard that checks whether an unknown value is a valid QR hardware
  * wallet sign request.

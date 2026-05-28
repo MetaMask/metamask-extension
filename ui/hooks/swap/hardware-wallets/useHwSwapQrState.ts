@@ -62,10 +62,12 @@ export function useHwSwapQrState({
       ? activeQrCodeScanRequest
       : undefined;
 
-  // Use a ref so the cancel callback doesn't recreate on every render due to
-  // the non-memoized qrSignRequest object changing identity.
+  // Use refs so the cancel callback doesn't recreate on every render due to
+  // non-memoized objects changing identity.
   const qrSignRequestRef = useRef(qrSignRequest);
   qrSignRequestRef.current = qrSignRequest;
+  const confirmationTxDataRef = useRef(confirmationTxData);
+  confirmationTxDataRef.current = confirmationTxData;
 
   const currentQrRequestId = qrSignRequest?.request.requestId;
 
@@ -91,20 +93,24 @@ export function useHwSwapQrState({
   );
 
   const handleQrSignatureCancel = useCallback(() => {
-    if (confirmationTxData?.id) {
+    const currentConfirmationTxData = confirmationTxDataRef.current;
+
+    if (currentConfirmationTxData?.id) {
       dispatch(
         rejectPendingApproval(
-          confirmationTxData.id,
+          currentConfirmationTxData.id,
           serializeError(providerErrors.userRejectedRequest()),
         ),
       );
-      dispatch(cancelTx(confirmationTxData as Parameters<typeof cancelTx>[0]));
+      dispatch(
+        cancelTx(currentConfirmationTxData as Parameters<typeof cancelTx>[0]),
+      );
     }
 
     if (qrSignRequestRef.current) {
       dispatch(cancelQrCodeScan());
     }
-  }, [dispatch, confirmationTxData]);
+  }, [dispatch]);
 
   return {
     isReadingQrSignature,

@@ -5,9 +5,9 @@ import QrSignatureCode from '.';
 const QR_REFRESH_RATE = 200;
 
 jest.mock('qrcode.react', () => ({
-  QRCodeSVG: ({ value }: { value: string }) => (
+  QRCodeSVG: jest.fn(({ value }: { value: string }) => (
     <svg data-testid="qr-code-svg" data-value={value} />
-  ),
+  )),
 }));
 
 jest.mock('@ngraveio/bc-ur', () => ({
@@ -39,8 +39,11 @@ jest.mock('@ngraveio/bc-ur', () => ({
   },
 }));
 
+const mockQRCodeSVG = jest.requireMock('qrcode.react').QRCodeSVG as jest.Mock;
+
 describe('QrSignatureCode', () => {
   afterEach(() => {
+    mockQRCodeSVG.mockClear();
     jest.useRealTimers();
   });
 
@@ -111,7 +114,7 @@ describe('QrSignatureCode', () => {
     unmount();
   });
 
-  it('does not render a stale QR code when the payload changes before effects run', () => {
+  it('does not pass a stale QR code to the QR renderer when the payload changes', () => {
     const firstPayload = {
       type: 'eth-sign-request',
       cbor: 'a201010203',
@@ -124,10 +127,18 @@ describe('QrSignatureCode', () => {
     const { getByTestId, rerender } = render(
       <QrSignatureCode payload={firstPayload} />,
     );
+    mockQRCodeSVG.mockClear();
+
     rerender(<QrSignatureCode payload={secondPayload} />);
 
     expect(getByTestId('qr-code-svg').dataset.value).toBe(
       'ETH-SIGN-REQUEST-B401010203-QR-PART-1',
+    );
+    expect(mockQRCodeSVG).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        value: 'ETH-SIGN-REQUEST-A201010203-QR-PART-1',
+      }),
+      undefined,
     );
   });
 });

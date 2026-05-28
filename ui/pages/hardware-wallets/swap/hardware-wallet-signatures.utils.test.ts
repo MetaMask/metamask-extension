@@ -1,6 +1,7 @@
+import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import { HardwareWalletSignatureStatus } from './hardware-wallet-signatures-state-machine';
+import { SignatureStepStatus } from './types';
 import {
-  SignatureStepStatus,
   getStepStatus,
   hasApprovalTxForRequestId,
   getTitle,
@@ -410,7 +411,7 @@ describe('hardware-wallet-signatures utils', () => {
     it('returns false when request is missing', () => {
       expect(
         isQrHardwareSignRequest({
-          type: 'sign',
+          type: QrScanRequestType.SIGN,
         }),
       ).toBe(false);
     });
@@ -418,7 +419,7 @@ describe('hardware-wallet-signatures utils', () => {
     it('returns false when requestId is not a string', () => {
       expect(
         isQrHardwareSignRequest({
-          type: 'sign',
+          type: QrScanRequestType.SIGN,
           request: {
             requestId: 123,
             payload: { type: 't', cbor: 'c' },
@@ -430,9 +431,24 @@ describe('hardware-wallet-signatures utils', () => {
     it('returns false when payload is missing', () => {
       expect(
         isQrHardwareSignRequest({
-          type: 'sign',
+          type: QrScanRequestType.SIGN,
           request: {
             requestId: 'id',
+          },
+        }),
+      ).toBe(false);
+    });
+
+    it('returns false for uppercase QR sign request type', () => {
+      expect(
+        isQrHardwareSignRequest({
+          type: 'SIGN',
+          request: {
+            requestId: 'request-id-123',
+            payload: {
+              type: 'eth-sign-request',
+              cbor: 'a201010203',
+            },
           },
         }),
       ).toBe(false);
@@ -441,7 +457,7 @@ describe('hardware-wallet-signatures utils', () => {
     it('returns true for valid QR sign request', () => {
       expect(
         isQrHardwareSignRequest({
-          type: 'sign',
+          type: QrScanRequestType.SIGN,
           request: {
             requestId: 'request-id-123',
             payload: {
