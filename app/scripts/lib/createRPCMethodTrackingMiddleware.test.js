@@ -99,6 +99,10 @@ messenger.registerActionHandler('AnalyticsController:optOut', () => {
   analyticsControllerState.optedIn = false;
 });
 
+messenger.registerActionHandler('AnalyticsController:trackEvent', jest.fn());
+messenger.registerActionHandler('AnalyticsController:identify', jest.fn());
+messenger.registerActionHandler('AnalyticsController:trackView', jest.fn());
+
 const controllerMessenger = new Messenger({
   namespace: 'MetaMetricsController',
   parent: messenger,
@@ -110,6 +114,9 @@ messenger.delegate({
     'AnalyticsController:getState',
     'AnalyticsController:optIn',
     'AnalyticsController:optOut',
+    'AnalyticsController:trackEvent',
+    'AnalyticsController:identify',
+    'AnalyticsController:trackView',
     'PreferencesController:getState',
     'NetworkController:getState',
     'NetworkController:getNetworkClientById',
