@@ -62,8 +62,8 @@ import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/onboarding-method-action-types';
 import { getAccountsBySnapId } from '../lib/snap-keyring';
 import { PreferencesControllerSetPasswordForgottenAction } from '../controllers/preferences-controller-method-action-types';
-import { LegacyBackgroundApiServiceMethodActions } from './legacy-background-api-service-method-action-types';
 import { getSnapKeyring } from '../lib/snap-keyring/utils/getSnapKeyring';
+import { LegacyBackgroundApiServiceMethodActions } from './legacy-background-api-service-method-action-types';
 
 const serviceName = 'LegacyBackgroundApiService';
 
