@@ -58,10 +58,7 @@ function renderRepairPage(
   const store = configureStore({ metamask: {} });
   return render(
     <Provider store={store}>
-      <MemoryRouter
-        initialEntries={initialEntries}
-        future={memoryRouterFuture}
-      >
+      <MemoryRouter initialEntries={initialEntries} future={memoryRouterFuture}>
         <HardwareWalletRepair />
       </MemoryRouter>
     </Provider>,
@@ -163,9 +160,7 @@ describe('HardwareWalletRepair', () => {
 
   it('renders the connect button', () => {
     const { getByRole } = renderRepairPage();
-    expect(
-      getByRole('button', { name: 'Connect' }),
-    ).toBeInTheDocument();
+    expect(getByRole('button', { name: 'Connect' })).toBeInTheDocument();
   });
 
   it('closes the repair page when the header close button is clicked', () => {
@@ -212,9 +207,9 @@ describe('HardwareWalletRepair', () => {
       HardwareWalletType.Trezor,
     );
     expect(mockEnsureDeviceReady).not.toHaveBeenCalled();
-    expect(hardwareWalletRepairUtils.ensureRepairDeviceReady).toHaveBeenCalledWith(
-      HardwareWalletType.Trezor,
-    );
+    expect(
+      hardwareWalletRepairUtils.ensureRepairDeviceReady,
+    ).toHaveBeenCalledWith(HardwareWalletType.Trezor);
     expect(mockSetConnectionReady).toHaveBeenCalled();
   });
 
@@ -235,9 +230,9 @@ describe('HardwareWalletRepair', () => {
       HardwareWalletType.Trezor,
     );
     expect(mockEnsureDeviceReady).not.toHaveBeenCalled();
-    expect(hardwareWalletRepairUtils.ensureRepairDeviceReady).toHaveBeenCalledWith(
-      HardwareWalletType.Trezor,
-    );
+    expect(
+      hardwareWalletRepairUtils.ensureRepairDeviceReady,
+    ).toHaveBeenCalledWith(HardwareWalletType.Trezor);
   });
 
   it('shows error when permission is not granted', async () => {

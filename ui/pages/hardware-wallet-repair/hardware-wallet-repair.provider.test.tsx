@@ -36,41 +36,55 @@ jest.mock('../../contexts/hardware-wallets/webConnectionUtils', () => ({
 
 // Intentionally keep useHardwareWalletConfig and useHardwareWalletActions real.
 // This test covers the provider plumbing that the sibling component test mocks.
-jest.mock('../../contexts/hardware-wallets/HardwareWalletEventHandlers', () => ({
-  useDeviceEventHandlers: jest.fn().mockReturnValue({
-    updateConnectionState: jest.fn(),
-    handleDeviceEvent: jest.fn(),
-    handleDisconnect: jest.fn(),
-  }),
-}));
-
-jest.mock('../../contexts/hardware-wallets/useHardwareWalletPermissions', () => {
-  const { HardwareConnectionPermissionState } = jest.requireActual(
-    '../../contexts/hardware-wallets/types',
-  );
-
-  return {
-    useHardwareWalletPermissions: jest.fn().mockReturnValue({
-      checkHardwareWalletPermissionAction: jest
-        .fn()
-        .mockResolvedValue(HardwareConnectionPermissionState.Unknown),
-      requestHardwareWalletPermissionAction: jest.fn().mockResolvedValue(false),
+jest.mock(
+  '../../contexts/hardware-wallets/HardwareWalletEventHandlers',
+  () => ({
+    useDeviceEventHandlers: jest.fn().mockReturnValue({
+      updateConnectionState: jest.fn(),
+      handleDeviceEvent: jest.fn(),
+      handleDisconnect: jest.fn(),
     }),
-  };
-});
-
-jest.mock('../../contexts/hardware-wallets/useHardwareWalletConnection', () => ({
-  useHardwareWalletConnection: jest.fn().mockReturnValue({
-    connect: jest.fn().mockResolvedValue(undefined),
-    disconnect: jest.fn().mockResolvedValue(undefined),
-    clearError: jest.fn(),
-    ensureDeviceReady: jest.fn().mockResolvedValue(true),
   }),
-}));
+);
 
-jest.mock('../../contexts/hardware-wallets/useHardwareWalletAutoConnect', () => ({
-  useHardwareWalletAutoConnect: jest.fn(),
-}));
+jest.mock(
+  '../../contexts/hardware-wallets/useHardwareWalletPermissions',
+  () => {
+    const { HardwareConnectionPermissionState } = jest.requireActual(
+      '../../contexts/hardware-wallets/types',
+    );
+
+    return {
+      useHardwareWalletPermissions: jest.fn().mockReturnValue({
+        checkHardwareWalletPermissionAction: jest
+          .fn()
+          .mockResolvedValue(HardwareConnectionPermissionState.Unknown),
+        requestHardwareWalletPermissionAction: jest
+          .fn()
+          .mockResolvedValue(false),
+      }),
+    };
+  },
+);
+
+jest.mock(
+  '../../contexts/hardware-wallets/useHardwareWalletConnection',
+  () => ({
+    useHardwareWalletConnection: jest.fn().mockReturnValue({
+      connect: jest.fn().mockResolvedValue(undefined),
+      disconnect: jest.fn().mockResolvedValue(undefined),
+      clearError: jest.fn(),
+      ensureDeviceReady: jest.fn().mockResolvedValue(true),
+    }),
+  }),
+);
+
+jest.mock(
+  '../../contexts/hardware-wallets/useHardwareWalletAutoConnect',
+  () => ({
+    useHardwareWalletAutoConnect: jest.fn(),
+  }),
+);
 
 function renderRepairPageWithProvider(
   initialEntries = ['/hardware-wallet-repair'],
@@ -103,10 +117,7 @@ function renderRepairPageWithProvider(
 
   return render(
     <Provider store={store}>
-      <MemoryRouter
-        initialEntries={initialEntries}
-        future={memoryRouterFuture}
-      >
+      <MemoryRouter initialEntries={initialEntries} future={memoryRouterFuture}>
         <HardwareWalletErrorProvider>
           <HardwareWalletRepair />
         </HardwareWalletErrorProvider>
