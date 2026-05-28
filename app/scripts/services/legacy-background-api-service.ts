@@ -6,7 +6,7 @@ import {
   NetworkControllerResetConnectionAction,
 } from '@metamask/network-controller';
 import { add0x, Hex, hexToBytes, Json } from '@metamask/utils';
-import { Mutex, MutexInterface } from 'async-mutex';
+import { Mutex } from 'async-mutex';
 import {
   AccountImportStrategy,
   KeyringControllerAddNewKeyringAction,
@@ -47,7 +47,6 @@ import {
   Caip25CaveatType,
 } from '@metamask/chain-agnostic-permission';
 import { SnapId } from '@metamask/snaps-sdk';
-import { SnapKeyring } from '@metamask/eth-snap-keyring';
 import {
   convertEnglishWordlistIndicesToCodepoints,
   isPublicEndpointUrl,
@@ -62,9 +61,9 @@ import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../shared/constants/
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/onboarding-method-action-types';
 import { getAccountsBySnapId } from '../lib/snap-keyring';
+import { PreferencesControllerSetPasswordForgottenAction } from '../controllers/preferences-controller-method-action-types';
 import { LegacyBackgroundApiServiceMethodActions } from './legacy-background-api-service-method-action-types';
 import { getSnapKeyring } from '../lib/snap-keyring/utils/getSnapKeyring';
-import { PreferencesControllerSetPasswordForgottenAction } from '../controllers/preferences-controller-method-action-types';
 
 const serviceName = 'LegacyBackgroundApiService';
 
