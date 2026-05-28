@@ -88,6 +88,7 @@ import {
   safeDecodeURIComponent,
   formatSignedChangePercent,
   willFlipPosition,
+  buildPerpsVipTrackingData,
 } from '../../components/app/perps/utils';
 import {
   parsePerpsDisplayPrice,
@@ -121,6 +122,7 @@ import {
   usePerpsToast,
 } from '../../components/app/perps/perps-toast';
 import { calculatePositionSize } from '../../components/app/perps/order-entry/order-entry.mocks';
+import { useVipTier } from '../../hooks/rewards/useVipTier';
 
 const ORDER_MODE_TOAST_KEYS: Record<
   OrderMode,
@@ -251,6 +253,8 @@ const PerpsOrderEntryPage: React.FC = () => {
   const { formatPercentWithMinThreshold } = useFormatters();
   const { replacePerpsToastByKey, hidePerpsToast, setPendingOrder } =
     usePerpsToast();
+
+  const vipTier = useVipTier();
 
   const { positions: allPositions } = usePerpsLivePositions();
   const { account, isInitialLoading: isLoadingAccount } = usePerpsLiveAccount();
@@ -977,6 +981,12 @@ const PerpsOrderEntryPage: React.FC = () => {
           position.size,
           marketInfo?.szDecimals,
         );
+        closeParams.trackingData = buildPerpsVipTrackingData({
+          totalFee: closeEstimatedFees,
+          marketPrice: currentPrice,
+          vipTier,
+          vipDiscount: metamaskFeeRateDiscountPercentage,
+        });
         const result = await submitRequestToBackground<PerpsBackgroundResult>(
           'perpsClosePosition',
           [closeParams],
@@ -1023,6 +1033,12 @@ const PerpsOrderEntryPage: React.FC = () => {
             orderMode,
             position?.size,
           );
+          orderParams.trackingData = buildPerpsVipTrackingData({
+            totalFee: orderCalculations?.estimatedFees ?? 0,
+            marketPrice: currentPrice,
+            vipTier,
+            vipDiscount: metamaskFeeRateDiscountPercentage,
+          });
           // Emit the submit-in-progress toast here (not via route state).
           replacePerpsToastByKey({
             key: PERPS_TOAST_KEYS.SUBMIT_IN_PROGRESS,
@@ -1122,6 +1138,12 @@ const PerpsOrderEntryPage: React.FC = () => {
         orderMode,
         position?.size,
       );
+      orderParams.trackingData = buildPerpsVipTrackingData({
+        totalFee: orderCalculations?.estimatedFees ?? 0,
+        marketPrice: currentPrice,
+        vipTier,
+        vipDiscount: metamaskFeeRateDiscountPercentage,
+      });
       // Do not re-emit SUBMIT_IN_PROGRESS via route state — it was already
       // emitted above by replacePerpsToastByKey. Re-emitting from the
       // market-detail useEffect races with the ORDER_SUBMITTED replace below
@@ -1303,6 +1325,8 @@ const PerpsOrderEntryPage: React.FC = () => {
     closeFeeRate,
     hasPendingPerpsDeposit,
     marketInfo?.szDecimals,
+    vipTier,
+    metamaskFeeRateDiscountPercentage,
   ]);
 
   const handlePrimaryAction = useCallback(async () => {
