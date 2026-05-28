@@ -89,11 +89,9 @@ export function useHwSwapSubmission({
     }
 
     hasStartedSubmission.current = true;
-    submitActiveQuoteRef
-      .current()
-      .catch(() => {
-        hasStartedSubmission.current = false;
-      });
+    submitActiveQuoteRef.current().catch(() => {
+      hasStartedSubmission.current = false;
+    });
   }, [lockedQuote]);
 
   const retrySubmission = useCallback(async () => {
