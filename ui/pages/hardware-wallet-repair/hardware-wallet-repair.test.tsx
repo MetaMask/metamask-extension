@@ -71,7 +71,14 @@ function renderRepairPage(
 describe('HardwareWalletRepair', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    (useI18nContext as jest.Mock).mockReturnValue((key: string) => key);
+    (useI18nContext as jest.Mock).mockReturnValue((key: string) => {
+      const translations: Record<string, string> = {
+        close: 'Close',
+        connect: 'Connect',
+      };
+
+      return translations[key] ?? key;
+    });
     jest
       .spyOn(hardwareWalletRepairUtils, 'ensureRepairDeviceReady')
       .mockResolvedValue(true);
@@ -155,8 +162,10 @@ describe('HardwareWalletRepair', () => {
   });
 
   it('renders the connect button', () => {
-    const { getByTestId } = renderRepairPage();
-    expect(getByTestId('hardware-wallet-repair-reconnect')).toBeInTheDocument();
+    const { getByRole } = renderRepairPage();
+    expect(
+      getByRole('button', { name: 'Connect' }),
+    ).toBeInTheDocument();
   });
 
   it('closes the repair page when the header close button is clicked', () => {
@@ -259,7 +268,9 @@ describe('HardwareWalletRepair', () => {
     const { getByTestId, findByText } = renderRepairPage();
     fireEvent.click(getByTestId('hardware-wallet-repair-reconnect'));
     await findByText('hardwareWalletRepairSuccessTitle');
-    expect(getByTestId('hardware-wallet-repair-close')).toBeInTheDocument();
+    expect(getByTestId('hardware-wallet-repair-close')).toHaveTextContent(
+      'Close',
+    );
   });
 
   it('shows error when ensureDeviceReady throws', async () => {

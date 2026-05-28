@@ -220,7 +220,7 @@ export const HardwareWalletRepair: React.FC = () => {
                 className="w-full"
                 data-testid="hardware-wallet-repair-reconnect"
               >
-                {t('hardwareWalletRepairConnectButton')}
+                {t('connect')}
               </Button>
             </Box>
           )}
@@ -233,7 +233,7 @@ export const HardwareWalletRepair: React.FC = () => {
               className="w-full"
               data-testid="hardware-wallet-repair-close"
             >
-              {t('hardwareWalletRepairCloseButton')}
+              {t('close')}
             </Button>
           </Footer>
         )}
