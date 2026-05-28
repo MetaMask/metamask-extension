@@ -30,10 +30,19 @@ const getRequestedToCompletedEvents = <Event extends { event?: string }>(
     -1,
     `${firstExpectedEvent} event not found`,
   );
-  return events.slice(
-    quotesRequestedEventIndex,
-    quotesRequestedEventIndex + expectedEvents.length,
+  const expectedEventSet = new Set(expectedEvents);
+  const requestedToCompletedEvents = events
+    .slice(quotesRequestedEventIndex)
+    .filter(({ event }) => event !== undefined && expectedEventSet.has(event))
+    .slice(0, expectedEvents.length);
+  assert.equal(
+    requestedToCompletedEvents.length,
+    expectedEvents.length,
+    `Expected ${expectedEvents.join(', ')} events, but got ${requestedToCompletedEvents
+      .map(({ event }) => event)
+      .join(', ')}`,
   );
+  return requestedToCompletedEvents;
 };
 
 describe('Swap tests', function (this: Suite) {
