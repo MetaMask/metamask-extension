@@ -239,35 +239,35 @@ export const SWAP_TEST_NETWORKS: NetworkSwapConfig[] = [
   },
   // Add more networks here as needed.
   //  Popular network list
-  // {
-  //   networkId: 'Base',
-  //   networkName: 'Base',
-  //   chainId: 8453,
-  //   nativeTokenSymbol: 'ETH',
-  //   manualTokens: [
-  //     {
-  //       symbol: 'USDC',
-  //       name: 'USD Coin',
-  //       address: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
-  //       decimals: 6,
-  //     },
-  //     {
-  //       symbol: 'WETH',
-  //       name: 'Wrapped Ether',
-  //       address: '0x4200000000000000000000000000000000000006',
-  //       decimals: 18,
-  //     },
-  //   ],
-  //   fixtureSetupMethod: 'withNetworkControllerOnBase',
-  //   blockExplorerUrl: 'https://basescan.org',
-  //   swapExecutionTokenSymbols: ['USDC', 'WETH'],
-  //   defaultSwapAmount: 0.0000001,
-  //   swapExecutionRoutes: [
-  //     { from: 'ETH', to: 'USDC', amount: '0.0000001' },
-  //     { from: 'USDC', to: 'WETH', amount: 0.01 },
-  //     { from: 'WETH', to: 'ETH', useMax: true },
-  //   ],
-  // },
+  {
+    networkId: 'Base',
+    networkName: 'Base',
+    chainId: 8453,
+    nativeTokenSymbol: 'ETH',
+    manualTokens: [
+      {
+        symbol: 'USDC',
+        name: 'USD Coin',
+        address: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+        decimals: 6,
+      },
+      {
+        symbol: 'WETH',
+        name: 'Wrapped Ether',
+        address: '0x4200000000000000000000000000000000000006',
+        decimals: 18,
+      },
+    ],
+    fixtureSetupMethod: 'withNetworkControllerOnBase',
+    blockExplorerUrl: 'https://basescan.org',
+    swapExecutionTokenSymbols: ['USDC', 'WETH'],
+    defaultSwapAmount: 0.0000001,
+    swapExecutionRoutes: [
+      { from: 'ETH', to: 'USDC', amount: '0.0000001' },
+      { from: 'USDC', to: 'WETH', amount: 0.01 },
+      { from: 'WETH', to: 'ETH', useMax: true },
+    ],
+  },
   // Custom network list
   // {
   //   networkId: 'Chiliz',

@@ -55,6 +55,31 @@ import {
   generateSwapExecutionReport,
 } from './swap-execution-helpers';
 
+function getCliOptionValue(optionName: string): string | undefined {
+  const prefixedOption = `--${optionName}`;
+  const exactIndex = process.argv.findIndex((arg) => arg === prefixedOption);
+  if (exactIndex !== -1) {
+    const nextArg = process.argv[exactIndex + 1];
+    return nextArg && !nextArg.startsWith('--') ? nextArg : undefined;
+  }
+
+  const inlineOption = process.argv.find((arg) =>
+    arg.startsWith(`${prefixedOption}=`),
+  );
+  return inlineOption ? inlineOption.slice(prefixedOption.length + 1) : undefined;
+}
+
+function parseNetworkNames(value?: string): string[] {
+  if (!value) {
+    return [];
+  }
+
+  return value
+    .split(',')
+    .map((name) => name.trim())
+    .filter(Boolean);
+}
+
 async function selectNetworkViaHomeSelector(
   driver: Driver,
   chainId: number,
@@ -136,7 +161,32 @@ async function dismissBlockingOverlays(driver: Driver): Promise<void> {
 describe('Production E2E: Network Swap Execution', function (this: Suite) {
   this.timeout(900000); // 15 minutes total for all routes
 
-  SWAP_TEST_NETWORKS.forEach((networkConfig) => {
+  // Accept networks from CLI (`--network Base`, `--networks Base,Monad`) or
+  // env vars (`NETWORK`, `NETWORKS`). If not provided, run all networks.
+  const networksFromCli =
+    getCliOptionValue('network') ??
+    getCliOptionValue('networks') ??
+    getCliOptionValue('networkNames');
+  const selectedNetworkNames = parseNetworkNames(
+    networksFromCli ?? process.env.NETWORK ?? process.env.NETWORKS,
+  );
+  const selectedNetworks = selectedNetworkNames.length
+    ? SWAP_TEST_NETWORKS.filter((config) =>
+        selectedNetworkNames.some(
+          (name) =>
+            config.networkName.toLowerCase() === name.toLowerCase() ||
+            config.networkId.toLowerCase() === name.toLowerCase(),
+        ),
+      )
+    : SWAP_TEST_NETWORKS;
+
+  if (selectedNetworkNames.length > 0 && selectedNetworks.length === 0) {
+    throw new Error(
+      `No matching swap network configurations found for: ${selectedNetworkNames.join(', ')}`,
+    );
+  }
+
+  selectedNetworks.forEach((networkConfig) => {
     if (!networkConfig.swapExecutionRoutes?.length) {
       return; // skip networks not yet configured for execution tests
     }
