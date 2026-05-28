@@ -33,13 +33,6 @@ export function useHwSwapQuoteData() {
   const lockedQuoteRef = useRef(activeQuote);
   if (activeQuote && !lockedQuoteRef.current) {
     lockedQuoteRef.current = activeQuote;
-    console.log(
-      '[HW-Batch] useHwSwapQuoteData: latched activeQuote → lockedQuote',
-      JSON.stringify({
-        requestId: activeQuote?.quote?.requestId ?? null,
-        hasApproval: Boolean(activeQuote?.approval),
-      }),
-    );
   }
   const lockedQuote = lockedQuoteRef.current;
 

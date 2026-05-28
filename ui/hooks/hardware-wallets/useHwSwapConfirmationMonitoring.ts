@@ -12,7 +12,7 @@ type UseHardwareWalletConfirmationMonitoringOptions = {
   hardwareWalletUsed: boolean;
   signatureState: HardwareWalletSignaturesState;
   dispatchSignatureEvent: React.Dispatch<HardwareWalletConfirmationAction>;
-  retryGenerationRef?: React.RefObject<number>;
+  retryGenerationCounterRef?: React.RefObject<number>;
   isDeviceDisconnectedRef?: React.RefObject<boolean>;
 };
 
@@ -32,7 +32,7 @@ type HardwareWalletConfirmationAction = {
  * @param options.hardwareWalletUsed - Whether a hardware wallet is being used for this swap.
  * @param options.signatureState - The current hardware-wallet signature state-machine state.
  * @param options.dispatchSignatureEvent - Dispatcher for signature state-machine events.
- * @param options.retryGenerationRef - Optional ref whose value changes when a retry is triggered; resets internal tracking.
+ * @param options.retryGenerationCounterRef - Optional ref whose value changes when a retry is triggered; resets internal tracking.
  * @param options.isDeviceDisconnectedRef - Optional ref indicating whether the device has been disconnected.
  * @returns An object containing the current `confirmationTxData` from Redux.
  */
@@ -40,7 +40,7 @@ export function useHwSwapConfirmationMonitoring({
   hardwareWalletUsed,
   signatureState,
   dispatchSignatureEvent,
-  retryGenerationRef,
+  retryGenerationCounterRef,
   isDeviceDisconnectedRef,
 }: UseHardwareWalletConfirmationMonitoringOptions) {
   const confirmationTxData = useSelector(
@@ -48,30 +48,19 @@ export function useHwSwapConfirmationMonitoring({
   );
 
   const previousTxIdRef = useRef<string | undefined>();
-  const lastSeenGenerationRef = useRef(retryGenerationRef?.current ?? 0);
+  const lastSeenGenerationRef = useRef(retryGenerationCounterRef?.current ?? 0);
 
   useEffect(() => {
     if (
-      retryGenerationRef &&
-      retryGenerationRef.current !== lastSeenGenerationRef.current
+      retryGenerationCounterRef &&
+      retryGenerationCounterRef.current !== lastSeenGenerationRef.current
     ) {
-      lastSeenGenerationRef.current = retryGenerationRef.current ?? 0;
+      lastSeenGenerationRef.current = retryGenerationCounterRef.current ?? 0;
       previousTxIdRef.current = undefined;
     }
 
     const currentId = confirmationTxData?.id;
     const previousId = previousTxIdRef.current;
-
-    console.log(
-      '[HW-Batch] useHwSwapConfirmationMonitoring effect',
-      JSON.stringify({
-        currentId: currentId ?? null,
-        previousId: previousId ?? null,
-        hardwareWalletUsed,
-        signatureState: signatureState.status,
-        isDeviceDisconnected: isDeviceDisconnectedRef?.current ?? false,
-      }),
-    );
 
     if (
       hardwareWalletUsed &&
@@ -83,13 +72,6 @@ export function useHwSwapConfirmationMonitoring({
       !currentId &&
       !isDeviceDisconnectedRef?.current
     ) {
-      console.log(
-        '[HW-Batch] useHwSwapConfirmationMonitoring → TransactionRejected',
-        JSON.stringify({
-          previousId,
-          currentId: currentId ?? null,
-        }),
-      );
       dispatchSignatureEvent({
         type: HardwareWalletSignatureEvent.TransactionRejected,
       });
