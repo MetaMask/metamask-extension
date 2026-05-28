@@ -11,7 +11,7 @@ function buildMessenger(callImpl: (...args: unknown[]) => unknown) {
 
 describe('getMnemonicSeed', () => {
   describe('without a source', () => {
-    it('returns the primary HD keyring seed via the V2 type selector', async () => {
+    it('returns the primary HD keyring seed via the V2 unsafe type selector', async () => {
       const messenger = buildMessenger(async (_action, selector, operation) => {
         expect(selector).toStrictEqual({
           type: KeyringType.Hd,
@@ -26,7 +26,7 @@ describe('getMnemonicSeed', () => {
 
       await expect(getMnemonicSeed(messenger)).resolves.toBe(SEED);
       expect(messenger.call).toHaveBeenCalledWith(
-        'KeyringController:withKeyringV2',
+        'KeyringController:withKeyringV2Unsafe',
         expect.any(Object),
         expect.any(Function),
       );

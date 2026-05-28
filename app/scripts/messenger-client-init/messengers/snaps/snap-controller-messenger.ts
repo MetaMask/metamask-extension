@@ -12,6 +12,7 @@ import {
   KeyringControllerUnlockEvent,
   KeyringControllerWithKeyringAction,
   KeyringControllerWithKeyringV2Action,
+  KeyringControllerWithKeyringV2UnsafeAction,
 } from '@metamask/keyring-controller';
 import { PreferencesControllerGetStateAction } from '../../../controllers/preferences-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller-method-action-types';
@@ -84,6 +85,7 @@ export function getSnapControllerMessenger(
 type InitActions =
   | KeyringControllerWithKeyringAction
   | KeyringControllerWithKeyringV2Action
+  | KeyringControllerWithKeyringV2UnsafeAction
   | PreferencesControllerGetStateAction
   | MetaMetricsControllerTrackEventAction
   | SnapControllerSetClientActiveAction
@@ -122,6 +124,7 @@ export function getSnapControllerInitMessenger(
     actions: [
       'KeyringController:withKeyring',
       'KeyringController:withKeyringV2',
+      'KeyringController:withKeyringV2Unsafe',
       'PreferencesController:getState',
       'MetaMetricsController:trackEvent',
       'SnapController:setClientActive',
