@@ -5,7 +5,10 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 import { NetworkControllerGetSelectedNetworkClientAction } from '@metamask/network-controller';
-import { KeyringController, KeyringControllerMessenger } from '@metamask/keyring-controller';
+import {
+  KeyringController,
+  KeyringControllerMessenger,
+} from '@metamask/keyring-controller';
 import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
 import { OneKeyKeyring, TrezorKeyring } from '@metamask/eth-trezor-keyring';
 import { QrKeyring, QrScanRequestType } from '@metamask/eth-qr-keyring';
