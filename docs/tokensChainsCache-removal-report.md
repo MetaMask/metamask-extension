@@ -2,7 +2,7 @@
 
 > **Date:** May 28, 2026
 > **Audited against:** current `main` branch at time of writing
-> **Reference PR:** [#42545 — remove tokensChainsCache usage from useTokenDisplayInfo](https://github.com/MetaMask/metamask-extension/pull/42545)
+> **Reference PR:** [#42545 — remove tokensChainsCache usage from useTokenDisplayInfo][pr-42545]
 
 ---
 
@@ -10,7 +10,7 @@
 
 `tokensChainsCache` is persisted state from `TokenListController` that stores ERC-20 token metadata (name, symbol, iconUrl) keyed by chain ID and contract address. It has **no migration path** in the new unified assets state (see `shared/lib/selectors/assets-migration.ts`), which means every read site must be migrated or removed before the state can be dropped.
 
-The Assets team has begun this cleanup iteratively. PR [#42545](https://github.com/MetaMask/metamask-extension/pull/42545) demonstrates the pattern: replace `tokensChainsCache` selector reads with either direct prop access or dynamic fetches via the `useTokensData` hook.
+The Assets team has begun this cleanup iteratively. [PR #42545][pr-42545] demonstrates the pattern: replace `tokensChainsCache` selector reads with either direct prop access or dynamic fetches via the `useTokensData` hook.
 
 ---
 
@@ -54,14 +54,14 @@ getMetadataContractName     → returns .name for a single address
 | 5 | `ui/pages/asset/components/token-asset.tsx` | *(no specific owner)* | ✅ Active |
 | 6 | `ui/pages/confirmations/.../gas-fee-token-icon.tsx` | **@MetaMask/confirmations** | 🆕 ✅ Active |
 | 7 | `ui/pages/custom-token-import/custom-token-import.tsx` | *(no specific owner)* | 🆕 ✅ Active |
-| 8 | `ui/components/app/assets/hooks/useTokenDisplayInfo.tsx` | **@MetaMask/metamask-assets** | ✅ Active *(PR #42545 in progress)* |
+| 8 | `ui/components/app/assets/hooks/useTokenDisplayInfo.tsx` | **@MetaMask/metamask-assets** | ✅ Active *([PR #42545][pr-42545] in progress)* |
 
 ### Usages via `getTokenList` (current-chain flattened)
 
 | # | File | CODEOWNERS Team | Status |
 |---|------|----------------|--------|
 | 9 | `ui/pages/asset/components/token-asset.tsx` | *(no specific owner)* | ✅ Active (also uses selectERC20TokensByChain) |
-| 10 | `ui/components/app/assets/hooks/useTokenDisplayInfo.tsx` | **@MetaMask/metamask-assets** | ✅ Active *(PR #42545 in progress)* |
+| 10 | `ui/components/app/assets/hooks/useTokenDisplayInfo.tsx` | **@MetaMask/metamask-assets** | ✅ Active *([PR #42545][pr-42545] in progress)* |
 | 11 | `ui/hooks/useIsOriginalTokenSymbol.js` | *(no specific owner)* | ✅ Active |
 | 12 | `ui/hooks/useAccountTotalFiatBalance.js` | *(no specific owner)* | ✅ Active |
 | 13 | `ui/hooks/useTokensToSearch.js` | *(no specific owner)* | ✅ Active |
@@ -114,7 +114,7 @@ getMetadataContractName     → returns .name for a single address
 
 | Team | Files to Migrate | Count |
 |------|-----------------|-------|
-| **@MetaMask/metamask-assets** | `useTokenDisplayInfo.tsx` *(PR #42545 in progress)* | 1 |
+| **@MetaMask/metamask-assets** | `useTokenDisplayInfo.tsx` *([PR #42545][pr-42545] in progress)* | 1 |
 | **@MetaMask/core-extension-ux** | `import-tokens-modal-confirm.js`, `Asset.tsx`, `asset-picker-modal.tsx` | 3 |
 | **@MetaMask/swaps-engineers** | `useTokensWithFiltering.ts`, `asset-selectors.ts` | 2 |
 | **@MetaMask/confirmations** | `gas-fee-token-icon.tsx` | 1 |
@@ -134,7 +134,7 @@ In many cases the component doesn't actually need data from `tokensChainsCache` 
 
 **When to use:** The token object you're working with already has `.name`, `.symbol`, and `.image` populated (e.g. from `TokensController` state, from the import flow, or from a parent component).
 
-**Example:** PR [#42545](https://github.com/MetaMask/metamask-extension/pull/42545) — `useTokenDisplayInfo` was doing:
+**Example:** [PR #42545][pr-42545] — `useTokenDisplayInfo` was doing:
 ```typescript
 // BEFORE: scanning tokensChainsCache for a name/image match
 const tokenList = useSelector(getTokenList);
@@ -205,13 +205,15 @@ For `ui/ducks/bridge/asset-selectors.ts` and `ui/hooks/bridge/useTokensWithFilte
 | Status | Count |
 |--------|-------|
 | Already cleaned up | 11 files |
-| In-progress (PR #42545) | 1 file |
+| In-progress ([PR #42545][pr-42545]) | 1 file |
 | Remaining to migrate | 18 files |
 | Infrastructure (auto-clean) | 4 files |
 
 **Recommended actions:**
-1. **Assets team** — land PR #42545 (`useTokenDisplayInfo`)
+1. **Assets team** — land [PR #42545][pr-42545] (`useTokenDisplayInfo`)
 2. **Tag teams in #metamask-performance** with this report and the migration patterns above
 3. **Each team picks up their files** using Strategy 1 (outright removal) where possible, falling back to Strategy 2 (`useTokensData`) where a lookup is genuinely needed
 4. **Files with no CODEOWNER** (9 files) — Assets team or Core Extension UX to coordinate ownership
 5. **Once all UI consumers are gone** — remove the selectors from `selectors.js`, the type from `background.ts`, and the Sentry allowlist entry, completing the cleanup
+
+[pr-42545]: https://github.com/MetaMask/metamask-extension/pull/42545
