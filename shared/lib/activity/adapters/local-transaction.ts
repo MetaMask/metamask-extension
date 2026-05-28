@@ -9,6 +9,8 @@ import type { ActivityListItem, TokenAmount } from '../types';
 import { supplyMethodIds, withdrawMethodIds } from './constants';
 import { getKnownTokenMetadata, getLocalTransactionStatus } from './helpers';
 
+const EVM_NATIVE_DECIMALS = 18;
+
 function getNativeAsset(chainId: string) {
   try {
     return getNativeAssetForChainId(chainId);
@@ -55,9 +57,7 @@ export function mapLocalTransaction(
         ? { amount: transaction.txParams.value }
         : {}),
       ...(nativeAsset?.assetId ? { assetId: nativeAsset.assetId } : {}),
-      ...(nativeAsset?.decimals === undefined
-        ? {}
-        : { decimals: nativeAsset.decimals }),
+      decimals: nativeAsset?.decimals ?? EVM_NATIVE_DECIMALS,
     };
   };
 

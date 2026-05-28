@@ -74,7 +74,7 @@ describe('mapLocalTransaction', () => {
       txParams: {
         from,
         to,
-        value: '0x1',
+        value: '0xde0b6b3a7640000',
       },
     };
     const transactionGroup = {
@@ -101,7 +101,8 @@ describe('mapLocalTransaction', () => {
         from,
         to,
         token: {
-          amount: '0x1',
+          amount: '0xde0b6b3a7640000',
+          decimals: 18,
           direction: 'out',
           symbol: 'ETH',
         },
