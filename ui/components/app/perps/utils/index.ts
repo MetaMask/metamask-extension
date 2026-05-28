@@ -21,6 +21,8 @@ export {
   shouldDisplayOrderInMarketDetailsOrders,
   buildDisplayOrdersWithSyntheticTpsl,
   isOrderAssociatedWithFullPosition,
+  derivePositionTpslPricesFromOrders,
+  willFlipPosition,
   formatOrderLabel,
 } from './orderUtils';
 
@@ -39,3 +41,5 @@ export {
   getTakeProfitErrorDirection,
   getStopLossErrorDirection,
 } from './tpslValidation';
+
+export { buildPerpsVipTrackingData } from './trackingData';

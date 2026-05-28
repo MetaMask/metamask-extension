@@ -1594,13 +1594,10 @@ const state = {
     coverageResults: {},
   },
   appState: {
-    welcomeScreenSeen: false,
     pendingTokens: {},
     confirmationExchangeRates: {},
     customNonceValue: '',
     nextNonce: 71,
-    shouldClose: false,
-    menuOpen: false,
     modal: {
       open: false,
       modalState: {
@@ -1618,31 +1615,18 @@ const state = {
         name: null,
       },
     },
-    sidebar: {
-      isOpen: false,
-      transitionName: '',
-      type: '',
-      props: {},
-    },
     alertOpen: false,
     alertMessage: null,
     qrCodeData: null,
     networkDropdownOpen: false,
-    accountDetail: {
-      subview: 'transactions',
-    },
     isLoading: false,
     warning: null,
-    buyView: {},
     defaultHdPaths: {
       trezor: "m/44'/60'/0'/0",
       ledger: "m/44'/60'/0'/0/0",
     },
-    networksTabSelectedRpcUrl: '',
-    loadingMethodData: false,
     requestAccountTabs: {},
     openMetaMaskTabs: {},
-    currentWindowTab: {},
   },
   history: {
     mostRecentOverviewPage: '/',

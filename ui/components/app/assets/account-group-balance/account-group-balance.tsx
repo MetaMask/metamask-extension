@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux';
 import classnames from 'clsx';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { CaipChainId, Hex, isCaipChainId } from '@metamask/utils';
+import { Skeleton } from '@metamask/design-system-react';
 import {
   getMultichainNativeTokenBalance,
-  selectAggregatedBalanceForSelectedAccount,
   selectBalanceBySelectedAccountGroup,
 } from '../../../../selectors/assets';
 
@@ -18,12 +18,11 @@ import {
 import { Box, SensitiveText } from '../../../component-library';
 import {
   getEnabledNetworksByNamespace,
-  getPreferences,
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../../selectors';
+import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
-import { Skeleton } from '../../../component-library/skeleton';
 import { isZeroAmount } from '../../../../helpers/utils/number-utils';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import {
@@ -58,9 +57,6 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
   const fallbackCurrency = useSelector(getCurrentCurrency);
   const anyEnabledNetworksAreAvailable = useSelector(
     selectAnyEnabledNetworksAreAvailable,
-  );
-  const aggregatedBalance = useSelector(
-    selectAggregatedBalanceForSelectedAccount,
   );
 
   const caipChainId = isCaipChainId(chainId)
@@ -109,23 +105,9 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
     ? (selectedGroupBalance.userCurrency ?? fallbackCurrency)
     : undefined;
 
-  const useAggregatedBalance =
-    aggregatedBalance &&
-    (aggregatedBalance.entries.length > 0 ||
-      aggregatedBalance.totalBalanceInFiat !== undefined);
-
   const formattedTotal = useMemo(() => {
     if (showNativeTokenAsMain || isTestnet) {
       return formattedNativeBalance;
-    }
-    if (
-      useAggregatedBalance &&
-      aggregatedBalance?.totalBalanceInFiat !== undefined
-    ) {
-      return formatCurrency(
-        aggregatedBalance.totalBalanceInFiat,
-        fallbackCurrency,
-      );
     }
     if (total === undefined) {
       return null;
@@ -134,22 +116,20 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
   }, [
     showNativeTokenAsMain,
     isTestnet,
-    useAggregatedBalance,
-    aggregatedBalance,
     total,
     formatCurrency,
     currency,
-    fallbackCurrency,
     formattedNativeBalance,
   ]);
 
   return (
     <Skeleton
-      isLoading={
+      hideChildren={
         !anyEnabledNetworksAreAvailable &&
         (isZeroAmount(total) || currency === undefined)
       }
-      marginBottom={1}
+      className="mb-1"
+      data-testid="account-group-balance-skeleton"
     >
       <Box
         className={classnames(`${classPrefix}-overview__primary-balance`, {

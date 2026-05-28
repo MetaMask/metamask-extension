@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -10,7 +10,10 @@ import {
   getSocialLoginEmail,
   getSocialLoginType,
 } from '../../../selectors';
-import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import {
+  AuthConnection,
+  FirstTimeFlowType,
+} from '../../../../shared/constants/onboarding';
 import {
   forceUpdateMetamaskState,
   resetOnboarding,
@@ -38,6 +41,20 @@ export default function AccountExist() {
     bufferedEndTrace,
     onboardingParentContext,
   } = useContext(MetaMetricsContext);
+
+  const descriptionKey = useMemo(() => {
+    if (socialLoginType === AuthConnection.Telegram) {
+      return 'accountAlreadyExistsLoginDescriptionTelegram';
+    }
+    return 'accountAlreadyExistsLoginDescription';
+  }, [socialLoginType]);
+
+  const descriptionInterpolation = useMemo(() => {
+    if (socialLoginType === AuthConnection.Telegram) {
+      return [socialLoginType];
+    }
+    return [userSocialLoginEmail || '-'];
+  }, [socialLoginType, userSocialLoginEmail]);
 
   const onLoginWithDifferentMethod = async (
     e?: React.MouseEvent<HTMLButtonElement>,
@@ -101,8 +118,8 @@ export default function AccountExist() {
     <AccountStatusLayout
       dataTestId="account-exist"
       titleKey="accountAlreadyExistsTitle"
-      descriptionKey="accountAlreadyExistsLoginDescription"
-      descriptionInterpolation={[userSocialLoginEmail || '-']}
+      descriptionKey={descriptionKey}
+      descriptionInterpolation={descriptionInterpolation}
       primaryButtonTextKey="accountAlreadyExistsLogin"
       onPrimaryButtonClick={onDone}
       secondaryButtonTextKey="useDifferentLoginMethod"

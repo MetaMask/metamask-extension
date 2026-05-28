@@ -1,6 +1,5 @@
 import { WebElement } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
-import { Ganache } from '../../../seeder/ganache';
 import { Anvil } from '../../../seeder/anvil';
 import HeaderNavbar from '../header-navbar';
 import { getCleanAppState, regularDelayMs } from '../../../helpers';
@@ -64,6 +63,11 @@ class HomePage {
     text: 'Connecting to Localhost 8545',
   };
 
+  private readonly lowValueAssetsToggle =
+    '[data-testid="low-value-assets-toggle"]';
+
+  private readonly lowValueAssetsToggleExpanded = `${this.lowValueAssetsToggle}[aria-expanded="true"]`;
+
   private readonly nftTab = {
     testId: 'account-overview__nfts-tab',
   };
@@ -101,10 +105,10 @@ class HomePage {
 
   private readonly revealSrpPasswordInput = '[data-testid="input-password"]';
 
-  private readonly srpAddedToast = '.toasts-container__banner-base';
+  private readonly srpAddedToast = '[data-testid="new-srp-added-toast"]';
 
   private readonly srpAddedToastCloseButton =
-    '.toasts-container__banner-base button[aria-label="Close"]';
+    '.toast-container button[aria-label="Close"]';
 
   private readonly surveyToast = '[data-testid="survey-toast"]';
 
@@ -151,6 +155,25 @@ class HomePage {
       throw e;
     }
     console.log('Home page is loaded');
+  }
+
+  private async expandLowValueAssetsIfPresent(): Promise<void> {
+    let toggle;
+
+    try {
+      toggle = await this.driver.findElement(this.lowValueAssetsToggle, 1000);
+    } catch {
+      return;
+    }
+
+    if ((await toggle.getAttribute('aria-expanded')) === 'true') {
+      return;
+    }
+
+    await this.driver.clickElement(this.lowValueAssetsToggle);
+    await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded, {
+      timeout: 5000,
+    });
   }
 
   async waitForNetworkAndDOMReady(): Promise<void> {
@@ -461,6 +484,7 @@ class HomePage {
     expectedTokenBalance: string,
     symbol: string,
   ): Promise<void> {
+    await this.expandLowValueAssetsIfPresent();
     await this.driver.waitForSelector({
       css: '[data-testid="multichain-token-list-item-value"]',
       text: `${expectedTokenBalance} ${symbol}`,
@@ -519,7 +543,7 @@ class HomePage {
   }
 
   async checkLocalNodeBalanceIsDisplayed(
-    localNode?: Ganache | Anvil,
+    localNode?: Anvil,
     address = null,
   ): Promise<void> {
     let expectedBalance: string;
@@ -555,21 +579,17 @@ class HomePage {
     await skeleton.waitForElementState('hidden', this.driver.timeout);
   }
 
-  async checkNewSrpAddedToastIsDisplayed(): Promise<void> {
-    // Race condition: the toast initially renders with the stale keyring count (e.g. "Wallet 1 imported")
-    // and only updates to the correct number once the background state propagates.
-    // If the 5s auto-hide fires before the state update, the toast disappears while still showing the wrong value
-    // the text-based selector never matches, causing the test to fail. See issue #40944
-    await this.driver.waitForSelector(this.srpAddedToast);
-    // TODO: Uncomment the selector below and add the param in the function, once the issue above is fixed.
-    // await this.driver.waitForSelector({
-    //   text: `Wallet ${srpNumber} imported`,
-    // });
+  async checkNewSrpAddedToastIsDisplayed(srpNumber = 2): Promise<void> {
+    await this.driver.waitForSelector({
+      css: this.srpAddedToast,
+      text: `Wallet ${srpNumber} imported`,
+    });
   }
 
   async dismissSrpAddedToast(): Promise<void> {
     console.log('Dismiss SRP added toast');
-    await this.driver.clickElementSafe(this.srpAddedToastCloseButton, 3000);
+    // The toast can take some time to appear
+    await this.driver.clickElementSafe(this.srpAddedToastCloseButton, 15_000);
   }
 
   async checkNoSurveyToastIsDisplayed(): Promise<void> {

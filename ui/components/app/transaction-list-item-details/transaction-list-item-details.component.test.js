@@ -132,6 +132,17 @@ describe('TransactionListItemDetails Component', () => {
 
       expect(queryByTestId('speedup-button')).toBeInTheDocument();
     });
+
+    it('shows speedUpCancellation label when the group has a cancel tx', async () => {
+      const { queryByTestId } = await render({
+        showSpeedUp: true,
+        transactionGroup: { ...transactionGroup, hasCancelled: true },
+      });
+
+      expect(queryByTestId('speedup-button')).toHaveTextContent(
+        messages.speedUpCancellation.message,
+      );
+    });
   });
 });
 

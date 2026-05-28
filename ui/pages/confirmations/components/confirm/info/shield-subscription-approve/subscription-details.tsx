@@ -15,7 +15,8 @@ import {
 } from '@metamask/subscription-controller';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { getProductPrice } from '../../../../../shield-plan/utils';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
+import { getProductPrice } from '../../../../../shield/plan/utils';
 import { SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS } from '../../../../../../../shared/constants/subscriptions';
 
 export const SubscriptionDetails = ({

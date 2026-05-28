@@ -23,6 +23,7 @@ import browser from 'webextension-polyfill';
 import mockEncryptor from '../../test/lib/mock-encryptor';
 import { HardwareKeyringNames } from '../../shared/constants/hardware-wallets';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
+import { ExtensionPasskeyErrorCode } from '../../shared/lib/passkey/passkey-error';
 import MetaMaskController from './metamask-controller';
 
 const mockToHardwareWalletError = jest.fn();
@@ -68,9 +69,9 @@ jest.mock('webextension-polyfill', () => ({
 // shares the same mock instance
 const browserPolyfillMock = jest.mocked(browser);
 
-const { Ganache } = require('../../test/e2e/seeder/ganache');
+const { LocalNodeStub } = require('../../test/stub/local-node');
 
-const ganacheServer = new Ganache();
+const localNodeServer = new LocalNodeStub();
 
 let loggerMiddlewareMock;
 const initializeMockMiddlewareLog = () => {
@@ -125,7 +126,7 @@ describe('MetaMaskController', function () {
   const noop = () => undefined;
 
   beforeAll(async function () {
-    await ganacheServer.start({ port: 32545 });
+    await localNodeServer.start({ port: 32545 });
   });
 
   beforeEach(function () {
@@ -195,7 +196,7 @@ describe('MetaMaskController', function () {
   });
 
   afterAll(async function () {
-    await ganacheServer.quit();
+    await localNodeServer.quit();
   });
 
   describe('Phishing Detection Mock', function () {
@@ -207,31 +208,6 @@ describe('MetaMaskController', function () {
       expect(METAMASK_HOTLIST_DIFF_URL).toStrictEqual(
         'https://phishing-detection.api.cx.metamask.io/v2/diffsSince',
       );
-    });
-  });
-
-  describe('#addNewAccount', function () {
-    it('two parallel calls with same accountCount give same result', async function () {
-      await metamaskController.createNewVaultAndKeychain('test@123');
-      const [addNewAccountResult1, addNewAccountResult2] = await Promise.all([
-        metamaskController.addNewAccount(1),
-        metamaskController.addNewAccount(1),
-      ]);
-      expect(addNewAccountResult1).toStrictEqual(addNewAccountResult2);
-    });
-
-    it('two successive calls with same accountCount give same result', async function () {
-      await metamaskController.createNewVaultAndKeychain('test@123');
-      const addNewAccountResult1 = await metamaskController.addNewAccount(1);
-      const addNewAccountResult2 = await metamaskController.addNewAccount(1);
-      expect(addNewAccountResult1).toStrictEqual(addNewAccountResult2);
-    });
-
-    it('two successive calls with different accountCount give different results', async function () {
-      await metamaskController.createNewVaultAndKeychain('test@123');
-      const addNewAccountResult1 = await metamaskController.addNewAccount(1);
-      const addNewAccountResult2 = await metamaskController.addNewAccount(2);
-      expect(addNewAccountResult1).not.toStrictEqual(addNewAccountResult2);
     });
   });
 
@@ -1235,8 +1211,9 @@ describe('MetaMaskController', function () {
           )
           .mockResolvedValue({ challenge: 'challenge' });
 
-        const result =
-          await metamaskController.generatePasskeyRegistrationOptions({
+        const result = await metamaskController
+          .getApi()
+          .generatePasskeyRegistrationOptions({
             prfAvailable: true,
           });
 
@@ -1256,11 +1233,32 @@ describe('MetaMaskController', function () {
           )
           .mockResolvedValue({ challenge: 'challenge' });
 
-        const result =
-          await metamaskController.generatePasskeyAuthenticationOptions();
+        const result = await metamaskController
+          .getApi()
+          .generatePasskeyAuthenticationOptions();
 
         expect(generateAuthenticationOptionsSpy).toHaveBeenCalledTimes(1);
         expect(result).toStrictEqual({ challenge: 'challenge' });
+      });
+    });
+
+    describe('#generatePasskeyPostRegistrationAuthenticationOptions', function () {
+      it('delegates to passkey controller', async function () {
+        const spy = jest
+          .spyOn(
+            metamaskController.passkeyController,
+            'generatePostRegistrationAuthenticationOptions',
+          )
+          .mockReturnValue({ challenge: 'post-reg' });
+
+        const result = await metamaskController
+          .getApi()
+          .generatePasskeyPostRegistrationAuthenticationOptions(
+            registrationResponse,
+          );
+
+        expect(spy).toHaveBeenCalledWith({ registrationResponse });
+        expect(result).toStrictEqual({ challenge: 'post-reg' });
       });
     });
 
@@ -1274,7 +1272,10 @@ describe('MetaMaskController', function () {
           });
 
         await expect(
-          metamaskController.protectVaultKeyWithPasskey(registrationResponse),
+          metamaskController.protectVaultKeyWithPasskey(
+            registrationResponse,
+            authenticationResponse,
+          ),
         ).rejects.toThrow('Password required to register passkey');
       });
 
@@ -1300,12 +1301,14 @@ describe('MetaMaskController', function () {
 
         await metamaskController.protectVaultKeyWithPasskey(
           registrationResponse,
+          authenticationResponse,
           'password',
         );
 
         expect(verifyPasswordSpy).toHaveBeenCalledWith('password');
         expect(protectVaultKeySpy).toHaveBeenCalledWith({
           registrationResponse,
+          authenticationResponse,
           vaultKey: 'vault-key',
         });
       });
@@ -1333,11 +1336,13 @@ describe('MetaMaskController', function () {
 
         await metamaskController.protectVaultKeyWithPasskey(
           registrationResponse,
+          authenticationResponse,
         );
 
         expect(verifyPasswordSpy).not.toHaveBeenCalled();
         expect(protectVaultKeySpy).toHaveBeenCalledWith({
           registrationResponse,
+          authenticationResponse,
           vaultKey: 'vault-key',
         });
       });
@@ -1594,7 +1599,13 @@ describe('MetaMaskController', function () {
             'new-password',
             authenticationResponse,
           ),
-        ).rejects.toThrow(renewError);
+        ).rejects.toMatchObject({
+          name: 'PasskeyControllerError',
+          message:
+            'Passkey vault key protection renewal failed after password change',
+          code: ExtensionPasskeyErrorCode.VaultKeyRenewalFailed,
+          cause: renewError,
+        });
 
         expect(removePasskeySpy).toHaveBeenCalledTimes(1);
         expect(releaseLock).toHaveBeenCalledTimes(1);
@@ -1633,6 +1644,48 @@ describe('MetaMaskController', function () {
           ),
         ).rejects.toThrow(changePasswordError);
 
+        expect(renewVaultKeyProtectionSpy).not.toHaveBeenCalled();
+        expect(releaseLock).toHaveBeenCalledTimes(1);
+      });
+
+      it('changes password and removes passkey when vault key protection renewal is skipped', async function () {
+        const releaseLock = jest.fn();
+        jest
+          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
+          .mockReturnValue(true);
+        jest
+          .spyOn(
+            metamaskController.passkeyController,
+            'verifyPasskeyAuthentication',
+          )
+          .mockResolvedValue(true);
+        jest
+          .spyOn(metamaskController.seedlessOperationMutex, 'acquire')
+          .mockResolvedValue(releaseLock);
+        const changePasswordSpy = jest
+          .spyOn(metamaskController.keyringController, 'changePassword')
+          .mockResolvedValue();
+        const verifyPasswordSpy = jest.spyOn(
+          metamaskController,
+          'verifyPassword',
+        );
+        const renewVaultKeyProtectionSpy = jest.spyOn(
+          metamaskController.passkeyController,
+          'renewVaultKeyProtection',
+        );
+        const removePasskeySpy = jest
+          .spyOn(metamaskController.passkeyController, 'removePasskey')
+          .mockReturnValue();
+
+        await metamaskController.changePasswordWithPasskeyVerification(
+          'new-password',
+          authenticationResponse,
+          { renewVaultKeyProtection: false },
+        );
+
+        expect(changePasswordSpy).toHaveBeenCalledWith('new-password');
+        expect(verifyPasswordSpy).not.toHaveBeenCalled();
+        expect(removePasskeySpy).toHaveBeenCalledTimes(1);
         expect(renewVaultKeyProtectionSpy).not.toHaveBeenCalled();
         expect(releaseLock).toHaveBeenCalledTimes(1);
       });
@@ -1694,6 +1747,8 @@ describe('MetaMaskController', function () {
         expect(api).toStrictEqual(
           expect.objectContaining({
             generatePasskeyRegistrationOptions: expect.any(Function),
+            generatePasskeyPostRegistrationAuthenticationOptions:
+              expect.any(Function),
             generatePasskeyAuthenticationOptions: expect.any(Function),
             protectVaultKeyWithPasskey: expect.any(Function),
             unlockWithPasskey: expect.any(Function),

@@ -19,8 +19,8 @@ import {
   updateCustomSwapsEIP1559GasParams,
   updatePreviousGasParams,
   updateSwapsUserFeeLevel,
-  updateTransactionGasFees,
 } from '../../../store/actions';
+import { updateTransactionGasFees } from '../../../store/actions/update-transaction-gas-fees';
 import {
   decGWEIToHexWEI,
   decimalToHex,

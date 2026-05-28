@@ -24,6 +24,8 @@ export const createBuilderRequest = (
     getParticipateInMetrics: jest.fn().mockReturnValue(true),
     getTokenStandardAndDetails: jest.fn(),
     getTransaction: jest.fn(),
+    getTransactionPayData: jest.fn(),
+    getAllTransactions: jest.fn().mockReturnValue([]),
     provider: {} as any,
     snapAndHardwareMessenger: {} as any,
     trackEvent: jest.fn(),

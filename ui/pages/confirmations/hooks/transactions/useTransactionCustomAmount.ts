@@ -4,6 +4,7 @@ import { BigNumber } from 'bignumber.js';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { setIsMaxAmount } from '../../../../store/controller-actions/transaction-pay-controller';
+import { upsertTransactionUIMetricsFragment } from '../../../../store/actions';
 import { useTokenFiatRate } from '../tokens/useTokenFiatRates';
 import { useConfirmContext } from '../../context/confirm';
 import { useTransactionPayToken } from '../pay/useTransactionPayToken';
@@ -45,6 +46,7 @@ export function useTransactionCustomAmount({
   const tokenAddress = getTokenAddress(transactionMeta);
   const tokenFiatRate =
     useTokenFiatRate(tokenAddress, chainId as Hex, currency) ?? 1;
+  const hasBalanceUsdOverride = balanceUsdOverride !== undefined;
   const balanceUsd = useTokenBalance(balanceUsdOverride);
 
   const { updateTokenAmount: updateTokenAmountCallback } =
@@ -64,6 +66,16 @@ export function useTransactionCustomAmount({
       setAmountHumanDebounced(value);
       if (!disableUpdate) {
         updateTokenAmountCallback(value);
+        // Emitted only after the debounce actually triggers a quote refresh
+        // via updateEditableParams -> TransactionPayController:stateChange.
+        if (transactionId) {
+          upsertTransactionUIMetricsFragment(transactionId, {
+            properties: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              mm_pay_quote_requested: true,
+            },
+          });
+        }
       }
     }, DEBOUNCE_DELAY);
 
@@ -74,7 +86,7 @@ export function useTransactionCustomAmount({
     return () => {
       debouncedFn.cancel();
     };
-  }, [disableUpdate, updateTokenAmountCallback]);
+  }, [disableUpdate, transactionId, updateTokenAmountCallback]);
 
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
 
@@ -98,10 +110,8 @@ export function useTransactionCustomAmount({
 
   const amountHuman = useMemo(
     () =>
-      new BigNumber(amountFiat || '0')
-        .dividedBy(String(tokenFiatRate))
-        .toString(10),
-    [amountFiat, tokenFiatRate],
+      getAmountHumanFromFiat(amountFiat, tokenFiatRate, hasBalanceUsdOverride),
+    [amountFiat, hasBalanceUsdOverride, tokenFiatRate],
   );
 
   useEffect(() => {
@@ -154,34 +164,63 @@ export function useTransactionCustomAmount({
         setIsMax(false);
       }
 
+      if (transactionId) {
+        upsertTransactionUIMetricsFragment(transactionId, {
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            mm_pay_amount_input_type: 'manual',
+          },
+        });
+      }
+
       setAmountFiat(newAmount);
     },
-    [isMaxAmount, setIsMax],
+    [isMaxAmount, setIsMax, transactionId],
   );
 
   const updatePendingAmountPercentage = useCallback(
     (percentage: number) => {
-      if (!balanceUsd) {
+      const balanceUsdValue = new BigNumber(String(balanceUsd ?? 0));
+
+      if (!balanceUsdValue.isFinite() || balanceUsdValue.lte(0)) {
         return;
       }
 
-      const newAmountFiat = new BigNumber(percentage)
+      const newAmountFiatValue = new BigNumber(percentage)
         .dividedBy(100)
-        .times(String(balanceUsd))
-        .round(2, BigNumber.ROUND_DOWN)
-        .toString(10);
+        .times(balanceUsdValue);
+      const shouldSetMaxAmountMode =
+        percentage === 100 && !hasBalanceUsdOverride;
+      const newAmountFiat = (
+        shouldSetMaxAmountMode || percentage !== 100
+          ? newAmountFiatValue.round(2, BigNumber.ROUND_DOWN)
+          : newAmountFiatValue
+      ).toString(10);
 
-      if (percentage === 100) {
+      if (shouldSetMaxAmountMode) {
         setIsMax(true);
       } else if (isMaxAmount) {
         setIsMax(false);
       }
 
+      if (transactionId) {
+        upsertTransactionUIMetricsFragment(transactionId, {
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            mm_pay_amount_input_type: `${percentage}%`,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            mm_pay_quote_requested: true,
+          },
+        });
+      }
+
       setAmountFiat(newAmountFiat);
 
-      const newAmountHuman = new BigNumber(newAmountFiat || '0')
-        .dividedBy(String(tokenFiatRate))
-        .toString(10);
+      const newAmountHuman = getAmountHumanFromFiat(
+        newAmountFiat,
+        tokenFiatRate,
+        hasBalanceUsdOverride,
+      );
 
       setAmountHumanDebounced(newAmountHuman);
       if (!disableUpdate) {
@@ -191,9 +230,11 @@ export function useTransactionCustomAmount({
     [
       balanceUsd,
       disableUpdate,
+      hasBalanceUsdOverride,
       isMaxAmount,
       setIsMax,
       tokenFiatRate,
+      transactionId,
       updateTokenAmountCallback,
     ],
   );
@@ -221,4 +262,18 @@ function useTokenBalance(balanceUsdOverride?: number) {
   ).toNumber();
 
   return payTokenBalanceUsd;
+}
+
+function getAmountHumanFromFiat(
+  amountFiat: string,
+  tokenFiatRate: number,
+  skipFiatRateConversion: boolean,
+) {
+  const amountFiatValue = new BigNumber(amountFiat || '0');
+
+  if (skipFiatRateConversion) {
+    return amountFiatValue.toString(10);
+  }
+
+  return amountFiatValue.dividedBy(String(tokenFiatRate)).toString(10);
 }
