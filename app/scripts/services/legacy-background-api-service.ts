@@ -52,7 +52,6 @@ import { SnapKeyring } from '@metamask/eth-snap-keyring';
 import {
   convertEnglishWordlistIndicesToCodepoints,
   isPublicEndpointUrl,
-  withLock,
 } from '../lib/util';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
 import {
@@ -544,7 +543,7 @@ export class LegacyBackgroundApiService {
     const privateKeyBytes = hexToBytes(add0x(privateKey));
 
     if (syncWithSocial) {
-      await withLock(this.#seedlessOperationMutex, async () => {
+      await this.#seedlessOperationMutex.runExclusive(async () => {
         try {
           await this.#messenger.call(
             'SeedlessOnboardingController:addNewSecretData',
