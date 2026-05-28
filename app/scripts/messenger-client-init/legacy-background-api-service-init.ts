@@ -25,8 +25,7 @@ export const LegacyBackgroundApiServiceInit: MessengerClientInitFunction<
   infuraProjectId,
   getRequestAccountTabIds,
   getOpenMetamaskTabsIds,
-  markPasswordForgotten,
-  unMarkPasswordForgotten,
+  sendUpdate,
   seedlessOperationMutex,
 }) => {
   const messengerClient = new LegacyBackgroundApiService({
@@ -34,8 +33,7 @@ export const LegacyBackgroundApiServiceInit: MessengerClientInitFunction<
     infuraProjectId,
     getRequestAccountTabIds,
     getOpenMetamaskTabsIds,
-    markPasswordForgotten,
-    unMarkPasswordForgotten,
+    sendUpdate,
     seedlessOperationMutex,
   });
 

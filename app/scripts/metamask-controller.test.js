@@ -3989,22 +3989,6 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('#markPasswordForgotten', () => {
-      it('adds and sets forgottenPassword to config data to true', () => {
-        metamaskController.markPasswordForgotten(noop);
-        const state = metamaskController.getState();
-        expect(state.forgottenPassword).toStrictEqual(true);
-      });
-    });
-
-    describe('#unMarkPasswordForgotten', () => {
-      it('adds and sets forgottenPassword to config data to false', () => {
-        metamaskController.unMarkPasswordForgotten(noop);
-        const state = metamaskController.getState();
-        expect(state.forgottenPassword).toStrictEqual(false);
-      });
-    });
-
     describe('getTokenStandardAndDetails', () => {
       it('gets token data from the token list if available, and with a balance retrieved by fetchTokenBalance', async () => {
         const providerResultStub = {

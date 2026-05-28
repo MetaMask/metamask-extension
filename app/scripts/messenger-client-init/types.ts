@@ -266,14 +266,10 @@ export type MessengerClientInitRequest<
   getOpenMetamaskTabsIds: () => Record<string, number>;
 
   /**
-   * Marks the password forgotten.
+   * Sends an update to the UI.
+   *
    */
-  markPasswordForgotten: () => void;
-
-  /**
-   * Un-marks the password forgotten.
-   */
-  unMarkPasswordForgotten: () => void;
+  sendUpdate: () => void;
 };
 
 /**

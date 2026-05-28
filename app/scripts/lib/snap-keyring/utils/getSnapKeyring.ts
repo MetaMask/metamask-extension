@@ -20,7 +20,6 @@ export async function getSnapKeyring(
     never
   >,
 ): Promise<SnapKeyring> {
-  // TODO: Use `withKeyring` instead
   let [snapKeyring] = messenger.call(
     'KeyringController:getKeyringsByType',
     KeyringTypes.snap,
@@ -29,7 +28,6 @@ export async function getSnapKeyring(
   if (!snapKeyring) {
     await messenger.call('KeyringController:addNewKeyring', KeyringTypes.snap);
 
-    // TODO: Use `withKeyring` instead
     [snapKeyring] = messenger.call(
       'KeyringController:getKeyringsByType',
       KeyringTypes.snap,

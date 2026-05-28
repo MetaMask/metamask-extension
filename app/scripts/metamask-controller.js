@@ -6719,26 +6719,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   //=============================================================================
-  // PASSWORD MANAGEMENT
-  //=============================================================================
-
-  /**
-   * Allows a user to begin the seed phrase recovery process.
-   */
-  markPasswordForgotten() {
-    this.preferencesController.setPasswordForgotten(true);
-    this.sendUpdate();
-  }
-
-  /**
-   * Allows a user to end the seed phrase recovery process.
-   */
-  unMarkPasswordForgotten() {
-    this.preferencesController.setPasswordForgotten(false);
-    this.sendUpdate();
-  }
-
-  //=============================================================================
   // SETUP
   //=============================================================================
 
@@ -8244,7 +8224,9 @@ export default class MetamaskController extends EventEmitter {
    * Handle global application unlock.
    */
   _onUnlock() {
-    this.unMarkPasswordForgotten();
+    this.controllerMessenger.call(
+      'LegacyBackgroundApiService:unMarkPasswordForgotten',
+    );
 
     // In the current implementation, this handler is triggered by a
     // KeyringController event. Other controllers subscribe to the 'unlock'
@@ -9571,7 +9553,7 @@ export default class MetamaskController extends EventEmitter {
       infuraProjectId: this.opts.infuraProjectId,
       initLangCode: this.opts.initLangCode,
       keyringOverrides: this.opts.overrides?.keyrings,
-      markPasswordForgotten: this.markPasswordForgotten.bind(this),
+      sendUpdate: this.sendUpdate.bind(this),
       offscreenPromise: this.offscreenPromise,
       preinstalledSnaps: this.opts.preinstalledSnaps,
       persistedState: initState,
@@ -9590,7 +9572,6 @@ export default class MetamaskController extends EventEmitter {
       setLocked: this.setLocked.bind(this),
       showNotification: this.platform._showNotification,
       showUserConfirmation: this.opts.showUserConfirmation,
-      unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
       getAccountType: this.getAccountType.bind(this),
       getDeviceModel: this.getDeviceModel.bind(this),
       getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),

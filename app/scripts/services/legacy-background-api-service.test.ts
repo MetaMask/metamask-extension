@@ -295,42 +295,65 @@ describe('LegacyBackgroundApiService', () => {
   });
 
   describe('markPasswordForgotten', () => {
-    it('calls the markPasswordForgotten function', async () => {
-      const mockMarkPasswordForgotten = jest.fn();
+    it('sets the preference and triggers an update', async () => {
+      const mockSendUpdate = jest.fn();
 
       await withService(
         {
           options: {
-            markPasswordForgotten: mockMarkPasswordForgotten,
+            sendUpdate: mockSendUpdate,
           },
         },
-        ({ rootMessenger }) => {
+        ({ rootMessenger, serviceMessenger }) => {
+          const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+          rootMessenger.registerActionHandler(
+            'PreferencesController:setPasswordForgotten',
+            jest.fn(),
+          );
+
           rootMessenger.call(
             'LegacyBackgroundApiService:markPasswordForgotten',
           );
 
-          expect(mockMarkPasswordForgotten).toHaveBeenCalled();
+          expect(callSpy).toHaveBeenCalledWith(
+            'PreferencesController:setPasswordForgotten',
+            true,
+          );
+          expect(mockSendUpdate).toHaveBeenCalled();
         },
       );
     });
   });
 
   describe('unMarkPasswordForgotten', () => {
-    it('calls the unMarkPasswordForgotten function', async () => {
-      const mockUnMarkPasswordForgotten = jest.fn();
+    it('sets the preference and triggers an update', async () => {
+      const mockSendUpdate = jest.fn();
 
       await withService(
         {
           options: {
-            unMarkPasswordForgotten: mockUnMarkPasswordForgotten,
+            sendUpdate: mockSendUpdate,
           },
         },
-        ({ rootMessenger }) => {
+        ({ rootMessenger, serviceMessenger }) => {
+          const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+          rootMessenger.registerActionHandler(
+            'PreferencesController:setPasswordForgotten',
+            jest.fn(),
+          );
+
           rootMessenger.call(
             'LegacyBackgroundApiService:unMarkPasswordForgotten',
           );
 
-          expect(mockUnMarkPasswordForgotten).toHaveBeenCalled();
+          expect(callSpy).toHaveBeenCalledWith(
+            'PreferencesController:setPasswordForgotten',
+            false,
+          );
+
+          expect(mockSendUpdate).toHaveBeenCalled();
         },
       );
     });
@@ -1050,6 +1073,7 @@ function getMessenger(
       'PermissionController:updatePermissionsByCaveat',
       'KeyringController:getKeyringsByType',
       'KeyringController:addNewKeyring',
+      'PreferencesController:setPasswordForgotten',
     ],
   });
 
@@ -1081,8 +1105,7 @@ async function withService<ReturnValue>(
     infuraProjectId: 'test-infura-project-id',
     getRequestAccountTabIds: () => ({}),
     getOpenMetamaskTabsIds: () => ({}),
-    markPasswordForgotten: () => jest.fn(),
-    unMarkPasswordForgotten: () => jest.fn(),
+    sendUpdate: jest.fn(),
     seedlessOperationMutex: new Mutex(),
     ...options,
   });

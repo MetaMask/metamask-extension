@@ -15,7 +15,6 @@ import {
   KeyringControllerImportAccountWithStrategyAction,
   KeyringControllerRemoveAccountAction,
   KeyringControllerWithKeyringAction,
-  KeyringTypes,
 } from '@metamask/keyring-controller';
 import {
   AccountsControllerGetAccountByAddressAction,
@@ -65,6 +64,7 @@ import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/o
 import { getAccountsBySnapId } from '../lib/snap-keyring';
 import { LegacyBackgroundApiServiceMethodActions } from './legacy-background-api-service-method-action-types';
 import { getSnapKeyring } from '../lib/snap-keyring/utils/getSnapKeyring';
+import { PreferencesControllerSetPasswordForgottenAction } from '../controllers/preferences-controller-method-action-types';
 
 const serviceName = 'LegacyBackgroundApiService';
 
@@ -92,7 +92,6 @@ const MESSENGER_EXPOSED_METHODS = [
 
 /**
  * The actions that the {@link LegacyBackgroundApiService} can handle.
- * This type is currently empty, but it can be extended in the future to replace `MetaMaskController.getApi()`.
  */
 export type LegacyBackgroundApiServiceActions =
   LegacyBackgroundApiServiceMethodActions;
@@ -117,6 +116,7 @@ type AllowedActions =
   | NetworkControllerResetConnectionAction
   | OnboardingControllerGetIsSocialLoginFlowAction
   | PermissionControllerUpdatePermissionsByCaveatAction
+  | PreferencesControllerSetPasswordForgottenAction
   | RemoteFeatureFlagControllerGetStateAction
   | SeedlessOnboardingControllerAddNewSecretDataAction
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
@@ -142,8 +142,7 @@ type LegacyBackgroundApiServiceOptions = {
   seedlessOperationMutex: Mutex;
   getRequestAccountTabIds: () => Record<string, number>;
   getOpenMetamaskTabsIds: () => Record<string, number>;
-  markPasswordForgotten: () => void;
-  unMarkPasswordForgotten: () => void;
+  sendUpdate: () => void;
 };
 
 /**
@@ -166,9 +165,7 @@ export class LegacyBackgroundApiService {
 
   readonly #getOpenMetamaskTabsIds: () => Record<string, number>;
 
-  readonly #markPasswordForgotten: () => void;
-
-  readonly #unMarkPasswordForgotten: () => void;
+  readonly #sendUpdate: () => void;
 
   readonly #seedlessOperationMutex: Mutex;
 
@@ -179,17 +176,15 @@ export class LegacyBackgroundApiService {
    * @param options.infuraProjectId - The Infura project ID.
    * @param options.getRequestAccountTabIds - A function that returns a record of account tab IDs.
    * @param options.getOpenMetamaskTabsIds - A function that returns a record of open MetaMask tab IDs.
-   * @param options.markPasswordForgotten - A function that marks the password as forgotten.
-   * @param options.unMarkPasswordForgotten - A function that un-marks the password as forgotten.
-   * @param options.seedlessOperationMutex
+   * @param options.sendUpdate - A function that triggers an update to the UI.
+   * @param options.seedlessOperationMutex - A mutex to use for seedless operations.
    */
   constructor({
     messenger,
     infuraProjectId,
     getRequestAccountTabIds,
     getOpenMetamaskTabsIds,
-    markPasswordForgotten,
-    unMarkPasswordForgotten,
+    sendUpdate,
     seedlessOperationMutex,
   }: LegacyBackgroundApiServiceOptions) {
     this.#messenger = messenger;
@@ -197,8 +192,7 @@ export class LegacyBackgroundApiService {
     this.#infuraProjectId = infuraProjectId;
     this.#getRequestAccountTabIds = getRequestAccountTabIds;
     this.#getOpenMetamaskTabsIds = getOpenMetamaskTabsIds;
-    this.#markPasswordForgotten = markPasswordForgotten;
-    this.#unMarkPasswordForgotten = unMarkPasswordForgotten;
+    this.#sendUpdate = sendUpdate;
     // Temporarily get the mutex from `MetamaskController` until we can
     // migrate the seedless onboarding functionality to this service.
     // TODO: Remove this once the migration is complete.
@@ -282,14 +276,16 @@ export class LegacyBackgroundApiService {
    * Marks the password as forgotten.
    */
   markPasswordForgotten(): void {
-    this.#markPasswordForgotten();
+    this.#messenger.call('PreferencesController:setPasswordForgotten', true);
+    this.#sendUpdate();
   }
 
   /**
    * Un-marks the password as forgotten.
    */
   unMarkPasswordForgotten(): void {
-    this.#unMarkPasswordForgotten();
+    this.#messenger.call('PreferencesController:setPasswordForgotten', false);
+    this.#sendUpdate();
   }
 
   /**
@@ -482,6 +478,7 @@ export class LegacyBackgroundApiService {
           'KeyringController:withKeyring',
           { address: importedAccountAddress },
           async ({ keyring, metadata }) => {
+            // We can be sure that the keyring supports exporting accounts because this is a SimpleKeyring.
             const privateKey = await keyring.exportAccount!(
               importedAccountAddress,
             );
@@ -576,6 +573,9 @@ export class LegacyBackgroundApiService {
    * @returns The addresses of the accounts managed by the snap.
    */
   async getAccountsBySnapId(snapId: SnapId): Promise<string[]> {
-    return getAccountsBySnapId(() => getSnapKeyring(this.#messenger), snapId);
+    return getAccountsBySnapId(
+      getSnapKeyring.bind(null, this.#messenger),
+      snapId,
+    );
   }
 }

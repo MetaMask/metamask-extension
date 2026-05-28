@@ -51,6 +51,7 @@ export function getLegacyBackgroundApiServiceMessenger(
       'PermissionController:updatePermissionsByCaveat',
       'KeyringController:getKeyringsByType',
       'KeyringController:addNewKeyring',
+      'PreferencesController:setPasswordForgotten',
     ],
   });
 
