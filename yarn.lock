@@ -11919,6 +11919,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sentry/browser@patch:@sentry/browser@npm%3A10.38.0#~/.yarn/patches/@sentry-browser-npm-10.38.0-d1e984c1c7.patch":
+  version: 10.38.0
+  resolution: "@sentry/browser@patch:@sentry/browser@npm%3A10.38.0#~/.yarn/patches/@sentry-browser-npm-10.38.0-d1e984c1c7.patch::version=10.38.0&hash=f20d24"
+  dependencies:
+    "@sentry-internal/browser-utils": "npm:10.38.0"
+    "@sentry-internal/feedback": "npm:10.38.0"
+    "@sentry-internal/replay": "npm:10.38.0"
+    "@sentry-internal/replay-canvas": "npm:10.38.0"
+    "@sentry/core": "npm:10.38.0"
+  checksum: 10/9c3dffab539e60519cbfdb241de7c891eba9cb4f781a9030d560c8615bcfe8d00eac50c124e09ac90e5aadeb40b62c8008afe68325b33d6342a965c56d6ff45a
+  languageName: node
+  linkType: hard
+
 "@sentry/cli-darwin@npm:2.56.0":
   version: 2.56.0
   resolution: "@sentry/cli-darwin@npm:2.56.0"
@@ -33598,7 +33611,7 @@ __metadata:
     "@rive-app/react-canvas": "patch:@rive-app/react-canvas@npm%3A4.23.3#~/.yarn/patches/@rive-app-react-canvas-npm-4.23.3-3ab1940c19.patch"
     "@scure/base": "npm:^1.2.5"
     "@segment/analytics-node": "npm:^3.0.0"
-    "@sentry/browser": "npm:10.38.0"
+    "@sentry/browser": "patch:@sentry/browser@npm%3A10.38.0#~/.yarn/patches/@sentry-browser-npm-10.38.0-d1e984c1c7.patch"
     "@sentry/cli": "npm:^2.56.0"
     "@sentry/core": "npm:10.38.0"
     "@sentry/node": "npm:10.38.0"

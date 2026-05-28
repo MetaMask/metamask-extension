@@ -448,7 +448,7 @@
     "@rive-app/react-canvas": "patch:@rive-app/react-canvas@npm%3A4.23.3#~/.yarn/patches/@rive-app-react-canvas-npm-4.23.3-3ab1940c19.patch",
     "@scure/base": "^1.2.5",
     "@segment/analytics-node": "^3.0.0",
-    "@sentry/browser": "10.38.0",
+    "@sentry/browser": "patch:@sentry/browser@npm%3A10.38.0#~/.yarn/patches/@sentry-browser-npm-10.38.0-d1e984c1c7.patch",
     "@sentry/core": "10.38.0",
     "@sentry/types": "10.38.0",
     "@simplewebauthn/browser": "^13.3.0",
