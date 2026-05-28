@@ -657,6 +657,9 @@
     "ui/hooks/useTrustSignals.test.ts": {
       "Test errors: Uncaught Errors": 4
     },
+    "ui/pages/activity/cells/activity-list-item.test.tsx": {
+      "React: DOM nesting violations": 2
+    },
     "ui/pages/asset/components/asset-page.test.tsx": {
       "React: DOM nesting violations": 2,
       "Reselect: Identity function warnings": 1
