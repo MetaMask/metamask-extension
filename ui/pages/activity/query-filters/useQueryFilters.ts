@@ -6,6 +6,7 @@ import type {
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { mapApiEvmTransactions } from '../../../../shared/lib/activity/adapters/api-evm-transactions';
+import { selectProtectedLocalTransactions } from '../../../selectors/activity';
 import { selectRequiredTransactionHashes } from '../../../selectors/transactionController';
 import { isExcludedTransactionHash } from './excluded-transaction-hash';
 import { isIncomingNativeAssetTransfer } from './incoming-native-asset-transfer';
@@ -16,6 +17,9 @@ import { isZeroValueSelfSend } from './zero-value-self-send';
 
 export function useQueryFilters(subjectAddress: string) {
   const excludedHashes = useSelector(selectRequiredTransactionHashes);
+  const protectedLocalTransactions = useSelector(
+    selectProtectedLocalTransactions,
+  );
 
   return useCallback(
     (data: InfiniteData<V4MultiAccountTransactionsResponse>) => {
@@ -39,10 +43,19 @@ export function useQueryFilters(subjectAddress: string) {
             )
             .map((transaction) =>
               mapApiEvmTransactions({ subjectAddress, transaction }),
-            ),
+            )
+            .map((activity) => {
+              const hash = activity.data.hash?.toLowerCase();
+
+              return activity.status === 'failed' &&
+                hash &&
+                protectedLocalTransactions.has(hash)
+                ? { ...activity, status: 'cancelled' }
+                : activity;
+            }),
         })),
       };
     },
-    [excludedHashes, subjectAddress],
+    [excludedHashes, protectedLocalTransactions, subjectAddress],
   );
 }

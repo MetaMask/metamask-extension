@@ -25,6 +25,7 @@ import { getTokensControllerAllTokens } from '../../shared/lib/selectors/assets-
 import { toAssetId } from '../../shared/lib/asset-utils';
 import { mapKeyringTransaction } from '../../shared/lib/activity/adapters/keyring-transaction';
 import { mapLocalTransaction } from '../../shared/lib/activity/adapters/local-transaction';
+import { isProtectedByEnforcedSimulations } from '../pages/confirmations/utils/confirm';
 import {
   groupAndSortTransactionsByNonce,
   smartTransactionsListSelector,
@@ -99,6 +100,24 @@ export const selectLocalTransactions = createSelector(
     }
 
     return groupAndSortTransactionsByNonce(combined) as TransactionGroup[];
+  },
+);
+
+export const selectProtectedLocalTransactions = createSelector(
+  selectLocalTransactions,
+  (transactionGroups) => {
+    const transactionsByHash = new Map<string, TransactionGroup>();
+
+    for (const transactionGroup of transactionGroups) {
+      const { primaryTransaction } = transactionGroup;
+      const hash = primaryTransaction.hash?.toLowerCase();
+
+      if (hash && isProtectedByEnforcedSimulations(primaryTransaction)) {
+        transactionsByHash.set(hash, transactionGroup);
+      }
+    }
+
+    return transactionsByHash;
   },
 );
 
