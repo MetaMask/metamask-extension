@@ -7059,6 +7059,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/keyring-controller@npm:^26.0.0":
+  version: 26.0.0
+  resolution: "@metamask/keyring-controller@npm:26.0.0"
+  dependencies:
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/browser-passworder": "npm:^6.0.0"
+    "@metamask/eth-hd-keyring": "npm:^14.1.1"
+    "@metamask/eth-sig-util": "npm:^8.2.0"
+    "@metamask/eth-simple-keyring": "npm:^12.0.2"
+    "@metamask/keyring-api": "npm:^23.1.0"
+    "@metamask/keyring-internal-api": "npm:^11.0.1"
+    "@metamask/messenger": "npm:^1.2.0"
+    "@metamask/utils": "npm:^11.9.0"
+    async-mutex: "npm:^0.5.0"
+    ethereumjs-wallet: "npm:^1.0.1"
+    immer: "npm:^9.0.6"
+    lodash: "npm:^4.17.21"
+    ulid: "npm:^2.3.0"
+  checksum: 10/3ca8a86b97fb9568debdc7b574d42cf98a6c3ff76695e72679980169738ff9e4b9626c9ee59a91f3aa57e3e89003ecccfd5f2e9fa7c2775ff1b545e12a47933f
+  languageName: node
+  linkType: hard
+
 "@metamask/keyring-internal-api@npm:^11.0.1":
   version: 11.0.1
   resolution: "@metamask/keyring-internal-api@npm:11.0.1"
@@ -33376,7 +33399,7 @@ __metadata:
     "@metamask/json-rpc-engine": "npm:^10.3.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.4"
     "@metamask/keyring-api": "npm:^23.1.0"
-    "@metamask/keyring-controller": "npm:^25.4.0"
+    "@metamask/keyring-controller": "npm:^26.0.0"
     "@metamask/keyring-internal-api": "npm:^11.0.1"
     "@metamask/keyring-internal-snap-client": "npm:^10.0.3"
     "@metamask/keyring-sdk": "npm:^2.1.1"
