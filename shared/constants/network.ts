@@ -119,6 +119,7 @@ export const CHAIN_IDS = {
   MAINNET: '0x1',
   GOERLI: '0x5',
   LOCALHOST: '0x539',
+  BAC: '0x2d3',
   BSC: '0x38',
   BSC_TESTNET: '0x61',
   OPTIMISM: '0xa',
@@ -401,6 +402,7 @@ export const TEMPO_TESTNET_DISPLAY_NAME = 'Tempo Testnet Moderato';
 export const TEMPO_MAINNET_DISPLAY_NAME = 'Tempo';
 export const STABLE_DISPLAY_NAME = 'Stable';
 export const MANTLE_DISPLAY_NAME = 'Mantle';
+export const BITASSET_CHAIN_MAINNET_DISPLAY_NAME = 'Bitasset Chain Mainnet';
 
 // If `network.ts` is being run in the Node.js environment, `infura-project-id.ts` will not be imported,
 // so we need to look at process.env.INFURA_PROJECT_ID instead.
@@ -674,6 +676,7 @@ export const UNICHAIN_IMAGE_URL = './images/unichain.svg';
 export const MEGAETH_TESTNET_IMAGE_URL = './images/MegaETH-logo-testnet.png';
 export const MEGAETH_TESTNET_V2_IMAGE_URL = './images/MegaETH-logo-testnet.png';
 export const MEGAETH_MAINNET_IMAGE_URL = './images/MegaETH-logo-mainnet.png';
+export const BITASSET_CHAIN_MAINNET_IMAGE_URL = './images/bitasset-mainnet.svg';
 export const SOLANA_IMAGE_URL = './images/solana-logo.svg';
 export const SOLANA_TESTNET_IMAGE_URL = './images/solana-testnet-logo.svg';
 export const SOLANA_DEVNET_IMAGE_URL = './images/solana-devnet-logo.svg';
@@ -1162,6 +1165,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.MEGAETH_TESTNET]: MEGAETH_TESTNET_IMAGE_URL,
   [CHAIN_IDS.MEGAETH_TESTNET_V2]: MEGAETH_TESTNET_V2_IMAGE_URL,
   [CHAIN_IDS.MEGAETH_MAINNET]: MEGAETH_MAINNET_IMAGE_URL,
+  [CHAIN_IDS.BAC]: BITASSET_CHAIN_MAINNET_IMAGE_URL,
   [CHAIN_IDS.NEAR]: NEAR_IMAGE_URL,
   [CHAIN_IDS.NEAR_TESTNET]: NEAR_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.ARBITRUM_NOVA]: ARBITRUM_NOVA_IMAGE_URL,
