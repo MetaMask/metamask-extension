@@ -25,6 +25,7 @@ import { extractHarnessMetrics } from '../scoring/harness-metrics';
 import { createMessageCounter } from '../scoring/message-counter';
 import { determineStatus } from '../scoring/status';
 import { checkAssertion } from './assertions';
+import { buildDockerSandboxConfig } from './docker-sandbox';
 import { setupTrial, takeScreenshot } from './setup';
 import { teardownTrial } from './teardown';
 
@@ -152,11 +153,17 @@ async function executeAgent(
   batchTimestamp: string,
   trialId: string,
 ) {
+  const sandbox =
+    config.sandbox === 'docker'
+      ? buildDockerSandboxConfig(config.extensionCwd)
+      : undefined;
+
   const runner = createAgentRunner({
     telemetry: {
       mode: config.telemetry.enabled ? 'enabled' : 'disabled',
       serviceName: config.telemetry.serviceName,
     },
+    sandbox,
   });
 
   const counter = createMessageCounter();

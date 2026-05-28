@@ -27,6 +27,7 @@ type CliArgs = {
   maxTurns?: number;
   maxWallclockMs?: number;
   coldStart?: boolean;
+  sandbox?: 'docker' | 'local';
 };
 
 export function loadConfig(args: CliArgs): EvalConfig {
@@ -61,6 +62,7 @@ export function loadConfig(args: CliArgs): EvalConfig {
         args.maxTurns ?? envInt('EVAL_MAX_TURNS') ?? DEFAULT_MAX_TURNS,
     },
     coldStart: args.coldStart ?? envBool('EVAL_COLD_START') ?? true,
+    sandbox: args.sandbox ?? envSandbox('EVAL_SANDBOX') ?? 'docker',
     artifactsDir: path.resolve(extensionCwd, ARTIFACTS_BASE_DIR),
     extensionCwd,
   };
@@ -99,6 +101,14 @@ function envBool(key: string): boolean | undefined {
     return undefined;
   }
   return val === 'true' || val === '1';
+}
+
+function envSandbox(key: string): 'docker' | 'local' | undefined {
+  const val = process.env[key];
+  if (val === 'docker' || val === 'local') {
+    return val;
+  }
+  return undefined;
 }
 
 function envList(key: string): string[] | undefined {

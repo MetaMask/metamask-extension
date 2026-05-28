@@ -8,6 +8,7 @@ export type EvalConfig = {
   toolJudge: { enabled: boolean; model: string };
   guardrails: { maxWallclockMs: number; maxTurns: number };
   coldStart: boolean;
+  sandbox: 'docker' | 'local';
   artifactsDir: string;
   extensionCwd: string;
 };
