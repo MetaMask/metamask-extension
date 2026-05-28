@@ -158,8 +158,9 @@ const PrepareBridgePage = ({
 
   const shouldShowMaxButton =
     fromToken && isNativeAddress(fromToken.assetId)
-      ? !isSolanaChainId(fromToken.chainId) &&
-        (effectiveGasIncluded || effectiveGasIncluded7702)
+      ? !isSolanaChainId(fromToken.chainId) ||
+        effectiveGasIncluded ||
+        effectiveGasIncluded7702
       : true;
   const locale = useSelector(getIntlLocale);
 

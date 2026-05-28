@@ -558,6 +558,50 @@ describe('PrepareBridgePage', () => {
     jest.useRealTimers();
   });
 
+  it('shows the Max button for native EVM tokens on non-gasless chains (e.g. Optimism)', () => {
+    jest
+      .spyOn(reactRouterUtils, 'useSearchParams')
+      .mockReturnValue([{ get: () => null }] as never);
+
+    const optimismNativeToken = toBridgeToken(
+      getNativeAssetForChainId(CHAIN_IDS.OPTIMISM),
+    );
+    const ethToken = toBridgeToken(getNativeAssetForChainId(ChainId.ETH));
+
+    const mockStore = createBridgeMockStore({
+      featureFlagOverrides: {
+        bridgeConfig: {
+          chains: {
+            [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: true },
+            [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: true },
+          },
+        },
+      },
+      bridgeSliceOverrides: {
+        fromTokenInputValue: '1',
+        fromToken: optimismNativeToken,
+        toToken: ethToken,
+        // EVM native balance is read from state.bridge.fromTokenBalance, so a
+        // non-zero value makes the balance row (and Max button) render.
+        fromTokenBalance: '1',
+      },
+      metamaskStateOverrides: {
+        completedOnboarding: true,
+      },
+    });
+
+    const { getByText } = renderWithProvider(
+      <HardwareWalletProvider>
+        <PrepareBridgePage onOpenSettings={jest.fn()} />
+      </HardwareWalletProvider>,
+      configureStore(mockStore),
+    );
+
+    // useGasIncluded7702 and useIsSendBundleSupported are mocked to false, so
+    // before the fix the Max button is hidden for this native EVM token.
+    expect(getByText('Max')).toBeInTheDocument();
+  });
+
   describe('token_security_type_destination coverage', () => {
     const TOKEN_ADDRESS = '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984';
     const WALLET_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
