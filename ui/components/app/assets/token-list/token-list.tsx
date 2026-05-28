@@ -119,6 +119,7 @@ const isLowValueAsset = (
 
   return (
     !token.isNative &&
+    !isMusdToken(token.address) &&
     tokenFiatAmount !== null &&
     tokenFiatAmount !== undefined &&
     Number.isFinite(tokenFiatAmount) &&
@@ -228,13 +229,10 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
             return false;
           }
           if (
-            'address' in asset &&
-            isMusdToken(asset.address) &&
-            asset.balance === '0'
+            shouldHideZeroBalanceTokens &&
+            asset.balance === '0' &&
+            !('address' in asset && isMusdToken(asset.address))
           ) {
-            return false;
-          }
-          if (shouldHideZeroBalanceTokens && asset.balance === '0') {
             return false;
           }
           return true;
