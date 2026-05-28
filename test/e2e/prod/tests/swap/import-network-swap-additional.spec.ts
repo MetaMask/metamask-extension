@@ -55,6 +55,78 @@ import {
   generateSwapExecutionReport,
 } from './swap-execution-helpers';
 
+async function selectNetworkViaHomeSelector(
+  driver: Driver,
+  chainId: number,
+): Promise<void> {
+  const networksListButton = '[data-testid="sort-by-networks"]';
+  const networkListItemSelector = `[data-testid="network-list-item-eip155:${chainId}"]`;
+
+  const maxAttempts = 3;
+  let lastError: unknown;
+
+  // Start with a best-effort cleanup in case onboarding/help modals are open.
+  await dismissBlockingOverlays(driver);
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      await driver.clickElement(networksListButton);
+      await driver.waitForSelector('[role="dialog"]');
+      await driver.clickElement(networkListItemSelector);
+      await driver.delay(PROD_DELAYS.API_RESPONSE);
+      return;
+    } catch (error) {
+      lastError = error;
+      const errorMessage = String(error);
+      const isInterceptionError =
+        errorMessage.includes('ElementClickInterceptedError') ||
+        errorMessage.includes('element click intercepted') ||
+        errorMessage.includes('Other element would receive the click');
+
+      if (!isInterceptionError || attempt === maxAttempts) {
+        throw error;
+      }
+
+      console.log(
+        `[TEST] Network selector click intercepted (attempt ${attempt}/${maxAttempts}). Closing overlay and retrying...`,
+      );
+      await dismissBlockingOverlays(driver);
+      await driver.delay(1000);
+    }
+  }
+
+  throw lastError;
+}
+
+async function dismissBlockingOverlays(driver: Driver): Promise<void> {
+  const closeButtonSelectors = [
+    '[data-testid="import-tokens-modal-close-button"]',
+    '.mm-modal-content__header-close-button',
+    'button[aria-label="Close"]',
+    '[data-testid="popover-close"]',
+  ];
+
+  for (const selector of closeButtonSelectors) {
+    try {
+      const isVisible = await driver.isElementPresentAndVisible(selector, 500);
+      if (isVisible) {
+        await driver.clickElement(selector);
+        await driver.delay(500);
+      }
+    } catch (_error) {
+      // Best-effort cleanup only.
+    }
+  }
+
+  // Ensure we are back on a stable, clickable home context.
+  try {
+    await driver.clickElement('[data-testid="account-overview__asset-tab"]');
+    await driver.delay(500);
+  } catch (_error) {
+    // If tab is already active or not clickable yet, proceed to retry.
+  }
+}
+
 /**
  * Production E2E Test: Monad Swap Execution
  *
@@ -118,12 +190,26 @@ describe('Production E2E: Network Swap Execution', function (this: Suite) {
             console.log(
               `[TEST] Selecting ${networkConfig.networkName} network...`,
             );
-            const networkManager = new NetworkManager(driver);
-            await networkManager.openNetworkManager();
-            await networkManager.selectTab('Popular');
-            await networkManager.selectNetworkByNameWithWait(
-              networkConfig.networkName,
-            );
+
+            // Prefer the home network selector (same pattern as send custom
+            // parameterized tests), and fall back to NetworkManager for
+            // backwards compatibility when the selector entry is not present.
+            try {
+              await selectNetworkViaHomeSelector(driver, networkConfig.chainId);
+            } catch (homeSelectorError) {
+              console.log(
+                `[TEST] Home selector network switch failed, falling back to NetworkManager: ${String(homeSelectorError)}`,
+              );
+
+              await dismissBlockingOverlays(driver);
+              const networkManager = new NetworkManager(driver);
+              await networkManager.openNetworkManager();
+              await networkManager.selectTab('Popular');
+              await networkManager.selectNetworkByNameWithWait(
+                networkConfig.networkName,
+              );
+            }
+
             await homePage.checkPageIsLoaded();
             await driver.delay(PROD_DELAYS.API_RESPONSE);
             console.log(
