@@ -38,7 +38,10 @@ function hasFungibleAsset(
   return movement.asset?.fungible === true;
 }
 
-function getToken(movements: Movement[], direction: TokenAmount['direction']) {
+function getToken(
+  movements: Movement[],
+  direction: TokenAmount['direction'],
+): TokenAmount | undefined {
   const movement = movements.find(hasFungibleAsset);
 
   if (!movement) {
@@ -52,7 +55,6 @@ function getToken(movements: Movement[], direction: TokenAmount['direction']) {
     direction,
   };
 }
-
 // Converts keyring API transactions into the shared activity item shape
 export function mapKeyringTransaction({
   transaction,
@@ -66,6 +68,18 @@ export function mapKeyringTransaction({
   const to = getAddress(transaction.to);
 
   if (transaction.type === KeyringTransactionType.Send) {
+    const fromToken = getToken(transaction.from, 'out');
+    let token = fromToken;
+
+    // Bitcoin transaction.from can be empty, meaning we have no asset to display
+    // This workaround uses the asset from the to movement if it exists
+    if (chainId.startsWith('bip122:')) {
+      if (!fromToken) {
+        const movement = transaction.to.find(hasFungibleAsset);
+        token = { direction: 'out', assetId: movement?.asset?.type };
+      }
+    }
+
     return {
       type: 'send',
       chainId,
@@ -76,7 +90,7 @@ export function mapKeyringTransaction({
         hash: transaction.id,
         from,
         to,
-        token: getToken(transaction.from, 'out'),
+        token,
       },
     };
   }
