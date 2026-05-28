@@ -75,7 +75,7 @@ export function RevealSeedMaliciousBlock({
           data-testid="reveal-seed-malicious-block-dismiss"
           className="w-full"
         >
-          {t('gotIt')}
+          {t('srpRevealMaliciousBlockDismiss')}
         </Button>
       </Box>
     </Box>
