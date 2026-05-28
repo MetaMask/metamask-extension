@@ -199,9 +199,6 @@
   "done": {
     "message": "Efectuat"
   },
-  "downloadGoogleChrome": {
-    "message": "Descărcare Google Chrome"
-  },
   "downloadStateLogs": {
     "message": "Descărcați jurnalele de stare"
   },
@@ -253,9 +250,6 @@
   },
   "hardwareWallets": {
     "message": "Conectați un portofel hardware"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Selectați un portofel hardware pe care doriți să îl folosiți cu MetaMask"
   },
   "here": {
     "message": "aici",
@@ -360,9 +354,6 @@
   },
   "nevermind": {
     "message": "Nu mai contează"
-  },
-  "newAccount": {
-    "message": "Cont nou"
   },
   "newAccountNumberName": {
     "message": "Cont $1",

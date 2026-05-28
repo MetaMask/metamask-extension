@@ -201,9 +201,6 @@
   "networks": {
     "message": "เครือข่าย"
   },
-  "newAccount": {
-    "message": "บัญชีใหม่"
-  },
   "newAccountNumberName": {
     "message": "บัญชี $1",
     "description": "Default name of next account to be created on create account screen"

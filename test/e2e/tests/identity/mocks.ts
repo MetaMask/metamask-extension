@@ -29,6 +29,7 @@ export async function mockIdentityServices(
   mockAPICall(server, AuthMocks.getMockAuthNonceResponse());
   mockAPICall(server, AuthMocks.getMockAuthLoginResponse());
   mockAPICall(server, AuthMocks.getMockAuthAccessTokenResponse());
+  mockAPICall(server, AuthMocks.getMockAuthPairResponse());
 
   // Storage
   userStorageMockttpControllerInstance.setupPath(

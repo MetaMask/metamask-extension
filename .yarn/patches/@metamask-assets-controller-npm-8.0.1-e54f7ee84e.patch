@@ -1,0 +1,66 @@
+diff --git a/dist/AssetsController.cjs b/dist/AssetsController.cjs
+index 92494173605bb53b1615f0cdb011712b1c9bfadb..084ffd8bc6b15a3474bb4ae65eeb6b195c2aaf2d 100644
+--- a/dist/AssetsController.cjs
++++ b/dist/AssetsController.cjs
+@@ -283,7 +283,7 @@ class AssetsController extends base_controller_1.BaseController {
+         _AssetsController_unsubscribeBasicFunctionality.set(this, null);
+         _AssetsController_queryApiClient.set(this, void 0);
+         _AssetsController_onActiveChainsUpdated.set(this, void 0);
+-        __classPrivateFieldSet(this, _AssetsController_isEnabled, isEnabled(), "f");
++        __classPrivateFieldSet(this, _AssetsController_isEnabled, isEnabled, "f");
+         __classPrivateFieldSet(this, _AssetsController_isBasicFunctionality, isBasicFunctionality ?? (() => true), "f");
+         __classPrivateFieldSet(this, _AssetsController_defaultUpdateInterval, defaultUpdateInterval, "f");
+         __classPrivateFieldSet(this, _AssetsController_trace, trace, "f");
+@@ -361,10 +361,6 @@ class AssetsController extends base_controller_1.BaseController {
+         __classPrivateFieldSet(this, _AssetsController_rpcFallbackMiddleware, new RpcFallbackMiddleware_1.RpcFallbackMiddleware({
+             rpcDataSource: __classPrivateFieldGet(this, _AssetsController_rpcDataSource, "f"),
+         }), "f");
+-        if (!__classPrivateFieldGet(this, _AssetsController_isEnabled, "f")) {
+-            log('AssetsController is disabled, skipping initialization');
+-            return;
+-        }
+         log('Initializing AssetsController', {
+             defaultUpdateInterval: __classPrivateFieldGet(this, _AssetsController_defaultUpdateInterval, "f"),
+         });
+@@ -1146,7 +1142,7 @@ _AssetsController_isEnabled = new WeakMap(), _AssetsController_isBasicFunctional
+ }, _AssetsController_registerActionHandlers = function _AssetsController_registerActionHandlers() {
+     this.messenger.registerMethodActionHandlers(this, MESSENGER_EXPOSED_METHODS);
+ }, _AssetsController_handleActiveChainsUpdate = function _AssetsController_handleActiveChainsUpdate(dataSourceId, activeChains, previousChains) {
+-    if (!__classPrivateFieldGet(this, _AssetsController_isEnabled, "f")) {
++    if (!__classPrivateFieldGet(this, _AssetsController_isEnabled, "f").call(this)) {
+         return;
+     }
+     log('Data source active chains changed', {
+diff --git a/dist/AssetsController.mjs b/dist/AssetsController.mjs
+index 85a913c8536bcdd7690d96cc0d512bf4528e37aa..b6b746b6635e48808e056f89b5d8d39cd31bf1ef 100644
+--- a/dist/AssetsController.mjs
++++ b/dist/AssetsController.mjs
+@@ -277,7 +277,7 @@ export class AssetsController extends BaseController {
+         _AssetsController_unsubscribeBasicFunctionality.set(this, null);
+         _AssetsController_queryApiClient.set(this, void 0);
+         _AssetsController_onActiveChainsUpdated.set(this, void 0);
+-        __classPrivateFieldSet(this, _AssetsController_isEnabled, isEnabled(), "f");
++        __classPrivateFieldSet(this, _AssetsController_isEnabled, isEnabled, "f");
+         __classPrivateFieldSet(this, _AssetsController_isBasicFunctionality, isBasicFunctionality ?? (() => true), "f");
+         __classPrivateFieldSet(this, _AssetsController_defaultUpdateInterval, defaultUpdateInterval, "f");
+         __classPrivateFieldSet(this, _AssetsController_trace, trace, "f");
+@@ -355,10 +355,6 @@ export class AssetsController extends BaseController {
+         __classPrivateFieldSet(this, _AssetsController_rpcFallbackMiddleware, new RpcFallbackMiddleware({
+             rpcDataSource: __classPrivateFieldGet(this, _AssetsController_rpcDataSource, "f"),
+         }), "f");
+-        if (!__classPrivateFieldGet(this, _AssetsController_isEnabled, "f")) {
+-            log('AssetsController is disabled, skipping initialization');
+-            return;
+-        }
+         log('Initializing AssetsController', {
+             defaultUpdateInterval: __classPrivateFieldGet(this, _AssetsController_defaultUpdateInterval, "f"),
+         });
+@@ -1139,7 +1135,7 @@ _AssetsController_isEnabled = new WeakMap(), _AssetsController_isBasicFunctional
+ }, _AssetsController_registerActionHandlers = function _AssetsController_registerActionHandlers() {
+     this.messenger.registerMethodActionHandlers(this, MESSENGER_EXPOSED_METHODS);
+ }, _AssetsController_handleActiveChainsUpdate = function _AssetsController_handleActiveChainsUpdate(dataSourceId, activeChains, previousChains) {
+-    if (!__classPrivateFieldGet(this, _AssetsController_isEnabled, "f")) {
++    if (!__classPrivateFieldGet(this, _AssetsController_isEnabled, "f").call(this)) {
+         return;
+     }
+     log('Data source active chains changed', {

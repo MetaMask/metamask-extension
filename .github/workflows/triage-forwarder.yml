@@ -1,0 +1,51 @@
+name: Triage Agent Forwarder
+
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  forward:
+    runs-on: ubuntu-latest
+    if: github.event.label.name == 'ta-needs-triage'
+    permissions:
+      id-token: write
+    steps:
+      - name: Get OIDC Token
+        id: oidc
+        run: |
+          OIDC_TOKEN=$(curl -sSf -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=api://token-exchange-service" | jq -r '.value')
+          echo "::add-mask::$OIDC_TOKEN"
+          echo "oidc_token=$OIDC_TOKEN" >> "$GITHUB_OUTPUT"
+
+      - name: Exchange for Installation Token
+        id: exchange
+        env:
+          OIDC_TOKEN: ${{ steps.oidc.outputs.oidc_token }}
+        run: |
+          RESPONSE=$(curl -sSf -X POST "${{ vars.TOKEN_EXCHANGE_URL }}/api/exchange/token" \
+            -H "Content-Type: application/json" \
+            -d "$(jq -cn \
+              --arg oidcToken "$OIDC_TOKEN" \
+              --arg targetRepo "MetaMask/triage-agent" \
+              '{oidcToken: $oidcToken, targetRepo: $targetRepo, requested_permissions: {contents: "write", metadata: "read"}}')")
+          TOKEN=$(echo "$RESPONSE" | jq -r '.token')
+          echo "::add-mask::$TOKEN"
+          echo "token=$TOKEN" >> "$GITHUB_OUTPUT"
+
+      - name: Dispatch to triage-agent
+        env:
+          TOKEN: ${{ steps.exchange.outputs.token }}
+        run: |
+          curl -sSf -X POST \
+            -H "Authorization: token $TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/MetaMask/triage-agent/dispatches" \
+            -d "$(jq -cn \
+              --arg owner "${{ github.repository_owner }}" \
+              --arg name "${{ github.event.repository.name }}" \
+              --arg number "${{ github.event.issue.number }}" \
+              --arg action "${{ github.event.action }}" \
+              --arg label "${{ github.event.label.name }}" \
+              '{event_type: "triage-issue", client_payload: {repo_owner: $owner, repo_name: $name, issue_number: $number, event_action: $action, event_label_name: $label, trigger_mode: "label"}}')"

@@ -50,17 +50,13 @@ jobs:
     name: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format(' ({0})', inputs.matrix-index) || '' }}
     runs-on: ubuntu-latest
     timeout-minutes: 40
-    container:
-      image: ghcr.io/metamask/metamask-extension-e2e-image:v24.13.0
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
     env:
+      SELENIUM_HEADLESS: true
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # This is to support tests that set manifestFlags.testing.infuraProjectId, such as power-user.spec.ts
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
       # Disables ASSETS_UNIFIED_STATE_ENABLED
-      ASSETS_UNIFIED_STATE_ENABLED: 'false'
+      ASSETS_UNIFIED_STATE_ENABLED: false
       SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
       # Enable colors in CI for enhanced test reporter output
       FORCE_COLOR: '1'
@@ -113,9 +109,6 @@ jobs:
       # if there is a build-command and there is no build artifact, or the specified artifact does not exist, we run the build command
       - run: ${{ inputs.build-command }}
         if: ${{ inputs.build-command != '' && (inputs.build-artifact == '' || steps.download-build-artifact.outcome == 'failure') }}
-
-      - name: Configure Xvfb
-        run: Xvfb -ac :99 -screen 0 1280x1024x16 &
 
       - name: Download changed-files artifact
         if: ${{ env.BRANCH != 'main' }}
