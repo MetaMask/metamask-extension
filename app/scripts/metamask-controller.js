@@ -3471,6 +3471,9 @@ export default class MetamaskController extends EventEmitter {
 
         return phishingController.test(website);
       },
+      checkAddressPoisoning: (address) => {
+        return phishingController.checkAddressPoisoning(address);
+      },
       scanUrlForPhishing: async (origin) => {
         return phishingController.scanUrl(origin);
       },

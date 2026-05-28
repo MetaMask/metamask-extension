@@ -1,31 +1,18 @@
-import { Messenger } from '@metamask/messenger';
+import {
+  Messenger,
+  type MessengerActions,
+  type MessengerEvents,
+} from '@metamask/messenger';
+import { TokenListControllerMessenger } from '@metamask/assets-controllers';
 import type {
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
-  NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
-import {
-  StorageServiceGetAllKeysAction,
-  StorageServiceGetItemAction,
-  StorageServiceSetItemAction,
-} from '@metamask/storage-service';
 import {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from '../../controllers/preferences-controller';
 import { RootMessenger } from '../../lib/messenger';
-
-type AllowedActions =
-  | NetworkControllerGetNetworkClientByIdAction
-  | StorageServiceGetAllKeysAction
-  | StorageServiceSetItemAction
-  | StorageServiceGetItemAction;
-
-type AllowedEvents = NetworkControllerStateChangeEvent;
-
-export type TokenListControllerMessenger = ReturnType<
-  typeof getTokenListControllerMessenger
->;
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
@@ -35,14 +22,12 @@ export type TokenListControllerMessenger = ReturnType<
  * messenger.
  */
 export function getTokenListControllerMessenger(
-  messenger: RootMessenger<AllowedActions, AllowedEvents>,
-) {
-  const controllerMessenger = new Messenger<
-    'TokenListController',
-    AllowedActions,
-    AllowedEvents,
-    typeof messenger
-  >({
+  messenger: RootMessenger<
+    MessengerActions<TokenListControllerMessenger>,
+    MessengerEvents<TokenListControllerMessenger>
+  >,
+): TokenListControllerMessenger {
+  const controllerMessenger: TokenListControllerMessenger = new Messenger({
     namespace: 'TokenListController',
     parent: messenger,
   });

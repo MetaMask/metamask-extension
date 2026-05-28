@@ -37,9 +37,6 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "Erro"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "Código QR inválido. Leia o código QR de sincronização da carteira de hardware."
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "Ler código QR"
   },
@@ -2285,12 +2282,6 @@
   },
   "dappConnections": {
     "message": "Conexões do dapp"
-  },
-  "dappScanMaliciousTitle": {
-    "message": "Site malicioso detectado"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "Este site está sinalizado como potencialmente perigoso. Se você revelar sua Frase de Recuperação Secreta, poderá colocar seus fundos em risco."
   },
   "dappSuggested": {
     "message": "Site sugerido"
