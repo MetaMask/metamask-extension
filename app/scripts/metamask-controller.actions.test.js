@@ -439,9 +439,9 @@ describe('MetaMaskController', function () {
       let unifyController;
 
       beforeEach(function () {
-        jest.mocked(getIsAssetsUnifiedStateIncludedInBuild).mockReturnValue(
-          true,
-        );
+        jest
+          .mocked(getIsAssetsUnifiedStateIncludedInBuild)
+          .mockReturnValue(true);
 
         unifyController = new MetaMaskController({
           showUserConfirmation: noop,
