@@ -278,7 +278,7 @@ describe('AssetsControllerInit', () => {
       const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
       const isEnabled = constructorCall.isEnabled as () => boolean;
 
-      expect(isEnabled()).toBe(true);
+      expect(isEnabled()).toBe(false);
     });
   });
 
