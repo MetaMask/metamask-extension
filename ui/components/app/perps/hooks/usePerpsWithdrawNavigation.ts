@@ -65,86 +65,89 @@ export function usePerpsWithdrawNavigation(
 
   const isInFlightRef = useRef(false);
 
-  const trigger = useCallback(async function triggerPerpsWithdrawNavigation() {
-    if (isInFlightRef.current || isLoading) {
-      return null;
-    }
+  const trigger = useCallback(
+    async function triggerPerpsWithdrawNavigation() {
+      if (isInFlightRef.current || isLoading) {
+        return null;
+      }
 
-    if (!selectedAccount?.address) {
-      console.error('No selected account');
-      return null;
-    }
+      if (!selectedAccount?.address) {
+        console.error('No selected account');
+        return null;
+      }
 
-    isInFlightRef.current = true;
-    setIsLoading(true);
+      isInFlightRef.current = true;
+      setIsLoading(true);
 
-    try {
-      if (isConfirmationFlowEnabled) {
-        const { transactionId } = await createPerpsWithdrawTransaction({
-          accountAddress: selectedAccount.address as Hex,
-        });
-        const route = `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`;
-
-        if (navigateOnTrigger) {
-          const params = new URLSearchParams({
-            loader: ConfirmationLoader.CustomAmount,
-            [PERPS_CONFIRMATION_STARTUP_FLOW_PARAM]:
-              PERPS_CONFIRMATION_STARTUP_FLOW.WITHDRAW,
+      try {
+        if (isConfirmationFlowEnabled) {
+          const { transactionId } = await createPerpsWithdrawTransaction({
+            accountAddress: selectedAccount.address as Hex,
           });
+          const route = `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`;
 
-          const goBackTo = location.pathname + location.search;
-          if (goBackTo && goBackTo !== '/') {
-            params.set('goBackTo', goBackTo);
+          if (navigateOnTrigger) {
+            const params = new URLSearchParams({
+              loader: ConfirmationLoader.CustomAmount,
+              [PERPS_CONFIRMATION_STARTUP_FLOW_PARAM]:
+                PERPS_CONFIRMATION_STARTUP_FLOW.WITHDRAW,
+            });
+
+            const goBackTo = location.pathname + location.search;
+            if (goBackTo && goBackTo !== '/') {
+              params.set('goBackTo', goBackTo);
+            }
+
+            navigate({
+              pathname: route,
+              search: params.toString(),
+            });
           }
 
-          navigate({
-            pathname: route,
-            search: params.toString(),
-          });
+          onNavigated?.(route);
+
+          return { route, transactionId };
         }
 
-        onNavigated?.(route);
+        if (navigateOnTrigger) {
+          navigate(PERPS_WITHDRAW_ROUTE);
+        }
 
-        return { route, transactionId };
+        onNavigated?.(PERPS_WITHDRAW_ROUTE);
+
+        return { route: PERPS_WITHDRAW_ROUTE };
+      } catch (error) {
+        console.error('Failed to open perps withdraw flow', error);
+        if (isConfirmationFlowEnabled) {
+          replacePerpsToast({
+            message: t('perpsWithdrawStartErrorTitle'),
+            description: t('perpsWithdrawStartErrorDescription'),
+            actionText: t('tryAgain'),
+            onActionClick: () => {
+              triggerPerpsWithdrawNavigation().catch(() => undefined);
+            },
+            variant: 'error',
+          });
+        }
+        return null;
+      } finally {
+        isInFlightRef.current = false;
+        setIsLoading(false);
       }
-
-      if (navigateOnTrigger) {
-        navigate(PERPS_WITHDRAW_ROUTE);
-      }
-
-      onNavigated?.(PERPS_WITHDRAW_ROUTE);
-
-      return { route: PERPS_WITHDRAW_ROUTE };
-    } catch (error) {
-      console.error('Failed to open perps withdraw flow', error);
-      if (isConfirmationFlowEnabled) {
-        replacePerpsToast({
-          message: t('perpsWithdrawStartErrorTitle'),
-          description: t('perpsWithdrawStartErrorDescription'),
-          actionText: t('tryAgain'),
-          onActionClick: () => {
-            triggerPerpsWithdrawNavigation().catch(() => undefined);
-          },
-          variant: 'error',
-        });
-      }
-      return null;
-    } finally {
-      isInFlightRef.current = false;
-      setIsLoading(false);
-    }
-  }, [
-    isConfirmationFlowEnabled,
-    isLoading,
-    location.pathname,
-    location.search,
-    navigate,
-    navigateOnTrigger,
-    onNavigated,
-    replacePerpsToast,
-    selectedAccount?.address,
-    t,
-  ]);
+    },
+    [
+      isConfirmationFlowEnabled,
+      isLoading,
+      location.pathname,
+      location.search,
+      navigate,
+      navigateOnTrigger,
+      onNavigated,
+      replacePerpsToast,
+      selectedAccount?.address,
+      t,
+    ],
+  );
 
   return {
     trigger,

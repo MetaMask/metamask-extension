@@ -36,8 +36,7 @@ const parsePerpsStartupErrorRouteState = (
   }
 
   const routeStateRecord = routeState as Record<string, unknown>;
-  const startupError =
-    routeStateRecord[PERPS_STARTUP_ERROR_ROUTE_STATE_KEY];
+  const startupError = routeStateRecord[PERPS_STARTUP_ERROR_ROUTE_STATE_KEY];
 
   if (!isPerpsConfirmationStartupFlow(startupError)) {
     return null;

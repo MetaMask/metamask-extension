@@ -167,9 +167,9 @@ const ToastHarness = () => {
         type="button"
         onClick={() => {
           replacePerpsToast({
-            message: 'Something went wrong',
-            description: 'Your withdrawal wasn’t started.',
-            actionText: 'Try again',
+            message: messages.perpsWithdrawStartErrorTitle.message,
+            description: messages.perpsWithdrawStartErrorDescription.message,
+            actionText: messages.tryAgain.message,
             onActionClick: mockToastActionClick,
             variant: 'error',
           });
@@ -311,14 +311,16 @@ describe('PerpsToastProvider', () => {
       getStore(),
     );
 
+    fireEvent.click(screen.getByRole('button', { name: 'Show Action Error' }));
     fireEvent.click(
-      screen.getByRole('button', { name: 'Show Action Error' }),
+      screen.getByRole('button', { name: messages.tryAgain.message }),
     );
-    fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
 
-    expect(screen.getByText('Something went wrong')).toBeInTheDocument();
     expect(
-      screen.getByText('Your withdrawal wasn’t started.'),
+      screen.getByText(messages.perpsWithdrawStartErrorTitle.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.perpsWithdrawStartErrorDescription.message),
     ).toBeInTheDocument();
     expect(mockToastActionClick).toHaveBeenCalledTimes(1);
   });
