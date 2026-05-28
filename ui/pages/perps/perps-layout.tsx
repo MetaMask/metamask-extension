@@ -3,7 +3,6 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { Outlet, useLocation } from 'react-router-dom';
 import { PROVIDER_CONFIG } from '@metamask/perps-controller';
 import { PerpsToastProvider } from '../../components/app/perps';
-import { PerpsStartupErrorToastListener } from '../../components/app/perps/perps-toast/perps-startup-error-toast-listener';
 import { usePerpsViewActive } from '../../hooks/perps/stream/usePerpsViewActive';
 import { usePerpsLifecycleBreadcrumbs } from '../../hooks/perps/usePerpsLifecycleBreadcrumbs';
 import { submitRequestToBackground } from '../../store/background-connection';
@@ -156,7 +155,6 @@ export default function PerpsLayout() {
 
   return (
     <PerpsToastProvider>
-      <PerpsStartupErrorToastListener />
       <Outlet />
     </PerpsToastProvider>
   );
