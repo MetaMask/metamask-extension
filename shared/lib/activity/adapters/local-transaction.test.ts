@@ -3,6 +3,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { CHAIN_IDS } from '../../../constants/network';
+import { WETH_CONTRACT_ADDRESS } from '../../../constants/swaps';
 import { toAssetId } from '../../asset-utils';
 import type { TransactionGroup } from '../../multichain/types';
 import { mapLocalTransaction } from './local-transaction';
@@ -637,6 +638,114 @@ describe('mapLocalTransaction', () => {
         destinationToken: {
           direction: 'in',
           symbol: 'USDC',
+        },
+      },
+    });
+  });
+
+  it('maps a WETH9 deposit contract interaction to a Wrap activity', () => {
+    const transaction = {
+      chainId: CHAIN_IDS.MAINNET,
+      id: 'wrap-id',
+      hash: '0xwrap',
+      status: TransactionStatus.confirmed,
+      time: 1716367781000,
+      type: TransactionType.contractInteraction,
+      txParams: {
+        from,
+        to: WETH_CONTRACT_ADDRESS,
+        value: '0x3782dace9d900000',
+        data: '0xd0e30db0',
+      },
+    };
+    const transactionGroup = {
+      hasCancelled: false,
+      hasRetried: false,
+      initialTransaction: transaction,
+      nonce: '0x4',
+      primaryTransaction: transaction,
+      transactions: [transaction],
+    } as unknown as TransactionGroup;
+
+    const item = mapLocalTransaction(transactionGroup);
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
+      type: 'wrap',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1716367781000,
+      data: {
+        hash: '0xwrap',
+        sourceToken: {
+          amount: '0x3782dace9d900000',
+          assetId: 'eip155:1/slip44:60',
+          decimals: 18,
+          direction: 'out',
+          symbol: 'ETH',
+        },
+        destinationToken: {
+          amount: '0x3782dace9d900000',
+          assetId: toAssetId(WETH_CONTRACT_ADDRESS, 'eip155:1'),
+          decimals: 18,
+          direction: 'in',
+          symbol: 'WETH',
+        },
+      },
+    });
+  });
+
+  it('maps a WETH9 withdraw contract interaction to an Unwrap activity', () => {
+    const unwrapAmount = '1000000000000000000';
+    const unwrapAmountHex = BigInt(unwrapAmount).toString(16).padStart(64, '0');
+    const transaction = {
+      chainId: CHAIN_IDS.MAINNET,
+      id: 'unwrap-id',
+      hash: '0xunwrap',
+      status: TransactionStatus.confirmed,
+      time: 1716367781000,
+      type: TransactionType.contractInteraction,
+      txParams: {
+        from,
+        to: WETH_CONTRACT_ADDRESS,
+        value: '0x0',
+        data: `0x2e1a7d4d${unwrapAmountHex}`,
+      },
+    };
+    const transactionGroup = {
+      hasCancelled: false,
+      hasRetried: false,
+      initialTransaction: transaction,
+      nonce: '0x5',
+      primaryTransaction: transaction,
+      transactions: [transaction],
+    } as unknown as TransactionGroup;
+
+    const item = mapLocalTransaction(transactionGroup);
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
+      type: 'unwrap',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1716367781000,
+      data: {
+        hash: '0xunwrap',
+        sourceToken: {
+          amount: unwrapAmount,
+          assetId: toAssetId(WETH_CONTRACT_ADDRESS, 'eip155:1'),
+          decimals: 18,
+          direction: 'out',
+          symbol: 'WETH',
+        },
+        destinationToken: {
+          amount: unwrapAmount,
+          assetId: 'eip155:1/slip44:60',
+          decimals: 18,
+          direction: 'in',
+          symbol: 'ETH',
         },
       },
     });

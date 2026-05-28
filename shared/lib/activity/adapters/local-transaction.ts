@@ -1,12 +1,19 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
+import { SWAPS_WRAPPED_TOKENS_ADDRESSES } from '../../../constants/swaps';
 import { toAssetId } from '../../asset-utils';
 import type { TransactionGroup } from '../../multichain/types';
+import { isEqualCaseInsensitive } from '../../string-utils';
 import { parseStandardTokenTransactionData } from '../../transaction.utils';
 import { TOKEN_TRANSFER_LOG_TOPIC_HASH } from '../../transactions-controller-utils';
 import type { ActivityListItem, TokenAmount } from '../types';
-import { supplyMethodIds, withdrawMethodIds } from './constants';
+import {
+  supplyMethodIds,
+  unwrapMethodIds,
+  withdrawMethodIds,
+  wrapMethodIds,
+} from './constants';
 import { getKnownTokenMetadata, getLocalTransactionStatus } from './helpers';
 
 const EVM_NATIVE_DECIMALS = 18;
@@ -467,6 +474,92 @@ export function mapLocalTransaction(
             destinationToken,
           },
         };
+      }
+
+      // wrap and unwrap
+      if (
+        initialTransaction.type === TransactionType.contractInteraction &&
+        methodId
+      ) {
+        const wrappedTokenAddress =
+          SWAPS_WRAPPED_TOKENS_ADDRESSES[
+            initialTransaction.chainId as keyof typeof SWAPS_WRAPPED_TOKENS_ADDRESSES
+          ];
+
+        if (
+          wrappedTokenAddress &&
+          isEqualCaseInsensitive(to, wrappedTokenAddress)
+        ) {
+          const normalizedMethodId = methodId.toLowerCase();
+          const activityRaw = {
+            type: 'localTransaction' as const,
+            data: transactionGroup,
+          };
+
+          if (wrapMethodIds.has(normalizedMethodId)) {
+            const { value: wrapAmount } = initialTransaction.txParams;
+
+            try {
+              if (wrapAmount && BigInt(wrapAmount) > 0n) {
+                return {
+                  type: 'wrap',
+                  chainId,
+                  status,
+                  timestamp,
+                  raw: activityRaw,
+                  data: {
+                    hash,
+                    sourceToken: getNativeToken(initialTransaction, 'out'),
+                    destinationToken: getContractToken({
+                      amount: wrapAmount,
+                      transaction: initialTransaction,
+                      direction: 'in',
+                      contractAddress: wrappedTokenAddress,
+                    }),
+                  },
+                };
+              }
+            } catch {
+              // Invalid native value — fall through.
+            }
+          }
+
+          if (unwrapMethodIds.has(normalizedMethodId)) {
+            const { data } = initialTransaction.txParams;
+            let unwrapAmount: string | undefined;
+
+            if (data && data.length >= 74) {
+              try {
+                unwrapAmount = BigInt(`0x${data.slice(10, 74)}`).toString();
+              } catch {
+                unwrapAmount = undefined;
+              }
+            }
+
+            const nativeToken = getNativeToken(initialTransaction, 'in');
+
+            return {
+              type: 'unwrap',
+              chainId,
+              status,
+              timestamp,
+              raw: activityRaw,
+              data: {
+                hash,
+                sourceToken: getContractToken({
+                  amount: unwrapAmount,
+                  transaction: initialTransaction,
+                  direction: 'out',
+                  contractAddress: wrappedTokenAddress,
+                }),
+                destinationToken:
+                  nativeToken && unwrapAmount
+                    ? { ...nativeToken, amount: unwrapAmount }
+                    : nativeToken,
+              },
+            };
+          }
+        }
       }
 
       const token = (() => {
