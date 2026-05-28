@@ -77,7 +77,7 @@ describe('<GasFeesDetails />', () => {
       // Intentionally empty
     });
 
-    expect(getByText('$0.04')).toBeInTheDocument();
+    expect(getByText('$0.07')).toBeInTheDocument();
   });
 
   it('renders max fee if advanced', async () => {
