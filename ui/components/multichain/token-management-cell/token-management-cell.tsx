@@ -42,6 +42,8 @@ export type TokenManagementCellProps = {
   onToggle: (nextValue: boolean) => void;
   /** Disables the toggle interaction (e.g. while a request is in flight). */
   disabled?: boolean;
+  /** Adds a loading state for smooth transition */
+  isLoading?: boolean;
   /** Whether to show the toggle control. Native tokens cannot be hidden here. */
   showToggle?: boolean;
   /** Optional data-testid suffix (`token-management-cell-${testIdSuffix}`). */
@@ -68,6 +70,7 @@ export type TokenManagementCellProps = {
  * @param props.isOn - Whether the toggle is currently in the ON state.
  * @param props.onToggle - Called with the next desired toggle value.
  * @param props.disabled - Disables the toggle interaction when true.
+ * @param props.isLoading - Handles a loading state.
  * @param props.showToggle - Whether the toggle is rendered.
  * @param props.testIdSuffix - Optional suffix appended to the row test id.
  */
@@ -82,6 +85,7 @@ export const TokenManagementCell = ({
   isOn,
   onToggle,
   disabled = false,
+  isLoading = false,
   showToggle = true,
   testIdSuffix,
 }: TokenManagementCellProps) => {
@@ -150,18 +154,23 @@ export const TokenManagementCell = ({
           ) : null}
         </Box>
         {showToggle ? (
-          <ToggleButton
-            value={isOn}
-            disabled={disabled}
-            onToggle={(currentValue: boolean) => {
-              if (!disabled) {
-                onToggle(!currentValue);
-              }
-            }}
-            offLabel=""
-            onLabel=""
-            dataTestId={`${dataTestId}-toggle`}
-          />
+          <span
+            aria-busy={isLoading}
+            className="relative inline-flex h-6 w-10 items-center justify-center"
+          >
+            <ToggleButton
+              value={isOn}
+              disabled={disabled || isLoading}
+              onToggle={(currentValue: boolean) => {
+                if (!disabled && !isLoading) {
+                  onToggle(!currentValue);
+                }
+              }}
+              offLabel=""
+              onLabel=""
+              dataTestId={`${dataTestId}-toggle`}
+            />
+          </span>
         ) : null}
       </Box>
     </Box>

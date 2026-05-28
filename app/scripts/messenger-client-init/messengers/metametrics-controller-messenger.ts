@@ -24,6 +24,7 @@ export function getMetaMetricsControllerMessenger(
       'NetworkController:getState',
       'PreferencesController:getState',
       'RemoteFeatureFlagController:getState',
+      'SeedlessOnboardingController:getState',
     ],
     events: [
       'PreferencesController:stateChange',

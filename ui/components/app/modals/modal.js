@@ -30,7 +30,6 @@ import ConfirmDeleteNetwork from './confirm-delete-network';
 import ConvertTokenToNftModal from './convert-token-to-nft-modal/convert-token-to-nft-modal';
 import CustomizeNonceModal from './customize-nonce';
 import FadeModal from './fade-modal';
-import NewAccountModal from './new-account-modal';
 // Metamask Notifications
 import TurnOnMetamaskNotifications from './turn-on-metamask-notifications/turn-on-metamask-notifications';
 
@@ -55,33 +54,6 @@ const modalContainerMobileStyle = {
 };
 
 const MODALS = {
-  NEW_ACCOUNT: {
-    contents: <NewAccountModal />,
-    mobileModalStyle: {
-      width: '95%',
-      top: '10%',
-      boxShadow: 'var(--shadow-size-xs) var(--color-shadow-default)',
-      transform: 'none',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
-      borderRadius: '10px',
-    },
-    laptopModalStyle: {
-      width: '375px',
-      top: '10%',
-      boxShadow: 'var(--shadow-size-xs) var(--color-shadow-default)',
-      transform: 'none',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
-      borderRadius: '10px',
-    },
-    contentStyle: {
-      borderRadius: '10px',
-    },
-  },
-
   HIDE_TOKEN_CONFIRMATION: {
     contents: <HideTokenConfirmationModal />,
     testId: 'hide-token-confirmation-modal',
