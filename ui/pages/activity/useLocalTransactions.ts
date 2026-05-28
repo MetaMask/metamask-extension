@@ -14,9 +14,7 @@ export function useLocalTransactions(filters: ActivityListFilter) {
 
   const filteredLocalItems = useMemo(() => {
     if (assetId) {
-      return localItems.filter((item) =>
-        activityMatchesAssetId(item, assetId),
-      );
+      return localItems.filter((item) => activityMatchesAssetId(item, assetId));
     }
 
     if (!networks?.length) {

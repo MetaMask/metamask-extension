@@ -396,7 +396,10 @@ describe('mapEvmTransactions', () => {
           decimals: 18,
           direction: 'in',
           symbol: 'ETH',
-          assetId: toAssetId('0x0000000000000000000000000000000000000000', 'eip155:1'),
+          assetId: toAssetId(
+            '0x0000000000000000000000000000000000000000',
+            'eip155:1',
+          ),
         },
       },
     });
@@ -453,7 +456,10 @@ describe('mapEvmTransactions', () => {
           decimals: 18,
           direction: 'out',
           symbol: 'ETH',
-          assetId: toAssetId('0x0000000000000000000000000000000000000000', 'eip155:1'),
+          assetId: toAssetId(
+            '0x0000000000000000000000000000000000000000',
+            'eip155:1',
+          ),
         },
         destinationToken: {
           amount: '1000000000000',
@@ -524,7 +530,10 @@ describe('mapEvmTransactions', () => {
           decimals: 18,
           direction: 'in',
           symbol: 'ETH',
-          assetId: toAssetId('0x0000000000000000000000000000000000000000', 'eip155:1'),
+          assetId: toAssetId(
+            '0x0000000000000000000000000000000000000000',
+            'eip155:1',
+          ),
         },
       },
     });

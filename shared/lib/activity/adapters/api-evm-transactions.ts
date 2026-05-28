@@ -306,7 +306,9 @@ export function mapApiEvmTransactions({
 
   // TODO: Not sure if this is specific enough, may need separate category in backend
   if (
-    (transactionCategory === 'DEPOSIT' && receivedTransfer && !hasSupplyMethodId)
+    transactionCategory === 'DEPOSIT' &&
+    receivedTransfer &&
+    !hasSupplyMethodId
   ) {
     return {
       type: 'wrap',
@@ -321,9 +323,7 @@ export function mapApiEvmTransactions({
       },
     };
   }
-  if (
-    (transactionCategory === 'UNWRAP')
-  ) {
+  if (transactionCategory === 'UNWRAP') {
     return {
       type: 'unwrap',
       chainId,
@@ -338,9 +338,7 @@ export function mapApiEvmTransactions({
     };
   }
 
-  if (
-    (transactionCategory === 'DEPOSIT')
-  ) {
+  if (transactionCategory === 'DEPOSIT') {
     return {
       type: 'deposit',
       chainId,
