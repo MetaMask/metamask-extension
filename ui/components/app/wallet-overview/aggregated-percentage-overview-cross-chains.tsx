@@ -14,7 +14,10 @@ import {
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 
-import { formatValue, isValidAmount } from '../../../../shared/lib/format-value';
+import {
+  formatValue,
+  isValidAmount,
+} from '../../../../shared/lib/format-value';
 import { useFormatters } from '../../../hooks/useFormatters';
 import {
   Display,

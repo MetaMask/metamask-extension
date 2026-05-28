@@ -13,7 +13,10 @@ import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
-import { formatValue, isValidAmount } from '../../../../shared/lib/format-value';
+import {
+  formatValue,
+  isValidAmount,
+} from '../../../../shared/lib/format-value';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import {
   Display,
