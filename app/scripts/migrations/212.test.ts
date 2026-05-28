@@ -117,6 +117,7 @@ describe(`migration #${VERSION}`, () => {
                 messageId: 'pageEvent',
                 timestamp: '2026-01-01T00:00:00.000Z',
                 properties: {
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   environment_type: 'background',
                 },
               },
@@ -128,6 +129,7 @@ describe(`migration #${VERSION}`, () => {
                 messageId: 'identifyEvent',
                 timestamp: '2026-01-02T00:00:00.000Z',
                 traits: {
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   account_type: 'Default',
                 },
               },
@@ -164,6 +166,7 @@ describe(`migration #${VERSION}`, () => {
         messageId: 'pageEvent',
         timestamp: '2026-01-01T00:00:00.000Z',
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: 'background',
         },
       },
@@ -173,6 +176,7 @@ describe(`migration #${VERSION}`, () => {
         messageId: 'identifyEvent',
         timestamp: '2026-01-02T00:00:00.000Z',
         traits: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: 'Default',
         },
       },
