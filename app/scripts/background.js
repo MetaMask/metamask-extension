@@ -115,6 +115,7 @@ import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
 import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
 import { getIframeProperties } from './lib/getIframeProperties';
+import { BLOCKED_HOSTNAMES, BLOCKED_PORTS } from './constants/background';
 
 /**
  * @typedef {import('../../shared/lib/stores/persistence-manager').Backup} Backup
@@ -184,8 +185,6 @@ const metamaskInternalProcessHash = {
   [ENVIRONMENT_TYPE_NOTIFICATION]: true,
   [ENVIRONMENT_TYPE_FULLSCREEN]: true,
 };
-
-const metamaskBlockedPorts = ['trezor-connect'];
 
 log.setLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info', false);
 
@@ -1727,7 +1726,7 @@ export function setupController(
   };
 
   connectWindowPostMessage = (remotePort, removeCriticalErrorListeners) => {
-    if (metamaskBlockedPorts.includes(remotePort.name)) {
+    if (BLOCKED_PORTS.includes(remotePort.name)) {
       return;
     }
 
@@ -1898,6 +1897,15 @@ export function setupController(
   };
 
   connectExternallyConnectable = (remotePort) => {
+    const senderUrl = remotePort.sender?.url;
+    if (senderUrl) {
+      const { hostname } = new URL(senderUrl);
+      if (BLOCKED_HOSTNAMES.includes(hostname)) {
+        remotePort.disconnect();
+        return;
+      }
+    }
+
     const portStream =
       overrides?.getPortStream?.(remotePort) ||
       new ExtensionPortStream(remotePort, { chunkSize: 0 });
@@ -1907,7 +1915,7 @@ export function setupController(
     // it with the 1193 provider
     const isDappConnecting = !remotePort.sender.id;
     if (isDappConnecting) {
-      if (metamaskBlockedPorts.includes(remotePort.name)) {
+      if (BLOCKED_PORTS.includes(remotePort.name)) {
         return;
       }
 
