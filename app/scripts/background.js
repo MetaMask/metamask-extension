@@ -115,7 +115,7 @@ import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
 import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
 import { getIframeProperties } from './lib/getIframeProperties';
-import { BLOCKED_ORIGINS, BLOCKED_PORTS } from './constants/background';
+import { BLOCKED_HOSTNAMES, BLOCKED_PORTS } from './constants/background';
 
 /**
  * @typedef {import('../../shared/lib/stores/persistence-manager').Backup} Backup
@@ -1900,7 +1900,7 @@ export function setupController(
     const senderUrl = remotePort.sender?.url;
     if (senderUrl) {
       const { hostname } = new URL(senderUrl);
-      if (BLOCKED_ORIGINS.includes(hostname)) {
+      if (BLOCKED_HOSTNAMES.includes(hostname)) {
         remotePort.disconnect();
         return;
       }
