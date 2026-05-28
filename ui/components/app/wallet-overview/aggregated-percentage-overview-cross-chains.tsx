@@ -14,9 +14,7 @@ import {
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { formatValue, isValidAmount } from '../../../../app/scripts/lib/util';
+import { formatValue, isValidAmount } from '../../../../shared/lib/format-value';
 import { useFormatters } from '../../../hooks/useFormatters';
 import {
   Display,
