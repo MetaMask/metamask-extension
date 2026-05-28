@@ -1,4 +1,4 @@
-import { ExtendedJSONSchema } from 'json-schema-to-ts';
+import type { ExtendedJSONSchema } from 'json-schema-to-ts';
 import { Browsers } from '../../helpers';
 
 type Writeable<T> = { -readonly [P in keyof T]: T[P] };

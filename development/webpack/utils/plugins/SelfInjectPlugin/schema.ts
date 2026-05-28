@@ -1,4 +1,4 @@
-import { ExtendedJSONSchema } from 'json-schema-to-ts';
+import type { ExtendedJSONSchema } from 'json-schema-to-ts';
 
 export const schema = {
   $schema: 'http://json-schema.org/draft-07/schema#',
