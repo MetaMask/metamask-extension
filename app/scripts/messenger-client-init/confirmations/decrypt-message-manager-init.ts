@@ -1,6 +1,8 @@
-import { DecryptMessageManager } from '@metamask/message-manager';
+import {
+  DecryptMessageManager,
+  DecryptMessageManagerMessenger,
+} from '@metamask/message-manager';
 import { MessengerClientInitFunction } from '../types';
-import { DecryptMessageManagerMessenger } from '../messengers';
 
 /**
  * Initialize the decrypt message manager.

@@ -1,8 +1,12 @@
 import { useCallback, useRef } from 'react';
 import { URDecoder } from '@ngraveio/bc-ur';
-import type { useI18nContext } from '../../../../hooks/useI18nContext';
 import type { BaseReaderProps, WebcamError } from '../base-reader.types';
+import { classifyScanResult } from '../qr-utils/qr-utils';
 import type { DecoderCallbacks } from './qr-hooks.types';
+import {
+  PAIRING_EXPECTED_TYPES,
+  SIGNING_EXPECTED_TYPES,
+} from './qr-hooks-utils';
 
 /**
  * Manages the URDecoder lifecycle: creating, receiving parts, tracking
@@ -12,28 +16,21 @@ import type { DecoderCallbacks } from './qr-hooks.types';
  * mutation (receivePart) shouldn't trigger re-renders — only the derived
  * `scanProgress` needs to update the UI.
  *
- * @param props - Subset of BaseReader props needed for decoding:
- * `handleSuccess`, `isReadingWallet`, and `setErrorTitle`.
- * @param callbacks - State dispatchers: `setScanProgress` and `setError`.
- * @param t - i18n translation function used for error messages.
+ * @param props - Subset of BaseReader props needed for decoding.
+ * @param callbacks - State dispatchers for progress and errors.
  * @returns An object with `handleScan` (feed QR frames) and `resetDecoder`
  * (reinitialize the decoder for retry flows).
  */
 export function useDecoderLifecycle(
-  props: Pick<
-    BaseReaderProps,
-    'handleSuccess' | 'isReadingWallet' | 'setErrorTitle'
-  >,
+  props: Pick<BaseReaderProps, 'handleSuccess' | 'isReadingWallet'>,
   callbacks: DecoderCallbacks,
-  t: ReturnType<typeof useI18nContext>,
 ) {
-  const { handleSuccess, isReadingWallet, setErrorTitle } = props;
-  const { setScanProgress, setError } = callbacks;
+  const { handleSuccess, isReadingWallet } = props;
+  const { setScanProgress, setScanError, setError } = callbacks;
   const decoderRef = useRef<URDecoder | null>(null);
+  const lastScannedTextRef = useRef<string | null>(null);
 
   /**
-   * Lazy-init accessor for the URDecoder ref.
-   *
    * Constructs the decoder on first access and returns the same instance on
    * subsequent calls, avoiding wasteful instantiation on every render while
    * providing a guaranteed non-null return type to callers.
@@ -53,6 +50,7 @@ export function useDecoderLifecycle(
    */
   const resetDecoder = useCallback(() => {
     decoderRef.current = new URDecoder();
+    lastScannedTextRef.current = null;
     setScanProgress(0);
   }, [setScanProgress]);
 
@@ -60,40 +58,55 @@ export function useDecoderLifecycle(
    * Feeds a scanned QR payload into the URDecoder. When the UR is fully
    * assembled, invokes `handleSuccess` with the decoded result.
    *
+   * On failure, classifies the error via {@link classifyScanResult} and
+   * dispatches the result as a structured `scanError`.
+   *
    * @param data - Raw text content of a single scanned QR frame, or null.
    */
   const handleScan = useCallback(
     (data: string | null) => {
+      const expectedTypes = isReadingWallet
+        ? PAIRING_EXPECTED_TYPES
+        : SIGNING_EXPECTED_TYPES;
+
       try {
         const decoder = getDecoder();
         if (!data || decoder.isComplete()) {
           return;
         }
+        lastScannedTextRef.current = data;
         decoder.receivePart(data);
         setScanProgress(decoder.estimatedPercentComplete());
         if (decoder.isComplete()) {
           const result = decoder.resultUR();
+
+          const detectedError = classifyScanResult({
+            decodedType: result.type,
+            expectedTypes,
+          });
+
+          if (detectedError) {
+            setScanError(detectedError);
+            return;
+          }
+
           handleSuccess(result).catch((successError: WebcamError) =>
             setError(successError),
           );
         }
-      } catch {
-        if (isReadingWallet) {
-          setErrorTitle(t('QRHardwareUnknownQRCodeTitle'));
-        } else {
-          setErrorTitle(t('QRHardwareInvalidTransactionTitle'));
+      } catch (exception) {
+        const detectedError = classifyScanResult({
+          text: lastScannedTextRef.current ?? undefined,
+          expectedTypes,
+          exception,
+        });
+
+        if (detectedError) {
+          setScanError(detectedError);
         }
-        setError(new Error(t('unknownQrCode')));
       }
     },
-    [
-      handleSuccess,
-      isReadingWallet,
-      setErrorTitle,
-      t,
-      setScanProgress,
-      setError,
-    ],
+    [handleSuccess, isReadingWallet, setScanProgress, setScanError, setError],
   );
 
   return { handleScan, resetDecoder } as const;

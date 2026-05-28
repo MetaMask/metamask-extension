@@ -15,6 +15,7 @@ const ZERO_HEX_FALLBACK = '0x0';
 
 export function useHasInsufficientBalance(): {
   hasInsufficientBalance: boolean;
+  isNativeBalanceKnown: boolean;
   nativeCurrency?: string;
 } {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -33,7 +34,14 @@ export function useHasInsufficientBalance(): {
     getNativeTokenCachedBalanceByChainIdSelector(state, fromAddress ?? ''),
   ) as Record<Hex, Hex>;
 
-  const balance = chainBalances?.[chainId as Hex] ?? ZERO_HEX_FALLBACK;
+  const hasNoNativeAsset = NO_NATIVE_ASSET_CHAIN_IDS.has(chainId);
+  const isNativeBalanceKnown =
+    hasNoNativeAsset ||
+    Boolean(chainId && Object.hasOwn(chainBalances ?? {}, chainId));
+
+  const balance = isNativeBalanceKnown
+    ? (chainBalances?.[chainId as Hex] ?? ZERO_HEX_FALLBACK)
+    : ZERO_HEX_FALLBACK;
 
   const totalValue = sumHexes(value, ...batchTransactionValues);
 
@@ -44,7 +52,6 @@ export function useHasInsufficientBalance(): {
   );
 
   const { nativeCurrencySymbol } = useNativeCurrencySymbol(chainId);
-  const hasNoNativeAsset = NO_NATIVE_ASSET_CHAIN_IDS.has(chainId);
   /**
    * Tempo (7702) special case: Force "enough native balance" in legacy flow
    * (when `excludeNativeTokenForFee` is false) to restore old MetaMask behavior.
@@ -61,6 +68,7 @@ export function useHasInsufficientBalance(): {
 
   return {
     hasInsufficientBalance,
+    isNativeBalanceKnown,
     nativeCurrency: nativeCurrencySymbol,
   };
 }
