@@ -111,40 +111,30 @@ describe('mapKeyringTransaction', () => {
     );
   });
 
-  it('fills missing send token assetId from to-movement asset type on bitcoin', () => {
+  it('maps bitcoin send token from to-movement when from is empty', () => {
     const item = mapKeyringTransaction({
       transaction: {
-        id: 'send-missing-asset-id',
+        id: 'btc-send-output-id',
         chain: MultichainNetworks.BITCOIN,
         account: '00000000-0000-4000-8000-000000000000',
         status: TransactionStatus.Confirmed,
         timestamp: 1716367781,
         type: TransactionType.Send,
-        from: [
-          {
-            address: 'from-address',
-            asset: {
-              fungible: true,
-              type: undefined,
-              unit: 'USDC',
-              amount: '2.5',
-            },
-          },
-        ],
+        from: [{ address: 'bc1from', asset: null }],
         to: [
           {
-            address: 'to-address',
+            address: 'bc1to',
             asset: {
               fungible: true,
               type: `${MultichainNetworks.BITCOIN}/slip44:0`,
-              unit: 'USDC',
-              amount: '2.5',
+              unit: 'BTC',
+              amount: '0.1',
             },
           },
         ],
         fees: [],
         events: [],
-      } as unknown as Parameters<typeof mapKeyringTransaction>[0]['transaction'],
+      },
     });
 
     expect(item).toStrictEqual(
@@ -154,14 +144,14 @@ describe('mapKeyringTransaction', () => {
         status: 'success',
         timestamp: 1716367781000,
         data: {
-          hash: 'send-missing-asset-id',
-          from: 'from-address',
-          to: 'to-address',
+          hash: 'btc-send-output-id',
+          from: 'bc1from',
+          to: 'bc1to',
           token: {
-            amount: '2.5',
+            amount: '0.1',
             assetId: `${MultichainNetworks.BITCOIN}/slip44:0`,
             direction: 'out',
-            symbol: 'USDC',
+            symbol: 'BTC',
           },
         },
       }),

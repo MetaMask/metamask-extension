@@ -55,6 +55,49 @@ function getToken(
     direction,
   };
 }
+
+function aggregateMovementAmount(movements: Movement[]) {
+  const amountByAssetType: Record<
+    string,
+    {
+      amount: number;
+      unit: string;
+    }
+  > = {};
+
+  for (const movement of movements) {
+    if (!hasFungibleAsset(movement)) {
+      continue;
+    }
+
+    const { type: assetType, unit } = movement.asset;
+    const parsedAmount = Number.parseFloat(movement.asset.amount);
+    const normalizedAmount = Number.isFinite(parsedAmount) ? parsedAmount : 0;
+
+    if (!amountByAssetType[assetType]) {
+      amountByAssetType[assetType] = {
+        amount: normalizedAmount,
+        unit,
+      };
+      continue;
+    }
+
+    amountByAssetType[assetType].amount += normalizedAmount;
+  }
+
+  const entries = Object.entries(amountByAssetType);
+  if (entries.length !== 1) {
+    return undefined;
+  }
+
+  const [assetType, aggregate] = entries[0];
+  return {
+    assetType,
+    amount: String(aggregate.amount),
+    unit: aggregate.unit,
+  };
+}
+
 // Converts keyring API transactions into the shared activity item shape
 export function mapKeyringTransaction({
   transaction,
@@ -71,12 +114,17 @@ export function mapKeyringTransaction({
     const fromToken = getToken(transaction.from, 'out');
     let token = fromToken;
 
-    // Bitcoin transaction.from can be empty, meaning we have no asset to display
-    // This workaround uses the asset from the to movement if it exists
-    if (chainId.startsWith('bip122:')) {
-      if (!fromToken) {
-        const movement = transaction.to.find(hasFungibleAsset);
-        token = { direction: 'out', assetId: movement?.asset?.type };
+    // Bitcoin transaction.from can be empty, resulting in no token avatar or send amount displayed.
+    // Workaround: use the same aggregated to-asset fallback strategy as tx details modal.
+    if (!fromToken && chainId.startsWith('bip122:')) {
+      const aggregatedToAsset = aggregateMovementAmount(transaction.to);
+      if (aggregatedToAsset) {
+        token = {
+          direction: 'out',
+          assetId: aggregatedToAsset.assetType,
+          symbol: aggregatedToAsset.unit,
+          amount: aggregatedToAsset.amount,
+        };
       }
     }
 
