@@ -4140,7 +4140,7 @@ describe('getPermissionsForActiveTab', () => {
   });
 
   it('should return permissions for popup context using activeTab.origin', () => {
-    const util = jest.requireMock('../../app/scripts/lib/util');
+    const util = jest.requireMock('../../shared/lib/environment-type');
     util.getEnvironmentType.mockReturnValue('popup');
 
     const result = selectors.getPermissionsForActiveTab(permissionsTestState);
@@ -4151,7 +4151,7 @@ describe('getPermissionsForActiveTab', () => {
   });
 
   it('should return permissions for sidepanel context using appActiveTab.origin', () => {
-    const util = jest.requireMock('../../app/scripts/lib/util');
+    const util = jest.requireMock('../../shared/lib/environment-type');
     util.getEnvironmentType.mockReturnValue('sidepanel');
 
     const result = selectors.getPermissionsForActiveTab(permissionsTestState);
@@ -4163,7 +4163,7 @@ describe('getPermissionsForActiveTab', () => {
   });
 
   it('should return empty array when no permissions exist for the origin', () => {
-    const util = jest.requireMock('../../app/scripts/lib/util');
+    const util = jest.requireMock('../../shared/lib/environment-type');
     util.getEnvironmentType.mockReturnValue('popup');
 
     const stateWithoutPermissions = {
@@ -4182,7 +4182,7 @@ describe('getPermissionsForActiveTab', () => {
   });
 
   it('should return empty array when origin is undefined in popup context', () => {
-    const util = jest.requireMock('../../app/scripts/lib/util');
+    const util = jest.requireMock('../../shared/lib/environment-type');
     util.getEnvironmentType.mockReturnValue('popup');
 
     const stateWithoutOrigin = {
@@ -4196,7 +4196,7 @@ describe('getPermissionsForActiveTab', () => {
   });
 
   it('should return empty array when appActiveTab is undefined in sidepanel context', () => {
-    const util = jest.requireMock('../../app/scripts/lib/util');
+    const util = jest.requireMock('../../shared/lib/environment-type');
     util.getEnvironmentType.mockReturnValue('sidepanel');
 
     const stateWithoutAppActiveTab = {
