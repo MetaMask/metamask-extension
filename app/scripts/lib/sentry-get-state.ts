@@ -73,14 +73,7 @@ export function getMetaMetricsStateFromAppState(
   if (appState.state) {
     const state = appState.state as Record<string, unknown>;
     if ('metamask' in state && state.metamask !== undefined) {
-      const metamask = state.metamask as AnalyticsState & MetaMetricsState;
-      const { analyticsId, completedMetaMetricsOnboarding, optedIn } = metamask;
-      return {
-        participateInMetaMetrics:
-          completedMetaMetricsOnboarding === true ? optedIn === true : null,
-        metaMetricsId:
-          typeof analyticsId === 'string' ? analyticsId : undefined,
-      };
+      return getMetaMetricsStateFromUIState(state.metamask);
     }
     return getMetaMetricsStateFromControllerState(state);
   }
@@ -108,6 +101,19 @@ function getMetaMetricsStateFromBackupState(
   backupState: Backup | null,
 ): Exclude<MetaMetricsParticipation, null> {
   return getMetaMetricsStateFromControllerState(backupState);
+}
+
+function getMetaMetricsStateFromUIState(
+  metamaskState: unknown,
+): Exclude<MetaMetricsParticipation, null> {
+  const { analyticsId, completedMetaMetricsOnboarding, optedIn } =
+    metamaskState as AnalyticsState & MetaMetricsState;
+
+  return {
+    participateInMetaMetrics:
+      completedMetaMetricsOnboarding === true ? optedIn === true : null,
+    metaMetricsId: typeof analyticsId === 'string' ? analyticsId : undefined,
+  };
 }
 
 function getMetaMetricsStateFromControllerState(
