@@ -1,4 +1,5 @@
 import { Suite } from 'mocha';
+import { SPECULOS_LEDGER_ADDRESSES } from '@metamask/hw-emulator';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import {
   withSpeculosFixtures,
@@ -6,7 +7,6 @@ import {
   stopSharedSpeculos,
 } from '../../../speculos/with-speculos-fixtures';
 import type { SharedSpeculosContext } from '../../../speculos/with-speculos-fixtures';
-import { SPECULOS_LEDGER_ADDRESSES } from '../../../speculos/constants';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import ConnectHardwareWalletPage from '../../../page-objects/pages/hardware-wallet/connect-hardware-wallet-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';

@@ -1,28 +1,50 @@
-import { SpeculosTestHelper } from './test-helper';
-import { SpeculosClient } from './client';
-import { ApduBridge } from './apdu-bridge';
-import { validateSpeculosTestEnv } from './build-config';
 import {
+  Speculos,
+  SpeculosClient,
+  ApduBridge,
   DEFAULT_DEVICE,
-  type DeviceConfig,
   getDeviceModel,
+  type DeviceConfig,
   type DeviceModel,
-  ensureDeviceEnv,
-} from './constants';
-import { createDeviceInteraction, type DeviceInteraction } from './device-interaction';
+  type LedgerDeviceInteraction,
+} from '@metamask/hw-emulator';
+import { validateSpeculosTestEnv } from './build-config';
 import { cleanupSpeculosEnvironment } from './cleanup';
 
 export type SharedSpeculosContext = {
-  helper: SpeculosTestHelper;
+  speculos: Speculos;
   client: SpeculosClient;
   apduBridge: ApduBridge;
   wsBridgePort: number;
   device: DeviceConfig;
-  interaction: DeviceInteraction;
+  interaction: LedgerDeviceInteraction;
   deviceModel: DeviceModel;
 };
 
 let registeredSignalHandlers = false;
+
+/**
+ * Read the device model from the SPECULOS_DEVICE env var (falls back to flex).
+ * The package's `getDeviceModel` takes an explicit id, so we bridge the env var here.
+ */
+function getDeviceModelFromEnv(): DeviceModel {
+  const id = process.env.SPECULOS_DEVICE ?? 'flex';
+  return getDeviceModel(id);
+}
+
+/**
+ * Ensure SPECULOS_DEVICE and SPECULOS_ELF env vars are set.
+ * These are read by docker-compose.yml when running in Docker mode.
+ */
+function ensureDeviceEnv(): void {
+  const model = getDeviceModelFromEnv();
+  if (!process.env.SPECULOS_DEVICE) {
+    process.env.SPECULOS_DEVICE = model.id;
+  }
+  if (!process.env.SPECULOS_ELF) {
+    process.env.SPECULOS_ELF = model.elfFile;
+  }
+}
 
 export async function startSharedSpeculos(
   options: {
@@ -40,21 +62,29 @@ export async function startSharedSpeculos(
     apiPort = device.apiPort,
   } = options;
 
-  const helper = new SpeculosTestHelper({ apduPort, apiPort });
-  await helper.start();
+  const deviceModel = getDeviceModelFromEnv();
 
-  const client = helper.getClient();
+  const speculos = new Speculos({
+    device: deviceModel.id,
+    apduPort,
+    apiPort,
+    wsBridgePort: device.wsBridgePort,
+  });
+
+  if (process.env.SKIP_SPECULOS_TESTS !== 'true') {
+    await speculos.start();
+  }
+
+  const client = speculos.getClient();
 
   const { wsBridgePort } = device;
-  const apduBridge = new ApduBridge(client, wsBridgePort);
-  await apduBridge.start();
+  const apduBridge = await speculos.startBridge(wsBridgePort);
 
-  const deviceModel = getDeviceModel();
-  const interaction = createDeviceInteraction(client, deviceModel);
+  const interaction = speculos.getInteraction() as LedgerDeviceInteraction;
   await interaction.enableBlindSigning();
 
   const ctx: SharedSpeculosContext = {
-    helper,
+    speculos,
     client,
     apduBridge,
     wsBridgePort,
@@ -85,12 +115,7 @@ export async function stopSharedSpeculos(
   ctx: SharedSpeculosContext,
 ): Promise<void> {
   try {
-    await ctx.apduBridge.stop();
-  } catch {
-    // may already be stopped
-  }
-  try {
-    await ctx.helper.stop();
+    await ctx.speculos.stop();
   } catch {
     // may already be stopped
   }

@@ -41,6 +41,7 @@ import {
 import type { AssetsControllerState } from '@metamask/assets-controller';
 import type { PerpsControllerState } from '@metamask/perps-controller';
 import type { PasskeyControllerState } from '@metamask/passkey-controller';
+import { SPECULOS_LEDGER_ADDRESS } from '@metamask/hw-emulator';
 import type { AppStateControllerState } from '../../../app/scripts/controllers/app-state-controller';
 import type { MetaMetricsControllerState } from '../../../app/scripts/controllers/metametrics-controller';
 import type { OnboardingControllerState } from '../../../app/scripts/controllers/onboarding';
@@ -68,7 +69,6 @@ import {
   TREZOR_ADDRESS,
   TREZOR_VAULT,
 } from '../constants';
-import { SPECULOS_LEDGER_ADDRESS } from '../speculos/constants';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../stub/keyring-bridge';
 import { SMART_CONTRACTS } from '../seeder/smart-contracts';
 import defaultFixtureJson from './default-fixture.json';

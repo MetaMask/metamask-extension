@@ -1,20 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  Speculos,
+  SpeculosClient,
+  ApduBridge,
+  SPECULOS_WS_BRIDGE_PORT,
+  getDeviceModel,
+  type LedgerDeviceInteraction,
+  type DeviceModel,
+} from '@metamask/hw-emulator';
 import { withFixtures } from '../helpers';
 import { Anvil } from '../seeder/anvil';
 import { Driver } from '../webdriver/driver';
-import { SpeculosTestHelper } from './test-helper';
-import { SpeculosClient } from './client';
-import { ApduBridge } from './apdu-bridge';
 import { validateSpeculosTestEnv } from './build-config';
-import {
-  SPECULOS_WS_BRIDGE_PORT,
-  ensureDeviceEnv,
-  getDeviceModel,
-} from './constants';
 import type { SharedSpeculosContext } from './shared-context';
-import type { DeviceInteraction } from './device-interaction';
-import type { DeviceModel } from './constants';
-import { createDeviceInteraction } from './device-interaction';
 
 export type { SharedSpeculosContext } from './shared-context';
 export { startSharedSpeculos, stopSharedSpeculos } from './shared-context';
@@ -28,7 +26,8 @@ export type WithSpeculosFixturesOptions = {
   staticServerOptions?: unknown;
   ignoredConsoleErrors?: string[];
   disableServerMochaToBackground?: boolean;
-  testSpecificMock?: () => Promise<unknown>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  testSpecificMock?: (...args: any[]) => Promise<any>;
   useMockingPassThrough?: boolean;
   useBundler?: boolean;
   usePaymaster?: boolean;
@@ -68,12 +67,34 @@ export type SpeculosFixturesTestSuiteArgs = {
   getNetworkReport?: () => unknown;
   clearNetworkReport?: () => unknown;
   speculosClient: SpeculosClient;
-  speculosHelper: SpeculosTestHelper;
+  speculos: Speculos;
   apduBridge: ApduBridge;
   wsBridgePort: number;
-  interaction: DeviceInteraction;
+  interaction: LedgerDeviceInteraction;
   deviceModel: DeviceModel;
 };
+
+/**
+ * Read the device model from the SPECULOS_DEVICE env var (falls back to flex).
+ */
+function getDeviceModelFromEnv(): DeviceModel {
+  const id = process.env.SPECULOS_DEVICE ?? 'flex';
+  return getDeviceModel(id);
+}
+
+/**
+ * Ensure SPECULOS_DEVICE and SPECULOS_ELF env vars are set.
+ * These are read by docker-compose.yml when running in Docker mode.
+ */
+function ensureDeviceEnv(): void {
+  const model = getDeviceModelFromEnv();
+  if (!process.env.SPECULOS_DEVICE) {
+    process.env.SPECULOS_DEVICE = model.id;
+  }
+  if (!process.env.SPECULOS_ELF) {
+    process.env.SPECULOS_ELF = model.elfFile;
+  }
+}
 
 export async function withSpeculosFixtures(
   options: WithSpeculosFixturesOptions,
@@ -90,38 +111,40 @@ export async function withSpeculosFixtures(
 
   const { apduPort, apiPort } = speculosOptions;
 
-  let speculosHelper: SpeculosTestHelper;
+  let speculos: Speculos;
   let speculosClient: SpeculosClient;
   let apduBridge: ApduBridge;
   const wsBridgePort = SPECULOS_WS_BRIDGE_PORT;
   let ownsContainer = false;
-  let interaction: DeviceInteraction;
+  let interaction: LedgerDeviceInteraction;
   let deviceModel: DeviceModel;
 
   if (sharedContext) {
-    speculosHelper = sharedContext.helper;
+    speculos = sharedContext.speculos;
     speculosClient = sharedContext.client;
     apduBridge = sharedContext.apduBridge;
     interaction = sharedContext.interaction;
     deviceModel = sharedContext.deviceModel;
   } else {
-    speculosHelper = new SpeculosTestHelper({
+    deviceModel = getDeviceModelFromEnv();
+    ensureDeviceEnv();
+
+    speculos = new Speculos({
+      device: deviceModel.id,
       apduPort,
       apiPort,
+      wsBridgePort,
     });
-    speculosClient = speculosHelper.getClient();
-    apduBridge = new ApduBridge(speculosClient, wsBridgePort);
     ownsContainer = true;
-    deviceModel = getDeviceModel();
-    interaction = createDeviceInteraction(speculosClient, deviceModel);
-    ensureDeviceEnv();
 
     console.log('[Speculos] Starting...');
 
-    await speculosHelper.start();
+    await speculos.start();
     console.log('[Speculos] Started and ready');
 
-    await apduBridge.start();
+    speculosClient = speculos.getClient();
+    apduBridge = await speculos.startBridge(wsBridgePort);
+    interaction = speculos.getInteraction() as LedgerDeviceInteraction;
     await interaction.enableBlindSigning();
     console.log(`[Speculos] APDU bridge listening on port ${wsBridgePort}`);
   }
@@ -134,10 +157,8 @@ export async function withSpeculosFixtures(
     if (!ownsContainer) {
       return;
     }
-    console.log('[Speculos] Stopping APDU bridge...');
-    await apduBridge.stop();
     console.log('[Speculos] Stopping...');
-    await speculosHelper.stop();
+    await speculos.stop();
   };
 
   const speculosIgnoredErrors = [
@@ -168,7 +189,7 @@ export async function withSpeculosFixtures(
           driver,
           ...restOfArgs,
           speculosClient,
-          speculosHelper,
+          speculos,
           apduBridge,
           wsBridgePort,
           interaction,

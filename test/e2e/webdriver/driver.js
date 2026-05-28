@@ -1885,13 +1885,10 @@ class Driver {
 
     try {
       const cdpConnection = await this.driver.createCDPConnection('page');
-      const webhidMockModule = await import('../speculos/webhid-mock-script');
-      const getWebHidMockScript =
-        webhidMockModule.getWebHidMockScript ??
-        webhidMockModule.default?.getWebHidMockScript;
+      const { getWebHidMockScript } = await import('@metamask/hw-emulator');
       if (typeof getWebHidMockScript !== 'function') {
         throw new TypeError(
-          'webhid-mock-script: getWebHidMockScript export not found',
+          'getWebHidMockScript export not found from speculos barrel',
         );
       }
       const mockScript = getWebHidMockScript(wsPort);

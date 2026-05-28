@@ -1,8 +1,10 @@
-import type { DeviceInteraction } from '../../../speculos/device-interaction';
-import type { ApduBridge } from '../../../speculos/apdu-bridge';
-import { SPECULOS_LEDGER_ADDRESS } from '../../../speculos/constants';
+import type {
+  LedgerDeviceInteraction as DeviceInteraction,
+  ApduBridge,
+} from '@metamask/hw-emulator';
+import { SPECULOS_LEDGER_ADDRESS } from '@metamask/hw-emulator';
 
-export { SPECULOS_LEDGER_ADDRESS } from '../../../speculos/constants';
+export { SPECULOS_LEDGER_ADDRESS } from '@metamask/hw-emulator';
 
 export const LEDGER_SEED_BALANCE = [
   { address: SPECULOS_LEDGER_ADDRESS, balance: '0x100000000000000000000' },

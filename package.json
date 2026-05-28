@@ -574,6 +574,7 @@
     "@metamask/eth-json-rpc-provider": "^6.0.0",
     "@metamask/forwarder": "^1.1.0",
     "@metamask/foundryup": "^1.0.1",
+    "@metamask/hw-emulator": "npm:@metamask-previews/hw-emulator@0.1.0-4bf3baf",
     "@metamask/messenger-cli": "^0.1.0",
     "@metamask/phishing-warning": "^5.1.0",
     "@metamask/preferences-controller": "^23.0.0",

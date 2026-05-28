@@ -1,45 +1,23 @@
-export { ApduBridge } from './apdu-bridge';
-export { SpeculosClient } from './client';
-export { SpeculosTestHelper } from './test-helper';
-export type {
-  WithSpeculosFixturesOptions,
-  SpeculosFixturesTestSuiteArgs,
-} from './with-speculos-fixtures';
-export { withSpeculosFixtures } from './with-speculos-fixtures';
-export { startSharedSpeculos, stopSharedSpeculos } from './shared-context';
-export type { SharedSpeculosContext } from './shared-context';
-export { withRetry } from './resilience';
-export { ExponentialBackoff } from './resilience';
-export { isRetryableError } from './resilience';
+/**
+ * Speculos E2E test utilities — extension-specific glue only.
+ *
+ * Import transport, device interaction, resilience, and lifecycle symbols
+ * directly from `@metamask/hw-emulator`.
+ */
+
+// ── Extension-specific modules ─────────────────────────────────────────
 export {
   getSpeculosBuildConfig,
   getChromeFlags,
   validateSpeculosTestEnv,
   isSpeculosMockInBuild,
 } from './build-config';
-export {
-  SPECULOS_LEDGER_ADDRESS,
-  SPECULOS_LEDGER_ADDRESSES,
-  SPECULOS_APDU_PORT,
-  SPECULOS_API_PORT,
-  SPECULOS_WS_BRIDGE_PORT,
-  DEFAULT_DEVICE,
-  DEVICE_PRESETS,
-  DEVICE_MODELS,
-  DEFAULT_DEVICE_MODEL,
-  getDeviceModel,
-  ensureDeviceEnv,
-} from './constants';
-export type { DeviceConfig, DeviceModel, InteractionType } from './constants';
-export {
-  type DeviceInteraction,
-  NanoInteraction,
-  TouchInteraction,
-  createDeviceInteraction,
-} from './device-interaction';
-export {
-  createSpeculosProcess,
-  type SpeculosProcess,
-  type SpeculosProcessOptions,
-} from './process';
-export { ensureSpeculosBinary } from './speculos-up';
+
+export type {
+  WithSpeculosFixturesOptions,
+  SpeculosFixturesTestSuiteArgs,
+} from './with-speculos-fixtures';
+export { withSpeculosFixtures } from './with-speculos-fixtures';
+
+export { startSharedSpeculos, stopSharedSpeculos } from './shared-context';
+export type { SharedSpeculosContext } from './shared-context';

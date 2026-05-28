@@ -19,8 +19,6 @@ export async function connectLedgerDevice(driver: Driver): Promise<void> {
   await connectPage.checkPageIsLoaded();
   console.log('[connectLedgerDevice] Clicking connect Ledger button');
   await connectPage.clickConnectLedgerButton();
-  console.log('[connectLedgerDevice] Clicking continue button');
-  await connectPage.clickContinueButton(30000);
 
   const selectPage = new SelectHardwareWalletAccountPage(driver);
   await selectPage.checkPageIsLoaded();
