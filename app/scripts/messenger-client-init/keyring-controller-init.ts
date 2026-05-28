@@ -2,6 +2,7 @@ import {
   keyringBuilderFactory,
   KeyringController,
   type KeyringV2Builder,
+  KeyringControllerMessenger,
 } from '@metamask/keyring-controller';
 import { QrKeyring, QrKeyringScannerBridge } from '@metamask/eth-qr-keyring';
 import { QrKeyring as QrKeyringV2 } from '@metamask/eth-qr-keyring/v2';
@@ -30,10 +31,7 @@ import { LedgerOffscreenBridge } from '../lib/offscreen-bridge/ledger-offscreen-
 import { LatticeKeyringOffscreen } from '../lib/offscreen-bridge/lattice-offscreen-keyring';
 import { LatticeKeyringV2 } from '../lib/offscreen-bridge/lattice-keyring-v2';
 import { MessengerClientInitFunction } from './types';
-import {
-  KeyringControllerMessenger,
-  KeyringControllerInitMessenger,
-} from './messengers';
+import { KeyringControllerInitMessenger } from './messengers';
 
 /**
  * Constructor signature shared by every V2 hardware-keyring wrapper.

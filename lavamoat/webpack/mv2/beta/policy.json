@@ -968,7 +968,7 @@
       },
       "packages": {
         "@metamask/bridge-controller": true,
-        "@metamask/bridge-status-controller>@metamask/controller-utils": true,
+        "@metamask/controller-utils": true,
         "@metamask/keyring-controller": true,
         "@metamask/polling-controller": true,
         "@metamask/snaps-controllers": true,
@@ -1044,23 +1044,6 @@
       }
     },
     "@metamask/bridge-controller>@metamask/controller-utils": {
-      "globals": {
-        "Buffer.from": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
-        "ethereumjs-util>bn.js": true,
-        "buffer": true,
-        "eth-ens-namehash": true,
-        "eslint>fast-deep-equal": true,
-        "lodash": true
-      }
-    },
-    "@metamask/bridge-status-controller>@metamask/controller-utils": {
       "globals": {
         "Buffer.from": true,
         "console.error": true,
@@ -1350,7 +1333,7 @@
         "@metamask/keyring-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
-        "@metamask/eip-5792-middleware>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "lodash": true,
         "uuid": true
@@ -1696,7 +1679,7 @@
         "@metamask/delegation-core": true,
         "@metamask/delegation-deployments": true,
         "@metamask/snaps-utils": true,
-        "@metamask/gator-permissions-controller>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true
       }
     },
@@ -2325,7 +2308,7 @@
         "@metamask/base-controller": true,
         "@metamask/shield-controller>@metamask/controller-utils": true,
         "@metamask/signature-controller": true,
-        "@metamask/shield-controller>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "cockatiel": true,
         "lodash": true
@@ -2367,7 +2350,7 @@
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/polling-controller": true,
         "@metamask/superstruct": true,
-        "@metamask/smart-transactions-controller>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
         "lodash": true,
@@ -2506,7 +2489,7 @@
       },
       "packages": {
         "@metamask/polling-controller": true,
-        "@metamask/subscription-controller>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/subscription-controller>bignumber.js": true
       }
@@ -2599,7 +2582,7 @@
         "@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
-        "@metamask/user-operation-controller>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "ethereumjs-util>bn.js": true,
         "webpack>events": true,
