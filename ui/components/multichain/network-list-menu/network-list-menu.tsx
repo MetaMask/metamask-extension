@@ -51,10 +51,7 @@ import {
   BUILT_IN_NETWORKS,
   CAIP_FORMATTED_TEST_CHAINS,
 } from '../../../../shared/constants/network';
-import {
-  MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME,
-  MultichainNetworks,
-} from '../../../../shared/constants/multichain/networks';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
   getShowTestNetworks,
   getOriginOfCurrentTab,
@@ -65,12 +62,12 @@ import {
   getIsAccessedFromDappConnectedSitePopover,
   getAllDomains,
   getPermittedEVMChainsForSelectedTab,
-  getPreferences,
   getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
   getNetworkDiscoverButtonEnabled,
   getAllChainsToPoll,
 } from '../../../selectors';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../selectors/network-blacklist/network-blacklist';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -106,12 +103,10 @@ import {
   sortNetworksByPrioity,
   getFilteredFeaturedNetworks,
 } from '../../../../shared/lib/network.utils';
-import {
-  getCompletedOnboarding,
-  getIsUnlocked,
-} from '../../../ducks/metamask/metamask';
-import NetworksForm from '../../../pages/settings/networks-tab/networks-form';
-import { useNetworkFormState } from '../../../pages/settings/networks-tab/networks-form/networks-form-state';
+import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
+import NetworksForm from '../networks-form';
+import { useNetworkFormState } from '../networks-form/networks-form-state';
 import { openWindow } from '../../../helpers/utils/window';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import PopularNetworkList from './popular-network-list/popular-network-list';
@@ -119,7 +114,6 @@ import NetworkListSearch from './network-list-search/network-list-search';
 import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
 import { SelectRpcUrlModal } from './select-rpc-url-modal/select-rpc-url-modal';
 import AddBlockExplorerModal from './add-block-explorer-modal/add-block-explorer-modal';
-import AddNonEvmAccountModal from './add-non-evm-account/add-non-evm-account';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -142,10 +136,6 @@ export enum ACTION_MODE {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   SELECT_RPC,
-  // Add account for non EVM networks
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  ADD_NON_EVM_ACCOUNT,
 }
 
 type NetworkListMenuProps = {
@@ -299,12 +289,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     return filteredNetworks.sort((a, b) => a.name.localeCompare(b.name));
   }, [evmNetworks, blacklistedChainIds]);
 
-  // This value needs to be tracked in case the user changes to a Non EVM
-  // network and there is no account created for that network. This will
-  // allow the user to add an account for that network.
-  const [selectedNonEvmNetwork, setSelectedNonEvmNetwork] =
-    useState<CaipChainId>();
-
   // Searches networks by user input
   const [searchQuery, setSearchQuery] = useState('');
   const [focusSearch, setFocusSearch] = useState(false);
@@ -399,14 +383,8 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   };
 
   const handleNonEvmNetworkChange = async (chainId: CaipChainId) => {
-    if (hasAnyAccountsInNetwork(chainId)) {
-      dispatch(toggleNetworkMenu());
-      dispatch(setActiveNetwork(chainId));
-      return;
-    }
-
-    setSelectedNonEvmNetwork(chainId);
-    setActionMode(ACTION_MODE.ADD_NON_EVM_ACCOUNT);
+    dispatch(toggleNetworkMenu());
+    dispatch(setActiveNetwork(chainId));
   };
 
   const handleNetworkChange = async (chainId: CaipChainId) => {
@@ -813,11 +791,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
           onNetworkChange={handleEvmNetworkChange}
         />
       );
-    } else if (
-      actionMode === ACTION_MODE.ADD_NON_EVM_ACCOUNT &&
-      selectedNonEvmNetwork
-    ) {
-      return <AddNonEvmAccountModal chainId={selectedNonEvmNetwork} />;
     }
     return null; // Should not be reachable
   };
@@ -833,13 +806,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     title = t('addBlockExplorerUrl');
   } else if (actionMode === ACTION_MODE.SELECT_RPC) {
     title = t('selectRpcUrl');
-  } else if (
-    actionMode === ACTION_MODE.ADD_NON_EVM_ACCOUNT &&
-    selectedNonEvmNetwork
-  ) {
-    title = t('addNonEvmAccount', [
-      MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME[selectedNonEvmNetwork],
-    ]);
   } else {
     title = editedNetwork?.name ?? '';
   }
@@ -856,8 +822,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     actionMode === ACTION_MODE.ADD_EXPLORER_URL
   ) {
     onBack = () => setActionMode(ACTION_MODE.ADD_EDIT);
-  } else if (actionMode === ACTION_MODE.ADD_NON_EVM_ACCOUNT) {
-    onBack = () => setActionMode(ACTION_MODE.LIST);
   }
 
   if (isMultiRpcOnboarding) {

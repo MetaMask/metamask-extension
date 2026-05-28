@@ -38,7 +38,6 @@ import succeededSplTokenTransaction from './mocks/succeededSplTokenTransaction.j
 const isUnifiedAssetsEnabled =
   process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true';
 
-const SOL_ACCOUNT_ID = '688e01b8-3134-4ef4-80e6-8772bab38ef7';
 const SOL_CAIP_ASSET = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
 const USDC_CAIP_ASSET =
   'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
@@ -99,12 +98,6 @@ async function mockAccountsApiV5WithSolana(
 }
 
 const SOLANA_SPL_ASSETS_CONTROLLER_FIXTURE = {
-  assetsBalance: {
-    [SOL_ACCOUNT_ID]: {
-      [SOL_CAIP_ASSET]: { amount: '50' },
-      [USDC_CAIP_ASSET]: { amount: '8.908267' },
-    },
-  },
   assetsInfo: {
     [SOL_CAIP_ASSET]: {
       decimals: 9,
@@ -143,9 +136,6 @@ const SOLANA_SPL_ASSETS_CONTROLLER_FIXTURE = {
 
 const MULTICHAIN_ASSETS_CONTROLLER_USDC_PATCH = {
   MultichainAssetsController: {
-    accountsAssets: {
-      [SOL_ACCOUNT_ID]: [SOL_CAIP_ASSET, USDC_CAIP_ASSET],
-    },
     assetsMetadata: {
       [USDC_CAIP_ASSET]: {
         fungible: true,

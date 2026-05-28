@@ -85,8 +85,8 @@ export type OrderCalculations = {
   liquidationPriceRaw: number | null;
   /** Total order value in USD */
   orderValue: string | null;
-  /** Estimated trading fees */
-  estimatedFees: string | null;
+  /** Estimated trading fees (raw USD amount) */
+  estimatedFees: number | null;
 };
 
 /**
@@ -135,6 +135,12 @@ export type OrderEntryProps = {
    * Falls back to currentPrice when not yet available.
    */
   markPrice?: number;
+  /** Auto-focus the USD size input on mount / when market order type is active */
+  autoFocusUsd?: boolean;
+  /** Auto-focus the limit price input on mount / when switching to limit order type */
+  autoFocusLimitPrice?: boolean;
+  /** Placeholder override for the USD input. Defaults to AmountInput's '0.00'. */
+  usdPlaceholder?: string;
 };
 
 /**
@@ -174,8 +180,18 @@ export type AmountInputProps = {
    * of the previous hard-coded 6.
    */
   szDecimals?: number;
+  /** Current open position size in asset units, shown when increasing exposure */
+  currentPositionSize?: string;
   /** Callback when add-funds icon is pressed */
   onAddFunds?: () => void;
+  /** Auto-focus the USD input on mount (used for keyboard-first order entry) */
+  autoFocus?: boolean;
+  /** Placeholder override for the USD input. Defaults to '0.00'. */
+  usdPlaceholder?: string;
+  /** Ref to the USD input element so parents can imperatively refocus it on order-type changes */
+  usdInputRef?:
+    | React.MutableRefObject<HTMLInputElement | null>
+    | ((instance: HTMLInputElement | null) => void);
 };
 
 /**
@@ -198,10 +214,17 @@ export type LeverageSliderProps = {
 export type OrderSummaryProps = {
   /** Margin required for the position */
   marginRequired: string | null;
-  /** Estimated trading fees */
-  estimatedFees: string | null;
+  /** Estimated trading fees (raw USD amount, after discount) */
+  estimatedFees: number | null;
+  /** Estimated trading fees before any VIP discount (raw USD amount) */
+  originalEstimatedFees?: number | null;
   /** Estimated liquidation price */
   liquidationPrice: string | null;
+  /**
+   * MetaMask fee discount percentage (whole numbers). When provided and
+   * positive, the fees row renders a VIP badge alongside the fee value.
+   */
+  metamaskFeeRateDiscountPercentage?: number;
 };
 
 /**

@@ -1,12 +1,12 @@
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { useMemo } from 'react';
 import {
+  getActiveQuoteInsufficientNativeReserveError,
   type BridgeAppState,
   getActiveQuotePriceData,
   getBridgeUnavailableQuoteReason,
   getFormattedPriceImpactFiat,
   getFormattedPriceImpactPercentage,
-  getInsufficientNativeReserveError,
   getToToken,
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
@@ -35,7 +35,7 @@ export const useBridgeAlerts = () => {
   );
   const formattedPriceImpactFiat = useSelector(getFormattedPriceImpactFiat);
   const insufficientNativeReserveError = useSelector(
-    getInsufficientNativeReserveError,
+    getActiveQuoteInsufficientNativeReserveError,
   );
 
   const {

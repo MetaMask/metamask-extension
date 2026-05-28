@@ -1,5 +1,7 @@
-import { PasskeyController } from '@metamask/passkey-controller';
-import type { PasskeyControllerMessenger } from './messengers';
+import {
+  PasskeyController,
+  PasskeyControllerMessenger,
+} from '@metamask/passkey-controller';
 import { MessengerClientInitFunction } from './types';
 
 const PASSKEY_RP_NAME = 'MetaMask';
@@ -25,8 +27,9 @@ export const PasskeyControllerInit: MessengerClientInitFunction<
   const messengerClient = new PasskeyController({
     state: persistedState.PasskeyController,
     messenger: controllerMessenger,
-    rpID: extensionOrigin, // used to match the RP ID in the passkey ceremony
+    rpId: undefined,
     rpName: PASSKEY_RP_NAME,
+    expectedRPID: extensionOrigin,
     expectedOrigin: extensionOrigin,
     userName: PASSKEY_USER_NAME,
     userDisplayName: PASSKEY_USER_DISPLAY_NAME,

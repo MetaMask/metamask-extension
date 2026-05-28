@@ -30,6 +30,7 @@ import {
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 
 import { Asset } from '../types/asset';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { navigateToSendRoute } from '../../confirmations/utils/send';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 
@@ -50,6 +51,9 @@ const TokenButtons = ({
   const navigate = useNavigate();
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
   const isEvm = isEvmChainId(token.chainId);
+  const shouldShowSendButton = Boolean(
+    token.balance?.value && token.balance.value !== '0',
+  );
 
   const currentChainId = token.chainId;
 
@@ -147,23 +151,25 @@ const TokenButtons = ({
         disabled={token.isERC721 || !isBuyableChain}
       />
 
-      <IconButton
-        className="token-overview__button"
-        onClick={handleSendOnClick}
-        Icon={
-          <Icon
-            name={IconName.Send}
-            color={IconColor.iconAlternative}
-            size={IconSize.Md}
-          />
-        }
-        label={t('send')}
-        data-testid="eth-overview-send"
-        disabled={
-          token.isERC721 ||
-          (disableSendForNonEvm && !isEvm && !isExternalServicesEnabled)
-        }
-      />
+      {shouldShowSendButton ? (
+        <IconButton
+          className="token-overview__button"
+          onClick={handleSendOnClick}
+          Icon={
+            <Icon
+              name={IconName.Send}
+              color={IconColor.iconAlternative}
+              size={IconSize.Md}
+            />
+          }
+          label={t('send')}
+          data-testid="eth-overview-send"
+          disabled={
+            token.isERC721 ||
+            (disableSendForNonEvm && !isEvm && !isExternalServicesEnabled)
+          }
+        />
+      ) : null}
 
       <IconButton
         className="token-overview__button"

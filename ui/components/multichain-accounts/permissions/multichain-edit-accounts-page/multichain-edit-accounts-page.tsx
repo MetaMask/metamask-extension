@@ -138,18 +138,11 @@ export const MultichainEditAccountsPage: React.FC<
   return (
     <Page
       data-testid="modal-page"
-      className={classnames(
-        'main-container',
-        'connect-page',
-        'multichain-edit-accounts-page',
-        {
-          'multichain-edit-accounts-page--snap':
-            snapsPermissionsRequestType ===
-              SnapsPermissionsRequestType.Initial ||
-            snapsPermissionsRequestType ===
-              SnapsPermissionsRequestType.Existing,
-        },
-      )}
+      className={classnames('main-container', 'multichain-edit-accounts-page', {
+        'multichain-edit-accounts-page--snap':
+          snapsPermissionsRequestType === SnapsPermissionsRequestType.Initial ||
+          snapsPermissionsRequestType === SnapsPermissionsRequestType.Existing,
+      })}
       backgroundColor={BackgroundColor.backgroundDefault}
     >
       {snapsPermissionsRequestType === SnapsPermissionsRequestType.None && (

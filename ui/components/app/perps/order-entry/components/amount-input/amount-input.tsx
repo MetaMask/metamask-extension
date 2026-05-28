@@ -11,7 +11,13 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import {
   BorderRadius,
@@ -19,6 +25,7 @@ import {
 } from '../../../../../../helpers/constants/design-system';
 import { useFormatters } from '../../../../../../hooks/useFormatters';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
+import { formatPositionSize } from '../../../../../../../shared/lib/perps-formatters';
 import { TextField, TextFieldSize } from '../../../../../component-library';
 import { PerpsSlider } from '../../../perps-slider';
 import { getDisplaySymbol } from '../../../utils';
@@ -28,6 +35,12 @@ import {
   isDigitsOnlyInput,
   isUnsignedDecimalInput,
 } from '../../utils';
+
+const handleNumericFocusSelectAll = (
+  event: React.FocusEvent<HTMLInputElement>,
+) => {
+  event.target.select();
+};
 
 /**
  * AmountInput - Size section with dual USD/token inputs and percentage slider
@@ -43,8 +56,12 @@ import {
  * @param options0.leverage
  * @param options0.asset
  * @param options0.currentPrice
+ * @param options0.currentPositionSize
  * @param options0.onAddFunds
  * @param options0.szDecimals
+ * @param options0.autoFocus
+ * @param options0.usdPlaceholder
+ * @param options0.usdInputRef
  */
 export const AmountInput: React.FC<AmountInputProps> = ({
   amount,
@@ -56,13 +73,19 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   asset,
   currentPrice,
   szDecimals,
+  currentPositionSize,
   onAddFunds,
+  autoFocus = false,
+  usdPlaceholder = '0.00',
+  usdInputRef,
 }) => {
   const t = useI18nContext();
-  const { formatCurrencyWithMinThreshold, formatNumber } = useFormatters();
+  const { formatNumber } = useFormatters();
   const [percentInputValue, setPercentInputValue] = useState<string>(
     String(balancePercent),
   );
+  const tokenInputRef = useRef<HTMLInputElement | null>(null);
+  const shouldSelectTokenOnEditRef = useRef(false);
 
   useEffect(() => {
     setPercentInputValue(String(balancePercent));
@@ -93,11 +116,34 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   const [isEditingToken, setIsEditingToken] = useState(false);
   const [tokenInputValue, setTokenInputValue] = useState(unGroupedTokenDisplay);
 
+  useEffect(() => {
+    if (!isEditingToken || !shouldSelectTokenOnEditRef.current) {
+      return;
+    }
+    shouldSelectTokenOnEditRef.current = false;
+    tokenInputRef.current?.select();
+  }, [isEditingToken, tokenInputValue]);
+
   // When not editing, derive the displayed token value from the current amount
   // rather than syncing via an effect — avoids a stale intermediate render.
   const displayedTokenValue = isEditingToken
     ? tokenInputValue
     : unGroupedTokenDisplay;
+
+  const currentPositionDisplay = useMemo(() => {
+    if (currentPositionSize === undefined) {
+      return null;
+    }
+
+    const parsedPositionSize = Number.parseFloat(
+      currentPositionSize.replace(/,/gu, ''),
+    );
+    const totalPositionSize = Number.isFinite(parsedPositionSize)
+      ? Math.abs(parsedPositionSize)
+      : 0;
+
+    return `${formatPositionSize(totalPositionSize, szDecimals)} ${getDisplaySymbol(asset)}`;
+  }, [asset, currentPositionSize, szDecimals]);
 
   const formatAmount = useCallback(
     (value: number): string => value.toFixed(2),
@@ -193,10 +239,14 @@ export const AmountInput: React.FC<AmountInputProps> = ({
     ],
   );
 
-  const handleTokenFocus = useCallback(() => {
-    setTokenInputValue(unGroupedTokenDisplay);
-    setIsEditingToken(true);
-  }, [unGroupedTokenDisplay]);
+  const handleTokenFocus = useCallback(
+    (_event: React.FocusEvent<HTMLInputElement>) => {
+      shouldSelectTokenOnEditRef.current = true;
+      setTokenInputValue(unGroupedTokenDisplay);
+      setIsEditingToken(true);
+    },
+    [unGroupedTokenDisplay],
+  );
 
   const handleTokenBlur = useCallback(() => {
     setIsEditingToken(false);
@@ -276,11 +326,29 @@ export const AmountInput: React.FC<AmountInputProps> = ({
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={3}>
+      {currentPositionDisplay !== null && (
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Between}
+          alignItems={BoxAlignItems.Center}
+          data-testid="perps-current-position-size-row"
+        >
+          <Text variant={TextVariant.BodySm}>{t('perpsPosition')}</Text>
+          <Text
+            variant={TextVariant.BodySm}
+            data-testid="perps-current-position-size-value"
+          >
+            {currentPositionDisplay}
+          </Text>
+        </Box>
+      )}
+
       {/* Available to trade row */}
       <Box
         flexDirection={BoxFlexDirection.Row}
         justifyContent={BoxJustifyContent.Between}
         alignItems={BoxAlignItems.Center}
+        data-testid="amount-input-available-to-trade-row"
       >
         <Text variant={TextVariant.BodySm}>{t('perpsAvailableToTrade')}</Text>
         <Box
@@ -317,13 +385,16 @@ export const AmountInput: React.FC<AmountInputProps> = ({
             size={TextFieldSize.Md}
             value={amount}
             onChange={handleAmountChange}
+            onFocus={handleNumericFocusSelectAll}
             onBlur={handleAmountBlur}
-            placeholder="0.00"
+            placeholder={usdPlaceholder}
             borderRadius={BorderRadius.MD}
             borderWidth={0}
             backgroundColor={BackgroundColor.backgroundMuted}
             className="w-full"
             data-testid="amount-input-field"
+            autoFocus={autoFocus}
+            inputRef={usdInputRef}
             inputProps={{ inputMode: 'decimal' }}
             startAccessory={
               <Text
@@ -343,6 +414,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
             onFocus={handleTokenFocus}
             onBlur={handleTokenBlur}
             placeholder="0"
+            inputRef={tokenInputRef}
             borderRadius={BorderRadius.MD}
             borderWidth={0}
             backgroundColor={BackgroundColor.backgroundMuted}
@@ -380,6 +452,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
             size={TextFieldSize.Sm}
             value={percentInputValue}
             onChange={handlePercentInputChange}
+            onFocus={handleNumericFocusSelectAll}
             onBlur={handlePercentInputBlur}
             borderRadius={BorderRadius.MD}
             borderWidth={0}
