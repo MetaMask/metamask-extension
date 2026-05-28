@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
 import { Provider } from 'react-redux';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import configureStore from '../../../store/store';
@@ -19,13 +20,57 @@ jest.mock('../../../../shared/lib/environment-type', () => ({
 }));
 
 jest.mock('./qr-hardware-wallet-importer', () => {
-  const Mock = () => <div data-testid="qr-hardware-wallet-importer" />;
+  const Mock = (props: {
+    setErrorTitle: (title: string) => void;
+    setErrorActive: (active: boolean) => void;
+  }) => (
+    <div data-testid="qr-hardware-wallet-importer">
+      <button
+        data-testid="importer-set-error-title"
+        onClick={() => props.setErrorTitle('Importer Error')}
+      />
+      <button
+        data-testid="importer-clear-error-title"
+        onClick={() => props.setErrorTitle('')}
+      />
+      <button
+        data-testid="importer-set-error-active"
+        onClick={() => props.setErrorActive(true)}
+      />
+      <button
+        data-testid="importer-clear-error-active"
+        onClick={() => props.setErrorActive(false)}
+      />
+    </div>
+  );
   Mock.displayName = 'QRHardwareWalletImporter';
   return Mock;
 });
 
 jest.mock('./qr-hardware-sign-request', () => {
-  const Mock = () => <div data-testid="qr-hardware-sign-request" />;
+  const Mock = (props: {
+    setErrorTitle: (title: string) => void;
+    setErrorActive: (active: boolean) => void;
+  }) => (
+    <div data-testid="qr-hardware-sign-request">
+      <button
+        data-testid="sign-set-error-title"
+        onClick={() => props.setErrorTitle('Sign Error')}
+      />
+      <button
+        data-testid="sign-clear-error-title"
+        onClick={() => props.setErrorTitle('')}
+      />
+      <button
+        data-testid="sign-set-error-active"
+        onClick={() => props.setErrorActive(true)}
+      />
+      <button
+        data-testid="sign-clear-error-active"
+        onClick={() => props.setErrorActive(false)}
+      />
+    </div>
+  );
   Mock.displayName = 'QRHardwareSignRequest';
   return Mock;
 });
@@ -68,14 +113,17 @@ describe('QRHardwarePopover', () => {
     expect(container.firstChild).toBeNull();
   });
 
-  it('renders the PAIR popover in fullscreen mode', () => {
+  it('renders the PAIR popover with the wallet importer title', () => {
     renderPopover(buildStore({ type: QrScanRequestType.PAIR }));
     expect(
       screen.getByTestId('qr-hardware-wallet-importer'),
     ).toBeInTheDocument();
+    expect(
+      screen.getByText(en.QRHardwareWalletImporterTitle.message),
+    ).toBeInTheDocument();
   });
 
-  it('renders the SIGN popover in fullscreen mode', () => {
+  it('renders the SIGN popover with the sign request title', () => {
     renderPopover(
       buildStore({
         type: QrScanRequestType.SIGN,
@@ -83,6 +131,9 @@ describe('QRHardwarePopover', () => {
       }),
     );
     expect(screen.getByTestId('qr-hardware-sign-request')).toBeInTheDocument();
+    expect(
+      screen.getByText(en.QRHardwareSignRequestTitle.message),
+    ).toBeInTheDocument();
   });
 
   it('does not render the PAIR popover in sidepanel mode', () => {
@@ -121,5 +172,93 @@ describe('QRHardwarePopover', () => {
       }),
     );
     expect(screen.getByTestId('qr-hardware-sign-request')).toBeInTheDocument();
+  });
+
+  describe('title behavior', () => {
+    it('displays errorTitle when child sets it, overriding the flow title', async () => {
+      renderPopover(
+        buildStore({
+          type: QrScanRequestType.SIGN,
+          request: { requestId: 'req-1', payload: {} },
+        }),
+      );
+      expect(
+        screen.getByText(en.QRHardwareSignRequestTitle.message),
+      ).toBeInTheDocument();
+
+      await userEvent.click(screen.getByTestId('sign-set-error-title'));
+
+      expect(screen.getByText('Sign Error')).toBeInTheDocument();
+      expect(
+        screen.queryByText(en.QRHardwareSignRequestTitle.message),
+      ).not.toBeInTheDocument();
+    });
+
+    it('restores the flow title when errorTitle is cleared', async () => {
+      renderPopover(
+        buildStore({
+          type: QrScanRequestType.SIGN,
+          request: { requestId: 'req-1', payload: {} },
+        }),
+      );
+
+      await userEvent.click(screen.getByTestId('sign-set-error-title'));
+      expect(screen.getByText('Sign Error')).toBeInTheDocument();
+
+      await userEvent.click(screen.getByTestId('sign-clear-error-title'));
+      expect(
+        screen.getByText(en.QRHardwareSignRequestTitle.message),
+      ).toBeInTheDocument();
+      expect(screen.queryByText('Sign Error')).not.toBeInTheDocument();
+    });
+
+    it('hides the flow title when errorActive is true', async () => {
+      renderPopover(
+        buildStore({
+          type: QrScanRequestType.PAIR,
+        }),
+      );
+      expect(
+        screen.getByText(en.QRHardwareWalletImporterTitle.message),
+      ).toBeInTheDocument();
+
+      await userEvent.click(screen.getByTestId('importer-set-error-active'));
+
+      expect(
+        screen.queryByText(en.QRHardwareWalletImporterTitle.message),
+      ).not.toBeInTheDocument();
+    });
+
+    it('restores the flow title when errorActive is cleared', async () => {
+      renderPopover(
+        buildStore({
+          type: QrScanRequestType.PAIR,
+        }),
+      );
+
+      await userEvent.click(screen.getByTestId('importer-set-error-active'));
+      expect(
+        screen.queryByText(en.QRHardwareWalletImporterTitle.message),
+      ).not.toBeInTheDocument();
+
+      await userEvent.click(screen.getByTestId('importer-clear-error-active'));
+      expect(
+        screen.getByText(en.QRHardwareWalletImporterTitle.message),
+      ).toBeInTheDocument();
+    });
+
+    it('prioritizes errorTitle over errorActive suppression', async () => {
+      renderPopover(
+        buildStore({
+          type: QrScanRequestType.SIGN,
+          request: { requestId: 'req-1', payload: {} },
+        }),
+      );
+
+      await userEvent.click(screen.getByTestId('sign-set-error-active'));
+      await userEvent.click(screen.getByTestId('sign-set-error-title'));
+
+      expect(screen.getByText('Sign Error')).toBeInTheDocument();
+    });
   });
 });
