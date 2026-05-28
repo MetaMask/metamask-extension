@@ -293,7 +293,7 @@ describe('Contract Deployment Confirmation', () => {
 
     const firstGasField =
       await within(editGasFeesRow).findByTestId('first-gas-field');
-    expect(firstGasField).toHaveTextContent('0.0001');
+    expect(firstGasField).toHaveTextContent('0.0023');
     expect(editGasFeesRow).toContainElement(
       await screen.findByTestId('edit-gas-fee-icon'),
     );
