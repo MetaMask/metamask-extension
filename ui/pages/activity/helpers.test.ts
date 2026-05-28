@@ -1,8 +1,5 @@
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
-import {
-  groupActivityListItems,
-  shouldShowPlusSign,
-} from './helpers';
+import { groupActivityListItems, shouldShowPlusSign } from './helpers';
 
 function makeItem(
   overrides: Partial<ActivityListItem> & {

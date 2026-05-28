@@ -435,18 +435,18 @@ export function mapLocalTransaction(
 
       if (isWithdrawContractInteraction) {
         const fromAddress = from.toLowerCase();
-        const receivedTokenLog = (initialTransaction.txReceipt?.logs ?? []).find(
-          ({ topics: [eventTopic, , logTo] = [] }) => {
-            const toAddress = logTo
-              ? `0x${logTo.slice(-40)}`.toLowerCase()
-              : undefined;
+        const receivedTokenLog = (
+          initialTransaction.txReceipt?.logs ?? []
+        ).find(({ topics: [eventTopic, , logTo] = [] }) => {
+          const toAddress = logTo
+            ? `0x${logTo.slice(-40)}`.toLowerCase()
+            : undefined;
 
-            return (
-              eventTopic?.toLowerCase() === TOKEN_TRANSFER_LOG_TOPIC_HASH &&
-              toAddress === fromAddress
-            );
-          },
-        );
+          return (
+            eventTopic?.toLowerCase() === TOKEN_TRANSFER_LOG_TOPIC_HASH &&
+            toAddress === fromAddress
+          );
+        });
         const destinationToken = receivedTokenLog
           ? getContractToken({
               amount: BigInt(String(receivedTokenLog.data)).toString(),

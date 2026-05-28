@@ -4,10 +4,7 @@ import { useActivityCellPresentation } from '../useActivityCellPresentation';
 import { ActivityCellBase } from './activity-cell-base';
 import type { ActivityCellProps } from './types';
 
-export function ActivityCell({
-  data,
-  onClick,
-}: Readonly<ActivityCellProps>) {
+export function ActivityCell({ data, onClick }: Readonly<ActivityCellProps>) {
   const cellStatus = getActivityCellStatus(data);
   const presentation = useActivityCellPresentation(data);
 

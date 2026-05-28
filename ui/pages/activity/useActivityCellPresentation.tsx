@@ -117,9 +117,7 @@ export function useActivityCellPresentation(
 
         return {
           title: t(labelKeys.title.key, [destinationChainName]),
-          subtitle: t(labelKeys.description.key, [
-            sourceToken?.symbol ?? '',
-          ]),
+          subtitle: t(labelKeys.description.key, [sourceToken?.symbol ?? '']),
           primaryToken: destinationToken,
           secondaryToken: sourceToken,
         };
@@ -147,9 +145,7 @@ export function useActivityCellPresentation(
       }
       case 'nftMint':
         return {
-          title: t(labelKeys.title.key, [
-            activity.data.token?.symbol ?? 'NFT',
-          ]),
+          title: t(labelKeys.title.key, [activity.data.token?.symbol ?? 'NFT']),
           subtitle,
           primaryToken: activity.data.token,
           secondaryToken: undefined,

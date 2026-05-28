@@ -1,8 +1,6 @@
 import type { V1TransactionByHashResponse } from '@metamask/core-backend';
 import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
-import {
-  NATIVE_TOKEN_ADDRESS as zeroAddress,
-} from '../../../constants/transaction';
+import { NATIVE_TOKEN_ADDRESS as zeroAddress } from '../../../constants/transaction';
 import { isEqualCaseInsensitive as equalsIgnoreCase } from '../../string-utils';
 import type { ActivityListItem, Status, TokenAmount } from '../types';
 import { supplyMethodIds } from './constants';

@@ -98,9 +98,11 @@ describe('ActivityListItem', () => {
       />,
     );
 
-    expect(screen.getByTestId('activity-list-item-action')).toHaveClass(
-      'text-error-default',
-    );
+    expect(
+      screen
+        .getByTestId('activity-list-item-action')
+        .querySelector('.text-error-default'),
+    ).toBeInTheDocument();
   });
 
   it('renders pending spinner when status is pending', () => {
