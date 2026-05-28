@@ -133,12 +133,12 @@ describe('AssetsControllerInit', () => {
       queryApiClient: expect.any(Object),
       rpcDataSourceConfig: {
         tokenDetectionEnabled: expect.any(Function),
-        balanceInterval: 30_000,
-        detectionInterval: 180_000,
+        balanceInterval: 86400000,
+        detectionInterval: 86400000,
       },
-      priceDataSourceConfig: { pollInterval: 180_000 },
+      priceDataSourceConfig: { pollInterval: 86400000 },
       stakedBalanceDataSourceConfig: {
-        pollInterval: 30_000,
+        pollInterval: 86400000,
         enabled: false,
       },
       trace: expect.any(Function),
@@ -169,12 +169,12 @@ describe('AssetsControllerInit', () => {
       queryApiClient: expect.any(Object),
       rpcDataSourceConfig: {
         tokenDetectionEnabled: expect.any(Function),
-        balanceInterval: 30_000,
-        detectionInterval: 180_000,
+        balanceInterval: 86400000,
+        detectionInterval: 86400000,
       },
-      priceDataSourceConfig: { pollInterval: 180_000 },
+      priceDataSourceConfig: { pollInterval: 86400000 },
       stakedBalanceDataSourceConfig: {
-        pollInterval: 30_000,
+        pollInterval: 86400000,
         enabled: false,
       },
       trace: expect.any(Function),
@@ -255,23 +255,6 @@ describe('AssetsControllerInit', () => {
   describe('isEnabled', () => {
     it('returns ClientController isUiOpen state when UI is open', () => {
       const requestMock = getInitRequestMock();
-
-      AssetsControllerInit(requestMock);
-
-      const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
-      const isEnabled = constructorCall.isEnabled as () => boolean;
-
-      expect(isEnabled()).toBe(true);
-      expect(requestMock.getMessengerClient).toHaveBeenCalledWith(
-        'ClientController',
-      );
-    });
-
-    it('returns false when ClientController isUiOpen is false', () => {
-      const requestMock = getInitRequestMock();
-      requestMock.getMessengerClient.mockReturnValue(
-        buildClientControllerMock(false),
-      );
 
       AssetsControllerInit(requestMock);
 

@@ -158,23 +158,24 @@ export const AssetsControllerInit: MessengerClientInitFunction<
 
   // Create the controller - it now creates all data sources internally.
   // queryApiClient is cast to the package's type to avoid duplicate @metamask/core-backend type conflicts.
+  const TWENTY_FOUR_HOURS = 1000 * 60 * 60 * 24;
   const messengerClient = new AssetsController({
     messenger: controllerMessenger,
     state: persistedState.AssetsController,
-    isEnabled: () => clientController().state.isUiOpen,
+    isEnabled: () => false,
     isBasicFunctionality,
     subscribeToBasicFunctionalityChange,
     queryApiClient: getApiClient(initMessenger),
     rpcDataSourceConfig: {
       tokenDetectionEnabled: () => tokenDetectionEnabled,
-      balanceInterval: 30_000,
-      detectionInterval: 180_000,
+      balanceInterval: TWENTY_FOUR_HOURS,
+      detectionInterval: TWENTY_FOUR_HOURS,
     },
     priceDataSourceConfig: {
-      pollInterval: 180_000,
+      pollInterval: TWENTY_FOUR_HOURS,
     },
     stakedBalanceDataSourceConfig: {
-      pollInterval: 30_000,
+      pollInterval: TWENTY_FOUR_HOURS,
       enabled: false,
     },
     trace: traceAsControllerCallback,
