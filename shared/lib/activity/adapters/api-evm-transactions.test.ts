@@ -356,6 +356,52 @@ describe('mapEvmTransactions', () => {
     });
   });
 
+  it('maps a DEPOSIT without an inbound transfer to a deposit activity', () => {
+    const stakingContractAddress = '0x00000000219ab540356cbb839cbe05303d7705fa';
+    const transaction = {
+      hash: '0xabc123deposit00000000000000000000000000000000000000000000000001',
+      timestamp: '2026-05-12T13:37:47.000Z',
+      chainId: Number(CHAIN_IDS.MAINNET),
+      from: subjectAddress,
+      to: stakingContractAddress,
+      transactionCategory: 'DEPOSIT',
+      valueTransfers: [
+        {
+          from: subjectAddress,
+          to: stakingContractAddress,
+          amount: '1000000000000000000',
+          decimal: 18,
+          symbol: 'ETH',
+          transferType: 'normal',
+        },
+      ],
+    } as V1TransactionByHashResponse;
+
+    const item = mapApiEvmTransactions({
+      subjectAddress,
+      transaction,
+    });
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
+      type: 'deposit',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1778593067000,
+      data: {
+        hash: '0xabc123deposit00000000000000000000000000000000000000000000000001',
+        token: {
+          amount: '1000000000000000000',
+          decimals: 18,
+          direction: 'in',
+          symbol: 'ETH',
+          assetId: toAssetId('0x0000000000000000000000000000000000000000', 'eip155:1'),
+        },
+      },
+    });
+  });
+
   it('maps a WETH deposit to a Wrap activity', () => {
     const transaction = {
       hash: '0x6e448f5b8cf55534507770c1cb90ba14e723d03b4a46b4919a5847eb8d13b7b5',

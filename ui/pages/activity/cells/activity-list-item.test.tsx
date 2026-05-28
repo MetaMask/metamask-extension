@@ -12,6 +12,10 @@ jest.mock('../../../hooks/useI18nContext', () => ({
       return `Converted ${values?.[0]}`;
     }
 
+    if (key === 'activity_wrap_success_title') {
+      return `Wrapped ${values?.[0]}`;
+    }
+
     if (key === 'activity_receive_success_description') {
       return `From: ${values?.[0] ?? ''}`;
     }
@@ -391,5 +395,57 @@ describe('ActivityListItem', () => {
     expect(
       screen.getByTestId('transaction-list-item-secondary-currency'),
     ).toHaveTextContent('-0.1 USDT');
+  });
+
+  it('renders wrap with source token on the secondary line instead of fiat', () => {
+    mockFormatTokenAmount.mockImplementation((token) =>
+      token?.symbol === 'WETH' ? '+0.000001 WETH' : '-0.000001 ETH',
+    );
+    mockUseFormatFiatAmount.mockReturnValue('$4.00');
+
+    render(
+      <ActivityListItem
+        data={{
+          type: 'wrap',
+          chainId: 'eip155:1',
+          status: 'success',
+          timestamp: 0,
+          data: {
+            sourceToken: {
+              amount: '1000000000000',
+              decimals: 18,
+              direction: 'out',
+              symbol: 'ETH',
+            },
+            destinationToken: {
+              amount: '1000000000000',
+              decimals: 18,
+              direction: 'in',
+              symbol: 'WETH',
+            },
+          },
+        }}
+        onClick={jest.fn()}
+      />,
+    );
+
+    expect(screen.getByTestId('activity-list-item-action')).toHaveTextContent(
+      'Wrapped ETH',
+    );
+    expect(screen.getByText('ETH → WETH')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('transaction-list-item-primary-currency'),
+    ).toHaveTextContent('+0.000001 WETH');
+    expect(
+      screen.getByTestId('transaction-list-item-secondary-currency'),
+    ).toHaveTextContent('-0.000001 ETH');
+    expect(
+      screen.getByTestId('transaction-list-item-secondary-currency'),
+    ).not.toHaveTextContent('$4.00');
+    expect(mockUseFormatFiatAmount).toHaveBeenCalledWith(
+      expect.objectContaining({ type: 'wrap' }),
+      undefined,
+      '0x1',
+    );
   });
 });

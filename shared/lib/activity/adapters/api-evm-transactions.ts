@@ -255,6 +255,22 @@ export function mapApiEvmTransactions({
     };
   }
 
+  if (
+    (transactionCategory === 'DEPOSIT')
+  ) {
+    return {
+      type: 'deposit',
+      chainId,
+      status,
+      timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
+      data: {
+        hash,
+        token: getToken(sentTransfer, 'in'),
+      },
+    };
+  }
+
   if (transactionCategory === 'WITHDRAW') {
     return {
       type: 'lendingWithdrawal',
