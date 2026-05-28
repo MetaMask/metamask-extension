@@ -1,4 +1,4 @@
-import { parseCaipAssetType } from '@metamask/utils';
+import { isCaipAssetType, parseCaipAssetType } from '@metamask/utils';
 import type { CaipAssetType, Hex } from '@metamask/utils';
 import { NATIVE_TOKEN_ADDRESS } from '../../constants/transaction';
 import { formatUnits } from '../unit';
@@ -108,7 +108,8 @@ export function toMarketRateLookupToken(
   token: TokenAmount,
   hexChainId: Hex,
 ): Token | undefined {
-  const address = getTokenAddressForMarketRates(token.assetId);
+  const assetId = isCaipAssetType(token.assetId) ? token.assetId : undefined;
+  const address = getTokenAddressForMarketRates(assetId);
 
   if (!address) {
     return undefined;

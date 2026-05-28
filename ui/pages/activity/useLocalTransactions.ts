@@ -5,18 +5,27 @@ import {
   useEarliestNonceByChain,
 } from '../../hooks/useEarliestNonceByChain';
 import { selectLocalActivityItems } from '../../selectors/activity';
+import { activityMatchesAssetId, type ActivityListFilter } from './helpers';
 
-export function useLocalTransactions({ networks }: { networks: string[] }) {
+export function useLocalTransactions(filters: ActivityListFilter) {
   const localItems = useSelector(selectLocalActivityItems);
+  const assetId = 'assetId' in filters ? filters.assetId : undefined;
+  const networks = 'networks' in filters ? filters.networks : undefined;
 
   const filteredLocalItems = useMemo(() => {
-    if (networks.length === 0) {
+    if (assetId) {
+      return localItems.filter((item) =>
+        activityMatchesAssetId(item, assetId),
+      );
+    }
+
+    if (!networks?.length) {
       return [];
     }
 
     const selectedNetworks = new Set(networks);
     return localItems.filter((item) => selectedNetworks.has(item.chainId));
-  }, [localItems, networks]);
+  }, [assetId, localItems, networks]);
 
   const localTransactionGroups = useMemo(
     () =>

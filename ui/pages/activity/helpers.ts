@@ -2,7 +2,9 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import type { CaipAssetType } from '@metamask/utils';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
+import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import {
   getStatusKey,
   QUEUED_PSEUDO_STATUS,
@@ -15,8 +17,29 @@ const hidePlusSignActivityTypes = new Set<ActivityListItem['type']>([
   'revokeSpendingCap',
 ]);
 
+export type ActivityListFilter =
+  | { assetId: CaipAssetType }
+  | { networks: string[] };
+
 export function shouldShowPlusSign(activityType: ActivityListItem['type']) {
   return !hidePlusSignActivityTypes.has(activityType);
+}
+
+export function activityMatchesAssetId(
+  item: ActivityListItem,
+  assetId: CaipAssetType,
+) {
+  const { data } = item;
+  const tokenAssetIds = [
+    'token' in data ? data.token?.assetId : undefined,
+    'sourceToken' in data ? data.sourceToken?.assetId : undefined,
+    'destinationToken' in data ? data.destinationToken?.assetId : undefined,
+  ];
+
+  return tokenAssetIds.some(
+    (tokenAssetId) =>
+      tokenAssetId && isEqualCaseInsensitive(tokenAssetId, assetId),
+  );
 }
 
 export function getActivityCellStatus(data: ActivityListItem) {

@@ -1,4 +1,4 @@
-import React, { type ReactNode, useEffect } from 'react';
+import React, { type ReactNode, useCallback, useEffect, useState } from 'react';
 import {
   useVirtualizer,
   type VirtualizerOptions,
@@ -27,6 +27,7 @@ type Props<TItem> = {
   overscan?: number;
   renderItem: (info: { item: TItem; index: number }) => ReactNode;
   scrollToFn?: ScrollToFn;
+  enableScrollMargin?: boolean;
 };
 
 export const VirtualizedList = <TItem,>({
@@ -39,9 +40,22 @@ export const VirtualizedList = <TItem,>({
   overscan = 5,
   renderItem,
   scrollToFn,
+  enableScrollMargin,
 }: Props<TItem>) => {
   const scrollContainerRef = useScrollContainer();
   const disabled = process.env.IN_TEST;
+  const [scrollMargin, setScrollMargin] = useState(0);
+
+  const listRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (!enableScrollMargin || !node) {
+        return;
+      }
+
+      setScrollMargin(node.offsetTop);
+    },
+    [enableScrollMargin],
+  );
 
   const virtualizer = useVirtualizer({
     count: data.length,
@@ -53,6 +67,7 @@ export const VirtualizedList = <TItem,>({
     overscan,
     initialOffset: scrollContainerRef?.current?.scrollTop,
     ...(scrollToFn ? { scrollToFn } : {}),
+    ...(enableScrollMargin ? { scrollMargin } : {}),
   });
 
   useEffect(() => {
@@ -93,6 +108,7 @@ export const VirtualizedList = <TItem,>({
   return (
     <>
       <div
+        ref={listRef}
         className="relative w-full"
         style={{ height: virtualizer.getTotalSize() }}
       >
@@ -112,7 +128,9 @@ export const VirtualizedList = <TItem,>({
               }}
               className="absolute top-0 left-0 w-full"
               style={{
-                transform: `translateY(${virtualItem.start}px)`,
+                transform: `translateY(${
+                  virtualItem.start - virtualizer.options.scrollMargin
+                }px)`,
               }}
             >
               {renderItem({ item, index: virtualItem.index })}

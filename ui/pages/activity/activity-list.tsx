@@ -12,7 +12,12 @@ import { useItemInView } from '../../hooks/useItemInView';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import { LegacyDetails } from './legacy-details';
 import { ActivityListItem as ActivityListItemCell } from './cells/activity-list-item';
-import { dedupeItems, getItemKey, groupActivityListItems } from './helpers';
+import {
+  dedupeItems,
+  getItemKey,
+  groupActivityListItems,
+  type ActivityListFilter,
+} from './helpers';
 import { useLocalTransactions } from './useLocalTransactions';
 import { useNonEvmTransactions } from './useNonEvmTransactions';
 import { useTransactionsQuery } from './useTransactionsQuery';
@@ -20,15 +25,16 @@ import { useTransactionsQuery } from './useTransactionsQuery';
 const itemHeight = 70;
 
 // Prototype implementation for the new activity list
-export function ActivityList() {
+export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
   const t = useI18nContext();
   const scrollContainerRef = useScrollContainer();
   const [networks, setNetworks] = useState<string[]>([]);
   const [selectedItem, setSelectedItem] = useState<ActivityListItem | null>(
     null,
   );
-  const localItems = useLocalTransactions({ networks });
-  const nonEvmItems = useNonEvmTransactions({ networks });
+  const filters = filter ?? { networks };
+  const localItems = useLocalTransactions(filters);
+  const nonEvmItems = useNonEvmTransactions(filters);
 
   const {
     data,
@@ -36,7 +42,7 @@ export function ActivityList() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useTransactionsQuery({ networks });
+  } = useTransactionsQuery(filters);
 
   const { groupedItems, lastEvmItemIndex } = useMemo(() => {
     const evmItems = data?.pages.flatMap((page) => page.data) ?? [];
@@ -86,11 +92,13 @@ export function ActivityList() {
 
   return (
     <PendingTransactionCancelSpeedUpProvider>
-      <AssetListControlBar
-        showSortControl={false}
-        showImportTokenButton={false}
-        onNetworkSelect={setNetworks}
-      />
+      {!filter && (
+        <AssetListControlBar
+          showSortControl={false}
+          showImportTokenButton={false}
+          onNetworkSelect={setNetworks}
+        />
+      )}
 
       <VirtualizedList
         data={groupedItems}
@@ -100,6 +108,7 @@ export function ActivityList() {
         listEmptyComponent={
           <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
         }
+        enableScrollMargin={Boolean(filter)}
         renderItem={({ item: row }) => {
           if (row.type === 'pending-header') {
             return <SectionHeader label={t('pending')} />;

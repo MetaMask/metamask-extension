@@ -4,6 +4,7 @@ import {
   KnownCaipNamespace,
   type CaipChainId,
   type Hex,
+  isCaipChainId,
   parseCaipChainId,
 } from '@metamask/utils';
 import {
@@ -22,6 +23,7 @@ import { getCurrentCurrency } from '../../ducks/metamask/metamask';
 import { useFormatters } from '../../hooks/useFormatters';
 import { selectMarketRates } from '../../selectors/activity';
 import { getMultichainShouldShowFiat } from '../../selectors/multichain';
+import { useAppSelector } from '../../store/store';
 import { shouldShowPlusSign } from './helpers';
 
 function resolveHexChainId(
@@ -33,6 +35,10 @@ function resolveHexChainId(
 
   if (typeof chainIdForFiat === 'string' && chainIdForFiat.startsWith('0x')) {
     return chainIdForFiat as Hex;
+  }
+
+  if (!isCaipChainId(chainIdForFiat)) {
+    return undefined;
   }
 
   try {
@@ -53,7 +59,7 @@ export function useFormatFiatAmount(
   chainIdForFiat: Hex | CaipChainId | undefined,
 ) {
   const marketRates = useSelector(selectMarketRates);
-  const shouldShowFiat = useSelector((state) =>
+  const shouldShowFiat = useAppSelector((state) =>
     chainIdForFiat
       ? getMultichainShouldShowFiat(state, undefined, chainIdForFiat)
       : false,

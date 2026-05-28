@@ -1,5 +1,6 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { HttpError } from '@metamask/core-backend';
+import { parseCaipAssetType } from '@metamask/utils';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { MINUTE } from '../../../shared/constants/time';
@@ -8,6 +9,7 @@ import { getIntlLocale } from '../../ducks/locale/locale';
 import { apiClient } from '../../helpers/api-client';
 import { getUseExternalServices } from '../../selectors';
 import { selectEvmAddress } from '../../selectors/accounts';
+import type { ActivityListFilter } from './helpers';
 import { useQueryFilters } from './query-filters/useQueryFilters';
 
 const knownApiMessages = ['networks param contains no supported chains'];
@@ -57,14 +59,17 @@ function withKnownApiResponse(queryFn: TransactionQueryOptions['queryFn']) {
   };
 }
 
-export function useTransactionsQuery({ networks }: { networks: string[] }) {
+export function useTransactionsQuery(filters: ActivityListFilter) {
   const useExternalServices = useSelector(getUseExternalServices);
   const evmAddress = (useSelector(selectEvmAddress) || '').toLowerCase();
   const locale = useSelector(getIntlLocale);
-  const selectFn = useQueryFilters(evmAddress);
-  const evmNetworks = useMemo(
-    () => networks.filter((network) => network.startsWith('eip155:')),
-    [networks],
+  const selectFn = useQueryFilters({ subjectAddress: evmAddress, ...filters });
+  const networks =
+    'assetId' in filters
+      ? [parseCaipAssetType(filters.assetId).chainId]
+      : filters.networks;
+  const evmNetworks = networks.filter((network) =>
+    network.startsWith('eip155:'),
   );
 
   const accountAddresses = useMemo(

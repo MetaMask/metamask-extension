@@ -162,7 +162,9 @@ describe('query filters', () => {
       transactionProtocol: 'SPAM_TOKEN',
     });
 
-    const { result } = renderHook(() => useQueryFilters(subjectAddress));
+    const { result } = renderHook(() =>
+      useQueryFilters({ subjectAddress, networks: [] }),
+    );
     const filtered = result.current({
       pages: [
         {
