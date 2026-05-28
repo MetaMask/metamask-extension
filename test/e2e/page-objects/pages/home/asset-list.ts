@@ -488,8 +488,8 @@ class AssetListPage {
       ).default;
       const tokenManagementPage = new TokenManagementPage(this.driver);
 
-      // Execute the complete flow
-      await tokenManagementPage.addCustomToken(tokenAddress);
+      // Execute the complete flow with skipInitialClick=true since dropdown is already open
+      await tokenManagementPage.addCustomToken(tokenAddress, true);
 
       // Return to home page
       await tokenManagementPage.goBackToHome();

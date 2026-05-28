@@ -43,9 +43,9 @@ class TokenManagementPage {
 
   /**
    * Opens the Token Management page by clicking the Manage Tokens button
-   * First clicks the 3-dots asset options button to reveal the dropdown menu
+   * @param skipInitialClick - If true, skip the initial 3-dots click (assumes dropdown is already open)
    */
-  async openTokenManagement(): Promise<void> {
+  async openTokenManagement(skipInitialClick: boolean = false): Promise<void> {
     const isTokenManagementPageAlreadyOpen =
       await this.driver.isElementPresentAndVisible(this.tokenManagementPage, 1500);
     if (isTokenManagementPageAlreadyOpen) {
@@ -53,13 +53,25 @@ class TokenManagementPage {
       return;
     }
 
-    console.log('[TokenManagement] Clicking 3-dots button to open asset options menu...');
-    for (let attempt = 1; attempt <= 2; attempt++) {
-      await this.driver.waitForSelector(this.assetOptionsButton, {
-        timeout: 10000,
-      });
-      await this.driver.clickElement(this.assetOptionsButton);
-      await this.driver.delay(500);
+    if (skipInitialClick) {
+      console.log('[TokenManagement] Skipping initial 3-dots click (dropdown already open)');
+    } else {
+      console.log('[TokenManagement] Clicking 3-dots button to open asset options menu...');
+    }
+
+    const maxAttempts = skipInitialClick ? 1 : 2;
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      if (!skipInitialClick) {
+        await this.driver.waitForSelector(this.assetOptionsButton, {
+          timeout: 10000,
+        });
+        await this.driver.clickElement(this.assetOptionsButton);
+        await this.driver.delay(500);
+      } else if (attempt === 1) {
+        // When skipping initial click, just add a small delay for dropdown to be ready
+        await this.driver.delay(300);
+      }
 
       const openedDirectly = await this.driver.isElementPresentAndVisible(
         this.tokenManagementPage,
@@ -186,13 +198,14 @@ class TokenManagementPage {
   /**
    * Complete flow: Add a custom token and return to home
    * @param tokenAddress - The token address to import
+   * @param skipInitialClick - If true, skip the initial 3-dots click
    */
-  async addCustomToken(tokenAddress: string): Promise<void> {
+  async addCustomToken(tokenAddress: string, skipInitialClick: boolean = false): Promise<void> {
     console.log(
       `[TokenManagement] Starting custom token import flow for: ${tokenAddress}`,
     );
     try {
-      await this.openTokenManagement();
+      await this.openTokenManagement(skipInitialClick);
       await this.clickAddCustomTokenButton();
       await this.enterTokenAddress(tokenAddress);
       await this.clickSubmit();
