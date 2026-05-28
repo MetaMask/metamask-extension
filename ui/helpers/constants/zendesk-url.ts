@@ -30,7 +30,7 @@ const ZENDESK_URLS = {
   LEGACY_WEB3:
     'https://support.metamask.io/third-party-platforms-and-dapps/metamask-legacy-web3/?utm_source=extension',
   PASSKEYS:
-    'https://support.metamask.io/configure/wallet/passkeys/?utm_source=extension',
+    'https://support.metamask.io/configure/wallet/passkeys-and-metamask/?utm_source=extension',
   PASSWORD_ARTICLE:
     'https://support.metamask.io/configure/wallet/passwords-and-metamask/?utm_source=extension',
   PASSWORD_AND_SRP_ARTICLE:
