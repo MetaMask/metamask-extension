@@ -1483,6 +1483,8 @@ describe('Sentry errors', function () {
       // Filtered from UI state patches (sensitive auth tokens - see state-utils.ts)
       rewardsSubscriptionTokens: false,
       storageWriteErrorType: true,
+      // AnalyticsController keeps the queue out of UI state.
+      eventQueue: false,
       // Optional property on AppStateController; only set after a user
       // interacts with a Snap install dialog, so absent from initial state.
       snapsInstallPrivacyWarningShown: true,
