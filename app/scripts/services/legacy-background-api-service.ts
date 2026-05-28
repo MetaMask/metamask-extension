@@ -479,6 +479,7 @@ export class LegacyBackgroundApiService {
           { address: importedAccountAddress },
           async ({ keyring, metadata }) => {
             // We can be sure that the keyring supports exporting accounts because this is a SimpleKeyring.
+            //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const privateKey = await keyring.exportAccount!(
               importedAccountAddress,
             );
