@@ -80,6 +80,9 @@ jest.mock('../../../store/actions.ts', () => ({
 }));
 
 const MOCK_ORIGIN = 'https://app.metamask.io';
+const CUSTOM_CHAIN_ID = '0x12345';
+const CUSTOM_NETWORK_NAME = 'Custom network 1';
+const CUSTOM_NETWORK_CLIENT_ID = 'custom-network-1';
 
 type TestRenderProps = Partial<{
   currentChainId?: string;
@@ -92,6 +95,8 @@ type TestRenderProps = Partial<{
   isAccessedFromDappConnectedSitePopover?: boolean;
   editedNetwork?: { chainId: string };
   neNetworkDiscoverButton?: Record<string, boolean>;
+  additionalNetworkConfigurationsByChainId?: Record<string, unknown>;
+  includeCustomNetworks?: boolean;
 }>;
 
 const render = ({
@@ -104,6 +109,8 @@ const render = ({
   isAccessedFromDappConnectedSitePopover = false,
   editedNetwork = undefined,
   neNetworkDiscoverButton = { '0x531': true, '0xe708': true, '0x8f': true },
+  additionalNetworkConfigurationsByChainId = {},
+  includeCustomNetworks = true,
 }: TestRenderProps = {}) => {
   const state = {
     appState: {
@@ -153,19 +160,23 @@ const render = ({
             },
           ],
         },
-        '0x5': {
-          nativeCurrency: 'ETH',
-          chainId: '0x5',
-          name: 'Chain 5',
-          defaultRpcEndpointIndex: 0,
-          rpcEndpoints: [
-            {
-              url: 'http://localhost/rpc',
-              type: RpcEndpointType.Custom,
-              networkClientId: 'goerli',
-            },
-          ],
-        },
+        ...(includeCustomNetworks
+          ? {
+              '0x5': {
+                nativeCurrency: 'ETH',
+                chainId: '0x5',
+                name: 'Chain 5',
+                defaultRpcEndpointIndex: 0,
+                rpcEndpoints: [
+                  {
+                    url: 'http://localhost/rpc',
+                    type: RpcEndpointType.Custom,
+                    networkClientId: 'goerli',
+                  },
+                ],
+              },
+            }
+          : {}),
         '0x539': {
           nativeCurrency: 'ETH',
           chainId: '0x539',
@@ -218,6 +229,7 @@ const render = ({
             },
           ],
         },
+        ...additionalNetworkConfigurationsByChainId,
       },
       isUnlocked,
       selectedNetworkClientId: NETWORK_TYPES.MAINNET,
@@ -282,6 +294,54 @@ describe('NetworkListMenu', () => {
   it('renders mainnet item', () => {
     const { getByText } = render();
     expect(getByText(MAINNET_DISPLAY_NAME)).toBeInTheDocument();
+  });
+
+  it('does not render the custom networks section when there are no custom networks', () => {
+    const { queryByText } = render({ includeCustomNetworks: false });
+
+    expect(
+      queryByText(messages.customNetworks.message),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders custom networks in a separate section when custom networks are available', () => {
+    const { getByText } = render({
+      additionalNetworkConfigurationsByChainId: {
+        [CUSTOM_CHAIN_ID]: {
+          nativeCurrency: 'ETH',
+          chainId: CUSTOM_CHAIN_ID,
+          name: CUSTOM_NETWORK_NAME,
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: 'http://localhost/custom-rpc',
+              type: RpcEndpointType.Custom,
+              networkClientId: CUSTOM_NETWORK_CLIENT_ID,
+            },
+          ],
+        },
+      },
+    });
+
+    const defaultNetworksHeader = getByText(messages.defaultNetworks.message);
+    const customNetworksHeader = getByText(messages.customNetworks.message);
+    const showTestNetworksHeader = getByText(
+      messages.showTestnetNetworks.message,
+    );
+    const additionalNetworksHeader = getByText(
+      messages.additionalNetworks.message,
+    );
+
+    expect(getByText(CUSTOM_NETWORK_NAME)).toBeInTheDocument();
+    expect(
+      defaultNetworksHeader.compareDocumentPosition(customNetworksHeader),
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(
+      customNetworksHeader.compareDocumentPosition(showTestNetworksHeader),
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(
+      showTestNetworksHeader.compareDocumentPosition(additionalNetworksHeader),
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
   });
 
   it('renders test networks when it should', () => {
