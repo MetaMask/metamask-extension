@@ -1,4 +1,7 @@
-import { TokenListController } from '@metamask/assets-controllers';
+import {
+  TokenListController,
+  TokenListControllerMessenger,
+} from '@metamask/assets-controllers';
 import {
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
@@ -16,7 +19,6 @@ import {
   getTokenListControllerInitMessenger,
   getTokenListControllerMessenger,
   TokenListControllerInitMessenger,
-  TokenListControllerMessenger,
 } from './messengers';
 import { TokenListControllerInit } from './token-list-controller-init';
 

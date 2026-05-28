@@ -1,5 +1,6 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import { URDecoder } from '@ngraveio/bc-ur';
+import { ScanErrorCategory } from '../qr-utils/qr-utils';
 import { useDecoderLifecycle } from './useDecoderLifecycle';
 
 jest.mock('@ngraveio/bc-ur', () => {
@@ -19,19 +20,18 @@ const mockURDecoder = jest.mocked(URDecoder);
 
 describe('useDecoderLifecycle', () => {
   const mockHandleSuccess = jest.fn().mockResolvedValue(undefined);
-  const mockSetErrorTitle = jest.fn();
   const mockSetScanProgress = jest.fn();
+  const mockSetScanError = jest.fn();
   const mockSetError = jest.fn();
-  const mockT = jest.fn((key: string) => key);
 
   const defaultProps = {
     handleSuccess: mockHandleSuccess,
     isReadingWallet: true,
-    setErrorTitle: mockSetErrorTitle,
   };
 
   const defaultCallbacks = {
     setScanProgress: mockSetScanProgress,
+    setScanError: mockSetScanError,
     setError: mockSetError,
   };
 
@@ -43,7 +43,7 @@ describe('useDecoderLifecycle', () => {
     props = defaultProps,
     callbacks = defaultCallbacks,
   ) {
-    return renderHook(() => useDecoderLifecycle(props, callbacks, mockT));
+    return renderHook(() => useDecoderLifecycle(props, callbacks));
   }
 
   describe('handleScan', () => {
@@ -134,7 +134,69 @@ describe('useDecoderLifecycle', () => {
       expect(mockInstance.receivePart).not.toHaveBeenCalled();
     });
 
-    it('sets wallet error title when scan throws and isReadingWallet is true', () => {
+    it('classifies as WrongUrType when decoded UR does not match expected pairing types', () => {
+      const mockInstance = {
+        isComplete: jest
+          .fn()
+          .mockReturnValueOnce(false)
+          .mockReturnValueOnce(true),
+        receivePart: jest.fn(),
+        estimatedPercentComplete: jest.fn().mockReturnValue(1),
+        resultUR: jest.fn().mockReturnValue({ type: 'eth-signature' }),
+      };
+      mockURDecoder.mockImplementation(
+        () => mockInstance as unknown as URDecoder,
+      );
+
+      const { result } = renderDecoderHook({
+        ...defaultProps,
+        isReadingWallet: true,
+      });
+
+      act(() => {
+        result.current.handleScan('ur:eth-signature/complete-frame');
+      });
+
+      expect(mockSetScanError).toHaveBeenCalledWith({
+        category: ScanErrorCategory.WrongUrType,
+        isUrFormat: true,
+        receivedUrType: 'eth-signature',
+      });
+      expect(mockHandleSuccess).not.toHaveBeenCalled();
+    });
+
+    it('classifies as WrongUrType when decoded UR does not match expected signing types', () => {
+      const mockInstance = {
+        isComplete: jest
+          .fn()
+          .mockReturnValueOnce(false)
+          .mockReturnValueOnce(true),
+        receivePart: jest.fn(),
+        estimatedPercentComplete: jest.fn().mockReturnValue(1),
+        resultUR: jest.fn().mockReturnValue({ type: 'crypto-hdkey' }),
+      };
+      mockURDecoder.mockImplementation(
+        () => mockInstance as unknown as URDecoder,
+      );
+
+      const { result } = renderDecoderHook({
+        ...defaultProps,
+        isReadingWallet: false,
+      });
+
+      act(() => {
+        result.current.handleScan('ur:crypto-hdkey/complete-frame');
+      });
+
+      expect(mockSetScanError).toHaveBeenCalledWith({
+        category: ScanErrorCategory.WrongUrType,
+        isUrFormat: true,
+        receivedUrType: 'crypto-hdkey',
+      });
+      expect(mockHandleSuccess).not.toHaveBeenCalled();
+    });
+
+    it('classifies non-UR data as NonUrQrScanned when isReadingWallet is true', () => {
       const mockInstance = {
         isComplete: jest.fn().mockReturnValue(false),
         receivePart: jest.fn().mockImplementation(() => {
@@ -156,15 +218,14 @@ describe('useDecoderLifecycle', () => {
         result.current.handleScan('bad-data');
       });
 
-      expect(mockSetErrorTitle).toHaveBeenCalledWith(
-        'QRHardwareUnknownQRCodeTitle',
-      );
-      expect(mockSetError).toHaveBeenCalledWith(
-        expect.objectContaining({ message: 'unknownQrCode' }),
-      );
+      expect(mockSetScanError).toHaveBeenCalledWith({
+        category: ScanErrorCategory.NonUrQrScanned,
+        isUrFormat: false,
+      });
+      expect(mockHandleSuccess).not.toHaveBeenCalled();
     });
 
-    it('sets transaction error title when scan throws and isReadingWallet is false', () => {
+    it('classifies non-UR data as NonUrQrScanned when isReadingWallet is false', () => {
       const mockInstance = {
         isComplete: jest.fn().mockReturnValue(false),
         receivePart: jest.fn().mockImplementation(() => {
@@ -186,9 +247,38 @@ describe('useDecoderLifecycle', () => {
         result.current.handleScan('bad-data');
       });
 
-      expect(mockSetErrorTitle).toHaveBeenCalledWith(
-        'QRHardwareInvalidTransactionTitle',
+      expect(mockSetScanError).toHaveBeenCalledWith({
+        category: ScanErrorCategory.NonUrQrScanned,
+        isUrFormat: false,
+      });
+      expect(mockHandleSuccess).not.toHaveBeenCalled();
+    });
+
+    it('classifies UR-formatted data that throws as ScanException with isUrFormat true', () => {
+      const mockInstance = {
+        isComplete: jest.fn().mockReturnValue(false),
+        receivePart: jest.fn().mockImplementation(() => {
+          throw new Error('cbor decode failure');
+        }),
+        estimatedPercentComplete: jest.fn(),
+        resultUR: jest.fn(),
+      };
+      mockURDecoder.mockImplementation(
+        () => mockInstance as unknown as URDecoder,
       );
+
+      const { result } = renderDecoderHook();
+
+      act(() => {
+        result.current.handleScan('ur:crypto-hdkey/corrupted-data');
+      });
+
+      expect(mockSetScanError).toHaveBeenCalledWith({
+        category: ScanErrorCategory.ScanException,
+        isUrFormat: true,
+        rawMessage: 'cbor decode failure',
+      });
+      expect(mockHandleSuccess).not.toHaveBeenCalled();
     });
 
     it('calls setError when handleSuccess rejects', async () => {

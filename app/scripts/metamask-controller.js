@@ -667,9 +667,9 @@ export default class MetamaskController extends EventEmitter {
         ? { PerpsController: PerpsControllerInit }
         : {}),
       PPOMController: PPOMControllerInit,
-      PhishingController: PhishingControllerInit,
       AccountTrackerController: AccountTrackerControllerInit,
       TransactionController: TransactionControllerInit,
+      PhishingController: PhishingControllerInit,
       TransactionPayController: TransactionPayControllerInit,
       SmartTransactionsController: SmartTransactionsControllerInit,
       BridgeController: BridgeControllerInit,
@@ -3450,7 +3450,7 @@ export default class MetamaskController extends EventEmitter {
         addTransaction(
           this.getAddTransactionRequest({
             transactionParams,
-            transactionOptions,
+            transactionOptions: { ...transactionOptions, isInternal: true },
             waitForSubmit: false,
           }),
         ),
@@ -3461,7 +3461,7 @@ export default class MetamaskController extends EventEmitter {
         addTransaction(
           this.getAddTransactionRequest({
             transactionParams,
-            transactionOptions,
+            transactionOptions: { ...transactionOptions, isInternal: true },
             waitForSubmit: true,
           }),
         ),
@@ -3555,6 +3555,9 @@ export default class MetamaskController extends EventEmitter {
         await phishingController.maybeUpdateState();
 
         return phishingController.test(website);
+      },
+      checkAddressPoisoning: (address) => {
+        return phishingController.checkAddressPoisoning(address);
       },
       scanUrlForPhishing: async (origin) => {
         return phishingController.scanUrl(origin);
@@ -9817,6 +9820,7 @@ export default class MetamaskController extends EventEmitter {
             transactionParams,
             transactionOptions: {
               ...options,
+              isInternal: true,
               origin: 'metamask',
               requireApproval: true,
             },

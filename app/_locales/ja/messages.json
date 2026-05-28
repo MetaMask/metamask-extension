@@ -37,20 +37,8 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "エラー"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "QRコードが無効です。ハードウェアウォレットの同期QRコードをスキャンしてください。"
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "QRコードをスキャン"
-  },
-  "QRHardwareWalletSteps1Description": {
-    "message": "公式QRコードをサポートする以下のパートナーのリストから選択できます。"
-  },
-  "QRHardwareWalletSteps1Title": {
-    "message": "QRハードウェアウォレットを接続"
-  },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
   },
   "SrpListHideAccounts": {
     "message": "$1件のアカウントを非表示",
@@ -561,9 +549,6 @@
   },
   "airDropPatternTitle": {
     "message": "エアドロップパターン"
-  },
-  "airgapVault": {
-    "message": "AirGap Vault"
   },
   "alert": {
     "message": "アラート"
@@ -1618,9 +1603,6 @@
     "message": "$1を追加購入",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyNow": {
-    "message": "今すぐ購入"
-  },
   "buyTabOpenedToastDescription": {
     "message": "購入のための新しいタブが開かれました。",
     "description": "Toast description shown after opening the buy flow in a new tab"
@@ -1927,9 +1909,6 @@
   "confirmTitleDescERC20ApproveTransaction": {
     "message": "このサイトがトークンの引き出し許可を求めています。"
   },
-  "confirmTitleDescERC20Revocation": {
-    "message": "このサイトがERC-20トークンの承認取り消し許可を求めています。"
-  },
   "confirmTitleDescPermission": {
     "message": "このサイトがトークンの使用許可を求めています。"
   },
@@ -2141,9 +2120,6 @@
   "convertTokenToNFTExistDescription": {
     "message": "このアセットがNFTとして追加されたことが検出されました。トークンリストから削除しますか？"
   },
-  "coolWallet": {
-    "message": "CoolWallet"
-  },
   "copiedExclamation": {
     "message": "コピーしました。"
   },
@@ -2307,12 +2283,6 @@
   "dappConnections": {
     "message": "DAppの接続"
   },
-  "dappScanMaliciousTitle": {
-    "message": "悪質なWebサイトが検出されました"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "このWebサイトは、危険な可能性があるとフラグ付けされています。シークレットリカバリーフレーズを明かした場合、資金が危険に晒される可能性があります。"
-  },
   "dappSuggested": {
     "message": "おすすめのサイト"
   },
@@ -2361,9 +2331,6 @@
   },
   "dateCreated": {
     "message": "作成日"
-  },
-  "dcent": {
-    "message": "D'Cent"
   },
   "debitCreditPurchaseOptions": {
     "message": "デビットカードまたはクレジットカードの購入オプション"
@@ -2689,9 +2656,6 @@
   "downloadAppTitle": {
     "message": "QRコードをスキャンしてアプリをダウンロード"
   },
-  "downloadGoogleChrome": {
-    "message": "Google Chromeをダウンロード"
-  },
   "downloadMetaMaskMobileDescription": {
     "message": "当社のアプリのFace IDならパスワードを忘れてもログインできます。MetaMaskをどこからでもご利用ください！"
   },
@@ -2700,9 +2664,6 @@
   },
   "downloadMetaMaskMobileTitle": {
     "message": "モバイルアプリを入手"
-  },
-  "downloadNow": {
-    "message": "今すぐダウンロード"
   },
   "downloadStateLogs": {
     "message": "ステートログをダウンロード"
@@ -3467,9 +3428,6 @@
   "hardwareWalletSubmissionWarningTitle": {
     "message": "送信をクリックする前:に"
   },
-  "hardwareWalletSupportLinkConversion": {
-    "message": "こちらをクリックしてください"
-  },
   "hardwareWalletTitleEthAppNotOpen": {
     "message": "イーサリアムアプリを開く"
   },
@@ -3479,12 +3437,6 @@
   },
   "hardwareWallets": {
     "message": "ハードウェアウォレットの接続"
-  },
-  "hardwareWalletsInfo": {
-    "message": "ハードウェアウォレットの統合には、外部サーバーへのAPI呼び出しを使用します。外部サーバーはこれにより、あなたがやり取りしたIPアドレスとスマートコントラクトアドレスを把握できます。"
-  },
-  "hardwareWalletsMsg": {
-    "message": "MetaMaskに接続するハードウェアウォレットを選択してください。"
   },
   "helpAndSettings": {
     "message": "ヘルプと設定"
@@ -3850,9 +3802,6 @@
     "message": "JSONファイル",
     "description": "format for importing an account"
   },
-  "keycardShell": {
-    "message": "Keycard Shell"
-  },
   "keyringAccountName": {
     "message": "アカウント名"
   },
@@ -3905,9 +3854,6 @@
   },
   "learnMoreAboutPrivacy": {
     "message": "プライバシーのベストプラクティスに関する詳細をご覧ください。"
-  },
-  "learnMoreKeystone": {
-    "message": "詳細"
   },
   "learnMoreUpperCase": {
     "message": "詳細"
@@ -3976,17 +3922,8 @@
   "ledgerFirefoxNotSupportedTitle": {
     "message": "Firefoxはサポートされていません"
   },
-  "ledgerLiveApp": {
-    "message": "Ledger Liveアプリ"
-  },
   "ledgerLocked": {
     "message": "Ledgerデバイスに接続できません。デバイスのロックが解除され、イーサリアムアプリが開かれていることを確認してください。"
-  },
-  "ledgerMultipleDevicesUnsupportedInfoDescription": {
-    "message": "新しいデバイスに接続するには、前のデバイスの接続を解除してください。"
-  },
-  "ledgerMultipleDevicesUnsupportedInfoTitle": {
-    "message": "一度に接続できるLedgerは1台のみです"
   },
   "ledgerTimeout": {
     "message": "Ledger Liveが応答に時間がかかりすぎているか、接続がタイムアウトしました。Ledger Liveのアプリが開かれていて、デバイスのロックが解除されていることを確認してください。"
@@ -5271,10 +5208,6 @@
   },
   "onboardingMetametricsTitle": {
     "message": "MetaMaskの改善にご協力ください"
-  },
-  "onboardingOptionIcon": {
-    "message": "$1アイコン",
-    "description": "$1 is the icon name"
   },
   "onboardingSignInWith": {
     "message": "$1でサインイン",
@@ -7519,11 +7452,11 @@
   },
   "securitySocialLoginEnabledDescription": {
     "message": "$1のログイン情報とMetaMaskのパスワードを使って、アカウントとシークレットリカバリーフレーズを復元することができます。",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySocialLoginLabel": {
     "message": "$1の復元",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySrpLabel": {
     "message": "シークレットリカバリーフレーズ"
@@ -8976,34 +8909,6 @@
   },
   "statusNotConnected": {
     "message": "未接続"
-  },
-  "step1LatticeWallet": {
-    "message": "Lattice1を接続する"
-  },
-  "step1LatticeWalletMsg": {
-    "message": "セットアップが完了しオンラインになると、MetaMaskをLattice1デバイスに接続できます。デバイスのロックを解除し、デバイスIDを準備してください。",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step1LedgerWallet": {
-    "message": "Ledgerアプリをダウンロード"
-  },
-  "step1LedgerWalletMsg": {
-    "message": "$1のロックを解除するには、ダウンロードして設定し、パスワードを入力してください。",
-    "description": "$1 represents the `ledgerLiveApp` localization value"
-  },
-  "step1TrezorWallet": {
-    "message": "Trezorを接続する"
-  },
-  "step1TrezorWalletMsg": {
-    "message": "Trezorをコンピューターに直接接続し、ロックを解除します。 必ず正しいパスフレーズを使用してください。",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step2LedgerWallet": {
-    "message": "Ledgerを接続する"
-  },
-  "step2LedgerWalletMsg": {
-    "message": "コンピューターにLedgerを直接接続します。Ledgerのロックを解除し、イーサリアムアプリを開きます。",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "stillConnectingTo": {
     "message": "$1に引き続き接続中です...",
