@@ -58,8 +58,8 @@ export function build(onComplete: () => void = noop) {
     } else {
       compiler.run((err, stats) => {
         logStats(err ?? undefined, stats);
-        // Install before `onComplete` signals the parent process so a Ctrl+C
-        // forwarded during that handoff cannot interrupt cache shutdown.
+        // Install before `onComplete` signals the parent process so shutdown
+        // signals forwarded during that handoff cannot interrupt cache writes.
         const removeCacheShutdownSignalHandlers =
           options.cache.type === 'filesystem'
             ? ignoreCacheShutdownSignal(process)

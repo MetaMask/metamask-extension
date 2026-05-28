@@ -78,22 +78,23 @@ export const UI_COMPONENT_RE = new RegExp(
 export const noop = () => undefined;
 
 /**
- * Temporarily ignores Ctrl+C while webpack closes its filesystem cache.
+ * Temporarily ignores 'SIGINT' and 'SIGTERM' while webpack closes its
+ * filesystem cache.
  *
- * Non-watch builds hand the terminal back before `compiler.close()` completes
- * so webpack can persist the cache in the background. If the process receives
- * a forwarded Ctrl+C during that close window, Node's default handling would
- * terminate the process and can leave the cache partially written.
+ * In the forked build path, the parent exits before `compiler.close()`
+ * completes so webpack can persist the cache in the background. During that
+ * handoff the parent can still forward shutdown signals to the child: Ctrl+C
+ * becomes 'SIGINT', and process managers or CI can send 'SIGTERM'. Node's
+ * default behavior would terminate the child and can leave the cache partially
+ * written.
  *
- * @param signalProcess - The process to install listeners on.
+ * @param process - The process to install signal listeners on.
  * @returns A cleanup function that removes the installed listeners.
  */
-export function ignoreCacheShutdownSignal(signalProcess: NodeJS.Process) {
-  signalProcess.on('SIGINT', noop);
-  // @ts-expect-error - `removeListener` is the correct method, but TypeScript's
-  // types don't allow it because our tsconfig is importing electron types which
-  // aren't correct for Node.
-  return () => signalProcess.removeListener('SIGINT', noop);
+export function ignoreCacheShutdownSignal(process: NodeJS.Process) {
+  const signals = ['SIGINT', 'SIGTERM'] as const;
+  signals.forEach((signal) => process.on(signal, noop));
+  return () => signals.forEach((signal) => process.off(signal, noop));
 }
 
 /**
