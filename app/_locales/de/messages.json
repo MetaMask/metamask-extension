@@ -37,9 +37,6 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "Fehler"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "Ungültiger QR-Code. Bitte scannen Sie den QR-Code der Hardware-Wallet."
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "QR-Code scannen"
   },

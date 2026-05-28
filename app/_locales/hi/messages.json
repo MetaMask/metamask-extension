@@ -37,9 +37,6 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "गड़बड़ी"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "QR कोड ग़लत है। कृपया hardware wallet के सिंक QR कोड को स्कैन करें।"
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "QR कोड स्कैन करें"
   },

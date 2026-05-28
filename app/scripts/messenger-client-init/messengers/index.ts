@@ -213,20 +213,14 @@ import { getDataDeletionServiceMessenger } from './data-deletion-service-messeng
 import { getLegacyBackgroundApiServiceMessenger } from './legacy-background-api-service-messenger';
 
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
-export type {
-  AccountTrackerControllerMessenger,
-  AccountTrackerControllerInitMessenger,
-} from './account-tracker-controller-messenger';
+export type { AccountTrackerControllerInitMessenger } from './account-tracker-controller-messenger';
 export {
   getAccountTrackerControllerMessenger,
   getAccountTrackerControllerInitMessenger,
 } from './account-tracker-controller-messenger';
-export type { AccountsControllerMessenger } from './accounts-controller-messenger';
 export { getAccountsControllerMessenger } from './accounts-controller-messenger';
-export type { AddressBookControllerMessenger } from './address-book-controller-messenger';
 export { getAddressBookControllerMessenger } from './address-book-controller-messenger';
 export { getAlertControllerMessenger } from './alert-controller-messenger';
-export type { AnnouncementControllerMessenger } from './announcement-controller-messenger';
 export { getAnnouncementControllerMessenger } from './announcement-controller-messenger';
 export { getAppMetadataControllerMessenger } from './app-metadata-controller-messenger';
 export { getAppStateControllerMessenger } from './app-state-controller-messenger';
@@ -237,10 +231,7 @@ export {
   getBridgeControllerInitMessenger,
 } from './bridge-controller-messenger';
 export { getBridgeStatusControllerMessenger } from './bridge-status-controller-messenger';
-export type {
-  CurrencyRateControllerMessenger,
-  CurrencyRateControllerInitMessenger,
-} from './currency-rate-controller-messenger';
+export type { CurrencyRateControllerInitMessenger } from './currency-rate-controller-messenger';
 export {
   getCurrencyRateControllerMessenger,
   getCurrencyRateControllerInitMessenger,
@@ -249,14 +240,12 @@ export {
   getDecryptMessageControllerMessenger,
   getDecryptMessageControllerInitMessenger,
 } from './decrypt-message-controller-messenger';
-export type { DecryptMessageManagerMessenger } from './decrypt-message-manager-messenger';
 export { getDecryptMessageManagerMessenger } from './decrypt-message-manager-messenger';
 export type { EncryptionPublicKeyControllerInitMessenger } from './encryption-public-key-controller-messenger';
 export {
   getEncryptionPublicKeyControllerMessenger,
   getEncryptionPublicKeyControllerInitMessenger,
 } from './encryption-public-key-controller-messenger';
-export type { EncryptionPublicKeyManagerMessenger } from './encryption-public-key-manager-messenger';
 export { getEncryptionPublicKeyManagerMessenger } from './encryption-public-key-manager-messenger';
 export type { EnsControllerInitMessenger } from './ens-controller-messenger';
 export {
@@ -270,16 +259,13 @@ export {
   getGasFeeControllerMessenger,
   getGasFeeControllerInitMessenger,
 } from './gas-fee-controller-messenger';
-export type {
-  KeyringControllerMessenger,
-  KeyringControllerInitMessenger,
-} from './keyring-controller-messenger';
+export type { KeyringControllerInitMessenger } from './keyring-controller-messenger';
 export {
   getKeyringControllerMessenger,
   getKeyringControllerInitMessenger,
 } from './keyring-controller-messenger';
-export type { LoggingControllerMessenger } from './logging-controller-messenger';
 export { getLoggingControllerMessenger } from './logging-controller-messenger';
+
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
 export type { NetworkControllerInitMessenger } from './network-controller-messenger';
@@ -287,18 +273,13 @@ export {
   getNetworkControllerMessenger,
   getNetworkControllerInitMessenger,
 } from './network-controller-messenger';
-export type { RatesControllerMessenger } from './rates-controller-messenger';
 export { getRatesControllerMessenger } from './rates-controller-messenger';
-export type {
-  NameControllerMessenger,
-  NameControllerInitMessenger,
-} from './name-controller-messenger';
+export type { NameControllerInitMessenger } from './name-controller-messenger';
 export {
   getNameControllerMessenger,
   getNameControllerInitMessenger,
 } from './name-controller-messenger';
 export { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
-export type { PasskeyControllerMessenger } from './passkey-controller-messenger';
 export { getPasskeyControllerMessenger } from './passkey-controller-messenger';
 export { getPreferencesControllerMessenger } from './preferences-controller-messenger';
 export type {
@@ -309,36 +290,26 @@ export {
   getPermissionControllerMessenger,
   getPermissionControllerInitMessenger,
 } from './permission-controller-messenger';
-export type { PermissionLogControllerMessenger } from './permission-log-controller-messenger';
 export { getPermissionLogControllerMessenger } from './permission-log-controller-messenger';
 export { getGeolocationApiServiceMessenger } from './geolocation-api-service-messenger';
 export { getGeolocationControllerMessenger } from './geolocation-controller-messenger';
 export type { PerpsControllerMessenger } from './perps-controller-messenger';
 export { getPerpsControllerMessenger } from './perps-controller-messenger';
-export type { PhishingControllerMessenger } from './phishing-controller-messenger';
 export { getPhishingControllerMessenger } from './phishing-controller-messenger';
-export type {
-  RemoteFeatureFlagControllerMessenger,
-  RemoteFeatureFlagControllerInitMessenger,
-} from './remote-feature-flag-controller-messenger';
+export type { RemoteFeatureFlagControllerInitMessenger } from './remote-feature-flag-controller-messenger';
 export {
   getRemoteFeatureFlagControllerMessenger,
   getRemoteFeatureFlagControllerInitMessenger,
 } from './remote-feature-flag-controller-messenger';
-export type { SelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
 export { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
 export type { SignatureControllerInitMessenger } from './signature-controller-messenger';
 export {
   getSignatureControllerMessenger,
   getSignatureControllerInitMessenger,
 } from './signature-controller-messenger';
-export type { SubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
 export { getSubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
 export { getRewardsControllerMessenger } from './rewards-controller-messenger';
-export type {
-  TokenBalancesControllerMessenger,
-  TokenBalancesControllerInitMessenger,
-} from './token-balances-controller-messenger';
+export type { TokenBalancesControllerInitMessenger } from './token-balances-controller-messenger';
 export {
   getTokenBalancesControllerMessenger,
   getTokenBalancesControllerInitMessenger,
@@ -348,26 +319,17 @@ export {
   getStaticAssetsControllerMessenger,
   getStaticAssetsControllerInitMessenger,
 } from './static-assets-controller-messenger';
-export type {
-  TokenDetectionControllerMessenger,
-  TokenDetectionControllerInitMessenger,
-} from './token-detection-controller-messenger';
+export type { TokenDetectionControllerInitMessenger } from './token-detection-controller-messenger';
 export {
   getTokenDetectionControllerMessenger,
   getTokenDetectionControllerInitMessenger,
 } from './token-detection-controller-messenger';
-export type {
-  TokenListControllerMessenger,
-  TokenListControllerInitMessenger,
-} from './token-list-controller-messenger';
+export type { TokenListControllerInitMessenger } from './token-list-controller-messenger';
 export {
   getTokenListControllerMessenger,
   getTokenListControllerInitMessenger,
 } from './token-list-controller-messenger';
-export type {
-  TokensControllerMessenger,
-  TokensControllerInitMessenger,
-} from './tokens-controller-messenger';
+export type { TokensControllerInitMessenger } from './tokens-controller-messenger';
 export {
   getTokensControllerMessenger,
   getTokensControllerInitMessenger,
@@ -377,10 +339,7 @@ export {
   getTransactionPayControllerMessenger,
   getTransactionPayControllerInitMessenger,
 } from './transaction-pay-controller-messenger';
-export type {
-  UserOperationControllerMessenger,
-  UserOperationControllerInitMessenger,
-} from './user-operation-controller-messenger';
+export type { UserOperationControllerInitMessenger } from './user-operation-controller-messenger';
 export {
   getUserOperationControllerMessenger,
   getUserOperationControllerInitMessenger,

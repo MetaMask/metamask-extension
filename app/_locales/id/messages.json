@@ -37,9 +37,6 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "Kesalahan"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "Kode QR tidak valid. Harap pindai kode QR sinkronisasi dari dompet perangkat keras."
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "Pindai kode QR"
   },
