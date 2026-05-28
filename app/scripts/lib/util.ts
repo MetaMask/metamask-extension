@@ -5,10 +5,13 @@ import {
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import type { Provider } from '@metamask/network-controller';
+<<<<<<< HEAD
 import { CaipAssetType, parseCaipAssetType } from '@metamask/utils';
 import { MultichainAssetsRatesControllerState } from '@metamask/assets-controllers';
 import { AssetConversion, FungibleAssetMarketData } from '@metamask/snaps-sdk';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
+=======
+>>>>>>> 205334ea18 (chore: extract getConversionRatesForNativeAsset to shared)
 import {
   DEVICE_TYPE,
   OS,
@@ -58,6 +61,7 @@ export {
 } from '../../../shared/lib/url-utils';
 export { formatValue, isValidAmount } from '../../../shared/lib/format-value';
 export { addHexPrefix } from '../../../shared/lib/add-hex-prefix';
+export { getConversionRatesForNativeAsset } from '../../../shared/lib/asset-conversion-rates';
 
 /**
  * Minimal type for User-Agent Client Hints API (NavigatorUAData).
@@ -564,38 +568,6 @@ export const getMethodDataName = async (
  */
 export function getBooleanFlag(value: string | boolean | undefined): boolean {
   return value === true || value === 'true';
-}
-
-type AssetsRatesState = {
-  metamask: MultichainAssetsRatesControllerState;
-};
-
-export function getConversionRatesForNativeAsset({
-  conversionRates,
-  chainId,
-}: {
-  conversionRates: AssetsRatesState['metamask']['conversionRates'];
-  chainId: string;
-}): (AssetConversion & { marketData?: FungibleAssetMarketData }) | null {
-  // Return early if conversionRates is falsy
-  if (!conversionRates) {
-    return null;
-  }
-
-  let conversionRateResult = null;
-
-  Object.entries(conversionRates).forEach(
-    ([caip19Identifier, conversionRate]) => {
-      const { assetNamespace, chainId: caipChainId } = parseCaipAssetType(
-        caip19Identifier as CaipAssetType,
-      );
-      if (assetNamespace === 'slip44' && caipChainId === chainId) {
-        conversionRateResult = conversionRate;
-      }
-    },
-  );
-
-  return conversionRateResult;
 }
 
 // Cache for known domains
