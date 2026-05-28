@@ -534,7 +534,7 @@ describe('Swap on Solana', function () {
 
         await homePage.goToActivityList();
         const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkTxAmountInActivity('0.1669 USDC', 1);
+        await activityListPage.checkTxAmountInActivity('+0.1669 USDC', 1);
         await activityListPage.checkWaitForTransactionStatus('confirmed');
         if (isUnifiedAssetsEnabled) {
           // BUG: The activity text or amount may not fully reflect the swap details
@@ -637,7 +637,7 @@ describe('Swap on Solana', function () {
 
         await homePage.goToActivityList();
         const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkTxAmountInActivity('0.005904 SOL', 1);
+        await activityListPage.checkTxAmountInActivity('+0.005904 SOL', 1);
         await activityListPage.checkWaitForTransactionStatus('confirmed');
         await activityListPage.checkTransactionActivityByText(
           'Swapped USDC to SOL',
