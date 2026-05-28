@@ -9,7 +9,8 @@ class BitcoinTransactionDetailsPage {
     this.driver = driver;
   }
 
-  private readonly modal = '[data-testid="multichain-transaction-details-modal"]';
+  private readonly modal =
+    '[data-testid="multichain-transaction-details-modal"]';
 
   private readonly amount = (text: string) => ({
     css: '[data-testid="transaction-amount"]',
