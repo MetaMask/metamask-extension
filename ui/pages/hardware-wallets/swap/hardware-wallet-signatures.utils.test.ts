@@ -1,7 +1,4 @@
-import {
-  HardwareWalletSignatureStatus,
-  type HardwareWalletSignaturesState,
-} from './hardware-wallet-signatures-state-machine';
+import { HardwareWalletSignatureStatus } from './hardware-wallet-signatures-state-machine';
 import {
   SignatureStepStatus,
   getStepStatus,
@@ -15,7 +12,9 @@ import {
 } from './hardware-wallet-signatures.utils';
 
 const t = (key: string, params?: (string | undefined)[]) => {
-  if (params) return `${key}[${params.join(',')}]`;
+  if (params) {
+    return `${key}[${params.join(',')}]`;
+  }
   return key;
 };
 
