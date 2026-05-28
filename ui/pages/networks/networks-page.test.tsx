@@ -17,16 +17,19 @@ jest.mock('../../components/ui/toggle-button', () => {
     __esModule: true,
     default: ({
       dataTestId,
+      disabled,
       value,
       onToggle,
     }: {
       dataTestId: string;
+      disabled?: boolean;
       value: boolean;
       onToggle: (value: boolean) => void;
     }) =>
       ReactActual.createElement('input', {
         'data-testid': dataTestId,
         checked: value,
+        disabled,
         onChange: () => onToggle(value),
         type: 'checkbox',
       }),
@@ -91,10 +94,20 @@ describe('NetworksPage', () => {
   const renderNetworksPage = ({
     pathname = NETWORKS_ROUTE,
     networkConfigurationsByChainId = mockNetworkConfigurations,
+    selectedNetworkClientId = 'mainnet',
+    selectedProviderChainId = '0x1',
+    enabledNetworkMap = {
+      eip155: {
+        '0x1': true,
+      },
+    },
     showTestNetworks = false,
   }: {
     pathname?: string;
     networkConfigurationsByChainId?: typeof mockNetworkConfigurations;
+    selectedNetworkClientId?: string;
+    selectedProviderChainId?: string;
+    enabledNetworkMap?: Record<string, Record<string, boolean>>;
     showTestNetworks?: boolean;
   } = {}) => {
     const store = configureStore({
@@ -102,18 +115,14 @@ describe('NetworksPage', () => {
       metamask: {
         ...mockState.metamask,
         networkConfigurationsByChainId,
-        selectedNetworkClientId: 'mainnet',
+        selectedNetworkClientId,
         providerConfig: {
-          chainId: '0x1',
+          chainId: selectedProviderChainId,
           rpcUrl: 'https://mainnet.infura.io/v3/123',
           type: 'rpc',
           ticker: 'ETH',
         },
-        enabledNetworkMap: {
-          eip155: {
-            '0x1': true,
-          },
-        },
+        enabledNetworkMap,
         preferences: {
           ...mockState.metamask.preferences,
           showTestNetworks,
@@ -124,14 +133,21 @@ describe('NetworksPage', () => {
     return renderWithProvider(<NetworksPage />, store, pathname);
   };
 
-  it('renders the sectioned networks view on the root route', () => {
+  it('renders the sectioned networks view and keeps testnets visible while selected on a testnet', () => {
     renderNetworksPage({
       networkConfigurationsByChainId: {
         ...mockNetworkConfigurations,
         ...customNetworkConfiguration,
         ...testNetworkConfiguration,
       },
-      showTestNetworks: true,
+      selectedNetworkClientId: 'sepolia',
+      selectedProviderChainId: '0xaa36a7',
+      enabledNetworkMap: {
+        eip155: {
+          '0xaa36a7': true,
+        },
+      },
+      showTestNetworks: false,
     });
 
     const defaultNetworksHeader = screen.getByText(
@@ -148,6 +164,7 @@ describe('NetworksPage', () => {
     );
 
     expect(screen.getByText('Custom network 1')).toBeInTheDocument();
+    expect(screen.getByText('Sepolia')).toBeInTheDocument();
     expect(
       defaultNetworksHeader.compareDocumentPosition(customNetworksHeader),
     ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
@@ -160,6 +177,13 @@ describe('NetworksPage', () => {
     expect(
       screen.getByText(messages.addACustomNetwork.message),
     ).toBeInTheDocument();
+
+    const testnetToggle = screen.getByTestId(
+      'networks-page-show-test-networks',
+    );
+
+    expect(testnetToggle).toBeChecked();
+    expect(testnetToggle).toBeDisabled();
   });
 
   it('renders the add network flow from the query param', () => {

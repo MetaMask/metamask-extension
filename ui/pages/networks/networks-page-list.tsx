@@ -37,7 +37,7 @@ import { MetaMetricsContext } from '../../contexts/metametrics';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useIsNetworkGasSponsored } from '../../hooks/useIsNetworkGasSponsored';
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../selectors/network-blacklist/network-blacklist';
-import { getMultichainNetworkConfigurationsByChainId } from '../../selectors/multichain/networks';
+import { getSelectedMultichainNetworkChainId } from '../../selectors/multichain/networks';
 import {
   getOrderedNetworksList,
   getShowTestNetworks,
@@ -63,6 +63,7 @@ import {
   sortNetworksByPrioity,
 } from '../../../shared/lib/network.utils';
 import { useNetworkManagerState } from '../../components/multichain/network-manager/hooks/useNetworkManagerState';
+import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
 
 const filterNetworks = <
   NetworkRecord extends {
@@ -173,9 +174,10 @@ export const NetworksPageList = ({
 
   const orderedNetworksList = useSelector(getOrderedNetworksList);
   const showTestnets = useSelector(getShowTestNetworks);
-  const [, evmNetworks] = useSelector(
-    getMultichainNetworkConfigurationsByChainId,
+  const currentMultichainChainId = useSelector(
+    getSelectedMultichainNetworkChainId,
   );
+  const evmNetworks = useSelector(getNetworkConfigurationsByChainId);
   const blacklistedChainIds = useSelector(
     selectAdditionalNetworksBlacklistFeatureFlag,
   );
@@ -232,6 +234,14 @@ export const NetworksPageList = ({
     [testNetworks, searchQuery],
   );
 
+  const currentlyOnTestnet = useMemo(
+    () =>
+      Object.values(testNetworks).some(
+        (network) => network.chainId === currentMultichainChainId,
+      ),
+    [currentMultichainChainId, testNetworks],
+  );
+
   const renderNetworkListItem = useCallback(
     (network: MultichainNetworkConfiguration) => {
       const { onDelete, onEdit, onDiscoverClick, onRpcSelect } =
@@ -272,6 +282,10 @@ export const NetworksPageList = ({
 
   const handleToggleTestNetworks = useCallback(
     (value: boolean) => {
+      if (currentlyOnTestnet) {
+        return;
+      }
+
       const newValue = !value;
       dispatch(setShowTestNetworks(newValue));
       trackEvent({
@@ -282,7 +296,7 @@ export const NetworksPageList = ({
         },
       });
     },
-    [dispatch, trackEvent],
+    [currentlyOnTestnet, dispatch, trackEvent],
   );
 
   return (
@@ -341,14 +355,15 @@ export const NetworksPageList = ({
               </Text>
               <ToggleButton
                 dataTestId="networks-page-show-test-networks"
-                value={showTestnets}
+                value={showTestnets || currentlyOnTestnet}
+                disabled={currentlyOnTestnet}
                 onToggle={handleToggleTestNetworks}
               />
             </Box>
           </>
         ) : null}
 
-        {showTestnets ? (
+        {showTestnets || currentlyOnTestnet ? (
           <>{sortedTestNetworks.map(renderNetworkListItem)}</>
         ) : null}
 
