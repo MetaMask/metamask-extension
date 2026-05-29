@@ -13,7 +13,7 @@ import {
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
-import { connectSolanaTestDapp } from '../../flask/solana-wallet-standard/testHelpers';
+import { connectSolanaTestDapp } from '../../page-objects/flows/solana-dapp.flow';
 import { Driver, PAGES } from '../../webdriver/driver';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';

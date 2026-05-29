@@ -5,6 +5,7 @@ import {
 } from '../../../stub/keyring-bridge';
 import AccountListPage from '../pages/account-list-page';
 import AddressListModal from '../pages/multichain/address-list-modal';
+import NonEvmHomepage from '../pages/home/non-evm-homepage';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
 
 export async function checkAccountAddressDisplayedInAccountList(
@@ -31,3 +32,24 @@ export async function checkAccountAddressDisplayedInAccountList(
     await addressListModal.goBack();
   }
 }
+
+/**
+ * Switches to the specified account via the NonEvm homepage account menu.
+ *
+ * @param driver
+ * @param accountName
+ */
+export const switchToNonEvmAccount = async (
+  driver: Driver,
+  accountName: string,
+): Promise<void> => {
+  const nonEvmHomepage = new NonEvmHomepage(driver);
+  await nonEvmHomepage.checkPageIsLoaded();
+  await nonEvmHomepage.headerNavbar.openAccountMenu();
+
+  const accountListPage = new AccountListPage(driver);
+  await accountListPage.checkPageIsLoaded();
+  await accountListPage.checkAccountDisplayedInAccountList(accountName);
+  await accountListPage.switchToAccount(accountName);
+  await nonEvmHomepage.headerNavbar.checkAccountLabel(accountName);
+};
