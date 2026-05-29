@@ -60,6 +60,13 @@ class AssetListPage {
 
   private readonly importTokensButton = '[data-testid="importTokens"]';
 
+  private readonly importTokensButtonLegacy =
+    '[data-testid="importTokens__button"]';
+
+  private readonly manageTokensButton = '[data-testid="manageTokens__button"]';
+
+  private readonly manageTokensMenuItem = '[data-testid="manageTokens"]';
+
   private readonly importTokensNextButton =
     '[data-testid="import-tokens-button-next"]';
 
@@ -320,7 +327,46 @@ class AssetListPage {
       waitAtLeastGuard: 1000,
     });
     await this.driver.clickElement(this.tokenOptionsButton);
-    await this.driver.clickElement(this.importTokensButton);
+
+    const hasPrimaryImportTokensEntry =
+      await this.driver.isElementPresentAndVisible(this.importTokensButton, 1500);
+    const hasLegacyImportTokensEntry =
+      await this.driver.isElementPresentAndVisible(
+        this.importTokensButtonLegacy,
+        1500,
+      );
+    const hasImportTokensEntry =
+      hasPrimaryImportTokensEntry || hasLegacyImportTokensEntry;
+
+    if (!hasImportTokensEntry) {
+      const hasManageTokensEntry =
+        (await this.driver.isElementPresentAndVisible(
+          this.manageTokensButton,
+          1500,
+        )) ||
+        (await this.driver.isElementPresentAndVisible(
+          this.manageTokensMenuItem,
+          1500,
+        ));
+
+      if (hasManageTokensEntry) {
+        console.log(
+          '[IMPORT] Import Tokens entry not found. Falling back to Manage Tokens flow.',
+        );
+        await this.importCustomTokenFromManageTokensUI(chainId, tokenAddress);
+        return;
+      }
+
+      throw new Error(
+        'Neither Import Tokens nor Manage Tokens entry is available in asset options',
+      );
+    }
+
+    if (hasPrimaryImportTokensEntry) {
+      await this.driver.clickElement(this.importTokensButton);
+    } else {
+      await this.driver.clickElement(this.importTokensButtonLegacy);
+    }
     await this.driver.waitForSelector(this.importTokenModalTitle);
     await this.driver.clickElement(this.tokenChainDropdown);
     await this.driver.clickElementAndWaitToDisappear(
@@ -442,8 +488,8 @@ class AssetListPage {
       ).default;
       const tokenManagementPage = new TokenManagementPage(this.driver);
 
-      // Execute the complete flow
-      await tokenManagementPage.addCustomToken(tokenAddress);
+      // Execute the complete flow with skipInitialClick=true since dropdown is already open
+      await tokenManagementPage.addCustomToken(tokenAddress, true);
 
       // Return to home page
       await tokenManagementPage.goBackToHome();

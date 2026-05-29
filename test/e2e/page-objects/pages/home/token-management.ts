@@ -19,6 +19,9 @@ class TokenManagementPage {
   private readonly manageTokensButton =
     '[data-testid="manageTokens__button"]';
 
+  private readonly manageTokensMenuItem =
+    '[data-testid="manageTokens"]';
+
   private readonly addCustomTokenButton =
     '[data-testid="token-management-add-custom-token-button"]';
 
@@ -40,24 +43,74 @@ class TokenManagementPage {
 
   /**
    * Opens the Token Management page by clicking the Manage Tokens button
-   * First clicks the 3-dots asset options button to reveal the dropdown menu
+   * @param skipInitialClick - If true, skip the initial 3-dots click (assumes dropdown is already open)
    */
-  async openTokenManagement(): Promise<void> {
-    console.log('[TokenManagement] Clicking 3-dots button to open asset options menu...');
-    await this.driver.waitForSelector(this.assetOptionsButton, {
-      timeout: 10000,
-    });
-    await this.driver.clickElement(this.assetOptionsButton);
-    await this.driver.delay(500);
-    console.log('[TokenManagement] ✅ Asset options menu opened');
+  async openTokenManagement(skipInitialClick: boolean = false): Promise<void> {
+    const isTokenManagementPageAlreadyOpen =
+      await this.driver.isElementPresentAndVisible(this.tokenManagementPage, 1500);
+    if (isTokenManagementPageAlreadyOpen) {
+      console.log('[TokenManagement] ✅ Token Management page already open');
+      return;
+    }
 
-    console.log('[TokenManagement] Clicking Manage Tokens button...');
-    await this.driver.waitForSelector(this.manageTokensButton, {
-      timeout: 10000,
-    });
-    await this.driver.clickElement(this.manageTokensButton);
-    await this.driver.delay(500);
-    console.log('[TokenManagement] ✅ Manage Tokens button clicked');
+    if (skipInitialClick) {
+      console.log('[TokenManagement] Skipping initial 3-dots click (dropdown already open)');
+    } else {
+      console.log('[TokenManagement] Clicking 3-dots button to open asset options menu...');
+    }
+
+    const maxAttempts = skipInitialClick ? 1 : 2;
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      if (!skipInitialClick) {
+        await this.driver.waitForSelector(this.assetOptionsButton, {
+          timeout: 10000,
+        });
+        await this.driver.clickElement(this.assetOptionsButton);
+        await this.driver.delay(500);
+      } else if (attempt === 1) {
+        // When skipping initial click, just add a small delay for dropdown to be ready
+        await this.driver.delay(300);
+      }
+
+      const openedDirectly = await this.driver.isElementPresentAndVisible(
+        this.tokenManagementPage,
+        1000,
+      );
+      if (openedDirectly) {
+        console.log(
+          `[TokenManagement] ✅ Token Management page opened directly (attempt ${attempt})`,
+        );
+        return;
+      }
+
+      const hasLegacyManageTokensButton =
+        await this.driver.isElementPresentAndVisible(this.manageTokensButton, 2500);
+      const hasManageTokensMenuItem =
+        await this.driver.isElementPresentAndVisible(this.manageTokensMenuItem, 2500);
+
+      if (hasLegacyManageTokensButton) {
+        await this.driver.clickElement(this.manageTokensButton);
+        await this.driver.delay(500);
+        console.log('[TokenManagement] ✅ Manage Tokens button clicked');
+        return;
+      }
+
+      if (hasManageTokensMenuItem) {
+        await this.driver.clickElement(this.manageTokensMenuItem);
+        await this.driver.delay(500);
+        console.log('[TokenManagement] ✅ Manage Tokens menu item clicked');
+        return;
+      }
+
+      console.log(
+        `[TokenManagement] Manage Tokens entry not found (attempt ${attempt}), retrying...`,
+      );
+    }
+
+    throw new Error(
+      'Manage Tokens entry was not found after retries (selectors: manageTokens__button/manageTokens)',
+    );
   }
 
   /**
@@ -145,13 +198,14 @@ class TokenManagementPage {
   /**
    * Complete flow: Add a custom token and return to home
    * @param tokenAddress - The token address to import
+   * @param skipInitialClick - If true, skip the initial 3-dots click
    */
-  async addCustomToken(tokenAddress: string): Promise<void> {
+  async addCustomToken(tokenAddress: string, skipInitialClick: boolean = false): Promise<void> {
     console.log(
       `[TokenManagement] Starting custom token import flow for: ${tokenAddress}`,
     );
     try {
-      await this.openTokenManagement();
+      await this.openTokenManagement(skipInitialClick);
       await this.clickAddCustomTokenButton();
       await this.enterTokenAddress(tokenAddress);
       await this.clickSubmit();

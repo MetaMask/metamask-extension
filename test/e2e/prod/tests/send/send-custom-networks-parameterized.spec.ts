@@ -28,6 +28,70 @@ type RuntimeNetworkConfig = NetworkTestConfig & {
   rpcName: string;
 };
 
+function getCliOptionValue(optionName: string): string | undefined {
+  const prefixedOption = `--${optionName}`;
+  const exactIndex = process.argv.findIndex((arg) => arg === prefixedOption);
+
+  if (exactIndex !== -1) {
+    const nextArg = process.argv[exactIndex + 1];
+    return nextArg && !nextArg.startsWith('--') ? nextArg : undefined;
+  }
+
+  const inlineOption = process.argv.find((arg) =>
+    arg.startsWith(`${prefixedOption}=`),
+  );
+
+  return inlineOption ? inlineOption.slice(prefixedOption.length + 1) : undefined;
+}
+
+function parseNetworkNames(value?: string): string[] {
+  if (!value) {
+    return [];
+  }
+
+  return value
+    .split(',')
+    .map((name) => name.trim())
+    .filter(Boolean);
+}
+
+function getSelectedCustomNetworkConfigs(): NetworkTestConfig[] {
+  const networkNamesFromCli =
+    getCliOptionValue('networks') ?? getCliOptionValue('networkNames');
+  const selectedNetworkNames = parseNetworkNames(
+    networkNamesFromCli ?? process.env.NETWORKS,
+  );
+  const customNetworks = getCustomNetworksForTesting();
+
+  if (selectedNetworkNames.length === 0) {
+    return customNetworks;
+  }
+
+  const lowerCaseSelectedNames = selectedNetworkNames.map((name) =>
+    name.toLowerCase(),
+  );
+
+  const selectedNetworks = customNetworks.filter((networkConfig) => {
+    const networkName = networkConfig.networkName.toLowerCase();
+    const networkId = networkConfig.id.toLowerCase();
+    const networkNameLong = networkConfig.networkNameLong?.toLowerCase();
+
+    return (
+      lowerCaseSelectedNames.includes(networkName) ||
+      lowerCaseSelectedNames.includes(networkId) ||
+      (networkNameLong && lowerCaseSelectedNames.includes(networkNameLong))
+    );
+  });
+
+  if (selectedNetworks.length === 0) {
+    throw new Error(
+      `No matching custom network configurations found for: ${selectedNetworkNames.join(', ')}`,
+    );
+  }
+
+  return selectedNetworks;
+}
+
 /**
  * Production E2E Test: Custom Networks, Import Account, and Send
  * This test is parameterized to run against multiple custom networks.
@@ -43,7 +107,7 @@ type RuntimeNetworkConfig = NetworkTestConfig & {
  */
 describe('Production E2E: Custom Networks, Import Account and Send (Parameterized)', function (this: Suite) {
   // Get all custom networks to test from configuration
-  const networks = getCustomNetworksForTesting();
+  const networks = getSelectedCustomNetworkConfigs();
   const allNetworkResults: SendTransactionResult[] = [];
 
   // Run test for each network
