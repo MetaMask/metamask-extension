@@ -837,9 +837,7 @@ describe('MetaMaskController', function () {
 
     it('should return true if firstTimeFlowType is seedless and password is outdated', async function () {
       // We now need the Snap keyring after onboarding the wallet.
-      jest.spyOn(getSnapKeyringUtil, 'getSnapKeyring').mockResolvedValue({
-        getSnapKeyring: jest.fn().mockResolvedValue({}),
-      });
+      jest.spyOn(getSnapKeyringUtil, 'getSnapKeyring').mockResolvedValue({});
       metamaskController.onboardingController.setFirstTimeFlowType(
         FirstTimeFlowType.socialCreate,
       );
@@ -1321,9 +1319,7 @@ describe('MetaMaskController', function () {
           .mockResolvedValue();
 
         // We now need the Snap keyring after unlocking the wallet.
-        jest.spyOn(getSnapKeyringUtil, 'getSnapKeyring').mockResolvedValue({
-          getSnapKeyring: jest.fn().mockResolvedValue({}),
-        });
+        jest.spyOn(getSnapKeyringUtil, 'getSnapKeyring').mockResolvedValue({});
 
         await metamaskController.syncPasswordAndUnlockWallet(password);
         expect(keyringSubmitPwdSpy).toHaveBeenCalled();
