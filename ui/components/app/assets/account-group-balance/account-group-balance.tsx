@@ -26,8 +26,6 @@ import { getPreferences } from '../../../../../shared/lib/selectors/preferences'
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { isZeroAmount } from '../../../../helpers/utils/number-utils';
-import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
-import { getMultichainNativeCurrency } from '../../../../selectors/multichain';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../selectors/multichain-accounts/account-tree';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { hexWEIToDecETH } from '../../../../../shared/lib/conversion.utils';
@@ -87,11 +85,6 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
   );
 
   const showConversionForTestnets = useSelector(getShowFiatInTestnets);
-
-  const nativeCurrency = useMultichainSelector(
-    getMultichainNativeCurrency,
-    selectedAccount,
-  );
 
   const nativeCurrencySymbol: string = useMemo(() => {
     if (isEvm) {
