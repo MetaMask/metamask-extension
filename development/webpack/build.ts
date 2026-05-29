@@ -4,6 +4,7 @@ import {
   logWatchBuildStats,
   logStats,
   noop,
+  ignoreCacheShutdownSignal,
   setupGracefulWatchShutdown,
   suppressDevServerInfoLogs,
 } from './utils/helpers';
@@ -45,10 +46,21 @@ export function build(onComplete: () => void = noop) {
   } else {
     compiler.run((err, stats) => {
       logStats(err ?? undefined, stats);
-      // `onComplete` must be called synchronously _before_ `compiler.close`
-      // or the caller might observe output from the `close` command.
-      onComplete();
-      compiler.close(noop);
+      // Install before `onComplete` signals the parent process so shutdown
+      // signals forwarded during that handoff cannot interrupt cache writes.
+      const removeCacheShutdownSignalHandlers =
+        options.cache.type === 'filesystem'
+          ? ignoreCacheShutdownSignal(process)
+          : noop;
+      try {
+        // `onComplete` must be called synchronously _before_ `compiler.close`
+        // or the caller might observe output from the `close` command.
+        onComplete();
+        compiler.close(() => removeCacheShutdownSignalHandlers());
+      } catch (error) {
+        removeCacheShutdownSignalHandlers();
+        throw error;
+      }
     });
   }
 }

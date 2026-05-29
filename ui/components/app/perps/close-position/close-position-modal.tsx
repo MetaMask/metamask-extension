@@ -15,6 +15,7 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
+import type { ClosePositionParams } from '@metamask/perps-controller';
 import {
   formatPerpsFiat,
   formatPnl,
@@ -45,6 +46,7 @@ import {
   getDisplayName,
   getPositionDirection,
   getPositionPnlRatio,
+  buildPerpsVipTrackingData,
 } from '../utils';
 import { handlePerpsError } from '../utils/translate-perps-error';
 import { PERPS_MIN_MARKET_ORDER_USD } from '../constants';
@@ -58,14 +60,7 @@ import {
 } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import type { Position } from '../types';
-
-type ClosePositionParams = {
-  symbol: string;
-  orderType: 'market';
-  currentPrice: number;
-  size?: string;
-  position?: Position;
-};
+import { useVipTier } from '../../../../hooks/rewards/useVipTier';
 
 type CloseToastConfig = Pick<PerpsToastKeyConfig, 'key' | 'description'>;
 
@@ -277,6 +272,8 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     [],
   );
 
+  const vipTier = useVipTier();
+
   const [closePercent, setClosePercent] = useState(100);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -401,18 +398,23 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
 
     try {
       onClose();
+      const closeRequestParams = buildCloseRequestParams({
+        symbol: position.symbol,
+        currentPrice,
+        isPartialClose,
+        closeSize,
+        position,
+      });
+      closeRequestParams.trackingData = buildPerpsVipTrackingData({
+        totalFee: estimatedFees,
+        marketPrice: currentPrice,
+        vipTier,
+        vipDiscount: metamaskFeeRateDiscountPercentage,
+      });
       const result = await submitRequestToBackground<{
         success: boolean;
         error?: string;
-      }>('perpsClosePosition', [
-        buildCloseRequestParams({
-          symbol: position.symbol,
-          currentPrice,
-          isPartialClose,
-          closeSize,
-          position,
-        }),
-      ]);
+      }>('perpsClosePosition', [closeRequestParams]);
       if (!result.success) {
         const message = result.error || 'Failed to close position';
         track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
@@ -498,6 +500,8 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     onClose,
     formatPercentWithMinThreshold,
     formatFiat,
+    vipTier,
+    metamaskFeeRateDiscountPercentage,
   ]);
 
   const handlePercentChange = useCallback((percent: number) => {
