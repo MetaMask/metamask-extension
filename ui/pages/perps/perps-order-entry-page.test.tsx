@@ -1150,11 +1150,15 @@ describe('PerpsOrderEntryPage', () => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsClosePosition',
         [
-          {
+          expect.objectContaining({
             symbol: 'ETH',
             orderType: 'market',
             currentPrice: 3025.5,
-          },
+            trackingData: expect.objectContaining({
+              totalFee: expect.any(Number),
+              marketPrice: 3025.5,
+            }),
+          }),
         ],
       );
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
