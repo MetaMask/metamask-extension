@@ -7,7 +7,130 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.33.0]
+
+### Uncategorized
+
+- Fixed the VIP tier label to display "VIP" instead of "VIP Fox" (#42856)
+- chore: Replace `await-semaphore` with `async-mutex` (#42818)
+- Updated Activity tab empty states to show context-specific messaging and actions when users have no transaction (#42786)
+  history.
+- Removed outdated translations from community-contributed ga, pt_BR, and zh_TW locales. (#40974)
+- Add Sentry distributed tracing instrumentation for Background RPC calls and inter-controller messenger calls. (#39891)
+- perf(6633): strip unused `withRouterHooks` props in lock and unlock-page containers (#42688)
+- Bump perps-controller to 6.1.0 (#42695)
+- perf(6918): memoize AssetPollingContext value to prevent unnecessary consumer re-renders (#42686)
+- perf(6917): extract useTokenBalances to isolated components to prevent subtree re-renders (#42685)
+- Set up batch sell quotes (#42434)
+- perf(6643): extract network/approval-driven route state from Routes (#42493)
+- chore: bump basic-ftp to 5.3.1 to fix GHSA-rpmf-866q-6p89 (#42508)
+- Update assets controllers to version 106.0.0 (#42465)
+- Migrate to new assets controller (#42297)
+- Aligned previously base-enabled custom network logos (Stable, Flow, XDC, Fraxtal, Hemi, Plasma, Lukso, Rootstock, MSU, Sonic, (#42555)
+  Lens, Plume) to a square format consistent with Popular networks
+- Remove tokensChainsCache usage from useTokenDetails (#42547)
+- Modified useERC20Tokens to make an API call instead of reading from the cache (#42489)
+
+### Added
+
+- Added new UI for hardware wallet onboarding process (#42720)
+- Fixed a bug that stopped Solana tokens from being imported (#42854)
+  Fixed a bug that stopped Tron assets for showing on
+  first import
+- Add new user traits in metametrics, `account_type`. (#42855)
+- Adds new ERC-7715 permission type `token-approval-revocation` that can be granted via (#42841)
+  `wallet_requestExecutionPermissions`
+- Added percentage and Max controls to the Perps withdraw confirmation flow. (#42783)
+- Added stop loss, take profit, liquidation, and auto-deleveraging badges to perps activity rows (#42645)
+- Added VIP tier badge and fee discount display for Perps trading and Bridge transactions (#42782)
+- Show VIP badge in swap page (#42771)
+- Update toggle (#42714)
+- Show enforced-simulations protection state ("Cancelled" status + info banner) in transaction details and Activity v2; rename (#42368)
+  `FORCE_ENABLE_SIMULATIONS` dev flag.
+- Remove gas alerts from confirmation modal in gasless flows (#42300)
+  update copy of 10 MON minimal reserve confirmation
+  alert
+- Added search for new manage tokens Page (#42624)
+- Text update (#42697)
+- Added in-app notifications for Perps withdrawals (#42607)
+- Added a feature-flagged confirmation flow for Perps withdrawals (#42608)
+- Hidden the EVM network picker on the dapp connection control bar for non-EIP-1193 connections (Solana, Tron, pure Multichain (#42498)
+  API). The picker now renders only for connections with the
+  `eip1193-compatible` session property.
+- Add support for displaying first party contract names in Snaps components (#42648)
+- Add new `native-token-allowance` and `erc20-token-allowance` via `wallet_requestExecutionPermissions` (#42431)
+- Enables previously disabled flipPosition entry point UI (#42467)
+- **Changed**: Clicking the network selector in the Dapp Connection Control Bar now opens an inline popover anchored to the (#41997)
+  selector instead of the full-screen network picker;
+  **Added**: New `DappBarNetworkSelectorPopover` that lists the user's
+  enabled EVM networks, highlights the active one, and switches the dapp's
+  active network on selection.
+- Added decoded revert reasons to the confirmation simulation section and gas estimation alert when advanced details are (#42365)
+  enabled.
+- Added custom token import flow (#42574)
+- Fixed Perps Withdraw token defaults and fee display (#42537)
+- Default network selection on the connect screen is now scoped to the requesting client's namespace. Connecting through a (#42286)
+  single-namespace dapp (EVM, Solana, Tron, or Bitcoin) only pre-permits
+  networks in that namespace; previously, all four namespaces' popular
+  networks were silently pre-permitted regardless of which provider the
+  dapp used.
+- Enable Passkey feature in all builds (#42521)
+- Updated passkey-related copy to use Windows Hello, Touch ID, or Biometrics depending on the user’s platform. (#42491)
+
+### Fixed
+
+- Merge RPC and token list metadata on custom import (#42840)
+- Remove the number of promises waiting for unlock from the badge (#42825)
+- Added current position size display on the increase exposure screen for perpetual trades (#42673)
+- Sponsored hardware wallet send max native (#42494)
+- Fixed a perps bug where market orders submitted with TP/SL left the Auto-close section empty and surfaced the TP/SL orders in (#42661)
+  the Orders section of the market detail page.
+- Fixed a bug that made only the Recent activity arrow tappable in Perps. (#42676)
+- Fixed Perps withdraw validation and activity details. (#42751)
+- N/A (#42770)
+- Fixed Perps market token logos that were difficult to see in dark mode (#42689)
+- Fixed open order price display to use correct number of decimals matching market price precision (#42405)
+- Prevented BTC swap when BTC network fees not retrieved (#42632)
+- Null (#42698)
+
+## **Related issues**
+
+Fixes:
+
+- Monad swap activity in asset details (#42669)
+- Improve login speed on slow networks (#42693)
+- Fixed a bug that prevented some Perps deposits from showing completion toasts. (#42671)
+- fix: patch assets controller 7.0.0 (#42666)
+- Fixed transaction publishing when Sentinel network flag requests fail. (#42677)
+- Route 7702 downgrade through standard publish path on sponsored networks (#42614)
+- Fixed a crash ("new BigNumber() number type has more than 15 significant digits") that could occur when viewing transaction (#42674)
+  confirmations, especially for users with non-USD currencies
+- Handle unsupported network from API (#42657)
+- Fixed a bug that caused Perps liquidation price and distance to show misleading values for non-positive liquidation prices (#42429)
+- Fixes websocket connection console errors on user initiated actions like account switch (#42473)
+- Adjusted Perps market filter modal design to improve sort hierarchy readability and use correct grey selected state (#42578)
+- Fixed perps order screen showing a redundant `min $10` placeholder and not auto-scrolling the auto-close section into view when (#42538)
+  enabled.
+- Fixed a Perps close-position warning that referenced the slider instead of closing the full position (#42435)
+- Fixed a bug where Perps RoE values could differ between the summary row and a single open position card (#42302)
+- Fixed an issue where Recent Activity rows on the Perps tab and market detail page were not tappable; tapping a row now opens (#42303)
+  the full activity list.
+- Fixed a bug that hid max leverage on the perps market detail page (#42404)
+- Fixed a bug that caused Perps TP/SL auto-close prices generated from percentage input to show too many decimal places for some (#42461)
+  markets.
+- Fix missing Explorer button on receive for Tempo (#42481)
+- Modals in lock screen (#42548)
+- Adds default background colour to network form footer (#42497)
+
 ## [13.32.1]
+
+### Changed
+
+- Bumped `qs` to 6.15.2, `tmp` to 0.2.6, updated uuid audit ignore ([#42999](https://github.com/MetaMask/metamask-extension/pull/42999))
+
+### Fixed
+
+- Disabled unified assets controller to fix background calls issue ([#42992](https://github.com/MetaMask/metamask-extension/pull/42992))
 
 ## [13.32.0]
 
@@ -2353,7 +2476,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.32.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.33.0...HEAD
+[13.33.0]: https://github.com/MetaMask/metamask-extension/compare/v13.32.1...v13.33.0
 [13.32.1]: https://github.com/MetaMask/metamask-extension/compare/v13.32.0...v13.32.1
 [13.32.0]: https://github.com/MetaMask/metamask-extension/compare/v13.31.0...v13.32.0
 [13.31.0]: https://github.com/MetaMask/metamask-extension/compare/v13.30.0...v13.31.0
