@@ -61,8 +61,10 @@ jest.mock('../unlock-page', () => {
 
   return function mockUnlock({
     onSubmit,
+    navigateAfterUnlock,
   }: {
     onSubmit: (password: string) => Promise<void>;
+    navigateAfterUnlock?: () => Promise<void>;
   }) {
     const [password, setPassword] = reactModule.useState('');
 
@@ -73,7 +75,13 @@ jest.mock('../unlock-page', () => {
           value={password}
           onChange={(event) => setPassword(event.target.value)}
         />
-        <button data-testid="unlock-submit" onClick={() => onSubmit(password)}>
+        <button
+          data-testid="unlock-submit"
+          onClick={async () => {
+            await onSubmit(password);
+            await navigateAfterUnlock?.();
+          }}
+        >
           Unlock
         </button>
       </div>
@@ -456,15 +464,15 @@ describe('Onboarding Flow', () => {
         expect(setCompletedOnboardingWithSidepanel).toHaveBeenCalled();
       });
 
-      expect(container.querySelector('.loading-overlay')).toBeInTheDocument();
+      expect(container.querySelector('.loading-overlay')).not.toBeInTheDocument();
       expect(mockUseNavigate).not.toHaveBeenCalled();
 
       sidepanelCompletion.resolve();
 
       await waitFor(() => {
-        expect(
-          container.querySelector('.loading-overlay'),
-        ).not.toBeInTheDocument();
+        expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+          replace: true,
+        });
       });
     });
 
@@ -500,17 +508,16 @@ describe('Onboarding Flow', () => {
         expect(setCompletedOnboarding).toHaveBeenCalled();
       });
 
-      expect(container.querySelector('.loading-overlay')).toBeInTheDocument();
+      expect(container.querySelector('.loading-overlay')).not.toBeInTheDocument();
       expect(mockUseNavigate).not.toHaveBeenCalled();
 
       onboardingCompletion.resolve();
 
       await waitFor(() => {
-        expect(
-          container.querySelector('.loading-overlay'),
-        ).not.toBeInTheDocument();
+        expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+          replace: true,
+        });
       });
-      expect(mockUseNavigate).not.toHaveBeenCalled();
     });
   });
 

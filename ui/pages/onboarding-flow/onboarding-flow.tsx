@@ -242,17 +242,6 @@ export default function OnboardingFlow() {
     }
   };
 
-  const handleSocialLoginRehydration = async () => {
-    if (isSidePanelEnabled) {
-      await dispatch(setUseSidePanelAsDefault(true));
-      await dispatch(setCompletedOnboardingWithSidepanel());
-    } else {
-      await dispatch(setCompletedOnboarding());
-    }
-
-    // unlock-page will be handling the navigation to the next route (i.e. Home)
-  };
-
   const handleUnlock = async (password: string) => {
     try {
       setIsLoading(true);
@@ -274,13 +263,35 @@ export default function OnboardingFlow() {
       if (retrievedSecretRecoveryPhrase) {
         setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
       }
-      if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
-        await handleSocialLoginRehydration();
-        return;
-      }
-      navigate(nextRoute, { replace: true });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  /**
+   * Redirects after a successful unlock (`handleUnlock` is called).
+   * Previously, navigation was handled immediately after `handleUnlock` is called.
+   * This functions is explicitly provided to `Unlock` component to allow for custom logics (e.g. metrics) before the navigation.
+   */
+  const handleNavigationAfterUnlock = async () => {
+    if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
+      if (isSidePanelEnabled) {
+        await dispatch(setUseSidePanelAsDefault(true));
+        await dispatch(setCompletedOnboardingWithSidepanel());
+
+        // for sidepanel, we need to navigate to the next route (i.e. Home)
+        navigate(DEFAULT_ROUTE, { replace: true });
+      } else {
+        await dispatch(setCompletedOnboarding());
+        let redirectTo = DEFAULT_ROUTE;
+        const fromLocation = location.state?.from;
+        if (fromLocation?.pathname) {
+          redirectTo = fromLocation.pathname + (fromLocation.search || '');
+        }
+        navigate(redirectTo, { replace: true });
+      }
+    } else {
+      navigate(nextRoute, { replace: true });
     }
   };
 
@@ -408,7 +419,7 @@ export default function OnboardingFlow() {
             />
             <Route
               path={toRelativePath(ONBOARDING_UNLOCK_ROUTE)}
-              element={<Unlock onSubmit={handleUnlock} />}
+              element={<Unlock onSubmit={handleUnlock} navigateAfterUnlock={handleNavigationAfterUnlock} />}
             />
             <Route
               path={toRelativePath(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}

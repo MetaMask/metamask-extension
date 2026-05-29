@@ -72,7 +72,7 @@ type UnlockPageProps = {
   isUnlocked: boolean;
   isOnboardingCompleted: boolean;
   onSubmit: (password: string) => Promise<void>;
-  navigateAfterUnlock: () => void;
+  navigateAfterUnlock: () => Promise<void>;
   isPasskeyActive: boolean;
   onUnlockWithPasskey: (
     authenticationResponse: PasskeyAuthenticationResponse,
@@ -387,7 +387,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
         },
       );
       this.setState({ isSubmitting: false });
-      this.props.navigateAfterUnlock();
+      await this.props.navigateAfterUnlock();
     } catch (error) {
       this.setState({ isSubmitting: false });
       await this.handleLoginError(error as LoginError, isRehydrationFlow);
@@ -579,7 +579,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     authenticationResponse: PasskeyAuthenticationResponse,
   ) => {
     await this.props.onUnlockWithPasskey(authenticationResponse);
-    this.props.navigateAfterUnlock();
+    await this.props.navigateAfterUnlock();
   };
 
   onForgotPasswordOrLoginWithDiffMethods = async () => {

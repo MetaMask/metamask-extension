@@ -1,11 +1,11 @@
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import {
   OnboardingState,
   getIsSocialLoginUserAuthenticated,
   getSocialLoginEmail,
   getSocialLoginType,
 } from './onboarding';
-import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 
 const MOCK_NODE_AUTH_TOKENS = [
   {
