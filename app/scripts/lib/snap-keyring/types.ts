@@ -30,6 +30,7 @@ import { SnapKeyring } from '@metamask/eth-snap-keyring';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller-method-action-types';
+import { LegacyBackgroundApiServiceRemoveAccountAction } from '../../services/legacy-background-api-service-method-action-types';
 
 export type SnapKeyringBuilderAllowedActions =
   | ApprovalControllerStartFlowAction
@@ -54,7 +55,8 @@ export type SnapKeyringBuilderAllowedActions =
   | SnapControllerIsMinimumPlatformVersionAction
   | RemoteFeatureFlagControllerGetStateAction
   | KeyringControllerPersistAllKeyringsAction
-  | MetaMetricsControllerTrackEventAction;
+  | MetaMetricsControllerTrackEventAction
+  | LegacyBackgroundApiServiceRemoveAccountAction;
 
 export type SnapKeyringBuilderMessenger = Messenger<
   'SnapKeyring',
