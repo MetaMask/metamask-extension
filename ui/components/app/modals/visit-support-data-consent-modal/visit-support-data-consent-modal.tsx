@@ -45,6 +45,7 @@ const VisitSupportDataConsentModal: React.FC<
   const { trackEvent } = useContext(MetaMetricsContext);
   const sessionData = useSelector(selectSessionData);
   const profileId = sessionData?.profile?.profileId;
+  console.log('[Support] profileId:', profileId);
   const metaMetricsId = useSelector(getMetaMetricsId);
   const { customerId: shieldCustomerId } = useUserSubscriptions();
 
