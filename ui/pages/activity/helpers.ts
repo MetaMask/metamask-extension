@@ -169,6 +169,36 @@ export function groupActivityListItems(
   return grouped;
 }
 
+/**
+ * Finds the index of the last EVM item in the grouped items list
+ * to determine when to trigger loading more items when scrolling
+ *
+ * @param groupedItems - Grouped items
+ * @param evmItems - EVM items
+ */
+export function getLastEvmItemIndex(
+  groupedItems: GroupedItem[],
+  evmItems: ActivityListItem[],
+) {
+  const evmItemHashes = new Set(
+    evmItems.flatMap((item) => {
+      const hash = getItemHash(item);
+      return hash ? [hash] : [];
+    }),
+  );
+
+  for (let index = groupedItems.length - 1; index >= 0; index -= 1) {
+    const row = groupedItems[index];
+    const hash = row?.type === 'item' ? getItemHash(row.item) : undefined;
+
+    if (hash && evmItemHashes.has(hash)) {
+      return index;
+    }
+  }
+
+  return -1;
+}
+
 export function getItemKey(row: GroupedItem, index: number) {
   if (row.type === 'pending-header') {
     return 'pending-header';

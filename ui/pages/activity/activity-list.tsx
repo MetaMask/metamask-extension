@@ -14,6 +14,7 @@ import { LegacyDetails } from './legacy-details';
 import { ActivityRow } from './cells/activity-row';
 import {
   dedupeItems,
+  getLastEvmItemIndex,
   getItemKey,
   groupActivityListItems,
   type ActivityListFilter,
@@ -33,49 +34,32 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
     null,
   );
   const filters = filter ?? { networks };
+
+  const { data, isInitialLoading, fetchNextVisiblePage } =
+    useTransactionsQuery(filters);
+
   const localItems = useLocalTransactions(filters);
   const nonEvmItems = useNonEvmTransactions(filters);
+  const evmItems = useMemo(
+    () => data?.pages.flatMap((page) => page.data) ?? [],
+    [data],
+  );
 
-  const {
-    data,
-    isInitialLoading,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useTransactionsQuery(filters);
-
-  const { groupedItems, lastEvmItemIndex } = useMemo(() => {
-    const evmItems = data?.pages.flatMap((page) => page.data) ?? [];
-    const evmItemHashes = new Set(
-      evmItems.flatMap((item) => {
-        const hash = item.data.hash?.toLowerCase();
-        return hash ? [hash] : [];
-      }),
-    );
+  const groupedItems = useMemo(() => {
     const items = dedupeItems(evmItems, nonEvmItems, localItems);
-    const groupedItems = groupActivityListItems(items);
 
-    for (let index = groupedItems.length - 1; index >= 0; index -= 1) {
-      const row = groupedItems[index];
-      const hash =
-        row?.type === 'item' ? row.item.data.hash?.toLowerCase() : undefined;
+    return groupActivityListItems(items);
+  }, [evmItems, localItems, nonEvmItems]);
 
-      if (hash && evmItemHashes.has(hash)) {
-        return { groupedItems, lastEvmItemIndex: index };
-      }
-    }
-
-    return { groupedItems, lastEvmItemIndex: -1 };
-  }, [data, localItems, nonEvmItems]);
+  const lastEvmItemIndex = useMemo(
+    () => getLastEvmItemIndex(groupedItems, evmItems),
+    [evmItems, groupedItems],
+  );
 
   const itemRef = useItemInView({
     targetIndex: lastEvmItemIndex,
     root: scrollContainerRef?.current ?? null,
-    onVisible: () => {
-      if (hasNextPage && !isFetchingNextPage) {
-        fetchNextPage();
-      }
-    },
+    onVisible: fetchNextVisiblePage,
   });
 
   const handleClick = (item: ActivityListItem) => {
@@ -133,13 +117,6 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
             />
           );
         }}
-        listFooterComponent={
-          isFetchingNextPage ? (
-            <Box className="p-4 flex justify-center">
-              <Text className="text-alternative">{t('loading')}</Text>
-            </Box>
-          ) : null
-        }
       />
 
       <LegacyDetails

@@ -1,7 +1,7 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { HttpError } from '@metamask/core-backend';
 import { parseCaipAssetType } from '@metamask/utils';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { MINUTE } from '../../../shared/constants/time';
 import { getErrorBodyMessage } from '../../../shared/lib/error';
@@ -13,6 +13,7 @@ import type { ActivityListFilter } from './helpers';
 import { useQueryFilters } from './query-filters/useQueryFilters';
 
 const knownApiMessages = ['networks param contains no supported chains'];
+const maxEmptyFilteredPagesToSkip = 1;
 
 type TransactionQueryOptions = ReturnType<
   typeof apiClient.accounts.getV4MultiAccountTransactionsInfiniteQueryOptions
@@ -90,7 +91,7 @@ export function useTransactionsQuery(filters: ActivityListFilter) {
     evmNetworks.length > 0 &&
     accountAddresses.length > 0;
 
-  return useInfiniteQuery({
+  const query = useInfiniteQuery({
     ...queryOptions,
     // @ts-expect-error apiClient returns v5 types, repo still in v4
     queryFn: withKnownApiResponse(queryOptions.queryFn),
@@ -102,4 +103,50 @@ export function useTransactionsQuery(filters: ActivityListFilter) {
     refetchOnMount: true,
     refetchOnWindowFocus: true,
   });
+
+  // Client-side filters can result in empty pages, so skip a bounded number
+  // until we find a non-empty page or reach the skip limit
+  const fetchNextVisiblePage = useCallback(() => {
+    if (!query.hasNextPage || query.isFetchingNextPage) {
+      return;
+    }
+
+    async function fetchPages() {
+      let visibleItemCount =
+        query.data?.pages.flatMap((page) => page.data).length ?? 0;
+      let pageCount = query.data?.pages.length ?? 0;
+      let emptyFilteredPagesSkipped = 0;
+      let result = await query.fetchNextPage();
+
+      while (
+        result.hasNextPage &&
+        emptyFilteredPagesSkipped < maxEmptyFilteredPagesToSkip
+      ) {
+        const pages = result.data?.pages ?? [];
+        const nextPageCount = pages.length;
+        const nextVisibleItemCount = pages.flatMap((page) => page.data).length;
+
+        if (
+          nextVisibleItemCount > visibleItemCount ||
+          nextPageCount <= pageCount
+        ) {
+          break;
+        }
+
+        emptyFilteredPagesSkipped += 1;
+        visibleItemCount = nextVisibleItemCount;
+        pageCount = nextPageCount;
+        result = await query.fetchNextPage();
+      }
+    }
+
+    fetchPages().catch(() => undefined);
+  }, [
+    query.data?.pages,
+    query.fetchNextPage,
+    query.hasNextPage,
+    query.isFetchingNextPage,
+  ]);
+
+  return { ...query, fetchNextVisiblePage };
 }
