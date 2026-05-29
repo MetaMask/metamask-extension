@@ -4201,8 +4201,9 @@ describe('MetaMaskController', () => {
         });
 
         metamaskController.provider = provider;
-        const tokenDetails =
-          await metamaskController.getTokenStandardAndDetails(
+        const tokenDetails = await metamaskController
+          .getApi()
+          .getTokenStandardAndDetails(
             '0x6B175474E89094C44Da98b954EedeAC495271d0F',
             '0xf0d172594caedee459b89ad44c94098e474571b6',
           );
@@ -4241,8 +4242,9 @@ describe('MetaMaskController', () => {
         );
 
         metamaskController.provider = provider;
-        const tokenDetails =
-          await metamaskController.getTokenStandardAndDetails(
+        const tokenDetails = await metamaskController
+          .getApi()
+          .getTokenStandardAndDetails(
             '0x6B175474E89094C44Da98b954EedeAC495271d0F',
             '0xf0d172594caedee459b89ad44c94098e474571b6',
           );
@@ -4266,8 +4268,9 @@ describe('MetaMaskController', () => {
         });
 
         metamaskController.provider = provider;
-        const tokenDetails =
-          await metamaskController.getTokenStandardAndDetails(
+        const tokenDetails = await metamaskController
+          .getApi()
+          .getTokenStandardAndDetails(
             '0x6B175474E89094C44Da98b954EedeAC495271d0F',
             '0xf0d172594caedee459b89ad44c94098e474571b6',
           );
@@ -4310,16 +4313,22 @@ describe('MetaMaskController', () => {
         });
 
         metamaskController.provider = provider;
+        const originalControllerMessengerCall =
+          metamaskController.controllerMessenger.call.bind(
+            metamaskController.controllerMessenger,
+          );
 
         jest
-          .spyOn(
-            metamaskController.assetsContractController,
-            'getTokenStandardAndDetails',
-          )
-          .mockReturnValue(tokenData);
+          .spyOn(metamaskController.controllerMessenger, 'call')
+          .mockImplementation((action, ...args) =>
+            action === 'AssetsContractController:getTokenStandardAndDetails'
+              ? tokenData
+              : originalControllerMessengerCall(action, ...args),
+          );
 
-        const tokenDetails =
-          await metamaskController.getTokenStandardAndDetails(
+        const tokenDetails = await metamaskController
+          .getApi()
+          .getTokenStandardAndDetails(
             '0xNotInTokenList',
             '0xf0d172594caedee459b89ad44c94098e474571b6',
           );
@@ -4364,16 +4373,22 @@ describe('MetaMaskController', () => {
         });
 
         metamaskController.provider = provider;
+        const originalControllerMessengerCall =
+          metamaskController.controllerMessenger.call.bind(
+            metamaskController.controllerMessenger,
+          );
 
         jest
-          .spyOn(
-            metamaskController.assetsContractController,
-            'getTokenStandardAndDetails',
-          )
-          .mockReturnValue(tokenData);
+          .spyOn(metamaskController.controllerMessenger, 'call')
+          .mockImplementation((action, ...args) =>
+            action === 'AssetsContractController:getTokenStandardAndDetails'
+              ? tokenData
+              : originalControllerMessengerCall(action, ...args),
+          );
 
-        const tokenDetails =
-          await metamaskController.getTokenStandardAndDetails(
+        const tokenDetails = await metamaskController
+          .getApi()
+          .getTokenStandardAndDetails(
             '0xAAA75474e89094c44da98b954eedeac495271d0f',
             '0xf0d172594caedee459b89ad44c94098e474571b6',
           );
@@ -4418,20 +4433,26 @@ describe('MetaMaskController', () => {
         });
 
         metamaskController.provider = provider;
+        const originalControllerMessengerCall =
+          metamaskController.controllerMessenger.call.bind(
+            metamaskController.controllerMessenger,
+          );
 
         jest
-          .spyOn(
-            metamaskController.assetsContractController,
-            'getTokenStandardAndDetails',
-          )
-          .mockReturnValue(tokenData);
+          .spyOn(metamaskController.controllerMessenger, 'call')
+          .mockImplementation((action, ...args) =>
+            action === 'AssetsContractController:getTokenStandardAndDetails'
+              ? tokenData
+              : originalControllerMessengerCall(action, ...args),
+          );
 
         const spyOnFetchERC1155Balance = jest
           .spyOn(tokenUtils, 'fetchERC1155Balance')
           .mockReturnValue({ _hex: '0x1' });
 
-        const tokenDetails =
-          await metamaskController.getTokenStandardAndDetails(
+        const tokenDetails = await metamaskController
+          .getApi()
+          .getTokenStandardAndDetails(
             '0xAAA75474e89094c44da98b954eedeac495271d0f',
             '0xf0d172594caedee459b89ad44c94098e474571b6',
           );
