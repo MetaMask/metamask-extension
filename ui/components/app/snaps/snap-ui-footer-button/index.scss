@@ -1,14 +1,14 @@
 .snap-ui-renderer__footer-button {
-  &:not(.hide-snap-branding) {
+  &:not(.hide-snap-branding):not(.snap-ui-renderer__footer-button--disabled) {
     &.snap-ui-renderer__footer-button--primary {
       box-shadow: none;
 
-      &:hover:not(&--disabled) {
+      &:hover {
         opacity: 80%;
         box-shadow: none;
       }
 
-      &:active:not(&--disabled) {
+      &:active {
         opacity: 60%;
       }
 
@@ -22,14 +22,14 @@
       border-color: var(--color-icon-default);
       color: var(--color-icon-default);
 
-      &:hover:not(&--disabled) {
+      &:hover {
         border-color: var(--color-icon-default);
         color: var(--color-icon-default);
         background-color: var(--color-background-default-hover);
         box-shadow: none;
       }
 
-      &:active:not(&--disabled) {
+      &:active {
         border-color: var(--color-icon-default);
         color: var(--color-icon-default);
         opacity: 60%;
@@ -41,7 +41,7 @@
     }
   }
 
-  &:not(&--disabled) {
+  &:not(.snap-ui-renderer__footer-button--disabled) {
     &:hover {
       cursor: pointer;
     }

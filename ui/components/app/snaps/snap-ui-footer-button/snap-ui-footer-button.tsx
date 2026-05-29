@@ -12,6 +12,7 @@ import {
   IconSize,
 } from '@metamask/design-system-react';
 import type { ButtonProps } from '@metamask/design-system-react';
+import { TextVariant } from '../../../../helpers/constants/design-system';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import { SnapIcon } from '../snap-icon';
 import { getHideSnapBranding } from '../../../../selectors';
@@ -36,10 +37,10 @@ export const SnapUIFooterButton = ({
   variant = ButtonVariant.Primary,
   snapVariant,
   form,
-  textVariant: _textVariant,
+  textVariant,
   ...props
 }: React.PropsWithChildren<
-  SnapUIFooterButtonProps & ButtonProps & { textVariant?: unknown }
+  SnapUIFooterButtonProps & ButtonProps & { textVariant?: TextVariant }
 >) => {
   const { handleEvent, snapId } = useSnapInterfaceContext();
   const hideSnapBranding = useSelector((state) =>

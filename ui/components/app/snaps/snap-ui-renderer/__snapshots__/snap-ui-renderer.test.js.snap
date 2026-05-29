@@ -252,7 +252,6 @@ exports[`SnapUIRenderer renders footers 1`] = `
           class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default snap-ui-renderer__footer-button snap-ui-renderer__footer-button--primary"
           data-testid="undefined-snap-footer-button"
           role="button"
-          textvariant="body-md"
           type="button"
         >
           <div
@@ -321,7 +320,6 @@ exports[`SnapUIRenderer supports container backgrounds 1`] = `
           class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default snap-ui-renderer__footer-button snap-ui-renderer__footer-button--primary"
           data-testid="undefined-snap-footer-button"
           role="button"
-          textvariant="body-md"
           type="button"
         >
           <div
@@ -405,7 +403,6 @@ exports[`SnapUIRenderer supports the contentBackgroundColor prop 1`] = `
           class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default snap-ui-renderer__footer-button snap-ui-renderer__footer-button--primary"
           data-testid="undefined-snap-footer-button"
           role="button"
-          textvariant="body-md"
           type="button"
         >
           <div
@@ -459,7 +456,6 @@ exports[`SnapUIRenderer supports the onCancel prop 1`] = `
           class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default snap-ui-renderer__footer-button snap-ui-renderer__footer-button--primary"
           data-testid="undefined-snap-footer-button"
           role="button"
-          textvariant="body-md"
           type="button"
         >
           <div
