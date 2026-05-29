@@ -156,25 +156,47 @@ const accountResourcesResponse = {
   TotalEnergyWeight: 19125511029,
 };
 
-export const mockGetBlock = (mockServer: Mockttp) =>
-  mockServer.forPost(`${TRONGRID_API_URL}/wallet/getblock`).thenJson(200, {
-    blockID: 'xxxxxxxx',
-    block_header: {
-      raw_data: {
-        number: 60677731,
-        txTrieRoot:
-          '0000000000000000000000000000000000000000000000000000000000000000',
-        witness_address: '41ce9b5acfce023822bcdf302333668cce2ba60bca',
-        parentHash:
-          '00000000039dde62a6faec6860eb9c2271b497d97031f90f336ab564662fc005',
-        version: 32,
-        // Use a recent timestamp to satisfy freshness checks
-        timestamp: Date.now() - 2000,
-      },
-      witness_signature:
-        '354261801bf88973cc144d74d81f90e3ebeb8ea6029b42412757e7e996df6d3a2ad22db54675d77be3774cc067e47f374a9bc8ffbdeb0cb62c6057be26201c9000',
+const blockResponse = {
+  blockID: 'xxxxxxxx',
+  block_header: {
+    raw_data: {
+      number: 60677731,
+      txTrieRoot:
+        '0000000000000000000000000000000000000000000000000000000000000000',
+      witness_address: '41ce9b5acfce023822bcdf302333668cce2ba60bca',
+      parentHash:
+        '00000000039dde62a6faec6860eb9c2271b497d97031f90f336ab564662fc005',
+      version: 32,
+      // Use a recent timestamp to satisfy freshness checks
+      timestamp: Date.now() - 2000,
     },
-  });
+    witness_signature:
+      '354261801bf88973cc144d74d81f90e3ebeb8ea6029b42412757e7e996df6d3a2ad22db54675d77be3774cc067e47f374a9bc8ffbdeb0cb62c6057be26201c9000',
+  },
+};
+
+export const mockGetBlock = (mockServer: Mockttp) =>
+  mockServer
+    .forPost(`${TRONGRID_API_URL}/wallet/getblock`)
+    .thenJson(200, blockResponse);
+
+export const mockGetNowBlock = (mockServer: Mockttp) =>
+  mockServer
+    .forPost(`${TRONGRID_API_URL}/wallet/getnowblock`)
+    .thenJson(200, blockResponse);
+
+export const mockGetBlockByNum = (mockServer: Mockttp) =>
+  mockServer
+    .forPost(`${TRONGRID_API_URL}/wallet/getblockbynum`)
+    .thenJson(200, blockResponse);
+
+// TODO: Check why we had to mock this. Do we intend this call to be routed through Infura
+// instead of Trongrid ?
+export const mockGetNowBlockInfura = (mockServer: Mockttp) =>
+  mockServer
+    .forGet(/tron-mainnet\.infura\.io\/v3\/.*\/wallet\/getnowblock/u)
+    .always()
+    .thenJson(200, blockResponse);
 
 export const mockBroadcastTransaction = (mockServer: Mockttp) =>
   mockServer
