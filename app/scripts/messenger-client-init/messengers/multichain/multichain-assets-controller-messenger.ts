@@ -4,7 +4,18 @@ import {
   MessengerEvents,
 } from '@metamask/messenger';
 import { MultichainAssetsControllerMessenger } from '@metamask/assets-controllers';
+import type { KeyringControllerState } from '@metamask/keyring-controller';
+import type { Patch } from 'immer';
 import { RootMessenger } from '../../../lib/messenger';
+
+/**
+ * Mirrors {@link KeyringControllerStateChangeEvent} for the non-deprecated
+ * `KeyringController:stateChanged` event (see BaseController).
+ */
+type KeyringControllerStateChangedEvent = {
+  type: 'KeyringController:stateChanged';
+  payload: [KeyringControllerState, Patch[]];
+};
 
 /**
  * Get a restricted messenger for the Multichain Assets controller. This is scoped to the
@@ -31,6 +42,8 @@ export function getMultichainAssetsControllerMessenger(
       'AccountsController:accountAdded',
       'AccountsController:accountRemoved',
       'AccountsController:accountAssetListUpdated',
+      'AccountsController:accountBalancesUpdated',
+      'KeyringController:stateChanged',
     ],
     actions: [
       'PermissionController:getPermissions',
@@ -38,6 +51,8 @@ export function getMultichainAssetsControllerMessenger(
       'SnapController:getRunnableSnaps',
       'AccountsController:listMultichainAccounts',
       'PhishingController:bulkScanTokens',
+      'MultichainBalancesController:mergeAccountBalanceExtras',
+      'KeyringController:getState',
     ],
   });
 

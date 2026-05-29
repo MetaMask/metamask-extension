@@ -5827,9 +5827,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:@metamask-previews/assets-controllers@106.0.0-preview-6c5b6b08f":
-  version: 106.0.0-preview-6c5b6b08f
-  resolution: "@metamask-previews/assets-controllers@npm:106.0.0-preview-6c5b6b08f"
+"@metamask/assets-controllers@npm:@metamask-previews/assets-controllers@106.0.0-preview-5f6bfd7b7":
+  version: 106.0.0-preview-5f6bfd7b7
+  resolution: "@metamask-previews/assets-controllers@npm:106.0.0-preview-5f6bfd7b7"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5838,7 +5838,7 @@ __metadata:
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
     "@metamask/abi-utils": "npm:^2.0.3"
-    "@metamask/account-tree-controller": "npm:^7.3.0"
+    "@metamask/account-tree-controller": "npm:^7.2.0"
     "@metamask/accounts-controller": "npm:^38.0.0"
     "@metamask/approval-controller": "npm:^9.0.1"
     "@metamask/base-controller": "npm:^9.1.0"
@@ -5847,13 +5847,13 @@ __metadata:
     "@metamask/core-backend": "npm:^6.2.1"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/keyring-api": "npm:^23.1.0"
-    "@metamask/keyring-controller": "npm:^25.5.0"
+    "@metamask/keyring-controller": "npm:^25.4.0"
     "@metamask/messenger": "npm:^1.2.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/multichain-account-service": "npm:^9.0.0"
+    "@metamask/multichain-account-service": "npm:^8.0.1"
     "@metamask/network-controller": "npm:^30.1.0"
     "@metamask/network-enablement-controller": "npm:^5.1.0"
-    "@metamask/permission-controller": "npm:^13.1.0"
+    "@metamask/permission-controller": "npm:^13.0.0"
     "@metamask/phishing-controller": "npm:^17.1.1"
     "@metamask/polling-controller": "npm:^16.0.4"
     "@metamask/preferences-controller": "npm:^23.1.0"
@@ -5863,7 +5863,7 @@ __metadata:
     "@metamask/snaps-sdk": "npm:^11.0.0"
     "@metamask/snaps-utils": "npm:^12.1.2"
     "@metamask/storage-service": "npm:^1.0.1"
-    "@metamask/transaction-controller": "npm:^65.2.0"
+    "@metamask/transaction-controller": "npm:^65.1.0"
     "@metamask/utils": "npm:^11.9.0"
     "@tanstack/query-core": "npm:^5.62.16"
     "@types/bn.js": "npm:^5.1.5"
@@ -5880,7 +5880,7 @@ __metadata:
   peerDependencies:
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/23633b46fbdfb37b169ab918fa4dacec9468430e0ceeca2492f174c07245cc1adf0dc5fb8e9949b9855656b395fb234997fbe5feef25d2e0c4c5f717ea8e6795
+  checksum: 10/2daaadf569a086956d0a424518a14170933858da02f617ab8849ad4a937e88593d8064ffc478a8417164a5267cb7099d101905665d2e05f360d821b19aea36d3
   languageName: node
   linkType: hard
 
@@ -8267,10 +8267,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/stellar-wallet-snap@npm:0.0.1-dev.186":
-  version: 0.0.1-dev.186
-  resolution: "@metamask/stellar-wallet-snap@npm:0.0.1-dev.186"
-  checksum: 10/e549943c7953feba56cbb46acbe7a55309c84183465ea2348cd1b470cd942ca40561ddbd7f53e01e3a3249ab5e1e791ca0aa2286292cf22d69ad3aeae8a959b8
+"@metamask/stellar-wallet-snap@npm:@metamask-previews/stellar-wallet-snap@0.0.1-preview-56dc705":
+  version: 0.0.1-preview-56dc705
+  resolution: "@metamask-previews/stellar-wallet-snap@npm:0.0.1-preview-56dc705"
+  checksum: 10/bd75fb17c61e264e92bd02b5be9e0cab8003647bb3cdf4a96c28319ef5d95df037116d1150e6449dec23862ef923882d60cfd11a478307e38c49a3238ce91890
   languageName: node
   linkType: hard
 
@@ -33537,7 +33537,7 @@ __metadata:
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
     "@metamask/assets-controller": "npm:7.0.0"
-    "@metamask/assets-controllers": "npm:@metamask-previews/assets-controllers@106.0.0-preview-6c5b6b08f"
+    "@metamask/assets-controllers": "npm:@metamask-previews/assets-controllers@106.0.0-preview-5f6bfd7b7"
     "@metamask/auto-changelog": "npm:^5.3.1"
     "@metamask/base-controller": "npm:^9.0.1"
     "@metamask/bitcoin-wallet-snap": "npm:^1.10.1"
@@ -33653,7 +33653,7 @@ __metadata:
     "@metamask/snaps-utils": "npm:^12.2.0"
     "@metamask/solana-wallet-snap": "npm:^2.8.0"
     "@metamask/solana-wallet-standard": "npm:^1.0.0"
-    "@metamask/stellar-wallet-snap": "npm:0.0.1-dev.186"
+    "@metamask/stellar-wallet-snap": "npm:@metamask-previews/stellar-wallet-snap@0.0.1-preview-56dc705"
     "@metamask/storage-service": "npm:^1.0.0"
     "@metamask/subscription-controller": "npm:^6.1.2"
     "@metamask/superstruct": "npm:^3.2.1"

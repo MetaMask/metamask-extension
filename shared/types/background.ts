@@ -204,8 +204,6 @@ export type ControllerStatePropertiesEnumerated = {
   assetsMetadata: MultichainAssetsControllerState['assetsMetadata'];
   accountsAssets: MultichainAssetsControllerState['accountsAssets'];
   allIgnoredAssets: MultichainAssetsControllerState['allIgnoredAssets'];
-  stellarClassicTrustlineInactiveAssetIds: MultichainAssetsControllerState['stellarClassicTrustlineInactiveAssetIds'];
-  stellarTrustlineInactiveBackfillComplete: MultichainAssetsControllerState['stellarTrustlineInactiveBackfillComplete'];
   multichainNetworkConfigurationsByChainId: MultichainNetworkControllerState['multichainNetworkConfigurationsByChainId'];
   selectedMultichainNetworkChainId: MultichainNetworkControllerState['selectedMultichainNetworkChainId'];
   isEvmSelected: MultichainNetworkControllerState['isEvmSelected'];
