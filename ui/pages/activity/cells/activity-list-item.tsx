@@ -1,7 +1,7 @@
 import React from 'react';
 import { ActivityCell } from './activity-cell';
 import { PendingActivityCell } from './pending-activity-cell';
-import type { ActivityCellProps } from './types';
+import type { ActivityCellProps } from '../types';
 
 export function ActivityListItem({
   data,

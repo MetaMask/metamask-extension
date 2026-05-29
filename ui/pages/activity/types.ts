@@ -1,4 +1,4 @@
-import type { ActivityListItem } from '../../../../shared/lib/activity/types';
+import type { ActivityListItem } from '../../../shared/lib/activity/types';
 
 export type ActivityCellProps = {
   data: ActivityListItem;

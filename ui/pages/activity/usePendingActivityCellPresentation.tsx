@@ -2,7 +2,7 @@ import React from 'react';
 import { Icon, IconName, IconSize } from '@metamask/design-system-react';
 import { StatusIcon } from '../../components/ui/icon/status-icon';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import type { ActivityCellProps } from './cells/types';
+import type { ActivityCellProps } from './types';
 import { useActivityCellPresentation } from './useActivityCellPresentation';
 
 export function usePendingActivityCellPresentation(

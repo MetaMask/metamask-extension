@@ -9,7 +9,7 @@ import { ActivityListItemAvatar } from '../../components/app/activity-list-item-
 import { ChainBadge } from '../../components/app/chain-badge/chain-badge';
 import { shortenAddress } from '../../helpers/utils/util';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import type { ActivityCellProps } from './cells/types';
+import type { ActivityCellProps } from './types';
 import { getActivityListItemAvatarConfig } from './resolve-activity-avatar-config';
 import { useFormatFiatAmount } from './useFormatFiatAmount';
 import { useFormatTokenAmount } from './useFormatTokenAmount';

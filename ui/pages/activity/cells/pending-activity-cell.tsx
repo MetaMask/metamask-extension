@@ -4,7 +4,7 @@ import { TransactionListItemPendingActions } from '../../../components/app/trans
 import { getActivityCellStatus } from '../helpers';
 import { usePendingActivityCellPresentation } from '../usePendingActivityCellPresentation';
 import { ActivityCellBase } from './activity-cell-base';
-import type { ActivityCellProps } from './types';
+import type { ActivityCellProps } from '../types';
 
 export function PendingActivityCell({
   data,

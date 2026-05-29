@@ -10,13 +10,13 @@ export function ActivityCellBase({
   title,
   txStatus,
 }: Readonly<{
+  txStatus: string;
   avatar: React.ReactNode;
-  onClick?: () => void;
+  title: React.ReactNode;
+  subtitle?: React.ReactNode;
   primaryAmount?: React.ReactNode;
   secondaryAmount?: React.ReactNode;
-  subtitle?: React.ReactNode;
-  title: React.ReactNode;
-  txStatus: string;
+  onClick?: () => void;
 }>) {
   return (
     <div
