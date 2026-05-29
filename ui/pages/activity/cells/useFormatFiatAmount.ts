@@ -13,18 +13,18 @@ import {
   getHumanReadableTokenAmount,
   getDisplaySignPrefix,
   toMarketRateLookupToken,
-} from '../../../shared/lib/activity/fiat';
+} from '../../../../shared/lib/activity/fiat';
 import type {
   ActivityListItem,
   TokenAmount,
-} from '../../../shared/lib/activity/types';
-import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
-import { getCurrentCurrency } from '../../ducks/metamask/metamask';
-import { useFormatters } from '../../hooks/useFormatters';
-import { selectMarketRates } from '../../selectors/activity';
-import { getMultichainShouldShowFiat } from '../../selectors/multichain';
-import { useAppSelector } from '../../store/store';
-import { shouldShowPlusSign } from './helpers';
+} from '../../../../shared/lib/activity/types';
+import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+import { useFormatters } from '../../../hooks/useFormatters';
+import { selectMarketRates } from '../../../selectors/activity';
+import { getMultichainShouldShowFiat } from '../../../selectors/multichain';
+import { useAppSelector } from '../../../store/store';
+import { shouldShowPlusSign } from '../helpers';
 
 function resolveHexChainId(
   chainIdForFiat: Hex | CaipChainId | undefined,

@@ -2,7 +2,7 @@ import React from 'react';
 import { PendingActivityCell } from './pending-activity-cell';
 import type { ActivityCellProps } from '../types';
 import { getActivityCellStatus } from '../helpers';
-import { useActivityCellPresentation } from '../useActivityCellPresentation';
+import { useActivityCellPresentation } from './useActivityCellPresentation';
 import { ActivityCellBase } from './activity-cell-base';
 
 export function ActivityListItem({

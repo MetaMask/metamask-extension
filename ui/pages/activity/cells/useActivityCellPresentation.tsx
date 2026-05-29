@@ -1,16 +1,16 @@
 import React from 'react';
 import cn from 'clsx';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
-import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
-import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../shared/constants/multichain/networks';
-import { getLabelKeys } from '../../../shared/lib/activity/label-keys';
-import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
-import { ActivityListItemAvatar } from '../../components/app/activity-list-item-avatar';
-import { ChainBadge } from '../../components/app/chain-badge/chain-badge';
-import { shortenAddress } from '../../helpers/utils/util';
-import { useI18nContext } from '../../hooks/useI18nContext';
-import type { ActivityCellProps } from './types';
-import { getActivityListItemAvatarConfig } from './resolve-activity-avatar-config';
+import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
+import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../shared/constants/multichain/networks';
+import { getLabelKeys } from '../../../../shared/lib/activity/label-keys';
+import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
+import { ActivityListItemAvatar } from '../../../components/app/activity-list-item-avatar';
+import { ChainBadge } from '../../../components/app/chain-badge/chain-badge';
+import { shortenAddress } from '../../../helpers/utils/util';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import type { ActivityCellProps } from '../types';
+import { getActivityListItemAvatarConfig } from '../resolve-activity-avatar-config';
 import { useFormatFiatAmount } from './useFormatFiatAmount';
 import { useFormatTokenAmount } from './useFormatTokenAmount';
 

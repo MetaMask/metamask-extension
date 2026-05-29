@@ -3,13 +3,13 @@ import {
   applyDisplaySign,
   getHumanReadableTokenAmount,
   getDisplaySignPrefix,
-} from '../../../shared/lib/activity/fiat';
+} from '../../../../shared/lib/activity/fiat';
 import type {
   ActivityListItem,
   TokenAmount,
-} from '../../../shared/lib/activity/types';
-import { useFormatters } from '../../hooks/useFormatters';
-import { shouldShowPlusSign } from './helpers';
+} from '../../../../shared/lib/activity/types';
+import { useFormatters } from '../../../hooks/useFormatters';
+import { shouldShowPlusSign } from '../helpers';
 
 export function useFormatTokenAmount() {
   const { formatTokenAmount } = useFormatters();
