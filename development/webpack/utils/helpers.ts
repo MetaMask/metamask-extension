@@ -1,5 +1,6 @@
 import { join, sep } from 'node:path';
-import type { EntryObject, Stats } from 'webpack';
+import type { Compiler, EntryObject, Stats } from 'webpack';
+import type WebpackDevServerType from 'webpack-dev-server';
 import type { Configuration } from 'webpack-dev-server';
 import type TerserPluginType from 'terser-webpack-plugin';
 
@@ -70,6 +71,189 @@ export const UI_COMPONENT_RE = new RegExp(
  * @returns `undefined`
  */
 export const noop = () => undefined;
+
+/**
+ * Suppresses routine webpack-dev-server info logs while leaving warnings and
+ * errors visible.
+ *
+ * webpack-dev-server logs startup and shutdown banners through webpack's
+ * infrastructure logger. Those banners interrupt webpack's progress status
+ * line, so the webpack launcher prints its own concise watch message instead.
+ *
+ * @param compiler - The webpack compiler.
+ */
+export function suppressDevServerInfoLogs(compiler: Compiler): void {
+  compiler.hooks.infrastructureLog.tap(
+    'MetaMaskDevServerInfoLogSuppressor',
+    (name, type) =>
+      name === 'webpack-dev-server' && type === 'info' ? true : undefined,
+  );
+}
+
+/**
+ * Writes a line after clearing webpack's active progress status.
+ *
+ * @param compiler - The webpack compiler.
+ * @param message - The message to write.
+ */
+export function writeLineAfterProgress(
+  compiler: Compiler,
+  message: string,
+): void {
+  compiler.getInfrastructureLogger('webpack.Progress').status();
+  console.error(message);
+}
+
+/**
+ * Logs watch-mode build stats and writes a line once the build is ready for
+ * more changes.
+ *
+ * webpack-dev-server starts listening before webpack finishes the initial
+ * compilation. Hooking the compiler completion keeps the output aligned with
+ * webpack watch mode: stats first, then the watch-ready line.
+ *
+ * @param compiler - The webpack compiler.
+ * @param message - The message to write.
+ */
+export function logWatchBuildStats(
+  compiler: Compiler,
+  message: string,
+): void {
+  const logBuild = (error?: Error | null, stats?: Stats) => {
+    compiler.getInfrastructureLogger('webpack.Progress').status();
+    logStats(error, stats);
+    console.error(message);
+  };
+
+  compiler.hooks.done.tap('MetaMaskWatchBuildLogger', (stats) => {
+    logBuild(undefined, stats);
+  });
+  compiler.hooks.failed.tap('MetaMaskWatchBuildLogger', (error) => {
+    logBuild(error);
+  });
+}
+
+type SignalListener = () => void;
+type SignalProcess = {
+  on: (signal: NodeJS.Signals, listener: SignalListener) => unknown;
+  removeListener: (
+    signal: NodeJS.Signals,
+    listener: SignalListener,
+  ) => unknown;
+};
+
+type GracefulWatchShutdownOptions = {
+  compiler: Compiler;
+  exit?: (code?: number) => void;
+  process?: SignalProcess;
+  server: WebpackDevServerType;
+  signals?: readonly NodeJS.Signals[];
+};
+
+const WATCH_SHUTDOWN_SIGNALS = ['SIGINT', 'SIGTERM'] as const;
+
+/**
+ * Installs signal handlers that let webpack finish closing its cache.
+ *
+ * webpack-dev-server force-exits when the user presses Ctrl+C a second time
+ * during shutdown. That can interrupt webpack's persistent cache write, so
+ * watch mode owns signal handling and ignores repeated shutdown signals until
+ * `compiler.close()` has completed.
+ *
+ * @param options - The watch server, compiler, and optional test hooks.
+ * @param options.compiler
+ * @param options.exit
+ * @param options.process
+ * @param options.server
+ * @param options.signals
+ * @returns A cleanup function that removes the installed listeners.
+ */
+export function setupGracefulWatchShutdown({
+  compiler,
+  exit = (code) => process.exit(code),
+  process: signalProcess = process,
+  server,
+  signals = WATCH_SHUTDOWN_SIGNALS,
+}: GracefulWatchShutdownOptions): () => void {
+  let isShuttingDown = false;
+  const listeners: { signal: NodeJS.Signals; listener: SignalListener }[] = [];
+
+  const removeListeners = () => {
+    for (const { signal, listener } of listeners) {
+      signalProcess.removeListener(signal, listener);
+    }
+  };
+
+  const shutdown = () => {
+    if (isShuttingDown) {
+      writeLineAfterProgress(
+        compiler,
+        '🦊 Still shutting down; waiting for webpack to finish writing its cache…',
+      );
+      return;
+    }
+
+    isShuttingDown = true;
+    writeLineAfterProgress(
+      compiler,
+      '🦊 Gracefully shutting down; waiting for webpack to finish writing its cache…',
+    );
+    closeWatchServerAndCompiler(server, compiler)
+      .then(() => {
+        removeListeners();
+        exit(0);
+      })
+      .catch((error: unknown) => {
+        console.error(error);
+        removeListeners();
+        exit(1);
+      });
+  };
+
+  for (const signal of signals) {
+    signalProcess.on(signal, shutdown);
+    listeners.push({ signal, listener: shutdown });
+  }
+
+  return removeListeners;
+}
+
+async function closeWatchServerAndCompiler(
+  server: WebpackDevServerType,
+  compiler: Compiler,
+): Promise<void> {
+  const errors: unknown[] = [];
+
+  try {
+    await server.stop();
+  } catch (error) {
+    errors.push(error);
+  }
+
+  try {
+    await new Promise<void>((resolve, reject) => {
+      compiler.close((error) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+        resolve();
+      });
+    });
+  } catch (error) {
+    errors.push(error);
+  }
+
+  if (errors.length === 1) {
+    throw errors[0];
+  }
+  if (errors.length > 1) {
+    throw new AggregateError(
+      errors,
+      'Failed to gracefully stop webpack watch mode.',
+    );
+  }
+}
 
 /**
  * Builds the webpack-dev-server client import URL from a

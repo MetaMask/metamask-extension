@@ -17,6 +17,9 @@ export const DEV_SERVER_CLIENT_ENTRY_NAME = 'dev-server-client';
 export const DEV_SERVER_OPTIONS: Configuration = {
   hot: false,
   liveReload: true,
+  // The built-in webpack-dev-server handler force-exits on a second Ctrl+C,
+  // which can interrupt webpack's persistent cache shutdown.
+  setupExitSignals: false,
   // always use loopback, as 0.0.0.0 tends to fail on some machines (WSL2?)
   host: 'localhost',
   // pick a free port at startup.

@@ -1,6 +1,12 @@
 import { webpack } from 'webpack';
 import type WebpackDevServerType from 'webpack-dev-server';
-import { noop, logStats } from './utils/helpers';
+import {
+  logWatchBuildStats,
+  logStats,
+  noop,
+  setupGracefulWatchShutdown,
+  suppressDevServerInfoLogs,
+} from './utils/helpers';
 import config from './webpack.config';
 import { DEV_SERVER_OPTIONS } from './utils/constants';
 
@@ -18,12 +24,17 @@ export function build(onComplete: () => void = noop) {
   // because webpack-dev-server calls `compiler.watch()` itself.
   const { watch, ...options } = config;
   const compiler = webpack(options);
+  console.error(`🦊 Running ${config.mode} build…`);
   if (watch) {
+    suppressDevServerInfoLogs(compiler);
+    logWatchBuildStats(compiler, '🦊 Watching for changes…');
     const WebpackDevServer: typeof WebpackDevServerType = require('webpack-dev-server');
     const server = new WebpackDevServer(DEV_SERVER_OPTIONS, compiler);
+    if (options.cache && options.cache.type === 'filesystem') {
+      setupGracefulWatchShutdown({ compiler, server });
+    }
     server
       .start()
-      .then(() => console.log('🦊 Watching for changes…'))
       .catch((error: unknown) => {
         console.error(
           `🦊 Failed to start dev server on ${server.options.host ?? 'localhost'}:${server.options.port ?? '(auto)'}.`,
@@ -32,7 +43,6 @@ export function build(onComplete: () => void = noop) {
         process.exit(1);
       });
   } else {
-    console.error(`🦊 Running ${config.mode} build…`);
     compiler.run((err, stats) => {
       logStats(err ?? undefined, stats);
       // `onComplete` must be called synchronously _before_ `compiler.close`
