@@ -83,8 +83,8 @@ import {
 import { PATCH_STORE_SUBSTREAM_METHODS } from '../../shared/constants/patch-store-substream-methods';
 import * as environment from '../../shared/lib/environment';
 import * as metamaskControllerUtils from '../../shared/lib/metamask-controller-utils';
-import * as utils from './lib/util';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../test/stub/keyring-bridge';
+import * as utils from './lib/util';
 import { ReferralStatus } from './controllers/preferences-controller';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 import {
