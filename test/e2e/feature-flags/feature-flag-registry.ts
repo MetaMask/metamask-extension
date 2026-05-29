@@ -2493,6 +2493,23 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  earnCONF1385AbtestPrefilledMaxAmount: {
+    name: 'earnCONF1385AbtestPrefilledMaxAmount',
+    type: FeatureFlagType.Remote,
+    inProd: false,
+    productionDefault: [
+      {
+        name: 'control',
+        scope: { type: 'threshold', value: 0.5 },
+      },
+      {
+        name: 'treatment',
+        scope: { type: 'threshold', value: 1.0 },
+      },
+    ],
+    status: FeatureFlagStatus.Active,
+  },
+
   earnMusdConversionGeoBlockedCountries: {
     name: 'earnMusdConversionGeoBlockedCountries',
     type: FeatureFlagType.Remote,

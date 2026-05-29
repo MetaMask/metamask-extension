@@ -22,6 +22,7 @@ export function useTransactionCustomAmount({
   currency,
   disableUpdate = false,
   balanceUsdOverride,
+  prefillMaxOnLoad = false,
 }: {
   currency?: string;
   disableUpdate?: boolean;
@@ -33,6 +34,12 @@ export function useTransactionCustomAmount({
    * shared hook to those flows.
    */
   balanceUsdOverride?: number;
+  /**
+   * When true, the amount field is pre-filled with the max balance once it is
+   * available, unless the user has already edited it. Used by the mUSD
+   * conversion A/B test (Variant B).
+   */
+  prefillMaxOnLoad?: boolean;
 } = {}) {
   const [isInputChanged, setInputChanged] = useState(false);
   const [hasInput, setHasInput] = useState(false);
@@ -55,6 +62,7 @@ export function useTransactionCustomAmount({
   const debounceRef = useRef<DebouncedFunc<(value: string) => void> | null>(
     null,
   );
+  const hasPrefilledMaxRef = useRef(false);
 
   // Create and update debounced function
   useEffect(() => {
@@ -179,7 +187,7 @@ export function useTransactionCustomAmount({
   );
 
   const updatePendingAmountPercentage = useCallback(
-    (percentage: number) => {
+    (percentage: number, { isPrefill = false }: { isPrefill?: boolean } = {}) => {
       const balanceUsdValue = new BigNumber(String(balanceUsd ?? 0));
 
       if (!balanceUsdValue.isFinite() || balanceUsdValue.lte(0)) {
@@ -207,7 +215,7 @@ export function useTransactionCustomAmount({
         upsertTransactionUIMetricsFragment(transactionId, {
           properties: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            mm_pay_amount_input_type: `${percentage}%`,
+            mm_pay_amount_input_type: isPrefill ? 'prefilled_max' : `${percentage}%`,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             mm_pay_quote_requested: true,
           },
@@ -238,6 +246,26 @@ export function useTransactionCustomAmount({
       updateTokenAmountCallback,
     ],
   );
+
+  // Variant B (A/B test): pre-fill the max amount once the balance is known,
+  // unless the user has already edited the field.
+  useEffect(() => {
+    if (
+      !prefillMaxOnLoad ||
+      hasPrefilledMaxRef.current ||
+      isInputChanged ||
+      !(balanceUsd > 0)
+    ) {
+      return;
+    }
+    hasPrefilledMaxRef.current = true;
+    updatePendingAmountPercentage(100, { isPrefill: true });
+  }, [
+    prefillMaxOnLoad,
+    balanceUsd,
+    isInputChanged,
+    updatePendingAmountPercentage,
+  ]);
 
   return {
     amountFiat,

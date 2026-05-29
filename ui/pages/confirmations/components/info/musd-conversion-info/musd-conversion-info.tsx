@@ -11,6 +11,12 @@ import {
   selectTransactionPaymentTokenByTransactionId,
   type TransactionPayState,
 } from '../../../../../selectors/transactionPayController';
+import { useABTest } from '../../../../../hooks/useABTest';
+import {
+  MUSD_PREFILLED_AMOUNT_AB_TEST_KEY,
+  MUSD_PREFILLED_AMOUNT_AB_TEST_VARIANTS,
+  MUSD_PREFILLED_AMOUNT_AB_TEST_EXPOSURE_METADATA,
+} from '../../../../../../shared/lib/ab-testing/configs/musd-prefilled-amount';
 import { useConfirmContext } from '../../../context/confirm';
 import { CustomAmountInfo } from '../custom-amount-info';
 import { useTransactionCustomAmountAlerts } from '../../../hooks/transactions/useTransactionCustomAmountAlerts';
@@ -77,6 +83,17 @@ export const MusdConversionInfo = () => {
     selectTransactionPaymentTokenByTransactionId(state, transactionId),
   );
 
+  // A/B test (Variant B = treatment): pre-fill the max amount on load.
+  // `useABTest` resolves the remote assignment and emits `Experiment Viewed`.
+  // Conversion and drop-off events are enriched with `active_ab_tests` via the
+  // registered analytics mapping.
+  const { variant } = useABTest(
+    MUSD_PREFILLED_AMOUNT_AB_TEST_KEY,
+    MUSD_PREFILLED_AMOUNT_AB_TEST_VARIANTS,
+    MUSD_PREFILLED_AMOUNT_AB_TEST_EXPOSURE_METADATA,
+  );
+  const prefillMaxOnLoad = variant.prefillMax;
+
   // Track quote fetch time via Sentry trace
   useMusdConversionQuoteTrace();
 
@@ -129,6 +146,7 @@ export const MusdConversionInfo = () => {
       disableAutomaticToken={true}
       preferredToken={preferredToken}
       hasMax={true}
+      prefillMaxOnLoad={prefillMaxOnLoad}
       overrideCenterContent={renderOverrideContent}
       overrideBottomContent={<MusdBottomContent />}
     />

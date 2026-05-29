@@ -13,6 +13,7 @@ import * as useTransactionPayDataModule from '../../../hooks/pay/useTransactionP
 import * as useTransactionPayTokenModule from '../../../hooks/pay/useTransactionPayToken';
 import * as useIsPaidByMetaMaskModule from '../../../hooks/pay/useIsPaidByMetaMask';
 import * as useMusdConversionTokensModule from '../../../../../hooks/musd';
+import * as useABTestModule from '../../../../../hooks/useABTest';
 import { MusdConversionInfo } from './musd-conversion-info';
 
 const mockEndTrace = jest.fn();
@@ -27,6 +28,8 @@ jest.mock('../../../../../../shared/lib/trace', () => ({
     MusdConversionDataFetch: 'musd.conversion.data_fetch',
   },
 }));
+
+jest.mock('../../../../../hooks/useABTest');
 
 jest.mock('../../../hooks/transactions/useTransactionCustomAmount');
 jest.mock('../../../hooks/transactions/useTransactionCustomAmountAlerts');
@@ -109,6 +112,7 @@ function setupDefaultMocks({
   hasQuotes = false,
   hideResults = false,
   isPaidByMetaMask = false,
+  prefillMax = false,
   defaultPaymentToken = null as {
     address: string;
     chainId: `0x${string}`;
@@ -118,8 +122,14 @@ function setupDefaultMocks({
   hasQuotes?: boolean;
   hideResults?: boolean;
   isPaidByMetaMask?: boolean;
+  prefillMax?: boolean;
   defaultPaymentToken?: { address: string; chainId: `0x${string}` } | null;
 } = {}) {
+  jest.mocked(useABTestModule.useABTest).mockReturnValue({
+    variant: { prefillMax },
+    variantName: prefillMax ? 'treatment' : 'control',
+    isActive: prefillMax,
+  });
   jest
     .mocked(useTransactionCustomAmountModule.useTransactionCustomAmount)
     .mockReturnValue({
@@ -272,6 +282,28 @@ describe('MusdConversionInfo', () => {
     const { getByTestId } = render();
 
     expect(getByTestId('custom-amount')).toBeInTheDocument();
+  });
+
+  describe('pre-filled max amount A/B test', () => {
+    it('does not pre-fill the amount for the control variant', () => {
+      render();
+
+      expect(
+        useTransactionCustomAmountModule.useTransactionCustomAmount,
+      ).toHaveBeenCalledWith(
+        expect.objectContaining({ prefillMaxOnLoad: false }),
+      );
+    });
+
+    it('pre-fills the max amount for the treatment variant', () => {
+      render({ prefillMax: true });
+
+      expect(
+        useTransactionCustomAmountModule.useTransactionCustomAmount,
+      ).toHaveBeenCalledWith(
+        expect.objectContaining({ prefillMaxOnLoad: true }),
+      );
+    });
   });
 
   it('renders the override content with amountHuman', () => {
