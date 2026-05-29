@@ -26,6 +26,7 @@ import {
   IconName,
   Box,
   Text,
+  TagUrl,
 } from '../../components/component-library';
 import { getCurrentChainId } from '../../../shared/lib/selectors/networks';
 import {
@@ -54,7 +55,6 @@ import {
 } from '../../helpers/constants/design-system';
 import NetworkAccountBalanceHeader from '../../components/app/network-account-balance-header/network-account-balance-header';
 import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
-import SiteOrigin from '../../components/ui/site-origin/site-origin';
 import { PRIMARY } from '../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../hooks/useUserPreferencedCurrency';
 import { useCurrencyDisplay } from '../../hooks/useCurrencyDisplay';
@@ -218,12 +218,9 @@ const ConfirmAddSuggestedNFT = () => {
           display={Display.Flex}
           justifyContent={JustifyContent.center}
         >
-          <SiteOrigin
-            chip
-            siteOrigin={originMetadata.origin}
-            title={originMetadata.origin}
-            iconSrc={originMetadata.iconUrl}
-            iconName={originMetadata.hostname}
+          <TagUrl
+            label={originMetadata.origin}
+            src={originMetadata.iconUrl}
           />
         </Box>
         <Text
