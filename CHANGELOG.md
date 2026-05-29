@@ -121,7 +121,16 @@ Fixes:
 - Fix missing Explorer button on receive for Tempo (#42481)
 - Modals in lock screen (#42548)
 - Adds default background colour to network form footer (#42497)
+
 ## [13.32.1]
+
+### Changed
+
+- Bumped `qs` to 6.15.2, `tmp` to 0.2.6, updated uuid audit ignore ([#42999](https://github.com/MetaMask/metamask-extension/pull/42999))
+
+### Fixed
+
+- Disabled unified assets controller to fix background calls issue ([#42992](https://github.com/MetaMask/metamask-extension/pull/42992))
 
 ## [13.32.0]
 
@@ -2468,8 +2477,7 @@ Fixes:
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.33.0...HEAD
-[13.33.0]: https://github.com/MetaMask/metamask-extension/compare/v13.31.0...v13.33.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.32.1...HEAD
+[13.33.0]: https://github.com/MetaMask/metamask-extension/compare/v13.32.1...v13.33.0
 [13.32.1]: https://github.com/MetaMask/metamask-extension/compare/v13.32.0...v13.32.1
 [13.32.0]: https://github.com/MetaMask/metamask-extension/compare/v13.31.0...v13.32.0
 [13.31.0]: https://github.com/MetaMask/metamask-extension/compare/v13.30.0...v13.31.0
