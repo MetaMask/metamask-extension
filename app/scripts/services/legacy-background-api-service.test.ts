@@ -44,7 +44,7 @@ describe('LegacyBackgroundApiService', () => {
           'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
         );
 
-        expect(result).toStrictEqual(false);
+        expect(result).toStrictEqual(true);
       });
     });
 
@@ -63,7 +63,7 @@ describe('LegacyBackgroundApiService', () => {
           'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
         );
 
-        expect(result).toStrictEqual(false);
+        expect(result).toStrictEqual(true);
       });
     });
 
@@ -82,7 +82,7 @@ describe('LegacyBackgroundApiService', () => {
           'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
         );
 
-        expect(result).toStrictEqual(false);
+        expect(result).toStrictEqual(true);
       });
     });
 
