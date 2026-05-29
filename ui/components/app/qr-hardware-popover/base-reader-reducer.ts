@@ -3,6 +3,7 @@ import {
   type CameraReadyStateValue,
   type WebcamError,
 } from './base-reader.types';
+import type { ScanErrorClassification } from './qr-utils/qr-utils';
 
 export const ActionType = {
   SetReady: 'SET_READY',
@@ -11,6 +12,7 @@ export const ActionType = {
   SetAccessingCamera: 'SET_ACCESSING_CAMERA',
   SetError: 'SET_ERROR',
   ClearError: 'CLEAR_ERROR',
+  SetScanError: 'SET_SCAN_ERROR',
   SetScanProgress: 'SET_SCAN_PROGRESS',
   SetPermissionActionLoading: 'SET_PERMISSION_ACTION_LOADING',
   Reset: 'RESET',
@@ -23,6 +25,7 @@ type Action =
   | { type: typeof ActionType.SetAccessingCamera }
   | { type: typeof ActionType.SetError; payload: WebcamError }
   | { type: typeof ActionType.ClearError }
+  | { type: typeof ActionType.SetScanError; payload: ScanErrorClassification }
   | { type: typeof ActionType.SetScanProgress; payload: number }
   | { type: typeof ActionType.SetPermissionActionLoading; payload: boolean }
   | { type: typeof ActionType.Reset };
@@ -30,6 +33,7 @@ type Action =
 export type BaseReaderState = {
   readyState: CameraReadyStateValue;
   error: WebcamError | null;
+  scanError: ScanErrorClassification | null;
   scanProgress: number;
   permissionActionLoading: boolean;
 };
@@ -44,6 +48,7 @@ export function getInitialState(): BaseReaderState {
   return {
     readyState: CameraReadyState.AccessingCamera,
     error: null,
+    scanError: null,
     scanProgress: 0,
     permissionActionLoading: false,
   };
@@ -88,6 +93,8 @@ export function baseReaderReducer(
       return { ...state, error: action.payload };
     case ActionType.ClearError:
       return { ...state, error: null };
+    case ActionType.SetScanError:
+      return { ...state, scanError: action.payload };
     case ActionType.SetScanProgress:
       return { ...state, scanProgress: action.payload };
     case ActionType.SetPermissionActionLoading:

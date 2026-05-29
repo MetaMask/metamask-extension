@@ -1,10 +1,11 @@
-import { Messenger } from '@metamask/messenger';
+import {
+  Messenger,
+  type MessengerActions,
+  type MessengerEvents,
+} from '@metamask/messenger';
+import { KeyringControllerMessenger } from '@metamask/keyring-controller';
 import { AppStateControllerRequestQrCodeScanAction } from '../../controllers/app-state-controller-method-action-types';
 import { RootMessenger } from '../../lib/messenger';
-
-export type KeyringControllerMessenger = ReturnType<
-  typeof getKeyringControllerMessenger
->;
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
@@ -14,12 +15,16 @@ export type KeyringControllerMessenger = ReturnType<
  * messenger.
  */
 export function getKeyringControllerMessenger(
-  messenger: RootMessenger<never, never>,
-) {
-  return new Messenger<'KeyringController', never, never, typeof messenger>({
+  messenger: RootMessenger<
+    MessengerActions<KeyringControllerMessenger>,
+    MessengerEvents<KeyringControllerMessenger>
+  >,
+): KeyringControllerMessenger {
+  const controllerMessenger: KeyringControllerMessenger = new Messenger({
     namespace: 'KeyringController',
     parent: messenger,
   });
+  return controllerMessenger;
 }
 
 type AllowedInitializationActions = AppStateControllerRequestQrCodeScanAction;

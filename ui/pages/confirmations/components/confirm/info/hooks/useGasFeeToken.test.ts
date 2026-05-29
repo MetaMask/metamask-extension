@@ -199,9 +199,9 @@ describe('useGasFeeToken', () => {
       const result = runHook({ tokenAddress: NATIVE_TOKEN_ADDRESS });
       expect(result).toStrictEqual(
         expect.objectContaining({
-          amount: '0x3be226d2d900',
-          amountFiat: '$0.04',
-          amountFormatted: '0.000066',
+          amount: '0x720087dcfc95',
+          amountFiat: '$0.07',
+          amountFormatted: '0.000125',
         }),
       );
     });

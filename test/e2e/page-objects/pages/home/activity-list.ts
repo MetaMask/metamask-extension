@@ -527,6 +527,9 @@ class ActivityListPage {
   }
 
   async clickCancelTransaction() {
+    // Ensure the Speed Up button is present before canceling
+    // to avoid component re-render, resulting in auto-closing the modal
+    await this.checkSpeedUpInlineButtonIsPresent();
     await this.driver.clickElement(this.cancelTransactionButton);
   }
 
