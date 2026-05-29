@@ -5827,9 +5827,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:@metamask-previews/assets-controllers@106.0.0-preview-6c5b6b08f":
-  version: 106.0.0-preview-6c5b6b08f
-  resolution: "@metamask-previews/assets-controllers@npm:106.0.0-preview-6c5b6b08f"
+"@metamask/assets-controllers@npm:@metamask-previews/assets-controllers@106.0.0-preview-5f6bfd7b7":
+  version: 106.0.0-preview-5f6bfd7b7
+  resolution: "@metamask-previews/assets-controllers@npm:106.0.0-preview-5f6bfd7b7"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5838,7 +5838,7 @@ __metadata:
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
     "@metamask/abi-utils": "npm:^2.0.3"
-    "@metamask/account-tree-controller": "npm:^7.3.0"
+    "@metamask/account-tree-controller": "npm:^7.2.0"
     "@metamask/accounts-controller": "npm:^38.0.0"
     "@metamask/approval-controller": "npm:^9.0.1"
     "@metamask/base-controller": "npm:^9.1.0"
@@ -5847,13 +5847,13 @@ __metadata:
     "@metamask/core-backend": "npm:^6.2.1"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/keyring-api": "npm:^23.1.0"
-    "@metamask/keyring-controller": "npm:^25.5.0"
+    "@metamask/keyring-controller": "npm:^25.4.0"
     "@metamask/messenger": "npm:^1.2.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/multichain-account-service": "npm:^9.0.0"
+    "@metamask/multichain-account-service": "npm:^8.0.1"
     "@metamask/network-controller": "npm:^30.1.0"
     "@metamask/network-enablement-controller": "npm:^5.1.0"
-    "@metamask/permission-controller": "npm:^13.1.0"
+    "@metamask/permission-controller": "npm:^13.0.0"
     "@metamask/phishing-controller": "npm:^17.1.1"
     "@metamask/polling-controller": "npm:^16.0.4"
     "@metamask/preferences-controller": "npm:^23.1.0"
@@ -5863,7 +5863,7 @@ __metadata:
     "@metamask/snaps-sdk": "npm:^11.0.0"
     "@metamask/snaps-utils": "npm:^12.1.2"
     "@metamask/storage-service": "npm:^1.0.1"
-    "@metamask/transaction-controller": "npm:^65.2.0"
+    "@metamask/transaction-controller": "npm:^65.1.0"
     "@metamask/utils": "npm:^11.9.0"
     "@tanstack/query-core": "npm:^5.62.16"
     "@types/bn.js": "npm:^5.1.5"
@@ -5880,7 +5880,7 @@ __metadata:
   peerDependencies:
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/23633b46fbdfb37b169ab918fa4dacec9468430e0ceeca2492f174c07245cc1adf0dc5fb8e9949b9855656b395fb234997fbe5feef25d2e0c4c5f717ea8e6795
+  checksum: 10/2daaadf569a086956d0a424518a14170933858da02f617ab8849ad4a937e88593d8064ffc478a8417164a5267cb7099d101905665d2e05f360d821b19aea36d3
   languageName: node
   linkType: hard
 
@@ -8267,10 +8267,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/stellar-wallet-snap@npm:0.0.1-dev.186":
-  version: 0.0.1-dev.186
-  resolution: "@metamask/stellar-wallet-snap@npm:0.0.1-dev.186"
-  checksum: 10/e549943c7953feba56cbb46acbe7a55309c84183465ea2348cd1b470cd942ca40561ddbd7f53e01e3a3249ab5e1e791ca0aa2286292cf22d69ad3aeae8a959b8
+"@metamask/stellar-wallet-snap@npm:@metamask-previews/stellar-wallet-snap@0.0.1-preview-56dc705":
+  version: 0.0.1-preview-56dc705
+  resolution: "@metamask-previews/stellar-wallet-snap@npm:0.0.1-preview-56dc705"
+  checksum: 10/bd75fb17c61e264e92bd02b5be9e0cab8003647bb3cdf4a96c28319ef5d95df037116d1150e6449dec23862ef923882d60cfd11a478307e38c49a3238ce91890
   languageName: node
   linkType: hard
 
@@ -19679,17 +19679,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"await-semaphore@npm:0.1.3":
+"await-semaphore@npm:^0.1.3":
   version: 0.1.3
   resolution: "await-semaphore@npm:0.1.3"
   checksum: 10/93769d51b8d26cdf26c770280a345d3af5e87daa09104af6d623c2d68d218bdd65b5d8d39ad9f56217bfc9ea9c6d50df9902e78de915188ede2736579a19227c
-  languageName: node
-  linkType: hard
-
-"await-semaphore@patch:await-semaphore@npm%3A0.1.3#./.yarn/patches/await-semaphore-npm-0.1.3-b7a0001fab.patch::locator=metamask-crx%40workspace%3A.":
-  version: 0.1.3
-  resolution: "await-semaphore@patch:await-semaphore@npm%3A0.1.3#./.yarn/patches/await-semaphore-npm-0.1.3-b7a0001fab.patch::version=0.1.3&hash=be888a&locator=metamask-crx%40workspace%3A."
-  checksum: 10/53e51c7cd270274a580e60da546cf4aeb0de0f6581fd7ebaa031037d201764eb8a0f6f194687ce016f66ab29110b9d8e7493b8aef859ff14cceabaf32d421873
   languageName: node
   linkType: hard
 
@@ -33544,7 +33537,7 @@ __metadata:
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
     "@metamask/assets-controller": "npm:7.0.0"
-    "@metamask/assets-controllers": "npm:@metamask-previews/assets-controllers@106.0.0-preview-6c5b6b08f"
+    "@metamask/assets-controllers": "npm:@metamask-previews/assets-controllers@106.0.0-preview-5f6bfd7b7"
     "@metamask/auto-changelog": "npm:^5.3.1"
     "@metamask/base-controller": "npm:^9.0.1"
     "@metamask/bitcoin-wallet-snap": "npm:^1.10.1"
@@ -33660,7 +33653,7 @@ __metadata:
     "@metamask/snaps-utils": "npm:^12.2.0"
     "@metamask/solana-wallet-snap": "npm:^2.8.0"
     "@metamask/solana-wallet-standard": "npm:^1.0.0"
-    "@metamask/stellar-wallet-snap": "npm:0.0.1-dev.186"
+    "@metamask/stellar-wallet-snap": "npm:@metamask-previews/stellar-wallet-snap@0.0.1-preview-56dc705"
     "@metamask/storage-service": "npm:^1.0.0"
     "@metamask/subscription-controller": "npm:^6.1.2"
     "@metamask/superstruct": "npm:^3.2.1"
@@ -33779,8 +33772,8 @@ __metadata:
     "@zxing/browser": "npm:^0.1.5"
     "@zxing/library": "npm:0.21.3"
     addons-linter: "npm:^9.5.0"
+    async-mutex: "npm:^0.5.0"
     autoprefixer: "npm:^10.4.19"
-    await-semaphore: "npm:^0.1.3"
     axios: "npm:^1.16.0"
     babel-plugin-react-compiler: "npm:^1.0.0"
     babelify: "npm:^10.0.0"
@@ -33998,7 +33991,7 @@ __metadata:
     webpack-bundle-analyzer: "npm:^5.3.0"
     webpack-cli: "npm:^6.0.1"
     webpack-dev-server: "npm:^5.2.4"
-    ws: "npm:^8.17.1"
+    ws: "npm:^8.20.1"
     xml2js: "npm:^0.6.2"
     yaml: "npm:^2.4.1"
     yargs: "npm:^17.7.2"
@@ -45558,9 +45551,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:*, ws@npm:^8.0.0, ws@npm:^8.11.0, ws@npm:^8.13.0, ws@npm:^8.17.1, ws@npm:^8.18.0, ws@npm:^8.18.3, ws@npm:^8.19.0, ws@npm:^8.2.3, ws@npm:^8.5.0, ws@npm:^8.8.0":
-  version: 8.20.0
-  resolution: "ws@npm:8.20.0"
+"ws@npm:*, ws@npm:^8.0.0, ws@npm:^8.11.0, ws@npm:^8.13.0, ws@npm:^8.18.0, ws@npm:^8.18.3, ws@npm:^8.19.0, ws@npm:^8.2.3, ws@npm:^8.20.1, ws@npm:^8.5.0, ws@npm:^8.8.0":
+  version: 8.20.1
+  resolution: "ws@npm:8.20.1"
   peerDependencies:
     bufferutil: ^4.0.1
     utf-8-validate: ">=5.0.2"
@@ -45569,52 +45562,7 @@ __metadata:
       optional: true
     utf-8-validate:
       optional: true
-  checksum: 10/b7ab934b21ffdea9f25a5af5097e8c1ec7625db553bca026c5a23e35b7c236f3fb89782f2b57fab9da553864512f9aa7d245827ef998d26ffa1b2187a19a6d10
-  languageName: node
-  linkType: hard
-
-"ws@npm:8.17.1, ws@npm:~8.17.1":
-  version: 8.17.1
-  resolution: "ws@npm:8.17.1"
-  peerDependencies:
-    bufferutil: ^4.0.1
-    utf-8-validate: ">=5.0.2"
-  peerDependenciesMeta:
-    bufferutil:
-      optional: true
-    utf-8-validate:
-      optional: true
-  checksum: 10/4264ae92c0b3e59c7e309001e93079b26937aab181835fb7af79f906b22cd33b6196d96556dafb4e985742dd401e99139572242e9847661fdbc96556b9e6902d
-  languageName: node
-  linkType: hard
-
-"ws@npm:8.18.0":
-  version: 8.18.0
-  resolution: "ws@npm:8.18.0"
-  peerDependencies:
-    bufferutil: ^4.0.1
-    utf-8-validate: ">=5.0.2"
-  peerDependenciesMeta:
-    bufferutil:
-      optional: true
-    utf-8-validate:
-      optional: true
-  checksum: 10/70dfe53f23ff4368d46e4c0b1d4ca734db2c4149c6f68bc62cb16fc21f753c47b35fcc6e582f3bdfba0eaeb1c488cddab3c2255755a5c3eecb251431e42b3ff6
-  languageName: node
-  linkType: hard
-
-"ws@npm:8.18.3":
-  version: 8.18.3
-  resolution: "ws@npm:8.18.3"
-  peerDependencies:
-    bufferutil: ^4.0.1
-    utf-8-validate: ">=5.0.2"
-  peerDependenciesMeta:
-    bufferutil:
-      optional: true
-    utf-8-validate:
-      optional: true
-  checksum: 10/725964438d752f0ab0de582cd48d6eeada58d1511c3f613485b5598a83680bedac6187c765b0fe082e2d8cc4341fc57707c813ae780feee82d0c5efe6a4c61b6
+  checksum: 10/8c4d2b06dc65381b6bfab1f2e584275dabd30a99a5ce058b4dc76f3d03fad1921cef3a21d8f53127d30a808cfd1864aa2fe6890a5d43359f682457315baec873
   languageName: node
   linkType: hard
 

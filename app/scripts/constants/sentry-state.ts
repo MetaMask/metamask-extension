@@ -113,8 +113,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     accountsAssets: false,
     assetsMetadata: false,
     allIgnoredAssets: false,
-    stellarClassicTrustlineInactiveAssetIds: false,
-    stellarTrustlineInactiveBackfillComplete: false,
   },
   MultichainAssetsRatesController: {
     assetsRates: false,

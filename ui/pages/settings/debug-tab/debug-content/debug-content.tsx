@@ -34,6 +34,7 @@ import { selectPerpsIsTestnet } from '../../../../selectors/perps-controller';
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
 import { getRemoteFeatureFlags } from '../../../../../shared/lib/selectors/remote-feature-flags';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { ConfirmationsDeveloperOptions } from '../../../confirmations/components/developer/confirmations-developer-options';
 import ToggleRow from './toggle-row-component';
 import SentryTest from './sentry-test';
