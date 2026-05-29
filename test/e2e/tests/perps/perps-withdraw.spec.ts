@@ -5,11 +5,6 @@
  * confirmation flow: navigation, form validation, summary row visibility,
  * and confirmation UI state.
  *
- * PREREQUISITE: All tests below require PERPS_ENABLED=true in the extension build
- * so the background PerpsController is included and can service `perpsInit` RPC calls.
- * Set PERPS_ENABLED=true in .metamaskrc or inline when building locally
- * (`PERPS_ENABLED=true yarn build:test`).
- *
  * The Withdraw page is accessible from Perps Home → balance dropdown → Withdraw.
  * Uses {@link WS_USER_WITH_FUNDED_ACCOUNT} so the balance bar leaves the loading skeleton.
  * Cancel and the header back control both navigate to wallet home (`/`); tests re-open

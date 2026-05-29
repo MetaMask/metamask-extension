@@ -368,17 +368,17 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  withTokenRatesController(data: Partial<TokenRatesControllerState>): this {
-    merge(this.fixture.data.TokenRatesController, data);
-    return this;
-  }
-
   withTokenListController(data: Partial<TokenListState>): this {
     (this.fixture.data as Record<string, unknown>).TokenListController ??= {};
     merge(
       (this.fixture.data as Record<string, unknown>).TokenListController,
       data,
     );
+    return this;
+  }
+
+  withTokenRatesController(data: Partial<TokenRatesControllerState>): this {
+    merge(this.fixture.data.TokenRatesController, data);
     return this;
   }
 
