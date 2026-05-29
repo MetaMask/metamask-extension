@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text } from '@metamask/design-system-react';
 
-export type ActivityCellBaseProps = {
+export type ActivityRowLayoutProps = {
   txStatus: string;
   avatar: React.ReactNode;
   title: React.ReactNode;
@@ -11,7 +11,7 @@ export type ActivityCellBaseProps = {
   onClick?: () => void;
 };
 
-export function ActivityCellBase({
+export function ActivityRowLayout({
   avatar,
   onClick,
   primaryAmount,
@@ -19,7 +19,7 @@ export function ActivityCellBase({
   subtitle,
   title,
   txStatus,
-}: Readonly<ActivityCellBaseProps>) {
+}: Readonly<ActivityRowLayoutProps>) {
   return (
     <div
       className="grid min-h-[70px] grid-cols-[32px_minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 transition-transform duration-200 ease-out hover:bg-hover cursor-pointer"

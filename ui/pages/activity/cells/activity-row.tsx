@@ -1,20 +1,17 @@
 import React from 'react';
-import { PendingActivityCell } from './pending-activity-cell';
-import type { ActivityCellProps } from '../types';
+import { PendingActivityRow } from './pending-activity-row';
+import type { ActivityRowProps } from '../types';
 import { getActivityCellStatus } from '../helpers';
 import { useActivityCellPresentation } from './useActivityCellPresentation';
-import { ActivityCellBase } from './activity-cell-base';
+import { ActivityRowLayout } from './activity-row-layout';
 
-export function ActivityListItem({
-  data,
-  onClick,
-}: Readonly<ActivityCellProps>) {
+export function ActivityRow({ data, onClick }: Readonly<ActivityRowProps>) {
   const cellStatus = getActivityCellStatus(data);
   const presentation = useActivityCellPresentation(data);
 
   if (data.status === 'pending') {
     return (
-      <PendingActivityCell
+      <PendingActivityRow
         {...presentation}
         data={data}
         txStatus={cellStatus.txStatus}
@@ -24,7 +21,7 @@ export function ActivityListItem({
   }
 
   return (
-    <ActivityCellBase
+    <ActivityRowLayout
       {...presentation}
       txStatus={cellStatus.txStatus}
       onClick={onClick}

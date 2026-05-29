@@ -1,6 +1,6 @@
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 
-export type ActivityCellProps = {
+export type ActivityRowProps = {
   data: ActivityListItem;
   onClick?: () => void;
 };

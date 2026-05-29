@@ -9,12 +9,12 @@ import { ActivityListItemAvatar } from '../../../components/app/activity-list-it
 import { ChainBadge } from '../../../components/app/chain-badge/chain-badge';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import type { ActivityCellProps } from '../types';
+import type { ActivityRowProps } from '../types';
 import { getActivityListItemAvatarConfig } from '../resolve-activity-avatar-config';
 import { useFormatFiatAmount } from './useFormatFiatAmount';
 import { useFormatTokenAmount } from './useFormatTokenAmount';
 
-function getChainDisplay(activity: ActivityCellProps['data']) {
+function getChainDisplay(activity: ActivityRowProps['data']) {
   const { namespace } = parseCaipChainId(activity.chainId);
   const chainId =
     namespace === KnownCaipNamespace.Eip155
@@ -31,7 +31,7 @@ function getChainDisplay(activity: ActivityCellProps['data']) {
 }
 
 export function useActivityCellPresentation(
-  activity: ActivityCellProps['data'],
+  activity: ActivityRowProps['data'],
 ) {
   const t = useI18nContext();
   const formatTokenAmount = useFormatTokenAmount();

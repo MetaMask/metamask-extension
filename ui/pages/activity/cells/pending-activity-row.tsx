@@ -1,25 +1,28 @@
 import React from 'react';
 import { usePendingTransactionGasModal } from '../../../components/app/pending-transaction-action-buttons/pending-transaction-cancel-speed-up-provider';
 import { TransactionListItemPendingActions } from '../../../components/app/transaction-list-item/transaction-list-item-pending-actions';
-import { ActivityCellBase, ActivityCellBaseProps } from './activity-cell-base';
-import type { ActivityCellProps } from '../types';
+import {
+  ActivityRowLayout,
+  ActivityRowLayoutProps,
+} from './activity-row-layout';
+import type { ActivityRowProps } from '../types';
 
-export function PendingActivityCell({
+export function PendingActivityRow({
   data,
   ...props
-}: Readonly<ActivityCellBaseProps & ActivityCellProps>) {
+}: Readonly<ActivityRowLayoutProps & ActivityRowProps>) {
   const transactionGroup =
     data.raw?.type === 'localTransaction' ? data.raw.data : undefined;
   const isEarliestNonce = data.isEarliestNonce ?? false;
   const { setEditGasMode, onGasModalMetaId } = usePendingTransactionGasModal();
 
   if (!transactionGroup) {
-    return <ActivityCellBase {...props} />;
+    return <ActivityRowLayout {...props} />;
   }
 
   return (
     <>
-      <ActivityCellBase {...props} />
+      <ActivityRowLayout {...props} />
 
       <TransactionListItemPendingActions
         transactionGroup={transactionGroup}

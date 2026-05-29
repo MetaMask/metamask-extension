@@ -11,7 +11,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { useItemInView } from '../../hooks/useItemInView';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import { LegacyDetails } from './legacy-details';
-import { ActivityListItem as ActivityListItemCell } from './cells/activity-list-item';
+import { ActivityRow } from './cells/activity-row';
 import {
   dedupeItems,
   getItemKey,
@@ -127,7 +127,7 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
           }
 
           return (
-            <ActivityListItemCell
+            <ActivityRow
               data={row.item}
               onClick={() => handleClick(row.item)}
             />
