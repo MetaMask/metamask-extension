@@ -419,7 +419,12 @@ export default function OnboardingFlow() {
             />
             <Route
               path={toRelativePath(ONBOARDING_UNLOCK_ROUTE)}
-              element={<Unlock onSubmit={handleUnlock} navigateAfterUnlock={handleNavigationAfterUnlock} />}
+              element={
+                <Unlock
+                  onSubmit={handleUnlock}
+                  navigateAfterUnlock={handleNavigationAfterUnlock}
+                />
+              }
             />
             <Route
               path={toRelativePath(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}

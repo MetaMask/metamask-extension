@@ -464,7 +464,9 @@ describe('Onboarding Flow', () => {
         expect(setCompletedOnboardingWithSidepanel).toHaveBeenCalled();
       });
 
-      expect(container.querySelector('.loading-overlay')).not.toBeInTheDocument();
+      expect(
+        container.querySelector('.loading-overlay'),
+      ).not.toBeInTheDocument();
       expect(mockUseNavigate).not.toHaveBeenCalled();
 
       sidepanelCompletion.resolve();
@@ -508,7 +510,9 @@ describe('Onboarding Flow', () => {
         expect(setCompletedOnboarding).toHaveBeenCalled();
       });
 
-      expect(container.querySelector('.loading-overlay')).not.toBeInTheDocument();
+      expect(
+        container.querySelector('.loading-overlay'),
+      ).not.toBeInTheDocument();
       expect(mockUseNavigate).not.toHaveBeenCalled();
 
       onboardingCompletion.resolve();

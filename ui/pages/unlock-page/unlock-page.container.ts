@@ -147,7 +147,8 @@ const mergeProps = (
     ...restOwnProps,
     onSubmit: ownPropsSubmit || onSubmit,
     onUnlockWithPasskey,
-    navigateAfterUnlock: ownPropsNavigateAfterUnlock || handleNavigationAfterUnlock,
+    navigateAfterUnlock:
+      ownPropsNavigateAfterUnlock || handleNavigationAfterUnlock,
     navigate,
     location,
     isPopup,
