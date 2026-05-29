@@ -9,7 +9,7 @@ import {
 } from '../../component-library';
 import { AccountListItem } from '../../multichain/account-list-item';
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
-import Box from '../../ui/box';
+import { Box } from '@metamask/design-system-react';
 import Button from '../../ui/button';
 import DefinitionList from '../../ui/definition-list';
 import Preloader from '../../ui/icon/preloader';
