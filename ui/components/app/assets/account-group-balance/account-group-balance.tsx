@@ -29,9 +29,7 @@ import { useFormatters } from '../../../../hooks/useFormatters';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { isZeroAmount } from '../../../../helpers/utils/number-utils';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
-import {
-  getMultichainNativeCurrency,
-} from '../../../../selectors/multichain';
+import { getMultichainNativeCurrency } from '../../../../selectors/multichain';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../selectors/multichain-accounts/account-tree';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { hexWEIToDecETH } from '../../../../../shared/lib/conversion.utils';
@@ -80,12 +78,14 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
 
   const isTestnetSelected = Boolean(
     Object.keys(enabledNetworksByNamespace).length === 1 &&
-    TEST_CHAINS.includes(
-      Object.keys(enabledNetworksByNamespace)[0] as `0x${string}`,
-    ),
+      TEST_CHAINS.includes(
+        Object.keys(enabledNetworksByNamespace)[0] as `0x${string}`,
+      ),
   );
 
-  const networkConfigurationsByChainId = useSelector(getNetworkConfigurationsByChainId);
+  const networkConfigurationsByChainId = useSelector(
+    getNetworkConfigurationsByChainId,
+  );
   const networks = useSelector(getMultichainNetwork);
   const showNativeTokenAsMain = Boolean(
     showNativeTokenAsMainBalance && Object.keys(enabledNetworks).length === 1,
@@ -100,17 +100,25 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
 
   const nativeCurrencySymbol: string = useMemo(() => {
     if (isEvm) {
-      return Object.keys(enabledNetworksByNamespace).length === 1 ?
-      networkConfigurationsByChainId[Object.keys(enabledNetworksByNamespace)[0] as `0x${string}`]?.nativeCurrency : fallbackCurrency;
+      return Object.keys(enabledNetworksByNamespace).length === 1
+        ? networkConfigurationsByChainId[
+            Object.keys(enabledNetworksByNamespace)[0] as `0x${string}`
+          ]?.nativeCurrency
+        : fallbackCurrency;
     }
 
-    return Object.keys(enabledNetworksByNamespace).length === 1 ?
-    networks.network.ticker : fallbackCurrency;
-  }, [enabledNetworksByNamespace, networkConfigurationsByChainId, isEvm, networks, fallbackCurrency]);
-
+    return Object.keys(enabledNetworksByNamespace).length === 1
+      ? networks.network.ticker
+      : fallbackCurrency;
+  }, [
+    enabledNetworksByNamespace,
+    networkConfigurationsByChainId,
+    isEvm,
+    networks,
+    fallbackCurrency,
+  ]);
 
   const total = selectedGroupBalance?.totalBalanceInUserCurrency;
-
 
   let formattedNativeBalance = null;
   if (showNativeTokenAsMain || isTestnetSelected) {
@@ -134,7 +142,10 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
     : undefined;
 
   const formattedTotal = useMemo(() => {
-    if (showNativeTokenAsMain || isTestnetSelected && !showConversionForTestnets) {
+    if (
+      showNativeTokenAsMain ||
+      (isTestnetSelected && !showConversionForTestnets)
+    ) {
       return formattedNativeBalance;
     }
     if (total === undefined) {

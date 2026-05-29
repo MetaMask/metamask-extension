@@ -92,9 +92,7 @@ describe('AccountGroupBalance', () => {
     };
   };
 
-  const renderComponent = (
-    props: Partial<AccountGroupBalanceProps> = {},
-  ) =>
+  const renderComponent = (props: Partial<AccountGroupBalanceProps> = {}) =>
     renderWithProvider(
       <AccountGroupBalance
         classPrefix={props.classPrefix || 'coin'}
