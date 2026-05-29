@@ -449,6 +449,11 @@ describe('MetaMaskController', function () {
             getVersion: () => 'foo',
           },
           browser: browserPolyfillMock,
+          getRequestAccountTabIds: () => ({}),
+          getOpenMetamaskTabsIds: () => ({}),
+          notificationManager: {
+            markAsAutomaticallyClosed: jest.fn(),
+          },
           infuraProjectId: 'foo',
           cronjobControllerStorageManager: {
             init: noop,

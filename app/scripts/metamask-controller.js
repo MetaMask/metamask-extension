@@ -3143,7 +3143,11 @@ export default class MetamaskController extends EventEmitter {
         image,
         networkClientId,
       }) => {
-        if (this.#isAssetsUnifyStateEnabled()) {
+        if (
+          this.controllerMessenger.call(
+            'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
+          )
+        ) {
           const selectedAccount = this.accountsController.getSelectedAccount();
           const chainId =
             this.networkController.getNetworkClientById(networkClientId)
