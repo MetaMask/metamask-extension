@@ -1,11 +1,15 @@
 import { SeedlessOnboardingControllerState } from '@metamask/seedless-onboarding-controller';
-import { AuthConnection, FirstTimeFlowType } from '../../../shared/constants/onboarding';
-import { OnboardingControllerState } from 'shared/types/onboarding';
-import { MetaMetricsEventAccountType } from 'shared/constants/metametrics';
+import { MetaMetricsEventAccountType } from '../../../shared/constants/metametrics';
+import {
+  AuthConnection,
+  FirstTimeFlowType,
+} from '../../../shared/constants/onboarding';
+import { OnboardingControllerState } from '../../../shared/types/onboarding';
 import { getIsSocialLoginFlow } from '../first-time-flow';
 
 export type OnboardingState = {
-  metamask: Partial<SeedlessOnboardingControllerState> & OnboardingControllerState;
+  metamask: Partial<SeedlessOnboardingControllerState> &
+    OnboardingControllerState;
 };
 
 export function getSocialLoginType(
@@ -14,7 +18,9 @@ export function getSocialLoginType(
   return state.metamask.authConnection;
 }
 
-export function getSocialLoginEmail(state: OnboardingState): string | undefined {
+export function getSocialLoginEmail(
+  state: OnboardingState,
+): string | undefined {
   return state.metamask.socialLoginEmail;
 }
 
@@ -24,7 +30,9 @@ export function getSocialLoginEmail(state: OnboardingState): string | undefined 
  * @param state - The backup state.
  * @returns True if the social login flow has been initialized and the user is authenticated, false otherwise.
  */
-export function getIsSocialLoginUserAuthenticated(state: OnboardingState): boolean {
+export function getIsSocialLoginUserAuthenticated(
+  state: OnboardingState,
+): boolean {
   const hasSocialLoginType = Boolean(getSocialLoginType(state));
   const hasSocialLoginEmail = Boolean(getSocialLoginEmail(state));
 
@@ -41,12 +49,14 @@ export function getIsSocialLoginUserAuthenticated(state: OnboardingState): boole
  * @param state - The backup state.
  * @returns The `account_type` property value for onboarding metrics.
  */
-export function getAccountTypeForOnboardingMetrics(state: OnboardingState): string {
+export function getAccountTypeForOnboardingMetrics(
+  state: OnboardingState,
+): string {
   const firstTimeFlowType = state.metamask.firstTimeFlowType;
   const baseType =
-      firstTimeFlowType === FirstTimeFlowType.import
-        ? MetaMetricsEventAccountType.Imported
-        : MetaMetricsEventAccountType.Default;
+    firstTimeFlowType === FirstTimeFlowType.import
+      ? MetaMetricsEventAccountType.Imported
+      : MetaMetricsEventAccountType.Default;
   const socialLoginType = getSocialLoginType(state);
   const isSocialLoginFlow = getIsSocialLoginFlow(state);
   if (isSocialLoginFlow && socialLoginType) {

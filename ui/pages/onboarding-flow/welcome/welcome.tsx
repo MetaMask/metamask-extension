@@ -214,7 +214,14 @@ export default function OnboardingWelcome() {
     });
 
     navigate(ONBOARDING_CREATE_PASSWORD_ROUTE);
-  }, [dispatch, navigate, trackEvent, onboardingParentContext, bufferedTrace, accountTypeForMetrics]);
+  }, [
+    dispatch,
+    navigate,
+    trackEvent,
+    onboardingParentContext,
+    bufferedTrace,
+    accountTypeForMetrics,
+  ]);
 
   const onImportClick = useCallback(async () => {
     setIsLoggingIn(true);
@@ -234,7 +241,14 @@ export default function OnboardingWelcome() {
     });
 
     navigate(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
-  }, [dispatch, navigate, trackEvent, onboardingParentContext, bufferedTrace, accountTypeForMetrics]);
+  }, [
+    dispatch,
+    navigate,
+    trackEvent,
+    onboardingParentContext,
+    bufferedTrace,
+    accountTypeForMetrics,
+  ]);
 
   const handleSocialLogin = useCallback(
     async (socialConnectionType) => {

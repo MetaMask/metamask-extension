@@ -297,7 +297,8 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     event.stopPropagation();
 
     const { password, isSubmitting } = this.state;
-    const { onSubmit, isOnboardingCompleted, accountTypeForMetrics } = this.props;
+    const { onSubmit, isOnboardingCompleted, accountTypeForMetrics } =
+      this.props;
 
     if (password === '' || isSubmitting) {
       return;
@@ -569,7 +570,12 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
   };
 
   onForgotPasswordOrLoginWithDiffMethods = async () => {
-    const { isSocialLoginFlow, navigate, isOnboardingCompleted, accountTypeForMetrics } = this.props;
+    const {
+      isSocialLoginFlow,
+      navigate,
+      isOnboardingCompleted,
+      accountTypeForMetrics,
+    } = this.props;
 
     // in `onboarding_unlock` route, if the user is on a social login flow and onboarding is not completed,
     // we can redirect to `onboarding_welcome` route to select a different login method
