@@ -2,6 +2,13 @@ const { readFileSync } = require('node:fs');
 const assert = require('node:assert');
 const { ENVIRONMENT } = require('./constants');
 
+function isProductionOrReleaseCandidateBuild(environment) {
+  return (
+    environment === ENVIRONMENT.PRODUCTION ||
+    environment === ENVIRONMENT.RELEASE_CANDIDATE
+  );
+}
+
 /**
  * Sets environment variables to inject in the current build.
  *
@@ -91,6 +98,9 @@ function setEnvironmentVariables({
     METAMASK_SHIELD_ENABLED: isTestBuild
       ? 'true'
       : variables.getMaybe('METAMASK_SHIELD_ENABLED'),
+    TELEGRAM_LOGIN_ENABLED: isProductionOrReleaseCandidateBuild(environment)
+      ? 'false'
+      : variables.getMaybe('TELEGRAM_LOGIN_ENABLED'),
     PERPS_ENABLED: isTestBuild ? 'true' : variables.getMaybe('PERPS_ENABLED'),
     ASSETS_UNIFIED_STATE_ENABLED: isTestBuild
       ? 'false'
@@ -205,10 +215,7 @@ function getOAuthClientId({
 }) {
   const clientIdEnv = `${provider}_CLIENT_ID`;
 
-  if (
-    environment === ENVIRONMENT.PRODUCTION ||
-    environment === ENVIRONMENT.RELEASE_CANDIDATE
-  ) {
+  if (isProductionOrReleaseCandidateBuild(environment)) {
     // Production and release-candidate builds resolve the client ID indirectly so
     // each build can point at the right secret without changing code.
     const clientIdRef = assertAndLoadEnvVar(
