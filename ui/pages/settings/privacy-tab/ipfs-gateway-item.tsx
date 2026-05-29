@@ -13,8 +13,7 @@ import {
   IPFS_DEFAULT_GATEWAY_URL,
   IPFS_FORBIDDEN_GATEWAY,
 } from '../../../../shared/constants/network';
-// eslint-disable-next-line import-x/no-restricted-paths
-import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
+import { addUrlProtocolPrefix } from '../../../../shared/lib/url-utils';
 import { THIRD_PARTY_API_ITEMS } from '../search-config';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
