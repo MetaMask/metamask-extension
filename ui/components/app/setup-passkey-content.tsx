@@ -257,6 +257,7 @@ export default function SetupPasskeyContent({
         goToNextStep();
       }
     } catch (error) {
+      const durationMs = Date.now() - enrollmentStartedAt;
       if (isPasskeyCeremonySilentError(error)) {
         log.debug('Passkey enrollment ceremony cancelled or timed out', error);
         trackEvent({
@@ -268,7 +269,7 @@ export default function SetupPasskeyContent({
             // eslint-disable-next-line @typescript-eslint/naming-convention
             current_step: currentStep,
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            duration_ms: Date.now() - enrollmentStartedAt,
+            duration_ms: durationMs,
           },
         });
 
@@ -280,13 +281,14 @@ export default function SetupPasskeyContent({
         return;
       }
 
+      const errorCode = getPasskeyErrorCode(error);
       captureException(
         createSentryError(
           'Passkey registration during onboarding failed',
           error,
         ),
         {
-          extra: { errorStep: currentStep },
+          extra: { currentStep, durationMs, errorCode },
         },
       );
       trackEvent({
@@ -298,9 +300,8 @@ export default function SetupPasskeyContent({
           // eslint-disable-next-line @typescript-eslint/naming-convention
           error_step: currentStep,
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          duration_ms: Date.now() - enrollmentStartedAt,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          reason: getPasskeyErrorCode(error),
+          duration_ms: durationMs,
+          reason: errorCode,
         },
       });
 
