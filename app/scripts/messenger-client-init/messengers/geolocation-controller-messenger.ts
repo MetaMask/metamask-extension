@@ -4,7 +4,7 @@ import {
   type MessengerEvents,
 } from '@metamask/messenger';
 import type { GeolocationControllerMessenger } from '@metamask/geolocation-controller';
-import type { RootMessenger } from '../../lib/messenger';
+import { RootMessenger } from '../../lib/messenger';
 
 export type {
   GeolocationControllerActions,
@@ -16,30 +16,24 @@ export type {
  * GeolocationApiService:fetchGeolocation action so the controller can
  * call the API service via the messenger.
  *
- * @param rootMessenger - The root messenger.
+ * @param messenger - The root messenger.
  * @returns The GeolocationControllerMessenger.
  */
 export function getGeolocationControllerMessenger(
-  rootMessenger: RootMessenger<
+  messenger: RootMessenger<
     MessengerActions<GeolocationControllerMessenger>,
     MessengerEvents<GeolocationControllerMessenger>
   >,
 ): GeolocationControllerMessenger {
-  const messenger = new Messenger<
-    'GeolocationController',
-    MessengerActions<GeolocationControllerMessenger>,
-    MessengerEvents<GeolocationControllerMessenger>,
-    typeof rootMessenger
-  >({
+  const controllerMessenger: GeolocationControllerMessenger = new Messenger({
     namespace: 'GeolocationController',
-    parent: rootMessenger,
+    parent: messenger,
   });
 
-  rootMessenger.delegate({
-    messenger,
+  messenger.delegate({
+    messenger: controllerMessenger,
     actions: ['GeolocationApiService:fetchGeolocation'],
-    events: [],
   });
 
-  return messenger;
+  return controllerMessenger;
 }

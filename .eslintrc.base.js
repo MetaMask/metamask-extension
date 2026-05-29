@@ -1,5 +1,6 @@
 const {
   architecturalZones,
+  buildSystemZones,
   routeIsolationZones,
 } = require('./development/eslint-restricted-paths-zones');
 
@@ -104,7 +105,11 @@ module.exports = {
       'error',
       {
         basePath: './',
-        zones: [...architecturalZones, ...routeIsolationZones],
+        zones: [
+          ...architecturalZones,
+          ...buildSystemZones,
+          ...routeIsolationZones,
+        ],
       },
     ],
 

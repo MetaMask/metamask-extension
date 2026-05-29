@@ -1,6 +1,7 @@
 import {
   keyringBuilderFactory,
   KeyringController,
+  KeyringControllerMessenger,
 } from '@metamask/keyring-controller';
 import { QrKeyring, QrKeyringScannerBridge } from '@metamask/eth-qr-keyring';
 import { KeyringClass } from '@metamask/keyring-utils';
@@ -22,10 +23,7 @@ import { TrezorOffscreenBridge } from '../lib/offscreen-bridge/trezor-offscreen-
 import { LedgerOffscreenBridge } from '../lib/offscreen-bridge/ledger-offscreen-bridge';
 import { LatticeKeyringOffscreen } from '../lib/offscreen-bridge/lattice-offscreen-keyring';
 import { MessengerClientInitFunction } from './types';
-import {
-  KeyringControllerMessenger,
-  KeyringControllerInitMessenger,
-} from './messengers';
+import { KeyringControllerInitMessenger } from './messengers';
 
 /**
  * Initialize the keyring controller.

@@ -1,4 +1,5 @@
 import type { WebcamError } from '../base-reader.types';
+import type { ScanErrorClassification } from '../qr-utils/qr-utils';
 
 /**
  * State dispatch functions consumed by the camera permission hook.
@@ -23,5 +24,6 @@ export type TrackingCallbacks = {
  */
 export type DecoderCallbacks = {
   setScanProgress: (progress: number) => void;
+  setScanError: (scanError: ScanErrorClassification) => void;
   setError: (error: WebcamError) => void;
 };

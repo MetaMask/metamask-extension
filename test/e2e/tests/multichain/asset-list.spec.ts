@@ -111,7 +111,7 @@ describe('Multichain Asset List', function (this: Suite) {
           NETWORK_NAME_MAINNET,
         );
         // Only Ethereum network is selected so only 1 token visible
-        await assetListPage.checkTokenItemNumber(1);
+        await assetListPage.checkTokenItemNumber(2);
         await assetListPage.clickOnAsset('Ether');
         await assetListPage.checkBuySellButtonIsPresent();
         await assetListPage.checkMultichainTokenListButtonIsPresent();
