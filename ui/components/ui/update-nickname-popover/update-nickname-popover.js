@@ -121,10 +121,6 @@ export default function UpdateNicknamePopover({
           margin="dense"
           multiline
           rows={3}
-          classes={{
-            inputMultiline: 'update-nickname__content__text-area',
-            inputRoot: 'update-nickname__content__text-area-wrapper',
-          }}
         />
       </div>
     </Popover>
