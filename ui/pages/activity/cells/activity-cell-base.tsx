@@ -1,6 +1,16 @@
 import React from 'react';
 import { Text } from '@metamask/design-system-react';
 
+export type ActivityCellBaseProps = {
+  txStatus: string;
+  avatar: React.ReactNode;
+  title: React.ReactNode;
+  subtitle?: React.ReactNode;
+  primaryAmount?: React.ReactNode;
+  secondaryAmount?: React.ReactNode;
+  onClick?: () => void;
+};
+
 export function ActivityCellBase({
   avatar,
   onClick,
@@ -9,15 +19,7 @@ export function ActivityCellBase({
   subtitle,
   title,
   txStatus,
-}: Readonly<{
-  txStatus: string;
-  avatar: React.ReactNode;
-  title: React.ReactNode;
-  subtitle?: React.ReactNode;
-  primaryAmount?: React.ReactNode;
-  secondaryAmount?: React.ReactNode;
-  onClick?: () => void;
-}>) {
+}: Readonly<ActivityCellBaseProps>) {
   return (
     <div
       className="grid min-h-[70px] grid-cols-[32px_minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 transition-transform duration-200 ease-out hover:bg-hover cursor-pointer"
