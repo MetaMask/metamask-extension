@@ -10,6 +10,11 @@ import {
   MetaMetricsEventLinkType,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import {
+  Text,
+  TextColor,
+} from '../../../components/component-library';
+import { TextVariant } from '../../../helpers/constants/design-system';
 
 export default function ViewOnBlockExplorer({
   blockExplorerUrl,
@@ -21,7 +26,10 @@ export default function ViewOnBlockExplorer({
 
   return (
     <Box marginTop={6} className="view-on-block-explorer">
-      <button
+      <Text
+        as="button"
+        variant={TextVariant.bodyXs}
+        color={TextColor.primaryDefault}
         onClick={() => {
           trackEvent({
             event: MetaMetricsEventName.ExternalLinkClicked,
@@ -40,7 +48,7 @@ export default function ViewOnBlockExplorer({
           t('blockExplorerSwapAction'),
           blockExplorerHostName,
         ])}
-      </button>
+      </Text>
     </Box>
   );
 }
