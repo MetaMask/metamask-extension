@@ -12,6 +12,19 @@ import {
 } from '../../../../helpers/utils/resolve-deep-link-href';
 import { FeatureAnnouncementNotification } from './types';
 
+function shouldUseDefaultLinkNavigation(
+  event: React.MouseEvent<HTMLElement>,
+): boolean {
+  return Boolean(
+    event.defaultPrevented ||
+      event.button !== 0 ||
+      event.metaKey ||
+      event.altKey ||
+      event.ctrlKey ||
+      event.shiftKey,
+  );
+}
+
 const useAnalyticEventCallback = (props: {
   id: string;
   type: string;
@@ -95,8 +108,13 @@ export const ExternalLinkButton = (props: {
   };
 
   const onClick: React.MouseEventHandler<HTMLElement> = (event) => {
-    event.preventDefault();
     analyticCallback();
+
+    if (shouldUseDefaultLinkNavigation(event)) {
+      return;
+    }
+
+    event.preventDefault();
     openResolvedLink().catch((error) => {
       console.error('[ExternalLinkButton] error opening external link', error);
     });

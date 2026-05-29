@@ -1,5 +1,11 @@
 import React from 'react';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+  createEvent,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import { processNotification } from '@metamask/notification-services-controller/notification-services';
 import { createMockFeatureAnnouncementRaw } from '@metamask/notification-services-controller/notification-services/mocks';
 import {
@@ -58,7 +64,12 @@ describe('Feature announcement footer buttons', () => {
   it('opens a non-deep-link external URL in a new tab', async () => {
     renderExternalLinkButton('https://example.com');
 
-    fireEvent.click(screen.getByRole('link', { name: linkText }));
+    const link = screen.getByRole('link', { name: linkText });
+    const clickEvent = createEvent.click(link);
+
+    fireEvent(link, clickEvent);
+
+    expect(clickEvent.defaultPrevented).toBe(true);
 
     await waitFor(() =>
       expect(global.platform.openTab).toHaveBeenCalledWith({
@@ -83,6 +94,32 @@ describe('Feature announcement footer buttons', () => {
       ),
     );
     expect(global.platform.openTab).not.toHaveBeenCalled();
+  });
+
+  it('lets modified clicks use native link navigation', () => {
+    renderExternalLinkButton('https://example.com');
+
+    const link = screen.getByRole('link', { name: linkText });
+    const clickEvent = createEvent.click(link, { ctrlKey: true });
+
+    fireEvent(link, clickEvent);
+
+    expect(clickEvent.defaultPrevented).toBe(false);
+    expect(global.platform.openTab).not.toHaveBeenCalled();
+    expect(global.platform.openExtensionInBrowser).not.toHaveBeenCalled();
+  });
+
+  it('lets non-primary clicks use native link navigation', () => {
+    renderExternalLinkButton('https://example.com');
+
+    const link = screen.getByRole('link', { name: linkText });
+    const clickEvent = createEvent.click(link, { button: 1 });
+
+    fireEvent(link, clickEvent);
+
+    expect(clickEvent.defaultPrevented).toBe(false);
+    expect(global.platform.openTab).not.toHaveBeenCalled();
+    expect(global.platform.openExtensionInBrowser).not.toHaveBeenCalled();
   });
 
   it('opens a deep link redirect URL in a new tab', async () => {
