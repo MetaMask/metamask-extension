@@ -16,6 +16,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { SECOND } from '../../../../shared/constants/time';
+import { createSentryError } from '../../../../shared/lib/error';
 import {
   getPasskeyAuthMethodKey,
   startPasskeyAuthentication,
@@ -24,6 +25,7 @@ import {
   translatePasskeyError,
   getPasskeyErrorCode,
 } from '../../../../shared/lib/passkey';
+import { captureException } from '../../../../shared/lib/sentry';
 import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
 import { toast, ToastContent } from '../../../components/ui/toast/toast';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -101,6 +103,7 @@ const PasskeyItem = () => {
       return;
     }
 
+    const verificationMethod = 'passkey';
     if (
       environmentType === ENVIRONMENT_TYPE_SIDEPANEL &&
       isEnrolledPasskeyIncompatibleWithSidepanel
@@ -111,7 +114,7 @@ const PasskeyItem = () => {
         event: MetaMetricsEventName.PasskeyTurnOff,
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          verification_method: 'passkey',
+          verification_method: verificationMethod,
           status: 'full_screen_opened',
         },
       });
@@ -123,7 +126,6 @@ const PasskeyItem = () => {
 
     setIsPasskeyOperationPending(true);
     const startedAt = Date.now();
-    const verificationMethod = 'passkey';
     trackEvent({
       category: MetaMetricsEventCategory.Settings,
       event: MetaMetricsEventName.PasskeyTurnOff,
@@ -175,6 +177,8 @@ const PasskeyItem = () => {
       navigate(SECURITY_AND_PASSWORD_ROUTE, { replace: true });
     } catch (error: unknown) {
       let errorStatus = 'failed';
+      const durationMs = Date.now() - startedAt;
+      const errorCode = getPasskeyErrorCode(error);
       if (isPasskeyCeremonySilentError(error)) {
         errorStatus = 'cancelled';
         log.debug(
@@ -182,9 +186,9 @@ const PasskeyItem = () => {
           error,
         );
       } else {
-        log.error(
-          'Passkey verification for disable failed; offering password fallback',
-          error,
+        captureException(
+          createSentryError('Passkey turn off in settings failed', error),
+          { extra: { verificationMethod, durationMs, errorCode } },
         );
         toast.error(
           <ToastContent
@@ -205,8 +209,8 @@ const PasskeyItem = () => {
           verification_method: verificationMethod,
           status: errorStatus,
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          duration_ms: Date.now() - startedAt,
-          reason: getPasskeyErrorCode(error),
+          duration_ms: durationMs,
+          reason: errorCode,
         },
       });
       navigate(SECURITY_TURN_OFF_PASSKEY_ROUTE, { replace: true });
