@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Uncategorized
 
+- chore: sync stable into release/13.33.0 (#43032)
+- chore: sync stable into release/13.33.0 (#42878)
 - Fixed the VIP tier label to display "VIP" instead of "VIP Fox" (#42856)
 - chore: Replace `await-semaphore` with `async-mutex` (#42818)
 - Updated Activity tab empty states to show context-specific messaging and actions when users have no transaction (#42786)
@@ -126,11 +128,11 @@ Fixes:
 
 ### Changed
 
-- Bumped `qs` to 6.15.2, `tmp` to 0.2.6, updated uuid audit ignore ([#42999](https://github.com/MetaMask/metamask-extension/pull/42999))
+- Bumped `qs` to 6.15.2, `tmp` to 0.2.6, updated uuid audit ignore (#42999)
 
 ### Fixed
 
-- Disabled unified assets controller to fix background calls issue ([#42992](https://github.com/MetaMask/metamask-extension/pull/42992))
+- Disabled unified assets controller to fix background calls issue (#42992)
 
 ## [13.32.0]
 
