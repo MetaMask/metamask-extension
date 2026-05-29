@@ -20,7 +20,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
             class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
           >
             <div
-              class="mm-box mm-box--margin-bottom-8 mm-box--display-flex mm-box--justify-content-center"
+              class="justify-center mb-8 flex"
             >
               <div
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-lg mm-avatar-favicon mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
@@ -33,7 +33,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
               </div>
             </div>
             <div
-              class="mm-box mm-box--margin-bottom-1 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center"
+              class="gap-2 items-center justify-center mb-1 flex"
             >
               <h2
                 class="mm-box mm-text mm-text--heading-lg mm-box--color-text-default"
@@ -43,7 +43,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
               </h2>
             </div>
             <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-center"
+              class="justify-center flex"
             >
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
@@ -91,10 +91,10 @@ exports[`MultichainConnectPage renders correctly 1`] = `
             role="tabpanel"
           >
             <div
-              class="mm-box mm-box--margin-top-4"
+              class="mt-4"
             >
               <div
-                class="mm-box mm-box--background-color-background-default mm-box--rounded-xl"
+                class="bg-default rounded-xl"
               >
                 <div
                   class="flex flex-row gap-4 items-center justify-between p-4 bg-transparent multichain-account-cell"
@@ -195,10 +195,10 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                 </div>
               </div>
               <div
-                class="mm-box mm-box--margin-top-4 mm-box--padding-4 mm-box--display-flex mm-box--justify-content-flex-start"
+                class="justify-start mt-4 p-4 flex"
               >
                 <div
-                  class="mm-box connect-page__edit-icon mm-box--margin-right-4 mm-box--padding-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-info-muted mm-box--rounded-md"
+                  class="items-center justify-center mr-4 p-2 bg-info-muted flex multichain-connect-page__edit-icon rounded-md"
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
@@ -220,10 +220,10 @@ exports[`MultichainConnectPage renders correctly 1`] = `
         class="mm-box multichain-page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--width-full"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full"
+          class="flex-col gap-4 flex w-full"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--width-full"
+            class="gap-4 flex w-full"
           >
             <button
               class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
@@ -265,7 +265,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
             class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
           >
             <div
-              class="mm-box mm-box--margin-bottom-8 mm-box--display-flex mm-box--justify-content-center"
+              class="justify-center mb-8 flex"
             >
               <div
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-lg mm-avatar-favicon mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
@@ -278,7 +278,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
               </div>
             </div>
             <div
-              class="mm-box mm-box--margin-bottom-1 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center"
+              class="gap-2 items-center justify-center mb-1 flex"
             >
               <h2
                 class="mm-box mm-text mm-text--heading-lg mm-box--color-text-default"
@@ -288,7 +288,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
               </h2>
             </div>
             <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-center"
+              class="justify-center flex"
             >
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
@@ -336,10 +336,10 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
             role="tabpanel"
           >
             <div
-              class="mm-box mm-box--margin-top-4"
+              class="mt-4"
             >
               <div
-                class="mm-box mm-box--background-color-background-default mm-box--rounded-xl"
+                class="bg-default rounded-xl"
               >
                 <div
                   class="flex flex-row gap-4 items-center justify-between p-4 bg-transparent multichain-account-cell"
@@ -440,10 +440,10 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                 </div>
               </div>
               <div
-                class="mm-box mm-box--margin-top-4 mm-box--padding-4 mm-box--display-flex mm-box--justify-content-flex-start"
+                class="justify-start mt-4 p-4 flex"
               >
                 <div
-                  class="mm-box connect-page__edit-icon mm-box--margin-right-4 mm-box--padding-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-info-muted mm-box--rounded-md"
+                  class="items-center justify-center mr-4 p-2 bg-info-muted flex multichain-connect-page__edit-icon rounded-md"
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
@@ -465,10 +465,10 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
         class="mm-box multichain-page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--width-full"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full"
+          class="flex-col gap-4 flex w-full"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--width-full"
+            class="gap-4 flex w-full"
           >
             <button
               class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
@@ -510,7 +510,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
             class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
           >
             <div
-              class="mm-box mm-box--margin-bottom-8 mm-box--display-flex mm-box--justify-content-center"
+              class="justify-center mb-8 flex"
             >
               <div
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-lg mm-avatar-favicon mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
@@ -523,7 +523,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
               </div>
             </div>
             <div
-              class="mm-box mm-box--margin-bottom-1 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center"
+              class="gap-2 items-center justify-center mb-1 flex"
             >
               <h2
                 class="mm-box mm-text mm-text--heading-lg mm-box--color-text-default"
@@ -533,7 +533,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
               </h2>
             </div>
             <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-center"
+              class="justify-center flex"
             >
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
@@ -581,10 +581,10 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
             role="tabpanel"
           >
             <div
-              class="mm-box mm-box--margin-top-4"
+              class="mt-4"
             >
               <div
-                class="mm-box mm-box--background-color-background-default mm-box--rounded-xl"
+                class="bg-default rounded-xl"
               >
                 <div
                   class="flex flex-row gap-4 items-center justify-between p-4 bg-transparent multichain-account-cell"
@@ -685,10 +685,10 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                 </div>
               </div>
               <div
-                class="mm-box mm-box--margin-top-4 mm-box--padding-4 mm-box--display-flex mm-box--justify-content-flex-start"
+                class="justify-start mt-4 p-4 flex"
               >
                 <div
-                  class="mm-box connect-page__edit-icon mm-box--margin-right-4 mm-box--padding-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-info-muted mm-box--rounded-md"
+                  class="items-center justify-center mr-4 p-2 bg-info-muted flex multichain-connect-page__edit-icon rounded-md"
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
@@ -710,10 +710,10 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
         class="mm-box multichain-page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--width-full"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full"
+          class="flex-col gap-4 flex w-full"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--width-full"
+            class="gap-4 flex w-full"
           >
             <button
               class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"

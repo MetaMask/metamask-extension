@@ -1,11 +1,18 @@
 import { useSelector } from 'react-redux';
+import { waitFor } from '@testing-library/react';
+import type { Hex } from '@metamask/utils';
 
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
-import { getAssetsBySelectedAccountGroup } from '../../../../selectors/assets';
+import {
+  getAssetsBySelectedAccountGroup,
+  getAssetsBySelectedAccountGroupIncludingHidden,
+} from '../../../../selectors/assets';
+import { getIsTokenManagementFilterEnabled } from '../../../../selectors/multichain/feature-flags';
 import * as useFiatFormatterModule from '../../../../hooks/useFiatFormatter';
 import { AssetStandard, type Asset } from '../../types/send';
 import * as useChainNetworkNameAndImageModule from '../useChainNetworkNameAndImage';
+import * as assetUtils from '../../../../../shared/lib/asset-utils';
 import { useSendTokens } from './useSendTokens';
 
 jest.mock('react-redux', () => ({
@@ -15,6 +22,10 @@ jest.mock('react-redux', () => ({
 
 jest.mock('../useChainNetworkNameAndImage');
 jest.mock('../../../../hooks/useFiatFormatter');
+jest.mock('../../../../../shared/lib/asset-utils', () => ({
+  ...jest.requireActual('../../../../../shared/lib/asset-utils'),
+  fetchAssetMetadataForAssetIds: jest.fn(),
+}));
 
 const mockUseSelector = jest.mocked(useSelector);
 const mockUseChainNetworkNameAndImageMap = jest.mocked(
@@ -22,6 +33,9 @@ const mockUseChainNetworkNameAndImageMap = jest.mocked(
 );
 const mockUseFiatFormatter = jest.mocked(
   useFiatFormatterModule.useFiatFormatter,
+);
+const mockFetchAssetMetadataForAssetIds = jest.mocked(
+  assetUtils.fetchAssetMetadataForAssetIds,
 );
 
 describe('useSendTokens', () => {
@@ -92,6 +106,9 @@ describe('useSendTokens', () => {
     jest.clearAllMocks();
 
     mockUseSelector.mockImplementation((selector) => {
+      if (selector === getIsTokenManagementFilterEnabled) {
+        return false;
+      }
       if (selector === getAssetsBySelectedAccountGroup) {
         return mockAssetsData;
       }
@@ -101,6 +118,7 @@ describe('useSendTokens', () => {
     mockUseChainNetworkNameAndImageMap.mockReturnValue(mockChainNetworkMap);
     mockUseFiatFormatter.mockReturnValue(mockFormatter);
     mockFormatter.mockReturnValue('$1,000.00');
+    mockFetchAssetMetadataForAssetIds.mockResolvedValue({});
   });
 
   it('includes testnet assets with non-zero raw balance', async () => {
@@ -155,6 +173,130 @@ describe('useSendTokens', () => {
       (asset: Asset) => asset.symbol === 'ZERO',
     );
     expect(zeroBalanceAsset).toBeDefined();
+  });
+
+  it('uses hidden-inclusive assets when the token management flag is enabled', async () => {
+    const hiddenAsset = {
+      address: '0xHiddenToken',
+      chainId: '0x1',
+      balance: '1000000000000000000',
+      rawBalance: '0xde0b6b3a7640000',
+      isNative: false,
+      symbol: 'HIDDEN',
+      decimals: 18,
+      fiat: {
+        balance: 100,
+        currency: 'USD',
+      },
+    };
+
+    mockUseSelector.mockImplementation((selector) => {
+      if (selector === getIsTokenManagementFilterEnabled) {
+        return true;
+      }
+      if (selector === getAssetsBySelectedAccountGroupIncludingHidden) {
+        return [hiddenAsset];
+      }
+      if (selector === getAssetsBySelectedAccountGroup) {
+        return [];
+      }
+      return undefined;
+    });
+
+    const { result } = renderHookWithProvider(() => useSendTokens(), mockState);
+
+    expect(result.current).toHaveLength(1);
+    expect(result.current[0].symbol).toBe('HIDDEN');
+  });
+
+  it('filters tokens by chain ID and address when tokenFilter is provided', async () => {
+    const { result } = renderHookWithProvider(
+      () =>
+        useSendTokens({
+          includeNoBalance: true,
+          tokenFilter: (chainId, address) =>
+            chainId === '0x1' && address.toLowerCase() === '0xusdc',
+        }),
+      mockState,
+    );
+
+    expect(result.current).toHaveLength(1);
+    expect(result.current[0].symbol).toBe('USDC');
+  });
+
+  it('enriches allowlisted tokens that are not in the wallet asset list', async () => {
+    const enrichedAddress = '0x1111111111111111111111111111111111111111';
+    const enrichedChainId = '0x1' as Hex;
+    const enrichedAssetId = assetUtils.toAssetId(
+      enrichedAddress,
+      enrichedChainId,
+    );
+
+    mockFetchAssetMetadataForAssetIds.mockResolvedValue({
+      [enrichedAssetId as string]: {
+        assetId: enrichedAssetId,
+        decimals: 18,
+        name: 'Dai Stablecoin',
+        symbol: 'DAI',
+      },
+    } as never);
+
+    const { result } = renderHookWithProvider(
+      () =>
+        useSendTokens({
+          enrichTokenRequests: [
+            {
+              address: enrichedAddress,
+              chainId: enrichedChainId,
+            },
+          ],
+          includeNoBalance: true,
+        }),
+      mockState,
+    );
+
+    await waitFor(() => {
+      expect(
+        result.current.find(
+          (asset: Asset) => asset.address === enrichedAddress,
+        ),
+      ).toBeDefined();
+    });
+
+    const enrichedAsset = result.current.find(
+      (asset: Asset) => asset.address === enrichedAddress,
+    );
+    expect(enrichedAsset?.symbol).toBe('DAI');
+    expect(enrichedAsset?.rawBalance).toBe('0x0');
+  });
+
+  it('handles metadata enrichment aborts without rejecting', async () => {
+    const abortError = new Error('Aborted');
+    abortError.name = 'AbortError';
+
+    mockFetchAssetMetadataForAssetIds.mockRejectedValueOnce(abortError);
+
+    const { result } = renderHookWithProvider(
+      () =>
+        useSendTokens({
+          enrichTokenRequests: [
+            {
+              address: '0x1111111111111111111111111111111111111111',
+              chainId: '0x1',
+            },
+          ],
+          includeNoBalance: true,
+        }),
+      mockState,
+    );
+
+    await waitFor(() => {
+      expect(mockFetchAssetMetadataForAssetIds).toHaveBeenCalled();
+    });
+
+    expect(result.current.some((asset: Asset) => asset.symbol === 'DAI')).toBe(
+      false,
+    );
   });
 
   it('sorts assets by fiat balance descending', async () => {

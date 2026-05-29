@@ -6,6 +6,7 @@ import {
   type MessengerEvents,
 } from '@metamask/messenger';
 import { captureException } from '../../../shared/lib/sentry';
+import { wrapMessengerWithTracing } from '../../../shared/lib/messenger-tracing';
 import type { MESSENGER_FACTORIES } from '../messenger-client-init/messengers';
 
 export const ROOT_MESSENGER_NAMESPACE = 'Root';
@@ -31,8 +32,10 @@ export function getRootMessenger<
   AllowedActions extends ActionConstraint = RootMessengerActions,
   AllowedEvents extends EventConstraint = RootMessengerEvents,
 >(): RootMessenger<AllowedActions, AllowedEvents> {
-  return new Messenger({
+  const messenger = new Messenger({
     namespace: ROOT_MESSENGER_NAMESPACE,
     captureException,
   });
+
+  return wrapMessengerWithTracing(messenger);
 }

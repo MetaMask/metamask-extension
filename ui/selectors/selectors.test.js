@@ -27,6 +27,7 @@ import {
   SOLANA_WALLET_NAME,
   SOLANA_WALLET_SNAP_ID,
 } from '../../shared/lib/accounts';
+import * as keyringSelectors from '../../shared/lib/selectors/keyring';
 import * as selectors from './selectors';
 
 jest.mock('../../shared/lib/selectors/networks', () => ({
@@ -872,29 +873,33 @@ describe('Selectors', () => {
       const mockStateWithImported = modifyStateWithHWKeyring(
         KeyringType.imported,
       );
-      expect(selectors.isHardwareWallet(mockStateWithImported)).toBe(false);
+      expect(keyringSelectors.isHardwareWallet(mockStateWithImported)).toBe(
+        false,
+      );
     });
 
     it('returns true if it is a Ledger HW wallet', () => {
       const mockStateWithLedger = modifyStateWithHWKeyring(KeyringType.ledger);
-      expect(selectors.isHardwareWallet(mockStateWithLedger)).toBe(true);
+      expect(keyringSelectors.isHardwareWallet(mockStateWithLedger)).toBe(true);
     });
 
     it('returns true if it is a Trezor HW wallet', () => {
       const mockStateWithTrezor = modifyStateWithHWKeyring(KeyringType.trezor);
-      expect(selectors.isHardwareWallet(mockStateWithTrezor)).toBe(true);
+      expect(keyringSelectors.isHardwareWallet(mockStateWithTrezor)).toBe(true);
     });
 
     it('returns true if it is a Lattice HW wallet', () => {
       const mockStateWithLattice = modifyStateWithHWKeyring(
         KeyringType.lattice,
       );
-      expect(selectors.isHardwareWallet(mockStateWithLattice)).toBe(true);
+      expect(keyringSelectors.isHardwareWallet(mockStateWithLattice)).toBe(
+        true,
+      );
     });
 
     it('returns true if it is a QR HW wallet', () => {
       const mockStateWithQr = modifyStateWithHWKeyring(KeyringType.qr);
-      expect(selectors.isHardwareWallet(mockStateWithQr)).toBe(true);
+      expect(keyringSelectors.isHardwareWallet(mockStateWithQr)).toBe(true);
     });
   });
 
@@ -918,11 +923,11 @@ describe('Selectors', () => {
           },
         },
       };
-      expect(selectors.accountSupportsSmartTx(state)).toBe(false);
+      expect(keyringSelectors.accountSupportsSmartTx(state)).toBe(false);
     });
 
     it('returns true if the account type is not "snap"', () => {
-      expect(selectors.accountSupportsSmartTx(mockState)).toBe(true);
+      expect(keyringSelectors.accountSupportsSmartTx(mockState)).toBe(true);
     });
   });
 
@@ -932,20 +937,20 @@ describe('Selectors', () => {
         KeyringType.imported,
       );
       expect(
-        selectors.getHardwareWalletType(mockStateWithImported),
+        keyringSelectors.getHardwareWalletType(mockStateWithImported),
       ).toBeUndefined();
     });
 
     it('returns "Ledger Hardware" if it is a Ledger HW wallet', () => {
       const mockStateWithLedger = modifyStateWithHWKeyring(KeyringType.ledger);
-      expect(selectors.getHardwareWalletType(mockStateWithLedger)).toBe(
+      expect(keyringSelectors.getHardwareWalletType(mockStateWithLedger)).toBe(
         KeyringType.ledger,
       );
     });
 
     it('returns "Trezor Hardware" if it is a Trezor HW wallet', () => {
       const mockStateWithTrezor = modifyStateWithHWKeyring(KeyringType.trezor);
-      expect(selectors.getHardwareWalletType(mockStateWithTrezor)).toBe(
+      expect(keyringSelectors.getHardwareWalletType(mockStateWithTrezor)).toBe(
         KeyringType.trezor,
       );
     });

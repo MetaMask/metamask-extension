@@ -1,9 +1,11 @@
-import type { Order, Position } from '@metamask/perps-controller';
+import type { Order, OrderParams, Position } from '@metamask/perps-controller';
 import {
   isOrderAssociatedWithFullPosition,
   shouldDisplayOrderInMarketDetailsOrders,
   buildDisplayOrdersWithSyntheticTpsl,
   normalizeMarketDetailsOrders,
+  derivePositionTpslPricesFromOrders,
+  willFlipPosition,
   formatOrderLabel,
 } from './orderUtils';
 
@@ -66,13 +68,34 @@ describe('orderUtils', () => {
       expect(isOrderAssociatedWithFullPosition(order, position)).toBe(false);
     });
 
-    it('returns false when isPositionTpsl is explicitly false', () => {
+    it('returns false when isPositionTpsl is explicitly false on a non-trigger order', () => {
       const order = makeOrder({
         reduceOnly: true,
         isPositionTpsl: false,
         symbol: 'ETH',
         side: 'sell',
         size: '1.0',
+      });
+      const position = makePosition({ symbol: 'ETH', size: '1.0' });
+      expect(isOrderAssociatedWithFullPosition(order, position)).toBe(false);
+    });
+
+    it('returns false for a TP/SL trigger with isPositionTpsl=false even when size matches the position (limit-order child)', () => {
+      // A limit-order's TP/SL children also carry isPositionTpsl=false with
+      // isTrigger=true. If the limit size coincidentally equals the active
+      // position size, size-matching would misclassify them as full-position
+      // and hide them from the Orders section. The explicit `false` flag is
+      // authoritative — trust the provider over size coincidence.
+      const order = makeOrder({
+        reduceOnly: true,
+        isPositionTpsl: false,
+        isTrigger: true,
+        symbol: 'ETH',
+        side: 'sell',
+        size: '1.0',
+        originalSize: '1.0',
+        triggerPrice: '3300',
+        detailedOrderType: 'Take Profit Limit',
       });
       const position = makePosition({ symbol: 'ETH', size: '1.0' });
       expect(isOrderAssociatedWithFullPosition(order, position)).toBe(false);
@@ -164,6 +187,197 @@ describe('orderUtils', () => {
         isPositionTpsl: true,
       });
       expect(shouldDisplayOrderInMarketDetailsOrders(positionTpsl)).toBe(false);
+    });
+
+    it('excludes zero-size reduce-only trigger orders matching the position even without isPositionTpsl flag', () => {
+      // Hyperliquid positionTPSL trigger orders carry size '0' (whole-position
+      // trigger). WebSocket order updates omit isPositionTpsl, so the UI must
+      // still recognise the order as full-position when size is zero and the
+      // trigger matches the active position.
+      const positionTpslNoFlag = makeOrder({
+        reduceOnly: true,
+        isTrigger: true,
+        symbol: 'ETH',
+        side: 'sell',
+        size: '0',
+        originalSize: '0',
+        triggerPrice: '3200.00',
+        detailedOrderType: 'Take Profit Market',
+      });
+      const position = makePosition({ symbol: 'ETH', size: '1.0' });
+      expect(
+        shouldDisplayOrderInMarketDetailsOrders(positionTpslNoFlag, position),
+      ).toBe(false);
+    });
+
+    it('keeps a flag-less zero-size reduce-only trigger visible when no matching position exists', () => {
+      const orphanTpsl = makeOrder({
+        reduceOnly: true,
+        isTrigger: true,
+        symbol: 'ETH',
+        side: 'sell',
+        size: '0',
+        originalSize: '0',
+        triggerPrice: '3200.00',
+      });
+      expect(shouldDisplayOrderInMarketDetailsOrders(orphanTpsl)).toBe(true);
+    });
+
+    it('keeps a flag-less zero-size reduce-only order without isTrigger visible (cannot infer position binding)', () => {
+      const zeroSizeNonTrigger = makeOrder({
+        reduceOnly: true,
+        symbol: 'ETH',
+        side: 'sell',
+        size: '0',
+        originalSize: '0',
+      });
+      const position = makePosition({ symbol: 'ETH', size: '1.0' });
+      expect(
+        shouldDisplayOrderInMarketDetailsOrders(zeroSizeNonTrigger, position),
+      ).toBe(true);
+    });
+  });
+
+  describe('willFlipPosition', () => {
+    const makeParams = (overrides: Partial<OrderParams> = {}): OrderParams =>
+      ({
+        symbol: 'ETH',
+        isBuy: false,
+        size: '2.0',
+        orderType: 'market',
+        ...overrides,
+      }) as OrderParams;
+
+    it('returns false for reduce-only orders', () => {
+      expect(
+        willFlipPosition(
+          makePosition({ size: '1.0' }),
+          makeParams({ reduceOnly: true }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false for limit orders', () => {
+      expect(
+        willFlipPosition(
+          makePosition({ size: '1.0' }),
+          makeParams({ orderType: 'limit' }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false when order direction matches position direction', () => {
+      expect(
+        willFlipPosition(
+          makePosition({ size: '1.0' }),
+          makeParams({ isBuy: true, size: '5.0' }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns true when opposing market order exceeds the position size', () => {
+      expect(
+        willFlipPosition(
+          makePosition({ size: '1.0' }),
+          makeParams({ isBuy: false, size: '2.0' }),
+        ),
+      ).toBe(true);
+    });
+
+    it('returns false when opposing market order matches the position size (full close, no flip)', () => {
+      expect(
+        willFlipPosition(
+          makePosition({ size: '1.0' }),
+          makeParams({ isBuy: false, size: '1.0' }),
+        ),
+      ).toBe(false);
+    });
+
+    it('strips thousand separators from position and order sizes before comparing', () => {
+      expect(
+        willFlipPosition(
+          makePosition({ size: '1,234.5' }),
+          makeParams({ isBuy: false, size: '2,000' }),
+        ),
+      ).toBe(true);
+      expect(
+        willFlipPosition(
+          makePosition({ size: '1,234.5' }),
+          makeParams({ isBuy: false, size: '500' }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false when the current position size is zero (no phantom direction)', () => {
+      expect(
+        willFlipPosition(
+          makePosition({ size: '0' }),
+          makeParams({ isBuy: false, size: '1.0' }),
+        ),
+      ).toBe(false);
+      expect(
+        willFlipPosition(
+          makePosition({ size: '0' }),
+          makeParams({ isBuy: true, size: '1.0' }),
+        ),
+      ).toBe(false);
+    });
+  });
+
+  describe('derivePositionTpslPricesFromOrders', () => {
+    it('returns empty when no position is provided', () => {
+      const order = makeOrder({
+        reduceOnly: true,
+        isTrigger: true,
+        isPositionTpsl: true,
+        triggerPrice: '3200',
+        detailedOrderType: 'Take Profit Market',
+      });
+      expect(derivePositionTpslPricesFromOrders([order])).toEqual({});
+    });
+
+    it('returns TP and SL prices from positionTPSL trigger orders matching the position', () => {
+      const position = makePosition({ symbol: 'ETH', size: '1.0' });
+      const tp = makeOrder({
+        orderId: 'tp',
+        reduceOnly: true,
+        isTrigger: true,
+        isPositionTpsl: true,
+        symbol: 'ETH',
+        side: 'sell',
+        triggerPrice: '3200',
+        detailedOrderType: 'Take Profit Market',
+      });
+      const sl = makeOrder({
+        orderId: 'sl',
+        reduceOnly: true,
+        isTrigger: true,
+        symbol: 'ETH',
+        side: 'sell',
+        size: '0',
+        originalSize: '0',
+        triggerPrice: '2800',
+        detailedOrderType: 'Stop Market',
+      });
+      expect(derivePositionTpslPricesFromOrders([tp, sl], position)).toEqual({
+        takeProfitPrice: '3200',
+        stopLossPrice: '2800',
+      });
+    });
+
+    it('ignores non-positionTPSL trigger orders', () => {
+      const position = makePosition({ symbol: 'ETH', size: '1.0' });
+      const limitTrigger = makeOrder({
+        reduceOnly: false,
+        isTrigger: true,
+        symbol: 'ETH',
+        side: 'sell',
+        triggerPrice: '3300',
+        detailedOrderType: 'Stop Limit',
+      });
+      expect(
+        derivePositionTpslPricesFromOrders([limitTrigger], position),
+      ).toEqual({});
     });
   });
 

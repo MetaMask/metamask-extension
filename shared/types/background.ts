@@ -105,19 +105,12 @@ export type ControllerStatePropertiesEnumerated = {
   recoveryPhraseReminderHasBeenShown: AppStateControllerState['recoveryPhraseReminderHasBeenShown'];
   recoveryPhraseReminderLastShown: AppStateControllerState['recoveryPhraseReminderLastShown'];
   outdatedBrowserWarningLastShown: AppStateControllerState['outdatedBrowserWarningLastShown'];
-  nftsDetectionNoticeDismissed: AppStateControllerState['nftsDetectionNoticeDismissed'];
-  showTestnetMessageInDropdown: AppStateControllerState['showTestnetMessageInDropdown'];
-  showBetaHeader: AppStateControllerState['showBetaHeader'];
-  showPermissionsTour: AppStateControllerState['showPermissionsTour'];
-  showNetworkBanner: AppStateControllerState['showNetworkBanner'];
-  showAccountBanner: AppStateControllerState['showAccountBanner'];
   productTour?: AppStateControllerState['productTour'];
   showDownloadMobileAppSlide: AppStateControllerState['showDownloadMobileAppSlide'];
   trezorModel: AppStateControllerState['trezorModel'];
   currentPopupId?: AppStateControllerState['currentPopupId'];
   onboardingDate: AppStateControllerState['onboardingDate'];
   lastViewedUserSurvey: AppStateControllerState['lastViewedUserSurvey'];
-  isRampCardClosed: AppStateControllerState['isRampCardClosed'];
   newPrivacyPolicyToastClickedOrClosed: AppStateControllerState['newPrivacyPolicyToastClickedOrClosed'];
   newPrivacyPolicyToastShownDate: AppStateControllerState['newPrivacyPolicyToastShownDate'];
   pna25Acknowledged: AppStateControllerState['pna25Acknowledged'];
@@ -128,7 +121,6 @@ export type ControllerStatePropertiesEnumerated = {
   activeQrCodeScanRequest: AppStateControllerState['activeQrCodeScanRequest'];
   lastQrScanCompletedSuccessfully: AppStateControllerState['lastQrScanCompletedSuccessfully'];
   nftsDropdownState: AppStateControllerState['nftsDropdownState'];
-  surveyLinkLastClickedOrClosed: AppStateControllerState['surveyLinkLastClickedOrClosed'];
   shieldSubscriptionError: AppStateControllerState['shieldSubscriptionError'];
   shieldEndingToastLastClickedOrClosed: AppStateControllerState['shieldEndingToastLastClickedOrClosed'];
   shieldPausedToastLastClickedOrClosed: AppStateControllerState['shieldPausedToastLastClickedOrClosed'];
@@ -332,6 +324,7 @@ export type ControllerStatePropertiesEnumerated = {
   rewardsSeasonStatuses: RewardsControllerState['rewardsSeasonStatuses'];
   rewardsSubscriptionTokens: RewardsControllerState['rewardsSubscriptionTokens'];
   rewardsPointsEstimateHistory: RewardsControllerState['rewardsPointsEstimateHistory'];
+  rewardsVipPerpsFees: RewardsControllerState['rewardsVipPerpsFees'];
   claims: ClaimsControllerState['claims'];
   claimsConfigurations: ClaimsControllerState['claimsConfigurations'];
   drafts: ClaimsControllerState['drafts'];

@@ -45,6 +45,11 @@ import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import type { Position, AccountState, PerpsBackgroundResult } from '../types';
 import { PerpsSlider } from '../perps-slider';
 import { getDisplayName } from '../utils';
+import {
+  formatPerpsLiquidationPrice,
+  isPerpsLiquidationPriceValid,
+  PERPS_LIQUIDATION_PRICE_FALLBACK,
+} from '../utils/formatPerpsDisplayPrice';
 
 const MARGIN_PRESETS = [25, 50, 100] as const;
 const MARGIN_FAILED_FALLBACK_ERROR_PATTERNS = [
@@ -128,23 +133,27 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     [marginAmount],
   );
   const showLiquidationComparison = amountNumForDisplay > 0;
+  const hasValidAnchorLiquidationPrice = isPerpsLiquidationPriceValid(
+    anchorLiquidationPrice,
+  );
+  const hasValidEstimatedLiquidationPrice = isPerpsLiquidationPriceValid(
+    estimatedLiquidationPrice,
+  );
 
   const liquidationPriceDisplay = useMemo(() => {
-    if (
-      anchorLiquidationPrice === null ||
-      !Number.isFinite(anchorLiquidationPrice)
-    ) {
+    const displayAnchorLiquidationPrice = anchorLiquidationPrice ?? 0;
+    if (!hasValidAnchorLiquidationPrice) {
       return (
-        <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-          -
+        <Text
+          variant={TextVariant.BodySm}
+          fontWeight={FontWeight.Medium}
+          data-testid="perps-edit-margin-liquidation-price-value"
+        >
+          {PERPS_LIQUIDATION_PRICE_FALLBACK}
         </Text>
       );
     }
-    if (
-      showLiquidationComparison &&
-      estimatedLiquidationPrice !== null &&
-      Number.isFinite(estimatedLiquidationPrice)
-    ) {
+    if (showLiquidationComparison && hasValidEstimatedLiquidationPrice) {
       return (
         <Box
           flexDirection={BoxFlexDirection.Row}
@@ -153,7 +162,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
           className="max-w-[65%] flex-wrap justify-end"
         >
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {formatPerpsFiat(anchorLiquidationPrice, {
+            {formatPerpsFiat(displayAnchorLiquidationPrice, {
               ranges: PRICE_RANGES_UNIVERSAL,
             })}
           </Text>
@@ -166,9 +175,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
             fontWeight={FontWeight.Medium}
             data-testid="perps-edit-margin-liquidation-price-value"
           >
-            {formatPerpsFiat(estimatedLiquidationPrice ?? 0, {
-              ranges: PRICE_RANGES_UNIVERSAL,
-            })}
+            {formatPerpsLiquidationPrice(estimatedLiquidationPrice)}
           </Text>
         </Box>
       );
@@ -180,17 +187,18 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
         fontWeight={FontWeight.Medium}
         data-testid="perps-edit-margin-liquidation-price-value"
       >
-        {formatPerpsFiat(
-          estimatedLiquidationPrice ?? anchorLiquidationPrice ?? 0,
-          {
-            ranges: PRICE_RANGES_UNIVERSAL,
-          },
+        {formatPerpsLiquidationPrice(
+          showLiquidationComparison
+            ? estimatedLiquidationPrice
+            : anchorLiquidationPrice,
         )}
       </Text>
     );
   }, [
     anchorLiquidationPrice,
     estimatedLiquidationPrice,
+    hasValidAnchorLiquidationPrice,
+    hasValidEstimatedLiquidationPrice,
     showLiquidationComparison,
   ]);
 
@@ -202,9 +210,9 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     return Math.min(100, Math.round((n / maxAmount) * 100));
   }, [marginAmount, maxAmount]);
 
-  const formatLiquidationDistance = useCallback((distance: number) => {
-    if (!Number.isFinite(distance)) {
-      return '-';
+  const formatLiquidationDistance = useCallback((distance: number | null) => {
+    if (distance === null || !Number.isFinite(distance)) {
+      return PERPS_LIQUIDATION_PRICE_FALLBACK;
     }
     // Match mobile's adjust-margin view: liquidation distance is rounded to a whole percent.
     return `${distance.toFixed(0)}%`;
@@ -445,6 +453,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
           <Box className="shrink-0">
             <TextField
               size={TextFieldSize.Md}
+              data-testid="perps-edit-margin-amount-input"
               value={marginAmount}
               onChange={handleAmountChange}
               onFocus={(event: React.FocusEvent<HTMLInputElement>) =>
@@ -456,7 +465,6 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
               backgroundColor={BackgroundColor.backgroundMuted}
               disabled={isSaving}
               autoFocus
-              data-testid="perps-edit-margin-amount-input"
               inputProps={{
                 inputMode: 'decimal',
                 size: 10,
@@ -512,7 +520,9 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
           </Text>
           {showLiquidationComparison &&
           estimatedLiquidationDistance !== null &&
-          Number.isFinite(estimatedLiquidationDistance) ? (
+          Number.isFinite(estimatedLiquidationDistance) &&
+          hasValidAnchorLiquidationPrice &&
+          hasValidEstimatedLiquidationPrice ? (
             <Box
               flexDirection={BoxFlexDirection.Row}
               alignItems={BoxAlignItems.Center}
@@ -547,7 +557,9 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
               fontWeight={FontWeight.Medium}
               data-testid="perps-edit-margin-liquidation-distance-value"
             >
-              {formatLiquidationDistance(anchorLiquidationDistance)}
+              {showLiquidationComparison || !hasValidAnchorLiquidationPrice
+                ? PERPS_LIQUIDATION_PRICE_FALLBACK
+                : formatLiquidationDistance(anchorLiquidationDistance)}
             </Text>
           )}
         </Box>

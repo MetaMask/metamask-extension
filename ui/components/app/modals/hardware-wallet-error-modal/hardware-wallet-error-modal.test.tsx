@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention, camelcase -- Segment analytics payload keys use snake_case */
 import React from 'react';
 import { render, fireEvent, waitFor, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
@@ -17,7 +18,11 @@ import {
 import { getMockContractInteractionConfirmState } from '../../../../../test/data/confirmations/helper';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
-import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventName,
+  MetaMetricsHardwareWalletDeviceType,
+  MetaMetricsHardwareWalletRecoveryErrorType,
+} from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { createHardwareWalletError } from '../../../../contexts/hardware-wallets/errors';
 import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
@@ -91,12 +96,9 @@ const createTestError = (
   code: ErrorCode,
   message: string,
   userMessage?: string,
+  walletType: HardwareWalletType = HardwareWalletType.Ledger,
 ): HardwareWalletErrorType => {
-  return createHardwareWalletError(
-    code,
-    'ledger' as HardwareWalletType,
-    userMessage || message,
-  );
+  return createHardwareWalletError(code, walletType, userMessage || message);
 };
 
 const metricsProviderValue = {
@@ -527,6 +529,103 @@ describe('HardwareWalletErrorModal', () => {
       );
 
       expect(getByTestId('qr-camera-firefox-instructions')).toBeInTheDocument();
+    });
+
+    describe('MetaMetrics tracking', () => {
+      it('tracks PermissionCameraDenied with CameraPermissionDenied error_type', async () => {
+        mockUseHardwareWalletConfig.mockReturnValue({
+          walletType: HardwareWalletType.Qr,
+        });
+        const error = createTestError(
+          ErrorCode.PermissionCameraDenied,
+          'Camera denied',
+          'Camera access denied.',
+          HardwareWalletType.Qr,
+        );
+
+        renderWithMetrics(<HardwareWalletErrorModal error={error} />);
+
+        await waitFor(() => {
+          const modalViewed = mockTrackEvent.mock.calls.filter(
+            (call) =>
+              call[0].event ===
+              MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
+          );
+          expect(modalViewed).toHaveLength(1);
+          expect(modalViewed[0][0].properties).toMatchObject({
+            device_type: MetaMetricsHardwareWalletDeviceType.QrHardware,
+            error_type:
+              MetaMetricsHardwareWalletRecoveryErrorType.CameraPermissionDenied,
+            error_code: 'PermissionCameraDenied',
+            error_type_view_count: 1,
+          });
+        });
+      });
+
+      it('tracks PermissionCameraPromptDismissed with CameraPermissionPromptDismissed error_type', async () => {
+        mockUseHardwareWalletConfig.mockReturnValue({
+          walletType: HardwareWalletType.Qr,
+        });
+        const error = createTestError(
+          ErrorCode.PermissionCameraPromptDismissed,
+          'Prompt dismissed',
+          'Prompt dismissed.',
+          HardwareWalletType.Qr,
+        );
+
+        renderWithMetrics(<HardwareWalletErrorModal error={error} />);
+
+        await waitFor(() => {
+          const modalViewed = mockTrackEvent.mock.calls.filter(
+            (call) =>
+              call[0].event ===
+              MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
+          );
+          expect(modalViewed).toHaveLength(1);
+          expect(modalViewed[0][0].properties).toMatchObject({
+            device_type: MetaMetricsHardwareWalletDeviceType.QrHardware,
+            error_type:
+              MetaMetricsHardwareWalletRecoveryErrorType.CameraPermissionPromptDismissed,
+            error_code: 'PermissionCameraPromptDismissed',
+            error_type_view_count: 1,
+          });
+        });
+      });
+
+      it('tracks CTA clicked with correct QR camera error_type on retry', async () => {
+        mockUseHardwareWalletConfig.mockReturnValue({
+          walletType: HardwareWalletType.Qr,
+        });
+        const error = createTestError(
+          ErrorCode.PermissionCameraDenied,
+          'Camera denied',
+          'Camera access denied.',
+          HardwareWalletType.Qr,
+        );
+
+        const { getByTestId } = renderWithMetrics(
+          <HardwareWalletErrorModal error={error} />,
+        );
+
+        await act(async () => {
+          fireEvent.click(getByTestId('qr-camera-blocked-continue'));
+        });
+
+        await waitFor(() => {
+          const ctaClicked = mockTrackEvent.mock.calls.filter(
+            (call) =>
+              call[0].event ===
+              MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
+          );
+          expect(ctaClicked).toHaveLength(1);
+          expect(ctaClicked[0][0].properties).toMatchObject({
+            device_type: MetaMetricsHardwareWalletDeviceType.QrHardware,
+            error_type:
+              MetaMetricsHardwareWalletRecoveryErrorType.CameraPermissionDenied,
+            error_code: 'PermissionCameraDenied',
+          });
+        });
+      });
     });
 
     describe('Continue button delegates to handleContinueWithPermissionCheck', () => {

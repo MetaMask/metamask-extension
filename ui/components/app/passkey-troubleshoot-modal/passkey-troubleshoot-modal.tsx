@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useMemo, useRef } from 'react';
 import {
   Box,
   Button,
@@ -18,7 +18,7 @@ import {
   ModalOverlay,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { SUPPORT_LINK } from '../../../helpers/constants/common';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
@@ -26,17 +26,48 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
+export type PasskeyTroubleshootModalMode = 'unlock' | 'verify';
+
 type PasskeyTroubleshootModalProps = Readonly<{
+  mode: PasskeyTroubleshootModalMode;
+  location: string;
   onClose: () => void;
   onOpenFullScreen: () => void;
 }>;
 
 export default function PasskeyTroubleshootModal({
+  mode,
+  location: troubleshootLocation,
   onClose,
   onOpenFullScreen,
 }: PasskeyTroubleshootModalProps) {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
+
+  const baseProperties = useMemo(
+    () => ({
+      location: troubleshootLocation,
+      mode,
+    }),
+    [troubleshootLocation, mode],
+  );
+
+  const hasTrackedView = useRef(false);
+
+  useEffect(() => {
+    if (hasTrackedView.current) {
+      return;
+    }
+    hasTrackedView.current = true;
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.PasskeyTroubleshoot,
+      properties: {
+        ...baseProperties,
+        cta: 'modal',
+      },
+    });
+  }, [baseProperties, trackEvent]);
 
   const handleContactSupportTrackEvent = () => {
     trackEvent(
@@ -44,7 +75,7 @@ export default function PasskeyTroubleshootModal({
         category: MetaMetricsEventCategory.Navigation,
         event: MetaMetricsEventName.SupportLinkClicked,
         properties: {
-          url: SUPPORT_LINK,
+          url: ZENDESK_URLS.PASSKEYS,
         },
       },
       {
@@ -54,11 +85,27 @@ export default function PasskeyTroubleshootModal({
   };
 
   const handleOpenFullScreen = () => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.PasskeyTroubleshoot,
+      properties: {
+        ...baseProperties,
+        cta: 'full_screen',
+      },
+    });
     onOpenFullScreen();
     onClose();
   };
 
   const handleStillHavingTrouble = () => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.PasskeyTroubleshoot,
+      properties: {
+        ...baseProperties,
+        cta: 'support',
+      },
+    });
     handleContactSupportTrackEvent();
     onClose();
   };
@@ -84,7 +131,11 @@ export default function PasskeyTroubleshootModal({
             color={TextColor.TextDefault}
             textAlign={TextAlign.Center}
           >
-            {t('passkeyTroubleshootModalTitle')}
+            {t(
+              mode === 'unlock'
+                ? 'passkeyTroubleshootUnlockModalTitle'
+                : 'passkeyTroubleshootVerifyModalTitle',
+            )}
           </Text>
         </ModalHeader>
         <Box paddingHorizontal={4}>
@@ -114,7 +165,7 @@ export default function PasskeyTroubleshootModal({
             >
               <a
                 data-testid="passkey-troubleshoot-still-having-trouble-link"
-                href={SUPPORT_LINK}
+                href={ZENDESK_URLS.PASSKEYS}
                 target="_blank"
                 rel="noopener noreferrer"
               >

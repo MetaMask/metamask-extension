@@ -78,9 +78,6 @@
   "autoLockTimeLimit": {
     "message": "Tajmer za automatsko odjavljivanje (u minutama)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "Podesite vreme mirovanja u minutima pre nego što se MetaMask automatski odjavi. "
-  },
   "average": {
     "message": "Prosečno"
   },
@@ -178,12 +175,6 @@
   "createPassword": {
     "message": "Kreirajte lozinku"
   },
-  "currencyConversion": {
-    "message": "Konverzija valuta"
-  },
-  "currentLanguage": {
-    "message": "Trenutni jezik"
-  },
   "custom": {
     "message": "Напредне опције"
   },
@@ -204,9 +195,6 @@
   },
   "done": {
     "message": "Gotovo"
-  },
-  "downloadGoogleChrome": {
-    "message": "Preuzmi Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Preuzmite dnevnike stanja"
@@ -265,9 +253,6 @@
   },
   "hardwareWallets": {
     "message": "Povežite hardverski novčanik"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Izaberite hardverski novčanik koji biste voleli da koristite sa MetaMask-om"
   },
   "here": {
     "message": "ovde",
@@ -336,12 +321,6 @@
   "likeToImportTokens": {
     "message": "Želite li da dodate ove tokene?"
   },
-  "lineaGoerli": {
-    "message": "Test mreža Linea Goerli"
-  },
-  "links": {
-    "message": "Veze"
-  },
   "loading": {
     "message": "Учитава се..."
   },
@@ -375,9 +354,6 @@
   },
   "nevermind": {
     "message": "Nema veze"
-  },
-  "newAccount": {
-    "message": "Nov nalog"
   },
   "newAccountNumberName": {
     "message": "Nalog $1",
@@ -484,9 +460,6 @@
   "restore": {
     "message": "Поново отвори"
   },
-  "revealSeedWords": {
-    "message": "Otkrivanje početnih reči"
-  },
   "revealSeedWordsWarning": {
     "message": "Ove reči se mogu iskoristiti za krađu svih vaših naloga.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -533,9 +506,6 @@
   "showFiatConversionInTestnets": {
     "message": "Prikažite konverzije na Testnet"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Izaberite ovo za prikaz konverzije dekretnog novca (fiat) na test mrežama."
-  },
   "showHexData": {
     "message": "Prikaži Hex podatke"
   },
@@ -565,9 +535,6 @@
   },
   "stateLogs": {
     "message": "Državne evidencije"
-  },
-  "stateLogsDescription": {
-    "message": "Dnevnici stanja sadrže adrese vaših javnih naloga i poslatih transakcija."
   },
   "submitted": {
     "message": "Prosleđeno"

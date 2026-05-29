@@ -12,4 +12,7 @@ export {
 export {
   ExtensionPasskeyErrorCode,
   translatePasskeyError,
+  getPasskeyErrorCode,
 } from './passkey-error';
+export { isPasskeyAaguidIncompatibleWithSidepanel } from './passkey-sidepanel-aaguid';
+export { getPasskeyAuthMethodKey } from './passkey-auth-method';

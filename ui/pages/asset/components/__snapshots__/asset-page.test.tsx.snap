@@ -53,14 +53,24 @@ exports[`AssetPage should render a native asset 1`] = `
           $123.00
         </h1>
         <div
-          class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-lg"
+          aria-hidden="true"
+          class="relative overflow-hidden rounded-lg"
           style="width: 33%;"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+          <div
+            aria-hidden="true"
+            class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+          />
+          <div
+            aria-hidden="true"
+            class="pointer-events-none invisible relative z-10"
           >
-             
-          </p>
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+            >
+               
+            </p>
+          </div>
         </div>
       </div>
       <div
@@ -72,8 +82,14 @@ exports[`AssetPage should render a native asset 1`] = `
           data-testid="asset-chart-loading"
         >
           <div
-            class="mm-box mm-skeleton asset-chart__skeleton mm-box--background-color-icon-alternative mm-box--rounded-lg"
-          />
+            aria-hidden="true"
+            class="relative overflow-hidden asset-chart__skeleton rounded-lg"
+          >
+            <div
+              aria-hidden="true"
+              class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+            />
+          </div>
         </div>
         <div
           class="mm-box mm-box--margin-top-2 mm-box--margin-right-3 mm-box--margin-left-3 mm-box--display-flex mm-box--justify-content-space-between"
@@ -866,14 +882,24 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
           $15,129.00
         </h1>
         <div
-          class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-lg"
+          aria-hidden="true"
+          class="relative overflow-hidden rounded-lg"
           style="width: 33%;"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+          <div
+            aria-hidden="true"
+            class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+          />
+          <div
+            aria-hidden="true"
+            class="pointer-events-none invisible relative z-10"
           >
-             
-          </p>
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+            >
+               
+            </p>
+          </div>
         </div>
       </div>
       <div
@@ -885,8 +911,14 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
           data-testid="asset-chart-loading"
         >
           <div
-            class="mm-box mm-skeleton asset-chart__skeleton mm-box--background-color-icon-alternative mm-box--rounded-lg"
-          />
+            aria-hidden="true"
+            class="relative overflow-hidden asset-chart__skeleton rounded-lg"
+          >
+            <div
+              aria-hidden="true"
+              class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+            />
+          </div>
         </div>
         <div
           class="mm-box mm-box--margin-top-2 mm-box--margin-right-3 mm-box--margin-left-3 mm-box--display-flex mm-box--justify-content-space-between"

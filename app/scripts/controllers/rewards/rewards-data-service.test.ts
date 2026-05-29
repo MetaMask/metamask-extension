@@ -5,7 +5,7 @@ import {
   MessengerEvents,
   MockAnyNamespace,
 } from '@metamask/messenger';
-import { ENVIRONMENT } from '../../../../development/build/constants';
+import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { REWARDS_API_URL } from '../../../../shared/constants/rewards';
 import {
   EstimatePointsDto,
@@ -2223,6 +2223,67 @@ describe('RewardsDataService', () => {
       const result = await service.fetchGeoLocation();
 
       expect(result).toBe('UNKNOWN');
+    });
+  });
+
+  describe('getVipFees', () => {
+    const mockSubscriptionToken = 'token-vip-fees';
+    const mockVipFees = {
+      vipTier: 1,
+      fees: {
+        hyperliquid: { builderCode: '0xbuilder', builderFeeBips: '5' },
+        swaps: { feeBips: '50' },
+      },
+      updatedAt: '2026-05-01T00:00:00.000Z',
+    };
+
+    beforeEach(() => {
+      service = createService();
+      mockFetch.mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: jest.fn().mockResolvedValue(mockVipFees),
+      } as unknown as Response);
+    });
+
+    it('fetches VIP fees using the expected endpoint and auth headers', async () => {
+      const result = await service.getVipFees(mockSubscriptionToken);
+
+      expect(result).toEqual(mockVipFees);
+      expect(mockFetch).toHaveBeenCalledWith(
+        `${REWARDS_API_URL.UAT}/vip/fees`,
+        expect.objectContaining({
+          method: 'GET',
+          credentials: 'omit',
+          headers: expect.objectContaining({
+            'Content-Type': 'application/json',
+            'rewards-access-token': mockSubscriptionToken,
+          }),
+        }),
+      );
+    });
+
+    it('throws when the VIP fees response is not ok', async () => {
+      mockFetch.mockResolvedValue({
+        ok: false,
+        status: 500,
+      } as Response);
+
+      await expect(service.getVipFees(mockSubscriptionToken)).rejects.toThrow(
+        'Get VIP fees failed: 500',
+      );
+    });
+
+    it('throws AuthorizationFailedError when response status is 403', async () => {
+      mockFetch.mockResolvedValue({
+        ok: false,
+        status: 403,
+        json: jest.fn().mockResolvedValue({}),
+      } as unknown as Response);
+
+      await expect(service.getVipFees(mockSubscriptionToken)).rejects.toThrow(
+        AuthorizationFailedError,
+      );
     });
   });
 });
