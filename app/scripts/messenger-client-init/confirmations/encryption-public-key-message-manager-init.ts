@@ -1,6 +1,8 @@
-import { EncryptionPublicKeyManager } from '@metamask/message-manager';
+import {
+  EncryptionPublicKeyManager,
+  EncryptionPublicKeyManagerMessenger,
+} from '@metamask/message-manager';
 import { MessengerClientInitFunction } from '../types';
-import { EncryptionPublicKeyManagerMessenger } from '../messengers';
 
 /**
  * Initialize the encryption public key message manager.
