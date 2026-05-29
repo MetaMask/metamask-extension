@@ -139,7 +139,10 @@ jobs:
         if: ${{ startsWith(env.BRANCH, 'release/') }}
         continue-on-error: true
         run: |
-          git fetch --unshallow
+          if [ "$(git rev-parse --is-shallow-repository)" = "true" ]; then
+            git fetch --unshallow
+          fi
+
           git fetch origin main:refs/remotes/origin/main --tags
 
       - name: Find the associated PR

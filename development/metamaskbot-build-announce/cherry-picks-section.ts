@@ -124,7 +124,7 @@ export function buildWhatsInRcSection(result: WhatsInRcResult): string {
 
   if (cherryPicks.length === 0 && changelog.length === 0) {
     return (
-      section + `<p><i>No cherry-picks or changelog commits found.</i></p>\n\n`
+      `${section  }<p><i>No cherry-picks or changelog commits found.</i></p>\n\n`
     );
   }
 
