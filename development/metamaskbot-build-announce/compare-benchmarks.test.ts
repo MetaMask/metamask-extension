@@ -1,8 +1,5 @@
 import { promises as fs } from 'fs';
-import type {
-  BenchmarkResults,
-  ThresholdConfig,
-} from '../../shared/constants/benchmarks';
+import type { BenchmarkResults } from '../../shared/constants/benchmarks';
 import { THRESHOLD_SEVERITY } from '../../shared/constants/benchmarks';
 import {
   runComparison,
@@ -13,11 +10,6 @@ import {
 import { COMPARISON_SEVERITY } from './comparison-utils';
 import type { BenchmarkEntryComparison } from './comparison-utils';
 import * as historicalComparison from './historical-comparison';
-import {
-  applyOverrides,
-  type AppliedOverride,
-  type ThresholdOverrideFile,
-} from './threshold-overrides';
 
 jest.mock('fs', () => ({
   promises: {
@@ -784,142 +776,5 @@ describe('buildMetricLines', () => {
     expect(lines[0].icon).toBe(COMPARISON_SEVERITY.Warn.icon);
     expect(lines[0].hasIssue).toBe(true);
     expect(lines[0].details).toContain('1560ms');
-  });
-});
-
-describe('threshold override integration', () => {
-  beforeEach(() => {
-    jest.spyOn(console, 'warn').mockImplementation();
-  });
-
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
-
-  it('passes a previously failing benchmark when overrides raise the threshold', () => {
-    // Self-contained registry so the test does not depend on the live
-    // THRESHOLD_REGISTRY values, which drift as thresholds are retuned.
-    const registry: Record<string, ThresholdConfig> = {
-      startupStandardHome: {
-        uiStartup: {
-          p75: { warn: 2000, fail: 2500 },
-          p95: { warn: 2500, fail: 3200 },
-        },
-      },
-    };
-
-    // p75 (3200) exceeds its fail threshold (2500) and p95 (4000) exceeds
-    // its fail threshold (3200), so without overrides the benchmark fails.
-    const benchmarks = [
-      {
-        name: 'benchmark-chrome-browserify-startupStandardHome',
-        data: {
-          startupStandardHome: makeBenchmarkResults('uiStartup', {
-            p75: { uiStartup: 3200 },
-            p95: { uiStartup: 4000 },
-            mean: { uiStartup: 2800 },
-          }),
-        },
-      },
-    ];
-
-    // Without overrides: should fail
-    const resultWithoutOverrides = runComparison(benchmarks, {}, registry);
-    expect(resultWithoutOverrides.anyFailed).toBe(true);
-
-    // With overrides: raise thresholds so the value passes
-    const overrides: ThresholdOverrideFile = {
-      overrides: [
-        {
-          benchmark: 'startupStandardHome',
-          metric: 'uiStartup',
-          percentile: 'p75',
-          warn: 3500,
-          fail: 4000,
-          justification: 'New dashboard feature adds ~700ms to startup',
-        },
-        {
-          benchmark: 'startupStandardHome',
-          metric: 'uiStartup',
-          percentile: 'p95',
-          warn: 4500,
-          fail: 5000,
-          justification: 'New dashboard feature adds ~700ms to startup',
-        },
-      ],
-    };
-
-    const { effectiveRegistry } = applyOverrides(registry, overrides);
-    const resultWithOverrides = runComparison(
-      benchmarks,
-      {},
-      effectiveRegistry,
-    );
-    expect(resultWithOverrides.anyFailed).toBe(false);
-  });
-
-  it('uses the custom registry instead of THRESHOLD_REGISTRY when provided', () => {
-    const customRegistry: Record<string, ThresholdConfig> = {
-      customBenchmark: {
-        myMetric: {
-          p75: { warn: 1000, fail: 2000 },
-          p95: { warn: 2000, fail: 3000 },
-        },
-      },
-    };
-
-    const benchmarks = [
-      {
-        name: 'custom-bench',
-        data: {
-          customBenchmark: makeBenchmarkResults('myMetric', {
-            p75: { myMetric: 1500 },
-            p95: { myMetric: 2500 },
-            mean: { myMetric: 1200 },
-          }),
-        },
-      },
-    ];
-
-    const result = runComparison(benchmarks, {}, customRegistry);
-    expect(result.comparisons).toHaveLength(1);
-    expect(result.anyFailed).toBe(false);
-  });
-
-  it('printReport displays override summary when overrides are provided', () => {
-    const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
-
-    const applied: AppliedOverride[] = [
-      {
-        benchmark: 'startupStandardHome',
-        metric: 'uiStartup',
-        percentile: 'p75',
-        warn: 2800,
-        fail: 3500,
-        justification: 'Adding dashboard feature',
-        previousWarn: 2000,
-        previousFail: 2500,
-      },
-    ];
-
-    printReport({ comparisons: [], anyFailed: false }, applied);
-
-    const allOutput = consoleSpy.mock.calls.flat().join('\n');
-    expect(allOutput).toContain('Threshold Overrides Active');
-    expect(allOutput).toContain('startupStandardHome/uiStartup');
-    expect(allOutput).toContain('Adding dashboard feature');
-
-    consoleSpy.mockRestore();
-  });
-
-  it('printReport omits override section when no overrides are applied', () => {
-    const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
-
-    printReport({ comparisons: [], anyFailed: false }, []);
-
-    const allOutput = consoleSpy.mock.calls.flat().join('\n');
-    expect(allOutput).not.toContain('Threshold Overrides Active');
-
-    consoleSpy.mockRestore();
   });
 });

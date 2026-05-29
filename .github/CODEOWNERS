@@ -223,8 +223,8 @@ shared/lib/deep-links/routes/musd.ts @MetaMask/earn
 # Performance Quality Gates
 test/e2e/benchmarks/utils/gated-metrics.ts                            @MetaMask/qa @MetaMask/extension-platform @MetaMask/performance-council
 test/e2e/benchmarks/utils/thresholds.ts                               @MetaMask/qa @MetaMask/extension-platform @MetaMask/performance-council
-/.threshold-overrides.json                                            @MetaMask/qa @MetaMask/extension-platform @MetaMask/performance-council
-/.threshold-overrides.example.json                                    @MetaMask/qa @MetaMask/extension-platform @MetaMask/performance-council
+test/e2e/benchmarks/baseline-resets.json                              @MetaMask/qa @MetaMask/extension-platform @MetaMask/performance-council
+shared/constants/benchmarks.ts                                        @MetaMask/qa @MetaMask/extension-platform @MetaMask/performance-council
 
 # Lint
 /.editorconfig                                        @MetaMask/extension-platform
