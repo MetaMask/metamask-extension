@@ -7,13 +7,10 @@ import { Duplex } from 'readable-stream';
 import { SubjectType } from '@metamask/permission-controller';
 import { PreinstalledSnap } from '@metamask/snaps-controllers';
 import { Browser } from 'webextension-polyfill';
-import { KeyringClass } from '@metamask/keyring-utils';
-import { QrKeyringScannerBridge } from '@metamask/eth-qr-keyring';
 import { Mutex } from 'async-mutex';
 import type { TransactionMetricsRequest } from '../../../shared/types';
 import { MessageSender } from '../../../types/global';
 import type { CronjobControllerStorageManager } from '../lib/CronjobControllerStorageManager';
-import { HardwareTransportBridgeClass } from '../lib/hardware-keyring-builder-factory';
 import ExtensionPlatform from '../platforms/extension';
 // This import is only used for the type.
 // eslint-disable-next-line import-x/no-restricted-paths
@@ -134,18 +131,6 @@ export type MessengerClientInitRequest<
    * Get the MetaMask state of the client available to the UI.
    */
   getUIState(): MetaMaskReduxState['metamask'];
-
-  /**
-   * Overrides for the keyrings.
-   */
-  keyringOverrides?: {
-    qr?: KeyringClass;
-    qrBridge?: typeof QrKeyringScannerBridge;
-    lattice?: KeyringClass;
-    trezorBridge?: HardwareTransportBridgeClass;
-    oneKey?: HardwareTransportBridgeClass;
-    ledgerBridge?: HardwareTransportBridgeClass;
-  };
 
   /**
    * The Infura project ID to use for the network controller.
