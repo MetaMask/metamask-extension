@@ -9,6 +9,7 @@ import type { Provider } from '@metamask/network-controller';
 import { CaipAssetType, parseCaipAssetType } from '@metamask/utils';
 import { MultichainAssetsRatesControllerState } from '@metamask/assets-controllers';
 import { AssetConversion, FungibleAssetMarketData } from '@metamask/snaps-sdk';
+import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import {
   DEVICE_TYPE,
   OS,
@@ -921,4 +922,20 @@ export function extractRpcDomain(
   } catch (error) {
     return 'invalid';
   }
+}
+
+/**
+ * Converts a BIP-39 mnemonic stored as indices of words in the English wordlist to a buffer of Unicode code points.
+ *
+ * @param wordlistIndices - Indices to specific words in the BIP-39 English wordlist.
+ * @returns The BIP-39 mnemonic formed from the words in the English wordlist, encoded as a list of Unicode code points.
+ */
+export function convertEnglishWordlistIndicesToCodepoints(
+  wordlistIndices: Uint8Array,
+) {
+  return Buffer.from(
+    Array.from(new Uint16Array(wordlistIndices.buffer))
+      .map((i) => wordlist[i])
+      .join(' '),
+  );
 }
