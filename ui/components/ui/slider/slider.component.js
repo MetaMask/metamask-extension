@@ -31,6 +31,9 @@ const sliderSx = {
     border: '1px solid var(--color-border-muted)',
     boxSizing: 'border-box',
     boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
+    '&::before': {
+      display: 'none',
+    },
     '&:focus, &.Mui-active': {
       height: 20,
       width: 20,
@@ -53,6 +56,7 @@ const Slider = ({
   titleText,
   tooltipText,
   valueText,
+  sx,
   ...rest
 }) => (
   <div className="slider">
@@ -80,7 +84,7 @@ const Slider = ({
         </div>
       )}
     </div>
-    <MaterialSlider {...rest} sx={[sliderSx, rest.sx]} />
+    <MaterialSlider {...rest} sx={[sliderSx, sx]} />
     <div className="slider__footer">
       <div className="slider__footer-info">
         {infoText && (
@@ -129,6 +133,10 @@ Slider.propTypes = {
    * Show value text
    */
   valueText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * MUI sx prop for custom slider styles
+   */
+  sx: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   /**
    * Set maximum step
    */
