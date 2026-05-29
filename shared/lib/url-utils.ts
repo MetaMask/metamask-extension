@@ -57,3 +57,38 @@ export function isWebOrigin(origin: string | undefined | null): boolean {
   }
   return origin.startsWith('http://') || origin.startsWith('https://');
 }
+
+/**
+ * Best-effort registrable domain (eTLD+1) for a URL, using the last two
+ * hostname labels. Used to group RPC endpoints by provider so a single
+ * provider's wide outage (e.g. *.infura.io) is treated as one failure
+ * rather than many. Not a Public Suffix List implementation — multi-part
+ * suffixes like ".co.uk" are not handled, which is fine for the RPC URL
+ * universe but not for arbitrary web hosts.
+ *
+ * Localhost and IP addresses are returned verbatim.
+ *
+ * @param urlString - The URL to extract a registrable domain from.
+ * @returns The registrable domain, or null if the URL is invalid.
+ */
+export function getRegistrableDomain(urlString: string): string | null {
+  const url = getValidUrl(urlString);
+  if (url === null) {
+    return null;
+  }
+
+  const { hostname } = url;
+
+  // IPv6 literal — URL.hostname wraps these in brackets.
+  if (hostname.startsWith('[')) {
+    return hostname;
+  }
+
+  // IPv4 literal or single-label host (e.g., "localhost").
+  if (/^\d+\.\d+\.\d+\.\d+$/u.test(hostname) || !hostname.includes('.')) {
+    return hostname;
+  }
+
+  const labels = hostname.split('.');
+  return labels.slice(-2).join('.');
+}
