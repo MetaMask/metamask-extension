@@ -17,10 +17,8 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { Box, SensitiveText } from '../../../component-library';
 import {
-  getAllMultichainNetworkConfigurations,
   getEnabledNetworksByNamespace,
   getMultichainNetwork,
-  getMultichainNetworkConfigurationsByChainId,
   getShowFiatInTestnets,
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../../selectors';
@@ -74,12 +72,11 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
   );
 
   const isEvm = isEvmChainId(chainId);
-  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
 
   const isTestnetSelected = Boolean(
-    Object.keys(enabledNetworksByNamespace).length === 1 &&
+    Object.keys(enabledNetworks).length === 1 &&
     TEST_CHAINS.includes(
-      Object.keys(enabledNetworksByNamespace)[0] as `0x${string}`,
+      Object.keys(enabledNetworks)[0] as `0x${string}`,
     ),
   );
 
@@ -100,18 +97,18 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
 
   const nativeCurrencySymbol: string = useMemo(() => {
     if (isEvm) {
-      return Object.keys(enabledNetworksByNamespace).length === 1
+      return Object.keys(enabledNetworks).length === 1
         ? networkConfigurationsByChainId[
-            Object.keys(enabledNetworksByNamespace)[0] as `0x${string}`
+            Object.keys(enabledNetworks)[0] as `0x${string}`
           ]?.nativeCurrency
         : fallbackCurrency;
     }
 
-    return Object.keys(enabledNetworksByNamespace).length === 1
+    return Object.keys(enabledNetworks).length === 1
       ? networks.network.ticker
       : fallbackCurrency;
   }, [
-    enabledNetworksByNamespace,
+    enabledNetworks,
     networkConfigurationsByChainId,
     isEvm,
     networks,
