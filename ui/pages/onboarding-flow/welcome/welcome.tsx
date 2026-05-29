@@ -321,7 +321,7 @@ export default function OnboardingWelcome() {
             event: MetaMetricsEventName.SocialLoginFailed,
             properties: {
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              account_type: accountTypeForMetrics,
+              account_type: `${MetaMetricsEventAccountType.Default}_${loginType}`,
               // eslint-disable-next-line @typescript-eslint/naming-convention
               is_rehydration: 'unknown',
               // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -342,7 +342,7 @@ export default function OnboardingWelcome() {
 
       setLoginError(LOGIN_ERROR.GENERIC);
     },
-    [bufferedEndTrace, trackEvent, accountTypeForMetrics],
+    [bufferedEndTrace, trackEvent],
   );
 
   const onSocialLoginCreateClick = useCallback(
