@@ -504,7 +504,7 @@ describe('Import flow', function () {
 
         // Native Tokens: Ethereum ETH, Linea ETH, Base ETH, mUSD
         // ERC20 Tokens: Chain Games, Chai, ChangeX
-        await tokenList.checkTokenItemNumber(7);
+        await tokenList.checkTokenItemNumber(8);
         await tokenList.checkTokenExistsInList('Ethereum');
         await tokenList.checkTokenExistsInList('Chain Games');
         await tokenList.checkTokenExistsInList('ChangeX');
@@ -636,7 +636,7 @@ describe('Import flow', function () {
 
         // Native Tokens: Ethereum ETH, Linea ETH, Base ETH, Polygon POL
         // ERC20 Tokens: MUSD (ETH), MUSD (Linea), Polygon USDT
-        await tokenList.checkTokenItemNumber(5);
+        await tokenList.checkTokenItemNumber(7);
 
         await tokenList.checkTokenExistsInList('Ether');
         await tokenList.checkTokenExistsInList('USDT');
