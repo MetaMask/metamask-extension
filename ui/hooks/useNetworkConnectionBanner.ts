@@ -1,7 +1,7 @@
 import { useEffect, useCallback, useRef, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Hex, hexToNumber } from '@metamask/utils';
-import { selectFirstUnavailableEvmNetwork } from '../selectors/multichain/networks';
+import { selectNetworkForConnectionBanner } from '../selectors/multichain/networks';
 import {
   getNetworkConnectionBanner,
   getIsDeviceOffline,
@@ -40,9 +40,7 @@ export const useNetworkConnectionBanner =
     const dispatch = useDispatch();
     const { trackEvent } = useContext(MetaMetricsContext);
     const isOffline = useSelector(getIsDeviceOffline);
-    const firstUnavailableEvmNetwork = useSelector(
-      selectFirstUnavailableEvmNetwork,
-    );
+    const bannerNetwork = useSelector(selectNetworkForConnectionBanner);
     const networkConnectionBannerState = useSelector(
       getNetworkConnectionBanner,
     );
@@ -140,27 +138,27 @@ export const useNetworkConnectionBanner =
       clearUnavailableTimer();
 
       timersRef.current.unavailableTimer = setTimeout(() => {
-        if (firstUnavailableEvmNetwork) {
+        if (bannerNetwork) {
           trackNetworkBannerEvent({
             bannerType: 'unavailable',
             eventName: MetaMetricsEventName.NetworkConnectionBannerShown,
-            networkClientId: firstUnavailableEvmNetwork.networkClientId,
+            networkClientId: bannerNetwork.networkClientId,
           });
           dispatch(
             updateNetworkConnectionBanner({
               status: 'unavailable',
-              networkName: firstUnavailableEvmNetwork.networkName,
-              networkClientId: firstUnavailableEvmNetwork.networkClientId,
-              chainId: firstUnavailableEvmNetwork.chainId,
-              isInfuraEndpoint: firstUnavailableEvmNetwork.isInfuraEndpoint,
+              networkName: bannerNetwork.networkName,
+              networkClientId: bannerNetwork.networkClientId,
+              chainId: bannerNetwork.chainId,
+              isInfuraEndpoint: bannerNetwork.isInfuraEndpoint,
               infuraEndpointIndex:
-                firstUnavailableEvmNetwork.infuraEndpointIndex,
+                bannerNetwork.infuraEndpointIndex,
             }),
           );
         }
       }, UNAVAILABLE_BANNER_TIMEOUT - DEGRADED_BANNER_TIMEOUT);
     }, [
-      firstUnavailableEvmNetwork,
+      bannerNetwork,
       trackNetworkBannerEvent,
       dispatch,
       clearUnavailableTimer,
@@ -170,21 +168,21 @@ export const useNetworkConnectionBanner =
       clearDegradedTimer();
 
       timersRef.current.degradedTimer = setTimeout(() => {
-        if (firstUnavailableEvmNetwork) {
+        if (bannerNetwork) {
           trackNetworkBannerEvent({
             bannerType: 'degraded',
             eventName: MetaMetricsEventName.NetworkConnectionBannerShown,
-            networkClientId: firstUnavailableEvmNetwork.networkClientId,
+            networkClientId: bannerNetwork.networkClientId,
           });
           dispatch(
             updateNetworkConnectionBanner({
               status: 'degraded',
-              networkName: firstUnavailableEvmNetwork.networkName,
-              networkClientId: firstUnavailableEvmNetwork.networkClientId,
-              chainId: firstUnavailableEvmNetwork.chainId,
-              isInfuraEndpoint: firstUnavailableEvmNetwork.isInfuraEndpoint,
+              networkName: bannerNetwork.networkName,
+              networkClientId: bannerNetwork.networkClientId,
+              chainId: bannerNetwork.chainId,
+              isInfuraEndpoint: bannerNetwork.isInfuraEndpoint,
               infuraEndpointIndex:
-                firstUnavailableEvmNetwork.infuraEndpointIndex,
+                bannerNetwork.infuraEndpointIndex,
             }),
           );
 
@@ -192,7 +190,7 @@ export const useNetworkConnectionBanner =
         }
       }, DEGRADED_BANNER_TIMEOUT);
     }, [
-      firstUnavailableEvmNetwork,
+      bannerNetwork,
       trackNetworkBannerEvent,
       dispatch,
       startUnavailableTimer,
@@ -214,7 +212,7 @@ export const useNetworkConnectionBanner =
         return;
       }
 
-      if (firstUnavailableEvmNetwork) {
+      if (bannerNetwork) {
         if (networkConnectionBannerState.status === 'degraded') {
           startUnavailableTimer();
         } else if (
@@ -232,7 +230,7 @@ export const useNetworkConnectionBanner =
       };
     }, [
       isOffline,
-      firstUnavailableEvmNetwork,
+      bannerNetwork,
       clearTimers,
       dispatch,
       networkConnectionBannerState.status,
@@ -292,16 +290,16 @@ export const useNetworkConnectionBanner =
     if (
       (networkConnectionBannerState.status === 'degraded' ||
         networkConnectionBannerState.status === 'unavailable') &&
-      firstUnavailableEvmNetwork
+      bannerNetwork
     ) {
       return {
         ...networkConnectionBannerState,
         // Override with fresh data from selector
-        networkClientId: firstUnavailableEvmNetwork.networkClientId,
-        networkName: firstUnavailableEvmNetwork.networkName,
-        chainId: firstUnavailableEvmNetwork.chainId,
-        isInfuraEndpoint: firstUnavailableEvmNetwork.isInfuraEndpoint,
-        infuraEndpointIndex: firstUnavailableEvmNetwork.infuraEndpointIndex,
+        networkClientId: bannerNetwork.networkClientId,
+        networkName: bannerNetwork.networkName,
+        chainId: bannerNetwork.chainId,
+        isInfuraEndpoint: bannerNetwork.isInfuraEndpoint,
+        infuraEndpointIndex: bannerNetwork.infuraEndpointIndex,
         trackNetworkBannerEvent,
         switchToInfura,
       };

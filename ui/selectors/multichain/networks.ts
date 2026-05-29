@@ -452,7 +452,21 @@ export const selectAnyEnabledNetworksAreAvailable = createSelector(
   },
 );
 
-export const selectFirstUnavailableEvmNetwork = createSelector(
+/**
+ * Returns the unavailable EVM network that should drive the connection banner,
+ * or null when no banner should be shown.
+ *
+ * The banner is intentionally noisy-averse: a single Infura-backed network
+ * failing is usually a server-side blip, so we suppress it. The banner shows
+ * only when 2+ enabled EVM networks are unavailable (likely client-side), or
+ * every enabled EVM network is unavailable (catches single-network setups), or
+ * any unavailable network's active RPC is a non-Infura (custom) endpoint —
+ * these have no automatic failover so the user must be told.
+ *
+ * When the custom override fires alongside other unavailable networks, the
+ * custom one is surfaced so the "Switch to MetaMask default RPC" CTA targets it.
+ */
+export const selectNetworkForConnectionBanner = createSelector(
   getEnabledNetworks,
   getNetworkConfigurationsByChainId,
   getNetworksMetadata,
@@ -462,61 +476,100 @@ export const selectFirstUnavailableEvmNetwork = createSelector(
       .filter(([, isEnabled]) => isEnabled)
       .map(([chainId]) => chainId as Hex);
 
+    type UnavailableNetwork = {
+      networkClientId: string;
+      chainId: Hex;
+      networkName: string;
+      isInfuraEndpoint: boolean;
+      infuraEndpointIndex: number | undefined;
+    };
+
+    const unavailable: UnavailableNetwork[] = [];
+    let totalEnabled = 0;
+
     for (const chainId of enabledChainIds) {
       const networkConfiguration = networkConfigurationsByChainId[chainId];
-      if (networkConfiguration) {
-        // Get the network client ID directly from the network configuration
-        const { rpcEndpoints, defaultRpcEndpointIndex, name } =
-          networkConfiguration;
-        const rpcEndpoint = rpcEndpoints[defaultRpcEndpointIndex];
+      if (!networkConfiguration) {
+        continue;
+      }
 
-        if (rpcEndpoint) {
-          const metadata = networksMetadata[rpcEndpoint.networkClientId];
+      const { rpcEndpoints, defaultRpcEndpointIndex, name } =
+        networkConfiguration;
+      const rpcEndpoint = rpcEndpoints[defaultRpcEndpointIndex];
+      if (!rpcEndpoint) {
+        continue;
+      }
 
-          if (
-            metadata !== undefined &&
-            metadata.status !== NetworkStatus.Available
-          ) {
-            const isInfuraEndpoint = getIsMetaMaskInfuraEndpointUrl(
-              rpcEndpoint.url,
+      totalEnabled += 1;
+
+      const metadata = networksMetadata[rpcEndpoint.networkClientId];
+      if (
+        metadata === undefined ||
+        metadata.status === NetworkStatus.Available
+      ) {
+        continue;
+      }
+
+      const isInfuraEndpoint = getIsMetaMaskInfuraEndpointUrl(
+        rpcEndpoint.url,
+        infuraProjectId ?? '',
+      );
+
+      // For custom endpoints (non-Infura), check if there's an Infura
+      // endpoint available for this network that we can switch to
+      let infuraEndpointIndex: number | undefined;
+      if (!isInfuraEndpoint) {
+        infuraEndpointIndex = rpcEndpoints.findIndex(
+          (endpoint, index) =>
+            index !== defaultRpcEndpointIndex &&
+            getIsMetaMaskInfuraEndpointUrl(
+              endpoint.url,
               infuraProjectId ?? '',
-            );
-
-            // For custom endpoints (non-Infura), check if there's an Infura
-            // endpoint available for this network that we can switch to
-            let infuraEndpointIndex: number | undefined;
-            if (!isInfuraEndpoint) {
-              infuraEndpointIndex = rpcEndpoints.findIndex(
-                (endpoint, index) =>
-                  index !== defaultRpcEndpointIndex &&
-                  getIsMetaMaskInfuraEndpointUrl(
-                    endpoint.url,
-                    infuraProjectId ?? '',
-                  ),
-              );
-              // If no Infura endpoint found, set to undefined
-              if (infuraEndpointIndex === -1) {
-                infuraEndpointIndex = undefined;
-              }
-            }
-
-            return {
-              networkClientId: rpcEndpoint.networkClientId,
-              chainId,
-              networkName: name,
-              // We have to use this function to check whether the endpoint is
-              // an Infura endpoint because some Infura endpoint URLs use the
-              // wrong type.
-              isInfuraEndpoint,
-              // Index of an available Infura endpoint (for custom networks that
-              // have one) that can be used to switch to Infura
-              infuraEndpointIndex,
-            };
-          }
+            ),
+        );
+        if (infuraEndpointIndex === -1) {
+          infuraEndpointIndex = undefined;
         }
       }
+
+      unavailable.push({
+        networkClientId: rpcEndpoint.networkClientId,
+        chainId,
+        networkName: name,
+        // We have to use this function to check whether the endpoint is
+        // an Infura endpoint because some Infura endpoint URLs use the
+        // wrong type.
+        isInfuraEndpoint,
+        // Index of an available Infura endpoint (for custom networks that
+        // have one) that can be used to switch to Infura
+        infuraEndpointIndex,
+      });
     }
-    return null;
+
+    if (unavailable.length === 0) {
+      return null;
+    }
+
+    const firstCustomUnavailable = unavailable.find((n) => !n.isInfuraEndpoint);
+    const multipleUnavailable = unavailable.length >= 2;
+    const allUnavailable = unavailable.length === totalEnabled;
+
+    if (!firstCustomUnavailable && !multipleUnavailable && !allUnavailable) {
+      return null;
+    }
+
+    // Prefer a custom-RPC network when one is among the unavailable set so the
+    // banner's "Switch to MetaMask default RPC" CTA points at the network the
+    // user can actually act on.
+    const selected = firstCustomUnavailable ?? unavailable[0];
+
+    return {
+      networkClientId: selected.networkClientId,
+      chainId: selected.chainId,
+      networkName: selected.networkName,
+      isInfuraEndpoint: selected.isInfuraEndpoint,
+      infuraEndpointIndex: selected.infuraEndpointIndex,
+    };
   },
 );
 
