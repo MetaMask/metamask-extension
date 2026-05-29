@@ -9443,7 +9443,7 @@ export default class MetamaskController extends EventEmitter {
         keyringType = TrezorKeyring.type;
         break;
       case HardwareDeviceNames.oneKey:
-        keyringType = OneKeyKeyring?.type;
+        keyringType = OneKeyKeyring.type;
         break;
       case HardwareDeviceNames.ledger:
         keyringType = LedgerKeyring.type;
