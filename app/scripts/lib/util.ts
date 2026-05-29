@@ -1,4 +1,3 @@
-import urlLib from 'url';
 import ipRegex from 'ip-regex';
 import { AccessList } from '@ethereumjs/tx';
 import {
@@ -9,6 +8,7 @@ import type { Provider } from '@metamask/network-controller';
 import { CaipAssetType, parseCaipAssetType } from '@metamask/utils';
 import { MultichainAssetsRatesControllerState } from '@metamask/assets-controllers';
 import { AssetConversion, FungibleAssetMarketData } from '@metamask/snaps-sdk';
+import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import {
   DEVICE_TYPE,
   OS,
@@ -49,6 +49,13 @@ import {
 // and keep the sentry bundle lightweight
 export { getInstallType, initInstallType } from './install-type';
 export { getEnvironmentType } from '../../../shared/lib/environment-type';
+export {
+  getValidUrl,
+  isWebUrl,
+  addUrlProtocolPrefix,
+  isValidEmail,
+  isWebOrigin,
+} from '../../../shared/lib/url-utils';
 
 /**
  * Minimal type for User-Agent Client Hints API (NavigatorUAData).
@@ -423,64 +430,6 @@ export function previousValueComparator<A>(
       cache = value;
     }
   };
-}
-
-export function addUrlProtocolPrefix(urlString: string) {
-  let trimmed = urlString.trim();
-
-  if (trimmed.length && !urlLib.parse(trimmed).protocol) {
-    trimmed = `https://${trimmed}`;
-  }
-
-  if (getValidUrl(trimmed) !== null) {
-    return trimmed;
-  }
-
-  return null;
-}
-
-export function getValidUrl(urlString: string): URL | null {
-  try {
-    const url = new URL(urlString);
-
-    if (url.hostname.length === 0 || url.pathname.length === 0) {
-      return null;
-    }
-
-    if (url.hostname !== decodeURIComponent(url.hostname)) {
-      return null; // will happen if there's a %, a space, or other invalid character in the hostname
-    }
-
-    return url;
-  } catch (error) {
-    return null;
-  }
-}
-
-export function isValidEmail(email: string): boolean {
-  return email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/iu) !== null;
-}
-
-export function isWebUrl(urlString: string): boolean {
-  const url = getValidUrl(urlString);
-
-  return (
-    url !== null && (url.protocol === 'https:' || url.protocol === 'http:')
-  );
-}
-
-/**
- * Checks if an origin string is a web origin (http:// or https://).
- * This is used to filter out non-web origins like chrome://, about://, moz-extension://, etc.
- *
- * @param origin - The origin string to check (e.g., "https://example.com", "chrome://newtab")
- * @returns true if the origin starts with http:// or https://, false otherwise
- */
-export function isWebOrigin(origin: string | undefined | null): boolean {
-  if (!origin) {
-    return false;
-  }
-  return origin.startsWith('http://') || origin.startsWith('https://');
 }
 
 /**
@@ -921,4 +870,20 @@ export function extractRpcDomain(
   } catch (error) {
     return 'invalid';
   }
+}
+
+/**
+ * Converts a BIP-39 mnemonic stored as indices of words in the English wordlist to a buffer of Unicode code points.
+ *
+ * @param wordlistIndices - Indices to specific words in the BIP-39 English wordlist.
+ * @returns The BIP-39 mnemonic formed from the words in the English wordlist, encoded as a list of Unicode code points.
+ */
+export function convertEnglishWordlistIndicesToCodepoints(
+  wordlistIndices: Uint8Array,
+) {
+  return Buffer.from(
+    Array.from(new Uint16Array(wordlistIndices.buffer))
+      .map((i) => wordlist[i])
+      .join(' '),
+  );
 }

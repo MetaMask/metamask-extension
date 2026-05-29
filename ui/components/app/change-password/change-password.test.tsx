@@ -42,6 +42,13 @@ jest.mock('../../../../shared/lib/environment-type', () => ({
   getEnvironmentType: jest.fn(),
 }));
 
+jest.mock('../../../../shared/lib/sentry', () => ({
+  ...jest.requireActual<typeof import('../../../../shared/lib/sentry')>(
+    '../../../../shared/lib/sentry',
+  ),
+  captureException: jest.fn(),
+}));
+
 const mockUseNavigate = jest.fn();
 const mockChangePassword = jest
   .fn()
