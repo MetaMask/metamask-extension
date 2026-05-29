@@ -128,10 +128,14 @@ class ActivityListPage {
       `Wait for ${expectedNumber} completed transactions to be displayed in activity list`,
     );
     await this.driver.wait(async () => {
-      const completedTxs = await this.driver.findElements(
-        this.completedTransactions,
-      );
-      return completedTxs.length === expectedNumber;
+      try {
+        const completedTxs = await this.driver.findElements(
+          this.completedTransactions,
+        );
+        return completedTxs.length === expectedNumber;
+      } catch {
+        return false;
+      }
     }, 10000);
     console.log(
       `${expectedNumber} completed transactions found in activity list on homepage`,
@@ -209,8 +213,14 @@ class ActivityListPage {
       `Wait for ${expectedNumber} failed transactions to be displayed in activity list`,
     );
     await this.driver.wait(async () => {
-      const failedTxs = await this.driver.findElements(this.failedTransactions);
-      return failedTxs.length === expectedNumber;
+      try {
+        const failedTxs = await this.driver.findElements(
+          this.failedTransactions,
+        );
+        return failedTxs.length === expectedNumber;
+      } catch {
+        return false;
+      }
     }, 60000);
     console.log(
       `${expectedNumber} failed transactions found in activity list on homepage`,
@@ -231,10 +241,14 @@ class ActivityListPage {
       `Wait for ${expectedNumber} pending transactions to be displayed in activity list`,
     );
     await this.driver.wait(async () => {
-      const pendingTxs = await this.driver.findElements(
-        this.pendingTransactionItems,
-      );
-      return pendingTxs.length === expectedNumber;
+      try {
+        const pendingTxs = await this.driver.findElements(
+          this.pendingTransactionItems,
+        );
+        return pendingTxs.length === expectedNumber;
+      } catch {
+        return false;
+      }
     }, 10000);
     console.log(
       `${expectedNumber} pending transactions found in activity list on homepage`,
@@ -316,10 +330,14 @@ class ActivityListPage {
       `Wait for ${expectedNumber} Bridge pending transactions to be displayed in activity list`,
     );
     await this.driver.wait(async () => {
-      const completedTxs = await this.driver.findElements(
-        this.bridgeTransactionPending,
-      );
-      return completedTxs.length === expectedNumber;
+      try {
+        const completedTxs = await this.driver.findElements(
+          this.bridgeTransactionPending,
+        );
+        return completedTxs.length === expectedNumber;
+      } catch {
+        return false;
+      }
     }, 60000);
     console.log(
       `${expectedNumber} Bridge pending transactions found in activity list on homepage`,
@@ -340,10 +358,14 @@ class ActivityListPage {
       `Wait for ${expectedNumber} Bridge completed transactions to be displayed in activity list`,
     );
     await this.driver.wait(async () => {
-      const completedTxs = await this.driver.findElements(
-        this.bridgeTransactionCompleted,
-      );
-      return completedTxs.length === expectedNumber;
+      try {
+        const completedTxs = await this.driver.findElements(
+          this.bridgeTransactionCompleted,
+        );
+        return completedTxs.length === expectedNumber;
+      } catch {
+        return false;
+      }
     }, 60000);
     console.log(
       `${expectedNumber} Bridge transactions found in activity list on homepage`,
