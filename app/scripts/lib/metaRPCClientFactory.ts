@@ -95,47 +95,6 @@ function propertyIn<T extends object>(
 export class DisconnectError extends Error {}
 
 /**
- * Options for {@link MetaRPCClient.subscribe}.
- */
-export type SubscribeOptions<
-  Api extends FunctionRegistry<Api>,
-  Data extends Json,
-> = {
-  /**
-   * The RPC request that asks the server to start emitting notifications for
-   * this subscription.
-   */
-  subscribeRequest: {
-    method: Extract<keyof Api, string>;
-    params: Parameters<Api[Extract<keyof Api, string>]>;
-  };
-  /**
-   * The RPC request that asks the server to stop emitting notifications for
-   * this subscription. Invoked when the last local subscriber unsubscribes.
-   */
-  unsubscribeRequest: {
-    method: Extract<keyof Api, string>;
-    params: Parameters<Api[Extract<keyof Api, string>]>;
-  };
-  /**
-   * The `method` field of the notifications that this subscription is
-   * interested in. Notifications are routed to callbacks by
-   * `(notificationMethod, params[0])`.
-   */
-  notificationMethod: string;
-  /**
-   * The callback invoked when a matching notification arrives. It receives
-   * `notification.params[1]`.
-   */
-  callback: (data: Data) => void;
-};
-
-type SubscriptionEntry = {
-  callbacks: Set<(data: Json) => void>;
-  subscribePromise: Promise<unknown>;
-};
-
-/**
  * A JSON-RPC 2.0 client that communicates over a stream.
  */
 export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
@@ -152,20 +111,6 @@ export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
   readonly #notificationChannel = new SafeEventEmitter();
 
   readonly #uncaughtErrorChannel = new SafeEventEmitter();
-
-  /**
-   * Active subscriptions, keyed by `notificationMethod:<JSON-stringified
-   * subscribeRequest.params[0]>`. Each entry holds the local callbacks and the
-   * in-flight subscribe promise so concurrent subscribers can share both.
-   */
-  readonly #subscriptions = new Map<string, SubscriptionEntry>();
-
-  /**
-   * Tracks whether the shared subscription-notification listener has been
-   * attached to {@link #notificationChannel}. Attached lazily on the first
-   * subscribe call.
-   */
-  #subscriptionListenerAttached = false;
 
   /**
    * A map of requests that are currently pending.
@@ -259,116 +204,6 @@ export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
     handler: (data: JsonRpcNotification<Params>) => void,
   ) => {
     this.#notificationChannel.removeListener('notification', handler);
-  };
-
-  /**
-   * Subscribe to a server-emitted event by sending an RPC subscribe request
-   * and routing matching notifications to the callback.
-   *
-   * Multiple local subscribers to the same logical event share a single
-   * upstream subscribe request and a single notification listener. The
-   * upstream unsubscribe request is only sent when the last local subscriber
-   * unsubscribes.
-   *
-   * Notifications are matched by `notificationMethod` and dedup key
-   * `subscribeRequest.params[0]`; matching notifications dispatch
-   * `notification.params[1]` to the callback.
-   *
-   * @param options - See {@link SubscribeOptions}.
-   * @param options.subscribeRequest - The RPC request that opens the subscription.
-   * @param options.unsubscribeRequest - The RPC request that closes the subscription.
-   * @param options.notificationMethod - The notification method to listen for.
-   * @param options.callback - Invoked with the notification payload.
-   * @returns A cleanup function that removes this subscriber. The upstream
-   * unsubscribe request is sent only when the last subscriber leaves.
-   */
-  subscribe = async <Data extends Json>({
-    subscribeRequest,
-    unsubscribeRequest,
-    notificationMethod,
-    callback,
-  }: SubscribeOptions<Api, Data>): Promise<() => Promise<void>> => {
-    // `Data extends Json` but `(data: Data) => void` is not assignable to
-    // `(data: Json) => void` due to contravariant function parameters; the cast
-    // is safe because callbacks receive `Json`-shaped data at runtime.
-    const looselyTypedCallback = callback as (data: Json) => void;
-
-    const key = `${notificationMethod}:${JSON.stringify(subscribeRequest.params[0])}`;
-    let entry = this.#subscriptions.get(key);
-
-    if (entry) {
-      entry.callbacks.add(looselyTypedCallback);
-    } else {
-      if (!this.#subscriptionListenerAttached) {
-        this.onNotification(this.#routeSubscriptionNotification);
-        this.#subscriptionListenerAttached = true;
-      }
-
-      const subscribePromise = this.send({
-        id: getNextId(),
-        jsonrpc: JSON_RPC_VERSION,
-        method: subscribeRequest.method,
-        params: subscribeRequest.params,
-      });
-
-      entry = {
-        callbacks: new Set([looselyTypedCallback]),
-        subscribePromise,
-      };
-      this.#subscriptions.set(key, entry);
-
-      // Side-effect handler: clear the entry on rejection so future subscribe
-      // attempts retry cleanly. Do NOT reassign `entry.subscribePromise` here
-      // — the original promise must retain its rejection so awaiters below
-      // still see it.
-      subscribePromise.catch(() => {
-        this.#subscriptions.delete(key);
-      });
-    }
-
-    await entry.subscribePromise;
-
-    return async () => {
-      const currentEntry = this.#subscriptions.get(key);
-      if (!currentEntry) {
-        return;
-      }
-
-      const removed = currentEntry.callbacks.delete(looselyTypedCallback);
-      if (!removed || currentEntry.callbacks.size > 0) {
-        return;
-      }
-
-      this.#subscriptions.delete(key);
-      await this.send({
-        id: getNextId(),
-        jsonrpc: JSON_RPC_VERSION,
-        method: unsubscribeRequest.method,
-        params: unsubscribeRequest.params,
-      });
-    };
-  };
-
-  #routeSubscriptionNotification = (
-    notification: JsonRpcNotification<JsonRpcParams>,
-  ) => {
-    const { params } = notification;
-    if (!Array.isArray(params)) {
-      return;
-    }
-    const [eventKey, payload] = params;
-    const key = `${notification.method}:${JSON.stringify(eventKey)}`;
-    const entry = this.#subscriptions.get(key);
-    if (!entry) {
-      return;
-    }
-    for (const callback of entry.callbacks) {
-      try {
-        callback(payload as Json);
-      } catch (error) {
-        console.error(error);
-      }
-    }
   };
 
   /**
