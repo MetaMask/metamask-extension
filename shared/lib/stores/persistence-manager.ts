@@ -848,18 +848,13 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     if (!backupDb) {
       return undefined;
     }
-    const [
-      KeyringController,
-      AppMetadataController,
-      MetaMetricsController,
-      meta,
-    ] = await backupDb.get([...backedUpStateKeys, `meta`]);
-    return {
-      KeyringController,
-      AppMetadataController,
-      MetaMetricsController,
-      meta: meta as MetaData | undefined,
-    };
+    const values = await backupDb.get([...backedUpStateKeys, `meta`]);
+    const backup: Backup = {};
+    backedUpStateKeys.forEach((key, index) => {
+      backup[key] = values[index];
+    });
+    backup.meta = values[backedUpStateKeys.length] as MetaData | undefined;
+    return backup;
   }
 
   /**
