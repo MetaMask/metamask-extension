@@ -168,6 +168,10 @@ class AssetListPage {
   private readonly modalCloseButton =
     '[data-testid="modal-header-close-button"]';
 
+  private readonly refreshErc20Tokens = {
+    testId: 'refreshList',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -587,6 +591,30 @@ class AssetListPage {
       text: tokenAmount,
     });
     console.log(`Token amount ${tokenAmount} was found`);
+  }
+
+  /**
+   * Checks if the expected token balance is displayed in the token list.
+   *
+   * @param expectedTokenBalance - The expected balance to be displayed.
+   * @param symbol - The symbol of the currency or token.
+   */
+  async checkExpectedTokenBalanceIsDisplayed(
+    expectedTokenBalance: string,
+    symbol: string,
+  ): Promise<void> {
+    await this.expandLowValueAssetsIfPresent();
+    await this.checkTokenAmountIsDisplayed(`${expectedTokenBalance} ${symbol}`);
+  }
+
+  /**
+   * Refreshes the ERC20 token list by opening the token options dropdown
+   * and clicking the refresh button.
+   */
+  async refreshErc20TokenList(): Promise<void> {
+    console.log('Refresh the ERC20 token list');
+    await this.driver.clickElement(this.tokenOptionsButton);
+    await this.driver.clickElement(this.refreshErc20Tokens);
   }
 
   /**

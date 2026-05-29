@@ -26,6 +26,13 @@ jest.mock('@metamask/logo', () => () => ({
   lookAtAndRender: jest.fn(),
 }));
 
+jest.mock('../../../shared/lib/sentry', () => ({
+  ...jest.requireActual<typeof import('../../../shared/lib/sentry')>(
+    '../../../shared/lib/sentry',
+  ),
+  captureException: jest.fn(),
+}));
+
 describe('UnlockPage component (passkey UI)', () => {
   const selectedTestAccountId = 'test-unlock-account-id';
 

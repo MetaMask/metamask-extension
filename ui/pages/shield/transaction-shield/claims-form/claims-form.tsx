@@ -40,9 +40,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useClaimState } from '../../../../hooks/shield/useClaimState';
 import { useClaimDraft } from '../../../../hooks/shield/useClaimDraft';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { isValidEmail } from '../../../../../app/scripts/lib/util';
+import { isValidEmail } from '../../../../../shared/lib/url-utils';
 import { TRANSACTION_SHIELD_CLAIM_ROUTES } from '../../../../helpers/constants/routes';
 import { submitShieldClaim } from '../../../../store/actions';
 import LoadingScreen from '../../../../components/ui/loading-screen';
