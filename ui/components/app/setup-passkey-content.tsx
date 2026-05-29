@@ -37,6 +37,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { createSentryError } from '../../../shared/lib/error';
 import { getPasskeyErrorCode } from '../../../shared/lib/passkey/passkey-error';
 import {
   getPasskeyAuthMethodKey,
@@ -45,6 +46,7 @@ import {
   translatePasskeyError,
   isPasskeyCeremonySilentError,
 } from '../../../shared/lib/passkey';
+import { captureException } from '../../../shared/lib/sentry';
 import {
   protectVaultKeyWithPasskey,
   generatePasskeyRegistrationOptions,
@@ -278,7 +280,15 @@ export default function SetupPasskeyContent({
         return;
       }
 
-      log.error('Passkey registration failed', error);
+      captureException(
+        createSentryError(
+          'Passkey registration during onboarding failed',
+          error,
+        ),
+        {
+          extra: { errorStep: currentStep },
+        },
+      );
       trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.PasskeySetup,
