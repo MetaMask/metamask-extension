@@ -28,15 +28,13 @@ const server = createServer({
   idleShutdownMs: 30 * 60 * 1000,
   logFilePath: path.join(resolveRepoRoot(), '.mm-daemon.log'),
   contextFactory: async () => {
-    const [anvilAlloc, fixtureAlloc, mockAlloc] = await Promise.all([
-      allocatePort(),
+    const [anvilAlloc, fixtureAlloc] = await Promise.all([
       allocatePort(),
       allocatePort(),
     ]);
     await Promise.all([
       releasePort(anvilAlloc),
       releasePort(fixtureAlloc),
-      releasePort(mockAlloc),
     ]);
     const context = createMetaMaskE2EContext({
       config: {
@@ -45,16 +43,12 @@ const server = createServer({
           fixtureServer: fixtureAlloc.port,
         },
       },
-      mockServer: {
-        port: mockAlloc.port,
-      },
     });
     return {
       ...context,
       allocatedPorts: {
         anvil: anvilAlloc.port,
         fixture: fixtureAlloc.port,
-        mock: mockAlloc.port,
       },
     };
   },
