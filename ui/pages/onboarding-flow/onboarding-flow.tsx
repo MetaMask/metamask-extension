@@ -246,15 +246,11 @@ export default function OnboardingFlow() {
     if (isSidePanelEnabled) {
       await dispatch(setUseSidePanelAsDefault(true));
       await dispatch(setCompletedOnboardingWithSidepanel());
-
-      // for sidepanel, we need to navigate to the next route (i.e. Home)
-      navigate(nextRoute, { replace: true });
     } else {
-      // For existing social login users, set onboarding complete
-      // The useEffect watching completedOnboarding will handle navigation to DEFAULT_ROUTE
-      // Don't navigate here - let the useEffect handle it to avoid duplicate navigations
       await dispatch(setCompletedOnboarding());
     }
+
+    // unlock-page will be handling the navigation to the next route (i.e. Home)
   };
 
   const handleUnlock = async (password: string) => {

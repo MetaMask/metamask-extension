@@ -72,6 +72,7 @@ type UnlockPageProps = {
   isUnlocked: boolean;
   isOnboardingCompleted: boolean;
   onSubmit: (password: string) => Promise<void>;
+  navigateAfterUnlock: () => void;
   isPasskeyActive: boolean;
   onUnlockWithPasskey: (
     authenticationResponse: PasskeyAuthenticationResponse,
@@ -160,6 +161,10 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
      * onSubmit handler when form is submitted
      */
     onSubmit: PropTypes.func,
+    /**
+     * Redirects after a successful unlock.
+     */
+    navigateAfterUnlock: PropTypes.func,
     /**
      * check password is outdated for social login flow
      */
@@ -381,10 +386,11 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
           isNewVisit: true,
         },
       );
-    } catch (error) {
-      await this.handleLoginError(error as LoginError, isRehydrationFlow);
-    } finally {
       this.setState({ isSubmitting: false });
+      this.props.navigateAfterUnlock();
+    } catch (error) {
+      this.setState({ isSubmitting: false });
+      await this.handleLoginError(error as LoginError, isRehydrationFlow);
     }
   };
 
@@ -567,6 +573,13 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
       return;
     }
     this.setPasswordUnlockMode(false);
+  };
+
+  handleUnlockWithPasskey = async (
+    authenticationResponse: PasskeyAuthenticationResponse,
+  ) => {
+    await this.props.onUnlockWithPasskey(authenticationResponse);
+    this.props.navigateAfterUnlock();
   };
 
   onForgotPasswordOrLoginWithDiffMethods = async () => {
@@ -827,7 +840,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
                 this.props.mustDeferPasskeyToBrowserTab
               }
               isPasswordInProgress={isSubmitting}
-              onUnlockWithPasskey={this.props.onUnlockWithPasskey}
+              onUnlockWithPasskey={this.handleUnlockWithPasskey}
               onUsePassword={() => this.setPasswordUnlockMode(true)}
             />
           )}

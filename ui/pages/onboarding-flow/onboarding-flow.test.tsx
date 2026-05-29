@@ -462,11 +462,6 @@ describe('Onboarding Flow', () => {
       sidepanelCompletion.resolve();
 
       await waitFor(() => {
-        expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
-          replace: true,
-        });
-      });
-      await waitFor(() => {
         expect(
           container.querySelector('.loading-overlay'),
         ).not.toBeInTheDocument();

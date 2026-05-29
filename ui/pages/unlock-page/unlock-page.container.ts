@@ -26,7 +26,6 @@ import {
   getIsPasskeyRegistered,
   getIsEnrolledPasskeyIncompatibleWithSidepanel,
   getAccountTypeForOnboardingMetrics,
-  OnboardingState,
 } from '../../selectors';
 import {
   getCompletedOnboarding,
@@ -127,14 +126,12 @@ const mergeProps = (
 
   const onSubmit = async (password: string) => {
     await propsTryUnlockMetamask(password);
-    navigateAfterUnlock();
   };
 
   const onUnlockWithPasskey = async (
     authenticationResponse: PasskeyAuthenticationResponse,
   ) => {
     await propsTryUnlockMetamaskWithPasskey(authenticationResponse);
-    navigateAfterUnlock();
   };
 
   return {
@@ -143,6 +140,7 @@ const mergeProps = (
     ...restOwnProps,
     onSubmit: ownPropsSubmit || onSubmit,
     onUnlockWithPasskey,
+    navigateAfterUnlock,
     navigate,
     location,
     isPopup,
