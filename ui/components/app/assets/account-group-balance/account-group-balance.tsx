@@ -78,9 +78,9 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
 
   const isTestnetSelected = Boolean(
     Object.keys(enabledNetworksByNamespace).length === 1 &&
-      TEST_CHAINS.includes(
-        Object.keys(enabledNetworksByNamespace)[0] as `0x${string}`,
-      ),
+    TEST_CHAINS.includes(
+      Object.keys(enabledNetworksByNamespace)[0] as `0x${string}`,
+    ),
   );
 
   const networkConfigurationsByChainId = useSelector(
