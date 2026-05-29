@@ -193,9 +193,11 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
 
   // HyperLiquid's marginUsed already includes accumulated PnL, so we do NOT
   // add unrealizedPnl separately (that would double-count).
+  // Derived from the same rounded values shown in the Margin/Fees rows so
+  // the summary always reconciles visually (avoids ±1 cent drift).
   const youWillReceive = useMemo(
-    () => Math.round((totalMargin - estimatedFees) * 100) / 100,
-    [totalMargin, estimatedFees],
+    () => Math.round((roundedMargin - roundedFees) * 100) / 100,
+    [roundedMargin, roundedFees],
   );
 
   const isSubmitDisabled = isSubmitting || positions.length === 0;

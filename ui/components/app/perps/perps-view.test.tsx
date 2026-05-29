@@ -10,13 +10,17 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { PERPS_EVENT_PROPERTY } from '../../../../shared/constants/perps-events';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../shared/constants/perps-events';
 import * as mocks from './mocks';
 import { PerpsView } from './perps-view';
 import { usePerpsTabExploreData } from './hooks/usePerpsTabExploreData';
 
 const mockSubmitRequestToBackground = jest.fn().mockResolvedValue(undefined);
 const mockGetPerpsStreamManager = jest.fn();
+const mockReplacePerpsToastByKey = jest.fn();
 
 jest.mock('../../../hooks/perps/usePerpsTransactionHistory', () => ({
   usePerpsTransactionHistory: jest.fn(() => ({
@@ -37,7 +41,7 @@ jest.mock('./perps-toast', () => ({
     <div data-testid="perps-toast-provider-mock">{children}</div>
   ),
   usePerpsToast: () => ({
-    replacePerpsToastByKey: jest.fn(),
+    replacePerpsToastByKey: mockReplacePerpsToastByKey,
   }),
   PERPS_TOAST_KEYS: {
     CLOSE_ALL_IN_PROGRESS: 'perpsToastCloseAllInProgress',
@@ -531,6 +535,115 @@ describe('PerpsView', () => {
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
         'perpsCancelOrders',
         [{ cancelAll: true }],
+      );
+    });
+
+    it('shows partial toast and tracks FAILED status when some positions fail to close', async () => {
+      const mockTrackEvent = jest.fn();
+
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsClosePositions') {
+          return Promise.resolve({
+            success: false,
+            successCount: 1,
+            failureCount: 1,
+          });
+        }
+        return Promise.resolve(undefined);
+      });
+
+      renderWithProvider(
+        <MetaMetricsContext.Provider
+          value={{
+            trackEvent: mockTrackEvent,
+            bufferedTrace: jest.fn(),
+            bufferedEndTrace: jest.fn(),
+            onboardingParentContext: { current: null },
+          }}
+        >
+          <PerpsView />
+        </MetaMetricsContext.Provider>,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('perps-close-all-positions'));
+      fireEvent.click(
+        screen.getByTestId('perps-close-all-positions-modal-submit'),
+      );
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastCloseAllPartial',
+          messageParams: [1, mocks.mockPositions.length],
+        });
+      });
+
+      const closeTxCalls = mockTrackEvent.mock.calls.filter(
+        ([arg]) =>
+          arg?.event === MetaMetricsEventName.PerpsPositionCloseTransaction,
+      );
+      expect(closeTxCalls).toHaveLength(1);
+      expect(closeTxCalls[0][0]).toEqual(
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+            [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: 1,
+          }),
+        }),
+      );
+    });
+
+    it('shows failed toast and tracks FAILED status when all positions fail to close', async () => {
+      const mockTrackEvent = jest.fn();
+
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsClosePositions') {
+          return Promise.resolve({
+            success: false,
+            successCount: 0,
+            failureCount: 2,
+          });
+        }
+        return Promise.resolve(undefined);
+      });
+
+      renderWithProvider(
+        <MetaMetricsContext.Provider
+          value={{
+            trackEvent: mockTrackEvent,
+            bufferedTrace: jest.fn(),
+            bufferedEndTrace: jest.fn(),
+            onboardingParentContext: { current: null },
+          }}
+        >
+          <PerpsView />
+        </MetaMetricsContext.Provider>,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('perps-close-all-positions'));
+      fireEvent.click(
+        screen.getByTestId('perps-close-all-positions-modal-submit'),
+      );
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastCloseAllFailed',
+        });
+      });
+
+      const closeTxCalls = mockTrackEvent.mock.calls.filter(
+        ([arg]) =>
+          arg?.event === MetaMetricsEventName.PerpsPositionCloseTransaction,
+      );
+      expect(closeTxCalls).toHaveLength(1);
+      expect(closeTxCalls[0][0]).toEqual(
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+            [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: 0,
+          }),
+        }),
       );
     });
   });
