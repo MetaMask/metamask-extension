@@ -16,10 +16,7 @@ import {
 import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
 import { getSnapName } from '../../../../shared/lib/accounts/snaps';
 import { showAccountCreationDialog, snapKeyringBuilder } from './snap-keyring';
-import {
-  SnapKeyringBuilderAllowedActions,
-  SnapKeyringBuilderMessenger,
-} from './types';
+import { SnapKeyringBuilderMessenger } from './types';
 
 const mockAddRequest = jest.fn();
 const mockStartFlow = jest.fn();
@@ -85,12 +82,7 @@ const createControllerMessenger = ({
   account?: InternalAccount;
 } = {}): SnapKeyringBuilderMessenger => {
   const rootMessenger = getRootMessenger();
-  const messenger = new Messenger<
-    'SnapKeyring',
-    SnapKeyringBuilderAllowedActions,
-    never,
-    typeof rootMessenger
-  >({
+  const messenger: SnapKeyringBuilderMessenger = new Messenger({
     namespace: 'SnapKeyring',
     parent: rootMessenger,
   });
