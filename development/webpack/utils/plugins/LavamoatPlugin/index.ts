@@ -131,6 +131,8 @@ export const lavamoatPlugin = (args: Args) =>
         'sentryHooks',
         'sentry',
         'logEncryptedVault',
+        'WebAssembly',
+        'Request',
         // needed by Sentry and react-router-dom v6 HashRouter
         'history',
         // globals used by react-dom
@@ -143,6 +145,9 @@ export const lavamoatPlugin = (args: Args) =>
         'ResizeObserver',
         'setTimeout',
         'clearTimeout',
+        // v10 Sentry web-vitals (whenIdleOrHidden) feature-detects this;
+        // under scuttling the detection itself throws unless excepted.
+        'requestIdleCallback',
         // globals used by e2e
         ...(args.test ? ['ret_nodes', 'browser', 'chrome', 'indexedDB'] : []),
       ],
