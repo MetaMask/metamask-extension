@@ -24,6 +24,31 @@ function setEnvironmentVariables({
   variables,
   version,
 }) {
+  const isSeedlessOnboardingEnabled =
+    variables.get('SEEDLESS_ONBOARDING_ENABLED')?.toString() === 'true';
+  const oauthClientIdOptions = {
+    buildType,
+    variables,
+    environment,
+    testing: isTestBuild,
+    development: isDevBuild,
+  };
+
+  const TELEGRAM_LOGIN_ENABLED = variables.getMaybe('TELEGRAM_LOGIN_ENABLED');
+
+  const APPLE_CLIENT_ID = isSeedlessOnboardingEnabled
+    ? getOAuthClientId({ ...oauthClientIdOptions, provider: 'APPLE' })
+    : '';
+
+  const GOOGLE_CLIENT_ID = isSeedlessOnboardingEnabled
+    ? getOAuthClientId({ ...oauthClientIdOptions, provider: 'GOOGLE' })
+    : '';
+
+  const TELEGRAM_CLIENT_ID =
+    isSeedlessOnboardingEnabled && TELEGRAM_LOGIN_ENABLED.toString() === 'true'
+      ? getOAuthClientId({ ...oauthClientIdOptions, provider: 'TELEGRAM' })
+      : '';
+
   variables.set({
     DEBUG: isDevBuild || isTestBuild ? variables.getMaybe('DEBUG') : undefined,
     EIP_4337_ENTRYPOINT: isTestBuild
@@ -69,6 +94,7 @@ function setEnvironmentVariables({
     METAMASK_SHIELD_ENABLED: isTestBuild
       ? 'true'
       : variables.getMaybe('METAMASK_SHIELD_ENABLED'),
+    TELEGRAM_LOGIN_ENABLED,
     PERPS_ENABLED: isTestBuild ? 'true' : variables.getMaybe('PERPS_ENABLED'),
     ASSETS_UNIFIED_STATE_ENABLED: variables.getMaybe(
       'ASSETS_UNIFIED_STATE_ENABLED',
