@@ -52,7 +52,7 @@ export function getIsSocialLoginUserAuthenticated(
 export function getAccountTypeForOnboardingMetrics(
   state: OnboardingState,
 ): string {
-  const firstTimeFlowType = state.metamask.firstTimeFlowType;
+  const { firstTimeFlowType } = state.metamask;
   const baseType =
     firstTimeFlowType === FirstTimeFlowType.import
       ? MetaMetricsEventAccountType.Imported

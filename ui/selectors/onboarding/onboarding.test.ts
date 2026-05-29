@@ -5,7 +5,7 @@ import {
   getSocialLoginEmail,
   getSocialLoginType,
 } from './onboarding';
-import { FirstTimeFlowType } from 'shared/constants/onboarding';
+import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 
 const MOCK_NODE_AUTH_TOKENS = [
   {
