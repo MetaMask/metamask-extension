@@ -25,6 +25,7 @@ import {
 } from '../../../../../../helpers/constants/design-system';
 import { useFormatters } from '../../../../../../hooks/useFormatters';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
+import { formatPositionSize } from '../../../../../../../shared/lib/perps-formatters';
 import { TextField, TextFieldSize } from '../../../../../component-library';
 import { PerpsSlider } from '../../../perps-slider';
 import { getDisplaySymbol } from '../../../utils';
@@ -55,6 +56,7 @@ const handleNumericFocusSelectAll = (
  * @param options0.leverage
  * @param options0.asset
  * @param options0.currentPrice
+ * @param options0.currentPositionSize
  * @param options0.onAddFunds
  * @param options0.szDecimals
  * @param options0.autoFocus
@@ -71,13 +73,14 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   asset,
   currentPrice,
   szDecimals,
+  currentPositionSize,
   onAddFunds,
   autoFocus = false,
   usdPlaceholder = '0.00',
   usdInputRef,
 }) => {
   const t = useI18nContext();
-  const { formatCurrencyWithMinThreshold, formatNumber } = useFormatters();
+  const { formatNumber } = useFormatters();
   const [percentInputValue, setPercentInputValue] = useState<string>(
     String(balancePercent),
   );
@@ -126,6 +129,21 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   const displayedTokenValue = isEditingToken
     ? tokenInputValue
     : unGroupedTokenDisplay;
+
+  const currentPositionDisplay = useMemo(() => {
+    if (currentPositionSize === undefined) {
+      return null;
+    }
+
+    const parsedPositionSize = Number.parseFloat(
+      currentPositionSize.replace(/,/gu, ''),
+    );
+    const totalPositionSize = Number.isFinite(parsedPositionSize)
+      ? Math.abs(parsedPositionSize)
+      : 0;
+
+    return `${formatPositionSize(totalPositionSize, szDecimals)} ${getDisplaySymbol(asset)}`;
+  }, [asset, currentPositionSize, szDecimals]);
 
   const formatAmount = useCallback(
     (value: number): string => value.toFixed(2),
@@ -308,11 +326,29 @@ export const AmountInput: React.FC<AmountInputProps> = ({
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={3}>
+      {currentPositionDisplay !== null && (
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Between}
+          alignItems={BoxAlignItems.Center}
+          data-testid="perps-current-position-size-row"
+        >
+          <Text variant={TextVariant.BodySm}>{t('perpsPosition')}</Text>
+          <Text
+            variant={TextVariant.BodySm}
+            data-testid="perps-current-position-size-value"
+          >
+            {currentPositionDisplay}
+          </Text>
+        </Box>
+      )}
+
       {/* Available to trade row */}
       <Box
         flexDirection={BoxFlexDirection.Row}
         justifyContent={BoxJustifyContent.Between}
         alignItems={BoxAlignItems.Center}
+        data-testid="amount-input-available-to-trade-row"
       >
         <Text variant={TextVariant.BodySm}>{t('perpsAvailableToTrade')}</Text>
         <Box

@@ -21,10 +21,10 @@ import {
   getTokenList,
 } from '../../../../selectors';
 import {
-  getConversionRate,
   getNativeCurrency,
   getTokens,
 } from '../../../../ducks/metamask/metamask';
+import { getConversionRate } from '../../../../ducks/metamask/base-selectors';
 import { getTopAssets } from '../../../../ducks/swaps/swaps';
 import {
   getMultichainNetworkConfigurationsByChainId,

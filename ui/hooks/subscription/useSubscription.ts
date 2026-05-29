@@ -46,7 +46,7 @@ import {
   selectIsSignedIn,
   selectSessionData,
 } from '../../selectors/identity/authentication';
-import { getIsUnlocked } from '../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import {
   getIsShieldSubscriptionActive,
   getSubscriptionDurationInDays,

@@ -61,7 +61,10 @@ export default function useTokenExchangeRate(
       return undefined;
     }
 
-    const nativeConversionRate = new Numeric(selectedNativeConversionRate, 10);
+    const nativeConversionRate = new Numeric(
+      String(selectedNativeConversionRate),
+      10,
+    );
 
     if (!tokenAddress) {
       return nativeConversionRate;
@@ -107,7 +110,9 @@ export default function useTokenExchangeRate(
       return undefined;
     }
 
-    return new Numeric(contractExchangeRate, 10).times(nativeConversionRate);
+    return new Numeric(String(contractExchangeRate), 10).times(
+      nativeConversionRate,
+    );
   }, [
     exchangeRates,
     chainId,

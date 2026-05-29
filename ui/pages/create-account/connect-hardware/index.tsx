@@ -30,11 +30,10 @@ import {
   getActiveQrCodeScanRequest,
 } from '../../../selectors';
 import { formatBalance } from '../../../helpers/utils/util';
-import { getMostRecentOverviewPage } from '../../../ducks/history/history';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { SECOND } from '../../../../shared/constants/time';
 import {
   HardwareDeviceNames,
-  LedgerTransportTypes,
   U2F_ERROR,
   LEDGER_ERRORS_CODES,
   LEDGER_LIVE_PATH,
@@ -137,13 +136,7 @@ const ConnectHardwareForm = () => {
     (state: { appState: { defaultHdPaths: Record<string, string> } }) =>
       state.appState.defaultHdPaths,
   );
-  const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
-  const ledgerTransportType = useSelector(
-    (state: {
-      metamask: { ledgerTransportType?: LedgerTransportTypes | 'live' };
-    }) => state.metamask.ledgerTransportType,
-  );
   const keyrings = useSelector(
     (state: { metamask: { keyrings: KeyringObject[] } }) =>
       state.metamask.keyrings,
@@ -560,7 +553,7 @@ const ConnectHardwareForm = () => {
           },
         });
 
-        navigate(mostRecentOverviewPage);
+        navigate(DEFAULT_ROUTE);
       } catch (e) {
         const errorMessage = toErrorMessage(e);
 
@@ -591,7 +584,6 @@ const ConnectHardwareForm = () => {
       dispatch,
       hardwareWalletKeyrings,
       hdEntropyIndex,
-      mostRecentOverviewPage,
       navigate,
       selectedAccounts,
       t,
@@ -599,9 +591,20 @@ const ConnectHardwareForm = () => {
     ],
   );
 
+  // Reset the local state so the component re-renders the device selection view
+  // instead of navigating away. Both views live under the same route, so a
+  // route change would be a no-op. The request ID is incremented to discard
+  // any in-flight getPage responses.
   const onCancel = useCallback(() => {
-    navigate(mostRecentOverviewPage);
-  }, [mostRecentOverviewPage, navigate]);
+    setError(null);
+    setSelectedAccounts([]);
+    latestGetPageRequestId.current += 1;
+    latestPendingDevice.current = null;
+    latestHardwareAccounts.current = [];
+    setHardwareAccounts([]);
+    setCurrentDevice(null);
+    setUnlocked(false);
+  }, [setCurrentDevice]);
 
   const renderError = () => {
     if (error === U2F_ERROR) {
@@ -675,8 +678,7 @@ const ConnectHardwareForm = () => {
         <SelectHardware
           connectToHardwareWallet={connectToHardwareWallet}
           browserSupported={browserSupported}
-          onCancel={onCancel}
-          ledgerTransportType={ledgerTransportType}
+          isFirefox={isFirefox}
         />
       );
     }

@@ -148,7 +148,7 @@ import {
   getLedgerTransportType,
   isAddressLedger,
   getIsUnlocked,
-} from '../ducks/metamask/metamask';
+} from '../ducks/metamask/base-selectors';
 import {
   getLedgerWebHidConnectedStatus,
   getLedgerTransportStatus,
@@ -305,6 +305,10 @@ export function getNewTokensImportedError(state) {
 }
 export function getExternalServicesOnboardingToggleState(state) {
   return state.appState.externalServicesOnboardingToggleState;
+}
+
+export function getBackupAndSyncOnboardingToggleState(state) {
+  return state.appState.backupAndSyncOnboardingToggleState;
 }
 
 export function getShowDeleteMetaMetricsDataModal(state) {
@@ -2866,6 +2870,16 @@ export function getUsePhishDetect(state) {
  */
 export function getIsPasskeyRegistered(state) {
   return Boolean(state.metamask.passkeyRecord);
+}
+
+/**
+ * Passkey vault wrapping key derivation method from the enrolled record.
+ *
+ * @param {object} state - Redux state
+ * @returns {'prf' | 'userHandle' | undefined}
+ */
+export function getPasskeyDerivationMethod(state) {
+  return state.metamask?.passkeyRecord?.keyDerivation?.method;
 }
 
 /**

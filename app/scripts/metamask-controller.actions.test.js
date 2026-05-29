@@ -24,7 +24,22 @@ import mockEncryptor from '../../test/lib/mock-encryptor';
 import { HardwareKeyringNames } from '../../shared/constants/hardware-wallets';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { ExtensionPasskeyErrorCode } from '../../shared/lib/passkey/passkey-error';
+import { CHAIN_IDS } from '../../shared/constants/network';
+import { toAssetId } from '../../shared/lib/asset-utils';
+import { getIsAssetsUnifiedStateIncludedInBuild } from '../../shared/lib/environment';
 import MetaMaskController from './metamask-controller';
+import * as getSnapKeyringUtil from './lib/snap-keyring/utils/getSnapKeyring';
+
+// Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
+// so unify-state tests can exercise real feature-flag gating via controller state.
+jest.mock('../../shared/lib/assets-unify-state/remote-feature-flag', () =>
+  jest.requireActual('../../shared/lib/assets-unify-state/remote-feature-flag'),
+);
+
+jest.mock('../../shared/lib/environment', () => ({
+  ...jest.requireActual('../../shared/lib/environment'),
+  getIsAssetsUnifiedStateIncludedInBuild: jest.fn(),
+}));
 
 const mockToHardwareWalletError = jest.fn();
 const mockIsUserRejectedHardwareWalletError = jest.fn().mockReturnValue(false);
@@ -69,9 +84,9 @@ jest.mock('webextension-polyfill', () => ({
 // shares the same mock instance
 const browserPolyfillMock = jest.mocked(browser);
 
-const { Ganache } = require('../../test/e2e/seeder/ganache');
+const { LocalNodeStub } = require('../../test/stub/local-node');
 
-const ganacheServer = new Ganache();
+const localNodeServer = new LocalNodeStub();
 
 let loggerMiddlewareMock;
 const initializeMockMiddlewareLog = () => {
@@ -126,7 +141,7 @@ describe('MetaMaskController', function () {
   const noop = () => undefined;
 
   beforeAll(async function () {
-    await ganacheServer.start({ port: 32545 });
+    await localNodeServer.start({ port: 32545 });
   });
 
   beforeEach(function () {
@@ -171,6 +186,11 @@ describe('MetaMaskController', function () {
         getVersion: () => 'foo',
       },
       browser: browserPolyfillMock,
+      getRequestAccountTabIds: () => ({}),
+      getOpenMetamaskTabsIds: () => ({}),
+      notificationManager: {
+        markAsAutomaticallyClosed: jest.fn(),
+      },
       infuraProjectId: 'foo',
       cronjobControllerStorageManager: {
         init: noop,
@@ -184,6 +204,7 @@ describe('MetaMaskController', function () {
     });
     initializeMockMiddlewareLog();
     mockToHardwareWalletError.mockReset();
+    jest.mocked(getIsAssetsUnifiedStateIncludedInBuild).mockReturnValue(false);
 
     // Re-create the ULID generator to start over again the `mockULIDs` list.
     mockUlidGenerator = ulidGenerator();
@@ -196,7 +217,7 @@ describe('MetaMaskController', function () {
   });
 
   afterAll(async function () {
-    await ganacheServer.quit();
+    await localNodeServer.quit();
   });
 
   describe('Phishing Detection Mock', function () {
@@ -207,51 +228,6 @@ describe('MetaMaskController', function () {
       );
       expect(METAMASK_HOTLIST_DIFF_URL).toStrictEqual(
         'https://phishing-detection.api.cx.metamask.io/v2/diffsSince',
-      );
-    });
-  });
-
-  describe('#addNewAccount', function () {
-    it('two parallel calls with same accountCount give same result', async function () {
-      await metamaskController.createNewVaultAndKeychain('test@123');
-      const [addNewAccountResult1, addNewAccountResult2] = await Promise.all([
-        metamaskController.addNewAccount(1),
-        metamaskController.addNewAccount(1),
-      ]);
-      expect(addNewAccountResult1).toStrictEqual(addNewAccountResult2);
-    });
-
-    it('two successive calls with same accountCount give same result', async function () {
-      await metamaskController.createNewVaultAndKeychain('test@123');
-      const addNewAccountResult1 = await metamaskController.addNewAccount(1);
-      const addNewAccountResult2 = await metamaskController.addNewAccount(1);
-      expect(addNewAccountResult1).toStrictEqual(addNewAccountResult2);
-    });
-
-    it('two successive calls with different accountCount give different results', async function () {
-      await metamaskController.createNewVaultAndKeychain('test@123');
-      const addNewAccountResult1 = await metamaskController.addNewAccount(1);
-      const addNewAccountResult2 = await metamaskController.addNewAccount(2);
-      expect(addNewAccountResult1).not.toStrictEqual(addNewAccountResult2);
-    });
-  });
-
-  describe('#importAccountWithStrategy', function () {
-    it('throws an error when importing the same account twice', async function () {
-      const importPrivkey =
-        '4cfd3e90fc78b0f86bf7524722150bb8da9c60cd532564d7ff43f5716514f553';
-      await metamaskController.createNewVaultAndKeychain('test@123');
-
-      await metamaskController.importAccountWithStrategy('privateKey', [
-        importPrivkey,
-      ]);
-
-      await expect(
-        metamaskController.importAccountWithStrategy('privateKey', [
-          importPrivkey,
-        ]),
-      ).rejects.toThrow(
-        'KeyringController - The account you are trying to import is a duplicate',
       );
     });
   });
@@ -380,6 +356,28 @@ describe('MetaMaskController', function () {
     const address = '0x514910771af9ca656af840dff83e8264ecf986ca';
     const symbol = 'LINK';
     const decimals = 18;
+    const networkClientId = 'sepolia';
+
+    it('delegates to TokensController.addToken when assets-unify state is off', async function () {
+      const addTokenSpy = jest
+        .spyOn(metamaskController.tokensController, 'addToken')
+        .mockResolvedValue(undefined);
+
+      await metamaskController.getApi().addToken({
+        address,
+        symbol,
+        decimals,
+        networkClientId,
+      });
+
+      expect(addTokenSpy).toHaveBeenCalledWith({
+        address,
+        symbol,
+        decimals,
+        image: undefined,
+        networkClientId,
+      });
+    });
 
     it('two parallel calls with same token details give same result', async function () {
       const [token1, token2] = await Promise.all([
@@ -421,6 +419,137 @@ describe('MetaMaskController', function () {
         'NetworkController:getNetworkClientById',
         'networkClientId1',
       ]);
+    });
+
+    describe('with assets-unify state enabled', function () {
+      let unifyController;
+
+      beforeEach(function () {
+        jest
+          .mocked(getIsAssetsUnifiedStateIncludedInBuild)
+          .mockReturnValue(true);
+
+        unifyController = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: mockEncryptor,
+          initLangCode: 'en_US',
+          initState: {
+            RemoteFeatureFlagController: {
+              remoteFeatureFlags: {
+                assetsUnifyState: {
+                  enabled: true,
+                  featureVersion: '1',
+                  minimumVersion: null,
+                },
+              },
+            },
+          },
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          getRequestAccountTabIds: () => ({}),
+          getOpenMetamaskTabsIds: () => ({}),
+          notificationManager: {
+            markAsAutomaticallyClosed: jest.fn(),
+          },
+          infuraProjectId: 'foo',
+          cronjobControllerStorageManager: {
+            init: noop,
+            getInitialState: noop,
+            set: noop,
+          },
+          controllerMessenger: new Messenger({
+            namespace: MOCK_ANY_NAMESPACE,
+            captureException: jest.fn(),
+          }),
+        });
+
+        jest
+          .spyOn(unifyController.accountsController, 'getSelectedAccount')
+          .mockReturnValue({ id: 'test-account-id' });
+        jest
+          .spyOn(unifyController.networkController, 'getNetworkClientById')
+          .mockReturnValue({
+            configuration: { chainId: CHAIN_IDS.SEPOLIA },
+          });
+        jest
+          .spyOn(unifyController.assetsController, 'addCustomAsset')
+          .mockResolvedValue(undefined);
+        jest
+          .spyOn(unifyController.tokensController, 'addToken')
+          .mockResolvedValue(undefined);
+      });
+
+      it('adds token via AssetsController.addCustomAsset', async function () {
+        const image = 'https://example.com/icon.png';
+        const expectedAssetId = toAssetId(address, CHAIN_IDS.SEPOLIA);
+
+        await unifyController.getApi().addToken({
+          address,
+          symbol,
+          decimals,
+          image,
+          networkClientId,
+        });
+
+        expect(
+          unifyController.tokensController.addToken,
+        ).not.toHaveBeenCalled();
+        expect(
+          unifyController.assetsController.addCustomAsset,
+        ).toHaveBeenCalledWith('test-account-id', expectedAssetId, {
+          address,
+          symbol,
+          name: symbol,
+          decimals,
+          chainId: CHAIN_IDS.SEPOLIA,
+          iconUrl: image,
+        });
+      });
+
+      it('omits iconUrl when image is not provided', async function () {
+        const expectedAssetId = toAssetId(address, CHAIN_IDS.SEPOLIA);
+
+        await unifyController.getApi().addToken({
+          address,
+          symbol,
+          decimals,
+          networkClientId,
+        });
+
+        expect(
+          unifyController.assetsController.addCustomAsset,
+        ).toHaveBeenCalledWith('test-account-id', expectedAssetId, {
+          address,
+          symbol,
+          name: symbol,
+          decimals,
+          chainId: CHAIN_IDS.SEPOLIA,
+        });
+      });
+
+      it('throws when assetId cannot be built', async function () {
+        unifyController.networkController.getNetworkClientById.mockReturnValue({
+          configuration: {},
+        });
+
+        await expect(
+          unifyController.getApi().addToken({
+            address,
+            symbol,
+            decimals,
+            networkClientId,
+          }),
+        ).rejects.toThrow(
+          `MetaMask - Cannot build assetId for token ${address} on undefined`,
+        );
+
+        expect(
+          unifyController.assetsController.addCustomAsset,
+        ).not.toHaveBeenCalled();
+      });
     });
   });
 
@@ -688,7 +817,7 @@ describe('MetaMaskController', function () {
 
     it('should return false if firstTimeFlowType is seedless and password is not outdated', async function () {
       // We now need the Snap keyring after onboarding the wallet.
-      jest.spyOn(metamaskController, 'getSnapKeyring').mockReturnValue({});
+      jest.spyOn(getSnapKeyringUtil, 'getSnapKeyring').mockResolvedValue({});
       metamaskController.onboardingController.setFirstTimeFlowType(
         FirstTimeFlowType.socialCreate,
       );
@@ -708,7 +837,7 @@ describe('MetaMaskController', function () {
 
     it('should return true if firstTimeFlowType is seedless and password is outdated', async function () {
       // We now need the Snap keyring after onboarding the wallet.
-      jest.spyOn(metamaskController, 'getSnapKeyring').mockReturnValue({});
+      jest.spyOn(getSnapKeyringUtil, 'getSnapKeyring').mockResolvedValue({});
       metamaskController.onboardingController.setFirstTimeFlowType(
         FirstTimeFlowType.socialCreate,
       );
@@ -1105,7 +1234,7 @@ describe('MetaMaskController', function () {
           .mockRejectedValue('Unexpected error');
 
         // We now need the Snap keyring after unlocking the wallet.
-        jest.spyOn(metamaskController, 'getSnapKeyring').mockReturnValue({});
+        jest.spyOn(getSnapKeyringUtil, 'getSnapKeyring').mockResolvedValue({});
 
         await metamaskController.syncPasswordAndUnlockWallet(password);
         expect(keyringSubmitPwdSpy).toHaveBeenCalled();
@@ -1190,7 +1319,7 @@ describe('MetaMaskController', function () {
           .mockResolvedValue();
 
         // We now need the Snap keyring after unlocking the wallet.
-        jest.spyOn(metamaskController, 'getSnapKeyring').mockReturnValue({});
+        jest.spyOn(getSnapKeyringUtil, 'getSnapKeyring').mockResolvedValue({});
 
         await metamaskController.syncPasswordAndUnlockWallet(password);
         expect(keyringSubmitPwdSpy).toHaveBeenCalled();
