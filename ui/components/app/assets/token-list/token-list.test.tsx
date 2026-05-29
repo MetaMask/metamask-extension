@@ -331,7 +331,7 @@ describe('TokenList', () => {
             fiatBalance: 0,
           }),
           chainId: LINEA_CHAIN_ID,
-        },
+        } as Asset,
       ],
     });
 
