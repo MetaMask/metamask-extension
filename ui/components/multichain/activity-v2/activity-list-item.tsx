@@ -52,6 +52,7 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
       className="px-4 py-3 bg-background-default cursor-pointer hover:bg-hover activity-list-item"
       onClick={onClick}
       data-testid="activity-list-item"
+      data-tx-status={transactionStatus}
     >
       <div className="flex gap-4 items-center">
         <div className="flex-shrink-0">
@@ -75,7 +76,6 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
             <TransactionStatusLabel
               status={transactionStatus}
               error={failureError}
-              statusOnly
               label={isProtected ? t('cancelled') : undefined}
               tooltip={
                 isProtected
