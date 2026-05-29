@@ -36,8 +36,11 @@ export const SnapUIFooterButton = ({
   variant = ButtonVariant.Primary,
   snapVariant,
   form,
+  textVariant: _textVariant,
   ...props
-}: React.PropsWithChildren<SnapUIFooterButtonProps & ButtonProps>) => {
+}: React.PropsWithChildren<
+  SnapUIFooterButtonProps & ButtonProps & { textVariant?: unknown }
+>) => {
   const { handleEvent, snapId } = useSnapInterfaceContext();
   const hideSnapBranding = useSelector((state) =>
     getHideSnapBranding(state, snapId),
