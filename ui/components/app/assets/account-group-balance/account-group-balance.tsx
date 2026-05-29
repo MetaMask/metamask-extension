@@ -18,20 +18,19 @@ import {
 import { Box, SensitiveText } from '../../../component-library';
 import {
   getEnabledNetworksByNamespace,
+  getMultichainNetwork,
+  getShowFiatInTestnets,
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../../selectors';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { isZeroAmount } from '../../../../helpers/utils/number-utils';
-import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
-import {
-  getMultichainNativeCurrency,
-  getMultichainIsTestnet,
-} from '../../../../selectors/multichain';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../selectors/multichain-accounts/account-tree';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { hexWEIToDecETH } from '../../../../../shared/lib/conversion.utils';
+import { TEST_CHAINS } from '../../../../../shared/constants/network';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
 
 export type AccountGroupBalanceProps = {
   classPrefix: string;
@@ -72,41 +71,69 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
 
   const isEvm = isEvmChainId(chainId);
 
-  const isTestnet = useSelector(getMultichainIsTestnet);
+  const isTestnetSelected = Boolean(
+    Object.keys(enabledNetworks).length === 1 &&
+    TEST_CHAINS.includes(Object.keys(enabledNetworks)[0] as `0x${string}`),
+  );
 
+  const networkConfigurationsByChainId = useSelector(
+    getNetworkConfigurationsByChainId,
+  );
+  const networks = useSelector(getMultichainNetwork);
   const showNativeTokenAsMain = Boolean(
     showNativeTokenAsMainBalance && Object.keys(enabledNetworks).length === 1,
   );
 
-  const nativeCurrency = useMultichainSelector(
-    getMultichainNativeCurrency,
-    selectedAccount,
-  );
+  const showConversionForTestnets = useSelector(getShowFiatInTestnets);
+
+  const nativeCurrencySymbol: string = useMemo(() => {
+    if (isEvm) {
+      return Object.keys(enabledNetworks).length === 1
+        ? networkConfigurationsByChainId[
+            Object.keys(enabledNetworks)[0] as `0x${string}`
+          ]?.nativeCurrency
+        : fallbackCurrency;
+    }
+
+    return Object.keys(enabledNetworks).length === 1
+      ? networks.network.ticker
+      : fallbackCurrency;
+  }, [
+    enabledNetworks,
+    networkConfigurationsByChainId,
+    isEvm,
+    networks,
+    fallbackCurrency,
+  ]);
+
+  const total = selectedGroupBalance?.totalBalanceInUserCurrency;
 
   let formattedNativeBalance = null;
-  if (showNativeTokenAsMain || isTestnet) {
+  if (showNativeTokenAsMain || isTestnetSelected) {
     if (isEvm) {
       const decimalBalance = parseFloat(hexWEIToDecETH(balance));
 
       formattedNativeBalance = formatTokenQuantity(
         decimalBalance,
-        nativeCurrency,
+        nativeCurrencySymbol,
       );
     } else {
       formattedNativeBalance = formatTokenQuantity(
         Number(multichainNativeTokenBalance.amount),
-        nativeCurrency,
+        nativeCurrencySymbol,
       );
     }
   }
 
-  const total = selectedGroupBalance?.totalBalanceInUserCurrency;
   const currency = selectedGroupBalance
     ? (selectedGroupBalance.userCurrency ?? fallbackCurrency)
     : undefined;
 
   const formattedTotal = useMemo(() => {
-    if (showNativeTokenAsMain || isTestnet) {
+    if (
+      showNativeTokenAsMain ||
+      (isTestnetSelected && !showConversionForTestnets)
+    ) {
       return formattedNativeBalance;
     }
     if (total === undefined) {
@@ -115,11 +142,12 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
     return formatCurrency(total, currency);
   }, [
     showNativeTokenAsMain,
-    isTestnet,
+    isTestnetSelected,
     total,
     formatCurrency,
     currency,
     formattedNativeBalance,
+    showConversionForTestnets,
   ]);
 
   return (
