@@ -7,7 +7,6 @@ import { Duplex } from 'readable-stream';
 import { SubjectType } from '@metamask/permission-controller';
 import { PreinstalledSnap } from '@metamask/snaps-controllers';
 import { Browser } from 'webextension-polyfill';
-import { Encryptor } from '@metamask/keyring-controller';
 import { KeyringClass } from '@metamask/keyring-utils';
 import { QrKeyringScannerBridge } from '@metamask/eth-qr-keyring';
 import { Mutex } from 'async-mutex';
@@ -164,11 +163,6 @@ export type MessengerClientInitRequest<
    * e.g. `{ TransactionController: { transactions: [] } }`.
    */
   persistedState: MessengerClientPersistedState;
-
-  /**
-   * Remove an account from keyring state.
-   */
-  removeAccount(address: string): Promise<string>;
 
   // TODO: Remove this once the migration to the LegacyBackgroundApiService is complete.
   /**

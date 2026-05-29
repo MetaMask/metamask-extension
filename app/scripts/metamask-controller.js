@@ -9543,7 +9543,6 @@ export default class MetamaskController extends EventEmitter {
   #initMessengerClients({ initFunctions, initState }) {
     const initRequest = {
       currentMigrationVersion: this.opts.currentMigrationVersion,
-      encryptor: this.opts.encryptor,
       ensureOnboardingComplete: this.#createEnsureOnboardingCompleteCallback(),
       extension: this.extension,
       platform: this.platform,
@@ -9562,10 +9561,6 @@ export default class MetamaskController extends EventEmitter {
       offscreenPromise: this.offscreenPromise,
       preinstalledSnaps: this.opts.preinstalledSnaps,
       persistedState: initState,
-      removeAccount: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:removeAccount',
-      ),
       // Temporarily get the mutex from `MetamaskController` until we can
       // migrate the seedless onboarding functionality to the LegacyBackgroundApiService.
       // TODO: Remove this once the migration is complete.

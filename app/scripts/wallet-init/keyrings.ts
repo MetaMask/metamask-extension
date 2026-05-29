@@ -120,6 +120,7 @@ export function getKeyringBuilders(
       'PreferencesController:getState',
       'RemoteFeatureFlagController:getState',
       'MetaMetricsController:trackEvent',
+      'LegacyBackgroundApiService:removeAccount',
     ],
   });
 
