@@ -1,5 +1,5 @@
 import { Env as ProfileSyncEnv } from '@metamask/profile-sync-controller/sdk';
-import { ENVIRONMENT } from '../../../../development/build/constants';
+import { ENVIRONMENT } from '../../../../shared/constants/build';
 import {
   BuildTypeEnv,
   getProfilePairingEnv,

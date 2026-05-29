@@ -11,7 +11,7 @@ import {
 } from '@metamask/messenger';
 import browser from 'webextension-polyfill';
 import { OAuthErrorMessages } from '../../../../shared/lib/error';
-import { ENVIRONMENT } from '../../../../development/build/constants';
+import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { AuthConnection } from '../../../../shared/constants/onboarding';
 import ExtensionPlatform from '../../platforms/extension';
 import { OAuthServiceMessenger, WebAuthenticator } from './types';

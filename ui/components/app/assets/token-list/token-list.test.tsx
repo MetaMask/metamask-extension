@@ -304,13 +304,15 @@ describe('TokenList', () => {
     expect(screen.queryByTestId('low-value-assets-toggle')).toBeNull();
   });
 
-  it('does not render zero-balance mUSD imported by token detection', () => {
+  it('renders zero-balance mUSD outside the low value bucket', () => {
+    jest.mocked(getShouldHideZeroBalanceTokens).mockReturnValue(true);
     jest.mocked(getAssetsBySelectedAccountGroup).mockReturnValue(
       createAccountGroupAssets([
         createAsset({
           symbol: 'MUSD',
           address: MUSD_TOKEN_ADDRESS,
           balance: '0',
+          fiatBalance: 0,
         }),
         createAsset({ symbol: 'USDC', fiatBalance: 25 }),
       ]),
@@ -319,7 +321,8 @@ describe('TokenList', () => {
     render();
 
     expect(screen.getByTestId('token-cell-USDC')).toBeInTheDocument();
-    expect(screen.queryByTestId('token-cell-MUSD')).not.toBeInTheDocument();
+    expect(screen.getByTestId('token-cell-MUSD')).toBeInTheDocument();
+    expect(screen.queryByTestId('low-value-assets-toggle')).toBeNull();
   });
 
   it('renders mUSD when it has a balance', () => {
