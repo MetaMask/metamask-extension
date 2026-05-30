@@ -25,7 +25,6 @@ import { useTransactionsQuery } from './useTransactionsQuery';
 
 const itemHeight = 70;
 
-// Prototype implementation for the new activity list
 export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
   const t = useI18nContext();
   const scrollContainerRef = useScrollContainer();

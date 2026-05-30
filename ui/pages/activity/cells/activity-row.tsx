@@ -1,7 +1,7 @@
 import React from 'react';
-import { PendingActivityRow } from './pending-activity-row';
 import type { ActivityRowProps } from '../types';
 import { getActivityCellStatus } from '../helpers';
+import { PendingActivityRow } from './pending-activity-row';
 import { useActivityCellPresentation } from './useActivityCellPresentation';
 import { ActivityRowLayout } from './activity-row-layout';
 

@@ -1,11 +1,11 @@
 import React from 'react';
 import { usePendingTransactionGasModal } from '../../../components/app/pending-transaction-action-buttons/pending-transaction-cancel-speed-up-provider';
 import { TransactionListItemPendingActions } from '../../../components/app/transaction-list-item/transaction-list-item-pending-actions';
+import type { ActivityRowProps } from '../types';
 import {
   ActivityRowLayout,
   ActivityRowLayoutProps,
 } from './activity-row-layout';
-import type { ActivityRowProps } from '../types';
 
 export function PendingActivityRow({
   data,

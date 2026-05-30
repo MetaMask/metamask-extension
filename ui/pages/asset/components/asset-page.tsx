@@ -50,6 +50,7 @@ import { ActivityList as ActivityListV2 } from '../../../components/multichain/a
 import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
 import { StockBadge } from '../../../components/app/assets/stock-badge/stock-badge';
 import { AddressCopyButton } from '../../../components/multichain';
+// eslint-disable-next-line import-x/no-restricted-paths
 import { ActivityList as ActivityListV3 } from '../../activity/activity-list';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
