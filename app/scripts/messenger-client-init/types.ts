@@ -10,6 +10,7 @@ import { Browser } from 'webextension-polyfill';
 import { Encryptor } from '@metamask/keyring-controller';
 import { KeyringClass } from '@metamask/keyring-utils';
 import { QrKeyringScannerBridge } from '@metamask/eth-qr-keyring';
+import { Mutex } from 'async-mutex';
 import type { TransactionMetricsRequest } from '../../../shared/types';
 import { MessageSender } from '../../../types/global';
 import type { CronjobControllerStorageManager } from '../lib/CronjobControllerStorageManager';
@@ -175,6 +176,12 @@ export type MessengerClientInitRequest<
    */
   removeAccount(address: string): Promise<string>;
 
+  // TODO: Remove this once the migration to the LegacyBackgroundApiService is complete.
+  /**
+   * The mutex used to ensure that only one seedless onboarding operation can occur at a time.
+   */
+  seedlessOperationMutex: Mutex;
+
   /**
    * Create a multiplexed stream for connecting to an untrusted context like a
    * like a website, Snap, or other extension.
@@ -247,6 +254,22 @@ export type MessengerClientInitRequest<
    * The user's preferred language code, if any.
    */
   initLangCode: string | null;
+
+  /**
+   * Gets the record of request account tab IDs.
+   */
+  getRequestAccountTabIds: () => Record<string, number>;
+
+  /**
+   * Gets the record of open MetaMask tab IDs.
+   */
+  getOpenMetamaskTabsIds: () => Record<string, number>;
+
+  /**
+   * Sends an update to the UI.
+   *
+   */
+  sendUpdate: () => void;
 };
 
 /**

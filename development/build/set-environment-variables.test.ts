@@ -1,6 +1,9 @@
 import { Variables } from '../lib/variables';
 import { ENVIRONMENT } from './constants';
-import { getOAuthClientId } from './set-environment-variables';
+import {
+  getOAuthClientId,
+  setEnvironmentVariables,
+} from './set-environment-variables';
 
 type ProviderConfig = {
   clientIdEnv: string;
@@ -14,7 +17,7 @@ type ProviderConfig = {
   flaskUatClientId: string;
 };
 
-type Provider = 'GOOGLE' | 'APPLE';
+type Provider = 'GOOGLE' | 'APPLE' | 'TELEGRAM';
 
 const PROVIDER_CONFIG: Record<Provider, ProviderConfig> = {
   GOOGLE: {
@@ -38,6 +41,17 @@ const PROVIDER_CONFIG: Record<Provider, ProviderConfig> = {
     uatClientId: 'apple-uat-client-id',
     flaskUatClientIdEnv: 'APPLE_CLIENT_ID_FLASK_UAT',
     flaskUatClientId: 'apple-flask-uat-client-id',
+  },
+  TELEGRAM: {
+    clientIdEnv: 'TELEGRAM_CLIENT_ID',
+    directClientId: 'telegram-dev-client-id',
+    clientIdRefEnv: 'TELEGRAM_CLIENT_ID_REF',
+    referencedClientIdEnv: 'TELEGRAM_PROD_CLIENT_ID',
+    referencedClientId: 'telegram-prod-client-id',
+    uatClientIdEnv: 'TELEGRAM_CLIENT_ID_UAT',
+    uatClientId: 'telegram-uat-client-id',
+    flaskUatClientIdEnv: 'TELEGRAM_CLIENT_ID_FLASK_UAT',
+    flaskUatClientId: 'telegram-flask-uat-client-id',
   },
 };
 
@@ -122,6 +136,80 @@ const providerEntries = Object.entries(PROVIDER_CONFIG) as [
   Provider,
   ProviderConfig,
 ][];
+
+const SET_ENVIRONMENT_VARIABLES_DECLARED_VARIABLES = [
+  ...DECLARED_VARIABLES,
+  'DEBUG',
+  'EIP_4337_ENTRYPOINT',
+  'IN_TEST',
+  'INFURA_PROJECT_ID',
+  'INFURA_ENV_KEY_REF',
+  'INFURA_PROD_PROJECT_ID',
+  'METAMASK_DEBUG',
+  'SENTRY_DISTRIBUTED_TRACING_DISABLED',
+  'METAMASK_BUILD_NAME',
+  'METAMASK_BUILD_APP_ID',
+  'METAMASK_BUILD_ICON',
+  'METAMASK_ENVIRONMENT',
+  'METAMASK_VERSION',
+  'METAMASK_BUILD_TYPE',
+  'NODE_ENV',
+  'PHISHING_WARNING_PAGE_URL',
+  'SEGMENT_WRITE_KEY',
+  'SEGMENT_WRITE_KEY_REF',
+  'SEGMENT_PROD_WRITE_KEY',
+  'TEST_GAS_FEE_FLOWS',
+  'DEEP_LINK_HOST',
+  'DEEP_LINK_PUBLIC_KEY',
+  'SEEDLESS_ONBOARDING_ENABLED',
+  'METAMASK_SHIELD_ENABLED',
+  'TELEGRAM_LOGIN_ENABLED',
+  'PERPS_ENABLED',
+  'ASSETS_UNIFIED_STATE_ENABLED',
+];
+
+function getVariablesForSetEnvironmentVariables() {
+  const variables = new Variables(SET_ENVIRONMENT_VARIABLES_DECLARED_VARIABLES);
+
+  variables.set({
+    DEBUG: false,
+    EIP_4337_ENTRYPOINT: '0x0000000000000000000000000000000000000000',
+    INFURA_PROJECT_ID: 'direct-infura-project-id',
+    INFURA_ENV_KEY_REF: 'INFURA_PROD_PROJECT_ID',
+    INFURA_PROD_PROJECT_ID: 'prod-infura-project-id',
+    METAMASK_DEBUG: false,
+    SENTRY_DISTRIBUTED_TRACING_DISABLED: false,
+    PHISHING_WARNING_PAGE_URL: 'https://example.test/',
+    SEGMENT_WRITE_KEY: 'direct-segment-write-key',
+    SEGMENT_WRITE_KEY_REF: 'SEGMENT_PROD_WRITE_KEY',
+    SEGMENT_PROD_WRITE_KEY: 'prod-segment-write-key',
+    TEST_GAS_FEE_FLOWS: false,
+    DEEP_LINK_HOST: 'https://deep-link.example.test',
+    DEEP_LINK_PUBLIC_KEY: 'public-key',
+    SEEDLESS_ONBOARDING_ENABLED: 'false',
+    METAMASK_SHIELD_ENABLED: 'false',
+    TELEGRAM_LOGIN_ENABLED: 'true',
+    PERPS_ENABLED: 'false',
+    ASSETS_UNIFIED_STATE_ENABLED: 'false',
+    GOOGLE_CLIENT_ID: 'google-dev-client-id',
+    APPLE_CLIENT_ID: 'apple-dev-client-id',
+    TELEGRAM_CLIENT_ID: 'telegram-dev-client-id',
+    GOOGLE_CLIENT_ID_REF: 'GOOGLE_PROD_CLIENT_ID',
+    APPLE_CLIENT_ID_REF: 'APPLE_PROD_CLIENT_ID',
+    TELEGRAM_CLIENT_ID_REF: 'TELEGRAM_PROD_CLIENT_ID',
+    GOOGLE_PROD_CLIENT_ID: 'google-prod-client-id',
+    APPLE_PROD_CLIENT_ID: 'apple-prod-client-id',
+    TELEGRAM_PROD_CLIENT_ID: 'telegram-prod-client-id',
+    GOOGLE_CLIENT_ID_UAT: 'google-uat-client-id',
+    APPLE_CLIENT_ID_UAT: 'apple-uat-client-id',
+    TELEGRAM_CLIENT_ID_UAT: 'telegram-uat-client-id',
+    GOOGLE_CLIENT_ID_FLASK_UAT: 'google-flask-uat-client-id',
+    APPLE_CLIENT_ID_FLASK_UAT: 'apple-flask-uat-client-id',
+    TELEGRAM_CLIENT_ID_FLASK_UAT: 'telegram-flask-uat-client-id',
+  });
+
+  return variables;
+}
 
 describe('getOAuthClientId', () => {
   for (const [provider, config] of providerEntries) {
@@ -233,4 +321,54 @@ describe('getOAuthClientId', () => {
       });
     });
   }
+});
+
+describe('setEnvironmentVariables', () => {
+  it('forces TELEGRAM_LOGIN_ENABLED to false for production builds', () => {
+    const variables = getVariablesForSetEnvironmentVariables();
+
+    setEnvironmentVariables({
+      buildName: 'MetaMask',
+      buildType: 'main',
+      environment: ENVIRONMENT.PRODUCTION,
+      isDevBuild: false,
+      isTestBuild: false,
+      variables,
+      version: '1.0.0',
+    });
+
+    expect(variables.get('TELEGRAM_LOGIN_ENABLED')).toBe('false');
+  });
+
+  it('forces TELEGRAM_LOGIN_ENABLED to false for release candidate builds', () => {
+    const variables = getVariablesForSetEnvironmentVariables();
+
+    setEnvironmentVariables({
+      buildName: 'MetaMask',
+      buildType: 'main',
+      environment: ENVIRONMENT.RELEASE_CANDIDATE,
+      isDevBuild: false,
+      isTestBuild: false,
+      variables,
+      version: '1.0.0',
+    });
+
+    expect(variables.get('TELEGRAM_LOGIN_ENABLED')).toBe('false');
+  });
+
+  it('preserves TELEGRAM_LOGIN_ENABLED outside production and release builds', () => {
+    const variables = getVariablesForSetEnvironmentVariables();
+
+    setEnvironmentVariables({
+      buildName: 'MetaMask',
+      buildType: 'main',
+      environment: ENVIRONMENT.TESTING,
+      isDevBuild: false,
+      isTestBuild: true,
+      variables,
+      version: '1.0.0',
+    });
+
+    expect(variables.get('TELEGRAM_LOGIN_ENABLED')).toBe('true');
+  });
 });

@@ -1,9 +1,10 @@
-import { Messenger } from '@metamask/messenger';
+import {
+  Messenger,
+  type MessengerActions,
+  type MessengerEvents,
+} from '@metamask/messenger';
+import { AddressBookControllerMessenger } from '@metamask/address-book-controller';
 import { RootMessenger } from '../../lib/messenger';
-
-export type AddressBookControllerMessenger = ReturnType<
-  typeof getAddressBookControllerMessenger
->;
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
@@ -13,12 +14,14 @@ export type AddressBookControllerMessenger = ReturnType<
  * messenger.
  */
 export function getAddressBookControllerMessenger(
-  messenger: RootMessenger<never, never>,
-) {
-  return new Messenger<'AddressBookController', never, never, typeof messenger>(
-    {
-      namespace: 'AddressBookController',
-      parent: messenger,
-    },
-  );
+  messenger: RootMessenger<
+    MessengerActions<AddressBookControllerMessenger>,
+    MessengerEvents<AddressBookControllerMessenger>
+  >,
+): AddressBookControllerMessenger {
+  const controllerMessenger: AddressBookControllerMessenger = new Messenger({
+    namespace: 'AddressBookController',
+    parent: messenger,
+  });
+  return controllerMessenger;
 }
