@@ -23,7 +23,7 @@ export const lavamoatPlugin = (args: Args) =>
     policyLocation: join(
       'lavamoat',
       'webpack',
-      `mv${args.manifest_version}`,
+      `mv${args.manifestVersion}`,
       args.type,
     ),
     diagnosticsVerbosity: 0,

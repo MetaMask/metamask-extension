@@ -7,7 +7,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.33.0]
+
+### Added
+
+- Add Sentry distributed tracing instrumentation for Background RPC calls and inter-controller messenger calls (#39891)
+- Added current position size display on the increase exposure screen for perpetual trades (#42673)
+- Set up batch sell quotes (#42434)
+- Added new UI for hardware wallet onboarding process (#42720)
+- Add new user traits in metametrics, `account_type`. (#42855)
+- Adds new ERC-7715 permission type `token-approval-revocation` that can be granted via `wallet_requestExecutionPermissions` (#42841)
+- Added percentage and Max controls to the Perps withdraw confirmation flow. (#42783)
+- Added stop loss, take profit, liquidation, and auto-deleveraging badges to perps activity rows (#42645)
+- Added VIP tier badge and fee discount display for Perps trading and Bridge transactions (#42782)
+- Show VIP badge in swap page (#42771)
+
+### Changed
+
+- Show enforced-simulations protection state ("Cancelled" status + info banner) in transaction details and Activity v2; rename `FORCE_ENABLE_SIMULATIONS` dev flag (#42368)
+- Update toggle (#42714)
+- Patched assets controller 7.0.0 (#42666)
+
+### Fixed
+
+- Fixed a bug that stopped Solana and Tron tokens from being imported (#42854)
+- Fixed merging RPC and token list metadata on custom import (#42840)
+- Removed the number of promises waiting for unlock from the badge (#42825)
+- Fixed sponsored hardware wallet send max native (#42494)
+- Fixed a perps bug where market orders submitted with TP/SL left the Auto-close section empty and surfaced the TP/SL orders in the Orders section of the market detail page (#42661)
+- Fixed a bug that made only the Recent activity arrow tappable in Perps (#42676)
+- Fixed Perps withdraw validation and activity details (#42751)
+- Fixed Perps market token logos that were difficult to see in dark mode (#42689)
+- Fixed open order price display to use correct number of decimals matching market price precision (#42405)
+- Fixed BTC swap when BTC network fees not retrieved (#42632)
+- Fixed Monad swap activity in asset details (#42669)
+
 ## [13.32.1]
+
+### Changed
+
+- Bumped `qs` to 6.15.2, `tmp` to 0.2.6, updated uuid audit ignore ([#42999](https://github.com/MetaMask/metamask-extension/pull/42999))
+
+### Fixed
+
+- Disabled unified assets controller to fix background calls issue ([#42992](https://github.com/MetaMask/metamask-extension/pull/42992))
 
 ## [13.32.0]
 
@@ -2353,7 +2396,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.32.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.33.0...HEAD
+[13.33.0]: https://github.com/MetaMask/metamask-extension/compare/v13.32.1...v13.33.0
 [13.32.1]: https://github.com/MetaMask/metamask-extension/compare/v13.32.0...v13.32.1
 [13.32.0]: https://github.com/MetaMask/metamask-extension/compare/v13.31.0...v13.32.0
 [13.31.0]: https://github.com/MetaMask/metamask-extension/compare/v13.30.0...v13.31.0

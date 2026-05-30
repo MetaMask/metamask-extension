@@ -1,4 +1,8 @@
-import { AssetsController } from '@metamask/assets-controller';
+import {
+  AssetsController,
+  AssetsControllerMessenger,
+} from '@metamask/assets-controller';
+import { ClientController } from '@metamask/client-controller';
 import { createApiPlatformClient } from '@metamask/core-backend';
 import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
@@ -6,7 +10,6 @@ import { getRootMessenger } from '../../lib/messenger';
 import {
   getAssetsControllerMessenger,
   getAssetsControllerInitMessenger,
-  AssetsControllerMessenger,
   AssetsControllerInitMessenger,
 } from '../messengers/assets/assets-controller-messenger';
 import { AssetsControllerInit } from './assets-controller-init';
@@ -21,6 +24,10 @@ jest.mock('@metamask/assets-controller', () => ({
 jest.mock('@metamask/core-backend', () => ({
   createApiPlatformClient: jest.fn().mockReturnValue({ mockApiClient: true }),
 }));
+
+function buildClientControllerMock(isUiOpen = true): ClientController {
+  return { state: { isUiOpen } } as ClientController;
+}
 
 function getInitRequestMock(
   options: {
@@ -55,6 +62,8 @@ function getInitRequestMock(
     }
     throw new Error(`Unexpected action: ${action}`);
   });
+
+  requestMock.getMessengerClient.mockReturnValue(buildClientControllerMock());
 
   return requestMock;
 }
@@ -244,8 +253,10 @@ describe('AssetsControllerInit', () => {
   });
 
   describe('isEnabled', () => {
-    it('always returns true', () => {
-      AssetsControllerInit(getInitRequestMock());
+    it('returns ClientController isUiOpen state when UI is open', () => {
+      const requestMock = getInitRequestMock();
+
+      AssetsControllerInit(requestMock);
 
       const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
       const isEnabled = constructorCall.isEnabled as () => boolean;
@@ -431,6 +442,7 @@ describe('AssetsControllerInit', () => {
 
       expect(createApiPlatformClient).toHaveBeenCalledWith({
         clientProduct: 'metamask-extension',
+        clientVersion: process.env.METAMASK_VERSION,
         getBearerToken: expect.any(Function),
       });
     });

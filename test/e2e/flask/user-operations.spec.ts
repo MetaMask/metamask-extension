@@ -307,7 +307,7 @@ describe.skip('User Operations', function () {
         paymaster: VERIFYING_PAYMASTER,
         localNodeOptions: [
           {
-            type: 'ganache',
+            type: 'anvil',
             options: {
               hardfork: 'london',
               mnemonic:

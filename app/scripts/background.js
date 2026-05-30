@@ -115,6 +115,7 @@ import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
 import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
 import { getIframeProperties } from './lib/getIframeProperties';
+import { BLOCKED_HOSTNAMES, BLOCKED_PORTS } from './constants/background';
 
 /**
  * @typedef {import('../../shared/lib/stores/persistence-manager').Backup} Backup
@@ -184,8 +185,6 @@ const metamaskInternalProcessHash = {
   [ENVIRONMENT_TYPE_NOTIFICATION]: true,
   [ENVIRONMENT_TYPE_FULLSCREEN]: true,
 };
-
-const metamaskBlockedPorts = ['trezor-connect'];
 
 log.setLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info', false);
 
@@ -1205,6 +1204,25 @@ export async function loadStateFromPersistence(backup) {
       `MetaMask - migrator data has invalid type '${typeof versionedData.data}'`,
     );
   }
+
+  // `yarn start:with-state` builds a local fixture wallet via WITH_STATE.
+  // Account/contact sync can otherwise pull remote user-storage for the same
+  // SRP and replace the generated local state. Applying this after migration
+  // covers both fresh fixture state and existing persisted state before
+  // controllers initialize; marking the key changed ensures split-state
+  // persistence writes the override.
+  if (
+    process.env.WITH_STATE &&
+    isObject(versionedData.data.UserStorageController)
+  ) {
+    versionedData.data.UserStorageController.isBackupAndSyncEnabled = false;
+    versionedData.data.UserStorageController.isAccountSyncingEnabled = false;
+    versionedData.data.UserStorageController.isContactSyncingEnabled = false;
+    if (!changedKeys.has('UserStorageController')) {
+      changedKeys.add('UserStorageController');
+    }
+  }
+
   // this initializes the meta/version data as a class variable to be used for future writes
   persistenceManager.setMetadata(versionedData.meta);
 
@@ -1708,7 +1726,7 @@ export function setupController(
   };
 
   connectWindowPostMessage = (remotePort, removeCriticalErrorListeners) => {
-    if (metamaskBlockedPorts.includes(remotePort.name)) {
+    if (BLOCKED_PORTS.includes(remotePort.name)) {
       return;
     }
 
@@ -1879,6 +1897,15 @@ export function setupController(
   };
 
   connectExternallyConnectable = (remotePort) => {
+    const senderUrl = remotePort.sender?.url;
+    if (senderUrl) {
+      const { hostname } = new URL(senderUrl);
+      if (BLOCKED_HOSTNAMES.includes(hostname)) {
+        remotePort.disconnect();
+        return;
+      }
+    }
+
     const portStream =
       overrides?.getPortStream?.(remotePort) ||
       new ExtensionPortStream(remotePort, { chunkSize: 0 });
@@ -1888,7 +1915,7 @@ export function setupController(
     // it with the 1193 provider
     const isDappConnecting = !remotePort.sender.id;
     if (isDappConnecting) {
-      if (metamaskBlockedPorts.includes(remotePort.name)) {
+      if (BLOCKED_PORTS.includes(remotePort.name)) {
         return;
       }
 
@@ -2063,12 +2090,9 @@ export function setupController(
 
   function getPendingApprovalCount() {
     try {
-      const pendingApprovalCount =
-        controller.appStateController.waitingForUnlock.length +
-        getAttentionRequiredApprovalCount({
-          approvalController: controller.approvalController,
-        });
-      return pendingApprovalCount;
+      return getAttentionRequiredApprovalCount({
+        approvalController: controller.approvalController,
+      });
     } catch (error) {
       console.error('Failed to get pending approval count:', error);
       return 0;

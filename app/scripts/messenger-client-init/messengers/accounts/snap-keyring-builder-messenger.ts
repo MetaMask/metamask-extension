@@ -1,13 +1,9 @@
-import { Messenger } from '@metamask/messenger';
+import { Messenger, MessengerActions } from '@metamask/messenger';
 import { KeyringControllerPersistAllKeyringsAction } from '@metamask/keyring-controller';
 import { AccountsControllerUpdateAccountsAction } from '@metamask/accounts-controller';
-import { SnapKeyringBuilderAllowActions } from '../../../lib/snap-keyring/types';
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller-method-action-types';
 import { RootMessenger } from '../../../lib/messenger';
-
-export type SnapKeyringBuilderMessenger = ReturnType<
-  typeof getSnapKeyringBuilderMessenger
->;
+import type { SnapKeyringBuilderMessenger } from '../../../lib/snap-keyring/types';
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
@@ -17,14 +13,12 @@ export type SnapKeyringBuilderMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getSnapKeyringBuilderMessenger(
-  messenger: RootMessenger<SnapKeyringBuilderAllowActions, never>,
+  messenger: RootMessenger<
+    MessengerActions<SnapKeyringBuilderMessenger>,
+    never
+  >,
 ) {
-  const keyringMessenger = new Messenger<
-    'SnapKeyring',
-    SnapKeyringBuilderAllowActions,
-    never,
-    typeof messenger
-  >({
+  const keyringMessenger: SnapKeyringBuilderMessenger = new Messenger({
     namespace: 'SnapKeyring',
     parent: messenger,
   });

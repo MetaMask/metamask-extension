@@ -75,6 +75,7 @@ import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import { toAssetId } from '../../shared/lib/asset-utils';
 import { HYPERLIQUID_APPROVAL_TYPE } from '../../shared/constants/app';
+import * as gatorPermissionFeatureFlags from '../../shared/lib/gator-permissions/feature-flags';
 import {
   DEFI_REFERRAL_PARTNERS,
   DefiReferralPartner,
@@ -147,9 +148,9 @@ jest.mock('webextension-polyfill', () => ({
 // shares the same mock instance
 const browserPolyfillMock = jest.mocked(browser);
 
-const { Ganache } = require('../../test/e2e/seeder/ganache');
+const { LocalNodeStub } = require('../../test/stub/local-node');
 
-const ganacheServer = new Ganache();
+const localNodeServer = new LocalNodeStub();
 
 const mockULIDs = [
   '01JKAF3DSGM3AB87EM9N0K41AJ',
@@ -359,6 +360,10 @@ jest.mock('@metamask/core-backend', () => ({
 
 jest.mock('../../shared/lib/environment', () => ({
   ...jest.requireActual('../../shared/lib/environment'),
+}));
+
+jest.mock('../../shared/lib/gator-permissions/feature-flags', () => ({
+  ...jest.requireActual('../../shared/lib/gator-permissions/feature-flags'),
   getEnabledAdvancedPermissions: jest.fn(() => []),
 }));
 
@@ -458,7 +463,7 @@ function createMockCronjobControllerStorageManager() {
 
 describe('MetaMaskController', () => {
   beforeAll(async () => {
-    await ganacheServer.start();
+    await localNodeServer.start();
   });
 
   beforeEach(() => {
@@ -541,7 +546,7 @@ describe('MetaMaskController', () => {
   });
 
   afterAll(async () => {
-    await ganacheServer.quit();
+    await localNodeServer.quit();
   });
 
   describe('Phishing Detection Mock', () => {
@@ -1799,8 +1804,8 @@ describe('MetaMaskController', () => {
     describe('wallet_requestExecutionPermissions (processRequestExecutionPermissions)', () => {
       beforeEach(() => {
         jest
-          .mocked(environment.getEnabledAdvancedPermissions)
-          .mockReturnValue(['erc20-token-revocation']);
+          .mocked(gatorPermissionFeatureFlags.getEnabledAdvancedPermissions)
+          .mockReturnValue(['token-approval-revocation']);
         jest.mocked(forwardRequestToSnap).mockResolvedValue({});
       });
 
@@ -1829,9 +1834,14 @@ describe('MetaMaskController', () => {
           chainId,
           to: '0x0000000000000000000000000000000000000000',
           permission: {
-            type: 'erc20-token-revocation',
+            type: 'token-approval-revocation',
             data: {
-              justification: 'A test permission request',
+              erc20Approve: true,
+              erc721Approve: true,
+              erc721SetApprovalForAll: true,
+              permit2Approve: true,
+              permit2Lockdown: true,
+              permit2InvalidateNonces: true,
             },
             isAdjustmentAllowed: true,
           },
@@ -1946,8 +1956,8 @@ describe('MetaMaskController', () => {
             cacheTimestamp: 0,
           });
         jest
-          .mocked(environment.getEnabledAdvancedPermissions)
-          .mockReturnValue(['erc20-token-revocation']);
+          .mocked(gatorPermissionFeatureFlags.getEnabledAdvancedPermissions)
+          .mockReturnValue(['token-approval-revocation']);
       });
 
       /**
@@ -1987,8 +1997,8 @@ describe('MetaMaskController', () => {
 
       it('omits permission types that are not enabled in the environment', async () => {
         jest.mocked(forwardRequestToSnap).mockResolvedValue({
-          'erc20-token-revocation': {
-            ruleTypes: ['a'],
+          'token-approval-revocation': {
+            ruleTypes: ['expiry'],
           },
           'some-other-permission': {
             ruleTypes: ['b'],
@@ -1998,8 +2008,8 @@ describe('MetaMaskController', () => {
         const response = await getSupportedExecutionPermissions();
 
         expect(response.result).toStrictEqual({
-          'erc20-token-revocation': {
-            ruleTypes: ['a'],
+          'token-approval-revocation': {
+            ruleTypes: ['expiry'],
             chainIds: ['0x1', '0x5'],
           },
         });
@@ -2007,16 +2017,16 @@ describe('MetaMaskController', () => {
 
       it('fills chainIds from EIP-7702 supported chains when the kernel omits chainIds', async () => {
         jest.mocked(forwardRequestToSnap).mockResolvedValue({
-          'erc20-token-revocation': {
-            ruleTypes: ['revoke'],
+          'token-approval-revocation': {
+            ruleTypes: ['expiry'],
           },
         });
 
         const response = await getSupportedExecutionPermissions();
 
         expect(response.result).toStrictEqual({
-          'erc20-token-revocation': {
-            ruleTypes: ['revoke'],
+          'token-approval-revocation': {
+            ruleTypes: ['expiry'],
             chainIds: ['0x1', '0x5'],
           },
         });
@@ -2024,8 +2034,8 @@ describe('MetaMaskController', () => {
 
       it('lowercases and filters kernel chainIds to EIP-7702 supported chains', async () => {
         jest.mocked(forwardRequestToSnap).mockResolvedValue({
-          'erc20-token-revocation': {
-            ruleTypes: ['revoke'],
+          'token-approval-revocation': {
+            ruleTypes: ['expiry'],
             chainIds: ['0x1', '0X5', '0x99', '0xAA'],
           },
         });
@@ -2033,8 +2043,8 @@ describe('MetaMaskController', () => {
         const response = await getSupportedExecutionPermissions();
 
         expect(response.result).toStrictEqual({
-          'erc20-token-revocation': {
-            ruleTypes: ['revoke'],
+          'token-approval-revocation': {
+            ruleTypes: ['expiry'],
             chainIds: ['0x1', '0x5'],
           },
         });
@@ -2042,8 +2052,8 @@ describe('MetaMaskController', () => {
 
       it('keeps chainIds empty when the kernel sends an empty chainIds array', async () => {
         jest.mocked(forwardRequestToSnap).mockResolvedValue({
-          'erc20-token-revocation': {
-            ruleTypes: ['revoke'],
+          'token-approval-revocation': {
+            ruleTypes: ['expiry'],
             chainIds: [],
           },
         });
@@ -2051,8 +2061,8 @@ describe('MetaMaskController', () => {
         const response = await getSupportedExecutionPermissions();
 
         expect(response.result).toStrictEqual({
-          'erc20-token-revocation': {
-            ruleTypes: ['revoke'],
+          'token-approval-revocation': {
+            ruleTypes: ['expiry'],
             chainIds: [],
           },
         });
@@ -2060,8 +2070,8 @@ describe('MetaMaskController', () => {
 
       it('uses EIP-7702 supported chains when kernel chainIds is null', async () => {
         jest.mocked(forwardRequestToSnap).mockResolvedValue({
-          'erc20-token-revocation': {
-            ruleTypes: ['revoke'],
+          'token-approval-revocation': {
+            ruleTypes: ['expiry'],
             chainIds: null,
           },
         });
@@ -2069,8 +2079,8 @@ describe('MetaMaskController', () => {
         const response = await getSupportedExecutionPermissions();
 
         expect(response.result).toStrictEqual({
-          'erc20-token-revocation': {
-            ruleTypes: ['revoke'],
+          'token-approval-revocation': {
+            ruleTypes: ['expiry'],
             chainIds: ['0x1', '0x5'],
           },
         });
@@ -2635,65 +2645,11 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('#addNewAccount', () => {
-      it('throws an error if the keyring controller is locked', async () => {
-        const addNewAccount = metamaskController.addNewAccount();
-        await expect(addNewAccount).rejects.toThrow(
-          'KeyringController - The operation cannot be completed while the controller is locked.',
-        );
-      });
-
-      it('returns an existing account if the accountCount is less than the number of accounts in the keyring', async () => {
-        await metamaskController.createNewVaultAndKeychain('password');
-        const secondAccount = await metamaskController.addNewAccount(1);
-        await metamaskController.addNewAccount(2);
-        await metamaskController.addNewAccount(3);
-
-        const numberOfAccount =
-          metamaskController.keyringController.state.keyrings[0].accounts
-            .length;
-        expect(numberOfAccount).toStrictEqual(4);
-
-        const result = await metamaskController.addNewAccount(1);
-        expect(result).toStrictEqual(secondAccount);
-      });
-
-      it('only checks for accounts in the keyring when comparing accountCount', async () => {
-        await metamaskController.createNewVaultAndKeychain('password');
-        // add a new hd keyring vault to simulate having multiple accounts from different keyrings
-        await metamaskController.importMnemonicToVault(TEST_SEED_ALT);
-
-        const numberOfAccounts = (
-          await metamaskController.keyringController.getAccounts()
-        ).length;
-        expect(numberOfAccounts).toStrictEqual(2);
-
-        await metamaskController.addNewAccount(1);
-
-        const numberOfAccountsForPrimaryKeyring =
-          metamaskController.keyringController.state.keyrings[0].accounts
-            .length;
-        const updatedNumberOfAccounts = (
-          await metamaskController.keyringController.getAccounts()
-        ).length;
-        expect(numberOfAccountsForPrimaryKeyring).toStrictEqual(2);
-        expect(updatedNumberOfAccounts).toStrictEqual(3);
-      });
-    });
-
     describe('#getSeedPhrase', () => {
       it('throws error if keyring controller is locked', async () => {
         await expect(metamaskController.getSeedPhrase()).rejects.toThrow(
           'KeyringController - The operation cannot be completed while the controller is locked.',
         );
-      });
-
-      it('#addNewAccount', async () => {
-        await metamaskController.createNewVaultAndKeychain('password');
-        await metamaskController.addNewAccount(1);
-        const getAccounts =
-          await metamaskController.keyringController.getAccounts();
-        expect(getAccounts).toHaveLength(2);
       });
     });
 
