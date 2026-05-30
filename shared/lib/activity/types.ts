@@ -5,7 +5,7 @@ import type { TransactionGroup } from '../multichain/types';
 
 export type Status = 'pending' | 'success' | 'failed' | 'cancelled';
 
-export type ActivityType =
+export type ActivityKind =
   | 'receive'
   | 'sell'
   | 'buy'
@@ -60,7 +60,7 @@ export type TokenAmount = {
   direction: 'in' | 'out';
 };
 
-type ActivityItem<Type extends ActivityType, Data> = {
+type ActivityData<Type extends ActivityKind, Data> = {
   type: Type;
   chainId: CaipChainId;
   status: Status;
@@ -77,7 +77,7 @@ type ActivityItem<Type extends ActivityType, Data> = {
 };
 
 export type ActivityListItem =
-  | ActivityItem<
+  | ActivityData<
       'send' | 'receive',
       {
         from: string;
@@ -85,7 +85,7 @@ export type ActivityListItem =
         token?: TokenAmount;
       }
     >
-  | ActivityItem<
+  | ActivityData<
       | 'swap'
       | 'convert'
       | 'lendingDeposit'
@@ -97,38 +97,38 @@ export type ActivityListItem =
         destinationToken?: TokenAmount;
       }
     >
-  | ActivityItem<
+  | ActivityData<
       'swapIncomplete',
       {
         sourceToken?: TokenAmount;
       }
     >
-  | ActivityItem<
+  | ActivityData<
       'bridge',
       {
         sourceToken?: TokenAmount;
         destinationToken?: TokenAmount;
       }
     >
-  | ActivityItem<
+  | ActivityData<
       'buy' | 'claim' | 'deposit',
       {
         token?: TokenAmount;
       }
     >
-  | ActivityItem<
+  | ActivityData<
       'claimMusdBonus',
       {
         token?: TokenAmount;
       }
     >
-  | ActivityItem<
+  | ActivityData<
       'approveSpendingCap' | 'revokeSpendingCap' | 'increaseSpendingCap',
       {
         token?: TokenAmount;
       }
     >
-  | ActivityItem<
+  | ActivityData<
       'nftMint',
       {
         from: string;
@@ -136,7 +136,7 @@ export type ActivityListItem =
         token?: TokenAmount;
       }
     >
-  | ActivityItem<
+  | ActivityData<
       'contractInteraction',
       {
         from: string;
