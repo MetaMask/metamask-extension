@@ -2,7 +2,7 @@
  * @file The main webpack configuration file for the browser extension.
  */
 
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { argv, exit } from 'node:process';
 import {
@@ -49,9 +49,10 @@ if (args.dryRun) {
 
 const context = join(__dirname, '../../app');
 const nodeModules = join(__dirname, '../../node_modules');
+const root = join(context, '..');
 const isDevelopment = args.mode === MODES.DEVELOPMENT;
 const MANIFEST_VERSION = args.manifestVersion;
-const browsersListPath = join(context, '../.browserslistrc');
+const browsersListPath = join(root, '.browserslistrc');
 // read .browserslist now to stop it from searching for the file over and over
 const browsersListQuery = readFileSync(browsersListPath, 'utf8');
 const { variables, safeVariables, version, buildEnvVarDeclarations } =
@@ -81,9 +82,10 @@ const cache = args.cache
         // `buildDependencies`
         config: [
           __filename,
-          join(context, '../.metamaskprodrc'),
-          join(context, '../.metamaskrc'),
-          join(context, '../builds.yml'),
+          ...[join(root, '.metamaskprodrc'), join(root, '.metamaskrc')].filter(
+            existsSync,
+          ),
+          join(root, 'builds.yml'),
           browsersListPath,
         ],
       },
