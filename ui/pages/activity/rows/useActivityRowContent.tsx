@@ -209,7 +209,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
     secondaryToken ? undefined : primaryToken,
     chainId,
   );
-  const primaryTokenAmount = formatTokenAmount(primaryToken, activity.type);
+
   const secondaryTokenAmount = formatTokenAmount(secondaryToken, activity.type);
   const secondaryDisplay = secondaryToken ? secondaryTokenAmount : fiatAmount;
   const avatarConfig = getActivityListItemAvatarConfig(
@@ -231,7 +231,10 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
     ),
     title: (
       <span
-        className={cn(activity.status === 'failed' && 'text-error-default')}
+        className={cn(
+          'truncate',
+          activity.status === 'failed' && 'text-error-default',
+        )}
       >
         {content.title}
       </span>
@@ -243,7 +246,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           primaryToken?.direction === 'in' && 'text-success-default',
         )}
       >
-        {primaryTokenAmount}
+        {formatTokenAmount(primaryToken, activity.type)}
       </span>
     ),
     secondaryAmount: secondaryDisplay,

@@ -6,25 +6,21 @@ import { useActivityRowContent } from './useActivityRowContent';
 import { ActivityRowLayout } from './activity-row-layout';
 
 export function ActivityRow({ data, onClick }: Readonly<ActivityRowProps>) {
-  const cellStatus = getActivityCellStatus(data);
-  const presentation = useActivityRowContent(data);
+  const content = useActivityRowContent(data);
+  const { txStatus } = getActivityCellStatus(data);
 
   if (data.status === 'pending') {
     return (
       <PendingActivityRow
-        {...presentation}
+        {...content}
         data={data}
-        txStatus={cellStatus.txStatus}
+        txStatus={txStatus}
         onClick={onClick}
       />
     );
   }
 
   return (
-    <ActivityRowLayout
-      {...presentation}
-      txStatus={cellStatus.txStatus}
-      onClick={onClick}
-    />
+    <ActivityRowLayout {...content} txStatus={txStatus} onClick={onClick} />
   );
 }
