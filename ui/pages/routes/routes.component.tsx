@@ -4,8 +4,9 @@
 import classnames from 'clsx';
 import React, { Suspense, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { useLocation, Navigate, Outlet } from 'react-router-dom';
+import { useLocation, useNavigate, Navigate, Outlet } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
+import extensionBrowser from 'webextension-polyfill';
 
 import type { ApprovalRequest } from '@metamask/approval-controller';
 import type { Json } from '@metamask/utils';
@@ -73,6 +74,7 @@ import {
   PERPS_ACTIVITY_ROUTE,
   PERPS_WITHDRAW_ROUTE,
   CONTACTS_ROUTE,
+  HYPERLIQUID_DEPOSIT_ROUTE,
 } from '../../helpers/constants/routes';
 import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
@@ -101,6 +103,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import RewardsPage from '../rewards';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import {
+  ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
@@ -133,6 +136,11 @@ import { RequireOnboarded } from '../../layouts/require-onboarded';
 import { contactsRoutes } from '../contacts';
 import RequireBasicFunctionality from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
 import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/selectors/assets-migration';
+import {
+  HYPERLIQUID_DEPOSIT_ROUTE_ACK_MESSAGE,
+  HYPERLIQUID_DEPOSIT_ROUTE_TARGET_SIDEPANEL,
+  isHyperliquidDepositPopupRouteMessage,
+} from '../../../shared/lib/hyperliquid-deposit-transaction';
 import { Toaster } from '../../components/ui/toast/toast';
 import { ToastListener } from '../../components/app/toast-listener/toast-listener';
 import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '../snaps/snap-view/messenger';
@@ -241,7 +249,49 @@ const PerpsOrderEntryPage = mmLazy(
 );
 const MusdConversionPage = mmLazy(() => import('../musd/index.tsx'));
 const PerpsLayout = mmLazy(() => import('../perps/perps-layout.tsx'));
+const HyperliquidDepositPage = mmLazy(
+  () => import('../hyperliquid-deposit/index.ts'),
+);
 // End Lazy Routes
+
+export function handleHyperliquidDepositRouteMessage({
+  message,
+  navigate,
+  runtime,
+  windowType,
+}: {
+  message: unknown;
+  navigate: (path: string) => void;
+  runtime: Pick<typeof extensionBrowser.runtime, 'sendMessage'>;
+  windowType: string;
+}) {
+  if (!isHyperliquidDepositPopupRouteMessage(message)) {
+    return;
+  }
+
+  if (
+    message.payload.target === HYPERLIQUID_DEPOSIT_ROUTE_TARGET_SIDEPANEL &&
+    windowType !== ENVIRONMENT_TYPE_SIDEPANEL
+  ) {
+    return;
+  }
+
+  navigate(
+    `${HYPERLIQUID_DEPOSIT_ROUTE}?trigger=${encodeURIComponent(
+      message.payload.triggerId,
+    )}`,
+  );
+
+  runtime
+    .sendMessage({
+      type: HYPERLIQUID_DEPOSIT_ROUTE_ACK_MESSAGE,
+      payload: {
+        triggerId: message.payload.triggerId,
+        environmentType: windowType,
+      },
+    })
+    .catch(() => undefined);
+}
 
 const SettingsV2LegacyRedirect = () => {
   const { pathname, search, hash } = useLocation();
@@ -496,6 +546,10 @@ export const routeConfig = [
             element: <RewardsPage />,
           },
           {
+            path: HYPERLIQUID_DEPOSIT_ROUTE,
+            element: <HyperliquidDepositPage />,
+          },
+          {
             element: <PerpsLayout />,
             children: [
               {
@@ -530,6 +584,7 @@ export const routeConfig = [
 export default function Routes() {
   const dispatch = useDispatch();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const alertOpen = useAppSelector((state) => state.appState.alertOpen);
   const alertMessage = useAppSelector((state) => state.appState.alertMessage);
@@ -617,6 +672,38 @@ export default function Routes() {
       global.platform?.openExtensionInBrowser?.();
     }
   }, [showExtensionInFullSizeView]);
+
+  useEffect(() => {
+    const windowType = getEnvironmentType();
+    if (
+      windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
+      windowType !== ENVIRONMENT_TYPE_POPUP &&
+      windowType !== ENVIRONMENT_TYPE_SIDEPANEL
+    ) {
+      return undefined;
+    }
+
+    const handleRuntimeHyperliquidDepositRouteMessage = (message: unknown) => {
+      handleHyperliquidDepositRouteMessage({
+        message,
+        navigate,
+        runtime: extensionBrowser.runtime,
+        windowType,
+      });
+
+      return undefined;
+    };
+
+    extensionBrowser.runtime.onMessage.addListener(
+      handleRuntimeHyperliquidDepositRouteMessage,
+    );
+
+    return () => {
+      extensionBrowser.runtime.onMessage.removeListener(
+        handleRuntimeHyperliquidDepositRouteMessage,
+      );
+    };
+  }, [navigate]);
 
   // Track location changes for metrics
   useEffect(() => {

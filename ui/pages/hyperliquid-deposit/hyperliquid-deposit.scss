@@ -1,0 +1,239 @@
+.hyperliquid-deposit {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 0;
+  background: var(--color-background-default);
+  color: var(--color-text-default);
+
+  &__panel {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--color-background-default);
+  }
+
+  &__step {
+    min-height: 100vh;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    padding: 28px 20px 24px;
+
+    &--intro,
+    &--status {
+      justify-content: center;
+      gap: 28px;
+      padding-top: 72px;
+    }
+  }
+
+  &__close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1;
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--color-background-muted);
+    color: var(--color-icon-default);
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  &__logo-wrap {
+    position: relative;
+    width: 76px;
+    height: 76px;
+  }
+
+  &__logo-tile {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    background: rgb(151, 252, 228);
+  }
+
+  &__logo {
+    width: 52px;
+    height: 52px;
+    display: block;
+  }
+
+  &__logo-pair {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  &__logo-pair-tile {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-border-muted);
+    border-radius: 14px;
+    background: var(--color-background-section);
+  }
+
+  &__logo-pair-tile--hyperliquid {
+    border-color: transparent;
+    background: rgb(151, 252, 228);
+  }
+
+  &__logo-pair-image {
+    width: 42px;
+    height: 42px;
+    display: block;
+    object-fit: contain;
+  }
+
+  &__logo-pair-separator {
+    color: var(--color-text-alternative);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  &__success-mark {
+    position: absolute;
+    right: -8px;
+    bottom: -8px;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid var(--color-background-default);
+    border-radius: 50%;
+    background: rgb(0, 199, 111);
+    color: rgb(255, 255, 255);
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  &__copy {
+    max-width: 300px;
+    text-align: center;
+
+    h1 {
+      margin: 0;
+      color: var(--color-text-default);
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 28px;
+    }
+
+    p {
+      margin: 12px 0 0;
+      color: var(--color-text-alternative);
+      font-size: 16px;
+      line-height: 24px;
+    }
+  }
+
+  &__pending-loader {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--color-background-section);
+  }
+
+  &__pending-loader-icon {
+    animation: hyperliquid-deposit-spinner 1.2s linear infinite;
+  }
+
+  &__balance-row {
+    width: 100%;
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding: 0 18px;
+    border-radius: 14px;
+    background: var(--color-background-section);
+
+    span {
+      color: var(--color-text-alternative);
+      font-weight: 600;
+    }
+
+    strong {
+      color: var(--color-text-default);
+    }
+  }
+
+  &__button {
+    width: 100%;
+    min-height: 56px;
+    margin-top: auto;
+    border: 0;
+    border-radius: 14px;
+    background: var(--color-primary-default);
+    color: var(--color-primary-inverse);
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 22px;
+    cursor: pointer;
+
+    &:disabled {
+      background: var(--color-background-muted);
+      color: var(--color-text-muted);
+      cursor: default;
+    }
+  }
+
+  &__actions {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+    margin-top: auto;
+
+    .hyperliquid-deposit__button {
+      margin-top: 0;
+    }
+  }
+
+  &__manual-link {
+    align-self: center;
+    border: 0;
+    background: transparent;
+    color: var(--color-primary-default);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    cursor: pointer;
+  }
+
+  &__error {
+    width: 100%;
+    margin: 16px 0 0;
+    color: var(--color-error-default);
+    font-size: 13px;
+    line-height: 18px;
+    text-align: center;
+  }
+}
+
+@keyframes hyperliquid-deposit-spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}

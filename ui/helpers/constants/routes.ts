@@ -174,6 +174,7 @@ export const PERPS_ORDER_ENTRY_ROUTE = '/perps/trade';
 export const PERPS_ACTIVITY_ROUTE = '/perps/activity';
 export const PERPS_WITHDRAW_ROUTE = '/perps/withdraw';
 export const PERPS_MARKET_LIST_ROUTE = '/perps/market-list';
+export const HYPERLIQUID_DEPOSIT_ROUTE = '/hyperliquid-deposit';
 
 // Window during which reopening the extension resumes the last Perps screen
 // instead of landing on the wallet home. Keeps the cap short so stale sessions
@@ -213,6 +214,11 @@ export const ROUTES = [
   {
     path: PERPS_WITHDRAW_ROUTE,
     label: 'Perps Withdraw',
+    trackInAnalytics: true,
+  },
+  {
+    path: HYPERLIQUID_DEPOSIT_ROUTE,
+    label: 'Hyperliquid Deposit',
     trackInAnalytics: true,
   },
   {

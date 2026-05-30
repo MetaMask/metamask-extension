@@ -1269,6 +1269,37 @@ describe('ConfirmFooter', () => {
   });
 
   describe('goBackTo navigation', () => {
+    it('navigates to goBackTo when a transaction confirmation succeeds', async () => {
+      mockOnTransactionConfirm.mockResolvedValue(true);
+      const navigateNextMock = jest.fn();
+      useConfirmationNavigationMock.mockReturnValue({
+        navigateNext: navigateNextMock,
+        navigateToId: jest.fn(),
+      } as unknown as ReturnType<typeof useConfirmationNavigation>);
+
+      const confirmation = genUnapprovedContractInteractionConfirmation();
+      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+        currentConfirmation: confirmation,
+        isScrollToBottomCompleted: true,
+        setIsScrollToBottomCompleted: () => undefined,
+        goBackTo: '/hyperliquid-deposit?step=status&txId=1',
+      } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
+
+      const { getByText } = render(getMockContractInteractionConfirmState());
+
+      fireEvent.click(getByText(messages.confirm.message));
+
+      await waitFor(() => {
+        expect(mockOnTransactionConfirm).toHaveBeenCalledTimes(1);
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        '/hyperliquid-deposit?step=status&txId=1',
+        { replace: true },
+      );
+      expect(navigateNextMock).not.toHaveBeenCalled();
+    });
+
     it('does not call navigateNext when cancel is clicked and goBackTo is defined', async () => {
       const navigateNextMock = jest.fn();
       useConfirmationNavigationMock.mockReturnValue({

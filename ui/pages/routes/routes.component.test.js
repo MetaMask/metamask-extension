@@ -1,4 +1,5 @@
 import React from 'react';
+import extensionBrowser from 'webextension-polyfill';
 import { Provider } from 'react-redux';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { render as rtlRender, screen } from '@testing-library/react';
@@ -7,8 +8,17 @@ import thunk from 'redux-thunk';
 import {
   CONFIRMATION_V_NEXT_ROUTE,
   DEFAULT_ROUTE,
+  HYPERLIQUID_DEPOSIT_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
 } from '../../helpers/constants/routes';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../shared/constants/app';
+import {
+  HYPERLIQUID_DEPOSIT_POPUP_ROUTE_MESSAGE,
+  HYPERLIQUID_DEPOSIT_ROUTE_ACK_MESSAGE,
+} from '../../../shared/lib/hyperliquid-deposit-transaction';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockSendState from '../../../test/data/mock-send-state.json';
 import mockState from '../../../test/data/mock-state.json';
@@ -16,13 +26,17 @@ import { useIsOriginalNativeTokenSymbol } from '../../hooks/useIsOriginalNativeT
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import useMultiPolling from '../../hooks/useMultiPolling';
-import Routes, { TokenManagementFeatureRoute } from '.';
+import Routes, {
+  handleHyperliquidDepositRouteMessage,
+  TokenManagementFeatureRoute,
+} from './routes.component';
 
 const middlewares = [thunk];
 
 const mockShowNetworkDropdown = jest.fn();
 const mockHideNetworkDropdown = jest.fn();
 const mockFetchWithCache = jest.fn();
+const mockNavigate = jest.fn();
 
 jest.mock('webextension-polyfill', () => ({
   runtime: {
@@ -30,8 +44,19 @@ jest.mock('webextension-polyfill', () => ({
       addListener: jest.fn(),
       removeListener: jest.fn(),
     },
+    sendMessage: jest.fn().mockResolvedValue(undefined),
     getManifest: () => ({ manifest_version: 2 }),
   },
+}));
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
+
+jest.mock('../../../app/scripts/lib/util', () => ({
+  ...jest.requireActual('../../../app/scripts/lib/util'),
+  getEnvironmentType: () => globalThis.mockEnvironmentType ?? 'popup',
 }));
 
 jest.mock('../../store/actions', () => ({
@@ -176,6 +201,12 @@ describe('Routes Component', () => {
   useIsOriginalNativeTokenSymbol.mockImplementation(() => true);
 
   beforeEach(() => {
+    globalThis.mockEnvironmentType = ENVIRONMENT_TYPE_POPUP;
+    mockNavigate.mockClear();
+    extensionBrowser.runtime.onMessage.addListener.mockClear();
+    extensionBrowser.runtime.onMessage.removeListener.mockClear();
+    extensionBrowser.runtime.sendMessage.mockClear();
+
     // Clear previous mock implementations
     useMultiPolling.mockClear();
 
@@ -291,6 +322,63 @@ describe('Routes Component', () => {
     );
 
     expect(await screen.findByTestId('home-route')).toBeInTheDocument();
+  });
+});
+
+describe('Hyperliquid deposit route messages', () => {
+  beforeEach(() => {
+    globalThis.mockEnvironmentType = ENVIRONMENT_TYPE_SIDEPANEL;
+    mockNavigate.mockClear();
+    extensionBrowser.runtime.onMessage.addListener.mockClear();
+    extensionBrowser.runtime.sendMessage.mockClear();
+    useMultiPolling.mockImplementation(() => ({
+      startPolling: jest.fn().mockResolvedValue('mockPollingToken'),
+      stopPollingByPollingToken: jest.fn(),
+    }));
+  });
+
+  it('routes sidepanel-targeted deposit messages in the sidepanel and acknowledges the route', () => {
+    handleHyperliquidDepositRouteMessage({
+      message: {
+        type: HYPERLIQUID_DEPOSIT_POPUP_ROUTE_MESSAGE,
+        payload: {
+          target: 'sidepanel',
+          triggerId: 'trigger-sidepanel',
+        },
+      },
+      navigate: mockNavigate,
+      runtime: extensionBrowser.runtime,
+      windowType: ENVIRONMENT_TYPE_SIDEPANEL,
+    });
+
+    expect(mockNavigate).toHaveBeenCalledWith(
+      `${HYPERLIQUID_DEPOSIT_ROUTE}?trigger=trigger-sidepanel`,
+    );
+    expect(extensionBrowser.runtime.sendMessage).toHaveBeenCalledWith({
+      type: HYPERLIQUID_DEPOSIT_ROUTE_ACK_MESSAGE,
+      payload: {
+        triggerId: 'trigger-sidepanel',
+        environmentType: ENVIRONMENT_TYPE_SIDEPANEL,
+      },
+    });
+  });
+
+  it('ignores sidepanel-targeted deposit messages outside the sidepanel', () => {
+    handleHyperliquidDepositRouteMessage({
+      message: {
+        type: HYPERLIQUID_DEPOSIT_POPUP_ROUTE_MESSAGE,
+        payload: {
+          target: 'sidepanel',
+          triggerId: 'trigger-popup',
+        },
+      },
+      navigate: mockNavigate,
+      runtime: extensionBrowser.runtime,
+      windowType: ENVIRONMENT_TYPE_POPUP,
+    });
+
+    expect(mockNavigate).not.toHaveBeenCalled();
+    expect(extensionBrowser.runtime.sendMessage).not.toHaveBeenCalled();
   });
 });
 

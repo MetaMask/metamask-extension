@@ -2,10 +2,11 @@ import React from 'react';
 import { DefaultRootState } from 'react-redux';
 import { fireEvent } from '@testing-library/react';
 import {
-  TransactionMeta,
   TransactionType,
+  type TransactionMeta,
 } from '@metamask/transaction-controller';
 
+import { HYPERLIQUID_DEPOSIT_CONFIRMATION_REQUEST_ID } from '../../../../../../shared/lib/hyperliquid-deposit-transaction';
 import {
   getMockConfirmStateForTransaction,
   getMockTokenTransferConfirmState,
@@ -22,6 +23,17 @@ const getPerpsDepositState = () => {
   const base = genUnapprovedContractInteractionConfirmation({ chainId: '0x1' });
   return getMockConfirmStateForTransaction({
     ...base,
+    type: TransactionType.perpsDeposit,
+    origin: 'metamask',
+  } as TransactionMeta);
+};
+
+/** Build a confirm state for a Hyperliquid deposit transaction. */
+const getHyperliquidDepositState = () => {
+  const base = genUnapprovedContractInteractionConfirmation({ chainId: '0x1' });
+  return getMockConfirmStateForTransaction({
+    ...base,
+    requestId: HYPERLIQUID_DEPOSIT_CONFIRMATION_REQUEST_ID,
     type: TransactionType.perpsDeposit,
     origin: 'metamask',
   } as TransactionMeta);
@@ -114,6 +126,13 @@ describe('<WalletInitiatedHeader />', () => {
     const { getByText } = render(getPerpsDepositState());
 
     expect(getByText(tEn('perpsDepositFundsTitle'))).toBeInTheDocument();
+  });
+
+  it('shows the Hyperliquid deposit title for marked perpsDeposit transactions', () => {
+    const { getByText, queryByText } = render(getHyperliquidDepositState());
+
+    expect(getByText('Deposit to Hyperliquid')).toBeInTheDocument();
+    expect(queryByText(tEn('perpsDepositFundsTitle'))).not.toBeInTheDocument();
   });
 
   it('hides AdvancedDetailsButton visually for perpsDeposit', () => {

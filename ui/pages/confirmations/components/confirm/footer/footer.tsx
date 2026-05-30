@@ -336,6 +336,10 @@ const Footer = () => {
 
       if (isTransactionConfirmation) {
         const didConfirm = await onTransactionConfirm();
+        if (didConfirm && goBackTo) {
+          navigate(goBackTo, { replace: true });
+          return;
+        }
         if (didConfirm && currentConfirmationId) {
           navigateNext(currentConfirmationId);
         }
@@ -376,6 +380,7 @@ const Footer = () => {
     shouldRunHardwareWalletPreflight,
     isAddEthereumChain,
     isTransactionConfirmation,
+    goBackTo,
     onAddEthereumChain,
     navigate,
     onTransactionConfirm,

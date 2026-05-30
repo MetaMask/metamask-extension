@@ -73,6 +73,26 @@ describe('Notification Manager', () => {
     expect(setCurrentPopupIdSpy).toHaveBeenCalledWith(newPopupWindow.id);
   });
 
+  it('should open a new popup window with a custom URL', async () => {
+    const newPopupWindow = generateMockWindow();
+    setCurrentPopupIdSpy = jest.fn();
+    browser.windows.getAll.mockReturnValue([]);
+    browser.windows.create.mockReturnValue(newPopupWindow);
+    currentPopupId = undefined;
+
+    await notificationManager.showPopup(
+      setCurrentPopupIdSpy,
+      currentPopupId,
+      'notification.html#/hyperliquid-deposit',
+    );
+
+    expect(browser.windows.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        url: 'notification.html#/hyperliquid-deposit',
+      }),
+    );
+  });
+
   it('should not pass negative left value for extension window created from last focused window', async () => {
     const newPopupWindow = generateMockWindow();
     setCurrentPopupIdSpy = jest.fn();

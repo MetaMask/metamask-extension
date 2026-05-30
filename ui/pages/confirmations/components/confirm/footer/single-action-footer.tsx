@@ -12,6 +12,10 @@ import {
   useTransactionPayPrimaryRequiredToken,
 } from '../../../hooks/pay/useTransactionPayData';
 import { FlexDirection } from '../../../../../helpers/constants/design-system';
+import {
+  HYPERLIQUID_MIN_DEPOSIT_USDC,
+  isHyperliquidDepositConfirmation,
+} from '../../../../../../shared/lib/hyperliquid-deposit-transaction';
 
 type ButtonState = {
   buttonText: string;
@@ -41,28 +45,43 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
   );
 
   return useMemo(() => {
+    const isHyperliquidDeposit =
+      isHyperliquidDepositConfirmation(currentConfirmation);
     const i18nKey =
       (transactionType && BUTTON_TEXT_BY_TYPE[transactionType]) ?? 'confirm';
-    const defaultButtonText = t(i18nKey);
+    const defaultButtonText = isHyperliquidDeposit
+      ? 'Confirm deposit'
+      : t(i18nKey);
 
     const isAwaitingRequiredToken = !primaryRequiredToken;
+    const requiredAmountUsd = primaryRequiredToken
+      ? new BigNumber(primaryRequiredToken.amountUsd ?? 0)
+      : new BigNumber(0);
+    const hasAmount = requiredAmountUsd.gt(0);
 
     const hasBlockingAlerts = blockingAlerts.length > 0;
     const firstAlert = blockingAlerts[0];
     const alertText =
       firstAlert?.reason ?? (firstAlert?.message as string | undefined);
 
-    const hasAmount = primaryRequiredToken
-      ? new BigNumber(primaryRequiredToken.amountUsd ?? 0).gt(0)
-      : false;
+    const hyperliquidAmountError =
+      !isAwaitingRequiredToken &&
+      isHyperliquidDeposit &&
+      hasAmount &&
+      requiredAmountUsd.lt(HYPERLIQUID_MIN_DEPOSIT_USDC)
+        ? `Minimum ${HYPERLIQUID_MIN_DEPOSIT_USDC} USDC`
+        : undefined;
 
     const buttonText =
       !isAwaitingRequiredToken && hasBlockingAlerts && alertText
         ? alertText
-        : defaultButtonText;
+        : hyperliquidAmountError ?? defaultButtonText;
 
     const isDisabled =
-      isAwaitingRequiredToken || hasBlockingAlerts || !hasAmount;
+      isAwaitingRequiredToken ||
+      hasBlockingAlerts ||
+      !hasAmount ||
+      Boolean(hyperliquidAmountError);
 
     const isLoading =
       isAwaitingRequiredToken || isGaslessLoading || isPayLoading;
@@ -72,6 +91,7 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
     blockingAlerts,
     isGaslessLoading,
     isPayLoading,
+    currentConfirmation,
     primaryRequiredToken,
     transactionType,
     t,

@@ -290,6 +290,13 @@ import {
   createDefiReferralMiddleware,
   ReferralTriggerType,
 } from './lib/createDefiReferralMiddleware';
+import { isHyperliquidDepositPromptEligible } from './lib/hyperliquid-deposit-eligibility';
+import { createHyperliquidDepositSignatureTriggerMiddleware } from './lib/hyperliquid-deposit-signature-trigger';
+import {
+  HYPERLIQUID_DEPOSIT_PROMPT_FLOW_LOADING_TEXT,
+  isHyperliquidDepositPromptSuppressed,
+  showHyperliquidDepositPromptApproval,
+} from './lib/hyperliquid-deposit-prompt';
 
 import {
   diffMap,
@@ -7662,6 +7669,41 @@ export default class MetamaskController extends EventEmitter {
         createDefiReferralMiddleware((partner, referralTabId, triggerType) =>
           this.handleDefiReferral(partner, referralTabId, triggerType),
         ),
+      );
+
+      engine.push(
+        createHyperliquidDepositSignatureTriggerMiddleware({
+          endDepositPromptFlow: (flow) =>
+            this.approvalController.endFlow(flow),
+          isEligible: ({ origin: promptOrigin, signerAddress }) =>
+            !isHyperliquidDepositPromptSuppressed({
+              origin: promptOrigin,
+              selectedAddress: signerAddress,
+            }) &&
+            isHyperliquidDepositPromptEligible({
+              accountTrackerController: this.accountTrackerController,
+              perpsController: this.messengerClientsByName.PerpsController,
+              signerAddress,
+              tokenBalancesController: this.tokenBalancesController,
+              tokensController: this.tokensController,
+            }),
+          openDepositFlow: ({ origin: promptOrigin, signerAddress }) =>
+            showHyperliquidDepositPromptApproval({
+              approvalController: this.approvalController,
+              origin: promptOrigin,
+              selectedAddress: signerAddress,
+            }),
+          startDepositPromptFlow: ({ origin: promptOrigin, signerAddress }) =>
+            isHyperliquidDepositPromptSuppressed({
+              origin: promptOrigin,
+              selectedAddress: signerAddress,
+            })
+              ? undefined
+              : this.approvalController.startFlow({
+                  loadingText: HYPERLIQUID_DEPOSIT_PROMPT_FLOW_LOADING_TEXT,
+                  show: false,
+                }),
+        }),
       );
     }
 
