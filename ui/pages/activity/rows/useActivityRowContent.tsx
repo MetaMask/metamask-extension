@@ -30,9 +30,7 @@ function getChainDisplay(activity: ActivityRowProps['data']) {
   return { chainId, networkName };
 }
 
-export function useActivityCellPresentation(
-  activity: ActivityRowProps['data'],
-) {
+export function useActivityRowContent(activity: ActivityRowProps['data']) {
   const t = useI18nContext();
   const formatTokenAmount = useFormatTokenAmount();
   const labelKeys = getLabelKeys({

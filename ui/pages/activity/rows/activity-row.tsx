@@ -2,12 +2,12 @@ import React from 'react';
 import type { ActivityRowProps } from '../types';
 import { getActivityCellStatus } from '../helpers';
 import { PendingActivityRow } from './pending-activity-row';
-import { useActivityCellPresentation } from './useActivityCellPresentation';
+import { useActivityRowContent } from './useActivityRowContent';
 import { ActivityRowLayout } from './activity-row-layout';
 
 export function ActivityRow({ data, onClick }: Readonly<ActivityRowProps>) {
   const cellStatus = getActivityCellStatus(data);
-  const presentation = useActivityCellPresentation(data);
+  const presentation = useActivityRowContent(data);
 
   if (data.status === 'pending') {
     return (
