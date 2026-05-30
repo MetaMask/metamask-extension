@@ -2,7 +2,11 @@ import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { NETWORK_CLIENT_ID, WINDOW_TITLES } from '../../constants';
+import {
+  DEFAULT_FIXTURE_ACCOUNT_ID,
+  NETWORK_CLIENT_ID,
+  WINDOW_TITLES,
+} from '../../constants';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import NetworkManager, {
@@ -248,6 +252,30 @@ describe('Network Manager', function (this: Suite) {
         fixtures: new FixtureBuilderV2()
           .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withAssetsController({
+            assetsBalance: {
+              [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+                [`eip155:1/erc20:${MUSD_ADDRESS}`]: { amount: '10' },
+                [`eip155:59144/erc20:${MUSD_ADDRESS}`]: { amount: '10' },
+              },
+            },
+            assetsInfo: {
+              [`eip155:1/erc20:${MUSD_ADDRESS}`]: {
+                aggregators: [],
+                decimals: 6,
+                name: 'mUSD',
+                symbol: 'mUSD',
+                type: 'erc20',
+              },
+              [`eip155:59144/erc20:${MUSD_ADDRESS}`]: {
+                aggregators: [],
+                decimals: 6,
+                name: 'mUSD',
+                symbol: 'mUSD',
+                type: 'erc20',
+              },
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockLineaAndMusd,
