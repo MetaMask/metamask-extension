@@ -11,7 +11,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { useItemInView } from '../../hooks/useItemInView';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import { LegacyDetails } from './legacy-details';
-import { ActivityRow } from './cells/activity-row';
+import { ActivityRow } from './rows/activity-row';
 import {
   dedupeItems,
   getLastEvmItemIndex,
