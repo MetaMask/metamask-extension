@@ -78,6 +78,26 @@ export const UI_COMPONENT_RE = new RegExp(
 export const noop = () => undefined;
 
 /**
+ * Temporarily ignores 'SIGINT' and 'SIGTERM' while webpack closes its
+ * filesystem cache.
+ *
+ * In the forked build path, the parent exits before `compiler.close()`
+ * completes so webpack can persist the cache in the background. During that
+ * handoff the parent can still forward shutdown signals to the child: Ctrl+C
+ * becomes 'SIGINT', and process managers or CI can send 'SIGTERM'. Node's
+ * default behavior would terminate the child and can leave the cache partially
+ * written.
+ *
+ * @param process - The process to install signal listeners on.
+ * @returns A cleanup function that removes the installed listeners.
+ */
+export function ignoreCacheShutdownSignal(process: NodeJS.Process) {
+  const signals = ['SIGINT', 'SIGTERM'] as const;
+  signals.forEach((signal) => process.on(signal, noop));
+  return () => signals.forEach((signal) => process.off(signal, noop));
+}
+
+/**
  * @param filename
  * @returns filename with .js extension (.ts | .tsx | .mjs -> .js)
  */
