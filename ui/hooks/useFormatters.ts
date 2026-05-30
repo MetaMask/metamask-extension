@@ -124,6 +124,21 @@ function formatDateTime(
   }).format(new Date(timestamp));
 }
 
+// Format a timestamp as a localized long date string (e.g. "Mar 15, 2024").
+function formatLongDate(
+  locale: string,
+  timestamp: string | number,
+  options?: Intl.DateTimeFormatOptions,
+) {
+  if (!timestamp) {
+    return '';
+  }
+  return getCachedDateTimeFormat(locale, {
+    dateStyle: 'medium',
+    ...options,
+  }).format(new Date(timestamp));
+}
+
 export function useFormatters() {
   const locale = useSelector(getIntlLocale);
 
@@ -147,6 +162,10 @@ export function useFormatters() {
        * Format a timestamp as a localized date+time string (e.g. "Mar 15, 2024, 2:30 PM").
        */
       formatDateTime: formatDateTime.bind(null, { locale }),
+      /**
+       * Format a timestamp as a localized long date string (e.g. "Mar 15, 2024").
+       */
+      formatLongDate: formatLongDate.bind(null, locale),
     };
   }, [locale]);
 }

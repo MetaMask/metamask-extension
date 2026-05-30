@@ -6,7 +6,7 @@ import { TransactionActivityEmptyState } from '../../components/app/transaction-
 import { SectionHeader } from '../../components/ui/section-header';
 import { VirtualizedList } from '../../components/ui/virtualized-list/virtualized-list';
 import { useScrollContainer } from '../../contexts/scroll-container';
-import { formatDateWithYearContext } from '../../helpers/utils/util';
+import { useFormatters } from '../../hooks/useFormatters';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useItemInView } from '../../hooks/useItemInView';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
@@ -24,9 +24,11 @@ import { useNonEvmTransactions } from './useNonEvmTransactions';
 import { useTransactionsQuery } from './useTransactionsQuery';
 
 const itemHeight = 70;
+const headerHeight = 40;
 
 export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
   const t = useI18nContext();
+  const { formatLongDate } = useFormatters();
   const scrollContainerRef = useScrollContainer();
   const [networks, setNetworks] = useState<string[]>([]);
   const [selectedItem, setSelectedItem] = useState<ActivityListItem | null>(
@@ -85,7 +87,12 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
 
       <VirtualizedList
         data={groupedItems}
-        estimatedItemSize={itemHeight}
+        estimatedItemSize={(row) =>
+          row.type === 'date-header' || row.type === 'pending-header'
+            ? headerHeight
+            : itemHeight
+        }
+        overscan={10}
         keyExtractor={getItemKey}
         itemRef={itemRef}
         listEmptyComponent={
@@ -98,15 +105,7 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
           }
 
           if (row.type === 'date-header') {
-            return (
-              <SectionHeader
-                label={formatDateWithYearContext(
-                  row.date,
-                  'MMM d, y',
-                  'MMM d, y',
-                )}
-              />
-            );
+            return <SectionHeader label={formatLongDate(row.date)} />;
           }
 
           return (

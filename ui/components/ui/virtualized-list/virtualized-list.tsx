@@ -16,7 +16,7 @@ export const noAdjustmentsScroll: ScrollToFn = (offset, options, instance) => {
 
 type Props<TItem> = {
   data: TItem[];
-  estimatedItemSize: number;
+  estimatedItemSize: number | ((item: TItem, index: number) => number);
   keyExtractor?: (item: TItem, index: number) => string;
   itemRef?: (
     node: HTMLDivElement | null,
@@ -61,7 +61,10 @@ export const VirtualizedList = <TItem,>({
     count: data.length,
     getScrollElement: () =>
       disabled ? null : (scrollContainerRef?.current ?? null),
-    estimateSize: () => estimatedItemSize,
+    estimateSize: (index) =>
+      typeof estimatedItemSize === 'function'
+        ? estimatedItemSize(data[index], index)
+        : estimatedItemSize,
     getItemKey: (index) =>
       keyExtractor ? keyExtractor(data[index], index) : index,
     overscan,
