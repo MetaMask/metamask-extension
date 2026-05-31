@@ -150,7 +150,19 @@ type GracefulWatchShutdownOptions = {
   signals?: readonly NodeJS.Signals[];
 };
 
-const WATCH_SHUTDOWN_SIGNALS = ['SIGINT', 'SIGTERM'] as const;
+const CACHE_SHUTDOWN_SIGNALS = ['SIGINT', 'SIGTERM'] as const;
+
+function listenForSignals(
+  signalProcess: SignalProcess,
+  signals: readonly NodeJS.Signals[],
+  listener: SignalListener,
+): () => void {
+  signals.forEach((signal) => signalProcess.on(signal, listener));
+  return () =>
+    signals.forEach((signal) =>
+      signalProcess.removeListener(signal, listener),
+    );
+}
 
 /**
  * Installs signal handlers that let webpack finish closing its cache.
@@ -173,18 +185,12 @@ export function setupGracefulWatchShutdown({
   exit = (code) => process.exit(code),
   process: signalProcess = process,
   server,
-  signals = WATCH_SHUTDOWN_SIGNALS,
+  signals = CACHE_SHUTDOWN_SIGNALS,
 }: GracefulWatchShutdownOptions): () => void {
   let isShuttingDown = false;
-  const listeners: { signal: NodeJS.Signals; listener: SignalListener }[] = [];
+  const removeListeners = listenForSignals(signalProcess, signals, shutdown);
 
-  const removeListeners = () => {
-    for (const { signal, listener } of listeners) {
-      signalProcess.removeListener(signal, listener);
-    }
-  };
-
-  const shutdown = () => {
+  function shutdown() {
     if (isShuttingDown) {
       writeLineAfterProgress(
         compiler,
@@ -208,11 +214,6 @@ export function setupGracefulWatchShutdown({
         removeListeners();
         exit(1);
       });
-  };
-
-  for (const signal of signals) {
-    signalProcess.on(signal, shutdown);
-    listeners.push({ signal, listener: shutdown });
   }
 
   return removeListeners;
@@ -293,10 +294,8 @@ export const getDevServerClientUrl = (config: Configuration): string => {
  * @param process - The process to install signal listeners on.
  * @returns A cleanup function that removes the installed listeners.
  */
-export function ignoreCacheShutdownSignal(process: NodeJS.Process) {
-  const signals = ['SIGINT', 'SIGTERM'] as const;
-  signals.forEach((signal) => process.on(signal, noop));
-  return () => signals.forEach((signal) => process.off(signal, noop));
+export function ignoreCacheShutdownSignal(process: SignalProcess) {
+  return listenForSignals(process, CACHE_SHUTDOWN_SIGNALS, noop);
 }
 
 /**

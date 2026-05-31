@@ -25,14 +25,12 @@ describe('./utils/helpers.ts', () => {
       const on = mock.fn((signal: NodeJS.Signals, listener: () => void) => {
         listeners.set(signal, listener);
       });
-      const off = mock.fn((signal: NodeJS.Signals, listener: () => void) => {
-        if (listeners.get(signal) === listener) {
-          listeners.delete(signal);
-        }
+      const removeListener = mock.fn((signal: NodeJS.Signals) => {
+        listeners.delete(signal);
       });
       const signalProcess = {
         on,
-        off,
+        removeListener,
       } as unknown as NodeJS.Process;
       const { mock: error } = mock.method(console, 'error', helpers.noop);
 
@@ -48,7 +46,7 @@ describe('./utils/helpers.ts', () => {
 
       assert.strictEqual(error.callCount(), 0);
       assert.strictEqual(on.mock.callCount(), signals.length);
-      assert.strictEqual(off.mock.callCount(), signals.length);
+      assert.strictEqual(removeListener.mock.callCount(), signals.length);
       signals.forEach((signal) =>
         assert.strictEqual(listeners.has(signal), false),
       );
@@ -374,13 +372,9 @@ describe('./utils/helpers.ts', () => {
             listeners.set(signal, listener);
           },
         ),
-        removeListener: mock.fn(
-          (signal: NodeJS.Signals, listener: () => void) => {
-            if (listeners.get(signal) === listener) {
-              listeners.delete(signal);
-            }
-          },
-        ),
+        removeListener: mock.fn((signal: NodeJS.Signals) => {
+          listeners.delete(signal);
+        }),
       };
       mock.method(console, 'error', (message) => {
         calls.push(message);
@@ -437,13 +431,9 @@ describe('./utils/helpers.ts', () => {
             listeners.set(signal, listener);
           },
         ),
-        removeListener: mock.fn(
-          (signal: NodeJS.Signals, listener: () => void) => {
-            if (listeners.get(signal) === listener) {
-              listeners.delete(signal);
-            }
-          },
-        ),
+        removeListener: mock.fn((signal: NodeJS.Signals) => {
+          listeners.delete(signal);
+        }),
       };
       mock.method(console, 'error', helpers.noop);
 
