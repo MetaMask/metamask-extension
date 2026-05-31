@@ -38,7 +38,7 @@ describe('Trezor Hardware', function (this: Suite) {
             '0x100000000000000000000',
           )) ?? console.error('localNodes is undefined or empty');
           await login(driver, {
-            expectedBalance: `1.21M`,
+            validateBalance: false,
             waitForNonEvmAccounts: false,
           });
           const homePage = new HomePage(driver);
@@ -48,6 +48,7 @@ describe('Trezor Hardware', function (this: Suite) {
             amount: '1',
           });
           await homePage.checkPageIsLoaded();
+          await homePage.checkExpectedBalanceIsDisplayed('1.21M', 'ETH', 15000 );
           await homePage.goToActivityList();
           const activityList = new ActivityListPage(driver);
           await activityList.checkConfirmedTxNumberDisplayedInActivity();

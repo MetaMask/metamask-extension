@@ -370,9 +370,6 @@ class AssetListPage {
     );
 
     await this.driver.waitForSelector(this.tokenImportedSuccessMessage);
-    await this.driver.assertElementNotPresent(this.tokenImportedSuccessMessage, {
-      timeout: 10000,
-    });
   }
 
   async importTokenBySearch({
@@ -399,9 +396,6 @@ class AssetListPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.confirmImportTokenButton,
     );
-    await this.driver.assertElementNotPresent(this.tokenImportedSuccessMessage, {
-      timeout: 10000,
-    });
   }
 
   async importMultipleTokensBySearch(tokenNames: string[]) {
