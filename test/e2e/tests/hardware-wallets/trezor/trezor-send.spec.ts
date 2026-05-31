@@ -48,7 +48,7 @@ describe('Trezor Hardware', function (this: Suite) {
             amount: '1',
           });
           await homePage.checkPageIsLoaded();
-          await homePage.checkExpectedBalanceIsDisplayed('1.21M', 'ETH', 15000 );
+          await homePage.checkExpectedBalanceIsDisplayed('1.21M', 'ETH', 15000);
           await homePage.goToActivityList();
           const activityList = new ActivityListPage(driver);
           await activityList.checkConfirmedTxNumberDisplayedInActivity();

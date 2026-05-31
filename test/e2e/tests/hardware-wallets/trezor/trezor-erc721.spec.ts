@@ -41,7 +41,7 @@ describe('Trezor Hardware', function (this: Suite) {
         });
 
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed('1.21M', 'ETH', 15000 );
+        await homePage.checkExpectedBalanceIsDisplayed('1.21M', 'ETH', 15000);
         // deploy action
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage();
@@ -82,7 +82,7 @@ describe('Trezor Hardware', function (this: Suite) {
           waitForNonEvmAccounts: false,
         });
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed('1.21M', 'ETH', 15000 );
+        await homePage.checkExpectedBalanceIsDisplayed('1.21M', 'ETH', 15000);
 
         const contractAddress = await (
           contractRegistry as ContractAddressRegistry
@@ -150,7 +150,11 @@ describe('Trezor Hardware', function (this: Suite) {
         });
 
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed(`${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(), 'ETH', 15000 );
+        await homePage.checkExpectedBalanceIsDisplayed(
+          `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
+          'ETH',
+          15000,
+        );
         const contractAddress =
           await contractRegistry?.getContractAddress(smartContract);
         const testDappPage = new TestDappPage(driver);
@@ -205,7 +209,11 @@ describe('Trezor Hardware', function (this: Suite) {
         });
 
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed(`${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(), 'ETH', 15000 );
+        await homePage.checkExpectedBalanceIsDisplayed(
+          `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
+          'ETH',
+          15000,
+        );
         const contractAddress = await (
           contractRegistry as ContractAddressRegistry
         ).getContractAddress(smartContract);

@@ -39,7 +39,7 @@ describe('Ledger Hardware', function (this: Suite) {
         });
 
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed('1.21M', 'ETH', 15000 );
+        await homePage.checkExpectedBalanceIsDisplayed('1.21M', 'ETH', 15000);
         // deploy action
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage();
@@ -92,7 +92,11 @@ describe('Ledger Hardware', function (this: Suite) {
         });
 
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed( `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(), 'ETH', 15000 );
+        await homePage.checkExpectedBalanceIsDisplayed(
+          `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
+          'ETH',
+          15000,
+        );
         const contractAddress =
           await contractRegistry.getContractAddress(erc721);
         const testDappPage = new TestDappPage(driver);
@@ -151,11 +155,16 @@ describe('Ledger Hardware', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
         );
         await login(driver, {
-          expectedBalance:
-            `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
+          validateBalance: false,
           waitForNonEvmAccounts: false,
         });
 
+        const homePage = new HomePage(driver);
+        await homePage.checkExpectedBalanceIsDisplayed(
+          `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
+          'ETH',
+          15000,
+        );
         const contractAddress =
           await contractRegistry.getContractAddress(erc721);
         const testDappPage = new TestDappPage(driver);
@@ -170,7 +179,6 @@ describe('Ledger Hardware', function (this: Suite) {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        const homePage = new HomePage(driver);
         await homePage.goToActivityList();
         const activityListPage = new ActivityListPage(driver);
         await activityListPage.checkTransactionActivityByText(
@@ -211,11 +219,16 @@ describe('Ledger Hardware', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
         );
         await login(driver, {
-          expectedBalance:
-            `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
+          validateBalance: false,
           waitForNonEvmAccounts: false,
         });
 
+        const homePage = new HomePage(driver);
+        await homePage.checkExpectedBalanceIsDisplayed(
+          `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
+          'ETH',
+          15000,
+        );
         const contractAddress =
           await contractRegistry.getContractAddress(erc721);
         const testDappPage = new TestDappPage(driver);
@@ -235,7 +248,6 @@ describe('Ledger Hardware', function (this: Suite) {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        const homePage = new HomePage(driver);
         const activityListPage = new ActivityListPage(driver);
         await homePage.goToActivityList();
         await activityListPage.checkTransactionActivityByText(

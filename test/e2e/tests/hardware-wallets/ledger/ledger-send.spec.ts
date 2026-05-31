@@ -30,7 +30,7 @@ describe('Ledger Hardware', function (this: Suite) {
           waitForNonEvmAccounts: false,
         });
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed('1.21M', 'ETH', 15000 );
+        await homePage.checkExpectedBalanceIsDisplayed('1.21M', 'ETH', 15000);
         await sendRedesignedTransactionToAddress({
           driver,
           recipientAddress: RECIPIENT,
@@ -64,7 +64,7 @@ describe('Ledger Hardware', function (this: Suite) {
           waitForNonEvmAccounts: false,
         });
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed('1.21M', 'ETH', 15000 );
+        await homePage.checkExpectedBalanceIsDisplayed('1.21M', 'ETH', 15000);
         await sendRedesignedTransactionToAddress({
           driver,
           recipientAddress: RECIPIENT,
