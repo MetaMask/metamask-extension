@@ -1,25 +1,54 @@
 import React from 'react';
 import classnames from 'clsx';
 import { AvatarToken, AvatarTokenSize } from '@metamask/design-system-react';
-import type {
-  ActivityListItemAvatarConfig,
-  ResolvedActivityToken,
-} from './activity-list-item-avatar.types';
+import { getAssetImageUrl } from '../../../../shared/lib/asset-utils';
 
-type ActivityListItemAvatarProps = {
-  config: ActivityListItemAvatarConfig;
+export type ActivityListItemAvatarTokens = readonly (string | undefined)[];
+
+// TODO: Audit API responses for missing token metadata
+const fallbackAssetId = 'eip155:1/slip44:60'; // ETH
+
+const sanitizeTokens = (tokens: ActivityListItemAvatarTokens): string[] =>
+  tokens.filter((token): token is string => Boolean(token));
+
+const getTokenAvatarData = (assetId: string) => {
+  try {
+    const [chainId, assetTypeWithReference] = assetId.split('/');
+    const [assetType, assetReference] = (assetTypeWithReference ?? '').split(':');
+
+    if (!chainId) {
+      throw new Error('Invalid asset id');
+    }
+
+    const displayName =
+      assetReference || 'Token';
+
+    return {
+      name: displayName,
+      src: getAssetImageUrl(
+        assetId as `${string}:${string}/${string}:${string}`,
+        chainId as `${string}:${string}`,
+      ),
+    };
+  } catch {
+    return {
+      name: 'Token',
+      src: undefined,
+    };
+  }
 };
 
 const ActivityTokenAvatar = ({
-  token,
+  assetId,
   className,
-}: Readonly<{ token: ResolvedActivityToken; className?: string }>) => {
+}: Readonly<{ assetId: string; className?: string }>) => {
+  const { name, src } = getTokenAvatarData(assetId);
+
   return (
     <AvatarToken
       size={AvatarTokenSize.Md}
-      name={token.symbol}
-      fallbackText={token.fallbackName.charAt(0)}
-      src={token.imageUrl}
+      name={name}
+      src={src}
       className={classnames(className)}
       data-testid="activity-list-item-avatar-token"
     />
@@ -29,7 +58,7 @@ const ActivityTokenAvatar = ({
 const ActivityDualTokenAvatar = ({
   from,
   to,
-}: Readonly<{ from: ResolvedActivityToken; to: ResolvedActivityToken }>) => {
+}: Readonly<{ from: string; to: string }>) => {
   return (
     <div
       className="activity-list-item-avatar-dual"
@@ -37,13 +66,13 @@ const ActivityDualTokenAvatar = ({
     >
       <div className="activity-list-item-avatar-dual__half activity-list-item-avatar-dual__half--left">
         <ActivityTokenAvatar
-          token={from}
+          assetId={from}
           className="activity-list-item-avatar-dual__token bg-transparent"
         />
       </div>
       <div className="activity-list-item-avatar-dual__half activity-list-item-avatar-dual__half--right">
         <ActivityTokenAvatar
-          token={to}
+          assetId={to}
           className="activity-list-item-avatar-dual__token bg-transparent"
         />
       </div>
@@ -51,12 +80,21 @@ const ActivityDualTokenAvatar = ({
   );
 };
 
-export const ActivityListItemAvatar = ({
-  config,
-}: Readonly<ActivityListItemAvatarProps>) => {
-  if (config.variant === 'dual') {
-    return <ActivityDualTokenAvatar from={config.from} to={config.to} />;
+export const ActivityListItemAvatar = (
+  props: Readonly<{ tokens: ActivityListItemAvatarTokens }>,
+) => {
+  const tokens = sanitizeTokens(props.tokens);
+
+  if (tokens.length === 0) {
+    // If no token metadata at all, intentionally show a fallback avatar
+    // We should probably consider a generic fallback image instead of ETH
+    return <ActivityTokenAvatar assetId={fallbackAssetId} />;
   }
 
-  return <ActivityTokenAvatar token={config.token} />;
+  if (tokens.length > 1) {
+    const [from, to] = tokens;
+    return <ActivityDualTokenAvatar from={from} to={to} />;
+  }
+
+  return <ActivityTokenAvatar assetId={tokens[0]} />;
 };

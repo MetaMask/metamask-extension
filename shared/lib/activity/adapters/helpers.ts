@@ -1,9 +1,9 @@
 import type { V1TransactionByHashResponse } from '@metamask/core-backend';
+import type { CaipChainId } from '@metamask/utils';
 import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import type { CaipChainId } from '@metamask/utils';
 import type { Hex } from 'viem';
 import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../constants/bridge';
 import { CHAIN_IDS } from '../../../constants/network';
@@ -36,7 +36,7 @@ const resolveAssetId = (
     return toAssetId(contractAddress, chainId);
   }
 
-  if (transferType === 'normal') {
+  if (transferType === 'normal' || transferType === 'internal') {
     return toAssetId(NATIVE_TOKEN_ADDRESS, chainId);
   }
 
@@ -170,12 +170,16 @@ export function getTokenAmountFromTransfer(
     return undefined;
   }
 
-  const assetId = transfer
-    ? resolveAssetId(chainId, {
-        contractAddress: transfer.contractAddress,
-        transferType: transfer.transferType,
-      })
-    : undefined;
+  const isNftTransfer =
+    transfer?.transferType === 'erc721' || transfer?.transferType === 'erc1155';
+
+  const assetId =
+    transfer && !isNftTransfer
+      ? resolveAssetId(chainId, {
+          contractAddress: transfer.contractAddress,
+          transferType: transfer.transferType,
+        })
+      : undefined;
 
   return {
     direction,

@@ -5,14 +5,23 @@ import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../shared/constants/multichain/networks';
 import { getLabelKeys } from '../../../../shared/lib/activity/label-keys';
 import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
-import { ActivityListItemAvatar } from '../../../components/app/activity-list-item-avatar';
+import { ActivityAvatar } from '../../../components/app/activity-list-item-avatar';
+import type { ActivityListItemAvatarTokens } from '../../../components/app/activity-list-item-avatar';
 import { ChainBadge } from '../../../components/app/chain-badge/chain-badge';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import type { TokenAmount } from '../../../../shared/lib/activity/types';
 import type { ActivityRowProps } from '../types';
-import { getActivityListItemAvatarConfig } from '../resolve-activity-avatar-config';
 import { useFormatFiatAmount } from './useFormatFiatAmount';
 import { useFormatTokenAmount } from './useFormatTokenAmount';
+
+type ActivityContent = {
+  title: string;
+  subtitle?: string;
+  primaryToken?: TokenAmount;
+  secondaryToken?: TokenAmount;
+  avatarTokens: ActivityListItemAvatarTokens;
+};
 
 function getChainDisplay(activity: ActivityRowProps['data']) {
   const { namespace } = parseCaipChainId(activity.chainId);
@@ -38,7 +47,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
     status: activity.status,
   });
 
-  const getContent = () => {
+  const getContent = (): ActivityContent => {
     switch (activity.type) {
       case 'send':
       case 'receive': {
@@ -47,12 +56,12 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         const symbol = token?.symbol ?? '';
 
         return {
+          avatarTokens: [token?.assetId],
           title: t(labelKeys.title.key, [symbol]),
           subtitle: t(labelKeys.description.key, [
             shortenAddress(address) || t('unknown'),
           ]),
           primaryToken: token,
-          secondaryToken: undefined,
         };
       }
       // Source and destination in title
@@ -62,6 +71,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         const destinationSymbol = destinationToken?.symbol ?? '';
 
         return {
+          avatarTokens: [sourceToken?.assetId, destinationToken?.assetId],
           title: t(labelKeys.title.key, [sourceSymbol, destinationSymbol]),
           subtitle: t(labelKeys.description.key),
           primaryToken: destinationToken,
@@ -78,6 +88,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
             : t(labelKeys.description.key, [destinationSymbol ?? '']);
 
         return {
+          avatarTokens: [sourceToken?.assetId, destinationToken?.assetId],
           title: t(labelKeys.title.key, [sourceSymbol ?? '']),
           subtitle,
           primaryToken: destinationToken,
@@ -95,6 +106,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
             : t(labelKeys.description.key, [destinationSymbol ?? '']);
 
         return {
+          avatarTokens: [sourceToken?.assetId, destinationToken?.assetId],
           title: t(labelKeys.title.key, [destinationSymbol ?? '']),
           subtitle,
           primaryToken: destinationToken,
@@ -106,6 +118,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         const symbol = destinationToken?.symbol ?? '';
 
         return {
+          avatarTokens: [destinationToken?.assetId ?? sourceToken?.assetId],
           title: t(labelKeys.title.key, [symbol]),
           subtitle: t(labelKeys.description.key, [symbol]),
           primaryToken: destinationToken,
@@ -118,115 +131,115 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         const symbol = destinationToken?.symbol ?? sourceToken?.symbol ?? '';
 
         return {
+          avatarTokens: destinationToken
+            ? [sourceToken?.assetId, destinationToken?.assetId]
+            : [sourceToken?.assetId],
           title: t(labelKeys.title.key, [symbol]),
-          subtitle: undefined,
           primaryToken: destinationToken ?? sourceToken,
-          secondaryToken: destinationToken ? sourceToken : undefined,
+          ...(destinationToken ? { secondaryToken: sourceToken } : {}),
         };
       }
-      case 'swapIncomplete':
+      case 'swapIncomplete': {
+        const { sourceToken } = activity.data;
+
         return {
-          title: t(labelKeys.title.key, [
-            activity.data.sourceToken?.symbol ?? '',
-          ]),
+          avatarTokens: [sourceToken?.assetId],
+          title: t(labelKeys.title.key, [sourceToken?.symbol ?? '']),
           subtitle: t(labelKeys.description.key),
-          primaryToken: activity.data.sourceToken,
-          secondaryToken: undefined,
+          primaryToken: sourceToken,
         };
+      }
       case 'buy':
       case 'claim':
       case 'deposit': {
-        const symbol = activity.data.token?.symbol ?? '';
+        const { token } = activity.data;
+        const symbol = token?.symbol ?? '';
 
         return {
+          avatarTokens: [token?.assetId],
           title: t(labelKeys.title.key, [symbol]),
           subtitle: t(labelKeys.description.key, [symbol]),
-          primaryToken: activity.data.token,
-          secondaryToken: undefined,
+          primaryToken: token,
         };
       }
-      case 'nftMint':
+      case 'nftMint': {
+        const { token } = activity.data;
+
         return {
-          title: t(labelKeys.title.key, [activity.data.token?.symbol ?? 'NFT']),
+          avatarTokens: [token?.assetId],
+          title: t(labelKeys.title.key, [token?.symbol ?? 'NFT']),
           subtitle: t(labelKeys.description.key),
-          primaryToken: activity.data.token,
-          secondaryToken: undefined,
+          primaryToken: token,
         };
-      case 'contractInteraction':
+      }
+      case 'contractInteraction': {
+        const { token, to } = activity.data;
+
         return {
+          avatarTokens: [token?.assetId],
           title: t(labelKeys.title.key),
           subtitle: t(labelKeys.description.key, [
-            shortenAddress(activity.data.to) || 'Contract',
+            shortenAddress(to) || 'Contract',
           ]),
-          primaryToken: activity.data.token,
-          secondaryToken: undefined,
+          primaryToken: token,
         };
+      }
       case 'approveSpendingCap':
       case 'increaseSpendingCap':
-      case 'revokeSpendingCap':
+      case 'revokeSpendingCap': {
+        const { token } = activity.data;
+
         return {
+          avatarTokens: [token?.assetId],
           title: t(labelKeys.title.key),
-          subtitle: t(labelKeys.description.key, [
-            activity.data.token?.symbol ?? '',
-          ]),
-          primaryToken: activity.data.token?.amount
-            ? activity.data.token
-            : undefined,
-          secondaryToken: undefined,
+          subtitle: t(labelKeys.description.key, [token?.symbol ?? '']),
+          primaryToken: token?.amount ? token : undefined,
         };
-      case 'lendingDeposit':
+      }
+      case 'lendingDeposit': {
+        const { sourceToken, destinationToken } = activity.data;
+        const primaryToken = destinationToken ?? sourceToken;
+
         return {
-          title: t(labelKeys.title.key),
-          subtitle: t(labelKeys.description.key),
-          primaryToken:
-            activity.data.destinationToken ?? activity.data.sourceToken,
-          secondaryToken: activity.data.destinationToken
-            ? activity.data.sourceToken
-            : undefined,
-        };
-      case 'claimMusdBonus':
-        return {
+          avatarTokens: [primaryToken?.assetId],
           title: t(labelKeys.title.key),
           subtitle: t(labelKeys.description.key),
-          primaryToken: activity.data.token,
-          secondaryToken: undefined,
+          primaryToken,
+          secondaryToken: destinationToken ? sourceToken : undefined,
         };
+      }
+      case 'claimMusdBonus': {
+        const { token } = activity.data;
+
+        return {
+          avatarTokens: [token?.assetId],
+          title: t(labelKeys.title.key),
+          subtitle: t(labelKeys.description.key),
+          primaryToken: token,
+        };
+      }
       default:
         return {
+          avatarTokens: [],
           title: t(labelKeys.title.key),
           subtitle: t(labelKeys.description.key),
-          primaryToken: undefined,
-          secondaryToken: undefined,
         };
     }
   };
 
   const content = getContent();
-  const { primaryToken, secondaryToken } = content;
-  const { chainId, networkName } = getChainDisplay(activity);
+  const { primaryToken, secondaryToken, avatarTokens } = content;
+  const { chainId } = getChainDisplay(activity);
   const fiatAmount = useFormatFiatAmount(
     activity,
     secondaryToken ? undefined : primaryToken,
     chainId,
   );
 
-  const secondaryTokenAmount = formatTokenAmount(secondaryToken, activity.type);
-  const secondaryDisplay = secondaryToken ? secondaryTokenAmount : fiatAmount;
-  const avatarConfig = getActivityListItemAvatarConfig(
-    activity,
-    primaryToken,
-    secondaryToken,
-    {
-      chainIdForImage: activity.chainId,
-      hexChainId: chainId,
-      networkName,
-    },
-  );
-
   return {
     avatar: (
       <ChainBadge chainId={chainId}>
-        <ActivityListItemAvatar config={avatarConfig} />
+        <ActivityAvatar tokens={avatarTokens} />
       </ChainBadge>
     ),
     title: (
@@ -249,6 +262,8 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         {formatTokenAmount(primaryToken, activity.type)}
       </span>
     ),
-    secondaryAmount: secondaryDisplay,
+    secondaryAmount: secondaryToken
+      ? formatTokenAmount(secondaryToken, activity.type)
+      : fiatAmount,
   };
 }

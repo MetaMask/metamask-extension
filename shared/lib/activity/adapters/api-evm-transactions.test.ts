@@ -17,6 +17,7 @@ const bscUniversalRouter = '0xca11bde05977b3631167028862be2a173976ca11';
 const bscRecipientAddress = '0xb92fe925dc43a0ecde6c8b1a2709c170ec4fff4f';
 const polygonRecipientAddress = '0x2cd071562a1688b3e9f31be39c92aa140a1acc94';
 const wethContractAddress = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
+const zeroAddress = '0x0000000000000000000000000000000000000000';
 
 describe('mapEvmTransactions', () => {
   it('maps an ERC-20 transfer sent by the account to a Send activity', () => {
@@ -240,6 +241,75 @@ describe('mapEvmTransactions', () => {
     });
   });
 
+  it('maps an exchange transaction with an internal ETH receive transfer to a Swap activity with native destination assetId', () => {
+    const aggregatorAddress = '0x0a2854fbbd9b3ef66f17d47284e7f899b9509330';
+    const transaction = {
+      hash: '0x80b974d5834e1047a78332369de3d4b988f0237ff8a418c9464217e55c542f2f',
+      timestamp: '2026-05-28T01:03:49.000Z',
+      chainId: Number(CHAIN_IDS.LINEA_MAINNET),
+      accountId: `eip155:59144:${subjectAddress}`,
+      methodId: '0xe9ae5c53',
+      value: '0',
+      to: subjectAddress,
+      from: subjectAddress,
+      isError: false,
+      transactionCategory: 'EXCHANGE',
+      valueTransfers: [
+        {
+          from: aggregatorAddress,
+          to: subjectAddress,
+          amount: '4894004361763',
+          decimal: 18,
+          symbol: 'ETH',
+          name: 'Ether',
+          transferType: 'internal',
+        },
+        {
+          from: subjectAddress,
+          to: aggregatorAddress,
+          amount: '10000',
+          decimal: 6,
+          contractAddress: lineaMusd,
+          symbol: 'mUSD',
+          name: 'MetaMask USD',
+          transferType: 'erc20',
+        },
+      ],
+      logs: [],
+    } as unknown as V1TransactionByHashResponse;
+
+    const item = mapApiEvmTransactions({
+      subjectAddress,
+      transaction,
+    });
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
+      type: 'swap',
+      chainId: 'eip155:59144',
+      status: 'success',
+      timestamp: 1779930229000,
+      data: {
+        hash: '0x80b974d5834e1047a78332369de3d4b988f0237ff8a418c9464217e55c542f2f',
+        sourceToken: {
+          amount: '10000',
+          decimals: 6,
+          direction: 'out',
+          assetId: toAssetId(lineaMusd, 'eip155:59144'),
+          symbol: 'mUSD',
+        },
+        destinationToken: {
+          amount: '4894004361763',
+          decimals: 18,
+          direction: 'in',
+          assetId: toAssetId('0x0000000000000000000000000000000000000000', 'eip155:59144'),
+          symbol: 'ETH',
+        },
+      },
+    });
+  });
+
   it('maps an NFT sale with received native value to a Send activity', () => {
     const nftRecipientAddress = '0x4f5243ceea96cee1da0fdb89c756d0e999439424';
     const nftBuyerAddress = '0x78c87da124bb36a914ff1c0f2d642f47870c997c';
@@ -289,6 +359,51 @@ describe('mapEvmTransactions', () => {
           amount: '1',
           direction: 'out',
           symbol: 'BAE',
+        },
+      },
+    });
+  });
+
+  it('maps an NFT mint transfer to an nftMint activity without assetId', () => {
+    const nftContractAddress = '0x239fd4b0c4db49fa8660e65b97619d43d0e0a79d';
+    const transaction = {
+      hash: '0x25805d4ae16935e6fa92add9dcee97db0127749d4244032a79489098a880210c',
+      timestamp: '2026-05-13T14:34:23.000Z',
+      chainId: Number(CHAIN_IDS.LINEA_MAINNET),
+      from: zeroAddress,
+      to: subjectAddress,
+      transactionCategory: 'TRANSFER',
+      valueTransfers: [
+        {
+          from: zeroAddress,
+          to: subjectAddress,
+          contractAddress: nftContractAddress,
+          tokenId: '1',
+          symbol: 'TDN',
+          transferType: 'erc721',
+        },
+      ],
+    } as unknown as V1TransactionByHashResponse;
+
+    const item = mapApiEvmTransactions({
+      subjectAddress,
+      transaction,
+    });
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
+      type: 'nftMint',
+      chainId: 'eip155:59144',
+      status: 'success',
+      timestamp: 1778682863000,
+      data: {
+        hash: '0x25805d4ae16935e6fa92add9dcee97db0127749d4244032a79489098a880210c',
+        from: zeroAddress,
+        to: subjectAddress,
+        token: {
+          direction: 'in',
+          symbol: 'TDN',
         },
       },
     });
