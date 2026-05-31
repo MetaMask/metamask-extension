@@ -11,6 +11,7 @@ import {
 import { validateSpeculosTestEnv } from './build-config';
 import { cleanupSpeculosEnvironment } from './cleanup';
 
+/** Lifecycle context returned by {@link startSharedSpeculos} and consumed by test suites. */
 export type SharedSpeculosContext = {
   speculos: Speculos;
   client: SpeculosClient;
@@ -23,19 +24,13 @@ export type SharedSpeculosContext = {
 
 let registeredSignalHandlers = false;
 
-/**
- * Read the device model from the SPECULOS_DEVICE env var (falls back to flex).
- * The package's `getDeviceModel` takes an explicit id, so we bridge the env var here.
- */
+/** Read the device model from SPECULOS_DEVICE (defaults to flex). */
 function getDeviceModelFromEnv(): DeviceModel {
   const id = process.env.SPECULOS_DEVICE ?? 'flex';
   return getDeviceModel(id);
 }
 
-/**
- * Ensure SPECULOS_DEVICE and SPECULOS_ELF env vars are set.
- * These are read by docker-compose.yml when running in Docker mode.
- */
+/** Set SPECULOS_DEVICE and SPECULOS_ELF env vars from the resolved device model. */
 function ensureDeviceEnv(): void {
   const model = getDeviceModelFromEnv();
   if (!process.env.SPECULOS_DEVICE) {
@@ -46,6 +41,15 @@ function ensureDeviceEnv(): void {
   }
 }
 
+/**
+ * Start a shared Speculos instance for use across multiple test cases.
+ *
+ * The instance (container or native process) is started once in a `before()`
+ * hook and reused by every `it()` block, then torn down in `after()`.
+ *
+ * @param options - Optional overrides for APDU/API ports and device config.
+ * @returns A {@link SharedSpeculosContext} with the live Speculos, client, bridge, and interaction handle.
+ */
 export async function startSharedSpeculos(
   options: {
     apduPort?: number;
@@ -111,6 +115,13 @@ export async function startSharedSpeculos(
   return ctx;
 }
 
+/**
+ * Stop a shared Speculos instance and clean up ports.
+ *
+ * Safe to call even if the instance was never started or already stopped.
+ *
+ * @param ctx - The context returned by {@link startSharedSpeculos}.
+ */
 export async function stopSharedSpeculos(
   ctx: SharedSpeculosContext,
 ): Promise<void> {

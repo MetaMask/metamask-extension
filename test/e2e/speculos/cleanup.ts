@@ -9,6 +9,7 @@ const SPECULOS_E2E_PORTS = [
   5000, // Speculos' default REST API port; used inside Docker/local defaults.
 ];
 
+/** Docker container name used for Speculos on non-Linux platforms. */
 const SPECULOS_CONTAINER_NAME = 'metamask-speculos';
 const IS_LINUX = process.platform === 'linux';
 
@@ -56,6 +57,7 @@ export async function cleanupSpeculosEnvironment(): Promise<void> {
   await timeout(2000);
 }
 
+/** Kill processes matching a command-line pattern (via pkill / taskkill). */
 function killByPattern(pattern: string): Promise<void> {
   return new Promise((resolve) => {
     const cmd = process.platform === 'win32' ? 'taskkill' : 'pkill';
@@ -67,6 +69,7 @@ function killByPattern(pattern: string): Promise<void> {
   });
 }
 
+/** Find and SIGKILL all processes listening on the given TCP port. */
 function killPort(port: number): Promise<void> {
   return new Promise((resolve, reject) => {
     const cmd = process.platform === 'win32' ? 'netstat' : 'lsof';
@@ -104,6 +107,7 @@ function killPort(port: number): Promise<void> {
   });
 }
 
+/** Execute a command with a timeout, rejecting on non-zero exit. */
 function run(cmd: string, args: string[], timeoutMs: number): Promise<void> {
   return new Promise((resolve, reject) => {
     const proc = execFile(cmd, args, { timeout: timeoutMs }, (err) => {
@@ -117,6 +121,7 @@ function run(cmd: string, args: string[], timeoutMs: number): Promise<void> {
   });
 }
 
+/** Execute a command and capture its stdout/stderr, rejecting on non-zero exit. */
 function runCapture(
   cmd: string,
   args: string[],

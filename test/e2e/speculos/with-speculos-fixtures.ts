@@ -17,6 +17,7 @@ import type { SharedSpeculosContext } from './shared-context';
 export type { SharedSpeculosContext } from './shared-context';
 export { startSharedSpeculos, stopSharedSpeculos } from './shared-context';
 
+/** Options accepted by {@link withSpeculosFixtures}. Extends the standard `withFixtures` options with Speculos-specific fields. */
 export type WithSpeculosFixturesOptions = {
   fixtures: unknown;
   title?: string;
@@ -53,6 +54,7 @@ export type WithSpeculosFixturesOptions = {
     | (string | { name: string; deployerOptions?: object })[];
 };
 
+/** Arguments passed to the test suite callback inside {@link withSpeculosFixtures}. */
 export type SpeculosFixturesTestSuiteArgs = {
   bundlerServer?: unknown;
   contractRegistry: {
@@ -96,6 +98,16 @@ function ensureDeviceEnv(): void {
   }
 }
 
+/**
+ * Run a test suite with Speculos hardware emulation and standard E2E fixtures.
+ *
+ * Wraps the base `withFixtures` helper — starts a Speculos instance (or reuses
+ * a shared one via {@link SharedSpeculosContext}), connects the APDU bridge,
+ * enables blind signing, then hands off to the test suite.
+ *
+ * @param options - Speculos-aware fixture options (see {@link WithSpeculosFixturesOptions}).
+ * @param testSuite - The test callback receiving driver, speculos client, bridge, and interaction handle.
+ */
 export async function withSpeculosFixtures(
   options: WithSpeculosFixturesOptions,
   testSuite: (args: SpeculosFixturesTestSuiteArgs) => Promise<void>,
