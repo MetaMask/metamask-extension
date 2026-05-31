@@ -129,9 +129,11 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             await contractRegistry?.getContractAddress(smartContract);
 
           await login(driver, {
-            expectedBalance: '1.21M',
+            validateBalance: false,
             waitForNonEvmAccounts: false,
           });
+          const homePage = new HomePage(driver);
+          await homePage.checkExpectedBalanceIsDisplayed('1.21M', 'ETH', 15000);
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();
@@ -145,7 +147,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
-          const homePage = new HomePage(driver);
           await homePage.goToActivityList();
           const activityList = new ActivityListPage(driver);
           await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
