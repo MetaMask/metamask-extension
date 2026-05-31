@@ -36,11 +36,9 @@ describe('Ledger Hardware', function (this: Suite) {
           '0x100000000000000000000',
         )) ?? console.error('localNodes is undefined or empty');
         await login(driver, {
-          validateBalance: false,
+          expectedBalance: '1.21M',
           waitForNonEvmAccounts: false,
         });
-        const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed('1.21M', 'ETH', 15000);
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage();
         await testDappPage.checkPageIsLoaded();
@@ -62,6 +60,7 @@ describe('Ledger Hardware', function (this: Suite) {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
+        const homePage = new HomePage(driver);
         await homePage.goToTokensTab();
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkExpectedTokenBalanceIsDisplayed('10', symbol);
@@ -97,12 +96,9 @@ describe('Ledger Hardware', function (this: Suite) {
           '0x100000000000000000000',
         )) ?? console.error('localNodes is undefined or empty');
         await login(driver, {
-          validateBalance: false,
+          expectedBalance: '1.21M',
           waitForNonEvmAccounts: false,
         });
-
-        const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed('1.21M', 'ETH', 15000);
         const contractAddress = contractRegistry.getContractAddress(erc20);
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage({
@@ -126,6 +122,7 @@ describe('Ledger Hardware', function (this: Suite) {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
+        const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
         const activityListPage = new ActivityListPage(driver);
@@ -163,11 +160,9 @@ describe('Ledger Hardware', function (this: Suite) {
           '0x100000000000000000000',
         )) ?? console.error('localNodes is undefined or empty');
         await login(driver, {
-          validateBalance: false,
+          expectedBalance: '1.21M',
           waitForNonEvmAccounts: false,
         });
-        const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed('1.21M', 'ETH', 15000);
         const contractAddress = contractRegistry.getContractAddress(erc20);
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage({
@@ -184,6 +179,7 @@ describe('Ledger Hardware', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
+        const homePage = new HomePage(driver);
         await homePage.goToActivityList();
         const activityListPage = new ActivityListPage(driver);
         await activityListPage.checkTransactionActivityByText(
@@ -222,11 +218,9 @@ describe('Ledger Hardware', function (this: Suite) {
           '0x100000000000000000000',
         )) ?? console.error('localNodes is undefined or empty');
         await login(driver, {
-          validateBalance: false,
+          expectedBalance: '1.21M',
           waitForNonEvmAccounts: false,
         });
-        const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed('1.21M', 'ETH', 15000);
         const contractAddress = contractRegistry.getContractAddress(erc20);
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage({
@@ -235,6 +229,7 @@ describe('Ledger Hardware', function (this: Suite) {
         await testDappPage.checkPageIsLoaded();
 
         const activityListPage = new ActivityListPage(driver);
+        const homePage = new HomePage(driver);
         // Increase token allowance
         await testDappPage.clickERC20IncreaseAllowanceButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);

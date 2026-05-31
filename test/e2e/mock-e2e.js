@@ -971,6 +971,27 @@ async function setupMocking(
       };
     });
 
+  // Localhost (chain 1337) native ETH — slip44:1 per nativeAssetIdentifiers in fixtures.
+  // assets-unify requests this with cacheOnly=false; extra query params are allowed by mockttp.
+  await server
+    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+    .withQuery({
+      assetIds: 'eip155:1337/slip44:1',
+      vsCurrency: 'usd',
+      includeMarketData: 'true',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        'eip155:1337/slip44:1': {
+          id: 'ethereum',
+          price: ethConversionInUsd,
+          marketCap: 382623505141,
+          pricePercentChange1d: 0,
+        },
+      },
+    }));
+
   // Native SOL + BTC v3 spot (multichain portfolio / assets unify). Without these,
   // Tron-only or default E2E flows still request these URLs but only ETH was mocked above.
   await server
