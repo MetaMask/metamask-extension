@@ -27,13 +27,9 @@ jobs:
           persist-credentials: false
 
       - name: Install zizmor
-        # The Astral install script verifies a checksum and writes the binary
-        # into $HOME/.cargo/bin. Pinned to a release tag.
-        run: |
-          curl --proto '=https' --tlsv1.2 -LsSf \
-            https://github.com/zizmorcore/zizmor/releases/download/v1.24.1/zizmor-installer.sh \
-            | sh
-          echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
+        # zizmor ships prebuilt wheels on PyPI that bundle the Rust binary.
+        # pipx keeps it in its own venv so it can't conflict with anything.
+        run: pipx install zizmor==1.24.1
 
       - name: Run zizmor
         # Gate at the strictest possible level. Any new finding (even
