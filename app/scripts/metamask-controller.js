@@ -5164,6 +5164,8 @@ export default class MetamaskController extends EventEmitter {
       const syncAndDiscoverAccounts = async () => {
         // We want to trigger a full sync of the account tree after importing a new SRP
         // because `hasAccountTreeSyncingSyncedAtLeastOnce` is already true
+        this.authenticationController.requestProfilePairing();
+        await this.authenticationController.performSignIn();
         await this.accountTreeController.syncWithUserStorage();
 
         const discoveredAccounts = await this.discoverAndCreateAccounts(id);
