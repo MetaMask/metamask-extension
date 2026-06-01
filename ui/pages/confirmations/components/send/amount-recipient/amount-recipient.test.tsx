@@ -42,6 +42,15 @@ jest.mock('../../../hooks/send/useAddressPoisoningDetection', () => ({
   })),
 }));
 
+// Stub to avoid hitting the background controller in tests that exercise the
+// real `useRecipientValidation` chain.
+jest.mock(
+  '../../../hooks/send/alerts/useFirstTimeInteractionSendAlert',
+  () => ({
+    useFirstTimeInteractionSendAlert: jest.fn(() => null),
+  }),
+);
+
 const render = (args?: Record<string, unknown>) => {
   const store = configureStore(args ?? mockState);
 

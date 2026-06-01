@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
 import { NameType } from '@metamask/name-controller';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -26,7 +26,8 @@ jest.mock('../../../../../store/actions', () => ({
 }));
 
 const MOCK_FROM = '0xFromAddress1234567890abcdef12345678';
-const MOCK_TO = '0xToAddress1234567890abcdef123456789';
+const MOCK_TO = '0xab39e6e72D7980Fe57c4D8C7b3776B95FCDE4dE6';
+const MOCK_ENS_NAME = 'vitalik.eth';
 
 describe('useFirstTimeInteractionSendAlert', () => {
   const mockT = jest.fn(
@@ -44,6 +45,7 @@ describe('useFirstTimeInteractionSendAlert', () => {
     jest.mocked(useI18nContext).mockReturnValue(mockT);
     mockUseSendContext.mockReturnValue({
       to: MOCK_TO,
+      toResolved: MOCK_TO,
       from: MOCK_FROM,
       chainId: '0x1',
     } as unknown as ReturnType<typeof useSendContext>);
@@ -59,6 +61,7 @@ describe('useFirstTimeInteractionSendAlert', () => {
   it('returns null when there is no recipient', () => {
     mockUseSendContext.mockReturnValue({
       to: undefined,
+      toResolved: undefined,
       from: MOCK_FROM,
       chainId: '0x1',
     } as unknown as ReturnType<typeof useSendContext>);
@@ -70,6 +73,7 @@ describe('useFirstTimeInteractionSendAlert', () => {
   it('returns null when there is no from address', () => {
     mockUseSendContext.mockReturnValue({
       to: MOCK_TO,
+      toResolved: MOCK_TO,
       from: undefined,
       chainId: '0x1',
     } as unknown as ReturnType<typeof useSendContext>);
@@ -194,9 +198,11 @@ describe('useFirstTimeInteractionSendAlert', () => {
     await waitForNextUpdate();
     expect(result.current).not.toBeNull();
 
+    const newRecipient = '0x111122223333444455556666777788889999aaaa';
     mockCheckFirstTimeInteraction.mockResolvedValue(false);
     mockUseSendContext.mockReturnValue({
-      to: '0xNewRecipientAddress12345678901234567',
+      to: newRecipient,
+      toResolved: newRecipient,
       from: MOCK_FROM,
       chainId: '0x1',
     } as unknown as ReturnType<typeof useSendContext>);
@@ -210,5 +216,68 @@ describe('useFirstTimeInteractionSendAlert', () => {
     }
 
     expect(result.current).toBeNull();
+  });
+
+  it('uses the resolved hex address (not the raw ENS name) for the API call', async () => {
+    mockUseSendContext.mockReturnValue({
+      to: MOCK_ENS_NAME,
+      toResolved: MOCK_TO,
+      from: MOCK_FROM,
+      chainId: '0x1',
+    } as unknown as ReturnType<typeof useSendContext>);
+    mockCheckFirstTimeInteraction.mockResolvedValue(true);
+
+    const { result, waitForNextUpdate } = renderHook(() =>
+      useFirstTimeInteractionSendAlert(),
+    );
+
+    await waitForNextUpdate();
+
+    expect(mockCheckFirstTimeInteraction).toHaveBeenCalledWith({
+      from: MOCK_FROM,
+      to: MOCK_TO,
+      chainId: 1,
+    });
+    expect(mockUseTrustSignal).toHaveBeenCalledWith(
+      MOCK_TO,
+      NameType.ETHEREUM_ADDRESS,
+      '0x1',
+    );
+    expect(result.current).not.toBeNull();
+  });
+
+  it('returns null while name resolution is pending (toResolved is not a hex address)', async () => {
+    mockUseSendContext.mockReturnValue({
+      to: MOCK_ENS_NAME,
+      toResolved: MOCK_ENS_NAME,
+      from: MOCK_FROM,
+      chainId: '0x1',
+    } as unknown as ReturnType<typeof useSendContext>);
+
+    const { result } = renderHook(() => useFirstTimeInteractionSendAlert());
+    await act(async () => {
+      // flush
+    });
+
+    expect(mockCheckFirstTimeInteraction).not.toHaveBeenCalled();
+    expect(result.current).toBeNull();
+  });
+
+  it('matches an internal account by the resolved hex address (not the ENS name)', async () => {
+    mockUseSendContext.mockReturnValue({
+      to: MOCK_ENS_NAME,
+      toResolved: MOCK_TO,
+      from: MOCK_FROM,
+      chainId: '0x1',
+    } as unknown as ReturnType<typeof useSendContext>);
+    mockUseSelector.mockReturnValue([{ address: MOCK_TO.toLowerCase() }]);
+
+    const { result } = renderHook(() => useFirstTimeInteractionSendAlert());
+    await act(async () => {
+      // flush
+    });
+
+    expect(result.current).toBeNull();
+    expect(mockCheckFirstTimeInteraction).not.toHaveBeenCalled();
   });
 });
