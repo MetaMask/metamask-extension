@@ -6,6 +6,9 @@ import process from 'node:process';
 import { join, resolve } from 'node:path';
 import {
   type Configuration,
+  type FileCacheOptions,
+  type RuleSetRule,
+  type Stats,
   webpack,
   Compiler,
   WebpackPluginInstance,
@@ -23,6 +26,36 @@ function getWebpackInstance(config: Configuration) {
   // so we just delete the watch property.
   delete config.watch;
   return webpack(config);
+}
+
+async function getWebpackWarnings(config: Configuration): Promise<string[]> {
+  const compiler = webpack(config);
+
+  try {
+    const stats = await new Promise<Stats>((resolveStats, rejectStats) => {
+      compiler.run((error, result) => {
+        if (error) {
+          rejectStats(error);
+          return;
+        }
+
+        if (!result) {
+          rejectStats(new Error('Webpack finished without returning stats.'));
+          return;
+        }
+
+        resolveStats(result);
+      });
+    });
+
+    return (stats.toJson({ all: false, warnings: true }).warnings ?? []).map(
+      (warning) => warning.message,
+    );
+  } finally {
+    await new Promise<void>((resolveClose, rejectClose) =>
+      compiler.close((error) => (error ? rejectClose(error) : resolveClose())),
+    );
+  }
 }
 
 async function withWatching<T>(
@@ -80,10 +113,19 @@ describe('webpack.config.test.ts', () => {
   let originalArgv: string[];
   let originalEnv: NodeJS.ProcessEnv;
   const originalReadFileSync = fs.readFileSync;
+  let originalExistsSync: typeof fs.existsSync;
+  const optionalRcPaths = {
+    metamaskrc: resolve(__dirname, '../../../.metamaskrc'),
+    metamaskprodrc: resolve(__dirname, '../../../.metamaskprodrc'),
+  };
+  const protobufInquireWarning =
+    'Critical dependency: the request of a dependency is an expression';
+
   before(() => {
     // cache originals before we start messing with them
     originalArgv = process.argv;
     originalEnv = process.env;
+    originalExistsSync = fs.existsSync;
   });
   after(() => {
     // restore originals for other tests
@@ -125,7 +167,28 @@ ${Object.entries(env)
     return require('../webpack.config.ts').default;
   }
 
+  function mockOptionalRcFiles({
+    metamaskrc = false,
+    metamaskprodrc = false,
+  } = {}) {
+    mock.method(
+      fs,
+      'existsSync',
+      (path: Parameters<typeof fs.existsSync>[0]) => {
+        if (path === optionalRcPaths.metamaskrc) {
+          return metamaskrc;
+        }
+        if (path === optionalRcPaths.metamaskprodrc) {
+          return metamaskprodrc;
+        }
+        return originalExistsSync(path);
+      },
+    );
+  }
+
   it('should have the correct defaults', () => {
+    mockOptionalRcFiles();
+
     const config: Configuration = getWebpackConfig();
     // check that options are valid
     const { options } = webpack(config);
@@ -145,6 +208,15 @@ ${Object.entries(env)
     assert.strictEqual(options.optimization.removeAvailableModules, false);
     assert.strictEqual(options.optimization.usedExports, false);
     assert.strictEqual(options.watch, false);
+    const cache = config.cache as FileCacheOptions;
+    const configBuildDependencies = cache.buildDependencies?.config ?? [];
+    assert.ok(
+      configBuildDependencies.every(
+        (path) =>
+          !path.endsWith('.metamaskrc') && !path.endsWith('.metamaskprodrc'),
+      ),
+      'optional rc files should not be cache dependencies when they do not exist',
+    );
 
     const runtimeChunk = options.optimization.runtimeChunk as
       | {
@@ -222,6 +294,90 @@ ${Object.entries(env)
     assert(progressPlugin, 'Progress plugin should present');
   });
 
+  it('includes existing optional rc files in cache dependencies', () => {
+    mockOptionalRcFiles({ metamaskrc: true });
+
+    const config: Configuration = getWebpackConfig();
+    const cache = config.cache as FileCacheOptions;
+    const configBuildDependencies = cache.buildDependencies?.config ?? [];
+
+    assert.ok(
+      configBuildDependencies.some((path) => path.endsWith('.metamaskrc')),
+      'existing .metamaskrc should be a cache dependency',
+    );
+    assert.ok(
+      configBuildDependencies.every(
+        (path) => !path.endsWith('.metamaskprodrc'),
+      ),
+      'missing .metamaskprodrc should not be a cache dependency',
+    );
+  });
+
+  it('suppresses the @protobufjs/inquire dynamic require warning only while it is still needed', async () => {
+    using tempDirectory = fs.mkdtempDisposableSync(
+      join(tmpdir(), 'protobuf-inquire-warning-test-'),
+    );
+    const entryPath = join(tempDirectory.path, 'entry.js');
+    fs.writeFileSync(
+      entryPath,
+      `
+const inquire = require('@protobufjs/inquire');
+inquire('long');
+`,
+    );
+
+    const config: Configuration = getWebpackConfig(['--no-progress']);
+    const protobufInquireRule = config.module?.rules?.find(
+      (rule) =>
+        rule &&
+        typeof rule === 'object' &&
+        'test' in rule &&
+        String(rule.test).includes('@protobufjs'),
+    ) as RuleSetRule | undefined;
+    assert(
+      protobufInquireRule,
+      'Expected a parser rule for @protobufjs/inquire.',
+    );
+
+    const getConfig = (name: string, rules: RuleSetRule[]): Configuration => ({
+      mode: 'development',
+      context: resolve(__dirname, '../../..'),
+      entry: entryPath,
+      output: {
+        path: join(tempDirectory.path, name),
+        filename: 'bundle.js',
+      },
+      cache: false,
+      stats: 'none',
+      infrastructureLogging: { level: 'none' },
+      resolve: {
+        modules: [join(__dirname, '../../../node_modules'), 'node_modules'],
+      },
+      module: { rules },
+    });
+
+    const warningsWithRule = await getWebpackWarnings(
+      getConfig('with-rule', [protobufInquireRule]),
+    );
+    assert.deepStrictEqual(
+      warningsWithRule.filter((warning) =>
+        warning.includes(protobufInquireWarning),
+      ),
+      [],
+      'Expected the @protobufjs/inquire parser rule to suppress the dynamic require warning.',
+    );
+
+    const warningsWithoutRule = await getWebpackWarnings(
+      getConfig('without-rule', []),
+    );
+    assert(
+      warningsWithoutRule.some((warning) =>
+        warning.includes(protobufInquireWarning),
+      ),
+      'Expected @protobufjs/inquire to still emit this warning without the workaround. If this fails, remove the parser rule.',
+    );
+  });
+
   it('should apply non-default options', () => {
     const removeUnsupportedFeatures = ['--no-lavamoat'];
     const config: Configuration = getWebpackConfig(
@@ -244,6 +400,7 @@ ${Object.entries(env)
         SEGMENT_PROD_WRITE_KEY: '-',
         GOOGLE_PROD_CLIENT_ID: '00000000000',
         APPLE_PROD_CLIENT_ID: '00000000000',
+        TELEGRAM_PROD_CLIENT_ID: '00000000000',
         METAMASK_REACT_REDUX_DEVTOOLS: 'true',
       },
     );

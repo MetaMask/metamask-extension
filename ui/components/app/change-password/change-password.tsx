@@ -34,6 +34,7 @@ import Mascot from '../../ui/mascot';
 import Spinner from '../../ui/spinner';
 import ToggleButton from '../../ui/toggle-button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { createSentryError } from '../../../../shared/lib/error';
 import {
   getPasskeyAuthMethodKey,
   startPasskeyAuthentication,
@@ -41,6 +42,7 @@ import {
   isPasskeyCeremonySilentError,
   translatePasskeyError,
 } from '../../../../shared/lib/passkey';
+import { captureException } from '../../../../shared/lib/sentry';
 import {
   ExtensionPasskeyErrorCode,
   getPasskeyErrorCode,
@@ -211,6 +213,8 @@ const ChangePassword = ({
         },
       });
     } catch (error) {
+      const errorCode = getPasskeyErrorCode(error);
+      const durationMs = Date.now() - startedAt;
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.PasswordChangeWithPasskey,
@@ -220,14 +224,30 @@ const ChangePassword = ({
           // eslint-disable-next-line @typescript-eslint/naming-convention
           passkey_renewal_enabled: isPasskeyRenewalEnabled,
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          duration_ms: Date.now() - startedAt,
-          reason: getPasskeyErrorCode(error),
+          duration_ms: durationMs,
+          reason: errorCode,
         },
       });
 
+      captureException(
+        createSentryError(
+          'Change password with passkey verification failed',
+          error,
+        ),
+        {
+          extra: {
+            isPasskeyRenewalEnabled,
+            errorCode,
+            durationMs,
+          },
+        },
+      );
+
+      // if passkey renewal is not enabled, it's either passkey verification failed or password change failed
       if (!isPasskeyRenewalEnabled) {
         throw error;
       }
+
       const passkeyCode = getPasskeyControllerErrorCode(error);
       // strictly treat vault key renewal failure as a password change success
       if (passkeyCode !== ExtensionPasskeyErrorCode.VaultKeyRenewalFailed) {
@@ -350,6 +370,12 @@ const ChangePassword = ({
           error,
         );
       } else {
+        captureException(
+          createSentryError(
+            'Passkey verification during change password failed',
+            error,
+          ),
+        );
         toast.error(
           <ToastContent
             title={

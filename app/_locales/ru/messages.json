@@ -37,9 +37,6 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "Ошибка"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "Недействительный QR-код. Отсканируйте QR-код синхронизации аппаратного кошелька."
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "Сканировать QR-код"
   },
@@ -1178,15 +1175,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "Вам нужно будет подтвердить 2 транзакции в Вашем аппаратном кошельке:"
   },
-  "bridgeCreateSolanaAccount": {
-    "message": "Создать счет Solana"
-  },
-  "bridgeCreateSolanaAccountDescription": {
-    "message": "Для выполнения свопа в сеть Solana понадобится счет и принимающий адрес."
-  },
-  "bridgeCreateSolanaAccountTitle": {
-    "message": "Сначала вам понадобится счет Solana."
-  },
   "bridgeDetailsTitle": {
     "message": "Сведения о мосте",
     "description": "Title for the modal showing details about a bridge transaction."
@@ -1461,9 +1449,6 @@
   },
   "bridgeSendLoading": {
     "message": "Отправка из исходного блокчейна"
-  },
-  "bridgeSolanaAccountCreated": {
-    "message": "Создан счет Solana"
   },
   "bridgeStatusComplete": {
     "message": "Завершено",
@@ -2285,12 +2270,6 @@
   },
   "dappConnections": {
     "message": "Соединения dapp"
-  },
-  "dappScanMaliciousTitle": {
-    "message": "Обнаружен вредоносный веб-сайт"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "Этот веб-сайт помечен как потенциально опасный. Раскрытие вашей секретной фразы для восстановления может поставить под угрозу ваши средства."
   },
   "dappSuggested": {
     "message": "Рекомендовано сайтом"
@@ -5218,10 +5197,6 @@
   "onboardingMetametricsTitle": {
     "message": "Помогите нам улучшить MetaMask"
   },
-  "onboardingOptionIcon": {
-    "message": "Значок $1",
-    "description": "$1 is the icon name"
-  },
   "onboardingSignInWith": {
     "message": "Войти с помощью $1",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -7465,11 +7440,11 @@
   },
   "securitySocialLoginEnabledDescription": {
     "message": "Используйте свой логин $1 и пароль MetaMask для восстановления своего счета и секретных фраз для восстановления.",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySocialLoginLabel": {
     "message": "ВОССТАНОВЛЕНИЕ $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySrpLabel": {
     "message": "СЕКРЕТНЫЕ ФРАЗЫ ДЛЯ ВОССТАНОВЛЕНИЯ"

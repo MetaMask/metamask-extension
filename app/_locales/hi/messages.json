@@ -37,9 +37,6 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "गड़बड़ी"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "QR कोड ग़लत है। कृपया hardware wallet के सिंक QR कोड को स्कैन करें।"
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "QR कोड स्कैन करें"
   },
@@ -1172,15 +1169,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "आपको अपने हार्डवेयर वॉलेट पर 2 ट्रांसेक्शन कन्फर्म करनी होगी:"
   },
-  "bridgeCreateSolanaAccount": {
-    "message": "Solana अकाउंट बनाएं"
-  },
-  "bridgeCreateSolanaAccountDescription": {
-    "message": "Solana नेटवर्क पर स्वैप करने के लिए, आपको एक अकाउंट और प्राप्त करने वाली एड्रेस की आवश्यकता होगी।"
-  },
-  "bridgeCreateSolanaAccountTitle": {
-    "message": "सबसे पहले आपको Solana अकाउंट की आवश्यकता होगी।"
-  },
   "bridgeDetailsTitle": {
     "message": "ब्रिज विवरण",
     "description": "Title for the modal showing details about a bridge transaction."
@@ -1455,9 +1443,6 @@
   },
   "bridgeSendLoading": {
     "message": "सोर्स चेन से भेज रहे हैं"
-  },
-  "bridgeSolanaAccountCreated": {
-    "message": "Solana अकाउंट बनाया गया"
   },
   "bridgeStatusComplete": {
     "message": "पूरा हुआ",
@@ -2279,12 +2264,6 @@
   },
   "dappConnections": {
     "message": "Dapp कनेक्शन्स"
-  },
-  "dappScanMaliciousTitle": {
-    "message": "बुरी नीयत वाली वेबसाइट का पता चला"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "इस वेबसाइट को खतरनाक माना गया है। अगर आप अपना सीक्रेट रिकवरी फ्रेज़ बताते हैं, तो आप अपने फंड्स को खतरे में डाल सकते हैं।"
   },
   "dappSuggested": {
     "message": "सुझावित साइट"
@@ -5212,10 +5191,6 @@
   "onboardingMetametricsTitle": {
     "message": "MetaMask को बेहतर बनाने में मदद करें"
   },
-  "onboardingOptionIcon": {
-    "message": "$1 आइकन",
-    "description": "$1 is the icon name"
-  },
   "onboardingSignInWith": {
     "message": "$1 के साथ साइन इन करें",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -7459,11 +7434,11 @@
   },
   "securitySocialLoginEnabledDescription": {
     "message": "अपने अकाउंट और सीक्रेट रिकवरी फ्रेज़ को रिकवर करने के लिए अपने $1 लॉगिन और MetaMask पासवर्ड का उपयोग करें।",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySocialLoginLabel": {
     "message": "$1 रिकवरी",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySrpLabel": {
     "message": "सीक्रेट रिकवरी फ्रेज़"

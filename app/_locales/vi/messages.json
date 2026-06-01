@@ -37,9 +37,6 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "Lỗi"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "Mã QR không hợp lệ. Vui lòng quét mã QR đồng bộ của ví cứng."
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "Quét mã QR"
   },
@@ -1178,15 +1175,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "Bạn sẽ cần xác nhận 2 giao dịch trên ví cứng của mình:"
   },
-  "bridgeCreateSolanaAccount": {
-    "message": "Tạo tài khoản Solana"
-  },
-  "bridgeCreateSolanaAccountDescription": {
-    "message": "Để hoán đổi sang mạng Solana, bạn cần có tài khoản và địa chỉ nhận."
-  },
-  "bridgeCreateSolanaAccountTitle": {
-    "message": "Bạn sẽ cần có tài khoản Solana trước."
-  },
   "bridgeDetailsTitle": {
     "message": "Chi tiết cầu nối",
     "description": "Title for the modal showing details about a bridge transaction."
@@ -1461,9 +1449,6 @@
   },
   "bridgeSendLoading": {
     "message": "Đang gửi từ chuỗi nguồn"
-  },
-  "bridgeSolanaAccountCreated": {
-    "message": "Đã tạo tài khoản Solana"
   },
   "bridgeStatusComplete": {
     "message": "Hoàn tất",
@@ -2285,12 +2270,6 @@
   },
   "dappConnections": {
     "message": "Kết nối Dapp"
-  },
-  "dappScanMaliciousTitle": {
-    "message": "Phát hiện trang web độc hại"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "Trang web này được đánh dấu là có khả năng nguy hiểm. Nếu bạn tiết lộ Cụm từ khôi phục bí mật, bạn có thể gặp rủi ro về tiền bạc."
   },
   "dappSuggested": {
     "message": "Trang web đề xuất"
@@ -5218,10 +5197,6 @@
   "onboardingMetametricsTitle": {
     "message": "Giúp cải thiện MetaMask"
   },
-  "onboardingOptionIcon": {
-    "message": "Biểu tượng $1",
-    "description": "$1 is the icon name"
-  },
   "onboardingSignInWith": {
     "message": "Đăng nhập bằng $1",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -7469,11 +7444,11 @@
   },
   "securitySocialLoginEnabledDescription": {
     "message": "Sử dụng đăng nhập $1 và mật khẩu MetaMask của bạn để khôi phục tài khoản và Cụm từ khôi phục bí mật.",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySocialLoginLabel": {
     "message": "KHÔI PHỤC $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySrpLabel": {
     "message": "CỤM TỪ KHÔI PHỤC BÍ MẬT"

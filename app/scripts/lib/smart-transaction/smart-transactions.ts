@@ -41,7 +41,11 @@ import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import { isLegacyTransaction } from '../../../../shared/lib/transaction.utils';
 import { MessengerClientFlatState } from '../../messenger-client-init/controller-list';
 import { getTransactionById } from '../transaction/util';
-import { getClientForTransactionMetadata, sanitizeOrigin } from './utils';
+import {
+  getClientForTransactionMetadata,
+  getClientVersionForTransactionMetadata,
+  sanitizeOrigin,
+} from './utils';
 
 const namespace = 'SmartTransactions';
 
@@ -133,6 +137,7 @@ class SmartTransactionHook {
       // runtime, so bridge the duplicate package types at this boundary.
       txType: transactionMeta.type as SmartTransactionTxType,
       client: getClientForTransactionMetadata(),
+      clientVersion: getClientVersionForTransactionMetadata(),
       origin: sanitizeOrigin(transactionMeta.origin),
     };
   }
