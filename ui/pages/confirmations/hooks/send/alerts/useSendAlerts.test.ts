@@ -115,4 +115,44 @@ describe('useSendAlerts', () => {
     expect(result.current.hasUnacknowledgedAlerts).toBe(false);
     expect(result.current.alerts).toStrictEqual([]);
   });
+
+  it('flags late-arriving alerts as unacknowledged after a prior acknowledgment', () => {
+    mockUseTokenContractSendAlert.mockReturnValue(TOKEN_CONTRACT_ALERT);
+
+    const { result, rerender } = renderHook(() => useSendAlerts());
+
+    expect(result.current.hasUnacknowledgedAlerts).toBe(true);
+
+    act(() => {
+      result.current.acknowledgeAlerts();
+    });
+
+    expect(result.current.hasUnacknowledgedAlerts).toBe(false);
+
+    mockUseFirstTimeInteractionSendAlert.mockReturnValue(FIRST_TIME_ALERT);
+    rerender();
+
+    expect(result.current.alerts).toStrictEqual([
+      TOKEN_CONTRACT_ALERT,
+      FIRST_TIME_ALERT,
+    ]);
+    expect(result.current.hasUnacknowledgedAlerts).toBe(true);
+  });
+
+  it('remains acknowledged when the same alerts persist across rerenders', () => {
+    mockUseTokenContractSendAlert.mockReturnValue(TOKEN_CONTRACT_ALERT);
+    mockUseFirstTimeInteractionSendAlert.mockReturnValue(FIRST_TIME_ALERT);
+
+    const { result, rerender } = renderHook(() => useSendAlerts());
+
+    act(() => {
+      result.current.acknowledgeAlerts();
+    });
+
+    expect(result.current.hasUnacknowledgedAlerts).toBe(false);
+
+    rerender();
+
+    expect(result.current.hasUnacknowledgedAlerts).toBe(false);
+  });
 });

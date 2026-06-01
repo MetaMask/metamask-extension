@@ -12,7 +12,7 @@ export function useSendAlerts(): {
   const { to } = useSendContext();
   const tokenContractAlert = useTokenContractSendAlert();
   const firstTimeAlert = useFirstTimeInteractionSendAlert();
-  const [acknowledged, setAcknowledged] = useState(false);
+  const [acknowledgedKeys, setAcknowledgedKeys] = useState<string[]>([]);
 
   const alerts = useMemo(() => {
     const result: SendAlert[] = [];
@@ -26,14 +26,16 @@ export function useSendAlerts(): {
   }, [tokenContractAlert, firstTimeAlert]);
 
   useEffect(() => {
-    setAcknowledged(false);
+    setAcknowledgedKeys([]);
   }, [to]);
 
   const acknowledgeAlerts = useCallback(() => {
-    setAcknowledged(true);
-  }, []);
+    setAcknowledgedKeys(alerts.map((alert) => alert.key));
+  }, [alerts]);
 
-  const hasUnacknowledgedAlerts = alerts.length > 0 && !acknowledged;
+  const hasUnacknowledgedAlerts = alerts.some(
+    (alert) => !acknowledgedKeys.includes(alert.key),
+  );
 
   return {
     alerts,
