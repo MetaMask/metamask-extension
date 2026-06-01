@@ -28,7 +28,7 @@ const headerHeight = 40;
 
 export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
   const t = useI18nContext();
-  const { formatLongDate } = useFormatters();
+  const { formatMediumDate } = useFormatters();
   const scrollContainerRef = useScrollContainer();
   const [networks, setNetworks] = useState<string[]>([]);
   const [selectedItem, setSelectedItem] = useState<ActivityListItem | null>(
@@ -105,7 +105,7 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
           }
 
           if (row.type === 'date-header') {
-            return <SectionHeader label={formatLongDate(row.date)} />;
+            return <SectionHeader label={formatMediumDate(row.date)} />;
           }
 
           return (

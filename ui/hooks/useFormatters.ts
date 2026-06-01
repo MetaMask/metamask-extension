@@ -124,8 +124,8 @@ function formatDateTime(
   }).format(new Date(timestamp));
 }
 
-// Format a timestamp as a localized long date string (e.g. "Mar 15, 2024").
-function formatLongDate(
+// Format a timestamp as a localized medium date string (e.g. "Mar 15, 2024").
+function formatMediumDate(
   locale: string,
   timestamp: string | number,
   options?: Intl.DateTimeFormatOptions,
@@ -163,9 +163,9 @@ export function useFormatters() {
        */
       formatDateTime: formatDateTime.bind(null, { locale }),
       /**
-       * Format a timestamp as a localized long date string (e.g. "Mar 15, 2024").
+       * Format a timestamp as a localized medium date string (e.g. "Mar 15, 2024").
        */
-      formatLongDate: formatLongDate.bind(null, locale),
+      formatMediumDate: formatMediumDate.bind(null, locale),
     };
   }, [locale]);
 }
