@@ -78,24 +78,6 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           secondaryToken: sourceToken,
         };
       }
-      // Token in title; source and destination in subtitle; converted token in avatar
-      case 'convert': {
-        const { sourceToken, destinationToken } = activity.data;
-        const sourceSymbol = sourceToken?.symbol;
-        const destinationSymbol = destinationToken?.symbol;
-        const subtitle =
-          sourceSymbol && destinationSymbol
-            ? `${sourceSymbol} → ${destinationSymbol}`
-            : t(labelKeys.description.key, [destinationSymbol ?? '']);
-
-        return {
-          avatarTokens: [destinationToken?.assetId],
-          title: t(labelKeys.title.key, [destinationSymbol ?? '']),
-          subtitle,
-          primaryToken: destinationToken,
-          secondaryToken: sourceToken,
-        };
-      }
       // Token in title; source and destination in subtitle; token being wrapped in avatar
       case 'wrap': {
         const { sourceToken, destinationToken } = activity.data;
@@ -114,7 +96,8 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           secondaryToken: sourceToken,
         };
       }
-      // Token in title; source and destination in subtitle; unwrapped token in avatar
+      // Token in title; source and destination in subtitle; destination token in avatar
+      case 'convert':
       case 'unwrap': {
         const { sourceToken, destinationToken } = activity.data;
         const sourceSymbol = sourceToken?.symbol;
