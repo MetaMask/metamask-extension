@@ -70,4 +70,8 @@ corepack enable
 yarn
 
 # 6. Run the production build command with 4GB of heap space
-NODE_OPTIONS='--max-old-space-size=4096' yarn build prod
+if [ "${1:-}" = "--flask" ]; then
+  NODE_OPTIONS='--max-old-space-size=4096' yarn build --build-type flask prod
+else
+  NODE_OPTIONS='--max-old-space-size=4096' yarn build prod
+fi
