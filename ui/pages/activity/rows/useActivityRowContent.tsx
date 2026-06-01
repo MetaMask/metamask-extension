@@ -78,7 +78,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           secondaryToken: sourceToken,
         };
       }
-      // Token in title; source and destination in subtitle; two tokens in avatar
+      // Token in title; source and destination in subtitle; converted token in avatar
       case 'convert': {
         const { sourceToken, destinationToken } = activity.data;
         const sourceSymbol = sourceToken?.symbol;
@@ -89,7 +89,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
             : t(labelKeys.description.key, [destinationSymbol ?? '']);
 
         return {
-          avatarTokens: [sourceToken?.assetId, destinationToken?.assetId],
+          avatarTokens: [destinationToken?.assetId],
           title: t(labelKeys.title.key, [destinationSymbol ?? '']),
           subtitle,
           primaryToken: destinationToken,
