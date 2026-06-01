@@ -3,12 +3,12 @@ import { useSelector } from 'react-redux';
 import classnames from 'clsx';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { CaipChainId, Hex, isCaipChainId } from '@metamask/utils';
-import { Skeleton } from '@metamask/design-system-react';
 import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
   BoxFlexWrap,
+  Skeleton,
 } from '@metamask/design-system-react';
 import {
   getMultichainNativeTokenBalance,
