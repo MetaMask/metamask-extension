@@ -8,10 +8,28 @@ on:
   merge_group:
 
 jobs:
+  is-fork-pull-request:
+    name: Determine whether this is a pull request from a fork
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request_target' }}
+    outputs:
+      IS_FORK: ${{ steps.is-fork.outputs.IS_FORK }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Determine whether this PR is from a fork
+        id: is-fork
+        run: echo "IS_FORK=$(gh pr view --json isCrossRepository --jq '.isCrossRepository' "${PR_NUMBER}" )" >> "$GITHUB_OUTPUT"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.number }}
+
   check-template-and-add-labels:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-    if: ${{ github.event_name != 'merge_group' }} # Skip this step for merge_group events
+    needs: [is-fork-pull-request]
+    if: ${{ always() && github.event_name != 'merge_group' && (github.event_name == 'issues' || (github.event_name == 'pull_request_target' && needs.is-fork-pull-request.outputs.IS_FORK == 'false')) }}
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
@@ -19,8 +37,18 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
+      - name: Get access token
+        id: get-token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            issues: write
+            members: read
+            pull_requests: write
+
       - name: Check template and add labels
         id: check-template-and-add-labels
         env:
-          LABEL_TOKEN: ${{ secrets.LABEL_TOKEN }}
+          LABEL_TOKEN: ${{ steps.get-token.outputs.token }}
         run: npm run check-template-and-add-labels
