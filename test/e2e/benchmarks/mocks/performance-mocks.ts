@@ -707,36 +707,16 @@ export async function mockBenchmarkEndpoints(
       .thenCallback(delayedResponse(400, SUBSCRIPTION_ELIGIBILITY)),
   );
 
-  // eth_call: return a JSON-RPC revert so ethers throws CALL_EXCEPTION and
-  // falls back to individual eth_getBalance calls (the only code path that
-  // triggers the getNativeBalancesFallback with a real balance).
-  endpoints.push(
-    await server
-      .forPost(/^https:\/\/mainnet\.infura\.io/u)
-      .withJsonBodyIncluding({ method: 'eth_call' })
-      .asPriority(MOCK_PRIORITIES.HIGH_PRIORITY)
-      .always()
-      .thenCallback(
-        delayedResponse(200, {
-          statusCode: 200,
-          json: {
-            jsonrpc: '2.0',
-            id: 1,
-            error: { code: -32000, message: 'execution reverted' },
-          },
-        }),
-      ),
-  );
-
-  // eth_getBalance: return 1 ETH so hasBalance stays true. Delay must be
-  // under safelyExecuteWithTimeout's 500 ms default — 200 ms is safe.
+  // Return a non-zero balance so the "Fund your wallet" empty state never
+  // appears during the benchmark — the test wallet has 0 ETH but the empty
+  // state is not what we are benchmarking here.
   endpoints.push(
     await server
       .forPost(/^https:\/\/mainnet\.infura\.io/u)
       .withJsonBodyIncluding({ method: 'eth_getBalance' })
       .asPriority(MOCK_PRIORITIES.HIGH_PRIORITY)
       .always()
-      .thenCallback(delayedResponse(200, jsonRpcResponse('0xde0b6b3a7640000'))),
+      .thenCallback(delayedResponse(800, jsonRpcResponse('0xde0b6b3a7640000'))), // 1 ETH.
   );
 
   endpoints.push(
