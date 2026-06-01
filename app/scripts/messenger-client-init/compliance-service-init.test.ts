@@ -42,6 +42,7 @@ describe('ComplianceServiceInit', () => {
     expect(result.persistedStateKey).toBeNull();
     expect(result.memStateKey).toBeNull();
     expect(ComplianceServiceMock).toHaveBeenCalledWith({
+      apiUrl: process.env.COMPLIANCE_API_URL,
       messenger: request.controllerMessenger,
       fetch: expect.any(Function),
       env: 'production',
@@ -60,6 +61,7 @@ describe('ComplianceServiceInit', () => {
     ComplianceServiceInit(request);
 
     expect(ComplianceServiceMock).toHaveBeenCalledWith({
+      apiUrl: process.env.COMPLIANCE_API_URL,
       messenger: request.controllerMessenger,
       fetch: expect.any(Function),
       env: 'development',
