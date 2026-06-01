@@ -37,20 +37,8 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "Lỗi"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "Mã QR không hợp lệ. Vui lòng quét mã QR đồng bộ của ví cứng."
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "Quét mã QR"
-  },
-  "QRHardwareWalletSteps1Description": {
-    "message": "Bạn có thể chọn các đối tác hỗ trợ mã QR chính thức từ danh sách bên dưới."
-  },
-  "QRHardwareWalletSteps1Title": {
-    "message": "Kết nối với ví cứng QR của bạn"
-  },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
   },
   "SrpListHideAccounts": {
     "message": "Ẩn $1 tài khoản",
@@ -561,9 +549,6 @@
   },
   "airDropPatternTitle": {
     "message": "Mô hình tặng thưởng"
-  },
-  "airgapVault": {
-    "message": "AirGap Vault"
   },
   "alert": {
     "message": "Cảnh báo"
@@ -1618,9 +1603,6 @@
     "message": "Mua thêm $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyNow": {
-    "message": "Mua ngay"
-  },
   "buyTabOpenedToastDescription": {
     "message": "Chúng tôi đã mở một tab mới để bạn mua.",
     "description": "Toast description shown after opening the buy flow in a new tab"
@@ -2138,9 +2120,6 @@
   "convertTokenToNFTExistDescription": {
     "message": "Chúng tôi phát hiện tài sản này đã được thêm dưới dạng một NFT. Bạn có muốn xóa nó khỏi danh sách token của mình không?"
   },
-  "coolWallet": {
-    "message": "CoolWallet"
-  },
   "copiedExclamation": {
     "message": "Đã sao chép."
   },
@@ -2304,12 +2283,6 @@
   "dappConnections": {
     "message": "Kết nối Dapp"
   },
-  "dappScanMaliciousTitle": {
-    "message": "Phát hiện trang web độc hại"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "Trang web này được đánh dấu là có khả năng nguy hiểm. Nếu bạn tiết lộ Cụm từ khôi phục bí mật, bạn có thể gặp rủi ro về tiền bạc."
-  },
   "dappSuggested": {
     "message": "Trang web đề xuất"
   },
@@ -2358,9 +2331,6 @@
   },
   "dateCreated": {
     "message": "Ngày tạo"
-  },
-  "dcent": {
-    "message": "D'Cent"
   },
   "debitCreditPurchaseOptions": {
     "message": "Tùy chọn mua bằng thẻ ghi nợ hoặc thẻ tín dụng"
@@ -2686,9 +2656,6 @@
   "downloadAppTitle": {
     "message": "Quét mã QR và tải ứng dụng xuống"
   },
-  "downloadGoogleChrome": {
-    "message": "Tải Google Chrome xuống"
-  },
   "downloadMetaMaskMobileDescription": {
     "message": "Face ID trên ứng dụng của chúng tôi cho phép bạn đăng nhập ngay cả khi quên mật khẩu. Mang MetaMask theo bạn mọi lúc mọi nơi!"
   },
@@ -2697,9 +2664,6 @@
   },
   "downloadMetaMaskMobileTitle": {
     "message": "Tải ứng dụng di động của chúng tôi"
-  },
-  "downloadNow": {
-    "message": "Tải xuống ngay"
   },
   "downloadStateLogs": {
     "message": "Tải nhật ký trạng thái xuống"
@@ -3464,9 +3428,6 @@
   "hardwareWalletSubmissionWarningTitle": {
     "message": "Trước khi nhấn Gửi:"
   },
-  "hardwareWalletSupportLinkConversion": {
-    "message": "nhấp vào đây"
-  },
   "hardwareWalletTitleEthAppNotOpen": {
     "message": "Mở ứng dụng Ethereum"
   },
@@ -3476,12 +3437,6 @@
   },
   "hardwareWallets": {
     "message": "Kết nối ví cứng"
-  },
-  "hardwareWalletsInfo": {
-    "message": "Các thành phần tích hợp của ví cứng sử dụng lệnh gọi API đến máy chủ bên ngoài, máy chủ này có thể xem địa chỉ IP của bạn và địa chỉ hợp đồng thông minh mà bạn tương tác."
-  },
-  "hardwareWalletsMsg": {
-    "message": "Chọn một ví cứng mà bạn muốn sử dụng với MetaMask."
   },
   "helpAndSettings": {
     "message": "Trợ giúp và cài đặt"
@@ -3847,9 +3802,6 @@
     "message": "Tập tin JSON",
     "description": "format for importing an account"
   },
-  "keycardShell": {
-    "message": "Keycard Shell"
-  },
   "keyringAccountName": {
     "message": "Tên tài khoản"
   },
@@ -3902,9 +3854,6 @@
   },
   "learnMoreAboutPrivacy": {
     "message": "Tìm hiểu thêm về các cách thức bảo mật tốt nhất."
-  },
-  "learnMoreKeystone": {
-    "message": "Tìm hiểu thêm"
   },
   "learnMoreUpperCase": {
     "message": "Tìm hiểu thêm"
@@ -3973,17 +3922,8 @@
   "ledgerFirefoxNotSupportedTitle": {
     "message": "Firefox không được hỗ trợ"
   },
-  "ledgerLiveApp": {
-    "message": "Ứng dụng Ledger Live"
-  },
   "ledgerLocked": {
     "message": "Không thể kết nối với thiết bị Ledger. Vui lòng đảm bảo bạn đã mở khóa thiết bị và mở ứng dụng Ethereum."
-  },
-  "ledgerMultipleDevicesUnsupportedInfoDescription": {
-    "message": "Để kết nối thiết bị mới, hãy ngắt kết nối thiết bị trước đó."
-  },
-  "ledgerMultipleDevicesUnsupportedInfoTitle": {
-    "message": "Bạn chỉ có thể kết nối một thiết bị Ledger tại một thời điểm"
   },
   "ledgerTimeout": {
     "message": "Ledger Live mất quá nhiều thời gian để phản hồi hoặc đã hết thời gian chờ kết nối. Hãy đảm bảo bạn đã mở ứng dụng Ledger Live và đã mở khóa thiết bị."
@@ -5268,10 +5208,6 @@
   },
   "onboardingMetametricsTitle": {
     "message": "Giúp cải thiện MetaMask"
-  },
-  "onboardingOptionIcon": {
-    "message": "Biểu tượng $1",
-    "description": "$1 is the icon name"
   },
   "onboardingSignInWith": {
     "message": "Đăng nhập bằng $1",
@@ -7520,11 +7456,11 @@
   },
   "securitySocialLoginEnabledDescription": {
     "message": "Sử dụng đăng nhập $1 và mật khẩu MetaMask của bạn để khôi phục tài khoản và Cụm từ khôi phục bí mật.",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySocialLoginLabel": {
     "message": "KHÔI PHỤC $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySrpLabel": {
     "message": "CỤM TỪ KHÔI PHỤC BÍ MẬT"
@@ -8977,34 +8913,6 @@
   },
   "statusNotConnected": {
     "message": "Chưa kết nối"
-  },
-  "step1LatticeWallet": {
-    "message": "Kết nối với Lattice1"
-  },
-  "step1LatticeWalletMsg": {
-    "message": "Bạn có thể kết nối MetaMask với Lattice1 sau khi thiết bị đã được thiết lập và trực tuyến. Mở khóa thiết bị và chuẩn bị sẵn ID Thiết Bị.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step1LedgerWallet": {
-    "message": "Tải về ứng dụng Ledger"
-  },
-  "step1LedgerWalletMsg": {
-    "message": "Tải về, thiết lập và nhập mật khẩu của bạn để mở khóa $1.",
-    "description": "$1 represents the `ledgerLiveApp` localization value"
-  },
-  "step1TrezorWallet": {
-    "message": "Kết nối với Trezor"
-  },
-  "step1TrezorWalletMsg": {
-    "message": "Cắm trực tiếp Trezor vào máy tính của bạn và mở khóa. Đảm bảo bạn sử dụng đúng cụm từ mật khẩu.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step2LedgerWallet": {
-    "message": "Kết nối với Ledger"
-  },
-  "step2LedgerWalletMsg": {
-    "message": "Cắm trực tiếp Ledger vào máy tính của bạn, sau đó mở khóa và mở ứng dụng Ethereum.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "stillConnectingTo": {
     "message": "Vẫn đang kết nối với $1...",

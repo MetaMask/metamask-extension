@@ -37,20 +37,8 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "Hata"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "Geçersiz QR kodu. Lütfen donanım cüzdanının senkronizasyon QR kodunu tarayın."
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "QR kodunu tara"
-  },
-  "QRHardwareWalletSteps1Description": {
-    "message": "Resmi olarak QR kod destekleyen ortakların listesinden aşağıda seçim yapabilirsiniz."
-  },
-  "QRHardwareWalletSteps1Title": {
-    "message": "QR donanım cüzdanınızı bağlayın"
-  },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
   },
   "SrpListHideAccounts": {
     "message": "$1 hesabı gizle",
@@ -525,9 +513,6 @@
   },
   "airDropPatternTitle": {
     "message": "Airdrop modeli"
-  },
-  "airgapVault": {
-    "message": "AirGap Vault"
   },
   "alert": {
     "message": "Uyarı"
@@ -1582,9 +1567,6 @@
     "message": "Daha fazla $1 satın al",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyNow": {
-    "message": "Şimdi satın al"
-  },
   "buyTabOpenedToastDescription": {
     "message": "Satın alma işleminiz için yeni bir sekme açtık.",
     "description": "Toast description shown after opening the buy flow in a new tab"
@@ -2102,9 +2084,6 @@
   "convertTokenToNFTExistDescription": {
     "message": "Bu varlığın bir NFT olarak eklendiğini tespit ettik. Token listenizden çıkarmak ister misiniz?"
   },
-  "coolWallet": {
-    "message": "CoolWallet"
-  },
   "copiedExclamation": {
     "message": "Kopyalandı."
   },
@@ -2268,12 +2247,6 @@
   "dappConnections": {
     "message": "Dapp Bağlantıları"
   },
-  "dappScanMaliciousTitle": {
-    "message": "Kötü amaçlı web sitesi algılandı"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "Bu web sitesi potansiyel tehlike olarak işaretlenmiş. Gizli Kurtarma İfadenizi açığa çıkarırsanız paranızı riske atabilirsiniz."
-  },
   "dappSuggested": {
     "message": "Önerilen site"
   },
@@ -2322,9 +2295,6 @@
   },
   "dateCreated": {
     "message": "Oluşturulma tarihi"
-  },
-  "dcent": {
-    "message": "D'Cent"
   },
   "debitCreditPurchaseOptions": {
     "message": "Banka kartı veya kredi kartı ile satın alma seçenekleri"
@@ -2650,9 +2620,6 @@
   "downloadAppTitle": {
     "message": "QR kodunu tarayın ve uygulamayı indirin"
   },
-  "downloadGoogleChrome": {
-    "message": "Google Chrome'u indir"
-  },
   "downloadMetaMaskMobileDescription": {
     "message": "Face ID ile şifrenizi unutsanız bile uygulamamıza giriş yapabilirsiniz. MetaMask'i gittiğiniz her yere yanınızda götürün!"
   },
@@ -2661,9 +2628,6 @@
   },
   "downloadMetaMaskMobileTitle": {
     "message": "Mobil uygulamamızı edinin"
-  },
-  "downloadNow": {
-    "message": "Şimdi indir"
   },
   "downloadStateLogs": {
     "message": "Durum Günlüklerini İndir"
@@ -3428,9 +3392,6 @@
   "hardwareWalletSubmissionWarningTitle": {
     "message": "Gönder düğmesine tıklamadan önce:"
   },
-  "hardwareWalletSupportLinkConversion": {
-    "message": "buraya tıklayın"
-  },
   "hardwareWalletTitleEthAppNotOpen": {
     "message": "Ethereum uygulamasını aç"
   },
@@ -3440,12 +3401,6 @@
   },
   "hardwareWallets": {
     "message": "Bir donanım cüzdanı bağlayın"
-  },
-  "hardwareWalletsInfo": {
-    "message": "Donanım cüzdanı entegrasyonları, IP adresinizi ve etkileşimde bulunduğunuz akıllı sözleşme adreslerini görebilen harici sunucular için API aramalarını kullanır."
-  },
-  "hardwareWalletsMsg": {
-    "message": "MetaMask ile kullanmak istediğiniz donanım cüzdanını seçin."
   },
   "helpAndSettings": {
     "message": "Yardım ve ayarlar"
@@ -3811,9 +3766,6 @@
     "message": "JSON Dosyası",
     "description": "format for importing an account"
   },
-  "keycardShell": {
-    "message": "Keycard Shell"
-  },
   "keyringAccountName": {
     "message": "Hesap adı"
   },
@@ -3866,9 +3818,6 @@
   },
   "learnMoreAboutPrivacy": {
     "message": "En iyi gizlilik uygulamaları hakkında daha fazla bilgi edinin."
-  },
-  "learnMoreKeystone": {
-    "message": "Daha fazla bilgi edin"
   },
   "learnMoreUpperCase": {
     "message": "Daha fazla bilgi edin"
@@ -3937,17 +3886,8 @@
   "ledgerFirefoxNotSupportedTitle": {
     "message": "Firefox Desteklenmiyor"
   },
-  "ledgerLiveApp": {
-    "message": "Ledger Live Uygulaması"
-  },
   "ledgerLocked": {
     "message": "Ledger cihazına bağlanılamıyor. Lütfen cihazınızın kilidinin açık ve Ethereum uygulamasının açık olduğundan emin olun."
-  },
-  "ledgerMultipleDevicesUnsupportedInfoDescription": {
-    "message": "Yeni bir cihaz bağlamak için önceki cihazın bağlantısını kesin."
-  },
-  "ledgerMultipleDevicesUnsupportedInfoTitle": {
-    "message": "Aynı anda yalnızca bir Ledger bağlayabilirsiniz"
   },
   "ledgerTimeout": {
     "message": "Ledger Live'ın yanıt vermesi çok uzun sürdü ya da bağlantı zaman aşımına uğradı. Ledger Live uygulamasının açık olduğundan ve cihazınızın kilidinin açık olduğundan emin olun."
@@ -5232,10 +5172,6 @@
   },
   "onboardingMetametricsTitle": {
     "message": "MetaMask'in iyileştirilmesine yardımcı olun"
-  },
-  "onboardingOptionIcon": {
-    "message": "$1 simgesi",
-    "description": "$1 is the icon name"
   },
   "onboardingSignInWith": {
     "message": "$1 ile giriş yap",
@@ -7484,11 +7420,11 @@
   },
   "securitySocialLoginEnabledDescription": {
     "message": "$1 oturumunuzu ve MetaMask şifrenizi kullanarak hesabınızı ve Gizli Kurtarma İfadelerini kurtarabilirsiniz.",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySocialLoginLabel": {
     "message": "$1 KURTARMA",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySrpLabel": {
     "message": "GİZLİ KURTARMA İFADELERİ"
@@ -8941,34 +8877,6 @@
   },
   "statusNotConnected": {
     "message": "Bağlanmadı"
-  },
-  "step1LatticeWallet": {
-    "message": "Lattice1'inizi bağlayın"
-  },
-  "step1LatticeWalletMsg": {
-    "message": "Kurulduktan ve çevrimiçi olduktan sonra MetaMask'i Lattice1 cihazınıza bağlayabilirsiniz. Cihazınızın kilidini açın ve Cihaz Kimlliğinizi hazırlayın.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step1LedgerWallet": {
-    "message": "Ledger uygulamasını indir"
-  },
-  "step1LedgerWalletMsg": {
-    "message": "$1 kilidini açmak için indirin, kurun ve şifrenizi girin.",
-    "description": "$1 represents the `ledgerLiveApp` localization value"
-  },
-  "step1TrezorWallet": {
-    "message": "Trezor'unuzu bağlayın"
-  },
-  "step1TrezorWalletMsg": {
-    "message": "Cüzdanınızı doğrudan bilgisayara bağlayın ve kilidini açın. Doğru parolayı kullandığınızdan emin olun.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step2LedgerWallet": {
-    "message": "Ledger'ınızı bağlayın"
-  },
-  "step2LedgerWalletMsg": {
-    "message": "Ledger'ınızı doğrudan bilgisayara bağlayın, ardından kilidini açın ve Ethereum uygulamasını açın.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "stillConnectingTo": {
     "message": "Halen $1 ağına bağlanılıyor...",

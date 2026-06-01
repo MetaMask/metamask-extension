@@ -37,20 +37,8 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "오류"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "잘못된 QR 코드입니다. 하드웨어 지갑의 동기화 QR 코드를 스캔하세요."
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "QR 코드 스캔"
-  },
-  "QRHardwareWalletSteps1Description": {
-    "message": "아래의 QR 코드 공식 지원 협력업체 목록에서 선택할 수 있습니다."
-  },
-  "QRHardwareWalletSteps1Title": {
-    "message": "QR 하드웨어 지갑을 연결하세요"
-  },
-  "QRHardwareWalletSteps2Description": {
-    "message": "N그레이브 제로"
   },
   "SrpListHideAccounts": {
     "message": "계정 $1개 숨기기",
@@ -561,9 +549,6 @@
   },
   "airDropPatternTitle": {
     "message": "에어드롭 패턴"
-  },
-  "airgapVault": {
-    "message": "에어갭 볼트"
   },
   "alert": {
     "message": "경고"
@@ -1618,9 +1603,6 @@
     "message": "$1 추가 구매",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyNow": {
-    "message": "지금 구매"
-  },
   "buyTabOpenedToastDescription": {
     "message": "구매를 위해 새 탭이 열렸습니다.",
     "description": "Toast description shown after opening the buy flow in a new tab"
@@ -2138,9 +2120,6 @@
   "convertTokenToNFTExistDescription": {
     "message": "이 자산이 NFT로 추가되었습니다. 이를 토큰 목록에서 제거할까요?"
   },
-  "coolWallet": {
-    "message": "CoolWallet"
-  },
   "copiedExclamation": {
     "message": "복사 완료."
   },
@@ -2304,12 +2283,6 @@
   "dappConnections": {
     "message": "디앱 연결"
   },
-  "dappScanMaliciousTitle": {
-    "message": "악성 웹사이트 감지됨"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "이 사이트는 위험할 수 있는 사이트로 표시되었습니다. 비밀복구구문을 공개하면 자산이 탈취될 수 있습니다."
-  },
   "dappSuggested": {
     "message": "사이트 제안"
   },
@@ -2358,9 +2331,6 @@
   },
   "dateCreated": {
     "message": "생성일"
-  },
-  "dcent": {
-    "message": "D'Cent"
   },
   "debitCreditPurchaseOptions": {
     "message": "직불카드 또는 신용카드 매수 옵션"
@@ -2686,9 +2656,6 @@
   "downloadAppTitle": {
     "message": "QR 코드를 스캔하고 앱을 다운로드하세요"
   },
-  "downloadGoogleChrome": {
-    "message": "Google Chrome 다운로드"
-  },
   "downloadMetaMaskMobileDescription": {
     "message": "비밀번호를 잊어버려도 앱의 Face ID로 로그인할 수 있습니다. MetaMask를 어디서든 사용하세요!"
   },
@@ -2697,9 +2664,6 @@
   },
   "downloadMetaMaskMobileTitle": {
     "message": "모바일 앱 받기"
-  },
-  "downloadNow": {
-    "message": "지금 다운로드"
   },
   "downloadStateLogs": {
     "message": "상태 로그 다운로드"
@@ -3464,9 +3428,6 @@
   "hardwareWalletSubmissionWarningTitle": {
     "message": "제출을 클릭하기 전:"
   },
-  "hardwareWalletSupportLinkConversion": {
-    "message": "여기를 클릭하세요"
-  },
   "hardwareWalletTitleEthAppNotOpen": {
     "message": "이더리움 앱 열기"
   },
@@ -3476,12 +3437,6 @@
   },
   "hardwareWallets": {
     "message": "하드웨어 지갑 연결"
-  },
-  "hardwareWalletsInfo": {
-    "message": "하드웨어 지갑을 통합하면 외부 서버에 API 호출을 사용하며, 이 서버는 사용자의 IP 주소와 사용자와 인터렉션하는 스마트 계약의 주소를 볼 수 있습니다."
-  },
-  "hardwareWalletsMsg": {
-    "message": "MetaMask와 함께 사용할 하드웨어 지갑을 선택하세요."
   },
   "helpAndSettings": {
     "message": "도움말 및 설정"
@@ -3847,9 +3802,6 @@
     "message": "JSON 파일",
     "description": "format for importing an account"
   },
-  "keycardShell": {
-    "message": "Keycard Shell"
-  },
   "keyringAccountName": {
     "message": "계정 이름"
   },
@@ -3902,9 +3854,6 @@
   },
   "learnMoreAboutPrivacy": {
     "message": "개인정보 보호 모범 사례에 대해 자세히 알아보세요."
-  },
-  "learnMoreKeystone": {
-    "message": "자세히 알아보기"
   },
   "learnMoreUpperCase": {
     "message": "더 보기"
@@ -3973,17 +3922,8 @@
   "ledgerFirefoxNotSupportedTitle": {
     "message": "Firefox 지원되지 않음"
   },
-  "ledgerLiveApp": {
-    "message": "Ledger Live 앱"
-  },
   "ledgerLocked": {
     "message": "Ledger 장치에 연결할 수 없습니다. 장치의 잠금이 해제되어 있고 이더리움 앱이 열려 있는지 확인하세요."
-  },
-  "ledgerMultipleDevicesUnsupportedInfoDescription": {
-    "message": "새 장치를 연결하려면 이전 장치의 연결을 해제하세요."
-  },
-  "ledgerMultipleDevicesUnsupportedInfoTitle": {
-    "message": "한 번에 하나의 Ledger만 연결할 수 있습니다"
   },
   "ledgerTimeout": {
     "message": "Ledger Live의 응답 시간이 너무 길거나 연결 시간을 초과했습니다. Ledger Live 앱이 열려 있고 장치의 잠금이 해제되어 있는지 확인하세요."
@@ -5268,10 +5208,6 @@
   },
   "onboardingMetametricsTitle": {
     "message": "MetaMask 개선에 도움을 주세요"
-  },
-  "onboardingOptionIcon": {
-    "message": "$1 아이콘",
-    "description": "$1 is the icon name"
   },
   "onboardingSignInWith": {
     "message": "$1(으)로 로그인",
@@ -7520,11 +7456,11 @@
   },
   "securitySocialLoginEnabledDescription": {
     "message": "$1 로그인과 MetaMask 비밀번호를 사용하여 계정과 비밀복구구문을 복구하세요.",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySocialLoginLabel": {
     "message": "$1 복구",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySrpLabel": {
     "message": "비밀복구구문"
@@ -8977,34 +8913,6 @@
   },
   "statusNotConnected": {
     "message": "연결되지 않음"
-  },
-  "step1LatticeWallet": {
-    "message": "Lattice1을 연결하세요."
-  },
-  "step1LatticeWalletMsg": {
-    "message": "Lattice1이 장치 설정을 마치고 온라인 상태가 되면 MetaMask를 연결할 수 있습니다. 장치의 잠금을 해제하고 장치 ID를 준비하세요.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step1LedgerWallet": {
-    "message": "Ledger 앱 다운로드"
-  },
-  "step1LedgerWalletMsg": {
-    "message": "$1의 잠금을 해제하려면 다운로드, 설정 및 비밀번호를 입력하세요.",
-    "description": "$1 represents the `ledgerLiveApp` localization value"
-  },
-  "step1TrezorWallet": {
-    "message": "Trezor 지갑 연결"
-  },
-  "step1TrezorWalletMsg": {
-    "message": "Trezor 지갑을 컴퓨터에 바로 연결하세요. 반드시 올바른 비밀구문을 사용하세요.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step2LedgerWallet": {
-    "message": "Ledger 지갑 연결"
-  },
-  "step2LedgerWalletMsg": {
-    "message": "지갑을 컴퓨터에 바로 연결하고 잠금 해제한 후 이더리움 앱을 여세요..",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "stillConnectingTo": {
     "message": "$1에 연결 중...",

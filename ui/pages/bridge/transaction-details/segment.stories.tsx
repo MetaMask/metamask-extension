@@ -1,12 +1,7 @@
 import React, { useEffect } from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-import {
-  BlockSize,
-  Display,
-  FlexDirection,
-} from '../../../helpers/constants/design-system';
 import Segment from './segment';
-import { Box } from '../../../components/component-library';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { StatusTypes } from '@metamask/bridge-controller';
 
 export default {
@@ -34,10 +29,9 @@ export const DefaultStory: StoryFn<typeof Segment> = () => {
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
+      className="flex w-full"
+      flexDirection={BoxFlexDirection.Column}
       gap={1}
-      width={BlockSize.Full}
     >
       <Segment type={typeIndex} />
     </Box>

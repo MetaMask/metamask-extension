@@ -88,7 +88,7 @@ import {
   type EndTraceRequest,
   type TraceCallback,
 } from '../../../shared/lib/trace';
-import { ENVIRONMENT } from '../../../development/build/constants';
+import { ENVIRONMENT } from '../../../shared/constants/build';
 import { KeyringType } from '../../../shared/constants/keyring';
 import type { captureException } from '../../../shared/lib/sentry';
 import type { FlattenedBackgroundStateProxy } from '../../../shared/types';

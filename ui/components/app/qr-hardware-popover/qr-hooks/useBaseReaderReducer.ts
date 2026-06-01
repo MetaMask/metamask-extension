@@ -4,6 +4,7 @@ import {
   getInitialState,
   ActionType,
 } from '../base-reader-reducer';
+import type { ScanErrorClassification } from '../qr-utils/qr-utils';
 
 /**
  * Wraps the BaseReader reducer and provides typed dispatch helpers so callers
@@ -46,6 +47,11 @@ export function useBaseReaderReducer() {
     () => dispatch({ type: ActionType.ClearError }),
     [],
   );
+  const setScanError = useCallback(
+    (scanError: ScanErrorClassification) =>
+      dispatch({ type: ActionType.SetScanError, payload: scanError }),
+    [],
+  );
   const setScanProgress = useCallback(
     (progress: number) =>
       dispatch({ type: ActionType.SetScanProgress, payload: progress }),
@@ -69,6 +75,7 @@ export function useBaseReaderReducer() {
     setAccessingCamera,
     setError,
     clearError,
+    setScanError,
     setScanProgress,
     setPermissionActionLoading,
     reset,
