@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "13.34.0",
+  "version": "13.35.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -297,7 +297,8 @@
     "@metamask/permission-controller@npm:^12.2.0": "^13.0.0",
     "@metamask/permission-controller@npm:^12.2.1": "^13.0.0",
     "@metamask/permission-controller@npm:^12.3.0": "^13.0.0",
-    "@metamask/transaction-controller": "patch:@metamask/transaction-controller@npm%3A66.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-66.0.0-23fe4d7dfe.patch"
+    "@metamask/transaction-controller": "patch:@metamask/transaction-controller@npm%3A66.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-66.0.0-23fe4d7dfe.patch",
+    "@metamask/transaction-pay-controller@npm:^22.6.0": "patch:@metamask/transaction-pay-controller@npm%3A22.6.0#~/.yarn/patches/@metamask-transaction-pay-controller-npm-22.6.0-ecc6df0372.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -334,8 +335,8 @@
     "@metamask/address-book-controller": "^7.1.2",
     "@metamask/announcement-controller": "^8.0.0",
     "@metamask/approval-controller": "^9.0.0",
-    "@metamask/assets-controller": "^8.1.0",
-    "@metamask/assets-controllers": "^108.1.0",
+    "@metamask/assets-controller": "^8.2.0",
+    "@metamask/assets-controllers": "^108.3.0",
     "@metamask/base-controller": "^9.0.1",
     "@metamask/bitcoin-wallet-snap": "^1.11.0",
     "@metamask/bridge-controller": "^72.0.0",
@@ -380,7 +381,6 @@
     "@metamask/keyring-api": "^23.1.0",
     "@metamask/keyring-controller": "^25.4.0",
     "@metamask/keyring-internal-api": "^11.0.1",
-    "@metamask/keyring-internal-snap-client": "^10.0.3",
     "@metamask/keyring-snap-client": "^9.0.2",
     "@metamask/keyring-utils": "^3.2.0",
     "@metamask/logging-controller": "^8.0.0",
@@ -438,6 +438,7 @@
     "@metamask/tron-wallet-snap": "^1.25.6",
     "@metamask/user-operation-controller": "^41.2.0",
     "@metamask/utils": "^11.11.0",
+    "@metamask/wallet": "^1.0.0",
     "@mui/material": "^5.18.0",
     "@mui/x-date-pickers": "^7.29.4",
     "@ngraveio/bc-ur": "^1.1.13",
@@ -556,7 +557,7 @@
     "@metamask/auto-changelog": "^5.3.1",
     "@metamask/browser-playground": "0.7.2",
     "@metamask/build-utils": "^3.0.0",
-    "@metamask/client-mcp-core": "^0.4.0",
+    "@metamask/client-mcp-core": "0.5.0",
     "@metamask/design-system-shared": "^0.17.0",
     "@metamask/eslint-config": "^13.0.0",
     "@metamask/eslint-config-jest": "^13.0.0",
@@ -808,7 +809,7 @@
     "web-vitals": "^4.2.4",
     "webextension-polyfill": "^0.8.0",
     "webpack": "^5.104.1",
-    "webpack-bundle-analyzer": "^5.3.0",
+    "webpack-bundle-analyzer": "patch:webpack-bundle-analyzer@npm%3A5.3.0#~/.yarn/patches/webpack-bundle-analyzer-npm-5.3.0-946883e2fa.patch",
     "webpack-cli": "^6.0.1",
     "webpack-dev-server": "^5.2.4",
     "ws": "^8.20.1",
