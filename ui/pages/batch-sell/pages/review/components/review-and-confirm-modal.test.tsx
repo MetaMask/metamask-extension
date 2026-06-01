@@ -3,7 +3,10 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import type { CaipAssetType } from '@metamask/utils';
 import type { BatchSellQuotesConfig, BatchSellQuotesResults } from '../types';
-import { buildBatchSellAsset } from '../../../../../../test/data/batch-sell';
+import {
+  buildBatchSellAsset,
+  buildReceivedAsset,
+} from '../../../../../../test/data/batch-sell';
 import useBatchSellSubmitQuotes from '../hooks/useBatchSellSubmitQuotes';
 import { ReviewAndConfirmModal } from './review-and-confirm-modal';
 
@@ -112,10 +115,10 @@ const defaultProps = {
   open: true,
   onClose: jest.fn(),
   sendAssetsConfig: makeSendAssetsConfig(),
-  receivedAsset: {
-    id: 'eip155:1/erc20:0xUSDC' as CaipAssetType,
+  receivedAsset: buildReceivedAsset({
+    assetId: 'eip155:1/erc20:0xUSDC' as CaipAssetType,
     symbol: 'USDC',
-  },
+  }),
   totalReceivedAmount: 100,
   minimumReceivedAmount: 95,
   totalNetworkFee: '0.01',

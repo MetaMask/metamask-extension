@@ -21,6 +21,7 @@ import type { BatchSellQuotesConfig } from '../types';
 import {
   noValidationErrors,
   buildBatchSellAsset,
+  buildReceivedAsset,
   mockUseSelectorPassthrough,
   BATCH_SELL_CHAIN_ID,
 } from '../../../../../../test/data/batch-sell';
@@ -138,10 +139,8 @@ const sendAssetsConfig: BatchSellQuotesConfig['sendAssetsConfig'] = {
   },
 };
 
-const receivedAsset: BatchSellQuotesConfig['receivedAsset'] = {
-  id: RECEIVE_ASSET_ID,
-  symbol: 'USDC',
-};
+const receivedAsset: BatchSellQuotesConfig['receivedAsset'] =
+  buildReceivedAsset({ assetId: RECEIVE_ASSET_ID });
 
 function renderDefault(
   options: {

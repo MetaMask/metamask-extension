@@ -18,8 +18,8 @@ import {
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
 import { getIsBatchSellEnabled } from '../../selectors/batch-sell/feature-flags';
-import { BatchSellSelectPage } from './pages/select';
-import { BatchSellReviewPage } from './pages/review';
+import { BatchSellSelectPage } from './pages/select/batch-sell-select-page';
+import { BatchSellReviewPage } from './pages/review/batch-sell-review-page';
 import { BatchSellInfoModalProvider } from './providers/batch-sell-info-modal-provider';
 import { BatchSellSelectionProvider } from './providers/batch-sell-selection-provider';
 
