@@ -4049,18 +4049,6 @@
         "define": true
       }
     },
-    "@metamask/eip-5792-middleware>@metamask/transaction-controller>bignumber.js": {
-      "globals": {
-        "crypto": true,
-        "define": true
-      }
-    },
-    "@metamask/gator-permissions-controller>@metamask/transaction-controller>bignumber.js": {
-      "globals": {
-        "crypto": true,
-        "define": true
-      }
-    },
     "@metamask/transaction-pay-controller>bignumber.js": {
       "globals": {
         "crypto": true,
