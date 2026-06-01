@@ -838,7 +838,6 @@
       "resolve-url-loader>es6-iterator>es5-ext": false,
       "ws>bufferutil": false,
       "ws>utf-8-validate": false,
-      "@storybook/react-webpack5>@storybook/preset-react-webpack>@pmmmwh/react-refresh-webpack-plugin>core-js-pure": false,
       "eth-lattice-keyring>gridplus-sdk>secp256k1": false,
       "eslint-import-resolver-typescript>unrs-resolver": false,
       "@sentry/cli#2.56.0": true,
