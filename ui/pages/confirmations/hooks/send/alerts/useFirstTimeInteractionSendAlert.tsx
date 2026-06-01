@@ -47,10 +47,7 @@ export function useFirstTimeInteractionSendAlert(): SendAlert | null {
   const isTrustSignalLoading =
     trustSignalState === TrustSignalDisplayState.Loading;
   const isFirstPartyContract = Boolean(
-    getExperience(
-      (resolvedAddress ?? '0x') as Hex,
-      (chainId ?? '0x') as Hex,
-    ),
+    getExperience((resolvedAddress ?? '0x') as Hex, (chainId ?? '0x') as Hex),
   );
 
   const shouldSkip =
