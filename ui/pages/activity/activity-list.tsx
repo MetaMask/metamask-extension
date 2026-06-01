@@ -47,7 +47,7 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
   );
 
   const groupedItems = useMemo(() => {
-    const items = dedupeItems(evmItems, nonEvmItems, localItems);
+    const items = dedupeItems(localItems, evmItems, nonEvmItems);
 
     return groupActivityListItems(items);
   }, [evmItems, localItems, nonEvmItems]);
