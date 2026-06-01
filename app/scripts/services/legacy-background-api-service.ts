@@ -48,6 +48,7 @@ import {
   Caip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
 import { SnapId } from '@metamask/snaps-sdk';
+import { SnapAccountServiceGetLegacySnapKeyringAction } from '@metamask/snap-account-service';
 import {
   convertEnglishWordlistIndicesToCodepoints,
   isPublicEndpointUrl,
@@ -65,7 +66,6 @@ import { getAccountsBySnapId } from '../lib/snap-keyring';
 import { PreferencesControllerSetPasswordForgottenAction } from '../controllers/preferences-controller-method-action-types';
 import { getSnapKeyring } from '../lib/snap-keyring/utils/getSnapKeyring';
 import { LegacyBackgroundApiServiceMethodActions } from './legacy-background-api-service-method-action-types';
-import { SnapAccountServiceGetLegacySnapKeyringAction } from '@metamask/snap-account-service';
 
 const serviceName = 'LegacyBackgroundApiService';
 
