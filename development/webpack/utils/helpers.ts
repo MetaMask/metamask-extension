@@ -135,22 +135,23 @@ const CACHE_SHUTDOWN_SIGNALS = ['SIGINT', 'SIGTERM'] as const;
  * Temporarily ignores 'SIGINT' and 'SIGTERM' while webpack closes its
  * filesystem cache.
  *
- * In the forked non-watch build path, the parent exits before
- * `compiler.close()` completes so webpack can persist the cache in the
- * background. During that handoff the parent can still forward shutdown
- * signals to the child. Node's default behavior would terminate the child and
- * can leave the cache partially written.
+ * In the forked non-watch build path, `onComplete()` notifies the parent before
+ * `compiler.close()` runs. The parent then unrefs the child and may exit while
+ * webpack is still persisting the cache. If the parent receives a shutdown
+ * signal during that handoff, its exit handler can forward the signal to the
+ * child. Node's default behavior would terminate the child and can leave the
+ * cache partially written.
  *
- * @param signalProcess - The process to install signal listeners on.
+ * @param process - The process to install signal listeners on.
  * @returns A cleanup function that removes the installed listeners.
  */
 export function ignoreCacheShutdownSignal(
-  signalProcess: NodeJS.Process,
+  process: NodeJS.Process,
 ): () => void {
-  CACHE_SHUTDOWN_SIGNALS.forEach((signal) => signalProcess.on(signal, noop));
+  CACHE_SHUTDOWN_SIGNALS.forEach((signal) => process.on(signal, noop));
   return () =>
     CACHE_SHUTDOWN_SIGNALS.forEach((signal) =>
-      signalProcess.off(signal, noop),
+      process.off(signal, noop),
     );
 }
 
