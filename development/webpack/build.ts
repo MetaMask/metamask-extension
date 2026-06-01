@@ -34,15 +34,13 @@ export function build(onComplete: () => void = noop) {
     if (options.cache && options.cache.type === 'filesystem') {
       setupGracefulWatchShutdown({ compiler, server });
     }
-    server
-      .start()
-      .catch((error: unknown) => {
-        console.error(
-          `🦊 Failed to start dev server on ${server.options.host ?? 'localhost'}:${server.options.port ?? '(auto)'}.`,
-        );
-        console.error(error);
-        process.exit(1);
-      });
+    server.start().catch((error: unknown) => {
+      console.error(
+        `🦊 Failed to start dev server on ${server.options.host ?? 'localhost'}:${server.options.port ?? '(auto)'}.`,
+      );
+      console.error(error);
+      process.exit(1);
+    });
   } else {
     compiler.run((err, stats) => {
       logStats(err ?? undefined, stats);

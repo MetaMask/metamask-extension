@@ -115,10 +115,7 @@ export function writeLineAfterProgress(
  * @param compiler - The webpack compiler.
  * @param message - The message to write.
  */
-export function logWatchBuildStats(
-  compiler: Compiler,
-  message: string,
-): void {
+export function logWatchBuildStats(compiler: Compiler, message: string): void {
   const logBuild = (error?: Error | null, stats?: Stats) => {
     compiler.getInfrastructureLogger('webpack.Progress').status();
     logStats(error, stats);
@@ -133,14 +130,12 @@ export function logWatchBuildStats(
   });
 }
 
-type SignalListener = () => void;
-type SignalProcess = {
-  on: (signal: NodeJS.Signals, listener: SignalListener) => unknown;
-  removeListener: (
-    signal: NodeJS.Signals,
-    listener: SignalListener,
-  ) => unknown;
-};
+type SignalListener = NodeJS.SignalsListener;
+type SignalProcess = NodeJS.Process;
+type SignalHandler = (
+  signal: NodeJS.Signals,
+  listener: SignalListener,
+) => unknown;
 
 type GracefulWatchShutdownOptions = {
   compiler: Compiler;
@@ -157,11 +152,14 @@ function listenForSignals(
   signals: readonly NodeJS.Signals[],
   listener: SignalListener,
 ): () => void {
-  signals.forEach((signal) => signalProcess.on(signal, listener));
+  const onSignal = signalProcess.on.bind(signalProcess) as SignalHandler;
+  const removeSignal = signalProcess.removeListener.bind(
+    signalProcess,
+  ) as unknown as SignalHandler;
+
+  signals.forEach((signal) => onSignal(signal, listener));
   return () =>
-    signals.forEach((signal) =>
-      signalProcess.removeListener(signal, listener),
-    );
+    signals.forEach((signal) => removeSignal(signal, listener));
 }
 
 /**

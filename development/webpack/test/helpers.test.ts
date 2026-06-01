@@ -11,6 +11,10 @@ import {
 import * as helpers from '../utils/helpers';
 import { type Combination, generateCases } from './helpers';
 
+type SignalProcess = NonNullable<
+  Parameters<typeof helpers.setupGracefulWatchShutdown>[0]['process']
+>;
+
 describe('./utils/helpers.ts', () => {
   afterEach(() => mock.restoreAll());
 
@@ -31,7 +35,7 @@ describe('./utils/helpers.ts', () => {
       const signalProcess = {
         on,
         removeListener,
-      } as unknown as NodeJS.Process;
+      } as unknown as SignalProcess;
       const { mock: error } = mock.method(console, 'error', helpers.noop);
 
       const cleanup = helpers.ignoreCacheShutdownSignal(signalProcess);
@@ -232,7 +236,7 @@ describe('./utils/helpers.ts', () => {
       const compiler = {
         getInfrastructureLogger,
       } as unknown as Compiler;
-      mock.method(console, 'error', (message) => {
+      mock.method(console, 'error', (message: string) => {
         calls.push(`error:${message}`);
       });
 
@@ -249,9 +253,7 @@ describe('./utils/helpers.ts', () => {
   describe('logWatchBuildStats', () => {
     it('logs stats and the watch message after each completed build', () => {
       const calls: unknown[] = [];
-      let done:
-        | Parameters<Compiler['hooks']['done']['tap']>[1]
-        | undefined;
+      let done: Parameters<Compiler['hooks']['done']['tap']>[1] | undefined;
       const status = mock.fn(() => calls.push('status'));
       const doneTap = mock.fn((_name, callback) => {
         done = callback;
@@ -284,7 +286,7 @@ describe('./utils/helpers.ts', () => {
         } as Compilation,
         toString: mock.fn((_?: unknown) => 'test-stats'),
       } as unknown as Stats;
-      mock.method(console, 'error', (message) => {
+      mock.method(console, 'error', (message: unknown) => {
         calls.push(message);
       });
 
@@ -312,9 +314,7 @@ describe('./utils/helpers.ts', () => {
 
     it('logs fatal watch errors and the watch message', () => {
       const calls: unknown[] = [];
-      let failed:
-        | Parameters<Compiler['hooks']['failed']['tap']>[1]
-        | undefined;
+      let failed: Parameters<Compiler['hooks']['failed']['tap']>[1] | undefined;
       const status = mock.fn(() => calls.push('status'));
       const compiler = {
         hooks: {
@@ -330,7 +330,7 @@ describe('./utils/helpers.ts', () => {
         getInfrastructureLogger: mock.fn(() => ({ status })),
       } as unknown as Compiler;
       const error = new Error('test error');
-      mock.method(console, 'error', (message) => {
+      mock.method(console, 'error', (message: unknown) => {
         calls.push(message);
       });
 
@@ -366,17 +366,17 @@ describe('./utils/helpers.ts', () => {
         close,
         getInfrastructureLogger: mock.fn(() => ({ status })),
       } as unknown as Compiler;
+      const on = mock.fn((signal: NodeJS.Signals, listener: () => void) => {
+        listeners.set(signal, listener);
+      });
+      const removeListener = mock.fn((signal: NodeJS.Signals) => {
+        listeners.delete(signal);
+      });
       const signalProcess = {
-        on: mock.fn(
-          (signal: NodeJS.Signals, listener: () => void) => {
-            listeners.set(signal, listener);
-          },
-        ),
-        removeListener: mock.fn((signal: NodeJS.Signals) => {
-          listeners.delete(signal);
-        }),
-      };
-      mock.method(console, 'error', (message) => {
+        on,
+        removeListener,
+      } as unknown as SignalProcess;
+      mock.method(console, 'error', (message: unknown) => {
         calls.push(message);
       });
 
@@ -425,16 +425,16 @@ describe('./utils/helpers.ts', () => {
         close,
         getInfrastructureLogger: mock.fn(() => ({ status: mock.fn() })),
       } as unknown as Compiler;
+      const on = mock.fn((signal: NodeJS.Signals, listener: () => void) => {
+        listeners.set(signal, listener);
+      });
+      const removeListener = mock.fn((signal: NodeJS.Signals) => {
+        listeners.delete(signal);
+      });
       const signalProcess = {
-        on: mock.fn(
-          (signal: NodeJS.Signals, listener: () => void) => {
-            listeners.set(signal, listener);
-          },
-        ),
-        removeListener: mock.fn((signal: NodeJS.Signals) => {
-          listeners.delete(signal);
-        }),
-      };
+        on,
+        removeListener,
+      } as unknown as SignalProcess;
       mock.method(console, 'error', helpers.noop);
 
       helpers.setupGracefulWatchShutdown({
@@ -457,7 +457,7 @@ describe('./utils/helpers.ts', () => {
       await waitForAsyncShutdown();
 
       assert.deepStrictEqual(exits, [0]);
-      assert.strictEqual(signalProcess.removeListener.mock.callCount(), 1);
+      assert.strictEqual(removeListener.mock.callCount(), 1);
       assert.strictEqual(listeners.has('SIGINT'), false);
     });
 
@@ -485,15 +485,14 @@ describe('./utils/helpers.ts', () => {
         close,
         getInfrastructureLogger: mock.fn(() => ({ status: mock.fn() })),
       } as unknown as Compiler;
+      const on = mock.fn((signal: NodeJS.Signals, listener: () => void) => {
+        listeners.set(signal, listener);
+      });
       const signalProcess = {
-        on: mock.fn(
-          (signal: NodeJS.Signals, listener: () => void) => {
-            listeners.set(signal, listener);
-          },
-        ),
+        on,
         removeListener: mock.fn(helpers.noop),
-      };
-      mock.method(console, 'error', (message) => {
+      } as unknown as SignalProcess;
+      mock.method(console, 'error', (message: unknown) => {
         calls.push(message);
       });
 
