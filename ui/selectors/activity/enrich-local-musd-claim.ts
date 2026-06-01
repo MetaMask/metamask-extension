@@ -54,10 +54,7 @@ export function resolveMusdClaimAmount({
   const claimParams = decodeMerklClaimParams(data);
   const userAddress = claimParams?.userAddress ?? from;
 
-  const receiptAmount = getClaimPayoutFromReceipt(
-    txReceipt?.logs,
-    userAddress,
-  );
+  const receiptAmount = getClaimPayoutFromReceipt(txReceipt?.logs, userAddress);
 
   if (receiptAmount) {
     return receiptAmount;

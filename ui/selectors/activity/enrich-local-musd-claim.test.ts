@@ -322,8 +322,8 @@ describe('enrichLocalMusdClaimActivity', () => {
       transactions: [],
     } as unknown as TransactionGroup;
 
-    expect(
-      enrichLocalMusdClaimActivity(apiActivity, transactionGroup),
-    ).toBe(apiActivity);
+    expect(enrichLocalMusdClaimActivity(apiActivity, transactionGroup)).toBe(
+      apiActivity,
+    );
   });
 });
