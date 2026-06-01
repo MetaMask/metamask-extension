@@ -1,11 +1,9 @@
 import React, { ReactNode } from 'react';
-import { Box } from '../../../../component-library';
 import {
-  Display,
-  FlexDirection,
-  BlockSize,
-  JustifyContent,
-} from '../../../../../helpers/constants/design-system';
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { ASSET_CELL_HEIGHT } from '../../constants';
 
 type GenericAssetCellLayoutProps = {
@@ -29,59 +27,49 @@ export default function GenericAssetCellLayout({
 }: GenericAssetCellLayoutProps) {
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      width={BlockSize.Full}
-      height={BlockSize.Full}
+      flexDirection={BoxFlexDirection.Row}
       gap={4}
+      className="flex h-full w-full"
     >
-      <Box
-        as="a"
-        onClick={(e?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-          e?.preventDefault();
-          if (onClick) {
-            onClick();
-          }
-        }}
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        paddingTop={2}
-        paddingBottom={2}
-        paddingLeft={4}
-        paddingRight={4}
-        width={BlockSize.Full}
-        className={onClick ? 'hover:bg-hover cursor-pointer' : ''}
-        style={{
-          height: ASSET_CELL_HEIGHT,
-        }}
-        data-testid="multichain-token-list-button"
-      >
-        {badge}
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          width={BlockSize.Full}
-          style={{ flexGrow: 1, overflow: 'hidden' }}
-          justifyContent={JustifyContent.center}
+      <Box asChild>
+        <a
+          onClick={(e?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+            e?.preventDefault();
+            if (onClick) {
+              onClick();
+            }
+          }}
+          className={`flex w-full flex-row py-2 px-4 ${onClick ? 'hover:bg-hover cursor-pointer' : ''}`}
+          style={{
+            height: ASSET_CELL_HEIGHT,
+          }}
+          data-testid="multichain-token-list-button"
         >
+          {badge}
           <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            justifyContent={JustifyContent.spaceBetween}
+            flexDirection={BoxFlexDirection.Column}
+            justifyContent={BoxJustifyContent.Center}
+            className="flex w-full overflow-hidden grow"
           >
-            {headerLeftDisplay}
-            {headerRightDisplay}
-          </Box>
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              justifyContent={BoxJustifyContent.Between}
+              className="flex"
+            >
+              {headerLeftDisplay}
+              {headerRightDisplay}
+            </Box>
 
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            justifyContent={JustifyContent.spaceBetween}
-          >
-            {footerLeftDisplay}
-            {footerRightDisplay}
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              justifyContent={BoxJustifyContent.Between}
+              className="flex"
+            >
+              {footerLeftDisplay}
+              {footerRightDisplay}
+            </Box>
           </Box>
-        </Box>
+        </a>
       </Box>
     </Box>
   );
