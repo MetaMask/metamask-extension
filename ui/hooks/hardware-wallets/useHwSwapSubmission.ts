@@ -1,28 +1,9 @@
 import { useCallback, useRef, useEffect } from 'react';
 
-import type { QuoteResponse, QuoteMetadata } from '@metamask/bridge-controller';
 import { HardwareWalletSignatureEvent } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
-import type { HardwareWalletSignaturesState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import type { UseHwSwapSubmissionOptions } from './useHwSwapSubmission.types';
 
 const RETRY_RPC_TIMEOUT_MS = 120_000;
-
-type LockedQuote = (QuoteResponse & QuoteMetadata) | null | undefined;
-
-type UseHwSwapSubmissionOptions = {
-  lockedQuote: LockedQuote;
-  needsTwoConfirmations: boolean;
-  signatureState: HardwareWalletSignaturesState;
-  dispatchSignatureEvent: React.Dispatch<HardwareWalletSignatureAction>;
-  submitBridgeTransaction: (
-    quote: QuoteResponse & QuoteMetadata,
-    options?: { rpcTimeoutMs?: number },
-  ) => Promise<void>;
-};
-
-type HardwareWalletSignatureAction = {
-  type: typeof HardwareWalletSignatureEvent.Reset;
-  needsTwoConfirmations: boolean;
-};
 
 /**
  * Manages automatic submission and retry logic for hardware wallet swap/bridge transactions.
@@ -104,8 +85,11 @@ export function useHwSwapSubmission({
       await submitBridgeTransaction(lockedQuote, {
         rpcTimeoutMs: RETRY_RPC_TIMEOUT_MS,
       });
-    } catch {
-      // Retry errors are intentionally handled by surrounding UI state.
+    } catch (error) {
+      console.warn(
+        '[useHwSwapSubmission] Retry submission failed:',
+        error,
+      );
     }
   }, [lockedQuote, submitBridgeTransaction]);
 
