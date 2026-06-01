@@ -96,7 +96,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           secondaryToken: sourceToken,
         };
       }
-      // Token in title; source and destination in subtitle; one token in avatar
+      // Token in title; source and destination in subtitle; token being wrapped in avatar
       case 'wrap': {
         const { sourceToken, destinationToken } = activity.data;
         const sourceSymbol = sourceToken?.symbol;
@@ -114,6 +114,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           secondaryToken: sourceToken,
         };
       }
+      // Token in title; source and destination in subtitle; unwrapped token in avatar
       case 'unwrap': {
         const { sourceToken, destinationToken } = activity.data;
         const sourceSymbol = sourceToken?.symbol;
@@ -131,6 +132,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           secondaryToken: sourceToken,
         };
       }
+      // Token being received in avatar
       case 'lendingWithdrawal': {
         const { sourceToken, destinationToken } = activity.data;
         const symbol = destinationToken?.symbol ?? '';
@@ -214,16 +216,18 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           primaryToken: token?.amount ? token : undefined,
         };
       }
+      // Token being lent in avatar
       case 'lendingDeposit': {
         const { sourceToken, destinationToken } = activity.data;
         const primaryToken = destinationToken ?? sourceToken;
+        const secondaryToken = destinationToken ? sourceToken : undefined;
 
         return {
-          avatarTokens: [primaryToken?.assetId],
+          avatarTokens: [secondaryToken?.assetId],
           title: t(labelKeys.title.key),
           subtitle: t(labelKeys.description.key),
           primaryToken,
-          secondaryToken: destinationToken ? sourceToken : undefined,
+          secondaryToken,
         };
       }
       case 'claimMusdBonus': {
