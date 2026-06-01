@@ -64,30 +64,33 @@ jest.mock('./messenger-client-init/accounts/snap-account-service-init', () => ({
         // past `ensureReady`, so no Snap accounts get created during init.
         () => new Promise(() => undefined),
       );
+      controllerMessenger.registerActionHandler(
+        'SnapAccountService:getLegacySnapKeyring',
+        async () => {
+          const result = await controllerMessenger.call(
+            'KeyringController:withController',
+            async (controller) => {
+              const found = controller.keyrings.find(
+                ({ keyring }) => keyring.type === 'Snap Keyring',
+              );
+              let snapKeyring = found?.keyring;
+              if (!snapKeyring) {
+                const { keyring } =
+                  await controller.addNewKeyring('Snap Keyring');
+                snapKeyring = keyring;
+              }
+              return { snapKeyring };
+            },
+          );
+          return result.snapKeyring;
+        },
+      );
       return {
         memStateKey: null,
         persistedStateKey: null,
         messengerClient: {
           init: jest.fn().mockResolvedValue(undefined),
           name: 'SnapAccountService',
-          async getLegacySnapKeyring() {
-            const result = await controllerMessenger.call(
-              'KeyringController:withController',
-              async (controller) => {
-                const found = controller.keyrings.find(
-                  ({ keyring }) => keyring.type === 'Snap Keyring',
-                );
-                let snapKeyring = found?.keyring;
-                if (!snapKeyring) {
-                  const { keyring } =
-                    await controller.addNewKeyring('Snap Keyring');
-                  snapKeyring = keyring;
-                }
-                return { snapKeyring };
-              },
-            );
-            return result.snapKeyring;
-          },
         },
       };
     }),
