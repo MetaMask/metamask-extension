@@ -6,7 +6,7 @@ import {
 import { useDispatch } from 'react-redux';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { updateTransactionGasFees } from '../../../../store/actions';
+import { updateTransactionGasFees } from '../../../../store/actions/update-transaction-gas-fees';
 import { type GasOption } from '../../types/gas';
 import { EMPTY_VALUE_STRING } from '../../constants/gas';
 import { useConfirmContext } from '../../context/confirm';

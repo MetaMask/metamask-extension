@@ -16,7 +16,6 @@ describe('Reset Wallet - ', function () {
         fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: [
-          'unable to proceed, wallet is locked',
           'The snap "npm:@metamask/message-signing-snap" has been terminated during execution', // issue #37342
           'npm:@metamask/message-signing-snap was stopped and the request was cancelled. This is likely because the Snap crashed.',
         ],
@@ -55,7 +54,6 @@ describe('Reset Wallet - ', function () {
         fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: [
-          'unable to proceed, wallet is locked',
           'The snap "npm:@metamask/message-signing-snap" has been terminated during execution', // issue #37342
           'npm:@metamask/message-signing-snap was stopped and the request was cancelled. This is likely because the Snap crashed.',
         ],

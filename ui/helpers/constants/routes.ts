@@ -15,7 +15,6 @@ export const LOCK_ROUTE = '/lock';
 export const ASSET_ROUTE = '/asset';
 export const SETTINGS_ROUTE = '/settings';
 export const LEGACY_SETTINGS_V2_ROUTE = '/settings-v2';
-export const SETTINGS_V2_ROUTE = SETTINGS_ROUTE;
 export const ASSETS_ROUTE = '/settings/assets';
 export const CURRENCY_ROUTE = '/settings/preferences-and-display/currency';
 export const TRANSACTIONS_ROUTE = '/settings/transactions';
@@ -33,6 +32,10 @@ export const MANAGE_WALLET_RECOVERY_ROUTE =
   '/settings/security-and-password/manage-wallet-recovery';
 export const SECURITY_PASSWORD_CHANGE_V2_ROUTE =
   '/settings/security-and-password/password';
+export const SECURITY_REGISTER_PASSKEY_ROUTE =
+  '/settings/security-and-password/register-passkey';
+export const SECURITY_TURN_OFF_PASSKEY_ROUTE =
+  '/settings/security-and-password/turn-off-passkey';
 export const DEVELOPER_TOOLS_ROUTE = '/settings/developer-tools';
 export const DEBUG_ROUTE = '/settings/debug';
 export const GENERAL_ROUTE = '/settings/general';
@@ -78,16 +81,15 @@ export const CONTACTS_ADD_ROUTE = '/contacts/add';
 export const CONTACTS_VIEW_ROUTE = '/contacts/view';
 export const CONTACTS_EDIT_ROUTE = '/contacts/edit';
 export const SNAP_SETTINGS_ROUTE = '/settings/snap';
-export const SECURITY_PASSWORD_CHANGE_ROUTE =
-  '/settings/security-and-privacy/password-change';
-export const BACKUPANDSYNC_ROUTE =
-  '/settings/security-and-privacy/backup-and-sync';
+export const BACKUPANDSYNC_ROUTE = '/settings/backup-and-sync';
 export const REVEAL_SEED_ROUTE = '/seed';
 export const IMPORT_SRP_ROUTE = '/import-srp';
 export const RESTORE_VAULT_ROUTE = '/restore-vault';
 export const IMPORT_TOKEN_ROUTE = '/import-token';
 export const IMPORT_TOKENS_ROUTE = '/import-tokens';
 export const CONFIRM_IMPORT_TOKEN_ROUTE = '/confirm-import-token';
+export const TOKEN_MANAGEMENT_ROUTE = '/token-management';
+export const CUSTOM_TOKEN_IMPORT_ROUTE = '/custom-token-import';
 export const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token';
 export const ACCOUNT_LIST_PAGE_ROUTE = '/account-list';
 export const MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE =
@@ -154,9 +156,9 @@ export const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
 export const ONBOARDING_ACCOUNT_EXIST = '/onboarding/account-exist';
 export const ONBOARDING_ACCOUNT_NOT_FOUND = '/onboarding/account-not-found';
 export const ONBOARDING_DOWNLOAD_APP_ROUTE = '/onboarding/download-app';
-export const NONEVM_BALANCE_CHECK_ROUTE = '/nonevm-balance-check';
 export const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
+export const ONBOARDING_SETUP_PASSKEY_ROUTE = '/onboarding/setup-passkey';
 
 export const DEEP_LINK_ROUTE = '/link';
 
@@ -271,6 +273,16 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
+    path: SECURITY_REGISTER_PASSKEY_ROUTE,
+    label: 'Register Passkey',
+    trackInAnalytics: true,
+  },
+  {
+    path: SECURITY_TURN_OFF_PASSKEY_ROUTE,
+    label: 'Turn Off Passkey',
+    trackInAnalytics: true,
+  },
+  {
     path: PREFERENCES_AND_DISPLAY_ROUTE,
     label: 'Preferences And Display Settings Page',
     trackInAnalytics: true,
@@ -367,11 +379,6 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
-    path: SECURITY_PASSWORD_CHANGE_ROUTE,
-    label: 'Change Password',
-    trackInAnalytics: true,
-  },
-  {
     path: BACKUPANDSYNC_ROUTE,
     label: 'Backup And Sync Settings Page',
     trackInAnalytics: true,
@@ -409,6 +416,16 @@ export const ROUTES = [
   {
     path: CONFIRM_IMPORT_TOKEN_ROUTE,
     label: 'Confirm Import Token Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: TOKEN_MANAGEMENT_ROUTE,
+    label: 'Token Management Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: CUSTOM_TOKEN_IMPORT_ROUTE,
+    label: 'Custom Token Import Page',
     trackInAnalytics: true,
   },
   {

@@ -30,7 +30,7 @@ jest.mock('./useTransactionGasLimit', () => ({
   useTransactionGasLimit: jest.fn(),
 }));
 
-jest.mock('../../../../store/actions', () => ({
+jest.mock('../../../../store/actions/update-transaction-gas-fees', () => ({
   updateTransactionGasFees: jest.fn(),
 }));
 

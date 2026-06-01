@@ -5,4 +5,5 @@ export type SendAlertModalProps = {
   alerts: SendAlert[];
   onAcknowledge: () => void;
   onClose: () => void;
+  acknowledgeLabel?: string;
 };

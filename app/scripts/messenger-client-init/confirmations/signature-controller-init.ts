@@ -1,9 +1,9 @@
-import { SignatureController } from '@metamask/signature-controller';
-import { MessengerClientInitFunction } from '../types';
 import {
-  SignatureControllerInitMessenger,
+  SignatureController,
   SignatureControllerMessenger,
-} from '../messengers';
+} from '@metamask/signature-controller';
+import { MessengerClientInitFunction } from '../types';
+import { SignatureControllerInitMessenger } from '../messengers';
 import { trace } from '../../../../shared/lib/trace';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 

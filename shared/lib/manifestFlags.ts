@@ -92,10 +92,6 @@ export type ManifestFlags = {
      */
     disableSmartTransactionsOverride?: boolean;
     /**
-     * Whether to disable all of the syncing features that get automatically enabled in migrations 158 and 167
-     */
-    disableSync?: boolean;
-    /**
      * Simulate a delay to how quickly the background responds to the UI. Set this to `true` to
      * make the background completely unresponsive.
      */

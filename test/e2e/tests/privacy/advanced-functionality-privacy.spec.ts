@@ -5,6 +5,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { NETWORK_CLIENT_ID } from '../../constants';
 import AccountList from '../../page-objects/pages/account-list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
 import {
@@ -17,11 +18,24 @@ import { mockSpotPrices } from '../tokens/utils/mocks';
 async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
   return [
     await mockServer
-      .forGet('https://token.api.cx.metamask.io/tokens/1')
+      .forGet(/^https:\/\/token\.api\.cx\.metamask\.io\/tokens\/1(\?.*)?$/u)
       .thenCallback(() => {
         return {
           statusCode: 200,
-          json: [{ fakedata: true }],
+          // Must include a valid `address` field — TokenListService passes this
+          // response through buildTokenListMap which calls token.address.toLowerCase().
+          // Without a valid address the queryFn throws, TanStack Query marks the
+          // entry as failed, and every subsequent fetchTokensByChainId call
+          // re-fetches from the network instead of returning the cached result.
+          json: [
+            {
+              address: '0x0d8775f648430679a709e98d2b0cb6250d2887ef',
+              symbol: 'BAT',
+              decimals: 18,
+              name: 'Basic Attention Token',
+              aggregators: [],
+            },
+          ],
         };
       }),
     await mockServer
@@ -100,7 +114,8 @@ describe('MetaMask onboarding ', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed();
-        await homePage.refreshErc20TokenList();
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.refreshErc20TokenList();
         await homePage.checkPageIsLoaded();
 
         for (const m of mockedEndpoint) {
@@ -140,7 +155,8 @@ describe('MetaMask onboarding ', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('25', 'ETH');
-        await homePage.refreshErc20TokenList();
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.refreshErc20TokenList();
         await homePage.checkPageIsLoaded();
         await homePage.headerNavbar.openAccountMenu();
         await new AccountList(driver).checkPageIsLoaded();
@@ -163,19 +179,29 @@ describe('MetaMask onboarding ', function () {
             continue;
           }
 
-          // Spot-prices endpoint may be called multiple times (initial load + refresh)
+          // spot-prices may be called more than once (initial load + refresh).
           if (mockUrl.includes('spot-prices')) {
             assert.ok(
               requests.length >= 1,
               `${m} should make at least 1 request after onboarding (actual: ${requests.length})`,
             );
-          } else {
-            assert.equal(
-              requests.length,
-              1,
-              `${m} should make requests after onboarding`,
-            );
+            continue;
           }
+
+          // token api may be called more than once (initial load + mUSD added by default)
+          if (mockUrl.includes('token\\.api\\.cx\\.metamask\\.io/tokens/1')) {
+            assert.ok(
+              requests.length >= 1,
+              `${m} should make at least 1 request after onboarding (actual: ${requests.length})`,
+            );
+            continue;
+          }
+
+          assert.equal(
+            requests.length,
+            1,
+            `${m} should make requests after onboarding`,
+          );
         }
       },
     );

@@ -200,7 +200,7 @@ async function mockSpotPricesV3(mockServer: Mockttp) {
 async function mockTokens(mockServer: Mockttp) {
   return [
     await mockServer
-      .forGet('https://token.api.cx.metamask.io/tokens/1')
+      .forGet(/^https:\/\/token\.api\.cx\.metamask\.io\/tokens\/1(\?.*)?$/u)
       .thenCallback(() => {
         return {
           statusCode: 200,
@@ -272,7 +272,7 @@ async function mockTokens(mockServer: Mockttp) {
         };
       }),
     await mockServer
-      .forGet('https://token.api.cx.metamask.io/tokens/137')
+      .forGet(/^https:\/\/token\.api\.cx\.metamask\.io\/tokens\/137(\?.*)?$/u)
       .thenCallback(() => {
         return {
           statusCode: 200,
@@ -508,9 +508,9 @@ describe('Import flow', function () {
 
         const tokenList = new AssetListPage(driver);
 
-        // Native Tokens: Ethereum ETH, Linea ETH, Base ETH
+        // Native Tokens: Ethereum ETH, Linea ETH, Base ETH, mUSD
         // ERC20 Tokens: Chain Games, Chai, ChangeX
-        await tokenList.checkTokenItemNumber(6);
+        await tokenList.checkTokenItemNumber(7);
         await tokenList.checkTokenExistsInList('Ethereum');
         await tokenList.checkTokenExistsInList('Chain Games');
         await tokenList.checkTokenExistsInList('ChangeX');
@@ -614,9 +614,9 @@ describe('Import flow', function () {
         );
         const tokenList = new AssetListPage(driver);
 
-        // Native Tokens: Ethereum ETH, Linea ETH, Base ETH, Polygon POL
+        // Native Tokens: Ethereum ETH, Linea ETH, Base ETH, Polygon POL, mUSD
         // ERC20 Tokens: Polygon USDT
-        await tokenList.checkTokenItemNumber(5);
+        await tokenList.checkTokenItemNumber(6);
 
         await tokenList.checkTokenExistsInList('Ether');
         await tokenList.checkTokenExistsInList('USDT');

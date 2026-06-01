@@ -132,6 +132,7 @@ export const SendAlertModal = ({
   alerts,
   onAcknowledge,
   onClose,
+  acknowledgeLabel,
 }: SendAlertModalProps) => {
   const t = useI18nContext();
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -227,7 +228,7 @@ export const SendAlertModal = ({
           onCancel={onClose}
           onSubmit={handleAcknowledgeStep}
           submitButtonProps={{
-            children: currentAlert.acknowledgeButtonLabel ?? t('iUnderstand'),
+            children: acknowledgeLabel ?? currentAlert.acknowledgeButtonLabel ?? t('iUnderstand'),
             'data-testid': 'send-alert-modal-acknowledge-button',
           }}
           cancelButtonProps={{

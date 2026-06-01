@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { add0x } from '@metamask/utils';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../shared/constants/transaction';
 import { getMaximumGasTotalInHexWei } from '../../../../../shared/lib/gas.utils';
 import { Numeric } from '../../../../../shared/lib/Numeric';
-import { addHexes } from '../../../../../shared/lib/conversion.utils';
+import { sumHexes } from '../../../../../shared/lib/conversion.utils';
 import type { MetricsProperties, TransactionMetricsBuilder } from './types';
+
+const ZERO_HEX = '0x0';
 
 export const getGaslessMetricsProperties: TransactionMetricsBuilder = ({
   transactionMeta,
@@ -37,9 +38,22 @@ export const getGaslessMetricsProperties: TransactionMetricsBuilder = ({
     maxFeePerGas: transactionMeta.txParams.maxFeePerGas,
   });
 
-  const totalCost = add0x(
-    addHexes(gasCost, transactionMeta.txParams.value ?? '0x0'),
+  const nestedTransactionValues =
+    transactionMeta.nestedTransactions?.map(
+      ({ value }) => (value as string | undefined) ?? ZERO_HEX,
+    ) ?? [];
+
+  const totalTransactionValue = sumHexes(
+    transactionMeta.txParams.value ?? ZERO_HEX,
+    ...nestedTransactionValues,
   );
+
+  const totalGasCost = sumHexes(
+    gasCost,
+    transactionMeta.layer1GasFee ?? ZERO_HEX,
+  );
+
+  const totalCost = sumHexes(totalGasCost, totalTransactionValue);
   properties.gas_insufficient_native_asset = new Numeric(
     totalCost,
     16,

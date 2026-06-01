@@ -15,6 +15,7 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
+import type { ClosePositionParams } from '@metamask/perps-controller';
 import {
   formatPerpsFiat,
   formatPnl,
@@ -45,10 +46,12 @@ import {
   getDisplayName,
   getPositionDirection,
   getPositionPnlRatio,
+  buildPerpsVipTrackingData,
 } from '../utils';
 import { handlePerpsError } from '../utils/translate-perps-error';
 import { PERPS_MIN_MARKET_ORDER_USD } from '../constants';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
+import { PerpsFeesDisplay } from '../perps-fees-display';
 import { CloseAmountSection } from '../order-entry';
 import {
   PERPS_TOAST_KEYS,
@@ -57,13 +60,7 @@ import {
 } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import type { Position } from '../types';
-
-type ClosePositionParams = {
-  symbol: string;
-  orderType: 'market';
-  currentPrice: number;
-  size?: string;
-};
+import { useVipTier } from '../../../../hooks/rewards/useVipTier';
 
 type CloseToastConfig = Pick<PerpsToastKeyConfig, 'key' | 'description'>;
 
@@ -86,17 +83,20 @@ const buildCloseRequestParams = ({
   currentPrice,
   isPartialClose,
   closeSize,
+  position,
 }: {
   symbol: string;
   currentPrice: number;
   isPartialClose: boolean;
   closeSize: number;
+  position: Position;
 }): ClosePositionParams => {
   if (!isPartialClose) {
     return {
       symbol,
       orderType: 'market',
       currentPrice,
+      position,
     };
   }
 
@@ -105,6 +105,7 @@ const buildCloseRequestParams = ({
     orderType: 'market',
     currentPrice,
     size: closeSize.toString(),
+    position,
   };
 };
 
@@ -271,6 +272,8 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     [],
   );
 
+  const vipTier = useVipTier();
+
   const [closePercent, setClosePercent] = useState(100);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -302,10 +305,11 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     [closeSize, currentPrice],
   );
 
-  const { feeRate } = usePerpsOrderFees({
-    symbol: position.symbol,
-    orderType: 'market',
-  });
+  const { feeRate, undiscountedFeeRate, metamaskFeeRateDiscountPercentage } =
+    usePerpsOrderFees({
+      symbol: position.symbol,
+      orderType: 'market',
+    });
 
   const margin = useMemo(() => {
     const totalMargin = parseFloat(position.marginUsed) || 0;
@@ -320,6 +324,11 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   const estimatedFees = useMemo(
     () => closeNotionalUsd * (feeRate ?? 0),
     [closeNotionalUsd, feeRate],
+  );
+
+  const originalEstimatedFees = useMemo(
+    () => closeNotionalUsd * (undiscountedFeeRate ?? 0),
+    [closeNotionalUsd, undiscountedFeeRate],
   );
 
   const isPriceValid = useMemo(
@@ -343,6 +352,11 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   const roundedFees = useMemo(
     () => Math.round(estimatedFees * 100) / 100,
     [estimatedFees],
+  );
+
+  const roundedOriginalFees = useMemo(
+    () => Math.round(originalEstimatedFees * 100) / 100,
+    [originalEstimatedFees],
   );
 
   // HyperLiquid's marginUsed already includes accumulated PnL, so we do NOT
@@ -384,17 +398,23 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
 
     try {
       onClose();
+      const closeRequestParams = buildCloseRequestParams({
+        symbol: position.symbol,
+        currentPrice,
+        isPartialClose,
+        closeSize,
+        position,
+      });
+      closeRequestParams.trackingData = buildPerpsVipTrackingData({
+        totalFee: estimatedFees,
+        marketPrice: currentPrice,
+        vipTier,
+        vipDiscount: metamaskFeeRateDiscountPercentage,
+      });
       const result = await submitRequestToBackground<{
         success: boolean;
         error?: string;
-      }>('perpsClosePosition', [
-        buildCloseRequestParams({
-          symbol: position.symbol,
-          currentPrice,
-          isPartialClose,
-          closeSize,
-        }),
-      ]);
+      }>('perpsClosePosition', [closeRequestParams]);
       if (!result.success) {
         const message = result.error || 'Failed to close position';
         track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
@@ -480,6 +500,8 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     onClose,
     formatPercentWithMinThreshold,
     formatFiat,
+    vipTier,
+    metamaskFeeRateDiscountPercentage,
   ]);
 
   const handlePercentChange = useCallback((percent: number) => {
@@ -610,13 +632,17 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                   >
                     {t('perpsFees')}
                   </Text>
-                  <Text
-                    variant={TextVariant.BodySm}
-                    fontWeight={FontWeight.Medium}
-                    data-testid="perps-close-summary-fees-value"
-                  >
-                    -{formatFiat(roundedFees)}
-                  </Text>
+                  <PerpsFeesDisplay
+                    metamaskFeeRateDiscountPercentage={
+                      feeRate === undefined
+                        ? undefined
+                        : metamaskFeeRateDiscountPercentage
+                    }
+                    originalFee={roundedOriginalFees}
+                    fee={roundedFees}
+                    feeTextFontWeight={FontWeight.Medium}
+                    feeTextTestId="perps-close-summary-fees-value"
+                  />
                 </Box>
 
                 {/* You'll receive */}
