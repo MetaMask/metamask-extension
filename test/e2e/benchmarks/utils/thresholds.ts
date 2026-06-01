@@ -269,12 +269,8 @@ const STANDARD_HOME = {
     ciMultiplier: CI_MULTIPLIER.TIER_1,
   },
   ...CLS_THRESHOLDS,
-  // Baseline from CI: p75≈850ms, p95≈1021ms (2026-04-22, chrome-browserify).
-  tbt: {
-    p75: { warn: 1020, fail: 1100 },
-    p95: { warn: 1225, fail: 1325 },
-    ciMultiplier: DEFAULT_CI_MULTIPLIER,
-  },
+  // No `tbt`: startup flows (`standard-home.ts`) do not call
+  // `buildLongTaskTimerResults`, so TBT data is never emitted for this preset.
 } satisfies ThresholdConfig;
 
 const POWER_USER_HOME = {
@@ -294,12 +290,8 @@ const POWER_USER_HOME = {
     ciMultiplier: CI_MULTIPLIER.STARTUP_POWER_USER,
   },
   ...CLS_THRESHOLDS,
-  // Baseline: p75=1189ms, p95=1367ms (2026-04-07 – 2026-04-20, ci.branch:main)
-  tbt: {
-    p75: { warn: 1425, fail: 1550 },
-    p95: { warn: 1650, fail: 1775 },
-    ciMultiplier: DEFAULT_CI_MULTIPLIER,
-  },
+  // No `tbt`: startup flows (`power-user-home.ts`) do not call
+  // `buildLongTaskTimerResults`, so TBT data is never emitted for this preset.
 } satisfies ThresholdConfig;
 
 // Threshold keys must match timer IDs emitted by the benchmark flows (snake_case).
