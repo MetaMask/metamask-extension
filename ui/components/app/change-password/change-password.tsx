@@ -301,16 +301,17 @@ const ChangePassword = ({
             passkeyMethodLabel,
           ])
         : t('securityChangePasswordToastSuccess');
-      toast.success(<ToastContent title={toastTitle} />, {
-        duration: autoHideToastDelay,
+      toast({
+        severity: 'success',
+        children: <ToastContent title={toastTitle} />,
       });
     } catch (error) {
       console.error(error);
       setStep(ChangePasswordSteps.ChangePassword);
-      toast.error(
-        <ToastContent title={t('securityChangePasswordToastError')} />,
-        { duration: autoHideToastDelay },
-      );
+      toast({
+        severity: 'danger',
+        children: <ToastContent title={t('securityChangePasswordToastError')} />,
+      });
     }
   };
 
@@ -376,18 +377,20 @@ const ChangePassword = ({
             error,
           ),
         );
-        toast.error(
-          <ToastContent
-            title={
-              translatePasskeyError(
-                error,
-                t as (key: string, substitutions?: string[]) => string,
-                passkeyMethodLabel,
-              ) ?? t('passkeyErrorVerificationFailed', [passkeyMethodLabel])
-            }
-          />,
-          { duration: autoHideToastDelay },
-        );
+        toast({
+          severity: 'danger',
+          children: (
+            <ToastContent
+              title={
+                translatePasskeyError(
+                  error,
+                  t as (key: string, substitutions?: string[]) => string,
+                  passkeyMethodLabel,
+                ) ?? t('passkeyErrorVerificationFailed', [passkeyMethodLabel])
+              }
+            />
+          ),
+        });
       }
       return null;
     } finally {

@@ -1,4 +1,3 @@
-import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -16,7 +15,6 @@ import {
   BoxFlexDirection,
   BoxAlignItems,
 } from '@metamask/design-system-react';
-import { toast } from 'react-hot-toast';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Modal,
@@ -24,6 +22,7 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '../../component-library';
+import { toast } from '../../ui/toast/toast';
 import { AlignItems } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { lockMetamask } from '../../../store/actions';
@@ -33,6 +32,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import React, { useContext, useEffect } from 'react';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention

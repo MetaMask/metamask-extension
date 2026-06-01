@@ -79,16 +79,15 @@ export const ImportSrp = () => {
 
       await dispatch(importMnemonicToVault(secretRecoveryPhrase));
 
-      toast.success(
-        <ToastContent
-          dataTestId={toastId}
-          title={t('importWalletSuccess', [hdKeyrings.length + 1])}
-        />,
-        {
-          id: toastId,
-          duration: autoHideToastDelay,
-        },
-      );
+      toast({
+        severity: 'success',
+        children: (
+          <ToastContent
+            dataTestId={toastId}
+            title={t('importWalletSuccess', [hdKeyrings.length + 1])}
+          />
+        ),
+      });
       navigate(DEFAULT_ROUTE);
     } catch (error) {
       switch ((error as Error)?.message) {
