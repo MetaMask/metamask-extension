@@ -65,6 +65,7 @@ import { getAccountsBySnapId } from '../lib/snap-keyring';
 import { PreferencesControllerSetPasswordForgottenAction } from '../controllers/preferences-controller-method-action-types';
 import { getSnapKeyring } from '../lib/snap-keyring/utils/getSnapKeyring';
 import { LegacyBackgroundApiServiceMethodActions } from './legacy-background-api-service-method-action-types';
+import { SnapAccountServiceGetLegacySnapKeyringAction } from '@metamask/snap-account-service';
 
 const serviceName = 'LegacyBackgroundApiService';
 
@@ -122,7 +123,8 @@ type AllowedActions =
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
   | SmartTransactionsControllerWipeSmartTransactionsAction
   | TransactionControllerGetStateAction
-  | TransactionControllerWipeTransactionsAction;
+  | TransactionControllerWipeTransactionsAction
+  | SnapAccountServiceGetLegacySnapKeyringAction;
 
 /**
  * The {@link LegacyBackgroundApiService} messenger.
