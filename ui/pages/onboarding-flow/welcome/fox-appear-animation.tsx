@@ -19,11 +19,10 @@ export default function FoxAppearAnimation({
   isLoader = false,
   skipTransition = false,
 }: FoxAppearAnimationProps) {
-<<<<<<< copilot/defer-rive-runtime-wasm-loading
   const containerClassName = classnames({
     'riv-animation__fox-container--loader': isLoader,
     'riv-animation__fox-container': !isLoader,
-=======
+  });
   const context = useRiveWasmContext();
   const { isWasmReady, error: wasmError } = context;
   const {
@@ -62,8 +61,6 @@ export default function FoxAppearAnimation({
       fit: Fit.Contain,
       alignment: isLoader ? Alignment.Center : Alignment.BottomCenter,
     }),
->>>>>>> main
-  });
 
   return (
     <Suspense
