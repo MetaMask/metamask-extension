@@ -1,3 +1,4 @@
+import { Interface } from '@ethersproject/abi';
 import {
   TransactionStatus,
   TransactionType,
@@ -14,6 +15,32 @@ const baseUsdc = '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913';
 const baseAavePool = '0xa238dd80c259a72e81d7e4664a9801593f98d1c5';
 const lineaDai = '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5';
 const lineaMusd = '0xaca92e438df0b2401ff60da7e4337b687a2435da';
+const merklDistributor = '0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae';
+
+const MERKL_CLAIM_ABI = [
+  'function claim(address[] calldata users, address[] calldata tokens, uint256[] calldata amounts, bytes32[][] calldata proofs)',
+];
+
+function encodeMerklClaimCalldata({
+  users = [from],
+  tokens = [lineaMusd],
+  amounts = ['5000000'],
+  proofs = [[]],
+}: {
+  users?: string[];
+  tokens?: string[];
+  amounts?: string[];
+  proofs?: string[][];
+} = {}) {
+  const contractInterface = new Interface(MERKL_CLAIM_ABI);
+
+  return contractInterface.encodeFunctionData('claim', [
+    users,
+    tokens,
+    amounts,
+    proofs,
+  ]);
+}
 
 describe('mapLocalTransaction', () => {
   it('maps a pending native send to a Send activity', () => {
@@ -797,6 +824,45 @@ describe('mapLocalTransaction', () => {
         },
         methodId: '0xd0e30db0',
         transactionType: TransactionType.contractInteraction,
+      },
+    });
+  });
+
+  it('maps musdClaim to claimMusdBonus with hash only', () => {
+    const transaction = {
+      chainId: CHAIN_IDS.LINEA_MAINNET,
+      id: 'musd-claim-id',
+      hash: '0xmusdclaim',
+      status: TransactionStatus.submitted,
+      time: 1778633325000,
+      type: TransactionType.musdClaim,
+      txParams: {
+        from,
+        to: merklDistributor,
+        value: '0x0',
+        data: encodeMerklClaimCalldata(),
+      },
+    };
+    const transactionGroup = {
+      hasCancelled: false,
+      hasRetried: false,
+      initialTransaction: transaction,
+      nonce: '0x1',
+      primaryTransaction: transaction,
+      transactions: [transaction],
+    } as unknown as TransactionGroup;
+
+    const item = mapLocalTransaction(transactionGroup);
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
+      type: 'claimMusdBonus',
+      chainId: 'eip155:59144',
+      status: 'pending',
+      timestamp: 1778633325000,
+      data: {
+        hash: '0xmusdclaim',
       },
     });
   });

@@ -26,6 +26,7 @@ import { toAssetId } from '../../shared/lib/asset-utils';
 import { mapKeyringTransaction } from '../../shared/lib/activity/adapters/keyring-transaction';
 import { mapLocalTransaction } from '../../shared/lib/activity/adapters/local-transaction';
 import { isProtectedByEnforcedSimulations } from '../pages/confirmations/utils/confirm';
+import { enrichLocalMusdClaimActivity } from './activity/enrich-local-musd-claim';
 import {
   groupAndSortTransactionsByNonce,
   smartTransactionsListSelector,
@@ -365,21 +366,27 @@ export const selectLocalActivityItems = createSelector(
         );
         const activityStatus = getBridgeActivityStatus(bridgeHistoryItem);
 
-        return mapLocalTransaction({
-          ...transactionGroup,
-          ...getSwapTokens(bridgeHistoryItem),
-          ...(activityStatus ? { activityStatus } : {}),
-          nativeAssetSymbol,
-          contractTokenMetadata,
-        });
+        return enrichLocalMusdClaimActivity(
+          mapLocalTransaction({
+            ...transactionGroup,
+            ...getSwapTokens(bridgeHistoryItem),
+            ...(activityStatus ? { activityStatus } : {}),
+            nativeAssetSymbol,
+            contractTokenMetadata,
+          }),
+          transactionGroup,
+        );
       }
 
-      return mapLocalTransaction({
-        ...transactionGroup,
-        nativeAssetSymbol,
-        contractTokenMetadata,
-        ...(sourceToken ? { sourceToken } : {}),
-      });
+      return enrichLocalMusdClaimActivity(
+        mapLocalTransaction({
+          ...transactionGroup,
+          nativeAssetSymbol,
+          contractTokenMetadata,
+          ...(sourceToken ? { sourceToken } : {}),
+        }),
+        transactionGroup,
+      );
     });
   },
 );
