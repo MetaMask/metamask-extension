@@ -37,13 +37,10 @@ import {
   parseCaipChainId,
 } from '@metamask/utils';
 import { toRelativeRoutePath } from '../routes/utils';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
 import {
   isEthAddress,
   normalizeSafeAddress,
-  // eslint-disable-next-line import-x/no-restricted-paths
-} from '../../../app/scripts/lib/multichain/address';
+} from '../../../shared/lib/multichain/address';
 import { MILLISECOND } from '../../../shared/constants/time';
 import {
   DEFAULT_ROUTE,
