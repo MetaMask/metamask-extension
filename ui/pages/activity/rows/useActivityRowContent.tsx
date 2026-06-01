@@ -64,7 +64,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           primaryToken: token,
         };
       }
-      // Source and destination in title
+      // Source and destination in title; two tokens in avatar
       case 'swap': {
         const { sourceToken, destinationToken } = activity.data;
         const sourceSymbol = sourceToken?.symbol ?? '';
@@ -78,24 +78,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           secondaryToken: sourceToken,
         };
       }
-      case 'wrap': {
-        const { sourceToken, destinationToken } = activity.data;
-        const sourceSymbol = sourceToken?.symbol;
-        const destinationSymbol = destinationToken?.symbol;
-        const subtitle =
-          sourceSymbol && destinationSymbol
-            ? `${sourceSymbol} → ${destinationSymbol}`
-            : t(labelKeys.description.key, [destinationSymbol ?? '']);
-
-        return {
-          avatarTokens: [sourceToken?.assetId, destinationToken?.assetId],
-          title: t(labelKeys.title.key, [sourceSymbol ?? '']),
-          subtitle,
-          primaryToken: destinationToken,
-          secondaryToken: sourceToken,
-        };
-      }
-      case 'unwrap':
+      // Token in title; source and destination in subtitle; two tokens in avatar
       case 'convert': {
         const { sourceToken, destinationToken } = activity.data;
         const sourceSymbol = sourceToken?.symbol;
@@ -107,6 +90,41 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
 
         return {
           avatarTokens: [sourceToken?.assetId, destinationToken?.assetId],
+          title: t(labelKeys.title.key, [destinationSymbol ?? '']),
+          subtitle,
+          primaryToken: destinationToken,
+          secondaryToken: sourceToken,
+        };
+      }
+      // Token in title; source and destination in subtitle; one token in avatar
+      case 'wrap': {
+        const { sourceToken, destinationToken } = activity.data;
+        const sourceSymbol = sourceToken?.symbol;
+        const destinationSymbol = destinationToken?.symbol;
+        const subtitle =
+          sourceSymbol && destinationSymbol
+            ? `${sourceSymbol} → ${destinationSymbol}`
+            : t(labelKeys.description.key, [destinationSymbol ?? '']);
+
+        return {
+          avatarTokens: [sourceToken?.assetId],
+          title: t(labelKeys.title.key, [sourceSymbol ?? '']),
+          subtitle,
+          primaryToken: destinationToken,
+          secondaryToken: sourceToken,
+        };
+      }
+      case 'unwrap': {
+        const { sourceToken, destinationToken } = activity.data;
+        const sourceSymbol = sourceToken?.symbol;
+        const destinationSymbol = destinationToken?.symbol;
+        const subtitle =
+          sourceSymbol && destinationSymbol
+            ? `${sourceSymbol} → ${destinationSymbol}`
+            : t(labelKeys.description.key, [destinationSymbol ?? '']);
+
+        return {
+          avatarTokens: [destinationToken?.assetId],
           title: t(labelKeys.title.key, [destinationSymbol ?? '']),
           subtitle,
           primaryToken: destinationToken,
