@@ -42,8 +42,8 @@ Steps to mark a full pass of QA complete.
 - Send a transaction and sign a message (https://danfinlay.github.io/js-eth-personal-sign-examples/) for each keyring type
   - hd keyring
   - imported keyring
-- Change network from mainnet → ropsten → rinkeby → localhost (ganache)
-- Ganache set blocktime to simulate retryTx in MetaMask
+- Change network from mainnet → ropsten → rinkeby → localhost (Anvil)
+- Configure Anvil's block time (`anvil --block-time <seconds>`) to simulate retryTx in MetaMask
 - Copy public key to clipboard
 - Export private key
 

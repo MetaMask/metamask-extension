@@ -300,6 +300,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     rewardsSeasonStatuses: false,
     rewardsSubscriptionTokens: false,
     rewardsPointsEstimateHistory: false,
+    rewardsVipPerpsFees: false,
   },
   NotificationServicesPushController: {
     fcmToken: false,

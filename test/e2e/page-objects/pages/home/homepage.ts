@@ -1,6 +1,5 @@
 import { WebElement } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
-import { Ganache } from '../../../seeder/ganache';
 import { Anvil } from '../../../seeder/anvil';
 import HeaderNavbar from '../header-navbar';
 import { getCleanAppState, regularDelayMs } from '../../../helpers';
@@ -52,10 +51,6 @@ class HomePage {
     tag: 'h6',
   };
 
-  private readonly erc20TokenDropdown = {
-    testId: 'asset-list-control-bar-action-button',
-  };
-
   private readonly fundYourWalletBanner = {
     text: 'Fund your wallet',
   };
@@ -63,6 +58,11 @@ class HomePage {
   private readonly loadingOverlay = {
     text: 'Connecting to Localhost 8545',
   };
+
+  private readonly lowValueAssetsToggle =
+    '[data-testid="low-value-assets-toggle"]';
+
+  private readonly lowValueAssetsToggleExpanded = `${this.lowValueAssetsToggle}[aria-expanded="true"]`;
 
   private readonly nftTab = {
     testId: 'account-overview__nfts-tab',
@@ -87,10 +87,6 @@ class HomePage {
   private readonly solanaAccountIcon = 'img[src="./images/solana-logo.svg"]';
 
   protected readonly swapButton: string = '[data-testid="eth-overview-swap"]';
-
-  private readonly refreshErc20Tokens = {
-    testId: 'refreshList',
-  };
 
   private readonly storageErrorToast = '[data-testid="storage-error-toast"]';
 
@@ -151,6 +147,25 @@ class HomePage {
       throw e;
     }
     console.log('Home page is loaded');
+  }
+
+  private async expandLowValueAssetsIfPresent(): Promise<void> {
+    let toggle;
+
+    try {
+      toggle = await this.driver.findElement(this.lowValueAssetsToggle, 1000);
+    } catch {
+      return;
+    }
+
+    if ((await toggle.getAttribute('aria-expanded')) === 'true') {
+      return;
+    }
+
+    await this.driver.clickElement(this.lowValueAssetsToggle);
+    await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded, {
+      timeout: 5000,
+    });
   }
 
   async waitForNetworkAndDOMReady(): Promise<void> {
@@ -309,12 +324,6 @@ class HomePage {
     await this.driver.clickElement(this.portfolioLink);
   }
 
-  async refreshErc20TokenList(): Promise<void> {
-    console.log(`Refresh the ERC20 token list`);
-    await this.driver.clickElement(this.erc20TokenDropdown);
-    await this.driver.clickElement(this.refreshErc20Tokens);
-  }
-
   async startSendFlow(): Promise<void> {
     await this.driver.clickElement(this.sendButton);
   }
@@ -461,6 +470,7 @@ class HomePage {
     expectedTokenBalance: string,
     symbol: string,
   ): Promise<void> {
+    await this.expandLowValueAssetsIfPresent();
     await this.driver.waitForSelector({
       css: '[data-testid="multichain-token-list-item-value"]',
       text: `${expectedTokenBalance} ${symbol}`,
@@ -519,7 +529,7 @@ class HomePage {
   }
 
   async checkLocalNodeBalanceIsDisplayed(
-    localNode?: Ganache | Anvil,
+    localNode?: Anvil,
     address = null,
   ): Promise<void> {
     let expectedBalance: string;

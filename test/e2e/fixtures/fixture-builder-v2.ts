@@ -10,6 +10,7 @@ import type {
   MultichainAssetsRatesControllerState,
   NftControllerState,
   RatesControllerState,
+  TokenRatesControllerState,
   TokenBalancesControllerState,
   TokenListMap,
   TokenListState,
@@ -20,6 +21,7 @@ import { type NameControllerState, NameType } from '@metamask/name-controller';
 import type { PersistedSnapControllerState } from '@metamask/snaps-controllers';
 import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
+import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import type { SelectedNetworkControllerState } from '@metamask/selected-network-controller';
 import type {
   PermissionConstraint,
@@ -40,6 +42,7 @@ import {
 } from '@metamask/transaction-controller';
 import type { AssetsControllerState } from '@metamask/assets-controller';
 import type { PerpsControllerState } from '@metamask/perps-controller';
+import type { PasskeyControllerState } from '@metamask/passkey-controller';
 import type { AppStateControllerState } from '../../../app/scripts/controllers/app-state-controller';
 import type { MetaMetricsControllerState } from '../../../app/scripts/controllers/metametrics-controller';
 import type { OnboardingControllerState } from '../../../app/scripts/controllers/onboarding';
@@ -306,6 +309,11 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withPasskeyController(data: Partial<PasskeyControllerState>): this {
+    merge(this.fixture.data.PasskeyController, data);
+    return this;
+  }
+
   withPermissionController(
     data: Partial<PermissionControllerState<PermissionConstraint>>,
   ): this {
@@ -321,6 +329,13 @@ class FixtureBuilderV2 {
       (this.fixture.data as Record<string, unknown>).PerpsController,
       data as Record<string, unknown>,
     );
+    return this;
+  }
+
+  withRemoteFeatureFlagController(
+    data: Partial<RemoteFeatureFlagControllerState>,
+  ): this {
+    merge(this.fixture.data.RemoteFeatureFlagController, data);
     return this;
   }
 
@@ -359,6 +374,11 @@ class FixtureBuilderV2 {
       (this.fixture.data as Record<string, unknown>).TokenListController,
       data,
     );
+    return this;
+  }
+
+  withTokenRatesController(data: Partial<TokenRatesControllerState>): this {
+    merge(this.fixture.data.TokenRatesController, data);
     return this;
   }
 
