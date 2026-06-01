@@ -208,18 +208,20 @@ function AlertDetails({
 }) {
   const t = useI18nContext();
   const severityStyle = getSeverityStyle(selectedAlert.severity);
-  const alertDetailsBackgroundColor =
-    selectedAlert.alertDetailsBackgroundColor ?? severityStyle.background;
+  const customAlertBg = selectedAlert.alertDetailsBackgroundColor;
 
   return (
     <Box
       key={selectedAlert.key}
       className="inline-block w-full rounded-sm"
       padding={customDetails ? 0 : 2}
+      backgroundColor={
+        customDetails || customAlertBg ? undefined : severityStyle.background
+      }
       style={
-        customDetails
-          ? undefined
-          : { backgroundColor: `var(--color-${alertDetailsBackgroundColor})` }
+        !customDetails && customAlertBg
+          ? { backgroundColor: `var(--color-${customAlertBg})` }
+          : undefined
       }
     >
       {customDetails ?? (
