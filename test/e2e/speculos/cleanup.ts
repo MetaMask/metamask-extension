@@ -57,7 +57,10 @@ export async function cleanupSpeculosEnvironment(): Promise<void> {
   await timeout(2000);
 }
 
-/** Kill processes matching a command-line pattern (via pkill / taskkill). */
+/**
+ * Kill processes matching a command-line pattern (via pkill / taskkill).
+ * @param pattern
+ */
 function killByPattern(pattern: string): Promise<void> {
   return new Promise((resolve) => {
     const cmd = process.platform === 'win32' ? 'taskkill' : 'pkill';
@@ -69,7 +72,10 @@ function killByPattern(pattern: string): Promise<void> {
   });
 }
 
-/** Find and SIGKILL all processes listening on the given TCP port. */
+/**
+ * Find and SIGKILL all processes listening on the given TCP port.
+ * @param port
+ */
 function killPort(port: number): Promise<void> {
   return new Promise((resolve, reject) => {
     const cmd = process.platform === 'win32' ? 'netstat' : 'lsof';
@@ -107,7 +113,12 @@ function killPort(port: number): Promise<void> {
   });
 }
 
-/** Execute a command with a timeout, rejecting on non-zero exit. */
+/**
+ * Execute a command with a timeout, rejecting on non-zero exit.
+ * @param cmd
+ * @param args
+ * @param timeoutMs
+ */
 function run(cmd: string, args: string[], timeoutMs: number): Promise<void> {
   return new Promise((resolve, reject) => {
     const proc = execFile(cmd, args, { timeout: timeoutMs }, (err) => {
@@ -118,22 +129,5 @@ function run(cmd: string, args: string[], timeoutMs: number): Promise<void> {
       }
     });
     proc.on('error', reject);
-  });
-}
-
-/** Execute a command and capture its stdout/stderr, rejecting on non-zero exit. */
-function runCapture(
-  cmd: string,
-  args: string[],
-  timeoutMs: number,
-): Promise<{ stdout: string; stderr: string }> {
-  return new Promise((resolve, reject) => {
-    execFile(cmd, args, { timeout: timeoutMs }, (err, stdout, stderr) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve({ stdout: stdout ?? '', stderr: stderr ?? '' });
-      }
-    });
   });
 }

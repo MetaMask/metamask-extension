@@ -1,3 +1,5 @@
+export const SPECULOS_WS_BRIDGE_PORT = 9876;
+
 type SpeculosMockDevice = {
   vendorId: number;
   productId: number;
@@ -25,8 +27,6 @@ export type SpeculosGlobals = {
   WS: typeof WebSocket;
   win: Window & {
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    __speculosWS?: typeof WebSocket;
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     __speculosWebHIDMockInstalled?: boolean;
     // eslint-disable-next-line @typescript-eslint/naming-convention
     __speculosWebSocketPort?: number;
@@ -38,6 +38,12 @@ export type SpeculosGlobals = {
   nav: Navigator;
 };
 
+/**
+ * Installs a WebHID mock that forwards Ledger HID frames to the Speculos
+ * ApduBridge over WebSocket (ws://localhost:{wsPort}).
+ * @param wsPort
+ * @param globals
+ */
 export function installSpeculosWebHidMock(
   wsPort: number,
   globals: SpeculosGlobals,
@@ -85,10 +91,6 @@ export function installSpeculosWebHidMock(
     }
     ws = new _WS(`ws://localhost:${wsPort}`);
 
-    ws.onopen = () => {
-      // connected
-    };
-
     ws.onmessage = (event) => {
       const response = JSON.parse(event.data as string) as {
         type: string;
@@ -120,6 +122,11 @@ export function installSpeculosWebHidMock(
         const pending = pendingExchanges.get(response.id);
         if (pending) {
           pendingExchanges.delete(response.id);
+          pending.resolve();
+        }
+      } else if (response.type === 'HID_FRAME_ACK') {
+        const pending = pendingExchanges.get(response.id);
+        if (pending) {
           pending.resolve();
         }
       } else if (response.type === 'APDU_ERROR') {
@@ -163,7 +170,6 @@ export function installSpeculosWebHidMock(
         return;
       }
 
-      // Queue until the socket is open instead of guessing with a timeout.
       if (!ws || ws.readyState !== _WS.CONNECTING) {
         connectWebSocket();
       }

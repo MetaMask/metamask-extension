@@ -16,6 +16,7 @@ const SPECULOS_ENTRY = 'scripts/speculos-webhid-mock';
 const INJECTION_ANCHORS = [
   '<script src="bootstrap.',
   '<script src="runtime.',
+  '<script src="offscreen.',
 ];
 
 type WebpackEntryObject = Record<

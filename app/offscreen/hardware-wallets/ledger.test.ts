@@ -307,19 +307,24 @@ describe('Ledger Offscreen', () => {
           .mockImplementation(() => undefined);
         const originalInTest = process.env.IN_TEST;
         delete process.env.IN_TEST;
-        mockOpenConnected.mockResolvedValue(null);
-        mockGetDevices.mockResolvedValue([]);
+        try {
+          mockOpenConnected.mockResolvedValue(null);
+          mockGetDevices.mockResolvedValue([]);
 
-        const response = await sendAction(LedgerAction.makeApp);
+          const response = await sendAction(LedgerAction.makeApp);
 
-        expect(response.success).toBe(false);
-        expect(response.payload).toEqual({
-          error: expect.objectContaining({
-            message: expect.stringContaining('No permitted Ledger device'),
-          }),
-        });
-        process.env.IN_TEST = originalInTest;
-        consoleSpy.mockRestore();
+          expect(response.success).toBe(false);
+          expect(response.payload).toEqual({
+            error: expect.objectContaining({
+              message: expect.stringContaining('No permitted Ledger device'),
+            }),
+          });
+        } finally {
+          if (originalInTest !== undefined) {
+            process.env.IN_TEST = originalInTest;
+          }
+          consoleSpy.mockRestore();
+        }
       });
     });
 
