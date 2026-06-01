@@ -93,7 +93,7 @@ const ONBOARDING_IMPORT_WALLET = {
   tbt: {
     p75: { warn: 575, fail: 625 },
     p95: { warn: 675, fail: 725 },
-    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+    ciMultiplier: CI_MULTIPLIER.DEFAULT,
   },
 } satisfies ThresholdConfig;
 
@@ -138,7 +138,7 @@ const ONBOARDING_NEW_WALLET = {
   tbt: {
     p75: { warn: 400, fail: 425 },
     p95: { warn: 450, fail: 500 },
-    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+    ciMultiplier: CI_MULTIPLIER.DEFAULT,
   },
 } satisfies ThresholdConfig;
 
@@ -168,7 +168,7 @@ const IMPORT_SRP_HOME = {
   tbt: {
     p75: { warn: 4000, fail: 4350 },
     p95: { warn: 4250, fail: 4625 },
-    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+    ciMultiplier: CI_MULTIPLIER.DEFAULT,
   },
 } satisfies ThresholdConfig;
 
@@ -193,7 +193,7 @@ const SWAP = {
   tbt: {
     p75: { warn: 525, fail: 575 },
     p95: { warn: 575, fail: 625 },
-    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+    ciMultiplier: CI_MULTIPLIER.DEFAULT,
   },
 } satisfies ThresholdConfig;
 
@@ -218,7 +218,7 @@ const SEND_TRANSACTIONS = {
   tbt: {
     p75: { warn: 200, fail: 225 },
     p95: { warn: 200, fail: 225 },
-    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+    ciMultiplier: CI_MULTIPLIER.DEFAULT,
   },
 } satisfies ThresholdConfig;
 
@@ -233,7 +233,7 @@ const ASSET_DETAILS = {
   tbt: {
     p75: { warn: 125, fail: 150 },
     p95: { warn: 150, fail: 175 },
-    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+    ciMultiplier: CI_MULTIPLIER.DEFAULT,
   },
 } satisfies ThresholdConfig;
 
@@ -248,7 +248,7 @@ const SOLANA_ASSET_DETAILS = {
   tbt: {
     p75: { warn: 50, fail: 75 },
     p95: { warn: 75, fail: 100 },
-    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+    ciMultiplier: CI_MULTIPLIER.DEFAULT,
   },
 } satisfies ThresholdConfig;
 
