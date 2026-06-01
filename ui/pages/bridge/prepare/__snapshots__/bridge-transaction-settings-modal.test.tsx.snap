@@ -64,10 +64,10 @@ exports[`BridgeTransactionSettingsModal should render the component, with initia
               Slippage tolerance
             </p>
             <div
-              class="mm-box"
+              class=""
             >
               <div
-                class="mm-box mm-box--display-flex"
+                class="flex"
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -212,10 +212,10 @@ exports[`BridgeTransactionSettingsModal should render the component, with initia
               Slippage tolerance
             </p>
             <div
-              class="mm-box"
+              class=""
             >
               <div
-                class="mm-box mm-box--display-flex"
+                class="flex"
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"

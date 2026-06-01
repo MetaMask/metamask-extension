@@ -127,7 +127,7 @@ export type LegacyBackgroundApiServiceGetGlobalChainIdAction = {
 /**
  * Removes an account from state / storage.
  *
- * @param address - A hex address
+ * @param address - The account address, not CAIP-10 formatted.
  */
 export type LegacyBackgroundApiServiceRemoveAccountAction = {
   type: `LegacyBackgroundApiService:removeAccount`;
