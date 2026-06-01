@@ -46,17 +46,6 @@ export const VirtualizedList = <TItem,>({
   const disabled = process.env.IN_TEST;
   const [scrollMargin, setScrollMargin] = useState(0);
 
-  const listRef = useCallback(
-    (node: HTMLDivElement | null) => {
-      if (!enableScrollMargin || !node) {
-        return;
-      }
-
-      setScrollMargin(node.offsetTop);
-    },
-    [enableScrollMargin],
-  );
-
   const virtualizer = useVirtualizer({
     count: data.length,
     getScrollElement: () =>
@@ -72,6 +61,17 @@ export const VirtualizedList = <TItem,>({
     ...(scrollToFn ? { scrollToFn } : {}),
     ...(enableScrollMargin ? { scrollMargin } : {}),
   });
+
+  const listRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (!enableScrollMargin || !node) {
+        return;
+      }
+
+      setScrollMargin(node.offsetTop);
+    },
+    [enableScrollMargin],
+  );
 
   useEffect(() => {
     if (scrollContainerRef?.current) {
@@ -116,18 +116,19 @@ export const VirtualizedList = <TItem,>({
         style={{ height: virtualizer.getTotalSize() }}
       >
         {virtualItems.map((virtualItem) => {
-          const item = data[virtualItem.index];
+          const { index } = virtualItem;
+          const item = data[index];
           const key = keyExtractor
-            ? keyExtractor(item, virtualItem.index)
+            ? keyExtractor(item, index)
             : virtualItem.key.toString();
 
           return (
             <div
               key={key}
-              data-index={virtualItem.index}
+              data-index={index}
               ref={(node) => {
                 virtualizer.measureElement(node);
-                itemRef?.(node, { item, index: virtualItem.index });
+                itemRef?.(node, { item, index });
               }}
               className="absolute top-0 left-0 w-full"
               style={{
@@ -136,7 +137,7 @@ export const VirtualizedList = <TItem,>({
                 }px)`,
               }}
             >
-              {renderItem({ item, index: virtualItem.index })}
+              {renderItem({ item, index })}
             </div>
           );
         })}
