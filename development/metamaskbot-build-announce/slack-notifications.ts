@@ -61,26 +61,31 @@ const SEVERE_FAIL_MULTIPLIER = 2.0; // >2x the fail threshold
 // ---------------------------------------------------------------------------
 
 let ownershipCache: OwnershipMap | null = null;
+let ownershipCachePath: string | null = null;
 
 /**
  * Loads benchmark -> team mapping from the ownership config file.
  * Returns an empty map if the file does not exist yet (#6841 not landed).
+ *
+ * The cache is invalidated whenever the resolved `configPath` differs from
+ * the previously cached path — otherwise a later call with a different
+ * `configPath` would silently return the stale earlier-cached result.
  *
  * @param configPath - Optional path to the ownership JSON file.
  */
 export async function loadOwnershipMap(
   configPath?: string,
 ): Promise<OwnershipMap> {
-  if (ownershipCache) {
-    return ownershipCache;
-  }
-
   const resolved =
     configPath ??
     path.resolve(
       __dirname,
       '../../test/e2e/benchmarks/benchmark-ownership.json',
     );
+
+  if (ownershipCache && ownershipCachePath === resolved) {
+    return ownershipCache;
+  }
 
   try {
     const raw = await fs.readFile(resolved, 'utf-8');
@@ -89,6 +94,7 @@ export async function loadOwnershipMap(
     // Ownership config not yet available — fall back to PR author
     ownershipCache = {};
   }
+  ownershipCachePath = resolved;
   return ownershipCache;
 }
 
