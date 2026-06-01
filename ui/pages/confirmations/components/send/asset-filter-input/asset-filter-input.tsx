@@ -27,6 +27,7 @@ export const AssetFilterInput = ({
   return (
     <Box paddingLeft={4} paddingRight={4} paddingBottom={2}>
       <TextFieldSearch
+        className="mm-text-field-search--inset-focus-outline"
         borderRadius={BorderRadius.LG}
         placeholder={placeholder ?? t('searchForAnAssetToSend')}
         value={searchQuery}

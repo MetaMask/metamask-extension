@@ -6,4 +6,10 @@
   ::-webkit-search-results-decoration {
     display: none;
   }
+
+  @supports (-moz-appearance: none) {
+    &--inset-focus-outline.mm-text-field--focused {
+      outline-offset: -2px;
+    }
+  }
 }

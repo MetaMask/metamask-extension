@@ -164,6 +164,7 @@ export const MultichainAddressRowsList = ({
     >
       <Box paddingLeft={4} paddingRight={4}>
         <TextFieldSearch
+          className="mm-text-field-search--inset-focus-outline"
           size={TextFieldSearchSize.Lg}
           placeholder={t('searchNetworks')}
           value={searchPattern}
