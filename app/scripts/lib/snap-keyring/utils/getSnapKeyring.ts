@@ -1,9 +1,7 @@
 import { SnapKeyring } from '@metamask/eth-snap-keyring';
 import {
-  KeyringControllerAddNewKeyringAction,
-  KeyringControllerGetKeyringsByTypeAction,
-  KeyringTypes,
-} from '@metamask/keyring-controller';
+  SnapAccountServiceGetLegacySnapKeyringAction,
+} from '@metamask/snap-account-service';
 import { Messenger } from '@metamask/messenger';
 
 /**
@@ -15,24 +13,9 @@ import { Messenger } from '@metamask/messenger';
 export async function getSnapKeyring(
   messenger: Messenger<
     string,
-    | KeyringControllerGetKeyringsByTypeAction
-    | KeyringControllerAddNewKeyringAction,
+    SnapAccountServiceGetLegacySnapKeyringAction,
     never
   >,
 ): Promise<SnapKeyring> {
-  let [snapKeyring] = messenger.call(
-    'KeyringController:getKeyringsByType',
-    KeyringTypes.snap,
-  );
-
-  if (!snapKeyring) {
-    await messenger.call('KeyringController:addNewKeyring', KeyringTypes.snap);
-
-    [snapKeyring] = messenger.call(
-      'KeyringController:getKeyringsByType',
-      KeyringTypes.snap,
-    );
-  }
-
-  return snapKeyring as SnapKeyring;
+  return await messenger.call('SnapAccountService:getLegacySnapKeyring');
 }
