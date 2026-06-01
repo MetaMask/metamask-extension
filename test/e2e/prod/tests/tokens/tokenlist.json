@@ -235,6 +235,86 @@
       "symbol": "USDT (BRIDGED)",
       "decimals": 6,
       "logoURI": "https://token-list.mantle.xyz/data/USDT/logo.svg"
+    },
+    {
+    "name": "Tether",
+    "address": "0x88f7F2b685F9692caf8c478f5BADF09eE9B1Cc13",
+    "symbol": "USDT",
+    "decimals": 6,
+    "chainId": 1776,
+    "logoUri": "https://imagedelivery.net/lPzngbR8EltRfBOi_WYaXw/e46e1742-fb16-4393-cc40-83b20e875400/public"
+    },
+    {
+    "name": "wETH",
+    "address": "0x83A15000b753AC0EeE06D2Cb41a69e76D0D5c7F7",
+    "symbol": "wETH",
+    "decimals": 18,
+    "chainId": 1776,
+    "logoUri": "https://imagedelivery.net/lPzngbR8EltRfBOi_WYaXw/0d22b678-a78f-4e64-5a7d-d9bd0f261f00/public"
+    },
+    {
+    "name": "transfer/channel-148/uusdc IBC token",
+    "address": "0x2a25fbD67b3aE485e461fe55d9DbeF302B7D3989",
+    "symbol": "USDC",
+    "decimals": 6,
+    "chainId": 1776,
+    "logoUri": "https://imagedelivery.net/lPzngbR8EltRfBOi_WYaXw/c09b0eff-fd4a-4756-e5c9-f6bf8ac0c900/public"
+    },
+    {
+    "name": "transfer/channel-1/uatom IBC token",
+    "address": "0x67F24D38c67E047ad0e7824AFdAeE1CA53Ade7E8",
+    "symbol": "ATOM",
+    "decimals": 6,
+    "chainId": 1776,
+    "logoUri": "https://imagedelivery.net/lPzngbR8EltRfBOi_WYaXw/68519b3d-1179-45f3-711d-be5d2ec00e00/public"
+    },
+    {
+    "name": "transfer/channel-152/utia IBC token",
+    "address": "0x55Fc9143D584FD327306Bf09e9267703E1Bc489e",
+    "symbol": "TIA",
+    "decimals": 6,
+    "chainId": 1776,
+    "logoUri": "https://imagedelivery.net/lPzngbR8EltRfBOi_WYaXw/323dfe0d-e86a-491a-afc0-08bc95951f00/public"
+    },
+    {
+    "name": "stINJ",
+    "address": "0x5965AeAe85F895403020FB92b845Edc51757f940",
+    "symbol": "stINJ",
+    "decimals": 18,
+    "chainId": 1776,
+    "logoUri": "https://imagedelivery.net/lPzngbR8EltRfBOi_WYaXw/22979060-9e84-4c03-e48b-d03830f2d300/public"
+    },
+    {
+    "name": "Wrapped INJ",
+    "address": "0x0000000088827d2d103ee2d9A6b781773AE03FfB",
+    "symbol": "WINJ",
+    "decimals": 18,
+    "chainId": 1776,
+    "logoUri": "https://imagedelivery.net/lPzngbR8EltRfBOi_WYaXw/7123d071-0def-459a-16b9-d85e8ea04700/public"
+    },
+    {
+    "name": "Bitcoin Silver",
+    "address": "0x0eb316Eccb5E23ee5edAF9386890614981633d95",
+    "symbol": "BTS",
+    "decimals": 6,
+    "chainId": 1776,
+    "logoUri": "https://imagedelivery.net/lPzngbR8EltRfBOi_WYaXw/63a231c0-d1c3-4901-1e28-7c4410dfaa00/public"
+    },
+    {
+    "name": "Procter & Gamble Company",
+    "address": "0x041f0aEac13Dc8d68d1D409d9223fF07C527fF5d",
+    "symbol": "PG",
+    "decimals": 18,
+    "chainId": 1776,
+    "logoUri": "https://imagedelivery.net/lPzngbR8EltRfBOi_WYaXw/63a231c0-d1c3-4901-1e28-7c4410dfaa00/public"
+    },
+    {
+    "name": "yINJ",
+    "address": "0x2d6E0e0c209D79b43f5d3D62e93D6A9f1e9317BD",
+    "symbol": "yINJ",
+    "decimals": 18,
+    "chainId": 1776,
+    "logoUri": "https://imagedelivery.net/lPzngbR8EltRfBOi_WYaXw/63a231c0-d1c3-4901-1e28-7c4410dfaa00/public"
     }
   ]
 }

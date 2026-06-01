@@ -59,17 +59,22 @@ class TokenManagementPage {
       console.log('[TokenManagement] Clicking 3-dots button to open asset options menu...');
     }
 
-    const maxAttempts = skipInitialClick ? 1 : 2;
+    // Even when callers think the dropdown is open, UI transitions can close it.
+    // Keep a second attempt that explicitly opens the 3-dots menu as a fallback.
+    const maxAttempts = 2;
 
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-      if (!skipInitialClick) {
+      const shouldClickAssetOptions =
+        !skipInitialClick || (skipInitialClick && attempt > 1);
+
+      if (shouldClickAssetOptions) {
         await this.driver.waitForSelector(this.assetOptionsButton, {
           timeout: 10000,
         });
         await this.driver.clickElement(this.assetOptionsButton);
         await this.driver.delay(500);
       } else if (attempt === 1) {
-        // When skipping initial click, just add a small delay for dropdown to be ready
+        // On first skip attempt, only wait for the already-open dropdown to settle.
         await this.driver.delay(300);
       }
 
