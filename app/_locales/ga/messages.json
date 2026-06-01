@@ -37,9 +37,6 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "Earráid"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "Cód QR neamhbhailí. Scanáil an cód QR sioncrónaithe den sparán crua-earraí le do thoil."
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "Scanáil cód QR"
   },
@@ -3703,10 +3700,6 @@
   "onboardingMetametricsTitle": {
     "message": "Cabhraigh linn MetaMask a fheabhsú"
   },
-  "onboardingOptionIcon": {
-    "message": "Deilbhín $1",
-    "description": "$1 is the icon name"
-  },
   "onboardingSignInWith": {
     "message": "Sínigh isteach le $1",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -4652,11 +4645,11 @@
   },
   "securitySocialLoginEnabledDescription": {
     "message": "Bain úsáid as do logáil isteach $1 agus do phasfhocal MetaMask chun do chuntas agus Frásaí Aisghabhála Rúnda a aisghabháil.",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySocialLoginLabel": {
     "message": "AISGHNÍOMH $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySrpLabel": {
     "message": "FRÁSAÍ AISGHABHÁLA RÚNDA"

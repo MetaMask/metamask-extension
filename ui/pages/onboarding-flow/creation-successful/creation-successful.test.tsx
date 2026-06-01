@@ -56,9 +56,15 @@ jest.mock('../../../hooks/useSidePanelEnabled');
 
 // Mock background connection to prevent "Background connection not initialized" warnings
 const mockRemoveDeferredDeepLink = jest.fn().mockResolvedValue(undefined);
+const mockSetIsBackupAndSyncFeatureEnabled = jest
+  .fn()
+  .mockResolvedValue(undefined);
+const mockToggleExternalServices = jest.fn().mockResolvedValue(undefined);
 const backgroundConnectionMock = new Proxy(
   {
     removeDeferredDeepLink: mockRemoveDeferredDeepLink,
+    setIsBackupAndSyncFeatureEnabled: mockSetIsBackupAndSyncFeatureEnabled,
+    toggleExternalServices: mockToggleExternalServices,
   },
   {
     get: (target, prop) => {
@@ -101,6 +107,7 @@ describe('Wallet Ready Page', () => {
     },
     appState: {
       externalServicesOnboardingToggleState: true,
+      backupAndSyncOnboardingToggleState: true,
     },
   };
 
@@ -178,6 +185,51 @@ describe('Wallet Ready Page', () => {
     fireEvent.click(doneButton);
     await waitFor(() => {
       expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    });
+  });
+
+  describe('Backup & Sync onboarding intent', () => {
+    it('disables the backup & sync main feature on completion when the onboarding flag is off', async () => {
+      const mockStore = configureMockStore([thunk])({
+        ...mockState,
+        appState: {
+          ...mockState.appState,
+          backupAndSyncOnboardingToggleState: false,
+        },
+      });
+
+      const { getByTestId } = renderWithProvider(
+        <CreationSuccessful />,
+        mockStore,
+      );
+
+      fireEvent.click(getByTestId('onboarding-complete-done'));
+
+      // Only the main flag needs to be disabled: account/contact syncing gate
+      // on `isBackupAndSyncEnabled` downstream, so disabling main is sufficient.
+      await waitFor(() => {
+        expect(mockSetIsBackupAndSyncFeatureEnabled).toHaveBeenCalledWith(
+          'main',
+          false,
+        );
+      });
+      expect(mockSetIsBackupAndSyncFeatureEnabled).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not call the backup & sync controller on completion when the onboarding flag is on (default)', async () => {
+      const mockStore = configureMockStore([thunk])(mockState);
+
+      const { getByTestId } = renderWithProvider(
+        <CreationSuccessful />,
+        mockStore,
+      );
+
+      fireEvent.click(getByTestId('onboarding-complete-done'));
+
+      await waitFor(() => {
+        expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      });
+      expect(mockSetIsBackupAndSyncFeatureEnabled).not.toHaveBeenCalled();
     });
   });
 

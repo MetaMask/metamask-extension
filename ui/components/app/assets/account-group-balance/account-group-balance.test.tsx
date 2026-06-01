@@ -105,8 +105,8 @@ describe('AccountGroupBalance', () => {
     );
 
   const actAssertSkeletonPresent = () => {
-    const { container } = renderComponent();
-    expect(container.querySelector('.mm-skeleton')).toBeTruthy();
+    const { getByTestId } = renderComponent();
+    expect(getByTestId('account-group-balance-skeleton')).toBeInTheDocument();
   };
 
   const actAssertBalanceContent = (props: {
