@@ -707,6 +707,18 @@ export async function mockBenchmarkEndpoints(
       .thenCallback(delayedResponse(400, SUBSCRIPTION_ELIGIBILITY)),
   );
 
+  // Return a non-zero balance so the "Fund your wallet" empty state never
+  // appears during the benchmark — the test wallet has 0 ETH but the empty
+  // state is not what we are benchmarking here.
+  endpoints.push(
+    await server
+      .forPost(/^https:\/\/mainnet\.infura\.io/u)
+      .withJsonBodyIncluding({ method: 'eth_getBalance' })
+      .asPriority(MOCK_PRIORITIES.HIGH_PRIORITY)
+      .always()
+      .thenCallback(delayedResponse(800, jsonRpcResponse('0xde0b6b3a7640000'))), // 1 ETH.
+  );
+
   endpoints.push(
     await server
       .forPost(/^https:\/\/mainnet\.infura\.io/u)
