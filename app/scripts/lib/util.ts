@@ -1,4 +1,3 @@
-import ipRegex from 'ip-regex';
 import { AccessList } from '@ethereumjs/tx';
 import {
   TransactionEnvelopeType,
@@ -45,6 +44,7 @@ import {
   getIsQuicknodeEndpointUrl,
   KNOWN_CUSTOM_ENDPOINT_URLS,
 } from '../../../shared/lib/network-utils';
+import { isLocalhostOrIPAddress } from '../../../shared/lib/url-utils';
 // Re-export install type utilities from dedicated module to avoid circular dependencies
 // and keep the sentry bundle lightweight
 export { getInstallType, initInstallType } from './install-type';
@@ -615,33 +615,6 @@ function extractHostname(url: string): string | null {
   } catch {
     return null;
   }
-}
-
-/**
- * Check if a hostname is localhost or an IP address.
- * Public RPC providers use domain names, not raw IP addresses.
- * These should never be considered "public" endpoints even if they appear in chainlist.
- *
- * @param hostname - The hostname to check.
- * @returns True if the hostname is localhost or an IP address (v4 or v6).
- */
-function isLocalhostOrIPAddress(hostname: string): boolean {
-  const lowerHostname = hostname.toLowerCase();
-
-  // Check for localhost
-  if (lowerHostname === 'localhost') {
-    return true;
-  }
-
-  // Remove brackets from IPv6 addresses for testing (e.g., [::1] -> ::1)
-  const hostnameWithoutBrackets = lowerHostname.replace(/^\[|\]$/gu, '');
-
-  // Check for IP address (v4 or v6)
-  if (ipRegex({ exact: true }).test(hostnameWithoutBrackets)) {
-    return true;
-  }
-
-  return false;
 }
 
 // RFC 6761 special-use TLDs that should never be used by real public RPC providers

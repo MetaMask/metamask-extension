@@ -1,4 +1,21 @@
-import { getRegistrableDomain } from './url-utils';
+import { getRegistrableDomain, isLocalhostOrIPAddress } from './url-utils';
+
+describe('isLocalhostOrIPAddress', () => {
+  it.each([
+    ['localhost', true],
+    ['LOCALHOST', true],
+    ['127.0.0.1', true],
+    ['10.0.0.1', true],
+    ['8.8.8.8', true],
+    ['::1', true],
+    ['[::1]', true],
+    ['infura.io', false],
+    ['mainnet.infura.io', false],
+    ['my-custom-rpc', false],
+  ])('returns %p -> %p', (hostname, expected) => {
+    expect(isLocalhostOrIPAddress(hostname)).toBe(expected);
+  });
+});
 
 describe('getRegistrableDomain', () => {
   it('returns the last two labels for a multi-label hostname', () => {

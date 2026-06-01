@@ -1,4 +1,5 @@
 import urlLib from 'url';
+import ipRegex from 'ip-regex';
 
 export function addUrlProtocolPrefix(urlString: string) {
   let trimmed = urlString.trim();
@@ -59,6 +60,27 @@ export function isWebOrigin(origin: string | undefined | null): boolean {
 }
 
 /**
+ * Check if a hostname is localhost or an IP address.
+ * Public RPC providers use domain names, not raw IP addresses.
+ * These should never be considered "public" endpoints even if they appear in chainlist.
+ *
+ * @param hostname - The hostname to check.
+ * @returns True if the hostname is localhost or an IP address (v4 or v6).
+ */
+export function isLocalhostOrIPAddress(hostname: string): boolean {
+  const lowerHostname = hostname.toLowerCase();
+
+  if (lowerHostname === 'localhost') {
+    return true;
+  }
+
+  // Remove brackets from IPv6 addresses for testing (e.g., [::1] -> ::1)
+  const hostnameWithoutBrackets = lowerHostname.replace(/^\[|\]$/gu, '');
+
+  return ipRegex({ exact: true }).test(hostnameWithoutBrackets);
+}
+
+/**
  * Best-effort registrable domain (eTLD+1) for a URL, using the last two
  * hostname labels. Used to group RPC endpoints by provider so a single
  * provider's wide outage (e.g. *.infura.io) is treated as one failure
@@ -66,7 +88,7 @@ export function isWebOrigin(origin: string | undefined | null): boolean {
  * suffixes like ".co.uk" are not handled, which is fine for the RPC URL
  * universe but not for arbitrary web hosts.
  *
- * Localhost and IP addresses are returned verbatim.
+ * Localhost, IP literals, and single-label hosts are returned verbatim.
  *
  * @param urlString - The URL to extract a registrable domain from.
  * @returns The registrable domain, or null if the URL is invalid.
@@ -79,13 +101,7 @@ export function getRegistrableDomain(urlString: string): string | null {
 
   const { hostname } = url;
 
-  // IPv6 literal — URL.hostname wraps these in brackets.
-  if (hostname.startsWith('[')) {
-    return hostname;
-  }
-
-  // IPv4 literal or single-label host (e.g., "localhost").
-  if (/^\d+\.\d+\.\d+\.\d+$/u.test(hostname) || !hostname.includes('.')) {
+  if (!hostname.includes('.') || isLocalhostOrIPAddress(hostname)) {
     return hostname;
   }
 
