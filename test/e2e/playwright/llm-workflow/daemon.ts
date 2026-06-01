@@ -32,10 +32,7 @@ const server = createServer({
       allocatePort(),
       allocatePort(),
     ]);
-    await Promise.all([
-      releasePort(anvilAlloc),
-      releasePort(fixtureAlloc),
-    ]);
+    await Promise.all([releasePort(anvilAlloc), releasePort(fixtureAlloc)]);
     const context = createMetaMaskE2EContext({
       config: {
         ports: {
