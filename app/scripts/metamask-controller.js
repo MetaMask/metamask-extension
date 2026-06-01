@@ -5506,7 +5506,7 @@ export default class MetamaskController extends EventEmitter {
     // We "force-create" the Snap keyring right after unlocking the vault to ensure it is
     // available as soon as possible, and will (potentially) avoid locking up the
     // `KeyringController` mutex.
-    await getSnapKeyring(this.controllerMessenger),
+    await getSnapKeyring(this.controllerMessenger);
 
     const resyncAndAlignAccounts = async () => {
       // READ THIS CAREFULLY:
