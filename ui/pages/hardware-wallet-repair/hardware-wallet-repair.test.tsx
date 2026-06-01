@@ -6,8 +6,8 @@ import configureStore from '../../store/store';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useHardwareWalletConfig } from '../../contexts/hardware-wallets';
 import { HardwareWalletType } from '../../contexts/hardware-wallets/types';
-import { HardwareWalletRepair } from './hardware-wallet-repair';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
+import { HardwareWalletRepair } from './hardware-wallet-repair';
 import * as hardwareWalletRepairUtils from './hardware-wallet-repair-utils';
 import * as hardwareWalletRepairPageModule from '.';
 
