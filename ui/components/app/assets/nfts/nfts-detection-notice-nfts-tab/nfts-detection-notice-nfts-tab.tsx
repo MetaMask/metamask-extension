@@ -35,16 +35,15 @@ export default function NFTsDetectionNoticeNFTsTab() {
           dispatch(setOpenSeaEnabled(true));
         }
         dispatch(setUseNftDetection(true));
-        toast.success(
-          <ToastContent
-            dataTestId={nftDetectionEnabledToastId}
-            title={t('nftAutoDetectionEnabled')}
-          />,
-          {
-            id: nftDetectionEnabledToastId,
-            duration: autoHideToastDelay,
-          },
-        );
+        toast({
+          severity: 'success',
+          children: (
+            <ToastContent
+              dataTestId={nftDetectionEnabledToastId}
+              title={t('nftAutoDetectionEnabled')}
+            />
+          ),
+        });
         // dispatch action to detect nfts
         dispatch(detectNfts(allChainIds));
       }}

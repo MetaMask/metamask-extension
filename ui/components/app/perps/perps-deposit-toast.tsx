@@ -43,13 +43,10 @@ export function PerpsDepositToast() {
     const content = (
       <ToastContent title={title} description={description} dataTestId={id} />
     );
-    const options = { id, duration };
-
-    if (isSuccess) {
-      toast.success(content, options);
-    } else {
-      toast.error(content, options);
-    }
+    toast({
+      severity: isSuccess ? 'success' : 'danger',
+      children: content,
+    });
 
     const timeoutId = setTimeout(() => {
       clearDepositResult();
@@ -57,7 +54,7 @@ export function PerpsDepositToast() {
 
     return () => {
       clearTimeout(timeoutId);
-      toast.dismiss(id);
+      toast.dismiss();
     };
   }, [
     hasDepositResult,
@@ -73,29 +70,29 @@ export function PerpsDepositToast() {
     }
 
     if (!shouldShowDepositToast) {
-      toast.dismiss(id);
+      toast.dismiss();
       return;
     }
 
     if (!depositInProgress) {
-      toast.dismiss(id);
+      toast.dismiss();
       return;
     }
 
-    toast.loading(
-      <ToastContent
-        title={t('perpsDepositToastPendingTitle')}
-        description={t('perpsDepositToastPendingDescription')}
-        dataTestId={id}
-      />,
-      {
-        id,
-        duration: Infinity,
-      },
-    );
+    toast({
+      severity: 'default',
+      children: (
+        <ToastContent
+          title={t('perpsDepositToastPendingTitle')}
+          description={t('perpsDepositToastPendingDescription')}
+          dataTestId={id}
+        />
+      ),
+      hasNoTimeout: true,
+    });
 
     return () => {
-      toast.dismiss(id);
+      toast.dismiss();
     };
   }, [depositInProgress, hasDepositResult, shouldShowDepositToast, t]);
 

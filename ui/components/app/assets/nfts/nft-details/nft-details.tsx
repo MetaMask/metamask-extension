@@ -228,19 +228,25 @@ export function NftDetailsComponent({
   const onRemove = async () => {
     try {
       await dispatch(removeAndIgnoreNft(address, tokenId, nftNetworkClientId));
-      toast.success(
-        <ToastContent
-          dataTestId="nft-remove-success-toast"
-          title={t('removeNftMessage')}
-        />,
-      );
+      toast({
+        severity: 'success',
+        children: (
+          <ToastContent
+            dataTestId="nft-remove-success-toast"
+            title={t('removeNftMessage')}
+          />
+        ),
+      });
     } catch {
-      toast.error(
-        <ToastContent
-          dataTestId="nft-remove-error-toast"
-          title={t('removeNftErrorMessage')}
-        />,
-      );
+      toast({
+        severity: 'danger',
+        children: (
+          <ToastContent
+            dataTestId="nft-remove-error-toast"
+            title={t('removeNftErrorMessage')}
+          />
+        ),
+      });
     } finally {
       navigate(DEFAULT_ROUTE);
     }

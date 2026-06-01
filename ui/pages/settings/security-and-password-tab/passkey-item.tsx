@@ -154,12 +154,10 @@ const PasskeyItem = () => {
         },
       });
 
-      toast.success(
-        <ToastContent title={t('passkeyTurnedOff', [passkeyMethodLabel])} />,
-        {
-          duration: PASSKEY_SETTINGS_TOAST_DURATION_MS,
-        },
-      );
+      toast({
+        severity: 'success',
+        children: <ToastContent title={t('passkeyTurnedOff', [passkeyMethodLabel])} />,
+      });
 
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
@@ -190,15 +188,17 @@ const PasskeyItem = () => {
           createSentryError('Passkey turn off in settings failed', error),
           { extra: { verificationMethod, durationMs, errorCode } },
         );
-        toast.error(
-          <ToastContent
-            title={
-              translatePasskeyError(error, t, passkeyMethodLabel) ??
-              t('passkeyErrorVerificationFailed', [passkeyMethodLabel])
-            }
-          />,
-          { duration: PASSKEY_SETTINGS_TOAST_DURATION_MS },
-        );
+        toast({
+          severity: 'danger',
+          children: (
+            <ToastContent
+              title={
+                translatePasskeyError(error, t, passkeyMethodLabel) ??
+                t('passkeyErrorVerificationFailed', [passkeyMethodLabel])
+              }
+            />
+          ),
+        });
       }
 
       trackEvent({

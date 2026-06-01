@@ -204,12 +204,10 @@ export default function PasskeyRegisterSubPage() {
       await new Promise((resolve) => {
         setTimeout(resolve, PASSKEY_ENROLLMENT_SUCCESS_DISPLAY_MS);
       });
-      toast.success(
-        <ToastContent title={t('passkeyTurnedOn', [passkeyMethodLabel])} />,
-        {
-          duration: PASSKEY_SETTINGS_TOAST_DURATION_MS,
-        },
-      );
+      toast({
+        severity: 'success',
+        children: <ToastContent title={t('passkeyTurnedOn', [passkeyMethodLabel])} />,
+      });
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.SettingsUpdated,

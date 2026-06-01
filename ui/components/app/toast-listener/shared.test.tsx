@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import {
@@ -7,25 +6,24 @@ import {
   showToast,
   type ToastStatus,
 } from './shared';
+import React from 'react';
 
 const mockToastLoading = jest.fn();
 const mockToastSuccess = jest.fn();
 const mockToastError = jest.fn();
 const mockUseTransactionDisplay = jest.fn();
 
-jest.mock('react-hot-toast', () => ({
-  toast: {
-    loading: (...args: unknown[]) => mockToastLoading(...args),
-    success: (...args: unknown[]) => mockToastSuccess(...args),
-    error: (...args: unknown[]) => mockToastError(...args),
-  },
-}));
-
 jest.mock('../../../helpers/utils/transaction-display', () => ({
   useTransactionDisplay: (status: string) => mockUseTransactionDisplay(status),
 }));
 
 jest.mock('../../ui/toast/toast', () => ({
+  toast: {
+    loading: (...args: unknown[]) => mockToastLoading(...args),
+    success: (...args: unknown[]) => mockToastSuccess(...args),
+    error: (...args: unknown[]) => mockToastError(...args),
+    dismiss: jest.fn(),
+  },
   ToastContent: ({
     title,
     description,

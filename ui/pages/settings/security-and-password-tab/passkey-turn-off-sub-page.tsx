@@ -108,12 +108,10 @@ export default function PasskeyTurnOffSubPage() {
             duration_ms: Date.now() - startedAt,
           },
         });
-        toast.success(
-          <ToastContent title={t('passkeyTurnedOff', [passkeyMethodLabel])} />,
-          {
-            duration: PASSKEY_SETTINGS_TOAST_DURATION_MS,
-          },
-        );
+        toast({
+          severity: 'success',
+          children: <ToastContent title={t('passkeyTurnedOff', [passkeyMethodLabel])} />,
+        });
         trackEvent({
           category: MetaMetricsEventCategory.Settings,
           event: MetaMetricsEventName.SettingsUpdated,
@@ -145,14 +143,14 @@ export default function PasskeyTurnOffSubPage() {
           createSentryError('Passkey turn off in settings failed', error),
           { extra: { verificationMethod: 'password', durationMs, errorCode } },
         );
-        toast.error(
-          <ToastContent
-            title={t('turnOffPasskeyFailed', [passkeyMethodLabel])}
-          />,
-          {
-            duration: PASSKEY_SETTINGS_TOAST_DURATION_MS,
-          },
-        );
+        toast({
+          severity: 'danger',
+          children: (
+            <ToastContent
+              title={t('turnOffPasskeyFailed', [passkeyMethodLabel])}
+            />
+          ),
+        });
         goToSettings();
       }
     } finally {
