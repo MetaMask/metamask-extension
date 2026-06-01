@@ -70,8 +70,13 @@ const getResolvedMarketType = (market: PerpsMarketData): string | undefined => {
 };
 
 /**
+ * Stock-related market types that all appear under the "Stocks" filter tab.
+ */
+const STOCK_MARKET_TYPES = new Set(['stock', 'pre-ipo', 'index', 'etf']);
+
+/**
  * Check if a market is an uncategorized HIP-3 market (no market type mapping).
- * These are HIP-3 assets that haven't been classified as equity, commodity, or forex.
+ * These are HIP-3 assets that haven't been classified as stock, etf, commodity, or forex.
  *
  * @param market - The market data
  * @param allowedHip3Sources - Set of allowed HIP-3 market sources
@@ -114,7 +119,10 @@ const filterByType = (
       return markets.filter(isCryptoMarket);
     }
     case 'stocks': {
-      return markets.filter((m) => getResolvedMarketType(m) === 'equity');
+      return markets.filter((m) => {
+        const type = getResolvedMarketType(m);
+        return type !== undefined && STOCK_MARKET_TYPES.has(type);
+      });
     }
     case 'commodities': {
       return markets.filter((m) => getResolvedMarketType(m) === 'commodity');

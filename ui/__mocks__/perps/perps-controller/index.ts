@@ -765,7 +765,14 @@ export type TradeConfiguration = {
 export type OrderType = 'market' | 'limit';
 
 // Market asset type classification (reusable across components)
-export type MarketType = 'crypto' | 'equity' | 'commodity' | 'forex';
+export type MarketType =
+  | 'crypto'
+  | 'stock'
+  | 'pre-ipo'
+  | 'index'
+  | 'etf'
+  | 'commodity'
+  | 'forex';
 
 // Market type filter including 'all' option and combined 'stocks_and_commodities' for UI filtering
 export type MarketTypeFilter = MarketType | 'all' | 'stocks_and_commodities';
@@ -1062,7 +1069,10 @@ export type PerpsMarketData = {
   /**
    * Market asset type classification (optional)
    * - crypto: Cryptocurrency (default for most markets)
-   * - equity: Stock/equity markets (HIP-3)
+   * - stock: Stock markets (HIP-3)
+   * - pre-ipo: Pre-IPO markets (HIP-3)
+   * - index: Index markets (HIP-3)
+   * - etf: ETF markets (HIP-3)
    * - commodity: Commodity markets (HIP-3)
    * - forex: Foreign exchange pairs (HIP-3)
    */
@@ -1229,7 +1239,7 @@ export type PerpsControllerConfig = {
    */
   fallbackBlockedRegions?: string[];
   /**
-   * Fallback HIP-3 equity perps master switch to use when RemoteFeatureFlagController fails to fetch.
+   * Fallback HIP-3 perps master switch to use when RemoteFeatureFlagController fails to fetch.
    * Controls whether HIP-3 (builder-deployed) DEXs are enabled.
    * The fallback is set by default if defined and replaced with remote feature flag once available.
    */

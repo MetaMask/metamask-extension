@@ -113,7 +113,7 @@ All mock data comes from: `ui/components/app/perps/mocks.ts`
 
 This includes:
 
-- **mockPositions** - 9 positions (crypto + HIP-3 equity/commodity/forex)
+- **mockPositions** - 9 positions (crypto + HIP-3 stock/commodity/forex)
 - **mockOrders** - 9 orders (various states: open, filled, queued)
 - **mockAccountState** - Account balance and P&L
 - **mockCryptoMarkets** - 8 crypto markets (BTC, ETH, SOL, etc.)

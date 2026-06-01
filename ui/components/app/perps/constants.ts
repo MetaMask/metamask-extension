@@ -110,7 +110,13 @@ export const HIP3_MARKET_CONFIG = {
 /**
  * HIP-3 market type for asset classification
  */
-export type Hip3MarketType = 'equity' | 'commodity' | 'forex';
+export type Hip3MarketType =
+  | 'stock'
+  | 'pre-ipo'
+  | 'index'
+  | 'etf'
+  | 'commodity'
+  | 'forex';
 
 /**
  * HIP-3 asset market type classifications (PRODUCTION DEFAULT)
@@ -121,7 +127,10 @@ export type Hip3MarketType = 'equity' | 'commodity' | 'forex';
  * Maps asset symbols (e.g., "xyz:TSLA") to their market type for badge display.
  *
  * Market type determines the badge shown in the UI:
- * - 'equity': STOCK badge (stocks like TSLA, NVDA)
+ * - 'stock': STOCK badge (stocks like TSLA, NVDA)
+ * - 'etf': ETF badge
+ * - 'pre-ipo': PRE-IPO badge
+ * - 'index': INDEX badge (indices like XYZ100)
  * - 'commodity': COMMODITY badge (commodities like GOLD)
  * - 'forex': FOREX badge (forex pairs)
  * - undefined: No badge for crypto or unmapped assets
@@ -131,34 +140,36 @@ export type Hip3MarketType = 'equity' | 'commodity' | 'forex';
  * Assets not listed here will have no market type (undefined).
  */
 export const HIP3_ASSET_MARKET_TYPES: Record<string, Hip3MarketType> = {
-  // xyz DEX - Equities
-  'xyz:TSLA': 'equity',
-  'xyz:NVDA': 'equity',
-  'xyz:XYZ100': 'equity',
-  'xyz:INTC': 'equity',
-  'xyz:MU': 'equity',
-  'xyz:CRCL': 'equity',
-  'xyz:HOOD': 'equity',
-  'xyz:SNDK': 'equity',
-  'xyz:GOOGL': 'equity',
-  'xyz:COIN': 'equity',
-  'xyz:ORCL': 'equity',
-  'xyz:AMZN': 'equity',
-  'xyz:PLTR': 'equity',
-  'xyz:AAPL': 'equity',
-  'xyz:META': 'equity',
-  'xyz:AMD': 'equity',
-  'xyz:MSFT': 'equity',
-  'xyz:BABA': 'equity',
-  'xyz:RIVN': 'equity',
-  'xyz:NFLX': 'equity',
-  'xyz:COST': 'equity',
-  'xyz:LLY': 'equity',
-  'xyz:TSM': 'equity',
-  'xyz:SKHX': 'equity',
-  'xyz:MSTR': 'equity',
-  'xyz:CRWV': 'equity',
-  'xyz:SMSN': 'equity',
+  // xyz DEX - Stocks
+  'xyz:TSLA': 'stock',
+  'xyz:NVDA': 'stock',
+  'xyz:INTC': 'stock',
+  'xyz:MU': 'stock',
+  'xyz:CRCL': 'stock',
+  'xyz:HOOD': 'stock',
+  'xyz:SNDK': 'stock',
+  'xyz:GOOGL': 'stock',
+  'xyz:COIN': 'stock',
+  'xyz:ORCL': 'stock',
+  'xyz:AMZN': 'stock',
+  'xyz:PLTR': 'stock',
+  'xyz:AAPL': 'stock',
+  'xyz:META': 'stock',
+  'xyz:AMD': 'stock',
+  'xyz:MSFT': 'stock',
+  'xyz:BABA': 'stock',
+  'xyz:RIVN': 'stock',
+  'xyz:NFLX': 'stock',
+  'xyz:COST': 'stock',
+  'xyz:LLY': 'stock',
+  'xyz:TSM': 'stock',
+  'xyz:SKHX': 'stock',
+  'xyz:MSTR': 'stock',
+  'xyz:CRWV': 'stock',
+  'xyz:SMSN': 'stock',
+
+  // xyz DEX - Indices
+  'xyz:XYZ100': 'index',
 
   // xyz DEX - Commodities
   'xyz:GOLD': 'commodity',

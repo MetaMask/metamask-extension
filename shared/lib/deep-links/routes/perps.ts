@@ -24,7 +24,7 @@ import {
  * Market detail (navigates directly to a specific market):
  * - https://link.metamask.io/perps?screen=asset&symbol=BTC
  * - https://link.metamask.io/perps?screen=asset&symbol=ETH
- * - https://link.metamask.io/perps?screen=asset&symbol=xyz:TSLA  (HIP-3 equity)
+ * - https://link.metamask.io/perps?screen=asset&symbol=xyz:TSLA  (HIP-3 stock)
  * - https://link.metamask.io/perps?screen=asset&symbol=xyz:GOLD  (HIP-3 commodity)
  * - https://link.metamask.io/perps?screen=asset&symbol=xyz:EUR   (HIP-3 forex)
  *
