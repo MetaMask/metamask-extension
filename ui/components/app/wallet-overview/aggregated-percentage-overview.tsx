@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
+import { Box } from '@metamask/design-system-react';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   getSelectedAccount,
@@ -18,11 +19,10 @@ import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBa
 import { formatValue, isValidAmount } from '../../../../app/scripts/lib/util';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import {
-  Display,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Box, SensitiveText } from '../../component-library';
+import { SensitiveText } from '../../component-library';
 import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
 import { getHistoricalMultichainAggregatedBalance } from '../../../selectors/assets';
 import { formatWithThreshold } from '../assets/util/formatWithThreshold';
@@ -125,7 +125,7 @@ export const AggregatedPercentageOverview = ({
     <Skeleton
       isLoading={!anyEnabledNetworksAreAvailable && isZeroAmount(amountChange)}
     >
-      <Box display={Display.Flex} className="gap-1">
+      <Box className="flex gap-1">
         <SensitiveText
           variant={TextVariant.bodyMdMedium}
           color={color}
@@ -215,7 +215,7 @@ export const AggregatedMultichainPercentageOverview = ({
         !anyEnabledNetworksAreAvailable && isZeroAmount(singleDayAmountChange)
       }
     >
-      <Box display={Display.Flex}>
+      <Box className="flex">
         <SensitiveText
           variant={TextVariant.bodyMdMedium}
           color={color}
