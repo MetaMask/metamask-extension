@@ -1,7 +1,5 @@
 import { SnapKeyring } from '@metamask/eth-snap-keyring';
-import {
-  SnapAccountServiceGetLegacySnapKeyringAction,
-} from '@metamask/snap-account-service';
+import { SnapAccountServiceGetLegacySnapKeyringAction } from '@metamask/snap-account-service';
 import { Messenger } from '@metamask/messenger';
 
 /**
