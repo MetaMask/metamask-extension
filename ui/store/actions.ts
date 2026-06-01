@@ -28,7 +28,10 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { PermissionsRequest } from '@metamask/permission-controller';
 import { NonEmptyArray } from '@metamask/controller-utils';
-import type { PhishingDetectionScanResult } from '@metamask/phishing-controller';
+import type {
+  PhishingDetectionScanResult,
+  SimilarAddressMatch,
+} from '@metamask/phishing-controller';
 import {
   SetNameRequest,
   UpdateProposedNamesRequest,
@@ -2251,6 +2254,12 @@ export async function scanUrlForPhishing(
   origin: string,
 ): Promise<PhishingDetectionScanResult | null> {
   return await submitRequestToBackground('scanUrlForPhishing', [origin]);
+}
+
+export async function checkAddressPoisoning(
+  address: string,
+): Promise<SimilarAddressMatch[]> {
+  return await submitRequestToBackground('checkAddressPoisoning', [address]);
 }
 
 // TODO: Clean this up.

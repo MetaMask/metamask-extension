@@ -1,4 +1,9 @@
-import { Messenger } from '@metamask/messenger';
+import {
+  Messenger,
+  type MessengerActions,
+  type MessengerEvents,
+} from '@metamask/messenger';
+import { RemoteFeatureFlagControllerMessenger } from '@metamask/remote-feature-flag-controller';
 import { MetaMetricsControllerGetMetaMetricsIdAction } from '../../controllers/metametrics-controller-method-action-types';
 import {
   PreferencesControllerGetStateAction,
@@ -10,10 +15,6 @@ import type {
   OnboardingControllerStateChangeEvent,
 } from '../../controllers/onboarding';
 
-export type RemoteFeatureFlagControllerMessenger = ReturnType<
-  typeof getRemoteFeatureFlagControllerMessenger
->;
-
 /**
  * Create a messenger restricted to the allowed actions and events of the
  * remote feature flag controller.
@@ -22,17 +23,17 @@ export type RemoteFeatureFlagControllerMessenger = ReturnType<
  * messenger.
  */
 export function getRemoteFeatureFlagControllerMessenger(
-  messenger: RootMessenger<never, never>,
-) {
-  return new Messenger<
-    'RemoteFeatureFlagController',
-    never,
-    never,
-    typeof messenger
-  >({
-    namespace: 'RemoteFeatureFlagController',
-    parent: messenger,
-  });
+  messenger: RootMessenger<
+    MessengerActions<RemoteFeatureFlagControllerMessenger>,
+    MessengerEvents<RemoteFeatureFlagControllerMessenger>
+  >,
+): RemoteFeatureFlagControllerMessenger {
+  const controllerMessenger: RemoteFeatureFlagControllerMessenger =
+    new Messenger({
+      namespace: 'RemoteFeatureFlagController',
+      parent: messenger,
+    });
+  return controllerMessenger;
 }
 
 type AllowedInitializationActions =

@@ -37,9 +37,6 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "Error"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "Código QR no válido. Escanee el QR sincronizado del monedero físico."
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "Escanear código QR"
   },
@@ -2273,12 +2270,6 @@
   },
   "dappConnections": {
     "message": "Conexiones de Dapp"
-  },
-  "dappScanMaliciousTitle": {
-    "message": "Sitio web malicioso detectado"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "Este sitio web está marcado como potencialmente peligroso. Si revelas tu frase secreta de recuperación, podrías poner en riesgo tus fondos."
   },
   "dappSuggested": {
     "message": "Sitio sugerido"

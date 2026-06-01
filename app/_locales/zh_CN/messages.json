@@ -37,9 +37,6 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "错误"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "二维码无效。请扫描硬件钱包的同步二维码。"
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "扫描二维码"
   },
@@ -2267,12 +2264,6 @@
   },
   "dappConnections": {
     "message": "去中心化应用连接"
-  },
-  "dappScanMaliciousTitle": {
-    "message": "检测到恶意网站"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "该网站被标记为可能存在风险。如果您泄露了私钥助记词，您的资金可能会面临风险。"
   },
   "dappSuggested": {
     "message": "建议的网站"

@@ -2100,7 +2100,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     productionDefault: {
       minimumVersion: '0.0.0',
-      enabled: false,
+      enabled: true,
     },
     status: FeatureFlagStatus.Active,
   },
@@ -2163,6 +2163,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
 
   extensionUxSidepanel: {
     name: 'extensionUxSidepanel',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: false,
+    status: FeatureFlagStatus.Active,
+  },
+
+  extensionUxNetworkManagement: {
+    name: 'extensionUxNetworkManagement',
     type: FeatureFlagType.Remote,
     inProd: true,
     productionDefault: false,
@@ -2370,6 +2378,62 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     productionDefault: {
       enabled: false,
+    },
+    status: FeatureFlagStatus.Active,
+  },
+
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  confirmations_pay_post_quote: {
+    name: 'confirmations_pay_post_quote',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: {
+      rc: true,
+      versions: {
+        '13.32.0': {
+          default: {
+            enabled: true,
+            tokens: {},
+          },
+          overrides: {
+            perpsWithdraw: {
+              enabled: true,
+              tokens: {
+                '0xe708': [
+                  '0x0000000000000000000000000000000000000000',
+                  '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+                ],
+                '0x1': [
+                  '0x0000000000000000000000000000000000000000',
+                  '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+                  '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+                  '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+                  '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
+                ],
+                '0x2105': [
+                  '0x0000000000000000000000000000000000000000',
+                  '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+                ],
+                '0x38': [
+                  '0x0000000000000000000000000000000000000000',
+                  '0x55d398326f99059fF775485246999027B3197955',
+                  '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+                ],
+                '0x89': [
+                  '0x0000000000000000000000000000000000001010',
+                  '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+                  '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
+                ],
+                '0xa4b1': [
+                  '0x0000000000000000000000000000000000000000',
+                  '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+                  '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9',
+                ],
+              },
+            },
+          },
+        },
+      },
     },
     status: FeatureFlagStatus.Active,
   },

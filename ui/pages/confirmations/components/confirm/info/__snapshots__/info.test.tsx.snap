@@ -381,7 +381,7 @@ exports[`Info renders info section for approve request 1`] = `
             class="mm-box mm-text mm-text--body-md"
             data-testid="native-currency"
           >
-            $0.08
+            $1.26
           </p>
           <div
             class="mm-box mm-box--margin-left-1 mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill"
@@ -740,7 +740,7 @@ exports[`Info renders info section for contract interaction request 1`] = `
             class="mm-box mm-text mm-text--body-md"
             data-testid="native-currency"
           >
-            $0.04
+            $0.07
           </p>
           <div
             class="mm-box mm-box--margin-left-1 mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill"
@@ -1357,7 +1357,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
             class="mm-box mm-text mm-text--body-md"
             data-testid="native-currency"
           >
-            $0.08
+            $1.26
           </p>
           <div
             class="mm-box mm-box--margin-left-1 mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill"

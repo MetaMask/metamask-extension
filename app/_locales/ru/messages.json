@@ -37,9 +37,6 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "Ошибка"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "Недействительный QR-код. Отсканируйте QR-код синхронизации аппаратного кошелька."
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "Сканировать QR-код"
   },
@@ -2273,12 +2270,6 @@
   },
   "dappConnections": {
     "message": "Соединения dapp"
-  },
-  "dappScanMaliciousTitle": {
-    "message": "Обнаружен вредоносный веб-сайт"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "Этот веб-сайт помечен как потенциально опасный. Раскрытие вашей секретной фразы для восстановления может поставить под угрозу ваши средства."
   },
   "dappSuggested": {
     "message": "Рекомендовано сайтом"
