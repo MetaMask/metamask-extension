@@ -37,9 +37,6 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "Error"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "Di-wastong QR code. Paki-scan ang sync QR code ng wallet na hardware."
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "Mag-scan ng QR code"
   },

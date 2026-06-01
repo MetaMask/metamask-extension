@@ -13,6 +13,7 @@ import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import { login } from '../../page-objects/flows/login.flow';
@@ -69,7 +70,8 @@ describe.skip('Snap Account Transfers', function (this: Suite) {
         const headerNavbar = new HeaderNavbar(driver);
         // BUG #37591 - Account created with snap using BIP44 with a custom name defaults to Snap Account 1
         await headerNavbar.checkAccountLabel('Snap Account 1');
-        await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
         // intended delay to allow for network requests to complete
         await driver.delay(1000);
 
@@ -137,7 +139,8 @@ describe.skip('Snap Account Transfers', function (this: Suite) {
         const headerNavbar = new HeaderNavbar(driver);
         // BUG #37591 - Account created with snap using BIP44 with a custom name defaults to Snap Account 1
         await headerNavbar.checkAccountLabel('Snap Account 1');
-        await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
         // intended delay to allow for network requests to complete
         await driver.delay(1000);
 
@@ -199,7 +202,8 @@ describe.skip('Snap Account Transfers', function (this: Suite) {
         const headerNavbar = new HeaderNavbar(driver);
         // BUG #37591 - Account created with snap using BIP44 with a custom name defaults to Snap Account 1
         await headerNavbar.checkAccountLabel('Snap Account 1');
-        await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
 
         // send 1 ETH from snap account to account 1 and reject the transaction
         await sendRedesignedTransactionWithSnapAccount({

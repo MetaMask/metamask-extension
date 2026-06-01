@@ -3,6 +3,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
 import SendPage from '../../page-objects/pages/send/send-page';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import NetworkManager from '../../page-objects/pages/network-manager';
@@ -31,7 +32,8 @@ describe('Send Tron', function () {
         await networkManager.selectNetworkByNameWithWait('Tron');
 
         const nonEvmHomepage = new NonEvmHomepage(driver);
-        await nonEvmHomepage.checkExpectedTokenBalanceIsDisplayed(
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.checkExpectedTokenBalanceIsDisplayed(
           '6.072',
           'TRX',
         );

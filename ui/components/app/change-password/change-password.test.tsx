@@ -32,6 +32,7 @@ jest.mock('../../ui/toast/toast', () => {
       error: jest.fn(),
       success: jest.fn(),
     },
+    ToastContent: actual.ToastContent,
   };
 });
 
@@ -40,6 +41,13 @@ jest.mock('../../../../shared/lib/environment-type', () => ({
     typeof import('../../../../shared/lib/environment-type')
   >('../../../../shared/lib/environment-type'),
   getEnvironmentType: jest.fn(),
+}));
+
+jest.mock('../../../../shared/lib/sentry', () => ({
+  ...jest.requireActual<typeof import('../../../../shared/lib/sentry')>(
+    '../../../../shared/lib/sentry',
+  ),
+  captureException: jest.fn(),
 }));
 
 const mockUseNavigate = jest.fn();
@@ -170,6 +178,20 @@ describe('ChangePassword', () => {
     });
   }
 
+  async function fillNewPasswordForm(getByTestId: (id: string) => HTMLElement) {
+    fireEvent.change(getByTestId('change-password-input'), {
+      target: { value: mockNewPassword },
+    });
+    fireEvent.change(getByTestId('change-password-confirm-input'), {
+      target: { value: mockNewPassword },
+    });
+    fireEvent.click(getByTestId('change-password-terms'));
+
+    await waitFor(() => {
+      expect(getByTestId('change-password-button')).toBeEnabled();
+    });
+  }
+
   describe('Step 1: verify current password', () => {
     it('renders the current password input', () => {
       const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
@@ -255,7 +277,9 @@ describe('ChangePassword', () => {
       expect(saveButton).toBeDisabled();
 
       fireEvent.click(getByTestId('change-password-terms'));
-      expect(saveButton).toBeEnabled();
+      await waitFor(() => {
+        expect(saveButton).toBeEnabled();
+      });
     });
 
     it('changes the password and navigates to security settings on save', async () => {
@@ -263,13 +287,7 @@ describe('ChangePassword', () => {
 
       await advanceToChangePasswordStep(getByTestId);
 
-      fireEvent.change(getByTestId('change-password-input'), {
-        target: { value: mockNewPassword },
-      });
-      fireEvent.change(getByTestId('change-password-confirm-input'), {
-        target: { value: mockNewPassword },
-      });
-      fireEvent.click(getByTestId('change-password-terms'));
+      await fillNewPasswordForm(getByTestId);
       fireEvent.click(getByTestId('change-password-button'));
 
       await waitFor(() => {
@@ -295,13 +313,7 @@ describe('ChangePassword', () => {
 
       await advanceToChangePasswordStep(getByTestId);
 
-      fireEvent.change(getByTestId('change-password-input'), {
-        target: { value: mockNewPassword },
-      });
-      fireEvent.change(getByTestId('change-password-confirm-input'), {
-        target: { value: mockNewPassword },
-      });
-      fireEvent.click(getByTestId('change-password-terms'));
+      await fillNewPasswordForm(getByTestId);
       fireEvent.click(getByTestId('change-password-button'));
 
       await waitFor(() => {
@@ -320,13 +332,7 @@ describe('ChangePassword', () => {
 
       await advanceToChangePasswordStep(getByTestId);
 
-      fireEvent.change(getByTestId('change-password-input'), {
-        target: { value: mockNewPassword },
-      });
-      fireEvent.change(getByTestId('change-password-confirm-input'), {
-        target: { value: mockNewPassword },
-      });
-      fireEvent.click(getByTestId('change-password-terms'));
+      await fillNewPasswordForm(getByTestId);
       fireEvent.click(getByTestId('change-password-button'));
 
       await waitFor(() => {
@@ -354,13 +360,7 @@ describe('ChangePassword', () => {
 
       await advanceToChangePasswordStep(getByTestId);
 
-      fireEvent.change(getByTestId('change-password-input'), {
-        target: { value: mockNewPassword },
-      });
-      fireEvent.change(getByTestId('change-password-confirm-input'), {
-        target: { value: mockNewPassword },
-      });
-      fireEvent.click(getByTestId('change-password-terms'));
+      await fillNewPasswordForm(getByTestId);
       fireEvent.click(getByTestId('change-password-button'));
 
       await waitFor(() => {

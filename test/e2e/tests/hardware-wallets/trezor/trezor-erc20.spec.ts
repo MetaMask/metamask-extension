@@ -11,6 +11,8 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import HardwareWalletTokenTransferConfirmation from '../../../page-objects/pages/hardware-wallet/hardware-wallet-token-transfer-confirmation';
 import HardwareWalletTransactionConfirmation from '../../../page-objects/pages/hardware-wallet/hardware-wallet-transaction-confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import AssetListPage from '../../../page-objects/pages/home/asset-list';
+import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import { confirmOrReconnect } from '../../../page-objects/pages/hardware-wallet/hardware-wallet-helpers';
 
@@ -60,7 +62,8 @@ describe('Trezor Hardware', function (this: Suite) {
         );
         const homePage = new HomePage(driver);
         await homePage.goToTokensTab();
-        await homePage.checkExpectedTokenBalanceIsDisplayed('10', symbol);
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.checkExpectedTokenBalanceIsDisplayed('10', symbol);
       },
     );
   });
@@ -169,7 +172,9 @@ describe('Trezor Hardware', function (this: Suite) {
         // Approve token
         await testDappPage.clickApproveTokens();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const txConfirmation = new HardwareWalletTransactionConfirmation(driver);
+        const txConfirmation = new HardwareWalletTransactionConfirmation(
+          driver,
+        );
         await txConfirmation.clickFooterConfirmButtonOrReconnect();
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
@@ -228,7 +233,9 @@ describe('Trezor Hardware', function (this: Suite) {
         // Increase token allowance
         await testDappPage.clickERC20IncreaseAllowanceButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const txConfirmation = new HardwareWalletTransactionConfirmation(driver);
+        const txConfirmation = new HardwareWalletTransactionConfirmation(
+          driver,
+        );
         await txConfirmation.clickFooterConfirmButtonOrReconnect();
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,

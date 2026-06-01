@@ -90,7 +90,8 @@ describe('Ledger Hardware ERC20 @speculos', function (this: Suite) {
         );
         const homePage = new HomePage(driver);
         await homePage.goToTokensTab();
-        await homePage.checkExpectedTokenBalanceIsDisplayed('10', symbol);
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.checkExpectedTokenBalanceIsDisplayed('10', symbol);
       },
     );
   });
@@ -193,7 +194,9 @@ describe('Ledger Hardware ERC20 @speculos', function (this: Suite) {
 
         await testDappPage.clickApproveTokens();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const txConfirmation = new HardwareWalletTransactionConfirmation(driver);
+        const txConfirmation = new HardwareWalletTransactionConfirmation(
+          driver,
+        );
         await txConfirmation.clickFooterConfirmButtonOrReconnect();
 
         await ledgerDone;
@@ -249,7 +252,9 @@ describe('Ledger Hardware ERC20 @speculos', function (this: Suite) {
 
         await testDappPage.clickERC20IncreaseAllowanceButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const txConfirmation = new HardwareWalletTransactionConfirmation(driver);
+        const txConfirmation = new HardwareWalletTransactionConfirmation(
+          driver,
+        );
         await txConfirmation.clickFooterConfirmButtonOrReconnect();
 
         await ledgerDone;

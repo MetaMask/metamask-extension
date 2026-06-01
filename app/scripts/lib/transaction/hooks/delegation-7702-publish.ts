@@ -22,6 +22,7 @@ import {
 } from '../transaction-relay';
 import {
   getClientForTransactionMetadata,
+  getClientVersionForTransactionMetadata,
   sanitizeOrigin,
 } from '../../smart-transaction/utils';
 import {
@@ -171,6 +172,7 @@ export class Delegation7702PublishHook {
       metadata: {
         txType: transactionMeta.type as RelayTransactionTxType,
         client: getClientForTransactionMetadata(),
+        clientVersion: getClientVersionForTransactionMetadata(),
         origin: sanitizeOrigin(transactionMeta.origin),
       },
     };
