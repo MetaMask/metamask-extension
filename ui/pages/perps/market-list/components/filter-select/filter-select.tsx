@@ -32,6 +32,9 @@ export const FilterSelect: React.FC<FilterSelectProps> = ({
       { id: 'all', label: t('perpsFilterAll') },
       { id: 'crypto', label: t('perpsFilterCrypto') },
       { id: 'stocks', label: t('perpsFilterStocks') },
+      { id: 'pre-ipo', label: t('perpsFilterPreIpo') },
+      { id: 'indices', label: t('perpsFilterIndices') },
+      { id: 'etfs', label: t('perpsFilterEtfs') },
       { id: 'commodities', label: t('perpsFilterCommodities') },
       { id: 'forex', label: t('perpsFilterForex') },
     ];

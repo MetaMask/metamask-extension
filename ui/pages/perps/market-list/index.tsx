@@ -16,7 +16,8 @@ import {
   TextColor,
   ButtonBase,
 } from '@metamask/design-system-react';
-import type { PerpsMarketData } from '@metamask/perps-controller';
+import type { PerpsMarketData, MarketType } from '@metamask/perps-controller';
+import { HIP3_ASSET_MARKET_TYPES, MarketCategory } from '@metamask/perps-controller';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
@@ -31,7 +32,6 @@ import {
   isHip3Market,
   isCryptoMarket,
 } from '../../../components/app/perps/utils';
-import { getHip3MarketType } from '../../../components/app/perps/constants';
 import {
   DEFAULT_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
@@ -60,23 +60,24 @@ import { FilterSelect } from './components/filter-select';
 
 /**
  * Get the resolved market type for a market.
- * Uses the HIP3_ASSET_MARKET_TYPES mapping first, then falls back to the market's own marketType.
+ * Uses the controller's HIP3_ASSET_MARKET_TYPES mapping first, then falls back
+ * to the market's own marketType.
  *
  * @param market - The market data
  * @returns The resolved market type
  */
-const getResolvedMarketType = (market: PerpsMarketData): string | undefined => {
-  return getHip3MarketType(market.symbol, market.marketType);
+const getResolvedMarketType = (
+  market: PerpsMarketData,
+): MarketType | undefined => {
+  return (
+    (HIP3_ASSET_MARKET_TYPES as Record<string, MarketType>)[market.symbol] ??
+    market.marketType
+  );
 };
 
 /**
- * Stock-related market types that all appear under the "Stocks" filter tab.
- */
-const STOCK_MARKET_TYPES = new Set(['stock', 'pre-ipo', 'index', 'etf']);
-
-/**
  * Check if a market is an uncategorized HIP-3 market (no market type mapping).
- * These are HIP-3 assets that haven't been classified as stock, etf, commodity, or forex.
+ * These are HIP-3 assets that haven't been classified into any category.
  *
  * @param market - The market data
  * @param allowedHip3Sources - Set of allowed HIP-3 market sources
@@ -119,16 +120,34 @@ const filterByType = (
       return markets.filter(isCryptoMarket);
     }
     case 'stocks': {
-      return markets.filter((m) => {
-        const type = getResolvedMarketType(m);
-        return type !== undefined && STOCK_MARKET_TYPES.has(type);
-      });
+      return markets.filter(
+        (m) => getResolvedMarketType(m) === MarketCategory.Stock,
+      );
+    }
+    case 'pre-ipo': {
+      return markets.filter(
+        (m) => getResolvedMarketType(m) === MarketCategory.PreIpo,
+      );
+    }
+    case 'indices': {
+      return markets.filter(
+        (m) => getResolvedMarketType(m) === MarketCategory.Index,
+      );
+    }
+    case 'etfs': {
+      return markets.filter(
+        (m) => getResolvedMarketType(m) === MarketCategory.Etf,
+      );
     }
     case 'commodities': {
-      return markets.filter((m) => getResolvedMarketType(m) === 'commodity');
+      return markets.filter(
+        (m) => getResolvedMarketType(m) === MarketCategory.Commodity,
+      );
     }
     case 'forex': {
-      return markets.filter((m) => getResolvedMarketType(m) === 'forex');
+      return markets.filter(
+        (m) => getResolvedMarketType(m) === MarketCategory.Forex,
+      );
     }
     case 'new': {
       return markets.filter((m) =>

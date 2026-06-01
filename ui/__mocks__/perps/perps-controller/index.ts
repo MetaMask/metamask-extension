@@ -14,10 +14,13 @@ import type {
   CaipAssetId,
   Hex,
 } from '@metamask/utils';
+import type { MarketType } from '@metamask/perps-controller';
 import {
   SUPPORT_CONFIG as SUPPORT_CONFIG_BASE,
   FEEDBACK_CONFIG as FEEDBACK_CONFIG_BASE,
 } from '../../../../shared/constants/perps';
+
+// Import and re-export MarketType from the controller to avoid local duplication
 
 /**
  * Perps feature constants
@@ -763,16 +766,7 @@ export type TradeConfiguration = {
 
 // Order type enumeration
 export type OrderType = 'market' | 'limit';
-
-// Market asset type classification (reusable across components)
-export type MarketType =
-  | 'crypto'
-  | 'stock'
-  | 'pre-ipo'
-  | 'index'
-  | 'etf'
-  | 'commodity'
-  | 'forex';
+export type { MarketType };
 
 // Market type filter including 'all' option and combined 'stocks_and_commodities' for UI filtering
 export type MarketTypeFilter = MarketType | 'all' | 'stocks_and_commodities';

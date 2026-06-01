@@ -6791,11 +6791,20 @@
   "perpsFilterCrypto": {
     "message": "Crypto"
   },
+  "perpsFilterEtfs": {
+    "message": "ETFs"
+  },
   "perpsFilterForex": {
     "message": "Forex"
   },
+  "perpsFilterIndices": {
+    "message": "Indices"
+  },
   "perpsFilterNew": {
     "message": "New"
+  },
+  "perpsFilterPreIpo": {
+    "message": "Pre-IPO"
   },
   "perpsFilterStocks": {
     "message": "Stocks"

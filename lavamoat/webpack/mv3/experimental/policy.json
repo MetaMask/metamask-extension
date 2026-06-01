@@ -1290,6 +1290,11 @@
         "nanoid": true
       }
     },
+    "@metamask/perps-controller": {
+      "packages": {
+        "@metamask/utils": true
+      }
+    },
     "@metamask/polling-controller": {
       "globals": {
         "clearTimeout": true,

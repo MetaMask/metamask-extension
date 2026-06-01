@@ -7,6 +7,33 @@ import {
   mockCryptoMarkets,
   mockHip3Markets,
 } from '../../../components/app/perps/mocks';
+
+jest.mock('@metamask/perps-controller', () => ({
+  HIP3_ASSET_MARKET_TYPES: {
+    'xyz:TSLA': 'stock',
+    'xyz:AAPL': 'stock',
+    'xyz:MSFT': 'stock',
+    'xyz:NVDA': 'stock',
+    'xyz:AMZN': 'stock',
+    'xyz:GOOGL': 'stock',
+    'xyz:GOLD': 'commodity',
+    'xyz:SILVER': 'commodity',
+    'xyz:CL': 'commodity',
+    'xyz:EUR': 'forex',
+    'xyz:JPY': 'forex',
+  },
+  MarketCategory: {
+    CryptoCurrency: 'crypto',
+    Stock: 'stock',
+    PreIpo: 'pre-ipo',
+    Index: 'index',
+    Etf: 'etf',
+    Commodity: 'commodity',
+    Forex: 'forex',
+  },
+}));
+
+// eslint-disable-next-line import-x/first
 import { MarketListView } from '.';
 
 const mockNavigate = jest.fn();
