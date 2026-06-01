@@ -1,12 +1,8 @@
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import {
-  MISSING,
-  VALID,
-  INVALID,
-} from '../../../../shared/lib/deep-links/verify';
+} from '../../constants/metametrics';
+import { MISSING, VALID, INVALID } from './verify';
 import { createEvent } from './metrics';
 
 describe('createEvent', () => {
