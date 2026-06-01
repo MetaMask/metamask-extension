@@ -30,7 +30,24 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 12. **WHEN asked to open a PR, use a Conventional Commits title** unless user specifies otherwise
 13. **WHEN asked to open a PR, open it as DRAFT** unless user specifies otherwise
 14. **WHEN using `.github/pull-request-template.md`, comment out non-applicable sections including the section title**
-15. **BEFORE modifying any `.github/workflows/` file**, read `.github/AGENTS.md` for CI-specific rules (consolidation patterns, required job wiring, merge queue considerations)
+15. **WHEN using `.github/pull-request-template.md`, the manual testing section
+    should contain instructions for how to _manually_ test the changes. It must not
+    list steps for automated testing.**
+
+- Good Instructions:
+  - Run extension
+  - Go to homepage, asset list
+  - Use Mainnet or Linea as the selected/enabled network.
+  - Verify mUSD is visible even with 0 balance.
+  - Enable "Hide zero-balance tokens".
+  - Verify mUSD is still visible.
+  - Ensure token sort is declining balance and low-value assets are collapsed.
+  - Verify mUSD is not hidden inside the low-value collapsed section.
+- Bad Instructions:
+  - `yarn lint:changed:fix`
+  - `yarn test:unit shared/lib/deep-links/metrics.test.ts shared/lib/deep-links/utils.test.ts ui/pages/onboarding-flow/creation-successful/creation-successful.test.tsx`
+
+16. **BEFORE modifying any `.github/workflows/` file**, read `.github/AGENTS.md` for CI-specific rules (consolidation patterns, required job wiring, merge queue considerations)
 
 ### Comprehensive Guidelines Location
 
