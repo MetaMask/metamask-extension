@@ -12,11 +12,23 @@ export class PerpsMarketListPage {
     testId: 'perps-explore-markets-row',
   };
 
+  private readonly filterOption = (optionId: string) => {
+    return {
+      xpath: `//*[@data-testid='filter-select-button'][contains(normalize-space(.), '${optionId}')]`,
+    };
+  };
+
   private readonly filterSelectButton = { testId: 'filter-select-button' };
 
   private readonly filterSortRow = { testId: 'market-list-filter-sort-row' };
 
+  private readonly headerBackButton = { testId: 'back-button' };
+
   private readonly marketListView = { testId: 'market-list-view' };
+
+  private readonly marketRow = {
+    xpath: "//*[starts-with(@data-testid,'market-row-')]",
+  };
 
   /** CSS selector for the search input; driver.fill() expects a string locator. */
   private readonly searchInput = '[data-testid="search-input"]';
@@ -67,6 +79,13 @@ export class PerpsMarketListPage {
   }
 
   /**
+   * Clicks the market list header back control (`navigate(-1)`), typically returning to Perps home.
+   */
+  async clickBack(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(this.headerBackButton);
+  }
+
+  /**
    * Selects a filter by type (e.g. 'crypto', 'all').
    * Opens the filter dropdown and clicks the option.
    *
@@ -95,6 +114,23 @@ export class PerpsMarketListPage {
     await this.driver.waitForSelector(this.sortDropdownButton);
     await this.driver.clickElement(this.sortDropdownButton);
     await this.driver.clickElement(this.sortOptionVolumeLow);
+  }
+
+  /**
+   * Waits for at least one market row to be visible in the list.
+   * Market rows have data-testid="market-row-{SYMBOL}" (e.g. market-row-BTC).
+   */
+  async waitForAnyMarketRow(): Promise<void> {
+    await this.driver.waitForSelector(this.marketRow);
+  }
+
+  /**
+   * Waits for the filter dropdown button to show the given label (e.g. "All", "Crypto", "Stocks").
+   *
+   * @param label - Expected visible label on the filter button.
+   */
+  async waitForFilterLabel(label: string): Promise<void> {
+    await this.driver.waitForSelector(this.filterOption(label));
   }
 
   /**

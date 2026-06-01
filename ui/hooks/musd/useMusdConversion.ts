@@ -22,7 +22,7 @@ import {
   selectIsMusdConversionFlowEnabled,
   selectMusdConversionEducationSeen,
 } from '../../selectors/musd';
-import { getSelectedInternalAccount } from '../../selectors';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { getUnapprovedTransactions } from '../../selectors/transactions';
 import {
   addTransaction,

@@ -18,6 +18,7 @@ import {
   TransactionPayPublishHook,
 } from '@metamask/transaction-pay-controller';
 import { Hex } from '@metamask/utils';
+import { AccountOverviewTabKey } from '../../../../shared/constants/app-state';
 import { trace } from '../../../../shared/lib/trace';
 import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
 import { getIsSmartTransaction } from '../../../../shared/lib/selectors';
@@ -131,9 +132,7 @@ export const TransactionControllerInit: MessengerClientInitFunction<
     incomingTransactions: {
       client: `extension-${process.env.METAMASK_VERSION?.replace(/\./gu, '-')}`,
       includeTokenTransfers: false,
-      isEnabled: () =>
-        preferencesController().state.useExternalServices &&
-        onboardingController().state.completedOnboarding,
+      isEnabled: () => false,
       updateTransactions: true,
     },
     isAutomaticGasFeeUpdateEnabled,
@@ -178,17 +177,16 @@ export const TransactionControllerInit: MessengerClientInitFunction<
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
     hooks: {
-      // Note: `#afterAdd.updateTransaction` is actually called before adding the TransactionMeta to the state
-      // Reference: https://github.com/MetaMask/core/blob/main/packages/transaction-controller/src/TransactionController.ts#L1335
-      afterAdd: async (_params: { transactionMeta: TransactionMeta }) => {
-        return {
-          updateTransaction: async (transactionMeta: TransactionMeta) => {
-            await initMessenger.call(
-              'SubscriptionService:submitSubscriptionSponsorshipIntent',
-              transactionMeta,
-            );
-          },
-        };
+      afterAdd: async ({
+        transactionMeta,
+      }: {
+        transactionMeta: TransactionMeta;
+      }) => {
+        await initMessenger.call(
+          'SubscriptionService:submitSubscriptionSponsorshipIntent',
+          transactionMeta,
+        );
+        return {};
       },
       beforePublish: (transactionMeta: TransactionMeta) => {
         const response = initMessenger.call(
@@ -448,10 +446,17 @@ export async function publishHook({
     keyringController,
   );
 
+  const isRevokeDelegation =
+    transactionMeta.type === TransactionType.revokeDelegation;
+
+  let attemptedHook = false;
+
   if (
     keyringSupports7702 &&
+    !isRevokeDelegation &&
     (!isSmartTransaction || !sendBundleSupport || isExternalSign)
   ) {
+    attemptedHook = true;
     const hook = new Delegation7702PublishHook({
       messenger: initMessenger,
     }).getHook();
@@ -480,6 +485,7 @@ export async function publishHook({
     isSmartTransaction &&
     (sendBundleSupport || transactionMeta.selectedGasFeeToken === undefined)
   ) {
+    attemptedHook = true;
     const result = await submitSmartTransactionHook({
       transactionMeta,
       signedTransactionInHex: signedTx as Hex,
@@ -509,6 +515,19 @@ export async function publishHook({
     // else, fall back to regular regular transaction submission
   }
 
+  if (attemptedHook) {
+    try {
+      await initMessenger.call(
+        'AppStateController:setDefaultHomeActiveTabName',
+        AccountOverviewTabKey.Activity,
+      );
+    } catch (error) {
+      console.error(
+        'Failed to set default home active tab for fallback transaction',
+        error,
+      );
+    }
+  }
   // Default: fall back to regular transaction submission
   return { transactionHash: undefined };
 }

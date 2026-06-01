@@ -10,6 +10,15 @@ import {
   Token,
   TokensControllerState,
 } from '@metamask/assets-controllers';
+import {
+  AuthConnection,
+  type SeedlessOnboardingControllerState,
+} from '@metamask/seedless-onboarding-controller';
+import {
+  EthAccountType,
+  BtcAccountType,
+  SolAccountType,
+} from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { Browser } from 'webextension-polyfill';
 import { deriveStateFromMetadata } from '@metamask/base-controller';
@@ -20,13 +29,14 @@ import {
 } from '@metamask/messenger';
 import { merge } from 'lodash';
 import { ThemeType } from '../../../shared/constants/preferences';
+import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import {
   DEVICE_TYPE,
   ENVIRONMENT_TYPE_BACKGROUND,
   OS,
   PLATFORM_CHROME,
 } from '../../../shared/constants/app';
-import Analytics from '../lib/segment/analytics';
+import type { SegmentClient } from '../lib/segment';
 import { createSegmentMock } from '../lib/segment';
 import {
   METAMETRICS_ANONYMOUS_ID,
@@ -41,10 +51,16 @@ import {
   AB_TEST_ANALYTICS_MAPPINGS,
   clearABTestAnalyticsMappings,
 } from '../../../shared/lib/ab-testing/ab-test-analytics';
+import { createActiveABTestAssignment } from '../../../shared/lib/ab-testing/active-ab-test-assignment';
 import * as ManifestFlags from '../../../shared/lib/manifestFlags';
 import * as Utils from '../lib/util';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { flushPromises } from '../../../test/lib/timer-helpers';
+import {
+  createMockInternalAccount,
+  createMockInternalAccounts,
+} from '../../../test/data/mock-accounts';
+import type { Preferences } from '../../../shared/types/preferences';
 import {
   MetaMetricsController,
   AllowedActions,
@@ -53,7 +69,6 @@ import {
 } from './metametrics-controller';
 import {
   getDefaultPreferencesControllerState,
-  Preferences,
   PreferencesControllerState,
 } from './preferences-controller';
 
@@ -97,6 +112,8 @@ const MOCK_TRAITS = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   test_boolean_array: [1, 2, 3],
+  [MetaMetricsUserTrait.CookieId]: 'GA1.1.12345.67890',
+  [MetaMetricsUserTrait.GaClientId]: '12345.67890',
 } as MetaMetricsUserTraits;
 
 const MOCK_INVALID_TRAITS = {
@@ -660,6 +677,85 @@ describe('MetaMetricsController', function () {
     });
   });
 
+  describe('handleMetaMaskStateUpdate', function () {
+    it('updates the profile when install attribution traits arrive after opt-in', async function () {
+      await withController(
+        {
+          options: {
+            state: {
+              participateInMetaMetrics: null,
+              metaMetricsId: TEST_META_METRICS_ID,
+              dataCollectionForMarketing: false,
+              traits: {},
+            },
+          },
+        },
+        async ({ controller }) => {
+          await controller.setParticipateInMetaMetrics(true);
+          const identifySpy = jest
+            .spyOn(controller, 'identify')
+            .mockImplementation(() => undefined);
+
+          const metaMaskState = {
+            addressBook: {},
+            allNfts: {},
+            allTokens: {},
+            ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+            internalAccounts: {
+              accounts: {
+                mock1: {} as InternalAccount,
+              },
+              selectedAccount: 'mock1',
+            },
+            multichainNetworkConfigurationsByChainId: {},
+            ledgerTransportType: LedgerTransportTypes.webhid,
+            openSeaEnabled: true,
+            useNftDetection: false,
+            securityAlertsEnabled: true,
+            theme: 'default' as ThemeType,
+            useTokenDetection: true,
+            names: {
+              ethereumAddress: {},
+            },
+            participateInMetaMetrics: true,
+            currentCurrency: 'usd',
+            dataCollectionForMarketing: false,
+            preferences: {
+              privacyMode: true,
+              tokenNetworkFilter: {},
+              tokenSortConfig: {
+                key: 'token-sort-key',
+                order: 'dsc',
+                sortCallback: 'stringNumeric',
+              },
+              showNativeTokenAsMainBalance: true,
+            } as Preferences,
+            srpSessionData: undefined,
+            keyrings: [],
+            firstTimeFlowType: FirstTimeFlowType.create,
+          };
+
+          controller.handleMetaMaskStateUpdate(metaMaskState);
+
+          expect(identifySpy).toHaveBeenCalledTimes(1);
+
+          controller.updateTraits({
+            [MetaMetricsUserTrait.CookieId]: 'GA1.1.12345.67890',
+            [MetaMetricsUserTrait.GaClientId]: '12345.67890',
+          });
+
+          controller.handleMetaMaskStateUpdate(metaMaskState);
+
+          expect(identifySpy).toHaveBeenCalledTimes(2);
+          expect(identifySpy).toHaveBeenLastCalledWith({
+            [MetaMetricsUserTrait.CookieId]: 'GA1.1.12345.67890',
+            [MetaMetricsUserTrait.GaClientId]: '12345.67890',
+          });
+        },
+      );
+    });
+  });
+
   describe('trackEvent', function () {
     it('should not track an event if user is not participating in metametrics', async function () {
       const spy = jest.spyOn(segmentMock, 'track');
@@ -992,10 +1088,10 @@ describe('MetaMetricsController', function () {
               properties: expect.objectContaining({
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 active_ab_tests: [
-                  {
-                    key: TEST_BADGE_FLAG_KEY,
-                    value: 'withBadge',
-                  },
+                  createActiveABTestAssignment(
+                    TEST_BADGE_FLAG_KEY,
+                    'withBadge',
+                  ),
                 ],
               }),
             }),
@@ -1039,14 +1135,11 @@ describe('MetaMetricsController', function () {
               properties: expect.objectContaining({
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 active_ab_tests: [
-                  {
-                    key: TEST_QUICK_AMOUNTS_FLAG_KEY,
-                    value: 'treatment',
-                  },
-                  {
-                    key: TEST_LAYOUT_FLAG_KEY,
-                    value: 'control',
-                  },
+                  createActiveABTestAssignment(
+                    TEST_QUICK_AMOUNTS_FLAG_KEY,
+                    'treatment',
+                  ),
+                  createActiveABTestAssignment(TEST_LAYOUT_FLAG_KEY, 'control'),
                 ],
               }),
             }),
@@ -1089,6 +1182,8 @@ describe('MetaMetricsController', function () {
                 {
                   key: TEST_QUICK_AMOUNTS_FLAG_KEY,
                   value: 'manual-value',
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  key_value_pair: 'incorrect=value',
                 },
               ],
               // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -1103,14 +1198,14 @@ describe('MetaMetricsController', function () {
                 quote_count: 3,
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 active_ab_tests: [
-                  {
-                    key: TEST_QUICK_AMOUNTS_FLAG_KEY,
-                    value: 'manual-value',
-                  },
-                  {
-                    key: TEST_LAYOUT_FLAG_KEY,
-                    value: 'treatment',
-                  },
+                  createActiveABTestAssignment(
+                    TEST_QUICK_AMOUNTS_FLAG_KEY,
+                    'manual-value',
+                  ),
+                  createActiveABTestAssignment(
+                    TEST_LAYOUT_FLAG_KEY,
+                    'treatment',
+                  ),
                 ],
               }),
             }),
@@ -1181,6 +1276,103 @@ describe('MetaMetricsController', function () {
       });
     });
 
+    it('normalizes existing active_ab_tests for unmapped events without fetching feature flags', async function () {
+      const getManifestFlagsSpy = jest
+        .spyOn(ManifestFlags, 'getManifestFlags')
+        .mockReturnValue({});
+
+      await withController(({ controller }) => {
+        const spy = jest.spyOn(segmentMock, 'track');
+
+        controller.trackEvent({
+          event: 'Unrelated Event',
+          category: 'Unit Test',
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            active_ab_tests: [
+              {
+                key: TEST_BADGE_FLAG_KEY,
+                value: 'withBadge',
+              },
+            ],
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            test_prop: 'value',
+          },
+        });
+
+        expect(getManifestFlagsSpy).not.toHaveBeenCalled();
+        expect(spy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            properties: expect.objectContaining({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              active_ab_tests: [
+                createActiveABTestAssignment(TEST_BADGE_FLAG_KEY, 'withBadge'),
+              ],
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              test_prop: 'value',
+            }),
+          }),
+          expect.anything(),
+        );
+      });
+    });
+
+    it('normalizes existing active_ab_tests on anonymous sensitive-property events', async function () {
+      const getManifestFlagsSpy = jest
+        .spyOn(ManifestFlags, 'getManifestFlags')
+        .mockReturnValue({});
+
+      await withController(({ controller }) => {
+        const spy = jest.spyOn(segmentMock, 'track');
+
+        controller.trackEvent({
+          event: 'Unrelated Event',
+          category: 'Unit Test',
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            active_ab_tests: [
+              {
+                key: TEST_BADGE_FLAG_KEY,
+                value: 'withBadge',
+              },
+            ],
+          },
+          sensitiveProperties: {
+            sensitive: 'value',
+          },
+        });
+
+        const normalizedAssignment = createActiveABTestAssignment(
+          TEST_BADGE_FLAG_KEY,
+          'withBadge',
+        );
+
+        expect(getManifestFlagsSpy).not.toHaveBeenCalled();
+        expect(spy).toHaveBeenCalledTimes(2);
+        expect(spy).toHaveBeenNthCalledWith(
+          1,
+          expect.objectContaining({
+            properties: expect.objectContaining({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              active_ab_tests: [normalizedAssignment],
+              sensitive: 'value',
+            }),
+          }),
+          expect.anything(),
+        );
+        expect(spy).toHaveBeenNthCalledWith(
+          2,
+          expect.objectContaining({
+            properties: expect.objectContaining({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              active_ab_tests: [normalizedAssignment],
+            }),
+          }),
+          expect.anything(),
+        );
+      });
+    });
+
     it('preserves sensitiveProperties and only enriches the identified event', async function () {
       AB_TEST_ANALYTICS_MAPPINGS.push({
         flagKey: TEST_BADGE_FLAG_KEY,
@@ -1232,10 +1424,7 @@ describe('MetaMetricsController', function () {
                 button_type: 'card',
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 active_ab_tests: [
-                  {
-                    key: TEST_BADGE_FLAG_KEY,
-                    value: 'control',
-                  },
+                  createActiveABTestAssignment(TEST_BADGE_FLAG_KEY, 'control'),
                 ],
               }),
             }),
@@ -1276,10 +1465,10 @@ describe('MetaMetricsController', function () {
               properties: expect.objectContaining({
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 active_ab_tests: [
-                  {
-                    key: TEST_QUICK_AMOUNTS_FLAG_KEY,
-                    value: 'treatment',
-                  },
+                  createActiveABTestAssignment(
+                    TEST_QUICK_AMOUNTS_FLAG_KEY,
+                    'treatment',
+                  ),
                 ],
               }),
             }),
@@ -1758,6 +1947,76 @@ describe('MetaMetricsController', function () {
     });
   });
 
+  function buildStateWithAccounts(
+    accounts: Record<string, InternalAccount>,
+  ): Parameters<MetaMetricsController['_buildUserTraitsObject']>[0] {
+    return {
+      addressBook: {},
+      allNfts: {},
+      allTokens: {},
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+      internalAccounts: {
+        accounts,
+        selectedAccount: Object.keys(accounts)[0] ?? '',
+      },
+      multichainNetworkConfigurationsByChainId: {},
+      ledgerTransportType: LedgerTransportTypes.webhid,
+      openSeaEnabled: false,
+      useNftDetection: false,
+      theme: 'default' as ThemeType,
+      useTokenDetection: false,
+      names: {
+        [NameType.ETHEREUM_ADDRESS]: {},
+      },
+      currentCurrency: 'usd',
+      securityAlertsEnabled: false,
+      participateInMetaMetrics: true,
+      dataCollectionForMarketing: false,
+      preferences: {
+        privacyMode: false,
+        tokenNetworkFilter: {},
+        tokenSortConfig: {
+          key: '',
+          order: 'dsc',
+          sortCallback: 'stringNumeric',
+        },
+        showNativeTokenAsMainBalance: false,
+      } as Preferences,
+      srpSessionData: undefined,
+      keyrings: [],
+      firstTimeFlowType: FirstTimeFlowType.create,
+    };
+  }
+
+  const buildKeyringAccount = (id: string, keyringType: string) => ({
+    id,
+    metadata: { keyring: { type: keyringType } },
+  });
+
+  const buildMnemonicEntropyAccount = ({
+    id,
+    entropyId,
+    groupIndex,
+    derivationPath,
+    keyringType = KeyringType.hdKeyTree,
+  }: {
+    id: string;
+    entropyId: string;
+    groupIndex: number;
+    derivationPath?: string;
+    keyringType?: string;
+  }) => ({
+    ...buildKeyringAccount(id, keyringType),
+    options: {
+      entropy: {
+        type: 'mnemonic' as const,
+        id: entropyId,
+        groupIndex,
+        ...(derivationPath ? { derivationPath } : {}),
+      },
+    },
+  });
+
   describe('_buildUserTraitsObject', function () {
     beforeEach(() => {
       jest.spyOn(Utils, 'getPlatform').mockReturnValue(PLATFORM_CHROME);
@@ -1916,6 +2175,7 @@ describe('MetaMetricsController', function () {
           } as Preferences,
           srpSessionData: undefined,
           keyrings: [],
+          firstTimeFlowType: FirstTimeFlowType.create,
         });
 
         expect(traits).toStrictEqual({
@@ -1943,6 +2203,13 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.NumberOfNfts]: 4,
           [MetaMetricsUserTrait.NumberOfTokens]: 5,
           [MetaMetricsUserTrait.NumberOfHDEntropies]: 0,
+          [MetaMetricsUserTrait.NumberOfAccountGroups]: 2,
+          [MetaMetricsUserTrait.NumberOfImportedAccounts]: 0,
+          [MetaMetricsUserTrait.NumberOfLedgerAccounts]: 0,
+          [MetaMetricsUserTrait.NumberOfTrezorAccounts]: 0,
+          [MetaMetricsUserTrait.NumberOfLatticeAccounts]: 0,
+          [MetaMetricsUserTrait.NumberOfQrHardwareAccounts]: 0,
+          [MetaMetricsUserTrait.NumberOfHardwareWallets]: 0,
           [MetaMetricsUserTrait.OpenSeaApiEnabled]: true,
           [MetaMetricsUserTrait.ThreeBoxEnabled]: false,
           [MetaMetricsUserTrait.Theme]: 'default',
@@ -1953,6 +2220,7 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.SecurityProviders]: ['blockaid'],
           [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
           [MetaMetricsUserTrait.ProfileId]: undefined,
+          [MetaMetricsUserTrait.AccountType]: 'metamask',
           [MetaMetricsUserTrait.PetnameAddressCount]: 3,
           [MetaMetricsUserTrait.TokenSortPreference]: 'token-sort-key',
           [MetaMetricsUserTrait.PrivacyModeEnabled]: true,
@@ -1963,6 +2231,114 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.Os]: OS.MACOS,
         });
       });
+    });
+
+    it('uses the social create flow to build the account type trait', async function () {
+      await withController(
+        {
+          seedlessOnboardingState: {
+            authConnection: AuthConnection.Google,
+          },
+        },
+        ({ controller }) => {
+          const traits = controller._buildUserTraitsObject({
+            addressBook: {},
+            allTokens: {},
+            ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+            ledgerTransportType: LedgerTransportTypes.webhid,
+            openSeaEnabled: true,
+            internalAccounts: {
+              accounts: {
+                mock1: {} as InternalAccount,
+              },
+              selectedAccount: 'mock1',
+            },
+            useNftDetection: false,
+            theme: 'default' as ThemeType,
+            useTokenDetection: true,
+            allNfts: {},
+            participateInMetaMetrics: true,
+            dataCollectionForMarketing: false,
+            preferences: {
+              privacyMode: false,
+              tokenNetworkFilter: {},
+              tokenSortConfig: {
+                key: 'token-sort-key',
+                order: 'dsc',
+                sortCallback: 'stringNumeric',
+              },
+              showNativeTokenAsMainBalance: false,
+            } as Preferences,
+            securityAlertsEnabled: false,
+            names: {
+              ethereumAddress: {},
+            },
+            currentCurrency: 'usd',
+            srpSessionData: undefined,
+            keyrings: [],
+            firstTimeFlowType: FirstTimeFlowType.socialCreate,
+            multichainNetworkConfigurationsByChainId: {},
+          });
+
+          expect(traits?.[MetaMetricsUserTrait.AccountType]).toBe(
+            'metamask_google',
+          );
+        },
+      );
+    });
+
+    it('uses the social import flow to build the account type trait', async function () {
+      await withController(
+        {
+          seedlessOnboardingState: {
+            authConnection: AuthConnection.Google,
+          },
+        },
+        ({ controller }) => {
+          const traits = controller._buildUserTraitsObject({
+            addressBook: {},
+            allTokens: {},
+            ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+            ledgerTransportType: LedgerTransportTypes.webhid,
+            openSeaEnabled: true,
+            internalAccounts: {
+              accounts: {
+                mock1: {} as InternalAccount,
+              },
+              selectedAccount: 'mock1',
+            },
+            useNftDetection: false,
+            theme: 'default' as ThemeType,
+            useTokenDetection: true,
+            allNfts: {},
+            participateInMetaMetrics: true,
+            dataCollectionForMarketing: false,
+            preferences: {
+              privacyMode: false,
+              tokenNetworkFilter: {},
+              tokenSortConfig: {
+                key: 'token-sort-key',
+                order: 'dsc',
+                sortCallback: 'stringNumeric',
+              },
+              showNativeTokenAsMainBalance: false,
+            } as Preferences,
+            securityAlertsEnabled: false,
+            names: {
+              ethereumAddress: {},
+            },
+            currentCurrency: 'usd',
+            srpSessionData: undefined,
+            keyrings: [],
+            firstTimeFlowType: FirstTimeFlowType.socialImport,
+            multichainNetworkConfigurationsByChainId: {},
+          });
+
+          expect(traits?.[MetaMetricsUserTrait.AccountType]).toBe(
+            'imported_google',
+          );
+        },
+      );
     });
 
     it('should return only changed traits object on subsequent calls', async function () {
@@ -2021,6 +2397,7 @@ describe('MetaMetricsController', function () {
           currentCurrency: 'usd',
           srpSessionData: undefined,
           keyrings: [],
+          firstTimeFlowType: FirstTimeFlowType.create,
           multichainNetworkConfigurationsByChainId: {},
         });
 
@@ -2090,21 +2467,25 @@ describe('MetaMetricsController', function () {
               profile: {
                 identifierId: 'identifierId',
                 profileId: 'profileId',
+                canonicalProfileId: 'profileId',
                 metaMetricsId: 'testid',
               },
             },
           },
           keyrings: [],
+          firstTimeFlowType: FirstTimeFlowType.import,
           multichainNetworkConfigurationsByChainId: {},
         });
 
         expect(updatedTraits).toStrictEqual({
           [MetaMetricsUserTrait.AddressBookEntries]: 4,
           [MetaMetricsUserTrait.NumberOfAccounts]: 3,
+          [MetaMetricsUserTrait.NumberOfAccountGroups]: 3,
           [MetaMetricsUserTrait.NumberOfTokens]: 1,
           [MetaMetricsUserTrait.OpenSeaApiEnabled]: false,
           [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]: false,
           [MetaMetricsUserTrait.ProfileId]: 'profileId',
+          [MetaMetricsUserTrait.AccountType]: 'imported',
         });
       });
     });
@@ -2173,12 +2554,14 @@ describe('MetaMetricsController', function () {
               profile: {
                 identifierId: 'identifierId',
                 profileId: 'profileId',
+                canonicalProfileId: 'profileId',
                 metaMetricsId: 'testid',
               },
             },
           },
           keyrings: [],
           multichainNetworkConfigurationsByChainId: {},
+          firstTimeFlowType: FirstTimeFlowType.create,
         });
 
         const updatedTraits = controller._buildUserTraitsObject({
@@ -2237,14 +2620,139 @@ describe('MetaMetricsController', function () {
               profile: {
                 identifierId: 'identifierId',
                 profileId: 'profileId',
+                canonicalProfileId: 'profileId',
                 metaMetricsId: 'testid',
               },
             },
           },
           keyrings: [],
           multichainNetworkConfigurationsByChainId: {},
+          firstTimeFlowType: FirstTimeFlowType.create,
         });
         expect(updatedTraits).toStrictEqual(null);
+      });
+    });
+
+    it('should count BIP44 multichain accounts as one account group per entropy+index pair', async function () {
+      const srp1 = 'entropy-source-id-1';
+      function mockBip44Account(
+        id: string,
+        type: InternalAccount['type'],
+        keyringType: InternalAccount['metadata']['keyring']['type'],
+        groupIndex: number,
+      ) {
+        return createMockInternalAccount({
+          id,
+          type,
+          metadata: { keyring: { type: keyringType } },
+          options: {
+            entropy: {
+              type: 'mnemonic',
+              id: srp1,
+              groupIndex,
+              derivationPath: '',
+            },
+          },
+        });
+      }
+
+      // 2 account groups from 1 SRP, each with EVM + BTC + SOL addresses.
+      const evm0 = mockBip44Account(
+        'evm-0',
+        EthAccountType.Eoa,
+        KeyringType.hdKeyTree,
+        0,
+      );
+      const btc0 = mockBip44Account(
+        'btc-0',
+        BtcAccountType.P2wpkh,
+        KeyringType.snap,
+        0,
+      );
+      const sol0 = mockBip44Account(
+        'sol-0',
+        SolAccountType.DataAccount,
+        KeyringType.snap,
+        0,
+      );
+      const evm1 = mockBip44Account(
+        'evm-1',
+        EthAccountType.Eoa,
+        KeyringType.hdKeyTree,
+        1,
+      );
+      const btc1 = mockBip44Account(
+        'btc-1',
+        BtcAccountType.P2wpkh,
+        KeyringType.snap,
+        1,
+      );
+      const sol1 = mockBip44Account(
+        'sol-1',
+        SolAccountType.DataAccount,
+        KeyringType.snap,
+        1,
+      );
+
+      const mockAccounts: Record<string, InternalAccount> = {
+        [evm0.id]: evm0,
+        [btc0.id]: btc0,
+        [sol0.id]: sol0,
+        [evm1.id]: evm1,
+        [btc1.id]: btc1,
+        [sol1.id]: sol1,
+      };
+      await withController(({ controller }) => {
+        const traits = controller._buildUserTraitsObject(
+          buildStateWithAccounts(mockAccounts),
+        );
+
+        // 6 internal accounts but only 2 unique {srp, groupIndex} pairs → 2 groups.
+        expect(traits?.[MetaMetricsUserTrait.NumberOfAccountGroups]).toBe(2);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfImportedAccounts]).toBe(0);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfLedgerAccounts]).toBe(0);
+        // 1 unique entropy id → 1 HD entropy.
+        expect(traits?.[MetaMetricsUserTrait.NumberOfHDEntropies]).toBe(1);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfHardwareWallets]).toBe(0);
+      });
+    });
+
+    it('should correctly count imported and hardware wallet account types', async function () {
+      const mockAccounts = createMockInternalAccounts([
+        buildMnemonicEntropyAccount({
+          id: 'hd-acc',
+          entropyId: 'srp1',
+          groupIndex: 0,
+          derivationPath: "m/44'/60'/0'/0/0",
+        }),
+        buildKeyringAccount('imported-acc', KeyringType.imported),
+        buildKeyringAccount('snap-acc', KeyringType.snap),
+        buildKeyringAccount('ledger-acc', KeyringType.ledger),
+        buildKeyringAccount('trezor-acc', KeyringType.trezor),
+        buildKeyringAccount('lattice-acc', KeyringType.lattice),
+        buildKeyringAccount('qr-acc', KeyringType.qr),
+        buildKeyringAccount('onekey-acc', KeyringType.oneKey),
+      ]);
+      await withController(({ controller }) => {
+        const traits = controller._buildUserTraitsObject(
+          buildStateWithAccounts(mockAccounts),
+        );
+
+        // 8 accounts: 1 HD group + 1 imported + 1 snap + 1 ledger +
+        //             1 trezor + 1 lattice + 1 qr + 1 onekey = 8 distinct groups.
+        expect(traits?.[MetaMetricsUserTrait.NumberOfAccountGroups]).toBe(8);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfImportedAccounts]).toBe(1);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfLedgerAccounts]).toBe(1);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfTrezorAccounts]).toBe(1);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfLatticeAccounts]).toBe(1);
+        // QR hardware includes both 'QR Hardware Wallet Device' and 'OneKey Hardware'.
+        expect(traits?.[MetaMetricsUserTrait.NumberOfQrHardwareAccounts]).toBe(
+          2,
+        );
+        // 1 mnemonic entropy id → 1 HD entropy; hardware wallets don't contribute.
+        expect(traits?.[MetaMetricsUserTrait.NumberOfHDEntropies]).toBe(1);
+        // 1 of each type paired → 4 distinct hardware wallets (one per type).
+        expect(traits?.[MetaMetricsUserTrait.NumberOfHardwareWallets]).toBe(4);
       });
     });
   });
@@ -2261,11 +2769,10 @@ describe('MetaMetricsController', function () {
     it('should remove event from store when callback is invoked', async function () {
       const segmentInstance = createSegmentMock(2);
       const stubFn = (
-        _message: Parameters<Analytics['track']>[0],
-        callback?: Parameters<Analytics['track']>[1],
-      ): Analytics => {
+        _message: Parameters<SegmentClient['track']>[0],
+        callback?: Parameters<SegmentClient['track']>[1],
+      ): void => {
         callback?.();
-        return segmentInstance as Analytics;
       };
       jest.spyOn(segmentInstance, 'track').mockImplementation(stubFn);
       jest.spyOn(segmentInstance, 'page').mockImplementation(stubFn);
@@ -2397,59 +2904,208 @@ describe('MetaMetricsController', function () {
     });
   });
 
-  describe('getNumberOfHDEntropies', function () {
-    it('counts HD entropies correctly across various keyring configurations', async function () {
-      await withController(({ controller: _ }) => {
-        const testScenarios = [
-          {
-            name: 'with undefined keyrings',
-            state: { keyrings: undefined },
-            expectedCount: 0,
-          },
-          {
-            name: 'with empty keyrings array',
-            state: { keyrings: [] },
-            expectedCount: 0,
-          },
-          {
-            name: 'with one HD keyring',
-            state: {
-              keyrings: [{ type: KeyringType.hdKeyTree, accounts: ['0x123'] }],
-            },
-            expectedCount: 1,
-          },
-          {
-            name: 'with two HD keyrings',
-            state: {
-              keyrings: [
-                { type: KeyringType.hdKeyTree, accounts: ['0x123'] },
-                { type: KeyringType.hdKeyTree, accounts: ['0x456'] },
-              ],
-            },
-            expectedCount: 2,
-          },
-          {
-            name: 'with mixed keyring types',
-            state: {
-              keyrings: [
-                { type: KeyringType.hdKeyTree, accounts: ['0x123'] },
-                { type: KeyringType.imported, accounts: ['0x456'] },
-                { type: KeyringType.ledger, accounts: ['0x789'] },
-                { type: KeyringType.hdKeyTree, accounts: ['0xabc'] },
-              ],
-            },
-            expectedCount: 2,
-          },
-        ];
+  describe('#getAccountCompositionTraits', function () {
+    it('returns zeros for an empty accounts object', async function () {
+      await withController(({ controller }) => {
+        const traits = controller._buildUserTraitsObject(
+          buildStateWithAccounts({}),
+        );
+        expect(traits?.[MetaMetricsUserTrait.NumberOfHDEntropies]).toBe(0);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfHardwareWallets]).toBe(0);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfAccountGroups]).toBe(0);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfImportedAccounts]).toBe(0);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfLedgerAccounts]).toBe(0);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfTrezorAccounts]).toBe(0);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfLatticeAccounts]).toBe(0);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfQrHardwareAccounts]).toBe(
+          0,
+        );
+      });
+    });
 
-        testScenarios.forEach((scenario) => {
-          // Implement the same logic as the private method
-          const hdKeyringCount =
-            scenario.state.keyrings?.filter(
-              (keyring) => keyring.type === KeyringType.hdKeyTree,
-            ).length ?? 0;
-          expect(hdKeyringCount).toBe(scenario.expectedCount);
-        });
+    it('counts a single SRP with multiple account groups as one HD entropy', async function () {
+      await withController(({ controller }) => {
+        const traits = controller._buildUserTraitsObject(
+          buildStateWithAccounts(
+            createMockInternalAccounts([
+              buildMnemonicEntropyAccount({
+                id: 'evm-0',
+                entropyId: 'srp1',
+                groupIndex: 0,
+              }),
+              buildMnemonicEntropyAccount({
+                id: 'evm-1',
+                entropyId: 'srp1',
+                groupIndex: 1,
+              }),
+              buildMnemonicEntropyAccount({
+                id: 'evm-2',
+                entropyId: 'srp1',
+                groupIndex: 2,
+              }),
+            ]),
+          ),
+        );
+        expect(traits?.[MetaMetricsUserTrait.NumberOfHDEntropies]).toBe(1);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfAccountGroups]).toBe(3);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfHardwareWallets]).toBe(0);
+      });
+    });
+
+    it('counts multiple distinct SRPs as separate HD entropies', async function () {
+      await withController(({ controller }) => {
+        const traits = controller._buildUserTraitsObject(
+          buildStateWithAccounts(
+            createMockInternalAccounts([
+              buildMnemonicEntropyAccount({
+                id: 'evm-srp1',
+                entropyId: 'srp1',
+                groupIndex: 0,
+              }),
+              buildMnemonicEntropyAccount({
+                id: 'evm-srp2',
+                entropyId: 'srp2',
+                groupIndex: 0,
+              }),
+              buildMnemonicEntropyAccount({
+                id: 'evm-srp3',
+                entropyId: 'srp3',
+                groupIndex: 0,
+              }),
+            ]),
+          ),
+        );
+        expect(traits?.[MetaMetricsUserTrait.NumberOfHDEntropies]).toBe(3);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfAccountGroups]).toBe(3);
+      });
+    });
+
+    it('does not count hardware wallets toward HD entropies', async function () {
+      await withController(({ controller }) => {
+        const traits = controller._buildUserTraitsObject(
+          buildStateWithAccounts(
+            createMockInternalAccounts([
+              buildKeyringAccount('ledger-1', KeyringType.ledger),
+              buildKeyringAccount('ledger-2', KeyringType.ledger),
+              buildKeyringAccount('trezor-1', KeyringType.trezor),
+              buildKeyringAccount('lattice-1', KeyringType.lattice),
+              buildKeyringAccount('qr-1', KeyringType.qr),
+              buildKeyringAccount('onekey-1', KeyringType.oneKey),
+            ]),
+          ),
+        );
+        expect(traits?.[MetaMetricsUserTrait.NumberOfHDEntropies]).toBe(0);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfLedgerAccounts]).toBe(2);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfTrezorAccounts]).toBe(1);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfLatticeAccounts]).toBe(1);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfQrHardwareAccounts]).toBe(
+          2,
+        );
+        // 1 Ledger device + 1 Trezor + 1 Lattice + 1 QR (OneKey) = 4 distinct hardware wallets.
+        expect(traits?.[MetaMetricsUserTrait.NumberOfHardwareWallets]).toBe(4);
+      });
+    });
+
+    it('does not count imported accounts toward HD entropies or hardware wallets', async function () {
+      await withController(({ controller }) => {
+        const traits = controller._buildUserTraitsObject(
+          buildStateWithAccounts(
+            createMockInternalAccounts([
+              buildKeyringAccount('imported-1', KeyringType.imported),
+              buildKeyringAccount('imported-2', KeyringType.imported),
+            ]),
+          ),
+        );
+        expect(traits?.[MetaMetricsUserTrait.NumberOfHDEntropies]).toBe(0);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfHardwareWallets]).toBe(0);
+        expect(traits?.[MetaMetricsUserTrait.NumberOfImportedAccounts]).toBe(2);
+      });
+    });
+
+    it('computes number_of_hardware_wallets as the sum of all hardware wallet types', async function () {
+      await withController(({ controller }) => {
+        const traits = controller._buildUserTraitsObject(
+          buildStateWithAccounts(
+            createMockInternalAccounts([
+              buildKeyringAccount('ledger-1', KeyringType.ledger),
+              buildKeyringAccount('ledger-2', KeyringType.ledger),
+              buildKeyringAccount('trezor-1', KeyringType.trezor),
+              buildKeyringAccount('lattice-1', KeyringType.lattice),
+              buildKeyringAccount('lattice-2', KeyringType.lattice),
+              buildKeyringAccount('qr-1', KeyringType.qr),
+              buildKeyringAccount('onekey-1', KeyringType.oneKey),
+            ]),
+          ),
+        );
+        // 1 Ledger device + 1 Trezor + 1 Lattice + 1 QR (includes OneKey) = 4 distinct hardware wallets.
+        expect(traits?.[MetaMetricsUserTrait.NumberOfHardwareWallets]).toBe(4);
+      });
+    });
+
+    it('handles accounts with unknown keyring type without throwing', async function () {
+      await withController(({ controller }) => {
+        expect(() =>
+          controller._buildUserTraitsObject(
+            buildStateWithAccounts(
+              createMockInternalAccounts([
+                buildKeyringAccount('unknown-acc', 'SomeUnknownKeyring'),
+              ]),
+            ),
+          ),
+        ).not.toThrow();
+      });
+    });
+
+    it('handles accounts with missing metadata without throwing', async function () {
+      await withController(({ controller }) => {
+        expect(() =>
+          controller._buildUserTraitsObject(
+            buildStateWithAccounts(
+              createMockInternalAccounts([
+                {
+                  ...buildKeyringAccount(
+                    'no-metadata-acc',
+                    KeyringType.hdKeyTree,
+                  ),
+                  metadata: undefined,
+                },
+              ]),
+            ),
+          ),
+        ).not.toThrow();
+      });
+    });
+
+    it('derives total wallets from hd_entropies + hardware_wallets + imported_accounts', async function () {
+      await withController(({ controller }) => {
+        const traits = controller._buildUserTraitsObject(
+          buildStateWithAccounts(
+            createMockInternalAccounts([
+              buildMnemonicEntropyAccount({
+                id: 'evm-0',
+                entropyId: 'srp1',
+                groupIndex: 0,
+              }),
+              buildMnemonicEntropyAccount({
+                id: 'evm-1',
+                entropyId: 'srp2',
+                groupIndex: 0,
+              }),
+              buildKeyringAccount('ledger-1', KeyringType.ledger),
+              buildKeyringAccount('imported-1', KeyringType.imported),
+              // Snap accounts are excluded from total wallet count.
+              buildKeyringAccount('snap-1', KeyringType.snap),
+            ]),
+          ),
+        );
+        const hdEntropies =
+          traits?.[MetaMetricsUserTrait.NumberOfHDEntropies] ?? 0;
+        const hardwareWallets =
+          traits?.[MetaMetricsUserTrait.NumberOfHardwareWallets] ?? 0;
+        const importedAccounts =
+          traits?.[MetaMetricsUserTrait.NumberOfImportedAccounts] ?? 0;
+        // 2 SRPs + 1 hardware + 1 imported = 4 total wallets.
+        expect(hdEntropies + hardwareWallets + importedAccounts).toBe(4);
       });
     });
   });
@@ -2572,6 +3228,7 @@ type WithControllerOptions = {
   currentLocale?: string;
   options?: Partial<MetaMetricsControllerOptions>;
   remoteFeatureFlags?: Record<string, unknown>;
+  seedlessOnboardingState?: Partial<SeedlessOnboardingControllerState>;
   mockNetworkClientConfigurationsByNetworkClientId?: Record<
     NetworkClientId,
     {
@@ -2609,6 +3266,7 @@ async function withController<ReturnValue>(
       options = {},
       currentLocale = LOCALE,
       remoteFeatureFlags = {},
+      seedlessOnboardingState = {},
       mockNetworkClientConfigurationsByNetworkClientId = {
         selectedNetworkClientId: {
           chainId: DEFAULT_CHAIN_ID,
@@ -2652,6 +3310,11 @@ async function withController<ReturnValue>(
       }),
     );
 
+    messenger.registerActionHandler(
+      'SeedlessOnboardingController:getState',
+      jest.fn().mockReturnValue(seedlessOnboardingState),
+    );
+
     const metaMetricsControllerMessenger = new Messenger<
       'MetaMetricsController',
       AllowedActions,
@@ -2668,6 +3331,7 @@ async function withController<ReturnValue>(
         'NetworkController:getState',
         'NetworkController:getNetworkClientById',
         'RemoteFeatureFlagController:getState',
+        'SeedlessOnboardingController:getState',
       ],
       events: [
         'PreferencesController:stateChange',

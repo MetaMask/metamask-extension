@@ -12,13 +12,19 @@ import {
   StatusTypes,
 } from '@metamask/bridge-controller';
 import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxFlexWrap,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   AvatarNetwork,
   AvatarNetworkSize,
   AvatarToken,
   AvatarTokenSize,
   BannerAlert,
   BannerAlertSeverity,
-  Box,
   ButtonIcon,
   ButtonIconSize,
   ButtonLink,
@@ -47,15 +53,13 @@ import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import {
   AlignItems,
   Display,
-  FlexDirection,
-  FlexWrap,
-  JustifyContent,
   TextTransform,
 } from '../../../helpers/constants/design-system';
 import { formatDate } from '../../../helpers/utils/util';
 import { ConfirmInfoRowDivider as Divider } from '../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getNativeTokenInfo, isHardwareWallet } from '../../../selectors';
+import { getNativeTokenInfo } from '../../../selectors';
+import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
 import { getTransactions } from '../../../selectors/transactions';
 import {
   MetaMetricsContextProp,
@@ -222,7 +226,7 @@ const CrossChainSwapTxDetails = () => {
   );
 
   const srcNetworkIconName = (
-    <Box display={Display.Flex} gap={1} alignItems={AlignItems.center}>
+    <Box className="flex" gap={1} alignItems={BoxAlignItems.Center}>
       {srcNetwork && (
         <AvatarNetwork
           size={AvatarNetworkSize.Xs}
@@ -235,7 +239,7 @@ const CrossChainSwapTxDetails = () => {
   );
 
   const destNetworkIconName = (
-    <Box display={Display.Flex} gap={1} alignItems={AlignItems.center}>
+    <Box className="flex" gap={1} alignItems={BoxAlignItems.Center}>
       {destNetwork && (
         <AvatarNetwork
           size={AvatarNetworkSize.Xs}
@@ -322,11 +326,7 @@ const CrossChainSwapTxDetails = () => {
           <Divider />
 
           {/* Bridge tx details */}
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            gap={2}
-          >
+          <Box className="flex" flexDirection={BoxFlexDirection.Column} gap={2}>
             <TransactionDetailRow
               title={t('bridgeTxDetailsStatus')}
               value={
@@ -348,11 +348,11 @@ const CrossChainSwapTxDetails = () => {
                 )}
                 value={
                   <Box
-                    display={Display.Flex}
+                    className="flex"
                     gap={1}
-                    alignItems={AlignItems.center}
-                    flexWrap={FlexWrap.Wrap}
-                    justifyContent={JustifyContent.flexEnd}
+                    alignItems={BoxAlignItems.Center}
+                    flexWrap={BoxFlexWrap.Wrap}
+                    justifyContent={BoxJustifyContent.End}
                   >
                     {srcNetworkIconName}
                     <Icon name={IconName.Arrow2Right} size={IconSize.Sm} />
@@ -370,11 +370,11 @@ const CrossChainSwapTxDetails = () => {
                 )}
                 value={
                   <Box
-                    display={Display.Flex}
+                    className="flex"
                     gap={1}
-                    alignItems={AlignItems.center}
-                    flexWrap={FlexWrap.Wrap}
-                    justifyContent={JustifyContent.flexEnd}
+                    alignItems={BoxAlignItems.Center}
+                    flexWrap={BoxFlexWrap.Wrap}
+                    justifyContent={BoxJustifyContent.End}
                   >
                     {sourceTokenIconUrl && (
                       <AvatarToken
@@ -409,20 +409,16 @@ const CrossChainSwapTxDetails = () => {
           <Divider />
 
           {/* Bridge tx details 2 */}
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            gap={2}
-          >
+          <Box className="flex" flexDirection={BoxFlexDirection.Column} gap={2}>
             <TransactionDetailRow
               title={t('bridgeTxDetailsYouSent')}
               value={
                 <Box
-                  display={Display.Flex}
+                  className="flex"
                   gap={1}
-                  alignItems={AlignItems.center}
-                  flexWrap={FlexWrap.Wrap}
-                  justifyContent={JustifyContent.flexEnd}
+                  alignItems={BoxAlignItems.Center}
+                  flexWrap={BoxFlexWrap.Wrap}
+                  justifyContent={BoxJustifyContent.End}
                 >
                   {t('bridgeTxDetailsTokenAmountOnChain', [
                     bridgeAmountSent ?? '',
@@ -437,11 +433,11 @@ const CrossChainSwapTxDetails = () => {
                 title={t('bridgeTxDetailsYouReceived')}
                 value={
                   <Box
-                    display={Display.Flex}
+                    className="flex"
                     gap={1}
-                    alignItems={AlignItems.center}
-                    flexWrap={FlexWrap.Wrap}
-                    justifyContent={JustifyContent.flexEnd}
+                    alignItems={BoxAlignItems.Center}
+                    flexWrap={BoxFlexWrap.Wrap}
+                    justifyContent={BoxJustifyContent.End}
                   >
                     {t('bridgeTxDetailsTokenAmountOnChain', [
                       amountReceived,
@@ -479,11 +475,7 @@ const CrossChainSwapTxDetails = () => {
           <Divider />
 
           {/* Generic tx details */}
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            gap={2}
-          >
+          <Box className="flex" flexDirection={BoxFlexDirection.Column} gap={2}>
             {srcChainTxMeta?.txParams.nonce ? (
               <TransactionDetailRow
                 title={t('bridgeTxDetailsNonce')}

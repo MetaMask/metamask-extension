@@ -61,6 +61,9 @@ import { CloseAmountSection } from './components/close-amount-section';
  * @param props.initialLeverage
  * @param props.sizeDecimals
  * @param props.markPrice
+ * @param props.autoFocusUsd
+ * @param props.autoFocusLimitPrice
+ * @param props.usdPlaceholder
  */
 export const OrderEntry: React.FC<OrderEntryProps> = ({
   asset,
@@ -82,6 +85,9 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   initialLeverage,
   sizeDecimals,
   markPrice,
+  autoFocusUsd = false,
+  autoFocusLimitPrice = false,
+  usdPlaceholder,
 }) => {
   const t = useI18nContext();
 
@@ -89,10 +95,11 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   const marketInfo = usePerpsMarketInfo(asset);
 
   // Fetch dynamic fee rates from the controller (user-specific, with discounts)
-  const { feeRate } = usePerpsOrderFees({
-    symbol: asset,
-    orderType: orderType ?? 'market',
-  });
+  const { feeRate, undiscountedFeeRate, metamaskFeeRateDiscountPercentage } =
+    usePerpsOrderFees({
+      symbol: asset,
+      orderType: orderType ?? 'market',
+    });
 
   // Use custom hook for form state management
   const {
@@ -129,6 +136,18 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
 
   const isLong = formState.direction === 'long';
 
+  const originalEstimatedFees = useMemo(() => {
+    if (
+      calculations.estimatedFees === null ||
+      feeRate === undefined ||
+      feeRate === 0 ||
+      undiscountedFeeRate === undefined
+    ) {
+      return null;
+    }
+    return calculations.estimatedFees * (undiscountedFeeRate / feeRate);
+  }, [calculations.estimatedFees, feeRate, undiscountedFeeRate]);
+
   const onCalculationsChangeRef = useRef(onCalculationsChange);
   onCalculationsChangeRef.current = onCalculationsChange;
 
@@ -162,6 +181,20 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
     handleOrderTypeChange(type);
     onOrderTypeChange?.(type);
   };
+
+  // Refocus the USD size input whenever the user switches back to market mode,
+  // so the keyboard-first flow stays consistent across order-type toggles.
+  const usdInputRef = useRef<HTMLInputElement | null>(null);
+  useEffect(() => {
+    if (
+      autoFocusUsd &&
+      mode !== 'close' &&
+      formState.type === 'market' &&
+      usdInputRef.current
+    ) {
+      usdInputRef.current.focus();
+    }
+  }, [autoFocusUsd, mode, formState.type]);
 
   // Determine submit button text based on mode
   const submitButtonText = useMemo(() => {
@@ -261,7 +294,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
                     ? TextColor.textDefault
                     : TextColor.textAlternative,
               }}
-              padding={3}
+              padding={4}
               data-testid="order-type-market"
             />
             <Tag
@@ -286,7 +319,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
                     ? TextColor.textDefault
                     : TextColor.textAlternative,
               }}
-              padding={3}
+              padding={4}
               data-testid="order-type-limit"
             />
           </Box>
@@ -313,6 +346,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             midPrice={midPrice}
             direction={formState.direction}
             liquidationPrice={calculations.liquidationPriceRaw}
+            autoFocus={autoFocusLimitPrice}
           />
         )}
 
@@ -327,7 +361,14 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             leverage={formState.leverage}
             asset={asset}
             currentPrice={currentPrice}
+            szDecimals={sizeDecimals ?? marketInfo?.szDecimals}
+            currentPositionSize={
+              mode === 'modify' ? existingPosition?.size : undefined
+            }
             onAddFunds={onAddFunds}
+            autoFocus={autoFocusUsd && formState.type === 'market'}
+            usdPlaceholder={usdPlaceholder}
+            usdInputRef={usdInputRef}
           />
         )}
 
@@ -361,6 +402,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             estimatedSize={estimatedSize}
             orderType={formState.type}
             limitPrice={formState.limitPrice}
+            liquidationPrice={calculations.liquidationPriceRaw}
             asset={asset}
           />
         )}
@@ -370,7 +412,11 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
           <OrderSummary
             marginRequired={calculations.marginRequired}
             estimatedFees={calculations.estimatedFees}
+            originalEstimatedFees={originalEstimatedFees}
             liquidationPrice={calculations.liquidationPrice}
+            metamaskFeeRateDiscountPercentage={
+              metamaskFeeRateDiscountPercentage
+            }
           />
         )}
       </Box>
@@ -384,7 +430,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
         >
           <Button
             variant={ButtonVariant.Primary}
-            size={ButtonSize.Lg}
+            size={ButtonSize.Md}
             onClick={handleSubmit}
             className={twMerge(
               'w-full',

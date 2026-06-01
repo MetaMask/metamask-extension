@@ -21,7 +21,7 @@ describe('Test Snap manageState', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
         const testSnaps = new TestSnaps(driver);
 
         // Navigate to test snaps page and connect manage state and validate installation
@@ -90,7 +90,7 @@ describe('Test Snap manageState', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
         const testSnaps = new TestSnaps(driver);
 
         // Navigate to test snaps page and connect manage state and validate installation

@@ -1,8 +1,7 @@
 import React from 'react';
-import { Box, Text } from '../../../components/component-library';
+import { Box, BoxJustifyContent } from '@metamask/design-system-react';
+import { Text } from '../../../components/component-library';
 import {
-  JustifyContent,
-  Display,
   TextVariant,
   BlockSize,
 } from '../../../helpers/constants/design-system';
@@ -20,10 +19,9 @@ export default function TransactionDetailRow({
 }: TransactionDetailRowProps) {
   return (
     <Box
-      display={Display.Flex}
-      justifyContent={JustifyContent.spaceBetween}
+      className="flex w-full"
+      justifyContent={BoxJustifyContent.Between}
       data-testid="transaction-detail-row"
-      width={BlockSize.Full}
     >
       <Text
         minWidth={BlockSize.Max}

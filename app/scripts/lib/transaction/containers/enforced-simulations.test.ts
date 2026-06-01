@@ -15,6 +15,7 @@ import { DELEGATOR_CONTRACTS } from '@metamask/delegation-deployments';
 import { Hex, remove0x } from '@metamask/utils';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import { toHex } from '@metamask/controller-utils';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { TransactionControllerInitMessenger } from '../../../messenger-client-init/messengers/transaction-controller-messenger';
 import { enforceSimulations } from './enforced-simulations';
 
@@ -64,13 +65,18 @@ describe('Enforced Simulations Utils', () => {
     TransactionControllerIsAtomicBatchSupportedAction['handler']
   > = jest.fn();
 
+  const remoteFeatureFlagGetStateMock: jest.MockedFn<
+    RemoteFeatureFlagControllerGetStateAction['handler']
+  > = jest.fn();
+
   beforeEach(() => {
     jest.resetAllMocks();
 
     const baseMessenger = new Messenger<
       MockAnyNamespace,
       | DelegationControllerSignDelegationAction
-      | TransactionControllerIsAtomicBatchSupportedAction,
+      | TransactionControllerIsAtomicBatchSupportedAction
+      | RemoteFeatureFlagControllerGetStateAction,
       never
     >({
       namespace: MOCK_ANY_NAMESPACE,
@@ -86,10 +92,16 @@ describe('Enforced Simulations Utils', () => {
       isAtomicBatchSupportedMock,
     );
 
+    baseMessenger.registerActionHandler(
+      'RemoteFeatureFlagController:getState',
+      remoteFeatureFlagGetStateMock,
+    );
+
     messenger = new Messenger<
       'TransactionControllerInitMessenger',
       | DelegationControllerSignDelegationAction
-      | TransactionControllerIsAtomicBatchSupportedAction,
+      | TransactionControllerIsAtomicBatchSupportedAction
+      | RemoteFeatureFlagControllerGetStateAction,
       never,
       typeof baseMessenger
     >({
@@ -101,10 +113,15 @@ describe('Enforced Simulations Utils', () => {
       actions: [
         'DelegationController:signDelegation',
         'TransactionController:isAtomicBatchSupported',
+        'RemoteFeatureFlagController:getState',
       ],
     });
 
     signDelegationMock.mockResolvedValue(DELEGATION_SIGNATURE_MOCK);
+    remoteFeatureFlagGetStateMock.mockReturnValue({
+      cacheTimestamp: 0,
+      remoteFeatureFlags: {},
+    });
 
     options = {
       messenger,
@@ -248,6 +265,20 @@ describe('Enforced Simulations Utils', () => {
           remove0x(DELEGATION_SIGNATURE_MOCK).toLowerCase(),
         ),
       );
+    });
+
+    it('throws when no caveats can be generated', async () => {
+      const transactionMeta = cloneDeep(TRANSACTION_META_MOCK);
+      transactionMeta.simulationData = {
+        tokenBalanceChanges: [],
+      };
+
+      await expect(
+        enforceSimulations({
+          ...options,
+          transactionMeta,
+        }),
+      ).rejects.toThrow('No caveats generated for enforced simulations');
     });
 
     describe('applies slippage', () => {

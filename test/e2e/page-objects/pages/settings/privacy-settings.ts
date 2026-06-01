@@ -14,9 +14,9 @@ class PrivacySettings {
   private readonly blockaidAlertsToggle =
     '[data-testid="securityAlert"] .toggle-button';
 
-  /** Security alerts (Blockaid) live under Transactions in Settings V2, not Privacy. */
+  /** Security alerts (Blockaid) live under Transactions in Settings, not Privacy. */
   private readonly settingsTransactionsTab =
-    '[data-testid="settings-v2-tab-item-transactions"]';
+    '[data-testid="settings-tab-item-transactions"]';
 
   private readonly closeRevealSrpDialogButton = {
     text: tEn('close'),
@@ -74,7 +74,7 @@ class PrivacySettings {
   private readonly selectSrpContainer = '[data-testid="select-srp-container"]';
 
   private readonly privacyTabButton =
-    '[data-testid="settings-v2-tab-item-privacy"]';
+    '[data-testid="settings-tab-item-privacy"]';
 
   private readonly thirdPartyApisSubpageLink = `a[href="#${THIRD_PARTY_APIS_ROUTE}"]`;
 
@@ -153,6 +153,27 @@ class PrivacySettings {
   private readonly backToSrpListButton =
     '[data-testid="reveal-recovery-phrase-back-button"]';
 
+  private readonly passkeySettingsRow =
+    '[data-testid="security-passkey-settings-row"]';
+
+  private readonly passkeyRegisterPasswordInput =
+    '[data-testid="register-passkey-password-input"]';
+
+  private readonly passkeyRegisterContinueButton =
+    '[data-testid="register-passkey-verify-continue-button"]';
+
+  private readonly passkeyTurnOffPasswordInput =
+    '[data-testid="turn-off-passkey-password-input"]';
+
+  private readonly passkeyTurnOffContinueButton =
+    '[data-testid="turn-off-passkey-verify-continue-button"]';
+
+  private readonly passkeyEnrollmentSteps =
+    '[data-testid="passkey-setup-steps"]';
+
+  private readonly passkeyStepIndicatorSuccess =
+    '[data-testid="passkey-step-indicator-success"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -199,7 +220,7 @@ class PrivacySettings {
   }
 
   /**
-   * Settings V2 Privacy → Export your data: opens confirmation modal then downloads
+   * Settings Privacy → Export your data: opens confirmation modal then downloads
    * the JSON backup (preferences, accounts, address book, networks) from `backupUserData`.
    */
   async exportYourData(): Promise<void> {
@@ -248,7 +269,9 @@ class PrivacySettings {
       await this.driver.clickElement(this.revealSrpQuizTryAgainButton);
     }
     await this.driver.waitForSelector(this.revealSrpQuizQuestionOne);
-    await this.driver.clickElement(this.revealSrpQuizRightAnswerButton);
+    await this.driver.findScrollToAndClickElement(
+      this.revealSrpQuizRightAnswerButton,
+    );
     await this.driver.clickElement(this.revealSrpQuizContinueButton);
 
     // answer quiz question 2
@@ -261,7 +284,9 @@ class PrivacySettings {
       await this.driver.clickElement(this.revealSrpQuizTryAgainButton);
     }
     await this.driver.waitForSelector(this.revealSrpQuizQuestionTwo);
-    await this.driver.clickElement(this.revealSrpQuizRightAnswerButton);
+    await this.driver.findScrollToAndClickElement(
+      this.revealSrpQuizRightAnswerButton,
+    );
     await this.driver.clickElement(this.revealSrpQuizContinueButton);
   }
 
@@ -325,7 +350,7 @@ class PrivacySettings {
   }
 
   /**
-   * Settings V2 does not show the legacy “device only” popover when opting out;
+   * Settings does not show the legacy “device only” popover when opting out;
    * this only toggles the control off.
    */
   async optOutDataCollectionForMarketing(): Promise<void> {
@@ -359,7 +384,7 @@ class PrivacySettings {
 
   /**
    * Opens Third-party APIs (nested under Privacy) by clicking the sidebar Privacy
-   * tab when needed, then the in-page link — same path a user takes in Settings V2.
+   * tab when needed, then the in-page link — same path a user takes in Settings.
    */
   async goToThirdPartyApisSettings(): Promise<void> {
     console.log('Go to Third-party APIs settings page');
@@ -443,6 +468,40 @@ class PrivacySettings {
     await this.driver.waitForSelector(
       `${this.dataCollectionForMarketingToggle}.toggle-button--${targetState}`,
     );
+  }
+
+  async checkPasskeyRowIsDisplayed(): Promise<void> {
+    console.log('Check passkey settings row is displayed');
+    await this.driver.waitForSelector(this.passkeySettingsRow);
+  }
+
+  async clickPasskeyToggle(): Promise<void> {
+    console.log('Click passkey toggle in settings');
+    await this.driver.clickElement(this.passkeySettingsRow);
+  }
+
+  async enterPasswordAndContinueForPasskeyRegister(
+    password: string,
+  ): Promise<void> {
+    console.log('Enter password and continue for passkey registration');
+    await this.driver.waitForSelector(this.passkeyRegisterPasswordInput);
+    await this.driver.fill(this.passkeyRegisterPasswordInput, password);
+    await this.driver.clickElement(this.passkeyRegisterContinueButton);
+  }
+
+  async waitForPasskeyEnrollmentSuccess(): Promise<void> {
+    console.log('Waiting for passkey enrollment success in settings');
+    await this.driver.waitForSelector(this.passkeyEnrollmentSteps);
+    await this.driver.waitForSelector(this.passkeyStepIndicatorSuccess);
+  }
+
+  async enterPasswordAndContinueForPasskeyTurnOff(
+    password: string,
+  ): Promise<void> {
+    console.log('Enter password and continue for passkey turn off');
+    await this.driver.waitForSelector(this.passkeyTurnOffPasswordInput);
+    await this.driver.fill(this.passkeyTurnOffPasswordInput, password);
+    await this.driver.clickElement(this.passkeyTurnOffContinueButton);
   }
 }
 

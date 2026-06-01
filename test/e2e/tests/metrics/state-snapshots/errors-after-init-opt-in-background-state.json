@@ -46,20 +46,20 @@
     "fullScreenGasPollTokens": "object",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "hasShownMultichainAccountsIntroModal": "boolean",
-    "isRampCardClosed": false,
     "isWalletResetInProgress": "boolean",
     "lastUpdatedAt": null,
     "lastViewedUserSurvey": null,
+    "lastVisitedRoute": null,
     "musdConversionDismissedCtaKeys": "object",
     "musdConversionEducationSeen": "boolean",
     "networkConnectionBanner": "object",
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
-    "nftsDetectionNoticeDismissed": false,
     "nftsDropdownState": {},
     "notificationGasPollTokens": "object",
     "onboardingDate": null,
     "outdatedBrowserWarningLastShown": "object",
+    "passkeyAutoUnlockSuppressed": "boolean",
     "pendingExtensionVersion": null,
     "pendingRedirectRoute": null,
     "pendingShieldCohort": null,
@@ -72,18 +72,12 @@
     "shieldEndingToastLastClickedOrClosed": "object",
     "shieldPausedToastLastClickedOrClosed": "object",
     "shieldSubscriptionError": "object",
-    "showAccountBanner": true,
-    "showBetaHeader": false,
     "showDownloadMobileAppSlide": "boolean",
-    "showNetworkBanner": true,
-    "showPermissionsTour": true,
     "showShieldEntryModalOnce": null,
-    "showTestnetMessageInDropdown": true,
     "sidePanelGasPollTokens": [],
     "signatureSecurityAlertResponses": "object",
     "slides": "object",
     "storageWriteErrorType": null,
-    "surveyLinkLastClickedOrClosed": "object",
     "termsOfUseLastAgreed": "number",
     "throttledOrigins": "object",
     "trezorModel": null,
@@ -96,21 +90,21 @@
   },
   "AuthenticationController": {
     "isSignedIn": "boolean",
+    "needsProfilePairing": "boolean",
     "srpSessionData": "object"
   },
   "BridgeController": {
     "assetExchangeRates": "object",
     "minimumBalanceForRentExemptionInLamports": "string",
     "quoteFetchError": null,
-    "quoteRequest": {
-      "srcTokenAddress": "0x0000000000000000000000000000000000000000"
-    },
+    "quoteRequest": "object",
     "quoteStreamComplete": null,
     "quotes": "object",
     "quotesInitialLoadTime": null,
     "quotesLastFetched": null,
     "quotesLoadingStatus": null,
     "quotesRefreshCount": 0,
+    "tokenSecurityTypeDestination": null,
     "tokenWarnings": "object"
   },
   "BridgeStatusController": { "txHistory": "object" },
@@ -130,6 +124,11 @@
         "conversionDate": "number",
         "conversionRate": 1700,
         "usdConversionRate": 1700
+      },
+      "MON": {
+        "conversionDate": "object",
+        "conversionRate": null,
+        "usdConversionRate": null
       },
       "POL": {
         "conversionDate": null,
@@ -252,6 +251,7 @@
     "seedPhraseBackedUp": null
   },
   "PPOMController": { "storageMetadata": "object" },
+  "PasskeyController": { "passkeyRecord": null },
   "PermissionController": { "subjects": "object" },
   "PermissionLogController": {
     "permissionActivityLog": "object",
@@ -338,7 +338,8 @@
     "rewardsSeasonStatuses": "object",
     "rewardsSeasons": "object",
     "rewardsSubscriptionTokens": "object",
-    "rewardsSubscriptions": "object"
+    "rewardsSubscriptions": "object",
+    "rewardsVipPerpsFees": "object"
   },
   "RewardsDataService": "undefined",
   "SeedlessOnboardingController": "object",

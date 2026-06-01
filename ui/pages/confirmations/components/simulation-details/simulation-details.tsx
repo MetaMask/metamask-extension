@@ -7,6 +7,8 @@ import {
 } from '@metamask/transaction-controller';
 import React, { Fragment, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { RevertReason } from '../revert-reason/revert-reason';
+import { selectConfirmationAdvancedDetailsOpen } from '../../selectors/preferences';
 import { useAlertMetrics } from '../../../../components/app/alert-system/contexts/alertMetricsContext';
 import InlineAlert from '../../../../components/app/alert-system/inline-alert';
 import { MultipleAlertModal } from '../../../../components/app/alert-system/multiple-alert-modal';
@@ -47,17 +49,17 @@ import { useBalanceChanges } from './useBalanceChanges';
 import { useSimulationMetrics } from './useSimulationMetrics';
 
 export type StaticRow = {
-  label: string;
-  balanceChanges: BalanceChange[];
+  readonly label: string;
+  readonly balanceChanges: BalanceChange[];
 };
 
 export type SimulationDetailsProps = {
-  enableMetrics?: boolean;
-  isTransactionsRedesign?: boolean;
-  metricsOnly?: boolean;
-  staticRows?: StaticRow[];
-  transaction: TransactionMeta;
-  smartTransactionStatus?: string;
+  readonly enableMetrics?: boolean;
+  readonly isTransactionsRedesign?: boolean;
+  readonly metricsOnly?: boolean;
+  readonly staticRows?: StaticRow[];
+  readonly transaction: TransactionMeta;
+  readonly smartTransactionStatus?: string;
 };
 
 /**
@@ -425,6 +427,12 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   const { chainId, id: transactionId, simulationData } = transaction;
   const balanceChangesResult = useBalanceChanges({ chainId, simulationData });
   const loading = !simulationData || balanceChangesResult.pending;
+  const showAdvancedDetails = useSelector(
+    selectConfirmationAdvancedDetailsOpen,
+  );
+  const showSimulationRevert = Boolean(
+    showAdvancedDetails && transaction.revert?.simulation?.message,
+  );
 
   const hasStaticData =
     staticRows?.length > 0 &&
@@ -483,6 +491,12 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
       >
         {error.code === SimulationErrorCode.Reverted && (
           <ErrorContent error={error} />
+        )}
+        {showSimulationRevert && (
+          <RevertReason
+            source="simulation"
+            data-testid="simulation-details-revert-reason"
+          />
         )}
       </SimulationDetailsLayout>
     );

@@ -7,7 +7,7 @@ import {
 } from '../../shared/constants/metametrics';
 import { resolveABTestAssignment } from '../../shared/lib/ab-testing/resolve-ab-test-assignment';
 import { MetaMetricsContext } from '../contexts/metametrics';
-import { getRemoteFeatureFlags } from '../selectors/remote-feature-flags';
+import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
 
 /**
  * Type constraint for variants object. Every A/B test must define a `control`

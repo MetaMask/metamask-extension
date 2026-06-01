@@ -13,6 +13,7 @@ import {
 } from '@metamask/bridge-status-controller';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import {
+  KeyringControllerGetStateAction,
   KeyringControllerSignEip7702AuthorizationAction,
   KeyringControllerSignTypedMessageAction,
 } from '@metamask/keyring-controller';
@@ -53,34 +54,26 @@ import {
   TransactionControllerUpdateTransactionAction,
 } from '@metamask/transaction-controller';
 import {
+  TransactionPayControllerGetDelegationTransactionAction,
   TransactionPayControllerGetStateAction,
   TransactionPayControllerGetStrategyAction,
 } from '@metamask/transaction-pay-controller';
 import { RootMessenger } from '../../lib/messenger';
 import { AppStateControllerGetStateAction } from '../../controllers/app-state-controller';
+import { AppStateControllerSetDefaultHomeActiveTabNameAction } from '../../controllers/app-state-controller-method-action-types';
 import { SubscriptionServiceSubmitSubscriptionSponsorshipIntentAction } from '../../services/subscription/types';
 import {
   InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction,
   InstitutionalSnapControllerPublishHookAction,
 } from '../../controllers/institutional-snap/InstitutionalSnapController-method-action-types';
 
-type AllowedActions = MessengerActions<TransactionControllerMessenger>;
-
-type AllowedEvents = MessengerEvents<TransactionControllerMessenger>;
-
-export type TransactionControllerInitMessenger = ReturnType<
-  typeof getTransactionControllerInitMessenger
->;
-
 export function getTransactionControllerMessenger(
-  messenger: RootMessenger<AllowedActions, AllowedEvents>,
-): TransactionControllerMessenger {
-  const controllerMessenger = new Messenger<
-    'TransactionController',
-    AllowedActions,
-    AllowedEvents,
-    typeof messenger
-  >({
+  messenger: RootMessenger<
+    MessengerActions<TransactionControllerMessenger>,
+    MessengerEvents<TransactionControllerMessenger>
+  >,
+) {
+  const controllerMessenger: TransactionControllerMessenger = new Messenger({
     namespace: 'TransactionController',
     parent: messenger,
   });
@@ -90,6 +83,7 @@ export function getTransactionControllerMessenger(
       'AccountsController:getSelectedAccount',
       'AccountsController:getState',
       `ApprovalController:addRequest`,
+      'KeyringController:getState',
       'KeyringController:signEip7702Authorization',
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getNetworkClientById',
@@ -106,18 +100,24 @@ export function getTransactionControllerMessenger(
   return controllerMessenger;
 }
 
+export type TransactionControllerInitMessenger = ReturnType<
+  typeof getTransactionControllerInitMessenger
+>;
+
 type InitMessengerActions =
   | AccountsControllerGetSelectedAccountAction
   | AccountsControllerGetStateAction
   | AccountTrackerControllerGetStateAction
   | ApprovalControllerActions
   | AppStateControllerGetStateAction
+  | AppStateControllerSetDefaultHomeActiveTabNameAction
   | AuthenticationController.AuthenticationControllerGetBearerTokenAction
   | BridgeStatusControllerActions
   | CurrencyRateControllerActions
   | DelegationControllerSignDelegationAction
   | InstitutionalSnapControllerPublishHookAction
   | InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction
+  | KeyringControllerGetStateAction
   | KeyringControllerSignEip7702AuthorizationAction
   | KeyringControllerSignTypedMessageAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
@@ -133,6 +133,7 @@ type InitMessengerActions =
   | TransactionControllerGetStateAction
   | TransactionControllerIsAtomicBatchSupportedAction
   | TransactionControllerUpdateTransactionAction
+  | TransactionPayControllerGetDelegationTransactionAction
   | TransactionPayControllerGetStateAction
   | TransactionPayControllerGetStrategyAction;
 
@@ -189,6 +190,7 @@ export function getTransactionControllerInitMessenger(
       'ApprovalController:startFlow',
       'ApprovalController:updateRequestState',
       'AppStateController:getState',
+      'AppStateController:setDefaultHomeActiveTabName',
       'AuthenticationController:getBearerToken',
       'BridgeStatusController:getState',
       'BridgeStatusController:submitTx',
@@ -196,6 +198,7 @@ export function getTransactionControllerInitMessenger(
       'DelegationController:signDelegation',
       'InstitutionalSnapController:beforeCheckPendingTransactionHook',
       'InstitutionalSnapController:publishHook',
+      'KeyringController:getState',
       'KeyringController:signEip7702Authorization',
       'KeyringController:signTypedMessage',
       'NetworkController:findNetworkClientIdByChainId',
@@ -211,6 +214,7 @@ export function getTransactionControllerInitMessenger(
       'TransactionController:getState',
       'TransactionController:isAtomicBatchSupported',
       'TransactionController:updateTransaction',
+      'TransactionPayController:getDelegationTransaction',
       'TransactionPayController:getState',
       'TransactionPayController:getStrategy',
     ],

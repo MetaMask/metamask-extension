@@ -25,6 +25,7 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { usePerpsLiveAccount } from '../../../../hooks/perps/stream';
+import { getTradeableBalance } from '../../../../hooks/perps/getTradeableBalance';
 import {
   invokePerpsBalanceAction,
   type PerpsBalanceActionHandler,
@@ -60,7 +61,10 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
 
   // Use account data or defaults
   const totalBalance = account?.totalBalance ?? '0';
-  const availableBalance = account?.availableBalance ?? '0';
+  // "available" label on perps home reflects the order-entry (tradeable)
+  // balance: for HyperLiquid unified accounts this folds unreserved spot USDC
+  // on top of the withdrawable perps balance.
+  const availableBalance = getTradeableBalance(account);
 
   // totalBalance is HL accountValue (perps equity, already includes unrealizedPnl) + spot
   const accountValue = parseFloat(totalBalance);

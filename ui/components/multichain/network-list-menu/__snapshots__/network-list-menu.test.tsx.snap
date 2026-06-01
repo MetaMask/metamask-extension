@@ -85,19 +85,19 @@ exports[`NetworkListMenu renders properly 1`] = `
               class="mm-box"
             >
               <div
-                class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--justify-content-space-between"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-                >
-                  Enabled networks
-                </p>
-              </div>
-              <div
                 class="mm-box characters"
                 data-rbd-droppable-context-id="0"
                 data-rbd-droppable-id="characters"
               >
+                <div
+                  class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--justify-content-space-between"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+                  >
+                    Default networks
+                  </p>
+                </div>
                 <div
                   aria-describedby="rbd-hidden-text-0-hidden-text-0"
                   class="mm-box"
@@ -291,65 +291,6 @@ exports[`NetworkListMenu renders properly 1`] = `
                   aria-describedby="rbd-hidden-text-0-hidden-text-0"
                   class="mm-box"
                   data-rbd-drag-handle-context-id="0"
-                  data-rbd-drag-handle-draggable-id="eip155:5"
-                  data-rbd-draggable-context-id="0"
-                  data-rbd-draggable-id="eip155:5"
-                  draggable="false"
-                  role="button"
-                  tabindex="0"
-                >
-                  <div
-                    class="mm-box multichain-network-list-item multichain-network-list-item--deselected multichain-network-list-item--not-selectable mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
-                    data-testid="network-list-item-eip155:5"
-                  >
-                    <div
-                      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-                    >
-                      C
-                    </div>
-                    <div
-                      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
-                      style="overflow: hidden;"
-                    >
-                      <div
-                        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
-                        data-testid="Chain 5"
-                      >
-                        <div
-                          class="multichain-network-list-item__tooltip"
-                        >
-                          <div
-                            class=""
-                            style="display: inline;"
-                            tabindex="0"
-                            title=""
-                          >
-                            <p
-                              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
-                              tabindex="0"
-                            >
-                              Chain 5
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <button
-                      aria-label="Network options"
-                      class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-                      data-testid="network-list-item-options-button-eip155:5"
-                    >
-                      <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                        style="mask-image: url('./images/icons/more-vertical.svg');"
-                      />
-                    </button>
-                  </div>
-                </div>
-                <div
-                  aria-describedby="rbd-hidden-text-0-hidden-text-0"
-                  class="mm-box"
-                  data-rbd-drag-handle-context-id="0"
                   data-rbd-drag-handle-draggable-id="eip155:143"
                   data-rbd-draggable-context-id="0"
                   data-rbd-draggable-id="eip155:143"
@@ -409,6 +350,115 @@ exports[`NetworkListMenu renders properly 1`] = `
                     </button>
                   </div>
                 </div>
+                <div
+                  class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--justify-content-space-between"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+                  >
+                    Custom networks
+                  </p>
+                </div>
+                <div
+                  aria-describedby="rbd-hidden-text-0-hidden-text-0"
+                  class="mm-box"
+                  data-rbd-drag-handle-context-id="0"
+                  data-rbd-drag-handle-draggable-id="eip155:5"
+                  data-rbd-draggable-context-id="0"
+                  data-rbd-draggable-id="eip155:5"
+                  draggable="false"
+                  role="button"
+                  tabindex="0"
+                >
+                  <div
+                    class="mm-box multichain-network-list-item multichain-network-list-item--deselected multichain-network-list-item--not-selectable mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+                    data-testid="network-list-item-eip155:5"
+                  >
+                    <div
+                      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                    >
+                      C
+                    </div>
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
+                      style="overflow: hidden;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
+                        data-testid="Chain 5"
+                      >
+                        <div
+                          class="multichain-network-list-item__tooltip"
+                        >
+                          <div
+                            class=""
+                            style="display: inline;"
+                            tabindex="0"
+                            title=""
+                          >
+                            <p
+                              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+                              tabindex="0"
+                            >
+                              Chain 5
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      aria-label="Network options"
+                      class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                      data-testid="network-list-item-options-button-eip155:5"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                        style="mask-image: url('./images/icons/more-vertical.svg');"
+                      />
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+                >
+                  Show test networks
+                </p>
+                <label
+                  class="toggle-button toggle-button--off"
+                  tabindex="0"
+                >
+                  <div
+                    style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+                  >
+                    <div
+                      style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(186, 187, 190);"
+                    >
+                      <div
+                        style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                      />
+                      <div
+                        style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+                      />
+                    </div>
+                    <div
+                      style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+                    >
+                      <div
+                        style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
+                      />
+                    </div>
+                    <input
+                      data-testid="network-menu-show-test-networks"
+                      style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                      type="checkbox"
+                      value="false"
+                    />
+                  </div>
+                </label>
               </div>
               <div
                 class="mm-box new-network-list__networks-container"
@@ -825,6 +875,53 @@ exports[`NetworkListMenu renders properly 1`] = `
                   </div>
                   <div
                     class="mm-box new-network-list__list-of-networks mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+                    data-testid="popular-network-0x1079"
+                  >
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
+                    >
+                      <div
+                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                      >
+                        <img
+                          alt="Tempo logo"
+                          class="mm-avatar-network__network-image"
+                          src="./images/tempo.svg"
+                        />
+                      </div>
+                      <div
+                        class="mm-box mm-box--margin-left-4"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+                        >
+                          Tempo
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box"
+                      data-testid="test-add-button"
+                    >
+                      <button
+                        aria-label="Add"
+                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                      >
+                        <svg
+                          class="inline-block w-6 h-6 text-inherit"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div
+                    class="mm-box new-network-list__list-of-networks mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
                     data-testid="popular-network-0x144"
                   >
                     <div
@@ -871,47 +968,6 @@ exports[`NetworkListMenu renders properly 1`] = `
                     </div>
                   </div>
                 </div>
-              </div>
-              <div
-                class="mm-box mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-                >
-                  Show test networks
-                </p>
-                <label
-                  class="toggle-button toggle-button--off"
-                  tabindex="0"
-                >
-                  <div
-                    style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
-                  >
-                    <div
-                      style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(186, 187, 190);"
-                    >
-                      <div
-                        style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
-                      />
-                      <div
-                        style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
-                      />
-                    </div>
-                    <div
-                      style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
-                    >
-                      <div
-                        style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
-                      />
-                    </div>
-                    <input
-                      data-testid="network-menu-show-test-networks"
-                      style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
-                      type="checkbox"
-                      value="false"
-                    />
-                  </div>
-                </label>
               </div>
             </div>
           </div>
@@ -1033,7 +1089,7 @@ exports[`NetworkListMenu should match snapshot when adding a network 1`] = `
             </div>
           </header>
           <div
-            class="mm-box networks-tab__scrollable mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full"
+            class="mm-box networks-form__scrollable mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full"
           >
             <div
               class="mm-box mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--width-full"
@@ -1200,10 +1256,11 @@ exports[`NetworkListMenu should match snapshot when adding a network 1`] = `
               </div>
             </div>
             <div
-              class="mm-box networks-tab__network-form__footer mm-box--padding-4 mm-box--width-full mm-box--background-color-background-default"
+              class="mm-box networks-form__footer mm-box--padding-4 mm-box--width-full mm-box--background-color-background-default"
             >
               <button
                 class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
+                data-testid="page-container-footer-next"
                 disabled=""
               >
                 Save
@@ -1313,19 +1370,19 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
               class="mm-box"
             >
               <div
-                class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--justify-content-space-between"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-                >
-                  Enabled networks
-                </p>
-              </div>
-              <div
                 class="mm-box characters"
                 data-rbd-droppable-context-id="1"
                 data-rbd-droppable-id="characters"
               >
+                <div
+                  class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--justify-content-space-between"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+                  >
+                    Default networks
+                  </p>
+                </div>
                 <div
                   aria-describedby="rbd-hidden-text-1-hidden-text-7"
                   class="mm-box"
@@ -1519,65 +1576,6 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                   aria-describedby="rbd-hidden-text-1-hidden-text-7"
                   class="mm-box"
                   data-rbd-drag-handle-context-id="1"
-                  data-rbd-drag-handle-draggable-id="eip155:5"
-                  data-rbd-draggable-context-id="1"
-                  data-rbd-draggable-id="eip155:5"
-                  draggable="false"
-                  role="button"
-                  tabindex="0"
-                >
-                  <div
-                    class="mm-box multichain-network-list-item multichain-network-list-item--deselected multichain-network-list-item--not-selectable mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
-                    data-testid="network-list-item-eip155:5"
-                  >
-                    <div
-                      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-                    >
-                      C
-                    </div>
-                    <div
-                      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
-                      style="overflow: hidden;"
-                    >
-                      <div
-                        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
-                        data-testid="Chain 5"
-                      >
-                        <div
-                          class="multichain-network-list-item__tooltip"
-                        >
-                          <div
-                            class=""
-                            style="display: inline;"
-                            tabindex="0"
-                            title=""
-                          >
-                            <p
-                              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
-                              tabindex="0"
-                            >
-                              Chain 5
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <button
-                      aria-label="Network options"
-                      class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-                      data-testid="network-list-item-options-button-eip155:5"
-                    >
-                      <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                        style="mask-image: url('./images/icons/more-vertical.svg');"
-                      />
-                    </button>
-                  </div>
-                </div>
-                <div
-                  aria-describedby="rbd-hidden-text-1-hidden-text-7"
-                  class="mm-box"
-                  data-rbd-drag-handle-context-id="1"
                   data-rbd-drag-handle-draggable-id="eip155:143"
                   data-rbd-draggable-context-id="1"
                   data-rbd-draggable-id="eip155:143"
@@ -1637,6 +1635,115 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                     </button>
                   </div>
                 </div>
+                <div
+                  class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--justify-content-space-between"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+                  >
+                    Custom networks
+                  </p>
+                </div>
+                <div
+                  aria-describedby="rbd-hidden-text-1-hidden-text-7"
+                  class="mm-box"
+                  data-rbd-drag-handle-context-id="1"
+                  data-rbd-drag-handle-draggable-id="eip155:5"
+                  data-rbd-draggable-context-id="1"
+                  data-rbd-draggable-id="eip155:5"
+                  draggable="false"
+                  role="button"
+                  tabindex="0"
+                >
+                  <div
+                    class="mm-box multichain-network-list-item multichain-network-list-item--deselected multichain-network-list-item--not-selectable mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+                    data-testid="network-list-item-eip155:5"
+                  >
+                    <div
+                      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                    >
+                      C
+                    </div>
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
+                      style="overflow: hidden;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
+                        data-testid="Chain 5"
+                      >
+                        <div
+                          class="multichain-network-list-item__tooltip"
+                        >
+                          <div
+                            class=""
+                            style="display: inline;"
+                            tabindex="0"
+                            title=""
+                          >
+                            <p
+                              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+                              tabindex="0"
+                            >
+                              Chain 5
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      aria-label="Network options"
+                      class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                      data-testid="network-list-item-options-button-eip155:5"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                        style="mask-image: url('./images/icons/more-vertical.svg');"
+                      />
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+                >
+                  Show test networks
+                </p>
+                <label
+                  class="toggle-button toggle-button--off"
+                  tabindex="0"
+                >
+                  <div
+                    style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+                  >
+                    <div
+                      style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(186, 187, 190);"
+                    >
+                      <div
+                        style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                      />
+                      <div
+                        style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+                      />
+                    </div>
+                    <div
+                      style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+                    >
+                      <div
+                        style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
+                      />
+                    </div>
+                    <input
+                      data-testid="network-menu-show-test-networks"
+                      style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                      type="checkbox"
+                      value="false"
+                    />
+                  </div>
+                </label>
               </div>
               <div
                 class="mm-box new-network-list__networks-container"
@@ -2053,6 +2160,53 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                   </div>
                   <div
                     class="mm-box new-network-list__list-of-networks mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+                    data-testid="popular-network-0x1079"
+                  >
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
+                    >
+                      <div
+                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                      >
+                        <img
+                          alt="Tempo logo"
+                          class="mm-avatar-network__network-image"
+                          src="./images/tempo.svg"
+                        />
+                      </div>
+                      <div
+                        class="mm-box mm-box--margin-left-4"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+                        >
+                          Tempo
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box"
+                      data-testid="test-add-button"
+                    >
+                      <button
+                        aria-label="Add"
+                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                      >
+                        <svg
+                          class="inline-block w-6 h-6 text-inherit"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div
+                    class="mm-box new-network-list__list-of-networks mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
                     data-testid="popular-network-0x144"
                   >
                     <div
@@ -2099,47 +2253,6 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                     </div>
                   </div>
                 </div>
-              </div>
-              <div
-                class="mm-box mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-                >
-                  Show test networks
-                </p>
-                <label
-                  class="toggle-button toggle-button--off"
-                  tabindex="0"
-                >
-                  <div
-                    style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
-                  >
-                    <div
-                      style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(186, 187, 190);"
-                    >
-                      <div
-                        style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
-                      />
-                      <div
-                        style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
-                      />
-                    </div>
-                    <div
-                      style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
-                    >
-                      <div
-                        style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
-                      />
-                    </div>
-                    <input
-                      data-testid="network-menu-show-test-networks"
-                      style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
-                      type="checkbox"
-                      value="false"
-                    />
-                  </div>
-                </label>
               </div>
             </div>
           </div>

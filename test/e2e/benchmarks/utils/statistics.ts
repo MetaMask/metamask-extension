@@ -16,6 +16,7 @@ import type {
   RatingDistribution,
   StatisticalResult,
   ThresholdConfig,
+  ThresholdSeverity,
   ThresholdViolation,
   TimerStatistics,
   WebVitalsAggregated,
@@ -168,7 +169,7 @@ export const detectOutliersZScore = (
   threshold: number = Z_SCORE_THRESHOLD,
 ): { filtered: number[]; outlierCount: number; outliers: number[] } => {
   if (values.length < 3) {
-    return { filtered: values, outlierCount: 0, outliers: [] };
+    return { filtered: [...values], outlierCount: 0, outliers: [] };
   }
 
   const mean = calculateMean(values);
@@ -197,7 +198,7 @@ export const detectOutliersIQR = (
   values: number[],
 ): { filtered: number[]; outlierCount: number; outliers: number[] } => {
   if (values.length < 4) {
-    return { filtered: values, outlierCount: 0, outliers: [] };
+    return { filtered: [...values], outlierCount: 0, outliers: [] };
   }
 
   const sorted = [...values].sort((a, b) => a - b);
@@ -353,13 +354,17 @@ export const calculateTimerStatistics = (
     maxDuration,
     minDuration,
   );
-  const { filtered, outlierCount } = detectOutliers(sanityResult.filtered);
+  const iqrResult = detectOutliersIQR(sanityResult.filtered);
+  const zScoreResult = detectOutliersZScore(iqrResult.filtered);
+  const { filtered } = zScoreResult;
+  const totalExcluded =
+    sanityResult.excludedCount +
+    iqrResult.outlierCount +
+    zScoreResult.outlierCount;
   const sorted = [...filtered].sort((a, b) => a - b);
   const mean = calculateMean(filtered);
   const stdDev = calculateStdDev(filtered);
   const cv = mean > 0 ? (stdDev / mean) * 100 : 0;
-
-  const totalExcluded = sanityResult.excludedCount + outlierCount;
 
   return {
     id: timerId,
@@ -374,6 +379,7 @@ export const calculateTimerStatistics = (
     p99: calculatePercentile(sorted, 99),
     samples: filtered.length,
     outliers: totalExcluded,
+    trimmedCount: iqrResult.outlierCount,
     dataQuality: assessDataQuality(cv),
   };
 };
@@ -407,19 +413,54 @@ export const isCI = (): boolean => {
 };
 
 /**
- * Get the effective threshold value, applying CI multiplier if in CI environment
+ * CV range in which adaptive threshold widening applies.
+ * Below 25% the metric is already stable enough that widening would mask real
+ * regressions. Above 50% the metric is classified "unreliable" and excluded
+ * from gating entirely (widening would make its threshold meaningless).
+ */
+export const CV_ADAPTIVE_MIN = 25;
+export const CV_ADAPTIVE_MAX = 50;
+
+/**
+ * Compute the CV-based threshold multiplier for a given observed CV.
+ * Returns `undefined` when `cv` is outside the adaptive window, so callers
+ * can distinguish "no adjustment applied" from "adjustment of 1.0×".
+ *
+ * Formula: `1 + CV/200` — produces 1.125× at CV=25, 1.25× at CV=50.
+ * Self-correcting: as harness improvements drop CV, thresholds tighten.
+ *
+ * @param cv - Observed coefficient of variation, as a percentage.
+ */
+export const computeCvAdjustment = (cv?: number): number | undefined => {
+  if (cv === undefined || cv < CV_ADAPTIVE_MIN || cv > CV_ADAPTIVE_MAX) {
+    return undefined;
+  }
+  return 1 + cv / 200;
+};
+
+/**
+ * Get the effective threshold value, applying CI multiplier if in CI
+ * environment and CV-adaptive widening if the observed CV falls in the
+ * adaptive band (see `computeCvAdjustment`).
  *
  * @param baseThreshold - The base threshold value in milliseconds
  * @param ciMultiplier - Optional multiplier for CI environments (default: 1.0)
+ * @param cv - Optional observed CV (percent). Triggers adaptive widening.
  */
 export const getEffectiveThreshold = (
   baseThreshold: number,
   ciMultiplier?: number,
+  cv?: number,
 ): number => {
+  let effective = baseThreshold;
   if (isCI() && ciMultiplier && ciMultiplier > 0) {
-    return baseThreshold * ciMultiplier;
+    effective *= ciMultiplier;
   }
-  return baseThreshold;
+  const cvAdjustment = computeCvAdjustment(cv);
+  if (cvAdjustment !== undefined) {
+    effective *= cvAdjustment;
+  }
+  return effective;
 };
 
 /**
@@ -430,6 +471,7 @@ export const getEffectiveThreshold = (
  * @param value - The actual percentile value
  * @param thresholds - The threshold configuration for this percentile
  * @param ciMultiplier - Optional CI multiplier
+ * @param cv - Optional observed CV (percent). Triggers adaptive widening.
  */
 const validatePercentile = (
   metricId: string,
@@ -437,28 +479,43 @@ const validatePercentile = (
   value: number,
   thresholds: PercentileThreshold,
   ciMultiplier?: number,
+  cv?: number,
 ): ThresholdViolation | null => {
-  const warnThreshold = getEffectiveThreshold(thresholds.warn, ciMultiplier);
-  const failThreshold = getEffectiveThreshold(thresholds.fail, ciMultiplier);
+  const warnThreshold = getEffectiveThreshold(
+    thresholds.warn,
+    ciMultiplier,
+    cv,
+  );
+  const failThreshold = getEffectiveThreshold(
+    thresholds.fail,
+    ciMultiplier,
+    cv,
+  );
+  const cvAdjustment = computeCvAdjustment(cv);
 
-  if (value > failThreshold) {
-    return {
+  const buildViolation = (
+    severity: ThresholdSeverity,
+    threshold: number,
+  ): ThresholdViolation => {
+    const base: ThresholdViolation = {
       metricId,
       percentile,
       value,
-      threshold: failThreshold,
-      severity: THRESHOLD_SEVERITY.Fail,
+      threshold,
+      severity,
     };
+    if (cvAdjustment !== undefined) {
+      base.cvAdjustment = cvAdjustment;
+    }
+    return base;
+  };
+
+  if (value > failThreshold) {
+    return buildViolation(THRESHOLD_SEVERITY.Fail, failThreshold);
   }
 
   if (value > warnThreshold) {
-    return {
-      metricId,
-      percentile,
-      value,
-      threshold: warnThreshold,
-      severity: THRESHOLD_SEVERITY.Warn,
-    };
+    return buildViolation(THRESHOLD_SEVERITY.Warn, warnThreshold);
   }
 
   return null;
@@ -485,6 +542,7 @@ export const validateTimerThreshold = (
       stats.p75,
       thresholds.p75,
       thresholds.ciMultiplier,
+      stats.cv,
     );
     if (violation) {
       violations.push(violation);
@@ -499,6 +557,7 @@ export const validateTimerThreshold = (
       stats.p95,
       thresholds.p95,
       thresholds.ciMultiplier,
+      stats.cv,
     );
     if (violation) {
       violations.push(violation);
@@ -561,6 +620,24 @@ export const validateResultThresholds = (
   const violations: ThresholdViolation[] = [];
 
   for (const [metricId, thresholds] of Object.entries(thresholdConfig)) {
+    // Derive CV from the BenchmarkResults JSON shape (no `cv` field is stored;
+    // mean and stdDev are). Guard against zero mean so division stays defined.
+    const mean = results.mean?.[metricId];
+    const stdDev = results.stdDev?.[metricId];
+    const cv =
+      mean !== undefined && stdDev !== undefined && mean > 0
+        ? (stdDev / mean) * 100
+        : undefined;
+
+    // Skip metrics where CV exceeds the adaptive window ceiling (CV_ADAPTIVE_MAX
+    // = CV_THRESHOLDS.POOR = 50). Uses strict > to match computeCvAdjustment,
+    // which treats cv === CV_ADAPTIVE_MAX as the top of the in-band range
+    // (returns 1.25×). Metrics at exactly cv=50 still receive widening; only
+    // cv > 50 is fundamentally unstable and excluded from gating.
+    if (cv !== undefined && cv > CV_THRESHOLDS.POOR) {
+      continue;
+    }
+
     if (thresholds.p75 && results.p75[metricId] !== undefined) {
       const violation = validatePercentile(
         metricId,
@@ -568,6 +645,7 @@ export const validateResultThresholds = (
         results.p75[metricId],
         thresholds.p75,
         thresholds.ciMultiplier,
+        cv,
       );
       if (violation) {
         violations.push(violation);
@@ -581,6 +659,7 @@ export const validateResultThresholds = (
         results.p95[metricId],
         thresholds.p95,
         thresholds.ciMultiplier,
+        cv,
       );
       if (violation) {
         violations.push(violation);

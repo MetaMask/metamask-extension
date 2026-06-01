@@ -20,6 +20,7 @@ import {
   PerpsOrderTransactionStatusType,
   type PerpsTransaction,
 } from '../types/transactionHistory';
+import { formatPositionSize } from '../../../../../shared/lib/perps-formatters';
 import { getDisplaySymbol } from '../utils';
 import { formatOrderLabel } from './orderUtils';
 
@@ -340,7 +341,11 @@ export function transformFillsToTransactions(
       type: 'trade',
       category: isOpened || isBuy ? 'position_open' : 'position_close',
       title,
-      subtitle: `${size} ${getDisplaySymbol(symbol)}`,
+      // formatPositionSize strips trailing `.0` for whole-number token amounts
+      // (e.g. PUMP "6601.0" → "6601") and trims redundant zeros for fractional
+      // sizes. Without szDecimals it falls back to magnitude-based precision,
+      // which matches mobile's activity-row formatting.
+      subtitle: `${formatPositionSize(size)} ${getDisplaySymbol(symbol)}`,
       timestamp,
       symbol,
       fill: {

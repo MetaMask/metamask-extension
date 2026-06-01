@@ -3,13 +3,17 @@ import {
   DEFAULT_TOP_X,
   DEFAULT_CACHE_EXPIRATION_MS,
   StaticAssetsController,
+  StaticAssetsControllerMessenger,
   StaticAssetsPollingFeatureFlagOptions,
 } from '../controllers/static-assets-controller';
-import { MessengerClientInitFunction } from './types';
 import {
-  StaticAssetsControllerMessenger,
-  StaticAssetsControllerInitMessenger,
-} from './messengers';
+  isAssetsUnifyStateFeatureEnabled,
+  ASSETS_UNIFY_STATE_VERSION_1,
+  type AssetsUnifyStateFeatureFlag,
+} from '../../../shared/lib/assets-unify-state/remote-feature-flag';
+import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
+import { MessengerClientInitFunction } from './types';
+import { StaticAssetsControllerInitMessenger } from './messengers';
 
 function getRemoteFeatureFlagControllerState(
   initMessenger: StaticAssetsControllerInitMessenger,
@@ -41,6 +45,19 @@ export const StaticAssetsControllerInit: MessengerClientInitFunction<
     getTopX: (): number => {
       const topX = getRemoteFeatureFlagControllerState(initMessenger)?.topX;
       return topX ? Number(topX) : DEFAULT_TOP_X;
+    },
+    getIsAssetsUnifyStateEnabled: (): boolean => {
+      if (!getIsAssetsUnifiedStateIncludedInBuild()) {
+        return false;
+      }
+      const state = initMessenger.call('RemoteFeatureFlagController:getState');
+      return isAssetsUnifyStateFeatureEnabled(
+        state?.remoteFeatureFlags?.assetsUnifyState as
+          | AssetsUnifyStateFeatureFlag
+          | null
+          | undefined,
+        ASSETS_UNIFY_STATE_VERSION_1,
+      );
     },
   });
   return {
