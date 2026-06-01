@@ -6,6 +6,7 @@ import process from 'node:process';
 import { join, resolve } from 'node:path';
 import {
   type Configuration,
+  type FileCacheOptions,
   webpack,
   Compiler,
   WebpackPluginInstance,
@@ -80,10 +81,17 @@ describe('webpack.config.test.ts', () => {
   let originalArgv: string[];
   let originalEnv: NodeJS.ProcessEnv;
   const originalReadFileSync = fs.readFileSync;
+  let originalExistsSync: typeof fs.existsSync;
+  const optionalRcPaths = {
+    metamaskrc: resolve(__dirname, '../../../.metamaskrc'),
+    metamaskprodrc: resolve(__dirname, '../../../.metamaskprodrc'),
+  };
+
   before(() => {
     // cache originals before we start messing with them
     originalArgv = process.argv;
     originalEnv = process.env;
+    originalExistsSync = fs.existsSync;
   });
   after(() => {
     // restore originals for other tests
@@ -125,7 +133,28 @@ ${Object.entries(env)
     return require('../webpack.config.ts').default;
   }
 
+  function mockOptionalRcFiles({
+    metamaskrc = false,
+    metamaskprodrc = false,
+  } = {}) {
+    mock.method(
+      fs,
+      'existsSync',
+      (path: Parameters<typeof fs.existsSync>[0]) => {
+        if (path === optionalRcPaths.metamaskrc) {
+          return metamaskrc;
+        }
+        if (path === optionalRcPaths.metamaskprodrc) {
+          return metamaskprodrc;
+        }
+        return originalExistsSync(path);
+      },
+    );
+  }
+
   it('should have the correct defaults', () => {
+    mockOptionalRcFiles();
+
     const config: Configuration = getWebpackConfig();
     // check that options are valid
     const { options } = webpack(config);
@@ -145,6 +174,15 @@ ${Object.entries(env)
     assert.strictEqual(options.optimization.removeAvailableModules, false);
     assert.strictEqual(options.optimization.usedExports, false);
     assert.strictEqual(options.watch, false);
+    const cache = config.cache as FileCacheOptions;
+    const configBuildDependencies = cache.buildDependencies?.config ?? [];
+    assert.ok(
+      configBuildDependencies.every(
+        (path) =>
+          !path.endsWith('.metamaskrc') && !path.endsWith('.metamaskprodrc'),
+      ),
+      'optional rc files should not be cache dependencies when they do not exist',
+    );
 
     const runtimeChunk = options.optimization.runtimeChunk as
       | {
@@ -220,6 +258,25 @@ ${Object.entries(env)
       (plugin) => plugin && plugin.constructor.name === 'ProgressPlugin',
     );
     assert(progressPlugin, 'Progress plugin should present');
+  });
+
+  it('includes existing optional rc files in cache dependencies', () => {
+    mockOptionalRcFiles({ metamaskrc: true });
+
+    const config: Configuration = getWebpackConfig();
+    const cache = config.cache as FileCacheOptions;
+    const configBuildDependencies = cache.buildDependencies?.config ?? [];
+
+    assert.ok(
+      configBuildDependencies.some((path) => path.endsWith('.metamaskrc')),
+      'existing .metamaskrc should be a cache dependency',
+    );
+    assert.ok(
+      configBuildDependencies.every(
+        (path) => !path.endsWith('.metamaskprodrc'),
+      ),
+      'missing .metamaskprodrc should not be a cache dependency',
+    );
   });
 
   it('should apply non-default options', () => {
