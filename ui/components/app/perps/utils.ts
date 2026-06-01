@@ -16,6 +16,7 @@ import {
 // resolve to this file (TypeScript prefers sibling `utils.ts` over the
 // `utils/index.ts` barrel). Keep the surface area in sync with `utils/index.ts`.
 export { willFlipPosition } from './utils/orderUtils';
+export { buildPerpsVipTrackingData } from './utils/trackingData';
 
 /**
  * Extract display name from symbol (strips DEX prefix for HIP-3 markets)

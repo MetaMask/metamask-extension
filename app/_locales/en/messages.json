@@ -3223,6 +3223,9 @@
   "default": {
     "message": "Default"
   },
+  "defaultNetworks": {
+    "message": "Default networks"
+  },
   "defaultRpcUrl": {
     "message": "Default RPC URL"
   },

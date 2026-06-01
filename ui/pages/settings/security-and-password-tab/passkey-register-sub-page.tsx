@@ -22,6 +22,7 @@ import {
 } from '../../../components/component-library';
 import { SECURITY_AND_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { createSentryError } from '../../../../shared/lib/error';
 import {
   getPasskeyAuthMethodKey,
   startPasskeyRegistration,
@@ -31,6 +32,7 @@ import {
   isPasskeyCeremonySilentError,
 } from '../../../../shared/lib/passkey';
 import { getPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
+import { captureException } from '../../../../shared/lib/sentry';
 import {
   protectVaultKeyWithPasskey,
   generatePasskeyRegistrationOptions,
@@ -222,6 +224,7 @@ export default function PasskeyRegisterSubPage() {
       });
       goToSettings();
     } catch (error) {
+      const durationMs = Date.now() - enrollmentStartedAt;
       if (isPasskeyCeremonySilentError(error)) {
         trackEvent({
           category: MetaMetricsEventCategory.Settings,
@@ -231,7 +234,7 @@ export default function PasskeyRegisterSubPage() {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             current_step: currentStep,
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            duration_ms: Date.now() - enrollmentStartedAt,
+            duration_ms: durationMs,
           },
         });
         log.debug(
@@ -243,7 +246,13 @@ export default function PasskeyRegisterSubPage() {
         return;
       }
 
-      log.error('Settings passkey enrollment failed', error);
+      const errorCode = getPasskeyErrorCode(error);
+      captureException(
+        createSentryError('Passkey registration in settings failed', error),
+        {
+          extra: { currentStep, durationMs, errorCode },
+        },
+      );
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.PasskeySetup,
@@ -252,9 +261,8 @@ export default function PasskeyRegisterSubPage() {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           error_step: currentStep,
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          duration_ms: Date.now() - enrollmentStartedAt,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          reason: getPasskeyErrorCode(error),
+          duration_ms: durationMs,
+          reason: errorCode,
         },
       });
       setEnrollmentError(
