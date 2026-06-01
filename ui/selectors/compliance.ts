@@ -1,6 +1,8 @@
 import { createSelector, lruMemoize, type Selector } from 'reselect';
 import {
   getDefaultComplianceControllerState,
+  selectAreAnyWalletsBlocked as coreSelectAreAnyWalletsBlocked,
+  selectIsWalletBlocked as coreSelectIsWalletBlocked,
   type ComplianceControllerState,
 } from '@metamask/compliance-controller';
 import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
@@ -23,19 +25,18 @@ export const getIsComplianceEnabled = createSelector(
     ),
 );
 
-const getComplianceWalletComplianceStatusMap = (state: ComplianceState) =>
-  state.metamask.walletComplianceStatusMap ??
-  DEFAULT_COMPLIANCE_STATE.walletComplianceStatusMap;
-
-const getComplianceLastCheckedAtValue = (state: ComplianceState) =>
-  state.metamask.lastCheckedAt ?? DEFAULT_COMPLIANCE_STATE.lastCheckedAt;
+const getComplianceControllerState = (state: ComplianceState) => ({
+  walletComplianceStatusMap:
+    state.metamask.walletComplianceStatusMap ??
+    DEFAULT_COMPLIANCE_STATE.walletComplianceStatusMap,
+  lastCheckedAt:
+    state.metamask.lastCheckedAt ?? DEFAULT_COMPLIANCE_STATE.lastCheckedAt,
+});
 
 const getSelectIsWalletBlocked = lruMemoize(
   (address: string) =>
-    createSelector(
-      getComplianceWalletComplianceStatusMap,
-      (walletComplianceStatusMap) =>
-        walletComplianceStatusMap[address]?.blocked ?? false,
+    createSelector(getComplianceControllerState, (complianceState) =>
+      coreSelectIsWalletBlocked(address)(complianceState),
     ),
   { maxSize: PARAMETERIZED_SELECTOR_CACHE_SIZE },
 );
@@ -49,13 +50,9 @@ const getAddressCacheKey = (addresses: string[]) =>
 
 const getSelectAreAnyWalletsBlocked = lruMemoize(
   (addresses: string[]) =>
-    createSelector(getComplianceWalletComplianceStatusMap, (statusMap) => {
-      if (addresses.length === 0) {
-        return false;
-      }
-
-      return addresses.some((address) => statusMap[address]?.blocked ?? false);
-    }),
+    createSelector(getComplianceControllerState, (complianceState) =>
+      coreSelectAreAnyWalletsBlocked(addresses)(complianceState),
+    ),
   {
     equalityCheck: (firstAddressList, secondAddressList) =>
       getAddressCacheKey(firstAddressList) ===
@@ -69,7 +66,8 @@ export const selectAreAnyWalletsBlocked = (
 ): Selector<ComplianceState, boolean> =>
   getSelectAreAnyWalletsBlocked(addresses);
 
-export const selectWalletComplianceStatusMap =
-  getComplianceWalletComplianceStatusMap;
+export const selectWalletComplianceStatusMap = (state: ComplianceState) =>
+  getComplianceControllerState(state).walletComplianceStatusMap;
 
-export const selectComplianceLastCheckedAt = getComplianceLastCheckedAtValue;
+export const selectComplianceLastCheckedAt = (state: ComplianceState) =>
+  getComplianceControllerState(state).lastCheckedAt;

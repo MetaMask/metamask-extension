@@ -21,6 +21,7 @@ export const ComplianceServiceInit: MessengerClientInitFunction<
   ComplianceServiceMessenger
 > = ({ controllerMessenger }) => {
   const messengerClient = new ComplianceService({
+    apiUrl: process.env.COMPLIANCE_API_URL || undefined,
     messenger: controllerMessenger,
     fetch: globalThis.fetch.bind(globalThis),
     env: getComplianceServiceEnvironment(),

@@ -14,8 +14,12 @@ jest.mock('../../shared/lib/manifestFlags', () => {
   };
 });
 
-const BLOCKED_ADDRESS = '0xblocked';
-const COMPLIANT_ADDRESS = '0xcompliant';
+const LOWERCASE_BLOCKED_EVM_ADDRESS =
+  '0x52908400098527886e0f7030069857d2e4169ee7';
+const CHECKSUMMED_BLOCKED_EVM_ADDRESS =
+  '0x52908400098527886E0F7030069857D2E4169EE7';
+const COMPLIANT_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678';
+const NON_EVM_ADDRESS = 'HN7cABqLq46Es1jh92dQQisAq662SmxELLLsHHe4YWrH';
 
 type RemoteFeatureFlagValue =
   RemoteFeatureFlagControllerState['remoteFeatureFlags'][string];
@@ -93,8 +97,8 @@ describe('compliance selectors', () => {
   describe('wallet status selectors', () => {
     const checkedAt = '2026-05-05T00:00:00.000Z';
     const walletComplianceStatusMap = {
-      [BLOCKED_ADDRESS]: {
-        address: BLOCKED_ADDRESS,
+      [LOWERCASE_BLOCKED_EVM_ADDRESS]: {
+        address: LOWERCASE_BLOCKED_EVM_ADDRESS,
         blocked: true,
         checkedAt,
       },
@@ -103,11 +107,24 @@ describe('compliance selectors', () => {
         blocked: false,
         checkedAt,
       },
+      [NON_EVM_ADDRESS]: {
+        address: NON_EVM_ADDRESS,
+        blocked: true,
+        checkedAt,
+      },
     };
 
     it('returns true for a cached blocked address', () => {
       expect(
-        selectIsWalletBlocked(BLOCKED_ADDRESS)(
+        selectIsWalletBlocked(LOWERCASE_BLOCKED_EVM_ADDRESS)(
+          getState({ walletComplianceStatusMap }),
+        ),
+      ).toBe(true);
+    });
+
+    it('returns true for a checksummed EVM address when the cache holds the lowercase form', () => {
+      expect(
+        selectIsWalletBlocked(CHECKSUMMED_BLOCKED_EVM_ADDRESS)(
           getState({ walletComplianceStatusMap }),
         ),
       ).toBe(true);
@@ -122,19 +139,41 @@ describe('compliance selectors', () => {
     });
 
     it('returns false for unknown or missing state', () => {
-      expect(selectIsWalletBlocked('0xunknown')(getState())).toBe(false);
       expect(
-        selectAreAnyWalletsBlocked([BLOCKED_ADDRESS])(
+        selectIsWalletBlocked('0x0000000000000000000000000000000000000001')(
+          getState(),
+        ),
+      ).toBe(false);
+      expect(
+        selectAreAnyWalletsBlocked([LOWERCASE_BLOCKED_EVM_ADDRESS])(
           getState({ walletComplianceStatusMap: undefined }),
+        ),
+      ).toBe(false);
+    });
+
+    it('uses exact match only for non-EVM addresses', () => {
+      expect(
+        selectIsWalletBlocked(NON_EVM_ADDRESS.toLowerCase())(
+          getState({ walletComplianceStatusMap }),
         ),
       ).toBe(false);
     });
 
     it('returns true when any address in an array is blocked', () => {
       expect(
-        selectAreAnyWalletsBlocked([COMPLIANT_ADDRESS, BLOCKED_ADDRESS])(
-          getState({ walletComplianceStatusMap }),
-        ),
+        selectAreAnyWalletsBlocked([
+          COMPLIANT_ADDRESS,
+          LOWERCASE_BLOCKED_EVM_ADDRESS,
+        ])(getState({ walletComplianceStatusMap })),
+      ).toBe(true);
+    });
+
+    it('returns true for batch check with checksummed blocked address', () => {
+      expect(
+        selectAreAnyWalletsBlocked([
+          COMPLIANT_ADDRESS,
+          CHECKSUMMED_BLOCKED_EVM_ADDRESS,
+        ])(getState({ walletComplianceStatusMap })),
       ).toBe(true);
     });
 
