@@ -228,11 +228,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
           if (isTronSpecialAsset(asset.assetId)) {
             return false;
           }
-          if (
-            shouldHideZeroBalanceTokens &&
-            asset.balance === '0' &&
-            !('address' in asset && isMusdToken(asset.address))
-          ) {
+          if (shouldHideZeroBalanceTokens && asset.balance === '0') {
             return false;
           }
           return true;
