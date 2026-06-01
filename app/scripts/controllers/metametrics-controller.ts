@@ -24,6 +24,10 @@ import type {
   NetworkControllerNetworkDidChangeEvent,
 } from '@metamask/network-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import type {
+  SeedlessOnboardingControllerGetStateAction,
+  SeedlessOnboardingControllerState,
+} from '@metamask/seedless-onboarding-controller';
 import type { Browser } from 'webextension-polyfill';
 import type { Nft } from '@metamask/assets-controllers';
 import {
@@ -42,6 +46,7 @@ import {
 import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
+  MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsUserTrait,
@@ -74,6 +79,7 @@ import {
   AnonymousTransactionMetaMetricsEvent,
   TransactionMetaMetricsEvent,
 } from '../../../shared/constants/transaction';
+import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import type { SegmentClient } from '../lib/segment';
 import {
   trace,
@@ -82,7 +88,7 @@ import {
   type EndTraceRequest,
   type TraceCallback,
 } from '../../../shared/lib/trace';
-import { ENVIRONMENT } from '../../../development/build/constants';
+import { ENVIRONMENT } from '../../../shared/constants/build';
 import { KeyringType } from '../../../shared/constants/keyring';
 import type { captureException } from '../../../shared/lib/sentry';
 import type { FlattenedBackgroundStateProxy } from '../../../shared/types';
@@ -195,6 +201,7 @@ export type MetaMaskState = Pick<
   | 'srpSessionData'
   | 'keyrings'
   | 'multichainNetworkConfigurationsByChainId'
+  | 'firstTimeFlowType'
   // TODO: Remove as this is no longer a top-level property of the flattened background state object.
   // | 'security_providers'
 > & {
@@ -343,7 +350,8 @@ export type AllowedActions =
   | PreferencesControllerGetStateAction
   | NetworkControllerGetStateAction
   | NetworkControllerGetNetworkClientByIdAction
-  | RemoteFeatureFlagControllerGetStateAction;
+  | RemoteFeatureFlagControllerGetStateAction
+  | SeedlessOnboardingControllerGetStateAction;
 
 /**
  * Events that this controller is allowed to subscribe.
@@ -1492,6 +1500,9 @@ export class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.ProfileId]: Object.entries(
         metamaskState.srpSessionData || {},
       )?.[0]?.[1]?.profile?.profileId,
+      [MetaMetricsUserTrait.AccountType]: this.#getAccountTypeTrait(
+        metamaskState.firstTimeFlowType,
+      ),
       [MetaMetricsUserTrait.Platform]: getPlatform(),
       [MetaMetricsUserTrait.InstallType]: getInstallType(),
       [MetaMetricsUserTrait.DeviceType]: getDeviceType(),
@@ -1530,6 +1541,42 @@ export class MetaMetricsController extends BaseController<
     }
 
     return null;
+  }
+
+  #getAccountTypeTrait(
+    firstTimeFlowType: MetaMaskState['firstTimeFlowType'],
+  ): NonNullable<MetaMetricsUserTraits[MetaMetricsUserTrait.AccountType]> {
+    switch (firstTimeFlowType) {
+      case FirstTimeFlowType.import:
+      case FirstTimeFlowType.restore:
+        return MetaMetricsEventAccountType.Imported;
+      case FirstTimeFlowType.socialImport:
+        return this.#getSocialAccountType(MetaMetricsEventAccountType.Imported);
+      case FirstTimeFlowType.socialCreate:
+        return this.#getSocialAccountType(MetaMetricsEventAccountType.Default);
+      case FirstTimeFlowType.create:
+      default:
+        return MetaMetricsEventAccountType.Default;
+    }
+  }
+
+  #getSocialAccountType(
+    baseType:
+      | MetaMetricsEventAccountType.Default
+      | MetaMetricsEventAccountType.Imported,
+  ): NonNullable<MetaMetricsUserTraits[MetaMetricsUserTrait.AccountType]> {
+    const authConnection = this.#getSeedlessOnboardingState()?.authConnection;
+    return authConnection ? `${baseType}_${authConnection}` : baseType;
+  }
+
+  #getSeedlessOnboardingState():
+    | Partial<SeedlessOnboardingControllerState>
+    | undefined {
+    try {
+      return this.messenger.call('SeedlessOnboardingController:getState');
+    } catch {
+      return undefined;
+    }
   }
 
   /**

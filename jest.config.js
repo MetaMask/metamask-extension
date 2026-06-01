@@ -7,6 +7,8 @@ module.exports = {
     '<rootDir>/shared/**/*.(js|ts|tsx)',
     '<rootDir>/ui/**/*.(js|ts|tsx)',
     '<rootDir>/development/build/transforms/**/*.js',
+    '<rootDir>/development/skills-postinstall.ts',
+    '<rootDir>/development/skills-sync.ts',
     '<rootDir>/development/metamaskbot-build-announce/**/*.(js|ts)',
     '<rootDir>/test/unit-global/**/*.test.(js|ts|tsx)',
   ],
