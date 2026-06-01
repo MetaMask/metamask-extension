@@ -47,7 +47,7 @@ import { getSelectedAccountGroup } from '../../selectors/multichain-accounts/acc
 import { QuoteValidationErrors, type BridgeToken } from '../bridge/types';
 import { createDeepEqualSelector } from '../../../shared/lib/selectors/selector-creators';
 import { isHardwareWallet } from '../../../shared/lib/selectors/keyring';
-import { BATCH_SELL_SUPPORTED_CHAIN_IDS } from '../../constants/batch-sell';
+import { BATCH_SELL_SUPPORTED_CHAIN_IDS } from '../../../shared/constants/batch-sell';
 import { BatchSellAsset } from './types';
 
 /**

@@ -105,7 +105,7 @@ export const BatchSellReviewPage = () => {
         totalReceivedFiat={data?.totalReceivedAmountFiat}
         selectedAsset={{
           symbol: selectedReceiveAsset.symbol,
-          image: selectedReceiveAsset.image,
+          image: selectedReceiveAsset.iconUrl,
         }}
         onTotalReceivedFiatIconClick={() =>
           setTotalReceivedAssetModalIsOpen(true)
@@ -133,7 +133,7 @@ export const BatchSellReviewPage = () => {
       />
       <SelectReceivedAssetModal
         assets={receivedAssets}
-        selectedAssetId={selectedReceiveAsset.id}
+        selectedAssetId={selectedReceiveAsset.assetId}
         onClose={() => setSelectReceivedAssetModalIsOpen(false)}
         open={selectReceivedAssetModalIsOpen}
         onSelectAsset={(assetId) => {

@@ -1,7 +1,14 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { CaipChainId } from '@metamask/utils';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
+import { formatAddressToCaipReference } from '@metamask/bridge-controller';
 import {
   getAvailableBatchSellSwapAssetsForNetwork,
   getAvailableBatchSellNetworks,
@@ -13,24 +20,30 @@ import { useSortBatchSellAssetsByBalance } from '../../../../hooks/batch-sell/us
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useBatchSellInfoModal } from '../../hooks/useBatchSellInfoModal';
 import { useBatchSellNavigation } from '../../../../hooks/batch-sell/useBatchSellNavigation';
+import { useBatchSellSelection } from '../../providers/batch-sell-selection-provider';
 import { MIN_SELECTED_ALLOWED_TOKENS } from '../../../../constants/batch-sell';
 import { transitionForward } from '../../../../components/ui/transition';
 import useBridging from '../../../../hooks/bridge/useBridging';
 import { MetaMetricsSwapsEventSource } from '../../../../../shared/constants/metametrics';
+import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { SortingToolbar } from './components/sorting-toolbar';
 import { NetworkToolbar } from './components/network-toolbar';
 import { Header } from './components/header';
 import { Footer } from './components/footer';
 import { AssetList } from './components/asset-list';
 import { BatchSellEmptySelectTokens } from './components/batch-sell-empty-select-tokens';
-import { useInitialStateFromLocation } from './hooks/useInitialStateFromLocation';
-import { getSourceTokenAddress } from './utils';
 
 export const BatchSellSelectPage = () => {
   const t = useI18nContext();
   const { openBridgeExperience } = useBridging();
   const { openModal, closeModal } = useBatchSellInfoModal();
   const { navigateToBatchSellConfirmPage } = useBatchSellNavigation();
+  const {
+    selectedNetworkChainId,
+    selectedAssetsId,
+    setSelectedNetworkChainId,
+    setSelectedAssetsId,
+  } = useBatchSellSelection();
 
   const [assetsOrderByBalance, setAssetsOrderByBalance] = useState<
     'asc' | 'desc'
@@ -45,33 +58,20 @@ export const BatchSellSelectPage = () => {
     [availableBatchSellNetworksList],
   );
 
-  // Need a stable getter for assets at init time (before selectedNetworkChainId state exists)
-  // We use a selector directly for each candidate chainId
-  const allAssetsByNetwork = useSelector((state: BridgeAppState) => {
-    const result: Record<string, string[]> = {};
-    for (const chainId of availableNetworkChainIds) {
-      result[chainId] = getAvailableBatchSellSwapAssetsForNetwork(
-        state,
-        chainId,
-      ).map((a) => a.assetId);
+  useEffect(() => {
+    endTrace({ name: TraceName.BatchSellModal });
+  }, []);
+
+  useLayoutEffect(() => {
+    // Default to the first available network when none is selected yet.
+    if (!selectedNetworkChainId && availableNetworkChainIds[0]) {
+      setSelectedNetworkChainId(availableNetworkChainIds[0]);
     }
-    return result;
-  });
-
-  const getAvailableAssetIds = useCallback(
-    (chainId: CaipChainId | null) =>
-      chainId ? (allAssetsByNetwork[chainId] ?? []) : [],
-    [allAssetsByNetwork],
-  );
-
-  const { networkChainId: initialNetworkChainId, assetsId: initialAssetsId } =
-    useInitialStateFromLocation(availableNetworkChainIds, getAvailableAssetIds);
-
-  const [selectedNetworkChainId, setSelectedNetworkChainId] =
-    useState<CaipChainId | null>(initialNetworkChainId);
-
-  const [selectedAssetsId, setSelectedAssetsId] =
-    useState<string[]>(initialAssetsId);
+  }, [
+    availableNetworkChainIds,
+    selectedNetworkChainId,
+    setSelectedNetworkChainId,
+  ]);
 
   const availableBatchSellAssetsForNetworkList = useSelector(
     (state: BridgeAppState) =>
@@ -91,24 +91,30 @@ export const BatchSellSelectPage = () => {
       assetsOrderByBalance,
     );
 
-  const onNetworkSelect = useCallback((chainId: CaipChainId) => {
-    setSelectedAssetsId([]);
-    setSelectedNetworkChainId(chainId);
-  }, []);
+  const onNetworkSelect = useCallback(
+    (chainId: CaipChainId) => {
+      setSelectedAssetsId([]);
+      setSelectedNetworkChainId(chainId);
+    },
+    [setSelectedAssetsId, setSelectedNetworkChainId],
+  );
 
   const onSelectAsset = useCallback(
     (asset: BatchSellAsset) =>
       setSelectedAssetsId((assets) =>
         assets.includes(asset.assetId) ? assets : [...assets, asset.assetId],
       ),
-    [],
+    [setSelectedAssetsId],
   );
 
-  const onDeselectAsset = useCallback((asset: BatchSellAsset) => {
-    setSelectedAssetsId((assets) =>
-      assets.filter((_assetId) => _assetId !== asset.assetId),
-    );
-  }, []);
+  const onDeselectAsset = useCallback(
+    (asset: BatchSellAsset) => {
+      setSelectedAssetsId((assets) =>
+        assets.filter((_assetId) => _assetId !== asset.assetId),
+      );
+    },
+    [setSelectedAssetsId],
+  );
 
   const navigateToBridgePageAndPreselect = useCallback(() => {
     closeModal();
@@ -118,7 +124,7 @@ export const BatchSellSelectPage = () => {
     const sourceToken = selectedAsset
       ? {
           symbol: selectedAsset.symbol,
-          address: getSourceTokenAddress(selectedAsset),
+          address: formatAddressToCaipReference(selectedAsset.assetId),
           name: selectedAsset.name,
           chainId: selectedAsset.chainId,
         }
@@ -158,15 +164,9 @@ export const BatchSellSelectPage = () => {
       return;
     }
 
-    transitionForward(() =>
-      navigateToBatchSellConfirmPage({
-        selectedNetworkChainId,
-        selectedAssetsId,
-      }),
-    );
+    transitionForward(navigateToBatchSellConfirmPage);
   }, [
     selectedAssetsId,
-    selectedNetworkChainId,
     openModal,
     navigateToBatchSellConfirmPage,
     navigateToBridgePageAndPreselect,

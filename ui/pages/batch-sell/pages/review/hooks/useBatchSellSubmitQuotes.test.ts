@@ -6,7 +6,7 @@ import {
   getFromAccount,
   getIsStxEnabled,
 } from '../../../../../ducks/bridge/selectors';
-import type { ReceivedAsset } from '../types';
+import type { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
 import { mockUseSelectorPassthrough } from '../../../../../../test/data/batch-sell';
 import useBatchSellSubmitQuotes from './useBatchSellSubmitQuotes';
 
@@ -52,22 +52,22 @@ const MOCK_ACCOUNT = { address: '0xdeadbeef', type: 'eip155:eoa' };
 
 const MOCK_QUOTE_RESPONSE = { quote: { requestId: 'req-1' } } as never;
 
-const MOCK_RECEIVED_ASSET_NO_SECURITY: ReceivedAsset = {
-  id: 'eip155:1/erc20:0xusdc' as never,
+const MOCK_RECEIVED_ASSET_NO_SECURITY: BatchSellAsset = {
+  assetId: 'eip155:1/erc20:0xusdc' as never,
   symbol: 'USDC',
   securityData: undefined,
-};
+} as unknown as BatchSellAsset;
 
-const MOCK_RECEIVED_ASSET_WITH_SECURITY: ReceivedAsset = {
-  id: 'eip155:1/erc20:0xusdc' as never,
+const MOCK_RECEIVED_ASSET_WITH_SECURITY: BatchSellAsset = {
+  assetId: 'eip155:1/erc20:0xusdc' as never,
   symbol: 'USDC',
   securityData: { type: 'VERIFIED' } as never,
-};
+} as unknown as BatchSellAsset;
 
 function renderDefault(
   overrides: {
     quoteResponses?: (typeof MOCK_QUOTE_RESPONSE | null)[];
-    receivedAsset?: ReceivedAsset;
+    receivedAsset?: BatchSellAsset;
   } = {},
 ) {
   const {

@@ -80,13 +80,16 @@ export const SlippageModal = ({
   const isSubmitDisabled =
     effectiveDraftValue === undefined ||
     isNaN(effectiveDraftValue) ||
-    effectiveDraftValue === value;
+    effectiveDraftValue === value ||
+    effectiveDraftValue <= 0 ||
+    effectiveDraftValue > 100;
 
   const handleSubmit = () => {
-    if (effectiveDraftValue !== undefined && !isNaN(effectiveDraftValue)) {
-      onChange(effectiveDraftValue);
+    if (isSubmitDisabled) {
+      return handleClose();
     }
-    onClose();
+
+    onChange(effectiveDraftValue);
   };
 
   const handlePresetClick = (option: number) => {

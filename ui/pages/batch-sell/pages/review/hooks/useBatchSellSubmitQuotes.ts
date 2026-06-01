@@ -10,11 +10,11 @@ import {
 } from '../../../../../ducks/bridge/selectors';
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import type { MetaMaskReduxDispatch } from '../../../../../store/store';
-import type { ReceivedAsset } from '../types';
+import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
 
 type UseBatchSellSubmitQuotesArgs = {
   quoteResponses: ((QuoteResponse & QuoteMetadata) | null)[];
-  receivedAsset: ReceivedAsset;
+  receivedAsset: BatchSellAsset;
 };
 
 /**

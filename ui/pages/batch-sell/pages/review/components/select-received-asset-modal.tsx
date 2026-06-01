@@ -23,30 +23,26 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { formatCurrencyAmount } from '../../../../bridge/utils/quote';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
+import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
 
 type SelectReceiveAssetModalProps = {
-  assets: {
-    id: CaipAssetType;
-    symbol: string;
-    fiatBalance?: number | null;
-    image?: string | null;
-  }[];
+  assets: BatchSellAsset[];
   selectedAssetId: CaipAssetType;
   open: boolean;
   onClose: () => void;
   onSelectAsset: (assetId: CaipAssetType) => void;
 };
 
-type AssetListItemProps = SelectReceiveAssetModalProps['assets'][0] & {
+type AssetListItemProps = BatchSellAsset & {
   selected: boolean;
   onClick: (assetId: CaipAssetType) => void;
 };
 
 const AssetListItem = ({
-  id,
+  assetId,
   symbol,
-  fiatBalance,
-  image,
+  tokenFiatAmount,
+  iconUrl,
   selected,
   onClick,
 }: AssetListItemProps) => {
@@ -63,12 +59,12 @@ const AssetListItem = ({
         'cursor-pointer',
         selected ? 'bg-muted' : 'hover:bg-muted-hover',
       )}
-      onClick={() => onClick(id)}
+      onClick={() => onClick(assetId)}
     >
       <AvatarToken
         size={AvatarTokenSize.Md}
         name={symbol}
-        src={image ?? undefined}
+        src={iconUrl ?? undefined}
       />
       <Box className="flex-1">
         <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
@@ -77,7 +73,7 @@ const AssetListItem = ({
       </Box>
       <Box>
         <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-          {formatCurrencyAmount(fiatBalance?.toString(), currency, 2)}
+          {formatCurrencyAmount(tokenFiatAmount?.toString(), currency, 2)}
         </Text>
       </Box>
     </Box>
@@ -98,9 +94,9 @@ const AssetList = ({
     <>
       {assets.map((asset) => (
         <AssetListItem
-          key={asset.id}
+          key={asset.assetId}
           {...asset}
-          selected={asset.id === selectedAssetId}
+          selected={asset.assetId === selectedAssetId}
           onClick={onSelectAsset}
         />
       ))}

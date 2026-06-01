@@ -12,13 +12,15 @@ import {
 } from '../../../../../../test/data/batch-sell';
 import { useBatchSellQuotesConfig } from './useBatchSellQuotesConfig';
 
-// Overridden per test via mockLocationState
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let mockLocationState: any = null;
+let mockSelectionState = {
+  selectedNetworkChainId: null as string | null,
+  selectedAssetsId: [] as string[],
+  setSelectedNetworkChainId: jest.fn(),
+  setSelectedAssetsId: jest.fn(),
+};
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useLocation: () => ({ state: mockLocationState }),
+jest.mock('../../../providers/batch-sell-selection-provider', () => ({
+  useBatchSellSelection: () => mockSelectionState,
 }));
 
 jest.mock('react-redux', () => ({
@@ -80,9 +82,11 @@ const MOCK_RECEIVED_ASSET_RAW_B = {
 
 describe('useBatchSellQuotesConfig', () => {
   beforeEach(() => {
-    mockLocationState = {
+    mockSelectionState = {
       selectedNetworkChainId: ETH_CHAIN_ID,
       selectedAssetsId: [ASSET_A_ID, ASSET_B_ID],
+      setSelectedNetworkChainId: jest.fn(),
+      setSelectedAssetsId: jest.fn(),
     };
 
     mockGetReceivedAssets.mockReturnValue([
@@ -126,7 +130,9 @@ describe('useBatchSellQuotesConfig', () => {
     it('sets the first received asset as selectedReceiveAsset', () => {
       const { result } = renderHook(() => useBatchSellQuotesConfig());
 
-      expect(result.current.selectedReceiveAsset.id).toBe(RECEIVE_ASSET_A_ID);
+      expect(result.current.selectedReceiveAsset.assetId).toBe(
+        RECEIVE_ASSET_A_ID,
+      );
       expect(result.current.selectedReceiveAsset.symbol).toBe('USDC');
     });
 
@@ -136,24 +142,12 @@ describe('useBatchSellQuotesConfig', () => {
       expect(result.current.editingSlippageAssetId).toBeNull();
     });
 
-    it('maps received assets to the expected shape', () => {
+    it('returns received assets from the selector', () => {
       const { result } = renderHook(() => useBatchSellQuotesConfig());
 
       expect(result.current.receivedAssets).toStrictEqual([
-        {
-          id: RECEIVE_ASSET_A_ID,
-          symbol: 'USDC',
-          fiatBalance: 500,
-          image: 'usdc.png',
-          securityData: undefined,
-        },
-        {
-          id: RECEIVE_ASSET_B_ID,
-          symbol: 'DAI',
-          fiatBalance: 200,
-          image: 'dai.png',
-          securityData: undefined,
-        },
+        MOCK_RECEIVED_ASSET_RAW_A,
+        MOCK_RECEIVED_ASSET_RAW_B,
       ]);
     });
   });
@@ -166,8 +160,8 @@ describe('useBatchSellQuotesConfig', () => {
     });
 
     it('returns false when selectedAssetsId is an empty array', () => {
-      mockLocationState = {
-        selectedNetworkChainId: ETH_CHAIN_ID,
+      mockSelectionState = {
+        ...mockSelectionState,
         selectedAssetsId: [],
       };
 
@@ -177,7 +171,10 @@ describe('useBatchSellQuotesConfig', () => {
     });
 
     it('returns false when selectedAssetsId is undefined', () => {
-      mockLocationState = { selectedNetworkChainId: ETH_CHAIN_ID };
+      mockSelectionState = {
+        ...mockSelectionState,
+        selectedAssetsId: undefined as never,
+      };
 
       const { result } = renderHook(() => useBatchSellQuotesConfig());
 
@@ -201,8 +198,8 @@ describe('useBatchSellQuotesConfig', () => {
     });
 
     it('returns true when there are more than 2 assets', () => {
-      mockLocationState = {
-        selectedNetworkChainId: ETH_CHAIN_ID,
+      mockSelectionState = {
+        ...mockSelectionState,
         selectedAssetsId: [ASSET_A_ID, ASSET_B_ID, ASSET_C_ID],
       };
       mockGetSwapAssets.mockReturnValue([
@@ -217,8 +214,8 @@ describe('useBatchSellQuotesConfig', () => {
     });
 
     it('updates dynamically as assets are deleted', () => {
-      mockLocationState = {
-        selectedNetworkChainId: ETH_CHAIN_ID,
+      mockSelectionState = {
+        ...mockSelectionState,
         selectedAssetsId: [ASSET_A_ID, ASSET_B_ID, ASSET_C_ID],
       };
       mockGetSwapAssets.mockReturnValue([
@@ -326,8 +323,8 @@ describe('useBatchSellQuotesConfig', () => {
 
   describe('deleteAsset', () => {
     it('removes the asset from sendAssetsConfig', () => {
-      mockLocationState = {
-        selectedNetworkChainId: ETH_CHAIN_ID,
+      mockSelectionState = {
+        ...mockSelectionState,
         selectedAssetsId: [ASSET_A_ID, ASSET_B_ID, ASSET_C_ID],
       };
       mockGetSwapAssets.mockReturnValue([
@@ -345,6 +342,33 @@ describe('useBatchSellQuotesConfig', () => {
       expect(result.current.sendAssetsConfig[ASSET_A_ID]).toBeUndefined();
       expect(result.current.sendAssetsConfig[ASSET_B_ID]).toBeDefined();
       expect(result.current.sendAssetsConfig[ASSET_C_ID]).toBeDefined();
+    });
+
+    it('removes the asset from the selection context so it is not pre-selected on back navigation', () => {
+      mockSelectionState = {
+        ...mockSelectionState,
+        selectedAssetsId: [ASSET_A_ID, ASSET_B_ID, ASSET_C_ID],
+      };
+      mockGetSwapAssets.mockReturnValue([
+        makeSwapAsset(ASSET_A_ID),
+        makeSwapAsset(ASSET_B_ID),
+        makeSwapAsset(ASSET_C_ID),
+      ] as never);
+
+      const { result } = renderHook(() => useBatchSellQuotesConfig());
+
+      act(() => {
+        result.current.deleteAsset(makeSwapAsset(ASSET_A_ID));
+      });
+
+      // The updater function passed to setSelectedAssetsId should filter out the deleted asset
+      const setSelectedAssetsIdMock = mockSelectionState.setSelectedAssetsId;
+      expect(setSelectedAssetsIdMock).toHaveBeenCalledTimes(1);
+      const updater = (setSelectedAssetsIdMock as jest.Mock).mock.calls[0][0];
+      expect(updater([ASSET_A_ID, ASSET_B_ID, ASSET_C_ID])).toStrictEqual([
+        ASSET_B_ID,
+        ASSET_C_ID,
+      ]);
     });
   });
 
@@ -377,13 +401,17 @@ describe('useBatchSellQuotesConfig', () => {
     it('updates selectedReceiveAsset when the asset exists in receivedAssets', () => {
       const { result } = renderHook(() => useBatchSellQuotesConfig());
 
-      expect(result.current.selectedReceiveAsset.id).toBe(RECEIVE_ASSET_A_ID);
+      expect(result.current.selectedReceiveAsset.assetId).toBe(
+        RECEIVE_ASSET_A_ID,
+      );
 
       act(() => {
         result.current.selectReceivedAsset(RECEIVE_ASSET_B_ID);
       });
 
-      expect(result.current.selectedReceiveAsset.id).toBe(RECEIVE_ASSET_B_ID);
+      expect(result.current.selectedReceiveAsset.assetId).toBe(
+        RECEIVE_ASSET_B_ID,
+      );
     });
 
     it('does not change selectedReceiveAsset when the asset is not found', () => {
@@ -401,9 +429,14 @@ describe('useBatchSellQuotesConfig', () => {
     });
   });
 
-  describe('null location state', () => {
-    it('handles null location state gracefully', () => {
-      mockLocationState = null;
+  describe('empty selection context', () => {
+    it('handles empty selection gracefully', () => {
+      mockSelectionState = {
+        selectedNetworkChainId: null,
+        selectedAssetsId: [],
+        setSelectedNetworkChainId: jest.fn(),
+        setSelectedAssetsId: jest.fn(),
+      };
       mockGetSwapAssets.mockReturnValue([] as never);
 
       const { result } = renderHook(() => useBatchSellQuotesConfig());

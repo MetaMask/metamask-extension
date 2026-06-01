@@ -1,8 +1,6 @@
 import { CaipAssetType } from '@metamask/utils';
 import { type BridgeController } from '@metamask/bridge-controller';
 import { BatchSellAsset } from '../../../../ducks/batch-sell/types';
-// eslint-disable-next-line import-x/no-restricted-paths
-import { BridgeAssetV2 } from '../../../bridge/utils/tokens';
 import type { getBatchSellQuotes } from '../../../../ducks/batch-sell/selectors';
 
 export type BatchSellQuotesConfig = {
@@ -14,7 +12,7 @@ export type BatchSellQuotesConfig = {
       enabled: boolean;
     };
   };
-  receivedAsset: ReceivedAsset;
+  receivedAsset: BatchSellAsset;
 };
 
 export type RecommendedQuote = ReturnType<
@@ -36,7 +34,7 @@ export type BatchSellQuotesResults = {
       quoteBpsFee?: string | number;
     };
   };
-  receivedAsset: ReceivedAsset;
+  receivedAsset: BatchSellAsset;
   totalReceivedAmount?: number;
   totalReceivedAmountFiat?: number;
   minimumReceivedAmount?: number;
@@ -74,16 +72,8 @@ export type BatchSellReviewStateAction =
     }
   | {
       type: BatchSellReviewStateActionType.SetSelectedReceiveAsset;
-      asset: ReceivedAsset;
+      asset: BatchSellAsset;
     };
-
-export type ReceivedAsset = {
-  id: CaipAssetType;
-  symbol: string;
-  fiatBalance?: number | null;
-  image?: string | null;
-  securityData?: BridgeAssetV2['securityData'];
-};
 
 export type SendAssetEntry = {
   assetId: CaipAssetType;
@@ -103,7 +93,7 @@ export type QuoteRequestContext = Parameters<
 
 export type BatchSellReviewState = {
   sendAssetsConfig: BatchSellQuotesConfig['sendAssetsConfig'];
-  selectedReceiveAsset: ReceivedAsset;
+  selectedReceiveAsset: BatchSellAsset;
   editingSlippageAssetId: CaipAssetType | null;
 };
 

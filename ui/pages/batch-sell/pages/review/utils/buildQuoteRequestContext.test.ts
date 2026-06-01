@@ -1,6 +1,5 @@
 import { CaipAssetType } from '@metamask/utils';
 import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
-import { ReceivedAsset } from '../types';
 import { buildReceivedAsset } from '../../../../../../test/data/batch-sell';
 import {
   buildQuoteRequestContext,
@@ -162,7 +161,7 @@ describe('buildQuoteRequestContext', () => {
       receivedAsset: buildReceivedAsset({
         securityData: {
           type: 'VERIFIED',
-        } as unknown as ReceivedAsset['securityData'],
+        } as unknown as BatchSellAsset['securityData'],
       }),
       sendAmountPercent: 100,
       smartTransactionsEnabled: false,

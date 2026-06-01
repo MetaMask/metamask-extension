@@ -1,10 +1,11 @@
 import React from 'react';
 import { Box } from '@metamask/design-system-react';
+import { CaipAssetType } from '@metamask/utils';
 import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
 import { AssetListItem } from './asset-list-item';
 
 type AssetListProps = {
-  selectedAssetsId: string[];
+  selectedAssetsId: CaipAssetType[];
   assets: BatchSellAsset[];
   onSelect: (asset: BatchSellAsset) => void;
   onDeselect: (asset: BatchSellAsset) => void;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import type { CaipChainId, CaipAssetType } from '@metamask/utils';
+import type { CaipAssetType } from '@metamask/utils';
 import * as useBridgingModule from '../../../../hooks/bridge/useBridging';
 import { buildBatchSellAsset } from '../../../../../test/data/batch-sell';
 import { BatchSellSelectPage } from '.';
@@ -70,10 +70,12 @@ jest.mock('../../hooks/useBatchSellInfoModal', () => ({
   }),
 }));
 
-jest.mock('./hooks/useInitialStateFromLocation', () => ({
-  useInitialStateFromLocation: (chainIds: CaipChainId[]) => ({
-    networkChainId: chainIds[0] ?? null,
-    assetsId: mockHarness.initialAssetsId,
+jest.mock('../../providers/batch-sell-selection-provider', () => ({
+  useBatchSellSelection: () => ({
+    selectedNetworkChainId: CHAIN_ID,
+    selectedAssetsId: mockHarness.initialAssetsId,
+    setSelectedNetworkChainId: jest.fn(),
+    setSelectedAssetsId: jest.fn(),
   }),
 }));
 

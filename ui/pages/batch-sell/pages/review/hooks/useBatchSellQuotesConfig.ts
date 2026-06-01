@@ -1,8 +1,6 @@
 import { useReducer } from 'react';
-import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { CaipAssetType } from '@metamask/utils';
-import { BatchSellNavigationState } from '../../../../../hooks/batch-sell/useBatchSellNavigation';
 import { BridgeAppState } from '../../../../../ducks/bridge/selectors';
 import {
   getAvailableBatchSellReceiveAssetsForNetwork as getAvailableBatchSellReceivedAssetsForNetwork,
@@ -15,23 +13,17 @@ import {
 import { BatchSellReviewStateActionType } from '../types';
 import { batchSellReviewStateReducer } from '../reducers';
 import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
+import { useBatchSellSelection } from '../../../providers/batch-sell-selection-provider';
 
 export const useBatchSellQuotesConfig = () => {
-  const { state: locationState } = useLocation();
-  const { selectedNetworkChainId, selectedAssetsId } = (locationState ??
-    {}) as BatchSellNavigationState;
+  const { selectedNetworkChainId, selectedAssetsId, setSelectedAssetsId } =
+    useBatchSellSelection();
 
   const receivedAssets = useSelector((_state: BridgeAppState) =>
     getAvailableBatchSellReceivedAssetsForNetwork(
       _state,
       selectedNetworkChainId ?? undefined,
-    ).map((asset) => ({
-      id: asset.assetId,
-      symbol: asset.symbol,
-      fiatBalance: asset.tokenFiatAmount,
-      image: asset.iconUrl,
-      securityData: asset.securityData,
-    })),
+    ),
   );
 
   const availableBatchSellAssetsForNetworkList = useSelector(
@@ -99,11 +91,13 @@ export const useBatchSellQuotesConfig = () => {
     });
   };
 
-  const deleteAsset = (asset: BatchSellAsset) =>
+  const deleteAsset = (asset: BatchSellAsset) => {
     dispatch({
       type: BatchSellReviewStateActionType.DeleteAsset,
       assetId: asset.assetId,
     });
+    setSelectedAssetsId((ids) => ids.filter((id) => id !== asset.assetId));
+  };
 
   const setEditingSlippageAssetId = (assetId: CaipAssetType | null) =>
     dispatch({
@@ -112,7 +106,7 @@ export const useBatchSellQuotesConfig = () => {
     });
 
   const selectReceivedAsset = (assetId: CaipAssetType) => {
-    const newAsset = receivedAssets.find((asset) => asset.id === assetId);
+    const newAsset = receivedAssets.find((asset) => asset.assetId === assetId);
     if (newAsset) {
       dispatch({
         type: BatchSellReviewStateActionType.SetSelectedReceiveAsset,

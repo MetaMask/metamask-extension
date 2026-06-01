@@ -1,7 +1,6 @@
 import type { CaipAssetType } from '@metamask/utils';
 import type { BatchSellAsset } from '../../../ui/ducks/batch-sell/types';
 import type {
-  ReceivedAsset,
   SendAssetEntry,
   BatchSellQuotesConfig,
   BatchSellQuotesResults,
@@ -40,18 +39,19 @@ export function buildSendAssetEntry(
 }
 
 /**
- * Returns a ReceivedAsset defaulting to the native ETH token on Ethereum Mainnet.
+ * Returns a BatchSellAsset for use as a receive asset, defaulting to the
+ * native ETH token on Ethereum Mainnet.
  *
  * @param overrides - Fields to override on the default asset.
  */
 export function buildReceivedAsset(
   overrides: AnyOverrides = {},
-): ReceivedAsset {
-  return {
-    id: BATCH_SELL_ASSET_IDS.ETH_NATIVE,
+): BatchSellAsset {
+  return buildBatchSellAsset({
+    assetId: BATCH_SELL_ASSET_IDS.ETH_NATIVE,
     symbol: 'ETH',
     ...overrides,
-  } as ReceivedAsset;
+  });
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

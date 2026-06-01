@@ -59,7 +59,7 @@ describe('SlippageModal', () => {
     expect(screen.getByRole('button', { name: 'submit' })).toBeEnabled();
   });
 
-  it('calls onChange and onClose when a new preset is submitted', () => {
+  it('calls onChange but not onClose when a new preset is submitted', () => {
     const onChange = jest.fn();
     const onClose = jest.fn();
 
@@ -76,7 +76,33 @@ describe('SlippageModal', () => {
     fireEvent.click(screen.getByRole('button', { name: 'submit' }));
 
     expect(onChange).toHaveBeenCalledWith(2);
-    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(onClose).not.toHaveBeenCalled();
+  });
+
+  it('disables submit when the effective value is zero', () => {
+    render(
+      <SlippageModal
+        {...defaultProps}
+        slippageOptions={[0, 2]}
+        value={2}
+        warningSlippageTheshold={0.5}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: '0%' }));
+
+    expect(screen.getByRole('button', { name: 'submit' })).toBeDisabled();
+  });
+
+  it('disables submit when the effective value exceeds 100', () => {
+    render(<SlippageModal {...defaultProps} value={0.5} />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'customSlippage' }));
+    fireEvent.change(screen.getByRole('textbox'), {
+      target: { value: '101' },
+    });
+
+    expect(screen.getByRole('button', { name: 'submit' })).toBeDisabled();
   });
 
   it('shows the low slippage warning when the draft value is below the threshold', () => {

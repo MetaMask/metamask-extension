@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { safeAmountForCalc } from '../../../../bridge/utils/quote';
 import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
-import { ReceivedAsset, QuoteRequestContext } from '../types';
+import { QuoteRequestContext } from '../types';
 
 export const computeUsdAmountSource = ({
   asset,
@@ -31,7 +31,7 @@ export const buildQuoteRequestContext = ({
   smartTransactionsEnabled,
 }: {
   sourceAsset: BatchSellAsset | undefined;
-  receivedAsset: ReceivedAsset;
+  receivedAsset: BatchSellAsset;
   sendAmountPercent: number;
   smartTransactionsEnabled: boolean;
 }): QuoteRequestContext => ({

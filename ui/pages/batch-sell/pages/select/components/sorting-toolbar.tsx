@@ -14,18 +14,13 @@ export const SortingToolbar = ({ balance }: SortingToolbarProps) => {
   return (
     <Box
       paddingVertical={2}
+      gap={2}
+      flexDirection={BoxFlexDirection.Row}
       className="w-full"
+      style={{ overflowX: 'auto' }}
       data-testid="batch-sell-select-sorting-toolbar"
     >
-      <Box
-        gap={2}
-        flexDirection={BoxFlexDirection.Row}
-        style={{
-          overflowX: 'auto',
-        }}
-      >
-        <SortingChip order={balance.order} onClick={balance.onClick} />
-      </Box>
+      <SortingChip order={balance.order} onClick={balance.onClick} />
     </Box>
   );
 };

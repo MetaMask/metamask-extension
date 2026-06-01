@@ -42,11 +42,8 @@ import {
 } from '../../../../bridge/utils/quote';
 import { getIntlLocale } from '../../../../../ducks/locale/locale';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
-import {
-  BatchSellQuotesConfig,
-  BatchSellQuotesResults,
-  ReceivedAsset,
-} from '../types';
+import { BatchSellQuotesConfig, BatchSellQuotesResults } from '../types';
+import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
 import { IconColor } from '../../../../../helpers/constants/design-system';
 import useBatchSellSubmitQuotes from '../hooks/useBatchSellSubmitQuotes';
 import { AssetsReceivedSummaryList } from './assets-received-summary-list';
@@ -57,7 +54,7 @@ type ReviewAndConfirmModalProps = {
   onClose: () => void;
   sendAssetsConfig: BatchSellQuotesConfig['sendAssetsConfig'];
   quotes?: BatchSellQuotesResults['quotes'];
-  receivedAsset: ReceivedAsset;
+  receivedAsset: BatchSellAsset;
   totalReceivedAmount?: number;
   minimumReceivedAmount?: number;
   totalNetworkFee?: string | null;

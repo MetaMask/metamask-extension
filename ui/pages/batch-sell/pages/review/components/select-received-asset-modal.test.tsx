@@ -1,7 +1,8 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { useSelector } from 'react-redux';
-import type { CaipAssetType } from '@metamask/utils';
+import { buildBatchSellAsset } from '../../../../../../test/data/batch-sell/factories';
+import { BATCH_SELL_ASSET_IDS } from '../../../../../../test/data/batch-sell/constants';
 import { SelectReceivedAssetModal } from './select-received-asset-modal';
 
 jest.mock('../../../../../hooks/useI18nContext', () => ({
@@ -24,12 +25,20 @@ beforeEach(() => {
   mockUseSelector.mockReturnValue('USD' as never);
 });
 
-const ASSET_USDC = 'eip155:1/erc20:0xUSDC' as CaipAssetType;
-const ASSET_USDT = 'eip155:1/erc20:0xUSDT' as CaipAssetType;
+const ASSET_USDC = BATCH_SELL_ASSET_IDS.USDC;
+const ASSET_USDT = BATCH_SELL_ASSET_IDS.USDT;
 
 const assets = [
-  { id: ASSET_USDC, symbol: 'USDC', fiatBalance: 100, image: '' },
-  { id: ASSET_USDT, symbol: 'USDT', fiatBalance: 50, image: null },
+  buildBatchSellAsset({
+    assetId: ASSET_USDC,
+    symbol: 'USDC',
+    tokenFiatAmount: 100,
+  }),
+  buildBatchSellAsset({
+    assetId: ASSET_USDT,
+    symbol: 'USDT',
+    tokenFiatAmount: 50,
+  }),
 ];
 
 describe('SelectReceivedAssetModal', () => {
