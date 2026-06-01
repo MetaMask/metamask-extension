@@ -352,6 +352,15 @@ export function mapApiEvmTransactions({
     };
   }
 
+  const contractInteractionTransfer = sentTransfer ?? receivedTransfer;
+  const contractInteractionToken = getToken(
+    contractInteractionTransfer,
+    sentTransfer ? 'out' : 'in',
+  );
+  const contractInteractionTokenWithAmount = contractInteractionToken?.amount
+    ? contractInteractionToken
+    : undefined;
+
   return {
     type: 'contractInteraction',
     chainId,
@@ -366,6 +375,9 @@ export function mapApiEvmTransactions({
       transactionCategory,
       transactionProtocol: transaction.transactionProtocol,
       transactionType: transaction.transactionType,
+      ...(contractInteractionTokenWithAmount
+        ? { token: contractInteractionTokenWithAmount }
+        : {}),
     },
   };
 }

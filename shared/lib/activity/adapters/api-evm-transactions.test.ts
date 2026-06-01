@@ -5,6 +5,7 @@ import { mapApiEvmTransactions } from './api-evm-transactions';
 
 const subjectAddress = '0x9bed78535d6a03a955f1504aadba974d9a29e292';
 const baseUsdc = '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913';
+const mainnetUsdc = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
 const baseAaveUsdc = '0x4e65fe4dba92790696d040ac24aa414708f5c0ab';
 const baseAavePool = '0xa238dd80c259a72e81d7e4664a9801593f98d1c5';
 const baseRecipientAddress = '0x6fdb1e9d93c1279177b00baaf44524055455e92e';
@@ -802,6 +803,62 @@ describe('mapEvmTransactions', () => {
         transactionCategory: 'CONTRACT_CALL',
         transactionProtocol: 'GENERIC',
         transactionType: 'GENERIC_CONTRACT_CALL',
+      },
+    });
+  });
+
+  it('maps the reported generic contract call to a contract interaction with its token amount', () => {
+    const transaction = {
+      hash: '0xd206cc6c16974409bae072ce4cd1559743041af40c2bae84775a0bbb4dff5fee',
+      timestamp: '2026-05-01T13:39:47.000Z',
+      chainId: Number(CHAIN_IDS.MAINNET),
+      from: subjectAddress,
+      to: subjectAddress,
+      methodId: '0xe9ae5c53',
+      value: '0',
+      transactionCategory: 'CONTRACT_CALL',
+      transactionType: 'GENERIC_CONTRACT_CALL',
+      valueTransfers: [
+        {
+          from: subjectAddress,
+          to: '0x4cd00e387622c35bddb9b4c962c136462338bc31',
+          amount: '580060',
+          decimal: 6,
+          contractAddress: mainnetUsdc,
+          symbol: 'USDC',
+          name: 'USD Coin',
+          transferType: 'erc20',
+        },
+      ],
+    } as V1TransactionByHashResponse;
+
+    const item = mapApiEvmTransactions({
+      subjectAddress,
+      transaction,
+    });
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
+      type: 'contractInteraction',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1777642787000,
+      data: {
+        from: subjectAddress,
+        hash: '0xd206cc6c16974409bae072ce4cd1559743041af40c2bae84775a0bbb4dff5fee',
+        methodId: '0xe9ae5c53',
+        to: subjectAddress,
+        transactionCategory: 'CONTRACT_CALL',
+        transactionProtocol: undefined,
+        transactionType: 'GENERIC_CONTRACT_CALL',
+        token: {
+          amount: '580060',
+          assetId: toAssetId(mainnetUsdc, 'eip155:1'),
+          decimals: 6,
+          direction: 'out',
+          symbol: 'USDC',
+        },
       },
     });
   });
