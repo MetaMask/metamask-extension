@@ -50,7 +50,8 @@ const selectBridgeHistory = (state: MetaMaskReduxState) =>
   >;
 
 const selectTransactionPayData = (state: MetaMaskReduxState) =>
-  (state.metamask as TransactionPayControllerState).transactionData ??
+  (state.metamask as unknown as TransactionPayControllerState)
+    .transactionData ??
   (EMPTY_OBJECT as TransactionPayControllerState['transactionData']);
 
 function isFromSelectedAccount(tx: TransactionMeta, selectedAddress: string) {
