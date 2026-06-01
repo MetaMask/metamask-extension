@@ -123,9 +123,10 @@ const defaultProps = {
   minimumReceivedAmount: 95,
   totalNetworkFee: '0.01',
   totalNetworkFeeFiat: '20',
-  networkFeeAssetSymbol: 'ETH',
+  totalNetworkFeeAssetSymbol: 'ETH',
   isInsufficientGasForFee: false,
   isBatchSellTradeAvailable: true,
+  totalNetworkfeeAreLoading: false,
 };
 
 describe('ReviewAndConfirmModal', () => {
@@ -247,11 +248,11 @@ describe('ReviewAndConfirmModal', () => {
     expect(screen.getByText(/rateIncludesMMFee/u)).toBeInTheDocument();
   });
 
-  it('falls back to receivedAsset.symbol for the fee asset when networkFeeAssetSymbol is not provided', () => {
+  it('falls back to receivedAsset.symbol for the fee asset when totalNetworkFeeAssetSymbol is not provided', () => {
     render(
       <ReviewAndConfirmModal
         {...defaultProps}
-        networkFeeAssetSymbol={undefined}
+        totalNetworkFeeAssetSymbol={undefined}
         totalNetworkFee="0.01"
       />,
     );
@@ -371,36 +372,92 @@ describe('ReviewAndConfirmModal', () => {
   });
 
   describe('NetworkFeeRow skeleton', () => {
-    it('shows the skeleton when totalNetworkFee is undefined', () => {
+    it('shows the skeleton when totalNetworkfeeAreLoading is true', () => {
       render(
         <ReviewAndConfirmModal
           {...defaultProps}
-          totalNetworkFee={undefined}
-          totalNetworkFeeFiat={undefined}
+          totalNetworkfeeAreLoading={true}
         />,
       );
 
       expect(screen.getByTestId('skeleton-loading')).toBeInTheDocument();
     });
 
-    it('shows the skeleton when totalNetworkFee is null', () => {
+    it('does not show the skeleton when totalNetworkfeeAreLoading is false and fee is provided', () => {
       render(
         <ReviewAndConfirmModal
           {...defaultProps}
+          totalNetworkfeeAreLoading={false}
+          totalNetworkFee="0.01"
+        />,
+      );
+
+      expect(screen.queryByTestId('skeleton-loading')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('NetworkFeeRow error state', () => {
+    it('shows a dash when fees failed to load (not loading, fee is null)', () => {
+      render(
+        <ReviewAndConfirmModal
+          {...defaultProps}
+          totalNetworkfeeAreLoading={false}
           totalNetworkFee={null}
           totalNetworkFeeFiat={null}
         />,
       );
 
-      expect(screen.getByTestId('skeleton-loading')).toBeInTheDocument();
+      expect(screen.getByText('-')).toBeInTheDocument();
     });
 
-    it('does not show the skeleton when totalNetworkFee is provided', () => {
+    it('shows a dash when fees failed to load (not loading, fee is undefined)', () => {
       render(
-        <ReviewAndConfirmModal {...defaultProps} totalNetworkFee="0.01" />,
+        <ReviewAndConfirmModal
+          {...defaultProps}
+          totalNetworkfeeAreLoading={false}
+          totalNetworkFee={undefined}
+          totalNetworkFeeFiat={undefined}
+        />,
       );
 
-      expect(screen.queryByTestId('skeleton-loading')).not.toBeInTheDocument();
+      expect(screen.getByText('-')).toBeInTheDocument();
+    });
+
+    it('does not show a dash while fees are still loading', () => {
+      render(
+        <ReviewAndConfirmModal
+          {...defaultProps}
+          totalNetworkfeeAreLoading={true}
+          totalNetworkFee={undefined}
+          totalNetworkFeeFiat={undefined}
+        />,
+      );
+
+      expect(screen.queryByText('-')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('totalNetworkfeeAreLoading', () => {
+    it('disables the Sell all button while fees are loading', () => {
+      render(
+        <ReviewAndConfirmModal
+          {...defaultProps}
+          totalNetworkfeeAreLoading={true}
+        />,
+      );
+
+      expect(screen.getByRole('button', { name: 'sellAll' })).toBeDisabled();
+    });
+
+    it('enables the Sell all button when fees have finished loading', () => {
+      render(
+        <ReviewAndConfirmModal
+          {...defaultProps}
+          totalNetworkfeeAreLoading={false}
+        />,
+      );
+
+      expect(screen.getByRole('button', { name: 'sellAll' })).toBeEnabled();
     });
   });
 

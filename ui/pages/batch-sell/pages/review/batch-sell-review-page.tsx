@@ -22,6 +22,9 @@ import { useBatchSellAggregateValidation } from './hooks/useBatchSellAggregateVa
 import { hasAtLeastOneQuoteAvailable } from './utils/hasAtLeastOneQuoteAvailable';
 import { hasAnyEnabledAsset } from './utils/hasAnyEnabledAsset';
 
+// TODO: fix zero value usdc
+// TODO: fix execute batch sell on evm due to network fees
+
 export const BatchSellReviewPage = () => {
   const [selectReceivedAssetModalIsOpen, setSelectReceivedAssetModalIsOpen] =
     useState(false);
@@ -47,7 +50,7 @@ export const BatchSellReviewPage = () => {
   const {
     data,
     entries,
-    isLoading,
+    isLoading: quotesAreLoading,
     quotesLastFetchedMs,
     areQuotesRefreshExpired,
     refetch,
@@ -61,17 +64,17 @@ export const BatchSellReviewPage = () => {
 
   useBatchSellTradesFetching(
     { data, entries, quotesLastFetchedMs },
-    { enabled: hasInitialSelection && !isLoading },
+    { enabled: hasInitialSelection && !quotesAreLoading },
   );
 
-  const { totalNetworkFee: batchFees, isBatchSellTradeAvailable } =
+  const { totalNetworkFee: batchFees, isBatchSellTradeAvailable, isLoading: feesAreLoading } =
     useSelector(getBatchSellTrades);
 
   const validation = useBatchSellAggregateValidation({
     sendAssetsConfig,
     quotes: data?.quotes,
     totalNetworkFee: batchFees?.amount,
-    feeAssetId: batchFees?.asset?.assetId,
+    feeAssetId: batchFees?.asset.assetId,
   });
 
   const atLeastOneQuoteAvailable = useMemo(
@@ -99,7 +102,7 @@ export const BatchSellReviewPage = () => {
       data-testid="batch-sell-review-page"
     >
       <Header
-        quotesAreFetching={isLoading}
+        quotesAreFetching={quotesAreLoading}
         atLeastOneQuoteAvailable={atLeastOneQuoteAvailable}
         anyEnabledAsset={anyEnabledAsset}
         totalReceivedFiat={data?.totalReceivedAmountFiat}
@@ -125,9 +128,9 @@ export const BatchSellReviewPage = () => {
         canDeleteAssets={canDeleteAssets}
       />
       <Footer
-        quotesAreLoading={isLoading}
+        quotesAreLoading={quotesAreLoading}
         onReviewClick={() => setReviewAndConfirmModalIsOpen(true)}
-        reviewIsDisabled={isLoading || !data || validation.isNoQuotesAvailable}
+        reviewIsDisabled={quotesAreLoading || !data || validation.isNoQuotesAvailable}
         areQuotesRefreshExpired={areQuotesRefreshExpired}
         onGetNewQuotesClick={refetch}
       />
@@ -153,7 +156,7 @@ export const BatchSellReviewPage = () => {
         minimumReceivedAmount={data?.minimumReceivedAmount}
         onClose={() => setTotalReceivedAssetModalIsOpen(false)}
         open={totalReceivedModalIsOpen}
-        quotesAreFetching={isLoading}
+        quotesAreFetching={quotesAreLoading}
       />
       {editingSlippageAssetId !== null && (
         <SlippageModal
@@ -175,7 +178,8 @@ export const BatchSellReviewPage = () => {
         minimumReceivedAmount={data?.minimumReceivedAmount}
         totalNetworkFee={batchFees?.amount}
         totalNetworkFeeFiat={batchFees?.valueInCurrency}
-        networkFeeAssetSymbol={batchFees?.asset.symbol}
+        totalNetworkFeeAssetSymbol={batchFees?.asset.symbol}
+        totalNetworkfeeAreLoading={feesAreLoading}
         isInsufficientGasForFee={validation.isInsufficientGasForFee}
         isBatchSellTradeAvailable={isBatchSellTradeAvailable}
       />

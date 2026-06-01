@@ -142,12 +142,17 @@ jest.mock('./components/review-and-confirm-modal', () => ({
   ReviewAndConfirmModal: ({
     open,
     onClose,
+    totalNetworkfeeAreLoading,
   }: {
     open: boolean;
     onClose: () => void;
+    totalNetworkfeeAreLoading: boolean;
   }) =>
     open ? (
-      <div data-testid="review-confirm-modal">
+      <div
+        data-testid="review-confirm-modal"
+        data-fees-loading={String(totalNetworkfeeAreLoading)}
+      >
         <button data-testid="review-confirm-close" onClick={onClose} />
       </div>
     ) : null,
@@ -200,6 +205,7 @@ const defaultValidation = {
 const defaultBatchSellTrades = {
   totalNetworkFee: undefined,
   isBatchSellTradeAvailable: false,
+  isLoading: false,
 };
 
 // ── renderPage helper ──────────────────────────────────────────────────────
@@ -392,6 +398,28 @@ describe('BatchSellReviewPage', () => {
       expect(
         screen.queryByTestId('review-confirm-modal'),
       ).not.toBeInTheDocument();
+    });
+
+    describe('totalNetworkfeeAreLoading', () => {
+      it('passes false when network fee is not loading', () => {
+        renderPage({ trades: { isLoading: false } });
+
+        fireEvent.click(screen.getByTestId('footer-review'));
+
+        expect(
+          screen.getByTestId('review-confirm-modal').getAttribute('data-fees-loading'),
+        ).toBe('false');
+      });
+
+      it('passes true when network fee is loading', () => {
+        renderPage({ trades: { isLoading: true } });
+
+        fireEvent.click(screen.getByTestId('footer-review'));
+
+        expect(
+          screen.getByTestId('review-confirm-modal').getAttribute('data-fees-loading'),
+        ).toBe('true');
+      });
     });
   });
 
