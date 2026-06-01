@@ -37,20 +37,8 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "गड़बड़ी"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "QR कोड ग़लत है। कृपया hardware wallet के सिंक QR कोड को स्कैन करें।"
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "QR कोड स्कैन करें"
-  },
-  "QRHardwareWalletSteps1Description": {
-    "message": "आप QR कोड सपोर्ट करने वाले आधिकारिक पार्टनरों की नीचे दी गई लिस्ट में से चुन सकते हैं।"
-  },
-  "QRHardwareWalletSteps1Title": {
-    "message": "अपने QR hardware wallet को कनेक्ट करें"
-  },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave ज़ीरो"
   },
   "SrpListHideAccounts": {
     "message": "$1 एकाउंट्स छिपाएं",
@@ -175,8 +163,169 @@
   "activity": {
     "message": "एक्टिविटी"
   },
-  "activityEmptyDescription": {
-    "message": "अभी देखने के लिए कुछ नहीं है। अपना पहला टोकन आज ही स्वैप करें।"
+  "activity_approveSpendingCap_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_failed_description": {
+    "message": "ब्रिज नहीं हो पाया"
+  },
+  "activity_bridge_failed_title": {
+    "message": "ब्रिज नहीं हो पाया"
+  },
+  "activity_buy_success_description": {
+    "message": "$1 खरीदा गया",
+    "description": "$1 is the token symbol"
+  },
+  "activity_buy_success_title": {
+    "message": "$1 खरीदा गया",
+    "description": "$1 is the token symbol"
+  },
+  "activity_contractInteraction_success_title": {
+    "message": "स्मार्ट अनुबंध संपर्क"
+  },
+  "activity_deposit_failed_description": {
+    "message": "डिपॉज़िट नहीं हो पाया"
+  },
+  "activity_deposit_failed_title": {
+    "message": "डिपॉज़िट नहीं हो पाया"
+  },
+  "activity_fallback_description": {
+    "message": "ट्रांसेक्शन"
+  },
+  "activity_fallback_title": {
+    "message": "ट्रांसेक्शन"
+  },
+  "activity_increaseSpendingCap_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_increaseSpendingCap_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_increaseSpendingCap_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_lendingDeposit_failed_title": {
+    "message": "डिपॉज़िट नहीं हो पाया"
+  },
+  "activity_lendingWithdrawal_failed_description": {
+    "message": "विदड्रॉवल नहीं हो पाया"
+  },
+  "activity_lendingWithdrawal_failed_title": {
+    "message": "विदड्रॉवल नहीं हो पाया"
+  },
+  "activity_lendingWithdrawal_success_description": {
+    "message": "प्राप्त उधार को निकालना"
+  },
+  "activity_lendingWithdrawal_success_title": {
+    "message": "प्राप्त उधार को निकालना"
+  },
+  "activity_nftMint_success_title": {
+    "message": "$1 मिंट किया ग्ग्य",
+    "description": "$1 is the NFT token symbol"
+  },
+  "activity_perpsCloseShort_success_description": {
+    "message": "शॉर्ट को क्लोज़ किया गया"
+  },
+  "activity_perpsCloseShort_success_title": {
+    "message": "शॉर्ट को क्लोज़ किया गया"
+  },
+  "activity_perpsOpenLong_success_description": {
+    "message": "खुला लॉन्ग"
+  },
+  "activity_perpsOpenLong_success_title": {
+    "message": "खुला लॉन्ग"
+  },
+  "activity_perpsWithdrawFunds_failed_description": {
+    "message": "विदड्रॉवल नहीं हो पाया"
+  },
+  "activity_perpsWithdrawFunds_failed_title": {
+    "message": "विदड्रॉवल नहीं हो पाया"
+  },
+  "activity_predictionCashedOut_success_description": {
+    "message": "कैश आउट किया गया"
+  },
+  "activity_predictionCashedOut_success_title": {
+    "message": "कैश आउट किया गया"
+  },
+  "activity_predictionPlaced_success_description": {
+    "message": "प्रेडिक्शन लगाया गया"
+  },
+  "activity_predictionPlaced_success_title": {
+    "message": "प्रेडिक्शन लगाया गया"
+  },
+  "activity_predictionsWithdrawFunds_failed_description": {
+    "message": "विदड्रॉवल नहीं हो पाया"
+  },
+  "activity_predictionsWithdrawFunds_failed_title": {
+    "message": "विदड्रॉवल नहीं हो पाया"
+  },
+  "activity_predictionsWithdrawFunds_pending_description": {
+    "message": "निकाला जा रहा है"
+  },
+  "activity_predictionsWithdrawFunds_pending_title": {
+    "message": "निकाला जा रहा है"
+  },
+  "activity_receive_failed_description": {
+    "message": "भेजने वाले: $1",
+    "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_pending_description": {
+    "message": "भेजने वाले: $1",
+    "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_success_description": {
+    "message": "भेजने वाले: $1",
+    "description": "$1 is the shortened sender address"
+  },
+  "activity_revokeSpendingCap_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_revokeSpendingCap_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_revokeSpendingCap_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_send_failed_description": {
+    "message": "प्रति: $1",
+    "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_pending_description": {
+    "message": "प्रति: $1",
+    "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_pending_title": {
+    "message": "$1 भेजा जा रहा है",
+    "description": "$1 is the token symbol"
+  },
+  "activity_send_success_description": {
+    "message": "प्रति: $1",
+    "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_success_title": {
+    "message": "$1 भेजा गया",
+    "description": "$1 is the token symbol"
+  },
+  "activity_swapIncomplete_failed_title": {
+    "message": "स्वैप नहीं हो पाया"
+  },
+  "activity_swap_failed_title": {
+    "message": "स्वैप नहीं हो पाया"
   },
   "add": {
     "message": "जोड़ें"
@@ -216,6 +365,9 @@
   },
   "addCustomNetwork": {
     "message": "कस्टम नेटवर्क जोड़ें"
+  },
+  "addCustomToken": {
+    "message": "एक कस्टम टोकन जोड़ें"
   },
   "addEthereumChainWarningModalHeader": {
     "message": "इस RPC प्रोवाइडर को केवल तभी जोड़ें जब आप निश्चित हैं कि आप इस पर विश्वास कर सकते हैं। $1",
@@ -392,9 +544,6 @@
   "airDropPatternTitle": {
     "message": "एयरड्रॉप पैटर्न"
   },
-  "airgapVault": {
-    "message": "AirGap Vault"
-  },
   "alert": {
     "message": "एलर्ट"
   },
@@ -492,6 +641,9 @@
   "alertMessageTokenTrustSignalWarning": {
     "message": "इस टोकन में बुरी नीयत वाले व्यवहार के स्पष्ट संकेत हैं। आगे बढ़ने पर फंड्स का नुकसान हो सकता है।"
   },
+  "alertMinimumReserve": {
+    "message": "रिज़र्व बैलेंस ज़रूरी है"
+  },
   "alertModalAcknowledge": {
     "message": "मैंने जोखिम को स्वीकार कर लिया है और इसके बावजूद आगे बढ़ना चाहता हूँ"
   },
@@ -572,6 +724,9 @@
   },
   "all": {
     "message": "सभी"
+  },
+  "allDefaultNetworks": {
+    "message": "सभी डिफॉल्ट नेटवर्क"
   },
   "allNetworks": {
     "message": "सभी नेटवर्क"
@@ -1014,15 +1169,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "आपको अपने हार्डवेयर वॉलेट पर 2 ट्रांसेक्शन कन्फर्म करनी होगी:"
   },
-  "bridgeCreateSolanaAccount": {
-    "message": "Solana अकाउंट बनाएं"
-  },
-  "bridgeCreateSolanaAccountDescription": {
-    "message": "Solana नेटवर्क पर स्वैप करने के लिए, आपको एक अकाउंट और प्राप्त करने वाली एड्रेस की आवश्यकता होगी।"
-  },
-  "bridgeCreateSolanaAccountTitle": {
-    "message": "सबसे पहले आपको Solana अकाउंट की आवश्यकता होगी।"
-  },
   "bridgeDetailsTitle": {
     "message": "ब्रिज विवरण",
     "description": "Title for the modal showing details about a bridge transaction."
@@ -1298,9 +1444,6 @@
   "bridgeSendLoading": {
     "message": "सोर्स चेन से भेज रहे हैं"
   },
-  "bridgeSolanaAccountCreated": {
-    "message": "Solana अकाउंट बनाया गया"
-  },
   "bridgeStatusComplete": {
     "message": "पूरा हुआ",
     "description": "Status text indicating a bridge transaction has successfully completed."
@@ -1441,9 +1584,6 @@
   "buyMoreAsset": {
     "message": "ज्यादा $1 खरीदें",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyNow": {
-    "message": "अभी खरीदें"
   },
   "buyTabOpenedToastDescription": {
     "message": "हमने खरीदने के लिए एक नया टैब खोला है।",
@@ -1751,9 +1891,6 @@
   "confirmTitleDescERC20ApproveTransaction": {
     "message": "यह साइट आपके टोकन को निकालने की अनुमति चाहती है"
   },
-  "confirmTitleDescERC20Revocation": {
-    "message": "यह साइट आपके ERC-20 टोकन एप्रूवल को कैंसिल करने की अनुमति चाहती है।"
-  },
   "confirmTitleDescPermission": {
     "message": "यह साइट आपके टोकन खर्च करने की अनुमति चाहती है।"
   },
@@ -1965,9 +2102,6 @@
   "convertTokenToNFTExistDescription": {
     "message": "हमने पाया है कि इस संपत्ति को NFT के रूप में जोड़ा गया है। क्या आप इसे अपनी टोकन सूची से हटाना चाहेंगे?"
   },
-  "coolWallet": {
-    "message": "CoolWallet"
-  },
   "copiedExclamation": {
     "message": "कॉपी किया गया!"
   },
@@ -2131,12 +2265,6 @@
   "dappConnections": {
     "message": "Dapp कनेक्शन्स"
   },
-  "dappScanMaliciousTitle": {
-    "message": "बुरी नीयत वाली वेबसाइट का पता चला"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "इस वेबसाइट को खतरनाक माना गया है। अगर आप अपना सीक्रेट रिकवरी फ्रेज़ बताते हैं, तो आप अपने फंड्स को खतरे में डाल सकते हैं।"
-  },
   "dappSuggested": {
     "message": "सुझावित साइट"
   },
@@ -2185,9 +2313,6 @@
   },
   "dateCreated": {
     "message": "बनाने की तारीख"
-  },
-  "dcent": {
-    "message": "D'Cent"
   },
   "debitCreditPurchaseOptions": {
     "message": "डेबिट या क्रेडिट कार्ड से खरीदारी के विकल्प"
@@ -2513,9 +2638,6 @@
   "downloadAppTitle": {
     "message": "QR कोड स्कैन करें और ऐप डाउनलोड करें"
   },
-  "downloadGoogleChrome": {
-    "message": "Google Chrome डाउनलोड करें"
-  },
   "downloadMetaMaskMobileDescription": {
     "message": "हमारे ऐप में फेस ID से आप पासवर्ड भूल जाने पर भी लॉग इन कर सकते हैं। MetaMask को अपने साथ हर जगह लेकर जाएं!"
   },
@@ -2524,9 +2646,6 @@
   },
   "downloadMetaMaskMobileTitle": {
     "message": "हमारा मोबाइल ऐप प्राप्त करें"
-  },
-  "downloadNow": {
-    "message": "अभी डाउनलोड करें"
   },
   "downloadStateLogs": {
     "message": "स्टेट लॉग डाउनलोड करें"
@@ -2737,8 +2856,14 @@
   "enterSymbol": {
     "message": "सिंबल डालें"
   },
+  "enterTokenAddress": {
+    "message": "टोकन एड्रेस डालें"
+  },
   "enterTokenNameOrAddress": {
     "message": "टोकन का नाम दर्ज करें या एड्रेस पेस्ट करें"
+  },
+  "enterTokenNameOrAddressManageTokens": {
+    "message": "टोकन नाम या एड्रेस डालें"
   },
   "enterYourPassword": {
     "message": "अपना पासवर्ड डालें"
@@ -3038,7 +3163,7 @@
     "message": "गैस प्राइस अनुमान नेटवर्क गड़बड़ी के कारण नहीं हो पाया है।"
   },
   "gasSponsorshipReserveBalanceWarning": {
-    "message": "इस ट्रांसेक्शन के लिए गैस स्पॉन्सरशिप उपलब्ध नहीं है। आपको अपने अकाउंट में कम से कम $1 $2 रखना होगा।",
+    "message": "इस खास नेटवर्क को आपके अकाउंट में $1 $2 का रिज़र्व बनाए रखना ज़रूरी है।",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
   "gasTimingHoursShort": {
@@ -3285,9 +3410,6 @@
   "hardwareWalletSubmissionWarningTitle": {
     "message": "सबमिट करें पर क्लिक करने से पहले:"
   },
-  "hardwareWalletSupportLinkConversion": {
-    "message": "यहां क्लिक करें"
-  },
   "hardwareWalletTitleEthAppNotOpen": {
     "message": "Ethereum ऐप खोलें"
   },
@@ -3297,12 +3419,6 @@
   },
   "hardwareWallets": {
     "message": "किसी hardware wallet को कनेक्ट करें"
-  },
-  "hardwareWalletsInfo": {
-    "message": "hardware wallet इंटीग्रेशन्स, एक्सटर्नल सर्वरों पर एपीआई कॉल्स की मदद लेते हैं, जो आपके आईपी एड्रेस और आपके द्वारा इंटरैक्ट किए गए स्मार्ट कॉन्ट्रैक्ट एड्रेस को देख सकता है।"
-  },
-  "hardwareWalletsMsg": {
-    "message": "किसी hardware wallet को चुनें, जिसे आप MetaMask के साथ इस्तेमाल करना चाहते हैं।"
   },
   "helpAndSettings": {
     "message": "सहायता और सेटिंग्स"
@@ -3668,9 +3784,6 @@
     "message": "JSON फाइल",
     "description": "format for importing an account"
   },
-  "keycardShell": {
-    "message": "कीकार्ड शैल"
-  },
   "keyringAccountName": {
     "message": "अकाउंट का नाम"
   },
@@ -3723,9 +3836,6 @@
   },
   "learnMoreAboutPrivacy": {
     "message": "गोपनीयता की सर्वोत्तम प्रथाओं के बारे में और जानें।"
-  },
-  "learnMoreKeystone": {
-    "message": "ज़्यादा जानें"
   },
   "learnMoreUpperCase": {
     "message": "ज़्यादा जानें"
@@ -3794,17 +3904,8 @@
   "ledgerFirefoxNotSupportedTitle": {
     "message": "Firefox सपोर्टेड नहीं है"
   },
-  "ledgerLiveApp": {
-    "message": "Ledger Live ऐप"
-  },
   "ledgerLocked": {
     "message": "Ledger डिवाइस से कनेक्ट नहीं हो सकता। कृपया पक्का करें कि आपका डिवाइस अनलॉक है और Ethereum ऐप खुला है।"
-  },
-  "ledgerMultipleDevicesUnsupportedInfoDescription": {
-    "message": "नया डिवाइस कनेक्ट करने के लिए, पिछले डिवाइस को डिस्कनेक्ट करें।"
-  },
-  "ledgerMultipleDevicesUnsupportedInfoTitle": {
-    "message": "आप एक समय में केवल एक ही Ledger कनेक्ट कर सकते हैं"
   },
   "ledgerTimeout": {
     "message": "Ledger Live जवाब देने में बहुत अधिक समय ले रहा है या कनेक्शन टाइमआउट हो गया है। पक्का करें कि Ledger Live ऐप खुला है और आपका डिवाइस अनलॉक है।"
@@ -3936,6 +4037,9 @@
   },
   "managePermissions": {
     "message": "अनुमतियाँ प्रबंधित करें"
+  },
+  "manageTokens": {
+    "message": "टोकन मैनेज करें"
   },
   "manageWalletRecovery": {
     "message": "वॉलेट रिकवरी मैनेज करें"
@@ -4632,6 +4736,9 @@
   "newContract": {
     "message": "नया कॉन्ट्रैक्ट"
   },
+  "newCustomTokenAdded": {
+    "message": "\"$1\" सफलतापूर्वक जोड़ा गया था!"
+  },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "सेटिंग्स में > सुरक्षा और गोपनीयता"
   },
@@ -4767,8 +4874,14 @@
   "noSnaps": {
     "message": "आपके पास इंस्टाल किए गए Snap नहीं हैं।"
   },
+  "noTokensMatchSearch": {
+    "message": "कोई भी टोकन आपकी सर्च से मैच नहीं करता"
+  },
   "noTokensMatchingYourFilters": {
     "message": "कोई भी टोकन आपके फ़िल्टर से मैच नहीं कर रहा"
+  },
+  "noTokensToManage": {
+    "message": "आपके पास अभी तक कोई टोकन नहीं है। पॉपुलर टोकन खोजने के लिए नाम या पते से खोजें।"
   },
   "noWebcamFound": {
     "message": "आपके कंप्यूटर का वेबकैम नहीं मिला। कृपया फिर से कोशिश करें।"
@@ -5078,10 +5191,6 @@
   "onboardingMetametricsTitle": {
     "message": "MetaMask को बेहतर बनाने में मदद करें"
   },
-  "onboardingOptionIcon": {
-    "message": "$1 आइकन",
-    "description": "$1 is the icon name"
-  },
   "onboardingSignInWith": {
     "message": "$1 के साथ साइन इन करें",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -5355,6 +5464,9 @@
     "message": "के साथ भुगतान करें",
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
   },
+  "payee": {
+    "message": "पेई"
+  },
   "pending": {
     "message": "अभी पूरा नहीं हुआ"
   },
@@ -5376,6 +5488,9 @@
   },
   "perSecond": {
     "message": "प्रति सेकंड"
+  },
+  "percent": {
+    "message": "$1%"
   },
   "percentChange": {
     "message": "प्रतिशत परिवर्तन"
@@ -5705,6 +5820,10 @@
   "perpsAutoClose": {
     "message": "ऑटो क्लोज़"
   },
+  "perpsAutoDeleveraging": {
+    "message": "ऑटो-डीलेवरेजिंग",
+    "description": "Badge label for trades executed via auto-deleveraging (ADL)"
+  },
   "perpsAvailable": {
     "message": "उपलब्ध",
     "description": "is the available balance amount"
@@ -5762,7 +5881,7 @@
     "message": "लॉन्ग को क्लोज़ करें"
   },
   "perpsClosePartialMinNotional": {
-    "message": "आंशिक क्लोज़ की कीमत USD में कम से कम $1 होनी चाहिए। क्लोज़ अमाउंट बढ़ाएँ या पूरी पोज़िशन बंद करें।"
+    "message": "पार्शियल क्लोज़ कम से कम $1 USD वैल्यू का होना चाहिए। क्लोज़ अमाउंट बढ़ाएं या पूरी पोज़िशन क्लोज करें।"
   },
   "perpsClosePosition": {
     "message": "पोज़िशन बंद करें"
@@ -5797,6 +5916,9 @@
   "perpsDepositActivityTitle": {
     "message": "फंडेड पर्प्स"
   },
+  "perpsDepositErrorBridgeFailed": {
+    "message": "ब्रिज नहीं हो पाया"
+  },
   "perpsDepositFailed": {
     "message": "डिपॉज़िट करना पूरा नहीं हो पाया। कृपया दोबारा कोशिश करें।"
   },
@@ -5819,10 +5941,10 @@
     "message": "पर्प्स में फंड्स जोड़े जा रहे हैं"
   },
   "perpsDepositToastSuccessDescription": {
-    "message": "आपके फंड्स ट्रेड करने के लिए तैयार हैं।"
+    "message": "फंड्स ट्रेड करने के लिए तैयार हैं"
   },
   "perpsDepositToastSuccessTitle": {
-    "message": "फंड्स पर्प्स में जोड़े गए"
+    "message": "आपका पर्प्स अकाउंट फंड हो गया"
   },
   "perpsDeposits": {
     "message": "डिपॉज़िट"
@@ -5927,6 +6049,10 @@
   },
   "perpsLimitPriceNearLiquidation": {
     "message": "वर्तमान प्राइस अनुमानित लिक्विडेशन प्राइस के लगभग बराबर है"
+  },
+  "perpsLiquidated": {
+    "message": "लिक्विडेट किया गया",
+    "description": "Badge label for trades that were liquidated"
   },
   "perpsLiquidationDistance": {
     "message": "लिक्विडेशन डिस्टेन्स"
@@ -6111,11 +6237,14 @@
   "perpsSortByPriceChange": {
     "message": "प्राइस में बदलाव"
   },
+  "perpsSortByRank": {
+    "message": "रैंक"
+  },
   "perpsSortBySection": {
     "message": "इसके अनुसार क्रमबद्ध करें"
   },
   "perpsSortByTitle": {
-    "message": "सॉर्ट करें"
+    "message": "फिल्टर"
   },
   "perpsSortByVolume": {
     "message": "वॉल्यूम"
@@ -6287,6 +6416,9 @@
   "perpsTrades": {
     "message": "ट्रेड्स"
   },
+  "perpsTransactionTitleOpenedLong": {
+    "message": "खुला लॉन्ग"
+  },
   "perpsTriggerPrice": {
     "message": "ट्रिगर प्राइस"
   },
@@ -6385,6 +6517,28 @@
   },
   "perpsWithdrawNoAccount": {
     "message": "कोई अकाउंट नहीं चुना गया। कृपया एक अकाउंट चुनें और दोबारा कोशिश करें।"
+  },
+  "perpsWithdrawPostQuoteToastErrorDescription": {
+    "message": "विदड्रॉवल नहीं हो पाया"
+  },
+  "perpsWithdrawPostQuoteToastErrorTitle": {
+    "message": "कुछ गलत हो गया"
+  },
+  "perpsWithdrawPostQuoteToastPendingDescription": {
+    "message": "लगभग 1 मिनट में उपलब्ध होगा"
+  },
+  "perpsWithdrawPostQuoteToastPendingTitle": {
+    "message": "विदड्रॉवल प्रोग्रेस में है"
+  },
+  "perpsWithdrawPostQuoteToastSuccessDescription": {
+    "message": "$1 $2 आपके वॉलेट में भेजा गया",
+    "description": "$1 is the formatted USD amount, e.g. '$20.73'. $2 is the destination token symbol, e.g. 'BNB'."
+  },
+  "perpsWithdrawPostQuoteToastSuccessGenericDescription": {
+    "message": "फंड आपके वॉलेट में भेजे गए"
+  },
+  "perpsWithdrawPostQuoteToastSuccessTitle": {
+    "message": "विदड्रॉवल पूरा हुआ"
   },
   "perpsWithdrawReceive": {
     "message": "प्राप्त करें"
@@ -6717,6 +6871,46 @@
     "message": "कैमरा एक्सेस की आवश्यकता है",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
+  "qrErrorNonUrPairingBody": {
+    "message": "अपने हार्डवेयर वॉलेट पर वापस जाएं और एकाउंट्स शेयर या एक्सपोर्ट करने का विकल्प ढूंढें, MetaMask चुनें, फिर QR कोड स्कैन करें।",
+    "description": "Body text for the non-UR QR code error during pairing."
+  },
+  "qrErrorNonUrPairingTitle": {
+    "message": "वॉलेट सिंक QR कोड स्कैन करें",
+    "description": "Title shown when scanned QR data is not a UR code during the pairing/import flow."
+  },
+  "qrErrorNonUrSigningBody": {
+    "message": "अपने हार्डवेयर वॉलेट पर वापस जाएं और ट्रांसेक्शन को एप्रूव करें, फिर वहां दिखने वाला QR कोड स्कैन करें।",
+    "description": "Body text for the non-UR QR code error during signing."
+  },
+  "qrErrorNonUrSigningTitle": {
+    "message": "सिग्नेचर QR कोड स्कैन करें",
+    "description": "Title shown when scanned QR data is not a UR code during the signing flow."
+  },
+  "qrErrorUrDecodeBody": {
+    "message": "सुनिश्चित करें कि QR कोड पूरी तरह दिखाई दे रहा है और अच्छी रोशनी में है, फिर से प्रयास करें। यदि समस्या बनी रहती है, तो आपको अपने हार्डवेयर वॉलेट का फर्मवेयर अपडेट करना पड़ सकता है।",
+    "description": "Body text for the UR decode error (universal for pairing and signing)."
+  },
+  "qrErrorUrDecodeTitle": {
+    "message": "QR कोड पढ़ा नहीं जा सका",
+    "description": "Title shown when the UR decoder encounters an error (universal for pairing and signing)."
+  },
+  "qrErrorWrongUrTypePairingBody": {
+    "message": "अपने हार्डवेयर वॉलेट पर वापस जाएं, MetaMask को वॉलेट प्रकार के रूप में चुनें, फिर नया QR कोड जनरेट करके स्कैन करें।",
+    "description": "Body text for the wrong UR type error during pairing."
+  },
+  "qrErrorWrongUrTypePairingTitle": {
+    "message": "गलत QR कोड",
+    "description": "Title shown when the UR type does not match what is expected during pairing."
+  },
+  "qrErrorWrongUrTypeSigningBody": {
+    "message": "अपने हार्डवेयर वॉलेट पर वापस जाएं और ट्रांसेक्शन को एप्रूव करें, फिर वहां दिखने वाला QR कोड स्कैन करें।",
+    "description": "Body text for the wrong UR type error during signing."
+  },
+  "qrErrorWrongUrTypeSigningTitle": {
+    "message": "गलत QR कोड",
+    "description": "Title shown when the UR type does not match what is expected during signing."
+  },
   "queued": {
     "message": "कतारबद्ध"
   },
@@ -6779,6 +6973,9 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "अपने वॉलेट को सुरक्षित रखें"
+  },
+  "redeemer": {
+    "message": "रिडीमर"
   },
   "redeposit": {
     "message": "फिर से डिपॉज़िट करें"
@@ -7029,6 +7226,12 @@
   "rewardsLinkAccountError": {
     "message": "अकाउंट जोड़ना नहीं हो पाया"
   },
+  "rewardsOnboardingCheckingRegion": {
+    "message": "क्षेत्र की जांच की जा रही है…"
+  },
+  "rewardsOnboardingDescription": {
+    "message": "इनाम जीतें, फ़ायदे पाएँ, और कमाने के और भी तरीके जानें—सिर्फ़ MetaMask का इस्तेमाल करके।"
+  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "हम यह निर्धारित नहीं कर सकते कि आपका देश रिवॉर्ड्स प्रोग्राम में ऑप्ट-इन की अनुमति देता है या नहीं। कृपया अपना कनेक्शन जांचें और फिर से कोशिश करें।"
   },
@@ -7047,6 +7250,46 @@
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "क्षेत्र सपोर्टेड नहीं है"
   },
+  "rewardsOnboardingLegalDisclaimer": {
+    "message": "जॉइन करके, आप हमारे $1 से सहमत हैं। हम इस डिवाइस पर सभी अकाउंट को ऑप्ट इन करेंगे और आपको अपने आप रिवॉर्ड देने के लिए ऑन-चेन एक्टिविटी को ट्रैक करेंगे। $2",
+    "description": "$1 is the Terms and Privacy Notice link, $2 is the Learn more link"
+  },
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
+    "message": "ज़्यादा जानें"
+  },
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
+    "message": "नियम और गोपनीयता सूचना"
+  },
+  "rewardsOnboardingOptInError": {
+    "message": "ऑप्ट-इन नहीं हो पाया"
+  },
+  "rewardsOnboardingReferralCodeError": {
+    "message": "रेफरल कोड ग़लत है"
+  },
+  "rewardsOnboardingReferralCodePlaceholder": {
+    "message": "रेफरल कोड (वैकल्पिक)"
+  },
+  "rewardsOnboardingReferralCodeUnknownError": {
+    "message": "रेफरल कोड का सत्यापन नहीं हो पाया।"
+  },
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
+    "message": "अपना कनेक्शन जांचें और फिर से प्रयास करें।"
+  },
+  "rewardsOnboardingReferralHide": {
+    "message": "कोड छिपाएँ"
+  },
+  "rewardsOnboardingReferralPrompt": {
+    "message": "क्या आपके पास रेफ़रल कोड है?"
+  },
+  "rewardsOnboardingSignUp": {
+    "message": "रिवॉर्ड में शामिल हों"
+  },
+  "rewardsOnboardingSignUpLoading": {
+    "message": "शामिल हो रहे हैं..."
+  },
+  "rewardsOnboardingTitle": {
+    "message": "रिवॉर्ड कमाना शुरू करें"
+  },
   "rewardsOptInVerifyingReferralCode": {
     "message": "रेफरल कोड वेरीफाई किया जा रहा है…",
     "description": "Text shown while verifying a referral code during rewards opt-in"
@@ -7062,6 +7305,12 @@
   "rewardsPointsIcon": {
     "message": "रिवॉर्ड पॉइंट्स",
     "description": "Alt text for the rewards points icon"
+  },
+  "rewardsQRCodeDescription": {
+    "message": "MetaMask रिवॉर्ड्स को एक्सेस करने के लिए, अपने मोबाइल डिवाइस से QR कोड स्कैन करें।"
+  },
+  "rewardsQRCodeTitle": {
+    "message": "मोबाइल पर जारी रखें"
   },
   "rewardsSignInFailed": {
     "message": "साइन इन नहीं हो पाया",
@@ -7185,11 +7434,11 @@
   },
   "securitySocialLoginEnabledDescription": {
     "message": "अपने अकाउंट और सीक्रेट रिकवरी फ्रेज़ को रिकवर करने के लिए अपने $1 लॉगिन और MetaMask पासवर्ड का उपयोग करें।",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySocialLoginLabel": {
     "message": "$1 रिकवरी",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySrpLabel": {
     "message": "सीक्रेट रिकवरी फ्रेज़"
@@ -8643,34 +8892,6 @@
   "statusNotConnected": {
     "message": "कनेक्ट नहीं है"
   },
-  "step1LatticeWallet": {
-    "message": "अपना Lattice1 कनेक्ट करें"
-  },
-  "step1LatticeWalletMsg": {
-    "message": "MetaMask के सेट अप और ऑनलाइन होने के बाद आप उसे अपने Lattice1 डिवाइस से कनेक्ट कर सकते हैं। अपना डिवाइस अनलॉक करें और अपनी डिवाइस ID तैयार रखें।",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step1LedgerWallet": {
-    "message": "Ledger ऐप डाउनलोड करें"
-  },
-  "step1LedgerWalletMsg": {
-    "message": "$1 अनलॉक करने के लिए डाउनलोड करें, सेट करें और अपना पासवर्ड डालें।",
-    "description": "$1 represents the `ledgerLiveApp` localization value"
-  },
-  "step1TrezorWallet": {
-    "message": "अपने Trezor को कनेक्ट करें"
-  },
-  "step1TrezorWalletMsg": {
-    "message": "अपने Trezor को सीधे अपने कंप्यूटर में प्लग करें और इसे अनलॉक करें। पक्का करें कि आप सही पासफ्रेज का इस्तेमाल कर रहे हैं।",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step2LedgerWallet": {
-    "message": "अपने Ledger को कनेक्ट करें"
-  },
-  "step2LedgerWalletMsg": {
-    "message": "अपने Ledger को सीधे अपने कंप्यूटर में प्लग करें, फिर इसे अनलॉक करें और Ethereum ऐप खोलें।",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "stillConnectingTo": {
     "message": "अब भी $1 से कनेक्ट किया जा रहा है...",
     "description": "Message shown when network connection is slow. $1 is the network name."
@@ -9166,6 +9387,9 @@
   "tokenAddress": {
     "message": "टोकन पता"
   },
+  "tokenAllowance": {
+    "message": "टोकन अलाउंस"
+  },
   "tokenAlreadyAdded": {
     "message": "टोकन पहले ही जोड़ा जा चुका है।"
   },
@@ -9207,6 +9431,9 @@
   "tokenPermissionsCount": {
     "message": "$1 टोकन अनुमतियां",
     "description": "$1 is the count of token permissions (plural form)"
+  },
+  "tokenSearchError": {
+    "message": "सर्च रिज़ल्ट लोड नहीं हो सके। कृपया फिर से कोशिश करें।"
   },
   "tokenStandard": {
     "message": "टोकन स्टैंडर्ड"

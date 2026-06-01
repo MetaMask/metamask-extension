@@ -153,6 +153,27 @@ class PrivacySettings {
   private readonly backToSrpListButton =
     '[data-testid="reveal-recovery-phrase-back-button"]';
 
+  private readonly passkeySettingsRow =
+    '[data-testid="security-passkey-settings-row"]';
+
+  private readonly passkeyRegisterPasswordInput =
+    '[data-testid="register-passkey-password-input"]';
+
+  private readonly passkeyRegisterContinueButton =
+    '[data-testid="register-passkey-verify-continue-button"]';
+
+  private readonly passkeyTurnOffPasswordInput =
+    '[data-testid="turn-off-passkey-password-input"]';
+
+  private readonly passkeyTurnOffContinueButton =
+    '[data-testid="turn-off-passkey-verify-continue-button"]';
+
+  private readonly passkeyEnrollmentSteps =
+    '[data-testid="passkey-setup-steps"]';
+
+  private readonly passkeyStepIndicatorSuccess =
+    '[data-testid="passkey-step-indicator-success"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -447,6 +468,40 @@ class PrivacySettings {
     await this.driver.waitForSelector(
       `${this.dataCollectionForMarketingToggle}.toggle-button--${targetState}`,
     );
+  }
+
+  async checkPasskeyRowIsDisplayed(): Promise<void> {
+    console.log('Check passkey settings row is displayed');
+    await this.driver.waitForSelector(this.passkeySettingsRow);
+  }
+
+  async clickPasskeyToggle(): Promise<void> {
+    console.log('Click passkey toggle in settings');
+    await this.driver.clickElement(this.passkeySettingsRow);
+  }
+
+  async enterPasswordAndContinueForPasskeyRegister(
+    password: string,
+  ): Promise<void> {
+    console.log('Enter password and continue for passkey registration');
+    await this.driver.waitForSelector(this.passkeyRegisterPasswordInput);
+    await this.driver.fill(this.passkeyRegisterPasswordInput, password);
+    await this.driver.clickElement(this.passkeyRegisterContinueButton);
+  }
+
+  async waitForPasskeyEnrollmentSuccess(): Promise<void> {
+    console.log('Waiting for passkey enrollment success in settings');
+    await this.driver.waitForSelector(this.passkeyEnrollmentSteps);
+    await this.driver.waitForSelector(this.passkeyStepIndicatorSuccess);
+  }
+
+  async enterPasswordAndContinueForPasskeyTurnOff(
+    password: string,
+  ): Promise<void> {
+    console.log('Enter password and continue for passkey turn off');
+    await this.driver.waitForSelector(this.passkeyTurnOffPasswordInput);
+    await this.driver.fill(this.passkeyTurnOffPasswordInput, password);
+    await this.driver.clickElement(this.passkeyTurnOffContinueButton);
   }
 }
 

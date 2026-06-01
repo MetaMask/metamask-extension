@@ -1,10 +1,7 @@
-import {
-  ListNames,
-  PhishingController,
-  AllowedEvents,
-  PhishingControllerActions,
-} from '@metamask/phishing-controller';
-import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
+import { Messenger } from '@metamask/messenger';
+import { ListNames, PhishingController } from '@metamask/phishing-controller';
+import { getRootMessenger } from '../../messenger';
+import { getPhishingControllerMessenger } from '../../../messenger-client-init/messengers/phishing-controller-messenger';
 import { isBlockedUrl } from './isBlockedUrl';
 
 // Run these tests as if we were in a Flask build
@@ -14,42 +11,41 @@ jest.mock('../../../../../shared/lib/build-types', () => ({
 }));
 
 describe('isBlockedUrl', () => {
-  const messenger = new Messenger<
-    typeof MOCK_ANY_NAMESPACE,
-    PhishingControllerActions,
-    AllowedEvents
-  >({ namespace: MOCK_ANY_NAMESPACE });
-  // Register no-op handlers for the external actions PhishingController calls
-  // during construction (address-poisoning hydration). Without these the
-  // controller logs a console.error which trips the test baseline.
-  messenger.registerActionHandler(
-    'TransactionController:getState' as never,
-    (() => ({ transactions: [] })) as never,
+  const messenger = getRootMessenger();
+  const phishingControllerMessenger = getPhishingControllerMessenger(messenger);
+
+  // Register stub handlers so PhishingController can hydrate known recipients
+  // during construction without errors. Each child messenger's registerActionHandler
+  // call automatically delegates the action up to the root messenger.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const txMessenger = new Messenger<'TransactionController', never, never, any>(
+    {
+      namespace: 'TransactionController',
+      parent: messenger,
+    },
   );
-  messenger.registerActionHandler(
-    'AddressBookController:getState' as never,
-    (() => ({ addressBook: {} })) as never,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (txMessenger as any).registerActionHandler(
+    'TransactionController:getState',
+    () => ({
+      transactions: [],
+    }),
   );
-  const phishingControllerMessenger = new Messenger<
-    'PhishingController',
-    PhishingControllerActions,
-    AllowedEvents,
-    typeof messenger
-  >({
-    namespace: 'PhishingController',
-    parent: messenger,
-  });
-  messenger.delegate({
-    messenger: phishingControllerMessenger,
-    actions: [
-      'AddressBookController:getState' as never,
-      'TransactionController:getState' as never,
-    ],
-    events: [
-      'AddressBookController:stateChange',
-      'TransactionController:stateChange',
-    ],
-  });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const abMessenger = new Messenger<'AddressBookController', never, never, any>(
+    {
+      namespace: 'AddressBookController',
+      parent: messenger,
+    },
+  );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (abMessenger as any).registerActionHandler(
+    'AddressBookController:getState',
+    () => ({
+      addressBook: {},
+    }),
+  );
+
   const phishingController = new PhishingController({
     messenger: phishingControllerMessenger,
     state: {

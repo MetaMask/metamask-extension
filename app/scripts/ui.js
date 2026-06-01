@@ -10,7 +10,7 @@ import '@lavamoat/lavadome-react';
 // This import sets up global functions required for Sentry to function.
 // It must be run as soon as possible in case an error is thrown later during initialization.
 import './lib/setup-initial-state-hooks';
-import '../../development/wdyr';
+import './development/wdyr';
 
 // Import this very early, so globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS is always defined
 import '../../shared/constants/infura-project-id';

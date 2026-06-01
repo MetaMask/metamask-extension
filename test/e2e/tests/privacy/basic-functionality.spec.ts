@@ -6,6 +6,7 @@ import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 import { METAMASK_STALELIST_URL } from '../phishing-controller/helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
@@ -175,7 +176,8 @@ describe('MetaMask onboarding', function () {
         await homePage.checkPageIsLoaded();
 
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Ethereum');
-        await homePage.refreshErc20TokenList();
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.refreshErc20TokenList();
 
         for (const mockedEndpoint of mockedEndpoints) {
           const requests = await mockedEndpoint.getSeenRequests();
@@ -218,7 +220,8 @@ describe('MetaMask onboarding', function () {
         await homePage.checkPageIsLoaded();
 
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Ethereum');
-        await homePage.refreshErc20TokenList();
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.refreshErc20TokenList();
 
         // Check if sidepanel is enabled
         const hasSidepanel = await isSidePanelEnabled();

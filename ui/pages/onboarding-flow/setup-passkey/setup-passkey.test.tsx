@@ -23,6 +23,7 @@ import {
   startPasskeyRegistration,
   startPasskeyAuthentication,
 } from '../../../../shared/lib/passkey';
+import SetupPasskeyContent from '../../../components/app/setup-passkey-content';
 import SetupPasskey from './setup-passkey';
 
 jest.mock('../../../../shared/lib/passkey', () => ({
@@ -50,6 +51,13 @@ jest.mock('../../../../shared/lib/passkey', () => ({
     },
     clientExtensionResults: {},
   }),
+}));
+
+jest.mock('../../../../shared/lib/sentry', () => ({
+  ...jest.requireActual<typeof import('../../../../shared/lib/sentry')>(
+    '../../../../shared/lib/sentry',
+  ),
+  captureException: jest.fn(),
 }));
 
 const mockAuthenticationResponse = {
@@ -156,6 +164,21 @@ describe('SetupPasskey', () => {
 
   function renderSetupPasskey(mockStore: ReturnType<typeof buildMockStore>) {
     return renderWithProvider(<SetupPasskey />, mockStore, '/', render);
+  }
+
+  function renderSetupPasskeyContent(
+    mockStore: ReturnType<typeof buildMockStore>,
+    onNext = jest.fn(),
+  ) {
+    return {
+      onNext,
+      ...renderWithProvider(
+        <SetupPasskeyContent onNext={onNext} />,
+        mockStore,
+        '/',
+        render,
+      ),
+    };
   }
 
   it('renders core passkey setup actions', () => {
@@ -293,6 +316,15 @@ describe('SetupPasskey', () => {
           replace: true,
         },
       );
+    });
+
+    it('calls onNext when maybe later is clicked in the reusable content', () => {
+      const mockStore = buildMockStore(FirstTimeFlowType.restore);
+      const { getByText, onNext } = renderSetupPasskeyContent(mockStore);
+
+      fireEvent.click(getByText(messages.maybeLater.message));
+
+      expect(onNext).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -449,6 +481,29 @@ describe('SetupPasskey', () => {
         );
       });
       expect(mockUseNavigate).not.toHaveBeenCalled();
+    });
+
+    it('calls onNext after successful enrollment in the reusable content', async () => {
+      const mockStore = buildMockStore(FirstTimeFlowType.restore);
+      jest
+        .mocked(forceUpdateMetamaskState)
+        .mockImplementation(async (dispatch) => {
+          dispatch({
+            type: UPDATE_METAMASK_STATE,
+            value: { passkeyRecord: testPasskeyRecord },
+          });
+        });
+
+      const { getByTestId, onNext } = renderSetupPasskeyContent(mockStore);
+
+      fireEvent.click(getByTestId('passkey-set-up-button'));
+
+      await waitFor(
+        () => {
+          expect(onNext).toHaveBeenCalledTimes(1);
+        },
+        { timeout: 4000 },
+      );
     });
   });
 });

@@ -2,11 +2,12 @@
  * @file The main webpack configuration file for the browser extension.
  */
 
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { argv, exit } from 'node:process';
 import {
   ProvidePlugin,
+  type Chunk,
   type Configuration,
   type WebpackPluginInstance,
   type MemoryCacheOptions,
@@ -48,9 +49,10 @@ if (args.dryRun) {
 
 const context = join(__dirname, '../../app');
 const nodeModules = join(__dirname, '../../node_modules');
+const root = join(context, '..');
 const isDevelopment = args.mode === MODES.DEVELOPMENT;
-const MANIFEST_VERSION = args.manifest_version;
-const browsersListPath = join(context, '../.browserslistrc');
+const MANIFEST_VERSION = args.manifestVersion;
+const browsersListPath = join(root, '.browserslistrc');
 // read .browserslist now to stop it from searching for the file over and over
 const browsersListQuery = readFileSync(browsersListPath, 'utf8');
 const { variables, safeVariables, version, buildEnvVarDeclarations } =
@@ -80,9 +82,10 @@ const cache = args.cache
         // `buildDependencies`
         config: [
           __filename,
-          join(context, '../.metamaskprodrc'),
-          join(context, '../.metamaskrc'),
-          join(context, '../builds.yml'),
+          ...[join(root, '.metamaskprodrc'), join(root, '.metamaskrc')].filter(
+            existsSync,
+          ),
+          join(root, 'builds.yml'),
           browsersListPath,
         ],
       },
@@ -249,6 +252,10 @@ const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
+const isChunkableInitial = (chunk: Chunk) =>
+  manifestPlugin.canBeChunked(chunk) && chunk.canBeInitial();
+const isChunkableAsync = (chunk: Chunk) =>
+  manifestPlugin.canBeChunked(chunk) && !chunk.canBeInitial();
 
 const threadLoader = getThreadLoader(args);
 const reactCompiler = getReactCompilerLoader({
@@ -381,6 +388,13 @@ const config = {
           loader: require.resolve('./utils/loaders/envValidationLoader'),
           options: { declarations: [...buildEnvVarDeclarations] },
         },
+      },
+      // @protobufjs/inquire intentionally uses `require(moduleName)` to probe
+      // optional modules such as `buffer` and `long`.
+      {
+        test: /[\\/]@protobufjs[\\/]inquire[\\/]index\.js$/u,
+        include: NODE_MODULES_RE,
+        parser: { exprContextCritical: false },
       },
       // thread-loader pool for UI component files (must appear before SWC rules)
       threadLoader && {
@@ -536,15 +550,23 @@ const config = {
       cacheGroups: {
         js: {
           // only our own ts/mts/tsx/js/mjs/jsx files (NOT in node_modules)
-          test: /(?!.*\/node_modules\/).+\.(?:m?[tj]s|[tj]sx?)?$/u,
+          test: /^(?!.*[\\/]node_modules[\\/]).+\.(?:m?[tj]s|[tj]sx?)?$/u,
           name: 'js',
-          chunks: manifestPlugin.canBeChunked,
+          chunks: isChunkableInitial,
         },
         vendor: {
           // js/mjs files in node_modules or subdirectories of node_modules
           test: /[\\/]node_modules[\\/].*?\.m?js$/u,
           name: 'vendor',
-          chunks: manifestPlugin.canBeChunked,
+          chunks: isChunkableInitial,
+        },
+        asyncJs: {
+          // only our own ts/mts/tsx/js/mjs/jsx files (NOT in node_modules)
+          test: /^(?!.*[\\/]node_modules[\\/]).+\.(?:m?[tj]s|[tj]sx?)?$/u,
+          chunks: isChunkableAsync,
+          // Avoid minChunks: 1: it creates extra single-use async chunks
+          // without reducing the initial entrypoint payload.
+          minChunks: 2,
         },
       },
     },

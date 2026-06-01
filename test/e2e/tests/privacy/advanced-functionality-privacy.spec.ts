@@ -5,6 +5,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { NETWORK_CLIENT_ID } from '../../constants';
 import AccountList from '../../page-objects/pages/account-list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
 import {
@@ -113,7 +114,8 @@ describe('MetaMask onboarding ', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed();
-        await homePage.refreshErc20TokenList();
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.refreshErc20TokenList();
         await homePage.checkPageIsLoaded();
 
         for (const m of mockedEndpoint) {
@@ -153,7 +155,8 @@ describe('MetaMask onboarding ', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('25', 'ETH');
-        await homePage.refreshErc20TokenList();
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.refreshErc20TokenList();
         await homePage.checkPageIsLoaded();
         await homePage.headerNavbar.openAccountMenu();
         await new AccountList(driver).checkPageIsLoaded();

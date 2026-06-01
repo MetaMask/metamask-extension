@@ -118,6 +118,29 @@ export function getSelectedNetworkClientId(
 }
 
 /**
+ * Returns the hex chainId for a given networkClientId by searching through
+ * all network configurations. Returns an empty string if no match is found.
+ *
+ * @param state - Redux state containing networkConfigurationsByChainId.
+ * @param networkClientId - The network client ID to look up.
+ * @returns The hex chainId string, or '' if not found.
+ */
+export function getChainIdByNetworkClientId(
+  state: NetworkConfigurationsByChainIdState,
+  networkClientId: string,
+): string {
+  const networkConfigs = getNetworkConfigurationsByChainId(state);
+  for (const [chainId, network] of Object.entries(networkConfigs ?? {})) {
+    for (const rpcEndpoint of network.rpcEndpoints ?? []) {
+      if (rpcEndpoint.networkClientId === networkClientId) {
+        return chainId;
+      }
+    }
+  }
+  return '';
+}
+
+/**
  * Combines and returns network configurations for all chains (EVM and not) by caip chain id.
  *
  * @param params - The parameters object.

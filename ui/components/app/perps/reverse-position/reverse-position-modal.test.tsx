@@ -113,6 +113,15 @@ jest.mock('../../../../store/background-connection', () => ({
     mockSubmitRequestToBackground(...args),
 }));
 
+jest.mock('../../rewards/RewardsVipBadge', () => ({
+  RewardsVipBadge: () => null,
+}));
+
+const mockUseVipTier = jest.fn<number | null, []>(() => null);
+jest.mock('../../../../hooks/rewards/useVipTier', () => ({
+  useVipTier: () => mockUseVipTier(),
+}));
+
 jest.mock('../../../../providers/perps', () => ({
   getPerpsStreamManager: () => mockGetPerpsStreamManager(),
 }));
@@ -149,8 +158,10 @@ describe('ReversePositionModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
+    mockUseVipTier.mockReturnValue(null);
     mockUsePerpsOrderFees.mockReturnValue({
       feeRate: 0.0001,
+      undiscountedFeeRate: 0.0001,
       isLoading: false,
       hasError: false,
     });
@@ -213,6 +224,7 @@ describe('ReversePositionModal', () => {
     it('shows fee placeholder while fees are unavailable', () => {
       mockUsePerpsOrderFees.mockReturnValue({
         feeRate: undefined,
+        undiscountedFeeRate: undefined,
         isLoading: true,
         hasError: false,
       });
@@ -227,6 +239,7 @@ describe('ReversePositionModal', () => {
     it('shows fee placeholder when fee lookup fails', () => {
       mockUsePerpsOrderFees.mockReturnValue({
         feeRate: undefined,
+        undiscountedFeeRate: undefined,
         isLoading: false,
         hasError: true,
       });
@@ -238,9 +251,10 @@ describe('ReversePositionModal', () => {
       );
     });
 
-    it('does not render the discount badge while the fee placeholder is shown', () => {
+    it('does not show discounted fee while the fee placeholder is shown', () => {
       mockUsePerpsOrderFees.mockReturnValue({
         feeRate: undefined,
+        undiscountedFeeRate: 0.0002,
         isLoading: true,
         hasError: false,
         metamaskFeeRateDiscountPercentage: 50,
@@ -249,13 +263,14 @@ describe('ReversePositionModal', () => {
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
 
       expect(
-        screen.queryByTestId('perps-fees-display-discount'),
+        screen.queryByTestId('perps-reverse-fee-value-original'),
       ).not.toBeInTheDocument();
     });
 
-    it('renders the discount badge alongside the fee value when fees are available', () => {
+    it('shows strikethrough original and discounted fee when fees are available', () => {
       mockUsePerpsOrderFees.mockReturnValue({
         feeRate: 0.0001,
+        undiscountedFeeRate: 0.0002,
         isLoading: false,
         hasError: false,
         metamaskFeeRateDiscountPercentage: 50,
@@ -264,8 +279,9 @@ describe('ReversePositionModal', () => {
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
 
       expect(
-        screen.getByTestId('perps-fees-display-discount'),
+        screen.getByTestId('perps-reverse-fee-value-original'),
       ).toBeInTheDocument();
+      expect(screen.getByTestId('perps-reverse-fee-value')).toBeInTheDocument();
     });
   });
 
@@ -328,14 +344,18 @@ describe('ReversePositionModal', () => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'perpsFlipPosition',
           [
-            {
+            expect.objectContaining({
               symbol: 'ETH',
               position: expect.objectContaining({
                 symbol: 'ETH',
                 size: '2.5',
                 leverage: expect.objectContaining({ value: 3 }),
               }),
-            },
+              trackingData: expect.objectContaining({
+                totalFee: expect.any(Number),
+                marketPrice: 2900,
+              }),
+            }),
           ],
         );
       });
@@ -369,6 +389,37 @@ describe('ReversePositionModal', () => {
       });
     });
 
+    it('includes vipTier and vipDiscount in trackingData when VIP tier is active', async () => {
+      mockUseVipTier.mockReturnValue(2);
+      mockUsePerpsOrderFees.mockReturnValue({
+        feeRate: 0.0001,
+        undiscountedFeeRate: 0.0002,
+        isLoading: false,
+        hasError: false,
+        metamaskFeeRateDiscountPercentage: 50,
+      });
+
+      renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
+
+      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsFlipPosition',
+          [
+            expect.objectContaining({
+              trackingData: expect.objectContaining({
+                totalFee: expect.any(Number),
+                marketPrice: 2900,
+                vipTier: 2,
+                vipDiscount: 50,
+              }),
+            }),
+          ],
+        );
+      });
+    });
+
     it('calls flip with short position when reversing a short', async () => {
       renderWithProvider(
         <ReversePositionModal
@@ -385,14 +436,18 @@ describe('ReversePositionModal', () => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'perpsFlipPosition',
           [
-            {
+            expect.objectContaining({
               symbol: 'BTC',
               position: expect.objectContaining({
                 symbol: 'BTC',
                 size: '-0.5',
                 leverage: expect.objectContaining({ value: 15 }),
               }),
-            },
+              trackingData: expect.objectContaining({
+                totalFee: expect.any(Number),
+                marketPrice: 45000,
+              }),
+            }),
           ],
         );
       });
@@ -605,12 +660,16 @@ describe('ReversePositionModal', () => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'perpsFlipPosition',
           [
-            {
+            expect.objectContaining({
               symbol: 'ETH',
               position: expect.objectContaining({
                 leverage: { type: 'cross', value: 5 },
               }),
-            },
+              trackingData: expect.objectContaining({
+                totalFee: expect.any(Number),
+                marketPrice: expect.any(Number),
+              }),
+            }),
           ],
         );
       });

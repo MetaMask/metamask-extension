@@ -87,6 +87,8 @@ import {
   normalizeTpslPrices,
   safeDecodeURIComponent,
   formatSignedChangePercent,
+  willFlipPosition,
+  buildPerpsVipTrackingData,
 } from '../../components/app/perps/utils';
 import {
   parsePerpsDisplayPrice,
@@ -120,6 +122,7 @@ import {
   usePerpsToast,
 } from '../../components/app/perps/perps-toast';
 import { calculatePositionSize } from '../../components/app/perps/order-entry/order-entry.mocks';
+import { useVipTier } from '../../hooks/rewards/useVipTier';
 
 const ORDER_MODE_TOAST_KEYS: Record<
   OrderMode,
@@ -251,6 +254,8 @@ const PerpsOrderEntryPage: React.FC = () => {
   const { replacePerpsToastByKey, hidePerpsToast, setPendingOrder } =
     usePerpsToast();
 
+  const vipTier = useVipTier();
+
   const { positions: allPositions } = usePerpsLivePositions();
   const { account, isInitialLoading: isLoadingAccount } = usePerpsLiveAccount();
   const { markets: allMarkets, isInitialLoading: marketsLoading } =
@@ -312,14 +317,39 @@ const PerpsOrderEntryPage: React.FC = () => {
 
   const isOrderPending = isSubmitting;
 
-  // Dynamic fee rate for close-mode order submission tracking. Also surfaces
-  // the MetaMask fee discount percentage (when applicable) so the
-  // OrderSummary can render the inline `-X%` badge next to the estimated fees.
-  const { feeRate: closeFeeRate, metamaskFeeRateDiscountPercentage } =
-    usePerpsOrderFees({
-      symbol: decodedSymbol ?? '',
-      orderType: 'market',
-    });
+  // Dynamic fee rate matching the user-selected order type. Used for both:
+  // 1. Reverse-engineering the original (pre-discount) fee from
+  //    orderCalculations.estimatedFees (which OrderEntry computes with the
+  //    same orderType).
+  // 2. Close-mode order submission tracking (close mode defaults to market).
+  const {
+    feeRate: closeFeeRate,
+    undiscountedFeeRate: closeUndiscountedFeeRate,
+    metamaskFeeRateDiscountPercentage,
+  } = usePerpsOrderFees({
+    symbol: decodedSymbol ?? '',
+    orderType,
+  });
+
+  const originalEstimatedFees = useMemo(() => {
+    if (
+      orderCalculations?.estimatedFees === null ||
+      orderCalculations?.estimatedFees === undefined ||
+      closeFeeRate === undefined ||
+      closeFeeRate === 0 ||
+      closeUndiscountedFeeRate === undefined
+    ) {
+      return null;
+    }
+    return (
+      orderCalculations.estimatedFees *
+      (closeUndiscountedFeeRate / closeFeeRate)
+    );
+  }, [
+    orderCalculations?.estimatedFees,
+    closeFeeRate,
+    closeUndiscountedFeeRate,
+  ]);
 
   const isLimitPriceInvalid = useMemo(() => {
     if (orderType !== 'limit' || !orderFormState) {
@@ -951,6 +981,12 @@ const PerpsOrderEntryPage: React.FC = () => {
           position.size,
           marketInfo?.szDecimals,
         );
+        closeParams.trackingData = buildPerpsVipTrackingData({
+          totalFee: closeEstimatedFees,
+          marketPrice: currentPrice,
+          vipTier,
+          vipDiscount: metamaskFeeRateDiscountPercentage,
+        });
         const result = await submitRequestToBackground<PerpsBackgroundResult>(
           'perpsClosePosition',
           [closeParams],
@@ -997,6 +1033,12 @@ const PerpsOrderEntryPage: React.FC = () => {
             orderMode,
             position?.size,
           );
+          orderParams.trackingData = buildPerpsVipTrackingData({
+            totalFee: orderCalculations?.estimatedFees ?? 0,
+            marketPrice: currentPrice,
+            vipTier,
+            vipDiscount: metamaskFeeRateDiscountPercentage,
+          });
           // Emit the submit-in-progress toast here (not via route state).
           replacePerpsToastByKey({
             key: PERPS_TOAST_KEYS.SUBMIT_IN_PROGRESS,
@@ -1096,13 +1138,42 @@ const PerpsOrderEntryPage: React.FC = () => {
         orderMode,
         position?.size,
       );
+      orderParams.trackingData = buildPerpsVipTrackingData({
+        totalFee: orderCalculations?.estimatedFees ?? 0,
+        marketPrice: currentPrice,
+        vipTier,
+        vipDiscount: metamaskFeeRateDiscountPercentage,
+      });
       // Do not re-emit SUBMIT_IN_PROGRESS via route state — it was already
       // emitted above by replacePerpsToastByKey. Re-emitting from the
       // market-detail useEffect races with the ORDER_SUBMITTED replace below
       // and can leave the toast stuck at "Submitting your trade".
+      //
+      // Market orders with TP/SL on a new (or flipping) position route through
+      // the two-step flow used by mobile: place the market order without
+      // TP/SL, then call `perpsUpdatePositionTPSL` so the controller submits
+      // the trigger orders under `grouping: 'positionTpsl'`. Sending TP/SL in
+      // the same `placeOrder` call falls back to the controller's
+      // `normalTpsl` default, which leaves the resulting trigger orders
+      // tagged `isPositionTpsl: false` and breaks the auto-close/orders
+      // partition on the market-detail page.
+      const shouldHandleTpslSeparately =
+        (orderParams.takeProfitPrice || orderParams.stopLossPrice) &&
+        orderFormState.type === 'market' &&
+        (!position ||
+          parseFloat(position.size.replaceAll(',', '')) === 0 ||
+          willFlipPosition(position, orderParams));
+      const placeOrderParams = shouldHandleTpslSeparately
+        ? (() => {
+            const stripped = { ...orderParams };
+            delete stripped.takeProfitPrice;
+            delete stripped.stopLossPrice;
+            return stripped;
+          })()
+        : orderParams;
       const result = await submitRequestToBackground<PerpsBackgroundResult>(
         'perpsPlaceOrder',
-        [orderParams],
+        [placeOrderParams],
       );
       if (!result.success) {
         const message = result.error || 'Failed to place order';
@@ -1111,6 +1182,47 @@ const PerpsOrderEntryPage: React.FC = () => {
           message,
         );
         throw new Error(result.error ?? 'Failed to place order');
+      }
+      if (shouldHandleTpslSeparately) {
+        const { takeProfitPrice: cleanTp, stopLossPrice: cleanSl } =
+          normalizeTpslPrices({
+            takeProfitPrice: orderParams.takeProfitPrice,
+            stopLossPrice: orderParams.stopLossPrice,
+          });
+        const tpslResult =
+          await submitRequestToBackground<PerpsBackgroundResult>(
+            'perpsUpdatePositionTPSL',
+            [
+              {
+                symbol: orderFormState.asset,
+                takeProfitPrice: cleanTp,
+                stopLossPrice: cleanSl,
+              },
+            ],
+          );
+        if (!tpslResult.success) {
+          // The market order already filled — treat as "position opened,
+          // TP/SL not set": show the TP/SL-specific failure toast and
+          // navigate back to the market detail page so the user can attach
+          // TP/SL from the open position rather than re-submitting the
+          // order form (which would open a duplicate position).
+          const tpslMessage =
+            tpslResult.error || 'Failed to attach TP/SL to position';
+          reportTransactionFailure(
+            MetaMetricsEventName.PerpsRiskManagement,
+            tpslMessage,
+          );
+          const translatedTpslError = translatePerpsError(
+            new Error(tpslMessage),
+            t as (key: string) => string,
+          );
+          replacePerpsToastByKey({
+            key: PERPS_TOAST_KEYS.UPDATE_FAILED,
+            description: translatedTpslError ?? tpslMessage,
+          });
+          handleBackClick();
+          return;
+        }
       }
       // Navigate only on success. On failure, stay on the form so the catch
       // block's failure toast renders on the current page. Navigating before
@@ -1213,6 +1325,8 @@ const PerpsOrderEntryPage: React.FC = () => {
     closeFeeRate,
     hasPendingPerpsDeposit,
     marketInfo?.szDecimals,
+    vipTier,
+    metamaskFeeRateDiscountPercentage,
   ]);
 
   const handlePrimaryAction = useCallback(async () => {
@@ -1445,6 +1559,7 @@ const PerpsOrderEntryPage: React.FC = () => {
           <OrderSummary
             marginRequired={orderCalculations.marginRequired}
             estimatedFees={orderCalculations.estimatedFees}
+            originalEstimatedFees={originalEstimatedFees}
             liquidationPrice={orderCalculations.liquidationPrice}
             metamaskFeeRateDiscountPercentage={
               metamaskFeeRateDiscountPercentage

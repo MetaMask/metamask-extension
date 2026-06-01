@@ -18,7 +18,7 @@ import {
   MOCK_GOOGLE_ACCOUNT_WALLET_ADDRESS,
 } from '../../constants';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
-import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
+import { normalizeSafeAddress } from '../../../../shared/lib/multichain/address';
 
 describe('Metamask onboarding (with social login)', function () {
   it('Creates a new wallet with Google login and completes the onboarding process', async function () {
