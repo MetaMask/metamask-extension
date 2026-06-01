@@ -10,6 +10,7 @@ on:
 jobs:
   check-template-and-add-labels:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     if: >
       github.event_name == 'issues' ||
       (github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name == github.repository)
