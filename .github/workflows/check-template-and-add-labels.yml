@@ -8,25 +8,11 @@ on:
   merge_group:
 
 jobs:
-  is-fork-pull-request:
-    name: Determine whether this is a pull request from a fork
-    runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request_target' }}
-    outputs:
-      IS_FORK: ${{ steps.is-fork.outputs.IS_FORK }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Determine whether this PR is from a fork
-        id: is-fork
-        run: echo "IS_FORK=$(gh pr view --json isCrossRepository --jq '.isCrossRepository' "${PR_NUMBER}" )" >> "$GITHUB_OUTPUT"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.number }}
-
   check-template-and-add-labels:
     runs-on: ubuntu-latest
-    needs: [is-fork-pull-request]
-    if: ${{ always() && github.event_name != 'merge_group' && (github.event_name == 'issues' || (github.event_name == 'pull_request_target' && needs.is-fork-pull-request.outputs.IS_FORK == 'false')) }}
+    if: >
+      github.event_name == 'issues' ||
+      (github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name == github.repository)
     permissions:
       contents: read
       id-token: write
