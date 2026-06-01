@@ -67,8 +67,11 @@ export const BatchSellReviewPage = () => {
     { enabled: hasInitialSelection && !quotesAreLoading },
   );
 
-  const { totalNetworkFee: batchFees, isBatchSellTradeAvailable, isLoading: feesAreLoading } =
-    useSelector(getBatchSellTrades);
+  const {
+    totalNetworkFee: batchFees,
+    isBatchSellTradeAvailable,
+    isLoading: feesAreLoading,
+  } = useSelector(getBatchSellTrades);
 
   const validation = useBatchSellAggregateValidation({
     sendAssetsConfig,
@@ -130,7 +133,9 @@ export const BatchSellReviewPage = () => {
       <Footer
         quotesAreLoading={quotesAreLoading}
         onReviewClick={() => setReviewAndConfirmModalIsOpen(true)}
-        reviewIsDisabled={quotesAreLoading || !data || validation.isNoQuotesAvailable}
+        reviewIsDisabled={
+          quotesAreLoading || !data || validation.isNoQuotesAvailable
+        }
         areQuotesRefreshExpired={areQuotesRefreshExpired}
         onGetNewQuotesClick={refetch}
       />

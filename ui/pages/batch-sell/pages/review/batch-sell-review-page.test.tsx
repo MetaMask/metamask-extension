@@ -407,7 +407,9 @@ describe('BatchSellReviewPage', () => {
         fireEvent.click(screen.getByTestId('footer-review'));
 
         expect(
-          screen.getByTestId('review-confirm-modal').getAttribute('data-fees-loading'),
+          screen
+            .getByTestId('review-confirm-modal')
+            .getAttribute('data-fees-loading'),
         ).toBe('false');
       });
 
@@ -417,7 +419,9 @@ describe('BatchSellReviewPage', () => {
         fireEvent.click(screen.getByTestId('footer-review'));
 
         expect(
-          screen.getByTestId('review-confirm-modal').getAttribute('data-fees-loading'),
+          screen
+            .getByTestId('review-confirm-modal')
+            .getAttribute('data-fees-loading'),
         ).toBe('true');
       });
     });

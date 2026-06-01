@@ -36,7 +36,6 @@ export function getBridgeStatusControllerMessenger(
       'BridgeController:getState',
       'BridgeController:trackUnifiedSwapBridgeEvent',
       'BridgeController:stopPollingForQuotes',
-      'GasFeeController:getState',
       'RemoteFeatureFlagController:getState',
       'SnapController:handleRequest',
       'TransactionController:getState',
