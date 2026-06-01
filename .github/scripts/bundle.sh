@@ -71,7 +71,7 @@ yarn
 
 # 6. Run the production build command with 4GB of heap space
 if [ "${1:-}" = "--flask" ]; then
-  NODE_OPTIONS='--max-old-space-size=4096' yarn build --build-type flask prod
+  NODE_OPTIONS='--max-old-space-size=4096' yarn webpack:lavamoat:build:mv2 --type flask --zip --env production
 else
-  NODE_OPTIONS='--max-old-space-size=4096' yarn build prod
+  NODE_OPTIONS='--max-old-space-size=4096' yarn webpack:lavamoat:build:mv2 --zip --env production
 fi
