@@ -389,6 +389,13 @@ const config = {
           options: { declarations: [...buildEnvVarDeclarations] },
         },
       },
+      // @protobufjs/inquire intentionally uses `require(moduleName)` to probe
+      // optional modules such as `buffer` and `long`.
+      {
+        test: /[\\/]@protobufjs[\\/]inquire[\\/]index\.js$/u,
+        include: NODE_MODULES_RE,
+        parser: { exprContextCritical: false },
+      },
       // thread-loader pool for UI component files (must appear before SWC rules)
       threadLoader && {
         test: UI_COMPONENT_RE,
