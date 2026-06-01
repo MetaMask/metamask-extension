@@ -45,6 +45,7 @@ import { PermissionControllerUpdatePermissionsByCaveatAction } from '@metamask/p
 import {
   Caip25CaveatMutators,
   Caip25CaveatType,
+  Caip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
 import { SnapId } from '@metamask/snaps-sdk';
 import {
@@ -431,9 +432,9 @@ export class LegacyBackgroundApiService {
   /**
    * Removes an account from state / storage.
    *
-   * @param address - A hex address
+   * @param address - The account address, not CAIP-10 formatted.
    */
-  async removeAccount(address: Hex): Promise<Hex> {
+  async removeAccount(address: string): Promise<string> {
     this.onAccountRemoved(address);
     await this.#messenger.call('KeyringController:removeAccount', address);
 
@@ -445,13 +446,17 @@ export class LegacyBackgroundApiService {
    *
    * @param address - The address of the account to remove.
    */
-  onAccountRemoved(address: Hex): void {
+  onAccountRemoved(address: string): void {
     this.#messenger.call(
       'PermissionController:updatePermissionsByCaveat',
       Caip25CaveatType,
       (scopes) =>
         // @ts-expect-error - Type mismatch
-        Caip25CaveatMutators[Caip25CaveatType].removeAccount(scopes, address),
+        Caip25CaveatMutators[Caip25CaveatType].removeAccount(
+          scopes as Caip25CaveatValue,
+          // This function is typed as expecting hex, but works with any address format.
+          address as Hex,
+        ),
     );
   }
 
