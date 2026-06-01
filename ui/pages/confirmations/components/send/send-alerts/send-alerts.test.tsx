@@ -32,8 +32,7 @@ describe('SendAlerts', () => {
       });
   };
 
-  const renderComponent = () =>
-    renderWithProvider(<SendAlerts />, mockStore);
+  const renderComponent = () => renderWithProvider(<SendAlerts />, mockStore);
 
   beforeEach(() => {
     mockUseI18nContext.mockReturnValue(

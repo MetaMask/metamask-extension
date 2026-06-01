@@ -228,7 +228,10 @@ export const SendAlertModal = ({
           onCancel={onClose}
           onSubmit={handleAcknowledgeStep}
           submitButtonProps={{
-            children: acknowledgeLabel ?? currentAlert.acknowledgeButtonLabel ?? t('iUnderstand'),
+            children:
+              acknowledgeLabel ??
+              currentAlert.acknowledgeButtonLabel ??
+              t('iUnderstand'),
             'data-testid': 'send-alert-modal-acknowledge-button',
           }}
           cancelButtonProps={{
