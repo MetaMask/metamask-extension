@@ -23,44 +23,6 @@ export default function FoxAppearAnimation({
     'riv-animation__fox-container--loader': isLoader,
     'riv-animation__fox-container': !isLoader,
   });
-  const context = useRiveWasmContext();
-  const { isWasmReady, error: wasmError } = context;
-  const {
-    buffer,
-    error: bufferError,
-    loading: bufferLoading,
-  } = useRiveWasmFile('./images/riv_animations/fox_appear.riv');
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (wasmError) {
-      console.error(
-        '[Rive - FoxAppearAnimation] Failed to load WASM:',
-        wasmError,
-      );
-    }
-    if (bufferError) {
-      console.error(
-        '[Rive - FoxAppearAnimation] Failed to load buffer:',
-        bufferError,
-      );
-    }
-  }, [wasmError, bufferError]);
-
-  // Use the buffer parameter instead of src
-  const { riveFile, status } = useRiveFile({
-    buffer,
-  });
-
-  // Only initialize Rive after WASM is ready and riveFile is loaded
-  const { rive, RiveComponent } = useRive({
-    riveFile: riveFile ?? undefined,
-    stateMachines: riveFile ? 'FoxRaiseUp' : undefined,
-    autoplay: false,
-    layout: new Layout({
-      fit: Fit.Contain,
-      alignment: isLoader ? Alignment.Center : Alignment.BottomCenter,
-    }),
 
   return (
     <Suspense
