@@ -2,7 +2,6 @@ import React, {
   useCallback,
   useContext,
   useEffect,
-  useRef,
   useState,
   useMemo,
 } from 'react';
@@ -99,7 +98,6 @@ import {
   getURLHostName,
   fetchTokenExchangeRates,
 } from '../../../helpers/utils/util';
-import { tokenInfoGetter } from '../../../helpers/utils/token-util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import {
@@ -293,8 +291,6 @@ export const ImportTokensModal = ({ onClose }) => {
   const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000';
   const MIN_DECIMAL_VALUE = 0;
   const MAX_DECIMAL_VALUE = 36;
-
-  const infoGetter = useRef(tokenInfoGetter());
 
   // CONFIRMATION MODE
   const { trackEvent } = useContext(MetaMetricsContext);
@@ -553,20 +549,14 @@ export const ImportTokensModal = ({ onClose }) => {
   );
 
   const attemptToAutoFillTokenParams = useCallback(
-    async (address) => {
-      const {
-        symbol = '',
-        decimals,
-        name = '',
-      } = await infoGetter.current(
-        address,
-        tokenListByChain?.[selectedNetwork]?.data,
-      );
+    (address) => {
+      const tokenListData = tokenListByChain?.[selectedNetwork]?.data;
+      const { symbol = '', decimals, name = '' } =
+        tokenListData?.[address.toLowerCase()] ?? {};
 
       setDecimalAutoFilled(Boolean(decimals));
       handleCustomSymbolChange(symbol || '');
       handleCustomDecimalsChange(decimals);
-      // Set custom token name
       setCustomName(name);
       setShowSymbolAndDecimals(true);
     },

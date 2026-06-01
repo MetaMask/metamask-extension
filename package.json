@@ -161,6 +161,7 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
+    "@metamask/assets-controllers": "npm:@metamask-previews/assets-controllers@108.3.0-preview-be0eea21e",
     "@metamask/bridge-controller": "72.0.0",
     "@metamask/messenger@npm:^0.3.0": "^1.2.0",
     "@metamask/network-controller": "32.0.0",
