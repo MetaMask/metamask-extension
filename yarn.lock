@@ -6946,13 +6946,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/hw-emulator@npm:@metamask-previews/hw-emulator@0.1.0-4bf3baf":
-  version: 0.1.0-4bf3baf
-  resolution: "@metamask-previews/hw-emulator@npm:0.1.0-4bf3baf"
+"@metamask/hw-emulator@npm:@metamask-previews/hw-emulator@0.1.0-de887b2":
+  version: 0.1.0-de887b2
+  resolution: "@metamask-previews/hw-emulator@npm:0.1.0-de887b2"
   dependencies:
     "@ledgerhq/devices": "npm:^7.0.0"
+    "@metamask/speculos-up": "npm:0.1.0"
     ws: "npm:^8.18.0"
-  checksum: 10/349972731144425023de8ceda7adb971e6d531e5e1d3761c989a175047d9a2151d2c5b4ecef1950aa4b19676600b6f77e9d4ab214d136be7c0966a7a837bf946
+  peerDependenciesMeta:
+    "@metamask/speculos-up":
+      optional: true
+  checksum: 10/40b7cd38fbf5bfc7ed90f6e2c46ea48ff0e1423e44d97eee282967a9a5956b1b56d5c413cac249f014b6475c4456bce01faa0413433b3b18a347c08387f02ac3
   languageName: node
   linkType: hard
 
@@ -8356,6 +8360,17 @@ __metadata:
     "@wallet-standard/wallet": "npm:^1.1.0"
     bs58: "npm:^6.0.0"
   checksum: 10/d5a21e964d1f31b3c08d28859332b7005646005de03836412c45bdfd8d9caf88ac633936f7e4fdc573591149171d0d08f8a8c9c679d99ac080f4d1d5762e333f
+  languageName: node
+  linkType: hard
+
+"@metamask/speculos-up@npm:@metamask-previews/speculos-up@0.1.0-de887b2, @metamask/speculosup@npm:@metamask-previews/speculos-up@0.1.0-de887b2":
+  version: 0.1.0-de887b2
+  resolution: "@metamask-previews/speculos-up@npm:0.1.0-de887b2"
+  dependencies:
+    tar: "npm:^7.4.3"
+  bin:
+    mm-speculos-up: ./dist/cli.mjs
+  checksum: 10/955061520d61ecfdf26587d127a7e181407226da8752c59dae46fa86dbf8528cb67e03c4e335b70caab455613f496c041e06344a89eac701c60dace2da90f190
   languageName: node
   linkType: hard
 
@@ -33428,7 +33443,7 @@ __metadata:
     "@metamask/gator-permissions-controller": "npm:^4.2.0"
     "@metamask/gator-permissions-snap": "npm:^2.2.0"
     "@metamask/geolocation-controller": "npm:^0.1.1"
-    "@metamask/hw-emulator": "npm:@metamask-previews/hw-emulator@0.1.0-4bf3baf"
+    "@metamask/hw-emulator": "npm:@metamask-previews/hw-emulator@0.1.0-de887b2"
     "@metamask/hw-wallet-sdk": "npm:^0.8.0"
     "@metamask/institutional-wallet-snap": "npm:1.5.0"
     "@metamask/jazzicon": "patch:@metamask/jazzicon@npm%3A2.0.0#~/.yarn/patches/@metamask-jazzicon-npm-2.0.0-36957be38d.patch"
@@ -33494,6 +33509,7 @@ __metadata:
     "@metamask/snaps-utils": "npm:^12.2.0"
     "@metamask/solana-wallet-snap": "npm:^2.8.0"
     "@metamask/solana-wallet-standard": "npm:^1.0.0"
+    "@metamask/speculosup": "npm:@metamask-previews/speculos-up@0.1.0-de887b2"
     "@metamask/storage-service": "npm:^1.0.0"
     "@metamask/subscription-controller": "npm:^6.1.2"
     "@metamask/superstruct": "npm:^3.2.1"
