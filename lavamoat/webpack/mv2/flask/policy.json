@@ -758,7 +758,7 @@
         "@metamask/accounts-controller": true,
         "@metamask/base-controller": true,
         "@metamask/keyring-api": true,
-        "@metamask/keyring-controller": true,
+        "@metamask/account-tree-controller>@metamask/keyring-controller": true,
         "@metamask/profile-sync-controller": true,
         "@metamask/snaps-utils": true,
         "@metamask/superstruct": true,
@@ -774,7 +774,7 @@
         "@metamask/base-controller": true,
         "@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
-        "@metamask/accounts-controller>@metamask/keyring-controller": true,
+        "@metamask/keyring-controller": true,
         "@metamask/eth-hd-keyring>@metamask/keyring-sdk": true,
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
@@ -1728,7 +1728,24 @@
         "@metamask/keyring-controller>ulid": true
       }
     },
-    "@metamask/accounts-controller>@metamask/keyring-controller": {
+    "@metamask/account-tree-controller>@metamask/keyring-controller": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/base-controller": true,
+        "@metamask/eth-hd-keyring": true,
+        "@metamask/eth-sig-util": true,
+        "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
+        "@metamask/utils": true,
+        "async-mutex": true,
+        "@metamask/keyring-controller>ethereumjs-wallet": true,
+        "lodash": true,
+        "@metamask/keyring-controller>ulid": true
+      }
+    },
+    "@metamask/multichain-account-service>@metamask/keyring-controller": {
       "globals": {
         "console.error": true
       },
@@ -1861,7 +1878,7 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/account-api": true,
         "@metamask/keyring-api": true,
-        "@metamask/keyring-controller": true,
+        "@metamask/multichain-account-service>@metamask/keyring-controller": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
