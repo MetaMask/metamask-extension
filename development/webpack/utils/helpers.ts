@@ -158,8 +158,7 @@ function listenForSignals(
   ) as unknown as SignalHandler;
 
   signals.forEach((signal) => onSignal(signal, listener));
-  return () =>
-    signals.forEach((signal) => removeSignal(signal, listener));
+  return () => signals.forEach((signal) => removeSignal(signal, listener));
 }
 
 /**
