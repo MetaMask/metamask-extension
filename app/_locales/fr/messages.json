@@ -1169,15 +1169,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "Vous devrez confirmer 2 transactions sur votre portefeuille matériel :"
   },
-  "bridgeCreateSolanaAccount": {
-    "message": "Créer un compte Solana"
-  },
-  "bridgeCreateSolanaAccountDescription": {
-    "message": "Pour échanger avec le réseau Solana, vous avez besoin d’un compte et d’une adresse de réception."
-  },
-  "bridgeCreateSolanaAccountTitle": {
-    "message": "Vous devez d’abord avoir un compte Solana."
-  },
   "bridgeDetailsTitle": {
     "message": "Détails concernant la passerelle",
     "description": "Title for the modal showing details about a bridge transaction."
@@ -1452,9 +1443,6 @@
   },
   "bridgeSendLoading": {
     "message": "Envoi depuis la chaîne source"
-  },
-  "bridgeSolanaAccountCreated": {
-    "message": "Compte Solana créé"
   },
   "bridgeStatusComplete": {
     "message": "Effectuée",

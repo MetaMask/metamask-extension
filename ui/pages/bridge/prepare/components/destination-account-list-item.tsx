@@ -10,6 +10,7 @@ import {
   IconColor,
   IconName,
   IconSize,
+  Box,
 } from '@metamask/design-system-react';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { shortenAddress } from '../../../../helpers/utils/util';
@@ -19,7 +20,6 @@ import {
   Tag,
   AvatarNetwork,
   AvatarNetworkSize,
-  Box,
 } from '../../../../components/component-library';
 import {
   AlignItems,
@@ -33,8 +33,7 @@ import {
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getChainIdsToPoll,
 } from '../../../../selectors';
-// eslint-disable-next-line import-x/no-restricted-paths
-import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
+import { normalizeSafeAddress } from '../../../../../shared/lib/multichain/address';
 import { useGetFormattedTokensPerChain } from '../../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../../hooks/useAccountTotalCrossChainFiatBalance';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component';

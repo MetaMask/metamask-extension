@@ -17,14 +17,18 @@ import {
   closeCurrentNotificationWindow,
 } from '../../store/actions';
 import { getIsHardwareWalletErrorModalVisible } from '../../selectors';
+import { HARDWARE_WALLET_REPAIR_ROUTE } from '../../helpers/constants/routes';
 import {
   HardwareWalletProvider,
   useHardwareWalletConfig,
   useHardwareWalletState,
   useHardwareWalletActions,
 } from './HardwareWalletContext';
-import { ConnectionStatus } from './types';
-import { HARDWARE_WALLET_ERROR_MODAL_NAME } from './constants';
+import { ConnectionStatus, HardwareWalletType } from './types';
+import {
+  HARDWARE_WALLET_ERROR_MODAL_NAME,
+  HARDWARE_WALLET_REPAIR_WALLET_TYPE_PARAM,
+} from './constants';
 import {
   getHardwareWalletErrorCode,
   isUserRejectedHardwareWalletError,
@@ -136,6 +140,19 @@ const HardwareWalletErrorMonitor = ({ children }: { children: ReactNode }) => {
     dispatch(closeCurrentNotificationWindow());
   }, [clearError, dispatch, resetModalState]);
 
+  const openRepairPage = useCallback((walletType?: HardwareWalletType) => {
+    const queryString = walletType
+      ? new URLSearchParams({
+          [HARDWARE_WALLET_REPAIR_WALLET_TYPE_PARAM]: walletType,
+        }).toString()
+      : null;
+
+    globalThis.platform.openExtensionInBrowser(
+      HARDWARE_WALLET_REPAIR_ROUTE,
+      queryString,
+    );
+  }, []);
+
   /**
    * Manually dismiss the error modal
    */
@@ -203,11 +220,19 @@ const HardwareWalletErrorMonitor = ({ children }: { children: ReactNode }) => {
         error,
         onRetry: handleRetry,
         onCancel: handleCancel,
+        onRepairDevice: openRepairPage,
         isOpen: true,
       };
       dispatch(showModal(modalPayload));
     },
-    [dispatch, displayedError, handleCancel, handleRetry, isUserRejection],
+    [
+      dispatch,
+      displayedError,
+      handleCancel,
+      handleRetry,
+      isUserRejection,
+      openRepairPage,
+    ],
   );
 
   /**

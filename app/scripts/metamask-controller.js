@@ -212,7 +212,6 @@ import {
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multichain/networks';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
-import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
 import {
@@ -421,8 +420,6 @@ import { AppStateControllerInit } from './messenger-client-init/app-state-contro
 import { PermissionControllerInit } from './messenger-client-init/permission-controller-init';
 import { SubjectMetadataControllerInit } from './messenger-client-init/subject-metadata-controller-init';
 import { NetworkEnablementControllerInit } from './messenger-client-init/assets/network-enablement-controller-init';
-import { KeyringControllerInit } from './messenger-client-init/keyring-controller-init';
-import { SnapKeyringBuilderInit } from './messenger-client-init/accounts/snap-keyring-builder-init';
 import { PermissionLogControllerInit } from './messenger-client-init/permission-log-controller-init';
 import { NetworkControllerInit } from './messenger-client-init/network-controller-init';
 import { AnnouncementControllerInit } from './messenger-client-init/announcement-controller-init';
@@ -457,6 +454,7 @@ import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-t
 import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-service-init';
 import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
 import { getSnapKeyring } from './lib/snap-keyring/utils/getSnapKeyring';
+import { initializeWallet } from './wallet-init/initialization';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -545,6 +543,12 @@ export default class MetamaskController extends EventEmitter {
 
     this.initializeChainlist();
 
+    this.wallet = initializeWallet({
+      messenger: controllerMessenger,
+      state: initState,
+      encryptor: this.opts.encryptor,
+    });
+
     this.controllerMessenger = controllerMessenger;
     this.currentMigrationVersion = opts.currentMigrationVersion;
 
@@ -619,8 +623,6 @@ export default class MetamaskController extends EventEmitter {
       StorageService: StorageServiceInit,
       AppMetadataController: AppMetadataControllerInit,
       PreferencesController: PreferencesControllerInit,
-      SnapKeyringBuilder: SnapKeyringBuilderInit,
-      KeyringController: KeyringControllerInit,
       AccountsController: AccountsControllerInit,
       AddressBookController: AddressBookControllerInit,
       AlertController: AlertControllerInit,
@@ -746,7 +748,7 @@ export default class MetamaskController extends EventEmitter {
     this.loggingController = messengerClientsByName.LoggingController;
     this.appMetadataController = messengerClientsByName.AppMetadataController;
     this.preferencesController = messengerClientsByName.PreferencesController;
-    this.keyringController = messengerClientsByName.KeyringController;
+    this.keyringController = this.wallet.getInstance('KeyringController');
     this.accountsController = messengerClientsByName.AccountsController;
     this.addressBookController = messengerClientsByName.AddressBookController;
     this.alertController = messengerClientsByName.AlertController;
@@ -3950,14 +3952,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       setName: this.nameController.setName.bind(this.nameController),
 
-      // SnapKeyring
-      createSnapAccount: async (snapId, options, internalOptions) => {
-        // NOTE: We should probably start using `withKeyring` with `createIfMissing: true`
-        // in this case.
-        const keyring = await getSnapKeyring(this.controllerMessenger);
-        return await keyring.createAccount(snapId, options, internalOptions);
-      },
-
       // Multichain Assets Controller
       multichainAddAssets: (assetIds, accountId) =>
         this.multichainAssetsController.addAssets(assetIds, accountId),
@@ -5404,13 +5398,6 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  async _getMultichainWalletSnapClient(snapId) {
-    const keyring = await getSnapKeyring(this.controllerMessenger);
-    const messenger = this.controllerMessenger;
-
-    return new MultichainWalletSnapClient(snapId, keyring, messenger);
-  }
-
   /**
    * Imports accounts with balances to the keyring.
    */
@@ -5431,43 +5418,6 @@ export default class MetamaskController extends EventEmitter {
         await this.accountTreeController.syncWithUserStorageAtLeastOnce();
         await this.discoverAndCreateAccounts(metadata.id);
       }
-    }
-  }
-
-  /**
-   * Adds Snap account to the keyring.
-   *
-   * @param {string} keyringId - The ID of the keyring to add the account to.
-   * @param {object} client - The Snap client instance.
-   * @param {object} options - The options to pass to the createAccount method.
-   */
-  async _addSnapAccount(keyringId, client, options = {}) {
-    let entropySource = keyringId;
-    try {
-      if (!entropySource) {
-        // Get the entropy source from the first HD keyring
-        const id = await this.keyringController.withKeyring(
-          { type: KeyringTypes.hd },
-          async ({ metadata }) => {
-            return metadata.id;
-          },
-        );
-        entropySource = id;
-      }
-
-      return await client.createAccount(
-        { ...options, entropySource },
-        {
-          displayConfirmation: false,
-          displayAccountNameSuggestion: false,
-          setSelectedAccount: false,
-        },
-      );
-    } catch (e) {
-      // Do not block the onboarding flow if this fails
-      log.warn(`Failed to add Snap account. Error: ${e}`);
-      captureException(e);
-      return null;
     }
   }
 
@@ -9434,23 +9384,22 @@ export default class MetamaskController extends EventEmitter {
    * @returns {*} The result of the callback
    */
   async #withKeyringForDevice(options, callback) {
-    const keyringOverrides = this.opts.overrides?.keyrings;
     let keyringType = null;
     switch (options.name) {
       case HardwareDeviceNames.trezor:
-        keyringType = keyringOverrides?.trezor?.type || TrezorKeyring.type;
+        keyringType = TrezorKeyring.type;
         break;
       case HardwareDeviceNames.oneKey:
-        keyringType = keyringOverrides?.oneKey?.type || OneKeyKeyring?.type;
+        keyringType = OneKeyKeyring.type;
         break;
       case HardwareDeviceNames.ledger:
-        keyringType = keyringOverrides?.ledger?.type || LedgerKeyring.type;
+        keyringType = LedgerKeyring.type;
         break;
       case HardwareDeviceNames.qr:
         keyringType = QrKeyring.type;
         break;
       case HardwareDeviceNames.lattice:
-        keyringType = keyringOverrides?.lattice?.type || LatticeKeyring.type;
+        keyringType = LatticeKeyring.type;
         break;
       default:
         throw new Error(
@@ -9541,7 +9490,6 @@ export default class MetamaskController extends EventEmitter {
   #initMessengerClients({ initFunctions, initState }) {
     const initRequest = {
       currentMigrationVersion: this.opts.currentMigrationVersion,
-      encryptor: this.opts.encryptor,
       ensureOnboardingComplete: this.#createEnsureOnboardingCompleteCallback(),
       extension: this.extension,
       platform: this.platform,
@@ -9556,15 +9504,10 @@ export default class MetamaskController extends EventEmitter {
       getUIState: this.getState.bind(this),
       infuraProjectId: this.opts.infuraProjectId,
       initLangCode: this.opts.initLangCode,
-      keyringOverrides: this.opts.overrides?.keyrings,
       sendUpdate: this.sendUpdate.bind(this),
       offscreenPromise: this.offscreenPromise,
       preinstalledSnaps: this.opts.preinstalledSnaps,
       persistedState: initState,
-      removeAccount: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:removeAccount',
-      ),
       // Temporarily get the mutex from `MetamaskController` until we can
       // migrate the seedless onboarding functionality to the LegacyBackgroundApiService.
       // TODO: Remove this once the migration is complete.
@@ -9583,6 +9526,7 @@ export default class MetamaskController extends EventEmitter {
     };
 
     return initMessengerClients({
+      wallet: this.wallet,
       baseControllerMessenger: this.controllerMessenger,
       initFunctions,
       initRequest,

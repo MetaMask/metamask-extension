@@ -37,6 +37,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { createSentryError } from '../../../shared/lib/error';
 import { getPasskeyErrorCode } from '../../../shared/lib/passkey/passkey-error';
 import {
   getPasskeyAuthMethodKey,
@@ -45,6 +46,7 @@ import {
   translatePasskeyError,
   isPasskeyCeremonySilentError,
 } from '../../../shared/lib/passkey';
+import { captureException } from '../../../shared/lib/sentry';
 import {
   protectVaultKeyWithPasskey,
   generatePasskeyRegistrationOptions,
@@ -255,6 +257,7 @@ export default function SetupPasskeyContent({
         goToNextStep();
       }
     } catch (error) {
+      const durationMs = Date.now() - enrollmentStartedAt;
       if (isPasskeyCeremonySilentError(error)) {
         log.debug('Passkey enrollment ceremony cancelled or timed out', error);
         trackEvent({
@@ -266,7 +269,7 @@ export default function SetupPasskeyContent({
             // eslint-disable-next-line @typescript-eslint/naming-convention
             current_step: currentStep,
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            duration_ms: Date.now() - enrollmentStartedAt,
+            duration_ms: durationMs,
           },
         });
 
@@ -278,7 +281,16 @@ export default function SetupPasskeyContent({
         return;
       }
 
-      log.error('Passkey registration failed', error);
+      const errorCode = getPasskeyErrorCode(error);
+      captureException(
+        createSentryError(
+          'Passkey registration during onboarding failed',
+          error,
+        ),
+        {
+          extra: { currentStep, durationMs, errorCode },
+        },
+      );
       trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.PasskeySetup,
@@ -288,9 +300,8 @@ export default function SetupPasskeyContent({
           // eslint-disable-next-line @typescript-eslint/naming-convention
           error_step: currentStep,
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          duration_ms: Date.now() - enrollmentStartedAt,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          reason: getPasskeyErrorCode(error),
+          duration_ms: durationMs,
+          reason: errorCode,
         },
       });
 

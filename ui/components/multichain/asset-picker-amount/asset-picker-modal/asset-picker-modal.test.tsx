@@ -576,6 +576,12 @@ describe('AssetPickerModal token filtering', () => {
       />,
     );
 
+    expect(
+      screen.queryByTestId('solana-account-creation-prompt'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText('searchTokensByNameOrAddress'),
+    ).toBeInTheDocument();
     expect(mockAssetList.mock.calls.at(-1)).toMatchSnapshot();
   });
 
