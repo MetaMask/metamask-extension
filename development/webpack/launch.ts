@@ -25,18 +25,17 @@ type Args = { [x in keyof typeof alias]?: boolean };
 const args = parser(rawArgv, { alias, boolean: Object.keys(alias) }) as Args;
 
 if (args.cache === false || args.help === true) {
-  // There are no cache-shutdown benefits to running the build in a child
-  // process if the cache is disabled, and help output should be printed
-  // directly.
+  // there are no time savings to running the build in a child process if: the
+  // cache is disabled or we need to output "help".
   require('./build').build();
 } else {
   fork(process, join(__dirname, 'fork'), rawArgv);
 }
 
 /**
- * Runs the `file` in a child process. This lets the parent process detach from
- * long-running cache work while the child process continues to serialize and
- * persist the cache in the background.
+ * Runs the `file` in a child process. This allows the parent process to
+ * exit as soon as the build completes, but lets the child process continue to
+ * serialize and persist the cache in the background.
  *
  * @param process - The parent process, like `globalThis.process`
  * @param file - Path to the file to run, given as an argument to the command
@@ -53,11 +52,12 @@ function fork(process: NodeJS.Process, file: string, argv: string[]) {
     '--max-semi-space-size=128',
   ];
 
-  // Run the build in a child process so the parent can release the terminal
-  // while webpack finishes cache work in the background. For non-watch builds,
-  // the child signals completion after the compilation finishes. For watch
-  // builds, the parent stays attached until the user interrupts it, then sends
-  // one shutdown signal to the child and exits.
+  // run the build in a child process so that we can exit the parent process as
+  // soon as the build completes, but let the cache serialization finish in the
+  // background (the cache can take 30% of build-time to serialize and persist).
+  // For non-watch builds, the child signals completion after the compilation
+  // finishes. For watch builds, the parent stays attached until the user
+  // interrupts it, then sends one shutdown signal to the child and exits.
   const { connectToChild, destroy, stdio } = createOutputStreams(process);
 
   const node = process.execPath;
