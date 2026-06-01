@@ -18,6 +18,42 @@ describe('./utils/helpers.ts', () => {
     assert.strictEqual(nothing, undefined);
   });
 
+  describe('ignoreCacheShutdownSignal', () => {
+    it('silently ignores shutdown signals until cleanup', () => {
+      const listeners = new Map<NodeJS.Signals, () => void>();
+      const on = mock.fn((signal: NodeJS.Signals, listener: () => void) => {
+        listeners.set(signal, listener);
+      });
+      const off = mock.fn((signal: NodeJS.Signals, listener: () => void) => {
+        if (listeners.get(signal) === listener) {
+          listeners.delete(signal);
+        }
+      });
+      const signalProcess = {
+        on,
+        off,
+      } as unknown as NodeJS.Process;
+      const { mock: error } = mock.method(console, 'error', helpers.noop);
+
+      const cleanup = helpers.ignoreCacheShutdownSignal(signalProcess);
+
+      const signals = ['SIGINT', 'SIGTERM'] as const;
+      signals.forEach((signal) => {
+        const listener = listeners.get(signal);
+        assert(listener, `${signal} listener should be set`);
+        listener();
+      });
+      cleanup();
+
+      assert.strictEqual(error.callCount(), 0);
+      assert.strictEqual(on.mock.callCount(), signals.length);
+      assert.strictEqual(off.mock.callCount(), signals.length);
+      signals.forEach((signal) =>
+        assert.strictEqual(listeners.has(signal), false),
+      );
+    });
+  });
+
   describe('logStats', () => {
     const getStatsMock = (
       stats: 'normal' | 'none',
