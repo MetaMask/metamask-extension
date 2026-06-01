@@ -4,8 +4,6 @@ import {
   logWatchBuildStats,
   logStats,
   noop,
-  ignoreCacheShutdownSignal,
-  setupGracefulWatchShutdown,
   suppressDevServerInfoLogs,
 } from './utils/helpers';
 import config from './webpack.config';
@@ -31,9 +29,6 @@ export function build(onComplete: () => void = noop) {
     logWatchBuildStats(compiler, '🦊 Watching for changes…');
     const WebpackDevServer: typeof WebpackDevServerType = require('webpack-dev-server');
     const server = new WebpackDevServer(DEV_SERVER_OPTIONS, compiler);
-    if (options.cache && options.cache.type === 'filesystem') {
-      setupGracefulWatchShutdown({ compiler, server });
-    }
     server.start().catch((error: unknown) => {
       console.error(
         `🦊 Failed to start dev server on ${server.options.host ?? 'localhost'}:${server.options.port ?? '(auto)'}.`,
@@ -44,21 +39,10 @@ export function build(onComplete: () => void = noop) {
   } else {
     compiler.run((err, stats) => {
       logStats(err ?? undefined, stats);
-      // Install before `onComplete` signals the parent process so shutdown
-      // signals forwarded during that handoff cannot interrupt cache writes.
-      const removeCacheShutdownSignalHandlers =
-        options.cache.type === 'filesystem'
-          ? ignoreCacheShutdownSignal(process)
-          : noop;
-      try {
-        // `onComplete` must be called synchronously _before_ `compiler.close`
-        // or the caller might observe output from the `close` command.
-        onComplete();
-        compiler.close(() => removeCacheShutdownSignalHandlers());
-      } catch (error) {
-        removeCacheShutdownSignalHandlers();
-        throw error;
-      }
+      // `onComplete` must be called synchronously _before_ `compiler.close`
+      // or the caller might observe output from the `close` command.
+      onComplete();
+      compiler.close(noop);
     });
   }
 }

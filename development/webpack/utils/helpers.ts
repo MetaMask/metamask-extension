@@ -1,6 +1,5 @@
 import { join, sep } from 'node:path';
 import type { Compiler, EntryObject, Stats } from 'webpack';
-import type WebpackDevServerType from 'webpack-dev-server';
 import type { Configuration } from 'webpack-dev-server';
 import type TerserPluginType from 'terser-webpack-plugin';
 
@@ -130,129 +129,6 @@ export function logWatchBuildStats(compiler: Compiler, message: string): void {
   });
 }
 
-type SignalListener = NodeJS.SignalsListener;
-type SignalProcess = NodeJS.Process;
-type SignalHandler = (
-  signal: NodeJS.Signals,
-  listener: SignalListener,
-) => unknown;
-
-type GracefulWatchShutdownOptions = {
-  compiler: Compiler;
-  exit?: (code?: number) => void;
-  process?: SignalProcess;
-  server: WebpackDevServerType;
-  signals?: readonly NodeJS.Signals[];
-};
-
-const CACHE_SHUTDOWN_SIGNALS = ['SIGINT', 'SIGTERM'] as const;
-
-function listenForSignals(
-  signalProcess: SignalProcess,
-  signals: readonly NodeJS.Signals[],
-  listener: SignalListener,
-): () => void {
-  const onSignal = signalProcess.on.bind(signalProcess) as SignalHandler;
-  const removeSignal = signalProcess.removeListener.bind(
-    signalProcess,
-  ) as unknown as SignalHandler;
-
-  signals.forEach((signal) => onSignal(signal, listener));
-  return () => signals.forEach((signal) => removeSignal(signal, listener));
-}
-
-/**
- * Installs signal handlers that let webpack finish closing its cache.
- *
- * webpack-dev-server force-exits when the user presses Ctrl+C a second time
- * during shutdown. That can interrupt webpack's persistent cache write, so
- * watch mode owns signal handling and ignores repeated shutdown signals until
- * `compiler.close()` has completed.
- *
- * @param options - The watch server, compiler, and optional test hooks.
- * @param options.compiler
- * @param options.exit
- * @param options.process
- * @param options.server
- * @param options.signals
- * @returns A cleanup function that removes the installed listeners.
- */
-export function setupGracefulWatchShutdown({
-  compiler,
-  exit = (code) => process.exit(code),
-  process: signalProcess = process,
-  server,
-  signals = CACHE_SHUTDOWN_SIGNALS,
-}: GracefulWatchShutdownOptions): () => void {
-  let isShuttingDown = false;
-  const removeListeners = listenForSignals(signalProcess, signals, shutdown);
-
-  function shutdown() {
-    if (isShuttingDown) {
-      writeLineAfterProgress(
-        compiler,
-        '🦊 Still shutting down; waiting for webpack to finish writing its cache…',
-      );
-      return;
-    }
-
-    isShuttingDown = true;
-    writeLineAfterProgress(
-      compiler,
-      '🦊 Gracefully shutting down; waiting for webpack to finish writing its cache…',
-    );
-    closeWatchServerAndCompiler(server, compiler)
-      .then(() => {
-        removeListeners();
-        exit(0);
-      })
-      .catch((error: unknown) => {
-        console.error(error);
-        removeListeners();
-        exit(1);
-      });
-  }
-
-  return removeListeners;
-}
-
-async function closeWatchServerAndCompiler(
-  server: WebpackDevServerType,
-  compiler: Compiler,
-): Promise<void> {
-  const errors: unknown[] = [];
-
-  try {
-    await server.stop();
-  } catch (error) {
-    errors.push(error);
-  }
-
-  try {
-    await new Promise<void>((resolve, reject) => {
-      compiler.close((error) => {
-        if (error) {
-          reject(error);
-          return;
-        }
-        resolve();
-      });
-    });
-  } catch (error) {
-    errors.push(error);
-  }
-
-  if (errors.length === 1) {
-    throw errors[0];
-  }
-  if (errors.length > 1) {
-    throw new AggregateError(
-      errors,
-      'Failed to gracefully stop webpack watch mode.',
-    );
-  }
-}
-
 /**
  * Builds the webpack-dev-server client import URL from a
  * dev-server config. webpack preserves the query string as `__resourceQuery`,
@@ -276,24 +152,6 @@ export const getDevServerClientUrl = (config: Configuration): string => {
   }
   return `webpack-dev-server/client/index?${params}`;
 };
-
-/**
- * Temporarily ignores 'SIGINT' and 'SIGTERM' while webpack closes its
- * filesystem cache.
- *
- * In the forked build path, the parent exits before `compiler.close()`
- * completes so webpack can persist the cache in the background. During that
- * handoff the parent can still forward shutdown signals to the child: Ctrl+C
- * becomes 'SIGINT', and process managers or CI can send 'SIGTERM'. Node's
- * default behavior would terminate the child and can leave the cache partially
- * written.
- *
- * @param process - The process to install signal listeners on.
- * @returns A cleanup function that removes the installed listeners.
- */
-export function ignoreCacheShutdownSignal(process: SignalProcess) {
-  return listenForSignals(process, CACHE_SHUTDOWN_SIGNALS, noop);
-}
 
 /**
  * @param filename
