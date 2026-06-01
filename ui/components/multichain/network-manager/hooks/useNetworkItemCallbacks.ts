@@ -18,7 +18,7 @@ import {
 } from '../../../../selectors';
 import { getCompletedOnboarding } from '../../../../ducks/metamask/metamask';
 import { getIsUnlocked } from '../../../../ducks/metamask/base-selectors';
-import { useAccountCreationOnNetworkChange } from '../../../../hooks/accounts/useAccountCreationOnNetworkChange';
+import { useAccountNetworkAvailability } from '../../../../hooks/accounts/useAccountNetworkAvailability';
 
 export const useNetworkItemCallbacks = () => {
   const dispatch = useDispatch();
@@ -33,7 +33,7 @@ export const useNetworkItemCallbacks = () => {
   );
   const completedOnboarding = useSelector(getCompletedOnboarding);
 
-  const { hasAnyAccountsInNetwork } = useAccountCreationOnNetworkChange();
+  const { hasAnyAccountsInNetwork } = useAccountNetworkAvailability();
 
   const isDiscoverBtnEnabled = useCallback(
     (chainId: Hex | `${string}:${string}`): boolean => {
