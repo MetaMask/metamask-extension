@@ -14,14 +14,13 @@ const sanitizeTokens = (tokens: ActivityListItemAvatarTokens): string[] =>
 const getTokenAvatarData = (assetId: string) => {
   try {
     const [chainId, assetTypeWithReference] = assetId.split('/');
-    const [assetType, assetReference] = (assetTypeWithReference ?? '').split(':');
+    const [, assetReference] = (assetTypeWithReference ?? '').split(':');
 
     if (!chainId) {
       throw new Error('Invalid asset id');
     }
 
-    const displayName =
-      assetReference || 'Token';
+    const displayName = assetReference || 'Token';
 
     return {
       name: displayName,

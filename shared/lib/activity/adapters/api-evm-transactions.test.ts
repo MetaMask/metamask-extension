@@ -303,7 +303,10 @@ describe('mapEvmTransactions', () => {
           amount: '4894004361763',
           decimals: 18,
           direction: 'in',
-          assetId: toAssetId('0x0000000000000000000000000000000000000000', 'eip155:59144'),
+          assetId: toAssetId(
+            '0x0000000000000000000000000000000000000000',
+            'eip155:59144',
+          ),
           symbol: 'ETH',
         },
       },
