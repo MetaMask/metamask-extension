@@ -6182,21 +6182,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/config-registry-controller@npm:^0.3.0":
-  version: 0.3.1
-  resolution: "@metamask/config-registry-controller@npm:0.3.1"
+"@metamask/config-registry-controller@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@metamask/config-registry-controller@npm:0.4.0"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/controller-utils": "npm:^12.0.0"
-    "@metamask/keyring-controller": "npm:^25.5.0"
+    "@metamask/controller-utils": "npm:^12.1.0"
+    "@metamask/keyring-controller": "npm:^26.0.0"
     "@metamask/messenger": "npm:^1.2.0"
-    "@metamask/polling-controller": "npm:^16.0.5"
-    "@metamask/profile-sync-controller": "npm:^28.0.2"
+    "@metamask/polling-controller": "npm:^16.0.6"
+    "@metamask/profile-sync-controller": "npm:^28.1.1"
     "@metamask/remote-feature-flag-controller": "npm:^4.2.1"
     "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/utils": "npm:^11.9.0"
     reselect: "npm:^5.1.1"
-  checksum: 10/11b1fe66b15d9d074774fe4afe805c16a92bb6fe0ede3a20ca5fb0259f676a7a60babb5c1d121925d9e726aa7ccd22b62d791a98425cd967143c1d9407b55de3
+  checksum: 10/51ebd4895c8250c9e6d351162c0d76b2701f1b7dc2b20657465b785ffcde7632a6c2199db1e2d20b208862a5025eb74107fcce90ce06040b7ee163931b4ed602
   languageName: node
   linkType: hard
 
@@ -33463,7 +33463,7 @@ __metadata:
     "@metamask/claims-controller": "npm:^0.4.2"
     "@metamask/client-controller": "npm:^1.0.0"
     "@metamask/client-mcp-core": "npm:^0.4.0"
-    "@metamask/config-registry-controller": "npm:^0.3.0"
+    "@metamask/config-registry-controller": "npm:^0.4.0"
     "@metamask/connectivity-controller": "npm:^0.2.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^12.1.0"
