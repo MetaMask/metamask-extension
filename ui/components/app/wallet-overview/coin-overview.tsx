@@ -219,8 +219,8 @@ export const CoinOverview = ({
   const anyEnabledNetworksAreAvailable = useSelector(
     selectAnyEnabledNetworksAreAvailable,
   );
-  const balanceNotReady =
-    !anyEnabledNetworksAreAvailable && isZeroAmount(amountChange);
+  const balanceIsReadyAndEmpty =
+    anyEnabledNetworksAreAvailable && isZeroAmount(amountChange);
 
   useRewardsModal();
 
@@ -233,7 +233,7 @@ export const CoinOverview = ({
     !isTestnet &&
     !balanceIsCached &&
     !hasBalance &&
-    balanceNotReady;
+    balanceIsReadyAndEmpty;
 
   const handleSensitiveToggle = () => {
     dispatch(setPrivacyMode(!privacyMode));
