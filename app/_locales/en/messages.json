@@ -5557,7 +5557,7 @@
     "message": "“$1” was successfully added!"
   },
   "newNFTDetectedInImportNFTsMessageStrongText": {
-    "message": "Settings > Security and privacy"
+    "message": "Settings > Assets"
   },
   "newNFTDetectedInImportNFTsMsg": {
     "message": "To use Opensea to see your NFTs, turn on 'Display NFT Media' in $1.",
