@@ -166,6 +166,7 @@ const SET_ENVIRONMENT_VARIABLES_DECLARED_VARIABLES = [
   'TELEGRAM_LOGIN_ENABLED',
   'PERPS_ENABLED',
   'ASSETS_UNIFIED_STATE_ENABLED',
+  'COMPLIANCE_API_URL',
 ];
 
 function getVariablesForSetEnvironmentVariables() {
@@ -191,6 +192,7 @@ function getVariablesForSetEnvironmentVariables() {
     TELEGRAM_LOGIN_ENABLED: 'true',
     PERPS_ENABLED: 'false',
     ASSETS_UNIFIED_STATE_ENABLED: 'false',
+    COMPLIANCE_API_URL: 'https://compliance.example.test',
     GOOGLE_CLIENT_ID: 'google-dev-client-id',
     APPLE_CLIENT_ID: 'apple-dev-client-id',
     TELEGRAM_CLIENT_ID: 'telegram-dev-client-id',
