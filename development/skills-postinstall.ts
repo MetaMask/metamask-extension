@@ -1,4 +1,4 @@
-// Auto-update skills on `yarn install`. Best-effort: never fails the install.
+// Refresh the public skills cache on `yarn install`. Best-effort: never fails the install.
 //
 // - Skipped on CI, or when SKILLS_SKIP_POSTINSTALL=1.
 // - Override CI skip with SKILLS_FORCE_POSTINSTALL=1 (for CI jobs that
@@ -6,9 +6,12 @@
 // - Clones https://github.com/MetaMask/skills (public, no auth) into
 //   .skills-cache/metamask-skills if absent.
 // - `git fetch + reset` to origin/main if present.
+// - When SKILLS_AUTO_UPDATE=1, also runs `yarn skills` after the cache
+//   refresh so generated skills stay current. Off by default for backward
+//   compatibility.
 // - Leaves installation/domain selection to `yarn skills`, which reads
 //   .skills.local and SKILLS_DOMAINS.
-// - All errors swallowed with a one-line warning. Engineers can run
+// - Failures are reported with a one-line warning. Engineers can run
 //   `yarn skills` manually for interactive feedback.
 
 import { spawnSync, type SpawnSyncReturns } from 'node:child_process';
@@ -62,11 +65,66 @@ export function shouldSkipPostinstall(env: NodeJS.ProcessEnv): boolean {
   );
 }
 
-export function postinstall(deps?: PostinstallDeps): number {
-  const env = deps?.env ?? process.env;
+export function shouldAutoUpdateSkills(env: NodeJS.ProcessEnv): boolean {
+  return /^(1|true|yes)$/iu.test(env.SKILLS_AUTO_UPDATE ?? '');
+}
+
+export function ensurePublicSkillsCache(deps?: PostinstallDeps): boolean {
   const mkdir = deps?.mkdir ?? mkdirSync;
   const spawn = deps?.spawn ?? spawnSync;
   const stat = deps?.stat ?? statSync;
+  const stderr = deps?.stderr ?? process.stderr;
+
+  const hasCache = isGitDir(CACHE_DIR, stat);
+  if (hasCache) {
+    const fetchResult = run(
+      'git',
+      ['-C', CACHE_DIR, 'fetch', '--depth', '1', 'origin', 'main'],
+      spawn,
+    );
+    if (fetchResult.status !== 0) {
+      warn('fetch failed (offline?)', stderr);
+      return false;
+    }
+    const reset = run(
+      'git',
+      ['-C', CACHE_DIR, 'reset', '--hard', 'origin/main'],
+      spawn,
+    );
+    if (reset.status !== 0) {
+      warn('reset failed', stderr);
+      return false;
+    }
+    return true;
+  }
+
+  mkdir(path.dirname(CACHE_DIR), { recursive: true });
+  const clone = run(
+    'git',
+    ['clone', '--depth', '1', '--branch', 'main', PUBLIC_REPO, CACHE_DIR],
+    spawn,
+  );
+  if (clone.status !== 0) {
+    warn('clone failed (offline?)', stderr);
+    return false;
+  }
+  return true;
+}
+
+export function autoUpdateSkills(deps?: PostinstallDeps): boolean {
+  const spawn = deps?.spawn ?? spawnSync;
+  const stderr = deps?.stderr ?? process.stderr;
+
+  const sync = run('yarn', ['skills'], spawn);
+  if (sync.status !== 0) {
+    warn('skills sync failed', stderr);
+    return false;
+  }
+  return true;
+}
+
+export function postinstall(deps?: PostinstallDeps): number {
+  const env = deps?.env ?? process.env;
   const stderr = deps?.stderr ?? process.stderr;
 
   if (shouldSkipPostinstall(env)) {
@@ -74,42 +132,18 @@ export function postinstall(deps?: PostinstallDeps): number {
   }
 
   try {
-    const hasCache = isGitDir(CACHE_DIR, stat);
-    if (hasCache) {
-      const fetchResult = run(
-        'git',
-        ['-C', CACHE_DIR, 'fetch', '--depth', '1', 'origin', 'main'],
-        spawn,
-      );
-      if (fetchResult.status !== 0) {
-        warn('fetch failed (offline?)', stderr);
-        return 0;
-      }
-      const reset = run(
-        'git',
-        ['-C', CACHE_DIR, 'reset', '--hard', 'origin/main'],
-        spawn,
-      );
-      if (reset.status !== 0) {
-        warn('reset failed', stderr);
-        return 0;
-      }
-    } else {
-      mkdir(path.dirname(CACHE_DIR), { recursive: true });
-      const clone = run(
-        'git',
-        ['clone', '--depth', '1', '--branch', 'main', PUBLIC_REPO, CACHE_DIR],
-        spawn,
-      );
-      if (clone.status !== 0) {
-        warn('clone failed (offline?)', stderr);
-        return 0;
-      }
-    }
+    const cacheReady = ensurePublicSkillsCache(deps);
 
     // `yarn skills` performs installation with the selected Bash and honors
-    // .skills.local / SKILLS_DOMAINS. Postinstall only keeps the public cache
-    // available so that default path works without any local configuration.
+    // .skills.local / SKILLS_DOMAINS. Postinstall only runs it when explicitly
+    // opted in so existing installs keep their current behavior.
+    if (shouldAutoUpdateSkills(env)) {
+      if (cacheReady || env.METAMASK_SKILLS_DIR || env.CONSENSYS_SKILLS_DIR) {
+        autoUpdateSkills(deps);
+      } else {
+        warn('auto-update skipped because skills cache is unavailable', stderr);
+      }
+    }
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     warn(`unexpected error: ${msg}`, stderr);

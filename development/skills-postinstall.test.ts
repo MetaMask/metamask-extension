@@ -1,7 +1,10 @@
 import type { Stats } from 'node:fs';
 import {
+  autoUpdateSkills,
+  ensurePublicSkillsCache,
   isGitDir,
   postinstall,
+  shouldAutoUpdateSkills,
   shouldSkipPostinstall,
   warn,
 } from './skills-postinstall';
@@ -42,6 +45,14 @@ describe('skills-postinstall', () => {
     ).toBe(false);
   });
 
+  it('only auto-updates generated skills when explicitly opted in', () => {
+    expect(shouldAutoUpdateSkills({})).toBe(false);
+    expect(shouldAutoUpdateSkills({ SKILLS_AUTO_UPDATE: '0' })).toBe(false);
+    expect(shouldAutoUpdateSkills({ SKILLS_AUTO_UPDATE: '1' })).toBe(true);
+    expect(shouldAutoUpdateSkills({ SKILLS_AUTO_UPDATE: 'true' })).toBe(true);
+    expect(shouldAutoUpdateSkills({ SKILLS_AUTO_UPDATE: 'YES' })).toBe(true);
+  });
+
   it('detects whether the public cache is a git checkout', () => {
     expect(isGitDir(cacheDir, statGitDir(true))).toBe(true);
     expect(isGitDir(cacheDir, statGitDir(false))).toBe(false);
@@ -52,13 +63,13 @@ describe('skills-postinstall', () => {
     const spawn = spawnWithStatuses([0]);
 
     expect(
-      postinstall({
+      ensurePublicSkillsCache({
         env: {},
         mkdir,
         spawn,
         stat: statGitDir(false),
       }),
-    ).toBe(0);
+    ).toBe(true);
     expect(mkdir).toHaveBeenCalledWith('.skills-cache', { recursive: true });
     expect(spawn).toHaveBeenNthCalledWith(
       1,
@@ -80,7 +91,9 @@ describe('skills-postinstall', () => {
   it('fetches and resets an existing cache', () => {
     const spawn = spawnWithStatuses([0, 0]);
 
-    expect(postinstall({ env: {}, spawn, stat: statGitDir(true) })).toBe(0);
+    expect(
+      ensurePublicSkillsCache({ env: {}, spawn, stat: statGitDir(true) }),
+    ).toBe(true);
     expect(spawn).toHaveBeenNthCalledWith(
       1,
       'git',
@@ -94,6 +107,55 @@ describe('skills-postinstall', () => {
       { stdio: 'ignore' },
     );
     expect(spawn).toHaveBeenCalledTimes(2);
+  });
+
+  it('does not run yarn skills by default', () => {
+    const spawn = spawnWithStatuses([0]);
+
+    expect(postinstall({ env: {}, spawn, stat: statGitDir(false) })).toBe(0);
+
+    expect(spawn).toHaveBeenCalledTimes(1);
+    expect(spawn).toHaveBeenNthCalledWith(
+      1,
+      'git',
+      [
+        'clone',
+        '--depth',
+        '1',
+        '--branch',
+        'main',
+        'https://github.com/MetaMask/skills.git',
+        cacheDir,
+      ],
+      { stdio: 'ignore' },
+    );
+  });
+
+  it('runs yarn skills after cache refresh when auto-update is opted in', () => {
+    const spawn = spawnWithStatuses([0, 0, 0]);
+
+    expect(
+      postinstall({
+        env: { SKILLS_AUTO_UPDATE: '1' },
+        spawn,
+        stat: statGitDir(true),
+      }),
+    ).toBe(0);
+
+    expect(spawn).toHaveBeenNthCalledWith(3, 'yarn', ['skills'], {
+      stdio: 'ignore',
+    });
+  });
+
+  it('warns but does not fail when auto-update sync fails', () => {
+    const stderr = { write: jest.fn() };
+
+    expect(autoUpdateSkills({ spawn: spawnWithStatuses([1]), stderr })).toBe(
+      false,
+    );
+    expect(stderr.write).toHaveBeenCalledWith(
+      expect.stringContaining('skills sync failed'),
+    );
   });
 
   it('returns without side effects when postinstall is skipped', () => {

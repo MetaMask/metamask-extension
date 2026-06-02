@@ -20,6 +20,10 @@
 #   SKILLS_DOMAINS=perps                     # single domain
 #   SKILLS_DOMAINS=perps,testing,pr-workflow # multiple domains
 #
+# Optional: regenerate gitignored installed skills during yarn install/setup after
+# the public cache refreshes. Off by default for backward compatibility.
+#   SKILLS_AUTO_UPDATE=1
+#
 # Override per-run with `SKILLS_DOMAINS=... yarn skills` or `--domain <list>`.
 # Pick interactively with `yarn skills --select`.
 # Use `yarn skills --reset` to wipe.
