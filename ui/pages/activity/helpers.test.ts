@@ -1,5 +1,9 @@
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
-import { groupActivityListItems, shouldShowPlusSign } from './helpers';
+import {
+  dedupeItems,
+  groupActivityListItems,
+  shouldShowPlusSign,
+} from './helpers';
 
 function makeItem(
   overrides: Partial<ActivityListItem> & {
@@ -26,6 +30,31 @@ describe('shouldShowPlusSign', () => {
 
   it('enables plus for send activities', () => {
     expect(shouldShowPlusSign('send')).toBe(true);
+  });
+});
+
+describe('dedupeItems', () => {
+  it('does not let contractInteraction replace a more specific item with the same hash', () => {
+    const timestamp = new Date('2025-01-02T12:00:00Z').getTime();
+    const sendItem = makeItem({
+      timestamp,
+      status: 'success',
+      type: 'send',
+    });
+    const contractInteractionItem = makeItem({
+      timestamp: timestamp + 1,
+      status: 'success',
+      type: 'contractInteraction',
+      data: {
+        hash: '0xabc',
+        from: '0x1',
+        to: '0x2',
+      },
+    });
+
+    expect(dedupeItems([sendItem], [contractInteractionItem])).toStrictEqual([
+      sendItem,
+    ]);
   });
 });
 

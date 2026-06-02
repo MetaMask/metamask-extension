@@ -95,26 +95,38 @@ function parseDate(timestamp: number) {
 }
 
 export function dedupeItems(...sources: ActivityListItem[][]) {
-  const hashes = new Set<string>();
+  const dedupedItems: ActivityListItem[] = [];
 
-  return sources
-    .flatMap((items) =>
-      items.filter((item) => {
-        const hash = getItemHash(item);
+  for (const item of sources.flat()) {
+    const hash = getItemHash(item);
 
-        if (!hash) {
-          return true;
-        }
+    if (!hash) {
+      dedupedItems.push(item);
+      continue;
+    }
 
-        if (hashes.has(hash)) {
-          return false;
-        }
+    const existingIndex = dedupedItems.findIndex(
+      (i) => getItemHash(i) === hash,
+    );
 
-        hashes.add(hash);
-        return true;
-      }),
-    )
-    .sort((a, b) => b.timestamp - a.timestamp);
+    if (existingIndex === -1) {
+      dedupedItems.push(item);
+      continue;
+    }
+
+    // More categorized items take precedence
+    const existingItem = dedupedItems[existingIndex];
+    if (
+      item.type === 'contractInteraction' &&
+      existingItem.type !== 'contractInteraction'
+    ) {
+      continue;
+    }
+
+    dedupedItems[existingIndex] = item;
+  }
+
+  return dedupedItems.sort((a, b) => b.timestamp - a.timestamp);
 }
 
 function groupItemsByDate(items: ActivityListItem[]): GroupedItem[] {
