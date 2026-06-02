@@ -153,12 +153,45 @@ describe('Add existing token using search', function () {
     ];
   }
 
+  async function mockTokenSearch(
+    mockServer: Mockttp,
+  ): Promise<MockedEndpoint> {
+    return mockServer
+      .forGet('https://token.api.cx.metamask.io/tokens/search')
+      .always()
+      .thenCallback((request) => {
+        const url = new URL(request.url);
+        const query = (url.searchParams.get('query') ?? '').trim().toLowerCase();
+        const data =
+          query === 'bat'
+            ? [
+                {
+                  assetId: `eip155:56/erc20:${BSC_BAT_ADDRESS}`,
+                  symbol: 'BAT',
+                  name: 'Basic Attention Token',
+                  decimals: 18,
+                },
+              ]
+            : [];
+        return {
+          statusCode: 200,
+          json: {
+            data,
+            count: data.length,
+            totalCount: data.length,
+            pageInfo: { hasNextPage: false, endCursor: '' },
+          },
+        };
+      });
+  }
+
   async function mockBscApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
     return [
       ...(await mockPriceFetch(mockServer)),
       ...(await mockBscBridgeApi(mockServer)),
       ...(await mockSupportedNetworks(mockServer)),
       ...(await mockTokensAssets(mockServer)),
+      await mockTokenSearch(mockServer),
     ];
   }
   it('renders the balance for the chosen token', async function () {

@@ -12,7 +12,6 @@ import { login } from '../../page-objects/flows/login.flow';
 import {
   mockEmptyHistoricalPrices,
   mockEmptyPrices,
-  mockHistoricalPrices,
   mockHistoricalPricesV3,
   mockSpotPrices,
 } from './utils/mocks';
@@ -21,6 +20,7 @@ describe('Token Details', function () {
   const chainId = CHAIN_IDS.MAINNET;
   const tokenAddress = '0x2EFA2Cb29C2341d8E5Ba7D3262C9e9d6f1Bf3711';
   const symbol = 'foo';
+  const decimals = '18';
 
   const fixtures = {
     fixtures: new FixtureBuilderV2()
@@ -52,6 +52,7 @@ describe('Token Details', function () {
           chainId,
           tokenAddress,
           symbol,
+          decimals,
         );
         await assetListPage.dismissTokenImportedMessage();
         await assetListPage.openTokenDetails(symbol);
@@ -96,15 +97,16 @@ describe('Token Details', function () {
               marketCap: marketData.marketCap * ethConversionInUsd,
             },
           }),
-          await mockHistoricalPrices(mockServer, {
-            address: tokenAddress,
-            chainId,
-            historicalPrices: [
-              { timestamp: 1717566000000, price: marketData.price * 0.9 },
-              { timestamp: 1717566322300, price: marketData.price },
-              { timestamp: 1717566611338, price: marketData.price * 1.1 },
+          await mockHistoricalPricesV3(
+            mockServer,
+            'eip155:1',
+            `erc20:${tokenAddress.toLowerCase()}`,
+            [
+              [1717566000000, marketData.price * 0.9],
+              [1717566322300, marketData.price],
+              [1717566611338, marketData.price * 1.1],
             ],
-          }),
+          ),
         ],
       },
       async ({ driver }: { driver: Driver }) => {
@@ -117,6 +119,7 @@ describe('Token Details', function () {
           chainId,
           tokenAddress,
           symbol,
+          decimals,
         );
         await assetListPage.dismissTokenImportedMessage();
         await assetListPage.openTokenDetails(symbol);
@@ -140,6 +143,9 @@ describe('Token Details', function () {
       {
         ...fixtures,
         title: (this as Context).test?.fullTitle(),
+        // Native ETH price in the details view comes from the ETH conversion
+        // rate (see useCurrentPrice), so seed it to match the asserted price.
+        ethConversionInUsd: 1700,
         testSpecificMock: async (mockServer: Mockttp) => [
           await mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': {

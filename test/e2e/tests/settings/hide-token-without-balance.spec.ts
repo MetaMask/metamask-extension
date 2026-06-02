@@ -27,6 +27,8 @@ describe('Hide tokens without balance', function (this: Suite) {
         await assetListPage.importCustomTokenByChain(
           '0x539',
           '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
+          'TST',
+          '4',
         );
         await assetListPage.importCustomTokenByChain(
           '0x539',

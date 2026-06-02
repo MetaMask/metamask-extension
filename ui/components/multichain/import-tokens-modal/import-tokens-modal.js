@@ -554,9 +554,13 @@ export const ImportTokensModal = ({ onClose }) => {
       const { symbol = '', decimals, name = '' } =
         tokenListData?.[address.toLowerCase()] ?? {};
 
-      setDecimalAutoFilled(Boolean(decimals));
-      handleCustomSymbolChange(symbol || '');
-      handleCustomDecimalsChange(decimals);
+      // Both handlers call `.trim()` internally, so values must be strings.
+      const decimalsStr =
+        decimals !== undefined && decimals !== null ? String(decimals) : '';
+
+      setDecimalAutoFilled(Boolean(decimalsStr));
+      handleCustomSymbolChange(String(symbol || ''));
+      handleCustomDecimalsChange(decimalsStr);
       setCustomName(name);
       setShowSymbolAndDecimals(true);
     },
@@ -802,7 +806,10 @@ export const ImportTokensModal = ({ onClose }) => {
     return tokenData && Object.keys(tokenData).length > 0;
   }, [tokenListByChain, selectedNetwork]);
 
-  const shouldShowSearchTab = hasSearchTokens;
+  // Token search is served by the Token Search API rather than the on-disk
+  // token list, so the Search tab is available for any EVM network (and still
+  // shown for non-EVM networks that have token-list data available).
+  const shouldShowSearchTab = isEvmChainId(selectedNetwork) || hasSearchTokens;
   const shouldShowCustomTab = isEvmChainId(selectedNetwork);
   const shouldShowNoSupportPlaceholder =
     !shouldShowSearchTab && !shouldShowCustomTab;
@@ -996,7 +1003,6 @@ export const ImportTokensModal = ({ onClose }) => {
                               setSearchResults(results)
                             }
                             error={tokenSelectorError}
-                            tokenList={tokenListByChain}
                             networkFilter={networkFilter}
                             setSearchResults={setSearchResults}
                             chainId={selectedNetwork}

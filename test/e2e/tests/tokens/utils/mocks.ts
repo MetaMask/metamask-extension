@@ -30,11 +30,25 @@ export const mockEmptyPrices = async (mockServer: Mockttp) => {
     }));
 };
 
+const HISTORICAL_PRICES_V3_URL =
+  /^https:\/\/price\.api\.cx\.metamask\.io\/v3\/historical-prices/u;
+
 export const mockEmptyHistoricalPrices = async (
   mockServer: Mockttp,
   address: string,
   chainId: string,
 ) => {
+  // `useHistoricalPrices` queries the v3 endpoint
+  // (`/v3/historical-prices/<caip>/<assetType>`); cover it (for any asset on
+  // the chain) so the chart receives valid JSON instead of an empty body.
+  await mockServer
+    .forGet(HISTORICAL_PRICES_V3_URL)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: { prices: [] },
+    }));
+
   return mockServer
     .forGet(getPriceUrl('v1', chainId, `historical-prices/${address}`))
     .thenCallback(() => ({
