@@ -70,6 +70,8 @@ export type CoinOverviewProps = {
   isSigningEnabled: boolean;
 };
 
+const DEBOUNCED_SHOW_BALANCE_EMPTY_STATE_MS = 500;
+
 export const LegacyAggregatedBalance = ({
   classPrefix,
   account,
@@ -210,6 +212,13 @@ export const CoinOverview = ({
     !isTestnet &&
     !balanceIsCached &&
     !hasBalance;
+
+  // Debounce the empty state to give the balance a chance to load before
+  // showing it, preventing a flash of the empty state on initial render.
+  const debouncedShouldShowBalanceEmptyState = useDebouncedValue(
+    shouldShowBalanceEmptyState,
+    DEBOUNCED_SHOW_BALANCE_EMPTY_STATE_MS,
+  );
 
   const handleSensitiveToggle = () => {
     dispatch(setPrivacyMode(!privacyMode));
