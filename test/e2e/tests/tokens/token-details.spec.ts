@@ -92,14 +92,14 @@ describe('Token Details', function () {
         testSpecificMock: async (mockServer: Mockttp) => [
           await mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': {
-              price:
-                process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true'
-                  ? ethConversionInUsd
-                  : 1,
+              price: ethConversionInUsd,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
             },
-            [`eip155:1/erc20:${tokenAddress.toLowerCase()}`]: marketData,
+            [`eip155:1/erc20:${tokenAddress.toLowerCase()}`]: {
+              price: marketData.price * ethConversionInUsd,
+              marketCap: marketData.marketCap * ethConversionInUsd,
+            },
           }),
           await mockHistoricalPrices(mockServer, {
             address: tokenAddress,
@@ -148,8 +148,7 @@ describe('Token Details', function () {
         testSpecificMock: async (mockServer: Mockttp) => [
           await mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': {
-              price:
-                process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true' ? 1700 : 1,
+              price: 1700,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
             },

@@ -84,6 +84,7 @@ describe('Send ERC20 - Mainnet', function () {
           tokenName: 'DAI',
           networkName: MAINNET_DISPLAY_NAME,
         });
+        await assetListPage.dismissTokenImportedMessage();
         await assetListPage.clickOnAsset('Dai Stablecoin');
 
         // Send DAI
