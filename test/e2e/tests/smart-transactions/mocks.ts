@@ -529,13 +529,14 @@ export async function mockSmartTransactionRequests(mockServer: MockttpServer) {
     .thenJson(200, { uuid: STX_UUID, txHashes: [TRANSACTION_HASH] });
 
   await mockServer
-      .forPost(
-        `${TX_SENTINEL_URL}/v1/networks/1/submitTransactions`,
-      )
-      .once()
-      .thenCallback(() => {
-        return { statusCode: 200, json: { uuid: STX_UUID, txHashes: [TRANSACTION_HASH] } };
-      });
+    .forPost(`${TX_SENTINEL_URL}/v1/networks/1/submitTransactions`)
+    .once()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: { uuid: STX_UUID, txHashes: [TRANSACTION_HASH] },
+      };
+    });
 }
 
 export async function mockChooseGasFeeTokenRequests(mockServer: MockttpServer) {
@@ -574,13 +575,11 @@ export async function mockChooseGasFeeTokenRequests(mockServer: MockttpServer) {
     .thenJson(200, { uuid: STX_UUID });
 
   await mockServer
-      .forPost(
-        `${TX_SENTINEL_URL}/v1/networks/1/submitTransactions`,
-      )
-      .once()
-      .thenCallback(() => {
-        return { statusCode: 200, json: { uuid: STX_UUID } };
-      });
+    .forPost(`${TX_SENTINEL_URL}/v1/networks/1/submitTransactions`)
+    .once()
+    .thenCallback(() => {
+      return { statusCode: 200, json: { uuid: STX_UUID } };
+    });
 }
 
 /**
@@ -724,13 +723,14 @@ export async function mockGasIncludedTransactionRequests(
     .thenJson(200, { uuid: STX_UUID, txHashes: [TRANSACTION_HASH] });
 
   await mockServer
-      .forPost(
-        `${TX_SENTINEL_URL}/v1/networks/1/submitTransactions`,
-      )
-      .once()
-      .thenCallback(() => {
-        return { statusCode: 200, json: { uuid: STX_UUID, txHashes: [TRANSACTION_HASH] } };
-      });
+    .forPost(`${TX_SENTINEL_URL}/v1/networks/1/submitTransactions`)
+    .once()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: { uuid: STX_UUID, txHashes: [TRANSACTION_HASH] },
+      };
+    });
 }
 
 export async function mockSmartTransactionBatchRequests(
@@ -759,13 +759,11 @@ export async function mockSmartTransactionBatchRequests(
     .thenJson(submitStatusCode, submitResponse);
 
   await mockServer
-      .forPost(
-        `${TX_SENTINEL_URL}/v1/networks/1/submitTransactions`,
-      )
-      .once()
-      .thenCallback(() => {
-        return { statusCode: submitStatusCode, json: submitResponse };
-      });
+    .forPost(`${TX_SENTINEL_URL}/v1/networks/1/submitTransactions`)
+    .once()
+    .thenCallback(() => {
+      return { statusCode: submitStatusCode, json: submitResponse };
+    });
 
   for (const transactionHash of transactionHashes) {
     await mockServer
