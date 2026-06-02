@@ -445,10 +445,6 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getEnsControllerMessenger,
     getInitMessenger: getEnsControllerInitMessenger,
   },
-  StorageService: {
-    getMessenger: getStorageServiceMessenger,
-    getInitMessenger: noop,
-  },
   ExecutionService: {
     getMessenger: getExecutionServiceMessenger,
     getInitMessenger: noop,

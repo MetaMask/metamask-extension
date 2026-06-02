@@ -438,7 +438,7 @@
     "@metamask/tron-wallet-snap": "^1.25.6",
     "@metamask/user-operation-controller": "^41.2.0",
     "@metamask/utils": "^11.11.0",
-    "@metamask/wallet": "^1.0.0",
+    "@metamask/wallet": "^2.0.0",
     "@mui/material": "^5.18.0",
     "@mui/x-date-pickers": "^7.29.4",
     "@ngraveio/bc-ur": "^1.1.13",

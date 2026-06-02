@@ -3,6 +3,7 @@ import { Json } from '@metamask/utils';
 import { Encryptor } from '@metamask/keyring-controller';
 import { RootMessenger } from '../lib/messenger';
 import { getKeyringBuilders } from './keyrings';
+import { BrowserStorageAdapter } from '../../../shared/lib/stores/browser-storage-adapter';
 
 export function initializeWallet({
   messenger,
@@ -21,6 +22,9 @@ export function initializeWallet({
         encryptor,
         keyringBuilders: getKeyringBuilders(messenger),
       },
+      storageService: {
+        storage: new BrowserStorageAdapter(),
+      }
     },
   });
 }
