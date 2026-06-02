@@ -13,7 +13,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import { tEn } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import {
-  SECURITY_ROUTE,
+  SECURITY_AND_PASSWORD_ROUTE,
   SECURITY_PASSWORD_CHANGE_V2_ROUTE,
 } from '../../../helpers/constants/routes';
 import * as selectors from '../../../selectors';
@@ -295,7 +295,9 @@ describe('ChangePassword', () => {
           mockNewPassword,
           mockPassword,
         );
-        expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          SECURITY_AND_PASSWORD_ROUTE,
+        );
       });
     });
   });
@@ -376,7 +378,9 @@ describe('ChangePassword', () => {
           mockNewPassword,
           mockPassword,
         );
-        expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          SECURITY_AND_PASSWORD_ROUTE,
+        );
       });
     });
   });
@@ -815,7 +819,9 @@ describe('ChangePassword', () => {
           mockRemovePasskeyWithPasswordVerification,
         ).not.toHaveBeenCalled();
         expect(mockForceUpdateMetamaskState).toHaveBeenCalled();
-        expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          SECURITY_AND_PASSWORD_ROUTE,
+        );
       });
     });
 
@@ -865,7 +871,9 @@ describe('ChangePassword', () => {
           mockRemovePasskeyWithPasswordVerification.mock.invocationCallOrder[0],
         ).toBeLessThan(mockChangePassword.mock.invocationCallOrder[0]);
         expect(mockForceUpdateMetamaskState).toHaveBeenCalled();
-        expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          SECURITY_AND_PASSWORD_ROUTE,
+        );
       });
     });
 
@@ -892,7 +900,9 @@ describe('ChangePassword', () => {
           { renewVaultKeyProtection: true },
         );
         expect(mockForceUpdateMetamaskState).toHaveBeenCalled();
-        expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          SECURITY_AND_PASSWORD_ROUTE,
+        );
       });
     });
 
@@ -934,7 +944,9 @@ describe('ChangePassword', () => {
           mockRemovePasskeyWithPasswordVerification,
         ).not.toHaveBeenCalled();
         expect(mockForceUpdateMetamaskState).toHaveBeenCalled();
-        expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          SECURITY_AND_PASSWORD_ROUTE,
+        );
       });
     });
 
@@ -977,7 +989,7 @@ describe('ChangePassword', () => {
         ]),
       );
       expect(mockForceUpdateMetamaskState).toHaveBeenCalled();
-      expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_AND_PASSWORD_ROUTE);
     });
   });
 });

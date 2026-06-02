@@ -8,7 +8,7 @@ import mockState from '../../../../../../test/data/mock-state.json';
 import * as actions from '../../../../../store/actions';
 import { setBackgroundConnection } from '../../../../../store/background-connection';
 import {
-  SECURITY_ROUTE,
+  ASSETS_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
 } from '../../../../../helpers/constants/routes';
 import AssetListControlBar from './asset-list-control-bar';
@@ -190,7 +190,9 @@ describe('NFTs options', () => {
     expect(autodetectButton).toBeInTheDocument();
 
     fireEvent.click(autodetectButton);
-    expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      `${ASSETS_ROUTE}#autodetect-tokens`,
+    );
   });
 
   it('shows Manage tokens instead of Import tokens when the token management feature flag is enabled', async () => {
