@@ -7,9 +7,7 @@ import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import { login } from '../../page-objects/flows/login.flow';
-import {
-  mockSpotPrices,
-} from './utils/mocks';
+import { mockSpotPrices } from './utils/mocks';
 
 describe('Token List Sorting', function () {
   const mainnetChainId = CHAIN_IDS.MAINNET;

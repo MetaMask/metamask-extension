@@ -48,7 +48,9 @@ async function mockSpotPriceV3ForDai(mockServer: Mockttp) {
       .always()
       .thenCallback((request) => {
         const url = new URL(request.url);
-        const query = (url.searchParams.get('query') ?? '').trim().toLowerCase();
+        const query = (url.searchParams.get('query') ?? '')
+          .trim()
+          .toLowerCase();
         const data =
           query === 'dai'
             ? [

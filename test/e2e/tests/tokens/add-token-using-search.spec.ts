@@ -153,15 +153,15 @@ describe('Add existing token using search', function () {
     ];
   }
 
-  async function mockTokenSearch(
-    mockServer: Mockttp,
-  ): Promise<MockedEndpoint> {
+  async function mockTokenSearch(mockServer: Mockttp): Promise<MockedEndpoint> {
     return mockServer
       .forGet('https://token.api.cx.metamask.io/tokens/search')
       .always()
       .thenCallback((request) => {
         const url = new URL(request.url);
-        const query = (url.searchParams.get('query') ?? '').trim().toLowerCase();
+        const query = (url.searchParams.get('query') ?? '')
+          .trim()
+          .toLowerCase();
         const data =
           query === 'bat'
             ? [

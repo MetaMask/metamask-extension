@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+  useRef,
+} from 'react';
 import PropTypes from 'prop-types';
 import { TextFieldSearch } from '../../../component-library/text-field-search/deprecated';
 import {
@@ -52,7 +58,10 @@ export default function TokenSearch({
     Object.keys(networkFilter).length === 1;
 
   const [searchQuery, setSearchQuery] = useState('');
-  const debouncedSearchQuery = useDebouncedValue(searchQuery, SEARCH_DEBOUNCE_MS);
+  const debouncedSearchQuery = useDebouncedValue(
+    searchQuery,
+    SEARCH_DEBOUNCE_MS,
+  );
   const abortRef = useRef(null);
 
   // `onSearch` is recreated on every parent render; keep it in a ref so the
@@ -89,7 +98,10 @@ export default function TokenSearch({
 
     if (!trimmedQuery) {
       setSearchResults([]);
-      onSearchRef.current({ newSearchQuery: debouncedSearchQuery, results: [] });
+      onSearchRef.current({
+        newSearchQuery: debouncedSearchQuery,
+        results: [],
+      });
       return undefined;
     }
 
@@ -145,7 +157,10 @@ export default function TokenSearch({
           return;
         }
         setSearchResults([]);
-        onSearchRef.current({ newSearchQuery: debouncedSearchQuery, results: [] });
+        onSearchRef.current({
+          newSearchQuery: debouncedSearchQuery,
+          results: [],
+        });
       });
 
     return () => controller.abort();

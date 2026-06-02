@@ -13,7 +13,9 @@ import {
   mockSupportedVsCurrencies,
 } from '../btc/mocks/price-api';
 import { mockTokensV2SupportedNetworks } from '../btc/mocks/tokens-api';
-import NetworkManager, { NetworkId } from '../../page-objects/pages/network-manager';
+import NetworkManager, {
+  NetworkId,
+} from '../../page-objects/pages/network-manager';
 import { getMockAssetsPrice } from './utils/mocks';
 
 const ETH_CONVERSION_RATE_USD = 1700;

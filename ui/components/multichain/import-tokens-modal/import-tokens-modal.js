@@ -551,8 +551,11 @@ export const ImportTokensModal = ({ onClose }) => {
   const attemptToAutoFillTokenParams = useCallback(
     (address) => {
       const tokenListData = tokenListByChain?.[selectedNetwork]?.data;
-      const { symbol = '', decimals, name = '' } =
-        tokenListData?.[address.toLowerCase()] ?? {};
+      const {
+        symbol = '',
+        decimals,
+        name = '',
+      } = tokenListData?.[address.toLowerCase()] ?? {};
 
       // Both handlers call `.trim()` internally, so values must be strings.
       const decimalsStr =

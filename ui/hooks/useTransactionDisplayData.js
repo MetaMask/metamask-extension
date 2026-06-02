@@ -421,7 +421,9 @@ export function useTransactionDisplayData(transactionGroup) {
       sourceChainId &&
       Object.values(knownTokens?.[sourceChainId] ?? {})
         .flat()
-        .find(({ address }) => isEqualCaseInsensitive(address, sourceTokenAddress));
+        .find(({ address }) =>
+          isEqualCaseInsensitive(address, sourceTokenAddress),
+        );
 
     if (type === TransactionType.perpsDeposit) {
       title = t('perpsDepositActivityTitle');
