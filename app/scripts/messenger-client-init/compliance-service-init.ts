@@ -2,12 +2,7 @@ import {
   ComplianceService,
   type ComplianceServiceMessenger,
 } from '@metamask/compliance-controller';
-import { isProduction } from '../../../shared/lib/environment';
 import { MessengerClientInitFunction } from './types';
-
-function getComplianceServiceEnvironment(): 'production' | 'development' {
-  return isProduction() ? 'production' : 'development';
-}
 
 /**
  * Initialize the ComplianceService.
@@ -24,7 +19,6 @@ export const ComplianceServiceInit: MessengerClientInitFunction<
     apiUrl: process.env.COMPLIANCE_API_URL || undefined,
     messenger: controllerMessenger,
     fetch: globalThis.fetch.bind(globalThis),
-    env: getComplianceServiceEnvironment(),
   });
 
   return { messengerClient, persistedStateKey: null, memStateKey: null };

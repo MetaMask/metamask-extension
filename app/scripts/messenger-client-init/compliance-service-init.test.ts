@@ -1,5 +1,4 @@
 import { ComplianceService } from '@metamask/compliance-controller';
-import { isProduction } from '../../../shared/lib/environment';
 import { buildControllerInitRequestMock } from './test/utils';
 import { ComplianceServiceInit } from './compliance-service-init';
 import type { ComplianceServiceMessenger } from './messengers/compliance-service-messenger';
@@ -7,9 +6,6 @@ import type { ComplianceServiceMessenger } from './messengers/compliance-service
 jest.mock('@metamask/compliance-controller', () => ({
   ComplianceService: jest.fn().mockImplementation(() => ({})),
 }));
-jest.mock('../../../shared/lib/environment');
-
-const isProductionMock = jest.mocked(isProduction);
 
 describe('ComplianceServiceInit', () => {
   const ComplianceServiceMock = jest.mocked(ComplianceService);
@@ -19,15 +15,13 @@ describe('ComplianceServiceInit', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     globalThis.fetch = fetchMock as unknown as typeof globalThis.fetch;
-    isProductionMock.mockReturnValue(false);
   });
 
   afterAll(() => {
     globalThis.fetch = originalFetch;
   });
 
-  it('creates ComplianceService with production environment for production builds', () => {
-    isProductionMock.mockReturnValue(true);
+  it('creates ComplianceService with configured API URL', () => {
     const request = {
       ...buildControllerInitRequestMock(),
       controllerMessenger: {
@@ -45,26 +39,6 @@ describe('ComplianceServiceInit', () => {
       apiUrl: process.env.COMPLIANCE_API_URL,
       messenger: request.controllerMessenger,
       fetch: expect.any(Function),
-      env: 'production',
-    });
-  });
-
-  it('creates ComplianceService with development environment outside production-like builds', () => {
-    const request = {
-      ...buildControllerInitRequestMock(),
-      controllerMessenger: {
-        call: jest.fn(),
-      } as unknown as ComplianceServiceMessenger,
-      initMessenger: undefined,
-    };
-
-    ComplianceServiceInit(request);
-
-    expect(ComplianceServiceMock).toHaveBeenCalledWith({
-      apiUrl: process.env.COMPLIANCE_API_URL,
-      messenger: request.controllerMessenger,
-      fetch: expect.any(Function),
-      env: 'development',
     });
   });
 });
