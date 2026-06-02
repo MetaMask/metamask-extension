@@ -79,48 +79,58 @@ async function mockApis(
   );
   await mockIdentityServices(mockServer, userStorageMockttpController);
 
-  return [
-    await mockServer.forGet(METAMASK_STALELIST_URL).thenCallback(() => {
+  // The unified-assets feature prefetches token lists for all popular chains
+  // via the old token-list API regardless of the basic-functionality toggle.
+  // Mock every chainId variant to prevent real network requests, but do not
+  // include this endpoint in the returned array so it is not subject to the
+  // "0 requests when privacy is off / ≥1 requests when privacy is on" assertions.
+  await mockServer
+    .forGet(/https:\/\/token\.api\.cx\.metamask\.io\/tokens\/\d+/u)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [],
+    }));
+
+  const stalelistMock = await mockServer
+    .forGet(METAMASK_STALELIST_URL)
+    .thenCallback(() => {
       return {
         statusCode: 200,
         json: [{ fakedata: true }],
       };
-    }),
-    await mockServer
-      .forGet('https://token.api.cx.metamask.io/tokens/1')
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: [{ fakedata: true }],
-        };
-      }),
-    await mockSpotPrices(mockServer, {
-      'eip155:1/slip44:60': {
-        price: 1700,
-        marketCap: 382623505141,
-        pricePercentChange1d: 0,
-      },
-    }),
-    await mockServer
-      .forGet(
-        'https://nft.api.cx.metamask.io/users/0x5cfe73b6021e818b776b421b1c4db2474086a7e1/tokens',
-      )
-      .withQuery({
-        limit: 50,
-        includeTopBid: 'true',
-        chainIds: ['1', '59144'],
-        continuation: '',
-      })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {
-            tokens: [],
-          },
-        };
-      }),
-    await mockEmptyPrices(mockServer),
-  ];
+    });
+
+  const spotPricesMock = await mockSpotPrices(mockServer, {
+    'eip155:1/slip44:60': {
+      price: 1700,
+      marketCap: 382623505141,
+      pricePercentChange1d: 0,
+    },
+  });
+
+  const nftMock = await mockServer
+    .forGet(
+      'https://nft.api.cx.metamask.io/users/0x5cfe73b6021e818b776b421b1c4db2474086a7e1/tokens',
+    )
+    .withQuery({
+      limit: 50,
+      includeTopBid: 'true',
+      chainIds: ['1', '59144'],
+      continuation: '',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          tokens: [],
+        },
+      };
+    });
+
+  await mockEmptyPrices(mockServer);
+
+  return [stalelistMock, spotPricesMock, nftMock];
 }
 
 describe('MetaMask onboarding', function () {
