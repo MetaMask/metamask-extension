@@ -24,7 +24,7 @@ export function initializeWallet({
       },
       storageService: {
         storage: new BrowserStorageAdapter(),
-      }
+      },
     },
   });
 }
