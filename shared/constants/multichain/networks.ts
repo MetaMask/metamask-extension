@@ -435,9 +435,7 @@ export const TRON_CHAINS: CaipChainId[] = [
   MultichainNetworks.TRON_SHASTA,
 ];
 
-export const BTC_CHAINS: CaipChainId[] = [
-  MultichainNetworks.BITCOIN,
-];
+export const BTC_CHAINS: CaipChainId[] = [MultichainNetworks.BITCOIN];
 
 type NonEvmAccountChangedConfig = {
   network: MultichainNetworks;
