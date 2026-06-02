@@ -133,11 +133,19 @@ const selectFiatBalanceByChain = createSelector(
 export const getAvailableBatchSellNetworks = createSelector(
   getNetworksWithPositiveBalanceForSelectedAccount,
   selectFiatBalanceByChain,
-  (networksWithBalance, fiatBalanceByChain) =>
+  getBridgeFeatureFlags,
+  (networksWithBalance, fiatBalanceByChain, bridgeFeatureFlags) =>
     Object.entries(networksWithBalance)
-      .filter(([chainId]) =>
-        BATCH_SELL_SUPPORTED_CHAIN_IDS.has(chainId as CaipChainId),
-      )
+      .filter(([chainId]) => {
+        if (!BATCH_SELL_SUPPORTED_CHAIN_IDS.has(chainId as CaipChainId)) {
+          return false;
+        }
+        const caipChainId = formatChainIdToCaip(chainId as CaipChainId);
+        const stablecoins =
+          bridgeFeatureFlags?.chains?.[caipChainId]?.batchSellDestStablecoins ??
+          [];
+        return stablecoins.length > 0;
+      })
       .map(([chainId, network]) => ({
         chainId: chainId as CaipChainId,
         name: network.name,
@@ -164,11 +172,7 @@ export const getBatchSellDestStablecoinsForNetwork = createSelector(
     }
     const caipChainId = formatChainIdToCaip(chainId);
     const batchSellDestStablecoins =
-      (
-        bridgeFeatureFlags?.chains?.[caipChainId] as unknown as {
-          batchSellDestStablecoins?: CaipAssetType[];
-        }
-      )?.batchSellDestStablecoins ?? [];
+      bridgeFeatureFlags?.chains?.[caipChainId]?.batchSellDestStablecoins ?? [];
 
     return batchSellDestStablecoins.map(
       (assetId) => toAssetId(assetId) ?? assetId,
