@@ -2910,8 +2910,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:getAccountsBySnapId',
       ),
-      checkIsSeedlessPasswordOutdated:
-        this.checkIsSeedlessPasswordOutdated.bind(this),
+      checkIsSeedlessPasswordOutdated: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
+      ),
       syncPasswordAndUnlockWallet: this.syncPasswordAndUnlockWallet.bind(this),
 
       // subscription
@@ -4421,10 +4423,13 @@ export default class MetamaskController extends EventEmitter {
     let isPasswordOutdated = false;
     if (isSocialLoginFlow) {
       try {
-        isPasswordOutdated = await this.checkIsSeedlessPasswordOutdated({
-          skipCache: false,
-          captureSentryError: true,
-        });
+        isPasswordOutdated =
+          await this.legacyBackgroundApiService.checkIsSeedlessPasswordOutdated(
+            {
+              skipCache: false,
+              captureSentryError: true,
+            },
+          );
       } catch (error) {
         // we don't want to block the unlock flow if the password outdated check fails
         log.error('error while checking if password is outdated', error);
@@ -4510,7 +4515,7 @@ export default class MetamaskController extends EventEmitter {
         await this.syncKeyringEncryptionKey();
 
         // check password outdated again skip cache to reset the cache after successful syncing
-        await this.checkIsSeedlessPasswordOutdated({
+        await this.legacyBackgroundApiService.checkIsSeedlessPasswordOutdated({
           skipCache: true,
           captureSentryError: true,
         });
@@ -4728,45 +4733,6 @@ export default class MetamaskController extends EventEmitter {
     await this.seedlessOnboardingController.storeKeyringEncryptionKey(
       keyringEncryptionKey,
     );
-  }
-
-  /**
-   * Checks if the seedless password is outdated.
-   *
-   * @param {object} args - The arguments for the checkIsSeedlessPasswordOutdated method.
-   * @param {boolean} args.skipCache - whether to skip the cache @default false
-   * @param {boolean} args.captureSentryError - whether to capture the sentry error. @default false
-   * @returns {Promise<boolean | undefined>} true if the password is outdated, false otherwise, undefined if the flow is not seedless
-   */
-  async checkIsSeedlessPasswordOutdated(args) {
-    const skipCache = args?.skipCache || false;
-    const captureSentryError = args?.captureSentryError || false;
-    try {
-      const isSocialLoginFlow =
-        this.onboardingController.getIsSocialLoginFlow();
-      const { completedOnboarding } = this.onboardingController.state;
-
-      if (!isSocialLoginFlow || !completedOnboarding) {
-        // this is only available for seedless onboarding flow and completed onboarding
-        return false;
-      }
-
-      const isPasswordOutdated =
-        await this.seedlessOnboardingController.checkIsPasswordOutdated({
-          skipCache,
-        });
-      return isPasswordOutdated;
-    } catch (error) {
-      if (captureSentryError) {
-        this.controllerMessenger?.captureException?.(
-          createSentryError(
-            'Failed to check if seedless password is outdated',
-            error,
-          ),
-        );
-      }
-      throw error;
-    }
   }
 
   /**
