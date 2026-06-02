@@ -81,19 +81,20 @@ export function isLocalhostOrIPAddress(hostname: string): boolean {
 }
 
 /**
- * Best-effort registrable domain (eTLD+1) for a URL, using the last two
- * hostname labels. Used to group RPC endpoints by provider so a single
- * provider's wide outage (e.g. *.infura.io) is treated as one failure
- * rather than many. Not a Public Suffix List implementation — multi-part
- * suffixes like ".co.uk" are not handled, which is fine for the RPC URL
- * universe but not for arbitrary web hosts.
+ * Best-effort domain (eTLD+1) for a URL, using the last two hostname labels.
+ * Used to group RPC endpoints by provider so a single provider's wide outage
+ * (e.g. *.infura.io) is treated as one failure rather than many. Not a Public
+ * Suffix List implementation — multi-part suffixes like ".co.uk" are not
+ * handled, which is fine for the RPC URL universe but not for arbitrary web
+ * hosts.
  *
- * Localhost, IP literals, and single-label hosts are returned verbatim.
+ * Localhost, IP literals, and single-label hosts are returned verbatim rather
+ * than reduced to a domain (so callers can still distinguish them).
  *
- * @param urlString - The URL to extract a registrable domain from.
- * @returns The registrable domain, or null if the URL is invalid.
+ * @param urlString - The URL to extract a domain from.
+ * @returns The domain, or null if the URL is invalid.
  */
-export function getRegistrableDomain(urlString: string): string | null {
+export function getDomain(urlString: string): string | null {
   const url = getValidUrl(urlString);
   if (url === null) {
     return null;

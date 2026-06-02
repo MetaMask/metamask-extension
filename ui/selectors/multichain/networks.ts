@@ -45,7 +45,7 @@ import {
 import { createDeepEqualSelector } from '../../../shared/lib/selectors/selector-creators';
 import { getEnabledNetworks } from '../../../shared/lib/selectors/multichain';
 import { getIsMetaMaskInfuraEndpointUrl } from '../../../shared/lib/network-utils';
-import { getRegistrableDomain } from '../../../shared/lib/url-utils';
+import { getDomain } from '../../../shared/lib/url-utils';
 import type { RemoteFeatureFlagsState } from '../../../shared/lib/selectors/remote-feature-flags';
 import {
   type AccountsState,
@@ -465,9 +465,9 @@ export const selectAnyEnabledNetworksAreAvailable = createSelector(
  * (e.g. an Infura-wide hiccup that takes down many *.infura.io networks at
  * once) is suppressed because it looks like many failed networks but is really
  * one provider. The banner shows only when failed RPCs span 2+ distinct
- * registrable domains (likely client-side), or every enabled EVM network has
- * failed (covers single-network setups), or any failed network's active RPC
- * is a non-Infura (custom) endpoint — these have no automatic failover so the
+ * domains (likely client-side), or every enabled EVM network has failed
+ * (covers single-network setups), or any failed network's active RPC is a
+ * non-Infura (custom) endpoint — these have no automatic failover so the
  * user must be told.
  *
  * When the custom override fires alongside other failed networks, the custom
@@ -491,7 +491,7 @@ export const selectFirstFailedNetworkForNetworkConnectionBanner =
         networkName: string;
         isInfuraEndpoint: boolean;
         infuraEndpointIndex: number | undefined;
-        registrableDomain: string | null;
+        domain: string | null;
       }[] = [];
       let totalEnabled = 0;
 
@@ -551,7 +551,7 @@ export const selectFirstFailedNetworkForNetworkConnectionBanner =
           // Index of an available Infura endpoint (for custom networks that
           // have one) that can be used to switch to Infura
           infuraEndpointIndex,
-          registrableDomain: getRegistrableDomain(rpcEndpoint.url),
+          domain: getDomain(rpcEndpoint.url),
         });
       }
 
@@ -562,7 +562,7 @@ export const selectFirstFailedNetworkForNetworkConnectionBanner =
       const firstCustomFailed = failed.find((n) => !n.isInfuraEndpoint);
       const distinctDomains = new Set(
         failed
-          .map((n) => n.registrableDomain)
+          .map((n) => n.domain)
           .filter((domain): domain is string => domain !== null),
       ).size;
       const allFailed = failed.length === totalEnabled;

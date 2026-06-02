@@ -1190,7 +1190,7 @@ describe('Multichain network selectors', () => {
       ).toBeNull();
     });
 
-    it('returns the first failed network when failures span 2+ registrable domains', () => {
+    it('returns the first failed network when failures span 2+ domains', () => {
       const mockStateWithTwoDomainsDown = {
         metamask: {
           enabledNetworkMap: {
