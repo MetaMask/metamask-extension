@@ -2,16 +2,18 @@ import React, { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 import { CaipAssetType, Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
+import {
+  Box,
+  BoxBorderColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 
 import { getPricePrecision } from '../util';
 
-import { Box, Text } from '../../../components/component-library';
+import { Text } from '../../../components/component-library';
 import {
-  BorderColor,
-  Display,
-  FlexDirection,
-  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -113,9 +115,9 @@ export const AssetMarketDetails = ({
   return (
     <Box>
       <Box
+        className="mx-4 border border-solid"
         marginBottom={2}
-        borderColor={BorderColor.borderMuted}
-        marginInline={4}
+        borderColor={BoxBorderColor.BorderMuted}
         style={{ height: '1px', borderBottomWidth: 0 }}
       ></Box>
       <Text
@@ -127,9 +129,8 @@ export const AssetMarketDetails = ({
         {t('marketDetails')}
       </Text>
       <Box
-        paddingInline={4}
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
+        className="flex px-4"
+        flexDirection={BoxFlexDirection.Column}
         gap={2}
       >
         {marketCap > 0 &&
@@ -185,7 +186,7 @@ export const AssetMarketDetails = ({
 
 function renderRow(leftColumn: string, rightColumn: ReactNode) {
   return (
-    <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
+    <Box className="flex" justifyContent={BoxJustifyContent.Between}>
       <Text
         color={TextColor.textAlternative}
         variant={TextVariant.bodyMdMedium}
