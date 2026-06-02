@@ -48,6 +48,7 @@ import { QuoteValidationErrors, type BridgeToken } from '../bridge/types';
 import { createDeepEqualSelector } from '../../../shared/lib/selectors/selector-creators';
 import { isHardwareWallet } from '../../../shared/lib/selectors/keyring';
 import { BATCH_SELL_SUPPORTED_CHAIN_IDS } from '../../../shared/constants/batch-sell';
+import { isStockRWAToken } from "../../pages/bridge/hooks/useRWAToken";
 import { BatchSellAsset } from './types';
 
 /**
@@ -250,6 +251,9 @@ export const getAvailableBatchSellSwapAssetsForNetwork = createSelector(
         }
         if (stablecoinSet.has(asset.assetId.toLowerCase())) {
           return false;
+        }
+        if (isStockRWAToken(asset)) {
+          return false
         }
         return true;
       })

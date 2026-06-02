@@ -494,6 +494,34 @@ describe('batch-sell selectors', () => {
       expect(result[0].symbol).toBe('ETH');
     });
 
+    it('filters out stock RWA tokens', () => {
+      const RWA_ASSET_ID =
+        `${CAIP_MAINNET}/erc20:0xaAaAaAaAaAaAaAaAaAaAaAaAaAaAaAaAaAaAaAa` as CaipChainId;
+      const RWA_BRIDGE_TOKEN = {
+        assetId: RWA_ASSET_ID,
+        chainId: CAIP_MAINNET,
+        symbol: 'AAPL',
+        name: 'Apple Stock',
+        decimals: 18,
+        balance: '1',
+        tokenFiatAmount: 200,
+        iconUrl: undefined,
+        rwaData: { instrumentType: 'stock' },
+      };
+      mockGetBridgeAssetsByAssetId.mockReturnValue({
+        [ETH_ASSET_ID.toLowerCase()]: ETH_BRIDGE_TOKEN,
+        [RWA_ASSET_ID.toLowerCase()]: RWA_BRIDGE_TOKEN,
+      } as never);
+
+      const result = getAvailableBatchSellSwapAssetsForNetwork(
+        buildState(),
+        CAIP_MAINNET,
+      );
+
+      expect(result).toHaveLength(1);
+      expect(result[0].symbol).toBe('ETH');
+    });
+
     it('populates tokenFiatPrice and percentageChange from marketData for EVM native asset', () => {
       mockGetBridgeAssetsByAssetId.mockReturnValue({
         [ETH_ASSET_ID.toLowerCase()]: ETH_BRIDGE_TOKEN,
