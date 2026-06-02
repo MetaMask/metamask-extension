@@ -1,7 +1,7 @@
 import { useEffect, useCallback, useRef, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Hex, hexToNumber } from '@metamask/utils';
-import { selectNetworkForConnectionBanner } from '../selectors/multichain/networks';
+import { selectFirstFailedNetworkForNetworkConnectionBanner } from '../selectors/multichain/networks';
 import {
   getNetworkConnectionBanner,
   getIsDeviceOffline,
@@ -25,7 +25,7 @@ type UseNetworkConnectionBannerResult = NetworkConnectionBanner & {
     networkClientId: string;
   }) => void;
   /**
-   * Switch the default RPC endpoint to Infura for the current unavailable network.
+   * Switch the default RPC endpoint to Infura for the current failed network.
    * Only available when the network has an Infura endpoint to switch to.
    * Returns a promise that resolves when the switch is complete (or rejects on error).
    */
@@ -40,7 +40,9 @@ export const useNetworkConnectionBanner =
     const dispatch = useDispatch();
     const { trackEvent } = useContext(MetaMetricsContext);
     const isOffline = useSelector(getIsDeviceOffline);
-    const bannerNetwork = useSelector(selectNetworkForConnectionBanner);
+    const failedNetwork = useSelector(
+      selectFirstFailedNetworkForNetworkConnectionBanner,
+    );
     const networkConnectionBannerState = useSelector(
       getNetworkConnectionBanner,
     );
@@ -138,26 +140,26 @@ export const useNetworkConnectionBanner =
       clearUnavailableTimer();
 
       timersRef.current.unavailableTimer = setTimeout(() => {
-        if (bannerNetwork) {
+        if (failedNetwork) {
           trackNetworkBannerEvent({
             bannerType: 'unavailable',
             eventName: MetaMetricsEventName.NetworkConnectionBannerShown,
-            networkClientId: bannerNetwork.networkClientId,
+            networkClientId: failedNetwork.networkClientId,
           });
           dispatch(
             updateNetworkConnectionBanner({
               status: 'unavailable',
-              networkName: bannerNetwork.networkName,
-              networkClientId: bannerNetwork.networkClientId,
-              chainId: bannerNetwork.chainId,
-              isInfuraEndpoint: bannerNetwork.isInfuraEndpoint,
-              infuraEndpointIndex: bannerNetwork.infuraEndpointIndex,
+              networkName: failedNetwork.networkName,
+              networkClientId: failedNetwork.networkClientId,
+              chainId: failedNetwork.chainId,
+              isInfuraEndpoint: failedNetwork.isInfuraEndpoint,
+              infuraEndpointIndex: failedNetwork.infuraEndpointIndex,
             }),
           );
         }
       }, UNAVAILABLE_BANNER_TIMEOUT - DEGRADED_BANNER_TIMEOUT);
     }, [
-      bannerNetwork,
+      failedNetwork,
       trackNetworkBannerEvent,
       dispatch,
       clearUnavailableTimer,
@@ -167,20 +169,20 @@ export const useNetworkConnectionBanner =
       clearDegradedTimer();
 
       timersRef.current.degradedTimer = setTimeout(() => {
-        if (bannerNetwork) {
+        if (failedNetwork) {
           trackNetworkBannerEvent({
             bannerType: 'degraded',
             eventName: MetaMetricsEventName.NetworkConnectionBannerShown,
-            networkClientId: bannerNetwork.networkClientId,
+            networkClientId: failedNetwork.networkClientId,
           });
           dispatch(
             updateNetworkConnectionBanner({
               status: 'degraded',
-              networkName: bannerNetwork.networkName,
-              networkClientId: bannerNetwork.networkClientId,
-              chainId: bannerNetwork.chainId,
-              isInfuraEndpoint: bannerNetwork.isInfuraEndpoint,
-              infuraEndpointIndex: bannerNetwork.infuraEndpointIndex,
+              networkName: failedNetwork.networkName,
+              networkClientId: failedNetwork.networkClientId,
+              chainId: failedNetwork.chainId,
+              isInfuraEndpoint: failedNetwork.isInfuraEndpoint,
+              infuraEndpointIndex: failedNetwork.infuraEndpointIndex,
             }),
           );
 
@@ -188,15 +190,15 @@ export const useNetworkConnectionBanner =
         }
       }, DEGRADED_BANNER_TIMEOUT);
     }, [
-      bannerNetwork,
+      failedNetwork,
       trackNetworkBannerEvent,
       dispatch,
       startUnavailableTimer,
       clearDegradedTimer,
     ]);
 
-    // If the first unavailable network does not change but the status changes, start the degraded or unavailable timer
-    // If the first unavailable network changes, reset all timers and change the status
+    // If the failed network does not change but the banner status changes, start the degraded or unavailable timer
+    // If the failed network changes, reset all timers and change the status
     // If the device is offline, don't show network banners - the issue is device connectivity, not the network
     useEffect(() => {
       // When device is offline, clear timers and reset banner state
@@ -210,7 +212,7 @@ export const useNetworkConnectionBanner =
         return;
       }
 
-      if (bannerNetwork) {
+      if (failedNetwork) {
         if (networkConnectionBannerState.status === 'degraded') {
           startUnavailableTimer();
         } else if (
@@ -228,7 +230,7 @@ export const useNetworkConnectionBanner =
       };
     }, [
       isOffline,
-      bannerNetwork,
+      failedNetwork,
       clearTimers,
       dispatch,
       networkConnectionBannerState.status,
@@ -288,16 +290,16 @@ export const useNetworkConnectionBanner =
     if (
       (networkConnectionBannerState.status === 'degraded' ||
         networkConnectionBannerState.status === 'unavailable') &&
-      bannerNetwork
+      failedNetwork
     ) {
       return {
         ...networkConnectionBannerState,
         // Override with fresh data from selector
-        networkClientId: bannerNetwork.networkClientId,
-        networkName: bannerNetwork.networkName,
-        chainId: bannerNetwork.chainId,
-        isInfuraEndpoint: bannerNetwork.isInfuraEndpoint,
-        infuraEndpointIndex: bannerNetwork.infuraEndpointIndex,
+        networkClientId: failedNetwork.networkClientId,
+        networkName: failedNetwork.networkName,
+        chainId: failedNetwork.chainId,
+        isInfuraEndpoint: failedNetwork.isInfuraEndpoint,
+        infuraEndpointIndex: failedNetwork.infuraEndpointIndex,
         trackNetworkBannerEvent,
         switchToInfura,
       };

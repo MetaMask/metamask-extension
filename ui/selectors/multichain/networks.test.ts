@@ -26,7 +26,7 @@ import {
   getSelectedMultichainNetworkChainId,
   getSelectedMultichainNetworkConfiguration,
   getIsEvmMultichainNetworkSelected,
-  selectNetworkForConnectionBanner,
+  selectFirstFailedNetworkForNetworkConnectionBanner,
   getEvmMultichainNetworkConfigurations,
   getAllMultichainNetworkConfigurations,
 } from './networks';
@@ -595,8 +595,8 @@ describe('Multichain network selectors', () => {
     });
   });
 
-  describe('selectNetworkForConnectionBanner', () => {
-    it('returns the first unavailable network when every enabled network is unavailable (all-down escape hatch)', () => {
+  describe('selectFirstFailedNetworkForNetworkConnectionBanner', () => {
+    it('returns the first failed network when every enabled network has failed (all-down escape hatch)', () => {
       const mockStateWithMultipleUnavailableNetworks = {
         metamask: {
           enabledNetworkMap: {
@@ -652,7 +652,7 @@ describe('Multichain network selectors', () => {
       };
 
       expect(
-        selectNetworkForConnectionBanner(
+        selectFirstFailedNetworkForNetworkConnectionBanner(
           mockStateWithMultipleUnavailableNetworks,
         ),
       ).toStrictEqual({
@@ -664,7 +664,7 @@ describe('Multichain network selectors', () => {
       });
     });
 
-    it('returns the unavailable custom network when both a custom and Infura network are down', () => {
+    it('returns the failed custom network when both a custom and Infura network are down', () => {
       const mockStateWithMultipleUnavailableNetworks = {
         metamask: {
           enabledNetworkMap: {
@@ -720,7 +720,7 @@ describe('Multichain network selectors', () => {
       };
 
       expect(
-        selectNetworkForConnectionBanner(
+        selectFirstFailedNetworkForNetworkConnectionBanner(
           mockStateWithMultipleUnavailableNetworks,
         ),
       ).toStrictEqual({
@@ -788,7 +788,7 @@ describe('Multichain network selectors', () => {
       };
 
       expect(
-        selectNetworkForConnectionBanner(mockStateWithAvailableEvmNetworks),
+        selectFirstFailedNetworkForNetworkConnectionBanner(mockStateWithAvailableEvmNetworks),
       ).toBeNull();
     });
 
@@ -805,7 +805,7 @@ describe('Multichain network selectors', () => {
       };
 
       expect(
-        selectNetworkForConnectionBanner(mockStateWithNoEnabledEvmNetworks),
+        selectFirstFailedNetworkForNetworkConnectionBanner(mockStateWithNoEnabledEvmNetworks),
       ).toBeNull();
     });
 
@@ -840,7 +840,7 @@ describe('Multichain network selectors', () => {
       };
 
       expect(
-        selectNetworkForConnectionBanner(mockStateWithMissingMetadata),
+        selectFirstFailedNetworkForNetworkConnectionBanner(mockStateWithMissingMetadata),
       ).toBeNull();
     });
 
@@ -864,7 +864,7 @@ describe('Multichain network selectors', () => {
       };
 
       expect(
-        selectNetworkForConnectionBanner(mockStateWithMissingNetworkConfig),
+        selectFirstFailedNetworkForNetworkConnectionBanner(mockStateWithMissingNetworkConfig),
       ).toBeNull();
     });
 
@@ -909,9 +909,9 @@ describe('Multichain network selectors', () => {
       };
 
       expect(
-        selectNetworkForConnectionBanner(
+        selectFirstFailedNetworkForNetworkConnectionBanner(
           mockStateWithCustomAndInfuraEndpoints as Parameters<
-            typeof selectNetworkForConnectionBanner
+            typeof selectFirstFailedNetworkForNetworkConnectionBanner
           >[0],
         ),
       ).toStrictEqual({
@@ -959,7 +959,7 @@ describe('Multichain network selectors', () => {
       };
 
       expect(
-        selectNetworkForConnectionBanner(mockStateWithOnlyCustomEndpoint),
+        selectFirstFailedNetworkForNetworkConnectionBanner(mockStateWithOnlyCustomEndpoint),
       ).toStrictEqual({
         networkName: 'Custom Network',
         networkClientId: 'custom-network',
@@ -969,7 +969,7 @@ describe('Multichain network selectors', () => {
       });
     });
 
-    it('returns the network when only one network is enabled and it is unavailable (all-down escape hatch)', () => {
+    it('returns the network when only one network is enabled and it has failed (all-down escape hatch)', () => {
       const mockStateWithInfuraAsDefault = {
         metamask: {
           enabledNetworkMap: {
@@ -1004,7 +1004,7 @@ describe('Multichain network selectors', () => {
         },
       };
 
-      const result = selectNetworkForConnectionBanner(
+      const result = selectFirstFailedNetworkForNetworkConnectionBanner(
         mockStateWithInfuraAsDefault,
       );
       expect(result).toStrictEqual({
@@ -1016,7 +1016,7 @@ describe('Multichain network selectors', () => {
       });
     });
 
-    it('returns null when only one Infura network out of many enabled is unavailable', () => {
+    it('returns null when only one Infura network out of many enabled has failed', () => {
       // Single Infura blip in an otherwise-healthy set: 1 distinct domain,
       // not all-down. Suppress to avoid the noisy banner. See WPC-1014.
       const mockStateWithSingleInfuraDown = {
@@ -1074,14 +1074,14 @@ describe('Multichain network selectors', () => {
       };
 
       expect(
-        selectNetworkForConnectionBanner(mockStateWithSingleInfuraDown),
+        selectFirstFailedNetworkForNetworkConnectionBanner(mockStateWithSingleInfuraDown),
       ).toBeNull();
     });
 
     it('returns null when multiple Infura networks fail together but stay on one domain and others remain available', () => {
       // Infura-wide partial outage: three *.infura.io networks down, but two
       // popular non-Infura RPCs are still healthy. Only 1 distinct domain in
-      // the unavailable set, not all-down -> suppress the banner.
+      // the failed set, not all-down -> suppress the banner.
       const mockStateWithInfuraPartialOutage = {
         metamask: {
           enabledNetworkMap: {
@@ -1182,15 +1182,15 @@ describe('Multichain network selectors', () => {
       };
 
       expect(
-        selectNetworkForConnectionBanner(
+        selectFirstFailedNetworkForNetworkConnectionBanner(
           mockStateWithInfuraPartialOutage as unknown as Parameters<
-            typeof selectNetworkForConnectionBanner
+            typeof selectFirstFailedNetworkForNetworkConnectionBanner
           >[0],
         ),
       ).toBeNull();
     });
 
-    it('returns the first unavailable network when failures span 2+ registrable domains', () => {
+    it('returns the first failed network when failures span 2+ registrable domains', () => {
       const mockStateWithTwoDomainsDown = {
         metamask: {
           enabledNetworkMap: {
@@ -1259,11 +1259,11 @@ describe('Multichain network selectors', () => {
         },
       };
 
-      // Both Mainnet (Infura) and the Alchemy-backed Arbitrum are unavailable
+      // Both Mainnet (Infura) and the Alchemy-backed Arbitrum have failed
       // -> 2 distinct domains -> banner. The Alchemy RPC is custom so the
       // override surfaces it for the CTA.
       expect(
-        selectNetworkForConnectionBanner(mockStateWithTwoDomainsDown),
+        selectFirstFailedNetworkForNetworkConnectionBanner(mockStateWithTwoDomainsDown),
       ).toStrictEqual({
         networkName: 'Arbitrum One',
         networkClientId: 'arbitrum-alchemy',
@@ -1273,7 +1273,7 @@ describe('Multichain network selectors', () => {
       });
     });
 
-    it('returns the unavailable custom network even when other networks are available (custom override)', () => {
+    it('returns the failed custom network even when other networks are available (custom override)', () => {
       const mockStateWithCustomDownAmongAvailable = {
         metamask: {
           enabledNetworkMap: {
@@ -1343,7 +1343,7 @@ describe('Multichain network selectors', () => {
       };
 
       expect(
-        selectNetworkForConnectionBanner(mockStateWithCustomDownAmongAvailable),
+        selectFirstFailedNetworkForNetworkConnectionBanner(mockStateWithCustomDownAmongAvailable),
       ).toStrictEqual({
         networkName: 'Custom Network',
         networkClientId: 'custom-network',
