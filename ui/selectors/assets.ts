@@ -99,6 +99,7 @@ import {
   getInternalAccountBySelectedAccountGroupAndCaip,
   getSelectedAccountGroup,
 } from './multichain-accounts/account-tree';
+import { AccountWalletId } from '@metamask/account-api';
 
 export type AssetsState = {
   metamask: MultichainAssetsControllerState;
@@ -1338,6 +1339,36 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
     });
 
     return hasEvmBalance || hasNonEvmBalance || hasErc20Tokens;
+  },
+);
+
+/**
+ * Selects the selected account group's balance entry from the aggregated
+ * balances output, returning a minimal fallback when not present.
+ *
+ * @param state - Redux state used to read selection and aggregated balances.
+ */
+export const selectBalanceIsLoadingBySelectedAccountGroup = createSelector(
+  [selectAccountTreeStateForBalances, selectMultichainBalancesStateForBalances],
+  (accountTreeState, accountBalances) => {
+    const selectedGroupId = accountTreeState?.selectedAccountGroup;
+    if (!selectedGroupId) {
+      return null;
+    }
+    const walletId = selectedGroupId.split('/')[0];
+    const wallet =
+      accountTreeState.accountTree.wallets[walletId as AccountWalletId] ?? null;
+    const group = wallet?.groups[selectedGroupId];
+    const accounts = group?.accounts ?? [];
+
+    return accounts.some((accountId) => {
+      const assets = Object.values(accountBalances.balances[accountId] ?? {});
+      return assets.some((asset) => {
+        // During initial load of non-EVM assets, the `unit` is using an empty string as a placeholder
+        // until the real asset data is loaded.
+        return asset.unit === '';
+      });
+    });
   },
 );
 

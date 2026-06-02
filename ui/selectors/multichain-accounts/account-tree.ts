@@ -1,9 +1,17 @@
 import {
+  AccountGroupType,
   AccountWalletType,
+  parseAccountGroupId,
   type AccountGroupId,
   type AccountWalletId,
 } from '@metamask/account-api';
-import { isEvmAccountType, EthAccountType } from '@metamask/keyring-api';
+import {
+  isEvmAccountType,
+  EthAccountType,
+  SolAccountType,
+  BtcAccountType,
+  TrxAccountType,
+} from '@metamask/keyring-api';
 import { AccountId } from '@metamask/accounts-controller';
 import { createSelector } from 'reselect';
 import {
@@ -59,6 +67,14 @@ const ACCOUNT_LRU_CACHE_SIZE = 20; // one entry per address (worst case: simulat
 const GROUP_LRU_CACHE_SIZE = 20; // one entry per visible account group (multichain-account-list renders all groups simultaneously)
 const CHAIN_LRU_CACHE_SIZE = 10; // one entry per unique chain/scope (max ~8 chains active simultaneously across all consumers)
 const SINGLE_LOOKUP_LRU_CACHE_SIZE = 5; // selectors used for individual lookups, never rendered in a list
+
+// All account types that must be present in a multichain account group for it to be considered "aligned".
+const MULTICHAIN_EXPECTED_ACCOUNT_TYPES = [
+  EthAccountType.Eoa,
+  SolAccountType.DataAccount,
+  BtcAccountType.P2wpkh,
+  TrxAccountType.Eoa,
+];
 
 /**
  * Retrieve account tree state.
@@ -546,7 +562,60 @@ export const getInternalAccountByGroupAndCaip = createParameterizedSelector(
  */
 export const getSelectedAccountGroup = (
   state: MultichainAccountsState,
-): AccountGroupId => state.metamask.selectedAccountGroup;
+): MultichainAccountsState['metamask']['selectedAccountGroup'] =>
+  state.metamask.selectedAccountGroup;
+
+/**
+ * Returns true when the selected account group has all its expected accounts.
+ *
+ * - SingleAccount groups are always considered aligned.
+ * - MultichainAccount groups are aligned only when at least one account from
+ *   each expected CAIP namespace (EVM, Solana, Bitcoin, Tron) is present.
+ *   Until then, balance state is incomplete and the empty-balance state must
+ *   not be shown.
+ */
+export const getSelectedAccountGroupIsAligned = createSelector(
+  (state: MultichainAccountsState) => state.metamask.accountTree.wallets,
+  getSelectedAccountGroup,
+  (state: MultichainAccountsState) => state.metamask.internalAccounts.accounts,
+  (wallets, selectedGroupId, internalAccounts): boolean => {
+    if (selectedGroupId === '') {
+      return true;
+    }
+
+    const {
+      wallet: { id: walletId },
+    } = parseAccountGroupId(selectedGroupId);
+    const wallet = wallets[walletId];
+    if (!wallet) {
+      return false;
+    }
+
+    const group = wallet?.groups?.[selectedGroupId];
+    if (!group) {
+      return false;
+    }
+
+    if (group.type === AccountGroupType.SingleAccount) {
+      // Single account groups are always aligned!
+      return true;
+    }
+
+    const accountTypes = new Set<string>();
+    for (const accountId of group.accounts) {
+      const account = internalAccounts[accountId];
+      if (!account) {
+        continue;
+      }
+
+      accountTypes.add(account.type);
+    }
+
+    return MULTICHAIN_EXPECTED_ACCOUNT_TYPES.every((type) =>
+      accountTypes.has(type),
+    );
+  },
+);
 
 /**
  * Get an internal account from the account tree by its selected account group and CAIP chain ID.
