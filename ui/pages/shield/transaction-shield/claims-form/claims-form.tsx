@@ -1,4 +1,3 @@
-import React, { useCallback, useMemo, useState } from 'react';
 import { isValidHexAddress } from '@metamask/controller-utils';
 import {
   Box,
@@ -18,7 +17,7 @@ import {
   TextColor,
   TextVariant,
   IconSize,
-} from '@metamask/design-system-react';
+ toast } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import classnames from 'clsx';
@@ -45,7 +44,6 @@ import { TRANSACTION_SHIELD_CLAIM_ROUTES } from '../../../../helpers/constants/r
 import { submitShieldClaim } from '../../../../store/actions';
 import LoadingScreen from '../../../../components/ui/loading-screen';
 import { ClaimSubmitToastType } from '../../../../../shared/constants/app-state';
-import { toast, ToastContent } from '../../../../components/ui/toast/toast';
 import { SECOND } from '../../../../../shared/constants/time';
 import {
   TRANSACTION_SHIELD_SUPPORT_LINK,
@@ -77,6 +75,7 @@ import {
   MAX_FILE_SIZE_MB,
 } from './constants';
 import { isValidTransactionHash } from './utils';
+import React, { useCallback, useMemo, useState } from 'react';
 
 const duration = 5 * SECOND;
 
@@ -329,17 +328,12 @@ const ClaimsForm = ({
         }
         toast({
           severity: 'danger',
-          children: (
-            <ToastContent
-              title={t('shieldClaimSubmitError')}
-              description={
-                toastMessage === ClaimSubmitToastType.Errored
-                  ? undefined
-                  : toastMessage
-              }
-              dataTestId="claim-submit-toast-error"
-            />
-          ),
+          title: t('shieldClaimSubmitError'),
+          description:
+            toastMessage === ClaimSubmitToastType.Errored
+              ? undefined
+              : toastMessage,
+          'data-testid': 'claim-submit-toast-error',
         });
       }
     },
@@ -405,16 +399,12 @@ const ClaimsForm = ({
         }
       }
 
-      toast({
-        severity: 'success',
-        children: (
-          <ToastContent
-            title={t('shieldClaimSubmitSuccess')}
-            description={t('shieldClaimSubmitSuccessDescription')}
-            dataTestId="claim-submit-toast-success"
-          />
-        ),
-      });
+        toast({
+          severity: 'success',
+          title: t('shieldClaimSubmitSuccess'),
+          description: t('shieldClaimSubmitSuccessDescription'),
+          'data-testid': 'claim-submit-toast-success',
+        });
       // update claims
       await refetchClaims();
       navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
@@ -490,13 +480,9 @@ const ClaimsForm = ({
         });
         toast({
           severity: 'success',
-          children: (
-            <ToastContent
-              title={t('shieldClaimDraftSaved')}
-              description={t('shieldClaimDraftSavedDescription')}
-              dataTestId="claim-draft-saved-toast"
-            />
-          ),
+          title: t('shieldClaimDraftSaved'),
+          description: t('shieldClaimDraftSavedDescription'),
+          'data-testid': 'claim-draft-saved-toast',
         });
         if (!isEditDraft) {
           navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
@@ -505,13 +491,9 @@ const ClaimsForm = ({
         log.error('Error saving draft', error);
         toast({
           severity: 'danger',
-          children: (
-            <ToastContent
-              title={t('shieldClaimDraftSaveFailed')}
-              description={t('shieldClaimDraftSaveFailedDescription')}
-              dataTestId="claim-draft-save-failed-toast"
-            />
-          ),
+          title: t('shieldClaimDraftSaveFailed'),
+          description: t('shieldClaimDraftSaveFailedDescription'),
+          'data-testid': 'claim-draft-save-failed-toast',
         });
       }
     },
@@ -538,26 +520,18 @@ const ClaimsForm = ({
       await deleteDraft(currentDraftId);
       toast({
         severity: 'success',
-        children: (
-          <ToastContent
-            title={t('shieldClaimDeletedDraft')}
-            description={t('shieldClaimDeleteDraftDescription')}
-            dataTestId="claim-draft-deleted-toast"
-          />
-        ),
+        title: t('shieldClaimDeletedDraft'),
+        description: t('shieldClaimDeleteDraftDescription'),
+        'data-testid': 'claim-draft-deleted-toast',
       });
       navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
     } catch (error) {
       log.error('Error deleting draft', error);
       toast({
         severity: 'danger',
-        children: (
-          <ToastContent
-            title={t('shieldClaimDraftDeleteFailed')}
-            description={t('shieldClaimDraftDeleteFailedDescription')}
-            dataTestId="claim-draft-delete-failed-toast"
-          />
-        ),
+        title: t('shieldClaimDraftDeleteFailed'),
+        description: t('shieldClaimDraftDeleteFailedDescription'),
+        'data-testid': 'claim-draft-delete-failed-toast',
       });
     }
   }, [currentDraftId, deleteDraft, navigate, t]);

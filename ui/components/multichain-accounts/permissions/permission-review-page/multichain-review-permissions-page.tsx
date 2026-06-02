@@ -1,4 +1,3 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { CaipChainId, NonEmptyArray, Hex } from '@metamask/utils';
@@ -11,6 +10,7 @@ import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
+  Toast,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
@@ -38,7 +38,6 @@ import {
   ButtonVariant,
   IconName,
 } from '../../../component-library';
-import { ToastContainer, Toast } from '../../../multichain/toast/toast';
 import { NoConnectionContent } from '../../../multichain/pages/connections/components/no-connection';
 import { Content, Footer, Page } from '../../../multichain/pages/page';
 import { SubjectsType } from '../../../multichain/pages/connections/components/connections.types';
@@ -62,6 +61,7 @@ import {
 import { PermissionsCell } from '../../../multichain/pages/gator-permissions/components';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/lib/environment';
 import { useRevokeGatorPermissionsMultiChain } from '../../../../hooks/gator-permissions/useRevokeGatorPermissionsMultiChain';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 export enum MultichainReviewPermissionsPageMode {
   Summary = 'summary',
@@ -418,34 +418,30 @@ export const MultichainReviewPermissions = () => {
                 alignItems={BoxAlignItems.Center}
               >
                 {showAccountToast ? (
-                  <ToastContainer>
-                    <Toast
-                      text={t('accountPermissionToast')}
-                      onClose={() => setShowAccountToast(false)}
-                      startAdornment={
-                        <AvatarFavicon
-                          name={connectedSubjectsMetadata?.name}
-                          size={AvatarFaviconSize.Sm}
-                          src={connectedSubjectsMetadata?.iconUrl}
-                        />
-                      }
-                    />
-                  </ToastContainer>
+                  <Toast
+                    title={t('accountPermissionToast')}
+                    onClose={() => setShowAccountToast(false)}
+                    startAccessory={
+                      <AvatarFavicon
+                        name={connectedSubjectsMetadata?.name}
+                        size={AvatarFaviconSize.Sm}
+                        src={connectedSubjectsMetadata?.iconUrl}
+                      />
+                    }
+                  />
                 ) : null}
                 {showNetworkToast ? (
-                  <ToastContainer>
-                    <Toast
-                      text={t('networkPermissionToast')}
-                      onClose={() => setShowNetworkToast(false)}
-                      startAdornment={
-                        <AvatarFavicon
-                          name={connectedSubjectsMetadata?.name}
-                          size={AvatarFaviconSize.Sm}
-                          src={connectedSubjectsMetadata?.iconUrl}
-                        />
-                      }
-                    />
-                  </ToastContainer>
+                  <Toast
+                    title={t('networkPermissionToast')}
+                    onClose={() => setShowNetworkToast(false)}
+                    startAccessory={
+                      <AvatarFavicon
+                        name={connectedSubjectsMetadata?.name}
+                        size={AvatarFaviconSize.Sm}
+                        src={connectedSubjectsMetadata?.iconUrl}
+                      />
+                    }
+                  />
                 ) : null}
                 <Button
                   size={ButtonSize.Lg}

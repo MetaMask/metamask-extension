@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { toast } from '@metamask/design-system-react';
 import { SECOND } from '../../../../shared/constants/time';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../store/background-connection';
@@ -8,7 +8,7 @@ import {
   selectPerpsLastDepositResult,
   selectPerpsShouldShowDepositToast,
 } from '../../../selectors/perps-controller';
-import { toast, ToastContent } from '../../ui/toast/toast';
+import React, { useEffect } from 'react';
 
 const id = 'perps-deposit-toast';
 const duration = 5 * SECOND;
@@ -40,12 +40,11 @@ export function PerpsDepositToast() {
     const description = isSuccess
       ? t('perpsDepositToastSuccessDescription')
       : lastDepositResultError || t('perpsDepositToastErrorDescription');
-    const content = (
-      <ToastContent title={title} description={description} dataTestId={id} />
-    );
     toast({
       severity: isSuccess ? 'success' : 'danger',
-      children: content,
+      title,
+      description,
+      'data-testid': id,
     });
 
     const timeoutId = setTimeout(() => {
@@ -81,13 +80,9 @@ export function PerpsDepositToast() {
 
     toast({
       severity: 'default',
-      children: (
-        <ToastContent
-          title={t('perpsDepositToastPendingTitle')}
-          description={t('perpsDepositToastPendingDescription')}
-          dataTestId={id}
-        />
-      ),
+      title: t('perpsDepositToastPendingTitle'),
+      description: t('perpsDepositToastPendingDescription'),
+      'data-testid': id,
       hasNoTimeout: true,
     });
 

@@ -1,12 +1,13 @@
-import React, { useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { Icon, IconColor, IconName } from '@metamask/design-system-react';
 import {
+  Icon,
+  IconColor,
+  IconName,
   Toast,
-  ToastContainer,
-} from '../../../../components/multichain/toast/toast';
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { resolveCancelSpeedupErrorMessage } from './utils';
+import React, { useCallback, useEffect } from 'react';
 
 const AUTO_HIDE_MS = 5000;
 
@@ -34,22 +35,30 @@ export const CancelSpeedupErrorToast = ({
     onClose();
   }, [onClose]);
 
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      handleClose();
+    }, AUTO_HIDE_MS);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [handleClose]);
+
   // Portal to document.body so position:fixed in ToastContainer is not
   // trapped by ancestor transforms inside the transaction list.
   return createPortal(
-    <ToastContainer>
+    <div className="toasts-container">
       <Toast
-        startAdornment={
+        startAccessory={
           <Icon name={IconName.CircleX} color={IconColor.ErrorDefault} />
         }
-        text={title}
+        title={title}
         description={description}
         onClose={handleClose}
-        autoHideTime={AUTO_HIDE_MS}
-        onAutoHideToast={handleClose}
-        dataTestId="cancel-speedup-error-toast"
+        data-testid="cancel-speedup-error-toast"
       />
-    </ToastContainer>,
+    </div>,
     document.body,
   );
 };

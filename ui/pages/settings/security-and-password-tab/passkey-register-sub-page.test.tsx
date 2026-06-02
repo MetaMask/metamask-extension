@@ -1,6 +1,6 @@
-import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { act, fireEvent, waitFor } from '@testing-library/react';
+import { toast } from '@metamask/design-system-react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import {
@@ -8,15 +8,16 @@ import {
   SECURITY_REGISTER_PASSKEY_ROUTE,
 } from '../../../helpers/constants/routes';
 import { SECOND } from '../../../../shared/constants/time';
-import { toast } from '../../../components/ui/toast/toast';
 import PasskeyRegisterSubPage from './passkey-register-sub-page';
+import React from 'react';
 
-jest.mock('../../../components/ui/toast/toast', () => ({
-  toast: {
-    success: jest.fn(),
-  },
-  ToastContent: ({ title }: { title: string }) => title,
-}));
+jest.mock('@metamask/design-system-react', () => {
+  const actual = jest.requireActual('@metamask/design-system-react');
+  return {
+    ...actual,
+    toast: Object.assign(jest.fn(), { dismiss: jest.fn() }),
+  };
+});
 
 const mockUseNavigate = jest.fn();
 const mockDispatch = jest.fn();
@@ -116,7 +117,7 @@ const stateWithPasskeyRegistered = {
 
 describe('PasskeyRegisterSubPage', () => {
   const mockStore = configureMockStore()(mockState);
-  const mockToastSuccess = jest.mocked(toast.success);
+  const mockToast = jest.mocked(toast);
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -223,10 +224,12 @@ describe('PasskeyRegisterSubPage', () => {
     await waitFor(
       () => {
         expect(mockForceUpdateMetamaskState).toHaveBeenCalled();
-        expect(mockToastSuccess).toHaveBeenCalledTimes(1);
-        expect(mockToastSuccess.mock.calls[0][1]).toStrictEqual({
-          duration: 5 * SECOND,
-        });
+        expect(mockToast).toHaveBeenCalledWith(
+          expect.objectContaining({
+            severity: 'success',
+            title: expect.any(String),
+          }),
+        );
         expect(mockUseNavigate).toHaveBeenCalledWith(
           SECURITY_AND_PASSWORD_ROUTE,
           {

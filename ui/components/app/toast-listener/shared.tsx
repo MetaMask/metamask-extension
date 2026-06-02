@@ -1,66 +1,38 @@
-import {
-  useTransactionDisplay,
-  type TransactionStatus,
-} from '../../../helpers/utils/transaction-display';
-import { ToastContent as ToastContentBase, toast } from '../../ui/toast/toast';
-import React from 'react';
+import { toast } from '@metamask/design-system-react';
 
-export type ToastStatus = 'pending' | 'success' | 'failed';
-
-type ToastContentOptions = {
-  title?: string;
+type ToastOptions = {
+  title: string;
   description?: string;
   dataTestId?: string;
 };
 
-export const ToastContent = ({
-  status,
-  title,
-  description,
-  dataTestId,
-}: { status: TransactionStatus } & ToastContentOptions) => {
-  const { title: statusTitle } = useTransactionDisplay(status);
-
-  return (
-    <ToastContentBase
-      title={title ?? statusTitle}
-      description={description}
-      dataTestId={dataTestId}
-    />
-  );
-};
-
-export function showPendingToast(id: string, options?: ToastContentOptions) {
+export function showPendingToast(id: string, options: ToastOptions) {
   toast({
     severity: 'default',
-    children: <ToastContent status="pending" {...options} />,
+    title: options.title,
+    description: options.description,
+    'data-testid': options.dataTestId,
   });
 }
 
-export function showSuccessToast(id: string, options?: ToastContentOptions) {
+export function showSuccessToast(id: string, options: ToastOptions) {
   toast({
     severity: 'success',
-    children: <ToastContent status="success" {...options} />,
+    title: options.title,
+    description: options.description,
+    'data-testid': options.dataTestId,
   });
 }
 
-export function showFailedToast(id: string, options?: ToastContentOptions) {
+export function showFailedToast(id: string, options: ToastOptions) {
   toast({
     severity: 'danger',
-    children: <ToastContent status="failed" {...options} />,
+    title: options.title,
+    description: options.description,
+    'data-testid': options.dataTestId,
   });
 }
 
 export function dismissToast(id: string) {
   toast.dismiss();
-}
-
-export function showToast(id: string, status: ToastStatus) {
-  if (status === 'pending') {
-    showPendingToast(id);
-  } else if (status === 'success') {
-    showSuccessToast(id);
-  } else if (status === 'failed') {
-    showFailedToast(id);
-  }
 }

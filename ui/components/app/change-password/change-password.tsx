@@ -1,11 +1,4 @@
 import EventEmitter from 'events';
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
 import log from 'loglevel';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -23,6 +16,7 @@ import {
   BoxJustifyContent,
   BoxAlignItems,
   FontWeight,
+  toast,
 } from '@metamask/design-system-react';
 import {
   FormTextField,
@@ -70,7 +64,6 @@ import {
   SECURITY_AND_PASSWORD_ROUTE,
   SECURITY_PASSWORD_CHANGE_V2_ROUTE,
 } from '../../../helpers/constants/routes';
-import { toast, ToastContent } from '../../ui/toast/toast';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -81,6 +74,13 @@ import { useBoolean } from '../../../hooks/useBoolean';
 import { SECOND } from '../../../../shared/constants/time';
 import PasskeyTroubleshootModal from '../passkey-troubleshoot-modal';
 import ChangePasswordWarning from './change-password-warning';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 const ChangePasswordSteps = {
   VerifyCurrentPassword: 1,
@@ -303,14 +303,14 @@ const ChangePassword = ({
         : t('securityChangePasswordToastSuccess');
       toast({
         severity: 'success',
-        children: <ToastContent title={toastTitle} />,
+        title: toastTitle,
       });
     } catch (error) {
       console.error(error);
       setStep(ChangePasswordSteps.ChangePassword);
       toast({
         severity: 'danger',
-        children: <ToastContent title={t('securityChangePasswordToastError')} />,
+        title: t('securityChangePasswordToastError'),
       });
     }
   };
@@ -379,17 +379,12 @@ const ChangePassword = ({
         );
         toast({
           severity: 'danger',
-          children: (
-            <ToastContent
-              title={
-                translatePasskeyError(
-                  error,
-                  t as (key: string, substitutions?: string[]) => string,
-                  passkeyMethodLabel,
-                ) ?? t('passkeyErrorVerificationFailed', [passkeyMethodLabel])
-              }
-            />
-          ),
+          title:
+            translatePasskeyError(
+              error,
+              t as (key: string, substitutions?: string[]) => string,
+              passkeyMethodLabel,
+            ) ?? t('passkeyErrorVerificationFailed', [passkeyMethodLabel]),
         });
       }
       return null;

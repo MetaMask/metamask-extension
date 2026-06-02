@@ -1,5 +1,5 @@
-import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { toast } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   getAllChainsToPoll,
@@ -11,8 +11,8 @@ import {
   setUseNftDetection,
 } from '../../../../../store/actions';
 import { SECOND } from '../../../../../../shared/constants/time';
-import { toast, ToastContent } from '../../../../ui/toast/toast';
 import { BannerAlert } from '../../../../component-library';
+import React from 'react';
 
 const nftDetectionEnabledToastId = 'enabled-nft-auto-detection';
 const autoHideToastDelay = 5 * SECOND;
@@ -32,18 +32,14 @@ export default function NFTsDetectionNoticeNFTsTab() {
       actionButtonLabel={t('selectNFTPrivacyPreference')}
       actionButtonOnClick={() => {
         if (!isDisplayNFTMediaToggleEnabled) {
-          dispatch(setOpenSeaEnabled(true));
-        }
-        dispatch(setUseNftDetection(true));
-        toast({
-          severity: 'success',
-          children: (
-            <ToastContent
-              dataTestId={nftDetectionEnabledToastId}
-              title={t('nftAutoDetectionEnabled')}
-            />
-          ),
-        });
+        dispatch(setOpenSeaEnabled(true));
+      }
+      dispatch(setUseNftDetection(true));
+      toast({
+        severity: 'success',
+        title: t('nftAutoDetectionEnabled'),
+        'data-testid': nftDetectionEnabledToastId,
+      });
         // dispatch action to detect nfts
         dispatch(detectNfts(allChainIds));
       }}
