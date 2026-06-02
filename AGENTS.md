@@ -41,7 +41,7 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
       - Verify mUSD is visible even with 0 balance.
       - Enable "Hide zero-balance tokens".
       - Verify mUSD is still visible.
-      - Ensure token sort is declining balance and low-value assets are collapsed.
+      - Ensure token sort is by descending balance and low-value assets are collapsed.
       - Verify mUSD is not hidden inside the low-value collapsed section.
     - Bad Instructions:
       - `yarn lint:changed:fix`
