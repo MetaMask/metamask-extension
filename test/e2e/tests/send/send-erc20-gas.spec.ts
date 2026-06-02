@@ -56,6 +56,8 @@ describe('Send ERC20 - Gas Customization', function () {
         await assetListPage.importCustomTokenByChain(
           '0x539',
           '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
+          'TST',
+          '4',
         );
         // go to custom tokens view on extension, perform send tokens
         await assetListPage.openTokenDetails(symbol);
@@ -128,6 +130,8 @@ describe('Send ERC20 - Gas Customization', function () {
         await assetListPage.importCustomTokenByChain(
           '0x539',
           '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
+          'TST',
+          '4',
         );
         // transfer token from dapp
         await testDapp.openTestDappPage({ contractAddress });
@@ -199,6 +203,8 @@ describe('Send ERC20 - Gas Customization', function () {
         await assetListPage.importCustomTokenByChain(
           '0x539',
           '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
+          'TST',
+          '4',
         );
         // transfer token from dapp
         await driver.openNewPage(`${DAPP_URL}/?contract=${contractAddress}`);
