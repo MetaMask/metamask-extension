@@ -50,7 +50,7 @@ describe('config-registry selectors', () => {
     });
   });
 
-  describe('getFeaturedNetworksForAdditionalList', () => {
+  describe('getFeaturedEvmNetworks', () => {
     it('returns FEATURED_RPCS when feature flag is off', () => {
       const state = {
         metamask: {

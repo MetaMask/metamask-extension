@@ -68,7 +68,7 @@ import {
 } from '../../../selectors';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../selectors/network-blacklist/network-blacklist';
-import { getFeaturedNetworksForAdditionalList } from '../../../selectors/config-registry/config-registry';
+import { getFeaturedEvmNetworks } from '../../../selectors/config-registry/config-registry';
 import ToggleButton from '../../ui/toggle-button';
 import {
   Display,
@@ -210,9 +210,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const blacklistedChainIds = useSelector(
     selectAdditionalNetworksBlacklistFeatureFlag,
   );
-  const featuredNetworksBaseList = useSelector(
-    getFeaturedNetworksForAdditionalList,
-  );
+  const featuredNetworksBaseList = useSelector(getFeaturedEvmNetworks);
   const canSelectNetwork: boolean =
     Boolean(selectedTabOrigin) &&
     Boolean(domains[selectedTabOrigin]) &&
