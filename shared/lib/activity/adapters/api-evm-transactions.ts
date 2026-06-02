@@ -3,7 +3,7 @@ import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
 import { NATIVE_TOKEN_ADDRESS as zeroAddress } from '../../../constants/transaction';
 import { isEqualCaseInsensitive as equalsIgnoreCase } from '../../string-utils';
 import type { ActivityListItem, Status, TokenAmount } from '../types';
-import { supplyMethodIds } from './constants';
+import { supplyMethodIds, wrapMethodIds } from './constants';
 import {
   getTokenMetadataFromKnownToken,
   getTokenAmountFromTransfer,
@@ -57,6 +57,8 @@ export function mapApiEvmTransactions({
     valueTransfers?.some(({ transferType }) => transferType === 'normal');
   const hasSupplyMethodId =
     transaction.methodId && supplyMethodIds.has(transaction.methodId);
+  const hasWrapMethodId =
+    transaction.methodId && wrapMethodIds.has(transaction.methodId);
   if (transactionCategory === 'SWAP' || transactionCategory === 'EXCHANGE') {
     if (!receivedTransfer?.symbol) {
       return {
@@ -283,33 +285,8 @@ export function mapApiEvmTransactions({
     };
   }
 
-  // TODO: Categorize these Swaps in the backend
-  if (
-    transactionCategory === 'CONTRACT_CALL' &&
-    sentTransfer?.symbol &&
-    receivedTransfer?.symbol &&
-    sentTransfer.symbol !== receivedTransfer.symbol
-  ) {
-    return {
-      type: 'swap',
-      chainId,
-      status,
-      timestamp,
-      raw: { type: 'apiEvmTransaction', data: transaction },
-      data: {
-        sourceToken: getToken(sentTransfer, 'out'),
-        destinationToken: getToken(receivedTransfer, 'in'),
-        hash,
-      },
-    };
-  }
-
   // TODO: Not sure if this is specific enough, may need separate category in backend
-  if (
-    transactionCategory === 'DEPOSIT' &&
-    receivedTransfer &&
-    !hasSupplyMethodId
-  ) {
+  if (receivedTransfer && hasWrapMethodId) {
     return {
       type: 'wrap',
       chainId,
@@ -334,6 +311,27 @@ export function mapApiEvmTransactions({
         hash,
         sourceToken: getToken(sentTransfer, 'out'),
         destinationToken: getToken(receivedTransfer, 'in'),
+      },
+    };
+  }
+
+  // TODO: Categorize these Swaps in the backend
+  if (
+    transactionCategory === 'CONTRACT_CALL' &&
+    sentTransfer?.symbol &&
+    receivedTransfer?.symbol &&
+    sentTransfer.symbol !== receivedTransfer.symbol
+  ) {
+    return {
+      type: 'swap',
+      chainId,
+      status,
+      timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
+      data: {
+        sourceToken: getToken(sentTransfer, 'out'),
+        destinationToken: getToken(receivedTransfer, 'in'),
+        hash,
       },
     };
   }
