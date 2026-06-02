@@ -168,6 +168,24 @@ describe('skills-postinstall', () => {
     });
   });
 
+  it('runs yarn skills when cache refresh fails but .skills.local has a source checkout', () => {
+    const spawn = spawnWithStatuses([1, 0]);
+
+    expect(
+      postinstall({
+        env: {},
+        readFile: () =>
+          'SKILLS_AUTO_UPDATE=1\nMETAMASK_SKILLS_DIR=/tmp/metamask-skills\n',
+        spawn,
+        stat: statGitDir(false),
+      }),
+    ).toBe(0);
+
+    expect(spawn).toHaveBeenNthCalledWith(2, 'yarn', ['skills'], {
+      stdio: 'inherit',
+    });
+  });
+
   it('warns but does not fail when auto-update sync fails', () => {
     const stderr = { write: jest.fn() };
 
