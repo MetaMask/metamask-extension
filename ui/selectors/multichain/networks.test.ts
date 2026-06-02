@@ -1182,7 +1182,11 @@ describe('Multichain network selectors', () => {
       };
 
       expect(
-        selectNetworkForConnectionBanner(mockStateWithInfuraPartialOutage),
+        selectNetworkForConnectionBanner(
+          mockStateWithInfuraPartialOutage as unknown as Parameters<
+            typeof selectNetworkForConnectionBanner
+          >[0],
+        ),
       ).toBeNull();
     });
 
