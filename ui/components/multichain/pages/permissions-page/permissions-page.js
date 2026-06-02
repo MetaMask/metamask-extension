@@ -6,6 +6,7 @@ import {
 } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { isSnapId } from '@metamask/snaps-utils';
+import { toast } from '@metamask/design-system-react';
 import { Content, Footer, Header, Page } from '../page';
 import {
   Box,
@@ -46,8 +47,9 @@ import { getMergedConnectionsListWithGatorPermissions } from '../../../../select
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/lib/environment';
 import { removePermissionsFor } from '../../../../store/actions';
 import { DisconnectAllSitesModal } from '../../disconnect-all-modal';
-import { Toast, ToastContainer } from '../../toast';
 import { ConnectionListItem } from './connection-list-item';
+
+const TOAST_VISIBLE_DURATION_MS = 5000;
 
 const PermissionsPage = () => {
   const t = useI18nContext();
@@ -87,6 +89,52 @@ const PermissionsPage = () => {
   useEffect(() => {
     setTotalConnections(Object.keys(mergedConnectionsList).length);
   }, [mergedConnectionsList]);
+
+  useEffect(() => {
+    if (!showSuccessToast) {
+      return undefined;
+    }
+
+    const timeoutId = setTimeout(() => {
+      setShowSuccessToast(false);
+    }, TOAST_VISIBLE_DURATION_MS);
+
+    toast({
+      severity: 'success',
+      title: t('disconnectAllSitesSuccess'),
+      'data-testid': 'disconnect-all-success-toast',
+      hasNoTimeout: true,
+      onClose: () => setShowSuccessToast(false),
+    });
+
+    return () => {
+      clearTimeout(timeoutId);
+      toast.dismiss();
+    };
+  }, [showSuccessToast, t]);
+
+  useEffect(() => {
+    if (!showErrorToast) {
+      return undefined;
+    }
+
+    const timeoutId = setTimeout(() => {
+      setShowErrorToast(false);
+    }, TOAST_VISIBLE_DURATION_MS);
+
+    toast({
+      severity: 'danger',
+      title: t('disconnectAllSitesError'),
+      'data-testid': 'disconnect-all-error-toast',
+      hasNoTimeout: true,
+      onClose: () => setShowErrorToast(false),
+    });
+
+    return () => {
+      clearTimeout(timeoutId);
+      toast.dismiss();
+    };
+  }, [showErrorToast, t]);
 
   const handleDisconnectAll = useCallback(() => {
     const errors = [];
@@ -213,28 +261,6 @@ const PermissionsPage = () => {
             gap={2}
             alignItems={AlignItems.center}
           >
-            {showSuccessToast && (
-              <ToastContainer>
-                <Toast
-                  text={t('disconnectAllSitesSuccess')}
-                  onClose={() => setShowSuccessToast(false)}
-                  autoHideTime={5000}
-                  onAutoHideToast={() => setShowSuccessToast(false)}
-                  dataTestId="disconnect-all-success-toast"
-                />
-              </ToastContainer>
-            )}
-            {showErrorToast && (
-              <ToastContainer>
-                <Toast
-                  text={t('disconnectAllSitesError')}
-                  onClose={() => setShowErrorToast(false)}
-                  autoHideTime={5000}
-                  onAutoHideToast={() => setShowErrorToast(false)}
-                  dataTestId="disconnect-all-error-toast"
-                />
-              </ToastContainer>
-            )}
             <Button
               size={ButtonSize.Lg}
               block

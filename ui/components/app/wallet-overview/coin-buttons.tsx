@@ -1,4 +1,3 @@
-import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toHex } from '@metamask/controller-utils';
@@ -11,7 +10,7 @@ import {
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { Box, BoxJustifyContent } from '@metamask/design-system-react';
+import { Box, BoxJustifyContent, toast } from '@metamask/design-system-react';
 import { ChainId } from '../../../../shared/constants/network';
 import { transitionForward } from '../../ui/transition';
 
@@ -37,7 +36,6 @@ import IconButton from '../../ui/icon-button';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
 import { ReceiveModal } from '../../multichain/receive-modal';
-import { Toast, ToastContainer } from '../../multichain/toast';
 import { setActiveNetworkWithError } from '../../../store/actions';
 import {
   getMultichainNativeCurrency,
@@ -49,26 +47,7 @@ import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../../shared/constants/bridge';
 import { trace, TraceName } from '../../../../shared/lib/trace';
 import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
-import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
-
-const TabOpenedToast = ({ onClose }: { onClose: () => void }) => {
-  const t = useContext(I18nContext);
-
-  return (
-    <ToastContainer>
-      <Toast
-        startAdornment={
-          <Icon name={IconName.Export} color={IconColor.iconDefault} />
-        }
-        text={t('buyTabOpenedToastText')}
-        description={t('buyTabOpenedToastDescription')}
-        onClose={onClose}
-        autoHideTime={3000}
-        onAutoHideToast={onClose}
-      />
-    </ToastContainer>
-  );
-};
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 
 type CoinButtonsProps = {
   account: InternalAccount;
@@ -116,8 +95,6 @@ const CoinButtons = ({
   if (isSwapsChain && defaultSwapsToken === undefined) {
     throw new Error('defaultSwapsToken is required');
   }
-
-  const handleSendNonEvm = useHandleSendNonEvm();
 
   const location = useLocation();
 
@@ -259,11 +236,20 @@ const CoinButtons = ({
     const params =
       trackingLocation === 'home' ? undefined : { chainId: chainId.toString() };
     transitionForward(() => navigateToSendRoute(navigate, params));
-  }, [chainId, account, setCorrectChain, handleSendNonEvm, trackingLocation]);
+  }, [
+    account,
+    chainId,
+    navigate,
+    nativeToken,
+    setCorrectChain,
+    trackEvent,
+    trackingLocation,
+  ]);
 
   const handleBuyAndSellOnClick = useCallback(() => {
     setShowTabOpenedToast(true);
-    openBuyCryptoInPdapp(getChainId());
+    const chainToUse = isCaipChainId(chainId) ? chainId : toHex(chainId);
+    openBuyCryptoInPdapp(chainToUse);
     trackEvent({
       event: MetaMetricsEventName.NavBuyButtonClicked,
       category: MetaMetricsEventCategory.Navigation,
@@ -282,7 +268,34 @@ const CoinButtons = ({
         ...getSnapAccountMetaMetricsPropertiesIfAny(account),
       },
     });
-  }, [chainId, defaultSwapsToken]);
+  }, [account, chainId, defaultSwapsToken, openBuyCryptoInPdapp, trackEvent]);
+
+  useEffect(() => {
+    if (!showTabOpenedToast) {
+      return undefined;
+    }
+
+    const timeoutId = setTimeout(() => {
+      setShowTabOpenedToast(false);
+    }, 3000);
+
+    toast({
+      severity: 'default',
+      title: t('buyTabOpenedToastText'),
+      description: t('buyTabOpenedToastDescription'),
+      startAccessory: (
+        <Icon name={IconName.Export} color={IconColor.iconDefault} />
+      ),
+      hasNoTimeout: true,
+      onClose: () => setShowTabOpenedToast(false),
+      'data-testid': 'buy-tab-opened-toast',
+    });
+
+    return () => {
+      clearTimeout(timeoutId);
+      toast.dismiss();
+    };
+  }, [showTabOpenedToast, t]);
 
   const handleSwapOnClick = useCallback(async () => {
     // Determine the chainId to use in the Swap experience using the url
@@ -415,9 +428,6 @@ const CoinButtons = ({
         width={BlockSize.Full}
         onClick={handleReceiveOnClick}
       />
-      {showTabOpenedToast && (
-        <TabOpenedToast onClose={() => setShowTabOpenedToast(false)} />
-      )}
     </Box>
   );
 };

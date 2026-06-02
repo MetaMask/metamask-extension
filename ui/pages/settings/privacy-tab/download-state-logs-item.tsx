@@ -1,20 +1,39 @@
-import React, { useState } from 'react';
-import {
-  Button,
-  Icon,
-  IconColor,
-  IconName,
-} from '@metamask/design-system-react';
+import { Button, toast } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PRIVACY_ITEMS } from '../search-config';
-import { Toast, ToastContainer } from '../../../components/multichain/toast';
-import { BorderRadius } from '../../../helpers/constants/design-system';
 import DownloadStateLogsModal from './download-state-logs-modal';
+import React, { useState } from 'react';
+
+const TOAST_VISIBLE_DURATION_MS = 2500;
 
 export const DownloadStateLogsItem = () => {
   const t = useI18nContext();
   const [showModal, setShowModal] = useState(false);
   const [showErrorToast, setShowErrorToast] = useState(false);
+
+  React.useEffect(() => {
+    if (!showErrorToast) {
+      return undefined;
+    }
+
+    const timeoutId = setTimeout(() => {
+      setShowErrorToast(false);
+    }, TOAST_VISIBLE_DURATION_MS);
+
+    toast({
+      severity: 'danger',
+      title: t('unableToDownload'),
+      description: t('stateLogError'),
+      'data-testid': 'download-state-logs-error-toast',
+      hasNoTimeout: true,
+      onClose: () => setShowErrorToast(false),
+    });
+
+    return () => {
+      clearTimeout(timeoutId);
+      toast.dismiss();
+    };
+  }, [showErrorToast, t]);
 
   return (
     <>
@@ -30,21 +49,6 @@ export const DownloadStateLogsItem = () => {
           onClose={() => setShowModal(false)}
           onError={() => setShowErrorToast(true)}
         />
-      )}
-      {showErrorToast && (
-        <ToastContainer>
-          <Toast
-            startAdornment={
-              <Icon name={IconName.Warning} color={IconColor.WarningDefault} />
-            }
-            text={t('unableToDownload')}
-            description={t('stateLogError')}
-            onClose={() => setShowErrorToast(false)}
-            borderRadius={BorderRadius.LG}
-            textClassName="text-base"
-            dataTestId="download-state-logs-error-toast"
-          />
-        </ToastContainer>
       )}
     </>
   );
