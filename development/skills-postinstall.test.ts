@@ -19,6 +19,12 @@ function statGitDir(existing: boolean) {
   }) as unknown as typeof import('node:fs').statSync;
 }
 
+function readSkillsLocal(
+  content: string,
+): typeof import('node:fs').readFileSync {
+  return (() => content) as unknown as typeof import('node:fs').readFileSync;
+}
+
 function spawnWithStatuses(statuses: number[]) {
   let index = 0;
   return jest.fn(() => {
@@ -47,14 +53,14 @@ describe('skills-postinstall', () => {
   });
 
   it('only auto-updates generated skills when explicitly opted in', () => {
-    expect(shouldAutoUpdateSkills({})).toBe(false);
+    expect(shouldAutoUpdateSkills({}, readSkillsLocal(''))).toBe(false);
     expect(shouldAutoUpdateSkills({ SKILLS_AUTO_UPDATE: '0' })).toBe(false);
     expect(shouldAutoUpdateSkills({ SKILLS_AUTO_UPDATE: '1' })).toBe(true);
     expect(shouldAutoUpdateSkills({ SKILLS_AUTO_UPDATE: 'true' })).toBe(true);
     expect(shouldAutoUpdateSkills({ SKILLS_AUTO_UPDATE: 'YES' })).toBe(true);
-    expect(shouldAutoUpdateSkills({}, () => 'SKILLS_AUTO_UPDATE=1\n')).toBe(
-      true,
-    );
+    expect(
+      shouldAutoUpdateSkills({}, readSkillsLocal('SKILLS_AUTO_UPDATE=1\n')),
+    ).toBe(true);
     expect(
       shouldAutoUpdateSkills(
         { SKILLS_AUTO_UPDATE: '0' },
@@ -133,7 +139,14 @@ describe('skills-postinstall', () => {
   it('does not run yarn skills by default', () => {
     const spawn = spawnWithStatuses([0]);
 
-    expect(postinstall({ env: {}, spawn, stat: statGitDir(false) })).toBe(0);
+    expect(
+      postinstall({
+        env: {},
+        readFile: readSkillsLocal(''),
+        spawn,
+        stat: statGitDir(false),
+      }),
+    ).toBe(0);
 
     expect(spawn).toHaveBeenCalledTimes(1);
     expect(spawn).toHaveBeenNthCalledWith(
@@ -174,8 +187,9 @@ describe('skills-postinstall', () => {
     expect(
       postinstall({
         env: {},
-        readFile: () =>
+        readFile: readSkillsLocal(
           'SKILLS_AUTO_UPDATE=1\nMETAMASK_SKILLS_DIR=/tmp/metamask-skills\n',
+        ),
         spawn,
         stat: statGitDir(false),
       }),
@@ -233,6 +247,7 @@ describe('skills-postinstall', () => {
     expect(
       postinstall({
         env: {},
+        readFile: readSkillsLocal(''),
         mkdir: jest.fn(() => {
           throw new Error('readonly');
         }) as unknown as typeof import('node:fs').mkdirSync,
