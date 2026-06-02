@@ -86,10 +86,7 @@ export function useHwSwapSubmission({
         rpcTimeoutMs: RETRY_RPC_TIMEOUT_MS,
       });
     } catch (error) {
-      console.warn(
-        '[useHwSwapSubmission] Retry submission failed:',
-        error,
-      );
+      console.warn('[useHwSwapSubmission] Retry submission failed:', error);
     }
   }, [lockedQuote, submitBridgeTransaction]);
 
