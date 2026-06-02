@@ -144,6 +144,34 @@ export const getUnapprovedIncreaseAllowanceTransaction = (
   };
 };
 
+// Legacy OpenZeppelin pre-2.0 `increaseApproval(address,uint256)` calldata
+// targeting spender 0x9bc5baf874d2da8d216ae9f137804184ee5afef4 with value 30000.
+// Selector 0xd73dd623. Classified as `contractInteraction` because no
+// matching `TransactionType` enum value exists; the trust signals middleware
+// still extracts and scans the spender. See PSAFE-415.
+export const getUnapprovedIncreaseApprovalTransaction = (
+  accountAddress: string,
+  pendingTransactionId: string,
+  pendingTransactionTime: number,
+) => {
+  return {
+    ...getUnapprovedContractInteractionTransaction(
+      accountAddress,
+      pendingTransactionId,
+      pendingTransactionTime,
+    ),
+    txParams: {
+      ...getUnapprovedContractInteractionTransaction(
+        accountAddress,
+        pendingTransactionId,
+        pendingTransactionTime,
+      ).txParams,
+      data: '0xd73dd6230000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000007530',
+    },
+    type: TransactionType.contractInteraction,
+  };
+};
+
 export const getUnapprovedSetApprovalForAllTransaction = (
   accountAddress: string,
   pendingTransactionId: string,
