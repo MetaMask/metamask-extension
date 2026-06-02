@@ -2,6 +2,7 @@ import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import { EthAccountType } from '@metamask/keyring-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
+import { toast } from '@metamask/design-system-react';
 import configureStore from '../../../../../store/store';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { setBackgroundConnection } from '../../../../../store/background-connection';
@@ -10,17 +11,15 @@ import { ETH_EOA_METHODS } from '../../../../../../shared/constants/eth-methods'
 import { mockNetworkState } from '../../../../../../test/stub/networks';
 import { createMockInternalAccount } from '../../../../../../test/jest/mocks';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
-import { toast, ToastContent } from '../../../../ui/toast/toast';
 import NftsTab from '.';
 
-jest.mock('../../../../ui/toast/toast', () => ({
-  toast: {
-    success: jest.fn(),
-  },
-  ToastContent: jest.fn(({ title, dataTestId }) => (
-    <div data-testid={dataTestId}>{title}</div>
-  )),
-}));
+jest.mock('@metamask/design-system-react', () => {
+  const actual = jest.requireActual('@metamask/design-system-react');
+  return {
+    ...actual,
+    toast: Object.assign(jest.fn(), { dismiss: jest.fn() }),
+  };
+});
 
 const ETH_BALANCE = '0x16345785d8a0000'; // 0.1 ETH
 
@@ -289,12 +288,12 @@ describe('NFT Items', () => {
       expect(setDisplayNftMediaStub).toHaveBeenCalledTimes(1);
       expect(setUseNftDetectionStub.mock.calls[0][0]).toStrictEqual(true);
       expect(setDisplayNftMediaStub.mock.calls[0][0]).toStrictEqual(true);
-      expect(toast.success).toHaveBeenCalledWith(
-        <ToastContent
-          title={messages.nftAutoDetectionEnabled.message}
-          dataTestId="enabled-nft-auto-detection"
-        />,
-        { id: 'enabled-nft-auto-detection', duration: 5000 },
+      expect(toast).toHaveBeenCalledWith(
+        expect.objectContaining({
+          severity: 'success',
+          title: messages.nftAutoDetectionEnabled.message,
+          'data-testid': 'enabled-nft-auto-detection',
+        }),
       );
     });
     it('should not render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has no NFTs but use NFT autodetection preference is set to true', () => {

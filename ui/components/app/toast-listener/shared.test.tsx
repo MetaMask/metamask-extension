@@ -1,111 +1,61 @@
-import { render, screen } from '@testing-library/react';
-import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import {
-  ToastContent,
-  showSuccessToast,
-  showToast,
-  type ToastStatus,
-} from './shared';
-import React from 'react';
+import { showFailedToast, showPendingToast, showSuccessToast } from './shared';
 
-const mockToastLoading = jest.fn();
-const mockToastSuccess = jest.fn();
-const mockToastError = jest.fn();
-const mockUseTransactionDisplay = jest.fn();
+const mockToast = jest.fn();
+const mockToastDismiss = jest.fn();
 
-jest.mock('../../../helpers/utils/transaction-display', () => ({
-  useTransactionDisplay: (status: string) => mockUseTransactionDisplay(status),
-}));
-
-jest.mock('../../ui/toast/toast', () => ({
-  toast: {
-    loading: (...args: unknown[]) => mockToastLoading(...args),
-    success: (...args: unknown[]) => mockToastSuccess(...args),
-    error: (...args: unknown[]) => mockToastError(...args),
-    dismiss: jest.fn(),
-  },
-  ToastContent: ({
-    title,
-    description,
-  }: {
-    title: string;
-    description?: string;
-  }) => (
-    <div>
-      <p>{title}</p>
-      {description ? <p>{description}</p> : null}
-    </div>
-  ),
+jest.mock('@metamask/design-system-react', () => ({
+  toast: Object.assign((...args: unknown[]) => mockToast(...args), {
+    dismiss: (...args: unknown[]) => mockToastDismiss(...args),
+  }),
 }));
 
 describe('toast-listener/shared', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseTransactionDisplay.mockReturnValue({
-      title: messages.transactionSubmitted.message,
-    });
-  });
-
-  it('renders the transaction title in ToastContent', () => {
-    render(<ToastContent status="pending" />);
-
-    expect(mockUseTransactionDisplay).toHaveBeenCalledWith('pending');
-    expect(
-      screen.getByText(messages.transactionSubmitted.message),
-    ).toBeInTheDocument();
-  });
-
-  it('renders custom toast content', () => {
-    render(
-      <ToastContent
-        status="success"
-        title={messages.perpsWithdrawPostQuoteToastSuccessTitle.message}
-        description="$20.73 BNB moved to your wallet"
-      />,
-    );
-
-    expect(
-      screen.getByText(
-        messages.perpsWithdrawPostQuoteToastSuccessTitle.message,
-      ),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText('$20.73 BNB moved to your wallet'),
-    ).toBeInTheDocument();
   });
 
   it('shows a pending toast', () => {
-    showToast('toast-id', 'pending' as ToastStatus);
+    showPendingToast('toast-id', {
+      title: 'Transaction submitted',
+      description: 'Waiting for confirmation',
+      dataTestId: 'pending-toast',
+    });
 
-    expect(mockToastLoading).toHaveBeenCalledWith(expect.any(Object), {
-      id: 'toast-id',
+    expect(mockToast).toHaveBeenCalledWith({
+      severity: 'default',
+      title: 'Transaction submitted',
+      description: 'Waiting for confirmation',
+      'data-testid': 'pending-toast',
     });
   });
 
   it('shows a success toast', () => {
-    showToast('toast-id', 'success' as ToastStatus);
+    showSuccessToast('toast-id', {
+      title: 'Transaction confirmed',
+      description: 'Completed',
+      dataTestId: 'success-toast',
+    });
 
-    expect(mockToastSuccess).toHaveBeenCalledWith(expect.any(Object), {
-      id: 'toast-id',
+    expect(mockToast).toHaveBeenCalledWith({
+      severity: 'success',
+      title: 'Transaction confirmed',
+      description: 'Completed',
+      'data-testid': 'success-toast',
     });
   });
 
   it('shows a failed toast', () => {
-    showToast('toast-id', 'failed' as ToastStatus);
-
-    expect(mockToastError).toHaveBeenCalledWith(expect.any(Object), {
-      id: 'toast-id',
-    });
-  });
-
-  it('shows a custom success toast', () => {
-    showSuccessToast('toast-id', {
-      title: messages.perpsWithdrawPostQuoteToastSuccessTitle.message,
-      description: '$20.73 BNB moved to your wallet',
+    showFailedToast('toast-id', {
+      title: 'Transaction failed',
+      description: 'Try again',
+      dataTestId: 'failed-toast',
     });
 
-    expect(mockToastSuccess).toHaveBeenCalledWith(expect.any(Object), {
-      id: 'toast-id',
+    expect(mockToast).toHaveBeenCalledWith({
+      severity: 'danger',
+      title: 'Transaction failed',
+      description: 'Try again',
+      'data-testid': 'failed-toast',
     });
   });
 });

@@ -20,8 +20,7 @@ const INVALID_ADDRESS = 'aoinsafasdfa';
 const VALID_TOKENID = '1201';
 const INVALID_TOKENID = 'abcde';
 
-const mockToastSuccess = jest.fn();
-const mockToastError = jest.fn();
+const mockToast = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => ({
   addNftVerifyOwnership: jest
@@ -35,13 +34,15 @@ jest.mock('../../../store/actions.ts', () => ({
   hideImportNftsModal: jest.fn().mockReturnValue(jest.fn().mockResolvedValue()),
 }));
 
-jest.mock('../../ui/toast/toast', () => ({
-  toast: {
-    success: (...args) => mockToastSuccess(...args),
-    error: (...args) => mockToastError(...args),
-  },
-  ToastContent: ({ title }) => title,
-}));
+jest.mock('@metamask/design-system-react', () => {
+  const actual = jest.requireActual('@metamask/design-system-react');
+  return {
+    ...actual,
+    toast: Object.assign((...args) => mockToast(...args), {
+      dismiss: jest.fn(),
+    }),
+  };
+});
 
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
@@ -56,8 +57,7 @@ describe('ImportNftsModal', () => {
 
   beforeEach(() => {
     jest.restoreAllMocks();
-    mockToastSuccess.mockClear();
-    mockToastError.mockClear();
+    mockToast.mockClear();
   });
 
   it('should enable the "Import" button when valid entries are input into both Address and TokenId fields and a network is selected', () => {
@@ -204,7 +204,13 @@ describe('ImportNftsModal', () => {
         },
       });
 
-      expect(mockToastSuccess).toHaveBeenCalled();
+      expect(mockToast).toHaveBeenCalledWith(
+        expect.objectContaining({
+          severity: 'success',
+          title: messages.newNftAddedMessage.message,
+          'data-testid': 'nft-import-success-toast',
+        }),
+      );
 
       expect(ignoreTokens).toHaveBeenCalledWith({
         dontShowLoadingIndicator: true,
@@ -247,7 +253,13 @@ describe('ImportNftsModal', () => {
     fireEvent.click(getByText(messages.import.message));
 
     await waitFor(() => {
-      expect(mockToastError).toHaveBeenCalled();
+      expect(mockToast).toHaveBeenCalledWith(
+        expect.objectContaining({
+          severity: 'danger',
+          title: messages.nftAddFailedMessage.message,
+          'data-testid': 'nft-import-error-toast',
+        }),
+      );
     });
   });
 

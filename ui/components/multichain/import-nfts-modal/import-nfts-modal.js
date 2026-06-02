@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useContext, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { toast } from '@metamask/design-system-react';
 import {
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
@@ -62,7 +63,6 @@ import { checkTokenIdExists } from '../../../helpers/utils/util';
 import { NetworkListItem } from '../network-list-item';
 import { NetworkSelectorCustomImport } from '../../app/import-token/network-selector-custom-import';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
-import { toast, ToastContent } from '../../ui/toast/toast';
 
 const ACTION_MODES = {
   // Displays the import nft modal
@@ -139,12 +139,8 @@ export const ImportNftsModal = ({ onClose }) => {
     } catch {
       toast({
         severity: 'danger',
-        children: (
-          <ToastContent
-            dataTestId="nft-import-error-toast"
-            title={t('nftAddFailedMessage')}
-          />
-        ),
+        title: t('nftAddFailedMessage'),
+        'data-testid': 'nft-import-error-toast',
       });
       return;
     } finally {
@@ -162,12 +158,8 @@ export const ImportNftsModal = ({ onClose }) => {
     }
     toast({
       severity: 'success',
-      children: (
-        <ToastContent
-          dataTestId="nft-import-success-toast"
-          title={t('newNftAddedMessage')}
-        />
-      ),
+      title: t('newNftAddedMessage'),
+      'data-testid': 'nft-import-success-toast',
     });
 
     const tokenDetails = await Promise.race([

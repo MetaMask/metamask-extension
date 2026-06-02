@@ -32,16 +32,17 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-const mockToastSuccess = jest.fn();
-const mockToastError = jest.fn();
+const mockToast = jest.fn();
 
-jest.mock('../../../../ui/toast/toast', () => ({
-  toast: {
-    success: (...args) => mockToastSuccess(...args),
-    error: (...args) => mockToastError(...args),
-  },
-  ToastContent: ({ title }) => title,
-}));
+jest.mock('@metamask/design-system-react', () => {
+  const actual = jest.requireActual('@metamask/design-system-react');
+  return {
+    ...actual,
+    toast: Object.assign((...args) => mockToast(...args), {
+      dismiss: jest.fn(),
+    }),
+  };
+});
 
 jest.mock('../../../../../store/actions.ts', () => ({
   ...jest.requireActual('../../../../../store/actions.ts'),
@@ -64,8 +65,7 @@ describe('NFT Details', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockToastSuccess.mockClear();
-    mockToastError.mockClear();
+    mockToast.mockClear();
   });
 
   it('should match minimal props and state snapshot', async () => {
@@ -116,7 +116,13 @@ describe('NFT Details', () => {
       nfts[5].tokenId,
       'testNetworkConfigurationId',
     );
-    expect(mockToastSuccess).toHaveBeenCalled();
+    expect(mockToast).toHaveBeenCalledWith(
+      expect.objectContaining({
+        severity: 'success',
+        title: expect.any(String),
+        'data-testid': 'nft-remove-success-toast',
+      }),
+    );
     expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
@@ -140,7 +146,13 @@ describe('NFT Details', () => {
       nfts[5].tokenId,
       'testNetworkConfigurationId',
     );
-    expect(mockToastError).toHaveBeenCalled();
+    expect(mockToast).toHaveBeenCalledWith(
+      expect.objectContaining({
+        severity: 'danger',
+        title: expect.any(String),
+        'data-testid': 'nft-remove-error-toast',
+      }),
+    );
     expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 

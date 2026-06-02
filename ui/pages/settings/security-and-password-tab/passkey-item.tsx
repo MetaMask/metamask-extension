@@ -1,14 +1,7 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import log from 'loglevel';
-import { TextButton, TextColor } from '@metamask/design-system-react';
+import { TextButton, TextColor, toast } from '@metamask/design-system-react';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
@@ -27,7 +20,6 @@ import {
 } from '../../../../shared/lib/passkey';
 import { captureException } from '../../../../shared/lib/sentry';
 import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
-import { toast, ToastContent } from '../../../components/ui/toast/toast';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   SECURITY_AND_PASSWORD_ROUTE,
@@ -47,6 +39,13 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import { SECURITY_ITEMS } from '../search-config';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 const PASSKEY_SETTINGS_TOAST_DURATION_MS = 5 * SECOND;
 
@@ -156,7 +155,7 @@ const PasskeyItem = () => {
 
       toast({
         severity: 'success',
-        children: <ToastContent title={t('passkeyTurnedOff', [passkeyMethodLabel])} />,
+        title: t('passkeyTurnedOff', [passkeyMethodLabel]),
       });
 
       trackEvent({
@@ -190,14 +189,9 @@ const PasskeyItem = () => {
         );
         toast({
           severity: 'danger',
-          children: (
-            <ToastContent
-              title={
-                translatePasskeyError(error, t, passkeyMethodLabel) ??
-                t('passkeyErrorVerificationFailed', [passkeyMethodLabel])
-              }
-            />
-          ),
+          title:
+            translatePasskeyError(error, t, passkeyMethodLabel) ??
+            t('passkeyErrorVerificationFailed', [passkeyMethodLabel]),
         });
       }
 

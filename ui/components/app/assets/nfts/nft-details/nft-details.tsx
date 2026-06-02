@@ -1,4 +1,3 @@
-import React, { useEffect, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { isEqual } from 'lodash';
@@ -6,6 +5,7 @@ import { getTokenTrackerLink, getAccountLink } from '@metamask/etherscan-link';
 import { Nft } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
 import { ERC721, ERC1155 } from '@metamask/controller-utils';
+import { toast } from '@metamask/design-system-react';
 import {
   BlockSize,
   BorderColor,
@@ -41,7 +41,6 @@ import {
   removeAndIgnoreNft,
   setActiveNetworkWithError,
 } from '../../../../../store/actions';
-import { toast, ToastContent } from '../../../../ui/toast/toast';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import NftOptions from '../nft-options/nft-options';
 import InfoTooltip from '../../../../ui/info-tooltip';
@@ -82,6 +81,7 @@ import NftDetailInformationRow from './nft-detail-information-row';
 import NftDetailInformationFrame from './nft-detail-information-frame';
 import NftDetailDescription from './nft-detail-description';
 import { renderShortTokenId } from './utils';
+import React, { useEffect, useContext } from 'react';
 
 const MAX_TOKEN_ID_LENGTH = 15;
 
@@ -230,22 +230,14 @@ export function NftDetailsComponent({
       await dispatch(removeAndIgnoreNft(address, tokenId, nftNetworkClientId));
       toast({
         severity: 'success',
-        children: (
-          <ToastContent
-            dataTestId="nft-remove-success-toast"
-            title={t('removeNftMessage')}
-          />
-        ),
+        title: t('removeNftMessage'),
+        'data-testid': 'nft-remove-success-toast',
       });
     } catch {
       toast({
         severity: 'danger',
-        children: (
-          <ToastContent
-            dataTestId="nft-remove-error-toast"
-            title={t('removeNftErrorMessage')}
-          />
-        ),
+        title: t('removeNftErrorMessage'),
+        'data-testid': 'nft-remove-error-toast',
       });
     } finally {
       navigate(DEFAULT_ROUTE);

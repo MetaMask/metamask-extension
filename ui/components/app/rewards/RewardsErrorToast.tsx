@@ -1,11 +1,14 @@
 import { useDispatch, useSelector } from 'react-redux';
-import React, { useCallback } from 'react';
-import { Box } from '@metamask/design-system-react';
-import { Icon, IconName } from '../../component-library';
-import { IconColor } from '../../../helpers/constants/design-system';
+import {
+  Box,
+  Toast,
+  Icon,
+  IconColor,
+  IconName,
+} from '@metamask/design-system-react';
 import { selectErrorToast } from '../../../ducks/rewards/selectors';
 import { setErrorToast } from '../../../ducks/rewards';
-import { Toast } from '../../multichain/toast/toast';
+import React, { useCallback } from 'react';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RewardsErrorToast() {
@@ -32,13 +35,11 @@ export default function RewardsErrorToast() {
   return (
     <Box data-testid="rewards-error-toast">
       <Toast
-        startAdornment={
-          <Icon name={IconName.Danger} color={IconColor.errorDefault} />
-        }
-        text={title}
+        startAccessory={<Icon name={IconName.Danger} color={IconColor.ErrorDefault} />}
+        title={title}
         description={description}
-        actionText={actionText}
-        onActionClick={onActionClick}
+        actionButtonLabel={actionText}
+        actionButtonOnClick={onActionClick}
         onClose={handleClose}
       />
     </Box>

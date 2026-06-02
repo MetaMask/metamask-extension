@@ -1,4 +1,3 @@
-import React, { useEffect, useState, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -9,7 +8,7 @@ import {
   Button,
   Text,
   TextVariant,
-} from '@metamask/design-system-react';
+ toast } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   hideWarning,
@@ -17,7 +16,6 @@ import {
   importMnemonicToVault,
 } from '../../../store/actions';
 import { SECOND } from '../../../../shared/constants/time';
-import { toast, ToastContent } from '../../../components/ui/toast/toast';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { Header, Page } from '../../../components/multichain/pages/page';
 import {
@@ -31,6 +29,7 @@ import { MetaMaskReduxDispatch } from '../../../store/store';
 import SrpInputForm from '../../srp-input-form';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import React, { useEffect, useState, useContext } from 'react';
 
 const toastId = 'new-srp-added-toast';
 const autoHideToastDelay = 5 * SECOND;
@@ -81,12 +80,8 @@ export const ImportSrp = () => {
 
       toast({
         severity: 'success',
-        children: (
-          <ToastContent
-            dataTestId={toastId}
-            title={t('importWalletSuccess', [hdKeyrings.length + 1])}
-          />
-        ),
+        title: t('importWalletSuccess', [hdKeyrings.length + 1]),
+        'data-testid': toastId,
       });
       navigate(DEFAULT_ROUTE);
     } catch (error) {
