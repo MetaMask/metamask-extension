@@ -89,7 +89,8 @@ jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useDispatch: () => mockDispatch,
 }));
-jest.mock('../../../../../../app/scripts/lib/util', () => ({
+jest.mock('../../../../../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../../../../../shared/lib/environment-type'),
   getEnvironmentType: (...args: unknown[]) => mockGetEnvironmentType(...args),
 }));
 jest.mock('../../../../../store/background-connection', () => ({

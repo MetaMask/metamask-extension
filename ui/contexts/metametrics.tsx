@@ -20,9 +20,7 @@ import type { Span } from '@sentry/types';
 import { omit } from 'lodash';
 
 import { captureException, captureMessage } from '../../shared/lib/sentry';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../shared/lib/environment-type';
 import {
   PATH_NAME_MAP,
   getPaths,

@@ -672,17 +672,20 @@ describe('Actions', () => {
         },
       });
 
-      const checkIsSeedlessPasswordOutdated =
-        background.checkIsSeedlessPasswordOutdated.resolves(true);
+      const checkIsSeedlessPasswordOutdatedStub = sinon.stub().resolves(true);
 
-      setBackgroundConnection(background);
+      background.getApi.returns({
+        checkIsSeedlessPasswordOutdated: checkIsSeedlessPasswordOutdatedStub,
+      });
+
+      setBackgroundConnection(background.getApi());
 
       const result = await store.dispatch(
         actions.checkIsSeedlessPasswordOutdated(),
       );
       expect(result).toStrictEqual(true);
-      expect(checkIsSeedlessPasswordOutdated.callCount).toStrictEqual(1);
-      expect(checkIsSeedlessPasswordOutdated.firstCall.args).toStrictEqual([
+      expect(checkIsSeedlessPasswordOutdatedStub.callCount).toStrictEqual(1);
+      expect(checkIsSeedlessPasswordOutdatedStub.firstCall.args).toStrictEqual([
         {
           skipCache: true,
           captureSentryError: true,
@@ -699,16 +702,19 @@ describe('Actions', () => {
         },
       });
 
-      const checkIsSeedlessPasswordOutdated =
-        background.checkIsSeedlessPasswordOutdated.resolves(false);
+      const checkIsSeedlessPasswordOutdatedStub = sinon.stub().resolves(false);
 
-      setBackgroundConnection(background);
+      background.getApi.returns({
+        checkIsSeedlessPasswordOutdated: checkIsSeedlessPasswordOutdatedStub,
+      });
+
+      setBackgroundConnection(background.getApi());
 
       const result = await store.dispatch(
         actions.checkIsSeedlessPasswordOutdated(),
       );
       expect(result).toStrictEqual(false);
-      expect(checkIsSeedlessPasswordOutdated.callCount).toStrictEqual(1);
+      expect(checkIsSeedlessPasswordOutdatedStub.callCount).toStrictEqual(1);
     });
 
     it('passes skipCache and captureSentryError to the background check', async () => {
@@ -720,18 +726,21 @@ describe('Actions', () => {
         },
       });
 
-      const checkIsSeedlessPasswordOutdated =
-        background.checkIsSeedlessPasswordOutdated.resolves(true);
+      const checkIsSeedlessPasswordOutdatedStub = sinon.stub().resolves(true);
 
-      setBackgroundConnection(background);
+      background.getApi.returns({
+        checkIsSeedlessPasswordOutdated: checkIsSeedlessPasswordOutdatedStub,
+      });
+
+      setBackgroundConnection(background.getApi());
 
       const result = await store.dispatch(
         actions.checkIsSeedlessPasswordOutdated(false, false),
       );
 
       expect(result).toStrictEqual(true);
-      expect(checkIsSeedlessPasswordOutdated.callCount).toStrictEqual(1);
-      expect(checkIsSeedlessPasswordOutdated.firstCall.args).toStrictEqual([
+      expect(checkIsSeedlessPasswordOutdatedStub.callCount).toStrictEqual(1);
+      expect(checkIsSeedlessPasswordOutdatedStub.firstCall.args).toStrictEqual([
         {
           skipCache: false,
           captureSentryError: false,
@@ -748,16 +757,21 @@ describe('Actions', () => {
         },
       });
 
-      const checkIsSeedlessPasswordOutdated =
-        background.checkIsSeedlessPasswordOutdated.rejects(new Error('error'));
+      const checkIsSeedlessPasswordOutdatedStub = sinon
+        .stub()
+        .rejects(new Error('error'));
 
-      setBackgroundConnection(background);
+      background.getApi.returns({
+        checkIsSeedlessPasswordOutdated: checkIsSeedlessPasswordOutdatedStub,
+      });
+
+      setBackgroundConnection(background.getApi());
 
       const result = await store.dispatch(
         actions.checkIsSeedlessPasswordOutdated(),
       );
       expect(result).toStrictEqual(false);
-      expect(checkIsSeedlessPasswordOutdated.callCount).toStrictEqual(1);
+      expect(checkIsSeedlessPasswordOutdatedStub.callCount).toStrictEqual(1);
     });
   });
 

@@ -81,6 +81,46 @@
     "AccountsController": {
       "internalAccounts": {
         "accounts": {
+          "688e01b8-3134-4ef4-80e6-8772bab38ef7": {
+            "address": "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer",
+            "id": "688e01b8-3134-4ef4-80e6-8772bab38ef7",
+            "metadata": {
+              "importTime": 1770282512702,
+              "keyring": {
+                "type": "Snap Keyring"
+              },
+              "lastSelected": 0,
+              "name": "",
+              "snap": {
+                "enabled": true,
+                "id": "npm:@metamask/solana-wallet-snap",
+                "name": "Solana"
+              }
+            },
+            "methods": [
+              "signAndSendTransaction",
+              "signTransaction",
+              "signMessage",
+              "signIn"
+            ],
+            "options": {
+              "derivationPath": "m/44'/501'/0'/0'",
+              "entropy": {
+                "derivationPath": "m/44'/501'/0'/0'",
+                "groupIndex": 0,
+                "id": "01KGPGYE2JJGMXDJPEVXKPJ1JG",
+                "type": "mnemonic"
+              },
+              "entropySource": "01KGPGYE2JJGMXDJPEVXKPJ1JG",
+              "index": 0
+            },
+            "scopes": [
+              "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z",
+              "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1"
+            ],
+            "type": "solana:data-account"
+          },
           "d5e45e4a-3b04-4a09-a5e1-39762e5c6be4": {
             "address": "0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
             "id": "d5e45e4a-3b04-4a09-a5e1-39762e5c6be4",
@@ -171,6 +211,132 @@
       "timeoutMinutes": 0,
       "trezorModel": null,
       "updateModalLastDismissedAt": null
+    },
+    "AssetsController": {
+      "assetPreferences": {},
+      "assetsBalance": {
+        "688e01b8-3134-4ef4-80e6-8772bab38ef7": {
+          "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501": {
+            "amount": "0"
+          }
+        },
+        "d5e45e4a-3b04-4a09-a5e1-39762e5c6be4": {
+          "eip155:1/slip44:60": {
+            "amount": "25"
+          },
+          "eip155:10/slip44:60": {
+            "amount": "25"
+          },
+          "eip155:1337/slip44:1": {
+            "amount": "25"
+          },
+          "eip155:137/slip44:60": {
+            "amount": "25"
+          },
+          "eip155:42161/slip44:60": {
+            "amount": "25"
+          },
+          "eip155:56/slip44:60": {
+            "amount": "25"
+          },
+          "eip155:59144/slip44:60": {
+            "amount": "25"
+          }
+        }
+      },
+      "assetsInfo": {
+        "eip155:1/slip44:60": {
+          "aggregators": [],
+          "decimals": 18,
+          "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+          "name": "Ethereum",
+          "symbol": "ETH",
+          "type": "native"
+        },
+        "eip155:10/slip44:60": {
+          "aggregators": [],
+          "decimals": 18,
+          "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/10/slip44/60.png",
+          "name": "Ether",
+          "symbol": "ETH",
+          "type": "native"
+        },
+        "eip155:1337/slip44:1": {
+          "aggregators": [],
+          "decimals": 18,
+          "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+          "name": "Ethereum",
+          "symbol": "ETH",
+          "type": "native"
+        },
+        "eip155:137/slip44:60": {
+          "aggregators": [],
+          "decimals": 18,
+          "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/137/slip44/60.png",
+          "name": "POL",
+          "symbol": "POL",
+          "type": "native"
+        },
+        "eip155:42161/slip44:60": {
+          "aggregators": [],
+          "decimals": 18,
+          "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/42161/slip44/60.png",
+          "name": "Ether",
+          "symbol": "ETH",
+          "type": "native"
+        },
+        "eip155:56/slip44:60": {
+          "aggregators": [],
+          "decimals": 18,
+          "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/56/slip44/60.png",
+          "name": "BNB",
+          "symbol": "BNB",
+          "type": "native"
+        },
+        "eip155:59144/slip44:60": {
+          "aggregators": [],
+          "decimals": 18,
+          "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/slip44/60.png",
+          "name": "Ether",
+          "symbol": "ETH",
+          "type": "native"
+        },
+        "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501": {
+          "decimals": 9,
+          "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png",
+          "name": "Solana",
+          "symbol": "SOL",
+          "type": "native"
+        }
+      },
+      "assetsPrice": {
+        "eip155:1/slip44:60": {
+          "assetPriceType": "fungible",
+          "id": "ethereum",
+          "price": 2047.51,
+          "usdPrice": 2047.51
+        },
+        "eip155:1337/slip44:1": {
+          "assetPriceType": "fungible",
+          "id": "ethereum",
+          "price": 2047.51,
+          "usdPrice": 2047.51
+        },
+        "eip155:42161/slip44:60": {
+          "assetPriceType": "fungible",
+          "id": "ethereum",
+          "price": 2047.51,
+          "usdPrice": 2047.51
+        },
+        "eip155:59144/slip44:60": {
+          "assetPriceType": "fungible",
+          "id": "ethereum",
+          "price": 2047.51,
+          "usdPrice": 2047.51
+        }
+      },
+      "customAssets": {},
+      "selectedCurrency": "usd"
     },
     "AuthenticationController": {},
     "BridgeStatusController": {
@@ -292,9 +458,27 @@
       "metaMetricsDataDeletionTimestamp": 0
     },
     "MultichainAssetsController": {
-      "accountsAssets": {},
+      "accountsAssets": {
+        "688e01b8-3134-4ef4-80e6-8772bab38ef7": [
+          "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501"
+        ]
+      },
       "allIgnoredAssets": {},
-      "assetsMetadata": {}
+      "assetsMetadata": {
+        "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501": {
+          "fungible": true,
+          "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png",
+          "name": "Solana",
+          "symbol": "SOL",
+          "units": [
+            {
+              "decimals": 9,
+              "name": "Solana",
+              "symbol": "SOL"
+            }
+          ]
+        }
+      }
     },
     "MultichainAssetsRatesController": {
       "conversionRates": {
@@ -324,7 +508,14 @@
       }
     },
     "MultichainBalancesController": {
-      "balances": {}
+      "balances": {
+        "688e01b8-3134-4ef4-80e6-8772bab38ef7": {
+          "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501": {
+            "amount": "0",
+            "unit": "SOL"
+          }
+        }
+      }
     },
     "MultichainNetworkController": {
       "isEvmSelected": true,
@@ -414,7 +605,9 @@
       }
     },
     "MultichainTransactionsController": {
-      "nonEvmTransactions": {}
+      "nonEvmTransactions": {
+        "688e01b8-3134-4ef4-80e6-8772bab38ef7": {}
+      }
     },
     "NameController": {
       "nameSources": {},
@@ -917,6 +1110,14 @@
           {
             "address": "0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
             "scopes": ["eip155:0"]
+          },
+          {
+            "address": "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer",
+            "scopes": [
+              "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z",
+              "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1"
+            ]
           }
         ]
       }

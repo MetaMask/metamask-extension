@@ -72,11 +72,11 @@ import {
   getIsTronTestnetSupportEnabled,
 } from './multichain/feature-flags';
 
+import { getEnvironmentType } from '../../shared/lib/environment-type';
 // TODO: Remove restricted import
 import {
   addHexPrefix,
   getDeviceType,
-  getEnvironmentType,
   // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../app/scripts/lib/util';
 import {

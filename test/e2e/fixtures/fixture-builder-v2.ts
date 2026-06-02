@@ -210,14 +210,20 @@ class FixtureBuilderV2 {
    * `AssetsControllerState` from `@metamask/assets-controller`.
    *
    * @param patch - Subset of `AssetsControllerState` to deep-merge; see {@link AssetsControllerFixturePatch}.
+   * @param opts - Options for the AssetsController state.
+   * @param opts.overwrite - Whether to overwrite the partial AssetsController state.
    */
-  withAssetsController(patch: AssetsControllerFixturePatch = {}): this {
+  withAssetsController(
+    patch: AssetsControllerFixturePatch = {},
+    opts = { overwrite: false },
+  ): this {
+    const { overwrite } = opts;
     const {
-      assetsBalance = {},
-      assetsPrice = {},
-      assetsInfo = {},
-      customAssets = {},
-      assetPreferences = {},
+      assetsBalance,
+      assetsPrice,
+      assetsInfo,
+      customAssets,
+      assetPreferences,
       selectedCurrency,
     } = patch;
     if (!(this.fixture.data as Record<string, unknown>).AssetsController) {
@@ -230,13 +236,26 @@ class FixtureBuilderV2 {
     ac.assetsInfo ??= {};
     ac.customAssets ??= {};
     ac.assetPreferences ??= {};
-    merge(ac.assetsBalance, assetsBalance);
-    if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true') {
-      merge(ac.assetsPrice, assetsPrice);
-    }
-    merge(ac.assetsInfo, assetsInfo);
-    merge(ac.customAssets, customAssets);
-    merge(ac.assetPreferences, assetPreferences);
+
+    const applyOverwriteOrMerge = <
+      AssetsControllerStateKey extends keyof AssetsControllerState,
+    >(
+      key: AssetsControllerStateKey,
+      value: AssetsControllerState[AssetsControllerStateKey] | undefined,
+    ): void => {
+      if (overwrite && value) {
+        ac[key] = value;
+      } else {
+        ac[key] = merge(ac[key], value);
+      }
+    };
+
+    applyOverwriteOrMerge('assetsBalance', assetsBalance);
+    applyOverwriteOrMerge('assetsPrice', assetsPrice);
+    applyOverwriteOrMerge('assetsInfo', assetsInfo);
+    applyOverwriteOrMerge('customAssets', customAssets);
+    applyOverwriteOrMerge('assetPreferences', assetPreferences);
+
     if (selectedCurrency !== undefined) {
       ac.selectedCurrency = selectedCurrency;
     }
@@ -1507,19 +1526,6 @@ class FixtureBuilderV2 {
   }
 
   build(): FixtureBuildResult {
-    if (process.env.ASSETS_UNIFIED_STATE_ENABLED !== 'true') {
-      const ac = (this.fixture.data as Record<string, unknown>)
-        .AssetsController as
-        | {
-            assetsPrice?: Record<string, unknown>;
-            assetsInfo?: Record<string, unknown>;
-          }
-        | undefined;
-      if (ac) {
-        ac.assetsPrice = {};
-        ac.assetsInfo = {};
-      }
-    }
     return {
       ...this.fixture,
       storageServiceData: this.storageServiceData,
