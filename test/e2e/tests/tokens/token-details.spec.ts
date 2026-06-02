@@ -27,6 +27,11 @@ describe('Token Details', function () {
       .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
       .withEnabledNetworks({ eip155: { [chainId]: true } })
       .build(),
+    manifestFlags: {
+      remoteFeatureFlags: {
+        extensionUxTokenManagementFilter: false,
+      },
+    },
     localNodeOptions: {
       chainId: parseInt(chainId, 16),
     },

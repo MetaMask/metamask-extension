@@ -41,6 +41,11 @@ describe('Token List via StorageService', function () {
         localNodeOptions: {
           chainId: parseInt(chainId, 16),
         },
+        manifestFlags: {
+          remoteFeatureFlags: {
+            extensionUxTokenManagementFilter: false,
+          },
+        },
         title: (this as Context).test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

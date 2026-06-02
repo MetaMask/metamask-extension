@@ -41,6 +41,11 @@ describe('Send ERC20 - Gas Customization', function () {
         smartContract,
         title: this.test?.fullTitle(),
         testSpecificMock: mocks,
+        manifestFlags: {
+          remoteFeatureFlags: {
+            extensionUxTokenManagementFilter: false,
+          },
+        },
       },
       async ({ driver }) => {
         await login(driver);
@@ -110,6 +115,11 @@ describe('Send ERC20 - Gas Customization', function () {
         smartContract,
         title: this.test?.fullTitle(),
         testSpecificMock: mocks,
+        manifestFlags: {
+          remoteFeatureFlags: {
+            extensionUxTokenManagementFilter: false,
+          },
+        },
       },
       async ({ driver, contractRegistry, localNodes }) => {
         const contractAddress =
@@ -181,6 +191,11 @@ describe('Send ERC20 - Gas Customization', function () {
         smartContract,
         title: this.test?.fullTitle(),
         testSpecificMock: mocks,
+        manifestFlags: {
+          remoteFeatureFlags: {
+            extensionUxTokenManagementFilter: false,
+          },
+        },
       },
       async ({ driver, contractRegistry, localNodes }) => {
         const contractAddress =
