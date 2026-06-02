@@ -25,6 +25,7 @@ import {
   getIsPasskeyFeatureAvailable,
   getIsPasskeyRegistered,
   getIsEnrolledPasskeyIncompatibleWithSidepanel,
+  getAccountTypeForOnboardingMetrics,
 } from '../../selectors';
 import {
   getCompletedOnboarding,
@@ -43,6 +44,12 @@ type OwnProps = {
   /** Injected by withRouterHooks; stripped in mergeProps — UnlockPage does not use URL params. */
   params: RouterHooksProps['params'];
   onSubmit?: (password: string) => Promise<void>;
+  /**
+   * Redirects after a successful unlock (`onSubmit` is called).
+   * Previously, navigation was handled immediately after `onSubmit` is called.
+   * This prop allows for custom logics (e.g. metrics) before the navigation.
+   */
+  navigateAfterUnlock?: () => Promise<void>;
 };
 
 const mapStateToProps = (state: MetaMaskReduxState) => {
@@ -56,11 +63,13 @@ const mapStateToProps = (state: MetaMaskReduxState) => {
     getIsPasskeyRegistered(state) &&
     !isSocialLoginFlow &&
     isOnboardingCompleted;
+  const firstTimeFlowType = getFirstTimeFlowType(state);
+  const accountTypeForMetrics = getAccountTypeForOnboardingMetrics(state);
   return {
     isUnlocked,
     isSocialLoginFlow,
     isOnboardingCompleted,
-    firstTimeFlowType: getFirstTimeFlowType(state),
+    firstTimeFlowType,
     isWalletResetInProgress: getIsWalletResetInProgress(state),
     isPasskeyActive,
     mustDeferPasskeyToBrowserTab:
@@ -68,6 +77,7 @@ const mapStateToProps = (state: MetaMaskReduxState) => {
       getIsEnrolledPasskeyIncompatibleWithSidepanel(state) &&
       isPasskeyActive,
     passkeyAutoUnlockSuppressed: getPasskeyAutoUnlockSuppressed(state),
+    accountTypeForMetrics,
   };
 };
 
@@ -100,6 +110,7 @@ const mergeProps = (
   const {
     navigate,
     onSubmit: ownPropsSubmit,
+    navigateAfterUnlock: ownPropsNavigateAfterUnlock,
     location,
     // Strip unused router prop — UnlockPage does not use URL params; excluding it
     // prevents unnecessary re-renders when route parameters change.
@@ -109,7 +120,7 @@ const mergeProps = (
 
   const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
-  const navigateAfterUnlock = () => {
+  const handleNavigationAfterUnlock = async () => {
     // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
     let redirectTo = DEFAULT_ROUTE;
     const fromLocation = location.state?.from;
@@ -122,14 +133,12 @@ const mergeProps = (
 
   const onSubmit = async (password: string) => {
     await propsTryUnlockMetamask(password);
-    navigateAfterUnlock();
   };
 
   const onUnlockWithPasskey = async (
     authenticationResponse: PasskeyAuthenticationResponse,
   ) => {
     await propsTryUnlockMetamaskWithPasskey(authenticationResponse);
-    navigateAfterUnlock();
   };
 
   return {
@@ -138,6 +147,8 @@ const mergeProps = (
     ...restOwnProps,
     onSubmit: ownPropsSubmit || onSubmit,
     onUnlockWithPasskey,
+    navigateAfterUnlock:
+      ownPropsNavigateAfterUnlock || handleNavigationAfterUnlock,
     navigate,
     location,
     isPopup,
@@ -149,6 +160,7 @@ const UnlockPageConnected = compose(
   connect(mapStateToProps, mapDispatchToProps, mergeProps),
 )(UnlockPage) as React.ComponentType<{
   onSubmit?: (password: string) => Promise<void>;
+  navigateAfterUnlock?: () => Promise<void>;
 }>;
 
 export default UnlockPageConnected;

@@ -1,10 +1,11 @@
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import {
-  BackupState,
+  OnboardingState,
   getIsSocialLoginUserAuthenticated,
   getSocialLoginEmail,
   getSocialLoginType,
-} from './social-sync';
+} from './onboarding';
 
 const MOCK_NODE_AUTH_TOKENS = [
   {
@@ -24,7 +25,7 @@ const MOCK_NODE_AUTH_TOKENS = [
   },
 ];
 
-const MOCK_STATE: BackupState = {
+const MOCK_STATE: OnboardingState = {
   metamask: {
     userId: 'mock-user-id',
     accessToken: 'mock-access-token',
@@ -34,6 +35,14 @@ const MOCK_STATE: BackupState = {
     socialLoginEmail: 'mock-social-login-email',
     authConnection: AuthConnection.Google,
     isSeedlessOnboardingUserAuthenticated: true,
+    seedPhraseBackedUp: true,
+    firstTimeFlowType: FirstTimeFlowType.import,
+    completedOnboarding: true,
+    onboardingTabs: {
+      welcome: 'welcome',
+      createPassword: 'createPassword',
+      downloadApp: 'downloadApp',
+    },
   },
 };
 
