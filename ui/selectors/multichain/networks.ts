@@ -485,16 +485,14 @@ export const selectFirstFailedNetworkForNetworkConnectionBanner =
         .filter(([, isEnabled]) => isEnabled)
         .map(([chainId]) => chainId as Hex);
 
-      type FailedNetwork = {
+      const failed: {
         networkClientId: string;
         chainId: Hex;
         networkName: string;
         isInfuraEndpoint: boolean;
         infuraEndpointIndex: number | undefined;
         registrableDomain: string | null;
-      };
-
-      const failed: FailedNetwork[] = [];
+      }[] = [];
       let totalEnabled = 0;
 
       for (const chainId of enabledChainIds) {
