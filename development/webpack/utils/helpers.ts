@@ -131,14 +131,10 @@ const CACHE_SHUTDOWN_SIGNALS = ['SIGINT', 'SIGTERM'] as const;
  * @param process - The process to install signal listeners on.
  * @returns A cleanup function that removes the installed listeners.
  */
-export function ignoreCacheShutdownSignal(
-  process: NodeJS.Process,
-): () => void {
+export function ignoreCacheShutdownSignal(process: NodeJS.Process): () => void {
   CACHE_SHUTDOWN_SIGNALS.forEach((signal) => process.on(signal, noop));
   return () =>
-    CACHE_SHUTDOWN_SIGNALS.forEach((signal) =>
-      process.off(signal, noop),
-    );
+    CACHE_SHUTDOWN_SIGNALS.forEach((signal) => process.off(signal, noop));
 }
 
 /**
