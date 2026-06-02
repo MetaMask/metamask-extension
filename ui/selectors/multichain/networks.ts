@@ -454,6 +454,147 @@ export const selectAnyEnabledNetworksAreAvailable = createSelector(
 );
 
 /**
+ * Network configurations annotated per-rpcEndpoint with the bits the banner
+ * logic cares about: whether the endpoint is an Infura URL, whether its
+ * current metadata status is anything other than Available ("failed"), and
+ * its registrable domain. The network itself also gets an `infuraEndpointIndex`
+ * pointing at the first Infura endpoint (used by the "Switch to Infura" CTA).
+ *
+ * Computed for every configured network, not just enabled ones, so the
+ * memoised result can be reused across selectors.
+ */
+const selectEnhancedNetworkConfigurationsByChainId = createSelector(
+  getNetworkConfigurationsByChainId,
+  getNetworksMetadata,
+  (networkConfigurationsByChainId, networksMetadata) => {
+    const enhanced: Record<
+      Hex,
+      Omit<(typeof networkConfigurationsByChainId)[Hex], 'rpcEndpoints'> & {
+        rpcEndpoints: {
+          networkClientId: string;
+          url: string;
+          isInfuraEndpoint: boolean;
+          isFailed: boolean;
+          domain: string | null;
+        }[];
+        infuraEndpointIndex: number | undefined;
+      }
+    > = {};
+
+    for (const [chainId, networkConfiguration] of Object.entries(
+      networkConfigurationsByChainId,
+    )) {
+      const enhancedRpcEndpoints = networkConfiguration.rpcEndpoints.map(
+        (rpcEndpoint) => {
+          const metadata = networksMetadata[rpcEndpoint.networkClientId];
+          // We have to use this function to check whether the endpoint is
+          // an Infura endpoint because some Infura endpoint URLs use the
+          // wrong type.
+          const isInfuraEndpoint = getIsMetaMaskInfuraEndpointUrl(
+            rpcEndpoint.url,
+            infuraProjectId ?? '',
+          );
+          const isFailed =
+            metadata !== undefined &&
+            metadata.status !== NetworkStatus.Available;
+
+          return {
+            networkClientId: rpcEndpoint.networkClientId,
+            url: rpcEndpoint.url,
+            isInfuraEndpoint,
+            isFailed,
+            domain: getDomain(rpcEndpoint.url),
+          };
+        },
+      );
+
+      const firstInfuraIndex = enhancedRpcEndpoints.findIndex(
+        (rpcEndpoint) => rpcEndpoint.isInfuraEndpoint,
+      );
+
+      enhanced[chainId as Hex] = {
+        ...networkConfiguration,
+        rpcEndpoints: enhancedRpcEndpoints,
+        infuraEndpointIndex:
+          firstInfuraIndex === -1 ? undefined : firstInfuraIndex,
+      };
+    }
+
+    return enhanced;
+  },
+);
+
+/**
+ * The list of enabled EVM networks whose default RPC endpoint is currently
+ * failing, plus a flag for whether every enabled network is failing. Used as
+ * the input to the banner show/hide rule.
+ */
+const selectEnabledFailedNetworksResult = createSelector(
+  getEnabledNetworks,
+  selectEnhancedNetworkConfigurationsByChainId,
+  (enabledNetworks, enhancedNetworkConfigurationsByChainId) => {
+    const enabledEvmNetworks = enabledNetworks[KnownCaipNamespace.Eip155] ?? {};
+    const enabledChainIds = Object.entries(enabledEvmNetworks)
+      .filter(([, isEnabled]) => isEnabled)
+      .map(([chainId]) => chainId as Hex);
+
+    const failedNetworks: {
+      networkClientId: string;
+      chainId: Hex;
+      networkName: string;
+      isInfuraEndpoint: boolean;
+      infuraEndpointIndex: number | undefined;
+      domain: string | null;
+    }[] = [];
+    let totalEnabled = 0;
+
+    for (const chainId of enabledChainIds) {
+      const networkConfiguration =
+        enhancedNetworkConfigurationsByChainId[chainId];
+      if (!networkConfiguration) {
+        continue;
+      }
+
+      const {
+        rpcEndpoints,
+        defaultRpcEndpointIndex,
+        name,
+        infuraEndpointIndex,
+      } = networkConfiguration;
+      const defaultRpcEndpoint = rpcEndpoints[defaultRpcEndpointIndex];
+      if (!defaultRpcEndpoint) {
+        continue;
+      }
+
+      totalEnabled += 1;
+
+      if (!defaultRpcEndpoint.isFailed) {
+        continue;
+      }
+
+      failedNetworks.push({
+        networkClientId: defaultRpcEndpoint.networkClientId,
+        chainId,
+        networkName: name,
+        isInfuraEndpoint: defaultRpcEndpoint.isInfuraEndpoint,
+        // Only useful when the default is non-Infura — otherwise the CTA to
+        // switch to Infura is hidden anyway.
+        infuraEndpointIndex: defaultRpcEndpoint.isInfuraEndpoint
+          ? undefined
+          : infuraEndpointIndex,
+        domain: defaultRpcEndpoint.domain,
+      });
+    }
+
+    return {
+      failedNetworks,
+      areAllEnabledNetworksFailed:
+        failedNetworks.length > 0 && failedNetworks.length === totalEnabled,
+    };
+  },
+);
+
+/**
  * Returns the first failed EVM network that should drive the network connection
  * banner, or null when no banner should be shown.
  *
@@ -475,106 +616,31 @@ export const selectAnyEnabledNetworksAreAvailable = createSelector(
  */
 export const selectFirstFailedNetworkForNetworkConnectionBanner =
   createSelector(
-    getEnabledNetworks,
-    getNetworkConfigurationsByChainId,
-    getNetworksMetadata,
-    (enabledNetworks, networkConfigurationsByChainId, networksMetadata) => {
-      const enabledEvmNetworks =
-        enabledNetworks[KnownCaipNamespace.Eip155] ?? {};
-      const enabledChainIds = Object.entries(enabledEvmNetworks)
-        .filter(([, isEnabled]) => isEnabled)
-        .map(([chainId]) => chainId as Hex);
-
-      const failed: {
-        networkClientId: string;
-        chainId: Hex;
-        networkName: string;
-        isInfuraEndpoint: boolean;
-        infuraEndpointIndex: number | undefined;
-        domain: string | null;
-      }[] = [];
-      let totalEnabled = 0;
-
-      for (const chainId of enabledChainIds) {
-        const networkConfiguration = networkConfigurationsByChainId[chainId];
-        if (!networkConfiguration) {
-          continue;
-        }
-
-        const { rpcEndpoints, defaultRpcEndpointIndex, name } =
-          networkConfiguration;
-        const rpcEndpoint = rpcEndpoints[defaultRpcEndpointIndex];
-        if (!rpcEndpoint) {
-          continue;
-        }
-
-        totalEnabled += 1;
-
-        const metadata = networksMetadata[rpcEndpoint.networkClientId];
-        if (
-          metadata === undefined ||
-          metadata.status === NetworkStatus.Available
-        ) {
-          continue;
-        }
-
-        const isInfuraEndpoint = getIsMetaMaskInfuraEndpointUrl(
-          rpcEndpoint.url,
-          infuraProjectId ?? '',
-        );
-
-        // For custom endpoints (non-Infura), check if there's an Infura
-        // endpoint available for this network that we can switch to
-        let infuraEndpointIndex: number | undefined;
-        if (!isInfuraEndpoint) {
-          infuraEndpointIndex = rpcEndpoints.findIndex(
-            (endpoint, index) =>
-              index !== defaultRpcEndpointIndex &&
-              getIsMetaMaskInfuraEndpointUrl(
-                endpoint.url,
-                infuraProjectId ?? '',
-              ),
-          );
-          if (infuraEndpointIndex === -1) {
-            infuraEndpointIndex = undefined;
-          }
-        }
-
-        failed.push({
-          networkClientId: rpcEndpoint.networkClientId,
-          chainId,
-          networkName: name,
-          // We have to use this function to check whether the endpoint is
-          // an Infura endpoint because some Infura endpoint URLs use the
-          // wrong type.
-          isInfuraEndpoint,
-          // Index of an available Infura endpoint (for custom networks that
-          // have one) that can be used to switch to Infura
-          infuraEndpointIndex,
-          domain: getDomain(rpcEndpoint.url),
-        });
-      }
-
-      if (failed.length === 0) {
+    selectEnabledFailedNetworksResult,
+    ({ failedNetworks, areAllEnabledNetworksFailed }) => {
+      if (failedNetworks.length === 0) {
         return null;
       }
 
-      const firstCustomFailed = failed.find((n) => !n.isInfuraEndpoint);
+      const firstCustomFailed = failedNetworks.find((n) => !n.isInfuraEndpoint);
       const distinctDomains = new Set(
-        failed
+        failedNetworks
           .map((n) => n.domain)
           .filter((domain): domain is string => domain !== null),
       ).size;
-      const allFailed = failed.length === totalEnabled;
 
-      if (!firstCustomFailed && distinctDomains < 2 && !allFailed) {
+      if (
+        !firstCustomFailed &&
+        distinctDomains < 2 &&
+        !areAllEnabledNetworksFailed
+      ) {
         return null;
       }
 
       // Prefer a custom-RPC network when one is among the failed set so the
-      // banner's "Switch to MetaMask default RPC" CTA points at the network the
-      // user can actually act on.
-      const selected = firstCustomFailed ?? failed[0];
+      // banner's "Switch to MetaMask default RPC" CTA points at the network
+      // the user can actually act on.
+      const selected = firstCustomFailed ?? failedNetworks[0];
 
       return {
         networkClientId: selected.networkClientId,
