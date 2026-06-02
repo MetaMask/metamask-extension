@@ -18,9 +18,7 @@ import { ERC20, ERC721, ERC1155 } from '@metamask/controller-utils';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import { type CaipChainId, type Hex } from '@metamask/utils';
 import { isValidHexAddress } from '../../../shared/lib/hexstring-utils';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { addHexPrefix } from '../../../app/scripts/lib/util';
+import { addHexPrefix } from '../../../shared/lib/add-hex-prefix';
 
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { Header, Page } from '../../components/multichain/pages/page';
