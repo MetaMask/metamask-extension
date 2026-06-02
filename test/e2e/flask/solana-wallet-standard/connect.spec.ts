@@ -10,7 +10,7 @@ import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/c
 import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import { connectSolanaTestDapp } from '../../page-objects/flows/solana-dapp.flow';
-import { switchToNonEvmAccount } from '../../page-objects/flows/account-list.flow';
+import { switchToAccount } from '../../page-objects/flows/account-list.flow';
 import { account1Short, account2Short } from './testHelpers';
 
 describe('Solana Wallet Standard - e2e tests', function () {
@@ -229,7 +229,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
-          await switchToNonEvmAccount(driver, 'Account 1');
+          await switchToAccount(driver, 'Account 1');
           await testDapp.switchTo();
 
           // Check that we're connected to the first account
@@ -270,7 +270,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
-          await switchToNonEvmAccount(driver, 'Account 1');
+          await switchToAccount(driver, 'Account 1');
           await testDapp.switchTo();
 
           // Check that we're still connected to the second account
@@ -280,7 +280,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
-          await switchToNonEvmAccount(driver, 'Account 2');
+          await switchToAccount(driver, 'Account 2');
           await testDapp.switchTo();
 
           // Check that we're still connected to the second account
