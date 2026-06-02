@@ -43,8 +43,6 @@ export function build(onComplete: () => void = noop) {
       // Install before `onComplete` signals the parent process so shutdown
       // signals forwarded during that handoff cannot interrupt cache writes.
       const removeCacheShutdownSignalHandlers =
-        options.cache &&
-        typeof options.cache === 'object' &&
         options.cache.type === 'filesystem'
           ? ignoreCacheShutdownSignal(process)
           : noop;
