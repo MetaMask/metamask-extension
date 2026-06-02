@@ -28,10 +28,7 @@ describe('LoginOptions', () => {
 
   const renderComponent = (loginOption: LoginOptionType = LOGIN_OPTION.NEW) =>
     renderWithProvider(
-      <LoginOptions
-        loginOption={loginOption}
-        handleLogin={mockHandleLogin}
-      />,
+      <LoginOptions loginOption={loginOption} handleLogin={mockHandleLogin} />,
       buildStore(),
     );
 
@@ -85,8 +82,12 @@ describe('LoginOptions', () => {
   }: Pick<RenderScenario, 'loginOption' | 'buttonPrefix'>) => {
     const { getByTestId } = renderComponent(loginOption);
 
-    fireEvent.click(getByTestId(`onboarding-${buttonPrefix}-with-google-button`));
-    fireEvent.click(getByTestId(`onboarding-${buttonPrefix}-with-apple-button`));
+    fireEvent.click(
+      getByTestId(`onboarding-${buttonPrefix}-with-google-button`),
+    );
+    fireEvent.click(
+      getByTestId(`onboarding-${buttonPrefix}-with-apple-button`),
+    );
     fireEvent.click(
       getByTestId(`onboarding-${buttonPrefix}-with-telegram-button`),
     );
