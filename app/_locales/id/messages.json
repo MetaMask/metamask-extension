@@ -1175,15 +1175,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "Anda perlu mengonfirmasikan 2 transaksi pada dompet perangkat keras:"
   },
-  "bridgeCreateSolanaAccount": {
-    "message": "Buat akun Solana"
-  },
-  "bridgeCreateSolanaAccountDescription": {
-    "message": "Untuk beralih ke jaringan Solana, Anda memerlukan akun dan alamat penerima."
-  },
-  "bridgeCreateSolanaAccountTitle": {
-    "message": "Anda memerlukan akun Solana terlebih dahulu."
-  },
   "bridgeDetailsTitle": {
     "message": "Detail bridge",
     "description": "Title for the modal showing details about a bridge transaction."
@@ -1458,9 +1449,6 @@
   },
   "bridgeSendLoading": {
     "message": "Mengirim dari chain sumber"
-  },
-  "bridgeSolanaAccountCreated": {
-    "message": "Akun Solana telah dibuat"
   },
   "bridgeStatusComplete": {
     "message": "Selesai",

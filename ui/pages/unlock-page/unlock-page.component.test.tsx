@@ -66,6 +66,7 @@ describe('UnlockPage component (passkey UI)', () => {
     isOnboardingCompleted: true,
     onRestore: jest.fn(),
     onSubmit: jest.fn().mockResolvedValue(undefined),
+    navigateAfterUnlock: jest.fn(),
     isPasskeyActive: true,
     onUnlockWithPasskey: jest.fn().mockResolvedValue(undefined),
     checkIsSeedlessPasswordOutdated: jest.fn().mockResolvedValue(undefined),
@@ -123,6 +124,27 @@ describe('UnlockPage component (passkey UI)', () => {
 
     await waitFor(() => {
       expect(props.onUnlockWithPasskey).toHaveBeenCalled();
+      expect(props.navigateAfterUnlock).toHaveBeenCalled();
+    });
+  });
+
+  it('navigates after a successful password unlock', async () => {
+    const props = buildProps({ isPasskeyActive: false });
+
+    const { getByTestId } = renderWithProvider(
+      <UnlockPage {...props} />,
+      mockStore,
+      '/unlock',
+    );
+
+    fireEvent.change(getByTestId('unlock-password'), {
+      target: { value: 'test-password' },
+    });
+    fireEvent.click(getByTestId('unlock-submit'));
+
+    await waitFor(() => {
+      expect(props.onSubmit).toHaveBeenCalledWith('test-password');
+      expect(props.navigateAfterUnlock).toHaveBeenCalled();
     });
   });
 

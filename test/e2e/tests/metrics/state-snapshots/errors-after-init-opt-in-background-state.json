@@ -88,6 +88,7 @@
     "pendingApprovalCount": "number",
     "pendingApprovals": "object"
   },
+  "AssetsController": "object",
   "AuthenticationController": {
     "isSignedIn": "boolean",
     "needsProfilePairing": "boolean",
@@ -127,9 +128,9 @@
         "usdConversionRate": null
       },
       "ETH": {
-        "conversionDate": "number",
+        "conversionDate": "object",
         "conversionRate": 1700,
-        "usdConversionRate": 1700
+        "usdConversionRate": null
       },
       "MON": {
         "conversionDate": "object",

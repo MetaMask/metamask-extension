@@ -71,8 +71,6 @@ import {
   getAccountTreeControllerInitMessenger,
   getMultichainAccountServiceMessenger,
   getMultichainAccountServiceInitMessenger,
-  getSnapKeyringBuilderMessenger,
-  getSnapKeyringBuilderInitMessenger,
 } from './accounts';
 import {
   getOAuthServiceMessenger,
@@ -160,10 +158,6 @@ import {
   getPermissionControllerInitMessenger,
 } from './permission-controller-messenger';
 import { getSubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
-import {
-  getKeyringControllerInitMessenger,
-  getKeyringControllerMessenger,
-} from './keyring-controller-messenger';
 import { getPermissionLogControllerMessenger } from './permission-log-controller-messenger';
 import {
   getNetworkControllerInitMessenger,
@@ -262,11 +256,6 @@ export {
   getGasFeeControllerMessenger,
   getGasFeeControllerInitMessenger,
 } from './gas-fee-controller-messenger';
-export type { KeyringControllerInitMessenger } from './keyring-controller-messenger';
-export {
-  getKeyringControllerMessenger,
-  getKeyringControllerInitMessenger,
-} from './keyring-controller-messenger';
 export { getLoggingControllerMessenger } from './logging-controller-messenger';
 
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
@@ -495,10 +484,6 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getInstitutionalSnapControllerMessenger,
     getInitMessenger: noop,
   },
-  KeyringController: {
-    getMessenger: getKeyringControllerMessenger,
-    getInitMessenger: getKeyringControllerInitMessenger,
-  },
   LegacyBackgroundApiService: {
     getMessenger: getLegacyBackgroundApiServiceMessenger,
     getInitMessenger: noop,
@@ -630,10 +615,6 @@ export const MESSENGER_FACTORIES = {
   SnapInterfaceController: {
     getMessenger: getSnapInterfaceControllerMessenger,
     getInitMessenger: noop,
-  },
-  SnapKeyringBuilder: {
-    getMessenger: getSnapKeyringBuilderMessenger,
-    getInitMessenger: getSnapKeyringBuilderInitMessenger,
   },
   StaticAssetsController: {
     getMessenger: getStaticAssetsControllerMessenger,

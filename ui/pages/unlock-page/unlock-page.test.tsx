@@ -281,16 +281,17 @@ describe('Unlock Page', () => {
     const loginButton = queryByTestId('unlock-submit') as HTMLElement;
     fireEvent.change(passwordField, { target: { value: 'a-password' } });
     fireEvent.click(loginButton);
-    await Promise.resolve(); // Wait for async operations
 
-    expect(mockTryUnlockMetamask).toHaveBeenCalledTimes(1);
-    expect(mockUseNavigate).toHaveBeenCalledTimes(1);
-    expect(mockUseNavigate).toHaveBeenCalledWith(
-      intendedPath + intendedSearch,
-      {
-        replace: true,
-      },
-    );
+    await waitFor(() => {
+      expect(mockTryUnlockMetamask).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        intendedPath + intendedSearch,
+        {
+          replace: true,
+        },
+      );
+    });
   });
 
   it('should show login error modal when authentication error is thrown', async () => {
