@@ -15,7 +15,7 @@
 //   `yarn skills` manually for interactive feedback.
 
 import { spawnSync, type SpawnSyncReturns } from 'node:child_process';
-import { mkdirSync, statSync } from 'node:fs';
+import { mkdirSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 
 const CACHE_DIR = '.skills-cache/metamask-skills';
@@ -25,6 +25,7 @@ type SpawnSync = typeof spawnSync;
 type StatSync = typeof statSync;
 type MkdirSync = typeof mkdirSync;
 type Stderr = Pick<NodeJS.WriteStream, 'write'>;
+type ReadFileSync = typeof readFileSync;
 
 type PostinstallDeps = {
   env?: NodeJS.ProcessEnv;
@@ -32,6 +33,7 @@ type PostinstallDeps = {
   spawn?: SpawnSync;
   stat?: StatSync;
   stderr?: Stderr;
+  readFile?: ReadFileSync;
 };
 
 export function warn(msg: string, stderr?: Stderr): void {
@@ -45,9 +47,10 @@ export function run(
   cmd: string,
   args: string[],
   spawn?: SpawnSync,
+  stdio: 'ignore' | 'inherit' = 'ignore',
 ): SpawnSyncReturns<Buffer> {
   const spawnFn = spawn ?? spawnSync;
-  return spawnFn(cmd, args, { stdio: 'ignore' }) as SpawnSyncReturns<Buffer>;
+  return spawnFn(cmd, args, { stdio }) as SpawnSyncReturns<Buffer>;
 }
 
 export function isGitDir(dir: string, stat?: StatSync): boolean {
@@ -65,8 +68,63 @@ export function shouldSkipPostinstall(env: NodeJS.ProcessEnv): boolean {
   );
 }
 
-export function shouldAutoUpdateSkills(env: NodeJS.ProcessEnv): boolean {
-  return /^(1|true|yes)$/iu.test(env.SKILLS_AUTO_UPDATE ?? '');
+export function parseSkillsLocal(content: string): Record<string, string> {
+  const config: Record<string, string> = {};
+
+  for (const rawLine of content.split(/\r?\n/u)) {
+    const line = rawLine.trim();
+    if (!line || line.startsWith('#')) {
+      continue;
+    }
+
+    const match = /^(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)=(.*)$/u.exec(line);
+    if (!match) {
+      continue;
+    }
+
+    const [, key, rawValue] = match;
+    let value = rawValue.trim();
+    if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
+      value = value.slice(1, -1);
+    }
+    config[key] = value;
+  }
+
+  return config;
+}
+
+export function readSkillsLocal(
+  readFile?: ReadFileSync,
+): Record<string, string> {
+  const read = readFile ?? readFileSync;
+  try {
+    return parseSkillsLocal(read('.skills.local', 'utf8') as string);
+  } catch {
+    return {};
+  }
+}
+
+export function getConfigValue(
+  env: NodeJS.ProcessEnv,
+  key: string,
+  readFile?: ReadFileSync,
+): string | undefined {
+  if (Object.prototype.hasOwnProperty.call(env, key)) {
+    return env[key];
+  }
+  return readSkillsLocal(readFile)[key];
+}
+
+export function shouldAutoUpdateSkills(
+  env: NodeJS.ProcessEnv,
+  readFile?: ReadFileSync,
+): boolean {
+  return /^(1|true|yes)$/iu.test(
+    getConfigValue(env, 'SKILLS_AUTO_UPDATE', readFile) ?? '',
+  );
 }
 
 export function ensurePublicSkillsCache(deps?: PostinstallDeps): boolean {
@@ -115,7 +173,7 @@ export function autoUpdateSkills(deps?: PostinstallDeps): boolean {
   const spawn = deps?.spawn ?? spawnSync;
   const stderr = deps?.stderr ?? process.stderr;
 
-  const sync = run('yarn', ['skills'], spawn);
+  const sync = run('yarn', ['skills'], spawn, 'inherit');
   if (sync.status !== 0) {
     warn('skills sync failed', stderr);
     return false;
@@ -137,7 +195,7 @@ export function postinstall(deps?: PostinstallDeps): number {
     // `yarn skills` performs installation with the selected Bash and honors
     // .skills.local / SKILLS_DOMAINS. Postinstall only runs it when explicitly
     // opted in so existing installs keep their current behavior.
-    if (shouldAutoUpdateSkills(env)) {
+    if (shouldAutoUpdateSkills(env, deps?.readFile)) {
       if (cacheReady || env.METAMASK_SKILLS_DIR || env.CONSENSYS_SKILLS_DIR) {
         autoUpdateSkills(deps);
       } else {
