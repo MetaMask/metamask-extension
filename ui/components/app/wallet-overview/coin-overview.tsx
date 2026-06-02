@@ -48,6 +48,7 @@ import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountT
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useRewardsModal } from '../../../hooks/rewards/useRewardsModal';
+import { useDebouncedValue } from '../../../hooks/useDebouncedValue';
 import { Skeleton } from '../../component-library/skeleton';
 import { isZeroAmount } from '../../../helpers/utils/number-utils';
 import { BalanceEmptyState } from '../balance-empty-state';
@@ -235,6 +236,13 @@ export const CoinOverview = ({
     !hasBalance &&
     balanceIsReadyAndEmpty;
 
+  // Debounce the empty state to give the balance a chance to load before
+  // showing it, preventing a flash of the empty state on initial render.
+  const debouncedShouldShowBalanceEmptyState = useDebouncedValue(
+    shouldShowBalanceEmptyState,
+    500,
+  );
+
   const handleSensitiveToggle = () => {
     dispatch(setPrivacyMode(!privacyMode));
   };
@@ -318,7 +326,7 @@ export const CoinOverview = ({
   return (
     <WalletOverview
       balance={
-        shouldShowBalanceEmptyState ? (
+        debouncedShouldShowBalanceEmptyState ? (
           <BalanceEmptyState
             className="w-full max-w-[460px] self-center"
             data-testid="coin-overview-balance-empty-state"
@@ -335,13 +343,13 @@ export const CoinOverview = ({
             >
               <div className={`${classPrefix}-overview__primary-container`}>
                 {balanceSection}
-                {balanceIsCached && !shouldShowBalanceEmptyState && (
+                {balanceIsCached && !debouncedShouldShowBalanceEmptyState && (
                   <span className={`${classPrefix}-overview__cached-star`}>
                     *
                   </span>
                 )}
               </div>
-              {!shouldShowBalanceEmptyState &&
+              {!debouncedShouldShowBalanceEmptyState &&
                 renderPercentageAndAmountChange()}
             </div>
           </Tooltip>
