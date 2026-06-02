@@ -20,13 +20,13 @@ import type { Child, PTY, Stdio, StdName } from './types.ts';
 
 const rawArgv = process.argv.slice(2);
 
-const alias = { cache: 'c', help: 'h', watch: 'w' };
+const alias = { cache: 'c', help: 'h' };
 type Args = { [x in keyof typeof alias]?: boolean };
 const args = parser(rawArgv, { alias, boolean: Object.keys(alias) }) as Args;
 
-if (args.cache === false || args.help === true || args.watch === true) {
+if (args.cache === false || args.help === true) {
   // there are no time savings to running the build in a child process if: the
-  // cache is disabled, we need to output "help", or we're in watch mode.
+  // cache is disabled or we need to output "help".
   require('./build').build();
 } else {
   fork(process, join(__dirname, 'fork'), rawArgv);
@@ -55,6 +55,9 @@ function fork(process: NodeJS.Process, file: string, argv: string[]) {
   // run the build in a child process so that we can exit the parent process as
   // soon as the build completes, but let the cache serialization finish in the
   // background (the cache can take 30% of build-time to serialize and persist).
+  // For non-watch builds, the child signals completion after the compilation
+  // finishes. For watch builds, the parent stays attached until the user
+  // interrupts it, then sends one shutdown signal to the child and exits.
   const { connectToChild, destroy, stdio } = createOutputStreams(process);
 
   const node = process.execPath;
