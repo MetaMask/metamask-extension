@@ -35,7 +35,44 @@ const DEFAULT_RECIPIENT = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 const smartContract = SMART_CONTRACTS.HST;
 
 async function erc20Mocks(server: Mockttp) {
-  return [await mockedSourcifyTokenSend(server)];
+  return [
+    await mockedSourcifyTokenSend(server),
+    await server
+      .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
+      .always()
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          // Localhost chain 1337 native token uses slip44:1
+          'eip155:1337/slip44:1': {
+            id: 'ethereum',
+            price: 3401,
+            marketCap: 0,
+            pricePercentChange1d: 0,
+          },
+        },
+      })),
+    await server
+      .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+      .always()
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          usd: {
+            name: 'US Dollar',
+            ticker: 'usd',
+            value: 1,
+            currencyType: 'fiat',
+          },
+          eth: {
+            name: 'Ether',
+            ticker: 'eth',
+            value: 1 / 3401,
+            currencyType: 'crypto',
+          },
+        },
+      })),
+  ];
 }
 
 describe('Send ERC20', function () {
