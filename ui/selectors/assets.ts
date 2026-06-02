@@ -99,7 +99,6 @@ import {
   getInternalAccountBySelectedAccountGroupAndCaip,
   getSelectedAccountGroup,
 } from './multichain-accounts/account-tree';
-import { AccountWalletId } from '@metamask/account-api';
 
 export type AssetsState = {
   metamask: MultichainAssetsControllerState;
