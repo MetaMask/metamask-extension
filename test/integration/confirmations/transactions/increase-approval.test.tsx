@@ -127,7 +127,11 @@ describe('Legacy ERC-20 increaseApproval Confirmation (PSAFE-415)', () => {
       });
     });
 
-    expect(await screen.findByRole('button', { name: /confirm/iu })).toBeInTheDocument();
-    expect(await screen.findByRole('button', { name: /cancel/iu })).toBeInTheDocument();
+    expect(
+      await screen.findByRole('button', { name: /confirm/iu }),
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByRole('button', { name: /cancel/iu }),
+    ).toBeInTheDocument();
   });
 });
