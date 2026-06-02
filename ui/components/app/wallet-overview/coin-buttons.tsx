@@ -491,9 +491,9 @@ const CoinButtons = ({
   return (
     <Box
       flexDirection={BoxFlexDirection.Row}
+      className="flex relative w-full"
       justifyContent={BoxJustifyContent.Between}
       gap={3}
-      className="relative w-full"
       ref={containerRef}
     >
       <IconButton

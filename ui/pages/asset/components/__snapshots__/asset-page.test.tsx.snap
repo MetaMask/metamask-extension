@@ -40,10 +40,10 @@ exports[`AssetPage should render a native asset 1`] = `
       </p>
     </div>
     <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--rounded-lg"
+      class="flex-col flex rounded-lg"
     >
       <div
-        class="mm-box mm-box--margin-right-4 mm-box--margin-left-4"
+        class="mr-4 ml-4"
       >
         <h1
           class="mm-box mm-text mm-text--display-md mm-text--font-weight-medium mm-box--margin-bottom-1 mm-box--color-text-default mm-box--rounded-lg"
@@ -74,11 +74,11 @@ exports[`AssetPage should render a native asset 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--margin-top-4 mm-box--display-flex mm-box--flex-direction-column mm-box--background-color-transparent mm-box--rounded-lg"
+        class="flex-col mt-4 bg-transparent flex rounded-lg"
         data-testid="asset-price-chart"
       >
         <div
-          class="mm-box asset-chart__empty-or-loading-state-container"
+          class="asset-chart__empty-or-loading-state-container"
           data-testid="asset-chart-loading"
         >
           <div
@@ -92,7 +92,7 @@ exports[`AssetPage should render a native asset 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-box--margin-top-2 mm-box--margin-right-3 mm-box--margin-left-3 mm-box--display-flex mm-box--justify-content-space-between"
+          class="justify-between mt-2 mr-3 ml-3 flex"
         >
           <button
             class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button time-range-button__selected mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
@@ -131,7 +131,7 @@ exports[`AssetPage should render a native asset 1`] = `
       class="mt-4 pr-4 pl-4"
     >
       <div
-        class="flex flex-row gap-3 justify-between relative w-full"
+        class="flex-row gap-3 justify-between flex relative w-full"
       >
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-md icon-button coin-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
@@ -238,10 +238,10 @@ exports[`AssetPage should render a native asset 1`] = `
         Your balance
       </h4>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full mm-box--height-full"
+        class="flex-row gap-4 flex h-full w-full"
       >
         <a
-          class="mm-box mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row mm-box--width-full"
+          class="flex w-full flex-row py-2 px-4 "
           data-testid="multichain-token-list-button"
           style="height: 62px;"
         >
@@ -273,11 +273,10 @@ exports[`AssetPage should render a native asset 1`] = `
             </div>
           </div>
           <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--width-full"
-            style="flex-grow: 1; overflow: hidden;"
+            class="flex-col justify-center flex w-full overflow-hidden grow"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+              class="flex-row justify-between flex"
             >
               <div
                 class="flex flex-row gap-2 min-w-0"
@@ -324,7 +323,7 @@ exports[`AssetPage should render a native asset 1`] = `
               </p>
             </div>
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+              class="flex-row justify-between flex"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
@@ -476,10 +475,10 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
       </p>
     </div>
     <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--rounded-lg"
+      class="flex-col flex rounded-lg"
     >
       <div
-        class="mm-box mm-box--margin-right-4 mm-box--margin-left-4"
+        class="mr-4 ml-4"
       >
         <h1
           class="mm-box mm-text mm-text--display-md mm-box--margin-bottom-1 mm-box--color-text-default"
@@ -493,11 +492,11 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
         </p>
       </div>
       <div
-        class="mm-box mm-box--margin-top-4 mm-box--display-flex mm-box--flex-direction-column mm-box--background-color-transparent mm-box--rounded-lg"
+        class="flex-col mt-4 bg-transparent flex rounded-lg"
         data-testid="asset-price-chart"
       >
         <div
-          class="mm-box asset-chart__empty-or-loading-state-container"
+          class="asset-chart__empty-or-loading-state-container"
           data-testid="asset-chart-empty-state"
         >
           <div
@@ -517,7 +516,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-box--margin-top-2 mm-box--margin-right-3 mm-box--margin-left-3 mm-box--display-flex mm-box--justify-content-space-between"
+          class="justify-between mt-2 mr-3 ml-3 flex"
         >
           <button
             class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button time-range-button__selected mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
@@ -556,7 +555,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
       class="mt-4 pr-4 pl-4"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-3 mm-box--justify-content-space-evenly"
+        class="gap-3 justify-evenly flex"
       >
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-md icon-button token-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
@@ -607,10 +606,10 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
         Your balance
       </h4>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full mm-box--height-full"
+        class="flex-row gap-4 flex h-full w-full"
       >
         <a
-          class="mm-box mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row mm-box--width-full"
+          class="flex w-full flex-row py-2 px-4 "
           data-testid="multichain-token-list-button"
           style="height: 62px;"
         >
@@ -642,11 +641,10 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
             </div>
           </div>
           <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--width-full"
-            style="flex-grow: 1; overflow: hidden;"
+            class="flex-col justify-center flex w-full overflow-hidden grow"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+              class="flex-row justify-between flex"
             >
               <div
                 class="flex flex-row gap-2 min-w-0"
@@ -667,7 +665,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
               </p>
             </div>
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+              class="flex-row justify-between flex"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
@@ -887,10 +885,10 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
       </p>
     </div>
     <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--rounded-lg"
+      class="flex-col flex rounded-lg"
     >
       <div
-        class="mm-box mm-box--margin-right-4 mm-box--margin-left-4"
+        class="mr-4 ml-4"
       >
         <h1
           class="mm-box mm-text mm-text--display-md mm-text--font-weight-medium mm-box--margin-bottom-1 mm-box--color-text-default mm-box--rounded-lg"
@@ -921,11 +919,11 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--margin-top-4 mm-box--display-flex mm-box--flex-direction-column mm-box--background-color-transparent mm-box--rounded-lg"
+        class="flex-col mt-4 bg-transparent flex rounded-lg"
         data-testid="asset-price-chart"
       >
         <div
-          class="mm-box asset-chart__empty-or-loading-state-container"
+          class="asset-chart__empty-or-loading-state-container"
           data-testid="asset-chart-loading"
         >
           <div
@@ -939,7 +937,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-box--margin-top-2 mm-box--margin-right-3 mm-box--margin-left-3 mm-box--display-flex mm-box--justify-content-space-between"
+          class="justify-between mt-2 mr-3 ml-3 flex"
         >
           <button
             class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button time-range-button__selected mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
@@ -978,7 +976,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
       class="mt-4 pr-4 pl-4"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-3 mm-box--justify-content-space-evenly"
+        class="gap-3 justify-evenly flex"
       >
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-md icon-button token-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
@@ -1029,10 +1027,10 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         Your balance
       </h4>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full mm-box--height-full"
+        class="flex-row gap-4 flex h-full w-full"
       >
         <a
-          class="mm-box mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row mm-box--width-full"
+          class="flex w-full flex-row py-2 px-4 "
           data-testid="multichain-token-list-button"
           style="height: 62px;"
         >
@@ -1064,11 +1062,10 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
             </div>
           </div>
           <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--width-full"
-            style="flex-grow: 1; overflow: hidden;"
+            class="flex-col justify-center flex w-full overflow-hidden grow"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+              class="flex-row justify-between flex"
             >
               <div
                 class="flex flex-row gap-2 min-w-0"
@@ -1089,7 +1086,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
               </p>
             </div>
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+              class="flex-row justify-between flex"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
@@ -1249,10 +1246,10 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
           </div>
         </div>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--margin-bottom-2 mm-box--margin-inline-4 mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+            class="mb-2 border-muted mx-4 border border-solid"
             style="height: 1px; border-bottom-width: 0;"
           />
           <h4
@@ -1261,10 +1258,10 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
             Market details
           </h4>
           <div
-            class="mm-box mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
+            class="flex-col gap-2 flex px-4"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+              class="justify-between flex"
             >
               <p
                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"

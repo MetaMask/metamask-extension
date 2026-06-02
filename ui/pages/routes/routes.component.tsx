@@ -73,6 +73,7 @@ import {
   PERPS_ACTIVITY_ROUTE,
   PERPS_WITHDRAW_ROUTE,
   CONTACTS_ROUTE,
+  HARDWARE_WALLET_REPAIR_ROUTE,
   BATCH_SELL_ROOT_ROUTE,
 } from '../../helpers/constants/routes';
 import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
@@ -243,6 +244,9 @@ const PerpsOrderEntryPage = mmLazy(
 );
 const MusdConversionPage = mmLazy(() => import('../musd/index.tsx'));
 const PerpsLayout = mmLazy(() => import('../perps/perps-layout.tsx'));
+const HardwareWalletRepair = mmLazy(
+  () => import('../hardware-wallet-repair/index.ts'),
+);
 // End Lazy Routes
 
 const SettingsV2LegacyRedirect = () => {
@@ -320,6 +324,10 @@ export const routeConfig = [
       {
         path: `${REVEAL_SEED_ROUTE}/:keyringId?`,
         element: <RevealSeedConfirmation />,
+      },
+      {
+        path: HARDWARE_WALLET_REPAIR_ROUTE,
+        element: <HardwareWalletRepair />,
       },
       {
         path: IMPORT_SRP_ROUTE,

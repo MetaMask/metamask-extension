@@ -106,6 +106,7 @@ export const MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE = '/multichain-smart-account';
 export const NEW_ACCOUNT_ROUTE = '/new-account';
 export const CONFIRM_ADD_SUGGESTED_NFT_ROUTE = '/confirm-add-suggested-nft';
 export const CONNECT_HARDWARE_ROUTE = '/new-account/connect';
+export const HARDWARE_WALLET_REPAIR_ROUTE = '/hardware-wallet-repair';
 export const SEND_ROUTE = '/send';
 export const REMOTE_ROUTE = '/remote';
 export const REMOTE_ROUTE_SETUP_SWAPS = '/remote/setup-swaps';
@@ -692,6 +693,11 @@ export const ROUTES = [
     path: BATCH_SELL_REVIEW_ROUTE,
     label: 'Batch Sell Review',
     trackInAnalytics: true,
+  },
+  {
+    path: HARDWARE_WALLET_REPAIR_ROUTE,
+    label: 'Hardware Wallet Repair',
+    trackInAnalytics: false,
   },
   ...MUSD_ROUTE_DEFINITIONS,
 ] as const satisfies AppRoute[];
