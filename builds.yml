@@ -272,7 +272,7 @@ env:
   ###
   # Compliance Feature
   ###
-  - COMPLIANCE_API_URL: https://compliance.api.cx.metamask.io
+  - COMPLIANCE_API_URL:
   - FIREBASE_API_KEY:
   - FIREBASE_AUTH_DOMAIN:
   - FIREBASE_STORAGE_BUCKET:
