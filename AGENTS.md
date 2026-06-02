@@ -31,6 +31,7 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 13. **WHEN asked to open a PR, open it as DRAFT** unless user specifies otherwise
 14. **WHEN using `.github/pull-request-template.md`, comment out non-applicable sections including the section title**
 15. **BEFORE modifying any `.github/workflows/` file**, read `.github/AGENTS.md` for CI-specific rules (consolidation patterns, required job wiring, merge queue considerations)
+16. **WHEN a branch exceeds 1,000 lines of intentional code changes**, occasionally suggest that the human author trim the work into smaller, more reviewable parts. Do not count `yarn.lock`, LavaMoat policy updates, or automated snapshot/fixture changes toward this threshold.
 
 ### Comprehensive Guidelines Location
 
