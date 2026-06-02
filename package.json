@@ -501,7 +501,6 @@
     "immer": "^9.0.6",
     "ip-regex": "^4.3.0",
     "jest-junit": "^14.0.1",
-    "jsontokens": "^4.0.1",
     "labeled-stream-splicer": "^2.0.2",
     "lavamoat-browserify": "^19.0.2",
     "lightweight-charts": "^5.1.0",

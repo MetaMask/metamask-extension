@@ -31964,7 +31964,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsontokens@npm:4.0.1, jsontokens@npm:^4.0.1":
+"jsontokens@npm:4.0.1":
   version: 4.0.1
   resolution: "jsontokens@npm:4.0.1"
   dependencies:
@@ -33817,7 +33817,6 @@ __metadata:
     jest-preview: "npm:^0.3.1"
     jsdom: "npm:^16.7.0"
     json-schema-to-ts: "npm:^3.0.1"
-    jsontokens: "npm:^4.0.1"
     jsonwebtoken: "npm:^9.0.2"
     koa: "npm:^3.1.1"
     labeled-stream-splicer: "npm:^2.0.2"
