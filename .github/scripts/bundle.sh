@@ -69,5 +69,13 @@ corepack enable
 # 5. Install dependencies
 yarn
 
-# 6. Run the production build command with 4GB of heap space
-NODE_OPTIONS='--max-old-space-size=4096' yarn build prod
+# 6. Compile the webpack launcher (generates development/.webpack/launch.js,
+# which the webpack:lavamoat build script loads)
+yarn webpack:tsc
+
+# 7. Run the production build command
+if [ "${1:-}" = "--flask" ]; then
+  yarn webpack:lavamoat:build:mv2 --type flask --zip --env production
+else
+  yarn webpack:lavamoat:build:mv2 --zip --env production
+fi

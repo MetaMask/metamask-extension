@@ -37,16 +37,14 @@ import {
   getBackupAndSyncOnboardingToggleState,
   getExternalServicesOnboardingToggleState,
   getFirstTimeFlowType,
-  getIsSocialLoginFlow,
-  getSocialLoginType,
   getParticipateInMetaMetrics,
   getDeferredDeepLink,
+  getAccountTypeForOnboardingMetrics,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-  MetaMetricsEventAccountType,
 } from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
@@ -94,11 +92,10 @@ export default function CreationSuccessful() {
   );
   const { trackEvent } = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
-  const socialLoginType = useSelector(getSocialLoginType);
   const isSidePanelEnabled = useSidePanelEnabled();
   const isOnboardingCompleted = useSelector(getCompletedOnboarding);
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+  const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
   const deferredDeepLink: DeferredDeepLink | null =
     useSelector(getDeferredDeepLink);
 
@@ -306,18 +303,6 @@ export default function CreationSuccessful() {
     // this is to ensure that the `Metrics Opt In/Out` event will not be tracked if basic functionality is disabled.
     if (!isOnboardingCompleted) {
       // before onboarding completion, we track the MetricsOptIn/Out event
-
-      const isNewWallet =
-        firstTimeFlowType === FirstTimeFlowType.create ||
-        firstTimeFlowType === FirstTimeFlowType.socialCreate;
-      const baseAccountType = isNewWallet
-        ? MetaMetricsEventAccountType.Default
-        : MetaMetricsEventAccountType.Imported;
-      const accountType =
-        isSocialLoginFlow && socialLoginType
-          ? `${baseAccountType}_${socialLoginType}`
-          : baseAccountType;
-
       trackEvent(
         {
           category: MetaMetricsEventCategory.Onboarding,
@@ -326,7 +311,7 @@ export default function CreationSuccessful() {
             : MetaMetricsEventName.MetricsOptOut,
           properties: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            account_type: accountType,
+            account_type: accountTypeForMetrics,
           },
         },
         {
@@ -388,8 +373,6 @@ export default function CreationSuccessful() {
     externalServicesOnboardingToggleState,
     backupAndSyncOnboardingToggleState,
     isSidePanelEnabled,
-    isSocialLoginFlow,
-    socialLoginType,
     navigate,
     isFromSettingsSecurity,
     firstTimeFlowType,
@@ -397,6 +380,7 @@ export default function CreationSuccessful() {
     participateInMetaMetrics,
     handleOnDoneNavigation,
     isResetWalletInProgress,
+    accountTypeForMetrics,
   ]);
 
   const renderDoneButton = () => {

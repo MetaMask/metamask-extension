@@ -28,6 +28,7 @@ import {
   ONBOARDING_SETUP_PASSKEY_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
+  getAccountTypeForOnboardingMetrics,
   getFirstTimeFlowType,
   getIsParticipateInMetaMetricsSet,
   getIsPasskeyFeatureAvailable,
@@ -111,6 +112,7 @@ export default function OnboardingWelcome() {
     getIsParticipateInMetaMetricsSet,
   );
   const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
+  const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
   const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
     useState(false);
 
@@ -213,7 +215,7 @@ export default function OnboardingWelcome() {
       event: MetaMetricsEventName.WalletSetupStarted,
       properties: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: MetaMetricsEventAccountType.Default,
+        account_type: accountTypeForMetrics,
       },
     });
     bufferedTrace?.({
@@ -223,7 +225,14 @@ export default function OnboardingWelcome() {
     });
 
     navigate(ONBOARDING_CREATE_PASSWORD_ROUTE);
-  }, [dispatch, navigate, trackEvent, onboardingParentContext, bufferedTrace]);
+  }, [
+    dispatch,
+    navigate,
+    trackEvent,
+    onboardingParentContext,
+    bufferedTrace,
+    accountTypeForMetrics,
+  ]);
 
   const onImportClick = useCallback(async () => {
     setIsLoggingIn(true);
@@ -233,7 +242,7 @@ export default function OnboardingWelcome() {
       event: MetaMetricsEventName.WalletImportStarted,
       properties: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: MetaMetricsEventAccountType.Imported,
+        account_type: accountTypeForMetrics,
       },
     });
     bufferedTrace?.({
@@ -243,7 +252,14 @@ export default function OnboardingWelcome() {
     });
 
     navigate(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
-  }, [dispatch, navigate, trackEvent, onboardingParentContext, bufferedTrace]);
+  }, [
+    dispatch,
+    navigate,
+    trackEvent,
+    onboardingParentContext,
+    bufferedTrace,
+    accountTypeForMetrics,
+  ]);
 
   const handleSocialLogin = useCallback(
     async (socialConnectionType: LoginType) => {
@@ -316,7 +332,7 @@ export default function OnboardingWelcome() {
             event: MetaMetricsEventName.SocialLoginFailed,
             properties: {
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              account_type: `${MetaMetricsEventAccountType.Default}_${LOGIN_TYPE.TELEGRAM}`,
+              account_type: `${MetaMetricsEventAccountType.Default}_${loginType}`,
               // eslint-disable-next-line @typescript-eslint/naming-convention
               is_rehydration: 'unknown',
               // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -344,13 +360,15 @@ export default function OnboardingWelcome() {
     async (socialConnectionType: LoginType) => {
       setIsLoggingIn(true);
       setNewAccountCreationInProgress(true);
+      // here, we cannot use the selector yet because the social login flow is not complete and the state is not updated yet
+      const accountTypeForSocialLoginMetrics = `${MetaMetricsEventAccountType.Default}_${socialConnectionType}`;
 
-      trackEvent({
+      await trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.WalletSetupStarted,
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: `${MetaMetricsEventAccountType.Default}_${socialConnectionType}`,
+          account_type: accountTypeForSocialLoginMetrics,
         },
       });
 
@@ -358,12 +376,12 @@ export default function OnboardingWelcome() {
         const isNewUser = await handleSocialLogin(socialConnectionType);
 
         // Track wallet setup completed for social login users
-        trackEvent({
+        await trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
           event: MetaMetricsEventName.SocialLoginCompleted,
           properties: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            account_type: `${MetaMetricsEventAccountType.Default}_${socialConnectionType}`,
+            account_type: accountTypeForSocialLoginMetrics,
           },
         });
         if (isNewUser) {
@@ -398,12 +416,16 @@ export default function OnboardingWelcome() {
   const onSocialLoginImportClick = useCallback(
     async (socialConnectionType: LoginType) => {
       setIsLoggingIn(true);
-      trackEvent({
+
+      // here, we cannot use the selector yet because the social login flow is not complete and the state is not updated yet
+      const accountTypeForSocialLoginMetrics = `${MetaMetricsEventAccountType.Imported}_${socialConnectionType}`;
+
+      await trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.WalletImportStarted,
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: `${MetaMetricsEventAccountType.Imported}_${socialConnectionType}`,
+          account_type: accountTypeForSocialLoginMetrics,
         },
       });
 
@@ -411,12 +433,12 @@ export default function OnboardingWelcome() {
         const isNewUser = await handleSocialLogin(socialConnectionType);
 
         // Track wallet login completed for existing social login users
-        trackEvent({
+        await trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
           event: MetaMetricsEventName.SocialLoginCompleted,
           properties: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            account_type: `${MetaMetricsEventAccountType.Imported}_${socialConnectionType}`,
+            account_type: accountTypeForSocialLoginMetrics,
           },
         });
 
@@ -480,15 +502,15 @@ export default function OnboardingWelcome() {
           return;
         }
 
-        if (!isFireFox) {
-          // automatically set participate in meta metrics to true for social login users in chrome
-          dispatch(setParticipateInMetaMetrics(true));
-        }
-
         if (loginOption === LOGIN_OPTION.NEW) {
           await onSocialLoginCreateClick(loginType);
         } else if (loginOption === LOGIN_OPTION.EXISTING) {
           await onSocialLoginImportClick(loginType);
+        }
+
+        if (!isFireFox) {
+          // automatically set participate in meta metrics to true for social login users in chrome
+          dispatch(setParticipateInMetaMetrics(true));
         }
 
         if (!isFireFox) {
