@@ -1,6 +1,9 @@
+import { strict as assert } from 'assert';
+import { By, WebElement } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 import { NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
 import { veryLargeDelayMs } from '../../../helpers';
+import NetworkManager from '../network-manager';
 
 class AssetListPage {
   private readonly driver: Driver;
@@ -179,31 +182,6 @@ class AssetListPage {
   async clickNetworkSelectorDropdown(): Promise<void> {
     console.log(`Clicking on the network selector dropdown`);
     await this.driver.clickElement(this.sortByPopoverToggle);
-  }
-
-  async clickCurrentNetworkOptionOnActivityList(): Promise<void> {
-    console.log(`Clicking on the current network option`);
-    await this.driver.clickElement(this.currentNetworkOption);
-    await this.driver.waitUntil(
-      async () => {
-        const toggle = await this.driver.findElement(this.sortByPopoverToggle);
-        const label = await toggle.getText();
-        return label !== 'Popular networks';
-      },
-      { timeout: 5000, interval: 100 },
-    );
-  }
-
-  async clickCurrentNetworkOption(): Promise<void> {
-    console.log(`Clicking on the current network option`);
-    await this.driver.clickElement(this.currentNetworkOption);
-    await this.driver.waitUntil(
-      async () => {
-        const label = await this.getNetworksFilterLabel();
-        return label !== 'Popular networks';
-      },
-      { timeout: 5000, interval: 100 },
-    );
   }
 
   async clickOnAsset(assetName: string): Promise<void> {
@@ -433,6 +411,38 @@ class AssetListPage {
         interval: 100,
       },
     );
+  }
+
+  /**
+   * Opens the Network Manager modal and selects only Tron, scoping the asset
+   * list to a single network. Clicking a network row in the Network Manager
+   * dispatches `handleNetworkChange` and auto-dismisses the modal, so callers
+   * do not need to close it explicitly.
+   */
+  async selectOnlyTronInNetworkFilter(): Promise<void> {
+    console.log('Selecting only Tron in the asset list network filter');
+    const networkManager = new NetworkManager(this.driver);
+    await networkManager.openNetworkManager();
+    await networkManager.selectTab('Popular');
+    // `selectNetworkByNameWithWait` clicks the row matching `[data-testid="${name}"]`
+    // (rendered by NetworkListItem on the inner Box) and waits for the modal
+    // to disappear, leaving Tron as the single enabled network.
+    await networkManager.selectNetworkByNameWithWait('Tron');
+  }
+
+  /**
+   * Opens the Network Manager modal and selects all popular networks via the
+   * `network-manager-select-all` row. The row click dispatches
+   * `setEnabledAllPopularNetworks` and auto-dismisses the modal.
+   */
+  async selectAllNetworksInNetworkFilter(): Promise<void> {
+    console.log(
+      'Selecting all popular networks in the asset list network filter',
+    );
+    const networkManager = new NetworkManager(this.driver);
+    await networkManager.openNetworkManager();
+    await networkManager.selectTab('Popular');
+    await networkManager.selectAllNetworks();
   }
 
   /**
@@ -693,6 +703,56 @@ class AssetListPage {
     }
   }
 
+  async checkTokenRowContainsAllText(
+    tokenName: string,
+    expectedTexts: string[],
+  ): Promise<void> {
+    for (const expectedText of expectedTexts) {
+      await this.checkTokenRowContainsText(tokenName, expectedText);
+    }
+  }
+
+  async checkTokenRowContainsText(
+    tokenName: string,
+    expectedText: string,
+  ): Promise<void> {
+    console.log(`Checking token row "${tokenName}" contains "${expectedText}"`);
+    const row = await this.findTokenRowByName(tokenName);
+    assert.ok(
+      (await row.getText()).includes(expectedText),
+      `Expected "${tokenName}" row to contain "${expectedText}"`,
+    );
+  }
+
+  /**
+   * Asserts the asset list contains exactly the given asset names by token-name
+   * cell, and no others. Used by chain-scoped views to prove nothing extra is
+   * rendered.
+   *
+   * @param symbols - Token name texts to require, in any order.
+   */
+  async checkOnlyAssetsArePresent(symbols: string[]): Promise<void> {
+    await this.expandLowValueAssetsIfPresent();
+    console.log(
+      `Checking only these assets are present: ${symbols.join(', ')}`,
+    );
+    for (const symbol of symbols) {
+      await this.driver.waitForSelector({
+        css: this.tokenName,
+        text: symbol,
+      });
+    }
+    await this.checkTokenItemNumber(symbols.length);
+  }
+
+  async checkAssetIsAbsent(symbol: string): Promise<void> {
+    console.log(`Checking asset is absent: ${symbol}`);
+    await this.driver.assertElementNotPresent({
+      css: this.tokenName,
+      text: symbol,
+    });
+  }
+
   /**
    * Waits until the token at the given 1-based position matches the expected
    * name. Uses findElements + index because each token-list-button lives in
@@ -938,6 +998,32 @@ class AssetListPage {
         stableFor: veryLargeDelayMs,
       },
     );
+  }
+
+  private async findTokenRowByName(tokenName: string): Promise<WebElement> {
+    let matchingRow: WebElement | undefined;
+
+    await this.driver.waitUntil(
+      async () => {
+        const rows = await this.driver.findElements(this.tokenListItem);
+        for (const row of rows) {
+          const nameElement = await row.findElement(By.css(this.tokenName));
+          if ((await nameElement.getText()) === tokenName) {
+            matchingRow = row;
+            return true;
+          }
+        }
+
+        return false;
+      },
+      { timeout: 10000, interval: 500 },
+    );
+
+    if (!matchingRow) {
+      throw new Error(`Could not find token row for ${tokenName}`);
+    }
+
+    return matchingRow;
   }
 }
 

@@ -19,6 +19,7 @@ module.exports = {
     // Mock lightweight-charts since it requires browser/canvas APIs not available in Jest
     '^lightweight-charts$': '<rootDir>/test/mocks/lightweight-charts.js',
   },
+  modulePathIgnorePatterns: ['<rootDir>/.metamask/cache/java-tron-up/'],
   // The path to the Prettier executable used to format snapshots
   // Jest doesn't support Prettier 3 yet, so we use Prettier 2
   prettierPath: require.resolve('prettier-2'),

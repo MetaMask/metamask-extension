@@ -225,6 +225,17 @@ class SwapPage {
     });
   }
 
+  async clickMaxButton(): Promise<void> {
+    console.log('Clicking the Max button on swap source amount');
+    await this.driver.clickElement(this.maxButton);
+  }
+
+  async completeSwapAndWaitForActivity(): Promise<void> {
+    console.log('Completing swap and navigating to activity');
+    await this.submitSwap();
+    await this.driver.clickElement(this.viewActivityButton);
+  }
+
   async submitSwap(): Promise<void> {
     console.log('Submit Swap');
     await this.driver.clickElement(this.swapButton);

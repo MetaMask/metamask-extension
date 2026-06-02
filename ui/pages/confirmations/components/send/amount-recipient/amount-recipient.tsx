@@ -60,7 +60,15 @@ export const AmountRecipient = () => {
     Boolean(hexDataError) ||
     Boolean(nonEVMSubmitError) ||
     addressPoisoningDetectionResult.pending;
-  const isDisabled = hasBlockingError || !toResolved || isNetworkUnreliable;
+
+  const isRecipientValidationPending =
+    Boolean(to) && recipientValidationResult.toAddressValidated !== to;
+
+  const isDisabled =
+    hasBlockingError ||
+    !toResolved ||
+    isNetworkUnreliable ||
+    isRecipientValidationPending;
 
   const proceedWithSubmit = useCallback(async () => {
     if (isNonEvmSendType) {

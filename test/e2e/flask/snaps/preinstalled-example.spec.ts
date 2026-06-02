@@ -62,7 +62,8 @@ describe('Preinstalled example Snap', function () {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         fixtures: new FixtureBuilderV2().build(),
-        testSpecificMock: mockTestSnapsSite,
+        testSpecificMock: (mockServer: Mockttp) =>
+          mockTestSnapsSite(mockServer, 8080),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -106,7 +107,8 @@ describe('Preinstalled example Snap', function () {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         fixtures: new FixtureBuilderV2().build(),
-        testSpecificMock: mockTestSnapsSite,
+        testSpecificMock: (mockServer: Mockttp) =>
+          mockTestSnapsSite(mockServer, 8080),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

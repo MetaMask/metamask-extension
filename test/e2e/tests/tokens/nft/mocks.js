@@ -1,7 +1,4 @@
-function setupAutoDetectMocking(
-  server,
-  testAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-) {
+async function setupAutoDetectMocking(server, { localNodes }) {
   const nfts = {
     tokens: [
       {
@@ -364,6 +361,12 @@ function setupAutoDetectMocking(
     continuation: null,
   };
 
+  if (!localNodes || !localNodes.length) {
+    throw new Error('setupAutoDetectMocking: no input `localNodes`');
+  }
+  const addresses = await localNodes[0].getAccounts();
+  const testAddress = addresses[0].toLowerCase();
+
   // Get assets for account
   server
     .forGet(`https://nft.api.cx.metamask.io/users/${testAddress}/tokens`)
@@ -406,11 +409,16 @@ function setupAutoDetectMocking(
       includeLastSale: 'true',
     })
     .thenCallback(() => {
+      console.warn('MOCK CALLED tokens');
+      console.warn('MOCK CALLED tokens');
+      console.warn('MOCK CALLED tokens');
       return {
         statusCode: 200,
         json: ensTokenResponse,
       };
     });
+
+  console.warn('AFTER INIT MOCK');
 }
 
 module.exports = {

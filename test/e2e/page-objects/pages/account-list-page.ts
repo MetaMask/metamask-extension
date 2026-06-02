@@ -699,6 +699,18 @@ class AccountListPage {
     });
   }
 
+  async checkMultichainAccountNameNotDisplayed(
+    expectedLabel: string,
+  ): Promise<void> {
+    console.log(
+      `Check that multichain account label ${expectedLabel} is not displayed on account list page`,
+    );
+    await this.driver.assertElementNotPresent({
+      css: this.multichainAccountListItem,
+      text: expectedLabel,
+    });
+  }
+
   async checkWalletDisplayedInAccountListMenu(
     expectedLabel: string = 'Wallet',
   ): Promise<void> {
