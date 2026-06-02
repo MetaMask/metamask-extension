@@ -4582,7 +4582,7 @@
         "gulp>vinyl-fs>pumpify>pump": true
       }
     },
-    "mockttp>express>qs": {
+    "browserify>url>qs": {
       "packages": {
         "string.prototype.matchall>side-channel": true
       }
@@ -6722,7 +6722,7 @@
         "gulp-livereload>tiny-lr>debug": true,
         "gulp-livereload>tiny-lr>faye-websocket": true,
         "react>object-assign": true,
-        "mockttp>express>qs": true
+        "browserify>url>qs": true
       }
     },
     "copy-webpack-plugin>tinyglobby": {
@@ -6905,7 +6905,7 @@
         "process.versions.pnp": true
       },
       "packages": {
-        "eslint-import-resolver-typescript>unrs-resolver>@unrs/resolver-binding-linux-x64-gnu": true
+        "eslint-import-resolver-typescript>unrs-resolver>@unrs/resolver-binding-darwin-arm64": true
       }
     },
     "uri-js": {
