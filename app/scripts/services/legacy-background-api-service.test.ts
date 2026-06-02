@@ -18,6 +18,7 @@ import { SnapId } from '@metamask/snaps-sdk';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import mockState from '../../../test/data/mock-state.json';
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../shared/constants/app';
+import { createSentryError } from '../../../shared/lib/error';
 import {
   LegacyBackgroundApiService,
   LegacyBackgroundApiServiceMessenger,
@@ -989,6 +990,171 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
   });
+
+  describe('checkIsSeedlessPasswordOutdated', () => {
+    it("returns false if it's a social login flow", async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(true),
+        );
+
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          jest.fn().mockReturnValue({ completedOnboarding: false }),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
+        );
+
+        expect(result).toStrictEqual(false);
+      });
+    });
+
+    it('returns false if the user has not completed onboarding', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(false),
+        );
+
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          jest.fn().mockReturnValue({ completedOnboarding: false }),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
+        );
+
+        expect(result).toStrictEqual(false);
+      });
+    });
+
+    it('returns true if the password is outdated', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(true),
+        );
+
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          jest.fn().mockReturnValue({ completedOnboarding: true }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:checkIsPasswordOutdated',
+          jest.fn().mockResolvedValue(true),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
+        );
+
+        expect(result).toStrictEqual(true);
+      });
+    });
+
+    it('returns false if the password is not outdated', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(true),
+        );
+
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          jest.fn().mockReturnValue({ completedOnboarding: true }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:checkIsPasswordOutdated',
+          jest.fn().mockResolvedValue(false),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
+        );
+
+        expect(result).toStrictEqual(false);
+      });
+    });
+
+    it('skips the cache if specified', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(true),
+        );
+
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          jest.fn().mockReturnValue({ completedOnboarding: true }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:checkIsPasswordOutdated',
+          jest.fn().mockResolvedValue(false),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
+          { skipCache: true },
+        );
+
+        expect(result).toStrictEqual(false);
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'SeedlessOnboardingController:checkIsPasswordOutdated',
+          { skipCache: true },
+        );
+      });
+    });
+
+    it('captures and throws an error', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const error = new Error('Test error');
+
+        const captureExceptionSpy = jest.spyOn(
+          serviceMessenger,
+          'captureException',
+        );
+
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(true),
+        );
+
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          jest.fn().mockReturnValue({ completedOnboarding: true }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:checkIsPasswordOutdated',
+          jest.fn().mockRejectedValue(error),
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
+            { captureSentryError: true },
+          ),
+        ).rejects.toThrow(error);
+
+        expect(captureExceptionSpy).toHaveBeenCalledWith(
+          createSentryError(
+            'Failed to check if seedless password is outdated',
+            error,
+          ),
+        );
+      });
+    });
+  });
 });
 
 /**
@@ -1074,6 +1240,8 @@ function getMessenger(
       'KeyringController:getKeyringsByType',
       'KeyringController:addNewKeyring',
       'PreferencesController:setPasswordForgotten',
+      'OnboardingController:getState',
+      'SeedlessOnboardingController:checkIsPasswordOutdated',
     ],
   });
 
