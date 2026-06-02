@@ -4,13 +4,12 @@ import { Mockttp } from 'mockttp';
 import { regularDelayMs, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder-v2';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import Homepage from '../../page-objects/pages/home/homepage';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import {
-  mockBitcoinFeatureFlag,
   mockExchangeRates,
   mockInitialFullScan,
   mockRampsDynamicFeatureFlag,
@@ -113,7 +112,6 @@ export async function withBtcWalletStandardSnap(
         },
       },
       testSpecificMock: async (mockServer: Mockttp) => [
-        await mockBitcoinFeatureFlag(mockServer),
         await mockInitialFullScan(mockServer),
         await mockExchangeRates(mockServer),
 
