@@ -52,7 +52,7 @@ export function mapLocalTransaction(
   const getNativeToken = (
     transaction: TransactionGroup['initialTransaction'],
     direction: TokenAmount['direction'],
-  ) => {
+  ): TokenAmount | undefined => {
     if (nativeSymbol === undefined) {
       return undefined;
     }
@@ -78,16 +78,28 @@ export function mapLocalTransaction(
     contractAddress?: string;
     direction: TokenAmount['direction'];
     transaction: TransactionGroup['initialTransaction'];
-  }) => {
+  }): TokenAmount | undefined => {
     if (contractAddress === undefined) {
       return undefined;
     }
 
     const tokenMetadata = getKnownTokenMetadata(chainId, contractAddress);
+
+    const isWrappedNativeToken = isEqualCaseInsensitive(
+      contractAddress,
+      SWAPS_WRAPPED_TOKENS_ADDRESSES[
+        initialTransaction.chainId as keyof typeof SWAPS_WRAPPED_TOKENS_ADDRESSES
+      ] || '',
+    );
+    const wrappedNativeTokenDecimals = isWrappedNativeToken
+      ? (nativeAsset?.decimals ?? EVM_NATIVE_DECIMALS)
+      : undefined;
+
     const decimals =
       transaction.transferInformation?.amount === undefined
         ? (tokenMetadata?.decimals ??
-          transactionGroup.contractTokenMetadata?.decimals)
+          transactionGroup.contractTokenMetadata?.decimals ??
+          wrappedNativeTokenDecimals)
         : transaction.transferInformation.decimals;
     const tokenAmount = transaction.transferInformation?.amount ?? amount;
     const symbol =
