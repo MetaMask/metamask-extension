@@ -1,5 +1,6 @@
 import urlLib from 'url';
 import ipRegex from 'ip-regex';
+import psl from 'psl';
 
 export function addUrlProtocolPrefix(urlString: string) {
   let trimmed = urlString.trim();
@@ -81,15 +82,14 @@ export function isLocalhostOrIPAddress(hostname: string): boolean {
 }
 
 /**
- * Best-effort domain (eTLD+1) for a URL, using the last two hostname labels.
- * Used to group RPC endpoints by provider so a single provider's wide outage
- * (e.g. *.infura.io) is treated as one failure rather than many. Not a Public
- * Suffix List implementation — multi-part suffixes like ".co.uk" are not
- * handled, which is fine for the RPC URL universe but not for arbitrary web
- * hosts.
+ * Registrable domain (eTLD+1) for a URL, computed via the Public Suffix List
+ * so multi-part suffixes like ".co.uk" resolve correctly. Used to group RPC
+ * endpoints by provider so a single provider's wide outage (e.g. *.infura.io)
+ * is treated as one failure rather than many.
  *
  * Localhost, IP literals, and single-label hosts are returned verbatim rather
- * than reduced to a domain (so callers can still distinguish them).
+ * than reduced to a domain (psl returns null or garbage for those, and callers
+ * grouping by domain still need to distinguish them).
  *
  * @param urlString - The URL to extract a domain from.
  * @returns The domain, or null if the URL is invalid.
@@ -106,6 +106,5 @@ export function getDomain(urlString: string): string | null {
     return hostname;
   }
 
-  const labels = hostname.split('.');
-  return labels.slice(-2).join('.');
+  return psl.get(hostname) ?? hostname;
 }

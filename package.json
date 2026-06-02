@@ -500,6 +500,7 @@
     "nanoid": "^3.3.8",
     "pify": "^5.0.0",
     "prop-types": "^15.6.1",
+    "psl": "^1.15.0",
     "punycode": "^2.1.1",
     "qrcode-generator": "^2.0.4",
     "qrcode.react": "^4.2.0",

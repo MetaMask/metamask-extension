@@ -44,6 +44,11 @@ describe('getDomain', () => {
     expect(getDomain('https://alchemy.com/')).toBe('alchemy.com');
   });
 
+  it('handles multi-part public suffixes like .co.uk', () => {
+    expect(getDomain('https://api.example.co.uk/v1')).toBe('example.co.uk');
+    expect(getDomain('https://example.co.uk/')).toBe('example.co.uk');
+  });
+
   it('returns single-label hosts (e.g., localhost) verbatim', () => {
     expect(getDomain('http://localhost:8545')).toBe('localhost');
   });
