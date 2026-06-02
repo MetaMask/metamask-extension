@@ -38,12 +38,12 @@ import {
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { useBoolean } from '../../../../hooks/useBoolean';
-import type { FeaturedNetworkForAdditionalList } from '../../../../selectors/config-registry/config-registry';
+import type { FeaturedNetwork } from '../../../../selectors/config-registry/config-registry';
 
 const PopularNetworkList = ({
   searchAddNetworkResults,
 }: {
-  searchAddNetworkResults: FeaturedNetworkForAdditionalList[];
+  searchAddNetworkResults: FeaturedNetwork[];
 }) => {
   const t = useI18nContext();
   const isPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
