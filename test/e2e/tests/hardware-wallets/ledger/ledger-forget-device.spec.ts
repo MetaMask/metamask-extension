@@ -14,7 +14,7 @@ describe('Ledger Hardware @speculos', function (this: Suite) {
   it('forgets device and checks if it is removed from the list', async function () {
     await withSpeculosFixtures(
       {
-        fixtures: new FixtureBuilderV2().withSpeculosLedgerAccount().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {

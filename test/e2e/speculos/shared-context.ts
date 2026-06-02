@@ -3,12 +3,15 @@ import {
   SpeculosClient,
   ApduBridge,
   DEFAULT_DEVICE,
-  getDeviceModel,
   type DeviceConfig,
-  type DeviceModel,
   type LedgerDeviceInteraction,
 } from '@metamask/hw-emulator';
-import { validateSpeculosTestEnv } from './build-config';
+import {
+  validateSpeculosTestEnv,
+  getDeviceModelFromEnv,
+  ensureDeviceEnv,
+  type DeviceModel,
+} from './build-config';
 import { cleanupSpeculosEnvironment } from './cleanup';
 
 /** Lifecycle context returned by {@link startSharedSpeculos} and consumed by test suites. */
@@ -24,23 +27,6 @@ export type SharedSpeculosContext = {
 
 let registeredSignalHandlers = false;
 
-/** Read the device model from SPECULOS_DEVICE (defaults to flex). */
-function getDeviceModelFromEnv(): DeviceModel {
-  const id = process.env.SPECULOS_DEVICE ?? 'flex';
-  return getDeviceModel(id);
-}
-
-/** Set SPECULOS_DEVICE and SPECULOS_ELF env vars from the resolved device model. */
-function ensureDeviceEnv(): void {
-  const model = getDeviceModelFromEnv();
-  if (!process.env.SPECULOS_DEVICE) {
-    process.env.SPECULOS_DEVICE = model.id;
-  }
-  if (!process.env.SPECULOS_ELF) {
-    process.env.SPECULOS_ELF = model.elfFile;
-  }
-}
-
 /**
  * Start a shared Speculos instance for use across multiple test cases.
  *
@@ -48,6 +34,9 @@ function ensureDeviceEnv(): void {
  * hook and reused by every `it()` block, then torn down in `after()`.
  *
  * @param options - Optional overrides for APDU/API ports and device config.
+ * @param options.apduPort
+ * @param options.apiPort
+ * @param options.device
  * @returns A {@link SharedSpeculosContext} with the live Speculos, client, bridge, and interaction handle.
  */
 export async function startSharedSpeculos(

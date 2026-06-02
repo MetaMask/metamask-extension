@@ -11,7 +11,10 @@ export {
   getChromeFlags,
   validateSpeculosTestEnv,
   isSpeculosMockInBuild,
+  getDeviceModelFromEnv,
+  ensureDeviceEnv,
 } from './build-config';
+export type { SpeculosBuildConfig, DeviceModel } from './build-config';
 
 export type {
   WithSpeculosFixturesOptions,

@@ -7,11 +7,30 @@
  * - @ledgerhq/hw-transport-webhid HID framing is handled in ApduBridge
  */
 
+import { getDeviceModel, type DeviceModel } from '@metamask/hw-emulator';
+
 export type SpeculosBuildConfig = {
   useRealBridge: boolean;
   mockWebHIDOnly: boolean;
   chromeFlags: string[];
 };
+
+export type { DeviceModel };
+
+export function getDeviceModelFromEnv(): DeviceModel {
+  const id = process.env.SPECULOS_DEVICE ?? 'flex';
+  return getDeviceModel(id);
+}
+
+export function ensureDeviceEnv(): void {
+  const model = getDeviceModelFromEnv();
+  if (!process.env.SPECULOS_DEVICE) {
+    process.env.SPECULOS_DEVICE = model.id;
+  }
+  if (!process.env.SPECULOS_ELF) {
+    process.env.SPECULOS_ELF = model.elfFile;
+  }
+}
 
 export function getSpeculosBuildConfig(): SpeculosBuildConfig {
   return {
