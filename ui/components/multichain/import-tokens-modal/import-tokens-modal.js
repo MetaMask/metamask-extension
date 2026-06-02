@@ -88,9 +88,7 @@ import {
   isValidHexAddress,
   toChecksumHexAddress,
 } from '../../../../shared/lib/hexstring-utils';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { addHexPrefix } from '../../../../app/scripts/lib/util';
+import { addHexPrefix } from '../../../../shared/lib/add-hex-prefix';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../../shared/constants/tokens';
 import {
   AssetType,
