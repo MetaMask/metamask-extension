@@ -52,17 +52,10 @@ import { useDebouncedValue } from '../../../hooks/useDebouncedValue';
 import { Skeleton } from '../../component-library/skeleton';
 import { isZeroAmount } from '../../../helpers/utils/number-utils';
 import { BalanceEmptyState } from '../balance-empty-state';
-import {
-  selectAccountGroupBalanceForEmptyState,
-  selectBalanceIsLoadingBySelectedAccountGroup,
-} from '../../../selectors/assets';
-import {
-  getSelectedAccountGroup,
-  getSelectedAccountGroupIsAligned,
-} from '../../../selectors/multichain-accounts/account-tree';
+import { selectAccountGroupBalanceForEmptyState } from '../../../selectors/assets';
+import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
-import { useAccountGroupBalanceDisplay } from '../assets/account-group-balance-change/useAccountGroupBalanceDisplay';
 
 export type CoinOverviewProps = {
   account: InternalAccount;
@@ -204,24 +197,9 @@ export const CoinOverview = ({
   const { privacyMode } = useSelector(getPreferences);
 
   const selectedAccountGroup = useSelector(getSelectedAccountGroup);
-  const selectedAccountGroupIsAligned = useSelector(
-    getSelectedAccountGroupIsAligned,
-  );
-  const selectedAccountGroupBalanceIsLoading = useSelector(
-    selectBalanceIsLoadingBySelectedAccountGroup,
-  );
 
   const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
   const isTestnet = useSelector(getMultichainIsTestnet);
-
-  // Use same logic that shows the skeleton loader in the balance section to determine whether to show the empty state too.
-  const balancePeriod = '1d' as const;
-  const { amountChange } = useAccountGroupBalanceDisplay(balancePeriod);
-  const anyEnabledNetworksAreAvailable = useSelector(
-    selectAnyEnabledNetworksAreAvailable,
-  );
-  const balanceIsReadyAndEmpty =
-    anyEnabledNetworksAreAvailable && isZeroAmount(amountChange);
 
   useRewardsModal();
 
@@ -229,19 +207,9 @@ export const CoinOverview = ({
   // otherwise the Receive button would be a no-op.
   const shouldShowBalanceEmptyState =
     Boolean(selectedAccountGroup) &&
-    selectedAccountGroupIsAligned &&
-    !selectedAccountGroupBalanceIsLoading &&
     !isTestnet &&
     !balanceIsCached &&
-    !hasBalance &&
-    balanceIsReadyAndEmpty;
-
-  // Debounce the empty state to give the balance a chance to load before
-  // showing it, preventing a flash of the empty state on initial render.
-  const debouncedShouldShowBalanceEmptyState = useDebouncedValue(
-    shouldShowBalanceEmptyState,
-    500,
-  );
+    !hasBalance;
 
   const handleSensitiveToggle = () => {
     dispatch(setPrivacyMode(!privacyMode));
@@ -306,7 +274,7 @@ export const CoinOverview = ({
     return (
       <Box className="wallet-overview__currency-wrapper">
         <AccountGroupBalanceChange
-          period={balancePeriod}
+          period="1d"
           trailingChild={renderPercentageAndAmountChangeTrail}
         />
       </Box>
