@@ -98,10 +98,20 @@ import MetaMaskController from './metamask-controller';
 import * as getSnapKeyringUtil from './lib/snap-keyring/utils/getSnapKeyring';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
-// so these tests exercise the real feature-flag gating logic via state.
-jest.mock('../../shared/lib/assets-unify-state/remote-feature-flag', () =>
-  jest.requireActual('../../shared/lib/assets-unify-state/remote-feature-flag'),
-);
+// and provide the pure flag-evaluation logic without the IN_TEST bypass
+// (test/helpers/setup-helper.js sets process.env.IN_TEST=true for all unit tests,
+// so using jest.requireActual here would make the function always return true,
+// breaking tests that depend on the disabled-flag path).
+jest.mock('../../shared/lib/assets-unify-state/remote-feature-flag', () => ({
+  ...jest.requireActual(
+    '../../shared/lib/assets-unify-state/remote-feature-flag',
+  ),
+  isAssetsUnifyStateFeatureEnabled: jest.fn(
+    (featureFlag, featureVersion) =>
+      Boolean(featureFlag?.enabled) &&
+      featureFlag?.featureVersion === featureVersion,
+  ),
+}));
 
 jest.mock('./messenger-client-init/perps-controller-init', () => ({
   PerpsControllerInit: jest.fn().mockImplementation(() => ({
