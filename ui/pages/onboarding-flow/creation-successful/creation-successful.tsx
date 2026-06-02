@@ -31,7 +31,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   DEFAULT_ROUTE,
-  SECURITY_ROUTE,
+  SECURITY_AND_PASSWORD_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   getBackupAndSyncOnboardingToggleState,
@@ -252,7 +252,9 @@ export default function CreationSuccessful() {
 
   const onDone = useCallback(async () => {
     if (isFromReminder) {
-      navigate(isFromSettingsSecurity ? SECURITY_ROUTE : DEFAULT_ROUTE);
+      navigate(
+        isFromSettingsSecurity ? SECURITY_AND_PASSWORD_ROUTE : DEFAULT_ROUTE,
+      );
       return;
     }
 
