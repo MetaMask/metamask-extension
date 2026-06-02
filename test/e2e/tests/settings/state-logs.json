@@ -589,6 +589,8 @@
         }
       }
     },
+    "batchSellTrades": "null",
+    "batchSellTradesLoadingStatus": "null",
     "browserEnvironment": {
       "browser": "string",
       "os": "string"

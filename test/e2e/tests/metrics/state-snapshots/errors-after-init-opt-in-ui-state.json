@@ -98,6 +98,8 @@
     "assetExchangeRates": "object",
     "assetsMetadata": "object",
     "balances": "object",
+    "batchSellTrades": null,
+    "batchSellTradesLoadingStatus": null,
     "browserEnvironment": { "browser": "string", "os": "string" },
     "cacheTimestamp": "number",
     "cachedMarketDataByProvider": "object",
