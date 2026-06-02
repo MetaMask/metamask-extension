@@ -4,6 +4,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import { AccessRestrictedProvider } from '../../compliance';
 import { mockPositions } from '../mocks';
 import { ReversePositionModal } from './reverse-position-modal';
 
@@ -142,6 +143,10 @@ const mockStore = configureStore({
     ...mockState.metamask,
   },
 });
+const selectedAccountId = mockState.metamask.internalAccounts
+  .selectedAccount as keyof typeof mockState.metamask.internalAccounts.accounts;
+const selectedAccountAddress =
+  mockState.metamask.internalAccounts.accounts[selectedAccountId].address;
 
 const longPosition = mockPositions[0];
 const shortPosition = mockPositions[1];
@@ -330,6 +335,46 @@ describe('ReversePositionModal', () => {
   });
 
   describe('successful save', () => {
+    it('does not call perpsFlipPosition when the selected wallet is compliance blocked', async () => {
+      mockSubmitRequestToBackground.mockResolvedValue([
+        {
+          address: selectedAccountAddress,
+          blocked: true,
+          checkedAt: '2026-05-05T00:00:00.000Z',
+        },
+      ]);
+      const blockedStore = configureStore({
+        metamask: {
+          ...mockState.metamask,
+          remoteFeatureFlags: {
+            ...mockState.metamask.remoteFeatureFlags,
+            complianceEnabled: true,
+          },
+        },
+      });
+
+      renderWithProvider(
+        <AccessRestrictedProvider>
+          <ReversePositionModal {...defaultProps} />
+        </AccessRestrictedProvider>,
+        blockedStore,
+      );
+
+      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'complianceCheckWalletsCompliance',
+          [[selectedAccountAddress]],
+        );
+      });
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsFlipPosition',
+        expect.anything(),
+      );
+      expect(screen.getByTestId('access-restricted-modal')).toBeInTheDocument();
+    });
+
     it('calls perpsFlipPosition once with symbol and position payload', async () => {
       const onClose = jest.fn();
 
