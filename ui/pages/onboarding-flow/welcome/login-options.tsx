@@ -132,7 +132,7 @@ export default function LoginOptions({
         />
       ),
       btnClass: 'mb-2',
-    }
+    },
   ];
 
   return (
