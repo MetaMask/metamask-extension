@@ -118,7 +118,9 @@ describe('useNetworkConnectionBanner', () => {
 
   describe('when all networks are available', () => {
     it("updates the status of the banner to 'available' if not already updated", () => {
-      mockSelectFirstFailedNetworkForNetworkConnectionBanner.mockReturnValue(null);
+      mockSelectFirstFailedNetworkForNetworkConnectionBanner.mockReturnValue(
+        null,
+      );
       mockGetNetworkConnectionBanner.mockReturnValue({ status: 'unknown' });
 
       renderHookWithProviderTyped(
@@ -132,7 +134,9 @@ describe('useNetworkConnectionBanner', () => {
     });
 
     it("does not update the status of the banner to 'available' if already updated", () => {
-      mockSelectFirstFailedNetworkForNetworkConnectionBanner.mockReturnValue(null);
+      mockSelectFirstFailedNetworkForNetworkConnectionBanner.mockReturnValue(
+        null,
+      );
       mockGetNetworkConnectionBanner.mockReturnValue({
         status: 'available',
       });
@@ -146,7 +150,9 @@ describe('useNetworkConnectionBanner', () => {
     });
 
     it('does not create a MetaMetrics event', () => {
-      mockSelectFirstFailedNetworkForNetworkConnectionBanner.mockReturnValue(null);
+      mockSelectFirstFailedNetworkForNetworkConnectionBanner.mockReturnValue(
+        null,
+      );
       mockGetNetworkConnectionBanner.mockReturnValue({ status: 'unknown' });
       const mockTrackEvent = jest.fn();
 
@@ -166,13 +172,15 @@ describe('useNetworkConnectionBanner', () => {
     describe('if the status of the banner is "unknown"', () => {
       describe('if at least one network is still not available after 5 seconds', () => {
         it('updates the status of the banner to "degraded"', () => {
-          mockSelectFirstFailedNetworkForNetworkConnectionBanner.mockReturnValue({
-            networkName: 'Ethereum Mainnet',
-            networkClientId: 'mainnet',
-            chainId: '0x1',
-            isInfuraEndpoint: true,
-            infuraEndpointIndex: undefined,
-          });
+          mockSelectFirstFailedNetworkForNetworkConnectionBanner.mockReturnValue(
+            {
+              networkName: 'Ethereum Mainnet',
+              networkClientId: 'mainnet',
+              chainId: '0x1',
+              isInfuraEndpoint: true,
+              infuraEndpointIndex: undefined,
+            },
+          );
           mockGetNetworkConnectionBanner.mockReturnValue({ status: 'unknown' });
 
           renderHookWithProviderTyped(
@@ -194,13 +202,15 @@ describe('useNetworkConnectionBanner', () => {
         });
 
         it('creates a MetaMetrics event to capture that the status changed', async () => {
-          mockSelectFirstFailedNetworkForNetworkConnectionBanner.mockReturnValue({
-            networkName: 'Ethereum Mainnet',
-            networkClientId: 'mainnet',
-            chainId: '0x1',
-            isInfuraEndpoint: true,
-            infuraEndpointIndex: undefined,
-          });
+          mockSelectFirstFailedNetworkForNetworkConnectionBanner.mockReturnValue(
+            {
+              networkName: 'Ethereum Mainnet',
+              networkClientId: 'mainnet',
+              chainId: '0x1',
+              isInfuraEndpoint: true,
+              infuraEndpointIndex: undefined,
+            },
+          );
           mockGetNetworkConnectionBanner.mockReturnValue({ status: 'unknown' });
           const mockTrackEvent = jest.fn();
 
@@ -365,7 +375,9 @@ describe('useNetworkConnectionBanner', () => {
         () => useNetworkConnectionBanner(),
         mockState,
       );
-      mockSelectFirstFailedNetworkForNetworkConnectionBanner.mockReturnValue(null);
+      mockSelectFirstFailedNetworkForNetworkConnectionBanner.mockReturnValue(
+        null,
+      );
       rerender();
       act(() => {
         jest.advanceTimersByTime(30000);
@@ -590,7 +602,9 @@ describe('useNetworkConnectionBanner', () => {
           typeof mockGetNetworkConfigurationsByChainId
         >,
       );
-      mockSelectFirstFailedNetworkForNetworkConnectionBanner.mockReturnValue(null);
+      mockSelectFirstFailedNetworkForNetworkConnectionBanner.mockReturnValue(
+        null,
+      );
       mockGetNetworkConnectionBanner.mockReturnValue({
         status: 'unavailable',
         networkName: 'Arbitrum One',
@@ -620,7 +634,9 @@ describe('useNetworkConnectionBanner', () => {
     });
 
     it('does nothing when status is available', async () => {
-      mockSelectFirstFailedNetworkForNetworkConnectionBanner.mockReturnValue(null);
+      mockSelectFirstFailedNetworkForNetworkConnectionBanner.mockReturnValue(
+        null,
+      );
       mockGetNetworkConnectionBanner.mockReturnValue({ status: 'available' });
 
       const { result } = renderHookWithProviderTyped(
@@ -637,7 +653,9 @@ describe('useNetworkConnectionBanner', () => {
     });
 
     it('does nothing when infuraEndpointIndex is undefined', async () => {
-      mockSelectFirstFailedNetworkForNetworkConnectionBanner.mockReturnValue(null);
+      mockSelectFirstFailedNetworkForNetworkConnectionBanner.mockReturnValue(
+        null,
+      );
       mockGetNetworkConnectionBanner.mockReturnValue({
         status: 'unavailable',
         networkName: 'Custom Network',
@@ -694,7 +712,9 @@ describe('useNetworkConnectionBanner', () => {
           typeof mockGetNetworkConfigurationsByChainId
         >,
       );
-      mockSelectFirstFailedNetworkForNetworkConnectionBanner.mockReturnValue(null);
+      mockSelectFirstFailedNetworkForNetworkConnectionBanner.mockReturnValue(
+        null,
+      );
       mockGetNetworkConnectionBanner.mockReturnValue({
         status: 'unavailable',
         networkName: 'Arbitrum One',

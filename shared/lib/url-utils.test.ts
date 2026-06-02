@@ -26,18 +26,16 @@ describe('isLocalhostOrIPAddress', () => {
 
 describe('getDomain', () => {
   it('returns the last two labels for a multi-label hostname', () => {
-    expect(getDomain('https://mainnet.infura.io/v3/abc')).toBe(
-      'infura.io',
-    );
+    expect(getDomain('https://mainnet.infura.io/v3/abc')).toBe('infura.io');
   });
 
   it('groups subdomain-heavy hostnames under the same registrable domain', () => {
     expect(getDomain('https://linea-mainnet.infura.io/v3/abc')).toBe(
       'infura.io',
     );
-    expect(
-      getDomain('https://polygon-mainnet.g.alchemy.com/v2/abc'),
-    ).toBe('alchemy.com');
+    expect(getDomain('https://polygon-mainnet.g.alchemy.com/v2/abc')).toBe(
+      'alchemy.com',
+    );
   });
 
   it('returns the hostname as-is when it has exactly two labels', () => {

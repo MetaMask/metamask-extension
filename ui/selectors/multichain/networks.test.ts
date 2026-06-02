@@ -788,7 +788,9 @@ describe('Multichain network selectors', () => {
       };
 
       expect(
-        selectFirstFailedNetworkForNetworkConnectionBanner(mockStateWithAvailableEvmNetworks),
+        selectFirstFailedNetworkForNetworkConnectionBanner(
+          mockStateWithAvailableEvmNetworks,
+        ),
       ).toBeNull();
     });
 
@@ -805,7 +807,9 @@ describe('Multichain network selectors', () => {
       };
 
       expect(
-        selectFirstFailedNetworkForNetworkConnectionBanner(mockStateWithNoEnabledEvmNetworks),
+        selectFirstFailedNetworkForNetworkConnectionBanner(
+          mockStateWithNoEnabledEvmNetworks,
+        ),
       ).toBeNull();
     });
 
@@ -840,7 +844,9 @@ describe('Multichain network selectors', () => {
       };
 
       expect(
-        selectFirstFailedNetworkForNetworkConnectionBanner(mockStateWithMissingMetadata),
+        selectFirstFailedNetworkForNetworkConnectionBanner(
+          mockStateWithMissingMetadata,
+        ),
       ).toBeNull();
     });
 
@@ -864,7 +870,9 @@ describe('Multichain network selectors', () => {
       };
 
       expect(
-        selectFirstFailedNetworkForNetworkConnectionBanner(mockStateWithMissingNetworkConfig),
+        selectFirstFailedNetworkForNetworkConnectionBanner(
+          mockStateWithMissingNetworkConfig,
+        ),
       ).toBeNull();
     });
 
@@ -959,7 +967,9 @@ describe('Multichain network selectors', () => {
       };
 
       expect(
-        selectFirstFailedNetworkForNetworkConnectionBanner(mockStateWithOnlyCustomEndpoint),
+        selectFirstFailedNetworkForNetworkConnectionBanner(
+          mockStateWithOnlyCustomEndpoint,
+        ),
       ).toStrictEqual({
         networkName: 'Custom Network',
         networkClientId: 'custom-network',
@@ -1074,7 +1084,9 @@ describe('Multichain network selectors', () => {
       };
 
       expect(
-        selectFirstFailedNetworkForNetworkConnectionBanner(mockStateWithSingleInfuraDown),
+        selectFirstFailedNetworkForNetworkConnectionBanner(
+          mockStateWithSingleInfuraDown,
+        ),
       ).toBeNull();
     });
 
@@ -1263,7 +1275,9 @@ describe('Multichain network selectors', () => {
       // -> 2 distinct domains -> banner. The Alchemy RPC is custom so the
       // override surfaces it for the CTA.
       expect(
-        selectFirstFailedNetworkForNetworkConnectionBanner(mockStateWithTwoDomainsDown),
+        selectFirstFailedNetworkForNetworkConnectionBanner(
+          mockStateWithTwoDomainsDown,
+        ),
       ).toStrictEqual({
         networkName: 'Arbitrum One',
         networkClientId: 'arbitrum-alchemy',
@@ -1343,7 +1357,9 @@ describe('Multichain network selectors', () => {
       };
 
       expect(
-        selectFirstFailedNetworkForNetworkConnectionBanner(mockStateWithCustomDownAmongAvailable),
+        selectFirstFailedNetworkForNetworkConnectionBanner(
+          mockStateWithCustomDownAmongAvailable,
+        ),
       ).toStrictEqual({
         networkName: 'Custom Network',
         networkClientId: 'custom-network',
