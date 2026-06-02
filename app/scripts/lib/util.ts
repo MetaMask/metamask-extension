@@ -56,6 +56,8 @@ export {
   isValidEmail,
   isWebOrigin,
 } from '../../../shared/lib/url-utils';
+export { formatValue, isValidAmount } from '../../../shared/lib/format-value';
+export { addHexPrefix } from '../../../shared/lib/add-hex-prefix';
 
 /**
  * Minimal type for User-Agent Client Hints API (NavigatorUAData).
@@ -339,28 +341,6 @@ export const getOs = (): Os => {
   return OS.UNKNOWN;
 };
 
-/**
- * Prefixes a hex string with '0x' or '-0x' and returns it. Idempotent.
- *
- * @param str - The string to prefix.
- * @returns The prefixed string.
- */
-const addHexPrefix = (str: string) => {
-  if (typeof str !== 'string' || str.match(/^-?0x/u)) {
-    return str;
-  }
-
-  if (str.match(/^-?0X/u)) {
-    return str.replace('0X', '0x');
-  }
-
-  if (str.startsWith('-')) {
-    return str.replace('-', '-0x');
-  }
-
-  return `0x${str}`;
-};
-
 function getChainType(chainId: string) {
   if (chainId === CHAIN_IDS.MAINNET) {
     return 'mainnet';
@@ -381,7 +361,7 @@ function checkAlarmExists(alarmList: { name: string }[], alarmName: string) {
   return alarmList.some((alarm) => alarm.name === alarmName);
 }
 
-export { addHexPrefix, checkAlarmExists, getChainType, getPlatform };
+export { checkAlarmExists, getChainType, getPlatform };
 
 // Taken from https://stackoverflow.com/a/1349426/3696652
 const characters =
@@ -535,24 +515,6 @@ export function formatTxMetaForRpcResult(
   }
 
   return formattedTxMeta;
-}
-
-export const isValidAmount = (amount: number | null | undefined): boolean =>
-  amount !== null && amount !== undefined && !Number.isNaN(amount);
-
-export function formatValue(
-  value: number | null | undefined,
-  includeParentheses: boolean,
-): string {
-  if (!isValidAmount(value)) {
-    return '';
-  }
-
-  const numericValue = value as number;
-  const sign = numericValue >= 0 ? '+' : '';
-  const formattedNumber = `${sign}${numericValue.toFixed(2)}%`;
-
-  return includeParentheses ? `(${formattedNumber})` : formattedNumber;
 }
 
 type MethodData = {

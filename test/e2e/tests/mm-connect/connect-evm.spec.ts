@@ -12,11 +12,9 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
+import { approveConnect } from '../../page-objects/flows/connect.flow';
 import { Driver, PAGES } from '../../webdriver/driver';
 import AccountListPage from '../../page-objects/pages/account-list-page';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
-import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
-import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { TestDappMmConnect as TestDapp } from '../../page-objects/pages/test-dapp-mm-connect';
@@ -28,55 +26,6 @@ const OPTIMISM_CHAIN_ID = parseInt(CHAIN_IDS.OPTIMISM, 16);
 const MM_CONNECT_TEST_DAPP_OPTIONS = {
   customDappPaths: [DAPP_PATH.TEST_DAPP_MM_CONNECT],
 };
-
-// ── Shared helpers ─────────────────────────────────────────────────────────
-
-/**
- * Approve the MetaMask connect dialog after the dapp has initiated a
- * connection. Switches to the dialog, optionally adds extra accounts and
- * extra permitted networks, then confirms. The caller is responsible for
- * triggering the connect action on the dapp and for switching focus back
- * to it afterwards.
- *
- * @param driver - Selenium driver
- * @param options - Options object with totalAccounts and extraNetworks
- * @param options.totalAccounts - Total number of accounts to connect (default: 1)
- * @param options.extraNetworks - Additional network display names to permit (e.g. ['Polygon'])
- */
-async function approveConnect(
-  driver: Driver,
-  {
-    totalAccounts = 1,
-    extraNetworks = [],
-  }: { totalAccounts?: number; extraNetworks?: string[] } = {},
-): Promise<void> {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  const confirmation = new ConnectAccountConfirmation(driver);
-  await confirmation.checkPageIsLoaded();
-
-  if (totalAccounts > 1) {
-    await confirmation.openEditAccountsModal();
-    const editAccountsModal = new EditConnectedAccountsModal(driver);
-    await editAccountsModal.checkPageIsLoaded();
-    for (let i = 1; i < totalAccounts; i++) {
-      await editAccountsModal.addNewAccount();
-    }
-  }
-
-  if (extraNetworks.length > 0) {
-    await confirmation.goToPermissionsTab();
-    await confirmation.openEditNetworksModal();
-    const networkModal = new NetworkPermissionSelectModal(driver);
-    await networkModal.checkPageIsLoaded();
-    for (const networkName of extraNetworks) {
-      await networkModal.selectNetwork({ networkName, shouldBeSelected: true });
-    }
-    await networkModal.clickConfirmEditButton();
-    await confirmation.checkPageIsLoaded();
-  }
-
-  await confirmation.confirmConnect();
-}
 
 /**
  * Open the MetaMask popup with the mm-connect dapp as the active tab origin,
