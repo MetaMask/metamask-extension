@@ -70,6 +70,9 @@ export type CoinOverviewProps = {
   isSigningEnabled: boolean;
 };
 
+/**
+ * Debounced delay to show the empty balance state (e.g "Fund your wallet" section).
+ */
 const DEBOUNCED_SHOW_BALANCE_EMPTY_STATE_MS = 500;
 
 export const LegacyAggregatedBalance = ({
@@ -215,6 +218,8 @@ export const CoinOverview = ({
 
   // Debounce the empty state to give the balance a chance to load before
   // showing it, preventing a flash of the empty state on initial render.
+  // NOTE: Today, there is no real way to determine that the balances are
+  // loading, so we are relying on the heuristic for now.
   const debouncedShouldShowBalanceEmptyState = useDebouncedValue(
     shouldShowBalanceEmptyState,
     DEBOUNCED_SHOW_BALANCE_EMPTY_STATE_MS,
