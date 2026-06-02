@@ -124,6 +124,15 @@ const SnapUIRendererComponent = ({
     [content, onCancel, useFooter, promptLegacyProps, t, backgroundColor],
   );
 
+  const pickerLocaleText = useMemo(
+    () => ({
+      clearButtonLabel: t('clear'),
+      cancelButtonLabel: t('cancel'),
+      okButtonLabel: t('ok'),
+    }),
+    [t],
+  );
+
   if (isLoading || !content) {
     return (
       <Box
@@ -147,7 +156,11 @@ const SnapUIRendererComponent = ({
       initialState={initialState}
     >
       <ThemeProvider theme={muiPickerTheme}>
-        <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale={locale}>
+        <LocalizationProvider
+          dateAdapter={AdapterLuxon}
+          adapterLocale={locale}
+          localeText={pickerLocaleText}
+        >
           <Box
             className="snap-ui-renderer__content"
             height={BlockSize.Full}

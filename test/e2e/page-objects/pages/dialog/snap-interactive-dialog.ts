@@ -14,14 +14,11 @@ const selectors = {
   rendererPanel: '.snap-ui-renderer__panel',
   exampleCheckbox: '.mm-checkbox__input',
   exampleDateTimePicker: '.snap-ui-renderer__date-time-picker--datetime',
-  exampleDatePickerContainer: '.snap-ui-renderer__date-time-picker--date',
+  exampleDatePicker: '.snap-ui-renderer__date-time-picker--date',
   exampleTimePicker: '.snap-ui-renderer__date-time-picker--time',
-  dateTimePickerField: '.snap-ui-renderer__date-time-picker--datetime',
-  datePickerField: '.snap-ui-renderer__date-time-picker--date',
-  timePickerField: '.snap-ui-renderer__date-time-picker--time',
-  pickerDialogOk: '.MuiDialogActions-root button:last-child',
-  pickerPrevMonthArrow:
+  datePickerPreviousMonthButton:
     '.MuiPickersCalendarHeader-root .MuiPickersArrowSwitcher-root button:first-child',
+  dateTimePickerOkButton: '.MuiDialogActions-root button:last-child',
 } satisfies Record<string, string | Record<string, string>>;
 
 class SnapInteractiveDialog {
@@ -76,16 +73,12 @@ class SnapInteractiveDialog {
   /**
    * Opens a MUI v5 mobile picker dialog by clicking its read-only field.
    *
-   * @param containerSelector - Selector for the picker wrapper (for scrolling).
-   * @param fieldSelector - Selector for the `<div role="textbox">` element.
+   * @param pickerSelector - Selector for the picker input element.
    */
-  async #openPickerDialog(
-    containerSelector: string,
-    fieldSelector: string,
-  ): Promise<void> {
-    const container = await this.driver.findElement(containerSelector);
-    await this.driver.scrollToElement(container);
-    await this.driver.clickElement(fieldSelector);
+  async #openPickerDialog(pickerSelector: string): Promise<void> {
+    const picker = await this.driver.findElement(pickerSelector);
+    await this.driver.scrollToElement(picker);
+    await this.driver.clickElement(pickerSelector);
     await this.driver.waitForSelector('.MuiDialog-root');
   }
 
@@ -96,7 +89,7 @@ class SnapInteractiveDialog {
    * @param day - Day of the month to select (1–31).
    */
   async #selectCalendarDay(day: number): Promise<void> {
-    await this.driver.clickElement(selectors.pickerPrevMonthArrow);
+    await this.driver.clickElement(selectors.datePickerPreviousMonthButton);
     await this.driver.waitForElementToStopMoving(
       '.MuiDayPicker-slideTransition',
     );
@@ -143,7 +136,7 @@ class SnapInteractiveDialog {
    * Confirms the current picker selection by clicking "OK".
    */
   async #confirmPicker(): Promise<void> {
-    await this.driver.clickElement(selectors.pickerDialogOk);
+    await this.driver.clickElement(selectors.dateTimePickerOkButton);
     await this.driver.delay(200);
   }
 
@@ -160,10 +153,7 @@ class SnapInteractiveDialog {
   async selectInDateTimePicker(day: number, hour: number, minute: number) {
     const prevMonthDate = DateTime.now().minus({ months: 1 });
 
-    await this.#openPickerDialog(
-      selectors.exampleDateTimePicker,
-      selectors.dateTimePickerField,
-    );
+    await this.#openPickerDialog(selectors.exampleDateTimePicker);
     await this.#selectCalendarDay(day);
     await this.#selectClockHour(hour);
     await this.#selectClockMinute(minute);
@@ -183,10 +173,7 @@ class SnapInteractiveDialog {
    * @returns ISO string of the selected time (today's date).
    */
   async selectInTimePicker(hour: number, minute: number) {
-    await this.#openPickerDialog(
-      selectors.exampleTimePicker,
-      selectors.timePickerField,
-    );
+    await this.#openPickerDialog(selectors.exampleTimePicker);
     await this.#selectClockHour(hour);
     await this.#selectClockMinute(minute);
     await this.#confirmPicker();
@@ -206,10 +193,7 @@ class SnapInteractiveDialog {
   async selectInDatePicker(day: number) {
     const prevMonthDate = DateTime.now().minus({ months: 1 });
 
-    await this.#openPickerDialog(
-      selectors.exampleDatePickerContainer,
-      selectors.datePickerField,
-    );
+    await this.#openPickerDialog(selectors.exampleDatePicker);
     await this.#selectCalendarDay(day);
     await this.#confirmPicker();
 
