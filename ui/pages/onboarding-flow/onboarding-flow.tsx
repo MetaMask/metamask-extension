@@ -15,6 +15,7 @@ import {
   BoxAlignItems,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import Unlock from '../unlock-page';
 import {
   ONBOARDING_EXPERIMENTAL_AREA,
@@ -34,14 +35,15 @@ import {
   SECURITY_ROUTE,
   ONBOARDING_REVEAL_SRP_ROUTE,
   ONBOARDING_DOWNLOAD_APP_ROUTE,
+  ONBOARDING_SETUP_PASSKEY_ROUTE,
 } from '../../helpers/constants/routes';
 import { toRelativeRoutePath } from '../routes/utils';
 import {
   getCompletedOnboarding,
   getIsPrimarySeedPhraseBackedUp,
-  getIsUnlocked,
   getOpenedWithSidepanel,
 } from '../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import {
   createNewVaultAndGetSeedPhrase,
   unlockAndGetSeedPhrase,
@@ -88,6 +90,7 @@ import AccountExist from './account-exist/account-exist';
 import AccountNotFound from './account-not-found/account-not-found';
 import RevealRecoveryPhrase from './recovery-phrase/reveal-recovery-phrase';
 import OnboardingDownloadApp from './download-app/download-app';
+import SetupPasskey from './setup-passkey/setup-passkey';
 
 // Lazy-load ExperimentalArea so the flask/ module is only fetched in Flask builds.
 // This is not just for performance, it is necessary so non-Flask builds don't try
@@ -171,9 +174,12 @@ export default function OnboardingFlow() {
       ONBOARDING_REVIEW_SRP_ROUTE,
       ONBOARDING_CONFIRM_SRP_ROUTE,
     ].some((route) => pathname?.startsWith(route));
+    const isSetupPasskeyRoute = pathname?.startsWith(
+      ONBOARDING_SETUP_PASSKEY_ROUTE,
+    );
 
     if (isUnlocked && !completedOnboarding && !secretRecoveryPhrase) {
-      if (isSRPBackupRoute) {
+      if (isSRPBackupRoute || isSetupPasskeyRoute) {
         navigate(ONBOARDING_UNLOCK_ROUTE, { replace: true });
       }
     }
@@ -236,21 +242,6 @@ export default function OnboardingFlow() {
     }
   };
 
-  const handleSocialLoginRehydration = async () => {
-    if (isSidePanelEnabled) {
-      await dispatch(setUseSidePanelAsDefault(true));
-      await dispatch(setCompletedOnboardingWithSidepanel());
-
-      // for sidepanel, we need to navigate to the next route (i.e. Home)
-      navigate(nextRoute, { replace: true });
-    } else {
-      // For existing social login users, set onboarding complete
-      // The useEffect watching completedOnboarding will handle navigation to DEFAULT_ROUTE
-      // Don't navigate here - let the useEffect handle it to avoid duplicate navigations
-      await dispatch(setCompletedOnboarding());
-    }
-  };
-
   const handleUnlock = async (password: string) => {
     try {
       setIsLoading(true);
@@ -272,13 +263,35 @@ export default function OnboardingFlow() {
       if (retrievedSecretRecoveryPhrase) {
         setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
       }
-      if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
-        await handleSocialLoginRehydration();
-        return;
-      }
-      navigate(nextRoute, { replace: true });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  /**
+   * Redirects after a successful unlock (`handleUnlock` is called).
+   * Previously, navigation was handled immediately after `handleUnlock` is called.
+   * This functions is explicitly provided to `Unlock` component to allow for custom logics (e.g. metrics) before the navigation.
+   */
+  const handleNavigationAfterUnlock = async () => {
+    if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
+      if (isSidePanelEnabled) {
+        await dispatch(setUseSidePanelAsDefault(true));
+        await dispatch(setCompletedOnboardingWithSidepanel());
+
+        // for sidepanel, we need to navigate to the next route (i.e. Home)
+        navigate(DEFAULT_ROUTE, { replace: true });
+      } else {
+        await dispatch(setCompletedOnboarding());
+        let redirectTo = DEFAULT_ROUTE;
+        const fromLocation = location.state?.from;
+        if (fromLocation?.pathname) {
+          redirectTo = fromLocation.pathname + (fromLocation.search || '');
+        }
+        navigate(redirectTo, { replace: true });
+      }
+    } else {
+      navigate(nextRoute, { replace: true });
     }
   };
 
@@ -369,6 +382,10 @@ export default function OnboardingFlow() {
               }
             />
             <Route
+              path={toRelativePath(ONBOARDING_SETUP_PASSKEY_ROUTE)}
+              element={<SetupPasskey />}
+            />
+            <Route
               path={toRelativePath(ONBOARDING_REVEAL_SRP_ROUTE)}
               element={
                 <RevealRecoveryPhrase
@@ -402,7 +419,12 @@ export default function OnboardingFlow() {
             />
             <Route
               path={toRelativePath(ONBOARDING_UNLOCK_ROUTE)}
-              element={<Unlock onSubmit={handleUnlock} />}
+              element={
+                <Unlock
+                  onSubmit={handleUnlock}
+                  navigateAfterUnlock={handleNavigationAfterUnlock}
+                />
+              }
             />
             <Route
               path={toRelativePath(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}

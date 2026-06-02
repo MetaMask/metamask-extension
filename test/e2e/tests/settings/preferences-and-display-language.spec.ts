@@ -43,7 +43,7 @@ const selectors = {
   headerTextAr: { text: ar.settings.message, tag: 'p' },
 };
 
-describe('Settings V2 - Preferences and display', function (this: Suite) {
+describe('Settings - Preferences and display', function (this: Suite) {
   it('validates language changes from preferences and display', async function () {
     await withFixtures(
       {
@@ -83,7 +83,7 @@ describe('Settings V2 - Preferences and display', function (this: Suite) {
     );
   });
 
-  it('validates "Dansk" localization across settings v2 navigation', async function () {
+  it('validates "Dansk" localization across settings navigation', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),

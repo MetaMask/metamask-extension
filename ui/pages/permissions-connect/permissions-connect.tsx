@@ -36,14 +36,12 @@ import {
   parseCaipAccountId,
   parseCaipChainId,
 } from '@metamask/utils';
+import { Box } from '@metamask/design-system-react';
 import { toRelativeRoutePath } from '../routes/utils';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
 import {
   isEthAddress,
   normalizeSafeAddress,
-  // eslint-disable-next-line import-x/no-restricted-paths
-} from '../../../app/scripts/lib/multichain/address';
+} from '../../../shared/lib/multichain/address';
 import { MILLISECOND } from '../../../shared/constants/time';
 import {
   DEFAULT_ROUTE,
@@ -58,13 +56,13 @@ import {
   getAccountsWithLabels,
   getLastConnectedInfo,
   getPermissionsRequests,
-  getSelectedInternalAccount,
   getSnapInstallOrUpdateRequests,
   getRequestState,
   getSnapsInstallPrivacyWarningShown,
   getRequestType,
   getTargetSubjectMetadata,
 } from '../../selectors';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { getURLHostName } from '../../helpers/utils/util';
 import {
   approvePermissionsRequest as approvePermissionsRequestAction,
@@ -76,8 +74,8 @@ import {
 } from '../../store/actions';
 import { getAccountGroupWithInternalAccounts } from '../../selectors/multichain-accounts/account-tree';
 import PermissionPageContainer from '../../components/app/permission-page-container';
-import { Box } from '../../components/component-library';
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header/snap-authorship-header';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { MultichainAccountsConnectPage } from '../multichain-accounts/multichain-accounts-connect-page/multichain-accounts-connect-page';
 import { supportsChainIds } from '../../hooks/useAccountGroupsForPermissions';
 import { getCaip25AccountIdsFromAccountGroupAndScope } from '../../../shared/lib/multichain/scope-utils';
@@ -231,7 +229,7 @@ function PermissionsConnect() {
     | undefined;
   const isRequestingAccounts = Boolean(
     permissions?.[Caip25EndowmentPermissionName] &&
-      !isRequestApprovalPermittedChains,
+    !isRequestApprovalPermittedChains,
   );
 
   const targetSubjectMetadataFromSelector = useSelector((state) =>

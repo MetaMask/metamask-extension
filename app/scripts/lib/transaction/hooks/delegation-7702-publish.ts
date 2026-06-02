@@ -2,11 +2,10 @@ import { Interface } from '@ethersproject/abi';
 import { abiERC20 } from '@metamask/metamask-eth-abis';
 import {
   GasFeeToken,
-  IsAtomicBatchSupportedRequest,
-  IsAtomicBatchSupportedResult,
   PublishHook,
   PublishHookResult,
   TransactionMeta,
+  TransactionType,
 } from '@metamask/transaction-controller';
 import { Hex, createProjectLogger } from '@metamask/utils';
 import { ExecutionStruct } from '../../../../../shared/lib/delegation';
@@ -23,6 +22,7 @@ import {
 } from '../transaction-relay';
 import {
   getClientForTransactionMetadata,
+  getClientVersionForTransactionMetadata,
   sanitizeOrigin,
 } from '../../smart-transaction/utils';
 import {
@@ -36,25 +36,20 @@ const EMPTY_RESULT = {
   transactionHash: undefined,
 };
 
+type RelayTransactionTxType = NonNullable<
+  RelaySubmitRequest['metadata']
+>['txType'];
+
 const log = createProjectLogger('delegation-7702-publish-hook');
 
 export class Delegation7702PublishHook {
-  #isAtomicBatchSupported: (
-    request: IsAtomicBatchSupportedRequest,
-  ) => Promise<IsAtomicBatchSupportedResult>;
-
   #messenger: TransactionControllerInitMessenger;
 
   constructor({
-    isAtomicBatchSupported,
     messenger,
   }: {
-    isAtomicBatchSupported: (
-      request: IsAtomicBatchSupportedRequest,
-    ) => Promise<IsAtomicBatchSupportedResult>;
     messenger: TransactionControllerInitMessenger;
   }) {
-    this.#isAtomicBatchSupported = isAtomicBatchSupported;
     this.#messenger = messenger;
   }
 
@@ -78,15 +73,23 @@ export class Delegation7702PublishHook {
     transactionMeta: TransactionMeta,
     _signedTx: string,
   ): Promise<PublishHookResult> {
+    if (transactionMeta.type === TransactionType.revokeDelegation) {
+      log('Skipping: revokeDelegation must publish as top-level setCode');
+      return EMPTY_RESULT;
+    }
+
     const { chainId, gasFeeTokens, selectedGasFeeToken, txParams } =
       transactionMeta;
 
     const { from } = txParams;
 
-    const atomicBatchSupport = await this.#isAtomicBatchSupported({
-      address: from as Hex,
-      chainIds: [chainId],
-    });
+    const atomicBatchSupport = await this.#messenger.call(
+      'TransactionController:isAtomicBatchSupported',
+      {
+        address: from as Hex,
+        chainIds: [chainId],
+      },
+    );
 
     const atomicBatchChainSupport = findAtomicBatchSupportForChain(
       atomicBatchSupport,
@@ -130,10 +133,6 @@ export class Delegation7702PublishHook {
     const includeTransfer =
       !isGaslessSwap && !transactionMeta.isGasFeeSponsored;
 
-    if (includeTransfer && (!gasFeeToken || gasFeeToken === undefined)) {
-      throw new Error('Gas fee token not found');
-    }
-
     const { nonce, ...txParamsWithoutNonce } = transactionMeta.txParams;
     const finalTransactionMeta: TransactionMeta = {
       ...transactionMeta,
@@ -171,8 +170,9 @@ export class Delegation7702PublishHook {
       data,
       to,
       metadata: {
-        txType: transactionMeta.type,
+        txType: transactionMeta.type as RelayTransactionTxType,
         client: getClientForTransactionMetadata(),
+        clientVersion: getClientVersionForTransactionMetadata(),
         origin: sanitizeOrigin(transactionMeta.origin),
       },
     };

@@ -45,6 +45,7 @@ import type {
 import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type { SignatureControllerState } from '@metamask/signature-controller';
 import type { PPOMState } from '@metamask/ppom-validator';
+import type { PasskeyControllerState } from '@metamask/passkey-controller';
 import type { NameControllerState } from '@metamask/name-controller';
 import type { UserOperationControllerState } from '@metamask/user-operation-controller';
 import type { TransactionControllerState } from '@metamask/transaction-controller';
@@ -104,19 +105,12 @@ export type ControllerStatePropertiesEnumerated = {
   recoveryPhraseReminderHasBeenShown: AppStateControllerState['recoveryPhraseReminderHasBeenShown'];
   recoveryPhraseReminderLastShown: AppStateControllerState['recoveryPhraseReminderLastShown'];
   outdatedBrowserWarningLastShown: AppStateControllerState['outdatedBrowserWarningLastShown'];
-  nftsDetectionNoticeDismissed: AppStateControllerState['nftsDetectionNoticeDismissed'];
-  showTestnetMessageInDropdown: AppStateControllerState['showTestnetMessageInDropdown'];
-  showBetaHeader: AppStateControllerState['showBetaHeader'];
-  showPermissionsTour: AppStateControllerState['showPermissionsTour'];
-  showNetworkBanner: AppStateControllerState['showNetworkBanner'];
-  showAccountBanner: AppStateControllerState['showAccountBanner'];
   productTour?: AppStateControllerState['productTour'];
   showDownloadMobileAppSlide: AppStateControllerState['showDownloadMobileAppSlide'];
   trezorModel: AppStateControllerState['trezorModel'];
   currentPopupId?: AppStateControllerState['currentPopupId'];
   onboardingDate: AppStateControllerState['onboardingDate'];
   lastViewedUserSurvey: AppStateControllerState['lastViewedUserSurvey'];
-  isRampCardClosed: AppStateControllerState['isRampCardClosed'];
   newPrivacyPolicyToastClickedOrClosed: AppStateControllerState['newPrivacyPolicyToastClickedOrClosed'];
   newPrivacyPolicyToastShownDate: AppStateControllerState['newPrivacyPolicyToastShownDate'];
   pna25Acknowledged: AppStateControllerState['pna25Acknowledged'];
@@ -126,7 +120,6 @@ export type ControllerStatePropertiesEnumerated = {
   canTrackWalletFundsObtained: AppStateControllerState['canTrackWalletFundsObtained'];
   activeQrCodeScanRequest: AppStateControllerState['activeQrCodeScanRequest'];
   nftsDropdownState: AppStateControllerState['nftsDropdownState'];
-  surveyLinkLastClickedOrClosed: AppStateControllerState['surveyLinkLastClickedOrClosed'];
   shieldSubscriptionError: AppStateControllerState['shieldSubscriptionError'];
   shieldEndingToastLastClickedOrClosed: AppStateControllerState['shieldEndingToastLastClickedOrClosed'];
   shieldPausedToastLastClickedOrClosed: AppStateControllerState['shieldPausedToastLastClickedOrClosed'];
@@ -147,12 +140,14 @@ export type ControllerStatePropertiesEnumerated = {
   lastUpdatedFromVersion: AppStateControllerState['lastUpdatedFromVersion'];
   showShieldEntryModalOnce: AppStateControllerState['showShieldEntryModalOnce'];
   pendingRedirectRoute: AppStateControllerState['pendingRedirectRoute'];
+  lastVisitedRoute: AppStateControllerState['lastVisitedRoute'];
   pendingShieldCohort: AppStateControllerState['pendingShieldCohort'];
   pendingShieldCohortTxType: AppStateControllerState['pendingShieldCohortTxType'];
   throttledOrigins: AppStateControllerState['throttledOrigins'];
   networkConnectionBanner: AppStateControllerState['networkConnectionBanner'];
   isWalletResetInProgress: AppStateControllerState['isWalletResetInProgress'];
   sidePanelGasPollTokens: AppStateControllerState['sidePanelGasPollTokens'];
+  passkeyAutoUnlockSuppressed: AppStateControllerState['passkeyAutoUnlockSuppressed'];
   quoteRequest: BridgeControllerState['quoteRequest'];
   quotes: BridgeControllerState['quotes'];
   quotesInitialLoadTime: BridgeControllerState['quotesInitialLoadTime'];
@@ -163,6 +158,7 @@ export type ControllerStatePropertiesEnumerated = {
   quoteStreamComplete: BridgeControllerState['quoteStreamComplete'];
   minimumBalanceForRentExemptionInLamports: BridgeControllerState['minimumBalanceForRentExemptionInLamports'];
   assetExchangeRates: BridgeControllerState['assetExchangeRates'];
+  tokenSecurityTypeDestination: BridgeControllerState['tokenSecurityTypeDestination'];
   tokenWarnings: BridgeControllerState['tokenWarnings'];
   txHistory: BridgeStatusControllerState['txHistory'];
   events: CronjobControllerState['events'];
@@ -192,6 +188,7 @@ export type ControllerStatePropertiesEnumerated = {
   fragments: MetaMetricsControllerState['fragments'];
   metaMetricsId: MetaMetricsControllerState['metaMetricsId'];
   participateInMetaMetrics: MetaMetricsControllerState['participateInMetaMetrics'];
+  passkeyRecord: PasskeyControllerState['passkeyRecord'];
   segmentApiCalls: MetaMetricsControllerState['segmentApiCalls'];
   traits: MetaMetricsControllerState['traits'];
   dataCollectionForMarketing: MetaMetricsControllerState['dataCollectionForMarketing'];
@@ -326,6 +323,7 @@ export type ControllerStatePropertiesEnumerated = {
   rewardsSeasonStatuses: RewardsControllerState['rewardsSeasonStatuses'];
   rewardsSubscriptionTokens: RewardsControllerState['rewardsSubscriptionTokens'];
   rewardsPointsEstimateHistory: RewardsControllerState['rewardsPointsEstimateHistory'];
+  rewardsVipPerpsFees: RewardsControllerState['rewardsVipPerpsFees'];
   claims: ClaimsControllerState['claims'];
   claimsConfigurations: ClaimsControllerState['claimsConfigurations'];
   drafts: ClaimsControllerState['drafts'];
@@ -370,6 +368,7 @@ type ControllerStateTypesMerged = AccountsControllerState &
   NotificationServicesController.NotificationServicesControllerState &
   NotificationServicesPushController.NotificationServicesPushControllerState &
   OnboardingControllerState &
+  PasskeyControllerState &
   PermissionControllerState<PermissionConstraint> &
   PermissionLogControllerState &
   PPOMState &

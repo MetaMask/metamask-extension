@@ -34,6 +34,7 @@ function createMockController(): jest.Mocked<
     | 'getPositions'
     | 'getOpenOrders'
     | 'getAccountState'
+    | 'startMarketDataPreload'
   >
 > {
   return {
@@ -53,6 +54,7 @@ function createMockController(): jest.Mocked<
     getPositions: jest.fn().mockResolvedValue([]),
     getOpenOrders: jest.fn().mockResolvedValue([]),
     getAccountState: jest.fn().mockResolvedValue(null),
+    startMarketDataPreload: jest.fn().mockReturnValue(undefined),
   };
 }
 
@@ -164,6 +166,32 @@ describe('PerpsStreamBridge', () => {
       expect(controller.subscribeToOrders).toHaveBeenCalledTimes(1);
       expect(controller.subscribeToAccount).toHaveBeenCalledTimes(1);
       expect(controller.subscribeToOrderFills).toHaveBeenCalledTimes(1);
+    });
+
+    it('triggers controller.startMarketDataPreload so the UI cache is primed for subsequent cold mounts', async () => {
+      const controller = createMockController();
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+      const api = bridge.bridgeApi();
+
+      await api.perpsInit();
+
+      expect(controller.startMarketDataPreload).toHaveBeenCalledTimes(1);
+    });
+
+    it('still resolves when startMarketDataPreload throws synchronously', async () => {
+      const controller = createMockController();
+      controller.startMarketDataPreload.mockImplementation(() => {
+        throw new Error('preload blew up');
+      });
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+      const api = bridge.bridgeApi();
+
+      await expect(api.perpsInit()).resolves.toBeUndefined();
+      expect(controller.startMarketDataPreload).toHaveBeenCalledTimes(1);
     });
 
     it('emits on correct channels when static subscription callbacks fire', async () => {

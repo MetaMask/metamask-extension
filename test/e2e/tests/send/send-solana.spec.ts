@@ -1,4 +1,5 @@
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
 import SendPage from '../../page-objects/pages/send/send-page';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import { SOLANA_MAINNET_SCOPE } from '../../constants';
@@ -26,7 +27,8 @@ describe('Send Solana', function () {
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         const sendPage = new SendPage(driver);
         const nonEvmHomepage = new NonEvmHomepage(driver);
-        await nonEvmHomepage.checkExpectedTokenBalanceIsDisplayed('50', 'SOL');
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.checkExpectedTokenBalanceIsDisplayed('50', 'SOL');
         const snapTransactionConfirmation = new SnapTransactionConfirmation(
           driver,
         );

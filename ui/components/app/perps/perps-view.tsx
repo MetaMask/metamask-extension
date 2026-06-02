@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
+  usePerpsLiveAccount,
 } from '../../../hooks/perps/stream';
 import { usePerpsTransactionHistory } from '../../../hooks/perps/usePerpsTransactionHistory';
 import { PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS } from '../../../../shared/constants/perps';
@@ -27,8 +28,14 @@ import {
 } from '../../../ducks/perps';
 
 import { usePerpsEligibility } from '../../../hooks/perps';
+import { getTradeableBalance } from '../../../hooks/perps/getTradeableBalance';
 import { usePerpsMeasurement } from '../../../hooks/perps/usePerpsMeasurement';
-
+import { usePerpsEventTracking } from '../../../hooks/perps/usePerpsEventTracking';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../shared/constants/perps-events';
 import { PerpsGeoBlockModal } from './perps-geo-block-modal';
 import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
 import { usePerpsWithdrawNavigation } from './hooks/usePerpsWithdrawNavigation';
@@ -66,11 +73,11 @@ export const PerpsView: React.FC = () => {
   const tutorialCompleted = useSelector(selectTutorialCompleted);
   const { isEligible } = usePerpsEligibility();
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
+  const { trigger: triggerWithdraw } = usePerpsWithdrawNavigation();
   const [isCloseAllPending, setIsCloseAllPending] = useState(false);
   const [isCancelAllPending, setIsCancelAllPending] = useState(false);
   const [batchActionError, setBatchActionError] = useState<string | null>(null);
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
-  const { trigger: triggerWithdraw } = usePerpsWithdrawNavigation();
 
   // Stream hooks must run before any effects that touch PerpsStreamManager.
   // `usePerpsStreamManager` (inside these hooks) calls `perpsInit` then `init(address)`;
@@ -80,6 +87,7 @@ export const PerpsView: React.FC = () => {
     usePerpsLivePositions();
   const { orders: allOrders, isInitialLoading: ordersLoading } =
     usePerpsLiveOrders();
+  const { account, isInitialLoading: accountLoading } = usePerpsLiveAccount();
   const {
     exploreMarkets,
     watchlistMarkets,
@@ -195,9 +203,29 @@ export const PerpsView: React.FC = () => {
   }, [isEligible, applyOrdersSnapshot, orders.length, t]);
 
   const hasPositions = positions.length > 0;
-  const isLoading = positionsLoading || ordersLoading || marketsLoading;
+  // Only the single-position view can mirror a card-level RoE; for zero or
+  // multiple positions, summary RoE remains the account aggregate.
+  const singlePosition = positions.length === 1 ? positions[0] : undefined;
+  const isLoading =
+    positionsLoading || ordersLoading || marketsLoading || accountLoading;
+  const hasPerpBalance = Boolean(
+    account && Number.parseFloat(getTradeableBalance(account)) > 0,
+  );
 
   usePerpsMeasurement('PerpsTabLoaded', !isLoading);
+
+  usePerpsEventTracking({
+    eventName: MetaMetricsEventName.PerpsScreenViewed,
+    conditions: !isLoading,
+    properties: {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+        PERPS_EVENT_VALUE.SCREEN_TYPE.WALLET_HOME_PERPS_TAB,
+      [PERPS_EVENT_PROPERTY.OPEN_POSITION]: positions.length,
+      [PERPS_EVENT_PROPERTY.OPEN_ORDER]: orders.length,
+      [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.HOMESCREEN_TAB,
+      [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
+    },
+  });
 
   // Auto-open tutorial modal the first time a user enters the perps domain.
   // Guards on both the backend isFirstTimeUser flag (stable once propagated) and
@@ -244,6 +272,7 @@ export const PerpsView: React.FC = () => {
       {/* Balance header with Add funds / Withdraw dropdown */}
       <PerpsBalanceDropdown
         hasPositions={hasPositions}
+        singlePosition={singlePosition}
         onAddFunds={triggerDeposit}
         onWithdraw={triggerWithdraw}
       />

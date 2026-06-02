@@ -19,20 +19,19 @@ export type HeaderSearchTextFieldSearchProps = Omit<
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export interface HeaderSearchBaseProps
-  extends Pick<
-    BoxProps,
-    | 'className'
-    | 'gap'
-    | 'padding'
-    | 'paddingLeft'
-    | 'paddingRight'
-    | 'paddingHorizontal'
-    | 'margin'
-    | 'flexDirection'
-    | 'alignItems'
-    | 'justifyContent'
-  > {
+export interface HeaderSearchBaseProps extends Pick<
+  BoxProps,
+  | 'className'
+  | 'gap'
+  | 'padding'
+  | 'paddingLeft'
+  | 'paddingRight'
+  | 'paddingHorizontal'
+  | 'margin'
+  | 'flexDirection'
+  | 'alignItems'
+  | 'justifyContent'
+> {
   textFieldSearchProps: HeaderSearchTextFieldSearchProps;
 }
 

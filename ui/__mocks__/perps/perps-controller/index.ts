@@ -806,6 +806,10 @@ export type TrackingData = {
 
   // Entry source for analytics (e.g., 'trending' for Trending page discovery)
   source?: string;
+
+  // VIP program context (used by TradingService analytics events)
+  vipTier?: number;
+  vipDiscount?: number;
 };
 
 // TP/SL-specific tracking data for analytics events
@@ -891,7 +895,8 @@ export type Position = {
 
 // Using 'type' instead of 'interface' for BaseController Json compatibility
 export type AccountState = {
-  availableBalance: string; // Based on HyperLiquid: withdrawable
+  spendableBalance: string; // Max collateral available for a new position (provider-normalised)
+  withdrawableBalance: string; // Max collateral that can leave the venue (provider-normalised)
   totalBalance: string; // Based on HyperLiquid: accountValue
   marginUsed: string; // Based on HyperLiquid: marginUsed
   unrealizedPnl: string; // Based on HyperLiquid: unrealizedPnl
@@ -911,7 +916,7 @@ export type AccountState = {
   subAccountBreakdown?: Record<
     string,
     {
-      availableBalance: string;
+      spendableBalance: string;
       totalBalance: string;
     }
   >;
@@ -967,6 +972,7 @@ export type MarginResult = {
 export type FlipPositionParams = {
   symbol: string; // Asset identifier to flip (e.g., 'BTC', 'ETH', 'xyz:TSLA')
   position: Position; // Current position to flip
+  trackingData?: TrackingData;
 };
 
 export type InitializeResult = {

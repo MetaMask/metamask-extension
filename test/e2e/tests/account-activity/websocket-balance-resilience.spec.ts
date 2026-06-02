@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
+import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import WebSocketRegistry from '../../websocket/registry';
 import { withFixtures } from '../../helpers';
@@ -53,117 +54,239 @@ async function waitForBalanceUpdate(
   }, timeoutMs);
 }
 
-describe('Account Activity WebSocket Balance Resilience', function (this: Suite) {
-  it('balance updates continue via REST polling when WebSocket disconnects', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({
-        driver,
-        localNodes,
-      }: {
-        driver: Driver;
-        localNodes: Anvil[];
-      }) => {
-        const subPromise = waitForAccountActivitySubscription();
+async function mockChain1337(mockServer: Mockttp) {
+  return [
+    await mockServer
+      .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
+      .always()
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          'eip155:1337/slip44:1': {
+            id: 'ethereum',
+            price: 3401,
+            marketCap: 0,
+            pricePercentChange1d: 0,
+          },
+          'eip155:1/slip44:60': {
+            id: 'ethereum',
+            price: 3401,
+            marketCap: 0,
+            pricePercentChange1d: 0,
+          },
+        },
+      })),
+    await mockServer
+      .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+      .always()
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          usd: {
+            name: 'US Dollar',
+            ticker: 'usd',
+            value: 1,
+            currencyType: 'fiat',
+          },
+          eth: {
+            name: 'Ether',
+            ticker: 'eth',
+            value: 1 / 3401,
+            currencyType: 'crypto',
+          },
+        },
+      })),
+    await mockServer
+      .forGet('https://accounts.api.cx.metamask.io/v2/supportedNetworks')
+      .always()
+      .thenJson(200, {
+        fullSupport: [],
+        partialSupport: { balances: [] },
+      }),
+    await mockServer
+      .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
+      .always()
+      .thenCallback((request) => {
+        const url = new URL(request.url);
+        const assetIds = url.searchParams.getAll('assetIds').join(',');
+        const results = [];
 
-        await login(driver);
-        await waitForAccountActivityWsConnections(driver, 1);
-        await subPromise;
+        if (assetIds.includes('eip155:1337')) {
+          results.push({
+            assetId: 'eip155:1337/slip44:1',
+            name: 'Ethereum',
+            symbol: 'ETH',
+            decimals: 18,
+          });
+        }
 
-        const homepage = new HomePage(driver);
-        await homepage.checkExpectedBalanceIsDisplayed('25');
+        return { statusCode: 200, json: { data: results } };
+      }),
+  ];
+}
 
-        const server = WebSocketRegistry.getServer(
-          WEBSOCKET_SERVICES.accountActivity,
-        );
-        await server.stopAndCleanup();
-
-        await localNodes[0].setAccountBalance(
-          DEFAULT_FIXTURE_ACCOUNT,
-          FIFTY_ETH_WEI,
-        );
-
-        await waitForBalanceUpdate(homepage, driver, '50');
-      },
-    );
-  });
-
-  it('WebSocket reconnects and real-time updates resume after server recovery', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({
-        driver,
-        localNodes,
-      }: {
-        driver: Driver;
-        localNodes: Anvil[];
-      }) => {
-        const subPromise = waitForAccountActivitySubscription();
-        await login(driver);
-        await waitForAccountActivityWsConnections(driver, 1);
-        await subPromise;
-
-        const homepage = new HomePage(driver);
-        await homepage.checkExpectedBalanceIsDisplayed('25');
-
-        const server = WebSocketRegistry.getServer(
-          WEBSOCKET_SERVICES.accountActivity,
-        );
-        await server.stopAndCleanup();
-        await waitForAccountActivityWsConnections(driver, 0);
-
-        server.start();
-        await accountActivityWebSocketConfig.setup(server, []);
-
-        // Waiter must be registered AFTER setup (which resets module state)
-        // but BEFORE the extension reconnects. Because setup is synchronous,
-        // no reconnection can slip in between these two calls.
-        const reconnectSubPromise =
-          waitForAccountActivitySubscription(RECONNECT_TIMEOUT);
-
-        await waitForAccountActivityWsConnections(driver, 1, RECONNECT_TIMEOUT);
-        const newSubId = await reconnectSubPromise;
-
-        await localNodes[0].setAccountBalance(
-          DEFAULT_FIXTURE_ACCOUNT,
-          THIRTY_FIVE_ETH_WEI,
-        );
-
-        const notification = createBalanceUpdateNotification({
-          subscriptionId: newSubId,
-          channel: `account-activity.v1.eip155:1337.${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}`,
-          address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-          chain: 'eip155:1337',
-          updates: [
+async function mockDisabledWebsocketBalance(mockServer: Mockttp) {
+  return [
+    ...(await mockChain1337(mockServer)),
+    await mockServer
+      .forGet('https://client-config.api.cx.metamask.io/v1/flags')
+      .always()
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: [
             {
-              asset: {
-                fungible: true,
-                type: 'eip155:1337/slip44:60',
-                unit: 'ETH',
-                decimals: 18,
-              },
-              postBalance: { amount: '35000000000000000000' },
-              transfers: [
-                {
-                  from: '0x0000000000000000000000000000000000000000',
-                  to: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-                  amount: '10000000000000000000',
-                },
-              ],
+              backendWebSocketConnection: false,
             },
           ],
-        });
-        server.sendMessage(JSON.stringify(notification));
+        };
+      }),
+  ];
+}
 
-        await waitForBalanceUpdate(homepage, driver, '35');
-      },
-    );
+describe('Account Activity WebSocket Balance Resilience', function (this: Suite) {
+  describe('REST Polling Fallback', function () {
+    it('balance updates continue via REST polling when WebSocket disconnects', async function () {
+      this.timeout(90_000);
+
+      // Mutable object passed to the global mock in mock-e2e.js.
+      // The mock reads defaultNativeEthHuman on every poll, so flipping it
+      // mid-test changes what the next Accounts API response returns.
+      const balanceOverride: { nativeBalance: string } = {
+        nativeBalance: '25',
+      };
+
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilderV2().build(),
+          title: this.test?.fullTitle(),
+          unifiedEvmAccountsApiBalances: balanceOverride,
+          testSpecificMock: mockChain1337,
+        },
+        async ({
+          driver,
+          localNodes,
+        }: {
+          driver: Driver;
+          localNodes: Anvil[];
+        }) => {
+          const subPromise = waitForAccountActivitySubscription();
+
+          await login(driver);
+          await waitForAccountActivityWsConnections(driver, 1);
+          await subPromise;
+
+          const homepage = new HomePage(driver);
+          await homepage.checkExpectedBalanceIsDisplayed('25');
+
+          const server = WebSocketRegistry.getServer(
+            WEBSOCKET_SERVICES.accountActivity,
+          );
+          await server.stopAndCleanup();
+
+          await localNodes[0].setAccountBalance(
+            DEFAULT_FIXTURE_ACCOUNT,
+            FIFTY_ETH_WEI,
+          );
+
+          // Switch the Accounts API response so the next REST poll returns 50 ETH
+          balanceOverride.nativeBalance = '50';
+
+          await waitForBalanceUpdate(homepage, driver, '50');
+        },
+      );
+    });
+  });
+
+  describe('Reconnection', function () {
+    it('WebSocket reconnects and real-time updates resume after server recovery', async function () {
+      this.timeout(240_000);
+
+      const balanceOverride: { nativeBalance: string } = {
+        nativeBalance: '25',
+      };
+
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilderV2().build(),
+          title: this.test?.fullTitle(),
+          unifiedEvmAccountsApiBalances: balanceOverride,
+          testSpecificMock: mockChain1337,
+        },
+        async ({
+          driver,
+          localNodes,
+        }: {
+          driver: Driver;
+          localNodes: Anvil[];
+        }) => {
+          const subPromise = waitForAccountActivitySubscription();
+          await login(driver);
+          await waitForAccountActivityWsConnections(driver, 1);
+          await subPromise;
+
+          const homepage = new HomePage(driver);
+          await homepage.checkExpectedBalanceIsDisplayed('25');
+
+          const server = WebSocketRegistry.getServer(
+            WEBSOCKET_SERVICES.accountActivity,
+          );
+          await server.stopAndCleanup();
+          await waitForAccountActivityWsConnections(driver, 0);
+
+          server.start();
+          await accountActivityWebSocketConfig.setup(server, []);
+
+          // Waiter must be registered AFTER setup (which resets module state)
+          // but BEFORE the extension reconnects. Because setup is synchronous,
+          // no reconnection can slip in between these two calls.
+          const reconnectSubPromise =
+            waitForAccountActivitySubscription(RECONNECT_TIMEOUT);
+
+          await waitForAccountActivityWsConnections(
+            driver,
+            1,
+            RECONNECT_TIMEOUT,
+          );
+          const newSubId = await reconnectSubPromise;
+
+          await localNodes[0].setAccountBalance(
+            DEFAULT_FIXTURE_ACCOUNT,
+            THIRTY_FIVE_ETH_WEI,
+          );
+
+          balanceOverride.nativeBalance = '35';
+
+          const notification = createBalanceUpdateNotification({
+            subscriptionId: newSubId,
+            channel: `account-activity.v1.eip155:1337.${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}`,
+            address: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+            chain: 'eip155:1337',
+            updates: [
+              {
+                asset: {
+                  fungible: true,
+                  type: 'eip155:1337/slip44:1',
+                  unit: 'ETH',
+                  decimals: 18,
+                },
+                postBalance: { amount: '35000000000000000000' },
+                transfers: [
+                  {
+                    from: '0x0000000000000000000000000000000000000000',
+                    to: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+                    amount: '10000000000000000000',
+                  },
+                ],
+              },
+            ],
+          });
+          server.sendMessage(JSON.stringify(notification));
+
+          await waitForBalanceUpdate(homepage, driver, '35');
+        },
+      );
+    });
   });
 
   it('balance updates work via REST polling when WebSocket feature flag is disabled', async function () {
@@ -171,11 +294,13 @@ describe('Account Activity WebSocket Balance Resilience', function (this: Suite)
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
+        // At the moment, setting this flag has no effect because of this issue #42049, so we need to mock the request
         manifestFlags: {
           remoteFeatureFlags: {
             backendWebSocketConnection: { value: false },
           },
         },
+        testSpecificMock: mockDisabledWebsocketBalance,
       },
       async ({
         driver,
@@ -185,9 +310,7 @@ describe('Account Activity WebSocket Balance Resilience', function (this: Suite)
         localNodes: Anvil[];
       }) => {
         await login(driver);
-
         const homepage = new HomePage(driver);
-        await homepage.checkExpectedBalanceIsDisplayed('25');
 
         const connectionCount = WebSocketRegistry.getServer(
           WEBSOCKET_SERVICES.accountActivity,

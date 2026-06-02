@@ -6,21 +6,25 @@ import type { Transaction } from '@metamask/keyring-api';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useScrollContainer } from '../../../contexts/scroll-container';
+import { useItemInView } from '../../../hooks/useItemInView';
 import { TransactionActivityEmptyState } from '../../app/transaction-activity-empty-state';
 import { TabEmptyState } from '../../ui/tab-empty-state';
 import { PENDING_STATUS_HASH } from '../../../helpers/constants/transactions';
-import { selectLocalTransactions } from '../../../selectors/activity';
+import {
+  selectNonEvmTransactionsForActivity,
+  selectLocalTransactions,
+} from '../../../selectors/activity';
 import { selectEvmAddress } from '../../../selectors/accounts';
-import { selectCurrentAccountNonEvmTransactions } from '../../../selectors/multichain-transactions';
 import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
 import { useEarliestNonceByChain } from '../../../hooks/useEarliestNonceByChain';
+import { useFormatters } from '../../../hooks/useFormatters';
 import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
-import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import AssetListControlBar from '../../app/assets/asset-list/asset-list-control-bar';
 import { noAdjustmentsScroll } from '../../ui/virtualized-list/virtualized-list';
 import {
   mergeAllTransactionsByTime,
   groupAndFlattenMergedTransactions,
+  enrichApiWithLocal,
   filterLocalNotInApi,
   matchesApiTransaction,
   matchesLocalTransaction,
@@ -33,7 +37,7 @@ import { ActivityDetailsModalAdapter } from './activity-details-modal-adapter';
 import { LocalActivityListItem } from './local-activity-list-item';
 import { NonEvmActivityListItem } from './non-evm-activity-list-item';
 import { NonEvmDetailsModal } from './non-evm-details-modal';
-import { useTransactionsQuery } from './hooks';
+import { useTransactionsQuery } from './useTransactionsQuery';
 
 const ITEM_HEIGHT = 70;
 const HEADER_HEIGHT = 36;
@@ -44,6 +48,7 @@ type Props = {
 
 export const ActivityList = ({ filter }: Props) => {
   const t = useI18nContext();
+  const { formatMediumDate } = useFormatters();
   const scrollContainerRef = useScrollContainer();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<TransactionViewModel | null>(
@@ -77,13 +82,14 @@ export const ActivityList = ({ filter }: Props) => {
   const localTransactions = useSelector(selectLocalTransactions);
 
   // Non-EVM transactions - not in API
-  const nonEvmTransactions = useSelector(
-    selectCurrentAccountNonEvmTransactions,
-  );
+  const nonEvmTransactions = useSelector(selectNonEvmTransactionsForActivity);
 
-  // Merge and flatten for virtualization
-  const flattenedItems = useMemo(() => {
-    let evmTransactions = data?.pages?.flatMap((page) => page.data ?? []) ?? [];
+  // Prepare the filtered transaction sources before merging them for rendering.
+  const transactionSources = useMemo(() => {
+    let evmTransactions = enrichApiWithLocal(
+      data?.pages?.flatMap((page) => page.data ?? []) ?? [],
+      localTransactions,
+    );
 
     // Filter local transactions by converting hex chainId to CAIP-2
     let filteredLocalTransactions = filterLocalNotInApi(
@@ -120,15 +126,24 @@ export const ActivityList = ({ filter }: Props) => {
       );
     }
 
+    return {
+      evmTransactions,
+      filteredLocalTransactions,
+      filteredNonEvmTransactions,
+    };
+  }, [data, nonEvmTransactions, localTransactions, enabledNetworks, filter]);
+
+  // Merge and flatten for virtualization
+  const flattenedItems = useMemo(() => {
     // Merge all three types by time
     const mergedByTime = mergeAllTransactionsByTime(
-      filteredLocalTransactions,
-      evmTransactions,
-      filteredNonEvmTransactions,
+      transactionSources.filteredLocalTransactions,
+      transactionSources.evmTransactions,
+      transactionSources.filteredNonEvmTransactions,
     );
 
     return groupAndFlattenMergedTransactions(mergedByTime);
-  }, [data, nonEvmTransactions, localTransactions, enabledNetworks, filter]);
+  }, [transactionSources]);
 
   const [scrollMargin, setScrollMargin] = useState(0);
 
@@ -152,8 +167,15 @@ export const ActivityList = ({ filter }: Props) => {
   });
 
   const virtualItems = virtualizer.getVirtualItems();
-  const lastVirtualItemIndex =
-    virtualItems.length > 0 ? virtualItems[virtualItems.length - 1].index : -1;
+  const lastCompletedEvmItemIndex = useMemo(() => {
+    for (let index = flattenedItems.length - 1; index >= 0; index -= 1) {
+      if (flattenedItems[index]?.type === 'completed') {
+        return index;
+      }
+    }
+
+    return -1;
+  }, [flattenedItems]);
 
   useEffect(() => {
     if (scrollContainerRef?.current) {
@@ -161,23 +183,16 @@ export const ActivityList = ({ filter }: Props) => {
     }
   }, [scrollContainerRef, virtualizer]);
 
-  // Fetch more items when scrolling near the end
-  useEffect(() => {
-    if (
-      lastVirtualItemIndex >= 0 &&
-      lastVirtualItemIndex >= flattenedItems.length - 5 &&
-      hasNextPage &&
-      !isFetchingNextPage
-    ) {
-      fetchNextPage();
-    }
-  }, [
-    lastVirtualItemIndex,
-    hasNextPage,
-    fetchNextPage,
-    flattenedItems.length,
-    isFetchingNextPage,
-  ]);
+  // Fetch more items when the last completed EVM transaction enters view
+  const observeLastCompletedEvmItem = useItemInView({
+    targetIndex: lastCompletedEvmItemIndex,
+    root: scrollContainerRef?.current ?? null,
+    onVisible: () => {
+      if (hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+      }
+    },
+  });
 
   const earliestNonceByChain = useEarliestNonceByChain(localTransactions);
 
@@ -200,7 +215,7 @@ export const ActivityList = ({ filter }: Props) => {
       return (
         <Box className="px-4 py-2 bg-background-default">
           <Text className="text-sm text-alternative">
-            {formatDateWithYearContext(item.date, 'MMM d, y', 'MMM d, y')}
+            {formatMediumDate(item.date)}
           </Text>
         </Box>
       );
@@ -258,7 +273,12 @@ export const ActivityList = ({ filter }: Props) => {
                   key={String(virtualItem.key)}
                   className="absolute top-0 left-0 w-full"
                   data-index={virtualItem.index}
-                  ref={virtualizer.measureElement}
+                  ref={(node) => {
+                    virtualizer.measureElement(node);
+                    observeLastCompletedEvmItem(node, {
+                      index: virtualItem.index,
+                    });
+                  }}
                   style={{
                     transform: `translateY(${translateY}px)`,
                   }}

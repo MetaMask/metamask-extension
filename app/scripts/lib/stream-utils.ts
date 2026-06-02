@@ -1,5 +1,5 @@
 import ObjectMultiplex from '@metamask/object-multiplex';
-// @ts-expect-error types/readable-stream.d.ts does not get picked up by ts-node
+// @ts-expect-error @types/readable-stream does not export pipeline or Duplex
 import { pipeline, Duplex } from 'readable-stream';
 
 /**
@@ -7,7 +7,7 @@ import { pipeline, Duplex } from 'readable-stream';
  * {@link isStreamWritable} across different stream implementations (node:stream,
  * readable-stream v2/v3/v4 and @metamask/object-multiplex).
  */
-type StreamLike = {
+export type StreamLike = {
   writable?: boolean;
   destroyed?: boolean;
   _writableState?: { ended: boolean };

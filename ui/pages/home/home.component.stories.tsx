@@ -66,8 +66,6 @@ const meta: Meta<typeof Home> = {
     newNetworkAddedName: null,
     editedNetwork: null,
     isSigningQRHardwareTransaction: false,
-    newNftAddedMessage: '',
-    removeNftMessage: '',
     newTokensImported: '',
     newTokensImportedError: '',
     hasAllowedPopupRedirectApprovals: false,
@@ -90,8 +88,6 @@ const meta: Meta<typeof Home> = {
     setRecoveryPhraseReminderLastShown: () => {},
     setTermsOfUseLastAgreed: () => {},
     setOutdatedBrowserWarningLastShown: () => {},
-    setNewNftAddedMessage: () => {},
-    setRemoveNftMessage: () => {},
     attemptCloseNotificationPopup: () => {},
     setNewTokensImported: () => {},
     setNewTokensImportedError: () => {},
@@ -113,8 +109,6 @@ export const Default: Story = {};
 export const NFTNotifications: Story = {
   args: {
     ...Default.args,
-    newNftAddedMessage: 'success',
-    removeNftMessage: 'error',
     newTokensImported: '5',
     newTokensImportedError: 'Failed to import some tokens',
     newNetworkAddedName: 'Arbitrum One',

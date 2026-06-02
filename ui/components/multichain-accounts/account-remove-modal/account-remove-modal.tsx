@@ -1,10 +1,17 @@
 import React from 'react';
-import { FontWeight, Text, TextVariant } from '@metamask/design-system-react';
-
 import {
   BannerAlert,
   BannerAlertSeverity,
   Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  FontWeight,
+  Text,
+  TextVariant,
+} from '@metamask/design-system-react';
+
+import {
   Modal,
   ModalBody,
   ModalContent,
@@ -13,12 +20,6 @@ import {
   ModalOverlay,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
 import { PreferredAvatar } from '../../app/preferred-avatar';
 import { AddressCopyButton } from '../../multichain';
 
@@ -46,10 +47,9 @@ export const AccountRemoveModal = ({
         <ModalHeader onClose={onClose}>{t('removeAccount')}</ModalHeader>
         <ModalBody>
           <Box
-            display={Display.Flex}
-            justifyContent={JustifyContent.center}
-            alignItems={AlignItems.center}
-            flexDirection={FlexDirection.Column}
+            flexDirection={BoxFlexDirection.Column}
+            alignItems={BoxAlignItems.Center}
+            justifyContent={BoxJustifyContent.Center}
           >
             <PreferredAvatar address={accountAddress} />
             <Text

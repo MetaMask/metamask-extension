@@ -20,6 +20,7 @@ import {
   getPnlDisplayColor,
   parseVolume,
   hasVolume,
+  formatRoePercent,
 } from './utils';
 import {
   HYPERLIQUID_ASSET_ICONS_BASE_URL,
@@ -672,6 +673,32 @@ describe('Perps Utils', () => {
 
     it('returns false for markets with unparseable volume', () => {
       expect(hasVolume(createMockMarket({ volume: '--' }))).toBe(false);
+    });
+  });
+
+  describe('formatRoePercent', () => {
+    it('formats positive integers without decimals', () => {
+      expect(formatRoePercent(10)).toBe('10');
+      expect(formatRoePercent(100)).toBe('100');
+    });
+
+    it('formats positive non-integers with 2 decimal places', () => {
+      expect(formatRoePercent(25.5)).toBe('25.50');
+      expect(formatRoePercent(3.33)).toBe('3.33');
+    });
+
+    it('formats negative values with sign preserved', () => {
+      expect(formatRoePercent(-25.5)).toBe('-25.50');
+      expect(formatRoePercent(-100)).toBe('-100');
+    });
+
+    it('formats zero as "0" without sign', () => {
+      expect(formatRoePercent(0)).toBe('0');
+    });
+
+    it('returns "0" (not "-0") when a small negative value rounds to zero', () => {
+      expect(formatRoePercent(-0.004)).toBe('0');
+      expect(formatRoePercent(-0.001)).toBe('0');
     });
   });
 });

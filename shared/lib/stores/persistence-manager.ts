@@ -18,19 +18,6 @@ import { runTrackedTask } from './utils/run-tracked-task';
 
 export type StorageKind = 'data' | 'split';
 
-export type Backup = {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  KeyringController?: unknown;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  AppMetadataController?: unknown;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  MetaMetricsController?: unknown;
-  meta?: MetaData;
-};
-
 export const backedUpStateKeys = [
   'KeyringController',
   'AppMetadataController',
@@ -38,6 +25,17 @@ export const backedUpStateKeys = [
 ] as const;
 
 export type BackedUpStateKey = (typeof backedUpStateKeys)[number];
+
+/**
+ * Shape of the backup object read from the IndexedDB backup database.
+ * Used for vault recovery and critical error restore.
+ * Keys are derived from backedUpStateKeys (single source of truth).
+ */
+export type Backup = {
+  [K in BackedUpStateKey]?: unknown;
+} & {
+  meta?: unknown;
+};
 
 export type VaultCorruptionDetectedEvent = {
   backup: Backup;
@@ -124,22 +122,26 @@ function makeBackup(state: MetaMaskStateType, meta: MetaData): Backup {
 }
 
 /**
- * Checks if the state contains a vault. This can be used to determine if the
- * MetaMask state is in a valid state for backup.
+ * Checks if the state or backup object has a vault.
  *
- * @param state - The current MetaMask state.
- * @returns
+ * @param state - Full MetaMask state, a backup snapshot, or `null`. Omission is allowed.
+ * @returns True if the vault exists, otherwise false.
  */
-function hasVault(
-  state?: MetaMaskStateType,
+export function hasVault(state?: MetaMaskStateType | Backup | null): state is {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-): state is { KeyringController: RuntimeObject & Record<'vault', unknown> } {
-  const keyringController = state?.KeyringController;
+  KeyringController: RuntimeObject & Record<'vault', unknown>;
+} {
+  // we're overly defensive here because we have no idea what happened to the
+  // database, and we don't want to throw another error on some unexpected object.
+  if (!isObject(state) || !hasProperty(state, 'KeyringController')) {
+    return false;
+  }
+  const keyringController = state.KeyringController;
   return (
     isObject(keyringController) &&
     hasProperty(keyringController, 'vault') &&
-    Boolean(keyringController?.vault)
+    Boolean(keyringController.vault)
   );
 }
 
@@ -219,6 +221,12 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
   #open: boolean = false;
 
   /**
+   * When non-undefined, an open of the backup IndexedDB is in flight. Concurrent
+   * callers of {@link open} await this same promise so only one open runs.
+   */
+  #openPromise: Promise<void> | undefined;
+
+  /**
    * Callback to be invoked when a set operation fails (storage.local or IndexedDB).
    * This allows the background script to notify the UI about the failure.
    * The callback receives the storage write error type.
@@ -287,41 +295,55 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     return error instanceof Error ? error : new Error(String(error));
   }
 
-  async open() {
-    if (!this.#open) {
-      try {
-        const db = new IndexedDBStore();
-        await db.open('metamask-backup', 1);
-        this.#backupDb = db;
-      } catch (error) {
-        // `indexedDB` can't be used by addons in FF in some instances of
-        // private browsing mode due to this bug:
-        // https://bugzilla.mozilla.org/show_bug.cgi?id=1982707. In these
-        // cases we just won't have a backup vault.
-        if (
-          isObject(error) &&
-          error instanceof DOMException &&
-          error.name === 'InvalidStateError' &&
-          error.message ===
-            'A mutation operation was attempted on a database that did not allow mutations.'
-        ) {
-          // Custom fingerprint prevents Sentry's deduplication from dropping
-          // this event when other persistence errors with the same underlying
-          // error message (e.g., "An unexpected error occurred") are reported.
-          captureException(error, {
-            tags: { 'persistence.error': 'backup-db-open-failed' },
-            fingerprint: ['persistence-error', 'backup-db-open-failed'],
-          });
-          console.warn(
-            'Could not open backup database; automatic vault recovery will not be available.',
-          );
-        } else {
-          // rethrow since we couldn't handle it here.
-          throw error;
-        }
-      }
-      this.#open = true;
+  async open(): Promise<void> {
+    if (this.#open) {
+      return;
     }
+    if (this.#openPromise) {
+      await this.#openPromise;
+      return;
+    }
+    this.#openPromise = this.#openBackupDatabase();
+    try {
+      await this.#openPromise;
+    } finally {
+      this.#openPromise = undefined;
+    }
+  }
+
+  async #openBackupDatabase(): Promise<void> {
+    try {
+      const db = new IndexedDBStore();
+      await db.open('metamask-backup', 1);
+      this.#backupDb = db;
+    } catch (error) {
+      // `indexedDB` can't be used by addons in FF in some instances of
+      // private browsing mode due to this bug:
+      // https://bugzilla.mozilla.org/show_bug.cgi?id=1982707. In these
+      // cases we just won't have a backup vault.
+      if (
+        isObject(error) &&
+        error instanceof DOMException &&
+        error.name === 'InvalidStateError' &&
+        error.message ===
+          'A mutation operation was attempted on a database that did not allow mutations.'
+      ) {
+        // Custom fingerprint prevents Sentry's deduplication from dropping
+        // this event when other persistence errors with the same underlying
+        // error message (e.g., "An unexpected error occurred") are reported.
+        captureException(error, {
+          tags: { 'persistence.error': 'backup-db-open-failed' },
+          fingerprint: ['persistence-error', 'backup-db-open-failed'],
+        });
+        console.warn(
+          'Could not open backup database; automatic vault recovery will not be available.',
+        );
+      } else {
+        // rethrow since we couldn't handle it here.
+        throw error;
+      }
+    }
+    this.#open = true;
   }
 
   /**
@@ -820,6 +842,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    * Retrieves the backup object containing the state of various controllers.
    */
   async getBackup(): Promise<Backup | undefined> {
+    await this.open();
     const backupDb = this.#backupDb;
     if (!backupDb) {
       return undefined;

@@ -15,6 +15,7 @@ import {
   FontWeight,
   ButtonBase,
 } from '@metamask/design-system-react';
+import type { Position } from '@metamask/perps-controller';
 import {
   formatPerpsFiat,
   PRICE_RANGES_MINIMAL_VIEW,
@@ -47,6 +48,8 @@ export function invokePerpsBalanceAction(
 export type PerpsBalanceDropdownProps = {
   /** Whether the user has open positions (controls P&L row visibility) */
   hasPositions?: boolean;
+  /** The only open position, used to keep single-position RoE synced with the card */
+  singlePosition?: Position;
   /** Callback when Add funds button is pressed */
   onAddFunds?: PerpsBalanceActionHandler;
   /** Callback when Withdraw button is pressed */
@@ -61,9 +64,11 @@ export type PerpsBalanceDropdownProps = {
  * @param options0.hasPositions - Whether the user has open positions (controls P&L row visibility)
  * @param options0.onAddFunds - Callback when Add funds button is pressed
  * @param options0.onWithdraw - Callback when Withdraw button is pressed
+ * @param options0.singlePosition - The only open position, if exactly one is open
  */
 export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
   hasPositions = false,
+  singlePosition,
   onAddFunds,
   onWithdraw,
 }) => {
@@ -76,20 +81,26 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
 
   const totalBalance = account?.totalBalance ?? '0';
   const unrealizedPnl = account?.unrealizedPnl ?? '0';
-  const returnOnEquity = account?.returnOnEquity ?? '0';
+  const singlePositionReturnOnEquity = singlePosition?.returnOnEquity;
+  const accountReturnOnEquity = account?.returnOnEquity ?? '0';
 
   // totalBalance is HL accountValue (perps equity, already includes unrealizedPnl) + spot
-  const accountValue = parseFloat(totalBalance);
+  const accountValue = Number.parseFloat(totalBalance);
 
-  const pnlNum = parseFloat(unrealizedPnl);
+  const pnlNum = Number.parseFloat(unrealizedPnl);
   const isProfit = pnlNum >= 0;
   const pnlPrefix = isProfit ? '+' : '-';
   const formattedPnl = `${pnlPrefix}${formatPerpsFiat(Math.abs(pnlNum), {
     ranges: PRICE_RANGES_MINIMAL_VIEW,
   })}`;
-  const formattedRoe = formatPercentWithMinThreshold(
-    parseFloat(returnOnEquity) / 100,
-  );
+  const formattedRoe =
+    singlePositionReturnOnEquity === undefined
+      ? formatPercentWithMinThreshold(
+          Number.parseFloat(accountReturnOnEquity) / 100,
+        )
+      : formatPercentWithMinThreshold(
+          Number.parseFloat(singlePositionReturnOnEquity),
+        );
 
   const handleToggleDropdown = useCallback(() => {
     setIsDropdownOpen((prev) => !prev);

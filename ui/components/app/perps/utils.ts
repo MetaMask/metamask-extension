@@ -12,6 +12,12 @@ import {
   PERPS_CONSTANTS,
 } from './constants';
 
+// Re-exported here because callers importing `'../../components/app/perps/utils'`
+// resolve to this file (TypeScript prefers sibling `utils.ts` over the
+// `utils/index.ts` barrel). Keep the surface area in sync with `utils/index.ts`.
+export { willFlipPosition } from './utils/orderUtils';
+export { buildPerpsVipTrackingData } from './utils/trackingData';
+
 /**
  * Extract display name from symbol (strips DEX prefix for HIP-3 markets)
  * e.g., "xyz:TSLA" -> "TSLA", "BTC" -> "BTC"
@@ -511,15 +517,19 @@ export function getPnlDisplayColor(pnl: number): TextColor {
  * non-integers with 2 decimal places ("25.50").
  *
  * @param value - The numeric percentage value to format
- * @returns The formatted percentage string
+ * @returns The formatted percentage string (sign preserved for negative values)
  * @example
  * formatRoePercent(10) => '10'
- * formatRoePercent(-25.5) => '25.50'
+ * formatRoePercent(-25.5) => '-25.50'
  * formatRoePercent(0) => '0'
  */
 export const formatRoePercent = (value: number): string => {
-  const rounded = Math.round(Math.abs(value) * 100) / 100;
-  return Number.isInteger(rounded) ? rounded.toFixed(0) : rounded.toFixed(2);
+  const abs = Math.abs(value);
+  const rounded = Math.round(abs * 100) / 100;
+  const formatted = Number.isInteger(rounded)
+    ? rounded.toFixed(0)
+    : rounded.toFixed(2);
+  return value < 0 && rounded !== 0 ? `-${formatted}` : formatted;
 };
 
 const volumeMultipliers: Record<string, number> = {

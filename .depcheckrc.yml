@@ -11,6 +11,14 @@ ignores:
   - 'react-compiler-runtime'
   - '@fortawesome/fontawesome-free'
   - 'punycode'
+  # peer deps of @mui/material v5, consumed internally by MUI (not imported directly)
+  - '@emotion/react'
+  - '@emotion/styled'
+  # v5 pre-installed ahead of migration from @material-ui/core (v4 path);
+  # imports switch to @mui/material in the migration branch
+  - '@mui/material'
+  # future use for Snaps date pickers; v7 supports React 17 + MUI v5
+  - '@mui/x-date-pickers'
 
   #
   # dev deps
@@ -37,7 +45,6 @@ ignores:
   - 'chromedriver'
   - 'depcheck' # ooo meta
   - 'ethers' # ethers @5.7.0 expected by @account-abstraction/contracts, but conflicts with transitive ethers@6.x
-  - 'ganache-cli'
   - 'geckodriver'
   - 'jest'
   - 'mocha-junit-reporter'
@@ -118,3 +125,5 @@ ignorePatterns:
   # self-contained bundle used for testing
   - '**/send-eth-with-private-key-test/web3js.js'
   - '**/send-eth-with-private-key-test/ethereumjs-tx.js'
+  # vendored Yarn plugin bundles
+  - '.yarn/plugins/**'

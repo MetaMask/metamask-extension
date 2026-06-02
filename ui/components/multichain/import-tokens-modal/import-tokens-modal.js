@@ -26,9 +26,9 @@ import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
 } from '../../../../shared/lib/selectors/networks';
+import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import {
   getInternalAccounts,
-  getSelectedInternalAccount,
   getTokenDetectionSupportNetworkByChainId,
   getTestNetworkBackgroundColor,
   getTokenExchangeRates,
@@ -88,9 +88,7 @@ import {
   isValidHexAddress,
   toChecksumHexAddress,
 } from '../../../../shared/lib/hexstring-utils';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { addHexPrefix } from '../../../../app/scripts/lib/util';
+import { addHexPrefix } from '../../../../shared/lib/add-hex-prefix';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../../shared/constants/tokens';
 import {
   AssetType,
@@ -484,19 +482,22 @@ export const ImportTokensModal = ({ onClose }) => {
     setCustomDecimals(initialCustomToken.decimals);
   }, [pendingTokens]);
 
+  const networkConfig = useMemo(() => {
+    // For non-EVM networks, check allNetworks first (they use CAIP chain IDs)
+    // For EVM networks, check networkConfigurations (they use hex chain IDs)
+    return (
+      allNetworks[selectedNetwork] || networkConfigurations[selectedNetwork]
+    );
+  }, [selectedNetwork, allNetworks, networkConfigurations]);
   useEffect(() => {
     if (selectedNetwork) {
-      // For non-EVM networks, check allNetworks first (they use CAIP chain IDs)
-      // For EVM networks, check networkConfigurations (they use hex chain IDs)
-      const networkConfig =
-        allNetworks[selectedNetwork] || networkConfigurations[selectedNetwork];
       if (networkConfig) {
         setNetworkFilter({
           [selectedNetwork]: networkConfig,
         });
       }
     }
-  }, [selectedNetwork, networkConfigurations, allNetworks]);
+  }, [networkConfig, selectedNetwork]);
 
   useEffect(() => {
     setSelectedTokens({});

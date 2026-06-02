@@ -20,6 +20,7 @@ import {
 import { Skeleton } from '../../components/component-library/skeleton';
 import { PreferredAvatar } from '../../components/app/preferred-avatar';
 import { getSnapName, shortenAddress } from '../../helpers/utils/util';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { selectAccountGroupNameByInternalAccount } from '../confirmations/selectors/accounts';
 import { MultichainAccountsState } from '../../selectors/multichain-accounts/account-tree.types';
 import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
@@ -31,17 +32,15 @@ import {
   getMetaMaskAccountsOrdered,
   getMetaMaskKeyrings,
   getSnapsMetadata,
-  getPreferences,
 } from '../../selectors';
+import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import { MergedInternalAccount } from '../../selectors/selectors.types';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { AccountNetworkIndicator } from '../../components/multichain/account-network-indicator';
 import { getAccountLabels } from '../../helpers/utils/accounts';
 import { useFormatters } from '../../hooks/useFormatters';
 import { getCurrentCurrency } from '../../ducks/metamask/metamask';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
+import { normalizeSafeAddress } from '../../../shared/lib/multichain/address';
 
 // Component to display snap account information (avatar, address, account group name, balance, network indicator, and snap name)
 export const SnapAccountCard = ({

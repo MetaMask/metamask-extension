@@ -345,7 +345,7 @@ export class TestDappSolana {
    * @returns
    */
   private async waitSelectorTestId(id: string) {
-    await this.driver.findElement(this.getElementSelectorTestId(id));
+    await this.driver.waitForSelector(this.getElementSelectorTestId(id));
   }
 
   /**

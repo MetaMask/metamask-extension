@@ -18,6 +18,7 @@ import { Loader } from '../components/send/loader';
 import { SendPages } from '../constants/send';
 import { useSendContext } from '../context/send';
 import { useSendQueryParams } from '../hooks/send/useSendQueryParams';
+import { useHideToasts } from '../../../hooks/useHideToasts';
 
 const SendContainer = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -61,6 +62,7 @@ const SendContainer = ({ children }: { children: React.ReactNode }) => {
 };
 
 export const SendInner = () => {
+  useHideToasts();
   useSendQueryParams();
   const { currentPage } = useSendContext();
 

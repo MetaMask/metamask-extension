@@ -20,8 +20,7 @@ import {
   FontWeight,
   TextButton,
 } from '@metamask/design-system-react';
-// eslint-disable-next-line import-x/no-restricted-paths
-import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
+import { addUrlProtocolPrefix } from '../../../../shared/lib/url-utils';
 import { TextField } from '../../../components/component-library';
 import {
   MetaMetricsEventCategory,
@@ -70,8 +69,8 @@ import {
 } from '../../../../shared/constants/network';
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import { BackupAndSyncToggle } from '../../../components/app/identity/backup-and-sync-toggle/backup-and-sync-toggle';
-import DeleteMetaMetricsDataButton from '../../settings/security-tab/delete-metametrics-data-button';
-import MetametricsToggle from '../../settings/security-tab/metametrics-toggle/metametrics-toggle';
+import DeleteMetaMetricsDataButton from '../../../components/app/delete-metametrics-data-button';
+import MetametricsToggle from '../../../components/app/metametrics-toggle/metametrics-toggle';
 import { MetaMaskReduxState } from '../../../store/store';
 import { Setting } from './setting';
 
@@ -425,7 +424,7 @@ export default function PrivacySettings() {
                     ])}
                   />
 
-                  <BackupAndSyncToggle />
+                  <BackupAndSyncToggle isOnboarding />
 
                   <Setting
                     title={t('onboardingAdvancedPrivacyNetworkTitle')}

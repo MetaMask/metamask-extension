@@ -1,11 +1,13 @@
-import { SignatureController } from '@metamask/signature-controller';
+import {
+  SignatureController,
+  SignatureControllerMessenger,
+} from '@metamask/signature-controller';
 import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
   getSignatureControllerInitMessenger,
   getSignatureControllerMessenger,
   SignatureControllerInitMessenger,
-  SignatureControllerMessenger,
 } from '../messengers';
 import { getRootMessenger } from '../../lib/messenger';
 import { SignatureControllerInit } from './signature-controller-init';

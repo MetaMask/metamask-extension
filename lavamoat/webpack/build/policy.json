@@ -1,14 +1,5 @@
 {
   "resources": {
-    "@babel/core>@ampproject/remapping": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
-        "terser-webpack-plugin>@jridgewell/trace-mapping": true
-      }
-    },
     "@babel/code-frame": {
       "globals": {
         "console.warn": true,
@@ -36,20 +27,23 @@
         "console.error": true,
         "console.log": true,
         "process.env": true,
-        "process.versions": true
+        "process.features.typescript": true,
+        "process.versions": true,
+        "structuredClone": true
       },
       "packages": {
-        "@babel/core>@ampproject/remapping": true,
         "@babel/code-frame": true,
         "@babel/core>@babel/generator": true,
         "@babel/core>@babel/helper-compilation-targets": true,
         "@babel/core>@babel/helper-module-transforms": true,
         "@babel/core>@babel/helpers": true,
         "@babel/core>@babel/parser": true,
+        "depcheck>@babel/parser": true,
         "@babel/preset-typescript": true,
         "@babel/core>@babel/template": true,
         "depcheck>@babel/traverse": true,
         "@babel/core>@babel/types": true,
+        "@babel/core>@jridgewell/remapping": true,
         "@babel/core>convert-source-map": true,
         "nock>debug": true,
         "@babel/core>gensync": true,
@@ -126,7 +120,6 @@
       "packages": {
         "@babel/core": true,
         "@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": true,
-        "@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": true,
         "@babel/code-frame>@babel/helper-validator-identifier": true,
         "depcheck>@babel/traverse": true
       }
@@ -144,7 +137,7 @@
         "depcheck>@babel/traverse": true
       }
     },
-    "@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": {
+    "@babel/preset-env>@babel/plugin-transform-modules-commonjs>@babel/helper-simple-access": {
       "packages": {
         "@babel/core>@babel/types": true
       }
@@ -175,7 +168,7 @@
         "@babel/core": true,
         "@babel/core>@babel/helper-module-transforms": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
-        "@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": true
+        "@babel/preset-env>@babel/plugin-transform-modules-commonjs>@babel/helper-simple-access": true
       }
     },
     "@babel/preset-typescript>@babel/plugin-transform-typescript": {
@@ -206,7 +199,7 @@
     "@babel/core>@babel/template": {
       "packages": {
         "@babel/code-frame": true,
-        "@babel/core>@babel/parser": true,
+        "depcheck>@babel/parser": true,
         "@babel/core>@babel/types": true
       }
     },
@@ -219,24 +212,11 @@
         "@babel/core>@babel/generator": true,
         "depcheck>@babel/traverse>@babel/helper-globals": true,
         "@babel/core>@babel/parser": true,
+        "depcheck>@babel/parser": true,
         "@babel/core>@babel/template": true,
         "@babel/core>@babel/types": true,
         "depcheck>@babel": true,
         "nock>debug": true
-      }
-    },
-    "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse": {
-      "globals": {
-        "console.log": true
-      },
-      "packages": {
-        "@babel/code-frame": true,
-        "@babel/core>@babel/generator": true,
-        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse>@babel/parser": true,
-        "@babel/core>@babel/template": true,
-        "@babel/core>@babel/types": true,
-        "nock>debug": true,
-        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse>globals": true
       }
     },
     "@babel/core>@babel/types": {
@@ -269,6 +249,15 @@
       },
       "packages": {
         "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
+        "terser-webpack-plugin>@jridgewell/trace-mapping": true
+      }
+    },
+    "@babel/core>@jridgewell/remapping": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
         "terser-webpack-plugin>@jridgewell/trace-mapping": true
       }
     },
@@ -329,7 +318,7 @@
         "process._rawDebug": true
       },
       "packages": {
-        "@lavamoat/webpack>@babel/parser": true,
+        "depcheck>@babel/parser": true,
         "@lavamoat/webpack>@lavamoat/aa": true,
         "browserify>browser-resolve": true,
         "@lavamoat/webpack>lavamoat-core": true,
@@ -452,21 +441,21 @@
         "mockttp>@peculiar/asn1-schema": true,
         "mockttp>@peculiar/x509>@peculiar/asn1-cms>@peculiar/asn1-x509-attr": true,
         "mockttp>@peculiar/asn1-x509": true,
-        "mockttp>@peculiar/x509>@peculiar/asn1-cms>tslib": true
+        "tslib": true
       }
     },
     "mockttp>@peculiar/x509>@peculiar/asn1-csr": {
       "packages": {
         "mockttp>@peculiar/asn1-schema": true,
         "mockttp>@peculiar/asn1-x509": true,
-        "mockttp>@peculiar/x509>@peculiar/asn1-csr>tslib": true
+        "tslib": true
       }
     },
     "mockttp>@peculiar/x509>@peculiar/asn1-ecc": {
       "packages": {
         "mockttp>@peculiar/asn1-schema": true,
         "mockttp>@peculiar/asn1-x509": true,
-        "mockttp>@peculiar/x509>@peculiar/asn1-ecc>tslib": true
+        "tslib": true
       }
     },
     "mockttp>@peculiar/x509>@peculiar/asn1-pkcs9>@peculiar/asn1-pfx": {
@@ -475,14 +464,14 @@
         "mockttp>@peculiar/asn1-pkcs8": true,
         "mockttp>@peculiar/x509>@peculiar/asn1-rsa": true,
         "mockttp>@peculiar/asn1-schema": true,
-        "mockttp>@peculiar/x509>@peculiar/asn1-pkcs9>@peculiar/asn1-pfx>tslib": true
+        "tslib": true
       }
     },
     "mockttp>@peculiar/asn1-pkcs8": {
       "packages": {
         "mockttp>@peculiar/asn1-schema": true,
         "mockttp>@peculiar/asn1-x509": true,
-        "mockttp>@peculiar/asn1-pkcs8>tslib": true
+        "tslib": true
       }
     },
     "mockttp>@peculiar/x509>@peculiar/asn1-pkcs9": {
@@ -493,35 +482,35 @@
         "mockttp>@peculiar/asn1-schema": true,
         "mockttp>@peculiar/x509>@peculiar/asn1-cms>@peculiar/asn1-x509-attr": true,
         "mockttp>@peculiar/asn1-x509": true,
-        "mockttp>@peculiar/x509>@peculiar/asn1-pkcs9>tslib": true
+        "tslib": true
       }
     },
     "mockttp>@peculiar/x509>@peculiar/asn1-rsa": {
       "packages": {
         "mockttp>@peculiar/asn1-schema": true,
         "mockttp>@peculiar/asn1-x509": true,
-        "mockttp>@peculiar/x509>@peculiar/asn1-rsa>tslib": true
+        "tslib": true
       }
     },
     "mockttp>@peculiar/asn1-schema": {
       "packages": {
         "mockttp>@peculiar/asn1-x509>asn1js": true,
         "mockttp>@peculiar/x509>pvtsutils": true,
-        "mockttp>@peculiar/asn1-schema>tslib": true
+        "tslib": true
       }
     },
     "mockttp>@peculiar/x509>@peculiar/asn1-cms>@peculiar/asn1-x509-attr": {
       "packages": {
         "mockttp>@peculiar/asn1-schema": true,
         "mockttp>@peculiar/asn1-x509": true,
-        "mockttp>@peculiar/x509>@peculiar/asn1-cms>@peculiar/asn1-x509-attr>tslib": true
+        "tslib": true
       }
     },
     "mockttp>@peculiar/asn1-x509": {
       "packages": {
         "mockttp>@peculiar/asn1-schema": true,
         "mockttp>@peculiar/x509>pvtsutils": true,
-        "mockttp>@peculiar/asn1-x509>tslib": true
+        "tslib": true
       }
     },
     "mockttp>@peculiar/x509": {
@@ -538,7 +527,7 @@
         "mockttp>@peculiar/asn1-x509": true,
         "mockttp>@peculiar/x509>pvtsutils": true,
         "mockttp>@peculiar/x509>reflect-metadata": true,
-        "mockttp>@peculiar/x509>tslib": true,
+        "tslib": true,
         "mockttp>@peculiar/x509>tsyringe": true
       }
     },
@@ -969,19 +958,6 @@
         "string.prototype.matchall>get-intrinsic": true
       }
     },
-    "postcss-discard-font-face>postcss>chalk": {
-      "globals": {
-        "process.env.TERM": true,
-        "process.platform": true
-      },
-      "packages": {
-        "postcss-discard-font-face>postcss>chalk>ansi-styles": true,
-        "postcss-discard-font-face>postcss>chalk>escape-string-regexp": true,
-        "prettier-eslint>loglevel-colored-level-prefix>chalk>has-ansi": true,
-        "postcss-discard-font-face>postcss>chalk>strip-ansi": true,
-        "postcss-discard-font-face>postcss>chalk>supports-color": true
-      }
-    },
     "chokidar": {
       "builtin": {
         "events.EventEmitter": true,
@@ -1107,7 +1083,7 @@
         "webpack-dev-server>compression>debug": true,
         "webpack-dev-server>compression>negotiator": true,
         "webpack-dev-server>compression>on-headers": true,
-        "koa>content-disposition>safe-buffer": true,
+        "mockttp>express>safe-buffer": true,
         "koa>vary": true
       }
     },
@@ -1119,12 +1095,12 @@
         "console": true
       }
     },
-    "koa>content-disposition": {
+    "mockttp>express>content-disposition": {
       "builtin": {
         "path.basename": true
       },
       "packages": {
-        "koa>content-disposition>safe-buffer": true
+        "mockttp>express>safe-buffer": true
       }
     },
     "@babel/core>convert-source-map": {
@@ -1177,7 +1153,7 @@
       "packages": {
         "postcss-loader>cosmiconfig>env-paths": true,
         "eslint>@eslint/eslintrc>import-fresh": true,
-        "eslint>js-yaml": true,
+        "mocha>js-yaml": true,
         "depcheck>cosmiconfig>parse-json": true,
         "typescript": true
       }
@@ -1539,7 +1515,7 @@
         "koa>accepts": true,
         "mockttp>express>array-flatten": true,
         "mockttp>body-parser": true,
-        "koa>content-disposition": true,
+        "mockttp>express>content-disposition": true,
         "koa>content-type": true,
         "mockttp>express>cookie-signature": true,
         "mockttp>express>cookie": true,
@@ -1559,7 +1535,7 @@
         "mockttp>express>proxy-addr": true,
         "mockttp>express>qs": true,
         "mockttp>express>range-parser": true,
-        "koa>content-disposition>safe-buffer": true,
+        "mockttp>express>safe-buffer": true,
         "mockttp>express>send": true,
         "mockttp>express>serve-static": true,
         "koa>http-errors>setprototypeof": true,
@@ -1663,7 +1639,7 @@
         "mockttp>body-parser>unpipe": true
       }
     },
-    "axios>follow-redirects": {
+    "wait-on>axios>follow-redirects": {
       "builtin": {
         "assert": true,
         "http": true,
@@ -1748,17 +1724,7 @@
         "setTimeout": true
       }
     },
-    "prettier-eslint>loglevel-colored-level-prefix>chalk>has-ansi": {
-      "packages": {
-        "prettier-eslint>loglevel-colored-level-prefix>chalk>has-ansi>ansi-regex": true
-      }
-    },
     "chalk>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
-      }
-    },
-    "postcss-discard-font-face>postcss>supports-color>has-flag": {
       "globals": {
         "process.argv": true
       }
@@ -1886,7 +1852,7 @@
       },
       "packages": {
         "@viem/anvil>http-proxy>eventemitter3": true,
-        "axios>follow-redirects": true,
+        "wait-on>axios>follow-redirects": true,
         "@viem/anvil>http-proxy>requires-port": true
       }
     },
@@ -2011,12 +1977,6 @@
         "value": true
       }
     },
-    "postcss-discard-font-face>postcss>js-base64": {
-      "globals": {
-        "Base64": "write",
-        "define": true
-      }
-    },
     "@babel/core>@babel/generator>jsesc": {
       "globals": {
         "Buffer": true
@@ -2086,8 +2046,8 @@
         "console.log": true
       },
       "packages": {
-        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/parser": true,
-        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse": true
+        "depcheck>@babel/parser": true,
+        "depcheck>@babel/traverse": true
       }
     },
     "webpack>loader-runner": {
@@ -2357,12 +2317,6 @@
         "postcss>source-map-js": true
       }
     },
-    "postcss-discard-font-face": {
-      "packages": {
-        "postcss-discard-font-face>balanced-match": true,
-        "postcss-discard-font-face>postcss": true
-      }
-    },
     "tailwindcss>postcss-js": {
       "globals": {
         "console": true
@@ -2375,6 +2329,9 @@
     "postcss-loader": {
       "builtin": {
         "module": true,
+        "node:module": true,
+        "node:path": true,
+        "node:url": true,
         "path": true,
         "url": true
       },
@@ -2413,9 +2370,6 @@
       }
     },
     "postcss-rtlcss": {
-      "globals": {
-        "SuppressedError": true
-      },
       "packages": {
         "postcss": true,
         "postcss-rtlcss>rtlcss": true
@@ -2425,21 +2379,6 @@
       "packages": {
         "stylelint>postcss-selector-parser>cssesc": true,
         "@storybook/react>util-deprecate": true
-      }
-    },
-    "postcss-discard-font-face>postcss": {
-      "builtin": {
-        "fs": true,
-        "path": true
-      },
-      "globals": {
-        "console": true
-      },
-      "packages": {
-        "postcss-discard-font-face>postcss>chalk": true,
-        "postcss-discard-font-face>postcss>js-base64": true,
-        "postcss-discard-font-face>postcss>source-map": true,
-        "postcss-discard-font-face>postcss>supports-color": true
       }
     },
     "mockttp>express>proxy-addr": {
@@ -2558,6 +2497,7 @@
         "process.versions.pnp": true
       },
       "packages": {
+        "string.prototype.matchall>es-errors": true,
         "depcheck>is-core-module": true,
         "depcheck>resolve>path-parse": true
       }
@@ -2583,7 +2523,7 @@
         "setTimeout": true
       }
     },
-    "koa>content-disposition>safe-buffer": {
+    "mockttp>express>safe-buffer": {
       "builtin": {
         "buffer": true
       }
@@ -2884,11 +2824,6 @@
         "eslint>strip-ansi": true
       }
     },
-    "postcss-discard-font-face>postcss>chalk>strip-ansi": {
-      "packages": {
-        "postcss-discard-font-face>postcss>chalk>strip-ansi>ansi-regex": true
-      }
-    },
     "eslint>strip-ansi": {
       "packages": {
         "eslint>strip-ansi>ansi-regex": true
@@ -2899,14 +2834,6 @@
         "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
         "tailwindcss>sucrase>lines-and-columns": true,
         "tailwindcss>sucrase>ts-interface-checker": true
-      }
-    },
-    "postcss-discard-font-face>postcss>chalk>supports-color": {
-      "globals": {
-        "process.argv": true,
-        "process.env": true,
-        "process.platform": true,
-        "process.stdout": true
       }
     },
     "mocha>supports-color": {
@@ -2920,14 +2847,6 @@
       },
       "packages": {
         "chalk>supports-color>has-flag": true
-      }
-    },
-    "postcss-discard-font-face>postcss>supports-color": {
-      "globals": {
-        "process": true
-      },
-      "packages": {
-        "postcss-discard-font-face>postcss>supports-color>has-flag": true
       }
     },
     "tailwindcss": {
@@ -3079,90 +2998,8 @@
         "Buffer": true
       }
     },
-    "mockttp>@peculiar/x509>@peculiar/asn1-cms>tslib": {
+    "tslib": {
       "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
-        "SuppressedError": true,
-        "define": true
-      }
-    },
-    "mockttp>@peculiar/x509>@peculiar/asn1-csr>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
-        "SuppressedError": true,
-        "define": true
-      }
-    },
-    "mockttp>@peculiar/x509>@peculiar/asn1-ecc>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
-        "SuppressedError": true,
-        "define": true
-      }
-    },
-    "mockttp>@peculiar/x509>@peculiar/asn1-pkcs9>@peculiar/asn1-pfx>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
-        "SuppressedError": true,
-        "define": true
-      }
-    },
-    "mockttp>@peculiar/asn1-pkcs8>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
-        "SuppressedError": true,
-        "define": true
-      }
-    },
-    "mockttp>@peculiar/x509>@peculiar/asn1-pkcs9>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
-        "SuppressedError": true,
-        "define": true
-      }
-    },
-    "mockttp>@peculiar/x509>@peculiar/asn1-rsa>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
-        "SuppressedError": true,
-        "define": true
-      }
-    },
-    "mockttp>@peculiar/asn1-schema>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
-        "SuppressedError": true,
-        "define": true
-      }
-    },
-    "mockttp>@peculiar/x509>@peculiar/asn1-cms>@peculiar/asn1-x509-attr>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
-        "SuppressedError": true,
-        "define": true
-      }
-    },
-    "mockttp>@peculiar/asn1-x509>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
-        "SuppressedError": true,
-        "define": true
-      }
-    },
-    "mockttp>@peculiar/x509>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
         "SuppressedError": true,
         "define": true
       }
@@ -3566,7 +3403,7 @@
       },
       "packages": {
         "webpack-dev-server>sockjs>websocket-driver>http-parser-js": true,
-        "koa>content-disposition>safe-buffer": true,
+        "mockttp>express>safe-buffer": true,
         "webpack-dev-server>sockjs>websocket-driver>websocket-extensions": true
       }
     },
@@ -3595,6 +3432,7 @@
         "stream.Writable": true,
         "tls.connect": true,
         "url.URL": true,
+        "util.types.isUint8Array": true,
         "zlib.Z_DEFAULT_WINDOWBITS": true,
         "zlib.Z_SYNC_FLUSH": true,
         "zlib.createDeflateRaw": true,

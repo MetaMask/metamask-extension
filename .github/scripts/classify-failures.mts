@@ -49,13 +49,14 @@
  *   - Sends a structured log to Sentry (when SENTRY_DSN_PERFORMANCE is set)
  */
 
-import { readFileSync, appendFileSync } from 'node:fs';
+import { appendFileSync, readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
-import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
-import { getGitHubToken } from './shared/github-token.mts';
 import { ghApi } from './shared/gh-api.mts';
+import { getGitHubToken } from './shared/github-token.mts';
+import { stripJsonComments } from './shared/json-tools.mts';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -214,22 +215,6 @@ async function flushSentry(
 // ---------------------------------------------------------------------------
 // Config
 // ---------------------------------------------------------------------------
-
-/**
- * Strip full-line // comments and trailing commas from JSONC for JSON.parse().
- *
- * Limitations (acceptable for our config file):
- *   - Does NOT handle // inside string values (no URLs in values).
- *   - Trailing-comma regex operates on full text, so ,] or ,} inside a
- *     string value would be corrupted. No current patterns contain these.
- */
-function stripJsonComments(jsonc: string): string {
-  return jsonc
-    .split('\n')
-    .filter((line) => !line.trim().startsWith('//'))
-    .join('\n')
-    .replace(/,\s*([\]}])/g, '$1');
-}
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const configPath = join(scriptDir, '..', 'rules', 'retry-config.jsonc');
@@ -472,15 +457,20 @@ function classifyJob(job: Job): JobClassification {
   // path + line number), this is a compiler/linter error — deterministic
   // by nature. This catches ALL TypeScript, ESLint, and Stylelint errors
   // without needing to enumerate every possible error message.
-  const sourceFileAnnotation = annotations.find(
-    (a) =>
-      a.path &&
-      a.path !== '.github' &&
-      a.start_line != null &&
-      a.start_line > 0 &&
-      a.message?.trim() &&
-      !/^Process completed with exit code \d+/.test(a.message.trim()),
-  );
+  // Prefer "failure"-level annotations over "warning"-level ones —
+  // warnings (e.g. React Hook missing dependency) don't cause the job
+  // to fail and shouldn't be reported as the root cause.
+  const isSourceAnnotation = (a: (typeof annotations)[number]) =>
+    a.path &&
+    a.path !== '.github' &&
+    a.start_line != null &&
+    a.start_line > 0 &&
+    a.message?.trim() &&
+    !/^Process completed with exit code \d+/.test(a.message.trim());
+  const sourceFileAnnotation =
+    annotations.find(
+      (a) => isSourceAnnotation(a) && a.annotation_level === 'failure',
+    ) ?? annotations.find(isSourceAnnotation);
   if (sourceFileAnnotation) {
     return {
       jobName,
@@ -488,8 +478,7 @@ function classifyJob(job: Job): JobClassification {
       category,
       jobRetryable: false,
       reason: `Deterministic: code error in ${sourceFileAnnotation.path}:${sourceFileAnnotation.start_line}`,
-      errorSnippet:
-        fallbackSnippet ?? sourceFileAnnotation.message!.trim().slice(0, 200),
+      errorSnippet: sourceFileAnnotation.message!.trim().slice(0, 200),
       unmatched,
       deterministic: true,
     };
@@ -507,7 +496,7 @@ function classifyJob(job: Job): JobClassification {
         category,
         jobRetryable: false,
         reason: `Deterministic: ${deterministicMatch[0]}`,
-        errorSnippet: fallbackSnippet ?? deterministicMatch[0],
+        errorSnippet: deterministicMatch[0],
         unmatched,
         deterministic: true,
       };
@@ -1028,8 +1017,17 @@ console.log('\n' + report);
 // ---------------------------------------------------------------------------
 // Create Check Run on the triggering commit
 //
-// TODO: This is untestable in a fork repo, and we won't really know if this works
-// until we merge it and see it run in the real repo.
+// This creates a "Triage and Retry System" check on the PR's Checks tab:
+//   - conclusion=neutral  → appears under "N neutral check(s)", visible
+//     separately from the 190+ successful checks.
+//   - conclusion=failure  → appears in the red "N failed check(s)" section
+//     at the top of the page.
+//
+// The check is attributed to "CLA Signature Bot" in the PR Checks tab
+// because GitHub groups check runs by app/check-suite, and the CLA bot's
+// suite appears to claim this check. Using a dedicated GitHub App token
+// instead of github.token might fix the attribution, but it's not worth
+// the extra workflow step just for cosmetics.
 // ---------------------------------------------------------------------------
 
 if (process.env.CI === 'true' && REPO === 'MetaMask/metamask-extension') {

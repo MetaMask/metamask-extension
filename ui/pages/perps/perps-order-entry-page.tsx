@@ -40,7 +40,6 @@ import type {
 import {
   formatPerpsFiat,
   PRICE_RANGES_UNIVERSAL,
-  PRICE_RANGES_MINIMAL_VIEW,
 } from '../../../shared/lib/perps-formatters';
 import {
   PERPS_EVENT_PROPERTY,
@@ -48,7 +47,7 @@ import {
 } from '../../../shared/constants/perps-events';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
-import { getSelectedInternalAccount } from '../../selectors/accounts';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   DEFAULT_ROUTE,
@@ -61,6 +60,7 @@ import {
   usePerpsLiveCandles,
 } from '../../hooks/perps/stream';
 import {
+  selectPerpsDepositPending,
   selectPerpsTradeConfigurations,
   selectPerpsIsTestnet,
 } from '../../selectors/perps-controller';
@@ -71,6 +71,7 @@ import {
 import { usePerpsEligibility, usePerpsEventTracking } from '../../hooks/perps';
 import { usePerpsMarketInfo } from '../../hooks/perps/usePerpsMarketInfo';
 import { usePerpsOrderFees } from '../../hooks/perps/usePerpsOrderFees';
+import { getTradeableBalance } from '../../hooks/perps/getTradeableBalance';
 import { useFormatters } from '../../hooks/useFormatters';
 import { translatePerpsError } from '../../components/app/perps/utils/translate-perps-error';
 import { PerpsGeoBlockModal } from '../../components/app/perps/perps-geo-block-modal';
@@ -86,6 +87,8 @@ import {
   normalizeTpslPrices,
   safeDecodeURIComponent,
   formatSignedChangePercent,
+  willFlipPosition,
+  buildPerpsVipTrackingData,
 } from '../../components/app/perps/utils';
 import {
   parsePerpsDisplayPrice,
@@ -99,8 +102,10 @@ import {
 import {
   isValidTakeProfitPrice,
   isValidStopLossPrice,
+  isStopLossSafeFromLiquidation,
 } from '../../components/app/perps/utils/tpslValidation';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
+import { PERPS_MIN_MARKET_ORDER_USD } from '../../components/app/perps/constants';
 import {
   OrderEntry,
   DirectionTabs,
@@ -117,6 +122,7 @@ import {
   usePerpsToast,
 } from '../../components/app/perps/perps-toast';
 import { calculatePositionSize } from '../../components/app/perps/order-entry/order-entry.mocks';
+import { useVipTier } from '../../hooks/rewards/useVipTier';
 
 const ORDER_MODE_TOAST_KEYS: Record<
   OrderMode,
@@ -137,6 +143,12 @@ const ORDER_MODE_TOAST_KEYS: Record<
     failed: PERPS_TOAST_KEYS.CLOSE_FAILED,
   },
 };
+
+export function shouldShowPerpsOrderSubmissionToasts(
+  hasPendingPerpsDeposit: boolean,
+) {
+  return !hasPendingPerpsDeposit;
+}
 
 /**
  * Convert UI OrderFormState to PerpsController OrderParams
@@ -235,10 +247,14 @@ const PerpsOrderEntryPage: React.FC = () => {
   trackRef.current = track;
   const tradeConfigurations = useSelector(selectPerpsTradeConfigurations);
   const isTestnet = useSelector(selectPerpsIsTestnet);
+  const hasPendingPerpsDeposit = useSelector(selectPerpsDepositPending);
   const { trigger: triggerDeposit, isLoading: isDepositLoading } =
     usePerpsDepositConfirmation();
   const { formatPercentWithMinThreshold } = useFormatters();
-  const { replacePerpsToastByKey, hidePerpsToast } = usePerpsToast();
+  const { replacePerpsToastByKey, hidePerpsToast, setPendingOrder } =
+    usePerpsToast();
+
+  const vipTier = useVipTier();
 
   const { positions: allPositions } = usePerpsLivePositions();
   const { account, isInitialLoading: isLoadingAccount } = usePerpsLiveAccount();
@@ -252,6 +268,10 @@ const PerpsOrderEntryPage: React.FC = () => {
     return safeDecodeURIComponent(symbol);
   }, [symbol]);
 
+  const hasPerpBalance = Boolean(
+    account && Number.parseFloat(getTradeableBalance(account)) > 0,
+  );
+
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
     conditions: !marketsLoading && Boolean(decodedSymbol) && account !== null,
@@ -259,10 +279,7 @@ const PerpsOrderEntryPage: React.FC = () => {
       [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: PERPS_EVENT_VALUE.SCREEN_TYPE.TRADING,
       ...(decodedSymbol && { [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol }),
       [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
-      [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]:
-        account && Number.parseFloat(account.availableBalance) > 0
-          ? 'yes'
-          : 'no',
+      [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
     },
     resetKey: decodedSymbol,
   });
@@ -300,11 +317,39 @@ const PerpsOrderEntryPage: React.FC = () => {
 
   const isOrderPending = isSubmitting;
 
-  // Dynamic fee rate for close-mode order submission tracking
-  const { feeRate: closeFeeRate } = usePerpsOrderFees({
+  // Dynamic fee rate matching the user-selected order type. Used for both:
+  // 1. Reverse-engineering the original (pre-discount) fee from
+  //    orderCalculations.estimatedFees (which OrderEntry computes with the
+  //    same orderType).
+  // 2. Close-mode order submission tracking (close mode defaults to market).
+  const {
+    feeRate: closeFeeRate,
+    undiscountedFeeRate: closeUndiscountedFeeRate,
+    metamaskFeeRateDiscountPercentage,
+  } = usePerpsOrderFees({
     symbol: decodedSymbol ?? '',
-    orderType: 'market',
+    orderType,
   });
+
+  const originalEstimatedFees = useMemo(() => {
+    if (
+      orderCalculations?.estimatedFees === null ||
+      orderCalculations?.estimatedFees === undefined ||
+      closeFeeRate === undefined ||
+      closeFeeRate === 0 ||
+      closeUndiscountedFeeRate === undefined
+    ) {
+      return null;
+    }
+    return (
+      orderCalculations.estimatedFees *
+      (closeUndiscountedFeeRate / closeFeeRate)
+    );
+  }, [
+    orderCalculations?.estimatedFees,
+    closeFeeRate,
+    closeUndiscountedFeeRate,
+  ]);
 
   const isLimitPriceInvalid = useMemo(() => {
     if (orderType !== 'limit' || !orderFormState) {
@@ -459,9 +504,10 @@ const PerpsOrderEntryPage: React.FC = () => {
     return Number.isFinite(parsed) && parsed > 0 ? parsed : currentPrice;
   })();
 
-  const availableBalance = account
-    ? Number.parseFloat(account.availableBalance)
-    : 0;
+  // Order-entry surface — use tradeable balance so HyperLiquid unified accounts
+  // funded by spot USDC are recognized as tradeable. Withdraw screens still
+  // read `account.spendableBalance` directly.
+  const availableBalance = Number.parseFloat(getTradeableBalance(account));
   const hasNoAvailableBalance =
     orderMode === 'new' && !isLoadingAccount && availableBalance <= 0;
   const isPrimaryTradeAction = orderMode !== 'new' || !hasNoAvailableBalance;
@@ -496,7 +542,8 @@ const PerpsOrderEntryPage: React.FC = () => {
 
   const hasInvalidTPSL = useMemo(() => {
     // In modify mode the TP/SL section is hidden and values carry over untouched,
-    // so stale prices that crossed the current market should not block submission.
+    // so stale prices that crossed the current market or liquidation price should
+    // not block submission. TP/SL edits are validated in the dedicated modal.
     if (!orderFormState?.autoCloseEnabled || orderMode === 'modify') {
       return false;
     }
@@ -514,24 +561,38 @@ const PerpsOrderEntryPage: React.FC = () => {
     const tp = orderFormState.takeProfitPrice;
     const sl = orderFormState.stopLossPrice;
     const dir = orderFormState.direction;
+    const liquidationPrice = orderCalculations?.liquidationPriceRaw;
 
     const tpInvalid = Boolean(
       tp?.trim() &&
-        !isValidTakeProfitPrice(tp, {
-          currentPrice: referencePrice,
-          direction: dir,
-        }),
+      !isValidTakeProfitPrice(tp, {
+        currentPrice: referencePrice,
+        direction: dir,
+      }),
     );
     const slInvalid = Boolean(
       sl?.trim() &&
-        !isValidStopLossPrice(sl, {
-          currentPrice: referencePrice,
-          direction: dir,
-        }),
+      !isValidStopLossPrice(sl, {
+        currentPrice: referencePrice,
+        direction: dir,
+      }),
+    );
+    const slLiquidationInvalid = Boolean(
+      sl?.trim() &&
+      !isStopLossSafeFromLiquidation(sl, {
+        liquidationPrice,
+        direction: dir,
+      }),
     );
 
-    return tpInvalid || slInvalid;
-  }, [orderFormState, orderType, currentPrice, orderMode]);
+    return tpInvalid || slInvalid || slLiquidationInvalid;
+  }, [
+    orderFormState,
+    orderType,
+    currentPrice,
+    orderMode,
+    orderCalculations?.liquidationPriceRaw,
+  ]);
 
   const isInsufficientFunds = useMemo(() => {
     if (!orderFormState || orderMode === 'close') {
@@ -546,17 +607,39 @@ const PerpsOrderEntryPage: React.FC = () => {
     return marginRequired > availableBalance;
   }, [orderFormState, orderMode, availableBalance]);
 
+  // For new market orders and modify-with-amount paths, require an amount
+  // meeting the $10 market-order minimum so submit stays disabled (and the
+  // button advertises the minimum) while the user has not entered a valid
+  // size. Modify with empty amount is the TP/SL-only update path and is
+  // intentionally exempt — it does not call perpsPlaceOrder.
+  const isBelowMinOrderSize = useMemo(() => {
+    if (!orderFormState || orderType !== 'market') {
+      return false;
+    }
+    if (orderMode !== 'new' && orderMode !== 'modify') {
+      return false;
+    }
+    const rawAmount = orderFormState.amount.replace(/,/gu, '').trim();
+    if (orderMode === 'modify' && rawAmount === '') {
+      return false;
+    }
+    const amount = Number.parseFloat(rawAmount) || 0;
+    return amount < PERPS_MIN_MARKET_ORDER_USD;
+  }, [orderFormState, orderMode, orderType]);
+
   const isSubmitDisabled =
     !selectedAddress ||
     isDepositLoading ||
     isOrderPending ||
     (orderMode === 'new' && isLoadingAccount) ||
+    hasNoAvailableBalance ||
     (isPrimaryTradeAction &&
       (isLimitPriceInvalid ||
         isLimitPriceUnfavorable ||
         isNearLiquidation ||
         hasInvalidTPSL ||
         isInsufficientFunds ||
+        isBelowMinOrderSize ||
         currentPrice <= 0 ||
         (orderMode === 'close' &&
           (orderFormState?.closePercent ?? FULL_CLOSE_PERCENT) <= 0)));
@@ -622,33 +705,36 @@ const PerpsOrderEntryPage: React.FC = () => {
     livePrice?.percentChange24h ?? market?.change24hPercent ?? '',
   );
 
+  // Visible header back button: pop the history stack so the user returns to
+  // wherever they came from. Pushing marketDetailPath instead would create a
+  // market-detail -> order-entry -> market-detail loop, since the
+  // market-detail back button uses navigate(-1).
+  const navigateBack = useCallback(() => {
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+    if (decodedSymbol) {
+      navigate(
+        `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(decodedSymbol)}`,
+        { replace: true },
+      );
+      return;
+    }
+    navigate(DEFAULT_ROUTE, { replace: true });
+  }, [decodedSymbol, navigate]);
+
   const handleBackClick = useCallback(
-    (
-      perpsToastKey?: PerpsToastKey,
-      perpsToastDescription?: string,
-      extraState?: Partial<PerpsToastRouteState>,
-    ) => {
-      if (!decodedSymbol) {
-        return;
+    (extraState?: Partial<PerpsToastRouteState>) => {
+      if (extraState?.pendingOrderSymbol) {
+        setPendingOrder({
+          symbol: extraState.pendingOrderSymbol,
+          filledDescription: extraState.pendingOrderFilledDescription,
+        });
       }
-
-      const marketDetailPath = `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(
-        decodedSymbol,
-      )}`;
-
-      if (!perpsToastKey) {
-        navigate(marketDetailPath);
-        return;
-      }
-
-      const toastRouteState: PerpsToastRouteState = {
-        perpsToastKey,
-        ...(perpsToastDescription ? { perpsToastDescription } : {}),
-        ...extraState,
-      };
-      navigate(marketDetailPath, { state: toastRouteState });
+      navigateBack();
     },
-    [navigate, decodedSymbol],
+    [setPendingOrder, navigateBack],
   );
 
   const getTradeActionToastDescription = useCallback(() => {
@@ -672,8 +758,10 @@ const PerpsOrderEntryPage: React.FC = () => {
       return undefined;
     }
 
-    const rawAmount = formattedPositionSize.endsWith(` ${rawAssetSymbol}`)
-      ? formattedPositionSize.slice(0, -` ${rawAssetSymbol}`.length).trimEnd()
+    const rawAmount = formattedPositionSize.endsWith(` ${displayAssetSymbol}`)
+      ? formattedPositionSize
+          .slice(0, -` ${displayAssetSymbol}`.length)
+          .trimEnd()
       : formattedPositionSize;
 
     if (!rawAmount) {
@@ -804,6 +892,8 @@ const PerpsOrderEntryPage: React.FC = () => {
     const isPartialClose =
       orderMode === 'close' && closePercent < FULL_CLOSE_PERCENT;
 
+    const shouldShowOrderSubmissionToasts =
+      shouldShowPerpsOrderSubmissionToasts(hasPendingPerpsDeposit);
     let inProgressToastKey: PerpsToastKey | undefined;
     let inProgressToastDescription: string | undefined;
     if (orderMode === 'close') {
@@ -814,7 +904,12 @@ const PerpsOrderEntryPage: React.FC = () => {
         ? closePartialToastDescription
         : tradeActionToastDescription;
     } else {
-      inProgressToastKey = ORDER_MODE_TOAST_KEYS[orderMode].inProgress;
+      inProgressToastKey =
+        orderMode === 'new' && !shouldShowOrderSubmissionToasts
+          ? undefined
+          : ORDER_MODE_TOAST_KEYS[orderMode].inProgress;
+      inProgressToastDescription =
+        orderMode === 'new' ? tradeActionToastDescription : undefined;
     }
     if (inProgressToastKey) {
       replacePerpsToastByKey({
@@ -886,15 +981,12 @@ const PerpsOrderEntryPage: React.FC = () => {
           position.size,
           marketInfo?.szDecimals,
         );
-        handleBackClick(
-          isPartialClose
-            ? PERPS_TOAST_KEYS.PARTIAL_CLOSE_IN_PROGRESS
-            : PERPS_TOAST_KEYS.CLOSE_IN_PROGRESS,
-          isPartialClose
-            ? closePartialToastDescription
-            : tradeActionToastDescription,
-        );
-
+        closeParams.trackingData = buildPerpsVipTrackingData({
+          totalFee: closeEstimatedFees,
+          marketPrice: currentPrice,
+          vipTier,
+          vipDiscount: metamaskFeeRateDiscountPercentage,
+        });
         const result = await submitRequestToBackground<PerpsBackgroundResult>(
           'perpsClosePosition',
           [closeParams],
@@ -912,6 +1004,10 @@ const PerpsOrderEntryPage: React.FC = () => {
           );
           throw new Error(result.error ?? 'Failed to close position');
         }
+        // Navigate only on success. Staying on the form on failure lets the
+        // catch block surface the inline error (setSubmitError for partial
+        // close) and the failure toast renders on the current page.
+        handleBackClick();
         track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
           [PERPS_EVENT_PROPERTY.ASSET]: orderFormState.asset,
           [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
@@ -937,10 +1033,19 @@ const PerpsOrderEntryPage: React.FC = () => {
             orderMode,
             position?.size,
           );
-          handleBackClick(
-            PERPS_TOAST_KEYS.SUBMIT_IN_PROGRESS,
-            tradeActionToastDescription,
-          );
+          orderParams.trackingData = buildPerpsVipTrackingData({
+            totalFee: orderCalculations?.estimatedFees ?? 0,
+            marketPrice: currentPrice,
+            vipTier,
+            vipDiscount: metamaskFeeRateDiscountPercentage,
+          });
+          // Emit the submit-in-progress toast here (not via route state).
+          replacePerpsToastByKey({
+            key: PERPS_TOAST_KEYS.SUBMIT_IN_PROGRESS,
+            ...(tradeActionToastDescription
+              ? { description: tradeActionToastDescription }
+              : {}),
+          });
           const result = await submitRequestToBackground<{
             success: boolean;
             error?: string;
@@ -953,6 +1058,9 @@ const PerpsOrderEntryPage: React.FC = () => {
             );
             throw new Error(result.error ?? 'Failed to add to position');
           }
+          // Navigate only on success. On failure, stay on the form so the
+          // catch block's failure toast renders on the current page.
+          handleBackClick();
 
           track(MetaMetricsEventName.PerpsTradeTransaction, {
             [PERPS_EVENT_PROPERTY.ASSET]: orderFormState.asset,
@@ -985,7 +1093,8 @@ const PerpsOrderEntryPage: React.FC = () => {
             ? orderFormState.stopLossPrice
             : undefined,
         });
-        handleBackClick(PERPS_TOAST_KEYS.UPDATE_IN_PROGRESS);
+        // Emit the update-in-progress toast here (not via route state).
+        replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.UPDATE_IN_PROGRESS });
         const result = await submitRequestToBackground<PerpsBackgroundResult>(
           'perpsUpdatePositionTPSL',
           [{ symbol: orderFormState.asset, takeProfitPrice, stopLossPrice }],
@@ -1019,6 +1128,7 @@ const PerpsOrderEntryPage: React.FC = () => {
         replacePerpsToastByKey({
           key: PERPS_TOAST_KEYS.UPDATE_SUCCESS,
         });
+        handleBackClick();
         return;
       }
 
@@ -1028,19 +1138,42 @@ const PerpsOrderEntryPage: React.FC = () => {
         orderMode,
         position?.size,
       );
-      handleBackClick(
-        PERPS_TOAST_KEYS.SUBMIT_IN_PROGRESS,
-        tradeActionToastDescription,
-        orderFormState.type === 'market'
-          ? {
-              pendingOrderSymbol: orderFormState.asset,
-              pendingOrderFilledDescription: tradeActionToastDescription,
-            }
-          : undefined,
-      );
+      orderParams.trackingData = buildPerpsVipTrackingData({
+        totalFee: orderCalculations?.estimatedFees ?? 0,
+        marketPrice: currentPrice,
+        vipTier,
+        vipDiscount: metamaskFeeRateDiscountPercentage,
+      });
+      // Do not re-emit SUBMIT_IN_PROGRESS via route state — it was already
+      // emitted above by replacePerpsToastByKey. Re-emitting from the
+      // market-detail useEffect races with the ORDER_SUBMITTED replace below
+      // and can leave the toast stuck at "Submitting your trade".
+      //
+      // Market orders with TP/SL on a new (or flipping) position route through
+      // the two-step flow used by mobile: place the market order without
+      // TP/SL, then call `perpsUpdatePositionTPSL` so the controller submits
+      // the trigger orders under `grouping: 'positionTpsl'`. Sending TP/SL in
+      // the same `placeOrder` call falls back to the controller's
+      // `normalTpsl` default, which leaves the resulting trigger orders
+      // tagged `isPositionTpsl: false` and breaks the auto-close/orders
+      // partition on the market-detail page.
+      const shouldHandleTpslSeparately =
+        (orderParams.takeProfitPrice || orderParams.stopLossPrice) &&
+        orderFormState.type === 'market' &&
+        (!position ||
+          parseFloat(position.size.replaceAll(',', '')) === 0 ||
+          willFlipPosition(position, orderParams));
+      const placeOrderParams = shouldHandleTpslSeparately
+        ? (() => {
+            const stripped = { ...orderParams };
+            delete stripped.takeProfitPrice;
+            delete stripped.stopLossPrice;
+            return stripped;
+          })()
+        : orderParams;
       const result = await submitRequestToBackground<PerpsBackgroundResult>(
         'perpsPlaceOrder',
-        [orderParams],
+        [placeOrderParams],
       );
       if (!result.success) {
         const message = result.error || 'Failed to place order';
@@ -1050,6 +1183,59 @@ const PerpsOrderEntryPage: React.FC = () => {
         );
         throw new Error(result.error ?? 'Failed to place order');
       }
+      if (shouldHandleTpslSeparately) {
+        const { takeProfitPrice: cleanTp, stopLossPrice: cleanSl } =
+          normalizeTpslPrices({
+            takeProfitPrice: orderParams.takeProfitPrice,
+            stopLossPrice: orderParams.stopLossPrice,
+          });
+        const tpslResult =
+          await submitRequestToBackground<PerpsBackgroundResult>(
+            'perpsUpdatePositionTPSL',
+            [
+              {
+                symbol: orderFormState.asset,
+                takeProfitPrice: cleanTp,
+                stopLossPrice: cleanSl,
+              },
+            ],
+          );
+        if (!tpslResult.success) {
+          // The market order already filled — treat as "position opened,
+          // TP/SL not set": show the TP/SL-specific failure toast and
+          // navigate back to the market detail page so the user can attach
+          // TP/SL from the open position rather than re-submitting the
+          // order form (which would open a duplicate position).
+          const tpslMessage =
+            tpslResult.error || 'Failed to attach TP/SL to position';
+          reportTransactionFailure(
+            MetaMetricsEventName.PerpsRiskManagement,
+            tpslMessage,
+          );
+          const translatedTpslError = translatePerpsError(
+            new Error(tpslMessage),
+            t as (key: string) => string,
+          );
+          replacePerpsToastByKey({
+            key: PERPS_TOAST_KEYS.UPDATE_FAILED,
+            description: translatedTpslError ?? tpslMessage,
+          });
+          handleBackClick();
+          return;
+        }
+      }
+      // Navigate only on success. On failure, stay on the form so the catch
+      // block's failure toast renders on the current page. Navigating before
+      // the await previously unmounted this page and orphaned the Promise
+      // response, leaving the "Submitting your trade" toast stuck forever.
+      handleBackClick(
+        orderFormState.type === 'market'
+          ? {
+              pendingOrderSymbol: orderFormState.asset,
+              pendingOrderFilledDescription: tradeActionToastDescription,
+            }
+          : undefined,
+      );
 
       track(MetaMetricsEventName.PerpsTradeTransaction, {
         [PERPS_EVENT_PROPERTY.ASSET]: orderFormState.asset,
@@ -1068,14 +1254,16 @@ const PerpsOrderEntryPage: React.FC = () => {
         console.warn('[Perps] Save trade configuration failed:', e);
       });
 
-      replacePerpsToastByKey({
-        key:
-          orderFormState.type === 'limit'
-            ? PERPS_TOAST_KEYS.ORDER_PLACED
-            : PERPS_TOAST_KEYS.ORDER_SUBMITTED,
-        description: tradeActionToastDescription,
-        autoHideTime: 3000,
-      });
+      if (shouldShowOrderSubmissionToasts) {
+        replacePerpsToastByKey({
+          key:
+            orderFormState.type === 'limit'
+              ? PERPS_TOAST_KEYS.ORDER_PLACED
+              : PERPS_TOAST_KEYS.ORDER_SUBMITTED,
+          description: tradeActionToastDescription,
+          autoHideTime: 3000,
+        });
+      }
     } catch (error) {
       if (inProgressToastKey) {
         hidePerpsToast();
@@ -1135,7 +1323,10 @@ const PerpsOrderEntryPage: React.FC = () => {
     replacePerpsToastByKey,
     t,
     closeFeeRate,
+    hasPendingPerpsDeposit,
     marketInfo?.szDecimals,
+    vipTier,
+    metamaskFeeRateDiscountPercentage,
   ]);
 
   const handlePrimaryAction = useCallback(async () => {
@@ -1161,6 +1352,19 @@ const PerpsOrderEntryPage: React.FC = () => {
     selectedAddress,
     triggerDeposit,
   ]);
+
+  const handleFormSubmit = useCallback(
+    (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      if (isSubmitDisabled) {
+        return;
+      }
+      handlePrimaryAction().catch(() => {
+        // Errors are surfaced via the page's submit-error state / toast system.
+      });
+    },
+    [handlePrimaryAction, isSubmitDisabled],
+  );
 
   if (!isPerpsExperienceAvailable) {
     return <Navigate to={DEFAULT_ROUTE} replace />;
@@ -1221,15 +1425,22 @@ const PerpsOrderEntryPage: React.FC = () => {
     }
   })();
 
-  const resolvedButtonText =
-    isPrimaryTradeAction && isInsufficientFunds
-      ? t('insufficientFundsSend')
-      : submitButtonText;
+  let resolvedButtonText = submitButtonText;
+  if (isPrimaryTradeAction) {
+    if (isBelowMinOrderSize) {
+      resolvedButtonText = t('perpsMinOrderSize', [
+        `$${PERPS_MIN_MARKET_ORDER_USD}`,
+      ]);
+    } else if (isInsufficientFunds) {
+      resolvedButtonText = t('insufficientFundsSend');
+    }
+  }
 
   return (
-    <Box
+    <form
       className="main-container asset__container"
       data-testid="perps-order-entry-page"
+      onSubmit={handleFormSubmit}
     >
       {/* Header: Back (left) + Asset symbol, price, % gain (centered) + spacer (right) */}
       <Box
@@ -1280,7 +1491,7 @@ const PerpsOrderEntryPage: React.FC = () => {
             </Text>
             {displayChange && (
               <Text
-                variant={TextVariant.BodyXs}
+                variant={TextVariant.BodySm}
                 color={getChangeColor(displayChange)}
                 data-testid="perps-order-entry-change"
               >
@@ -1328,6 +1539,8 @@ const PerpsOrderEntryPage: React.FC = () => {
           onOrderTypeChange={setOrderType}
           onAddFunds={triggerDeposit}
           initialLeverage={initialLeverage}
+          autoFocusUsd={orderMode !== 'close'}
+          autoFocusLimitPrice={orderMode !== 'close'}
           sizeDecimals={marketInfo?.szDecimals}
         />
       </Box>
@@ -1337,16 +1550,20 @@ const PerpsOrderEntryPage: React.FC = () => {
         paddingLeft={4}
         paddingRight={4}
         paddingBottom={4}
-        paddingTop={2}
+        paddingTop={3}
         flexDirection={BoxFlexDirection.Column}
-        gap={2}
+        gap={4}
         className="shrink-0"
       >
         {orderCalculations && (
           <OrderSummary
             marginRequired={orderCalculations.marginRequired}
             estimatedFees={orderCalculations.estimatedFees}
+            originalEstimatedFees={originalEstimatedFees}
             liquidationPrice={orderCalculations.liquidationPrice}
+            metamaskFeeRateDiscountPercentage={
+              metamaskFeeRateDiscountPercentage
+            }
           />
         )}
         {submitError && (
@@ -1359,9 +1576,9 @@ const PerpsOrderEntryPage: React.FC = () => {
           </Text>
         )}
         <Button
+          type="submit"
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
-          onClick={handlePrimaryAction}
           disabled={isSubmitDisabled}
           className={twMerge(
             'w-full',
@@ -1376,7 +1593,7 @@ const PerpsOrderEntryPage: React.FC = () => {
         isOpen={isGeoBlockModalOpen}
         onClose={() => setIsGeoBlockModalOpen(false)}
       />
-    </Box>
+    </form>
   );
 };
 

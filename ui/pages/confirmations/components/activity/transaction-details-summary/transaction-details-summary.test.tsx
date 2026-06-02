@@ -223,6 +223,14 @@ describe('TransactionDetailsSummary', () => {
     expect(useTokenWithBalanceMock).toHaveBeenCalledWith('0x456', CHAIN_ID);
   });
 
+  it('renders a ReceiveSummaryLine for perpsWithdraw transactions', () => {
+    const { getByText } = render(TransactionType.perpsWithdraw);
+
+    expect(
+      getByText(messages.bridgeReceiveLoading.message),
+    ).toBeInTheDocument();
+  });
+
   describe('mUSD conversion summary', () => {
     it('shows relay and receive lines, filtering out approval txs', () => {
       const approvalTx = createMockTransactionMeta(
