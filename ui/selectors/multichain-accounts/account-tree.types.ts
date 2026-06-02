@@ -28,7 +28,7 @@ export type InternalAccountsState = {
 
 export type MultichainAccountsState = {
   metamask: {
-    selectedAccountGroup: AccountGroupId | '';
+    selectedAccountGroup: AccountGroupId;
     accountTree: AccountTreeState;
     internalAccounts: InternalAccountsState;
     accountIdByAddress: Record<string, AccountId>;

@@ -1,17 +1,9 @@
 import {
-  AccountGroupType,
   AccountWalletType,
-  parseAccountGroupId,
   type AccountGroupId,
   type AccountWalletId,
 } from '@metamask/account-api';
-import {
-  isEvmAccountType,
-  EthAccountType,
-  SolAccountType,
-  BtcAccountType,
-  TrxAccountType,
-} from '@metamask/keyring-api';
+import { isEvmAccountType, EthAccountType } from '@metamask/keyring-api';
 import { AccountId } from '@metamask/accounts-controller';
 import { createSelector } from 'reselect';
 import {
@@ -67,14 +59,6 @@ const ACCOUNT_LRU_CACHE_SIZE = 20; // one entry per address (worst case: simulat
 const GROUP_LRU_CACHE_SIZE = 20; // one entry per visible account group (multichain-account-list renders all groups simultaneously)
 const CHAIN_LRU_CACHE_SIZE = 10; // one entry per unique chain/scope (max ~8 chains active simultaneously across all consumers)
 const SINGLE_LOOKUP_LRU_CACHE_SIZE = 5; // selectors used for individual lookups, never rendered in a list
-
-// All account types that must be present in a multichain account group for it to be considered "aligned".
-const MULTICHAIN_EXPECTED_ACCOUNT_TYPES = [
-  EthAccountType.Eoa,
-  SolAccountType.DataAccount,
-  BtcAccountType.P2wpkh,
-  TrxAccountType.Eoa,
-];
 
 /**
  * Retrieve account tree state.
@@ -562,8 +546,7 @@ export const getInternalAccountByGroupAndCaip = createParameterizedSelector(
  */
 export const getSelectedAccountGroup = (
   state: MultichainAccountsState,
-): MultichainAccountsState['metamask']['selectedAccountGroup'] =>
-  state.metamask.selectedAccountGroup;
+): AccountGroupId => state.metamask.selectedAccountGroup;
 
 /**
  * Get an internal account from the account tree by its selected account group and CAIP chain ID.
