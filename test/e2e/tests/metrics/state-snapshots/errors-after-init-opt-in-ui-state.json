@@ -399,7 +399,7 @@
     "tokenScanCache": "object",
     "tokenSecurityTypeDestination": null,
     "tokenWarnings": "object",
-    "tokensChainsCache": { "0x539": "object" },
+    "tokensChainsCache": {},
     "tracesBeforeMetricsOptIn": "object",
     "tradeConfigurations": "object",
     "traits": "object",
