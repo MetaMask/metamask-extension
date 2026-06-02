@@ -5,6 +5,7 @@
     "accountDetail": "object",
     "alertMessage": null,
     "alertOpen": "boolean",
+    "backupAndSyncOnboardingToggleState": "boolean",
     "confirmationExchangeRates": {},
     "customNonceValue": "",
     "customTokenAmount": "string",
@@ -96,7 +97,11 @@
     "announcements": "object",
     "approvalFlows": "object",
     "assetExchangeRates": "object",
+    "assetPreferences": "object",
+    "assetsBalance": "object",
+    "assetsInfo": "object",
     "assetsMetadata": "object",
+    "assetsPrice": "object",
     "balances": "object",
     "browserEnvironment": { "browser": "string", "os": "string" },
     "cacheTimestamp": "number",
@@ -118,9 +123,9 @@
         "usdConversionRate": null
       },
       "ETH": {
-        "conversionDate": "number",
+        "conversionDate": "object",
         "conversionRate": 1700,
-        "usdConversionRate": 1700
+        "usdConversionRate": null
       },
       "MON": {
         "conversionDate": "object",
@@ -138,6 +143,7 @@
     "currentExtensionPopupId": "number",
     "currentLocale": "en",
     "currentMigrationVersion": "number",
+    "customAssets": "object",
     "dappSwapComparisonData": "object",
     "dataCollectionForMarketing": "boolean",
     "database": "object",
@@ -342,10 +348,12 @@
     "rewardsSeasonStatuses": "object",
     "rewardsSeasons": "object",
     "rewardsSubscriptions": "object",
+    "rewardsVipPerpsFees": "object",
     "securityAlertsEnabled": "boolean",
     "seedPhraseBackedUp": null,
     "segmentApiCalls": "object",
     "selectedAccountGroup": "string",
+    "selectedCurrency": "string",
     "selectedMultichainNetworkChainId": "string",
     "selectedNetworkClientId": "string",
     "selectedPaymentToken": null,
