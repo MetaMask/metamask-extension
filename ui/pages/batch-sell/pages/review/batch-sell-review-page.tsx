@@ -24,6 +24,8 @@ import { hasAnyEnabledAsset } from './utils/hasAnyEnabledAsset';
 
 // TODO: fix zero value usdc
 // TODO: fix execute batch sell on evm due to network fees
+// TODO: exclude RWA from asset list
+// TODO: move batch sell config to root level LF flag using RemoteFeatureFlagController
 
 export const BatchSellReviewPage = () => {
   const [selectReceivedAssetModalIsOpen, setSelectReceivedAssetModalIsOpen] =
