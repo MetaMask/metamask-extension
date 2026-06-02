@@ -5,13 +5,7 @@ import {
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import type { Provider } from '@metamask/network-controller';
-<<<<<<< HEAD
-import { CaipAssetType, parseCaipAssetType } from '@metamask/utils';
-import { MultichainAssetsRatesControllerState } from '@metamask/assets-controllers';
-import { AssetConversion, FungibleAssetMarketData } from '@metamask/snaps-sdk';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-=======
->>>>>>> 205334ea18 (chore: extract getConversionRatesForNativeAsset to shared)
 import {
   DEVICE_TYPE,
   OS,
