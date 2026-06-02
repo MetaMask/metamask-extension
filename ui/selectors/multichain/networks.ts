@@ -454,20 +454,18 @@ export const selectAnyEnabledNetworksAreAvailable = createSelector(
 );
 
 /**
- * Network configurations annotated per-rpcEndpoint with the bits the banner
- * logic cares about: whether the endpoint is an Infura URL, whether its
- * current metadata status is anything other than Available ("failed"), and
- * its registrable domain. The network itself also gets an `infuraEndpointIndex`
- * pointing at the first Infura endpoint (used by the "Switch to Infura" CTA).
- *
- * Computed for every configured network, not just enabled ones, so the
- * memoised result can be reused across selectors.
+ * Network configurations and their RPC endpoints annotated with information
+ * that the network connection banner logic cares about: whether the endpoint is
+ * an Infura URL, whether its current metadata status is anything other than
+ * Available ("failed"), and its registrable domain. The network itself also
+ * gets an `infuraEndpointIndex` pointing at the first Infura endpoint (used by
+ * the "Switch to Infura" CTA).
  */
 const selectEnhancedNetworkConfigurationsByChainId = createSelector(
   getNetworkConfigurationsByChainId,
   getNetworksMetadata,
   (networkConfigurationsByChainId, networksMetadata) => {
-    const enhanced: Record<
+    const enhancedNetworkConfigurationsByChainId: Record<
       Hex,
       Omit<(typeof networkConfigurationsByChainId)[Hex], 'rpcEndpoints'> & {
         rpcEndpoints: {
@@ -512,7 +510,7 @@ const selectEnhancedNetworkConfigurationsByChainId = createSelector(
         (rpcEndpoint) => rpcEndpoint.isInfuraEndpoint,
       );
 
-      enhanced[chainId as Hex] = {
+      enhancedNetworkConfigurationsByChainId[chainId as Hex] = {
         ...networkConfiguration,
         rpcEndpoints: enhancedRpcEndpoints,
         infuraEndpointIndex:
@@ -520,21 +518,21 @@ const selectEnhancedNetworkConfigurationsByChainId = createSelector(
       };
     }
 
-    return enhanced;
+    return enhancedNetworkConfigurationsByChainId;
   },
 );
 
 /**
  * The list of enabled EVM networks whose default RPC endpoint is currently
  * failing, plus a flag for whether every enabled network is failing. Used as
- * the input to the banner show/hide rule.
+ * the input to the network connection banner show/hide rule.
  */
 const selectEnabledFailedNetworksResult = createSelector(
   getEnabledNetworks,
   selectEnhancedNetworkConfigurationsByChainId,
   (enabledNetworks, enhancedNetworkConfigurationsByChainId) => {
     const enabledEvmNetworks = enabledNetworks[KnownCaipNamespace.Eip155] ?? {};
-    const enabledChainIds = Object.entries(enabledEvmNetworks)
+    const enabledEvmChainIds = Object.entries(enabledEvmNetworks)
       .filter(([, isEnabled]) => isEnabled)
       .map(([chainId]) => chainId as Hex);
 
@@ -548,7 +546,7 @@ const selectEnabledFailedNetworksResult = createSelector(
     }[] = [];
     let totalEnabled = 0;
 
-    for (const chainId of enabledChainIds) {
+    for (const chainId of enabledEvmChainIds) {
       const networkConfiguration =
         enhancedNetworkConfigurationsByChainId[chainId];
       if (!networkConfiguration) {
@@ -598,30 +596,25 @@ const selectEnabledFailedNetworksResult = createSelector(
  * Returns the first failed EVM network that should drive the network connection
  * banner, or null when no banner should be shown.
  *
- * A network is "failed" here when its default RPC endpoint's metadata status is
- * anything other than NetworkStatus.Available. (Note that NetworkStatus.Unavailable
- * is a specific circuit-broken state — "failed" is the broader bucket we use.)
+ * A network is "failed" here when its default RPC endpoint's status is anything
+ * other than `NetworkStatus.Available`.
  *
- * The banner is intentionally noisy-averse. A single provider's wide outage
- * (e.g. an Infura-wide hiccup that takes down many *.infura.io networks at
- * once) is suppressed because it looks like many failed networks but is really
- * one provider. The banner shows only when failed RPCs span 2+ distinct
- * domains (likely client-side), or every enabled EVM network has failed
- * (covers single-network setups), or any failed network's active RPC is a
- * non-Infura (custom) endpoint — these have no automatic failover so the
+ * The banner always shows for custom networks because users always have the
+ * option to switch to a built-in network, and we surface that custom network
+ * first so the "Switch to MetaMask default RPC" CTA points at it. For all
+ * other networks the banner is intentionally noisy-averse: a single provider's
+ * wide outage (e.g. an Infura-wide hiccup that takes down many *.infura.io
+ * networks at once) is suppressed because it looks like many failed networks
+ * but is really one provider. The banner shows only when failed RPCs span
+ * 2+ distinct domains (likely client-side), or every enabled EVM network has
+ * failed (covers single-network setups), or any failed network's active RPC
+ * is a non-Infura (custom) endpoint — these have no automatic failover so the
  * user must be told.
- *
- * When the custom override fires alongside other failed networks, the custom
- * one is surfaced so the "Switch to MetaMask default RPC" CTA targets it.
  */
 export const selectFirstFailedNetworkForNetworkConnectionBanner =
   createSelector(
     selectEnabledFailedNetworksResult,
     ({ failedNetworks, areAllEnabledNetworksFailed }) => {
-      if (failedNetworks.length === 0) {
-        return null;
-      }
-
       const firstCustomFailed = failedNetworks.find((n) => !n.isInfuraEndpoint);
       const distinctDomains = new Set(
         failedNetworks
@@ -629,26 +622,29 @@ export const selectFirstFailedNetworkForNetworkConnectionBanner =
           .filter((domain): domain is string => domain !== null),
       ).size;
 
+      // Show the banner if:
+      // - The first failing network is a custom network (we assume users always
+      //   want to be informed about errors with RPC endpoints they've chosen)
+      // - There are failures across more than one domain (likely client-side
+      //   issue)
+      // - All enabled networks are failing (likely client-side issue)
       if (
-        !firstCustomFailed &&
-        distinctDomains < 2 &&
-        !areAllEnabledNetworksFailed
+        firstCustomFailed ||
+        distinctDomains > 1 ||
+        areAllEnabledNetworksFailed
       ) {
-        return null;
+        const selected = firstCustomFailed ?? failedNetworks[0];
+
+        return {
+          networkClientId: selected.networkClientId,
+          chainId: selected.chainId,
+          networkName: selected.networkName,
+          isInfuraEndpoint: selected.isInfuraEndpoint,
+          infuraEndpointIndex: selected.infuraEndpointIndex,
+        };
       }
 
-      // Prefer a custom-RPC network when one is among the failed set so the
-      // banner's "Switch to MetaMask default RPC" CTA points at the network
-      // the user can actually act on.
-      const selected = firstCustomFailed ?? failedNetworks[0];
-
-      return {
-        networkClientId: selected.networkClientId,
-        chainId: selected.chainId,
-        networkName: selected.networkName,
-        isInfuraEndpoint: selected.isInfuraEndpoint,
-        infuraEndpointIndex: selected.infuraEndpointIndex,
-      };
+      return null;
     },
   );
 
