@@ -25,18 +25,23 @@ export const getIsComplianceEnabled = createSelector(
     ),
 );
 
-const getComplianceControllerState = (state: ComplianceState) => ({
-  walletComplianceStatusMap:
-    state.metamask.walletComplianceStatusMap ??
-    DEFAULT_COMPLIANCE_STATE.walletComplianceStatusMap,
-  lastCheckedAt:
-    state.metamask.lastCheckedAt ?? DEFAULT_COMPLIANCE_STATE.lastCheckedAt,
-});
+const selectComplianceWalletStatusMap = (state: ComplianceState) =>
+  state.metamask.walletComplianceStatusMap ??
+  DEFAULT_COMPLIANCE_STATE.walletComplianceStatusMap;
+
+const selectComplianceLastCheckedAtValue = (state: ComplianceState) =>
+  state.metamask.lastCheckedAt ?? DEFAULT_COMPLIANCE_STATE.lastCheckedAt;
 
 const getSelectIsWalletBlocked = lruMemoize(
   (address: string) =>
-    createSelector(getComplianceControllerState, (complianceState) =>
-      coreSelectIsWalletBlocked(address)(complianceState),
+    createSelector(
+      selectComplianceWalletStatusMap,
+      selectComplianceLastCheckedAtValue,
+      (walletComplianceStatusMap, lastCheckedAt) =>
+        coreSelectIsWalletBlocked(address)({
+          walletComplianceStatusMap,
+          lastCheckedAt,
+        }),
     ),
   { maxSize: PARAMETERIZED_SELECTOR_CACHE_SIZE },
 );
@@ -50,8 +55,14 @@ const getAddressCacheKey = (addresses: string[]) =>
 
 const getSelectAreAnyWalletsBlocked = lruMemoize(
   (addresses: string[]) =>
-    createSelector(getComplianceControllerState, (complianceState) =>
-      coreSelectAreAnyWalletsBlocked(addresses)(complianceState),
+    createSelector(
+      selectComplianceWalletStatusMap,
+      selectComplianceLastCheckedAtValue,
+      (walletComplianceStatusMap, lastCheckedAt) =>
+        coreSelectAreAnyWalletsBlocked(addresses)({
+          walletComplianceStatusMap,
+          lastCheckedAt,
+        }),
     ),
   {
     equalityCheck: (firstAddressList, secondAddressList) =>
@@ -66,8 +77,6 @@ export const selectAreAnyWalletsBlocked = (
 ): Selector<ComplianceState, boolean> =>
   getSelectAreAnyWalletsBlocked(addresses);
 
-export const selectWalletComplianceStatusMap = (state: ComplianceState) =>
-  getComplianceControllerState(state).walletComplianceStatusMap;
+export const selectWalletComplianceStatusMap = selectComplianceWalletStatusMap;
 
-export const selectComplianceLastCheckedAt = (state: ComplianceState) =>
-  getComplianceControllerState(state).lastCheckedAt;
+export const selectComplianceLastCheckedAt = selectComplianceLastCheckedAtValue;
