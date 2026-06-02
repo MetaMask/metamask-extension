@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   twMerge,
   TextVariant,
@@ -24,6 +25,11 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { usePerpsEligibility } from '../../../../hooks/perps';
 import { usePerpsLiveAccount } from '../../../../hooks/perps/stream';
+import {
+  SensitiveText,
+  SensitiveTextLength,
+} from '../../../component-library';
+import { getPrivacyMode } from '../../../../selectors';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import { PerpsControlBarSkeleton } from '../perps-skeletons';
 
@@ -76,6 +82,7 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
   const { account, isInitialLoading } = usePerpsLiveAccount();
   const { formatPercentWithMinThreshold } = useFormatters();
   const { isEligible } = usePerpsEligibility();
+  const privacyMode = useSelector(getPrivacyMode);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
@@ -179,11 +186,16 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
               alignItems={BoxAlignItems.Center}
               gap={2}
             >
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+              <SensitiveText
+                variant={TextVariant.BodySm}
+                fontWeight={FontWeight.Medium}
+                isHidden={privacyMode}
+                length={SensitiveTextLength.Medium}
+              >
                 {formatPerpsFiat(accountValue, {
                   ranges: PRICE_RANGES_MINIMAL_VIEW,
                 })}
-              </Text>
+              </SensitiveText>
               <Icon
                 name={isDropdownOpen ? IconName.ArrowUp : IconName.ArrowDown}
                 size={IconSize.Xs}
@@ -235,13 +247,15 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
             {t('perpsUnrealizedPnl')}
           </Text>
-          <Text
+          <SensitiveText
             variant={TextVariant.BodySm}
             fontWeight={FontWeight.Medium}
             color={isProfit ? TextColor.SuccessDefault : TextColor.ErrorDefault}
+            isHidden={privacyMode}
+            length={SensitiveTextLength.Medium}
           >
             {formattedPnl} ({formattedRoe})
-          </Text>
+          </SensitiveText>
         </Box>
       )}
       <PerpsGeoBlockModal

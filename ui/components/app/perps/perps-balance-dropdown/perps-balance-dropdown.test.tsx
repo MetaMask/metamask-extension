@@ -234,6 +234,26 @@ describe('PerpsBalanceDropdown', () => {
     expect(screen.queryByText(/1\.00%/u)).not.toBeInTheDocument();
   });
 
+  it('hides balance and P&L when privacyMode is true', () => {
+    const privacyModeStore = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        preferences: {
+          ...mockState.metamask.preferences,
+          privacyMode: true,
+        },
+      },
+    });
+
+    renderWithProvider(
+      <PerpsBalanceDropdown hasPositions />,
+      privacyModeStore,
+    );
+
+    expect(screen.queryByText('$15,250')).not.toBeInTheDocument();
+    expect(screen.queryByText(/\+\$375/u)).not.toBeInTheDocument();
+  });
+
   describe('geo-blocking', () => {
     it('shows geo-block modal and does not call onAddFunds when user is not eligible', () => {
       mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
