@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { BtcScope, EthScope, SolScope, TrxScope } from '@metamask/keyring-api';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../shared/constants/network';
 import {
-  getFeaturedNetworksForAdditionalList,
-  type FeaturedNetworkForAdditionalList,
+  getFeaturedEvmNetworks,
+  type FeaturedNetwork,
 } from '../../../../../selectors/config-registry/config-registry';
 import {
   convertCaipToHexChainId,
@@ -63,11 +63,7 @@ import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../../../sel
 import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
 import { useIsNetworkGasSponsored } from '../../../../../hooks/useIsNetworkGasSponsored';
 
-const AdditionalNetwork = ({
-  network,
-}: {
-  network: FeaturedNetworkForAdditionalList;
-}) => {
+const AdditionalNetwork = ({ network }: { network: FeaturedNetwork }) => {
   const t = useI18nContext();
   const networkImageUrl =
     network.imageUrl ||
@@ -202,9 +198,7 @@ const DefaultNetworks = memo(() => {
   ]);
 
   // Get the base featured list (dynamic from config registry when flag on, else static)
-  const featuredNetworksBaseList = useSelector(
-    getFeaturedNetworksForAdditionalList,
-  );
+  const featuredNetworksBaseList = useSelector(getFeaturedEvmNetworks);
 
   // Memoize the featured networks calculation
   const featuredNetworksNotYetEnabled = useMemo(() => {

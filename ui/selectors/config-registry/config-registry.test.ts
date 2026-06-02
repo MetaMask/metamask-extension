@@ -1,8 +1,10 @@
+import type { ConfigRegistryControllerState } from '@metamask/config-registry-controller';
+import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { FEATURED_RPCS } from '../../../shared/constants/network';
 import {
   getRegistryConfigs,
   getIsConfigRegistryApiEnabled,
-  getFeaturedNetworksForAdditionalList,
+  getFeaturedEvmNetworks,
 } from './config-registry';
 
 /** State shape that satisfies both config-registry and remote feature flag selectors. */
@@ -18,11 +20,6 @@ describe('config-registry selectors', () => {
         },
       };
       expect(getRegistryConfigs(state)).toStrictEqual(state.metamask.configs);
-    });
-
-    it('returns undefined when metamask is undefined', () => {
-      const state = {};
-      expect(getRegistryConfigs(state)).toBeUndefined();
     });
   });
 
@@ -64,7 +61,7 @@ describe('config-registry selectors', () => {
           version: '1.0',
         },
       };
-      const result = getFeaturedNetworksForAdditionalList(state);
+      const result = getFeaturedEvmNetworks(state);
       expect(result).toBe(FEATURED_RPCS);
     });
 
@@ -78,12 +75,16 @@ describe('config-registry selectors', () => {
           version: '1.0',
         },
       };
-      const result = getFeaturedNetworksForAdditionalList(state);
+      const result = getFeaturedEvmNetworks(state);
       expect(result).toBe(FEATURED_RPCS);
     });
 
     it('returns FEATURED_RPCS when configs is missing', () => {
-      const state = {
+      const state: {
+        metamask: ConfigRegistryControllerState &
+          RemoteFeatureFlagControllerState;
+      } = {
+        // @ts-expect-error intentionally missing configs
         metamask: {
           remoteFeatureFlags: { configRegistryApiEnabled: true },
           lastFetched: null,
@@ -91,7 +92,7 @@ describe('config-registry selectors', () => {
           version: '1.0',
         },
       };
-      const result = getFeaturedNetworksForAdditionalList(state);
+      const result = getFeaturedEvmNetworks(state);
       expect(result).toBe(FEATURED_RPCS);
     });
 
@@ -146,7 +147,7 @@ describe('config-registry selectors', () => {
           etag: null,
         },
       };
-      const result = getFeaturedNetworksForAdditionalList(state);
+      const result = getFeaturedEvmNetworks(state);
       expect(result).not.toBe(FEATURED_RPCS);
       expect(Array.isArray(result)).toBe(true);
       expect(result.length).toBeGreaterThan(0);
@@ -207,7 +208,7 @@ describe('config-registry selectors', () => {
           etag: null,
         },
       };
-      const result = getFeaturedNetworksForAdditionalList(state);
+      const result = getFeaturedEvmNetworks(state);
       const sei = result.find((n) => n.chainId === '0x531');
       expect(sei).toBeDefined();
       expect(sei?.imageUrl).toBeUndefined();
@@ -239,7 +240,7 @@ describe('config-registry selectors', () => {
           etag: null,
         },
       };
-      const result = getFeaturedNetworksForAdditionalList(state);
+      const result = getFeaturedEvmNetworks(state);
       expect(result).toBe(FEATURED_RPCS);
     });
 
@@ -273,7 +274,7 @@ describe('config-registry selectors', () => {
           etag: null,
         },
       };
-      const result = getFeaturedNetworksForAdditionalList(state);
+      const result = getFeaturedEvmNetworks(state);
       expect(result).toBe(FEATURED_RPCS);
     });
 
@@ -307,7 +308,7 @@ describe('config-registry selectors', () => {
           etag: null,
         },
       };
-      const result = getFeaturedNetworksForAdditionalList(state);
+      const result = getFeaturedEvmNetworks(state);
       expect(result).toBe(FEATURED_RPCS);
     });
 
@@ -345,8 +346,8 @@ describe('config-registry selectors', () => {
           etag: null,
         },
       };
-      expect(() => getFeaturedNetworksForAdditionalList(state)).not.toThrow();
-      const result = getFeaturedNetworksForAdditionalList(state);
+      expect(() => getFeaturedEvmNetworks(state)).not.toThrow();
+      const result = getFeaturedEvmNetworks(state);
       expect(result).toBe(FEATURED_RPCS);
     });
 
@@ -405,8 +406,8 @@ describe('config-registry selectors', () => {
           etag: null,
         },
       };
-      expect(() => getFeaturedNetworksForAdditionalList(state)).not.toThrow();
-      const result = getFeaturedNetworksForAdditionalList(state);
+      expect(() => getFeaturedEvmNetworks(state)).not.toThrow();
+      const result = getFeaturedEvmNetworks(state);
       expect(result).not.toBe(FEATURED_RPCS);
       const sei = result.find((n) => n.chainId === '0x531');
       expect(sei).toBeDefined();
@@ -449,7 +450,7 @@ describe('config-registry selectors', () => {
           etag: null,
         },
       };
-      const result = getFeaturedNetworksForAdditionalList(state);
+      const result = getFeaturedEvmNetworks(state);
       expect(result).toBe(FEATURED_RPCS);
     });
   });

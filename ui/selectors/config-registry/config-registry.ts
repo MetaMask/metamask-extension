@@ -7,7 +7,6 @@ import {
 import { createSelector } from 'reselect';
 import {
   add0x,
-  CaipChainId,
   CaipChainIdStruct,
   Hex,
   parseCaipChainId,
@@ -23,15 +22,14 @@ import { captureException } from '../../../shared/lib/sentry';
 import { createSentryError } from '../../../shared/lib/error';
 
 /**
- * Get the Configs from the ConfigRegistryController state, or undefined if not set.
+ * Get the Configs from the ConfigRegistryController state.
+ *
+ * @param state - The MetaMask state object
+ * @param state.metamask - The MetaMask state slice
  */
-export const getRegistryConfigs = createSelector(
-  (state: { metamask?: Partial<ConfigRegistryControllerState> }) =>
-    state.metamask?.configs,
-  (configs): ConfigRegistryControllerState['configs'] | undefined => {
-    return configs;
-  },
-);
+export const getRegistryConfigs = (state: {
+  metamask: ConfigRegistryControllerState;
+}) => state.metamask.configs;
 
 /**
  * Returns whether the Config Registry API feature flag is enabled.
@@ -67,15 +65,11 @@ function isAllowedImageUrl(url: unknown): url is `https://${string}` {
  * Network item for "Additional networks" list. Extends AddNetworkFields with
  * optional imageUrl from the config registry (validated https only).
  */
-export type FeaturedNetworkForAdditionalList = AddNetworkFields & {
+export type FeaturedNetwork = AddNetworkFields & {
   imageUrl?: string;
 };
 
-function caipChainIdToHex(chainId: CaipChainId): Hex {
-  const { namespace, reference } = parseCaipChainId(chainId);
-  if (namespace !== 'eip155') {
-    throw new Error(`Unsupported CAIP namespace: ${namespace}`);
-  }
+function caipChainIdReferenceToHex(reference: string): Hex {
   const decimalChainId = parseInt(reference, 10);
   if (isNaN(decimalChainId)) {
     throw new Error(`Invalid CAIP reference: ${reference}`);
@@ -91,10 +85,14 @@ function caipChainIdToHex(chainId: CaipChainId): Hex {
  */
 function registryConfigToAddNetworkFields(
   config: RegistryNetworkConfig,
-): FeaturedNetworkForAdditionalList | null {
+): FeaturedNetwork | null {
   try {
     CaipChainIdStruct.assert(config.chainId);
-    const hexChainId = caipChainIdToHex(config.chainId);
+    const { namespace, reference } = parseCaipChainId(config.chainId);
+    if (namespace !== 'eip155') {
+      return null;
+    }
+    const hexChainId = caipChainIdReferenceToHex(reference);
 
     const defaultRpc = config.rpcProviders?.default;
     if (!defaultRpc || !isAllowedRpcUrl(defaultRpc.url)) {
@@ -144,15 +142,15 @@ function registryConfigToAddNetworkFields(
 }
 
 /**
- * Returns the list of featured networks to show in "Additional networks".
+ * Returns the list of featured EVM networks to show in "Additional networks".
  * When the config registry API is enabled and we have fetched configs, returns
  * the dynamic list from the registry (EVM only). Otherwise falls back to the
  * static FEATURED_RPCS list.
  */
-export const getFeaturedNetworksForAdditionalList = createSelector(
+export const getFeaturedEvmNetworks = createSelector(
   getRegistryConfigs,
   getIsConfigRegistryApiEnabled,
-  (configs, isConfigRegistryEnabled): FeaturedNetworkForAdditionalList[] => {
+  (configs, isConfigRegistryEnabled): FeaturedNetwork[] => {
     if (
       !isConfigRegistryEnabled ||
       !configs?.networks ||
@@ -162,7 +160,7 @@ export const getFeaturedNetworksForAdditionalList = createSelector(
     }
 
     const evmNetworks = Object.values(configs.networks).reduce<
-      FeaturedNetworkForAdditionalList[]
+      FeaturedNetwork[]
     >((acc, network) => {
       if (
         !network.config.isActive ||
