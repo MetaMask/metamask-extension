@@ -208,9 +208,6 @@ async function setupMocking(
     numNetworkReqs = 0;
   }
 
-  const mockedEndpoint = await testSpecificMock(server);
-  // Mocks below this line can be overridden by test-specific mocks
-
   // Snaps execution ACL registry
   await setupSnapRegistryMocks(server);
 
@@ -1496,6 +1493,69 @@ async function setupMocking(
       };
     });
 
+  // Accounts API: v4 multi-account balances (TokenBalancesController account API path).
+  // Same default balance shape as v5; query param is accountAddresses instead of accountIds.
+  await server
+    .forGet('https://accounts.api.cx.metamask.io/v4/multiaccount/balances')
+    .always()
+    .thenCallback((req) => {
+      const url = new URL(req.url);
+      const accountAddressesParam =
+        url.searchParams.get('accountAddresses') ?? '';
+      const accountAddresses = accountAddressesParam
+        ? accountAddressesParam.split(',')
+        : [];
+
+      const mainnetNativeOverride =
+        typeof unifiedEvmAccountsApiBalances.mainnetNativeEthHuman === 'string'
+          ? unifiedEvmAccountsApiBalances.mainnetNativeEthHuman
+          : null;
+      const localhostNativeOverride =
+        typeof unifiedEvmAccountsApiBalances.localhostNativeEthHuman ===
+        'string'
+          ? unifiedEvmAccountsApiBalances.localhostNativeEthHuman
+          : null;
+      const defaultNativeOverride =
+        typeof unifiedEvmAccountsApiBalances.nativeBalance === 'string'
+          ? unifiedEvmAccountsApiBalances.nativeBalance
+          : null;
+
+      const balances = [];
+      for (const accountAddress of accountAddresses) {
+        if (
+          !accountAddress.toLowerCase().includes(DEFAULT_FIXTURE_ACCOUNT_LOWERCASE)
+        ) {
+          continue;
+        }
+        const parts = accountAddress.split(':');
+        const chainRef = parts[1];
+        let nativeBalance = '25';
+        if (chainRef === '1' && mainnetNativeOverride !== null) {
+          nativeBalance = mainnetNativeOverride;
+        } else if (chainRef === '1337' && localhostNativeOverride !== null) {
+          nativeBalance = localhostNativeOverride;
+        } else if (defaultNativeOverride !== null) {
+          nativeBalance = defaultNativeOverride;
+        }
+
+        const slip44 = chainRef === '1337' ? '1' : '60';
+        balances.push({
+          accountAddress,
+          assetId: `eip155:${chainRef}/slip44:${slip44}`,
+          balance: nativeBalance,
+        });
+      }
+
+      return {
+        statusCode: 200,
+        json: {
+          count: balances.length,
+          balances,
+          unprocessedNetworks: [],
+        },
+      };
+    });
+
   // Accounts API: tokens
   const ACCOUNTS_API_TOKENS = fs.readFileSync(ACCOUNTS_API_TOKENS_PATH);
   await server
@@ -1969,6 +2029,9 @@ async function setupMocking(
       privacyReport.add(request.headers.host);
     }
   });
+
+  // Test-specific mocks are registered last so they override defaults above.
+  const mockedEndpoint = await testSpecificMock(server);
 
   return {
     mockedEndpoint,
