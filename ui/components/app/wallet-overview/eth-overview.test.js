@@ -138,7 +138,7 @@ describe('EthOverview', () => {
         [CHAIN_IDS.MAINNET]: {},
       },
       remoteFeatureFlags: {
-        batchSell: { minimumVersion: '0.0.0' },
+        batchSell: { enabled: true },
         bridgeConfig: {
           support: true,
         },
@@ -383,7 +383,7 @@ describe('EthOverview', () => {
           ...mockStore.metamask,
           remoteFeatureFlags: {
             ...mockStore.metamask.remoteFeatureFlags,
-            batchSell: { minimumVersion: '999.0.0' },
+            batchSell: { enabled: false },
           },
         },
       });
