@@ -1,4 +1,4 @@
-import React, { useContext, useCallback, useMemo } from 'react';
+import React, { useContext, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import classnames from 'clsx';
@@ -208,23 +208,10 @@ export const CoinOverview = ({
   const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
   const isTestnet = useSelector(getMultichainIsTestnet);
 
-  useRewardsModal();
-
-  // Selected account group balance + Balance related dependency (networks availability) for empty
-  // state check.
-  // (Similar checks than `AccountGroupBalanceChange`).
   const period = '1d';
-  const { amountChange } = useAccountGroupBalanceDisplay(period);
-  const anyEnabledNetworksAreAvailable = useSelector(
-    selectAnyEnabledNetworksAreAvailable,
-  );
-  // We re-use the exact same logic than for  `AccountGroupBalanceChange` for the skeleton loading.
-  // UX-wise, we want to show the skeleton AND then show the empty state only if there is really no
-  // balance and not just because the balance is loading.
-  const balanceIsLoading = useMemo(
-    () => !anyEnabledNetworksAreAvailable && isZeroAmount(amountChange),
-    [anyEnabledNetworksAreAvailable, amountChange],
-  );
+  const { isLoading: balanceIsLoading } = useAccountGroupBalanceDisplay(period);
+
+  useRewardsModal();
 
   // Only show empty state when Receive can act (selectedAccountGroup exists);
   // otherwise the Receive button would be a no-op.
