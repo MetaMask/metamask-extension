@@ -46,6 +46,7 @@ export function PerpsDepositToast() {
     toast({
       severity: isSuccess ? 'success' : 'danger',
       children: content,
+      id,
     });
 
     const timeoutId = setTimeout(() => {
@@ -54,7 +55,7 @@ export function PerpsDepositToast() {
 
     return () => {
       clearTimeout(timeoutId);
-      toast.dismiss();
+      toast.dismiss(id);
     };
   }, [
     hasDepositResult,
@@ -70,12 +71,12 @@ export function PerpsDepositToast() {
     }
 
     if (!shouldShowDepositToast) {
-      toast.dismiss();
+      toast.dismiss(id);
       return;
     }
 
     if (!depositInProgress) {
-      toast.dismiss();
+      toast.dismiss(id);
       return;
     }
 
@@ -89,10 +90,11 @@ export function PerpsDepositToast() {
         />
       ),
       hasNoTimeout: true,
+      id,
     });
 
     return () => {
-      toast.dismiss();
+      toast.dismiss(id);
     };
   }, [depositInProgress, hasDepositResult, shouldShowDepositToast, t]);
 

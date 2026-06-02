@@ -1,42 +1,37 @@
 import { render, screen } from '@testing-library/react';
-import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import {
-  ToastContent,
-  showSuccessToast,
-  showToast,
-  type ToastStatus,
-} from './shared';
 import React from 'react';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { ToastContent, showSuccessToast, showToast, type ToastStatus } from './shared';
 
-const mockToastLoading = jest.fn();
-const mockToastSuccess = jest.fn();
-const mockToastError = jest.fn();
+const mockToast = jest.fn();
+const mockToastDismiss = jest.fn();
 const mockUseTransactionDisplay = jest.fn();
 
 jest.mock('../../../helpers/utils/transaction-display', () => ({
   useTransactionDisplay: (status: string) => mockUseTransactionDisplay(status),
 }));
 
-jest.mock('../../ui/toast/toast', () => ({
-  toast: {
-    loading: (...args: unknown[]) => mockToastLoading(...args),
-    success: (...args: unknown[]) => mockToastSuccess(...args),
-    error: (...args: unknown[]) => mockToastError(...args),
-    dismiss: jest.fn(),
-  },
-  ToastContent: ({
-    title,
-    description,
-  }: {
-    title: string;
-    description?: string;
-  }) => (
-    <div>
-      <p>{title}</p>
-      {description ? <p>{description}</p> : null}
-    </div>
-  ),
-}));
+jest.mock('../../ui/toast/toast', () => {
+  const toast = Object.assign(
+    (...args: unknown[]) => mockToast(...args),
+    { dismiss: (...args: unknown[]) => mockToastDismiss(...args) },
+  );
+  return {
+    toast,
+    ToastContent: ({
+      title,
+      description,
+    }: {
+      title: string;
+      description?: string;
+    }) => (
+      <div>
+        <p>{title}</p>
+        {description ? <p>{description}</p> : null}
+      </div>
+    ),
+  };
+});
 
 describe('toast-listener/shared', () => {
   beforeEach(() => {
@@ -76,26 +71,32 @@ describe('toast-listener/shared', () => {
 
   it('shows a pending toast', () => {
     showToast('toast-id', 'pending' as ToastStatus);
-
-    expect(mockToastLoading).toHaveBeenCalledWith(expect.any(Object), {
-      id: 'toast-id',
-    });
+    expect(mockToast).toHaveBeenCalledWith(
+      expect.objectContaining({
+        severity: 'default',
+        id: 'toast-id',
+      }),
+    );
   });
 
   it('shows a success toast', () => {
     showToast('toast-id', 'success' as ToastStatus);
-
-    expect(mockToastSuccess).toHaveBeenCalledWith(expect.any(Object), {
-      id: 'toast-id',
-    });
+    expect(mockToast).toHaveBeenCalledWith(
+      expect.objectContaining({
+        severity: 'success',
+        id: 'toast-id',
+      }),
+    );
   });
 
   it('shows a failed toast', () => {
     showToast('toast-id', 'failed' as ToastStatus);
-
-    expect(mockToastError).toHaveBeenCalledWith(expect.any(Object), {
-      id: 'toast-id',
-    });
+    expect(mockToast).toHaveBeenCalledWith(
+      expect.objectContaining({
+        severity: 'danger',
+        id: 'toast-id',
+      }),
+    );
   });
 
   it('shows a custom success toast', () => {
@@ -103,9 +104,11 @@ describe('toast-listener/shared', () => {
       title: messages.perpsWithdrawPostQuoteToastSuccessTitle.message,
       description: '$20.73 BNB moved to your wallet',
     });
-
-    expect(mockToastSuccess).toHaveBeenCalledWith(expect.any(Object), {
-      id: 'toast-id',
-    });
+    expect(mockToast).toHaveBeenCalledWith(
+      expect.objectContaining({
+        severity: 'success',
+        id: 'toast-id',
+      }),
+    );
   });
 });

@@ -11,24 +11,31 @@ import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { PerpsDepositToast } from './perps-deposit-toast';
 
+const mockToast = jest.fn();
 const mockToastDismiss = jest.fn();
-const mockToastError = jest.fn();
-const mockToastLoading = jest.fn();
-const mockToastSuccess = jest.fn();
 
 jest.mock('../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
 }));
 
-jest.mock('../../ui/toast/toast', () => ({
-  toast: {
-    dismiss: (...args: unknown[]) => mockToastDismiss(...args),
-    error: (...args: unknown[]) => mockToastError(...args),
-    loading: (...args: unknown[]) => mockToastLoading(...args),
-    success: (...args: unknown[]) => mockToastSuccess(...args),
-  },
-  ToastContent: () => null,
-}));
+jest.mock('../../ui/toast/toast', () => {
+  const toast = Object.assign(
+    (...args: unknown[]) => mockToast(...args),
+    { dismiss: (...args: unknown[]) => mockToastDismiss(...args) },
+  );
+  return {
+    toast,
+    ToastContent: ({
+      title,
+      description,
+      dataTestId,
+    }: {
+      title: string;
+      description?: string;
+      dataTestId?: string;
+    }) => null,
+  };
+});
 
 function buildPendingDepositTransaction(
   overrides: {
@@ -68,9 +75,7 @@ describe('PerpsDepositToast', () => {
     renderWithProvider(<PerpsDepositToast />, store);
 
     expect(mockToastDismiss).toHaveBeenCalledWith('perps-deposit-toast');
-    expect(mockToastLoading).not.toHaveBeenCalled();
-    expect(mockToastSuccess).not.toHaveBeenCalled();
-    expect(mockToastError).not.toHaveBeenCalled();
+    expect(mockToast).not.toHaveBeenCalled();
   });
 
   it('renders pending toast when mounting with deposit already in progress', () => {
@@ -85,17 +90,18 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(mockToastLoading).toHaveBeenCalledWith(
+    expect(mockToast).toHaveBeenCalledWith(
       expect.objectContaining({
-        props: expect.objectContaining({
-          title: messages.perpsDepositToastPendingTitle.message,
-          description: messages.perpsDepositToastPendingDescription.message,
+        severity: 'default',
+        id: 'perps-deposit-toast',
+        hasNoTimeout: true,
+        children: expect.objectContaining({
+          props: expect.objectContaining({
+            title: messages.perpsDepositToastPendingTitle.message,
+            description: messages.perpsDepositToastPendingDescription.message,
+          }),
         }),
       }),
-      {
-        id: 'perps-deposit-toast',
-        duration: Infinity,
-      },
     );
   });
 
@@ -119,17 +125,18 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(mockToastLoading).toHaveBeenCalledWith(
+    expect(mockToast).toHaveBeenCalledWith(
       expect.objectContaining({
-        props: expect.objectContaining({
-          title: messages.perpsDepositToastPendingTitle.message,
-          description: messages.perpsDepositToastPendingDescription.message,
+        severity: 'default',
+        id: 'perps-deposit-toast',
+        hasNoTimeout: true,
+        children: expect.objectContaining({
+          props: expect.objectContaining({
+            title: messages.perpsDepositToastPendingTitle.message,
+            description: messages.perpsDepositToastPendingDescription.message,
+          }),
         }),
       }),
-      {
-        id: 'perps-deposit-toast',
-        duration: Infinity,
-      },
     );
   });
 
@@ -153,7 +160,13 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(mockToastLoading).toHaveBeenCalled();
+    expect(mockToast).toHaveBeenCalledWith(
+      expect.objectContaining({
+        severity: 'default',
+        id: 'perps-deposit-toast',
+        hasNoTimeout: true,
+      }),
+    );
   });
 
   it('renders pending toast when mounting with deposit already in progress for perpsDepositAndOrder', () => {
@@ -172,7 +185,13 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(mockToastLoading).toHaveBeenCalled();
+    expect(mockToast).toHaveBeenCalledWith(
+      expect.objectContaining({
+        severity: 'default',
+        id: 'perps-deposit-toast',
+        hasNoTimeout: true,
+      }),
+    );
   });
 
   it('does not render the pending toast when the transaction is still unapproved', () => {
@@ -191,7 +210,7 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(mockToastLoading).not.toHaveBeenCalled();
+    expect(mockToast).not.toHaveBeenCalled();
   });
 
   it('renders success toast when lastDepositResult is successful', () => {
@@ -215,17 +234,17 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(mockToastSuccess).toHaveBeenCalledWith(
+    expect(mockToast).toHaveBeenCalledWith(
       expect.objectContaining({
-        props: expect.objectContaining({
-          title: messages.perpsDepositToastSuccessTitle.message,
-          description: messages.perpsDepositToastSuccessDescription.message,
+        severity: 'success',
+        id: 'perps-deposit-toast',
+        children: expect.objectContaining({
+          props: expect.objectContaining({
+            title: messages.perpsDepositToastSuccessTitle.message,
+            description: messages.perpsDepositToastSuccessDescription.message,
+          }),
         }),
       }),
-      {
-        id: 'perps-deposit-toast',
-        duration: 5000,
-      },
     );
   });
 
@@ -245,17 +264,17 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(mockToastSuccess).toHaveBeenCalledWith(
+    expect(mockToast).toHaveBeenCalledWith(
       expect.objectContaining({
-        props: expect.objectContaining({
-          title: messages.perpsDepositToastSuccessTitle.message,
-          description: messages.perpsDepositToastSuccessDescription.message,
+        severity: 'success',
+        id: 'perps-deposit-toast',
+        children: expect.objectContaining({
+          props: expect.objectContaining({
+            title: messages.perpsDepositToastSuccessTitle.message,
+            description: messages.perpsDepositToastSuccessDescription.message,
+          }),
         }),
       }),
-      {
-        id: 'perps-deposit-toast',
-        duration: 5000,
-      },
     );
   });
 
@@ -403,17 +422,17 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(mockToastError).toHaveBeenCalledWith(
+    expect(mockToast).toHaveBeenCalledWith(
       expect.objectContaining({
-        props: expect.objectContaining({
-          title: messages.perpsDepositToastErrorTitle.message,
-          description: messages.perpsDepositErrorBridgeFailed.message,
+        severity: 'danger',
+        id: 'perps-deposit-toast',
+        children: expect.objectContaining({
+          props: expect.objectContaining({
+            title: messages.perpsDepositToastErrorTitle.message,
+            description: messages.perpsDepositErrorBridgeFailed.message,
+          }),
         }),
       }),
-      {
-        id: 'perps-deposit-toast',
-        duration: 5000,
-      },
     );
   });
 
@@ -433,8 +452,17 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(mockToastSuccess).toHaveBeenCalled();
-    expect(mockToastLoading).not.toHaveBeenCalled();
+    expect(mockToast).toHaveBeenCalledWith(
+      expect.objectContaining({
+        severity: 'success',
+        id: 'perps-deposit-toast',
+      }),
+    );
+    expect(
+      mockToast.mock.calls.some(
+        (args) => (args?.[0] as { severity?: string })?.severity === 'default',
+      ),
+    ).toBe(false);
   });
 
   it('renders pending toast when a new deposit transaction ID appears', () => {
@@ -449,7 +477,7 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(mockToastLoading).not.toHaveBeenCalled();
+    expect(mockToast).not.toHaveBeenCalled();
 
     act(() => {
       store.dispatch({
@@ -464,7 +492,13 @@ describe('PerpsDepositToast', () => {
       });
     });
 
-    expect(mockToastLoading).toHaveBeenCalled();
+    expect(mockToast).toHaveBeenCalledWith(
+      expect.objectContaining({
+        severity: 'default',
+        id: 'perps-deposit-toast',
+        hasNoTimeout: true,
+      }),
+    );
   });
 
   it('keeps showing the pending toast after a transaction ID appears', () => {
@@ -479,7 +513,7 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(mockToastLoading).not.toHaveBeenCalled();
+    expect(mockToast).not.toHaveBeenCalled();
 
     act(() => {
       store.dispatch({
@@ -497,7 +531,13 @@ describe('PerpsDepositToast', () => {
       });
     });
 
-    expect(mockToastLoading).toHaveBeenCalled();
+    expect(mockToast).toHaveBeenCalledWith(
+      expect.objectContaining({
+        severity: 'default',
+        id: 'perps-deposit-toast',
+        hasNoTimeout: true,
+      }),
+    );
   });
 
   it('shows completion toast when deposit result arrives', () => {
@@ -536,16 +576,16 @@ describe('PerpsDepositToast', () => {
       });
     });
 
-    expect(mockToastSuccess).toHaveBeenCalledWith(
+    expect(mockToast).toHaveBeenCalledWith(
       expect.objectContaining({
-        props: expect.objectContaining({
-          title: messages.perpsDepositToastSuccessTitle.message,
+        severity: 'success',
+        id: 'perps-deposit-toast',
+        children: expect.objectContaining({
+          props: expect.objectContaining({
+            title: messages.perpsDepositToastSuccessTitle.message,
+          }),
         }),
       }),
-      {
-        id: 'perps-deposit-toast',
-        duration: 5000,
-      },
     );
   });
 
@@ -578,17 +618,17 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(mockToastSuccess).toHaveBeenCalledWith(
+    expect(mockToast).toHaveBeenCalledWith(
       expect.objectContaining({
-        props: expect.objectContaining({
-          title: messages.perpsDepositToastSuccessTitle.message,
-          description: messages.perpsDepositToastSuccessDescription.message,
+        severity: 'success',
+        id: 'perps-deposit-toast',
+        children: expect.objectContaining({
+          props: expect.objectContaining({
+            title: messages.perpsDepositToastSuccessTitle.message,
+            description: messages.perpsDepositToastSuccessDescription.message,
+          }),
         }),
       }),
-      {
-        id: 'perps-deposit-toast',
-        duration: 5000,
-      },
     );
   });
 
@@ -613,7 +653,13 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(mockToastLoading).toHaveBeenCalled();
+    expect(mockToast).toHaveBeenCalledWith(
+      expect.objectContaining({
+        severity: 'default',
+        id: 'perps-deposit-toast',
+        hasNoTimeout: true,
+      }),
+    );
   });
 
   it('does not show pending when active id is confirmed even if another perps deposit stays submitted', () => {
@@ -637,6 +683,10 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(mockToastLoading).not.toHaveBeenCalled();
+    expect(
+      mockToast.mock.calls.some(
+        (args) => (args?.[0] as { severity?: string })?.severity === 'default',
+      ),
+    ).toBe(false);
   });
 });

@@ -1,9 +1,9 @@
+import React from 'react';
 import {
   useTransactionDisplay,
   type TransactionStatus,
 } from '../../../helpers/utils/transaction-display';
 import { ToastContent as ToastContentBase, toast } from '../../ui/toast/toast';
-import React from 'react';
 
 export type ToastStatus = 'pending' | 'success' | 'failed';
 
@@ -34,6 +34,7 @@ export function showPendingToast(id: string, options?: ToastContentOptions) {
   toast({
     severity: 'default',
     children: <ToastContent status="pending" {...options} />,
+    id,
   });
 }
 
@@ -41,6 +42,7 @@ export function showSuccessToast(id: string, options?: ToastContentOptions) {
   toast({
     severity: 'success',
     children: <ToastContent status="success" {...options} />,
+    id,
   });
 }
 
@@ -48,11 +50,12 @@ export function showFailedToast(id: string, options?: ToastContentOptions) {
   toast({
     severity: 'danger',
     children: <ToastContent status="failed" {...options} />,
+    id,
   });
 }
 
 export function dismissToast(id: string) {
-  toast.dismiss();
+  toast.dismiss(id);
 }
 
 export function showToast(id: string, status: ToastStatus) {
