@@ -142,6 +142,24 @@ const sendAssetsConfig: BatchSellQuotesConfig['sendAssetsConfig'] = {
 const receivedAsset: BatchSellQuotesConfig['receivedAsset'] =
   buildReceivedAsset({ assetId: RECEIVE_ASSET_ID });
 
+const bothEnabledConfig: BatchSellQuotesConfig = {
+  sendAssetsConfig: {
+    [ASSET_A_ID]: {
+      asset: makeAsset(ASSET_A_ID),
+      sendAmountPercent: 100,
+      slippagePercent: 0.5,
+      enabled: true,
+    },
+    [ASSET_B_ID]: {
+      asset: makeAsset(ASSET_B_ID),
+      sendAmountPercent: 50,
+      slippagePercent: 1,
+      enabled: true,
+    },
+  },
+  receivedAsset,
+};
+
 function renderDefault(
   options: {
     enabled?: boolean;
@@ -307,7 +325,7 @@ describe('useBatchSellQuotesFetching', () => {
     });
 
     it('dispatches setSelectedQuote and updateQuoteRequestParams when all conditions are met', () => {
-      renderDefault({ enabled: true });
+      renderDefault({ enabled: true, config: bothEnabledConfig });
 
       expect(mockDispatch).toHaveBeenCalledWith({ type: 'SET_SELECTED_QUOTE' });
       expect(setSelectedQuote).toHaveBeenCalledWith(null);
@@ -318,7 +336,7 @@ describe('useBatchSellQuotesFetching', () => {
     });
 
     it('passes the correct index and total to updateQuoteRequestParams', () => {
-      renderDefault({ enabled: true });
+      renderDefault({ enabled: true, config: bothEnabledConfig });
 
       expect(updateQuoteRequestParams).toHaveBeenCalledWith(
         MOCK_PARAMS,
@@ -334,12 +352,9 @@ describe('useBatchSellQuotesFetching', () => {
       );
     });
 
-    it('filters out entries for which buildQuoteRequestForEntry returns undefined', () => {
-      // First entry returns params, second returns undefined
-      mockBuildQuoteRequestForEntry
-        .mockReturnValueOnce(MOCK_PARAMS)
-        .mockReturnValueOnce(undefined as never);
-
+    it('excludes disabled entries from the quote requests sent to the controller', () => {
+      // Default config has ASSET_A enabled and ASSET_B disabled, so only one
+      // request (reindexed to 0, total 1) should be dispatched.
       renderDefault({ enabled: true });
 
       expect(updateQuoteRequestParams).toHaveBeenCalledTimes(1);
@@ -347,7 +362,25 @@ describe('useBatchSellQuotesFetching', () => {
         MOCK_PARAMS,
         MOCK_CONTEXT,
         0,
-        2,
+        1,
+      );
+    });
+
+    it('filters out entries for which buildQuoteRequestForEntry returns undefined and reindexes the rest', () => {
+      // Both entries enabled, but the second yields no params, so the surviving
+      // request is reindexed to 0 with a total of 1.
+      mockBuildQuoteRequestForEntry
+        .mockReturnValueOnce(MOCK_PARAMS)
+        .mockReturnValueOnce(undefined as never);
+
+      renderDefault({ enabled: true, config: bothEnabledConfig });
+
+      expect(updateQuoteRequestParams).toHaveBeenCalledTimes(1);
+      expect(updateQuoteRequestParams).toHaveBeenCalledWith(
+        MOCK_PARAMS,
+        MOCK_CONTEXT,
+        0,
+        1,
       );
     });
 

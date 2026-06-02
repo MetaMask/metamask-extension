@@ -168,12 +168,36 @@ describe('batch-sell selectors', () => {
       // stablecoin-presence filter does not strip them in the base cases.
       mockGetBridgeFeatureFlags.mockReturnValue({
         chains: {
-          [CAIP_MAINNET]: { batchSellDestStablecoins: ['eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'] },
-          [CAIP_BASE]: { batchSellDestStablecoins: ['eip155:8453/erc20:0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'] },
-          [CAIP_BSC]: { batchSellDestStablecoins: ['eip155:56/erc20:0x55d398326f99059fF775485246999027B3197955'] },
-          [CAIP_ARBITRUM]: { batchSellDestStablecoins: ['eip155:42161/erc20:0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8'] },
-          [CAIP_POLYGON]: { batchSellDestStablecoins: ['eip155:137/erc20:0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174'] },
-          [CAIP_LINEA]: { batchSellDestStablecoins: ['eip155:59144/erc20:0x176211869cA2b568f2A7D4EE941E073a821EE1ff'] },
+          [CAIP_MAINNET]: {
+            batchSellDestStablecoins: [
+              'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+            ],
+          },
+          [CAIP_BASE]: {
+            batchSellDestStablecoins: [
+              'eip155:8453/erc20:0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+            ],
+          },
+          [CAIP_BSC]: {
+            batchSellDestStablecoins: [
+              'eip155:56/erc20:0x55d398326f99059fF775485246999027B3197955',
+            ],
+          },
+          [CAIP_ARBITRUM]: {
+            batchSellDestStablecoins: [
+              'eip155:42161/erc20:0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
+            ],
+          },
+          [CAIP_POLYGON]: {
+            batchSellDestStablecoins: [
+              'eip155:137/erc20:0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+            ],
+          },
+          [CAIP_LINEA]: {
+            batchSellDestStablecoins: [
+              'eip155:59144/erc20:0x176211869cA2b568f2A7D4EE941E073a821EE1ff',
+            ],
+          },
         },
       } as never);
     });
@@ -271,7 +295,11 @@ describe('batch-sell selectors', () => {
       // Only Mainnet has stablecoins configured; Base has none.
       mockGetBridgeFeatureFlags.mockReturnValue({
         chains: {
-          [CAIP_MAINNET]: { batchSellDestStablecoins: ['eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'] },
+          [CAIP_MAINNET]: {
+            batchSellDestStablecoins: [
+              'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+            ],
+          },
           [CAIP_BASE]: { batchSellDestStablecoins: [] },
         },
       } as never);
@@ -579,8 +607,16 @@ describe('batch-sell selectors', () => {
       } as never);
       mockGetBridgeFeatureFlags.mockReturnValue({
         chains: {
-          [CAIP_MAINNET]: { batchSellDestStablecoins: ['eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'] },
-          [CAIP_BASE]: { batchSellDestStablecoins: ['eip155:8453/erc20:0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'] },
+          [CAIP_MAINNET]: {
+            batchSellDestStablecoins: [
+              'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+            ],
+          },
+          [CAIP_BASE]: {
+            batchSellDestStablecoins: [
+              'eip155:8453/erc20:0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+            ],
+          },
         },
       } as never);
 

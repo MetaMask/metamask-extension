@@ -20,23 +20,43 @@ export const buildResults = ({
   validationErrorsByIndex: QuoteValidationErrors[];
   isLoading: boolean;
 }): BatchSellQuotesResults => {
-  const { recommendedQuotes } = controllerResult;
+  const { recommendedQuotes, totalReceived, minimumReceived } =
+    controllerResult;
 
+  // Quotes are requested only for enabled entries, so `recommendedQuotes` (and
+  // the per-slot validation errors) are positionally aligned with the enabled
+  // entries in order. Walk the full entries list and advance a separate cursor
+  // for each enabled entry to map it back onto its controller slot.
+  let enabledSlotIndex = 0;
   const quotes: BatchSellQuotesResults['quotes'] = Object.fromEntries(
-    entries.map((entry, index) => {
-      const recommendedQuote = recommendedQuotes[index];
-      if (!entry.enabled || !recommendedQuote) {
+    entries.map((entry) => {
+      if (!entry.enabled) {
         return [
           entry.assetId,
           {
             asset: entry.asset,
             quote: null,
             hasQuote: false,
-            isLoadingQuote: entry.enabled && isLoading,
+            isLoadingQuote: false,
           },
         ];
       }
-      const validation = validationErrorsByIndex[index];
+
+      const slotIndex = enabledSlotIndex;
+      enabledSlotIndex += 1;
+      const recommendedQuote = recommendedQuotes[slotIndex];
+      if (!recommendedQuote) {
+        return [
+          entry.assetId,
+          {
+            asset: entry.asset,
+            quote: null,
+            hasQuote: false,
+            isLoadingQuote: isLoading,
+          },
+        ];
+      }
+      const validation = validationErrorsByIndex[slotIndex];
       return [
         entry.assetId,
         {
@@ -63,26 +83,20 @@ export const buildResults = ({
     }),
   );
 
-  // Recompute totals from only the enabled slots' quotes so the bridge
-  // controller's pre-aggregated sums (which include disabled slots) don't
-  // leak into the UI. Totals stay `undefined` until the first quote lands so
-  // consumers can render a skeleton instead of a deceptive "0".
-  const enabledRecommendedQuotes = entries
-    .map((entry, index) => (entry.enabled ? recommendedQuotes[index] : null))
-    .filter((quote): quote is NonNullable<typeof quote> => Boolean(quote));
-
-  const sum = (values: (number | string | null | undefined)[]): number =>
-    values.reduce<number>((acc, v) => acc + toFinite(v), 0);
-
-  const hasAnyEnabledQuote = enabledRecommendedQuotes.length > 0;
-  const totalReceivedAmount = hasAnyEnabledQuote
-    ? sum(enabledRecommendedQuotes.map((q) => q.toTokenAmount?.amount))
+  // Totals come straight from the controller's pre-aggregated sums. Because
+  // quotes are requested only for enabled entries, these already exclude
+  // disabled slots, so the UI does not re-sum anything itself. They stay
+  // `undefined` until the first quote lands so consumers can render a skeleton
+  // instead of a deceptive "0".
+  const hasAnyQuote = recommendedQuotes.some((quote) => Boolean(quote));
+  const totalReceivedAmount = hasAnyQuote
+    ? toFinite(totalReceived?.amount)
     : undefined;
-  const totalReceivedAmountFiat = hasAnyEnabledQuote
-    ? sum(enabledRecommendedQuotes.map((q) => q.toTokenAmount?.valueInCurrency))
+  const totalReceivedAmountFiat = hasAnyQuote
+    ? toFinite(totalReceived?.valueInCurrency)
     : undefined;
-  const minimumReceivedAmount = hasAnyEnabledQuote
-    ? sum(enabledRecommendedQuotes.map((q) => q.minToTokenAmount?.amount))
+  const minimumReceivedAmount = hasAnyQuote
+    ? toFinite(minimumReceived?.amount)
     : undefined;
 
   return {

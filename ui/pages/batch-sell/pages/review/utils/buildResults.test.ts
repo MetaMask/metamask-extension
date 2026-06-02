@@ -235,32 +235,49 @@ describe('buildResults', () => {
       expect(result.minimumReceivedAmount).toBe(13);
     });
 
-    it('excludes disabled entries from the totals', () => {
+    it('reads the controller totals directly without re-summing per slot', () => {
+      // Disabled entries are never sent to the controller, so the controller
+      // result only carries the enabled slot's quote. `buildResults` must use
+      // the controller's pre-aggregated totals as-is.
       const entries = [
         buildSendAssetEntry({ assetId: ASSET_ID_A, enabled: true }),
         buildSendAssetEntry({ assetId: ASSET_ID_B, enabled: false }),
       ];
-      const quotes = [
-        buildRecommendedQuote({
-          toTokenAmount: { amount: 10, valueInCurrency: 100 },
-          minToTokenAmount: { amount: 9 },
-        }),
-        buildRecommendedQuote({
-          toTokenAmount: { amount: 99, valueInCurrency: 999 },
-          minToTokenAmount: { amount: 88 },
-        }),
-      ];
+      const enabledQuote = buildRecommendedQuote({
+        toTokenAmount: { amount: 10, valueInCurrency: 100 },
+        minToTokenAmount: { amount: 9 },
+      });
       const result = buildResults({
-        controllerResult: buildBatchSellControllerResult(quotes),
+        controllerResult: buildBatchSellControllerResult([enabledQuote]),
         entries,
         receivedAsset: buildReceivedAsset(),
-        validationErrorsByIndex: [noValidationErrors, noValidationErrors],
+        validationErrorsByIndex: [noValidationErrors],
         isLoading: false,
       });
 
+      expect(result.quotes[ASSET_ID_B].hasQuote).toBe(false);
       expect(result.totalReceivedAmount).toBe(10);
       expect(result.totalReceivedAmountFiat).toBe(100);
       expect(result.minimumReceivedAmount).toBe(9);
+    });
+
+    it('uses controller totals even when they differ from the per-slot quotes', () => {
+      const entries = [buildSendAssetEntry({ assetId: ASSET_ID_A })];
+      const result = buildResults({
+        controllerResult: {
+          recommendedQuotes: [buildRecommendedQuote()],
+          totalReceived: { amount: '42', valueInCurrency: '420', usd: null },
+          minimumReceived: { amount: '38', valueInCurrency: null, usd: null },
+        } as never,
+        entries,
+        receivedAsset: buildReceivedAsset(),
+        validationErrorsByIndex: [noValidationErrors],
+        isLoading: false,
+      });
+
+      expect(result.totalReceivedAmount).toBe(42);
+      expect(result.totalReceivedAmountFiat).toBe(420);
+      expect(result.minimumReceivedAmount).toBe(38);
     });
   });
 

@@ -65,7 +65,9 @@ export function buildRecommendedQuote(overrides: AnyOverrides = {}): any {
 
 /**
  * Wraps an array of recommended quotes inside the minimal controller-result
- * shape expected by `buildResults` and related utilities.
+ * shape expected by `buildResults` and related utilities. Mirrors the bridge
+ * controller by pre-aggregating `totalReceived` and `minimumReceived` across
+ * the provided quotes so consumers can read the sums directly.
  *
  * @param recommendedQuotes - Array of recommended quote objects.
  */
@@ -74,7 +76,27 @@ export function buildBatchSellControllerResult(
   recommendedQuotes: any[] = [],
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): any {
-  return { recommendedQuotes } as never;
+  const sum = (key: string, field: string): string =>
+    String(
+      recommendedQuotes.reduce(
+        (acc, quote) => acc + (Number(quote?.[key]?.[field]) || 0),
+        0,
+      ),
+    );
+
+  return {
+    recommendedQuotes,
+    totalReceived: {
+      amount: sum('toTokenAmount', 'amount'),
+      valueInCurrency: sum('toTokenAmount', 'valueInCurrency'),
+      usd: null,
+    },
+    minimumReceived: {
+      amount: sum('minToTokenAmount', 'amount'),
+      valueInCurrency: sum('minToTokenAmount', 'valueInCurrency'),
+      usd: null,
+    },
+  } as never;
 }
 
 /**

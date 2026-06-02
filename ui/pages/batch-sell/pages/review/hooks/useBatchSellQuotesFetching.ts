@@ -60,7 +60,16 @@ export const useBatchSellQuotesFetching = (
     [sendAssetsConfig],
   );
 
-  const requestCount = entries.length;
+  // Only enabled entries are sent to the controller, so disabled slots (a
+  // percentage of 0 or a toggled-off asset) are never quoted. This keeps the
+  // controller's pre-aggregated totals correct and lets the UI consume them
+  // directly instead of re-summing per slot.
+  const enabledEntries = useMemo(
+    () => entries.filter((entry) => entry.enabled),
+    [entries],
+  );
+
+  const requestCount = enabledEntries.length;
 
   const controllerResult = useSelector((state: BridgeAppState) =>
     getBatchSellQuotes(state, { requestCount }),
@@ -77,7 +86,7 @@ export const useBatchSellQuotesFetching = (
     (!hasEverFetched || controllerResult.isLoading);
 
   const data = useMemo<BatchSellQuotesResults | undefined>(() => {
-    if (!enabled || requestCount === 0) {
+    if (!enabled || entries.length === 0) {
       return undefined;
     }
     return buildResults({
@@ -89,7 +98,6 @@ export const useBatchSellQuotesFetching = (
     });
   }, [
     enabled,
-    requestCount,
     controllerResult,
     entries,
     receivedAsset,
@@ -116,12 +124,12 @@ export const useBatchSellQuotesFetching = (
   );
 
   const refetch = useCallback(() => {
-    if (!enabled || requestCount === 0 || !selectedAccount?.address) {
+    if (!enabled || enabledEntries.length === 0 || !selectedAccount?.address) {
       return;
     }
 
-    const requests = entries
-      .map((entry, index) => {
+    const requests = enabledEntries
+      .map((entry) => {
         const params = buildQuoteRequestForEntry({
           entry,
           destAssetId: receivedAsset.assetId,
@@ -138,11 +146,14 @@ export const useBatchSellQuotesFetching = (
             sendAmountPercent: entry.sendAmountPercent,
             smartTransactionsEnabled,
           }),
-          index,
-          total: requestCount,
         };
       })
-      .filter((request) => request !== undefined);
+      .filter((request) => request !== undefined)
+      .map((request, index, allRequests) => ({
+        ...request,
+        index,
+        total: allRequests.length,
+      }));
 
     if (requests.length === 0) {
       return;
@@ -152,9 +163,8 @@ export const useBatchSellQuotesFetching = (
     debouncedDispatchQuoteRequests.current(requests);
   }, [
     enabled,
-    entries,
+    enabledEntries,
     receivedAsset,
-    requestCount,
     selectedAccount?.address,
     smartTransactionsEnabled,
     dispatch,
