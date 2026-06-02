@@ -22,7 +22,6 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '../../component-library';
-import { toast } from '../../ui/toast/toast';
 import { AlignItems } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { lockMetamask } from '../../../store/actions';

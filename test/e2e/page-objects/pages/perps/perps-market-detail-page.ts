@@ -126,7 +126,7 @@ export class PerpsMarketDetailPage {
    * Dismissing avoids `ElementClickInterceptedError` on CTAs in Firefox when the
    * banner overlays the action row.
    *
-   * @see ui/components/multichain/toast/toast.tsx
+   * @see @metamask/design-system-react toast()
    * @see ui/components/app/perps/perps-toast/perps-toast-provider.tsx
    */
   private readonly perpsToastCloseButton =

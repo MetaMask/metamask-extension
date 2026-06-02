@@ -1,17 +1,30 @@
-import React from 'react';
-import { screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+/**
+ * @jest-environment jsdom
+ */
+import { waitFor } from '@testing-library/react';
+import { toast } from '@metamask/design-system-react';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { PerpsWithdrawToast } from './perps-withdraw-toast';
+import React from 'react';
+
+jest.mock('@metamask/design-system-react', () => {
+  const actual = jest.requireActual('@metamask/design-system-react');
+  const mockToast = jest.fn();
+  mockToast.dismiss = jest.fn();
+  return {
+    ...actual,
+    toast: mockToast,
+  };
+});
 
 jest.mock('../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
 }));
 
+const mockToast = toast as jest.MockedFunction<typeof toast>;
 const mockSubmit = submitRequestToBackground as jest.MockedFunction<
   typeof submitRequestToBackground
 >;
@@ -26,24 +39,11 @@ describe('PerpsWithdrawToast', () => {
     error: '',
   };
 
-  it('renders success toast when lastWithdrawResult is set', () => {
-    const store = configureStore({
-      metamask: {
-        ...mockState.metamask,
-        lastWithdrawResult: baseResult,
-      },
-    });
-
-    renderWithProvider(<PerpsWithdrawToast />, store);
-
-    expect(screen.getByTestId('perps-withdraw-toast')).toBeInTheDocument();
-    expect(
-      screen.getByText(messages.perpsWithdrawToastSuccessTitle.message),
-    ).toBeInTheDocument();
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
-  it('calls perpsClearWithdrawResult when dismissed', async () => {
-    const user = userEvent.setup();
+  it('emits a success toast when lastWithdrawResult is set', async () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
@@ -53,14 +53,41 @@ describe('PerpsWithdrawToast', () => {
 
     renderWithProvider(<PerpsWithdrawToast />, store);
 
-    await user.click(
-      screen.getByRole('button', { name: messages.close.message }),
+    await waitFor(() => expect(mockToast).toHaveBeenCalled());
+
+    expect(mockToast).toHaveBeenCalledWith(
+      expect.objectContaining({
+        severity: 'success',
+        title: expect.any(String),
+        description: expect.any(String),
+        hasNoTimeout: true,
+        'data-testid': 'perps-withdraw-toast',
+      }),
     );
+  });
+
+  it('passes dismissToast as onClose', async () => {
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        lastWithdrawResult: baseResult,
+      },
+    });
+
+    renderWithProvider(<PerpsWithdrawToast />, store);
+
+    await waitFor(() => expect(mockToast).toHaveBeenCalled());
+
+    const options = mockToast.mock.calls.at(-1)?.[0] as {
+      onClose?: () => void;
+    };
+
+    options.onClose?.();
 
     expect(mockSubmit).toHaveBeenCalledWith('perpsClearWithdrawResult', []);
   });
 
-  it('renders nothing when there is no lastWithdrawResult', () => {
+  it('renders nothing when there is no lastWithdrawResult', async () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
@@ -70,8 +97,6 @@ describe('PerpsWithdrawToast', () => {
 
     renderWithProvider(<PerpsWithdrawToast />, store);
 
-    expect(
-      screen.queryByTestId('perps-withdraw-toast'),
-    ).not.toBeInTheDocument();
+    await waitFor(() => expect(mockToast).not.toHaveBeenCalled());
   });
 });

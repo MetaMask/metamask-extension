@@ -1,4 +1,3 @@
-import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import copyToClipboard from 'copy-to-clipboard';
@@ -8,6 +7,7 @@ import {
   Box,
   TextVariant,
   TextColor,
+  toast,
 } from '@metamask/design-system-react';
 import {
   RecommendedAction,
@@ -29,7 +29,6 @@ import {
 import { getHDEntropyIndex, getOriginOfCurrentTab } from '../../selectors';
 import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
 import { PREVIOUS_ROUTE } from '../../helpers/constants/routes';
-import { Toast, ToastContainer } from '../../components/multichain/toast';
 import { useBoolean } from '../../hooks/useBoolean';
 import type { RevealSeedScreen, RevealSeedLocationState } from './types';
 import { RevealSeedPageHeader } from './reveal-seed-page-header';
@@ -39,6 +38,7 @@ import { QuizIntroduction } from './quiz-introduction';
 import { QuizQuestion } from './quiz-question';
 import { PasswordPrompt } from './password-prompt';
 import { RevealSeedContent } from './reveal-seed-content';
+import React, { useContext, useEffect, useState, useCallback } from 'react';
 
 const QUIZ_INTRODUCTION_SCREEN: RevealSeedScreen = 'QUIZ_INTRODUCTION_SCREEN';
 const QUIZ_QUESTIONS_SCREEN: RevealSeedScreen = 'QUIZ_QUESTIONS_SCREEN';
@@ -112,6 +112,29 @@ function RevealSeedPage() {
       });
     }
   }, [scanResult]);
+
+  useEffect(() => {
+    if (!showSuccessToast) {
+      return undefined;
+    }
+
+    const hideToast = setTimeout(() => {
+      setShowSuccessToast(false);
+    }, 5000);
+
+    toast({
+      severity: 'success',
+      title: t('copiedToClipboard'),
+      'data-testid': 'reveal-seed-copy-success-toast',
+      hasNoTimeout: true,
+      onClose: () => setShowSuccessToast(false),
+    });
+
+    return () => {
+      clearTimeout(hideToast);
+      toast.dismiss();
+    };
+  }, [showSuccessToast, t]);
 
   // Only Block triggers the malicious warning. Warn and None show the generic warning.
   const isMalicious = scanResult?.recommendedAction === RecommendedAction.Block;
@@ -423,18 +446,6 @@ function RevealSeedPage() {
         </>
       )}
       {renderContent()}
-      {showSuccessToast && (
-        <ToastContainer>
-          <Toast
-            startAdornment={null}
-            text={t('copiedToClipboard')}
-            onClose={() => setShowSuccessToast(false)}
-            autoHideTime={5000}
-            onAutoHideToast={() => setShowSuccessToast(false)}
-            dataTestId="reveal-seed-copy-success-toast"
-          />
-        </ToastContainer>
-      )}
     </Box>
   );
 }

@@ -1,22 +1,20 @@
 /* eslint-disable react/prop-types -- TODO: upgrade to TypeScript */
 
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
+  toast,
 } from '@metamask/design-system-react';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
-import { SECOND } from '../../../../shared/constants/time';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { PRIVACY_POLICY_LINK } from '../../../../shared/lib/ui-utils';
 import {
-  BorderRadius,
   IconColor,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
   DEFAULT_ROUTE,
@@ -35,7 +33,6 @@ import {
   toggleDefaultView,
 } from '../../../store/actions';
 import { Icon, IconName, IconSize } from '../../component-library';
-import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast';
 import { StorageWriteErrorType } from '../../../../shared/constants/app-state';
 import { MerklClaimToast, MusdConversionToast } from '../musd';
@@ -102,7 +99,7 @@ export function ToastMaster() {
 
   if (onHomeScreen) {
     return (
-      <ToastContainer>
+      <div className="toasts-container">
         {storageErrorToast}
         <SurveyToast />
         <PrivacyPolicyToast />
@@ -114,27 +111,27 @@ export function ToastMaster() {
         <ShieldPausedToast />
         <ShieldEndingToast />
         <SidePanelMigrationToast />
-      </ToastContainer>
+      </div>
     );
   }
 
   if (onPerpsScreen) {
     return (
-      <ToastContainer>
+      <div className="toasts-container">
         {storageErrorToast}
         <PerpsWithdrawToast />
-      </ToastContainer>
+      </div>
     );
   }
 
   if (onSettingsScreen) {
-    return <ToastContainer>{storageErrorToast}</ToastContainer>;
+    return <div className="toasts-container">{storageErrorToast}</div>;
   }
 
   // On other screens, only render ToastContainer if storage error toast should show
   // ToastContainer provides essential CSS styling (position: fixed, z-index, etc.)
   if (shouldShowStorageErrorToast) {
-    return <ToastContainer>{storageErrorToast}</ToastContainer>;
+    return <div className="toasts-container">{storageErrorToast}</div>;
   }
 
   return null;
@@ -146,30 +143,38 @@ function PrivacyPolicyToast() {
   const { showPrivacyPolicyToast, newPrivacyPolicyToastShownDate } =
     useSelector(selectShowPrivacyPolicyToast);
 
-  // If the privacy policy toast is shown, and there is no date set, set it
-  if (showPrivacyPolicyToast && !newPrivacyPolicyToastShownDate) {
-    setNewPrivacyPolicyToastShownDate(Date.now());
-  }
+  useEffect(() => {
+    if (!showPrivacyPolicyToast) {
+      return undefined;
+    }
 
-  return (
-    showPrivacyPolicyToast && (
-      <Toast
-        key="privacy-policy-toast"
-        startAdornment={
-          <Icon name={IconName.Info} color={IconColor.iconDefault} />
-        }
-        text={t('newPrivacyPolicyTitle')}
-        actionText={t('newPrivacyPolicyActionButton')}
-        onActionClick={() => {
-          global.platform.openTab({
-            url: PRIVACY_POLICY_LINK,
-          });
-          setNewPrivacyPolicyToastClickedOrClosed();
-        }}
-        onClose={setNewPrivacyPolicyToastClickedOrClosed}
-      />
-    )
-  );
+    if (!newPrivacyPolicyToastShownDate) {
+      setNewPrivacyPolicyToastShownDate(Date.now());
+      return undefined;
+    }
+
+    toast({
+      severity: 'default',
+      title: t('newPrivacyPolicyTitle'),
+      actionButtonLabel: t('newPrivacyPolicyActionButton'),
+      actionButtonOnClick: () => {
+        global.platform.openTab({
+          url: PRIVACY_POLICY_LINK,
+        });
+        setNewPrivacyPolicyToastClickedOrClosed();
+      },
+      onClose: setNewPrivacyPolicyToastClickedOrClosed,
+      startAccessory: (
+        <Icon name={IconName.Info} color={IconColor.iconDefault} />
+      ),
+    });
+
+    return () => {
+      toast.dismiss();
+    };
+  }, [newPrivacyPolicyToastShownDate, showPrivacyPolicyToast, t]);
+
+  return null;
 }
 
 function PermittedNetworkToast() {
@@ -190,7 +195,7 @@ function PermittedNetworkToast() {
   const displayNetwork = dappActiveNetwork || currentNetwork;
 
   // Get the correct image URL - dapp network structure is different
-  const getNetworkImageUrl = () => {
+  const getNetworkImageUrl = useCallback(() => {
     if (dappActiveNetwork) {
       // For dapp networks, check rpcPrefs.imageUrl first, then fallback to CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
       return (
@@ -201,33 +206,51 @@ function PermittedNetworkToast() {
     }
     // For global network, use existing logic
     return currentNetwork?.rpcPrefs?.imageUrl || '';
-  };
+  }, [currentNetwork?.rpcPrefs?.imageUrl, dappActiveNetwork]);
 
-  return (
-    isPermittedNetworkToastOpen && (
-      <Toast
-        key="switched-permitted-network-toast"
-        startAdornment={
-          <AvatarNetwork
-            size={AvatarNetworkSize.Md}
-            className="border-transparent"
-            src={getNetworkImageUrl()}
-            name={displayNetwork?.name || displayNetwork?.nickname}
-          />
-        }
-        text={t('permittedChainToastUpdate', [
-          getURLHost(activeTabOrigin),
-          displayNetwork?.name || displayNetwork?.nickname,
-        ])}
-        actionText={t('editPermissions')}
-        onActionClick={() => {
-          dispatch(hidePermittedNetworkToast());
-          navigate(`${REVIEW_PERMISSIONS}?origin=${safeEncodedHost}`);
-        }}
-        onClose={() => dispatch(hidePermittedNetworkToast())}
-      />
-    )
-  );
+  useEffect(() => {
+    if (!isPermittedNetworkToastOpen) {
+      return undefined;
+    }
+
+    toast({
+      severity: 'default',
+      title: t('permittedChainToastUpdate', [
+        getURLHost(activeTabOrigin),
+        displayNetwork?.name || displayNetwork?.nickname,
+      ]),
+      actionButtonLabel: t('editPermissions'),
+      actionButtonOnClick: () => {
+        dispatch(hidePermittedNetworkToast());
+        navigate(`${REVIEW_PERMISSIONS}?origin=${safeEncodedHost}`);
+      },
+      onClose: () => dispatch(hidePermittedNetworkToast()),
+      startAccessory: (
+        <AvatarNetwork
+          size={AvatarNetworkSize.Md}
+          className="border-transparent"
+          src={getNetworkImageUrl()}
+          name={displayNetwork?.name || displayNetwork?.nickname}
+        />
+      ),
+    });
+
+    return () => {
+      toast.dismiss();
+    };
+  }, [
+    activeTabOrigin,
+    dispatch,
+    displayNetwork?.name,
+    displayNetwork?.nickname,
+    isPermittedNetworkToastOpen,
+    navigate,
+    safeEncodedHost,
+    getNetworkImageUrl,
+    t,
+  ]);
+
+  return null;
 }
 
 function InfuraSwitchToast() {
@@ -235,23 +258,28 @@ function InfuraSwitchToast() {
   const dispatch = useDispatch();
 
   const showInfuraSwitchToast = useSelector(selectShowInfuraSwitchToast);
-  const autoHideDelay = 5 * SECOND;
 
-  return (
-    showInfuraSwitchToast && (
-      <Toast
-        key="infura-switch-toast"
-        dataTestId="infura-switch-toast"
-        text={t('updatedToMetaMaskDefault')}
-        startAdornment={
-          <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
-        }
-        onClose={() => dispatch(setShowInfuraSwitchToast(false))}
-        autoHideTime={autoHideDelay}
-        onAutoHideToast={() => dispatch(setShowInfuraSwitchToast(false))}
-      />
-    )
-  );
+  useEffect(() => {
+    if (!showInfuraSwitchToast) {
+      return undefined;
+    }
+
+    toast({
+      severity: 'success',
+      title: t('updatedToMetaMaskDefault'),
+      startAccessory: (
+        <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
+      ),
+      onClose: () => dispatch(setShowInfuraSwitchToast(false)),
+      'data-testid': 'infura-switch-toast',
+    });
+
+    return () => {
+      toast.dismiss();
+    };
+  }, [dispatch, showInfuraSwitchToast, t]);
+
+  return null;
 }
 
 function ShieldPausedToast() {
@@ -289,58 +317,76 @@ function ShieldPausedToast() {
     actionText = 'shieldPaymentPausedActionCryptoPayment';
   }
 
-  const trackShieldErrorStateClickedEvent = (actionClicked) => {
-    const { cryptoPaymentChain, cryptoPaymentCurrency } =
-      getSubscriptionPaymentData(shieldSubscription);
-    // capture error state clicked event
-    captureShieldErrorStateClickedEvent({
-      subscriptionStatus: shieldSubscription.status,
-      paymentType: shieldSubscription.paymentMethod.type,
-      billingInterval: shieldSubscription.interval,
-      cryptoPaymentChain,
-      cryptoPaymentCurrency,
-      errorCause: 'payment_error',
-      actionClicked,
-      location: ShieldErrorStateLocationEnum.Homepage,
-      view: ShieldErrorStateViewEnum.Toast,
+  useEffect(() => {
+    if (!isPaused || !showShieldPausedToast) {
+      return undefined;
+    }
+
+    const trackShieldErrorStateClickedEvent = (actionClicked) => {
+      const { cryptoPaymentChain, cryptoPaymentCurrency } =
+        getSubscriptionPaymentData(shieldSubscription);
+      // capture error state clicked event
+      captureShieldErrorStateClickedEvent({
+        subscriptionStatus: shieldSubscription.status,
+        paymentType: shieldSubscription.paymentMethod.type,
+        billingInterval: shieldSubscription.interval,
+        cryptoPaymentChain,
+        cryptoPaymentCurrency,
+        errorCause: 'payment_error',
+        actionClicked,
+        location: ShieldErrorStateLocationEnum.Homepage,
+        view: ShieldErrorStateViewEnum.Toast,
+      });
+    };
+
+    const handleActionClick = async () => {
+      // capture error state clicked event
+      trackShieldErrorStateClickedEvent(
+        ShieldErrorStateActionClickedEnum.Cta,
+      );
+      setShieldPausedToastLastClickedOrClosed(Date.now());
+      navigate(TRANSACTION_SHIELD_ROUTE);
+    };
+
+    const handleToastClose = () => {
+      // capture error state clicked event
+      trackShieldErrorStateClickedEvent(
+        ShieldErrorStateActionClickedEnum.Dismiss,
+      );
+      setShieldPausedToastLastClickedOrClosed(Date.now());
+    };
+
+    toast({
+      severity: 'danger',
+      title: t('shieldPaymentPaused'),
+      description: t(descriptionText),
+      actionButtonLabel: t(actionText),
+      actionButtonOnClick: handleActionClick,
+      startAccessory: (
+        <Icon
+          name={IconName.CircleX}
+          color={IconColor.errorDefault}
+          size={IconSize.Lg}
+        />
+      ),
+      onClose: handleToastClose,
     });
-  };
 
-  const handleActionClick = async () => {
-    // capture error state clicked event
-    trackShieldErrorStateClickedEvent(ShieldErrorStateActionClickedEnum.Cta);
-    setShieldPausedToastLastClickedOrClosed(Date.now());
-    navigate(TRANSACTION_SHIELD_ROUTE);
-  };
+    return () => {
+      toast.dismiss();
+    };
+  }, [
+    actionText,
+    captureShieldErrorStateClickedEvent,
+    descriptionText,
+    isPaused,
+    navigate,
+    shieldSubscription,
+    showShieldPausedToast,
+    t,
+  ]);
 
-  const handleToastClose = () => {
-    // capture error state clicked event
-    trackShieldErrorStateClickedEvent(
-      ShieldErrorStateActionClickedEnum.Dismiss,
-    );
-    setShieldPausedToastLastClickedOrClosed(Date.now());
-  };
-
-  return (
-    Boolean(isPaused) &&
-    showShieldPausedToast && (
-      <Toast
-        key="shield-payment-declined-toast"
-        text={t('shieldPaymentPaused')}
-        description={t(descriptionText)}
-        actionText={t(actionText)}
-        onActionClick={handleActionClick}
-        startAdornment={
-          <Icon
-            name={IconName.CircleX}
-            color={IconColor.errorDefault}
-            size={IconSize.Lg}
-          />
-        }
-        onClose={handleToastClose}
-      />
-    )
-  );
+  return null;
 }
 
 function ShieldEndingToast() {
@@ -357,33 +403,46 @@ function ShieldEndingToast() {
   const isSubscriptionEndingSoon =
     getIsShieldSubscriptionEndingSoon(subscriptions);
 
-  return (
-    isSubscriptionEndingSoon &&
-    showShieldEndingToast && (
-      <Toast
-        key="shield-coverage-ending-toast"
-        text={t('shieldCoverageEnding')}
-        description={t('shieldCoverageEndingDescription', [
-          getShortDateFormatterV2().format(
-            new Date(shieldSubscription.currentPeriodEnd),
-          ),
-        ])}
-        actionText={t('shieldCoverageEndingAction')}
-        onActionClick={async () => {
-          setShieldEndingToastLastClickedOrClosed(Date.now());
-          navigate(TRANSACTION_SHIELD_ROUTE);
-        }}
-        startAdornment={
-          <Icon
-            name={IconName.Clock}
-            color={IconColor.warningDefault}
-            size={IconSize.Lg}
-          />
-        }
-        onClose={() => setShieldEndingToastLastClickedOrClosed(Date.now())}
-      />
-    )
-  );
+  useEffect(() => {
+    if (!isSubscriptionEndingSoon || !showShieldEndingToast) {
+      return undefined;
+    }
+
+    toast({
+      severity: 'default',
+      title: t('shieldCoverageEnding'),
+      description: t('shieldCoverageEndingDescription', [
+        getShortDateFormatterV2().format(
+          new Date(shieldSubscription.currentPeriodEnd),
+        ),
+      ]),
+      actionButtonLabel: t('shieldCoverageEndingAction'),
+      actionButtonOnClick: async () => {
+        setShieldEndingToastLastClickedOrClosed(Date.now());
+        navigate(TRANSACTION_SHIELD_ROUTE);
+      },
+      startAccessory: (
+        <Icon
+          name={IconName.Clock}
+          color={IconColor.warningDefault}
+          size={IconSize.Lg}
+        />
+      ),
+      onClose: () => setShieldEndingToastLastClickedOrClosed(Date.now()),
+    });
+
+    return () => {
+      toast.dismiss();
+    };
+  }, [
+    isSubscriptionEndingSoon,
+    navigate,
+    showShieldEndingToast,
+    shieldSubscription.currentPeriodEnd,
+    t,
+  ]);
+
+  return null;
 }
 
 function StorageErrorToast() {
@@ -418,52 +477,59 @@ function StorageErrorToast() {
     }
   }, [shouldShow, hasTrackedView, trackEvent]);
 
-  const handleRevealSrpClick = () => {
-    trackEvent({
-      event: MetaMetricsEventName.StorageErrorToastBackupSrpButtonPressed,
-      category: MetaMetricsEventCategory.Error,
+  useEffect(() => {
+    if (!shouldShow || isDismissed) {
+      return undefined;
+    }
+
+    const handleRevealSrpClick = () => {
+      trackEvent({
+        event: MetaMetricsEventName.StorageErrorToastBackupSrpButtonPressed,
+        category: MetaMetricsEventCategory.Error,
+      });
+      setIsDismissed(true);
+      navigate(REVEAL_SEED_ROUTE, { state: { skipQuiz: true } });
+    };
+
+    const handleClose = () => {
+      trackEvent({
+        event: MetaMetricsEventName.StorageErrorToastDismissed,
+        category: MetaMetricsEventCategory.Error,
+      });
+      setIsDismissed(true);
+    };
+
+    toast({
+      severity: 'danger',
+      'data-testid': 'storage-error-toast',
+      startAccessory: (
+        <Icon
+          name={IconName.Danger}
+          color={IconColor.errorDefault}
+          size={IconSize.Lg}
+        />
+      ),
+      title: t('storageErrorTitle'),
+      description,
+      onClose: handleClose,
+      actionButtonLabel: isNoSpaceError ? undefined : t('storageErrorAction'),
+      actionButtonOnClick: isNoSpaceError ? undefined : handleRevealSrpClick,
     });
-    setIsDismissed(true);
-    navigate(REVEAL_SEED_ROUTE, { state: { skipQuiz: true } });
-  };
 
-  const handleClose = () => {
-    trackEvent({
-      event: MetaMetricsEventName.StorageErrorToastDismissed,
-      category: MetaMetricsEventCategory.Error,
-    });
-    setIsDismissed(true);
-  };
+    return () => {
+      toast.dismiss();
+    };
+  }, [
+    description,
+    navigate,
+    isDismissed,
+    isNoSpaceError,
+    shouldShow,
+    trackEvent,
+    t,
+  ]);
 
-  // Only show action button for default errors (not for no-space errors)
-  const actionProps = isNoSpaceError
-    ? {}
-    : {
-        actionText: t('storageErrorAction'),
-        onActionClick: handleRevealSrpClick,
-      };
-
-  return (
-    shouldShow && (
-      <Toast
-        key="storage-error-toast"
-        dataTestId="storage-error-toast"
-        startAdornment={
-          <Icon
-            name={IconName.Danger}
-            color={IconColor.errorDefault}
-            size={IconSize.Lg}
-          />
-        }
-        text={t('storageErrorTitle')}
-        description={description}
-        {...actionProps}
-        borderRadius={BorderRadius.LG}
-        textVariant={TextVariant.bodyMd}
-        onClose={handleClose}
-      />
-    )
-  );
+  return null;
 }
 
 function SidePanelMigrationToast() {
@@ -476,37 +542,40 @@ function SidePanelMigrationToast() {
 
   const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
 
-  const handleSwitchBackToPopup = async () => {
-    try {
-      await dispatch(toggleDefaultView());
-    } finally {
-      dismissSidePanelMigrationToast();
+  useEffect(() => {
+    if (!showSidePanelMigrationToast || !isSidePanel) {
+      return undefined;
     }
-  };
 
-  return (
-    showSidePanelMigrationToast &&
-    isSidePanel && (
-      <Toast
-        key="side-panel-migration-toast"
-        dataTestId="side-panel-migration-toast"
-        startAdornment={
-          <Icon name={IconName.Info} color={IconColor.iconDefault} />
-        }
-        text={t('sidePanelMigrationToast', [
-          <button
-            key="side-panel-migration-switch-back"
-            type="button"
-            onClick={handleSwitchBackToPopup}
-            className="inline h-auto min-h-0 cursor-pointer bg-transparent p-0 align-baseline text-inherit underline underline-offset-[0.25em]"
-          >
-            {t('switchBackToPopup')}
-          </button>,
-        ])}
-        borderRadius={BorderRadius.LG}
-        textVariant={TextVariant.bodyMd}
-        onClose={() => dismissSidePanelMigrationToast()}
-      />
-    )
-  );
+    toast({
+      severity: 'default',
+      'data-testid': 'side-panel-migration-toast',
+      startAccessory: (
+        <Icon name={IconName.Info} color={IconColor.iconDefault} />
+      ),
+      title: t('sidePanelMigrationToast', [
+        <button
+          key="side-panel-migration-switch-back"
+          type="button"
+          onClick={async () => {
+            try {
+              await dispatch(toggleDefaultView());
+            } finally {
+              dismissSidePanelMigrationToast();
+            }
+          }}
+          className="inline h-auto min-h-0 cursor-pointer bg-transparent p-0 align-baseline text-inherit underline underline-offset-[0.25em]"
+        >
+          {t('switchBackToPopup')}
+        </button>,
+      ]),
+      onClose: () => dismissSidePanelMigrationToast(),
+    });
+
+    return () => {
+      toast.dismiss();
+    };
+  }, [dispatch, isSidePanel, showSidePanelMigrationToast, t]);
+
+  return null;
 }

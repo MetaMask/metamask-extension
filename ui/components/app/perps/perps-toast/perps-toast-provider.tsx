@@ -1,14 +1,4 @@
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useMemo,
-  useRef,
-  useState,
-  type ReactNode,
-} from 'react';
-import { Box } from '@metamask/design-system-react';
-import { Toast } from '../../../multichain/toast';
+import { toast } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   type PerpsToastKey,
@@ -20,6 +10,16 @@ import {
   PERPS_TOAST_PRESENTATION_BY_VARIANT,
   type PerpsToastPresentation,
 } from './perps-toast.presentation';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react';
 
 export { PERPS_TOAST_KEYS } from './perps-toast.constants';
 export type { PerpsToastKey, PerpsToastVariant };
@@ -96,6 +96,18 @@ const getDefaultAutoHideTime = (
   return undefined;
 };
 
+const getToastSeverity = (variant: PerpsToastVariant) => {
+  if (variant === 'info') {
+    return 'default';
+  }
+
+  if (variant === 'error') {
+    return 'danger';
+  }
+
+  return 'success';
+};
+
 type PerpsToastProviderProps = {
   children: ReactNode;
 };
@@ -150,6 +162,40 @@ export const PerpsToastProvider = ({ children }: PerpsToastProviderProps) => {
     [t],
   );
 
+  useEffect(() => {
+    if (activeToast) {
+      let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+      if (activeToast.autoHideTime === undefined) {
+        timeoutId = undefined;
+      } else {
+        timeoutId = setTimeout(() => {
+          hidePerpsToast();
+        }, activeToast.autoHideTime);
+      }
+
+      toast({
+        severity: getToastSeverity(activeToast.presentation.variant),
+        title: activeToast.message,
+        description: activeToast.description,
+        startAccessory: getPerpsToastIcon(activeToast.presentation),
+        className: 'perps-toast',
+        'data-testid': activeToast.dataTestId ?? 'perps-toast',
+        hasNoTimeout: true,
+        onClose: hidePerpsToast,
+      });
+
+      return () => {
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
+        toast.dismiss();
+      };
+    }
+
+    return undefined;
+  }, [activeToast, hidePerpsToast]);
+
   const contextValue = useMemo<PerpsToastContextValue>(
     () => ({
       hidePerpsToast,
@@ -170,22 +216,6 @@ export const PerpsToastProvider = ({ children }: PerpsToastProviderProps) => {
   return (
     <PerpsToastContext.Provider value={contextValue}>
       {children}
-      {activeToast ? (
-        <Box className="toasts-container bottom-20 w-[calc(100%-32px)] max-w-[408px]">
-          <Toast
-            key={activeToast.id}
-            startAdornment={getPerpsToastIcon(activeToast.presentation)}
-            text={activeToast.message}
-            description={activeToast.description}
-            className="perps-toast"
-            contentProps={{ className: 'items-center' }}
-            autoHideTime={activeToast.autoHideTime}
-            onClose={hidePerpsToast}
-            onAutoHideToast={hidePerpsToast}
-            dataTestId={activeToast.dataTestId ?? 'perps-toast'}
-          />
-        </Box>
-      ) : null}
     </PerpsToastContext.Provider>
   );
 };
