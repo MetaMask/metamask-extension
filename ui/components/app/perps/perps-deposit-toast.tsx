@@ -53,7 +53,7 @@ export function PerpsDepositToast() {
 
     return () => {
       clearTimeout(timeoutId);
-      toast.dismiss();
+      toast.dismiss(id);
     };
   }, [
     hasDepositResult,
@@ -69,12 +69,12 @@ export function PerpsDepositToast() {
     }
 
     if (!shouldShowDepositToast) {
-      toast.dismiss();
+      toast.dismiss(id);
       return;
     }
 
     if (!depositInProgress) {
-      toast.dismiss();
+      toast.dismiss(id);
       return;
     }
 
@@ -87,7 +87,7 @@ export function PerpsDepositToast() {
     });
 
     return () => {
-      toast.dismiss();
+      toast.dismiss(id);
     };
   }, [depositInProgress, hasDepositResult, shouldShowDepositToast, t]);
 
