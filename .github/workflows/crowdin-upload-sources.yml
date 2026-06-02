@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   upload-sources:
     runs-on: ubuntu-latest
@@ -15,6 +18,7 @@ jobs:
         with:
           # Use PAT to ensure that the commit later can trigger status check workflows
           token: ${{ secrets.METAMASKBOT_CROWDIN_TOKEN }}
+          persist-credentials: false
 
       - name: crowdin upload sources
         uses: crowdin/github-action@a3160b9e5a9e00739392c23da5e580c6cabe526d

@@ -8,6 +8,11 @@ concurrency:
   group: update-lavamoat-policies-${{ github.event.issue.number }}
   cancel-in-progress: true
 
+# Push + PR ops use LAVAMOAT_UPDATE_TOKEN (PAT); GITHUB_TOKEN only
+# needs read access.
+permissions:
+  contents: read
+
 jobs:
   prepare:
     name: Prepare
@@ -121,6 +126,9 @@ jobs:
     steps:
       - name: Checkout repository
         if: ${{ env.VALIDATION_FAILED == 'true' }}
+        # zizmor: ignore[artipacked]
+        # Credentials are persisted on purpose: this job pushes the
+        # updated LavaMoat policies. No artifacts are uploaded.
         uses: actions/checkout@v6
         with:
           token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}

@@ -23,8 +23,9 @@ jobs:
         id: exchange
         env:
           OIDC_TOKEN: ${{ steps.oidc.outputs.oidc_token }}
+          VARS_TOKEN_EXCHANGE_URL: ${{ vars.TOKEN_EXCHANGE_URL }}
         run: |
-          RESPONSE=$(curl -sSf -X POST "${{ vars.TOKEN_EXCHANGE_URL }}/api/exchange/token" \
+          RESPONSE=$(curl -sSf -X POST "${VARS_TOKEN_EXCHANGE_URL}/api/exchange/token" \
             -H "Content-Type: application/json" \
             -d "$(jq -cn \
               --arg oidcToken "$OIDC_TOKEN" \
@@ -37,6 +38,9 @@ jobs:
       - name: Dispatch to triage-agent
         env:
           TOKEN: ${{ steps.exchange.outputs.token }}
+          GITHUB_EVENT_REPOSITORY_NAME: ${{ github.event.repository.name }}
+          GITHUB_EVENT_ACTION: ${{ github.event.action }}
+          GITHUB_EVENT_LABEL_NAME: ${{ github.event.label.name }}
         run: |
           curl -sSf -X POST \
             -H "Authorization: token $TOKEN" \
@@ -44,8 +48,8 @@ jobs:
             "https://api.github.com/repos/MetaMask/triage-agent/dispatches" \
             -d "$(jq -cn \
               --arg owner "${{ github.repository_owner }}" \
-              --arg name "${{ github.event.repository.name }}" \
+              --arg name "${GITHUB_EVENT_REPOSITORY_NAME}" \
               --arg number "${{ github.event.issue.number }}" \
-              --arg action "${{ github.event.action }}" \
-              --arg label "${{ github.event.label.name }}" \
+              --arg action "${GITHUB_EVENT_ACTION}" \
+              --arg label "${GITHUB_EVENT_LABEL_NAME}" \
               '{event_type: "triage-issue", client_payload: {repo_owner: $owner, repo_name: $name, issue_number: $number, event_action: $action, event_label_name: $label, trigger_mode: "label"}}')"

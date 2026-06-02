@@ -12,6 +12,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ !(contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/stable')) }}
 
+permissions:
+  contents: read
+
 jobs:
   identify-codeowners:
     # Avoid running on cross-repo PRs since we need to write a PR comment
@@ -34,6 +37,7 @@ jobs:
             .github
             .nvmrc
           sparse-checkout-cone-mode: false
+          persist-credentials: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v6

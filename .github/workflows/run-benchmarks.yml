@@ -230,6 +230,7 @@ jobs:
             test/e2e/benchmarks/utils/thresholds.ts
             test/e2e/benchmarks/utils/statistics.ts
           sparse-checkout-cone-mode: false
+          persist-credentials: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -305,6 +306,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - name: Download all performance benchmark artifacts
         id: download-perf-benchmark

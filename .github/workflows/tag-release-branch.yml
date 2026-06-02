@@ -58,6 +58,9 @@ jobs:
           echo "Using version: ${VERSION}"
 
       - name: Checkout release branch
+        # zizmor: ignore[artipacked]
+        # Credentials are persisted on purpose: subsequent steps push
+        # version tags. No artifacts are uploaded.
         uses: actions/checkout@v6
         with:
           ref: ${{ steps.determine-branch.outputs.branch }}

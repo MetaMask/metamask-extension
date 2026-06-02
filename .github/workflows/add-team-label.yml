@@ -5,6 +5,10 @@ on:
     types:
       - opened
 
+# Labelling uses TEAM_LABEL_TOKEN (PAT); GITHUB_TOKEN only needs read.
+permissions:
+  contents: read
+
 jobs:
   add-team-label:
     name: Add team label

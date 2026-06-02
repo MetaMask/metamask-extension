@@ -50,6 +50,9 @@ jobs:
     name: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format(' ({0})', inputs.matrix-index) || '' }}
     runs-on: ubuntu-latest
     timeout-minutes: 40
+    permissions:
+      contents: read
+      actions: read # required for download-artifact with run-id (cross-run)
     env:
       SELENIUM_HEADLESS: true
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -107,8 +110,10 @@ jobs:
           run-id: ${{ inputs.builds-from-run }} # Download from the run that produced the builds.
 
       # if there is a build-command and there is no build artifact, or the specified artifact does not exist, we run the build command
-      - run: ${{ inputs.build-command }}
-        if: ${{ inputs.build-command != '' && (inputs.build-artifact == '' || steps.download-build-artifact.outcome == 'failure') }}
+      - if: ${{ inputs.build-command != '' && (inputs.build-artifact == '' || steps.download-build-artifact.outcome == 'failure') }}
+        env:
+          BUILD_COMMAND: ${{ inputs.build-command }}
+        run: $BUILD_COMMAND
 
       - name: Download changed-files artifact
         if: ${{ env.BRANCH != 'main' }}
@@ -142,12 +147,13 @@ jobs:
 
       - name: Run E2E tests
         timeout-minutes: ${{ inputs.test-timeout-minutes }}
-        run: ${{ inputs.test-command }} --retries 1
         env:
+          TEST_COMMAND: ${{ inputs.test-command }}
           # The properties are picked up by mocha-junit-reporter and added to the XML test results
           PROPERTIES: 'JOB_NAME:${{ env.JOB_NAME }},RUN_ID:${{ env.RUN_ID }},PR_NUMBER:${{ env.PR_NUMBER }}'
           # On re-run, pass the path to previous results to run only failed tests
           PREVIOUS_RESULTS_PATH: ${{ steps.download-previous-results.outcome == 'success' && './previous-test-results/test/test-results/e2e' || '' }}
+        run: $TEST_COMMAND --retries 1
 
       # Merge previous test results with current results to preserve pass/fail history across re-runs.
       # Without this, tests that passed in attempt N but were skipped in attempt N+1 would have no

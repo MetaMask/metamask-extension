@@ -26,6 +26,9 @@ jobs:
     if: ${{ inputs.builds-from-run == github.run_id }} # Only run if builds are from the current run
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      contents: read
+      id-token: write # required for OIDC auth in S3 uploads
     env:
       # Build parameter
       ENABLE_MV3: ${{ !contains(inputs.build-name, 'mv2') }}
@@ -107,7 +110,10 @@ jobs:
         run: yarn webpack:tsc
 
       - name: Run build
-        run: ${{ inputs.build-command }}${{ inputs.bundle-analyzer && ' --bundleAnalyzer' || '' }}
+        env:
+          BUILD_COMMAND: ${{ inputs.build-command }}
+          BUNDLE_ANALYZER_FLAG: ${{ inputs.bundle-analyzer && ' --bundleAnalyzer' || '' }}
+        run: $BUILD_COMMAND$BUNDLE_ANALYZER_FLAG
 
       - name: Validate source maps
         run: ${{ contains(inputs.build-name, 'webpack') && 'yarn validate-source-maps:webpack' || 'yarn validate-source-maps' }}

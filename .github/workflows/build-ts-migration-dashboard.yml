@@ -6,6 +6,9 @@ on:
       TS_MIGRATION_DASHBOARD_TOKEN:
         required: true
 
+permissions:
+  contents: read
+
 jobs:
   build-ts-migration-dashboard:
     runs-on: ubuntu-latest

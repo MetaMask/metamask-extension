@@ -5,6 +5,9 @@ on:
       - main
     types: [opened, edited, reopened, synchronize]
 
+permissions:
+  contents: read
+
 jobs:
   pr-title-linter:
     runs-on: ubuntu-latest

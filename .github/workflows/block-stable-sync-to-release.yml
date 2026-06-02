@@ -6,6 +6,9 @@ on:
     branches:
       - 'release/*'
 
+permissions:
+  contents: read
+
 jobs:
   check-branch:
     name: Block stable-sync-* to release/*

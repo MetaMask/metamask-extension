@@ -20,6 +20,9 @@ env:
   APPLE_FLASK_CLIENT_ID: 00000000000
   TELEGRAM_FLASK_CLIENT_ID: 00000000000
 
+permissions:
+  contents: read
+
 jobs:
   validate-lavamoat-policy-build:
     name: Validate LavaMoat build policy

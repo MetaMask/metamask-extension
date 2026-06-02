@@ -20,6 +20,10 @@ jobs:
     steps:
       # We don't want to use action-checkout-and-setup here because it forces `yarn --immutable`
       - name: Checkout code
+        # zizmor: ignore[artipacked]
+        # Credentials are persisted on purpose: the job runs `git push` at
+        # the end. No artifacts are uploaded from this job, so the
+        # persisted PAT cannot leak.
         uses: actions/checkout@v6
         with:
           # Use PAT to ensure that the commit later can trigger status check workflows

@@ -20,6 +20,9 @@ on:
       INFURA_PROJECT_ID:
         required: false
 
+permissions:
+  contents: read
+
 jobs:
   test-e2e-chrome-browserify:
     uses: ./.github/workflows/run-e2e.yml

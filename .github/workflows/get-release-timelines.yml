@@ -8,6 +8,9 @@ on:
         type: string
         description: The version of the release
 
+permissions:
+  contents: read
+
 jobs:
   get-release-timelines:
     name: Get release timelines
