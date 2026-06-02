@@ -90,20 +90,6 @@ export function suppressDevServerInfoLogs(compiler: Compiler): void {
 }
 
 /**
- * Writes a line after clearing webpack's active progress status.
- *
- * @param compiler - The webpack compiler.
- * @param message - The message to write.
- */
-export function writeLineAfterProgress(
-  compiler: Compiler,
-  message: string,
-): void {
-  compiler.getInfrastructureLogger('webpack.Progress').status();
-  console.error(message);
-}
-
-/**
  * Logs watch-mode build stats and writes a line once the build is ready for
  * more changes.
  *

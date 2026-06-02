@@ -228,28 +228,6 @@ describe('./utils/helpers.ts', () => {
     });
   });
 
-  describe('writeLineAfterProgress', () => {
-    it('clears the active progress status before writing the message', () => {
-      const calls: string[] = [];
-      const status = mock.fn(() => calls.push('status'));
-      const getInfrastructureLogger = mock.fn(() => ({ status }));
-      const compiler = {
-        getInfrastructureLogger,
-      } as unknown as Compiler;
-      mock.method(console, 'error', (message: string) => {
-        calls.push(`error:${message}`);
-      });
-
-      helpers.writeLineAfterProgress(compiler, 'test message');
-
-      assert.deepStrictEqual(getInfrastructureLogger.mock.calls[0].arguments, [
-        'webpack.Progress',
-      ]);
-      assert.strictEqual(status.mock.callCount(), 1);
-      assert.deepStrictEqual(calls, ['status', 'error:test message']);
-    });
-  });
-
   describe('logWatchBuildStats', () => {
     it('logs stats and the watch message after each completed build', () => {
       const calls: unknown[] = [];
