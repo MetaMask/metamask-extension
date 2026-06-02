@@ -159,8 +159,8 @@ const privateHostMatchers = [
  * @param {(server: Mockttp) => Promise<MockedEndpoint[]>} testSpecificMock - A function for setting up test-specific network mocks
  * @param {object} options - Network mock options.
  * @param {string} options.chainId - The chain ID used by the default configured network.
- * @param {string} options.ethConversionInUsd - The USD conversion rate for ETH. Defaults to 3010.
- * @param {object | undefined} [options.unifiedEvmAccountsApiBalances] - Overrides default Accounts API v5 balances (assets-unify-state). See UnifiedEvmAccountsApiBalances typedef in helpers.js.
+ * @param {string} options.ethConversionInUsd - The USD conversion rate for ETH. Defaults to 3010 when ASSETS_UNIFIED_STATE_ENABLED=true, otherwise 1700.
+ * @param {object | undefined} [options.unifiedEvmAccountsApiBalances] - Overrides default Accounts API v5 balances (assets-unify-state).
  * @returns {Promise<SetupMockReturn>}
  */
 async function setupMocking(
@@ -168,7 +168,9 @@ async function setupMocking(
   testSpecificMock,
   {
     chainId,
-    ethConversionInUsd = 3010,
+    ethConversionInUsd = process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true'
+      ? 3010
+      : 1700,
     unifiedEvmAccountsApiBalances = {},
   } = {},
 ) {
@@ -207,6 +209,9 @@ async function setupMocking(
   function clearNetworkReport() {
     numNetworkReqs = 0;
   }
+
+  const mockedEndpoint = await testSpecificMock(server);
+  // Mocks below this line can be overridden by test-specific mocks
 
   // Snaps execution ACL registry
   await setupSnapRegistryMocks(server);
@@ -968,27 +973,6 @@ async function setupMocking(
       };
     });
 
-  // Localhost (chain 1337) native ETH — slip44:1 per nativeAssetIdentifiers in fixtures.
-  // assets-unify requests this with cacheOnly=false; extra query params are allowed by mockttp.
-  await server
-    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
-    .withQuery({
-      assetIds: 'eip155:1337/slip44:1',
-      vsCurrency: 'usd',
-      includeMarketData: 'true',
-    })
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        'eip155:1337/slip44:1': {
-          id: 'ethereum',
-          price: ethConversionInUsd,
-          marketCap: 382623505141,
-          pricePercentChange1d: 0,
-        },
-      },
-    }));
-
   // Native SOL + BTC v3 spot (multichain portfolio / assets unify). Without these,
   // Tron-only or default E2E flows still request these URLs but only ETH was mocked above.
   await server
@@ -1334,71 +1318,26 @@ async function setupMocking(
       return { statusCode: 200, json: results };
     });
 
-  // Tokens API: v2 supported networks — mocked globally so all tests work.
-  await server
-    .forGet('https://tokens.api.cx.metamask.io/v2/supportedNetworks')
-    .always()
-    .thenJson(200, {
-      fullSupport: [
-        'eip155:1',
-        'eip155:10',
-        'eip155:25',
-        'eip155:56',
-        'eip155:100',
-        'eip155:137',
-        'eip155:143',
-        'eip155:250',
-        'eip155:324',
-        'eip155:1101',
-        'eip155:1284',
-        'eip155:1285',
-        'eip155:1329',
-        'eip155:8453',
-        'eip155:42161',
-        'eip155:42220',
-        'eip155:43114',
-        'eip155:59144',
-        'eip155:1313161554',
-        'eip155:1666600000',
-        'eip155:11297108109',
-        'eip155:13371',
-        'eip155:534352',
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-        'tron:728126428',
-        'stellar:pubnet',
-        'eip155:698',
-        'eip155:16507',
-        'eip155:41923',
-        'eip155:747474',
-        'eip155:80094',
-        'eip155:33139',
-        'eip155:2741',
-        'eip155:1868',
-        'eip155:166',
-        'eip155:1440000',
-        'eip155:252',
-        'eip155:43111',
-        'eip155:50',
-        'eip155:42',
-        'eip155:9745',
-        'eip155:999',
-        'eip155:1776',
-        'eip155:4326',
-        'eip155:196',
-        'eip155:68414',
-        'eip155:42793',
-        'eip155:60808',
-        'eip155:30',
-        'bip122:000000000019d6689c085ae165831e93',
-        'eip155:88888',
-        'eip155:988',
-        'eip155:42431',
-        'eip155:4217',
-        'eip155:5000',
-        'eip155:1337',
-      ],
-      partialSupport: ['solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1'],
-    });
+  // Tokens API (assets-unify-state): v2 supported networks required alongside
+  // Accounts API v5 so EVM balances load. Only needed when unified state is enabled.
+  if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true') {
+    await server
+      .forGet('https://tokens.api.cx.metamask.io/v2/supportedNetworks')
+      .always()
+      .thenJson(200, {
+        fullSupport: [
+          'eip155:1',
+          'eip155:59144',
+          'eip155:42161',
+          'eip155:8453',
+          'eip155:10',
+          'eip155:137',
+          'eip155:56',
+          'eip155:1337',
+        ],
+        partialSupport: [],
+      });
+  } // end ASSETS_UNIFIED_STATE_ENABLED === 'true'
 
   // Accounts API: v2 supported networks (used by AccountsApiDataSource when assetsUnifyState is enabled)
   await server
@@ -1431,11 +1370,6 @@ async function setupMocking(
         typeof unifiedEvmAccountsApiBalances.mainnetNativeEthHuman === 'string'
           ? unifiedEvmAccountsApiBalances.mainnetNativeEthHuman
           : null;
-      const localhostNativeOverride =
-        typeof unifiedEvmAccountsApiBalances.localhostNativeEthHuman ===
-        'string'
-          ? unifiedEvmAccountsApiBalances.localhostNativeEthHuman
-          : null;
       const defaultNativeOverride =
         typeof unifiedEvmAccountsApiBalances.nativeBalance === 'string'
           ? unifiedEvmAccountsApiBalances.nativeBalance
@@ -1456,8 +1390,6 @@ async function setupMocking(
         let nativeBalance = '25';
         if (chainRef === '1' && mainnetNativeOverride !== null) {
           nativeBalance = mainnetNativeOverride;
-        } else if (chainRef === '1337' && localhostNativeOverride !== null) {
-          nativeBalance = localhostNativeOverride;
         } else if (defaultNativeOverride !== null) {
           nativeBalance = defaultNativeOverride;
         }
@@ -1481,69 +1413,6 @@ async function setupMocking(
             }
           }
         }
-      }
-
-      return {
-        statusCode: 200,
-        json: {
-          count: balances.length,
-          balances,
-          unprocessedNetworks: [],
-        },
-      };
-    });
-
-  // Accounts API: v4 multi-account balances (TokenBalancesController account API path).
-  // Same default balance shape as v5; query param is accountAddresses instead of accountIds.
-  await server
-    .forGet('https://accounts.api.cx.metamask.io/v4/multiaccount/balances')
-    .always()
-    .thenCallback((req) => {
-      const url = new URL(req.url);
-      const accountAddressesParam =
-        url.searchParams.get('accountAddresses') ?? '';
-      const accountAddresses = accountAddressesParam
-        ? accountAddressesParam.split(',')
-        : [];
-
-      const mainnetNativeOverride =
-        typeof unifiedEvmAccountsApiBalances.mainnetNativeEthHuman === 'string'
-          ? unifiedEvmAccountsApiBalances.mainnetNativeEthHuman
-          : null;
-      const localhostNativeOverride =
-        typeof unifiedEvmAccountsApiBalances.localhostNativeEthHuman ===
-        'string'
-          ? unifiedEvmAccountsApiBalances.localhostNativeEthHuman
-          : null;
-      const defaultNativeOverride =
-        typeof unifiedEvmAccountsApiBalances.nativeBalance === 'string'
-          ? unifiedEvmAccountsApiBalances.nativeBalance
-          : null;
-
-      const balances = [];
-      for (const accountAddress of accountAddresses) {
-        if (
-          !accountAddress.toLowerCase().includes(DEFAULT_FIXTURE_ACCOUNT_LOWERCASE)
-        ) {
-          continue;
-        }
-        const parts = accountAddress.split(':');
-        const chainRef = parts[1];
-        let nativeBalance = '25';
-        if (chainRef === '1' && mainnetNativeOverride !== null) {
-          nativeBalance = mainnetNativeOverride;
-        } else if (chainRef === '1337' && localhostNativeOverride !== null) {
-          nativeBalance = localhostNativeOverride;
-        } else if (defaultNativeOverride !== null) {
-          nativeBalance = defaultNativeOverride;
-        }
-
-        const slip44 = chainRef === '1337' ? '1' : '60';
-        balances.push({
-          accountAddress,
-          assetId: `eip155:${chainRef}/slip44:${slip44}`,
-          balance: nativeBalance,
-        });
       }
 
       return {
@@ -2029,9 +1898,6 @@ async function setupMocking(
       privacyReport.add(request.headers.host);
     }
   });
-
-  // Test-specific mocks are registered last so they override defaults above.
-  const mockedEndpoint = await testSpecificMock(server);
 
   return {
     mockedEndpoint,
