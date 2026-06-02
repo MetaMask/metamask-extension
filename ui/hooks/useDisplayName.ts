@@ -17,6 +17,7 @@ import {
   getAccountTree,
 } from '../selectors/multichain-accounts/account-tree';
 import { buildEvmCaip19AssetId } from '../../shared/lib/multichain/buildEvmCaip19AssetId';
+import { getAssetImageUrl } from '../../shared/lib/asset-utils';
 import { useNames } from './useName';
 import { TrustSignalDisplayState, useTrustSignals } from './useTrustSignals';
 import { useTokensData } from './useTokensData';
@@ -146,7 +147,16 @@ function useERC20Tokens(
       const name =
         preferContractSymbol && token?.symbol ? token.symbol : token?.name;
 
-      return { name, image: token?.iconUrl };
+      // The token API omits `iconUrl` for some recognized tokens (e.g. mUSD)
+      // even though the canonical icon exists, so derive it from the address.
+      const image =
+        token &&
+        (token.iconUrl ||
+          (isStrictHexString(variation)
+            ? getAssetImageUrl(value as Hex, variation as Hex)
+            : undefined));
+
+      return { name, image: image || undefined };
     },
   );
 }
