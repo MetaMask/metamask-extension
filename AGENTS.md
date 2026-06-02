@@ -34,18 +34,18 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
     should contain instructions for how to _manually_ test the changes. It must not
     list steps for automated testing.**
 
-- Good Instructions:
-  - Run extension
-  - Go to homepage, asset list
-  - Use Mainnet or Linea as the selected/enabled network.
-  - Verify mUSD is visible even with 0 balance.
-  - Enable "Hide zero-balance tokens".
-  - Verify mUSD is still visible.
-  - Ensure token sort is declining balance and low-value assets are collapsed.
-  - Verify mUSD is not hidden inside the low-value collapsed section.
-- Bad Instructions:
-  - `yarn lint:changed:fix`
-  - `yarn test:unit shared/lib/deep-links/metrics.test.ts shared/lib/deep-links/utils.test.ts ui/pages/onboarding-flow/creation-successful/creation-successful.test.tsx`
+    - Good Instructions:
+      - Run extension
+      - Go to homepage, asset list
+      - Use Mainnet or Linea as the selected/enabled network.
+      - Verify mUSD is visible even with 0 balance.
+      - Enable "Hide zero-balance tokens".
+      - Verify mUSD is still visible.
+      - Ensure token sort is declining balance and low-value assets are collapsed.
+      - Verify mUSD is not hidden inside the low-value collapsed section.
+    - Bad Instructions:
+      - `yarn lint:changed:fix`
+      - `yarn test:unit shared/lib/deep-links/metrics.test.ts shared/lib/deep-links/utils.test.ts ui/pages/onboarding-flow/creation-successful/creation-successful.test.tsx`
 
 16. **BEFORE modifying any `.github/workflows/` file**, read `.github/AGENTS.md` for CI-specific rules (consolidation patterns, required job wiring, merge queue considerations)
 
