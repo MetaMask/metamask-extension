@@ -1,4 +1,4 @@
-import React, { useContext, useCallback } from 'react';
+import React, { useContext, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import classnames from 'clsx';
@@ -56,6 +56,7 @@ import { selectAccountGroupBalanceForEmptyState } from '../../../selectors/asset
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
+import { useAccountGroupBalanceDisplay } from '../assets/account-group-balance-change/useAccountGroupBalanceDisplay';
 
 export type CoinOverviewProps = {
   account: InternalAccount;
@@ -208,18 +209,37 @@ export const CoinOverview = ({
 
   useRewardsModal();
 
+  // Selected account group balance + Balance related dependency (networks availability) for empty
+  // state check.
+  // (Similar checks than `AccountGroupBalanceChange`).
+  const period = '1d';
+  const { amountChange } = useAccountGroupBalanceDisplay(period);
+  const anyEnabledNetworksAreAvailable = useSelector(
+    selectAnyEnabledNetworksAreAvailable,
+  );
+  // We re-use the exact same logic than for  `AccountGroupBalanceChange` for the skeleton loading.
+  // UX-wise, we want to show the skeleton AND then show the empty state only if there is really no
+  // balance and not just because the balance is loading.
+  const balanceIsLoading = useMemo(
+    () => !anyEnabledNetworksAreAvailable && isZeroAmount(amountChange),
+    [anyEnabledNetworksAreAvailable, amountChange],
+  );
+
   // Only show empty state when Receive can act (selectedAccountGroup exists);
   // otherwise the Receive button would be a no-op.
   const shouldShowBalanceEmptyState =
     Boolean(selectedAccountGroup) &&
     !isTestnet &&
     !balanceIsCached &&
-    !hasBalance;
+    !hasBalance &&
+    !balanceIsLoading;
 
-  // Debounce the empty state to give the balance a chance to load before
-  // showing it, preventing a flash of the empty state on initial render.
-  // NOTE: Today, there is no real way to determine that the balances are
-  // loading, so we are relying on the heuristic for now.
+  // To prevent a flash of the empty state on initial render, we debounce this
+  // value since there is no reliable way to determine that the balance is loading
+  // (either for EVM or non-EVMs).
+  // NOTE: The initial render will always show a balance skeleton loading, so this
+  // will always be false on the first render and then update after the debounce
+  // delay if the balance is really empty.
   const debouncedShouldShowBalanceEmptyState = useDebouncedValue(
     shouldShowBalanceEmptyState,
     DEBOUNCED_SHOW_BALANCE_EMPTY_STATE_MS,
@@ -288,7 +308,7 @@ export const CoinOverview = ({
     return (
       <Box className="wallet-overview__currency-wrapper">
         <AccountGroupBalanceChange
-          period="1d"
+          period={period}
           trailingChild={renderPercentageAndAmountChangeTrail}
         />
       </Box>
