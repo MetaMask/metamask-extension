@@ -530,9 +530,7 @@ export async function mockSmartTransactionRequests(mockServer: MockttpServer) {
 
   await mockServer
       .forPost(
-        new RegExp(
-          `${TX_SENTINEL_URL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/v1/networks/1/submitTransactions`,
-        ),
+        `${TX_SENTINEL_URL}/v1/networks/1/submitTransactions`,
       )
       .once()
       .thenCallback(() => {
@@ -577,9 +575,7 @@ export async function mockChooseGasFeeTokenRequests(mockServer: MockttpServer) {
 
   await mockServer
       .forPost(
-        new RegExp(
-          `${TX_SENTINEL_URL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/v1/networks/1/submitTransactions`,
-        ),
+        `${TX_SENTINEL_URL}/v1/networks/1/submitTransactions`,
       )
       .once()
       .thenCallback(() => {
@@ -729,9 +725,7 @@ export async function mockGasIncludedTransactionRequests(
 
   await mockServer
       .forPost(
-        new RegExp(
-          `${TX_SENTINEL_URL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/v1/networks/1/submitTransactions`,
-        ),
+        `${TX_SENTINEL_URL}/v1/networks/1/submitTransactions`,
       )
       .once()
       .thenCallback(() => {
@@ -766,9 +760,7 @@ export async function mockSmartTransactionBatchRequests(
 
   await mockServer
       .forPost(
-        new RegExp(
-          `${TX_SENTINEL_URL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/v1/networks/1/submitTransactions`,
-        ),
+        `${TX_SENTINEL_URL}/v1/networks/1/submitTransactions`,
       )
       .once()
       .thenCallback(() => {
