@@ -1,5 +1,3 @@
-import { strict as assert } from 'assert';
-import { By } from 'selenium-webdriver';
 import { Mockttp } from 'mockttp';
 import { regularDelayMs, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
@@ -8,7 +6,6 @@ import FixtureBuilder from '../../fixtures/fixture-builder-v2';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import Homepage from '../../page-objects/pages/home/homepage';
 import AccountListPage from '../../page-objects/pages/account-list-page';
-import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import {
   mockExchangeRates,
   mockInitialFullScan,
@@ -37,8 +34,6 @@ import {
   mockPriceMultiBtcAndSol,
 } from '../../tests/btc/mocks/min-api';
 
-export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
-
 export const account1Short = `${DEFAULT_BTC_ADDRESS.slice(0, 4)}...${DEFAULT_BTC_ADDRESS.slice(-4)}`;
 export const account2Short = `${SECONDARY_BTC_ADDRESS.slice(0, 4)}...${SECONDARY_BTC_ADDRESS.slice(-4)}`;
 export const txHashShort = `f632...2f78`;
@@ -56,9 +51,6 @@ export const SIGNED_MESSAGES_MOCK: Record<WalletConnectionType, string> = {
   [WalletConnectionType.SatsConnectV4]: '',
 };
 
-/**
- * Default options for setting up Bitcoin E2E test environment
- */
 export const DEFAULT_BITCOIN_TEST_DAPP_FIXTURE_OPTIONS = {
   dappOptions: {
     customDappPaths: [DAPP_PATH.TEST_DAPP_BITCOIN],
@@ -159,85 +151,6 @@ export async function withBtcWalletStandardSnap(
   );
 }
 
-/**
- * Waits for the Confirm button in the footer of a Bitcoin-specific modal to be clickable then clicks it.
- * Note: This function does not work for general purpose modals like connect/disconnect.
- *
- * @param driver
- */
 export const clickConfirmButton = async (driver: Driver): Promise<void> => {
   await driver.clickElement({ text: 'Approve' });
-};
-
-/**
- * Clicks the Cancel button in the footer in a Bitcoin-specific modal.
- * Note: This function does not work for general purpose modals like connect/disconnect.
- *
- * @param driver
- */
-export const clickCancelButton = async (driver: Driver): Promise<void> => {
-  const footerButtons = await driver.findClickableElements(
-    By.css('button.snap-ui-renderer__footer-button'),
-  );
-  const cancelButton = footerButtons[0];
-  await cancelButton.click();
-};
-
-/**
- * Switches to the specified account in the account menu.
- *
- * @param driver
- * @param accountName
- */
-export const switchToAccount = async (
-  driver: Driver,
-  accountName: string,
-): Promise<void> => {
-  const nonEvmHomepage = new NonEvmHomepage(driver);
-  await nonEvmHomepage.checkPageIsLoaded();
-  await nonEvmHomepage.headerNavbar.openAccountMenu();
-
-  const accountListPage = new AccountListPage(driver);
-  await accountListPage.checkPageIsLoaded();
-  await accountListPage.checkAccountDisplayedInAccountList(accountName);
-  await accountListPage.switchToAccount(accountName);
-  await nonEvmHomepage.headerNavbar.checkAccountLabel(accountName);
-  await nonEvmHomepage.checkPageIsLoaded();
-};
-
-enum ConnectionStatus {
-  Connected = 'Connected',
-  NotConnected = 'Not connected',
-}
-
-/**
- * Asserts that the connection status is as expected.
- *
- * @param connectionStatus
- * @param expectedAddress
- */
-export const assertConnected = (
-  connectionStatus: string,
-  expectedAddress?: string,
-): void => {
-  assert.strictEqual(
-    connectionStatus,
-    expectedAddress ? `${expectedAddress}` : ConnectionStatus.Connected,
-    `Connection status should be ${
-      expectedAddress ? `"${expectedAddress}"` : ConnectionStatus.Connected
-    }`,
-  );
-};
-
-/**
- * Asserts that the connection status is "Not connected".
- *
- * @param connectionStatus
- */
-export const assertDisconnected = (connectionStatus: string): void => {
-  assert.strictEqual(
-    connectionStatus,
-    ConnectionStatus.NotConnected,
-    `Connection status should be "${ConnectionStatus.NotConnected}"`,
-  );
 };

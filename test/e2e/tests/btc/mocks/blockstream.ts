@@ -1,27 +1,63 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { Mockttp } from 'mockttp';
 import { DEFAULT_BTC_ADDRESS, SATS_IN_1_BTC } from '../../../constants';
 
 const BLOCKSTREAM_URL = 'https://blockstream.info';
+const TX_ID =
+  '9f0c516666f127a5bd10fbdab377c5aa2f9f70dbc0b90e496b80f77790db8995';
+const TX_HEX =
+  '020000000001011172d24279306b1d47f1effaac95e6cad8217efa83c7883903f05c40c395a28d0d00000000fdffffff029e08000000000000160014469d76e8387e11cbe9010c72ee4b748dd9152fa50581200000000000225120ed129ee08e1badadbb4fe75f3847213479dd6b9ad2106259d5520891d97f681001407ba91bc9b9c2687255fa2d8eefd11b2863bae3deeb68e53fd48dc68ca6053e0b5eeb74d3caeeb13b6e4c163e836b28ec1927a2a0672e0f55b858609314d2a68500000000';
+const UTXO_RESPONSE = [
+  {
+    txid: TX_ID,
+    vout: 1,
+    status: {
+      confirmed: true,
+      block_height: 927990,
+      block_hash:
+        '000000000000000000001ca2359aac12b5b5e4830bb7725fdfe9c9c440efca8d',
+      block_time: 1765815599,
+    },
+    value: SATS_IN_1_BTC,
+  },
+];
+const feeEstimatesResponse = Object.fromEntries([
+  [10, 0.997],
+  [4, 10.17],
+  [22, 0.997],
+  [3, 10.17],
+  [19, 0.997],
+  [21, 0.997],
+  [20, 0.997],
+  [17, 0.997],
+  [12, 0.997],
+  [6, 10.17],
+  [5, 10.17],
+  [16, 0.997],
+  [24, 0.997],
+  [25, 0.997],
+  [18, 0.997],
+  [144, 0.997],
+  [1008, 0.996],
+  [9, 0.997],
+  [13, 0.997],
+  [14, 0.997],
+  [11, 0.997],
+  [15, 0.997],
+  [23, 0.997],
+  [504, 0.997],
+  [1, 10.17],
+  [2, 10.17],
+  [7, 0.997],
+  [8, 0.997],
+]);
 
 export const mockGetUtxos = (mockServer: Mockttp) =>
   mockServer
     .forGet(
       `${BLOCKSTREAM_URL}/testnet/api/address/${DEFAULT_BTC_ADDRESS}/utxo`,
     )
-    .thenJson(200, [
-      {
-        txid: '9f0c516666f127a5bd10fbdab377c5aa2f9f70dbc0b90e496b80f77790db8995',
-        vout: 1,
-        status: {
-          confirmed: true,
-          block_height: 927990,
-          block_hash:
-            '000000000000000000001ca2359aac12b5b5e4830bb7725fdfe9c9c440efca8d',
-          block_time: 1765815599,
-        },
-        value: SATS_IN_1_BTC,
-      },
-    ]);
+    .thenJson(200, UTXO_RESPONSE);
 
 export const mockGetBlocks = (mockServer: Mockttp) =>
   mockServer.forGet(`${BLOCKSTREAM_URL}/api/blocks`).thenJson(200, [
@@ -53,13 +89,6 @@ export const mockFeeEstimatesMainnet = (mockServer: Mockttp) =>
   mockServer
     .forGet(`${BLOCKSTREAM_URL}/api/fee-estimates`)
     .thenJson(200, feeEstimatesResponse);
-
-export const mockScripthashTxs2 = (mockServer: Mockttp) =>
-  mockServer
-    .forGet(
-      `${BLOCKSTREAM_URL}/api/scripthash/538c172f4f5ff9c24693359c4cdc8ee4666565326a789d5e4b2df1db7acb4721/txs`,
-    )
-    .thenJson(200, txsResponse);
 
 export const mockScripthashTxs = (mockServer: Mockttp) =>
   mockServer
@@ -97,75 +126,21 @@ export const mockGetUtxosMainnet = (mockServer: Mockttp) =>
     .forGet(
       `${BLOCKSTREAM_URL}/api/address/bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252/utxo`,
     )
-    .thenJson(200, [
-      {
-        txid: '9f0c516666f127a5bd10fbdab377c5aa2f9f70dbc0b90e496b80f77790db8995',
-        vout: 1,
-        status: {
-          confirmed: true,
-          block_height: 927990,
-          block_hash:
-            '000000000000000000001ca2359aac12b5b5e4830bb7725fdfe9c9c440efca8d',
-          block_time: 1765815599,
-        },
-        value: SATS_IN_1_BTC,
-      },
-    ]);
+    .thenJson(200, UTXO_RESPONSE);
 
 export const mockGetTxHex = (mockServer: Mockttp) =>
   mockServer
-    .forGet(
-      `${BLOCKSTREAM_URL}/testnet/api/tx/9f0c516666f127a5bd10fbdab377c5aa2f9f70dbc0b90e496b80f77790db8995/hex`,
-    )
-    .thenReply(
-      200,
-      '020000000001011172d24279306b1d47f1effaac95e6cad8217efa83c7883903f05c40c395a28d0d00000000fdffffff029e08000000000000160014469d76e8387e11cbe9010c72ee4b748dd9152fa50581200000000000225120ed129ee08e1badadbb4fe75f3847213479dd6b9ad2106259d5520891d97f681001407ba91bc9b9c2687255fa2d8eefd11b2863bae3deeb68e53fd48dc68ca6053e0b5eeb74d3caeeb13b6e4c163e836b28ec1927a2a0672e0f55b858609314d2a68500000000',
-    );
+    .forGet(`${BLOCKSTREAM_URL}/testnet/api/tx/${TX_ID}/hex`)
+    .thenReply(200, TX_HEX);
 
 export const mockGetTxHexMainnet = (mockServer: Mockttp) =>
   mockServer
-    .forGet(
-      `${BLOCKSTREAM_URL}/api/tx/9f0c516666f127a5bd10fbdab377c5aa2f9f70dbc0b90e496b80f77790db8995/hex`,
-    )
-    .thenReply(
-      200,
-      '020000000001011172d24279306b1d47f1effaac95e6cad8217efa83c7883903f05c40c395a28d0d00000000fdffffff029e08000000000000160014469d76e8387e11cbe9010c72ee4b748dd9152fa50581200000000000225120ed129ee08e1badadbb4fe75f3847213479dd6b9ad2106259d5520891d97f681001407ba91bc9b9c2687255fa2d8eefd11b2863bae3deeb68e53fd48dc68ca6053e0b5eeb74d3caeeb13b6e4c163e836b28ec1927a2a0672e0f55b858609314d2a68500000000',
-    );
-
-const feeEstimatesResponse = {
-  10: 0.997,
-  4: 10.17,
-  22: 0.997,
-  3: 10.17,
-  19: 0.997,
-  21: 0.997,
-  20: 0.997,
-  17: 0.997,
-  12: 0.997,
-  6: 10.17,
-  5: 10.17,
-  16: 0.997,
-  24: 0.997,
-  25: 0.997,
-  18: 0.997,
-  144: 0.997,
-  1008: 0.996,
-  9: 0.997,
-  13: 0.997,
-  14: 0.997,
-  11: 0.997,
-  15: 0.997,
-  23: 0.997,
-  504: 0.997,
-  1: 10.17,
-  2: 10.17,
-  7: 0.997,
-  8: 0.997,
-};
+    .forGet(`${BLOCKSTREAM_URL}/api/tx/${TX_ID}/hex`)
+    .thenReply(200, TX_HEX);
 
 const txsResponse = [
   {
-    txid: '9f0c516666f127a5bd10fbdab377c5aa2f9f70dbc0b90e496b80f77790db8995',
+    txid: TX_ID,
     version: 2,
     locktime: 0,
     vin: [
@@ -223,3 +198,10 @@ const txsResponse = [
     },
   },
 ];
+
+export const mockScripthashTxs2 = (mockServer: Mockttp) =>
+  mockServer
+    .forGet(
+      `${BLOCKSTREAM_URL}/api/scripthash/538c172f4f5ff9c24693359c4cdc8ee4666565326a789d5e4b2df1db7acb4721/txs`,
+    )
+    .thenJson(200, txsResponse);

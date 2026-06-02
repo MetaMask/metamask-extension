@@ -164,7 +164,7 @@ describe('Bitcoin Wallet Standard Connect - e2e tests', function () {
           const nonEvmHomepage = new NonEvmHomepage(driver);
           await nonEvmHomepage.headerNavbar.openAccountMenu();
           const accountListPage = new AccountListPage(driver);
-          await accountListPage.switchToAccount('Bitcoin Account 2');
+          await accountListPage.switchToAccount('Account 2');
 
           await testDapp.switchTo();
 

@@ -37,13 +37,6 @@ export class TestDappBitcoin {
     this.driver = driver;
   }
 
-  /**
-   * Open the bitcoin test dapp page.
-   *
-   * @param options - The options for opening the test dapp page.
-   * @param options.url - The URL of the dapp. Defaults to DAPP_URL.
-   * @returns A promise that resolves when the new page is opened.
-   */
   async openTestDappPage({
     url = DAPP_URL,
   }: {
@@ -69,24 +62,15 @@ export class TestDappBitcoin {
     console.log('Bitcoin Test Dapp page is loaded');
   }
 
-  /**
-   * Focus on the Bitcoin test dapp window.
-   */
   async switchTo() {
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.BitcoinTestDApp);
     await this.checkPageIsLoaded();
   }
 
-  /**
-   * Find the header connected state.
-   */
   async findHeaderConnectedState() {
     await this.driver.findElement(this.headerConnectionStateSelector);
   }
 
-  /**
-   * Find the header not connected state.
-   */
   async findHeaderNotConnectedState() {
     await this.driver.findElement(
       this.headerConnectionNotConnectedStateSelector,
@@ -138,11 +122,6 @@ export class TestDappBitcoin {
     });
   }
 
-  /**
-   * Find the connected account.
-   *
-   * @param account - The account to find.
-   */
   async findConnectedAccount(account: string) {
     await this.driver.findElement({
       css: this.connectedAccountSelectorTestId,
@@ -150,11 +129,6 @@ export class TestDappBitcoin {
     });
   }
 
-  /**
-   * Select the network.
-   *
-   * @param label - The network to select.
-   */
   async selectNetwork(label: 'Mainnet' | 'Testnet') {
     const selectEl = await this.driver.findElement({
       testId: dataTestIds.testPage.header.network,
@@ -187,7 +161,10 @@ export class TestDappBitcoin {
   }
 
   async setAmount(message: string) {
-    this.setInputValue(dataTestIds.testPage.sendTransaction.amout, message);
+    await this.setInputValue(
+      dataTestIds.testPage.sendTransaction.amout,
+      message,
+    );
   }
 
   async sendTransaction() {
@@ -220,9 +197,6 @@ export class TestDappBitcoin {
     });
   }
 
-  /**
-   * Switch to the mainnet network.
-   */
   async switchToMainnet() {
     await this.driver.clickElement(dataTestIds.testPage.header.network);
 
@@ -231,12 +205,6 @@ export class TestDappBitcoin {
     );
   }
 
-  /**
-   * Set the value of an input element by its data-testid.
-   *
-   * @param id - The data-testid of the input element.
-   * @param value - The value to set in the input element.
-   */
   private async setInputValue(id: string, value: string) {
     await this.driver.fill({ testId: id }, value);
   }
