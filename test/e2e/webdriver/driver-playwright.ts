@@ -1,6 +1,7 @@
 /* eslint-disable jsdoc/require-jsdoc, jsdoc/require-param -- shim file mirrors the Selenium Driver public API */
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { expect } from '@playwright/test';
 import type { BrowserContext, Locator, Page } from '@playwright/test';
 
 /**
@@ -185,18 +186,18 @@ export class PlaywrightElement {
         await this.locator.waitFor({ state: 'hidden', timeout });
         return;
       case 'enabled':
+        // See `PlaywrightDriver.waitForSelector` for why we use Playwright's
+        // `toBeEnabled` matcher instead of polling `isEnabled()` manually.
         await this.locator.waitFor({ state: 'visible', timeout });
-        await this.driver.waitUntil(
-          async () => await this.locator.isEnabled(),
-          { interval: 100, timeout: timeout ?? this.driver.timeout },
-        );
+        await expect(this.locator).toBeEnabled({
+          timeout: timeout ?? this.driver.timeout,
+        });
         return;
       case 'disabled':
         await this.locator.waitFor({ state: 'visible', timeout });
-        await this.driver.waitUntil(
-          async () => await this.locator.isDisabled(),
-          { interval: 100, timeout: timeout ?? this.driver.timeout },
-        );
+        await expect(this.locator).toBeDisabled({
+          timeout: timeout ?? this.driver.timeout,
+        });
         return;
       default:
         throw new Error(
@@ -385,22 +386,31 @@ export class PlaywrightDriver {
     script: string | ((...args: unknown[]) => unknown),
     ...args: unknown[]
   ): Promise<TResult> {
-    const fnSource =
+    // Selenium's `executeScript` takes either:
+    //   - a string of JS statements where `arguments[N]` binds to varargs, or
+    //   - a function which receives the varargs as its parameters.
+    // Playwright's `page.evaluate` only ships ONE argument and stringifies
+    // the page-side function via `.toString()`. We bridge by reconstructing
+    // a callable on the page side with `new Function` and spreading our
+    // single args-tuple parameter back into the script.
+    //
+    // Single-wrap: previous revision wrapped twice ("outer" + "inner"
+    // function), which made for harder-to-read stack traces and an extra
+    // round of source-string mutation. This version is one wrapper.
+    const source =
       typeof script === 'string'
-        ? `function() { return (function() { ${script} }).apply(null, arguments[0]); }`
-        : `function() { return (${script.toString()}).apply(null, arguments[0]); }`;
+        ? `function() { ${script} }`
+        : script.toString();
     return (await this.page.evaluate<
       TResult,
       { source: string; passedArgs: unknown[] }
     >(
-      ({ source, passedArgs }) => {
+      ({ source: src, passedArgs }) => {
         // eslint-disable-next-line no-new-func, @typescript-eslint/no-implied-eval
-        const fn = new Function(
-          `return (${source}).apply(null, [arguments[0]]);`,
-        );
+        const fn = new Function('args', `return (${src}).apply(null, args);`);
         return fn(passedArgs) as TResult;
       },
-      { source: fnSource, passedArgs: args },
+      { source, passedArgs: args },
     )) as TResult;
   }
 
@@ -415,10 +425,18 @@ export class PlaywrightDriver {
 
   async findElement(
     rawLocator: RawLocator,
-    timeout: number = this.timeout,
+    _timeout: number = this.timeout,
   ): Promise<PlaywrightElement> {
+    // Playwright `Locator`s are lazy: returning one here is free, and every
+    // downstream action (`click`, `fill`, `getText`, ...) already auto-waits
+    // for the right state before it dispatches. The Selenium driver had to
+    // resolve the element eagerly because WebDriver returned a live element
+    // handle; on Playwright that round-trip is pure overhead.
+    //
+    // Callers that need an explicit existence assertion should use
+    // `waitForSelector` (preserved with its wait semantics) or wrap their
+    // findElement in `findVisibleElement`.
     const locator = this.buildLocator(rawLocator).first();
-    await locator.waitFor({ state: 'attached', timeout });
     return new PlaywrightElement(locator, this);
   }
 
@@ -452,27 +470,27 @@ export class PlaywrightDriver {
     if (waitAtLeastGuard > 0) {
       await this.delay(waitAtLeastGuard);
     }
+    // Playwright's `click()` already auto-waits for actionability — visible,
+    // stable (no animation), enabled, and receives-pointer-events — before
+    // dispatching. The Selenium driver had to pre-check visible + enabled
+    // because `click()` had no built-in actionability guard. We keep only the
+    // visibility wait so callers that don't immediately click (rare) still
+    // get a meaningful "element is on screen" signal; the enabled poll is
+    // dropped as it duplicates Playwright's auto-wait.
     const locator = this.buildLocator(rawLocator).first();
     await locator.waitFor({ state: 'visible', timeout });
-    await this.waitUntil(async () => await locator.isEnabled(), {
-      interval: 100,
-      timeout,
-    });
     return new PlaywrightElement(locator, this);
   }
 
   async findClickableElements(
     rawLocator: RawLocator,
   ): Promise<PlaywrightElement[]> {
+    // See `findClickableElement` for why we drop the `isEnabled` poll.
     const elements = await this.findElements(rawLocator);
     await Promise.all(
       elements.map(async (element) => {
         await element.locator.waitFor({
           state: 'visible',
-          timeout: this.timeout,
-        });
-        await this.waitUntil(async () => await element.locator.isEnabled(), {
-          interval: 100,
           timeout: this.timeout,
         });
       }),
@@ -484,8 +502,8 @@ export class PlaywrightDriver {
     parent: PlaywrightElement,
     nestedLocator: RawLocator,
   ): Promise<PlaywrightElement> {
+    // See `findElement` for why we skip the eager `waitFor`.
     const locator = this.buildLocatorOn(parent.locator, nestedLocator).first();
-    await locator.waitFor({ state: 'attached', timeout: this.timeout });
     return new PlaywrightElement(locator, this);
   }
 
@@ -517,17 +535,15 @@ export class PlaywrightDriver {
     } else if (state === 'detached') {
       await locator.waitFor({ state: 'detached', timeout });
     } else if (state === 'enabled') {
+      // Playwright's `toBeEnabled` matcher polls in-page at a faster
+      // cadence than our 100ms JS-loop and avoids a protocol round trip
+      // per check. We still pre-wait for `visible` to preserve the
+      // Selenium contract of "the element is on screen AND interactive".
       await locator.waitFor({ state: 'visible', timeout });
-      await this.waitUntil(async () => await locator.isEnabled(), {
-        interval: 100,
-        timeout,
-      });
+      await expect(locator).toBeEnabled({ timeout });
     } else if (state === 'disabled') {
       await locator.waitFor({ state: 'visible', timeout });
-      await this.waitUntil(async () => await locator.isDisabled(), {
-        interval: 100,
-        timeout,
-      });
+      await expect(locator).toBeDisabled({ timeout });
     } else {
       throw new Error(
         `Provided state selector ${state as string} is not supported`,
@@ -548,10 +564,10 @@ export class PlaywrightDriver {
   }
 
   async waitForNonEmptyElement(element: PlaywrightElement): Promise<void> {
-    await this.waitUntil(async () => (await element.getText()).length > 0, {
-      interval: 100,
-      timeout: this.timeout,
-    });
+    // Waits for at least one non-whitespace character. Matches the
+    // semantics of the original `getText().length > 0` poll (which
+    // trimmed via `innerText`) without the per-poll protocol round trip.
+    await expect(element.locator).toHaveText(/\S/u, { timeout: this.timeout });
   }
 
   async elementCountBecomesN(
@@ -561,10 +577,7 @@ export class PlaywrightDriver {
   ): Promise<boolean> {
     const locator = this.buildLocator(rawLocator);
     try {
-      await this.waitUntil(
-        async () => (await locator.count()) === expectedCount,
-        { interval: 100, timeout },
-      );
+      await expect(locator).toHaveCount(expectedCount, { timeout });
       return true;
     } catch {
       const actual = await locator.count();
@@ -639,8 +652,7 @@ export class PlaywrightDriver {
     }
     const locator = this.buildLocator(rawLocator);
     try {
-      await this.waitUntil(async () => (await locator.count()) === 0, {
-        interval: 100,
+      await expect(locator).toHaveCount(0, {
         timeout: timeout - waitAtLeastGuard,
       });
     } catch {
@@ -708,11 +720,23 @@ export class PlaywrightDriver {
   }
 
   async clickElement(rawLocator: RawLocator, retries = 3): Promise<void> {
+    // Direct `locator.click()` — Playwright's built-in auto-wait already
+    // checks attached + visible + stable + enabled + receives-pointer-events
+    // before dispatching, so the `findClickableElement` pre-flight round
+    // trip is redundant on the click path.
+    //
+    // The outer retry loop is kept because page objects rely on
+    // `clickElement` swallowing the occasional transient failure
+    // (e.g. element detached mid-click during a re-render). Inter-attempt
+    // delay was 1000ms — a Selenium-era constant from when ChromeDriver
+    // could throw StaleElementReferenceError that resolved itself after a
+    // brief wait. Playwright's `Locator` is re-resolved on every action so
+    // that wait is unnecessary; 100ms is enough to let a re-render settle.
+    const locator = this.buildLocator(rawLocator).first();
     let lastError: unknown;
     for (let attempt = 0; attempt < retries; attempt += 1) {
       try {
-        const element = await this.findClickableElement(rawLocator);
-        await element.click();
+        await locator.click({ timeout: this.timeout });
         return;
       } catch (error) {
         lastError = error;
@@ -721,7 +745,7 @@ export class PlaywrightDriver {
             `Retrying click (attempt ${attempt + 1}/${retries}) due to:`,
             error,
           );
-          await this.delay(1000);
+          await this.delay(100);
         }
       }
     }
@@ -1081,7 +1105,10 @@ export class PlaywrightDriver {
 
   /**
    * Returns true if the element's bounding box moves between two
-   * 500ms-apart samples. Mirrors the Selenium driver's implementation.
+   * 500ms-apart samples. Mirrors the Selenium driver's implementation —
+   * preserved for the rare call site that uses this method directly.
+   * Page objects should prefer letting Playwright actions auto-wait for
+   * stability instead.
    *
    * @param rawLocator - Element locator.
    */
@@ -1094,24 +1121,28 @@ export class PlaywrightDriver {
   }
 
   /**
-   * Polls `isElementMoving` every 500ms until the element settles or the
-   * timeout elapses. Used by page objects after opening menus/popovers
-   * that have an open-animation (e.g. `HeaderNavbar.openGlobalMenu`).
+   * Effectively a no-op on the Playwright path. Every actionable method
+   * (`click`, `fill`, `hover`, ...) already auto-waits for the element to
+   * be stable — Playwright defines "stable" as the bounding box not
+   * changing for two consecutive animation frames — before dispatching.
+   * The Selenium driver had to poll the rect manually because Selenium's
+   * actions had no built-in stability guard.
+   *
+   * We still resolve the locator's `visible` state so the call surfaces a
+   * missing-element failure at the same site Selenium did, and so anyone
+   * who calls this method *without* a follow-up action still gets a
+   * meaningful "the element is on screen" signal.
    *
    * @param rawLocator - Element locator.
-   * @param timeout - Maximum total wait time in milliseconds (default 6000).
+   * @param timeout - Maximum wait for the element to become visible
+   * (default 6000ms, matches the Selenium driver's outer timeout).
    */
   async waitForElementToStopMoving(
     rawLocator: RawLocator,
     timeout = 6000,
   ): Promise<void> {
-    const startTime = Date.now();
-    while (Date.now() - startTime < timeout) {
-      if (!(await this.isElementMoving(rawLocator))) {
-        return;
-      }
-      await this.delay(500);
-    }
-    throw new Error('Element did not stop moving within the timeout period');
+    await this.buildLocator(rawLocator)
+      .first()
+      .waitFor({ state: 'visible', timeout });
   }
 }

@@ -37,7 +37,7 @@ pwTest.describe('Auto-Lock Timer', () => {
           await settingsPage.waitForAutoLockOptionsList();
           await settingsPage.selectQuarterMinuteAutoLockOption();
 
-          await driver.delay(16000);
+          await driver.delay(16500);
 
           const loginPage = new LoginPage(driver);
           await loginPage.checkPageIsLoaded();

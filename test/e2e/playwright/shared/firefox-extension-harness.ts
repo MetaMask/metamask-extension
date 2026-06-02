@@ -22,6 +22,12 @@ const DEFAULT_FIREFOX_EXTENSION_DIR = path.join(
 const ABOUT_DEBUGGING_URL = 'about:debugging#/runtime/this-firefox';
 const PATCH_MARKER = '// --- MetaMask Firefox Harness Patch ---';
 
+// Process-level memo of `omni.ja` files we've already verified are patched.
+// `ensurePatchedPlaywrightFirefox` would otherwise unzip + read the JSM on
+// every launch — ~100-200ms of disk IO per spec — even though the bundled
+// Firefox binary is immutable for the lifetime of a node process.
+const patchedOmniJaPaths = new Set<string>();
+
 export type FirefoxPolicySetup = {
   policiesPath: string;
   xpiPath: string;
@@ -127,6 +133,11 @@ export async function findMetaMaskInternalUuidFromProfile(
 ): Promise<string> {
   const deadline = Date.now() + timeoutMs;
   const prefsPath = path.join(profileDirectory, 'prefs.js');
+  // 50ms is small enough that we don't routinely overshoot the moment
+  // Firefox finishes writing the UUID into prefs.js (saves ~200-400ms
+  // per launch over a 500ms interval) while still bounding the syscall
+  // rate well below anything Firefox would notice.
+  const pollIntervalMs = 50;
 
   while (Date.now() < deadline) {
     try {
@@ -136,7 +147,7 @@ export async function findMetaMaskInternalUuidFromProfile(
       );
 
       if (!mappingMatch?.[1]) {
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
         continue;
       }
 
@@ -153,7 +164,7 @@ export async function findMetaMaskInternalUuidFromProfile(
       // Ignore read/parse race conditions while Firefox is still writing prefs.
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
   }
 
   throw new Error(
@@ -186,6 +197,12 @@ export async function ensurePatchedPlaywrightFirefox(): Promise<void> {
     );
   }
 
+  // Fast path: we've already verified (or applied) the patch on this
+  // omni.ja during the current node process. Skip the unzip/read entirely.
+  if (patchedOmniJaPaths.has(omniPath)) {
+    return;
+  }
+
   const tempDir = await mkdtemp(path.join(os.tmpdir(), 'mm-firefox-patch-'));
 
   try {
@@ -202,6 +219,7 @@ export async function ensurePatchedPlaywrightFirefox(): Promise<void> {
 
     const jugglerChild = await readFile(jugglerChildPath, 'utf-8');
     if (jugglerChild.includes(PATCH_MARKER)) {
+      patchedOmniJaPaths.add(omniPath);
       return;
     }
 
@@ -221,6 +239,7 @@ export async function ensurePatchedPlaywrightFirefox(): Promise<void> {
       ],
       { cwd: tempDir },
     );
+    patchedOmniJaPaths.add(omniPath);
   } finally {
     await rm(tempDir, { recursive: true, force: true });
   }
@@ -259,6 +278,12 @@ export async function installTemporaryAddonViaRdp({
 
   return await new Promise<string | null>((resolve, reject) => {
     const socket = net.connect({ port, host });
+    // RDP framing exchanges small JSON messages (~50-200 bytes) over
+    // localhost. Without TCP_NODELAY, Nagle's algorithm coalesces small
+    // sends, which can hold the `installTemporaryAddon` request for up to
+    // ~200ms waiting on the ACK for the prior `getRoot`. That was the
+    // most likely source of the bimodal timing pattern we saw on Firefox.
+    socket.setNoDelay(true);
     let finished = false;
     let installedAddonId: string | null = null;
     let remainingBytes = 0;
@@ -427,6 +452,17 @@ export async function launchMetaMaskFirefoxExtension(
 
   const userDataDir = await mkdtemp(path.join(os.tmpdir(), 'mm-pw-firefox-'));
 
+  // Kick off the XPI build in parallel with the Firefox cold-start. On a
+  // warm cache (typical steady-state) `getOrBuildXpi` resolves in a few
+  // ms — overlapping it costs nothing. On a cold cache (first run after
+  // a fresh build) it can take 50-500ms, which we'd otherwise pay
+  // sequentially after the ~1-2s Firefox launch.
+  const xpiPromise = getOrBuildXpi(extensionDirectory);
+  // Silence Node's "unhandledRejection" warning if the XPI build fails
+  // before we reach the `await xpiPromise` below; the real error path is
+  // the await site, which still throws.
+  xpiPromise.catch(() => undefined);
+
   const context = await firefox.launchPersistentContext(userDataDir, {
     headless,
     args: ['-start-debugger-server', String(rdpPort)],
@@ -437,9 +473,10 @@ export async function launchMetaMaskFirefoxExtension(
   });
 
   try {
+    const xpiPath = await xpiPromise;
     await installTemporaryAddonViaRdp({
       port: rdpPort,
-      addonPath: extensionDirectory,
+      addonPath: xpiPath,
     });
 
     const extensionUuid = await findMetaMaskInternalUuidFromProfile(
