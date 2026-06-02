@@ -62,9 +62,14 @@ export function isGitDir(dir: string, stat?: StatSync): boolean {
   }
 }
 
+export function isTruthy(value: string | undefined): boolean {
+  return /^(1|true|yes)$/iu.test(value ?? '');
+}
+
 export function shouldSkipPostinstall(env: NodeJS.ProcessEnv): boolean {
-  return Boolean(
-    env.SKILLS_SKIP_POSTINSTALL || (env.CI && !env.SKILLS_FORCE_POSTINSTALL),
+  return (
+    isTruthy(env.SKILLS_SKIP_POSTINSTALL) ||
+    (isTruthy(env.CI) && !isTruthy(env.SKILLS_FORCE_POSTINSTALL))
   );
 }
 
@@ -126,9 +131,7 @@ export function shouldAutoUpdateSkills(
   env: NodeJS.ProcessEnv,
   readFile?: ReadFileSync,
 ): boolean {
-  return /^(1|true|yes)$/iu.test(
-    getConfigValue(env, 'SKILLS_AUTO_UPDATE', readFile) ?? '',
-  );
+  return isTruthy(getConfigValue(env, 'SKILLS_AUTO_UPDATE', readFile));
 }
 
 export function ensurePublicSkillsCache(deps?: PostinstallDeps): boolean {
