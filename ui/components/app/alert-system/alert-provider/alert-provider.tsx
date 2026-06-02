@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box } from '@metamask/design-system-react';
+import { Box, BoxSpacing } from '@metamask/design-system-react';
 import {
   SECURITY_PROVIDER_CONFIG,
   SecurityProvider,
@@ -12,7 +12,6 @@ import {
   IconSize,
   Text,
 } from '../../../component-library';
-import { SizeNumber } from '../../../component-library/box/box.types';
 import {
   AlignItems,
   Display,
@@ -31,7 +30,7 @@ const TEXT_ALIGN_CLASS: Partial<Record<TextAlign, string>> = {
 
 export type AlertProviderProps = {
   provider?: SecurityProvider;
-  paddingTop?: SizeNumber;
+  paddingTop?: BoxSpacing;
   textAlign?: TextAlign;
 };
 
@@ -50,7 +49,7 @@ export function AlertProvider({
 
   return (
     <Box
-      paddingTop={paddingTop ?? undefined}
+      paddingTop={paddingTop}
       className={textAlign ? TEXT_ALIGN_CLASS[textAlign] : undefined}
     >
       <Text
