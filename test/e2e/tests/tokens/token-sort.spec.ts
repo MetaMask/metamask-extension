@@ -8,8 +8,6 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import { login } from '../../page-objects/flows/login.flow';
 import {
-  mockCustomErc20AssetsV3,
-  mockErc20TokenInfuraRpc,
   mockSpotPrices,
 } from './utils/mocks';
 
@@ -31,17 +29,6 @@ describe('Token List Sorting', function () {
   };
 
   async function mockCustomTokenImport(mockServer: MockttpServer) {
-    await mockErc20TokenInfuraRpc(mockServer, {
-      tokenAddress: customTokenAddress,
-      symbol: customTokenSymbol,
-      decimals: Number(customTokenDecimals),
-    });
-    await mockCustomErc20AssetsV3(mockServer, {
-      tokenAddress: customTokenAddress,
-      symbol: customTokenSymbol,
-      decimals: Number(customTokenDecimals),
-      chainId: mainnetChainId,
-    });
     await mockSpotPrices(mockServer, {
       'eip155:1/slip44:60': {
         price: 1700,
