@@ -22,7 +22,6 @@ import {
 import { getBrowserName } from '../shared/lib/browser-runtime.utils';
 import { COPY_OPTIONS } from '../shared/constants/copy';
 import { START_UI_SYNC } from '../shared/constants/ui-initialization';
-import { PATCH_STORE_SUBSTREAM_METHODS } from '../shared/constants/patch-store-substream-methods';
 import { switchDirection } from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
@@ -59,7 +58,6 @@ import { getStartupTraceTags } from './helpers/utils/tags';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
 import { initWebVitals } from './helpers/utils/web-vitals';
 import { getPerpsStreamManager } from './providers/perps';
-import { setupPatchStoreSubstreamConnection } from './store/patch-store-substream-connection';
 import { createUIMessenger } from './messengers/ui-messenger';
 
 export { CriticalStartupErrorHandler } from './helpers/utils/critical-startup-error-handler';
@@ -67,10 +65,6 @@ export {
   displayCriticalErrorMessage,
   CriticalErrorTranslationKey,
 } from './helpers/utils/display-critical-error';
-
-/**
- * @typedef {import("@metamask/object-multiplex/dist/Substream").Substream} Substream
- */
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
@@ -92,47 +86,27 @@ export const connectToBackground = (
   setBackgroundConnection(backgroundConnection);
   backgroundConnection.onNotification(async (data) => {
     const { method } = data;
-    if (method === START_UI_SYNC) {
+    if (method === 'sendUpdate') {
+      const store = await reduxStore.promise;
+      store.dispatch(actions.updateMetamaskState(data.params[0]));
+    } else if (method === START_UI_SYNC) {
       await handleStartUISync(data.params[0]);
     } else if (method === 'perpsStreamUpdate') {
       getPerpsStreamManager().handleBackgroundUpdate(data.params[0]);
     } else if (method !== MESSENGER_SUBSCRIPTION_NOTIFICATION) {
       throw new Error(
-        `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(
-          data,
-        )}`,
+        `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(data)}`,
       );
     }
   });
 };
 
-/**
- * Handles messages coming through the patch store substream from the
- * background.
- *
- * @param {Substream} patchStoreSubstream - The connection with the background
- * process.
- */
-export const connectToBackgroundViaPatchStoreSubstream = (
-  patchStoreSubstream,
-) => {
-  setupPatchStoreSubstreamConnection(patchStoreSubstream, {
-    handleSendUpdate: async (notification) => {
-      const store = await reduxStore.promise;
-      store.dispatch(actions.updateMetamaskState(notification.params[0]));
-    },
-  });
-};
-
 export async function launchMetamaskUi(opts) {
-  const { patchSubstream, initialState } = opts;
+  const { backgroundConnection, initialState } = opts;
 
   const store = await startApp(initialState, opts);
 
-  patchSubstream.write({
-    jsonrpc: '2.0',
-    method: PATCH_STORE_SUBSTREAM_METHODS.StartSendingPatches,
-  });
+  await backgroundConnection.startSendingPatches();
 
   setupStateHooks(store);
 
