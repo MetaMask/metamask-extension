@@ -47,9 +47,7 @@ const MusdBottomContent = () => {
         tooltipDescription={t('musdConversionFeeTooltipDescription')}
       />
       <ClaimableBonusRow rowVariant={ConfirmInfoRowSize.Small} />
-      {!isPaidByMetaMask && (
-        <TotalRow variant={ConfirmInfoRowSize.Small} />
-      )}
+      {!isPaidByMetaMask && <TotalRow variant={ConfirmInfoRowSize.Small} />}
     </Box>
   );
 };

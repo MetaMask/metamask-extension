@@ -64,10 +64,10 @@ export function BridgeFeeRow({
       return '';
     }
 
-    const totalFee = new BigNumber(totals.fees.provider.usd)
+    const totalFee = new BigNumber(totals.fees.provider?.usd ?? '0')
       .plus(totals.fees.metaMask?.usd ?? '0')
-      .plus(totals.fees.sourceNetwork.estimate.usd)
-      .plus(totals.fees.targetNetwork.usd);
+      .plus(totals.fees.sourceNetwork?.estimate?.usd ?? '0')
+      .plus(totals.fees.targetNetwork?.usd ?? '0');
 
     return formatFiat(totalFee.toNumber());
   }, [totals, formatFiat]);
@@ -184,10 +184,7 @@ function FeeValue({
           size={IconSize.Sm}
           color={IconColor.SuccessDefault}
         />
-        <Text
-          variant={TextVariant.BodyMd}
-          color={TextColor.SuccessDefault}
-        >
+        <Text variant={TextVariant.BodyMd} color={TextColor.SuccessDefault}>
           {t('paidByMetaMask')}
         </Text>
       </Box>
@@ -233,11 +230,11 @@ function buildTooltipLines({
   includeMetamaskFee,
   useProviderFeeLabel,
 }: BuildTooltipLinesArgs): string[] {
-  const networkFee = new BigNumber(totals.fees.sourceNetwork.estimate.usd).plus(
-    totals.fees.targetNetwork.usd,
-  );
+  const networkFee = new BigNumber(
+    totals.fees.sourceNetwork?.estimate?.usd ?? '0',
+  ).plus(totals.fees.targetNetwork?.usd ?? '0');
 
-  const providerFeeUsd = new BigNumber(totals.fees.provider.usd);
+  const providerFeeUsd = new BigNumber(totals.fees.provider?.usd ?? '0');
 
   const lines: string[] = [];
 
