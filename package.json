@@ -513,7 +513,7 @@
     "react-markdown": "^6.0.3",
     "react-popper": "^2.2.3",
     "react-redux": "^7.2.9",
-    "react-router-dom": "^6.28.0",
+    "react-router-dom": "^6.30.4",
     "react-simple-file-input": "^2.0.0",
     "react-tippy": "^1.2.2",
     "react-toggle-button": "^2.2.0",
