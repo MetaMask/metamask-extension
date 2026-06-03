@@ -301,6 +301,9 @@
     "ui/components/app/perps/perps-tutorial-modal/PerpsTutorialModal.test.tsx": {
       "MetaMask: Background connection not initialized": 4
     },
+    "ui/components/app/perps/perps-withdraw-toast.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 1
+    },
     "ui/components/app/qr-hardware-popover/base-reader.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 8
     },

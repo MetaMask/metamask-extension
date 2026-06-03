@@ -1,8 +1,8 @@
 import React from 'react';
-import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { act } from 'react-dom/test-utils';
+import { toast } from '@metamask/design-system-react';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -19,7 +19,20 @@ jest.mock('../../../../shared/lib/fetch-with-cache', () => ({
   default: jest.fn(),
 }));
 
+jest.mock('@metamask/design-system-react', () => {
+  const actual = jest.requireActual('@metamask/design-system-react');
+  const mockToast = jest.fn();
+  mockToast.dismiss = jest.fn();
+  return {
+    ...actual,
+    toast: mockToast,
+  };
+});
+
 const mockFetchWithCache = fetchWithCache as jest.Mock;
+const mockToast = toast as jest.MockedFunction<typeof toast> & {
+  dismiss: jest.Mock;
+};
 const mockTrackEvent = jest.fn();
 const mockMetaMetricsContext = {
   trackEvent: mockTrackEvent,
@@ -84,44 +97,42 @@ describe('SurveyToast', () => {
     jest.restoreAllMocks();
   });
 
-  it('should match snapshot', async () => {
+  it('dispatches a toast for a valid survey', async () => {
     mockFetchWithCache.mockResolvedValue({ surveys: surveyData.valid });
 
-    let container;
-    await act(async () => {
-      const result = renderComponent();
-      container = result.container;
-    });
+    renderComponent();
 
-    expect(container).toMatchSnapshot();
+    await waitFor(() => expect(mockToast).toHaveBeenCalled());
+
+    expect(mockToast).toHaveBeenCalledWith(
+      expect.objectContaining({
+        severity: 'default',
+        title: surveyData.valid.description,
+        description: undefined,
+        actionButtonLabel: surveyData.valid.cta,
+        'data-testid': 'survey-toast',
+      }),
+    );
   });
 
-  it('renders nothing if no survey is available', () => {
+  it('does not dispatch a toast when no survey is available', async () => {
     mockFetchWithCache.mockResolvedValue({ surveys: [] });
+
     renderComponent();
-    expect(screen.queryByTestId('survey-toast')).toBeNull();
+
+    await waitFor(() => expect(mockFetchWithCache).toHaveBeenCalled());
+
+    expect(mockToast).not.toHaveBeenCalled();
   });
 
-  it('renders nothing if the survey is stale', () => {
+  it('does not dispatch a toast when the survey is stale', async () => {
     mockFetchWithCache.mockResolvedValue({ surveys: surveyData.stale });
+
     renderComponent();
-    expect(screen.queryByTestId('survey-toast')).toBeNull();
-  });
 
-  it('renders the survey toast when a valid survey is available', async () => {
-    mockFetchWithCache.mockResolvedValue({ surveys: surveyData.valid });
+    await waitFor(() => expect(mockFetchWithCache).toHaveBeenCalled());
 
-    await act(async () => {
-      renderComponent();
-    });
-
-    await waitFor(() => {
-      expect(screen.getByTestId('survey-toast')).toBeInTheDocument();
-      expect(
-        screen.getByText(surveyData.valid.description),
-      ).toBeInTheDocument();
-      expect(screen.getByText(surveyData.valid.cta)).toBeInTheDocument();
-    });
+    expect(mockToast).not.toHaveBeenCalled();
   });
 
   it('handles action click correctly when metametrics is enabled', async () => {
@@ -129,11 +140,13 @@ describe('SurveyToast', () => {
 
     renderComponent();
 
-    await waitFor(() => {
-      expect(screen.getByTestId('survey-toast')).toBeInTheDocument();
-    });
+    await waitFor(() => expect(mockToast).toHaveBeenCalled());
 
-    fireEvent.click(screen.getByText(surveyData.valid.cta));
+    const toastOptions = mockToast.mock.calls[0]?.[0] as {
+      actionButtonOnClick?: () => void;
+    };
+
+    toastOptions.actionButtonOnClick?.();
 
     expect(global.platform.openTab).toHaveBeenCalledWith({
       url: surveyData.valid.url,
@@ -148,15 +161,13 @@ describe('SurveyToast', () => {
     });
   });
 
-  it('should not show the toast if metametrics is disabled', async () => {
+  it('does not dispatch a toast if metametrics is disabled', async () => {
     mockFetchWithCache.mockResolvedValue({ surveys: surveyData.valid });
 
     renderComponent({
       metametricsEnabled: false,
     });
 
-    await waitFor(() => {
-      expect(screen.queryByTestId('survey-toast')).toBeNull();
-    });
+    expect(mockToast).not.toHaveBeenCalled();
   });
 });
