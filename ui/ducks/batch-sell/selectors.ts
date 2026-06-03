@@ -24,6 +24,7 @@ import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../shared/constants/net
 import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
 import {
   getAssetsBySelectedAccountGroup,
+  getAssetsPrice,
   getAssetsRates,
 } from '../../selectors/assets';
 import {
@@ -351,20 +352,73 @@ export const getAvailableBatchSellReceiveAssetsForNetwork = createSelector(
       })),
 );
 
+/**
+ * Projects the unified-assets fiat prices (`assetsPrice`) into the
+ * `assetExchangeRates` shape that the bridge rate resolver
+ * (`selectExchangeRateByAssetId`) consumes, keyed by lower-cased CAIP asset ID.
+ *
+ * When the unified assets system is active, held-token fiat rates live in
+ * `assetsPrice` rather than the legacy `marketData`/`currencyRates` slices the
+ * resolver reads. Without this projection, held destination tokens (e.g. USDC)
+ * resolve no fiat value, while unheld tokens (whose rates the bridge controller
+ * fetches directly) do.
+ */
+const getAssetsPriceExchangeRates = createSelector(
+  getAssetsPrice,
+  (assetsPrice) =>
+    Object.fromEntries(
+      Object.entries(assetsPrice).flatMap(([assetId, priceData]) => {
+        const { price, usdPrice } = priceData as {
+          price?: number;
+          usdPrice?: number;
+        };
+        return Number.isFinite(price) && Number.isFinite(usdPrice)
+          ? [
+              [
+                assetId.toLowerCase(),
+                {
+                  exchangeRate: String(price),
+                  usdExchangeRate: String(usdPrice),
+                },
+              ],
+            ]
+          : [];
+      }),
+    ),
+);
+
+/**
+ * The MetaMask controller state to use as the rate source for bridge quote
+ * selectors, with `assetExchangeRates` augmented from the unified assets price
+ * data. Rates already fetched by the bridge controller take precedence.
+ */
+const getBridgeRateSourceState = createSelector(
+  ({ metamask }: BridgeAppState) => metamask,
+  getAssetsPriceExchangeRates,
+  (metamask, assetsPriceExchangeRates) =>
+    ({
+      ...metamask,
+      assetExchangeRates: {
+        ...assetsPriceExchangeRates,
+        ...(metamask as { assetExchangeRates?: Record<string, unknown> })
+          .assetExchangeRates,
+      },
+    }) as typeof metamask,
+);
+
 export const getBatchSellQuotes = createSelector(
   [
-    ({ metamask }: BridgeAppState) => metamask,
+    getBridgeRateSourceState,
     ({ bridge: { sortOrder } }: BridgeAppState) => sortOrder,
     ({ bridge: { selectedQuote } }: BridgeAppState) => selectedQuote,
     (_, { requestCount }: { requestCount: number }) => requestCount,
   ],
-  (controllerStates, sortOrder, selectedQuote, requestCount) => {
-    return selectBatchSellQuotes(controllerStates, {
+  (controllerStates, sortOrder, selectedQuote, requestCount) =>
+    selectBatchSellQuotes(controllerStates, {
       sortOrder,
       requestCount,
       selectedQuote,
-    });
-  },
+    }),
 );
 
 export const getBatchSellTrades = createSelector(
