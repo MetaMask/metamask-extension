@@ -122,15 +122,13 @@ export enum MultichainAccountsConnectPageMode {
   EditAccounts = 'edit-accounts',
 }
 
-export const MultichainAccountsConnectPage: React.FC<
-  MultichainConnectPageProps
-> = ({
+export const MultichainAccountsConnectPage = ({
   request,
   permissionsRequestId,
   rejectPermissionsRequest,
   approveConnection,
   targetSubjectMetadata,
-}) => {
+}: MultichainConnectPageProps) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const [pageMode, setPageMode] = useState<MultichainAccountsConnectPageMode>(
