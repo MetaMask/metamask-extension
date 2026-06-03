@@ -1,6 +1,5 @@
 import { WebElement } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
-import { Ganache } from '../../../seeder/ganache';
 import { Anvil } from '../../../seeder/anvil';
 import HeaderNavbar from '../header-navbar';
 import { getCleanAppState, regularDelayMs } from '../../../helpers';
@@ -52,10 +51,6 @@ class HomePage {
     tag: 'h6',
   };
 
-  private readonly erc20TokenDropdown = {
-    testId: 'asset-list-control-bar-action-button',
-  };
-
   private readonly fundYourWalletBanner = {
     text: 'Fund your wallet',
   };
@@ -63,6 +58,11 @@ class HomePage {
   private readonly loadingOverlay = {
     text: 'Connecting to Localhost 8545',
   };
+
+  private readonly lowValueAssetsToggle =
+    '[data-testid="low-value-assets-toggle"]';
+
+  private readonly lowValueAssetsToggleExpanded = `${this.lowValueAssetsToggle}[aria-expanded="true"]`;
 
   private readonly nftTab = {
     testId: 'account-overview__nfts-tab',
@@ -88,10 +88,6 @@ class HomePage {
 
   protected readonly swapButton: string = '[data-testid="eth-overview-swap"]';
 
-  private readonly refreshErc20Tokens = {
-    testId: 'refreshList',
-  };
-
   private readonly storageErrorToast = '[data-testid="storage-error-toast"]';
 
   private readonly storageErrorToastBackupButton = {
@@ -101,10 +97,10 @@ class HomePage {
 
   private readonly revealSrpPasswordInput = '[data-testid="input-password"]';
 
-  private readonly srpAddedToast = '.toasts-container__banner-base';
+  private readonly srpAddedToast = '[data-testid="new-srp-added-toast"]';
 
   private readonly srpAddedToastCloseButton =
-    '.toasts-container__banner-base button[aria-label="Close"]';
+    '.toast-container button[aria-label="Close"]';
 
   private readonly surveyToast = '[data-testid="survey-toast"]';
 
@@ -151,6 +147,25 @@ class HomePage {
       throw e;
     }
     console.log('Home page is loaded');
+  }
+
+  private async expandLowValueAssetsIfPresent(): Promise<void> {
+    let toggle;
+
+    try {
+      toggle = await this.driver.findElement(this.lowValueAssetsToggle, 1000);
+    } catch {
+      return;
+    }
+
+    if ((await toggle.getAttribute('aria-expanded')) === 'true') {
+      return;
+    }
+
+    await this.driver.clickElement(this.lowValueAssetsToggle);
+    await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded, {
+      timeout: 5000,
+    });
   }
 
   async waitForNetworkAndDOMReady(): Promise<void> {
@@ -309,12 +324,6 @@ class HomePage {
     await this.driver.clickElement(this.portfolioLink);
   }
 
-  async refreshErc20TokenList(): Promise<void> {
-    console.log(`Refresh the ERC20 token list`);
-    await this.driver.clickElement(this.erc20TokenDropdown);
-    await this.driver.clickElement(this.refreshErc20Tokens);
-  }
-
   async startSendFlow(): Promise<void> {
     await this.driver.clickElement(this.sendButton);
   }
@@ -408,22 +417,26 @@ class HomePage {
    *
    * @param expectedBalance - The expected balance to be displayed. Defaults to '25'.
    * @param symbol - The symbol of the currency or token. Defaults to 'ETH'.
+   * @param timeout - Max ms to wait for the balance; defaults to `driver.timeout` (10s unless the test overrides `Driver` construction).
    */
   async checkExpectedBalanceIsDisplayed(
     expectedBalance: string = '25',
     symbol: string = 'ETH',
+    timeout: number = this.driver.timeout,
   ): Promise<void> {
     if (expectedBalance === '0') {
-      await this.driver.waitForSelector(this.fundYourWalletBanner);
+      await this.driver.waitForSelector(this.fundYourWalletBanner, { timeout });
       return;
     }
     try {
-      await this.driver.waitForSelector({
-        css: this.balance,
-        text: expectedBalance,
-      });
+      await this.driver.waitForSelector(
+        { css: this.balance, text: expectedBalance },
+        { timeout },
+      );
     } catch (e) {
-      const balance = await this.driver.waitForSelector(this.balance);
+      const balance = await this.driver.waitForSelector(this.balance, {
+        timeout,
+      });
       const currentBalance = parseFloat(await balance.getText());
       const errorMessage = `Expected balance ${expectedBalance} ${symbol}, got balance ${currentBalance} ${symbol}`;
       console.log(errorMessage, e);
@@ -457,6 +470,7 @@ class HomePage {
     expectedTokenBalance: string,
     symbol: string,
   ): Promise<void> {
+    await this.expandLowValueAssetsIfPresent();
     await this.driver.waitForSelector({
       css: '[data-testid="multichain-token-list-item-value"]',
       text: `${expectedTokenBalance} ${symbol}`,
@@ -515,7 +529,7 @@ class HomePage {
   }
 
   async checkLocalNodeBalanceIsDisplayed(
-    localNode?: Ganache | Anvil,
+    localNode?: Anvil,
     address = null,
   ): Promise<void> {
     let expectedBalance: string;
@@ -551,21 +565,17 @@ class HomePage {
     await skeleton.waitForElementState('hidden', this.driver.timeout);
   }
 
-  async checkNewSrpAddedToastIsDisplayed(): Promise<void> {
-    // Race condition: the toast initially renders with the stale keyring count (e.g. "Wallet 1 imported")
-    // and only updates to the correct number once the background state propagates.
-    // If the 5s auto-hide fires before the state update, the toast disappears while still showing the wrong value
-    // the text-based selector never matches, causing the test to fail. See issue #40944
-    await this.driver.waitForSelector(this.srpAddedToast);
-    // TODO: Uncomment the selector below and add the param in the function, once the issue above is fixed.
-    // await this.driver.waitForSelector({
-    //   text: `Wallet ${srpNumber} imported`,
-    // });
+  async checkNewSrpAddedToastIsDisplayed(srpNumber = 2): Promise<void> {
+    await this.driver.waitForSelector({
+      css: this.srpAddedToast,
+      text: `Wallet ${srpNumber} imported`,
+    });
   }
 
   async dismissSrpAddedToast(): Promise<void> {
     console.log('Dismiss SRP added toast');
-    await this.driver.clickElementSafe(this.srpAddedToastCloseButton, 3000);
+    // The toast can take some time to appear
+    await this.driver.clickElementSafe(this.srpAddedToastCloseButton, 15_000);
   }
 
   async checkNoSurveyToastIsDisplayed(): Promise<void> {

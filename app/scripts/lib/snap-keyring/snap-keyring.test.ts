@@ -16,10 +16,7 @@ import {
 import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
 import { getSnapName } from '../../../../shared/lib/accounts/snaps';
 import { showAccountCreationDialog, snapKeyringBuilder } from './snap-keyring';
-import {
-  SnapKeyringBuilderAllowActions,
-  SnapKeyringBuilderMessenger,
-} from './types';
+import { SnapKeyringBuilderMessenger } from './types';
 
 const mockAddRequest = jest.fn();
 const mockStartFlow = jest.fn();
@@ -85,12 +82,7 @@ const createControllerMessenger = ({
   account?: InternalAccount;
 } = {}): SnapKeyringBuilderMessenger => {
   const rootMessenger = getRootMessenger();
-  const messenger = new Messenger<
-    'SnapKeyring',
-    SnapKeyringBuilderAllowActions,
-    never,
-    typeof rootMessenger
-  >({
+  const messenger: SnapKeyringBuilderMessenger = new Messenger({
     namespace: 'SnapKeyring',
     parent: rootMessenger,
   });
@@ -145,6 +137,12 @@ const createControllerMessenger = ({
       case 'AccountsController:getAccountByAddress':
         return mockGetAccountByAddress.mockReturnValue(account)(params);
 
+      case 'KeyringController:persistAllKeyrings':
+        return mockPersistKeyringHelper();
+
+      case 'AccountsController:updateAccounts':
+        return undefined;
+
       case 'AccountsController:listMultichainAccounts':
         return mockListMultichainAccounts.mockReturnValue([])();
 
@@ -173,6 +171,12 @@ const createControllerMessenger = ({
       case 'RemoteFeatureFlagController:getState':
         return mockRemoteFeatureFlagsGetStateRequest(params);
 
+      case 'MetaMetricsController:trackEvent':
+        return mockTrackEvent(...params);
+
+      case 'LegacyBackgroundApiService:removeAccount':
+        return mockRemoveAccountHelper(...params);
+
       default:
         throw new Error(
           `MOCK_FAIL - unsupported messenger call: ${actionType}`,
@@ -198,11 +202,7 @@ const createSnapKeyringBuilder = ({
     remoteFeatureFlags: {},
   } as RemoteFeatureFlagControllerState);
 
-  return snapKeyringBuilder(createControllerMessenger(), {
-    persistKeyringHelper: mockPersistKeyringHelper,
-    removeAccountHelper: mockRemoveAccountHelper,
-    trackEvent: mockTrackEvent,
-  });
+  return snapKeyringBuilder(createControllerMessenger());
 };
 
 /**
@@ -430,6 +430,31 @@ describe('Snap Keyring Methods', () => {
       expect(mockEndFlow).toHaveBeenCalledTimes(2);
       expect(mockEndFlow).toHaveBeenNthCalledWith(1, [{ id: mockFlowId }]);
       expect(mockEndFlow).toHaveBeenNthCalledWith(2, [{ id: mockFlowId }]);
+    });
+  });
+
+  describe('removeAccount', () => {
+    it('starts and ends an approval flow when the user accepts removal', async () => {
+      mockAddRequest.mockReturnValue(true);
+      const builder = createSnapKeyringBuilder();
+      const keyring = builder();
+      // Seed the keyring state so the account exists before removing it.
+      await keyring.deserialize({
+        accounts: {
+          [mockAccount.id]: { account: mockAccount, snapId: mockSnapId },
+        },
+      });
+
+      await keyring.handleKeyringSnapMessage(mockSnapId, {
+        method: 'notify:accountDeleted',
+        params: { id: mockAccount.id },
+      });
+
+      expect(mockStartFlow).toHaveBeenCalledTimes(1);
+      expect(mockEndFlow).toHaveBeenCalledTimes(1);
+      expect(mockRemoveAccountHelper).toHaveBeenCalledWith(
+        address.toLowerCase(),
+      );
     });
   });
 });

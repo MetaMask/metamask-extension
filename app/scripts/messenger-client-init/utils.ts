@@ -1,4 +1,5 @@
 import { createProjectLogger } from '@metamask/utils';
+import { Wallet } from '@metamask/wallet';
 import {
   BaseControllerMessenger,
   BaseRestrictedControllerMessenger,
@@ -11,6 +12,11 @@ import { MessengerClient } from './controller-list';
 import { MESSENGER_FACTORIES } from './messengers';
 
 const log = createProjectLogger('messenger-client-init');
+
+/** A function tagged with the controller that owns it. */
+export type TaggedApiMethod = ((...args: unknown[]) => unknown) & {
+  _controllerName?: string;
+};
 
 /** Result of initializing messenger clients. */
 export type InitMessengerClientsResult = {
@@ -55,6 +61,8 @@ export type MessengerClientsToInitialize =
   | 'SnapController'
   | 'SnapInsightsController'
   | 'SnapInterfaceController'
+  | 'GeolocationApiService'
+  | 'GeolocationController'
   | 'PerpsController'
   | 'PPOMController'
   | 'TransactionController'
@@ -77,6 +85,7 @@ export type InitFunctions = Partial<{
  * Each init object can be a function that returns a messenger client.
  *
  * @param options - Options bag.
+ * @param options.wallet - The wallet instance.
  * @param options.baseControllerMessenger - Unrestricted base controller messenger.
  * @param options.initFunctions - Map of init functions keyed by messenger client name.
  * @param options.initRequest - Base request used to initialize the messenger clients.
@@ -84,10 +93,12 @@ export type InitFunctions = Partial<{
  * @returns The initialized messenger clients and associated data.
  */
 export function initMessengerClients({
+  wallet,
   baseControllerMessenger,
   initFunctions,
   initRequest,
 }: {
+  wallet: Wallet;
   baseControllerMessenger: BaseControllerMessenger;
   initFunctions: InitFunctions;
   initRequest: Omit<
@@ -107,6 +118,7 @@ export function initMessengerClients({
     name: Name,
   ): MessengerClientByName[Name] =>
     getMessengerClientOrThrow(
+      wallet,
       partialMessengerClientsByName as MessengerClientByName,
       name,
     );
@@ -147,6 +159,12 @@ export function initMessengerClients({
     } = result;
 
     const api = result.api ?? {};
+
+    for (const fn of Object.values(api)) {
+      if (typeof fn === 'function') {
+        (fn as TaggedApiMethod)._controllerName = messengerClientName;
+      }
+    }
 
     const persistedStateKey =
       persistedStateKeyRaw === null
@@ -191,10 +209,12 @@ export function initMessengerClients({
 }
 
 function getMessengerClientOrThrow<Name extends MessengerClientName>(
+  wallet: Wallet,
   messengerClientsByName: MessengerClientByName,
   name: Name,
 ): MessengerClientByName[Name] {
-  const messengerClient = messengerClientsByName[name];
+  const messengerClient =
+    wallet.getInstance(name) ?? messengerClientsByName[name];
 
   if (!messengerClient) {
     throw new Error(
@@ -202,5 +222,5 @@ function getMessengerClientOrThrow<Name extends MessengerClientName>(
     );
   }
 
-  return messengerClient;
+  return messengerClient as MessengerClientByName[Name];
 }

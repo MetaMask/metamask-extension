@@ -1,39 +1,10 @@
-import { Messenger } from '@metamask/messenger';
 import {
-  AccountsControllerAccountAddedEvent,
-  AccountsControllerGetSelectedMultichainAccountAction,
-  AccountsControllerListMultichainAccountsAction,
-} from '@metamask/accounts-controller';
-import {
-  CurrencyRateStateChange,
-  GetCurrencyRateState,
-  MultichainAssetsControllerAccountAssetListUpdatedEvent,
-  MultichainAssetsControllerGetStateAction,
-} from '@metamask/assets-controllers';
-import {
-  KeyringControllerLockEvent,
-  KeyringControllerUnlockEvent,
-} from '@metamask/keyring-controller';
-import { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
+  Messenger,
+  type MessengerActions,
+  type MessengerEvents,
+} from '@metamask/messenger';
+import { MultichainAssetsRatesControllerMessenger } from '@metamask/assets-controllers';
 import { RootMessenger } from '../../../lib/messenger';
-
-type Actions =
-  | SnapControllerHandleRequestAction
-  | AccountsControllerListMultichainAccountsAction
-  | GetCurrencyRateState
-  | MultichainAssetsControllerGetStateAction
-  | AccountsControllerGetSelectedMultichainAccountAction;
-
-type Events =
-  | KeyringControllerLockEvent
-  | KeyringControllerUnlockEvent
-  | AccountsControllerAccountAddedEvent
-  | CurrencyRateStateChange
-  | MultichainAssetsControllerAccountAssetListUpdatedEvent;
-
-export type MultichainAssetsRatesControllerMessenger = ReturnType<
-  typeof getMultichainAssetsRatesControllerMessenger
->;
 
 /**
  * Get a restricted messenger for the Multichain Assets Rate controller. This is scoped to the
@@ -43,17 +14,16 @@ export type MultichainAssetsRatesControllerMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getMultichainAssetsRatesControllerMessenger(
-  messenger: RootMessenger<Actions, Events>,
-) {
-  const controllerMessenger = new Messenger<
-    'MultichainAssetsRatesController',
-    Actions,
-    Events,
-    typeof messenger
-  >({
-    namespace: 'MultichainAssetsRatesController',
-    parent: messenger,
-  });
+  messenger: RootMessenger<
+    MessengerActions<MultichainAssetsRatesControllerMessenger>,
+    MessengerEvents<MultichainAssetsRatesControllerMessenger>
+  >,
+): MultichainAssetsRatesControllerMessenger {
+  const controllerMessenger: MultichainAssetsRatesControllerMessenger =
+    new Messenger({
+      namespace: 'MultichainAssetsRatesController',
+      parent: messenger,
+    });
   messenger.delegate({
     messenger: controllerMessenger,
     events: [

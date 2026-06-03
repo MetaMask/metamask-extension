@@ -9,9 +9,6 @@ import { RootMessenger } from '../../lib/messenger';
 // Re-export the type from core for convenience
 export type StorageServiceMessenger = CoreStorageServiceMessenger;
 
-type AllowedActions = MessengerActions<StorageServiceMessenger>;
-type AllowedEvents = MessengerEvents<StorageServiceMessenger>;
-
 /**
  * Create the messenger for StorageService.
  *
@@ -22,14 +19,12 @@ type AllowedEvents = MessengerEvents<StorageServiceMessenger>;
  * @returns The StorageService messenger
  */
 export function getStorageServiceMessenger(
-  messenger: RootMessenger<AllowedActions, AllowedEvents>,
+  messenger: RootMessenger<
+    MessengerActions<StorageServiceMessenger>,
+    MessengerEvents<StorageServiceMessenger>
+  >,
 ): StorageServiceMessenger {
-  const serviceMessenger = new Messenger<
-    'StorageService',
-    AllowedActions,
-    AllowedEvents,
-    typeof messenger
-  >({
+  const serviceMessenger: StorageServiceMessenger = new Messenger({
     namespace: 'StorageService',
     parent: messenger,
   });

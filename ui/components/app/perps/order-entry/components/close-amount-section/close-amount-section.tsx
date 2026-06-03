@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   Box,
   BoxBackgroundColor,
@@ -11,11 +11,17 @@ import {
   BoxJustifyContent,
   BoxAlignItems,
 } from '@metamask/design-system-react';
+import { formatPositionSize } from '../../../../../../../shared/lib/perps-formatters';
+import {
+  BorderRadius,
+  BackgroundColor,
+} from '../../../../../../helpers/constants/design-system';
+import { TextField, TextFieldSize } from '../../../../../component-library';
 import { PerpsSlider } from '../../../perps-slider';
 import { getDisplaySymbol } from '../../../utils';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { useFormatters } from '../../../../../../hooks/useFormatters';
 import type { CloseAmountSectionProps } from '../../order-entry.types';
+import { isUnsignedDecimalInput, formatNumberForInput } from '../../utils';
 
 /** Fixed width (rem) for the close-% chip so the slider row layout stays stable as digits change */
 const CLOSE_PERCENT_CHIP_WIDTH_REM = 4.75;
@@ -29,6 +35,7 @@ const CLOSE_PERCENT_CHIP_WIDTH_REM = 4.75;
  * @param props.onClosePercentChange - Callback when percentage changes
  * @param props.asset - Asset symbol for display
  * @param props.currentPrice - Current asset price for USD calculation
+ * @param props.sizeDecimals - Market size decimals for controller-based size formatting
  */
 export const CloseAmountSection: React.FC<CloseAmountSectionProps> = ({
   positionSize,
@@ -36,19 +43,54 @@ export const CloseAmountSection: React.FC<CloseAmountSectionProps> = ({
   onClosePercentChange,
   asset,
   currentPrice,
+  sizeDecimals,
 }) => {
   const t = useI18nContext();
-  const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
-    useFormatters();
 
-  const closeAmount = useMemo(() => {
-    const size = Math.abs(parseFloat(positionSize)) || 0;
-    return (size * closePercent) / 100;
-  }, [positionSize, closePercent]);
+  const totalPositionSize = Math.abs(Number.parseFloat(positionSize)) || 0;
+  const totalNotionalUsd = totalPositionSize * currentPrice;
 
-  const closeValueUsd = useMemo(() => {
-    return closeAmount * currentPrice;
-  }, [closeAmount, currentPrice]);
+  const closeValueUsd = useMemo(
+    () => (totalNotionalUsd * closePercent) / 100,
+    [totalNotionalUsd, closePercent],
+  );
+
+  const [rawInput, setRawInput] = useState('');
+  const [isUsdInputFocused, setIsUsdInputFocused] = useState(false);
+
+  const displayValue = useMemo(
+    () => formatNumberForInput(closeValueUsd, 2),
+    [closeValueUsd],
+  );
+
+  const handleUsdInputChange = useCallback(
+    ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
+      if (value === '' || isUnsignedDecimalInput(value)) {
+        setRawInput(value);
+
+        const parsed = Number.parseFloat(value);
+        if (!Number.isNaN(parsed) && totalNotionalUsd > 0) {
+          const newPercent = Math.min(
+            100,
+            Math.max(0, (parsed / totalNotionalUsd) * 100),
+          );
+          onClosePercentChange(newPercent);
+        } else if (value === '' || value === '0') {
+          onClosePercentChange(0);
+        }
+      }
+    },
+    [totalNotionalUsd, onClosePercentChange],
+  );
+
+  const handleUsdInputFocus = useCallback(() => {
+    setIsUsdInputFocused(true);
+    setRawInput(formatNumberForInput(closeValueUsd, 2));
+  }, [closeValueUsd]);
+
+  const handleUsdInputBlur = useCallback(() => {
+    setIsUsdInputFocused(false);
+  }, []);
 
   const handleSliderChange = useCallback(
     (_event: React.ChangeEvent<unknown>, value: number | number[]) => {
@@ -57,8 +99,6 @@ export const CloseAmountSection: React.FC<CloseAmountSectionProps> = ({
     },
     [onClosePercentChange],
   );
-
-  const totalPositionSize = Math.abs(parseFloat(positionSize)) || 0;
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={3}>
@@ -71,7 +111,7 @@ export const CloseAmountSection: React.FC<CloseAmountSectionProps> = ({
           {t('perpsAvailableToClose')}
         </Text>
         <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-          {formatTokenQuantity(totalPositionSize, getDisplaySymbol(asset))}
+          {`${formatPositionSize(totalPositionSize, sizeDecimals)} ${getDisplaySymbol(asset)}`}
         </Text>
       </Box>
 
@@ -79,19 +119,28 @@ export const CloseAmountSection: React.FC<CloseAmountSectionProps> = ({
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
           {t('perpsCloseAmount')}
         </Text>
-        <Box
-          backgroundColor={BoxBackgroundColor.BackgroundMuted}
-          className="rounded-xl"
-          padding={4}
-        >
-          <Text
-            variant={TextVariant.BodyMd}
-            fontWeight={FontWeight.Medium}
-            data-testid="close-amount-value"
-          >
-            {formatCurrencyWithMinThreshold(closeValueUsd, 'USD')}
-          </Text>
-        </Box>
+        <TextField
+          size={TextFieldSize.Md}
+          value={isUsdInputFocused ? rawInput : displayValue}
+          onChange={handleUsdInputChange}
+          onFocus={handleUsdInputFocus}
+          onBlur={handleUsdInputBlur}
+          placeholder="0.00"
+          borderRadius={BorderRadius.MD}
+          borderWidth={0}
+          backgroundColor={BackgroundColor.backgroundMuted}
+          className="w-full"
+          data-testid="close-amount-value"
+          inputProps={{ inputMode: 'decimal' }}
+          startAccessory={
+            <Text
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
+            >
+              $
+            </Text>
+          }
+        />
       </Box>
 
       <Box
@@ -102,7 +151,7 @@ export const CloseAmountSection: React.FC<CloseAmountSectionProps> = ({
         <Box
           className="min-w-0 flex-1"
           paddingHorizontal={1}
-          data-testid="close-amount-slider"
+          data-testid={`close-amount-slider-pct-${closePercent}`}
         >
           <PerpsSlider
             min={0}
@@ -131,7 +180,7 @@ export const CloseAmountSection: React.FC<CloseAmountSectionProps> = ({
             textAlign={TextAlign.Center}
             style={{ width: '100%', fontVariantNumeric: 'tabular-nums' }}
           >
-            {closePercent} %
+            {Math.round(closePercent)} %
           </Text>
         </Box>
       </Box>

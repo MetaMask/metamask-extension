@@ -40,6 +40,28 @@ describe('AmountInput', () => {
       expect(screen.getByText(/USDC/u)).toBeInTheDocument();
     });
 
+    it('renders current position size when provided', () => {
+      renderWithProvider(
+        <AmountInput {...defaultProps} currentPositionSize="2.5" />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-current-position-size-row'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-current-position-size-value'),
+      ).toHaveTextContent('2.5 BTC');
+    });
+
+    it('does not render current position size when omitted', () => {
+      renderWithProvider(<AmountInput {...defaultProps} />, mockStore);
+
+      expect(
+        screen.queryByTestId('perps-current-position-size-row'),
+      ).not.toBeInTheDocument();
+    });
+
     it('renders the amount input field', () => {
       renderWithProvider(<AmountInput {...defaultProps} />, mockStore);
 
@@ -348,6 +370,97 @@ describe('AmountInput', () => {
 
       expect(onAmountChange).not.toHaveBeenCalled();
     });
+
+    it('preserves leading "0" in the field while the user continues typing', () => {
+      const onAmountChange = jest.fn();
+      renderWithProvider(
+        <AmountInput
+          {...defaultProps}
+          onAmountChange={onAmountChange}
+          currentPrice={45000}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('amount-input-token-field');
+      const input = container.querySelector('input') as HTMLInputElement;
+
+      fireEvent.focus(input);
+
+      // Step 1: type "0" — partial; USD clears but field keeps "0"
+      fireEvent.change(input, { target: { value: '0' } });
+      expect(input).toHaveValue('0');
+      expect(onAmountChange).toHaveBeenLastCalledWith('');
+
+      // Step 2: type "0." — field keeps "0."
+      fireEvent.change(input, { target: { value: '0.' } });
+      expect(input).toHaveValue('0.');
+
+      // Step 3: type "0.5" — field shows "0.5" and USD is computed
+      fireEvent.change(input, { target: { value: '0.5' } });
+      expect(input).toHaveValue('0.5');
+      // 0.5 × 45000 = 22500
+      expect(onAmountChange).toHaveBeenLastCalledWith('22500.00');
+    });
+
+    it('clears USD when the token field is backspaced to empty', () => {
+      const onAmountChange = jest.fn();
+      renderWithProvider(
+        <AmountInput
+          {...defaultProps}
+          onAmountChange={onAmountChange}
+          currentPrice={50000}
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('amount-input-token-field');
+      const input = container.querySelector('input') as HTMLInputElement;
+
+      fireEvent.focus(input);
+      // Enter a valid token amount
+      fireEvent.change(input, { target: { value: '0.1' } });
+      expect(onAmountChange).toHaveBeenLastCalledWith('5000.00');
+
+      // Clear the field
+      fireEvent.change(input, { target: { value: '' } });
+      expect(input).toHaveValue('');
+      expect(onAmountChange).toHaveBeenLastCalledWith('');
+    });
+
+    it('shows un-grouped value for large token amounts so backspace edits work', () => {
+      // 450000 USDC / price 1 = 450000 tokens
+      // Without useGrouping:false this would be "450,000" which isUnsignedDecimalInput rejects
+      renderWithProvider(
+        <AmountInput {...defaultProps} amount="450000" currentPrice={1} />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('amount-input-token-field');
+      const input = container.querySelector('input');
+      // Must not contain a comma — value must be plain digits
+      expect(input?.value).not.toContain(',');
+      expect(input).toHaveValue('450000');
+    });
+
+    it('syncs token field from external amount change when not editing', () => {
+      const { rerender } = renderWithProvider(
+        <AmountInput {...defaultProps} amount="" currentPrice={50000} />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('amount-input-token-field');
+      const input = container.querySelector('input');
+      expect(input).toHaveValue('');
+
+      // Simulate external update (e.g. slider or USD field changed amount)
+      rerender(
+        <AmountInput {...defaultProps} amount="5000" currentPrice={50000} />,
+      );
+
+      // 5000 / 50000 = 0.1
+      expect(input).toHaveValue('0.1');
+    });
   });
 
   describe('percent input', () => {
@@ -429,6 +542,93 @@ describe('AmountInput', () => {
       renderWithProvider(<AmountInput {...defaultProps} />, mockStore);
 
       expect(screen.getByTestId('amount-slider')).toBeInTheDocument();
+    });
+  });
+
+  describe('auto-focus and select-all', () => {
+    it('auto-focuses the USD input when autoFocus is true', () => {
+      renderWithProvider(
+        <AmountInput {...defaultProps} autoFocus />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('amount-input-field');
+      const input = container.querySelector('input');
+      expect(input).toHaveFocus();
+    });
+
+    it('does not auto-focus the USD input when autoFocus is false', () => {
+      renderWithProvider(
+        <AmountInput {...defaultProps} autoFocus={false} />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('amount-input-field');
+      const input = container.querySelector('input');
+      expect(input).not.toHaveFocus();
+    });
+
+    it('selects existing USD value on focus', () => {
+      renderWithProvider(
+        <AmountInput {...defaultProps} amount="123.45" />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('amount-input-field');
+      const input = container.querySelector('input') as HTMLInputElement;
+      const selectSpy = jest.spyOn(input, 'select');
+      fireEvent.focus(input);
+      expect(selectSpy).toHaveBeenCalled();
+    });
+
+    it('selects existing token value after focus switches to editing mode', () => {
+      renderWithProvider(
+        <AmountInput {...defaultProps} amount="9000" currentPrice={45000} />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('amount-input-token-field');
+      const input = container.querySelector('input') as HTMLInputElement;
+      const selectSpy = jest.spyOn(input, 'select');
+      fireEvent.focus(input);
+
+      expect(input).toHaveValue('0.2');
+      expect(selectSpy).toHaveBeenCalled();
+    });
+
+    it('selects existing percent value on focus', () => {
+      renderWithProvider(
+        <AmountInput {...defaultProps} balancePercent={42} />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('balance-percent-input');
+      const input = container.querySelector('input') as HTMLInputElement;
+      const selectSpy = jest.spyOn(input, 'select');
+      fireEvent.focus(input);
+      expect(selectSpy).toHaveBeenCalled();
+    });
+
+    it('uses custom usdPlaceholder when provided', () => {
+      renderWithProvider(
+        <AmountInput {...defaultProps} usdPlaceholder="min $10" />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('amount-input-field');
+      const input = container.querySelector('input');
+      expect(input).toHaveAttribute('placeholder', 'min $10');
+    });
+
+    it('exposes the USD input through usdInputRef', () => {
+      const ref: { current: HTMLInputElement | null } = { current: null };
+      renderWithProvider(
+        <AmountInput {...defaultProps} usdInputRef={ref} />,
+        mockStore,
+      );
+
+      expect(ref.current).not.toBeNull();
+      expect(ref.current?.tagName).toBe('INPUT');
     });
   });
 });

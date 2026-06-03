@@ -19,18 +19,17 @@ import { NotificationsTagCounter } from '../notifications-tag-counter';
 import { NewFeatureTag } from '../../../pages/notifications/NewFeatureTag';
 import {
   SETTINGS_ROUTE,
-  // SETTINGS_V2_ROUTE,
   NOTIFICATIONS_ROUTE,
   SNAPS_ROUTE,
   PERMISSIONS,
   GATOR_PERMISSIONS,
   CONTACTS_ROUTE,
+  NETWORKS_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   lockMetamask,
   setShowSupportDataConsentModal,
   showConfirmTurnOnMetamaskNotifications,
-  toggleNetworkMenu,
   toggleDefaultView,
 } from '../../../store/actions';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/lib/environment';
@@ -43,9 +42,7 @@ import {
 } from '../../../selectors/metamask-notifications/metamask-notifications';
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import { Tag } from '../../component-library';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -370,10 +367,7 @@ export function useGlobalMenuSections(
           id: 'global-menu-networks',
           iconName: IconName.Hierarchy,
           label: t('networks'),
-          onClick: () => {
-            dispatch(toggleNetworkMenu());
-            onClose();
-          },
+          to: `${NETWORKS_ROUTE}?drawerOpen=true`,
         },
         {
           id: 'global-menu-snaps',
@@ -403,21 +397,6 @@ export function useGlobalMenuSections(
           },
           disabled: hasUnapprovedTransactions,
         },
-        // Uncomment to view Settings V2 in Hamburger Menu
-        // {
-        //   id: 'global-menu-settings-v2',
-        //   iconName: IconName.Setting,
-        //   label: `${t('settings')} (V2)`,
-        //   to: SETTINGS_V2_ROUTE,
-        //   onClick: () => {
-        //     trackEvent({
-        //       category: MetaMetricsEventCategory.Navigation,
-        //       event: MetaMetricsEventName.NavSettingsOpened,
-        //       properties: { location: METRICS_LOCATION },
-        //     });
-        //   },
-        //   disabled: hasUnapprovedTransactions,
-        // },
         {
           id: 'global-menu-support',
           iconName: IconName.MessageQuestion,
@@ -457,7 +436,7 @@ export function useGlobalMenuSections(
           iconName: IconName.Lock,
           iconColor: IconColor.ErrorDefault,
           textColor: TextColor.ErrorDefault,
-          label: t('logOut'),
+          label: t('lock'),
           onClick: async () => {
             trackEvent({
               category: MetaMetricsEventCategory.Navigation,
@@ -494,10 +473,8 @@ export function useGlobalMenuSections(
     snapsUpdatesAvailable,
     showPriorityTag,
     notificationsUnreadCount,
-    notificationsReadCount,
     isMetamaskNotificationFeatureSeen,
     onClose,
-    navigate,
     dispatch,
     trackEvent,
     metaMetricsId,

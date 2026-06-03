@@ -90,7 +90,12 @@ import {
   ProfileMetricsController,
   ProfileMetricsService,
 } from '@metamask/profile-metrics-controller';
+import {
+  GeolocationApiService,
+  GeolocationController,
+} from '@metamask/geolocation-controller';
 import { PerpsController } from '@metamask/perps-controller';
+import { PasskeyController } from '@metamask/passkey-controller';
 import { OnboardingController } from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import { InstitutionalSnapController } from '../controllers/institutional-snap/InstitutionalSnapController';
@@ -111,6 +116,7 @@ import { RewardsDataService } from '../controllers/rewards/rewards-data-service'
 import { RewardsController } from '../controllers/rewards/rewards-controller';
 import { StaticAssetsController } from '../controllers/static-assets-controller';
 import { DataDeletionService } from '../services/data-deletion-service';
+import { LegacyBackgroundApiService } from '../services/legacy-background-api-service';
 
 /**
  * Union of all messenger clients (controllers and services) supporting or required by modular initialization.
@@ -144,7 +150,10 @@ export type MessengerClient =
   | ExecutionService
   | GasFeeController
   | GatorPermissionsController
+  | GeolocationApiService
+  | GeolocationController
   | KeyringController
+  | LegacyBackgroundApiService
   | LoggingController
   | MetaMetricsController
   | MetaMetricsDataDeletionController
@@ -161,6 +170,7 @@ export type MessengerClient =
   | NotificationServicesPushController
   | OAuthService
   | OnboardingController
+  | PasskeyController
   | PermissionController<
       PermissionSpecificationConstraint,
       CaveatSpecificationConstraint
@@ -241,6 +251,7 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   EnsController['state'] &
   GasFeeController['state'] &
   GatorPermissionsController['state'] &
+  GeolocationController['state'] &
   KeyringController['state'] &
   LoggingController['state'] &
   MetaMetricsController['state'] &
@@ -254,6 +265,7 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   NetworkController['state'] &
   NetworkOrderController['state'] &
   OnboardingController['state'] &
+  PasskeyController['state'] &
   PermissionController<
     PermissionSpecificationConstraint,
     CaveatSpecificationConstraint

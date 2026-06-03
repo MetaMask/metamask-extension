@@ -350,7 +350,7 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
       }
 
       const accountAddress = internalAccount.address as Hex;
-      result[accountAddress] = {};
+      result[accountAddress] ??= {};
 
       for (const [assetId, assetBalance] of Object.entries(chainIdBalances)) {
         const metadata = assetsInfo[assetId];

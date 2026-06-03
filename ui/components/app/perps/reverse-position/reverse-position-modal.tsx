@@ -6,10 +6,15 @@ import {
   BoxAlignItems,
   Text,
   TextVariant,
+  TextAlign,
   TextColor,
   FontWeight,
+  Icon,
+  IconName,
+  IconSize,
 } from '@metamask/design-system-react';
 import type { Position as PerpsPosition } from '@metamask/perps-controller';
+import { formatPositionSize } from '../../../../../shared/lib/perps-formatters';
 import {
   Modal,
   ModalContent,
@@ -29,21 +34,23 @@ import {
   usePerpsEventTracking,
 } from '../../../../hooks/perps';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useFormatters } from '../../../../hooks/useFormatters';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
-import { getPositionDirection } from '../utils';
+import { getPositionDirection, buildPerpsVipTrackingData } from '../utils';
 import { handlePerpsError } from '../utils/translate-perps-error';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
+import { PerpsFeesDisplay } from '../perps-fees-display';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import type { Position } from '../types';
+import { useVipTier } from '../../../../hooks/rewards/useVipTier';
 
 export type ReversePositionModalProps = {
   isOpen: boolean;
   onClose: () => void;
   position: Position;
   currentPrice: number;
+  sizeDecimals?: number;
 };
 
 function toFlipPositionPayload(pos: Position): Position {
@@ -62,10 +69,10 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   onClose,
   position,
   currentPrice,
+  sizeDecimals,
 }) => {
   const t = useI18nContext();
   const { isEligible } = usePerpsEligibility();
-  const { formatCurrencyWithMinThreshold } = useFormatters();
   const { track } = usePerpsEventTracking();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
@@ -86,6 +93,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
     },
   });
   const { replacePerpsToastByKey } = usePerpsToast();
+  const vipTier = useVipTier();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -95,12 +103,14 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
       ? `${t('perpsLong')} → ${t('perpsShort')}`
       : `${t('perpsShort')} → ${t('perpsLong')}`;
   const sizeNum = Math.abs(parseFloat(position.size));
-  const estSizeLabel = `${sizeNum.toFixed(2)} ${position.symbol}`;
+  const estSizeLabel = `${formatPositionSize(sizeNum, sizeDecimals)} ${position.symbol}`;
 
   const {
     feeRate,
+    undiscountedFeeRate,
     isLoading: isFeeLoading,
     hasError: hasFeeError,
+    metamaskFeeRateDiscountPercentage,
   } = usePerpsOrderFees({
     symbol: position.symbol,
     orderType: 'market',
@@ -110,6 +120,14 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
     () =>
       feeRate === undefined ? undefined : 2 * sizeNum * currentPrice * feeRate,
     [sizeNum, currentPrice, feeRate],
+  );
+
+  const originalEstimatedFees = useMemo(
+    () =>
+      undiscountedFeeRate === undefined
+        ? undefined
+        : 2 * sizeNum * currentPrice * undiscountedFeeRate,
+    [sizeNum, currentPrice, undiscountedFeeRate],
   );
 
   const shouldShowFeePlaceholder =
@@ -136,7 +154,16 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
         success: boolean;
         error?: string;
       }>('perpsFlipPosition', [
-        { symbol: position.symbol, position: positionForFlip },
+        {
+          symbol: position.symbol,
+          position: positionForFlip,
+          trackingData: buildPerpsVipTrackingData({
+            totalFee: estimatedFees ?? 0,
+            marketPrice: currentPrice,
+            vipTier,
+            vipDiscount: metamaskFeeRateDiscountPercentage,
+          }),
+        },
       ]);
       if (flipResult?.success !== true) {
         throw new Error(flipResult?.error || 'Failed to flip position');
@@ -174,6 +201,10 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
     replacePerpsToastByKey,
     track,
     t,
+    estimatedFees,
+    currentPrice,
+    vipTier,
+    metamaskFeeRateDiscountPercentage,
   ]);
 
   return (
@@ -186,7 +217,19 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
         <ModalOverlay />
         <ModalContent size={ModalContentSize.Sm}>
           <ModalHeader onClose={onClose}>
-            {t('perpsReversePosition')}
+            <Box
+              flexDirection={BoxFlexDirection.Column}
+              alignItems={BoxAlignItems.Center}
+              gap={2}
+            >
+              <Icon name={IconName.SwapHorizontal} size={IconSize.Xl} />
+              <Text
+                variant={TextVariant.HeadingSm}
+                textAlign={TextAlign.Center}
+              >
+                {t('perpsReversePosition')}
+              </Text>
+            </Box>
           </ModalHeader>
           <ModalBody>
             <Box flexDirection={BoxFlexDirection.Column} gap={4}>
@@ -222,6 +265,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
                 <Text
                   variant={TextVariant.BodySm}
                   fontWeight={FontWeight.Medium}
+                  data-testid="perps-reverse-est-size-value"
                 >
                   {estSizeLabel}
                 </Text>
@@ -237,15 +281,18 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
                 >
                   {t('perpsFees')}
                 </Text>
-                <Text
-                  variant={TextVariant.BodySm}
-                  fontWeight={FontWeight.Medium}
-                  data-testid="perps-reverse-fee-value"
-                >
-                  {shouldShowFeePlaceholder
-                    ? '--'
-                    : formatCurrencyWithMinThreshold(estimatedFees, 'USD')}
-                </Text>
+                <PerpsFeesDisplay
+                  metamaskFeeRateDiscountPercentage={
+                    shouldShowFeePlaceholder
+                      ? undefined
+                      : metamaskFeeRateDiscountPercentage
+                  }
+                  originalFee={originalEstimatedFees}
+                  fee={shouldShowFeePlaceholder ? undefined : estimatedFees}
+                  placeholder="--"
+                  feeTextFontWeight={FontWeight.Medium}
+                  feeTextTestId="perps-reverse-fee-value"
+                />
               </Box>
               {error && (
                 <Box

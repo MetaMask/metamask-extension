@@ -26,6 +26,10 @@ type AllowedActions =
   | SnapControllerGetPermittedSnapsAction
   | SnapControllerInstallSnapsAction;
 
+// TODO: Ideally we remove this type, but we request more permissions than
+// defined in the permission controller's own messenger (to support certain
+// side effects), so we can't currently use the controller's messenger type as
+// the allowed actions for the controller's messenger.
 export type PermissionControllerMessenger = ReturnType<
   typeof getPermissionControllerMessenger
 >;
@@ -69,7 +73,8 @@ type AllowedInitializationActions =
   | MultichainRoutingServiceGetSupportedAccountsAction
   | MultichainRoutingServiceIsSupportedScopeAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
-  | SnapPermissionSpecificationsActions;
+  | SnapPermissionSpecificationsActions
+  | ApprovalControllerAddRequestAction;
 
 export type PermissionControllerInitMessenger = ReturnType<
   typeof getPermissionControllerInitMessenger
@@ -99,9 +104,11 @@ export function getPermissionControllerInitMessenger(
     actions: [
       'AppStateController:getUnlockPromise',
       'AccountsController:listAccounts',
+      'AssetsController:getState',
       'CurrencyRateController:getState',
       'KeyringController:getKeyringsByType',
       'KeyringController:withKeyring',
+      'KeyringController:addNewKeyring',
       'MultichainRoutingService:isSupportedScope',
       'MultichainRoutingService:getSupportedAccounts',
       'NetworkController:findNetworkClientIdByChainId',
@@ -109,6 +116,7 @@ export function getPermissionControllerInitMessenger(
       'PhishingController:testOrigin',
       'PreferencesController:getState',
       'RateLimitController:call',
+      'RemoteFeatureFlagController:getState',
       'SnapController:clearSnapState',
       'SnapController:getSnap',
       'SnapController:getSnapState',
@@ -117,6 +125,7 @@ export function getPermissionControllerInitMessenger(
       'SnapInterfaceController:createInterface',
       'SnapInterfaceController:getInterface',
       'SnapInterfaceController:setInterfaceDisplayed',
+      'ApprovalController:addRequest',
     ],
   });
   return controllerInitMessenger;

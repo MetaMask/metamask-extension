@@ -40,7 +40,6 @@
       "defaultHomeActiveTabName": null,
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
       "hasShownMultichainAccountsIntroModal": "boolean",
-      "isRampCardClosed": false,
       "isWalletResetInProgress": "boolean",
       "lastUpdatedAt": null,
       "lastViewedUserSurvey": null,
@@ -48,7 +47,6 @@
       "musdConversionEducationSeen": "boolean",
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
-      "nftsDetectionNoticeDismissed": false,
       "onboardingDate": null,
       "outdatedBrowserWarningLastShown": "object",
       "pendingShieldCohort": null,
@@ -59,20 +57,18 @@
       "recoveryPhraseReminderLastShown": "number",
       "shieldEndingToastLastClickedOrClosed": "object",
       "shieldPausedToastLastClickedOrClosed": "object",
-      "showAccountBanner": true,
-      "showBetaHeader": false,
       "showDownloadMobileAppSlide": "boolean",
-      "showNetworkBanner": true,
-      "showPermissionsTour": true,
       "showShieldEntryModalOnce": null,
-      "showTestnetMessageInDropdown": true,
       "slides": "object",
-      "surveyLinkLastClickedOrClosed": "object",
       "termsOfUseLastAgreed": "number",
       "trezorModel": null,
       "updateModalLastDismissedAt": null
     },
-    "AuthenticationController": { "isSignedIn": "boolean" },
+    "AssetsController": "object",
+    "AuthenticationController": {
+      "isSignedIn": "boolean",
+      "needsProfilePairing": "boolean"
+    },
     "BridgeStatusController": { "txHistory": "object" },
     "ClaimsController": "object",
     "CurrencyController": {
@@ -87,6 +83,11 @@
           "conversionRate": 1700,
           "usdConversionRate": null
         },
+        "MON": {
+          "conversionDate": "object",
+          "conversionRate": null,
+          "usdConversionRate": null
+        },
         "POL": {
           "conversionDate": null,
           "conversionRate": null,
@@ -95,7 +96,6 @@
       },
       "currentCurrency": "usd"
     },
-    "DelegationController": "object",
     "EnsController": {
       "ensEntries": "object",
       "ensResolutionsByAddress": "object"
@@ -181,6 +181,7 @@
       "seedPhraseBackedUp": null
     },
     "PPOMController": { "storageMetadata": "object" },
+    "PasskeyController": { "passkeyRecord": null },
     "PermissionController": { "subjects": "object" },
     "PermissionLogController": { "permissionHistory": "object" },
     "PerpsController": "object",
@@ -264,7 +265,8 @@
       "rewardsSeasonStatuses": "object",
       "rewardsSeasons": "object",
       "rewardsSubscriptionTokens": "object",
-      "rewardsSubscriptions": "object"
+      "rewardsSubscriptions": "object",
+      "rewardsVipPerpsFees": "object"
     },
     "SeedlessOnboardingController": "object",
     "SelectedNetworkController": { "domains": "object" },
@@ -305,5 +307,5 @@
     },
     "config": "object"
   },
-  "meta": { "storageKind": "split", "version": 204 }
+  "meta": { "storageKind": "split", "version": 211 }
 }

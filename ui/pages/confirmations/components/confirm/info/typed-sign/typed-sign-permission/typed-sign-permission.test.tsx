@@ -59,8 +59,8 @@ describe('TypedSignPermissionInfo', () => {
     });
   });
 
-  describe('invalid permission type', () => {
-    it('throws an error when an invalid permission type is provided', () => {
+  describe('unknown permission type', () => {
+    it('throws an error when an unknown permission type is provided', () => {
       const state = getMockTypedSignPermissionConfirmState({
         permission: { type: 'invalid' },
       } as unknown as DecodedPermission);
@@ -68,7 +68,7 @@ describe('TypedSignPermissionInfo', () => {
       const mockStore = configureMockStore([])(state);
       expect(() =>
         renderWithConfirmContext(<TypedSignPermissionInfo />, mockStore),
-      ).toThrow('Invalid permission type');
+      ).toThrow('Unknown permission type: invalid');
     });
 
     it('throws an error when decodedPermission is not defined', () => {

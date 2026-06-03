@@ -10,8 +10,10 @@ import WatchAssetConfirmation from '../../../page-objects/pages/confirmations/wa
 import HomePage from '../../../page-objects/pages/home/homepage';
 import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/token-transfer-confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import AssetListPage from '../../../page-objects/pages/home/asset-list';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
+import { mockEmptyPrices } from '../../tokens/utils/mocks';
 
 describe('Ledger Hardware', function (this: Suite) {
   it('can create an ERC20 token', async function () {
@@ -25,6 +27,7 @@ describe('Ledger Hardware', function (this: Suite) {
           })
           .build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: mockEmptyPrices,
       },
       async ({ driver, localNodes }) => {
         const symbol = 'TST';
@@ -32,7 +35,10 @@ describe('Ledger Hardware', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x100000000000000000000',
         )) ?? console.error('localNodes is undefined or empty');
-        await login(driver, { expectedBalance: '1.21M' });
+        await login(driver, {
+          expectedBalance: '1.21M',
+          waitForNonEvmAccounts: false,
+        });
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage();
         await testDappPage.checkPageIsLoaded();
@@ -56,7 +62,8 @@ describe('Ledger Hardware', function (this: Suite) {
         );
         const homePage = new HomePage(driver);
         await homePage.goToTokensTab();
-        await homePage.checkExpectedTokenBalanceIsDisplayed('10', symbol);
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.checkExpectedTokenBalanceIsDisplayed('10', symbol);
       },
     );
   });
@@ -72,6 +79,7 @@ describe('Ledger Hardware', function (this: Suite) {
           })
           .build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: mockEmptyPrices,
         smartContract: [
           {
             name: erc20,
@@ -87,7 +95,10 @@ describe('Ledger Hardware', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x100000000000000000000',
         )) ?? console.error('localNodes is undefined or empty');
-        await login(driver, { expectedBalance: '1.21M' });
+        await login(driver, {
+          expectedBalance: '1.21M',
+          waitForNonEvmAccounts: false,
+        });
         const contractAddress = contractRegistry.getContractAddress(erc20);
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage({
@@ -132,6 +143,7 @@ describe('Ledger Hardware', function (this: Suite) {
           })
           .build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: mockEmptyPrices,
         smartContract: [
           {
             name: erc20,
@@ -147,7 +159,10 @@ describe('Ledger Hardware', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x100000000000000000000',
         )) ?? console.error('localNodes is undefined or empty');
-        await login(driver, { expectedBalance: '1.21M' });
+        await login(driver, {
+          expectedBalance: '1.21M',
+          waitForNonEvmAccounts: false,
+        });
         const contractAddress = contractRegistry.getContractAddress(erc20);
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage({
@@ -186,6 +201,7 @@ describe('Ledger Hardware', function (this: Suite) {
           })
           .build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: mockEmptyPrices,
         smartContract: [
           {
             name: erc20,
@@ -201,7 +217,10 @@ describe('Ledger Hardware', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x100000000000000000000',
         )) ?? console.error('localNodes is undefined or empty');
-        await login(driver, { expectedBalance: '1.21M' });
+        await login(driver, {
+          expectedBalance: '1.21M',
+          waitForNonEvmAccounts: false,
+        });
         const contractAddress = contractRegistry.getContractAddress(erc20);
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage({

@@ -19,7 +19,7 @@ describe('Ledger Hardware', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await login(driver);
+        await login(driver, { waitForNonEvmAccounts: false });
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
@@ -41,9 +41,6 @@ describe('Ledger Hardware', function () {
           await connectHardwareWalletPage.checkFirefoxNotSupportedIsDisplayed();
           return; // Exit early for Firefox
         }
-
-        // Click continue button when browser is not Firefox
-        await connectHardwareWalletPage.clickContinueButton();
 
         // For non-Firefox browsers, continue with the existing test flow
         const selectLedgerAccountPage = new SelectHardwareWalletAccountPage(
@@ -63,9 +60,15 @@ describe('Ledger Hardware', function () {
         }
 
         // Unlock first account of first page and check that the correct account has been added
-        await selectLedgerAccountPage.unlockAccount(1);
-        await headerNavbar.checkPageIsLoaded();
-        await new HomePage(driver).checkExpectedBalanceIsDisplayed('0');
+        await selectLedgerAccountPage.selectAccount(1);
+        // Brief pause to ensure React has fully committed the state update from
+        // account selection. Without this, the unlock handler may execute with a
+        // stale selectedAccounts closure on slower CI environments.
+        await driver.delay(1000);
+        await selectLedgerAccountPage.clickUnlockButton();
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('0');
         await headerNavbar.openAccountMenu();
         await checkAccountAddressDisplayedInAccountList(driver, 'Ledger', 1);
       },
@@ -79,7 +82,7 @@ describe('Ledger Hardware', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await login(driver);
+        await login(driver, { waitForNonEvmAccounts: false });
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
@@ -100,9 +103,6 @@ describe('Ledger Hardware', function () {
           await connectHardwareWalletPage.checkFirefoxNotSupportedIsDisplayed();
           return; // Exit early for Firefox
         }
-
-        // Click continue button when browser is not Firefox
-        await connectHardwareWalletPage.clickContinueButton();
 
         // For non-Firefox browsers, continue with the existing test flow
         // Unlock 5 Ledger accounts

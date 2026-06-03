@@ -46,6 +46,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   },
   AuthenticationController: {
     isSignedIn: false,
+    needsProfilePairing: false,
     srpSessionData: false,
   },
   NetworkOrderController: {
@@ -81,8 +82,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     hadAdvancedGasFeesSetPriorToMigration92_3: true,
     canTrackWalletFundsObtained: true,
-    isRampCardClosed: true,
-    nftsDetectionNoticeDismissed: true,
     nftsDropdownState: true,
     notificationGasPollTokens: true,
     outdatedBrowserWarningLastShown: true,
@@ -90,14 +89,8 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     activeQrCodeScanRequest: true,
     recoveryPhraseReminderHasBeenShown: true,
     recoveryPhraseReminderLastShown: true,
-    showBetaHeader: true,
     productTour: true,
-    showPermissionsTour: true,
-    showNetworkBanner: true,
-    showAccountBanner: true,
-    showTestnetMessageInDropdown: true,
     sidePanelGasPollTokens: true,
-    surveyLinkLastClickedOrClosed: true,
     snapsInstallPrivacyWarningShown: true,
     termsOfUseLastAgreed: true,
     throttledOrigins: false,
@@ -127,15 +120,17 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   BridgeController: {
     assetExchangeRates: false,
     minimumBalanceForRentExemptionInLamports: false,
-    quoteRequest: {
-      walletAddress: false,
-      srcTokenAddress: true,
-      slippage: true,
-      srcChainId: true,
-      destChainId: true,
-      destTokenAddress: true,
-      srcTokenAmount: true,
-    },
+    quoteRequest: [
+      {
+        walletAddress: false,
+        srcTokenAddress: true,
+        slippage: true,
+        srcChainId: true,
+        destChainId: true,
+        destTokenAddress: true,
+        srcTokenAmount: true,
+      },
+    ],
     quotes: [],
     quotesInitialLoadTime: true,
     quotesLastFetched: true,
@@ -236,6 +231,9 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     storageMetadata: [],
     versionInfo: [],
   },
+  PasskeyController: {
+    passkeyRecord: false,
+  },
   PermissionController: {
     subjects: false,
   },
@@ -296,6 +294,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     rewardsSeasonStatuses: false,
     rewardsSubscriptionTokens: false,
     rewardsPointsEstimateHistory: false,
+    rewardsVipPerpsFees: false,
   },
   NotificationServicesPushController: {
     fcmToken: false,
@@ -407,7 +406,6 @@ export const SENTRY_UI_STATE: SentryReduxRootMask = {
     isNetworkMenuOpen: true,
     nextNonce: true,
     pendingTokens: false,
-    welcomeScreenSeen: true,
     slides: false,
     confirmationExchangeRates: true,
   },

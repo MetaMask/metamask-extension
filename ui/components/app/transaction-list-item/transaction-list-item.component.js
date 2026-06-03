@@ -1,22 +1,20 @@
 /* eslint-disable import-x/no-duplicates */
-import React, { useMemo, useState, useCallback, useContext } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 
 import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { Button, ButtonSize } from '@metamask/design-system-react';
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+import { usePendingTransactionActions } from '../../../hooks/usePendingTransactionActions';
+import { isIntentBridgeActivity } from '../../../helpers/transactions/pending-transaction-actions';
 import { CancelSpeedup } from '../../../pages/confirmations/cancel-speedup/cancel-speedup';
 import TransactionListItemDetails from '../transaction-list-item-details';
 import { TransactionDetailsModal } from '../../../pages/confirmations/components/activity';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
-import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import TransactionIcon from '../transaction-icon';
 import {
@@ -36,20 +34,10 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
-import { EditGasModes } from '../../../../shared/constants/gas';
-import {
-  TransactionModalContextProvider,
-  useTransactionModalContext,
-} from '../../../contexts/transaction-modal';
-import { formatDateWithYearContext } from '../../../helpers/utils/util';
-import CancelButton from '../cancel-button';
+import { TransactionModalContextProvider } from '../../../contexts/transaction-modal';
+import { PendingTransactionActionButtons } from '../pending-transaction-action-buttons/pending-transaction-action-buttons';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ActivityListItem } from '../../multichain/activity-list-item';
-import { abortTransactionSigning } from '../../../store/actions';
-import {
-  selectBridgeHistoryForOriginalTxMetaId,
-  selectBridgeHistoryItemByHash,
-} from '../../../ducks/bridge-status/selectors';
 import {
   useBridgeTxHistoryData,
   FINAL_NON_CONFIRMED_STATUSES,
@@ -68,49 +56,34 @@ function TransactionListItemInner({
   isEarliestNonce = false,
   chainId,
 }) {
-  const t = useI18nContext();
   const navigate = useNavigate();
-  const { hasCancelled } = transactionGroup;
   const [showDetails, setShowDetails] = useState(false);
-  const { openModal } = useTransactionModalContext();
-  const dispatch = useDispatch();
 
   // Bridge transactions
   const isBridgeTx =
     transactionGroup.initialTransaction.type === TransactionType.bridge;
-  const { isBridgeComplete, showBridgeTxDetails, isBridgeFailed } =
-    useBridgeTxHistoryData({
-      transactionGroup,
-    });
-  const bridgeTxHistoryItemByHash = useSelector((state) =>
-    selectBridgeHistoryItemByHash(
-      state,
-      transactionGroup.initialTransaction.hash,
-    ),
-  );
-  const bridgeTxHistoryItemByOriginalTxMetaId = useSelector((state) =>
-    selectBridgeHistoryForOriginalTxMetaId(
-      state,
-      transactionGroup.initialTransaction.id,
-    ),
-  );
-  const bridgeTxHistoryItem =
-    bridgeTxHistoryItemByHash ?? bridgeTxHistoryItemByOriginalTxMetaId;
-  const isIntentBridgeActivity = Boolean(bridgeTxHistoryItem?.quote?.intent);
+  const {
+    bridgeHistoryItem,
+    isBridgeComplete,
+    showBridgeTxDetails,
+    isBridgeFailed,
+  } = useBridgeTxHistoryData({
+    transactionGroup,
+  });
   const isUnifiedSwapTx =
     (isBridgeTx ||
       transactionGroup.initialTransaction.type === TransactionType.swap) &&
-    bridgeTxHistoryItem;
+    bridgeHistoryItem;
 
   const {
     initialTransaction: { id, txParams, type, metamaskPay },
-    primaryTransaction: { error, status, selectedGasFeeToken },
+    primaryTransaction: { error, status },
   } = transactionGroup;
 
-  const hasGasFeeTokenSelected = Boolean(selectedGasFeeToken);
-
   const badgeChainId =
-    type === TransactionType.perpsDeposit && metamaskPay?.chainId
+    (type === TransactionType.perpsDeposit ||
+      type === TransactionType.perpsWithdraw) &&
+    metamaskPay?.chainId
       ? metamaskPay.chainId
       : chainId;
 
@@ -118,48 +91,16 @@ function TransactionListItemInner({
 
   const { trackEvent } = useContext(MetaMetricsContext);
 
-  const retryTransaction = useCallback(
-    async (event) => {
-      event.stopPropagation();
-      trackEvent({
-        event: 'Clicked "Speed Up"',
-        category: MetaMetricsEventCategory.Navigation,
-        properties: {
-          action: 'Activity Log',
-          legacy_event: true,
-        },
-      });
-      setEditGasMode(EditGasModes.speedUp);
-      openModal('cancelSpeedUpTransaction');
-    },
-    [openModal, setEditGasMode, trackEvent],
-  );
-
-  const cancelTransaction = useCallback(
-    (event) => {
-      event.stopPropagation();
-      trackEvent({
-        event: 'Clicked "Cancel"',
-        category: MetaMetricsEventCategory.Navigation,
-        properties: {
-          action: 'Activity Log',
-          legacy_event: true,
-        },
-      });
-      if (status === TransactionStatus.approved) {
-        dispatch(abortTransactionSigning(id));
-      } else {
-        setEditGasMode(EditGasModes.cancel);
-        openModal('cancelSpeedUpTransaction');
-      }
-    },
-    [trackEvent, openModal, setEditGasMode, status, dispatch, id],
-  );
-
-  const shouldShowSpeedUp = useShouldShowSpeedUp(
+  const {
+    showCancel: showCancelButton,
+    onCancel: cancelTransaction,
+    speedUp,
+  } = usePendingTransactionActions({
     transactionGroup,
     isEarliestNonce,
-  );
+    setEditGasMode,
+    hasIntentBridgeActivity: isIntentBridgeActivity(bridgeHistoryItem),
+  });
 
   const resolvedType = resolveTransactionType(
     transactionGroup.initialTransaction.type,
@@ -185,11 +126,6 @@ function TransactionListItemInner({
     displayedStatusKey === TransactionStatus.submitted &&
     !isBridgeFailed &&
     !isBridgeComplete;
-  const date = formatDateWithYearContext(
-    transactionGroup.primaryTransaction.time,
-    'MMM d, y',
-    'MMM d',
-  );
   const isSignatureReq = category === TransactionGroupCategory.signatureRequest;
   const isApproval = category === TransactionGroupCategory.approval;
   const isUnapproved = status === TransactionStatus.unapproved;
@@ -205,9 +141,6 @@ function TransactionListItemInner({
   // ].includes(category);
   // const showRetry =
   //   status === TransactionStatus.failed && !isSwap && !isSmartTransaction;
-
-  const isSigning = status === TransactionStatus.approved;
-  const isSubmitting = status === TransactionStatus.signed;
 
   const className = classnames('transaction-list-item', {
     'transaction-list-item--unconfirmed':
@@ -238,62 +171,10 @@ function TransactionListItemInner({
     });
   }, [isUnapproved, navigate, id, trackEvent, category]);
 
-  const isSpeedUpButtonVisible = useMemo(() => {
-    if (
-      !shouldShowSpeedUp ||
-      !isPending ||
-      isUnapproved ||
-      isSigning ||
-      isSubmitting ||
-      hasGasFeeTokenSelected
-    ) {
-      return false;
-    }
-
-    return true;
-  }, [
-    shouldShowSpeedUp,
-    isUnapproved,
-    isPending,
-    isSigning,
-    isSubmitting,
-    hasGasFeeTokenSelected,
-  ]);
-
-  const speedUpButton = useMemo(() => {
-    if (!isSpeedUpButtonVisible) {
-      return null;
-    }
-
-    return (
-      <Button
-        data-testid="speed-up-button"
-        size={ButtonSize.Sm}
-        onClick={hasCancelled ? cancelTransaction : retryTransaction}
-      >
-        {hasCancelled ? t('speedUpCancellation') : t('speedUp')}
-      </Button>
-    );
-  }, [
-    isSpeedUpButtonVisible,
-    t,
-    hasCancelled,
-    retryTransaction,
-    cancelTransaction,
-  ]);
-  const showCancelButton =
-    !hasCancelled &&
-    isPending &&
-    !isUnapproved &&
-    !isSubmitting &&
-    !isBridgeTx &&
-    !isIntentBridgeActivity &&
-    !hasGasFeeTokenSelected;
-
   return (
     <>
       <ActivityListItem
-        data-testid="activity-list-item"
+        status={displayedStatusKey}
         onClick={
           isUnifiedSwapTx && showBridgeTxDetails
             ? showBridgeTxDetails
@@ -310,18 +191,16 @@ function TransactionListItemInner({
           !FINAL_NON_CONFIRMED_STATUSES.includes(status) &&
           isBridgeTx &&
           !(isBridgeComplete || isBridgeFailed) &&
-          bridgeTxHistoryItem ? (
+          bridgeHistoryItem ? (
             <BridgeActivityItemTxSegments
-              bridgeTxHistoryItem={bridgeTxHistoryItem}
+              bridgeTxHistoryItem={bridgeHistoryItem}
               transactionGroup={transactionGroup}
             />
           ) : (
             <TransactionStatusLabel
-              statusOnly
               isPending={isPending}
               isEarliestNonce={isEarliestNonce || shouldShowPendingBridgeStatus}
               error={error}
-              date={date}
               status={displayedStatusKey}
             />
           )
@@ -360,19 +239,12 @@ function TransactionListItemInner({
           )
         }
       >
-        {Boolean(showCancelButton || speedUpButton) && (
-          <Box paddingTop={2} className="flex gap-2">
-            {showCancelButton && (
-              <CancelButton
-                data-testid="cancel-button"
-                size={ButtonSize.Sm}
-                transaction={transactionGroup.primaryTransaction}
-                cancelTransaction={cancelTransaction}
-              />
-            )}
-            {speedUpButton}
-          </Box>
-        )}
+        <PendingTransactionActionButtons
+          showCancel={showCancelButton}
+          onCancel={cancelTransaction}
+          speedUp={speedUp}
+          primaryTransaction={transactionGroup.primaryTransaction}
+        />
       </ActivityListItem>
       {showDetails &&
         (PAY_TRANSACTION_TYPES.includes(resolvedType) ? (
@@ -388,9 +260,9 @@ function TransactionListItemInner({
             primaryCurrency={primaryCurrency}
             senderAddress={senderAddress}
             recipientAddress={recipientAddress}
-            onRetry={retryTransaction}
+            onRetry={speedUp.onClick}
             // showRetry={showRetry}
-            showSpeedUp={isSpeedUpButtonVisible}
+            showSpeedUp={speedUp.show}
             onCancel={cancelTransaction}
             transactionStatus={() => (
               <TransactionStatusLabel
@@ -399,9 +271,7 @@ function TransactionListItemInner({
                   isEarliestNonce || shouldShowPendingBridgeStatus
                 }
                 error={error}
-                date={date}
                 status={displayedStatusKey}
-                statusOnly
               />
             )}
             chainId={chainId}

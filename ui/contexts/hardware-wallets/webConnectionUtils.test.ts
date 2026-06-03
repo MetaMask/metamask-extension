@@ -2,12 +2,21 @@ import {
   LEDGER_USB_VENDOR_ID,
   TREZOR_USB_VENDOR_IDS,
 } from '../../../shared/constants/hardware-wallets';
+import {
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../shared/constants/app';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { CameraPermissionState } from './constants';
 import { HardwareWalletType, HardwareConnectionPermissionState } from './types';
 import {
   isWebHidAvailable,
   isWebUsbAvailable,
   isCameraAvailable,
+  openCameraVideoStream,
+  queryCameraPermissionWithStatus,
+  stopMediaStreamTracks,
   checkHardwareWalletPermission,
   checkWebHidPermission,
   checkWebUsbPermission,
@@ -23,7 +32,15 @@ import {
   subscribeToWebHidEvents,
   subscribeToWebUsbEvents,
   subscribeToHardwareWalletEvents,
+  isRestrictedCameraEnvironment,
+  redirectToFullscreen,
+  handleContinueWithPermissionCheck,
 } from './webConnectionUtils';
+
+jest.mock('../../../shared/lib/environment-type', () => ({
+  getEnvironmentType: jest.fn(() => 'fullscreen'),
+}));
+const mockGetEnvironmentType = jest.mocked(getEnvironmentType);
 
 // Default device identifiers for testing
 const DEFAULT_LEDGER_VENDOR_ID = Number(LEDGER_USB_VENDOR_ID);
@@ -379,6 +396,61 @@ describe('webConnectionUtils', () => {
     });
   });
 
+  describe('queryCameraPermissionWithStatus', () => {
+    it('returns state and permissionStatus when supported', async () => {
+      const permissionStatus = { state: 'denied' as PermissionState };
+      getMockedPermissions().query.mockResolvedValue(permissionStatus);
+
+      await expect(queryCameraPermissionWithStatus()).resolves.toStrictEqual({
+        state: 'denied',
+        permissionStatus,
+      });
+    });
+
+    it('falls back to prompt when query throws', async () => {
+      getMockedPermissions().query.mockRejectedValue(new Error('unsupported'));
+
+      await expect(queryCameraPermissionWithStatus()).resolves.toStrictEqual({
+        state: 'prompt',
+        permissionStatus: null,
+      });
+    });
+  });
+
+  describe('openCameraVideoStream', () => {
+    it('throws when camera APIs are unavailable', async () => {
+      Object.defineProperty(window.navigator, 'mediaDevices', {
+        value: undefined,
+        writable: true,
+        configurable: true,
+      });
+
+      await expect(openCameraVideoStream()).rejects.toThrow(
+        'Camera capture is not available in this context',
+      );
+    });
+
+    it('returns the stream from getUserMedia', async () => {
+      const mockStream = { getTracks: () => [] } as unknown as MediaStream;
+      getMockedMediaDevices().getUserMedia.mockResolvedValue(mockStream);
+
+      await expect(openCameraVideoStream()).resolves.toBe(mockStream);
+      expect(getMockedMediaDevices().getUserMedia).toHaveBeenCalledWith({
+        video: true,
+      });
+    });
+  });
+
+  describe('stopMediaStreamTracks', () => {
+    it('stops every track', () => {
+      const stop = jest.fn();
+      stopMediaStreamTracks({
+        getTracks: () => [{ stop }],
+      } as unknown as MediaStream);
+      expect(stop).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe('camera permission helpers', () => {
     it('checkCameraPermissionState returns Granted when camera permission is granted', async () => {
       getMockedPermissions().query.mockResolvedValue({
@@ -397,6 +469,16 @@ describe('webConnectionUtils', () => {
 
       await expect(checkCameraPermissionState()).resolves.toBe(
         HardwareConnectionPermissionState.Denied,
+      );
+    });
+
+    it('checkCameraPermissionState returns Prompt when permission state is prompt', async () => {
+      getMockedPermissions().query.mockResolvedValue({
+        state: CameraPermissionState.Prompt,
+      });
+
+      await expect(checkCameraPermissionState()).resolves.toBe(
+        HardwareConnectionPermissionState.Prompt,
       );
     });
 
@@ -1166,6 +1248,30 @@ describe('webConnectionUtils', () => {
       expect(mockOnConnect).toHaveBeenCalledTimes(1);
     });
 
+    it('propagates synchronous errors from onConnect', () => {
+      const thrownError = new Error('connect failed');
+      mockOnConnect.mockImplementation(() => {
+        throw thrownError;
+      });
+
+      unsubscribe = subscribeToWebUsbEvents(
+        HardwareWalletType.Trezor,
+        mockOnConnect,
+        mockOnDisconnect,
+      );
+      const trezorDevice = createMockUSBDevice() as USBDevice;
+
+      const connectHandler = getMockEventHandler(
+        getMockedUsb().addEventListener.mock.calls,
+        'connect',
+      );
+
+      expect(() => connectHandler({ device: trezorDevice })).toThrow(
+        thrownError,
+      );
+      expect(mockOnConnect).toHaveBeenCalledWith(trezorDevice);
+    });
+
     it('ignores non-Trezor devices on connect', () => {
       unsubscribe = subscribeToWebUsbEvents(
         HardwareWalletType.Trezor,
@@ -1529,6 +1635,225 @@ describe('webConnectionUtils', () => {
       const result = await checkWebUsbPermission(HardwareWalletType.Trezor);
 
       expect(result).toBe(HardwareConnectionPermissionState.Prompt);
+    });
+  });
+
+  describe('camera environment and fullscreen redirect utilities', () => {
+    describe('isRestrictedCameraEnvironment', () => {
+      it('returns true for side panel', () => {
+        mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+        expect(isRestrictedCameraEnvironment()).toBe(true);
+      });
+
+      it('returns false for popup', () => {
+        mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+        expect(isRestrictedCameraEnvironment()).toBe(false);
+      });
+
+      it('returns false for fullscreen', () => {
+        mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
+        expect(isRestrictedCameraEnvironment()).toBe(false);
+      });
+    });
+
+    describe('redirectToFullscreen', () => {
+      let mockOpenExtensionInBrowser: jest.Mock;
+      let originalLocation: Location;
+
+      beforeEach(() => {
+        mockOpenExtensionInBrowser = jest.fn();
+        (globalThis as Record<string, unknown>).platform = {
+          ...globalThis.platform,
+          openExtensionInBrowser: mockOpenExtensionInBrowser,
+        };
+        originalLocation = globalThis.location;
+      });
+
+      afterEach(() => {
+        Object.defineProperty(globalThis, 'location', {
+          value: originalLocation,
+          writable: true,
+        });
+      });
+
+      it('opens fullscreen with current hash route', () => {
+        Object.defineProperty(globalThis, 'location', {
+          value: {
+            href: 'chrome-extension://id/home.html#/confirm-transaction/42',
+          },
+          writable: true,
+        });
+
+        redirectToFullscreen();
+
+        expect(mockOpenExtensionInBrowser).toHaveBeenCalledWith(
+          '/confirm-transaction/42',
+          null,
+        );
+      });
+
+      it('passes null when there is no hash', () => {
+        Object.defineProperty(globalThis, 'location', {
+          value: { href: 'chrome-extension://id/home.html' },
+          writable: true,
+        });
+
+        redirectToFullscreen();
+
+        expect(mockOpenExtensionInBrowser).toHaveBeenCalledWith(null, null);
+      });
+
+      it('forwards query string for bridge/swap params', () => {
+        Object.defineProperty(globalThis, 'location', {
+          value: {
+            href: 'chrome-extension://id/home.html#/cross-chain/swaps/prepare-bridge-page',
+          },
+          writable: true,
+        });
+
+        redirectToFullscreen('from=eip155%3A1%2Fslip44%3A60&amount=1000');
+
+        expect(mockOpenExtensionInBrowser).toHaveBeenCalledWith(
+          '/cross-chain/swaps/prepare-bridge-page',
+          'from=eip155%3A1%2Fslip44%3A60&amount=1000',
+        );
+      });
+
+      it('passes null queryString when none provided', () => {
+        Object.defineProperty(globalThis, 'location', {
+          value: {
+            href: 'chrome-extension://id/home.html#/cross-chain/swaps/prepare-bridge-page',
+          },
+          writable: true,
+        });
+
+        redirectToFullscreen(null);
+
+        expect(mockOpenExtensionInBrowser).toHaveBeenCalledWith(
+          '/cross-chain/swaps/prepare-bridge-page',
+          null,
+        );
+      });
+    });
+
+    describe('handleContinueWithPermissionCheck', () => {
+      let mockOpenExtensionInBrowser: jest.Mock;
+      let onRetry: jest.Mock;
+
+      beforeEach(() => {
+        mockOpenExtensionInBrowser = jest.fn();
+        (globalThis as Record<string, unknown>).platform = {
+          ...globalThis.platform,
+          openExtensionInBrowser: mockOpenExtensionInBrowser,
+        };
+        onRetry = jest.fn().mockResolvedValue(undefined);
+        Object.defineProperty(globalThis, 'location', {
+          value: {
+            href: 'chrome-extension://id/home.html#/confirm-transaction/1',
+          },
+          writable: true,
+        });
+      });
+
+      it('calls onRetry when permission is granted (any environment)', async () => {
+        mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+        getMockedPermissions().query.mockResolvedValue({
+          state: CameraPermissionState.Granted,
+        } as unknown as PermissionStatus);
+
+        await handleContinueWithPermissionCheck(onRetry);
+
+        expect(onRetry).toHaveBeenCalledTimes(1);
+        expect(mockOpenExtensionInBrowser).not.toHaveBeenCalled();
+      });
+
+      it('redirects to fullscreen when permission is prompt and in side panel', async () => {
+        mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+        getMockedPermissions().query.mockResolvedValue({
+          state: CameraPermissionState.Prompt,
+        } as unknown as PermissionStatus);
+
+        await handleContinueWithPermissionCheck(onRetry);
+
+        expect(mockOpenExtensionInBrowser).toHaveBeenCalledTimes(1);
+        expect(onRetry).not.toHaveBeenCalled();
+      });
+
+      it('forwards redirectQueryString to fullscreen redirect', async () => {
+        mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+        getMockedPermissions().query.mockResolvedValue({
+          state: CameraPermissionState.Prompt,
+        } as unknown as PermissionStatus);
+
+        const queryString = 'from=eip155%3A1%2Fslip44%3A60&amount=1000';
+        await handleContinueWithPermissionCheck(onRetry, queryString);
+
+        expect(mockOpenExtensionInBrowser).toHaveBeenCalledWith(
+          expect.any(String),
+          queryString,
+        );
+        expect(onRetry).not.toHaveBeenCalled();
+      });
+
+      it('does not forward queryString when permission is granted', async () => {
+        mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+        getMockedPermissions().query.mockResolvedValue({
+          state: CameraPermissionState.Granted,
+        } as unknown as PermissionStatus);
+
+        await handleContinueWithPermissionCheck(onRetry, 'from=something');
+
+        expect(onRetry).toHaveBeenCalledTimes(1);
+        expect(mockOpenExtensionInBrowser).not.toHaveBeenCalled();
+      });
+
+      it('calls onRetry when permission is prompt and in popup (popup can show native prompt)', async () => {
+        mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+        getMockedPermissions().query.mockResolvedValue({
+          state: CameraPermissionState.Prompt,
+        } as unknown as PermissionStatus);
+
+        await handleContinueWithPermissionCheck(onRetry);
+
+        expect(onRetry).toHaveBeenCalledTimes(1);
+        expect(mockOpenExtensionInBrowser).not.toHaveBeenCalled();
+      });
+
+      it('calls onRetry when permission is prompt and in fullscreen', async () => {
+        mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
+        getMockedPermissions().query.mockResolvedValue({
+          state: CameraPermissionState.Prompt,
+        } as unknown as PermissionStatus);
+
+        await handleContinueWithPermissionCheck(onRetry);
+
+        expect(onRetry).toHaveBeenCalledTimes(1);
+        expect(mockOpenExtensionInBrowser).not.toHaveBeenCalled();
+      });
+
+      it('does nothing when permission is denied', async () => {
+        mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+        getMockedPermissions().query.mockResolvedValue({
+          state: CameraPermissionState.Denied,
+        } as unknown as PermissionStatus);
+
+        await handleContinueWithPermissionCheck(onRetry);
+
+        expect(onRetry).not.toHaveBeenCalled();
+        expect(mockOpenExtensionInBrowser).not.toHaveBeenCalled();
+      });
+
+      it('falls through to onRetry when permission check throws', async () => {
+        mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+        getMockedPermissions().query.mockRejectedValue(
+          new Error('Not supported'),
+        );
+
+        await handleContinueWithPermissionCheck(onRetry);
+
+        expect(onRetry).toHaveBeenCalledTimes(1);
+        expect(mockOpenExtensionInBrowser).not.toHaveBeenCalled();
+      });
     });
   });
 });

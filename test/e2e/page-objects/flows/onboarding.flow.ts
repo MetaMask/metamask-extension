@@ -6,10 +6,10 @@ import OnboardingPasswordPage from '../pages/onboarding/onboarding-password-page
 import OnboardingSrpPage from '../pages/onboarding/onboarding-srp-page';
 import StartOnboardingPage from '../pages/onboarding/start-onboarding-page';
 import SecureWalletPage from '../pages/onboarding/secure-wallet-page';
+import SetupPasskeyPage from '../pages/onboarding/setup-passkey-page';
 import OnboardingCompletePage from '../pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../pages/onboarding/onboarding-privacy-settings-page';
-import { WALLET_PASSWORD } from '../../constants';
-import { E2E_SRP } from '../../fixtures/default-fixture';
+import { E2E_SRP, WALLET_PASSWORD } from '../../constants';
 import HeaderNavbar from '../pages/header-navbar';
 import HomePage from '../pages/home/homepage';
 import LoginPage from '../pages/login-page';
@@ -81,6 +81,28 @@ const goToOnboardingWelcomeLoginPage = async ({
   await startOnboardingPage.checkLoginPageIsLoaded();
 
   return startOnboardingPage;
+};
+
+/**
+ * Skip the passkey setup page when it is presented during onboarding.
+ *
+ * Note: Passkey setup page is only shown for the non-social login flows.
+ *
+ * @param driver - The WebDriver instance.
+ * @param options - The options object.
+ * @param [options.timeout] - The time to wait for the page to appear.
+ */
+export const skipPasskeySetup = async (
+  driver: Driver,
+  { timeout = 5000 }: { timeout?: number } = {},
+): Promise<void> => {
+  // passkey setup is only shown for chrome
+  if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
+    const setupPasskeyPage = new SetupPasskeyPage(driver);
+
+    await setupPasskeyPage.checkPageIsLoaded(timeout);
+    await setupPasskeyPage.skipPasskeySetup();
+  }
 };
 
 /**
@@ -217,6 +239,7 @@ export const createNewWalletOnboardingFlow = async ({
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
   await onboardingPasswordPage.checkPageIsLoaded();
   await onboardingPasswordPage.createWalletPassword(password);
+  await skipPasskeySetup(driver);
 
   const secureWalletPage = new SecureWalletPage(driver);
   await secureWalletPage.checkPageIsLoaded();
@@ -270,6 +293,7 @@ export const incompleteCreateNewWalletOnboardingFlow = async ({
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
   await onboardingPasswordPage.checkPageIsLoaded();
   await onboardingPasswordPage.createWalletPassword(password);
+  await skipPasskeySetup(driver);
 
   const secureWalletPage = new SecureWalletPage(driver);
   await secureWalletPage.checkPageIsLoaded();
@@ -360,6 +384,7 @@ export const importSRPOnboardingFlow = async ({
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
   await onboardingPasswordPage.checkPageIsLoaded();
   await onboardingPasswordPage.createWalletPassword(password);
+  await skipPasskeySetup(driver);
 
   if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
     await onboardingMetricsFlow(driver, {
@@ -413,6 +438,62 @@ export const completeCreateNewWalletOnboardingFlow = async ({
   await onboardingCompletePage.completeOnboarding();
 
   await handleSidepanelPostOnboarding(driver);
+  const homePage = new HomePage(driver);
+  await homePage.checkPageIsLoaded();
+  await homePage.waitForLoadingOverlayToDisappear();
+};
+
+/**
+ * Complete create new wallet onboarding flow with passkey enrollment.
+ * Uses the real WebAuthn enrollment flow (requires a virtual authenticator
+ * to be attached to the browser before calling this).
+ *
+ * @param options - The options object.
+ * @param options.driver - The WebDriver instance.
+ * @param [options.password] - The password to use. Defaults to WALLET_PASSWORD.
+ */
+export const completeOnboardingWithPasskey = async ({
+  driver,
+  password = WALLET_PASSWORD,
+}: {
+  driver: Driver;
+  password?: string;
+}): Promise<void> => {
+  console.log('Starting onboarding with passkey enrollment');
+
+  const startOnboardingPage = await goToOnboardingWelcomeLoginPage({
+    driver,
+    participateInMetaMetrics: false,
+    needNavigateToNewPage: true,
+    dataCollectionForMarketing: false,
+  });
+  await startOnboardingPage.createWalletWithSrp();
+
+  const onboardingPasswordPage = new OnboardingPasswordPage(driver);
+  await onboardingPasswordPage.checkPageIsLoaded();
+  await onboardingPasswordPage.createWalletPassword(password);
+
+  const setupPasskeyPage = new SetupPasskeyPage(driver);
+  await setupPasskeyPage.checkPageIsLoaded();
+  await setupPasskeyPage.clickSetUpPasskey();
+  await setupPasskeyPage.waitForEnrollmentSteps();
+  await setupPasskeyPage.waitForEnrollmentSuccess();
+
+  const secureWalletPage = new SecureWalletPage(driver);
+  await secureWalletPage.checkPageIsLoaded();
+  await secureWalletPage.revealAndConfirmSRP();
+
+  if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
+    await onboardingMetricsFlow(driver);
+  }
+
+  const onboardingCompletePage = new OnboardingCompletePage(driver);
+  await onboardingCompletePage.checkPageIsLoaded();
+  await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
+  await onboardingCompletePage.completeOnboarding();
+
+  await handleSidepanelPostOnboarding(driver);
+
   const homePage = new HomePage(driver);
   await homePage.checkPageIsLoaded();
   await homePage.waitForLoadingOverlayToDisappear();

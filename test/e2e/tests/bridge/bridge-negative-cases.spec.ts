@@ -146,6 +146,7 @@ describe('Bridge functionality', function (this: Suite) {
           },
           BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
           this.test?.fullTitle(),
+          { minedTx: 'reverted', isSettled: false },
         ),
       },
       async ({ driver, localNodes }) => {
@@ -160,7 +161,10 @@ describe('Bridge functionality', function (this: Suite) {
         await homePage.startSwapFlow();
 
         const bridgePage = await enterBridgeQuote(driver);
-        await bridgePage.submitQuoteAndDismiss();
+
+        await bridgePage.submitQuote();
+        await bridgePage.approveModalIfPresent();
+        await driver.clickElementSafe({ text: 'View activity' });
         await homePage.goToActivityList();
 
         const activityList = new ActivityListPage(driver);

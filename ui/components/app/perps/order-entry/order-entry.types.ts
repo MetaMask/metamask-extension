@@ -85,8 +85,8 @@ export type OrderCalculations = {
   liquidationPriceRaw: number | null;
   /** Total order value in USD */
   orderValue: string | null;
-  /** Estimated trading fees */
-  estimatedFees: string | null;
+  /** Estimated trading fees (raw USD amount) */
+  estimatedFees: number | null;
 };
 
 /**
@@ -127,12 +127,20 @@ export type OrderEntryProps = {
   onAddFunds?: () => void;
   /** Initial leverage override for new orders (e.g. last used leverage for this market) */
   initialLeverage?: number;
+  /** Market size decimals for controller-based position-size formatting */
+  sizeDecimals?: number;
   /**
    * Oracle mark price (oraclePx from HyperLiquid's activeAssetCtx feed).
    * Used for margin calculation to match mobile's source of truth.
    * Falls back to currentPrice when not yet available.
    */
   markPrice?: number;
+  /** Auto-focus the USD size input on mount / when market order type is active */
+  autoFocusUsd?: boolean;
+  /** Auto-focus the limit price input on mount / when switching to limit order type */
+  autoFocusLimitPrice?: boolean;
+  /** Placeholder override for the USD input. Defaults to AmountInput's '0.00'. */
+  usdPlaceholder?: string;
 };
 
 /**
@@ -165,8 +173,25 @@ export type AmountInputProps = {
   asset: string;
   /** Current asset price for token conversion */
   currentPrice: number;
+  /**
+   * HyperLiquid size decimals for the asset (from MarketInfo.szDecimals). Used
+   * to cap the token-input display precision so PUMP (szDecimals=0) never shows
+   * fractional token counts and ETH (szDecimals=4) stops at 4 decimals instead
+   * of the previous hard-coded 6.
+   */
+  szDecimals?: number;
+  /** Current open position size in asset units, shown when increasing exposure */
+  currentPositionSize?: string;
   /** Callback when add-funds icon is pressed */
   onAddFunds?: () => void;
+  /** Auto-focus the USD input on mount (used for keyboard-first order entry) */
+  autoFocus?: boolean;
+  /** Placeholder override for the USD input. Defaults to '0.00'. */
+  usdPlaceholder?: string;
+  /** Ref to the USD input element so parents can imperatively refocus it on order-type changes */
+  usdInputRef?:
+    | React.MutableRefObject<HTMLInputElement | null>
+    | ((instance: HTMLInputElement | null) => void);
 };
 
 /**
@@ -189,10 +214,17 @@ export type LeverageSliderProps = {
 export type OrderSummaryProps = {
   /** Margin required for the position */
   marginRequired: string | null;
-  /** Estimated trading fees */
-  estimatedFees: string | null;
+  /** Estimated trading fees (raw USD amount, after discount) */
+  estimatedFees: number | null;
+  /** Estimated trading fees before any VIP discount (raw USD amount) */
+  originalEstimatedFees?: number | null;
   /** Estimated liquidation price */
   liquidationPrice: string | null;
+  /**
+   * MetaMask fee discount percentage (whole numbers). When provided and
+   * positive, the fees row renders a VIP badge alongside the fee value.
+   */
+  metamaskFeeRateDiscountPercentage?: number;
 };
 
 /**
@@ -223,6 +255,8 @@ export type AutoCloseSectionProps = {
   orderType?: OrderType;
   /** Limit price string – used as the reference price for limit-order TP/SL validation */
   limitPrice?: string;
+  /** Estimated liquidation price – used for stop-loss safety validation */
+  liquidationPrice?: number | null;
   /** Leverage multiplier - used to convert RoE % to price change % (RoE% = priceChange% * leverage) */
   leverage: number;
   /** Asset symbol (e.g. 'BTC', 'ETH') – used to fetch dynamic closing fee rates */
@@ -244,4 +278,6 @@ export type CloseAmountSectionProps = {
   asset: string;
   /** Current asset price for USD value calculation */
   currentPrice: number;
+  /** Market size decimals for controller-based position-size formatting */
+  sizeDecimals?: number;
 };

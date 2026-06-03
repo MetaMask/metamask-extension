@@ -4,20 +4,19 @@ import { type AccountGroupId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  Display,
-  FlexDirection,
-  TextVariant,
+  Text,
   TextColor,
-  BlockSize,
-} from '../../../helpers/constants/design-system';
-import {
+  TextVariant,
   Box,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { BlockSize } from '../../../helpers/constants/design-system';
+import {
   Button,
   ButtonSize,
   ButtonVariant,
-  Text,
   TextField,
   TextFieldSize,
   TextFieldType,
@@ -154,7 +153,7 @@ const MultichainPrivateKeyList = ({
     () => (
       <Box paddingTop={8} paddingBottom={4}>
         <Box>
-          <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
+          <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
             {t('enterYourPassword')}
           </Text>
           <TextField
@@ -169,8 +168,8 @@ const MultichainPrivateKeyList = ({
           />
           {wrongPassword ? (
             <Text
-              variant={TextVariant.bodySm}
-              color={TextColor.errorDefault}
+              variant={TextVariant.BodySm}
+              color={TextColor.ErrorDefault}
               data-testid="wrong-password-msg"
             >
               {t('wrongPassword')}
@@ -178,8 +177,8 @@ const MultichainPrivateKeyList = ({
           ) : null}
         </Box>
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
+          className="flex"
+          flexDirection={BoxFlexDirection.Row}
           gap={4}
           paddingBottom={2}
           paddingTop={8}
@@ -258,8 +257,8 @@ const MultichainPrivateKeyList = ({
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
+      className="flex"
+      flexDirection={BoxFlexDirection.Column}
       data-testid="multichain-private-keyring-list"
     >
       {reveal ? renderedRows : renderedPasswordInput}

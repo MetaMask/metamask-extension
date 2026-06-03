@@ -256,6 +256,11 @@ export async function mockEip7702FeatureFlag(mockServer: Mockttp) {
                 },
                 supportedChains: ['0xaa36a7', '0x539', '0x1'],
               },
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              confirmations_enforced_simulations: {
+                enabled: true,
+              },
             },
           ],
         };

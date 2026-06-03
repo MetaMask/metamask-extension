@@ -6,7 +6,7 @@
 import { ReactFragment } from 'react';
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
-import { capitalize, isEqual } from 'lodash';
+import capitalize from 'lodash/capitalize';
 import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 import { providerErrors } from '@metamask/rpc-errors';
@@ -28,7 +28,10 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { PermissionsRequest } from '@metamask/permission-controller';
 import { NonEmptyArray } from '@metamask/controller-utils';
-import type { PhishingDetectionScanResult } from '@metamask/phishing-controller';
+import type {
+  PhishingDetectionScanResult,
+  SimilarAddressMatch,
+} from '@metamask/phishing-controller';
 import {
   SetNameRequest,
   UpdateProposedNamesRequest,
@@ -64,7 +67,6 @@ import {
 } from '@metamask/account-tree-controller';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
-import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { SerializedUR } from '@metamask/eth-qr-keyring';
 import {
@@ -89,10 +91,17 @@ import {
   CreateClaimRequest,
   SubmitClaimConfig,
 } from '@metamask/claims-controller';
+import type {
+  PasskeyAuthenticationResponse,
+  PasskeyRegistrationOptions,
+  PasskeyAuthenticationOptions,
+  PasskeyRegistrationResponse,
+} from '@metamask/passkey-controller';
 import { toHardwareWalletError } from '../contexts/hardware-wallets/rpcErrorUtils';
 import { HardwareWalletType } from '../contexts/hardware-wallets/types';
 import { ModalType } from '../selectors/subscription/subscription';
 import { captureException } from '../../shared/lib/sentry';
+import { isPasskeyPRFSupported } from '../../shared/lib/passkey';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -101,9 +110,10 @@ import {
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
 } from '../../shared/constants/app';
+import { getEnvironmentType } from '../../shared/lib/environment-type';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
+import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   getMetaMaskAccounts,
   hasTransactionPendingApprovals,
@@ -114,13 +124,12 @@ import {
   getPermissionSubjects,
   getFirstSnapInstallOrUpdateRequest,
   getInternalAccountByAddress,
-  getSelectedInternalAccount,
-  getMetaMaskHdKeyrings,
   getAllPermittedAccountsForCurrentTab,
   getOriginOfCurrentTab,
   getIsSocialLoginFlow,
   getFirstTimeFlowType,
 } from '../selectors';
+import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import {
   getSelectedNetworkClientId,
   getProviderConfig,
@@ -158,7 +167,7 @@ import {
   loadRelativeTimeFormatLocaleData,
 } from '../../shared/lib/i18n';
 import { decimalToHex } from '../../shared/lib/conversion.utils';
-import { TxGasFees, PriorityLevels } from '../../shared/constants/gas';
+import { PriorityLevels } from '../../shared/constants/gas';
 import {
   getErrorMessage,
   isErrorWithMessage,
@@ -167,7 +176,10 @@ import {
 } from '../../shared/lib/error';
 import type { DefaultAddressScope } from '../../shared/constants/default-address';
 import { ThemeType } from '../../shared/constants/preferences';
-import { FirstTimeFlowType } from '../../shared/constants/onboarding';
+import {
+  AuthConnection,
+  FirstTimeFlowType,
+} from '../../shared/constants/onboarding';
 import { getMethodDataAsync } from '../../shared/lib/four-byte';
 import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
 import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
@@ -195,8 +207,8 @@ import {
   OptInStatusDto,
   OptInStatusInputDto,
 } from '../../shared/types/rewards';
-import { SubmitClaimErrorResponse } from '../pages/settings/transaction-shield-tab/types';
-import { SubmitClaimError } from '../pages/settings/transaction-shield-tab/claim-error';
+import { SubmitClaimErrorResponse } from '../pages/shield/transaction-shield/types';
+import { SubmitClaimError } from '../pages/shield/transaction-shield/claim-error';
 import {
   DefaultSubscriptionPaymentOptions,
   ShieldSubscriptionMetricsPropsFromUI,
@@ -993,6 +1005,34 @@ export function tryUnlockMetamask(
 }
 
 /**
+ * Tries to unlock the metamask with the passkey.
+ * @param authenticationResponse - The authentication response from the passkey.
+ * @returns A promise that resolves when the unlock is successful or rejected when it fails.
+ */
+export function tryUnlockMetamaskWithPasskey(
+  authenticationResponse: PasskeyAuthenticationResponse,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    dispatch(unlockInProgress());
+
+    try {
+      await submitRequestToBackground('unlockWithPasskey', [
+        authenticationResponse,
+      ]);
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(unlockSucceeded());
+      dispatch(hideWarning());
+    } catch (error) {
+      dispatch(unlockFailed(getErrorMessage(error)));
+      throw error;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+/**
  * Checks if the seedless onboarding user is authenticated.
  *
  * @returns True if the seedless onboarding user is authenticated, false otherwise.
@@ -1170,6 +1210,115 @@ export function submitPassword(password: string): Promise<void> {
 }
 
 /**
+ * Generates passkey registration options.
+ *
+ * @returns Passkey registration options.
+ */
+export async function generatePasskeyRegistrationOptions(): Promise<PasskeyRegistrationOptions> {
+  const prfSupported = await isPasskeyPRFSupported();
+  return submitRequestToBackground('generatePasskeyRegistrationOptions', [
+    { prfAvailable: prfSupported !== false },
+  ]);
+}
+
+/**
+ * Generates passkey authentication options.
+ *
+ * @returns Passkey authentication options.
+ */
+export function generatePasskeyAuthenticationOptions(): Promise<PasskeyAuthenticationOptions> {
+  return submitRequestToBackground('generatePasskeyAuthenticationOptions');
+}
+
+/**
+ * Generates passkey authentication options immediately after registration.
+ *
+ * @param registrationResponse - Passkey registration response JSON from the UI ceremony.
+ */
+export function generatePasskeyPostRegistrationAuthenticationOptions(
+  registrationResponse: PasskeyRegistrationResponse,
+): Promise<PasskeyAuthenticationOptions> {
+  return submitRequestToBackground(
+    'generatePasskeyPostRegistrationAuthenticationOptions',
+    [registrationResponse],
+  );
+}
+
+/**
+ * Protects the vault key with a passkey.
+ *
+ * @param registrationResponse - Passkey registration response JSON from the UI ceremony.
+ * @param authenticationResponse - Post-registration `get()` response from the UI ceremony.
+ * @param password - When onboarding is complete, the wallet password (step-up). Omit during onboarding.
+ */
+export function protectVaultKeyWithPasskey(
+  registrationResponse: PasskeyRegistrationResponse,
+  authenticationResponse: PasskeyAuthenticationResponse,
+  password?: string,
+): Promise<void> {
+  return submitRequestToBackground('protectVaultKeyWithPasskey', [
+    registrationResponse,
+    authenticationResponse,
+    password,
+  ]);
+}
+
+/**
+ * Removes the passkey from the vault using the passkey authentication response.
+ *
+ * @param authenticationResponse - Passkey authentication response JSON from the UI ceremony.
+ */
+export function removePasskeyWithPasskeyVerification(
+  authenticationResponse: PasskeyAuthenticationResponse,
+): Promise<void> {
+  return submitRequestToBackground('removePasskeyWithPasskeyVerification', [
+    authenticationResponse,
+  ]);
+}
+
+/**
+ * Removes the passkey from the vault using the wallet password.
+ *
+ * @param password - The wallet password.
+ */
+export function removePasskeyWithPasswordVerification(
+  password: string,
+): Promise<void> {
+  return submitRequestToBackground('removePasskeyWithPasswordVerification', [
+    password,
+  ]);
+}
+
+/**
+ * Changes wallet password using a verified passkey assertion, then either re-wraps the
+ * passkey record for the new vault encryption key or removes passkey enrollment.
+ * (Non–social-login, passkey already enrolled.)
+ *
+ * @param newPassword - The new wallet password.
+ * @param authenticationResponse - WebAuthn authentication response from `navigator.credentials.get`.
+ * @param options - Settings forwarded to the background handler.
+ * @param options.renewVaultKeyProtection - Whether to renew vault key protection. If `false`, removes passkey after the change instead of renewing vault key protection.
+ */
+export function changePasswordWithPasskeyVerification(
+  newPassword: string,
+  authenticationResponse: PasskeyAuthenticationResponse,
+  options: { renewVaultKeyProtection: boolean },
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('changePasswordWithPasskeyVerification', [
+        newPassword,
+        authenticationResponse,
+        options,
+      ]);
+    } catch (error) {
+      dispatch(displayWarning(error));
+      throw error;
+    }
+  };
+}
+
+/**
  * Creates a seed phrase backup in the metadata store for seedless onboarding flow.
  *
  * @param password - The password.
@@ -1326,55 +1475,6 @@ export function importNewAccount(
     }
 
     return await forceUpdateMetamaskState(dispatch);
-  };
-}
-
-export function addNewAccount(
-  keyringId?: string,
-  showLoading: boolean = true,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  log.debug(`background.addNewAccount`);
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch, getState) => {
-    const keyrings = getMetaMaskHdKeyrings(getState());
-    const [defaultPrimaryKeyring] = keyrings;
-
-    // The HD keyring to add the account for.
-    let hdKeyring = defaultPrimaryKeyring;
-    if (keyringId) {
-      hdKeyring = keyrings.find((keyring) => keyring.metadata.id === keyringId);
-    }
-    // Fail-safe in case we could not find the associated HD keyring.
-    if (!hdKeyring) {
-      log.error('Should never reach this. There is always a keyring');
-      throw new Error('Keyring not found');
-    }
-    const oldAccounts = hdKeyring.accounts;
-
-    if (showLoading) {
-      dispatch(showLoadingIndication());
-    }
-
-    let newAccount;
-    try {
-      const addedAccountAddress = await submitRequestToBackground(
-        'addNewAccount',
-        [oldAccounts.length, keyringId],
-      );
-      await forceUpdateMetamaskState(dispatch);
-      const newState = getState();
-      newAccount = getInternalAccountByAddress(newState, addedAccountAddress);
-    } catch (error) {
-      dispatch(displayWarning(error));
-      throw error;
-    } finally {
-      if (showLoading) {
-        dispatch(hideLoadingIndication());
-      }
-    }
-
-    return newAccount;
   };
 }
 
@@ -1800,32 +1900,6 @@ export function removeSlide(
   };
 }
 
-// TODO: Not a thunk, but rather a wrapper around a background call
-export function updateTransactionGasFees(
-  txId: string,
-  txGasFees: Partial<TxGasFees>,
-): ThunkAction<
-  Promise<TransactionMeta>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async () => {
-    let updatedTransaction: TransactionMeta;
-    try {
-      updatedTransaction = await submitRequestToBackground(
-        'updateTransactionGasFees',
-        [txId, txGasFees],
-      );
-    } catch (error) {
-      logErrorWithMessage(error);
-      throw error;
-    }
-
-    return updatedTransaction;
-  };
-}
-
 export function updateTransaction(
   txMeta: TransactionMeta,
   dontShowLoadingIndicator: boolean,
@@ -2173,24 +2247,6 @@ export function enableSnap(
   };
 }
 
-export function updateSnap(
-  origin: string,
-  snap: { [snapId: string]: { version: string } },
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch, getState) => {
-    await submitRequestToBackground('updateSnap', [origin, snap]);
-    await forceUpdateMetamaskState(dispatch);
-
-    const state = getState();
-
-    const approval = getFirstSnapInstallOrUpdateRequest(state);
-
-    return approval?.metadata.id;
-  };
-}
-
 export async function getPhishingResult(website: string) {
   return await submitRequestToBackground('getPhishingResult', [website]);
 }
@@ -2199,6 +2255,12 @@ export async function scanUrlForPhishing(
   origin: string,
 ): Promise<PhishingDetectionScanResult | null> {
   return await submitRequestToBackground('scanUrlForPhishing', [origin]);
+}
+
+export async function checkAddressPoisoning(
+  address: string,
+): Promise<SimilarAddressMatch[]> {
+  return await submitRequestToBackground('checkAddressPoisoning', [address]);
 }
 
 // TODO: Clean this up.
@@ -2284,7 +2346,7 @@ export function deleteExpiredNotifications(): ThunkAction<
 
         return Boolean(
           notification.readDate &&
-            new Date(notification.readDate) < expirationTime,
+          new Date(notification.readDate) < expirationTime,
         );
       })
       .map(({ id }) => id);
@@ -2490,61 +2552,6 @@ export function updateMetamaskState(
       dispatch({ type: actionConstants.SELECTED_ADDRESS_CHANGED });
     }
 
-    const newAddressBook =
-      newState.addressBook?.[newProviderConfig?.chainId] ?? {};
-    const oldAddressBook =
-      currentState.addressBook?.[providerConfig?.chainId] ?? {};
-
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const newAccounts: { [address: string]: Record<string, any> } =
-      getMetaMaskAccounts({ metamask: newState });
-
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const oldAccounts: { [address: string]: Record<string, any> } =
-      getMetaMaskAccounts({ metamask: currentState });
-    const newSelectedAccount = newAccounts[newSelectedAddress];
-    const oldSelectedAccount = newAccounts[selectedAddress];
-    // dispatch an ACCOUNT_CHANGED for any account whose balance or other
-    // properties changed in this update
-    Object.entries(oldAccounts).forEach(([address, oldAccount]) => {
-      if (!isEqual(oldAccount, newAccounts[address])) {
-        dispatch({
-          type: actionConstants.ACCOUNT_CHANGED,
-          payload: { account: newAccounts[address] },
-        });
-      }
-    });
-
-    // Also emit an event for the selected account changing, either due to a
-    // property update or if the entire account changes.
-    if (isEqual(oldSelectedAccount, newSelectedAccount) === false) {
-      dispatch({
-        type: actionConstants.SELECTED_ACCOUNT_CHANGED,
-        payload: { account: newSelectedAccount },
-      });
-    }
-    // We need to keep track of changing address book entries
-    if (isEqual(oldAddressBook, newAddressBook) === false) {
-      dispatch({
-        type: actionConstants.ADDRESS_BOOK_UPDATED,
-        payload: { addressBook: newAddressBook },
-      });
-    }
-
-    // track when gasFeeEstimates change
-    if (
-      isEqual(currentState.gasFeeEstimates, newState.gasFeeEstimates) === false
-    ) {
-      dispatch({
-        type: actionConstants.GAS_FEE_ESTIMATES_UPDATED,
-        payload: {
-          gasFeeEstimates: newState.gasFeeEstimates,
-          gasEstimateType: newState.gasEstimateType,
-        },
-      });
-    }
     dispatch({
       type: actionConstants.UPDATE_METAMASK_STATE,
       value: newState,
@@ -3478,7 +3485,6 @@ export async function checkAndUpdateSingleNftOwnershipStatus(
 ) {
   await submitRequestToBackground('checkAndUpdateSingleNftOwnershipStatus', [
     nft,
-    false,
     networkClientId,
   ]);
 }
@@ -3683,6 +3689,7 @@ export function createSpeedUpTransaction(
 }
 export function addNetwork(
   networkConfiguration: AddNetworkFields | UpdateNetworkFields,
+  options: { setActive?: boolean } = {},
 ): ThunkAction<
   Promise<NetworkConfiguration>,
   MetaMaskReduxState,
@@ -3694,6 +3701,7 @@ export function addNetwork(
     try {
       return await submitRequestToBackground('addNetwork', [
         networkConfiguration,
+        options,
       ]);
     } catch (error) {
       logErrorWithMessage(error);
@@ -4321,6 +4329,24 @@ export async function setDefaultHomeActiveTabName(
   }
 }
 
+export function setLastVisitedPerpsRoute(
+  path: string | null,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    // Fire-and-forget: this write is a pure navigation hint for the next
+    // home mount. Swallow errors without a warning toast — users should
+    // never see UI noise for an internal persistence operation. We also
+    // skip `forceUpdateMetamaskState` because the field is memory-only
+    // (persist:false) and every Perps route change would otherwise pull
+    // the entire background state.
+    try {
+      await submitRequestToBackground('setLastVisitedRoute', ['perps', path]);
+    } catch (error) {
+      log.error('[setLastVisitedPerpsRoute] error', error);
+    }
+  };
+}
+
 export function setShowNativeTokenAsMainBalancePreference(value: boolean) {
   return setPreference('showNativeTokenAsMainBalance', value);
 }
@@ -4898,23 +4924,6 @@ export function setUseCurrencyRateCheck(
     } finally {
       dispatch(hideLoadingIndication());
     }
-  };
-}
-
-// MultichainAssetsRatesController
-export function fetchHistoricalPricesForAsset(
-  address: CaipAssetType,
-  internalAccount: InternalAccount,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(`background.fetchHistoricalPricesForAsset`);
-    await submitRequestToBackground('fetchHistoricalPricesForAsset', [
-      address,
-      internalAccount,
-    ]);
-    await forceUpdateMetamaskState(dispatch);
   };
 }
 
@@ -5790,24 +5799,6 @@ export function setEditedNetwork(
   return { type: actionConstants.SET_EDIT_NETWORK, payload };
 }
 
-export function setNewNftAddedMessage(
-  newNftAddedMessage: string,
-): PayloadAction<string> {
-  return {
-    type: actionConstants.SET_NEW_NFT_ADDED_MESSAGE,
-    payload: newNftAddedMessage,
-  };
-}
-
-export function setRemoveNftMessage(
-  removeNftMessage: string,
-): PayloadAction<string> {
-  return {
-    type: actionConstants.SET_REMOVE_NFT_MESSAGE,
-    payload: removeNftMessage,
-  };
-}
-
 export function setNewTokensImported(
   newTokensImported: string,
 ): PayloadAction<string> {
@@ -6344,18 +6335,17 @@ export function updateBalancesFoAccounts(
  * @param params - The parameters for the polling.
  * @param params.chainIds - The chain ids to poll.
  * @param params.selectedAccountAddress - The selected account address to poll.
+ * @param params.selectedAccountId - The selected account id to poll.
  * @returns The polling token that can be used to stop polling.
  */
-export async function staticAssetsStartPolling({
-  chainIds,
-  selectedAccountAddress,
-}: {
+export async function staticAssetsStartPolling(params: {
   chainIds: string[];
   selectedAccountAddress: string;
+  selectedAccountId: string;
 }): Promise<string> {
   const pollingToken = await submitRequestToBackground(
     'staticAssetsStartPolling',
-    [{ chainIds, selectedAccountAddress }],
+    [params],
   );
   await addPollingTokenToAppState(pollingToken);
   return pollingToken;
@@ -7345,6 +7335,33 @@ export function performSignIn(): ThunkAction<
 }
 
 /**
+ * Marks profile pairing as needed in the AuthenticationController state.
+ *
+ * Dispatched by `useAutoSignIn` when a new keyring/SRP is added so that the
+ * next auto-sign-in cycle re-runs `performSignIn` and re-pairs profiles. The
+ * controller method is a synchronous, never-throws state setter.
+ *
+ * @returns A thunk action that toggles `needsProfilePairing` to `true`.
+ */
+export function requestProfilePairing(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  return async () => {
+    try {
+      await submitRequestToBackground('requestProfilePairing');
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
+/**
  * Initiates the sign-out process.
  *
  * This function dispatches a request to the background script to perform the sign-out operation.
@@ -7946,18 +7963,6 @@ export async function sendMultichainTransaction(
       },
     },
   });
-}
-
-export async function createSnapAccount(
-  snapId: SnapId,
-  options: Record<string, Json>,
-  internalOptions?: SnapKeyringInternalOptions,
-): Promise<InternalAccount> {
-  return await submitRequestToBackground<InternalAccount>('createSnapAccount', [
-    snapId,
-    options,
-    internalOptions,
-  ]);
 }
 
 export async function getCode(address: Hex, networkClientId: string) {

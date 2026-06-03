@@ -81,6 +81,7 @@ jest.mock('@metamask/perps-controller', () => ({
     getHistoricalPortfolio: jest.fn(),
     fetchHistoricalCandles: jest.fn(),
     calculateFees: jest.fn(),
+    calculateLiquidationPrice: jest.fn(),
     getAvailableDexs: jest.fn(),
     refreshEligibility: jest.fn(),
     startEligibilityMonitoring: jest.fn(),
@@ -181,6 +182,31 @@ describe('PerpsControllerInit', () => {
       });
     });
 
+    /**
+     * Data-layer guard: the UI categorization filter (Stocks/Commodities/Forex)
+     * intentionally does NOT re-check the HIP-3 allowlist and trusts the
+     * controller to limit which HIP-3 markets reach the UI. If this fallback
+     * is ever weakened (e.g. set to []), markets from non-allowlisted DEXes
+     * could surface in the UI before LaunchDarkly responds. Lock it in here.
+     *
+     * See ui/pages/perps/market-list/index.tsx :: filterByType.
+     */
+    it('always wires a non-empty fallbackHip3AllowlistMarkets so the controller can gate HIP-3 markets before LD loads', () => {
+      const request = getInitRequestMock();
+      PerpsControllerInit(request);
+
+      const constructorCall = PerpsControllerMock.mock.calls[0][0];
+      const { clientConfig } = constructorCall;
+      expect(clientConfig).toBeDefined();
+      if (!clientConfig) {
+        return;
+      }
+      expect(clientConfig.fallbackHip3Enabled).toBe(true);
+      expect(clientConfig.fallbackHip3AllowlistMarkets).toEqual(['xyz:*']);
+      expect(clientConfig.fallbackHip3AllowlistMarkets).not.toEqual([]);
+      expect(clientConfig.fallbackHip3AllowlistMarkets).not.toBeUndefined();
+    });
+
     it('passes deferEligibilityCheck true when onboarding is not complete', () => {
       const request = getInitRequestMock();
       request.persistedState.OnboardingController = {
@@ -266,7 +292,44 @@ describe('PerpsControllerInit', () => {
       PerpsControllerInit(getInitRequestMock());
       expect(createPerpsInfrastructure).toHaveBeenCalledWith({
         trackEvent: expect.any(Function),
+        getStorageItem: expect.any(Function),
+        setStorageItem: expect.any(Function),
+        removeStorageItem: expect.any(Function),
+        isDisconnecting: expect.any(Function),
+        getPerpsDiscountForAccount: expect.any(Function),
       });
+    });
+
+    it('getPerpsDiscountForAccount from createPerpsInfrastructure delegates to RewardsController:getPerpsDiscountForAccount', async () => {
+      const call = jest.fn().mockResolvedValue(5000);
+      const request = getInitRequestMock();
+      request.controllerMessenger = {
+        call,
+      } as unknown as PerpsControllerMessenger;
+      let capturedDeps: InfrastructureDeps | undefined;
+
+      jest
+        .mocked(createPerpsInfrastructure)
+        .mockImplementationOnce((deps: InfrastructureDeps) => {
+          capturedDeps = deps;
+          return {} as PerpsPlatformDependencies;
+        });
+
+      PerpsControllerInit(request);
+      expect(capturedDeps).toBeDefined();
+      const deps = capturedDeps as InfrastructureDeps;
+
+      const result = await deps.getPerpsDiscountForAccount(
+        'eip155:42161:0xabc',
+        10,
+      );
+
+      expect(result).toBe(5000);
+      expect(call).toHaveBeenCalledWith(
+        'RewardsController:getPerpsDiscountForAccount',
+        'eip155:42161:0xabc',
+        10,
+      );
     });
 
     it('trackEvent from createPerpsInfrastructure delegates to MetaMetricsController:trackEvent', () => {
@@ -295,6 +358,53 @@ describe('PerpsControllerInit', () => {
           event: MetaMetricsEventName.PerpsScreenViewed,
           category: MetaMetricsEventCategory.Perps,
         }),
+      );
+    });
+
+    it('storage helpers from createPerpsInfrastructure delegate to StorageService', async () => {
+      const call = jest.fn().mockResolvedValue({ result: 'cached-value' });
+      const request = getInitRequestMock();
+      request.controllerMessenger = {
+        call,
+      } as unknown as PerpsControllerMessenger;
+      let capturedDeps: InfrastructureDeps | undefined;
+
+      jest
+        .mocked(createPerpsInfrastructure)
+        .mockImplementationOnce((deps: InfrastructureDeps) => {
+          capturedDeps = deps;
+          return {} as PerpsPlatformDependencies;
+        });
+
+      PerpsControllerInit(request);
+      expect(capturedDeps).toBeDefined();
+      const deps = capturedDeps as InfrastructureDeps;
+
+      await deps.getStorageItem('diskCache:PERPS_DISK_CACHE_MARKETS');
+      await deps.setStorageItem(
+        'diskCache:PERPS_DISK_CACHE_MARKETS',
+        'cached-value',
+      );
+      await deps.removeStorageItem('diskCache:PERPS_DISK_CACHE_MARKETS');
+
+      expect(call).toHaveBeenNthCalledWith(
+        1,
+        'StorageService:getItem',
+        'PerpsController',
+        'diskCache:PERPS_DISK_CACHE_MARKETS',
+      );
+      expect(call).toHaveBeenNthCalledWith(
+        2,
+        'StorageService:setItem',
+        'PerpsController',
+        'diskCache:PERPS_DISK_CACHE_MARKETS',
+        'cached-value',
+      );
+      expect(call).toHaveBeenNthCalledWith(
+        3,
+        'StorageService:removeItem',
+        'PerpsController',
+        'diskCache:PERPS_DISK_CACHE_MARKETS',
       );
     });
   });
@@ -447,6 +557,7 @@ describe('PerpsControllerInit', () => {
       ['perpsGetHistoricalPortfolio', 'getHistoricalPortfolio'],
       ['perpsFetchHistoricalCandles', 'fetchHistoricalCandles'],
       ['perpsCalculateFees', 'calculateFees'],
+      ['perpsCalculateLiquidationPrice', 'calculateLiquidationPrice'],
       ['perpsGetAvailableDexs', 'getAvailableDexs'],
       ['perpsRefreshEligibility', 'refreshEligibility'],
       ['perpsStartEligibilityMonitoring', 'startEligibilityMonitoring'],
@@ -629,6 +740,236 @@ describe('PerpsControllerInit', () => {
       expect(messengerClient.init).toHaveBeenCalledTimes(1);
       expect(placeOrder).toHaveBeenCalledTimes(2);
       expect(result).toEqual({ orderId: '123' });
+    });
+
+    describe('benign disconnect-race recovery', () => {
+      function makeTerminatedByUserError() {
+        const cause = Object.assign(
+          new Error('Error when reconnecting WebSocket: TERMINATED_BY_USER'),
+          { name: 'ReconnectingWebSocketError', code: 'TERMINATED_BY_USER' },
+        );
+        return Object.assign(
+          new Error('Failed to establish WebSocket connection'),
+          { name: 'WebSocketRequestError', cause },
+        );
+      }
+
+      function makeConnectionClosedError() {
+        return Object.assign(new Error('WebSocket connection closed'), {
+          name: 'WebSocketRequestError',
+        });
+      }
+
+      describe('read methods retry on benign disconnect errors', () => {
+        it('retries perpsGetPositions after TERMINATED_BY_USER and succeeds', async () => {
+          const { api, messengerClient } = initWithApi();
+          const getPositions = messengerClient.getPositions as jest.Mock;
+          getPositions
+            .mockRejectedValueOnce(makeTerminatedByUserError())
+            .mockResolvedValueOnce([{ symbol: 'ETH' }]);
+
+          const result = await api.perpsGetPositions();
+
+          expect(messengerClient.init).toHaveBeenCalledTimes(1);
+          expect(getPositions).toHaveBeenCalledTimes(2);
+          expect(result).toEqual([{ symbol: 'ETH' }]);
+        });
+
+        it('retries perpsGetUserHistory (provider passthrough) after TERMINATED_BY_USER', async () => {
+          const { api, messengerClient } = initWithApi();
+          const getUserHistory = messengerClient.getActiveProvider()
+            .getUserHistory as jest.Mock;
+          getUserHistory
+            .mockRejectedValueOnce(makeTerminatedByUserError())
+            .mockResolvedValueOnce([{ id: 'h1' }]);
+
+          const result = await api.perpsGetUserHistory({ startTime: 0 });
+
+          expect(messengerClient.init).toHaveBeenCalledTimes(1);
+          expect(result).toEqual([{ id: 'h1' }]);
+        });
+
+        it('retries perpsGetPositions after WebSocket connection closed and succeeds', async () => {
+          const { api, messengerClient } = initWithApi();
+          const getPositions = messengerClient.getPositions as jest.Mock;
+          getPositions
+            .mockRejectedValueOnce(makeConnectionClosedError())
+            .mockResolvedValueOnce([{ symbol: 'BTC' }]);
+
+          const result = await api.perpsGetPositions();
+
+          expect(messengerClient.init).toHaveBeenCalledTimes(1);
+          expect(getPositions).toHaveBeenCalledTimes(2);
+          expect(result).toEqual([{ symbol: 'BTC' }]);
+        });
+
+        it('retries perpsGetUserHistory after WebSocket connection closed and succeeds', async () => {
+          const { api, messengerClient } = initWithApi();
+          const getUserHistory = messengerClient.getActiveProvider()
+            .getUserHistory as jest.Mock;
+          getUserHistory
+            .mockRejectedValueOnce(makeConnectionClosedError())
+            .mockResolvedValueOnce([{ id: 'h2' }]);
+
+          const result = await api.perpsGetUserHistory({ startTime: 0 });
+
+          expect(messengerClient.init).toHaveBeenCalledTimes(1);
+          expect(result).toEqual([{ id: 'h2' }]);
+        });
+
+        it('does not retry when the cause code is not TERMINATED_BY_USER', async () => {
+          const { api, messengerClient } = initWithApi();
+          const getPositions = messengerClient.getPositions as jest.Mock;
+          const cause = Object.assign(
+            new Error('Error when reconnecting WebSocket: UNKNOWN_ERROR'),
+            { name: 'ReconnectingWebSocketError', code: 'UNKNOWN_ERROR' },
+          );
+          const wsError = Object.assign(
+            new Error('Failed to establish WebSocket connection'),
+            { name: 'WebSocketRequestError', cause },
+          );
+          getPositions.mockRejectedValueOnce(wsError);
+
+          await expect(api.perpsGetPositions()).rejects.toThrow(
+            'Failed to establish WebSocket connection',
+          );
+          expect(messengerClient.init).not.toHaveBeenCalled();
+          expect(getPositions).toHaveBeenCalledTimes(1);
+        });
+
+        it('does not retry for a WebSocketRequestError with a different message', async () => {
+          const { api, messengerClient } = initWithApi();
+          const getPositions = messengerClient.getPositions as jest.Mock;
+          const wsError = Object.assign(
+            new Error('Failed to close WebSocket connection'),
+            { name: 'WebSocketRequestError' },
+          );
+          getPositions.mockRejectedValueOnce(wsError);
+
+          await expect(api.perpsGetPositions()).rejects.toThrow(
+            'Failed to close WebSocket connection',
+          );
+          expect(messengerClient.init).not.toHaveBeenCalled();
+          expect(getPositions).toHaveBeenCalledTimes(1);
+        });
+      });
+
+      describe('write methods do not retry on benign disconnect errors', () => {
+        // [apiMethod, controllerMethod] pairs for all guarded mutations
+        const writeMethods: [string, string][] = [
+          ['perpsPlaceOrder', 'placeOrder'],
+          ['perpsClosePosition', 'closePosition'],
+          ['perpsClosePositions', 'closePositions'],
+          ['perpsEditOrder', 'editOrder'],
+          ['perpsCancelOrder', 'cancelOrder'],
+          ['perpsCancelOrders', 'cancelOrders'],
+          ['perpsUpdatePositionTPSL', 'updatePositionTPSL'],
+          ['perpsUpdateMargin', 'updateMargin'],
+          ['perpsFlipPosition', 'flipPosition'],
+          ['perpsWithdraw', 'withdraw'],
+          ['perpsUpdateWithdrawalStatus', 'updateWithdrawalStatus'],
+          ['perpsUpdateWithdrawalProgress', 'updateWithdrawalProgress'],
+        ];
+
+        for (const [apiMethod, controllerMethod] of writeMethods) {
+          it(`${apiMethod} surfaces "WebSocket connection closed" without retry`, async () => {
+            const { api, messengerClient } = initWithApi();
+            const fn = (
+              messengerClient as unknown as Record<string, jest.Mock>
+            )[controllerMethod];
+            fn.mockRejectedValueOnce(makeConnectionClosedError());
+
+            await expect(
+              (api as Record<string, CallableFunction>)[apiMethod](),
+            ).rejects.toThrow('WebSocket connection closed');
+            expect(messengerClient.init).not.toHaveBeenCalled();
+            expect(fn).toHaveBeenCalledTimes(1);
+          });
+
+          it(`${apiMethod} surfaces TERMINATED_BY_USER without retry`, async () => {
+            const { api, messengerClient } = initWithApi();
+            const fn = (
+              messengerClient as unknown as Record<string, jest.Mock>
+            )[controllerMethod];
+            fn.mockRejectedValueOnce(makeTerminatedByUserError());
+
+            await expect(
+              (api as Record<string, CallableFunction>)[apiMethod](),
+            ).rejects.toThrow();
+            expect(messengerClient.init).not.toHaveBeenCalled();
+            expect(fn).toHaveBeenCalledTimes(1);
+          });
+
+          it(`${apiMethod} still retries on CLIENT_NOT_INITIALIZED (pre-send)`, async () => {
+            const { api, messengerClient } = initWithApi();
+            const fn = (
+              messengerClient as unknown as Record<string, jest.Mock>
+            )[controllerMethod];
+            fn.mockRejectedValueOnce(
+              new Error('CLIENT_NOT_INITIALIZED'),
+            ).mockResolvedValueOnce(undefined);
+
+            await (api as Record<string, CallableFunction>)[apiMethod]();
+
+            expect(messengerClient.init).toHaveBeenCalledTimes(1);
+            expect(fn).toHaveBeenCalledTimes(2);
+          });
+        }
+
+        it('perpsDepositWithConfirmation surfaces "WebSocket connection closed" without retry', async () => {
+          const { api, messengerClient } = initWithApi();
+          (
+            messengerClient.depositWithConfirmation as jest.Mock
+          ).mockRejectedValueOnce(makeConnectionClosedError());
+
+          await expect(
+            api.perpsDepositWithConfirmation(
+              ...([] as unknown as Parameters<
+                typeof messengerClient.depositWithConfirmation
+              >),
+            ),
+          ).rejects.toThrow('WebSocket connection closed');
+          expect(messengerClient.init).not.toHaveBeenCalled();
+        });
+
+        it('perpsDepositWithConfirmation surfaces TERMINATED_BY_USER without retry', async () => {
+          const { api, messengerClient } = initWithApi();
+          (
+            messengerClient.depositWithConfirmation as jest.Mock
+          ).mockRejectedValueOnce(makeTerminatedByUserError());
+
+          await expect(
+            api.perpsDepositWithConfirmation(
+              ...([] as unknown as Parameters<
+                typeof messengerClient.depositWithConfirmation
+              >),
+            ),
+          ).rejects.toThrow();
+          expect(messengerClient.init).not.toHaveBeenCalled();
+        });
+
+        it('perpsDepositWithConfirmation still retries on CLIENT_NOT_INITIALIZED (pre-send)', async () => {
+          const { api, messengerClient } = initWithApi();
+          (
+            messengerClient.state as unknown as Record<string, string>
+          ).lastDepositTransactionId = 'tx-retry';
+          (messengerClient.depositWithConfirmation as jest.Mock)
+            .mockRejectedValueOnce(new Error('CLIENT_NOT_INITIALIZED'))
+            .mockResolvedValueOnce(undefined);
+
+          const result = await api.perpsDepositWithConfirmation(
+            ...([] as unknown as Parameters<
+              typeof messengerClient.depositWithConfirmation
+            >),
+          );
+
+          expect(messengerClient.init).toHaveBeenCalledTimes(1);
+          expect(messengerClient.depositWithConfirmation).toHaveBeenCalledTimes(
+            2,
+          );
+          expect(result).toBe('tx-retry');
+        });
+      });
     });
   });
 });

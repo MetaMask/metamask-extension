@@ -37,20 +37,8 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "Earráid"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "Cód QR neamhbhailí. Scanáil an cód QR sioncrónaithe den sparán crua-earraí le do thoil."
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "Scanáil cód QR"
-  },
-  "QRHardwareWalletSteps1Description": {
-    "message": "Is féidir leat rogha a dhéanamh as liosta de chomhpháirtithe oifigiúla tacaíochta cóid QR thíos."
-  },
-  "QRHardwareWalletSteps1Title": {
-    "message": "Ceangail do sparán crua-earraí QR"
-  },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
   },
   "SrpListHideAccounts": {
     "message": "Folaigh cuntais $1",
@@ -107,12 +95,6 @@
   },
   "accountIdenticon": {
     "message": "Deilbhín cuntais"
-  },
-  "accountIdenticonDescription": {
-    "message": "Roghnaigh as trí stíl éagsúla de dheilbhíní uathúla a chabhróidh leat cuntais a aithint go tapa."
-  },
-  "accountIsntConnectedToastText": {
-    "message": "Níl $1 ceangailte le $2"
   },
   "accountName": {
     "message": "Ainm an chuntais"
@@ -181,9 +163,6 @@
   "addACustomNetwork": {
     "message": "Cuir líonra saincheaptha leis"
   },
-  "addAHardwareWallet": {
-    "message": "Cuir sparán crua-earraí leis"
-  },
   "addANetwork": {
     "message": "Cuir líonra leis"
   },
@@ -196,21 +175,11 @@
   "addAccount": {
     "message": "Cuir cuntas leis"
   },
-  "addAccountFromNetwork": {
-    "message": "Cuir cuntas $1 leis",
-    "description": "$1 is the network name, e.g. Bitcoin or Solana"
-  },
-  "addAccountOrWallet": {
-    "message": "Cuir cuntas nó sparán leis"
-  },
   "addAcquiredTokens": {
     "message": "Cuir na comharthaí leis atá faighte agat ag baint úsáide as MetaMask"
   },
   "addAlias": {
     "message": "Cuir leasainm leis"
-  },
-  "addBitcoinAccountLabel": {
-    "message": "Cuntas Bitcoin"
   },
   "addBlockExplorer": {
     "message": "Cuir taiscéalaí bloc leis"
@@ -252,12 +221,6 @@
   "addFriendsAndAddresses": {
     "message": "Cuir cairde agus seoltaí muiníneacha leis"
   },
-  "addHardwareWalletLabel": {
-    "message": "Sparán crua-earraí"
-  },
-  "addIPFSGateway": {
-    "message": "Cuir do gheata IPFS is fearr leat leis"
-  },
   "addMemo": {
     "message": "Cuir meamram leis"
   },
@@ -268,28 +231,11 @@
     "message": "Cuir $1 leis",
     "description": "$1 represents network name"
   },
-  "addNewAccount": {
-    "message": "Cuir cuntas Ethereum nua leis"
-  },
-  "addNewEthereumAccountLabel": {
-    "message": "Cuntas Ethereum"
-  },
-  "addNewSolanaAccountLabel": {
-    "message": "Cuntas Solana"
-  },
   "addNft": {
     "message": "Cuir NFT leis"
   },
   "addNfts": {
     "message": "Cuir NFTanna leis"
-  },
-  "addNonEvmAccount": {
-    "message": "Cuir cuntas $1 leis",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
-  },
-  "addNonEvmAccountFromNetworkPicker": {
-    "message": "Chun an líonra $1 a chumasú, ní mór duit cuntas $2 a chruthú.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "Cuir URL RPC leis"
@@ -382,9 +328,6 @@
   },
   "airDropPatternTitle": {
     "message": "Patrún Aerthiar"
-  },
-  "airgapVault": {
-    "message": "Cruinneachán AirGap"
   },
   "alert": {
     "message": "Foláireamh"
@@ -642,15 +585,8 @@
   "autoDetectTokens": {
     "message": "Brath comharthaí go huathoibríoch"
   },
-  "autoDetectTokensDescription": {
-    "message": "Úsáidimid APIanna tríú páirtí chun comharthaí nua a sheoltar chuig do sparán a bhrath agus a thaispeáint. Múch mura dteastaíonn uait go dtarraingeoidh an aip sonraí ó na seirbhísí sin go huathoibríoch. $1",
-    "description": "$1 is a link to a support article"
-  },
   "autoLockTimeLimit": {
     "message": "Uaineadóir glasála uathoibríoch (nóiméid)"
-  },
-  "autoLockTimeLimitDescription": {
-    "message": "Socraigh an t-am díomhaoin i nóiméid sula nglasálfar MetaMask."
   },
   "available": {
     "message": "ar fáil"
@@ -822,9 +758,6 @@
   "blockaidDescriptionTransferFarming": {
     "message": "Má cheadaíonn tú an t-iarratas seo, tógfaidh tríú páirtí atá aitheanta as camscéimeanna do shócmhainní go léir."
   },
-  "blockaidMessage": {
-    "message": "Príobháideacht á caomhnú - ní roinntear aon sonraí le tríú páirtithe. Ar fáil ar Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon, Base agus Sepolia."
-  },
   "blockaidTitleDeceptive": {
     "message": "Is iarratas mealltach é seo"
   },
@@ -865,15 +798,6 @@
   },
   "bridgeConfirmTwoTransactions": {
     "message": "Beidh ort 2 idirbheart a dheimhniú ar do sparán crua-earraí:"
-  },
-  "bridgeCreateSolanaAccount": {
-    "message": "Cruthaigh cuntas Solana"
-  },
-  "bridgeCreateSolanaAccountDescription": {
-    "message": "Chun aistriú chuig líonra Solana, beidh cuntas agus seoladh glactha ag teastáil uait."
-  },
-  "bridgeCreateSolanaAccountTitle": {
-    "message": "Beidh cuntas Solana ag teastáil uait ar dtús."
   },
   "bridgeDetailsTitle": {
     "message": "Sonraí an droichid",
@@ -918,9 +842,6 @@
   },
   "bridgeSelectTokenAndAmount": {
     "message": "Roghnaigh comhartha agus méid"
-  },
-  "bridgeSolanaAccountCreated": {
-    "message": "Cruthaíodh cuntas Solana"
   },
   "bridgeStatusComplete": {
     "message": "Críochnaithe",
@@ -1021,9 +942,6 @@
   "browserNotSupported": {
     "message": "Ní thacaítear le do bhrabhsálaí..."
   },
-  "builtAroundTheWorld": {
-    "message": "Tá MetaMask deartha agus tógtha ar fud an domhain."
-  },
   "busy": {
     "message": "Gnóthach"
   },
@@ -1033,9 +951,6 @@
   "buyMoreAsset": {
     "message": "Ceannaigh níos mó $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyNow": {
-    "message": "Ceannaigh Anois"
   },
   "bytes": {
     "message": "Bearta"
@@ -1077,16 +992,6 @@
   "changePasswordWarningDescription": {
     "message": "Má athraíonn tú do phasfhocal anseo, glasálfar MetaMask ar ghléasanna eile atá in úsáid agat. Beidh ort logáil isteach arís le do phasfhocal nua."
   },
-  "chooseYourNetwork": {
-    "message": "Roghnaigh do líonra"
-  },
-  "chooseYourNetworkDescription": {
-    "message": "Nuair a úsáideann tú ár socruithe agus cumraíochtaí réamhshocraithe, úsáidimid Infura mar ár soláthraí glaonna nós imeachta cianda (RPC) réamhshocraithe chun an rochtain is iontaofa agus is príobháideacha is féidir a thairiscint ar shonraí Ethereum. I gcásanna teoranta, féadfaimid soláthraithe RPC eile a úsáid chun an taithí is fearr a sholáthar dár n-úsáideoirí. Is féidir leat do RPC féin a roghnú, ach cuimhnigh go bhfaighidh aon RPC do sheoladh IP agus do sparán Ethereum chun idirbhearta a dhéanamh. Chun tuilleadh a fhoghlaim faoi mar a láimhseálann Infura sonraí do chuntais EVM, léigh ár $1, agus do chuntais Solana, $2.",
-    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
-  },
-  "chooseYourNetworkDescriptionCallToAction": {
-    "message": "cliceáil anseo"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Ní mór duit MetaMask a úsáid ar Google Chrome chun ceangal le do Sparán Crua-earraí."
   },
@@ -1098,9 +1003,6 @@
   },
   "clearActivity": {
     "message": "Glan sonraí gníomhaíochta agus neamhghníomhaíochta"
-  },
-  "clearActivityButton": {
-    "message": "Glan sonraí an chluaisín gníomhaíochta"
   },
   "clearActivityDescription": {
     "message": "Athshocraíonn sé seo neamh-uair an chuntais agus scriosann sé sonraí ón táb gníomhaíochta i do sparán. Ní bheidh tionchar ach ar an gcuntas reatha agus ar an líonra. Ní athróidh d’iarmhéideanna ná d’idirbhearta isteach."
@@ -1321,20 +1223,11 @@
   "connect": {
     "message": "Ceangail"
   },
-  "connectAccount": {
-    "message": "Ceangail cuntas"
-  },
   "connectAccounts": {
     "message": "Ceangail cuntais"
   },
-  "connectAnAccountHeader": {
-    "message": "Ceangail cuntas"
-  },
   "connectManually": {
     "message": "Ceangail de láimh leis an suíomh reatha"
-  },
-  "connectMoreAccounts": {
-    "message": "Ceangail níos mó cuntas"
   },
   "connectSnap": {
     "message": "Ceangail $1",
@@ -1352,10 +1245,6 @@
   },
   "connectedAccountsEmptyDescription": {
     "message": "Níl MetaMask ceangailte leis an suíomh seo. Chun ceangal le suíomh gréasáin, aimsigh agus cliceáil an cnaipe ceangail."
-  },
-  "connectedAccountsListTooltip": {
-    "message": "Is féidir le $1 iarmhéid an chuntais, an seoladh, an ghníomhaíocht a fheiceáil, agus idirbhearta a mholadh le ceadú do chuntais nasctha.",
-    "description": "$1 is the origin name"
   },
   "connectedSites": {
     "message": "Suíomhanna ceangailte"
@@ -1388,10 +1277,6 @@
   "connectedWithNetwork": {
     "message": "$1 líonra ceangailte",
     "description": "$1 represents network length"
-  },
-  "connectedWithNetworkName": {
-    "message": "Ceangailte le $1",
-    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "Ag ceangal"
@@ -1426,9 +1311,6 @@
   "connectionFailedDescription": {
     "message": "Theip ar $1 a fháil, seiceáil do líonra agus déan iarracht arís.",
     "description": "$1 is the name of the snap being fetched."
-  },
-  "connectionPopoverDescription": {
-    "message": "Chun ceangal le suíomh, roghnaigh an cnaipe ceangail. Ní féidir le MetaMask ceangal ach le suíomhanna gréasáin 3."
   },
   "connectionRequest": {
     "message": "Iarratas ceangail"
@@ -1473,9 +1355,6 @@
   "convertTokenToNFTExistDescription": {
     "message": "Tá braite againn gur cuireadh an tsócmhainn seo leis mar NFT. Ar mhaith leat í a bhaint de do liosta comharthaí?"
   },
-  "coolWallet": {
-    "message": "CoolWallet"
-  },
   "copiedExclamation": {
     "message": "Cóipeáilte."
   },
@@ -1505,9 +1384,6 @@
     "message": "Ag cruthú cuntais...",
     "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
   },
-  "createNewAccountHeader": {
-    "message": "Cruthaigh cuntas nua"
-  },
   "createPassword": {
     "message": "Pasfhocal MetaMask"
   },
@@ -1533,17 +1409,11 @@
   "createSnapAccountTitle": {
     "message": "Cruthaigh cuntas"
   },
-  "createSolanaAccount": {
-    "message": "Cruthaigh cuntas Solana"
-  },
   "creatorAddress": {
     "message": "Seoladh an chruthaitheora"
   },
   "cryptoCompare": {
     "message": "CryptoCompare"
-  },
-  "currencyConversion": {
-    "message": "Airgeadra"
   },
   "currencyRateCheckToggle": {
     "message": "Taispeáin an t-iarmhéid agus seiceálaí praghsanna comharthaí"
@@ -1563,9 +1433,6 @@
   },
   "currentExtension": {
     "message": "Leathanach síneadh reatha"
-  },
-  "currentLanguage": {
-    "message": "Teanga reatha"
   },
   "currentNetwork": {
     "message": "Líonra reatha",
@@ -1636,20 +1503,11 @@
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Faigh nuashonruithe táirgí, leideanna agus nuacht - lena n-áirítear trí ríomhphost. Féadfaimid d’idirghníomhaíochtaí a úsáid chun feabhas a chur ar a bhfuil á roinnt againn."
   },
-  "dataCollectionWarningPopoverButton": {
-    "message": "Ceart go leor"
-  },
-  "dataCollectionWarningPopoverDescription": {
-    "message": "Mhúch tú bailiú sonraí chun críocha margaíochta. Ní bhaineann sé seo ach leis an ngléas seo. Má úsáideann tú MetaMask ar ghléasanna eile, déan cinnte rogha an diúltaithe a dhéanamh ansin freisin."
-  },
   "dataUnavailable": {
     "message": "sonraí ar fáil"
   },
   "dateCreated": {
     "message": "Dáta cruthaithe"
-  },
-  "dcent": {
-    "message": "D'Cent"
   },
   "debitCreditPurchaseOptions": {
     "message": "Roghanna ceannaigh le cárta dochair nó creidmheasa"
@@ -1740,9 +1598,6 @@
   },
   "deepLink_theSwapsPage": {
     "message": "an leathanach malartuithe"
-  },
-  "deepLink_theSwapsRampsPage": {
-    "message": "an leathanach Malartuithe/Rampaí"
   },
   "defaultRpcUrl": {
     "message": "URL RPC réamhshocraithe"
@@ -1840,9 +1695,6 @@
   "details": {
     "message": "Sonraí"
   },
-  "developerOptions": {
-    "message": "Roghanna Forbróra"
-  },
   "disabledGasOptionToolTipMessage": {
     "message": "Tá “$1” díchumasaithe mar ní chomhlíonann sé an t-íosmhéid méadaithe 10% ón táille gáis bhunaidh.",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -1856,14 +1708,8 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "An bhfuil tú cinnte gur mian leat dícheangal? D’fhéadfá feidhmiúlacht an tsuímh a chailleadh."
   },
-  "disconnectAllAccountsText": {
-    "message": "cuntais"
-  },
   "disconnectAllDescriptionText": {
     "message": "Má dhícheanglaíonn tú ón suíomh seo, beidh ort do chuntais agus do líonraí a athcheangal le go mbeidh tú in ann an suíomh seo a úsáid arís."
-  },
-  "disconnectAllSnapsText": {
-    "message": "Snapanna"
   },
   "disconnectMessage": {
     "message": "Déanfaidh sé seo tú a dhícheangal ón suíomh seo"
@@ -1884,17 +1730,8 @@
   "dismiss": {
     "message": "Díbhe"
   },
-  "dismissReminderDescriptionField": {
-    "message": "Cas air seo chun an teachtaireacht meabhrúcháin chúltaca den Frása Aisghabhála Rúnda a dhíbhe. Molaimid go láidir duit cúltaca de do Frása Aisghabhála Rúnda a dhéanamh chun cailliúint cistí a sheachaint."
-  },
-  "dismissReminderField": {
-    "message": "Díbhe meabhrúchán cúltaca Frása Aisghabhála Rúnda"
-  },
   "displayNftMedia": {
     "message": "Taispeáin meáin NFT"
-  },
-  "displayNftMediaDescription": {
-    "message": "Nochtann taispeáint meán agus sonraí NFT do sheoladh IP do OpenSea nó do thríú páirtithe eile. Féadann sé seo ligean d’ionsaitheoirí do sheoladh IP a cheangal le do sheoladh Ethereum. Braitheann uath-bhrath NFT ar an socrú seo, agus ní bheidh sé ar fáil nuair a bhíonn sé seo múchta."
   },
   "doNotShare": {
     "message": "Ná roinn seo le duine ar bith"
@@ -1914,9 +1751,6 @@
   "downloadAppTitle": {
     "message": "Scan an cód QR agus íoslódáil an aip"
   },
-  "downloadGoogleChrome": {
-    "message": "Íoslódáil Google Chrome"
-  },
   "downloadMetaMaskMobileDescription": {
     "message": "Ligeann Face ID ar ár n-aip duit dul isteach fiú má dhéanann tú dearmad ar do phasfhocal. Tabhair MetaMask leat cibé áit a théann tú!"
   },
@@ -1925,9 +1759,6 @@
   },
   "downloadMetaMaskMobileTitle": {
     "message": "Faigh ár n-aip soghluaiste"
-  },
-  "downloadNow": {
-    "message": "Íoslódáil Anois"
   },
   "downloadStateLogs": {
     "message": "Íoslódáil logaí stáit"
@@ -2153,10 +1984,6 @@
   "errorCode": {
     "message": "Cód: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
-  },
-  "errorDetails": {
-    "message": "Sonraí earráide",
-    "description": "Label for the error details field in the error screen."
   },
   "errorGettingSafeChainList": {
     "message": "Earráid agus liosta slabhra sábháilte á fháil, lean ar aghaidh go cúramach le do thoil."
@@ -2480,17 +2307,8 @@
   "hardwareWalletSubmissionWarningTitle": {
     "message": "Sula gcliceálann tú ar Cuir Isteach:"
   },
-  "hardwareWalletSupportLinkConversion": {
-    "message": "cliceáil anseo"
-  },
   "hardwareWallets": {
     "message": "Ceangail sparán crua-earraí"
-  },
-  "hardwareWalletsInfo": {
-    "message": "Úsáideann comhtháthú sparán crua-earraí glaonna API chuig freastalaithe seachtracha, ar féidir leo do sheoladh IP agus na seoltaí conartha cliste a mbíonn tú ag idirghníomhú leo a fheiceáil."
-  },
-  "hardwareWalletsMsg": {
-    "message": "Roghnaigh sparán crua-earraí ar mhaith leat a úsáid le MetaMask."
   },
   "here": {
     "message": "anseo",
@@ -2655,9 +2473,6 @@
   "importNFTTokenIdToolTip": {
     "message": "Is aitheantóir uathúil é aitheantas NFT ós rud é nach bhfuil dhá NFT mar a chéile. Arís, ar OpenSea tá an uimhir seo faoi 'Sonraí'. Déan nóta de, nó cóipeáil í chuig do ghearrthaisce."
   },
-  "importPrivateKey": {
-    "message": "Eochair Phríobháideach"
-  },
   "importSecretRecoveryPhrase": {
     "message": "Iompórtáil Frása Rúnda Aisghabhála"
   },
@@ -2672,9 +2487,6 @@
   },
   "importTokensError": {
     "message": "Níorbh fhéidir linn na comharthaí a allmhairiú. Déan iarracht arís ar ball."
-  },
-  "importWalletOrAccountHeader": {
-    "message": "Sparán nó cuntas a allmhairiú"
   },
   "importWalletSuccess": {
     "message": "Frása Rúnda Aisghabhála $1 allmhairithe",
@@ -2800,9 +2612,6 @@
   "ipfsGateway": {
     "message": "Geata IPFS"
   },
-  "ipfsGatewayDescription": {
-    "message": "Úsáideann MetaMask seirbhísí tríú páirtí chun íomhánna de do NFTanna atá stóráilte ar IPFS a thaispeáint, faisnéis a bhaineann le seoltaí ENS atá curtha isteach i mbarra seoltaí do bhrabhsálaí a thaispeáint, agus deilbhíní a fháil le haghaidh comharthaí éagsúla. D’fhéadfadh do sheoladh IP a bheith nochta do na seirbhísí seo nuair a bhíonn tú á n-úsáid."
-  },
   "ipfsToggleModalDescriptionOne": {
     "message": "Úsáidimid seirbhísí tríú páirtí chun íomhánna de do NFTanna atá stóráilte ar IPFS a thaispeáint, faisnéis a bhaineann le seoltaí ENS atá curtha isteach i mbarra seoltaí do bhrabhsálaí a thaispeáint, agus deilbhíní a fháil le haghaidh comharthaí éagsúla. D’fhéadfadh do sheoladh IP a bheith nochta do na seirbhísí seo nuair a bhíonn tú á n-úsáid."
   },
@@ -2869,9 +2678,6 @@
   "learnMoreAboutPrivacy": {
     "message": "Foghlaim tuilleadh faoi na cleachtais is fearr maidir le príobháideacht."
   },
-  "learnMoreKeystone": {
-    "message": "Foghlaim Tuilleadh"
-  },
   "learnMoreUpperCase": {
     "message": "Foghlaim níos mó"
   },
@@ -2935,17 +2741,8 @@
   "ledgerFirefoxNotSupportedTitle": {
     "message": "Ní Thacaítear le Firefox"
   },
-  "ledgerLiveApp": {
-    "message": "Aip Ledger Live"
-  },
   "ledgerLocked": {
     "message": "Ní féidir ceangal leis an ngléas Ledger. Cinntigh go bhfuil do ghléas díghlasáilte agus go bhfuil aip Ethereum oscailte."
-  },
-  "ledgerMultipleDevicesUnsupportedInfoDescription": {
-    "message": "Chun gléas nua a nascadh, dícheangail an ceann roimhe sin."
-  },
-  "ledgerMultipleDevicesUnsupportedInfoTitle": {
-    "message": "Ní féidir leat ach Ledger amháin a nascadh ag an am céanna."
   },
   "ledgerTimeout": {
     "message": "Tá an iomarca ama á thógáil ag Ledger Live le freagairt nó tá an nasc imithe in éag. Cinntigh go bhfuil aip Ledger Live oscailte agus go bhfuil do ghléas díghlasáilte."
@@ -2963,9 +2760,6 @@
   "likeToImportTokens": {
     "message": "Ar mhaith leat na comharthaí seo a allmhairiú?"
   },
-  "lineaGoerli": {
-    "message": "Líonra tástála Linea Goerli"
-  },
   "lineaMainnet": {
     "message": "Linea Mainnet"
   },
@@ -2977,9 +2771,6 @@
   },
   "linkCentralizedExchanges": {
     "message": "Ceangail do chuntais Coinbase nó Binance chun cripte a aistriú chuig MetaMask saor in aisce."
-  },
-  "links": {
-    "message": "Naisc"
   },
   "loading": {
     "message": "Ag lódáil..."
@@ -2998,9 +2789,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "Ag Glasáil MetaMask..."
-  },
-  "lockTimeInvalid": {
-    "message": "Ní mór don am glasála a bheith ina uimhir idir 0 agus 10080"
   },
   "loginErrorConnectButton": {
     "message": "Déan iarracht arís"
@@ -3170,12 +2958,6 @@
   },
   "mismatchedRpcUrl": {
     "message": "De réir ár dtaifead, ní hionann luach URL an RPC a cuireadh isteach agus soláthraí aitheanta don ID slabhra seo."
-  },
-  "missingSetting": {
-    "message": "Ní féidir leat socrú a aimsiú?"
-  },
-  "missingSettingRequest": {
-    "message": "Iarratas anseo"
   },
   "month": {
     "message": "mí"
@@ -3437,9 +3219,6 @@
   "networkPermissionToast": {
     "message": "Ceadanna líonra nuashonraithe"
   },
-  "networkProvider": {
-    "message": "Soláthraí líonra"
-  },
   "networkStatus": {
     "message": "Stádas an líonra"
   },
@@ -3481,9 +3260,6 @@
   },
   "new": {
     "message": "Nua!"
-  },
-  "newAccount": {
-    "message": "Cuntas nua"
   },
   "newAccountIconMessage": {
     "message": "Tá deilbhíní cuntais athnuachana againn chun cabhrú leat do chuntais a aithint óna chéile níos éasca. Is féidir leat an stíl a athrú i $1 > $2 > $3.",
@@ -3599,9 +3375,6 @@
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Ní oibreoidh Snaps, ná an chuid is mó de sparán crua-earraí, le do leagan brabhsálaí reatha."
-  },
-  "noMMFeeSwapping": {
-    "message": "Gan aon táille MM ar mhalartú go $1."
   },
   "noNetworksAvailable": {
     "message": "Níl aon líonraí ar fáil"
@@ -3897,9 +3670,6 @@
   "onboardingLoginFooterTermsOfUse": {
     "message": "Téarmaí Úsáide"
   },
-  "onboardingMetametricCheckboxDescriptionOne": {
-    "message": "We’ll collect basic product usage data like general location, clicks, and views. No other information will be stored."
-  },
   "onboardingMetametricCheckboxDescriptionTwo": {
     "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."
   },
@@ -3917,10 +3687,6 @@
   },
   "onboardingMetametricsTitle": {
     "message": "Cabhraigh linn MetaMask a fheabhsú"
-  },
-  "onboardingOptionIcon": {
-    "message": "Deilbhín $1",
-    "description": "$1 is the icon name"
   },
   "onboardingSignInWith": {
     "message": "Sínigh isteach le $1",
@@ -3989,9 +3755,6 @@
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "Sáraigh ceanntásc Beartas Slándála Ábhair"
-  },
-  "overrideContentSecurityPolicyHeaderDescription": {
-    "message": "Is réiteach sealadach é an rogha seo ar fhadhb aitheanta i Firefox, áit a bhféadfadh ceanntásc Content-Security-Policy dapp cosc ​​a chur ar an síneadh luchtú i gceart. Ní mholtar an rogha seo a dhíchumasú mura bhfuil sé riachtanach ar mhaithe le comhoiriúnacht leathanaigh ghréasáin ar leith."
   },
   "padlock": {
     "message": "glas fraincín "
@@ -4681,14 +4444,6 @@
   "requestingFor": {
     "message": "Ag iarraidh"
   },
-  "requestingForAccount": {
-    "message": "Ag iarraidh $1",
-    "description": "Name of Account"
-  },
-  "requestingForNetwork": {
-    "message": "Ag iarraidh $1",
-    "description": "Name of Network"
-  },
   "required": {
     "message": "Riachtanach"
   },
@@ -4740,9 +4495,6 @@
   "revealSecretRecoveryPhrase": {
     "message": "Frása Rúnda Aisghabhála"
   },
-  "revealSeedWords": {
-    "message": "Nochtadh Frása Rúnda Aisghabhála"
-  },
   "revealSeedWordsDescription1": {
     "message": "Tugann do $1 rochtain iomlán ar do sparán, cistí agus cuntais.",
     "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
@@ -4755,10 +4507,6 @@
   },
   "revealSeedWordsText": {
     "message": "Téacs"
-  },
-  "revealSeedWordsWarning": {
-    "message": "Cinntigh nach bhfuil aon duine ag féachaint ar do scáileán. $1",
-    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealSensitiveContent": {
     "message": "Nocht ábhar íogair"
@@ -4840,10 +4588,6 @@
   "secretRecoveryPhrase": {
     "message": "Frása Rúnda Aisghabhála"
   },
-  "secretRecoveryPhrasePlusNumber": {
-    "message": "Frása Rúnda Aisghabhála $1",
-    "description": "The $1 is the order of the Secret Recovery Phrase"
-  },
   "secureWallet": {
     "message": "Sparán slán"
   },
@@ -4859,21 +4603,8 @@
   "securityAlerts": {
     "message": "Foláirimh slándála"
   },
-  "securityAlertsDescription": {
-    "message": "Tugann an ghné seo foláireamh duit faoi ghníomhaíocht mailíseach nó neamhghnách trí athbhreithniú gníomhach a dhéanamh ar iarratais ar idirbhearta agus ar shínithe. $1",
-    "description": "Link to learn more about security alerts"
-  },
   "securityAndPrivacy": {
     "message": "Slándáil & príobháideacht"
-  },
-  "securityChangePassword": {
-    "message": "Athraigh an focal faire"
-  },
-  "securityChangePasswordDescription": {
-    "message": "Roghnaigh pasfhocal láidir chun an aip MetaMask a dhíghlasáil ar do ghléas. Má chailleann tú an pasfhocal seo, beidh do Rún Aisghabhála Frása ag teastáil uait chun do sparán a ath-allmhairiú."
-  },
-  "securityChangePasswordTitle": {
-    "message": "Pasfhocal"
   },
   "securityChangePasswordToastError": {
     "message": "Níorbh fhéidir an focal faire a athrú. Déan iarracht arís."
@@ -4886,16 +4617,6 @@
   },
   "securityDescription": {
     "message": "Laghdaigh do sheans go mbeidh tú páirteach i líonraí neamhshábháilte agus cosain do chuntais"
-  },
-  "securityLoginWithSocial": {
-    "message": "Logáil isteach le $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
-  "securityLoginWithSrpBackedUp": {
-    "message": "Frása Rúnda Aisghabhála cúltaca déanta air"
-  },
-  "securityLoginWithSrpNotBackedUp": {
-    "message": "Cúltaca de Frása Rúnda Aisghabhála"
   },
   "securityMessageLinkForNetworks": {
     "message": "camscéimeanna líonra agus rioscaí slándála"
@@ -4912,20 +4633,14 @@
   },
   "securitySocialLoginEnabledDescription": {
     "message": "Bain úsáid as do logáil isteach $1 agus do phasfhocal MetaMask chun do chuntas agus Frásaí Aisghabhála Rúnda a aisghabháil.",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySocialLoginLabel": {
     "message": "AISGHNÍOMH $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
-  "securitySrpDescription": {
-    "message": "Déan cúltaca de do Rún Aisghabhála Frása ionas nach gcaillfidh tú rochtain ar do sparán choíche. Bí cinnte é a stóráil in áit shábháilte nach féidir ach leatsa rochtain a fháil air agus nach ndéanfaidh tú dearmad air."
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySrpLabel": {
     "message": "FRÁSAÍ AISGHABHÁLA RÚNDA"
-  },
-  "securitySrpWalletRecovery": {
-    "message": "Bainistigh modhanna aisghabhála"
   },
   "seeAllPermissions": {
     "message": "Féach ar na ceadanna uile",
@@ -4936,10 +4651,6 @@
   },
   "seedPhraseReq": {
     "message": "Tá 12, 15, 18, 21, nó 24 focal i bhFrásaí Rúnda Aisghabhála"
-  },
-  "seedPhraseReviewDetails": {
-    "message": "Seo do $1. Scríobh síos é san ord ceart agus coinnigh slán é. Má tá do Rúndacht Aisghabhála ag duine éigin, is féidir leo rochtain a fháil ar do sparán. $2",
-    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewTitle": {
     "message": "Sábháil do Frása Rúnda Aisghabhála"
@@ -5191,9 +4902,6 @@
     "message": "Mura gcealaíonn tú, ní bheidh do sparán ná d’idirbhearta clúdaithe ag tosú le $1.",
     "description": "The $1 is the date subscription ends"
   },
-  "shieldTxDetails1Title": {
-    "message": "Clúdaíonn sé $10,000 i gcosaint idirbhirt"
-  },
   "shieldTxMembershipActive": {
     "message": "Ballraíocht ghníomhach"
   },
@@ -5252,9 +4960,6 @@
   "showFiatConversionInTestnets": {
     "message": "Taispeáin comhshó ar líonraí tástála"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Roghnaigh é seo chun tiontú fiat a thaispeáint ar líonraí tástála"
-  },
   "showHexData": {
     "message": "Taispeáin sonraí heicsidheachúlach"
   },
@@ -5284,9 +4989,6 @@
   },
   "showTestnetNetworks": {
     "message": "Taispeáin líonraí tástála"
-  },
-  "showTestnetNetworksDescription": {
-    "message": "Roghnaigh é seo chun líonraí tástála a thaispeáint sa liosta líonraí"
   },
   "sign": {
     "message": "Sínigh"
@@ -5394,9 +5096,6 @@
   "skipDeepLinkInterstitial": {
     "message": "Ná taispeáin an scáileán idirmheánach agus naisc dhomhain á n-oscailt"
   },
-  "skipDeepLinkInterstitialDescription": {
-    "message": "Má chumasaíonn tú an rogha seo, scipeálfar an scáileán idirmheánach a thaispeántar agus naisc dhomhain á n-oscailt i MetaMask. Is nasc cosúil le https://link.metamask.io/home é \"nasc domhain\" a chuirfidh faoi deara go n-osclófar MetaMask; is féidir le daoine eile na naisc seo a cheilt. Tá an scáileán idirmheánach deartha chun tú a chosaint ó leathanaigh a oscailt de thaisme laistigh de MetaMask a d'fhéadfadh do chuntais, comharthaí, stair, iarmhéideanna, socruithe, nó faisnéis eile a d'fhéadfadh a bheith íogair a thaispeáint. Ní bhaineann an socrú seo ach le naisc atá sínithe ag MetaMask."
-  },
   "slippage": {
     "message": "Sleamhnú"
   },
@@ -5420,9 +5119,6 @@
   },
   "smartAccountUpgradeBannerTitle": {
     "message": "Athraigh go cuntas cliste"
-  },
-  "smartContracts": {
-    "message": "Conarthaí cliste"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Níl dóthain cistí ann le haghaidh malartú cliste."
@@ -5621,12 +5317,6 @@
   "snapsUIError": {
     "message": "Téigh i dteagmháil le cruthaitheoirí $1 le haghaidh tuilleadh tacaíochta.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "solanaAccountRequested": {
-    "message": "Tá an suíomh seo ag iarraidh cuntas Solana."
-  },
-  "solanaAccountRequired": {
-    "message": "Tá cuntas Solana ag teastáil chun ceangal leis an suíomh seo."
   },
   "someNetworks": {
     "message": "Líonraí $1"
@@ -5873,49 +5563,15 @@
   "stateLogs": {
     "message": "Logaí stáit"
   },
-  "stateLogsDescription": {
-    "message": "Tá seoltaí do chuntais phoiblí agus na hidirbhearta a seoladh i logaí stáit."
-  },
   "status": {
     "message": "Stádas"
   },
   "statusNotConnected": {
     "message": "Gan cheangal"
   },
-  "step1LatticeWallet": {
-    "message": "Ceangail do Lattice1"
-  },
-  "step1LatticeWalletMsg": {
-    "message": "Is féidir leat MetaMask a nascadh le do ghléas Lattice1 a luaithe a bheidh sé socraithe agus ar líne. Díghlasáil do ghléas agus bíodh d’Aitheantas Gléis réidh agat.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step1LedgerWallet": {
-    "message": "Íoslódáil an aip Ledger"
-  },
-  "step1LedgerWalletMsg": {
-    "message": "Íoslódáil, socraigh, agus cuir isteach do phasfhocal chun $1 a dhíghlasáil.",
-    "description": "$1 represents the `ledgerLiveApp` localization value"
-  },
-  "step1TrezorWallet": {
-    "message": "Ceangail do Trezor"
-  },
-  "step1TrezorWalletMsg": {
-    "message": "Breiseán do Trezor go díreach isteach i do ríomhaire agus díghlasáil é. Déan cinnte go n-úsáideann tú an frása faire ceart.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step2LedgerWallet": {
-    "message": "Ceangail do Leabhar Mór"
-  },
-  "step2LedgerWalletMsg": {
-    "message": "Breiseán do Ledger go díreach isteach i do ríomhaire, ansin díghlasáil é agus oscail an aip Ethereum.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "stillConnectingTo": {
     "message": "Ag ceangal le $1 fós...",
     "description": "Message shown when network connection is slow. $1 is the network name."
-  },
-  "stillGettingMessage": {
-    "message": "An bhfuil an teachtaireacht seo fós á fáil agat?"
   },
   "strong": {
     "message": "Láidir"
@@ -5935,9 +5591,6 @@
   "stxFailureDescription": {
     "message": "Is féidir le hathruithe tobann sa mhargadh teipeanna a chur faoi deara. Má leanann an fhadhb, déan teagmháil le $1 le do thoil.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
-  },
-  "stxOptInSupportedNetworksDescription": {
-    "message": "Cas ar Idirbhearta Cliste le haghaidh idirbhearta níos iontaofa agus níos sláine ar líonraí tacaithe. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Ag cur isteach do Mhalartú go príobháideach..."
@@ -5998,12 +5651,6 @@
   },
   "supportMultiRpcInformation": {
     "message": "Tacaímid anois le roinnt RPCanna do líonra amháin. Tá do RPC is déanaí roghnaithe mar an ceann réamhshocraithe chun faisnéis choinbhleachtúil a réiteach."
-  },
-  "surveyConversion": {
-    "message": "Glac páirt inár suirbhé"
-  },
-  "surveyTitle": {
-    "message": "Múnlaigh todhchaí MetaMask"
   },
   "swap": {
     "message": "Malartú"
@@ -6348,9 +5995,6 @@
   "theme": {
     "message": "Téama"
   },
-  "themeDescription": {
-    "message": "Roghnaigh do théama MetaMask is fearr leat."
-  },
   "thirdPartySoftware": {
     "message": "Fógra bogearraí tríú páirtí",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
@@ -6372,9 +6016,6 @@
   },
   "tokenAlreadyAdded": {
     "message": "Tá an comhartha curtha leis cheana féin."
-  },
-  "tokenAutoDetection": {
-    "message": "Uathbhrath comharthaí"
   },
   "tokenContractAddress": {
     "message": "Seoladh conartha comhartha"
@@ -6704,9 +6345,6 @@
   "useNftDetection": {
     "message": "NFTanna a bhrath go huathoibríoch"
   },
-  "useNftDetectionDescriptionText": {
-    "message": "Lig do MetaMask NFTanna atá i do sheilbh a chur leis trí sheirbhísí tríú páirtí. Nochtann uath-bhrath NFTanna do sheoladh IP agus do sheoladh cuntais do na seirbhísí seo. D’fhéadfadh sé go n-aistreofar do sheoladh IP le do sheoladh Ethereum agus go dtaispeánfar NFTanna bréige arna scaoileadh ag scamadóirí. Is féidir leat comharthaí a chur leis de láimh chun an riosca seo a sheachaint."
-  },
   "usePhishingDetection": {
     "message": "Bain úsáid as braiteadh fioscaireachta"
   },
@@ -6715,9 +6353,6 @@
   },
   "useSafeChainsListValidation": {
     "message": "Seiceáil sonraí líonra"
-  },
-  "useSafeChainsListValidationDescription": {
-    "message": "Úsáideann MetaMask seirbhís tríú páirtí ar a dtugtar $1 chun sonraí líonra cruinne agus caighdeánaithe a thaispeáint. Laghdaíonn sé seo do sheans ceangal le líonra mailíseach nó mícheart. Agus an ghné seo in úsáid agat, nochtar do sheoladh IP do chainid.network."
   },
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",

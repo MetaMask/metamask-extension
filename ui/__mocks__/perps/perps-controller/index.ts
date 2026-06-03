@@ -14,6 +14,10 @@ import type {
   CaipAssetId,
   Hex,
 } from '@metamask/utils';
+import {
+  SUPPORT_CONFIG as SUPPORT_CONFIG_BASE,
+  FEEDBACK_CONFIG as FEEDBACK_CONFIG_BASE,
+} from '../../../../shared/constants/perps';
 
 /**
  * Perps feature constants
@@ -490,10 +494,20 @@ export const LEARN_MORE_CONFIG = {
   CtaKey: 'perps.learn_more.cta',
 } as const;
 
-export {
-  SUPPORT_CONFIG,
-  FEEDBACK_CONFIG,
-} from '../../../../shared/constants/perps';
+/**
+ * Support and feedback configuration
+ * Extends the real constants with mock-specific properties for testing
+ */
+export const SUPPORT_CONFIG = {
+  ...SUPPORT_CONFIG_BASE,
+  TitleKey: 'perps.support.title',
+  DescriptionKey: 'perps.support.description',
+} as const;
+
+export const FEEDBACK_CONFIG = {
+  ...FEEDBACK_CONFIG_BASE,
+  TitleKey: 'perps.feedback.title',
+} as const;
 
 /**
  * Support article URLs
@@ -501,7 +515,7 @@ export {
  */
 export const PERPS_SUPPORT_ARTICLES_URLS = {
   AdlUrl:
-    'https://support.metamask.io/manage-crypto/trade/perps/leverage-and-liquidation/#what-is-auto-deleveraging-adl',
+    'https://support.metamask.io/manage-crypto/trade/perps/leverage-and-liquidation/?utm_source=extension#what-is-auto-deleveraging-adl',
 } as const;
 
 /**
@@ -792,6 +806,10 @@ export type TrackingData = {
 
   // Entry source for analytics (e.g., 'trending' for Trending page discovery)
   source?: string;
+
+  // VIP program context (used by TradingService analytics events)
+  vipTier?: number;
+  vipDiscount?: number;
 };
 
 // TP/SL-specific tracking data for analytics events
@@ -877,7 +895,8 @@ export type Position = {
 
 // Using 'type' instead of 'interface' for BaseController Json compatibility
 export type AccountState = {
-  availableBalance: string; // Based on HyperLiquid: withdrawable
+  spendableBalance: string; // Max collateral available for a new position (provider-normalised)
+  withdrawableBalance: string; // Max collateral that can leave the venue (provider-normalised)
   totalBalance: string; // Based on HyperLiquid: accountValue
   marginUsed: string; // Based on HyperLiquid: marginUsed
   unrealizedPnl: string; // Based on HyperLiquid: unrealizedPnl
@@ -897,7 +916,7 @@ export type AccountState = {
   subAccountBreakdown?: Record<
     string,
     {
-      availableBalance: string;
+      spendableBalance: string;
       totalBalance: string;
     }
   >;
@@ -953,6 +972,7 @@ export type MarginResult = {
 export type FlipPositionParams = {
   symbol: string; // Asset identifier to flip (e.g., 'BTC', 'ETH', 'xyz:TSLA')
   position: Position; // Current position to flip
+  trackingData?: TrackingData;
 };
 
 export type InitializeResult = {

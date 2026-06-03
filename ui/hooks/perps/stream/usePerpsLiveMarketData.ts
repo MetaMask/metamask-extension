@@ -130,10 +130,7 @@ export function usePerpsLiveMarketData(
     if (!streamManager) {
       return;
     }
-    // Clear and re-subscribe to trigger a fresh fetch
-    streamManager.markets.clearCache();
-    hasReceivedData.current = false;
-    setIsInitialLoading(true);
+    streamManager.markets.refresh();
   }, [streamManager]);
 
   useEffect(() => {

@@ -11,13 +11,13 @@ import { login } from '../../page-objects/flows/login.flow';
 async function mockPriceApi(mockServer: Mockttp) {
   const spotPricesMockEth = await mockServer
     .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
-
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
         'eip155:1/slip44:60': {
           id: 'ethereum',
-          price: 1,
+          price: 1700,
           marketCap: 112500000,
           totalVolume: 4500000,
           dilutedMarketCap: 120000000,

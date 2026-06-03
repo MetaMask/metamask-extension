@@ -90,10 +90,10 @@ describe('PerpsCandlePeriodModal', () => {
     );
 
     expect(screen.getByTestId('perps-candle-period-modal-1M')).toHaveClass(
-      'bg-overlay-inverse',
+      'bg-icon-default',
     );
     expect(screen.getByTestId('perps-candle-period-modal-1m')).not.toHaveClass(
-      'bg-overlay-inverse',
+      'bg-icon-default',
     );
   });
 

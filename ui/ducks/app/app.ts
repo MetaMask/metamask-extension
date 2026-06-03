@@ -10,10 +10,7 @@ import {
   WebHIDConnectedStatuses,
 } from '../../../shared/constants/hardware-wallets';
 import * as actionConstants from '../../store/actionConstants';
-import {
-  PasswordChangeToastType,
-  ClaimSubmitToastType,
-} from '../../../shared/constants/app-state';
+import { ClaimSubmitToastType } from '../../../shared/constants/app-state';
 
 type AppState = {
   customNonceValue: string;
@@ -22,10 +19,7 @@ type AppState = {
   pendingTokens: {
     [address: string]: Token & { isCustom?: boolean; unlisted?: boolean };
   };
-  welcomeScreenSeen: boolean;
   confirmationExchangeRates: ContractExchangeRates;
-  shouldClose: boolean;
-  menuOpen: boolean;
   modal: {
     open: boolean;
     modalState: {
@@ -63,34 +57,21 @@ type AppState = {
   importTokensModalOpen: boolean;
   deprecatedNetworkModalOpen: boolean;
   accountDetail: {
-    subview?: string;
-    accountExport?: string;
     privateKey?: string;
   };
   isLoading: boolean;
   isNftStillFetchingIndication: boolean;
-  showNftDetectionEnablementToast: boolean;
   loadingMessage: string | null;
-  scrollToBottom: boolean;
   warning: string | null | undefined;
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  buyView: Record<string, any>;
   defaultHdPaths: {
     trezor: string;
     oneKey: string;
     ledger: string;
     lattice: string;
   };
-  networksTabSelectedRpcUrl: string | null;
   requestAccountTabs: Record<string, number>; // [url.origin]: tab.id
   openMetaMaskTabs: Record<string, boolean>; // openMetamaskTabsIDs[tab.id]): true/false
-
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  currentWindowTab: Record<string, any>; // tabs.tab https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
-  showTermsOfUsePopup: boolean;
   singleExceptions: {
     testKey: string | null;
   };
@@ -101,8 +82,7 @@ type AppState = {
   ledgerTransportStatus: HardwareTransportStates;
   showBasicFunctionalityModal: boolean;
   externalServicesOnboardingToggleState: boolean;
-  newNftAddedMessage: string;
-  removeNftMessage: string;
+  backupAndSyncOnboardingToggleState: boolean;
   newNetworkAddedName: string;
   editedNetwork:
     | {
@@ -121,17 +101,12 @@ type AppState = {
   onboardedInThisUISession: boolean;
   customTokenAmount: string;
   txId: string | null;
-  accountDetailsAddress: string;
   showDeleteMetaMetricsDataModal: boolean;
   showDataDeletionErrorModal: boolean;
-  snapsInstallPrivacyWarningShown: boolean;
   isAddingNewNetwork: boolean;
   isMultiRpcOnboarding: boolean;
   isAccessedFromDappConnectedSitePopover: boolean;
   errorInSettings: string | null;
-  showNewSrpAddedToast: number | false;
-  showPasswordChangeToast: PasswordChangeToastType | null;
-  showCopyAddressToast: boolean;
   showClaimSubmitToast: ClaimSubmitToastType | null;
   showInfuraSwitchToast: boolean;
   shieldEntryModal?: {
@@ -156,10 +131,7 @@ const initialState: AppState = {
   isNetworkMenuOpen: false,
   nextNonce: null,
   pendingTokens: {},
-  welcomeScreenSeen: false,
   confirmationExchangeRates: {},
-  shouldClose: false,
-  menuOpen: false,
   modal: {
     open: false,
     modalState: {
@@ -179,6 +151,7 @@ const initialState: AppState = {
   showIpfsModalOpen: false,
   showBasicFunctionalityModal: false,
   externalServicesOnboardingToggleState: true,
+  backupAndSyncOnboardingToggleState: true,
   keyringRemovalSnapModal: {
     snapName: '',
     result: 'none',
@@ -193,23 +166,17 @@ const initialState: AppState = {
   isLoading: false,
   // Used to show a spinner at the bottom of the page when we are still fetching nfts
   isNftStillFetchingIndication: false,
-  // Used to display a toast after the user enables the nft auto detection from the notice banner
-  showNftDetectionEnablementToast: false,
   loadingMessage: null,
   // Used to display error text
   warning: null,
-  buyView: {},
   defaultHdPaths: {
     trezor: `m/44'/60'/0'/0`,
     oneKey: `m/44'/60'/0'/0`,
     ledger: `m/44'/60'/0'/0/0`,
     lattice: `m/44'/60'/0'/0`,
   },
-  networksTabSelectedRpcUrl: '',
   requestAccountTabs: {},
   openMetaMaskTabs: {},
-  currentWindowTab: {},
-  showTermsOfUsePopup: true,
   singleExceptions: {
     testKey: null,
   },
@@ -218,8 +185,6 @@ const initialState: AppState = {
   smartTransactionsErrorMessageDismissed: false,
   ledgerWebHidConnectedStatus: WebHIDConnectedStatuses.unknown,
   ledgerTransportStatus: HardwareTransportStates.none,
-  newNftAddedMessage: '',
-  removeNftMessage: '',
   newNetworkAddedName: '',
   editedNetwork: undefined,
   newNetworkAddedConfigurationId: '',
@@ -229,19 +194,13 @@ const initialState: AppState = {
   newTokensImportedError: '',
   onboardedInThisUISession: false,
   customTokenAmount: '',
-  scrollToBottom: true,
   txId: null,
-  accountDetailsAddress: '',
   showDeleteMetaMetricsDataModal: false,
   showDataDeletionErrorModal: false,
-  snapsInstallPrivacyWarningShown: false,
   isAddingNewNetwork: false,
   isMultiRpcOnboarding: false,
   isAccessedFromDappConnectedSitePopover: false,
   errorInSettings: null,
-  showNewSrpAddedToast: false,
-  showPasswordChangeToast: null,
-  showCopyAddressToast: false,
   showClaimSubmitToast: null,
   showInfuraSwitchToast: false,
   showSupportDataConsentModal: false,
@@ -283,24 +242,11 @@ export default function reduceApp(
       };
     }
 
-    case actionConstants.CLOSE_WELCOME_SCREEN:
-      return {
-        ...appState,
-        welcomeScreenSeen: true,
-      };
-
     case actionConstants.SET_CONFIRMATION_EXCHANGE_RATES:
       return {
         ...appState,
         confirmationExchangeRates: action.value,
       };
-
-    case actionConstants.RESET_ONBOARDING: {
-      return {
-        ...appState,
-        welcomeScreenSeen: false,
-      };
-    }
 
     // dropdown methods
     case actionConstants.NETWORK_DROPDOWN_OPEN:
@@ -353,6 +299,17 @@ export default function reduceApp(
       return {
         ...appState,
         externalServicesOnboardingToggleState: false,
+      };
+
+    case actionConstants.ONBOARDING_TOGGLE_BACKUP_AND_SYNC_ON:
+      return {
+        ...appState,
+        backupAndSyncOnboardingToggleState: true,
+      };
+    case actionConstants.ONBOARDING_TOGGLE_BACKUP_AND_SYNC_OFF:
+      return {
+        ...appState,
+        backupAndSyncOnboardingToggleState: false,
       };
 
     case actionConstants.SHOW_IPFS_MODAL_OPEN:
@@ -500,7 +457,6 @@ export default function reduceApp(
         ...appState,
         isLoading: false,
         warning: null,
-        scrollToBottom: false,
       };
 
     case actionConstants.SHOW_CONF_TX_PAGE:
@@ -562,11 +518,6 @@ export default function reduceApp(
         ...appState,
         isNftStillFetchingIndication: true,
       };
-    case actionConstants.SHOW_NFT_DETECTION_ENABLEMENT_TOAST:
-      return {
-        ...appState,
-        showNftDetectionEnablementToast: action.payload,
-      };
 
     case actionConstants.HIDE_NFT_STILL_FETCHING_INDICATION:
       return {
@@ -625,18 +576,6 @@ export default function reduceApp(
       return {
         ...appState,
         newTokensImportedError: action.payload,
-      };
-
-    case actionConstants.SET_NEW_NFT_ADDED_MESSAGE:
-      return {
-        ...appState,
-        newNftAddedMessage: action.payload,
-      };
-
-    case actionConstants.SET_REMOVE_NFT_MESSAGE:
-      return {
-        ...appState,
-        removeNftMessage: action.payload,
       };
 
     case actionConstants.SET_REQUEST_ACCOUNT_TABS:
@@ -754,24 +693,6 @@ export default function reduceApp(
           result: 'none',
         },
       };
-    case actionConstants.SET_SHOW_NEW_SRP_ADDED_TOAST:
-      return {
-        ...appState,
-        showNewSrpAddedToast: action.payload,
-      };
-
-    case actionConstants.SET_SHOW_COPY_ADDRESS_TOAST:
-      return {
-        ...appState,
-        showCopyAddressToast: action.payload,
-      };
-
-    case actionConstants.SET_SHOW_CLAIM_SUBMIT_TOAST:
-      return {
-        ...appState,
-        showClaimSubmitToast: action.payload,
-      };
-
     case actionConstants.SET_SHOW_INFURA_SWITCH_TOAST:
       return {
         ...appState,
@@ -822,6 +743,18 @@ export function onboardingToggleBasicFunctionalityOff(): Action {
   };
 }
 
+export function onboardingToggleBackupAndSyncOn(): Action {
+  return {
+    type: actionConstants.ONBOARDING_TOGGLE_BACKUP_AND_SYNC_ON,
+  };
+}
+
+export function onboardingToggleBackupAndSyncOff(): Action {
+  return {
+    type: actionConstants.ONBOARDING_TOGGLE_BACKUP_AND_SYNC_OFF,
+  };
+}
+
 export function toggleGasLoadingAnimation(
   payload: boolean,
 ): PayloadAction<boolean> {
@@ -848,12 +781,6 @@ export function setOnBoardedInThisUISession(
   payload: boolean,
 ): PayloadAction<boolean> {
   return { type: actionConstants.ONBOARDED_IN_THIS_UI_SESSION, payload };
-}
-
-export function setShowCopyAddressToast(
-  payload: boolean,
-): PayloadAction<boolean> {
-  return { type: actionConstants.SET_SHOW_COPY_ADDRESS_TOAST, payload };
 }
 
 export function setCustomTokenAmount(payload: string): PayloadAction<string> {
@@ -905,10 +832,6 @@ export function getLedgerTransportStatus(state: AppSliceState): string | null {
 
 export function getShowSupportDataConsentModal(state: AppSliceState): boolean {
   return state.appState.showSupportDataConsentModal;
-}
-
-export function getShowCopyAddressToast(state: AppSliceState): boolean {
-  return state.appState.showCopyAddressToast;
 }
 
 export function openDeleteMetaMetricsDataModal(): Action {

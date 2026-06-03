@@ -2,24 +2,16 @@ import React, { useCallback, useContext, useMemo, useRef } from 'react';
 import { createSearchParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  IconName as DesignSystemIconName,
-  TextColor as DesignSystemTextColor,
-} from '@metamask/design-system-react';
-import {
   Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxJustifyContent,
   Icon,
   IconName,
-  ModalFocus,
-  Popover,
-  PopoverPosition,
-} from '../../component-library';
-import {
-  AlignItems,
-  BackgroundColor,
-  BorderRadius,
-  Display,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
+  TextColor,
+} from '@metamask/design-system-react';
+import { ModalFocus, Popover, PopoverPosition } from '../../component-library';
+import { BorderRadius } from '../../../helpers/constants/design-system';
 import {
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
@@ -201,31 +193,27 @@ export const MultichainAccountMenu = ({
     const baseMenuItems: MenuItemConfig[] = [
       {
         textKey: 'accountDetails',
-        iconName: DesignSystemIconName.Details,
+        iconName: IconName.Details,
         onClick: handleAccountDetailsClick,
       },
       {
         textKey: 'rename',
-        iconName: DesignSystemIconName.Edit,
+        iconName: IconName.Edit,
         onClick: handleAccountRenameClick,
       },
       {
         textKey: 'addresses',
-        iconName: DesignSystemIconName.QrCode,
+        iconName: IconName.QrCode,
         onClick: handleAccountAddressesClick,
       },
       {
         textKey: isPinned ? 'unpin' : 'pinToTop',
-        iconName: isPinned
-          ? DesignSystemIconName.Unpin
-          : DesignSystemIconName.Pin,
+        iconName: isPinned ? IconName.Unpin : IconName.Pin,
         onClick: handleAccountPinClick,
       },
       {
         textKey: isHidden ? 'showAccount' : 'hideAccount',
-        iconName: isHidden
-          ? DesignSystemIconName.Eye
-          : DesignSystemIconName.EyeSlash,
+        iconName: isHidden ? IconName.Eye : IconName.EyeSlash,
         onClick: handleAccountHideClick,
       },
     ];
@@ -233,9 +221,9 @@ export const MultichainAccountMenu = ({
     if (isRemovable) {
       baseMenuItems.push({
         textKey: 'remove',
-        iconName: DesignSystemIconName.Trash,
+        iconName: IconName.Trash,
         onClick: handleAccountRemoveClick,
-        textColor: DesignSystemTextColor.ErrorDefault,
+        textColor: TextColor.ErrorDefault,
       });
     }
 
@@ -256,15 +244,13 @@ export const MultichainAccountMenu = ({
   return (
     <>
       <Box
-        className="multichain-account-cell-popover-menu-button"
+        className="flex multichain-account-cell-popover-menu-button rounded-lg"
         ref={popoverRef}
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
         backgroundColor={
-          buttonBackgroundColor || BackgroundColor.backgroundMuted
+          buttonBackgroundColor ?? BoxBackgroundColor.BackgroundMuted
         }
-        borderRadius={BorderRadius.LG}
         padding={1}
         onClick={togglePopover}
       >

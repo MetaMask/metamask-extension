@@ -25,7 +25,6 @@ import { ACCOUNT_1, DAPP_URL } from './constants';
 import transformOpenRPCDocument from './api-specs/transform';
 import { MultichainAuthorizationConfirmationErrors } from './api-specs/MultichainAuthorizationConfirmationErrors';
 import { ConfirmationsRejectRule } from './api-specs/ConfirmationRejectionRule';
-import HomePage from './page-objects/pages/home/homepage';
 import { login } from './page-objects/flows/login.flow';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
@@ -113,10 +112,6 @@ async function main() {
       extensionId: string;
     }) => {
       await login(driver, { validateBalance: false });
-      const homePage = new HomePage(driver);
-      await homePage.checkPageIsLoaded();
-      // We don't have balance so we expect to see Fund Your Wallet
-      await homePage.checkExpectedBalanceIsDisplayed('0', 'ETH');
 
       // Open Dapp
       await driver.openNewPage(DAPP_URL);
@@ -192,11 +187,6 @@ async function main() {
       extensionId: string;
     }) => {
       await login(driver, { validateBalance: false });
-
-      const homePage = new HomePage(driver);
-      await homePage.checkPageIsLoaded();
-      // We don't have balance so we expect to see Fund Your Wallet
-      await homePage.checkExpectedBalanceIsDisplayed('0', 'ETH');
 
       // Open Dapp
       await driver.openNewPage(DAPP_URL);

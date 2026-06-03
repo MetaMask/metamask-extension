@@ -5,7 +5,7 @@
  * Several dependencies are stubbed pending integration with extension services.
  */
 
-import { createProjectLogger } from '@metamask/utils';
+import { CaipAccountId, createProjectLogger } from '@metamask/utils';
 import type * as Sentry from '@sentry/browser';
 import type {
   PerpsPlatformDependencies,
@@ -22,11 +22,13 @@ import type {
   PerpsTraceName,
   PerpsTraceValue,
   InvalidateCacheParams,
+  FiatRangeConfig,
 } from '@metamask/perps-controller';
 import {
-  formatPerpsPrice,
+  formatPerpsFiat,
+  formatPercentage,
+  formatVolume,
   PRICE_RANGES_UNIVERSAL,
-  type PerpsPriceRange,
 } from '../../../../shared/lib/perps-formatters';
 import { PERPS_EVENT_PROPERTY } from '../../../../shared/constants/perps-events';
 import {
@@ -35,19 +37,79 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { captureException } from '../../../../shared/lib/sentry';
 import { validatedVersionGatedFeatureFlag } from '../../../../shared/lib/feature-flags/version-gating';
+import { isBenignDisconnectError } from './perps-error-utils';
 
 /**
  * Dependencies required to wire {@link createPerpsInfrastructure} to extension services.
  */
 export type InfrastructureDeps = {
   trackEvent: (payload: MetaMetricsEventPayload) => void;
+  getStorageItem: (key: string) => Promise<{
+    result?: unknown;
+    error?: Error;
+  }>;
+  setStorageItem: (key: string, value: string) => Promise<void>;
+  removeStorageItem: (key: string) => Promise<void>;
+  /**
+   * Returns true while a self-initiated disconnect() is in progress (e.g.
+   * during an account switch). Used to suppress benign WS-race errors that
+   * are guaranteed to be side-effects of our own teardown rather than real
+   * failures.
+   */
+  isDisconnecting?: () => boolean;
+  /**
+   * Bridge to {@link RewardsController.getPerpsDiscountForAccount}. The
+   * rewards controller owns the fee-discount logic; perps just supplies the
+   * account and its own base fee in bips. The controller returns null when
+   * the discount is currently unknowable (unhydrated cache, fetch error, no
+   * subscription); this adapter collapses null to 0 before returning to the
+   * core perps-controller, which expects a numeric discount.
+   */
+  getPerpsDiscountForAccount: (
+    caipAccountId: `${string}:${string}:${string}`,
+    baseFeeBips: number,
+  ) => Promise<number | null>;
 };
 
 const debugLog = createProjectLogger('perps');
 
-function createLogger(): PerpsLogger {
+function createLogger(deps: InfrastructureDeps): PerpsLogger {
   return {
     error: (error, options) => {
+      // Suppress benign WS-close errors only while our own disconnect() is
+      // active (account switch in progress). Outside that window the same
+      // error shapes indicate real connectivity problems and must reach Sentry.
+      //
+      // KNOWN TRADEOFF: this guard intentionally suppresses every benign-shaped
+      // error during the disconnect window, including write-context errors
+      // (placeOrder, editOrder, cancelOrder, closePosition, updateMargin,
+      // flipPosition, withdraw, ...). We accept this for two reasons:
+      //
+      //   1. Account switches generate a high volume of in-flight read/stream
+      //      cancellations whose error shape is indistinguishable from a true
+      //      write race at this layer. Reporting them clutters both the dev
+      //      console (captureException -> console.error) and the Sentry inbox
+      //      enough to drown out real signal. We verified empirically that
+      //      gating on `options.context.data.method` to let write-path errors
+      //      through produced many false positives during normal account
+      //      switches without surfacing actionable failures.
+      //   2. Writes that genuinely race with `disconnect()` are observable to
+      //      the user via the UI (orders surface success/failure inline and
+      //      withdrawals via transaction state) and to the team via product
+      //      reports, so we are not relying on Sentry as the primary signal
+      //      for "did the order go through?" during account switches.
+      //
+      // If that invariant changes (e.g. writes start being issued from
+      // non-user-initiated paths during disconnect, or UI surfacing weakens),
+      // tighten this guard by gating on `options.context.data.method` against
+      // the upstream write-method names so write contexts bypass suppression.
+      if (
+        isBenignDisconnectError(error) &&
+        (deps.isDisconnecting?.() ?? false)
+      ) {
+        debugLog('Suppressed benign perps WS disconnect race', error, options);
+        return;
+      }
       const withScope = globalThis.sentry?.withScope;
       if (!withScope) {
         captureException(error);
@@ -184,13 +246,13 @@ function createTracer(): PerpsTracer {
     setMeasurement: (name: string, value: number, unit: string) => {
       globalThis.sentry?.setMeasurement?.(name, value, unit);
     },
-    addBreadcrumb: (_breadcrumb: {
+    addBreadcrumb: (breadcrumb: {
       category: string;
       message: string;
       level: 'fatal' | 'error' | 'warning' | 'log' | 'info' | 'debug';
       data?: Record<string, unknown>;
     }) => {
-      // TODO: Integrate with Sentry breadcrumbs when ready
+      globalThis.sentry?.addBreadcrumb?.(breadcrumb);
     },
   };
 }
@@ -216,32 +278,21 @@ function createFeatureFlags(): PerpsPlatformDependencies['featureFlags'] {
 }
 
 function createMarketDataFormatters(): MarketDataFormatters {
-  const compactFormatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    notation: 'compact',
-    maximumFractionDigits: 1,
-  });
-
-  const percentFormatter = new Intl.NumberFormat('en-US', {
-    style: 'percent',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-
   return {
-    formatVolume: (value: number) => compactFormatter.format(value),
-    formatPerpsFiat: (value: number, options?: { ranges?: unknown[] }) => {
-      const customRanges = options?.ranges as PerpsPriceRange[] | undefined;
-      // When ranges are provided they are applied; otherwise the default
-      // PRICE_RANGES_UNIVERSAL inside formatPerpsPrice is used.
-      if (customRanges) {
-        return formatPerpsPrice(value, 'en-US', customRanges);
-      }
-      return formatPerpsPrice(value);
-    },
-    formatPercentage: (percent: number) =>
-      percentFormatter.format(percent / 100),
+    // Mobile-parity magnitude-aware volume formatter (2 decimals for B/M, 0 for
+    // K, 2 below $1K). Replaces the previous Intl.NumberFormat compact config,
+    // which dropped trailing `.0` on round billions (`$2B` instead of mobile's
+    // `$2.30B`). See shared/lib/perps-formatters.ts:formatVolume.
+    formatVolume: (value: number) => formatVolume(value),
+    formatPerpsFiat: (
+      value: number,
+      options?: { ranges?: unknown[] },
+    ): string =>
+      formatPerpsFiat(value, {
+        ...options,
+        ranges: options?.ranges as FiatRangeConfig[] | undefined,
+      }),
+    formatPercentage: (percent: number) => formatPercentage(percent),
     priceRangesUniversal: PRICE_RANGES_UNIVERSAL,
   };
 }
@@ -257,6 +308,43 @@ function createCacheInvalidator(): PerpsCacheInvalidator {
   };
 }
 
+const PERPS_DISK_CACHE_KEY_PREFIX = 'diskCache:';
+
+function getDiskCacheStorageKey(key: string): string {
+  return `${PERPS_DISK_CACHE_KEY_PREFIX}${key}`;
+}
+
+function createDiskCache(
+  deps: InfrastructureDeps,
+): PerpsPlatformDependencies['diskCache'] {
+  const memoryCache = new Map<string, string>();
+
+  return {
+    getItem: async (key: string) => {
+      if (memoryCache.has(key)) {
+        return memoryCache.get(key) ?? null;
+      }
+
+      const { result, error } = await deps.getStorageItem(
+        getDiskCacheStorageKey(key),
+      );
+      if (error || typeof result !== 'string') {
+        return null;
+      }
+      memoryCache.set(key, result);
+      return result;
+    },
+    setItem: async (key: string, value: string) => {
+      await deps.setStorageItem(getDiskCacheStorageKey(key), value);
+      memoryCache.set(key, value);
+    },
+    removeItem: async (key: string) => {
+      await deps.removeStorageItem(getDiskCacheStorageKey(key));
+      memoryCache.delete(key);
+    },
+  };
+}
+
 /**
  * Create the complete PerpsPlatformDependencies for the extension.
  *
@@ -267,7 +355,7 @@ export function createPerpsInfrastructure(
   deps: InfrastructureDeps,
 ): PerpsPlatformDependencies {
   return {
-    logger: createLogger(),
+    logger: createLogger(deps),
     debugLogger: createDebugLogger(),
     metrics: createMetrics(deps),
     performance: createPerformance(),
@@ -276,12 +364,31 @@ export function createPerpsInfrastructure(
     featureFlags: createFeatureFlags(),
     marketDataFormatters: createMarketDataFormatters(),
     cacheInvalidator: createCacheInvalidator(),
+    diskCache: createDiskCache(deps),
     rewards: {
+      // The perps package only passes `caipAccountId`; the rewards controller
+      // additionally needs the perps MetaMask builder base fee in bips so it
+      // can convert the absolute reward fee into a discount fraction. We
+      // source the base fee from the perps package's own constants here so
+      // the rewards controller stays a pure transformer.
       getPerpsDiscountForAccount: async (
-        _caipAccountId: `${string}:${string}:${string}`,
+        caipAccountId: `${string}:${string}:${string}`,
+        baseFeeBips: number,
       ) => {
-        // TODO: Wire to RewardsController when available
-        return 0;
+        try {
+          const result = await deps.getPerpsDiscountForAccount(
+            caipAccountId,
+            baseFeeBips,
+          );
+          // The rewards controller returns null when the discount is
+          // currently unknowable; treat it the same as a thrown error so
+          // the core perps-controller (which expects a number) sees a
+          // safe "no discount" fallback.
+          return result ?? 0;
+        } catch {
+          // Never let a discount lookup failure block a trade — return 0.
+          return 0;
+        }
       },
     },
   };

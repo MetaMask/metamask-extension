@@ -7,7 +7,6 @@ import {
   CHAIN_IDS,
 } from '../../../../shared/constants/network';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
-import HomePage from '../../page-objects/pages/home/homepage';
 import { login } from '../../page-objects/flows/login.flow';
 
 const BSC_BAT_ADDRESS = '0x0d8775f648430679a709e98d2b0cb6250d2887ef';
@@ -25,28 +24,49 @@ const BSC_BAT_TOKEN_LIST_ENTRY = {
 };
 
 describe('Add existing token using search', function () {
-  // Mock call to core to fetch BAT token price
+  // Mock all spot-price requests for BSC (BNB native + BAT)
   async function mockPriceFetch(
     mockServer: Mockttp,
   ): Promise<MockedEndpoint[]> {
     return [
       await mockServer
         .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
-        .withQuery({
-          assetIds:
-            'eip155:56/erc20:0x0d8775f648430679a709e98d2b0cb6250d2887ef',
-          vsCurrency: 'ETH',
-        })
-        .thenCallback(() => {
-          return {
-            statusCode: 200,
-            json: {
-              'eip155:56/erc20:0x0d8775f648430679a709e98d2b0cb6250d2887ef': {
-                eth: 0.0001,
-              },
+        .always()
+        .thenCallback(() => ({
+          statusCode: 200,
+          json: {
+            'eip155:56/slip44:60': {
+              price: 600,
+              marketCap: 90000000000,
+              pricePercentChange1d: 0,
             },
-          };
-        }),
+            'eip155:56/erc20:0x0d8775f648430679a709e98d2b0cb6250d2887ef': {
+              price: 0.18,
+              marketCap: 270000000,
+              pricePercentChange1d: 0,
+            },
+          },
+        })),
+      await mockServer
+        .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+        .always()
+        .thenCallback(() => ({
+          statusCode: 200,
+          json: {
+            usd: {
+              name: 'US Dollar',
+              ticker: 'usd',
+              value: 1,
+              currencyType: 'fiat',
+            },
+            bnb: {
+              name: 'BNB',
+              ticker: 'bnb',
+              value: 1 / 600,
+              currencyType: 'crypto',
+            },
+          },
+        })),
     ];
   }
 
@@ -91,10 +111,54 @@ describe('Add existing token using search', function () {
     ];
   }
 
+  async function mockSupportedNetworks(
+    mockServer: Mockttp,
+  ): Promise<MockedEndpoint[]> {
+    return [
+      await mockServer
+        .forGet('https://tokens.api.cx.metamask.io/v2/supportedNetworks')
+        .thenCallback(() => ({
+          statusCode: 200,
+          json: {
+            fullSupport: ['eip155:56'],
+          },
+        })),
+    ];
+  }
+
+  async function mockTokensAssets(
+    mockServer: Mockttp,
+  ): Promise<MockedEndpoint[]> {
+    return [
+      await mockServer
+        .forGet('https://tokens.api.cx.metamask.io/v3/assets')
+        .thenCallback(() => ({
+          statusCode: 200,
+          json: [
+            {
+              assetId: 'eip155:56/slip44:714',
+              name: 'BNB',
+              symbol: 'BNB',
+              decimals: 18,
+            },
+            {
+              assetId:
+                'eip155:56/erc20:0x0d8775f648430679a709e98d2b0cb6250d2887ef',
+              name: 'Basic Attention Token',
+              symbol: 'BAT',
+              decimals: 18,
+            },
+          ],
+        })),
+    ];
+  }
+
   async function mockBscApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
     return [
       ...(await mockPriceFetch(mockServer)),
       ...(await mockBscBridgeApi(mockServer)),
+      ...(await mockSupportedNetworks(mockServer)),
+      ...(await mockTokensAssets(mockServer)),
     ];
   }
   it('renders the balance for the chosen token', async function () {
@@ -125,9 +189,6 @@ describe('Add existing token using search', function () {
       },
       async ({ driver }) => {
         await login(driver);
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-        await homePage.waitForNonEvmAccountsLoaded();
 
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenAmountIsDisplayed('25 BNB');

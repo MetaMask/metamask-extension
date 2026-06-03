@@ -2,7 +2,7 @@ import { useCallback, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { getSelectedInternalAccount } from '../../../../selectors';
+import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes';
 import { ConfirmationLoader } from '../../../../pages/confirmations/hooks/useConfirmationNavigation';
 import { createPerpsDepositTransaction } from './createPerpsDepositTransaction';
@@ -68,10 +68,13 @@ export function usePerpsDepositConfirmation(
           params.set('goBackTo', goBackTo);
         }
 
-        navigate({
-          pathname: `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`,
-          search: params.toString(),
-        });
+        navigate(
+          {
+            pathname: `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`,
+            search: params.toString(),
+          },
+          { replace: true },
+        );
       }
 
       onCreated?.(transactionId);

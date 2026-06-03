@@ -15,6 +15,12 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
+import type { ClosePositionParams } from '@metamask/perps-controller';
+import {
+  formatPerpsFiat,
+  formatPnl,
+  PRICE_RANGES_UNIVERSAL,
+} from '../../../../../shared/lib/perps-formatters';
 import {
   Modal,
   ModalContent,
@@ -40,10 +46,12 @@ import {
   getDisplayName,
   getPositionDirection,
   getPositionPnlRatio,
+  buildPerpsVipTrackingData,
 } from '../utils';
 import { handlePerpsError } from '../utils/translate-perps-error';
 import { PERPS_MIN_MARKET_ORDER_USD } from '../constants';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
+import { PerpsFeesDisplay } from '../perps-fees-display';
 import { CloseAmountSection } from '../order-entry';
 import {
   PERPS_TOAST_KEYS,
@@ -52,13 +60,7 @@ import {
 } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import type { Position } from '../types';
-
-type ClosePositionParams = {
-  symbol: string;
-  orderType: 'market';
-  currentPrice: number;
-  size?: string;
-};
+import { useVipTier } from '../../../../hooks/rewards/useVipTier';
 
 type CloseToastConfig = Pick<PerpsToastKeyConfig, 'key' | 'description'>;
 
@@ -72,10 +74,7 @@ type FormatNumber = (
   },
 ) => string;
 
-type FormatCurrencyWithMinThreshold = (
-  value: number,
-  currency: string,
-) => string;
+type FormatPerpsFiat = (value: number | string) => string;
 
 type FormatPercentWithMinThreshold = (value: number) => string | undefined;
 
@@ -84,17 +83,20 @@ const buildCloseRequestParams = ({
   currentPrice,
   isPartialClose,
   closeSize,
+  position,
 }: {
   symbol: string;
   currentPrice: number;
   isPartialClose: boolean;
   closeSize: number;
+  position: Position;
 }): ClosePositionParams => {
   if (!isPartialClose) {
     return {
       symbol,
       orderType: 'market',
       currentPrice,
+      position,
     };
   }
 
@@ -103,6 +105,7 @@ const buildCloseRequestParams = ({
     orderType: 'market',
     currentPrice,
     size: closeSize.toString(),
+    position,
   };
 };
 
@@ -197,19 +200,19 @@ const getCloseFailureToastConfig = ({
   error,
   isPartialClose,
   t,
-  formatCurrencyWithMinThreshold,
+  formatFiat,
 }: {
   error: unknown;
   isPartialClose: boolean;
   t: CloseToastTranslation;
-  formatCurrencyWithMinThreshold: FormatCurrencyWithMinThreshold;
+  formatFiat: FormatPerpsFiat;
 }): { errorMessage: string; toast: CloseToastConfig } => {
   const isOrderSizeMinError =
     error instanceof Error && error.message === 'ORDER_SIZE_MIN';
 
   const errorMessage = isOrderSizeMinError
     ? t('perpsClosePartialMinNotional', [
-        formatCurrencyWithMinThreshold(PERPS_MIN_MARKET_ORDER_USD, 'USD'),
+        formatFiat(PERPS_MIN_MARKET_ORDER_USD),
       ])
     : handlePerpsError(error, t as (key: string) => string);
 
@@ -237,6 +240,7 @@ export type ClosePositionModalProps = {
   onClose: () => void;
   position: Position;
   currentPrice: number;
+  sizeDecimals?: number;
 };
 
 export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
@@ -244,6 +248,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   onClose,
   position,
   currentPrice,
+  sizeDecimals,
 }) => {
   const t = useI18nContext() as CloseToastTranslation;
   const { isEligible } = usePerpsEligibility();
@@ -259,12 +264,15 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
       [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
     },
   });
-  const {
-    formatCurrencyWithMinThreshold,
-    formatNumber,
-    formatPercentWithMinThreshold,
-  } = useFormatters();
+  const { formatNumber, formatPercentWithMinThreshold } = useFormatters();
   const { replacePerpsToastByKey } = usePerpsToast();
+  const formatFiat = useCallback(
+    (value: number | string) =>
+      formatPerpsFiat(value, { ranges: PRICE_RANGES_UNIVERSAL }),
+    [],
+  );
+
+  const vipTier = useVipTier();
 
   const [closePercent, setClosePercent] = useState(100);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -297,10 +305,11 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     [closeSize, currentPrice],
   );
 
-  const { feeRate } = usePerpsOrderFees({
-    symbol: position.symbol,
-    orderType: 'market',
-  });
+  const { feeRate, undiscountedFeeRate, metamaskFeeRateDiscountPercentage } =
+    usePerpsOrderFees({
+      symbol: position.symbol,
+      orderType: 'market',
+    });
 
   const margin = useMemo(() => {
     const totalMargin = parseFloat(position.marginUsed) || 0;
@@ -315,6 +324,11 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   const estimatedFees = useMemo(
     () => closeNotionalUsd * (feeRate ?? 0),
     [closeNotionalUsd, feeRate],
+  );
+
+  const originalEstimatedFees = useMemo(
+    () => closeNotionalUsd * (undiscountedFeeRate ?? 0),
+    [closeNotionalUsd, undiscountedFeeRate],
   );
 
   const isPriceValid = useMemo(
@@ -338,6 +352,11 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   const roundedFees = useMemo(
     () => Math.round(estimatedFees * 100) / 100,
     [estimatedFees],
+  );
+
+  const roundedOriginalFees = useMemo(
+    () => Math.round(originalEstimatedFees * 100) / 100,
+    [originalEstimatedFees],
   );
 
   // HyperLiquid's marginUsed already includes accumulated PnL, so we do NOT
@@ -378,17 +397,24 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     );
 
     try {
+      onClose();
+      const closeRequestParams = buildCloseRequestParams({
+        symbol: position.symbol,
+        currentPrice,
+        isPartialClose,
+        closeSize,
+        position,
+      });
+      closeRequestParams.trackingData = buildPerpsVipTrackingData({
+        totalFee: estimatedFees,
+        marketPrice: currentPrice,
+        vipTier,
+        vipDiscount: metamaskFeeRateDiscountPercentage,
+      });
       const result = await submitRequestToBackground<{
         success: boolean;
         error?: string;
-      }>('perpsClosePosition', [
-        buildCloseRequestParams({
-          symbol: position.symbol,
-          currentPrice,
-          isPartialClose,
-          closeSize,
-        }),
-      ]);
+      }>('perpsClosePosition', [closeRequestParams]);
       if (!result.success) {
         const message = result.error || 'Failed to close position';
         track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
@@ -408,7 +434,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
           error: new Error(message),
           isPartialClose,
           t,
-          formatCurrencyWithMinThreshold,
+          formatFiat,
         });
         setError(errorMessage);
         replacePerpsToastByKey(toast);
@@ -429,7 +455,6 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
           formatPercentWithMinThreshold,
         }),
       );
-      onClose();
     } catch (err) {
       const errMessage =
         err instanceof Error ? err.message : 'An unknown error occurred';
@@ -450,7 +475,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
         error: err,
         isPartialClose,
         t,
-        formatCurrencyWithMinThreshold,
+        formatFiat,
       });
       setError(errorMessage);
       replacePerpsToastByKey(toast);
@@ -474,7 +499,9 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     closePercent,
     onClose,
     formatPercentWithMinThreshold,
-    formatCurrencyWithMinThreshold,
+    formatFiat,
+    vipTier,
+    metamaskFeeRateDiscountPercentage,
   ]);
 
   const handlePercentChange = useCallback((percent: number) => {
@@ -491,7 +518,21 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
       >
         <ModalOverlay />
         <ModalContent size={ModalContentSize.Sm}>
-          <ModalHeader onClose={onClose}>{t('perpsClosePosition')}</ModalHeader>
+          <ModalHeader onClose={onClose}>
+            <Box
+              flexDirection={BoxFlexDirection.Column}
+              alignItems={BoxAlignItems.Center}
+              gap={2}
+            >
+              <Icon name={IconName.CircleX} size={IconSize.Xl} />
+              <Text
+                variant={TextVariant.HeadingSm}
+                textAlign={TextAlign.Center}
+              >
+                {t('perpsClosePosition')}
+              </Text>
+            </Box>
+          </ModalHeader>
           <ModalBody>
             <Box flexDirection={BoxFlexDirection.Column} gap={4}>
               {/* Close Amount Section (input + slider) */}
@@ -501,6 +542,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                 onClosePercentChange={handlePercentChange}
                 asset={displayName}
                 currentPrice={currentPrice}
+                sizeDecimals={sizeDecimals}
               />
 
               {isPartialCloseBelowMinNotional ? (
@@ -514,18 +556,16 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                 >
                   <Icon
                     name={IconName.Warning}
-                    size={IconSize.Sm}
+                    size={IconSize.Md}
                     color={IconColor.WarningDefault}
+                    className="shrink-0"
                   />
                   <Text
                     variant={TextVariant.BodySm}
                     color={TextColor.WarningDefault}
                   >
                     {t('perpsClosePartialMinNotional', [
-                      formatCurrencyWithMinThreshold(
-                        PERPS_MIN_MARKET_ORDER_USD,
-                        'USD',
-                      ),
+                      formatFiat(PERPS_MIN_MARKET_ORDER_USD),
                     ])}
                   </Text>
                 </Box>
@@ -555,7 +595,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                       textAlign={TextAlign.Right}
                       data-testid="perps-close-summary-margin-value"
                     >
-                      {formatCurrencyWithMinThreshold(roundedMargin, 'USD')}
+                      {formatFiat(roundedMargin)}
                     </Text>
                     <Text
                       variant={TextVariant.BodyXs}
@@ -573,12 +613,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                           }
                           asChild
                         >
-                          <span>
-                            {`${unrealizedPnl >= 0 ? '+' : '-'}${formatCurrencyWithMinThreshold(
-                              Math.abs(unrealizedPnl),
-                              'USD',
-                            )}`}
-                          </span>
+                          <span>{formatPnl(unrealizedPnl)}</span>
                         </Text>,
                       ])}
                     </Text>
@@ -597,13 +632,17 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                   >
                     {t('perpsFees')}
                   </Text>
-                  <Text
-                    variant={TextVariant.BodySm}
-                    fontWeight={FontWeight.Medium}
-                    data-testid="perps-close-summary-fees-value"
-                  >
-                    -{formatCurrencyWithMinThreshold(roundedFees, 'USD')}
-                  </Text>
+                  <PerpsFeesDisplay
+                    metamaskFeeRateDiscountPercentage={
+                      feeRate === undefined
+                        ? undefined
+                        : metamaskFeeRateDiscountPercentage
+                    }
+                    originalFee={roundedOriginalFees}
+                    fee={roundedFees}
+                    feeTextFontWeight={FontWeight.Medium}
+                    feeTextTestId="perps-close-summary-fees-value"
+                  />
                 </Box>
 
                 {/* You'll receive */}
@@ -623,10 +662,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                     fontWeight={FontWeight.Medium}
                     data-testid="perps-close-summary-receive-value"
                   >
-                    {formatCurrencyWithMinThreshold(
-                      Math.max(youWillReceive, 0),
-                      'USD',
-                    )}
+                    {formatFiat(Math.max(youWillReceive, 0))}
                   </Text>
                 </Box>
               </Box>
@@ -662,6 +698,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
               'data-testid': 'perps-close-position-modal-submit',
               children: t('perpsClosePosition'),
               disabled: isSubmitDisabled,
+              autoFocus: true,
             }}
           />
         </ModalContent>

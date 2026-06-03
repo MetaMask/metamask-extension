@@ -19,29 +19,7 @@ import { CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE } from '../../../helpers/constants/ro
 import { ChainInfo } from '../../../pages/bridge/utils/tx-details';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import mockBridgeTxData from '../../../../test/data/bridge/mock-bridge-transaction-details.json';
-import {
-  useGetTitle,
-  usePrefetchTransactions,
-  useTransactionsQuery,
-} from './hooks';
-
-const mockUseInfiniteQuery = jest.fn();
-const mockUseQueryClient = jest.fn();
-const mockGetV4MultiAccountTransactionsInfiniteQueryOptions = jest.fn();
-
-jest.mock('@tanstack/react-query', () => ({
-  useInfiniteQuery: (...args: unknown[]) => mockUseInfiniteQuery(...args),
-  useQueryClient: () => mockUseQueryClient(),
-}));
-
-jest.mock('../../../helpers/api-client', () => ({
-  apiClient: {
-    accounts: {
-      getV4MultiAccountTransactionsInfiniteQueryOptions: (...args: unknown[]) =>
-        mockGetV4MultiAccountTransactionsInfiniteQueryOptions(...args),
-    },
-  },
-}));
+import { useGetTitle } from './hooks';
 
 const mockUseNavigate = jest.fn();
 
@@ -58,6 +36,9 @@ jest.mock('../../../hooks/useI18nContext', () => ({
 const selectedAddress = '0x4f5243ceea96cee1da0fdb89c756d0e999439424';
 
 const store = configureMockStore()({
+  localeMessages: {
+    currentLocale: 'en_GB',
+  },
   metamask: {
     internalAccounts: {
       selectedAccount: '1',
@@ -68,6 +49,7 @@ const store = configureMockStore()({
         },
       },
     },
+    remoteFeatureFlags: {},
   },
 });
 
@@ -82,6 +64,7 @@ describe('useGetTitle', () => {
     jest
       .spyOn(useBridgeActivityDataHook, 'useBridgeActivityData')
       .mockReturnValue({
+        bridgeHistoryItem: undefined,
         isBridgeTx: false,
         isBridgeComplete: false,
         isBridgeFailed: false,
@@ -100,6 +83,100 @@ describe('useGetTitle', () => {
 
   it('returns swap title for swap-like CONTRACT_CALL', () => {
     const tx = {
+      amounts: {
+        from: {
+          amount: -100000n,
+          token: {
+            address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            chainId: '0x1',
+            decimals: 6,
+            symbol: 'USDC',
+          },
+        },
+        to: {
+          amount: 99857n,
+          token: {
+            address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+            chainId: '0x1',
+            decimals: 6,
+            symbol: 'USDT',
+          },
+        },
+      },
+      transactionCategory: 'CONTRACT_CALL',
+      transactionProtocol: '',
+      transactionType: 'GENERIC_CONTRACT_CALL',
+      txParams: {
+        from: selectedAddress,
+        to: selectedAddress,
+      },
+    } as unknown as TransactionViewModel;
+
+    const { result } = renderHook(() => useGetTitle(tx));
+
+    expect(result.current).toBe('swapTokenToToken:USDC,USDT');
+  });
+
+  it('uses the API readable label when extensionTransactionLabels is enabled', () => {
+    const flaggedStore = configureMockStore()({
+      metamask: {
+        internalAccounts: {
+          selectedAccount: '1',
+          accounts: {
+            '1': {
+              address: selectedAddress,
+              type: 'eip155:eoa',
+            },
+          },
+        },
+        remoteFeatureFlags: {
+          extensionTransactionLabels: true,
+        },
+      },
+    });
+    const tx = {
+      readable: 'Swap 100 USDC to 99.857 USDT',
+      amounts: {
+        from: {
+          amount: -100000n,
+          token: {
+            address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            chainId: '0x1',
+            decimals: 6,
+            symbol: 'USDC',
+          },
+        },
+        to: {
+          amount: 99857n,
+          token: {
+            address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+            chainId: '0x1',
+            decimals: 6,
+            symbol: 'USDT',
+          },
+        },
+      },
+      transactionCategory: 'CONTRACT_CALL',
+      transactionProtocol: '',
+      transactionType: 'GENERIC_CONTRACT_CALL',
+      txParams: {
+        from: selectedAddress,
+        to: selectedAddress,
+      },
+    } as unknown as TransactionViewModel;
+
+    const { result } = renderHookBase(() => useGetTitle(tx), {
+      wrapper: ({ children }) => (
+        <Provider store={flaggedStore}>{children}</Provider>
+      ),
+    });
+
+    expect(result.current).toBe('Swap 100 USDC to 99.857 USDT');
+  });
+
+  it('falls back to legacy title logic when extensionTransactionLabels is disabled', () => {
+    const tx = {
+      readable: 'Swap 100 USDC to 99.857 USDT',
       amounts: {
         from: {
           amount: -100000n,
@@ -297,6 +374,7 @@ describe('useGetTitle', () => {
     jest
       .spyOn(useBridgeActivityDataHook, 'useBridgeActivityData')
       .mockReturnValue({
+        bridgeHistoryItem: undefined,
         isBridgeTx: true,
         isBridgeComplete: false,
         isBridgeFailed: false,
@@ -522,106 +600,6 @@ describe('useGetTitle', () => {
   });
 });
 
-describe('Query hooks', () => {
-  const expectedEvmAddress = selectedAddress;
-  const expectedNetworks = ['eip155:1'];
-  const mockStore = configureMockStore()({
-    metamask: {
-      useExternalServices: true,
-      enabledNetworkMap: {
-        eip155: {
-          '0x1': true,
-        },
-      },
-      transactions: [],
-      internalAccounts: {
-        selectedAccount: '1',
-        accounts: {
-          '1': {
-            address: selectedAddress,
-            type: 'eip155:eoa',
-          },
-        },
-      },
-    },
-  });
-
-  function renderQueryHook<Result>(callback: () => Result) {
-    return renderHookBase(callback, {
-      wrapper: ({ children }) => (
-        <Provider store={mockStore}>{children}</Provider>
-      ),
-    });
-  }
-
-  beforeEach(() => {
-    mockUseInfiniteQuery.mockReturnValue({ data: undefined });
-    mockGetV4MultiAccountTransactionsInfiniteQueryOptions.mockReturnValue({
-      queryKey: ['transactions'],
-      queryFn: jest.fn(),
-      getNextPageParam: jest.fn(),
-      enabled: true,
-    });
-    mockUseQueryClient.mockReturnValue({
-      getQueryData: jest.fn().mockReturnValue(undefined),
-      isFetching: jest.fn().mockReturnValue(0),
-      prefetchInfiniteQuery: jest.fn().mockResolvedValue(undefined),
-    });
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it('useTransactionsQuery composes query options and delegates to useInfiniteQuery', () => {
-    renderQueryHook(() => useTransactionsQuery());
-
-    expect(
-      mockGetV4MultiAccountTransactionsInfiniteQueryOptions,
-    ).toHaveBeenCalledWith({
-      accountAddresses: [`eip155:0:${expectedEvmAddress}`],
-      networks: expectedNetworks,
-      includeTxMetadata: true,
-    });
-    expect(mockUseInfiniteQuery).toHaveBeenCalledWith(
-      expect.objectContaining({
-        select: expect.any(Function),
-        enabled: true,
-        staleTime: 300000,
-      }),
-    );
-  });
-
-  it('usePrefetchTransactions prefetches when query is not cached and not fetching', () => {
-    const mockQueryClient = {
-      getQueryData: jest.fn().mockReturnValue(undefined),
-      isFetching: jest.fn().mockReturnValue(0),
-      prefetchInfiniteQuery: jest.fn().mockResolvedValue(undefined),
-    };
-    const queryOptions = {
-      queryKey: ['transactions'],
-      queryFn: jest.fn(),
-      getNextPageParam: jest.fn(),
-      enabled: true,
-    };
-
-    mockUseQueryClient.mockReturnValue(mockQueryClient);
-    mockGetV4MultiAccountTransactionsInfiniteQueryOptions.mockReturnValue(
-      queryOptions,
-    );
-
-    const { result } = renderQueryHook(() => usePrefetchTransactions());
-
-    act(() => {
-      result.current();
-    });
-
-    expect(mockQueryClient.prefetchInfiniteQuery).toHaveBeenCalledWith(
-      expect.objectContaining({ ...queryOptions, staleTime: 300000 }),
-    );
-  });
-});
-
 describe('useBridgeTxHistoryData', () => {
   const middleware = [thunk];
 
@@ -717,6 +695,9 @@ describe('useBridgeTxHistoryData', () => {
     expect(result.current.isBridgeFailed).toBe(true);
     expect(result.current.isBridgeComplete).toBe(false);
     expect(result.current.showBridgeTxDetails).toEqual(expect.any(Function));
+    expect(result.current.bridgeHistoryItem).toMatchObject({
+      originalTransactionId: 'intent-tx-meta-id',
+    });
 
     act(() => result.current.showBridgeTxDetails?.());
 

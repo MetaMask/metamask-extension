@@ -1,4 +1,8 @@
-import { AssetsController } from '@metamask/assets-controller';
+import {
+  AssetsController,
+  type AssetsControllerMessenger,
+} from '@metamask/assets-controller';
+import { ClientController } from '@metamask/client-controller';
 import { createApiPlatformClient } from '@metamask/core-backend';
 import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
@@ -6,24 +10,9 @@ import { getRootMessenger } from '../../lib/messenger';
 import {
   getAssetsControllerMessenger,
   getAssetsControllerInitMessenger,
-  AssetsControllerMessenger,
   AssetsControllerInitMessenger,
 } from '../messengers/assets/assets-controller-messenger';
-import {
-  ASSETS_UNIFY_STATE_VERSION_1,
-  isAssetsUnifyStateFeatureEnabled,
-} from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { AssetsControllerInit } from './assets-controller-init';
-
-jest.mock(
-  '../../../../shared/lib/assets-unify-state/remote-feature-flag',
-  () => ({
-    ...jest.requireActual(
-      '../../../../shared/lib/assets-unify-state/remote-feature-flag',
-    ),
-    isAssetsUnifyStateFeatureEnabled: jest.fn(),
-  }),
-);
 
 jest.mock('@metamask/assets-controller', () => ({
   ...jest.requireActual('@metamask/assets-controller'),
@@ -36,10 +25,12 @@ jest.mock('@metamask/core-backend', () => ({
   createApiPlatformClient: jest.fn().mockReturnValue({ mockApiClient: true }),
 }));
 
+function buildClientControllerMock(isUiOpen = true): ClientController {
+  return { state: { isUiOpen } } as ClientController;
+}
+
 function getInitRequestMock(
   options: {
-    featureFlagEnabled?: boolean;
-    featureVersion?: string | null;
     useTokenDetection?: boolean;
     completedOnboarding?: boolean;
   } = {},
@@ -49,12 +40,7 @@ function getInitRequestMock(
     AssetsControllerInitMessenger
   >
 > {
-  const {
-    featureFlagEnabled = false,
-    featureVersion = ASSETS_UNIFY_STATE_VERSION_1,
-    useTokenDetection = true,
-    completedOnboarding = true,
-  } = options;
+  const { useTokenDetection = true, completedOnboarding = true } = options;
 
   const baseMessenger = getRootMessenger<never, never>();
 
@@ -63,23 +49,6 @@ function getInitRequestMock(
     controllerMessenger: getAssetsControllerMessenger(baseMessenger),
     initMessenger: getAssetsControllerInitMessenger(baseMessenger),
   };
-
-  // Mock getController for RemoteFeatureFlagController
-  requestMock.getMessengerClient.mockImplementation((controllerName) => {
-    if (controllerName === 'RemoteFeatureFlagController') {
-      return {
-        state: {
-          remoteFeatureFlags: {
-            assetsUnifyState: {
-              enabled: featureFlagEnabled,
-              featureVersion,
-            },
-          },
-        },
-      } as unknown as ReturnType<typeof requestMock.getMessengerClient>;
-    }
-    throw new Error(`Unexpected controller name: ${controllerName}`);
-  });
 
   requestMock.initMessenger.call = jest.fn().mockImplementation((action) => {
     if (action === 'OnboardingController:getState') {
@@ -93,6 +62,8 @@ function getInitRequestMock(
     }
     throw new Error(`Unexpected action: ${action}`);
   });
+
+  requestMock.getMessengerClient.mockReturnValue(buildClientControllerMock());
 
   return requestMock;
 }
@@ -122,15 +93,6 @@ function buildSubscribeTestSetup(
     controllerMessenger: getAssetsControllerMessenger(baseMessenger),
     initMessenger: getAssetsControllerInitMessenger(baseMessenger),
   };
-
-  requestMock.getMessengerClient.mockImplementation((controllerName) => {
-    if (controllerName === 'RemoteFeatureFlagController') {
-      return {
-        state: { remoteFeatureFlags: {} },
-      } as unknown as ReturnType<typeof requestMock.getMessengerClient>;
-    }
-    throw new Error(`Unexpected controller name: ${controllerName}`);
-  });
 
   requestMock.initMessenger.call = jest.fn().mockImplementation((action) => {
     if (action === 'OnboardingController:getState') {
@@ -290,130 +252,26 @@ describe('AssetsControllerInit', () => {
     expect(tokenDetectionEnabledGetter()).toBe(true);
   });
 
-  describe('isEnabled function', () => {
-    it('returns true when feature flag is enabled with correct version', () => {
-      jest.mocked(isAssetsUnifyStateFeatureEnabled).mockReturnValue(true);
-
-      const requestMock = getInitRequestMock({
-        featureFlagEnabled: true,
-        featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
-      });
+  describe('isEnabled', () => {
+    it('returns ClientController isUiOpen state when UI is open', () => {
+      const requestMock = getInitRequestMock();
 
       AssetsControllerInit(requestMock);
 
-      // Get the isEnabled function that was passed to the controller
       const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
       const isEnabled = constructorCall.isEnabled as () => boolean;
 
       expect(isEnabled()).toBe(true);
+      expect(requestMock.getMessengerClient).toHaveBeenCalledWith(
+        'ClientController',
+      );
     });
 
-    it('returns false when feature flag is disabled', () => {
-      jest.mocked(isAssetsUnifyStateFeatureEnabled).mockReturnValue(false);
-
-      const requestMock = getInitRequestMock({
-        featureFlagEnabled: false,
-      });
-
-      AssetsControllerInit(requestMock);
-
-      const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
-      const isEnabled = constructorCall.isEnabled as () => boolean;
-
-      expect(isEnabled()).toBe(false);
-    });
-
-    it('returns false when feature version does not match', () => {
-      jest.mocked(isAssetsUnifyStateFeatureEnabled).mockReturnValue(false);
-
-      const requestMock = getInitRequestMock({
-        featureFlagEnabled: true,
-        featureVersion: '999', // Wrong version
-      });
-
-      AssetsControllerInit(requestMock);
-
-      const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
-      const isEnabled = constructorCall.isEnabled as () => boolean;
-
-      expect(isEnabled()).toBe(false);
-    });
-
-    it('returns false when feature flag is not present', () => {
-      jest.mocked(isAssetsUnifyStateFeatureEnabled).mockReturnValue(false);
-      const baseMessenger = getRootMessenger<never, never>();
-
-      const requestMock = {
-        ...buildControllerInitRequestMock(),
-        controllerMessenger: getAssetsControllerMessenger(baseMessenger),
-        initMessenger: getAssetsControllerInitMessenger(baseMessenger),
-      };
-
-      requestMock.getMessengerClient.mockImplementation((controllerName) => {
-        if (controllerName === 'RemoteFeatureFlagController') {
-          return {
-            state: {
-              remoteFeatureFlags: {},
-            },
-          } as unknown as ReturnType<typeof requestMock.getMessengerClient>;
-        }
-        throw new Error(`Unexpected controller name: ${controllerName}`);
-      });
-
-      // Mock initMessenger.call
-      requestMock.initMessenger.call = jest
-        .fn()
-        .mockImplementation((action) => {
-          if (action === 'OnboardingController:getState') {
-            return { completedOnboarding: true };
-          }
-          if (action === 'PreferencesController:getState') {
-            return { useTokenDetection: true };
-          }
-          if (action === 'AuthenticationController:getBearerToken') {
-            return Promise.resolve('mock-bearer-token');
-          }
-          throw new Error(`Unexpected action: ${action}`);
-        });
-
-      AssetsControllerInit(requestMock);
-
-      const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
-      const isEnabled = constructorCall.isEnabled as () => boolean;
-
-      expect(isEnabled()).toBe(false);
-    });
-
-    it('returns false when getMessengerClient throws an error', () => {
-      jest.mocked(isAssetsUnifyStateFeatureEnabled).mockReturnValue(false);
-
-      const baseMessenger = getRootMessenger<never, never>();
-
-      const requestMock = {
-        ...buildControllerInitRequestMock(),
-        controllerMessenger: getAssetsControllerMessenger(baseMessenger),
-        initMessenger: getAssetsControllerInitMessenger(baseMessenger),
-      };
-
-      requestMock.getMessengerClient.mockImplementation(() => {
-        throw new Error('Controller not found');
-      });
-
-      // Mock initMessenger.call
-      requestMock.initMessenger.call = jest
-        .fn()
-        .mockImplementation((action) => {
-          if (action === 'OnboardingController:getState') {
-            return { completedOnboarding: true };
-          }
-          if (action === 'PreferencesController:getState') {
-            return { useTokenDetection: true };
-          }
-          if (action === 'AuthenticationController:getBearerToken') {
-            return Promise.resolve('mock-bearer-token');
-          }
-          throw new Error(`Unexpected action: ${action}`);
-        });
+    it('returns false when ClientController isUiOpen is false', () => {
+      const requestMock = getInitRequestMock();
+      requestMock.getMessengerClient.mockReturnValue(
+        buildClientControllerMock(false),
+      );
 
       AssetsControllerInit(requestMock);
 
@@ -601,6 +459,7 @@ describe('AssetsControllerInit', () => {
 
       expect(createApiPlatformClient).toHaveBeenCalledWith({
         clientProduct: 'metamask-extension',
+        clientVersion: process.env.METAMASK_VERSION,
         getBearerToken: expect.any(Function),
       });
     });

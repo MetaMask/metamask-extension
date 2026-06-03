@@ -3,6 +3,7 @@ import {
   AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
   AccountTreeControllerSelectedAccountGroupChangeEvent,
 } from '@metamask/account-tree-controller';
+import { GeolocationControllerGetGeolocationAction } from '@metamask/geolocation-controller';
 import {
   KeyringControllerGetStateAction,
   KeyringControllerSignTypedMessageAction,
@@ -17,8 +18,14 @@ import {
   RemoteFeatureFlagControllerGetStateAction,
   RemoteFeatureFlagControllerStateChangeEvent,
 } from '@metamask/remote-feature-flag-controller';
+import {
+  StorageServiceGetItemAction,
+  StorageServiceRemoveItemAction,
+  StorageServiceSetItemAction,
+} from '@metamask/storage-service';
 import { TransactionControllerAddTransactionAction } from '@metamask/transaction-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller-method-action-types';
+import { RewardsControllerGetPerpsDiscountForAccountAction } from '../../controllers/rewards/rewards-controller-method-action-types';
 import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions =
@@ -30,15 +37,22 @@ type AllowedActions =
   | TransactionControllerAddTransactionAction
   | RemoteFeatureFlagControllerGetStateAction
   | AccountTreeControllerGetAccountsFromSelectedAccountGroupAction
+  | GeolocationControllerGetGeolocationAction
   | AuthenticationController.AuthenticationControllerGetBearerTokenAction
-  | MetaMetricsControllerTrackEventAction;
+  | MetaMetricsControllerTrackEventAction
+  | StorageServiceGetItemAction
+  | StorageServiceSetItemAction
+  | StorageServiceRemoveItemAction
+  | RewardsControllerGetPerpsDiscountForAccountAction;
 
 type AllowedEvents =
   | RemoteFeatureFlagControllerStateChangeEvent
   | AccountTreeControllerSelectedAccountGroupChangeEvent;
 
-export type PerpsControllerMessenger = ReturnType<
-  typeof getPerpsControllerMessenger
+export type PerpsControllerMessenger = Messenger<
+  'PerpsController',
+  AllowedActions,
+  AllowedEvents
 >;
 
 /**
@@ -51,13 +65,8 @@ export type PerpsControllerMessenger = ReturnType<
  */
 export function getPerpsControllerMessenger(
   messenger: RootMessenger<AllowedActions, AllowedEvents>,
-) {
-  const perpsControllerMessenger = new Messenger<
-    'PerpsController',
-    AllowedActions,
-    AllowedEvents,
-    typeof messenger
-  >({
+): PerpsControllerMessenger {
+  const perpsControllerMessenger: PerpsControllerMessenger = new Messenger({
     namespace: 'PerpsController',
     parent: messenger,
   });
@@ -73,8 +82,13 @@ export function getPerpsControllerMessenger(
       'TransactionController:addTransaction',
       'RemoteFeatureFlagController:getState',
       'AccountTreeController:getAccountsFromSelectedAccountGroup',
+      'GeolocationController:getGeolocation',
       'AuthenticationController:getBearerToken',
       'MetaMetricsController:trackEvent',
+      'StorageService:getItem',
+      'StorageService:setItem',
+      'StorageService:removeItem',
+      'RewardsController:getPerpsDiscountForAccount',
     ],
     events: [
       'RemoteFeatureFlagController:stateChange',

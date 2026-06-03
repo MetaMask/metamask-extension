@@ -35,7 +35,10 @@ describe('Bridge tests', function (this: Suite) {
         withErc20: false,
       }),
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await login(driver, { expectedBalance: '0' });
+        await login(driver, {
+          expectedBalance: '225,730.11',
+          waitForNonEvmAccounts: false,
+        });
 
         const homePage = new HomePage(driver);
         const bridgePage = new BridgeQuotePage(driver);
@@ -47,7 +50,6 @@ describe('Bridge tests', function (this: Suite) {
           quote,
           expectedTransactionsCount: 2,
           expectedDestAmount: '0.0157',
-          dismissStatusPage: true,
         });
 
         const inputChangesCount1 = await checkInputChangedEvents(
