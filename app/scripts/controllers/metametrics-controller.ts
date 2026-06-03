@@ -796,7 +796,7 @@ export class MetaMetricsController extends BaseController<
 
     if (participateInMetaMetrics === true) {
       this.messenger.call('AnalyticsController:optIn');
-    } else if (participateInMetaMetrics === false) {
+    } else {
       this.messenger.call('AnalyticsController:optOut');
     }
 
@@ -1271,21 +1271,7 @@ export class MetaMetricsController extends BaseController<
     }
 
     const { analyticsId, optedIn } = this.#analyticsGetState();
-    // Require a completed metrics decision: when participation is reset to
-    // `null` (e.g. onboarding welcome login), `completedMetaMetricsOnboarding`
-    // is cleared but AnalyticsController may still be opted in, so `optedIn`
-    // alone is not sufficient to allow submission.
-    //
-    // We intentionally gate on `completedMetaMetricsOnboarding` because `optedIn`
-    // in not reset to `false` when setParticipateInMetaMetrics(null) is called.
-    // We don't reset `optedIn` to `false` in that case, because resetting calling
-    // AnalyticsController:optOut() would clear the queued events which we want to avoid
-    // when resetting participation to null.
-    return (
-      this.state.completedMetaMetricsOnboarding &&
-      optedIn &&
-      analyticsId.length > 0
-    );
+    return optedIn && analyticsId.length > 0;
   }
 
   #updateLatestAnalyticsEventTimestamp(): void {

@@ -562,39 +562,6 @@ describe('MetaMetricsController', function () {
         },
       );
     });
-    it('does not opt out of AnalyticsController when participation is reset to null', async function () {
-      const eventQueue = {
-        queuedEvent: {
-          type: 'track',
-          eventName: 'Queued Event',
-          messageId: 'queuedEvent',
-          timestamp: '2026-05-28T00:00:00.000Z',
-        },
-      };
-
-      await withController(
-        {
-          options: {
-            state: { completedMetaMetricsOnboarding: true },
-          },
-          analyticsControllerState: {
-            optedIn: true,
-            eventQueue,
-          },
-        },
-        async ({ controller, controllerMessenger }) => {
-          await controller.setParticipateInMetaMetrics(null);
-
-          expect(controller.state.completedMetaMetricsOnboarding).toBe(false);
-          expect(
-            controllerMessenger.call('AnalyticsController:getState').optedIn,
-          ).toBe(true);
-          expect(
-            controllerMessenger.call('AnalyticsController:getState').eventQueue,
-          ).toStrictEqual(eventQueue);
-        },
-      );
-    });
     it('should not nullify the metaMetricsId when set to false', async function () {
       await withController(async ({ controller }) => {
         await controller.setParticipateInMetaMetrics(false);
@@ -785,34 +752,6 @@ describe('MetaMetricsController', function () {
           analyticsControllerState: { optedIn: false },
         },
         ({ controller }) => {
-          const spy = jest.spyOn(segmentMock, 'track');
-          controller.trackEvent({
-            event: 'Fake Event',
-            category: 'Unit Test',
-            properties: {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              chain_id: '1',
-            },
-          });
-          expect(spy).not.toHaveBeenCalled();
-        },
-      );
-    });
-
-    it('does not track normal events after participation is reset to null even if AnalyticsController is still opted in', async function () {
-      await withController(
-        {
-          options: {
-            state: { completedMetaMetricsOnboarding: true },
-          },
-          analyticsControllerState: { optedIn: true },
-        },
-        async ({ controller }) => {
-          // Resetting to null clears the onboarding decision but intentionally
-          // leaves AnalyticsController opted in (queue is preserved).
-          await controller.setParticipateInMetaMetrics(null);
-
           const spy = jest.spyOn(segmentMock, 'track');
           controller.trackEvent({
             event: 'Fake Event',
@@ -3017,7 +2956,6 @@ async function withController<ReturnValue>(
 
     messenger.registerActionHandler('AnalyticsController:optOut', () => {
       mockAnalyticsControllerState.optedIn = false;
-      mockAnalyticsControllerState.eventQueue = {};
     });
 
     // Emulate the analytics platform adapter: every Segment payload is built
