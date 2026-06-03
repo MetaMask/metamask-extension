@@ -128,7 +128,7 @@ const SnapUIRendererComponent = ({
     () => ({
       clearButtonLabel: t('clear'),
       cancelButtonLabel: t('cancel'),
-      okButtonLabel: t('ok'),
+      okButtonLabel: t('ok').toUpperCase(),
     }),
     [t],
   );

@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import type { Meta, StoryObj } from '@storybook/react';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
-import { ThemeProvider } from '@material-ui/core/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import configureStore from '../../../../store/store';
 import { SnapInterfaceContextProvider } from '../../../../contexts/snaps';
 import testData from '../../../../../.storybook/test-data';

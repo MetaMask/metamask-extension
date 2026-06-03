@@ -147,7 +147,7 @@ class SnapInteractiveDialog {
    *
    * @param day - Day of the month to select.
    * @param hour - Hour to select (0–23).
-   * @param minute - Minute to select (0–59, rounded to nearest 5 on clock face).
+   * @param minute - Minute to select (must be a multiple of 5: 0, 5, 10, …, 55).
    * @returns ISO string of the selected date-time.
    */
   async selectInDateTimePicker(day: number, hour: number, minute: number) {
@@ -169,7 +169,7 @@ class SnapInteractiveDialog {
    * Opens the dialog, selects hour and minute on the analog clock, and confirms.
    *
    * @param hour - Hour to select (0–23).
-   * @param minute - Minute to select (0–59, rounded to nearest 5 on clock face).
+   * @param minute - Minute to select (must be a multiple of 5: 0, 5, 10, …, 55).
    * @returns ISO string of the selected time (today's date).
    */
   async selectInTimePicker(hour: number, minute: number) {

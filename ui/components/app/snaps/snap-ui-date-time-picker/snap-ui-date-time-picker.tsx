@@ -56,6 +56,26 @@ function normalizeDate(
 }
 
 /**
+ * Parses interface state into a committed DateTime, or null when unset/invalid.
+ * getValue can return an empty string; that must not be treated as a valid ISO value.
+ * @param value
+ * @param type
+ */
+function parseInitialIsoValue(
+  value: string | undefined | null,
+  type: 'date' | 'time' | 'datetime',
+): DateTime | null {
+  if (value === undefined || value === null || value === '') {
+    return null;
+  }
+  const parsed = DateTime.fromISO(value);
+  if (!parsed.isValid) {
+    return null;
+  }
+  return normalizeDate(parsed, type) as DateTime;
+}
+
+/**
  * The SnapUIDateTimePicker component.
  *
  * @param props - The component props.
@@ -84,16 +104,14 @@ export const SnapUIDateTimePicker: FunctionComponent<
   disableFuture = false,
 }) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
-  const initialValue = getValue(name, form) as string;
-
-  const hasInitialValue = Boolean(initialValue);
+  const initialValue = getValue(name, form) as string | undefined | null;
+  const parsedInitialValue = parseInitialIsoValue(initialValue, type);
+  const hasInitialValue = parsedInitialValue !== null;
 
   // The date shown inside the picker dialog (always non-null so the
   // toolbar/calendar never shows dashes). Defaults to "now".
   const [pickerValue, setPickerValue] = React.useState<DateTime>(
-    initialValue
-      ? DateTime.fromISO(initialValue)
-      : (normalizeDate(DateTime.now(), type) as DateTime),
+    parsedInitialValue ?? (normalizeDate(DateTime.now(), type) as DateTime),
   );
 
   // Whether the user has committed a selection (or a value was provided).
@@ -102,14 +120,21 @@ export const SnapUIDateTimePicker: FunctionComponent<
   const [open, setOpen] = React.useState(false);
 
   useEffect(() => {
-    if (initialValue !== undefined && initialValue !== null) {
-      setPickerValue(DateTime.fromISO(initialValue));
+    const parsed = parseInitialIsoValue(initialValue, type);
+    if (parsed) {
+      setPickerValue(parsed);
       setCommitted(true);
+      return;
     }
-  }, [initialValue]);
+    setCommitted(false);
+    setPickerValue(normalizeDate(DateTime.now(), type) as DateTime);
+  }, [initialValue, type]);
 
   const handleChange = (date: DateTime | null) => {
     if (!date) {
+      setCommitted(false);
+      handleInputChange(name, null, form);
+      setPickerValue(normalizeDate(DateTime.now(), type) as DateTime);
       return;
     }
     setPickerValue(normalizeDate(date, type) as DateTime);
