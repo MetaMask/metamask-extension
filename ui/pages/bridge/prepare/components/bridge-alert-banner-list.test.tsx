@@ -46,9 +46,9 @@ jest.mock('../../../../contexts/hardware-wallets', () => ({
 }));
 
 setBackgroundConnection({
-  resetState: async () => jest.fn(),
+  'BridgeController:resetState': async () => jest.fn(),
   getStatePatches: async () => jest.fn(),
-  updateBridgeQuoteRequestParams: async () => jest.fn(),
+  'BridgeController:updateBridgeQuoteRequestParams': async () => jest.fn(),
 } as never);
 
 describe('BridgeAlertBannerList', () => {

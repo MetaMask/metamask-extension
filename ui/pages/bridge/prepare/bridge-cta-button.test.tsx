@@ -62,7 +62,7 @@ setBackgroundConnection({
   submitTx: jest.fn(),
   setEnabledAllPopularNetworks: jest.fn(),
   getStatePatches: jest.fn(),
-  resetState: () => mockResetState(),
+  'BridgeController:resetState': () => mockResetState(),
 } as never);
 
 describe('BridgeCTAButton', () => {

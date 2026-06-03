@@ -1,8 +1,8 @@
 import {
-  BridgeBackgroundAction,
   type BridgeController,
-  BridgeUserAction,
+  BRIDGE_CONTROLLER_NAME,
   type RequiredEventContextFromClient,
+  BridgeControllerActions,
   UnifiedSwapBridgeEventName,
   isCrossChain,
   isNonEvmChainId,
@@ -79,7 +79,7 @@ export {
 };
 
 const callBridgeControllerMethod = (
-  bridgeAction: BridgeUserAction | BridgeBackgroundAction,
+  bridgeAction: BridgeControllerActions['type'],
   ...args: unknown[]
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -91,7 +91,9 @@ const callBridgeControllerMethod = (
 // Background actions
 export const resetBridgeController = () => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(callBridgeControllerMethod(BridgeBackgroundAction.RESET_STATE));
+    dispatch(
+      callBridgeControllerMethod(`${BRIDGE_CONTROLLER_NAME}:resetState`),
+    );
     await clearAllBridgeCacheItems();
   };
 };
@@ -108,7 +110,7 @@ export const trackUnifiedSwapBridgeEvent = <
   return async (dispatch: MetaMaskReduxDispatch) => {
     await dispatch(
       callBridgeControllerMethod(
-        BridgeBackgroundAction.TRACK_METAMETRICS_EVENT,
+        `${BRIDGE_CONTROLLER_NAME}:trackUnifiedSwapBridgeEvent`,
         eventName,
         propertiesFromClient,
       ),
@@ -128,7 +130,7 @@ export const updateQuoteRequestParams = (
   return async (dispatch: MetaMaskReduxDispatch) => {
     await dispatch(
       callBridgeControllerMethod(
-        BridgeUserAction.UPDATE_QUOTE_PARAMS,
+        `${BRIDGE_CONTROLLER_NAME}:updateBridgeQuoteRequestParams`,
         params,
         context,
         quoteRequestIndex,
@@ -261,8 +263,11 @@ export const setToToken = (newToToken: TokenPayload) => {
           fromToken.assetId,
         );
       }
-      // @ts-expect-error - GasFeeState's nested union type is causing a type mismatch
-      dispatch(setFromToken(fromTokenToUse));
+      await dispatch(
+        setFromToken(fromTokenToUse) as unknown as Parameters<
+          typeof dispatch
+        >[0],
+      );
     }
 
     dispatch(setToTokenAction(newToToken));

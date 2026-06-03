@@ -2,8 +2,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { zeroAddress } from 'ethereumjs-util';
 import {
-  BridgeBackgroundAction,
-  BridgeUserAction,
+  BRIDGE_CONTROLLER_NAME,
   RequestStatus,
 } from '@metamask/bridge-controller';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
@@ -246,7 +245,8 @@ describe('Ducks - Bridge', () => {
     it('dispatches quote params to the bridge controller', () => {
       const mockUpdateParams = jest.fn();
       setBackgroundConnection({
-        [BridgeUserAction.UPDATE_QUOTE_PARAMS]: mockUpdateParams,
+        [`${BRIDGE_CONTROLLER_NAME}:updateBridgeQuoteRequestParams`]:
+          mockUpdateParams,
         getStatePatches: jest.fn(),
       } as never);
 
@@ -330,7 +330,7 @@ describe('Ducks - Bridge', () => {
         'clearAllBridgeCacheItems',
       );
       setBackgroundConnection({
-        [BridgeBackgroundAction.RESET_STATE]: mockResetBridgeState,
+        [`${BRIDGE_CONTROLLER_NAME}:resetState`]: mockResetBridgeState,
         getStatePatches: jest.fn(),
       } as never);
 

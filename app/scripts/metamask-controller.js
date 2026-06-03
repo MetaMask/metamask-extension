@@ -58,11 +58,7 @@ import { ERC1155, ERC20, ERC721, toHex } from '@metamask/controller-utils';
 
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
-import {
-  BRIDGE_CONTROLLER_NAME,
-  BridgeUserAction,
-  BridgeBackgroundAction,
-} from '@metamask/bridge-controller';
+import { BRIDGE_CONTROLLER_NAME } from '@metamask/bridge-controller';
 
 import {
   TransactionStatus,
@@ -3627,24 +3623,26 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // Bridge
-      [BridgeBackgroundAction.RESET_STATE]: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.RESET_STATE}`,
-      ),
-      [BridgeUserAction.UPDATE_QUOTE_PARAMS]:
+      [`${BRIDGE_CONTROLLER_NAME}:resetState`]:
         this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          `${BRIDGE_CONTROLLER_NAME}:${BridgeUserAction.UPDATE_QUOTE_PARAMS}`,
+          `${BRIDGE_CONTROLLER_NAME}:resetState`,
         ),
-      [BridgeBackgroundAction.TRACK_METAMETRICS_EVENT]:
+      [`${BRIDGE_CONTROLLER_NAME}:updateBridgeQuoteRequestParams`]:
         this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.TRACK_METAMETRICS_EVENT}`,
+          `${BRIDGE_CONTROLLER_NAME}:updateBridgeQuoteRequestParams`,
         ),
-      [BridgeBackgroundAction.FETCH_QUOTES]: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.FETCH_QUOTES}`,
-      ),
+      [`${BRIDGE_CONTROLLER_NAME}:trackUnifiedSwapBridgeEvent`]:
+        this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          `${BRIDGE_CONTROLLER_NAME}:trackUnifiedSwapBridgeEvent`,
+        ),
+      [`${BRIDGE_CONTROLLER_NAME}:fetchQuotes`]:
+        this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          `${BRIDGE_CONTROLLER_NAME}:fetchQuotes`,
+        ),
 
       // Bridge Tx submission
       submitTx: this.controllerMessenger.call.bind(
@@ -7481,7 +7479,7 @@ export default class MetamaskController extends EventEmitter {
       createDappSwapMiddleware({
         fetchQuotes: this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.FETCH_QUOTES}`,
+          `${BRIDGE_CONTROLLER_NAME}:fetchQuotes`,
         ),
         setDappSwapComparisonData:
           this.appStateController.setDappSwapComparisonData.bind(
