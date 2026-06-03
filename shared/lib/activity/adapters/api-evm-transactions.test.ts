@@ -5,6 +5,7 @@ import { mapApiEvmTransactions } from './api-evm-transactions';
 
 const subjectAddress = '0x9bed78535d6a03a955f1504aadba974d9a29e292';
 const baseUsdc = '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913';
+const mainnetUsdc = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
 const baseAaveUsdc = '0x4e65fe4dba92790696d040ac24aa414708f5c0ab';
 const baseAavePool = '0xa238dd80c259a72e81d7e4664a9801593f98d1c5';
 const baseRecipientAddress = '0x6fdb1e9d93c1279177b00baaf44524055455e92e';
@@ -474,6 +475,68 @@ describe('mapEvmTransactions', () => {
     });
   });
 
+  it('maps an Aave withdraw with a known method id to a Lending withdrawal activity', () => {
+    const transaction = {
+      hash: '0x26f4911467b538702c0945e4ec5e303de44c0c1c174897141d1b548ea3161795',
+      timestamp: '2026-05-27T14:47:14.000Z',
+      chainId: Number(CHAIN_IDS.BASE),
+      from: subjectAddress,
+      to: baseAavePool,
+      methodId: '0x69328dec',
+      transactionCategory: 'WITHDRAW',
+      transactionType: 'GENERIC_CONTRACT_CALL',
+      valueTransfers: [
+        {
+          from: subjectAddress,
+          to: baseAaveUsdc,
+          amount: '100000',
+          decimal: 6,
+          contractAddress: baseAaveUsdc,
+          symbol: 'aBasUSDC',
+        },
+        {
+          from: baseAavePool,
+          to: subjectAddress,
+          amount: '200000',
+          decimal: 6,
+          contractAddress: baseUsdc,
+          symbol: 'USDC',
+        },
+      ],
+    } as V1TransactionByHashResponse;
+
+    const item = mapApiEvmTransactions({
+      subjectAddress,
+      transaction,
+    });
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
+      type: 'lendingWithdrawal',
+      chainId: 'eip155:8453',
+      status: 'success',
+      timestamp: 1779893234000,
+      data: {
+        hash: '0x26f4911467b538702c0945e4ec5e303de44c0c1c174897141d1b548ea3161795',
+        sourceToken: {
+          amount: '100000',
+          decimals: 6,
+          direction: 'out',
+          symbol: 'aBasUSDC',
+          assetId: toAssetId(baseAaveUsdc, 'eip155:8453'),
+        },
+        destinationToken: {
+          amount: '200000',
+          decimals: 6,
+          direction: 'in',
+          symbol: 'USDC',
+          assetId: toAssetId(baseUsdc, 'eip155:8453'),
+        },
+      },
+    });
+  });
+
   it('maps a DEPOSIT without an inbound transfer to a deposit activity', () => {
     const stakingContractAddress = '0x00000000219ab540356cbb839cbe05303d7705fa';
     const transaction = {
@@ -804,5 +867,84 @@ describe('mapEvmTransactions', () => {
         transactionType: 'GENERIC_CONTRACT_CALL',
       },
     });
+  });
+
+  it('maps the reported generic contract call to a contract interaction with its token amount', () => {
+    const transaction = {
+      hash: '0xd206cc6c16974409bae072ce4cd1559743041af40c2bae84775a0bbb4dff5fee',
+      timestamp: '2026-05-01T13:39:47.000Z',
+      chainId: Number(CHAIN_IDS.MAINNET),
+      from: subjectAddress,
+      to: subjectAddress,
+      methodId: '0xe9ae5c53',
+      value: '0',
+      transactionCategory: 'CONTRACT_CALL',
+      transactionType: 'GENERIC_CONTRACT_CALL',
+      valueTransfers: [
+        {
+          from: subjectAddress,
+          to: '0x4cd00e387622c35bddb9b4c962c136462338bc31',
+          amount: '580060',
+          decimal: 6,
+          contractAddress: mainnetUsdc,
+          symbol: 'USDC',
+          name: 'USD Coin',
+          transferType: 'erc20',
+        },
+      ],
+    } as V1TransactionByHashResponse;
+
+    const item = mapApiEvmTransactions({
+      subjectAddress,
+      transaction,
+    });
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
+      type: 'contractInteraction',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1777642787000,
+      data: {
+        from: subjectAddress,
+        hash: '0xd206cc6c16974409bae072ce4cd1559743041af40c2bae84775a0bbb4dff5fee',
+        methodId: '0xe9ae5c53',
+        to: subjectAddress,
+        transactionCategory: 'CONTRACT_CALL',
+        transactionProtocol: undefined,
+        transactionType: 'GENERIC_CONTRACT_CALL',
+        token: {
+          amount: '580060',
+          assetId: toAssetId(mainnetUsdc, 'eip155:1'),
+          decimals: 6,
+          direction: 'out',
+          symbol: 'USDC',
+        },
+      },
+    });
+  });
+
+  it('maps a Standard transaction on a chain outside the swaps registry without throwing', () => {
+    // chainId 4657 (0x1231) is not in the bridge swaps registry, so the native
+    // asset lookup throws; mapping should degrade gracefully instead.
+    const transaction = {
+      timestamp: '2026-05-12T13:37:47.000Z',
+      chainId: 4657,
+      from: subjectAddress,
+      to: baseRecipientAddress,
+      transactionCategory: 'STANDARD',
+      value: '1000000000000000000',
+      valueTransfers: [],
+    } as unknown as V1TransactionByHashResponse;
+
+    expect(() =>
+      mapApiEvmTransactions({ subjectAddress, transaction }),
+    ).not.toThrow();
+
+    const item = mapApiEvmTransactions({ subjectAddress, transaction });
+
+    expect(item.type).toBe('send');
+    expect(item.chainId).toBe('eip155:4657');
   });
 });
