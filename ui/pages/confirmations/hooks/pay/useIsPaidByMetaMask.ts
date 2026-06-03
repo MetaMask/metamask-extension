@@ -1,0 +1,43 @@
+import { BigNumber } from 'bignumber.js';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import { useConfirmContext } from '../../context/confirm';
+import { useTransactionPayTotals } from './useTransactionPayData';
+
+const SUPPORTED_TYPES: TransactionType[] = [TransactionType.musdConversion];
+
+/**
+ * Determines whether the current transaction is fully sponsored by MetaMask
+ * (zero gas, zero provider fee, zero MetaMask fee).
+ *
+ * Scoped to musdConversion for now; broadening to other types is a product
+ * decision left for follow-up.
+ */
+export function useIsPaidByMetaMask(): boolean {
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const totals = useTransactionPayTotals();
+
+  if (
+    !currentConfirmation?.type ||
+    !SUPPORTED_TYPES.includes(currentConfirmation.type) ||
+    !totals?.fees
+  ) {
+    return false;
+  }
+
+  const sourceNetwork = new BigNumber(
+    totals.fees.sourceNetwork?.estimate?.usd ?? 0,
+  );
+  const targetNetwork = new BigNumber(totals.fees.targetNetwork?.usd ?? 0);
+  const provider = new BigNumber(totals.fees.provider?.usd ?? 0);
+  const metaMask = new BigNumber(totals.fees.metaMask?.usd ?? 0);
+
+  return (
+    sourceNetwork.isZero() &&
+    targetNetwork.isZero() &&
+    provider.isZero() &&
+    metaMask.isZero()
+  );
+}
