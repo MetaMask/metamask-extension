@@ -6,7 +6,7 @@ import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import BitcoinHomepage from '../../page-objects/pages/home/bitcoin-homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 import BitcoinReviewTxPage from '../../page-objects/pages/send/bitcoin-review-tx-page';
 import SendPage from '../../page-objects/pages/send/send-page';
 import {
@@ -50,11 +50,12 @@ describe('BTC Account - Send', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
-        const homePage = new BitcoinHomepage(driver);
+        const homePage = new HomePage(driver);
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
-        await homePage.checkIsExpectedBitcoinBalanceDisplayed(
-          DEFAULT_BTC_BALANCE,
+        await homePage.checkExpectedTokenBalanceIsDisplayed(
+          `${DEFAULT_BTC_BALANCE}`,
+          'BTC',
         );
 
         const sendPage = new SendPage(driver);
@@ -77,11 +78,12 @@ describe('BTC Account - Send', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
-        const homePage = new BitcoinHomepage(driver);
+        const homePage = new HomePage(driver);
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
-        await homePage.checkIsExpectedBitcoinBalanceDisplayed(
-          DEFAULT_BTC_BALANCE,
+        await homePage.checkExpectedTokenBalanceIsDisplayed(
+          `${DEFAULT_BTC_BALANCE}`,
+          'BTC',
         );
 
         const sendPage = new SendPage(driver);
@@ -110,11 +112,12 @@ describe('BTC Account - Send', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
-        const homePage = new BitcoinHomepage(driver);
+        const homePage = new HomePage(driver);
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
-        await homePage.checkIsExpectedBitcoinBalanceDisplayed(
-          DEFAULT_BTC_BALANCE,
+        await homePage.checkExpectedTokenBalanceIsDisplayed(
+          `${DEFAULT_BTC_BALANCE}`,
+          'BTC',
         );
 
         const sendPage = new SendPage(driver);

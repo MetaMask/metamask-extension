@@ -18,14 +18,14 @@ class HomePage {
     testId: 'account-overview__activity-tab',
   };
 
-  private readonly backupSecretRecoveryPhraseButton = {
-    text: 'Back up now',
-    css: '.home-notification__accept-button',
-  };
-
   private readonly backupRemindMeLaterButton = {
     tag: 'button',
     text: 'Remind me later',
+  };
+
+  private readonly backupSecretRecoveryPhraseButton = {
+    text: 'Back up now',
+    css: '.home-notification__accept-button',
   };
 
   private readonly backupSecretRecoveryPhraseNotification = {
@@ -33,8 +33,10 @@ class HomePage {
     css: '.home-notification__text',
   };
 
+  // Matches both the EVM (`eth-overview__primary-currency`) and non-EVM
+  // (`coin-overview__primary-currency`) balance containers.
   protected readonly balance: string =
-    '[data-testid="eth-overview__primary-currency"]';
+    '[data-testid$="overview__primary-currency"]';
 
   private readonly basicFunctionalityOffWarningMessage = {
     text: 'Basic functionality is off',
@@ -46,10 +48,30 @@ class HomePage {
   protected readonly bridgeButton: string =
     '[data-testid="eth-overview-bridge"]';
 
+  protected readonly buySellButton = { css: 'button', text: 'Buy' };
+
+  private readonly closeSurveyToastBannerButton =
+    '[data-testid="survey-toast-banner-base"] [aria-label="Close"] span';
+
   private readonly closeUseNetworkNotificationModalButton = {
     text: 'Got it',
     tag: 'h6',
   };
+
+  private readonly connectionsRemovedModal =
+    '[data-testid="connections-removed-modal"]';
+
+  private readonly copyAddressButton = '[data-testid="app-header-copy-button"]';
+
+  private readonly defaultAddressContainer =
+    '[data-testid="default-address-container"]';
+
+  private readonly defiTab = {
+    testId: 'account-overview__defi-tab',
+  };
+
+  private readonly emptyBalance =
+    '[data-testid="coin-overview-balance-empty-state"]';
 
   private readonly fundYourWalletBanner = {
     text: 'Fund your wallet',
@@ -68,10 +90,6 @@ class HomePage {
     testId: 'account-overview__nfts-tab',
   };
 
-  private readonly defiTab = {
-    testId: 'account-overview__defi-tab',
-  };
-
   private readonly overviewBalanceSection = '.wallet-overview__balance';
 
   private readonly popoverBackground = '.popover-bg';
@@ -82,42 +100,11 @@ class HomePage {
     testId: 'account-value-and-suffix',
   };
 
-  protected readonly sendButton: string = '[data-testid="eth-overview-send"]';
-
-  private readonly solanaAccountIcon = 'img[src="./images/solana-logo.svg"]';
-
-  protected readonly swapButton: string = '[data-testid="eth-overview-swap"]';
-
-  private readonly storageErrorToast = '[data-testid="storage-error-toast"]';
-
-  private readonly storageErrorToastBackupButton = {
-    text: 'Back up Secret Recovery Phrase',
-    tag: 'span',
-  };
+  protected readonly receiveButton = { css: 'button', text: 'Receive' };
 
   private readonly revealSrpPasswordInput = '[data-testid="input-password"]';
 
-  private readonly srpAddedToast = '[data-testid="new-srp-added-toast"]';
-
-  private readonly srpAddedToastCloseButton =
-    '.toast-container button[aria-label="Close"]';
-
-  private readonly surveyToast = '[data-testid="survey-toast"]';
-
-  private readonly tokensTab = {
-    testId: 'account-overview__asset-tab',
-  };
-
-  private readonly closeSurveyToastBannerButton =
-    '[data-testid="survey-toast-banner-base"] [aria-label="Close"] span';
-
-  private readonly copyAddressButton = '[data-testid="app-header-copy-button"]';
-
-  private readonly defaultAddressContainer =
-    '[data-testid="default-address-container"]';
-
-  private readonly connectionsRemovedModal =
-    '[data-testid="connections-removed-modal"]';
+  protected readonly sendButton = { css: 'button', text: 'Send' };
 
   private readonly shieldEntryModal = '[data-testid="shield-entry-modal"]';
 
@@ -127,8 +114,27 @@ class HomePage {
   private readonly shieldEntryModalSkip =
     '[data-testid="shield-entry-modal-close-button"]';
 
-  private readonly emptyBalance =
-    '[data-testid="coin-overview-balance-empty-state"]';
+  private readonly solanaAccountIcon = 'img[src="./images/solana-logo.svg"]';
+
+  private readonly srpAddedToast = '[data-testid="new-srp-added-toast"]';
+
+  private readonly srpAddedToastCloseButton =
+    '.toast-container button[aria-label="Close"]';
+
+  private readonly storageErrorToast = '[data-testid="storage-error-toast"]';
+
+  private readonly storageErrorToastBackupButton = {
+    text: 'Back up Secret Recovery Phrase',
+    tag: 'span',
+  };
+
+  private readonly surveyToast = '[data-testid="survey-toast"]';
+
+  protected readonly swapButton = { css: 'button', text: 'Swap' };
+
+  private readonly tokensTab = {
+    testId: 'account-overview__asset-tab',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -543,27 +549,6 @@ class HomePage {
     await this.checkExpectedBalanceIsDisplayed(expectedBalance);
   }
 
-  async getSkeleton(): Promise<
-    WebElement & {
-      waitForElementState: (state: string, timeout: number) => Promise<void>;
-    }
-  > {
-    return (await this.driver.waitForSelector('.mm-skeleton', {
-      state: 'visible',
-      timeout: 100,
-      // The `waitForSelector` method returns the wrong type.
-      // We supply that type in the return type, and we don't need to restate it here.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    })) as any;
-  }
-
-  async waitForSkeletonToDisappear(
-    skeleton: WebElement & {
-      waitForElementState: (state: string, timeout: number) => Promise<void>;
-    },
-  ): Promise<void> {
-    await skeleton.waitForElementState('hidden', this.driver.timeout);
-  }
 
   async checkNewSrpAddedToastIsDisplayed(srpNumber = 2): Promise<void> {
     await this.driver.waitForSelector({
@@ -632,6 +617,11 @@ class HomePage {
     await this.driver.waitForSelector(this.shieldEntryModal);
   }
 
+  async clickOnSendButton(): Promise<void> {
+    await this.driver.waitForSelector(this.sendButton);
+    await this.driver.clickElement(this.sendButton);
+  }
+
   async clickOnShieldEntryModalGetStarted(): Promise<void> {
     console.log('Click on shield entry modal get started');
     await this.driver.clickElement(this.shieldEntryModalGetStarted);
@@ -640,6 +630,11 @@ class HomePage {
   async clickOnShieldEntryModalSkip(): Promise<void> {
     console.log('Click on shield entry modal skip');
     await this.driver.clickElement(this.shieldEntryModalSkip);
+  }
+
+  async clickOnSwapButton(): Promise<void> {
+    await this.driver.waitForSelector(this.swapButton);
+    await this.driver.clickElement(this.swapButton);
   }
 
   async checkNoShieldEntryModalIsDisplayed(): Promise<void> {
