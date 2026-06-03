@@ -475,6 +475,68 @@ describe('mapEvmTransactions', () => {
     });
   });
 
+  it('maps an Aave withdraw with a known method id to a Lending withdrawal activity', () => {
+    const transaction = {
+      hash: '0x26f4911467b538702c0945e4ec5e303de44c0c1c174897141d1b548ea3161795',
+      timestamp: '2026-05-27T14:47:14.000Z',
+      chainId: Number(CHAIN_IDS.BASE),
+      from: subjectAddress,
+      to: baseAavePool,
+      methodId: '0x69328dec',
+      transactionCategory: 'WITHDRAW',
+      transactionType: 'GENERIC_CONTRACT_CALL',
+      valueTransfers: [
+        {
+          from: subjectAddress,
+          to: baseAaveUsdc,
+          amount: '100000',
+          decimal: 6,
+          contractAddress: baseAaveUsdc,
+          symbol: 'aBasUSDC',
+        },
+        {
+          from: baseAavePool,
+          to: subjectAddress,
+          amount: '200000',
+          decimal: 6,
+          contractAddress: baseUsdc,
+          symbol: 'USDC',
+        },
+      ],
+    } as V1TransactionByHashResponse;
+
+    const item = mapApiEvmTransactions({
+      subjectAddress,
+      transaction,
+    });
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
+      type: 'lendingWithdrawal',
+      chainId: 'eip155:8453',
+      status: 'success',
+      timestamp: 1779893234000,
+      data: {
+        hash: '0x26f4911467b538702c0945e4ec5e303de44c0c1c174897141d1b548ea3161795',
+        sourceToken: {
+          amount: '100000',
+          decimals: 6,
+          direction: 'out',
+          symbol: 'aBasUSDC',
+          assetId: toAssetId(baseAaveUsdc, 'eip155:8453'),
+        },
+        destinationToken: {
+          amount: '200000',
+          decimals: 6,
+          direction: 'in',
+          symbol: 'USDC',
+          assetId: toAssetId(baseUsdc, 'eip155:8453'),
+        },
+      },
+    });
+  });
+
   it('maps a DEPOSIT without an inbound transfer to a deposit activity', () => {
     const stakingContractAddress = '0x00000000219ab540356cbb839cbe05303d7705fa';
     const transaction = {

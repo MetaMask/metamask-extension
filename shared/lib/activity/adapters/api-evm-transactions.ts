@@ -5,7 +5,7 @@ import { NATIVE_TOKEN_ADDRESS as zeroAddress } from '../../../constants/transact
 import { toAssetId } from '../../asset-utils';
 import { isEqualCaseInsensitive as equalsIgnoreCase } from '../../string-utils';
 import type { ActivityListItem, Status, TokenAmount } from '../types';
-import { supplyMethodIds, wrapMethodIds } from './constants';
+import { supplyMethodIds, withdrawMethodIds, wrapMethodIds } from './constants';
 import {
   getTokenMetadataFromKnownToken,
   getTokenAmountFromTransfer,
@@ -59,6 +59,8 @@ export function mapApiEvmTransactions({
     valueTransfers?.some(({ transferType }) => transferType === 'normal');
   const hasSupplyMethodId =
     transaction.methodId && supplyMethodIds.has(transaction.methodId);
+  const hasWithdrawMethodId =
+    transaction.methodId && withdrawMethodIds.has(transaction.methodId);
   const hasWrapMethodId =
     transaction.methodId && wrapMethodIds.has(transaction.methodId);
   if (transactionCategory === 'SWAP' || transactionCategory === 'EXCHANGE') {
@@ -253,21 +255,6 @@ export function mapApiEvmTransactions({
     };
   }
 
-  if (transactionCategory === 'WITHDRAW') {
-    return {
-      type: 'lendingWithdrawal',
-      chainId,
-      status,
-      timestamp,
-      raw: { type: 'apiEvmTransaction', data: transaction },
-      data: {
-        hash,
-        sourceToken: getToken(sentTransfer, 'out'),
-        destinationToken: getToken(receivedTransfer, 'in'),
-      },
-    };
-  }
-
   if (transactionCategory === 'BRIDGE_WITHDRAW') {
     return {
       type: 'bridge',
@@ -278,6 +265,22 @@ export function mapApiEvmTransactions({
       data: {
         hash,
         sourceToken: getToken(sentTransfer, 'out'),
+      },
+    };
+  }
+
+  // lending withdrawal - applies to Earn features only
+  if (transactionCategory === 'WITHDRAW' && hasWithdrawMethodId) {
+    return {
+      type: 'lendingWithdrawal',
+      chainId,
+      status,
+      timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
+      data: {
+        hash,
+        sourceToken: getToken(sentTransfer, 'out'),
+        destinationToken: getToken(receivedTransfer, 'in'),
       },
     };
   }

@@ -452,6 +452,7 @@ export function mapLocalTransaction(
         };
       }
 
+      // lending withdrawal - applies to Earn features only
       if (isWithdrawContractInteraction) {
         const fromAddress = from.toLowerCase();
         const receivedTokenLog = (
