@@ -159,16 +159,12 @@ export const selectNonEvmTransactionsForActivity = createSelector(
 export const selectNonEvmActivityItems = createSelector(
   [selectNonEvmTransactionsForActivity, getAssetsMetadata],
   (transactions, assetsMetadata) =>
-    transactions.map((transaction) => {
-      if (transaction.type !== 'swap') {
-        return mapKeyringTransaction({ transaction });
-      }
-
-      return mapKeyringTransaction({
-        // Unified assets caused Snap token movements with empty unit
+    transactions.map((transaction) =>
+      mapKeyringTransaction({
+        // Unified assets caused Snap token movements with empty or placeholder units.
         transaction: patchKeyringTransaction(transaction, assetsMetadata),
-      });
-    }),
+      }),
+    ),
 );
 
 function patchKeyringTransaction(
@@ -188,7 +184,11 @@ function patchUnit(
   movement: KeyringTransaction['from'][number],
   assetsMetadata: ReturnType<typeof getAssetsMetadata>,
 ) {
-  if (!movement.asset?.fungible || movement.asset.unit) {
+  if (!movement.asset?.fungible) {
+    return movement;
+  }
+
+  if (movement.asset.unit && movement.asset.unit !== 'UNKNOWN') {
     return movement;
   }
 
