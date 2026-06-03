@@ -14,7 +14,8 @@ ignores:
   # peer deps of @mui/material v5; no direct imports in app source (MUI resolves them)
   - '@emotion/react'
   - '@emotion/styled'
-  - '@mui/system'
+  # present for upcoming date-picker migration; not imported yet — depcheck would flag unused
+  - '@mui/x-date-pickers'
 
   #
   # dev deps
