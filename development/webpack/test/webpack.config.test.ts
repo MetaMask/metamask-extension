@@ -393,6 +393,8 @@ inquire('long');
         '--no-progress',
         '--no-cache',
         '--zip',
+        '--zip.mtime',
+        '315532800000',
         ...removeUnsupportedFeatures,
       ],
       {
@@ -441,6 +443,7 @@ inquire('long');
       manifestPlugin.options.zipOptions.outFilePath,
       `../builds/metamask-[browser]-${packageVersion}.zip`,
     );
+    assert.strictEqual(manifestPlugin.options.zipOptions.mtime, 315532800000);
     assert.deepStrictEqual(manifestPlugin.options.transform, undefined);
     assert(manifestPlugin.options.stats, 'Stats options should be present');
     assert.strictEqual(
@@ -495,6 +498,21 @@ inquire('long');
       bundleAnalyzerPlugin,
       undefined,
       'BundleAnalyzerPlugin should be absent without --bundleAnalyzer',
+    );
+  });
+
+  it('uses the latest commit timestamp as the default zip mtime', () => {
+    const config: Configuration = getWebpackConfig(['--zip']);
+    const instance = getWebpackInstance(config);
+    const manifestPlugin = instance.options.plugins.find(
+      (plugin) => plugin && plugin.constructor.name === 'ManifestPlugin',
+    ) as ManifestPlugin<true>;
+
+    assert(manifestPlugin, 'Manifest plugin should be present');
+    assert.strictEqual(manifestPlugin.options.zip, true);
+    assert.strictEqual(
+      manifestPlugin.options.zipOptions.mtime,
+      getLatestCommit().timestamp(),
     );
   });
 

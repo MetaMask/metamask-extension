@@ -21,6 +21,10 @@ import {
   resolveAutoJobs,
   resolveAutoThreads,
 } from './loaders/threadLoader';
+import {
+  getDefaultZipMtime,
+  validateZipMtime,
+} from './plugins/ManifestPlugin/zip-mtime';
 
 const ENV_PREFIX = 'BUNDLE';
 const addFeat = 'addFeature' as const;
@@ -58,6 +62,8 @@ function coerceAutoNumber(
 const coerceThreads = (value: string) => coerceAutoNumber(value, 'threads', 0);
 const coerceJobsPerThread = (value: string) =>
   coerceAutoNumber(value, 'jobsPerThread', 1);
+const coerceZipMtime = (value: string | number) =>
+  validateZipMtime(Number(value), '--zip.mtime');
 
 function resolveThreadOptions({
   generatePolicy,
@@ -165,6 +171,14 @@ const prerequisites = {
     group: toOrange('Security:'),
     type: 'boolean',
   },
+  zip: {
+    alias: 'z',
+    array: false,
+    default: false,
+    description: 'Generate a zip file of the build',
+    group: toOrange('Build options:'),
+    type: 'boolean',
+  },
   // `as const` makes it easier for developers to see the values of the type
   // when hovering over it in their IDE. `satisfies Options` enables type
   // checking, without loosing the `const` property of the values, which is
@@ -206,6 +220,7 @@ function preParse(argv: string[]) {
   const parsed = parser(argv, {
     alias: aliases,
     coerce: coerces,
+    'dot-notation': false,
     envPrefix: ENV_PREFIX,
     boolean: booleanOptions,
     string: stringOptions,
@@ -216,6 +231,7 @@ function preParse(argv: string[]) {
   const generatePolicy = parsed.generatePolicy === true;
   const reactCompilerVerbose = parsed.reactCompilerVerbose === true;
   const threads = parsed.threads as AutoNumberOption;
+  const zip = parsed.zip === true;
 
   return {
     mode,
@@ -223,6 +239,7 @@ function preParse(argv: string[]) {
     generatePolicy,
     reactCompilerVerbose,
     threads,
+    zip,
   } as const;
 }
 
@@ -315,11 +332,20 @@ export function parseArgv(
   const args = getCli(options, 'yarn webpack').parseSync(argv);
   // the properties `$0` and `_` are added by yargs, but we don't need them. We
   // transform `add` and `omit`, so we also remove them from the config object.
-  const { $0, _, addFeature: add, omitFeature: omit, ...config } = args;
+  const {
+    $0,
+    _,
+    addFeature: add,
+    omitFeature: omit,
+    'zip.mtime': zipMtime,
+    ...config
+  } = args;
+  const normalizedConfig = { ...config, zipMtime };
 
   // set up feature flags
   const active = new Set<string>();
-  const defaultFeaturesForBuildType = buildTypes[config.type].features ?? [];
+  const defaultFeaturesForBuildType =
+    buildTypes[normalizedConfig.type].features ?? [];
   const setActive = (f: string) => omit.includes(f) || active.add(f);
   [defaultFeaturesForBuildType, add].forEach((feat) => feat.forEach(setActive));
 
@@ -336,7 +362,7 @@ export function parseArgv(
     .filter(([key]) => key.length > 1 && !ignore.has(key) && !key.includes('-'))
     .sort(([x], [y]) => x.localeCompare(y));
   return {
-    args: config,
+    args: normalizedConfig,
     cacheKey: JSON.stringify(cacheKey),
     features: {
       active,
@@ -365,6 +391,7 @@ function getCli<T extends YargsOptionsMap = Options>(options: T, name: string) {
     // config file containing webpack options
     .config()
     .parserConfiguration({
+      'dot-notation': false,
       'strip-aliased': true,
       'strip-dashed': true,
     })
@@ -411,6 +438,11 @@ function getCli<T extends YargsOptionsMap = Options>(options: T, name: string) {
           'Invalid combination: --jobsPerThread is ignored when thread-loader is disabled (--threads 0, --generatePolicy, or --reactCompilerVerbose). Remove --jobsPerThread or enable thread-loader.',
         );
       }
+      if (args['zip.mtime'] !== undefined && args.zip !== true) {
+        throw new Error(
+          'Invalid combination: --zip.mtime can only be used when --zip is enabled.',
+        );
+      }
       return true;
     })
     .options(options);
@@ -426,6 +458,7 @@ function getOptions(
     generatePolicy,
     reactCompilerVerbose,
     threads,
+    zip,
   }: ReturnType<typeof preParse>,
   buildTypes: string[],
   allFeatures: string[],
@@ -525,13 +558,21 @@ function getOptions(
 
     mode: prerequisites.mode,
     test: prerequisites.test,
-    zip: {
-      alias: 'z',
+    zip: prerequisites.zip,
+    'zip.mtime': {
       array: false,
-      default: false,
-      description: 'Generate a zip file of the build',
+      coerce: coerceZipMtime,
+      ...(zip
+        ? {
+            default: getDefaultZipMtime(),
+            defaultDescription:
+              'Latest commit timestamp, or 1980-01-01 if unavailable',
+          }
+        : {}),
+      description:
+        'Modification time for all files in the zip, specified as a UNIX timestamp in milliseconds. Requires --zip.',
       group: toOrange('Build options:'),
-      type: 'boolean',
+      type: 'number',
     },
     minify: {
       alias: 'm',
@@ -698,7 +739,7 @@ Watch: ${args.watch}
 Cache: ${args.cache}
 Progress: ${args.progress}
 Zip: ${args.zip}
-LavaMoat: ${args.lavamoat}
+${args.zip ? `Zip mtime: ${args.zipMtime ?? 'latest commit timestamp'}\n` : ''}LavaMoat: ${args.lavamoat}
 LavaMoat debug: ${args.lavamoatDebug}
 Generate policy: ${args.generatePolicy}
 Snow: ${args.snow}

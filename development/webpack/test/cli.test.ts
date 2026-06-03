@@ -3,6 +3,7 @@ import assert from 'node:assert';
 import { loadBuildTypesConfig } from '../../lib/build-type';
 import { getDryRunMessage, parseArgv } from '../utils/cli';
 import { Browsers, noop } from '../utils/helpers';
+import { getDefaultZipMtime } from '../utils/plugins/ManifestPlugin/zip-mtime';
 
 describe('./utils/cli.ts', () => {
   afterEach(() => {
@@ -22,6 +23,7 @@ describe('./utils/cli.ts', () => {
     reactCompilerVerbose: false,
     reactCompilerDebug: 'none',
     zip: false,
+    zipMtime: undefined,
     minify: false,
     browser: ['chrome'],
     manifestVersion: 3,
@@ -350,6 +352,62 @@ describe('./utils/cli.ts', () => {
       );
       assert.strictEqual(args.threads, 0);
       assert.strictEqual(args.jobsPerThread, 0);
+    });
+  });
+
+  describe('zip options', () => {
+    it('defaults --zip.mtime when --zip is enabled', () => {
+      const { args } = parseArgv(['--zip'], loadBuildTypesConfig());
+
+      assert.strictEqual(args.zip, true);
+      assert.strictEqual(args.zipMtime, getDefaultZipMtime());
+    });
+
+    it('parses --zip.mtime when --zip is enabled', () => {
+      const { args } = parseArgv(
+        ['--zip', '--zip.mtime', '315532800000'],
+        loadBuildTypesConfig(),
+      );
+
+      assert.strictEqual(args.zip, true);
+      assert.strictEqual(args.zipMtime, 315532800000);
+    });
+
+    it('requires --zip when --zip.mtime is specified', () => {
+      const exit = mock.method(process, 'exit', noop as () => never);
+      const error = mock.method(console, 'error', noop);
+
+      parseArgv(['--zip.mtime', '315532800000'], loadBuildTypesConfig());
+
+      assert.strictEqual(exit.mock.calls.length, 1);
+      assert.strictEqual(exit.mock.calls[0].arguments[0], 1);
+      assert.ok(
+        error.mock.calls.some((call) =>
+          String(call.arguments[0]).includes(
+            '--zip.mtime can only be used when --zip is enabled',
+          ),
+        ),
+      );
+    });
+
+    it('rejects --zip.mtime values outside the ManifestPlugin range', () => {
+      for (const invalidMtime of ['315532799999', '4102444800000']) {
+        mock.restoreAll();
+        const exit = mock.method(process, 'exit', noop as () => never);
+        const error = mock.method(console, 'error', noop);
+
+        parseArgv(['--zip', '--zip.mtime', invalidMtime], loadBuildTypesConfig());
+
+        assert.strictEqual(exit.mock.calls.length, 1);
+        assert.strictEqual(exit.mock.calls[0].arguments[0], 1);
+        assert.ok(
+          error.mock.calls.some((call) =>
+            String(call.arguments[0]).includes(
+              `Invalid --zip.mtime value "${invalidMtime}"`,
+            ),
+          ),
+        );
+      }
     });
   });
 });

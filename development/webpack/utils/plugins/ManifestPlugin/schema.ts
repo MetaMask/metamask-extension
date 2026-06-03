@@ -1,5 +1,6 @@
 import { ExtendedJSONSchema } from 'json-schema-to-ts';
 import { Browsers } from '../../helpers';
+import { getZipMtimeSchema } from './zip-mtime';
 
 type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
@@ -75,19 +76,7 @@ export const schema = {
           minimum: 0,
           maximum: 9,
         },
-        mtime: {
-          description:
-            'Modification time for all files in the zip, specified as a UNIX timestamp (milliseconds since 1 January 1970 UTC). This property sets a uniform modification time for the contents of the zip file. Note: Zip files use FAT file timestamps, which have a limited range. Therefore, datetimes before 1980-01-01 (timestamp value of 315532800000) are invalid in standard Zip files, and datetimes on or after 2100-01-01 (timestamp value of 4102444800000) are also invalid. Values must fall within this range.',
-          type: 'number',
-          // Zip files use FAT file timestamps, which have a limited range.
-          // Datetimes before 1980-01-01 are invalid in standard Zip files.
-          minimum: Date.UTC(1980, 0, 1),
-          // datetimes after 2099-12-31 are invalid in zip files
-          exclusiveMaximum: Date.UTC(2100, 0, 1),
-          get default() {
-            return Date.now();
-          },
-        },
+        mtime: getZipMtimeSchema(),
         excludeExtensions: {
           description: 'File extensions to exclude from zip.',
           type: 'array',
