@@ -548,11 +548,20 @@ export const ImportTokensModal = ({ onClose }) => {
   const attemptToAutoFillTokenParams = useCallback(
     (address) => {
       const tokenListData = tokenListByChain?.[selectedNetwork]?.data;
-      const {
-        symbol = '',
-        decimals,
-        name = '',
-      } = tokenListData?.[address.toLowerCase()] ?? {};
+      const listEntry = tokenListData?.[address.toLowerCase()];
+
+      // Always reveal the form so the user can fill it manually.
+      setShowSymbolAndDecimals(true);
+
+      // Only overwrite symbol/decimals when the token list has actual data for
+      // this address. Clearing them when nothing is found would erase values
+      // the user has already typed (e.g. when topTokens resolves later and
+      // triggers a re-run of this callback).
+      if (!listEntry) {
+        return;
+      }
+
+      const { symbol = '', decimals, name = '' } = listEntry;
 
       // Both handlers call `.trim()` internally, so values must be strings.
       const decimalsStr =
@@ -562,7 +571,6 @@ export const ImportTokensModal = ({ onClose }) => {
       handleCustomSymbolChange(String(symbol || ''));
       handleCustomDecimalsChange(decimalsStr);
       setCustomName(name);
-      setShowSymbolAndDecimals(true);
     },
     [
       selectedNetwork,
