@@ -46,7 +46,7 @@ const DISABLED_AUTOMATIC_GAS_FEE_UPDATE_TYPES = [
 
 export function getTransactionControllerOptions(
   request: InitializeWalletRequest,
-): WalletOptions['instanceOptions']['transactionController'] {
+): NonNullable<WalletOptions['instanceOptions']>['transactionController'] {
   const { getPermittedAccounts, messenger: rootMessenger } = request;
 
   const messenger = getTransactionControllerInitMessenger(rootMessenger);
@@ -80,8 +80,8 @@ export function getTransactionControllerOptions(
         .useTransactionSimulations,
     publicKeyEIP7702: process.env.EIP_7702_PUBLIC_KEY as Hex | undefined,
     testGasFeeFlows: Boolean(process.env.TEST_GAS_FEE_FLOWS === 'true'),
-    // @ts-expect-error - Controller using legacy type
-    trace,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    trace: trace as any,
   };
 }
 
@@ -152,13 +152,15 @@ function addTransactionControllerListeners(
   initMessenger: TransactionControllerInitMessenger,
   getTransactionMetricsRequest: () => TransactionMetricsRequest,
 ) {
-  const transactionMetricsRequest = getTransactionMetricsRequest();
-
   initMessenger.subscribe(
     'TransactionController:postTransactionBalanceUpdated',
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    handlePostTransactionBalanceUpdate.bind(null, transactionMetricsRequest),
+    (...args) =>
+      handlePostTransactionBalanceUpdate(
+        getTransactionMetricsRequest(),
+        ...args,
+      ),
   );
 
   initMessenger.subscribe(
@@ -166,50 +168,58 @@ function addTransactionControllerListeners(
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     (transactionMeta) =>
-      handleTransactionAdded(transactionMetricsRequest, { transactionMeta }),
+      handleTransactionAdded(getTransactionMetricsRequest(), {
+        transactionMeta,
+      }),
   );
 
   initMessenger.subscribe(
     'TransactionController:transactionApproved',
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    handleTransactionApproved.bind(null, transactionMetricsRequest),
+    (...args) =>
+      handleTransactionApproved(getTransactionMetricsRequest(), ...args),
   );
 
   initMessenger.subscribe(
     'TransactionController:transactionDropped',
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    handleTransactionDropped.bind(null, transactionMetricsRequest),
+    (...args) =>
+      handleTransactionDropped(getTransactionMetricsRequest(), ...args),
   );
 
   initMessenger.subscribe(
     'TransactionController:transactionConfirmed',
-    // @ts-expect-error Error is string in metrics code but TransactionError in TransactionMeta type from controller
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    handleTransactionConfirmed.bind(null, transactionMetricsRequest),
+    (...args) =>
+      // @ts-expect-error Error is string in metrics code but TransactionError in TransactionMeta type from controller
+      handleTransactionConfirmed(getTransactionMetricsRequest(), ...args),
   );
 
   initMessenger.subscribe(
     'TransactionController:transactionFailed',
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    handleTransactionFailed.bind(null, transactionMetricsRequest),
+    (...args) =>
+      handleTransactionFailed(getTransactionMetricsRequest(), ...args),
   );
 
   initMessenger.subscribe(
     'TransactionController:transactionRejected',
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    handleTransactionRejected.bind(null, transactionMetricsRequest),
+    (...args) =>
+      handleTransactionRejected(getTransactionMetricsRequest(), ...args),
   );
 
   initMessenger.subscribe(
     'TransactionController:transactionSubmitted',
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    handleTransactionSubmitted.bind(null, transactionMetricsRequest),
+    (...args) =>
+      handleTransactionSubmitted(getTransactionMetricsRequest(), ...args),
   );
 }
 

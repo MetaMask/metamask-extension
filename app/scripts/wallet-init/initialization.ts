@@ -13,12 +13,10 @@ export function initializeWallet(request: InitializeWalletRequest) {
     messenger,
     state,
     instanceOptions: {
-      approvalController: {} as never,
       keyringController: {
         encryptor,
         keyringBuilders: getKeyringBuilders(messenger),
       },
-      storageService: {} as never,
       transactionController: getTransactionControllerOptions(request),
     },
   });
