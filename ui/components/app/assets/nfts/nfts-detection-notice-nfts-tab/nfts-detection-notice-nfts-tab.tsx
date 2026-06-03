@@ -39,6 +39,10 @@ export default function NFTsDetectionNoticeNFTsTab() {
           severity: 'success',
           title: t('nftAutoDetectionEnabled'),
           'data-testid': nftDetectionEnabledToastId,
+          // Ensure toast auto-hides and dedupes like before
+          id: nftDetectionEnabledToastId,
+          duration: autoHideToastDelay,
+          hasNoTimeout: false,
         });
         // dispatch action to detect nfts
         dispatch(detectNfts(allChainIds));
