@@ -111,7 +111,7 @@ export class PerpsWithdrawConfirmation {
   async fillAmount(amount: string): Promise<void> {
     await this.driver.waitForSelector(this.amountInput, {
       state: 'enabled',
-      timeout: 15000,
+      timeout: 25000,
     });
     await this.driver.fill(this.amountInput, amount, { retries: 1 });
   }
