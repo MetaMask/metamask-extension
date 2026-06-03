@@ -73,7 +73,7 @@ class AssetListPage extends HomePage {
   private readonly sortByPopoverToggle =
     '[data-testid="sort-by-popover-toggle"]';
 
-  private readonly buySellButton = '[data-testid="coin-overview-buy"]';
+  private readonly coinOverviewBuyButton = '[data-testid="coin-overview-buy"]';
 
   private readonly tokenFiatAmount =
     '[data-testid="multichain-token-list-item-secondary-value"]';
@@ -453,7 +453,7 @@ class AssetListPage extends HomePage {
 
   async checkBuySellButtonIsPresent(): Promise<void> {
     console.log(`Verify the buy/sell button is displayed`);
-    await this.driver.waitForSelector(this.buySellButton);
+    await this.driver.waitForSelector(this.coinOverviewBuyButton);
   }
 
   async checkMultichainTokenListButtonIsPresent(): Promise<void> {
