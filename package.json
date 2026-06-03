@@ -591,7 +591,6 @@
     "@open-rpc/schema-utils-js": "^2.0.5",
     "@open-rpc/test-coverage": "^2.2.5",
     "@playwright/test": "^1.54.2",
-    "@pmmmwh/react-refresh-webpack-plugin": "^0.6.2",
     "@sentry/cli": "^2.56.0",
     "@sentry/node": "^10.30.0",
     "@slack/types": "^2.14.0",
