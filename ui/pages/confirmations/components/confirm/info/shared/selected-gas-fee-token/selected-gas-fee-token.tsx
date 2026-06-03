@@ -83,9 +83,7 @@ export function SelectedGasFeeToken() {
         alignItems={BoxAlignItems.Center}
         gap={1}
         style={{
-          cursor: hasMoreThanOneGasFeeTokenToChooseFrom
-            ? 'pointer'
-            : 'default',
+          cursor: hasMoreThanOneGasFeeTokenToChooseFrom ? 'pointer' : 'default',
         }}
       >
         <GasFeeTokenIcon

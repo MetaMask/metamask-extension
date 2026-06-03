@@ -51,9 +51,7 @@ export function GasFeeTokenIcon({
 
   if (tokenAddress !== NATIVE_TOKEN_ADDRESS) {
     const avatarSize =
-      size === GasFeeTokenIconSize.Md
-        ? AvatarTokenSize.Md
-        : AvatarTokenSize.Xs;
+      size === GasFeeTokenIconSize.Md ? AvatarTokenSize.Md : AvatarTokenSize.Xs;
 
     return image ? (
       <AvatarToken data-testid="token-icon" src={image} size={avatarSize} />
