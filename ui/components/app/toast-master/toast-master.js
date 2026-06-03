@@ -402,9 +402,14 @@ function ShieldEndingToast() {
   );
   const isSubscriptionEndingSoon =
     getIsShieldSubscriptionEndingSoon(subscriptions);
+  const currentPeriodEnd = shieldSubscription?.currentPeriodEnd;
 
   useEffect(() => {
-    if (!isSubscriptionEndingSoon || !showShieldEndingToast) {
+    if (
+      !isSubscriptionEndingSoon ||
+      !showShieldEndingToast ||
+      !currentPeriodEnd
+    ) {
       return undefined;
     }
 
@@ -412,9 +417,7 @@ function ShieldEndingToast() {
       severity: 'default',
       title: t('shieldCoverageEnding'),
       description: t('shieldCoverageEndingDescription', [
-        getShortDateFormatterV2().format(
-          new Date(shieldSubscription.currentPeriodEnd),
-        ),
+        getShortDateFormatterV2().format(new Date(currentPeriodEnd)),
       ]),
       actionButtonLabel: t('shieldCoverageEndingAction'),
       actionButtonOnClick: async () => {
@@ -437,8 +440,8 @@ function ShieldEndingToast() {
   }, [
     isSubscriptionEndingSoon,
     navigate,
+    currentPeriodEnd,
     showShieldEndingToast,
-    shieldSubscription.currentPeriodEnd,
     t,
   ]);
 
