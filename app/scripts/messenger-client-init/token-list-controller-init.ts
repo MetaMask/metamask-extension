@@ -17,7 +17,7 @@ export const TokenListControllerInit: MessengerClientInitFunction<
     messenger: controllerMessenger,
     state: persistedState.TokenListController,
     chainId: getGlobalChainId(initMessenger),
-    isDisabled: () => true,
+    isDeprecated: () => true,
   });
 
   // Initialize the controller to load cached token lists from storage.
