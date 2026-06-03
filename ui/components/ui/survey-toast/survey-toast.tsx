@@ -1,10 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  Icon,
-  IconName,
-  IconSize,
-  toast,
-} from '@metamask/design-system-react';
+import { Icon, IconName, IconSize, toast } from '@metamask/design-system-react';
+import React, { useEffect, useState, useContext, useMemo } from 'react';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { DAY } from '../../../../shared/constants/time';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -21,7 +17,6 @@ import {
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { ACCOUNTS_API_BASE_URL } from '../../../../shared/constants/accounts';
 import { setLastViewedUserSurvey } from '../../../store/actions';
-import React, { useEffect, useState, useContext, useMemo } from 'react';
 
 type Survey = {
   url: string;

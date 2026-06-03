@@ -10,7 +10,8 @@ import {
   type BridgeController,
   formatAddressToCaipReference,
 } from '@metamask/bridge-controller';
-import { Box, BoxBackgroundColor , toast } from '@metamask/design-system-react';
+import { Box, BoxBackgroundColor, toast } from '@metamask/design-system-react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { BRIDGE_ONLY_CHAINS } from '../../../../shared/constants/bridge';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import {
@@ -86,7 +87,6 @@ import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
 import { BridgeAlertModal } from './components/bridge-alert-modal';
 import { BridgeAlertBannerList } from './components/bridge-alert-banner-list';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 const PrepareBridgePage = ({
   onOpenSettings,
@@ -673,7 +673,6 @@ const PrepareBridgePage = ({
         )}
         <div ref={footerRef} />
       </Column>
-
     </>
   );
 };

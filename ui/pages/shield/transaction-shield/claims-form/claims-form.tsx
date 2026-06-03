@@ -17,11 +17,13 @@ import {
   TextColor,
   TextVariant,
   IconSize,
- toast } from '@metamask/design-system-react';
+  toast,
+} from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import classnames from 'clsx';
 import log from 'loglevel';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useClaims } from '../../../../contexts/claims/claims';
 import {
@@ -75,7 +77,6 @@ import {
   MAX_FILE_SIZE_MB,
 } from './constants';
 import { isValidTransactionHash } from './utils';
-import React, { useCallback, useMemo, useState } from 'react';
 
 const duration = 5 * SECOND;
 
@@ -399,12 +400,12 @@ const ClaimsForm = ({
         }
       }
 
-        toast({
-          severity: 'success',
-          title: t('shieldClaimSubmitSuccess'),
-          description: t('shieldClaimSubmitSuccessDescription'),
-          'data-testid': 'claim-submit-toast-success',
-        });
+      toast({
+        severity: 'success',
+        title: t('shieldClaimSubmitSuccess'),
+        description: t('shieldClaimSubmitSuccessDescription'),
+        'data-testid': 'claim-submit-toast-success',
+      });
       // update claims
       await refetchClaims();
       navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);

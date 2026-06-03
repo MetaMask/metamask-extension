@@ -6,9 +6,9 @@ import {
   IconColor,
   IconName,
 } from '@metamask/design-system-react';
+import React, { useCallback } from 'react';
 import { selectErrorToast } from '../../../ducks/rewards/selectors';
 import { setErrorToast } from '../../../ducks/rewards';
-import React, { useCallback } from 'react';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RewardsErrorToast() {
@@ -35,7 +35,9 @@ export default function RewardsErrorToast() {
   return (
     <Box data-testid="rewards-error-toast">
       <Toast
-        startAccessory={<Icon name={IconName.Danger} color={IconColor.ErrorDefault} />}
+        startAccessory={
+          <Icon name={IconName.Danger} color={IconColor.ErrorDefault} />
+        }
         title={title}
         description={description}
         actionButtonLabel={actionText}

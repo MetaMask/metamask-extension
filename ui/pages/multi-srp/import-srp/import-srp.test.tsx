@@ -3,13 +3,13 @@ import { userEvent } from '@testing-library/user-event';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { toast } from '@metamask/design-system-react';
+import React from 'react';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { importMnemonicToVault } from '../../../store/actions';
 import { ImportSrp } from './import-srp';
-import React from 'react';
 
 jest.mock('../../../store/actions', () => ({
   importMnemonicToVault: jest.fn().mockReturnValue(
@@ -105,9 +105,9 @@ describe('ImportSrp', () => {
           'data-testid': 'new-srp-added-toast',
         }),
       );
-      expect(
-        jest.mocked(toast).mock.invocationCallOrder[0],
-      ).toBeLessThan(mockNavigate.mock.invocationCallOrder[0]);
+      expect(jest.mocked(toast).mock.invocationCallOrder[0]).toBeLessThan(
+        mockNavigate.mock.invocationCallOrder[0],
+      );
       // Verify that navigation happened after import
       expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     });

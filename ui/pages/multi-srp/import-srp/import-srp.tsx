@@ -8,7 +8,9 @@ import {
   Button,
   Text,
   TextVariant,
- toast } from '@metamask/design-system-react';
+  toast,
+} from '@metamask/design-system-react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   hideWarning,
@@ -29,7 +31,6 @@ import { MetaMaskReduxDispatch } from '../../../store/store';
 import SrpInputForm from '../../srp-input-form';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
-import React, { useEffect, useState, useContext } from 'react';
 
 const toastId = 'new-srp-added-toast';
 const autoHideToastDelay = 5 * SECOND;

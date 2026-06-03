@@ -12,9 +12,7 @@ import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { PRIVACY_POLICY_LINK } from '../../../../shared/lib/ui-utils';
-import {
-  IconColor,
-} from '../../../helpers/constants/design-system';
+import { IconColor } from '../../../helpers/constants/design-system';
 import {
   DEFAULT_ROUTE,
   PERPS_ROUTE,
@@ -340,9 +338,7 @@ function ShieldPausedToast() {
 
     const handleActionClick = async () => {
       // capture error state clicked event
-      trackShieldErrorStateClickedEvent(
-        ShieldErrorStateActionClickedEnum.Cta,
-      );
+      trackShieldErrorStateClickedEvent(ShieldErrorStateActionClickedEnum.Cta);
       setShieldPausedToastLastClickedOrClosed(Date.now());
       navigate(TRANSACTION_SHIELD_ROUTE);
     };
