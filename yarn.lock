@@ -33784,6 +33784,7 @@ __metadata:
     prettier-plugin-sort-json: "npm:^4.1.1"
     process: "npm:^0.11.10"
     prop-types: "npm:^15.6.1"
+    psl: "npm:^1.15.0"
     pumpify: "npm:^2.0.1"
     punycode: "npm:^2.1.1"
     qrcode-generator: "npm:^2.0.4"
@@ -37348,10 +37349,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"psl@npm:^1.1.33":
-  version: 1.9.0
-  resolution: "psl@npm:1.9.0"
-  checksum: 10/d07879d4bfd0ac74796306a8e5a36a93cfb9c4f4e8ee8e63fbb909066c192fe1008cd8f12abd8ba2f62ca28247949a20c8fb32e1d18831d9e71285a1569720f9
+"psl@npm:^1.1.33, psl@npm:^1.15.0":
+  version: 1.15.0
+  resolution: "psl@npm:1.15.0"
+  dependencies:
+    punycode: "npm:^2.3.1"
+  checksum: 10/5e7467eb5196eb7900d156783d12907d445c0122f76c73203ce96b148a6ccf8c5450cc805887ffada38ff92d634afcf33720c24053cb01d5b6598d1c913c5caf
   languageName: node
   linkType: hard
 
