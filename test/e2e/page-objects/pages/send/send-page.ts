@@ -69,9 +69,7 @@ class SendPage {
 
   async checkInsufficientBalanceToCoverFeesError(): Promise<void> {
     console.log('Checking for insufficient balance to cover fees error');
-    await this.driver.waitForSelector(
-      this.insufficientBalanceToCoverFeesError,
-    );
+    await this.driver.waitForSelector(this.insufficientBalanceToCoverFeesError);
   }
 
   async checkInsufficientFundsError(): Promise<void> {

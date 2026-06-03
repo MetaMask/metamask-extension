@@ -163,5 +163,4 @@ describe('BTC Account - Send', function (this: Suite) {
       },
     );
   });
-
 });
