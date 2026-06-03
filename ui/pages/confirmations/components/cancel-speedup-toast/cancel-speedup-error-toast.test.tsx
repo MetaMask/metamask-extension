@@ -83,7 +83,9 @@ describe('CancelSpeedupErrorToast', () => {
       />,
     );
 
-    expect(screen.getByTestId('cancel-speedup-error-toast')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('cancel-speedup-error-toast'),
+    ).toBeInTheDocument();
 
     const closeButton = screen.getByRole('button', { name: /close toast/i });
     expect(closeButton).toBeInTheDocument();

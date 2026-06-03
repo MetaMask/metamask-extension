@@ -31,12 +31,12 @@ jest.mock('../../../selectors/toast', () => ({
   selectSmartTransactions: jest.fn(),
 }));
 
-  jest.mock('./shared', () => ({
-    showPendingToast: (...args: [string]) => mockShowPendingToast(...args),
-    showSuccessToast: (...args: [string]) => mockShowSuccessToast(...args),
-    showFailedToast: (...args: [string]) => mockShowFailedToast(...args),
-    dismissToast: (...args: [string]) => mockDismissToast(...args),
-  }));
+jest.mock('./shared', () => ({
+  showPendingToast: (...args: [string]) => mockShowPendingToast(...args),
+  showSuccessToast: (...args: [string]) => mockShowSuccessToast(...args),
+  showFailedToast: (...args: [string]) => mockShowFailedToast(...args),
+  dismissToast: (...args: [string]) => mockDismissToast(...args),
+}));
 
 const pendingToastOptions = {
   title: '[transactionSubmitted]',
