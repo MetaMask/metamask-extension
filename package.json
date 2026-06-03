@@ -17,8 +17,8 @@
     "webpack:lavamoat:policy:mv2": "concurrently 'yarn webpack:lavamoat:build:mv2 --generatePolicy' 'yarn webpack:lavamoat:build:mv2 --generatePolicy --type flask' 'yarn webpack:lavamoat:build:mv2 --generatePolicy --type beta' 'yarn webpack:lavamoat:build:mv2 --generatePolicy --type experimental' --kill-others-on-fail",
     "webpack:lavamoat:policy:mv3": "concurrently 'yarn webpack:lavamoat:build --generatePolicy' 'yarn webpack:lavamoat:build --generatePolicy --type flask' 'yarn webpack:lavamoat:build --generatePolicy --type beta' 'yarn webpack:lavamoat:build --generatePolicy --type experimental' --kill-others-on-fail",
     "foundryup": "yarn mm-foundryup",
-    "postinstall": "yarn webpack:clearcache && yarn foundryup && tsx development/skills-postinstall.ts",
-    "skills": "tsx development/skills-sync.ts",
+    "postinstall": "yarn webpack:clearcache && yarn foundryup && yarn skills:postinstall",
+    "skills": "metamask-skills sync",
     "env:e2e": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn",
     "start": "yarn webpack --watch",
     "start:with-state": "node ./app/scripts/start-with-wallet-state.mjs",
@@ -158,7 +158,8 @@
     "feature-flags:sync:check": "tsx test/e2e/feature-flags/sync-production-flags.ts --check",
     "feature-flags:sync:update": "tsx test/e2e/feature-flags/sync-production-flags.ts --update",
     "yarn-binary:download": "corepack pack -o .yarn/yarn-corepack.tgz",
-    "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
+    "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate",
+    "skills:postinstall": "metamask-skills postinstall"
   },
   "resolutions": {
     "@metamask/bridge-controller": "72.0.0",
@@ -571,6 +572,7 @@
     "@metamask/messenger-cli": "^0.1.0",
     "@metamask/phishing-warning": "^5.1.0",
     "@metamask/preferences-controller": "^23.0.0",
+    "@metamask/skills": "^0.1.0",
     "@metamask/snap-account-abstraction-keyring-site": "^1.0.0",
     "@metamask/snap-simple-keyring-site": "^2.1.1",
     "@metamask/snaps-registry": "^4.0.0",
