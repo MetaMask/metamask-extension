@@ -46,14 +46,14 @@ class SnapInteractiveDialog {
 
   async clickSubmitButton() {
     console.log(`Clicking submit button`);
-    await this.driver.clickElement({ text: 'Submit', tag: 'span' });
+    await this.driver.clickElement({ text: 'Submit', tag: 'button' });
   }
 
   async clickCancelButton() {
     console.log(`Clicking cancel button`);
     await this.driver.clickElementAndWaitForWindowToClose({
       text: 'Cancel',
-      tag: 'span',
+      tag: 'button',
     });
   }
 
@@ -61,7 +61,7 @@ class SnapInteractiveDialog {
     console.log(`Clicking OK button`);
     await this.driver.clickElementAndWaitForWindowToClose({
       text: 'OK',
-      tag: 'span',
+      tag: 'button',
     });
   }
 

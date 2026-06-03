@@ -90,7 +90,7 @@ export type EditMarginModalContentProps = {
  * @param options0.onSaveEnabledChange
  * @param options0.onSavingChange
  */
-export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
+export const EditMarginModalContent = ({
   position,
   account,
   currentPrice,
@@ -100,7 +100,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
   onSaveRef,
   onSaveEnabledChange,
   onSavingChange,
-}) => {
+}: EditMarginModalContentProps) => {
   const t = useI18nContext();
   const { isEligible } = usePerpsEligibility();
   const { replacePerpsToastByKey } = usePerpsToast();

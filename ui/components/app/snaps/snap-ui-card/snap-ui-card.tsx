@@ -1,4 +1,4 @@
-import React, { FunctionComponent, ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import {
   Display,
   FlexDirection,
@@ -19,13 +19,13 @@ export type SnapUICardProps = {
   extra?: string | undefined;
 };
 
-export const SnapUICard: FunctionComponent<SnapUICardProps> = ({
+export const SnapUICard = ({
   image,
   title,
   description,
   value,
   extra,
-}) => {
+}: SnapUICardProps) => {
   return (
     <Box
       className="snap-ui-renderer__card"
