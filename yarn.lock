@@ -8689,13 +8689,13 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.1.1"
     "@metamask/storage-service": "npm:^1.0.1"
     "@metamask/utils": "npm:^11.9.0"
-<<<<<<< HEAD
-  checksum: 10/a33f80c1ea1cf5d6b96965b6c3fe5c2bc7d885f61b810fa995d184c9e5eb8a9374dbba4fabf199fbdf1e0fa0ee5b37706b0b42b6a69675d714b3909a0c7f4bc8
-=======
   checksum: 10/f38c50e55e9333b68c1972b898de95bb8681814d851ed2cf4b12f2b58af18b2f0c78d341563d490cbb4258871c2fd134508e0cff4a0b48d179aa46cda0a5c057
->>>>>>> main
   languageName: node
+  linkType: hard
+
+"@mobily/ts-belt@npm:^3.13.1":
   version: 3.13.1
+  resolution: "@mobily/ts-belt@npm:3.13.1"
   checksum: 10/d851e4f8b80f99646a67ecebc824994771f93509fe839680dcd3c21ab055099a0f04cd93ffa87e3529248fed0ea26abd62788302d7eb1bd2ffe42ad109229306
   languageName: node
   linkType: hard
