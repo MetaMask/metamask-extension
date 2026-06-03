@@ -1,8 +1,11 @@
+import type { Transaction } from '@metamask/keyring-api';
+import type { V1TransactionByHashResponse } from '@metamask/core-backend';
 import type { CaipChainId } from '@metamask/utils';
+import type { TransactionGroup } from '../multichain/types';
 
-export type Status = 'pending' | 'success' | 'failed';
+export type Status = 'pending' | 'success' | 'failed' | 'cancelled';
 
-export type ActivityType =
+export type ActivityKind =
   | 'receive'
   | 'sell'
   | 'buy'
@@ -52,23 +55,29 @@ export type TokenAmount = {
   amount?: string;
   decimals?: number;
   symbol?: string;
+  // CAIP-19 asset id (from adapters)
+  assetId?: string;
   direction: 'in' | 'out';
 };
 
-type ActivityItem<Type extends ActivityType, Data> = {
+type ActivityData<Type extends ActivityKind, Data> = {
   type: Type;
   chainId: CaipChainId;
   status: Status;
   timestamp: number;
-  /** TransactionController meta id used for cancel / speed up buttons */
-  metaId?: string;
+  isEarliestNonce?: boolean;
+  /* Used by legacy details modals. Interim until redesigned details are implemented */
+  raw?:
+    | { type: 'apiEvmTransaction'; data: V1TransactionByHashResponse }
+    | { type: 'keyringTransaction'; data: Transaction }
+    | { type: 'localTransaction'; data: TransactionGroup };
   data: Data & {
     hash?: string;
   };
 };
 
 export type ActivityListItem =
-  | ActivityItem<
+  | ActivityData<
       'send' | 'receive',
       {
         from: string;
@@ -76,38 +85,50 @@ export type ActivityListItem =
         token?: TokenAmount;
       }
     >
-  | ActivityItem<
-      'swap',
+  | ActivityData<
+      | 'swap'
+      | 'convert'
+      | 'lendingDeposit'
+      | 'lendingWithdrawal'
+      | 'wrap'
+      | 'unwrap',
       {
         sourceToken?: TokenAmount;
         destinationToken?: TokenAmount;
       }
     >
-  | ActivityItem<
+  | ActivityData<
       'swapIncomplete',
       {
         sourceToken?: TokenAmount;
       }
     >
-  | ActivityItem<
-      'buy' | 'lendingDeposit' | 'claim',
+  | ActivityData<
+      'bridge',
+      {
+        sourceToken?: TokenAmount;
+        destinationToken?: TokenAmount;
+      }
+    >
+  | ActivityData<
+      'buy' | 'claim' | 'deposit',
       {
         token?: TokenAmount;
       }
     >
-  | ActivityItem<
+  | ActivityData<
       'claimMusdBonus',
       {
         token?: TokenAmount;
       }
     >
-  | ActivityItem<
+  | ActivityData<
       'approveSpendingCap' | 'revokeSpendingCap' | 'increaseSpendingCap',
       {
-        tokenSymbol?: string;
+        token?: TokenAmount;
       }
     >
-  | ActivityItem<
+  | ActivityData<
       'nftMint',
       {
         from: string;
@@ -115,11 +136,12 @@ export type ActivityListItem =
         token?: TokenAmount;
       }
     >
-  | ActivityItem<
+  | ActivityData<
       'contractInteraction',
       {
         from: string;
         to: string;
+        token?: TokenAmount;
         methodId?: string;
         transactionCategory?: string;
         transactionProtocol?: string;

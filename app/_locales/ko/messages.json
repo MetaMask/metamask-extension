@@ -1175,15 +1175,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "하드웨어 지갑에서 2건의 트랜잭션을 컨펌해야 합니다."
   },
-  "bridgeCreateSolanaAccount": {
-    "message": "솔라나 계정 만들기"
-  },
-  "bridgeCreateSolanaAccountDescription": {
-    "message": "솔라나 네트워크로 스왑하려면 계정과 수신 주소가 필요합니다."
-  },
-  "bridgeCreateSolanaAccountTitle": {
-    "message": "우선 솔라나 계정이 필요합니다."
-  },
   "bridgeDetailsTitle": {
     "message": "브릿지 세부 정보",
     "description": "Title for the modal showing details about a bridge transaction."
@@ -1458,9 +1449,6 @@
   },
   "bridgeSendLoading": {
     "message": "소스 체인에서 전송"
-  },
-  "bridgeSolanaAccountCreated": {
-    "message": "솔라나 계정을 생성했습니다"
   },
   "bridgeStatusComplete": {
     "message": "완료",
