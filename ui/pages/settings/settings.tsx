@@ -5,6 +5,7 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import {
@@ -37,9 +38,7 @@ import {
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
 import { SnapSettingsRenderer } from '../../components/app/snaps/snap-settings-page';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -78,6 +77,16 @@ const normalizeSettingsPath = (path: string) =>
 
 const getRoutePathname = (path: string) => path.split('?')[0];
 
+const reactRetainedElementSelector = 'input, select, textarea, img';
+
+const clearReactInternalReferences = (element: Element) => {
+  for (const key of Object.keys(element)) {
+    if (key.startsWith('__reactFiber$') || key.startsWith('__reactProps$')) {
+      delete (element as unknown as Record<string, unknown>)[key];
+    }
+  }
+};
+
 /**
  * Layout for Settings: header, tab bar, and content area.
  *
@@ -104,7 +113,28 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+  const settingsRootRef = useRef<HTMLElement | null>(null);
   const searchResults = useSettingsSearch(searchValue);
+
+  const setSettingsRootRef = useCallback((element: HTMLElement | null) => {
+    if (element) {
+      settingsRootRef.current = element;
+    }
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      settingsRootRef.current
+        ?.querySelectorAll(reactRetainedElementSelector)
+        .forEach((element) => {
+          // React 17 leaves per-node non-delegated event listeners on these
+          // elements. If the browser retains one listener target, the target's
+          // React internals and parent links can retain the whole settings tree.
+          clearReactInternalReferences(element);
+          element.remove();
+        });
+    };
+  }, []);
 
   // --- Shield entry modal interception ---
   const hasSubscribedToShield = useSelector(getHasSubscribedToShield);
@@ -381,6 +411,7 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <Box
+      ref={setSettingsRootRef}
       flexDirection={BoxFlexDirection.Column}
       backgroundColor={BoxBackgroundColor.BackgroundDefault}
       className="h-full w-full shadow-xs"

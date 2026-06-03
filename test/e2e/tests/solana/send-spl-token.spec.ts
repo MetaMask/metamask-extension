@@ -31,14 +31,10 @@ import {
   mockSolanaBalanceQuote,
   mockTokenApiAssets,
   simulateSolanaTransaction,
-  buildSolanaTestSpecificMock,
 } from './common-solana';
-import succeededSplTokenTransaction from './mocks/succeededSplTokenTransaction.json';
 
-const isUnifiedAssetsEnabled =
-  process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true';
+const isUnifiedAssetsEnabled = true;
 
-const SOL_ACCOUNT_ID = '688e01b8-3134-4ef4-80e6-8772bab38ef7';
 const SOL_CAIP_ASSET = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
 const USDC_CAIP_ASSET =
   'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
@@ -99,12 +95,6 @@ async function mockAccountsApiV5WithSolana(
 }
 
 const SOLANA_SPL_ASSETS_CONTROLLER_FIXTURE = {
-  assetsBalance: {
-    [SOL_ACCOUNT_ID]: {
-      [SOL_CAIP_ASSET]: { amount: '50' },
-      [USDC_CAIP_ASSET]: { amount: '8.908267' },
-    },
-  },
   assetsInfo: {
     [SOL_CAIP_ASSET]: {
       decimals: 9,
@@ -143,9 +133,6 @@ const SOLANA_SPL_ASSETS_CONTROLLER_FIXTURE = {
 
 const MULTICHAIN_ASSETS_CONTROLLER_USDC_PATCH = {
   MultichainAssetsController: {
-    accountsAssets: {
-      [SOL_ACCOUNT_ID]: [SOL_CAIP_ASSET, USDC_CAIP_ASSET],
-    },
     assetsMetadata: {
       [USDC_CAIP_ASSET]: {
         fungible: true,
@@ -211,43 +198,35 @@ async function mockSolanaTokenApiAssets(mockServer: Mockttp) {
 
 // --- Mock builders ---
 
-const mockSendWithUSDCVisible = isUnifiedAssetsEnabled
-  ? buildSolanaTestSpecificMock({
-      mockGetTransactionSuccess: true,
-      mockTokenAccountAccountInfo: false,
-      withCustomMocks: async (mockServer) => [
-        await mockSolanaTokenApiAssets(mockServer),
-        await mockGetTokenAccountBalance(mockServer),
-        await mockServer
-          .forPost(/https:\/\/solana-mainnet\.infura\.io/u)
-          .withBodyIncluding('getTransaction')
-          .always()
-          .thenCallback(() => ({
-            statusCode: 200,
-            json: succeededSplTokenTransaction,
-          })),
-        await mockGetTokenAccountsUSDCOnly(mockServer),
-        await mockGetMintAccountInfo(mockServer),
-      ],
-    })
-  : async (mockServer: Mockttp): Promise<MockedEndpoint[]> => [
-      await mockGetTokenAccountsUSDCOnly(mockServer),
-      await mockGetTokenAccountBalance(mockServer),
-      await simulateSolanaTransaction(mockServer),
-      await mockSolanaBalanceQuote({ mockServer }),
-      await mockGetFeeForMessage(mockServer),
-      await mockGetLatestBlockhash(mockServer),
-      await mockGetMinimumBalanceForRentExemption(mockServer),
-      await mockMultiCoinPrice(mockServer),
-      await mockPriceApiSpotPriceSwap(mockServer),
-      await mockPriceApiExchangeRates(mockServer),
-      await mockGetMultipleAccounts(mockServer),
-      await mockSendSolanaTransaction(mockServer),
-      await mockGetSuccessSignaturesForAddress(mockServer),
-      await mockGetSuccessSplTokenTransaction(mockServer),
-      await mockGetMintAccountInfo(mockServer),
-      await mockTokenApiAssets(mockServer),
-    ];
+const mockSendWithUSDCVisible = async (
+  mockServer: Mockttp,
+): Promise<MockedEndpoint[]> => [
+  ...(isUnifiedAssetsEnabled
+    ? [
+        await mockAccountsApiV2WithSolana(mockServer),
+        await mockAccountsApiV5WithSolana(mockServer),
+      ]
+    : []),
+  await mockGetTokenAccountsUSDCOnly(mockServer),
+  await mockGetTokenAccountBalance(mockServer),
+  await simulateSolanaTransaction(mockServer),
+  await mockSolanaBalanceQuote({ mockServer }),
+  await mockGetFeeForMessage(mockServer),
+  await mockGetLatestBlockhash(mockServer),
+  await mockGetMinimumBalanceForRentExemption(mockServer),
+  await mockMultiCoinPrice(mockServer),
+  await mockPriceApiSpotPriceSwap(mockServer),
+  await mockPriceApiExchangeRates(mockServer),
+  await mockGetMultipleAccounts(mockServer),
+  await mockSendSolanaTransaction(mockServer),
+  await mockGetTokenAccountBalance(mockServer),
+  await mockGetSuccessSplTokenTransaction(mockServer),
+  await mockGetMintAccountInfo(mockServer),
+
+  isUnifiedAssetsEnabled
+    ? await mockSolanaTokenApiAssets(mockServer)
+    : await mockTokenApiAssets(mockServer),
+];
 
 async function mockSendSPLTokenFailed(
   mockServer: Mockttp,

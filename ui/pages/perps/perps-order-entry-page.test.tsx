@@ -1150,11 +1150,15 @@ describe('PerpsOrderEntryPage', () => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsClosePosition',
         [
-          {
+          expect.objectContaining({
             symbol: 'ETH',
             orderType: 'market',
             currentPrice: 3025.5,
-          },
+            trackingData: expect.objectContaining({
+              totalFee: expect.any(Number),
+              marketPrice: 3025.5,
+            }),
+          }),
         ],
       );
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
@@ -1480,6 +1484,89 @@ describe('PerpsOrderEntryPage', () => {
         'perpsPlaceOrder',
         expect.anything(),
       );
+    });
+
+    it('routes market order with TP/SL on new position through two-step placeOrder + updatePositionTPSL', async () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('100');
+      fireEvent.click(screen.getByTestId('auto-close-toggle'));
+
+      const tpContainer = screen.getByTestId('tp-price-input');
+      fireEvent.change(tpContainer.querySelector('input') as HTMLInputElement, {
+        target: { value: '3300' },
+      });
+      const slContainer = screen.getByTestId('sl-price-input');
+      fireEvent.change(slContainer.querySelector('input') as HTMLInputElement, {
+        target: { value: '2800' },
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      const placeOrderCall = mockSubmitRequestToBackground.mock.calls.find(
+        ([method]) => method === 'perpsPlaceOrder',
+      );
+      expect(placeOrderCall).toBeTruthy();
+      expect(placeOrderCall?.[1][0]).not.toHaveProperty('takeProfitPrice');
+      expect(placeOrderCall?.[1][0]).not.toHaveProperty('stopLossPrice');
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsUpdatePositionTPSL',
+        [
+          expect.objectContaining({
+            symbol: 'ETH',
+            takeProfitPrice: '3300',
+            stopLossPrice: '2800',
+          }),
+        ],
+      );
+    });
+
+    it('reports TP/SL attach failure when the follow-up updatePositionTPSL call fails', async () => {
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsUpdatePositionTPSL') {
+          return Promise.resolve({
+            success: false,
+            error: 'TPSL attach failed',
+          });
+        }
+        return Promise.resolve({ success: true });
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('100');
+      fireEvent.click(screen.getByTestId('auto-close-toggle'));
+
+      const tpContainer = screen.getByTestId('tp-price-input');
+      fireEvent.change(tpContainer.querySelector('input') as HTMLInputElement, {
+        target: { value: '3300' },
+      });
+      const slContainer = screen.getByTestId('sl-price-input');
+      fireEvent.change(slContainer.querySelector('input') as HTMLInputElement, {
+        target: { value: '2800' },
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsUpdatePositionTPSL',
+        expect.anything(),
+      );
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
+        expect.objectContaining({
+          key: 'perpsToastUpdateFailed',
+        }),
+      );
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
+        replace: true,
+      });
     });
   });
 

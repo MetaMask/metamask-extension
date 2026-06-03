@@ -3,6 +3,7 @@ import { waitFor } from '@testing-library/react';
 import {
   CONFIRM_TRANSACTION_ROUTE,
   DEFAULT_ROUTE,
+  HARDWARE_WALLET_REPAIR_ROUTE,
 } from '../../helpers/constants/routes';
 import { createMemoryRouterWrapper } from '../../../test/lib/render-helpers-navigate';
 import { useHardwareWalletAutoConnect } from './useHardwareWalletAutoConnect';
@@ -795,6 +796,19 @@ describe('useHardwareWalletAutoConnect', () => {
         },
       );
 
+      expect(mockConnectRef).not.toHaveBeenCalled();
+    });
+
+    it('does not auto-connect on the hardware wallet repair route', async () => {
+      (webConnectionUtils.getConnectedDevices as jest.Mock).mockResolvedValue([
+        { productId: 123 },
+      ]);
+
+      setupAutoConnectHook({}, {}, [HARDWARE_WALLET_REPAIR_ROUTE]);
+
+      await waitFor(() => {
+        expect(webConnectionUtils.getConnectedDevices).not.toHaveBeenCalled();
+      });
       expect(mockConnectRef).not.toHaveBeenCalled();
     });
 

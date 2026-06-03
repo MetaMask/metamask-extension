@@ -1,5 +1,7 @@
-import { PasskeyController } from '@metamask/passkey-controller';
-import type { PasskeyControllerMessenger } from './messengers';
+import {
+  PasskeyController,
+  PasskeyControllerMessenger,
+} from '@metamask/passkey-controller';
 import { MessengerClientInitFunction } from './types';
 
 const PASSKEY_RP_NAME = 'MetaMask';

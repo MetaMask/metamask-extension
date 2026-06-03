@@ -1,6 +1,6 @@
 import { isConnectionError } from '@metamask/network-controller';
 import { generateDeterministicRandomNumber } from '@metamask/remote-feature-flag-controller';
-import { ENVIRONMENT } from '../../../../development/build/constants';
+import { ENVIRONMENT } from '../../../../shared/constants/build';
 
 /**
  * We capture Segment events for degraded or unavailable RPC endpoints for 1%

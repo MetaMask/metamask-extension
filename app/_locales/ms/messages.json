@@ -199,9 +199,6 @@
   "done": {
     "message": "Selesai"
   },
-  "downloadGoogleChrome": {
-    "message": "Muat Turun Google Chrome"
-  },
   "downloadStateLogs": {
     "message": "Muat Turun Log Keadaan"
   },
@@ -256,9 +253,6 @@
   },
   "hardwareWallets": {
     "message": "Sambungkan dompet perkakasan"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Pilih dompet perkakasan yang anda ingin gunakan dengan MetaMask"
   },
   "here": {
     "message": "di sini",
