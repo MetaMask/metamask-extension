@@ -344,7 +344,7 @@ import {
   NftDetectionControllerInit,
   TokenRatesControllerInit,
 } from './messenger-client-init/assets';
-import { TransactionControllerInit } from './messenger-client-init/confirmations/transaction-controller-init';
+
 import { TransactionPayControllerInit } from './messenger-client-init/transaction-pay-controller-init';
 import { GeolocationApiServiceInit } from './messenger-client-init/geolocation-api-service-init';
 import { GeolocationControllerInit } from './messenger-client-init/geolocation-controller-init';
@@ -455,6 +455,7 @@ import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-s
 import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
 import { getSnapKeyring } from './lib/snap-keyring/utils/getSnapKeyring';
 import { initializeWallet } from './wallet-init/initialization';
+import { getTransactionControllerApi } from './messenger-client-init/confirmations/transaction-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -544,9 +545,13 @@ export default class MetamaskController extends EventEmitter {
     this.initializeChainlist();
 
     this.wallet = initializeWallet({
+      encryptor: this.opts.encryptor,
+      getFlatState: this.getState.bind(this),
+      getPermittedAccounts: this.getPermittedAccounts.bind(this),
+      getTransactionMetricsRequest:
+        this.getTransactionMetricsRequest.bind(this),
       messenger: controllerMessenger,
       state: initState,
-      encryptor: this.opts.encryptor,
     });
 
     this.controllerMessenger = controllerMessenger;
@@ -663,7 +668,6 @@ export default class MetamaskController extends EventEmitter {
         : {}),
       PPOMController: PPOMControllerInit,
       AccountTrackerController: AccountTrackerControllerInit,
-      TransactionController: TransactionControllerInit,
       PhishingController: PhishingControllerInit,
       TransactionPayController: TransactionPayControllerInit,
       SmartTransactionsController: SmartTransactionsControllerInit,
@@ -787,7 +791,7 @@ export default class MetamaskController extends EventEmitter {
     this.onboardingController = messengerClientsByName.OnboardingController;
     this.accountTrackerController =
       messengerClientsByName.AccountTrackerController;
-    this.txController = messengerClientsByName.TransactionController;
+    this.txController = this.wallet.getInstance('TransactionController');
     this.txPayController = messengerClientsByName.TransactionPayController;
     this.smartTransactionsController =
       messengerClientsByName.SmartTransactionsController;
@@ -7054,6 +7058,7 @@ export default class MetamaskController extends EventEmitter {
     const api = {
       ...this.getApi(),
       ...this.messengerClientApi,
+      ...getTransactionControllerApi(this.txController),
       ...(perpsStream ? perpsStream.bridgeApi() : {}),
       messengerSubscribe: messengerSubscriptions.subscribe.bind(
         messengerSubscriptions,

@@ -13,6 +13,7 @@ import {
 } from '@metamask/bridge-status-controller';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import {
+  KeyringControllerGetKeyringForAccountAction,
   KeyringControllerGetStateAction,
   KeyringControllerSignEip7702AuthorizationAction,
   KeyringControllerSignTypedMessageAction,
@@ -30,7 +31,11 @@ import {
 } from '@metamask/network-controller';
 import type { AuthenticationController } from '@metamask/profile-sync-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
-import { SmartTransactionsControllerSmartTransactionEvent } from '@metamask/smart-transactions-controller';
+import {
+  SmartTransactionsControllerGetFeesAction,
+  SmartTransactionsControllerSmartTransactionEvent,
+  SmartTransactionsControllerSubmitSignedTransactionsAction,
+} from '@metamask/smart-transactions-controller';
 import { SubscriptionControllerActions } from '@metamask/subscription-controller';
 import {
   TransactionControllerAddTransactionAction,
@@ -66,6 +71,7 @@ import {
   InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction,
   InstitutionalSnapControllerPublishHookAction,
 } from '../../controllers/institutional-snap/InstitutionalSnapController-method-action-types';
+import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 
 export function getTransactionControllerMessenger(
   messenger: RootMessenger<
@@ -118,12 +124,16 @@ type InitMessengerActions =
   | InstitutionalSnapControllerPublishHookAction
   | InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction
   | KeyringControllerGetStateAction
+  | KeyringControllerGetKeyringForAccountAction
   | KeyringControllerSignEip7702AuthorizationAction
   | KeyringControllerSignTypedMessageAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetEIP1559CompatibilityAction
   | NetworkControllerGetNetworkClientByIdAction
+  | PreferencesControllerGetStateAction
   | RemoteFeatureFlagControllerGetStateAction
+  | SmartTransactionsControllerGetFeesAction
+  | SmartTransactionsControllerSubmitSignedTransactionsAction
   | SubscriptionControllerActions
   | SubscriptionServiceSubmitSubscriptionSponsorshipIntentAction
   | TransactionControllerAddTransactionAction
