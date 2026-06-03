@@ -11,15 +11,12 @@ import {
   IconSize as DsIconSize,
   toast,
 } from '@metamask/design-system-react';
+import React, { useEffect } from 'react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMerklClaimStatus } from '../../../hooks/musd/useMerklClaimStatus';
 import { SECOND } from '../../../../shared/constants/time';
-import React, { useEffect } from 'react';
 
-const getMerklToastTitle = (
-  toastState: string,
-  t: (key: string) => string,
-) => {
+const getMerklToastTitle = (toastState: string, t: (key: string) => string) => {
   switch (toastState) {
     case 'in-progress':
       return t('merklRewardsToastInProgress');

@@ -1,7 +1,7 @@
-
 import { Hex } from '@metamask/utils';
 import { toast } from '@metamask/design-system-react';
 
+import React, { useEffect, useRef } from 'react';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import {
@@ -9,7 +9,6 @@ import {
   useSelectedGasFeeToken,
 } from '../../hooks/useGasFeeToken';
 import { GasFeeTokenIcon } from '../gas-fee-token-icon';
-import React, { useEffect, useRef } from 'react';
 
 const TOAST_TIMEOUT_MILLISECONDS = 5 * 1000; // 5 Seconds
 
@@ -49,9 +48,7 @@ export function GasFeeTokenToast() {
       title: t('confirmGasFeeTokenToast', [
         <b key="symbol">{selectedGasFeeToken?.symbol}</b>,
       ]),
-      startAccessory: (
-        <GasFeeTokenIcon tokenAddress={selectedTokenAddress} />
-      ),
+      startAccessory: <GasFeeTokenIcon tokenAddress={selectedTokenAddress} />,
       hasNoTimeout: true,
     });
 

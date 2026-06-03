@@ -6,12 +6,12 @@ import {
   IconSize as DsIconSize,
   toast,
 } from '@metamask/design-system-react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { SECOND } from '../../../../shared/constants/time';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { selectPerpsLastWithdrawResult } from '../../../selectors/perps-controller';
-import React, { useCallback, useEffect, useState } from 'react';
 
 /**
  * Home-screen toast for Perps withdrawal completion.
@@ -85,7 +85,14 @@ export function PerpsWithdrawToast() {
       clearTimeout(timeoutId);
       toast.dismiss();
     };
-  }, [autoHideDelay, dismissed, dismissToast, formatCurrency, lastWithdrawResult, t]);
+  }, [
+    autoHideDelay,
+    dismissed,
+    dismissToast,
+    formatCurrency,
+    lastWithdrawResult,
+    t,
+  ]);
 
   return null;
 }
