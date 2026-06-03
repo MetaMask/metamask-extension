@@ -320,6 +320,177 @@ describe('./utils/helpers.ts', () => {
     });
   });
 
+  describe('setupGracefulWatchShutdown', () => {
+    it('starts shutdown once and leaves cache close running in the background', () => {
+      const exits: number[] = [];
+      const stopDeferred = createDeferred<void>();
+      const stop = mock.fn(() => stopDeferred.promise);
+      const server = { stop } as unknown as Parameters<
+        typeof helpers.setupGracefulWatchShutdown
+      >[0]['server'];
+      const close = mock.fn();
+      const compiler = {
+        close,
+      } as unknown as Compiler;
+      const { listeners, signalProcess } = createSignalProcess();
+      const onShutdownStart = mock.fn();
+
+      helpers.setupGracefulWatchShutdown({
+        compiler,
+        exit: (code = 0) => exits.push(code),
+        onShutdownStart,
+        process: signalProcess,
+        server,
+        signals: ['SIGINT'],
+      });
+
+      const listener = listeners.get('SIGINT');
+      assert(listener, 'SIGINT listener should be set');
+      listener('SIGINT');
+      listener('SIGINT');
+
+      assert.strictEqual(onShutdownStart.mock.callCount(), 1);
+      assert.strictEqual(stop.mock.callCount(), 1);
+      assert.strictEqual(close.mock.callCount(), 0);
+      assert.deepStrictEqual(exits, []);
+    });
+
+    it('accepts shutdown requests over IPC', async () => {
+      const exits: number[] = [];
+      const server = {
+        stop: mock.fn(async () => undefined),
+      } as unknown as Parameters<
+        typeof helpers.setupGracefulWatchShutdown
+      >[0]['server'];
+      const close = mock.fn(
+        (callback: (error?: Error | null | undefined) => void) => {
+          callback();
+        },
+      );
+      const compiler = {
+        close,
+      } as unknown as Compiler;
+      const { listeners, removeListener, signalProcess } = createSignalProcess({
+        hasIpc: true,
+      });
+      const onShutdownStart = mock.fn();
+
+      helpers.setupGracefulWatchShutdown({
+        compiler,
+        exit: (code = 0) => exits.push(code),
+        onShutdownStart,
+        process: signalProcess,
+        server,
+        signals: ['SIGINT'],
+      });
+
+      const listener = listeners.get('message');
+      assert(listener, 'message listener should be set');
+      listener('SIGINT');
+      await waitForAsyncShutdown();
+
+      assert.strictEqual(onShutdownStart.mock.callCount(), 1);
+      assert.strictEqual(close.mock.callCount(), 1);
+      assert.deepStrictEqual(exits, [0]);
+      assert.strictEqual(removeListener.mock.callCount(), 2);
+      assert.strictEqual(listeners.has('SIGINT'), false);
+      assert.strictEqual(listeners.has('message'), false);
+    });
+
+    it('still closes the compiler when the dev server fails to stop', async () => {
+      const exits: number[] = [];
+      const calls: unknown[] = [];
+      const stopError = new Error('stop failed');
+      const server = {
+        stop: mock.fn(async () => {
+          throw stopError;
+        }),
+      } as unknown as Parameters<
+        typeof helpers.setupGracefulWatchShutdown
+      >[0]['server'];
+      let closeCallback:
+        | ((error?: Error | null | undefined) => void)
+        | undefined;
+      const close = mock.fn(
+        (callback: (error?: Error | null | undefined) => void) => {
+          closeCallback = callback;
+        },
+      );
+      const compiler = {
+        close,
+      } as unknown as Compiler;
+      const { listeners, signalProcess } = createSignalProcess();
+      mock.method(console, 'error', (message: unknown) => {
+        calls.push(message);
+      });
+
+      helpers.setupGracefulWatchShutdown({
+        compiler,
+        exit: (code = 0) => exits.push(code),
+        process: signalProcess,
+        server,
+        signals: ['SIGINT'],
+      });
+
+      const listener = listeners.get('SIGINT');
+      assert(listener, 'SIGINT listener should be set');
+      listener('SIGINT');
+      await waitForAsyncShutdown();
+
+      assert.strictEqual(close.mock.callCount(), 1);
+      assert(closeCallback, 'compiler close callback should be set');
+      closeCallback();
+      await waitForAsyncShutdown();
+
+      assert.deepStrictEqual(calls, [stopError]);
+      assert.deepStrictEqual(exits, [1]);
+    });
+
+    it('still stops the server when the shutdown handoff throws', async () => {
+      const exits: number[] = [];
+      const calls: unknown[] = [];
+      const handoffError = new Error('handoff failed');
+      const server = {
+        stop: mock.fn(async () => undefined),
+      } as unknown as Parameters<
+        typeof helpers.setupGracefulWatchShutdown
+      >[0]['server'];
+      const close = mock.fn(
+        (callback: (error?: Error | null | undefined) => void) => {
+          callback();
+        },
+      );
+      const compiler = {
+        close,
+      } as unknown as Compiler;
+      const { listeners, signalProcess } = createSignalProcess();
+      mock.method(console, 'error', (message: unknown) => {
+        calls.push(message);
+      });
+
+      helpers.setupGracefulWatchShutdown({
+        compiler,
+        exit: (code = 0) => exits.push(code),
+        onShutdownStart: () => {
+          throw handoffError;
+        },
+        process: signalProcess,
+        server,
+        signals: ['SIGINT'],
+      });
+
+      const listener = listeners.get('SIGINT');
+      assert(listener, 'SIGINT listener should be set');
+      listener('SIGINT');
+      await waitForAsyncShutdown();
+
+      assert.deepStrictEqual(calls, [handoffError]);
+      assert.strictEqual(server.stop.mock.callCount(), 1);
+      assert.strictEqual(close.mock.callCount(), 1);
+      assert.deepStrictEqual(exits, [0]);
+    });
+  });
+
   describe('getDevServerClientUrl', () => {
     const parse = (url: string) => {
       const [base, query] = url.split('?');
@@ -391,3 +562,40 @@ describe('./utils/helpers.ts', () => {
     });
   });
 });
+
+function createDeferred<T>() {
+  let resolve!: (value: T | PromiseLike<T>) => void;
+  let reject!: (reason?: unknown) => void;
+  const promise = new Promise<T>((resolvePromise, rejectPromise) => {
+    resolve = resolvePromise;
+    reject = rejectPromise;
+  });
+  return { promise, reject, resolve };
+}
+
+async function waitForAsyncShutdown() {
+  await new Promise<void>((resolve) => {
+    setImmediate(resolve);
+  });
+}
+
+function createSignalProcess({ hasIpc = false } = {}) {
+  const listeners = new Map<string, (...args: unknown[]) => void>();
+  const on = mock.fn((event: string, listener: (...args: unknown[]) => void) => {
+    listeners.set(event, listener);
+  });
+  const removeListener = mock.fn(
+    (event: string, listener: (...args: unknown[]) => void) => {
+      if (listeners.get(event) === listener) {
+        listeners.delete(event);
+      }
+    },
+  );
+  const signalProcess = {
+    on,
+    removeListener,
+    ...(hasIpc ? { send: mock.fn() } : {}),
+  } as unknown as NodeJS.Process;
+
+  return { listeners, on, removeListener, signalProcess };
+}

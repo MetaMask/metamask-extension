@@ -5,6 +5,7 @@ import {
   logStats,
   noop,
   ignoreCacheShutdownSignal,
+  setupGracefulWatchShutdown,
   suppressDevServerInfoLogs,
 } from './utils/helpers';
 import config from './webpack.config';
@@ -30,6 +31,12 @@ export function build(onComplete: () => void = noop) {
     logWatchBuildStats(compiler, '🦊 Watching for changes…');
     const WebpackDevServer: typeof WebpackDevServerType = require('webpack-dev-server');
     const server = new WebpackDevServer(DEV_SERVER_OPTIONS, compiler);
+    setupGracefulWatchShutdown({
+      compiler,
+      onShutdownStart:
+        options.cache.type === 'filesystem' ? onComplete : noop,
+      server,
+    });
     server.start().catch((error: unknown) => {
       console.error(
         `🦊 Failed to start dev server on ${server.options.host ?? 'localhost'}:${server.options.port ?? '(auto)'}.`,

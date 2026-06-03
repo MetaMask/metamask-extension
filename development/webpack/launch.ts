@@ -19,6 +19,8 @@ import parser from 'yargs-parser';
 import type { Child, PTY, Stdio, StdName } from './types.ts';
 
 const rawArgv = process.argv.slice(2);
+const shutdownSignalExitCodes = { SIGINT: 2, SIGTERM: 15 } as const;
+type ShutdownSignal = keyof typeof shutdownSignalExitCodes;
 
 const alias = { cache: 'c', help: 'h' };
 type Args = { [x in keyof typeof alias]?: boolean };
@@ -102,9 +104,26 @@ function createOutputStreams(process: NodeJS.Process) {
 
       listenForShutdownSignal(process, child);
 
+      let didForwardShutdownSignal = false;
+      for (const signal of Object.keys(
+        shutdownSignalExitCodes,
+      ) as ShutdownSignal[]) {
+        process.once(signal, function handleShutdownSignal() {
+          didForwardShutdownSignal = true;
+          requestChildShutdown(child, signal, () => {
+            child.unref();
+            process.exit(128 + shutdownSignalExitCodes[signal]);
+          });
+        });
+      }
+
       process
         // kill the child process if we didn't exit cleanly
-        .on('exit', (code) => code > 128 && child.kill(code - 128))
+        .on(
+          'exit',
+          (code) =>
+            !didForwardShutdownSignal && code > 128 && child.kill(code - 128),
+        )
         // `SIGWINCH` means the terminal was resized
         .on('SIGWINCH', function handleSigwinch(signal) {
           // resize the tty's
@@ -116,6 +135,47 @@ function createOutputStreams(process: NodeJS.Process) {
     destroy: () => outs.forEach((out) => out.destroy()),
     stdio: ['ignore', outs[0].pty, outs[1].pty, ipc] as StdioOptions,
   };
+}
+
+/**
+ * Ask the child to start shutdown. Windows uses IPC because POSIX-style signals
+ * terminate the child instead of giving Node a chance to run signal handlers.
+ *
+ * @param child - The child process to shut down.
+ * @param signal - The shutdown signal to forward.
+ * @param onRequestSent - Called once the shutdown request has been sent.
+ */
+function requestChildShutdown(
+  child: Child,
+  signal: ShutdownSignal,
+  onRequestSent: () => void,
+) {
+  if (child.channel && child.send) {
+    let isRequestSent = false;
+    const markRequestSent = (fallback?: NodeJS.Timeout) => {
+      if (!isRequestSent) {
+        isRequestSent = true;
+        if (fallback) clearTimeout(fallback);
+        onRequestSent();
+      }
+    };
+    const fallback = setTimeout(() => markRequestSent(), 100);
+    fallback.unref();
+
+    try {
+      child.send(signal, (error) => {
+        if (error) child.kill(signal);
+        markRequestSent(fallback);
+      });
+    } catch {
+      child.kill(signal);
+      markRequestSent(fallback);
+    }
+    return;
+  }
+
+  child.kill(signal);
+  onRequestSent();
 }
 
 /**
