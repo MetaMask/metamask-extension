@@ -1,16 +1,10 @@
 import React from 'react';
-import README from './README.mdx';
 import Slider from '.';
 
 export default {
   title: 'Components/UI/Slider',
 
   component: Slider,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     editText: { control: 'text' },
     infoText: { control: 'text' },

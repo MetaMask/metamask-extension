@@ -6,7 +6,7 @@ import {
   BorderColor,
 } from '../../../helpers/constants/design-system';
 import configureStore from '../../../store/store';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { BadgeStatus } from './badge-status';
 
 describe('Badge Status', () => {
@@ -30,7 +30,16 @@ describe('Badge Status', () => {
     );
   };
   it('should render correctly', () => {
-    const { container } = render({}, { useBlockie: true });
+    const { container } = render({});
     expect(container).toMatchSnapshot();
+    const badge = container.querySelector('.multichain-badge-status__badge');
+    expect(badge).toBeInTheDocument();
+  });
+
+  it('should not render the badge if showConnectedStatus is false', () => {
+    const { container } = render({ showConnectedStatus: false });
+    expect(container).toMatchSnapshot();
+    const badge = container.querySelector('.multichain-badge-status__badge');
+    expect(badge).not.toBeInTheDocument();
   });
 });

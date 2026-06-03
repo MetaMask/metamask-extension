@@ -16,18 +16,54 @@ import {
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import * as actions from '../../../store/actions';
+import { useAssetDetails } from '../hooks/useAssetDetails';
 import { SignatureRequestType } from '../types/confirm';
 import { memoizedGetTokenStandardAndDetails } from '../utils/token';
 import Confirm from './confirm';
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    replace: jest.fn(),
+jest.mock('../hooks/useAssetDetails', () => ({
+  ...jest.requireActual('../hooks/useAssetDetails'),
+  useAssetDetails: jest.fn().mockResolvedValue({
+    decimals: '4',
   }),
 }));
 
+jest.mock('../hooks/gas/useIsGaslessLoading', () => ({
+  useIsGaslessLoading: () => {
+    return { isGaslessLoading: false };
+  },
+}));
+
+// Mock async hooks used by useSpenderAlerts to prevent React Act warnings
+jest.mock('../components/confirm/info/approve/hooks/use-is-nft', () => ({
+  ...jest.requireActual('../components/confirm/info/approve/hooks/use-is-nft'),
+  useIsNFT: () => ({ isNFT: false, pending: false }),
+}));
+
+jest.mock('../../../hooks/useAsync', () => ({
+  ...jest.requireActual('../../../hooks/useAsync'),
+  useAsyncResult: () => ({ value: null, pending: false, error: undefined }),
+}));
+
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+  const actual = jest.requireActual('react-router-dom');
+  return {
+    ...actual,
+    useNavigate: () => mockUseNavigate,
+    useSearchParams: () => [new URLSearchParams(''), jest.fn()],
+    useLocation: () => ({
+      pathname: '/',
+      search: '',
+      hash: '',
+      state: null,
+      key: 'test',
+    }),
+  };
+});
+
 const middleware = [thunk];
+const mockedAssetDetails = jest.mocked(useAssetDetails);
 
 describe('Confirm', () => {
   afterEach(() => {
@@ -35,6 +71,14 @@ describe('Confirm', () => {
 
     /** Reset memoized function using getTokenStandardAndDetails for each test */
     memoizedGetTokenStandardAndDetails?.cache?.clear?.();
+  });
+
+  beforeEach(() => {
+    mockedAssetDetails.mockImplementation(() => ({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      decimals: '4' as any,
+    }));
   });
 
   it('should render', () => {
@@ -58,6 +102,10 @@ describe('Confirm', () => {
     );
 
     jest.spyOn(actions, 'getTokenStandardAndDetails').mockResolvedValue({
+      decimals: '2',
+      standard: 'ERC20',
+    });
+    jest.spyOn(actions, 'getTokenStandardAndDetailsByChain').mockResolvedValue({
       decimals: '2',
       standard: 'ERC20',
     });
@@ -105,6 +153,10 @@ describe('Confirm', () => {
       decimals: '2',
       standard: 'ERC20',
     });
+    jest.spyOn(actions, 'getTokenStandardAndDetailsByChain').mockResolvedValue({
+      decimals: '2',
+      standard: 'ERC20',
+    });
 
     const mockStore = configureMockStore(middleware)(mockStateTypedSign);
 
@@ -148,13 +200,17 @@ describe('Confirm', () => {
       decimals: '2',
       standard: 'ERC20',
     });
+    jest.spyOn(actions, 'getTokenStandardAndDetailsByChain').mockResolvedValue({
+      decimals: '2',
+      standard: 'ERC20',
+    });
 
     await act(async () => {
-      const { container, findAllByText } =
-        await renderWithConfirmContextProvider(<Confirm />, mockStore);
+      const { container } = await renderWithConfirmContextProvider(
+        <Confirm />,
+        mockStore,
+      );
 
-      const valueElement = await findAllByText('14,615,016,373,...');
-      expect(valueElement[0]).toBeInTheDocument();
       expect(container).toMatchSnapshot();
     });
   });
@@ -172,13 +228,57 @@ describe('Confirm', () => {
       decimals: '2',
       standard: 'ERC20',
     });
+    jest.spyOn(actions, 'getTokenStandardAndDetailsByChain').mockResolvedValue({
+      decimals: '2',
+      standard: 'ERC20',
+    });
 
     await act(async () => {
-      const { container, findAllByText } =
-        await renderWithConfirmContextProvider(<Confirm />, mockStore);
+      const { container } = await renderWithConfirmContextProvider(
+        <Confirm />,
+        mockStore,
+      );
 
-      const valueElement = await findAllByText('14,615,016,373,...');
-      expect(valueElement[0]).toBeInTheDocument();
+      expect(container).toMatchSnapshot();
+    });
+  });
+
+  it('should render SmartTransactionsBannerAlert for transaction types but not signature types', async () => {
+    // Test with a transaction type
+    const mockStateTransaction = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        alertEnabledness: {
+          smartTransactionsMigration: true,
+        },
+        preferences: {
+          smartTransactionsOptInStatus: true,
+          smartTransactionsMigrationApplied: true,
+        },
+      },
+    };
+
+    const mockStoreTransaction =
+      configureMockStore(middleware)(mockStateTransaction);
+
+    await act(async () => {
+      const { container } = renderWithConfirmContextProvider(
+        <Confirm />,
+        mockStoreTransaction,
+      );
+      expect(container).toMatchSnapshot();
+    });
+
+    // Test with a signature type (reuse existing mock)
+    const mockStateTypedSign = getMockTypedSignConfirmState();
+    const mockStoreSign = configureMockStore(middleware)(mockStateTypedSign);
+
+    await act(async () => {
+      const { container } = renderWithConfirmContextProvider(
+        <Confirm />,
+        mockStoreSign,
+      );
       expect(container).toMatchSnapshot();
     });
   });

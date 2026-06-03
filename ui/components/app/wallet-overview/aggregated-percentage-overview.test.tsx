@@ -2,15 +2,21 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { getIntlLocale } from '../../../ducks/locale/locale';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
-  getCurrentCurrency,
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
   getTokensMarketData,
-  getPreferences,
 } from '../../../selectors';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
+import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
+import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
-import { AggregatedPercentageOverview } from './aggregated-percentage-overview';
+import { getHistoricalMultichainAggregatedBalance } from '../../../selectors/assets';
+import {
+  AggregatedPercentageOverview,
+  AggregatedMultichainPercentageOverview,
+} from './aggregated-percentage-overview';
 
 jest.mock('react-redux', () => ({
   useSelector: jest.fn((selector) => selector()),
@@ -20,26 +26,50 @@ jest.mock('../../../ducks/locale/locale', () => ({
   getIntlLocale: jest.fn(),
 }));
 
-jest.mock('../../../selectors', () => ({
+jest.mock('../../../ducks/metamask/metamask', () => ({
   getCurrentCurrency: jest.fn(),
+}));
+
+jest.mock('../../../selectors', () => ({
   getSelectedAccount: jest.fn(),
-  getPreferences: jest.fn(),
   getShouldHideZeroBalanceTokens: jest.fn(),
   getTokensMarketData: jest.fn(),
+  selectAnyEnabledNetworksAreAvailable: jest.fn(),
+}));
+
+jest.mock('../../../../shared/lib/selectors/accounts', () => ({
+  getSelectedInternalAccount: jest.fn(),
+}));
+
+jest.mock('../../../../shared/lib/selectors/networks', () => ({
+  getCurrentChainId: jest.fn(),
 }));
 
 jest.mock('../../../hooks/useAccountTotalFiatBalance', () => ({
   useAccountTotalFiatBalance: jest.fn(),
 }));
 
-const mockGetIntlLocale = getIntlLocale as unknown as jest.Mock;
-const mockGetCurrentCurrency = getCurrentCurrency as jest.Mock;
-const mockGetPreferences = getPreferences as jest.Mock;
-const mockGetSelectedAccount = getSelectedAccount as unknown as jest.Mock;
-const mockGetShouldHideZeroBalanceTokens =
-  getShouldHideZeroBalanceTokens as jest.Mock;
+jest.mock('../../../selectors/assets', () => ({
+  getHistoricalMultichainAggregatedBalance: jest.fn(),
+}));
+jest.mock('../../../../shared/lib/selectors/preferences', () => ({
+  ...jest.requireActual('../../../../shared/lib/selectors/preferences'),
+  getPreferences: jest.fn(),
+}));
 
+const mockGetIntlLocale = jest.mocked(getIntlLocale);
+const mockGetCurrentCurrency = jest.mocked(getCurrentCurrency);
+const mockGetPreferences = jest.mocked(getPreferences);
+const mockGetSelectedAccount = jest.mocked(getSelectedAccount);
+const mockGetShouldHideZeroBalanceTokens = jest.mocked(
+  getShouldHideZeroBalanceTokens,
+);
 const mockGetTokensMarketData = getTokensMarketData as jest.Mock;
+const mockGetCurrentChainId = jest.mocked(getCurrentChainId);
+const mockGetHistoricalMultichainAggregatedBalance = jest.mocked(
+  getHistoricalMultichainAggregatedBalance,
+);
+const mockGetSelectedInternalAccount = jest.mocked(getSelectedInternalAccount);
 
 const selectedAccountMock = {
   id: 'd51c0116-de36-4e77-b35b-408d4ea82d01',
@@ -162,12 +192,41 @@ describe('AggregatedPercentageOverview', () => {
   beforeEach(() => {
     mockGetIntlLocale.mockReturnValue('en-US');
     mockGetCurrentCurrency.mockReturnValue('USD');
-    mockGetPreferences.mockReturnValue({ privacyMode: false });
+    mockGetPreferences.mockReturnValue({
+      privacyMode: false,
+    } as ReturnType<typeof mockGetPreferences>);
     mockGetSelectedAccount.mockReturnValue(selectedAccountMock);
     mockGetShouldHideZeroBalanceTokens.mockReturnValue(false);
     mockGetTokensMarketData.mockReturnValue(marketDataMock);
-
+    mockGetCurrentChainId.mockReturnValue('0x1');
     jest.clearAllMocks();
+    mockGetSelectedInternalAccount.mockReturnValue({
+      id: 'd51c0116-de36-4e77-b35b-408d4ea82d01',
+      address: '0xa259af9db8172f62ef0373d7dfa893a3e245ace9',
+      options: {},
+      methods: [],
+      type: 'eip155:eoa',
+      metadata: {
+        name: '',
+        importTime: 0,
+        keyring: {
+          type: '',
+        },
+        nameLastUpdatedAt: undefined,
+        snap: undefined,
+        lastSelected: undefined,
+      },
+      scopes: [],
+    });
+    mockGetHistoricalMultichainAggregatedBalance.mockReturnValue({
+      PT1H: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P7D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P14D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P30D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P200D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1Y: { balance: 0, percentChange: 0, amountChange: 0 },
+    });
   });
 
   describe('render', () => {
@@ -182,7 +241,9 @@ describe('AggregatedPercentageOverview', () => {
         ],
         totalFiatBalance: 0,
       });
-      const { container } = render(<AggregatedPercentageOverview />);
+      const { container } = render(
+        <AggregatedPercentageOverview trailingChild={() => null} />,
+      );
       expect(container).toMatchSnapshot();
     });
   });
@@ -199,7 +260,7 @@ describe('AggregatedPercentageOverview', () => {
       totalFiatBalance: 0,
     });
 
-    render(<AggregatedPercentageOverview />);
+    render(<AggregatedPercentageOverview trailingChild={() => null} />);
     const percentageElement = screen.getByText('(+0.00%)');
     const numberElement = screen.getByText('+$0.00');
     expect(percentageElement).toBeInTheDocument();
@@ -258,7 +319,7 @@ describe('AggregatedPercentageOverview', () => {
     });
     const expectedAmountChange = '-$0.09';
     const expectedPercentageChange = '(-0.29%)';
-    render(<AggregatedPercentageOverview />);
+    render(<AggregatedPercentageOverview trailingChild={() => null} />);
     const percentageElement = screen.getByText(expectedPercentageChange);
     const numberElement = screen.getByText(expectedAmountChange);
     expect(percentageElement).toBeInTheDocument();
@@ -318,7 +379,7 @@ describe('AggregatedPercentageOverview', () => {
     mockGetTokensMarketData.mockReturnValue(positiveMarketDataMock);
     const expectedAmountChange = '+$0.09';
     const expectedPercentageChange = '(+0.29%)';
-    render(<AggregatedPercentageOverview />);
+    render(<AggregatedPercentageOverview trailingChild={() => null} />);
     const percentageElement = screen.getByText(expectedPercentageChange);
     const numberElement = screen.getByText(expectedAmountChange);
     expect(percentageElement).toBeInTheDocument();
@@ -378,7 +439,7 @@ describe('AggregatedPercentageOverview', () => {
     mockGetTokensMarketData.mockReturnValue(mixedMarketDataMock);
     const expectedAmountChange = '-$0.07';
     const expectedPercentageChange = '(-0.23%)';
-    render(<AggregatedPercentageOverview />);
+    render(<AggregatedPercentageOverview trailingChild={() => null} />);
     const percentageElement = screen.getByText(expectedPercentageChange);
     const numberElement = screen.getByText(expectedAmountChange);
     expect(percentageElement).toBeInTheDocument();
@@ -489,7 +550,7 @@ describe('AggregatedPercentageOverview', () => {
     });
     const expectedAmountChange = '-$0.39';
     const expectedPercentageChange = '(-1.08%)';
-    render(<AggregatedPercentageOverview />);
+    render(<AggregatedPercentageOverview trailingChild={() => null} />);
     const percentageElement = screen.getByText(expectedPercentageChange);
     const numberElement = screen.getByText(expectedAmountChange);
     expect(percentageElement).toBeInTheDocument();
@@ -587,10 +648,224 @@ describe('AggregatedPercentageOverview', () => {
     });
     const expectedAmountChange = '-$0.01';
     const expectedPercentageChange = '(-0.03%)';
-    render(<AggregatedPercentageOverview />);
+    render(<AggregatedPercentageOverview trailingChild={() => null} />);
     const percentageElement = screen.getByText(expectedPercentageChange);
     const numberElement = screen.getByText(expectedAmountChange);
     expect(percentageElement).toBeInTheDocument();
     expect(numberElement).toBeInTheDocument();
+  });
+});
+
+describe('AggregatedMultichainPercentageOverview', () => {
+  beforeEach(() => {
+    mockGetIntlLocale.mockReturnValue('en-US');
+    mockGetCurrentCurrency.mockReturnValue('USD');
+    mockGetSelectedInternalAccount.mockReturnValue({
+      id: 'd51c0116-de36-4e77-b35b-408d4ea82d01',
+      address: '0xa259af9db8172f62ef0373d7dfa893a3e245ace9',
+      options: {},
+      methods: [],
+      type: 'eip155:eoa',
+      metadata: {
+        name: '',
+        importTime: 0,
+        keyring: {
+          type: '',
+        },
+        nameLastUpdatedAt: undefined,
+        snap: undefined,
+        lastSelected: undefined,
+      },
+      scopes: [],
+    });
+    mockGetHistoricalMultichainAggregatedBalance.mockReturnValue({
+      PT1H: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P7D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P14D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P30D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P200D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1Y: { balance: 0, percentChange: 0, amountChange: 0 },
+    });
+  });
+
+  describe('render', () => {
+    it('renders correctly with zero values', () => {
+      const { container } = render(
+        <AggregatedMultichainPercentageOverview trailingChild={() => null} />,
+      );
+      expect(container).toMatchSnapshot();
+    });
+
+    it('renders correctly with positive values', () => {
+      mockGetHistoricalMultichainAggregatedBalance.mockReturnValue({
+        PT1H: { balance: 0, percentChange: 0, amountChange: 0 },
+        P1D: { balance: 1000, percentChange: 5.12, amountChange: 51.23 },
+        P7D: { balance: 0, percentChange: 0, amountChange: 0 },
+        P14D: { balance: 0, percentChange: 0, amountChange: 0 },
+        P30D: { balance: 0, percentChange: 0, amountChange: 0 },
+        P200D: { balance: 0, percentChange: 0, amountChange: 0 },
+        P1Y: { balance: 0, percentChange: 0, amountChange: 0 },
+      });
+
+      const { container } = render(
+        <AggregatedMultichainPercentageOverview trailingChild={() => null} />,
+      );
+      expect(container).toMatchSnapshot();
+    });
+
+    it('renders correctly with negative values', () => {
+      mockGetHistoricalMultichainAggregatedBalance.mockReturnValue({
+        PT1H: { balance: 0, percentChange: 0, amountChange: 0 },
+        P1D: { balance: 1000, percentChange: -4.87, amountChange: -51.23 },
+        P7D: { balance: 0, percentChange: 0, amountChange: 0 },
+        P14D: { balance: 0, percentChange: 0, amountChange: 0 },
+        P30D: { balance: 0, percentChange: 0, amountChange: 0 },
+        P200D: { balance: 0, percentChange: 0, amountChange: 0 },
+        P1Y: { balance: 0, percentChange: 0, amountChange: 0 },
+      });
+
+      const { container } = render(
+        <AggregatedMultichainPercentageOverview trailingChild={() => null} />,
+      );
+      expect(container).toMatchSnapshot();
+    });
+  });
+
+  it('should display zero percentage and amount when balance is zero', () => {
+    render(
+      <AggregatedMultichainPercentageOverview trailingChild={() => null} />,
+    );
+    const percentageElement = screen.getByTestId(
+      'aggregated-percentage-change',
+    );
+    const numberElement = screen.getByTestId('aggregated-value-change');
+    expect(percentageElement).toHaveTextContent('(+0.00%)');
+    expect(numberElement).toHaveTextContent('+$0.00');
+  });
+
+  it('should display positive percentage and amount change', () => {
+    mockGetHistoricalMultichainAggregatedBalance.mockReturnValue({
+      PT1H: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1D: { balance: 1000, percentChange: 5.12, amountChange: 51.23 },
+      P7D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P14D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P30D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P200D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1Y: { balance: 0, percentChange: 0, amountChange: 0 },
+    });
+
+    render(
+      <AggregatedMultichainPercentageOverview trailingChild={() => null} />,
+    );
+    const percentageElement = screen.getByTestId(
+      'aggregated-percentage-change',
+    );
+    const numberElement = screen.getByTestId('aggregated-value-change');
+    expect(percentageElement).toHaveTextContent('(+5.12%)');
+    expect(numberElement).toHaveTextContent('+$51.23');
+  });
+
+  it('should display negative percentage and amount change', () => {
+    mockGetHistoricalMultichainAggregatedBalance.mockReturnValue({
+      PT1H: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1D: { balance: 1000, percentChange: -4.87, amountChange: -51.23 },
+      P7D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P14D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P30D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P200D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1Y: { balance: 0, percentChange: 0, amountChange: 0 },
+    });
+
+    render(
+      <AggregatedMultichainPercentageOverview trailingChild={() => null} />,
+    );
+    const percentageElement = screen.getByTestId(
+      'aggregated-percentage-change',
+    );
+    const numberElement = screen.getByTestId('aggregated-value-change');
+    expect(percentageElement).toHaveTextContent('(-4.87%)');
+    expect(numberElement).toHaveTextContent('-$51.23');
+  });
+
+  it('should hide values when privacy mode is enabled', () => {
+    mockGetHistoricalMultichainAggregatedBalance.mockReturnValue({
+      PT1H: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1D: { balance: 1000, percentChange: 5.12, amountChange: 51.23 },
+      P7D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P14D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P30D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P200D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1Y: { balance: 0, percentChange: 0, amountChange: 0 },
+    });
+
+    render(
+      <AggregatedMultichainPercentageOverview
+        trailingChild={() => null}
+        privacyMode={true}
+      />,
+    );
+    const percentageElement = screen.getByTestId(
+      'aggregated-percentage-change',
+    );
+    const numberElement = screen.getByTestId('aggregated-value-change');
+    expect(percentageElement).toHaveTextContent('••••••••••');
+    expect(numberElement).toHaveTextContent('••••••••••');
+  });
+
+  it('should use correct color for positive values', () => {
+    mockGetHistoricalMultichainAggregatedBalance.mockReturnValue({
+      PT1H: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1D: { balance: 1000, percentChange: 5.12, amountChange: 51.23 },
+      P7D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P14D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P30D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P200D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1Y: { balance: 0, percentChange: 0, amountChange: 0 },
+    });
+
+    render(
+      <AggregatedMultichainPercentageOverview trailingChild={() => null} />,
+    );
+    const percentageElement = screen.getByTestId(
+      'aggregated-percentage-change',
+    );
+    const numberElement = screen.getByTestId('aggregated-value-change');
+    expect(percentageElement).toHaveClass('mm-box--color-success-default');
+    expect(numberElement).toHaveClass('mm-box--color-success-default');
+  });
+
+  it('should use correct color for negative values', () => {
+    mockGetHistoricalMultichainAggregatedBalance.mockReturnValue({
+      PT1H: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1D: { balance: 1000, percentChange: -4.87, amountChange: -51.23 },
+      P7D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P14D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P30D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P200D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1Y: { balance: 0, percentChange: 0, amountChange: 0 },
+    });
+
+    render(
+      <AggregatedMultichainPercentageOverview trailingChild={() => null} />,
+    );
+    const percentageElement = screen.getByTestId(
+      'aggregated-percentage-change',
+    );
+    const numberElement = screen.getByTestId('aggregated-value-change');
+    expect(percentageElement).toHaveClass('mm-box--color-error-default');
+    expect(numberElement).toHaveClass('mm-box--color-error-default');
+  });
+
+  it('should use correct color for zero values', () => {
+    render(
+      <AggregatedMultichainPercentageOverview trailingChild={() => null} />,
+    );
+    const percentageElement = screen.getByTestId(
+      'aggregated-percentage-change',
+    );
+    const numberElement = screen.getByTestId('aggregated-value-change');
+    expect(percentageElement).toHaveClass('mm-box--color-text-alternative');
+    expect(numberElement).toHaveClass('mm-box--color-text-alternative');
   });
 });

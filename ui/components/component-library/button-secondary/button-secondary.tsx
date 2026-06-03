@@ -1,8 +1,11 @@
 import React from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 
 import { ButtonBase, ButtonBaseProps } from '../button-base';
-import { Color } from '../../../helpers/constants/design-system';
+import {
+  BackgroundColor,
+  TextColor,
+} from '../../../helpers/constants/design-system';
 import { PolymorphicRef } from '../box';
 import type { ButtonSecondaryProps } from './button-secondary.types';
 import {
@@ -10,7 +13,14 @@ import {
   ButtonSecondaryComponent,
 } from './button-secondary.types';
 
+/**
+ * @deprecated Please update your code to use `Button` from `@metamask/design-system-react` with `variant={ButtonVariant.Secondary}`.
+ * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#button-component | Migration Guide}
+ * @see {@link https://metamask.github.io/metamask-design-system/?path=/docs/react-components-button--docs | Storybook Documentation}
+ */
 export const ButtonSecondary: ButtonSecondaryComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'button' | 'a'>(
     {
       className = '',
@@ -20,21 +30,17 @@ export const ButtonSecondary: ButtonSecondaryComponent = React.forwardRef(
       ...props
     }: ButtonSecondaryProps<C>,
     ref?: PolymorphicRef<C>,
-  ) => {
-    const buttonColor = danger ? Color.errorDefault : Color.primaryDefault;
-    return (
-      <ButtonBase
-        backgroundColor={Color.transparent}
-        borderColor={buttonColor}
-        color={buttonColor}
-        className={classnames(className, 'mm-button-secondary', {
-          'mm-button-secondary--type-danger': danger,
-          'mm-button-secondary--disabled': disabled,
-        })}
-        size={size}
-        ref={ref}
-        {...{ disabled, ...(props as ButtonBaseProps<C>) }}
-      />
-    );
-  },
+  ) => (
+    <ButtonBase
+      backgroundColor={BackgroundColor.backgroundMuted}
+      color={danger ? TextColor.errorDefault : TextColor.textDefault}
+      className={classnames(className, 'mm-button-secondary', {
+        'mm-button-secondary--type-danger': danger,
+        'mm-button-secondary--disabled': disabled,
+      })}
+      size={size}
+      ref={ref}
+      {...{ disabled, ...(props as ButtonBaseProps<C>) }}
+    />
+  ),
 );

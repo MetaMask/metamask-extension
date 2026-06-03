@@ -23,6 +23,7 @@ describe('NotificationsSettingsBox', () => {
           onToggle={() => {
             console.log('Toggled');
           }}
+          dataTestId="test-id"
         >
           <div>{testMessage}</div>
         </NotificationsSettingsBox>
@@ -34,15 +35,20 @@ describe('NotificationsSettingsBox', () => {
 
   it('toggles value on click', () => {
     const onToggleMock = jest.fn();
+    const testId = 'test-id';
     render(
       <Provider store={store}>
-        <NotificationsSettingsBox value={false} onToggle={onToggleMock}>
+        <NotificationsSettingsBox
+          value={false}
+          onToggle={onToggleMock}
+          dataTestId={testId}
+        >
           <div>Toggle Test</div>
         </NotificationsSettingsBox>
       </Provider>,
     );
 
-    fireEvent.click(screen.getByTestId('test-toggle'));
+    fireEvent.click(screen.getByTestId(`${testId}-toggle-input`));
     expect(onToggleMock).toHaveBeenCalledTimes(1);
   });
 });

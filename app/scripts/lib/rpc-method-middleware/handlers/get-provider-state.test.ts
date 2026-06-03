@@ -1,10 +1,11 @@
 import { PendingJsonRpcResponse } from '@metamask/utils';
 import { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
-import getProviderState, {
-  GetProviderState,
+import {
+  getProviderStateHandler,
+  type GetProviderState,
+  ProviderStateHandlerRequest,
   ProviderStateHandlerResult,
 } from './get-provider-state';
-import { HandlerRequestType } from './types';
 
 describe('getProviderState', () => {
   let mockEnd: JsonRpcEngineEndCallback;
@@ -21,9 +22,11 @@ describe('getProviderState', () => {
   });
 
   it('should call getProviderState when the handler is invoked', async () => {
-    const req: HandlerRequestType = {
+    const req: ProviderStateHandlerRequest = {
       origin: 'testOrigin',
-      params: [],
+      params: {
+        isInitializingStreamProvider: true,
+      },
       id: '22',
       jsonrpc: '2.0',
       method: 'metamask_getProviderState',
@@ -40,11 +43,13 @@ describe('getProviderState', () => {
       },
     };
 
-    await getProviderState.implementation(req, res, jest.fn(), mockEnd, {
+    await getProviderStateHandler.implementation(req, res, jest.fn(), mockEnd, {
       getProviderState: mockGetProviderState,
     });
 
-    expect(mockGetProviderState).toHaveBeenCalledWith(req.origin);
+    expect(mockGetProviderState).toHaveBeenCalledWith(req.origin, {
+      isInitializingStreamProvider: true,
+    });
     expect(res.result).toStrictEqual({
       chainId: '0x539',
       isUnlocked: true,

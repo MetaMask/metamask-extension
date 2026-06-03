@@ -1,5 +1,5 @@
 import log from 'loglevel';
-import { isManifestV3 } from '../../../shared/modules/mv3.utils';
+import { isManifestV3 } from '../../../shared/lib/mv3.utils';
 import { MessageType, WindowProperties } from './types';
 
 /**

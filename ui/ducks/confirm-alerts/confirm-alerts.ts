@@ -1,7 +1,18 @@
+import { ReactNode } from 'react';
 import { SecurityProvider } from '../../../shared/constants/security-provider';
-import { Severity } from '../../helpers/constants/design-system';
+import {
+  BackgroundColor,
+  IconColor,
+  Severity,
+} from '../../helpers/constants/design-system';
+import { IconName } from '../../components/component-library';
 
-export type AlertSeverity = Severity.Danger | Severity.Warning | Severity.Info;
+export type AlertSeverity =
+  | Severity.Danger
+  | Severity.Info
+  | Severity.Success
+  | Severity.Warning
+  | Severity.Disabled;
 
 /**
  * A confirmable alert to be displayed in the UI.
@@ -23,9 +34,34 @@ export type Alert = {
   field?: string;
 
   /**
-   * The unique key of the alert.
+   * Optional text to override the default on the inline alert.
    */
-  key: string;
+  inlineAlertText?: string;
+
+  /**
+   * The background color of the inline alert.
+   */
+  inlineAlertTextBackgroundColor?: BackgroundColor;
+
+  /**
+   * Whether to show the inline alert as a pill style.
+   */
+  inlineAlertTextPill?: boolean;
+
+  /**
+   * Whether to show the icon on the right side of the inline alert.
+   */
+  inlineAlertIconRight?: boolean;
+
+  /**
+   * The name of the icon to show.
+   */
+  iconName?: IconName;
+
+  /**
+   * The color of the icon to show.
+   */
+  iconColor?: IconColor;
 
   /**
    * Whether the alert is a blocker and un-acknowledgeable, preventing the user
@@ -34,9 +70,20 @@ export type Alert = {
   isBlocking?: boolean;
 
   /**
-   * The message is a summary of the alert details.
+   * Whether the modal is opened when the inline alert is clicked.
    */
-  message: string;
+  isOpenModalOnClick?: boolean;
+
+  /**
+   * Whether acknowledgement requirements should be bypassed for this alert,
+   * even when the severity is set to Danger.
+   */
+  acknowledgeBypass?: boolean;
+
+  /**
+   * The unique key of the alert.
+   */
+  key: string;
 
   /**
    * The security provider associated with the alert.
@@ -49,15 +96,64 @@ export type Alert = {
   reason?: string;
 
   /**
+   * URL to report issue.
+   */
+  reportUrl?: string;
+
+  /**
    * The severity of the alert.
    */
   severity: AlertSeverity;
 
   /**
-   * URL to report issue.
+   * Whether this alert should be excluded from navigation controls.
    */
-  reportUrl?: string;
-};
+  hideFromAlertNavigation?: boolean;
+
+  /**
+   * Whether to show the arrow icon on the inline alert.
+   */
+  showArrow?: boolean;
+
+  /**
+   * The background color of the alert details.
+   */
+  alertDetailsBackgroundColor?: BackgroundColor;
+
+  /**
+   * The custom button text for acknowledging the alert in modal.
+   */
+  customAcknowledgeButtonText?: string;
+
+  /**
+   * The custom button onClick handler for acknowledging the alert in modal.
+   */
+  customAcknowledgeButtonOnClick?: () => void;
+} & MessageOrContent;
+
+type MessageOrContent =
+  | {
+      /**
+       * The message is a summary of the alert details.
+       */
+      message: string;
+
+      /**
+       * Alert summary components can be used as an alternative to a message.
+       */
+      content?: ReactNode;
+    }
+  | {
+      /**
+       * The message is a summary of the alert details.
+       */
+      message?: string;
+
+      /**
+       * Alert summary components can be used as an alternative to a message.
+       */
+      content: ReactNode;
+    };
 
 /**
  * Represents the state of confirm alerts in the application.
@@ -77,7 +173,7 @@ export type ConfirmAlertsState = {
 
 type UpdateAlertsAction = {
   type: 'UPDATE_ALERTS';
-  ownerId: string;
+  ownerId: string | undefined;
   alerts: Alert[];
 };
 
@@ -90,7 +186,7 @@ type SetAlertConfirmedAction = {
 
 type ClearAlertsAction = {
   type: 'CLEAR_ALERTS';
-  ownerId: string;
+  ownerId: string | undefined;
 };
 
 type Action = UpdateAlertsAction | SetAlertConfirmedAction | ClearAlertsAction;
@@ -105,6 +201,10 @@ export default function confirmAlertsReducer(
   state: ConfirmAlertsState = INIT_STATE,
   action: Action,
 ) {
+  if (action.ownerId === undefined) {
+    return state;
+  }
+
   switch (action.type) {
     case 'UPDATE_ALERTS':
       return {
@@ -146,7 +246,7 @@ export default function confirmAlertsReducer(
 }
 
 export function updateAlerts(
-  ownerId: string,
+  ownerId: string | undefined,
   alerts: Alert[],
 ): UpdateAlertsAction {
   return {
@@ -169,7 +269,7 @@ export function setAlertConfirmed(
   };
 }
 
-export function clearAlerts(ownerId: string): ClearAlertsAction {
+export function clearAlerts(ownerId: string | undefined): ClearAlertsAction {
   return {
     type: 'CLEAR_ALERTS',
     ownerId,

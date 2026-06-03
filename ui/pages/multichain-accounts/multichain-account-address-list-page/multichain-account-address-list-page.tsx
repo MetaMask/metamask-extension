@@ -1,0 +1,148 @@
+import React, { useState, useCallback, useEffect } from 'react';
+
+import {
+  useNavigate,
+  useLocation,
+  type Location as RouterLocation,
+} from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { CaipChainId } from '@metamask/utils';
+import {
+  Box,
+  BoxFlexDirection,
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+} from '@metamask/design-system-react';
+import { AccountGroupId } from '@metamask/account-api';
+import {
+  Content,
+  Header,
+  Page,
+} from '../../../components/multichain/pages/page';
+import { TextVariant } from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { MultichainAddressRowsList } from '../../../components/multichain-accounts/multichain-address-rows-list';
+import { getMultichainAccountGroupById } from '../../../selectors/multichain-accounts/account-tree';
+import { AddressQRCodeModal } from '../../../components/multichain-accounts/address-qr-code-modal/address-qr-code-modal';
+import { endTrace, TraceName } from '../../../../shared/lib/trace';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
+import { transitionBack } from '../../../components/ui/transition';
+import {
+  AddressListQueryParams,
+  AddressListSource,
+} from './multichain-account-address-list-page.types';
+
+type MultichainAccountAddressListPageProps = {
+  location?: RouterLocation;
+};
+
+export const MultichainAccountAddressListPage = ({
+  location: propsLocation,
+}: MultichainAccountAddressListPageProps = {}) => {
+  const t = useI18nContext();
+  const navigate = useNavigate();
+  const hookLocation = useLocation();
+
+  const location = propsLocation || hookLocation;
+
+  const searchParams = new URLSearchParams(location.search);
+  const accountGroupId = searchParams.get('accountGroupId');
+  const decodedAccountGroupId = accountGroupId
+    ? (decodeURIComponent(accountGroupId) as AccountGroupId)
+    : null;
+
+  const accountGroup = useSelector((state) =>
+    decodedAccountGroupId
+      ? getMultichainAccountGroupById(state, decodedAccountGroupId)
+      : null,
+  );
+
+  const isReceiveMode =
+    searchParams.get(AddressListQueryParams.Source) ===
+    AddressListSource.Receive;
+
+  const pageTitle = isReceiveMode
+    ? t('receivingAddress')
+    : `${accountGroup?.metadata?.name || t('account')} / ${t('addresses')}`;
+
+  // QR Modal state
+  const [isQRModalOpen, setIsQRModalOpen] = useState(false);
+  const [selectedQRData, setSelectedQRData] = useState<{
+    address: string;
+    networkName: string;
+    chainId: CaipChainId;
+    networkImageSrc?: string;
+  } | null>(null);
+
+  // QR Modal handlers
+  const handleShowQR = useCallback(
+    (
+      address: string,
+      networkName: string,
+      chainId: CaipChainId,
+      networkImageSrc?: string,
+    ) => {
+      setSelectedQRData({ address, networkName, chainId, networkImageSrc });
+      setIsQRModalOpen(true);
+    },
+    [],
+  );
+
+  const handleCloseQR = useCallback(() => {
+    setIsQRModalOpen(false);
+    setSelectedQRData(null);
+  }, []);
+
+  useEffect(() => {
+    endTrace({ name: TraceName.ShowAccountAddressList });
+  }, []);
+
+  const handleBack = useCallback(() => {
+    transitionBack(() => navigate(PREVIOUS_ROUTE));
+  }, [navigate]);
+
+  return (
+    <Page>
+      <Header
+        textProps={{
+          variant: TextVariant.headingSm,
+        }}
+        startAccessory={
+          <ButtonIcon
+            size={ButtonIconSize.Md}
+            ariaLabel={t('back')}
+            iconName={IconName.ArrowLeft}
+            onClick={handleBack}
+            data-testid="multichain-account-address-list-page-back-button"
+          />
+        }
+      >
+        {pageTitle}
+      </Header>
+      <Content padding={0}>
+        <Box flexDirection={BoxFlexDirection.Column}>
+          {decodedAccountGroupId ? (
+            <MultichainAddressRowsList
+              groupId={decodedAccountGroupId}
+              onQrClick={handleShowQR}
+            />
+          ) : null}
+        </Box>
+      </Content>
+
+      {/* QR Code Modal */}
+      {selectedQRData && (
+        <AddressQRCodeModal
+          isOpen={isQRModalOpen}
+          onClose={handleCloseQR}
+          address={selectedQRData.address}
+          accountName={accountGroup?.metadata?.name || t('account')}
+          networkName={selectedQRData.networkName}
+          chainId={selectedQRData.chainId}
+          networkImageSrc={selectedQRData.networkImageSrc}
+        />
+      )}
+    </Page>
+  );
+};

@@ -39,9 +39,13 @@ export interface HeaderBaseStyleUtilityProps extends StyleUtilityProps {
   className?: string;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type HeaderBaseProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, HeaderBaseStyleUtilityProps>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type HeaderBaseComponent = <C extends React.ElementType = 'div'>(
   props: HeaderBaseProps<C>,
 ) => React.ReactElement | null;

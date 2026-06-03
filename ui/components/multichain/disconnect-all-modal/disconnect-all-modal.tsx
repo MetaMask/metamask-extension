@@ -12,18 +12,10 @@ import {
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-// Maps to localizations for title and text
-export enum DisconnectType {
-  Account = 'disconnectAllAccountsText',
-  Snap = 'disconnectAllSnapsText',
-}
-
 export const DisconnectAllModal = ({
   onClick,
   onClose,
 }: {
-  type: DisconnectType;
-  hostname: string;
   onClick: () => void;
   onClose: () => void;
 }) => {
@@ -42,7 +34,6 @@ export const DisconnectAllModal = ({
             onClick={onClick}
             startIconName={IconName.Logout}
             block
-            danger
             data-testid="disconnect-all"
           >
             {t('disconnect')}

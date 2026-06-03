@@ -1,7 +1,7 @@
 import React from 'react';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   AccountOverviewUnknown,
   AccountOverviewUnknownProps,
@@ -18,8 +18,6 @@ const render = (props: AccountOverviewUnknownProps) => {
 describe('AccountOverviewUnknown', () => {
   it('shows only the activity tab', () => {
     const { queryByTestId } = render({
-      defaultHomeActiveTabName: '',
-      onTabClick: jest.fn(),
       setBasicFunctionalityModalOpen: jest.fn(),
       onSupportLinkClick: jest.fn(),
     });
@@ -29,5 +27,6 @@ describe('AccountOverviewUnknown', () => {
     ).not.toBeInTheDocument();
     expect(queryByTestId('account-overview__nfts-tab')).not.toBeInTheDocument();
     expect(queryByTestId('account-overview__activity-tab')).toBeInTheDocument();
+    expect(queryByTestId('account-overview__defi-tab')).not.toBeInTheDocument();
   });
 });

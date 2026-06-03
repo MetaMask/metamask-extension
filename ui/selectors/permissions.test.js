@@ -8,7 +8,7 @@ import {
   getLastConnectedInfo,
   getOrderedConnectedAccountsForActiveTab,
   getPermissionsForActiveTab,
-} from './permissions';
+} from './selectors';
 
 describe('selectors', () => {
   describe('getConnectedSubjectsForSelectedAddress', () => {
@@ -46,33 +46,53 @@ describe('selectors', () => {
           subjects: {
             'peepeth.com': {
               permissions: {
-                eth_accounts: {
+                'endowment:caip25': {
                   caveats: [
                     {
-                      type: 'restrictReturnedAccounts',
-                      value: ['0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5'],
+                      type: 'authorizedScopes',
+                      value: {
+                        requiredScopes: {},
+                        optionalScopes: {
+                          'eip155:1': {
+                            accounts: [
+                              'eip155:1:0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
+                            ],
+                          },
+                        },
+                        isMultichainOrigin: false,
+                      },
                     },
                   ],
                   date: 1585676177970,
                   id: '840d72a0-925f-449f-830a-1aa1dd5ce151',
                   invoker: 'peepeth.com',
-                  parentCapability: 'eth_accounts',
+                  parentCapability: 'endowment:caip25',
                 },
               },
             },
             'https://remix.ethereum.org': {
               permissions: {
-                eth_accounts: {
+                'endowment:caip25': {
                   caveats: [
                     {
-                      type: 'restrictReturnedAccounts',
-                      value: ['0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5'],
+                      type: 'authorizedScopes',
+                      value: {
+                        requiredScopes: {},
+                        optionalScopes: {
+                          'eip155:1': {
+                            accounts: [
+                              'eip155:1:0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
+                            ],
+                          },
+                        },
+                        isMultichainOrigin: false,
+                      },
                     },
                   ],
                   date: 1585685128948,
                   id: '6b9615cc-64e4-4317-afab-3c4f8ee0244a',
                   invoker: 'https://remix.ethereum.org',
-                  parentCapability: 'eth_accounts',
+                  parentCapability: 'endowment:caip25',
                 },
               },
             },
@@ -147,36 +167,54 @@ describe('selectors', () => {
           subjects: {
             'peepeth.com': {
               permissions: {
-                eth_accounts: {
+                'endowment:caip25': {
                   caveats: [
                     {
-                      type: 'restrictReturnedAccounts',
-                      value: ['0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5'],
+                      type: 'authorizedScopes',
+                      value: {
+                        requiredScopes: {},
+                        optionalScopes: {
+                          'eip155:1': {
+                            accounts: [
+                              'eip155:1:0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
+                            ],
+                          },
+                        },
+                        isMultichainOrigin: false,
+                      },
                     },
                   ],
                   date: 1585676177970,
                   id: '840d72a0-925f-449f-830a-1aa1dd5ce151',
                   invoker: 'peepeth.com',
-                  parentCapability: 'eth_accounts',
+                  parentCapability: 'endowment:caip25',
                 },
               },
             },
             'https://remix.ethereum.org': {
               permissions: {
-                eth_accounts: {
+                'endowment:caip25': {
                   caveats: [
                     {
-                      type: 'restrictReturnedAccounts',
-                      value: [
-                        '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
-                        '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
-                      ],
+                      type: 'authorizedScopes',
+                      value: {
+                        requiredScopes: {},
+                        optionalScopes: {
+                          'eip155:1': {
+                            accounts: [
+                              'eip155:1:0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
+                              'eip155:1:0x7250739de134d33ec7ab1ee592711e15098c9d2d',
+                            ],
+                          },
+                        },
+                        isMultichainOrigin: false,
+                      },
                     },
                   ],
                   date: 1585685128948,
                   id: '6b9615cc-64e4-4317-afab-3c4f8ee0244a',
                   invoker: 'https://remix.ethereum.org',
-                  parentCapability: 'eth_accounts',
+                  parentCapability: 'endowment:caip25',
                 },
               },
             },
@@ -302,39 +340,57 @@ describe('selectors', () => {
         subjects: {
           'https://remix.ethereum.org': {
             permissions: {
-              eth_accounts: {
+              'endowment:caip25': {
                 caveats: [
                   {
-                    type: 'restrictReturnedAccounts',
-                    value: [
-                      '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
-                      '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
-                      '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
-                      '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-                      '0xb3958fb96c8201486ae20be1d5c9f58083df343a',
-                    ],
+                    type: 'authorizedScopes',
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {
+                        'eip155:1': {
+                          accounts: [
+                            'eip155:1:0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
+                            'eip155:1:0x7250739de134d33ec7ab1ee592711e15098c9d2d',
+                            'eip155:1:0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
+                            'eip155:1:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                            'eip155:1:0xb3958fb96c8201486ae20be1d5c9f58083df343a',
+                          ],
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
                   },
                 ],
                 date: 1586359844177,
                 id: '3aa65a8b-3bcb-4944-941b-1baa5fe0ed8b',
                 invoker: 'https://remix.ethereum.org',
-                parentCapability: 'eth_accounts',
+                parentCapability: 'endowment:caip25',
               },
             },
           },
           'peepeth.com': {
             permissions: {
-              eth_accounts: {
+              'endowment:caip25': {
                 caveats: [
                   {
-                    type: 'restrictReturnedAccounts',
-                    value: ['0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5'],
+                    type: 'authorizedScopes',
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {
+                        'eip155:1': {
+                          accounts: [
+                            'eip155:1:0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
+                          ],
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
                   },
                 ],
                 date: 1585676177970,
                 id: '840d72a0-925f-449f-830a-1aa1dd5ce151',
                 invoker: 'peepeth.com',
-                parentCapability: 'eth_accounts',
+                parentCapability: 'endowment:caip25',
               },
             },
           },
@@ -371,8 +427,8 @@ describe('selectors', () => {
       expect(getOrderedConnectedAccountsForActiveTab(mockState)).toStrictEqual([
         {
           address: '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
-          balance: '0x0',
           id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
+          name: 'Account 1',
           metadata: {
             name: 'Account 1',
             lastActive: 1586359844192,
@@ -387,8 +443,8 @@ describe('selectors', () => {
         },
         {
           address: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
-          balance: '0x0',
           id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          name: 'Really Long Name That Should Be Truncated',
           metadata: {
             name: 'Really Long Name That Should Be Truncated',
             lastActive: 1586359844192,
@@ -402,8 +458,8 @@ describe('selectors', () => {
         },
         {
           address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
-          balance: '0x0',
           id: '784225f4-d30b-4e77-a900-c8bbce735b88',
+          name: 'Account 3',
           metadata: {
             name: 'Account 3',
             lastActive: 1586359844192,
@@ -418,8 +474,8 @@ describe('selectors', () => {
         },
         {
           address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-          balance: '0x0',
           id: 'f9305241-c50f-4725-ad0f-cbd3f24ac7ab',
+          name: 'Account 4',
           metadata: {
             name: 'Account 4',
             lastActive: 1586359844192,
@@ -433,8 +489,8 @@ describe('selectors', () => {
         },
         {
           address: '0xb3958fb96c8201486ae20be1d5c9f58083df343a',
-          balance: '0x0',
           id: '15e69915-2a1a-4019-93b3-916e11fd432f',
+          name: 'Account 2',
           metadata: {
             name: 'Account 2',
             lastActive: 1586359844192,
@@ -553,52 +609,80 @@ describe('selectors', () => {
         subjects: {
           'https://remix.ethereum.org': {
             permissions: {
-              eth_accounts: {
+              'endowment:caip25': {
                 caveats: [
                   {
-                    type: 'restrictReturnedAccounts',
-                    value: [
-                      '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
-                      '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
-                    ],
+                    type: 'authorizedScopes',
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {
+                        'eip155:1': {
+                          accounts: [
+                            'eip155:1:0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
+                            'eip155:1:0x7250739de134d33ec7ab1ee592711e15098c9d2d',
+                          ],
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
                   },
                 ],
                 date: 1586359844177,
                 id: '3aa65a8b-3bcb-4944-941b-1baa5fe0ed8b',
                 invoker: 'https://remix.ethereum.org',
-                parentCapability: 'eth_accounts',
+                parentCapability: 'endowment:caip25',
               },
             },
           },
           'peepeth.com': {
             permissions: {
-              eth_accounts: {
+              'endowment:caip25': {
                 caveats: [
                   {
-                    type: 'restrictReturnedAccounts',
-                    value: ['0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5'],
+                    type: 'authorizedScopes',
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {
+                        'eip155:1': {
+                          accounts: [
+                            'eip155:1:0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
+                          ],
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
                   },
                 ],
                 date: 1585676177970,
                 id: '840d72a0-925f-449f-830a-1aa1dd5ce151',
                 invoker: 'peepeth.com',
-                parentCapability: 'eth_accounts',
+                parentCapability: 'endowment:caip25',
               },
             },
           },
           'uniswap.exchange': {
             permissions: {
-              eth_accounts: {
+              'endowment:caip25': {
                 caveats: [
                   {
-                    type: 'restrictReturnedAccounts',
-                    value: ['0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5'],
+                    type: 'authorizedScopes',
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {
+                        'eip155:1': {
+                          accounts: [
+                            'eip155:1:0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
+                          ],
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
                   },
                 ],
                 date: 1585616816623,
                 id: 'ce625215-f2e9-48e7-93ca-21ba193244ff',
                 invoker: 'uniswap.exchange',
-                parentCapability: 'eth_accounts',
+                parentCapability: 'endowment:caip25',
               },
             },
           },
@@ -626,21 +710,29 @@ describe('selectors', () => {
     it('should return a list of permissions keys and values', () => {
       expect(getPermissionsForActiveTab(mockState)).toStrictEqual([
         {
-          key: 'eth_accounts',
+          key: 'endowment:caip25',
           value: {
             caveats: [
               {
-                type: 'restrictReturnedAccounts',
-                value: [
-                  '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
-                  '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
-                ],
+                type: 'authorizedScopes',
+                value: {
+                  requiredScopes: {},
+                  optionalScopes: {
+                    'eip155:1': {
+                      accounts: [
+                        'eip155:1:0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
+                        'eip155:1:0x7250739de134d33ec7ab1ee592711e15098c9d2d',
+                      ],
+                    },
+                  },
+                  isMultichainOrigin: false,
+                },
               },
             ],
             date: 1586359844177,
             id: '3aa65a8b-3bcb-4944-941b-1baa5fe0ed8b',
             invoker: 'https://remix.ethereum.org',
-            parentCapability: 'eth_accounts',
+            parentCapability: 'endowment:caip25',
           },
         },
       ]);

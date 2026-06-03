@@ -1,66 +1,133 @@
+// @ts-check
+
 const fs = require('fs');
 const { AssertionError } = require('assert');
 const path = require('path');
 const {
-  object,
-  string,
-  record,
-  optional,
   array,
-  refine,
-  any,
   boolean,
   coerce,
+  integer,
+  literal,
+  never,
+  nullable,
+  object,
+  optional,
+  record,
+  refine,
+  string,
   union,
-  number,
   unknown,
   validate,
-  nullable,
-  never,
-  literal,
-} = require('superstruct');
+} = require('@metamask/superstruct');
 const yaml = require('yaml');
-const { uniqWith } = require('lodash');
+const { cloneDeep, merge, uniqWith } = require('lodash');
 
-const BUILDS_YML_PATH = path.resolve('./builds.yml');
+const BUILDS_YML_PATH = path.resolve(__dirname, '../../builds.yml');
 
 /**
- * @type {import('superstruct').Infer<typeof BuildTypesStruct> | null}
+ * @template {unknown} T
+ * @typedef {import('@metamask/superstruct').Struct<T>} Struct
  */
-let cachedBuildTypes = null;
+
+/**
+ * @template {Struct<any>} T
+ * @typedef {import('@metamask/superstruct').Infer<T>} Infer
+ */
+
+/** @typedef {import('@metamask/superstruct').StructError} StructError */
+
+/**
+ * @type {Infer<typeof BuildTypesStruct> | null}
+ */
+let _cachedBuildTypes = null;
+
+/**
+ * Given a source array and a set or array of its unique values, returns the elements
+ * that are duplicated in the source array.
+ *
+ * @template {unknown} Element
+ * @param {Element[]} source
+ * @param {Set<Element> | Element[]} uniqueValues
+ * @returns {Element[]}
+ */
+const getDuplicates = (source, uniqueValues) => {
+  const uniqueValuesCopy = new Set(uniqueValues);
+  return source.filter((item) => {
+    if (uniqueValuesCopy.has(item)) {
+      uniqueValuesCopy.delete(item);
+      return false;
+    }
+    return true;
+  });
+};
 
 /**
  * Ensures that the array item contains only elements that are distinct from each other
  *
- * @template {Struct<any>} Element
- * @type {import('./build-type').Unique<Element>}
+ * @template {unknown} Element
+ * @param {Struct<Element[]>} struct
+ * @param {(a: Element, b: Element) => boolean} [eq]
+ * @returns {Struct<Element[]>}
  */
 const unique = (struct, eq) =>
   refine(struct, 'unique', (value) => {
-    if (uniqWith(value, eq).length === value.length) {
+    const uniqueValues = new Set(uniqWith(value, eq));
+    if (uniqueValues.size === value.length) {
       return true;
     }
-    return 'Array contains duplicated values';
+    throw new Error(
+      `Array contains duplicated values: ${JSON.stringify(
+        getDuplicates(value, uniqueValues),
+        null,
+        2,
+      )}`,
+    );
   });
 
-const EnvDefinitionStruct = coerce(
-  object({ key: string(), value: unknown() }),
-  refine(record(string(), any()), 'Env variable declaration', (value) => {
-    if (Object.keys(value).length !== 1) {
-      return 'Declaration should have only one property, the name';
+const RawEnvDefinitionStruct = refine(
+  record(string(), unknown()),
+  'Env variable declaration',
+  (value) => {
+    if (Object.keys(value).length === 1) {
+      return true;
     }
-    return true;
-  }),
-  (value) => ({ key: Object.keys(value)[0], value: Object.values(value)[0] }),
+    throw new Error(
+      `Env variable declarations may only have a single property. Received: ${JSON.stringify(
+        value,
+        null,
+        2,
+      )}`,
+    );
+  },
 );
 
-const EnvArrayStruct = unique(
-  array(union([string(), EnvDefinitionStruct])),
+const RawEnvArrayStruct = unique(
+  array(union([string(), RawEnvDefinitionStruct])),
   (a, b) => {
-    const keyA = typeof a === 'string' ? a : a.key;
-    const keyB = typeof b === 'string' ? b : b.key;
+    const keyA = typeof a === 'string' ? a : Object.keys(a)[0];
+    const keyB = typeof b === 'string' ? b : Object.keys(b)[0];
     return keyA === keyB;
   },
+);
+
+// The `env` field is parsed into an array of strings or objects with a single key.
+// This struct coerces this array into a single object.
+/**
+ * @type {Struct<Record<string, unknown>>} EnvObjectStruct
+ */
+const EnvObjectStruct = coerce(
+  record(string(), unknown()),
+  RawEnvArrayStruct,
+  (value) =>
+    Object.fromEntries(
+      value.map((item) => {
+        if (typeof item === 'string') {
+          return [item, undefined];
+        }
+        return Object.entries(item)[0];
+      }),
+    ),
 );
 
 /**
@@ -69,92 +136,139 @@ const EnvArrayStruct = unique(
  * @param {number} min
  * @param {number} max
  */
-const isInRange = (min, max) => {
-  /**
-   *
-   * @param {number} value
-   * @returns boolean
-   */
-  function check(value) {
-    return value >= min && value <= max;
-  }
-  return refine(number(), 'range', check);
+const RangeStruct = (min, max) => {
+  return refine(
+    integer(),
+    'range',
+    (value) =>
+      (value >= min && value <= max) ||
+      `Number must be an integer ${min} <= ${max}. Received: ${value}`,
+  );
 };
 
+/**
+ * @type {Struct<{
+ *   id: number,
+ *   extends?: string | undefined,
+ *   features?: string[] | undefined,
+ *   env?: Record<string, unknown> | undefined,
+ *   isPrerelease?: boolean | undefined,
+ *   manifestOverrides?: string | false | undefined,
+ *   buildNameOverride?: string | false | undefined,
+ * }>} BuildTypeStruct
+ */
 const BuildTypeStruct = object({
-  id: isInRange(10, 64),
+  id: RangeStruct(10, 64),
+  extends: optional(string()),
   features: optional(unique(array(string()))),
-  env: optional(EnvArrayStruct),
+  env: optional(EnvObjectStruct),
   isPrerelease: optional(boolean()),
-  manifestOverrides: union([string(), literal(false)]),
-  buildNameOverride: union([string(), literal(false)]),
+  manifestOverrides: optional(union([string(), literal(false)])),
+  buildNameOverride: optional(union([string(), literal(false)])),
 });
 
+/**
+ * @typedef {Infer<typeof BuildTypeStruct>} BuildType
+ */
+
+/**
+ * @type {Struct<{
+ *   src: string,
+ *   dest: string,
+ * }>} CopyAssetStruct
+ */
 const CopyAssetStruct = object({ src: string(), dest: string() });
+
+/**
+ * @type {Struct<{
+ *   exclusiveInclude: string,
+ * }>} ExclusiveIncludeAssetStruct
+ */
 const ExclusiveIncludeAssetStruct = coerce(
   object({ exclusiveInclude: string() }),
   string(),
   (exclusiveInclude) => ({ exclusiveInclude }),
 );
+
+/**
+ * @type {Struct<
+ *   Infer<typeof CopyAssetStruct> | Infer<typeof ExclusiveIncludeAssetStruct>
+ * >} AssetStruct
+ */
 const AssetStruct = union([CopyAssetStruct, ExclusiveIncludeAssetStruct]);
 
+/**
+ * @type {Struct<{
+ *   assets?: Infer<typeof AssetStruct>[] | undefined,
+ * }>} FeatureStruct
+ */
 const FeatureStruct = object({
-  env: optional(EnvArrayStruct),
   // TODO(ritave): Check if the paths exist
   assets: optional(array(AssetStruct)),
 });
 
-const FeaturesStruct = refine(
-  record(
-    string(),
-    coerce(FeatureStruct, nullable(never()), () => ({})),
-  ),
-  'feature definitions',
-  function* (value) {
-    let isValid = true;
-
-    const definitions = new Set();
-
-    for (const feature of Object.values(value)) {
-      for (const env of feature?.env ?? []) {
-        if (typeof env !== 'string') {
-          if (definitions.has(env.key)) {
-            isValid = false;
-            yield `Multiple defined features have a definition of "${env}" env variable, resulting in a conflict`;
-          }
-          definitions.add(env.key);
-        }
-      }
-    }
-    return isValid;
-  },
+/**
+ * @type {Struct<Record<string, Infer<typeof FeatureStruct>>>} FeaturesStruct
+ */
+const FeaturesStruct = record(
+  string(),
+  coerce(FeatureStruct, nullable(never()), () => ({})),
 );
 
+/**
+ * @type {Struct<{
+ *   default: string,
+ *   buildTypes: Record<string, BuildType>,
+ *   features: Infer<typeof FeaturesStruct>,
+ *   env: Infer<typeof EnvObjectStruct>,
+ * }>} BuildTypesStruct
+ */
 const BuildTypesStruct = refine(
   object({
     default: string(),
     buildTypes: record(string(), BuildTypeStruct),
     features: FeaturesStruct,
-    env: EnvArrayStruct,
+    env: EnvObjectStruct,
   }),
   'BuildTypes',
   (value) => {
-    if (!Object.keys(value.buildTypes).includes(value.default)) {
+    if (!Object.hasOwn(value.buildTypes, value.default)) {
       return `Default build type "${value.default}" does not exist in builds declarations`;
+    }
+
+    const buildTypeIds = Object.values(value.buildTypes).map(
+      (buildType) => buildType.id,
+    );
+    const uniqueBuildTypeIds = new Set(buildTypeIds);
+    if (uniqueBuildTypeIds.size !== buildTypeIds.length) {
+      return `Build type ids must be unique. Duplicate ids: ${JSON.stringify(
+        getDuplicates(buildTypeIds, uniqueBuildTypeIds),
+        null,
+        2,
+      )}`;
     }
     return true;
   },
 );
 
 /**
- * Loads definitions of build type and what they are composed of.
- *
- * @returns {import('superstruct').Infer<typeof BuildTypesStruct>}
+ * @typedef {Infer<typeof BuildTypesStruct>} BuildTypesConfig
  */
-function loadBuildTypesConfig() {
+
+/**
+ * Loads and parses the `builds.yml` file, which contains the definitions of
+ * our build types.
+ *
+ * @param {BuildTypesConfig | null} cachedBuildTypes - The cached build types, if any.
+ * @returns {BuildTypesConfig} The parsed builds configuration.
+ */
+module.exports.loadBuildTypesConfig = function loadBuildTypesConfig(
+  cachedBuildTypes = _cachedBuildTypes,
+) {
   if (cachedBuildTypes !== null) {
     return cachedBuildTypes;
   }
+
   const buildsData = yaml.parse(fs.readFileSync(BUILDS_YML_PATH, 'utf8'));
   const [err, result] = validate(buildsData, BuildTypesStruct, {
     coerce: true,
@@ -164,14 +278,35 @@ function loadBuildTypesConfig() {
       message: constructFailureMessage(err),
     });
   }
-  cachedBuildTypes = result;
-  return cachedBuildTypes;
+
+  applyBuildTypeExtensions(result);
+  _cachedBuildTypes = result;
+  return _cachedBuildTypes;
+};
+
+/**
+ * Extends any extended build types with their parent build types. This is accomplished
+ * by merging the extending build type into a copy of its parent build type.
+ *
+ * @param {BuildTypesConfig} buildsConfig
+ */
+function applyBuildTypeExtensions({ buildTypes }) {
+  for (const [buildType, config] of Object.entries(buildTypes)) {
+    if (config.extends !== undefined) {
+      const parentConfig = buildTypes[config.extends];
+      if (!parentConfig) {
+        throw new Error(`Extended build type "${config.extends}" not found`);
+      }
+
+      buildTypes[buildType] = merge(cloneDeep(parentConfig), config);
+    }
+  }
 }
 
 /**
  * Creates a user readable error message about parse failure.
  *
- * @param {import('superstruct').StructError} structError
+ * @param {StructError} structError
  * @returns {string}
  */
 function constructFailureMessage(structError) {
@@ -185,5 +320,3 @@ function constructFailureMessage(structError) {
     .join('\n  -> ')}
 `;
 }
-
-module.exports = { loadBuildTypesConfig };

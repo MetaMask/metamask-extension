@@ -3,10 +3,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   SmartTransactionStatuses,
   SmartTransaction,
-} from '@metamask/smart-transactions-controller/dist/types';
+} from '@metamask/smart-transactions-controller';
 
 import {
   Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   Text,
   IconName,
   Button,
@@ -14,22 +19,18 @@ import {
   ButtonSecondary,
 } from '../../../components/component-library';
 import {
-  AlignItems,
   BlockSize,
-  BorderStyle,
-  Display,
-  FlexDirection,
-  JustifyContent,
   TextVariant,
   TextColor,
   FontWeight,
   IconColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentChainId, getFullTxData } from '../../../selectors';
+import { getFullTxData } from '../../../selectors';
 import { BaseUrl } from '../../../../shared/constants/urls';
 import { hideLoadingIndication } from '../../../store/actions';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
+import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { SimulationDetails } from '../../confirmations/components/simulation-details';
 import { NOTIFICATION_WIDTH } from '../../../../shared/constants/notifications';
 
@@ -105,10 +106,9 @@ const Description = ({ description }: { description: string | undefined }) => {
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      alignItems={AlignItems.center}
-      className="smart-transaction-status-page__description"
+      className="flex smart-transaction-status-page__description"
+      flexDirection={BoxFlexDirection.Column}
+      alignItems={BoxAlignItems.Center}
     >
       <Text
         marginTop={2}
@@ -131,10 +131,10 @@ const PortfolioSmartTransactionStatusUrl = ({
   onCloseExtension: () => void;
 }) => {
   const t = useI18nContext();
-  if (!portfolioSmartTransactionStatusUrl) {
-    return null;
-  }
   const handleViewTransactionLinkClick = useCallback(() => {
+    if (!portfolioSmartTransactionStatusUrl) {
+      return;
+    }
     const isWiderThanNotificationWidth = window.innerWidth > NOTIFICATION_WIDTH;
     if (!isSmartTransactionPending || isWiderThanNotificationWidth) {
       onCloseExtension();
@@ -147,12 +147,11 @@ const PortfolioSmartTransactionStatusUrl = ({
     onCloseExtension,
     portfolioSmartTransactionStatusUrl,
   ]);
+  if (!portfolioSmartTransactionStatusUrl) {
+    return null;
+  }
   return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      marginTop={2}
-    >
+    <Box className="flex" flexDirection={BoxFlexDirection.Column} marginTop={2}>
       <Button
         type="link"
         variant={ButtonVariant.Link}
@@ -182,7 +181,7 @@ const CloseExtensionButton = ({
       width={BlockSize.Full}
       marginTop={3}
     >
-      {t('closeExtension')}
+      {t('backToHome')}
     </ButtonSecondary>
   );
 };
@@ -245,10 +244,8 @@ const SmartTransactionsStatusPageFooter = ({
 }) => {
   return (
     <Box
-      className="smart-transaction-status-page__footer"
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      width={BlockSize.Full}
+      className="flex w-full smart-transaction-status-page__footer"
+      flexDirection={BoxFlexDirection.Column}
       padding={4}
       paddingBottom={0}
     >
@@ -295,7 +292,7 @@ export const SmartTransactionStatusPage = ({
     smartTransaction?.status?.startsWith(SmartTransactionStatuses.CANCELLED),
   );
 
-  const chainId: string = useSelector(getCurrentChainId);
+  const chainId: string | undefined = smartTransaction?.chainId;
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore: This same selector is used in the awaiting-swap component.
   const fullTxData = useSelector((state) => getFullTxData(state, txId)) || {};
@@ -309,7 +306,7 @@ export const SmartTransactionStatusPage = ({
 
   useEffect(() => {
     dispatch(hideLoadingIndication());
-  }, []);
+  }, [dispatch]);
 
   const canShowSimulationDetails =
     fullTxData.simulationData?.tokenBalanceChanges?.length > 0 ||
@@ -324,32 +321,22 @@ export const SmartTransactionStatusPage = ({
 
   return (
     <Box
-      className="smart-transaction-status-page"
-      height={BlockSize.Full}
-      width={BlockSize.Full}
-      display={Display.Flex}
-      borderStyle={BorderStyle.none}
-      flexDirection={FlexDirection.Column}
-      alignItems={AlignItems.center}
+      className="flex h-full w-full smart-transaction-status-page"
+      flexDirection={BoxFlexDirection.Column}
+      alignItems={BoxAlignItems.Center}
       marginBottom={0}
     >
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
-        paddingLeft={4}
-        paddingRight={4}
-        width={BlockSize.Full}
+        className="flex w-full"
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
         style={{ flexGrow: 1 }}
       >
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          alignItems={AlignItems.center}
-          paddingLeft={6}
-          paddingRight={6}
-          width={BlockSize.Full}
+          className="flex w-full"
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.Center}
         >
           <SmartTransactionStatusAnimation
             status={smartTransaction?.status as SmartTransactionStatuses}
@@ -365,8 +352,11 @@ export const SmartTransactionStatusPage = ({
           />
         </Box>
         {canShowSimulationDetails && (
-          <Box width={BlockSize.Full}>
-            <SimulationDetails transaction={fullTxData} />
+          <Box className="w-full">
+            <SimulationDetails
+              transaction={fullTxData}
+              smartTransactionStatus={smartTransaction?.status?.toLowerCase()}
+            />
           </Box>
         )}
       </Box>

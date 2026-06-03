@@ -1,63 +1,46 @@
-import React, { useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { forwardRef } from 'react';
+import { useSelector } from 'react-redux';
 import {
   ButtonBase,
   ButtonBaseSize,
   IconName,
+  IconSize,
 } from '../../../../component-library';
 import {
   BackgroundColor,
-  BorderColor,
-  BorderStyle,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
-import { showImportTokensModal } from '../../../../../store/actions';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../../../shared/constants/metametrics';
 import { getMultichainIsEvm } from '../../../../../selectors/multichain';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
-type AssetListControlBarProps = {
+type ImportControlProps = {
   showTokensLinks?: boolean;
+  onClick?: () => void;
 };
 
-const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
-  const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
-  const t = useI18nContext();
-  const isEvm = useSelector(getMultichainIsEvm);
-  // NOTE: Since we can parametrize it now, we keep the original behavior
-  // for EVM assets
-  const shouldShowTokensLinks = showTokensLinks ?? isEvm;
+const ImportControl = forwardRef<HTMLButtonElement, ImportControlProps>(
+  ({ showTokensLinks, onClick }, ref) => {
+    const isEvm = useSelector(getMultichainIsEvm);
+    // NOTE: Since we can parametrize it now, we keep the original behavior
+    // for EVM assets
+    const shouldShowTokensLinks = showTokensLinks ?? isEvm;
 
-  return (
-    <ButtonBase
-      className="asset-list-control-bar__button"
-      data-testid="import-token-button"
-      disabled={!shouldShowTokensLinks}
-      size={ButtonBaseSize.Sm}
-      startIconName={IconName.Add}
-      backgroundColor={BackgroundColor.backgroundDefault}
-      borderColor={BorderColor.borderMuted}
-      borderStyle={BorderStyle.solid}
-      color={TextColor.textDefault}
-      onClick={() => {
-        dispatch(showImportTokensModal());
-        trackEvent({
-          category: MetaMetricsEventCategory.Navigation,
-          event: MetaMetricsEventName.TokenImportButtonClicked,
-          properties: {
-            location: 'HOME',
-          },
-        });
-      }}
-    >
-      {t('import')}
-    </ButtonBase>
-  );
-};
+    return (
+      <ButtonBase
+        ref={ref}
+        className="asset-list-control-bar__button"
+        data-testid="asset-list-control-bar-action-button"
+        disabled={!shouldShowTokensLinks}
+        size={ButtonBaseSize.Sm}
+        startIconName={IconName.MoreVertical}
+        startIconProps={{ marginInlineEnd: 0, size: IconSize.Md }}
+        backgroundColor={BackgroundColor.backgroundDefault}
+        color={TextColor.textDefault}
+        onClick={onClick}
+      />
+    );
+  },
+);
 
-export default AssetListControlBar;
+ImportControl.displayName = 'ImportControl';
+
+export default ImportControl;

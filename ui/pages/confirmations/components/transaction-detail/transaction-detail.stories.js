@@ -3,18 +3,12 @@ import InfoTooltip from '../../../../components/ui/info-tooltip/info-tooltip';
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
 import GasTiming from '../gas-timing/gas-timing.component';
 import { Icon, IconName } from '../../../../components/component-library';
-import README from './README.mdx';
 import TransactionDetail from '.';
 
 export default {
   title: 'Confirmations/Components/TransactionDetail',
 
   component: TransactionDetail,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     rows: { control: 'array' },
     onEdit: { action: 'onEdit' },

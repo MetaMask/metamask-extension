@@ -1,8 +1,7 @@
-import { Hex, JsonRpcRequest } from '@metamask/utils';
-import { SecurityAlertResponse } from './types';
+import { JsonRpcRequest } from '@metamask/utils';
+import { SecurityAlertResponse, GetSecurityAlertsConfig } from './types';
 
 const ENDPOINT_VALIDATE = 'validate';
-const ENDPOINT_SUPPORTED_CHAINS = 'supportedChains';
 
 type SecurityAlertsAPIRequestBody = {
   method: string;
@@ -25,24 +24,33 @@ export async function validateWithSecurityAlertsAPI(
   body:
     | SecurityAlertsAPIRequestBody
     | Pick<JsonRpcRequest, 'method' | 'params'>,
+  getSecurityAlertsConfig?: GetSecurityAlertsConfig,
 ): Promise<SecurityAlertResponse> {
   const endpoint = `${ENDPOINT_VALIDATE}/${chainId}`;
-  return request(endpoint, {
+  let url = getUrl(endpoint);
+  const { newUrl, authorization } =
+    (await getSecurityAlertsConfig?.(url)) || {};
+  if (newUrl) {
+    url = newUrl;
+  }
+
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+
+  // Add optional authorization header, if provided.
+  if (authorization) {
+    headers.Authorization = authorization;
+  }
+
+  return request(url, {
     method: 'POST',
     body: JSON.stringify(body),
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers,
   });
 }
 
-export async function getSecurityAlertsAPISupportedChainIds(): Promise<Hex[]> {
-  return request(ENDPOINT_SUPPORTED_CHAINS);
-}
-
-async function request(endpoint: string, options?: RequestInit) {
-  const url = getUrl(endpoint);
-
+async function request(url: string, options?: RequestInit) {
   const response = await fetch(url, options);
 
   if (!response.ok) {
@@ -51,7 +59,7 @@ async function request(endpoint: string, options?: RequestInit) {
     );
   }
 
-  return response.json();
+  return await response.json();
 }
 
 function getUrl(endpoint: string) {

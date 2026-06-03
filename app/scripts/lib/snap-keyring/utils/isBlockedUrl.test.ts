@@ -1,14 +1,51 @@
+import { Messenger } from '@metamask/messenger';
 import { ListNames, PhishingController } from '@metamask/phishing-controller';
-import { ControllerMessenger } from '@metamask/base-controller';
+import { getRootMessenger } from '../../messenger';
+import { getPhishingControllerMessenger } from '../../../messenger-client-init/messengers/phishing-controller-messenger';
 import { isBlockedUrl } from './isBlockedUrl';
 
+// Run these tests as if we were in a Flask build
+jest.mock('../../../../../shared/lib/build-types', () => ({
+  ...jest.requireActual('../../../../../shared/lib/build-types'),
+  isFlask: jest.fn().mockReturnValue(true),
+}));
+
 describe('isBlockedUrl', () => {
-  const messenger = new ControllerMessenger();
-  const phishingControllerMessenger = messenger.getRestricted({
-    name: 'PhishingController',
-    allowedActions: [],
-    allowedEvents: [],
-  });
+  const messenger = getRootMessenger();
+  const phishingControllerMessenger = getPhishingControllerMessenger(messenger);
+
+  // Register stub handlers so PhishingController can hydrate known recipients
+  // during construction without errors. Each child messenger's registerActionHandler
+  // call automatically delegates the action up to the root messenger.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const txMessenger = new Messenger<'TransactionController', never, never, any>(
+    {
+      namespace: 'TransactionController',
+      parent: messenger,
+    },
+  );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (txMessenger as any).registerActionHandler(
+    'TransactionController:getState',
+    () => ({
+      transactions: [],
+    }),
+  );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const abMessenger = new Messenger<'AddressBookController', never, never, any>(
+    {
+      namespace: 'AddressBookController',
+      parent: messenger,
+    },
+  );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (abMessenger as any).registerActionHandler(
+    'AddressBookController:getState',
+    () => ({
+      addressBook: {},
+    }),
+  );
+
   const phishingController = new PhishingController({
     messenger: phishingControllerMessenger,
     state: {
@@ -27,6 +64,7 @@ describe('isBlockedUrl', () => {
           lastUpdated: 0,
           name: ListNames.MetaMask,
           c2DomainBlocklist: [],
+          blocklistPaths: {},
         },
       ],
     },
@@ -55,7 +93,7 @@ describe('isBlockedUrl', () => {
     [1, true],
     [0, true],
     [-1, true],
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ])('"%s" is blocked: %s', async (url: any, expected: boolean) => {
     const result = await isBlockedUrl(

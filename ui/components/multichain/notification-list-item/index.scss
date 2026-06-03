@@ -3,7 +3,7 @@
   background-color: transparent;
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.04);
+    background: var(--color-background-default-hover);
   }
 }
 
@@ -12,11 +12,15 @@
 }
 
 .notification-list-item--unread {
-  background-color: rgba(3, 109, 185, 0.05); // #0376C9 at 5% opacity
-
-  &:hover {
-    background-color: rgba(3, 109, 185, 0.1); // #0376C9 at 10% opacity
+  [data-theme='light'] & {
+    --item-background: rgba(3, 118, 201, 0.05);
   }
+
+  [data-theme='dark'] & {
+    --item-background: rgba(3, 118, 201, 0.1);
+  }
+
+  background-color: var(--item-background);
 }
 
 .notification-list-item__unread-dot__wrapper {
@@ -34,6 +38,8 @@
 .notification-list-item__unread-dot__dot {
   width: 6px;
   height: 6px;
+  background-color: var(--color-info-default);
+  border-radius: 100vh;
 }
 
 .notification-list-item__right-container {

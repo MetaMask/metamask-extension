@@ -6,16 +6,15 @@ import { formatIconUrlWithProxy } from '@metamask/assets-controllers';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import {
   getTokenExchangeRates,
-  getCurrentCurrency,
   getSwapsDefaultToken,
-  getCurrentChainId,
   getTokenList,
 } from '../selectors';
-import { getConversionRate } from '../ducks/metamask/metamask';
-
+import { getCurrentChainId } from '../../shared/lib/selectors/networks';
+import { getCurrentCurrency } from '../ducks/metamask/metamask';
+import { getConversionRate } from '../ducks/metamask/base-selectors';
 import { getSwapsTokens } from '../ducks/swaps/swaps';
-import { isSwapsDefaultTokenSymbol } from '../../shared/modules/swaps.utils';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import { isSwapsDefaultTokenSymbol } from '../../shared/lib/swaps.utils';
+import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import { TokenBucketPriority } from '../../shared/constants/swaps';
 import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../shared/constants/network';
 import { useEqualityCheck } from './useEqualityCheck';
@@ -92,6 +91,7 @@ export function getRenderableTokenData(
     decimals,
     name: name || tokenList[address?.toLowerCase()]?.name,
     rawFiat,
+    image: token.image || token.iconUrl,
   };
 }
 

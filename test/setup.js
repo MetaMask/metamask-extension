@@ -1,5 +1,9 @@
+// Polyfill setImmediate which jsdom removes but tsx/cjs needs
+globalThis.setImmediate =
+  globalThis.setImmediate || ((fn, ...args) => setTimeout(fn, 0, ...args));
+
 require('@babel/register');
-require('ts-node').register({ transpileOnly: true });
+require('tsx/cjs');
 
 require('./helpers/setup-helper');
 
@@ -8,4 +12,10 @@ global.platform = {
   openTab: () => undefined,
   // Required for: settings info tab
   getVersion: () => '<version>',
+};
+
+global.browser = {
+  permissions: {
+    request: jest.fn().mockResolvedValue(true),
+  },
 };

@@ -3,21 +3,22 @@ import { useSelector } from 'react-redux';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
-  getCurrentCurrency,
   getShouldShowFiat,
   txDataSelector,
-  getCurrentKeyring,
   getTokenExchangeRates,
-  getPreferences,
   selectConversionRateByChainId,
 } from '../../../selectors';
+import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
+import { selectNetworkConfigurationByChainId } from '../../../../shared/lib/selectors/networks';
 
 import {
   getCustomMaxFeePerGas,
   getCustomMaxPriorityFeePerGas,
 } from '../../../ducks/swaps/swaps';
-import { Numeric } from '../../../../shared/modules/Numeric';
+import { Numeric } from '../../../../shared/lib/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import {
@@ -120,6 +121,9 @@ export const generateUseSelectorRouter =
       selector === getCurrentCurrency
     ) {
       return 'USD';
+    }
+    if (selector === selectNetworkConfigurationByChainId) {
+      return '2';
     }
     if (
       selector === getMultichainShouldShowFiat ||

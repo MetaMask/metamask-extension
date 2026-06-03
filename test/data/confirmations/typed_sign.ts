@@ -7,6 +7,8 @@ export const unapprovedTypedSignMsgV1 = {
   chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type: 'validation_in_progress',
     securityAlertId: '3a938cfc-301d-4af0-96c4-b51fe1a5d6ad',
   },
@@ -64,6 +66,8 @@ export const unapprovedTypedSignMsgV3 = {
   chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type: 'validation_in_progress',
     securityAlertId: 'efefe1db-6c6e-4a2c-aa0d-6183ad3ec810',
   },
@@ -146,11 +150,46 @@ export const unapprovedTypedSignMsgV4 = {
   },
 } as SignatureRequestType;
 
+export const unapprovedTypedSignMsgV4WithPermission = {
+  id: '0050d5b0-c023-11ee-a0cb-3390a510a0ab',
+  chainId: CHAIN_IDS.GOERLI,
+  status: 'unapproved',
+  time: new Date().getTime(),
+  chainid: '0x5',
+  type: TransactionType.signTypedData,
+  securityProviderResponse: null,
+  msgParams: {
+    from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+    data: JSON.stringify(rawMessageV4),
+    origin: 'https://metamask.github.io',
+    requestId: 123456789,
+    signatureMethod: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+  },
+  decodedPermission: {
+    expiry: 123456789,
+    origin: 'https://metamask.github.io',
+    permission: {
+      type: 'native-token-stream',
+      data: {
+        initialAmount: '0x1234',
+        maxAmount: '0x1234',
+        amountPerSecond: '0x1234',
+        startTime: 123456789,
+      },
+      justification: 'The reason for the permission',
+    },
+    chainId: '0x1',
+    to: '0xCdD6132d1a6efA06bce1A89b0fEa6b08304A3829',
+  },
+} as SignatureRequestType;
+
 export const orderSignatureMsg = {
   id: 'e5249ae0-4b6b-11ef-831f-65b48eb489ec',
   chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
-    result_type: 'loading',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    result_type: 'Loading',
     reason: 'validation_in_progress',
     securityAlertId: 'dadfc03d-43f9-4515-9aa2-cb00715c3e07',
   },
@@ -172,6 +211,8 @@ export const permitSignatureMsg = {
   chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type: 'validation_in_progress',
     securityAlertId: 'ab21395f-2190-472f-8cfa-3d224e7529d8',
   },
@@ -185,6 +226,61 @@ export const permitSignatureMsg = {
     requestId: 14,
     signatureMethod: 'eth_signTypedData_v4',
     origin: 'https://metamask.github.io',
+  },
+} as SignatureRequestType;
+
+export const seaportSignatureMsg = {
+  chainId: '0x1',
+  id: 'e9297d91-aca0-11ef-9ac4-417a173450d3',
+  messageParams: {
+    data: '{"types":{"OrderComponents":[{"name":"offerer","type":"address"},{"name":"zone","type":"address"},{"name":"offer","type":"OfferItem[]"},{"name":"consideration","type":"ConsiderationItem[]"},{"name":"orderType","type":"uint8"},{"name":"startTime","type":"uint256"},{"name":"endTime","type":"uint256"},{"name":"zoneHash","type":"bytes32"},{"name":"salt","type":"uint256"},{"name":"conduitKey","type":"bytes32"},{"name":"counter","type":"uint256"}],"OfferItem":[{"name":"itemType","type":"uint8"},{"name":"token","type":"address"},{"name":"identifierOrCriteria","type":"uint256"},{"name":"startAmount","type":"uint256"},{"name":"endAmount","type":"uint256"}],"ConsiderationItem":[{"name":"itemType","type":"uint8"},{"name":"token","type":"address"},{"name":"identifierOrCriteria","type":"uint256"},{"name":"startAmount","type":"uint256"},{"name":"endAmount","type":"uint256"},{"name":"recipient","type":"address"}],"EIP712Domain":[{"name":"name","type":"string"},{"name":"version","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"}]},"domain":{"name":"Seaport","version":"1.1","chainId":"0x1","verifyingContract":"0x00000000006c3852cbef3e08e8df289169ede581"},"primaryType":"OrderComponents","message":{"offerer":"0x935E73EDb9fF52E23BaC7F7e043A1ecD06d05477","zone":"0x004c00500000ad104d7dbd00e3ae0a5c00560c00","offer":[{"itemType":"2","token":"0x922dc160f2ab743312a6bb19dd5152c1d3ecca33","identifierOrCriteria":"176","startAmount":"1","endAmount":"1"}],"consideration":[{"itemType":"0","token":"0x0000000000000000000000000000000000000000","identifierOrCriteria":"0","startAmount":"0","endAmount":"0","recipient":"0x935E73EDb9fF52E23BaC7F7e043A1ecD06d05477"},{"itemType":"0","token":"0x0000000000000000000000000000000000000000","identifierOrCriteria":"0","startAmount":"25000000000000000","endAmount":"25000000000000000","recipient":"0x8de9c5a032463c561423387a9648c5c7bcc5bc90"},{"itemType":"0","token":"0x0000000000000000000000000000000000000000","identifierOrCriteria":"0","startAmount":"50000000000000000","endAmount":"50000000000000000","recipient":"0x5c6139cd9ff1170197f13935c58f825b422c744c"}],"orderType":"3","startTime":"1660565524","endTime":"1661170320","zoneHash":"0x3000000000000000000000000000000000000000000000000000000000000000","salt":"5965482869793190759363249887602871532","conduitKey":"0x0000007b02230091a7ed01230072f7006a004d60a8d4e71d599b8104250f0000","counter":"0"}}',
+    from: '0x935e73edb9ff52e23bac7f7e043a1ecd06d05477',
+    version: 'V4',
+    signatureMethod: 'eth_signTypedData_v4',
+    metamaskId: 'e9297d90-aca0-11ef-9ac4-417a173450d3',
+    origin: 'https://develop.d3bkcslj57l47p.amplifyapp.com',
+    requestId: 1376479613,
+  },
+  networkClientId: 'mainnet',
+  securityAlertResponse: {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    result_type: 'Loading',
+    reason: 'validation_in_progress',
+    securityAlertId: 'def3b0ef-c96b-4c87-b1b1-c69cc02a0f78',
+  },
+  status: 'unapproved',
+  time: 1732699257833,
+  type: 'eth_signTypedData',
+  version: 'V4',
+  decodingLoading: false,
+  decodingData: {
+    stateChanges: [
+      {
+        assetType: 'NATIVE',
+        changeType: 'RECEIVE',
+        address: '',
+        amount: '0',
+        contractAddress: '',
+      },
+      {
+        assetType: 'ERC721',
+        changeType: 'LISTING',
+        address: '',
+        amount: '',
+        contractAddress: '0x922dc160f2ab743312a6bb19dd5152c1d3ecca33',
+        tokenID: '176',
+      },
+    ],
+  },
+  msgParams: {
+    data: '{"types":{"OrderComponents":[{"name":"offerer","type":"address"},{"name":"zone","type":"address"},{"name":"offer","type":"OfferItem[]"},{"name":"consideration","type":"ConsiderationItem[]"},{"name":"orderType","type":"uint8"},{"name":"startTime","type":"uint256"},{"name":"endTime","type":"uint256"},{"name":"zoneHash","type":"bytes32"},{"name":"salt","type":"uint256"},{"name":"conduitKey","type":"bytes32"},{"name":"counter","type":"uint256"}],"OfferItem":[{"name":"itemType","type":"uint8"},{"name":"token","type":"address"},{"name":"identifierOrCriteria","type":"uint256"},{"name":"startAmount","type":"uint256"},{"name":"endAmount","type":"uint256"}],"ConsiderationItem":[{"name":"itemType","type":"uint8"},{"name":"token","type":"address"},{"name":"identifierOrCriteria","type":"uint256"},{"name":"startAmount","type":"uint256"},{"name":"endAmount","type":"uint256"},{"name":"recipient","type":"address"}],"EIP712Domain":[{"name":"name","type":"string"},{"name":"version","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"}]},"domain":{"name":"Seaport","version":"1.4","chainId":"0x1","verifyingContract":"0x00000000006c3852cbef3e08e8df289169ede581"},"primaryType":"OrderComponents","message":{"offerer":"0x935E73EDb9fF52E23BaC7F7e043A1ecD06d05477","zone":"0x004c00500000ad104d7dbd00e3ae0a5c00560c00","offer":[{"itemType":"2","token":"0x922dc160f2ab743312a6bb19dd5152c1d3ecca33","identifierOrCriteria":"176","startAmount":"1","endAmount":"1"}],"consideration":[{"itemType":"0","token":"0x0000000000000000000000000000000000000000","identifierOrCriteria":"0","startAmount":"0","endAmount":"0","recipient":"0x935E73EDb9fF52E23BaC7F7e043A1ecD06d05477"},{"itemType":"0","token":"0x0000000000000000000000000000000000000000","identifierOrCriteria":"0","startAmount":"25000000000000000","endAmount":"25000000000000000","recipient":"0x8de9c5a032463c561423387a9648c5c7bcc5bc90"},{"itemType":"0","token":"0x0000000000000000000000000000000000000000","identifierOrCriteria":"0","startAmount":"50000000000000000","endAmount":"50000000000000000","recipient":"0x5c6139cd9ff1170197f13935c58f825b422c744c"}],"orderType":"3","startTime":"1660565524","endTime":"1661170320","zoneHash":"0x3000000000000000000000000000000000000000000000000000000000000000","salt":"5965482869793190759363249887602871532","conduitKey":"0x0000007b02230091a7ed01230072f7006a004d60a8d4e71d599b8104250f0000","counter":"0"}}',
+    from: '0x935e73edb9ff52e23bac7f7e043a1ecd06d05477',
+    version: 'V4',
+    signatureMethod: 'eth_signTypedData_v4',
+    metamaskId: 'e9297d90-aca0-11ef-9ac4-417a173450d3',
+    origin: 'https://develop.d3bkcslj57l47p.amplifyapp.com',
+    requestId: 1376479613,
   },
 } as SignatureRequestType;
 
@@ -209,6 +305,8 @@ export const permitSignatureMsgWithNoDeadline = {
   chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type: 'validation_in_progress',
     securityAlertId: 'ab21395f-2190-472f-8cfa-3d224e7529d8',
   },
@@ -229,6 +327,8 @@ export const permitBatchSignatureMsg = {
   chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type: 'validation_in_progress',
     securityAlertId: 'ab21395f-2190-472f-8cfa-3d224e7529d8',
   },
@@ -245,11 +345,66 @@ export const permitBatchSignatureMsg = {
   },
 } as SignatureRequestType;
 
+export const signatureMsgPermitRevokeDAI = {
+  id: '0b1787a0-1c44-11ef-b70d-e7064bd7b659',
+  chainId: CHAIN_IDS.GOERLI,
+  securityAlertResponse: {
+    reason: 'loading',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    result_type: 'validation_in_progress',
+    securityAlertId: 'ab21395f-2190-472f-8cfa-3d224e7529d8',
+  },
+  status: 'unapproved',
+  time: 1716826404122,
+  type: TransactionType.signTypedData,
+  msgParams: {
+    data: JSON.stringify({
+      domain: {
+        name: 'Dai Stablecoin',
+        version: '1',
+        chainId: 1,
+        verifyingContract: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+      },
+      types: {
+        EIP712Domain: [
+          { name: 'name', type: 'string' },
+          { name: 'version', type: 'string' },
+          { name: 'chainId', type: 'uint256' },
+          { name: 'verifyingContract', type: 'address' },
+        ],
+        Permit: [
+          { name: 'holder', type: 'address' },
+          { name: 'spender', type: 'address' },
+          { name: 'nonce', type: 'uint256' },
+          { name: 'expiry', type: 'uint256' },
+          { name: 'allowed', type: 'bool' },
+        ],
+      },
+      primaryType: 'Permit',
+      message: {
+        spender: '0x5B38Da6a701c568545dCfcB03FcB875f56beddC4',
+        tokenId: '3606393',
+        nonce: 0,
+        expiry: 0,
+        allowed: false,
+      },
+    }),
+    from: '0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad',
+    version: 'V4',
+    requestId: 15,
+    signatureMethod: 'eth_signTypedData_v4',
+    origin: 'https://metamask.github.io',
+  },
+} as SignatureRequestType;
+
 export const permitSingleSignatureMsg = {
   id: '0b1787a0-1c44-11ef-b70d-e7064bd7b659',
   chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type: 'validation_in_progress',
     securityAlertId: 'ab21395f-2190-472f-8cfa-3d224e7529d8',
   },

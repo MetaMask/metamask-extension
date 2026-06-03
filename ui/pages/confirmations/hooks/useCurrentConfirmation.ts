@@ -1,26 +1,19 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import {
   ApprovalsMetaMaskState,
-  getIsRedesignedConfirmationsDeveloperEnabled,
-  getRedesignedConfirmationsEnabled,
-  getRedesignedTransactionsEnabled,
   getUnapprovedTransaction,
-  oldestPendingConfirmationSelector,
-  selectPendingApproval,
+  firstPendingConfirmationSelector,
+  internalSelectPendingApproval,
 } from '../../../selectors';
 import { selectUnapprovedMessage } from '../../../selectors/signatures';
 import {
-  REDESIGN_APPROVAL_TYPES,
-  REDESIGN_DEV_TRANSACTION_TYPES,
-  REDESIGN_USER_TRANSACTION_TYPES,
-} from '../utils';
+  shouldUseRedesignForSignatures,
+  shouldUseRedesignForTransactions,
+} from '../../../../shared/lib/confirmation.utils';
 
 /**
  * Determine the current confirmation based on the pending approvals and controller state.
@@ -28,75 +21,52 @@ import {
  * DO NOT USE within a redesigned confirmation.
  * Instead use ConfirmContext to read the current confirmation.
  *
+ * @param providedConfirmationId - Optional confirmation ID to use instead of URL params
  * @returns The current confirmation data.
  */
-const useCurrentConfirmation = () => {
+const useCurrentConfirmation = (providedConfirmationId?: string) => {
   const { id: paramsConfirmationId } = useParams<{ id: string }>();
-  const oldestPendingApproval = useSelector(oldestPendingConfirmationSelector);
-  const confirmationId = paramsConfirmationId ?? oldestPendingApproval?.id;
-
-  const isRedesignedSignaturesUserSettingEnabled = useSelector(
-    getRedesignedConfirmationsEnabled,
-  );
-
-  const isRedesignedTransactionsUserSettingEnabled = useSelector(
-    getRedesignedTransactionsEnabled,
-  );
-
-  const isRedesignedConfirmationsDeveloperEnabled = useSelector(
-    getIsRedesignedConfirmationsDeveloperEnabled,
-  );
-
-  const isRedesignedConfirmationsDeveloperSettingEnabled =
-    process.env.ENABLE_CONFIRMATION_REDESIGN === 'true' ||
-    isRedesignedConfirmationsDeveloperEnabled;
+  const oldestPendingApproval = useSelector(firstPendingConfirmationSelector);
+  const confirmationId =
+    providedConfirmationId ?? paramsConfirmationId ?? oldestPendingApproval?.id;
+  const confirmationIdForSelectors = confirmationId ?? '';
 
   const pendingApproval = useSelector((state) =>
-    selectPendingApproval(state as ApprovalsMetaMaskState, confirmationId),
+    internalSelectPendingApproval(
+      state as ApprovalsMetaMaskState,
+      confirmationIdForSelectors,
+    ),
   );
 
   const transactionMetadata = useSelector((state) =>
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (getUnapprovedTransaction as any)(state, confirmationId),
+    (getUnapprovedTransaction as any)(state, confirmationIdForSelectors),
   ) as TransactionMeta | undefined;
 
+  // TODO: Migrate to selectUnapprovedSignatureRequestById once all consumers
+  // of currentConfirmation are updated from msgParams to messageParams.
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   const signatureMessage = useSelector((state) =>
-    selectUnapprovedMessage(state, confirmationId),
+    selectUnapprovedMessage(state, confirmationIdForSelectors),
   );
 
-  const isCorrectUserTransactionType = REDESIGN_USER_TRANSACTION_TYPES.includes(
-    transactionMetadata?.type as TransactionType,
-  );
+  const useRedesignedForSignatures = shouldUseRedesignForSignatures({
+    approvalType: pendingApproval?.type as ApprovalType,
+  });
 
-  const isCorrectDeveloperTransactionType =
-    REDESIGN_DEV_TRANSACTION_TYPES.includes(
-      transactionMetadata?.type as TransactionType,
-    );
+  const useRedesignedForTransaction = shouldUseRedesignForTransactions({
+    transactionMetadataType: transactionMetadata?.type,
+  });
 
-  const isCorrectApprovalType = REDESIGN_APPROVAL_TYPES.includes(
-    pendingApproval?.type as ApprovalType,
-  );
-
-  const shouldUseRedesignForSignatures =
-    (isRedesignedSignaturesUserSettingEnabled && isCorrectApprovalType) ||
-    (isRedesignedConfirmationsDeveloperSettingEnabled && isCorrectApprovalType);
-
-  const shouldUseRedesignForTransactions =
-    (isRedesignedTransactionsUserSettingEnabled &&
-      isCorrectUserTransactionType) ||
-    (isRedesignedConfirmationsDeveloperSettingEnabled &&
-      isCorrectDeveloperTransactionType);
-
-  // If the developer toggle or the build time environment variable are enabled,
-  // all the signatures and transactions in development are shown. If the user
-  // facing feature toggles for signature or transactions are enabled, we show
-  // only confirmations that shipped (contained in `REDESIGN_APPROVAL_TYPES` and
-  // `REDESIGN_USER_TRANSACTION_TYPES` or `REDESIGN_DEV_TRANSACTION_TYPES`
-  // respectively).
   const shouldUseRedesign =
-    shouldUseRedesignForSignatures || shouldUseRedesignForTransactions;
+    useRedesignedForSignatures || useRedesignedForTransaction;
 
   return useMemo(() => {
+    if (pendingApproval?.type === ApprovalType.AddEthereumChain) {
+      return { currentConfirmation: pendingApproval };
+    }
+
     if (!shouldUseRedesign) {
       return { currentConfirmation: undefined };
     }
@@ -105,7 +75,12 @@ const useCurrentConfirmation = () => {
       transactionMetadata ?? signatureMessage ?? undefined;
 
     return { currentConfirmation };
-  }, [transactionMetadata, signatureMessage, shouldUseRedesign]);
+  }, [
+    transactionMetadata,
+    signatureMessage,
+    shouldUseRedesign,
+    pendingApproval,
+  ]);
 };
 
 export default useCurrentConfirmation;

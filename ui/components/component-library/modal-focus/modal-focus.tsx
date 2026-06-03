@@ -8,7 +8,7 @@ import type { ModalFocusProps } from './modal-focus.types';
  */
 
 const FocusTrap: typeof ReactFocusLock =
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (ReactFocusLock as any).default ?? ReactFocusLock;
 

@@ -1,31 +1,33 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+} from '@metamask/design-system-react';
+import {
   AlignItems,
+  Display,
   JustifyContent,
   TextColor,
   TextVariant,
-  Display,
-  BlockSize,
   FontWeight,
-  FlexDirection,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import {
   IconSize,
   Text,
-  Box,
   AvatarFavicon,
   AvatarBase,
 } from '../../component-library';
 import { getAvatarFallbackLetter } from '../../../helpers/utils/util';
+import { Nav } from '../../../pages/confirmations/components/confirm/nav';
 
-const PermissionConnectHeader = ({ origin, iconUrl }) => {
+const PermissionConnectHeader = ({ requestId, origin, iconUrl }) => {
   const transformOriginToTitle = (rawOrigin) => {
     try {
       const url = new URL(rawOrigin);
-      const parts = url.hostname.split('.');
-      return parts.slice(-2).join('.');
+      return url.hostname;
     } catch (e) {
       return 'Unknown Origin';
     }
@@ -33,61 +35,63 @@ const PermissionConnectHeader = ({ origin, iconUrl }) => {
   const title = transformOriginToTitle(origin);
 
   return (
-    <Box
-      backgroundColor={BackgroundColor.backgroundDefault}
-      width={BlockSize.Full}
-      alignItems={AlignItems.center}
-      display={Display.Flex}
-      padding={4}
-      style={{
-        boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
-      }}
-    >
-      <Box>
-        {iconUrl ? (
-          <AvatarFavicon
-            backgroundColor={BackgroundColor.backgroundAlternative}
-            size={IconSize.Lg}
-            src={iconUrl}
-            name={title}
-          />
-        ) : (
-          <AvatarBase
-            size={IconSize.Lg}
-            display={Display.Flex}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.center}
-            color={TextColor.textAlternative}
-            style={{ borderWidth: '0px' }}
-            backgroundColor={BackgroundColor.backgroundAlternative}
-          >
-            {getAvatarFallbackLetter(title)}
-          </AvatarBase>
-        )}
-      </Box>
+    <>
+      <Nav confirmationId={requestId} />
       <Box
-        marginLeft={4}
-        marginRight={4}
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        style={{ overflow: 'hidden' }}
+        backgroundColor={BoxBackgroundColor.BackgroundDefault}
+        className="flex w-full"
+        alignItems={BoxAlignItems.Center}
+        padding={4}
+        style={{
+          boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
+        }}
       >
-        <Text ellipsis fontWeight={FontWeight.Medium}>
-          {title}
-        </Text>
-        <Text
-          ellipsis
-          variant={TextVariant.bodySm}
-          color={TextColor.textAlternative}
+        <Box>
+          {iconUrl ? (
+            <AvatarFavicon
+              backgroundColor={BackgroundColor.backgroundAlternative}
+              size={IconSize.Lg}
+              src={iconUrl}
+              name={title}
+            />
+          ) : (
+            <AvatarBase
+              size={IconSize.Lg}
+              display={Display.Flex}
+              alignItems={AlignItems.center}
+              justifyContent={JustifyContent.center}
+              color={TextColor.textAlternative}
+              style={{ borderWidth: '0px' }}
+              backgroundColor={BackgroundColor.backgroundAlternative}
+            >
+              {getAvatarFallbackLetter(title)}
+            </AvatarBase>
+          )}
+        </Box>
+        <Box
+          marginLeft={4}
+          marginRight={4}
+          className="flex flex-col"
+          style={{ overflow: 'hidden' }}
         >
-          {origin}
-        </Text>
+          <Text ellipsis fontWeight={FontWeight.Medium}>
+            {title}
+          </Text>
+          <Text
+            ellipsis
+            variant={TextVariant.bodySm}
+            color={TextColor.textAlternative}
+          >
+            {origin}
+          </Text>
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 };
 
 PermissionConnectHeader.propTypes = {
+  requestId: PropTypes.string,
   origin: PropTypes.string,
   iconUrl: PropTypes.string,
 };

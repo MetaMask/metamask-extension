@@ -56,6 +56,8 @@ const AvatarTokenComponent = ({ src }: { src: string }): JSX.Element => (
   <AvatarToken
     data-testid="avatar-token"
     src={src}
+    padding={1}
+    backgroundColor={BackgroundColor.transparent}
     borderStyle={BorderStyle.none}
     size={AvatarTokenSize.Md}
   />
@@ -100,6 +102,8 @@ const getBadge = (badge: BadgeProps, children: JSX.Element): JSX.Element => {
   return (
     <BadgeWrapper
       data-testid="badge-wrapper"
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       position={badge.position || BadgeWrapperPosition.bottomRight}
       badge={
         <AvatarIcon

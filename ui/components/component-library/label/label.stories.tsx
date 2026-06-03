@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
+import README from './README.mdx';
 import {
   Display,
   FlexDirection,
@@ -7,15 +8,17 @@ import {
   IconColor,
 } from '../../../helpers/constants/design-system';
 
-import { Box, Icon, IconName, IconSize, TextField } from '..';
 import { Label } from './label';
 
-import README from './README.mdx';
+import { Icon, IconName, IconSize } from '../icon';
+import { Box } from '../box';
+import { TextField } from '../text-field';
 
 export default {
   title: 'Components/ComponentLibrary/Label',
 
   component: Label,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       page: README,

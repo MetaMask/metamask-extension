@@ -11,7 +11,6 @@ import Card from '../card';
 import Box from '../box';
 import { Text } from '../../component-library';
 
-import README from './README.mdx';
 import Approve from './approve-icon.component';
 import InfoIcon from './info-icon.component';
 import InfoIconInverted from './info-icon-inverted.component';
@@ -42,12 +41,6 @@ const validColors = [
 
 export default {
   title: 'Components/UI/Icon',
-
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     size: {
       control: 'select',
@@ -156,11 +149,11 @@ DefaultStory.args = {
   reverseColors: false,
 };
 
-export const Size = (args) => (
+export const Size = () => (
   <div>
-    <SunCheck size={16 || args.size} />
-    <SunCheck size={24 || args.size} />
-    <SunCheck size={32 || args.size} />
+    <SunCheck size={16} />
+    <SunCheck size={24} />
+    <SunCheck size={32} />
   </div>
 );
 

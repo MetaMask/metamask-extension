@@ -1,10 +1,15 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { NotificationServicesController } from '@metamask/notification-services-controller';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import {
+  type INotification,
+  TRIGGER_TYPES,
+  NOTIFICATION_API_TRIGGER_TYPES_SET,
+} from '@metamask/notification-services-controller/notification-services';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   IconName,
+  IconSize,
   ButtonIcon,
   ButtonIconSize,
   Box,
@@ -12,72 +17,30 @@ import {
 import { Tabs, Tab } from '../../components/ui/tabs';
 import {
   DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
 } from '../../helpers/constants/routes';
-import { NotificationsPage } from '../../components/multichain';
-import { Content, Header } from '../../components/multichain/pages/page';
+import { Content, Header, Page } from '../../components/multichain/pages/page';
 import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
 import { useUnreadNotificationsCounter } from '../../hooks/metamask-notifications/useCounter';
-import { getNotifications, getNotifySnaps } from '../../selectors';
+import { getNotifySnaps } from '../../selectors';
 import {
   selectIsFeatureAnnouncementsEnabled,
   selectIsMetamaskNotificationsEnabled,
   getMetamaskNotifications,
 } from '../../selectors/metamask-notifications/metamask-notifications';
-import { deleteExpiredNotifications } from '../../store/actions';
 import {
   AlignItems,
   Display,
   JustifyContent,
 } from '../../helpers/constants/design-system';
-import { NotificationsList } from './notifications-list';
-import { processSnapNotifications } from './snap/utils/utils';
-import { SnapNotification } from './snap/types/types';
+import { deleteExpiredNotifications } from '../../store/actions';
+import { NotificationsList, TAB_KEYS } from './notifications-list';
 import { NewFeatureTag } from './NewFeatureTag';
-
-type Notification = NotificationServicesController.Types.INotification;
-
-const { TRIGGER_TYPES, TRIGGER_TYPES_WALLET_SET } =
-  NotificationServicesController.Constants;
-
-export type NotificationType = Notification | SnapNotification;
-
-// NOTE - Tab filters could change once we support more notifications.
-export const enum TAB_KEYS {
-  // Shows all notifications
-  ALL = 'notifications-all-tab',
-
-  // These are only on-chain notifications (no snaps or feature announcements)
-  WALLET = 'notifications-wallet-tab',
-
-  // These are 3rd party notifications (snaps, feature announcements, web3 alerts)
-  WEB3 = 'notifications-other-tab',
-}
-
-// Cleanup method to ensure we aren't keeping really old notifications.
-// See internals to tweak expiry date
-const useEffectDeleteExpiredNotifications = () => {
-  const dispatch = useDispatch();
-  useEffect(() => {
-    return () => {
-      dispatch(deleteExpiredNotifications());
-    };
-  }, [dispatch]);
-};
-
-const useSnapNotifications = () => {
-  const snapNotifications = useSelector(getNotifications);
-
-  const processedSnapNotifications: SnapNotification[] = useMemo(() => {
-    return processSnapNotifications(snapNotifications);
-  }, [snapNotifications]);
-
-  return processedSnapNotifications;
-};
 
 // NOTE - these 2 data sources are combined in our controller.
 // FUTURE - we could separate these data sources into separate methods.
-const useFeatureAnnouncementAndWalletNotifications = () => {
+const useMetaMaskNotifications = () => {
   const isFeatureAnnouncementsEnabled = useSelector(
     selectIsFeatureAnnouncementsEnabled,
   );
@@ -99,21 +62,32 @@ const useFeatureAnnouncementAndWalletNotifications = () => {
   const walletNotifications = useMemo(() => {
     return isMetamaskNotificationsEnabled
       ? (notificationsData ?? []).filter(
-          (n) => n.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
+          (n) =>
+            n.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT &&
+            n.type !== TRIGGER_TYPES.SNAP,
         )
       : [];
   }, [isMetamaskNotificationsEnabled, notificationsData]);
 
+  const snapNotifications = useMemo(() => {
+    return (notificationsData ?? []).filter(
+      (n) => n.type === TRIGGER_TYPES.SNAP,
+    );
+  }, [notificationsData]);
+
   return {
     featureAnnouncementNotifications,
     walletNotifications,
+    snapNotifications,
   };
 };
 
 const useCombinedNotifications = () => {
-  const snapNotifications = useSnapNotifications();
-  const { featureAnnouncementNotifications, walletNotifications } =
-    useFeatureAnnouncementAndWalletNotifications();
+  const {
+    featureAnnouncementNotifications,
+    walletNotifications,
+    snapNotifications,
+  } = useMetaMaskNotifications();
 
   const combinedNotifications = useMemo(() => {
     const notifications = [
@@ -137,7 +111,7 @@ const useCombinedNotifications = () => {
 
 export const filterNotifications = (
   activeTab: TAB_KEYS,
-  notifications: NotificationType[],
+  notifications: INotification[],
 ) => {
   if (activeTab === TAB_KEYS.ALL) {
     return notifications;
@@ -146,23 +120,38 @@ export const filterNotifications = (
   if (activeTab === TAB_KEYS.WALLET) {
     return notifications.filter(
       (notification) =>
-        TRIGGER_TYPES_WALLET_SET.has(notification.type) ||
+        NOTIFICATION_API_TRIGGER_TYPES_SET.has(notification.type) ||
         notification.type === TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
     );
   }
 
   if (activeTab === TAB_KEYS.WEB3) {
-    return notifications.filter((notification) => notification.type === 'SNAP');
+    return notifications.filter(
+      (notification) => notification.type === TRIGGER_TYPES.SNAP,
+    );
   }
 
   return notifications;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Notifications() {
-  const history = useHistory();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const t = useI18nContext();
+  const dispatch = useDispatch();
 
-  useEffectDeleteExpiredNotifications();
+  const fromPath = searchParams.get('from') ?? undefined;
+
+  const handleBack = () => {
+    if (fromPath === DEFAULT_ROUTE) {
+      navigate(PREVIOUS_ROUTE);
+    } else {
+      navigate(DEFAULT_ROUTE);
+    }
+  };
+
   const { isLoading, error } = useMetamaskNotificationsContext();
 
   const [activeTab, setActiveTab] = useState<TAB_KEYS>(TAB_KEYS.ALL);
@@ -176,18 +165,20 @@ export default function Notifications() {
   let hasNotifySnaps = false;
   hasNotifySnaps = useSelector(getNotifySnaps).length > 0;
 
+  useEffect(() => {
+    dispatch(deleteExpiredNotifications());
+  }, [dispatch]);
+
   return (
-    <NotificationsPage>
+    <Page data-testid="notifications-page">
       {/* Back and Settings Buttons */}
       <Header
         startAccessory={
           <ButtonIcon
             ariaLabel="Back"
             iconName={IconName.ArrowLeft}
-            size={ButtonIconSize.Sm}
-            onClick={() => {
-              history.push(DEFAULT_ROUTE);
-            }}
+            size={ButtonIconSize.Md}
+            onClick={handleBack}
             data-testid="back-button"
           />
         }
@@ -195,9 +186,12 @@ export default function Notifications() {
           <ButtonIcon
             ariaLabel="Notifications Settings"
             iconName={IconName.Setting}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
+            iconProps={{
+              size: IconSize.Lg,
+            }}
             onClick={() => {
-              history.push(NOTIFICATIONS_SETTINGS_ROUTE);
+              navigate(NOTIFICATIONS_SETTINGS_ROUTE);
             }}
             data-testid="notifications-settings-button"
           />
@@ -209,20 +203,16 @@ export default function Notifications() {
       <Content padding={0}>
         {hasNotifySnaps && (
           <Tabs
-            defaultActiveTabKey={activeTab}
-            onTabClick={(tab) => setActiveTab(tab)}
-            tabsClassName="notifications__tabs"
+            activeTab={activeTab}
+            onTabClick={(tab: string) => setActiveTab(tab as TAB_KEYS)}
+            tabListProps={{ className: 'px-4' }}
           >
             <Tab
-              activeClassName="notifications__tab--active"
-              className="notifications__tab"
               data-testid={TAB_KEYS.ALL}
               name={t('all')}
               tabKey={TAB_KEYS.ALL}
             />
             <Tab
-              activeClassName="notifications__tab--active"
-              className="notifications__tab"
               data-testid={TAB_KEYS.WALLET}
               name={
                 <Box
@@ -238,8 +228,6 @@ export default function Notifications() {
               tabKey={TAB_KEYS.WALLET}
             ></Tab>
             <Tab
-              activeClassName="notifications__tab--active"
-              className="notifications__tab"
               data-testid={TAB_KEYS.WEB3}
               name={t('web3')}
               tabKey={TAB_KEYS.WEB3}
@@ -255,6 +243,6 @@ export default function Notifications() {
           notificationsCount={notificationsUnreadCount}
         />
       </Content>
-    </NotificationsPage>
+    </Page>
   );
 }

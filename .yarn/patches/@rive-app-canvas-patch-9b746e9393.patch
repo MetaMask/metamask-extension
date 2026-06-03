@@ -1,0 +1,12 @@
+diff --git a/rive.js b/rive.js
+index 44112630e4ea885e7a374fdb922dd09a21e17ef1..03eeff276d0495d77ce0c4715160db4b80a5fc87 100644
+--- a/rive.js
++++ b/rive.js
+@@ -4366,6 +4366,7 @@ var RuntimeLoader = /** @class */ (function () {
+         _rive_advanced_mjs__WEBPACK_IMPORTED_MODULE_0__["default"]({
+             // Loads Wasm bundle
+             locateFile: function () { return RuntimeLoader.wasmURL; },
++            wasmBinary: RuntimeLoader.wasmBinary
+         })
+             .then(function (rive) {
+             var _a;

@@ -1,15 +1,11 @@
-import { ERC1155, ERC721 } from '@metamask/controller-utils';
-
 import {
   TransactionEnvelopeType,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { addHexPrefix } from '../../../app/scripts/lib/util';
+import { addHexPrefix } from '../../../shared/lib/add-hex-prefix';
 import { TransactionGroupStatus } from '../../../shared/constants/transaction';
-import { readAddressAsContract } from '../../../shared/modules/contract-utils';
+import { readAddressAsContract } from '../../../shared/lib/contract-utils';
 
 /**
  * Returns four-byte method signature from data
@@ -63,7 +59,7 @@ export function getLatestSubmittedTxWithNonce(
 
 export async function isSmartContractAddress(address) {
   const { isContractAddress } = await readAddressAsContract(
-    global.eth,
+    global.ethereumProvider,
     address,
   );
   return isContractAddress;
@@ -77,8 +73,7 @@ export function isLegacyTransaction(txParams) {
  * Returns a status key for a transaction. Requires parsing the txMeta.txReceipt on top of
  * txMeta.status because txMeta.status does not reflect on-chain errors.
  *
- * @param {object} transaction - The txMeta object of a transaction.
- * @param {object} transaction.txReceipt - The transaction receipt.
+ * @param {import('@metamask/transaction-controller').TransactionMeta} transaction - The txMeta object of a transaction.
  * @returns {string}
  */
 export function getStatusKey(transaction) {
@@ -136,7 +131,9 @@ export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
     case TransactionType.simpleSend: {
       return t('sendingNativeAsset', [nativeCurrency]);
     }
-    case TransactionType.contractInteraction: {
+    case TransactionType.contractInteraction:
+    case TransactionType.batch:
+    case TransactionType.revokeDelegation: {
       return t('contractInteraction');
     }
     case TransactionType.deployContract: {
@@ -156,12 +153,3 @@ export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
     }
   }
 }
-
-/**
- * Method to check if asset standard passed is NFT
- *
- * @param {*} assetStandard - string
- * @returns boolean
- */
-export const isNFTAssetStandard = (assetStandard) =>
-  assetStandard === ERC1155 || assetStandard === ERC721;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import {
   Display,
   AlignItems,
@@ -7,13 +7,21 @@ import {
   TextColor,
   BackgroundColor,
   BorderColor,
+  BorderRadius,
 } from '../../../helpers/constants/design-system';
 import type { PolymorphicRef } from '../box';
 import { AvatarBase, AvatarBaseProps } from '../avatar-base';
 import type { AvatarNetworkComponent } from './avatar-network.types';
 import { AvatarNetworkProps, AvatarNetworkSize } from './avatar-network.types';
 
+/**
+ * @deprecated Please update your code to use `AvatarNetwork` from `@metamask/design-system-react`.
+ * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#from-extension-component-library | Migration Guide}
+ * @see {@link https://metamask.github.io/metamask-design-system/?path=/docs/react-components-avatarnetwork--docs | Storybook Documentation}
+ */
 export const AvatarNetwork: AvatarNetworkComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     {
       size = AvatarNetworkSize.Md,
@@ -22,7 +30,7 @@ export const AvatarNetwork: AvatarNetworkComponent = React.forwardRef(
       showHalo,
       color = TextColor.textDefault,
       backgroundColor = BackgroundColor.backgroundAlternative,
-      borderColor = BorderColor.transparent,
+      borderColor = BorderColor.backgroundDefault,
       className = '',
       ...props
     }: AvatarNetworkProps<C>,
@@ -52,6 +60,8 @@ export const AvatarNetwork: AvatarNetworkComponent = React.forwardRef(
           showHalo ? 'mm-avatar-network--with-halo' : '',
           className,
         )}
+        borderRadius={BorderRadius.MD}
+        borderWidth={1}
         {...{
           backgroundColor,
           borderColor,

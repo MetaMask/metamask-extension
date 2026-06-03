@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { I18nContext } from '../../../../contexts/i18n';
 import { useModalProps } from '../../../../hooks/useModalProps';
 import { useMetamaskNotificationsContext } from '../../../../contexts/metamask-notifications/metamask-notifications';
@@ -13,9 +13,13 @@ import {
   selectIsMetamaskNotificationsEnabled,
   getIsUpdatingMetamaskNotifications,
 } from '../../../../selectors/metamask-notifications/metamask-notifications';
-import { selectIsProfileSyncingEnabled } from '../../../../selectors/metamask-notifications/profile-syncing';
-import { useCreateNotifications } from '../../../../hooks/metamask-notifications/useNotifications';
+import { selectIsBackupAndSyncEnabled } from '../../../../selectors/identity/backup-and-sync';
+import {
+  useEnableNotifications,
+  useSafeState,
+} from '../../../../hooks/metamask-notifications/useNotifications';
 import { NOTIFICATIONS_ROUTE } from '../../../../helpers/constants/routes';
+import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 
 import {
   Box,
@@ -36,11 +40,13 @@ import {
   TextColor,
 } from '../../../../helpers/constants/design-system';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function TurnOnMetamaskNotifications() {
   const { hideModal } = useModalProps();
-  const history = useHistory();
+  const navigate = useNavigate();
   const t = useContext(I18nContext);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const { listNotifications } = useMetamaskNotificationsContext();
 
   const isNotificationEnabled = useSelector(
@@ -49,13 +55,13 @@ export default function TurnOnMetamaskNotifications() {
   const isUpdatingMetamaskNotifications = useSelector(
     getIsUpdatingMetamaskNotifications,
   );
-  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
 
-  const [isLoading, setIsLoading] = useState<boolean>(
+  const [isLoading, setIsLoading] = useSafeState<boolean>(
     isUpdatingMetamaskNotifications,
   );
 
-  const { createNotifications, error } = useCreateNotifications();
+  const { enableNotifications, error } = useEnableNotifications();
 
   const handleTurnOnNotifications = async () => {
     setIsLoading(true);
@@ -63,42 +69,47 @@ export default function TurnOnMetamaskNotifications() {
       category: MetaMetricsEventCategory.NotificationsActivationFlow,
       event: MetaMetricsEventName.NotificationsActivated,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         is_profile_syncing_enabled: true,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         action_type: 'activated',
       },
     });
-    await createNotifications();
+    await enableNotifications();
   };
 
   const handleHideModal = () => {
+    if (!isLoading) {
+      trackEvent({
+        category: MetaMetricsEventCategory.NotificationsActivationFlow,
+        event: MetaMetricsEventName.NotificationsActivated,
+        properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_profile_syncing_enabled: isBackupAndSyncEnabled,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          action_type: 'dismissed',
+        },
+      });
+    }
     hideModal();
-    setIsLoading((prevLoadingState) => {
-      if (!prevLoadingState) {
-        trackEvent({
-          category: MetaMetricsEventCategory.NotificationsActivationFlow,
-          event: MetaMetricsEventName.NotificationsActivated,
-          properties: {
-            is_profile_syncing_enabled: isProfileSyncingEnabled,
-            action_type: 'dismissed',
-          },
-        });
-      }
-      return prevLoadingState;
-    });
   };
 
   useEffect(() => {
     if (isNotificationEnabled && !error) {
-      history.push(NOTIFICATIONS_ROUTE);
+      navigate(NOTIFICATIONS_ROUTE);
       hideModal();
       listNotifications();
     }
-  }, [isNotificationEnabled, error]);
+  }, [isNotificationEnabled, error, navigate, hideModal, listNotifications]);
 
   const privacyLink = (
     <Text
       as="a"
-      href="https://support.metamask.io/privacy-and-security/profile-privacy"
+      href={ZENDESK_URLS.PROFILE_PRIVACY}
       target="_blank"
       rel="noopener noreferrer"
       key="privacy-link"
@@ -147,6 +158,8 @@ export default function TurnOnMetamaskNotifications() {
         </ModalBody>
         <ModalFooter
           paddingTop={4}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onSubmit={() => handleTurnOnNotifications()}
           containerProps={{
             flexDirection: FlexDirection.Column,

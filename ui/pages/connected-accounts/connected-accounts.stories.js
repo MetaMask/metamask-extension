@@ -1,5 +1,4 @@
 import React from 'react';
-import { action } from '@storybook/addon-actions';
 import { EthAccountType } from '@metamask/keyring-api';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import ConnectedAccounts from './connected-accounts.component';
@@ -109,10 +108,16 @@ export const DefaultStory = () => {
     <ConnectedAccounts
       activeTabOrigin="https://metamask.github.io"
       accountToConnect={internalAccount}
-      connectAccount={action('Account Connected')}
+      connectAccount={() => {
+        /* no-op */
+      }}
       connectedAccounts={accounts}
-      removePermittedAccount={action('Account Removed')}
-      setSelectedAddress={action('Selected Address Changed')}
+      removePermittedAccount={() => {
+        /* no-op */
+      }}
+      setSelectedAddress={() => {
+        /* no-op */
+      }}
       originOfActiveTab="https://snaps.metamask.io/"
       subjectMetadata={subjectMetadata}
       permissionSubjects={permissionSubjects}

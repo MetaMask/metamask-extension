@@ -3,6 +3,7 @@ import { PriorityLevels } from '../../../shared/constants/gas';
 import {
   gasEstimateGreaterThanGasUsedPlusTenPercent,
   formatGasFeeOrFeeRange,
+  getGasValuesForReplacement,
 } from './gas';
 
 describe('Gas utils', () => {
@@ -34,6 +35,44 @@ describe('Gas utils', () => {
         suggestedMaxFeePerGas: '1',
       });
       expect(result).toStrictEqual(false);
+    });
+
+    it('returns false when txParams has no maxFeePerGas and no gasPrice', () => {
+      const result = gasEstimateGreaterThanGasUsedPlusTenPercent(
+        { gas: '0x5208' },
+        { medium: { suggestedMaxFeePerGas: '70' } },
+        PriorityLevels.medium,
+      );
+      expect(result).toBe(false);
+    });
+
+    describe('legacy (gasPrice) txParams', () => {
+      it('returns true when medium estimate > gasPrice + 10%', () => {
+        const result = gasEstimateGreaterThanGasUsedPlusTenPercent(
+          { gasPrice: '0x59682f10' },
+          { medium: '70' },
+          PriorityLevels.medium,
+        );
+        expect(result).toStrictEqual(true);
+      });
+
+      it('returns false when medium estimate < gasPrice + 10%', () => {
+        const result = gasEstimateGreaterThanGasUsedPlusTenPercent(
+          { gasPrice: '0x59682f10' },
+          { medium: '1' },
+          PriorityLevels.medium,
+        );
+        expect(result).toStrictEqual(false);
+      });
+
+      it('handles fee-market estimates with legacy txParams', () => {
+        const result = gasEstimateGreaterThanGasUsedPlusTenPercent(
+          { gasPrice: '0x59682f10' },
+          { medium: { suggestedMaxFeePerGas: '70' } },
+          PriorityLevels.medium,
+        );
+        expect(result).toStrictEqual(true);
+      });
     });
   });
 
@@ -93,6 +132,184 @@ describe('Gas utils', () => {
     describe('if the fee is undefined', () => {
       it('should return null', () => {
         expect(formatGasFeeOrFeeRange(null, { precision: 1 })).toBeNull();
+      });
+    });
+  });
+
+  describe('getGasValuesForReplacement', () => {
+    it('returns txParams unchanged when previousGas is missing', () => {
+      const txParams = {
+        maxFeePerGas: '0x5',
+        maxPriorityFeePerGas: '0x5',
+        gasLimit: '0x5208',
+      };
+      expect(
+        getGasValuesForReplacement(txParams, undefined, 1.1),
+      ).toStrictEqual(txParams);
+      expect(getGasValuesForReplacement(txParams, null, 1.1)).toStrictEqual(
+        txParams,
+      );
+    });
+
+    it('returns gas at least previousGas × rate when txParams has lower values', () => {
+      const txParams = {
+        maxFeePerGas: '0x5',
+        maxPriorityFeePerGas: '0x5',
+        gasLimit: '0x5208',
+      };
+      const previousGas = {
+        maxFeePerGas: '0x10',
+        maxPriorityFeePerGas: '0x10',
+        gasLimit: '0x5208',
+      };
+      const result = getGasValuesForReplacement(txParams, previousGas, 1.1);
+      expect(Number(result.maxFeePerGas)).toBeGreaterThanOrEqual(0x12);
+      expect(Number(result.maxPriorityFeePerGas)).toBeGreaterThanOrEqual(0x12);
+    });
+
+    it('returns txParams gas when higher than previousGas × rate', () => {
+      const txParams = {
+        maxFeePerGas: '0x100',
+        maxPriorityFeePerGas: '0x100',
+        gasLimit: '0x5208',
+      };
+      const previousGas = {
+        maxFeePerGas: '0x10',
+        maxPriorityFeePerGas: '0x10',
+        gasLimit: '0x5208',
+      };
+      const result = getGasValuesForReplacement(txParams, previousGas, 1.1);
+      expect(result.maxFeePerGas).toBe('0x100');
+      expect(result.maxPriorityFeePerGas).toBe('0x100');
+    });
+
+    it('returns txParams when they exceed min replacement gas (0x-prefixed hex from toPrefixedHexString)', () => {
+      // previousGas 70 GWEI × 1.1 ≈ 77 GWEI min. User chose 100 GWEI — must be kept.
+      // Uses 0x-prefixed values as produced by Numeric#toPrefixedHexString().
+      const txParams = {
+        maxFeePerGas: '0x174876e800', // 100 GWEI
+        maxPriorityFeePerGas: '0x174876e800',
+        gasLimit: '0x5208',
+      };
+      const previousGas = {
+        maxFeePerGas: '0x104c533c00', // 70 GWEI in hex WEI
+        maxPriorityFeePerGas: '0x2540be400', // 10 GWEI
+        gasLimit: '0x5208',
+      };
+      const result = getGasValuesForReplacement(txParams, previousGas, 1.1);
+      expect(result.maxFeePerGas).toBe('0x174876e800');
+      expect(result.maxPriorityFeePerGas).toBe('0x174876e800');
+    });
+
+    it('returns min replacement gas when txParams are lower (0x-prefixed hex)', () => {
+      // 70 GWEI × 1.1 = 77 GWEI min. txParams at 70 GWEI → result should be ≥ 77 GWEI.
+      const seventyGweiHex = '0x104c533c00';
+      const tenGweiHex = '0x2540be400';
+      const txParams = {
+        maxFeePerGas: seventyGweiHex,
+        maxPriorityFeePerGas: tenGweiHex,
+        gasLimit: '0x5208',
+      };
+      const previousGas = {
+        maxFeePerGas: seventyGweiHex,
+        maxPriorityFeePerGas: tenGweiHex,
+        gasLimit: '0x5208',
+      };
+      const result = getGasValuesForReplacement(txParams, previousGas, 1.1);
+      const minMaxFeeWei = 77 * 1e9;
+      const minMaxPriorityWei = 10 * 1.1 * 1e9;
+      expect(Number(result.maxFeePerGas)).toBeGreaterThanOrEqual(minMaxFeeWei);
+      expect(Number(result.maxPriorityFeePerGas)).toBeGreaterThanOrEqual(
+        minMaxPriorityWei,
+      );
+    });
+
+    it('returns txParams when higher than min and txParams use hex without 0x prefix', () => {
+      // BigNumber(value) infers hex from 0x; hex without prefix also parses.
+      const txParams = {
+        maxFeePerGas: '174876e800', // 100 GWEI, no 0x
+        maxPriorityFeePerGas: '174876e800',
+        gasLimit: '0x5208',
+      };
+      const previousGas = {
+        maxFeePerGas: '0x104c533c00', // 70 GWEI
+        maxPriorityFeePerGas: '0x2540be400',
+        gasLimit: '0x5208',
+      };
+      const result = getGasValuesForReplacement(txParams, previousGas, 1.1);
+      expect(result.maxFeePerGas).toBe('174876e800');
+      expect(result.maxPriorityFeePerGas).toBe('174876e800');
+    });
+
+    it('returns same value for gas and gasLimit (no mixed fallback chains)', () => {
+      // txParams has gas but no gasLimit; previousGas has different gasLimit.
+      // Result must use one effective gas limit for both fields.
+      const txParams = {
+        maxFeePerGas: '0x100',
+        maxPriorityFeePerGas: '0x100',
+        gas: '0x5208',
+      };
+      const previousGas = {
+        maxFeePerGas: '0x10',
+        maxPriorityFeePerGas: '0x10',
+        gasLimit: '0x30d4',
+      };
+      const result = getGasValuesForReplacement(txParams, previousGas, 1.1);
+      expect(result.gas).toBe(result.gasLimit);
+      expect(result.gas).toBe('0x5208');
+    });
+
+    describe('legacy flow', () => {
+      it('returns min gasPrice when txParams gasPrice is lower than previousGas × rate', () => {
+        const txParams = { gasPrice: '0x5', gas: '0x5208' };
+        const previousGas = { gasPrice: '0x10', gasLimit: '0x5208' };
+        const result = getGasValuesForReplacement(txParams, previousGas, 1.1);
+        const minExpected = Math.ceil(0x10 * 1.1);
+        expect(Number(result.gasPrice)).toBeGreaterThanOrEqual(minExpected);
+        expect(result.gas).toBe('0x5208');
+        expect(result.gasLimit).toBe('0x5208');
+      });
+
+      it('keeps txParams gasPrice when higher than previousGas × rate', () => {
+        const txParams = { gasPrice: '0x100', gas: '0x5208' };
+        const previousGas = { gasPrice: '0x10', gasLimit: '0x5208' };
+        const result = getGasValuesForReplacement(txParams, previousGas, 1.1);
+        expect(result.gasPrice).toBe('0x100');
+      });
+
+      it('returns gasPrice path even with 0x-prefixed large hex values', () => {
+        const seventyGweiHex = '0x104c533c00';
+        const txParams = { gasPrice: seventyGweiHex, gas: '0x5208' };
+        const previousGas = { gasPrice: seventyGweiHex, gasLimit: '0x5208' };
+        const result = getGasValuesForReplacement(txParams, previousGas, 1.1);
+        const minGasPrice = 70 * 1e9 * 1.1;
+        expect(Number(result.gasPrice)).toBeGreaterThanOrEqual(minGasPrice);
+      });
+
+      it('does not enter legacy path when previousGas has maxFeePerGas (EIP-1559)', () => {
+        const txParams = {
+          gasPrice: '0x10',
+          maxFeePerGas: '0x10',
+          maxPriorityFeePerGas: '0x10',
+          gas: '0x5208',
+        };
+        const previousGas = {
+          gasPrice: '0x10',
+          maxFeePerGas: '0x10',
+          maxPriorityFeePerGas: '0x10',
+          gasLimit: '0x5208',
+        };
+        const result = getGasValuesForReplacement(txParams, previousGas, 1.1);
+        expect(result.maxFeePerGas).toBeDefined();
+        expect(result.maxPriorityFeePerGas).toBeDefined();
+      });
+
+      it('returns gas and gasLimit from txParams when available', () => {
+        const txParams = { gasPrice: '0x100', gas: '0xAAAA' };
+        const previousGas = { gasPrice: '0x10', gasLimit: '0xBBBB' };
+        const result = getGasValuesForReplacement(txParams, previousGas, 1.1);
+        expect(result.gas).toBe('0xAAAA');
+        expect(result.gasLimit).toBe('0xAAAA');
       });
     });
   });

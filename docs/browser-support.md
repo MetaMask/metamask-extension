@@ -2,8 +2,8 @@
 
 MetaMask's browser support policy is to support:
 
-* The last two years of Chrome stable releases
-* The current and previous Firefox Extended Support Release
+- The last two years of Chrome stable releases
+- The current and previous Firefox Extended Support Release
 
 We try to support browser forks as well (aligned with supported Chrome/Firefox releases), but we don't actively test them.
 

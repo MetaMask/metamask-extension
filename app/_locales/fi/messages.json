@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Sinun on valittava tili!"
   },
-  "activityLog": {
-    "message": "toimintaloki"
-  },
   "addAcquiredTokens": {
     "message": "Lisää MetaMaskia käyttämällä hankkimasi tietueet"
   },
@@ -80,9 +77,6 @@
   },
   "autoLockTimeLimit": {
     "message": "Automaattisen uloskirjautumisen ajastin (minuuttia)"
-  },
-  "autoLockTimeLimitDescription": {
-    "message": "Määritä, montako minuuttia MetaMask on ollut joutilaana ennen kuin sinut kirjataan automaattisesti ulos"
   },
   "average": {
     "message": "Keskiverto"
@@ -184,12 +178,6 @@
   "createPassword": {
     "message": "Luo salasana"
   },
-  "currencyConversion": {
-    "message": "Valuuttamuunnin"
-  },
-  "currentLanguage": {
-    "message": "Nykyinen kieli"
-  },
   "custom": {
     "message": "Lisäasetukset"
   },
@@ -211,9 +199,6 @@
   "done": {
     "message": "Valmis"
   },
-  "downloadGoogleChrome": {
-    "message": "Lataa Google Chrome"
-  },
   "downloadStateLogs": {
     "message": "Lataa tilalokit"
   },
@@ -229,14 +214,8 @@
   "enterPasswordContinue": {
     "message": "Syötä salasana voidaksesi jatkaa"
   },
-  "ethereumPublicAddress": {
-    "message": "Ethereumin julkinen osoite"
-  },
   "etherscanView": {
     "message": "Tarkastele tiliä Etherscanissa"
-  },
-  "expandView": {
-    "message": "Laajenna näkymää"
   },
   "failed": {
     "message": "Epäonnistui"
@@ -254,26 +233,11 @@
   "from": {
     "message": "Alkaen"
   },
-  "functionType": {
-    "message": "Funktion tyyppi"
-  },
   "gasLimit": {
     "message": "Gas-raja"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Polttoaineraja tarkoittaa suurinta mahdollista polttoainemäärää, jonka olet valmis kuluttamaan."
-  },
   "gasLimitTooLow": {
     "message": "Gas-rajan tulee olla vähintään 21 000"
-  },
-  "gasPrice": {
-    "message": "Gas-hinta (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Gas-hinta erittäin alhainen"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Polttoaineen hinta määrittää Ether-määrän, jonka olet valmis maksamaan jokaisesta polttoaineyksiköstä."
   },
   "gasUsed": {
     "message": "Käytetty bensaa"
@@ -292,9 +256,6 @@
   },
   "hardwareWallets": {
     "message": "Yhdistä kiinteän laitteiston lompakko"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Valitse laitteistokukkaro, jota haluaisit käyttää MetaMaskilla"
   },
   "here": {
     "message": "tässä",
@@ -316,18 +277,12 @@
     "message": "Tuo",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Tuo tili"
-  },
   "importAccountMsg": {
     "message": "Tuotuja tilejä ei liitetä alkuperäisen MetaMask-tilisi siemenlauseeseen. Lue lisää tuoduista tileistä"
   },
   "imported": {
     "message": "Tuotu",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "initialTransactionConfirmed": {
-    "message": "Verkko hyväksyi alkuperäisen tapahtumasi. Siirry takaisin napsauttamalla OK-painiketta."
   },
   "insufficientBalance": {
     "message": "Liian pieni saldo."
@@ -369,20 +324,8 @@
   "likeToImportTokens": {
     "message": "Haluaisitko lisätä nämä poletit?"
   },
-  "lineaGoerli": {
-    "message": "Linea-testiverkko"
-  },
-  "links": {
-    "message": "Linkit"
-  },
-  "loadMore": {
-    "message": "Lataa lisää"
-  },
   "loading": {
     "message": "Ladataan..."
-  },
-  "loadingTokens": {
-    "message": "Käyttötunnuksia ladataan..."
   },
   "localhost": {
     "message": "Paikallisjoukko 8545"
@@ -412,9 +355,6 @@
     "message": "Sinun tarvitsee valita tuotava tiedosto.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "ETH:ta ei voi lähettää negatiivista määrää."
-  },
   "networkName": {
     "message": "Verkon nimi"
   },
@@ -424,15 +364,9 @@
   "nevermind": {
     "message": "Antaa olla"
   },
-  "newAccount": {
-    "message": "Uusi tili"
-  },
   "newAccountNumberName": {
     "message": "Tili $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Uusi yhteys"
   },
   "newContract": {
     "message": "Uusi sopimus"
@@ -442,12 +376,6 @@
   },
   "next": {
     "message": "Seuraava"
-  },
-  "noConversionRateAvailable": {
-    "message": "Vaihtokurssi ei saatavilla"
-  },
-  "noTransactions": {
-    "message": "Sinulla ei ole tapahtumia"
   },
   "noWebcamFound": {
     "message": "Tietokoneesi verkkokameraa ei löytynyt. Ole hyvä ja yritä uudestaan."
@@ -469,9 +397,6 @@
   },
   "origin": {
     "message": "Alkuperä"
-  },
-  "parameters": {
-    "message": "Parametrit"
   },
   "participateInMetaMetrics": {
     "message": "Osallistu MetaMetricsiin"
@@ -523,12 +448,6 @@
   "rejectAll": {
     "message": "Hylkää kaikki"
   },
-  "rejectTxsDescription": {
-    "message": "Olet kieltäytymässä yhteensä $1 maksusiirrosta samalla kertaa."
-  },
-  "rejectTxsN": {
-    "message": "Hylkää $1 maksusiirtoa"
-  },
   "rejected": {
     "message": "Hylätty"
   },
@@ -538,12 +457,6 @@
   "removeAccount": {
     "message": "Poista tili"
   },
-  "removeAccountDescription": {
-    "message": "Tämä tili poistetaan kukkarostasi. Varmistathan ennen kuin jatkat, että sinulla on alkuperäinen salausteksti tai yksityinen avain tätä tuotua tiliä varten. Voit tuoda tai luoda tilejä uudestaan tilin pudotusvalikosta."
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "vahvistusta odottavaa pyyntöä"
-  },
   "required": {
     "message": "Pakollinen"
   },
@@ -552,9 +465,6 @@
   },
   "restore": {
     "message": "Palauta"
-  },
-  "revealSeedWords": {
-    "message": "Paljasta salaussanat"
   },
   "revealSeedWordsWarning": {
     "message": "Näitä sanoja voidaan käyttää kaikkien tiliesi ryöstämiseen.",
@@ -602,17 +512,11 @@
   "showFiatConversionInTestnets": {
     "message": "Näytä vaihtokurssi koeverkoissa"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Valitse tämä näyttääksesi fiat-vaihtokurssin koeverkoissa"
-  },
   "showHexData": {
     "message": "Näytä Hex-tiedot"
   },
   "showHexDataDescription": {
     "message": "Näytä hex-tietokenttä lähetysnäytössä valitsemalla tämän"
-  },
-  "sigRequest": {
-    "message": "Allekirjoitus pyydetään"
   },
   "sign": {
     "message": "Allekirjoita"
@@ -632,26 +536,17 @@
   "speedUpCancellation": {
     "message": "Nopeuta tätä peruutusta"
   },
-  "speedUpTransaction": {
-    "message": "Nopeuta tätä maksusiirtoa"
-  },
   "stateLogError": {
     "message": "Virhe tilalokien noutamisessa."
   },
   "stateLogs": {
     "message": "Tilaloki"
   },
-  "stateLogsDescription": {
-    "message": "Tilalokeista löydät julkiset tiliosoitteesi sekä lähetetyt maksusiirtosi."
-  },
   "submitted": {
     "message": "Lähetetty"
   },
   "supportCenter": {
     "message": "Käy tukikeskuksessamme"
-  },
-  "switchNetworks": {
-    "message": "Vaihda verkostoa"
   },
   "symbol": {
     "message": "Symboli"
@@ -661,9 +556,6 @@
   },
   "terms": {
     "message": "Käyttöehdot"
-  },
-  "tips": {
-    "message": "Tipit"
   },
   "to": {
     "message": "Kohde"
@@ -686,41 +578,11 @@
   "transaction": {
     "message": "maksusiirto"
   },
-  "transactionCancelAttempted": {
-    "message": "Tapahtuman peruutusta yritetty $1 bensataksalla kohdassa $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Tapahtuman peruutus onnistui – $2"
-  },
-  "transactionConfirmed": {
-    "message": "Tapahtuma vahvistettu kohdassa $2."
-  },
-  "transactionCreated": {
-    "message": "Tapahtuma luotu $1 arvolla kohdassa $2."
-  },
-  "transactionDropped": {
-    "message": "Tapahtumasta luovuttu kohdassa $2."
-  },
   "transactionError": {
     "message": "Tapahtumavirhe. Poikkeus havaittu sopimuskoodissa."
   },
   "transactionErrorNoContract": {
     "message": "Yritetään kutsua funktiota ei-sopimusosoitteesta."
-  },
-  "transactionErrored": {
-    "message": "Tapahtumissa tapahtui virhe."
-  },
-  "transactionFee": {
-    "message": "Siirtomaksu"
-  },
-  "transactionResubmitted": {
-    "message": "Tapahtuma toimitettiin uudelleen bensataksan noustessa summaan $1 kohdassa $2."
-  },
-  "transactionSubmitted": {
-    "message": "Tapahtuma toimitettu $1 bensataksalla kohdassa $2."
-  },
-  "transactionUpdated": {
-    "message": "Tapahtuma päivitetty – $2."
   },
   "transfer": {
     "message": "Siirrä"
@@ -740,29 +602,17 @@
   "unknown": {
     "message": "Tuntematon"
   },
-  "unknownNetwork": {
-    "message": "Tuntematon yksityinen verkko"
-  },
   "unknownQrCode": {
     "message": "Virhe: Emme onnistuneet tunnistamaan kyseistä QR-koodia"
   },
   "unlock": {
     "message": "Poista lukitus"
   },
-  "unlockMessage": {
-    "message": "Hajautettu verkko odottaa"
-  },
   "urlErrorMsg": {
     "message": "URI:t vaativat asianmukaisen HTTP/HTTPS-etuliitteen."
   },
   "usedByClients": {
     "message": "Lukuisien eri asiakkaiden käyttämä"
-  },
-  "userName": {
-    "message": "Käyttäjätunnus"
-  },
-  "viewContact": {
-    "message": "Näytä yhteyshenkilö"
   },
   "visitWebSite": {
     "message": "Vieraile verkkosivustollamme"
@@ -772,14 +622,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Käyttääksesi tätä ominaisuutta sinun tarvitsee antaa kameralle käyttöoikeudet."
-  },
-  "youSign": {
-    "message": "Olet allekirjoittamassa"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Sinun yksityinen siemenlauseesi"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Polttoaine ei maksa kiihdytyksen yhteydessä"
   }
 }

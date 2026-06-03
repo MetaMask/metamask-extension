@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-utils';
+import { Box } from '@metamask/design-system-react';
 import Popover from '../../components/ui/popover';
 import ConnectedAccountsList from '../../components/app/connected-accounts-list';
 import ConnectedAccountsPermissions from '../../components/app/connected-accounts-permissions';
@@ -9,7 +10,7 @@ import { getURLHost } from '../../helpers/utils/util';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import ConnectedSnaps from '../../components/app/connected-sites-list/connected-snaps';
 import { TextColor, TextVariant } from '../../helpers/constants/design-system';
-import { Box, Text } from '../../components/component-library';
+import { Text } from '../../components/component-library';
 import { getInternalAccounts } from '../../selectors';
 
 export default function ConnectedAccounts({
@@ -18,7 +19,7 @@ export default function ConnectedAccounts({
   isActiveTabExtension,
   connectAccount,
   connectedAccounts,
-  history,
+  navigate,
   mostRecentOverviewPage,
   permissions = undefined,
   selectedAddress,
@@ -75,7 +76,7 @@ export default function ConnectedAccounts({
         paddingRight: 4,
       }}
       subtitle={subtitle}
-      onClose={() => history.push(mostRecentOverviewPage)}
+      onClose={() => navigate(mostRecentOverviewPage)}
       footerClassName="connected-accounts__footer"
       ConnectedAccountsPermissions={{}}
       footer={
@@ -139,7 +140,7 @@ ConnectedAccounts.propTypes = {
   selectedAddress: PropTypes.string.isRequired,
   removePermittedAccount: PropTypes.func.isRequired,
   setSelectedAccount: PropTypes.func.isRequired,
-  history: PropTypes.object.isRequired,
+  navigate: PropTypes.func.isRequired,
   subjectMetadata: PropTypes.arrayOf(PropTypes.object).isRequired,
   originOfActiveTab: PropTypes.string,
   permissionSubjects: PropTypes.object,

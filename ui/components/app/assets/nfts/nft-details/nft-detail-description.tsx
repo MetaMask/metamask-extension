@@ -18,7 +18,11 @@ const NftDetailDescription = ({ value }: { value: string | null }) => {
   const { contentRef, isOverflowing } = useIsOverflowing();
   const [isOpen, setIsOpen] = useState(false);
 
-  const shouldDisplayButton = !isOpen && isOverflowing;
+  if (!value) {
+    return null;
+  }
+
+  const shouldDisplayButton = isOverflowing;
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -27,46 +31,33 @@ const NftDetailDescription = ({ value }: { value: string | null }) => {
 
   return (
     <>
-      <Box
-        marginTop={2}
-        className="nft-details__show-more"
-        style={{
-          position: 'relative',
-          overflow: 'hidden',
-          maxHeight: isOpen ? 'none' : undefined,
-        }}
-        ref={contentRef}
-      >
+      <Box marginTop={2}>
         <Text
-          variant={TextVariant.bodySm}
+          variant={TextVariant.bodyMd}
           fontWeight={FontWeight.Medium}
           color={TextColor.textAlternative}
           data-testid="nft-details__description"
+          ref={contentRef}
+          style={{
+            display: '-webkit-box',
+            WebkitLineClamp: isOpen ? 'unset' : 2,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+          }}
         >
           {value}
         </Text>
-        {shouldDisplayButton && (
-          <Box className="buttonDescriptionContainer">
-            <Button
-              className="nft-details__show-more__button"
-              padding={0}
-              paddingLeft={9}
-              variant={ButtonVariant.Link}
-              onClick={handleClick}
-            >
-              <Text color={TextColor.infoDefault}>{t('showMore')}</Text>
-            </Button>
-          </Box>
-        )}
       </Box>
-      {isOpen && (
-        <Box>
+      {shouldDisplayButton && (
+        <Box marginTop={2}>
           <Button
             padding={0}
             variant={ButtonVariant.Link}
             onClick={handleClick}
           >
-            <Text color={TextColor.infoDefault}>{t('showLess')}</Text>
+            <Text color={TextColor.infoDefault}>
+              {isOpen ? t('showLess') : t('showMore')}
+            </Text>
           </Button>
         </Box>
       )}

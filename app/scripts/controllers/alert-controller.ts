@@ -6,12 +6,14 @@ import {
   BaseController,
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedControllerMessenger,
+  StateMetadata,
 } from '@metamask/base-controller';
+import type { Messenger } from '@metamask/messenger';
 import {
   TOGGLEABLE_ALERT_TYPES,
   Web3ShimUsageAlertStates,
 } from '../../../shared/constants/alerts';
+import type { AlertControllerMethodActions } from './alert-controller-method-action-types';
 
 const controllerName = 'AlertController';
 
@@ -26,7 +28,9 @@ export type AlertControllerGetStateAction = ControllerGetStateAction<
 /**
  * Actions exposed by the {@link AlertController}.
  */
-export type AlertControllerActions = AlertControllerGetStateAction;
+export type AlertControllerActions =
+  | AlertControllerGetStateAction
+  | AlertControllerMethodActions;
 
 /**
  * Event emitted when the state of the {@link AlertController} changes.
@@ -51,12 +55,10 @@ export type AllowedActions = AccountsControllerGetSelectedAccountAction;
  */
 export type AllowedEvents = AccountsControllerSelectedAccountChangeEvent;
 
-export type AlertControllerMessenger = RestrictedControllerMessenger<
+export type AlertControllerMessenger = Messenger<
   typeof controllerName,
   AlertControllerActions | AllowedActions,
-  AlertControllerEvents | AllowedEvents,
-  AllowedActions['type'],
-  AllowedEvents['type']
+  AlertControllerEvents | AllowedEvents
 >;
 
 /**
@@ -78,7 +80,7 @@ export type AlertControllerState = {
  * The alert controller options
  *
  * @property state - The initial controller state
- * @property controllerMessenger - The controller messenger
+ * @property messenger - The controller messenger
  */
 export type AlertControllerOptions = {
   state?: Partial<AlertControllerState>;
@@ -107,20 +109,37 @@ export const getDefaultAlertControllerState = (): AlertControllerState => ({
  * using the `persist` flag; and if they can be sent to Sentry or not, using
  * the `anonymous` flag.
  */
-const controllerMetadata = {
+const controllerMetadata: StateMetadata<AlertControllerState> = {
   alertEnabledness: {
+    includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
   },
   unconnectedAccountAlertShownOrigins: {
+    includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
+    usedInUi: true,
   },
   web3ShimUsageOrigins: {
+    includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
+    usedInUi: true,
   },
 };
+
+/**
+ * Methods exposed by the {@link AlertController} messenger.
+ */
+const MESSENGER_EXPOSED_METHODS = [
+  'setAlertEnabledness',
+  'setUnconnectedAccountAlertShown',
+  'getWeb3ShimUsageState',
+  'setWeb3ShimUsageRecorded',
+  'setWeb3ShimUsageAlertDismissed',
+] as const;
 
 /**
  * Controller responsible for maintaining alert-related state.
@@ -143,11 +162,11 @@ export class AlertController extends BaseController<
       },
     });
 
-    this.#selectedAddress = this.messagingSystem.call(
+    this.#selectedAddress = this.messenger.call(
       'AccountsController:getSelectedAccount',
     ).address;
 
-    this.messagingSystem.subscribe(
+    this.messenger.subscribe(
       'AccountsController:selectedAccountChange',
       (account: { address: string }) => {
         const currentState = this.state;
@@ -161,6 +180,11 @@ export class AlertController extends BaseController<
           });
         }
       },
+    );
+
+    this.messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
     );
   }
 

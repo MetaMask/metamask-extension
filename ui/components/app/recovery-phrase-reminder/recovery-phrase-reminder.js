@@ -1,94 +1,91 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import {
+  Box,
+  BoxAlignItems,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-// Components
-import Box from '../../ui/box';
-import Button from '../../ui/button';
-import Popover from '../../ui/popover';
 // Helpers
 import {
-  DISPLAY,
+  AlignItems,
   TextAlign,
   TextVariant,
-  BLOCK_SIZES,
-  FontWeight,
-  JustifyContent,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { ONBOARDING_UNLOCK_ROUTE } from '../../../helpers/constants/routes';
-import { Text } from '../../component-library';
+import { ONBOARDING_REVEAL_SRP_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ButtonLink,
+  ButtonLinkSize,
+  ButtonPrimary,
+  ButtonSize,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Text,
+} from '../../component-library';
 
-export default function RecoveryPhraseReminder({ onConfirm, hasBackedUp }) {
+export default function RecoveryPhraseReminder({ onConfirm }) {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleBackUp = () => {
-    history.push(ONBOARDING_UNLOCK_ROUTE);
+    const backUpSRPRoute = `${ONBOARDING_REVEAL_SRP_ROUTE}/?isFromReminder=true`;
+    navigate(backUpSRPRoute);
   };
 
   return (
-    <Popover centerTitle title={t('recoveryPhraseReminderTitle')}>
-      <Box
-        paddingRight={4}
-        paddingBottom={6}
-        paddingLeft={4}
-        className="recovery-phrase-reminder"
-      >
-        <Text
-          color={TextColor.textDefault}
-          align={TextAlign.Center}
-          variant={TextVariant.bodyMd}
-          marginBottom={4}
-        >
-          {t('recoveryPhraseReminderSubText')}
-        </Text>
-        <Box marginTop={4} marginBottom={8}>
-          <ul className="recovery-phrase-reminder__list">
-            <Text
-              as="li"
-              color={TextColor.textDefault}
-              fontWeight={FontWeight.Bold}
-            >
-              {t('recoveryPhraseReminderItemOne')}
+    <Modal isOpen onClose={() => undefined}>
+      <ModalOverlay />
+      <ModalContent alignItems={AlignItems.center}>
+        <ModalHeader onClose={onConfirm}>
+          <Box
+            className="flex flex-col"
+            alignItems={BoxAlignItems.Center}
+            gap={4}
+          >
+            <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
+              {t('recoveryPhraseReminderTitle')}
             </Text>
-            <Text as="li">{t('recoveryPhraseReminderItemTwo')}</Text>
-            <Text as="li">
-              {hasBackedUp ? (
-                t('recoveryPhraseReminderHasBackedUp')
-              ) : (
-                <>
-                  {t('recoveryPhraseReminderHasNotBackedUp')}
-                  <Box display={DISPLAY.INLINE_BLOCK} marginLeft={1}>
-                    <Button
-                      type="link"
-                      onClick={handleBackUp}
-                      style={{
-                        fontSize: 'inherit',
-                        padding: 0,
-                      }}
-                    >
-                      {t('recoveryPhraseReminderBackupStart')}
-                    </Button>
-                  </Box>
-                </>
-              )}
-            </Text>
-          </ul>
-        </Box>
-        <Box justifyContent={JustifyContent.center}>
-          <Box width={BLOCK_SIZES.TWO_FIFTHS}>
-            <Button type="primary" onClick={onConfirm}>
-              {t('recoveryPhraseReminderConfirm')}
-            </Button>
           </Box>
-        </Box>
-      </Box>
-    </Popover>
+        </ModalHeader>
+        <ModalBody>
+          <Box
+            className="flex w-full"
+            alignItems={BoxAlignItems.Center}
+            justifyContent={BoxJustifyContent.Center}
+            marginBottom={4}
+          >
+            <img
+              src="images/forgot-password-lock.png"
+              width={100}
+              height={100}
+              alt={t('recoveryPhraseReminderTitle')}
+            />
+          </Box>
+          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+            {t('recoveryPhraseReminderSubText')}
+          </Text>
+        </ModalBody>
+        <ModalFooter>
+          <Box className="flex flex-col" gap={2}>
+            <ButtonPrimary size={ButtonSize.Lg} block onClick={handleBackUp}>
+              {t('recoveryPhraseReminderBackupStart')}
+            </ButtonPrimary>
+            <ButtonLink size={ButtonLinkSize.Lg} block onClick={onConfirm}>
+              {t('recoveryPhraseReminderConfirm')}
+            </ButtonLink>
+          </Box>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 }
 
 RecoveryPhraseReminder.propTypes = {
-  hasBackedUp: PropTypes.bool.isRequired,
   onConfirm: PropTypes.func.isRequired,
 };

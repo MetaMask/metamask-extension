@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Meta } from '@storybook/react';
-import { processSnapNotifications } from './snap/utils/utils';
 import { Box } from '../../components/component-library';
 import {
   createMockNotificationEthSent,
@@ -19,24 +18,14 @@ import {
   createMockNotificationRocketPoolStakeCompleted,
   createMockNotificationRocketPoolUnStakeCompleted,
   createMockFeatureAnnouncementRaw,
+  createMockSnapNotification,
+  createMockPlatformNotification,
 } from '@metamask/notification-services-controller/notification-services/mocks';
-import type { SnapNotification } from './snap/types/types';
-import { SnapComponent } from './notification-components/snap/snap';
 import { NotificationsListItem } from './notifications-list-item';
-import { NotificationServicesController } from '@metamask/notification-services-controller';
-
-type Notification = NotificationServicesController.Types.INotification;
-const { processNotification } = NotificationServicesController.Processors;
-
-const snapNotifications = processSnapNotifications([
-  {
-    createdDate: 1728380597788,
-    id: 'TRYkTTkpGf1BqhajRQz8h',
-    message: 'Hello from within MetaMask!',
-    origin: 'npm:@metamask/notification-example-snap',
-    readDate: undefined,
-  },
-]);
+import {
+  type INotification,
+  processNotification,
+} from '@metamask/notification-services-controller/notification-services';
 
 const notificationMocks = {
   EthSent: createMockNotificationEthSent,
@@ -55,9 +44,16 @@ const notificationMocks = {
   RocketPoolStakeCompleted: createMockNotificationRocketPoolStakeCompleted,
   RocketPoolUnStakeCompleted: createMockNotificationRocketPoolUnStakeCompleted,
   FeatureAnnouncement: createMockFeatureAnnouncementRaw,
+  Snap: () => {
+    const mock = createMockSnapNotification();
+    // TODO(hmalik88): the mock's origin should be fixed upstream
+    mock.data.origin = 'npm:@metamask/example-snap';
+    return mock;
+  },
+  Platform: createMockPlatformNotification,
 } as const;
 
-const notifications: Notification[] = Object.values(notificationMocks).map(
+const notifications: INotification[] = Object.values(notificationMocks).map(
   (createMock) => processNotification(createMock()),
 );
 
@@ -67,7 +63,7 @@ export default {
 } as Meta;
 
 const NotificationItemWrapper: React.FC<{
-  notification: Notification;
+  notification: INotification;
   onRead: (id: string) => void;
 }> = ({ notification, onRead }) => {
   const handleCustomNotificationClick = () => {
@@ -81,25 +77,8 @@ const NotificationItemWrapper: React.FC<{
   );
 };
 
-const SnapNotificationWrapper: React.FC<{
-  snapNotification: SnapNotification;
-  onRead: (id: string) => void;
-}> = ({ snapNotification, onRead }) => {
-  const handleSnapNotificationClick = () => {
-    onRead(snapNotification.id);
-  };
-
-  return (
-    <div onClick={handleSnapNotificationClick}>
-      <SnapComponent snapNotification={snapNotification} />
-    </div>
-  );
-};
-
 const Template = () => {
   const [notificationList, setNotificationList] = useState(notifications);
-  const [snapNotificationList, setSnapNotificationList] =
-    useState(snapNotifications);
 
   const markAsRead = (id: string) => {
     setNotificationList((prevNotifications) =>
@@ -111,16 +90,6 @@ const Template = () => {
     );
   };
 
-  const markSnapAsRead = (id: string) => {
-    setSnapNotificationList((prevSnapNotifications) =>
-      prevSnapNotifications.map((snapNotification) =>
-        snapNotification.id === id
-          ? { ...snapNotification, readDate: Date.now() }
-          : snapNotification,
-      ),
-    );
-  };
-
   return (
     <Box marginLeft={'auto'} marginRight={'auto'}>
       {notificationList.map((notification) => (
@@ -128,13 +97,6 @@ const Template = () => {
           key={notification.id}
           notification={notification}
           onRead={markAsRead} // Pass the markAsRead function
-        />
-      ))}
-      {snapNotificationList.map((snapNotification) => (
-        <SnapNotificationWrapper
-          key={snapNotification.id}
-          snapNotification={snapNotification}
-          onRead={markSnapAsRead} // Pass the markSnapAsRead function
         />
       ))}
     </Box>

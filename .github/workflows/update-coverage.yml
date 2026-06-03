@@ -15,6 +15,7 @@ jobs:
     if: ${{ needs.run-tests.outputs.current-coverage > needs.run-tests.outputs.stored-coverage }}
     name: Update coverage
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs:
       - run-tests
     env:
@@ -22,7 +23,7 @@ jobs:
       STORED_COVERAGE: ${{ needs.run-tests.outputs.stored-coverage }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
 
@@ -43,4 +44,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
         run: |
-          gh pr create --title "chore: Update coverage.json" --body "This PR is automatically opened to update the coverage.json file when test coverage increases. Coverage increased from $STORED_COVERAGE% to $CURRENT_COVERAGE%." --base develop --head metamaskbot/update-coverage || gh pr edit --body "This PR is automatically opened to update the coverage.json file when test coverage increases. Coverage increased from $STORED_COVERAGE% to $CURRENT_COVERAGE%."
+          gh pr create --title "chore: Update coverage.json" --body "This PR is automatically opened to update the coverage.json file when test coverage increases. Coverage increased from $STORED_COVERAGE% to $CURRENT_COVERAGE%." --base main --head metamaskbot/update-coverage || gh pr edit --body "This PR is automatically opened to update the coverage.json file when test coverage increases. Coverage increased from $STORED_COVERAGE% to $CURRENT_COVERAGE%."

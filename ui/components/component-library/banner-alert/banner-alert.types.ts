@@ -11,8 +11,7 @@ export enum BannerAlertSeverity {
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export interface BannerAlertStyleUtilityProps
-  extends BannerBaseStyleUtilityProps {
+export interface BannerAlertStyleUtilityProps extends BannerBaseStyleUtilityProps {
   /**
    * An additional className to apply to the Banner
    */
@@ -24,9 +23,13 @@ export interface BannerAlertStyleUtilityProps
   severity?: BannerAlertSeverity;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type BannerAlertProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, BannerAlertStyleUtilityProps>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type BannerAlertComponent = <C extends React.ElementType = 'div'>(
   props: BannerAlertProps<C>,
 ) => React.ReactElement | null;

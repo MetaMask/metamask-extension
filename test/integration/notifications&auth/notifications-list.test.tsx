@@ -21,7 +21,6 @@ import {
 jest.mock('../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
-  callBackgroundMethod: jest.fn(),
 }));
 
 const backgroundConnectionMocked = {
@@ -35,7 +34,7 @@ const setupSubmitRequestToBackgroundMocks = (
 ) => {
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
-      ...(mockRequests ?? {}),
+      ...mockRequests,
     }),
   );
 };
@@ -64,7 +63,7 @@ describe('Notifications List', () => {
   });
 
   afterEach(() => {
-    window.history.pushState({}, '', '/'); // return to homescreen
+    window.location.hash = '#/'; // return to homescreen
   });
 
   it('should show the correct number of unread notifications on the badge', async () => {
@@ -77,8 +76,8 @@ describe('Notifications List', () => {
       });
     });
 
-    await waitFor(() => {
-      const unreadCount = screen.getByTestId(
+    await waitFor(async () => {
+      const unreadCount = await screen.findByTestId(
         'notifications-tag-counter__unread-dot',
       );
       expect(unreadCount).toBeInTheDocument();
@@ -91,35 +90,44 @@ describe('Notifications List', () => {
 
     await act(async () => {
       await integrationTestRender({
-        preloadedState: mockedState,
+        preloadedState: {
+          ...mockedState,
+          participateInMetaMetrics: true,
+          dataCollectionForMarketing: false,
+        },
         backgroundConnection: backgroundConnectionMocked,
       });
     });
 
-    fireEvent.click(screen.getByTestId('account-options-menu-button'));
+    fireEvent.click(await screen.findByTestId('account-options-menu-button'));
 
-    await waitFor(() => {
-      expect(screen.getByTestId('notifications-menu-item')).toBeInTheDocument();
-      fireEvent.click(screen.getByTestId('notifications-menu-item'));
+    await waitFor(async () => {
+      expect(
+        await screen.findByTestId('notifications-menu-item'),
+      ).toBeInTheDocument();
+      fireEvent.click(await screen.findByTestId('notifications-menu-item'));
     });
 
-    await waitFor(() => {
-      const notificationsList = screen.getByTestId('notifications-list');
+    await waitFor(async () => {
+      const notificationsList = await screen.findByTestId('notifications-list');
       expect(notificationsList).toBeInTheDocument();
       expect(notificationsList.childElementCount).toBe(3);
 
       // Feature notification details
       expect(
-        within(notificationsList).getByText(featureNotification.data.title),
+        await within(notificationsList).findByText(
+          featureNotification.data.title,
+        ),
       ).toBeInTheDocument();
       expect(
-        within(notificationsList).getByText(
+        await within(notificationsList).findByText(
           featureNotification.data.shortDescription,
         ),
       ).toBeInTheDocument();
 
       // Eth sent notification details
-      const sentToElement = within(notificationsList).getByText('Sent to');
+      const sentToElement =
+        await within(notificationsList).findByText('Sent to');
       expect(sentToElement).toBeInTheDocument();
 
       const addressElement = sentToElement.nextElementSibling;
@@ -127,12 +135,12 @@ describe('Notifications List', () => {
 
       // Read all button
       expect(
-        within(notificationsList).getByTestId(
+        await within(notificationsList).findByTestId(
           'notifications-list-read-all-button',
         ),
       ).toBeInTheDocument();
 
-      const unreadDot = screen.getAllByTestId('unread-dot');
+      const unreadDot = await screen.findAllByTestId('unread-dot');
       expect(unreadDot).toHaveLength(2);
     });
 
@@ -163,7 +171,11 @@ describe('Notifications List', () => {
       );
 
       expect(metricsEvent.properties).toMatchObject({
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         unread_count: 2,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         read_count: 0,
       });
     });
@@ -178,17 +190,18 @@ describe('Notifications List', () => {
         backgroundConnection: backgroundConnectionMocked,
       });
 
-      fireEvent.click(screen.getByTestId('account-options-menu-button'));
+      fireEvent.click(await screen.findByTestId('account-options-menu-button'));
 
-      await waitFor(() => {
+      await waitFor(async () => {
         expect(
-          screen.getByTestId('notifications-menu-item'),
+          await screen.findByTestId('notifications-menu-item'),
         ).toBeInTheDocument();
-        fireEvent.click(screen.getByTestId('notifications-menu-item'));
+        fireEvent.click(await screen.findByTestId('notifications-menu-item'));
       });
 
-      await waitFor(() => {
-        const notificationsList = screen.getByTestId('notifications-list');
+      await waitFor(async () => {
+        const notificationsList =
+          await screen.findByTestId('notifications-list');
         expect(notificationsList).toBeInTheDocument();
 
         expect(notificationsList.childElementCount).toBe(2);
@@ -211,14 +224,18 @@ describe('Notifications List', () => {
       });
     });
 
-    fireEvent.click(screen.getByTestId('account-options-menu-button'));
+    fireEvent.click(await screen.findByTestId('account-options-menu-button'));
 
-    await waitFor(() => {
-      expect(screen.getByTestId('notifications-menu-item')).toBeInTheDocument();
-      fireEvent.click(screen.getByTestId('notifications-menu-item'));
+    await waitFor(async () => {
+      expect(
+        await screen.findByTestId('notifications-menu-item'),
+      ).toBeInTheDocument();
+      fireEvent.click(await screen.findByTestId('notifications-menu-item'));
     });
 
-    fireEvent.click(screen.getByTestId('notifications-list-read-all-button'));
+    fireEvent.click(
+      await screen.findByTestId('notifications-list-read-all-button'),
+    );
 
     await waitFor(() => {
       const markAllAsReadEvent =

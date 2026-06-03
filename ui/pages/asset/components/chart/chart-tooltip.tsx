@@ -1,18 +1,14 @@
 import React from 'react';
 // @ts-expect-error suppress CommonJS vs ECMAScript error
 import { Point } from 'chart.js';
-import {
-  Box,
-  Text,
-  TextDirection,
-} from '../../../../components/component-library';
-import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
+import { Box } from '@metamask/design-system-react';
+import { Text, TextDirection } from '../../../../components/component-library';
+import { useFormatters } from '../../../../hooks/useFormatters';
 import {
   TextAlign,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { getPricePrecision } from '../../util';
 
 // A label indicating the minimum or maximum price on the chart
 const ChartTooltip = ({
@@ -22,12 +18,13 @@ const ChartTooltip = ({
   currency,
 }: {
   point?: Point;
-  xMin?: Point;
-  xMax?: Point;
+  xMin?: number;
+  xMax?: number;
   currency: string;
 }) => {
+  const { formatCurrencyTokenPrice } = useFormatters();
   const xAxisPercent =
-    point && xMin && xMax ? (point.x - xMin.x) / (xMax.x - xMin.x) : 0;
+    point && xMin && xMax ? (point.x - xMin) / (xMax - xMin) : 0;
 
   return (
     <Box
@@ -44,17 +41,15 @@ const ChartTooltip = ({
       <Text
         marginLeft={4}
         marginRight={4}
-        variant={TextVariant.bodySmMedium}
+        marginBottom={1}
+        marginTop={1}
+        variant={TextVariant.bodyXsMedium}
         color={TextColor.textAlternative}
         textAlign={TextAlign.Center}
       >
         {point?.y === undefined
           ? '\u00A0'
-          : formatCurrency(
-              `${point?.y}`,
-              currency,
-              getPricePrecision(point?.y),
-            )}
+          : formatCurrencyTokenPrice(point?.y, currency)}
       </Text>
     </Box>
   );

@@ -1,107 +1,61 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-
+import { useNavigate } from 'react-router-dom';
+import { Box, BoxJustifyContent } from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
-import {
-  SEND_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  PREPARE_SWAP_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../helpers/constants/routes';
-import { startNewDraftTransaction } from '../../../ducks/send';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import { isHardwareKeyring } from '../../../helpers/utils/hardware';
-import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
-///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import {
-  getMmiPortfolioEnabled,
-  getMmiPortfolioUrl,
-} from '../../../selectors/institutional/selectors';
-///: END:ONLY_INCLUDE_IF
-import {
-  getIsSwapsChain,
-  getCurrentChainId,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  getIsBridgeChain,
-  getCurrentKeyring,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../selectors';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import { getUseExternalServices } from '../../../selectors';
 import useBridging from '../../../hooks/bridge/useBridging';
-///: END:ONLY_INCLUDE_IF
 
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 import { showModal } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { AssetType } from '../../../../shared/constants/transaction';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsSwapsEventSource,
 } from '../../../../shared/constants/metametrics';
-import { AssetType } from '../../../../shared/constants/transaction';
-import {
-  Display,
-  IconColor,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
+import { IconColor } from '../../../helpers/constants/design-system';
 import IconButton from '../../../components/ui/icon-button/icon-button';
 import {
-  Box,
   Icon,
   IconName,
   IconSize,
 } from '../../../components/component-library';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
-///: END:ONLY_INCLUDE_IF
-import { Asset } from './asset-page';
+
+import { Asset } from '../types/asset';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
+import { navigateToSendRoute } from '../../confirmations/utils/send';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 
 const TokenButtons = ({
   token,
+  disableSendForNonEvm = false,
+  isMarketClosed = false,
 }: {
   token: Asset & { type: AssetType.token };
+  /** When true, disables the send button for non-EVM chains (used on asset page) */
+  disableSendForNonEvm?: boolean;
+  /** When true, disables the swap button because the stock market is closed */
+  isMarketClosed?: boolean;
 }) => {
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
-  const trackEvent = useContext(MetaMetricsContext);
-  const history = useHistory();
+  const { trackEvent } = useContext(MetaMetricsContext);
+  const navigate = useNavigate();
+  const isExternalServicesEnabled = useSelector(getUseExternalServices);
+  const isEvm = isEvmChainId(token.chainId);
+  const shouldShowSendButton = Boolean(
+    token.balance?.value && token.balance.value !== '0',
+  );
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  const keyring = useSelector(getCurrentKeyring);
-  // @ts-expect-error keyring type is wrong maybe?
-  const usingHardwareWallet = isHardwareKeyring(keyring.type);
-  ///: END:ONLY_INCLUDE_IF
+  const currentChainId = token.chainId;
 
-  const chainId = useSelector(getCurrentChainId);
-  const isSwapsChain = useSelector(getIsSwapsChain);
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  const isBridgeChain = useSelector(getIsBridgeChain);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const { openBuyCryptoInPdapp } = useRamps();
   const { openBridgeExperience } = useBridging();
-  ///: END:ONLY_INCLUDE_IF
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
-  const mmiPortfolioUrl = useSelector(getMmiPortfolioUrl);
-
-  const portfolioEvent = () => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.MMIPortfolioButtonClicked,
-    });
-  };
-
-  const stakingEvent = () => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.MMIPortfolioButtonClicked,
-    });
-  };
-  ///: END:ONLY_INCLUDE_IF
 
   useEffect(() => {
     if (token.isERC721) {
@@ -114,211 +68,115 @@ const TokenButtons = ({
     }
   }, [token.isERC721, token.address, dispatch]);
 
-  return (
-    <Box display={Display.Flex} justifyContent={JustifyContent.spaceEvenly}>
+  const handleBuyAndSellOnClick = useCallback(() => {
+    openBuyCryptoInPdapp();
+    trackEvent({
+      event: MetaMetricsEventName.NavBuyButtonClicked,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: {
+        location: 'Token Overview',
+        text: 'Buy',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        chain_id: currentChainId,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        token_symbol: token.symbol,
+      },
+    });
+  }, [currentChainId, token.symbol, trackEvent, openBuyCryptoInPdapp]);
+
+  const handleSendOnClick = useCallback(async () => {
+    trackEvent(
       {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+        event: MetaMetricsEventName.SendStarted,
+        category: MetaMetricsEventCategory.Navigation,
+        properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_symbol: token.symbol,
+          location: MetaMetricsSwapsEventSource.TokenView,
+          text: 'Send',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: token.chainId,
+        },
+      },
+      { excludeMetaMetricsId: false },
+    );
+
+    try {
+      navigateToSendRoute(navigate, {
+        address: token.address,
+        chainId: token.chainId,
+      });
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      if (!err.message.includes(INVALID_ASSET_TYPE)) {
+        throw err;
+      }
+    }
+  }, [trackEvent, navigate, token]);
+
+  const handleSwapOnClick = useCallback(async () => {
+    openBridgeExperience(MetaMetricsSwapsEventSource.TokenView, token);
+  }, [token, openBridgeExperience]);
+
+  return (
+    <Box className="flex" gap={3} justifyContent={BoxJustifyContent.Evenly}>
+      <IconButton
+        className="token-overview__button"
+        Icon={
+          <Icon
+            name={IconName.Dollar}
+            color={IconColor.iconAlternative}
+            size={IconSize.Md}
+          />
+        }
+        label={t('buy')}
+        data-testid="token-overview-buy"
+        onClick={handleBuyAndSellOnClick}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+        disabled={token.isERC721 || !isBuyableChain}
+      />
+
+      {shouldShowSendButton ? (
         <IconButton
           className="token-overview__button"
+          onClick={handleSendOnClick}
           Icon={
             <Icon
-              name={IconName.PlusMinus}
-              color={IconColor.primaryInverse}
-              size={IconSize.Sm}
+              name={IconName.Send}
+              color={IconColor.iconAlternative}
+              size={IconSize.Md}
             />
           }
-          label={t('buyAndSell')}
-          data-testid="token-overview-buy"
-          onClick={() => {
-            openBuyCryptoInPdapp();
-            trackEvent({
-              event: MetaMetricsEventName.NavBuyButtonClicked,
-              category: MetaMetricsEventCategory.Navigation,
-              properties: {
-                location: 'Token Overview',
-                text: 'Buy',
-                chain_id: chainId,
-                token_symbol: token.symbol,
-              },
-            });
-          }}
-          disabled={token.isERC721 || !isBuyableChain}
-          tooltipRender={null}
+          label={t('send')}
+          data-testid="eth-overview-send"
+          disabled={
+            token.isERC721 ||
+            (disableSendForNonEvm && !isEvm && !isExternalServicesEnabled)
+          }
         />
-        ///: END:ONLY_INCLUDE_IF
-      }
-
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        <>
-          <IconButton
-            className="eth-overview__button"
-            Icon={
-              <Icon
-                name={IconName.Stake}
-                color={IconColor.primaryInverse}
-                size={IconSize.Sm}
-              />
-            }
-            label={t('stake')}
-            data-testid="token-overview-mmi-stake"
-            tooltipRender={null}
-            onClick={() => {
-              stakingEvent();
-              global.platform.openTab({
-                url: `${mmiPortfolioUrl}/stake`,
-              });
-            }}
-          />
-          {mmiPortfolioEnabled && (
-            <IconButton
-              className="eth-overview__button"
-              Icon={
-                <Icon
-                  name={IconName.Diagram}
-                  color={IconColor.primaryInverse}
-                  size={IconSize.Sm}
-                />
-              }
-              label={t('portfolio')}
-              data-testid="token-overview-mmi-portfolio"
-              tooltipRender={null}
-              onClick={() => {
-                portfolioEvent();
-                global.platform.openTab({
-                  url: mmiPortfolioUrl,
-                });
-              }}
-            />
-          )}
-        </>
-        ///: END:ONLY_INCLUDE_IF
-      }
+      ) : null}
 
       <IconButton
         className="token-overview__button"
-        onClick={async () => {
-          trackEvent(
-            {
-              event: MetaMetricsEventName.NavSendButtonClicked,
-              category: MetaMetricsEventCategory.Navigation,
-              properties: {
-                token_symbol: token.symbol,
-                location: MetaMetricsSwapsEventSource.TokenView,
-                text: 'Send',
-                chain_id: chainId,
-              },
-            },
-            { excludeMetaMetricsId: false },
-          );
-          try {
-            await dispatch(
-              startNewDraftTransaction({
-                type: AssetType.token,
-                details: token,
-              }),
-            );
-            history.push(SEND_ROUTE);
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          } catch (err: any) {
-            if (!err.message.includes(INVALID_ASSET_TYPE)) {
-              throw err;
-            }
-          }
-        }}
         Icon={
           <Icon
-            name={IconName.Arrow2UpRight}
-            color={IconColor.primaryInverse}
-            size={IconSize.Sm}
+            name={IconName.SwapVertical}
+            color={IconColor.iconAlternative}
+            size={IconSize.Md}
           />
         }
-        label={t('send')}
-        data-testid="eth-overview-send"
-        disabled={token.isERC721}
-        tooltipRender={null}
+        onClick={handleSwapOnClick}
+        data-testid="token-overview-swap"
+        label={t('swap')}
+        disabled={!isExternalServicesEnabled || isMarketClosed}
       />
-      {isSwapsChain && (
-        <IconButton
-          className="token-overview__button"
-          Icon={
-            <Icon
-              name={IconName.SwapHorizontal}
-              color={IconColor.primaryInverse}
-              size={IconSize.Sm}
-            />
-          }
-          onClick={() => {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-            global.platform.openTab({
-              url: `${mmiPortfolioUrl}/swap`,
-            });
-            ///: END:ONLY_INCLUDE_IF
-
-            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-            trackEvent({
-              event: MetaMetricsEventName.NavSwapButtonClicked,
-              category: MetaMetricsEventCategory.Swaps,
-              properties: {
-                token_symbol: token.symbol,
-                location: MetaMetricsSwapsEventSource.TokenView,
-                text: 'Swap',
-                chain_id: chainId,
-              },
-            });
-            dispatch(
-              setSwapsFromToken({
-                ...token,
-                address: token.address.toLowerCase(),
-                iconUrl: token.image,
-                balance: token.balance.value,
-                string: token.balance.display,
-              }),
-            );
-            if (usingHardwareWallet) {
-              global.platform.openExtensionInBrowser?.(
-                PREPARE_SWAP_ROUTE,
-                undefined,
-                false,
-              );
-            } else {
-              history.push(PREPARE_SWAP_ROUTE);
-            }
-            ///: END:ONLY_INCLUDE_IF
-          }}
-          label={t('swap')}
-          tooltipRender={null}
-        />
-      )}
-
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-        isBridgeChain && (
-          <IconButton
-            className="token-overview__button"
-            data-testid="token-overview-bridge"
-            Icon={
-              <Icon
-                name={IconName.Bridge}
-                color={IconColor.primaryInverse}
-                size={IconSize.Sm}
-              />
-            }
-            label={t('bridge')}
-            onClick={() => {
-              openBridgeExperience(MetaMetricsSwapsEventSource.TokenView, {
-                ...token,
-                iconUrl: token.image,
-                balance: token.balance.value,
-                string: token.balance.display,
-                name: token.name ?? '',
-              });
-            }}
-            tooltipRender={null}
-          />
-        )
-        ///: END:ONLY_INCLUDE_IF
-      }
     </Box>
   );
 };

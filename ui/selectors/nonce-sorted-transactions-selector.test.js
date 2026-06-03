@@ -28,6 +28,7 @@ const INCOMING_TX = {
     to: SENDERS.ONE,
   },
   chainId: CHAIN_IDS.MAINNET,
+  networkClientId: 'mainnet',
 };
 
 const SIGNING_REQUEST = {
@@ -35,6 +36,7 @@ const SIGNING_REQUEST = {
   id: '0-signing',
   status: TransactionStatus.unapproved,
   chainId: CHAIN_IDS.MAINNET,
+  networkClientId: 'mainnet',
 };
 
 const SIMPLE_SEND_TX = {
@@ -45,6 +47,7 @@ const SIMPLE_SEND_TX = {
   },
   type: TransactionType.simpleSend,
   chainId: CHAIN_IDS.MAINNET,
+  networkClientId: 'mainnet',
 };
 
 const TOKEN_SEND_TX = {
@@ -57,6 +60,7 @@ const TOKEN_SEND_TX = {
   },
   type: TransactionType.tokenMethodTransfer,
   chainId: CHAIN_IDS.MAINNET,
+  networkClientId: 'mainnet',
 };
 
 const RETRY_TX = {
@@ -64,6 +68,7 @@ const RETRY_TX = {
   id: '0-retry',
   type: TransactionType.retry,
   chainId: CHAIN_IDS.MAINNET,
+  networkClientId: 'mainnet',
 };
 
 const CANCEL_TX = {
@@ -75,6 +80,7 @@ const CANCEL_TX = {
   },
   type: TransactionType.cancel,
   chainId: CHAIN_IDS.MAINNET,
+  networkClientId: 'mainnet',
 };
 
 const getStateTree = ({
@@ -105,7 +111,6 @@ const getStateTree = ({
     },
     featureFlags: {},
     transactions: [...incomingTxList, ...txList],
-    incomingTransactionsPreferences: {},
   },
 });
 

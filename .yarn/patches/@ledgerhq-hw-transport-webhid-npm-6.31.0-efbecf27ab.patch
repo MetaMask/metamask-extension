@@ -1,0 +1,13 @@
+diff --git a/lib/TransportWebHID.js b/lib/TransportWebHID.js
+index 469201bac579148c77a13a64209457a602a78c6a..d56265cdc51b5c0f3b5d874a892fb7c9f3c1bca5 100644
+--- a/lib/TransportWebHID.js
++++ b/lib/TransportWebHID.js
+@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
+ };
+ Object.defineProperty(exports, "__esModule", { value: true });
+ const hw_transport_1 = __importDefault(require("@ledgerhq/hw-transport"));
+-const hid_framing_1 = __importDefault(require("@ledgerhq/devices/hid-framing"));
++const hid_framing_1 = __importDefault(require("@ledgerhq/devices/lib/hid-framing"));
+ const devices_1 = require("@ledgerhq/devices");
+ const logs_1 = require("@ledgerhq/logs");
+ const errors_1 = require("@ledgerhq/errors");

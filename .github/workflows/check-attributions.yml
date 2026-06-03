@@ -2,24 +2,19 @@ name: Check Attributions
 
 on:
   push:
-    branches: Version-v*
-  pull_request:
-    branches: Version-v*
-    types:
-      - opened
-      - reopened
-      - synchronize
-      - ready_for_review
+    branches:
+      - release/*
 
 jobs:
   check-attributions:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
 
       - name: Check attributions changes
         run: yarn attributions:check

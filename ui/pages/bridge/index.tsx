@@ -1,105 +1,155 @@
-import React, { useContext, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Switch, useHistory } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { Route, Routes } from 'react-router-dom';
+import { isNonEvmChainId } from '@metamask/bridge-controller';
 import { I18nContext } from '../../contexts/i18n';
-import { clearSwapsState } from '../../ducks/swaps/swaps';
 import {
-  DEFAULT_ROUTE,
-  SWAPS_MAINTENANCE_ROUTE,
   PREPARE_SWAP_ROUTE,
-  CROSS_CHAIN_SWAP_ROUTE,
+  AWAITING_SIGNATURES_ROUTE,
 } from '../../helpers/constants/routes';
-import { resetBackgroundSwapsState } from '../../store/actions';
-import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
+import { toRelativeRoutePath } from '../routes/utils';
 import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
 } from '../../components/component-library';
-import { getIsBridgeChain, getIsBridgeEnabled } from '../../selectors';
+import { getSelectedNetworkClientId } from '../../../shared/lib/selectors/networks';
 import useBridging from '../../hooks/bridge/useBridging';
 import {
   Content,
   Footer,
   Header,
+  Page,
 } from '../../components/multichain/pages/page';
-import { getProviderConfig } from '../../ducks/metamask/metamask';
-import { resetInputFields, setFromChain } from '../../ducks/bridge/actions';
+import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
+import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRates';
+import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
+import { TextVariant } from '../../helpers/constants/design-system';
+import { useTxAlerts } from '../../hooks/bridge/useTxAlerts';
+import { getFromChain } from '../../ducks/bridge/selectors';
+import { useBridgeNavigation } from '../../hooks/bridge/useBridgeNavigation';
+import { usePrefillFromSearchQuery } from '../../hooks/bridge/usePrefillFromSearchQuery';
+import { usePrefillFromBridgeState } from '../../hooks/bridge/usePrefillFromBridgeState';
+import { useSmartSlippage } from '../../hooks/bridge/useSmartSlippage';
+import { transitionBack } from '../../components/ui/transition';
+import { useInitialBridgeTokens } from '../../hooks/bridge/useInitialBridgeTokens';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
-import { BridgeCTAButton } from './prepare/bridge-cta-button';
+import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
+import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
+import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
+import { useRefreshSmartTransactionsLiveness } from './hooks/useRefreshSmartTransactionsLiveness';
+import { clearAllBridgeCacheItems } from './utils/cache';
 
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
 
   useBridging();
 
-  const history = useHistory();
-  const dispatch = useDispatch();
+  const { navigateToDefaultRoute } = useBridgeNavigation();
+  // Pre-fill the src chain balances, slippage and other quote params before rendering the bridge page
+  // This also resets any search query parameters and navigation states
+  usePrefillFromSearchQuery();
+  usePrefillFromBridgeState();
+  useSmartSlippage();
 
-  const isBridgeEnabled = useSelector(getIsBridgeEnabled);
-  const providerConfig = useSelector(getProviderConfig);
-  const isBridgeChain = useSelector(getIsBridgeChain);
+  const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
 
+  // Get chain information to determine if we need gas estimates
+  const fromChain = useSelector(getFromChain);
+
+  // Refresh smart transactions liveness for the source chain
+  useRefreshSmartTransactionsLiveness(fromChain?.chainId);
+
+  // Only fetch gas estimates if the source chain is EVM (not Solana, Bitcoin, or Tron)
+  const shouldFetchGasEstimates =
+    fromChain?.chainId && !isNonEvmChainId(fromChain.chainId);
+
+  // Needed for refreshing gas estimates (only for EVM chains)
+  useGasFeeEstimates(selectedNetworkClientId, shouldFetchGasEstimates);
+  // Needed for fetching exchange rates for tokens that have not been imported
+  useBridgeExchangeRates();
+  // Emits events related to quote-fetching
+  useQuoteFetchEvents();
+  // Sets tx alerts for the active quote
+  useTxAlerts();
+
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+
+  // Pre-fetch the popular tokens list
+  const { fetchTokens } = useInitialBridgeTokens();
   useEffect(() => {
-    isBridgeChain &&
-      isBridgeEnabled &&
-      providerConfig &&
-      dispatch(setFromChain(providerConfig.chainId));
-
+    fetchTokens();
     return () => {
-      dispatch(resetInputFields());
+      clearAllBridgeCacheItems();
     };
-  }, [isBridgeChain, isBridgeEnabled, providerConfig]);
+  }, [fetchTokens]);
 
-  const redirectToDefaultRoute = async () => {
-    history.push({
-      pathname: DEFAULT_ROUTE,
-      state: { stayOnHomePage: true },
-    });
-    dispatch(clearSwapsState());
-    await dispatch(resetBackgroundSwapsState());
+  const handleBack = () => {
+    transitionBack(() => navigateToDefaultRoute());
   };
 
   return (
-    <div className="bridge">
-      <div className="bridge__container">
-        <Header
-          className="bridge__header"
-          startAccessory={
-            <ButtonIcon
-              iconName={IconName.ArrowLeft}
-              size={ButtonIconSize.Sm}
-              ariaLabel={t('back')}
-              onClick={redirectToDefaultRoute}
-            />
-          }
-          endAccessory={
-            <ButtonIcon
-              iconName={IconName.Setting}
-              size={ButtonIconSize.Sm}
-              ariaLabel={t('settings')}
-            />
-          }
-        >
-          {t('bridge')}
-        </Header>
-        <Content className="bridge__content">
-          <Switch>
-            <FeatureToggledRoute
-              redirectRoute={SWAPS_MAINTENANCE_ROUTE}
-              flag={isBridgeEnabled}
-              path={CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE}
-              render={() => {
-                return <PrepareBridgePage />;
-              }}
-            />
-          </Switch>
-        </Content>
-        <Footer>
-          <BridgeCTAButton />
-        </Footer>
-      </div>
-    </div>
+    <Page className="bridge__container">
+      <Header
+        textProps={{ variant: TextVariant.headingSm }}
+        startAccessory={
+          <ButtonIcon
+            iconName={IconName.ArrowLeft}
+            size={ButtonIconSize.Sm}
+            ariaLabel={t('back')}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            onClick={handleBack}
+          />
+        }
+        endAccessory={
+          <ButtonIcon
+            iconName={IconName.Setting}
+            size={ButtonIconSize.Sm}
+            ariaLabel={t('settings')}
+            data-testid="bridge__header-settings-button"
+            onClick={() => {
+              setIsSettingsModalOpen(true);
+            }}
+          />
+        }
+      >
+        {t('swap')}
+      </Header>
+      <Content padding={0}>
+        <Routes>
+          <Route
+            path={toRelativeRoutePath(PREPARE_SWAP_ROUTE)}
+            element={
+              <>
+                <BridgeTransactionSettingsModal
+                  isOpen={isSettingsModalOpen}
+                  onClose={() => {
+                    setIsSettingsModalOpen(false);
+                  }}
+                />
+                <PrepareBridgePage
+                  onOpenSettings={() => setIsSettingsModalOpen(true)}
+                />
+              </>
+            }
+          />
+          <Route
+            path={toRelativeRoutePath(AWAITING_SIGNATURES_ROUTE)}
+            element={
+              <>
+                <Content>
+                  <AwaitingSignatures />
+                </Content>
+                <Footer>
+                  <AwaitingSignaturesCancelButton />
+                </Footer>
+              </>
+            }
+          />
+        </Routes>
+      </Content>
+    </Page>
   );
 };
 

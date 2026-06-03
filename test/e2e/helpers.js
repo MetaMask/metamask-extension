@@ -1,29 +1,40 @@
-const { strict: assert } = require('assert');
 const path = require('path');
 const { promises: fs, writeFileSync, readFileSync } = require('fs');
 const BigNumber = require('bignumber.js');
 const mockttp = require('mockttp');
 const detectPort = require('detect-port');
 const { difference } = require('lodash');
+const WebSocket = require('ws');
 const createStaticServer = require('../../development/create-static-server');
-const { tEn } = require('../lib/i18n-helpers');
 const { setupMocking } = require('./mock-e2e');
-const { Ganache } = require('./seeder/ganache');
-const FixtureServer = require('./fixture-server');
+const { setupMockingPassThrough } = require('./mock-e2e-pass-through');
+const FixtureServer = require('./fixtures/fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
 const { PAGES } = require('./webdriver/driver');
-const GanacheSeeder = require('./seeder/ganache-seeder');
 const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { setManifestFlags } = require('./set-manifest-flags');
-const {
-  ERC_4337_ACCOUNT,
-  DEFAULT_GANACHE_ETH_BALANCE_DEC,
-} = require('./constants');
+const { DAPP_PATHS, ERC_4337_ACCOUNT } = require('./constants');
 const {
   getServerMochaToBackground,
 } = require('./background-socket/server-mocha-to-background');
+const WebSocketRegistry = require('./websocket/registry').default;
+const { solanaWebSocketConfig } = require('./websocket/solana-mocks');
+const {
+  accountActivityWebSocketConfig,
+} = require('./websocket/account-activity-mocks');
+const { perpsWebSocketConfig } = require('./websocket/perps-mocks');
+const { WEBSOCKET_SERVICES } = require('./websocket/constants');
+const {
+  addVirtualAuthenticator,
+  removeVirtualAuthenticator,
+} = require('./webdriver/virtual-authenticator');
+
+// Register each WebSocket service explicitly.
+WebSocketRegistry.register(solanaWebSocketConfig);
+WebSocketRegistry.register(accountActivityWebSocketConfig);
+WebSocketRegistry.register(perpsWebSocketConfig);
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -41,56 +52,150 @@ const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
 const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 
 /**
+ * Normalizes the localNodeOptions into a consistent format to handle different data structures.
+ * Case 1: A string: localNodeOptions = 'anvil'
+ * Case 2: Array of strings: localNodeOptions = ['anvil', 'bitcoin']
+ * Case 3: Array of objects: localNodeOptions =
+ * [
+ *  { type: 'anvil', options: {anvilOpts}},
+ *  { type: 'bitcoin',options: {bitcoinOpts}},
+ * ]
+ * Case 4: Options object without type: localNodeOptions = {options}
+ *
+ * @param {string | object | Array} localNodeOptions - The input local node options.
+ * @returns {Array} The normalized local node options.
+ */
+function normalizeLocalNodeOptions(localNodeOptions) {
+  if (typeof localNodeOptions === 'string') {
+    // Case 1: Passing a string
+    return [{ type: localNodeOptions, options: {} }];
+  } else if (Array.isArray(localNodeOptions)) {
+    return localNodeOptions.map((node) => {
+      if (typeof node === 'string') {
+        // Case 2: Array of strings
+        return { type: node, options: {} };
+      }
+      if (typeof node === 'object' && node !== null) {
+        // Case 3: Array of objects
+        return {
+          type: node.type || 'anvil',
+          options: node.options || {},
+        };
+      }
+      throw new Error(`Invalid localNodeOptions entry: ${node}`);
+    });
+  }
+  if (typeof localNodeOptions === 'object' && localNodeOptions !== null) {
+    // Case 4: Passing an options object without type
+    return [
+      {
+        type: 'anvil',
+        options: localNodeOptions,
+      },
+    ];
+  }
+  throw new Error(`Invalid localNodeOptions type: ${typeof localNodeOptions}`);
+}
+
+/**
+ * Normalizes the smartContract option into a consistent format to handle different data structures.
+ * Examples:
+ * // Case 1: Single string: SMART_CONTRACTS.HST
+ * // Case 2: Array of strings: [SMART_CONTRACTS.HST, SMART_CONTRACTS.NFTS]
+ * // Case 3: Object with deployer options: { name: SMART_CONTRACTS.HST, deployerOptions: { fromAddress: '0x...' } }
+ * // Case 4: Mixed array: [SMART_CONTRACTS.HST, { name: SMART_CONTRACTS.NFTS, deployerOptions: { fromPrivateKey: '0x...' } }]
+ *
+ * @param {string | {name: string, deployerOptions?: object} | Array<string | {name: string, deployerOptions?: object}>} smartContract
+ * @returns {{ name: string, deployerOptions?: object }[]}
+ */
+function normalizeSmartContracts(smartContract) {
+  const contractsInput = Array.isArray(smartContract)
+    ? smartContract
+    : [smartContract];
+
+  return contractsInput.map((entry) => {
+    if (typeof entry === 'string') {
+      return { name: entry };
+    }
+    if (entry && typeof entry === 'object' && typeof entry.name === 'string') {
+      return entry;
+    }
+    throw new Error(
+      `Invalid smartContract entry: ${JSON.stringify(entry)}. Expected string or { name, deployerOptions } object.`,
+    );
+  });
+}
+
+/**
  * @typedef {object} Fixtures
  * @property {import('./webdriver/driver').Driver} driver - The driver number.
- * @property {GanacheContractAddressRegistry | undefined} contractRegistry - The contract registry.
- * @property {Ganache | undefined} ganacheServer - The Ganache server.
- * @property {Ganache | undefined} secondaryGanacheServer - The secondary Ganache server.
+ * @property {ContractAddressRegistry | undefined} contractRegistry - The contract registry.
+ * @property {string | object | Array} localNodeOptions - The local node(s) and options chosen ('anvil', 'none').
  * @property {mockttp.MockedEndpoint[]} mockedEndpoint - The mocked endpoint.
  * @property {Bundler} bundlerServer - The bundler server.
  * @property {mockttp.Mockttp} mockServer - The mock server.
  * @property {object} manifestFlags - Flags to add to the manifest in order to change things at runtime.
+ * @property {string} extensionId - The extension ID (useful for connecting via `externally_connectable`).
  */
 
 /**
- *
+ * @typedef {object} UnifiedEvmAccountsApiBalances
+ * @property {string} [mainnetNativeEthHuman] - Mainnet (eip155:1) native balance string for the default fixture account (Accounts API v5).
+ * @property {string} [localhostNativeEthHuman] - Localhost (eip155:1337) native balance string. Auto-populated from the local node when omitted, so smart-contract deployment gas is reflected.
+ * @property {{ assetId: string, balance: string }[]} [mainnetAdditionalBalances] - Extra v5 rows for mainnet (e.g. ERC-20s).
+ */
+
+/**
  * @param {object} options
  * @param {({driver: Driver, mockedEndpoint: MockedEndpoint}: TestSuiteArguments) => Promise<void>} testSuite
  */
 async function withFixtures(options, testSuite) {
   const {
-    dapp,
     fixtures,
-    ganacheOptions,
+    localNodeOptions = 'anvil',
     smartContract,
     driverOptions,
     dappOptions,
     staticServerOptions,
     title,
     ignoredConsoleErrors = [],
-    dappPath = undefined,
-    disableGanache,
     disableServerMochaToBackground = false,
-    dappPaths,
     testSpecificMock = function () {
       // do nothing.
     },
+    useMockingPassThrough,
     useBundler,
     usePaymaster,
     ethConversionInUsd,
+    monConversionInUsd,
     manifestFlags,
+    solanaWebSocketSpecificMocks = [],
+    accountActivityWebSocketSpecificMocks = [],
+    perpsWebSocketSpecificMocks = [],
+    extendedTimeoutMultiplier = 1,
+    unifiedEvmAccountsApiBalances,
+    virtualAuthenticator,
   } = options;
 
+  // Normalize localNodeOptions
+  const localNodeOptsNormalized = normalizeLocalNodeOptions(localNodeOptions);
+
   const fixtureServer = new FixtureServer();
-  let ganacheServer;
-  if (!disableGanache) {
-    ganacheServer = new Ganache();
-  }
+
   const bundlerServer = new Bundler();
   const https = await mockttp.generateCACertificate();
   const mockServer = mockttp.getLocal({ https, cors: true });
-  const secondaryGanacheServer = [];
-  let numberOfDapps = dapp ? 1 : 0;
+  const dappOpts = dappOptions || {};
+  const hasCustomPaths =
+    Array.isArray(dappOpts.customDappPaths) &&
+    dappOpts.customDappPaths.length > 0;
+  const customCount = hasCustomPaths ? dappOpts.customDappPaths.length : 0;
+  const defaultCount =
+    typeof dappOpts.numberOfTestDapps === 'number' &&
+    dappOpts.numberOfTestDapps > 0
+      ? dappOpts.numberOfTestDapps
+      : 0;
+  const numberOfDapps = customCount + defaultCount;
   const dappServer = [];
   const phishingPageServer = new PhishingWarningPageServer();
 
@@ -100,84 +205,160 @@ async function withFixtures(options, testSuite) {
 
   let webDriver;
   let driver;
+  let extensionId;
   let failed = false;
+
+  let localNode;
+  const localNodes = [];
+
   try {
-    if (!disableGanache) {
-      await ganacheServer.start(ganacheOptions);
+    // Start servers based on the localNodes array
+    for (let i = 0; i < localNodeOptsNormalized.length; i++) {
+      const nodeType = localNodeOptsNormalized[i].type;
+      const nodeOptions = localNodeOptsNormalized[i].options || {};
+
+      switch (nodeType) {
+        case 'anvil':
+          // eslint-disable-next-line n/global-require, no-case-declarations -- load this module conditionally
+          const { Anvil } = require('./seeder/anvil');
+          localNode = new Anvil();
+          await localNode.start(nodeOptions);
+          localNodes.push(localNode);
+          break;
+
+        case 'none':
+          break;
+
+        default:
+          throw new Error(
+            `Unsupported localNode: '${nodeType}'. Cannot start the server.`,
+          );
+      }
     }
+
     let contractRegistry;
+    let seeder;
 
-    if (smartContract && !disableGanache) {
-      const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
-      const contracts =
-        smartContract instanceof Array ? smartContract : [smartContract];
-      await Promise.all(
-        contracts.map((contract) =>
-          ganacheSeeder.deploySmartContract(contract),
-        ),
-      );
-      contractRegistry = ganacheSeeder.getContractRegistry();
-    }
+    // We default the smart contract seeder to the first node client
+    // If there's a future need to deploy multiple smart contracts in multiple clients
+    // this assumption is no longer correct and the below code needs to be modified accordingly
+    if (smartContract) {
+      switch (localNodeOptsNormalized[0].type) {
+        case 'anvil':
+          // eslint-disable-next-line n/global-require, no-case-declarations -- load this module conditionally
+          const AnvilSeeder = require('./seeder/anvil-seeder');
+          seeder = new AnvilSeeder(localNodes[0].getProvider());
+          break;
 
-    if (ganacheOptions?.concurrent) {
-      ganacheOptions.concurrent.forEach(async (ganacheSettings) => {
-        const { port, chainId, ganacheOptions2 } = ganacheSettings;
-        const server = new Ganache();
-        secondaryGanacheServer.push(server);
-        await server.start({
-          blockTime: 2,
-          chain: { chainId },
-          port,
-          vmErrorsOnRPCResponse: false,
-          ...ganacheOptions2,
-        });
-      });
-    }
+        default:
+          throw new Error(
+            `Unsupported localNode: '${localNodeOptsNormalized[0].type}'. Cannot deploy smart contracts.`,
+          );
+      }
+      const contractsNormalized = normalizeSmartContracts(smartContract);
 
-    if (!disableGanache && useBundler) {
-      await initBundler(bundlerServer, ganacheServer, usePaymaster);
+      const hardfork = localNodeOptsNormalized[0].options.hardfork || 'prague';
+      for (const contract of contractsNormalized) {
+        await seeder.deploySmartContract(
+          contract.name,
+          hardfork,
+          contract.deployerOptions,
+        );
+      }
+
+      contractRegistry = seeder.getContractRegistry();
     }
 
     await fixtureServer.start();
     fixtureServer.loadJsonState(fixtures, contractRegistry);
+
+    if (localNodes[0] && useBundler) {
+      await initBundler(bundlerServer, localNodes[0], usePaymaster);
+    }
+
     await phishingPageServer.start();
-    if (dapp) {
-      if (dappOptions?.numberOfDapps) {
-        numberOfDapps = dappOptions.numberOfDapps;
-      }
+    if (numberOfDapps > 0) {
+      // Ensure the default test dapp occupies the lowest ports first (e.g., 8080),
+      // then any custom dapps follow (e.g., 8081, 8082, ...).
       for (let i = 0; i < numberOfDapps; i++) {
         let dappDirectory;
-        if (dappPath || (dappPaths && dappPaths[i])) {
-          dappDirectory = path.resolve(__dirname, dappPath || dappPaths[i]);
+        let currentDappPath;
+        if (i < defaultCount) {
+          // First spin up the default test-dapp instances
+          currentDappPath = 'test-dapp';
+        } else if (hasCustomPaths) {
+          // Then start custom dapps on subsequent ports
+          currentDappPath = dappOpts.customDappPaths[i - defaultCount];
         } else {
+          currentDappPath = 'test-dapp';
+        }
+
+        if (DAPP_PATHS && DAPP_PATHS[currentDappPath]) {
           dappDirectory = path.resolve(
             __dirname,
-            '..',
-            '..',
-            'node_modules',
-            '@metamask',
-            'test-dapp',
-            'dist',
+            ...DAPP_PATHS[currentDappPath],
           );
+        } else {
+          dappDirectory = path.resolve(__dirname, currentDappPath);
         }
         dappServer.push(
           createStaticServer({ public: dappDirectory, ...staticServerOptions }),
         );
-        dappServer[i].listen(`${dappBasePort + i}`);
+        const basePort =
+          typeof dappOpts.basePort === 'number'
+            ? dappOpts.basePort
+            : dappBasePort;
+        dappServer[i].listen(`${basePort + i}`);
         await new Promise((resolve, reject) => {
           dappServer[i].on('listening', resolve);
           dappServer[i].on('error', reject);
         });
       }
     }
-    const { mockedEndpoint, getPrivacyReport } = await setupMocking(
-      mockServer,
-      testSpecificMock,
-      {
-        chainId: ganacheOptions?.chainId || 1337,
-        ethConversionInUsd,
+
+    // Start all registered WebSocket servers and apply mocks
+    await WebSocketRegistry.startAll({
+      [WEBSOCKET_SERVICES.solana]: { mocks: solanaWebSocketSpecificMocks },
+      [WEBSOCKET_SERVICES.accountActivity]: {
+        mocks: accountActivityWebSocketSpecificMocks,
       },
-    );
+      [WEBSOCKET_SERVICES.perps]: { mocks: perpsWebSocketSpecificMocks },
+    });
+
+    // Sync the localhost native balance to what's actually on the node.
+    // This ensures the Accounts API v5 mock returns the correct balance
+    // even after smart-contract deployment has consumed gas.
+    let effectiveUnifiedEvmAccountsApiBalances =
+      unifiedEvmAccountsApiBalances ?? {};
+    if (
+      localNodes[0] &&
+      !effectiveUnifiedEvmAccountsApiBalances.localhostNativeEthHuman
+    ) {
+      const nodeBalance = await localNodes[0].getBalance();
+      effectiveUnifiedEvmAccountsApiBalances = {
+        ...effectiveUnifiedEvmAccountsApiBalances,
+        localhostNativeEthHuman: Number(nodeBalance.toFixed(3)).toString(),
+      };
+    }
+
+    // Decide between the regular setupMocking and the passThrough version
+    const mockingSetupFunction = useMockingPassThrough
+      ? setupMockingPassThrough
+      : setupMocking;
+
+    // Use the mockingSetupFunction we just chose
+    const {
+      mockedEndpoint,
+      getPrivacyReport,
+      getNetworkReport,
+      clearNetworkReport,
+    } = await mockingSetupFunction(mockServer, testSpecificMock, {
+      chainId: localNodeOptsNormalized[0]?.options.chainId || 1337,
+      ethConversionInUsd,
+      monConversionInUsd,
+      unifiedEvmAccountsApiBalances: effectiveUnifiedEvmAccountsApiBalances,
+    });
+
     if ((await detectPort(8000)) !== 8000) {
       throw new Error(
         'Failed to set up mock server, something else may be running on port 8000.',
@@ -185,9 +366,48 @@ async function withFixtures(options, testSuite) {
     }
     await mockServer.start(8000);
 
-    setManifestFlags(manifestFlags);
+    // Log every request hitting the mock server.
+    // In pass-through mode (benchmarks), group duplicates by host to reduce noise.
+    const requestLogLabel = useMockingPassThrough
+      ? 'Request going to a live server ============'
+      : 'Request sent to mock server ============';
+    const hostCounts = useMockingPassThrough ? new Map() : null;
+    const logColor = useMockingPassThrough ? '\x1b[32m' : '\x1b[38;5;216m';
+    mockServer.on('request', (req) => {
+      if (hostCounts) {
+        let host;
+        try {
+          host = new URL(req.url).host;
+        } catch {
+          host = req.url;
+        }
+        const count = (hostCounts.get(host) || 0) + 1;
+        hostCounts.set(host, count);
+        if (count <= 3) {
+          console.log(`${logColor}${requestLogLabel} ${req.url}\x1b[0m`);
+        } else if (count === 4) {
+          console.log(
+            `\x1b[33m${requestLogLabel} ${host} (repeated, suppressing further logs)\x1b[0m`,
+          );
+        }
+      } else {
+        console.log(`${logColor}${requestLogLabel} ${req.url}\x1b[0m`);
+      }
+    });
 
-    driver = (await buildWebDriver(driverOptions)).driver;
+    await setManifestFlags(manifestFlags);
+
+    const wd = await buildWebDriver({
+      ...driverOptions,
+      disableServerMochaToBackground,
+    });
+
+    driver = wd.driver;
+    driver.timeout =
+      extendedTimeoutMultiplier > 1
+        ? driver.timeout * extendedTimeoutMultiplier
+        : driver.timeout;
+    extensionId = wd.extensionId;
     webDriver = driver.driver;
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {
@@ -206,6 +426,7 @@ async function withFixtures(options, testSuite) {
                 `${new Date().toISOString()} [driver] Called '${prop}' with arguments ${JSON.stringify(
                   args,
                 ).slice(0, 224)}`, // limit the length of the log entry to 224 characters
+                false,
               );
               return originalProperty.bind(target)(...args);
             };
@@ -215,16 +436,30 @@ async function withFixtures(options, testSuite) {
       });
     }
 
+    const effectiveDriver = driverProxy ?? driver;
+
+    if (virtualAuthenticator) {
+      await addVirtualAuthenticator(effectiveDriver);
+    }
+
     console.log(`\nExecuting testcase: '${title}'\n`);
 
     await testSuite({
-      driver: driverProxy ?? driver,
-      contractRegistry,
-      ganacheServer,
-      secondaryGanacheServer,
-      mockedEndpoint,
       bundlerServer,
+      contractRegistry,
+      driver: effectiveDriver,
+      localNodes,
+      mockedEndpoint,
       mockServer,
+      extensionId,
+      getNetworkReport,
+      clearNetworkReport,
+      ...(virtualAuthenticator && {
+        resetVirtualAuthenticator: async () => {
+          await removeVirtualAuthenticator(effectiveDriver);
+          await addVirtualAuthenticator(effectiveDriver);
+        },
+      }),
     });
 
     const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
@@ -257,7 +492,7 @@ async function withFixtures(options, testSuite) {
       if (process.env.UPDATE_PRIVACY_SNAPSHOT === 'true') {
         writeFileSync(
           './privacy-snapshot.json',
-          JSON.stringify(mergedReport, null, 2),
+          `${JSON.stringify(mergedReport, null, 2)}\n`, // must add trailing newline to satisfy prettier
         );
       } else {
         throw new Error(
@@ -295,658 +530,123 @@ async function withFixtures(options, testSuite) {
       }
     }
 
-    // Add information to the end of the error message that should surface in the "Tests" tab of CircleCI
-    if (process.env.CIRCLE_NODE_INDEX) {
-      error.message += `\n  (Ran on CircleCI Node ${process.env.CIRCLE_NODE_INDEX} of ${process.env.CIRCLE_NODE_TOTAL}, Job ${process.env.CIRCLE_JOB})`;
-    }
-
     throw error;
   } finally {
     if (!failed || process.env.E2E_LEAVE_RUNNING !== 'true') {
-      await fixtureServer.stop();
-      if (ganacheServer) {
-        await ganacheServer.quit();
-      }
+      const shutdownTasks = [fixtureServer.stop()];
 
-      if (ganacheOptions?.concurrent) {
-        secondaryGanacheServer.forEach(async (server) => {
-          await server.quit();
-        });
+      for (const server of localNodes) {
+        if (server) {
+          shutdownTasks.push(server.quit());
+        }
       }
 
       if (useBundler) {
-        await bundlerServer.stop();
+        shutdownTasks.push(bundlerServer.stop());
       }
 
       if (webDriver) {
-        await driver.quit();
+        shutdownTasks.push(driver.quit());
       }
-      if (dapp) {
+      if (numberOfDapps > 0) {
         for (let i = 0; i < numberOfDapps; i++) {
           if (dappServer[i] && dappServer[i].listening) {
-            await new Promise((resolve, reject) => {
-              dappServer[i].close((error) => {
-                if (error) {
-                  return reject(error);
-                }
-                return resolve();
-              });
-            });
+            shutdownTasks.push(
+              new Promise((resolve, reject) => {
+                dappServer[i].close((error) => {
+                  if (error) {
+                    return reject(error);
+                  }
+                  return resolve();
+                });
+                // We need to close all connections to stop the server quickly
+                // Otherwise it takes a few seconds for it to close
+                dappServer[i].closeAllConnections();
+              }),
+            );
           }
         }
       }
       if (phishingPageServer.isRunning()) {
-        await phishingPageServer.quit();
+        shutdownTasks.push(phishingPageServer.quit());
       }
 
-      // Since mockServer could be stop'd at another location,
-      // use a try/catch to avoid an error
-      try {
-        await mockServer.stop();
-      } catch (e) {
-        console.log('mockServer already stopped');
+      shutdownTasks.push(
+        (async () => {
+          // Since mockServer could be stop'd at another location,
+          // use a try/catch to avoid an error
+          try {
+            await mockServer.stop();
+          } catch (e) {
+            console.log('mockServer already stopped');
+          }
+        })(),
+      );
+
+      shutdownTasks.push(
+        (async () => {
+          try {
+            await WebSocketRegistry.stopAll();
+          } catch (e) {
+            console.log('WebSocket servers already stopped or not initialized');
+          }
+        })(),
+      );
+
+      const results = await Promise.allSettled(shutdownTasks);
+      const failures = results.filter((result) => result.status === 'rejected');
+      for (const { reason } of failures) {
+        console.error('Failed to shut down:', reason);
+      }
+      if (failures.length) {
+        // A test error may get overridden here by the shutdown error, but this is OK because a
+        // shutdown error indicates a bug in our test tooling that might invalidate later tests.
+        // eslint-disable-next-line no-unsafe-finally
+        throw new AggregateError(
+          failures.map((failure) => failure.reason),
+          'Failed to shut down test servers',
+        );
       }
     }
   }
 }
 
-const WINDOW_TITLES = Object.freeze({
-  ExtensionInFullScreenView: 'MetaMask',
-  InstalledExtensions: 'Extensions',
-  Dialog: 'MetaMask Dialog',
-  Phishing: 'MetaMask Phishing Detection',
-  ServiceWorkerSettings: 'Inspect with Chrome Developer Tools',
-  SnapSimpleKeyringDapp: 'SSK - Simple Snap Keyring',
-  TestDApp: 'E2E Test Dapp',
-  TestSnaps: 'Test Snaps',
-  ERC4337Snap: 'Account Abstraction Snap',
-});
-
 /**
- * @param {*} driver - Selenium driver
- * @param {*} handlesCount - total count of windows that should be loaded
- * @returns handles - an object with window handles, properties in object represent windows:
- *            1. extension: MetaMask extension window
- *            2. dapp: test-app window
- *            3. popup: MetaMask extension popup window
- */
-const getWindowHandles = async (driver, handlesCount) => {
-  await driver.waitUntilXWindowHandles(handlesCount);
-  const windowHandles = await driver.getAllWindowHandles();
-
-  const extension = windowHandles[0];
-  const dapp = await driver.switchToWindowWithTitle(
-    WINDOW_TITLES.TestDApp,
-    windowHandles,
-  );
-  const popup = windowHandles.find(
-    (handle) => handle !== extension && handle !== dapp,
-  );
-  return { extension, dapp, popup };
-};
-
-/**
- * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
- * Begin the create new wallet flow on onboarding screen.
- * @param {WebDriver} driver
- */
-const onboardingBeginCreateNewWallet = async (driver) => {
-  // agree to terms of use
-  await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
-
-  // welcome
-  await driver.clickElement('[data-testid="onboarding-create-wallet"]');
-};
-
-/**
- * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
- * Choose either "I Agree" or "No Thanks" on the MetaMetrics onboarding screen
- * @param {WebDriver} driver
- * @param {boolean} option - true to opt into metrics, default is false
- */
-const onboardingChooseMetametricsOption = async (driver, option = false) => {
-  const optionIdentifier = option ? 'i-agree' : 'no-thanks';
-  // metrics
-  await driver.clickElement(`[data-testid="metametrics-${optionIdentifier}"]`);
-};
-
-/**
- * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
- * Set a password for MetaMask during onboarding
- * @param {WebDriver} driver
- * @param {string} password - Password to set
- */
-const onboardingCreatePassword = async (driver, password) => {
-  // create password
-  await driver.fill('[data-testid="create-password-new"]', password);
-  await driver.fill('[data-testid="create-password-confirm"]', password);
-  await driver.clickElement('[data-testid="create-password-terms"]');
-  await driver.clickElement('[data-testid="create-password-wallet"]');
-};
-
-/**
- * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
- * Choose to secure wallet, and then get recovery phrase and confirm the SRP
- * during onboarding flow.
- * @param {WebDriver} driver
- */
-const onboardingRevealAndConfirmSRP = async (driver) => {
-  // secure my wallet
-  await driver.clickElement('[data-testid="secure-wallet-recommended"]');
-
-  // reveal SRP
-  await driver.clickElement('[data-testid="recovery-phrase-reveal"]');
-
-  const revealedSeedPhrase = await driver.findElement(
-    '[data-testid="recovery-phrase-chips"]',
-  );
-
-  const recoveryPhrase = await revealedSeedPhrase.getText();
-
-  await driver.clickElement('[data-testid="recovery-phrase-next"]');
-
-  // confirm SRP
-  const words = recoveryPhrase.split(/\s*(?:[0-9)]+|\n|\.|^$|$)\s*/u);
-  const finalWords = words.filter((str) => str !== '');
-  assert.equal(finalWords.length, 12);
-
-  await driver.fill('[data-testid="recovery-phrase-input-2"]', finalWords[2]);
-  await driver.fill('[data-testid="recovery-phrase-input-3"]', finalWords[3]);
-  await driver.fill('[data-testid="recovery-phrase-input-7"]', finalWords[7]);
-
-  await driver.clickElement('[data-testid="confirm-recovery-phrase"]');
-
-  await driver.clickElementAndWaitToDisappear({
-    tag: 'button',
-    text: 'Confirm',
-  });
-};
-
-/**
- * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
- * Complete the onboarding flow by confirming completion. Final step before the
- * reminder to pin the extension.
- * @param {WebDriver} driver
- */
-const onboardingCompleteWalletCreation = async (driver) => {
-  // complete
-  await driver.findElement({ text: 'Congratulations', tag: 'h2' });
-  await driver.clickElement('[data-testid="onboarding-complete-done"]');
-};
-
-/**
- * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
- * Move through the steps of pinning extension after successful onboarding
- * @param {WebDriver} driver
- */
-const onboardingPinExtension = async (driver) => {
-  // pin extension
-  await driver.clickElement('[data-testid="pin-extension-next"]');
-  await driver.clickElement('[data-testid="pin-extension-done"]');
-};
-
-/**
- * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
- * Completes the onboarding flow with optional opt-out settings for wallet creation.
- *
- * This function navigates through the onboarding process, allowing for opt-out of certain features.
- * It waits for the appropriate heading to appear, then proceeds to opt-out of third-party API
- * integration for general and assets sections if specified in the optOutOptions.
- * @param {WebDriver} driver - The Selenium WebDriver instance.
- * @param {object} optOutOptions - Optional. An object specifying which features to opt-out of.
- * @param {boolean} optOutOptions.basicFunctionality - Optional. Defaults to true. Opt-out of basic functionality.
- * @param {boolean} optOutOptions.profileSync - Optional. Defaults to true. Opt-out of profile sync.
- * @param {boolean} optOutOptions.assets - Optional. Defaults to true. Opt-out of assets options.
- * @param {boolean} optOutOptions.isNewWallet - Optional. Defaults to true. Indicates if this is a new wallet creation.
- */
-const onboardingCompleteWalletCreationWithOptOut = async (
-  driver,
-  optOutOptions = {},
-) => {
-  const defaultOptOutOptions = {
-    basicFunctionality: true,
-    profileSync: true,
-    assets: true,
-    isNewWallet: true,
-  };
-
-  const optOutOptionsToUse = { ...defaultOptOutOptions, ...optOutOptions };
-
-  // wait for h2 to appear
-  await driver.findElement({
-    text: optOutOptionsToUse.isNewWallet
-      ? 'Congratulations'
-      : 'Your wallet is ready',
-    tag: 'h2',
-  });
-
-  // opt-out from third party API on general section
-  await driver.clickElementAndWaitToDisappear({
-    text: 'Manage default privacy settings',
-    tag: 'button',
-  });
-  await driver.clickElement({ text: 'General', tag: 'p' });
-
-  if (optOutOptionsToUse.basicFunctionality) {
-    await driver.clickElement(
-      '[data-testid="basic-functionality-toggle"] .toggle-button',
-    );
-    await driver.clickElement('[id="basic-configuration-checkbox"]');
-    await driver.clickElementAndWaitToDisappear({
-      tag: 'button',
-      text: 'Turn off',
-    });
-  }
-
-  if (
-    optOutOptionsToUse.profileSync &&
-    !optOutOptionsToUse.basicFunctionality
-  ) {
-    await driver.clickElement(
-      '[data-testid="profile-sync-toggle"] .toggle-button',
-    );
-    await driver.clickElementAndWaitToDisappear({
-      tag: 'button',
-      text: 'Turn off',
-    });
-  }
-
-  await driver.clickElement('[data-testid="category-back-button"]');
-
-  if (optOutOptionsToUse.assets) {
-    // opt-out from third party API on assets section
-    await driver.clickElement({ text: 'Assets', tag: 'p' });
-    await Promise.all(
-      (
-        await driver.findClickableElements(
-          '.toggle-button.toggle-button--on:not([data-testid="basic-functionality-toggle"] .toggle-button)',
-        )
-      ).map((toggle) => toggle.click()),
-    );
-
-    await driver.clickElement('[data-testid="category-back-button"]');
-  }
-
-  // Wait until the onboarding carousel has stopped moving
-  // otherwise the click has no effect.
-  await driver.waitForElementToStopMoving(
-    '[data-testid="privacy-settings-back-button"]',
-  );
-  await driver.clickElement('[data-testid="privacy-settings-back-button"]');
-
-  // complete onboarding
-  await driver.clickElementAndWaitToDisappear({
-    tag: 'button',
-    text: 'Done',
-  });
-  await onboardingPinExtension(driver);
-};
-
-/**
- * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
- * Completes the onboarding flow for creating a new wallet with opt-out options.
- *
- * This function guides the user through the onboarding process of creating a new wallet,
- * including opting out of certain features as specified by the `optOutOptions` parameter.
- * @param {object} driver - The Selenium driver instance.
- * @param {string} password - The password to use for the new wallet.
- * @param {object} optOutOptions - An object specifying the features to opt out of.
- * @param {boolean} optOutOptions.isNewWallet - Indicates if this is a new wallet creation.
- * @param {boolean} optOutOptions.basicFunctionality - Indicates if basic functionality should be opted out.
- * @param {boolean} optOutOptions.profileSync - Indicates if profile sync should be opted out.
- * @param {boolean} optOutOptions.assets - Indicates if assets should be opted out.
- */
-const completeCreateNewWalletOnboardingFlowWithOptOut = async (
-  driver,
-  password,
-  optOutOptions,
-) => {
-  await onboardingBeginCreateNewWallet(driver);
-  await onboardingChooseMetametricsOption(driver, false);
-  await onboardingCreatePassword(driver, password);
-  await onboardingRevealAndConfirmSRP(driver);
-  await onboardingCompleteWalletCreationWithOptOut(driver, optOutOptions);
-};
-
-/**
- * @deprecated Please use page object functions in `onboarding.flow.ts` and in `pages/onboarding/*`.
- * @param driver
- * @param password
- */
-const completeCreateNewWalletOnboardingFlow = async (driver, password) => {
-  await onboardingBeginCreateNewWallet(driver);
-  await onboardingChooseMetametricsOption(driver, false);
-  await onboardingCreatePassword(driver, password);
-  await onboardingRevealAndConfirmSRP(driver);
-  await onboardingCompleteWalletCreation(driver);
-  await onboardingPinExtension(driver);
-};
-
-const openSRPRevealQuiz = async (driver) => {
-  // navigate settings to reveal SRP
-  await driver.clickElement('[data-testid="account-options-menu-button"]');
-
-  // fix race condition with mmi build
-  if (process.env.MMI) {
-    await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
-  }
-
-  await driver.clickElement({ text: 'Settings', tag: 'div' });
-  await driver.clickElement({ text: 'Security & privacy', tag: 'div' });
-  await driver.clickElement('[data-testid="reveal-seed-words"]');
-};
-
-/**
- * @deprecated Please use page object functions in `test/e2e/page-objects/pages/settings/privacy-settings.ts`.
- * @param driver
- */
-const completeSRPRevealQuiz = async (driver) => {
-  // start quiz
-  await driver.clickElement('[data-testid="srp-quiz-get-started"]');
-
-  // tap correct answer 1
-  await driver.clickElement('[data-testid="srp-quiz-right-answer"]');
-
-  // tap Continue 1
-  await driver.clickElement('[data-testid="srp-quiz-continue"]');
-
-  // tap correct answer 2
-  await driver.clickElement('[data-testid="srp-quiz-right-answer"]');
-
-  // tap Continue 2
-  await driver.clickElement('[data-testid="srp-quiz-continue"]');
-};
-
-const tapAndHoldToRevealSRP = async (driver) => {
-  await driver.holdMouseDownOnElement(
-    {
-      text: tEn('holdToRevealSRP'),
-      tag: 'span',
-    },
-    3000,
-  );
-};
-
-const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
-const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
-const DAPP_ONE_URL = 'http://127.0.0.1:8081';
-const DAPP_TWO_URL = 'http://127.0.0.1:8082';
-
-const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
-  return contract
-    ? await driver.openNewPage(`${dappURL}/?contract=${contract}`)
-    : await driver.openNewPage(dappURL);
-};
-
-const openDappConnectionsPage = async (driver) => {
-  await driver.openNewPage(
-    `${driver.extensionUrl}/home.html#connections/${encodeURIComponent(
-      DAPP_URL,
-    )}`,
-  );
-};
-
-const createDappTransaction = async (driver, transaction) => {
-  await openDapp(
-    driver,
-    null,
-    `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([
-      transaction,
-    ])}`,
-  );
-};
-
-const switchToOrOpenDapp = async (
-  driver,
-  contract = null,
-  dappURL = DAPP_URL,
-) => {
-  const handle = await driver.windowHandles.switchToWindowIfKnown(
-    WINDOW_TITLES.TestDApp,
-  );
-
-  if (!handle) {
-    await openDapp(driver, contract, dappURL);
-  }
-};
-
-/**
- *
- * @param {import('./webdriver/driver').Driver} driver
- */
-const connectToDapp = async (driver) => {
-  await openDapp(driver);
-  // Connect to dapp
-  await driver.clickElement({
-    text: 'Connect',
-    tag: 'button',
-  });
-
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-  await driver.clickElementAndWaitForWindowToClose({
-    text: 'Connect',
-    tag: 'button',
-  });
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-};
-
-const PRIVATE_KEY =
-  '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
-
-const PRIVATE_KEY_TWO =
-  '0xf444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8';
-
-const ACCOUNT_1 = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
-const ACCOUNT_2 = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
-
-const defaultGanacheOptions = {
-  accounts: [
-    {
-      secretKey: PRIVATE_KEY,
-      balance: convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
-    },
-  ],
-};
-
-const defaultGanacheOptionsForType2Transactions = {
-  ...defaultGanacheOptions,
-  // EVM version that supports type 2 transactions (EIP1559)
-  hardfork: 'london',
-};
-
-const multipleGanacheOptions = {
-  accounts: [
-    {
-      secretKey: PRIVATE_KEY,
-      balance: convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
-    },
-    {
-      secretKey: PRIVATE_KEY_TWO,
-      balance: convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
-    },
-  ],
-};
-
-const multipleGanacheOptionsForType2Transactions = {
-  ...multipleGanacheOptions,
-  // EVM version that supports type 2 transactions (EIP1559)
-  hardfork: 'london',
-};
-
-const generateGanacheOptions = ({
-  secretKey = PRIVATE_KEY,
-  balance = convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
-  ...otherProps
-}) => {
-  const accounts = [
-    {
-      secretKey,
-      balance,
-    },
-  ];
-
-  return {
-    accounts,
-    ...otherProps, // eg: hardfork
-  };
-};
-
-// Edit priority gas fee form
-const editGasFeeForm = async (driver, gasLimit, gasPrice) => {
-  const inputs = await driver.findElements('input[type="number"]');
-  const gasLimitInput = inputs[0];
-  const gasPriceInput = inputs[1];
-  await gasLimitInput.fill(gasLimit);
-  await gasPriceInput.fill(gasPrice);
-  await driver.clickElement({ text: 'Save', tag: 'button' });
-};
-
-const openActionMenuAndStartSendFlow = async (driver) => {
-  await driver.clickElement('[data-testid="eth-overview-send"]');
-};
-
-const clickNestedButton = async (driver, tabName) => {
-  try {
-    await driver.clickElement({ text: tabName, tag: 'button' });
-  } catch (error) {
-    await driver.clickElement({
-      xpath: `//*[contains(text(),"${tabName}")]/parent::button`,
-    });
-  }
-};
-
-const sendScreenToConfirmScreen = async (
-  driver,
-  recipientAddress,
-  quantity,
-) => {
-  await openActionMenuAndStartSendFlow(driver);
-  await driver.waitForSelector('[data-testid="ens-input"]');
-  await driver.pasteIntoField('[data-testid="ens-input"]', recipientAddress);
-  await driver.fill('.unit-input__input', quantity);
-
-  // check if element exists and click it
-  await driver.clickElementSafe({
-    text: 'I understand',
-    tag: 'button',
-  });
-
-  await driver.clickElement({ text: 'Continue', tag: 'button' });
-};
-
-const sendTransaction = async (
-  driver,
-  recipientAddress,
-  quantity,
-  isAsyncFlow = false,
-) => {
-  await openActionMenuAndStartSendFlow(driver);
-  await driver.waitForSelector('[data-testid="ens-input"]');
-  await driver.pasteIntoField('[data-testid="ens-input"]', recipientAddress);
-  await driver.fill('.unit-input__input', quantity);
-
-  await driver.clickElement({
-    text: 'Continue',
-    tag: 'button',
-  });
-  await driver.clickElement({
-    text: 'Confirm',
-    tag: 'button',
-  });
-
-  // the default is to do this block, but if we're testing an async flow, it would get stuck here
-  if (!isAsyncFlow) {
-    await driver.clickElement('[data-testid="account-overview__activity-tab"]');
-    await driver.assertElementNotPresent('.transaction-list-item--unconfirmed');
-    await driver.findElement('.transaction-list-item');
-  }
-};
-
-const findAnotherAccountFromAccountList = async (
-  driver,
-  itemNumber,
-  accountName,
-) => {
-  await driver.clickElement('[data-testid="account-menu-icon"]');
-  const accountMenuItemSelector = `.multichain-account-list-item:nth-child(${itemNumber})`;
-
-  await driver.findElement({
-    css: `${accountMenuItemSelector} .multichain-account-list-item__account-name__button`,
-    text: accountName,
-  });
-
-  return accountMenuItemSelector;
-};
-
-const TEST_SEED_PHRASE =
-  'forum vessel pink push lonely enact gentle tail admit parrot grunt dress';
-
-const TEST_SEED_PHRASE_TWO =
-  'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
-
-/**
- * Checks the balance for a specific address. If no address is provided, it defaults to the first address.
- * This function is typically used during onboarding to ensure the state is retrieved correctly from metamaskState,
- * or after a transaction is made.
+ * Simulates a WebSocket connection by executing a script in the browser context.
  *
  * @param {WebDriver} driver - The WebDriver instance.
- * @param {Ganache} [ganacheServer] - The Ganache server instance (optional).
- * @param {string} [address] - The address to check the balance for (optional).
+ * @param {string} hostname - The hostname to connect to.
  */
-const locateAccountBalanceDOM = async (
-  driver,
-  ganacheServer,
-  address = null,
-) => {
-  const balanceSelector = '[data-testid="eth-overview__primary-currency"]';
-  if (ganacheServer) {
-    const balance = await ganacheServer.getBalance(address);
-    await driver.waitForSelector({
-      css: balanceSelector,
-      text: `${balance} ETH`,
-    });
-  } else {
-    await driver.findElement(balanceSelector);
-  }
-};
-
-const WALLET_PASSWORD = 'correct horse battery staple';
-
-/**
- * Unlock the wallet with the default password.
- * This method is intended to replace driver.navigate and should not be called after driver.navigate.
- *
- * @param {WebDriver} driver - The webdriver instance
- * @param {object} options - Options for unlocking the wallet
- * @param {boolean} options.navigate - Whether to navigate to the root page prior to unlocking. Defaults to true.
- * @param {boolean} options.waitLoginSuccess - Whether to wait for the login to succeed. Defaults to true.
- */
-async function unlockWallet(
-  driver,
-  options = {
-    navigate: true,
-    waitLoginSuccess: true,
-  },
-) {
-  if (options.navigate !== false) {
-    await driver.navigate();
-  }
-
-  await driver.fill('#password', WALLET_PASSWORD);
-  await driver.press('#password', driver.Key.ENTER);
-
-  if (options.waitLoginSuccess !== false) {
-    // No guard is necessary here, because it goes from present to absent
-    await driver.assertElementNotPresent('[data-testid="unlock-page"]');
+async function createWebSocketConnection(driver, hostname) {
+  try {
+    await driver.executeScript(async (wsHostname) => {
+      const url = `ws://${wsHostname}:8000`;
+      const socket = new WebSocket(url);
+      socket.onopen = () => {
+        console.log('WebSocket connection opened');
+        socket.send('Hello, server!');
+      };
+      socket.onerror = (error) => {
+        console.error(
+          'WebSocket error:',
+          error.message || 'Connection blocked',
+        );
+      };
+      socket.onmessage = (event) => {
+        console.log('Message received from server:', event.data);
+      };
+      socket.onclose = () => {
+        console.log('WebSocket connection closed');
+      };
+    }, hostname);
+  } catch (error) {
+    console.error(
+      `Failed to execute WebSocket connection script for ws://${hostname}:8000`,
+      error,
+    );
+    throw error;
   }
 }
-
-const logInWithBalanceValidation = async (driver, ganacheServer) => {
-  await unlockWallet(driver);
-  // Wait for balance to load
-  await locateAccountBalanceDOM(driver, ganacheServer);
-};
 
 function roundToXDecimalPlaces(number, decimalPlaces) {
   return Math.round(number * 10 ** decimalPlaces) / 10 ** decimalPlaces;
@@ -960,90 +660,37 @@ function generateRandNumBetween(x, y) {
   return randomNumber;
 }
 
-function genRandInitBal(minETHBal = 10, maxETHBal = 100, decimalPlaces = 4) {
-  const initialBalance = roundToXDecimalPlaces(
-    generateRandNumBetween(minETHBal, maxETHBal),
-    decimalPlaces,
-  );
-
-  const initialBalanceInHex = convertETHToHexGwei(initialBalance);
-
-  return { initialBalance, initialBalanceInHex };
-}
-
-/**
- * This method handles clicking the sign button on signature confirmation
- * screen.
- *
- * @param {object} options - Options for the function.
- * @param {WebDriver} options.driver - The WebDriver instance controlling the browser.
- * @param {boolean} [options.snapSigInsights] - Whether to wait for the insights snap to be ready before clicking the sign button.
- */
-async function clickSignOnSignatureConfirmation({
-  driver,
-  snapSigInsights = false,
-}) {
-  if (snapSigInsights) {
-    // there is no condition we can wait for to know the snap is ready,
-    // so we have to add a small delay as the last alternative to avoid flakiness.
-    await driver.delay(regularDelayMs);
-  }
-
-  await driver.clickElement({ text: 'Sign', tag: 'button' });
-}
-
-/**
- * Some signing methods have extra security that requires the user to click a
- * button to validate that they have verified the details. This method handles
- * performing the necessary steps to click that button.
- *
- * @param {WebDriver} driver
- */
-async function validateContractDetails(driver) {
-  const verifyDetailsBtnSelector =
-    '.signature-request-content__verify-contract-details';
-
-  await driver.clickElement(verifyDetailsBtnSelector);
-  await driver.clickElement({ text: 'Got it', tag: 'button' });
-
-  await driver.clickElementSafe(
-    '[data-testid="signature-request-scroll-button"]',
-  );
-}
-
-/**
- * @deprecated since the background socket was added, and special handling is no longer necessary
- * Just call `await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog)` instead.
- * @param {WebDriver} driver
- */
-async function switchToNotificationWindow(driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-}
-
 /**
  * When mocking the segment server and returning an array of mocks from the
  * mockServer method, this method will allow getting all of the seen requests
  * for each mock in the array.
  *
- * @param {WebDriver} driver
- * @param {import('mockttp').MockedEndpoint[]} mockedEndpoints
- * @param {boolean} hasRequest
+ * @param {WebDriver} driver - The WebDriver instance.
+ * @param {import('mockttp').MockedEndpoint[]} mockedEndpoints - mockttp mocked endpoints
+ * @param {boolean} [waitWhilePending] - Wait until no requests are pending
  * @returns {Promise<import('mockttp/dist/pluggable-admin').MockttpClientResponse[]>}
  */
-async function getEventPayloads(driver, mockedEndpoints, hasRequest = true) {
-  await driver.wait(
-    async () => {
-      let isPending = true;
+async function getEventPayloads(
+  driver,
+  mockedEndpoints,
+  waitWhilePending = true,
+) {
+  if (waitWhilePending) {
+    await driver.wait(
+      async () => {
+        const pendingStatuses = await Promise.all(
+          mockedEndpoints.map((mockedEndpoint) => mockedEndpoint.isPending()),
+        );
+        const isSomethingPending = pendingStatuses.some(
+          (pendingStatus) => pendingStatus,
+        );
 
-      for (const mockedEndpoint of mockedEndpoints) {
-        isPending = await mockedEndpoint.isPending();
-      }
-
-      return isPending === !hasRequest;
-    },
-    driver.timeout,
-    true,
-  );
+        return !isSomethingPending;
+      },
+      driver.timeout,
+      true,
+    );
+  }
   const mockedRequests = [];
   for (const mockedEndpoint of mockedEndpoints) {
     mockedRequests.push(...(await mockedEndpoint.getSeenRequests()));
@@ -1097,25 +744,23 @@ async function getCleanAppState(driver) {
   );
 }
 
-async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
+async function initBundler(bundlerServer, localNodeServer, usePaymaster) {
   try {
-    const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
+    // eslint-disable-next-line n/global-require -- load this module conditionally
+    const AnvilSeeder = require('./seeder/anvil-seeder');
+    const seeder = new AnvilSeeder(localNodeServer.getProvider());
 
-    await ganacheSeeder.deploySmartContract(SMART_CONTRACTS.ENTRYPOINT);
+    await seeder.deploySmartContract(SMART_CONTRACTS.ENTRYPOINT);
 
-    await ganacheSeeder.deploySmartContract(
-      SMART_CONTRACTS.SIMPLE_ACCOUNT_FACTORY,
-    );
+    await seeder.deploySmartContract(SMART_CONTRACTS.SIMPLE_ACCOUNT_FACTORY);
 
     if (usePaymaster) {
-      await ganacheSeeder.deploySmartContract(
-        SMART_CONTRACTS.VERIFYING_PAYMASTER,
-      );
+      await seeder.deploySmartContract(SMART_CONTRACTS.VERIFYING_PAYMASTER);
 
-      await ganacheSeeder.paymasterDeposit(convertETHToHexGwei(1));
+      await seeder.paymasterDeposit(convertETHToHexGwei(1));
     }
 
-    await ganacheSeeder.transfer(ERC_4337_ACCOUNT, convertETHToHexGwei(10));
+    await seeder.transfer(ERC_4337_ACCOUNT, convertETHToHexGwei(10));
 
     await bundlerServer.start();
   } catch (error) {
@@ -1124,152 +769,94 @@ async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
   }
 }
 
-/**
- * @deprecated Please use page object functions in `pages/account-list-page`.
- * @param driver
- */
-async function removeSelectedAccount(driver) {
-  await driver.clickElement('[data-testid="account-menu-icon"]');
-  await driver.clickElement(
-    '.multichain-account-list-item--selected [data-testid="account-list-item-menu-button"]',
-  );
-  await driver.clickElement('[data-testid="account-list-menu-remove"]');
-  await driver.clickElement({ text: 'Remove', tag: 'button' });
-}
-
-/**
- * @deprecated Please use page object functions in `pages/account-list-page`.
- * @param driver
- */
-async function getSelectedAccountAddress(driver) {
-  await driver.clickElement('[data-testid="account-options-menu-button"]');
-  await driver.clickElement('[data-testid="account-list-menu-details"]');
-  const accountAddress = await (
-    await driver.findElement('[data-testid="address-copy-button-text"]')
-  ).getText();
-  await driver.clickElement('.mm-box button[aria-label="Close"]');
-
-  return accountAddress;
-}
-
-/**
- * Rather than using the FixtureBuilder#withPreferencesController to set the setting
- * we need to manually set the setting because the migration #122 overrides this.
- * We should be able to remove this when we delete the redesignedConfirmationsEnabled setting.
- *
- * @param driver
- */
-async function tempToggleSettingRedesignedConfirmations(driver) {
-  // Ensure we are on the extension window
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-
-  // Open settings menu button
-  await driver.clickElement('[data-testid="account-options-menu-button"]');
-
-  // fix race condition with mmi build
-  if (process.env.MMI) {
-    await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
-  }
-
-  // Click settings from dropdown menu
-  await driver.clickElement('[data-testid="global-menu-settings"]');
-
-  // Click Experimental tab
-  const experimentalTabRawLocator = {
-    text: 'Experimental',
-    tag: 'div',
-  };
-  await driver.clickElement(experimentalTabRawLocator);
-
-  // Click redesignedConfirmationsEnabled toggle
-  await driver.clickElement(
-    '[data-testid="toggle-redesigned-confirmations-container"]',
-  );
-}
-
-/**
- * Opens the account options menu safely, handling potential race conditions
- * with the MMI build.
- *
- * @param {WebDriver} driver - The WebDriver instance used to interact with the browser.
- * @returns {Promise<void>} A promise that resolves when the menu is opened and any necessary waits are complete.
- */
-async function openMenuSafe(driver) {
-  await driver.clickElement('[data-testid="account-options-menu-button"]');
-
-  // fix race condition with mmi build
-  if (process.env.MMI) {
-    await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
-  }
-}
-
 const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
 
+/**
+ * Check if sidepanel is enabled by examining the build flag at runtime.
+ * Only works on Chrome-based browsers (Firefox doesn't support sidepanel).
+ * Use this check for now in case we need to disable sidepanel in future.
+ *
+ * @returns {Promise<boolean>} True if sidepanel permission is present in manifest
+ */
+async function isSidePanelEnabled() {
+  try {
+    // Check if browser is Chrome (sidepanel is only supported in Chrome)
+    const hasSidepanel = process.env.SELENIUM_BROWSER === 'chrome';
+
+    // Log for debugging
+    console.log(`Sidepanel check: ${hasSidepanel ? 'enabled' : 'disabled'}`);
+
+    return hasSidepanel;
+  } catch (error) {
+    // Chrome API not accessible (e.g., LavaMoat scuttling mode, Firefox)
+    console.log('Sidepanel check failed:', error.message);
+    return false;
+  }
+}
+
+/**
+ * Check if a key should be ignored based on various rules
+ *
+ * @param {string} key - The key to check
+ * @param {string[]} ignoredKeys - Array of keys/prefixes to ignore
+ * @returns {boolean} True if the key should be ignored
+ */
+const shouldIgnoreKey = (key, ignoredKeys) => {
+  const hasNonZeroArrayIndex = key.split('.').some((part) => {
+    const matches = part.match(/\[(\d+)\]/gu);
+    return (
+      matches?.some((match) => {
+        const index = Number(match.slice(1, -1));
+        return Number.isNaN(index) === false && index !== 0;
+      }) ?? false
+    );
+  });
+  if (hasNonZeroArrayIndex) {
+    return true;
+  }
+
+  // Ignore entropy keys in account tree (dynamic entropy IDs)
+  if (key.match(/entropy:[A-Z0-9]+/u)) {
+    return true;
+  }
+
+  // Check if any part of the key path should be ignored
+  const keyParts = key.split('.');
+  const shouldIgnore = ignoredKeys.some((ignoredKey) => {
+    const ignoredParts = ignoredKey.split('.');
+
+    // Ignore if the ignored key is an exact prefix of the current key
+    // OR if the current key exactly matches the ignored key
+    // OR if the current key starts with the ignored key (for nested properties)
+    const isExactPrefix = ignoredParts.every(
+      (part, index) => keyParts[index] === part,
+    );
+    const isExactMatch = key === ignoredKey;
+    const startsWithIgnoredKey =
+      key.startsWith(`${ignoredKey}.`) || key.startsWith(`${ignoredKey}[`);
+
+    return isExactPrefix || isExactMatch || startsWithIgnoredKey;
+  });
+
+  return shouldIgnore;
+};
+
 module.exports = {
-  DAPP_HOST_ADDRESS,
-  DAPP_URL,
-  DAPP_ONE_URL,
-  DAPP_TWO_URL,
-  TEST_SEED_PHRASE,
-  TEST_SEED_PHRASE_TWO,
-  PRIVATE_KEY,
-  PRIVATE_KEY_TWO,
-  ACCOUNT_1,
-  ACCOUNT_2,
-  getWindowHandles,
+  assertInAnyOrder,
+  convertETHToHexGwei,
   convertToHexValue,
-  tinyDelayMs,
-  regularDelayMs,
+  createDownloadFolder,
+  createWebSocketConnection,
+  generateRandNumBetween,
+  getCleanAppState,
+  getEventPayloads,
+  isSidePanelEnabled,
   largeDelayMs,
+  regularDelayMs,
+  roundToXDecimalPlaces,
+  sentryRegEx,
+  shouldIgnoreKey,
+  tinyDelayMs,
   veryLargeDelayMs,
   withFixtures,
-  completeCreateNewWalletOnboardingFlow,
-  completeCreateNewWalletOnboardingFlowWithOptOut,
-  openSRPRevealQuiz,
-  completeSRPRevealQuiz,
-  tapAndHoldToRevealSRP,
-  createDownloadFolder,
-  openDapp,
-  openDappConnectionsPage,
-  createDappTransaction,
-  switchToOrOpenDapp,
-  connectToDapp,
-  multipleGanacheOptions,
-  defaultGanacheOptions,
-  defaultGanacheOptionsForType2Transactions,
-  multipleGanacheOptionsForType2Transactions,
-  sendTransaction,
-  sendScreenToConfirmScreen,
-  findAnotherAccountFromAccountList,
-  unlockWallet,
-  logInWithBalanceValidation,
-  locateAccountBalanceDOM,
-  generateGanacheOptions,
-  WALLET_PASSWORD,
-  WINDOW_TITLES,
-  convertETHToHexGwei,
-  roundToXDecimalPlaces,
-  generateRandNumBetween,
-  clickSignOnSignatureConfirmation,
-  validateContractDetails,
-  switchToNotificationWindow,
-  getEventPayloads,
-  onboardingBeginCreateNewWallet,
-  onboardingChooseMetametricsOption,
-  onboardingCreatePassword,
-  onboardingRevealAndConfirmSRP,
-  onboardingCompleteWalletCreation,
-  onboardingCompleteWalletCreationWithOptOut,
-  onboardingPinExtension,
-  assertInAnyOrder,
-  genRandInitBal,
-  openActionMenuAndStartSendFlow,
-  getCleanAppState,
-  editGasFeeForm,
-  clickNestedButton,
-  removeSelectedAccount,
-  getSelectedAccountAddress,
-  tempToggleSettingRedesignedConfirmations,
-  openMenuSafe,
-  sentryRegEx,
 };

@@ -2,6 +2,13 @@ const { readFileSync } = require('node:fs');
 const assert = require('node:assert');
 const { ENVIRONMENT } = require('./constants');
 
+function isProductionOrReleaseCandidateBuild(environment) {
+  return (
+    environment === ENVIRONMENT.PRODUCTION ||
+    environment === ENVIRONMENT.RELEASE_CANDIDATE
+  );
+}
+
 /**
  * Sets environment variables to inject in the current build.
  *
@@ -15,7 +22,7 @@ const { ENVIRONMENT } = require('./constants');
  * @param {import('../lib/variables').Variables} options.variables
  * @param {ENVIRONMENT[keyof ENVIRONMENT]} options.environment - The build environment.
  */
-module.exports.setEnvironmentVariables = function setEnvironmentVariables({
+function setEnvironmentVariables({
   buildName,
   isDevBuild,
   isTestBuild,
@@ -24,6 +31,35 @@ module.exports.setEnvironmentVariables = function setEnvironmentVariables({
   variables,
   version,
 }) {
+  const isSeedlessOnboardingEnabled =
+    variables.get('SEEDLESS_ONBOARDING_ENABLED')?.toString() === 'true';
+  const oauthClientIdOptions = {
+    buildType,
+    variables,
+    environment,
+    testing: isTestBuild,
+    development: isDevBuild,
+  };
+
+  const TELEGRAM_LOGIN_ENABLED = isProductionOrReleaseCandidateBuild(
+    environment,
+  )
+    ? 'false'
+    : variables.getMaybe('TELEGRAM_LOGIN_ENABLED');
+
+  const APPLE_CLIENT_ID = isSeedlessOnboardingEnabled
+    ? getOAuthClientId({ ...oauthClientIdOptions, provider: 'APPLE' })
+    : '';
+
+  const GOOGLE_CLIENT_ID = isSeedlessOnboardingEnabled
+    ? getOAuthClientId({ ...oauthClientIdOptions, provider: 'GOOGLE' })
+    : '';
+
+  const TELEGRAM_CLIENT_ID =
+    isSeedlessOnboardingEnabled && TELEGRAM_LOGIN_ENABLED.toString() === 'true'
+      ? getOAuthClientId({ ...oauthClientIdOptions, provider: 'TELEGRAM' })
+      : '';
+
   variables.set({
     DEBUG: isDevBuild || isTestBuild ? variables.getMaybe('DEBUG') : undefined,
     EIP_4337_ENTRYPOINT: isTestBuild
@@ -37,6 +73,8 @@ module.exports.setEnvironmentVariables = function setEnvironmentVariables({
       testing: isTestBuild,
     }),
     METAMASK_DEBUG: isDevBuild || variables.getMaybe('METAMASK_DEBUG') === true,
+    SENTRY_DISTRIBUTED_TRACING_DISABLED:
+      variables.getMaybe('SENTRY_DISTRIBUTED_TRACING_DISABLED') === true,
     METAMASK_BUILD_NAME: buildName,
     METAMASK_BUILD_APP_ID: getBuildAppId({
       buildType,
@@ -59,14 +97,29 @@ module.exports.setEnvironmentVariables = function setEnvironmentVariables({
     }),
     TEST_GAS_FEE_FLOWS:
       isDevBuild && variables.getMaybe('TEST_GAS_FEE_FLOWS') === true,
+    DEEP_LINK_HOST: variables.getMaybe('DEEP_LINK_HOST'),
+    DEEP_LINK_PUBLIC_KEY: variables.getMaybe('DEEP_LINK_PUBLIC_KEY'),
+    SEEDLESS_ONBOARDING_ENABLED: isTestBuild
+      ? 'true'
+      : variables.getMaybe('SEEDLESS_ONBOARDING_ENABLED'),
+    METAMASK_SHIELD_ENABLED: isTestBuild
+      ? 'true'
+      : variables.getMaybe('METAMASK_SHIELD_ENABLED'),
+    TELEGRAM_LOGIN_ENABLED,
+    PERPS_ENABLED: isTestBuild ? 'true' : variables.getMaybe('PERPS_ENABLED'),
+    ASSETS_UNIFIED_STATE_ENABLED: variables.getMaybe(
+      'ASSETS_UNIFIED_STATE_ENABLED',
+    ),
+    GOOGLE_CLIENT_ID,
+    APPLE_CLIENT_ID,
+    TELEGRAM_CLIENT_ID,
   });
-};
+}
 
 const BUILD_TYPES_TO_SVG_LOGO_PATH = {
   main: './app/images/logo/metamask-fox.svg',
   beta: './app/build-types/beta/images/logo/metamask-fox.svg',
   flask: './app/build-types/flask/images/logo/metamask-fox.svg',
-  mmi: './app/build-types/mmi/images/logo/mmi-logo.svg',
 };
 
 /**
@@ -94,6 +147,15 @@ function getBuildIcon({ buildType }) {
 function getBuildAppId({ buildType }) {
   const baseDomain = 'io.metamask';
   return buildType === 'main' ? baseDomain : `${baseDomain}.${buildType}`;
+}
+
+function assertAndLoadEnvVar(envVarName, buildType, variables) {
+  const envVarValue = variables.get(envVarName);
+  assert(
+    typeof envVarValue === 'string' && envVarValue.length > 0,
+    `Build type "${buildType}" has improperly set ${envVarName} in builds.yml. Current value: "${envVarValue}"`,
+  );
+  return envVarValue;
 }
 
 /**
@@ -134,6 +196,53 @@ function getInfuraProjectId({ buildType, variables, environment, testing }) {
     `Infura Project ID environmental variable "${infuraKeyReference}" is set improperly.`,
   );
   return infuraProjectId;
+}
+
+/**
+ * Get the OAuth client ID for the current build.
+ *
+ * @param {object} options - The OAuth client ID options.
+ * @param {'APPLE' | 'GOOGLE' | 'TELEGRAM'} options.provider - The OAuth provider.
+ * @param {string} options.buildType - The current build type.
+ * @param {ENVIRONMENT[keyof ENVIRONMENT]} options.environment - The current build environment.
+ * @param {boolean} options.testing - Whether this is a test build or not.
+ * @param {boolean} options.development - Whether this is a development build or not.
+ * @param {import('../lib/variables').Variables} options.variables - Object containing all variables that modify the build pipeline.
+ * @returns {string} The OAuth client ID.
+ */
+function getOAuthClientId({
+  provider,
+  buildType,
+  variables,
+  environment,
+  testing,
+  development,
+}) {
+  const clientIdEnv = `${provider}_CLIENT_ID`;
+
+  if (isProductionOrReleaseCandidateBuild(environment)) {
+    // Production and release-candidate builds resolve the client ID indirectly so
+    // each build can point at the right secret without changing code.
+    const clientIdRef = assertAndLoadEnvVar(
+      `${clientIdEnv}_REF`,
+      buildType,
+      variables,
+    );
+    return assertAndLoadEnvVar(clientIdRef, buildType, variables);
+  }
+
+  if (testing || development) {
+    if (!variables.isDefined(clientIdEnv)) {
+      throw new Error(
+        `${clientIdEnv} is not set for seedless onboarding enabled build`,
+      );
+    }
+    return variables.get(clientIdEnv);
+  }
+
+  const envToLoad =
+    buildType === 'flask' ? `${clientIdEnv}_FLASK_UAT` : `${clientIdEnv}_UAT`;
+  return variables.get(envToLoad);
 }
 
 /**
@@ -184,14 +293,13 @@ function getPhishingWarningPageUrl({ variables, testing }) {
     phishingWarningPageUrl = testing
       ? 'http://localhost:9999/'
       : `https://metamask.github.io/phishing-warning/v${
-          // eslint-disable-next-line node/global-require
+          // eslint-disable-next-line n/global-require
           require('@metamask/phishing-warning/package.json').version
         }/`;
   }
 
   let phishingWarningPageUrlObject;
   try {
-    // eslint-disable-next-line no-new
     phishingWarningPageUrlObject = new URL(phishingWarningPageUrl);
   } catch (error) {
     throw new Error(
@@ -210,3 +318,8 @@ function getPhishingWarningPageUrl({ variables, testing }) {
   // of the domain if it is missing
   return phishingWarningPageUrlObject.toString();
 }
+
+module.exports = {
+  setEnvironmentVariables,
+  getOAuthClientId,
+};

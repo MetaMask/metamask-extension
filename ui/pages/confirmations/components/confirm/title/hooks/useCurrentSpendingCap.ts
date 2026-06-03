@@ -43,7 +43,7 @@ export function useCurrentSpendingCap(currentConfirmation: Confirmation) {
 
   const { spendingCap, pending } = useApproveTokenSimulation(
     currentConfirmation as TransactionMeta,
-    decimals || '0',
+    decimals,
   );
 
   let customSpendingCap = '';

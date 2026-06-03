@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Трябва да изберете акаунт!"
   },
-  "activityLog": {
-    "message": "Дневник на дейността"
-  },
   "addAcquiredTokens": {
     "message": "Добавете жетоните, които сте придобили с помощта на MetaMask"
   },
@@ -80,9 +77,6 @@
   },
   "autoLockTimeLimit": {
     "message": "Таймер за автоматично излизане (минути)"
-  },
-  "autoLockTimeLimitDescription": {
-    "message": "Задайте времето на неактивност в минути, преди MetaMask автоматично да Ви отпише от акаунта"
   },
   "average": {
     "message": "Средно аритметично"
@@ -184,12 +178,6 @@
   "createPassword": {
     "message": "Създаване на парола"
   },
-  "currencyConversion": {
-    "message": "Конвертиране на валута"
-  },
-  "currentLanguage": {
-    "message": "Настоящ език"
-  },
   "custom": {
     "message": "Разширени"
   },
@@ -211,9 +199,6 @@
   "done": {
     "message": "Готово"
   },
-  "downloadGoogleChrome": {
-    "message": "Изтеглете Google Chrome"
-  },
   "downloadStateLogs": {
     "message": "Изтеглете държавни дневници"
   },
@@ -229,14 +214,8 @@
   "enterPasswordContinue": {
     "message": "Въведете парола, за да продължите"
   },
-  "ethereumPublicAddress": {
-    "message": "Публичен адрес за етереум"
-  },
   "etherscanView": {
     "message": "Преглед на акаунта в Etherscan"
-  },
-  "expandView": {
-    "message": "Разгъване на изглед"
   },
   "failed": {
     "message": "Неуспешно"
@@ -254,26 +233,11 @@
   "from": {
     "message": "От"
   },
-  "functionType": {
-    "message": "Тип функция"
-  },
   "gasLimit": {
     "message": "Ограничение на газ"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Ограничението за газ е максималното количество единици газ, което сте готови да похарчите."
-  },
   "gasLimitTooLow": {
     "message": "Ограничението за газ трябва да бъде поне 21000"
-  },
-  "gasPrice": {
-    "message": "Цената на газа (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Цена на газа е изключително ниска"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Цената на газа определя количеството етер, което сте готови да платите за всяка единица газ."
   },
   "gasUsed": {
     "message": "Използван газ"
@@ -292,9 +256,6 @@
   },
   "hardwareWallets": {
     "message": "Свържете хардуерен портфейл"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Изберете хардуерен портфейл, който искате да използвате с MetaMask"
   },
   "here": {
     "message": "тук",
@@ -316,18 +277,12 @@
     "message": "Импортиране",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Импортиране на акаунт"
-  },
   "importAccountMsg": {
     "message": "Импортираните акаунти няма да бъдат свързани с първоначално създадената ви фраза за метаМаск акаунт. Научете повече за импортираните акаунти"
   },
   "imported": {
     "message": "Импортирани",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "initialTransactionConfirmed": {
-    "message": "Първоначалната транзакция беше потвърдена от мрежата. Кликнете върху OK, за да се върнете обратно."
   },
   "insufficientBalance": {
     "message": "Недостатъчно салдо."
@@ -369,20 +324,8 @@
   "likeToImportTokens": {
     "message": "Искате ли да добавите тези жетони?"
   },
-  "lineaGoerli": {
-    "message": "Тестова мрежа на Linea Goerli"
-  },
-  "links": {
-    "message": "Връзки"
-  },
-  "loadMore": {
-    "message": "Зареди повече"
-  },
   "loading": {
     "message": "Зарежда се..."
-  },
-  "loadingTokens": {
-    "message": "Зареждане на жетони..."
   },
   "localhost": {
     "message": "Локален хост 8545"
@@ -412,9 +355,6 @@
     "message": "Трябва да изберете файл за импортиране.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Не може да изпраща отрицателни суми от ETH."
-  },
   "networkName": {
     "message": "Име на мрежата"
   },
@@ -424,15 +364,9 @@
   "nevermind": {
     "message": "Няма значение"
   },
-  "newAccount": {
-    "message": "Нов акаунт"
-  },
   "newAccountNumberName": {
     "message": "Акаунт $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Нов контакт"
   },
   "newContract": {
     "message": "Нов договор"
@@ -442,12 +376,6 @@
   },
   "next": {
     "message": "Напред"
-  },
-  "noConversionRateAvailable": {
-    "message": "Няма наличен процент на преобръщане"
-  },
-  "noTransactions": {
-    "message": "Нямате транзакции"
   },
   "noWebcamFound": {
     "message": "Уеб камерата на компютърa Ви не беше намерена. Моля, опитайте отново."
@@ -472,9 +400,6 @@
   },
   "origin": {
     "message": "Произход"
-  },
-  "parameters": {
-    "message": "Параметри"
   },
   "participateInMetaMetrics": {
     "message": "Участвайте в MetaMetrics"
@@ -526,12 +451,6 @@
   "rejectAll": {
     "message": "Отхвърлете всички"
   },
-  "rejectTxsDescription": {
-    "message": "На път сте да отхвърлите партида от $1 транзакции."
-  },
-  "rejectTxsN": {
-    "message": "Отхвърлете $1 транзакции"
-  },
   "rejected": {
     "message": "Отказан"
   },
@@ -541,12 +460,6 @@
   "removeAccount": {
     "message": "Премахване на профила"
   },
-  "removeAccountDescription": {
-    "message": "Този акаунт ще бъде премахнат от портфейла ви. Моля, уверете се, че имате оригиналната фраза или частен ключ за този импортиран акаунт, преди да продължите. Можете да импортирате или създавате отново акаунти от падащото меню."
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "искания, които чакат да бъдат потвърдени"
-  },
   "required": {
     "message": "Задължително"
   },
@@ -555,9 +468,6 @@
   },
   "restore": {
     "message": "Възстановяване"
-  },
-  "revealSeedWords": {
-    "message": "Разкрий думите зародиш"
   },
   "revealSeedWordsWarning": {
     "message": "Тези думи могат да бъдат използвани за кражба на всички ваши акаунти.",
@@ -605,17 +515,11 @@
   "showFiatConversionInTestnets": {
     "message": "Показване на преобразуването на Testnets"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Изберете това, за да покажете фиат  преобразуване на Testnets"
-  },
   "showHexData": {
     "message": "Показване на шестнадесетични данни"
   },
   "showHexDataDescription": {
     "message": "Изберете това, за да се покаже полето с шестнадесетични данни на екрана за изпращане"
-  },
-  "sigRequest": {
-    "message": "Заявка за подпис"
   },
   "sign": {
     "message": "Подпис"
@@ -635,26 +539,17 @@
   "speedUpCancellation": {
     "message": "Ускорете това анулиране"
   },
-  "speedUpTransaction": {
-    "message": "Ускорете тази транзакция"
-  },
   "stateLogError": {
     "message": "Грешка при извличането на дневници на състоянието."
   },
   "stateLogs": {
     "message": "Държавни дневници"
   },
-  "stateLogsDescription": {
-    "message": "Държавните дневници съдържат адресите на публичните ви акаунти и изпратените транзакции."
-  },
   "submitted": {
     "message": "Изпратен"
   },
   "supportCenter": {
     "message": "Посетете нашия център за поддръжка"
-  },
-  "switchNetworks": {
-    "message": "Превключване на мрежи"
   },
   "symbol": {
     "message": "Символ"
@@ -664,9 +559,6 @@
   },
   "terms": {
     "message": "Условия за ползване"
-  },
-  "tips": {
-    "message": "Дарения"
   },
   "to": {
     "message": "На"
@@ -689,41 +581,11 @@
   "transaction": {
     "message": "транзакция"
   },
-  "transactionCancelAttempted": {
-    "message": "Опит за отмяна на транзакцията с такса за газ от $1 при $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Транзакцията беше успешно отменена при $2"
-  },
-  "transactionConfirmed": {
-    "message": "Транзакцията беше потвърдена при $2."
-  },
-  "transactionCreated": {
-    "message": "Транзакцията е създадена със стойност от $1 при $2."
-  },
-  "transactionDropped": {
-    "message": "Транзакцията спадна на $2."
-  },
   "transactionError": {
     "message": "Грешка при транзакцията. Беше върнато изключение в кода на договора."
   },
   "transactionErrorNoContract": {
     "message": "Опит за извикване на функция на извъндоговорния адрес."
-  },
-  "transactionErrored": {
-    "message": "Възникна грешка в транзакцията."
-  },
-  "transactionFee": {
-    "message": "Такса за транзакция"
-  },
-  "transactionResubmitted": {
-    "message": "Повторната транзакция с такса за газ се увеличи до $1 при $2"
-  },
-  "transactionSubmitted": {
-    "message": "Транзакция, изпратена с такса за газ от $1 при $2."
-  },
-  "transactionUpdated": {
-    "message": "Транзакцията е актуализирана на $2."
   },
   "transfer": {
     "message": "Трансфер"
@@ -743,29 +605,17 @@
   "unknown": {
     "message": "Неизвестно"
   },
-  "unknownNetwork": {
-    "message": "Неизвестна частна мрежа"
-  },
   "unknownQrCode": {
     "message": "Грешка: Не можахме да идентифицираме този QR код"
   },
   "unlock": {
     "message": "Отключване"
   },
-  "unlockMessage": {
-    "message": "Децентрализираната мрежа очаква"
-  },
   "urlErrorMsg": {
     "message": "URI изискват съответния HTTP / HTTPS префикс."
   },
   "usedByClients": {
     "message": "Използва се от различни клиенти"
-  },
-  "userName": {
-    "message": "Потребителско име"
-  },
-  "viewContact": {
-    "message": "Преглед на контакта"
   },
   "visitWebSite": {
     "message": "Посетете нашият уеб сайт"
@@ -775,14 +625,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Трябва да разрешите достъпа на камерата, за да използвате тази функция."
-  },
-  "youSign": {
-    "message": "Вие подписвате"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Вашата лична фраза зародиш"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Нулева цена на газ при ускоряване"
   }
 }

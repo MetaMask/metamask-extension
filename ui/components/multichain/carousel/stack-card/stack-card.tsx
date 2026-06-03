@@ -1,0 +1,121 @@
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import {
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+  Text,
+} from '../../../component-library';
+import {
+  IconColor,
+  TextVariant,
+  TextColor,
+} from '../../../../helpers/constants/design-system';
+import {
+  isInternalRouteHref,
+  resolveCarouselHref,
+} from '../resolve-carousel-href';
+import type { StackCardProps } from './stack-card.types';
+
+export const StackCard: React.FC<StackCardProps> = ({
+  slide,
+  isCurrentCard,
+  isLastSlide = false,
+  onSlideClick,
+  onTransitionToNextCard,
+  className = '',
+}) => {
+  const t = useI18nContext();
+  const isContentfulContent = slide.id.startsWith('contentful-');
+
+  const handleCloseClick = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (onTransitionToNextCard) {
+      onTransitionToNextCard(slide.id, isLastSlide);
+    }
+  };
+
+  const navigate = useNavigate();
+
+  const handleCardClick = async () => {
+    if (!isCurrentCard) {
+      return;
+    }
+
+    const clickHandled = onSlideClick?.(slide.id);
+
+    if (clickHandled) {
+      // If the click was handled by the parent component, we assume it took care of navigation or any other side effects, so we don't proceed with the `linkUrl` behavior.
+      return;
+    }
+
+    if (slide.href) {
+      const href = await resolveCarouselHref(slide.href);
+
+      if (isInternalRouteHref(href)) {
+        navigate(href);
+      } else {
+        global.platform.openTab({ url: href });
+      }
+    }
+  };
+
+  return (
+    <div
+      className={`carousel-card ${
+        isCurrentCard ? 'carousel-card--current' : 'carousel-card--next'
+      } ${className}`}
+      onClick={handleCardClick}
+      data-testid={`carousel-slide-${slide.id}`}
+    >
+      {/* Pressed background overlay for next card */}
+      {!isCurrentCard && <div className="carousel-card__pressed-overlay" />}
+
+      {/* Image Container */}
+      <div className="carousel-card__image">
+        <img src={slide.image} alt={slide.title} />
+      </div>
+
+      {/* Info container */}
+      <div className="carousel-card__text">
+        {/* Title and close button container */}
+        <div className="carousel-card__text-header">
+          <Text
+            variant={TextVariant.bodySmMedium}
+            color={TextColor.textDefault}
+            className="carousel-card__title"
+          >
+            {isContentfulContent ? slide.title : t(slide.title)}
+          </Text>
+
+          {onTransitionToNextCard && (
+            <ButtonIcon
+              iconName={IconName.Close}
+              size={ButtonIconSize.Md}
+              color={IconColor.iconAlternative}
+              ariaLabel={t('closeSlide', [
+                isContentfulContent ? slide.title : t(slide.title),
+              ])}
+              onClick={handleCloseClick}
+              data-testid={`carousel-slide-${slide.id}-close-button`}
+            />
+          )}
+        </div>
+
+        {/* Description Text container */}
+        <div className="carousel-card__text-body">
+          <Text
+            variant={TextVariant.bodyXsMedium}
+            color={TextColor.textAlternative}
+            className="carousel-card__description"
+          >
+            {isContentfulContent ? slide.description : t(slide.description)}
+          </Text>
+        </div>
+      </div>
+    </div>
+  );
+};

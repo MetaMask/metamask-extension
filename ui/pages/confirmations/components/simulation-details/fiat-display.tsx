@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { BigNumber } from 'bignumber.js';
 import {
   TextAlign,
   TextColor,
@@ -7,7 +8,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Text } from '../../../../components/component-library';
-import { SizeNumber } from '../../../../components/component-library/box/box.types';
 import Tooltip from '../../../../components/ui/tooltip';
 import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
 import { getShouldShowFiat } from '../../../../selectors';
@@ -16,7 +16,6 @@ import { FIAT_UNAVAILABLE, FiatAmount } from './types';
 const textStyle = {
   color: TextColor.textAlternative,
   variant: TextVariant.bodySm,
-  paddingRight: 2 as SizeNumber,
   textAlign: 'right' as TextAlign,
 } as const;
 
@@ -53,7 +52,13 @@ export const IndividualFiatDisplay: React.FC<{
     return null;
   }
   const absFiat = Math.abs(fiatAmount);
-  const fiatDisplayValue = fiatFormatter(absFiat, { shorten });
+  const isNonZeroSmallValue =
+    absFiat &&
+    new BigNumber(String(absFiat)).lt(new BigNumber(0.01)) &&
+    new BigNumber(String(absFiat)).greaterThan(new BigNumber(0));
+  const fiatDisplayValue = isNonZeroSmallValue
+    ? `< ${fiatFormatter(0.01, { shorten })}`
+    : fiatFormatter(absFiat, { shorten });
 
   return shorten ? (
     <Tooltip position="bottom" title={fiatDisplayValue} interactive>
@@ -86,11 +91,17 @@ export const TotalFiatDisplay: React.FC<{
     return null;
   }
 
+  const totalFiatShorten = fiatFormatter(Math.abs(totalFiat), {
+    shorten: true,
+    truncatedCharLimit: 20,
+    truncatedStartChars: 17,
+  });
+
   return totalFiat === 0 ? (
     <FiatNotAvailableDisplay />
   ) : (
     <Text {...textStyle}>
-      {t('simulationDetailsTotalFiat', [fiatFormatter(Math.abs(totalFiat))])}
+      {t('simulationDetailsTotalFiat', [totalFiatShorten])}
     </Text>
   );
 };

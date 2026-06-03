@@ -4,11 +4,29 @@ export const SENDER_ADDRESS_MOCK = `0x${SENDER_ADDRESS_NO_0X_MOCK}`;
 export const RECIPIENT_ADDRESS_MOCK =
   '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc';
 
+type JsonRpcBase = {
+  jsonrpc?: '2.0';
+  id: string | number;
+};
+
+type JsonRpcRequest = JsonRpcBase & {
+  method: string;
+  params?: unknown[] | object;
+};
+
+type JsonRpcResponse = JsonRpcBase & {
+  result?: unknown;
+  error?: {
+    code: number;
+    message: string;
+    data?: unknown;
+  };
+};
+
+export type MockRequest = Partial<JsonRpcRequest>;
+export type MockResponse = Partial<JsonRpcResponse>;
+
 export type MockRequestResponse = {
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  request: any;
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  response: any;
+  request: MockRequest;
+  response: MockResponse;
 };

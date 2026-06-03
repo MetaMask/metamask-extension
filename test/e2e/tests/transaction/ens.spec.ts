@@ -1,99 +1,44 @@
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
-import { defaultGanacheOptions, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
-import HomePage from '../../page-objects/pages/homepage';
-import SendTokenPage from '../../page-objects/pages/send/send-token-page';
+import { NETWORK_CLIENT_ID } from '../../constants';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { login } from '../../page-objects/flows/login.flow';
+import HomePage from '../../page-objects/pages/home/homepage';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
+import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-balance-polling';
+import SendPage from '../../page-objects/pages/send/send-page';
+import { shortenAddress } from '../../../../ui/helpers/utils/util';
 
 describe('ENS', function (this: Suite) {
-  const sampleAddress: string = '1111111111111111111111111111111111111111';
-
-  // Having 2 versions of the address is a bug(#25286)
-  const shortSampleAddress = '0x1111...1111';
-  const shortSampleAddresV2 = '0x11111...11111';
+  const shortSampleAddress = shortenAddress(
+    '0x225f137127d9067788314bc7fcc1f36746a3c3B5',
+  );
   const chainId = 1;
-  const mockResolver = '226159d592e2b063810a10ebf6dcbada94ed68b8';
 
-  const sampleEnsDomain: string = 'test.eth';
-  const infuraUrl: string =
-    'https://mainnet.infura.io/v3/00000000000000000000000000000000';
+  const UR_PROXY = '0xeeeeeeee14d718c2b47d9923deab1335e144eeee';
+  const sampleEnsDomain = 'luc.eth';
 
   async function mockInfura(mockServer: MockttpServer): Promise<void> {
-    await mockServer
-      .forPost(infuraUrl)
-      .withJsonBodyIncluding({ method: 'eth_blockNumber' })
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: '1111111111111111',
-          result: '0x1',
-        },
-      }));
-
-    await mockServer
-      .forPost(infuraUrl)
-      .withJsonBodyIncluding({ method: 'eth_getBalance' })
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: '1111111111111111',
-          result: '0x1',
-        },
-      }));
-
-    await mockServer
-      .forPost(infuraUrl)
-      .withJsonBodyIncluding({ method: 'eth_getBlockByNumber' })
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: '1111111111111111',
-          result: {},
-        },
-      }));
+    await mockMultiNetworkBalancePolling(mockServer);
 
     await mockServerJsonRpc(mockServer, [
+      ['eth_blockNumber'],
+      ['eth_getBlockByNumber'],
       ['eth_chainId', { result: `0x${chainId}` }],
+      // Get the address from the universal resolver
       [
         'eth_call',
         {
           params: [
             {
-              to: '0x00000000000c2e074ec69a0dfb2997ba6c7d2e1e',
-              data: '0x0178b8bfeb4f647bea6caa36333c816d7b46fdcb05f9466ecacc140ea8c66faf15b3d9f1',
+              to: UR_PROXY,
+              data: '0xa1472844000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000009036c75630365746800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000243b3b57dee1e7bcf2ca33c28a806ee265cfedf02fedf1b124ca73b2203ca80cc7c91a02ad00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000014782d62617463682d676174657761793a74727565000000000000000000000000',
             },
           ],
-          result: `0x000000000000000000000000${mockResolver}`,
-        },
-      ],
-      [
-        'eth_call',
-        {
-          params: [
-            {
-              to: `0x${mockResolver}`,
-              data: '0x01ffc9a79061b92300000000000000000000000000000000000000000000000000000000',
-            },
-          ],
-          result: `0x0000000000000000000000000000000000000000000000000000000000000000`,
-        },
-      ],
-      [
-        'eth_call',
-        {
-          params: [
-            {
-              to: `0x${mockResolver}`,
-              data: '0x3b3b57deeb4f647bea6caa36333c816d7b46fdcb05f9466ecacc140ea8c66faf15b3d9f1',
-            },
-          ],
-          result: `0x000000000000000000000000${sampleAddress}`,
+          result:
+            '0x00000000000000000000000000000000000000000000000000000000000000400000000000000000000000004976fb03c32e5b8cfe2b6ccb31c09ba78ebaba410000000000000000000000000000000000000000000000000000000000000020000000000000000000000000225f137127d9067788314bc7fcc1f36746a3c3b5',
         },
       ],
     ]);
@@ -102,35 +47,35 @@ describe('ENS', function (this: Suite) {
   it('domain resolves to a correct address', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
-        ganacheOptions: defaultGanacheOptions,
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockInfura,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         // click send button on homepage to start send flow
         const homepage = new HomePage(driver);
-        await homepage.check_pageIsLoaded();
-        await homepage.check_expectedBalanceIsDisplayed('<0.000001');
+        await homepage.checkPageIsLoaded();
+        await homepage.checkExpectedBalanceIsDisplayed('20');
         await homepage.startSendFlow();
 
         // fill ens address as recipient when user lands on send token screen
-        const sendToPage = new SendTokenPage(driver);
-        await sendToPage.check_pageIsLoaded();
+        const sendToPage = new SendPage(driver);
+        await sendToPage.selectToken('0x1', 'ETH');
         await sendToPage.fillRecipient(sampleEnsDomain);
 
-        // verify that ens domain resolves to the correct address
-        await sendToPage.check_ensAddressResolution(
+        // Verify that ens is resolved to the correct address
+        await sendToPage.checkEnsAddressResolution(
           sampleEnsDomain,
           shortSampleAddress,
-        );
-
-        // Verify the resolved ENS address can be used as the recipient address
-        await sendToPage.check_ensAddressAsRecipient(
-          sampleEnsDomain,
-          shortSampleAddresV2,
         );
       },
     );

@@ -1,17 +1,20 @@
 import React from 'react';
 import {
-  AlignItems,
+  Box,
+  BoxAlignItems,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   BlockSize,
-  Display,
-  FlexDirection,
-  JustifyContent,
   TextAlign,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Button, Box, Text } from '../../../component-library';
+import { Button, Text } from '../../../component-library';
 import { IQuizInformationProps } from '../types';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function QuizContent({
   icon,
   image,
@@ -25,16 +28,15 @@ export default function QuizContent({
     <>
       {icon && (
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.center}
+          className="flex flex-row"
+          alignItems={BoxAlignItems.Center}
+          justifyContent={BoxJustifyContent.Center}
         >
           {icon}
         </Box>
       )}
       {image && (
-        <Box display={Display.Flex} margin="auto" textAlign={TextAlign.Center}>
+        <Box className="flex text-center m-auto">
           <img
             src={image}
             alt={t('srpSecurityQuizImgAlt')}
@@ -60,7 +62,7 @@ export default function QuizContent({
           key={idx}
           size={btn.size}
           onClick={btn.onClick}
-          // TODO: Replace `any` with type
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           variant={btn.variant as any}
           width={BlockSize.Full}

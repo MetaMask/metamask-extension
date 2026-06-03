@@ -19,6 +19,12 @@ export const icon: UIComponentFactory<IconElement> = ({ element }) => {
         return IconColor.iconMuted;
       case 'primary':
         return IconColor.primaryDefault;
+      case 'error':
+        return IconColor.errorDefault;
+      case 'warning':
+        return IconColor.warningDefault;
+      case 'success':
+        return IconColor.successDefault;
       default:
         return IconColor.iconDefault;
     }

@@ -1,75 +1,93 @@
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { NameType } from '@metamask/name-controller';
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import React from 'react';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
-import Name from '../../../../../../components/app/name';
-import {
-  Box,
-  Icon,
-  IconName,
-  IconSize,
-} from '../../../../../../components/component-library';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  IconColor,
-  JustifyContent,
-} from '../../../../../../helpers/constants/design-system';
+import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
+import { toChecksumHexAddress } from '../../../../../../../shared/lib/hexstring-utils';
+import { useI18nContext } from '../../../../../../hooks/useI18nContext';
+import { useDisplayName } from '../../../../../../hooks/useDisplayName';
 import { useConfirmContext } from '../../../../context/confirm';
-import { useDecodedTransactionData } from '../hooks/useDecodedTransactionData';
-import { ConfirmLoader } from '../shared/confirm-loader/confirm-loader';
+import { useTransferRecipient } from '../hooks/useTransferRecipient';
+import { AccountFlowRow } from '../../../rows/account-flow-row/account-flow-row';
 
 export const TransactionFlowSection = () => {
+  const t = useI18nContext();
+
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const { value, pending } = useDecodedTransactionData();
-
-  const addresses = value?.data[0].params.filter(
-    (param) => param.type === 'address',
-  );
-  const recipientAddress =
-    transactionMeta.type === TransactionType.simpleSend
-      ? transactionMeta.txParams.to
-      : // sometimes there's more than one address, in which case we want the last one
-        addresses?.[addresses.length - 1].value;
-
-  if (pending) {
-    return <ConfirmLoader />;
-  }
+  const recipientAddress = useTransferRecipient();
 
   const { chainId } = transactionMeta;
+  const fromAddress = transactionMeta.txParams.from;
+  const toAddress = recipientAddress ?? '';
+
+  const {
+    name: fromName,
+    isAccount: fromIsAccount,
+    image: fromImage,
+    displayState: fromDisplayState,
+    subtitle: fromWalletName,
+  } = useDisplayName({
+    value: toChecksumHexAddress(fromAddress),
+    type: NameType.ETHEREUM_ADDRESS,
+    preferContractSymbol: true,
+    variation: chainId,
+  });
+
+  const {
+    name: toName,
+    isAccount: toIsAccount,
+    image: toImage,
+    displayState: toDisplayState,
+    subtitle: toWalletName,
+  } = useDisplayName({
+    value: toChecksumHexAddress(toAddress),
+    type: NameType.ETHEREUM_ADDRESS,
+    preferContractSymbol: true,
+    variation: chainId,
+  });
+
+  const fromLabel = fromWalletName
+    ? `${t('from')} ${fromWalletName}`
+    : t('from');
+
+  const toLabel = toWalletName ? `${t('to')} ${toWalletName}` : t('to');
 
   return (
     <ConfirmInfoSection data-testid="confirmation__transaction-flow">
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        alignItems={AlignItems.center}
-        padding={3}
-      >
-        <Name
-          value={transactionMeta.txParams.from}
-          type={NameType.ETHEREUM_ADDRESS}
-          variation={chainId}
+      <Box flexDirection={BoxFlexDirection.Column} paddingRight={2}>
+        <AccountFlowRow
+          address={fromAddress}
+          label={fromLabel}
+          alertKey={RowAlertKey.SigningInWith}
+          name={fromName}
+          isAccount={fromIsAccount}
+          image={fromImage}
+          displayState={fromDisplayState}
+          data-testid="sender-address"
         />
-        <Icon
-          name={IconName.ArrowRight}
-          size={IconSize.Md}
-          color={IconColor.iconMuted}
+
+        <Box
+          style={{
+            borderTop: '1px solid var(--color-border-muted)',
+          }}
+          marginLeft={2}
+          marginTop={1}
+          marginBottom={1}
         />
-        {recipientAddress && (
-          <Name
-            value={recipientAddress}
-            type={NameType.ETHEREUM_ADDRESS}
-            variation={chainId}
-          />
-        )}
+
+        <AccountFlowRow
+          address={toAddress}
+          label={toLabel}
+          alertKey={RowAlertKey.InteractingWith}
+          name={toName}
+          isAccount={toIsAccount}
+          image={toImage}
+          displayState={toDisplayState}
+          data-testid="recipient-address"
+        />
       </Box>
     </ConfirmInfoSection>
   );

@@ -1,0 +1,300 @@
+import { TransactionStatus } from '@metamask/transaction-controller';
+import { fireEvent } from '@testing-library/react';
+import { StatusTypes } from '@metamask/bridge-controller';
+import React from 'react';
+import configureStore from 'redux-mock-store';
+import mockUnifiedSwapTxGroup from '../../../../test/data/swap/mock-unified-swap-transaction-group.json';
+import mockBridgeTxData from '../../../../test/data/bridge/mock-bridge-transaction-details.json';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import TransactionListItem from '.';
+
+const mockUseNavigate = jest.fn();
+const mockUseLocation = jest.fn();
+
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
+    useLocation: () => mockUseLocation(),
+  };
+});
+
+jest.mock('../../../store/background-connection', () => ({
+  ...jest.requireActual('../../../store/background-connection'),
+  submitRequestToBackground: jest.fn(),
+}));
+
+const mockMetaMetricsContext = {
+  trackEvent: jest.fn(),
+  bufferedTrace: jest.fn(),
+  bufferedEndTrace: jest.fn(),
+  onboardingParentContext: { current: null },
+};
+
+describe('TransactionListItem for Unified Swap and Bridge', () => {
+  beforeEach(() => {
+    mockUseLocation.mockReturnValue({
+      pathname: '/',
+      search: '',
+      hash: '',
+      state: null,
+      key: 'test',
+    });
+    mockUseNavigate.mockClear();
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should render confirmed unified swap tx summary', () => {
+    const { queryByTestId } = renderWithProvider(
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+        <TransactionListItem transactionGroup={mockUnifiedSwapTxGroup} />
+      </MetaMetricsContext.Provider>,
+      configureStore()(createBridgeMockStore()),
+    );
+
+    expect(queryByTestId('activity-list-item')).toHaveTextContent(
+      '?Swap to Confirmed-0 ETH',
+    );
+  });
+
+  it('should render failed unified swap tx summary', () => {
+    const { queryByTestId, getByText } = renderWithProvider(
+      <TransactionListItem
+        transactionGroup={{
+          ...mockUnifiedSwapTxGroup,
+          primaryTransaction: {
+            ...mockUnifiedSwapTxGroup.primaryTransaction,
+            status: TransactionStatus.failed,
+          },
+        }}
+      />,
+      configureStore()(
+        createBridgeMockStore({
+          metamaskStateOverrides: {
+            transactions: [mockUnifiedSwapTxGroup.primaryTransaction],
+          },
+          bridgeStatusStateOverrides: {
+            txHistory: {
+              [mockUnifiedSwapTxGroup.primaryTransaction.id]: {
+                ...mockBridgeTxData.bridgeHistoryItem,
+              },
+            },
+          },
+        }),
+      ),
+    );
+
+    expect(queryByTestId('activity-list-item')).toHaveTextContent(
+      '?Swap USDC to USDCFailed-2 USDC-USD 0.00',
+    );
+    expect(getByText(messages.failed.message)).toBeInTheDocument();
+  });
+
+  it('should render pending for submitted unified swap tx even when not earliest nonce', () => {
+    const { getByText, queryByText, queryByTestId } = renderWithProvider(
+      <TransactionListItem
+        transactionGroup={{
+          ...mockUnifiedSwapTxGroup,
+          primaryTransaction: {
+            ...mockUnifiedSwapTxGroup.primaryTransaction,
+            status: TransactionStatus.submitted,
+          },
+        }}
+        isEarliestNonce={false}
+      />,
+      configureStore()(
+        createBridgeMockStore({
+          metamaskStateOverrides: {
+            transactions: [
+              {
+                ...mockUnifiedSwapTxGroup.primaryTransaction,
+                status: TransactionStatus.submitted,
+              },
+            ],
+          },
+          bridgeStatusStateOverrides: {
+            txHistory: {
+              intentOrderUid: {
+                ...mockBridgeTxData.bridgeHistoryItem,
+                quote: {
+                  ...mockBridgeTxData.bridgeHistoryItem.quote,
+                  intent: {
+                    protocol: 'cowswap',
+                  },
+                },
+                originalTransactionId:
+                  mockUnifiedSwapTxGroup.initialTransaction.id,
+                status: {
+                  ...mockBridgeTxData.bridgeHistoryItem.status,
+                  destChain: {},
+                  status: StatusTypes.PENDING,
+                },
+              },
+            },
+          },
+        }),
+      ),
+    );
+
+    expect(getByText(messages.pending.message)).toBeInTheDocument();
+    expect(queryByText(messages.queued.message)).not.toBeInTheDocument();
+    expect(queryByTestId('cancel-button')).not.toBeInTheDocument();
+  });
+
+  it('should render pending confirmed bridge tx summary', () => {
+    const { bridgeHistoryItem, srcTxMetaId } = mockBridgeTxData;
+    const { queryByTestId } = renderWithProvider(
+      <TransactionListItem
+        transactionGroup={{
+          ...mockBridgeTxData.transactionGroup,
+          primaryTransaction: {
+            ...mockBridgeTxData.transactionGroup.primaryTransaction,
+            status: TransactionStatus.confirmed,
+          },
+        }}
+      />,
+      configureStore()(
+        createBridgeMockStore({
+          metamaskStateOverrides: {
+            transactions: [
+              mockBridgeTxData.transactionGroup.primaryTransaction,
+            ],
+          },
+          bridgeStatusStateOverrides: {
+            txHistory: {
+              [srcTxMetaId]: {
+                ...bridgeHistoryItem,
+                status: {
+                  ...bridgeHistoryItem.status,
+                  status: StatusTypes.PENDING,
+                },
+              },
+            },
+          },
+        }),
+      ),
+    );
+
+    expect(queryByTestId('activity-list-item')).toHaveTextContent(
+      '?Bridged to OPTransaction 2 of 2-2 USDC-USD 0.00',
+    );
+  });
+
+  it('should render submitted bridge tx summary', () => {
+    const { bridgeHistoryItem, srcTxMetaId } = mockBridgeTxData;
+    const { queryByTestId } = renderWithProvider(
+      <TransactionListItem
+        transactionGroup={{
+          ...mockBridgeTxData.transactionGroup,
+          primaryTransaction: {
+            ...mockBridgeTxData.transactionGroup.primaryTransaction,
+            status: TransactionStatus.submitted,
+          },
+        }}
+      />,
+      configureStore()(
+        createBridgeMockStore({
+          metamaskStateOverrides: {
+            transactions: [
+              mockBridgeTxData.transactionGroup.primaryTransaction,
+            ],
+          },
+          bridgeStatusStateOverrides: {
+            txHistory: {
+              [srcTxMetaId]: {
+                ...bridgeHistoryItem,
+                status: {
+                  ...bridgeHistoryItem.status,
+                  destChain: {},
+                  status: StatusTypes.PENDING,
+                },
+              },
+            },
+          },
+        }),
+      ),
+    );
+
+    expect(queryByTestId('activity-list-item')).toHaveTextContent(
+      '?Bridged to OPTransaction 2 of 2-2 USDC-USD 0.00',
+    );
+  });
+
+  it('should render completed bridge tx summary', () => {
+    const { bridgeHistoryItem, srcTxMetaId } = mockBridgeTxData;
+    const { queryByTestId, getByTestId } = renderWithProvider(
+      <TransactionListItem
+        transactionGroup={mockBridgeTxData.transactionGroup}
+      />,
+      configureStore()(
+        createBridgeMockStore({
+          bridgeStatusStateOverrides: {
+            txHistory: {
+              [srcTxMetaId]: bridgeHistoryItem,
+            },
+          },
+          metamaskStateOverrides: {
+            transactions: [
+              mockBridgeTxData.transactionGroup.primaryTransaction,
+            ],
+          },
+        }),
+      ),
+    );
+
+    expect(queryByTestId('activity-list-item')).toHaveTextContent(
+      '?Bridged to OPConfirmed-2 USDC-USD 0.00',
+    );
+
+    fireEvent.click(getByTestId('activity-list-item'));
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      '/cross-chain/tx-details/0x1e9c69458ea78bb5b3a815763c8d505d09d8017cdf955f7c7ae3c2f7ba7243b0',
+      expect.any(Object),
+    );
+  });
+
+  it('should render failed bridge tx summary', () => {
+    const { bridgeHistoryItem, srcTxMetaId } = mockBridgeTxData;
+    const failedTransactionGroup = {
+      ...mockBridgeTxData.transactionGroup,
+      primaryTransaction: {
+        ...mockBridgeTxData.transactionGroup.primaryTransaction,
+        status: TransactionStatus.failed,
+      },
+    };
+    const { queryByTestId, getByTestId, getByText } = renderWithProvider(
+      <TransactionListItem transactionGroup={failedTransactionGroup} />,
+      configureStore()(
+        createBridgeMockStore({
+          bridgeStatusStateOverrides: {
+            txHistory: {
+              [srcTxMetaId]: bridgeHistoryItem,
+            },
+          },
+          metamaskStateOverrides: {
+            transactions: [
+              mockBridgeTxData.transactionGroup.primaryTransaction,
+            ],
+          },
+        }),
+      ),
+    );
+
+    expect(queryByTestId('activity-list-item')).toHaveTextContent(
+      '?Bridged to OPFailed-2 USDC-USD 0.00',
+    );
+    expect(getByText(messages.failed.message)).toBeInTheDocument();
+
+    fireEvent.click(getByTestId('activity-list-item'));
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      '/cross-chain/tx-details/0x1e9c69458ea78bb5b3a815763c8d505d09d8017cdf955f7c7ae3c2f7ba7243b0',
+      expect.any(Object),
+    );
+  });
+});

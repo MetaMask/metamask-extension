@@ -1,5 +1,5 @@
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import locales from '../../../app/_locales/index.json';
 import testData from '../../../test/data/mock-state.json';
 

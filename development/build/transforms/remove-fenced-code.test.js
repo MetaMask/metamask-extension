@@ -14,8 +14,8 @@ jest.mock('./utils', () => ({
   getESLintInstance: jest.fn(),
 }));
 
-const FEATURE_A = 'build-main';
-const FEATURE_B = 'build-flask';
+const FEATURE_A = 'build-xx1';
+const FEATURE_B = 'build-xx2';
 
 const getMinimalFencedCode = (params = FEATURE_B) =>
   `///: BEGIN:ONLY_INCLUDE_IF(${params})

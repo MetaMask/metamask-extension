@@ -1,7 +1,6 @@
 import React from 'react';
+import README from './README.mdx';
 import type { Meta, StoryObj } from '@storybook/react';
-
-import { Box, Container, Checkbox, ContainerMaxWidth } from '..';
 import {
   BackgroundColor,
   Display,
@@ -9,11 +8,14 @@ import {
 } from '../../../helpers/constants/design-system';
 import { ModalFooter } from './modal-footer';
 
-import README from './README.mdx';
+import { Box } from '../box';
+import { Container, ContainerMaxWidth } from '../container';
+import { Checkbox } from '../checkbox';
 
 const meta: Meta<typeof ModalFooter> = {
   title: 'Components/ComponentLibrary/ModalFooter',
   component: ModalFooter,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       page: README,
@@ -144,7 +146,7 @@ export const Children: Story = {
   args: {
     children: 'Lorem ipsum dolor sit ',
   },
-  render: (args) => {
+  render: function Render(args) {
     const [checked, setChecked] = React.useState(false);
     const handleCheckboxChange = () => setChecked(!checked);
     return (

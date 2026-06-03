@@ -1,19 +1,19 @@
 #!/usr/bin/env node
 
-/* eslint-disable node/shebang */
+/* eslint-disable n/hashbang */
 const path = require('path');
 const { promises: fs, constants: fsConstants } = require('fs');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 const { exitWithError } = require('../../development/lib/exit-with-error');
 const { withFixtures, tinyDelayMs } = require('./helpers');
-const FixtureBuilder = require('./fixture-builder');
+const { default: FixtureBuilderV2 } = require('./fixtures/fixture-builder-v2');
 
 async function measurePage() {
   let metrics;
   try {
     await withFixtures(
-      { fixtures: new FixtureBuilder().build() },
+      { fixtures: new FixtureBuilderV2().build() },
       async ({ driver }) => {
         await driver.delay(tinyDelayMs);
         await driver.navigate();
@@ -110,9 +110,8 @@ async function main() {
   let existingParentDirectory;
   if (out) {
     outputDirectory = path.dirname(out);
-    existingParentDirectory = await getFirstParentDirectoryThatExists(
-      outputDirectory,
-    );
+    existingParentDirectory =
+      await getFirstParentDirectoryThatExists(outputDirectory);
     if (!(await isWritable(existingParentDirectory))) {
       throw new Error('Specified output file directory is not writable');
     }

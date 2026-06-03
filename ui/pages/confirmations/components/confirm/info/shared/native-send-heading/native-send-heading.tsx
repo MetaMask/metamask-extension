@@ -1,50 +1,42 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { BigNumber } from 'bignumber.js';
-import React from 'react';
-import { useSelector } from 'react-redux';
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  TEST_CHAINS,
-} from '../../../../../../../../shared/constants/network';
 import {
   AvatarToken,
   AvatarTokenSize,
   Box,
   Text,
-} from '../../../../../../../components/component-library';
-import Tooltip from '../../../../../../../components/ui/tooltip';
-import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  JustifyContent,
   TextColor,
   TextVariant,
-} from '../../../../../../../helpers/constants/design-system';
-import { MIN_AMOUNT } from '../../../../../../../hooks/useCurrencyDisplay';
+} from '@metamask/design-system-react';
+import { BigNumber } from 'bignumber.js';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import {
+  CHAIN_ID_TOKEN_IMAGE_MAP,
+  TEST_CHAINS,
+} from '../../../../../../../../shared/constants/network';
+import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
+import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/lib/selectors/networks';
+import Tooltip from '../../../../../../../components/ui/tooltip';
+import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
 import { useFiatFormatter } from '../../../../../../../hooks/useFiatFormatter';
-import {
-  getPreferences,
-  selectConversionRateByChainId,
-} from '../../../../../../../selectors';
-import { getMultichainNetwork } from '../../../../../../../selectors/multichain';
+import { selectConversionRateByChainId } from '../../../../../../../selectors';
+import { getPreferences } from '../../../../../../../../shared/lib/selectors/preferences';
 import { useConfirmContext } from '../../../../../context/confirm';
-import {
-  formatAmount,
-  formatAmountMaxPrecision,
-} from '../../../../simulation-details/formatAmount';
-import { toNonScientificString } from '../../hooks/use-token-values';
+import { formatAmount } from '../../../../simulation-details/formatAmount';
+import { useSendingValueMetric } from '../../hooks/useSendingValueMetric';
+import SendHeadingLayout from '../send-heading-layout/send-heading-layout';
 
 const NativeSendHeading = () => {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const { chainId } = transactionMeta;
+  const { chainId, txParams, txParamsOriginal } = transactionMeta;
 
-  const nativeAssetTransferValue = new BigNumber(
-    transactionMeta.txParams.value as string,
-  ).dividedBy(new BigNumber(10).pow(18));
+  // Prefer the original `value` so that container wrapping (e.g. enforced
+  // simulations) does not zero out the displayed send amount.
+  const displayValue = (txParamsOriginal?.value ?? txParams.value) as string;
+
+  const nativeAssetTransferValue = calcTokenAmount(displayValue, 18);
 
   const conversionRate = useSelector((state) =>
     selectConversionRateByChainId(state, chainId),
@@ -57,18 +49,25 @@ const NativeSendHeading = () => {
       .times(nativeAssetTransferValue, 10)
       .toNumber();
   const fiatFormatter = useFiatFormatter();
-  const fiatDisplayValue =
-    fiatValue && fiatFormatter(fiatValue, { shorten: true });
+  const isNonZeroSmallValue =
+    fiatValue &&
+    new BigNumber(String(fiatValue)).lt(new BigNumber(0.01)) &&
+    new BigNumber(String(fiatValue)).greaterThan(new BigNumber(0));
+  const fiatDisplayValue = isNonZeroSmallValue
+    ? `< ${fiatFormatter(0.01, { shorten: true })}`
+    : fiatValue && fiatFormatter(fiatValue, { shorten: true });
 
-  const multichainNetwork = useSelector(getMultichainNetwork);
-  const ticker = multichainNetwork?.network?.ticker;
+  const networkConfigurationsByChainId = useSelector(
+    getNetworkConfigurationsByChainId,
+  );
+
+  const network = networkConfigurationsByChainId?.[transactionMeta.chainId];
+  const { nativeCurrency } = network;
 
   const locale = useSelector(getIntlLocale);
   const roundedTransferValue = formatAmount(locale, nativeAssetTransferValue);
 
-  const transferValue = toNonScientificString(
-    nativeAssetTransferValue.toNumber(),
-  );
+  const transferValue = nativeAssetTransferValue.toFixed();
 
   type TestNetChainId = (typeof TEST_CHAINS)[number];
   const isTestnet = TEST_CHAINS.includes(
@@ -79,57 +78,46 @@ const NativeSendHeading = () => {
   const NetworkImage = (
     <AvatarToken
       src={
-        multichainNetwork?.network?.rpcPrefs?.imageUrl ||
-        CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-          transactionMeta.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+        CHAIN_ID_TOKEN_IMAGE_MAP[
+          transactionMeta.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
         ]
       }
-      name={multichainNetwork?.nickname}
+      name={nativeCurrency}
       size={AvatarTokenSize.Xl}
     />
   );
 
   const NativeAssetAmount =
-    roundedTransferValue ===
-    `<${formatAmountMaxPrecision(locale, MIN_AMOUNT)}` ? (
-      <Tooltip title={transferValue} position="right">
-        <Text
-          variant={TextVariant.headingLg}
-          color={TextColor.inherit}
-          marginTop={3}
-        >
-          {`${roundedTransferValue} ${ticker}`}
+    roundedTransferValue === transferValue ? (
+      <Box paddingBottom={1}>
+        <Text variant={TextVariant.HeadingLg} color={TextColor.Inherit}>
+          {`${roundedTransferValue} ${nativeCurrency}`}
         </Text>
-      </Tooltip>
+      </Box>
     ) : (
-      <Text
-        variant={TextVariant.headingLg}
-        color={TextColor.inherit}
-        marginTop={3}
-      >
-        {`${roundedTransferValue} ${ticker}`}
-      </Text>
+      <Tooltip title={transferValue} position="right">
+        <Box paddingBottom={1}>
+          <Text variant={TextVariant.HeadingLg} color={TextColor.Inherit}>
+            {`${roundedTransferValue} ${nativeCurrency}`}
+          </Text>
+        </Box>
+      </Tooltip>
     );
 
   const NativeAssetFiatConversion = Boolean(fiatDisplayValue) &&
     (!isTestnet || showFiatInTestnets) && (
-      <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+      <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
         {fiatDisplayValue}
       </Text>
     );
 
+  useSendingValueMetric({ transactionMeta, fiatValue });
+
   return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      justifyContent={JustifyContent.center}
-      alignItems={AlignItems.center}
-      padding={4}
-    >
-      {NetworkImage}
+    <SendHeadingLayout image={NetworkImage}>
       {NativeAssetAmount}
       {NativeAssetFiatConversion}
-    </Box>
+    </SendHeadingLayout>
   );
 };
 

@@ -2,22 +2,40 @@ name: Check template and add labels
 
 on:
   issues:
-    types: [opened, edited]
+    types: [opened, edited, labeled, unlabeled, reopened]
   pull_request_target:
-    types: [opened, edited]
+    types: [opened, edited, labeled, unlabeled, reopened, synchronize]
+  merge_group:
 
 jobs:
   check-template-and-add-labels:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: >
+      github.event_name == 'issues' ||
+      (github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name == github.repository)
+    permissions:
+      contents: read
+      id-token: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
 
-      - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
+      - name: Get access token
+        id: get-token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            issues: write
+            members: read
+            pull_requests: write
 
       - name: Check template and add labels
         id: check-template-and-add-labels
         env:
-          LABEL_TOKEN: ${{ secrets.LABEL_TOKEN }}
+          LABEL_TOKEN: ${{ steps.get-token.outputs.token }}
         run: npm run check-template-and-add-labels

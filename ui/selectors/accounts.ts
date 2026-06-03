@@ -1,58 +1,144 @@
 import {
   EthAccountType,
   BtcAccountType,
-  InternalAccount,
+  SolAccountType,
+  CaipChainId,
+  EthScope,
+  TrxAccountType,
+  isEvmAccountType,
 } from '@metamask/keyring-api';
-import { AccountsControllerState } from '@metamask/accounts-controller';
+import { InternalAccount } from '@metamask/keyring-internal-api';
+import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
+import { createSelector } from 'reselect';
+
 import {
-  isBtcMainnetAddress,
-  isBtcTestnetAddress,
-} from '../../shared/lib/multichain';
+  type AccountsState,
+  getSelectedInternalAccount,
+} from '../../shared/lib/selectors/accounts';
+import { EMPTY_OBJECT } from './shared';
 
-export type AccountsState = {
-  metamask: AccountsControllerState;
-};
-
-function isBtcAccount(account: InternalAccount) {
-  const { P2wpkh } = BtcAccountType;
-
-  return Boolean(account && account.type === P2wpkh);
+export function isBitcoinAccount(account: InternalAccount) {
+  return Boolean(
+    account &&
+    Object.values(BtcAccountType).includes(account.type as BtcAccountType),
+  );
 }
 
-export function getInternalAccounts(state: AccountsState) {
-  return Object.values(state.metamask.internalAccounts.accounts);
+export function isSolanaAccount(account: InternalAccount) {
+  const { DataAccount } = SolAccountType;
+
+  return Boolean(account && account.type === DataAccount);
 }
 
-export function getSelectedInternalAccount(state: AccountsState) {
-  const accountId = state.metamask.internalAccounts.selectedAccount;
-  return state.metamask.internalAccounts.accounts[accountId];
+export function isTronAccount(account: InternalAccount) {
+  const { Eoa } = TrxAccountType;
+  return Boolean(account && account.type === Eoa);
 }
 
-export function isSelectedInternalAccountEth(state: AccountsState) {
-  const account = getSelectedInternalAccount(state);
-  const { Eoa, Erc4337 } = EthAccountType;
-
-  return Boolean(account && (account.type === Eoa || account.type === Erc4337));
+export function isNonEvmAccount(account: InternalAccount) {
+  return (
+    isBitcoinAccount(account) ||
+    isSolanaAccount(account) ||
+    isTronAccount(account)
+  );
 }
 
-export function isSelectedInternalAccountBtc(state: AccountsState) {
-  return isBtcAccount(getSelectedInternalAccount(state));
-}
+export const getInternalAccountsObject = (state: AccountsState) =>
+  state.metamask.internalAccounts.accounts;
 
-function hasCreatedBtcAccount(
-  state: AccountsState,
-  isAddressCallback: (address: string) => boolean,
-) {
-  const accounts = getInternalAccounts(state);
-  return accounts.some((account) => {
-    return isBtcAccount(account) && isAddressCallback(account.address);
-  });
-}
+export const getInternalAccounts = createSelector(
+  getInternalAccountsObject,
+  (accounts) => Object.values(accounts),
+);
 
-export function hasCreatedBtcMainnetAccount(state: AccountsState) {
-  return hasCreatedBtcAccount(state, isBtcMainnetAddress);
-}
+// Uses EMPTY_OBJECT to preserve referential equality when accountIdByAddress
+// is undefined, so downstream createSelector consumers don't recompute.
+export const getAccountIdByAddress = (state: AccountsState) =>
+  state.metamask.accountIdByAddress ?? EMPTY_OBJECT;
 
-export function hasCreatedBtcTestnetAccount(state: AccountsState) {
-  return hasCreatedBtcAccount(state, isBtcTestnetAddress);
-}
+export const getInternalAccountByAddress = createSelector(
+  [
+    getInternalAccountsObject,
+    getAccountIdByAddress,
+    (_, address: string) => address,
+  ],
+  (accounts, accountIdByAddress, address) => {
+    const accountId =
+      accountIdByAddress[address] ?? accountIdByAddress[address?.toLowerCase()];
+    return accountId ? accounts[accountId] : undefined;
+  },
+);
+
+export const isSelectedInternalAccountEth = createSelector(
+  getSelectedInternalAccount,
+  (account) => {
+    const { Eoa, Erc4337 } = EthAccountType;
+    return Boolean(
+      account && (account.type === Eoa || account.type === Erc4337),
+    );
+  },
+);
+
+export const selectEvmAddress = createSelector(
+  getSelectedInternalAccount,
+  (account) =>
+    account && isEvmAccountType(account.type) ? account.address : undefined,
+);
+
+export const isSelectedInternalAccountSolana = createSelector(
+  getSelectedInternalAccount,
+  (account) => isSolanaAccount(account),
+);
+
+/**
+ * Returns all internal accounts that declare support for the provided CAIP scope.
+ * The scope should be a CAIP-2 scope string (e.g., 'eip155:0', 'bip122:...').
+ *
+ * @param _state - Redux state (unused; required for selector signature)
+ * @param scope - The CAIP scope string to filter accounts by
+ */
+export const getInternalAccountsByScope = createSelector(
+  [getInternalAccounts, (_state: AccountsState, scope: CaipChainId) => scope],
+  (accounts, scope): InternalAccount[] => {
+    if (!Array.isArray(accounts) || accounts.length === 0) {
+      return [];
+    }
+
+    let namespace: string;
+    let reference: string;
+    try {
+      const parsed = parseCaipChainId(scope);
+      namespace = parsed.namespace;
+      reference = parsed.reference;
+    } catch {
+      return [];
+    }
+
+    if (namespace === KnownCaipNamespace.Eip155) {
+      // If requesting eip155:0 (wildcard), include any account that has any EVM scope
+      if (reference === '0') {
+        return accounts.filter(
+          (account) =>
+            Array.isArray(account.scopes) &&
+            account.scopes.some((s) =>
+              s.startsWith(`${KnownCaipNamespace.Eip155}:`),
+            ),
+        );
+      }
+
+      // For a specific EVM chain, include accounts that either have the exact scope or the wildcard
+      return accounts.filter(
+        (account) =>
+          Array.isArray(account.scopes) &&
+          (account.scopes.includes(scope) ||
+            account.scopes.includes(EthScope.Eoa)),
+      );
+    }
+
+    // Non-EVM: exact scope match only
+    return accounts.filter(
+      (account) =>
+        Array.isArray(account.scopes) && account.scopes.includes(scope),
+    );
+  },
+);

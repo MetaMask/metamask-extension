@@ -1,7 +1,26 @@
-import React, { useCallback, useEffect } from 'react';
 import { ButtonVariant } from '@metamask/snaps-sdk';
-
-import { SecurityProvider } from '../../../../../shared/constants/security-provider';
+import React, { useCallback, useEffect } from 'react';
+import {
+  BlockaidReason,
+  SecurityProvider,
+} from '../../../../../shared/constants/security-provider';
+import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
+import {
+  AlignItems,
+  BackgroundColor,
+  BlockSize,
+  BorderRadius,
+  Display,
+  FlexDirection,
+  IconColor,
+  Severity,
+  TextAlign,
+  TextColor,
+  TextVariant,
+} from '../../../../helpers/constants/design-system';
+import useAlerts from '../../../../hooks/useAlerts';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useConfirmContext } from '../../../../pages/confirmations/context/confirm';
 import {
   Box,
   Button,
@@ -18,22 +37,6 @@ import {
   ModalOverlay,
   Text,
 } from '../../../component-library';
-import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  BorderRadius,
-  Display,
-  FlexDirection,
-  IconColor,
-  Severity,
-  TextAlign,
-  TextColor,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import useAlerts from '../../../../hooks/useAlerts';
-import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { useAlertActionHandler } from '../contexts/alertActionHandler';
 import { useAlertMetrics } from '../contexts/alertMetricsContext';
 
@@ -101,6 +104,18 @@ function getSeverityStyle(severity?: Severity) {
   }
 }
 
+function requiresAcknowledgement(alert: Alert) {
+  return (
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    alert.severity === Severity.Danger &&
+    !alert.isBlocking &&
+    !alert.acknowledgeBypass
+  );
+}
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function AlertHeader({
   selectedAlert,
   customTitle,
@@ -109,7 +124,7 @@ function AlertHeader({
   customTitle?: string;
 }) {
   const t = useI18nContext();
-  const { severity, reason } = selectedAlert;
+  const { severity, reason, iconName, iconColor } = selectedAlert;
   const severityStyle = getSeverityStyle(severity);
   return (
     <Box
@@ -119,9 +134,14 @@ function AlertHeader({
       textAlign={TextAlign.Center}
     >
       <Icon
-        name={severity === Severity.Info ? IconName.Info : IconName.Danger}
+        name={
+          iconName ??
+          (severity === Severity.Info || severity === Severity.Success
+            ? IconName.Info
+            : IconName.Danger)
+        }
         size={IconSize.Xl}
-        color={severityStyle.icon}
+        color={iconColor ?? severityStyle.icon}
       />
       <Text
         variant={TextVariant.headingSm}
@@ -135,15 +155,49 @@ function AlertHeader({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function BlockaidAlertDetails() {
   const t = useI18nContext();
+  const { currentConfirmation } = useConfirmContext();
+  const { securityAlertResponse } = currentConfirmation;
+  let copy;
+  switch (securityAlertResponse?.reason) {
+    case BlockaidReason.approvalFarming:
+    case BlockaidReason.setApprovalForAll:
+    case BlockaidReason.permitFarming:
+      copy = t('blockaidAlertDescriptionWithdraw');
+      break;
+    case BlockaidReason.transferFarming:
+    case BlockaidReason.transferFromFarming:
+    case BlockaidReason.rawNativeTokenTransfer:
+      copy = t('blockaidAlertDescriptionTokenTransfer');
+      break;
+    case BlockaidReason.seaportFarming:
+      copy = t('blockaidAlertDescriptionOpenSea');
+      break;
+    case BlockaidReason.blurFarming:
+      copy = t('blockaidAlertDescriptionBlur');
+      break;
+    case BlockaidReason.maliciousDomain:
+      copy = t('blockaidAlertDescriptionMalicious');
+      break;
+    case BlockaidReason.rawSignatureFarming:
+    case BlockaidReason.tradeOrderFarming:
+    case BlockaidReason.other:
+    default:
+      copy = t('blockaidAlertDescriptionOthers');
+  }
+
   return (
     <Text textAlign={TextAlign.Center} variant={TextVariant.bodyMd}>
-      {t('blockaidAlertInfo')}
+      {copy}
     </Text>
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function AlertDetails({
   selectedAlert,
   customDetails,
@@ -153,23 +207,29 @@ function AlertDetails({
 }) {
   const t = useI18nContext();
   const severityStyle = getSeverityStyle(selectedAlert.severity);
+  const alertDetailsBackgroundColor =
+    selectedAlert.alertDetailsBackgroundColor ?? severityStyle.background;
+
   return (
     <Box
       key={selectedAlert.key}
       display={Display.InlineBlock}
       padding={customDetails ? 0 : 2}
       width={BlockSize.Full}
-      backgroundColor={customDetails ? undefined : severityStyle.background}
+      backgroundColor={customDetails ? undefined : alertDetailsBackgroundColor}
       borderRadius={BorderRadius.SM}
     >
       {customDetails ?? (
         <Box>
-          <Text
-            variant={TextVariant.bodyMd}
-            data-testid="alert-modal__selected-alert"
-          >
-            {selectedAlert.message}
-          </Text>
+          {Boolean(selectedAlert.content) && selectedAlert.content}
+          {Boolean(selectedAlert.message) && (
+            <Text
+              variant={TextVariant.bodyMd}
+              data-testid="alert-modal__selected-alert"
+            >
+              {selectedAlert.message}
+            </Text>
+          )}
           {selectedAlert.alertDetails?.length ? (
             <Text variant={TextVariant.bodyMdBold} marginTop={1}>
               {t('alertModalDetails')}
@@ -188,6 +248,8 @@ function AlertDetails({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function AcknowledgeCheckboxBase({
   selectedAlert,
   onCheckboxClick,
@@ -199,12 +261,13 @@ export function AcknowledgeCheckboxBase({
   isConfirmed: boolean;
   label?: string;
 }) {
-  if (selectedAlert.isBlocking || selectedAlert.severity !== Severity.Danger) {
+  const t = useI18nContext();
+  const severityStyle = getSeverityStyle(selectedAlert.severity);
+
+  if (!requiresAcknowledgement(selectedAlert)) {
     return null;
   }
 
-  const t = useI18nContext();
-  const severityStyle = getSeverityStyle(selectedAlert.severity);
   return (
     <Box
       display={Display.Flex}
@@ -226,16 +289,20 @@ export function AcknowledgeCheckboxBase({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function AcknowledgeButton({
   onAcknowledgeClick,
   isConfirmed,
   hasActions,
   isBlocking,
+  label,
 }: {
   onAcknowledgeClick: () => void;
   isConfirmed: boolean;
   hasActions?: boolean;
   isBlocking?: boolean;
+  label?: string;
 }) {
   const t = useI18nContext();
 
@@ -248,11 +315,13 @@ function AcknowledgeButton({
       data-testid="alert-modal-button"
       disabled={!isBlocking && !isConfirmed}
     >
-      {t('gotIt')}
+      {label ?? t('gotIt')}
     </Button>
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function ActionButton({
   action,
   onClose,
@@ -296,6 +365,8 @@ function ActionButton({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function AlertModal({
   ownerId,
   onAcknowledgeClick,
@@ -326,18 +397,30 @@ export function AlertModal({
     }
   }, [selectedAlert, trackAlertRender]);
 
+  const isConfirmed = selectedAlert
+    ? isAlertConfirmed(selectedAlert.key)
+    : false;
+  const acknowledgementRequired = selectedAlert
+    ? requiresAcknowledgement(selectedAlert)
+    : false;
+
+  const handleCheckboxClick = useCallback(() => {
+    if (selectedAlert) {
+      setAlertConfirmed(selectedAlert.key, !isConfirmed);
+    }
+  }, [isConfirmed, selectedAlert, setAlertConfirmed]);
+
   if (!selectedAlert) {
     return null;
   }
-  const isConfirmed = isAlertConfirmed(selectedAlert.key);
-  const isAlertDanger = selectedAlert.severity === Severity.Danger;
-
-  const handleCheckboxClick = useCallback(() => {
-    return setAlertConfirmed(selectedAlert.key, !isConfirmed);
-  }, [isConfirmed, selectedAlert.key, setAlertConfirmed]);
 
   return (
-    <Modal isOpen onClose={handleClose} data-testid="alert-modal">
+    <Modal
+      isOpen
+      onClose={handleClose}
+      data-testid="alert-modal"
+      autoFocus={false}
+    >
       <ModalOverlay />
       <ModalContent>
         <ModalHeader
@@ -352,7 +435,7 @@ export function AlertModal({
         />
         <AlertHeader selectedAlert={selectedAlert} customTitle={customTitle} />
         <ModalBody>
-          {selectedAlert?.provider === SecurityProvider.Blockaid ? (
+          {selectedAlert.provider === SecurityProvider.Blockaid ? (
             <BlockaidAlertDetails />
           ) : (
             <AlertDetails
@@ -379,10 +462,14 @@ export function AlertModal({
             {customAcknowledgeButton ?? (
               <>
                 <AcknowledgeButton
-                  onAcknowledgeClick={onAcknowledgeClick}
-                  isConfirmed={!isAlertDanger || isConfirmed}
+                  onAcknowledgeClick={
+                    selectedAlert.customAcknowledgeButtonOnClick ??
+                    onAcknowledgeClick
+                  }
+                  isConfirmed={acknowledgementRequired ? isConfirmed : true}
                   hasActions={Boolean(selectedAlert.actions)}
                   isBlocking={selectedAlert.isBlocking}
+                  label={selectedAlert.customAcknowledgeButtonText}
                 />
                 {(selectedAlert.actions ?? []).map(
                   (action: { key: string; label: string }) => (

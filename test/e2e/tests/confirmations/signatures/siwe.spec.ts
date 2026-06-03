@@ -1,71 +1,71 @@
-import { strict as assert } from 'assert';
-import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../constants';
 import { Driver } from '../../../webdriver/driver';
 import {
   mockSignatureApproved,
   mockSignatureRejected,
   scrollAndConfirmAndAssertConfirm,
-  withRedesignConfirmationFixtures,
+  withSignatureFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
+import PersonalSignConfirmation from '../../../page-objects/pages/confirmations/personal-sign-confirmation';
+import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
+import AccountDetailsModal from '../../../page-objects/pages/confirmations/accountDetailsModal';
+import TestDapp, { SignatureType } from '../../../page-objects/pages/test-dapp';
+import { login } from '../../../page-objects/flows/login.flow';
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../../shared/constants/security-provider';
+import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {
   assertAccountDetailsMetrics,
-  assertHeaderInfoBalance,
-  assertPastedAddress,
   assertSignatureConfirmedMetrics,
   assertSignatureRejectedMetrics,
-  clickHeaderInfoBtn,
-  copyAddressAndPasteWalletAddress,
-  openDappAndTriggerSignature,
-  SignatureType,
+  WALLET_ETH_BALANCE,
 } from './signature-helpers';
 
-describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
+describe('Confirmation Signature - SIWE', function (this: Suite) {
   it('initiates and confirms', async function () {
-    await withRedesignConfirmationFixtures(
+    await withSignatureFixtures(
       this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await openDappAndTriggerSignature(driver, SignatureType.SIWE);
+        const testDapp = new TestDapp(driver);
+        const confirmation = new Confirmation(driver);
+        const accountDetailsModal = new AccountDetailsModal(driver);
 
-        await clickHeaderInfoBtn(driver);
-        await assertHeaderInfoBalance(driver);
+        await login(driver);
+        await testDapp.openTestDappAndTriggerSignature(SignatureType.SIWE);
 
-        await copyAddressAndPasteWalletAddress(driver);
-        await assertPastedAddress(driver);
+        await confirmation.clickHeaderAccountDetailsButton();
+        await accountDetailsModal.assertHeaderInfoBalance(WALLET_ETH_BALANCE);
+        await accountDetailsModal.clickAccountDetailsModalCloseButton();
+
+        await assertInfoValues(driver);
+        await scrollAndConfirmAndAssertConfirm(driver);
+
+        await testDapp.assertVerifiedSiweMessage(
+          '0xef8674a92d62a1876624547bdccaef6c67014ae821de18fa910fbff56577a65830f68848585b33d1f4b9ea1c3da1c1b11553b6aabe8446717daf7cd1e38a68271c',
+        );
+
         await assertAccountDetailsMetrics(
           driver,
           mockedEndpoints as MockedEndpoint[],
           'personal_sign',
         );
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await assertInfoValues(driver);
-        await scrollAndConfirmAndAssertConfirm(driver);
 
-        await assertVerifiedSiweMessage(
-          driver,
-          '0xef8674a92d62a1876624547bdccaef6c67014ae821de18fa910fbff56577a65830f68848585b33d1f4b9ea1c3da1c1b11553b6aabe8446717daf7cd1e38a68271c',
-        );
         await assertSignatureConfirmedMetrics({
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'personal_sign',
-          uiCustomizations: [
-            'redesigned_confirmation',
-            'sign_in_with_ethereum',
-          ],
+          uiCustomizations: ['sign_in_with_ethereum'],
           securityAlertReason: BlockaidReason.notApplicable,
           securityAlertResponse: BlockaidResultType.NotApplicable,
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
       },
       mockSignatureApproved,
@@ -73,34 +73,30 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
   });
 
   it('initiates and rejects', async function () {
-    await withRedesignConfirmationFixtures(
+    await withSignatureFixtures(
       this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await openDappAndTriggerSignature(driver, SignatureType.SIWE);
+        const confirmation = new PersonalSignConfirmation(driver);
+        const testDapp = new TestDapp(driver);
 
-        await driver.clickElementAndWaitForWindowToClose(
-          '[data-testid="confirm-footer-cancel-button"]',
-        );
+        await login(driver);
+        await testDapp.openTestDappAndTriggerSignature(SignatureType.SIWE);
+
+        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        await driver.waitForSelector({
-          css: '#siweResult',
-          text: 'Error: User rejected the request.',
-        });
+        await testDapp.assertUserRejectedRequest();
         await assertSignatureRejectedMetrics({
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'personal_sign',
-          uiCustomizations: [
-            'redesigned_confirmation',
-            'sign_in_with_ethereum',
-          ],
+          uiCustomizations: ['sign_in_with_ethereum'],
           location: 'confirmation',
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
           securityAlertReason: BlockaidReason.notApplicable,
           securityAlertResponse: BlockaidResultType.NotApplicable,
         });
@@ -111,22 +107,7 @@ describe('Confirmation Signature - SIWE @no-mmi', function (this: Suite) {
 });
 
 async function assertInfoValues(driver: Driver) {
-  await driver.clickElement('[data-testid="sectionCollapseButton"]');
-  const origin = driver.findElement({ text: DAPP_HOST_ADDRESS });
-  const message = driver.findElement({
-    text: 'I accept the MetaMask Terms of Service: https://community.metamask.io/tos',
-  });
-
-  assert.ok(await origin);
-  assert.ok(await message);
-}
-
-async function assertVerifiedSiweMessage(driver: Driver, message: string) {
-  await driver.waitUntilXWindowHandles(2);
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-
-  await driver.waitForSelector({
-    css: '#siweResult',
-    text: message,
-  });
+  const confirmation = new PersonalSignConfirmation(driver);
+  await confirmation.verifyOrigin();
+  await confirmation.checkSiweMessage();
 }

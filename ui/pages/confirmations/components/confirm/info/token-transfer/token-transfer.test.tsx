@@ -4,6 +4,10 @@ import { getMockTokenTransferConfirmState } from '../../../../../../../test/data
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import TokenTransferInfo from './token-transfer';
 
+jest.mock('../../../simulation-details/useBalanceChanges', () => ({
+  useBalanceChanges: jest.fn(() => ({ pending: false, value: [] })),
+}));
+
 jest.mock(
   '../../../../../../components/app/alert-system/contexts/alertMetricsContext',
   () => ({
@@ -21,10 +25,16 @@ jest.mock('../../../../../../store/actions', () => ({
   }),
 }));
 
+jest.mock('../../../../hooks/useAssetDetails', () => ({
+  useAssetDetails: jest.fn(() => ({
+    decimals: 18,
+  })),
+}));
+
 describe('TokenTransferInfo', () => {
   it('renders correctly', () => {
     const state = getMockTokenTransferConfirmState({});
-    const mockStore = configureMockStore([])(state);
+    const mockStore = configureMockStore()(state);
     const { container } = renderWithConfirmContextProvider(
       <TokenTransferInfo />,
       mockStore,

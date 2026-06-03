@@ -1,16 +1,16 @@
 .confirm_nav {
   &__reject_all {
     background-color: var(--color-error-muted);
-    color: #d73847;
+    color: var(--color-error-default);
     font-size: 12px;
     height: 20px;
     padding-left: 8px !important;
     padding-right: 8px !important;
 
     &:hover {
-      background-color: var(--color-error-muted) !important;
+      background-color: var(--color-error-muted-hover) !important;
       box-shadow: none !important;
-      color: #d73847 !important;
+      color: var(--color-error-default) !important;
     }
 
     > span {

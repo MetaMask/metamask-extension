@@ -1,14 +1,14 @@
 const { strict: assert } = require('assert');
-const FixtureBuilder = require('../../fixture-builder');
-
 const {
+  default: FixtureBuilderV2,
+} = require('../../fixtures/fixture-builder-v2');
+const { login } = require('../../page-objects/flows/login.flow');
+const { withFixtures } = require('../../helpers');
+const {
+  DAPP_URL_LOCALHOST,
+  NETWORK_CLIENT_ID,
   WINDOW_TITLES,
-  defaultGanacheOptions,
-  openDapp,
-  unlockWallet,
-  withFixtures,
-  switchToNotificationWindow,
-} = require('../../helpers');
+} = require('../../constants');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
 const bannerAlertSelector = '[data-testid="security-provider-banner-alert"]';
@@ -161,7 +161,7 @@ async function mockInfuraWithFailedResponses(mockServer) {
  *
  * @see {@link https://wobbly-nutmeg-8a5.notion.site/MM-E2E-Testing-1e51b617f79240a49cd3271565c6e12d}
  */
-describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
+describe('Confirmation Security Alert - Blockaid', function () {
   /**
    * todo: fix test
    *
@@ -171,22 +171,26 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
   it.skip('should not show security alerts for benign requests', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
-          .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            securityAlertsEnabled: true,
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withPermissionControllerConnectedToTestDapp({
+            useLocalhostHostname: true,
+            chainIds: [1],
+          })
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
           })
           .build(),
-        defaultGanacheOptions,
         testSpecificMock: mockInfura,
         title: this.test.fullTitle(),
       },
 
       async ({ driver }) => {
-        await unlockWallet(driver);
-        await openDapp(driver);
+        await login(driver, { expectedBalance: '1.37T ETH' });
+        await driver.openNewPage(DAPP_URL_LOCALHOST);
 
         for (const config of testBenignConfigs) {
           const { btnSelector, logExpectedDetail, method, params } = config;
@@ -208,7 +212,7 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
 
           // Wait for confirmation pop-up
           await driver.delay(500);
-          await switchToNotificationWindow(driver, 3);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
           const isPresent = await driver.isElementPresent(bannerAlertSelector);
           assert.equal(
@@ -234,22 +238,26 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
   it.skip('should show security alerts for malicious requests', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
-          .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            securityAlertsEnabled: true,
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withPermissionControllerConnectedToTestDapp({
+            useLocalhostHostname: true,
+            chainIds: [1],
+          })
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
           })
           .build(),
-        defaultGanacheOptions,
         testSpecificMock: mockInfuraWithMaliciousResponses,
         title: this.test.fullTitle(),
       },
 
       async ({ driver }) => {
-        await unlockWallet(driver);
-        await openDapp(driver);
+        await login(driver, { expectedBalance: '1.37T ETH' });
+        await driver.openNewPage(DAPP_URL_LOCALHOST);
 
         for (const config of testMaliciousConfigs) {
           const { expectedDescription, expectedReason, btnSelector } = config;
@@ -261,7 +269,7 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
 
           // Wait for confirmation pop-up
           await driver.delay(500);
-          await switchToNotificationWindow(driver, 3);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
           await driver.assertElementNotPresent('.loading-indicator');
 
@@ -293,22 +301,26 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
   it.skip('should show "Request may not be safe" if the PPOM request fails to check transaction', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
-          .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            securityAlertsEnabled: true,
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withPermissionControllerConnectedToTestDapp({
+            useLocalhostHostname: true,
+            chainIds: [1],
+          })
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
           })
           .build(),
-        defaultGanacheOptions,
         testSpecificMock: mockInfuraWithFailedResponses,
         title: this.test.fullTitle(),
       },
 
       async ({ driver }) => {
-        await unlockWallet(driver);
-        await openDapp(driver);
+        await login(driver, { expectedBalance: '1.37T ETH' });
+        await driver.openNewPage(DAPP_URL_LOCALHOST);
 
         // Click TestDapp button to send JSON-RPC request
         await driver.clickElement('#maliciousApprovalButton');
@@ -316,7 +328,7 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
 
         // Wait for confirmation pop-up
         await driver.delay(500);
-        await switchToNotificationWindow(driver, 3);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const expectedTitle = 'Request may not be safe';
 

@@ -1,6 +1,9 @@
 import type { ButtonBaseStyleUtilityProps } from '../button-base/button-base.types';
 import type { PolymorphicComponentPropWithRef } from '../box';
 
+/**
+ * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
+ */
 export enum ButtonPrimarySize {
   Sm = 'sm',
   Md = 'md',
@@ -11,8 +14,10 @@ export type ValidButtonTagType = 'button' | 'a';
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export interface ButtonPrimaryStyleUtilityProps
-  extends Omit<ButtonBaseStyleUtilityProps, 'size'> {
+export interface ButtonPrimaryStyleUtilityProps extends Omit<
+  ButtonBaseStyleUtilityProps,
+  'size'
+> {
   /**
    * Boolean to change button type to Danger when true
    */
@@ -33,10 +38,14 @@ export interface ButtonPrimaryStyleUtilityProps
   size?: ButtonPrimarySize;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type ButtonPrimaryProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, ButtonPrimaryStyleUtilityProps>;
 
 export type ButtonPrimaryComponent = <
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   C extends React.ElementType = 'button' | 'a',
 >(
   props: ButtonPrimaryProps<C>,

@@ -1,173 +1,119 @@
-import React, { useContext, useState } from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import TokenList from '../token-list';
-import { PRIMARY } from '../../../../helpers/constants/common';
-import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
-import {
-  getDetectedTokensInCurrentNetwork,
-  getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
-  getSelectedAccount,
-} from '../../../../selectors';
-import {
-  getMultichainIsEvm,
-  getMultichainSelectedAccountCachedBalance,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  getMultichainIsBitcoin,
-  ///: END:ONLY_INCLUDE_IF
-  getMultichainSelectedAccountCachedBalanceIsZero,
-} from '../../../../selectors/multichain';
-import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import DetectedToken from '../../detected-token/detected-token';
+import { trace, TraceName } from '../../../../../shared/lib/trace';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { getMultichainIsEvm } from '../../../../selectors/multichain';
+import { type SafeChain } from '../../../multichain/networks-form/use-safe-chains';
+import { usePrimaryCurrencyProperties } from '../hooks';
+import TokenList from '../token-list';
+import { MusdBuyGetCta } from '../../musd';
 import {
-  DetectedTokensBanner,
-  ImportTokenLink,
-  ReceiveModal,
-} from '../../../multichain';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { FundingMethodModal } from '../../../multichain/funding-method-modal/funding-method-modal';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import {
-  RAMPS_CARD_VARIANT_TYPES,
-  RampsCard,
-} from '../../../multichain/ramps-card/ramps-card';
-import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
-///: END:ONLY_INCLUDE_IF
+  useMusdCtaVisibility,
+  useMusdBalance,
+  useMusdNetworkFilter,
+  useMusdConversionTokens,
+} from '../../../../hooks/musd';
+import { selectAccountGroupBalanceForEmptyState } from '../../../../selectors/assets';
 import AssetListControlBar from './asset-list-control-bar';
-import NativeToken from './native-token';
-
-export type TokenWithBalance = {
-  address: string;
-  symbol: string;
-  string?: string;
-  image: string;
-  secondary?: string;
-  tokenFiatAmount?: string;
-  isNative?: boolean;
-};
 
 export type AssetListProps = {
-  onClickAsset: (arg: string) => void;
+  onClickAsset: (chainId: string, address: string) => void;
   showTokensLinks?: boolean;
+  safeChains?: SafeChain[];
 };
 
-const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
-  const [showDetectedTokens, setShowDetectedTokens] = useState(false);
-  const selectedAccount = useSelector(getSelectedAccount);
-  const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
-  const balance = useSelector(getMultichainSelectedAccountCachedBalance);
+const TokenListContainer = React.memo(
+  ({
+    onClickAsset,
+    safeChains,
+  }: Pick<AssetListProps, 'onClickAsset' | 'safeChains'>) => {
+    const { trackEvent } = useContext(MetaMetricsContext);
+    const { primaryCurrencyProperties } = usePrimaryCurrencyProperties();
 
-  const {
-    currency: primaryCurrency,
-    numberOfDecimals: primaryNumberOfDecimals,
-  } = useUserPreferencedCurrency(PRIMARY, {
-    ethNumberOfDecimals: 4,
-    shouldCheckShowNativeToken: true,
-  });
+    const onTokenClick = useCallback(
+      (chainId: string, tokenAddress: string) => {
+        trace({ name: TraceName.AssetDetails });
+        onClickAsset(chainId, tokenAddress);
+        trackEvent({
+          event: MetaMetricsEventName.TokenScreenOpened,
+          category: MetaMetricsEventCategory.Navigation,
+          properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            token_symbol: primaryCurrencyProperties.suffix,
+            location: 'Home',
+          },
+        });
+      },
+      [],
+    );
 
-  const [, primaryCurrencyProperties] = useCurrencyDisplay(balance, {
-    numberOfDecimals: primaryNumberOfDecimals,
-    currency: primaryCurrency,
-  });
+    return <TokenList onTokenClick={onTokenClick} safeChains={safeChains} />;
+  },
+);
 
-  const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork) || [];
-  const isTokenDetectionInactiveOnNonMainnetSupportedNetwork = useSelector(
-    getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
-  );
-
-  const [showFundingMethodModal, setShowFundingMethodModal] = useState(false);
-  const [showReceiveModal, setShowReceiveModal] = useState(false);
-
-  const onClickReceive = () => {
-    setShowFundingMethodModal(false);
-    setShowReceiveModal(true);
-  };
-
-  const balanceIsZero = useSelector(
-    getMultichainSelectedAccountCachedBalanceIsZero,
-  );
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  const isBuyableChain = useSelector(getIsNativeTokenBuyable);
-  const shouldShowBuy = isBuyableChain && balanceIsZero;
-  const isBtc = useSelector(getMultichainIsBitcoin);
-  ///: END:ONLY_INCLUDE_IF
-
+const AssetList = ({
+  onClickAsset,
+  showTokensLinks,
+  safeChains,
+}: AssetListProps) => {
   const isEvm = useSelector(getMultichainIsEvm);
   // NOTE: Since we can parametrize it now, we keep the original behavior
   // for EVM assets
   const shouldShowTokensLinks = showTokensLinks ?? isEvm;
 
+  // mUSD CTA visibility logic
+  const { shouldShowBuyGetMusdCta } = useMusdCtaVisibility();
+  const { hasMusdBalance } = useMusdBalance();
+  const { selectedChainId } = useMusdNetworkFilter();
+  const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
+
+  // Use the centralized token filter that includes min balance check
+  // This is the source of truth for which tokens are eligible for mUSD conversion
+  const { tokens: conversionTokens, hasConvertibleTokensByChainId } =
+    useMusdConversionTokens();
+
+  // Determine if user has convertible tokens based on the centralized filter
+  // This properly checks allowlist/blocklist AND minimum fiat balance
+  const hasConvertibleTokens = useMemo(() => {
+    if (!hasBalance) {
+      return false;
+    }
+    // If a specific chain is selected, check for convertible tokens on that chain
+    if (selectedChainId) {
+      return hasConvertibleTokensByChainId(selectedChainId);
+    }
+    // Otherwise, check if there are any convertible tokens at all
+    return conversionTokens.length > 0;
+  }, [
+    hasBalance,
+    selectedChainId,
+    hasConvertibleTokensByChainId,
+    conversionTokens,
+  ]);
+
+  // Get CTA state
+  const buyGetCtaState = shouldShowBuyGetMusdCta({
+    hasConvertibleTokens,
+    hasMusdBalance,
+    isEmptyWallet: !hasBalance,
+    selectedChainId,
+  });
+
   return (
     <>
-      {detectedTokens.length > 0 &&
-        !isTokenDetectionInactiveOnNonMainnetSupportedNetwork && (
-          <DetectedTokensBanner
-            className=""
-            actionButtonOnClick={() => setShowDetectedTokens(true)}
-            margin={4}
-          />
-        )}
-      <AssetListControlBar showTokensLinks={showTokensLinks} />
-      <TokenList
-        nativeToken={<NativeToken onClickAsset={onClickAsset} />}
-        onTokenClick={(tokenAddress: string) => {
-          onClickAsset(tokenAddress);
-          trackEvent({
-            event: MetaMetricsEventName.TokenScreenOpened,
-            category: MetaMetricsEventCategory.Navigation,
-            properties: {
-              token_symbol: primaryCurrencyProperties.suffix,
-              location: 'Home',
-            },
-          });
-        }}
-      />
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-        shouldShowBuy ? (
-          <RampsCard
-            variant={
-              isBtc
-                ? RAMPS_CARD_VARIANT_TYPES.BTC
-                : RAMPS_CARD_VARIANT_TYPES.TOKEN
-            }
-            handleOnClick={
-              isBtc ? undefined : () => setShowFundingMethodModal(true)
-            }
-          />
-        ) : null
-        ///: END:ONLY_INCLUDE_IF
-      }
-      {shouldShowTokensLinks && (
-        <ImportTokenLink
-          margin={4}
-          marginBottom={2}
-          marginTop={detectedTokens.length > 0 && !balanceIsZero ? 0 : 2}
+      <AssetListControlBar showTokensLinks={shouldShowTokensLinks} />
+      {buyGetCtaState.shouldShowCta && (
+        <MusdBuyGetCta
+          variant={buyGetCtaState.variant}
+          selectedChainId={buyGetCtaState.selectedChainId}
         />
       )}
-      {showDetectedTokens && (
-        <DetectedToken setShowDetectedTokens={setShowDetectedTokens} />
-      )}
-      {showReceiveModal && selectedAccount?.address && (
-        <ReceiveModal
-          address={selectedAccount.address}
-          onClose={() => setShowReceiveModal(false)}
-        />
-      )}
-      {showFundingMethodModal && (
-        <FundingMethodModal
-          isOpen={showFundingMethodModal}
-          onClose={() => setShowFundingMethodModal(false)}
-          title={t('fundingMethod')}
-          onClickReceive={onClickReceive}
-        />
-      )}
+      <TokenListContainer onClickAsset={onClickAsset} safeChains={safeChains} />
     </>
   );
 };

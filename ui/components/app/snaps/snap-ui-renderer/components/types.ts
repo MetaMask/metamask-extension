@@ -1,6 +1,9 @@
 import { ChangeEvent as ReactChangeEvent } from 'react';
 import { JSXElement, SnapsChildren } from '@metamask/snaps-sdk/jsx';
+import type { COMPONENT_MAPPING } from '.';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type UIComponentParams<T extends JSXElement> = {
   map: Record<string, number>;
   element: T;
@@ -13,6 +16,11 @@ export type UIComponentParams<T extends JSXElement> = {
     placeholder?: string;
   };
   t: (key: string) => string;
+  contentBackgroundColor: string | undefined;
+  componentMap: COMPONENT_MAPPING;
+  isScrollableContainer?: boolean;
+  setScroll: () => void;
+  scrollableContainerRef: React.RefObject<HTMLDivElement>;
 };
 
 export type UIComponent = {
@@ -22,6 +30,8 @@ export type UIComponent = {
   key?: string;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type UIComponentFactory<T extends JSXElement> = (
   params: UIComponentParams<T>,
 ) => UIComponent;

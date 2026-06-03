@@ -1,16 +1,17 @@
 const { strict: assert } = require('assert');
-const FixtureBuilder = require('../../fixture-builder');
-
 const {
+  default: FixtureBuilderV2,
+} = require('../../fixtures/fixture-builder-v2');
+const { withFixtures } = require('../../helpers');
+const { login } = require('../../page-objects/flows/login.flow');
+const {
+  DAPP_URL_LOCALHOST,
+  NETWORK_CLIENT_ID,
   WINDOW_TITLES,
-  defaultGanacheOptions,
-  openDapp,
-  unlockWallet,
-  withFixtures,
-} = require('../../helpers');
+} = require('../../constants');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
-const bannerAlertSelector = '[data-testid="security-provider-banner-alert"]';
+const bannerAlertSelector = '[data-testid="confirm-banner-alert"]';
 
 const selectedAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
 const selectedAddressWithoutPrefix = '5cfe73b6021e818b776b421b1c4db2474086a7e1';
@@ -247,27 +248,31 @@ async function mockInfura(mockServer) {
     });
 }
 
-describe('PPOM Blockaid Alert - Set Approval to All @no-mmi', function () {
+describe('PPOM Blockaid Alert - Set Approval to All', function () {
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('should show banner alert', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
-          .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            securityAlertsEnabled: true,
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withPermissionControllerConnectedToTestDapp({
+            useLocalhostHostname: true,
+            chainIds: [1],
+          })
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
           })
           .build(),
-        defaultGanacheOptions,
         testSpecificMock: mockInfura,
         title: this.test.title,
       },
 
       async ({ driver }) => {
-        await unlockWallet(driver);
-        await openDapp(driver);
+        await login(driver, { expectedBalance: '1.37T ETH' });
+        await driver.openNewPage(DAPP_URL_LOCALHOST);
 
         const expectedTitle = 'This is a deceptive request';
         const expectedDescription =
@@ -277,7 +282,6 @@ describe('PPOM Blockaid Alert - Set Approval to All @no-mmi', function () {
         await driver.clickElement('#maliciousSetApprovalForAll');
 
         // Wait for confirmation pop-up
-        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.assertElementNotPresent('.loading-indicator');

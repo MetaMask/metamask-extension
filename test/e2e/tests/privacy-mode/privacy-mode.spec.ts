@@ -1,0 +1,82 @@
+import { Driver } from '../../webdriver/driver';
+import { withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import AccountListPage from '../../page-objects/pages/account-list-page';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HomePage from '../../page-objects/pages/home/homepage';
+import { MOCK_ETH_CONVERSION_RATE, mockPriceApi } from '../tokens/utils/mocks';
+import { login } from '../../page-objects/flows/login.flow';
+
+describe('Privacy Mode', function () {
+  it('should hide fiat balance and token balance when privacy mode is activated', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2().build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockPriceApi,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.togglePrivacyBalance();
+        await homePage.checkExpectedBalanceIsDisplayed('••••••', '••••••');
+
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openAccountMenu();
+
+        const accountList = new AccountListPage(driver);
+        await accountList.checkPageIsLoaded();
+        await accountList.checkAccountBalanceIsPrivate();
+      },
+    );
+  });
+
+  it('should show fiat balance and token balance when privacy mode is deactivated', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2()
+          .withShowNativeTokenAsMainBalanceDisabled()
+          .withPreferencesController({
+            preferences: {
+              privacyMode: true,
+            },
+          })
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withAssetsController({
+            assetsPrice: {
+              'eip155:1/slip44:60': {
+                assetPriceType: 'fungible' as const,
+                id: 'ethereum',
+                lastUpdated: 0,
+                price: MOCK_ETH_CONVERSION_RATE,
+                usdPrice: MOCK_ETH_CONVERSION_RATE,
+              },
+            },
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockPriceApi,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver, { validateBalance: false });
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.togglePrivacyBalance();
+        await homePage.checkExpectedBalanceIsDisplayed('$85,025');
+
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openAccountMenu();
+
+        const accountList = new AccountListPage(driver);
+        await accountList.checkPageIsLoaded();
+
+        await accountList.checkMultichainAccountBalanceDisplayed({
+          account: 'Account 1',
+          balance: '$85,025',
+        });
+      },
+    );
+  });
+});

@@ -1,6 +1,8 @@
 import React from 'react';
+import { CaipAssetType } from '@metamask/utils';
 import { Box, Text } from '../../../../component-library';
 import {
+  AlignItems,
   Display,
   TextColor,
   TextVariant,
@@ -9,7 +11,7 @@ import {
   formatValue,
   isValidAmount,
   // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
+  // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../../../../app/scripts/lib/util';
 
 export const PercentageChange = ({
@@ -17,10 +19,9 @@ export const PercentageChange = ({
   address,
 }: {
   value: number | null | undefined;
-  address: `0x${string}`;
+  address: `0x${string}` | CaipAssetType;
 }) => {
-  let color = TextColor.textDefault;
-
+  let color = TextColor.textAlternative;
   if (isValidAmount(value)) {
     if ((value as number) === 0) {
       color = TextColor.textDefault;
@@ -34,14 +35,14 @@ export const PercentageChange = ({
   const formattedValue = formatValue(value, false);
 
   return (
-    <Box display={Display.Flex}>
+    <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
       <Text
         variant={TextVariant.bodySmMedium}
         color={color}
         data-testid={`token-increase-decrease-percentage-${address}`}
         ellipsis
       >
-        {formattedValue}
+        {formattedValue || '-'}
       </Text>
     </Box>
   );

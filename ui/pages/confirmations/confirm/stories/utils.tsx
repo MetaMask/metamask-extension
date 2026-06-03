@@ -1,6 +1,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import configureStore from '../../../../store/store';
+import { HardwareWalletErrorProvider } from '../../../../contexts/hardware-wallets';
 import ConfirmPage from '../confirm';
 
 export const CONFIRM_PAGE_DECORATOR = [
@@ -16,7 +17,10 @@ export const ARG_TYPES_SIGNATURE = {
   },
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function ConfirmStoryTemplate(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metamaskState: any = {},
 ): JSX.Element {
@@ -30,12 +34,17 @@ export function ConfirmStoryTemplate(
 
   return (
     <Provider store={store}>
-      <ConfirmPage />
+      <HardwareWalletErrorProvider>
+        <ConfirmPage />
+      </HardwareWalletErrorProvider>
     </Provider>
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function SignatureStoryTemplate(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metamaskState: any = {},
 ): JSX.Element {

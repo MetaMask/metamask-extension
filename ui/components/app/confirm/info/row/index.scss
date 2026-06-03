@@ -10,3 +10,28 @@
 .expandIcon.expanded {
   rotate: -180deg;
 }
+
+.hoverable:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.address-display-clickable {
+  display: inline-flex;
+
+  button,
+  button * {
+    color: var(--color-text-default) !important;
+  }
+
+  &:hover {
+    button,
+    button * {
+      color: var(--color-primary-default) !important;
+    }
+
+    button {
+      text-decoration-color: var(--color-primary-default) !important;
+    }
+  }
+}

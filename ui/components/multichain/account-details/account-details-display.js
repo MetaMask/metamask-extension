@@ -1,59 +1,65 @@
-import React, { useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
+import { isEvmAccountType } from '@metamask/keyring-api';
 
-import QrCodeView from '../../ui/qr-code-view';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  ButtonIcon,
+  ButtonIconSize,
+  IconColor,
+  IconName,
+  Text,
+  TextVariant,
+} from '@metamask/design-system-react';
 import EditableLabel from '../../ui/editable-label/editable-label';
 
 import { setAccountLabel } from '../../../store/actions';
-import {
-  getCurrentChainId,
-  getHardwareWalletType,
-  getInternalAccountByAddress,
-} from '../../../selectors';
-import { isAbleToExportAccount } from '../../../helpers/utils/util';
-import {
-  Box,
-  ButtonSecondary,
-  ButtonSecondarySize,
-} from '../../component-library';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
+import { getHardwareWalletType } from '../../../../shared/lib/selectors/keyring';
+import { shortenString } from '../../../helpers/utils/util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
-  MetaMetricsEventKeyType,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
+import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
+import { SmartAccountTab } from '../../../pages/confirmations/components/confirm/smart-account-tab/smart-account-tab';
+import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+import { useEIP7702Networks } from '../../../pages/confirmations/hooks/useEIP7702Networks';
+import Preloader from '../../ui/icon/preloader';
+import { Tab, Tabs } from '../../ui/tabs';
+import { AccountDetailsSection } from './account-details-section';
 
 export const AccountDetailsDisplay = ({
   accounts,
   accountName,
   address,
+  accountType,
   onExportClick,
 }) => {
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
-  const t = useI18nContext();
+  const { trackEvent } = useContext(MetaMetricsContext);
+  const formatedAddress = isEvmAccountType(accountType)
+    ? toChecksumHexAddress(address)?.toLowerCase()
+    : address;
 
-  const {
-    metadata: { keyring },
-  } = useSelector((state) => getInternalAccountByAddress(state, address));
-  const exportPrivateKeyFeatureEnabled = isAbleToExportAccount(keyring?.type);
-
+  // useCopyToClipboard analysis: Copies one of your public addresses
+  const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
+  const handleClick = useCallback(() => {
+    handleCopy(formatedAddress);
+  }, [formatedAddress, handleCopy]);
   const chainId = useSelector(getCurrentChainId);
   const deviceName = useSelector(getHardwareWalletType);
+  const { networkSupporting7702Present, pending } = useEIP7702Networks(address);
 
   return (
     <Box
-      display={Display.Flex}
-      alignItems={AlignItems.center}
-      flexDirection={FlexDirection.Column}
+      flexDirection={BoxFlexDirection.Column}
+      alignItems={BoxAlignItems.Center}
     >
       <EditableLabel
         defaultValue={accountName}
@@ -71,27 +77,66 @@ export const AccountDetailsDisplay = ({
         }}
         accounts={accounts}
       />
-      <QrCodeView Qr={{ data: address }} />
-      {exportPrivateKeyFeatureEnabled ? (
-        <ButtonSecondary
-          block
-          size={ButtonSecondarySize.Lg}
-          variant={TextVariant.bodyMd}
-          onClick={() => {
-            trackEvent({
-              category: MetaMetricsEventCategory.Accounts,
-              event: MetaMetricsEventName.KeyExportSelected,
-              properties: {
-                key_type: MetaMetricsEventKeyType.Pkey,
-                location: 'Account Details Modal',
-              },
-            });
-            onExportClick();
-          }}
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        style={{ position: 'relative' }}
+      >
+        <Text
+          variant={TextVariant.BodyMd}
+          data-testid="account-address-shortened"
+          className="mb-4"
         >
-          {t('showPrivateKey')}
-        </ButtonSecondary>
-      ) : null}
+          {shortenString(formatedAddress, {
+            truncatedStartChars: 12,
+            truncatedEndChars: 10,
+          })}
+        </Text>
+        <ButtonIcon
+          color={IconColor.IconAlternative}
+          iconName={copied ? IconName.CopySuccess : IconName.Copy}
+          size={ButtonIconSize.Md}
+          style={{
+            cursor: 'pointer',
+            position: 'absolute',
+            right: -32,
+            top: -2,
+          }}
+          onClick={handleClick}
+          ariaLabel="copy-button"
+          data-testid="address-copy-button-text"
+        />
+      </Box>
+      {pending && (
+        <Box
+          paddingTop={12}
+          paddingBottom={12}
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Center}
+          alignItems={BoxAlignItems.Center}
+          data-testid="network-loader"
+        >
+          <Preloader size={18} />
+        </Box>
+      )}
+      {!pending && networkSupporting7702Present && (
+        <Tabs onTabClick={() => undefined} className="mt-2">
+          <Tab name="Type" tabKey="Type" className="flex-1">
+            <SmartAccountTab address={address} />
+          </Tab>
+          <Tab name="Details" tabKey="Details" className="flex-1">
+            <AccountDetailsSection
+              address={address}
+              onExportClick={onExportClick}
+            />
+          </Tab>
+        </Tabs>
+      )}
+      {!pending && !networkSupporting7702Present && (
+        <AccountDetailsSection
+          address={address}
+          onExportClick={onExportClick}
+        />
+      )}
     </Box>
   );
 };
@@ -109,6 +154,10 @@ AccountDetailsDisplay.propTypes = {
    * Current address
    */
   address: PropTypes.string.isRequired,
+  /**
+   * Current account type
+   */
+  accountType: PropTypes.string.isRequired,
   /**
    * Executes upon Export button click
    */

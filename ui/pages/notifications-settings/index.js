@@ -1,1 +1,4 @@
-export { default } from './notifications-settings';
+export {
+  default,
+  NotificationsSettingsContent,
+} from './notifications-settings';

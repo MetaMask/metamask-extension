@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { Numeric } from '../../../../../shared/modules/Numeric';
+import { Numeric } from '../../../../../shared/lib/Numeric';
 
 const MAX_DECIMALS_TOKEN_SECONDARY = 6;
 
@@ -16,6 +16,9 @@ export default function useProcessNewDecimalValue(
   isTokenPrimary: boolean,
   tokenToFiatConversionRate: Numeric | undefined,
 ) {
+  const tokenToFiatConversionRateToString =
+    tokenToFiatConversionRate?.toString();
+
   return useCallback(
     (newDecimalValue: string, isTokenPrimaryOverride?: boolean) => {
       let newFiatDecimalValue, newTokenDecimalValue;
@@ -55,6 +58,7 @@ export default function useProcessNewDecimalValue(
 
       return { newFiatDecimalValue, newTokenDecimalValue };
     },
-    [tokenToFiatConversionRate?.toString(), isTokenPrimary, assetDecimals],
+    // eslint-disable-next-line react-compiler/react-compiler,react-hooks/exhaustive-deps -- `tokenToFiatConversionRate` intentionally excluded; re-renders only triggered when conversion rate value actually changes
+    [tokenToFiatConversionRateToString, isTokenPrimary, assetDecimals],
   );
 }

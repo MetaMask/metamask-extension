@@ -1,35 +1,36 @@
+import ZENDESK_URLS from './zendesk-url';
+
 export const PRIMARY = 'PRIMARY';
 export const SECONDARY = 'SECONDARY';
 
-const _contractAddressLink =
-  'https://support.metamask.io/managing-my-tokens/moving-your-tokens/why-am-i-being-warned-about-sending-tokens-to-a-contract/';
+const _contractAddressLink = ZENDESK_URLS.CONTRACT_ADDRESS_WARNING;
 
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-const _mmiWebSite = 'https://metamask.io/institutions/';
-export const MMI_WEB_SITE = _mmiWebSite;
-///: END:ONLY_INCLUDE_IF
+export const TRANSACTION_SHIELD_SUPPORT_LINK = ZENDESK_URLS.TRANSACTION_SHIELD;
 
+export const TRANSACTION_SHIELD_LINK = 'https://metamask.io/transaction-shield';
+
+export const FIND_TRANSACTION_HASH_LINK = ZENDESK_URLS.FIND_TRANSACTION_HASH;
 // eslint-disable-next-line prefer-destructuring
-export const METAMETRICS_SETTINGS_LINK =
-  'https://support.metamask.io/privacy-and-security/how-to-manage-your-metametrics-settings';
+export const METAMETRICS_SETTINGS_LINK = ZENDESK_URLS.METAMETRICS_SETTINGS;
 // eslint-disable-next-line prefer-destructuring
-export const SUPPORT_REQUEST_LINK = process.env.SUPPORT_REQUEST_LINK;
+export const SUPPORT_LINK = process.env.SUPPORT_LINK;
 export const CONTRACT_ADDRESS_LINK = _contractAddressLink;
 export const PASSWORD_MIN_LENGTH = 8;
 export const OUTDATED_BROWSER_VERSIONS = {
   // Chrome and Edge should match the latest Chrome version released ~2 years ago,
   // or the earliest version that supports our MV3 functionality, whichever is higher
-  chrome: '<109',
-  edge: '<109',
+  chrome: '<123',
+  edge: '<123',
   // Firefox should match the previous extended support release
-  // Current ESR: 115
-  // Previous ESR: 102
-  firefox: '<102',
+  // Current ESR: 140 - first released to ESR 2025/06/24
+  // Previous ESR: 128 - first released to ESR 2024/07/09
+  // per https://whattrainisitnow.com/release/?version=esr
+  firefox: '<128',
   // Opera versions correspond to differently numbered Chromium versions.
   // Opera should be set to the equivalent of the Chromium version set
-  // Opera 95 is based on Chromium 109
+  // Opera 109 is based on Chromium 123
   // See https://en.wikipedia.org/wiki/History_of_the_Opera_web_browser
-  opera: '<95',
+  opera: '<109',
 };
 
 /**

@@ -1,19 +1,17 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import * as Sentry from '@sentry/browser';
-import browser from 'webextension-polyfill';
-import {
-  MetaMetricsContextProp,
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
 
+import {
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { getParticipateInMetaMetrics } from '../../selectors';
-import { MetaMetricsContext } from '../../contexts/metametrics';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   BannerAlert,
-  Box,
   Icon,
   IconName,
   IconSize,
@@ -29,9 +27,7 @@ import {
 } from '../../components/component-library';
 import {
   AlignItems,
-  BackgroundColor,
   BlockSize,
-  BorderRadius,
   Display,
   FlexDirection,
   IconColor,
@@ -40,11 +36,11 @@ import {
   TextVariant,
 } from '../../helpers/constants/design-system';
 
-import { SUPPORT_REQUEST_LINK } from '../../helpers/constants/common';
-
 import { Textarea } from '../../components/component-library/textarea/textarea';
 import { TextareaResize } from '../../components/component-library/textarea/textarea.types';
 import { ButtonSize } from '../../components/component-library/button/button.types';
+import VisitSupportDataConsentModal from '../../components/app/modals/visit-support-data-consent-modal';
+import { reloadExtensionFromUi } from '../../helpers/utils/reload-extension-from-ui';
 
 type ErrorPageProps = {
   error: {
@@ -57,12 +53,13 @@ type ErrorPageProps = {
 
 const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
 
   const [feedbackMessage, setFeedbackMessage] = useState('');
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [isSuccessModalShown, setIsSuccessModalShown] = useState(false);
+  const [isSupportDataConsentModalOpen, setIsSupportDataConsentModalOpen] =
+    useState(false);
 
   const handleClickDescribeButton = (): void => {
     setIsFeedbackModalOpen(true);
@@ -74,9 +71,9 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
 
   const handleSubmitFeedback = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
-    const eventId = Sentry.lastEventId();
+    const eventId = globalThis?.sentry?.lastEventId?.();
 
-    Sentry.captureFeedback({
+    globalThis?.sentry?.captureFeedback?.({
       message: feedbackMessage,
       associatedEventId: eventId,
     });
@@ -100,42 +97,52 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
     <section className="error-page">
       <section className="error-page__inner-wrapper">
         <Box
-          className="error-page__header"
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          alignItems={AlignItems.center}
+          className="flex error-page__header"
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.Center}
         >
           <Icon
             name={IconName.Danger}
             size={IconSize.Xl}
             color={IconColor.warningDefault}
           />
-          <Text variant={TextVariant.headingMd} marginBottom={4}>
+          <Text
+            color={TextColor.inherit}
+            variant={TextVariant.headingMd}
+            marginBottom={4}
+            data-testid="error-page-title"
+          >
             {t('errorPageTitle')}
           </Text>
         </Box>
 
         <div className="error-page__banner-wrapper">
-          <BannerAlert marginBottom={4}>{t('errorPageInfo')}</BannerAlert>
+          <BannerAlert
+            childrenWrapperProps={{ color: TextColor.inherit }}
+            marginBottom={4}
+          >
+            {t('errorPageInfo')}
+          </BannerAlert>
         </div>
 
-        <Text variant={TextVariant.bodyMd}>{t('errorPageMessageTitle')}</Text>
+        <Text color={TextColor.inherit} variant={TextVariant.bodyMd}>
+          {t('errorPageMessageTitle')}
+        </Text>
 
         <Box
-          borderRadius={BorderRadius.LG}
+          className="flex rounded-lg error-page__error-message-wrapper"
           marginBottom={2}
           marginTop={2}
-          backgroundColor={BackgroundColor.errorMuted}
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
+          backgroundColor={BoxBackgroundColor.ErrorMuted}
+          flexDirection={BoxFlexDirection.Column}
           padding={2}
-          className="error-page__error-message-wrapper"
         >
           {error.message ? (
             <Text
               variant={TextVariant.bodyXs}
               marginBottom={2}
               data-testid="error-page-error-message"
+              color={TextColor.inherit}
             >
               {t('errorMessage', [error.message])}
             </Text>
@@ -145,6 +152,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
               variant={TextVariant.bodyXs}
               marginBottom={2}
               data-testid="error-page-error-code"
+              color={TextColor.inherit}
             >
               {t('errorCode', [error.code])}
             </Text>
@@ -154,13 +162,18 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
               variant={TextVariant.bodyXs}
               marginBottom={2}
               data-testid="error-page-error-name"
+              color={TextColor.inherit}
             >
               {t('errorName', [error.name])}
             </Text>
           ) : null}
           {error.stack ? (
             <>
-              <Text variant={TextVariant.bodyXs} marginBottom={2}>
+              <Text
+                color={TextColor.inherit}
+                variant={TextVariant.bodyXs}
+                marginBottom={2}
+              >
                 {t('errorStack')}
               </Text>
               <pre
@@ -197,7 +210,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
                 />
               </ModalBody>
               <ModalFooter>
-                <Box display={Display.Flex} gap={4}>
+                <Box className="flex" gap={4}>
                   <Button
                     variant={ButtonVariant.Secondary}
                     width={BlockSize.Half}
@@ -251,12 +264,17 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
             </ModalContent>
           </Modal>
         )}
+        {isSupportDataConsentModalOpen && (
+          <VisitSupportDataConsentModal
+            isOpen={isSupportDataConsentModalOpen}
+            onClose={() => setIsSupportDataConsentModalOpen(false)}
+          />
+        )}
         <Box
-          width={BlockSize.Full}
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.center}
+          className="flex w-full"
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.Center}
+          justifyContent={BoxJustifyContent.Center}
           marginTop={4}
         >
           {isMetaMetricsEnabled && (
@@ -275,23 +293,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
             variant={ButtonVariant.Secondary}
             block
             data-testid="error-page-contact-support-button"
-            onClick={() => {
-              window.open(SUPPORT_REQUEST_LINK, '_blank');
-              trackEvent(
-                {
-                  category: MetaMetricsEventCategory.Error,
-                  event: MetaMetricsEventName.SupportLinkClicked,
-                  properties: {
-                    url: SUPPORT_REQUEST_LINK,
-                  },
-                },
-                {
-                  contextPropsIntoEventProperties: [
-                    MetaMetricsContextProp.PageTitle,
-                  ],
-                },
-              );
-            }}
+            onClick={() => setIsSupportDataConsentModalOpen(true)}
           >
             {t('errorPageContactSupport')}
           </Button>
@@ -299,7 +301,9 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
             variant={ButtonVariant.Secondary}
             block
             data-testid="error-page-try-again-button"
-            onClick={() => browser.runtime.reload()}
+            onClick={async () => {
+              await reloadExtensionFromUi();
+            }}
           >
             {t('errorPageTryAgain')}
           </Button>

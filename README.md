@@ -8,11 +8,11 @@ MetaMask supports Firefox, Google Chrome, and Chromium-based browsers. We recomm
 
 For up to the minute news, follow us on [X](https://x.com/MetaMask).
 
-To learn how to develop MetaMask-compatible applications, visit our [Developer Docs](https://metamask.github.io/metamask-docs/).
+To learn how to develop MetaMask-compatible applications, visit our [Developer Docs](https://docs.metamask.io/).
 
 To learn how to contribute to the MetaMask codebase, visit our [Contributor Docs](https://github.com/MetaMask/contributor-docs).
 
-To learn how to contribute to the MetaMask Extension project itself, visit our [Extension Docs](https://github.com/MetaMask/metamask-extension/tree/develop/docs).
+To learn how to contribute to the MetaMask Extension project itself, visit our [Extension Docs](https://github.com/MetaMask/metamask-extension/tree/main/docs).
 
 ## GitHub Codespaces quickstart
 
@@ -47,7 +47,7 @@ If you are not a MetaMask Internal Developer, or are otherwise developing on a f
 
 ## Building on your local machine
 
-- Install [Node.js](https://nodejs.org) version 20
+- Install [Node.js](https://nodejs.org) version 24
   - If you are using [nvm](https://github.com/nvm-sh/nvm#installing-and-updating) (recommended) running `nvm use` will automatically choose the right node version for you.
 - Enable Corepack by executing the command `corepack enable` within the metamask-extension project. Corepack is a utility included with Node.js by default. It manages Yarn on a per-project basis, using the version specified by the `packageManager` property in the project's package.json file. Please note that modern releases of [Yarn](https://yarnpkg.com/getting-started/install) are not intended to be installed globally or via npm.
 - Duplicate `.metamaskrc.dist` within the root and rename it to `.metamaskrc` by running `cp .metamaskrc{.dist,}`.
@@ -56,9 +56,20 @@ If you are not a MetaMask Internal Developer, or are otherwise developing on a f
   - If debugging MetaMetrics, you'll need to add a value for `SEGMENT_WRITE_KEY` [Segment write key](https://segment.com/docs/connections/find-writekey/), see [Developing on MetaMask - Segment](./development/README.md#segment).
   - If debugging unhandled exceptions, you'll need to add a value for `SENTRY_DSN` [Sentry Dsn](https://docs.sentry.io/product/sentry-basics/dsn-explainer/), see [Developing on MetaMask - Sentry](./development/README.md#sentry).
   - Optionally, replace the `PASSWORD` value with your development wallet password to avoid entering it each time you open the app.
+  - If developing with remote feature flags, and you want to override the flags in the build process, you can add a `.manifest-overrides.json` file to the root of the project and set `MANIFEST_OVERRIDES=.manifest-overrides.json` in `.metamaskrc` to the path of the file.
+    This file is used to add flags to `manifest.json` build files for the extension. You can also modify the `_flags.remoteFeatureFlags` in the built version of `manifest.json` in the `dist/browser` folder to tweak the flags after the build process (these changes will get overwritten when you build again).
+    An example of this remote feature flag overwrite could be:
+
+  ```json
+  {
+    "_flags": {
+      "remoteFeatureFlags": { "testBooleanFlag": false }
+    }
+  }
+  ```
+
 - Run `yarn install` to install the dependencies.
 - Build the project to the `./dist/` folder with `yarn dist` (for Chromium-based browsers) or `yarn dist:mv2` (for Firefox)
-
   - Optionally, to create a development build you can instead run `yarn start` (for Chromium-based browsers) or `yarn start:mv2` (for Firefox)
   - Uncompressed builds can be found in `/dist`, compressed builds can be found in `/builds` once they're built.
   - See the [build system readme](./development/build/README.md) for build system usage information.
@@ -66,6 +77,30 @@ If you are not a MetaMask Internal Developer, or are otherwise developing on a f
 - Follow these instructions to verify that your local build runs correctly:
   - [How to add custom build to Chrome](./docs/add-to-chrome.md)
   - [How to add custom build to Firefox](./docs/add-to-firefox.md)
+
+## AI Agent Skills (`yarn skills`)
+
+AI coding agents (Cursor, Claude Code, Codex) consume shared skills from the [MetaMask/skills](https://github.com/MetaMask/skills) repo, with an optional private overlay from [Consensys/skills](https://github.com/Consensys/skills). Per [ADR #57](https://github.com/MetaMask/decisions/pull/162) this content is **not committed here** — `yarn skills` syncs it on demand into local-only paths under `.cursor/`, `.claude/`, and `.agents/`.
+
+Zero-config setup:
+
+```bash
+yarn install # clones MetaMask/skills into .skills-cache/metamask-skills
+yarn skills  # syncs all default skills from the cache
+```
+
+Optional local configuration:
+
+```bash
+cp .skills.local.example .skills.local
+# edit .skills.local to set SKILLS_DOMAINS or override skills source paths
+yarn skills --select                         # interactively pick domains
+SKILLS_DOMAINS=perps,testing yarn skills      # one-off domain override
+```
+
+Use `.skills.local` for persistent skills configuration. Shell environment variables with the same names are supported for one-off or CI overrides and take precedence.
+
+Skipping `yarn skills` is fine — it only affects agent tooling, not the app build.
 
 ## Git Hooks
 
@@ -91,11 +126,15 @@ You can start a development build with a preloaded wallet state, by adding `TEST
 2. Check the list of available fixture flags, by running `yarn start:with-state --help`.
 3. Start the wallet with custom fixture flags, by running `yarn start:with-state --FIXTURE_NAME=VALUE` for example `yarn start:with-state --withAccounts=100`. You can pass as many flags as you want. The rest of the fixtures will take the default values.
 
-#### Development build with Webpack
+#### Advanced Webpack builds
 
-You can also start a development build using the `yarn webpack` command, or `yarn webpack --watch`. This uses an alternative build system that is much faster, but not yet production ready. See the [Webpack README](./development/webpack/README.md) for more information.
+`yarn start` is backed by Webpack. You can also call `yarn webpack` directly for advanced build-system debugging; see the [Webpack README](./development/webpack/README.md) for more information.
+
+`yarn start:lavamoat` is not currently supported because Webpack watch mode does not support LavaMoat. For production-like LavaMoat verification, use `yarn webpack:lavamoat:build` or `yarn build:test:webpack`.
 
 #### React and Redux DevTools
+
+To use React or Redux DevTools you'll first need to set `METAMASK_REACT_REDUX_DEVTOOLS` to `true` in `.metamaskrc`.
 
 To start the [React DevTools](https://github.com/facebook/react-devtools), run `yarn devtools:react` with a development build installed in a browser. This will open in a separate window; no browser extension is required.
 
@@ -129,18 +168,17 @@ Our e2e test suite can be run on either Firefox or Chrome. Here's how to get sta
 
 Before running e2e tests, ensure you've run `yarn install` to download dependencies. Next, you'll need a test build. You have 3 options:
 
-1. Use `yarn download-builds:test` to quickly download and unzip test builds for Chrome and Firefox into the `./dist/` folder. This method is fast and convenient for standard testing.
-2. Create a custom test build: for testing against different build types, use `yarn build:test`. This command allows you to generate test builds for various types, including:
-   - `yarn build:test` for main build
-   - `yarn build:test:flask` for flask build
-   - `yarn build:test:mmi` for mmi build
-   - `yarn build:test:mv2` for mv2 build
-3. Start a test build with live changes: `yarn start:test` is particularly useful for development. It starts a test build that automatically recompiles application code upon changes. This option is ideal for iterative testing and development. This command also allows you to generate test builds for various types, including:
+1. Use `yarn download-builds --build-type test` to quickly download and unzip test builds for Chrome and Firefox into the `./dist/` folder. This method is fast and convenient for standard testing.
+2. Create a custom production-like Webpack test build. This command allows you to generate test builds for various types, including:
+   - `yarn build:test:webpack` for main build
+   - `yarn build:test:flask:webpack` for flask build
+   - `yarn build:test:webpack:mv2` for mv2 build
+3. Start a Webpack test build with live changes: `yarn start:test` is particularly useful for development. It starts a test build that automatically recompiles application code upon changes. This option is ideal for iterative testing and development. This command also allows you to generate test builds for various types, including:
    - `yarn start:test` for main build
    - `yarn start:test:flask` for flask build
    - `yarn start:test:mv2` for mv2 build
 
-Note: The `yarn start:test` command (which initiates the testDev build type) has LavaMoat disabled for both the build system and the application, offering a streamlined testing experience during development. On the other hand, `yarn build:test` enables LavaMoat for enhanced security in both the build system and application, mirroring production environments more closely.
+Note: The `yarn start:test` command has LavaMoat and Snow disabled for faster iteration. Use `yarn build:test:webpack` for production-like LavaMoat verification.
 
 #### Running Tests
 
@@ -165,8 +203,8 @@ Single e2e tests can be run with `yarn test:e2e:single test/e2e/tests/TEST_NAME.
   --retries           Set how many times the test should be retried upon failure.
                                                               [number] [default: 0]
   --leave-running     Leaves the browser running after a test fails, along with
-                      anything else that the test used (ganache, the test dapp,
-                      etc.)                              [boolean] [default: false]
+                      anything else that the test used (the local node, the
+                      test dapp, etc.)                   [boolean] [default: false]
   --update-snapshot   Update E2E test snapshots
                                              [alias: -u] [boolean] [default: false]
 ```
@@ -174,35 +212,98 @@ Single e2e tests can be run with `yarn test:e2e:single test/e2e/tests/TEST_NAME.
 For example, to run the `account-details` tests using Chrome, with debug logging and with the browser set to remain open upon failure, you would use:
 `yarn test:e2e:single test/e2e/tests/account-menu/account-details.spec.js --browser=chrome --leave-running`
 
-#### Running e2e tests against specific feature flag
+#### Running E2E tests with feature flags
 
-While developing new features, we often use feature flags. As we prepare to make these features generally available (GA), we remove the feature flags. Existing feature flags are listed in the `.metamaskrc.dist` file. To execute e2e tests with a particular feature flag enabled, it's necessary to first generate a test build with that feature flag activated. There are two ways to achieve this:
+Feature flags used in tests fall into two categories: remote flags (runtime values fetched from client-config) and build-time flags (compile-time values set during the build). Use the workflow that matches the flag type.
 
-- To enable a feature flag in your local configuration, you should first ensure you have a `.metamaskrc` file copied from `.metamaskrc.dist`. Then, within your local `.metamaskrc` file, you can set the desired feature flag to true. Following this, a test build with the feature flag enabled can be created by executing `yarn build:test`.
+##### Remote feature flags (runtime)
 
-- Alternatively, for enabling a feature flag directly during the test build creation, you can pass the parameter as true via the command line. For instance, activating the MULTICHAIN feature flag can be done by running `MULTICHAIN=1 yarn build:test` or `MULTICHAIN=1 yarn start:test` . This method allows for quick adjustments to feature flags without altering the `.metamaskrc` file.
+Remote flags are provided at runtime and should usually follow production defaults from the [Feature Flag Registry](./test/e2e/feature-flags/feature-flag-registry.ts). You do not need a custom build just to change a remote flag value for a test.
 
-Once you've created a test build with the desired feature flag enabled, proceed to run your tests as usual. Your tests will now run against the version of the extension with the specific feature flag activated. For example:
-`yarn test:e2e:single test/e2e/tests/account-menu/account-details.spec.js --browser=chrome`
+Use one of these test-time overrides:
 
-This approach ensures that your e2e tests accurately reflect the user experience for the upcoming GA features.
+- **`manifestFlags` in `withFixtures`** — best for simple, test-wide flag overrides that don't depend on other fixture state.
+- **`FixtureBuilder.withRemoteFeatureFlags()`** — best when you need the flag change to interact with other fixture state. Note: this method is only available on the legacy `FixtureBuilder`; use this builder when you need it, even for new tests.
+
+For code examples and detailed guidelines, see [Feature flags in E2E tests](https://github.com/MetaMask/contributor-docs/blob/main/docs/testing/e2e-testing.md#feature-flags-in-e2e-tests) in contributor-docs.
+
+##### Build-time feature flags (compile-time)
+
+Build-time flags are set before running tests and require creating a test build with the flag enabled. Set the flag either in your local `.metamaskrc` file or as an environment variable prefix (e.g. `MULTICHAIN=1 yarn build:test:webpack`), then follow the steps in [Preparing a Test Build](#preparing-a-test-build) to create and run the build.
+
+#### Feature Flag Registry
+
+The [Feature Flag Registry](./test/e2e/feature-flags/feature-flag-registry.ts) is the central source of truth for all remote feature flags used in MetaMask Extension E2E tests. A [CI check](./.github/workflows/check-feature-flag-registry.yml) runs on every PR to verify that every remote flag reference in changed files exists in the registry. For background on how remote feature flags work in MetaMask, see the [Remote Feature Flags](https://github.com/MetaMask/contributor-docs/blob/main/docs/remote-feature-flags.md) contributor doc.
+
+##### Registry entry format
+
+Each entry in `test/e2e/feature-flags/feature-flag-registry.ts` has the following shape:
+
+```typescript
+myNewFlag: {
+  name: 'myNewFlag',
+  type: FeatureFlagType.Remote,
+  inProd: true,
+  productionDefault: false,
+  status: FeatureFlagStatus.Active,
+},
+```
+
+| Field               | Description                                                                             |
+| ------------------- | --------------------------------------------------------------------------------------- |
+| `name`              | Must match the object key exactly                                                       |
+| `type`              | `FeatureFlagType.Remote` (fetched at runtime) or `FeatureFlagType.Build` (compile-time) |
+| `inProd`            | Whether the flag currently exists in the production client-config API                   |
+| `productionDefault` | Any valid JSON value (`Json` type — boolean, number, string, null, object, or array)    |
+| `status`            | `FeatureFlagStatus.Active` or `FeatureFlagStatus.Deprecated`                            |
+
+##### Add a flag to the registry
+
+For the full process of creating a remote feature flag (LaunchDarkly setup, code integration), see the [Remote Feature Flags](https://github.com/MetaMask/contributor-docs/blob/main/docs/remote-feature-flags.md) contributor doc. Once the flag exists, register it for E2E tests:
+
+1. Look up the flag's current production value from the [client-config API](https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod). If the flag is not yet in production, set `inProd: false` and `productionDefault` to the intended default.
+2. Add an entry to `test/e2e/feature-flags/feature-flag-registry.ts` in alphabetical order.
+3. If you access the flag via a constant (e.g. `remoteFeatureFlags[MY_CONSTANT]`), also add the constant mapping to [`.github/scripts/known-feature-flag-constants.mts`](./.github/scripts/known-feature-flag-constants.mts) so the CI check can resolve it.
+
+##### Override flags in E2E tests
+
+To test behavior with a flag value different from the production default, see the override examples in [Remote feature flags (runtime)](#remote-feature-flags-runtime) above.
+
+The registry module also exports helper functions for use in tests and tooling (e.g. `getProductionRemoteFlagApiResponse()`, `getProductionRemoteFlagDefaults()`). See the JSDoc in [feature-flag-registry.ts](./test/e2e/feature-flags/feature-flag-registry.ts) for details.
+
+##### Remove a flag
+
+When a remote feature flag is fully rolled out or no longer needed:
+
+1. Remove all references to the flag from application code (`app/`, `ui/`, `shared/`).
+2. Either remove the entry from the registry, or change its `status` to `FeatureFlagStatus.Deprecated` if you want to track it temporarily.
+3. The CI check will post a warning on PRs that remove the last codebase reference to a registered flag, reminding you to clean up the registry.
+
+#### Running E2E performance benchmarks
+
+E2E performance benchmarks measure flow timings (onboarding, send, swap, asset details, etc.) and can be run locally or in CI. Use `yarn test:e2e:benchmark` with `--preset <name>` or a file path. See [test/e2e/benchmarks/flows/README.md](test/e2e/benchmarks/flows/README.md) for presets and options.
 
 #### Running specific builds types e2e test
 
 Different build types have different e2e tests sets. In order to run them look in the `package.json` file. You will find:
 
 ```console
-    "test:e2e:chrome:mmi": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --mmi",
     "test:e2e:chrome:snaps": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --snaps",
     "test:e2e:firefox": "SELENIUM_BROWSER=firefox node test/e2e/run-all.js",
 ```
 
-#### Note: Running MMI e2e tests
+### Test and iterate on GitHub Actions more quickly
 
-When running e2e on an MMI build you need to know that there are 2 separated set of tests:
+Running the full workflow on GitHub Actions can take 30 minutes or more, but there are ways to speed it up for faster iteration
 
-- MMI runs a subset of MetaMask's e2e tests. To facilitate this, we have appended the `@no-mmi` tags to the names of those tests that are not applicable to this build type.
-- MMI runs another specific set of e2e legacy tests which are better documented [here](test/e2e/mmi/README.md)
+- **Automatic build reuse** — CI automatically detects when a PR's build-affecting source files haven't changed compared to a prior run (on the same branch or the base branch). When a match is found, it reuses the existing build artifacts instead of rebuilding, saving ~12 minutes for the browserify builds, and ~4 minutes for the webpack builds. This happens transparently with no action needed from you.
+  - `[force-builds]` in the last commit message, or a `force-builds` label on the PR — Forces fresh builds even when CI would otherwise reuse prior artifacts. Useful when you need to verify that builds work after changing only non-code files (CI configs, docs, etc.), or if the automatic system is making a mistake.
+  - `[skip-builds]` in the last commit message, or a `skip-builds` label on the PR — Reuses builds from the most recent prior run **without** verifying the source hash. This is the fastest option for iterating on tests or non-build changes, but it **blocks merging** — you must remove the tag/label and push again before the PR can enter the merge queue.
+- **Automatic E2E skipping** — CI automatically skips E2E tests when the PR's changes don't require them (e.g., docs-only, CI-only, or test-only changes with reused builds). You can override this in both directions:
+  - `[skip-e2e]` in the last commit message, or a `skip-e2e` label on the PR — Forces E2E tests to be skipped regardless of what files changed.
+  - `[force-e2e]` in the last commit message, or a `force-e2e` label on the PR — Forces E2E tests to run even when CI would otherwise skip them. Useful for CI-only PRs that modify E2E workflow files.
+- `[skip-unit]` in the last commit message _(command not working yet, coming soon)_ - Skips the unit test suite
+- `trigger-ci-*` as the branch name - This allows you to run the CI workflow without attaching it to a PR. This is useful if you need to test some things that you know will never be merged. Please clean up after yourself when you're done, and delete the branch.
 
 ### Changing dependencies
 

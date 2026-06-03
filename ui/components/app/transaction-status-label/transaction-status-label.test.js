@@ -1,283 +1,168 @@
 import React from 'react';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import { EthAccountType } from '@metamask/keyring-api';
+import { render, screen } from '@testing-library/react';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
+import { TransactionGroupStatus } from '../../../../shared/constants/transaction';
 import TransactionStatusLabel from '.';
 
+// Mock the useI18nContext hook
+jest.mock('../../../hooks/useI18nContext', () => ({
+  useI18nContext: () => (key) => key,
+}));
+
+// Mock the Tooltip component
+jest.mock('../../ui/tooltip', () => ({
+  __esModule: true,
+  default: ({ children, title, wrapperClassName }) => (
+    <div data-testid="tooltip" data-title={title} className={wrapperClassName}>
+      {children}
+    </div>
+  ),
+}));
+
 describe('TransactionStatusLabel Component', () => {
-  const createMockStore = configureMockStore([thunk]);
-  const mockState = {
-    metamask: {
-      custodyStatusMaps: {},
-      internalAccounts: {
-        accounts: {
-          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-            metadata: {
-              name: 'Test Account',
-              keyring: {
-                type: 'HD Key Tree',
-              },
-            },
-            options: {},
-            methods: ETH_EOA_METHODS,
-            type: EthAccountType.Eoa,
-          },
-        },
-        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-      },
-    },
-  };
-
-  let store = createMockStore(mockState);
-  it('should render CONFIRMED properly', () => {
-    const confirmedProps = {
-      status: 'confirmed',
-      date: 'June 1',
-    };
-
-    const { container } = renderWithProvider(
-      <TransactionStatusLabel {...confirmedProps} />,
-      store,
-    );
-
-    expect(container).toMatchSnapshot();
+  it('renders translated status text for confirmed transactions', () => {
+    render(<TransactionStatusLabel status={TransactionStatus.confirmed} />);
+    expect(screen.getByText(TransactionStatus.confirmed)).toBeInTheDocument();
   });
 
-  it('should render PENDING properly', () => {
+  it('should render PENDING status when submitted and isEarliestNonce is true', () => {
     const props = {
-      date: 'June 1',
       status: TransactionStatus.submitted,
       isEarliestNonce: true,
     };
 
-    const { container } = renderWithProvider(
-      <TransactionStatusLabel {...props} />,
-      store,
-    );
-
-    expect(container).toMatchSnapshot();
+    render(<TransactionStatusLabel {...props} />);
+    expect(
+      screen.getByText(TransactionGroupStatus.pending),
+    ).toBeInTheDocument();
   });
 
-  it('should render QUEUED properly', () => {
+  it('should render QUEUED status when submitted and isEarliestNonce is false', () => {
     const props = {
       status: TransactionStatus.submitted,
       isEarliestNonce: false,
     };
 
-    const { container } = renderWithProvider(
-      <TransactionStatusLabel {...props} />,
-      store,
-    );
-
-    expect(container).toMatchSnapshot();
+    render(<TransactionStatusLabel {...props} />);
+    expect(screen.getByText('queued')).toBeInTheDocument();
   });
 
-  it('should render UNAPPROVED properly', () => {
+  it('should render UNAPPROVED status', () => {
     const props = {
       status: TransactionStatus.unapproved,
     };
 
-    const { container } = renderWithProvider(
-      <TransactionStatusLabel {...props} />,
-      store,
-    );
-
-    expect(container).toMatchSnapshot();
+    render(<TransactionStatusLabel {...props} />);
+    expect(screen.getByText(TransactionStatus.unapproved)).toBeInTheDocument();
   });
 
-  it('should render SIGNING if status is approved', () => {
+  it('should render SIGNING status when approved', () => {
     const props = {
       status: TransactionStatus.approved,
     };
 
-    const { container } = renderWithProvider(
-      <TransactionStatusLabel {...props} />,
-      store,
-    );
-
-    expect(container).toMatchSnapshot();
+    render(<TransactionStatusLabel {...props} />);
+    expect(screen.getByText('signing')).toBeInTheDocument();
   });
 
-  it('should render statusText properly when is custodyStatusDisplayText is defined', () => {
+  it('should handle error prop for tooltip', () => {
+    const errorMessage = 'An error occurred';
     const props = {
-      custodyStatusDisplayText: 'test',
+      status: TransactionStatus.failed,
+      error: { message: errorMessage },
     };
 
-    const { getByText } = renderWithProvider(
-      <TransactionStatusLabel {...props} />,
-      store,
-    );
-
-    expect(getByText(props.custodyStatusDisplayText)).toBeVisible();
+    render(<TransactionStatusLabel {...props} />);
+    expect(screen.getByTestId('tooltip')).toBeInTheDocument();
+    expect(screen.getByText(TransactionStatus.failed)).toBeInTheDocument();
   });
 
-  it('should display the correct status text and tooltip', () => {
-    const mockShortText = 'Short Text Test';
-    const mockLongText = 'Long Text Test';
+  it('should map approved status to signing status', () => {
     const props = {
-      status: 'approved',
-      custodyStatus: 'approved',
-      custodyStatusDisplayText: 'Test',
-    };
-    const customMockStore = {
-      metamask: {
-        custodyStatusMaps: {
-          saturn: {
-            approved: {
-              shortText: mockShortText,
-              longText: mockLongText,
-            },
-          },
-        },
-        internalAccounts: {
-          accounts: {
-            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-              address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-              metadata: {
-                name: 'Account 1',
-                keyring: {
-                  type: 'Custody - JSONRPC',
-                },
-              },
-              options: {},
-              methods: ETH_EOA_METHODS,
-              type: EthAccountType.Eoa,
-            },
-          },
-          selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-        },
-        keyrings: [
-          {
-            type: 'Custody - JSONRPC',
-            accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
-          },
-        ],
-      },
+      status: TransactionStatus.approved,
     };
 
-    store = createMockStore(customMockStore);
-
-    const { getByText } = renderWithProvider(
-      <TransactionStatusLabel {...props} />,
-      store,
-    );
-
-    expect(getByText(props.custodyStatusDisplayText)).toBeVisible();
-  });
-  it('should display the error message when there is an error', () => {
-    const mockShortText = 'Short Text Test';
-    const mockLongText = 'Long Text Test';
-    const props = {
-      status: 'approved',
-      custodyStatus: 'approved',
-      error: { message: 'An error occurred' },
-    };
-    const customMockStore = {
-      metamask: {
-        custodyStatusMaps: {
-          saturn: {
-            approved: {
-              shortText: mockShortText,
-              longText: mockLongText,
-            },
-          },
-        },
-        internalAccounts: {
-          accounts: {
-            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-              address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-              metadata: {
-                name: 'Account 1',
-                keyring: {
-                  type: 'Custody - JSONRPC',
-                },
-              },
-              options: {},
-              methods: ETH_EOA_METHODS,
-              type: EthAccountType.Eoa,
-            },
-          },
-          selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-        },
-        keyrings: [
-          {
-            type: 'Custody - JSONRPC',
-            accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
-          },
-        ],
-      },
-    };
-
-    store = createMockStore(customMockStore);
-
-    const { getByText } = renderWithProvider(
-      <TransactionStatusLabel {...props} />,
-      store,
-    );
-
-    expect(getByText('Error')).toBeVisible();
+    render(<TransactionStatusLabel {...props} />);
+    expect(screen.getByText('signing')).toBeInTheDocument();
   });
 
-  it('should display correctly the error message when there is an error and custodyStatus is aborted', () => {
-    const mockShortText = 'Short Text Test';
-    const mockLongText = 'Long Text Test';
+  it('should map submitted status to pending when isEarliestNonce is true', () => {
     const props = {
-      status: 'approved',
-      custodyStatus: 'aborted',
-      error: { message: 'An error occurred' },
-      custodyStatusDisplayText: 'Test',
-    };
-    const customMockStore = {
-      metamask: {
-        custodyStatusMaps: {
-          saturn: {
-            approved: {
-              shortText: mockShortText,
-              longText: mockLongText,
-            },
-          },
-        },
-        internalAccounts: {
-          accounts: {
-            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-              address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-              metadata: {
-                name: 'Account 1',
-                keyring: {
-                  type: 'Custody - JSONRPC',
-                },
-              },
-              options: {},
-              methods: ETH_EOA_METHODS,
-              type: EthAccountType.Eoa,
-            },
-          },
-          selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-        },
-        keyrings: [
-          {
-            type: 'Custody - JSONRPC',
-            accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
-          },
-        ],
-      },
+      status: TransactionStatus.submitted,
+      isEarliestNonce: true,
     };
 
-    store = createMockStore(customMockStore);
+    render(<TransactionStatusLabel {...props} />);
+    expect(
+      screen.getByText(TransactionGroupStatus.pending),
+    ).toBeInTheDocument();
+  });
 
-    const { getByText } = renderWithProvider(
-      <TransactionStatusLabel {...props} />,
-      store,
+  it('should map submitted status to queued when isEarliestNonce is false', () => {
+    const props = {
+      status: TransactionStatus.submitted,
+      isEarliestNonce: false,
+    };
+
+    render(<TransactionStatusLabel {...props} />);
+    expect(screen.getByText('queued')).toBeInTheDocument();
+  });
+
+  it('should map signed status to pending when isEarliestNonce is true', () => {
+    const props = {
+      status: TransactionStatus.signed,
+      isEarliestNonce: true,
+    };
+
+    render(<TransactionStatusLabel {...props} />);
+    expect(
+      screen.getByText(TransactionGroupStatus.pending),
+    ).toBeInTheDocument();
+  });
+
+  it('should map signed status to queued when isEarliestNonce is false', () => {
+    const props = {
+      status: TransactionStatus.signed,
+      isEarliestNonce: false,
+    };
+
+    render(<TransactionStatusLabel {...props} />);
+    expect(screen.getByText('queued')).toBeInTheDocument();
+  });
+
+  it('label overrides the displayed text', () => {
+    render(
+      <TransactionStatusLabel
+        status={TransactionStatus.confirmed}
+        label="cancelled"
+      />,
     );
+    expect(screen.getByText('cancelled')).toBeInTheDocument();
+  });
 
-    expect(getByText(props.custodyStatusDisplayText)).toBeVisible();
+  it('label applies confirmed class regardless of status', () => {
+    render(
+      <TransactionStatusLabel
+        status={TransactionStatus.failed}
+        label="cancelled"
+      />,
+    );
+    expect(screen.getByTestId('tooltip').className).toContain(
+      'transaction-status-label--confirmed',
+    );
+    expect(screen.getByTestId('tooltip').className).not.toContain(
+      'transaction-status-label--failed',
+    );
+  });
+
+  it('tooltip prop overrides the tooltip text', () => {
+    render(
+      <TransactionStatusLabel
+        status={TransactionStatus.failed}
+        error={{ message: 'original error' }}
+        tooltip="custom tooltip"
+      />,
+    );
+    expect(screen.getByTestId('tooltip').dataset.title).toBe('custom tooltip');
   });
 });

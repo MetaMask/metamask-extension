@@ -28,26 +28,6 @@
     "name": "Philippine Peso"
   },
   {
-    "code": "adt",
-    "name": "adToken"
-  },
-  {
-    "code": "adx",
-    "name": "AdEx"
-  },
-  {
-    "code": "ant",
-    "name": "Aragon"
-  },
-  {
-    "code": "bat",
-    "name": "Basic Attention Token"
-  },
-  {
-    "code": "bnt",
-    "name": "Bancor"
-  },
-  {
     "code": "btc",
     "name": "Bitcoin"
   },
@@ -56,140 +36,24 @@
     "name": "Canadian Dollar"
   },
   {
-    "code": "crb",
-    "name": "CreditBit"
-  },
-  {
-    "code": "cvc",
-    "name": "Civic"
-  },
-  {
-    "code": "dash",
-    "name": "Dash"
-  },
-  {
-    "code": "dgd",
-    "name": "DigixDAO"
-  },
-  {
-    "code": "etc",
-    "name": "Ethereum Classic"
-  },
-  {
     "code": "eur",
     "name": "Euro"
-  },
-  {
-    "code": "fun",
-    "name": "FunFair"
   },
   {
     "code": "gbp",
     "name": "Pound Sterling"
   },
   {
-    "code": "gno",
-    "name": "Gnosis"
-  },
-  {
-    "code": "gnt",
-    "name": "Golem"
-  },
-  {
-    "code": "hmq",
-    "name": "Humaniq"
-  },
-  {
     "code": "jpy",
     "name": "Japanese Yen"
-  },
-  {
-    "code": "lsk",
-    "name": "Lisk"
   },
   {
     "code": "ltc",
     "name": "Litecoin"
   },
   {
-    "code": "lun",
-    "name": "Lunyr"
-  },
-  {
-    "code": "mco",
-    "name": "Monaco"
-  },
-  {
-    "code": "mtl",
-    "name": "Metal"
-  },
-  {
-    "code": "myst",
-    "name": "Mysterium"
-  },
-  {
-    "code": "nmr",
-    "name": "Numeraire"
-  },
-  {
-    "code": "omg",
-    "name": "OmiseGO"
-  },
-  {
-    "code": "pay",
-    "name": "TenX"
-  },
-  {
-    "code": "ptoy",
-    "name": "Patientory"
-  },
-  {
-    "code": "qrl",
-    "name": "Quantum-Resistant Ledger"
-  },
-  {
-    "code": "qtum",
-    "name": "Qtum"
-  },
-  {
-    "code": "rep",
-    "name": "Augur"
-  },
-  {
-    "code": "rlc",
-    "name": "iEx.ec"
-  },
-  {
     "code": "rub",
     "name": "Russian Ruble"
-  },
-  {
-    "code": "sc",
-    "name": "Siacoin"
-  },
-  {
-    "code": "sngls",
-    "name": "SingularDTV"
-  },
-  {
-    "code": "snt",
-    "name": "Status"
-  },
-  {
-    "code": "steem",
-    "name": "Steem"
-  },
-  {
-    "code": "storj",
-    "name": "Storj"
-  },
-  {
-    "code": "time",
-    "name": "ChronoBank"
-  },
-  {
-    "code": "tkn",
-    "name": "TokenCard"
   },
   {
     "code": "uah",
@@ -200,35 +64,115 @@
     "name": "United States Dollar"
   },
   {
-    "code": "wings",
-    "name": "Wings"
-  },
-  {
-    "code": "xem",
-    "name": "NEM"
-  },
-  {
     "code": "xlm",
     "name": "Stellar Lumen"
-  },
-  {
-    "code": "xmr",
-    "name": "Monero"
   },
   {
     "code": "xrp",
     "name": "Ripple"
   },
   {
-    "code": "zec",
-    "name": "Zcash"
-  },
-  {
-    "code": "dai",
-    "name": "DAI"
-  },
-  {
     "code": "sek",
     "name": "Swedish Krona"
+  },
+  {
+    "code": "aed",
+    "name": "United Arab Emirates Dirham"
+  },
+  {
+    "code": "ars",
+    "name": "Argentine Peso"
+  },
+  {
+    "code": "bch",
+    "name": "Bitcoin Cash"
+  },
+  {
+    "code": "bnb",
+    "name": "Binance Coin"
+  },
+  {
+    "code": "brl",
+    "name": "Brazilian Real"
+  },
+  {
+    "code": "clp",
+    "name": "Chilean Peso"
+  },
+  {
+    "code": "cny",
+    "name": "Chinese Yuan"
+  },
+  {
+    "code": "czk",
+    "name": "Czech Koruna"
+  },
+  {
+    "code": "dkk",
+    "name": "Danish Krone"
+  },
+  {
+    "code": "chf",
+    "name": "Swiss Franc"
+  },
+  {
+    "code": "dot",
+    "name": "Polkadot"
+  },
+  {
+    "code": "eos",
+    "name": "EOS"
+  },
+  {
+    "code": "eth",
+    "name": "Ethereum"
+  },
+  {
+    "code": "gel",
+    "name": "Georgian Lari"
+  },
+  {
+    "code": "huf",
+    "name": "Hungarian Forint"
+  },
+  {
+    "code": "ils",
+    "name": "Israeli Shekel"
+  },
+  {
+    "code": "krw",
+    "name": "South Korean Won"
+  },
+  {
+    "code": "mxn",
+    "name": "Mexican Peso"
+  },
+  {
+    "code": "myr",
+    "name": "Malaysian Ringgit"
+  },
+  {
+    "code": "ngn",
+    "name": "Nigerian Naira"
+  },
+  {
+    "code": "nok",
+    "name": "Norwegian Krone"
+  },
+  {
+    "code": "pln",
+    "name": "Polish Zloty"
+  },
+  {
+    "code": "thb",
+    "name": "Thai Baht"
+  },
+  {
+    "code": "try",
+    "name": "Turkish Lira"
+  },
+  {
+    "code": "zar",
+    "name": "South African Rand"
   }
 ]

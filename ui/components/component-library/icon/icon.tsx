@@ -1,5 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 
 import { IconColor, Display } from '../../../helpers/constants/design-system';
 
@@ -8,7 +8,16 @@ import type { PolymorphicRef } from '../box';
 
 import { IconSize, IconProps, IconComponent } from './icon.types';
 
+/**
+ * @deprecated This component is deprecated and will be removed in a future release.
+ * Please use the Icon component from @metamask/design-system-react instead.
+ * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#icon-component | Migration Guide}
+ * @see {@link https://metamask.github.io/metamask-design-system/?path=/docs/react-components-icon--docs | Storybook Documentation}
+ * @see {@link https://github.com/MetaMask/metamask-design-system/tree/main/packages/design-system-react/src/components/Icon | Component Source}
+ */
 export const Icon: IconComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'span'>(
     {
       name,

@@ -23,9 +23,6 @@
   "accountSelectionRequired": {
     "message": "Ou bezwen chwazi yon kont!"
   },
-  "activityLog": {
-    "message": "aktivite ki fèt"
-  },
   "addAcquiredTokens": {
     "message": "Ajoute tokens yo ou te achte lè l sèvi avèk MetaMask"
   },
@@ -111,9 +108,6 @@
   "create": {
     "message": "Kreye"
   },
-  "currentLanguage": {
-    "message": "Lang Aktyèl"
-  },
   "customToken": {
     "message": "Koutim Token"
   },
@@ -128,9 +122,6 @@
   },
   "done": {
     "message": "Fini"
-  },
-  "downloadGoogleChrome": {
-    "message": "Telechaje Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Telechaje State Logs"
@@ -147,9 +138,6 @@
   "etherscanView": {
     "message": "Gade kont sou Etherscan"
   },
-  "expandView": {
-    "message": "Elaji Wè"
-  },
   "failed": {
     "message": "Tonbe"
   },
@@ -163,17 +151,11 @@
   "from": {
     "message": "Soti nan"
   },
-  "functionType": {
-    "message": "Kalite Fonksyon"
-  },
   "gasLimit": {
     "message": "Limit gaz"
   },
   "gasLimitTooLow": {
     "message": "Limit gaz dwe omwen 21000"
-  },
-  "gasPrice": {
-    "message": "Pri gaz (GWEI)"
   },
   "gasUsed": {
     "message": "Gaz yo Itilize"
@@ -186,9 +168,6 @@
   },
   "hardwareWallets": {
     "message": "Materyèl Wallet konekte"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Chwazi yon Materyèl Wallet ou ta renmen itilize ak MetaMask"
   },
   "here": {
     "message": "isit la",
@@ -207,18 +186,12 @@
     "message": "Pòte",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Pòte Kont"
-  },
   "importAccountMsg": {
     "message": " Kont pòte pa pral asosye avèk orijinal ou te kreye nan kont MetaMask seed fraz. Aprann plis sou kont enpòte "
   },
   "imported": {
     "message": "Pòte",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "initialTransactionConfirmed": {
-    "message": "Premye tranzaksyon ou konfime sou rezo a. Klike sou OK pou tounen."
   },
   "insufficientFunds": {
     "message": "Lajan ensifizan."
@@ -254,14 +227,8 @@
   "likeToImportTokens": {
     "message": "Èske ou ta renmen ajoute sa nan tokens?"
   },
-  "links": {
-    "message": "Lyen"
-  },
   "loading": {
     "message": "Telechaje..."
-  },
-  "loadingTokens": {
-    "message": "Telechaje Tokens..."
   },
   "lock": {
     "message": "Dekonekte"
@@ -285,17 +252,11 @@
     "message": "Ou dwe chwazi yon dosye pou enpòte.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Pa ka voye kantite lajan negatif ETH."
-  },
   "networks": {
     "message": "Rezo"
   },
   "nevermind": {
     "message": "Pa pwoblèm"
-  },
-  "newAccount": {
-    "message": "Nouvo Kont"
   },
   "newAccountNumberName": {
     "message": "Kont $1",
@@ -310,12 +271,6 @@
   "next": {
     "message": "Aprè sa"
   },
-  "noConversionRateAvailable": {
-    "message": "Pa gen okenn Konvèsyon Disponib"
-  },
-  "noTransactions": {
-    "message": "Pa gen tranzaksyon"
-  },
   "noWebcamFound": {
     "message": "Nou pakay jwenn webcam òdinatè ou. Tanpri eseye ankò."
   },
@@ -327,9 +282,6 @@
   },
   "origin": {
     "message": "Orijin"
-  },
-  "parameters": {
-    "message": "Paramèt"
   },
   "password": {
     "message": "Modpas"
@@ -375,12 +327,6 @@
   "rejectAll": {
     "message": "Rejte Tout"
   },
-  "rejectTxsDescription": {
-    "message": "Ou se sou rejte $ 1 yon anpil nan tranzaksyon yo."
-  },
-  "rejectTxsN": {
-    "message": "Rejete $ 1 tranzaksyon"
-  },
   "rejected": {
     "message": "Rejete"
   },
@@ -390,9 +336,6 @@
   "removeAccount": {
     "message": "Retire kont"
   },
-  "removeAccountDescription": {
-    "message": "Kont sa a pral retire nan Wallet ou. Tanpri, asire ou ke ou gen orijinal fraz seed la oubyen kle prive pou rantre kont lan avan ou kontinye. Oubyen ou ka rantre kont ou ankò apati kont \"drop-down\" ou an."
-  },
   "required": {
     "message": "Egzije"
   },
@@ -401,9 +344,6 @@
   },
   "restore": {
     "message": "Retabli"
-  },
-  "revealSeedWords": {
-    "message": "Revele Seed Mo Yo"
   },
   "revealSeedWordsWarning": {
     "message": "Yo ka itilize mo sa pou vòlè kont ou.",
@@ -448,9 +388,6 @@
   "showHexDataDescription": {
     "message": "Pran sa pouw ka montre chan entèfas hex data a"
   },
-  "sigRequest": {
-    "message": "Demann Siyati"
-  },
   "sign": {
     "message": "Siyen"
   },
@@ -465,9 +402,6 @@
   },
   "stateLogError": {
     "message": "Erè nan retwouve State Logs yo."
-  },
-  "stateLogsDescription": {
-    "message": "State logs gen adrès kont piblik ou yo epi tranzaksyon ou te voye yo."
   },
   "submitted": {
     "message": "Te Soumèt"
@@ -493,23 +427,8 @@
   "transaction": {
     "message": "tranzaksyon yo"
   },
-  "transactionConfirmed": {
-    "message": "Tranzaksyon ou te konfime pou $2."
-  },
-  "transactionCreated": {
-    "message": "Tranzaksyon ou te kreye avèk on valè de $1 pou $2."
-  },
-  "transactionDropped": {
-    "message": "Tranzaksyon ou te tonbe a $2."
-  },
   "transactionError": {
     "message": "Erè tranzaksyon. Eksepsyon jete nan kòd kontra."
-  },
-  "transactionSubmitted": {
-    "message": "Tranzaksyon ou te soumèt a $2."
-  },
-  "transactionUpdated": {
-    "message": "Tranzaksyon ou te aktyalize a $2."
   },
   "transfer": {
     "message": "Transfè"
@@ -526,17 +445,11 @@
   "unknown": {
     "message": "Enkoni"
   },
-  "unknownNetwork": {
-    "message": "Rezo Prive Enkoni"
-  },
   "unknownQrCode": {
     "message": "Erè: Nou pa t kapab idantifye QR kòd sa"
   },
   "unlock": {
     "message": "Debloke"
-  },
-  "unlockMessage": {
-    "message": "Entènèt desantralize a ap tann"
   },
   "urlErrorMsg": {
     "message": "URIs mande pou apwopriye prefiks HTTP / HTTPS a."
@@ -552,11 +465,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Ou bezwen bay kamera aksè pou sèvi ak fonksyon sa."
-  },
-  "youSign": {
-    "message": "Ou ap siyen kounya"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Seed fraz prive ou a"
   }
 }

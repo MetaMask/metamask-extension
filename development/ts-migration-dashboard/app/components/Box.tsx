@@ -1,9 +1,11 @@
 import React, { useEffect, useRef } from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { Tooltip as ReactTippy } from 'react-tippy';
 import type { ModulePartitionChild } from '../../common/build-module-partitions';
 import type { BoxRect } from './types';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Box({
   module,
   register,

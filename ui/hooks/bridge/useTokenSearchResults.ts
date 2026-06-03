@@ -1,0 +1,171 @@
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { type CaipChainId } from '@metamask/utils';
+import { BridgeClientId } from '@metamask/bridge-controller';
+import { type AccountGroupId } from '@metamask/account-api';
+import { useSelector } from 'react-redux';
+import { debounce } from 'lodash';
+import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
+import { BridgeToken } from '../../ducks/bridge/types';
+import { toBridgeToken } from '../../ducks/bridge/utils';
+import { type BridgeAppState } from '../../ducks/bridge/selectors';
+import { getBridgeAssetsByAssetId } from '../../ducks/bridge/asset-selectors';
+import { fetchTokensBySearchQuery } from '../../pages/bridge/utils/tokens';
+import { getBearerToken } from '../../store/actions';
+import { useAsyncResult } from '../useAsync';
+
+/**
+ * Returns a list of tokens from the bridge api that match the search query
+ *
+ * @param params
+ * @param params.chainIds - enabled src/dest chainIds to return tokens for
+ * @param params.accountGroupId - the account group id used for balances
+ * @param params.searchQuery - the search query
+ * @param params.assetsToInclude - the assets to show at the top of the search results
+ */
+export const useTokenSearchResults = ({
+  searchQuery,
+  accountGroupId,
+  chainIds,
+  assetsToInclude,
+}: {
+  chainIds: Set<CaipChainId>;
+  searchQuery: string;
+  accountGroupId?: AccountGroupId;
+  assetsToInclude: BridgeToken[];
+}) => {
+  const ownedAssetsByAssetId = useSelector((state: BridgeAppState) =>
+    getBridgeAssetsByAssetId(state, accountGroupId),
+  );
+
+  const abortControllerRef = useRef<AbortController>(new AbortController());
+
+  const [isSearchResultsLoading, setIsSearchResultsLoading] = useState(false);
+  const [searchResultsWithBalance, setSearchResultsWithBalance] = useState<
+    BridgeToken[]
+  >([]);
+  /**
+   * Whether there are more pages to fetch
+   * This is set to false when all pages have been fetched
+   * This doesn't change until the first batch of search results are available
+   */
+  const [hasMoreResults, setHasMoreResults] = useState(false);
+  const [searchResultCursor, setSearchResultCursor] = useState<
+    string | undefined
+  >(undefined);
+
+  const { value: jwt } = useAsyncResult(async () => {
+    return await getBearerToken();
+  }, []);
+
+  const fetchSearchResults = useCallback(
+    (
+      query: string,
+      filteredAssetsToInclude: BridgeToken[],
+      cursor?: string,
+    ) => {
+      setIsSearchResultsLoading(true);
+      abortControllerRef.current.abort('Asset balances changed');
+      abortControllerRef.current = new AbortController();
+
+      fetchTokensBySearchQuery({
+        chainIds: Array.from(chainIds),
+        assetsWithBalances: filteredAssetsToInclude,
+        query,
+        jwt,
+        clientId: BridgeClientId.EXTENSION,
+        clientVersion: process.env.METAMASK_VERSION,
+        signal: abortControllerRef.current?.signal,
+        bridgeApiBaseUrl: BRIDGE_API_BASE_URL,
+        after: cursor,
+      })
+        ?.then(({ endCursor, tokens, hasNextPage }) => {
+          setHasMoreResults(hasNextPage);
+          setSearchResultsWithBalance((currentSearchResults) => [
+            // Clear the list on initial fetch and if token data is not empty
+            // If fetched data is empty, preserve the previous state
+            ...(cursor || tokens.length === 0 ? currentSearchResults : []),
+            ...tokens.map((token) =>
+              toBridgeToken(
+                token,
+                ownedAssetsByAssetId?.[
+                  // Balance keys are lowercased for easier lookup
+                  token.assetId.toLowerCase() as keyof typeof ownedAssetsByAssetId
+                ],
+              ),
+            ),
+          ]);
+          // Only update cursor if fetch succeeds
+          // If fetching fails the failed page will be retried next time the callback runs
+          setSearchResultCursor(endCursor);
+        })
+        .finally(() => {
+          setIsSearchResultsLoading(false);
+        });
+    },
+    [ownedAssetsByAssetId, chainIds, abortControllerRef, jwt],
+  );
+
+  const debouncedFetchSearchResults = useCallback(
+    // eslint-disable-next-line react-compiler/react-compiler
+    debounce(
+      (query: string, assets: BridgeToken[]) =>
+        fetchSearchResults(query, assets),
+      300,
+    ),
+    [fetchSearchResults],
+  );
+
+  /*
+   * Placeholder assets while fetching search results
+   */
+  const filteredAssetsToInclude = useMemo(() => {
+    return assetsToInclude.filter((token) => {
+      return (
+        token.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        token.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        token.assetId?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    });
+  }, [searchQuery, assetsToInclude]);
+
+  /*
+   * Combine asset IDs into a string to avoid re-fetching
+   * results whenever the balance or fiat balance amount changes
+   */
+  const stableMinimalAssetsString = useMemo(() => {
+    return filteredAssetsToInclude.map(({ assetId }) => assetId).join('|');
+  }, [filteredAssetsToInclude]);
+
+  useEffect(() => {
+    if (!jwt) {
+      return;
+    }
+    // Reset state on search query change
+    abortControllerRef.current.abort('Search query changed');
+    setSearchResultsWithBalance([]);
+    setSearchResultCursor(undefined);
+    setHasMoreResults(false);
+    if (searchQuery.length > 0) {
+      setIsSearchResultsLoading(true);
+      setSearchResultsWithBalance(filteredAssetsToInclude);
+      // Debounce the initial fetch until the user stops typing
+      debouncedFetchSearchResults(searchQuery, filteredAssetsToInclude);
+    }
+  }, [searchQuery, stableMinimalAssetsString, jwt]);
+
+  useEffect(() => {
+    const debouncedFn = debouncedFetchSearchResults;
+    return () => {
+      abortControllerRef.current.abort('Page unmounted');
+      debouncedFn.cancel();
+    };
+  }, []);
+
+  return {
+    searchResults: searchResultsWithBalance,
+    isSearchResultsLoading,
+    onFetchMoreResults: (query: string) =>
+      fetchSearchResults(query, filteredAssetsToInclude, searchResultCursor),
+    hasMoreResults,
+  };
+};

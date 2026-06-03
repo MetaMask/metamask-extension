@@ -1,23 +1,31 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SnapListPage from '../../page-objects/pages/snap-list-page';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
+import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
 
-describe('Create and remove Snap Account @no-mmi', function (this: Suite) {
+describe('Create and remove Snap Account', function (this: Suite) {
   it('create snap account and remove it by removing snap', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
+        },
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
+        testSpecificMock: mockSnapSimpleKeyringAndSite,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await installSnapSimpleKeyring(driver);
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
         await snapSimpleKeyringPage.createNewAccount();
@@ -27,7 +35,8 @@ describe('Create and remove Snap Account @no-mmi', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.check_accountLabel('SSK Account');
+        // BUG #37591 - With BIP44 the account mame is not retained.
+        await headerNavbar.checkAccountLabel('Snap Account 1');
 
         // Navigate to account snaps list page.
         await headerNavbar.openSnapListPage();
@@ -35,14 +44,15 @@ describe('Create and remove Snap Account @no-mmi', function (this: Suite) {
 
         // Remove the snap and check snap is successfully removed
         await snapListPage.removeSnapByName('MetaMask Simple Snap Keyring');
-        await snapListPage.check_noSnapInstalledMessageIsDisplayed();
+        await snapListPage.checkNoSnapInstalledMessageIsDisplayed();
+        await snapListPage.clickBackButton();
 
         // Assert that the snap account is removed from the account list
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
-        await accountListPage.check_accountIsNotDisplayedInAccountList(
-          'SSK Account',
+        await accountListPage.checkPageIsLoaded();
+        await accountListPage.checkAccountIsNotDisplayedInAccountList(
+          'Snap Account 1',
         );
       },
     );

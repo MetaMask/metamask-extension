@@ -17,7 +17,6 @@ import { getMockedNotificationsState } from './data/notification-state';
 jest.mock('../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
-  callBackgroundMethod: jest.fn(),
 }));
 
 const backgroundConnectionMocked = {
@@ -31,7 +30,7 @@ const setupSubmitRequestToBackgroundMocks = (
 ) => {
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
-      ...(mockRequests ?? {}),
+      ...mockRequests,
     }),
   );
 };
@@ -47,7 +46,11 @@ const trackNotificationsActivatedMetaMetricsEvent = async (
         event: MetaMetricsEventName.NotificationsActivated,
         category: MetaMetricsEventCategory.NotificationsActivationFlow,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           action_type: actionType,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           is_profile_syncing_enabled: profileSyncEnabled,
         },
       }),
@@ -70,7 +73,7 @@ describe('Notifications Activation', () => {
 
   const clickElement = async (testId: string) => {
     await act(async () => {
-      fireEvent.click(screen.getByTestId(testId));
+      fireEvent.click(await screen.findByTestId(testId));
     });
   };
 
@@ -80,16 +83,18 @@ describe('Notifications Activation', () => {
     });
   };
 
-  it('should successfully activate notification for the first time', async () => {
+  it('should successfully activate notification for the first time and send correct metrics', async () => {
     const mockedState = getMockedNotificationsState();
     await act(async () => {
       await integrationTestRender({
         preloadedState: {
           ...mockedState,
-          isProfileSyncingEnabled: false,
+          isBackupAndSyncEnabled: false,
           isNotificationServicesEnabled: false,
           isFeatureAnnouncementsEnabled: false,
           isMetamaskNotificationsFeatureSeen: false,
+          participateInMetaMetrics: true,
+          dataCollectionForMarketing: false,
         },
         backgroundConnection: backgroundConnectionMocked,
       });
@@ -105,16 +110,18 @@ describe('Notifications Activation', () => {
       });
 
       await act(async () => {
-        fireEvent.click(screen.getByText('Turn on'));
+        fireEvent.click(await screen.findByText('Turn on'));
       });
 
       await waitFor(() => {
-        const createOnChainTriggersCall =
+        const enableMetamaskNotificationsCall =
           mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-            (call) => call[0] === 'createOnChainTriggers',
+            (call) => call[0] === 'enableMetamaskNotifications',
           );
 
-        expect(createOnChainTriggersCall?.[0]).toBe('createOnChainTriggers');
+        expect(enableMetamaskNotificationsCall?.[0]).toBe(
+          'enableMetamaskNotifications',
+        );
       });
 
       await trackNotificationsActivatedMetaMetricsEvent('started', false);
@@ -128,10 +135,12 @@ describe('Notifications Activation', () => {
       await integrationTestRender({
         preloadedState: {
           ...mockedState,
-          isProfileSyncingEnabled: false,
+          isBackupAndSyncEnabled: false,
           isNotificationServicesEnabled: false,
           isFeatureAnnouncementsEnabled: false,
           isMetamaskNotificationsFeatureSeen: false,
+          participateInMetaMetrics: true,
+          dataCollectionForMarketing: false,
         },
         backgroundConnection: backgroundConnectionMocked,
       });
@@ -148,43 +157,7 @@ describe('Notifications Activation', () => {
 
       await act(async () => {
         fireEvent.click(
-          within(screen.getByRole('dialog')).getByRole('button', {
-            name: 'Close',
-          }),
-        );
-      });
-
-      await trackNotificationsActivatedMetaMetricsEvent('dismissed', false);
-    });
-  });
-
-  it('should successfully send correct metrics when notifications modal is dismissed', async () => {
-    const mockedState = getMockedNotificationsState();
-    await act(async () => {
-      await integrationTestRender({
-        preloadedState: {
-          ...mockedState,
-          isProfileSyncingEnabled: false,
-          isNotificationServicesEnabled: false,
-          isFeatureAnnouncementsEnabled: false,
-          isMetamaskNotificationsFeatureSeen: false,
-        },
-        backgroundConnection: backgroundConnectionMocked,
-      });
-
-      await clickElement('account-options-menu-button');
-      await waitForElement('notifications-menu-item');
-      await clickElement('notifications-menu-item');
-
-      await waitFor(() => {
-        expect(
-          within(screen.getByRole('dialog')).getByText('Turn on'),
-        ).toBeInTheDocument();
-      });
-
-      await act(async () => {
-        fireEvent.click(
-          within(screen.getByRole('dialog')).getByRole('button', {
+          await within(screen.getByRole('dialog')).findByRole('button', {
             name: 'Close',
           }),
         );

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Box, Text } from '../../../../component-library';
 import {
   AlignItems,
@@ -12,8 +12,8 @@ import { useRowContext } from './hook';
 import { ConfirmInfoRowVariant } from './row';
 
 export type ConfirmInfoRowValueDoubleProps = {
-  left: string;
-  right: string;
+  left: ReactNode;
+  right: ReactNode;
 };
 
 const LEFT_TEXT_COLORS = {
@@ -35,8 +35,16 @@ export const ConfirmInfoRowValueDouble = ({
       flexWrap={FlexWrap.Wrap}
       gap={1}
     >
-      <Text color={LEFT_TEXT_COLORS[variant] as TextColor}>{left}</Text>
-      <Text color={TextColor.inherit}>{right}</Text>
+      {typeof left === 'string' ? (
+        <Text color={LEFT_TEXT_COLORS[variant] as TextColor}>{left}</Text>
+      ) : (
+        left
+      )}
+      {typeof right === 'string' ? (
+        <Text color={TextColor.inherit}>{right}</Text>
+      ) : (
+        right
+      )}
     </Box>
   );
 };

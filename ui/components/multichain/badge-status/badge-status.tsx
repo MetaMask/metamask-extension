@@ -1,6 +1,5 @@
-import React from 'react';
-import classNames from 'classnames';
-import { useSelector } from 'react-redux';
+import React, { useMemo } from 'react';
+import classNames from 'clsx';
 import {
   AlignItems,
   BackgroundColor,
@@ -9,63 +8,38 @@ import {
   Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
-  BadgeWrapper,
-  Box,
-  BoxProps,
-} from '../../component-library';
-import { getUseBlockie } from '../../../selectors';
+import { BadgeWrapper, Box, BoxProps } from '../../component-library';
+import { PreferredAvatar } from '../../app/preferred-avatar';
 import Tooltip from '../../ui/tooltip';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
-///: END:ONLY_INCLUDE_IF
+
 import { BadgeStatusProps } from './badge-status.types';
+
+const TooltipStyle = { display: 'flex' };
 
 export const BadgeStatus: React.FC<BadgeStatusProps> = ({
   className = '',
+  hideTooltip = false,
   badgeBackgroundColor = BackgroundColor.backgroundAlternative,
   badgeBorderColor = BorderColor.borderMuted,
   address,
   isConnectedAndNotActive = false,
+  showConnectedStatus = true,
   text,
   ...props
 }): JSX.Element => {
-  const useBlockie = useSelector(getUseBlockie);
+  const tooltipContents = useMemo(() => {
+    let positionObj;
+    if (showConnectedStatus) {
+      positionObj = isConnectedAndNotActive
+        ? { bottom: '-4%', right: '-12%' }
+        : { bottom: '-10%', right: '-20%' };
+    }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const custodianIcon = useSelector((state) =>
-    // @ts-expect-error todo - https://consensyssoftware.atlassian.net/browse/MMI-5367
-    getCustodianIconForAddress(state, address),
-  );
-  ///: END:ONLY_INCLUDE_IF
-
-  return (
-    <Box
-      className={classNames('multichain-badge-status', className)}
-      data-testid="multichain-badge-status"
-      as="button"
-      display={Display.Flex}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.center}
-      backgroundColor={BackgroundColor.transparent}
-      {...(props as BoxProps<'div'>)}
-    >
-      <Tooltip
-        style={{ display: 'flex' }}
-        title={text}
-        data-testid="multichain-badge-status__tooltip"
-        position="bottom"
-      >
-        <BadgeWrapper
-          positionObj={
-            isConnectedAndNotActive
-              ? { bottom: 2, right: 5 }
-              : { bottom: -1, right: 2 }
-          }
-          badge={
+    return (
+      <BadgeWrapper
+        positionObj={positionObj}
+        badge={
+          showConnectedStatus && (
             <Box
               className={classNames('multichain-badge-status__badge', {
                 'multichain-badge-status__badge-not-connected':
@@ -74,52 +48,45 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
               backgroundColor={badgeBackgroundColor}
               borderRadius={BorderRadius.full}
               borderColor={badgeBorderColor}
-              borderWidth={isConnectedAndNotActive ? 2 : 4}
+              borderWidth={2}
             />
-          }
-        >
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-            <AvatarAccount
-              borderColor={BorderColor.transparent}
-              size={AvatarAccountSize.Md}
-              address={address}
-              variant={
-                useBlockie
-                  ? AvatarAccountVariant.Blockies
-                  : AvatarAccountVariant.Jazzicon
-              }
-              marginInlineEnd={2}
-            />
-            ///: END:ONLY_INCLUDE_IF
-          }
+          )
+        }
+      >
+        {<PreferredAvatar address={address} className="flex" />}
+      </BadgeWrapper>
+    );
+  }, [
+    address,
+    badgeBackgroundColor,
+    badgeBorderColor,
+    isConnectedAndNotActive,
+    showConnectedStatus,
+  ]);
 
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-            custodianIcon ? (
-              <img
-                src={custodianIcon}
-                data-testid="custody-logo"
-                className="custody-logo"
-                alt="custody logo"
-              />
-            ) : (
-              <AvatarAccount
-                borderColor={BorderColor.transparent}
-                size={AvatarAccountSize.Md}
-                address={address}
-                variant={
-                  useBlockie
-                    ? AvatarAccountVariant.Blockies
-                    : AvatarAccountVariant.Jazzicon
-                }
-                marginInlineEnd={2}
-              />
-            )
-            ///: END:ONLY_INCLUDE_IF
-          }
-        </BadgeWrapper>
-      </Tooltip>
+  return (
+    <Box
+      className={classNames('multichain-badge-status pr-1', className)}
+      data-testid="multichain-badge-status"
+      as="button"
+      display={Display.Flex}
+      alignItems={AlignItems.center}
+      justifyContent={JustifyContent.center}
+      backgroundColor={BackgroundColor.transparent}
+      {...(props as BoxProps<'div'>)}
+    >
+      {showConnectedStatus && !hideTooltip ? (
+        <Tooltip
+          style={TooltipStyle}
+          title={text}
+          data-testid="multichain-badge-status__tooltip"
+          position="bottom"
+        >
+          {tooltipContents}
+        </Tooltip>
+      ) : (
+        tooltipContents
+      )}
     </Box>
   );
 };

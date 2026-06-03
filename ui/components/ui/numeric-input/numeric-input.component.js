@@ -1,5 +1,5 @@
 import React from 'react';
-import classNames from 'classnames';
+import classNames from 'clsx';
 import PropTypes from 'prop-types';
 import {
   TextColor,
@@ -30,7 +30,7 @@ export default function NumericInput({
         type="number"
         value={value}
         onKeyDown={(e) => {
-          if (!allowDecimals && e.key === '.') {
+          if (!allowDecimals && (e.key === '.' || e.key === ',')) {
             e.preventDefault();
           }
         }}
@@ -40,7 +40,7 @@ export default function NumericInput({
           if (match?.[1]?.length >= 15) {
             return;
           }
-          onChange?.(parseFloat(newValue || 0, 10));
+          onChange?.(newValue);
         }}
         min="0"
         autoFocus={autoFocus}

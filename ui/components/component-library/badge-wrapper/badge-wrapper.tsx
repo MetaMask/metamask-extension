@@ -1,10 +1,9 @@
 import React from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 
 import { Display } from '../../../helpers/constants/design-system';
-import { Box } from '..';
-import type { BoxProps, PolymorphicRef } from '..';
 
+import { Box, type BoxProps, type PolymorphicRef } from '../box';
 import {
   BadgeWrapperPosition,
   BadgeWrapperAnchorElementShape,
@@ -12,15 +11,22 @@ import {
   BadgeWrapperComponent,
 } from './badge-wrapper.types';
 
+/**
+ * @deprecated Please update your code to use `BadgeWrapper` from `@metamask/design-system-react`.
+ * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#from-extension-component-library | Migration Guide}
+ * @see {@link https://metamask.github.io/metamask-design-system/?path=/docs/react-components-badgewrapper--docs | Storybook Documentation}
+ */
 export const BadgeWrapper: BadgeWrapperComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     {
       children,
       badge,
       badgeContainerProps,
-      position = BadgeWrapperPosition.topRight,
+      position = BadgeWrapperPosition.bottomRight,
       positionObj,
-      anchorElementShape = BadgeWrapperAnchorElementShape.circular,
+      anchorElementShape = BadgeWrapperAnchorElementShape.rectangular,
       className = '',
       ...props
     }: BadgeWrapperProps<C>,
@@ -42,6 +48,8 @@ export const BadgeWrapper: BadgeWrapperComponent = React.forwardRef(
             [`mm-badge-wrapper__badge-container--${anchorElementShape}-${position}`]:
               !positionObj,
           },
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           badgeContainerProps?.className || '',
         )}
         style={{ ...positionObj }}

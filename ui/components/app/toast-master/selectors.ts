@@ -1,47 +1,29 @@
-import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
-import { getAlertEnabledness } from '../../../ducks/metamask/metamask';
 import { PRIVACY_POLICY_DATE } from '../../../helpers/constants/privacy-policy';
-import {
-  SURVEY_DATE,
-  SURVEY_END_TIME,
-  SURVEY_START_TIME,
-} from '../../../helpers/constants/survey';
-import { getPermittedAccountsForCurrentTab } from '../../../selectors';
 import { MetaMaskReduxState } from '../../../store/store';
+import { StorageWriteErrorType } from '../../../../shared/constants/app-state';
 import { getIsPrivacyToastRecent } from './utils';
 
-// TODO: get this into one of the larger definitions of state type
-type State = Omit<MetaMaskReduxState, 'appState'> & {
-  appState: {
-    showNftDetectionEnablementToast?: boolean;
-  };
-  metamask: {
-    newPrivacyPolicyToastClickedOrClosed?: boolean;
-    newPrivacyPolicyToastShownDate?: number;
-    onboardingDate?: number;
-    showNftDetectionEnablementToast?: boolean;
-    surveyLinkLastClickedOrClosed?: number;
-    switchedNetworkNeverShowMessage?: boolean;
-  };
+type State = {
+  appState: Partial<
+    Pick<MetaMaskReduxState['appState'], 'showInfuraSwitchToast'>
+  >;
+  metamask: Partial<
+    Pick<
+      MetaMaskReduxState['metamask'],
+      | 'newPrivacyPolicyToastClickedOrClosed'
+      | 'newPrivacyPolicyToastShownDate'
+      | 'onboardingDate'
+      | 'shieldEndingToastLastClickedOrClosed'
+      | 'shieldPausedToastLastClickedOrClosed'
+      | 'participateInMetaMetrics'
+      | 'remoteFeatureFlags'
+      | 'pna25Acknowledged'
+      | 'completedOnboarding'
+      | 'storageWriteErrorType'
+      | 'isUnlocked'
+    >
+  >;
 };
-
-/**
- * Determines if the survey toast should be shown based on the current time, survey start and end times, and whether the survey link was last clicked or closed.
- *
- * @param state - The application state containing the necessary survey data.
- * @returns True if the current time is between the survey start and end times and the survey link was not last clicked or closed. False otherwise.
- */
-export function selectShowSurveyToast(state: State): boolean {
-  if (state.metamask?.surveyLinkLastClickedOrClosed) {
-    return false;
-  }
-
-  const startTime = new Date(`${SURVEY_DATE} ${SURVEY_START_TIME}`).getTime();
-  const endTime = new Date(`${SURVEY_DATE} ${SURVEY_END_TIME}`).getTime();
-  const now = Date.now();
-
-  return now > startTime && now < endTime;
-}
 
 /**
  * Determines if the privacy policy toast should be shown based on the current date and whether the new privacy policy toast was clicked or closed.
@@ -49,9 +31,9 @@ export function selectShowSurveyToast(state: State): boolean {
  * @param state - The application state containing the privacy policy data.
  * @returns Boolean is True if the toast should be shown, and the number is the date the toast was last shown.
  */
-export function selectShowPrivacyPolicyToast(state: State): {
+export function selectShowPrivacyPolicyToast(state: Pick<State, 'metamask'>): {
   showPrivacyPolicyToast: boolean;
-  newPrivacyPolicyToastShownDate?: number;
+  newPrivacyPolicyToastShownDate?: number | null;
 } {
   const {
     newPrivacyPolicyToastClickedOrClosed,
@@ -73,36 +55,119 @@ export function selectShowPrivacyPolicyToast(state: State): {
   return { showPrivacyPolicyToast, newPrivacyPolicyToastShownDate };
 }
 
-export function selectNftDetectionEnablementToast(state: State): boolean {
-  return Boolean(state.appState?.showNftDetectionEnablementToast);
-}
-
-// If there is more than one connected account to activeTabOrigin,
-// *BUT* the current account is not one of them, show the banner
-export function selectShowConnectAccountToast(
-  state: State,
-  account: InternalAccount,
-): boolean {
-  const allowShowAccountSetting = getAlertEnabledness(state).unconnectedAccount;
-  const connectedAccounts = getPermittedAccountsForCurrentTab(state);
-  const isEvmAccount = isEvmAccountType(account?.type);
-
-  return (
-    allowShowAccountSetting &&
-    account &&
-    state.activeTab?.origin &&
-    isEvmAccount &&
-    connectedAccounts.length > 0 &&
-    !connectedAccounts.some((address) => address === account.address)
-  );
-}
-
 /**
- * Retrieves user preference to never see the "Switched Network" toast
+ * Retrieves user preference to see the "Updated to MetaMask default" toast
  *
  * @param state - Redux state object.
  * @returns Boolean preference value
  */
-export function selectSwitchedNetworkNeverShowMessage(state: State): boolean {
-  return Boolean(state.metamask.switchedNetworkNeverShowMessage);
+export function selectShowInfuraSwitchToast(
+  state: Pick<State, 'appState'>,
+): boolean {
+  return Boolean(state.appState.showInfuraSwitchToast);
+}
+
+/**
+ * Retrieves user preference to see the "Shield Payment Declined" toast
+ *
+ * @param state - Redux state object.
+ * @returns Boolean preference value
+ */
+export function selectShowShieldPausedToast(
+  state: Pick<State, 'metamask'>,
+): boolean {
+  return !state.metamask.shieldPausedToastLastClickedOrClosed;
+}
+
+/**
+ * Retrieves user preference to see the "Shield Coverage Ending" toast
+ *
+ * @param state - Redux state object.
+ * @returns Boolean preference value
+ */
+export function selectShowShieldEndingToast(
+  state: Pick<State, 'metamask'>,
+): boolean {
+  return !state.metamask.shieldEndingToastLastClickedOrClosed;
+}
+
+/**
+ * Determines if the storage error toast should be shown based on:
+ * - storageWriteErrorType is set (not null/undefined, indicates an error occurred)
+ * - User has completed onboarding
+ * - Wallet is unlocked
+ *
+ * @param state - Redux state object.
+ * @returns Boolean indicating whether to show the toast
+ */
+export function selectShowStorageErrorToast(
+  state: Pick<State, 'metamask'>,
+): boolean {
+  const { storageWriteErrorType, completedOnboarding, isUnlocked } =
+    state.metamask || {};
+
+  // Check for truthy value to handle both null and undefined as "no error"
+  return Boolean(storageWriteErrorType && completedOnboarding && isUnlocked);
+}
+
+/**
+ * Returns the type of storage write error that occurred.
+ * Used to show specific error messages (e.g., disk space vs default error).
+ *
+ * @param state - Redux state object.
+ * @returns The storage write error type or null if no error
+ */
+export function selectStorageWriteErrorType(
+  state: Pick<State, 'metamask'>,
+): StorageWriteErrorType | null {
+  return state.metamask?.storageWriteErrorType ?? null;
+}
+
+/**
+ * Whether to show the one-time side panel migration toast.
+ * The flag is set by migration 204 for users migrated from popup to side panel.
+ *
+ * @param state - Redux state object.
+ * @returns Boolean preference value
+ */
+export function selectShowSidePanelMigrationToast(
+  state: Pick<State, 'metamask'>,
+): boolean {
+  return Boolean(
+    (state.metamask as Record<string, unknown>)?.showSidePanelMigrationToast,
+  );
+}
+
+/**
+ * Determines if the PNA25 banner should be shown based on:
+ * - User has completed onboarding (completedOnboarding === true)
+ * - User has opted into metrics (participateInMetaMetrics === true)
+ * - User hasn't acknowledged the banner yet (pna25Acknowledged === false)
+ *
+ * Regular new users: Go through metametrics page → pna25Acknowledged = true → don't see banner
+ * Social login users: Skip metametrics page → pna25Acknowledged = false → see banner
+ * Existing users: pna25Acknowledged = false (default) → see banner
+ *
+ * @param state - The application state containing the banner data.
+ * @returns Boolean indicating whether to show the banner
+ */
+export function selectShowPna25Modal(state: Pick<State, 'metamask'>): boolean {
+  const { completedOnboarding, participateInMetaMetrics, pna25Acknowledged } =
+    state.metamask || {};
+
+  // Only show to users who have completed onboarding
+  if (!completedOnboarding) {
+    return false; // User hasn't completed onboarding yet
+  }
+
+  if (participateInMetaMetrics !== true) {
+    return false; // User hasn't opted into metrics
+  }
+
+  if (pna25Acknowledged === true) {
+    return false; // User already acknowledged
+  }
+
+  // Only show banner if explicitly false (existing users who haven't acknowledged)
+  return pna25Acknowledged === false;
 }

@@ -22,6 +22,7 @@
 //
 // //////////////////////////////////////////////////////////////////////////////
 
+const { deepStrictEqual, AssertionError } = require('node:assert');
 const fs = require('fs');
 const { promisify } = require('util');
 const log = require('loglevel');
@@ -31,6 +32,8 @@ const localeIndex = require('../app/_locales/index.json');
 const {
   compareLocalesForMissingDescriptions,
   compareLocalesForMissingItems,
+  compareLocalesForUnexpectedReplacementKeys,
+  getMessagesWithInvalidReplacementKeys,
   getLocale,
   getLocalePath,
 } = require('./lib/locales');
@@ -117,6 +120,31 @@ async function writeLocale(code, locale) {
 
 async function verifyLocale(code) {
   const englishLocale = await getLocale('en');
+  let failed = false;
+
+  try {
+    // `en_GB` is a special case, added for compliance reasons
+    // Not used in-app. Should be identical to `en`.
+    const englishGbLocale = await getLocale('en_GB');
+    deepStrictEqual(
+      englishLocale,
+      englishGbLocale,
+      'en_GB should be identical to en',
+    );
+  } catch (error) {
+    if (!(error instanceof AssertionError)) {
+      throw error;
+    }
+
+    if (fix) {
+      console.info('Differences detected in `en_GB` local; overwriting');
+      await writeLocale('en_GB', englishLocale);
+    } else {
+      console.error(error);
+    }
+    failed = true;
+  }
+
   const targetLocale = await getLocale(code);
 
   const extraItems = compareLocalesForMissingItems({
@@ -147,7 +175,47 @@ async function verifyLocale(code) {
     });
   }
 
-  if (extraItems.length > 0 || missingDescriptions.length > 0) {
+  const invalidReplacementKeys =
+    getMessagesWithInvalidReplacementKeys(targetLocale);
+
+  if (invalidReplacementKeys.length) {
+    console.log(
+      `**${code}**: ${invalidReplacementKeys.length} messages with invalid replacement keys`,
+    );
+    log.info('Messages with invalid replacement keys:');
+    invalidReplacementKeys.forEach(function ({
+      key,
+      invalidReplacementKeys: invalidKeys,
+    }) {
+      log.info(`  - [ ] ${key} (${invalidKeys.join(', ')})`);
+    });
+  }
+
+  const messagesWithUnexpectedReplacementKeys =
+    compareLocalesForUnexpectedReplacementKeys({
+      englishLocale,
+      targetLocale,
+    });
+
+  if (messagesWithUnexpectedReplacementKeys.length) {
+    console.log(
+      `**${code}**: ${messagesWithUnexpectedReplacementKeys.length} messages with unexpected replacement keys`,
+    );
+    log.info('Messages with unexpected replacement keys:');
+    messagesWithUnexpectedReplacementKeys.forEach(function ({
+      key,
+      unexpectedReplacementKeys: unexpectedKeys,
+    }) {
+      log.info(`  - [ ] ${key} (${unexpectedKeys.join(', ')})`);
+    });
+  }
+
+  if (
+    extraItems.length > 0 ||
+    missingDescriptions.length > 0 ||
+    invalidReplacementKeys.length > 0 ||
+    messagesWithUnexpectedReplacementKeys.length > 0
+  ) {
     if (fix) {
       const newLocale = { ...targetLocale };
       for (const item of extraItems) {
@@ -161,14 +229,16 @@ async function verifyLocale(code) {
       }
       await writeLocale(code, newLocale);
     }
-    return true;
+    failed = true;
   }
 
-  return false;
+  return failed;
 }
 
 async function verifyEnglishLocale() {
   const englishLocale = await getLocale('en');
+  const invalidReplacementKeys =
+    getMessagesWithInvalidReplacementKeys(englishLocale);
   // As time allows we'll switch to only performing the strict search.
   // In the meantime we'll use glob to specify which paths can be strict searched
   // and gradually phase out the key based search
@@ -241,16 +311,25 @@ async function verifyEnglishLocale() {
     'appName',
     'appNameBeta',
     'appNameFlask',
-    'appNameMmi',
     'appDescription',
     'rejected',
     'signed',
+    // used via CSS
+    'CSS_loadingTakingTooLongMessageText',
+    'CSS_loadingTakingTooLongActionText',
+  ];
+
+  const messageExceptionPatterns = [
+    /^activity_[a-zA-Z0-9]+_(failed|pending|success)_(description|title)$/u,
+    /^activity_fallback_(description|title)$/u,
   ];
 
   const englishMessages = Object.keys(englishLocale);
   const unusedMessages = englishMessages.filter(
     (message) =>
-      !messageExceptions.includes(message) && !usedMessages.has(message),
+      !messageExceptions.includes(message) &&
+      !messageExceptionPatterns.some((pattern) => pattern.test(message)) &&
+      !usedMessages.has(message),
   );
 
   if (unusedMessages.length) {
@@ -268,7 +347,24 @@ async function verifyEnglishLocale() {
     });
   }
 
-  if (!unusedMessages.length && !templateUsage.length) {
+  if (invalidReplacementKeys.length) {
+    console.log(
+      `**en**: ${invalidReplacementKeys.length} messages with invalid replacement keys`,
+    );
+    log.info('Messages with invalid replacement keys:');
+    invalidReplacementKeys.forEach(function ({
+      key,
+      invalidReplacementKeys: invalidKeys,
+    }) {
+      log.info(`  - [ ] ${key} (${invalidKeys.join(', ')})`);
+    });
+  }
+
+  if (
+    !unusedMessages.length &&
+    !templateUsage.length &&
+    !invalidReplacementKeys.length
+  ) {
     return false; // failed === false
   }
 

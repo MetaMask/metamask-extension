@@ -1,236 +1,172 @@
-import React from 'react';
 import * as reactRedux from 'react-redux';
-import { Provider } from 'react-redux';
-import { renderHook } from '@testing-library/react-hooks';
 import sinon from 'sinon';
-import { MemoryRouter } from 'react-router-dom';
-import {
-  TransactionStatus,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 import mockState from '../../test/data/mock-state.json';
-import configureStore from '../store/store';
 import transactions from '../../test/data/transaction-data.json';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import messages from '../../app/_locales/en/messages.json';
+import { enLocale as messages } from '../../test/lib/i18n-helpers';
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../helpers/constants/routes';
-import { TransactionGroupCategory } from '../../shared/constants/transaction';
-import { formatDateWithYearContext } from '../helpers/utils/util';
+import { KeyringType } from '../../shared/constants/keyring';
+import { createMockInternalAccount } from '../../test/jest/mocks';
 import { getMessage } from '../helpers/utils/i18n-helper';
 import { mockNetworkState } from '../../test/stub/networks';
 import { CHAIN_IDS } from '../../shared/constants/network';
+import { renderHookWithProvider } from '../../test/lib/render-helpers-navigate';
+import { MERKL_DISTRIBUTOR_ADDRESS } from '../components/app/musd/constants';
 import * as i18nhooks from './useI18nContext';
 import * as useTokenFiatAmountHooks from './useTokenFiatAmount';
 import { useTransactionDisplayData } from './useTransactionDisplayData';
 
 const expectedResults = [
   {
-    title: 'Send',
-    category: TransactionGroupCategory.send,
-    subtitle: 'To: 0xffe5b...91a97',
-    subtitleContainsOrigin: false,
-    date: formatDateWithYearContext(1589314601567),
+    title: 'Sent',
     primaryCurrency: '-1 ETH',
-    senderAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     recipientAddress: '0xffe5bc4e8f1f969934d773fa67da095d2e491a97',
     secondaryCurrency: '-1 ETH',
     isPending: false,
-    displayedStatusKey: TransactionStatus.confirmed,
-    isSubmitted: false,
   },
   {
-    title: 'Send',
-    category: TransactionGroupCategory.send,
-    subtitle: 'To: 0x0ccc8...f8848',
-    subtitleContainsOrigin: false,
-    date: formatDateWithYearContext(1589314355872),
+    title: 'Sent',
     primaryCurrency: '-2 ETH',
-    senderAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     recipientAddress: '0x0ccc8aeeaf5ce790f3b448325981a143fdef8848',
     secondaryCurrency: '-2 ETH',
     isPending: false,
-    displayedStatusKey: TransactionStatus.confirmed,
   },
   {
-    title: 'Send',
-    category: TransactionGroupCategory.send,
-    subtitle: 'To: 0xffe5b...91a97',
-    subtitleContainsOrigin: false,
-    date: formatDateWithYearContext(1589314345433),
+    title: 'Sent',
     primaryCurrency: '-2 ETH',
-    senderAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     recipientAddress: '0xffe5bc4e8f1f969934d773fa67da095d2e491a97',
     secondaryCurrency: '-2 ETH',
     isPending: false,
-    displayedStatusKey: TransactionStatus.confirmed,
   },
   {
-    title: 'Receive',
-    category: TransactionGroupCategory.receive,
-    subtitle: 'From: 0x31b98...84523',
-    subtitleContainsOrigin: false,
-    date: formatDateWithYearContext(1589314295000),
+    title: 'Received',
     primaryCurrency: '18.75 ETH',
-    senderAddress: '0x31b98d14007bdee637298086988a0bbd31184523',
     recipientAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     secondaryCurrency: '18.75 ETH',
     isPending: false,
-    displayedStatusKey: TransactionStatus.confirmed,
   },
   {
-    title: 'Receive',
-    category: TransactionGroupCategory.receive,
-    subtitle: 'From: 0x9eca6...6a149',
-    subtitleContainsOrigin: false,
-    date: formatDateWithYearContext(1588972833000),
+    title: 'Received',
     primaryCurrency: '0 ETH',
-    senderAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     recipientAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     secondaryCurrency: '0 ETH',
     isPending: false,
-    displayedStatusKey: TransactionStatus.confirmed,
   },
   {
-    title: 'Receive',
-    category: TransactionGroupCategory.receive,
-    subtitle: 'From: 0xee014...efebb',
-    subtitleContainsOrigin: false,
-    date: formatDateWithYearContext(1585087013000),
+    title: 'Received',
     primaryCurrency: '1 ETH',
-    senderAddress: '0xee014609ef9e09776ac5fe00bdbfef57bcdefebb',
     recipientAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     secondaryCurrency: '1 ETH',
     isPending: false,
-    displayedStatusKey: TransactionStatus.confirmed,
   },
   {
     title: 'Swap ETH to ABC',
-    category: TransactionType.swap,
-    subtitle: '',
-    subtitleContainsOrigin: false,
-    date: formatDateWithYearContext(1585088013000),
     primaryCurrency: '+1 ABC',
-    senderAddress: '0xee014609ef9e09776ac5fe00bdbfef57bcdefebb',
     recipientAddress: '0xabca64466f257793eaa52fcfff5066894b76a149',
-    secondaryCurrency: undefined,
     isPending: false,
-    displayedStatusKey: TransactionStatus.confirmed,
   },
   {
     title: 'Contract deployment',
-    category: TransactionGroupCategory.interaction,
-    subtitle: 'metamask.github.io',
-    subtitleContainsOrigin: true,
-    date: formatDateWithYearContext(1585088013000),
     primaryCurrency: '-0 ETH',
-    senderAddress: '0xee014609ef9e09776ac5fe00bdbfef57bcdefebb',
     recipientAddress: undefined,
     secondaryCurrency: '-0 ETH',
     isPending: false,
-    displayedStatusKey: TransactionStatus.confirmed,
   },
   {
     title: 'Safe transfer from',
-    category: TransactionGroupCategory.send,
-    subtitle: 'To: 0xe7d52...0dd98',
-    subtitleContainsOrigin: true,
     primaryCurrency: '-0 ETH',
-    senderAddress: '0x806627172af48bd5b0765d3449a7def80d6576ff',
     recipientAddress: '0xe7d522230eff653bb0a9b4385f0be0815420dd98',
     secondaryCurrency: '-0 ETH',
     isPending: false,
-    displayedStatusKey: TransactionStatus.confirmed,
   },
   {
     title: 'Approve ABC spending cap',
-    category: TransactionGroupCategory.approval,
-    subtitle: `metamask.github.io`,
-    subtitleContainsOrigin: true,
     primaryCurrency: '0.00000000000005 ABC',
-    senderAddress: '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc',
     recipientAddress: '0xabca64466f257793eaa52fcfff5066894b76a149',
     secondaryCurrency: undefined,
-    displayedStatusKey: TransactionStatus.confirmed,
     isPending: false,
   },
   {
-    title: 'Send BAT as ETH',
-    category: TransactionType.swapAndSend,
-    subtitle: 'metamask',
-    subtitleContainsOrigin: true,
-    date: formatDateWithYearContext(1585088013000),
+    title: 'Sent BAT as ETH',
     primaryCurrency: '-33.425656732428330864 BAT',
-    senderAddress: '0x0a985a957b490f4d05bef05bc7ec556dd8535946',
     recipientAddress: '0xc6f6ca03d790168758285264bcbf7fb30d27322b',
     secondaryCurrency: undefined,
     isPending: false,
-    displayedStatusKey: TransactionStatus.confirmed,
   },
   {
-    title: 'Send USDC as DAI',
-    category: TransactionType.swapAndSend,
-    subtitle: 'metamask',
-    subtitleContainsOrigin: true,
-    date: formatDateWithYearContext(1585088013000),
+    title: 'Sent USDC as DAI',
     primaryCurrency: '-5 USDC',
-    senderAddress: '0x141d32a89a1e0a5ef360034a2f60a4b917c18838',
     recipientAddress: '0x141d32a89a1e0a5ef360034a2f60a4b917c18838',
     secondaryCurrency: undefined,
     isPending: false,
-    displayedStatusKey: TransactionStatus.confirmed,
   },
   {
-    title: 'Send BNB as USDC',
-    category: TransactionType.swapAndSend,
-    subtitle: 'metamask',
-    subtitleContainsOrigin: true,
-    date: formatDateWithYearContext(1585088013000),
+    title: 'Sent BNB as USDC',
     primaryCurrency: '-0.05 BNB',
-    senderAddress: '0x141d32a89a1e0a5ef360034a2f60a4b917c18838',
     recipientAddress: '0x141d32a89a1e0a5ef360034a2f60a4b917c18838',
     secondaryCurrency: undefined,
     isPending: false,
-    displayedStatusKey: TransactionStatus.confirmed,
+  },
+  {
+    title: 'Sent ABC',
+    primaryCurrency: '-1.234 ABC',
+    recipientAddress: '0xabca64466f257793eaa52fcfff5066894b76a149',
+    secondaryCurrency: undefined,
+    isPending: false,
   },
 ];
 
 let useI18nContext, useTokenFiatAmount;
+const ADDRESS_MOCK = '0xabc';
+const NAME_MOCK = 'Account 1';
 
-const renderHookWithRouter = (cb, tokenAddress) => {
-  const initialEntries = [
-    tokenAddress ? `${ASSET_ROUTE}/${tokenAddress}` : DEFAULT_ROUTE,
-  ];
+const MOCK_INTERNAL_ACCOUNT = createMockInternalAccount({
+  address: ADDRESS_MOCK,
+  name: NAME_MOCK,
+  keyringType: KeyringType.hd,
+  snapOptions: undefined,
+});
 
-  const defaultState = {
-    ...mockState,
-    metamask: {
-      ...mockState.metamask,
-      completeOnboarding: true,
-      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-      currentCurrency: 'ETH',
-      useCurrencyRateCheck: false, // to force getShouldShowFiat to return false
-      preferences: {
-        getShowFiatInTestnets: false,
-      },
-      allNfts: [],
-      tokens: [
-        {
-          address: '0xabca64466f257793eaa52fcfff5066894b76a149',
-          symbol: 'ABC',
-          decimals: 18,
-        },
-      ],
+const getMockState = () => ({
+  ...mockState,
+  metamask: {
+    ...mockState.metamask,
+    completeOnboarding: true,
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+    currentCurrency: 'ETH',
+    useCurrencyRateCheck: false, // to force getShouldShowFiat to return false
+    preferences: {
+      getShowFiatInTestnets: false,
     },
-  };
-
-  const wrapper = ({ children }) => (
-    <MemoryRouter initialEntries={initialEntries}>
-      <Provider store={configureStore(defaultState)}>{children}</Provider>
-    </MemoryRouter>
-  );
-  return renderHook(cb, { wrapper });
-};
+    allNfts: [],
+    internalAccounts: {
+      accounts: { [MOCK_INTERNAL_ACCOUNT.id]: MOCK_INTERNAL_ACCOUNT },
+      selectedAccount: MOCK_INTERNAL_ACCOUNT.id,
+    },
+    allTokens: {
+      [CHAIN_IDS.MAINNET]: {
+        [ADDRESS_MOCK]: [
+          {
+            address: '0xabca64466f257793eaa52fcfff5066894b76a149',
+            symbol: 'ABC',
+            decimals: 18,
+          },
+        ],
+      },
+    },
+    tokensChainsCache: {
+      '0x4': {
+        data: {
+          '0xabca64466f257793eaa52fcfff5066894b76a149': {
+            address: '0xabca64466f257793eaa52fcfff5066894b76a149',
+            symbol: 'ABC',
+            decimals: 18,
+          },
+        },
+      },
+    },
+  },
+});
 
 describe('useTransactionDisplayData', () => {
   const dispatch = sinon.spy();
@@ -257,78 +193,339 @@ describe('useTransactionDisplayData', () => {
       const expected = expectedResults[idx];
       const tokenAddress =
         transactionGroup.primaryTransaction?.destinationTokenAddress;
+      const pathname = tokenAddress
+        ? `${ASSET_ROUTE}/${tokenAddress}`
+        : DEFAULT_ROUTE;
+
       it(`should return a title of ${expected.title}`, () => {
-        const { result } = renderHookWithRouter(
+        const { result } = renderHookWithProvider(
           () => useTransactionDisplayData(transactionGroup),
-          tokenAddress,
+          getMockState(),
+          pathname,
         );
         expect(result.current.title).toStrictEqual(expected.title);
       });
-      it(`should return a subtitle of ${expected.subtitle}`, () => {
-        const { result } = renderHookWithRouter(
-          () => useTransactionDisplayData(transactionGroup),
-          tokenAddress,
-        );
-        expect(result.current.subtitle).toStrictEqual(expected.subtitle);
-      });
-      it(`should return a category of ${expected.category}`, () => {
-        const { result } = renderHookWithRouter(
-          () => useTransactionDisplayData(transactionGroup),
-          tokenAddress,
-        );
-        expect(result.current.category).toStrictEqual(expected.category);
-      });
+
       it(`should return a primaryCurrency of ${expected.primaryCurrency}`, () => {
-        const { result } = renderHookWithRouter(
+        const { result } = renderHookWithProvider(
           () => useTransactionDisplayData(transactionGroup),
-          tokenAddress,
+          getMockState(),
+          pathname,
         );
         expect(result.current.primaryCurrency).toStrictEqual(
           expected.primaryCurrency,
         );
       });
-      it(`should return a secondaryCurrency of ${expected.secondaryCurrency}`, () => {
-        const { result } = renderHookWithRouter(
+
+      it(`should return a secondaryCurrency of ${expected.secondaryCurrency} for ${transactionGroup.primaryTransaction.type}`, () => {
+        const { result } = renderHookWithProvider(
           () => useTransactionDisplayData(transactionGroup),
-          tokenAddress,
+          getMockState(),
+          pathname,
         );
         expect(result.current.secondaryCurrency).toStrictEqual(
           expected.secondaryCurrency,
         );
       });
-      it(`should return a displayedStatusKey of ${expected.displayedStatusKey}`, () => {
-        const { result } = renderHookWithRouter(
-          () => useTransactionDisplayData(transactionGroup),
-          tokenAddress,
-        );
-        expect(result.current.displayedStatusKey).toStrictEqual(
-          expected.displayedStatusKey,
-        );
-      });
+
       it(`should return a recipientAddress of ${expected.recipientAddress}`, () => {
-        const { result } = renderHookWithRouter(
+        const { result } = renderHookWithProvider(
           () => useTransactionDisplayData(transactionGroup),
-          tokenAddress,
+          getMockState(),
+          pathname,
         );
         expect(result.current.recipientAddress).toStrictEqual(
           expected.recipientAddress,
         );
       });
-      it(`should return a senderAddress of ${expected.senderAddress}`, () => {
-        const { result } = renderHookWithRouter(
-          () => useTransactionDisplayData(transactionGroup),
-          tokenAddress,
-        );
-        expect(result.current.senderAddress).toStrictEqual(
-          expected.senderAddress,
-        );
-      });
     });
   });
+
   it('should return an appropriate object', () => {
-    const { result } = renderHookWithRouter(() =>
-      useTransactionDisplayData(transactions[0]),
+    const { result } = renderHookWithProvider(
+      () => useTransactionDisplayData(transactions[0]),
+      getMockState(),
+      DEFAULT_ROUTE,
     );
     expect(result.current).toStrictEqual(expectedResults[0]);
+  });
+
+  it('formats metamaskPay targetFiat secondary in USD when user prefers BRL', () => {
+    const usdcArbitrum = '0xaf88d065e77c8cC2239327C5EDb3A432268e5831';
+    const perpsDepositGroup = {
+      nonce: '0x1',
+      initialTransaction: {
+        id: 'perps-deposit-fiat-test',
+        time: 1700000000000,
+        status: 'confirmed',
+        chainId: CHAIN_IDS.ARBITRUM,
+        txParams: {
+          from: '0x9eca64466f257793eaa52fcfff5066894b76a149',
+          to: usdcArbitrum,
+          value: '0x0',
+          data: '0x',
+        },
+        type: TransactionType.perpsDeposit,
+        metamaskPay: {
+          chainId: CHAIN_IDS.BASE,
+          tokenAddress: '0x0000000000000000000000000000000000000000',
+          targetFiat: '1.00',
+        },
+      },
+      primaryTransaction: {
+        id: 'perps-deposit-fiat-test',
+        time: 1700000000000,
+        status: 'confirmed',
+        chainId: CHAIN_IDS.ARBITRUM,
+        txParams: {
+          from: '0x9eca64466f257793eaa52fcfff5066894b76a149',
+          to: usdcArbitrum,
+          value: '0x0',
+          data: '0x',
+        },
+        type: TransactionType.perpsDeposit,
+        metamaskPay: {
+          chainId: CHAIN_IDS.BASE,
+          tokenAddress: '0x0000000000000000000000000000000000000000',
+          targetFiat: '1.00',
+        },
+      },
+      transactions: [],
+      hasRetried: false,
+      hasCancelled: false,
+    };
+
+    const { result } = renderHookWithProvider(
+      () => useTransactionDisplayData(perpsDepositGroup),
+      {
+        ...getMockState(),
+        metamask: {
+          ...getMockState().metamask,
+          currentCurrency: 'brl',
+        },
+      },
+      DEFAULT_ROUTE,
+    );
+
+    expect(result.current.secondaryCurrency).toMatch(/\$1[.,]00/u);
+    expect(result.current.secondaryCurrency).not.toMatch(/R\$/u);
+  });
+
+  it('should return "Perps withdraw" title for a perpsWithdraw transaction', () => {
+    const perpsWithdrawGroup = {
+      nonce: '0x1',
+      initialTransaction: {
+        id: 'perps-withdraw-test',
+        time: 1700000000000,
+        status: 'confirmed',
+        chainId: CHAIN_IDS.MAINNET,
+        txParams: {
+          from: '0x9eca64466f257793eaa52fcfff5066894b76a149',
+          to: '0xabca64466f257793eaa52fcfff5066894b76a149',
+          value: '0x0',
+          data: '0xa9059cbb',
+        },
+        type: 'perpsWithdraw',
+        metamaskPay: {
+          chainId: CHAIN_IDS.MAINNET,
+          tokenAddress: '0xabca64466f257793eaa52fcfff5066894b76a149',
+        },
+      },
+      primaryTransaction: {
+        id: 'perps-withdraw-test',
+        time: 1700000000000,
+        status: 'confirmed',
+        chainId: CHAIN_IDS.MAINNET,
+        txParams: {
+          from: '0x9eca64466f257793eaa52fcfff5066894b76a149',
+          to: '0xabca64466f257793eaa52fcfff5066894b76a149',
+          value: '0x0',
+          data: '0xa9059cbb',
+        },
+        type: 'perpsWithdraw',
+      },
+      transactions: [],
+      hasRetried: false,
+      hasCancelled: false,
+    };
+
+    const { result } = renderHookWithProvider(
+      () => useTransactionDisplayData(perpsWithdrawGroup),
+      getMockState(),
+      DEFAULT_ROUTE,
+    );
+    expect(result.current.title).toBe('Perps withdraw');
+  });
+
+  describe('post-quote pay flows (e.g. Perps Withdraw)', () => {
+    const NATIVE_ADDRESS = '0x0000000000000000000000000000000000000000';
+    const ERC20_ADDRESS = '0xdac17f958d2ee523a2206206994597c13d831ec7';
+
+    function buildPostQuoteGroup({ tokenAddress, targetFiat }) {
+      const tx = {
+        id: 'perps-withdraw-post-quote',
+        time: 1700000000000,
+        status: 'confirmed',
+        chainId: CHAIN_IDS.MAINNET,
+        txParams: {
+          from: '0x9eca64466f257793eaa52fcfff5066894b76a149',
+          to: '0xabca64466f257793eaa52fcfff5066894b76a149',
+          value: '0x0',
+          data: '0xa9059cbb',
+        },
+        type: 'perpsWithdraw',
+        metamaskPay: {
+          isPostQuote: true,
+          chainId: CHAIN_IDS.MAINNET,
+          tokenAddress,
+          targetFiat,
+        },
+      };
+      return {
+        nonce: '0x1',
+        initialTransaction: tx,
+        primaryTransaction: tx,
+        transactions: [],
+        hasRetried: false,
+        hasCancelled: false,
+      };
+    }
+
+    function buildPostQuoteState({ withErc20Token, withMarketData } = {}) {
+      const base = getMockState();
+      return {
+        ...base,
+        metamask: {
+          ...base.metamask,
+          currencyRates: {
+            ETH: { conversionRate: 3000, usdConversionRate: 3000 },
+          },
+          marketData: withMarketData
+            ? {
+                [CHAIN_IDS.MAINNET]: {
+                  // marketData is keyed by checksummed address
+                  '0xdAC17F958D2ee523a2206206994597C13D831ec7': {
+                    price: 0.000333,
+                  },
+                },
+              }
+            : {},
+          tokensChainsCache: withErc20Token
+            ? {
+                ...base.metamask.tokensChainsCache,
+                [CHAIN_IDS.MAINNET]: {
+                  data: {
+                    [ERC20_ADDRESS]: {
+                      address: ERC20_ADDRESS,
+                      symbol: 'USDT',
+                      decimals: 6,
+                    },
+                  },
+                },
+              }
+            : base.metamask.tokensChainsCache,
+        },
+      };
+    }
+
+    it('renders destination native symbol and derived amount when target is native', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          useTransactionDisplayData(
+            buildPostQuoteGroup({
+              tokenAddress: NATIVE_ADDRESS,
+              targetFiat: '0.27',
+            }),
+          ),
+        buildPostQuoteState(),
+        DEFAULT_ROUTE,
+      );
+
+      // 0.27 / 3000 = 0.00009 -> toPrecision(4) = "0.00009000"
+      expect(result.current.primaryCurrency).toBe('0.00009000 ETH');
+    });
+
+    it('renders destination ERC-20 symbol and derived amount when target is an ERC-20 with market data', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          useTransactionDisplayData(
+            buildPostQuoteGroup({
+              tokenAddress: ERC20_ADDRESS,
+              targetFiat: '100',
+            }),
+          ),
+        buildPostQuoteState({ withErc20Token: true, withMarketData: true }),
+        DEFAULT_ROUTE,
+      );
+
+      // tokenUsdRate = 0.000333 * 3000 = 0.999
+      // 100 / 0.999 ≈ 100.10 -> toFixed(2) = "100.10"
+      expect(result.current.primaryCurrency).toBe('100.10 USDT');
+    });
+
+    it('renders the USD value (and no destination-token symbol) when the destination token rate is unavailable', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          useTransactionDisplayData(
+            buildPostQuoteGroup({
+              tokenAddress: ERC20_ADDRESS,
+              targetFiat: '50',
+            }),
+          ),
+        buildPostQuoteState({ withErc20Token: true }),
+        DEFAULT_ROUTE,
+      );
+
+      // No marketData -> tokenUsdRate = 0 -> receivedAmount undefined.
+      // The fallback uses the USD-pinned formatter for both primary and
+      // secondary, bypassing `useCurrencyDisplay`'s default behavior of
+      // appending the chain native ticker (which would misleadingly
+      // render "$50" as "50 ETH" / "50 BNB").
+      expect(result.current.primaryCurrency).toBe('$50.00');
+      expect(result.current.primaryCurrency).not.toContain('USDT');
+      expect(result.current.primaryCurrency).not.toContain('ETH');
+    });
+  });
+
+  it('should return "Claim Bonus" title for a contractInteraction sent to the Merkl distributor address', () => {
+    const merklClaimGroup = {
+      nonce: '0x1',
+      initialTransaction: {
+        id: 'merkl-claim-test',
+        time: 1700000000000,
+        status: 'confirmed',
+        chainId: '0xe708',
+        txParams: {
+          from: '0x9eca64466f257793eaa52fcfff5066894b76a149',
+          to: MERKL_DISTRIBUTOR_ADDRESS,
+          value: '0x0',
+          data: '0x71ee95c0',
+        },
+        type: 'contractInteraction',
+      },
+      primaryTransaction: {
+        id: 'merkl-claim-test',
+        time: 1700000000000,
+        status: 'confirmed',
+        chainId: '0xe708',
+        txParams: {
+          from: '0x9eca64466f257793eaa52fcfff5066894b76a149',
+          to: MERKL_DISTRIBUTOR_ADDRESS,
+          value: '0x0',
+          data: '0x71ee95c0',
+        },
+        type: 'contractInteraction',
+      },
+      transactions: [],
+      hasRetried: false,
+      hasCancelled: false,
+    };
+
+    const { result } = renderHookWithProvider(
+      () => useTransactionDisplayData(merklClaimGroup),
+      getMockState(),
+      DEFAULT_ROUTE,
+    );
+    expect(result.current.title).toBe('Claim bonus');
   });
 });

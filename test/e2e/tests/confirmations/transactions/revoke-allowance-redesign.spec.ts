@@ -1,110 +1,56 @@
-/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
-import { MockttpServer } from 'mockttp';
-import { WINDOW_TITLES } from '../../../helpers';
-import { Driver } from '../../../webdriver/driver';
-import { scrollAndConfirmAndAssertConfirm } from '../helpers';
-import { mocked4BytesApprove } from './erc20-approve-redesign.spec';
-import {
-  assertChangedSpendingCap,
-  editSpendingCap,
-} from './increase-token-allowance-redesign.spec';
-import { openDAppWithContract, TestSuiteArguments } from './shared';
-
-const {
-  defaultGanacheOptions,
-  defaultGanacheOptionsForType2Transactions,
-  withFixtures,
-} = require('../../../helpers');
-const FixtureBuilder = require('../../../fixture-builder');
-const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
+import { WINDOW_TITLES } from '../../../constants';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
+import { withFixtures } from '../../../helpers';
+import { login } from '../../../page-objects/flows/login.flow';
+import ERC20ApproveTransactionConfirmation from '../../../page-objects/pages/confirmations/erc20-approve-transaction-confirmation';
+import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import HomePage from '../../../page-objects/pages/home/homepage';
+import TestDapp from '../../../page-objects/pages/test-dapp';
+import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
+import { mocked4BytesApprove, TestSuiteArguments } from './shared';
 
 describe('Confirmation Redesign ERC20 Revoke Allowance', function () {
   const smartContract = SMART_CONTRACTS.HST;
 
-  describe('Submit an revoke transaction @no-mmi', function () {
-    it('Sends a type 0 transaction (Legacy)', async function () {
-      await withFixtures(
-        {
-          dapp: true,
-          fixtures: new FixtureBuilder()
-            .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: {
-                redesignedConfirmationsEnabled: true,
-                isRedesignedConfirmationsDeveloperEnabled: true,
-              },
-            })
-            .build(),
-          ganacheOptions: defaultGanacheOptions,
-          smartContract,
-          testSpecificMock: mocks,
-          title: this.test?.fullTitle(),
-        },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+  it('submits an ERC20 revoke allowance transaction', async function () {
+    await withFixtures(
+      {
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        smartContract,
+        testSpecificMock: mocked4BytesApprove,
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver, contractRegistry, localNodes }: TestSuiteArguments) => {
+        const contractAddress =
+          await contractRegistry?.getContractAddress(smartContract);
+        await login(driver, { localNode: localNodes?.[0] });
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage({ contractAddress });
+        await testDapp.checkPageIsLoaded();
 
-          await createERC20ApproveTransaction(driver);
+        await testDapp.clickApproveTokens();
 
-          const NEW_SPENDING_CAP = '0';
-          await editSpendingCap(driver, NEW_SPENDING_CAP);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const txConfirmation = new ERC20ApproveTransactionConfirmation(driver);
+        await txConfirmation.editSpendingCap('0');
+        await txConfirmation.checkRevokeTitle();
 
-          await driver.waitForSelector({
-            css: 'h2',
-            text: 'Remove permission',
-          });
+        await txConfirmation.clickScrollToBottomButton();
+        await txConfirmation.clickFooterConfirmButton();
 
-          await scrollAndConfirmAndAssertConfirm(driver);
-
-          await assertChangedSpendingCap(driver, NEW_SPENDING_CAP);
-        },
-      );
-    });
-
-    it('Sends a type 2 transaction (EIP1559)', async function () {
-      await withFixtures(
-        {
-          dapp: true,
-          fixtures: new FixtureBuilder()
-            .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: {
-                redesignedConfirmationsEnabled: true,
-                isRedesignedConfirmationsDeveloperEnabled: true,
-              },
-            })
-            .build(),
-          ganacheOptions: defaultGanacheOptionsForType2Transactions,
-          smartContract,
-          testSpecificMock: mocks,
-          title: this.test?.fullTitle(),
-        },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
-
-          await createERC20ApproveTransaction(driver);
-
-          const NEW_SPENDING_CAP = '0';
-          await editSpendingCap(driver, NEW_SPENDING_CAP);
-
-          await driver.waitForSelector({
-            css: 'h2',
-            text: 'Remove permission',
-          });
-
-          await scrollAndConfirmAndAssertConfirm(driver);
-
-          await assertChangedSpendingCap(driver, NEW_SPENDING_CAP);
-        },
-      );
-    });
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+        const activityList = new ActivityListPage(driver);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+        await activityList.clickConfirmedTransaction();
+        await activityList.checkSpendingCapValueInDetails('0 TST');
+      },
+    );
   });
 });
-
-async function mocks(server: MockttpServer) {
-  return [await mocked4BytesApprove(server)];
-}
-
-async function createERC20ApproveTransaction(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.clickElement('#approveTokens');
-}

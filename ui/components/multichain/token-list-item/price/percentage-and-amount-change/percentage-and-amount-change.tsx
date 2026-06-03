@@ -1,30 +1,32 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
-import { isHexString, zeroAddress } from 'ethereumjs-util';
+import { isHexString } from 'ethereumjs-util';
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { Text, Box } from '../../../../component-library';
 import {
   Display,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
+import { getCurrentChainId } from '../../../../../../shared/lib/selectors/networks';
 import {
-  getCurrentCurrency,
   getSelectedAccountCachedBalance,
   getTokensMarketData,
 } from '../../../../../selectors';
-import { getIntlLocale } from '../../../../../ducks/locale/locale';
+import { useFormatters } from '../../../../../hooks/useFormatters';
 import { EtherDenomination } from '../../../../../../shared/constants/common';
-import { Numeric } from '../../../../../../shared/modules/Numeric';
+import { Numeric } from '../../../../../../shared/lib/Numeric';
 import {
-  getConversionRate,
+  getCurrentCurrency,
   getNativeCurrency,
 } from '../../../../../ducks/metamask/metamask';
+import { getConversionRate } from '../../../../../ducks/metamask/base-selectors';
 import {
   formatValue,
   isValidAmount,
   // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
+  // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../../../../app/scripts/lib/util';
 
 export const renderPercentageWithNumber = (
@@ -33,7 +35,7 @@ export const renderPercentageWithNumber = (
   color: TextColor,
 ) => {
   return (
-    <Box display={Display.Flex}>
+    <Box display={Display.Flex} className="gap-1">
       <Text
         variant={TextVariant.bodyMdMedium}
         color={color}
@@ -61,15 +63,17 @@ export const PercentageAndAmountChange = ({
   value: number | null | undefined;
 }) => {
   const fiatCurrency = useSelector(getCurrentCurrency);
-  const locale = useSelector(getIntlLocale);
+  const { formatCurrencyCompact } = useFormatters();
   const balanceValue = useSelector(getSelectedAccountCachedBalance);
   const conversionRate = useSelector(getConversionRate);
   const nativeCurrency = useSelector(getNativeCurrency);
   const marketData = useSelector(getTokensMarketData);
+  const currentChainId = useSelector(getCurrentChainId);
 
   const balanceChange = useMemo(() => {
     // Extracts the 1-day percentage change in price from marketData using the zero address as a key.
-    const percentage1d = marketData?.[zeroAddress()]?.pricePercentChange1d;
+    const percentage1d =
+      marketData?.[getNativeTokenAddress(currentChainId)]?.pricePercentChange1d;
 
     // Checks if the balanceValue is in hex format. This is important for cryptocurrency balances which are often represented in hex.
     if (isHexString(balanceValue)) {
@@ -120,27 +124,10 @@ export const PercentageAndAmountChange = ({
   if (isValidAmount(balanceChange)) {
     formattedValuePrice = (balanceChange as number) >= 0 ? '+' : '';
 
-    const options = {
-      notation: 'compact',
-      compactDisplay: 'short',
-      maximumFractionDigits: 2,
-    } as const;
-
-    try {
-      // For currencies compliant with ISO 4217 Standard
-      formattedValuePrice += `${Intl.NumberFormat(locale, {
-        ...options,
-        style: 'currency',
-        currency: fiatCurrency,
-      }).format(balanceChange as number)} `;
-    } catch {
-      // Non-standard Currency Codes
-      formattedValuePrice += `${Intl.NumberFormat(locale, {
-        ...options,
-        minimumFractionDigits: 2,
-        style: 'decimal',
-      }).format(balanceChange as number)} `;
-    }
+    formattedValuePrice += formatCurrencyCompact(
+      balanceChange ?? 0,
+      fiatCurrency,
+    );
   }
 
   return renderPercentageWithNumber(formattedValue, formattedValuePrice, color);

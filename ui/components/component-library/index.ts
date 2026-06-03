@@ -1,10 +1,3 @@
-export {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
-  AvatarAccountDiameter,
-} from './avatar-account';
-export type { AvatarAccountProps } from './avatar-account';
 export { AvatarFavicon, AvatarFaviconSize } from './avatar-favicon';
 export type { AvatarFaviconProps } from './avatar-favicon';
 export { AvatarIcon, AvatarIconSize } from './avatar-icon';
@@ -65,6 +58,8 @@ export { PickerNetwork } from './picker-network';
 export type { PickerNetworkProps } from './picker-network';
 export { Tag } from './tag';
 export type { TagProps } from './tag';
+export { SuccessPill } from './success-pill';
+export type { SuccessPillProps } from './success-pill';
 export { TagUrl } from './tag-url';
 export type { TagUrlProps } from './tag-url';
 export { Text, ValidTag, TextDirection, InvisibleCharacter } from './text';
@@ -103,6 +98,13 @@ export { Popover, PopoverPosition, PopoverRole } from './popover';
 export type { PopoverProps } from './popover';
 export { ModalHeader } from './modal-header';
 export type { ModalHeaderProps } from './modal-header';
+export { HeaderSearch, HeaderSearchVariant } from './header-search';
+export type {
+  HeaderSearchProps,
+  HeaderSearchTextFieldSearchProps,
+  HeaderSearchScreenProps,
+  HeaderSearchInlineProps,
+} from './header-search';
 export { SelectButton, SelectButtonSize } from './select-button';
 export type { SelectButtonProps } from './select-button';
 export { SelectOption } from './select-option';

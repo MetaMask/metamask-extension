@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { AvatarBase, AvatarBaseProps } from '../avatar-base';
 import {
   Display,
@@ -12,7 +12,14 @@ import type { PolymorphicRef } from '../box';
 import type { AvatarTokenComponent } from './avatar-token.types';
 import { AvatarTokenProps, AvatarTokenSize } from './avatar-token.types';
 
+/**
+ * @deprecated Please update your code to use `AvatarToken` from `@metamask/design-system-react`.
+ * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#from-extension-component-library | Migration Guide}
+ * @see {@link https://metamask.github.io/metamask-design-system/?path=/docs/react-components-avatartoken--docs | Storybook Documentation}
+ */
 export const AvatarToken: AvatarTokenComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     {
       size = AvatarTokenSize.Md,
@@ -79,7 +86,7 @@ export const AvatarToken: AvatarTokenComponent = React.forwardRef(
               }
               onError={handleOnError}
               src={src}
-              alt={`${name} logo` || 'token logo'}
+              alt={`${name} logo`}
             />
           </>
         )}

@@ -1,4 +1,5 @@
 export * from './address';
+export * from './address-display';
 export * from './date';
 export * from './divider';
 export * from './row';

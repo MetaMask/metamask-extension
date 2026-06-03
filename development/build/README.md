@@ -4,7 +4,7 @@
 > Add `--build-type flask` to build Flask, our canary distribution with more experimental features.
 
 This directory contains the MetaMask build system, which is used to build the MetaMask Extension such that it can be used in a supported browser.
-From the repository root, the build system entry file is located at [`./development/build/index.js`](https://github.com/MetaMask/metamask-extension/blob/develop/development/build/index.js).
+From the repository root, the build system entry file is located at [`./development/build/index.js`](https://github.com/MetaMask/metamask-extension/blob/main/development/build/index.js).
 
 Several package scripts invoke the build system.
 For example, `yarn start` creates a watched development build, and `yarn dist` creates a production build.
@@ -20,7 +20,7 @@ are written to the `./dist` directory.
 
 Our JavaScript source files are transformed using [Babel](https://babeljs.io/), specifically using
 the [`babelify`](https://npmjs.com/package/babelify) Browserify transform.
-Source file bundling tasks are implemented in the [`./development/build/scripts.js`](https://github.com/MetaMask/metamask-extension/blob/develop/development/build/scripts.js).
+Source file bundling tasks are implemented in the [`./development/build/scripts.js`](https://github.com/MetaMask/metamask-extension/blob/main/development/build/scripts.js).
 
 > Locally implemented Browserify transforms, _some of which affect how we write JavaScript_, are listed and documented [here](./transforms/README.md).
 

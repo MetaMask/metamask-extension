@@ -1,0 +1,105 @@
+/**
+ * Mock Hardware Wallet Adapter for testing
+ */
+
+import type {
+  EnsureDeviceReadyOptions,
+  HardwareWalletAdapter,
+  HardwareWalletAdapterOptions,
+} from '../types';
+
+export class MockHardwareWalletAdapter implements HardwareWalletAdapter {
+  private connected: boolean = false;
+
+  private options: HardwareWalletAdapterOptions;
+
+  public connectMock = jest.fn();
+
+  public disconnectMock = jest.fn();
+
+  public isConnectedMock = jest.fn();
+
+  public destroyMock = jest.fn();
+
+  public ensureDeviceReadyMock = jest.fn();
+
+  constructor(options: HardwareWalletAdapterOptions) {
+    this.options = options;
+
+    // Setup default implementations
+    this.setupDefaultMocks();
+  }
+
+  async connect(): Promise<void> {
+    return this.connectMock();
+  }
+
+  async disconnect(): Promise<void> {
+    return this.disconnectMock();
+  }
+
+  isConnected(): boolean {
+    return this.isConnectedMock();
+  }
+
+  destroy(): void {
+    return this.destroyMock();
+  }
+
+  ensureDeviceReady(options?: EnsureDeviceReadyOptions): Promise<boolean> {
+    return this.ensureDeviceReadyMock(options);
+  }
+
+  // Test helpers
+  simulateDisconnect(error?: Error): void {
+    this.connected = false;
+    this.options.onDisconnect?.(error);
+  }
+
+  simulateDeviceLocked(): void {
+    this.options.onDeviceLocked?.();
+  }
+
+  simulateAppNotOpen(): void {
+    this.options.onAppNotOpen?.();
+  }
+
+  simulateAwaitingConfirmation(): void {
+    this.options.onAwaitingConfirmation?.();
+  }
+
+  getOptions(): HardwareWalletAdapterOptions {
+    return this.options;
+  }
+
+  resetMocks(): void {
+    this.connectMock.mockClear();
+    this.disconnectMock.mockClear();
+    this.isConnectedMock.mockClear();
+    this.destroyMock.mockClear();
+    this.ensureDeviceReadyMock.mockClear();
+  }
+
+  reset(): void {
+    // Reset internal state
+    this.connected = false;
+    // Reset mocks
+    this.resetMocks();
+    // Reset mock implementations to defaults
+    this.setupDefaultMocks();
+  }
+
+  private setupDefaultMocks(): void {
+    this.connectMock.mockImplementation(async () => {
+      this.connected = true;
+    });
+    this.disconnectMock.mockImplementation(async () => {
+      this.connected = false;
+    });
+    this.isConnectedMock.mockImplementation(() => this.connected);
+    this.destroyMock.mockImplementation(() => {
+      this.connected = false;
+    });
+    this.ensureDeviceReadyMock.mockResolvedValue(true);
+  }
+}

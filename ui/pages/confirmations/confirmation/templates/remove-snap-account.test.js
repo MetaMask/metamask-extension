@@ -4,7 +4,8 @@ import thunk from 'redux-thunk';
 import { waitFor } from '@testing-library/react';
 
 import Confirmation from '../confirmation';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../../shared/constants/app';
 import mockState from '../../../../../test/data/mock-state.json';
 import { mockNetworkState } from '../../../../../test/stub/networks';
@@ -57,6 +58,12 @@ describe('remove-snap-account confirmation', () => {
           },
         },
       },
+      appState: {
+        ...mockBaseStore.appState,
+      },
+      localeMessages: {
+        currentLocale: 'en',
+      },
       activeTab: {
         origin: 'https://uniswap.org/',
       },
@@ -67,7 +74,7 @@ describe('remove-snap-account confirmation', () => {
       store,
     );
     await waitFor(() => {
-      expect(getByText(`Remove account`)).toBeInTheDocument();
+      expect(getByText(messages.removeAccount.message)).toBeInTheDocument();
       expect(container.querySelector('.callout')).toBeDefined();
       expect(container).toMatchSnapshot();
     });

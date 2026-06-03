@@ -7,6 +7,7 @@ import {
   type Asset,
   type Compilation,
 } from 'webpack';
+import type { EntryDescriptionNormalized } from '../utils/plugins/ManifestPlugin';
 
 const { SourceMapSource, RawSource } = sources;
 
@@ -33,21 +34,24 @@ export function mockWebpack(
   maps: (string | null)[],
   devtool: 'source-map' | 'hidden-source-map' | false = 'source-map',
 ) {
-  const assets = files.reduce((acc, name, i) => {
-    const source = contents[i];
-    const map = maps?.[i];
-    const webpackSource = map
-      ? new SourceMapSource(source, name, map)
-      : new RawSource(source);
-    acc[name] = {
-      name,
-      info: {
-        size: webpackSource.size(),
-      },
-      source: webpackSource,
-    };
-    return acc;
-  }, {} as Record<string, Asset>);
+  const assets = files.reduce(
+    (acc, name, i) => {
+      const source = contents[i];
+      const map = maps?.[i];
+      const webpackSource = map
+        ? new SourceMapSource(source, name, map)
+        : new RawSource(source);
+      acc[name] = {
+        name,
+        info: {
+          size: webpackSource.size(),
+        },
+        source: webpackSource,
+      };
+      return acc;
+    },
+    {} as Record<string, Asset>,
+  );
   let done: () => void;
   const promise = new Promise<void>((resolve) => {
     done = resolve;
@@ -75,13 +79,36 @@ export function mockWebpack(
     ]),
     getAsset: mock.fn((name) => assets[name]),
     updateAsset: mock.fn(
-      (name: string, fn: (source: sources.Source) => sources.Source) => {
-        return fn(assets[name].source);
+      (
+        name: string,
+        newSourceOrFunction:
+          | sources.Source
+          | ((source: sources.Source) => sources.Source),
+      ) => {
+        assets[name].source =
+          typeof newSourceOrFunction === 'function'
+            ? newSourceOrFunction(assets[name].source)
+            : newSourceOrFunction;
       },
     ),
+    renameAsset: mock.fn((name: string, newFile: string) => {
+      const asset = assets[name];
+      delete assets[name];
+      assets[newFile] = {
+        ...asset,
+        name: newFile,
+      };
+
+      for (const chunk of compilation.chunks) {
+        chunk.files.delete(name);
+        chunk.files.add(newFile);
+      }
+    }),
     deleteAsset: mock.fn((name: string) => {
       delete assets[name];
     }),
+    entrypoints: new Map(),
+    fileDependencies: new Set<string>(),
     hooks: {
       processAssets: {
         async tapPromise(_: unknown, fn: (assets: Assets) => Promise<void>) {
@@ -95,8 +122,24 @@ export function mockWebpack(
       },
     },
   };
+  const entries: Record<string, EntryDescriptionNormalized> = {};
   const compiler = {
+    context: '',
+    modifiedFiles: undefined,
     hooks: {
+      entryOption: {
+        tap(
+          _: unknown,
+          fn: (context: string, entries: Record<string, unknown>) => void,
+        ) {
+          fn(compiler.context, entries);
+        },
+      },
+      afterCompile: {
+        tap(_: unknown, fn: (compilation: Compilation) => void) {
+          fn(compilation as unknown as Compilation);
+        },
+      },
       compilation: {
         tap(_: unknown, fn: (compilation: Compilation) => void) {
           fn(compilation as unknown as Compilation);
@@ -107,9 +150,12 @@ export function mockWebpack(
       sources: { SourceMapSource, RawSource },
     },
   } as Compiler;
+  // Link compilation back to compiler (used by resolveEntrypoints)
+  (compilation as Record<string, unknown>).compiler = compiler;
   return {
     compiler,
     compilation: compilation as Compilation & typeof compilation,
+    entries,
     promise,
   };
 }

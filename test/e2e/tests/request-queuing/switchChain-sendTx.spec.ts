@@ -1,0 +1,79 @@
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
+import TestDapp from '../../page-objects/pages/test-dapp';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
+import { login } from '../../page-objects/flows/login.flow';
+import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
+
+describe('Request Queuing SwitchChain -> SendTx', function () {
+  it('switching network should reject pending confirmations from same origin', async function () {
+    const port = 8546;
+    const chainId = 1338;
+    await withFixtures(
+      {
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
+          .withNetworkControllerDoubleNode()
+          .build(),
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
+              port,
+              chainId,
+            },
+          },
+        ],
+        title: this.test?.fullTitle(),
+      },
+
+      async ({ driver }) => {
+        await login(driver);
+
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.checkPageIsLoaded();
+        await connectAccountToTestDapp(driver);
+        await testDapp.checkPageIsLoaded();
+
+        // Switch Ethereum Chain
+        const switchEthereumChainRequest = JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: '0x539' }],
+        });
+
+        await driver.executeScript(
+          `window.ethereum.request(${switchEthereumChainRequest})`,
+        );
+
+        // Navigate back to test dapp
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await testDapp.checkPageIsLoaded();
+
+        // Dapp Send Button
+        await testDapp.clickSimpleSendButton();
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // Persist Switch Ethereum Chain notifcation
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.checkPageIsLoaded();
+
+        // THIS IS BROKEN
+        // Find the cancel pending txs on the Switch Ethereum Chain notification.
+        // await driver.findElement({
+        //   text: 'Switching networks will cancel all pending confirmations',
+        //   tag: 'span',
+        // });
+
+        // Confirm Switch Network
+        await transactionConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+      },
+    );
+  });
+});

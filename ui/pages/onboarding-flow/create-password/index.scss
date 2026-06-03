@@ -13,41 +13,8 @@
     color: var(--color-success-default);
   }
 
-  &__wrapper {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-  }
-
   &__link-text {
     color: var(--color-primary-default);
-  }
-
-  &__form {
-    @include design-system.screen-sm-min {
-      max-width: 320px;
-    }
-
-    &--password-button {
-      color: var(--color-primary-default);
-    }
-
-    &--checkmark {
-      i {
-        color: var(--color-success-default);
-      }
-    }
-
-    // override Checkbox
-    .mm-checkbox__input-wrapper {
-      margin-top: 2px;
-    }
-
-    .form-field__input {
-      height: 50px;
-      width: 100%;
-    }
   }
 
   &__analytics-iframe {

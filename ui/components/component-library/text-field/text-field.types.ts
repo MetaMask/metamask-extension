@@ -22,8 +22,10 @@ export enum TextFieldType {
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export interface TextFieldStyleUtilityProps
-  extends Omit<StyleUtilityProps, 'type'> {
+export interface TextFieldStyleUtilityProps extends Omit<
+  StyleUtilityProps,
+  'type'
+> {
   /**
    * Autocomplete allows the browser to predict the value based on earlier typed values
    */
@@ -56,6 +58,8 @@ export interface TextFieldStyleUtilityProps
    * The component that is rendered as the input
    * Defaults to the Text component
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   InputComponent?: InputComponent;
   /**
    * Attributes applied to the `input` element.
@@ -136,9 +140,13 @@ export interface TextFieldStyleUtilityProps
   testId?: string;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type TextFieldProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, TextFieldStyleUtilityProps>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type TextFieldComponent = <C extends React.ElementType = 'div'>(
   props: TextFieldProps<C>,
 ) => React.ReactElement | null;

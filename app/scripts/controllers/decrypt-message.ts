@@ -1,8 +1,6 @@
-import EventEmitter from 'events';
 import log from 'loglevel';
 import {
   AbstractMessage,
-  AbstractMessageManager,
   AbstractMessageParams,
   AbstractMessageParamsMetamask,
   MessageManagerState,
@@ -11,27 +9,47 @@ import {
   DecryptMessageParams,
   DecryptMessageParamsMetamask,
 } from '@metamask/message-manager';
+import type {
+  DecryptMessageManagerState,
+  DecryptMessageManagerUnapprovedMessageAddedEvent,
+} from '@metamask/message-manager';
 import {
   BaseController,
-  RestrictedControllerMessenger,
+  ControllerGetStateAction,
+  StateMetadata,
 } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
-  AcceptRequest,
-  AddApprovalRequest,
-  RejectRequest,
+  ApprovalControllerAcceptRequestAction,
+  ApprovalControllerAddRequestAction,
+  ApprovalControllerRejectRequestAction,
 } from '@metamask/approval-controller';
 import { ApprovalType, ORIGIN_METAMASK } from '@metamask/controller-utils';
 import { Patch } from 'immer';
 import type { KeyringControllerDecryptMessageAction } from '@metamask/keyring-controller';
 import { Eip1024EncryptedData, hasProperty, isObject } from '@metamask/utils';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
-import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
+import { stripHexPrefix } from '../../../shared/lib/hexstring-utils';
+// This import is only used for the type.
+// eslint-disable-next-line import-x/no-restricted-paths
+import type { MetaMaskReduxState } from '../../../ui/store/store';
+import { DecryptMessageControllerMethodActions } from './decrypt-message-method-action-types';
 
 const controllerName = 'DecryptMessageController';
 
-const stateMetadata = {
-  unapprovedDecryptMsgs: { persist: false, anonymous: false },
-  unapprovedDecryptMsgCount: { persist: false, anonymous: false },
+const stateMetadata: StateMetadata<DecryptMessageControllerState> = {
+  unapprovedDecryptMsgs: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: false,
+    usedInUi: true,
+  },
+  unapprovedDecryptMsgCount: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: false,
+    usedInUi: true,
+  },
 };
 
 /**
@@ -86,59 +104,75 @@ export type DecryptMessageControllerState = {
   unapprovedDecryptMsgCount: number;
 };
 
-export type GetDecryptMessageState = {
-  type: `${typeof controllerName}:getState`;
-  handler: () => DecryptMessageControllerState;
-};
+export type DecryptMessageControllerGetStateAction = ControllerGetStateAction<
+  typeof controllerName,
+  DecryptMessageControllerState
+>;
 
-export type DecryptMessageStateChange = {
+export type DecryptMessageControllerStateChange = {
   type: `${typeof controllerName}:stateChange`;
   payload: [DecryptMessageControllerState, Patch[]];
 };
 
-export type DecryptMessageControllerActions = GetDecryptMessageState;
+export type DecryptMessageControllerActions =
+  | DecryptMessageControllerGetStateAction
+  | DecryptMessageControllerMethodActions;
 
-export type DecryptMessageControllerEvents = DecryptMessageStateChange;
+export type DecryptMessageControllerEvents =
+  DecryptMessageControllerStateChange;
 
-type AllowedActions =
-  | AddApprovalRequest
-  | AcceptRequest
-  | RejectRequest
+export type AllowedActions =
+  | ApprovalControllerAddRequestAction
+  | ApprovalControllerAcceptRequestAction
+  | ApprovalControllerRejectRequestAction
   | KeyringControllerDecryptMessageAction;
 
-export type DecryptMessageControllerMessenger = RestrictedControllerMessenger<
+type DecryptMessageManagerStateChangeEvent = {
+  type: `DecryptMessageManager:stateChange`;
+  payload: [DecryptMessageManagerState, Patch[]];
+};
+
+export type AllowedEvents =
+  | DecryptMessageManagerStateChangeEvent
+  | DecryptMessageManagerUnapprovedMessageAddedEvent;
+
+export type DecryptMessageControllerMessenger = Messenger<
   typeof controllerName,
   DecryptMessageControllerActions | AllowedActions,
-  DecryptMessageControllerEvents,
-  AllowedActions['type'],
-  never
+  DecryptMessageControllerEvents | AllowedEvents
 >;
 
 export type DecryptMessageControllerOptions = {
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getState: () => any;
+  getState: () => MetaMaskReduxState['metamask'];
+  manager: DecryptMessageManager;
   messenger: DecryptMessageControllerMessenger;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metricsEvent: (payload: any, options?: any) => void;
 };
 
+const MESSENGER_EXPOSED_METHODS = [
+  'resetState',
+  'clearUnapproved',
+  'newRequestDecryptMessage',
+  'decryptMessage',
+  'decryptMessageInline',
+  'cancelDecryptMessage',
+  'rejectUnapproved',
+] as const;
+
 /**
  * Controller for decrypt signing requests requiring user approval.
  */
-export default class DecryptMessageController extends BaseController<
+export class DecryptMessageController extends BaseController<
   typeof controllerName,
   DecryptMessageControllerState,
   DecryptMessageControllerMessenger
 > {
-  hub: EventEmitter;
+  private _getState: () => MetaMaskReduxState['metamask'];
 
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private _getState: () => any;
-
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private _metricsEvent: (payload: any, options?: any) => void;
 
@@ -151,11 +185,13 @@ export default class DecryptMessageController extends BaseController<
    * @param options.getState - Callback to retrieve all user state.
    * @param options.messenger - A reference to the messaging system.
    * @param options.metricsEvent - A function for emitting a metric event.
+   * @param options.manager - A reference to the message manager.
    */
   constructor({
     getState,
     metricsEvent,
     messenger,
+    manager,
   }: DecryptMessageControllerOptions) {
     super({
       metadata: stateMetadata,
@@ -165,33 +201,24 @@ export default class DecryptMessageController extends BaseController<
     });
     this._getState = getState;
     this._metricsEvent = metricsEvent;
+    this._decryptMessageManager = manager;
 
-    this.hub = new EventEmitter();
-
-    this._decryptMessageManager = new DecryptMessageManager(
-      undefined,
-      undefined,
-      undefined,
-      ['decrypted'],
-    );
-
-    this._decryptMessageManager.hub.on('updateBadge', () => {
-      this.hub.emit('updateBadge');
-    });
-
-    this._decryptMessageManager.hub.on(
-      'unapprovedMessage',
-      (messageParams: AbstractMessageParamsMetamask) => {
-        this._requestApproval(messageParams);
-      },
+    messenger.subscribe(
+      'DecryptMessageManager:unapprovedMessage',
+      this._requestApproval.bind(this),
     );
 
     this._subscribeToMessageState(
-      this._decryptMessageManager,
+      messenger,
       (state, newMessages, messageCount) => {
         state.unapprovedDecryptMsgs = newMessages;
         state.unapprovedDecryptMsgCount = messageCount;
       },
+    );
+
+    this.messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
     );
   }
 
@@ -215,10 +242,7 @@ export default class DecryptMessageController extends BaseController<
    * Clears all unapproved messages from memory.
    */
   clearUnapproved() {
-    this._decryptMessageManager.update({
-      unapprovedMessages: {},
-      unapprovedMessagesCount: 0,
-    });
+    this._decryptMessageManager.clearUnapprovedMessages();
   }
 
   /**
@@ -256,7 +280,7 @@ export default class DecryptMessageController extends BaseController<
         throw new Error('Invalid encrypted data.');
       }
 
-      const rawMessage = await this.messagingSystem.call(
+      const rawMessage = await this.messenger.call(
         'KeyringController:decryptMessage',
         cleanMessageParams,
       );
@@ -287,7 +311,7 @@ export default class DecryptMessageController extends BaseController<
     if (!isEIP1024EncryptedMessage(messageParams)) {
       throw new Error('Invalid encrypted data.');
     }
-    const rawMessage = await this.messagingSystem.call(
+    const rawMessage = await this.messenger.call(
       'KeyringController:decryptMessage',
       messageParams,
     );
@@ -327,15 +351,11 @@ export default class DecryptMessageController extends BaseController<
   }
 
   private _acceptApproval(messageId: string) {
-    this.messagingSystem.call('ApprovalController:acceptRequest', messageId);
+    this.messenger.call('ApprovalController:acceptRequest', messageId);
   }
 
   private _cancelAbstractMessage(
-    messageManager: AbstractMessageManager<
-      AbstractMessage,
-      AbstractMessageParams,
-      AbstractMessageParamsMetamask
-    >,
+    messageManager: DecryptMessageManager,
     messageId: string,
     reason?: string,
   ) {
@@ -356,27 +376,26 @@ export default class DecryptMessageController extends BaseController<
   }
 
   private _subscribeToMessageState(
-    messageManager: AbstractMessageManager<
-      AbstractMessage,
-      AbstractMessageParams,
-      AbstractMessageParamsMetamask
-    >,
+    controllerMessenger: DecryptMessageControllerMessenger,
     updateState: (
       state: DecryptMessageControllerState,
       newMessages: Record<string, StateMessage>,
       messageCount: number,
     ) => void,
   ) {
-    messageManager.subscribe((state: MessageManagerState<AbstractMessage>) => {
-      const newMessages = this._migrateMessages(
-        // TODO: Replace `any` with type
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        state.unapprovedMessages as any,
-      );
-      this.update((draftState) => {
-        updateState(draftState, newMessages, state.unapprovedMessagesCount);
-      });
-    });
+    controllerMessenger.subscribe(
+      'DecryptMessageManager:stateChange',
+      (state: MessageManagerState<AbstractMessage>) => {
+        const newMessages = this._migrateMessages(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          state.unapprovedMessages as any,
+        );
+        this.update((draftState) => {
+          updateState(draftState, newMessages, state.unapprovedMessagesCount);
+        });
+      },
+    );
   }
 
   private _migrateMessages(
@@ -408,9 +427,11 @@ export default class DecryptMessageController extends BaseController<
 
   private _requestApproval(messageParams: AbstractMessageParamsMetamask) {
     const id = messageParams.metamaskId as string;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     const origin = messageParams.origin || ORIGIN_METAMASK;
     try {
-      this.messagingSystem.call(
+      this.messenger.call(
         'ApprovalController:addRequest',
         {
           id,
@@ -432,7 +453,7 @@ export default class DecryptMessageController extends BaseController<
 
   private _rejectApproval(messageId: string) {
     try {
-      this.messagingSystem.call(
+      this.messenger.call(
         'ApprovalController:rejectRequest',
         messageId,
         'Cancel',

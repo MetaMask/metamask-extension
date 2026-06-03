@@ -19,12 +19,7 @@ const inputLabelBase = {
   color: 'var(--color-text-default)',
 };
 
-const fontFamily = [
-  '"Euclid Circular B"',
-  'Helvetica',
-  'Arial',
-  'sans-serif',
-].join(', ');
+const fontFamily = ['"Geist"', 'Helvetica', 'Arial', 'sans-serif'].join(', ');
 
 const styles = {
   materialLabel: {
@@ -213,7 +208,7 @@ const getBorderedThemeInputProps = ({
       max,
       autoComplete,
     },
-    disableUnderline: 'true',
+    disableUnderline: true,
   },
 });
 

@@ -8,7 +8,7 @@ import {
   ButtonVariant,
   Text,
 } from '../../../components/component-library';
-import { SnapAccountRedirectProps } from '../snap-account-redirect';
+import type { SnapAccountRedirectProps } from '../snap-account-redirect';
 import {
   AlignItems,
   Display,
@@ -18,6 +18,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import SnapAccountRedirectMessage from './snap-account-redirect-message';
 
 const SnapAccountRedirectContent = ({
@@ -28,8 +29,7 @@ const SnapAccountRedirectContent = ({
   onSubmit,
 }: SnapAccountRedirectProps) => {
   const t = useI18nContext();
-  const learnMoreAboutBlockedUrls =
-    'https://support.metamask.io/troubleshooting/deceptive-site-ahead-when-trying-to-connect-to-a-site/';
+  const learnMoreAboutBlockedUrls = ZENDESK_URLS.DECEPTIVE_SITE;
 
   return (
     <Box
@@ -48,6 +48,7 @@ const SnapAccountRedirectContent = ({
           data-testid="snap-account-redirect-content-title"
           textAlign={TextAlign.Center}
           variant={TextVariant.headingLg}
+          paddingBottom={2}
         >
           {t('snapAccountRedirectFinishSigningTitle')}
         </Text>

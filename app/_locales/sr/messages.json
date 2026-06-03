@@ -26,9 +26,6 @@
   "accountSelectionRequired": {
     "message": "Potrebno je da izaberete nalog!"
   },
-  "activityLog": {
-    "message": "dnevnik aktivnosti"
-  },
   "addAcquiredTokens": {
     "message": "Dodajte stečene tokene koristeći MetaMask."
   },
@@ -80,9 +77,6 @@
   },
   "autoLockTimeLimit": {
     "message": "Tajmer za automatsko odjavljivanje (u minutama)"
-  },
-  "autoLockTimeLimitDescription": {
-    "message": "Podesite vreme mirovanja u minutima pre nego što se MetaMask automatski odjavi. "
   },
   "average": {
     "message": "Prosečno"
@@ -181,12 +175,6 @@
   "createPassword": {
     "message": "Kreirajte lozinku"
   },
-  "currencyConversion": {
-    "message": "Konverzija valuta"
-  },
-  "currentLanguage": {
-    "message": "Trenutni jezik"
-  },
   "custom": {
     "message": "Напредне опције"
   },
@@ -208,9 +196,6 @@
   "done": {
     "message": "Gotovo"
   },
-  "downloadGoogleChrome": {
-    "message": "Preuzmi Google Chrome"
-  },
   "downloadStateLogs": {
     "message": "Preuzmite dnevnike stanja"
   },
@@ -226,14 +211,8 @@
   "enterPasswordContinue": {
     "message": "Unesite lozinku kako biste nastavili"
   },
-  "ethereumPublicAddress": {
-    "message": "Ethereum javna adresa"
-  },
   "etherscanView": {
     "message": "Pogledajte račun na Etherscan-u"
-  },
-  "expandView": {
-    "message": "Proširite prikaz"
   },
   "failed": {
     "message": "Neuspešno"
@@ -251,26 +230,11 @@
   "from": {
     "message": "Od"
   },
-  "functionType": {
-    "message": "Tip funkcije"
-  },
   "gasLimit": {
     "message": "Limit gasa"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Granica gasa je maksimalni iznos jedinica gasa koje ste voljni da potrošite."
-  },
   "gasLimitTooLow": {
     "message": "Limit za gas mora da bude najmanje 21 000"
-  },
-  "gasPrice": {
-    "message": "Cena gasa (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Cena gasa izuzetno niska"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Cena gasa određuje količinu Ethera koju ste spremni da platite za svaku jedinicu gasa."
   },
   "gasUsed": {
     "message": "Korišćen gas"
@@ -289,9 +253,6 @@
   },
   "hardwareWallets": {
     "message": "Povežite hardverski novčanik"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Izaberite hardverski novčanik koji biste voleli da koristite sa MetaMask-om"
   },
   "here": {
     "message": "ovde",
@@ -313,18 +274,12 @@
     "message": "Uvoz",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Uvezite nalog"
-  },
   "importAccountMsg": {
     "message": "Uvezeni nalozi neće biti povezani sa početnom frazom koju ste prvobitno kreirali za MetaMask nalog. Saznajte više o uvezenim nalozima."
   },
   "imported": {
     "message": "Увезени",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "initialTransactionConfirmed": {
-    "message": "Vašu početnu transakciju je potvrdila mreža. Kliknite OK da biste se vratili."
   },
   "insufficientBalance": {
     "message": "Nedovoljno sredstava."
@@ -366,20 +321,8 @@
   "likeToImportTokens": {
     "message": "Želite li da dodate ove tokene?"
   },
-  "lineaGoerli": {
-    "message": "Test mreža Linea Goerli"
-  },
-  "links": {
-    "message": "Veze"
-  },
-  "loadMore": {
-    "message": "Učitati više"
-  },
   "loading": {
     "message": "Учитава се..."
-  },
-  "loadingTokens": {
-    "message": "Učitavanje tokena..."
   },
   "lock": {
     "message": "Odjavi se"
@@ -403,9 +346,6 @@
     "message": "Morate izabrati fajl koji ćete uvesti.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Ne možete poslati negativan iznos ETH."
-  },
   "networkName": {
     "message": "Ime mreže"
   },
@@ -415,15 +355,9 @@
   "nevermind": {
     "message": "Nema veze"
   },
-  "newAccount": {
-    "message": "Nov nalog"
-  },
   "newAccountNumberName": {
     "message": "Nalog $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Novi kontakt"
   },
   "newContract": {
     "message": "Novi ugovor"
@@ -433,12 +367,6 @@
   },
   "next": {
     "message": "Даље"
-  },
-  "noConversionRateAvailable": {
-    "message": "Nije dostupan kurs za konverziju"
-  },
-  "noTransactions": {
-    "message": "Nemate transakcije"
   },
   "noWebcamFound": {
     "message": "Nije pronađena veb kamera na vašem kompjuteru. Molimo vas pokušajte ponovo."
@@ -463,9 +391,6 @@
   },
   "origin": {
     "message": "Извор"
-  },
-  "parameters": {
-    "message": "Parametri"
   },
   "participateInMetaMetrics": {
     "message": "Učestvujte u MetaMetrics"
@@ -517,12 +442,6 @@
   "rejectAll": {
     "message": "Odbacite sve"
   },
-  "rejectTxsDescription": {
-    "message": "Upravo ćete odbaciti sve transakcije od $1."
-  },
-  "rejectTxsN": {
-    "message": "Odbijte transakcije od $1"
-  },
   "rejected": {
     "message": "Odbijeno"
   },
@@ -532,12 +451,6 @@
   "removeAccount": {
     "message": "Уклањање налога"
   },
-  "removeAccountDescription": {
-    "message": "Uklonićemo ovaj nalog iz vašeg novčanika. Pre nego što nastavite, proverite da li za ovaj uvezeni nalog imate originalnu početnu frazu ili privatni ključ. Ponovo možete da uvezete ili kreirate naloge izborom iz padajućeg menija na nalogu."
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "zahtevi koji čekaju da budu potvrđeni"
-  },
   "required": {
     "message": "Obavezno"
   },
@@ -546,9 +459,6 @@
   },
   "restore": {
     "message": "Поново отвори"
-  },
-  "revealSeedWords": {
-    "message": "Otkrivanje početnih reči"
   },
   "revealSeedWordsWarning": {
     "message": "Ove reči se mogu iskoristiti za krađu svih vaših naloga.",
@@ -596,17 +506,11 @@
   "showFiatConversionInTestnets": {
     "message": "Prikažite konverzije na Testnet"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Izaberite ovo za prikaz konverzije dekretnog novca (fiat) na test mrežama."
-  },
   "showHexData": {
     "message": "Prikaži Hex podatke"
   },
   "showHexDataDescription": {
     "message": "Izaberite ovo da bi se pokazalo polje sa hex podacima na „Pošalji” ekranu "
-  },
-  "sigRequest": {
-    "message": "Zahtev za potpisom"
   },
   "sign": {
     "message": "Potpišite"
@@ -626,26 +530,17 @@
   "speedUpCancellation": {
     "message": "Ubrzajte ovo otkazivanje"
   },
-  "speedUpTransaction": {
-    "message": "Ubrzajte ovu transakciju"
-  },
   "stateLogError": {
     "message": "Greška u preuzimanju evidencija stanja"
   },
   "stateLogs": {
     "message": "Državne evidencije"
   },
-  "stateLogsDescription": {
-    "message": "Dnevnici stanja sadrže adrese vaših javnih naloga i poslatih transakcija."
-  },
   "submitted": {
     "message": "Prosleđeno"
   },
   "supportCenter": {
     "message": "Posetite naš centar za podršku"
-  },
-  "switchNetworks": {
-    "message": "Prebacivanje mreže"
   },
   "symbol": {
     "message": "Simbol"
@@ -655,9 +550,6 @@
   },
   "terms": {
     "message": "Uslovi korišćenja"
-  },
-  "tips": {
-    "message": "Donacije"
   },
   "to": {
     "message": "Za"
@@ -677,41 +569,11 @@
   "transaction": {
     "message": "transakcija"
   },
-  "transactionCancelAttempted": {
-    "message": "Pokušano je otkazivanje transakcije sa naknadom za gas od $1 do $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Transakcija je uspešno otkazana sa $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transakcija je potvrđena na $2."
-  },
-  "transactionCreated": {
-    "message": "Transakcija je kreirana sa vrednošću od $1 na $2."
-  },
-  "transactionDropped": {
-    "message": "Transakcija je pala na $2."
-  },
   "transactionError": {
     "message": "Greška prilikom transakcije. Izuzetak ubačen u kod ugovora."
   },
   "transactionErrorNoContract": {
     "message": "Pokušavamo da pozovemo funkciju preko ne-ugovorne adrese."
-  },
-  "transactionErrored": {
-    "message": "Transakcija je naišla na grešku"
-  },
-  "transactionFee": {
-    "message": "Provizija"
-  },
-  "transactionResubmitted": {
-    "message": "Transakcija je ponovo prosleđena sa naknadom za gas povećanom sa $1 na $2"
-  },
-  "transactionSubmitted": {
-    "message": "Transakcija je podnešena sa gas naknadom od $1 na $2."
-  },
-  "transactionUpdated": {
-    "message": "Transakcija je ažurirana na $2."
   },
   "transfer": {
     "message": "Prenos"
@@ -731,29 +593,17 @@
   "unknown": {
     "message": "Непознато"
   },
-  "unknownNetwork": {
-    "message": "Nepoznata privatna mreža"
-  },
   "unknownQrCode": {
     "message": "Greška: nismo uspeli da identifikujemo taj QR kod"
   },
   "unlock": {
     "message": "Откључај"
   },
-  "unlockMessage": {
-    "message": "Decentralizovani veb čeka"
-  },
   "urlErrorMsg": {
     "message": "URI-ovi zahtevaju odgovarajući prefiks HTTP / HTTPS."
   },
   "usedByClients": {
     "message": "Koristi ga veliki broj različitih klijenata"
-  },
-  "userName": {
-    "message": "Корисничко име"
-  },
-  "viewContact": {
-    "message": "Pogledaj kontakt"
   },
   "visitWebSite": {
     "message": "Posetite našu veb lokaciju"
@@ -763,14 +613,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Za upotrebu ove funkcije morate omogućiti pristup kameri."
-  },
-  "youSign": {
-    "message": "Vi potpisujete"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Vaša privatna šifra za oporavak naloga (seed phrase)"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Nulta cena gasa ubrzava"
   }
 }

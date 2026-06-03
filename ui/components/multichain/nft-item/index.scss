@@ -1,16 +1,20 @@
+@use "design-system";
+
 .nft-item {
+  &__card {
+    cursor: pointer;
+  }
+
   &__container {
     width: 100%;
     padding: 0;
     border-radius: 8px;
-    cursor: unset;
   }
 
   &__badge-wrapper {
     max-width: 100%;
     position: relative;
     align-self: center;
-    cursor: unset;
 
     &__clickable {
       cursor: pointer;
@@ -19,8 +23,51 @@
 
   &__item-image {
     border-radius: 8px;
-    padding: 0;
+    width: 100%;
+    object-fit: cover;
+    aspect-ratio: 1;
+  }
+
+  &__item-image--hidden {
+    border-radius: 8px;
+    width: 100%;
+    object-fit: cover;
+    aspect-ratio: 1;
+    background: rgba(255, 255, 255, 0.5);
+    mix-blend-mode: lighten;
+  }
+
+
+
+  @include design-system.screen-sm-max {
+    &__item-image--hidden {
+      background: rgba(255, 255, 255, 0.5);
+      mix-blend-mode: lighten;
+    }
+  }
+
+  &__item-detail {
+    border-radius: 8px;
+    object-fit: cover;
+    aspect-ratio: 1;
     width: 100%;
     height: 100%;
+  }
+
+  // Fallback image
+  &__item-image,
+  &__item-image--hidden,
+  &__item-detail {
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url('/images/default_nft.png');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
   }
 }

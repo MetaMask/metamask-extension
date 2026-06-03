@@ -1,6 +1,6 @@
-import { TransactionType } from '@metamask/transaction-controller';
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLocation,
@@ -9,9 +9,6 @@ import {
 import { ConfirmInfoRow } from '../../../../../components/app/confirm/info/row';
 import { ConfirmInfoRowCurrency } from '../../../../../components/app/confirm/info/row/currency';
 import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
   Box,
   ButtonIcon,
   ButtonIconSize,
@@ -37,27 +34,30 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { getUseBlockie } from '../../../../../selectors';
 import { useConfirmContext } from '../../../context/confirm';
 import { useBalance } from '../../../hooks/useBalance';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
 import { SignatureRequestType } from '../../../types/confirm';
-import {
-  isSignatureTransactionType,
-  REDESIGN_DEV_TRANSACTION_TYPES,
-} from '../../../utils/confirm';
+import { isSignatureTransactionType } from '../../../utils/confirm';
+import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
+import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
+import { getHDEntropyIndex } from '../../../../../selectors/selectors';
 import { AdvancedDetailsButton } from './advanced-details-button';
 
 const HeaderInfo = () => {
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
-  const useBlockie = useSelector(getUseBlockie);
   const [showAccountInfo, setShowAccountInfo] = React.useState(false);
 
   const { currentConfirmation } = useConfirmContext();
 
-  const { senderAddress: fromAddress, senderName: fromName } =
-    useConfirmationRecipientInfo();
+  const {
+    senderAddress: fromAddress,
+    senderName: fromName,
+    walletName,
+    hasMoreThanOneWallet,
+  } = useConfirmationRecipientInfo();
 
   const t = useI18nContext();
 
@@ -68,12 +68,22 @@ const HeaderInfo = () => {
   const eventProps = isSignature
     ? {
         location: MetaMetricsEventLocation.SignatureConfirmation,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         signature_type: (currentConfirmation as SignatureRequestType)?.msgParams
           ?.signatureMethod,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        hd_entropy_index: hdEntropyIndex,
       }
     : {
         location: MetaMetricsEventLocation.Transaction,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         transaction_type: currentConfirmation?.type,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        hd_entropy_index: hdEntropyIndex,
       };
 
   function trackAccountModalOpened() {
@@ -89,8 +99,8 @@ const HeaderInfo = () => {
     trackEvent(event);
   }
 
-  const isShowAdvancedDetailsToggle = REDESIGN_DEV_TRANSACTION_TYPES.includes(
-    currentConfirmation?.type as TransactionType,
+  const isShowAdvancedDetailsToggle = isCorrectDeveloperTransactionType(
+    currentConfirmation?.type,
   );
 
   return (
@@ -98,6 +108,7 @@ const HeaderInfo = () => {
       <Box
         display={Display.Flex}
         justifyContent={JustifyContent.flexEnd}
+        gap={4}
         style={{
           alignSelf: 'flex-end',
         }}
@@ -139,12 +150,7 @@ const HeaderInfo = () => {
                 flexDirection={FlexDirection.Column}
                 alignItems={AlignItems.center}
               >
-                <AvatarAccount
-                  variant={
-                    useBlockie
-                      ? AvatarAccountVariant.Blockies
-                      : AvatarAccountVariant.Jazzicon
-                  }
+                <PreferredAvatar
                   address={fromAddress}
                   size={AvatarAccountSize.Lg}
                 />
@@ -159,6 +165,15 @@ const HeaderInfo = () => {
                 >
                   {fromName}
                 </Text>
+                {hasMoreThanOneWallet && (
+                  <Text
+                    variant={TextVariant.bodySm}
+                    color={TextColor.textAlternative}
+                    marginTop={1}
+                  >
+                    {walletName}
+                  </Text>
+                )}
               </Box>
               <Box style={{ position: 'absolute', right: 0 }}>
                 <ButtonIcon

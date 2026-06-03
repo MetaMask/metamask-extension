@@ -30,7 +30,7 @@ async function start() {
     await exec(`yarn version ${betaVersion}`);
   }
   // Generate a beta commit message and push changes to github
-  // Later on this will be picked up by CircleCI with the format of Version vx.x.x-beta.x
+  // Later on this will be picked up by CI with the format of Version vx.x.x-beta.x
   await exec(
     `git add . && git commit -m "Version v${betaVersion}" && git push`,
   );

@@ -29,6 +29,7 @@ import {
   SLIPPAGE_NEGATIVE_ERROR,
 } from '../../../../shared/constants/swaps';
 import { setTransactionSettingsOpened } from '../../../ducks/swaps/swaps';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 export default function SwapsBannerAlert({
   swapsErrorKey,
@@ -116,7 +117,7 @@ export default function SwapsBannerAlert({
               alignItems: AlignItems.flexStart,
             }}
             as="a"
-            href="https://support.metamask.io/token-swaps/user-guide-swaps/"
+            href={ZENDESK_URLS.SWAPS_USER_GUIDE}
             target="_blank"
             rel="noopener noreferrer"
           >

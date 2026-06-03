@@ -1,15 +1,8 @@
 import React from 'react';
-import { waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import QRCodeView from './qr-code-view';
-
-const mockCopy = jest.fn();
-jest.mock('../../../hooks/useCopyToClipboard', () => ({
-  useCopyToClipboard: () => [null, mockCopy],
-}));
 
 const mockEthAddress = '0x467060a50CB7bBd2209017323b794130184195a0';
 const mockBtcAddress = 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq';
@@ -17,10 +10,10 @@ const mockBtcAddress = 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq';
 const render = (
   {
     Qr,
-    warning,
-  }: { Qr: { message: string; data: string }; warning: null | string } = {
+  }: // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  { Qr: { message: string; data: string } } = {
     Qr: { data: mockEthAddress, message: '' },
-    warning: '',
   },
 ) => {
   const store = configureStore({
@@ -28,7 +21,7 @@ const render = (
       ...mockState.metamask,
     },
   });
-  return renderWithProvider(<QRCodeView Qr={Qr} warning={warning} />, store);
+  return renderWithProvider(<QRCodeView Qr={Qr} />, store);
 };
 
 describe('QRCodeView', () => {
@@ -47,51 +40,28 @@ describe('QRCodeView', () => {
     {
       test: 'lowercased ETH address to checksummed',
       data: mockEthAddress.toLowerCase(),
-      expected: mockEthAddress,
       message: '',
     },
     {
       test: 'checksummed ETH address',
       data: mockEthAddress,
-      expected: mockEthAddress,
       message: '',
     },
     {
       test: 'BTC address',
       data: mockBtcAddress,
-      expected: mockBtcAddress,
       message: '',
     },
   ])(
     'it renders the $test',
-    async ({
-      data,
-      message,
-      expected,
-    }: {
-      data: string;
-      message: string;
-      expected: string;
-    }) => {
-      const user = userEvent.setup();
+    async ({ data, message }: { data: string; message: string }) => {
       const { container } = render({
         Qr: { data, message },
-        warning: '',
       });
       const qrCodeImage = container.querySelector(
         '[data-testid="qr-code-image"]',
       );
       expect(qrCodeImage).toBeInTheDocument();
-
-      const copyButton = container.querySelector(
-        '[data-testid="address-copy-button-text"]',
-      );
-      expect(copyButton).toBeInTheDocument();
-      await user.click(copyButton as HTMLElement);
-
-      await waitFor(() => {
-        expect(mockCopy).toHaveBeenCalledWith(expected);
-      });
     },
   );
 });

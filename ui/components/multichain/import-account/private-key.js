@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
 import {
   FormTextField,
   TextFieldSize,
@@ -14,12 +13,11 @@ import BottomButtons from './bottom-buttons';
 export default function PrivateKeyImportView({
   importAccountFunc,
   onActionComplete,
+  importErrorMessage,
 }) {
   const t = useI18nContext();
   const [privateKey, setPrivateKey] = useState('');
   const [showPrivateKey, setShowPrivateKey] = useState(false);
-
-  const warning = useSelector((state) => state.appState.warning);
 
   function handleKeyPress(event) {
     if (privateKey !== '' && event.key === 'Enter') {
@@ -38,8 +36,8 @@ export default function PrivateKeyImportView({
         id="private-key-box"
         size={TextFieldSize.Lg}
         autoFocus
-        helpText={warning}
-        error
+        helpText={importErrorMessage}
+        error={Boolean(importErrorMessage)}
         label={t('pastePrivateKey')}
         value={privateKey}
         onChange={(event) => setPrivateKey(event.target.value)}
@@ -80,4 +78,8 @@ PrivateKeyImportView.propTypes = {
    * Executes when the key is imported
    */
   onActionComplete: PropTypes.func.isRequired,
+  /**
+   * Import error message
+   */
+  importErrorMessage: PropTypes.string,
 };

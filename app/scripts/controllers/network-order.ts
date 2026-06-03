@@ -1,14 +1,22 @@
+import { BtcScope, SolScope, TrxScope } from '@metamask/keyring-api';
+import { BaseController, StateMetadata } from '@metamask/base-controller';
+import type { Messenger } from '@metamask/messenger';
 import {
-  BaseController,
-  RestrictedControllerMessenger,
-} from '@metamask/base-controller';
-import {
+  NetworkControllerSetActiveNetworkAction,
   NetworkControllerStateChangeEvent,
   NetworkState,
+  NetworkControllerNetworkRemovedEvent,
+  NetworkControllerGetStateAction,
 } from '@metamask/network-controller';
-import { Hex } from '@metamask/utils';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import type { CaipChainId, CaipNamespace, Hex } from '@metamask/utils';
 import type { Patch } from 'immer';
+import type {
+  ControllerGetStateAction,
+  ControllerStateChangeEvent,
+} from '@metamask/base-controller';
 import { TEST_CHAINS } from '../../../shared/constants/network';
+import { NetworkOrderControllerMethodActions } from './network-order-method-action-types';
 
 // Unique name for the controller
 const controllerName = 'NetworkOrderController';
@@ -17,8 +25,13 @@ const controllerName = 'NetworkOrderController';
  * Information about an ordered network.
  */
 export type NetworksInfo = {
-  networkId: Hex; // The network's chain id
+  networkId: CaipChainId; // The network's chain id
 };
+
+export type EnabledNetworksByChainId = Record<
+  CaipNamespace,
+  Record<string, boolean>
+>;
 
 // State shape for NetworkOrderController
 export type NetworkOrderControllerState = {
@@ -31,23 +44,36 @@ export type NetworkOrderStateChange = {
   payload: [NetworkOrderControllerState, Patch[]];
 };
 
-// Describes the action for updating the networks list
-export type NetworkOrderControllerupdateNetworksListAction = {
-  type: `${typeof controllerName}:updateNetworksList`;
-  handler: NetworkOrderController['updateNetworksList'];
-};
+export type NetworkOrderControllerGetStateAction = ControllerGetStateAction<
+  typeof controllerName,
+  NetworkOrderControllerState
+>;
 
 // Union of all possible actions for the messenger
-export type NetworkOrderControllerMessengerActions =
-  NetworkOrderControllerupdateNetworksListAction;
+export type NetworkOrderControllerActions =
+  | NetworkOrderControllerGetStateAction
+  | NetworkOrderControllerMethodActions;
+
+export type NetworkOrderControllerMessengerEvents =
+  | ControllerStateChangeEvent<
+      typeof controllerName,
+      NetworkOrderControllerState
+    >
+  | NetworkOrderStateChange;
+
+type AllowedActions =
+  | NetworkControllerGetStateAction
+  | NetworkControllerSetActiveNetworkAction;
+
+type AllowedEvents =
+  | NetworkControllerStateChangeEvent
+  | NetworkControllerNetworkRemovedEvent;
 
 // Type for the messenger of NetworkOrderController
-export type NetworkOrderControllerMessenger = RestrictedControllerMessenger<
+export type NetworkOrderControllerMessenger = Messenger<
   typeof controllerName,
-  NetworkOrderControllerMessengerActions,
-  NetworkOrderStateChange | NetworkControllerStateChangeEvent,
-  never,
-  NetworkOrderStateChange['type'] | NetworkControllerStateChangeEvent['type']
+  NetworkOrderControllerActions | AllowedActions,
+  NetworkOrderControllerMessengerEvents | AllowedEvents
 >;
 
 // Default state for the controller
@@ -56,12 +82,19 @@ const defaultState: NetworkOrderControllerState = {
 };
 
 // Metadata for the controller state
-const metadata = {
+const metadata: StateMetadata<NetworkOrderControllerState> = {
   orderedNetworkList: {
+    includeInStateLogs: false,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
   },
 };
+
+const MESSENGER_EXPOSED_METHODS = [
+  'onNetworkControllerStateChange',
+  'updateNetworksList',
+] as const;
 
 /**
  * Controller that updates the order of the network list.
@@ -96,11 +129,16 @@ export class NetworkOrderController extends BaseController<
     });
 
     // Subscribe to network state changes
-    this.messagingSystem.subscribe(
+    this.messenger.subscribe(
       'NetworkController:stateChange',
       (networkControllerState) => {
         this.onNetworkControllerStateChange(networkControllerState);
       },
+    );
+
+    this.messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
     );
   }
 
@@ -115,10 +153,16 @@ export class NetworkOrderController extends BaseController<
   }: NetworkState) {
     this.update((state) => {
       // Filter out testnets, which are in the state but not orderable
-      const chainIds = Object.keys(networkConfigurationsByChainId).filter(
+      const hexChainIds = Object.keys(networkConfigurationsByChainId).filter(
         (chainId) =>
           !TEST_CHAINS.includes(chainId as (typeof TEST_CHAINS)[number]),
       ) as Hex[];
+      const chainIds: CaipChainId[] = hexChainIds.map(toEvmCaipChainId);
+      const nonEvmChainIds: CaipChainId[] = [
+        BtcScope.Mainnet,
+        SolScope.Mainnet,
+        TrxScope.Mainnet,
+      ];
 
       const newNetworks = chainIds
         .filter(
@@ -131,7 +175,14 @@ export class NetworkOrderController extends BaseController<
 
       state.orderedNetworkList = state.orderedNetworkList
         // Filter out deleted networks
-        .filter(({ networkId }) => chainIds.includes(networkId))
+        .filter(
+          ({ networkId }) =>
+            chainIds.includes(networkId) ||
+            // Since Bitcoin, Solana and Tron are not part of the @metamask/network-controller, we have
+            // to add a second check to make sure it is not filtered out.
+            // TODO: Update this logic to @metamask/multichain-network-controller once all networks are migrated.
+            nonEvmChainIds.includes(networkId),
+        )
         // Append new networks to the end
         .concat(newNetworks);
     });
@@ -143,7 +194,7 @@ export class NetworkOrderController extends BaseController<
    * @param networkList - The list of networks to update in the state.
    */
 
-  updateNetworksList(chainIds: Hex[]) {
+  updateNetworksList(chainIds: CaipChainId[]) {
     this.update((state) => {
       state.orderedNetworkList = chainIds.map((chainId) => ({
         networkId: chainId,

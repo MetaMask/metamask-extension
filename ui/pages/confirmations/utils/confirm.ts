@@ -1,50 +1,27 @@
-import { ApprovalRequest } from '@metamask/approval-controller';
-import { ApprovalType } from '@metamask/controller-utils';
-import { TransactionType } from '@metamask/transaction-controller';
-import { Json } from '@metamask/utils';
+import {
+  TransactionMeta,
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import {
   PRIMARY_TYPES_ORDER,
   PRIMARY_TYPES_PERMIT,
 } from '../../../../shared/constants/signatures';
-import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
+import { parseTypedDataMessage } from '../../../../shared/lib/transaction.utils';
 import { sanitizeMessage } from '../../../helpers/utils/util';
 import { Confirmation, SignatureRequestType } from '../types/confirm';
 import { TYPED_SIGNATURE_VERSIONS } from '../constants';
-
-export const REDESIGN_APPROVAL_TYPES = [
-  ApprovalType.EthSignTypedData,
-  ApprovalType.PersonalSign,
-];
-
-export const REDESIGN_USER_TRANSACTION_TYPES = [
-  TransactionType.contractInteraction,
-  TransactionType.deployContract,
-  TransactionType.tokenMethodApprove,
-  TransactionType.tokenMethodIncreaseAllowance,
-  TransactionType.tokenMethodSetApprovalForAll,
-  TransactionType.tokenMethodTransfer,
-  TransactionType.tokenMethodTransferFrom,
-  TransactionType.tokenMethodSafeTransferFrom,
-  TransactionType.simpleSend,
-];
-
-export const REDESIGN_DEV_TRANSACTION_TYPES = [
-  ...REDESIGN_USER_TRANSACTION_TYPES,
-];
-
-const SIGNATURE_APPROVAL_TYPES = [
-  ApprovalType.PersonalSign,
-  ApprovalType.EthSignTypedData,
-];
-
-export const isSignatureApprovalRequest = (
-  request: ApprovalRequest<Record<string, Json>>,
-) => SIGNATURE_APPROVAL_TYPES.includes(request.type as ApprovalType);
 
 export const SIGNATURE_TRANSACTION_TYPES = [
   TransactionType.personalSign,
   TransactionType.signTypedData,
 ];
+
+// DelegationFramework caveat enforcers revert with `Error(string)` messages of
+// the form `<EnforcerName>:<reason>` (Solidity convention).
+const CAVEAT_ENFORCER_REVERT_PATTERN = /^[A-Z][A-Za-z0-9]*Enforcer:/u;
+
+const REDEEM_DELEGATIONS_SELECTOR = '0xcef6d209';
 
 export const isSignatureTransactionType = (request?: Record<string, unknown>) =>
   request &&
@@ -102,20 +79,86 @@ export const isPermitSignatureRequest = (request?: Confirmation) => {
   return PRIMARY_TYPES_PERMIT.includes(primaryType);
 };
 
-export const isValidASCIIURL = (urlString?: string) => {
+/**
+ * @param urlString - The URL to check
+ * @returns True if the URL hostname contains only ASCII characters, false otherwise. The URL is still valid if the path contains non-ASCII characters.
+ */
+export const isValidASCIIURL = (urlString?: string): boolean => {
   try {
-    return urlString?.includes(new URL(urlString).host);
+    if (!urlString || urlString.length === 0) {
+      return false;
+    }
+
+    return urlString.includes(new URL(urlString).host);
   } catch (exp: unknown) {
-    console.error(exp);
+    console.error(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      `Failed to detect if URL hostname contains non-ASCII characters: ${urlString}. Error: ${exp}`,
+    );
     return false;
   }
 };
 
-export const toPunycodeURL = (urlString: string) => {
+/**
+ * Converts the URL to Punycode
+ *
+ * @param urlString - The URL to convert
+ * @returns The Punycode URL
+ */
+export const toPunycodeURL = (urlString: string): string | undefined => {
   try {
-    return new URL(urlString).href;
+    const url = new URL(urlString);
+    const isWithoutEndSlash = url.pathname === '/' && !urlString.endsWith('/');
+
+    return isWithoutEndSlash ? url.href.slice(0, -1) : url.href;
   } catch (err: unknown) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     console.error(`Failed to convert URL to Punycode: ${err}`);
     return undefined;
   }
 };
+
+/**
+ * Removes the protocol (http://, https://, etc.) from a URL
+ *
+ * @param urlString - The URL to strip the protocol from
+ * @returns The URL without the protocol
+ */
+export const stripProtocol = (urlString: string): string => {
+  return urlString.replace(/^\w+:\/\//u, '');
+};
+
+/**
+ * Detect whether a transaction was reverted on-chain by an enforced-simulations
+ * caveat enforcer (the DelegationFramework "protection" mechanism).
+ *
+ * Returns true when the transaction failed AND its `txParams.data` is a
+ * `redeemDelegations` call AND its decoded receipt revert reason matches the
+ * Solidity `<EnforcerName>:<reason>` revert format.
+ *
+ * @param transactionMeta - The transaction metadata. May be undefined.
+ * @returns Whether the transaction was reverted by an enforced-simulations caveat enforcer.
+ */
+export function isProtectedByEnforcedSimulations(
+  transactionMeta?: TransactionMeta,
+): boolean {
+  if (!transactionMeta || transactionMeta.status !== TransactionStatus.failed) {
+    return false;
+  }
+
+  const data = transactionMeta.txParams?.data;
+  const revertMessage = transactionMeta.revert?.receipt?.message;
+
+  if (
+    !data ||
+    !data.toLowerCase().startsWith(REDEEM_DELEGATIONS_SELECTOR) ||
+    !revertMessage ||
+    !CAVEAT_ENFORCER_REVERT_PATTERN.test(revertMessage)
+  ) {
+    return false;
+  }
+
+  return true;
+}

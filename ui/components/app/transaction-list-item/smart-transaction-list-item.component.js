@@ -1,10 +1,10 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
+import { ButtonSize } from '@metamask/design-system-react';
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import TransactionIcon from '../transaction-icon';
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
-import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import {
   TransactionGroupStatus,
   SmartTransactionStatus,
@@ -13,12 +13,11 @@ import {
 import CancelButton from '../cancel-button';
 import { cancelSwapsSmartTransaction } from '../../../ducks/swaps/swaps';
 import TransactionListItemDetails from '../transaction-list-item-details';
-import { ActivityListItem } from '../../multichain';
+import { ActivityListItem } from '../../multichain/activity-list-item';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
   BadgeWrapper,
-  BadgeWrapperAnchorElementShape,
   Box,
 } from '../../component-library';
 import {
@@ -26,27 +25,22 @@ import {
   Display,
 } from '../../../helpers/constants/design-system';
 import { getCurrentNetwork } from '../../../selectors';
+import { useBoolean } from '../../../hooks/useBoolean';
 
 export default function SmartTransactionListItem({
   smartTransaction,
   transactionGroup,
   isEarliestNonce = false,
+  chainId,
 }) {
   const dispatch = useDispatch();
   const [cancelSwapLinkClicked, setCancelSwapLinkClicked] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
-  const {
-    title,
-    category,
-    primaryCurrency,
-    recipientAddress,
-    isPending,
-    senderAddress,
-  } = useTransactionDisplayData(transactionGroup);
+  const { value: showDetails, toggle: toggleShowDetails } = useBoolean();
+  const { title, category, primaryCurrency, recipientAddress, isPending } =
+    useTransactionDisplayData(transactionGroup);
   const currentChain = useSelector(getCurrentNetwork);
 
-  const { time, status } = smartTransaction;
-  const date = formatDateWithYearContext(time, 'MMM d, y', 'MMM d');
+  const { status } = smartTransaction;
   let displayedStatusKey;
   if (status === SmartTransactionStatus.pending) {
     displayedStatusKey = TransactionGroupStatus.pending;
@@ -56,19 +50,17 @@ export default function SmartTransactionListItem({
   const showCancelSwapLink =
     smartTransaction.cancellable && !cancelSwapLinkClicked;
   const className = 'transaction-list-item transaction-list-item--unconfirmed';
-  const toggleShowDetails = useCallback(() => {
-    setShowDetails((prev) => !prev);
-  }, []);
+  const senderAddress = transactionGroup.initialTransaction.txParams?.from;
+
   return (
     <>
       <ActivityListItem
         className={className}
+        status={displayedStatusKey}
         title={title}
         onClick={toggleShowDetails}
         icon={
           <BadgeWrapper
-            anchorElementShape={BadgeWrapperAnchorElementShape.circular}
-            positionObj={{ top: -4, right: -4 }}
             display={Display.Block}
             badge={
               <AvatarNetwork
@@ -77,8 +69,8 @@ export default function SmartTransactionListItem({
                 size={AvatarNetworkSize.Xs}
                 name={currentChain?.nickname}
                 src={currentChain?.rpcPrefs?.imageUrl}
-                borderWidth={1}
                 borderColor={BackgroundColor.backgroundDefault}
+                borderWidth={2}
               />
             }
           >
@@ -89,18 +81,15 @@ export default function SmartTransactionListItem({
           <TransactionStatusLabel
             isPending
             isEarliestNonce={isEarliestNonce}
-            date={date}
             status={displayedStatusKey}
           />
         }
       >
         {displayedStatusKey === TransactionGroupStatus.pending &&
           showCancelSwapLink && (
-            <Box
-              paddingTop={4}
-              className="transaction-list-item__pending-actions"
-            >
+            <Box paddingTop={2}>
               <CancelButton
+                size={ButtonSize.Sm}
                 transaction={smartTransaction.uuid}
                 cancelTransaction={(e) => {
                   e?.preventDefault();
@@ -118,17 +107,15 @@ export default function SmartTransactionListItem({
           senderAddress={senderAddress}
           recipientAddress={recipientAddress}
           primaryCurrency={primaryCurrency}
-          isEarliestNonce={isEarliestNonce}
           transactionGroup={transactionGroup}
           transactionStatus={() => (
             <TransactionStatusLabel
               isPending={isPending}
               isEarliestNonce={isEarliestNonce}
-              date={date}
               status={displayedStatusKey}
-              statusOnly
             />
           )}
+          chainId={chainId}
         />
       )}
     </>
@@ -139,4 +126,5 @@ SmartTransactionListItem.propTypes = {
   smartTransaction: PropTypes.object.isRequired,
   isEarliestNonce: PropTypes.bool,
   transactionGroup: PropTypes.object,
+  chainId: PropTypes.string,
 };

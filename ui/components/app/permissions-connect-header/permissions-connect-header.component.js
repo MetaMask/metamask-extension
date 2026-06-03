@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { SubjectType } from '@metamask/permission-controller';
 import SiteOrigin from '../../ui/site-origin';
 import Box from '../../ui/box';

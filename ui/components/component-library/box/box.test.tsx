@@ -14,8 +14,7 @@ import {
   BackgroundColor,
   TextColor,
 } from '../../../helpers/constants/design-system';
-
-import { Box } from '.';
+import { Box } from './box';
 
 describe('Box', () => {
   it('should render the Box without crashing', () => {
@@ -2062,7 +2061,7 @@ describe('Box', () => {
         <Box margin={[0]}>1 item</Box>
         <Box margin={[0, 1]}>2 items</Box>
         <Box margin={[0, 1, 2]}>3 items</Box>
-        {/* TODO: Replace `any` with type */}
+        {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973 */}
         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         <Box margin={[0, 1, 2, 3, 4] as any}>too many items</Box>
       </>,

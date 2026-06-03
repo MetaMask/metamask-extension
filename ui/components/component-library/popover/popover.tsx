@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { usePopper } from 'react-popper';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import {
   AlignItems,
   BackgroundColor,
@@ -11,7 +11,7 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 
-import { Box } from '..';
+import { Box } from '../box';
 import type { BoxProps, PolymorphicRef } from '../box';
 
 import {
@@ -21,7 +21,11 @@ import {
   PopoverRole,
 } from './popover.types';
 
+const CAPTURE_EVENT_LISTENER_OPTIONS = { capture: true };
+
 export const Popover: PopoverComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     {
       children,
@@ -84,41 +88,62 @@ export const Popover: PopoverComponent = React.forwardRef(
       width: matchWidth ? referenceElement?.clientWidth : 'auto',
     };
 
-    // Esc key press
-    const handleEscKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        // Close the popover when the "Esc" key is pressed
-        if (onPressEscKey) {
-          onPressEscKey();
-        }
-      }
-    };
-
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        isOpen &&
-        popoverRef.current &&
-        !popoverRef.current.contains(event.target as Node)
-      ) {
-        if (onClickOutside) {
-          onClickOutside();
-        }
-      }
-    };
-
     useEffect(() => {
-      document.addEventListener('keydown', handleEscKey);
-      if (isOpen) {
-        document.addEventListener('click', handleClickOutside);
-      } else {
-        document.removeEventListener('click', handleClickOutside);
+      if (!isOpen || (!onPressEscKey && !onClickOutside)) {
+        return undefined;
+      }
+
+      // Esc key press
+      const handleEscKey = (event: KeyboardEvent) => {
+        if (event.key === 'Escape') {
+          onPressEscKey?.();
+        }
+      };
+
+      const handleClickOutside = (event: MouseEvent) => {
+        if (
+          popoverRef.current &&
+          !popoverRef.current.contains(event.target as Node) &&
+          !referenceElement?.contains(event.target as Node)
+        ) {
+          onClickOutside?.();
+        }
+      };
+
+      if (onPressEscKey) {
+        document.addEventListener(
+          'keydown',
+          handleEscKey,
+          CAPTURE_EVENT_LISTENER_OPTIONS,
+        );
+      }
+
+      if (onClickOutside) {
+        document.addEventListener(
+          'click',
+          handleClickOutside,
+          CAPTURE_EVENT_LISTENER_OPTIONS,
+        );
       }
 
       return () => {
-        document.removeEventListener('keydown', handleEscKey);
-        document.removeEventListener('click', handleClickOutside);
+        if (onPressEscKey) {
+          document.removeEventListener(
+            'keydown',
+            handleEscKey,
+            CAPTURE_EVENT_LISTENER_OPTIONS,
+          );
+        }
+
+        if (onClickOutside) {
+          document.removeEventListener(
+            'click',
+            handleClickOutside,
+            CAPTURE_EVENT_LISTENER_OPTIONS,
+          );
+        }
       };
-    }, [onPressEscKey, isOpen, onClickOutside]);
+    }, [onPressEscKey, isOpen, onClickOutside, referenceElement]);
 
     const PopoverContent = (
       <Box

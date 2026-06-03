@@ -3,7 +3,12 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { Provider } from 'react-redux';
 import { MOCK_TRANSACTION_BY_TYPE } from '../../../../.storybook/initial-states/transactions';
+import configureStore from '../../../store/store';
+import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
+import { I18nProvider } from '../../../../.storybook/i18n';
+import * as allLocales from '../../../../.storybook/locales';
 import TransactionListItem from '.';
 
 /**
@@ -16,10 +21,20 @@ import TransactionListItem from '.';
  */
 const getMockTransactionGroup = (args) => {
   const status = args['transactionGroup.primaryTransaction.status'];
+  const submittedTime =
+    args['transactionGroup.primaryTransaction.submittedTime'];
+  const specificDataForTxParams =
+    args['transactionGroup.primaryTransaction.txParams.data'];
+  const basePrimaryTransaction = args['transactionGroup.primaryTransaction'];
+
   const tx = {
-    ...args['transactionGroup.primaryTransaction'],
+    ...basePrimaryTransaction, // Spread type, txParamsOriginal, and base txParams (like .from, .to, .value)
     status,
-    submittedTime: args['transactionGroup.primaryTransaction.submittedTime'],
+    submittedTime,
+    txParams: {
+      ...(basePrimaryTransaction.txParams || {}), // Start with txParams from basePrimaryTransaction
+      data: specificDataForTxParams, // Override/set the data field
+    },
   };
 
   return {
@@ -56,6 +71,8 @@ export default {
     },
     'transactionGroup.primaryTransaction.submittedTime': { control: 'number' },
     'transactionGroup.primaryTransaction': { control: 'object' },
+    'transactionGroup.primaryTransaction.txParams': { control: 'object' },
+    'transactionGroup.primaryTransaction.txParams.data': { control: 'text' },
   },
   args: {
     isEarliestNonce: true,
@@ -63,6 +80,8 @@ export default {
     'transactionGroup.hasRetried': false,
     'transactionGroup.primaryTransaction.status': TransactionStatus.pending,
     'transactionGroup.primaryTransaction.submittedTime': 19999999999999,
+    'transactionGroup.primaryTransaction.txParams.data':
+      '0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000',
   },
 };
 
@@ -87,6 +106,9 @@ export const SignTypeData = Template.bind({});
 export const SimpleSend = Template.bind({});
 export const Smart = Template.bind({});
 export const Swap = Template.bind({});
+export const BridgeSuccess = Template.bind({});
+export const BridgePending = Template.bind({});
+export const BridgeFailed = Template.bind({});
 export const SwapApproval = Template.bind({});
 export const TokenMethodApprove = Template.bind({});
 export const TokenMethodSafeTransferFrom = Template.bind({});
@@ -135,6 +157,13 @@ PersonalSign.args = {
   },
 };
 
+Sign.storyName = 'sign';
+Sign.args = {
+  'transactionGroup.primaryTransaction': {
+    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.sign],
+  },
+};
+
 SignTypeData.storyName = 'eth_signTypedData';
 SignTypeData.args = {
   'transactionGroup.primaryTransaction': {
@@ -149,10 +178,146 @@ SimpleSend.args = {
   },
 };
 
+Smart.storyName = 'smart';
+Smart.args = {
+  'transactionGroup.primaryTransaction': {
+    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.smart],
+  },
+};
+
 Swap.storyName = 'swap';
 Swap.args = {
   'transactionGroup.primaryTransaction': {
     ...MOCK_TRANSACTION_BY_TYPE[TransactionType.swap],
+  },
+};
+
+const configureBridgeStore = (status) =>
+  configureStore(
+    createBridgeMockStore({
+      metamaskStateOverrides: {
+        txHistory: {
+          4243712234858467: {
+            account: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            quote: {
+              srcChainId: 1,
+              srcAsset: {
+                address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                decimals: 18,
+                symbol: 'ETH',
+              },
+              destChainId: 10,
+              destAsset: {},
+            },
+            status: {
+              srcChain: {
+                chainId: 1,
+                txHash:
+                  '0xbcb195f393f4468945b4045cd41bcdbc2f19ad75ae92a32cf153a3004e42009a',
+              },
+              destChain:
+                status === 'FAILED'
+                  ? undefined
+                  : {
+                      chainId: 59144,
+                    },
+              status,
+            },
+            txMetaId: 4243712234858467,
+          },
+        },
+      },
+    }),
+  );
+
+BridgeSuccess.storyName = 'bridgeSuccess';
+BridgeSuccess.decorators = [
+  (Story) => (
+    <Provider store={configureBridgeStore('COMPLETE')}>
+      <I18nProvider
+        currentLocale="en"
+        current={allLocales.en}
+        en={allLocales.en}
+      >
+        <Story />
+      </I18nProvider>
+    </Provider>
+  ),
+];
+BridgeSuccess.args = {
+  'transactionGroup.primaryTransaction': {
+    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.bridge],
+  },
+};
+
+BridgePending.storyName = 'bridgePending';
+BridgePending.decorators = [
+  (Story) => (
+    <Provider
+      store={configureStore(
+        createBridgeMockStore({
+          metamaskStateOverrides: {
+            txHistory: {
+              4243712234858467: {
+                account: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                quote: {
+                  srcChainId: 1,
+                  srcAsset: {
+                    address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                    decimals: 18,
+                    symbol: 'ETH',
+                  },
+                  destChainId: 10,
+                  destAsset: {},
+                },
+                status: {
+                  srcChain: {
+                    txHash:
+                      '0xbcb195f393f4468945b4045cd41bcdbc2f19ad75ae92a32cf153a3004e42009a',
+                  },
+                  destChain: {},
+                  status: 'PENDING',
+                },
+                txMetaId: 4243712234858467,
+              },
+            },
+          },
+        }),
+      )}
+    >
+      <I18nProvider
+        currentLocale="en"
+        current={allLocales.en}
+        en={allLocales.en}
+      >
+        <Story />
+      </I18nProvider>
+    </Provider>
+  ),
+];
+BridgePending.args = {
+  'transactionGroup.primaryTransaction': {
+    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.bridge],
+  },
+};
+
+BridgeFailed.storyName = 'bridgeFailed';
+BridgeFailed.decorators = [
+  (Story) => (
+    <Provider store={configureBridgeStore('FAILED')}>
+      <I18nProvider
+        currentLocale="en"
+        current={allLocales.en}
+        en={allLocales.en}
+      >
+        <Story />
+      </I18nProvider>
+    </Provider>
+  ),
+];
+BridgeFailed.args = {
+  'transactionGroup.primaryTransaction': {
+    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.bridge],
   },
 };
 

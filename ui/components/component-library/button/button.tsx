@@ -10,7 +10,14 @@ import type { ButtonProps, ButtonComponent } from './button.types';
 
 import { ButtonVariant } from './button.types';
 
+/**
+ * @deprecated Please update your code to use `Button` from `@metamask/design-system-react`.
+ * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#button-component | Migration Guide}
+ * @see {@link https://metamask.github.io/metamask-design-system/?path=/docs/react-components-button--docs | Storybook Documentation}
+ */
 export const Button: ButtonComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'button' | 'a'>(
     { variant, ...props }: ButtonProps<C>,
     ref?: PolymorphicRef<C>,

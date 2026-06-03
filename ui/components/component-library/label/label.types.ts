@@ -16,11 +16,19 @@ export interface LabelStyleUtilityProps extends TextStyleUtilityProps {
    * The content of the Label component
    */
   children: string | React.ReactNode;
+  /**
+   * Data test id
+   */
+  'data-testid'?: string;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type LabelProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, LabelStyleUtilityProps>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type LabelComponent = <C extends React.ElementType = 'label'>(
   props: LabelProps<C>,
 ) => React.ReactElement | null;

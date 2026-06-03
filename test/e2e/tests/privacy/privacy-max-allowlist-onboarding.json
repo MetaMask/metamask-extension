@@ -1,0 +1,36 @@
+{
+  "duringOnboarding": [
+    "accounts.api.cx.metamask.io",
+    "accounts.google.com",
+    "chainid.network",
+    "firefox.settings.services.mozilla.com",
+    "metamask.github.io",
+    "sentry.io"
+  ],
+  "toBeRemoved": {
+    "accounts.google.com": "Should be removed - web3auth team - will only call during social login",
+    "bridge.api.cx.metamask.io": "Should be removed - STX team - when move to remote feature flag"
+  },
+  "untilOnboardingComplete": [
+    "accounts.api.cx.metamask.io",
+    "token.api.cx.metamask.io",
+    "static.cx.metamask.io",
+    "accounts.google.com",
+    "arbitrum-mainnet.infura.io",
+    "base-mainnet.infura.io",
+    "bridge.api.cx.metamask.io",
+    "bsc-mainnet.infura.io",
+    "chainid.network",
+    "firefox.settings.services.mozilla.com",
+    "linea-mainnet.infura.io",
+    "mainnet.infura.io",
+    "metamask.github.io",
+    "monad-mainnet.infura.io",
+    "on-ramp.api.cx.metamask.io",
+    "on-ramp.dev-api.cx.metamask.io",
+    "optimism-mainnet.infura.io",
+    "polygon-mainnet.infura.io",
+    "sei-mainnet.infura.io",
+    "sentry.io"
+  ]
+}

@@ -1,0 +1,54 @@
+diff --git a/rive.js b/rive.js
+index 03eeff276d0495d77ce0c4715160db4b80a5fc87..79d6a4b12d62a12a4005e2d7f6f9249ce2ddeb55 100644
+--- a/rive.js
++++ b/rive.js
+@@ -5418,7 +5418,7 @@ var RiveFile = /** @class */ (function () {
+                             });
+                         }
+                         else {
+-                            this.fireLoadError(RiveFile.fileLoadErrorMessage);
++                            // this.fireLoadError(RiveFile.fileLoadErrorMessage);
+                         }
+                         return [2 /*return*/];
+                 }
+@@ -5433,7 +5433,8 @@ var RiveFile = /** @class */ (function () {
+                     case 0:
+                         // If no source file url specified, it's a bust
+                         if (!this.src && !this.buffer) {
+-                            this.fireLoadError(RiveFile.missingErrorMessage);
++                            // this.fireLoadError(RiveFile.missingErrorMessage);
++                            console.warn(RiveFile.missingErrorMessage);
+                             return [2 /*return*/];
+                         }
+                         _b.label = 1;
+@@ -5452,7 +5453,8 @@ var RiveFile = /** @class */ (function () {
+                         return [3 /*break*/, 5];
+                     case 4:
+                         error_1 = _b.sent();
+-                        this.fireLoadError(error_1 instanceof Error ? error_1.message : RiveFile.fileLoadErrorMessage);
++                        // this.fireLoadError(error_1 instanceof Error ? error_1.message : RiveFile.fileLoadErrorMessage);
++                        console.warn(error_1 instanceof Error ? error_1.message : RiveFile.fileLoadErrorMessage);
+                         return [3 /*break*/, 5];
+                     case 5: return [2 /*return*/];
+                 }
+@@ -5464,7 +5466,8 @@ var RiveFile = /** @class */ (function () {
+             type: EventType.LoadError,
+             data: message,
+         });
+-        throw new Error(message);
++        // throw new Error(message);
++        console.warn(message);
+     };
+     /**
+      * Subscribe to Rive-generated events
+@@ -5692,7 +5695,9 @@ var Rive = /** @class */ (function () {
+         this.riveFile = riveFile;
+         // If no source file url specified, it's a bust
+         if (!this.src && !this.buffer && !this.riveFile) {
+-            throw new RiveError(Rive.missingErrorMessage);
++            // throw new RiveError(Rive.missingErrorMessage);
++            console.warn(Rive.missingErrorMessage);
++            return;
+         }
+         // List of animations that should be initialized.
+         var startingAnimationNames = mapToStringArray(animations);

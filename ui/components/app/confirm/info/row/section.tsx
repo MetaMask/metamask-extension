@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { Box } from '../../../../component-library';
 import {
   BackgroundColor,
@@ -8,21 +8,26 @@ import {
 export type ConfirmInfoSectionProps = {
   children: React.ReactNode | string;
   noPadding?: boolean;
+  style?: CSSProperties;
   'data-testid'?: string;
 };
 
 export const ConfirmInfoSection = ({
   children,
   noPadding,
+  style = {},
   'data-testid': dataTestId,
 }: ConfirmInfoSectionProps) => {
   return (
     <Box
       data-testid={dataTestId}
-      backgroundColor={BackgroundColor.backgroundDefault}
-      borderRadius={BorderRadius.MD}
-      padding={noPadding ? 0 : 2}
+      backgroundColor={BackgroundColor.backgroundSection}
+      borderRadius={BorderRadius.LG}
+      paddingInline={noPadding ? 0 : 2}
+      paddingTop={noPadding ? 0 : 1}
+      paddingBottom={noPadding ? 0 : 1}
       marginBottom={4}
+      style={style}
     >
       {children}
     </Box>

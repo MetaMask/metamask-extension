@@ -8,10 +8,16 @@ import {
   keyringSnapPermissionsBuilder,
 } from './keyring-snaps-permissions';
 
+// Run these tests as if we were in a Flask build
+jest.mock('../../../../shared/lib/build-types', () => ({
+  ...jest.requireActual('../../../../shared/lib/build-types'),
+  isFlask: jest.fn().mockReturnValue(true),
+}));
+
 const PORTFOLIO_ORIGINS: string[] = [
-  'https://portfolio.metamask.io',
-  'https://dev.portfolio.metamask.io',
-  'https://ramps-dev.portfolio.metamask.io',
+  'https://app.metamask.io',
+  'https://dev.app.metamask.io',
+  'https://ramps-dev.app.metamask.io',
 ];
 
 describe('keyringSnapPermissionsBuilder', () => {
@@ -19,9 +25,10 @@ describe('keyringSnapPermissionsBuilder', () => {
     subjectCacheLimit: 100,
     messenger: {
       registerActionHandler: jest.fn(),
+      registerMethodActionHandlers: jest.fn(),
       registerInitialEventPayload: jest.fn(),
       publish: jest.fn(),
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any,
     state: {},
@@ -76,12 +83,16 @@ describe('keyringSnapPermissionsBuilder', () => {
     expect(permissions()).toStrictEqual([
       KeyringRpcMethod.ListAccounts,
       KeyringRpcMethod.GetAccount,
+      KeyringRpcMethod.CreateAccount,
+      KeyringRpcMethod.CreateAccounts,
       KeyringRpcMethod.FilterAccountChains,
       KeyringRpcMethod.DeleteAccount,
       KeyringRpcMethod.ListRequests,
       KeyringRpcMethod.GetRequest,
       KeyringRpcMethod.SubmitRequest,
       KeyringRpcMethod.RejectRequest,
+      KeyringRpcMethod.ResolveAccountAddress,
+      KeyringRpcMethod.SetSelectedAccounts,
     ]);
   });
 
@@ -130,7 +141,7 @@ describe('keyringSnapPermissionsBuilder', () => {
   ])('"%s" cannot call any methods', (origin: unknown) => {
     const permissions = keyringSnapPermissionsBuilder(
       mockController,
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       origin as any,
     );
@@ -154,7 +165,7 @@ describe('isProtocolAllowed', () => {
     [1, false],
     [0, false],
     [-1, false],
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ])('"%s" cannot call any methods', (origin: any, expected: boolean) => {
     expect(isProtocolAllowed(origin)).toBe(expected);

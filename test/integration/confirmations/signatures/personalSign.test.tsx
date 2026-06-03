@@ -1,16 +1,19 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLocation,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { integrationTestRender } from '../../../lib/render-helpers';
 import mockMetaMaskState from '../../data/integration-init-state.json';
+import {
+  getSelectedAccountGroupAccounts,
+  getSelectedAccountGroupName,
+} from '../../helpers';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
@@ -30,7 +33,6 @@ const getMetaMaskStateWithUnapprovedPersonalSign = (accountAddress: string) => {
     ...mockMetaMaskState,
     preferences: {
       ...mockMetaMaskState.preferences,
-      redesignedConfirmationsEnabled: true,
     },
     unapprovedPersonalMsgs: {
       [pendingPersonalSignId]: {
@@ -71,43 +73,53 @@ describe('PersonalSign Confirmation', () => {
   });
 
   it('displays the header account modal with correct data', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
-
-    const accountName = account.metadata.name;
+    const [account] = getSelectedAccountGroupAccounts(mockMetaMaskState);
+    const accountName = getSelectedAccountGroupName(mockMetaMaskState);
     const mockedMetaMaskState = getMetaMaskStateWithUnapprovedPersonalSign(
       account.address,
     );
 
-    const { getByTestId, queryByTestId } = await integrationTestRender({
-      preloadedState: mockedMetaMaskState,
-      backgroundConnection: backgroundConnectionMocked,
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: {
+          ...mockedMetaMaskState,
+          participateInMetaMetrics: true,
+          metaMetricsId: 'test-metametrics-id',
+          dataCollectionForMarketing: false,
+        },
+        backgroundConnection: backgroundConnectionMocked,
+      });
     });
 
-    expect(getByTestId('header-account-name')).toHaveTextContent(accountName);
-    expect(getByTestId('header-network-display-name')).toHaveTextContent(
-      'Sepolia',
+    expect(await screen.findByTestId('header-account-name')).toHaveTextContent(
+      accountName,
+    );
+    expect(
+      await screen.findByTestId('confirmation__details-network-name'),
+    ).toHaveTextContent('Sepolia');
+
+    fireEvent.click(
+      await screen.findByTestId('header-info__account-details-button'),
     );
 
-    fireEvent.click(getByTestId('header-info__account-details-button'));
-
-    await waitFor(() => {
-      expect(
-        getByTestId('confirmation-account-details-modal__account-name'),
-      ).toBeInTheDocument();
-    });
+    expect(
+      await screen.findByTestId(
+        'confirmation-account-details-modal__account-name',
+      ),
+    ).toBeInTheDocument();
 
     expect(
-      getByTestId('confirmation-account-details-modal__account-name'),
+      await screen.findByTestId(
+        'confirmation-account-details-modal__account-name',
+      ),
     ).toHaveTextContent(accountName);
-    expect(getByTestId('address-copy-button-text')).toHaveTextContent(
-      '0x0DCD5...3E7bc',
-    );
     expect(
-      getByTestId('confirmation-account-details-modal__account-balance'),
+      await screen.findByTestId('address-copy-button-text'),
+    ).toHaveTextContent('0x0DCD5...3E7bc');
+    expect(
+      await screen.findByTestId(
+        'confirmation-account-details-modal__account-balance',
+      ),
     ).toHaveTextContent('1.582717SepoliaETH');
 
     let confirmAccountDetailsModalMetricsEvent;
@@ -130,19 +142,28 @@ describe('PersonalSign Confirmation', () => {
           properties: {
             action: 'Confirm Screen',
             location: MetaMetricsEventLocation.SignatureConfirmation,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             signature_type: ApprovalType.PersonalSign,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            hd_entropy_index: 0,
           },
         }),
       ]),
     );
 
     fireEvent.click(
-      getByTestId('confirmation-account-details-modal__close-button'),
+      await screen.findByTestId(
+        'confirmation-account-details-modal__close-button',
+      ),
     );
 
     await waitFor(() => {
       expect(
-        queryByTestId('confirmation-account-details-modal__account-name'),
+        screen.queryByTestId(
+          'confirmation-account-details-modal__account-name',
+        ),
       ).not.toBeInTheDocument();
     });
   });
@@ -165,38 +186,9 @@ describe('PersonalSign Confirmation', () => {
       });
     });
 
-    expect(screen.getByText('Signature request')).toBeInTheDocument();
+    expect(await screen.findByText('Signature request')).toBeInTheDocument();
     expect(
-      screen.getByText('Review request details before you confirm.'),
+      await screen.findByText('Review request details before you confirm.'),
     ).toBeInTheDocument();
-  });
-
-  it('displays the MMI header warning when account signing is not the same as the account selected', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        '07c2cfec-36c9-46c4-8115-3836d3ac9047'
-      ];
-    const selectedAccount =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
-
-    const mockedMetaMaskState = getMetaMaskStateWithUnapprovedPersonalSign(
-      account.address,
-    );
-
-    const { getByText } = await integrationTestRender({
-      preloadedState: mockedMetaMaskState,
-      backgroundConnection: backgroundConnectionMocked,
-    });
-
-    const mismatchAccountText = `Your selected account (${shortenAddress(
-      selectedAccount.address,
-    )}) is different than the account trying to sign (${shortenAddress(
-      account.address,
-    )})`;
-
-    expect(getByText(mismatchAccountText)).toBeInTheDocument();
   });
 });

@@ -1,5 +1,6 @@
 /* eslint-disable-next-line */
-import { TextEncoder, TextDecoder } from 'util';
+import { TextEncoder, TextDecoder } from 'node:util';
+import 'fake-indexeddb/auto';
 import nock from 'nock';
 import log from 'loglevel';
 import { JSDOM } from 'jsdom';
@@ -22,7 +23,21 @@ global.chrome = {
   },
 };
 
-global.indexedDB = {};
+// Stub for Sentry global
+global.sentry = {
+  captureException: () => {
+    // no-op
+  },
+  captureFeedback: () => {
+    // no-op
+  },
+  captureMessage: () => {
+    // no-op
+  },
+  lastEventId: () => {
+    // no-op
+  },
+};
 
 nock.disableNetConnect();
 nock.enableNetConnect('localhost');
@@ -35,13 +50,21 @@ if (typeof beforeEach === 'function') {
 
 // catch rejections that are still unhandled when tests exit
 const unhandledRejections = new Map();
+let ignoreUnhandled = false;
 process.on('unhandledRejection', (reason, promise) => {
-  console.log('Unhandled rejection:', reason);
-  unhandledRejections.set(promise, reason);
+  if (!ignoreUnhandled) {
+    console.log(
+      `Unhandled rejection: ..${process.env.IGNORE_UNHANDLED}`,
+      reason,
+    );
+    unhandledRejections.set(promise, reason);
+  }
 });
 process.on('rejectionHandled', (promise) => {
-  console.log(`handled: ${unhandledRejections.get(promise)}`);
-  unhandledRejections.delete(promise);
+  if (!ignoreUnhandled) {
+    console.log(`handled: ${unhandledRejections.get(promise)}`);
+    unhandledRejections.delete(promise);
+  }
 });
 
 process.on('exit', () => {
@@ -53,6 +76,15 @@ process.on('exit', () => {
     process.exit(1);
   }
 });
+// #region Helpers that allow tests to ignore unhandled rejections that might be intentional.
+process.resetIgnoreUnhandled = () => {
+  // default is false
+  ignoreUnhandled = false;
+};
+process.setIgnoreUnhandled = (ignore) => {
+  ignoreUnhandled = ignore;
+};
+// #endregion
 
 log.setDefaultLevel(5);
 global.log = log;
@@ -102,7 +134,24 @@ window.localStorage = {
 };
 
 // used for native dark/light mode detection
-window.matchMedia = () => true;
+window.matchMedia = (query) => ({
+  matches: false,
+  media: query,
+  onchange: null,
+  addListener: () => {
+    // deprecated - no-op
+  },
+  removeListener: () => {
+    // deprecated - no-op
+  },
+  addEventListener: () => {
+    // no-op for tests
+  },
+  removeEventListener: () => {
+    // no-op for tests
+  },
+  dispatchEvent: () => true,
+});
 
 // override @metamask/logo
 window.requestAnimationFrame = () => undefined;
@@ -112,8 +161,19 @@ if (!window.crypto) {
   window.crypto = {};
 }
 if (!window.crypto.getRandomValues) {
-  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line n/global-require
   window.crypto.getRandomValues = require('crypto').webcrypto.getRandomValues;
+}
+
+// Ensure `crypto.randomUUID` exists in the test environment (some Jest
+// environments don't expose the webcrypto `crypto.randomUUID` even on Node 18+).
+if (typeof window.crypto.randomUUID !== 'function') {
+  // eslint-disable-next-line n/global-require
+  const nodeCrypto = require('crypto');
+
+  if (typeof nodeCrypto.randomUUID === 'function') {
+    window.crypto.randomUUID = nodeCrypto.randomUUID.bind(nodeCrypto);
+  }
 }
 
 // TextEncoder/TextDecoder
@@ -132,3 +192,21 @@ window.SVGPathElement = window.SVGPathElement || { prototype: {} };
 
 // scrollIntoView is not available in JSDOM
 window.HTMLElement.prototype.scrollIntoView = () => undefined;
+
+// ResizeObserver is not available in JSDOM
+if (typeof window.ResizeObserver === 'undefined') {
+  const ResizeObserver = function () {
+    // no-op for tests
+  };
+  ResizeObserver.prototype.observe = () => {
+    // no-op for tests
+  };
+  ResizeObserver.prototype.unobserve = () => {
+    // no-op for tests
+  };
+  ResizeObserver.prototype.disconnect = () => {
+    // no-op for tests
+  };
+  window.ResizeObserver = ResizeObserver;
+  global.ResizeObserver = ResizeObserver;
+}

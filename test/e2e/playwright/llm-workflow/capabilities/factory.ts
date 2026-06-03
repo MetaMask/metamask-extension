@@ -1,0 +1,110 @@
+import type {
+  WorkflowContext,
+  BaseEnvironmentConfig,
+  E2EEnvironmentConfig,
+  ProdEnvironmentConfig,
+} from '@metamask/client-mcp-core';
+import { MetaMaskFixtureCapability } from './fixture';
+import { MetaMaskChainCapability, NoOpChainCapability } from './chain';
+import { MetaMaskContractSeedingCapability } from './seeding';
+import { MetaMaskStateSnapshotCapability } from './state-snapshot';
+
+export type CreateMetaMaskContextOptions = {
+  config?: Partial<E2EEnvironmentConfig>;
+  forkUrl?: string;
+  forkBlockNumber?: number;
+};
+
+const DEFAULT_BASE_CONFIG: BaseEnvironmentConfig = {
+  extensionName: 'MetaMask',
+  defaultPassword: 'correct horse battery staple',
+  artifactsDir: 'test-artifacts',
+};
+
+const DEFAULT_E2E_CONFIG: E2EEnvironmentConfig = {
+  ...DEFAULT_BASE_CONFIG,
+  environment: 'e2e',
+  defaultChainId: 1337,
+};
+
+const DEFAULT_PROD_CONFIG: ProdEnvironmentConfig = {
+  ...DEFAULT_BASE_CONFIG,
+  environment: 'prod',
+  defaultChainId: 1,
+};
+
+export function createMetaMaskE2EContext(
+  options: CreateMetaMaskContextOptions = {},
+): WorkflowContext {
+  const config: E2EEnvironmentConfig = {
+    ...DEFAULT_E2E_CONFIG,
+    ...options.config,
+  };
+
+  const fixture = new MetaMaskFixtureCapability({
+    port: config.ports?.fixtureServer,
+    anvilPort: config.ports?.anvil,
+  });
+
+  const chain = new MetaMaskChainCapability({
+    port: config.ports?.anvil,
+    chainId: config.defaultChainId,
+    forkUrl: options.forkUrl,
+    forkBlockNumber: options.forkBlockNumber,
+  });
+
+  const contractSeeding = new MetaMaskContractSeedingCapability({
+    chainCapability: chain,
+  });
+
+  const stateSnapshot = new MetaMaskStateSnapshotCapability({
+    defaultChainId: config.defaultChainId,
+  });
+
+  return {
+    fixture,
+    chain,
+    contractSeeding,
+    stateSnapshot,
+    config,
+  };
+}
+
+export type RemoteChainConfig = {
+  rpcUrl: string;
+  chainId?: number;
+};
+
+export type CreateMetaMaskProdContextOptions = Omit<
+  CreateMetaMaskContextOptions,
+  'config'
+> & {
+  config?: Partial<ProdEnvironmentConfig>;
+  remoteChain?: RemoteChainConfig;
+};
+
+export function createMetaMaskProdContext(
+  options: CreateMetaMaskProdContextOptions = {},
+): WorkflowContext {
+  const config: ProdEnvironmentConfig = {
+    ...DEFAULT_PROD_CONFIG,
+    ...options.config,
+  };
+
+  const stateSnapshot = new MetaMaskStateSnapshotCapability({
+    defaultChainId: config.defaultChainId,
+  });
+
+  const chain = options.remoteChain
+    ? new NoOpChainCapability({
+        rpcUrl: options.remoteChain.rpcUrl,
+        chainId: options.remoteChain.chainId ?? 1,
+      })
+    : undefined;
+
+  return {
+    ...(chain && { chain }),
+    stateSnapshot,
+    config,
+  };
+}

@@ -1,8 +1,9 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import ConfirmDeleteNetwork from '.';
 
 describe('Confirm Delete Network', () => {
@@ -10,7 +11,10 @@ describe('Confirm Delete Network', () => {
     hideModal: jest.fn(),
     onConfirm: jest.fn(),
     removeNetwork: jest.fn().mockResolvedValue(),
-    target: '0x1',
+    switchEvmNetwork: jest.fn(),
+    target: '0x5',
+    chainId: '0xe708',
+    ethereumMainnetClientId: '0x1',
   };
 
   it('should match snapshot', () => {
@@ -29,7 +33,7 @@ describe('Confirm Delete Network', () => {
       <ConfirmDeleteNetwork {...props} />,
       mockStore,
     );
-    const expectedTitle = 'Delete Custom Mainnet RPC network?';
+    const expectedTitle = 'Delete Goerli network?';
 
     expect(getByText(expectedTitle)).toBeInTheDocument();
   });
@@ -39,7 +43,7 @@ describe('Confirm Delete Network', () => {
       <ConfirmDeleteNetwork.WrappedComponent {...props} />,
     );
 
-    fireEvent.click(queryByText('[cancel]'));
+    fireEvent.click(queryByText(messages.cancel.message));
 
     expect(props.removeNetwork).not.toHaveBeenCalled();
     expect(props.onConfirm).not.toHaveBeenCalled();
@@ -52,7 +56,7 @@ describe('Confirm Delete Network', () => {
       <ConfirmDeleteNetwork.WrappedComponent {...props} />,
     );
 
-    fireEvent.click(queryByText('[delete]'));
+    fireEvent.click(queryByText(messages.delete.message));
 
     await waitFor(() => {
       expect(props.removeNetwork).toHaveBeenCalled();

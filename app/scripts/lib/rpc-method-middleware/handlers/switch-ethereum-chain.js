@@ -1,26 +1,40 @@
 import { providerErrors } from '@metamask/rpc-errors';
+import { isSnapId } from '@metamask/snaps-utils';
+
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   validateSwitchEthereumChainParams,
   switchChain,
 } from './ethereum-chain-utils';
 
-const switchEthereumChain = {
-  methodNames: [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN],
-  implementation: switchEthereumChainHandler,
+/** @typedef {import('@metamask/json-rpc-engine').MethodHandler<Record<string, unknown>>} SwitchEthereumChainHandler */
+
+/** @type {SwitchEthereumChainHandler} */
+export const switchEthereumChainHandler = {
+  implementation: switchEthereumChainImplementation,
   hookNames: {
     getNetworkConfigurationByChainId: true,
     setActiveNetwork: true,
+    requestUserApproval: true,
     getCaveat: true,
-    requestPermittedChainsPermission: true,
     getCurrentChainIdForDomain: true,
-    grantPermittedChainsPermissionIncremental: true,
+    requestPermittedChainsPermissionIncrementalForOrigin: true,
+    rejectApprovalRequestsForOrigin: true,
+    setTokenNetworkFilter: true,
+    setEnabledNetworks: true,
+    getEnabledNetworks: true,
+    hasApprovalRequestsForOrigin: true,
   },
 };
 
-export default switchEthereumChain;
+/** @type {Record<MESSAGE_TYPE['SWITCH_ETHEREUM_CHAIN'], SwitchEthereumChainHandler>} */
+const switchEthereumChainHandlers = {
+  [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN]: switchEthereumChainHandler,
+};
 
-async function switchEthereumChainHandler(
+export default switchEthereumChainHandlers;
+
+async function switchEthereumChainImplementation(
   req,
   res,
   _next,
@@ -28,15 +42,20 @@ async function switchEthereumChainHandler(
   {
     getNetworkConfigurationByChainId,
     setActiveNetwork,
-    requestPermittedChainsPermission,
+    requestUserApproval,
     getCaveat,
     getCurrentChainIdForDomain,
-    grantPermittedChainsPermissionIncremental,
+    requestPermittedChainsPermissionIncrementalForOrigin,
+    rejectApprovalRequestsForOrigin,
+    setTokenNetworkFilter,
+    setEnabledNetworks,
+    getEnabledNetworks,
+    hasApprovalRequestsForOrigin,
   },
 ) {
   let chainId;
   try {
-    chainId = validateSwitchEthereumChainParams(req, end);
+    chainId = validateSwitchEthereumChainParams(req);
   } catch (error) {
     return end(error);
   }
@@ -64,10 +83,26 @@ async function switchEthereumChainHandler(
     );
   }
 
-  return switchChain(res, end, chainId, networkClientIdToSwitchTo, null, {
+  const fromNetworkConfiguration = getNetworkConfigurationByChainId(
+    currentChainIdForOrigin,
+  );
+
+  const toNetworkConfiguration = getNetworkConfigurationByChainId(chainId);
+
+  return switchChain(res, end, chainId, networkClientIdToSwitchTo, {
+    origin,
+    isSwitchFlow: true,
+    autoApprove: isSnapId(origin),
     setActiveNetwork,
     getCaveat,
-    requestPermittedChainsPermission,
-    grantPermittedChainsPermissionIncremental,
+    requestPermittedChainsPermissionIncrementalForOrigin,
+    rejectApprovalRequestsForOrigin,
+    setTokenNetworkFilter,
+    setEnabledNetworks,
+    getEnabledNetworks,
+    requestUserApproval,
+    hasApprovalRequestsForOrigin,
+    toNetworkConfiguration,
+    fromNetworkConfiguration,
   });
 }

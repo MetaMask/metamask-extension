@@ -1,29 +1,45 @@
-import { Meta } from '@storybook/react';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { getMockContractInteractionConfirmState } from '../../../../../../../../test/data/confirmations/helper';
+import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import configureStore from '../../../../../../../store/store';
 import { ConfirmContextProvider } from '../../../../../context/confirm';
+import { DappSwapContextProvider } from '../../../../../context/dapp-swap';
 import { EditGasFeesRow } from './edit-gas-fees-row';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
+import { GAS_FEE_TOKEN_MOCK } from '../../../../../../../../test/data/confirmations/gas';
+import { Hex } from '@metamask/utils';
 
-function getStore() {
-  return configureStore(getMockContractInteractionConfirmState());
+function getStore({
+  advanced,
+  selectedGasFeeToken,
+}: { advanced?: boolean; selectedGasFeeToken?: Hex } = {}) {
+  return configureStore(
+    getMockConfirmStateForTransaction(
+      genUnapprovedContractInteractionConfirmation({
+        gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+        selectedGasFeeToken,
+      }),
+      {
+        metamask: {
+          preferences: {
+            showConfirmationAdvancedDetails: advanced ?? false,
+            showFiatInTestnets: true,
+          },
+        },
+      },
+    ),
+  );
 }
 
 const Story = {
   title: 'Components/App/Confirm/info/EditGasFeesRow',
   component: EditGasFeesRow,
   decorators: [
-    (story: () => Meta<typeof EditGasFeesRow>) => (
-      <Provider store={getStore()}>
-        <div
-          style={{
-            backgroundColor: 'var(--color-background-alternative)',
-            padding: 30,
-          }}
-        >
-          <ConfirmContextProvider>{story()}</ConfirmContextProvider>
-        </div>
+    (story: any, { args }) => (
+      <Provider store={getStore(args ?? {})}>
+        <ConfirmContextProvider>
+          <DappSwapContextProvider>{story()}</DappSwapContextProvider>
+        </ConfirmContextProvider>
       </Provider>
     ),
   ],
@@ -34,10 +50,45 @@ export default Story;
 export const DefaultStory = () => (
   <EditGasFeesRow
     fiatFee="$1"
-    nativeFee="0.001 ETH"
-    supportsEIP1559={true}
-    setShowCustomizeGasPopover={() => {}}
+    nativeFee="0.001"
+    fiatFeeWith18SignificantDigits="0.001234"
   />
 );
 
 DefaultStory.storyName = 'Default';
+
+export const TokenStory = () => (
+  <EditGasFeesRow
+    fiatFee="$1"
+    nativeFee="0.001"
+    fiatFeeWith18SignificantDigits="0.001234"
+  />
+);
+
+TokenStory.storyName = 'Token';
+TokenStory.args = { selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress };
+
+export const AdvancedStory = () => (
+  <EditGasFeesRow
+    fiatFee="$1"
+    nativeFee="0.001"
+    fiatFeeWith18SignificantDigits="0.001234"
+  />
+);
+
+AdvancedStory.storyName = 'Advanced';
+AdvancedStory.args = { advanced: true };
+
+export const TokenAdvanced = () => (
+  <EditGasFeesRow
+    fiatFee="$1"
+    nativeFee="0.001"
+    fiatFeeWith18SignificantDigits="0.001234"
+  />
+);
+
+TokenAdvanced.storyName = 'Token + Advanced';
+TokenAdvanced.args = {
+  advanced: true,
+  selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+};

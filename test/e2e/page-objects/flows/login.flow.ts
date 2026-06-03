@@ -1,46 +1,88 @@
 import LoginPage from '../pages/login-page';
-import HomePage from '../pages/homepage';
+import HomePage from '../pages/home/homepage';
+import HeaderNavbar from '../pages/header-navbar';
 import { Driver } from '../../webdriver/driver';
-import { Ganache } from '../../seeder/ganache';
+import { Anvil } from '../../seeder/anvil';
 
 /**
- * This method unlocks the wallet and lands the user on the homepage.
+ * Unlocks the wallet and lands the user on the homepage.
+ * By default, validates the displayed balance. Use {@link localNode} or {@link expectedBalance}
+ * for specific checks, or set {@link validateBalance} to false to skip validation entirely.
  *
  * @param driver - The webdriver instance.
- * @param password - The password used to unlock the wallet.
+ * @param options - Optional configuration for the login flow.
+ * @param options.expectedBalance - An expected balance string to verify on the homepage.
+ * @param options.localNode - A local node instance whose balance should be verified.
+ * @param options.password - The password used to unlock the wallet.
+ * @param options.validateBalance - Whether to verify the balance is displayed. Defaults to true.
+ * @param options.waitForNonEvmAccounts - Whether to wait for non-EVM accounts to load on the homepage. Defaults to true; set to false to skip.
+ * @param options.ignorePasskeyUnlock - Whether to ignore the passkey unlock and use password instead. Defaults to false.
  */
-export const loginWithoutBalanceValidation = async (
+export const login = async (
   driver: Driver,
-  password?: string,
+  options?: {
+    expectedBalance?: string;
+    localNode?: Anvil;
+    password?: string;
+    validateBalance?: boolean;
+    waitForNonEvmAccounts?: boolean;
+    ignorePasskeyUnlock?: boolean;
+  },
 ) => {
   console.log('Navigate to unlock page and try to login with password');
   await driver.navigate();
   const loginPage = new LoginPage(driver);
-  await loginPage.check_pageIsLoaded();
-  await loginPage.loginToHomepage(password);
+  if (options?.ignorePasskeyUnlock === true) {
+    await loginPage.checkPasskeyUnlockPageIsLoaded();
+    await loginPage.clickUsePassword();
+  }
+  await loginPage.checkPageIsLoaded();
+  await loginPage.loginToHomepage(options?.password);
+
+  const homePage = new HomePage(driver);
+  await homePage.checkPageIsLoaded();
+  if (options?.waitForNonEvmAccounts !== false) {
+    await homePage.waitForNonEvmAccountsLoaded();
+  }
+
+  if (options?.localNode) {
+    await homePage.checkLocalNodeBalanceIsDisplayed(options.localNode);
+  } else if (options?.expectedBalance !== undefined) {
+    await homePage.checkExpectedBalanceIsDisplayed(options.expectedBalance);
+  } else if (options?.validateBalance !== false) {
+    // defaults to 25 ETH
+    await homePage.checkExpectedBalanceIsDisplayed();
+  }
 };
 
 /**
- * This method unlocks the wallet and verifies that the user lands on the homepage with the expected balance. It is designed to be the initial step in setting up a test environment.
+ * Locks MetaMask and waits for the login (unlock) page to be loaded.
+ * Use this flow when you need to lock the wallet and then interact with the login screen.
  *
  * @param driver - The webdriver instance.
- * @param ganacheServer - The ganache server instance
- * @param password - The password used to unlock the wallet.
  */
-export const loginWithBalanceValidation = async (
+export const lockAndWaitForLoginPage = async (
   driver: Driver,
-  ganacheServer?: Ganache,
-  password?: string,
-) => {
-  await loginWithoutBalanceValidation(driver, password);
-  // user should land on homepage after successfully logging in with password
-  const homePage = new HomePage(driver);
-  await homePage.check_pageIsLoaded();
+): Promise<void> => {
+  console.log('Lock MetaMask and wait for login page');
+  const headerNavbar = new HeaderNavbar(driver);
+  await headerNavbar.lockMetaMask();
+  const loginPage = new LoginPage(driver);
+  await loginPage.checkPageIsLoaded();
+};
 
-  // Verify the expected balance on the homepage
-  if (ganacheServer) {
-    await homePage.check_ganacheBalanceIsDisplayed(ganacheServer);
-  } else {
-    await homePage.check_expectedBalanceIsDisplayed();
-  }
+/**
+ * Locks MetaMask and waits for the passkey unlock page to be loaded.
+ * Use this flow when you need to lock the wallet and then interact with the passkey unlock screen.
+ *
+ * @param driver - The webdriver instance.
+ */
+export const lockAndWaitForPasskeyUnlockPage = async (
+  driver: Driver,
+): Promise<void> => {
+  console.log('Lock MetaMask and wait for passkey unlock page');
+  const headerNavbar = new HeaderNavbar(driver);
+  await headerNavbar.lockMetaMask();
+  const loginPage = new LoginPage(driver);
+  await loginPage.checkPasskeyUnlockPageIsLoaded();
 };

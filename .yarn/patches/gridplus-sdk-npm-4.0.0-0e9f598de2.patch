@@ -1,0 +1,30 @@
+diff --git a/dist/index.cjs b/dist/index.cjs
+index a78eb62001f784924eabc712b1e4234b5ee53c23..26ba68c2b558198f32c9d5e5e2c9397ea08aa704 100644
+--- a/dist/index.cjs
++++ b/dist/index.cjs
+@@ -1570,8 +1570,8 @@ function buildUrlForSupportedChainAndAddress({ supportedChain, address }) {
+   const baseUrl = supportedChain.baseUrl;
+   const apiRoute = supportedChain.apiRoute;
+   const urlWithRoute = `${baseUrl}/${apiRoute}&address=${address}`;
+-  const apiKey = process.env.ETHERSCAN_KEY;
+-  const apiKeyParam = apiKey ? `&apiKey=${process.env.ETHERSCAN_KEY}` : "";
++  const apiKey = null;
++  const apiKeyParam = apiKey ? `&apiKey=${apiKey}` : "";
+   return urlWithRoute + apiKeyParam;
+ }
+ function selectDefFrom4byteABI(abiData, selector) {
+diff --git a/dist/index.mjs b/dist/index.mjs
+index 793949dd1f22aec3542aa667b267b02c7c670cb8..5d594e1a6201d6417221351ca1cae6fa0b547e23 100644
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -1496,8 +1496,8 @@ function buildUrlForSupportedChainAndAddress({ supportedChain, address }) {
+   const baseUrl = supportedChain.baseUrl;
+   const apiRoute = supportedChain.apiRoute;
+   const urlWithRoute = `${baseUrl}/${apiRoute}&address=${address}`;
+-  const apiKey = process.env.ETHERSCAN_KEY;
+-  const apiKeyParam = apiKey ? `&apiKey=${process.env.ETHERSCAN_KEY}` : "";
++  const apiKey = null;
++  const apiKeyParam = apiKey ? `&apiKey=${apiKey}` : "";
+   return urlWithRoute + apiKeyParam;
+ }
+ function selectDefFrom4byteABI(abiData, selector) {

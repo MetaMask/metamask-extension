@@ -1,0 +1,253 @@
+import { act } from 'react-dom/test-utils';
+import { AuthorizationList } from '@metamask/transaction-controller';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
+import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
+import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
+import { EIP_7702_REVOKE_ADDRESS } from '../../../../../shared/lib/eip7702-utils';
+import { isRelaySupported } from '../../../../store/actions';
+import { isHardwareWallet } from '../../../../../shared/lib/selectors/keyring';
+import { useIsGaslessSupported } from './useIsGaslessSupported';
+import { useGaslessSupportedSmartTransactions } from './useGaslessSupportedSmartTransactions';
+
+jest.mock('../../../../../shared/lib/selectors');
+jest.mock('../../../../store/controller-actions/transaction-controller');
+
+jest.mock('../../../../store/actions', () => ({
+  ...jest.requireActual('../../../../store/actions'),
+  isRelaySupported: jest.fn(),
+}));
+
+jest.mock('../../../../selectors', () => ({
+  ...jest.requireActual('../../../../selectors'),
+}));
+
+jest.mock('./useGaslessSupportedSmartTransactions');
+jest.mock('../../../../../shared/lib/selectors/keyring', () => ({
+  ...jest.requireActual('../../../../../shared/lib/selectors/keyring'),
+  isHardwareWallet: jest.fn(),
+}));
+
+async function runHook({
+  authorizationList,
+}: { authorizationList?: AuthorizationList } = {}) {
+  const { result } = renderHookWithConfirmContextProvider(
+    useIsGaslessSupported,
+    getMockConfirmStateForTransaction(
+      genUnapprovedContractInteractionConfirmation({ authorizationList }),
+    ),
+  );
+
+  await act(async () => {
+    // Intentionally empty
+  });
+
+  return result.current;
+}
+
+describe('useIsGaslessSupported', () => {
+  const isRelaySupportedMock = jest.mocked(isRelaySupported);
+  const isHardwareWalletMock = jest.mocked(isHardwareWallet);
+  const useGaslessSupportedSmartTransactionsMock = jest.mocked(
+    useGaslessSupportedSmartTransactions,
+  );
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+
+    isRelaySupportedMock.mockResolvedValue(false);
+    isHardwareWalletMock.mockReturnValue(false);
+    useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+      isSmartTransaction: false,
+      isSupported: false,
+      pending: false,
+    });
+
+    process.env.TRANSACTION_RELAY_API_URL = 'test.com';
+  });
+
+  it('returns true if is smart transaction and send bundle supported', async () => {
+    useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+      isSmartTransaction: true,
+      isSupported: true,
+      pending: false,
+    });
+
+    const result = await runHook();
+
+    expect(result).toStrictEqual({
+      isSupported: true,
+      isSmartTransaction: true,
+      pending: false,
+    });
+  });
+
+  describe('if smart transaction disabled', () => {
+    it('returns true if chain supports EIP-7702 and account is supported and relay supported and send bundle supported', async () => {
+      isRelaySupportedMock.mockResolvedValue(true);
+
+      const result = await runHook();
+
+      expect(result).toStrictEqual({
+        isSupported: true,
+        isSmartTransaction: false,
+        pending: false,
+      });
+    });
+
+    it('returns false if chain does not support EIP-7702', async () => {
+      isRelaySupportedMock.mockResolvedValue(false);
+
+      const result = await runHook();
+
+      expect(result).toStrictEqual({
+        isSupported: false,
+        isSmartTransaction: false,
+        pending: false,
+      });
+    });
+
+    it('returns false if upgraded account not supported', async () => {
+      isRelaySupportedMock.mockResolvedValue(false);
+
+      const result = await runHook();
+
+      expect(result).toStrictEqual({
+        isSupported: false,
+        isSmartTransaction: false,
+        pending: false,
+      });
+    });
+
+    it('returns false if relay not supported', async () => {
+      isRelaySupportedMock.mockResolvedValue(false);
+
+      const result = await runHook();
+
+      expect(result).toStrictEqual({
+        isSupported: false,
+        isSmartTransaction: false,
+        pending: false,
+      });
+    });
+  });
+
+  it('returns false if smart transaction is enabled but sendBundle is not supported', async () => {
+    useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+      isSmartTransaction: true,
+      isSupported: false,
+      pending: false,
+    });
+    const result = await runHook();
+    expect(result).toStrictEqual({
+      isSupported: false,
+      isSmartTransaction: true,
+      pending: false,
+    });
+  });
+
+  it('returns pending state when useGaslessSupportedSmartTransactions is pending', async () => {
+    useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+      isSmartTransaction: true,
+      isSupported: false,
+      pending: true,
+    });
+
+    // these mocks shouldn't be called when pending is true
+    isRelaySupportedMock.mockResolvedValue(true);
+
+    const result = await runHook();
+
+    // since pending=true, 7702 eligibility shouldn't be checked yet
+    expect(isRelaySupportedMock).not.toHaveBeenCalled();
+
+    expect(result).toStrictEqual({
+      isSupported: false,
+      isSmartTransaction: true,
+      pending: true,
+    });
+  });
+
+  it('returns isSupported false for hardware wallets even when smart transactions are supported', async () => {
+    isHardwareWalletMock.mockReturnValue(true);
+    useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+      isSmartTransaction: true,
+      isSupported: true,
+      pending: false,
+    });
+
+    const result = await runHook();
+
+    expect(result).toStrictEqual({
+      isSupported: false,
+      isSmartTransaction: true,
+      pending: false,
+    });
+  });
+
+  it('returns isSupported false for hardware wallets even when relay is supported', async () => {
+    isHardwareWalletMock.mockReturnValue(true);
+    isRelaySupportedMock.mockResolvedValue(true);
+
+    const result = await runHook();
+
+    expect(isRelaySupportedMock).not.toHaveBeenCalled();
+
+    expect(result).toStrictEqual({
+      isSupported: false,
+      isSmartTransaction: false,
+      pending: false,
+    });
+  });
+
+  describe('account downgrade transactions', () => {
+    const downgradeAuthorizationList: AuthorizationList = [
+      { address: EIP_7702_REVOKE_ADDRESS },
+    ];
+
+    it('returns isSupported false for downgrade even when relay is supported', async () => {
+      isRelaySupportedMock.mockResolvedValue(true);
+
+      const result = await runHook({
+        authorizationList: downgradeAuthorizationList,
+      });
+
+      expect(result).toStrictEqual({
+        isSupported: false,
+        isSmartTransaction: false,
+        pending: false,
+      });
+    });
+
+    it('returns isSupported false for downgrade even when smart transactions are supported', async () => {
+      useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+        isSmartTransaction: true,
+        isSupported: true,
+        pending: false,
+      });
+
+      const result = await runHook({
+        authorizationList: downgradeAuthorizationList,
+      });
+
+      expect(result).toStrictEqual({
+        isSupported: false,
+        isSmartTransaction: true,
+        pending: false,
+      });
+    });
+
+    it('still returns isSupported true for upgrade transactions with relay support', async () => {
+      isRelaySupportedMock.mockResolvedValue(true);
+
+      const result = await runHook({
+        authorizationList: [{ address: '0x1234' }],
+      });
+
+      expect(result).toStrictEqual({
+        isSupported: true,
+        isSmartTransaction: false,
+        pending: false,
+      });
+    });
+  });
+});

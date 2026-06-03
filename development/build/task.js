@@ -1,5 +1,6 @@
 const EventEmitter = require('events');
-const spawn = require('cross-spawn');
+const { spawn } = require('node:child_process');
+const { getActiveFeatures } = require('./config');
 
 const tasks = {};
 const taskEvents = new EventEmitter();
@@ -78,12 +79,14 @@ function runInChildProcess(
         `--snow=${shouldIncludeSnow ? 'true' : 'false'}`,
         `--apply-lavamoat=${applyLavaMoat ? 'true' : 'false'}`,
         `--build-type=${buildType}`,
+        `--features=${getActiveFeatures().join(' ')}`,
         `--lint-fence-files=${shouldLintFenceFiles ? 'true' : 'false'}`,
         `--policyOnly=${policyOnly ? 'true' : 'false'}`,
         '--skip-stats=true',
       ],
       {
         env: process.env,
+        shell: true,
       },
     );
 

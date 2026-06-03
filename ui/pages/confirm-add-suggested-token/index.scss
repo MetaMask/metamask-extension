@@ -1,11 +1,7 @@
 @use "design-system";
 
 .confirm-add-suggested-token {
-  padding: 16px;
-
   &__header {
-    @include design-system.H7;
-
     display: flex;
   }
 
@@ -49,4 +45,28 @@
     margin-right: 12px;
     flex: 0 0 auto;
   }
+
+  &.page-container {
+    transition: margin-top 0.3s ease-in-out, margin-bottom 0.3s ease-in-out;
+  }
+
+  .page-container {
+    &__content {
+      padding: 16px;
+    }
+
+    &__header {
+      padding-top: 24px;
+      padding-bottom: 24px;
+    }
+
+    &__title {
+      text-align: center;
+      margin: 0;
+    }
+  }
+}
+
+.confirm-add-suggested-token--has-app-header-multichain {
+  border-radius: 0 0 2px 2px;
 }

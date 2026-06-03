@@ -3,6 +3,9 @@ import type { AvatarBaseStyleUtilityProps } from '../avatar-base/avatar-base.typ
 import { PolymorphicComponentPropWithRef } from '../box';
 import { IconProps } from '../icon';
 
+/**
+ * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
+ */
 export enum AvatarFaviconSize {
   Xs = 'xs',
   Sm = 'sm',
@@ -13,8 +16,10 @@ export enum AvatarFaviconSize {
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export interface AvatarFaviconStyleUtilityProps
-  extends Omit<AvatarBaseStyleUtilityProps, 'size' | 'children'> {
+export interface AvatarFaviconStyleUtilityProps extends Omit<
+  AvatarBaseStyleUtilityProps,
+  'size' | 'children'
+> {
   /**
    * The src accepts the string of the image to be rendered
    */
@@ -44,9 +49,13 @@ export interface AvatarFaviconStyleUtilityProps
   className?: string;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type AvatarFaviconProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, AvatarFaviconStyleUtilityProps>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type AvatarFaviconComponent = <C extends React.ElementType = 'span'>(
   props: AvatarFaviconProps<C>,
 ) => React.ReactElement | null;

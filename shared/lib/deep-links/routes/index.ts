@@ -1,0 +1,64 @@
+import { asset } from './asset';
+import { buy } from './buy';
+import { card } from './card';
+import { home } from './home';
+import { nfts } from './nfts';
+import { notifications } from './notifications';
+import { onboarding } from './onboarding';
+import { musd } from './musd';
+import { perps } from './perps';
+import { perpsAsset } from './perps-asset';
+import { perpsMarkets } from './perps-markets';
+import { predict } from './predict';
+import { rewards } from './rewards';
+import type { Route } from './route';
+import { sell } from './sell';
+import { shield } from './shield';
+import { swap } from './swap';
+import { trending } from './trending';
+
+export type { Route } from './route';
+
+export const routes = new Map<Route['pathname'], Route>();
+
+/**
+ * Adds a route to the routes map.
+ *
+ * @param route - The route to add.
+ */
+export function addRoute(route: Route) {
+  if (process.env.DEBUG) {
+    // just making sure all added route `pathname`'s are unique; but only in
+    // DEBUG builds, since it's too late to change the routes in prod.
+    if (routes.has(route.pathname)) {
+      throw new Error(
+        `Route with pathname "${route.pathname}" already exists.`,
+      );
+    }
+  }
+
+  routes.set(route.pathname, route);
+}
+
+if (process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS || process.env.IN_TEST) {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
+  addRoute(require('./test-route').test);
+}
+
+addRoute(buy);
+addRoute(sell);
+addRoute(card);
+addRoute(home);
+addRoute(nfts);
+addRoute(notifications);
+addRoute(onboarding);
+addRoute(swap);
+addRoute(musd);
+addRoute(perps);
+addRoute(perpsAsset);
+addRoute(perpsMarkets);
+addRoute(predict);
+addRoute(rewards);
+addRoute(shield);
+addRoute(asset);
+addRoute(trending);

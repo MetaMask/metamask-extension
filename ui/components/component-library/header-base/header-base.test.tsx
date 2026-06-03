@@ -1,7 +1,7 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render } from '@testing-library/react';
 import React from 'react';
-import { Icon, IconName } from '..';
+import { Icon, IconName } from '../icon';
 import { HeaderBase } from './header-base';
 
 describe('HeaderBase', () => {

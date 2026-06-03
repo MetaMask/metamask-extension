@@ -1,34 +1,32 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Redirect, Route } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
+import { Text, TextVariant, TextColor } from '@metamask/design-system-react';
+import { COHORT_NAMES } from '@metamask/subscription-controller';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   MetaMetricsContextProp,
-  ///: END:ONLY_INCLUDE_IF
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsUserTrait,
 } from '../../../shared/constants/metametrics';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import { wasPerpsUnmountedInAppRecently } from '../../helpers/perps/in-app-leave-marker';
 import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
-import WhatsNewPopup from '../../components/app/whats-new-popup';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
-///: END:ONLY_INCLUDE_IF
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
-import Typography from '../../components/ui/typography/typography';
 import Button from '../../components/ui/button';
 import Popover from '../../components/ui/popover';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import ConnectedSites from '../connected-sites';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import ConnectedAccounts from '../connected-accounts';
-import { isMv3ButOffscreenDocIsMissing } from '../../../shared/modules/mv3.utils';
+import { isMv3ButOffscreenDocIsMissing } from '../../../shared/lib/mv3.utils';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
-
+import { ScrollContainer } from '../../contexts/scroll-container';
 import {
   FontWeight,
   Display,
-  TextColor,
-  TextVariant,
   FlexDirection,
   BlockSize,
   AlignItems,
@@ -40,7 +38,6 @@ import {
   ButtonIconSize,
   IconName,
   Box,
-  Text,
   Icon,
   Modal,
   ModalBody,
@@ -49,72 +46,45 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '../../components/component-library';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import MultiRpcEditModal from '../../components/app/multi-rpc-edit-modal/multi-rpc-edit-modal';
-///: END:ONLY_INCLUDE_IF
+import UpdateModal from '../../components/app/update-modal/update-modal';
 import {
   RESTORE_VAULT_ROUTE,
-  CONFIRM_TRANSACTION_ROUTE,
-  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
-  CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
-  CONNECT_ROUTE,
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
-  AWAITING_SWAP_ROUTE,
-  PREPARE_SWAP_ROUTE,
-  CONFIRMATION_V_NEXT_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  CONFIRM_ADD_CUSTODIAN_TOKEN,
-  INTERACTIVE_REPLACEMENT_TOKEN_PAGE,
-  ///: END:ONLY_INCLUDE_IF
+  ONBOARDING_REVIEW_SRP_ROUTE,
+  PERPS_ROUTE,
+  PERPS_REOPEN_TTL_MS,
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { METAMETRICS_SETTINGS_LINK } from '../../helpers/constants/common';
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-  SUPPORT_LINK,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../shared/lib/ui-utils';
-import { AccountOverview } from '../../components/multichain/account-overview';
-import { setEditedNetwork } from '../../store/actions';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { AccountType } from '../../../shared/constants/custody';
-///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(build-beta)
-import BetaHomeFooter from './beta/beta-home-footer.component';
-///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import FlaskHomeFooter from './flask/flask-home-footer.component';
-///: END:ONLY_INCLUDE_IF
+import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
+import { AccountOverview } from '../../components/multichain';
+import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
+import ShieldEntryModal from '../../components/app/shield-entry-modal';
+import RewardsModal from '../../components/app/rewards/onboarding/RewardsModal';
+import { Pna25Modal } from '../../components/app/modals/pna25-modal';
+import { isBeta, isFlask, isMain } from '../../../shared/lib/build-types';
+import BetaAndFlaskHomeFooter from './beta-and-flask-home-footer.component';
+import { HomeDeepLinkActions } from './HomeDeepLinkActions';
 
 function shouldCloseNotificationPopup({
   isNotification,
-  totalUnapprovedAndQueuedRequestCount,
+  totalUnapprovedCount,
   hasApprovalFlows,
   isSigningQRHardwareTransaction,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  waitForConfirmDeepLinkDialog,
-  institutionalConnectRequests,
-  ///: END:ONLY_INCLUDE_IF
+  isHardwareWalletErrorModalVisible,
 }) {
-  // we can't use totalUnapproved because there are also queued requests
-
-  let shouldClose =
+  const baseCondition =
     isNotification &&
-    totalUnapprovedAndQueuedRequestCount === 0 &&
+    totalUnapprovedCount === 0 &&
     !hasApprovalFlows &&
     !isSigningQRHardwareTransaction;
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  shouldClose &&=
-    // MMI User must be shown a deeplink
-    !waitForConfirmDeepLinkDialog &&
-    // MMI User is connecting to custodian
-    institutionalConnectRequests.length === 0;
-  ///: END:ONLY_INCLUDE_IF
+  const isHardwareWalletErrorModalBlockingClose =
+    isHardwareWalletErrorModalVisible;
+
+  const shouldClose = baseCondition && !isHardwareWalletErrorModalBlockingClose;
 
   return shouldClose;
 }
@@ -126,59 +96,31 @@ export default class Home extends PureComponent {
   };
 
   static propTypes = {
-    history: PropTypes.object,
+    navigate: PropTypes.func,
     forgottenPassword: PropTypes.bool,
-    hasTransactionPendingApprovals: PropTypes.bool.isRequired,
-    hasWatchTokenPendingApprovals: PropTypes.bool,
-    hasWatchNftPendingApprovals: PropTypes.bool,
+    isNotification: PropTypes.bool,
+    hasApprovalFlows: PropTypes.bool,
     setConnectedStatusPopoverHasBeenShown: PropTypes.func,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
     isPopup: PropTypes.bool,
     connectedStatusPopoverHasBeenShown: PropTypes.bool,
     showRecoveryPhraseReminder: PropTypes.bool.isRequired,
     showTermsOfUsePopup: PropTypes.bool.isRequired,
-    seedPhraseBackedUp: (props) => {
-      if (
-        props.seedPhraseBackedUp !== null &&
-        typeof props.seedPhraseBackedUp !== 'boolean'
-      ) {
-        throw new Error(
-          `seedPhraseBackedUp is required to be null or boolean. Received ${props.seedPhraseBackedUp}`,
-        );
-      }
-    },
     firstTimeFlowType: PropTypes.string,
     completedOnboarding: PropTypes.bool,
-    showWhatsNewPopup: PropTypes.bool.isRequired,
-    hideWhatsNewPopup: PropTypes.func.isRequired,
-    announcementsToShow: PropTypes.bool.isRequired,
     onboardedInThisUISession: PropTypes.bool,
     showMultiRpcModal: PropTypes.bool.isRequired,
-    ///: END:ONLY_INCLUDE_IF
+    showUpdateModal: PropTypes.bool.isRequired,
     newNetworkAddedConfigurationId: PropTypes.string,
-    isNotification: PropTypes.bool.isRequired,
-    firstPermissionsRequestId: PropTypes.string,
-    // This prop is used in the `shouldCloseNotificationPopup` function
-    // eslint-disable-next-line react/no-unused-prop-types
     totalUnapprovedCount: PropTypes.number.isRequired,
-    defaultHomeActiveTabName: PropTypes.string,
     participateInMetaMetrics: PropTypes.bool.isRequired,
-    onTabClick: PropTypes.func.isRequired,
-    haveSwapsQuotes: PropTypes.bool.isRequired,
-    showAwaitingSwapScreen: PropTypes.bool.isRequired,
     setDataCollectionForMarketing: PropTypes.func.isRequired,
     dataCollectionForMarketing: PropTypes.bool,
-    swapsFetchParams: PropTypes.object,
     location: PropTypes.object,
     shouldShowWeb3ShimUsageNotification: PropTypes.bool.isRequired,
     setWeb3ShimUsageAlertDismissed: PropTypes.func.isRequired,
     originOfCurrentTab: PropTypes.string,
     disableWeb3ShimUsageAlert: PropTypes.func.isRequired,
-    pendingConfirmations: PropTypes.arrayOf(PropTypes.object).isRequired,
-    pendingConfirmationsPrioritized: PropTypes.arrayOf(PropTypes.object)
-      .isRequired,
-    hasApprovalFlows: PropTypes.bool.isRequired,
     infuraBlocked: PropTypes.bool.isRequired,
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
     setRecoveryPhraseReminderLastShown: PropTypes.func.isRequired,
@@ -187,14 +129,9 @@ export default class Home extends PureComponent {
     setOutdatedBrowserWarningLastShown: PropTypes.func.isRequired,
     newNetworkAddedName: PropTypes.string,
     editedNetwork: PropTypes.object,
-    // This prop is used in the `shouldCloseNotificationPopup` function
-    // eslint-disable-next-line react/no-unused-prop-types
-    isSigningQRHardwareTransaction: PropTypes.bool.isRequired,
-    newNftAddedMessage: PropTypes.string,
-    setNewNftAddedMessage: PropTypes.func.isRequired,
-    removeNftMessage: PropTypes.string,
-    setRemoveNftMessage: PropTypes.func.isRequired,
-    closeNotificationPopup: PropTypes.func.isRequired,
+    isSigningQRHardwareTransaction: PropTypes.bool,
+    isHardwareWalletErrorModalVisible: PropTypes.bool,
+    attemptCloseNotificationPopup: PropTypes.func.isRequired,
     newTokensImported: PropTypes.string,
     newTokensImportedError: PropTypes.string,
     setNewTokensImported: PropTypes.func.isRequired,
@@ -202,190 +139,210 @@ export default class Home extends PureComponent {
     clearNewNetworkAdded: PropTypes.func,
     clearEditedNetwork: PropTypes.func,
     setActiveNetwork: PropTypes.func,
-    hasAllowedPopupRedirectApprovals: PropTypes.bool.isRequired,
     useExternalServices: PropTypes.bool,
     setBasicFunctionalityModalOpen: PropTypes.func,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    institutionalConnectRequests: PropTypes.arrayOf(PropTypes.object),
-    modalOpen: PropTypes.bool,
-    setWaitForConfirmDeepLinkDialog: PropTypes.func,
-    waitForConfirmDeepLinkDialog: PropTypes.bool,
-    showCustodianDeepLink: PropTypes.func,
-    cleanCustodianDeepLink: PropTypes.func,
-    custodianDeepLink: PropTypes.object,
-    accountType: PropTypes.string,
-    ///: END:ONLY_INCLUDE_IF
     fetchBuyableChains: PropTypes.func.isRequired,
+    redirectAfterDefaultPage: PropTypes.object,
+    setRedirectAfterDefaultPage: PropTypes.func,
+    clearRedirectAfterDefaultPage: PropTypes.func,
+    isSeedlessPasswordOutdated: PropTypes.bool,
+    isPrimarySeedPhraseBackedUp: PropTypes.bool,
+    showShieldEntryModal: PropTypes.bool,
+    isSocialLoginFlow: PropTypes.bool,
+    lookupSelectedNetworks: PropTypes.func.isRequired,
+    evaluateCohortEligibility: PropTypes.func,
+    pendingShieldCohort: PropTypes.string,
+    setPendingShieldCohort: PropTypes.func,
+    isSignedIn: PropTypes.bool,
+    rewardsEnabled: PropTypes.bool,
+    rewardsModalOpen: PropTypes.bool,
+    showPna25Modal: PropTypes.bool.isRequired,
+    envType: PropTypes.string,
+    pendingRedirectRoute: PropTypes.object,
+    clearPendingRedirectRoute: PropTypes.func,
+    lastVisitedPerpsRoute: PropTypes.shape({
+      path: PropTypes.string.isRequired,
+      timestamp: PropTypes.number.isRequired,
+    }),
+    clearLastVisitedPerpsRoute: PropTypes.func,
   };
 
   state = {
     canShowBlockageNotification: true,
     notificationClosing: false,
-    redirecting: false,
+    shouldEvaluateCohortEligibility: true,
   };
 
   constructor(props) {
     super(props);
 
     const {
-      closeNotificationPopup,
-      firstPermissionsRequestId,
-      haveSwapsQuotes,
+      attemptCloseNotificationPopup,
       isNotification,
-      showAwaitingSwapScreen,
-      hasWatchTokenPendingApprovals,
-      hasWatchNftPendingApprovals,
-      swapsFetchParams,
-      hasTransactionPendingApprovals,
-      location,
-    } = this.props;
-    const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
-
-    if (shouldCloseNotificationPopup(props)) {
-      this.state.notificationClosing = true;
-      closeNotificationPopup();
-    } else if (
-      firstPermissionsRequestId ||
-      hasTransactionPendingApprovals ||
-      hasWatchTokenPendingApprovals ||
-      hasWatchNftPendingApprovals ||
-      (!isNotification &&
-        !stayOnHomePage &&
-        (showAwaitingSwapScreen || haveSwapsQuotes || swapsFetchParams))
-    ) {
-      this.state.redirecting = true;
-    }
-  }
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  checkInstitutionalConnectRequest() {
-    const { history, institutionalConnectRequests } = this.props;
-    if (
-      institutionalConnectRequests &&
-      institutionalConnectRequests.length > 0 &&
-      institutionalConnectRequests[0].feature === 'custodian'
-    ) {
-      if (
-        institutionalConnectRequests[0].method ===
-        'metamaskinstitutional_reauthenticate'
-      ) {
-        history.push(INTERACTIVE_REPLACEMENT_TOKEN_PAGE);
-      } else if (
-        institutionalConnectRequests[0].method ===
-        'metamaskinstitutional_authenticate'
-      ) {
-        history.push(CONFIRM_ADD_CUSTODIAN_TOKEN);
-      }
-    }
-  }
-
-  shouldCloseCurrentWindow() {
-    const {
-      isNotification,
-      modalOpen,
       totalUnapprovedCount,
-      institutionalConnectRequests,
-      waitForConfirmDeepLinkDialog,
+      hasApprovalFlows,
+      isSigningQRHardwareTransaction,
+      isHardwareWalletErrorModalVisible,
+    } = this.props;
+    if (
+      shouldCloseNotificationPopup({
+        isNotification,
+        totalUnapprovedCount,
+        hasApprovalFlows,
+        isSigningQRHardwareTransaction,
+        isHardwareWalletErrorModalVisible,
+      })
+    ) {
+      this.state.notificationClosing = true;
+      attemptCloseNotificationPopup();
+    }
+  }
+
+  checkRedirectAfterDefaultPage() {
+    const {
+      redirectAfterDefaultPage,
+      navigate,
+      clearRedirectAfterDefaultPage,
     } = this.props;
 
     if (
-      isNotification &&
-      totalUnapprovedCount === 0 &&
-      institutionalConnectRequests.length === 0 &&
-      !waitForConfirmDeepLinkDialog &&
-      !modalOpen
+      redirectAfterDefaultPage?.shouldRedirect &&
+      redirectAfterDefaultPage?.path
     ) {
-      global.platform.closeCurrentWindow();
+      navigate(redirectAfterDefaultPage.path);
+      clearRedirectAfterDefaultPage();
     }
   }
-  ///: END:ONLY_INCLUDE_IF
 
-  checkStatusAndNavigate() {
-    const {
-      firstPermissionsRequestId,
-      history,
-      isNotification,
-      hasTransactionPendingApprovals,
-      hasWatchTokenPendingApprovals,
-      hasWatchNftPendingApprovals,
-      haveSwapsQuotes,
-      showAwaitingSwapScreen,
-      swapsFetchParams,
-      location,
-      pendingConfirmations,
-      pendingConfirmationsPrioritized,
-      hasApprovalFlows,
-    } = this.props;
-    const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
+  /**
+   * Hydrate history duck from persisted pendingRedirectRoute (cross-session redirect).
+   * Must only be called once per arrival of a new pendingRedirectRoute, because
+   * clearPendingRedirectRoute is an async thunk — the prop stays non-null across
+   * several render cycles, so calling this unconditionally in componentDidUpdate
+   * would create a re-render loop.
+   */
+  checkPendingRedirectRoute() {
+    if (this.props.pendingRedirectRoute) {
+      const { path, search, environmentType } = this.props.pendingRedirectRoute;
+      const shouldRedirect =
+        !environmentType || environmentType === this.props.envType;
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    this.shouldCloseCurrentWindow();
-    ///: END:ONLY_INCLUDE_IF
-
-    const canRedirect = !isNotification && !stayOnHomePage;
-    if (canRedirect && showAwaitingSwapScreen) {
-      history.push(AWAITING_SWAP_ROUTE);
-    } else if (canRedirect && (haveSwapsQuotes || swapsFetchParams)) {
-      history.push(PREPARE_SWAP_ROUTE);
-    } else if (firstPermissionsRequestId) {
-      history.push(`${CONNECT_ROUTE}/${firstPermissionsRequestId}`);
-    } else if (pendingConfirmationsPrioritized.length > 0) {
-      history.push(CONFIRMATION_V_NEXT_ROUTE);
-    } else if (hasTransactionPendingApprovals) {
-      history.push(CONFIRM_TRANSACTION_ROUTE);
-    } else if (hasWatchTokenPendingApprovals) {
-      history.push(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE);
-    } else if (hasWatchNftPendingApprovals) {
-      history.push(CONFIRM_ADD_SUGGESTED_NFT_ROUTE);
-    } else if (pendingConfirmations.length > 0 || hasApprovalFlows) {
-      history.push(CONFIRMATION_V_NEXT_ROUTE);
+      if (shouldRedirect) {
+        this.props.setRedirectAfterDefaultPage({
+          path: search ? `${path}${search}` : path,
+        });
+      }
+      this.props.clearPendingRedirectRoute();
     }
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    this.checkInstitutionalConnectRequest();
-    ///: END:ONLY_INCLUDE_IF
+  }
+
+  /**
+   * Resume a recent Perps session if the user reopened the extension within
+   * {@link PERPS_REOPEN_TTL_MS}. Explicit `pendingRedirectRoute` always wins
+   * to avoid overriding a route set by a background flow. The persisted entry
+   * is cleared after inspection so it never hijacks a later home mount.
+   */
+  checkLastVisitedPerpsRoute() {
+    const {
+      lastVisitedPerpsRoute,
+      pendingRedirectRoute,
+      envType,
+      setRedirectAfterDefaultPage,
+      clearLastVisitedPerpsRoute,
+    } = this.props;
+
+    if (!lastVisitedPerpsRoute) {
+      return;
+    }
+
+    const { path, timestamp } = lastVisitedPerpsRoute;
+    const isFresh = Date.now() - timestamp < PERPS_REOPEN_TTL_MS;
+    // Exact match on `/perps` or a `/perps/...` sub-route only. Prevents a
+    // future sibling like `/perpsNew` from silently resuming off a stale
+    // persisted path. Strip any query/hash suffix first so a stored path
+    // like `/perps?tab=1` still matches.
+    const pathname = typeof path === 'string' ? path.split(/[?#]/u)[0] : '';
+    const isPerpsPath =
+      pathname === PERPS_ROUTE || pathname.startsWith(`${PERPS_ROUTE}/`);
+
+    // An in-app departure from `/perps/*` scheduled a Redux clear in the
+    // passive-effect phase — React fires this `componentDidMount` first, so
+    // the clear hasn't landed yet. The module-level marker tells us this is
+    // an in-app transition (not a popup reopen) and we must not replay the
+    // redirect. A fresh JS context (popup close→reopen) starts with an
+    // unset marker, so the real resume path still fires.
+    // `pendingRedirectRoute` is a higher-priority cross-session redirect
+    // (e.g. a background-initiated deeplink); skip the perps resume when
+    // one will actually fire in this environment. Mirror the
+    // `checkPendingRedirectRoute` env applicability check so an
+    // environment-mismatched pending entry (still non-null because the
+    // clear is async) does not suppress the perps resume. Always clear
+    // the persisted entry afterwards so a later home mount cannot replay
+    // it.
+    const pendingApplies =
+      Boolean(pendingRedirectRoute) &&
+      (!pendingRedirectRoute.environmentType ||
+        pendingRedirectRoute.environmentType === envType);
+    const justLeftPerpsInApp = wasPerpsUnmountedInAppRecently(1500);
+    if (!pendingApplies && !justLeftPerpsInApp && isFresh && isPerpsPath) {
+      setRedirectAfterDefaultPage({ path });
+    }
+
+    clearLastVisitedPerpsRoute?.();
   }
 
   componentDidMount() {
-    this.checkStatusAndNavigate();
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    const { setWaitForConfirmDeepLinkDialog } = this.props;
-
-    window.addEventListener('beforeunload', () => {
-      // If user closes notification window manually, change waitForConfirmDeepLinkDialog to false
-      setWaitForConfirmDeepLinkDialog(false);
-    });
-    ///: END:ONLY_INCLUDE_IF
-
     this.props.fetchBuyableChains();
+
+    this.checkPendingRedirectRoute();
+    this.checkLastVisitedPerpsRoute();
+    this.checkRedirectAfterDefaultPage();
+
+    // Ensure we have up-to-date connectivity statuses for all enabled networks
+    this.props.lookupSelectedNetworks();
+
+    // Set pending Shield cohort for wallet home evaluation if there's no existing pending cohort
+    if (this.props.setPendingShieldCohort && !this.props.pendingShieldCohort) {
+      this.props.setPendingShieldCohort(COHORT_NAMES.WALLET_HOME);
+    }
   }
 
-  static getDerivedStateFromProps(props) {
-    if (shouldCloseNotificationPopup(props)) {
+  static getDerivedStateFromProps({
+    isNotification,
+    totalUnapprovedCount,
+    hasApprovalFlows,
+    isSigningQRHardwareTransaction,
+    isHardwareWalletErrorModalVisible,
+  }) {
+    const shouldClose = shouldCloseNotificationPopup({
+      isNotification,
+      totalUnapprovedCount,
+      hasApprovalFlows,
+      isSigningQRHardwareTransaction,
+      isHardwareWalletErrorModalVisible,
+    });
+    if (shouldClose) {
       return { notificationClosing: true };
     }
     return null;
   }
 
-  componentDidUpdate(_prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     const {
-      closeNotificationPopup,
-      isNotification,
-      hasAllowedPopupRedirectApprovals,
+      attemptCloseNotificationPopup,
       newNetworkAddedConfigurationId,
       setActiveNetwork,
       clearNewNetworkAdded,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      custodianDeepLink,
-      showCustodianDeepLink,
-      cleanCustodianDeepLink,
-      accountType,
-      ///: END:ONLY_INCLUDE_IF
+      pendingShieldCohort,
+      evaluateCohortEligibility,
+      isSignedIn,
     } = this.props;
+
+    const { shouldEvaluateCohortEligibility } = this.state;
 
     const {
       newNetworkAddedConfigurationId: prevNewNetworkAddedConfigurationId,
-    } = _prevProps;
+    } = prevProps;
     const { notificationClosing } = this.state;
 
     if (
@@ -397,34 +354,32 @@ export default class Home extends PureComponent {
     }
 
     if (notificationClosing && !prevState.notificationClosing) {
-      closeNotificationPopup();
-    } else if (isNotification || hasAllowedPopupRedirectApprovals) {
-      this.checkStatusAndNavigate();
+      attemptCloseNotificationPopup();
     }
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    // Check for pending Shield cohort evaluation if user is signed in
     if (
-      accountType === AccountType.CUSTODY &&
-      custodianDeepLink &&
-      Object.keys(custodianDeepLink).length
+      shouldEvaluateCohortEligibility &&
+      pendingShieldCohort &&
+      evaluateCohortEligibility &&
+      isSignedIn
     ) {
-      const { custodyId, fromAddress } = custodianDeepLink;
-
-      showCustodianDeepLink({
-        fromAddress,
-        custodyId,
-        isSignature: true,
-        isNotification,
-        onDeepLinkShown: () => {
-          this.context.trackEvent({
-            category: MetaMetricsEventCategory.MMI,
-            event: MetaMetricsEventName.SignatureDeeplinkDisplayed,
-          });
-          cleanCustodianDeepLink();
-        },
-      });
+      evaluateCohortEligibility(pendingShieldCohort);
+      this.setState({ shouldEvaluateCohortEligibility: false });
     }
-    ///: END:ONLY_INCLUDE_IF
+
+    // Only process pendingRedirectRoute when the prop first transitions from null to non-null
+    if (this.props.pendingRedirectRoute && !prevProps.pendingRedirectRoute) {
+      this.checkPendingRedirectRoute();
+    }
+
+    // Same one-shot pattern: only react when lastVisitedPerpsRoute hydrates from null to a value.
+    if (this.props.lastVisitedPerpsRoute && !prevProps.lastVisitedPerpsRoute) {
+      this.checkLastVisitedPerpsRoute();
+    }
+
+    // clearRedirectAfterDefaultPage is a synchronous Redux action, so the guard condition flips before the next render.
+    this.checkRedirectAfterDefaultPage();
   }
 
   onRecoveryPhraseReminderClose = () => {
@@ -448,22 +403,22 @@ export default class Home extends PureComponent {
     });
   };
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   onSupportLinkClick = () => {
-    this.context.trackEvent(
-      {
-        category: MetaMetricsEventCategory.Home,
-        event: MetaMetricsEventName.SupportLinkClicked,
-        properties: {
-          url: SUPPORT_LINK,
+    if (isMain()) {
+      this.context.trackEvent(
+        {
+          category: MetaMetricsEventCategory.Home,
+          event: MetaMetricsEventName.SupportLinkClicked,
+          properties: {
+            url: SUPPORT_LINK,
+          },
         },
-      },
-      {
-        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
-      },
-    );
+        {
+          contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
+        },
+      );
+    }
   };
-  ///: END:ONLY_INCLUDE_IF
 
   onOutdatedBrowserWarningClose = () => {
     const { setOutdatedBrowserWarningLastShown } = this.props;
@@ -474,37 +429,30 @@ export default class Home extends PureComponent {
     const { t } = this.context;
 
     const {
-      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-      history,
+      navigate,
       shouldShowSeedPhraseReminder,
       isPopup,
-      ///: END:ONLY_INCLUDE_IF
       shouldShowWeb3ShimUsageNotification,
       setWeb3ShimUsageAlertDismissed,
       originOfCurrentTab,
       disableWeb3ShimUsageAlert,
       infuraBlocked,
       showOutdatedBrowserWarning,
-      newNftAddedMessage,
-      setNewNftAddedMessage,
       newNetworkAddedName,
       editedNetwork,
-      removeNftMessage,
-      setRemoveNftMessage,
       newTokensImported,
       newTokensImportedError,
       setNewTokensImported,
       setNewTokensImportedError,
       clearNewNetworkAdded,
       clearEditedNetwork,
+      isPrimarySeedPhraseBackedUp,
     } = this.props;
 
     const onAutoHide = () => {
-      setNewNftAddedMessage('');
-      setRemoveNftMessage('');
       setNewTokensImported(''); // Added this so we dnt see the notif if user does not close it
       setNewTokensImportedError('');
-      setEditedNetwork();
+      clearEditedNetwork(); // dispatches setEditedNetwork(), setting editedNetwork to undefined, which clears the editedNetwork state
     };
 
     const autoHideDelay = 5 * SECOND;
@@ -514,7 +462,7 @@ export default class Home extends PureComponent {
         <div>
           <Text>{t('outdatedBrowserNotification')}</Text>
           <br />
-          <Text fontWeight={FontWeight.Bold} color={TextColor.warningDefault}>
+          <Text fontWeight={FontWeight.Bold} color={TextColor.WarningDefault}>
             {t('noHardwareWalletOrSnapsSupport')}
           </Text>
         </div>
@@ -522,256 +470,194 @@ export default class Home extends PureComponent {
         t('outdatedBrowserNotification')
       );
 
-    return (
-      <MultipleNotifications>
-        {newNftAddedMessage === 'success' ? (
-          <ActionableMessage
-            type="success"
-            className="home__new-network-notification"
-            autoHideTime={autoHideDelay}
-            onAutoHide={onAutoHide}
-            message={
-              <Box display={Display.InlineFlex}>
-                <i className="fa fa-check-circle home__new-nft-notification-icon" />
-                <Text variant={TextVariant.bodySm} as="h6">
-                  {t('newNftAddedMessage')}
-                </Text>
-                <ButtonIcon
-                  iconName={IconName.Close}
-                  size={ButtonIconSize.Sm}
-                  ariaLabel={t('close')}
-                  onClick={onAutoHide}
-                />
-              </Box>
-            }
-          />
-        ) : null}
-        {removeNftMessage === 'success' ? (
-          <ActionableMessage
-            type="success"
-            className="home__new-network-notification"
-            autoHideTime={autoHideDelay}
-            onAutoHide={onAutoHide}
-            message={
-              <Box display={Display.InlineFlex}>
-                <i className="fa fa-check-circle home__new-nft-notification-icon" />
-                <Text variant={TextVariant.bodySm} as="h6">
-                  {t('removeNftMessage')}
-                </Text>
-                <ButtonIcon
-                  iconName={IconName.Close}
-                  size={ButtonIconSize.Sm}
-                  ariaLabel={t('close')}
-                  onClick={onAutoHide}
-                />
-              </Box>
-            }
-          />
-        ) : null}
-        {removeNftMessage === 'error' ? (
-          <ActionableMessage
-            type="danger"
-            className="home__new-network-notification"
-            autoHideTime={autoHideDelay}
-            onAutoHide={onAutoHide}
-            message={
-              <Box display={Display.InlineFlex}>
-                <i className="fa fa-check-circle home__new-nft-notification-icon" />
-                <Text variant={TextVariant.bodySm} as="h6">
-                  {t('removeNftErrorMessage')}
-                </Text>
-                <ButtonIcon
-                  iconName={IconName.Close}
-                  size={ButtonIconSize.Sm}
-                  ariaLabel={t('close')}
-                  onClick={onAutoHide}
-                />
-              </Box>
-            }
-          />
-        ) : null}
-        {newNetworkAddedName ? (
-          <ActionableMessage
-            type="success"
-            className="home__new-network-notification"
-            message={
-              <Box display={Display.InlineFlex}>
-                <i className="fa fa-check-circle home__new-network-notification-icon" />
-                <Text variant={TextVariant.bodySm} as="h6">
-                  {t('newNetworkAdded', [newNetworkAddedName])}
-                </Text>
-                <ButtonIcon
-                  iconName={IconName.Close}
-                  size={ButtonIconSize.Sm}
-                  ariaLabel={t('close')}
-                  onClick={() => clearNewNetworkAdded()}
-                  className="home__new-network-notification-close"
-                />
-              </Box>
-            }
-          />
-        ) : null}
-        {editedNetwork?.editCompleted ? (
-          <ActionableMessage
-            type="success"
-            className="home__new-tokens-imported-notification"
-            autoHideTime={autoHideDelay}
-            onAutoHide={onAutoHide}
-            message={
-              <Box display={Display.InlineFlex}>
-                <i className="fa fa-check-circle home__new-network-notification-icon" />
-                <Text variant={TextVariant.bodySm} as="h6">
+    const items = [
+      newNetworkAddedName ? (
+        <ActionableMessage
+          key="new-network-added"
+          type="success"
+          className="home__new-network-notification"
+          message={
+            <Box display={Display.InlineFlex}>
+              <i className="fa fa-check-circle home__new-network-notification-icon" />
+              <Text variant={TextVariant.BodySm} asChild>
+                <h6>{t('newNetworkAdded', [newNetworkAddedName])}</h6>
+              </Text>
+              <ButtonIcon
+                iconName={IconName.Close}
+                size={ButtonIconSize.Sm}
+                ariaLabel={t('close')}
+                onClick={() => clearNewNetworkAdded()}
+                className="home__new-network-notification-close"
+              />
+            </Box>
+          }
+        />
+      ) : null,
+      editedNetwork?.editCompleted ? (
+        <ActionableMessage
+          key="edited-network"
+          type="success"
+          className="home__new-tokens-imported-notification"
+          autoHideTime={autoHideDelay}
+          onAutoHide={onAutoHide}
+          message={
+            <Box display={Display.InlineFlex}>
+              <i className="fa fa-check-circle home__new-network-notification-icon" />
+              <Text variant={TextVariant.BodySm} asChild>
+                <h6>
                   {editedNetwork.newNetwork
                     ? t('newNetworkAdded', [editedNetwork.nickname])
                     : t('newNetworkEdited', [editedNetwork.nickname])}
+                </h6>
+              </Text>
+              <ButtonIcon
+                iconName={IconName.Close}
+                size={ButtonIconSize.Sm}
+                ariaLabel={t('close')}
+                onClick={() => clearEditedNetwork()}
+                className="home__new-network-notification-close"
+              />
+            </Box>
+          }
+        />
+      ) : null,
+      newTokensImported ? (
+        <ActionableMessage
+          key="new-tokens-imported"
+          type="success"
+          autoHideTime={autoHideDelay}
+          onAutoHide={onAutoHide}
+          className="home__new-tokens-imported-notification"
+          message={
+            <Box display={Display.InlineFlex}>
+              <i className="fa fa-check-circle home__new-tokens-imported-notification-icon" />
+              <Box>
+                <Text
+                  className="home__new-tokens-imported-notification-title"
+                  variant={TextVariant.BodySm}
+                  asChild
+                >
+                  <h6>{t('newTokensImportedTitle')}</h6>
                 </Text>
-                <ButtonIcon
-                  iconName={IconName.Close}
-                  size={ButtonIconSize.Sm}
-                  ariaLabel={t('close')}
-                  onClick={() => clearEditedNetwork()}
-                  className="home__new-network-notification-close"
-                />
+                <Text
+                  className="home__new-tokens-imported-notification-message"
+                  variant={TextVariant.BodySm}
+                  asChild
+                >
+                  <h6>{t('newTokensImportedMessage', [newTokensImported])}</h6>
+                </Text>
               </Box>
-            }
-          />
-        ) : null}
-        {newTokensImported ? (
-          <ActionableMessage
-            type="success"
-            autoHideTime={autoHideDelay}
-            onAutoHide={onAutoHide}
-            className="home__new-tokens-imported-notification"
-            message={
-              <Box display={Display.InlineFlex}>
-                <i className="fa fa-check-circle home__new-tokens-imported-notification-icon" />
-                <Box>
-                  <Text
-                    className="home__new-tokens-imported-notification-title"
-                    variant={TextVariant.bodySmBold}
-                    as="h6"
-                  >
-                    {t('newTokensImportedTitle')}
-                  </Text>
-                  <Text
-                    className="home__new-tokens-imported-notification-message"
-                    variant={TextVariant.bodySm}
-                    as="h6"
-                  >
-                    {t('newTokensImportedMessage', [newTokensImported])}
-                  </Text>
-                </Box>
 
-                <ButtonIcon
-                  iconName={IconName.Close}
-                  size={ButtonIconSize.Sm}
-                  ariaLabel={t('close')}
-                  onClick={() => setNewTokensImported('')}
-                  className="home__new-tokens-imported-notification-close"
-                />
-              </Box>
-            }
-          />
-        ) : null}
-        {newTokensImportedError ? (
-          <ActionableMessage
-            type="danger"
-            className="home__new-tokens-imported-notification"
-            autoHideTime={autoHideDelay}
-            onAutoHide={onAutoHide}
-            message={
-              <Box display={Display.InlineFlex}>
-                <Icon name={IconName.Danger} />
-                <Text variant={TextVariant.bodySm} as="h6">
-                  {t('importTokensError')}
-                </Text>
-                <ButtonIcon
-                  iconName={IconName.Close}
-                  size={ButtonIconSize.Sm}
-                  ariaLabel={t('close')}
-                  onClick={onAutoHide}
-                />
-              </Box>
-            }
-          />
-        ) : null}
-        {shouldShowWeb3ShimUsageNotification ? (
-          <HomeNotification
-            descriptionText={t('web3ShimUsageNotification', [
-              <span
-                key="web3ShimUsageNotificationLink"
-                className="home-notification__text-link"
-                onClick={() =>
-                  global.platform.openTab({ url: ZENDESK_URLS.LEGACY_WEB3 })
-                }
-              >
-                {t('here')}
-              </span>,
-            ])}
-            ignoreText={t('dismiss')}
-            onIgnore={(disable) => {
-              setWeb3ShimUsageAlertDismissed(originOfCurrentTab);
-              if (disable) {
-                disableWeb3ShimUsageAlert();
+              <ButtonIcon
+                iconName={IconName.Close}
+                size={ButtonIconSize.Sm}
+                ariaLabel={t('close')}
+                onClick={() => setNewTokensImported('')}
+                className="home__new-tokens-imported-notification-close"
+              />
+            </Box>
+          }
+        />
+      ) : null,
+      newTokensImportedError ? (
+        <ActionableMessage
+          key="new-tokens-imported-error"
+          type="danger"
+          className="home__new-tokens-imported-notification"
+          autoHideTime={autoHideDelay}
+          onAutoHide={onAutoHide}
+          message={
+            <Box display={Display.InlineFlex}>
+              <Icon name={IconName.Danger} marginRight={1} />
+              <Text variant={TextVariant.BodySm} asChild>
+                <h6>{t('importTokensError')}</h6>
+              </Text>
+              <ButtonIcon
+                iconName={IconName.Close}
+                size={ButtonIconSize.Sm}
+                ariaLabel={t('close')}
+                onClick={onAutoHide}
+              />
+            </Box>
+          }
+        />
+      ) : null,
+      shouldShowWeb3ShimUsageNotification ? (
+        <HomeNotification
+          key="show-web3-shim"
+          descriptionText={t('web3ShimUsageNotification', [
+            <span
+              key="web3ShimUsageNotificationLink"
+              className="home-notification__text-link"
+              onClick={() =>
+                global.platform.openTab({ url: ZENDESK_URLS.LEGACY_WEB3 })
               }
-            }}
-            checkboxText={t('dontShowThisAgain')}
-            checkboxTooltipText={t('canToggleInSettings')}
-            key="home-web3ShimUsageNotification"
-          />
-        ) : null}
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-          shouldShowSeedPhraseReminder ? (
-            <HomeNotification
-              descriptionText={t('backupApprovalNotice')}
-              acceptText={t('backupNow')}
-              onAccept={() => {
-                const backUpSRPRoute = `${ONBOARDING_SECURE_YOUR_WALLET_ROUTE}/?isFromReminder=true`;
-                if (isPopup) {
-                  global.platform.openExtensionInBrowser(backUpSRPRoute);
-                } else {
-                  history.push(backUpSRPRoute);
-                }
-              }}
-              infoText={t('backupApprovalInfo')}
-              key="home-backupApprovalNotice"
-            />
-          ) : null
-          ///: END:ONLY_INCLUDE_IF
-        }
-        {infuraBlocked && this.state.canShowBlockageNotification ? (
-          <HomeNotification
-            descriptionText={t('infuraBlockedNotification', [
-              <span
-                key="infuraBlockedNotificationLink"
-                className="home-notification__text-link"
-                onClick={() =>
-                  global.platform.openTab({ url: ZENDESK_URLS.INFURA_BLOCKAGE })
-                }
-              >
-                {t('here')}
-              </span>,
-            ])}
-            ignoreText={t('dismiss')}
-            onIgnore={() => {
-              this.setState({
-                canShowBlockageNotification: false,
-              });
-            }}
-            key="home-infuraBlockedNotification"
-          />
-        ) : null}
-        {showOutdatedBrowserWarning ? (
-          <HomeNotification
-            descriptionText={outdatedBrowserNotificationDescriptionText}
-            acceptText={t('gotIt')}
-            onAccept={this.onOutdatedBrowserWarningClose}
-            key="home-outdatedBrowserNotification"
-          />
-        ) : null}
-      </MultipleNotifications>
-    );
+            >
+              {t('here')}
+            </span>,
+          ])}
+          ignoreText={t('dismiss')}
+          onIgnore={(disable) => {
+            setWeb3ShimUsageAlertDismissed(originOfCurrentTab);
+            if (disable) {
+              disableWeb3ShimUsageAlert();
+            }
+          }}
+          checkboxText={t('dontShowThisAgain')}
+          checkboxTooltipText={t('canToggleInSettings')}
+        />
+      ) : null,
+      !isPrimarySeedPhraseBackedUp && shouldShowSeedPhraseReminder ? (
+        <HomeNotification
+          key="show-seed-phrase-reminder"
+          descriptionText={t('backupApprovalNotice')}
+          acceptText={t('backupNow')}
+          onAccept={() => {
+            const backUpSRPRoute = `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true`;
+            if (isPopup) {
+              global.platform.openExtensionInBrowser(backUpSRPRoute);
+            } else {
+              navigate(backUpSRPRoute);
+            }
+          }}
+          infoText={t('backupApprovalInfo')}
+        />
+      ) : null,
+      infuraBlocked && this.state.canShowBlockageNotification ? (
+        <HomeNotification
+          key="infura-blocked"
+          descriptionText={t('infuraBlockedNotification', [
+            <span
+              key="infuraBlockedNotificationLink"
+              className="home-notification__text-link"
+              onClick={() =>
+                global.platform.openTab({ url: ZENDESK_URLS.INFURA_BLOCKAGE })
+              }
+            >
+              {t('here')}
+            </span>,
+          ])}
+          ignoreText={t('dismiss')}
+          onIgnore={() => {
+            this.setState({
+              canShowBlockageNotification: false,
+            });
+          }}
+        />
+      ) : null,
+      showOutdatedBrowserWarning ? (
+        <HomeNotification
+          key="outdated-browser-notification"
+          descriptionText={outdatedBrowserNotificationDescriptionText}
+          acceptText={t('gotIt')}
+          onAccept={this.onOutdatedBrowserWarningClose}
+        />
+      ) : null,
+    ].filter(Boolean);
+
+    return items.length ? (
+      <MultipleNotifications>{items}</MultipleNotifications>
+    ) : null;
   }
 
   renderOnboardingPopover = () => {
@@ -784,7 +670,7 @@ export default class Home extends PureComponent {
         category: MetaMetricsEventCategory.Home,
         event: MetaMetricsEventName.AnalyticsPreferenceSelected,
         properties: {
-          has_marketing_consent: false,
+          [MetaMetricsUserTrait.HasMarketingConsent]: false,
           location: 'marketing_consent_modal',
         },
       });
@@ -796,7 +682,7 @@ export default class Home extends PureComponent {
         category: MetaMetricsEventCategory.Home,
         event: MetaMetricsEventName.AnalyticsPreferenceSelected,
         properties: {
-          has_marketing_consent: consent,
+          [MetaMetricsUserTrait.HasMarketingConsent]: consent,
           location: 'marketing_consent_modal',
         },
       });
@@ -826,7 +712,7 @@ export default class Home extends PureComponent {
               gap={2}
               margin={4}
             >
-              <Typography>
+              <Text>
                 {t('onboardedMetametricsParagraph1', [
                   <a
                     href={METAMETRICS_SETTINGS_LINK}
@@ -837,14 +723,14 @@ export default class Home extends PureComponent {
                     {t('onboardedMetametricsLink')}
                   </a>,
                 ])}
-              </Typography>
-              <Typography>{t('onboardedMetametricsParagraph2')}</Typography>
+              </Text>
+              <Text>{t('onboardedMetametricsParagraph2')}</Text>
               <ul className="home__onboarding_list">
                 <li>{t('onboardedMetametricsKey1')}</li>
                 <li>{t('onboardedMetametricsKey2')}</li>
                 <li>{t('onboardedMetametricsKey3')}</li>
               </ul>
-              <Typography>{t('onboardedMetametricsParagraph3')}</Typography>
+              <Text>{t('onboardedMetametricsParagraph3')}</Text>
             </Box>
           </ModalBody>
           <ModalFooter>
@@ -915,115 +801,140 @@ export default class Home extends PureComponent {
 
   render() {
     const {
-      defaultHomeActiveTabName,
-      onTabClick,
       useExternalServices,
       setBasicFunctionalityModalOpen,
       forgottenPassword,
       participateInMetaMetrics,
       dataCollectionForMarketing,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       connectedStatusPopoverHasBeenShown,
       isPopup,
-      seedPhraseBackedUp,
       showRecoveryPhraseReminder,
       showTermsOfUsePopup,
-      showWhatsNewPopup,
-      hideWhatsNewPopup,
       completedOnboarding,
       onboardedInThisUISession,
-      announcementsToShow,
       firstTimeFlowType,
       newNetworkAddedConfigurationId,
       showMultiRpcModal,
-      ///: END:ONLY_INCLUDE_IF
+      showUpdateModal,
+      isSeedlessPasswordOutdated,
+      isPrimarySeedPhraseBackedUp,
+      showShieldEntryModal,
+      isSocialLoginFlow,
+      rewardsEnabled,
+      rewardsModalOpen,
+      showPna25Modal,
     } = this.props;
 
     if (forgottenPassword) {
-      return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />;
-    } else if (this.state.notificationClosing || this.state.redirecting) {
+      return <Navigate to={RESTORE_VAULT_ROUTE} replace />;
+    } else if (this.state.notificationClosing) {
       return null;
     }
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     const canSeeModals =
       completedOnboarding &&
       (!onboardedInThisUISession ||
         firstTimeFlowType === FirstTimeFlowType.import) &&
-      !process.env.IN_TEST &&
       !newNetworkAddedConfigurationId;
 
-    const showWhatsNew =
-      canSeeModals && announcementsToShow && showWhatsNewPopup;
-
     const showMultiRpcEditModal =
-      canSeeModals && showMultiRpcModal && !showWhatsNew;
+      canSeeModals && showMultiRpcModal && !process.env.IN_TEST;
+
+    const displayUpdateModal =
+      canSeeModals && showUpdateModal && !showMultiRpcEditModal;
 
     const showTermsOfUse =
-      completedOnboarding && !onboardedInThisUISession && showTermsOfUsePopup;
-    ///: END:ONLY_INCLUDE_IF
+      completedOnboarding &&
+      !onboardedInThisUISession &&
+      showTermsOfUsePopup &&
+      !isSocialLoginFlow;
 
+    const showRecoveryPhrase =
+      showRecoveryPhraseReminder && !isPrimarySeedPhraseBackedUp;
+
+    const showRewardsModal =
+      rewardsEnabled &&
+      canSeeModals &&
+      !showTermsOfUse &&
+      !showMultiRpcEditModal &&
+      !displayUpdateModal &&
+      !isSeedlessPasswordOutdated &&
+      !showShieldEntryModal &&
+      !showRecoveryPhrase;
+
+    const showPna25ModalComponent =
+      showPna25Modal &&
+      canSeeModals &&
+      !showTermsOfUse &&
+      !showMultiRpcEditModal &&
+      !displayUpdateModal &&
+      !isSeedlessPasswordOutdated &&
+      !showShieldEntryModal &&
+      !showRecoveryPhrase &&
+      !rewardsModalOpen;
+
+    const { location } = this.props;
+
+    // Handle connected routes
+    if (location?.pathname === CONNECTED_ROUTE) {
+      return (
+        <ScrollContainer className="main-container main-container--has-shadow">
+          <ConnectedSites navigate={this.props.navigate} />
+        </ScrollContainer>
+      );
+    }
+
+    if (location?.pathname === CONNECTED_ACCOUNTS_ROUTE) {
+      return (
+        <ScrollContainer className="main-container main-container--has-shadow">
+          <ConnectedAccounts navigate={this.props.navigate} />
+        </ScrollContainer>
+      );
+    }
+
+    // Render normal home content
     return (
-      <div className="main-container">
-        <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
-        <Route
-          path={CONNECTED_ACCOUNTS_ROUTE}
-          component={ConnectedAccounts}
-          exact
-        />
+      <ScrollContainer className="main-container main-container--has-shadow">
         <div className="home__container">
           {dataCollectionForMarketing === null &&
           participateInMetaMetrics === true
             ? this.renderOnboardingPopover()
             : null}
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-          }
+          {isSeedlessPasswordOutdated && <PasswordOutdatedModal />}
           {showMultiRpcEditModal && <MultiRpcEditModal />}
-          {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
-          {!showWhatsNew && showRecoveryPhraseReminder ? (
+          {displayUpdateModal && <UpdateModal />}
+          {showRecoveryPhrase ? (
             <RecoveryPhraseReminder
-              hasBackedUp={seedPhraseBackedUp}
               onConfirm={this.onRecoveryPhraseReminderClose}
             />
           ) : null}
           {showTermsOfUse ? (
             <TermsOfUsePopup onAccept={this.onAcceptTermsOfUse} />
           ) : null}
+          {showShieldEntryModal && <ShieldEntryModal />}
+          {showRewardsModal && <RewardsModal />}
+          {showPna25ModalComponent && <Pna25Modal />}
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()
             : null}
-          {
-            ///: END:ONLY_INCLUDE_IF
-          }
           <div className="home__main-view">
             <AccountOverview
-              onTabClick={onTabClick}
-              ///: BEGIN:ONLY_INCLUDE_IF(build-main)
               onSupportLinkClick={this.onSupportLinkClick}
-              ///: END:ONLY_INCLUDE_IF
-              defaultHomeActiveTabName={defaultHomeActiveTabName}
               useExternalServices={useExternalServices}
               setBasicFunctionalityModalOpen={setBasicFunctionalityModalOpen}
-            ></AccountOverview>
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
+            />
+            {(isBeta() || isFlask()) && (
               <div className="home__support">
-                <BetaHomeFooter />
+                <BetaAndFlaskHomeFooter />
               </div>
-              ///: END:ONLY_INCLUDE_IF
-            }
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-              <div className="home__support">
-                <FlaskHomeFooter />
-              </div>
-              ///: END:ONLY_INCLUDE_IF
-            }
+            )}
           </div>
           {this.renderNotifications()}
         </div>
-      </div>
+
+        {/* Ghost component that manages the useHomeDeepLinkEffects */}
+        <HomeDeepLinkActions />
+      </ScrollContainer>
     );
   }
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import ConfirmResetAccount from '.';
 
 describe('Confirm Reset Account', () => {
@@ -18,22 +19,22 @@ describe('Confirm Reset Account', () => {
   });
 
   it('hides modal when nevermind button is clicked', () => {
-    const { queryByText } = renderWithProvider(
+    const { getByText } = renderWithProvider(
       <ConfirmResetAccount.WrappedComponent {...props} />,
     );
 
-    fireEvent.click(queryByText('[nevermind]'));
+    fireEvent.click(getByText(messages.nevermind.message));
 
     expect(props.resetAccount).not.toHaveBeenCalled();
     expect(props.hideModal).toHaveBeenCalled();
   });
 
   it('resets account and hides modal when reset button is clicked', async () => {
-    const { queryByText } = renderWithProvider(
+    const { getByText } = renderWithProvider(
       <ConfirmResetAccount.WrappedComponent {...props} />,
     );
 
-    fireEvent.click(queryByText('[clear]'));
+    await fireEvent.click(getByText(messages.clear.message));
 
     expect(props.resetAccount).toHaveBeenCalled();
     expect(props.hideModal).toHaveBeenCalled();

@@ -1,32 +1,26 @@
 import { strict as assert } from 'assert';
-import { defaultGanacheOptions, withFixtures } from '../helpers';
+import { withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
-import { Ganache } from '../seeder/ganache';
-import FixtureBuilder from '../fixture-builder';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
+import { ACCOUNT_1, ACCOUNT_2 } from '../constants';
+import { login } from '../page-objects/flows/login.flow';
 
 describe('eth_accounts', function () {
-  it('executes a eth_accounts json rpc call', async function () {
+  it('returns permitted eth accounts when wallet is unlocked', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
           .withKeyringControllerAdditionalAccountVault()
-          .withPreferencesControllerAdditionalAccountIdentities()
-          .withAccountsControllerAdditionalAccountIdentities()
-          .withPermissionControllerConnectedToTestDapp()
+          .withAccountsControllerAdditionalAccountVault()
+          .withPermissionControllerConnectedToTestDapp({
+            account: [ACCOUNT_1, ACCOUNT_2],
+          })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer?: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver);
 
         // eth_accounts
         await driver.openNewPage(`http://127.0.0.1:8080`);
@@ -40,10 +34,38 @@ describe('eth_accounts', function () {
           `return window.ethereum.request(${accountsRequest})`,
         );
 
-        assert.deepStrictEqual(accounts, [
-          '0x09781764c08de8ca82e156bbf156a3ca217c7950',
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-        ]);
+        assert.deepStrictEqual(accounts, [ACCOUNT_2, ACCOUNT_1]);
+      },
+    );
+  });
+
+  it('returns permitted eth accounts when wallet is locked', async function () {
+    await withFixtures(
+      {
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
+          .withKeyringControllerAdditionalAccountVault()
+          .withAccountsControllerAdditionalAccountVault()
+          .withPermissionControllerConnectedToTestDapp({
+            account: [ACCOUNT_1, ACCOUNT_2],
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        // eth_accounts
+        await driver.openNewPage(`http://127.0.0.1:8080`);
+
+        const accountsRequest = JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'eth_accounts',
+        });
+
+        const accounts: string[] = await driver.executeScript(
+          `return window.ethereum.request(${accountsRequest})`,
+        );
+
+        assert.deepStrictEqual(accounts, [ACCOUNT_2, ACCOUNT_1]);
       },
     );
   });

@@ -1,0 +1,10 @@
+@use 'design-system';
+
+.visit-support-data-consent-modal {
+  &__body {
+    &__preference-checkbox {
+      margin-top: 16px;
+      margin-bottom: 16px;
+    }
+  }
+}

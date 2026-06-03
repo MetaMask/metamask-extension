@@ -1,17 +1,18 @@
 import React from 'react';
+import README from './README.mdx';
 import type { Meta, StoryObj } from '@storybook/react';
 import {
   BackgroundColor,
   Display,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
-import { Text } from '..';
-import README from './README.mdx';
+import { Text } from '../text';
 import { ModalBody } from './modal-body';
 
 const meta: Meta<typeof ModalBody> = {
   title: 'Components/ComponentLibrary/ModalBody',
   component: ModalBody,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       page: README,

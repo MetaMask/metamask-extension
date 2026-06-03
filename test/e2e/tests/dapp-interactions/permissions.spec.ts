@@ -1,0 +1,40 @@
+import { Suite } from 'mocha';
+import { withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { DAPP_HOST_ADDRESS } from '../../constants';
+import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
+import { openPermissionsPageFlow } from '../../page-objects/flows/permissions.flow';
+import TestDapp from '../../page-objects/pages/test-dapp';
+import { login } from '../../page-objects/flows/login.flow';
+
+describe('Permissions', function (this: Suite) {
+  it('sets permissions and connect to Dapp', async function () {
+    await withFixtures(
+      {
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver, localNodes }) => {
+        const addresses = await localNodes[0].getAccounts();
+        const publicAddress = addresses[0].toLowerCase();
+        await login(driver);
+
+        // open permissions page and check that the dapp is connected
+        await openPermissionsPageFlow(driver);
+        const permissionListPage = new PermissionListPage(driver);
+        await permissionListPage.checkPageIsLoaded();
+        await permissionListPage.checkConnectedToSite(DAPP_HOST_ADDRESS);
+        await permissionListPage.checkNumberOfConnectedSites();
+
+        // can get accounts within the dapp
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.checkPageIsLoaded();
+        await testDapp.checkGetAccountsResult(publicAddress);
+      },
+    );
+  });
+});

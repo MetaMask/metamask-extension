@@ -1,5 +1,5 @@
 import React from 'react';
-import { SnapAccountRedirectProps } from '../snap-account-redirect';
+import type { SnapAccountRedirectProps } from '../snap-account-redirect';
 import {
   AlignItems,
   BackgroundColor,

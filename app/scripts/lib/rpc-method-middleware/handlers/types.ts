@@ -1,12 +1,34 @@
-import { JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
-import { MessageType } from '../../../../../shared/constants/app';
+import type { NonEmptyArray } from '@metamask/utils';
+import type {
+  RequestedPermissions,
+  GenericPermissionController,
+} from '@metamask/permission-controller';
+import {
+  getCaip25PermissionFromLegacyPermissions,
+  Caip25EndowmentPermissionName,
+} from '@metamask/chain-agnostic-permission';
+import type MetamaskController from '../../../metamask-controller';
+import type { MetaMetricsController } from '../../../controllers/metametrics-controller';
 
-export type HandlerWrapper = {
-  methodNames: [MessageType] | MessageType[];
-  hookNames: Record<string, boolean>;
+export type GetAccounts = MetamaskController['getPermittedAccounts'];
+
+export type RequestPermissionsForOrigin = (
+  requestedPermissions: RequestedPermissions,
+) => ReturnType<GenericPermissionController['requestPermissions']>;
+
+export type SendMetrics = MetaMetricsController['trackEvent'];
+
+type Caip25Permission = ReturnType<
+  typeof getCaip25PermissionFromLegacyPermissions
+>;
+
+type Caip25RequestedPermission =
+  Caip25Permission[typeof Caip25EndowmentPermissionName];
+
+type Caip25Caveats = {
+  caveats: NonEmptyArray<Caip25RequestedPermission['caveats'][0]>;
 };
 
-export type HandlerRequestType<Params extends JsonRpcParams = JsonRpcParams> =
-  Required<JsonRpcRequest<Params>> & {
-    origin: string;
-  };
+export type GetCaip25PermissionFromLegacyPermissionsForOrigin = (
+  requestedPermissions?: RequestedPermissions,
+) => { [Caip25EndowmentPermissionName]: Caip25Caveats };

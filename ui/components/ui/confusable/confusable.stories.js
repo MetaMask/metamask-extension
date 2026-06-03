@@ -1,16 +1,10 @@
 import React from 'react';
-import README from './README.mdx';
 import Confusable from './confusable.component';
 
 export default {
   title: 'Components/UI/Confusable',
 
   component: Confusable,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argsTypes: {
     input: {
       control: 'text',
