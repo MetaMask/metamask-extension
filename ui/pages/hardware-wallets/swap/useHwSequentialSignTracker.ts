@@ -16,10 +16,10 @@ const TRADE_TYPES = new Set([TransactionType.bridge, TransactionType.swap]);
 const ALL_BATCH_TYPES = new Set([...APPROVAL_TYPES, ...TRADE_TYPES]);
 
 type HwSequentialSignTrackerAction =
-  | { type: HardwareWalletSignatureEvent.FirstSignatureSubmitted }
-  | { type: HardwareWalletSignatureEvent.TransactionSubmitted }
-  | { type: HardwareWalletSignatureEvent.TransactionRejected }
-  | { type: HardwareWalletSignatureEvent.TransactionFailed };
+  | { type: typeof HardwareWalletSignatureEvent.FirstSignatureSubmitted }
+  | { type: typeof HardwareWalletSignatureEvent.TransactionSubmitted }
+  | { type: typeof HardwareWalletSignatureEvent.TransactionRejected }
+  | { type: typeof HardwareWalletSignatureEvent.TransactionFailed };
 
 type HwSequentialSignTrackerOptions = {
   enabled?: boolean;
