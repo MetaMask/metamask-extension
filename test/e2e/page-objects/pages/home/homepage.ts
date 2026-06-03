@@ -14,7 +14,7 @@ class HomePage {
 
   public headerNavbar: HeaderNavbar;
 
-  private readonly activityTab = {
+  protected readonly activityTab = {
     testId: 'account-overview__activity-tab',
   };
 
@@ -66,7 +66,7 @@ class HomePage {
   private readonly defaultAddressContainer =
     '[data-testid="default-address-container"]';
 
-  private readonly defiTab = {
+  protected readonly defiTab = {
     testId: 'account-overview__defi-tab',
   };
 
@@ -81,12 +81,7 @@ class HomePage {
     text: 'Connecting to Localhost 8545',
   };
 
-  private readonly lowValueAssetsToggle =
-    '[data-testid="low-value-assets-toggle"]';
-
-  private readonly lowValueAssetsToggleExpanded = `${this.lowValueAssetsToggle}[aria-expanded="true"]`;
-
-  private readonly nftTab = {
+  protected readonly nftTab = {
     testId: 'account-overview__nfts-tab',
   };
 
@@ -132,7 +127,7 @@ class HomePage {
 
   protected readonly swapButton = { css: 'button', text: 'Swap' };
 
-  private readonly tokensTab = {
+  protected readonly tokensTab = {
     testId: 'account-overview__asset-tab',
   };
 
@@ -153,25 +148,6 @@ class HomePage {
       throw e;
     }
     console.log('Home page is loaded');
-  }
-
-  private async expandLowValueAssetsIfPresent(): Promise<void> {
-    let toggle;
-
-    try {
-      toggle = await this.driver.findElement(this.lowValueAssetsToggle, 1000);
-    } catch {
-      return;
-    }
-
-    if ((await toggle.getAttribute('aria-expanded')) === 'true') {
-      return;
-    }
-
-    await this.driver.clickElement(this.lowValueAssetsToggle);
-    await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded, {
-      timeout: 5000,
-    });
   }
 
   async waitForNetworkAndDOMReady(): Promise<void> {
@@ -467,23 +443,6 @@ class HomePage {
   async checkBalanceEmptyStateIsDisplayed(): Promise<void> {
     console.log('Check balance empty state is displayed on homepage');
     await this.driver.waitForSelector(this.emptyBalance);
-  }
-
-  /**
-   * Checks if the expected token balance is displayed on homepage.
-   *
-   * @param expectedTokenBalance - The expected balance to be displayed.
-   * @param symbol - The symbol of the currency or token.
-   */
-  async checkExpectedTokenBalanceIsDisplayed(
-    expectedTokenBalance: string,
-    symbol: string,
-  ): Promise<void> {
-    await this.expandLowValueAssetsIfPresent();
-    await this.driver.waitForSelector({
-      css: '[data-testid="multichain-token-list-item-value"]',
-      text: `${expectedTokenBalance} ${symbol}`,
-    });
   }
 
   /**
