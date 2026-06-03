@@ -112,6 +112,7 @@ export default function UpdateNicknamePopover({
           {t('memo')}
         </div>
         <TextField
+          className="update-nickname__content__memo-field"
           type="text"
           id="memo"
           value={memoInput}

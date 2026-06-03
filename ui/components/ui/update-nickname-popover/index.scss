@@ -32,12 +32,11 @@
       margin-bottom: 16px;
     }
 
-    // Memo field is the only multiline TextField in this block.
-    .MuiInputBase-root:has(textarea) {
+    &__memo-field .MuiInputBase-root {
       height: 96px !important;
     }
 
-    textarea {
+    &__memo-field textarea {
       line-height: initial !important;
     }
 
