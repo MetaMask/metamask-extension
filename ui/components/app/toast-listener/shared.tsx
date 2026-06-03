@@ -11,6 +11,7 @@ export function showPendingToast(id: string, options: ToastOptions) {
     severity: 'default',
     title: options.title,
     description: options.description,
+    hasNoTimeout: true,
     'data-testid': options.dataTestId,
   });
 }

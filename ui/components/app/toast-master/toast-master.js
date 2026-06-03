@@ -147,10 +147,9 @@ function PrivacyPolicyToast() {
 
     if (!newPrivacyPolicyToastShownDate) {
       setNewPrivacyPolicyToastShownDate(Date.now());
-      return undefined;
     }
 
-    toast({
+    const toastId = toast({
       severity: 'default',
       title: t('newPrivacyPolicyTitle'),
       actionButtonLabel: t('newPrivacyPolicyActionButton'),
@@ -167,7 +166,9 @@ function PrivacyPolicyToast() {
     });
 
     return () => {
-      toast.dismiss();
+      if (toastId) {
+        toast.dismiss(toastId);
+      }
     };
   }, [newPrivacyPolicyToastShownDate, showPrivacyPolicyToast, t]);
 
@@ -210,7 +211,7 @@ function PermittedNetworkToast() {
       return undefined;
     }
 
-    toast({
+    const toastId = toast({
       severity: 'default',
       title: t('permittedChainToastUpdate', [
         getURLHost(activeTabOrigin),
@@ -233,7 +234,9 @@ function PermittedNetworkToast() {
     });
 
     return () => {
-      toast.dismiss();
+      if (toastId) {
+        toast.dismiss(toastId);
+      }
     };
   }, [
     activeTabOrigin,
@@ -261,7 +264,7 @@ function InfuraSwitchToast() {
       return undefined;
     }
 
-    toast({
+    const toastId = toast({
       severity: 'success',
       title: t('updatedToMetaMaskDefault'),
       startAccessory: (
@@ -272,7 +275,9 @@ function InfuraSwitchToast() {
     });
 
     return () => {
-      toast.dismiss();
+      if (toastId) {
+        toast.dismiss(toastId);
+      }
     };
   }, [dispatch, showInfuraSwitchToast, t]);
 
@@ -351,7 +356,7 @@ function ShieldPausedToast() {
       setShieldPausedToastLastClickedOrClosed(Date.now());
     };
 
-    toast({
+    const toastId = toast({
       severity: 'danger',
       title: t('shieldPaymentPaused'),
       description: t(descriptionText),
@@ -368,7 +373,9 @@ function ShieldPausedToast() {
     });
 
     return () => {
-      toast.dismiss();
+      if (toastId) {
+        toast.dismiss(toastId);
+      }
     };
   }, [
     actionText,
@@ -408,7 +415,7 @@ function ShieldEndingToast() {
       return undefined;
     }
 
-    toast({
+    const toastId = toast({
       severity: 'default',
       title: t('shieldCoverageEnding'),
       description: t('shieldCoverageEndingDescription', [
@@ -430,7 +437,9 @@ function ShieldEndingToast() {
     });
 
     return () => {
-      toast.dismiss();
+      if (toastId) {
+        toast.dismiss(toastId);
+      }
     };
   }, [
     isSubscriptionEndingSoon,
@@ -497,7 +506,7 @@ function StorageErrorToast() {
       setIsDismissed(true);
     };
 
-    toast({
+    const toastId = toast({
       severity: 'danger',
       'data-testid': 'storage-error-toast',
       startAccessory: (
@@ -515,7 +524,9 @@ function StorageErrorToast() {
     });
 
     return () => {
-      toast.dismiss();
+      if (toastId) {
+        toast.dismiss(toastId);
+      }
     };
   }, [
     description,
@@ -545,7 +556,7 @@ function SidePanelMigrationToast() {
       return undefined;
     }
 
-    toast({
+    const toastId = toast({
       severity: 'default',
       'data-testid': 'side-panel-migration-toast',
       startAccessory: (
@@ -571,7 +582,9 @@ function SidePanelMigrationToast() {
     });
 
     return () => {
-      toast.dismiss();
+      if (toastId) {
+        toast.dismiss(toastId);
+      }
     };
   }, [dispatch, isSidePanel, showSidePanelMigrationToast, t]);
 

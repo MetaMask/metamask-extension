@@ -25,6 +25,7 @@ describe('toast-listener/shared', () => {
       severity: 'default',
       title: 'Transaction submitted',
       description: 'Waiting for confirmation',
+      hasNoTimeout: true,
       'data-testid': 'pending-toast',
     });
   });
