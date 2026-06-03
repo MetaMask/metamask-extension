@@ -2,6 +2,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
   useMemo,
 } from 'react';
@@ -95,6 +96,7 @@ import {
   getURLHostName,
   fetchTokenExchangeRates,
 } from '../../../helpers/utils/util';
+import { tokenInfoGetter } from '../../../helpers/utils/token-util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import {
@@ -288,6 +290,8 @@ export const ImportTokensModal = ({ onClose }) => {
   const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000';
   const MIN_DECIMAL_VALUE = 0;
   const MAX_DECIMAL_VALUE = 36;
+
+  const infoGetter = useRef(tokenInfoGetter());
 
   // CONFIRMATION MODE
   const { trackEvent } = useContext(MetaMetricsContext);
@@ -546,31 +550,22 @@ export const ImportTokensModal = ({ onClose }) => {
   );
 
   const attemptToAutoFillTokenParams = useCallback(
-    (address) => {
-      const tokenListData = tokenListByChain?.[selectedNetwork]?.data;
-      const listEntry = tokenListData?.[address.toLowerCase()];
+    async (address) => {
+      const {
+        symbol = '',
+        decimals,
+        name = '',
+      } = await infoGetter.current(
+        address,
+        tokenListByChain?.[selectedNetwork]?.data,
+      );
 
-      // Always reveal the form so the user can fill it manually.
-      setShowSymbolAndDecimals(true);
-
-      // Only overwrite symbol/decimals when the token list has actual data for
-      // this address. Clearing them when nothing is found would erase values
-      // the user has already typed (e.g. when topTokens resolves later and
-      // triggers a re-run of this callback).
-      if (!listEntry) {
-        return;
-      }
-
-      const { symbol = '', decimals, name = '' } = listEntry;
-
-      // Both handlers call `.trim()` internally, so values must be strings.
-      const decimalsStr =
-        decimals !== undefined && decimals !== null ? String(decimals) : '';
-
-      setDecimalAutoFilled(Boolean(decimalsStr));
-      handleCustomSymbolChange(String(symbol || ''));
-      handleCustomDecimalsChange(decimalsStr);
+      setDecimalAutoFilled(Boolean(decimals));
+      handleCustomSymbolChange(symbol || '');
+      handleCustomDecimalsChange(decimals);
+      // Set custom token name
       setCustomName(name);
+      setShowSymbolAndDecimals(true);
     },
     [
       selectedNetwork,
@@ -814,10 +809,7 @@ export const ImportTokensModal = ({ onClose }) => {
     return tokenData && Object.keys(tokenData).length > 0;
   }, [tokenListByChain, selectedNetwork]);
 
-  // Token search is served by the Token Search API rather than the on-disk
-  // token list, so the Search tab is available for any EVM network (and still
-  // shown for non-EVM networks that have token-list data available).
-  const shouldShowSearchTab = isEvmChainId(selectedNetwork) || hasSearchTokens;
+  const shouldShowSearchTab = hasSearchTokens;
   const shouldShowCustomTab = isEvmChainId(selectedNetwork);
   const shouldShowNoSupportPlaceholder =
     !shouldShowSearchTab && !shouldShowCustomTab;
@@ -1011,6 +1003,7 @@ export const ImportTokensModal = ({ onClose }) => {
                               setSearchResults(results)
                             }
                             error={tokenSelectorError}
+                            tokenList={tokenListByChain}
                             networkFilter={networkFilter}
                             setSearchResults={setSearchResults}
                             chainId={selectedNetwork}
