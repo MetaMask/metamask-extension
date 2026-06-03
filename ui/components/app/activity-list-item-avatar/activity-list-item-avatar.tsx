@@ -1,12 +1,14 @@
 import React from 'react';
 import classnames from 'clsx';
-import { AvatarToken, AvatarTokenSize } from '@metamask/design-system-react';
+import {
+  AvatarBase,
+  AvatarBaseSize,
+  AvatarToken,
+  AvatarTokenSize,
+} from '@metamask/design-system-react';
 import { getAssetImageUrl } from '../../../../shared/lib/asset-utils';
 
 export type ActivityListItemAvatarTokens = readonly (string | undefined)[];
-
-// TODO: Audit API responses for missing token metadata
-const fallbackAssetId = 'eip155:1/slip44:60'; // ETH
 
 const sanitizeTokens = (tokens: ActivityListItemAvatarTokens): string[] =>
   tokens.filter((token): token is string => Boolean(token));
@@ -85,9 +87,13 @@ export const ActivityListItemAvatar = (
   const tokens = sanitizeTokens(props.tokens);
 
   if (tokens.length === 0) {
-    // If no token metadata at all, intentionally show a fallback avatar
-    // We should probably consider a generic fallback image instead of ETH
-    return <ActivityTokenAvatar assetId={fallbackAssetId} />;
+    return (
+      <AvatarBase
+        size={AvatarBaseSize.Md}
+        fallbackText="?"
+        data-testid="activity-list-item-avatar-fallback"
+      />
+    );
   }
 
   if (tokens.length > 1) {

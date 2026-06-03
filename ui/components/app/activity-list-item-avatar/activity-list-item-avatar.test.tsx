@@ -47,7 +47,7 @@ describe('ActivityListItemAvatar', () => {
     renderAvatar([undefined]);
 
     expect(
-      screen.getByTestId('activity-list-item-avatar-token'),
+      screen.getByTestId('activity-list-item-avatar-fallback'),
     ).toBeInTheDocument();
   });
 });
