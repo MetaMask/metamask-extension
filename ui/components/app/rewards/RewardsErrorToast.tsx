@@ -35,6 +35,7 @@ export default function RewardsErrorToast() {
   return (
     <Box data-testid="rewards-error-toast">
       <Toast
+        data-testid="rewards-error-toast-toast"
         startAccessory={
           <Icon name={IconName.Danger} color={IconColor.ErrorDefault} />
         }
@@ -43,6 +44,7 @@ export default function RewardsErrorToast() {
         actionButtonLabel={actionText}
         actionButtonOnClick={onActionClick}
         onClose={handleClose}
+        closeButtonProps={{ 'data-testid': 'rewards-error-toast-close' }}
       />
     </Box>
   );

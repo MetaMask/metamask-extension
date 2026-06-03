@@ -816,7 +816,9 @@
       "globals": {
         "console.warn": true,
         "setTimeout": true,
-        "clearTimeout": true
+        "clearTimeout": true,
+        "requestAnimationFrame": true,
+        "cancelAnimationFrame": true
       },
       "packages": {
         "@metamask/design-system-shared": true,

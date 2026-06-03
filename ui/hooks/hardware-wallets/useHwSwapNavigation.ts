@@ -1,7 +1,7 @@
 import { toast } from '@metamask/design-system-react';
 import { useEffect, useRef } from 'react';
 import { useBridgeNavigation } from '../bridge/useBridgeNavigation';
-import { useI18nContext } from '../../hooks/useI18nContext';
+import { useI18nContext } from '../useI18nContext';
 import { HardwareWalletSignatureStatus } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 import type { HardwareWalletSignaturesState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 

@@ -1,5 +1,6 @@
 import { fireEvent, screen, waitFor, act } from '@testing-library/react';
 import React from 'react';
+import { toast } from '@metamask/design-system-react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
@@ -13,12 +14,21 @@ jest.mock('../../../helpers/utils/export-utils', () => ({
   exportAsFile: jest.fn(),
 }));
 
+jest.mock('@metamask/design-system-react', () => {
+  const actual = jest.requireActual('@metamask/design-system-react');
+  return {
+    ...actual,
+    toast: Object.assign(jest.fn(), { dismiss: jest.fn() }),
+  };
+});
+
 jest.mock('../../../../shared/lib/sentry', () => ({
   ...jest.requireActual('../../../../shared/lib/sentry'),
   captureException: jest.fn(),
 }));
 
 const mockExportAsFile = exportUtils.exportAsFile as jest.Mock;
+const mockToast = toast as unknown as jest.Mock;
 
 describe('DownloadStateLogsItem', () => {
   const mockStore = configureMockStore([thunk])(mockState);
@@ -101,12 +111,15 @@ describe('DownloadStateLogsItem', () => {
     });
 
     await waitFor(() => {
-      expect(
-        screen.getByTestId('download-state-logs-error-toast'),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText(messages.stateLogError.message),
-      ).toBeInTheDocument();
+      expect(mockToast).toHaveBeenCalledWith(
+        expect.objectContaining({
+          severity: 'danger',
+          title: messages.unableToDownload.message,
+          description: messages.stateLogError.message,
+          'data-testid': 'download-state-logs-error-toast',
+          hasNoTimeout: true,
+        }),
+      );
     });
   });
 
@@ -127,9 +140,15 @@ describe('DownloadStateLogsItem', () => {
     });
 
     await waitFor(() => {
-      expect(
-        screen.getByTestId('download-state-logs-error-toast'),
-      ).toBeInTheDocument();
+      expect(mockToast).toHaveBeenCalledWith(
+        expect.objectContaining({
+          severity: 'danger',
+          title: messages.unableToDownload.message,
+          description: messages.stateLogError.message,
+          'data-testid': 'download-state-logs-error-toast',
+          hasNoTimeout: true,
+        }),
+      );
     });
   });
 });

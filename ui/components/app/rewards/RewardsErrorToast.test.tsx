@@ -82,13 +82,9 @@ describe('RewardsErrorToast', () => {
 
     render(<RewardsErrorToast />);
 
-    const closeButton = document.querySelector(
-      '.mm-banner-base__close-button',
-    ) as HTMLElement | null;
+    const closeButton = screen.getByTestId('rewards-error-toast-close');
     expect(closeButton).toBeTruthy();
-    if (closeButton) {
-      fireEvent.click(closeButton);
-    }
+    fireEvent.click(closeButton);
 
     const expectedAction = setErrorToast({
       isOpen: false,

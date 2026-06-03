@@ -31,12 +31,24 @@ jest.mock('../../../selectors/toast', () => ({
   selectSmartTransactions: jest.fn(),
 }));
 
-jest.mock('./shared', () => ({
-  showPendingToast: (...args: [string]) => mockShowPendingToast(...args),
-  showSuccessToast: (...args: [string]) => mockShowSuccessToast(...args),
-  showFailedToast: (...args: [string]) => mockShowFailedToast(...args),
-  dismissToast: (...args: [string]) => mockDismissToast(...args),
-}));
+  jest.mock('./shared', () => ({
+    showPendingToast: (...args: [string]) => mockShowPendingToast(...args),
+    showSuccessToast: (...args: [string]) => mockShowSuccessToast(...args),
+    showFailedToast: (...args: [string]) => mockShowFailedToast(...args),
+    dismissToast: (...args: [string]) => mockDismissToast(...args),
+  }));
+
+const pendingToastOptions = {
+  title: '[transactionSubmitted]',
+};
+
+const successToastOptions = {
+  title: '[transactionConfirmed]',
+};
+
+const failedToastOptions = {
+  title: '[transactionFailed]',
+};
 
 describe('useSmartTransactionToasts', () => {
   let mockTransactions: {
@@ -63,7 +75,10 @@ describe('useSmartTransactionToasts', () => {
 
     renderHook(() => useSmartTransactionToasts());
 
-    expect(mockShowPendingToast).toHaveBeenCalledWith('stx-tx-1');
+    expect(mockShowPendingToast).toHaveBeenCalledWith(
+      'stx-tx-1',
+      pendingToastOptions,
+    );
   });
 
   it('shows a success toast and resolves the approval when a pending transaction succeeds', () => {
@@ -87,7 +102,10 @@ describe('useSmartTransactionToasts', () => {
 
     rerender();
 
-    expect(mockShowSuccessToast).toHaveBeenCalledWith('stx-tx-1');
+    expect(mockShowSuccessToast).toHaveBeenCalledWith(
+      'stx-tx-1',
+      successToastOptions,
+    );
     expect(mockResolvePendingApproval).toHaveBeenCalledWith('approval-1', true);
     expect(mockDispatch).toHaveBeenCalledWith({
       type: 'resolvePendingApproval',
@@ -117,7 +135,10 @@ describe('useSmartTransactionToasts', () => {
 
     rerender();
 
-    expect(mockShowFailedToast).toHaveBeenCalledWith('stx-tx-1');
+    expect(mockShowFailedToast).toHaveBeenCalledWith(
+      'stx-tx-1',
+      failedToastOptions,
+    );
     expect(mockResolvePendingApproval).toHaveBeenCalledWith('approval-1', true);
     expect(mockDispatch).toHaveBeenCalledWith({
       type: 'resolvePendingApproval',
@@ -138,7 +159,10 @@ describe('useSmartTransactionToasts', () => {
 
     const { rerender } = renderHook(() => useSmartTransactionToasts());
 
-    expect(mockShowPendingToast).toHaveBeenCalledWith('stx-tx-1');
+    expect(mockShowPendingToast).toHaveBeenCalledWith(
+      'stx-tx-1',
+      pendingToastOptions,
+    );
 
     mockTransactions = [
       {
@@ -151,7 +175,10 @@ describe('useSmartTransactionToasts', () => {
 
     rerender();
 
-    expect(mockShowFailedToast).toHaveBeenCalledWith('stx-tx-1');
+    expect(mockShowFailedToast).toHaveBeenCalledWith(
+      'stx-tx-1',
+      failedToastOptions,
+    );
     expect(mockResolvePendingApproval).toHaveBeenCalledWith('approval-1', true);
   });
 
@@ -185,7 +212,10 @@ describe('useSmartTransactionToasts', () => {
 
       rerender();
 
-      expect(mockShowFailedToast).toHaveBeenCalledWith('stx-tx-1');
+      expect(mockShowFailedToast).toHaveBeenCalledWith(
+        'stx-tx-1',
+        failedToastOptions,
+      );
       expect(mockResolvePendingApproval).toHaveBeenCalledWith(
         'approval-1',
         true,
@@ -205,7 +235,10 @@ describe('useSmartTransactionToasts', () => {
 
     const { rerender } = renderHook(() => useSmartTransactionToasts());
 
-    expect(mockShowPendingToast).toHaveBeenCalledWith('stx-tx-1');
+    expect(mockShowPendingToast).toHaveBeenCalledWith(
+      'stx-tx-1',
+      pendingToastOptions,
+    );
 
     // Speed Up in flight: selector is following the retry replacement, which is still submitted.
     mockTransactions = [
@@ -233,7 +266,10 @@ describe('useSmartTransactionToasts', () => {
 
     rerender();
 
-    expect(mockShowSuccessToast).toHaveBeenCalledWith('stx-tx-1');
+    expect(mockShowSuccessToast).toHaveBeenCalledWith(
+      'stx-tx-1',
+      successToastOptions,
+    );
     expect(mockResolvePendingApproval).toHaveBeenCalledWith('approval-1', true);
   });
 
@@ -258,7 +294,10 @@ describe('useSmartTransactionToasts', () => {
 
     rerender();
 
-    expect(mockShowFailedToast).toHaveBeenCalledWith('stx-tx-1');
+    expect(mockShowFailedToast).toHaveBeenCalledWith(
+      'stx-tx-1',
+      failedToastOptions,
+    );
     expect(mockResolvePendingApproval).toHaveBeenCalledWith('approval-1', true);
     expect(mockDispatch).toHaveBeenCalledWith({
       type: 'resolvePendingApproval',
@@ -278,7 +317,10 @@ describe('useSmartTransactionToasts', () => {
 
     const { rerender } = renderHook(() => useSmartTransactionToasts());
 
-    expect(mockShowPendingToast).toHaveBeenCalledWith('stx-tx-1');
+    expect(mockShowPendingToast).toHaveBeenCalledWith(
+      'stx-tx-1',
+      pendingToastOptions,
+    );
 
     mockTransactions = [];
 
