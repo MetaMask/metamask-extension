@@ -15,6 +15,7 @@ import { Messenger } from '@metamask/messenger';
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
 import { qrKeyringBuilderFactory } from '../lib/qr-keyring-builder-factory';
 import { TrezorOffscreenBridge } from '../lib/offscreen-bridge/trezor-offscreen-bridge';
+import { TrezorMv2Bridge } from '../lib/offscreen-bridge/trezor-mv2-bridge';
 import { LedgerOffscreenBridge } from '../lib/offscreen-bridge/ledger-offscreen-bridge';
 import { LatticeKeyringOffscreen } from '../lib/offscreen-bridge/lattice-offscreen-keyring';
 import { hardwareKeyringBuilderFactory } from '../lib/hardware-keyring-builder-factory';
@@ -61,11 +62,11 @@ export function getKeyringBuilders(
       keyringBuilderFactory(LatticeKeyring as unknown as KeyringClass),
       hardwareKeyringBuilderFactory(
         TrezorKeyring as unknown as KeyringClass,
-        overrides?.trezorBridge || TrezorConnectBridge,
+        overrides?.trezorBridge || TrezorMv2Bridge,
       ),
       hardwareKeyringBuilderFactory(
         OneKeyKeyring as unknown as KeyringClass,
-        TrezorConnectBridge,
+        TrezorMv2Bridge,
       ),
       hardwareKeyringBuilderFactory(
         LedgerKeyring as unknown as KeyringClass,
