@@ -1,10 +1,8 @@
-import { Driver } from '../../../webdriver/driver';
 import { NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
 import { veryLargeDelayMs } from '../../../helpers';
+import HomePage from './homepage';
 
-class AssetListPage {
-  private readonly driver: Driver;
-
+class AssetListPage extends HomePage {
   private readonly assetOptionsButton = '[data-testid="asset-options__button"]';
 
   private readonly assetPriceInDetailsModal =
@@ -86,8 +84,6 @@ class AssetListPage {
       text: networkName,
     };
   };
-
-  private readonly sendButton = '[data-testid="eth-overview-send"]';
 
   private readonly tokenAddressInput =
     '[data-testid="import-tokens-modal-custom-address"]';
@@ -172,10 +168,6 @@ class AssetListPage {
     testId: 'refreshList',
   };
 
-  constructor(driver: Driver) {
-    this.driver = driver;
-  }
-
   async clickNetworkSelectorDropdown(): Promise<void> {
     console.log(`Clicking on the network selector dropdown`);
     await this.driver.clickElement(this.sortByPopoverToggle);
@@ -213,11 +205,6 @@ class AssetListPage {
       css: this.tokenName,
       text: assetName,
     });
-  }
-
-  async clickSendButton(): Promise<void> {
-    console.log(`Clicking on the send button`);
-    await this.driver.clickElement(this.sendButton);
   }
 
   async clickMultichainTokenListButton(): Promise<void> {
