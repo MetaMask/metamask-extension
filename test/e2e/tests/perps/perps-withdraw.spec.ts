@@ -52,6 +52,7 @@ async function openPerpsWithdrawConfirmation(
   await perpsHomePage.navigateToPerpsHome();
   await perpsHomePage.checkPageIsLoaded();
   await perpsHomePage.waitForBalanceSection();
+  await perpsHomePage.waitForEmptyActivitySection();
   await perpsHomePage.clickWithdraw();
 
   const withdrawConfirmation = new PerpsWithdrawConfirmation(driver);
@@ -60,7 +61,7 @@ async function openPerpsWithdrawConfirmation(
   return withdrawConfirmation;
 }
 
-describe('Perps Withdraw TEST', function (this: Suite) {
+describe('Perps Withdraw', function (this: Suite) {
   this.timeout(120000);
 
   it('withdraw page loads with header and summary rows visible', async function () {
@@ -75,6 +76,7 @@ describe('Perps Withdraw TEST', function (this: Suite) {
         await perpsHomePage.navigateToPerpsHome();
         await perpsHomePage.checkPageIsLoaded();
         await perpsHomePage.waitForBalanceSection();
+        await perpsHomePage.waitForEmptyActivitySection();
         await perpsHomePage.clickWithdraw();
 
         const withdrawPage = new PerpsWithdrawPage(driver);
@@ -96,6 +98,7 @@ describe('Perps Withdraw TEST', function (this: Suite) {
         await perpsHomePage.navigateToPerpsHome();
         await perpsHomePage.checkPageIsLoaded();
         await perpsHomePage.waitForBalanceSection();
+        await perpsHomePage.waitForEmptyActivitySection();
         await perpsHomePage.clickWithdraw();
 
         const withdrawPage = new PerpsWithdrawPage(driver);
@@ -120,6 +123,7 @@ describe('Perps Withdraw TEST', function (this: Suite) {
         await perpsHomePage.navigateToPerpsHome();
         await perpsHomePage.checkPageIsLoaded();
         await perpsHomePage.waitForBalanceSection();
+        await perpsHomePage.waitForEmptyActivitySection();
         await perpsHomePage.clickWithdraw();
 
         const withdrawPage = new PerpsWithdrawPage(driver);
@@ -142,6 +146,7 @@ describe('Perps Withdraw TEST', function (this: Suite) {
         await perpsHomePage.navigateToPerpsHome();
         await perpsHomePage.checkPageIsLoaded();
         await perpsHomePage.waitForBalanceSection();
+        await perpsHomePage.waitForEmptyActivitySection();
         await perpsHomePage.clickWithdraw();
 
         const withdrawPage = new PerpsWithdrawPage(driver);
