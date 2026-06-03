@@ -64,7 +64,7 @@ describe('Send ERC20 - Gas Customization', function () {
         );
         // go to custom tokens view on extension, perform send tokens
         await assetListPage.openTokenDetails(symbol);
-        await assetListPage.clickSendButton();
+        await assetListPage.startSendFlow();
 
         await sendPage.fillRecipient(recipientAddress);
         await sendPage.fillAmount('1');

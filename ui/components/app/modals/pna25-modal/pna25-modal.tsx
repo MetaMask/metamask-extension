@@ -25,7 +25,7 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
-import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
+import { PRIVACY_ROUTE } from '../../../../helpers/constants/routes';
 import { setPna25Acknowledged } from '../../../../store/actions';
 import { PNA25_BLOG_POST_LINK, Pna25NoticeAction } from './constants';
 
@@ -58,7 +58,7 @@ export default function Pna25Modal() {
       }
 
       if (action === Pna25NoticeAction.OpenSettings) {
-        navigate(SECURITY_ROUTE);
+        navigate(PRIVACY_ROUTE);
       }
     },
     [trackEvent, dispatch, navigate],
