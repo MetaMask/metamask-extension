@@ -63,6 +63,10 @@ jest.mock('../../../hooks/perps/stream', () => {
       account: streamMocks.mockAccountState,
       isInitialLoading: false,
     })),
+    usePerpsLivePrices: jest.fn(() => ({
+      prices: {},
+      isInitialLoading: false,
+    })),
   };
 });
 

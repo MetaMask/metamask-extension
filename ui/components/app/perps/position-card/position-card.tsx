@@ -15,13 +15,23 @@ import { useNavigate } from 'react-router-dom';
 import type { Position } from '@metamask/perps-controller';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { formatPnl } from '../../../../../shared/lib/perps-formatters';
-import { formatPerpsFiatMinimal } from '../utils/formatPerpsDisplayPrice';
+import {
+  formatPerpsFiatMinimal,
+  getLiquidationDistancePercent,
+  formatLiquidationDistancePercent,
+} from '../utils/formatPerpsDisplayPrice';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import { getDisplayName, getPositionDirection } from '../utils';
 import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes';
 
 export type PositionCardProps = {
   position: Position;
+  /**
+   * Live mark/market price for the position symbol. When provided and valid,
+   * the card renders a liquidation distance percentage next to the position
+   * size.
+   */
+  currentPrice?: number;
   onClick?: (position: Position) => void;
 };
 
@@ -33,9 +43,11 @@ export type PositionCardProps = {
  * @param options0 - Component props
  * @param options0.position - The position data to display
  * @param options0.onClick
+ * @param options0.currentPrice
  */
 export const PositionCard: React.FC<PositionCardProps> = ({
   position,
+  currentPrice,
   onClick,
 }) => {
   const navigate = useNavigate();
@@ -50,6 +62,10 @@ export const PositionCard: React.FC<PositionCardProps> = ({
   const formattedRoe = Number.isNaN(roeNum)
     ? null
     : formatPercentWithMinThreshold(roeNum);
+  const liquidationDistance = getLiquidationDistancePercent(
+    currentPrice,
+    position.liquidationPrice,
+  );
 
   const handleClick = useCallback(() => {
     if (onClick) {
@@ -100,9 +116,24 @@ export const PositionCard: React.FC<PositionCardProps> = ({
             {position.leverage.value}x {direction}
           </Text>
         </Box>
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {absSize} {displayName}
-        </Text>
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Baseline}
+          gap={1}
+        >
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {absSize} {displayName}
+          </Text>
+          {liquidationDistance !== null && (
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
+              data-testid={`position-card-liquidation-distance-${position.symbol}`}
+            >
+              · {formatLiquidationDistancePercent(liquidationDistance)}
+            </Text>
+          )}
+        </Box>
       </Box>
 
       {/* Right side: Position value and P&L */}

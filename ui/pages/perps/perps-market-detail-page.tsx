@@ -95,6 +95,8 @@ import {
   formatPerpsFiatMinimal,
   formatPerpsFiatUniversal,
   formatPerpsLiquidationPrice,
+  getLiquidationDistancePercent,
+  formatLiquidationDistancePercent,
 } from '../../components/app/perps/utils/formatPerpsDisplayPrice';
 import {
   derivePositionTpslPricesFromOrders,
@@ -1511,6 +1513,51 @@ const PerpsMarketDetailPage: React.FC = () => {
                     {formatPerpsLiquidationPrice(position.liquidationPrice)}
                   </Text>
                 </Box>
+
+                {/* Liquidation Distance Row */}
+                {(() => {
+                  // Match the positions-tab/mobile source: prefer live mark
+                  // price, then live last price, then the chart/market
+                  // fallback so detail + list stay in lockstep.
+                  const liveMarkOrPrice =
+                    livePrice?.markPrice ?? livePrice?.price;
+                  const parsedLive = liveMarkOrPrice
+                    ? parsePerpsDisplayPrice(liveMarkOrPrice)
+                    : Number.NaN;
+                  const liqDistanceCurrentPrice =
+                    Number.isFinite(parsedLive) && parsedLive > 0
+                      ? parsedLive
+                      : currentPrice;
+                  const liqDistance = getLiquidationDistancePercent(
+                    liqDistanceCurrentPrice,
+                    position.liquidationPrice,
+                  );
+                  if (liqDistance === null) {
+                    return null;
+                  }
+                  return (
+                    <Box
+                      className="bg-muted px-4 py-3"
+                      flexDirection={BoxFlexDirection.Row}
+                      justifyContent={BoxJustifyContent.Between}
+                      alignItems={BoxAlignItems.Center}
+                    >
+                      <Text
+                        variant={TextVariant.BodySm}
+                        color={TextColor.TextAlternative}
+                      >
+                        {t('perpsLiquidationDistance')}
+                      </Text>
+                      <Text
+                        variant={TextVariant.BodySm}
+                        fontWeight={FontWeight.Medium}
+                        data-testid="perps-position-liquidation-distance-value"
+                      >
+                        {formatLiquidationDistancePercent(liqDistance)}
+                      </Text>
+                    </Box>
+                  );
+                })()}
 
                 {/* Funding Payments Row */}
                 <Box
