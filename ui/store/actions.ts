@@ -1380,6 +1380,32 @@ export function requestRevealSeedWords(
   };
 }
 
+/**
+ * Reveals the Secret Recovery Phrase using a verified passkey assertion instead
+ * of the wallet password.
+ *
+ * @param authenticationResponse - WebAuthn authentication response from the passkey ceremony.
+ * @param keyringId - The id of the HD keyring to reveal. Defaults to the primary keyring.
+ * @returns The decoded seed phrase.
+ */
+export function requestRevealSeedWordsWithPasskey(
+  authenticationResponse: PasskeyAuthenticationResponse,
+  keyringId?: string,
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    try {
+      const encodedSeedPhrase = await submitRequestToBackground<string>(
+        'requestRevealSeedWordsWithPasskey',
+        [authenticationResponse, keyringId],
+      );
+      return Buffer.from(encodedSeedPhrase).toString('utf8');
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
 export function tryReverseResolveAddress(
   address: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {

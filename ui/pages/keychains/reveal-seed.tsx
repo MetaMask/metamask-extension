@@ -1,19 +1,33 @@
-import React, { useContext, useEffect, useState, useCallback } from 'react';
+import React, { useContext, useEffect, useState, useCallback, useRef } from 'react';
+import log from 'loglevel';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import copyToClipboard from 'copy-to-clipboard';
+import { type PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
 import {
   TextButton,
   Text,
   Box,
   TextVariant,
   TextColor,
+  BoxFlexDirection,
+  BoxAlignItems,
+  FontWeight,
 } from '@metamask/design-system-react';
 import {
   RecommendedAction,
   type PhishingDetectionScanResult,
 } from '@metamask/phishing-controller';
-import { getErrorMessage } from '../../../shared/lib/error';
+import { createSentryError, getErrorMessage } from '../../../shared/lib/error';
+import { captureException } from '../../../shared/lib/sentry';
+import {
+  getPasskeyAuthMethodKey,
+  startPasskeyAuthentication,
+  cancelPasskeyCeremony,
+  isPasskeyCeremonySilentError,
+  translatePasskeyError,
+} from '../../../shared/lib/passkey';
+import { getPasskeyErrorCode } from '../../../shared/lib/passkey/passkey-error';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
@@ -23,13 +37,30 @@ import { MetaMetricsContext } from '../../contexts/metametrics';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
+  generatePasskeyAuthenticationOptions,
   requestRevealSeedWords,
+  requestRevealSeedWordsWithPasskey,
   scanUrlForPhishing,
 } from '../../store/actions';
-import { getHDEntropyIndex, getOriginOfCurrentTab } from '../../selectors';
+import {
+  getHDEntropyIndex,
+  getIsEnrolledPasskeyIncompatibleWithSidepanel,
+  getIsPasskeyFeatureAvailable,
+  getIsPasskeyRegistered,
+  getIsSocialLoginFlow,
+  getOriginOfCurrentTab,
+} from '../../selectors';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
+import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../shared/constants/app';
 import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
-import { PREVIOUS_ROUTE } from '../../helpers/constants/routes';
+import {
+  PREVIOUS_ROUTE,
+  REVEAL_SEED_ROUTE,
+} from '../../helpers/constants/routes';
 import { Toast, ToastContainer } from '../../components/multichain/toast';
+import { toast, ToastContent } from '../../components/ui/toast/toast';
+import Spinner from '../../components/ui/spinner';
+import PasskeyTroubleshootModal from '../../components/app/passkey-troubleshoot-modal';
 import { useBoolean } from '../../hooks/useBoolean';
 import type { RevealSeedScreen, RevealSeedLocationState } from './types';
 import { RevealSeedPageHeader } from './reveal-seed-page-header';
@@ -42,6 +73,7 @@ import { RevealSeedContent } from './reveal-seed-content';
 
 const QUIZ_INTRODUCTION_SCREEN: RevealSeedScreen = 'QUIZ_INTRODUCTION_SCREEN';
 const QUIZ_QUESTIONS_SCREEN: RevealSeedScreen = 'QUIZ_QUESTIONS_SCREEN';
+const VERIFY_PASSKEY_SCREEN: RevealSeedScreen = 'VERIFY_PASSKEY_SCREEN';
 // Screen identifier for the unlock step (not a credential)
 const PASSWORD_PROMPT_SCREEN: RevealSeedScreen = 'PASSWORD_PROMPT_SCREEN'; // NOSONAR
 const REVEAL_SEED_SCREEN: RevealSeedScreen = 'REVEAL_SEED_SCREEN';
@@ -56,9 +88,35 @@ function RevealSeedPage() {
   const locationState = useLocation().state as RevealSeedLocationState | null;
   const skipQuiz = locationState?.skipQuiz ?? false;
 
-  const [screen, setScreen] = useState<RevealSeedScreen>(
-    skipQuiz ? PASSWORD_PROMPT_SCREEN : QUIZ_INTRODUCTION_SCREEN,
+  const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
+  const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
+  const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
+  const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
+  const isEnrolledPasskeyIncompatibleWithSidepanel = useSelector(
+    getIsEnrolledPasskeyIncompatibleWithSidepanel,
   );
+  // Passkey reveal is not supported for social-login (seedless) wallets.
+  const isPasskeyActive =
+    isPasskeyRegistered && isPasskeyFeatureAvailable && !isSocialLoginFlow;
+  const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+  const mustDeferPasskeyToBrowserTab =
+    isSidePanel &&
+    isEnrolledPasskeyIncompatibleWithSidepanel &&
+    isPasskeyActive;
+  const hasDeferredPasskeyToBrowserTabRef = useRef(false);
+
+  // The credential step after the quiz: passkey when active, else password.
+  const initialCredentialScreen =
+    isPasskeyActive && !mustDeferPasskeyToBrowserTab
+      ? VERIFY_PASSKEY_SCREEN
+      : PASSWORD_PROMPT_SCREEN;
+
+  const [screen, setScreen] = useState<RevealSeedScreen>(
+    skipQuiz ? initialCredentialScreen : QUIZ_INTRODUCTION_SCREEN,
+  );
+  const [isVerifyingPasskey, setIsVerifyingPasskey] = useState(false);
+  const [showPasskeyTroubleshootModal, setShowPasskeyTroubleshootModal] =
+    useState(false);
   const [password, setPassword] = useState('');
   const [seedWords, setSeedWords] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -240,8 +298,199 @@ function RevealSeedPage() {
   }, [trackEvent, screen, hdEntropyIndex, navigate]);
 
   const handleQuizComplete = useCallback(() => {
+    setScreen(initialCredentialScreen);
+  }, [initialCredentialScreen]);
+
+  const performPasskeyAuthentication =
+    useCallback(async (): Promise<PasskeyAuthenticationResponse | null> => {
+      setIsVerifyingPasskey(true);
+      try {
+        const authOptions = await generatePasskeyAuthenticationOptions();
+        return await startPasskeyAuthentication(authOptions);
+      } catch (ceremonyError: unknown) {
+        if (isPasskeyCeremonySilentError(ceremonyError)) {
+          log.debug(
+            'Passkey authentication during reveal SRP cancelled or timed out',
+            ceremonyError,
+          );
+        } else {
+          captureException(
+            createSentryError(
+              'Passkey verification during reveal SRP failed',
+              ceremonyError,
+            ),
+          );
+          toast.error(
+            <ToastContent
+              title={
+                translatePasskeyError(
+                  ceremonyError,
+                  t as (key: string, substitutions?: string[]) => string,
+                  passkeyMethodLabel,
+                ) ?? t('passkeyErrorVerificationFailed', [passkeyMethodLabel])
+              }
+            />,
+          );
+        }
+        return null;
+      } finally {
+        setIsVerifyingPasskey(false);
+      }
+    }, [passkeyMethodLabel, t]);
+
+  const handleRevealWithPasskey = useCallback(
+    async (authenticationResponse: PasskeyAuthenticationResponse) => {
+      const startedAt = Date.now();
+      trace({ name: TraceName.RevealSeed });
+      trackEvent({
+        category: MetaMetricsEventCategory.Keys,
+        event: MetaMetricsEventName.SrpRevealWithPasskey,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          key_type: MetaMetricsEventKeyType.Srp,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          status: 'started',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: hdEntropyIndex,
+        },
+      });
+
+      try {
+        const revealedSeedWords = (await (dispatch(
+          requestRevealSeedWordsWithPasskey(authenticationResponse, keyringId),
+        ) as unknown as Promise<string>)) as string;
+
+        trackEvent({
+          category: MetaMetricsEventCategory.Keys,
+          event: MetaMetricsEventName.SrpRevealWithPasskey,
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            key_type: MetaMetricsEventKeyType.Srp,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            status: 'completed',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            duration_ms: Date.now() - startedAt,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            hd_entropy_index: hdEntropyIndex,
+          },
+        });
+        trackEvent({
+          category: MetaMetricsEventCategory.Keys,
+          event: MetaMetricsEventName.KeyExportRevealed,
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            key_type: MetaMetricsEventKeyType.Srp,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            hd_entropy_index: hdEntropyIndex,
+          },
+        });
+
+        setSeedWords(revealedSeedWords);
+        setScreen(REVEAL_SEED_SCREEN);
+        return true;
+      } catch (e) {
+        const revealError = e as Error;
+        const errorCode = getPasskeyErrorCode(revealError);
+        trackEvent({
+          category: MetaMetricsEventCategory.Keys,
+          event: MetaMetricsEventName.SrpRevealWithPasskey,
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            key_type: MetaMetricsEventKeyType.Srp,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            status: 'failed',
+            reason: errorCode,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            duration_ms: Date.now() - startedAt,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            hd_entropy_index: hdEntropyIndex,
+          },
+        });
+        captureException(
+          createSentryError('Reveal SRP with passkey failed', revealError),
+        );
+        // Fall back to password verification on any passkey reveal failure.
+        setScreen(PASSWORD_PROMPT_SCREEN);
+        return false;
+      } finally {
+        endTrace({ name: TraceName.RevealSeed });
+      }
+    },
+    [dispatch, keyringId, trackEvent, hdEntropyIndex],
+  );
+
+  const handleUsePassword = useCallback(() => {
+    cancelPasskeyCeremony();
+    setIsVerifyingPasskey(false);
     setScreen(PASSWORD_PROMPT_SCREEN);
   }, []);
+
+  const openRevealSeedInFullScreen = useCallback(() => {
+    cancelPasskeyCeremony();
+    globalThis.platform?.openExtensionInBrowser?.(
+      keyringId ? `${REVEAL_SEED_ROUTE}/${keyringId}` : REVEAL_SEED_ROUTE,
+    );
+  }, [keyringId]);
+
+  // In the side panel, an enrolled passkey incompatible with WebAuthn there
+  // must be verified in a full browser tab instead.
+  useEffect(() => {
+    if (
+      !mustDeferPasskeyToBrowserTab ||
+      hasDeferredPasskeyToBrowserTabRef.current
+    ) {
+      return;
+    }
+    hasDeferredPasskeyToBrowserTabRef.current = true;
+    openRevealSeedInFullScreen();
+  }, [mustDeferPasskeyToBrowserTab, openRevealSeedInFullScreen]);
+
+  // Auto-run the passkey ceremony when the verify-passkey step is shown.
+  useEffect(() => {
+    if (
+      !isPasskeyActive ||
+      mustDeferPasskeyToBrowserTab ||
+      screen !== VERIFY_PASSKEY_SCREEN ||
+      seedWords !== null
+    ) {
+      return undefined;
+    }
+
+    let aborted = false;
+
+    (async () => {
+      const response = await performPasskeyAuthentication();
+      if (aborted) {
+        return;
+      }
+      if (response) {
+        await handleRevealWithPasskey(response);
+      } else {
+        // Cancelled/timed out/failed ceremony falls back to password.
+        setScreen(PASSWORD_PROMPT_SCREEN);
+      }
+    })();
+
+    return () => {
+      aborted = true;
+      cancelPasskeyCeremony();
+      setIsVerifyingPasskey(false);
+    };
+  }, [
+    isPasskeyActive,
+    mustDeferPasskeyToBrowserTab,
+    screen,
+    seedWords,
+    performPasskeyAuthentication,
+    handleRevealWithPasskey,
+  ]);
+
+  useEffect(
+    () => () => {
+      cancelPasskeyCeremony();
+    },
+    [],
+  );
 
   useEffect(() => {
     if (screen === REVEAL_SEED_SCREEN && !srpViewEventTracked) {
@@ -350,6 +599,55 @@ function RevealSeedPage() {
         />
       );
     }
+    if (screen === VERIFY_PASSKEY_SCREEN) {
+      return (
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.Center}
+          marginTop={12}
+          gap={4}
+          data-testid="reveal-seed-passkey-verifying"
+        >
+          <Spinner className="w-6 h-6" />
+          <Text
+            variant={TextVariant.BodyLg}
+            fontWeight={FontWeight.Medium}
+            className="text-center"
+          >
+            {t('passkeyVerifyingTitle', [passkeyMethodLabel])}
+          </Text>
+          <Text
+            variant={TextVariant.BodySm}
+            color={TextColor.TextAlternative}
+            className="text-center"
+          >
+            {t('passkeyVerifyingDescription', [passkeyMethodLabel])}
+          </Text>
+          {isSidePanel &&
+          isVerifyingPasskey &&
+          !mustDeferPasskeyToBrowserTab ? (
+            <TextButton
+              type="button"
+              data-testid="reveal-seed-passkey-verifying-open-full-screen"
+              color={TextColor.PrimaryDefault}
+              className="text-center"
+              onClick={() => setShowPasskeyTroubleshootModal(true)}
+            >
+              {t('passkeyTroubleshootVerify')}
+            </TextButton>
+          ) : null}
+          <TextButton
+            type="button"
+            data-testid="reveal-seed-verify-passkey-use-password"
+            color={TextColor.PrimaryDefault}
+            className="text-center mt-4"
+            onClick={handleUsePassword}
+          >
+            {t('usePassword')}
+          </TextButton>
+        </Box>
+      );
+    }
     if (screen === PASSWORD_PROMPT_SCREEN) {
       if (isMalicious) {
         return (
@@ -435,6 +733,14 @@ function RevealSeedPage() {
           />
         </ToastContainer>
       )}
+      {showPasskeyTroubleshootModal ? (
+        <PasskeyTroubleshootModal
+          mode="verify"
+          location="reveal-srp"
+          onClose={() => setShowPasskeyTroubleshootModal(false)}
+          onOpenFullScreen={openRevealSeedInFullScreen}
+        />
+      ) : null}
     </Box>
   );
 }

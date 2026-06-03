@@ -28,6 +28,7 @@ import { toAssetId } from '../../shared/lib/asset-utils';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../shared/lib/environment';
 import MetaMaskController from './metamask-controller';
 import * as getSnapKeyringUtil from './lib/snap-keyring/utils/getSnapKeyring';
+import { convertEnglishWordlistIndicesToCodepoints } from './lib/util';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
 // so unify-state tests can exercise real feature-flag gating via controller state.
@@ -1746,6 +1747,122 @@ describe('MetaMaskController', function () {
       });
     });
 
+    describe('#requestRevealSeedWordsWithPasskey', function () {
+      it('throws when passkey is not registered', async function () {
+        jest
+          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
+          .mockReturnValue(false);
+
+        await expect(
+          metamaskController.requestRevealSeedWordsWithPasskey(
+            authenticationResponse,
+          ),
+        ).rejects.toMatchObject({
+          code: PasskeyControllerErrorCode.NotEnrolled,
+        });
+      });
+
+      it('propagates the error when passkey verification fails', async function () {
+        jest
+          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
+          .mockReturnValue(true);
+        jest
+          .spyOn(
+            metamaskController.passkeyController,
+            'retrieveVaultKeyWithPasskey',
+          )
+          .mockRejectedValue(new Error('invalid assertion'));
+
+        await expect(
+          metamaskController.requestRevealSeedWordsWithPasskey(
+            authenticationResponse,
+          ),
+        ).rejects.toThrow('invalid assertion');
+      });
+
+      it('throws when the passkey vault key does not match the current vault key', async function () {
+        jest
+          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
+          .mockReturnValue(true);
+        jest
+          .spyOn(
+            metamaskController.passkeyController,
+            'retrieveVaultKeyWithPasskey',
+          )
+          .mockResolvedValue('passkey-vault-key');
+        jest
+          .spyOn(metamaskController.keyringController, 'exportEncryptionKey')
+          .mockResolvedValue('different-vault-key');
+        const verifySeedPhraseSpy = jest.spyOn(
+          metamaskController.keyringController,
+          'verifySeedPhrase',
+        );
+
+        await expect(
+          metamaskController.requestRevealSeedWordsWithPasskey(
+            authenticationResponse,
+          ),
+        ).rejects.toMatchObject({
+          code: PasskeyControllerErrorCode.AuthenticationVerificationFailed,
+        });
+        expect(verifySeedPhraseSpy).not.toHaveBeenCalled();
+      });
+
+      it('returns the encoded seed phrase for the given keyring after verification', async function () {
+        const mnemonic = new Uint8Array([0, 0, 0, 1]);
+        jest
+          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
+          .mockReturnValue(true);
+        jest
+          .spyOn(
+            metamaskController.passkeyController,
+            'retrieveVaultKeyWithPasskey',
+          )
+          .mockResolvedValue('vault-key');
+        jest
+          .spyOn(metamaskController.keyringController, 'exportEncryptionKey')
+          .mockResolvedValue('vault-key');
+        const verifySeedPhraseSpy = jest
+          .spyOn(metamaskController.keyringController, 'verifySeedPhrase')
+          .mockResolvedValue(mnemonic);
+
+        const result =
+          await metamaskController.requestRevealSeedWordsWithPasskey(
+            authenticationResponse,
+            'keyring-id',
+          );
+
+        expect(verifySeedPhraseSpy).toHaveBeenCalledWith('keyring-id');
+        expect(result).toStrictEqual(
+          convertEnglishWordlistIndicesToCodepoints(mnemonic),
+        );
+      });
+
+      it('defaults to the primary keyring when no keyring id is provided', async function () {
+        jest
+          .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
+          .mockReturnValue(true);
+        jest
+          .spyOn(
+            metamaskController.passkeyController,
+            'retrieveVaultKeyWithPasskey',
+          )
+          .mockResolvedValue('vault-key');
+        jest
+          .spyOn(metamaskController.keyringController, 'exportEncryptionKey')
+          .mockResolvedValue('vault-key');
+        const verifySeedPhraseSpy = jest
+          .spyOn(metamaskController.keyringController, 'verifySeedPhrase')
+          .mockResolvedValue(new Uint8Array([0, 0, 0, 1]));
+
+        await metamaskController.requestRevealSeedWordsWithPasskey(
+          authenticationResponse,
+        );
+
+        expect(verifySeedPhraseSpy).toHaveBeenCalledWith(undefined);
+      });
+    });
+
     describe('#changePassword', function () {
       it('does not remove passkey after keyring password change', async function () {
         const releaseLock = jest.fn();
@@ -1810,6 +1927,7 @@ describe('MetaMaskController', function () {
             removePasskeyWithPasskeyVerification: expect.any(Function),
             removePasskeyWithPasswordVerification: expect.any(Function),
             changePasswordWithPasskeyVerification: expect.any(Function),
+            requestRevealSeedWordsWithPasskey: expect.any(Function),
           }),
         );
       });

@@ -1046,6 +1046,7 @@ export enum MetaMetricsEventName {
   SrpRevealCancelButtonClicked = 'Clicks Cancel on Reveal Secret Recovery Phrase Page',
   SrpRevealCloseClicked = 'Clicks CLOSE with SRP',
   SrpRevealNextClicked = 'Clicks Next on Reveal Secret Recovery Phrase',
+  SrpRevealWithPasskey = 'SRP Reveal With Passkey',
   SrpHoldToRevealClickStarted = 'Reveal SRP Click Started',
   SrpHoldToRevealCloseClicked = 'Closes Hold To Reveal SRP',
   SrpHoldToRevealCompleted = 'Reveal SRP Completed',

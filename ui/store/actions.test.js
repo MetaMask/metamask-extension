@@ -936,6 +936,73 @@ describe('Actions', () => {
     });
   });
 
+  describe('#requestRevealSeedWordsWithPasskey', () => {
+    const authenticationResponse = {
+      id: 'cred',
+      rawId: 'cred',
+      response: {
+        authenticatorData: 'auth',
+        clientDataJSON: 'e30',
+        signature: 'sig',
+      },
+      type: 'public-key',
+    };
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('forwards the authentication response and keyring id and decodes the seed phrase', async () => {
+      const store = mockStore();
+
+      const requestRevealSeedWordsWithPasskey = sinon
+        .stub()
+        .resolves(Array.from(Buffer.from('test seed').values()));
+
+      background.getApi.returns({ requestRevealSeedWordsWithPasskey });
+      setBackgroundConnection(background.getApi());
+
+      const seedPhrase = await store.dispatch(
+        actions.requestRevealSeedWordsWithPasskey(
+          authenticationResponse,
+          'keyring-id',
+        ),
+      );
+
+      expect(
+        requestRevealSeedWordsWithPasskey.calledOnceWith(
+          authenticationResponse,
+          'keyring-id',
+        ),
+      ).toBe(true);
+      expect(seedPhrase).toStrictEqual('test seed');
+    });
+
+    it('hides the loading indication and rethrows when the background errors', async () => {
+      const store = mockStore();
+
+      background.getApi.returns({
+        requestRevealSeedWordsWithPasskey: sinon
+          .stub()
+          .rejects(new Error('error')),
+      });
+      setBackgroundConnection(background.getApi());
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      await expect(
+        store.dispatch(
+          actions.requestRevealSeedWordsWithPasskey(authenticationResponse),
+        ),
+      ).rejects.toThrow('error');
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
   describe('#removeAccount', () => {
     afterEach(() => {
       sinon.restore();

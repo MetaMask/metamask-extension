@@ -3085,6 +3085,8 @@ export default class MetamaskController extends EventEmitter {
         this.removePasskeyWithPasswordVerification.bind(this),
       changePasswordWithPasskeyVerification:
         this.changePasswordWithPasskeyVerification.bind(this),
+      requestRevealSeedWordsWithPasskey:
+        this.requestRevealSeedWordsWithPasskey.bind(this),
 
       // network management
       setActiveNetwork: async (id) => {
@@ -4719,6 +4721,49 @@ export default class MetamaskController extends EventEmitter {
     } finally {
       releaseLock();
     }
+  }
+
+  /**
+   * Reveals the Secret Recovery Phrase after verifying a passkey assertion,
+   * used as a password-less alternative to {@link getSeedPhrase}.
+   *
+   * The vault is already unlocked here, so the passkey assertion only acts as a
+   * step-up re-authentication gate. We additionally require the passkey-derived
+   * vault key to match the currently-unlocked vault key, binding the passkey to
+   * this vault. Non-social-login only.
+   *
+   * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse - WebAuthn authentication response from the passkey ceremony.
+   * @param {string} [keyringId] - The id of the HD keyring to reveal. Defaults to the primary keyring.
+   * @returns {Promise<Buffer>} The seed phrase encoded as an array of UTF-8 bytes.
+   */
+  async requestRevealSeedWordsWithPasskey(authenticationResponse, keyringId) {
+    if (!this.passkeyController.isPasskeyEnrolled()) {
+      throw new PasskeyControllerError(
+        PasskeyControllerErrorMessage.NotEnrolled,
+        { code: PasskeyControllerErrorCode.NotEnrolled },
+      );
+    }
+
+    // Use retrieveVaultKeyWithPasskey (not verifyPasskeyAuthentication) so we
+    // can bind-check the derived key against the currently-unlocked vault key
+    // below. This also cryptographically verifies the assertion, throwing on an
+    // invalid passkey.
+    const vaultKeyFromPasskey =
+      await this.passkeyController.retrieveVaultKeyWithPasskey(
+        authenticationResponse,
+      );
+
+    // Defense-in-depth: the passkey must wrap the currently-unlocked vault key.
+    const currentVaultKey = await this.keyringController.exportEncryptionKey();
+    if (vaultKeyFromPasskey !== currentVaultKey) {
+      throw new PasskeyControllerError(
+        PasskeyControllerErrorMessage.AuthenticationVerificationFailed,
+        { code: PasskeyControllerErrorCode.AuthenticationVerificationFailed },
+      );
+    }
+
+    const mnemonic = await this.keyringController.verifySeedPhrase(keyringId);
+    return convertEnglishWordlistIndicesToCodepoints(mnemonic);
   }
 
   /**

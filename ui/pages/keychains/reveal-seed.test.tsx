@@ -42,13 +42,59 @@ const mockRequestRevealSeedWords = jest
   );
 const mockScanUrlForPhishing = jest.fn().mockResolvedValue(null);
 
+const mockPasskeyAuthResponse = { id: 'assertion-id', type: 'public-key' };
+const mockGeneratePasskeyAuthenticationOptions = jest
+  .fn()
+  .mockResolvedValue({ challenge: 'challenge' });
+const mockRequestRevealSeedWordsWithPasskey = jest
+  .fn()
+  .mockReturnValue(() => Promise.resolve('test srp'));
+
+const mockGetIsPasskeyRegistered = jest.fn().mockReturnValue(false);
+const mockGetIsPasskeyFeatureAvailable = jest.fn().mockReturnValue(false);
+const mockGetIsSocialLoginFlow = jest.fn().mockReturnValue(false);
+const mockGetIsEnrolledPasskeyIncompatibleWithSidepanel = jest
+  .fn()
+  .mockReturnValue(false);
+
+const mockStartPasskeyAuthentication = jest
+  .fn()
+  .mockResolvedValue(mockPasskeyAuthResponse);
+const mockCancelPasskeyCeremony = jest.fn();
+const mockIsPasskeyCeremonySilentError = jest.fn().mockReturnValue(false);
+
 const password = 'password';
 
 jest.mock('../../store/actions.ts', () => ({
   ...jest.requireActual('../../store/actions.ts'),
   requestRevealSeedWords: (userPassword: string, keyringId?: string) =>
     mockRequestRevealSeedWords(userPassword, keyringId),
+  requestRevealSeedWordsWithPasskey: (
+    authenticationResponse: unknown,
+    keyringId?: string,
+  ) => mockRequestRevealSeedWordsWithPasskey(authenticationResponse, keyringId),
+  generatePasskeyAuthenticationOptions: (...args: unknown[]) =>
+    mockGeneratePasskeyAuthenticationOptions(...args),
   scanUrlForPhishing: (...args: unknown[]) => mockScanUrlForPhishing(...args),
+}));
+
+jest.mock('../../selectors', () => ({
+  ...jest.requireActual('../../selectors'),
+  getIsPasskeyRegistered: () => mockGetIsPasskeyRegistered(),
+  getIsPasskeyFeatureAvailable: () => mockGetIsPasskeyFeatureAvailable(),
+  getIsSocialLoginFlow: () => mockGetIsSocialLoginFlow(),
+  getIsEnrolledPasskeyIncompatibleWithSidepanel: () =>
+    mockGetIsEnrolledPasskeyIncompatibleWithSidepanel(),
+}));
+
+jest.mock('../../../shared/lib/passkey', () => ({
+  ...jest.requireActual('../../../shared/lib/passkey'),
+  startPasskeyAuthentication: (...args: unknown[]) =>
+    mockStartPasskeyAuthentication(...args),
+  cancelPasskeyCeremony: (...args: unknown[]) =>
+    mockCancelPasskeyCeremony(...args),
+  isPasskeyCeremonySilentError: (...args: unknown[]) =>
+    mockIsPasskeyCeremonySilentError(...args),
 }));
 
 type NavigateQuizToPasswordScreenArgs = {
@@ -89,6 +135,32 @@ async function navigateQuizToPasswordScreen({
   await waitFor(() => {
     expect(queryByTestId(landingTestId)).toBeInTheDocument();
   });
+}
+
+async function completeQuiz({
+  getByText,
+  queryByTestId,
+  fireEvent: fireEventFn,
+}: Omit<NavigateQuizToPasswordScreenArgs, 'landingTestId'>) {
+  fireEventFn.click(getByText(messages.srpSecurityQuizGetStarted.message));
+
+  await waitFor(() => {
+    expect(queryByTestId('srp-quiz-right-answer')).toBeInTheDocument();
+  });
+  fireEventFn.click(queryByTestId('srp-quiz-right-answer') as HTMLElement);
+  await waitFor(() => {
+    expect(queryByTestId('srp-quiz-continue')).toBeInTheDocument();
+  });
+  fireEventFn.click(queryByTestId('srp-quiz-continue') as HTMLElement);
+
+  await waitFor(() => {
+    expect(queryByTestId('srp-quiz-right-answer')).toBeInTheDocument();
+  });
+  fireEventFn.click(queryByTestId('srp-quiz-right-answer') as HTMLElement);
+  await waitFor(() => {
+    expect(queryByTestId('srp-quiz-continue')).toBeInTheDocument();
+  });
+  fireEventFn.click(queryByTestId('srp-quiz-continue') as HTMLElement);
 }
 
 function createMockMetaMetricsContext() {
@@ -730,6 +802,131 @@ describe('Reveal Seed Page', () => {
           undefined,
         );
       });
+    });
+  });
+
+  describe('passkey reveal', () => {
+    beforeEach(() => {
+      mockGetIsPasskeyRegistered.mockReturnValue(true);
+      mockGetIsPasskeyFeatureAvailable.mockReturnValue(true);
+      mockGetIsSocialLoginFlow.mockReturnValue(false);
+      mockGetIsEnrolledPasskeyIncompatibleWithSidepanel.mockReturnValue(false);
+      mockStartPasskeyAuthentication.mockResolvedValue(mockPasskeyAuthResponse);
+      mockIsPasskeyCeremonySilentError.mockReturnValue(false);
+      mockRequestRevealSeedWordsWithPasskey.mockReturnValue(() =>
+        Promise.resolve('test srp'),
+      );
+    });
+
+    afterEach(() => {
+      mockGetIsPasskeyRegistered.mockReturnValue(false);
+      mockGetIsPasskeyFeatureAvailable.mockReturnValue(false);
+      mockGetIsSocialLoginFlow.mockReturnValue(false);
+      mockGetIsEnrolledPasskeyIncompatibleWithSidepanel.mockReturnValue(false);
+      mockStartPasskeyAuthentication.mockResolvedValue(mockPasskeyAuthResponse);
+      mockIsPasskeyCeremonySilentError.mockReturnValue(false);
+    });
+
+    it('verifies via passkey and reveals the SRP without a password', async () => {
+      const store = configureStore(mockState as object);
+      const { queryByTestId, getByText } = renderWithProvider(
+        <RevealSeedPage />,
+        store,
+      );
+
+      await completeQuiz({ getByText, queryByTestId, fireEvent });
+
+      await waitFor(() => {
+        expect(mockRequestRevealSeedWordsWithPasskey).toHaveBeenCalledWith(
+          mockPasskeyAuthResponse,
+          undefined,
+        );
+        expect(getByText(messages.copyToClipboard.message)).toBeInTheDocument();
+      });
+      expect(queryByTestId('recovery-phrase-chips')).toBeInTheDocument();
+      expect(mockRequestRevealSeedWords).not.toHaveBeenCalled();
+    });
+
+    it('falls back to the password prompt when the passkey ceremony is cancelled', async () => {
+      mockStartPasskeyAuthentication.mockRejectedValue(new Error('cancelled'));
+      mockIsPasskeyCeremonySilentError.mockReturnValue(true);
+
+      const { queryByTestId, getByText } = renderWithProvider(
+        <RevealSeedPage />,
+        mockStore,
+      );
+
+      await completeQuiz({ getByText, queryByTestId, fireEvent });
+
+      await waitFor(() => {
+        expect(queryByTestId('input-password')).toBeInTheDocument();
+      });
+      expect(mockRequestRevealSeedWordsWithPasskey).not.toHaveBeenCalled();
+    });
+
+    it('falls back to the password prompt when "Use password" is clicked', async () => {
+      // Keep the ceremony pending so the verifying step stays visible.
+      mockStartPasskeyAuthentication.mockReturnValue(new Promise(() => {
+        // never resolves
+      }));
+
+      const { queryByTestId, getByText } = renderWithProvider(
+        <RevealSeedPage />,
+        mockStore,
+      );
+
+      await completeQuiz({ getByText, queryByTestId, fireEvent });
+
+      await waitFor(() => {
+        expect(
+          queryByTestId('reveal-seed-verify-passkey-use-password'),
+        ).toBeInTheDocument();
+      });
+
+      fireEvent.click(
+        queryByTestId('reveal-seed-verify-passkey-use-password') as HTMLElement,
+      );
+
+      await waitFor(() => {
+        expect(queryByTestId('input-password')).toBeInTheDocument();
+      });
+    });
+
+    it('passes the keyringId to the passkey reveal action', async () => {
+      const keyringId = 'ULID01234567890ABCDEFGHIJKLMN';
+      mockUseParams.mockReturnValue({ keyringId });
+      const store = configureStore(mockState as object);
+
+      const { queryByTestId, getByText } = renderWithProvider(
+        <RevealSeedPage />,
+        store,
+      );
+
+      await completeQuiz({ getByText, queryByTestId, fireEvent });
+
+      await waitFor(() => {
+        expect(mockRequestRevealSeedWordsWithPasskey).toHaveBeenCalledWith(
+          mockPasskeyAuthResponse,
+          keyringId,
+        );
+      });
+    });
+
+    it('uses the password prompt for social-login wallets even when a passkey is enrolled', async () => {
+      mockGetIsSocialLoginFlow.mockReturnValue(true);
+
+      const { queryByTestId, getByText } = renderWithProvider(
+        <RevealSeedPage />,
+        mockStore,
+      );
+
+      await completeQuiz({ getByText, queryByTestId, fireEvent });
+
+      await waitFor(() => {
+        expect(queryByTestId('input-password')).toBeInTheDocument();
+      });
+      expect(mockRequestRevealSeedWordsWithPasskey).not.toHaveBeenCalled();
+      expect(mockStartPasskeyAuthentication).not.toHaveBeenCalled();
     });
   });
 });
