@@ -13,6 +13,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import configureStore from '../../store/store';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
+import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../shared/constants/app';
 import RevealSeedPage from './reveal-seed';
 
 const mockUseParams = jest.fn().mockReturnValue({});
@@ -62,6 +63,7 @@ const mockStartPasskeyAuthentication = jest
   .mockResolvedValue(mockPasskeyAuthResponse);
 const mockCancelPasskeyCeremony = jest.fn();
 const mockIsPasskeyCeremonySilentError = jest.fn().mockReturnValue(false);
+const mockGetEnvironmentType = jest.fn().mockReturnValue('fullscreen');
 
 const password = 'password';
 
@@ -95,6 +97,11 @@ jest.mock('../../../shared/lib/passkey', () => ({
     mockCancelPasskeyCeremony(...args),
   isPasskeyCeremonySilentError: (...args: unknown[]) =>
     mockIsPasskeyCeremonySilentError(...args),
+}));
+
+jest.mock('../../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../../shared/lib/environment-type'),
+  getEnvironmentType: () => mockGetEnvironmentType(),
 }));
 
 type NavigateQuizToPasswordScreenArgs = {
@@ -813,6 +820,7 @@ describe('Reveal Seed Page', () => {
       mockGetIsEnrolledPasskeyIncompatibleWithSidepanel.mockReturnValue(false);
       mockStartPasskeyAuthentication.mockResolvedValue(mockPasskeyAuthResponse);
       mockIsPasskeyCeremonySilentError.mockReturnValue(false);
+      mockGetEnvironmentType.mockReturnValue('fullscreen');
       mockRequestRevealSeedWordsWithPasskey.mockReturnValue(() =>
         Promise.resolve('test srp'),
       );
@@ -825,6 +833,7 @@ describe('Reveal Seed Page', () => {
       mockGetIsEnrolledPasskeyIncompatibleWithSidepanel.mockReturnValue(false);
       mockStartPasskeyAuthentication.mockResolvedValue(mockPasskeyAuthResponse);
       mockIsPasskeyCeremonySilentError.mockReturnValue(false);
+      mockGetEnvironmentType.mockReturnValue('fullscreen');
     });
 
     it('verifies via passkey and reveals the SRP without a password', async () => {
@@ -927,6 +936,29 @@ describe('Reveal Seed Page', () => {
       });
       expect(mockRequestRevealSeedWordsWithPasskey).not.toHaveBeenCalled();
       expect(mockStartPasskeyAuthentication).not.toHaveBeenCalled();
+    });
+
+    it('falls back to the password prompt in the side panel when the enrolled passkey is incompatible there', async () => {
+      mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+      mockGetIsEnrolledPasskeyIncompatibleWithSidepanel.mockReturnValue(true);
+      const openExtensionInBrowser = jest.fn();
+      globalThis.platform = { openExtensionInBrowser } as never;
+
+      const { queryByTestId, getByText } = renderWithProvider(
+        <RevealSeedPage />,
+        mockStore,
+      );
+
+      await completeQuiz({ getByText, queryByTestId, fireEvent });
+
+      await waitFor(() => {
+        expect(queryByTestId('input-password')).toBeInTheDocument();
+      });
+      expect(mockRequestRevealSeedWordsWithPasskey).not.toHaveBeenCalled();
+      expect(mockStartPasskeyAuthentication).not.toHaveBeenCalled();
+      // No hand-off to a full browser tab; the user verifies with the password
+      // in the side panel instead.
+      expect(openExtensionInBrowser).not.toHaveBeenCalled();
     });
   });
 });
