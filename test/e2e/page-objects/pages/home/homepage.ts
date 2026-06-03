@@ -423,14 +423,17 @@ class HomePage {
    *
    * @param expectedBalance - The expected balance to be displayed. Defaults to '25'.
    * @param symbol - The symbol of the currency or token. Defaults to 'ETH'.
+   * @param expectFundYourWalletBanner - When the balance is '0', whether to assert the
+   * "Fund your wallet" banner (EVM behavior).
    * @param timeout - Max ms to wait for the balance; defaults to `driver.timeout` (10s unless the test overrides `Driver` construction).
    */
   async checkExpectedBalanceIsDisplayed(
     expectedBalance: string = '25',
     symbol: string = 'ETH',
+    expectFundYourWalletBanner: boolean = true,
     timeout: number = this.driver.timeout,
   ): Promise<void> {
-    if (expectedBalance === '0') {
+    if (expectedBalance === '0' && expectFundYourWalletBanner) {
       await this.driver.waitForSelector(this.fundYourWalletBanner, { timeout });
       return;
     }
@@ -548,7 +551,6 @@ class HomePage {
     }
     await this.checkExpectedBalanceIsDisplayed(expectedBalance);
   }
-
 
   async checkNewSrpAddedToastIsDisplayed(srpNumber = 2): Promise<void> {
     await this.driver.waitForSelector({

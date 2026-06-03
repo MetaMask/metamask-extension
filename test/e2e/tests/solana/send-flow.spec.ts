@@ -29,7 +29,7 @@ describe('Send flow', function (this: Suite) {
 
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('0');
+        await homePage.checkExpectedBalanceIsDisplayed('0', 'SOL', false);
         await homePage.clickOnSendButton();
         await sendPage.checkSolanaNetworkIsPresent();
         await sendPage.selectToken(SOLANA_MAINNET_SCOPE, 'SOL');
