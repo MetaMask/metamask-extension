@@ -166,7 +166,7 @@ export function AssetPickerModal({
   }, [searchQuery, debouncedSetSearchQuery]);
 
   const handleAssetChange = useCallback(
-    (newAsset) => {
+    (newAsset: Parameters<typeof onAssetChange>[0]) => {
       onAssetChange(newAsset);
       setSearchQuery('');
     },

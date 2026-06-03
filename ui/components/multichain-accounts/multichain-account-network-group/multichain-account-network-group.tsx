@@ -53,15 +53,13 @@ export type MultichainAccountNetworkGroupProps = {
  * @param props.className - Optional CSS class name for additional styling
  * @returns A React component displaying network avatars in a group
  */
-export const MultichainAccountNetworkGroup: React.FC<
-  MultichainAccountNetworkGroupProps
-> = ({
+export const MultichainAccountNetworkGroup = ({
   groupId,
   chainIds,
   excludeTestNetworks = true,
   limit = 4,
   className,
-}) => {
+}: MultichainAccountNetworkGroupProps) => {
   // Fetch chain IDs from account group if groupId is provided
   const accountGroupScopes = useSelector((state) =>
     groupId

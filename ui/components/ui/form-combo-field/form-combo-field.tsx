@@ -57,7 +57,7 @@ function Option({
   onClick: (option: FormComboFieldOption) => void;
 }) {
   const handleClick = useCallback(
-    (e) => {
+    (e: React.MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
       e.nativeEvent.stopImmediatePropagation();
