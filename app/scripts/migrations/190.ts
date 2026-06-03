@@ -1,5 +1,5 @@
-import browser from 'webextension-polyfill';
-import type { Hex } from '@metamask/utils';
+import type { Hex, Json } from '@metamask/utils';
+import { BrowserStorageAdapter } from '../../../shared/lib/stores/browser-storage-adapter';
 
 type VersionedData = {
   meta: { version: number };
@@ -10,7 +10,7 @@ type TokensChainsCache = Record<
   Hex,
   {
     timestamp: number;
-    data: Record<string, unknown>;
+    data: Record<string, Json>;
   }
 >;
 
@@ -21,20 +21,8 @@ type TokenListControllerState = {
 
 export const version = 190;
 
-// Storage key constants matching TokenListController and StorageService
-const STORAGE_KEY_PREFIX = 'storageService:';
 const CONTROLLER_NAME = 'TokenListController';
 const CACHE_KEY_PREFIX = 'tokensChainsCache';
-
-/**
- * Build the full storage key for a chain's token list cache.
- *
- * @param chainId - The chain ID (hex string like '0x1')
- * @returns Full storage key: storageService:TokenListController:tokensChainsCache:{chainId}
- */
-function makeStorageKey(chainId: string): string {
-  return `${STORAGE_KEY_PREFIX}${CONTROLLER_NAME}:${CACHE_KEY_PREFIX}:${chainId}`;
-}
 
 /**
  * This migration moves TokenListController's tokensChainsCache from persisted
@@ -75,34 +63,33 @@ export async function migrate(
   }
 
   try {
-    // Check which chains already exist in storage (don't overwrite)
-    const existingKeys = await browser.storage.local.get(
-      chainIds.map(makeStorageKey),
-    );
+    const browserStorageAdapter = new BrowserStorageAdapter();
 
-    // Filter to chains that need migration (not already in storage)
-    const chainsToMigrate = chainIds.filter((chainId) => {
-      const storageKey = makeStorageKey(chainId);
-      return !(storageKey in existingKeys);
-    });
+    let migratedChains = 0;
+    for (const chainId of chainIds) {
+      const cacheKey = `${CACHE_KEY_PREFIX}:${chainId}`;
+      const existingCache = await browserStorageAdapter.getItem(
+        CONTROLLER_NAME,
+        cacheKey,
+      );
+      if ('result' in existingCache) {
+        continue;
+      }
+      await browserStorageAdapter.setItem(
+        CONTROLLER_NAME,
+        cacheKey,
+        chainsCache[chainId],
+      );
+      migratedChains += 1;
+    }
 
-    if (chainsToMigrate.length === 0) {
+    if (migratedChains === 0) {
       console.log(
         `Migration #${version}: All ${chainIds.length} chain(s) already migrated to StorageService`,
       );
     } else {
-      // Build the storage object for all chains to migrate
-      const storageData: Record<string, unknown> = {};
-      for (const chainId of chainsToMigrate) {
-        const storageKey = makeStorageKey(chainId);
-        storageData[storageKey] = chainsCache[chainId];
-      }
-
-      // Save all chains to browser.storage.local in a single call
-      await browser.storage.local.set(storageData);
-
       console.log(
-        `Migration #${version}: Migrated ${chainsToMigrate.length} chain(s) from TokenListController state to StorageService`,
+        `Migration #${version}: Migrated ${migratedChains} chain(s) from TokenListController state to StorageService`,
       );
     }
 

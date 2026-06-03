@@ -1,10 +1,15 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import browser from 'webextension-polyfill';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import { NetworkState } from '@metamask/network-controller';
 import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { hasProperty, isObject, Json } from '@metamask/utils';
 import { getIsSettingsPageDevOptionsEnabled } from '../../../shared/lib/environment';
+import {
+  getSplitStateMigrationDeveloperOverrides,
+  SPLIT_STATE_MIGRATION_ENABLED_KEY,
+  SPLIT_STATE_MIGRATION_MAX_ACCOUNTS_KEY,
+  SPLIT_STATE_MIGRATION_MAX_NETWORKS_KEY,
+} from '../../../shared/lib/split-state-migration-dev-overrides';
 
 type State = {
   RemoteFeatureFlagController?: RemoteFeatureFlagControllerState;
@@ -32,30 +37,34 @@ function isFlagValid(flag?: Json): flag is {
   );
 }
 
+function isOverrideUnset(value: Json | undefined): boolean {
+  return value === undefined || value === null;
+}
+
 async function developerOverrides() {
-  const {
-    splitStateMigrationEnabled,
-    splitStateMigrationMaxAccounts,
-    splitStateMigrationMaxNetworks,
-  } = await browser.storage.local.get([
-    'splitStateMigrationEnabled',
-    'splitStateMigrationMaxAccounts',
-    'splitStateMigrationMaxNetworks',
-  ]);
+  const splitStateMigrationDeveloperOverrides =
+    await getSplitStateMigrationDeveloperOverrides();
+  const splitStateMigrationEnabled =
+    splitStateMigrationDeveloperOverrides[SPLIT_STATE_MIGRATION_ENABLED_KEY];
+  const splitStateMigrationMaxAccounts =
+    splitStateMigrationDeveloperOverrides[
+      SPLIT_STATE_MIGRATION_MAX_ACCOUNTS_KEY
+    ];
+  const splitStateMigrationMaxNetworks =
+    splitStateMigrationDeveloperOverrides[
+      SPLIT_STATE_MIGRATION_MAX_NETWORKS_KEY
+    ];
 
   return {
-    enabled:
-      splitStateMigrationEnabled === undefined
-        ? null
-        : splitStateMigrationEnabled === '1',
-    maxAccounts:
-      splitStateMigrationMaxAccounts === undefined
-        ? 0
-        : Number(splitStateMigrationMaxAccounts),
-    maxNetworks:
-      splitStateMigrationMaxNetworks === undefined
-        ? 0
-        : Number(splitStateMigrationMaxNetworks),
+    enabled: isOverrideUnset(splitStateMigrationEnabled)
+      ? null
+      : splitStateMigrationEnabled === '1',
+    maxAccounts: isOverrideUnset(splitStateMigrationMaxAccounts)
+      ? 0
+      : Number(splitStateMigrationMaxAccounts),
+    maxNetworks: isOverrideUnset(splitStateMigrationMaxNetworks)
+      ? 0
+      : Number(splitStateMigrationMaxNetworks),
   };
 }
 

@@ -1,6 +1,36 @@
 import { Text } from '@metamask/design-system-react';
 import browser from 'webextension-polyfill';
 import React, { useEffect, useState } from 'react';
+import {
+  getSplitStateMigrationDeveloperOverrides,
+  setSplitStateMigrationDeveloperOverride,
+  SPLIT_STATE_MIGRATION_ENABLED_KEY,
+  SPLIT_STATE_MIGRATION_MAX_ACCOUNTS_KEY,
+  SPLIT_STATE_MIGRATION_MAX_NETWORKS_KEY,
+  unsetSplitStateMigrationDeveloperOverride,
+} from '../../../../../shared/lib/split-state-migration-dev-overrides';
+
+async function getLocalStorageValue(key: string): Promise<unknown> {
+  try {
+    const result = await browser.storage.local.get(key);
+    return result[key];
+  } catch {
+    return undefined;
+  }
+}
+
+function getStorageKind(meta: unknown): string {
+  if (
+    typeof meta === 'object' &&
+    meta !== null &&
+    'storageKind' in meta &&
+    typeof meta.storageKind === 'string'
+  ) {
+    return meta.storageKind;
+  }
+
+  return 'data';
+}
 
 const MigrateToSplitStateTest = () => {
   const [enabled, setEnabled] = useState<string | null>(null);
@@ -27,26 +57,29 @@ const MigrateToSplitStateTest = () => {
     let isMounted = true;
 
     const loadFromStorage = async () => {
-      const {
-        splitStateMigrationEnabled,
-        splitStateMigrationMaxAccounts,
-        splitStateMigrationMaxNetworks,
-        meta,
-      } = await browser.storage.local.get([
-        'splitStateMigrationEnabled',
-        'splitStateMigrationMaxAccounts',
-        'splitStateMigrationMaxNetworks',
-        'meta',
+      const [splitStateMigrationDeveloperOverrides, meta] = await Promise.all([
+        getSplitStateMigrationDeveloperOverrides(),
+        getLocalStorageValue('meta'),
       ]);
+      const splitStateMigrationEnabled =
+        splitStateMigrationDeveloperOverrides[
+          SPLIT_STATE_MIGRATION_ENABLED_KEY
+        ];
+      const splitStateMigrationMaxAccounts =
+        splitStateMigrationDeveloperOverrides[
+          SPLIT_STATE_MIGRATION_MAX_ACCOUNTS_KEY
+        ];
+      const splitStateMigrationMaxNetworks =
+        splitStateMigrationDeveloperOverrides[
+          SPLIT_STATE_MIGRATION_MAX_NETWORKS_KEY
+        ];
 
       if (!isMounted) {
         return;
       }
 
       setEnabled(toEnabledString(splitStateMigrationEnabled));
-      setStorageKind(
-        typeof meta?.storageKind === 'string' ? meta.storageKind : 'data',
-      );
+      setStorageKind(getStorageKind(meta));
       setMaxAccounts(
         splitStateMigrationMaxAccounts === undefined
           ? ''
@@ -73,14 +106,7 @@ const MigrateToSplitStateTest = () => {
       }
 
       if (changes.meta) {
-        const newValue = changes.meta.newValue as
-          | { storageKind?: string }
-          | undefined;
-        setStorageKind(
-          typeof newValue?.storageKind === 'string'
-            ? newValue.storageKind
-            : 'data',
-        );
+        setStorageKind(getStorageKind(changes.meta.newValue));
       }
 
       if (changes.splitStateMigrationMaxAccounts) {
@@ -105,11 +131,14 @@ const MigrateToSplitStateTest = () => {
 
   const handleEnabledChange = async (value: string | null) => {
     if (value === null) {
-      await browser.storage.local.remove('splitStateMigrationEnabled');
+      await unsetSplitStateMigrationDeveloperOverride(
+        SPLIT_STATE_MIGRATION_ENABLED_KEY,
+      );
     } else {
-      await browser.storage.local.set({
-        splitStateMigrationEnabled: value,
-      });
+      await setSplitStateMigrationDeveloperOverride(
+        SPLIT_STATE_MIGRATION_ENABLED_KEY,
+        value,
+      );
     }
     setEnabled(value);
   };
@@ -119,11 +148,14 @@ const MigrateToSplitStateTest = () => {
   ) => {
     const { value } = event.target;
     if (value === '') {
-      await browser.storage.local.remove('splitStateMigrationMaxAccounts');
+      await unsetSplitStateMigrationDeveloperOverride(
+        SPLIT_STATE_MIGRATION_MAX_ACCOUNTS_KEY,
+      );
     } else {
-      await browser.storage.local.set({
-        splitStateMigrationMaxAccounts: value,
-      });
+      await setSplitStateMigrationDeveloperOverride(
+        SPLIT_STATE_MIGRATION_MAX_ACCOUNTS_KEY,
+        value,
+      );
     }
     setMaxAccounts(value);
   };
@@ -133,11 +165,14 @@ const MigrateToSplitStateTest = () => {
   ) => {
     const { value } = event.target;
     if (value === '') {
-      await browser.storage.local.remove('splitStateMigrationMaxNetworks');
+      await unsetSplitStateMigrationDeveloperOverride(
+        SPLIT_STATE_MIGRATION_MAX_NETWORKS_KEY,
+      );
     } else {
-      await browser.storage.local.set({
-        splitStateMigrationMaxNetworks: value,
-      });
+      await setSplitStateMigrationDeveloperOverride(
+        SPLIT_STATE_MIGRATION_MAX_NETWORKS_KEY,
+        value,
+      );
     }
     setMaxNetworks(value);
   };

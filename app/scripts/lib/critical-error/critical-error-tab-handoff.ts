@@ -6,10 +6,60 @@ import {
   METAMASK_RESTORING_PAGE_URL,
 } from '../../../../shared/constants/critical-error-restore-session';
 
+export const CriticalErrorRestoreValueKeyPrefix =
+  '__metamaskCriticalErrorRestore:';
+export const CriticalErrorRestorePointerKeyPrefix =
+  '__metamaskCriticalErrorRestorePointer';
+export const CriticalErrorRestoreSecondaryPointerKeyPrefix =
+  '__metamaskCriticalErrorRestoreSecondaryPointer';
+
+const CriticalErrorRestorePrimaryPointerKeys = [
+  `${CriticalErrorRestorePointerKeyPrefix}0`,
+  `${CriticalErrorRestorePointerKeyPrefix}1`,
+  `${CriticalErrorRestorePointerKeyPrefix}2`,
+  `${CriticalErrorRestorePointerKeyPrefix}3`,
+] as const;
+const CriticalErrorRestoreSecondaryPointerKeys = [
+  `${CriticalErrorRestoreSecondaryPointerKeyPrefix}0`,
+  `${CriticalErrorRestoreSecondaryPointerKeyPrefix}1`,
+  `${CriticalErrorRestoreSecondaryPointerKeyPrefix}2`,
+  `${CriticalErrorRestoreSecondaryPointerKeyPrefix}3`,
+] as const;
+const CriticalErrorRestorePointerKeys = [
+  ...CriticalErrorRestorePrimaryPointerKeys,
+  ...CriticalErrorRestoreSecondaryPointerKeys,
+] as const;
+const CRITICAL_ERROR_RESTORE_POINTER_VERSION = 1;
+
 export type RestoringTabHandoff = {
   tabId: number | undefined;
   tabUrl: string;
 };
+
+type StoredRestoringTabHandoff = {
+  tabId?: number;
+  tabUrl: string;
+};
+
+type CriticalErrorRestorePointer = {
+  version: typeof CRITICAL_ERROR_RESTORE_POINTER_VERSION;
+  updatedAt: number;
+  storageKey: string | null;
+};
+
+type CriticalErrorRestorePointerState = {
+  pointer?: CriticalErrorRestorePointer;
+  hasUnreadablePointers: boolean;
+};
+
+type CriticalErrorRestoreStorageOperation = 'read' | 'write';
+
+type CriticalErrorRestoreStorageKeyClass =
+  | 'critical-error-restore-legacy-state'
+  | 'critical-error-restore-generated-state'
+  | 'critical-error-restore-pointer';
+
+let criticalErrorRestoreWriteQueue: Promise<void> = Promise.resolve();
 
 export type ExtensionPlatformLike = {
   getExtensionURL: (
@@ -18,61 +68,275 @@ export type ExtensionPlatformLike = {
   ) => string;
 };
 
-export async function readCriticalErrorRestoreSession(
+function makeStorageKeyId(): string {
+  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+}
+
+function makeCriticalErrorRestoreValueKey(): string {
+  return `${CriticalErrorRestoreValueKeyPrefix}${makeStorageKeyId()}`;
+}
+
+async function runCriticalErrorRestoreWrite<Result>(
+  operation: () => Promise<Result>,
+): Promise<Result> {
+  const previousQueue = criticalErrorRestoreWriteQueue;
+  let releaseCurrentQueue: () => void = () => undefined;
+  const currentQueue = new Promise<void>((resolve) => {
+    releaseCurrentQueue = resolve;
+  });
+  const nextQueue = previousQueue
+    .catch(() => undefined)
+    .then(() => currentQueue);
+  criticalErrorRestoreWriteQueue = nextQueue;
+
+  await previousQueue.catch(() => undefined);
+  try {
+    return await operation();
+  } finally {
+    releaseCurrentQueue();
+    if (criticalErrorRestoreWriteQueue === nextQueue) {
+      criticalErrorRestoreWriteQueue = Promise.resolve();
+    }
+  }
+}
+
+function isObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+function isCriticalErrorRestorePointer(
+  value: unknown,
+): value is CriticalErrorRestorePointer {
+  return (
+    isObject(value) &&
+    value.version === CRITICAL_ERROR_RESTORE_POINTER_VERSION &&
+    typeof value.updatedAt === 'number' &&
+    (typeof value.storageKey === 'string' || value.storageKey === null)
+  );
+}
+
+function normalizeRestoreSession(session: unknown): RestoringTabHandoff | null {
+  if (!isObject(session)) {
+    return null;
+  }
+
+  const { tabUrl, tabId } = session;
+  if (typeof tabUrl !== 'string') {
+    return null;
+  }
+
+  return {
+    tabId: typeof tabId === 'number' ? tabId : undefined,
+    tabUrl,
+  };
+}
+
+async function readStorageKey(
+  browserApi: typeof browser,
+  storageKey: string,
+): Promise<unknown> {
+  const data = await browserApi.storage.local.get(storageKey);
+  return data[storageKey];
+}
+
+function captureCriticalErrorRestoreStorageError(
+  message: string,
+  error: unknown,
+  storageOperation: CriticalErrorRestoreStorageOperation,
+  storageKeyClass: CriticalErrorRestoreStorageKeyClass,
+) {
+  captureException(new Error(message, { cause: error }), {
+    tags: {
+      'persistence.storage_area': 'local',
+      'persistence.storage_operation': storageOperation,
+      'persistence.storage_key_class': storageKeyClass,
+    },
+  });
+}
+
+async function readLatestRestorePointer(
+  browserApi: typeof browser,
+): Promise<CriticalErrorRestorePointerState> {
+  let hasUnreadablePointers = false;
+  const pointers = (
+    await Promise.all(
+      CriticalErrorRestorePointerKeys.map(async (pointerKey) => {
+        try {
+          const response = await browserApi.storage.local.get(pointerKey);
+          if (isCriticalErrorRestorePointer(response[pointerKey])) {
+            return response[pointerKey];
+          }
+        } catch (error) {
+          hasUnreadablePointers = true;
+          captureCriticalErrorRestoreStorageError(
+            'critical-error-restore: failed to read restore session pointer',
+            error,
+            'read',
+            'critical-error-restore-pointer',
+          );
+        }
+        return undefined;
+      }),
+    )
+  ).filter(
+    (pointer): pointer is CriticalErrorRestorePointer => pointer !== undefined,
+  );
+
+  return {
+    pointer: pointers.reduce<CriticalErrorRestorePointer | undefined>(
+      (latest, current) =>
+        !latest || current.updatedAt >= latest.updatedAt ? current : latest,
+      undefined,
+    ),
+    hasUnreadablePointers,
+  };
+}
+
+async function readLegacyRestoreSession(
   browserApi: typeof browser,
 ): Promise<RestoringTabHandoff | null> {
   try {
     // storage.local survives runtime.reload(); storage.session does not
-    const data = await browserApi.storage.local.get(CRITICAL_ERROR_RESTORE_KEY);
-    const session = data[CRITICAL_ERROR_RESTORE_KEY];
-
-    if (!session || typeof session !== 'object') {
-      return null;
-    }
-
-    const { tabUrl, tabId } = session as Record<string, unknown>;
-    if (typeof tabUrl !== 'string') {
-      return null;
-    }
-
-    return {
-      tabId: typeof tabId === 'number' ? tabId : undefined,
-      tabUrl,
-    };
+    return normalizeRestoreSession(
+      await readStorageKey(browserApi, CRITICAL_ERROR_RESTORE_KEY),
+    );
   } catch (error) {
-    // Do not rethrow: throwing would block the service worker initialization, and this,
-    // even when the startup is a default init (not a critical-error restore).
-    // Returning null treats the error like absent session data and at least allows
-    // default init to proceed.
-    captureException(error);
+    // Do not rethrow: throwing would block service worker initialization, even
+    // when startup is not a critical-error restore. Treat the read failure like
+    // absent session data so default init can proceed.
+    captureCriticalErrorRestoreStorageError(
+      'critical-error-restore: failed to read legacy restore session',
+      error,
+      'read',
+      'critical-error-restore-legacy-state',
+    );
     return null;
   }
 }
 
+async function writeRestorePointers(
+  browserApi: typeof browser,
+  pointer: CriticalErrorRestorePointer,
+): Promise<boolean> {
+  const pointerValues = Object.fromEntries(
+    CriticalErrorRestorePointerKeys.map((pointerKey) => [pointerKey, pointer]),
+  );
+
+  try {
+    await browserApi.storage.local.set(pointerValues);
+    return true;
+  } catch (error) {
+    captureCriticalErrorRestoreStorageError(
+      'critical-error-restore: failed to write restore session pointers',
+      error,
+      'write',
+      'critical-error-restore-pointer',
+    );
+  }
+
+  let didWritePointer = false;
+  for (const pointerKey of CriticalErrorRestorePointerKeys) {
+    try {
+      await browserApi.storage.local.set({ [pointerKey]: pointer });
+      didWritePointer = true;
+    } catch (error) {
+      captureCriticalErrorRestoreStorageError(
+        'critical-error-restore: failed to write restore session pointer',
+        error,
+        'write',
+        'critical-error-restore-pointer',
+      );
+    }
+  }
+
+  return didWritePointer;
+}
+
+export async function readCriticalErrorRestoreSession(
+  browserApi: typeof browser,
+): Promise<RestoringTabHandoff | null> {
+  const { pointer, hasUnreadablePointers } =
+    await readLatestRestorePointer(browserApi);
+  if (pointer) {
+    if (pointer.storageKey === null) {
+      return null;
+    }
+
+    try {
+      const generatedSession = normalizeRestoreSession(
+        await readStorageKey(browserApi, pointer.storageKey),
+      );
+      if (generatedSession) {
+        return generatedSession;
+      }
+    } catch (error) {
+      captureCriticalErrorRestoreStorageError(
+        'critical-error-restore: failed to read generated restore session',
+        error,
+        'read',
+        'critical-error-restore-generated-state',
+      );
+    }
+    return null;
+  }
+
+  if (hasUnreadablePointers) {
+    return null;
+  }
+
+  return await readLegacyRestoreSession(browserApi);
+}
+
 /**
- * Removes the restore session key. Best-effort: if `storage.local.remove` fails,
+ * Publishes a restore session tombstone. Best-effort: if `storage.local.set` fails,
  * the error is wrapped for context, reported to Sentry, and not rethrown so startup
- * can continue (the key may already be absent or storage may be transiently broken).
+ * can continue.
  *
  * @param browserApi - WebExtension `browser` API (injected for tests).
  */
 export async function clearCriticalErrorRestoreSession(
   browserApi: typeof browser,
 ): Promise<void> {
-  try {
-    await browserApi.storage.local.remove(CRITICAL_ERROR_RESTORE_KEY);
-  } catch (error) {
-    // Do not rethrow: throwing would block the critical-error restore path and could
-    // keep the user from reaching their SRP. If remove keeps failing (non-transient),
-    // the session key may remain and they may repeat recovery after each restart until
-    // remove succeeds. We accept that trade-off so SRP remains accessible in case of storage failure.
-    captureException(
-      new Error(
-        'critical-error-restore: failed to clear restore session from storage.local',
-        { cause: error },
-      ),
-    );
-  }
+  await runCriticalErrorRestoreWrite(async () => {
+    await writeRestorePointers(browserApi, {
+      version: CRITICAL_ERROR_RESTORE_POINTER_VERSION,
+      updatedAt: Date.now(),
+      storageKey: null,
+    });
+  });
+}
+
+async function writeCriticalErrorRestoreSession(
+  value: StoredRestoringTabHandoff,
+): Promise<void> {
+  await runCriticalErrorRestoreWrite(async () => {
+    const storageKey = makeCriticalErrorRestoreValueKey();
+    let didWriteGeneratedValue = false;
+
+    try {
+      await browser.storage.local.set({ [storageKey]: value });
+      didWriteGeneratedValue = true;
+    } catch (error) {
+      captureCriticalErrorRestoreStorageError(
+        'critical-error-restore: failed to save generated restore session to storage.local',
+        error,
+        'write',
+        'critical-error-restore-generated-state',
+      );
+    }
+
+    if (!didWriteGeneratedValue) {
+      return;
+    }
+
+    const pointer: CriticalErrorRestorePointer = {
+      version: CRITICAL_ERROR_RESTORE_POINTER_VERSION,
+      updatedAt: Date.now(),
+      storageKey,
+    };
+
+    await writeRestorePointers(browser, pointer);
+  });
 }
 
 export async function openRestoringTabAndReload(
@@ -101,7 +365,7 @@ export async function openRestoringTabAndReload(
     log.error(error);
   }
 
-  await browser.storage.local.set({ [CRITICAL_ERROR_RESTORE_KEY]: value });
+  await writeCriticalErrorRestoreSession(value);
 
   await requestSafeReload();
 }

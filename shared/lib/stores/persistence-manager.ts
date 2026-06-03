@@ -737,6 +737,28 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             localStoreError !== undefined || !hasVault(result?.data);
 
           if (needsVaultRecovery) {
+            if (hasVault(this.#mostRecentRetrievedState?.data)) {
+              captureMessage(
+                'Using in-memory state after primary persistence returned no vault',
+                {
+                  level: 'warning',
+                  tags: {
+                    'persistence.event': localStoreError
+                      ? 'get-memory-fallback-after-error'
+                      : 'get-memory-fallback-missing-vault',
+                  },
+                  fingerprint: [
+                    'persistence-event',
+                    localStoreError
+                      ? 'get-memory-fallback-after-error'
+                      : 'get-memory-fallback-missing-vault',
+                  ],
+                },
+              );
+              this.storageKind =
+                this.#mostRecentRetrievedState.meta?.storageKind ?? 'data';
+              return this.#mostRecentRetrievedState;
+            }
             // Check if we have a backup in IndexedDB. We need to throw an error
             // so that the user can be prompted to recover it.
             // Wrap in try-catch to prevent backup failures from masking the
