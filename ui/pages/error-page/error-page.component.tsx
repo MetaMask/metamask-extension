@@ -51,7 +51,7 @@ type ErrorPageProps = {
   };
 };
 
-const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
+const ErrorPage = ({ error }: ErrorPageProps) => {
   const t = useI18nContext();
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
 
