@@ -73,8 +73,7 @@ class AssetListPage extends HomePage {
   private readonly sortByPopoverToggle =
     '[data-testid="sort-by-popover-toggle"]';
 
-  private readonly coinOverviewBuyButton =
-    '[data-testid="coin-overview-buy"]';
+  private readonly coinOverviewBuyButton = '[data-testid="coin-overview-buy"]';
 
   private readonly tokenFiatAmount =
     '[data-testid="multichain-token-list-item-secondary-value"]';
