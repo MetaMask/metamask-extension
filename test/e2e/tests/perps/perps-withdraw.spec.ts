@@ -155,6 +155,7 @@ describe('Perps Withdraw', function (this: Suite) {
 
   // The fill form takes very long to be enabled in the new withdraw page causing the test to fail
   // To re-enable back once the issue is fixed
+  // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('submits a valid withdrawal from the confirmation flow', async function () {
     await withFixtures(
       {
@@ -176,6 +177,7 @@ describe('Perps Withdraw', function (this: Suite) {
 
   // The fill form takes very long to be enabled in the new withdraw page causing the test to fail
   // To re-enable back once the issue is fixed
+  // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('blocks withdrawal amounts above the Perps available balance', async function () {
     await withFixtures(
       {
