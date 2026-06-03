@@ -17,8 +17,9 @@ import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
+import { openPerpsActivityPage } from '../../page-objects/flows/perps-activity.flow';
+import HomePage from '../../page-objects/pages/home/homepage';
 import { PerpsHomePage } from '../../page-objects/pages/perps/perps-home-page';
-import { PerpsActivityPage } from '../../page-objects/pages/perps/perps-activity-page';
 import { PerpsMarketDetailPage } from '../../page-objects/pages/perps/perps-market-detail-page';
 import { getPerpsConfigEligibleWithActivity } from './perps-fixture-config';
 import { WS_WITH_ACTIVITY_DATA } from './mocks/websocketActivityMocks';
@@ -35,13 +36,7 @@ describe('Perps Activity', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForBalanceSection();
-        await perpsHomePage.clickRecentActivitySeeAll();
-
-        const activityPage = new PerpsActivityPage(driver);
-        await activityPage.checkPageIsLoaded();
+        const activityPage = await openPerpsActivityPage({ driver });
 
         // Open the filter dropdown and verify all options are visible
         await activityPage.clickFilterButton();
@@ -64,13 +59,7 @@ describe('Perps Activity', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForBalanceSection();
-        await perpsHomePage.clickRecentActivitySeeAll();
-
-        const activityPage = new PerpsActivityPage(driver);
-        await activityPage.checkPageIsLoaded();
+        const activityPage = await openPerpsActivityPage({ driver });
 
         // Open dropdown and select Trades filter
         await activityPage.clickFilterButton();
@@ -94,13 +83,7 @@ describe('Perps Activity', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForBalanceSection();
-        await perpsHomePage.clickRecentActivitySeeAll();
-
-        const activityPage = new PerpsActivityPage(driver);
-        await activityPage.checkPageIsLoaded();
+        const activityPage = await openPerpsActivityPage({ driver });
 
         // Open dropdown and select Orders filter
         await activityPage.clickFilterButton();
@@ -123,13 +106,7 @@ describe('Perps Activity', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForBalanceSection();
-        await perpsHomePage.clickRecentActivitySeeAll();
-
-        const activityPage = new PerpsActivityPage(driver);
-        await activityPage.checkPageIsLoaded();
+        const activityPage = await openPerpsActivityPage({ driver });
 
         // Open dropdown and select Funding filter
         await activityPage.clickFilterButton();
@@ -152,13 +129,7 @@ describe('Perps Activity', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForBalanceSection();
-        await perpsHomePage.clickRecentActivitySeeAll();
-
-        const activityPage = new PerpsActivityPage(driver);
-        await activityPage.checkPageIsLoaded();
+        const activityPage = await openPerpsActivityPage({ driver });
 
         // Open dropdown and select Deposits filter
         await activityPage.clickFilterButton();
@@ -181,13 +152,7 @@ describe('Perps Activity', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.waitForBalanceSection();
-        await perpsHomePage.clickRecentActivitySeeAll();
-
-        const activityPage = new PerpsActivityPage(driver);
-        await activityPage.checkPageIsLoaded();
+        const activityPage = await openPerpsActivityPage({ driver });
 
         // Select Orders filter and wait for an order transaction card.
         // Only order-type cards have an onClick handler that navigates to market detail.
@@ -216,8 +181,10 @@ describe('Perps Activity', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
+        const homePage = new HomePage(driver);
         const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
+        await homePage.goToPerpsTab();
+        await perpsHomePage.checkPageIsLoaded();
         await perpsHomePage.waitForBalanceSection();
 
         // Wait for the non-empty recent-activity section to appear

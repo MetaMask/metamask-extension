@@ -4,7 +4,7 @@ import { PerpsPositionsBase } from './perps-positions-base';
  * Page object for the Perps tab (wallet home with Perps tab selected).
  * Use this when the user is already on the Perps tab and interacting with
  * balance, positions, explore markets, and tutorial content.
- * For opening the Perps tab from account overview, use PerpsTabPage first.
+ * For opening the Perps tab from account overview, use HomePage.goToPerpsTab().
  *
  * @see ui/components/app/perps/perps-view.tsx
  */
@@ -19,6 +19,10 @@ export class PerpsHomePage extends PerpsPositionsBase {
 
   private readonly balanceDropdownWithdraw = {
     testId: 'perps-balance-dropdown-withdraw',
+  };
+
+  private readonly exploreSection = {
+    testId: 'perps-explore-section',
   };
 
   private readonly geoBlockModal = { testId: 'perps-geo-block-modal' };
@@ -77,7 +81,7 @@ export class PerpsHomePage extends PerpsPositionsBase {
    */
   async checkPageIsLoaded(): Promise<void> {
     await this.driver.waitForMultipleSelectors(
-      [this.perpsView, this.perpsBalanceDropdown],
+      [this.perpsView, this.perpsBalanceDropdown, this.exploreSection],
       { timeout: 20000 },
     );
   }
@@ -134,17 +138,6 @@ export class PerpsHomePage extends PerpsPositionsBase {
     await this.driver.clickElementAndWaitToDisappear(
       this.perpsTutorialLetsGoButton,
     );
-  }
-
-  /**
-   * Navigates to Perps Home by clicking the Perps tab on the account overview.
-   * Requires the account overview to be visible (e.g. after login or driver.navigate()).
-   * Waits for the Perps tab to be present, clicks it, then waits for the Perps Home view to load.
-   */
-  async navigateToPerpsHome(): Promise<void> {
-    await this.driver.waitForSelector(this.accountOverviewPerpsTab);
-    await this.driver.clickElement(this.accountOverviewPerpsTab);
-    await this.checkPageIsLoaded();
   }
 
   /**

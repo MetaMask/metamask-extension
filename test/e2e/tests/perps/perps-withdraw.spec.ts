@@ -18,9 +18,10 @@ import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
-import { PerpsWithdrawConfirmation } from '../../page-objects/pages/confirmations/perps-withdraw-confirmation';
-import { PerpsHomePage } from '../../page-objects/pages/perps/perps-home-page';
-import { PerpsWithdrawPage } from '../../page-objects/pages/perps/perps-withdraw-page';
+import {
+  openPerpsWithdrawLegacy,
+  openPerpsWithdrawConfirmation,
+} from '../../page-objects/flows/perps-withdraw.flow';
 import {
   getPerpsConfigEligible,
   getPerpsConfigEligibleWithArbitrumUsdc,
@@ -43,23 +44,6 @@ const withdrawConfirmationFixtures = (title?: string) => {
   };
 };
 
-async function openPerpsWithdrawConfirmation(
-  driver: Driver,
-): Promise<PerpsWithdrawConfirmation> {
-  await login(driver, { validateBalance: false });
-
-  const perpsHomePage = new PerpsHomePage(driver);
-  await perpsHomePage.navigateToPerpsHome();
-  await perpsHomePage.checkPageIsLoaded();
-  await perpsHomePage.waitForBalanceSection();
-  await perpsHomePage.clickWithdraw();
-
-  const withdrawConfirmation = new PerpsWithdrawConfirmation(driver);
-  await withdrawConfirmation.checkPageIsLoaded();
-
-  return withdrawConfirmation;
-}
-
 describe('Perps Withdraw', function (this: Suite) {
   this.timeout(120000);
 
@@ -70,16 +54,7 @@ describe('Perps Withdraw', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.checkPageIsLoaded();
-        await perpsHomePage.waitForBalanceSection();
-        await perpsHomePage.clickWithdraw();
-
-        const withdrawPage = new PerpsWithdrawPage(driver);
-        await withdrawPage.checkPageIsLoaded();
-        await withdrawPage.waitForSummaryRows();
+        await openPerpsWithdrawLegacy({ driver });
       },
     );
   });
@@ -91,16 +66,7 @@ describe('Perps Withdraw', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.checkPageIsLoaded();
-        await perpsHomePage.waitForBalanceSection();
-        await perpsHomePage.clickWithdraw();
-
-        const withdrawPage = new PerpsWithdrawPage(driver);
-        await withdrawPage.checkPageIsLoaded();
-        await withdrawPage.waitForSummaryRows();
+        const withdrawPage = await openPerpsWithdrawLegacy({ driver });
         await withdrawPage.fillAmount('50');
         await withdrawPage.clickSubmit();
         await withdrawPage.waitForWithdrawSubmittedToast();
@@ -115,15 +81,7 @@ describe('Perps Withdraw', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.checkPageIsLoaded();
-        await perpsHomePage.waitForBalanceSection();
-        await perpsHomePage.clickWithdraw();
-
-        const withdrawPage = new PerpsWithdrawPage(driver);
-        await withdrawPage.checkPageIsLoaded();
+        const withdrawPage = await openPerpsWithdrawLegacy({ driver });
         // Default amount is 0 — submit should be disabled
         await withdrawPage.assertSubmitDisabled();
       },
@@ -137,15 +95,7 @@ describe('Perps Withdraw', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-
-        const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
-        await perpsHomePage.checkPageIsLoaded();
-        await perpsHomePage.waitForBalanceSection();
-        await perpsHomePage.clickWithdraw();
-
-        const withdrawPage = new PerpsWithdrawPage(driver);
-        await withdrawPage.checkPageIsLoaded();
+        const withdrawPage = await openPerpsWithdrawLegacy({ driver });
         await withdrawPage.fillAmount('99999');
         await withdrawPage.waitForValidationMessage('exceeds');
         await withdrawPage.assertSubmitDisabled();
@@ -159,8 +109,10 @@ describe('Perps Withdraw', function (this: Suite) {
         ...withdrawConfirmationFixtures(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
-        const withdrawConfirmation =
-          await openPerpsWithdrawConfirmation(driver);
+        await login(driver, { validateBalance: false });
+        const withdrawConfirmation = await openPerpsWithdrawConfirmation({
+          driver,
+        });
 
         await withdrawConfirmation.checkAvailableBalance('$10,000.00');
         await withdrawConfirmation.checkDestinationToken('USDC');
@@ -178,8 +130,10 @@ describe('Perps Withdraw', function (this: Suite) {
         ...withdrawConfirmationFixtures(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
-        const withdrawConfirmation =
-          await openPerpsWithdrawConfirmation(driver);
+        await login(driver, { validateBalance: false });
+        const withdrawConfirmation = await openPerpsWithdrawConfirmation({
+          driver,
+        });
 
         await withdrawConfirmation.fillAmount('10001');
         await withdrawConfirmation.waitForInsufficientFundsReason();
