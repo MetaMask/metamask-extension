@@ -53,6 +53,7 @@ async function openPerpsWithdrawConfirmation(
   await perpsHomePage.checkPageIsLoaded();
   await perpsHomePage.waitForBalanceSection();
   await perpsHomePage.waitForEmptyActivitySection();
+  await driver.delay(5000);
   await perpsHomePage.clickWithdraw();
 
   const withdrawConfirmation = new PerpsWithdrawConfirmation(driver);
