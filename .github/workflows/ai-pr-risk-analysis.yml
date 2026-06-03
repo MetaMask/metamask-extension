@@ -35,7 +35,7 @@ jobs:
           repository: MetaMask/ai-analyzer
           ref: v1
           path: .ai-analyzer-action
-          token: ${{ secrets.AI_ANALYZER_TOKEN || secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.AI_ANALYZER_TOKEN }}
 
       - name: Run AI PR Analysis
         uses: ./.ai-analyzer-action
@@ -46,4 +46,4 @@ jobs:
           add-comment: true
           add-label: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          litellm-api-key: ${{ secrets.LITELLM_API_KEY }}
+          litellm-api-key: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}

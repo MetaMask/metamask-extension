@@ -16,7 +16,7 @@ critical:
     - app/scripts/contentscript.js
     - app/scripts/inpage.js
     - app/scripts/migrations/index.js
-    - app/scripts/controller-init/network-controller-init.ts
+    - app/scripts/messenger-client-init/network-controller-init.ts
     - app/scripts/lib/createMetamaskMiddleware.ts
     - app/scripts/lib/encryptor-factory.ts
     - ui/store/store.ts
@@ -38,7 +38,7 @@ critical:
     - app/scripts/lib/ppom/
     - app/scripts/lib/trust-signals/
     # Core wiring
-    - app/scripts/controller-init/messengers/
+    - app/scripts/messenger-client-init/messengers/
     - app/scripts/streams/
     - app/scripts/lib/rpc-method-middleware/
     - app/scripts/lib/transaction/

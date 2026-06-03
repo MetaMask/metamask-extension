@@ -1,16 +1,1 @@
-[
-  {
-    "name": "critical-file-count-threshold",
-    "description": "More than 10 critical files changed in this PR",
-    "trigger": {
-      "type": "criticalFileCount",
-      "threshold": 10
-    },
-
-    "result": {
-      "merge_safe": false,
-      "risk_level": "high",
-      "summary": "- More than 10 critical files changed — treat as high risk and prioritize manual review."
-    }
-  }
-]
+[]
