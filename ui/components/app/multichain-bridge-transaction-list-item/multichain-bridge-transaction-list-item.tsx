@@ -59,9 +59,11 @@ type MultichainBridgeTransactionListItemProps = {
  * @param options0.bridgeHistoryItem - The bridge history item data to display
  * @param options0.toggleShowDetails - Function to call when the item is clicked
  */
-const MultichainBridgeTransactionListItem: React.FC<
-  MultichainBridgeTransactionListItemProps
-> = ({ transaction, bridgeHistoryItem, toggleShowDetails }) => {
+const MultichainBridgeTransactionListItem = ({
+  transaction,
+  bridgeHistoryItem,
+  toggleShowDetails,
+}: MultichainBridgeTransactionListItemProps) => {
   const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
 
@@ -124,6 +126,7 @@ const MultichainBridgeTransactionListItem: React.FC<
       className="multichain-bridge-transaction-list-item"
       status={KEYRING_TRANSACTION_STATUS_KEY[status]}
       onClick={() => toggleShowDetails(transaction)}
+      // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
       icon={
         <BadgeWrapper
           anchorElementShape={BadgeWrapperAnchorElementShape.circular}
@@ -150,6 +153,7 @@ const MultichainBridgeTransactionListItem: React.FC<
           />
         </BadgeWrapper>
       }
+      // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
       rightContent={
         <>
           <Text
@@ -176,6 +180,7 @@ const MultichainBridgeTransactionListItem: React.FC<
         </>
       }
       title={title}
+      // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
       subtitle={
         <Box className="flex flex-col" gap={1}>
           {isTerminalState ? (

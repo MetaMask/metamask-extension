@@ -315,6 +315,7 @@ export const CoinOverview = ({
 
   return (
     <WalletOverview
+      // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
       balance={
         debouncedShouldShowBalanceEmptyState ? (
           <BalanceEmptyState
@@ -345,6 +346,7 @@ export const CoinOverview = ({
           </Tooltip>
         )
       }
+      // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
       buttons={
         <CoinButtons
           {...{

@@ -16,7 +16,7 @@ import UnlockPageImport from '.';
 
 // The container uses compose() which returns ComponentType, but TypeScript sees it as 'any'
 const UnlockPage = UnlockPageImport as React.ComponentType<
-  Record<string, unknown>
+  React.PropsWithChildren<Record<string, unknown>>
 >;
 
 const mockUseNavigate = jest.fn();

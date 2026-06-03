@@ -200,7 +200,6 @@ import {
 import { getClaimsServiceMessenger } from './claims/claims-service-messenger';
 import { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
 import { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
-import { getStorageServiceMessenger } from './storage-service-messenger';
 import { getGeolocationApiServiceMessenger } from './geolocation-api-service-messenger';
 import { getGeolocationControllerMessenger } from './geolocation-controller-messenger';
 import { getPerpsControllerMessenger } from './perps-controller-messenger';
@@ -247,8 +246,6 @@ export {
   getEnsControllerMessenger,
   getEnsControllerInitMessenger,
 } from './ens-controller-messenger';
-export type { StorageServiceMessenger } from './storage-service-messenger';
-export { getStorageServiceMessenger } from './storage-service-messenger';
 export type { GasFeeControllerInitMessenger } from './gas-fee-controller-messenger';
 export {
   getGasFeeControllerMessenger,
@@ -445,10 +442,6 @@ export const MESSENGER_FACTORIES = {
   EnsController: {
     getMessenger: getEnsControllerMessenger,
     getInitMessenger: getEnsControllerInitMessenger,
-  },
-  StorageService: {
-    getMessenger: getStorageServiceMessenger,
-    getInitMessenger: noop,
   },
   ExecutionService: {
     getMessenger: getExecutionServiceMessenger,
