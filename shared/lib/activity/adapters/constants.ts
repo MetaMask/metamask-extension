@@ -12,7 +12,13 @@ export const supplyMethodIds = new Set([
 
 // Known method IDs for withdraw calls
 const aaveWithdrawMethodId = '0x69328dec';
-export const withdrawMethodIds = new Set([aaveWithdrawMethodId]);
+const lidoClaimWithdrawMethodId = '0xf8444436';
+const rocketPoolBurnMethodId = '0x42966c68';
+export const withdrawMethodIds = new Set([
+  aaveWithdrawMethodId,
+  lidoClaimWithdrawMethodId,
+  rocketPoolBurnMethodId,
+]);
 
 // WETH9-style wrap / unwrap (deposit / withdraw)
 export const wrapMethodIds = new Set(['0xd0e30db0']);
