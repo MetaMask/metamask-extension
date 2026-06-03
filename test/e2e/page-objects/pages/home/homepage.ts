@@ -72,6 +72,10 @@ class HomePage {
     testId: 'account-overview__defi-tab',
   };
 
+  private readonly perpsTab = {
+    testId: 'account-overview__perps-tab',
+  };
+
   private readonly overviewBalanceSection = '.wallet-overview__balance';
 
   private readonly popoverBackground = '.popover-bg';
@@ -312,6 +316,11 @@ class HomePage {
   async goToDeFiTab(): Promise<void> {
     console.log(`Go to DeFi tab on homepage`);
     await this.driver.clickElement(this.defiTab);
+  }
+
+  async goToPerpsTab(): Promise<void> {
+    console.log(`Go to Perps tab on homepage`);
+    await this.driver.clickElement(this.perpsTab);
   }
 
   async goToTokensTab(): Promise<void> {

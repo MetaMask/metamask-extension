@@ -2,6 +2,7 @@ import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
+import HomePage from '../../page-objects/pages/home/homepage';
 import { PerpsHomePage } from '../../page-objects/pages/perps/perps-home-page';
 import { PerpsMarketDetailPage } from '../../page-objects/pages/perps/perps-market-detail-page';
 import { PerpsMarketListPage } from '../../page-objects/pages/perps/perps-market-list-page';
@@ -26,8 +27,10 @@ describe('Perps', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
 
+        const homePage = new HomePage(driver);
         const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
+        await homePage.goToPerpsTab();
+        await perpsHomePage.checkPageIsLoaded();
         await perpsHomePage.waitForPositionsSection();
         await perpsHomePage.waitForPositionCardsCount(9);
 
@@ -45,8 +48,10 @@ describe('Perps', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
 
+        const homePage = new HomePage(driver);
         const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
+        await homePage.goToPerpsTab();
+        await perpsHomePage.checkPageIsLoaded();
         await perpsHomePage.waitForPositionsSection();
 
         const marketListPage = new PerpsMarketListPage(driver);
@@ -72,8 +77,10 @@ describe('Perps', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
 
+        const homePage = new HomePage(driver);
         const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
+        await homePage.goToPerpsTab();
+        await perpsHomePage.checkPageIsLoaded();
         await perpsHomePage.waitForBalanceSection();
         await perpsHomePage.clickAddFunds();
         // Add funds flow not implemented yet; test verifies button is visible and clickable
@@ -91,8 +98,10 @@ describe('Perps', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
 
+        const homePage = new HomePage(driver);
         const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
+        await homePage.goToPerpsTab();
+        await perpsHomePage.checkPageIsLoaded();
         await perpsHomePage.waitForBalanceSection();
         await perpsHomePage.clickWithdraw();
         // Withdraw flow not implemented yet; test verifies button is visible and clickable
@@ -110,8 +119,10 @@ describe('Perps', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
 
+        const homePage = new HomePage(driver);
         const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
+        await homePage.goToPerpsTab();
+        await perpsHomePage.checkPageIsLoaded();
         await perpsHomePage.waitForBalanceSection();
 
         const marketListPage = new PerpsMarketListPage(driver);
@@ -133,8 +144,10 @@ describe('Perps', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
 
+        const homePage = new HomePage(driver);
         const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
+        await homePage.goToPerpsTab();
+        await perpsHomePage.checkPageIsLoaded();
         await perpsHomePage.waitForBalanceSection();
         await perpsHomePage.clickLearnBasics();
         await perpsHomePage.goThroughTutorialModal();
@@ -151,8 +164,10 @@ describe('Perps', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
 
+        const homePage = new HomePage(driver);
         const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
+        await homePage.goToPerpsTab();
+        await perpsHomePage.checkPageIsLoaded();
         await perpsHomePage.waitForPositionsSection();
 
         const marketListPage = new PerpsMarketListPage(driver);

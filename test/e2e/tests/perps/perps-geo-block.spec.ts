@@ -13,6 +13,7 @@ import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
+import HomePage from '../../page-objects/pages/home/homepage';
 import { PerpsHomePage } from '../../page-objects/pages/perps/perps-home-page';
 import { PerpsMarketDetailPage } from '../../page-objects/pages/perps/perps-market-detail-page';
 import { PerpsMarketListPage } from '../../page-objects/pages/perps/perps-market-list-page';
@@ -37,8 +38,9 @@ describe('Perps Geo-block', function (this: Suite) {
           waitForNonEvmAccounts: false,
         });
 
+        const homePage = new HomePage(driver);
         const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
+        await homePage.goToPerpsTab();
         await perpsHomePage.checkPageIsLoaded();
         await perpsHomePage.waitForBalanceSection();
 
@@ -60,8 +62,9 @@ describe('Perps Geo-block', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
+        const homePage = new HomePage(driver);
         const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
+        await homePage.goToPerpsTab();
         await perpsHomePage.checkPageIsLoaded();
         await perpsHomePage.waitForBalanceSection();
 

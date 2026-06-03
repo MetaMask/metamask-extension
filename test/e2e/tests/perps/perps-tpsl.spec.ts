@@ -17,6 +17,7 @@ import WebSocketRegistry from '../../websocket/registry';
 import { WEBSOCKET_SERVICES } from '../../websocket/constants';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
+import HomePage from '../../page-objects/pages/home/homepage';
 import { PerpsHomePage } from '../../page-objects/pages/perps/perps-home-page';
 import { PerpsMarketDetailPage } from '../../page-objects/pages/perps/perps-market-detail-page';
 import { assertPerpsActivityShowsCloseFill } from '../../page-objects/flows/perps-activity-close-fill.flow';
@@ -39,8 +40,10 @@ describe('Perps Take Profit / Stop Loss', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
+        const homePage = new HomePage(driver);
         const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
+        await homePage.goToPerpsTab();
+        await perpsHomePage.checkPageIsLoaded();
         await perpsHomePage.waitForPositionsSection();
         await perpsHomePage.waitForPositionCard('ETH');
         await perpsHomePage.clickPositionCard('ETH');
@@ -92,8 +95,10 @@ describe('Perps Take Profit / Stop Loss', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
+        const homePage = new HomePage(driver);
         const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
+        await homePage.goToPerpsTab();
+        await perpsHomePage.checkPageIsLoaded();
         await perpsHomePage.waitForPositionsSection();
         await perpsHomePage.waitForPositionCard('ETH');
         await perpsHomePage.clickPositionCard('ETH');

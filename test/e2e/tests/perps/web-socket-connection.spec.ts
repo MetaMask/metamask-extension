@@ -4,6 +4,7 @@ import { WEBSOCKET_SERVICES } from '../../websocket/constants';
 import WebSocketRegistry from '../../websocket/registry';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
+import HomePage from '../../page-objects/pages/home/homepage';
 import { PerpsHomePage } from '../../page-objects/pages/perps/perps-home-page';
 import { getPerpsConfigEligible } from './perps-fixture-config';
 
@@ -47,8 +48,10 @@ describe.skip('Perps Web Socket', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
+        const homePage = new HomePage(driver);
         const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
+        await homePage.goToPerpsTab();
+        await perpsHomePage.checkPageIsLoaded();
         await perpsHomePage.waitForBalanceSection();
 
         await waitForPerpsWebsocketConnections(driver, 1);
@@ -64,8 +67,10 @@ describe.skip('Perps Web Socket', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
+        const homePage = new HomePage(driver);
         const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
+        await homePage.goToPerpsTab();
+        await perpsHomePage.checkPageIsLoaded();
         await perpsHomePage.waitForBalanceSection();
 
         await waitForPerpsWebsocketConnections(driver, 1);
@@ -88,8 +93,10 @@ describe.skip('Perps Web Socket', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
+        const homePage = new HomePage(driver);
         const perpsHomePage = new PerpsHomePage(driver);
-        await perpsHomePage.navigateToPerpsHome();
+        await homePage.goToPerpsTab();
+        await perpsHomePage.checkPageIsLoaded();
         await perpsHomePage.waitForBalanceSection();
 
         await waitForPerpsWebsocketConnections(driver, 1);

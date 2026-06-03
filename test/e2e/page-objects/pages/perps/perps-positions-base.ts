@@ -2,14 +2,10 @@ import { Driver } from '../../../webdriver/driver';
 
 /**
  * Base class with shared position-related selectors and methods
- * used by both PerpsTabPage and PerpsHomePage.
+ * used by PerpsHomePage.
  */
 export class PerpsPositionsBase {
   protected readonly driver: Driver;
-
-  protected readonly accountOverviewPerpsTab = {
-    testId: 'account-overview__perps-tab',
-  };
 
   private readonly perpsPositionsSection = {
     testId: 'perps-positions-section',

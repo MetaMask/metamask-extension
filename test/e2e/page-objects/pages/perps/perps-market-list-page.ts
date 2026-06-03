@@ -68,7 +68,7 @@ export class PerpsMarketListPage {
 
   /**
    * Navigates to the Perps Market List by clicking the "Explore markets" row.
-   * Requires the Perps Home view to be visible (e.g. after navigateToPerpsHome()).
+   * Requires the Perps Home view to be visible (e.g. after selecting the Perps tab).
    * Dismisses any visible toast first so it does not intercept the click; then uses
    * clickElementUsingMouseMove for the row to avoid ElementClickInterceptedError.
    */
