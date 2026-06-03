@@ -73,7 +73,7 @@ describe('Send ETH - Advanced', function () {
           // Verify balance is displayed correctly (format: "X.XX ETH")
           await homePage.checkBalanceIsDisplayed();
 
-          await activityListPage.openActivityTab();
+          await activityListPage.goToActivityList();
           await activityListPage.checkConfirmedTxNumberDisplayedInActivity(1);
           await activityListPage.checkNoFailedTransactions();
         },
@@ -130,7 +130,7 @@ describe('Send ETH - Advanced', function () {
           );
 
           // Find the transaction in the transactions list
-          await activityListPage.openActivityTab();
+          await activityListPage.goToActivityList();
           await activityListPage.checkConfirmedTxNumberDisplayedInActivity(1);
           await activityListPage.checkTxAmountInActivity('-0 ETH');
 
@@ -190,7 +190,7 @@ describe('Send ETH - Advanced', function () {
           await homePage.checkBalanceIsDisplayed();
 
           // Find the transaction in the transactions list
-          await activityListPage.openActivityTab();
+          await activityListPage.goToActivityList();
           await activityListPage.checkConfirmedTxNumberDisplayedInActivity(1);
           await activityListPage.checkTxAction({
             action: 'Smart contract interaction',

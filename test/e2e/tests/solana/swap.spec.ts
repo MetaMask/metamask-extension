@@ -4,7 +4,7 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
 import NetworkManager from '../../page-objects/pages/network-manager';
-import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
@@ -494,7 +494,7 @@ describe('Swap on Solana', function () {
       async ({ driver }) => {
         await login(driver);
 
-        const homePage = new NonEvmHomepage(driver);
+        const homePage = new HomePage(driver);
         if (isUnifiedAssetsEnabled) {
           await homePage.waitForNonEvmAccountsLoaded();
         }
@@ -505,7 +505,8 @@ describe('Swap on Solana', function () {
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
-        await homePage.checkPageIsLoaded({ amount: '50' });
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('50');
 
         // Create swap
         const swapPage = new SwapPage(driver);
@@ -625,7 +626,7 @@ describe('Swap on Solana', function () {
       async ({ driver }) => {
         await login(driver);
 
-        const homePage = new NonEvmHomepage(driver);
+        const homePage = new HomePage(driver);
         if (isUnifiedAssetsEnabled) {
           await homePage.waitForNonEvmAccountsLoaded();
         }
@@ -636,7 +637,8 @@ describe('Swap on Solana', function () {
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
-        await homePage.checkPageIsLoaded({ amount: '50' });
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('50');
 
         // Create swap USDC → SOL
         const swapPage = new SwapPage(driver);
@@ -681,7 +683,7 @@ describe('Swap on Solana', function () {
       async ({ driver }) => {
         await login(driver);
 
-        const homePage = new NonEvmHomepage(driver);
+        const homePage = new HomePage(driver);
         if (isUnifiedAssetsEnabled) {
           await homePage.waitForNonEvmAccountsLoaded();
         }
@@ -692,7 +694,8 @@ describe('Swap on Solana', function () {
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
-        await homePage.checkPageIsLoaded({ amount: '50' });
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('50');
 
         // Create swap and verify no quotes message
         const swapPage = new SwapPage(driver);
@@ -723,7 +726,7 @@ describe('Swap on Solana', function () {
       async ({ driver }) => {
         await login(driver);
 
-        const homePage = new NonEvmHomepage(driver);
+        const homePage = new HomePage(driver);
         if (isUnifiedAssetsEnabled) {
           await homePage.waitForNonEvmAccountsLoaded();
         }
@@ -734,7 +737,8 @@ describe('Swap on Solana', function () {
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
-        await homePage.checkPageIsLoaded({ amount: '50' });
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('50');
 
         // Create swap SOL → USDC
         const swapPage = new SwapPage(driver);

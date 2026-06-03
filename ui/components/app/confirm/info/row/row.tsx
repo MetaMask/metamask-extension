@@ -102,7 +102,7 @@ export const ConfirmInfoRowContext = createContext({
   variant: ConfirmInfoRowVariant.Default,
 });
 
-export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
+export const ConfirmInfoRow = ({
   label,
   children,
   variant = ConfirmInfoRowVariant.Default,
@@ -119,7 +119,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
   tooltipIconColor,
   onClick,
   labelChildrenStyleOverride,
-}) => {
+}: ConfirmInfoRowProps) => {
   const { value: expanded, toggle } = useBoolean(!collapsed);
 
   const isCollapsible = collapsed !== undefined;
@@ -255,11 +255,11 @@ export type ConfirmInfoRowSkeletonProps = {
   rowVariant?: ConfirmInfoRowSize;
 };
 
-export const ConfirmInfoRowSkeleton: React.FC<ConfirmInfoRowSkeletonProps> = ({
+export const ConfirmInfoRowSkeleton = ({
   'data-testid': dataTestId,
   label,
   rowVariant = ConfirmInfoRowSize.Default,
-}) => {
+}: ConfirmInfoRowSkeletonProps) => {
   const isSmall = rowVariant === ConfirmInfoRowSize.Small;
 
   if (isSmall || !label) {

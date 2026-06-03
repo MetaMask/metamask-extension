@@ -1,14 +1,9 @@
 import { strict as assert } from 'assert';
-import { Driver } from '../../../webdriver/driver';
+import HomePage from './homepage';
 
-class ActivityListPage {
-  private readonly driver: Driver;
-
+class ActivityListPage extends HomePage {
   private readonly activityListAction =
     '[data-testid="activity-list-item-action"]';
-
-  private readonly activityTab =
-    '[data-testid="account-overview__activity-tab"]';
 
   private readonly baseFeeLabel = {
     xpath: "//div[contains(text(), 'Base fee')]",
@@ -62,32 +57,6 @@ class ActivityListPage {
     text: 'View on block explorer',
     tag: 'button',
   };
-
-  constructor(driver: Driver) {
-    this.driver = driver;
-  }
-
-  async openActivityTab(): Promise<void> {
-    console.log('Opening activity tab');
-    const isActivityTabSelected = async () => {
-      const activityTab = await this.driver.findElement(this.activityTab);
-      return (await activityTab.getAttribute('aria-selected')) === 'true';
-    };
-
-    if (await isActivityTabSelected()) {
-      return;
-    }
-
-    try {
-      await this.driver.clickElement(this.activityTab);
-    } catch (error) {
-      if (await isActivityTabSelected()) {
-        return;
-      }
-
-      throw error;
-    }
-  }
 
   /**
    * This function clicks on the activity at the specified index.
@@ -636,7 +605,7 @@ class ActivityListPage {
     swapTo: string;
     amount: string;
   }): Promise<void> {
-    await this.openActivityTab();
+    await this.goToActivityList();
     await this.driver.waitForSelector(this.completedTransactionItems);
 
     const swapLabel = `Swap ${options.swapFrom} to ${options.swapTo}`;
