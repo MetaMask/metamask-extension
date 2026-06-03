@@ -18,6 +18,13 @@ import {
   FontWeight,
   toast,
 } from '@metamask/design-system-react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import {
   FormTextField,
   FormTextFieldSize,
@@ -74,13 +81,6 @@ import { useBoolean } from '../../../hooks/useBoolean';
 import { SECOND } from '../../../../shared/constants/time';
 import PasskeyTroubleshootModal from '../passkey-troubleshoot-modal';
 import ChangePasswordWarning from './change-password-warning';
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
 
 const ChangePasswordSteps = {
   VerifyCurrentPassword: 1,
@@ -304,6 +304,7 @@ const ChangePassword = ({
       toast({
         severity: 'success',
         title: toastTitle,
+        hasNoTimeout: false,
       });
     } catch (error) {
       console.error(error);
@@ -311,6 +312,7 @@ const ChangePassword = ({
       toast({
         severity: 'danger',
         title: t('securityChangePasswordToastError'),
+        hasNoTimeout: false,
       });
     }
   };
