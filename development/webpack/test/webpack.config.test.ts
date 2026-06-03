@@ -20,6 +20,7 @@ import { ManifestPluginOptions } from '../utils/plugins/ManifestPlugin/types';
 import { version as packageVersion } from '../../../package.json';
 import { CHROME_MANIFEST_KEY_NON_PRODUCTION } from '../utils/constants';
 import { BUNDLE_SIZE_SUMMARY_FILE } from '../utils/plugins/ManifestPlugin/stats';
+import { DEFAULT_ZIP_MTIME } from '../utils/plugins/ManifestPlugin/zip-mtime';
 
 function getWebpackInstance(config: Configuration) {
   // webpack logs a warning if we pass config.watch to it without a callback
@@ -393,8 +394,6 @@ inquire('long');
         '--no-progress',
         '--no-cache',
         '--zip',
-        '--zip.mtime',
-        '315532800000',
         ...removeUnsupportedFeatures,
       ],
       {
@@ -443,7 +442,7 @@ inquire('long');
       manifestPlugin.options.zipOptions.outFilePath,
       `../builds/metamask-[browser]-${packageVersion}.zip`,
     );
-    assert.strictEqual(manifestPlugin.options.zipOptions.mtime, 315532800000);
+    assert.strictEqual(manifestPlugin.options.zipOptions.mtime, DEFAULT_ZIP_MTIME);
     assert.deepStrictEqual(manifestPlugin.options.transform, undefined);
     assert(manifestPlugin.options.stats, 'Stats options should be present');
     assert.strictEqual(
@@ -501,8 +500,10 @@ inquire('long');
     );
   });
 
-  it('uses the latest commit timestamp as the default zip mtime', () => {
-    const config: Configuration = getWebpackConfig(['--zip']);
+  it('uses SOURCE_DATE_EPOCH as the default zip mtime when set', () => {
+    const config: Configuration = getWebpackConfig(['--zip'], {
+      SOURCE_DATE_EPOCH: '1711141205',
+    });
     const instance = getWebpackInstance(config);
     const manifestPlugin = instance.options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'ManifestPlugin',
@@ -510,10 +511,7 @@ inquire('long');
 
     assert(manifestPlugin, 'Manifest plugin should be present');
     assert.strictEqual(manifestPlugin.options.zip, true);
-    assert.strictEqual(
-      manifestPlugin.options.zipOptions.mtime,
-      getLatestCommit().timestamp(),
-    );
+    assert.strictEqual(manifestPlugin.options.zipOptions.mtime, 1711141205000);
   });
 
   it('should include BundleAnalyzerPlugin when --bundleAnalyzer is passed', () => {

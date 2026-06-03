@@ -10,6 +10,10 @@ import {
 } from '../utils/plugins/ManifestPlugin/stats';
 import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
 import { createBrowserZipBuilder } from '../utils/plugins/ManifestPlugin/zip';
+import {
+  DEFAULT_ZIP_MTIME,
+  getDefaultZipMtime,
+} from '../utils/plugins/ManifestPlugin/zip-mtime';
 import { ZipOptions } from '../utils/plugins/ManifestPlugin/types';
 import { Manifest } from '../utils/helpers';
 import {
@@ -640,6 +644,39 @@ describe('ManifestPlugin', () => {
   });
 
   describe('zip helpers', () => {
+    it('uses a deterministic default zip mtime when SOURCE_DATE_EPOCH is unset', () => {
+      const originalSourceDateEpoch = process.env.SOURCE_DATE_EPOCH;
+      delete process.env.SOURCE_DATE_EPOCH;
+
+      try {
+        assert.strictEqual(getDefaultZipMtime(), DEFAULT_ZIP_MTIME);
+      } finally {
+        if (originalSourceDateEpoch === undefined) {
+          delete process.env.SOURCE_DATE_EPOCH;
+        } else {
+          process.env.SOURCE_DATE_EPOCH = originalSourceDateEpoch;
+        }
+      }
+
+      assert.strictEqual(getDefaultZipMtime(''), DEFAULT_ZIP_MTIME);
+    });
+
+    it('uses SOURCE_DATE_EPOCH as the default zip mtime', () => {
+      assert.strictEqual(getDefaultZipMtime('1711141205'), 1711141205000);
+    });
+
+    it('rejects invalid SOURCE_DATE_EPOCH values', () => {
+      assert.throws(() => getDefaultZipMtime('1711141205.825'), {
+        message: /Invalid SOURCE_DATE_EPOCH value/u,
+      });
+      assert.throws(() => getDefaultZipMtime('-1'), {
+        message: /Invalid SOURCE_DATE_EPOCH value/u,
+      });
+      assert.throws(() => getDefaultZipMtime('0'), {
+        message: /Invalid SOURCE_DATE_EPOCH value/u,
+      });
+    });
+
     it('skips excluded extensions when adding assets to a browser zip', async () => {
       const addedAssets: string[] = [];
       const builder = createBrowserZipBuilder({
