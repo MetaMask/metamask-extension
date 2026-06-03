@@ -67,14 +67,6 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
     setSelectedItem(item);
   };
 
-  if (isInitialLoading) {
-    return (
-      <Box className="p-4">
-        <Text>{t('loading')}</Text>
-      </Box>
-    );
-  }
-
   return (
     <PendingTransactionCancelSpeedUpProvider>
       {!filter && (
@@ -96,7 +88,13 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
         keyExtractor={getItemKey}
         itemRef={itemRef}
         listEmptyComponent={
-          <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
+          isInitialLoading ? (
+            <Box className="p-4">
+              <Text>{t('loading')}</Text>
+            </Box>
+          ) : (
+            <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
+          )
         }
         enableScrollMargin={Boolean(filter)}
         renderItem={({ item: row }) => {
