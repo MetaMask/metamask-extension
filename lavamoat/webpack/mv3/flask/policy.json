@@ -15,6 +15,69 @@
         "luxon": true
       }
     },
+    "@emotion/react>@emotion/cache": {
+      "globals": {
+        "document.head": true,
+        "document.querySelectorAll": true
+      },
+      "packages": {
+        "@emotion/react>@emotion/cache>@emotion/memoize": true,
+        "@emotion/react>@emotion/cache>@emotion/sheet": true,
+        "@emotion/react>@emotion/weak-memoize": true,
+        "@emotion/react>@emotion/cache>stylis": true
+      }
+    },
+    "@emotion/styled>@emotion/is-prop-valid": {
+      "packages": {
+        "@emotion/react>@emotion/cache>@emotion/memoize": true
+      }
+    },
+    "@emotion/react": {
+      "globals": {
+        "HTMLElement": true,
+        "document.querySelector": true
+      },
+      "packages": {
+        "@babel/runtime": true,
+        "@emotion/react>@emotion/cache": true,
+        "@emotion/react>@emotion/serialize": true,
+        "@emotion/react>@emotion/use-insertion-effect-with-fallbacks": true,
+        "@emotion/react>@emotion/utils": true,
+        "@emotion/react>@emotion/weak-memoize": true,
+        "react-redux>hoist-non-react-statics": true,
+        "react": true
+      }
+    },
+    "@emotion/react>@emotion/serialize": {
+      "packages": {
+        "@emotion/react>@emotion/serialize>@emotion/hash": true,
+        "@emotion/react>@emotion/cache>@emotion/memoize": true,
+        "@emotion/react>@emotion/serialize>@emotion/unitless": true
+      }
+    },
+    "@emotion/react>@emotion/cache>@emotion/sheet": {
+      "globals": {
+        "document.createElement": true,
+        "document.createTextNode": true,
+        "document.styleSheets": true
+      }
+    },
+    "@emotion/styled": {
+      "packages": {
+        "@babel/runtime": true,
+        "@emotion/styled>@emotion/is-prop-valid": true,
+        "@emotion/react": true,
+        "@emotion/react>@emotion/serialize": true,
+        "@emotion/react>@emotion/use-insertion-effect-with-fallbacks": true,
+        "@emotion/react>@emotion/utils": true,
+        "react": true
+      }
+    },
+    "@emotion/react>@emotion/use-insertion-effect-with-fallbacks": {
+      "packages": {
+        "react": true
+      }
+    },
     "@ethereumjs/tx>@ethereumjs/common": {
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
@@ -572,7 +635,6 @@
         "@material-ui/core>@material-ui/system": true,
         "@material-ui/core>@material-ui/utils": true,
         "@material-ui/core>clsx": true,
-        "@material-ui/core>popper.js": true,
         "prop-types": true,
         "react": true,
         "react-dom": true,
@@ -1478,6 +1540,88 @@
         "lodash": true,
         "@metamask/utils>pony-cause": true,
         "semver": true
+      }
+    },
+    "@mui/material": {
+      "globals": {
+        "CSS": true,
+        "DocumentFragment": true,
+        "ResizeObserver": true,
+        "addEventListener": true,
+        "cancelAnimationFrame": true,
+        "clearInterval": true,
+        "console.error": true,
+        "console.warn": true,
+        "document.activeElement": true,
+        "document.addEventListener": true,
+        "document.body": true,
+        "document.removeEventListener": true,
+        "getSelection": true,
+        "navigator": true,
+        "performance.now": true,
+        "removeEventListener": true,
+        "requestAnimationFrame": true,
+        "setInterval": true
+      },
+      "packages": {
+        "@babel/runtime": true,
+        "@mui/material>@mui/system": true,
+        "@mui/material>@mui/utils": true,
+        "@popperjs/core": true,
+        "clsx": true,
+        "prop-types": true,
+        "react": true,
+        "react-dom": true,
+        "@mui/material>react-is": true,
+        "react-transition-group": true
+      }
+    },
+    "@mui/material>@mui/system>@mui/styled-engine": {
+      "globals": {
+        "console.error": true,
+        "document": true
+      },
+      "packages": {
+        "@emotion/react>@emotion/cache": true,
+        "@emotion/react": true,
+        "@emotion/react>@emotion/serialize": true,
+        "@emotion/styled": true,
+        "prop-types": true,
+        "react": true
+      }
+    },
+    "@mui/material>@mui/system": {
+      "globals": {
+        "console.error": true,
+        "console.warn": true
+      },
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@mui/material>@mui/system>@mui/styled-engine' reexports from '@emotion/react' and webpack collapsed that to a direct import."
+        ]
+      },
+      "packages": {
+        "@babel/runtime": true,
+        "@emotion/react": true,
+        "@mui/material>@mui/system>@mui/styled-engine": true,
+        "@mui/material>@mui/utils": true,
+        "prop-types": true,
+        "react": true
+      }
+    },
+    "@mui/material>@mui/utils": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "document": true,
+        "innerWidth": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@babel/runtime": true,
+        "clsx": true,
+        "react": true,
+        "@mui/material>@mui/utils>react-is": true
       }
     },
     "@ngraveio/bc-ur": {
@@ -3750,22 +3894,6 @@
         "mockttp>express>safe-buffer": true,
         "@ngraveio/bc-ur>sha.js": true,
         "@ngraveio/bc-ur>sha.js>to-buffer": true
-      }
-    },
-    "@material-ui/core>popper.js": {
-      "globals": {
-        "MSInputMethodContext": true,
-        "Node.DOCUMENT_POSITION_FOLLOWING": true,
-        "cancelAnimationFrame": true,
-        "console.warn": true,
-        "devicePixelRatio": true,
-        "document": true,
-        "getComputedStyle": true,
-        "innerHeight": true,
-        "innerWidth": true,
-        "navigator": true,
-        "requestAnimationFrame": true,
-        "setTimeout": true
       }
     },
     "react-tippy>popper.js": {
