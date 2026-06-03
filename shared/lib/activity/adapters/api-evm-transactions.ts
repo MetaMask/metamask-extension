@@ -1,10 +1,15 @@
 import type { V1TransactionByHashResponse } from '@metamask/core-backend';
 import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
-import { zeroAddress } from 'viem';
+import { NATIVE_TOKEN_ADDRESS as zeroAddress } from '../../../constants/transaction';
 import { isEqualCaseInsensitive as equalsIgnoreCase } from '../../string-utils';
-import type { ActivityListItem, Status } from '../types';
+import type { ActivityListItem, Status, TokenAmount } from '../types';
 import { supplyMethodIds } from './constants';
-import { getTokenAmountFromTransfer } from './helpers';
+import {
+  getTokenMetadataFromKnownToken,
+  getTokenAmountFromTransfer,
+  withFallbackTokenAssetId,
+  type ValueTransfer,
+} from './helpers';
 
 // Converts indexed API transactions into the shared activity item shape
 export function mapApiEvmTransactions({
@@ -21,6 +26,10 @@ export function mapApiEvmTransactions({
     KnownCaipNamespace.Eip155,
     transaction.chainId.toString(),
   );
+  const getToken = (
+    transfer: ValueTransfer | undefined,
+    direction: TokenAmount['direction'],
+  ) => getTokenAmountFromTransfer(transfer, direction, chainId);
 
   const sentTransfer = valueTransfers?.find(({ from }) =>
     equalsIgnoreCase(from, subjectAddress),
@@ -42,9 +51,12 @@ export function mapApiEvmTransactions({
     ({ from, transferType }) =>
       equalsIgnoreCase(from, subjectAddress) && transferType === 'normal',
   );
+  const hasNativeTransferWithoutMethod =
+    transactionCategory === 'CONTRACT_CALL' &&
+    !transaction.methodId &&
+    valueTransfers?.some(({ transferType }) => transferType === 'normal');
   const hasSupplyMethodId =
     transaction.methodId && supplyMethodIds.has(transaction.methodId);
-
   if (transactionCategory === 'SWAP' || transactionCategory === 'EXCHANGE') {
     if (!receivedTransfer?.symbol) {
       return {
@@ -52,8 +64,9 @@ export function mapApiEvmTransactions({
         chainId,
         status,
         timestamp,
+        raw: { type: 'apiEvmTransaction', data: transaction },
         data: {
-          sourceToken: getTokenAmountFromTransfer(sentTransfer, 'out'),
+          sourceToken: getToken(sentTransfer, 'out'),
           hash,
         },
       };
@@ -64,9 +77,10 @@ export function mapApiEvmTransactions({
       chainId,
       status,
       timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
       data: {
-        sourceToken: getTokenAmountFromTransfer(sentTransfer, 'out'),
-        destinationToken: getTokenAmountFromTransfer(receivedTransfer, 'in'),
+        sourceToken: getToken(sentTransfer, 'out'),
+        destinationToken: getToken(receivedTransfer, 'in'),
         hash,
       },
     };
@@ -74,15 +88,21 @@ export function mapApiEvmTransactions({
 
   if (transactionCategory === 'APPROVE') {
     // TODO: Categorize REVOKE in the backend
+    const approveTransfer = sentTransfer ?? receivedTransfer;
+    const approveDirection = receivedTransfer && !sentTransfer ? 'in' : 'out';
+    const approveToken =
+      getToken(approveTransfer, approveDirection) ??
+      getTokenMetadataFromKnownToken(transaction.to, approveDirection, chainId);
 
     return {
       type: 'approveSpendingCap',
       chainId,
       status,
       timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
       data: {
         hash,
-        tokenSymbol: sentTransfer?.symbol ?? receivedTransfer?.symbol,
+        token: approveToken,
       },
     };
   }
@@ -96,11 +116,12 @@ export function mapApiEvmTransactions({
           chainId,
           status,
           timestamp,
+          raw: { type: 'apiEvmTransaction', data: transaction },
           data: {
             hash,
             from: receivedNftTransfer.from,
             to: receivedNftTransfer.to,
-            token: getTokenAmountFromTransfer(receivedNftTransfer, 'in'),
+            token: getToken(receivedNftTransfer, 'in'),
           },
         };
       }
@@ -111,9 +132,10 @@ export function mapApiEvmTransactions({
           chainId,
           status,
           timestamp,
+          raw: { type: 'apiEvmTransaction', data: transaction },
           data: {
             hash,
-            token: getTokenAmountFromTransfer(receivedNftTransfer, 'in'),
+            token: getToken(receivedNftTransfer, 'in'),
           },
         };
       }
@@ -123,11 +145,12 @@ export function mapApiEvmTransactions({
         chainId,
         status,
         timestamp,
+        raw: { type: 'apiEvmTransaction', data: transaction },
         data: {
           hash,
           from: receivedNftTransfer.from,
           to: receivedNftTransfer.to,
-          token: getTokenAmountFromTransfer(receivedNftTransfer, 'in'),
+          token: getToken(receivedNftTransfer, 'in'),
         },
       };
     }
@@ -138,11 +161,12 @@ export function mapApiEvmTransactions({
         chainId,
         status,
         timestamp,
+        raw: { type: 'apiEvmTransaction', data: transaction },
         data: {
           hash,
           from: sentNftTransfer.from,
           to: sentNftTransfer.to,
-          token: getTokenAmountFromTransfer(sentNftTransfer, 'out'),
+          token: getToken(sentNftTransfer, 'out'),
         },
       };
     }
@@ -150,7 +174,8 @@ export function mapApiEvmTransactions({
 
   if (
     transactionCategory === 'TRANSFER' ||
-    transactionCategory === 'STANDARD'
+    transactionCategory === 'STANDARD' ||
+    hasNativeTransferWithoutMethod
   ) {
     const isReceive =
       Boolean(receivedTransfer) ||
@@ -167,10 +192,16 @@ export function mapApiEvmTransactions({
       chainId,
       status,
       timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
       data: {
         from: transfer?.from ?? transaction.from,
         to: transfer?.to ?? transaction.to,
-        token: getTokenAmountFromTransfer(transfer, isReceive ? 'in' : 'out'),
+        token: withFallbackTokenAssetId(
+          getToken(transfer, isReceive ? 'in' : 'out'),
+          transaction.to,
+          transfer?.transferType,
+          chainId,
+        ),
         hash,
       },
     };
@@ -182,9 +213,10 @@ export function mapApiEvmTransactions({
       chainId,
       status,
       timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
       data: {
         hash,
-        token: getTokenAmountFromTransfer(receivedTransfer, 'in'),
+        token: getToken(receivedTransfer, 'in'),
       },
     };
   }
@@ -195,12 +227,42 @@ export function mapApiEvmTransactions({
       chainId,
       status,
       timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
       data: {
         hash,
-        token: getTokenAmountFromTransfer(
+        token: getToken(
           receivedTransfer ?? sentTransfer,
           receivedTransfer ? 'in' : 'out',
         ),
+      },
+    };
+  }
+
+  if (transactionCategory === 'WITHDRAW') {
+    return {
+      type: 'lendingWithdrawal',
+      chainId,
+      status,
+      timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
+      data: {
+        hash,
+        sourceToken: getToken(sentTransfer, 'out'),
+        destinationToken: getToken(receivedTransfer, 'in'),
+      },
+    };
+  }
+
+  if (transactionCategory === 'BRIDGE_WITHDRAW') {
+    return {
+      type: 'bridge',
+      chainId,
+      status,
+      timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
+      data: {
+        hash,
+        sourceToken: getToken(sentTransfer, 'out'),
       },
     };
   }
@@ -212,9 +274,11 @@ export function mapApiEvmTransactions({
       chainId,
       status,
       timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
       data: {
         hash,
-        token: getTokenAmountFromTransfer(sentTransfer, 'out'),
+        sourceToken: getToken(sentTransfer, 'out'),
+        destinationToken: getToken(receivedTransfer, 'in'),
       },
     };
   }
@@ -231,10 +295,59 @@ export function mapApiEvmTransactions({
       chainId,
       status,
       timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
       data: {
-        sourceToken: getTokenAmountFromTransfer(sentTransfer, 'out'),
-        destinationToken: getTokenAmountFromTransfer(receivedTransfer, 'in'),
+        sourceToken: getToken(sentTransfer, 'out'),
+        destinationToken: getToken(receivedTransfer, 'in'),
         hash,
+      },
+    };
+  }
+
+  // TODO: Not sure if this is specific enough, may need separate category in backend
+  if (
+    transactionCategory === 'DEPOSIT' &&
+    receivedTransfer &&
+    !hasSupplyMethodId
+  ) {
+    return {
+      type: 'wrap',
+      chainId,
+      status,
+      timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
+      data: {
+        hash,
+        sourceToken: getToken(sentTransfer, 'out'),
+        destinationToken: getToken(receivedTransfer, 'in'),
+      },
+    };
+  }
+  if (transactionCategory === 'UNWRAP') {
+    return {
+      type: 'unwrap',
+      chainId,
+      status,
+      timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
+      data: {
+        hash,
+        sourceToken: getToken(sentTransfer, 'out'),
+        destinationToken: getToken(receivedTransfer, 'in'),
+      },
+    };
+  }
+
+  if (transactionCategory === 'DEPOSIT') {
+    return {
+      type: 'deposit',
+      chainId,
+      status,
+      timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
+      data: {
+        hash,
+        token: getToken(sentTransfer, 'in'),
       },
     };
   }
@@ -244,6 +357,7 @@ export function mapApiEvmTransactions({
     chainId,
     status,
     timestamp,
+    raw: { type: 'apiEvmTransaction', data: transaction },
     data: {
       hash,
       methodId: transaction.methodId,
