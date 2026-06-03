@@ -82,9 +82,8 @@ class StartOnboardingPage {
   ): Promise<void> {
     await this.driver.clickElement(this.createWalletButton);
 
-    const socialLoginButton = this.getCreateWalletSocialLoginButton(
-      authConnection,
-    );
+    const socialLoginButton =
+      this.getCreateWalletSocialLoginButton(authConnection);
 
     await this.driver.waitForSelector(socialLoginButton);
     await this.driver.clickElement(socialLoginButton);
@@ -95,9 +94,8 @@ class StartOnboardingPage {
   ): Promise<void> {
     await this.driver.clickElement(this.importWalletButton);
 
-    const socialLoginButton = this.getImportWalletSocialLoginButton(
-      authConnection,
-    );
+    const socialLoginButton =
+      this.getImportWalletSocialLoginButton(authConnection);
 
     await this.driver.waitForSelector(socialLoginButton);
     await this.driver.clickElement(socialLoginButton);

@@ -17,6 +17,7 @@ import {
   ProfileSyncServer,
   SSSBaseUrlRgx,
   SSSNodeKeyPairs,
+  E2E_REDIRECT_URL,
 } from './constants';
 import {
   ToprfAuthenticateResponse,
@@ -634,7 +635,7 @@ export class OAuthMockttpService {
           return this.onPostProfileSyncOidcToken();
         }),
       await server
-        .forGet(/^https:\/\/mock-redirect-url\.com\/?/u)
+        .forGet(E2E_REDIRECT_URL)
         .always()
         .thenCallback(() => {
           return this.onGetTelegramRedirectPage();

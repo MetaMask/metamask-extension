@@ -14,9 +14,10 @@ export const AuthServer = {
     'https://auth-service.dev-api.cx.metamask.io/api/v1/oauth/marketing_opt_in_status',
 
   // Mint token from Profile Sync OIDC server to Auth Service
-  MintToken:
-    'https://auth-service.dev-api.cx.metamask.io/api/v1/oauth/mint',
+  MintToken: 'https://auth-service.dev-api.cx.metamask.io/api/v1/oauth/mint',
 };
+
+export const E2E_REDIRECT_URL = 'https://metamask.github.io/mock-redirect';
 
 export const ProfileSyncServer = {
   // Initiating Telegram login flow
@@ -27,7 +28,7 @@ export const ProfileSyncServer = {
 
   // Exchange the OIDC Access Token for the Verified Telegram Login Response
   OIDCToken: /\/oauth2\/token$/u,
-}
+};
 
 export const SSSBaseUrlRgx =
   /https:\/\/node-[1-5]\.dev-node\.web3auth\.io\/sss\/jrpc/u;
