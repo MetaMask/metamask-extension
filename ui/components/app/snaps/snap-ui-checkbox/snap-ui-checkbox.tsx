@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classnames from 'clsx';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import {
@@ -25,7 +25,7 @@ export type SnapUICheckboxProps = {
   disabled?: boolean;
 };
 
-export const SnapUICheckbox: FunctionComponent<SnapUICheckboxProps> = ({
+export const SnapUICheckbox = ({
   name,
   variant,
   fieldLabel,
@@ -34,7 +34,7 @@ export const SnapUICheckbox: FunctionComponent<SnapUICheckboxProps> = ({
   form,
   disabled,
   ...props
-}) => {
+}: SnapUICheckboxProps) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
 
   const initialValue = getValue(name, form) as boolean;
