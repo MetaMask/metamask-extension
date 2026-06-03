@@ -634,6 +634,7 @@
       "supportedNetworks": ["string"],
       "validSubmissionWindowDays": "number"
     },
+    "completedMetaMetricsOnboarding": "boolean",
     "completedOnboarding": "boolean",
     "connectedStatusPopoverHasBeenShown": "boolean",
     "connectivityStatus": "string",
@@ -1087,6 +1088,8 @@
     "metaMetricsDataDeletionId": "null",
     "metaMetricsDataDeletionTimestamp": "number",
     "metaMetricsId": "string",
+    "analyticsId": "string",
+    "optedIn": "boolean",
     "methodData": {},
     "minimumBalanceForRentExemptionInLamports": "string",
     "multichainNetworkConfigurationsByChainId": {
