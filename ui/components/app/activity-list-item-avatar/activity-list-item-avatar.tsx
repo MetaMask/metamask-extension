@@ -10,22 +10,21 @@ import { getAssetImageUrl } from '../../../../shared/lib/asset-utils';
 
 export type ActivityListItemAvatarTokens = readonly (string | undefined)[];
 
+const fallbackText = '?';
+
 const sanitizeTokens = (tokens: ActivityListItemAvatarTokens): string[] =>
   tokens.filter((token): token is string => Boolean(token));
 
 const getTokenAvatarData = (assetId: string) => {
   try {
-    const [chainId, assetTypeWithReference] = assetId.split('/');
-    const [, assetReference] = (assetTypeWithReference ?? '').split(':');
+    const [chainId] = assetId.split('/');
 
     if (!chainId) {
       throw new Error('Invalid asset id');
     }
 
-    const displayName = assetReference || 'Token';
-
     return {
-      name: displayName,
+      name: fallbackText,
       src: getAssetImageUrl(
         assetId as `${string}:${string}/${string}:${string}`,
         chainId as `${string}:${string}`,
@@ -33,7 +32,7 @@ const getTokenAvatarData = (assetId: string) => {
     };
   } catch {
     return {
-      name: 'Token',
+      name: fallbackText,
       src: undefined,
     };
   }
@@ -90,7 +89,7 @@ export const ActivityListItemAvatar = (
     return (
       <AvatarBase
         size={AvatarBaseSize.Md}
-        fallbackText="?"
+        fallbackText={fallbackText}
         data-testid="activity-list-item-avatar-fallback"
       />
     );
