@@ -89,7 +89,6 @@ import {
   getSubscriptionControllerInitMessenger,
   getSubscriptionControllerMessenger,
 } from './subscription';
-import { getConnectivityControllerMessenger } from './connectivity';
 import { getGatorPermissionsControllerMessenger } from './gator-permissions/gator-permissions-controller-messenger';
 import { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 import { getUserStorageControllerInitMessenger } from './identity/user-storage-controller-messenger';
@@ -165,7 +164,6 @@ import {
 import { getSubscriptionServiceMessenger } from './subscription/subscription-service-messenger';
 import { getAnnouncementControllerMessenger } from './announcement-controller-messenger';
 import { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
-import { getAccountsControllerMessenger } from './accounts-controller-messenger';
 import { getPhishingControllerMessenger } from './phishing-controller-messenger';
 import { getAlertControllerMessenger } from './alert-controller-messenger';
 import { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
@@ -213,7 +211,6 @@ export {
   getAccountTrackerControllerMessenger,
   getAccountTrackerControllerInitMessenger,
 } from './account-tracker-controller-messenger';
-export { getAccountsControllerMessenger } from './accounts-controller-messenger';
 export { getAddressBookControllerMessenger } from './address-book-controller-messenger';
 export { getAlertControllerMessenger } from './alert-controller-messenger';
 export { getAnnouncementControllerMessenger } from './announcement-controller-messenger';
@@ -348,10 +345,6 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getAccountTrackerControllerMessenger,
     getInitMessenger: getAccountTrackerControllerInitMessenger,
   },
-  AccountsController: {
-    getMessenger: getAccountsControllerMessenger,
-    getInitMessenger: noop,
-  },
   AddressBookController: {
     getMessenger: getAddressBookControllerMessenger,
     getInitMessenger: noop,
@@ -390,10 +383,6 @@ export const MESSENGER_FACTORIES = {
   },
   BridgeStatusController: {
     getMessenger: getBridgeStatusControllerMessenger,
-    getInitMessenger: noop,
-  },
-  ConnectivityController: {
-    getMessenger: getConnectivityControllerMessenger,
     getInitMessenger: noop,
   },
   ClaimsController: {
