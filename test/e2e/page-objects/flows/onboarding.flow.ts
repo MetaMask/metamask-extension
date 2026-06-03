@@ -1,5 +1,4 @@
 import { Browser } from 'selenium-webdriver';
-import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { Driver } from '../../webdriver/driver';
 import OnboardingMetricsPage from '../pages/onboarding/onboarding-metrics-page';
 import OnboardingPasswordPage from '../pages/onboarding/onboarding-password-page';
@@ -14,6 +13,7 @@ import HeaderNavbar from '../pages/header-navbar';
 import HomePage from '../pages/home/homepage';
 import LoginPage from '../pages/login-page';
 import TermsOfUseUpdateModal from '../pages/dialog/terms-of-use-update-modal';
+import { AuthConnection } from '../../../../shared/constants/onboarding';
 
 /**
  * Helper function to handle post-onboarding navigation for sidepanel builds.
@@ -141,7 +141,19 @@ export const createNewWalletWithSocialLoginOnboardingFlow = async ({
     dataCollectionForMarketing,
   });
 
+  const originalWindowHandle = await driver.getCurrentWindowHandle();
+  const originalWindowHandles = await driver.getAllWindowHandles();
+
   await startOnboardingPage.createWalletWithSocialLogin(authConnection);
+
+  if (authConnection === AuthConnection.Telegram) {
+    await recoverFromTelegramAuthTab({
+      driver,
+      originalWindowHandle,
+      originalWindowCount: originalWindowHandles.length,
+    });
+  }
+
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
   await onboardingPasswordPage.checkPageIsLoaded();
 
@@ -184,7 +196,18 @@ export const importWalletWithSocialLoginOnboardingFlow = async ({
     dataCollectionForMarketing,
   });
 
+  const originalWindowHandle = await driver.getCurrentWindowHandle();
+  const originalWindowHandles = await driver.getAllWindowHandles();
+
   await startOnboardingPage.importWalletWithSocialLogin(authConnection);
+
+  if (authConnection === AuthConnection.Telegram) {
+    await recoverFromTelegramAuthTab({
+      driver,
+      originalWindowHandle,
+      originalWindowCount: originalWindowHandles.length,
+    });
+  }
 
   const loginPage = new LoginPage(driver);
   await loginPage.checkPageIsLoaded();
@@ -197,6 +220,32 @@ export const importWalletWithSocialLoginOnboardingFlow = async ({
   //   });
   // }
 };
+
+async function recoverFromTelegramAuthTab({
+  driver,
+  originalWindowHandle,
+  originalWindowCount,
+}: {
+  driver: Driver;
+  originalWindowHandle: string;
+  originalWindowCount: number;
+}): Promise<void> {
+  try {
+    await driver.waitUntilXWindowHandles(originalWindowCount + 1, 500, 10_000);
+  } catch {
+    // The auth tab can open and close quickly, so continue to restore focus.
+  }
+
+  await driver.switchToWindow(originalWindowHandle);
+
+  try {
+    await driver.waitUntilXWindowHandles(originalWindowCount, 500, 10_000);
+  } catch {
+    // If the auth tab is still closing, keeping focus on the extension tab is enough.
+  }
+
+  await driver.switchToWindow(originalWindowHandle);
+}
 
 /**
  * Create new wallet onboarding flow

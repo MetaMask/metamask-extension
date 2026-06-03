@@ -1,3 +1,5 @@
+import browser from 'webextension-polyfill';
+
 /**
  * Mock the WebAuthenticator object for the Seedless Onboarding flow e2e tests.
  *
@@ -8,6 +10,8 @@ export function mockWebAuthenticator() {
   const state = JSON.stringify({
     nonce,
   });
+  const redirectUrl = browser.runtime.getURL('home.html');
+
   return {
     generateNonce: () => nonce,
     launchWebAuthFlow: (
@@ -15,9 +19,7 @@ export function mockWebAuthenticator() {
       callback?: (url: string) => void,
     ) => {
       return Promise.resolve(
-        callback?.(
-          `https://mock-redirect-url.com?nonce=${nonce}&state=${state}&code=mock-code`,
-        ),
+        callback?.(`${redirectUrl}?nonce=${nonce}&state=${state}&code=mock-code`),
       );
     },
     generateCodeVerifierAndChallenge: () =>
@@ -25,6 +27,6 @@ export function mockWebAuthenticator() {
         codeVerifier: 'mock-code-verifier',
         challenge: 'mock-challenge',
       }),
-    getRedirectURL: () => 'https://mock-redirect-url.com',
+    getRedirectURL: () => redirectUrl,
   };
 }
