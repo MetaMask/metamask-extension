@@ -800,6 +800,34 @@ describe('MetaMetricsController', function () {
       );
     });
 
+    it('does not track normal events after participation is reset to null even if AnalyticsController is still opted in', async function () {
+      await withController(
+        {
+          options: {
+            state: { completedMetaMetricsOnboarding: true },
+          },
+          analyticsControllerState: { optedIn: true },
+        },
+        async ({ controller }) => {
+          // Resetting to null clears the onboarding decision but intentionally
+          // leaves AnalyticsController opted in (queue is preserved).
+          await controller.setParticipateInMetaMetrics(null);
+
+          const spy = jest.spyOn(segmentMock, 'track');
+          controller.trackEvent({
+            event: 'Fake Event',
+            category: 'Unit Test',
+            properties: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              chain_id: '1',
+            },
+          });
+          expect(spy).not.toHaveBeenCalled();
+        },
+      );
+    });
+
     it('should track a legacy event', async function () {
       await withController(({ controller }) => {
         const spy = jest.spyOn(segmentMock, 'track');
