@@ -1,52 +1,47 @@
-import React, { FunctionComponent, MouseEvent as ReactMouseEvent } from 'react';
-import {
-  ButtonType,
-  ButtonVariant,
-  UserInputEventType,
-} from '@metamask/snaps-sdk';
+import React, { MouseEvent as ReactMouseEvent } from 'react';
+import { ButtonType, UserInputEventType } from '@metamask/snaps-sdk';
 import type { ButtonProps as SnapButtonProps } from '@metamask/snaps-sdk/jsx';
 import { useSelector } from 'react-redux';
 import classnames from 'clsx';
 import {
   Button,
-  ButtonProps,
   ButtonSize,
+  ButtonVariant,
   Icon,
   IconName,
   IconSize,
-} from '../../../component-library';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-} from '../../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
+import type { ButtonProps } from '@metamask/design-system-react';
+import { TextVariant } from '../../../../helpers/constants/design-system';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import { SnapIcon } from '../snap-icon';
 import { getHideSnapBranding } from '../../../../selectors';
 
 type SnapUIFooterButtonProps = {
   name?: string;
+  loading?: boolean;
   variant?: ButtonVariant;
   snapVariant?: SnapButtonProps['variant'];
   isSnapAction?: boolean;
   onCancel?: () => void;
 };
 
-export const SnapUIFooterButton: FunctionComponent<
-  SnapUIFooterButtonProps & ButtonProps<'button'>
-> = ({
+export const SnapUIFooterButton = ({
   onCancel,
   name,
   children,
   disabled = false,
   loading = false,
   isSnapAction = false,
-  type,
+  type = ButtonType.Button,
   variant = ButtonVariant.Primary,
   snapVariant,
   form,
+  textVariant,
   ...props
-}) => {
+}: React.PropsWithChildren<
+  SnapUIFooterButtonProps & ButtonProps & { textVariant?: TextVariant }
+>) => {
   const { handleEvent, snapId } = useSnapInterfaceContext();
   const hideSnapBranding = useSelector((state) =>
     getHideSnapBranding(state, snapId),
@@ -75,24 +70,25 @@ export const SnapUIFooterButton: FunctionComponent<
     <Button
       className={classnames('snap-ui-renderer__footer-button', {
         'snap-ui-renderer__footer-button--disabled': disabled,
+        'snap-ui-renderer__footer-button--primary':
+          buttonVariant === ButtonVariant.Primary,
+        'snap-ui-renderer__footer-button--secondary':
+          buttonVariant === ButtonVariant.Secondary,
+        'snap-ui-renderer__footer-button--danger':
+          snapVariant === 'destructive',
         'hide-snap-branding': hideSnapBranding,
       })}
       type={type}
       form={form}
       {...props}
       size={ButtonSize.Lg}
-      block
+      isFullWidth
       disabled={disabled}
       variant={buttonVariant}
       onClick={handleClick}
-      textProps={{
-        display: Display.Flex,
-        alignItems: AlignItems.center,
-        flexDirection: FlexDirection.Row,
-      }}
       data-testid={`${name}-snap-footer-button`}
       data-theme={null}
-      danger={snapVariant === 'destructive'}
+      isDanger={snapVariant === 'destructive'}
     >
       {isSnapAction && !hideSnapBranding && !loading && (
         <SnapIcon snapId={snapId} avatarSize={IconSize.Sm} marginRight={2} />
