@@ -450,8 +450,11 @@ describe('PrepareBridgePage', () => {
     setBackgroundConnection({
       'BridgeController:resetState': jest.fn().mockResolvedValue(undefined),
       getStatePatches: jest.fn().mockResolvedValue([]),
-      'BridgeController:updateBridgeQuoteRequestParams': updateBridgeQuoteRequestParams,
-      'BridgeController:trackUnifiedSwapBridgeEvent': jest.fn().mockResolvedValue(undefined),
+      'BridgeController:updateBridgeQuoteRequestParams':
+        updateBridgeQuoteRequestParams,
+      'BridgeController:trackUnifiedSwapBridgeEvent': jest
+        .fn()
+        .mockResolvedValue(undefined),
     } as never);
 
     const btcAsset = getNativeAssetForChainId(ChainId.BTC);
