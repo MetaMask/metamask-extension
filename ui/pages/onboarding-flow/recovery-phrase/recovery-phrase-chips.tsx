@@ -97,7 +97,7 @@ export default function RecoveryPhraseChips({
   );
 
   const addQuizWord = useCallback(
-    (word, actualIndexInSrp) => {
+    (word: string, actualIndexInSrp: number) => {
       const newQuizAnswers = [...quizAnswers];
       const targetIndex = newQuizAnswers.findIndex(
         (answer) => answer.index === indexToFocus,
@@ -114,7 +114,7 @@ export default function RecoveryPhraseChips({
   );
 
   const removeQuizWord = useCallback(
-    (answerWord) => {
+    (answerWord: string) => {
       const newQuizAnswers = [...quizAnswers];
       const targetIndex = newQuizAnswers.findIndex(
         (answer) => answer.word === answerWord,
