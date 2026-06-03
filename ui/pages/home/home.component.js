@@ -42,6 +42,7 @@ import {
   Modal,
   ModalBody,
   ModalContent,
+  ModalContentSize,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
@@ -64,6 +65,7 @@ import PasswordOutdatedModal from '../../components/app/password-outdated-modal'
 import ShieldEntryModal from '../../components/app/shield-entry-modal';
 import RewardsModal from '../../components/app/rewards/onboarding/RewardsModal';
 import { Pna25Modal } from '../../components/app/modals/pna25-modal';
+import { DeeplinkQRCode } from '../../components/app/deeplink-qr-code';
 import { isBeta, isFlask, isMain } from '../../../shared/lib/build-types';
 import BetaAndFlaskHomeFooter from './beta-and-flask-home-footer.component';
 import { HomeDeepLinkActions } from './HomeDeepLinkActions';
@@ -169,6 +171,7 @@ export default class Home extends PureComponent {
 
   state = {
     canShowBlockageNotification: true,
+    deepLinkQrCode: null,
     notificationClosing: false,
     shouldEvaluateCohortEligibility: true,
   };
@@ -423,6 +426,14 @@ export default class Home extends PureComponent {
   onOutdatedBrowserWarningClose = () => {
     const { setOutdatedBrowserWarningLastShown } = this.props;
     setOutdatedBrowserWarningLastShown(new Date().getTime());
+  };
+
+  showDeepLinkQrCode = (deepLinkQrCode) => {
+    this.setState({ deepLinkQrCode });
+  };
+
+  hideDeepLinkQrCode = () => {
+    this.setState({ deepLinkQrCode: null });
   };
 
   renderNotifications() {
@@ -800,6 +811,8 @@ export default class Home extends PureComponent {
   };
 
   render() {
+    const { t } = this.context;
+    const { deepLinkQrCode } = this.state;
     const {
       useExternalServices,
       setBasicFunctionalityModalOpen,
@@ -860,7 +873,18 @@ export default class Home extends PureComponent {
       !displayUpdateModal &&
       !isSeedlessPasswordOutdated &&
       !showShieldEntryModal &&
-      !showRecoveryPhrase;
+      !showRecoveryPhrase &&
+      !deepLinkQrCode;
+
+    const showDeepLinkQrCodeModal =
+      canSeeModals &&
+      !showTermsOfUse &&
+      !showMultiRpcEditModal &&
+      !displayUpdateModal &&
+      !isSeedlessPasswordOutdated &&
+      !showShieldEntryModal &&
+      !showRecoveryPhrase &&
+      Boolean(deepLinkQrCode);
 
     const showPna25ModalComponent =
       showPna25Modal &&
@@ -871,7 +895,8 @@ export default class Home extends PureComponent {
       !isSeedlessPasswordOutdated &&
       !showShieldEntryModal &&
       !showRecoveryPhrase &&
-      !rewardsModalOpen;
+      !rewardsModalOpen &&
+      !deepLinkQrCode;
 
     const { location } = this.props;
 
@@ -913,6 +938,49 @@ export default class Home extends PureComponent {
           ) : null}
           {showShieldEntryModal && <ShieldEntryModal />}
           {showRewardsModal && <RewardsModal />}
+          {showDeepLinkQrCodeModal ? (
+            <Modal
+              data-testid="deeplink-qrcode-modal"
+              isOpen={true}
+              onClose={this.hideDeepLinkQrCode}
+            >
+              <ModalOverlay />
+              <ModalContent
+                alignItems={AlignItems.center}
+                justifyContent={JustifyContent.center}
+                size={ModalContentSize.Md}
+                modalDialogProps={{
+                  paddingTop: 0,
+                  paddingBottom: 0,
+                  style: {
+                    height: 'auto',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  },
+                }}
+              >
+                <ModalHeader
+                  closeButtonProps={{
+                    className: 'absolute z-10',
+                    style: {
+                      top: '24px',
+                      right: '12px',
+                    },
+                  }}
+                  paddingBottom={0}
+                  onClose={this.hideDeepLinkQrCode}
+                />
+                <DeeplinkQRCode
+                  title={t(deepLinkQrCode.titleKey)}
+                  description={t(deepLinkQrCode.descriptionKey)}
+                  data={deepLinkQrCode.deeplinkUrl}
+                  onDone={this.hideDeepLinkQrCode}
+                  doneLabel={t('done')}
+                  testId="deeplink-qrcode-container"
+                />
+              </ModalContent>
+            </Modal>
+          ) : null}
           {showPna25ModalComponent && <Pna25Modal />}
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()
@@ -933,7 +1001,7 @@ export default class Home extends PureComponent {
         </div>
 
         {/* Ghost component that manages the useHomeDeepLinkEffects */}
-        <HomeDeepLinkActions />
+        <HomeDeepLinkActions onQrCodeDeepLink={this.showDeepLinkQrCode} />
       </ScrollContainer>
     );
   }
