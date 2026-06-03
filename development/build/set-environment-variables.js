@@ -107,9 +107,9 @@ function setEnvironmentVariables({
       : variables.getMaybe('METAMASK_SHIELD_ENABLED'),
     TELEGRAM_LOGIN_ENABLED,
     PERPS_ENABLED: isTestBuild ? 'true' : variables.getMaybe('PERPS_ENABLED'),
-    ASSETS_UNIFIED_STATE_ENABLED: isTestBuild
-      ? 'false'
-      : variables.getMaybe('ASSETS_UNIFIED_STATE_ENABLED') || 'false',
+    ASSETS_UNIFIED_STATE_ENABLED: variables.getMaybe(
+      'ASSETS_UNIFIED_STATE_ENABLED',
+    ),
     GOOGLE_CLIENT_ID,
     APPLE_CLIENT_ID,
     TELEGRAM_CLIENT_ID,
