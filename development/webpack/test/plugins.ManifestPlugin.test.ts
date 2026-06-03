@@ -657,8 +657,6 @@ describe('ManifestPlugin', () => {
           process.env.SOURCE_DATE_EPOCH = originalSourceDateEpoch;
         }
       }
-
-      assert.strictEqual(getDefaultZipMtime(''), DEFAULT_ZIP_MTIME);
     });
 
     it('uses SOURCE_DATE_EPOCH as the default zip mtime', () => {
@@ -670,6 +668,9 @@ describe('ManifestPlugin', () => {
         message: /Invalid SOURCE_DATE_EPOCH value/u,
       });
       assert.throws(() => getDefaultZipMtime('-1'), {
+        message: /Invalid SOURCE_DATE_EPOCH value/u,
+      });
+      assert.throws(() => getDefaultZipMtime(''), {
         message: /Invalid SOURCE_DATE_EPOCH value/u,
       });
       assert.throws(() => getDefaultZipMtime('0'), {

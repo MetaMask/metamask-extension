@@ -6,9 +6,7 @@ export const ZIP_MTIME_MINIMUM = Date.UTC(1980, 0, 1);
 export const ZIP_MTIME_EXCLUSIVE_MAXIMUM = Date.UTC(2100, 0, 1);
 
 /**
- * MetaMask's birthday. This mirrors the legacy Browserify zip task and keeps
- * zip output reproducible when SOURCE_DATE_EPOCH is not set. Use local time to
- * match the existing gulp-zip configuration.
+ * MetaMask's birthday.
  */
 export const DEFAULT_ZIP_MTIME = new Date(2016, 6, 14).getTime();
 
@@ -76,16 +74,17 @@ export function validateZipMtime(
 export function getDefaultZipMtime(
   sourceDateEpoch = process.env.SOURCE_DATE_EPOCH,
 ): number {
-  if (sourceDateEpoch === undefined || sourceDateEpoch === '') {
+  if (sourceDateEpoch === undefined) {
     return DEFAULT_ZIP_MTIME;
   }
 
-  if (!/^\d+$/u.test(sourceDateEpoch)) {
+  const epoch = Number(sourceDateEpoch);
+  if (!Number.isInteger(epoch)) {
     throw new Error(
       `Invalid SOURCE_DATE_EPOCH value "${sourceDateEpoch}": expected a non-negative integer number of seconds since the Unix epoch`,
     );
   }
 
-  const mtime = Number(sourceDateEpoch) * 1000;
+  const mtime = epoch * 1000;
   return validateZipMtime(mtime, 'SOURCE_DATE_EPOCH');
 }
