@@ -158,7 +158,9 @@
     "feature-flags:sync:check": "tsx test/e2e/feature-flags/sync-production-flags.ts --check",
     "feature-flags:sync:update": "tsx test/e2e/feature-flags/sync-production-flags.ts --update",
     "yarn-binary:download": "corepack pack -o .yarn/yarn-corepack.tgz",
-    "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
+    "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate",
+    "docs:platform-api:build": "platform-api-docs --build --project-label Extension",
+    "docs:platform-api:serve": "platform-api-docs --serve --project-label Extension --site-base-url /"
   },
   "resolutions": {
     "@metamask/bridge-controller": "73.2.0",
@@ -294,7 +296,6 @@
     "prismjs@npm:~1.27.0": "^1.30.0",
     "nanoid@npm:3.3.3": "^3.3.11",
     "protobufjs": "^7.5.8",
-    "postcss-loader/jiti": "npm:npm-empty-package@1.0.0",
     "@metamask/snaps-controllers": "^20.0.5",
     "@metamask/permission-controller@npm:^12.2.0": "^13.0.0",
     "@metamask/permission-controller@npm:^12.2.1": "^13.0.0",
@@ -575,6 +576,7 @@
     "@metamask/foundryup": "^1.0.1",
     "@metamask/messenger-cli": "^0.1.0",
     "@metamask/phishing-warning": "^5.1.0",
+    "@metamask/platform-api-docs": "npm:@metamask-previews/platform-api-docs@0.0.0-preview-34aa73a7b",
     "@metamask/preferences-controller": "^23.0.0",
     "@metamask/snap-account-abstraction-keyring-site": "^1.0.0",
     "@metamask/snap-simple-keyring-site": "^2.1.1",
@@ -850,7 +852,8 @@
       "react-devtools>electron#23.3.0": true,
       "sharp#0.34.2": true,
       "tsx>esbuild#0.27.7": true,
-      "ethereumjs-util>ethereum-cryptography>secp256k1#4.0.4": false
+      "ethereumjs-util>ethereum-cryptography>secp256k1#4.0.4": false,
+      "@metamask/platform-api-docs>@docusaurus/core>core-js#3.49.0": false
     }
   },
   "packageManager": "yarn@4.14.1",
