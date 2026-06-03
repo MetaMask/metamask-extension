@@ -20,7 +20,6 @@ import {
   getApprovalFlows,
   getNewTokensImportedError,
   hasPendingApprovals,
-  getSelectedInternalAccount,
   getEditedNetwork,
   getShowUpdateModal,
   getIsSocialLoginFlow,
@@ -30,6 +29,7 @@ import {
   getLastVisitedPerpsRoute,
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/lib/selectors/networks';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import {
   attemptCloseNotificationPopup,
   setConnectedStatusPopoverHasBeenShown,
@@ -59,13 +59,10 @@ import {
 import { fetchBuyableChains } from '../../ducks/ramps';
 import {
   selectRewardsEnabled,
-  selectRewardsOnboardingEnabled,
-  selectOnboardingModalOpen,
+  selectRewardsModalOpen,
 } from '../../ducks/rewards/selectors';
 import { selectShowPna25Modal } from '../../components/app/toast-master/selectors';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { getIsBrowserDeprecated } from '../../helpers/utils/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -168,8 +165,7 @@ const mapStateToProps = (state) => {
     pendingShieldCohort: getPendingShieldCohort(state),
     isSignedIn: state.metamask.isSignedIn,
     rewardsEnabled: selectRewardsEnabled(state),
-    rewardsOnboardingEnabled: selectRewardsOnboardingEnabled(state),
-    rewardsOnboardingModalOpen: selectOnboardingModalOpen(state),
+    rewardsModalOpen: selectRewardsModalOpen(state),
     showPna25Modal: selectShowPna25Modal(state),
     pendingRedirectRoute: getPendingRedirectRoute(state),
     lastVisitedPerpsRoute: getLastVisitedPerpsRoute(state),

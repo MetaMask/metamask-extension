@@ -1,12 +1,10 @@
-import { Driver } from '../../../webdriver/driver';
+import HomePage from '../home/homepage';
 
 /**
  * Base class with shared position-related selectors and methods
- * used by both PerpsTabPage and PerpsHomePage.
+ * used by PerpsHomePage.
  */
-export class PerpsPositionsBase {
-  protected readonly driver: Driver;
-
+export class PerpsPositionsBase extends HomePage {
   protected readonly accountOverviewPerpsTab = {
     testId: 'account-overview__perps-tab',
   };
@@ -15,8 +13,13 @@ export class PerpsPositionsBase {
     testId: 'perps-positions-section',
   };
 
-  constructor(driver: Driver) {
-    this.driver = driver;
+  /**
+   * Clicks the position card for the given symbol (navigates to market detail).
+   *
+   * @param symbol - The trading pair symbol (e.g. 'ETH', 'BTC').
+   */
+  async clickPositionCard(symbol: string): Promise<void> {
+    await this.driver.clickElement({ testId: `position-card-${symbol}` });
   }
 
   /**
@@ -28,6 +31,37 @@ export class PerpsPositionsBase {
     await this.driver.waitForSelector({
       testId: `position-card-${symbol}`,
     });
+  }
+
+  /**
+   * Waits until the position card for `symbol` contains the given text fragment
+   * (e.g. size row "2.25 ETH" or leverage/direction "3x short").
+   *
+   * @param symbol - Asset symbol (e.g. 'ETH', 'BTC').
+   * @param textFragment - Substring that must appear in the card text.
+   */
+  async waitForPositionCardContains(
+    symbol: string,
+    textFragment: string,
+  ): Promise<void> {
+    await this.driver.waitForSelector({
+      testId: `position-card-${symbol}`,
+      text: textFragment,
+    });
+  }
+
+  /**
+   * Waits until the position card for `symbol` shows the given size line
+   * (e.g. "2.25 ETH" on the Perps home positions list).
+   *
+   * @param symbol - Asset symbol (e.g. 'ETH').
+   * @param sizeLabel - Size row text as shown on the card (e.g. '2.25 ETH').
+   */
+  async waitForPositionCardSize(
+    symbol: string,
+    sizeLabel: string,
+  ): Promise<void> {
+    await this.waitForPositionCardContains(symbol, sizeLabel);
   }
 
   /**

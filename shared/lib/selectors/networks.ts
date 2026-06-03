@@ -69,6 +69,30 @@ export const getNetworkConfigurationsByChainId = (
   state: NetworkConfigurationsByChainIdState,
 ) => state.metamask.networkConfigurationsByChainId;
 
+// Routed through `getNetworkConfigurationsByChainId` (rather than reading
+// `state` directly) so jest mocks of that selector flow through to consumers
+// of these selectors.
+export const selectNetworkConfigurationByChainId = createSelector(
+  [
+    (state: NetworkConfigurationsByChainIdState) =>
+      getNetworkConfigurationsByChainId(state),
+    (_state: NetworkConfigurationsByChainIdState, chainId: string) => chainId,
+  ],
+  (networkConfigurationsByChainId, chainId) =>
+    networkConfigurationsByChainId[chainId as Hex],
+);
+
+export const selectDefaultRpcEndpointByChainId = createSelector(
+  selectNetworkConfigurationByChainId,
+  (networkConfiguration) => {
+    if (!networkConfiguration) {
+      return undefined;
+    }
+    const { defaultRpcEndpointIndex, rpcEndpoints } = networkConfiguration;
+    return rpcEndpoints[defaultRpcEndpointIndex];
+  },
+);
+
 export const selectDefaultNetworkClientIdsByChainId = createSelector(
   getNetworkConfigurationsByChainId,
   (networkConfigurationsByChainId) => {
@@ -91,6 +115,29 @@ export function getSelectedNetworkClientId(
   state: SelectedNetworkClientIdState,
 ) {
   return state.metamask.selectedNetworkClientId;
+}
+
+/**
+ * Returns the hex chainId for a given networkClientId by searching through
+ * all network configurations. Returns an empty string if no match is found.
+ *
+ * @param state - Redux state containing networkConfigurationsByChainId.
+ * @param networkClientId - The network client ID to look up.
+ * @returns The hex chainId string, or '' if not found.
+ */
+export function getChainIdByNetworkClientId(
+  state: NetworkConfigurationsByChainIdState,
+  networkClientId: string,
+): string {
+  const networkConfigs = getNetworkConfigurationsByChainId(state);
+  for (const [chainId, network] of Object.entries(networkConfigs ?? {})) {
+    for (const rpcEndpoint of network.rpcEndpoints ?? []) {
+      if (rpcEndpoint.networkClientId === networkClientId) {
+        return chainId;
+      }
+    }
+  }
+  return '';
 }
 
 /**

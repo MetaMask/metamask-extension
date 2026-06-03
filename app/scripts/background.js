@@ -58,7 +58,7 @@ import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
-import { getDeferredDeepLinkFromCookie } from '../../shared/lib/deep-links/utils';
+import { getInstallAttribution } from '../../shared/lib/install-attribution';
 import {
   backedUpStateKeys,
   hasVault,
@@ -115,6 +115,7 @@ import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
 import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
 import { getIframeProperties } from './lib/getIframeProperties';
+import { BLOCKED_HOSTNAMES, BLOCKED_PORTS } from './constants/background';
 
 /**
  * @typedef {import('../../shared/lib/stores/persistence-manager').Backup} Backup
@@ -184,8 +185,6 @@ const metamaskInternalProcessHash = {
   [ENVIRONMENT_TYPE_NOTIFICATION]: true,
   [ENVIRONMENT_TYPE_FULLSCREEN]: true,
 };
-
-const metamaskBlockedPorts = ['trezor-connect'];
 
 log.setLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info', false);
 
@@ -863,24 +862,6 @@ async function initialize(backup) {
     await browser.storage.session.set({ isFirstMetaMaskControllerSetup });
   }
 
-  const overrides = inTest
-    ? {
-        keyrings: {
-          // Use `require` to make it easier to exclude this test code from the Browserify build.
-          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
-          trezorBridge: require('../../test/stub/keyring-bridge')
-            .FakeTrezorBridge,
-          // Use `require` to make it easier to exclude this test code from the Browserify build.
-          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
-          ledgerBridge: require('../../test/stub/keyring-bridge')
-            .FakeLedgerBridge,
-          // Use `require` to make it easier to exclude this test code from the Browserify build.
-          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
-          qrBridge: require('../../test/stub/keyring-bridge').FakeQrBridge,
-        },
-      }
-    : {};
-
   const preinstalledSnaps = await loadPreinstalledSnaps();
   const cronjobControllerStorageManager = new CronjobControllerStorageManager();
   await cronjobControllerStorageManager.init();
@@ -888,7 +869,6 @@ async function initialize(backup) {
   setupController(
     initState,
     initLangCode,
-    overrides,
     isFirstMetaMaskControllerSetup,
     initData.meta,
     offscreenPromise,
@@ -1205,6 +1185,25 @@ export async function loadStateFromPersistence(backup) {
       `MetaMask - migrator data has invalid type '${typeof versionedData.data}'`,
     );
   }
+
+  // `yarn start:with-state` builds a local fixture wallet via WITH_STATE.
+  // Account/contact sync can otherwise pull remote user-storage for the same
+  // SRP and replace the generated local state. Applying this after migration
+  // covers both fresh fixture state and existing persisted state before
+  // controllers initialize; marking the key changed ensures split-state
+  // persistence writes the override.
+  if (
+    process.env.WITH_STATE &&
+    isObject(versionedData.data.UserStorageController)
+  ) {
+    versionedData.data.UserStorageController.isBackupAndSyncEnabled = false;
+    versionedData.data.UserStorageController.isAccountSyncingEnabled = false;
+    versionedData.data.UserStorageController.isContactSyncingEnabled = false;
+    if (!changedKeys.has('UserStorageController')) {
+      changedKeys.add('UserStorageController');
+    }
+  }
+
   // this initializes the meta/version data as a class variable to be used for future writes
   persistenceManager.setMetadata(versionedData.meta);
 
@@ -1488,7 +1487,6 @@ const refreshAppActiveTab = async (windowId) => {
  *
  * @param {object} initState - The initial state to start the controller with, matches the state that is emitted from the controller.
  * @param {string} initLangCode - The region code for the language preferred by the current user.
- * @param {object} overrides - object with callbacks that are allowed to override the setup controller logic
  * @param isFirstMetaMaskControllerSetup
  * @param {object} stateMetadata - Metadata about the initial state and migrations, including the most recent migration version
  * @param {Promise<void>} offscreenPromise - A promise that resolves when the offscreen document has finished initialization.
@@ -1498,7 +1496,6 @@ const refreshAppActiveTab = async (windowId) => {
 export function setupController(
   initState,
   initLangCode,
-  overrides,
   isFirstMetaMaskControllerSetup,
   stateMetadata,
   offscreenPromise,
@@ -1526,7 +1523,6 @@ export function setupController(
     getOpenMetamaskTabsIds: () => {
       return openMetamaskTabsIDs;
     },
-    overrides,
     isFirstMetaMaskControllerSetup,
     currentMigrationVersion: stateMetadata.version,
     featureFlags: {},
@@ -1708,7 +1704,7 @@ export function setupController(
   };
 
   connectWindowPostMessage = (remotePort, removeCriticalErrorListeners) => {
-    if (metamaskBlockedPorts.includes(remotePort.name)) {
+    if (BLOCKED_PORTS.includes(remotePort.name)) {
       return;
     }
 
@@ -1719,9 +1715,7 @@ export function setupController(
       /**
        * @type {ExtensionPortStream}
        */
-      const portStream =
-        overrides?.getPortStream?.(remotePort) ||
-        new ExtensionPortStream(remotePort);
+      const portStream = new ExtensionPortStream(remotePort);
 
       /**
        * send event to sentry with details about the event
@@ -1820,9 +1814,9 @@ export function setupController(
       senderUrl.origin === phishingPageUrl.origin &&
       senderUrl.pathname === phishingPageUrl.pathname
     ) {
-      const portStreamForPhishingPage =
-        overrides?.getPortStream?.(remotePort) ||
-        new ExtensionPortStream(remotePort, { chunkSize: 0 });
+      const portStreamForPhishingPage = new ExtensionPortStream(remotePort, {
+        chunkSize: 0,
+      });
       controller.setupPhishingCommunication({
         connectionStream: portStreamForPhishingPage,
       });
@@ -1850,17 +1844,16 @@ export function setupController(
           (origin) => origin === senderUrl.origin,
         )
       ) {
-        const portStreamForCookieHandlerPage =
-          overrides?.getPortStream?.(remotePort) ||
-          new ExtensionPortStream(remotePort, { chunkSize: 0 });
+        const portStreamForCookieHandlerPage = new ExtensionPortStream(
+          remotePort,
+          { chunkSize: 0 },
+        );
         controller.setUpCookieHandlerCommunication({
           connectionStream: portStreamForCookieHandlerPage,
         });
       }
 
-      const portStream =
-        overrides?.getPortStream?.(remotePort) ||
-        new ExtensionPortStream(remotePort, { chunkSize: 0 });
+      const portStream = new ExtensionPortStream(remotePort, { chunkSize: 0 });
 
       connectEip1193(portStream, remotePort.sender);
 
@@ -1879,16 +1872,23 @@ export function setupController(
   };
 
   connectExternallyConnectable = (remotePort) => {
-    const portStream =
-      overrides?.getPortStream?.(remotePort) ||
-      new ExtensionPortStream(remotePort, { chunkSize: 0 });
+    const senderUrl = remotePort.sender?.url;
+    if (senderUrl) {
+      const { hostname } = new URL(senderUrl);
+      if (BLOCKED_HOSTNAMES.includes(hostname)) {
+        remotePort.disconnect();
+        return;
+      }
+    }
+
+    const portStream = new ExtensionPortStream(remotePort, { chunkSize: 0 });
 
     // if the sender.id value is present it means the caller is an extension rather
     // than a site. When the caller is an extension we want to fallback to connecting
     // it with the 1193 provider
     const isDappConnecting = !remotePort.sender.id;
     if (isDappConnecting) {
-      if (metamaskBlockedPorts.includes(remotePort.name)) {
+      if (BLOCKED_PORTS.includes(remotePort.name)) {
         return;
       }
 
@@ -1914,13 +1914,6 @@ export function setupController(
       sender,
     });
   };
-
-  if (overrides?.registerConnectListeners) {
-    overrides.registerConnectListeners(
-      connectWindowPostMessage,
-      connectEip1193,
-    );
-  }
 
   //
   // User Interface setup
@@ -2063,12 +2056,9 @@ export function setupController(
 
   function getPendingApprovalCount() {
     try {
-      const pendingApprovalCount =
-        controller.appStateController.waitingForUnlock.length +
-        getAttentionRequiredApprovalCount({
-          approvalController: controller.approvalController,
-        });
-      return pendingApprovalCount;
+      return getAttentionRequiredApprovalCount({
+        approvalController: controller.approvalController,
+      });
     } catch (error) {
       console.error('Failed to get pending approval count:', error);
       return 0;
@@ -2142,35 +2132,55 @@ async function triggerUi() {
   }
 }
 
-// It adds the "App Installed" event into a queue of events, which will be tracked only after a user opts into metrics.
-const addAppInstalledEvent = async () => {
-  if (controller) {
-    controller.metaMetricsController.updateTraits({
-      [MetaMetricsUserTrait.InstallDateExt]: new Date()
-        .toISOString()
-        .split('T')[0], // yyyy-mm-dd
-    });
+// It queues the "App Installed" event before consent, or tracks it immediately if consent already exists.
+const addAppInstalledEvent = async (installAttributionPromise) => {
+  const { deferredDeepLink, traits: installAttributionTraits } =
+    await installAttributionPromise;
 
-    const deferredDeepLink = await getDeferredDeepLinkFromCookie();
-    const eventProperties = {};
+  controller.metaMetricsController.updateTraits({
+    [MetaMetricsUserTrait.InstallDateExt]: new Date()
+      .toISOString()
+      .split('T')[0], // yyyy-mm-dd
+    ...installAttributionTraits,
+  });
+  const eventProperties = {};
 
-    if (deferredDeepLink) {
-      controller.appStateController.setDeferredDeepLink(deferredDeepLink);
-      eventProperties.install_source = 'deeplink';
-      eventProperties.deeplink_path = deferredDeepLink.referringLink;
-    }
+  if (deferredDeepLink) {
+    controller.appStateController.setDeferredDeepLink(deferredDeepLink);
+    eventProperties.install_source = 'deeplink';
+    eventProperties.deeplink_path = deferredDeepLink.referringLink;
+  }
 
-    controller.metaMetricsController.addEventBeforeMetricsOptIn({
-      category: MetaMetricsEventCategory.App,
-      event: MetaMetricsEventName.AppInstalled,
-      properties: eventProperties,
-    });
+  const appInstalledEvent = {
+    category: MetaMetricsEventCategory.App,
+    event: MetaMetricsEventName.AppInstalled,
+    properties: eventProperties,
+  };
+
+  const { participateInMetaMetrics, metaMetricsId } =
+    controller.metaMetricsController.state;
+
+  if (participateInMetaMetrics === false) {
+    // We can skip tracking completely if they've already explicitly opted out
     return;
   }
-  setTimeout(async () => {
-    // If the controller is not set yet, we wait and try to add the "App Installed" event again.
-    await addAppInstalledEvent();
-  }, 500);
+
+  // Track immediately only once consent is active and the controller has a
+  // persisted MetaMetrics ID. Otherwise keep the event buffered for the opt-in
+  // flush path so it is not dropped.
+  // No need to call getMetaMetricsId() first: setParticipateInMetaMetrics()
+  // generates and persists the ID before setting participation to true, and this
+  // install handler should not create a metrics ID outside that consent path.
+  if (participateInMetaMetrics === true && metaMetricsId) {
+    controller.metaMetricsController.trackEvent(appInstalledEvent);
+  } else {
+    // participateInMetaMetrics is either `null` (not opted in or out yet) or
+    // `true` (opted in, but for some reason we don't have a MetaMetrics ID yet),
+    // so we queue the metrics event for possible submission later.
+    controller.metaMetricsController.addEventBeforeMetricsOptIn(
+      appInstalledEvent,
+    );
+  }
 };
 
 /**
@@ -2196,10 +2206,16 @@ async function handleOnInstalled([details]) {
  */
 async function onInstall() {
   log.debug('First install detected');
+  const installAttributionPromise = getInstallAttribution();
+
   if (!process.env.IN_TEST && !process.env.METAMASK_DEBUG) {
     platform.openExtensionInBrowser();
   }
-  await addAppInstalledEvent();
+
+  // The controller must exist before we can persist install attribution.
+  await isInitialized;
+
+  await addAppInstalledEvent(installAttributionPromise);
 }
 
 /**

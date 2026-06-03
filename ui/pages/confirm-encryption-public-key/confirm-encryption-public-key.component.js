@@ -10,6 +10,7 @@ import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics'
 import SiteOrigin from '../../components/ui/site-origin';
 import { Numeric } from '../../../shared/lib/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { Nav } from '../confirmations/components/confirm/nav';
 
 export default class ConfirmEncryptionPublicKey extends Component {

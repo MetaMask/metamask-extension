@@ -10,6 +10,7 @@ import type {
   MultichainAssetsRatesControllerState,
   NftControllerState,
   RatesControllerState,
+  TokenRatesControllerState,
   TokenBalancesControllerState,
   TokenListMap,
   TokenListState,
@@ -20,6 +21,7 @@ import { type NameControllerState, NameType } from '@metamask/name-controller';
 import type { PersistedSnapControllerState } from '@metamask/snaps-controllers';
 import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
+import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import type { SelectedNetworkControllerState } from '@metamask/selected-network-controller';
 import type {
   PermissionConstraint,
@@ -39,13 +41,13 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import type { AssetsControllerState } from '@metamask/assets-controller';
+import type { PerpsControllerState } from '@metamask/perps-controller';
+import type { PasskeyControllerState } from '@metamask/passkey-controller';
 import type { AppStateControllerState } from '../../../app/scripts/controllers/app-state-controller';
 import type { MetaMetricsControllerState } from '../../../app/scripts/controllers/metametrics-controller';
 import type { OnboardingControllerState } from '../../../app/scripts/controllers/onboarding';
-import type {
-  Preferences,
-  PreferencesControllerState,
-} from '../../../app/scripts/controllers/preferences-controller';
+import type { Preferences } from '../../../shared/types/preferences';
+import type { PreferencesControllerState } from '../../../app/scripts/controllers/preferences-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   ACCOUNT_2,
@@ -203,14 +205,20 @@ class FixtureBuilderV2 {
    * `AssetsControllerState` from `@metamask/assets-controller`.
    *
    * @param patch - Subset of `AssetsControllerState` to deep-merge; see {@link AssetsControllerFixturePatch}.
+   * @param opts - Options for the AssetsController state.
+   * @param opts.overwrite - Whether to overwrite the partial AssetsController state.
    */
-  withAssetsController(patch: AssetsControllerFixturePatch = {}): this {
+  withAssetsController(
+    patch: AssetsControllerFixturePatch = {},
+    opts = { overwrite: false },
+  ): this {
+    const { overwrite } = opts;
     const {
-      assetsBalance = {},
-      assetsPrice = {},
-      assetsInfo = {},
-      customAssets = {},
-      assetPreferences = {},
+      assetsBalance,
+      assetsPrice,
+      assetsInfo,
+      customAssets,
+      assetPreferences,
       selectedCurrency,
     } = patch;
     if (!(this.fixture.data as Record<string, unknown>).AssetsController) {
@@ -223,13 +231,26 @@ class FixtureBuilderV2 {
     ac.assetsInfo ??= {};
     ac.customAssets ??= {};
     ac.assetPreferences ??= {};
-    merge(ac.assetsBalance, assetsBalance);
-    if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true') {
-      merge(ac.assetsPrice, assetsPrice);
-    }
-    merge(ac.assetsInfo, assetsInfo);
-    merge(ac.customAssets, customAssets);
-    merge(ac.assetPreferences, assetPreferences);
+
+    const applyOverwriteOrMerge = <
+      AssetsControllerStateKey extends keyof AssetsControllerState,
+    >(
+      key: AssetsControllerStateKey,
+      value: AssetsControllerState[AssetsControllerStateKey] | undefined,
+    ): void => {
+      if (overwrite && value) {
+        ac[key] = value;
+      } else {
+        ac[key] = merge(ac[key], value);
+      }
+    };
+
+    applyOverwriteOrMerge('assetsBalance', assetsBalance);
+    applyOverwriteOrMerge('assetsPrice', assetsPrice);
+    applyOverwriteOrMerge('assetsInfo', assetsInfo);
+    applyOverwriteOrMerge('customAssets', customAssets);
+    applyOverwriteOrMerge('assetPreferences', assetPreferences);
+
     if (selectedCurrency !== undefined) {
       ac.selectedCurrency = selectedCurrency;
     }
@@ -307,10 +328,33 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withPasskeyController(data: Partial<PasskeyControllerState>): this {
+    merge(this.fixture.data.PasskeyController, data);
+    return this;
+  }
+
   withPermissionController(
     data: Partial<PermissionControllerState<PermissionConstraint>>,
   ): this {
     merge(this.fixture.data.PermissionController, data);
+    return this;
+  }
+
+  withPerpsController(data: Partial<PerpsControllerState>): this {
+    if (!(this.fixture.data as Record<string, unknown>).PerpsController) {
+      (this.fixture.data as Record<string, unknown>).PerpsController = {};
+    }
+    merge(
+      (this.fixture.data as Record<string, unknown>).PerpsController,
+      data as Record<string, unknown>,
+    );
+    return this;
+  }
+
+  withRemoteFeatureFlagController(
+    data: Partial<RemoteFeatureFlagControllerState>,
+  ): this {
+    merge(this.fixture.data.RemoteFeatureFlagController, data);
     return this;
   }
 
@@ -349,6 +393,11 @@ class FixtureBuilderV2 {
       (this.fixture.data as Record<string, unknown>).TokenListController,
       data,
     );
+    return this;
+  }
+
+  withTokenRatesController(data: Partial<TokenRatesControllerState>): this {
+    merge(this.fixture.data.TokenRatesController, data);
     return this;
   }
 
@@ -1440,19 +1489,6 @@ class FixtureBuilderV2 {
   }
 
   build(): FixtureBuildResult {
-    if (process.env.ASSETS_UNIFIED_STATE_ENABLED !== 'true') {
-      const ac = (this.fixture.data as Record<string, unknown>)
-        .AssetsController as
-        | {
-            assetsPrice?: Record<string, unknown>;
-            assetsInfo?: Record<string, unknown>;
-          }
-        | undefined;
-      if (ac) {
-        ac.assetsPrice = {};
-        ac.assetsInfo = {};
-      }
-    }
     return {
       ...this.fixture,
       storageServiceData: this.storageServiceData,

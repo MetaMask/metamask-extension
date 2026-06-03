@@ -21,10 +21,10 @@ import {
   getTokenList,
 } from '../../../../selectors';
 import {
-  getConversionRate,
   getNativeCurrency,
   getTokens,
 } from '../../../../ducks/metamask/metamask';
+import { getConversionRate } from '../../../../ducks/metamask/base-selectors';
 import { getTopAssets } from '../../../../ducks/swaps/swaps';
 import {
   getMultichainNetworkConfigurationsByChainId,
@@ -576,6 +576,12 @@ describe('AssetPickerModal token filtering', () => {
       />,
     );
 
+    expect(
+      screen.queryByTestId('solana-account-creation-prompt'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText('searchTokensByNameOrAddress'),
+    ).toBeInTheDocument();
     expect(mockAssetList.mock.calls.at(-1)).toMatchSnapshot();
   });
 

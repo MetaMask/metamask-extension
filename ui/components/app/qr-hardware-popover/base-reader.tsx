@@ -1,3 +1,44 @@
+import React, { useContext, useCallback, useEffect, useRef } from 'react';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  FontWeight,
+  Text,
+  TextAlign,
+  TextVariant,
+} from '@metamask/design-system-react';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import {
+  getChromiumExtensionCameraSiteSettingsUrl,
+  getMozExtensionOriginForDisplay,
+  isFirefoxBrowser,
+} from '../../../../shared/lib/browser-runtime.utils';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import PageContainerFooter from '../../ui/page-container/page-container-footer/page-container-footer.component';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  CameraAccessErrorContent,
+  CameraAccessErrorContentVariant,
+} from '../camera-access-error-content';
+import {
+  CameraReadyState,
+  WebcamErrorType,
+  type BaseReaderProps,
+} from './base-reader.types';
+import {
+  cameraReadyStateToErrorCode,
+  buildQrCameraRecoveryTrackEventArgs,
+} from './base-reader-utils';
+import {
+  useBaseReaderReducer,
+  useDecoderLifecycle,
+  useCameraPermission,
+} from './qr-hooks';
+import { QrErrorContent, QrErrorFlowContext } from './qr-error-content';
+import { scanCategoryToQrErrorType } from './qr-utils/qr-utils';
+import EnhancedReader from './enhanced-reader';
+
 /**
  * `BaseReader` — low-level QR camera scanner component.
  *
@@ -8,7 +49,7 @@
  * (popup / side panel) cannot prompt for camera access.
  * 2. **Permission flow** — queries the Permissions API, calls `getUserMedia`,
  * and classifies the result into one of four {@link CameraReadyState} values.
- * 3. **QR decoding** — once the camera is ready, renders `EnhancedReader,`
+ * 3. **QR decoding** — once the camera is ready, renders `EnhancedReader`,
  * which continuously feeds scanned payloads into a `URDecoder` until a full
  * UR is assembled and forwarded to `handleSuccess`.
  * 4. **Error UI** — displays recoverable camera / scan errors with retry.
@@ -17,99 +58,16 @@
  * the `PermissionStatus.change` event so the scanner transitions to READY
  * automatically when the user grants camera access in browser settings.
  *
+ * @param options0 - Component props.
+ * @param options0.isReadingWallet - True when scanning a wallet sync QR code;
+ * false for transaction signing.
+ * @param options0.handleCancel - Called when the user cancels the QR scan flow.
+ * @param options0.handleSuccess - Called when a complete UR payload has been
+ * decoded from the QR code stream.
+ * @param options0.setErrorTitle - Sets the popover title to an error-specific
+ * heading.
  * @see CameraReadyState for the state machine definition.
  */
-import React, {
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-  useCallback,
-} from 'react';
-import log from 'loglevel';
-import { URDecoder } from '@ngraveio/bc-ur';
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
-import { getEnvironmentType } from '../../../../shared/lib/environment-type';
-import {
-  getChromiumExtensionCameraSiteSettingsUrl,
-  getMozExtensionOriginForDisplay,
-  isFirefoxBrowser,
-} from '../../../../shared/lib/browser-runtime.utils';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import WebcamUtils from '../../../helpers/utils/webcam-utils';
-import PageContainerFooter from '../../ui/page-container/page-container-footer/page-container-footer.component';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  CameraAccessErrorContent,
-  CameraAccessErrorContentVariant,
-} from '../camera-access-error-content';
-import { CameraPermissionState } from '../../../contexts/hardware-wallets/constants';
-import {
-  CameraReadyState,
-  type BaseReaderProps,
-  type CameraReadyStateValue,
-  type WebcamError,
-} from './base-reader.types';
-import {
-  cameraReadyStateToErrorCode,
-  buildQrCameraRecoveryTrackEventArgs,
-} from './base-reader-utils';
-import EnhancedReader from './enhanced-reader';
-
-// ---------------------------------------------------------------------------
-// Hooks – camera permission lifecycle
-// ---------------------------------------------------------------------------
-
-/**
- * Manages the `PermissionStatus.change` subscription so the scanner can
- * transition to READY when the user grants camera access externally.
- *
- * @returns Ref-backed helpers to attach, clean up, and access the listener.
- */
-function usePermissionChangeListener() {
-  const permissionStatusRef = useRef<PermissionStatus | null>(null);
-  const handlerRef = useRef<(() => void) | null>(null);
-
-  const cleanup = useCallback(() => {
-    const status = permissionStatusRef.current;
-    const handler = handlerRef.current;
-    if (status && handler) {
-      if (typeof status.removeEventListener === 'function') {
-        status.removeEventListener('change', handler);
-      } else {
-        status.onchange = null;
-      }
-    }
-    permissionStatusRef.current = null;
-    handlerRef.current = null;
-  }, []);
-
-  const attach = useCallback(
-    (permissionStatus: PermissionStatus | null, onGranted: () => void) => {
-      cleanup();
-      if (!permissionStatus) {
-        return;
-      }
-      permissionStatusRef.current = permissionStatus;
-      const handler = () => {
-        if (permissionStatus.state === CameraPermissionState.Granted) {
-          onGranted();
-        }
-      };
-      handlerRef.current = handler;
-      if (typeof permissionStatus.addEventListener === 'function') {
-        permissionStatus.addEventListener('change', handler);
-      } else {
-        permissionStatus.onchange = handler;
-      }
-    },
-    [cleanup],
-  );
-
-  return { attach, cleanup } as const;
-}
-
 const BaseReader = ({
   isReadingWallet,
   handleCancel,
@@ -119,29 +77,29 @@ const BaseReader = ({
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
 
-  const [readyState, setReadyState] = useState<CameraReadyStateValue>(
-    CameraReadyState.AccessingCamera,
-  );
-  const [error, setError] = useState<WebcamError | null>(null);
-  const [urDecoder, setUrDecoder] = useState(() => new URDecoder());
-  const [scanProgress, setScanProgress] = useState(0);
-  const [permissionActionLoading, setPermissionActionLoading] = useState(false);
-
-  const mountedRef = useRef(false);
-  const errorTypeViewCountRef = useRef(0);
-  const lastTrackedReadyStateRef = useRef<CameraReadyStateValue | null>(null);
-  const prevErrorReadyStateRef = useRef<CameraReadyStateValue | null>(null);
   const {
-    attach: attachPermissionListener,
-    cleanup: cleanupPermissionListener,
-  } = usePermissionChangeListener();
+    state: {
+      readyState,
+      error,
+      scanError,
+      scanProgress,
+      permissionActionLoading,
+    },
+    setReady,
+    setBlocked,
+    setNeeded,
+    setError,
+    setScanError,
+    setScanProgress,
+    setPermissionActionLoading,
+    reset,
+  } = useBaseReaderReducer();
 
   // ---- MetaMetrics tracking -----------------------------------------------
-  // `readyState` is set asynchronously from multiple code paths (initial
-  // permission query, getUserMedia rejection, Continue-button retry, and the
-  // PermissionStatus change listener). A reactive `useEffect` is the only
-  // way to reliably track every transition without duplicating fire-once
-  // guards inside each handler.
+
+  const errorTypeViewCountRef = useRef(0);
+  const lastTrackedReadyStateRef = useRef<typeof readyState | null>(null);
+  const prevErrorReadyStateRef = useRef<typeof readyState | null>(null);
 
   useEffect(() => {
     const errorCode = cameraReadyStateToErrorCode(readyState);
@@ -187,158 +145,7 @@ const BaseReader = ({
     );
   }, [readyState, trackEvent]);
 
-  // ---- camera helpers -----------------------------------------------------
-
-  /**
-   * Auto-recovery callback for the `PermissionStatus.change` event.
-   * Proves the camera works by briefly acquiring and releasing a stream,
-   * then transitions to READY. Errors are logged silently — the user
-   * remains on the instructional UI and can retry manually via Continue button.
-   */
-  const acquireCameraAndTransitionToReady = useCallback(async () => {
-    try {
-      const stream = await WebcamUtils.requestVideoStream();
-      WebcamUtils.stopVideoStream(stream);
-      if (mountedRef.current) {
-        cleanupPermissionListener();
-        setReadyState(CameraReadyState.Ready);
-      }
-    } catch (cameraError) {
-      log.info(
-        'QR camera: could not acquire stream after permission grant',
-        cameraError,
-      );
-    }
-  }, [cleanupPermissionListener]);
-
-  /**
-   * After `getUserMedia` throws `NotAllowedError`, re-queries the permission
-   * and attaches a change listener so the component recovers automatically.
-   *
-   * @returns The current permission state after re-querying.
-   */
-  const reconcileNotAllowedPermission =
-    useCallback(async (): Promise<PermissionState> => {
-      const { state, permissionStatus } =
-        await WebcamUtils.queryCameraPermission();
-      attachPermissionListener(
-        permissionStatus,
-        acquireCameraAndTransitionToReady,
-      );
-      return state;
-    }, [attachPermissionListener, acquireCameraAndTransitionToReady]);
-
-  // ---- permission flow entry points ---------------------------------------
-
-  /**
-   * Classifies a `NotAllowedError` after re-querying the permission state
-   * and updates the UI to the appropriate error screen.
-   */
-  const handleNotAllowedError = useCallback(async () => {
-    const nextState = await reconcileNotAllowedPermission();
-    if (!mountedRef.current) {
-      return;
-    }
-    const useBlockedUi =
-      nextState === CameraPermissionState.Denied ||
-      (nextState === CameraPermissionState.Prompt && isFirefoxBrowser());
-    setReadyState(
-      useBlockedUi
-        ? CameraReadyState.CameraAccessBlocked
-        : CameraReadyState.CameraAccessNeeded,
-    );
-  }, [reconcileNotAllowedPermission]);
-
-  /**
-   * Prompts the user for camera access via `getUserMedia` (used when the
-   * Permissions API returns `'prompt'`). On success transitions to READY;
-   * on `NotAllowedError` classifies the denial; other errors bubble up.
-   */
-  const promptForCameraAccess = useCallback(async () => {
-    try {
-      const stream = await WebcamUtils.requestVideoStream();
-      WebcamUtils.stopVideoStream(stream);
-      if (mountedRef.current) {
-        cleanupPermissionListener();
-        setReadyState(CameraReadyState.Ready);
-      }
-    } catch (cameraError) {
-      if ((cameraError as { name?: string }).name === 'NotAllowedError') {
-        await handleNotAllowedError();
-      } else if (mountedRef.current) {
-        setError(cameraError as WebcamError);
-      }
-    }
-  }, [cleanupPermissionListener, handleNotAllowedError]);
-
-  /**
-   * Initial permission flow executed once the environment check passes.
-   * Queries the permission API, then dispatches to the appropriate handler
-   * based on the current permission state.
-   */
-  const startCameraPermissionFlow = useCallback(async () => {
-    const { state, permissionStatus } =
-      await WebcamUtils.queryCameraPermission();
-
-    if (state === CameraPermissionState.Denied) {
-      attachPermissionListener(
-        permissionStatus,
-        acquireCameraAndTransitionToReady,
-      );
-      if (mountedRef.current) {
-        setReadyState(CameraReadyState.CameraAccessBlocked);
-      }
-      return;
-    }
-
-    // Skip getUserMedia when already granted — EnhancedReader will open the
-    // camera once, avoiding a redundant open/close cycle that slows scanning.
-    if (state === CameraPermissionState.Granted) {
-      if (mountedRef.current) {
-        cleanupPermissionListener();
-        setReadyState(CameraReadyState.Ready);
-      }
-      return;
-    }
-
-    await promptForCameraAccess();
-  }, [
-    attachPermissionListener,
-    acquireCameraAndTransitionToReady,
-    cleanupPermissionListener,
-    promptForCameraAccess,
-  ]);
-
-  // ---- environment check --------------------------------------------------
-
-  /**
-   * Ensures the extension runs in a context capable of prompting for camera
-   * access. Popup / side panel environments redirect to a fullscreen tab.
-   */
-  const checkEnvironment = useCallback(async () => {
-    try {
-      const { environmentReady } = await WebcamUtils.checkStatus();
-      if (
-        !environmentReady &&
-        getEnvironmentType() !== ENVIRONMENT_TYPE_FULLSCREEN
-      ) {
-        const currentUrl = new URL(globalThis.location.href);
-        const currentHash = currentUrl.hash;
-        const currentRoute = currentHash ? currentHash.substring(1) : null;
-        globalThis.platform.openExtensionInBrowser(currentRoute);
-        return;
-      }
-    } catch (environmentError) {
-      if (mountedRef.current) {
-        setError(environmentError as WebcamError);
-      }
-      return;
-    }
-    await startCameraPermissionFlow();
-  }, [startCameraPermissionFlow]);
-
-  // ---- "Continue" handlers for camera-access error states -----------------
-
+  /** Fires a MetaMetrics event when the user clicks a recovery CTA button. */
   const trackCameraRecoveryCtaClicked = useCallback(() => {
     const errorCode = cameraReadyStateToErrorCode(readyState);
     if (errorCode === null) {
@@ -353,166 +160,82 @@ const BaseReader = ({
     );
   }, [readyState, trackEvent]);
 
-  /**
-   * Handler for the "needed" (prompt-dismissed) Continue button.
-   * Re-requests camera access via `getUserMedia`.
-   */
-  const handleCameraAccessNeededContinue = useCallback(async () => {
-    trackCameraRecoveryCtaClicked();
-    setPermissionActionLoading(true);
-    try {
-      const stream = await WebcamUtils.requestVideoStream();
-      WebcamUtils.stopVideoStream(stream);
-      if (mountedRef.current) {
-        cleanupPermissionListener();
-        setReadyState(CameraReadyState.Ready);
-      }
-    } catch (cameraError) {
-      const domError = cameraError as { name?: string };
-      if (domError.name === 'NotAllowedError') {
-        const nextState = await reconcileNotAllowedPermission();
-        if (
-          mountedRef.current &&
-          (nextState === CameraPermissionState.Denied ||
-            (nextState === CameraPermissionState.Prompt && isFirefoxBrowser()))
-        ) {
-          setReadyState(CameraReadyState.CameraAccessBlocked);
-        }
-      } else if (mountedRef.current) {
-        setError(cameraError as WebcamError);
-      }
-    } finally {
-      if (mountedRef.current) {
-        setPermissionActionLoading(false);
-      }
-    }
-  }, [
-    cleanupPermissionListener,
-    reconcileNotAllowedPermission,
-    trackCameraRecoveryCtaClicked,
-  ]);
+  // ---- Decoder lifecycle --------------------------------------------------
 
-  /**
-   * Handler for the "blocked" Continue button.
-   * Re-checks the permission state; if no longer denied, acquires the camera.
-   */
-  const handleCameraAccessBlockedContinue = useCallback(async () => {
-    trackCameraRecoveryCtaClicked();
-    setPermissionActionLoading(true);
-    try {
-      const { state } = await WebcamUtils.queryCameraPermission();
-      if (state === CameraPermissionState.Denied) {
-        return;
-      }
-      const stream = await WebcamUtils.requestVideoStream();
-      WebcamUtils.stopVideoStream(stream);
-      if (mountedRef.current) {
-        cleanupPermissionListener();
-        setReadyState(CameraReadyState.Ready);
-      }
-    } catch (cameraError) {
-      const domError = cameraError as { name?: string };
-      if (domError.name === 'NotAllowedError') {
-        await reconcileNotAllowedPermission();
-      } else if (mountedRef.current) {
-        setError(cameraError as WebcamError);
-      }
-    } finally {
-      if (mountedRef.current) {
-        setPermissionActionLoading(false);
-      }
-    }
-  }, [
-    cleanupPermissionListener,
-    reconcileNotAllowedPermission,
-    trackCameraRecoveryCtaClicked,
-  ]);
+  const { handleScan, resetDecoder } = useDecoderLifecycle(
+    { handleSuccess, isReadingWallet },
+    { setScanProgress, setScanError, setError },
+  );
 
-  /**
-   * Opens the Chromium camera site-settings page in a new tab.
-   */
+  // ---- Camera permission lifecycle ----------------------------------------
+
+  const {
+    handleCameraAccessNeededContinue,
+    handleCameraAccessBlockedContinue,
+    cleanupPermissionListener,
+    checkEnvironment,
+  } = useCameraPermission(
+    {
+      setReady,
+      setBlocked,
+      setNeeded,
+      setError,
+      setPermissionActionLoading,
+    },
+    { trackCameraRecoveryCtaClicked },
+  );
+
+  // ---- tryAgain -----------------------------------------------------------
+
+  /** Resets all scanner state and re-enters the environment check. */
+  const tryAgain = useCallback(() => {
+    cleanupPermissionListener();
+    reset();
+    resetDecoder();
+    checkEnvironment();
+  }, [cleanupPermissionListener, reset, resetDecoder, checkEnvironment]);
+
+  // ---- Chromium settings --------------------------------------------------
+
+  /** Opens the Chromium camera site-settings page in a new tab. */
   const handleOpenChromiumCameraSettings = useCallback(() => {
     globalThis.platform.openTab({
       url: getChromiumExtensionCameraSiteSettingsUrl(),
     });
   }, []);
 
-  // ---- QR scan callback ---------------------------------------------------
+  // ---- Render: classified scan error UI ------------------------------------
 
-  /**
-   * Feeds a scanned QR payload into the `URDecoder`. When the UR is fully
-   * assembled, invokes `handleSuccess` with the decoded result.
-   *
-   * @param data - Raw text content of a single scanned QR frame.
-   */
-  const handleScan = useCallback(
-    (data: string | null) => {
-      try {
-        if (!data || urDecoder.isComplete()) {
-          return;
-        }
-        urDecoder.receivePart(data);
-        setScanProgress(urDecoder.estimatedPercentComplete());
-        if (urDecoder.isComplete()) {
-          const result = urDecoder.resultUR();
-          handleSuccess(result).catch((successError: WebcamError) =>
-            setError(successError),
-          );
-        }
-      } catch {
-        if (isReadingWallet) {
-          setErrorTitle(t('QRHardwareUnknownQRCodeTitle'));
-        } else {
-          setErrorTitle(t('QRHardwareInvalidTransactionTitle'));
-        }
-        setError(new Error(t('unknownQrCode')) as WebcamError);
-      }
-    },
-    [handleSuccess, isReadingWallet, setErrorTitle, t, urDecoder],
-  );
+  if (scanError) {
+    const flowContext = isReadingWallet
+      ? QrErrorFlowContext.Pairing
+      : QrErrorFlowContext.Signing;
 
-  // ---- lifecycle ----------------------------------------------------------
+    return (
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Center}
+        className="qr-scanner"
+      >
+        <QrErrorContent
+          errorType={scanCategoryToQrErrorType(scanError.category)}
+          flowContext={flowContext}
+          onTryAgain={tryAgain}
+        />
+      </Box>
+    );
+  }
 
-  useEffect(() => {
-    mountedRef.current = true;
-    checkEnvironment();
-    return () => {
-      mountedRef.current = false;
-      cleanupPermissionListener();
-    };
-  }, [checkEnvironment, cleanupPermissionListener]);
+  // ---- Render: legacy error UI (webcam / handleSuccess rejection) ---------
 
-  /**
-   * Resets all scanner state and re-enters the environment check.
-   */
-  const tryAgain = () => {
-    cleanupPermissionListener();
-    setReadyState(CameraReadyState.AccessingCamera);
-    setError(null);
-    setUrDecoder(new URDecoder());
-    setScanProgress(0);
-    setPermissionActionLoading(false);
-    checkEnvironment();
-  };
-
-  // ---- render helpers -----------------------------------------------------
-
-  /**
-   * Renders the error overlay (no-webcam, unknown QR, mismatched sign-id, or
-   * generic camera error) with Cancel / Try Again footer buttons.
-   */
-  const renderError = () => {
+  if (error) {
     let title: string | undefined;
     let message: string;
 
-    if (error?.type === 'NO_WEBCAM_FOUND') {
+    if (error.type === WebcamErrorType.NoWebcamFound) {
       title = t('noWebcamFoundTitle');
       message = t('noWebcamFound');
-    } else if (error?.message === t('unknownQrCode')) {
-      message = isReadingWallet
-        ? t('QRHardwareUnknownWalletQRCode')
-        : t('unknownQrCode');
-    } else if (error?.message === t('QRHardwareMismatchedSignId')) {
+    } else if (error.message === t('QRHardwareMismatchedSignId')) {
       message = t('QRHardwareMismatchedSignId');
     } else {
       title = t('generalCameraErrorTitle');
@@ -520,14 +243,34 @@ const BaseReader = ({
     }
 
     return (
-      <>
-        <div className="qr-scanner__image">
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Center}
+        className="qr-scanner"
+      >
+        <Box paddingTop={4} className="text-center">
           <img src="images/webcam.svg" width="70" height="70" alt="" />
-        </div>
-        {title ? <div className="qr-scanner__title">{title}</div> : null}
-        <div className="qr-scanner__error" data-testid="qr-scanner__error">
-          {message}
-        </div>
+        </Box>
+        {title ? (
+          <Box paddingTop={4} paddingBottom={4}>
+            <Text
+              variant={TextVariant.HeadingLg}
+              fontWeight={FontWeight.Medium}
+              textAlign={TextAlign.Center}
+            >
+              {title}
+            </Text>
+          </Box>
+        ) : null}
+        <Box padding={4}>
+          <Text
+            variant={TextVariant.BodyMd}
+            textAlign={TextAlign.Center}
+            data-testid="qr-scanner__error"
+          >
+            {message}
+          </Text>
+        </Box>
         <PageContainerFooter
           onCancel={() => {
             setErrorTitle('');
@@ -541,26 +284,35 @@ const BaseReader = ({
           submitText={t('tryAgain')}
           submitButtonType="confirm"
         />
-      </>
+      </Box>
     );
-  };
+  }
 
-  /**
-   * Renders the main scanner area: one of the camera-access error states,
-   * the "accessing camera" loading message, or the live QR scanner.
-   */
-  const renderVideo = () => {
-    if (readyState === CameraReadyState.CameraAccessNeeded) {
-      return (
+  // ---- Render: camera-access error states ---------------------------------
+
+  if (readyState === CameraReadyState.CameraAccessNeeded) {
+    return (
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Center}
+        className="qr-scanner"
+      >
         <CameraAccessErrorContent
           variant={CameraAccessErrorContentVariant.Needed}
           onContinue={handleCameraAccessNeededContinue}
           continueLoading={permissionActionLoading}
         />
-      );
-    }
-    if (readyState === CameraReadyState.CameraAccessBlocked) {
-      return (
+      </Box>
+    );
+  }
+
+  if (readyState === CameraReadyState.CameraAccessBlocked) {
+    return (
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Center}
+        className="qr-scanner"
+      >
         <CameraAccessErrorContent
           variant={CameraAccessErrorContentVariant.Blocked}
           isFirefox={isFirefoxBrowser()}
@@ -569,43 +321,49 @@ const BaseReader = ({
           onContinue={handleCameraAccessBlockedContinue}
           continueLoading={permissionActionLoading}
         />
-      );
-    }
-
-    let statusMessage: string | undefined;
-    if (readyState === CameraReadyState.AccessingCamera) {
-      statusMessage = t('accessingYourCamera');
-    } else if (readyState === CameraReadyState.Ready) {
-      statusMessage = t('QRHardwareScanInstructions');
-    }
-
-    return (
-      <>
-        <div className="qr-scanner__content">
-          {readyState === CameraReadyState.Ready ? (
-            <EnhancedReader handleScan={handleScan} />
-          ) : null}
-        </div>
-        {scanProgress > 0 && (
-          <div
-            className="qr-scanner__progress"
-            data-testid="qr-reader-progress-bar"
-            style={
-              {
-                '--progress': `${Math.floor(scanProgress * 100)}%`,
-              } as React.CSSProperties
-            }
-          />
-        )}
-        {statusMessage && (
-          <div className="qr-scanner__status">{statusMessage}</div>
-        )}
-      </>
+      </Box>
     );
-  };
+  }
+
+  // ---- Render: scanner / loading ------------------------------------------
+
+  let statusMessage: string | undefined;
+  if (readyState === CameraReadyState.AccessingCamera) {
+    statusMessage = t('accessingYourCamera');
+  } else if (readyState === CameraReadyState.Ready) {
+    statusMessage = t('QRHardwareScanInstructions');
+  }
 
   return (
-    <div className="qr-scanner">{error ? renderError() : renderVideo()}</div>
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      alignItems={BoxAlignItems.Center}
+      className="qr-scanner"
+    >
+      <Box paddingLeft={5} paddingRight={5} className="qr-scanner__content">
+        {readyState === CameraReadyState.Ready ? (
+          <EnhancedReader onFrame={handleScan} />
+        ) : null}
+      </Box>
+      {scanProgress > 0 && (
+        <div
+          className="qr-scanner__progress"
+          data-testid="qr-reader-progress-bar"
+          style={
+            {
+              '--progress': `${Math.floor(scanProgress * 100)}%`,
+            } as React.CSSProperties
+          }
+        />
+      )}
+      {statusMessage && (
+        <Box padding={4}>
+          <Text variant={TextVariant.BodySm} textAlign={TextAlign.Center}>
+            {statusMessage}
+          </Text>
+        </Box>
+      )}
+    </Box>
   );
 };
 

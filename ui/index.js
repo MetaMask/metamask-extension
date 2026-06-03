@@ -7,9 +7,7 @@ import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic
 
 import { captureException } from '../shared/lib/sentry';
 import { withResolvers } from '../shared/lib/promise-with-resolvers';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../app/scripts/lib/util';
+import { getEnvironmentType } from '../shared/lib/environment-type';
 import { AlertTypes } from '../shared/constants/alerts';
 import { maskObject } from '../shared/lib/object.utils';
 // TODO: Remove restricted import
@@ -28,6 +26,7 @@ import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
 import { getCurrentChainId } from '../shared/lib/selectors/networks';
 import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../shared/constants/messages';
+import { getSelectedInternalAccount } from '../shared/lib/selectors/accounts';
 import {
   setupLongTaskObserver,
   setupLongTaskSentryReporting,
@@ -36,7 +35,6 @@ import {
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
-  getSelectedInternalAccount,
   getUnapprovedTransactions,
   getNetworkToAutomaticallySwitchTo,
   getAllPermittedAccountsForCurrentTab,
@@ -45,10 +43,10 @@ import {
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
-  getIsUnlocked,
   getUnconnectedAccountAlertEnabledness,
   getUnconnectedAccountAlertShown,
 } from './ducks/metamask/metamask';
+import { getIsUnlocked } from './ducks/metamask/base-selectors';
 import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
 import {

@@ -82,6 +82,7 @@ type AppState = {
   ledgerTransportStatus: HardwareTransportStates;
   showBasicFunctionalityModal: boolean;
   externalServicesOnboardingToggleState: boolean;
+  backupAndSyncOnboardingToggleState: boolean;
   newNetworkAddedName: string;
   editedNetwork:
     | {
@@ -150,6 +151,7 @@ const initialState: AppState = {
   showIpfsModalOpen: false,
   showBasicFunctionalityModal: false,
   externalServicesOnboardingToggleState: true,
+  backupAndSyncOnboardingToggleState: true,
   keyringRemovalSnapModal: {
     snapName: '',
     result: 'none',
@@ -297,6 +299,17 @@ export default function reduceApp(
       return {
         ...appState,
         externalServicesOnboardingToggleState: false,
+      };
+
+    case actionConstants.ONBOARDING_TOGGLE_BACKUP_AND_SYNC_ON:
+      return {
+        ...appState,
+        backupAndSyncOnboardingToggleState: true,
+      };
+    case actionConstants.ONBOARDING_TOGGLE_BACKUP_AND_SYNC_OFF:
+      return {
+        ...appState,
+        backupAndSyncOnboardingToggleState: false,
       };
 
     case actionConstants.SHOW_IPFS_MODAL_OPEN:
@@ -680,12 +693,6 @@ export default function reduceApp(
           result: 'none',
         },
       };
-    case actionConstants.SET_SHOW_CLAIM_SUBMIT_TOAST:
-      return {
-        ...appState,
-        showClaimSubmitToast: action.payload,
-      };
-
     case actionConstants.SET_SHOW_INFURA_SWITCH_TOAST:
       return {
         ...appState,
@@ -733,6 +740,18 @@ export function onboardingToggleBasicFunctionalityOn(): Action {
 export function onboardingToggleBasicFunctionalityOff(): Action {
   return {
     type: actionConstants.ONBOARDING_TOGGLE_BASIC_FUNCTIONALITY_OFF,
+  };
+}
+
+export function onboardingToggleBackupAndSyncOn(): Action {
+  return {
+    type: actionConstants.ONBOARDING_TOGGLE_BACKUP_AND_SYNC_ON,
+  };
+}
+
+export function onboardingToggleBackupAndSyncOff(): Action {
+  return {
+    type: actionConstants.ONBOARDING_TOGGLE_BACKUP_AND_SYNC_OFF,
   };
 }
 

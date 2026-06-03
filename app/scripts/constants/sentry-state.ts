@@ -46,6 +46,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   },
   AuthenticationController: {
     isSignedIn: false,
+    needsProfilePairing: false,
     srpSessionData: false,
   },
   NetworkOrderController: {
@@ -119,15 +120,17 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   BridgeController: {
     assetExchangeRates: false,
     minimumBalanceForRentExemptionInLamports: false,
-    quoteRequest: {
-      walletAddress: false,
-      srcTokenAddress: true,
-      slippage: true,
-      srcChainId: true,
-      destChainId: true,
-      destTokenAddress: true,
-      srcTokenAmount: true,
-    },
+    quoteRequest: [
+      {
+        walletAddress: false,
+        srcTokenAddress: true,
+        slippage: true,
+        srcChainId: true,
+        destChainId: true,
+        destTokenAddress: true,
+        srcTokenAmount: true,
+      },
+    ],
     quotes: [],
     quotesInitialLoadTime: true,
     quotesLastFetched: true,
@@ -291,6 +294,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     rewardsSeasonStatuses: false,
     rewardsSubscriptionTokens: false,
     rewardsPointsEstimateHistory: false,
+    rewardsVipPerpsFees: false,
   },
   NotificationServicesPushController: {
     fcmToken: false,

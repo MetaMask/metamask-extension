@@ -223,6 +223,50 @@ describe('Popover', () => {
     expect(getByTestId('popover')).toHaveClass('mm-popover--reference-hidden');
   });
 
+  test('removes document listeners with the same callbacks and capture options used on add', () => {
+    const addEventListenerSpy = jest.spyOn(document, 'addEventListener');
+    const removeEventListenerSpy = jest.spyOn(document, 'removeEventListener');
+
+    try {
+      const { unmount } = render(
+        <Popover
+          isOpen={true}
+          onClickOutside={jest.fn()}
+          onPressEscKey={jest.fn()}
+        >
+          Popover
+        </Popover>,
+      );
+
+      const keydownAddCall = addEventListenerSpy.mock.calls.find(
+        ([eventType]) => eventType === 'keydown',
+      );
+      const clickAddCall = addEventListenerSpy.mock.calls.find(
+        ([eventType]) => eventType === 'click',
+      );
+
+      if (!keydownAddCall || !clickAddCall) {
+        throw new Error('Expected Popover to add document event listeners');
+      }
+
+      unmount();
+
+      expect(removeEventListenerSpy).toHaveBeenCalledWith(
+        'keydown',
+        keydownAddCall[1],
+        keydownAddCall[2],
+      );
+      expect(removeEventListenerSpy).toHaveBeenCalledWith(
+        'click',
+        clickAddCall[1],
+        clickAddCall[2],
+      );
+    } finally {
+      addEventListenerSpy.mockRestore();
+      removeEventListenerSpy.mockRestore();
+    }
+  });
+
   const EscKeyTestComponent = () => {
     const [isOpen, setIsOpen] = useState(true);
 

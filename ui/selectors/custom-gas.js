@@ -1,6 +1,4 @@
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { addHexPrefix } from '../../app/scripts/lib/util';
+import { addHexPrefix } from '../../shared/lib/add-hex-prefix';
 import { decEthToConvertedCurrency } from '../../shared/lib/conversion.utils';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import { formatETHFee } from '../helpers/utils/formatters';
@@ -9,8 +7,8 @@ import { GasEstimateTypes as GAS_FEE_CONTROLLER_ESTIMATE_TYPES } from '../../sha
 import {
   getGasEstimateType,
   getGasFeeEstimates,
-  isEIP1559Network,
 } from '../ducks/metamask/metamask';
+import { isEIP1559Network } from '../ducks/metamask/base-selectors';
 import { calcGasTotal } from '../../shared/lib/transactions-controller-utils';
 import { Numeric } from '../../shared/lib/Numeric';
 import { EtherDenomination } from '../../shared/constants/common';

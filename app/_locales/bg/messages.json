@@ -78,9 +78,6 @@
   "autoLockTimeLimit": {
     "message": "Таймер за автоматично излизане (минути)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "Задайте времето на неактивност в минути, преди MetaMask автоматично да Ви отпише от акаунта"
-  },
   "average": {
     "message": "Средно аритметично"
   },
@@ -181,12 +178,6 @@
   "createPassword": {
     "message": "Създаване на парола"
   },
-  "currencyConversion": {
-    "message": "Конвертиране на валута"
-  },
-  "currentLanguage": {
-    "message": "Настоящ език"
-  },
   "custom": {
     "message": "Разширени"
   },
@@ -207,9 +198,6 @@
   },
   "done": {
     "message": "Готово"
-  },
-  "downloadGoogleChrome": {
-    "message": "Изтеглете Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Изтеглете държавни дневници"
@@ -268,9 +256,6 @@
   },
   "hardwareWallets": {
     "message": "Свържете хардуерен портфейл"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Изберете хардуерен портфейл, който искате да използвате с MetaMask"
   },
   "here": {
     "message": "тук",
@@ -339,12 +324,6 @@
   "likeToImportTokens": {
     "message": "Искате ли да добавите тези жетони?"
   },
-  "lineaGoerli": {
-    "message": "Тестова мрежа на Linea Goerli"
-  },
-  "links": {
-    "message": "Връзки"
-  },
   "loading": {
     "message": "Зарежда се..."
   },
@@ -384,9 +363,6 @@
   },
   "nevermind": {
     "message": "Няма значение"
-  },
-  "newAccount": {
-    "message": "Нов акаунт"
   },
   "newAccountNumberName": {
     "message": "Акаунт $1",
@@ -493,9 +469,6 @@
   "restore": {
     "message": "Възстановяване"
   },
-  "revealSeedWords": {
-    "message": "Разкрий думите зародиш"
-  },
   "revealSeedWordsWarning": {
     "message": "Тези думи могат да бъдат използвани за кражба на всички ваши акаунти.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -542,9 +515,6 @@
   "showFiatConversionInTestnets": {
     "message": "Показване на преобразуването на Testnets"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Изберете това, за да покажете фиат  преобразуване на Testnets"
-  },
   "showHexData": {
     "message": "Показване на шестнадесетични данни"
   },
@@ -574,9 +544,6 @@
   },
   "stateLogs": {
     "message": "Държавни дневници"
-  },
-  "stateLogsDescription": {
-    "message": "Държавните дневници съдържат адресите на публичните ви акаунти и изпратените транзакции."
   },
   "submitted": {
     "message": "Изпратен"

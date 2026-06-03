@@ -1,13 +1,24 @@
 import { useCallback, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { TransactionType } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
 
-import { getSelectedInternalAccount } from '../../../../selectors';
-import { PERPS_WITHDRAW_ROUTE } from '../../../../helpers/constants/routes';
+import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
+import type { RemoteFeatureFlagsState } from '../../../../../shared/lib/selectors/remote-feature-flags';
+import {
+  CONFIRM_TRANSACTION_ROUTE,
+  PERPS_WITHDRAW_ROUTE,
+} from '../../../../helpers/constants/routes';
+import { ConfirmationLoader } from '../../../../pages/confirmations/hooks/useConfirmationNavigation';
+import { selectPayQuoteConfig } from '../../../../pages/confirmations/selectors/feature-flags';
+import { createPerpsWithdrawTransaction } from './createPerpsWithdrawTransaction';
 
 export type PerpsWithdrawNavigationResponse = {
-  /** Route opened (or that would be opened) for the withdraw flow */
+  /** Route opened (or that would be opened) for the withdraw flow. */
   route: string;
+  /** Created transaction ID when routed through the confirmation flow. */
+  transactionId?: string;
 };
 
 export type PerpsWithdrawNavigationOptions = {
@@ -22,14 +33,11 @@ export type PerpsWithdrawNavigationResult = {
 };
 
 /**
- * Perps-owned entrypoint for opening the withdraw flow (dedicated route).
+ * Perps-owned entrypoint for opening the withdraw flow.
  *
- * Sibling to {@link usePerpsDepositConfirmation}: same `trigger` / `isLoading` shape.
- * Deposit confirmation is backed by `depositWithConfirmation`, which builds an EVM
- * transaction and submits it through `TransactionController` (`perpsDeposit`).
- * Withdraw is API-only (`perpsWithdraw`) with no staged `TransactionMeta`, so it
- * cannot reuse that confirmations path without new controller support. Completion
- * feedback on the wallet home uses `PerpsWithdrawToast` and `lastWithdrawResult`.
+ * When `confirmations_pay_post_quote.perpsWithdraw.enabled` is true, this
+ * starts the custom amount confirmation flow. Otherwise it falls back to the
+ * legacy standalone Perps withdraw route while the confirmation flow rolls out.
  *
  * @param options
  */
@@ -38,7 +46,13 @@ export function usePerpsWithdrawNavigation(
 ): PerpsWithdrawNavigationResult {
   const { navigateOnTrigger = true, onNavigated } = options;
   const navigate = useNavigate();
+  const location = useLocation();
   const selectedAccount = useSelector(getSelectedInternalAccount);
+  const isConfirmationFlowEnabled = useSelector(
+    (state: RemoteFeatureFlagsState) =>
+      selectPayQuoteConfig(state, TransactionType.perpsWithdraw).enabled ===
+      true,
+  );
   const [isLoading, setIsLoading] = useState(false);
 
   const isInFlightRef = useRef(false);
@@ -57,6 +71,33 @@ export function usePerpsWithdrawNavigation(
     setIsLoading(true);
 
     try {
+      if (isConfirmationFlowEnabled) {
+        const { transactionId } = await createPerpsWithdrawTransaction({
+          accountAddress: selectedAccount.address as Hex,
+        });
+        const route = `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`;
+
+        if (navigateOnTrigger) {
+          const params = new URLSearchParams({
+            loader: ConfirmationLoader.CustomAmount,
+          });
+
+          const goBackTo = location.pathname + location.search;
+          if (goBackTo && goBackTo !== '/') {
+            params.set('goBackTo', goBackTo);
+          }
+
+          navigate({
+            pathname: route,
+            search: params.toString(),
+          });
+        }
+
+        onNavigated?.(route);
+
+        return { route, transactionId };
+      }
+
       if (navigateOnTrigger) {
         navigate(PERPS_WITHDRAW_ROUTE);
       }
@@ -72,7 +113,10 @@ export function usePerpsWithdrawNavigation(
       setIsLoading(false);
     }
   }, [
+    isConfirmationFlowEnabled,
     isLoading,
+    location.pathname,
+    location.search,
     navigate,
     navigateOnTrigger,
     onNavigated,

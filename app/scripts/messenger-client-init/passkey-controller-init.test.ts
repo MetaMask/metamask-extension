@@ -1,10 +1,10 @@
-import { PasskeyController } from '@metamask/passkey-controller';
+import {
+  PasskeyController,
+  PasskeyControllerMessenger,
+} from '@metamask/passkey-controller';
 import { getRootMessenger } from '../lib/messenger';
 import { buildControllerInitRequestMock } from './test/utils';
-import {
-  getPasskeyControllerMessenger,
-  PasskeyControllerMessenger,
-} from './messengers';
+import { getPasskeyControllerMessenger } from './messengers';
 import { PasskeyControllerInit } from './passkey-controller-init';
 import { MessengerClientInitRequest } from './types';
 

@@ -1,10 +1,11 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
+import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
-import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
+import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import * as actionsModule from '../../store/actions';
 import * as passkeyCeremony from '../../../shared/lib/passkey/passkey-ceremony';
 import UnlockPage from './unlock-page.component';
@@ -25,9 +26,37 @@ jest.mock('@metamask/logo', () => () => ({
   lookAtAndRender: jest.fn(),
 }));
 
+jest.mock('../../../shared/lib/sentry', () => ({
+  ...jest.requireActual<typeof import('../../../shared/lib/sentry')>(
+    '../../../shared/lib/sentry',
+  ),
+  captureException: jest.fn(),
+}));
+
 describe('UnlockPage component (passkey UI)', () => {
+  const selectedTestAccountId = 'test-unlock-account-id';
+
   const mockStore = configureMockStore([thunk])({
-    metamask: { passkeyRecord: null },
+    metamask: {
+      passkeyRecord: null,
+      internalAccounts: {
+        selectedAccount: selectedTestAccountId,
+        accounts: {
+          [selectedTestAccountId]: {
+            address: '0x0000000000000000000000000000000000000001',
+            id: selectedTestAccountId,
+            metadata: {
+              name: 'Test',
+              keyring: { type: 'HD Key Tree' },
+            },
+            options: {},
+            methods: ETH_EOA_METHODS,
+            type: EthAccountType.Eoa,
+            scopes: [EthScope.Eoa],
+          },
+        },
+      },
+    },
   });
 
   const buildProps = (overrides: Record<string, unknown> = {}) => ({
@@ -37,6 +66,7 @@ describe('UnlockPage component (passkey UI)', () => {
     isOnboardingCompleted: true,
     onRestore: jest.fn(),
     onSubmit: jest.fn().mockResolvedValue(undefined),
+    navigateAfterUnlock: jest.fn(),
     isPasskeyActive: true,
     onUnlockWithPasskey: jest.fn().mockResolvedValue(undefined),
     checkIsSeedlessPasswordOutdated: jest.fn().mockResolvedValue(undefined),
@@ -81,30 +111,41 @@ describe('UnlockPage component (passkey UI)', () => {
     jest.restoreAllMocks();
   });
 
-  it('completes passkey unlock and records an App Unlocked metrics event', async () => {
-    const trackEvent = jest.fn().mockResolvedValue(undefined);
+  it('completes passkey unlock when user clicks passkey', async () => {
     const props = buildProps();
 
     const { getByTestId } = renderWithProvider(
       <UnlockPage {...props} />,
       mockStore,
       '/unlock',
-      undefined,
-      () => trackEvent,
     );
 
     fireEvent.click(getByTestId('unlock-passkey-button'));
 
     await waitFor(() => {
       expect(props.onUnlockWithPasskey).toHaveBeenCalled();
+      expect(props.navigateAfterUnlock).toHaveBeenCalled();
     });
+  });
 
-    expect(trackEvent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        event: MetaMetricsEventName.AppUnlocked,
-        properties: { method: 'passkey' },
-      }),
+  it('navigates after a successful password unlock', async () => {
+    const props = buildProps({ isPasskeyActive: false });
+
+    const { getByTestId } = renderWithProvider(
+      <UnlockPage {...props} />,
+      mockStore,
+      '/unlock',
     );
+
+    fireEvent.change(getByTestId('unlock-password'), {
+      target: { value: 'test-password' },
+    });
+    fireEvent.click(getByTestId('unlock-submit'));
+
+    await waitFor(() => {
+      expect(props.onSubmit).toHaveBeenCalledWith('test-password');
+      expect(props.navigateAfterUnlock).toHaveBeenCalled();
+    });
   });
 
   it('shows a passkey error banner when authentication fails with a non-silent error', async () => {

@@ -1,6 +1,5 @@
 import { WebElement } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
-import { Ganache } from '../../../seeder/ganache';
 import { Anvil } from '../../../seeder/anvil';
 import HeaderNavbar from '../header-navbar';
 import { getCleanAppState, regularDelayMs } from '../../../helpers';
@@ -15,7 +14,7 @@ class HomePage {
 
   public headerNavbar: HeaderNavbar;
 
-  private readonly activityTab = {
+  protected readonly activityTab = {
     testId: 'account-overview__activity-tab',
   };
 
@@ -52,10 +51,6 @@ class HomePage {
     tag: 'h6',
   };
 
-  private readonly erc20TokenDropdown = {
-    testId: 'asset-list-control-bar-action-button',
-  };
-
   private readonly fundYourWalletBanner = {
     text: 'Fund your wallet',
   };
@@ -64,11 +59,11 @@ class HomePage {
     text: 'Connecting to Localhost 8545',
   };
 
-  private readonly nftTab = {
+  protected readonly nftTab = {
     testId: 'account-overview__nfts-tab',
   };
 
-  private readonly defiTab = {
+  protected readonly defiTab = {
     testId: 'account-overview__defi-tab',
   };
 
@@ -88,10 +83,6 @@ class HomePage {
 
   protected readonly swapButton: string = '[data-testid="eth-overview-swap"]';
 
-  private readonly refreshErc20Tokens = {
-    testId: 'refreshList',
-  };
-
   private readonly storageErrorToast = '[data-testid="storage-error-toast"]';
 
   private readonly storageErrorToastBackupButton = {
@@ -104,11 +95,11 @@ class HomePage {
   private readonly srpAddedToast = '[data-testid="new-srp-added-toast"]';
 
   private readonly srpAddedToastCloseButton =
-    '[data-testid="new-srp-added-toast"] ~ button[aria-label="Close"]';
+    '.toast-container button[aria-label="Close"]';
 
   private readonly surveyToast = '[data-testid="survey-toast"]';
 
-  private readonly tokensTab = {
+  protected readonly tokensTab = {
     testId: 'account-overview__asset-tab',
   };
 
@@ -309,12 +300,6 @@ class HomePage {
     await this.driver.clickElement(this.portfolioLink);
   }
 
-  async refreshErc20TokenList(): Promise<void> {
-    console.log(`Refresh the ERC20 token list`);
-    await this.driver.clickElement(this.erc20TokenDropdown);
-    await this.driver.clickElement(this.refreshErc20Tokens);
-  }
-
   async startSendFlow(): Promise<void> {
     await this.driver.clickElement(this.sendButton);
   }
@@ -452,22 +437,6 @@ class HomePage {
   }
 
   /**
-   * Checks if the expected token balance is displayed on homepage.
-   *
-   * @param expectedTokenBalance - The expected balance to be displayed.
-   * @param symbol - The symbol of the currency or token.
-   */
-  async checkExpectedTokenBalanceIsDisplayed(
-    expectedTokenBalance: string,
-    symbol: string,
-  ): Promise<void> {
-    await this.driver.waitForSelector({
-      css: '[data-testid="multichain-token-list-item-value"]',
-      text: `${expectedTokenBalance} ${symbol}`,
-    });
-  }
-
-  /**
    * This function checks if account syncing has been successfully completed at least once.
    * Includes a delay before checking to give Firefox more time to initialize (reduces flakiness).
    */
@@ -519,7 +488,7 @@ class HomePage {
   }
 
   async checkLocalNodeBalanceIsDisplayed(
-    localNode?: Ganache | Anvil,
+    localNode?: Anvil,
     address = null,
   ): Promise<void> {
     let expectedBalance: string;

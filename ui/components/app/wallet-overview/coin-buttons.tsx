@@ -11,16 +11,13 @@ import {
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { Box, BoxJustifyContent } from '@metamask/design-system-react';
 import { ChainId } from '../../../../shared/constants/network';
 import { transitionForward } from '../../ui/transition';
 
 import { I18nContext } from '../../../contexts/i18n';
 
-import { MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
-import {
-  AddressListQueryParams,
-  AddressListSource,
-} from '../../../pages/multichain-accounts/multichain-account-address-list-page';
+import { getMultichainAccountAddressListReceivePagePath } from '../../../pages/multichain-accounts/multichain-account-address-list-page';
 import {
   getUseExternalServices,
   getNetworkConfigurationIdByChainId,
@@ -34,13 +31,8 @@ import {
   MetaMetricsSwapsEventSource,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  BlockSize,
-  Display,
-  IconColor,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
-import { Box, Icon, IconName, IconSize } from '../../component-library';
+import { BlockSize, IconColor } from '../../../helpers/constants/design-system';
+import { Icon, IconName, IconSize } from '../../component-library';
 import IconButton from '../../ui/icon-button';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
@@ -331,7 +323,7 @@ const CoinButtons = ({
       // Navigate to the multichain address list page with receive source
       transitionForward(() =>
         navigate(
-          `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}?accountGroupId=${encodeURIComponent(selectedAccountGroup)}&${AddressListQueryParams.Source}=${AddressListSource.Receive}`,
+          getMultichainAccountAddressListReceivePagePath(selectedAccountGroup),
         ),
       );
     } else {
@@ -342,9 +334,8 @@ const CoinButtons = ({
 
   return (
     <Box
-      display={Display.Flex}
-      justifyContent={JustifyContent.spaceBetween}
-      width={BlockSize.Full}
+      className="flex w-full"
+      justifyContent={BoxJustifyContent.Between}
       gap={3}
     >
       <IconButton

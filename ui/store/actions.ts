@@ -28,7 +28,10 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { PermissionsRequest } from '@metamask/permission-controller';
 import { NonEmptyArray } from '@metamask/controller-utils';
-import type { PhishingDetectionScanResult } from '@metamask/phishing-controller';
+import type {
+  PhishingDetectionScanResult,
+  SimilarAddressMatch,
+} from '@metamask/phishing-controller';
 import {
   SetNameRequest,
   UpdateProposedNamesRequest,
@@ -64,7 +67,6 @@ import {
 } from '@metamask/account-tree-controller';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
-import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { SerializedUR } from '@metamask/eth-qr-keyring';
 import {
@@ -108,9 +110,10 @@ import {
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
 } from '../../shared/constants/app';
+import { getEnvironmentType } from '../../shared/lib/environment-type';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
+import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   getMetaMaskAccounts,
   hasTransactionPendingApprovals,
@@ -121,13 +124,12 @@ import {
   getPermissionSubjects,
   getFirstSnapInstallOrUpdateRequest,
   getInternalAccountByAddress,
-  getSelectedInternalAccount,
-  getMetaMaskHdKeyrings,
   getAllPermittedAccountsForCurrentTab,
   getOriginOfCurrentTab,
   getIsSocialLoginFlow,
   getFirstTimeFlowType,
 } from '../selectors';
+import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import {
   getSelectedNetworkClientId,
   getProviderConfig,
@@ -165,7 +167,7 @@ import {
   loadRelativeTimeFormatLocaleData,
 } from '../../shared/lib/i18n';
 import { decimalToHex } from '../../shared/lib/conversion.utils';
-import { TxGasFees, PriorityLevels } from '../../shared/constants/gas';
+import { PriorityLevels } from '../../shared/constants/gas';
 import {
   getErrorMessage,
   isErrorWithMessage,
@@ -174,7 +176,10 @@ import {
 } from '../../shared/lib/error';
 import type { DefaultAddressScope } from '../../shared/constants/default-address';
 import { ThemeType } from '../../shared/constants/preferences';
-import { FirstTimeFlowType } from '../../shared/constants/onboarding';
+import {
+  AuthConnection,
+  FirstTimeFlowType,
+} from '../../shared/constants/onboarding';
 import { getMethodDataAsync } from '../../shared/lib/four-byte';
 import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
 import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
@@ -1473,55 +1478,6 @@ export function importNewAccount(
   };
 }
 
-export function addNewAccount(
-  keyringId?: string,
-  showLoading: boolean = true,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  log.debug(`background.addNewAccount`);
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch, getState) => {
-    const keyrings = getMetaMaskHdKeyrings(getState());
-    const [defaultPrimaryKeyring] = keyrings;
-
-    // The HD keyring to add the account for.
-    let hdKeyring = defaultPrimaryKeyring;
-    if (keyringId) {
-      hdKeyring = keyrings.find((keyring) => keyring.metadata.id === keyringId);
-    }
-    // Fail-safe in case we could not find the associated HD keyring.
-    if (!hdKeyring) {
-      log.error('Should never reach this. There is always a keyring');
-      throw new Error('Keyring not found');
-    }
-    const oldAccounts = hdKeyring.accounts;
-
-    if (showLoading) {
-      dispatch(showLoadingIndication());
-    }
-
-    let newAccount;
-    try {
-      const addedAccountAddress = await submitRequestToBackground(
-        'addNewAccount',
-        [oldAccounts.length, keyringId],
-      );
-      await forceUpdateMetamaskState(dispatch);
-      const newState = getState();
-      newAccount = getInternalAccountByAddress(newState, addedAccountAddress);
-    } catch (error) {
-      dispatch(displayWarning(error));
-      throw error;
-    } finally {
-      if (showLoading) {
-        dispatch(hideLoadingIndication());
-      }
-    }
-
-    return newAccount;
-  };
-}
-
 export function checkHardwareStatus(
   deviceName: HardwareDeviceNames,
   hdPath: string,
@@ -1944,32 +1900,6 @@ export function removeSlide(
   };
 }
 
-// TODO: Not a thunk, but rather a wrapper around a background call
-export function updateTransactionGasFees(
-  txId: string,
-  txGasFees: Partial<TxGasFees>,
-): ThunkAction<
-  Promise<TransactionMeta>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async () => {
-    let updatedTransaction: TransactionMeta;
-    try {
-      updatedTransaction = await submitRequestToBackground(
-        'updateTransactionGasFees',
-        [txId, txGasFees],
-      );
-    } catch (error) {
-      logErrorWithMessage(error);
-      throw error;
-    }
-
-    return updatedTransaction;
-  };
-}
-
 export function updateTransaction(
   txMeta: TransactionMeta,
   dontShowLoadingIndicator: boolean,
@@ -2325,6 +2255,12 @@ export async function scanUrlForPhishing(
   origin: string,
 ): Promise<PhishingDetectionScanResult | null> {
   return await submitRequestToBackground('scanUrlForPhishing', [origin]);
+}
+
+export async function checkAddressPoisoning(
+  address: string,
+): Promise<SimilarAddressMatch[]> {
+  return await submitRequestToBackground('checkAddressPoisoning', [address]);
 }
 
 // TODO: Clean this up.
@@ -4991,23 +4927,6 @@ export function setUseCurrencyRateCheck(
   };
 }
 
-// MultichainAssetsRatesController
-export function fetchHistoricalPricesForAsset(
-  address: CaipAssetType,
-  internalAccount: InternalAccount,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(`background.fetchHistoricalPricesForAsset`);
-    await submitRequestToBackground('fetchHistoricalPricesForAsset', [
-      address,
-      internalAccount,
-    ]);
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-
 // TokenDetectionController
 export function detectTokens(
   chainIds?: string[],
@@ -6416,18 +6335,17 @@ export function updateBalancesFoAccounts(
  * @param params - The parameters for the polling.
  * @param params.chainIds - The chain ids to poll.
  * @param params.selectedAccountAddress - The selected account address to poll.
+ * @param params.selectedAccountId - The selected account id to poll.
  * @returns The polling token that can be used to stop polling.
  */
-export async function staticAssetsStartPolling({
-  chainIds,
-  selectedAccountAddress,
-}: {
+export async function staticAssetsStartPolling(params: {
   chainIds: string[];
   selectedAccountAddress: string;
+  selectedAccountId: string;
 }): Promise<string> {
   const pollingToken = await submitRequestToBackground(
     'staticAssetsStartPolling',
-    [{ chainIds, selectedAccountAddress }],
+    [params],
   );
   await addPollingTokenToAppState(pollingToken);
   return pollingToken;
@@ -7417,6 +7335,33 @@ export function performSignIn(): ThunkAction<
 }
 
 /**
+ * Marks profile pairing as needed in the AuthenticationController state.
+ *
+ * Dispatched by `useAutoSignIn` when a new keyring/SRP is added so that the
+ * next auto-sign-in cycle re-runs `performSignIn` and re-pairs profiles. The
+ * controller method is a synchronous, never-throws state setter.
+ *
+ * @returns A thunk action that toggles `needsProfilePairing` to `true`.
+ */
+export function requestProfilePairing(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  return async () => {
+    try {
+      await submitRequestToBackground('requestProfilePairing');
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
+/**
  * Initiates the sign-out process.
  *
  * This function dispatches a request to the background script to perform the sign-out operation.
@@ -8018,18 +7963,6 @@ export async function sendMultichainTransaction(
       },
     },
   });
-}
-
-export async function createSnapAccount(
-  snapId: SnapId,
-  options: Record<string, Json>,
-  internalOptions?: SnapKeyringInternalOptions,
-): Promise<InternalAccount> {
-  return await submitRequestToBackground<InternalAccount>('createSnapAccount', [
-    snapId,
-    options,
-    internalOptions,
-  ]);
 }
 
 export async function getCode(address: Hex, networkClientId: string) {
