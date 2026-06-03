@@ -517,13 +517,13 @@ describe('ImportTokensModal', () => {
         isLoading: false,
       });
 
-      const { getByText, queryByText } = render();
+      const { getByText } = render();
 
       // Custom token tab should still be available on EVM chains
       expect(getByText(messages.customToken.message)).toBeInTheDocument();
 
-      // Search tab should not show when no tokens
-      expect(queryByText(messages.search.message)).not.toBeInTheDocument();
+      // Search tab is always shown on EVM chains to enable API-based search
+      expect(getByText(messages.search.message)).toBeInTheDocument();
     });
 
     it('should disable Next button when loading', () => {
