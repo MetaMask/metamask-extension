@@ -4,7 +4,7 @@ import Disclosure from './disclosure';
 
 describe('Disclosure', () => {
   it('matches snapshot without title prop', () => {
-    const { container } = render(<Disclosure variant="">Test</Disclosure>);
+    const { container } = render(<Disclosure>Test</Disclosure>);
     expect(container).toMatchSnapshot();
   });
 
@@ -22,7 +22,7 @@ describe('Disclosure', () => {
       <Disclosure title="Test Title">Test</Disclosure>,
     );
     expect(getByText('Test Title')).toBeInTheDocument();
-    expect(container.querySelector('.disclosure__content').textContent).toBe(
+    expect(container.querySelector('.disclosure__content')?.textContent).toBe(
       'Test',
     );
 
@@ -48,11 +48,14 @@ describe('Disclosure', () => {
         window.HTMLElement.prototype.scrollIntoView;
       window.HTMLElement.prototype.scrollIntoView = mockScrollIntoView;
 
-      const { getByTestId } = render(
+      const { container } = render(
         <Disclosure title="Test Title">Test</Disclosure>,
       );
-      const element = getByTestId('disclosure');
-      fireEvent.click(element);
+      const details = container.querySelector('details') as HTMLDetailsElement;
+      // isScrollToBottomOnOpen defaults to false, so scrolling never triggers
+      // regardless of the open state.
+      details.open = true;
+      fireEvent(details, new Event('toggle'));
       expect(mockScrollIntoView).not.toHaveBeenCalled();
       window.HTMLElement.prototype.scrollIntoView = originalScrollIntoView;
     });
@@ -63,14 +66,16 @@ describe('Disclosure', () => {
         window.HTMLElement.prototype.scrollIntoView;
       window.HTMLElement.prototype.scrollIntoView = mockScrollIntoView;
 
-      const { getByTestId } = render(
+      const { container } = render(
         <Disclosure title="Test Title" isScrollToBottomOnOpen>
           Test
         </Disclosure>,
       );
-      const element = getByTestId('disclosure');
-
-      fireEvent.click(element);
+      const details = container.querySelector('details') as HTMLDetailsElement;
+      // Set open=true before dispatching so the handler reads the correct state
+      // and triggers the scroll-to-bottom effect.
+      details.open = true;
+      fireEvent(details, new Event('toggle'));
       expect(mockScrollIntoView).toHaveBeenCalledWith({
         behavior: 'smooth',
       });

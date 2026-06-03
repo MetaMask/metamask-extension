@@ -2,11 +2,14 @@ import React, { useMemo } from 'react';
 import { BigNumber } from 'bignumber.js';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { TransactionPayTotals } from '@metamask/transaction-pay-controller';
-import { Text } from '../../../../../components/component-library';
 import {
+  IconColor,
+  IconName,
+  Text,
   TextColor,
   TextVariant,
-} from '../../../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
+import { PopoverPosition } from '../../../../../components/component-library';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowSize,
@@ -22,6 +25,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
 import { useConfirmContext } from '../../../context/confirm';
 import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
+import { InfoPopoverTooltip } from '../../info-popover-tooltip';
 
 export type BridgeFeeRowProps = {
   variant?: ConfirmInfoRowSize;
@@ -72,7 +76,32 @@ export function BridgeFeeRow({
   }, [totals, formatFiat]);
 
   const isSmall = variant === ConfirmInfoRowSize.Small;
-  const textVariant = isSmall ? TextVariant.bodyMd : TextVariant.bodyMdMedium;
+
+  const hasQuotes = Boolean(quotes?.length);
+
+  const tooltipLines = useMemo(() => {
+    if (!hasQuotes || !totals) {
+      return undefined;
+    }
+    return buildTooltipLines({
+      description: tooltipDescription,
+      t,
+      totals,
+      formatFiat,
+      metamaskFeeFormatted: metamaskFeeUsd,
+      includeMetamaskFee: isSmall,
+      useProviderFeeLabel: isPerpsWithdraw,
+    });
+  }, [
+    hasQuotes,
+    totals,
+    tooltipDescription,
+    t,
+    formatFiat,
+    metamaskFeeUsd,
+    isSmall,
+    isPerpsWithdraw,
+  ]);
 
   if (isLoading) {
     return (
@@ -84,33 +113,39 @@ export function BridgeFeeRow({
     );
   }
 
-  const hasQuotes = Boolean(quotes?.length);
-
-  let tooltipContent: string | undefined;
-  if (hasQuotes && totals) {
-    tooltipContent = renderTooltipContent({
-      description: tooltipDescription,
-      t,
-      totals,
-      formatFiat,
-      metamaskFeeFormatted: metamaskFeeUsd,
-      /** Matches prior behavior: MetaMask fee was only shown for Small variant (body row). */
-      includeMetamaskFee: isSmall,
-      useProviderFeeLabel: isPerpsWithdraw,
-    });
-  }
-
   return (
     <ConfirmInfoRow
       data-testid="bridge-fee-row"
       label={feeLabel}
       rowVariant={variant}
-      tooltip={tooltipContent}
+      labelChildren={
+        tooltipLines ? (
+          <InfoPopoverTooltip
+            position={PopoverPosition.Top}
+            offset={[0, 16]}
+            iconName={IconName.Question}
+            iconColor={IconColor.IconAlternative}
+            iconMarginLeft={1}
+            plainIcon
+            ariaLabel={feeLabel}
+            data-testid="bridge-fee-tooltip-popover"
+          >
+            <Text variant={TextVariant.BodyMd} color={TextColor.InfoInverse}>
+              {tooltipLines.map((line, i) => (
+                <React.Fragment key={i}>
+                  {i > 0 && <br />}
+                  {line}
+                </React.Fragment>
+              ))}
+            </Text>
+          </InfoPopoverTooltip>
+        ) : undefined
+      }
     >
       {isSmall ? (
         <Text
-          variant={textVariant}
-          color={TextColor.textAlternative}
+          variant={TextVariant.BodyMd}
+          color={TextColor.TextAlternative}
           data-testid="transaction-fee-value"
         >
           {feeTotalUsd}
@@ -125,18 +160,17 @@ export function BridgeFeeRow({
   );
 }
 
-type RenderTooltipContentArgs = {
+type BuildTooltipLinesArgs = {
   description: string | undefined;
   t: ReturnType<typeof useI18nContext>;
   totals: TransactionPayTotals;
   formatFiat: ReturnType<typeof useFiatFormatter>;
   metamaskFeeFormatted: string;
   includeMetamaskFee: boolean;
-  /** Render the provider fee as "Provider fee" (withdraw flows) instead of "Bridge fee". */
   useProviderFeeLabel?: boolean;
 };
 
-function renderTooltipContent({
+function buildTooltipLines({
   description,
   t,
   totals,
@@ -144,7 +178,7 @@ function renderTooltipContent({
   metamaskFeeFormatted,
   includeMetamaskFee,
   useProviderFeeLabel,
-}: RenderTooltipContentArgs): string {
+}: BuildTooltipLinesArgs): string[] {
   const networkFee = new BigNumber(totals.fees.sourceNetwork.estimate.usd).plus(
     totals.fees.targetNetwork.usd,
   );
@@ -169,5 +203,5 @@ function renderTooltipContent({
     lines.push(`${t('metamaskFee')}: ${metamaskFeeFormatted}`);
   }
 
-  return lines.join('\n');
+  return lines;
 }

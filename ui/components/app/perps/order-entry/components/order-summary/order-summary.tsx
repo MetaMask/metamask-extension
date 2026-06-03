@@ -22,13 +22,13 @@ import type { OrderSummaryProps } from '../../order-entry.types';
  * @param props.liquidationPrice - Estimated liquidation price
  * @param props.metamaskFeeRateDiscountPercentage - MetaMask fee discount percentage (whole numbers)
  */
-export const OrderSummary: React.FC<OrderSummaryProps> = ({
+export const OrderSummary = ({
   marginRequired,
   estimatedFees,
   originalEstimatedFees,
   liquidationPrice,
   metamaskFeeRateDiscountPercentage,
-}) => {
+}: OrderSummaryProps) => {
   const t = useI18nContext();
 
   return (

@@ -1,6 +1,7 @@
-import React, { FunctionComponent } from 'react';
+import React from 'react';
 
 import { useSelector } from 'react-redux';
+import { IconSize } from '@metamask/design-system-react';
 import {
   getSnapMetadata,
   getTargetSubjectMetadata,
@@ -12,7 +13,6 @@ import {
   AvatarFavicon,
   AvatarFaviconProps,
   AvatarFaviconSize,
-  IconSize,
 } from '../../../component-library';
 import {
   AlignItems,
@@ -30,11 +30,11 @@ type SnapIconProps = {
   badgeBackgroundColor?: BackgroundColor;
 } & Omit<AvatarFaviconProps<'span'>, 'name'>;
 
-export const SnapIcon: FunctionComponent<SnapIconProps> = ({
+export const SnapIcon = ({
   snapId,
   avatarSize = IconSize.Lg,
   ...props
-}) => {
+}: SnapIconProps) => {
   const subjectMetadata = useSelector((state) =>
     getTargetSubjectMetadata(state, snapId),
   );
@@ -56,7 +56,7 @@ export const SnapIcon: FunctionComponent<SnapIconProps> = ({
       src={iconUrl}
       name={snapName}
       {...props}
-      size={avatarSize as unknown as AvatarFaviconSize}
+      size={avatarSize as AvatarFaviconSize}
     />
   ) : (
     <AvatarBase
@@ -69,7 +69,7 @@ export const SnapIcon: FunctionComponent<SnapIconProps> = ({
         backgroundColor: 'var(--color-background-alternative-hover)',
       }}
       {...props}
-      size={avatarSize as unknown as AvatarBaseSize}
+      size={avatarSize as AvatarBaseSize}
     >
       {fallbackIcon}
     </AvatarBase>
