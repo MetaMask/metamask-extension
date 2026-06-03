@@ -1,4 +1,5 @@
 import React from 'react';
+import clsx from 'clsx';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { Box, Button, ButtonSize } from '@metamask/design-system-react';
 import CancelButton from '../cancel-button';
@@ -10,6 +11,7 @@ type PendingTransactionActionButtonsProps = {
   onCancel: (event: React.MouseEvent) => void;
   speedUp: PendingTransactionSpeedUpAction;
   primaryTransaction: TransactionMeta;
+  className?: string;
 };
 
 // Cancel / Speed up buttons for pending EVM activity rows
@@ -18,6 +20,7 @@ export const PendingTransactionActionButtons = ({
   onCancel,
   speedUp,
   primaryTransaction,
+  className,
 }: Readonly<PendingTransactionActionButtonsProps>) => {
   const t = useI18nContext();
 
@@ -27,8 +30,7 @@ export const PendingTransactionActionButtons = ({
 
   return (
     <Box
-      paddingTop={2}
-      className="flex gap-2"
+      className={clsx('flex gap-2 pt-2', className)}
       onClick={(event: React.MouseEvent) => {
         event.stopPropagation();
       }}
