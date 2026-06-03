@@ -1,5 +1,6 @@
 import type { Hex } from '@metamask/utils';
 import React, { useMemo, useState } from 'react';
+import { Text, TextColor, TextVariant } from '@metamask/design-system-react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
@@ -158,6 +159,17 @@ export default function TokenCell({
           bonusAmountRange={merklBonusAmountRange}
           hasClaimedBefore={hasClaimedBefore}
         />
+      );
+    }
+    if (displayToken.isStellarTrustlineInactive) {
+      return (
+        <Text
+          variant={TextVariant.BodySmMedium}
+          color={TextColor.TextAlternative}
+          data-testid="stellar-trustline-inactive-network-label"
+        >
+          {t('networkNameStellar')}
+        </Text>
       );
     }
     return <TokenCellPercentChange token={displayToken} />;

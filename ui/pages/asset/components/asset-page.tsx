@@ -51,6 +51,7 @@ import {
 import { ActivityList } from '../../../components/multichain/activity-v2/activity-list';
 import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
 import { StockBadge } from '../../../components/app/assets/stock-badge/stock-badge';
+import { StellarTrustlineInactiveBadge } from '../../../components/app/assets/stellar-trustline-inactive-badge/stellar-trustline-inactive-badge';
 import { AddressCopyButton } from '../../../components/multichain';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
@@ -274,9 +275,12 @@ const AssetPage = ({
     type === AssetType.token &&
     Boolean(assetId) &&
     !isSep41StellarAsset;
-  const showStellarClassicTrustlineActivate =
-    isStellarClassicTrustlineTrackedToken &&
+  const isStellarTrustlineInactive =
     assetWithBalance?.isStellarTrustlineInactive === true;
+  const showStellarClassicTrustlineActivate =
+    isStellarClassicTrustlineTrackedToken && isStellarTrustlineInactive;
+  const showStellarInactiveAssetHeader =
+    isStellarClassicTrustlineTrackedToken && isStellarTrustlineInactive;
   const hasStellarClassicTrustlineToRemove =
     assetWithBalance !== undefined &&
     assetWithBalance.isStellarTrustlineInactive !== true;
@@ -321,6 +325,33 @@ const AssetPage = ({
     setIsMarketClosedModalOpen(true);
   };
 
+  const renderAssetTitleSection = () => {
+    if (showStellarInactiveAssetHeader) {
+      return (
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={2}
+          data-testid="stellar-inactive-asset-header"
+        >
+          {assetNameElement}
+          <StellarTrustlineInactiveBadge />
+        </Box>
+      );
+    }
+
+    if (isStockToken) {
+      return (
+        <Box alignItems={BoxAlignItems.Center} gap={2}>
+          {assetNameElement}
+          <StockBadge isMarketClosed={isMarketClosed} />
+        </Box>
+      );
+    }
+
+    return assetNameElement;
+  };
+
   return (
     <Box className="asset__content">
       <Box
@@ -344,14 +375,7 @@ const AssetPage = ({
         {optionsButton}
       </Box>
       <Box paddingLeft={4}>
-        {isStockToken ? (
-          <Box alignItems={BoxAlignItems.Center} gap={2}>
-            {assetNameElement}
-            <StockBadge isMarketClosed={isMarketClosed} />
-          </Box>
-        ) : (
-          assetNameElement
-        )}
+        {renderAssetTitleSection()}
       </Box>
       <StellarClassicTrustlineActivateCard
         visible={showStellarClassicTrustlineActivate}

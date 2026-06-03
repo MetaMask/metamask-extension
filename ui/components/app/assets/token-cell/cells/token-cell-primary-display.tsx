@@ -27,6 +27,10 @@ export const TokenCellPrimaryDisplay = React.memo(
       selectAnyEnabledNetworksAreAvailable,
     );
 
+    if (token.isStellarTrustlineInactive) {
+      return null;
+    }
+
     return (
       <Skeleton
         hideChildren={
@@ -48,5 +52,7 @@ export const TokenCellPrimaryDisplay = React.memo(
   },
   (prevProps, nextProps) =>
     prevProps.token.balance === nextProps.token.balance &&
+    prevProps.token.isStellarTrustlineInactive ===
+      nextProps.token.isStellarTrustlineInactive &&
     prevProps.privacyMode === nextProps.privacyMode,
 );

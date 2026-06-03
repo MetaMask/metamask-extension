@@ -1,11 +1,17 @@
 import { errorCodes } from '@metamask/rpc-errors';
 import {
   Box,
-  BoxBorderColor,
+  BoxAlignItems,
+  BoxBackgroundColor,
   BoxFlexDirection,
   Button,
+  ButtonSize,
   ButtonVariant,
   FontWeight,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
   Text,
   TextColor,
   TextVariant,
@@ -30,6 +36,7 @@ export type StellarClassicTrustlineActivateCardProps = {
 /**
  * Asset detail CTA for Stellar classic tokens with an inactive trustline: opens the Stellar wallet
  * snap to add the trustline (the snap handles funding / activation messaging).
+ *
  * @param options0
  * @param options0.visible
  * @param options0.account
@@ -75,35 +82,54 @@ export const StellarClassicTrustlineActivateCard = ({
 
   return (
     <Box
-      marginTop={4}
+      marginTop={3}
+      marginBottom={4}
       paddingLeft={4}
       paddingRight={4}
       data-testid="stellar-classic-trustline-activate-card"
     >
       <Box
-        flexDirection={BoxFlexDirection.Column}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Start}
         gap={3}
         padding={4}
-        borderColor={BoxBorderColor.BorderMuted}
-        className="rounded-xl border"
+        backgroundColor={BoxBackgroundColor.WarningMuted}
+        className="rounded-xl"
       >
-        <Text
-          variant={TextVariant.HeadingSm}
-          fontWeight={FontWeight.Medium}
+        <Icon
+          name={IconName.Danger}
+          size={IconSize.Lg}
+          color={IconColor.WarningDefault}
+          className="shrink-0"
+        />
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          gap={2}
+          className="min-w-0 flex-1"
         >
-          {t('stellarClassicActivateOnStellarTitle', [symbol])}
-        </Text>
-        <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-          {t('stellarClassicActivateOnStellarBody')}
-        </Text>
-        <Button
-          variant={ButtonVariant.Primary}
-          onClick={handleActivateTrustline}
-          disabled={isAddingTrustline}
-          data-testid="stellar-classic-trustline-activate-button"
-        >
-          {t('stellarClassicActivateOnStellarButton')}
-        </Button>
+          <Box flexDirection={BoxFlexDirection.Column} gap={1}>
+            <Text
+              variant={TextVariant.BodyMd}
+              fontWeight={FontWeight.Medium}
+              color={TextColor.TextDefault}
+            >
+              {t('stellarClassicActivateOnStellarTitle', [symbol])}
+            </Text>
+            <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+              {t('stellarClassicActivateOnStellarBody', [symbol])}
+            </Text>
+          </Box>
+          <Button
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Sm}
+            onClick={handleActivateTrustline}
+            disabled={isAddingTrustline}
+            data-testid="stellar-classic-trustline-activate-button"
+            className="self-start"
+          >
+            {t('stellarClassicActivateOnStellarButton')}
+          </Button>
+        </Box>
       </Box>
     </Box>
   );

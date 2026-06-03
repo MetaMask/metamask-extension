@@ -7,7 +7,7 @@ import { Tag } from '../../../../component-library';
 import { ACCOUNT_TYPE_LABELS } from '../../constants';
 import { useRWAToken } from '../../../../../pages/bridge/hooks/useRWAToken';
 import { StockBadge } from '../../stock-badge/stock-badge';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { StellarTrustlineInactiveBadge } from '../../stellar-trustline-inactive-badge/stellar-trustline-inactive-badge';
 
 type TokenCellTitleProps = {
   token: TokenFiatDisplayInfo;
@@ -15,7 +15,6 @@ type TokenCellTitleProps = {
 
 export const TokenCellTitle = React.memo(
   ({ token }: TokenCellTitleProps) => {
-    const t = useI18nContext();
     const label = token.accountType
       ? ACCOUNT_TYPE_LABELS[token.accountType]
       : undefined;
@@ -26,9 +25,7 @@ export const TokenCellTitle = React.memo(
       <Box flexDirection={BoxFlexDirection.Row} gap={2} className="min-w-0">
         <AssetCellTitle title={token.title} />
         {label && <Tag label={label} />}
-        {token.isStellarTrustlineInactive && (
-          <Tag label={t('stellarTrustlineInactive')} />
-        )}
+        {token.isStellarTrustlineInactive && <StellarTrustlineInactiveBadge />}
         {tokenIsStock && (
           <StockBadge isMarketClosed={!isTokenTradingOpen(token)} />
         )}

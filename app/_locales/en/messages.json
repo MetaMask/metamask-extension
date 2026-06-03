@@ -9648,7 +9648,7 @@
     "message": "Staked"
   },
   "stellarTrustlineInactive": {
-    "message": "No trustline",
+    "message": "Inactive",
     "description": "Label for a Stellar classic token the user imported but has not established an on-chain trustline for yet"
   },
   "stellarClassicActivateOnStellarTitle": {
@@ -9656,8 +9656,8 @@
     "description": "Title for the trustline activation card on the Stellar asset detail page. $1 is the token symbol."
   },
   "stellarClassicActivateOnStellarBody": {
-    "message": "Approve adding this token trustline in MetaMask. You need a funded Stellar account and enough XLM for fees and reserve.",
-    "description": "Explainer for the trustline activation card on the Stellar asset detail page"
+    "message": "Two steps: fund wallet with XLM, then add $1",
+    "description": "Explainer for the trustline activation card on the Stellar asset detail page. $1 is the token symbol."
   },
   "stellarClassicActivateOnStellarButton": {
     "message": "Activate",

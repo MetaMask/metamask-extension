@@ -42,6 +42,12 @@ jest.mock('../../stock-badge/stock-badge', () => ({
   ),
 }));
 
+jest.mock('../../stellar-trustline-inactive-badge/stellar-trustline-inactive-badge', () => ({
+  StellarTrustlineInactiveBadge: () => (
+    <span data-testid="stellar-trustline-inactive-badge" />
+  ),
+}));
+
 const mockIsStockToken = jest.fn();
 const mockIsTokenTradingOpen = jest.fn();
 
@@ -100,17 +106,14 @@ describe('TokenCellTitle', () => {
     expect(queryByTestId('tag')).not.toBeInTheDocument();
   });
 
-  it('renders no trustline tag when isStellarTrustlineInactive is true', () => {
+  it('renders stellar trustline inactive badge when isStellarTrustlineInactive is true', () => {
     const token = createMockToken({
       accountType: undefined,
       isStellarTrustlineInactive: true,
     });
     const { getByTestId } = render(<TokenCellTitle token={token} />);
 
-    expect(getByTestId('tag')).toHaveAttribute(
-      'data-label',
-      'stellarTrustlineInactive',
-    );
+    expect(getByTestId('stellar-trustline-inactive-badge')).toBeInTheDocument();
   });
 
   it('does not render tag when accountType is undefined', () => {
