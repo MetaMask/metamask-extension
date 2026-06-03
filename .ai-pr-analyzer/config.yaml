@@ -59,8 +59,8 @@ searchDirs:
   - .github/
 
 models:
-  default: azure/grok-4-fast-reasoning
-  escalation: anthropic/claude-sonnet-4-6
+  default: grok-4-20-reasoning
+  escalation: claude-sonnet-4.6
   escalationThreshold: 2
 
   criticalFileThreshold: 5
