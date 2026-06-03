@@ -60,7 +60,7 @@ async function openPerpsWithdrawConfirmation(
   return withdrawConfirmation;
 }
 
-describe('Perps Withdraw', function (this: Suite) {
+describe('Perps Withdraw TEST', function (this: Suite) {
   this.timeout(120000);
 
   it('withdraw page loads with header and summary rows visible', async function () {
