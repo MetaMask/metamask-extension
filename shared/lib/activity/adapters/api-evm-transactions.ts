@@ -1,11 +1,11 @@
 import type { V1TransactionByHashResponse } from '@metamask/core-backend';
 import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
 import { NATIVE_TOKEN_ADDRESS as zeroAddress } from '../../../constants/transaction';
+import { toAssetId } from '../../asset-utils';
 import { isEqualCaseInsensitive as equalsIgnoreCase } from '../../string-utils';
 import type { ActivityListItem, Status, TokenAmount } from '../types';
 import { supplyMethodIds, wrapMethodIds } from './constants';
 import {
-  getTokenMetadataFromKnownToken,
   getTokenAmountFromTransfer,
   withFallbackTokenAssetId,
   type ValueTransfer,
@@ -90,11 +90,8 @@ export function mapApiEvmTransactions({
 
   if (transactionCategory === 'APPROVE') {
     // TODO: Categorize REVOKE in the backend
-    const approveTransfer = sentTransfer ?? receivedTransfer;
-    const approveDirection = receivedTransfer && !sentTransfer ? 'in' : 'out';
-    const approveToken =
-      getToken(approveTransfer, approveDirection) ??
-      getTokenMetadataFromKnownToken(transaction.to, approveDirection, chainId);
+    const direction = receivedTransfer && !sentTransfer ? 'in' : 'out';
+    const assetId = toAssetId(transaction.to, chainId);
 
     return {
       type: 'approveSpendingCap',
@@ -104,7 +101,7 @@ export function mapApiEvmTransactions({
       raw: { type: 'apiEvmTransaction', data: transaction },
       data: {
         hash,
-        token: approveToken,
+        token: assetId ? { direction, assetId } : undefined,
       },
     };
   }
