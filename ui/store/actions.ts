@@ -225,7 +225,6 @@ import {
   generateActionId,
   submitRequestToBackground,
 } from './background-connection';
-import { getStatePatches } from './patch-store-substream-connection';
 import type {
   MetaMaskReduxDispatch,
   MetaMaskReduxState,
@@ -4667,7 +4666,8 @@ export async function forceUpdateMetamaskState(
   let pendingPatches: Patch[] | undefined;
 
   try {
-    pendingPatches = await getStatePatches();
+    pendingPatches =
+      await submitRequestToBackground<Patch[]>('getStatePatches');
   } catch (error) {
     dispatch(displayWarning(error));
     throw error;

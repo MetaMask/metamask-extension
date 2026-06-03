@@ -21,7 +21,7 @@ let mockStoreState = {
   },
 };
 
-const wrapper: FC = ({ children }) => (
+const wrapper = ({ children }: React.PropsWithChildren<unknown>) => (
   <Provider store={configureStore(mockStoreState)}>{children}</Provider>
 );
 

@@ -18,7 +18,7 @@ import {
 } from '../../../../../../../helpers/constants/design-system';
 import { useConfirmContext } from '../../../../../context/confirm';
 
-const SIWESignInfo: React.FC = () => {
+const SIWESignInfo = () => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
 

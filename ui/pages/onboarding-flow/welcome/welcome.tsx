@@ -15,6 +15,7 @@ import {
   BoxAlignItems,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
+import type { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
@@ -60,18 +61,26 @@ import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { useRiveWasmContext } from '../../../contexts/rive-wasm';
 import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 import WelcomeLogin from './welcome-login';
-import { LOGIN_ERROR, LOGIN_OPTION, LOGIN_TYPE, LoginErrorType } from './types';
+import {
+  LOGIN_ERROR,
+  LOGIN_OPTION,
+  LOGIN_TYPE,
+  LoginErrorType,
+  LoginType,
+} from './types';
 import LoginErrorModal from './login-error-modal';
 
 const MetaMaskWordMarkAnimation = lazy(
   () =>
     // @ts-expect-error - TypeScript expects .js extension for ESM, but Jest needs the actual .tsx file
     import('./metamask-wordmark-animation') as unknown as Promise<{
-      default: ComponentType<{
-        setIsAnimationComplete: (isAnimationComplete: boolean) => void;
-        isAnimationComplete?: boolean;
-        skipTransition?: boolean;
-      }>;
+      default: ComponentType<
+        React.PropsWithChildren<{
+          setIsAnimationComplete: (isAnimationComplete: boolean) => void;
+          isAnimationComplete?: boolean;
+          skipTransition?: boolean;
+        }>
+      >;
     }>,
 );
 
@@ -79,10 +88,12 @@ const FoxAppearAnimation = lazy(
   () =>
     // @ts-expect-error - TypeScript expects .js extension for ESM, but Jest needs the actual .tsx file
     import('./fox-appear-animation') as unknown as Promise<{
-      default: ComponentType<{
-        isLoader?: boolean;
-        skipTransition?: boolean;
-      }>;
+      default: ComponentType<
+        React.PropsWithChildren<{
+          isLoader?: boolean;
+          skipTransition?: boolean;
+        }>
+      >;
     }>,
 );
 
@@ -251,7 +262,7 @@ export default function OnboardingWelcome() {
   ]);
 
   const handleSocialLogin = useCallback(
-    async (socialConnectionType) => {
+    async (socialConnectionType: LoginType) => {
       if (isSeedlessOnboardingFeatureEnabled) {
         bufferedTrace?.({
           name: TraceName.OnboardingSocialLoginAttempt,
@@ -261,7 +272,7 @@ export default function OnboardingWelcome() {
         });
         const isNewUser = await dispatch(
           startOAuthLogin(
-            socialConnectionType,
+            socialConnectionType as AuthConnection,
             bufferedTrace,
             bufferedEndTrace,
             trackEvent,
@@ -283,7 +294,7 @@ export default function OnboardingWelcome() {
   );
 
   const handleSocialLoginError = useCallback(
-    (error, loginType) => {
+    (error: Error | undefined, loginType: LoginType) => {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
 
@@ -346,7 +357,7 @@ export default function OnboardingWelcome() {
   );
 
   const onSocialLoginCreateClick = useCallback(
-    async (socialConnectionType) => {
+    async (socialConnectionType: LoginType) => {
       setIsLoggingIn(true);
       setNewAccountCreationInProgress(true);
       // here, we cannot use the selector yet because the social login flow is not complete and the state is not updated yet
@@ -386,7 +397,7 @@ export default function OnboardingWelcome() {
           navigate(ONBOARDING_ACCOUNT_EXIST, { replace: true });
         }
       } catch (error) {
-        handleSocialLoginError(error, socialConnectionType);
+        handleSocialLoginError(error as Error, socialConnectionType);
       } finally {
         setIsLoggingIn(false);
       }
@@ -403,7 +414,7 @@ export default function OnboardingWelcome() {
   );
 
   const onSocialLoginImportClick = useCallback(
-    async (socialConnectionType) => {
+    async (socialConnectionType: LoginType) => {
       setIsLoggingIn(true);
 
       // here, we cannot use the selector yet because the social login flow is not complete and the state is not updated yet
@@ -444,7 +455,7 @@ export default function OnboardingWelcome() {
           navigate(ONBOARDING_UNLOCK_ROUTE, { replace: true });
         }
       } catch (error) {
-        handleSocialLoginError(error, socialConnectionType);
+        handleSocialLoginError(error as Error, socialConnectionType);
       } finally {
         setIsLoggingIn(false);
       }
@@ -460,8 +471,8 @@ export default function OnboardingWelcome() {
     ],
   );
 
-  const handleLoginError = useCallback((error) => {
-    if (isUserCancelledLoginError(error)) {
+  const handleLoginError = useCallback((error: unknown) => {
+    if (isUserCancelledLoginError(error as Error | undefined)) {
       setLoginError(null);
     } else {
       setLoginError(LOGIN_ERROR.GENERIC);
@@ -469,7 +480,7 @@ export default function OnboardingWelcome() {
   }, []);
 
   const handleLogin = useCallback(
-    async (loginType, loginOption) => {
+    async (loginType: LoginType, loginOption: string) => {
       try {
         if (!isFireFox) {
           // reset the participate in meta metrics in case it was set to true from previous login attempts
