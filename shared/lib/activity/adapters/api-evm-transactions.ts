@@ -1,5 +1,4 @@
 import type { V1TransactionByHashResponse } from '@metamask/core-backend';
-import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
 import { NATIVE_TOKEN_ADDRESS as zeroAddress } from '../../../constants/transaction';
 import { toAssetId } from '../../asset-utils';
@@ -7,6 +6,7 @@ import { isEqualCaseInsensitive as equalsIgnoreCase } from '../../string-utils';
 import type { ActivityListItem, Status, TokenAmount } from '../types';
 import { supplyMethodIds, withdrawMethodIds, wrapMethodIds } from './constants';
 import {
+  getNativeAssetSafe,
   getTokenMetadataFromKnownToken,
   getTokenAmountFromTransfer,
   withFallbackTokenAssetId,
@@ -190,7 +190,7 @@ export function mapApiEvmTransactions({
 
     const transfer = isReceive ? receivedTransfer : sentTransfer;
     const direction = isReceive ? 'in' : 'out';
-    const nativeAsset = getNativeAssetForChainId(chainId);
+    const nativeAsset = getNativeAssetSafe(chainId);
     const nativeToken =
       transactionCategory === 'STANDARD' && nativeAsset
         ? ({
