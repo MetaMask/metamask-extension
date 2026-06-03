@@ -7,6 +7,7 @@ import { isEqualCaseInsensitive as equalsIgnoreCase } from '../../string-utils';
 import type { ActivityListItem, Status, TokenAmount } from '../types';
 import { supplyMethodIds, wrapMethodIds } from './constants';
 import {
+  getTokenMetadataFromKnownToken,
   getTokenAmountFromTransfer,
   withFallbackTokenAssetId,
   type ValueTransfer,
@@ -93,6 +94,9 @@ export function mapApiEvmTransactions({
     // TODO: Categorize REVOKE in the backend
     const direction = receivedTransfer && !sentTransfer ? 'in' : 'out';
     const assetId = toAssetId(transaction.to, chainId);
+    const token =
+      getTokenMetadataFromKnownToken(transaction.to, direction, chainId) ??
+      (assetId ? { direction, assetId } : undefined);
 
     return {
       type: 'approveSpendingCap',
@@ -102,7 +106,7 @@ export function mapApiEvmTransactions({
       raw: { type: 'apiEvmTransaction', data: transaction },
       data: {
         hash,
-        token: assetId ? { direction, assetId } : undefined,
+        token,
       },
     };
   }
