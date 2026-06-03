@@ -13,6 +13,13 @@ import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import { UNLOCK_ROUTE } from '../../../helpers/constants/routes';
 import { UnlockPasskeySection } from './unlock-passkey-section';
 
+jest.mock('../../../../shared/lib/sentry', () => ({
+  ...jest.requireActual<typeof import('../../../../shared/lib/sentry')>(
+    '../../../../shared/lib/sentry',
+  ),
+  captureException: jest.fn(),
+}));
+
 jest.mock('../../../../shared/lib/environment-type', () => {
   const actual = jest.requireActual<
     typeof import('../../../../shared/lib/environment-type')
