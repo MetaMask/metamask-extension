@@ -24,16 +24,17 @@ import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 
 import {
   Modal,
+  Text,
+} from '../../../component-library';
+import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
   ModalBody,
-  Text,
   ModalFooter,
-} from '../../../component-library';
+  ButtonsAlignment,
+} from '@metamask/design-system-react';
 import {
-  AlignItems,
-  FlexDirection,
   FontWeight,
   TextColor,
 } from '../../../../helpers/constants/design-system';
@@ -127,7 +128,10 @@ export default function TurnOnMetamaskNotifications() {
     <Modal isOpen onClose={() => handleHideModal()}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader onClose={() => handleHideModal()}>
+        <ModalHeader
+          onClose={() => handleHideModal()}
+          closeButtonProps={{ ariaLabel: t('close') }}
+        >
           {t('turnOnMetamaskNotifications')}
         </ModalHeader>
         <ModalBody>
@@ -151,19 +155,16 @@ export default function TurnOnMetamaskNotifications() {
           </Text>
         </ModalBody>
         <ModalFooter
-          paddingTop={4}
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          onSubmit={() => handleTurnOnNotifications()}
-          containerProps={{
-            flexDirection: FlexDirection.Column,
-            alignItems: AlignItems.stretch,
-          }}
-          submitButtonProps={{
+          className="pt-4"
+          buttonsAlignment={ButtonsAlignment.Vertical}
+          primaryButtonProps={{
             children: t('turnOnMetamaskNotificationsButton'),
-            loading: isLoading,
-            disabled: isLoading,
+            isLoading,
+            isDisabled: isLoading,
             'data-testid': 'turn-on-notifications-button',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            onClick: () => handleTurnOnNotifications(),
           }}
         />
         {error && (
