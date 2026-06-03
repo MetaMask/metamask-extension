@@ -1,4 +1,5 @@
 import type { V1TransactionByHashResponse } from '@metamask/core-backend';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
 import { NATIVE_TOKEN_ADDRESS as zeroAddress } from '../../../constants/transaction';
 import { toAssetId } from '../../asset-utils';
@@ -182,6 +183,16 @@ export function mapApiEvmTransactions({
         !equalsIgnoreCase(transaction.from, subjectAddress));
 
     const transfer = isReceive ? receivedTransfer : sentTransfer;
+    const direction = isReceive ? 'in' : 'out';
+    const nativeAsset = getNativeAssetForChainId(chainId);
+    const nativeToken =
+      transactionCategory === 'STANDARD' && nativeAsset
+        ? ({
+            ...nativeAsset,
+            amount: transaction.value,
+            direction,
+          } as TokenAmount)
+        : undefined;
 
     // TODO: Handle mUSD converts in the backend
     // Falls back to "send" without a matching local transaction
@@ -195,12 +206,13 @@ export function mapApiEvmTransactions({
       data: {
         from: transfer?.from ?? transaction.from,
         to: transfer?.to ?? transaction.to,
-        token: withFallbackTokenAssetId(
-          getToken(transfer, isReceive ? 'in' : 'out'),
-          transaction.to,
-          transfer?.transferType,
-          chainId,
-        ),
+        token:
+          withFallbackTokenAssetId(
+            getToken(transfer, direction),
+            transaction.to,
+            transfer?.transferType,
+            chainId,
+          ) ?? nativeToken,
         hash,
       },
     };
