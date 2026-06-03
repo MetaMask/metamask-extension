@@ -8,7 +8,6 @@ import {
   clickConfirmButton,
   DEFAULT_BITCOIN_TEST_DAPP_FIXTURE_OPTIONS,
   psbt,
-  signedPsbt,
   withBtcWalletStandardSnap,
 } from './testHelpers';
 
@@ -39,7 +38,7 @@ describe('Bitcoin Wallet Standard - Sign psbt - e2e tests', function () {
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.BitcoinTestDApp);
 
-          await testDapp.verifySignedPsbt(signedPsbt);
+          await testDapp.verifySignedPsbt(psbt);
         },
       );
     });

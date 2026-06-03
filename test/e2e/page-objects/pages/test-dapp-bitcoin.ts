@@ -1,3 +1,4 @@
+import assert from 'assert';
 import { dataTestIds, WalletConnectionType } from '@metamask/test-dapp-bitcoin';
 import { WINDOW_TITLES } from '../../constants';
 import { Driver } from '../../webdriver/driver';
@@ -85,17 +86,10 @@ export class TestDappBitcoin {
       tag: 'button',
     });
 
-    const walletButtons = await this.driver.findElements({
+    await this.driver.clickElement({
       testId: dataTestIds.testPage.walletSelectionModal.walletOption,
+      text: 'MetaMask',
     });
-
-    const metaMaskButton = walletButtons[0]; // Assuming MetaMask is always the first button
-
-    if (!metaMaskButton) {
-      throw new Error('MetaMask button not found');
-    }
-
-    await metaMaskButton.click();
 
     if (lib === WalletConnectionType.SatsConnectV3) {
       await this.driver.clickElement({
@@ -141,9 +135,9 @@ export class TestDappBitcoin {
   }
 
   async signMessage() {
-    await this.driver.clickElement(
-      dataTestIds.testPage.signMessage.signMessage,
-    );
+    await this.driver.clickElement({
+      testId: dataTestIds.testPage.signMessage.signMessage,
+    });
   }
 
   async verifySignedMessage(signedMessage: string) {
@@ -168,9 +162,9 @@ export class TestDappBitcoin {
   }
 
   async sendTransaction() {
-    await this.driver.clickElement(
-      dataTestIds.testPage.sendTransaction.sendTransaction,
-    );
+    await this.driver.clickElement({
+      testId: dataTestIds.testPage.sendTransaction.sendTransaction,
+    });
   }
 
   async verifyTransactionHash(transactionHash: string) {
@@ -185,24 +179,33 @@ export class TestDappBitcoin {
   }
 
   async signPsbt() {
-    await this.driver.clickElement(
-      dataTestIds.testPage.signTransaction.signTransaction,
-    );
-  }
-
-  async verifySignedPsbt(signedPsbt: string) {
-    await this.driver.findElement({
-      css: `[data-testid="${dataTestIds.testPage.signTransaction.signedPsbt}"]`,
-      text: signedPsbt,
+    await this.driver.clickElement({
+      testId: dataTestIds.testPage.signTransaction.signTransaction,
     });
   }
 
-  async switchToMainnet() {
-    await this.driver.clickElement(dataTestIds.testPage.header.network);
-
-    await this.driver.clickElement(
-      dataTestIds.testPage.header.networks.mainnet,
+  async verifySignedPsbt(unsignedPsbt: string) {
+    const signedPsbtElement = await this.driver.waitForSelector(
+      `[data-testid="${dataTestIds.testPage.signTransaction.signedPsbt}"]`,
     );
+    const signedPsbt = await signedPsbtElement.getText();
+
+    assert.match(signedPsbt, /^cHNidP/u, 'Signed PSBT is not base64 PSBT data');
+    assert.notStrictEqual(
+      signedPsbt,
+      unsignedPsbt,
+      'Signed PSBT should differ from the unsigned input PSBT',
+    );
+  }
+
+  async switchToMainnet() {
+    await this.driver.clickElement({
+      testId: dataTestIds.testPage.header.network,
+    });
+
+    await this.driver.clickElement({
+      testId: dataTestIds.testPage.header.networks.mainnet,
+    });
   }
 
   private async setInputValue(id: string, value: string) {
