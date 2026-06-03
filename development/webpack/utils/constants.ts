@@ -17,6 +17,9 @@ export const DEV_SERVER_CLIENT_ENTRY_NAME = 'dev-server-client';
 export const DEV_SERVER_OPTIONS: Configuration = {
   hot: false,
   liveReload: true,
+  // Watch shutdown is handled in `build.ts` so repeated shutdown signals cannot
+  // interrupt webpack's persistent cache write.
+  setupExitSignals: false,
   // always use loopback, as 0.0.0.0 tends to fail on some machines (WSL2?)
   host: 'localhost',
   // pick a free port at startup.
