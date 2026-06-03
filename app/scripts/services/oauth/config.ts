@@ -1,6 +1,6 @@
 import { Web3AuthNetwork } from '@metamask/seedless-onboarding-controller';
 import { Env as ProfileSyncEnv } from '@metamask/profile-sync-controller/sdk';
-import { ENVIRONMENT } from '../../../../development/build/constants';
+import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { OAuthConfig } from './types';
 
 export enum BuildTypeEnv {

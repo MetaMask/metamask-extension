@@ -46,7 +46,7 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
               class="mm-box mm-badge-wrapper nft-item__badge-wrapper mm-box--display-block"
             >
               <div
-                class="mm-box nft-item__default-image nft-default mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-lg"
+                class="flex-row items-center justify-center flex nft-item__default-image nft-default rounded-lg"
                 data-testid="nft-default-image"
                 tabindex="0"
               />
@@ -534,7 +534,7 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
             class="mm-box mm-text mm-text--body-md"
             data-testid="native-currency"
           >
-            $0.08
+            $1.26
           </p>
           <div
             class="mm-box mm-box--margin-left-1 mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill"

@@ -7,19 +7,14 @@ import {
   getIsGasEstimatesLoadingByChainId,
   getIsNetworkBusyByChainId,
 } from '../ducks/metamask/metamask';
-import {
-  gasFeeStopPollingByPollingToken,
-  getNetworkConfigurationByNetworkClientId,
-} from '../store/actions';
+import { gasFeeStopPollingByPollingToken } from '../store/actions';
 
 import { useGasFeeEstimates } from './useGasFeeEstimates';
 import usePolling from './usePolling';
 
 jest.mock('./usePolling', () => jest.fn());
 
-jest.mock('../store/actions', () => ({
-  getNetworkConfigurationByNetworkClientId: jest.fn(),
-}));
+jest.mock('../store/actions', () => ({}));
 
 jest.mock('../ducks/metamask/metamask', () => ({
   getGasEstimateTypeByChainId: jest
@@ -40,6 +35,9 @@ jest.mock('../../shared/lib/selectors/networks', () => ({
   getSelectedNetworkClientId: jest
     .fn()
     .mockReturnValue('getSelectedNetworkClientId'),
+  getChainIdByNetworkClientId: jest
+    .fn()
+    .mockReturnValue('getChainIdByNetworkClientId'),
 }));
 
 jest.mock('../selectors', () => ({
@@ -83,6 +81,9 @@ const generateUseSelectorRouter =
     if (selectorId === 'getSelectedNetworkClientId') {
       return 'selectedNetworkClientId';
     }
+    if (selectorId === 'getChainIdByNetworkClientId') {
+      return '0xa';
+    }
     if (selectorId === 'getGasEstimateTypeByChainId') {
       return opts.gasEstimateType ?? DEFAULT_OPTS.gasEstimateType;
     }
@@ -98,17 +99,6 @@ const generateUseSelectorRouter =
 describe('useGasFeeEstimates', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    getNetworkConfigurationByNetworkClientId.mockImplementation(
-      (networkClientId) => {
-        if (!networkClientId) {
-          return Promise.resolve(undefined);
-        }
-
-        return Promise.resolve({
-          chainId: '0xa',
-        });
-      },
-    );
   });
 
   it('polls the selected networkClientId by default', async () => {
