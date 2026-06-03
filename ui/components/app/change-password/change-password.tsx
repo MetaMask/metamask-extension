@@ -2,6 +2,13 @@ import EventEmitter from 'events';
 import log from 'loglevel';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { type PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
 import {
   Box,
@@ -74,13 +81,6 @@ import { useBoolean } from '../../../hooks/useBoolean';
 import { SECOND } from '../../../../shared/constants/time';
 import PasskeyTroubleshootModal from '../passkey-troubleshoot-modal';
 import ChangePasswordWarning from './change-password-warning';
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
 
 const ChangePasswordSteps = {
   VerifyCurrentPassword: 1,

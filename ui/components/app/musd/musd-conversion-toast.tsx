@@ -11,11 +11,11 @@ import {
   IconSize as DsIconSize,
   toast,
 } from '@metamask/design-system-react';
+import React, { useEffect } from 'react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMusdConversionToastStatus } from '../../../hooks/musd/useMusdConversionToastStatus';
 import { useMusdConversionConfirmTrace } from '../../../hooks/musd/useMusdConversionConfirmTrace';
 import { SECOND } from '../../../../shared/constants/time';
-import React, { useEffect } from 'react';
 
 const getMusdConversionToastTitle = (
   toastState: string,

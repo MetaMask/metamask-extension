@@ -2,13 +2,13 @@
  * @jest-environment jsdom
  */
 import { waitFor } from '@testing-library/react';
+import React from 'react';
 import { toast } from '@metamask/design-system-react';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { PerpsWithdrawToast } from './perps-withdraw-toast';
-import React from 'react';
 
 jest.mock('@metamask/design-system-react', () => {
   const actual = jest.requireActual('@metamask/design-system-react');

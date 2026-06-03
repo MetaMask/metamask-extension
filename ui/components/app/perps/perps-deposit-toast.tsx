@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
 import { toast } from '@metamask/design-system-react';
 import { SECOND } from '../../../../shared/constants/time';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -8,7 +9,6 @@ import {
   selectPerpsLastDepositResult,
   selectPerpsShouldShowDepositToast,
 } from '../../../selectors/perps-controller';
-import React, { useEffect } from 'react';
 
 const id = 'perps-deposit-toast';
 const duration = 5 * SECOND;

@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Box,
   BoxAlignItems,
@@ -36,7 +37,6 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getIsPasskeyRegistered } from '../../../selectors';
-import React, { useContext, useEffect, useState } from 'react';
 
 const PASSKEY_SETTINGS_TOAST_DURATION_MS = 5 * SECOND;
 

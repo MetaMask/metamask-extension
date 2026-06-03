@@ -1,5 +1,6 @@
 import configureMockStore from 'redux-mock-store';
 import { act, fireEvent, waitFor } from '@testing-library/react';
+import React from 'react';
 import { toast } from '@metamask/design-system-react';
 import { ExtensionPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
 import {
@@ -17,7 +18,6 @@ import {
 } from '../../../helpers/constants/routes';
 import * as selectors from '../../../selectors';
 import ChangePassword from './change-password';
-import React from 'react';
 
 const PASSKEY_LABEL_BIOMETRICS = tEn('passkeyAuthMethodBiometrics');
 

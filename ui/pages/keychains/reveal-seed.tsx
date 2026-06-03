@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import React, { useContext, useEffect, useState, useCallback } from 'react';
 import copyToClipboard from 'copy-to-clipboard';
 import {
   TextButton,
@@ -38,7 +39,6 @@ import { QuizIntroduction } from './quiz-introduction';
 import { QuizQuestion } from './quiz-question';
 import { PasswordPrompt } from './password-prompt';
 import { RevealSeedContent } from './reveal-seed-content';
-import React, { useContext, useEffect, useState, useCallback } from 'react';
 
 const QUIZ_INTRODUCTION_SCREEN: RevealSeedScreen = 'QUIZ_INTRODUCTION_SCREEN';
 const QUIZ_QUESTIONS_SCREEN: RevealSeedScreen = 'QUIZ_QUESTIONS_SCREEN';

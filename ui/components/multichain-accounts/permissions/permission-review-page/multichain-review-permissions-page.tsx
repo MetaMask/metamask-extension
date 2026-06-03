@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { CaipChainId, NonEmptyArray, Hex } from '@metamask/utils';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   getAllScopesFromCaip25CaveatValue,
   getCaipAccountIdsFromCaip25CaveatValue,
@@ -61,7 +62,6 @@ import {
 import { PermissionsCell } from '../../../multichain/pages/gator-permissions/components';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/lib/environment';
 import { useRevokeGatorPermissionsMultiChain } from '../../../../hooks/gator-permissions/useRevokeGatorPermissionsMultiChain';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 export enum MultichainReviewPermissionsPageMode {
   Summary = 'summary',

@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { toHex } from '@metamask/controller-utils';
 import {
   isCaipChainId,
@@ -47,7 +48,6 @@ import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../../shared/constants/bridge';
 import { trace, TraceName } from '../../../../shared/lib/trace';
 import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
 
 type CoinButtonsProps = {
   account: InternalAccount;

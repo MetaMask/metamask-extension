@@ -1,4 +1,5 @@
 import { act } from '@testing-library/react';
+import React from 'react';
 import {
   TransactionStatus,
   TransactionType,
@@ -9,7 +10,6 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { PerpsDepositToast } from './perps-deposit-toast';
-import React from 'react';
 
 const mockToastDismiss = jest.fn();
 const mockToast = jest.fn();

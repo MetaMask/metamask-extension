@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 import { act, render, waitFor } from '@testing-library/react';
+import React from 'react';
 import { toast } from '@metamask/design-system-react';
 import { MerklClaimToast } from './merkl-claim-toast';
-import React from 'react';
 
 const mockDismissToast = jest.fn();
 const mockUseMerklClaimStatus = jest.fn();

@@ -2,10 +2,6 @@
 /* eslint-disable import-x/no-useless-path-segments */
 /* eslint-disable import-x/extensions */
 import classnames from 'clsx';
-<<<<<<< HEAD
-import React, { Suspense, useCallback, useEffect } from 'react';
-=======
->>>>>>> 8bbda30726 (chore: migrate toast surfaces to MMDS)
 import { useDispatch } from 'react-redux';
 import { useLocation, Navigate, Outlet } from 'react-router-dom';
 import { useIdleTimer } from 'react-idle-timer';
@@ -14,6 +10,7 @@ import type { ApprovalRequest } from '@metamask/approval-controller';
 import type { Json } from '@metamask/utils';
 
 import { Toaster } from '@metamask/design-system-react';
+import React, { Suspense, useCallback, useEffect } from 'react';
 import { useAppSelector } from '../../store/store';
 import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
@@ -144,7 +141,6 @@ import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationRouter } from './confirmation-router';
 import { Modals } from './modals';
 import { NetworkHandler } from './network-handler';
-import React, { Suspense, useEffect } from 'react';
 
 // Begin Lazy Routes
 const OnboardingFlow = mmLazy(() => import('../onboarding-flow/index.ts'));

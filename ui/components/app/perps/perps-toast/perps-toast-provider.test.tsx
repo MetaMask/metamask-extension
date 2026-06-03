@@ -1,4 +1,5 @@
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import React from 'react';
 import { toast } from '@metamask/design-system-react';
 import mockState from '../../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
@@ -9,7 +10,6 @@ import {
   PERPS_TOAST_KEYS,
   usePerpsToast,
 } from './perps-toast-provider';
-import React from 'react';
 
 jest.mock('@metamask/design-system-react', () => {
   const actual = jest.requireActual('@metamask/design-system-react');

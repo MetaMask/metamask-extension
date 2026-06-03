@@ -1,6 +1,7 @@
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { sortBy } from 'lodash';
+import React, { useMemo, useState, useEffect, useContext } from 'react';
 import {
   Box,
   BoxAlignItems,
@@ -39,7 +40,6 @@ import {
 import { buildDuplicateContactMap, hasDuplicateContacts } from './utils';
 import { ContactListItem } from './components/contact-list-item';
 import { ContactsEmptyState } from './components/contacts-empty-state';
-import React, { useMemo, useState, useEffect, useContext } from 'react';
 
 export function ContactsListPage() {
   const t = useI18nContext();

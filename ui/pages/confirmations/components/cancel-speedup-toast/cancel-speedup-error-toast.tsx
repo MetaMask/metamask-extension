@@ -1,4 +1,5 @@
 import { createPortal } from 'react-dom';
+import React, { useCallback, useEffect } from 'react';
 import {
   Icon,
   IconColor,
@@ -7,7 +8,6 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { resolveCancelSpeedupErrorMessage } from './utils';
-import React, { useCallback, useEffect } from 'react';
 
 const AUTO_HIDE_MS = 5000;
 

@@ -1,12 +1,12 @@
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
+import React from 'react';
 import { toast } from '@metamask/design-system-react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import { SECURITY_AND_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import { SECOND } from '../../../../shared/constants/time';
 import PasskeyTurnOffSubPage from './passkey-turn-off-sub-page';
-import React from 'react';
 
 jest.mock('@metamask/design-system-react', () => {
   const actual = jest.requireActual('@metamask/design-system-react');

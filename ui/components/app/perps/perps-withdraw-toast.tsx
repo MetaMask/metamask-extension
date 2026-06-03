@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Icon as DsIcon,
   IconColor as DsIconColor,
@@ -6,7 +7,6 @@ import {
   IconSize as DsIconSize,
   toast,
 } from '@metamask/design-system-react';
-import React, { useCallback, useEffect, useState } from 'react';
 import { SECOND } from '../../../../shared/constants/time';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';

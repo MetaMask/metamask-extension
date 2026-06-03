@@ -1,6 +1,7 @@
 import log from 'loglevel';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import {
   Box,
   Text,
@@ -54,7 +55,6 @@ import {
   PasskeyEnrollmentSteps,
   type PasskeyEnrollmentStepStatus,
 } from '../../../components/app/passkey-enrollment-steps';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
 
 const PASSKEY_SETTINGS_TOAST_DURATION_MS = 5 * SECOND;
 

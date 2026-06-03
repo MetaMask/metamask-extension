@@ -1,4 +1,14 @@
 import { toast } from '@metamask/design-system-react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   type PerpsToastKey,
@@ -10,16 +20,6 @@ import {
   PERPS_TOAST_PRESENTATION_BY_VARIANT,
   type PerpsToastPresentation,
 } from './perps-toast.presentation';
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type ReactNode,
-} from 'react';
 
 export { PERPS_TOAST_KEYS } from './perps-toast.constants';
 export type { PerpsToastKey, PerpsToastVariant };

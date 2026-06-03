@@ -1,6 +1,13 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import log from 'loglevel';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { TextButton, TextColor, toast } from '@metamask/design-system-react';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
@@ -39,13 +46,6 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import { SECURITY_ITEMS } from '../search-config';
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
 
 const PASSKEY_SETTINGS_TOAST_DURATION_MS = 5 * SECOND;
 

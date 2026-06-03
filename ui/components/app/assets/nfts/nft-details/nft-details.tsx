@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useContext } from 'react';
 import { isEqual } from 'lodash';
 import { getTokenTrackerLink, getAccountLink } from '@metamask/etherscan-link';
 import { Nft } from '@metamask/assets-controllers';
@@ -81,7 +82,6 @@ import NftDetailInformationRow from './nft-detail-information-row';
 import NftDetailInformationFrame from './nft-detail-information-frame';
 import NftDetailDescription from './nft-detail-description';
 import { renderShortTokenId } from './utils';
-import React, { useEffect, useContext } from 'react';
 
 const MAX_TOKEN_ID_LENGTH = 15;
 

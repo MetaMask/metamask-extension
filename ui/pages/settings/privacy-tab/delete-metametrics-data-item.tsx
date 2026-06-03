@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
 import { Button, toast } from '@metamask/design-system-react';
 import {
   DeleteRegulationStatus,
@@ -15,7 +16,6 @@ import {
 import { PRIVACY_ITEMS } from '../search-config';
 import DeleteMetametricsModal from './delete-metametrics-modal';
 import DeletionInProgressModal from './deletion-in-progress-modal';
-import React, { useEffect, useState } from 'react';
 
 const TOAST_VISIBLE_DURATION_MS = 2500;
 

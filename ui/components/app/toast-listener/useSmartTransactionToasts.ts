@@ -1,5 +1,6 @@
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller';
 import { TransactionStatus as EvmTransactionStatus } from '@metamask/transaction-controller';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { type TransactionStatus } from '../../../helpers/utils/transaction-display';
@@ -11,7 +12,6 @@ import {
   showPendingToast,
   showSuccessToast,
 } from './shared';
-import { useEffect, useRef } from 'react';
 
 function generateToastId(txId: string) {
   return `stx-${txId}`;
