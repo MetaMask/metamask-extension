@@ -50,6 +50,7 @@ const ActivityTokenAvatar = ({
       name={name}
       src={src}
       className={classnames(className)}
+      imageProps={{ className: 'bg-alternative' }}
       data-testid="activity-list-item-avatar-token"
     />
   );
@@ -67,13 +68,13 @@ const ActivityDualTokenAvatar = ({
       <div className="activity-list-item-avatar-dual__half activity-list-item-avatar-dual__half--left">
         <ActivityTokenAvatar
           assetId={from}
-          className="activity-list-item-avatar-dual__token bg-transparent"
+          className="activity-list-item-avatar-dual__token"
         />
       </div>
       <div className="activity-list-item-avatar-dual__half activity-list-item-avatar-dual__half--right">
         <ActivityTokenAvatar
           assetId={to}
-          className="activity-list-item-avatar-dual__token bg-transparent"
+          className="activity-list-item-avatar-dual__token"
         />
       </div>
     </div>
