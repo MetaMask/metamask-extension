@@ -21,14 +21,14 @@ export type PerpsPositionsOrdersProps = {
   isCancelAllPending?: boolean;
 };
 
-export const PerpsPositionsOrders: React.FC<PerpsPositionsOrdersProps> = ({
+export const PerpsPositionsOrders = ({
   positions,
   orders,
   onCloseAllPositions,
   onCancelAllOrders,
   isCloseAllPending = false,
   isCancelAllPending = false,
-}) => {
+}: PerpsPositionsOrdersProps) => {
   const t = useI18nContext();
   const hasPositions = positions.length > 0;
   const hasOrders = orders.length > 0;

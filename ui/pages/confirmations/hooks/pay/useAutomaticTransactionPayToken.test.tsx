@@ -67,7 +67,11 @@ function renderHookWithProvider({
     setIsScrollToBottomCompleted: jest.fn(),
   };
 
-  const wrapper = ({ children }: React.PropsWithChildren<unknown>) => (
+  const wrapper: React.ComponentType<{
+    children?: React.ReactNode;
+    currentDisable?: boolean;
+    currentPreferredToken?: SetPayTokenRequest;
+  }> = ({ children }) => (
     <Provider store={store}>
       <ConfirmContext.Provider value={confirmContextValue as never}>
         {children}

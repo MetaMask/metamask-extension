@@ -63,11 +63,11 @@ export type CancelOrderModalProps = {
  * @param options0.onClose - Callback to close the modal
  * @param options0.order - The order to display and potentially cancel
  */
-export const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
+export const CancelOrderModal = ({
   isOpen,
   onClose,
   order,
-}) => {
+}: CancelOrderModalProps) => {
   const t = useI18nContext();
   const currentLocale = useSelector(getCurrentLocale);
   const { replacePerpsToastByKey } = usePerpsToast();
