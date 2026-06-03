@@ -1367,7 +1367,9 @@
         "console.warn": true,
         "document.addEventListener": true,
         "document.body": true,
-        "document.removeEventListener": true
+        "document.removeEventListener": true,
+        "setTimeout": true,
+        "clearTimeout": true
       },
       "packages": {
         "@metamask/design-system-shared": true,
@@ -1377,7 +1379,8 @@
         "react": true,
         "react-dom": true,
         "react-focus-lock": true,
-        "@metamask/design-system-react>tailwind-merge": true
+        "@metamask/design-system-react>tailwind-merge": true,
+        "@metamask-previews/design-system-shared": true
       }
     },
     "@metamask/design-system-shared": {
@@ -6918,6 +6921,11 @@
         "atob": true,
         "btoa": true,
         "navigator": true
+      }
+    },
+    "@metamask-previews/design-system-shared": {
+      "packages": {
+        "@metamask/utils": true
       }
     }
   }

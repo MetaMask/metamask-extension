@@ -283,9 +283,6 @@ export function ContactsListPage() {
             paddingTop={4}
             className="shrink-0 bg-background-default"
           >
-            {(showDeletedToastNow || showUpdatedToastNow) && (
-              <Box marginBottom={4}>{toastContent}</Box>
-            )}
             <Button
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}

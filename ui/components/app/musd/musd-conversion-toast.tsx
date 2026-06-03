@@ -17,10 +17,12 @@ import { useMusdConversionToastStatus } from '../../../hooks/musd/useMusdConvers
 import { useMusdConversionConfirmTrace } from '../../../hooks/musd/useMusdConversionConfirmTrace';
 import { SECOND } from '../../../../shared/constants/time';
 
+type I18nTranslator = ReturnType<typeof useI18nContext>;
+
 const getMusdConversionToastTitle = (
   toastState: string,
   sourceTokenSymbol: string | null,
-  t: (key: string, values?: string[]) => string,
+  t: I18nTranslator,
 ) => {
   switch (toastState) {
     case 'in-progress':
@@ -97,7 +99,11 @@ export function MusdConversionToast() {
 
     toast({
       severity: getMusdConversionToastSeverity(toastState),
-      title: getMusdConversionToastTitle(toastState, sourceTokenSymbol, t),
+      title: getMusdConversionToastTitle(
+        toastState,
+        sourceTokenSymbol ?? null,
+        t,
+      ),
       description:
         toastState === 'success'
           ? (t('musdConversionToastSuccessDescription') as string)

@@ -16,7 +16,9 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMerklClaimStatus } from '../../../hooks/musd/useMerklClaimStatus';
 import { SECOND } from '../../../../shared/constants/time';
 
-const getMerklToastTitle = (toastState: string, t: (key: string) => string) => {
+type I18nTranslator = ReturnType<typeof useI18nContext>;
+
+const getMerklToastTitle = (toastState: string, t: I18nTranslator) => {
   switch (toastState) {
     case 'in-progress':
       return t('merklRewardsToastInProgress');

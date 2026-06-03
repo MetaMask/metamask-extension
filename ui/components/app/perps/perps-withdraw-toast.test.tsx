@@ -24,7 +24,9 @@ jest.mock('../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
 }));
 
-const mockToast = toast as jest.MockedFunction<typeof toast>;
+const mockToast = toast as jest.MockedFunction<typeof toast> & {
+  dismiss: jest.Mock;
+};
 const mockSubmit = submitRequestToBackground as jest.MockedFunction<
   typeof submitRequestToBackground
 >;

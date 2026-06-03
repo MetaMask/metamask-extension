@@ -1295,7 +1295,9 @@
     },
     "@metamask/design-system-react": {
       "globals": {
-        "console.warn": true
+        "console.warn": true,
+        "setTimeout": true,
+        "clearTimeout": true
       },
       "packages": {
         "@metamask/design-system-shared": true,
@@ -1303,7 +1305,8 @@
         "@metamask/design-system-react>@radix-ui/react-slot": true,
         "@metamask/design-system-react>blo": true,
         "react": true,
-        "@metamask/design-system-react>tailwind-merge": true
+        "@metamask/design-system-react>tailwind-merge": true,
+        "@metamask-previews/design-system-shared": true
       }
     },
     "@metamask/design-system-shared": {
@@ -6940,6 +6943,11 @@
         "navigator": true,
         "regexes": true,
         "util": true
+      }
+    },
+    "@metamask-previews/design-system-shared": {
+      "packages": {
+        "@metamask/utils": true
       }
     }
   }

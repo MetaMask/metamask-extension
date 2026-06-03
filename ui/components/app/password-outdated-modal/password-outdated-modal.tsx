@@ -14,6 +14,7 @@ import {
   BoxJustifyContent,
   BoxFlexDirection,
   BoxAlignItems,
+  toast,
 } from '@metamask/design-system-react';
 import React, { useContext, useEffect } from 'react';
 import { useI18nContext } from '../../../hooks/useI18nContext';

@@ -1,7 +1,7 @@
+import { toast } from '@metamask/design-system-react';
 import { useEffect, useRef } from 'react';
-
-import { showSuccessToast } from '../../components/app/toast-listener/shared';
 import { useBridgeNavigation } from '../bridge/useBridgeNavigation';
+import { useI18nContext } from '../../hooks/useI18nContext';
 import { HardwareWalletSignatureStatus } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 import type { HardwareWalletSignaturesState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 
@@ -25,6 +25,7 @@ export function useHwSwapNavigation({
   signatureState,
 }: UseHardwareWalletNavigationOptions) {
   const { navigateToDefaultRoute } = useBridgeNavigation();
+  const t = useI18nContext();
   const hasNavigatedAfterSubmission = useRef(false);
 
   useEffect(() => {
@@ -35,10 +36,12 @@ export function useHwSwapNavigation({
       return;
     }
 
-    const toastId = `bridge-hw-submitted-${Date.now()}`;
     const timer = setTimeout(async () => {
       hasNavigatedAfterSubmission.current = true;
-      showSuccessToast(toastId);
+      toast({
+        severity: 'success',
+        title: t('transactionSubmitted'),
+      });
       await navigateToDefaultRoute();
     }, 1000);
 

@@ -1,5 +1,5 @@
-import { Button, toast } from '@metamask/design-system-react';
 import React, { useState } from 'react';
+import { Button, toast } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PRIVACY_ITEMS } from '../search-config';
 import DownloadStateLogsModal from './download-state-logs-modal';
