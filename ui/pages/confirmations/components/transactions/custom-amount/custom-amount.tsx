@@ -20,6 +20,7 @@ import {
 
 export type CustomAmountProps = {
   amountFiat: string;
+  autoFocus?: boolean;
   currency?: string;
   disabled?: boolean;
   hasAlert?: boolean;
@@ -27,27 +28,27 @@ export type CustomAmountProps = {
   onChange?: (value: string) => void;
 };
 
-function getFontSize(length: number): string {
-  if (length <= 8) {
+function getFontSize(displayWidth: number): string {
+  if (displayWidth <= 8) {
     return '64px';
   }
-  if (length <= 13) {
+  if (displayWidth <= 13) {
     return '40px';
   }
-  if (length <= 18) {
+  if (displayWidth <= 18) {
     return '30px';
   }
   return '20px';
 }
 
-function getLineHeight(length: number): string {
-  if (length <= 8) {
+function getLineHeight(displayWidth: number): string {
+  if (displayWidth <= 8) {
     return '70px';
   }
-  if (length <= 13) {
+  if (displayWidth <= 13) {
     return '44px';
   }
-  if (length <= 18) {
+  if (displayWidth <= 18) {
     return '33px';
   }
   return '22px';
@@ -82,6 +83,7 @@ export const CustomAmountSkeleton: React.FC = () => (
 export const CustomAmount: React.FC<CustomAmountProps> = React.memo(
   ({
     amountFiat,
+    autoFocus = false,
     currency: currencyProp,
     disabled = false,
     hasAlert = false,
@@ -94,6 +96,13 @@ export const CustomAmount: React.FC<CustomAmountProps> = React.memo(
     const currency = currencyProp ?? selectedCurrency;
     const fiatSymbol = getCurrencySymbol(currency);
     const amountLength = amountFiat.length;
+    const decimalSeparatorCount = (amountFiat.match(/[.,]/gu) || []).length;
+    // Decimal separators visually take roughly half the width of a digit in
+    // proportional fonts, so account for them as 0.5ch each. Counting them
+    // as a full ch over-allocates (visible cursor gap); counting them as 0
+    // under-allocates (text gets clipped when overflowing the input).
+    const amountWidth = amountLength - decimalSeparatorCount * 0.5;
+    const displayWidth = amountWidth + Math.max(1, fiatSymbol.length);
 
     const showLoader = isLoading || (isMaxAmount && isQuotesLoading);
 
@@ -111,8 +120,8 @@ export const CustomAmount: React.FC<CustomAmountProps> = React.memo(
       return <CustomAmountSkeleton />;
     }
 
-    const fontSize = getFontSize(amountLength);
-    const lineHeight = getLineHeight(amountLength);
+    const fontSize = getFontSize(displayWidth);
+    const lineHeight = getLineHeight(displayWidth);
     const textColor = getTextColor(hasAlert, disabled);
 
     return (
@@ -133,6 +142,7 @@ export const CustomAmount: React.FC<CustomAmountProps> = React.memo(
           {fiatSymbol}
         </Text>
         <input
+          autoFocus={autoFocus && !disabled}
           data-testid="custom-amount-input"
           type="text"
           inputMode="decimal"
@@ -149,7 +159,7 @@ export const CustomAmount: React.FC<CustomAmountProps> = React.memo(
               border: 'none',
               background: 'transparent',
               outline: 'none',
-              width: `${Math.max(1, amountLength)}ch`,
+              width: `${Math.max(1, amountWidth)}ch`,
               cursor: disabled ? 'default' : 'text',
             } as React.CSSProperties
           }

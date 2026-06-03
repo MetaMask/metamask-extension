@@ -8,27 +8,45 @@ import {
   BoxAlignItems,
   FontWeight,
 } from '@metamask/design-system-react';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import {
+  formatPerpsFiat,
+  PRICE_RANGES_MINIMAL_VIEW,
+  PRICE_RANGES_UNIVERSAL,
+} from '../../../../../../../shared/lib/perps-formatters';
 
 import {
   BorderRadius,
   BackgroundColor,
-  TextVariant as TextVariantLegacy,
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { useFormatters } from '../../../../../../hooks/useFormatters';
 import { usePerpsOrderFees } from '../../../../../../hooks/perps/usePerpsOrderFees';
 import { TextField, TextFieldSize } from '../../../../../component-library';
 import ToggleButton from '../../../../../ui/toggle-button';
 import type { AutoCloseSectionProps } from '../../order-entry.types';
-import { isSignedDecimalInput, isUnsignedDecimalInput } from '../../utils';
+import { isUnsignedDecimalInput } from '../../utils';
 import {
   isValidTakeProfitPrice,
   isValidStopLossPrice,
+  isStopLossSafeFromLiquidation,
   getTakeProfitErrorDirection,
   getStopLossErrorDirection,
+  getStopLossLiquidationErrorDirection,
 } from '../../../utils/tpslValidation';
+import {
+  applyDefaultStopLossSign,
+  isSignedDecimalInput,
+} from '../../../utils/tpslInput';
 import { formatRoePercent, getPnlDisplayColor } from '../../../utils';
+
+const LOW_VALUE_TRIGGER_PRICE_THRESHOLD = 0.01;
+const LOW_VALUE_TRIGGER_PRICE_DECIMALS = 6;
 
 /**
  * AutoCloseSection - Collapsible section for Take Profit and Stop Loss configuration
@@ -49,10 +67,11 @@ import { formatRoePercent, getPnlDisplayColor } from '../../../utils';
  * @param props.onStopLossPriceChange - Callback when SL price changes
  * @param props.direction - Current order direction
  * @param props.currentPrice - Current asset price (used as entry price for new orders)
- * @param props.entryPrice - Position entry price (modify mode). When provided, overrides limit/current price for % calc.
+ * @param props.entryPrice - Position entry price (modify mode - use for accurate % calc)
  * @param props.estimatedSize - Signed position size in asset units for estimated PnL
  * @param props.orderType - Order type ('market' | 'limit') for choosing the validation reference price
- * @param props.limitPrice - Limit price string; used as the baseline for both validation and % ↔ price conversions on limit orders
+ * @param props.limitPrice - Limit price string used as reference price for limit-order TP/SL validation
+ * @param props.liquidationPrice - Estimated liquidation price for stop-loss safety validation
  * @param props.leverage - Leverage multiplier for RoE% calculation
  * @param props.asset - Asset symbol for fetching dynamic closing fee rates
  */
@@ -69,12 +88,11 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   estimatedSize,
   orderType,
   limitPrice,
+  liquidationPrice,
   leverage,
   asset,
 }) => {
   const t = useI18nContext();
-  const { formatCurrencyWithMinThreshold } = useFormatters();
-
   const { feeRate: closingFeeRate } = usePerpsOrderFees({
     symbol: asset,
     orderType: 'market',
@@ -103,11 +121,13 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   const [isSlPercentFocused, setIsSlPercentFocused] = useState(false);
 
   /**
-   * Convert a target price to a RoE% for display.
+   * Convert a target price to a signed RoE% for display.
+   * Positive = profitable (above entry for long / below entry for short).
+   * Negative = at a loss.
    * RoE% = ((targetPrice - entryPrice) / entryPrice) * leverage * 100
    */
   const priceToPercent = useCallback(
-    (price: string, isTP: boolean): string => {
+    (price: string): string => {
       if (!price || !entryPrice) {
         return '';
       }
@@ -119,41 +139,55 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
       const diff = priceNum - entryPrice;
       const percentChange = (diff / entryPrice) * leverage * 100;
 
-      // For long: TP is above entry (positive RoE%), SL is below entry (show as positive loss%)
-      // For short: TP is below entry (show as positive profit%), SL is above entry (show as positive loss%)
-      if (direction === 'long') {
-        return formatRoePercent(isTP ? percentChange : -percentChange);
-      }
-      return formatRoePercent(isTP ? -percentChange : percentChange);
+      // For long: positive when price > entry (profit). For short: negate (profit when price < entry).
+      return formatRoePercent(
+        direction === 'long' ? percentChange : -percentChange,
+      );
     },
     [entryPrice, leverage, direction],
   );
 
   /**
-   * Convert a RoE% to a target price.
-   * targetPrice = entryPrice * (1 + roePercent / (leverage * 100))
+   * Convert a signed RoE% to a target price.
+   * Positive percent = profitable direction (above entry for long / below entry for short).
+   * Negative percent = loss direction.
+   * targetPrice = entryPrice * (1 + signedRoe / (leverage * 100))  [long]
+   * targetPrice = entryPrice * (1 - signedRoe / (leverage * 100))  [short]
    */
   const percentToPrice = useCallback(
-    (percent: number, isTP: boolean): string => {
+    (percent: number): string => {
       if (!entryPrice || percent === 0) {
         return '';
       }
 
-      // For long: TP = entry * (1 + roe/lev), SL = entry * (1 - roe/lev)
-      // For short: TP = entry * (1 - roe/lev), SL = entry * (1 + roe/lev)
       const priceChangeRatio = percent / (leverage * 100);
-      let multiplier: number;
-      if (direction === 'long') {
-        multiplier = isTP ? 1 + priceChangeRatio : 1 - priceChangeRatio;
-      } else {
-        multiplier = isTP ? 1 - priceChangeRatio : 1 + priceChangeRatio;
+      const multiplier =
+        direction === 'long' ? 1 + priceChangeRatio : 1 - priceChangeRatio;
+      const price = entryPrice * multiplier;
+
+      if (!Number.isFinite(price) || price <= 0) {
+        return '';
       }
 
-      const price = entryPrice * multiplier;
-      const normalizedPrice = Number.parseFloat(price.toFixed(8));
-      return Number.isFinite(normalizedPrice) && normalizedPrice > 0
-        ? normalizedPrice.toString()
-        : '';
+      const preserveLowValueDecimals =
+        Math.abs(price) < LOW_VALUE_TRIGGER_PRICE_THRESHOLD;
+
+      const formattedPrice = formatPerpsFiat(price, {
+        ranges: PRICE_RANGES_UNIVERSAL,
+        ...(preserveLowValueDecimals
+          ? {
+              minimumDecimals: LOW_VALUE_TRIGGER_PRICE_DECIMALS,
+              maximumDecimals: LOW_VALUE_TRIGGER_PRICE_DECIMALS,
+              stripTrailingZeros: false,
+            }
+          : {}),
+      });
+
+      if (formattedPrice.startsWith('<')) {
+        return '';
+      }
+
+      return formattedPrice.replace(/[$,]/gu, '');
     },
     [entryPrice, leverage, direction],
   );
@@ -198,10 +232,10 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
       if (value === '' || isSignedDecimalInput(value)) {
         setRawTpPercent(value);
         const numValue = parseFloat(value);
-        if (value === '' || value === '-') {
+        if (value === '' || value === '-' || value === '+') {
           onTakeProfitPriceChange('');
         } else if (!isNaN(numValue)) {
-          const newPrice = percentToPrice(numValue, true);
+          const newPrice = percentToPrice(numValue);
           onTakeProfitPriceChange(newPrice);
         }
       }
@@ -211,7 +245,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
 
   const handleTpPercentFocus = useCallback(() => {
     // Seed raw value from current derived percent so the cursor lands on existing content
-    const derived = priceToPercent(takeProfitPrice, true);
+    const derived = priceToPercent(takeProfitPrice);
     setRawTpPercent(derived);
     setIsTpPercentFocused(true);
   }, [priceToPercent, takeProfitPrice]);
@@ -251,23 +285,23 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   // Handle SL percentage input change
   const handleSlPercentChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      const { value } = event.target;
+      const value = applyDefaultStopLossSign(event.target.value, rawSlPercent);
       if (value === '' || isSignedDecimalInput(value)) {
         setRawSlPercent(value);
         const numValue = parseFloat(value);
-        if (value === '' || value === '-') {
+        if (value === '' || value === '-' || value === '+') {
           onStopLossPriceChange('');
         } else if (!isNaN(numValue)) {
-          const newPrice = percentToPrice(numValue, false);
+          const newPrice = percentToPrice(numValue);
           onStopLossPriceChange(newPrice);
         }
       }
     },
-    [onStopLossPriceChange, percentToPrice],
+    [onStopLossPriceChange, percentToPrice, rawSlPercent],
   );
 
   const handleSlPercentFocus = useCallback(() => {
-    const derived = priceToPercent(stopLossPrice, false);
+    const derived = priceToPercent(stopLossPrice);
     setRawSlPercent(derived);
     setIsSlPercentFocused(true);
   }, [priceToPercent, stopLossPrice]);
@@ -279,12 +313,12 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
 
   // Calculate current RoE percentages for display (used when fields are not focused)
   const tpPercent = useMemo(
-    () => priceToPercent(takeProfitPrice, true),
+    () => priceToPercent(takeProfitPrice),
     [priceToPercent, takeProfitPrice],
   );
 
   const slPercent = useMemo(
-    () => priceToPercent(stopLossPrice, false),
+    () => priceToPercent(stopLossPrice),
     [priceToPercent, stopLossPrice],
   );
 
@@ -343,11 +377,11 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
     () =>
       Boolean(
         takeProfitPrice.trim() &&
-          validationReferencePrice > 0 &&
-          !isValidTakeProfitPrice(takeProfitPrice, {
-            currentPrice: validationReferencePrice,
-            direction,
-          }),
+        validationReferencePrice > 0 &&
+        !isValidTakeProfitPrice(takeProfitPrice, {
+          currentPrice: validationReferencePrice,
+          direction,
+        }),
       ),
     [takeProfitPrice, validationReferencePrice, direction],
   );
@@ -356,13 +390,25 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
     () =>
       Boolean(
         stopLossPrice.trim() &&
-          validationReferencePrice > 0 &&
-          !isValidStopLossPrice(stopLossPrice, {
-            currentPrice: validationReferencePrice,
-            direction,
-          }),
+        validationReferencePrice > 0 &&
+        !isValidStopLossPrice(stopLossPrice, {
+          currentPrice: validationReferencePrice,
+          direction,
+        }),
       ),
     [stopLossPrice, validationReferencePrice, direction],
+  );
+
+  const isSlLiquidationInvalid = useMemo(
+    () =>
+      Boolean(
+        stopLossPrice.trim() &&
+        !isStopLossSafeFromLiquidation(stopLossPrice, {
+          liquidationPrice,
+          direction,
+        }),
+      ),
+    [stopLossPrice, liquidationPrice, direction],
   );
 
   const tpErrorMessage = useMemo(() => {
@@ -376,17 +422,41 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   }, [isTpInvalid, direction, priceLabel, t]);
 
   const slErrorMessage = useMemo(() => {
-    if (!isSlInvalid) {
-      return null;
+    if (isSlInvalid) {
+      return t('perpsStopLossInvalidPrice', [
+        getStopLossErrorDirection(direction),
+        priceLabel,
+      ]);
     }
-    return t('perpsStopLossInvalidPrice', [
-      getStopLossErrorDirection(direction),
-      priceLabel,
-    ]);
-  }, [isSlInvalid, direction, priceLabel, t]);
+    if (isSlLiquidationInvalid) {
+      return t('perpsStopLossInvalidLiquidationPrice', [
+        getStopLossLiquidationErrorDirection(direction),
+      ]);
+    }
+    return null;
+  }, [isSlInvalid, isSlLiquidationInvalid, direction, priceLabel, t]);
+
+  const sectionRef = useRef<HTMLDivElement | null>(null);
+
+  // Bring the expanded TP/SL inputs into view on smaller surfaces where the
+  // section would otherwise sit below the fold.
+  useEffect(() => {
+    if (!enabled) {
+      return;
+    }
+    sectionRef.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'end',
+    });
+  }, [enabled]);
 
   return (
-    <Box flexDirection={BoxFlexDirection.Column} gap={3}>
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      gap={3}
+      ref={sectionRef}
+      data-testid="auto-close-section"
+    >
       {/* Toggle Row */}
       <Box
         flexDirection={BoxFlexDirection.Row}
@@ -436,7 +506,6 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                   className="w-full"
                   data-testid="tp-price-input"
                   inputProps={{
-                    textVariant: TextVariantLegacy.bodySm,
                     inputMode: 'decimal',
                   }}
                   startAccessory={
@@ -464,7 +533,9 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                   backgroundColor={BackgroundColor.backgroundMuted}
                   className="w-full"
                   data-testid="tp-percent-input"
-                  inputProps={{ textVariant: TextVariantLegacy.bodySm }}
+                  inputProps={{
+                    inputMode: 'decimal',
+                  }}
                   endAccessory={
                     <Text
                       variant={TextVariant.BodySm}
@@ -476,30 +547,54 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                 />
               </Box>
             </Box>
-            {estimatedPnlAtTp !== null && (
+            {(Boolean(takeProfitPrice.trim()) || estimatedPnlAtTp !== null) && (
               <Box
                 flexDirection={BoxFlexDirection.Row}
                 justifyContent={BoxJustifyContent.Between}
                 alignItems={BoxAlignItems.Center}
                 data-testid="auto-close-estimated-tp-pnl-row"
               >
-                <Text
-                  variant={TextVariant.BodyXs}
-                  color={TextColor.TextAlternative}
-                >
-                  {t('perpsEstimatedPnlAtTakeProfit')}
-                </Text>
-                <Text
-                  variant={TextVariant.BodyXs}
-                  fontWeight={FontWeight.Medium}
-                  color={getPnlDisplayColor(estimatedPnlAtTp)}
-                >
-                  {estimatedPnlAtTp >= 0 ? '+' : '-'}
-                  {formatCurrencyWithMinThreshold(
-                    Math.abs(estimatedPnlAtTp),
-                    'USD',
-                  )}
-                </Text>
+                {takeProfitPrice.trim() ? (
+                  <button
+                    type="button"
+                    className="cursor-pointer bg-transparent border-none p-0"
+                    onClick={() => onTakeProfitPriceChange('')}
+                    data-testid="tp-clear-button"
+                  >
+                    <Text
+                      variant={TextVariant.BodyXs}
+                      color={TextColor.PrimaryDefault}
+                    >
+                      {t('clear')}
+                    </Text>
+                  </button>
+                ) : (
+                  <Box />
+                )}
+                {estimatedPnlAtTp !== null && (
+                  <Box
+                    flexDirection={BoxFlexDirection.Row}
+                    alignItems={BoxAlignItems.Center}
+                    gap={1}
+                  >
+                    <Text
+                      variant={TextVariant.BodyXs}
+                      color={TextColor.TextAlternative}
+                    >
+                      {t('perpsEstimatedPnlAtTakeProfit')}
+                    </Text>
+                    <Text
+                      variant={TextVariant.BodyXs}
+                      fontWeight={FontWeight.Medium}
+                      color={getPnlDisplayColor(estimatedPnlAtTp)}
+                    >
+                      {estimatedPnlAtTp >= 0 ? '+' : '-'}
+                      {formatPerpsFiat(Math.abs(estimatedPnlAtTp), {
+                        ranges: PRICE_RANGES_MINIMAL_VIEW,
+                      })}
+                    </Text>
+                  </Box>
+                )}
               </Box>
             )}
             {tpErrorMessage && (
@@ -543,7 +638,6 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                   className="w-full"
                   data-testid="sl-price-input"
                   inputProps={{
-                    textVariant: TextVariantLegacy.bodySm,
                     inputMode: 'decimal',
                   }}
                   startAccessory={
@@ -571,7 +665,9 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                   backgroundColor={BackgroundColor.backgroundMuted}
                   className="w-full"
                   data-testid="sl-percent-input"
-                  inputProps={{ textVariant: TextVariantLegacy.bodySm }}
+                  inputProps={{
+                    inputMode: 'decimal',
+                  }}
                   endAccessory={
                     <Text
                       variant={TextVariant.BodySm}
@@ -583,30 +679,54 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                 />
               </Box>
             </Box>
-            {estimatedPnlAtSl !== null && (
+            {(Boolean(stopLossPrice.trim()) || estimatedPnlAtSl !== null) && (
               <Box
                 flexDirection={BoxFlexDirection.Row}
                 justifyContent={BoxJustifyContent.Between}
                 alignItems={BoxAlignItems.Center}
                 data-testid="auto-close-estimated-sl-pnl-row"
               >
-                <Text
-                  variant={TextVariant.BodyXs}
-                  color={TextColor.TextAlternative}
-                >
-                  {t('perpsEstimatedPnlAtStopLoss')}
-                </Text>
-                <Text
-                  variant={TextVariant.BodyXs}
-                  fontWeight={FontWeight.Medium}
-                  color={getPnlDisplayColor(estimatedPnlAtSl)}
-                >
-                  {estimatedPnlAtSl >= 0 ? '+' : '-'}
-                  {formatCurrencyWithMinThreshold(
-                    Math.abs(estimatedPnlAtSl),
-                    'USD',
-                  )}
-                </Text>
+                {stopLossPrice.trim() ? (
+                  <button
+                    type="button"
+                    className="cursor-pointer bg-transparent border-none p-0"
+                    onClick={() => onStopLossPriceChange('')}
+                    data-testid="sl-clear-button"
+                  >
+                    <Text
+                      variant={TextVariant.BodyXs}
+                      color={TextColor.PrimaryDefault}
+                    >
+                      {t('clear')}
+                    </Text>
+                  </button>
+                ) : (
+                  <Box />
+                )}
+                {estimatedPnlAtSl !== null && (
+                  <Box
+                    flexDirection={BoxFlexDirection.Row}
+                    alignItems={BoxAlignItems.Center}
+                    gap={1}
+                  >
+                    <Text
+                      variant={TextVariant.BodyXs}
+                      color={TextColor.TextAlternative}
+                    >
+                      {t('perpsEstimatedPnlAtStopLoss')}
+                    </Text>
+                    <Text
+                      variant={TextVariant.BodyXs}
+                      fontWeight={FontWeight.Medium}
+                      color={getPnlDisplayColor(estimatedPnlAtSl)}
+                    >
+                      {estimatedPnlAtSl >= 0 ? '+' : '-'}
+                      {formatPerpsFiat(Math.abs(estimatedPnlAtSl), {
+                        ranges: PRICE_RANGES_MINIMAL_VIEW,
+                      })}
+                    </Text>
+                  </Box>
+                )}
               </Box>
             )}
             {slErrorMessage && (

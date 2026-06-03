@@ -6,7 +6,7 @@ import { TestSuiteArguments } from '../confirmations/transactions/shared';
 import { login } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import DeveloperOptionsPage from '../../page-objects/pages/developer-options-page';
+import DeveloperOptionsPage from '../../page-objects/pages/debug-page';
 import {
   MOCK_CUSTOMIZED_REMOTE_FEATURE_FLAGS,
   MOCK_META_METRICS_ID,
@@ -89,7 +89,7 @@ describe('Remote feature flag', function (this: Suite) {
       },
 
       async ({ driver, mockedEndpoint }: TestSuiteArguments) => {
-        await login(driver);
+        await login(driver, { waitForNonEvmAccounts: false });
 
         // Intended delay to wait for any potential requests to be made
         await driver.delay(5_000);

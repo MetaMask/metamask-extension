@@ -33,6 +33,7 @@ import MetaMaskTemplateRenderer from '../../../components/app/metamask-template-
 import ConfirmationWarningModal from '../components/confirmation-warning-modal';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useHideToasts } from '../../../hooks/useHideToasts';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   getUnapprovedTemplatedConfirmations,
@@ -50,7 +51,11 @@ import { Box } from '../../../components/component-library';
 import Loading from '../../../components/ui/loading-screen';
 import SnapAuthorshipHeader from '../../../components/app/snaps/snap-authorship-header';
 import { SnapUIRenderer } from '../../../components/app/snaps/snap-ui-renderer';
-import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
+import {
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+  SMART_TRANSACTION_CONFIRMATION_TYPES,
+} from '../../../../shared/constants/app';
+import { getExtensionSkipTransactionStatusPage } from '../../../../shared/lib/selectors/smart-transactions';
 import { DAY } from '../../../../shared/constants/time';
 import { Nav } from '../components/confirm/nav';
 import { ConfirmContextProvider } from '../context/confirm';
@@ -230,6 +235,8 @@ function Header({ confirmation, isSnapCustomUIDialog, onCancel }) {
 export default function ConfirmationPage({
   redirectToHomeOnZeroConfirmations = true,
 }) {
+  useHideToasts();
+
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
@@ -246,6 +253,9 @@ export default function ConfirmationPage({
   );
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
+  );
+  const skipSmartTransactionStatusPage = useSelector(
+    getExtensionSkipTransactionStatusPage,
   );
   const [approvalFlowLoadingText, setApprovalFlowLoadingText] = useState(null);
 
@@ -305,6 +315,10 @@ export default function ConfirmationPage({
 
   // When pendingConfirmation is undefined, this will also be undefined
   const snapName = isSnapDialog && name;
+
+  const isSmartTransactionStatus =
+    pendingConfirmation?.type ===
+    SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage;
 
   const hasHeaderMaybe = isSnapDialog;
   const hasHeader =
@@ -468,6 +482,10 @@ export default function ConfirmationPage({
       return <Loading loadingMessage={approvalFlowLoadingText} />;
     }
 
+    return null;
+  }
+
+  if (isSmartTransactionStatus && skipSmartTransactionStatusPage) {
     return null;
   }
 

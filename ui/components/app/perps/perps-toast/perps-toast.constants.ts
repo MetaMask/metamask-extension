@@ -2,6 +2,7 @@ export type PerpsToastVariant = 'info' | 'success' | 'error';
 
 export const PERPS_TOAST_KEYS = {
   CANCEL_ORDER_FAILED: 'perpsToastCancelOrderFailed',
+  INCREASE_POSITION_CROSS_MARGIN_BLOCKED: 'perpsCrossMarginNotSupportedTitle',
   CANCEL_ORDER_SUCCESS: 'perpsToastCancelOrderSuccess',
   CLOSE_FAILED: 'perpsToastCloseFailed',
   CLOSE_IN_PROGRESS: 'perpsToastCloseInProgress',

@@ -4,10 +4,24 @@ import {
   PerpsAnalyticsEvent,
 } from '../../../../shared/constants/perps-events';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+
 import {
   createPerpsInfrastructure,
   type InfrastructureDeps,
 } from './infrastructure';
+
+jest.mock('@metamask/perps-controller', () => ({
+  formatPerpsFiat: jest.fn((value: number) =>
+    new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(value),
+  ),
+  formatPercentage: jest.fn((percent: number) => `+${percent.toFixed(2)}%`),
+  PRICE_RANGES_UNIVERSAL: [{ threshold: 0, decimals: 2 }],
+}));
 
 const mockCaptureException = jest.fn();
 jest.mock('../../../../shared/lib/sentry', () => ({
@@ -29,13 +43,30 @@ function setupSentryScope() {
 
 describe('createPerpsInfrastructure', () => {
   const mockTrackEvent = jest.fn();
+  const mockGetStorageItem = jest.fn();
+  const mockSetStorageItem = jest.fn();
+  const mockRemoveStorageItem = jest.fn();
+  const mockGetPerpsDiscountForAccount = jest.fn();
 
-  function getDeps(): InfrastructureDeps {
-    return { trackEvent: mockTrackEvent };
+  function getDeps(
+    overrides?: Partial<InfrastructureDeps>,
+  ): InfrastructureDeps {
+    return {
+      trackEvent: mockTrackEvent,
+      getStorageItem: mockGetStorageItem,
+      setStorageItem: mockSetStorageItem,
+      removeStorageItem: mockRemoveStorageItem,
+      getPerpsDiscountForAccount: mockGetPerpsDiscountForAccount,
+      ...overrides,
+    };
   }
 
   beforeEach(() => {
     mockTrackEvent.mockClear();
+    mockGetStorageItem.mockReset().mockResolvedValue({});
+    mockSetStorageItem.mockReset().mockResolvedValue(undefined);
+    mockRemoveStorageItem.mockReset().mockResolvedValue(undefined);
+    mockGetPerpsDiscountForAccount.mockReset().mockResolvedValue(0);
   });
 
   afterEach(() => {
@@ -55,6 +86,7 @@ describe('createPerpsInfrastructure', () => {
     expect(infrastructure.featureFlags).toBeDefined();
     expect(infrastructure.marketDataFormatters).toBeDefined();
     expect(infrastructure.cacheInvalidator).toBeDefined();
+    expect(infrastructure.diskCache).toBeDefined();
     expect(infrastructure.rewards).toBeDefined();
   });
 
@@ -198,6 +230,188 @@ describe('createPerpsInfrastructure', () => {
         expect(mockScope.setContext).not.toHaveBeenCalled();
         expect(mockScope.setExtras).not.toHaveBeenCalled();
         expect(mockCaptureException).toHaveBeenCalledWith(error);
+      });
+    });
+
+    describe('when error is a benign disconnect race', () => {
+      function makeBenignError() {
+        return Object.assign(new Error('reconnect error'), {
+          name: 'ReconnectingWebSocketError',
+          code: 'TERMINATED_BY_USER',
+        });
+      }
+
+      describe('while disconnect is in progress (isDisconnecting = true)', () => {
+        function getDisconnectingDeps() {
+          return getDeps({ isDisconnecting: () => true });
+        }
+
+        it('does not call captureException for a direct TERMINATED_BY_USER code', () => {
+          setupSentryScope();
+          const { logger } = createPerpsInfrastructure(getDisconnectingDeps());
+
+          const error = Object.assign(new Error('reconnect error'), {
+            name: 'ReconnectingWebSocketError',
+            code: 'TERMINATED_BY_USER',
+          });
+
+          logger.error(error);
+
+          expect(mockCaptureException).not.toHaveBeenCalled();
+        });
+
+        it('does not call captureException when TERMINATED_BY_USER is nested via cause', () => {
+          setupSentryScope();
+          const { logger } = createPerpsInfrastructure(getDisconnectingDeps());
+
+          // Real-world shape: WebSocketRequestError { cause: ReconnectingWebSocketError { code } }
+          const cause = Object.assign(
+            new Error('Error when reconnecting WebSocket: TERMINATED_BY_USER'),
+            {
+              name: 'ReconnectingWebSocketError',
+              code: 'TERMINATED_BY_USER',
+            },
+          );
+          const error = Object.assign(
+            new Error('Failed to establish WebSocket connection'),
+            {
+              name: 'WebSocketRequestError',
+              cause,
+            },
+          );
+
+          logger.error(error);
+
+          expect(mockCaptureException).not.toHaveBeenCalled();
+        });
+
+        it('does not call captureException when matched by ReconnectingWebSocketError name alone', () => {
+          setupSentryScope();
+          const { logger } = createPerpsInfrastructure(getDisconnectingDeps());
+
+          const error = Object.assign(new Error('reconnect error'), {
+            name: 'ReconnectingWebSocketError',
+          });
+
+          logger.error(error);
+
+          expect(mockCaptureException).not.toHaveBeenCalled();
+        });
+
+        it('does not call captureException for WebSocketRequestError("WebSocket connection closed")', () => {
+          setupSentryScope();
+          const { logger } = createPerpsInfrastructure(getDisconnectingDeps());
+
+          // Shape produced when the HL SDK drains its pending request queue on socket close
+          const error = Object.assign(
+            new Error('WebSocket connection closed'),
+            {
+              name: 'WebSocketRequestError',
+            },
+          );
+
+          logger.error(error);
+
+          expect(mockCaptureException).not.toHaveBeenCalled();
+        });
+
+        it('does not touch Sentry scope when suppressing', () => {
+          const mockScope = setupSentryScope();
+          const { logger } = createPerpsInfrastructure(getDisconnectingDeps());
+
+          const cause = Object.assign(new Error('TERMINATED_BY_USER'), {
+            name: 'ReconnectingWebSocketError',
+            code: 'TERMINATED_BY_USER',
+          });
+          const error = Object.assign(new Error('WS error'), {
+            name: 'WebSocketRequestError',
+            cause,
+          });
+
+          logger.error(error, { tags: { feature: 'perps' } });
+
+          expect(mockScope.setTag).not.toHaveBeenCalled();
+          expect(mockScope.setContext).not.toHaveBeenCalled();
+          expect(mockScope.setExtras).not.toHaveBeenCalled();
+          expect(mockCaptureException).not.toHaveBeenCalled();
+        });
+
+        it('suppresses regardless of the error context (write or read)', () => {
+          setupSentryScope();
+          const { logger } = createPerpsInfrastructure(getDisconnectingDeps());
+          const error = makeBenignError();
+
+          // Even a write context like placeOrder is suppressed during disconnect
+          logger.error(error, {
+            context: { name: 'TradingService', data: { method: 'placeOrder' } },
+          });
+
+          expect(mockCaptureException).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('while disconnect is NOT in progress (isDisconnecting = false)', () => {
+        it('still calls captureException for errors with a different ReconnectingWebSocket code', () => {
+          setupSentryScope();
+          const { logger } = createPerpsInfrastructure(getDeps());
+
+          const cause = Object.assign(
+            new Error('Error when reconnecting WebSocket: UNKNOWN_ERROR'),
+            {
+              name: 'ReconnectingWebSocketError',
+              code: 'UNKNOWN_ERROR',
+            },
+          );
+          const error = Object.assign(
+            new Error('Failed to establish WebSocket connection'),
+            {
+              name: 'WebSocketRequestError',
+              cause,
+            },
+          );
+
+          logger.error(error);
+
+          expect(mockCaptureException).toHaveBeenCalledWith(error);
+        });
+
+        it('still calls captureException for WebSocketRequestError with a different message', () => {
+          setupSentryScope();
+          const { logger } = createPerpsInfrastructure(getDeps());
+
+          const error = Object.assign(
+            new Error('Failed to close WebSocket connection'),
+            {
+              name: 'WebSocketRequestError',
+            },
+          );
+
+          logger.error(error);
+
+          expect(mockCaptureException).toHaveBeenCalledWith(error);
+        });
+
+        it('reports benign-shaped errors to Sentry when no disconnect is active', () => {
+          setupSentryScope();
+          const { logger } = createPerpsInfrastructure(getDeps());
+          const error = makeBenignError();
+
+          logger.error(error);
+
+          expect(mockCaptureException).toHaveBeenCalledWith(error);
+        });
+
+        it('reports benign-shaped errors to Sentry when isDisconnecting is not provided', () => {
+          setupSentryScope();
+          const deps = getDeps();
+          delete deps.isDisconnecting;
+          const { logger } = createPerpsInfrastructure(deps);
+          const error = makeBenignError();
+
+          logger.error(error);
+
+          expect(mockCaptureException).toHaveBeenCalledWith(error);
+        });
       });
     });
   });
@@ -430,6 +644,26 @@ describe('createPerpsInfrastructure', () => {
           'millisecond',
         );
       });
+
+      it('forwards breadcrumbs to sentry', () => {
+        const addBreadcrumb = jest.fn();
+        (globalThis as Record<string, unknown>).sentry = { addBreadcrumb };
+
+        const { tracer } = createPerpsInfrastructure(getDeps());
+        tracer.addBreadcrumb({
+          category: 'perps.order',
+          message: 'place order started',
+          level: 'info',
+          data: { symbol: 'ETH' },
+        });
+
+        expect(addBreadcrumb).toHaveBeenCalledWith({
+          category: 'perps.order',
+          message: 'place order started',
+          level: 'info',
+          data: { symbol: 'ETH' },
+        });
+      });
     });
   });
 
@@ -474,26 +708,62 @@ describe('createPerpsInfrastructure', () => {
 
     it('formats fiat using adaptive significant-digit rules', () => {
       const { marketDataFormatters } = createPerpsInfrastructure(getDeps());
-      // $10,000–$100,000 range: 5 sig figs, 0 decimals → "$50,000"
+      // The published controller formatter currently preserves this value at
+      // two decimals in the universal range configuration.
       const formatted = marketDataFormatters.formatPerpsFiat(50000.123);
       expect(formatted).toContain('50,000');
-      // Verify it does NOT include the decimal portion (correct sig-fig truncation)
-      expect(formatted).not.toContain('50,000.1');
+      expect(formatted).toContain('50,000.12');
     });
 
     it('formats percentage', () => {
       const { marketDataFormatters } = createPerpsInfrastructure(getDeps());
       const formatted = marketDataFormatters.formatPercentage(2.5);
-      expect(formatted).toContain('2.50');
+      expect(formatted).toContain('+2.50');
       expect(formatted).toContain('%');
+    });
+
+    it('exposes shared universal price ranges', () => {
+      const { marketDataFormatters } = createPerpsInfrastructure(getDeps());
+      expect(marketDataFormatters.priceRangesUniversal.length).toBeGreaterThan(
+        0,
+      );
     });
   });
 
   describe('rewards', () => {
-    it('returns 0 discount as default stub', async () => {
+    it('delegates to the injected getPerpsDiscountForAccount with the perps base fee', async () => {
+      mockGetPerpsDiscountForAccount.mockResolvedValueOnce(5000);
       const infrastructure = createPerpsInfrastructure(getDeps());
       const discount = await infrastructure.rewards.getPerpsDiscountForAccount(
         'eip155:42161:0x1234',
+        10,
+      );
+
+      expect(discount).toBe(5000);
+      // Base fee bips comes from the perps package constants
+      // (BUILDER_FEE_CONFIG.MaxFeeDecimal * BASIS_POINTS_DIVISOR = 0.001 * 10000 = 10).
+      expect(mockGetPerpsDiscountForAccount).toHaveBeenCalledWith(
+        'eip155:42161:0x1234',
+        10,
+      );
+    });
+
+    it('returns 0 when the injected getPerpsDiscountForAccount throws', async () => {
+      mockGetPerpsDiscountForAccount.mockRejectedValueOnce(new Error('boom'));
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      const discount = await infrastructure.rewards.getPerpsDiscountForAccount(
+        'eip155:42161:0x1234',
+        10,
+      );
+      expect(discount).toBe(0);
+    });
+
+    it('collapses a null discount to 0 so the core perps-controller never sees null', async () => {
+      mockGetPerpsDiscountForAccount.mockResolvedValueOnce(null);
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      const discount = await infrastructure.rewards.getPerpsDiscountForAccount(
+        'eip155:42161:0x1234',
+        0,
       );
       expect(discount).toBe(0);
     });
@@ -514,6 +784,108 @@ describe('createPerpsInfrastructure', () => {
       expect(() =>
         infrastructure.cacheInvalidator.invalidateAll(),
       ).not.toThrow();
+    });
+  });
+
+  describe('diskCache', () => {
+    it('supports async cache access without sync hydration support', async () => {
+      const { diskCache } = createPerpsInfrastructure(getDeps());
+      expect(diskCache.getItemSync).toBeUndefined();
+
+      await expect(diskCache.getItem('missing-key')).resolves.toBeNull();
+
+      await diskCache.setItem('perps-test-key', 'value');
+
+      await expect(diskCache.getItem('perps-test-key')).resolves.toBe('value');
+
+      await diskCache.removeItem('perps-test-key');
+      await expect(diskCache.getItem('perps-test-key')).resolves.toBeNull();
+    });
+
+    it('stores perps disk cache through StorageService namespaced keys', async () => {
+      mockGetStorageItem
+        .mockResolvedValueOnce({ result: 'persisted-value' })
+        .mockResolvedValueOnce({ result: 'persisted-value' });
+
+      const { diskCache } = createPerpsInfrastructure(getDeps());
+      expect(diskCache.getItemSync).toBeUndefined();
+
+      await diskCache.setItem('PERPS_DISK_CACHE_MARKETS', 'persisted-value');
+
+      expect(mockSetStorageItem).toHaveBeenCalledWith(
+        'diskCache:PERPS_DISK_CACHE_MARKETS',
+        'persisted-value',
+      );
+
+      const { diskCache: hydratedDiskCache } =
+        createPerpsInfrastructure(getDeps());
+      await expect(
+        hydratedDiskCache.getItem('PERPS_DISK_CACHE_MARKETS'),
+      ).resolves.toBe('persisted-value');
+      expect(mockGetStorageItem).toHaveBeenCalledWith(
+        'diskCache:PERPS_DISK_CACHE_MARKETS',
+      );
+
+      await hydratedDiskCache.removeItem('PERPS_DISK_CACHE_MARKETS');
+      expect(mockRemoveStorageItem).toHaveBeenCalledWith(
+        'diskCache:PERPS_DISK_CACHE_MARKETS',
+      );
+    });
+
+    it('returns null when StorageService misses or returns non-string values', async () => {
+      mockGetStorageItem
+        .mockResolvedValueOnce({})
+        .mockResolvedValueOnce({ result: { unexpected: true } });
+
+      const { diskCache } = createPerpsInfrastructure(getDeps());
+      await expect(diskCache.getItem('arbitraryKey')).resolves.toBeNull();
+      await expect(diskCache.getItem('anotherKey')).resolves.toBeNull();
+
+      expect(mockGetStorageItem).toHaveBeenNthCalledWith(
+        1,
+        'diskCache:arbitraryKey',
+      );
+      expect(mockGetStorageItem).toHaveBeenNthCalledWith(
+        2,
+        'diskCache:anotherKey',
+      );
+    });
+
+    it('does not update memory cache when setItem persistence fails', async () => {
+      mockSetStorageItem.mockRejectedValueOnce(new Error('write failed'));
+
+      const { diskCache } = createPerpsInfrastructure(getDeps());
+
+      await expect(
+        diskCache.setItem('PERPS_DISK_CACHE_MARKETS', 'persisted-value'),
+      ).rejects.toThrow('write failed');
+
+      await expect(
+        diskCache.getItem('PERPS_DISK_CACHE_MARKETS'),
+      ).resolves.toBeNull();
+      expect(mockGetStorageItem).toHaveBeenCalledWith(
+        'diskCache:PERPS_DISK_CACHE_MARKETS',
+      );
+    });
+
+    it('does not clear memory cache when removeItem persistence fails', async () => {
+      mockGetStorageItem.mockResolvedValueOnce({ result: 'persisted-value' });
+      mockRemoveStorageItem.mockRejectedValueOnce(new Error('delete failed'));
+
+      const { diskCache } = createPerpsInfrastructure(getDeps());
+
+      await expect(diskCache.getItem('PERPS_DISK_CACHE_MARKETS')).resolves.toBe(
+        'persisted-value',
+      );
+
+      await expect(
+        diskCache.removeItem('PERPS_DISK_CACHE_MARKETS'),
+      ).rejects.toThrow('delete failed');
+
+      await expect(diskCache.getItem('PERPS_DISK_CACHE_MARKETS')).resolves.toBe(
+        'persisted-value',
+      );
+      expect(mockGetStorageItem).toHaveBeenCalledTimes(1);
     });
   });
 });

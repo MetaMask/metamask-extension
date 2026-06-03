@@ -981,6 +981,8 @@ function setupBundlerDefaults(
             './**/node_modules/@ledgerhq/hw-transport',
             './**/node_modules/@ledgerhq/hw-app-eth',
             './**/node_modules/@ledgerhq/devices',
+            // jose (via @segment/analytics-node) ships ESM under "browser". Transpile for browserify.
+            './**/node_modules/jose',
           ],
           global: true,
         },

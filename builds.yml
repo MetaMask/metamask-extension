@@ -29,14 +29,15 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.0.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.1.1/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
-      - EXTENSION_UX_PNA25: true
       # for seedless onboarding (social login)
       - GOOGLE_PROD_CLIENT_ID
       - APPLE_PROD_CLIENT_ID
+      - TELEGRAM_PROD_CLIENT_ID
       - GOOGLE_CLIENT_ID_REF: GOOGLE_PROD_CLIENT_ID
       - APPLE_CLIENT_ID_REF: APPLE_PROD_CLIENT_ID
+      - TELEGRAM_CLIENT_ID_REF: TELEGRAM_PROD_CLIENT_ID
       - PERPS_ENABLED: true
     # Main build uses the default browser manifest
     manifestOverrides: false
@@ -61,14 +62,15 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.0.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.1.1/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
-      - EXTENSION_UX_PNA25: true
       # for seedless onboarding (social login)
       - GOOGLE_BETA_CLIENT_ID
       - APPLE_BETA_CLIENT_ID
+      - TELEGRAM_BETA_CLIENT_ID
       - GOOGLE_CLIENT_ID_REF: GOOGLE_BETA_CLIENT_ID
       - APPLE_CLIENT_ID_REF: APPLE_BETA_CLIENT_ID
+      - TELEGRAM_CLIENT_ID_REF: TELEGRAM_BETA_CLIENT_ID
     # Modifies how the version is displayed.
     # eg. instead of 10.25.0 -> 10.25.0-beta.2
     isPrerelease: true
@@ -92,14 +94,15 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.0.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.1.1/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
-      - EXTENSION_UX_PNA25: true
       # for seedless onboarding (social login)
       - GOOGLE_EXPERIMENTAL_CLIENT_ID
       - APPLE_EXPERIMENTAL_CLIENT_ID
+      - TELEGRAM_EXPERIMENTAL_CLIENT_ID
       - GOOGLE_CLIENT_ID_REF: GOOGLE_EXPERIMENTAL_CLIENT_ID
       - APPLE_CLIENT_ID_REF: APPLE_EXPERIMENTAL_CLIENT_ID
+      - TELEGRAM_CLIENT_ID_REF: TELEGRAM_EXPERIMENTAL_CLIENT_ID
       - ENABLE_SETTINGS_PAGE_DEV_OPTIONS: true
       - PERPS_ENABLED: true
     isPrerelease: true
@@ -122,19 +125,20 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.0.1/index.html
-      - SUPPORT_LINK: https://support.metamask.io/
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.1.1/index.html
+      - SUPPORT_LINK: https://support.metamask.io/?utm_source=extension
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://metamask.github.io/snaps-directory-staging/main/account-management
       - EIP_4337_ENTRYPOINT: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789'
-      - EXTENSION_UX_PNA25: true
       # for seedless onboarding (social login)
       - GOOGLE_FLASK_CLIENT_ID
       - APPLE_FLASK_CLIENT_ID
+      - TELEGRAM_FLASK_CLIENT_ID
       - GOOGLE_CLIENT_ID_REF: GOOGLE_FLASK_CLIENT_ID
       - APPLE_CLIENT_ID_REF: APPLE_FLASK_CLIENT_ID
-      - GATOR_ENABLED_PERMISSION_TYPES: 'native-token-stream,native-token-periodic,erc20-token-stream,erc20-token-periodic,erc20-token-revocation'
+      - TELEGRAM_CLIENT_ID_REF: TELEGRAM_FLASK_CLIENT_ID
+      - GATOR_ENABLED_PERMISSION_TYPES: 'native-token-allowance,native-token-stream,native-token-periodic,erc20-token-allowance,erc20-token-stream,erc20-token-periodic,token-approval-revocation'
       - GATOR_PERMISSIONS_REVOCATION_ENABLED: true
 
     isPrerelease: true
@@ -220,7 +224,7 @@ env:
   # Also see METAMASK_DEBUG and NODE_DEBUG
   - DEBUG: null
   - METAMASK_REACT_REDUX_DEVTOOLS: null
-  - SUPPORT_LINK: https://support.metamask.io
+  - SUPPORT_LINK: https://support.metamask.io/?utm_source=extension
   - SKIP_BACKGROUND_INITIALIZATION: false
   - PPOM_URI: ./ppom_bg.wasm
   # CDN for blockaid files
@@ -285,7 +289,6 @@ env:
   - QUICKNODE_OPTIMISM_URL: null
   - QUICKNODE_POLYGON_URL: null
   - QUICKNODE_BASE_URL: null
-  - QUICKNODE_BSC_URL: null
   - QUICKNODE_SEI_URL: null
   - QUICKNODE_MONAD_URL: null
   - QUICKNODE_HYPEREVM_URL: null
@@ -329,6 +332,7 @@ env:
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   # Also see DEBUG and NODE_DEBUG
   - METAMASK_DEBUG: false
+  - SENTRY_DISTRIBUTED_TRACING_DISABLED: false
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   - IN_TEST
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
@@ -372,7 +376,7 @@ env:
   - METAMASK_RAMP_API_CONTENT_BASE_URL: https://on-ramp-content.api.cx.metamask.io
 
   # EIP-7715 Readable Permissions
-  - GATOR_ENABLED_PERMISSION_TYPES: 'native-token-stream,native-token-periodic,erc20-token-stream,erc20-token-periodic,erc20-token-revocation'
+  - GATOR_ENABLED_PERMISSION_TYPES: 'native-token-allowance,native-token-stream,native-token-periodic,erc20-token-allowance,erc20-token-stream,erc20-token-periodic,token-approval-revocation'
   - PERMISSIONS_KERNEL_SNAP_ID: 'npm:@metamask/permissions-kernel-snap'
   - GATOR_PERMISSIONS_PROVIDER_SNAP_ID: 'npm:@metamask/gator-permissions-snap'
   - GATOR_PERMISSIONS_REVOCATION_ENABLED: true
@@ -386,7 +390,9 @@ env:
   - PERPS_ENABLED: false
   # Build-time gate: when false AssetsController is instantiated but state remains empty.
   # When true, the controller populates state (subject to remote feature flag).
-  - ASSETS_UNIFIED_STATE_ENABLED: false
+  - ASSETS_UNIFIED_STATE_ENABLED: true
+  # Build-time gate: when true, hardware wallet onboarding uses the new flow.
+  - NEW_HARDWARE_WALLET_ONBOARDING: false
 
   ###
   # Meta variables
@@ -428,20 +434,27 @@ env:
   ###
   - DEEP_LINK_PUBLIC_KEY: BD8cWMMR2J33ax8hvSz8LNt99H3wGBPWuAgw+lsfWcBrw4ZtTHFnWyNkbgXglqJOoc+1OA5ZC4kW4GYU/QIeBNA=
 
-  # Enforce simulation balance changes by converting external transactions to delegations.
-  - ENABLE_ENFORCED_SIMULATIONS: false
+  # Force enforced simulations to apply whenever a transaction has balance
+  # changes, bypassing the trust signal check. Intended for local
+  # development and QA only; must remain false for production builds.
+  - FORCE_ENFORCED_SIMULATIONS: false
 
   # OAuth (Social login)
   - GOOGLE_CLIENT_ID_REF
   - APPLE_CLIENT_ID_REF
+  - TELEGRAM_CLIENT_ID_REF
   - SEEDLESS_ONBOARDING_ENABLED: 'true'
   - GOOGLE_CLIENT_ID: ''
   - APPLE_CLIENT_ID: ''
+  - TELEGRAM_CLIENT_ID: ''
   # OAuth (Social login) for UAT(QA) builds
   - GOOGLE_CLIENT_ID_FLASK_UAT: ''
   - APPLE_CLIENT_ID_FLASK_UAT: ''
+  - TELEGRAM_CLIENT_ID_FLASK_UAT: ''
   - GOOGLE_CLIENT_ID_UAT: ''
   - APPLE_CLIENT_ID_UAT: ''
+  - TELEGRAM_CLIENT_ID_UAT: ''
+  - TELEGRAM_LOGIN_ENABLED: 'false'
 
   # Metamask Shield
   - METAMASK_SHIELD_ENABLED: 'true'
@@ -452,8 +465,8 @@ env:
   # production builds (including beta and Flask).
   - FORCE_PREINSTALLED_SNAPS: 'false'
 
-  # PNA25 (Privacy Notice)
-  - EXTENSION_UX_PNA25: true
-
   # Authentication (Backup & Sync, Profile metrics...)
   - FORCE_AUTH_MATCH_BUILD: false
+
+  # Passkey / Biometrics unlock
+  - PASSKEY_ENABLED: true

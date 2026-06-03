@@ -30,7 +30,7 @@ import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_METAMETRICS,
   ONBOARDING_REVIEW_SRP_ROUTE,
-  REVEAL_SRP_LIST_ROUTE,
+  MANAGE_WALLET_RECOVERY_ROUTE,
 } from '../../../helpers/constants/routes';
 import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
 import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
@@ -93,7 +93,7 @@ export default function RevealRecoveryPhrase({
 
   const returnToPreviousPage = useCallback(() => {
     if (isFromSettingsSecurity) {
-      navigate(REVEAL_SRP_LIST_ROUTE, { replace: true });
+      navigate(MANAGE_WALLET_RECOVERY_ROUTE, { replace: true });
     } else {
       navigate(DEFAULT_ROUTE, { replace: true });
     }

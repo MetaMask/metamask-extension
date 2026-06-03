@@ -15,6 +15,11 @@ import {
   FontWeight,
   ButtonBase,
 } from '@metamask/design-system-react';
+import type { Position } from '@metamask/perps-controller';
+import {
+  formatPerpsFiat,
+  PRICE_RANGES_MINIMAL_VIEW,
+} from '../../../../../shared/lib/perps-formatters';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { usePerpsEligibility } from '../../../../hooks/perps';
@@ -43,6 +48,8 @@ export function invokePerpsBalanceAction(
 export type PerpsBalanceDropdownProps = {
   /** Whether the user has open positions (controls P&L row visibility) */
   hasPositions?: boolean;
+  /** The only open position, used to keep single-position RoE synced with the card */
+  singlePosition?: Position;
   /** Callback when Add funds button is pressed */
   onAddFunds?: PerpsBalanceActionHandler;
   /** Callback when Withdraw button is pressed */
@@ -57,34 +64,43 @@ export type PerpsBalanceDropdownProps = {
  * @param options0.hasPositions - Whether the user has open positions (controls P&L row visibility)
  * @param options0.onAddFunds - Callback when Add funds button is pressed
  * @param options0.onWithdraw - Callback when Withdraw button is pressed
+ * @param options0.singlePosition - The only open position, if exactly one is open
  */
 export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
   hasPositions = false,
+  singlePosition,
   onAddFunds,
   onWithdraw,
 }) => {
   const t = useI18nContext();
-  const { formatCurrencyWithMinThreshold, formatPercentWithMinThreshold } =
-    useFormatters();
   const { account, isInitialLoading } = usePerpsLiveAccount();
+  const { formatPercentWithMinThreshold } = useFormatters();
   const { isEligible } = usePerpsEligibility();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
   const totalBalance = account?.totalBalance ?? '0';
   const unrealizedPnl = account?.unrealizedPnl ?? '0';
-  const returnOnEquity = account?.returnOnEquity ?? '0';
+  const singlePositionReturnOnEquity = singlePosition?.returnOnEquity;
+  const accountReturnOnEquity = account?.returnOnEquity ?? '0';
 
   // totalBalance is HL accountValue (perps equity, already includes unrealizedPnl) + spot
-  const accountValue = parseFloat(totalBalance);
+  const accountValue = Number.parseFloat(totalBalance);
 
-  const pnlNum = parseFloat(unrealizedPnl);
+  const pnlNum = Number.parseFloat(unrealizedPnl);
   const isProfit = pnlNum >= 0;
   const pnlPrefix = isProfit ? '+' : '-';
-  const formattedPnl = `${pnlPrefix}${formatCurrencyWithMinThreshold(Math.abs(pnlNum), 'USD')}`;
-  const formattedRoe = formatPercentWithMinThreshold(
-    parseFloat(returnOnEquity) / 100,
-  );
+  const formattedPnl = `${pnlPrefix}${formatPerpsFiat(Math.abs(pnlNum), {
+    ranges: PRICE_RANGES_MINIMAL_VIEW,
+  })}`;
+  const formattedRoe =
+    singlePositionReturnOnEquity === undefined
+      ? formatPercentWithMinThreshold(
+          Number.parseFloat(accountReturnOnEquity) / 100,
+        )
+      : formatPercentWithMinThreshold(
+          Number.parseFloat(singlePositionReturnOnEquity),
+        );
 
   const handleToggleDropdown = useCallback(() => {
     setIsDropdownOpen((prev) => !prev);
@@ -164,7 +180,9 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
               gap={2}
             >
               <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-                {formatCurrencyWithMinThreshold(accountValue, 'USD')}
+                {formatPerpsFiat(accountValue, {
+                  ranges: PRICE_RANGES_MINIMAL_VIEW,
+                })}
               </Text>
               <Icon
                 name={isDropdownOpen ? IconName.ArrowUp : IconName.ArrowDown}

@@ -83,7 +83,7 @@ jobs:
     environment: default-branch
     steps:
       - name: Send Slack notification
-        uses: MetaMask/github-tools/.github/actions/feature-flag-drift-slack-noti@main
+        uses: MetaMask/github-tools/.github/actions/feature-flag-drift-slack-noti@v1
         with:
           title: MetaMask Extension
           slack-webhook: ${{ secrets.SLACK_WEBHOOK_FEATURE_FLAG_DRIFT }}

@@ -3,7 +3,7 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
-import { mockAccountState } from '../mocks';
+import { mockAccountState, mockPositions } from '../mocks';
 import {
   PerpsBalanceDropdown,
   invokePerpsBalanceAction,
@@ -84,7 +84,7 @@ describe('PerpsBalanceDropdown', () => {
   it('displays the formatted total balance from mock data', () => {
     renderWithProvider(<PerpsBalanceDropdown />, mockStore);
 
-    expect(screen.getByText('$15,250.00')).toBeInTheDocument();
+    expect(screen.getByText('$15,250')).toBeInTheDocument();
   });
 
   it('renders loading skeleton when account data is still loading', () => {
@@ -206,8 +206,32 @@ describe('PerpsBalanceDropdown', () => {
   it('displays formatted P&L value when hasPositions is true', () => {
     renderWithProvider(<PerpsBalanceDropdown hasPositions />, mockStore);
 
-    expect(screen.getByText(/\+\$375\.00/u)).toBeInTheDocument();
+    expect(screen.getByText(/\+\$375/u)).toBeInTheDocument();
     expect(screen.getByText(/7\.32%/u)).toBeInTheDocument();
+  });
+
+  it('uses the single position RoE when provided', () => {
+    mockUsePerpsLiveAccount.mockReturnValueOnce({
+      account: {
+        ...mockAccountState,
+        returnOnEquity: '1',
+      },
+      isInitialLoading: false,
+    });
+
+    renderWithProvider(
+      <PerpsBalanceDropdown
+        hasPositions
+        singlePosition={{
+          ...mockPositions[0],
+          returnOnEquity: '0.42',
+        }}
+      />,
+      mockStore,
+    );
+
+    expect(screen.getByText(/42\.00%/u)).toBeInTheDocument();
+    expect(screen.queryByText(/1\.00%/u)).not.toBeInTheDocument();
   });
 
   describe('geo-blocking', () => {

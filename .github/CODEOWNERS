@@ -113,6 +113,7 @@ ui/components/app/whats-new-popup               @MetaMask/core-extension-ux
 ui/css                                          @MetaMask/core-extension-ux
 ui/pages/home                                   @MetaMask/core-extension-ux
 ui/pages/core                                   @MetaMask/core-extension-ux
+ui/pages/settings                               @MetaMask/core-extension-ux
 ui/components/multichain/                       @MetaMask/core-extension-ux
 ui/components/app/transaction-list              @MetaMask/core-extension-ux
 ui/components/app/transaction-list-item-details @MetaMask/core-extension-ux
@@ -141,7 +142,7 @@ ui/contexts/claims                              @MetaMask/web3auth
 ui/contexts/shield                              @MetaMask/web3auth
 ui/hooks/claims                                 @MetaMask/web3auth
 ui/hooks/subscription                           @MetaMask/web3auth
-ui/pages/shield-plan                            @MetaMask/web3auth
+ui/pages/shield                                 @MetaMask/web3auth
 ui/pages/settings/transaction-shield-tab        @MetaMask/web3auth
 
 # Confirmations team to own code for confirmations on UI.
@@ -163,17 +164,15 @@ ui/pages/confirmations/hooks/transactions/useEnableShieldCoverageChecks.ts      
 ui/pages/confirmations/hooks/transactions/useEnableShieldCoverageChecks.test.ts     @MetaMask/confirmations @MetaMask/web3auth
 
 # Assets
-ui/components/app/detected-token                   @MetaMask/metamask-assets
 ui/components/app/import-token                        @MetaMask/metamask-assets
 ui/components/app/assets                              @MetaMask/metamask-assets
-ui/components/ui/nft-collection-image                 @MetaMask/metamask-assets
 
 # Smart Transactions
 app/scripts/controller-init/smart-transactions    @MetaMask/transactions
 app/scripts/lib/smart-transaction                 @MetaMask/transactions
 
-# New networks
-shared/lib/multichain/addresses/* @MetaMask/new-networks
+# Networks Team
+shared/lib/multichain/addresses/* @MetaMask/networks
 
 # QA Team - E2E Framework
 test/e2e/page-objects/                                                @MetaMask/qa
@@ -192,6 +191,8 @@ test/e2e/fixtures/onboarding-fixture.json                             @MetaMask/
 test/e2e/fixtures/fixture-validation.ts                               @MetaMask/qa @MetaMask/extension-platform
 test/e2e/dist/wallet-fixture-export.spec.ts                           @MetaMask/qa @MetaMask/extension-platform
 test/e2e/dist/wallet-fixture-validation.spec.ts                       @MetaMask/qa @MetaMask/extension-platform
+test/e2e/benchmarks/utils/gated-metrics.ts                            @MetaMask/qa @MetaMask/extension-platform
+test/e2e/benchmarks/utils/thresholds.ts                               @MetaMask/qa @MetaMask/extension-platform
 
 # Wallet Integrations
 app/scripts/lib/rpc-method-middleware                                 @MetaMask/wallet-integrations
@@ -261,5 +262,10 @@ development/generate-lavamoat-policies.js             @MetaMask/extension-platfo
 /tsconfig.*.json                                      @MetaMask/extension-platform
 
 # Background Process
-app/scripts/lib/createMetaRPCHandler.js              @MetaMask/extension-platform
+app/scripts/lib/createMetaRPCHandler.ts              @MetaMask/extension-platform
 app/scripts/lib/metaRPCClientFactory.ts              @MetaMask/extension-platform
+
+# Delegation Team
+ui/hooks/gator-permissions                           @MetaMask/delegation
+app/scripts/messenger-client-init/gator-permissions  @MetaMask/delegation
+shared/lib/gator-permissions                         @MetaMask/delegation

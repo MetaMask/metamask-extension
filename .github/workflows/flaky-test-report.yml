@@ -20,4 +20,4 @@ jobs:
           repository: ${{ github.event.repository.name }}
           workflow-id: main.yml
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          slack-webhook-flaky-tests: ${{ secrets.SLACK_WEBHOOK_FLAKY_TESTS }}
+          slack-webhook-flaky-tests: ${{ secrets.SLACK_WEBHOOK_METAMASK_EXTENSION }}

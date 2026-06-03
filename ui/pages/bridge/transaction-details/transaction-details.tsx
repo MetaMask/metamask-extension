@@ -6,7 +6,18 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
-import { formatChainIdToHex, StatusTypes } from '@metamask/bridge-controller';
+import {
+  formatChainIdToHex,
+  isCrossChain,
+  StatusTypes,
+} from '@metamask/bridge-controller';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxFlexWrap,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -14,7 +25,6 @@ import {
   AvatarTokenSize,
   BannerAlert,
   BannerAlertSeverity,
-  Box,
   ButtonIcon,
   ButtonIconSize,
   ButtonLink,
@@ -43,15 +53,13 @@ import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import {
   AlignItems,
   Display,
-  FlexDirection,
-  FlexWrap,
-  JustifyContent,
   TextTransform,
 } from '../../../helpers/constants/design-system';
 import { formatDate } from '../../../helpers/utils/util';
 import { ConfirmInfoRowDivider as Divider } from '../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getNativeTokenInfo } from '../../../selectors';
+import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
 import { getTransactions } from '../../../selectors/transactions';
 import {
   MetaMetricsContextProp,
@@ -68,7 +76,7 @@ import {
 } from '../../../../shared/constants/bridge';
 import { Numeric } from '../../../../shared/lib/Numeric';
 import { getImageForChainId } from '../../../selectors/multichain';
-import { formatTokenAmount } from '../utils/quote';
+import { resolveTransactionType } from '../../../components/multichain/activity-v2/helpers';
 import {
   getBlockExplorerUrl,
   getBridgeAmountReceivedFormatted,
@@ -76,6 +84,7 @@ import {
   getIsDelayed,
   STATUS_TO_COLOR_MAP,
 } from '../utils/tx-details';
+import { formatTokenAmount } from '../utils/quote';
 import TransactionDetailRow from './transaction-detail-row';
 import BridgeExplorerLinks from './bridge-explorer-links';
 import BridgeStepList from './bridge-step-list';
@@ -85,6 +94,7 @@ const CrossChainSwapTxDetails = () => {
   const locale = useSelector(getIntlLocale);
   const { trackEvent } = useContext(MetaMetricsContext);
   const rootState = useSelector((state) => state);
+  const isHardwareWalletAccount = useSelector(isHardwareWallet);
 
   const { txHash } = useParams<{ txHash: string }>();
   const location = useLocation() as {
@@ -122,7 +132,15 @@ const CrossChainSwapTxDetails = () => {
     (tx) => tx.id === bridgeHistoryItem?.approvalTxId,
   );
 
-  const isBridgeTx = srcChainTxMeta?.type === TransactionType.bridge;
+  const isBridgeTx =
+    srcChainTxMeta?.type === TransactionType.bridge ||
+    (transaction?.transactionCategory &&
+      resolveTransactionType(transaction) === TransactionType.bridge) ||
+    (bridgeHistoryItem &&
+      isCrossChain(
+        bridgeHistoryItem.status.srcChain?.chainId,
+        bridgeHistoryItem.status.destChain?.chainId,
+      ));
 
   const srcTxHash = srcChainTxMeta?.hash;
   const srcBlockExplorerUrl = getBlockExplorerUrl(srcNetwork, srcTxHash);
@@ -130,11 +148,15 @@ const CrossChainSwapTxDetails = () => {
   const destTxHash = bridgeHistoryItem?.status.destChain?.txHash;
   const destBlockExplorerUrl = getBlockExplorerUrl(destNetwork, destTxHash);
 
-  const bridgeStatus = bridgeHistoryItem
-    ? bridgeHistoryItem?.status.status
-    : StatusTypes.PENDING;
-  // Show src tx status for swaps
-  const status = isBridgeTx ? bridgeStatus : srcChainTxMeta?.status;
+  // Either the local tx or the transaction from accounts-api
+  const transactionStatus = srcChainTxMeta?.status || transaction?.status;
+  // Use txHistory status for bridge txs, fallback to src tx status if not a local bridge tx
+  const bridgeStatus =
+    (bridgeHistoryItem ? bridgeHistoryItem.status.status : transactionStatus) ??
+    StatusTypes.PENDING;
+
+  // Show src tx status for swaps, but use txHistory status for bridge txs
+  const status = isBridgeTx ? bridgeStatus : transactionStatus;
 
   const srcChainIconUrl = srcNetwork
     ? getImageForChainId(
@@ -166,6 +188,7 @@ const CrossChainSwapTxDetails = () => {
         state: rootState as MetaMaskReduxState,
         transaction: srcChainTxMeta,
         isTokenApprove: false,
+        isHardwareWalletAccount,
       })
     : undefined;
 
@@ -203,7 +226,7 @@ const CrossChainSwapTxDetails = () => {
   );
 
   const srcNetworkIconName = (
-    <Box display={Display.Flex} gap={1} alignItems={AlignItems.center}>
+    <Box className="flex" gap={1} alignItems={BoxAlignItems.Center}>
       {srcNetwork && (
         <AvatarNetwork
           size={AvatarNetworkSize.Xs}
@@ -216,7 +239,7 @@ const CrossChainSwapTxDetails = () => {
   );
 
   const destNetworkIconName = (
-    <Box display={Display.Flex} gap={1} alignItems={AlignItems.center}>
+    <Box className="flex" gap={1} alignItems={BoxAlignItems.Center}>
       {destNetwork && (
         <AvatarNetwork
           size={AvatarNetworkSize.Xs}
@@ -303,11 +326,7 @@ const CrossChainSwapTxDetails = () => {
           <Divider />
 
           {/* Bridge tx details */}
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            gap={2}
-          >
+          <Box className="flex" flexDirection={BoxFlexDirection.Column} gap={2}>
             <TransactionDetailRow
               title={t('bridgeTxDetailsStatus')}
               value={
@@ -329,11 +348,11 @@ const CrossChainSwapTxDetails = () => {
                 )}
                 value={
                   <Box
-                    display={Display.Flex}
+                    className="flex"
                     gap={1}
-                    alignItems={AlignItems.center}
-                    flexWrap={FlexWrap.Wrap}
-                    justifyContent={JustifyContent.flexEnd}
+                    alignItems={BoxAlignItems.Center}
+                    flexWrap={BoxFlexWrap.Wrap}
+                    justifyContent={BoxJustifyContent.End}
                   >
                     {srcNetworkIconName}
                     <Icon name={IconName.Arrow2Right} size={IconSize.Sm} />
@@ -351,11 +370,11 @@ const CrossChainSwapTxDetails = () => {
                 )}
                 value={
                   <Box
-                    display={Display.Flex}
+                    className="flex"
                     gap={1}
-                    alignItems={AlignItems.center}
-                    flexWrap={FlexWrap.Wrap}
-                    justifyContent={JustifyContent.flexEnd}
+                    alignItems={BoxAlignItems.Center}
+                    flexWrap={BoxFlexWrap.Wrap}
+                    justifyContent={BoxJustifyContent.End}
                   >
                     {sourceTokenIconUrl && (
                       <AvatarToken
@@ -390,20 +409,16 @@ const CrossChainSwapTxDetails = () => {
           <Divider />
 
           {/* Bridge tx details 2 */}
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            gap={2}
-          >
+          <Box className="flex" flexDirection={BoxFlexDirection.Column} gap={2}>
             <TransactionDetailRow
               title={t('bridgeTxDetailsYouSent')}
               value={
                 <Box
-                  display={Display.Flex}
+                  className="flex"
                   gap={1}
-                  alignItems={AlignItems.center}
-                  flexWrap={FlexWrap.Wrap}
-                  justifyContent={JustifyContent.flexEnd}
+                  alignItems={BoxAlignItems.Center}
+                  flexWrap={BoxFlexWrap.Wrap}
+                  justifyContent={BoxJustifyContent.End}
                 >
                   {t('bridgeTxDetailsTokenAmountOnChain', [
                     bridgeAmountSent ?? '',
@@ -418,11 +433,11 @@ const CrossChainSwapTxDetails = () => {
                 title={t('bridgeTxDetailsYouReceived')}
                 value={
                   <Box
-                    display={Display.Flex}
+                    className="flex"
                     gap={1}
-                    alignItems={AlignItems.center}
-                    flexWrap={FlexWrap.Wrap}
-                    justifyContent={JustifyContent.flexEnd}
+                    alignItems={BoxAlignItems.Center}
+                    flexWrap={BoxFlexWrap.Wrap}
+                    justifyContent={BoxJustifyContent.End}
                   >
                     {t('bridgeTxDetailsTokenAmountOnChain', [
                       amountReceived,
@@ -460,11 +475,7 @@ const CrossChainSwapTxDetails = () => {
           <Divider />
 
           {/* Generic tx details */}
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            gap={2}
-          >
+          <Box className="flex" flexDirection={BoxFlexDirection.Column} gap={2}>
             {srcChainTxMeta?.txParams.nonce ? (
               <TransactionDetailRow
                 title={t('bridgeTxDetailsNonce')}

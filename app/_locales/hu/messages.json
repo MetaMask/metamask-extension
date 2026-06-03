@@ -78,9 +78,6 @@
   "autoLockTimeLimit": {
     "message": "Automatikus kijelentkezés időzítő (perc)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "Adja meg a MetaMask automatikus kijelentkezéséig tartó tétlen állapot idejét percekben "
-  },
   "average": {
     "message": "Átlag"
   },
@@ -181,12 +178,6 @@
   "createPassword": {
     "message": "Jelszó létrehozása"
   },
-  "currencyConversion": {
-    "message": "Valutaváltás"
-  },
-  "currentLanguage": {
-    "message": "Aktuális nyelv"
-  },
   "custom": {
     "message": "Speciális"
   },
@@ -207,9 +198,6 @@
   },
   "done": {
     "message": "Kész"
-  },
-  "downloadGoogleChrome": {
-    "message": "Google Chrome letöltése"
   },
   "downloadStateLogs": {
     "message": "Állapotnapló letöltése"
@@ -268,9 +256,6 @@
   },
   "hardwareWallets": {
     "message": "Hardveres tárca csatlakoztatása"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Válassza ki a MetaMask-kal használni kívánt hardveres pénztárcát"
   },
   "here": {
     "message": "itt",
@@ -339,12 +324,6 @@
   "likeToImportTokens": {
     "message": "Hozzá szeretné adni ezeket az érméket?"
   },
-  "lineaGoerli": {
-    "message": "Linea Goerli teszthálózat"
-  },
-  "links": {
-    "message": "Linkek"
-  },
   "loading": {
     "message": "Betöltés..."
   },
@@ -381,9 +360,6 @@
   },
   "nevermind": {
     "message": "Nem fontos"
-  },
-  "newAccount": {
-    "message": "Új fiók"
   },
   "newAccountNumberName": {
     "message": "$1 fiók",
@@ -490,9 +466,6 @@
   "restore": {
     "message": "Visszaállítás"
   },
-  "revealSeedWords": {
-    "message": "Seed szavak megjelenítése"
-  },
   "revealSeedWordsWarning": {
     "message": "Ezekkel a szavakkal ellophatóak a fiókjai.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -539,9 +512,6 @@
   "showFiatConversionInTestnets": {
     "message": "Konverzió mutatása Testnetsen"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Válassza ezt, ha a Testnetsen szeretné megnézni a törvényes fizetőeszközre való átváltást"
-  },
   "showHexData": {
     "message": "Hex adatok mutatása"
   },
@@ -571,9 +541,6 @@
   },
   "stateLogs": {
     "message": "Állapotnapló"
-  },
-  "stateLogsDescription": {
-    "message": "Az állapotnaplóban megtalálhatók nyilvános fiókcímeid és elküldött tranzakcióid."
   },
   "submitted": {
     "message": "Elküldve"

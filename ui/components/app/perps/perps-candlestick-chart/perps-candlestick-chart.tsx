@@ -13,16 +13,69 @@ import {
   ISeriesApi,
   // @ts-expect-error suppress CommonJS vs ECMAScript error
 } from 'lightweight-charts';
+import { useSelector } from 'react-redux';
 import { brandColor } from '@metamask/design-tokens';
 import { Box } from '@metamask/design-system-react';
 import type { CandleData, CandleStick } from '@metamask/perps-controller';
+import {
+  formatVolume,
+  PRICE_THRESHOLD,
+} from '../../../../../shared/lib/perps-formatters';
 import { CandlePeriod, ZOOM_CONFIG } from '../constants/chartConfig';
+import { useTheme } from '../../../../hooks/useTheme';
+import { getIntlLocale } from '../../../../ducks/locale/locale';
 import {
   formatCandleDataForChart,
   formatVolumeDataForChart,
   formatSingleCandleForChart,
   formatSingleVolumeForChart,
+  formatChartTimestamp,
 } from './chart-utils';
+
+/**
+ * Derive lightweight-charts priceFormat options from a representative price,
+ * mirroring the decimal precision rules in PRICE_RANGES_UNIVERSAL so the
+ * y-axis always shows the same number of decimal places as the header price.
+ *
+ * @param price - Representative asset price (e.g. current mark price).
+ * @returns precision and minMove for a lightweight-charts priceFormat object.
+ */
+export function getPriceFormatForPrice(price: number): {
+  precision: number;
+  minMove: number;
+} {
+  const abs = Math.abs(price);
+  if (abs > PRICE_THRESHOLD.HIGH) {
+    // > $10,000 (includes > $100,000): 0 decimals
+    return { precision: 0, minMove: 1 };
+  }
+  if (abs > PRICE_THRESHOLD.LARGE) {
+    // $1,000–$10,000: max 1 decimal
+    return { precision: 1, minMove: 0.1 };
+  }
+  if (abs > PRICE_THRESHOLD.MEDIUM) {
+    // $100–$1,000: max 2 decimals
+    return { precision: 2, minMove: 0.01 };
+  }
+  if (abs > PRICE_THRESHOLD.MEDIUM_LOW) {
+    // $10–$100: max 3 decimals
+    return { precision: 3, minMove: 0.001 };
+  }
+  if (abs > PRICE_THRESHOLD.VERY_LOW) {
+    // $1–$10: max 4 decimals
+    return { precision: 4, minMove: 0.0001 };
+  }
+  if (abs > PRICE_THRESHOLD.EXTRA_LOW) {
+    // $0.1–$1: max 5 decimals
+    return { precision: 5, minMove: 0.00001 };
+  }
+  if (abs > PRICE_THRESHOLD.LOW) {
+    // $0.01–$0.1: max 6 decimals
+    return { precision: 6, minMove: 0.000001 };
+  }
+  // < $0.01 (including very small values): 6 decimals
+  return { precision: 6, minMove: 0.000001 };
+}
 
 /** Cooldown in ms between load-more requests to avoid spamming */
 const LOAD_MORE_COOLDOWN_MS = 2000;
@@ -53,6 +106,12 @@ type PerpsCandlestickChartProps = {
   selectedPeriod?: CandlePeriod;
   /** Candle data to display. When null/undefined the parent handles loading/error states. */
   candleData?: CandleData | null;
+  /**
+   * Representative current price of the asset, used to derive y-axis decimal
+   * precision. When provided, the y-axis will show the same number of decimal
+   * places as the formatted header price (e.g. 1 decimal for ETH ~$2,332).
+   */
+  currentPrice?: number;
   /** Horizontal price lines to overlay on the chart (TP, Entry, SL, etc.) */
   priceLines?: ChartPriceLine[];
   /** Callback when data needs to be fetched for a new period */
@@ -94,6 +153,7 @@ const PerpsCandlestickChart = forwardRef<
       height = 250,
       selectedPeriod = CandlePeriod.FiveMinutes,
       candleData,
+      currentPrice,
       priceLines,
       onPeriodDataRequest,
       onNeedMoreHistory,
@@ -101,7 +161,28 @@ const PerpsCandlestickChart = forwardRef<
     },
     ref,
   ) => {
+    const theme = useTheme();
+    const isDark = theme === 'dark';
+    const locale = useSelector(getIntlLocale);
+
+    // Theme-aware colors matching mobile semantic tokens
+    const upColor = isDark ? brandColor.lime100 : brandColor.lime500;
+    const downColor = isDark ? brandColor.red300 : brandColor.red500;
+    // Volume bars use the same hue but at ~37% opacity so they don't overpower the candles
+    const volumeUpColor = `${upColor}60`;
+    const volumeDownColor = `${downColor}60`;
+    const textColor = isDark
+      ? 'rgba(255, 255, 255, 0.4)'
+      : 'rgba(0, 0, 0, 0.4)';
+    const gridColor = isDark
+      ? 'rgba(255, 255, 255, 0.06)'
+      : 'rgba(0, 0, 0, 0.06)';
+    const crosshairColor = isDark
+      ? 'rgba(255, 255, 255, 0.4)'
+      : 'rgba(0, 0, 0, 0.4)';
+
     const containerRef = useRef<HTMLDivElement>(null);
+    const volumeLabelRef = useRef<HTMLDivElement>(null);
     const chartRef = useRef<IChartApi | null>(null);
     const seriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
     const volumeSeriesRef = useRef<ISeriesApi<'Histogram'> | null>(null);
@@ -111,6 +192,14 @@ const PerpsCandlestickChart = forwardRef<
     // Track previous candle data for incremental update optimization
     const prevCandleCountRef = useRef<number>(0);
     const prevLastCandleTimeRef = useRef<number>(0);
+    // Track the symbol+interval the series was last filled with so we can
+    // force a full setData when the user switches markets or timeframes.
+    // Without this, rapid switches (e.g. xyz:AAPL → xyz:GOLD) can coincide
+    // with the new series having the same length as the old one, sending
+    // the new symbol's candle through the `.update()` path and triggering
+    // lightweight-charts' "Cannot update oldest data" crash.
+    const prevSymbolRef = useRef<string | null>(null);
+    const prevIntervalRef = useRef<string | null>(null);
 
     // Edge detection cooldown
     const lastLoadMoreTimeRef = useRef<number>(0);
@@ -190,7 +279,7 @@ const PerpsCandlestickChart = forwardRef<
         height,
         layout: {
           background: { color: 'transparent' },
-          textColor: 'rgba(255, 255, 255, 0.4)',
+          textColor,
           attributionLogo: false,
           panes: {
             separatorColor: 'transparent',
@@ -198,9 +287,14 @@ const PerpsCandlestickChart = forwardRef<
             enableResize: false,
           },
         },
+        localization: {
+          locale,
+          timeFormatter: (time: number) =>
+            formatChartTimestamp(time, null, true, locale),
+        },
         grid: {
-          vertLines: { color: 'rgba(255, 255, 255, 0.06)' },
-          horzLines: { color: 'rgba(255, 255, 255, 0.06)' },
+          vertLines: { color: gridColor },
+          horzLines: { color: gridColor },
         },
         crosshair: {
           mode: 1, // Normal crosshair mode
@@ -209,20 +303,25 @@ const PerpsCandlestickChart = forwardRef<
             labelVisible: true,
             width: 1,
             style: 3, // Dotted line
-            color: 'rgba(255, 255, 255, 0.4)',
+            color: crosshairColor,
           },
           horzLine: {
             visible: true,
             labelVisible: true,
             width: 1,
             style: 3,
-            color: 'rgba(255, 255, 255, 0.4)',
+            color: crosshairColor,
           },
         },
         timeScale: {
           timeVisible: true,
           secondsVisible: false,
           borderColor: 'transparent',
+          tickMarkFormatter: (
+            time: number,
+            tickMarkType: number,
+            chartLocale: string,
+          ) => formatChartTimestamp(time, tickMarkType, false, chartLocale),
         },
         rightPriceScale: {
           borderColor: 'transparent',
@@ -239,14 +338,22 @@ const PerpsCandlestickChart = forwardRef<
       chartRef.current = chart;
 
       // Create candlestick series (pane 0 - top)
+      // priceFormat mirrors mobile (TradingViewChartTemplate.tsx:697): allow up to
+      // 6 decimals with a minMove of 1e-6 so small-value assets (PUMP at $0.001824)
+      // render real digits on the Y axis instead of rounding to $0.00.
       const candlestickSeries = chart.addSeries(CandlestickSeries, {
-        upColor: brandColor.lime100,
-        downColor: brandColor.red300,
+        upColor,
+        downColor,
         borderVisible: false,
-        wickUpColor: brandColor.lime100,
-        wickDownColor: brandColor.red300,
+        wickUpColor: upColor,
+        wickDownColor: downColor,
         priceLineVisible: false,
         lastValueVisible: false,
+        priceFormat: {
+          type: 'price',
+          precision: 6,
+          minMove: 0.000001,
+        },
       });
 
       seriesRef.current = candlestickSeries;
@@ -255,7 +362,7 @@ const PerpsCandlestickChart = forwardRef<
       const volumeSeries = chart.addSeries(
         HistogramSeries,
         {
-          color: brandColor.lime100, // Default green
+          color: volumeUpColor, // Default to bullish color (semi-transparent)
           priceFormat: { type: 'volume' },
           priceScaleId: '', // Independent price scale
           lastValueVisible: false,
@@ -298,10 +405,45 @@ const PerpsCandlestickChart = forwardRef<
         }
       });
 
-      // Crosshair move: report hovered candle for OHLCV bar
+      // Crosshair move:
+      // 1. report hovered candle to the parent OHLCV bar (existing)
+      // 2. swap the right-side y-axis label to show the bar's volume when the
+      //    cursor is inside the volume pane — without this the price scale
+      //    extrapolates pane-0 prices into pane-1 and prints the chart's low.
       chart.subscribeCrosshairMove((param) => {
         // Skip during our own data updates to prevent loop: update/setData → crosshair → setState → re-render → effect → update
-        if (isApplyingDataUpdateRef.current || !onCrosshairMoveRef.current) {
+        if (isApplyingDataUpdateRef.current) {
+          return;
+        }
+
+        const volumeData = param.seriesData.get(volumeSeries);
+        const volumeValue =
+          volumeData && 'value' in volumeData ? volumeData.value : undefined;
+
+        const labelEl = volumeLabelRef.current;
+        if (labelEl) {
+          if (
+            param.paneIndex === 1 &&
+            param.point !== undefined &&
+            typeof volumeValue === 'number' &&
+            volumeValue > 0
+          ) {
+            // param.point.y is pane-local. Translate to chart-container coords by
+            // adding the cumulative height of preceding panes + 1px separator each.
+            const panes = chart.panes();
+            let paneTop = 0;
+            for (let i = 0; i < param.paneIndex; i += 1) {
+              paneTop += panes[i].getHeight() + 1;
+            }
+            labelEl.textContent = formatVolume(volumeValue, 1);
+            labelEl.style.top = `${paneTop + param.point.y}px`;
+            labelEl.style.display = 'block';
+          } else {
+            labelEl.style.display = 'none';
+          }
+        }
+
+        if (!onCrosshairMoveRef.current) {
           return;
         }
 
@@ -322,14 +464,8 @@ const PerpsCandlestickChart = forwardRef<
             high: String(candleSeriesData.high),
             low: String(candleSeriesData.low),
             close: String(candleSeriesData.close),
-            volume: '0', // Volume from histogram series if needed
+            volume: typeof volumeValue === 'number' ? String(volumeValue) : '0',
           };
-
-          // Try to get volume from the histogram series
-          const volumeData = param.seriesData.get(volumeSeries);
-          if (volumeData && 'value' in volumeData) {
-            hoveredCandle.volume = String(volumeData.value);
-          }
 
           onCrosshairMoveRef.current(hoveredCandle);
         }
@@ -338,7 +474,7 @@ const PerpsCandlestickChart = forwardRef<
       // Add resize listener
       window.addEventListener('resize', handleResize);
 
-      // Cleanup on unmount
+      // Cleanup on unmount / before effect re-runs (e.g. theme change)
       return () => {
         window.removeEventListener('resize', handleResize);
         if (chartRef.current) {
@@ -347,8 +483,27 @@ const PerpsCandlestickChart = forwardRef<
           seriesRef.current = null;
           volumeSeriesRef.current = null;
         }
+        // Reset data-tracking refs so the data-update effect issues a full
+        // setData() on the new chart rather than a single-candle update().
+        prevCandleCountRef.current = 0;
+        prevLastCandleTimeRef.current = 0;
+        prevSymbolRef.current = null;
+        prevIntervalRef.current = null;
+        dataLengthRef.current = 0;
       };
-    }, [height, handleResize]);
+    }, [
+      height,
+      handleResize,
+      theme,
+      upColor,
+      downColor,
+      volumeUpColor,
+      volumeDownColor,
+      textColor,
+      gridColor,
+      crosshairColor,
+      locale,
+    ]);
 
     // Update chart data when candleData or selectedPeriod changes
     useEffect(() => {
@@ -370,24 +525,40 @@ const PerpsCandlestickChart = forwardRef<
       const periodChanged = previousPeriodRef.current !== selectedPeriod;
       previousPeriodRef.current = selectedPeriod;
 
+      // A symbol or interval switch means the series must be rebuilt from
+      // scratch — the new market's candle times are unrelated to the old
+      // market's, so an incremental update would violate lightweight-charts'
+      // monotonic-time invariant.
+      const symbolChanged = prevSymbolRef.current !== candleData.symbol;
+      const intervalChanged = prevIntervalRef.current !== candleData.interval;
+      const seriesIdentityChanged = symbolChanged || intervalChanged;
+
       // Determine update strategy:
       // 1. Same count + same last candle time = live tick update (replace last candle in-place)
       // 2. Count increased by 1 + previous last time still present = new candle appended
-      // 3. Otherwise = full replacement (period change, initial load, fetch-more merge)
+      // 3. Otherwise = full replacement (period change, symbol switch, initial load, fetch-more merge)
       const isLiveTick =
         !periodChanged &&
+        !seriesIdentityChanged &&
         prevCount > 0 &&
         currentCount === prevCount &&
         currentLastTime === prevLastTime;
 
       const isAppend =
-        !periodChanged && prevCount > 0 && currentCount === prevCount + 1;
+        !periodChanged &&
+        !seriesIdentityChanged &&
+        prevCount > 0 &&
+        currentCount === prevCount + 1;
 
       if (isLiveTick || isAppend) {
         // Incremental update — only update the last candle
         const lastCandle = candles[currentCount - 1];
         const formattedCandle = formatSingleCandleForChart(lastCandle);
-        const formattedVolume = formatSingleVolumeForChart(lastCandle);
+        const formattedVolume = formatSingleVolumeForChart(
+          lastCandle,
+          volumeUpColor,
+          volumeDownColor,
+        );
 
         if (formattedCandle && seriesRef.current) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -410,7 +581,11 @@ const PerpsCandlestickChart = forwardRef<
 
           // Update volume data
           if (volumeSeriesRef.current) {
-            const volumeData = formatVolumeDataForChart(candleData);
+            const volumeData = formatVolumeDataForChart(
+              candleData,
+              volumeUpColor,
+              volumeDownColor,
+            );
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             volumeSeriesRef.current.setData(volumeData as any);
           }
@@ -426,10 +601,14 @@ const PerpsCandlestickChart = forwardRef<
 
           chartRef.current.timeScale().setVisibleLogicalRange({ from, to });
 
-          // Handle period change: scroll to real time and notify parent
+          // Handle period change: scroll to real time and notify parent.
+          // Also scroll on symbol/interval switch so the new market renders
+          // at the live edge instead of whatever offset the prior series had.
           if (periodChanged) {
             chartRef.current.timeScale().scrollToRealTime();
             onPeriodDataRequest?.(selectedPeriod);
+          } else if (seriesIdentityChanged) {
+            chartRef.current.timeScale().scrollToRealTime();
           }
         }
       }
@@ -437,6 +616,8 @@ const PerpsCandlestickChart = forwardRef<
       // Update tracking refs
       prevCandleCountRef.current = currentCount;
       prevLastCandleTimeRef.current = currentLastTime;
+      prevSymbolRef.current = candleData.symbol;
+      prevIntervalRef.current = candleData.interval;
 
       // Clear flag after chart has applied updates (library may emit crosshair on next frame)
       const timeoutId = setTimeout(() => {
@@ -444,7 +625,26 @@ const PerpsCandlestickChart = forwardRef<
       }, 0);
 
       return () => clearTimeout(timeoutId);
-    }, [candleData, selectedPeriod, onPeriodDataRequest]);
+    }, [
+      candleData,
+      selectedPeriod,
+      onPeriodDataRequest,
+      volumeUpColor,
+      volumeDownColor,
+    ]);
+
+    // Update y-axis price format when the asset's price range changes.
+    // This keeps decimal precision in sync with the header price display
+    // without recreating the chart series.
+    useEffect(() => {
+      if (!seriesRef.current || !currentPrice || currentPrice <= 0) {
+        return;
+      }
+      const { precision, minMove } = getPriceFormatForPrice(currentPrice);
+      seriesRef.current.applyOptions({
+        priceFormat: { type: 'price', precision, minMove },
+      });
+    }, [currentPrice]);
 
     // Manage price lines (TP, Entry, SL, etc.)
     useEffect(() => {
@@ -483,16 +683,43 @@ const PerpsCandlestickChart = forwardRef<
 
     return (
       <Box
-        ref={containerRef}
-        className="perps-candlestick-chart"
         data-testid="perps-candlestick-chart"
         style={{
+          position: 'relative',
           width: '100%',
           height,
           borderRadius: '8px',
           overflow: 'hidden',
         }}
-      />
+      >
+        <Box
+          ref={containerRef}
+          className="perps-candlestick-chart"
+          style={{ width: '100%', height: '100%' }}
+        />
+        <div
+          ref={volumeLabelRef}
+          data-testid="perps-volume-axis-label"
+          style={{
+            position: 'absolute',
+            right: 0,
+            top: 0,
+            display: 'none',
+            transform: 'translateY(-50%)',
+            padding: '1px 4px',
+            fontSize: '11px',
+            lineHeight: '12px',
+            color: isDark ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.9)',
+            backgroundColor: isDark ? brandColor.grey800 : brandColor.white,
+            border: `1px solid ${crosshairColor}`,
+            borderRadius: '2px',
+            pointerEvents: 'none',
+            zIndex: 2,
+            whiteSpace: 'nowrap',
+            fontFamily: 'monospace',
+          }}
+        />
+      </Box>
     );
   },
 );

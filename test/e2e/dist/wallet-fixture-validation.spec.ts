@@ -1,10 +1,6 @@
 import path from 'path';
 import { withFixtures } from '../helpers';
-import {
-  LOCAL_NODE_MNEMONIC,
-  WALLET_PASSWORD,
-  WINDOW_TITLES,
-} from '../constants';
+import { E2E_SRP, WALLET_PASSWORD, WINDOW_TITLES } from '../constants';
 import StartOnboardingPage from '../page-objects/pages/onboarding/start-onboarding-page';
 import {
   computeSchemaDiff,
@@ -129,7 +125,7 @@ describe('Wallet State', function () {
         // Perform the onboarding manual steps with e2e SRP and password to generate the logged in state
         await importSRPOnboardingFlow({
           driver,
-          seedPhrase: LOCAL_NODE_MNEMONIC,
+          seedPhrase: E2E_SRP,
           password: WALLET_PASSWORD,
           participateInMetaMetrics: true,
           dataCollectionForMarketing: true,
@@ -150,6 +146,15 @@ describe('Wallet State', function () {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+
+        // Headless Chrome defaults to 800×600 which is too short for the
+        // settings-v2 content pane — the native-balance toggle is below the
+        // fold and waitForSelector's visibility check times out.  Resize to
+        // a height that keeps the toggle visible without scrolling.
+        await driver.driver.manage().window().setRect({
+          width: 1280,
+          height: 960,
+        });
 
         // Set the settings to match the desired fixture state:
         // 1. enabled native balance and 2. enabled test networks

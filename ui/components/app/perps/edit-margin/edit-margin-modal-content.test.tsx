@@ -4,11 +4,13 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { mockPositions, mockAccountState } from '../mocks';
+import { PERPS_LIQUIDATION_PRICE_FALLBACK } from '../utils/formatPerpsDisplayPrice';
 import { EditMarginModalContent } from './edit-margin-modal-content';
 
 const mockSubmitRequestToBackground = jest.fn();
 const mockReplacePerpsToastByKey = jest.fn();
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
+const mockUsePerpsMarginCalculations = jest.fn();
 
 jest.mock('../../../../store/background-connection', () => ({
   submitRequestToBackground: (...args: unknown[]) =>
@@ -21,15 +23,7 @@ jest.mock('../../../../hooks/perps', () => ({
 }));
 
 jest.mock('../../../../hooks/perps/usePerpsMarginCalculations', () => ({
-  usePerpsMarginCalculations: () => ({
-    maxAmount: 5000,
-    anchorLiquidationPrice: 2000,
-    estimatedLiquidationPrice: 1800,
-    anchorLiquidationDistance: 0.2,
-    estimatedLiquidationDistance: 0.3,
-    riskAssessment: { riskLevel: 'safe' },
-    isValid: true,
-  }),
+  usePerpsMarginCalculations: () => mockUsePerpsMarginCalculations(),
 }));
 
 jest.mock('../../../../providers/perps', () => ({
@@ -76,6 +70,15 @@ describe('EditMarginModalContent', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
+    mockUsePerpsMarginCalculations.mockReturnValue({
+      maxAmount: 5000,
+      anchorLiquidationPrice: 2000,
+      estimatedLiquidationPrice: 1800,
+      anchorLiquidationDistance: 0.2,
+      estimatedLiquidationDistance: 0.3,
+      riskAssessment: { riskLevel: 'safe' },
+      isValid: true,
+    });
     mockSubmitRequestToBackground.mockResolvedValue({ success: true });
   });
 
@@ -83,6 +86,119 @@ describe('EditMarginModalContent', () => {
     renderWithProvider(<EditMarginModalContent {...defaultProps} />, mockStore);
 
     expect(screen.getByText(/available/iu)).toBeInTheDocument();
+  });
+
+  it('renders liquidation fallback when the liquidation price is not positive', () => {
+    mockUsePerpsMarginCalculations.mockReturnValue({
+      maxAmount: 5000,
+      anchorLiquidationPrice: null,
+      estimatedLiquidationPrice: null,
+      anchorLiquidationDistance: 0,
+      estimatedLiquidationDistance: null,
+      riskAssessment: null,
+      isValid: true,
+    });
+
+    renderWithProvider(<EditMarginModalContent {...defaultProps} />, mockStore);
+
+    expect(
+      screen.getByTestId('perps-edit-margin-liquidation-price-value'),
+    ).toHaveTextContent(PERPS_LIQUIDATION_PRICE_FALLBACK);
+    expect(
+      screen.getByTestId('perps-edit-margin-liquidation-distance-value'),
+    ).toHaveTextContent(PERPS_LIQUIDATION_PRICE_FALLBACK);
+  });
+
+  it('renders liquidation fallback when the estimated liquidation price is not positive', () => {
+    mockUsePerpsMarginCalculations.mockReturnValue({
+      maxAmount: 5000,
+      anchorLiquidationPrice: 2000,
+      estimatedLiquidationPrice: 0,
+      anchorLiquidationDistance: 31,
+      estimatedLiquidationDistance: 0,
+      riskAssessment: null,
+      isValid: true,
+    });
+
+    renderWithProvider(<EditMarginModalContent {...defaultProps} />, mockStore);
+
+    const amountInput = screen.getByPlaceholderText('0.00');
+    fireEvent.change(amountInput, { target: { value: '100' } });
+
+    expect(
+      screen.getByTestId('perps-edit-margin-liquidation-price-value'),
+    ).toHaveTextContent(PERPS_LIQUIDATION_PRICE_FALLBACK);
+    expect(
+      screen.getByTestId('perps-edit-margin-liquidation-distance-value'),
+    ).toHaveTextContent(PERPS_LIQUIDATION_PRICE_FALLBACK);
+  });
+
+  describe('auto-focus and select-all', () => {
+    it('auto-focuses the margin amount input on mount', () => {
+      renderWithProvider(
+        <EditMarginModalContent {...defaultProps} />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('perps-edit-margin-amount-input');
+      const input = container.querySelector('input') as HTMLInputElement;
+      expect(input).toHaveFocus();
+    });
+
+    it('selects existing margin amount on focus', () => {
+      renderWithProvider(
+        <EditMarginModalContent {...defaultProps} />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('perps-edit-margin-amount-input');
+      const input = container.querySelector('input') as HTMLInputElement;
+      fireEvent.change(input, { target: { value: '42' } });
+      const selectSpy = jest.spyOn(input, 'select');
+      fireEvent.focus(input);
+      expect(selectSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('keyboard submission', () => {
+    it('submits margin update when Enter is pressed with a valid amount', async () => {
+      renderWithProvider(
+        <EditMarginModalContent {...defaultProps} />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('perps-edit-margin-amount-input');
+      const input = container.querySelector('input') as HTMLInputElement;
+      fireEvent.change(input, { target: { value: '100' } });
+
+      fireEvent.keyDown(input, { key: 'Enter' });
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsUpdateMargin',
+          [
+            expect.objectContaining({
+              symbol: basePosition.symbol,
+              amount: '100',
+            }),
+          ],
+        );
+      });
+    });
+
+    it('does not submit when Enter is pressed with an empty amount', () => {
+      renderWithProvider(
+        <EditMarginModalContent {...defaultProps} />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('perps-edit-margin-amount-input');
+      const input = container.querySelector('input') as HTMLInputElement;
+
+      fireEvent.keyDown(input, { key: 'Enter' });
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+    });
   });
 
   describe('geo-blocking', () => {

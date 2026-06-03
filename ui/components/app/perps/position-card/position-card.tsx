@@ -14,6 +14,8 @@ import {
 import { useNavigate } from 'react-router-dom';
 import type { Position } from '@metamask/perps-controller';
 import { useFormatters } from '../../../../hooks/useFormatters';
+import { formatPnl } from '../../../../../shared/lib/perps-formatters';
+import { formatPerpsFiatMinimal } from '../utils/formatPerpsDisplayPrice';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import { getDisplayName, getPositionDirection } from '../utils';
 import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes';
@@ -37,15 +39,13 @@ export const PositionCard: React.FC<PositionCardProps> = ({
   onClick,
 }) => {
   const navigate = useNavigate();
-  const { formatCurrencyWithMinThreshold, formatPercentWithMinThreshold } =
-    useFormatters();
+  const { formatPercentWithMinThreshold } = useFormatters();
   const direction = getPositionDirection(position.size);
   const pnlNum = parseFloat(position.unrealizedPnl);
   const isProfit = pnlNum >= 0;
   const absSize = Math.abs(parseFloat(position.size)).toString();
   const displayName = getDisplayName(position.symbol);
-  const pnlPrefix = isProfit ? '+' : '-';
-  const formattedPnl = `${pnlPrefix}${formatCurrencyWithMinThreshold(Math.abs(pnlNum), 'USD')}`;
+  const formattedPnl = formatPnl(pnlNum);
   const roeNum = Number.parseFloat(position.returnOnEquity);
   const formattedRoe = Number.isNaN(roeNum)
     ? null
@@ -113,10 +113,7 @@ export const PositionCard: React.FC<PositionCardProps> = ({
         gap={1}
       >
         <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-          {formatCurrencyWithMinThreshold(
-            parseFloat(position.positionValue),
-            'USD',
-          )}
+          {formatPerpsFiatMinimal(parseFloat(position.positionValue))}
         </Text>
         <Box
           flexDirection={BoxFlexDirection.Row}

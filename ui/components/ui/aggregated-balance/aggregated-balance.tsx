@@ -2,13 +2,9 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'clsx';
 import { MULTICHAIN_NETWORK_DECIMAL_PLACES } from '@metamask/multichain-network-controller';
-import {
-  AlignItems,
-  Display,
-  FlexWrap,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
-import { Box, SensitiveText } from '../../component-library';
+import { Box, BoxAlignItems, BoxFlexWrap } from '@metamask/design-system-react';
+import { TextVariant } from '../../../helpers/constants/design-system';
+import { SensitiveText } from '../../component-library';
 import {
   getCurrentCurrency,
   getTokenBalances,
@@ -21,10 +17,10 @@ import {
 } from '../../../selectors/assets';
 import {
   getEnabledNetworksByNamespace,
-  getPreferences,
-  getSelectedInternalAccount,
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../selectors';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
+import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import {
   getMultichainNetwork,
   getMultichainShouldShowFiat,
@@ -107,13 +103,12 @@ export const AggregatedBalance = ({
       marginBottom={1}
     >
       <Box
-        className={classnames(`${classPrefix}-overview__primary-balance`, {
+        className={classnames(`flex ${classPrefix}-overview__primary-balance`, {
           [`${classPrefix}-overview__cached-balance`]: balanceIsCached,
         })}
         data-testid={`${classPrefix}-overview__primary-currency`}
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        flexWrap={FlexWrap.Wrap}
+        alignItems={BoxAlignItems.Center}
+        flexWrap={BoxFlexWrap.Wrap}
       >
         <SensitiveText
           ellipsis

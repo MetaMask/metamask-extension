@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { act } from '@testing-library/react';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
+import { upsertTransactionUIMetricsFragment } from '../../../../store/actions';
 import * as TransactionPayControllerActions from '../../../../store/controller-actions/transaction-pay-controller';
 import * as useTokenFiatRatesModule from '../tokens/useTokenFiatRates';
 import * as useTransactionPayDataModule from '../pay/useTransactionPayData';
@@ -18,6 +20,9 @@ jest.mock('../tokens/useTokenFiatRates');
 jest.mock('../pay/useTransactionPayData');
 jest.mock('../pay/useTransactionPayToken');
 jest.mock('./useUpdateTokenAmount');
+jest.mock('../../../../store/actions', () => ({
+  upsertTransactionUIMetricsFragment: jest.fn(),
+}));
 
 const MOCK_TRANSACTION_META =
   genUnapprovedContractInteractionConfirmation() as TransactionMeta;
@@ -31,6 +36,7 @@ function runHook({
   disableUpdate = false,
   tokenFiatRate = 1,
   payTokenBalanceUsd = 100,
+  balanceUsdOverride,
   isMaxAmount = false,
   requiredTokens = [],
   updateTokenAmountMock = jest.fn(),
@@ -39,6 +45,7 @@ function runHook({
   disableUpdate?: boolean;
   tokenFiatRate?: number;
   payTokenBalanceUsd?: number;
+  balanceUsdOverride?: number;
   isMaxAmount?: boolean;
   requiredTokens?: { amountUsd?: string; skipIfBalance?: boolean }[];
   updateTokenAmountMock?: jest.Mock;
@@ -80,7 +87,12 @@ function runHook({
   });
 
   return renderHookWithConfirmContextProvider(
-    () => useTransactionCustomAmount({ currency, disableUpdate }),
+    () =>
+      useTransactionCustomAmount({
+        balanceUsdOverride,
+        currency,
+        disableUpdate,
+      }),
     DEFAULT_MOCK_STATE,
   );
 }
@@ -143,6 +155,19 @@ describe('useTransactionCustomAmount', () => {
       });
 
       expect(result.current.amountHuman).toBe('0');
+    });
+
+    it('uses the fiat amount directly when balanceUsdOverride is provided', () => {
+      const { result } = runHook({
+        balanceUsdOverride: 7.863083,
+        tokenFiatRate: 0.999692,
+      });
+
+      act(() => {
+        result.current.updatePendingAmount('7.86308329211399939404');
+      });
+
+      expect(result.current.amountHuman).toBe('7.86308329211399939404');
     });
   });
 
@@ -265,6 +290,23 @@ describe('useTransactionCustomAmount', () => {
 
       // 33% of 100 = 33, rounded down to 2 decimals
       expect(result.current.amountFiat).toBe('33');
+    });
+
+    it('does not inflate max amount with token fiat rate when balanceUsdOverride is provided', () => {
+      const updateTokenAmountMock = jest.fn();
+      const { result } = runHook({
+        balanceUsdOverride: 7.863083,
+        tokenFiatRate: 0.999692,
+        updateTokenAmountMock,
+      });
+
+      act(() => {
+        result.current.updatePendingAmountPercentage(100);
+      });
+
+      expect(result.current.amountFiat).toBe('7.863083');
+      expect(result.current.amountHuman).toBe('7.863083');
+      expect(updateTokenAmountMock).toHaveBeenCalledWith('7.863083');
     });
   });
 
@@ -409,6 +451,109 @@ describe('useTransactionCustomAmount', () => {
     });
   });
 
+  describe('mm_pay_amount_input_type tracking', () => {
+    it('dispatches mm_pay_amount_input_type as manual without mm_pay_quote_requested when updatePendingAmount is called', () => {
+      const { result } = runHook();
+
+      act(() => {
+        result.current.updatePendingAmount('50');
+      });
+
+      expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
+        MOCK_TRANSACTION_META.id,
+        {
+          properties: {
+            mm_pay_amount_input_type: 'manual',
+          },
+        },
+      );
+    });
+
+    it('dispatches mm_pay_quote_requested as true after debounce when manual input triggers a quote refresh', () => {
+      const { result } = runHook();
+
+      act(() => {
+        result.current.updatePendingAmount('50');
+      });
+
+      jest.mocked(upsertTransactionUIMetricsFragment).mockClear();
+
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+
+      expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
+        MOCK_TRANSACTION_META.id,
+        {
+          properties: {
+            mm_pay_quote_requested: true,
+          },
+        },
+      );
+    });
+
+    it('does not dispatch mm_pay_quote_requested after debounce when disableUpdate is true', () => {
+      const { result } = runHook({ disableUpdate: true });
+
+      act(() => {
+        result.current.updatePendingAmount('50');
+      });
+
+      jest.mocked(upsertTransactionUIMetricsFragment).mockClear();
+
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+
+      expect(upsertTransactionUIMetricsFragment).not.toHaveBeenCalledWith(
+        MOCK_TRANSACTION_META.id,
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            mm_pay_quote_requested: expect.anything(),
+          }),
+        }),
+      );
+    });
+
+    it('dispatches mm_pay_amount_input_type as percentage when updatePendingAmountPercentage is called', () => {
+      const { result } = runHook({
+        payTokenBalanceUsd: 100,
+      });
+
+      act(() => {
+        result.current.updatePendingAmountPercentage(50);
+      });
+
+      expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
+        MOCK_TRANSACTION_META.id,
+        {
+          properties: expect.objectContaining({
+            mm_pay_amount_input_type: '50%',
+          }),
+        },
+      );
+    });
+
+    it('dispatches mm_pay_quote_requested when updatePendingAmountPercentage is called', () => {
+      const { result } = runHook({
+        payTokenBalanceUsd: 100,
+      });
+
+      act(() => {
+        result.current.updatePendingAmountPercentage(25);
+      });
+
+      expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
+        MOCK_TRANSACTION_META.id,
+        {
+          properties: expect.objectContaining({
+            mm_pay_quote_requested: true,
+          }),
+        },
+      );
+    });
+  });
+
   describe('infinite loop prevention', () => {
     it('does not trigger infinite updates when updateTokenAmount callback is recreated', () => {
       const updateTokenAmountMock = jest.fn();
@@ -497,6 +642,43 @@ describe('useTransactionCustomAmount', () => {
 
       // Verify no additional calls were made
       expect(updateTokenAmountMock).toHaveBeenCalledTimes(initialCallCount);
+    });
+
+    it('does not call updateTokenAmount when amountUsd changes while isMaxAmount is true', () => {
+      const updateTokenAmountMock = jest.fn();
+      const { rerender } = runHook({
+        disableUpdate: false,
+        isMaxAmount: true,
+        tokenFiatRate: 2,
+        requiredTokens: [{ amountUsd: '100', skipIfBalance: false }],
+        updateTokenAmountMock,
+      });
+
+      // Clear any initial calls from mount
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+      updateTokenAmountMock.mockClear();
+
+      // Simulate QuoteRefresher updating amountUsd (price movement)
+      jest
+        .mocked(
+          useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken,
+        )
+        .mockReturnValue({
+          amountUsd: '100.01',
+          skipIfBalance: false,
+        } as unknown as ReturnType<
+          typeof useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken
+        >);
+
+      rerender();
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+
+      // Must NOT call updateTokenAmount — doing so restarts the quote cycle
+      expect(updateTokenAmountMock).not.toHaveBeenCalled();
     });
   });
 });

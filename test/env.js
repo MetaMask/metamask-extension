@@ -1,5 +1,5 @@
 process.env.METAMASK_ENVIRONMENT = 'test';
-process.env.SUPPORT_LINK = 'https://support.metamask.io';
+process.env.SUPPORT_LINK = 'https://support.metamask.io/?utm_source=extension';
 process.env.IFRAME_EXECUTION_ENVIRONMENT_URL =
   'https://execution.metamask.io/0.36.1-flask.1/index.html';
 process.env.AUTH_API = 'https://mock-test-auth-api.metamask.io';
@@ -15,6 +15,8 @@ process.env.PUSH_NOTIFICATIONS_SERVICE_URL =
 process.env.PORTFOLIO_URL = 'https://portfolio.test';
 process.env.METAMASK_VERSION = 'MOCK_VERSION';
 process.env.SEEDLESS_ONBOARDING_ENABLED = 'true';
+process.env.TELEGRAM_LOGIN_ENABLED = 'true';
 process.env.METAMASK_SHIELD_ENABLED = 'false';
 process.env.PERPS_ENABLED = 'true';
 process.env.ASSETS_UNIFIED_STATE_ENABLED = 'true';
+process.env.NEW_HARDWARE_WALLET_ONBOARDING = 'false';

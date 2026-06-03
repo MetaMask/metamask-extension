@@ -63,7 +63,9 @@ function serialize(obj: unknown): unknown {
 }
 
 export function useBridgeTxHistoryData({
+  // Used in legacy transaction list
   transactionGroup,
+  // Used in activity list v2
   transaction: transactionViewData,
 }: UseBridgeTxHistoryDataProps) {
   const navigate = useNavigate();
@@ -117,6 +119,7 @@ export function useBridgeTxHistoryData({
   }, [navigate, txMeta]);
 
   return {
+    bridgeHistoryItem,
     // By complete, this means BOTH source and dest tx are confirmed
     isBridgeComplete: displayBridgeHistoryItem
       ? isBridgeComplete(displayBridgeHistoryItem)

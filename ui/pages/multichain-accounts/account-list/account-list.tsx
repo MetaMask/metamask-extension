@@ -1,28 +1,31 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
   Button,
   ButtonIcon,
   ButtonIconSize,
   ButtonSize,
   ButtonVariant,
+  FontWeight,
   Icon,
   IconColor,
   IconName,
   IconSize,
+  Text,
+  TextColor,
+  TextVariant as DsrTextVariant,
 } from '@metamask/design-system-react';
 
 import {
-  AlignItems,
   BackgroundColor,
   BlockSize,
   BorderRadius,
-  Display,
-  FlexDirection,
-  JustifyContent,
-  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { transitionBack } from '../../../components/ui/transition';
@@ -38,12 +41,13 @@ import {
   getIsDefaultAddressEnabled,
   getShowDefaultAddressPreference,
 } from '../../../selectors';
-import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
-import { AddWalletModal } from '../../../components/multichain-accounts/add-wallet-modal';
+import {
+  DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
+  CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE,
+} from '../../../helpers/constants/routes';
 import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
 import {
-  Box,
-  Text,
   TextFieldSearch,
   TextFieldSearchSize,
 } from '../../../components/component-library';
@@ -60,6 +64,7 @@ import { filterWalletsByGroupNameOrAddress } from './utils';
 export const AccountList = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const location = useLocation();
   const accountTree = useSelector(getAccountTree);
   const { wallets } = accountTree;
   const selectedAccountGroup = useSelector(getSelectedAccountGroup);
@@ -114,19 +119,27 @@ export const AccountList = () => {
     [filteredWallets],
   );
 
-  const [isAddWalletModalOpen, setIsAddWalletModalOpen] = useState(false);
+  const handleNavigateToChooseNewWalletType = useCallback(() => {
+    navigate(CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE);
+  }, [navigate]);
 
-  const handleOpenAddWalletModal = useCallback(() => {
-    setIsAddWalletModalOpen(true);
-  }, [setIsAddWalletModalOpen]);
-
-  const handleCloseAddWalletModal = useCallback(() => {
-    setIsAddWalletModalOpen(false);
-  }, [setIsAddWalletModalOpen]);
+  // When opened in a fresh tab (e.g. redirected from side panel/popup for
+  // hardware wallet onboarding), there is no browser history to go back to.
+  // Detect this via location.key being 'default' (initial entry) or
+  // fromFreshTab state propagated from downstream pages, then navigate
+  // directly to home instead of using history-based back navigation.
+  const isFreshTab =
+    location.key === 'default' ||
+    (location.state as { fromFreshTab?: boolean } | null)?.fromFreshTab ===
+      true;
 
   const handleBack = useCallback(() => {
-    transitionBack(() => navigate(PREVIOUS_ROUTE));
-  }, [navigate]);
+    if (isFreshTab) {
+      navigate(DEFAULT_ROUTE, { replace: true });
+    } else {
+      transitionBack(() => navigate(PREVIOUS_ROUTE));
+    }
+  }, [isFreshTab, navigate]);
 
   return (
     <Page className="account-list-page">
@@ -147,7 +160,7 @@ export const AccountList = () => {
       </Header>
       <div className="account-list-page__content flex flex-col min-h-0 overflow-auto">
         <Box
-          flexDirection={FlexDirection.Column}
+          flexDirection={BoxFlexDirection.Column}
           paddingTop={1}
           paddingLeft={4}
           paddingRight={4}
@@ -178,15 +191,15 @@ export const AccountList = () => {
             />
           ) : (
             <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.center}
-              alignItems={AlignItems.center}
-              width={BlockSize.Full}
-              height={BlockSize.Full}
+              className="flex h-full w-full"
+              flexDirection={BoxFlexDirection.Row}
+              justifyContent={BoxJustifyContent.Center}
+              alignItems={BoxAlignItems.Center}
             >
               <Text
-                color={TextColor.textAlternative}
-                variant={TextVariant.bodyMdMedium}
+                color={TextColor.TextAlternative}
+                variant={DsrTextVariant.BodyMd}
+                fontWeight={FontWeight.Medium}
               >
                 {t('noAccountsFound')}
               </Text>
@@ -198,12 +211,16 @@ export const AccountList = () => {
         <Button
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Lg}
-          onClick={handleOpenAddWalletModal}
+          onClick={handleNavigateToChooseNewWalletType}
           isDisabled={isAccountTreeSyncingInProgress}
           isFullWidth
           data-testid="account-list-add-wallet-button"
         >
-          <Box gap={2} display={Display.Flex} alignItems={AlignItems.center}>
+          <Box
+            gap={2}
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+          >
             {isAccountTreeSyncingInProgress && (
               <Icon
                 className="add-multichain-account__icon-box__icon-loading"
@@ -212,16 +229,15 @@ export const AccountList = () => {
                 size={IconSize.Lg}
               />
             )}
-            <Text variant={TextVariant.bodyMdMedium}>
+            <Text
+              variant={DsrTextVariant.BodyMd}
+              fontWeight={FontWeight.Medium}
+            >
               {addWalletButtonLabel}
             </Text>
           </Box>
         </Button>
       </Footer>
-      <AddWalletModal
-        isOpen={isAddWalletModalOpen}
-        onClose={handleCloseAddWalletModal}
-      />
     </Page>
   );
 };

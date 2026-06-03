@@ -32,6 +32,7 @@ const MOCK_CHAIN_ID = '0x1' as Hex;
       delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
     },
     siteOrigin: 'http://localhost:8000',
+    status: 'Active',
   },
 ];
 

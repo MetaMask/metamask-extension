@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller';
-import { Box } from '../../../components/component-library';
-import { Display } from '../../../helpers/constants/design-system';
+import { Box } from '@metamask/design-system-react';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
 
 const ANIMATIONS_FOLDER = 'images/animations/smart-transaction-status';
@@ -68,7 +67,7 @@ export const SmartTransactionStatusAnimation = ({
   }, [status, isIntro]);
 
   return (
-    <Box display={Display.Flex} style={{ width: '96px', height: '96px' }}>
+    <Box className="flex" style={{ width: '96px', height: '96px' }}>
       <LottieAnimation
         path={animation.path}
         loop={animation.loop}

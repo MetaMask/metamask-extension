@@ -3,10 +3,6 @@ name: Run build
 on:
   workflow_call:
     inputs:
-      is-high-risk-environment:
-        type: boolean
-        default: true
-        description: Whether the build is running in a high-risk environment (e.g. production) or not.
       build-name:
         required: true
         type: string
@@ -41,6 +37,8 @@ jobs:
       APPLE_CLIENT_ID_UAT: ${{ secrets.APPLE_CLIENT_ID_UAT }}
       GOOGLE_CLIENT_ID_FLASK_UAT: ${{ secrets.GOOGLE_CLIENT_ID_FLASK_UAT }}
       GOOGLE_CLIENT_ID_UAT: ${{ secrets.GOOGLE_CLIENT_ID_UAT }}
+      TELEGRAM_CLIENT_ID_FLASK_UAT: ${{ secrets.TELEGRAM_CLIENT_ID_FLASK_UAT }}
+      TELEGRAM_CLIENT_ID_UAT: ${{ secrets.TELEGRAM_CLIENT_ID_UAT }}
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
       SEGMENT_WRITE_KEY: ${{ secrets.SEGMENT_WRITE_KEY }}
       # Environment variables used in production builds
@@ -66,6 +64,10 @@ jobs:
       GOOGLE_EXPERIMENTAL_CLIENT_ID: ${{ secrets.GOOGLE_EXPERIMENTAL_CLIENT_ID }}
       GOOGLE_FLASK_CLIENT_ID: ${{ secrets.GOOGLE_FLASK_CLIENT_ID }}
       GOOGLE_PROD_CLIENT_ID: ${{ secrets.GOOGLE_PROD_CLIENT_ID }}
+      TELEGRAM_BETA_CLIENT_ID: ${{ secrets.TELEGRAM_BETA_CLIENT_ID }}
+      TELEGRAM_EXPERIMENTAL_CLIENT_ID: ${{ secrets.TELEGRAM_EXPERIMENTAL_CLIENT_ID }}
+      TELEGRAM_FLASK_CLIENT_ID: ${{ secrets.TELEGRAM_FLASK_CLIENT_ID }}
+      TELEGRAM_PROD_CLIENT_ID: ${{ secrets.TELEGRAM_PROD_CLIENT_ID }}
       INFURA_BETA_PROJECT_ID: ${{ secrets.INFURA_BETA_PROJECT_ID }}
       INFURA_EXPERIMENTAL_PROJECT_ID: ${{ secrets.INFURA_EXPERIMENTAL_PROJECT_ID }}
       INFURA_FLASK_PROJECT_ID: ${{ secrets.INFURA_FLASK_PROJECT_ID }}
@@ -95,7 +97,7 @@ jobs:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
         with:
-          is-high-risk-environment: ${{ inputs.is-high-risk-environment }}
+          is-high-risk-environment: ${{ github.ref_name == 'main' || github.ref_name == 'stable' || startsWith(github.ref_name, 'release/') }}
           skip-allow-scripts: true
 
       # Running tsc is only needed for webpack builds. Webpack uses typescript, but lavamoat node

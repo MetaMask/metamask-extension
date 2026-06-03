@@ -5,7 +5,6 @@ import {
 } from '@metamask/smart-transactions-controller';
 import type { Hex } from '@metamask/utils';
 import type { TraceCallback } from '@metamask/controller-utils';
-import log from 'loglevel';
 import { getAllowedSmartTransactionsChainIds } from '../../../../shared/constants/smartTransactions';
 import {
   MessengerClientInitFunction,
@@ -44,28 +43,6 @@ export const SmartTransactionsControllerInit: MessengerClientInitFunction<
     trace,
   } = request as SmartTransactionsControllerInitRequest;
 
-  /**
-   * Bearer token is only present when the user is signed in (AuthenticationController
-   * has a valid session). If getBearerToken returns undefined, no Authorization header is sent.
-   * To test with a real token: enable "Use external services" and "Backup and Sync" in Settings;
-   * see docs/testing-stx-authentication.md.
-   * To see [STX auth] logs: chrome://extensions → MetaMask → "Inspect views: Service worker", then reload the extension.
-   */
-  const getBearerToken = async (): Promise<string | undefined> => {
-    try {
-      const token = await Promise.resolve(
-        initMessenger.call('AuthenticationController:getBearerToken'),
-      );
-      if (token) {
-        return token;
-      }
-      return undefined;
-    } catch (err) {
-      log.warn('Failed to get bearer token', err);
-      return undefined;
-    }
-  };
-
   const smartTransactionsController = new SmartTransactionsController({
     supportedChainIds: getAllowedSmartTransactionsChainIds() as Hex[],
     clientId: ClientId.Extension,
@@ -77,7 +54,6 @@ export const SmartTransactionsControllerInit: MessengerClientInitFunction<
     >[0]['trackMetaMetricsEvent'],
     state: persistedState.SmartTransactionsController,
     messenger: controllerMessenger,
-    getBearerToken,
     getMetaMetricsProps: async () => {
       const metamask = getUIState();
       const { internalAccounts } = metamask;

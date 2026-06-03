@@ -16,10 +16,9 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-// Mock usePerpsLiveMarketData hook to avoid controller dependency
-const mockUsePerpsLiveMarketData = jest.fn();
+const mockUsePerpsLiveMarketListData = jest.fn();
 jest.mock('../../../hooks/perps/stream', () => ({
-  usePerpsLiveMarketData: () => mockUsePerpsLiveMarketData(),
+  usePerpsLiveMarketListData: () => mockUsePerpsLiveMarketListData(),
   usePerpsLiveAccount: () => ({ account: null }),
 }));
 
@@ -36,9 +35,13 @@ describe('MarketListView', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     // Default mock returns loaded state with markets
-    mockUsePerpsLiveMarketData.mockReturnValue({
+    mockUsePerpsLiveMarketListData.mockReturnValue({
       markets: [...mockCryptoMarkets, ...mockHip3Markets],
+      cryptoMarkets: mockCryptoMarkets,
+      hip3Markets: mockHip3Markets,
       isInitialLoading: false,
+      error: null,
+      refresh: jest.fn(),
     });
   });
 
@@ -72,14 +75,45 @@ describe('MarketListView', () => {
 
       expect(screen.getByTestId('back-button')).toBeInTheDocument();
     });
+
+    it('renders live price and change values from the list hook', async () => {
+      const [firstMarket] = mockCryptoMarkets;
+      mockUsePerpsLiveMarketListData.mockReturnValue({
+        markets: [
+          {
+            ...firstMarket,
+            price: '$99,999',
+            change24hPercent: '+9.9%',
+          },
+          ...mockCryptoMarkets.slice(1),
+          ...mockHip3Markets,
+        ],
+        cryptoMarkets: mockCryptoMarkets,
+        hip3Markets: mockHip3Markets,
+        isInitialLoading: false,
+        error: null,
+        refresh: jest.fn(),
+      });
+
+      renderWithProvider(<MarketListView />, mockStore);
+
+      await waitFor(() => {
+        expect(screen.getByText('$99,999')).toBeInTheDocument();
+        expect(screen.getByText('+9.9%')).toBeInTheDocument();
+      });
+    });
   });
 
   describe('loading state', () => {
     it('shows loading skeletons initially', () => {
       // Override mock to return loading state
-      mockUsePerpsLiveMarketData.mockReturnValue({
+      mockUsePerpsLiveMarketListData.mockReturnValue({
         markets: [],
+        cryptoMarkets: [],
+        hip3Markets: [],
         isInitialLoading: true,
+        error: null,
+        refresh: jest.fn(),
       });
 
       renderWithProvider(<MarketListView />, mockStore);
@@ -198,6 +232,60 @@ describe('MarketListView', () => {
 
       await waitFor(() => {
         expect(screen.getByTestId('filter-select-menu')).toBeInTheDocument();
+      });
+    });
+
+    it('shows equity markets on Stocks tab even when perpsHip3AllowlistMarkets flag is absent', async () => {
+      // mockStore has no perpsHip3AllowlistMarkets flag → allowedHip3Sources defaults to Set()
+      renderWithProvider(<MarketListView />, mockStore);
+
+      // Open filter dropdown and click Stocks
+      const filterButton = screen.getByTestId('filter-select-button');
+      fireEvent.click(filterButton);
+      await waitFor(() => screen.getByTestId('filter-select-menu'));
+      fireEvent.click(screen.getByTestId('filter-select-option-stocks'));
+
+      await waitFor(() => {
+        // TSLA and AAPL are equity markets in mockHip3Markets
+        expect(screen.getByTestId('market-row-xyz-TSLA')).toBeInTheDocument();
+        expect(screen.getByTestId('market-row-xyz-AAPL')).toBeInTheDocument();
+        // BTC is a crypto market and should be absent
+        expect(screen.queryByTestId('market-row-BTC')).not.toBeInTheDocument();
+      });
+    });
+
+    it('shows commodity markets on Commodities tab even when perpsHip3AllowlistMarkets flag is absent', async () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      const filterButton = screen.getByTestId('filter-select-button');
+      fireEvent.click(filterButton);
+      await waitFor(() => screen.getByTestId('filter-select-menu'));
+      fireEvent.click(screen.getByTestId('filter-select-option-commodities'));
+
+      await waitFor(() => {
+        // GOLD and SILVER are commodity markets in mockHip3Markets
+        expect(screen.getByTestId('market-row-xyz-GOLD')).toBeInTheDocument();
+        expect(screen.getByTestId('market-row-xyz-SILVER')).toBeInTheDocument();
+        // BTC is crypto and should be absent
+        expect(screen.queryByTestId('market-row-BTC')).not.toBeInTheDocument();
+      });
+    });
+
+    it('shows only crypto markets on Crypto tab regardless of allowedHip3Sources', async () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      const filterButton = screen.getByTestId('filter-select-button');
+      fireEvent.click(filterButton);
+      await waitFor(() => screen.getByTestId('filter-select-menu'));
+      fireEvent.click(screen.getByTestId('filter-select-option-crypto'));
+
+      await waitFor(() => {
+        const btcRow = screen.queryByTestId('market-row-BTC');
+        expect(btcRow).toBeInTheDocument();
+        // HIP-3 equity market should not appear under Crypto
+        expect(
+          screen.queryByTestId('market-row-xyz-TSLA'),
+        ).not.toBeInTheDocument();
       });
     });
   });

@@ -1,10 +1,10 @@
+import { ApprovalRequest } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
-import { Hex } from '@metamask/utils';
+import { Hex, Json } from '@metamask/utils';
 import { QuoteResponse } from '@metamask/bridge-controller';
 
 import { createSelector } from 'reselect';
 import { getPendingApprovals } from '../../../selectors/approvals';
-import { createDeepEqualSelector } from '../../../../shared/lib/selectors/selector-creators';
 import { ConfirmMetamaskState } from '../types/confirm';
 
 const ConfirmationApprovalTypes = [
@@ -22,14 +22,10 @@ export const pendingConfirmationsSortedSelector = createSelector(
       .sort((a1, a2) => a1.time - a2.time),
 );
 
-const firstPendingConfirmationSelector = createSelector(
+export const firstPendingConfirmationSelector = createSelector(
   pendingConfirmationsSortedSelector,
-  (pendingConfirmations) => pendingConfirmations[0],
-);
-
-export const oldestPendingConfirmationSelector = createDeepEqualSelector(
-  firstPendingConfirmationSelector,
-  (firstPendingConfirmation) => firstPendingConfirmation,
+  (pendingConfirmations): ApprovalRequest<Record<string, Json>> | undefined =>
+    pendingConfirmations[0],
 );
 
 export function selectDappSwapComparisonData(

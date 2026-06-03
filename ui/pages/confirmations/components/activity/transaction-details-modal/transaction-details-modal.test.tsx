@@ -107,6 +107,15 @@ describe('TransactionDetailsModal', () => {
     ).toBeInTheDocument();
   });
 
+  it('renders Withdraw title for perpsWithdraw transactions', () => {
+    const { getByRole } = render(TransactionType.perpsWithdraw);
+    expect(
+      getByRole('heading', {
+        name: messages.perpsWithdrawFundsTitle.message,
+      }),
+    ).toBeInTheDocument();
+  });
+
   it('renders TransactionDetails component', () => {
     const { getByTestId } = render();
     expect(getByTestId('transaction-details')).toBeInTheDocument();

@@ -32,7 +32,7 @@ jobs:
 
       - name: Merge previous releases
         if: steps.validate.outputs.is-valid == 'true'
-        uses: metamask/github-tools/.github/actions/merge-previous-releases@v1.2.0
+        uses: metamask/github-tools/.github/actions/merge-previous-releases@v1
         with:
           new-release-branch: ${{ github.event.ref }}
           github-token: ${{ secrets.METAMASK_EXTENSION_BRANCH_SYNC_TOKEN }}

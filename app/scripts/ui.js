@@ -10,7 +10,7 @@ import '@lavamoat/lavadome-react';
 // This import sets up global functions required for Sentry to function.
 // It must be run as soon as possible in case an error is thrown later during initialization.
 import './lib/setup-initial-state-hooks';
-import '../../development/wdyr';
+import './development/wdyr';
 
 // Import this very early, so globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS is always defined
 import '../../shared/constants/infura-project-id';
@@ -266,10 +266,13 @@ async function initializeUiWithTab(
       global.platform.openExtensionInBrowser();
     }
   } catch (error) {
+    // No port: by the time launchMetamaskUi throws, startSendingPatches may have already
+    // run and removed the repair listener, so a restore link would be non-functional.
     await displayCriticalErrorMessage(
       container,
       CriticalErrorTranslationKey.TroubleStarting,
       error,
+      undefined,
     );
   }
 }

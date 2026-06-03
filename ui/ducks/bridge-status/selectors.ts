@@ -254,6 +254,15 @@ const selectBridgeHistoryItemForTxHash = createSelector(
       return bridgeHistory[txHash];
     }
 
+    const historyItem = Object.values(bridgeHistory).find(
+      (item) =>
+        txHash &&
+        item.status.srcChain?.txHash?.toLowerCase() === txHash.toLowerCase(),
+    );
+    if (historyItem) {
+      return historyItem;
+    }
+
     const txId = tx?.id;
     const actionId = tx?.actionId;
     if (txId && bridgeHistory[txId]) {

@@ -26,33 +26,32 @@ import {
   IconName,
   IconSize,
 } from '@metamask/design-system-react';
+import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
-  ONBOARDING_WELCOME_ROUTE,
   DEFAULT_ROUTE,
-  SECURITY_ROUTE,
+  SECURITY_AND_PASSWORD_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
+  getBackupAndSyncOnboardingToggleState,
   getExternalServicesOnboardingToggleState,
   getFirstTimeFlowType,
-  getIsSocialLoginFlow,
-  getSocialLoginType,
   getParticipateInMetaMetrics,
-  getPreferences,
   getDeferredDeepLink,
+  getAccountTypeForOnboardingMetrics,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-  MetaMetricsEventAccountType,
 } from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
   getCompletedOnboarding,
   getIsInitialized,
   getIsPrimarySeedPhraseBackedUp,
+  getIsWalletResetInProgress,
 } from '../../../ducks/metamask/metamask';
 import {
   toggleExternalServices,
@@ -60,6 +59,7 @@ import {
   setCompletedOnboardingWithSidepanel,
   setUseSidePanelAsDefault,
   removeDeferredDeepLink,
+  setIsBackupAndSyncFeatureEnabled,
 } from '../../../store/actions';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
@@ -87,19 +87,20 @@ export default function CreationSuccessful() {
   const externalServicesOnboardingToggleState = useSelector(
     getExternalServicesOnboardingToggleState,
   );
+  const backupAndSyncOnboardingToggleState = useSelector(
+    getBackupAndSyncOnboardingToggleState,
+  );
   const { trackEvent } = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
-  const socialLoginType = useSelector(getSocialLoginType);
   const isSidePanelEnabled = useSidePanelEnabled();
-  const preferences = useSelector(getPreferences);
-  const isSidePanelSetAsDefault = preferences?.useSidePanelAsDefault ?? false;
   const isOnboardingCompleted = useSelector(getCompletedOnboarding);
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+  const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
   const deferredDeepLink: DeferredDeepLink | null =
     useSelector(getDeferredDeepLink);
 
   const isInitialized = useSelector(getIsInitialized);
+  const isResetWalletInProgress = useSelector(getIsWalletResetInProgress);
 
   const learnMoreLink = ZENDESK_URLS.BASIC_SAFETY_TIPS;
 
@@ -116,10 +117,10 @@ export default function CreationSuccessful() {
     if (isFromReminder) {
       return;
     }
-    if (!isInitialized) {
-      navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
+    if (!isInitialized || isResetWalletInProgress) {
+      navigate(DEFAULT_ROUTE, { replace: true });
     }
-  }, [isInitialized, isFromReminder, navigate]);
+  }, [isInitialized, isFromReminder, navigate, isResetWalletInProgress]);
 
   useEffect(() => {
     const browserWithSidePanel = browser as BrowserWithSidePanel;
@@ -251,7 +252,15 @@ export default function CreationSuccessful() {
 
   const onDone = useCallback(async () => {
     if (isFromReminder) {
-      navigate(isFromSettingsSecurity ? SECURITY_ROUTE : DEFAULT_ROUTE);
+      navigate(
+        isFromSettingsSecurity ? SECURITY_AND_PASSWORD_ROUTE : DEFAULT_ROUTE,
+      );
+      return;
+    }
+
+    if (isResetWalletInProgress) {
+      // if the wallet reset is in progress, we navigate to the default route (i.e. onboarding start page)
+      navigate(DEFAULT_ROUTE);
       return;
     }
 
@@ -285,23 +294,17 @@ export default function CreationSuccessful() {
       toggleExternalServices(externalServicesOnboardingToggleState),
     );
 
+    if (!backupAndSyncOnboardingToggleState) {
+      await dispatch(
+        setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, false),
+      );
+    }
+
     // NOTE: Metametrics Opt In/Out event tracking should be done after `toggleExternalServices` dispatch.
     // Since we will track the `Metrics Opt In/Out` event even when participateInMetaMetrics is false,
     // this is to ensure that the `Metrics Opt In/Out` event will not be tracked if basic functionality is disabled.
     if (!isOnboardingCompleted) {
       // before onboarding completion, we track the MetricsOptIn/Out event
-
-      const isNewWallet =
-        firstTimeFlowType === FirstTimeFlowType.create ||
-        firstTimeFlowType === FirstTimeFlowType.socialCreate;
-      const baseAccountType = isNewWallet
-        ? MetaMetricsEventAccountType.Default
-        : MetaMetricsEventAccountType.Imported;
-      const accountType =
-        isSocialLoginFlow && socialLoginType
-          ? `${baseAccountType}_${socialLoginType}`
-          : baseAccountType;
-
       trackEvent(
         {
           category: MetaMetricsEventCategory.Onboarding,
@@ -310,7 +313,7 @@ export default function CreationSuccessful() {
             : MetaMetricsEventName.MetricsOptOut,
           properties: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            account_type: accountType,
+            account_type: accountTypeForMetrics,
           },
         },
         {
@@ -321,14 +324,6 @@ export default function CreationSuccessful() {
 
     // Side Panel - only if feature flag is enabled
     if (isSidePanelEnabled) {
-      // If useSidePanelAsDefault is already true, side panel is already set up
-      // Just complete onboarding and redirect to home page
-      if (isSidePanelSetAsDefault) {
-        await dispatch(setCompletedOnboarding());
-        navigate(DEFAULT_ROUTE);
-        return;
-      }
-
       try {
         // Type assertion needed as webextension-polyfill doesn't include sidePanel API types yet
         const browserWithSidePanel = browser as BrowserWithSidePanel;
@@ -378,16 +373,16 @@ export default function CreationSuccessful() {
     isOnboardingCompleted,
     dispatch,
     externalServicesOnboardingToggleState,
+    backupAndSyncOnboardingToggleState,
     isSidePanelEnabled,
-    isSocialLoginFlow,
-    socialLoginType,
     navigate,
     isFromSettingsSecurity,
     firstTimeFlowType,
     trackEvent,
-    isSidePanelSetAsDefault,
     participateInMetaMetrics,
     handleOnDoneNavigation,
+    isResetWalletInProgress,
+    accountTypeForMetrics,
   ]);
 
   const renderDoneButton = () => {

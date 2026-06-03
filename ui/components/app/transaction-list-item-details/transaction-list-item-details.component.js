@@ -3,10 +3,18 @@ import PropTypes from 'prop-types';
 import copyToClipboard from 'copy-to-clipboard';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { TransactionType } from '@metamask/transaction-controller';
-import { Button, ButtonSize } from '@metamask/design-system-react';
+import {
+  BannerAlert,
+  BannerAlertSeverity,
+  Button,
+  ButtonSize,
+  Text,
+  TextVariant,
+} from '@metamask/design-system-react';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 import { DEFAULT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants';
 import TransactionBreakdown from '../transaction-breakdown';
+import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import Tooltip from '../../ui/tooltip';
 import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
@@ -50,6 +58,8 @@ export default class TransactionListItemDetails extends PureComponent {
     blockExplorerLinkText: PropTypes.object,
     chainId: PropTypes.string,
     networkConfiguration: PropTypes.object,
+    isHardwareWalletAccount: PropTypes.bool,
+    isProtectedByEnforcedSimulations: PropTypes.bool,
   };
 
   state = {
@@ -156,16 +166,31 @@ export default class TransactionListItemDetails extends PureComponent {
       showCancel,
       transactionStatus: TransactionStatus,
       blockExplorerLinkText,
+      isHardwareWalletAccount,
+      isProtectedByEnforcedSimulations,
     } = this.props;
     const {
       primaryTransaction: transaction,
       initialTransaction: { type },
+      hasCancelled,
     } = transactionGroup;
     const { chainId, hash } = transaction;
+    const speedUpLabel = hasCancelled ? 'speedUpCancellation' : 'speedUp';
 
     return (
       <Popover title={title} onClose={onClose}>
         <div className="transaction-list-item-details">
+          {isProtectedByEnforcedSimulations && (
+            <BannerAlert
+              severity={BannerAlertSeverity.Info}
+              className="mx-4"
+              data-testid="transaction-protected-by-enforced-simulations"
+            >
+              <Text variant={TextVariant.BodySm}>
+                {t('transactionProtectedByEnforcedSimulations')}
+              </Text>
+            </BannerAlert>
+          )}
           <div className="transaction-list-item-details__operations">
             <div className="flex gap-2">
               {showSpeedUp && (
@@ -174,7 +199,7 @@ export default class TransactionListItemDetails extends PureComponent {
                   onClick={this.handleRetry}
                   data-testid="speedup-button"
                 >
-                  {t('speedUp')}
+                  {t(speedUpLabel)}
                 </Button>
               )}
               {showCancel && (
@@ -206,7 +231,14 @@ export default class TransactionListItemDetails extends PureComponent {
             >
               <div>{t('status')}</div>
               <div>
-                <TransactionStatus />
+                {isProtectedByEnforcedSimulations ? (
+                  <TransactionStatusLabel
+                    label={t('cancelled')}
+                    tooltip={t('transactionProtectedByEnforcedSimulations')}
+                  />
+                ) : (
+                  <TransactionStatus />
+                )}
               </div>
             </div>
             <div className="transaction-list-item-details__tx-hash gap-1">
@@ -255,6 +287,7 @@ export default class TransactionListItemDetails extends PureComponent {
             </div>
             <div className="transaction-list-item-details__cards-container">
               <TransactionBreakdown
+                isHardwareWalletAccount={isHardwareWalletAccount}
                 nonce={transactionGroup.initialTransaction.txParams.nonce}
                 isTokenApprove={
                   type === TransactionType.tokenMethodApprove ||

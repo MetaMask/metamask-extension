@@ -8,15 +8,11 @@ import {
   RateLimitedApiMap,
 } from '@metamask/rate-limit-controller';
 import { GetSubjectMetadataState } from '@metamask/permission-controller';
-import { NotificationServicesControllerUpdateMetamaskNotificationsList } from '@metamask/notification-services-controller/notification-services';
+import { NotificationServicesControllerUpdateMetamaskNotificationsListAction } from '@metamask/notification-services-controller/notification-services';
 import { RootMessenger } from '../../../lib/messenger';
 
 export type RateLimitControllerMessenger =
   RateLimitMessenger<RateLimitedApiMap>;
-
-type Actions = MessengerActions<RateLimitControllerMessenger>;
-
-type Events = MessengerEvents<RateLimitControllerMessenger>;
 
 /**
  * Get a restricted controller messenger for the rate limit controller. This is
@@ -27,22 +23,21 @@ type Events = MessengerEvents<RateLimitControllerMessenger>;
  * @returns The restricted controller messenger.
  */
 export function getRateLimitControllerMessenger(
-  messenger: RootMessenger<Actions, Events>,
-): RateLimitControllerMessenger {
-  return new Messenger<
-    'RateLimitController',
-    Actions,
-    Events,
-    typeof messenger
-  >({
+  messenger: RootMessenger<
+    MessengerActions<RateLimitControllerMessenger>,
+    MessengerEvents<RateLimitControllerMessenger>
+  >,
+) {
+  const controllerMessenger: RateLimitControllerMessenger = new Messenger({
     namespace: 'RateLimitController',
     parent: messenger,
   });
+  return controllerMessenger;
 }
 
 type InitActions =
   | GetSubjectMetadataState
-  | NotificationServicesControllerUpdateMetamaskNotificationsList;
+  | NotificationServicesControllerUpdateMetamaskNotificationsListAction;
 
 export type RateLimitControllerInitMessenger = ReturnType<
   typeof getRateLimitControllerInitMessenger

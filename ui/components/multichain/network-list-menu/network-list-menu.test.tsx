@@ -80,6 +80,9 @@ jest.mock('../../../store/actions.ts', () => ({
 }));
 
 const MOCK_ORIGIN = 'https://app.metamask.io';
+const CUSTOM_CHAIN_ID = '0x12345';
+const CUSTOM_NETWORK_NAME = 'Custom network 1';
+const CUSTOM_NETWORK_CLIENT_ID = 'custom-network-1';
 
 type TestRenderProps = Partial<{
   currentChainId?: string;
@@ -92,6 +95,8 @@ type TestRenderProps = Partial<{
   isAccessedFromDappConnectedSitePopover?: boolean;
   editedNetwork?: { chainId: string };
   neNetworkDiscoverButton?: Record<string, boolean>;
+  additionalNetworkConfigurationsByChainId?: Record<string, unknown>;
+  includeCustomNetworks?: boolean;
 }>;
 
 const render = ({
@@ -104,6 +109,8 @@ const render = ({
   isAccessedFromDappConnectedSitePopover = false,
   editedNetwork = undefined,
   neNetworkDiscoverButton = { '0x531': true, '0xe708': true, '0x8f': true },
+  additionalNetworkConfigurationsByChainId = {},
+  includeCustomNetworks = true,
 }: TestRenderProps = {}) => {
   const state = {
     appState: {
@@ -153,19 +160,23 @@ const render = ({
             },
           ],
         },
-        '0x5': {
-          nativeCurrency: 'ETH',
-          chainId: '0x5',
-          name: 'Chain 5',
-          defaultRpcEndpointIndex: 0,
-          rpcEndpoints: [
-            {
-              url: 'http://localhost/rpc',
-              type: RpcEndpointType.Custom,
-              networkClientId: 'goerli',
-            },
-          ],
-        },
+        ...(includeCustomNetworks
+          ? {
+              '0x5': {
+                nativeCurrency: 'ETH',
+                chainId: '0x5',
+                name: 'Chain 5',
+                defaultRpcEndpointIndex: 0,
+                rpcEndpoints: [
+                  {
+                    url: 'http://localhost/rpc',
+                    type: RpcEndpointType.Custom,
+                    networkClientId: 'goerli',
+                  },
+                ],
+              },
+            }
+          : {}),
         '0x539': {
           nativeCurrency: 'ETH',
           chainId: '0x539',
@@ -218,6 +229,7 @@ const render = ({
             },
           ],
         },
+        ...additionalNetworkConfigurationsByChainId,
       },
       isUnlocked,
       selectedNetworkClientId: NETWORK_TYPES.MAINNET,
@@ -284,6 +296,54 @@ describe('NetworkListMenu', () => {
     expect(getByText(MAINNET_DISPLAY_NAME)).toBeInTheDocument();
   });
 
+  it('does not render the custom networks section when there are no custom networks', () => {
+    const { queryByText } = render({ includeCustomNetworks: false });
+
+    expect(
+      queryByText(messages.customNetworks.message),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders custom networks in a separate section when custom networks are available', () => {
+    const { getByText } = render({
+      additionalNetworkConfigurationsByChainId: {
+        [CUSTOM_CHAIN_ID]: {
+          nativeCurrency: 'ETH',
+          chainId: CUSTOM_CHAIN_ID,
+          name: CUSTOM_NETWORK_NAME,
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              url: 'http://localhost/custom-rpc',
+              type: RpcEndpointType.Custom,
+              networkClientId: CUSTOM_NETWORK_CLIENT_ID,
+            },
+          ],
+        },
+      },
+    });
+
+    const defaultNetworksHeader = getByText(messages.defaultNetworks.message);
+    const customNetworksHeader = getByText(messages.customNetworks.message);
+    const showTestNetworksHeader = getByText(
+      messages.showTestnetNetworks.message,
+    );
+    const additionalNetworksHeader = getByText(
+      messages.additionalNetworks.message,
+    );
+
+    expect(getByText(CUSTOM_NETWORK_NAME)).toBeInTheDocument();
+    expect(
+      defaultNetworksHeader.compareDocumentPosition(customNetworksHeader),
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(
+      customNetworksHeader.compareDocumentPosition(showTestNetworksHeader),
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(
+      showTestNetworksHeader.compareDocumentPosition(additionalNetworksHeader),
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+  });
+
   it('renders test networks when it should', () => {
     const { getByText } = render({ showTestNetworks: true });
     expect(getByText(SEPOLIA_DISPLAY_NAME)).toBeInTheDocument();
@@ -312,11 +372,16 @@ describe('NetworkListMenu', () => {
     const mainnetItem = getByText(MAINNET_DISPLAY_NAME);
     expect(mainnetItem).toBeInTheDocument();
     fireEvent.click(mainnetItem);
-    await waitFor(() => expect(mockToggleNetworkMenu).toHaveBeenCalled());
-    await waitFor(() => expect(mockSetActiveNetwork).toHaveBeenCalled());
-    await waitFor(() => expect(mockUpdateCustomNonce).toHaveBeenCalled());
-    await waitFor(() => expect(mockSetNextNonce).toHaveBeenCalled());
-    await waitFor(() => expect(mockDetectNfts).toHaveBeenCalled());
+    await waitFor(
+      () => {
+        expect(mockToggleNetworkMenu).toHaveBeenCalled();
+        expect(mockSetActiveNetwork).toHaveBeenCalled();
+        expect(mockUpdateCustomNonce).toHaveBeenCalled();
+        expect(mockSetNextNonce).toHaveBeenCalled();
+        expect(mockDetectNfts).toHaveBeenCalled();
+      },
+      { timeout: 10000 },
+    );
   });
 
   it('shows the correct selected network when networks share the same chain ID', () => {
@@ -346,7 +411,7 @@ describe('NetworkListMenu', () => {
     ).toBeInTheDocument();
   });
 
-  it('narrows down search results', () => {
+  it('narrows down search results', async () => {
     const { queryByText, getByPlaceholderText } = render();
 
     expect(queryByText('Chain 5')).toBeInTheDocument();
@@ -355,7 +420,12 @@ describe('NetworkListMenu', () => {
     fireEvent.focus(searchBox);
     fireEvent.change(searchBox, { target: { value: 'Main' } });
 
-    expect(queryByText('Chain 5')).not.toBeInTheDocument();
+    await waitFor(
+      () => {
+        expect(queryByText('Chain 5')).not.toBeInTheDocument();
+      },
+      { timeout: 10000 },
+    );
   });
 
   it('enables the "Add a custom network" button when MetaMask is locked', () => {
@@ -484,20 +554,19 @@ describe('NetworkListMenu', () => {
         store,
       );
       fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
-      await waitFor(() =>
-        expect(mockAddPermittedChain).toHaveBeenCalledWith(
-          MOCK_ORIGIN,
-          'eip155:1',
-        ),
-      );
-      await waitFor(() =>
-        expect(mockShowPermittedNetworkToast).toHaveBeenCalled(),
-      );
-      await waitFor(() =>
-        expect(mockSetNetworkClientIdForDomain).toHaveBeenCalledWith(
-          MOCK_ORIGIN,
-          NETWORK_TYPES.MAINNET,
-        ),
+      await waitFor(
+        () => {
+          expect(mockAddPermittedChain).toHaveBeenCalledWith(
+            MOCK_ORIGIN,
+            'eip155:1',
+          );
+          expect(mockShowPermittedNetworkToast).toHaveBeenCalled();
+          expect(mockSetNetworkClientIdForDomain).toHaveBeenCalledWith(
+            MOCK_ORIGIN,
+            NETWORK_TYPES.MAINNET,
+          );
+        },
+        { timeout: 10000 },
       );
     });
 

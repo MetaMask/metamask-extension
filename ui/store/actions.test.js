@@ -30,6 +30,7 @@ import { mockNetworkState } from '../../test/stub/networks';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
+import * as passkeyCapabilities from '../../shared/lib/passkey/passkey-capabilities';
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
@@ -140,6 +141,11 @@ describe('Actions', () => {
     background.grantPermissions = sinon.stub();
     background.grantPermissionsIncremental = sinon.stub();
     background.changePassword = sinon.stub();
+    background.changePasswordWithPasskeyVerification = sinon.stub();
+    background.generatePasskeyRegistrationOptions = sinon.stub();
+    background.generatePasskeyAuthenticationOptions = sinon.stub();
+    background.generatePasskeyPostRegistrationAuthenticationOptions =
+      sinon.stub();
 
     // Make sure navigator.hid is defined for WebHID tests
     if (!global.navigator) {
@@ -176,15 +182,19 @@ describe('Actions', () => {
         Buffer.from(mockSeedPhrase).values(),
       );
 
-      const createSeedPhraseBackupStub =
-        background.createSeedPhraseBackup.resolves();
-      const createNewVaultAndKeychainStub =
-        background.createNewVaultAndKeychain.resolves(mockKeyrings[0]);
-      const getSeedPhraseStub = background.getSeedPhrase.resolves(
-        mockEncodedSeedPhrase,
-      );
+      const createSeedPhraseBackupStub = sinon.stub().resolves();
+      const createNewVaultAndKeychainStub = sinon
+        .stub()
+        .resolves(mockKeyrings[0]);
+      const getSeedPhraseStub = sinon.stub().resolves(mockEncodedSeedPhrase);
 
-      setBackgroundConnection(background);
+      background.getApi.returns({
+        createSeedPhraseBackup: createSeedPhraseBackupStub,
+        createNewVaultAndKeychain: createNewVaultAndKeychainStub,
+        getSeedPhrase: getSeedPhraseStub,
+      });
+
+      setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.createNewVaultAndSyncWithSocial('password'));
 
@@ -311,6 +321,343 @@ describe('Actions', () => {
     });
   });
 
+  describe('#changePasswordWithPasskeyVerification', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('submits passkey authentication response and new password to the background', async () => {
+      const store = mockStore();
+      const newPassword = 'new-password';
+      const authenticationResponse = {
+        id: 'cred',
+        rawId: 'cred',
+        response: {
+          clientDataJSON: 'e30',
+          authenticatorData: 'AA',
+          signature: 'sig',
+        },
+        type: 'public-key',
+      };
+
+      background.changePasswordWithPasskeyVerification.resolves();
+      setBackgroundConnection(background);
+
+      await store.dispatch(
+        actions.changePasswordWithPasskeyVerification(
+          newPassword,
+          authenticationResponse,
+        ),
+      );
+
+      expect(
+        background.changePasswordWithPasskeyVerification.calledOnceWith(
+          newPassword,
+          authenticationResponse,
+          undefined,
+        ),
+      ).toStrictEqual(true);
+    });
+
+    it('forwards renewVaultKeyProtection option to the background', async () => {
+      const store = mockStore();
+      const newPassword = 'new-password';
+      const authenticationResponse = {
+        id: 'cred',
+        rawId: 'cred',
+        response: {
+          clientDataJSON: 'e30',
+          authenticatorData: 'AA',
+          signature: 'sig',
+        },
+        type: 'public-key',
+      };
+
+      background.changePasswordWithPasskeyVerification.resolves();
+      setBackgroundConnection(background);
+
+      await store.dispatch(
+        actions.changePasswordWithPasskeyVerification(
+          newPassword,
+          authenticationResponse,
+          { renewVaultKeyProtection: false },
+        ),
+      );
+
+      expect(
+        background.changePasswordWithPasskeyVerification.calledOnceWith(
+          newPassword,
+          authenticationResponse,
+          { renewVaultKeyProtection: false },
+        ),
+      ).toStrictEqual(true);
+    });
+
+    it('dispatches a warning and rethrows when the background rejects', async () => {
+      const store = mockStore();
+      const err = new Error('passkey verification failed');
+      background.changePasswordWithPasskeyVerification.rejects(err);
+      setBackgroundConnection(background);
+
+      await expect(
+        store.dispatch(
+          actions.changePasswordWithPasskeyVerification('pw', {
+            id: 'cred',
+            rawId: 'cred',
+            response: {
+              clientDataJSON: 'e30',
+              authenticatorData: 'AA',
+              signature: 'sig',
+            },
+            type: 'public-key',
+          }),
+        ),
+      ).rejects.toThrow('passkey verification failed');
+
+      expect(store.getActions()).toStrictEqual([
+        { type: actionConstants.DISPLAY_WARNING, payload: err.message },
+      ]);
+    });
+  });
+
+  describe('passkey background requests', () => {
+    afterEach(() => {
+      sinon.restore();
+      jest.restoreAllMocks();
+    });
+
+    it('#tryUnlockMetamaskWithPasskey dispatches success actions when unlock succeeds', async () => {
+      getStatePatchesMock.mockResolvedValue([]);
+      const store = mockStore();
+      background.unlockWithPasskey.resolves();
+      setBackgroundConnection(background);
+
+      const authenticationResponse = {
+        id: 'cred',
+        rawId: 'cred',
+        response: {
+          clientDataJSON: 'e30',
+          authenticatorData: 'AA',
+          signature: 'sig',
+        },
+        type: 'public-key',
+      };
+
+      await store.dispatch(
+        actions.tryUnlockMetamaskWithPasskey(authenticationResponse),
+      );
+
+      expect(
+        background.unlockWithPasskey.calledOnceWith(authenticationResponse),
+      ).toBe(true);
+      expect(store.getActions()).toStrictEqual([
+        { type: actionConstants.SHOW_LOADING, payload: undefined },
+        { type: actionConstants.UNLOCK_IN_PROGRESS },
+        { type: actionConstants.UNLOCK_SUCCEEDED, value: undefined },
+        { type: actionConstants.HIDE_WARNING },
+        { type: actionConstants.HIDE_LOADING },
+      ]);
+    });
+
+    it('#tryUnlockMetamaskWithPasskey dispatches failure and rethrows when unlock fails', async () => {
+      getStatePatchesMock.mockResolvedValue([]);
+      const store = mockStore();
+      background.unlockWithPasskey.rejects(new Error('unlock failed'));
+      setBackgroundConnection(background);
+
+      const authenticationResponse = {
+        id: 'cred',
+        rawId: 'cred',
+        response: {
+          clientDataJSON: 'e30',
+          authenticatorData: 'AA',
+          signature: 'sig',
+        },
+        type: 'public-key',
+      };
+
+      await expect(
+        store.dispatch(
+          actions.tryUnlockMetamaskWithPasskey(authenticationResponse),
+        ),
+      ).rejects.toThrow('unlock failed');
+
+      expect(store.getActions()).toStrictEqual([
+        { type: actionConstants.SHOW_LOADING, payload: undefined },
+        { type: actionConstants.UNLOCK_IN_PROGRESS },
+        { type: actionConstants.UNLOCK_FAILED, value: 'unlock failed' },
+        { type: actionConstants.HIDE_LOADING },
+      ]);
+    });
+
+    it('#generatePasskeyRegistrationOptions passes prfAvailable true when PRF support is true', async () => {
+      jest
+        .spyOn(passkeyCapabilities, 'isPasskeyPRFSupported')
+        .mockResolvedValue(true);
+      background.generatePasskeyRegistrationOptions.resolves({
+        rp: { name: 'MM' },
+      });
+      setBackgroundConnection(background);
+
+      await actions.generatePasskeyRegistrationOptions();
+
+      expect(
+        background.generatePasskeyRegistrationOptions.calledOnceWith({
+          prfAvailable: true,
+        }),
+      ).toBe(true);
+    });
+
+    it('#generatePasskeyRegistrationOptions passes prfAvailable false when PRF support is false', async () => {
+      jest
+        .spyOn(passkeyCapabilities, 'isPasskeyPRFSupported')
+        .mockResolvedValue(false);
+      background.generatePasskeyRegistrationOptions.resolves({
+        rp: { name: 'MM' },
+      });
+      setBackgroundConnection(background);
+
+      await actions.generatePasskeyRegistrationOptions();
+
+      expect(
+        background.generatePasskeyRegistrationOptions.calledOnceWith({
+          prfAvailable: false,
+        }),
+      ).toBe(true);
+    });
+
+    it('#generatePasskeyAuthenticationOptions forwards to the background', async () => {
+      const opts = { challenge: 'AQ', allowCredentials: [] };
+      background.generatePasskeyAuthenticationOptions.resolves(opts);
+      setBackgroundConnection(background);
+
+      const result = await actions.generatePasskeyAuthenticationOptions();
+
+      expect(result).toStrictEqual(opts);
+      expect(background.generatePasskeyAuthenticationOptions.calledOnce).toBe(
+        true,
+      );
+    });
+
+    it('#generatePasskeyPostRegistrationAuthenticationOptions forwards registration response', async () => {
+      const registrationResponse = {
+        id: 'cred',
+        rawId: 'cred',
+        response: {
+          clientDataJSON: 'e30',
+          attestationObject: 'e30',
+        },
+        type: 'public-key',
+      };
+      const opts = { challenge: 'post', allowCredentials: [] };
+      background.generatePasskeyPostRegistrationAuthenticationOptions.resolves(
+        opts,
+      );
+      setBackgroundConnection(background);
+
+      const result =
+        await actions.generatePasskeyPostRegistrationAuthenticationOptions(
+          registrationResponse,
+        );
+
+      expect(result).toStrictEqual(opts);
+      expect(
+        background.generatePasskeyPostRegistrationAuthenticationOptions.calledOnceWith(
+          registrationResponse,
+        ),
+      ).toBe(true);
+    });
+
+    it('#protectVaultKeyWithPasskey forwards registration and authentication responses and optional password', async () => {
+      const registrationResponse = {
+        id: 'cred',
+        rawId: 'cred',
+        response: {
+          clientDataJSON: 'e30',
+          attestationObject: 'e30',
+        },
+        type: 'public-key',
+      };
+      const authenticationResponse = {
+        id: 'cred',
+        rawId: 'cred',
+        response: {
+          clientDataJSON: 'e30',
+          authenticatorData: 'AA',
+          signature: 'AA',
+        },
+        type: 'public-key',
+      };
+      background.protectVaultKeyWithPasskey.resolves();
+      setBackgroundConnection(background);
+
+      await actions.protectVaultKeyWithPasskey(
+        registrationResponse,
+        authenticationResponse,
+        'secret',
+      );
+
+      expect(
+        background.protectVaultKeyWithPasskey.calledOnceWith(
+          registrationResponse,
+          authenticationResponse,
+          'secret',
+        ),
+      ).toBe(true);
+
+      await actions.protectVaultKeyWithPasskey(
+        registrationResponse,
+        authenticationResponse,
+      );
+
+      expect(
+        background.protectVaultKeyWithPasskey.secondCall.args,
+      ).toStrictEqual([
+        registrationResponse,
+        authenticationResponse,
+        undefined,
+      ]);
+    });
+
+    it('#removePasskeyWithPasskeyVerification forwards the authentication response', async () => {
+      const authenticationResponse = {
+        id: 'cred',
+        rawId: 'cred',
+        response: {
+          clientDataJSON: 'e30',
+          authenticatorData: 'AA',
+          signature: 'sig',
+        },
+        type: 'public-key',
+      };
+      background.removePasskeyWithPasskeyVerification.resolves();
+      setBackgroundConnection(background);
+
+      await actions.removePasskeyWithPasskeyVerification(
+        authenticationResponse,
+      );
+
+      expect(
+        background.removePasskeyWithPasskeyVerification.calledOnceWith(
+          authenticationResponse,
+        ),
+      ).toBe(true);
+    });
+
+    it('#removePasskeyWithPasswordVerification forwards the password', async () => {
+      background.removePasskeyWithPasswordVerification.resolves();
+      setBackgroundConnection(background);
+
+      await actions.removePasskeyWithPasswordVerification('wallet-password');
+
+      expect(
+        background.removePasskeyWithPasswordVerification.calledOnceWith(
+          'wallet-password',
+        ),
+      ).toBe(true);
+    });
+  });
+
   describe('#checkIsSeedlessPasswordOutdated', () => {
     afterEach(() => {
       sinon.restore();
@@ -325,17 +672,20 @@ describe('Actions', () => {
         },
       });
 
-      const checkIsSeedlessPasswordOutdated =
-        background.checkIsSeedlessPasswordOutdated.resolves(true);
+      const checkIsSeedlessPasswordOutdatedStub = sinon.stub().resolves(true);
 
-      setBackgroundConnection(background);
+      background.getApi.returns({
+        checkIsSeedlessPasswordOutdated: checkIsSeedlessPasswordOutdatedStub,
+      });
+
+      setBackgroundConnection(background.getApi());
 
       const result = await store.dispatch(
         actions.checkIsSeedlessPasswordOutdated(),
       );
       expect(result).toStrictEqual(true);
-      expect(checkIsSeedlessPasswordOutdated.callCount).toStrictEqual(1);
-      expect(checkIsSeedlessPasswordOutdated.firstCall.args).toStrictEqual([
+      expect(checkIsSeedlessPasswordOutdatedStub.callCount).toStrictEqual(1);
+      expect(checkIsSeedlessPasswordOutdatedStub.firstCall.args).toStrictEqual([
         {
           skipCache: true,
           captureSentryError: true,
@@ -352,16 +702,19 @@ describe('Actions', () => {
         },
       });
 
-      const checkIsSeedlessPasswordOutdated =
-        background.checkIsSeedlessPasswordOutdated.resolves(false);
+      const checkIsSeedlessPasswordOutdatedStub = sinon.stub().resolves(false);
 
-      setBackgroundConnection(background);
+      background.getApi.returns({
+        checkIsSeedlessPasswordOutdated: checkIsSeedlessPasswordOutdatedStub,
+      });
+
+      setBackgroundConnection(background.getApi());
 
       const result = await store.dispatch(
         actions.checkIsSeedlessPasswordOutdated(),
       );
       expect(result).toStrictEqual(false);
-      expect(checkIsSeedlessPasswordOutdated.callCount).toStrictEqual(1);
+      expect(checkIsSeedlessPasswordOutdatedStub.callCount).toStrictEqual(1);
     });
 
     it('passes skipCache and captureSentryError to the background check', async () => {
@@ -373,18 +726,21 @@ describe('Actions', () => {
         },
       });
 
-      const checkIsSeedlessPasswordOutdated =
-        background.checkIsSeedlessPasswordOutdated.resolves(true);
+      const checkIsSeedlessPasswordOutdatedStub = sinon.stub().resolves(true);
 
-      setBackgroundConnection(background);
+      background.getApi.returns({
+        checkIsSeedlessPasswordOutdated: checkIsSeedlessPasswordOutdatedStub,
+      });
+
+      setBackgroundConnection(background.getApi());
 
       const result = await store.dispatch(
         actions.checkIsSeedlessPasswordOutdated(false, false),
       );
 
       expect(result).toStrictEqual(true);
-      expect(checkIsSeedlessPasswordOutdated.callCount).toStrictEqual(1);
-      expect(checkIsSeedlessPasswordOutdated.firstCall.args).toStrictEqual([
+      expect(checkIsSeedlessPasswordOutdatedStub.callCount).toStrictEqual(1);
+      expect(checkIsSeedlessPasswordOutdatedStub.firstCall.args).toStrictEqual([
         {
           skipCache: false,
           captureSentryError: false,
@@ -401,16 +757,21 @@ describe('Actions', () => {
         },
       });
 
-      const checkIsSeedlessPasswordOutdated =
-        background.checkIsSeedlessPasswordOutdated.rejects(new Error('error'));
+      const checkIsSeedlessPasswordOutdatedStub = sinon
+        .stub()
+        .rejects(new Error('error'));
 
-      setBackgroundConnection(background);
+      background.getApi.returns({
+        checkIsSeedlessPasswordOutdated: checkIsSeedlessPasswordOutdatedStub,
+      });
+
+      setBackgroundConnection(background.getApi());
 
       const result = await store.dispatch(
         actions.checkIsSeedlessPasswordOutdated(),
       );
       expect(result).toStrictEqual(false);
-      expect(checkIsSeedlessPasswordOutdated.callCount).toStrictEqual(1);
+      expect(checkIsSeedlessPasswordOutdatedStub.callCount).toStrictEqual(1);
     });
   });
 
@@ -472,26 +833,30 @@ describe('Actions', () => {
     it('calls createNewVaultAndRestore', async () => {
       const store = mockStore();
 
-      const createNewVaultAndRestore =
-        background.createNewVaultAndRestore.resolves();
+      const createNewVaultAndRestoreStub = sinon.stub().resolves();
 
-      background.unMarkPasswordForgotten.resolves();
+      background.getApi.returns({
+        createNewVaultAndRestore: createNewVaultAndRestoreStub,
+        unMarkPasswordForgotten: sinon.stub().resolves(),
+      });
 
-      setBackgroundConnection(background);
+      setBackgroundConnection(background.getApi());
 
       await store.dispatch(
         actions.createNewVaultAndRestore('password', 'test'),
       );
-      expect(createNewVaultAndRestore.callCount).toStrictEqual(1);
+      expect(createNewVaultAndRestoreStub.callCount).toStrictEqual(1);
     });
 
     it('calls the expected actions', async () => {
       const store = mockStore();
 
-      background.createNewVaultAndRestore.resolves();
-      background.unMarkPasswordForgotten.resolves();
+      background.getApi.returns({
+        createNewVaultAndRestore: sinon.stub().resolves(),
+        unMarkPasswordForgotten: sinon.stub().resolves(),
+      });
 
-      setBackgroundConnection(background);
+      setBackgroundConnection(background.getApi());
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -535,12 +900,13 @@ describe('Actions', () => {
     it('calls verifyPassword in background', async () => {
       const store = mockStore();
 
-      const verifyPassword = background.verifyPassword.resolves();
-      const getSeedPhrase = background.getSeedPhrase.resolves(
-        Array.from(Buffer.from('test').values()),
-      );
+      const verifyPassword = sinon.stub().resolves();
+      const getSeedPhrase = sinon
+        .stub()
+        .resolves(Array.from(Buffer.from('test').values()));
 
-      setBackgroundConnection(background);
+      background.getApi.returns({ verifyPassword, getSeedPhrase });
+      setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.requestRevealSeedWords());
       expect(verifyPassword.callCount).toStrictEqual(1);
@@ -550,10 +916,12 @@ describe('Actions', () => {
     it('displays warning error message then callback in background errors', async () => {
       const store = mockStore();
 
-      background.verifyPassword.resolves();
-      background.getSeedPhrase.rejects(new Error('error'));
+      background.getApi.returns({
+        verifyPassword: sinon.stub().resolves(),
+        getSeedPhrase: sinon.stub().rejects(new Error('error')),
+      });
 
-      setBackgroundConnection(background);
+      setBackgroundConnection(background.getApi());
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -576,9 +944,10 @@ describe('Actions', () => {
     it('calls removeAccount in background and expect actions to show account', async () => {
       const store = mockStore();
 
-      const removeAccount = background.removeAccount.resolves();
+      const removeAccount = sinon.stub().resolves();
 
-      setBackgroundConnection(background);
+      background.getApi.returns({ removeAccount });
+      setBackgroundConnection(background.getApi());
 
       const expectedActions = [
         'SHOW_LOADING_INDICATION',
@@ -597,9 +966,10 @@ describe('Actions', () => {
     it('displays warning error message when removeAccount callback errors', async () => {
       const store = mockStore();
 
-      background.removeAccount.rejects(new Error('error'));
-
-      setBackgroundConnection(background);
+      background.getApi.returns({
+        removeAccount: sinon.stub().rejects(new Error('error')),
+      });
+      setBackgroundConnection(background.getApi());
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -625,9 +995,10 @@ describe('Actions', () => {
     it('resets account', async () => {
       const store = mockStore();
 
-      const resetAccount = background.resetAccount.resolves();
+      const resetAccount = sinon.stub().resolves();
 
-      setBackgroundConnection(background);
+      background.getApi.returns({ resetAccount });
+      setBackgroundConnection(background.getApi());
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -643,9 +1014,10 @@ describe('Actions', () => {
     it('throws if resetAccount throws', async () => {
       const store = mockStore();
 
-      background.resetAccount.rejects(new Error('error'));
-
-      setBackgroundConnection(background);
+      background.getApi.returns({
+        resetAccount: sinon.stub().rejects(new Error('error')),
+      });
+      setBackgroundConnection(background.getApi());
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -669,10 +1041,10 @@ describe('Actions', () => {
     it('calls importAccountWithStrategies in background', async () => {
       const store = mockStore();
 
-      const importAccountWithStrategy =
-        background.importAccountWithStrategy.resolves();
+      const importAccountWithStrategy = sinon.stub().resolves();
 
-      setBackgroundConnection(background);
+      background.getApi.returns({ importAccountWithStrategy });
+      setBackgroundConnection(background.getApi());
 
       await store.dispatch(
         actions.importNewAccount(
@@ -687,9 +1059,10 @@ describe('Actions', () => {
     it('displays warning error message when importAccount in background callback errors', async () => {
       const store = mockStore();
 
-      background.importAccountWithStrategy.rejects(new Error('error'));
-
-      setBackgroundConnection(background);
+      background.getApi.returns({
+        importAccountWithStrategy: sinon.stub().rejects(new Error('error')),
+      });
+      setBackgroundConnection(background.getApi());
 
       const expectedActions = [
         {
@@ -704,69 +1077,6 @@ describe('Actions', () => {
       );
 
       expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
-  describe('#addNewAccount', () => {
-    it('adds a new account', async () => {
-      const store = mockStore({
-        metamask: { ...defaultState.metamask },
-      });
-
-      const addNewAccount = background.addNewAccount.resolves('0x123');
-
-      setBackgroundConnection(background);
-
-      await store.dispatch(actions.addNewAccount());
-      expect(addNewAccount.callCount).toStrictEqual(1);
-    });
-
-    it('displays warning error message when addNewAccount in background callback errors', async () => {
-      const store = mockStore();
-
-      background.addNewAccount.rejects(new Error('error'));
-
-      setBackgroundConnection(background);
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
-
-      await expect(store.dispatch(actions.addNewAccount())).rejects.toThrow(
-        'error',
-      );
-
-      expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-
-    it('adds an account to a specific keyring by id', async () => {
-      const store = mockStore({
-        metamask: { ...defaultState.metamask },
-      });
-
-      const addNewAccount = background.addNewAccount.resolves('0x123');
-
-      setBackgroundConnection(background);
-
-      await store.dispatch(actions.addNewAccount(mockUlid));
-      expect(addNewAccount.callCount).toStrictEqual(1);
-    });
-
-    it('throws if an invalid keyring id is provided', async () => {
-      const store = mockStore({
-        metamask: { ...defaultState.metamask },
-      });
-
-      const addNewAccount = background.addNewAccount.resolves('0x123');
-
-      setBackgroundConnection(background);
-
-      await expect(
-        store.dispatch(actions.addNewAccount('invalidKeyringId')),
-      ).rejects.toThrow('Keyring not found');
-      expect(addNewAccount.callCount).toStrictEqual(0);
     });
   });
 
@@ -1482,6 +1792,7 @@ describe('Actions', () => {
 
       await store.dispatch(actions.lockMetamask());
       expect(backgroundSetLocked.callCount).toStrictEqual(1);
+      expect(backgroundSetLocked.firstCall.args).toStrictEqual([]);
     });
 
     it('returns display warning error with value when setLocked in background callback errors', async () => {
@@ -3048,21 +3359,31 @@ describe('Actions', () => {
     it('calls markPasswordForgotten', async () => {
       const store = mockStore();
 
-      background.markPasswordForgotten.resolves();
+      const markPasswordForgottenStub = sinon.stub().resolves();
 
-      setBackgroundConnection(background);
+      background.getApi.returns({
+        markPasswordForgotten: markPasswordForgottenStub,
+      });
+
+      setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.markPasswordForgotten());
 
-      expect(background.markPasswordForgotten.callCount).toStrictEqual(1);
+      expect(markPasswordForgottenStub.callCount).toStrictEqual(1);
     });
 
     it('errors when markPasswordForgotten throws', async () => {
       const store = mockStore();
 
-      background.markPasswordForgotten.rejects(new Error('error'));
+      const markPasswordForgottenStub = sinon
+        .stub()
+        .rejects(new Error('error'));
 
-      setBackgroundConnection(background);
+      background.getApi.returns({
+        markPasswordForgotten: markPasswordForgottenStub,
+      });
+
+      setBackgroundConnection(background.getApi());
 
       const expectedActions = [{ type: 'HIDE_LOADING_INDICATION' }];
 
@@ -3078,13 +3399,17 @@ describe('Actions', () => {
     it('calls unMarkPasswordForgotten', async () => {
       const store = mockStore();
 
-      background.unMarkPasswordForgotten.resolves();
+      const unMarkPasswordForgottenStub = sinon.stub().resolves();
 
-      setBackgroundConnection(background);
+      background.getApi.returns({
+        unMarkPasswordForgotten: unMarkPasswordForgottenStub,
+      });
+
+      setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.unMarkPasswordForgotten());
 
-      expect(background.unMarkPasswordForgotten.callCount).toStrictEqual(1);
+      expect(unMarkPasswordForgottenStub.callCount).toStrictEqual(1);
     });
   });
 
@@ -3245,6 +3570,41 @@ describe('Actions', () => {
 
       await store.dispatch(actions.performSignOut());
       expect(performSignOutStub.calledOnceWith()).toBe(true);
+    });
+  });
+
+  describe('#requestProfilePairing', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls requestProfilePairing in the background', async () => {
+      const store = mockStore();
+
+      const requestProfilePairingStub = sinon.stub().resolves();
+
+      background.getApi.returns({
+        requestProfilePairing: requestProfilePairingStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.requestProfilePairing());
+      expect(requestProfilePairingStub.calledOnceWith()).toBe(true);
+    });
+
+    it('rethrows when requestProfilePairing fails in the background', async () => {
+      const store = mockStore();
+
+      const requestProfilePairingStub = sinon.stub().rejects(new Error('boom'));
+
+      background.getApi.returns({
+        requestProfilePairing: requestProfilePairingStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await expect(
+        store.dispatch(actions.requestProfilePairing()),
+      ).rejects.toThrow('boom');
     });
   });
 

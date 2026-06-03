@@ -38,7 +38,7 @@ import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_METAMETRICS,
   ONBOARDING_REVEAL_SRP_ROUTE,
-  REVEAL_SRP_LIST_ROUTE,
+  MANAGE_WALLET_RECOVERY_ROUTE,
 } from '../../../helpers/constants/routes';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { TraceName } from '../../../../shared/lib/trace';
@@ -198,7 +198,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   ]);
 
   const onClose = useCallback(() => {
-    navigate(REVEAL_SRP_LIST_ROUTE, { replace: true });
+    navigate(MANAGE_WALLET_RECOVERY_ROUTE, { replace: true });
   }, [navigate]);
 
   return (

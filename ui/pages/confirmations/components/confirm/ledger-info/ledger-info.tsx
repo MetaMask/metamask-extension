@@ -1,8 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../../shared/constants/app';
 import {
   HardwareTransportStates,
@@ -22,7 +20,7 @@ import {
   getLedgerWebHidConnectedStatus,
   setLedgerWebHidConnectedStatus,
 } from '../../../../../ducks/app/app';
-import { getLedgerTransportType } from '../../../../../ducks/metamask/metamask';
+import { getLedgerTransportType } from '../../../../../ducks/metamask/base-selectors';
 import {
   FontWeight,
   TextAlign,

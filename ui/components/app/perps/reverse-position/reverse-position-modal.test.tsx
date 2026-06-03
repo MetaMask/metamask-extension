@@ -29,6 +29,20 @@ jest.mock('../../../../hooks/useFormatters', () => ({
   }),
 }));
 
+jest.mock('../../../../../shared/lib/perps-formatters', () => ({
+  formatPerpsFiat: (value: number) =>
+    `$${Number(value).toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`,
+  PRICE_RANGES_MINIMAL_VIEW: [],
+  formatPositionSize: (value: number, decimals?: number) =>
+    Number(value).toLocaleString('en-US', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: decimals ?? 4,
+    }),
+}));
+
 jest.mock('@metamask/perps-controller', () => ({
   PERPS_ERROR_CODES: {
     CLIENT_NOT_INITIALIZED: 'CLIENT_NOT_INITIALIZED',
@@ -99,6 +113,15 @@ jest.mock('../../../../store/background-connection', () => ({
     mockSubmitRequestToBackground(...args),
 }));
 
+jest.mock('../../rewards/RewardsVipBadge', () => ({
+  RewardsVipBadge: () => null,
+}));
+
+const mockUseVipTier = jest.fn<number | null, []>(() => null);
+jest.mock('../../../../hooks/rewards/useVipTier', () => ({
+  useVipTier: () => mockUseVipTier(),
+}));
+
 jest.mock('../../../../providers/perps', () => ({
   getPerpsStreamManager: () => mockGetPerpsStreamManager(),
 }));
@@ -128,14 +151,17 @@ const defaultProps = {
   onClose: jest.fn(),
   position: longPosition,
   currentPrice: 2900,
+  sizeDecimals: 3,
 };
 
 describe('ReversePositionModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
+    mockUseVipTier.mockReturnValue(null);
     mockUsePerpsOrderFees.mockReturnValue({
       feeRate: 0.0001,
+      undiscountedFeeRate: 0.0001,
       isLoading: false,
       hasError: false,
     });
@@ -198,6 +224,7 @@ describe('ReversePositionModal', () => {
     it('shows fee placeholder while fees are unavailable', () => {
       mockUsePerpsOrderFees.mockReturnValue({
         feeRate: undefined,
+        undiscountedFeeRate: undefined,
         isLoading: true,
         hasError: false,
       });
@@ -212,6 +239,7 @@ describe('ReversePositionModal', () => {
     it('shows fee placeholder when fee lookup fails', () => {
       mockUsePerpsOrderFees.mockReturnValue({
         feeRate: undefined,
+        undiscountedFeeRate: undefined,
         isLoading: false,
         hasError: true,
       });
@@ -221,6 +249,39 @@ describe('ReversePositionModal', () => {
       expect(screen.getByTestId('perps-reverse-fee-value')).toHaveTextContent(
         '--',
       );
+    });
+
+    it('does not show discounted fee while the fee placeholder is shown', () => {
+      mockUsePerpsOrderFees.mockReturnValue({
+        feeRate: undefined,
+        undiscountedFeeRate: 0.0002,
+        isLoading: true,
+        hasError: false,
+        metamaskFeeRateDiscountPercentage: 50,
+      });
+
+      renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
+
+      expect(
+        screen.queryByTestId('perps-reverse-fee-value-original'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('shows strikethrough original and discounted fee when fees are available', () => {
+      mockUsePerpsOrderFees.mockReturnValue({
+        feeRate: 0.0001,
+        undiscountedFeeRate: 0.0002,
+        isLoading: false,
+        hasError: false,
+        metamaskFeeRateDiscountPercentage: 50,
+      });
+
+      renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
+
+      expect(
+        screen.getByTestId('perps-reverse-fee-value-original'),
+      ).toBeInTheDocument();
+      expect(screen.getByTestId('perps-reverse-fee-value')).toBeInTheDocument();
     });
   });
 
@@ -235,7 +296,7 @@ describe('ReversePositionModal', () => {
     it('displays correct estimated size', () => {
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
 
-      expect(screen.getByText('2.50 ETH')).toBeInTheDocument();
+      expect(screen.getByText('2.5 ETH')).toBeInTheDocument();
     });
   });
 
@@ -264,7 +325,7 @@ describe('ReversePositionModal', () => {
         mockStore,
       );
 
-      expect(screen.getByText('0.50 BTC')).toBeInTheDocument();
+      expect(screen.getByText('0.5 BTC')).toBeInTheDocument();
     });
   });
 
@@ -283,14 +344,18 @@ describe('ReversePositionModal', () => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'perpsFlipPosition',
           [
-            {
+            expect.objectContaining({
               symbol: 'ETH',
               position: expect.objectContaining({
                 symbol: 'ETH',
                 size: '2.5',
                 leverage: expect.objectContaining({ value: 3 }),
               }),
-            },
+              trackingData: expect.objectContaining({
+                totalFee: expect.any(Number),
+                marketPrice: 2900,
+              }),
+            }),
           ],
         );
       });
@@ -324,6 +389,37 @@ describe('ReversePositionModal', () => {
       });
     });
 
+    it('includes vipTier and vipDiscount in trackingData when VIP tier is active', async () => {
+      mockUseVipTier.mockReturnValue(2);
+      mockUsePerpsOrderFees.mockReturnValue({
+        feeRate: 0.0001,
+        undiscountedFeeRate: 0.0002,
+        isLoading: false,
+        hasError: false,
+        metamaskFeeRateDiscountPercentage: 50,
+      });
+
+      renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
+
+      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsFlipPosition',
+          [
+            expect.objectContaining({
+              trackingData: expect.objectContaining({
+                totalFee: expect.any(Number),
+                marketPrice: 2900,
+                vipTier: 2,
+                vipDiscount: 50,
+              }),
+            }),
+          ],
+        );
+      });
+    });
+
     it('calls flip with short position when reversing a short', async () => {
       renderWithProvider(
         <ReversePositionModal
@@ -340,14 +436,18 @@ describe('ReversePositionModal', () => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'perpsFlipPosition',
           [
-            {
+            expect.objectContaining({
               symbol: 'BTC',
               position: expect.objectContaining({
                 symbol: 'BTC',
                 size: '-0.5',
                 leverage: expect.objectContaining({ value: 15 }),
               }),
-            },
+              trackingData: expect.objectContaining({
+                totalFee: expect.any(Number),
+                marketPrice: 45000,
+              }),
+            }),
           ],
         );
       });
@@ -560,12 +660,16 @@ describe('ReversePositionModal', () => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'perpsFlipPosition',
           [
-            {
+            expect.objectContaining({
               symbol: 'ETH',
               position: expect.objectContaining({
                 leverage: { type: 'cross', value: 5 },
               }),
-            },
+              trackingData: expect.objectContaining({
+                totalFee: expect.any(Number),
+                marketPrice: expect.any(Number),
+              }),
+            }),
           ],
         );
       });

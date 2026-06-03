@@ -26,9 +26,9 @@ import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
 } from '../../../../shared/lib/selectors/networks';
+import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import {
   getInternalAccounts,
-  getSelectedInternalAccount,
   getTokenDetectionSupportNetworkByChainId,
   getTestNetworkBackgroundColor,
   getTokenExchangeRates,
@@ -79,18 +79,13 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
-import {
-  SECURITY_ROUTE,
-  DEFAULT_ROUTE,
-} from '../../../helpers/constants/routes';
+import { ASSETS_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import {
   isValidHexAddress,
   toChecksumHexAddress,
 } from '../../../../shared/lib/hexstring-utils';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { addHexPrefix } from '../../../../app/scripts/lib/util';
+import { addHexPrefix } from '../../../../shared/lib/add-hex-prefix';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../../shared/constants/tokens';
 import {
   AssetType,
@@ -484,19 +479,22 @@ export const ImportTokensModal = ({ onClose }) => {
     setCustomDecimals(initialCustomToken.decimals);
   }, [pendingTokens]);
 
+  const networkConfig = useMemo(() => {
+    // For non-EVM networks, check allNetworks first (they use CAIP chain IDs)
+    // For EVM networks, check networkConfigurations (they use hex chain IDs)
+    return (
+      allNetworks[selectedNetwork] || networkConfigurations[selectedNetwork]
+    );
+  }, [selectedNetwork, allNetworks, networkConfigurations]);
   useEffect(() => {
     if (selectedNetwork) {
-      // For non-EVM networks, check allNetworks first (they use CAIP chain IDs)
-      // For EVM networks, check networkConfigurations (they use hex chain IDs)
-      const networkConfig =
-        allNetworks[selectedNetwork] || networkConfigurations[selectedNetwork];
       if (networkConfig) {
         setNetworkFilter({
           [selectedNetwork]: networkConfig,
         });
       }
     }
-  }, [selectedNetwork, networkConfigurations, allNetworks]);
+  }, [networkConfig, selectedNetwork]);
 
   useEffect(() => {
     setSelectedTokens({});
@@ -986,7 +984,7 @@ export const ImportTokensModal = ({ onClose }) => {
                                     onClick={() => {
                                       onClose();
                                       navigate(
-                                        `${SECURITY_ROUTE}#auto-detect-tokens`,
+                                        `${ASSETS_ROUTE}#autodetect-tokens`,
                                       );
                                     }}
                                   >

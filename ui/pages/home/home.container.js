@@ -16,21 +16,20 @@ import {
   getNewNetworkAdded,
   getIsSigningQRHardwareTransaction,
   getIsHardwareWalletErrorModalVisible,
-  getNewNftAddedMessage,
   getNewTokensImported,
-  getRemoveNftMessage,
   getApprovalFlows,
   getNewTokensImportedError,
   hasPendingApprovals,
-  getSelectedInternalAccount,
   getEditedNetwork,
   getShowUpdateModal,
   getIsSocialLoginFlow,
   getShowShieldEntryModal,
   getPendingShieldCohort,
   getPendingRedirectRoute,
+  getLastVisitedPerpsRoute,
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/lib/selectors/networks';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import {
   attemptCloseNotificationPopup,
   setConnectedStatusPopoverHasBeenShown,
@@ -41,8 +40,6 @@ import {
   setTermsOfUseLastAgreed,
   setOutdatedBrowserWarningLastShown,
   setNewNetworkAdded,
-  setNewNftAddedMessage,
-  setRemoveNftMessage,
   setNewTokensImported,
   setActiveNetwork,
   setNewTokensImportedError,
@@ -51,6 +48,7 @@ import {
   lookupSelectedNetworks,
   setPendingShieldCohort,
   setPendingRedirectRoute,
+  setLastVisitedPerpsRoute,
 } from '../../store/actions';
 import { openBasicFunctionalityModal } from '../../ducks/app/app';
 import {
@@ -61,13 +59,10 @@ import {
 import { fetchBuyableChains } from '../../ducks/ramps';
 import {
   selectRewardsEnabled,
-  selectRewardsOnboardingEnabled,
-  selectOnboardingModalOpen,
+  selectRewardsModalOpen,
 } from '../../ducks/rewards/selectors';
 import { selectShowPna25Modal } from '../../components/app/toast-master/selectors';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { getIsBrowserDeprecated } from '../../helpers/utils/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -155,8 +150,6 @@ const mapStateToProps = (state) => {
     isSigningQRHardwareTransaction: getIsSigningQRHardwareTransaction(state),
     isHardwareWalletErrorModalVisible:
       getIsHardwareWalletErrorModalVisible(state),
-    newNftAddedMessage: getNewNftAddedMessage(state),
-    removeNftMessage: getRemoveNftMessage(state),
     newTokensImported: getNewTokensImported(state),
     newTokensImportedError: getNewTokensImportedError(state),
     newNetworkAddedConfigurationId: appState.newNetworkAddedConfigurationId,
@@ -172,10 +165,10 @@ const mapStateToProps = (state) => {
     pendingShieldCohort: getPendingShieldCohort(state),
     isSignedIn: state.metamask.isSignedIn,
     rewardsEnabled: selectRewardsEnabled(state),
-    rewardsOnboardingEnabled: selectRewardsOnboardingEnabled(state),
-    rewardsOnboardingModalOpen: selectOnboardingModalOpen(state),
+    rewardsModalOpen: selectRewardsModalOpen(state),
     showPna25Modal: selectShowPna25Modal(state),
     pendingRedirectRoute: getPendingRedirectRoute(state),
+    lastVisitedPerpsRoute: getLastVisitedPerpsRoute(state),
   };
 };
 
@@ -199,14 +192,6 @@ const mapDispatchToProps = (dispatch) => {
     },
     setOutdatedBrowserWarningLastShown: (lastShown) => {
       dispatch(setOutdatedBrowserWarningLastShown(lastShown));
-    },
-    setNewNftAddedMessage: (message) => {
-      dispatch(setRemoveNftMessage(''));
-      dispatch(setNewNftAddedMessage(message));
-    },
-    setRemoveNftMessage: (message) => {
-      dispatch(setNewNftAddedMessage(''));
-      dispatch(setRemoveNftMessage(message));
     },
     setNewTokensImported: (newTokens) => {
       dispatch(setNewTokensImported(newTokens));
@@ -234,6 +219,7 @@ const mapDispatchToProps = (dispatch) => {
     setPendingShieldCohort: (cohort) =>
       dispatch(setPendingShieldCohort(cohort)),
     clearPendingRedirectRoute: () => dispatch(setPendingRedirectRoute(null)),
+    clearLastVisitedPerpsRoute: () => dispatch(setLastVisitedPerpsRoute(null)),
   };
 };
 

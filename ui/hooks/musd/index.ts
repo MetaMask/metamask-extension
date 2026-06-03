@@ -30,6 +30,11 @@ export {
 export { useMusdBalance, type UseMusdBalanceResult } from './useMusdBalance';
 
 export {
+  useMusdMerklPosition,
+  type UseMusdMerklPositionResult,
+} from './useMusdMerklPosition';
+
+export {
   useMusdNetworkFilter,
   type MusdNetworkFilterResult,
 } from './useMusdNetworkFilter';

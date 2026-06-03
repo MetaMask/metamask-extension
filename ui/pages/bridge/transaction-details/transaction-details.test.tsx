@@ -1,7 +1,11 @@
 import React from 'react';
 import type { Location as RouterLocation } from 'react-router-dom';
+import * as locationUtils from 'react-router-dom';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
-import { TransactionStatus } from '@metamask/transaction-controller';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { StatusTypes } from '@metamask/bridge-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
@@ -37,7 +41,7 @@ jest.mock('react-router-dom', () => ({
 const getMockStore = (
   transactionGroup: TransactionGroup,
   srcTxMetaId: string,
-  txHistoryItem: BridgeHistoryItem,
+  txHistoryItem?: BridgeHistoryItem,
 ) => {
   return configureStore(
     createBridgeMockStore({
@@ -58,17 +62,19 @@ const getMockStore = (
         transactions: [
           transactionGroup.primaryTransaction,
           transactionGroup.initialTransaction,
-        ],
+        ].filter(Boolean),
         currencyRates: {},
         preferences: {},
         ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
         completedOnboarding: true,
-        txHistory: {
-          [srcTxMetaId]: {
-            ...txHistoryItem,
-            account: '0x30e8ccad5a980bdf30447f8c2c48e70989d9d294',
-          },
-        },
+        txHistory: txHistoryItem
+          ? {
+              [srcTxMetaId]: {
+                ...txHistoryItem,
+                account: '0x30e8ccad5a980bdf30447f8c2c48e70989d9d294',
+              },
+            }
+          : {},
       },
     }),
   );
@@ -468,6 +474,102 @@ describe('transaction-details', () => {
       expect(
         queryByText(messages.bridgeTxDetailsNonce.message),
       ).not.toBeInTheDocument();
+    });
+
+    it('should render confirmed bridge tx when transactionCategory does not resolve to a Bridge transaction', () => {
+      jest.spyOn(locationUtils, 'useLocation').mockReturnValue({
+        ...mockLocation(),
+        state: {
+          transaction: {
+            ...mockBridgeTxData.transactionGroup.initialTransaction,
+            type: TransactionType.contractInteraction,
+            transactionCategory: 'DEPOSIT',
+          },
+        },
+      } as RouterLocation);
+      const { queryAllByTestId, getByText } = renderWithProvider(
+        <CrossChainSwapTxDetails />,
+        getMockStore({}, mockBridgeTxData.srcTxMetaId, {
+          ...mockBridgeTxData.bridgeHistoryItem,
+          status: {
+            ...mockBridgeTxData.bridgeHistoryItem.status,
+            status: StatusTypes.COMPLETE,
+          },
+        } as never),
+      );
+      const expectedRows = [
+        'Statuscomplete',
+        'BridgedPolygonOP',
+        'Time stamp',
+        'You sent2 USDC onPolygon',
+        'You received1.981 USDC onOP',
+        'Total gas fee0.00446 POL',
+        'Nonce3',
+      ];
+      expect(queryAllByTestId('transaction-detail-row')).toHaveLength(7);
+      queryAllByTestId('transaction-detail-row').forEach((row, i) => {
+        expect(row).toHaveTextContent(expectedRows[i]);
+      });
+
+      expect(
+        getByText(messages.bridgeDetailsTitle.message),
+      ).toBeInTheDocument();
+      expect(
+        getByText(
+          messages.bridgeExplorerLinkViewOn.message.replace(
+            '$1',
+            'PolygonScan',
+          ),
+        ),
+      ).toBeInTheDocument();
+      expect(
+        getByText(
+          messages.bridgeExplorerLinkViewOn.message.replace(
+            '$1',
+            'Optimism Explorer',
+          ),
+        ),
+      ).toBeInTheDocument();
+    });
+
+    it('should render confirmed bridge tx when transactionCategory does not resolve to a Bridge transaction and bridgeHistoryItem is not found', () => {
+      jest.spyOn(locationUtils, 'useLocation').mockReturnValue({
+        ...mockLocation(),
+        state: {
+          transaction: {
+            ...mockBridgeTxData.transactionGroup.initialTransaction,
+            type: TransactionType.contractInteraction,
+            transactionCategory: 'BRIDGE_OUT',
+          },
+        },
+      } as RouterLocation);
+      const { queryAllByTestId, getByText } = renderWithProvider(
+        <CrossChainSwapTxDetails />,
+        getMockStore({}, mockBridgeTxData.srcTxMetaId),
+      );
+      const expectedRows = [
+        'Statusconfirmed',
+        'Time stampJun 21, 2025 at 12:43 AM',
+        'You sent onPolygon',
+        'Total gas fee0.00446 POL',
+        'Nonce3',
+      ];
+      expect(queryAllByTestId('transaction-detail-row')).toHaveLength(5);
+      queryAllByTestId('transaction-detail-row').forEach((row, i) => {
+        expect(row).toHaveTextContent(expectedRows[i]);
+      });
+
+      expect(
+        getByText(messages.bridgeDetailsTitle.message),
+      ).toBeInTheDocument();
+      expect(
+        getByText(
+          messages.bridgeExplorerLinkViewOn.message.replace(
+            '$1',
+            'PolygonScan',
+          ),
+        ),
+      ).toBeInTheDocument();
     });
   });
 });

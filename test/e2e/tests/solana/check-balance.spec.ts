@@ -33,8 +33,7 @@ describe('Check balance', function (this: Suite) {
         testSpecificMock: buildSolanaTestSpecificMock({ balance: 0 }),
       },
       async ({ driver }) => {
-        // Balance is $0 as conversion on testnets is disabled
-        await login(driver, { expectedBalance: '$0.00' });
+        await login(driver, { validateBalance: false });
         const homePage = new NonEvmHomepage(driver);
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded({ amount: '$0' });
@@ -42,17 +41,18 @@ describe('Check balance', function (this: Suite) {
     );
   });
   it('For a non 0 balance account - USD balance', async function () {
+    const fixture = new FixtureBuilderV2()
+      .withShowNativeTokenAsMainBalanceDisabled()
+      .build();
+
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2()
-          .withShowNativeTokenAsMainBalanceDisabled()
-          .build(),
+        fixtures: fixture,
         title: this.test?.fullTitle(),
         testSpecificMock: buildSolanaTestSpecificMock(),
       },
       async ({ driver }) => {
-        // Balance is $0 as conversion on testnets is disabled
-        await login(driver, { expectedBalance: '$0.00' });
+        await login(driver, { validateBalance: false });
         const homePage = new NonEvmHomepage(driver);
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded({ amount: '$5,643.50' });

@@ -1,16 +1,41 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Mockttp, MockedEndpoint } from 'mockttp';
+import {
+  mockTokensV2SupportedNetworks,
+  mockTokensV3Assets,
+} from '../../btc/mocks/tokens-api';
 
 export const TRON_ACCOUNT_ADDRESS = 'TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3';
 export const TRON_RECIPIENT_ADDRESS = 'TK3xRFq22eEiATz6kfamDeAAQrPdfdGPeq';
 export const TRON_CHAIN_ID = 'tron:728126428';
 export const TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE =
   '5472616e73616374696f6e2065787069726564';
+const MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR = new Date(
+  new Date().getTime() + 365 * 24 * 60 * 60 * 1000,
+).getTime();
 
 // TRX balance in SUN (1 TRX = 1,000,000 SUN)
 export const TRX_BALANCE = 6072392; // ~6.07 TRX
 export const TRX_TO_USD_RATE = 0.29469;
 export const SUN_PER_TRX = 1_000_000;
+
+const TRON_BLOCK_RESPONSE = {
+  blockID: '0000000004b6f733ff89d72ddc1ce1eabd6045d84cbc4eb0a7e88d9223c12c5e',
+  block_header: {
+    raw_data: {
+      number: 79099699,
+      txTrieRoot:
+        '82bee4864136cf3b1e8ca1f67dd8edba1cfcbf37169fd58d16e29223d5ec3425',
+      witness_address: '4162398d516b555ac64af24416e05c199c01823048',
+      parentHash:
+        '0000000004b6f732a48af7041c4e68a8f472c8072ed98c4a8126bc6d01a9dd0b',
+      version: 32,
+      timestamp: 1767962214000,
+    },
+    witness_signature:
+      'b93cc232e26d2a1751dbaea8985aac5bac9d64b2c644021e96343c14f59212eb359ff52a6d46464bf61d56275ea26e38f903ffc253fca4f55097d0824136271b00',
+  },
+};
 
 // Feature flags URL
 export const FEATURE_FLAGS_URL =
@@ -76,9 +101,8 @@ export async function mockBroadTransaction(
     .thenCallback(() => ({
       statusCode: 200,
       json: {
-        code: 'TRANSACTION_EXPIRATION_ERROR',
+        result: true,
         txid: '6db783c4142b3749a4b598db4644155455c9206e2eca4b31efbd48e46773d9d5',
-        message: TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE,
       },
     }));
 }
@@ -87,13 +111,25 @@ export async function mockTronGetAccount(
   mockServer: Mockttp,
   mockZeroBalance?: boolean,
 ): Promise<MockedEndpoint> {
+  // `($|\\?)` so the regex matches both with and without query params like ?visible=true
   return mockServer
-    .forGet(tronInfuraUrl(`/v1/accounts/${TRON_ACCOUNT_ADDRESS}`))
+    .forGet(
+      new RegExp(
+        `^${TRON_INFURA_BASE_URL}/v1/accounts/${TRON_ACCOUNT_ADDRESS}($|\\?)`,
+        'u',
+      ),
+    )
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
         data: [
           {
+            id: '',
+            version: 1,
+            address: '4100dd57a0a3ee58392689f79c0bedcf44d3b6c255',
+            create_time: 1763374065000,
+            latest_opration_time: 1764149628000,
             owner_permission: {
               keys: [
                 {
@@ -125,9 +161,17 @@ export async function mockTronGetAccount(
                 permission_name: 'active',
               },
             ],
-            address: '4100dd57a0a3ee58392689f79c0bedcf44d3b6c255',
-            create_time: 1763374065000,
-            latest_opration_time: 1764149628000,
+            balance: mockZeroBalance ? 0 : TRX_BALANCE,
+            frozenV2: [
+              {},
+              {
+                amount: mockZeroBalance ? 0 : 20000000,
+                type: 'ENERGY',
+              },
+              {
+                type: 'TRON_POWER',
+              },
+            ],
             free_asset_net_usageV2: mockZeroBalance
               ? []
               : [
@@ -144,17 +188,6 @@ export async function mockTronGetAccount(
                     key: '1005074',
                   },
                 ],
-            frozenV2: [
-              {},
-              {
-                amount: mockZeroBalance ? 0 : 20000000,
-                type: 'ENERGY',
-              },
-              {
-                type: 'TRON_POWER',
-              },
-            ],
-            balance: mockZeroBalance ? 0 : TRX_BALANCE,
             trc20: mockZeroBalance
               ? []
               : [
@@ -181,6 +214,57 @@ export async function mockTronGetAccount(
         meta: {
           at: 1767888275562,
           page_size: 1,
+        },
+      },
+    }));
+}
+
+export async function mockTronGetTrc20Balance(
+  mockServer: Mockttp,
+  mockZeroBalance?: boolean,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forGet(tronInfuraUrl(`/v1/accounts/${TRON_ACCOUNT_ADDRESS}/trc20/balance`))
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        data: mockZeroBalance
+          ? []
+          : [
+              {
+                contract_address: 'TUPM7K8REVzD2UdV4R5fe5M8XbnR2DdoJ6',
+                balance: '3156454956836360132407885',
+                name: 'HTX',
+                symbol: 'HTX',
+                decimals: 18,
+              },
+              {
+                contract_address: 'TBwoSTyywvLrgjSgaatxrBhxt3DGpVuENh',
+                balance: '89851311',
+                name: 'SEED',
+                symbol: 'SEED',
+                decimals: 6,
+              },
+              {
+                contract_address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+                balance: '2804595',
+                name: 'Tether USD',
+                symbol: 'USDT',
+                decimals: 6,
+              },
+              {
+                contract_address: 'TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz',
+                balance: '289757448699320931',
+                name: 'Decentralized USD',
+                symbol: 'USDD',
+                decimals: 18,
+              },
+            ],
+        success: true,
+        meta: {
+          at: 1767888275562,
+          page_size: 10,
         },
       },
     }));
@@ -585,15 +669,33 @@ export async function mockTronSpotPrices(
 ): Promise<MockedEndpoint> {
   return mockServer
     .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
-    .withQuery({
-      vsCurrency: 'usd',
-      assetIds:
-        'tron:728126428/trc10:1005074,tron:728126428/trc20:TUPM7K8REVzD2UdV4R5fe5M8XbnR2DdoJ6,tron:728126428/trc20:TBwoSTyywvLrgjSgaatxrBhxt3DGpVuENh,tron:728126428/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t,tron:728126428/trc20:TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz',
-      includeMarketData: 'true',
-    })
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
+        'tron:728126428/slip44:195': {
+          id: 'tron',
+          price: TRX_TO_USD_RATE,
+          marketCap: 26501571090,
+          allTimeHigh: 0.431288,
+          allTimeLow: 0.00180434,
+          totalVolume: 584039469,
+          high1d: 0.281458,
+          low1d: 0.278801,
+          circulatingSupply: 94683395974.3822,
+          dilutedMarketCap: 26501570979,
+          marketCapPercentChange1d: -0.25,
+          priceChange1d: -0.000716844753300194,
+          pricePercentChange1h: 0.357582350741983,
+          pricePercentChange1d: -0.255462049152282,
+          pricePercentChange7d: 0.862835815143018,
+          pricePercentChange14d: 0.395394234400669,
+          pricePercentChange30d: -4.69037102835574,
+          pricePercentChange200d: 4.7347558395209,
+          pricePercentChange1y: -1.29971018156079,
+        },
+        'tron:3448148188/slip44:195': null,
+        'tron:2494104990/slip44:195': null,
         'tron:728126428/trc10:1005074': null,
         'tron:728126428/trc20:TUPM7K8REVzD2UdV4R5fe5M8XbnR2DdoJ6': {
           id: 'htx-dao',
@@ -665,8 +767,35 @@ export async function mockTronSpotPrices(
 
 export async function mockTrxNativeSpotPrices(
   mockServer: Mockttp,
-): Promise<MockedEndpoint> {
-  return mockServer
+): Promise<MockedEndpoint[]> {
+  const trxPriceResponse = {
+    'tron:728126428/slip44:195': {
+      id: 'tron',
+      price: TRX_TO_USD_RATE,
+      marketCap: 27908032838,
+      allTimeHigh: 0.431288,
+      allTimeLow: 0.00180434,
+      totalVolume: 681456174,
+      high1d: 0.298231,
+      low1d: 0.294641,
+      circulatingSupply: 94699702752.04857,
+      dilutedMarketCap: 27908037090,
+      marketCapPercentChange1d: -0.97531,
+      priceChange1d: -0.003047860467726426,
+      pricePercentChange1h: -0.15075140224689543,
+      pricePercentChange1d: -1.0236731036599194,
+      pricePercentChange7d: 3.655119648562475,
+      pricePercentChange14d: 6.071878922562999,
+      pricePercentChange30d: 4.476394163995479,
+      pricePercentChange200d: 10.682232053374577,
+      pricePercentChange1y: 16.823798348731327,
+    },
+    'tron:3448148188/slip44:195': null,
+    'tron:2494104990/slip44:195': null,
+  };
+
+  // Initial load: all three Tron chains bundled together
+  const allChainsEndpoint = await mockServer
     .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
     .withQuery({
       vsCurrency: 'usd',
@@ -674,34 +803,30 @@ export async function mockTrxNativeSpotPrices(
         'tron:728126428/slip44:195,tron:3448148188/slip44:195,tron:2494104990/slip44:195',
       includeMarketData: 'true',
     })
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: trxPriceResponse,
+    }));
+
+  // After switching to Tron network: single-chain refresh with cacheOnly=false
+  const singleChainEndpoint = await mockServer
+    .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
+    .withQuery({
+      assetIds: 'tron:728126428/slip44:195',
+      vsCurrency: 'usd',
+      includeMarketData: 'true',
+    })
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
-        'tron:728126428/slip44:195': {
-          id: 'tron',
-          price: TRX_TO_USD_RATE,
-          marketCap: 27908032838,
-          allTimeHigh: 0.431288,
-          allTimeLow: 0.00180434,
-          totalVolume: 681456174,
-          high1d: 0.298231,
-          low1d: 0.294641,
-          circulatingSupply: 94699702752.04857,
-          dilutedMarketCap: 27908037090,
-          marketCapPercentChange1d: -0.97531,
-          priceChange1d: -0.003047860467726426,
-          pricePercentChange1h: -0.15075140224689543,
-          pricePercentChange1d: -1.0236731036599194,
-          pricePercentChange7d: 3.655119648562475,
-          pricePercentChange14d: 6.071878922562999,
-          pricePercentChange30d: 4.476394163995479,
-          pricePercentChange200d: 10.682232053374577,
-          pricePercentChange1y: 16.823798348731327,
-        },
-        'tron:3448148188/slip44:195': null,
-        'tron:2494104990/slip44:195': null,
+        'tron:728126428/slip44:195':
+          trxPriceResponse['tron:728126428/slip44:195'],
       },
     }));
+
+  return [allChainsEndpoint, singleChainEndpoint];
 }
 
 export async function mockTronAssets(
@@ -709,6 +834,7 @@ export async function mockTronAssets(
 ): Promise<MockedEndpoint> {
   return mockServer
     .forGet('https://tokens.api.cx.metamask.io/v3/assets')
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: [
@@ -746,32 +872,74 @@ export async function mockTronAssets(
     }));
 }
 
+export async function mockTronGetReward(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forPost(tronInfuraUrl('/wallet/getReward'))
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: { reward: 0 },
+    }));
+}
+
 export async function mockTronGetBlock(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
   return mockServer
     .forPost(tronInfuraUrl('/wallet/getblock'))
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
-      json: {
-        blockID:
-          '0000000004b6f733ff89d72ddc1ce1eabd6045d84cbc4eb0a7e88d9223c12c5e',
-        block_header: {
-          raw_data: {
-            number: 79099699,
-            txTrieRoot:
-              '82bee4864136cf3b1e8ca1f67dd8edba1cfcbf37169fd58d16e29223d5ec3425',
-            witness_address: '4162398d516b555ac64af24416e05c199c01823048',
-            parentHash:
-              '0000000004b6f732a48af7041c4e68a8f472c8072ed98c4a8126bc6d01a9dd0b',
-            version: 32,
-            timestamp: 1767962214000,
-          },
-          witness_signature:
-            'b93cc232e26d2a1751dbaea8985aac5bac9d64b2c644021e96343c14f59212eb359ff52a6d46464bf61d56275ea26e38f903ffc253fca4f55097d0824136271b00',
-        },
-      },
+      json: TRON_BLOCK_RESPONSE,
     }));
+}
+
+export async function mockTronGetNowBlock(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forGet(tronInfuraUrl('/wallet/getnowblock'))
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: buildMockTronBlock(),
+    }));
+}
+
+export async function mockTronGetBlockByNum(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forPost(tronInfuraUrl('/wallet/getblockbynum'))
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: buildMockTronBlock(),
+    }));
+}
+
+function buildMockTronBlock() {
+  return {
+    blockID: '0000000004b6f733ff89d72ddc1ce1eabd6045d84cbc4eb0a7e88d9223c12c5e',
+    block_header: {
+      raw_data: {
+        number: 79099699,
+        txTrieRoot:
+          '82bee4864136cf3b1e8ca1f67dd8edba1cfcbf37169fd58d16e29223d5ec3425',
+        witness_address: '4162398d516b555ac64af24416e05c199c01823048',
+        parentHash:
+          '0000000004b6f732a48af7041c4e68a8f472c8072ed98c4a8126bc6d01a9dd0b',
+        version: 32,
+        // Keep the block timestamp stable and ahead of wall clock time so
+        // refresh checks remain valid in CI and locally.
+        timestamp: MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR,
+      },
+      witness_signature:
+        'b93cc232e26d2a1751dbaea8985aac5bac9d64b2c644021e96343c14f59212eb359ff52a6d46464bf61d56275ea26e38f903ffc253fca4f55097d0824136271b00',
+    },
+  };
 }
 
 const MOCK_TRON_TOKENS = [
@@ -981,7 +1149,7 @@ export async function mockBridgeGetTronQuote(
           },
           trade: {
             visible: false,
-            txID: 'caba58cd8e4af466b2d0f1f8c4146f6145805b29389d73c4cd62c8b97c86c687',
+            txID: '51f819579ad7c0a02bf428c0128ba7430b670526a560e31649dfb818e4ad4740',
             raw_data: {
               contract: [
                 {
@@ -1000,14 +1168,14 @@ export async function mockBridgeGetTronQuote(
                   type: 'TriggerSmartContract',
                 },
               ],
-              ref_block_bytes: '046f',
-              ref_block_hash: '675132da12ff98b1',
-              expiration: 1767972438000,
+              ref_block_bytes: 'f733',
+              ref_block_hash: 'ff89d72ddc1ce1ea',
+              expiration: MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR,
               fee_limit: 300000,
-              timestamp: 1767972378000,
+              timestamp: MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR,
             },
             raw_data_hex:
-              '0A02046F2208675132DA12FF98B140F0FFF99ABA335AF40F081F12EF0F0A31747970652E676F6F676C65617069732E636F6D2F70726F746F636F6C2E54726967676572536D617274436F6E747261637412B90F0A1541588C5216750CCEAAD16CF5A757E3F7B32835A5E1121541F742F4589459F0923FA579600815763D1646BEC318C0843D22840F14D08FCA00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000220000000000000000000000000588C5216750CCEAAD16CF5A757E3F7B32835A5E1000000000000000000000000000000000678810EA08142469DDB483CCF2D999E0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000A614F803B6FD780986A42C78EC9C7F77E6DED13C00000000000000000000000000000000000000000000000000000000000F201200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000222E0000000000000000000000003C067DCD94CB563404B312F3114ECD307FEAF53100000000000000000000000000000000000000000000000000000000000468BA000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000003E9000000000000000000000000000000000000000000000000000000000000018000000000000000000000000000000000000000000000000000000000000000084D6574614D61736B0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002000000000000000000000000018FF186CB1973D4B29700F2AAC6B1EEC9E55FFBD00000000000000000000000018FF186CB1973D4B29700F2AAC6B1EEC9E55FFBD0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000A614F803B6FD780986A42C78EC9C7F77E6DED13C000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000F201200000000000000000000000000000000000000000000000000000000000000E00000000000000000000000000000000000000000000000000000000000000404CEF95229000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001A000000000000000000000000000000000000000000000000000000000000002E0000000000000000000000000000000000000000000000000000000000000036000000000000000000000000000000000000000000000000000000000000F201200000000000000000000000000000000000000000000000000000000000468BA000000000000000000000000F742F4589459F0923FA579600815763D1646BEC30000000000000000000000000000000000000000000000000000000069612C2C000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000000000000000000000000003487B63D30B5B2C87FB7FFA8BCFADE38EAAC1ABE00000000000000000000000094F24E992CA04B49C6F2A2753076EF8938ED4DAA000000000000000000000000A614F803B6FD780986A42C78EC9C7F77E6DED13C0000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000A000000000000000000000000000000000000000000000000000000000000000E0000000000000000000000000000000000000000000000000000000000000000276310000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002763200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000117573646432706F6F6C7475736475736474000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007090ABF69ABA339001E0A712',
+              '0A02F7332208FF89D72DDC1CE1EA4090AD9AD68D375AF40F081F12EF0F0A31747970652E676F6F676C65617069732E636F6D2F70726F746F636F6C2E54726967676572536D617274436F6E747261637412B90F0A1541588C5216750CCEAAD16CF5A757E3F7B32835A5E1121541F742F4589459F0923FA579600815763D1646BEC318C0843D22840F14D08FCA00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000220000000000000000000000000588C5216750CCEAAD16CF5A757E3F7B32835A5E1000000000000000000000000000000000678810EA08142469DDB483CCF2D999E0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000A614F803B6FD780986A42C78EC9C7F77E6DED13C00000000000000000000000000000000000000000000000000000000000F201200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000222E0000000000000000000000003C067DCD94CB563404B312F3114ECD307FEAF53100000000000000000000000000000000000000000000000000000000000468BA000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000003E9000000000000000000000000000000000000000000000000000000000000018000000000000000000000000000000000000000000000000000000000000000084D6574614D61736B0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002000000000000000000000000018FF186CB1973D4B29700F2AAC6B1EEC9E55FFBD00000000000000000000000018FF186CB1973D4B29700F2AAC6B1EEC9E55FFBD0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000A614F803B6FD780986A42C78EC9C7F77E6DED13C000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000F201200000000000000000000000000000000000000000000000000000000000000E00000000000000000000000000000000000000000000000000000000000000404CEF95229000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001A000000000000000000000000000000000000000000000000000000000000002E0000000000000000000000000000000000000000000000000000000000000036000000000000000000000000000000000000000000000000000000000000F201200000000000000000000000000000000000000000000000000000000000468BA000000000000000000000000F742F4589459F0923FA579600815763D1646BEC30000000000000000000000000000000000000000000000000000000069612C2C000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000000000000000000000000003487B63D30B5B2C87FB7FFA8BCFADE38EAAC1ABE00000000000000000000000094F24E992CA04B49C6F2A2753076EF8938ED4DAA000000000000000000000000A614F803B6FD780986A42C78EC9C7F77E6DED13C0000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000A000000000000000000000000000000000000000000000000000000000000000E0000000000000000000000000000000000000000000000000000000000000000276310000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002763200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000117573646432706F6F6C74757364757364740000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000070B0D896D68D379001E0A712',
             payload: {
               owner_address: '41588c5216750cceaad16cf5a757e3f7b32835a5e1',
               call_value: 1000000,
@@ -1039,13 +1207,109 @@ export async function mockBridgeGetTronQuoteEmpty(
     }));
 }
 
+/**
+ * Mocks the accounts API v2 supportedNetworks to include Tron so the
+ * AccountsApiDataSource handles Tron balances via the v5 API instead of
+ * the Snap polling path.
+ *
+ * @param mockServer
+ */
+export async function mockAccountsApiV2WithTron(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forGet(/https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
+    .always()
+    .thenJson(200, {
+      fullSupport: [
+        1,
+        137,
+        56,
+        59144,
+        8453,
+        10,
+        42161,
+        534352,
+        1337,
+        TRON_CHAIN_ID,
+      ],
+      partialSupport: { balances: [42220, 43114] },
+    });
+}
+
+/**
+ * Mocks the accounts API v5 multiaccount balances with TRX for the Tron
+ * wallet address. The AccountsApiDataSource maps by address (not account
+ * UUID), so this works regardless of which runtime account ID the Snap creates.
+ *
+ * @param mockServer
+ * @param mockZeroBalance
+ */
+export async function mockAccountsApiV5WithTron(
+  mockServer: Mockttp,
+  mockZeroBalance?: boolean,
+): Promise<MockedEndpoint> {
+  const trxAmount = mockZeroBalance ? '0' : String(TRX_BALANCE / SUN_PER_TRX);
+  const balances = mockZeroBalance
+    ? [
+        {
+          accountId: `${TRON_CHAIN_ID}:${TRON_ACCOUNT_ADDRESS}`,
+          assetId: `${TRON_CHAIN_ID}/slip44:195`,
+          balance: '0',
+        },
+      ]
+    : [
+        {
+          accountId: `${TRON_CHAIN_ID}:${TRON_ACCOUNT_ADDRESS}`,
+          assetId: `${TRON_CHAIN_ID}/slip44:195`,
+          balance: trxAmount,
+        },
+        {
+          accountId: `${TRON_CHAIN_ID}:${TRON_ACCOUNT_ADDRESS}`,
+          assetId: `${TRON_CHAIN_ID}/trc20:TUPM7K8REVzD2UdV4R5fe5M8XbnR2DdoJ6`,
+          balance: '3156454.956836360132407885', // HTX decimals=18
+        },
+        {
+          accountId: `${TRON_CHAIN_ID}:${TRON_ACCOUNT_ADDRESS}`,
+          assetId: `${TRON_CHAIN_ID}/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t`,
+          balance: '2.804595', // USDT decimals=6
+        },
+        {
+          accountId: `${TRON_CHAIN_ID}:${TRON_ACCOUNT_ADDRESS}`,
+          assetId: `${TRON_CHAIN_ID}/trc20:TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz`,
+          balance: '0.289757448699320931', // USDD decimals=18
+        },
+      ];
+
+  return mockServer
+    .forGet(
+      /https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
+    )
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        count: balances.length,
+        unprocessedNetworks: [],
+        balances,
+      },
+    }));
+}
+
 export async function mockTronApis(
   mockServer: Mockttp,
   mockZeroBalance?: boolean,
 ): Promise<MockedEndpoint[]> {
   return [
+    await mockTokensV2SupportedNetworks(mockServer),
+    await mockTokensV3Assets(mockServer),
+    await mockAccountsApiV2WithTron(mockServer),
+    await mockAccountsApiV5WithTron(mockServer, mockZeroBalance),
     await mockTronFeatureFlags(mockServer),
+    await mockTronGetReward(mockServer),
     await mockTronGetBlock(mockServer),
+    await mockTronGetNowBlock(mockServer),
+    await mockTronGetBlockByNum(mockServer),
     await mockTronGetAccount(mockServer, mockZeroBalance),
     await mockTronGetAccountResource(mockServer),
     await mockTronGetTrc20Transactions(mockServer),
@@ -1053,7 +1317,6 @@ export async function mockTronApis(
     await mockExchangeRates(mockServer),
     await mockFiatExchangeRates(mockServer),
     await mockTronSpotPrices(mockServer),
-    await mockTrxNativeSpotPrices(mockServer),
     await mockTronAssets(mockServer),
     await mockBroadTransaction(mockServer),
   ];

@@ -20,6 +20,7 @@ import {
 import { type DefaultAddressScope } from '../../../shared/constants/default-address';
 import { DefiReferralPartner } from '../../../shared/constants/defi-referrals';
 import { FALLBACK_LOCALE } from '../../../shared/lib/i18n';
+import type { Preferences } from '../../../shared/types/preferences';
 import { PreferencesControllerMethodActions } from './preferences-controller-method-action-types';
 
 /**
@@ -77,34 +78,6 @@ export type PreferencesControllerMessenger = Messenger<
 type PreferencesControllerOptions = {
   state?: Partial<PreferencesControllerState>;
   messenger: PreferencesControllerMessenger;
-};
-
-export type Preferences = {
-  autoLockTimeLimit?: number;
-  avatarType?: 'maskicon' | 'jazzicon' | 'blockies';
-  defaultAddressScope: DefaultAddressScope;
-  dismissSmartAccountSuggestionEnabled: boolean;
-  featureNotificationsEnabled: boolean;
-  hideZeroBalanceTokens: boolean;
-  privacyMode: boolean;
-  showConfirmationAdvancedDetails: boolean;
-  showDefaultAddress: boolean;
-  showExtensionInFullSizeView: boolean;
-  showFiatInTestnets: boolean;
-  showMultiRpcModal: boolean;
-  showNativeTokenAsMainBalance: boolean;
-  showTestNetworks: boolean;
-  skipDeepLinkInterstitial: boolean;
-  smartTransactionsOptInStatus: boolean;
-  smartTransactionsMigrationApplied: boolean;
-  tokenNetworkFilter: Record<string, boolean>;
-  tokenSortConfig: {
-    key: string;
-    order: string;
-    sortCallback: string;
-  };
-  useNativeCurrencyAsPrimaryCurrency: boolean;
-  useSidePanelAsDefault?: boolean;
 };
 
 // Omitting properties that already exist in the PreferencesState, as part of the preferences property.
@@ -856,18 +829,25 @@ export class PreferencesController extends BaseController<
       [preference]: value,
     };
 
-    // Full-screen and default side panel are mutually exclusive when enabled.
-    if (preference === 'showExtensionInFullSizeView' && value === true) {
-      updatedPreferences = {
-        ...updatedPreferences,
-        useSidePanelAsDefault: false,
-      };
-    }
-    if (preference === 'useSidePanelAsDefault' && value === true) {
-      updatedPreferences = {
-        ...updatedPreferences,
-        showExtensionInFullSizeView: false,
-      };
+    // Full-screen and default side panel are mutually exclusive. Disabling
+    // full-screen restores side panel as the default extension entry point.
+    switch (preference) {
+      case 'showExtensionInFullSizeView':
+        updatedPreferences = {
+          ...updatedPreferences,
+          useSidePanelAsDefault: !value,
+        };
+        break;
+      case 'useSidePanelAsDefault':
+        if (value) {
+          updatedPreferences = {
+            ...updatedPreferences,
+            showExtensionInFullSizeView: false,
+          };
+        }
+        break;
+      default:
+        break;
     }
 
     this.update((state) => {

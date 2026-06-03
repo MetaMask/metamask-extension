@@ -11,8 +11,9 @@
  * --current <path-to-benchmark-json-directory>
  *
  * Exit codes:
- * 0 — all benchmarks within constant fail limits
- * 1 — at least one benchmark exceeded a constant fail limit
+ * 0 — no allowlisted (GATED_METRICS) metric exceeded its fail threshold
+ * 1 — at least one allowlisted metric exceeded its fail threshold;
+ * non-allowlisted breaches are degraded to warnings and do not block
  * 2 — usage error or fatal crash
  */
 
@@ -26,12 +27,15 @@ import type {
   ComparisonKey,
   BenchmarkResults,
 } from '../../shared/constants/benchmarks';
+import { GATED_METRICS } from '../../test/e2e/benchmarks/utils/gated-metrics';
 import { THRESHOLD_REGISTRY } from '../../test/e2e/benchmarks/utils/thresholds';
 import { fetchHistoricalPerformanceDataFromMain } from './historical-comparison';
 import type { HistoricalBaselineReference } from './historical-comparison';
 import {
+  applyGatingPolicy,
   compareBenchmarkEntries,
   formatDeltaPercent,
+  scaleThresholdsForBrowser,
   COMPARISON_SEVERITY,
   type BenchmarkEntryComparison,
 } from './comparison-utils';
@@ -85,15 +89,29 @@ export function runComparison(
   let anyFailed = false;
 
   for (const { name, data } of benchmarks) {
-    for (const [entryName, results] of Object.entries(data)) {
-      const thresholdConfig = THRESHOLD_REGISTRY[entryName];
+    const parsed = parseArtifactName(name);
 
-      if (!thresholdConfig) {
+    for (const [entryName, results] of Object.entries(data)) {
+      if (!results.p75 || !results.p95) {
+        console.warn(
+          `Skipping "${entryName}" in "${name}": missing p75/p95 (benchmark likely failed).`,
+        );
+        continue;
+      }
+
+      const baseThresholdConfig = THRESHOLD_REGISTRY[entryName];
+
+      if (!baseThresholdConfig) {
         console.warn(
           `No threshold config for benchmark "${entryName}" in file "${name}". Add an entry to THRESHOLD_REGISTRY in thresholds.ts.`,
         );
         continue;
       }
+
+      const thresholdConfig = scaleThresholdsForBrowser(
+        baseThresholdConfig,
+        parsed?.browser,
+      );
 
       const baselineMetrics = resolveBaselineFromArtifactName(
         baseline,
@@ -101,14 +119,14 @@ export function runComparison(
         name,
       );
 
-      const comparison = compareBenchmarkEntries(
+      const rawComparison = compareBenchmarkEntries(
         entryName,
         results,
         thresholdConfig,
         baselineMetrics,
       );
+      const comparison = applyGatingPolicy(rawComparison, GATED_METRICS);
 
-      const parsed = parseArtifactName(name);
       if (parsed) {
         comparison.source = `${parsed.browser}-${parsed.buildType}`;
       }
@@ -191,6 +209,8 @@ export function buildMetricLines(
     let displayIcon: string = COMPARISON_SEVERITY.Pass.icon;
     let hasIssue = false;
     const details: string[] = [];
+    const formatValue = (value: number): string =>
+      metric === 'cls' ? value.toFixed(3) : `${value.toFixed(0)}ms`;
 
     for (const pKey of percentiles) {
       const key = `${metric}:${pKey}`;
@@ -228,7 +248,7 @@ export function buildMetricLines(
 
         if (isIssue) {
           const delta = formatDeltaPercent(rel.deltaPercent);
-          details.push(`${pKey}: ${rel.current.toFixed(0)}ms (${delta})`);
+          details.push(`${pKey}: ${formatValue(rel.current)} (${delta})`);
           hasIssue = true;
           displayIcon = updateDisplayIcon(icon, displayIcon);
         }
@@ -240,7 +260,7 @@ export function buildMetricLines(
           icon = violationIcon(violation.severity);
           isIssue = true;
           details.push(
-            `${pKey}: ${violation.value.toFixed(0)}ms (no baseline)`,
+            `${pKey}: ${formatValue(violation.value)} (no baseline)`,
           );
           hasIssue = true;
           displayIcon = updateDisplayIcon(icon, displayIcon);

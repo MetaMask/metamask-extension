@@ -39,6 +39,7 @@ function createMockStreamManager(cachedMarkets?: PerpsMarketData[]) {
     getCachedData: jest.fn(() => cachedMarkets ?? []),
     hasCachedData: jest.fn(() => Boolean(cachedMarkets?.length)),
     clearCache: jest.fn(),
+    refresh: jest.fn(),
     subscribe: jest.fn((cb: SubscribeCallback) => {
       subscriber = cb;
       if (cachedMarkets?.length) {
@@ -190,7 +191,7 @@ describe('usePerpsLiveMarketData', () => {
     expect(result.current.markets).toEqual([]);
   });
 
-  it('refresh clears cache and resets loading state', () => {
+  it('refresh triggers a market refresh without resetting loading state', () => {
     const allMarkets = [createMockMarket({ symbol: 'BTC', volume: '$1.2B' })];
 
     const { streamManager } = createMockStreamManager(allMarkets);
@@ -211,10 +212,10 @@ describe('usePerpsLiveMarketData', () => {
     });
 
     expect(
-      (streamManager as unknown as { markets: { clearCache: jest.Mock } })
-        .markets.clearCache,
+      (streamManager as unknown as { markets: { refresh: jest.Mock } }).markets
+        .refresh,
     ).toHaveBeenCalled();
-    expect(result.current.isInitialLoading).toBe(true);
+    expect(result.current.isInitialLoading).toBe(false);
   });
 
   it('excludes zero-volume HIP-3 markets from hip3Markets', () => {

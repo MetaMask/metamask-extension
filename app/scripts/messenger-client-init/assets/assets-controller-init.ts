@@ -1,20 +1,12 @@
 import {
   AssetsController,
+  type AssetsControllerMessenger,
   type AssetsControllerOptions,
 } from '@metamask/assets-controller';
 import type { PreferencesState } from '@metamask/preferences-controller';
 import { createApiPlatformClient } from '@metamask/core-backend';
-import {
-  isAssetsUnifyStateFeatureEnabled,
-  ASSETS_UNIFY_STATE_VERSION_1,
-  type AssetsUnifyStateFeatureFlag,
-  ASSETS_UNIFY_STATE_FLAG,
-} from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { type MessengerClientInitFunction } from '../types';
-import {
-  type AssetsControllerMessenger,
-  type AssetsControllerInitMessenger,
-} from '../messengers/assets/assets-controller-messenger';
+import { type AssetsControllerInitMessenger } from '../messengers/assets/assets-controller-messenger';
 import { traceAsControllerCallback } from '../../../../shared/lib/trace';
 import type { OnboardingControllerState } from '../../controllers/onboarding';
 
@@ -100,6 +92,7 @@ function getApiClient(
   if (!apiClient) {
     apiClient = createApiPlatformClient({
       clientProduct: 'metamask-extension',
+      clientVersion: process.env.METAMASK_VERSION,
       getBearerToken: () => safeGetBearerToken(initMessenger),
     }) as unknown as AssetsControllerOptions['queryApiClient'];
   }
@@ -113,7 +106,7 @@ function getApiClient(
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.persistedState - The persisted state of the extension.
  * @param request.initMessenger - The init messenger to use for the controller.
- * @param request.getMessengerClient - Function to get a controller by name.
+ * @param request.getMessengerClient - The function to get a messenger client.
  * @returns The initialized controller.
  */
 export const AssetsControllerInit: MessengerClientInitFunction<
@@ -126,28 +119,7 @@ export const AssetsControllerInit: MessengerClientInitFunction<
   initMessenger,
   getMessengerClient,
 }) => {
-  /**
-   * Check if the AssetsController feature is enabled based on the remote feature flag.
-   *
-   * @returns True if the feature is enabled, false otherwise.
-   */
-  const isEnabled = (): boolean => {
-    try {
-      const remoteFeatureFlagController = getMessengerClient(
-        'RemoteFeatureFlagController',
-      );
-      const featureFlag = remoteFeatureFlagController.state.remoteFeatureFlags[
-        ASSETS_UNIFY_STATE_FLAG
-      ] as AssetsUnifyStateFeatureFlag | undefined;
-
-      return isAssetsUnifyStateFeatureEnabled(
-        featureFlag,
-        ASSETS_UNIFY_STATE_VERSION_1,
-      );
-    } catch {
-      return false;
-    }
-  };
+  const clientController = () => getMessengerClient('ClientController');
 
   // Get token detection preference
   const tokenDetectionEnabled = safeGetTokenDetectionEnabled(initMessenger);
@@ -156,6 +128,7 @@ export const AssetsControllerInit: MessengerClientInitFunction<
   const isBasicFunctionality = getIsBasicFunctionality(initMessenger);
 
   // Extension: subscribe to PreferencesController:stateChange and notify the controller only when useExternalServices changes.
+  // Also subscribe to OnboardingController:stateChange so that when onboarding completes, subscriptions are re-evaluated.
   // Mobile can pass a different implementation (e.g. Redux or app-specific listener).
   const subscribeToBasicFunctionalityChange = (
     onChange: (isBasic: boolean) => void,
@@ -188,7 +161,7 @@ export const AssetsControllerInit: MessengerClientInitFunction<
   const messengerClient = new AssetsController({
     messenger: controllerMessenger,
     state: persistedState.AssetsController,
-    isEnabled,
+    isEnabled: () => clientController().state.isUiOpen,
     isBasicFunctionality,
     subscribeToBasicFunctionalityChange,
     queryApiClient: getApiClient(initMessenger),

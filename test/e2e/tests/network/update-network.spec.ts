@@ -7,6 +7,7 @@ import { Mockttp } from '../../mock-e2e';
 import AddNetworkRpcUrlModal from '../../page-objects/pages/dialog/add-network-rpc-url';
 import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
 import HomePage from '../../page-objects/pages/home/homepage';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import { login } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -40,14 +41,14 @@ describe('Update Network:', function (this: Suite) {
         // Update the network name and save the changes
         await editNetworkModal.fillNetworkNameInputField(inputData.networkName);
         await editNetworkModal.saveEditedNetwork();
+        await selectNetworkDialog.checkEditNetworkMessageIsDisplayed(
+          inputData.networkName,
+        );
+        await editNetworkModal.clickBackButton();
 
         // Verify the new network name is visible
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkEditNetworkMessageIsDisplayed(
-          inputData.networkName,
-        );
-        await homePage.closeUseNetworkNotificationModal();
         // Since switching networks is disabled via the networks modal in global menu, we don't need to check the selected network anymore
         await headerNavbar.openGlobalNetworksMenu();
 
@@ -138,6 +139,9 @@ describe('Update Network:', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
+        const assetListPage = new AssetListPage(driver);
+        const originalFilterLabel =
+          await assetListPage.getNetworksFilterLabel();
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
 
@@ -157,10 +161,13 @@ describe('Update Network:', function (this: Suite) {
           false,
         );
         await editNetworkModal.saveEditedNetwork();
+        await selectNetworkDialog.checkEditNetworkMessageIsDisplayed(
+          'Arbitrum',
+        );
+        await editNetworkModal.clickBackButton();
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
-        await homePage.closeUseNetworkNotificationModal();
+        await assetListPage.waitUntilFilterLabelIs(originalFilterLabel);
 
         // Re-open the network menu and go back to edit the network
         await headerNavbar.openGlobalNetworksMenu();
@@ -227,6 +234,9 @@ describe('Update Network:', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
+        const assetListPage = new AssetListPage(driver);
+        const originalFilterLabel =
+          await assetListPage.getNetworksFilterLabel();
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
 
@@ -253,10 +263,13 @@ describe('Update Network:', function (this: Suite) {
 
         // Save the network
         await editNetworkModal.saveEditedNetwork();
+        await selectNetworkDialog.checkEditNetworkMessageIsDisplayed(
+          'Arbitrum',
+        );
+        await editNetworkModal.clickBackButton();
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
-        await homePage.closeUseNetworkNotificationModal();
+        await assetListPage.waitUntilFilterLabelIs(originalFilterLabel);
 
         // Re-open the network menu and go back to edit the network
         await headerNavbar.openGlobalNetworksMenu();

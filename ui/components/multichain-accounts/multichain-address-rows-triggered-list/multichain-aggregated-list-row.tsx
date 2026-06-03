@@ -22,8 +22,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { CopyParams } from '../multichain-address-row/multichain-address-row';
 import { getNetworksByScopes } from '../../../../shared/lib/selectors/networks';
 import { MultichainAccountNetworkGroup } from '../multichain-account-network-group';
-// eslint-disable-next-line import-x/no-restricted-paths
-import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
+import { normalizeSafeAddress } from '../../../../shared/lib/multichain/address';
 
 type MultichainAggregatedAddressListRowProps = {
   /**
@@ -54,7 +53,7 @@ export const MultichainAggregatedAddressListRow = ({
 
   const truncatedAddress = shortenAddress(normalizeSafeAddress(address)); // Shorten address for display
   const [displayText, setDisplayText] = useState(truncatedAddress); // Text to display (address or copy message)
-  const [copyIcon, setCopyIcon] = useState(IconName.Copy); // Default copy icon state
+  const [copyIcon, setCopyIcon] = useState<IconName>(IconName.Copy); // Default copy icon state
   const [addressCopied, setAddressCopied] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   // Track timeout ID for managing `setTimeout`
