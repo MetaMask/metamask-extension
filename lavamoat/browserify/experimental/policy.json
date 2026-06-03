@@ -946,7 +946,7 @@
         "@metamask/rpc-errors": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
-        "@metamask/assets-controllers>@tanstack/query-core": true,
+        "@metamask/core-backend>@tanstack/query-core": true,
         "async-mutex": true,
         "ethereumjs-util>bn.js": true,
         "immer": true,
@@ -1939,23 +1939,6 @@
         "@metamask/keyring-controller>ulid": true
       }
     },
-    "@metamask/wallet>@metamask/keyring-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/base-controller": true,
-        "@metamask/eth-hd-keyring": true,
-        "@metamask/eth-sig-util": true,
-        "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
-        "@metamask/utils": true,
-        "async-mutex": true,
-        "@metamask/keyring-controller>ethereumjs-wallet": true,
-        "lodash": true,
-        "@metamask/keyring-controller>ulid": true
-      }
-    },
     "@metamask/keyring-internal-api": {
       "packages": {
         "@metamask/keyring-api": true,
@@ -2456,7 +2439,7 @@
     "@metamask/react-data-query": {
       "packages": {
         "@metamask/utils": true,
-        "@tanstack/react-query>@tanstack/query-core": true,
+        "@metamask/react-data-query>@tanstack/query-core": true,
         "@tanstack/react-query": true
       }
     },
@@ -2864,7 +2847,7 @@
     "@metamask/wallet": {
       "packages": {
         "@metamask/browser-passworder": true,
-        "@metamask/wallet>@metamask/keyring-controller": true,
+        "@metamask/keyring-controller": true,
         "@metamask/messenger": true,
         "@metamask/scure-bip39": true,
         "@metamask/storage-service": true,
@@ -3407,51 +3390,6 @@
         "browserify>browser-resolve": true
       }
     },
-    "@metamask/assets-controllers>@tanstack/query-core": {
-      "globals": {
-        "AbortController": true,
-        "CancelledError": true,
-        "InfiniteQueryObserver": true,
-        "Mutation": true,
-        "MutationCache": true,
-        "MutationObserver": true,
-        "QueriesObserver": true,
-        "Query": true,
-        "QueryCache": true,
-        "QueryClient": true,
-        "QueryObserver": true,
-        "addEventListener": true,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "console.warn": true,
-        "defaultScheduler": true,
-        "defaultShouldDehydrateMutation": true,
-        "defaultShouldDehydrateQuery": true,
-        "dehydrate": true,
-        "document": true,
-        "experimental_streamedQuery": true,
-        "focusManager": true,
-        "hashKey": true,
-        "hydrate": true,
-        "isCancelledError": true,
-        "isServer": true,
-        "keepPreviousData": true,
-        "matchMutation": true,
-        "matchQuery": true,
-        "noop": true,
-        "notifyManager": true,
-        "onlineManager": true,
-        "partialMatchKey": true,
-        "removeEventListener": true,
-        "replaceEqualDeep": true,
-        "setInterval": true,
-        "setTimeout": true,
-        "shouldThrowError": true,
-        "skipToken": true,
-        "timeoutManager": true
-      }
-    },
     "@metamask/assets-controller>@metamask/assets-controllers>@tanstack/query-core": {
       "globals": {
         "addEventListener": false,
@@ -3503,6 +3441,20 @@
         "shouldThrowError": true,
         "skipToken": true,
         "timeoutManager": true
+      }
+    },
+    "@metamask/react-data-query>@tanstack/query-core": {
+      "globals": {
+        "AbortController": true,
+        "addEventListener": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console": true,
+        "document": true,
+        "navigator": true,
+        "removeEventListener": true,
+        "setInterval": true,
+        "setTimeout": true
       }
     },
     "@tanstack/react-query>@tanstack/query-core": {
