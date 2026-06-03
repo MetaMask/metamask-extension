@@ -129,8 +129,6 @@ describe('Multichain Asset List', function (this: Suite) {
         await assetListPage.importCustomTokenByChain(
           '0x89',
           '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
-          'TST',
-          '4',
         );
         // Currently only polygon is selected, so only see polygon tokens
         // 1 native token (POL), and 1 ERC-20 (TST)

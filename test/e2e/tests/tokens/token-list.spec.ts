@@ -20,7 +20,6 @@ describe('Token List', function () {
   const chainId = CHAIN_IDS.MAINNET;
   const tokenAddress = '0x2EFA2Cb29C2341d8E5Ba7D3262C9e9d6f1Bf3711';
   const symbol = 'foo';
-  const decimals = '18';
 
   const fixtures = {
     fixtures: new FixtureBuilderV2()
@@ -53,7 +52,6 @@ describe('Token List', function () {
           chainId,
           tokenAddress,
           symbol,
-          decimals,
         );
 
         await assetListPage.checkTokenGeneralChangePercentageNotPresent(
@@ -110,7 +108,6 @@ describe('Token List', function () {
           chainId,
           tokenAddress,
           symbol,
-          decimals,
         );
         await assetListPage.dismissTokenImportedMessage();
         await assetListPage.checkTokenGeneralChangePercentage(

@@ -1419,6 +1419,13 @@ async function setupMocking(
       };
     });
 
+  // Merkl rewards API: return empty rewards so mUSD reward polling doesn't crash
+  // tests with SyntaxError when the catch-all returns an empty body.
+  await server
+    .forGet(/^https:\/\/api\.merkl\.xyz\/v4\/users\/[^/]+\/rewards/u)
+    .always()
+    .thenCallback(() => ({ statusCode: 200, json: [] }));
+
   // Accounts API: v5 multi-account balances (used by AccountsApiDataSource when assetsUnifyState is enabled).
   // Default: 25 ETH native per requested chain for the default fixture account. Override via
   // withFixtures({ unifiedEvmAccountsApiBalances }) when login() asserts a custom fiat total.

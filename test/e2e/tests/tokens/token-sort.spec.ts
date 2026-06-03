@@ -13,7 +13,6 @@ describe('Token List Sorting', function () {
   const mainnetChainId = CHAIN_IDS.MAINNET;
   const customTokenAddress = '0x2EFA2Cb29C2341d8E5Ba7D3262C9e9d6f1Bf3711';
   const customTokenSymbol = 'ABC';
-  const customTokenDecimals = '18';
   const customTokenAssetId = `eip155:1/erc20:${customTokenAddress.toLowerCase()}`;
 
   const testFixtures = {
@@ -59,7 +58,6 @@ describe('Token List Sorting', function () {
           mainnetChainId,
           customTokenAddress,
           customTokenSymbol,
-          customTokenDecimals,
         );
         await assetListPage.dismissTokenImportedMessage();
 

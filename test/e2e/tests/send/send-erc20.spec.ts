@@ -98,8 +98,6 @@ describe('Send ERC20', function () {
           await assetListPage.importCustomTokenByChain(
             '0x539',
             tokenAddress as string,
-            'TST',
-            '4',
           );
 
           const homePage = new HomePage(driver);

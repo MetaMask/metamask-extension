@@ -324,11 +324,9 @@ class AssetListPage extends HomePage {
     await this.driver.waitForSelector(this.modalWarningBanner);
     // Wait for the input to be present and stable after modal content re-renders
     await this.driver.waitForSelector(this.tokenAddressInput);
-    console.log(`Filling symbol ${symbol} 2222 ++++++++++`);
 
     await this.driver.fill(this.tokenAddressInput, tokenAddress);
     await this.driver.waitForSelector(this.tokenSymbolTitle);
-    console.log(`Filling symbol ${symbol} 111 ++++++++++`);
 
     if (symbol) {
       // do not fill the form until the button is disabled, because there's a form re-render which can clear the input field causing flakiness
@@ -348,7 +346,6 @@ class AssetListPage extends HomePage {
     }
 
     await this.driver.waitForSelector(this.tokenDecimalsTitle);
-    console.log(`Filling symbol ${symbol} ++++++++++`);
     await this.driver.clickElement(this.importTokensNextButton);
     await this.driver.waitForSelector(this.tokenConfirmListItem);
     // Same readiness condition as `importTokenBySearch`: confirm copy means

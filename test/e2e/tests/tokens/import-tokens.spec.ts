@@ -65,7 +65,7 @@ async function mockTokenSearch(mockServer: Mockttp) {
   ];
 
   return mockServer
-    .forGet('https://token.api.cx.metamask.io/tokens/search')
+    .forGet(/^https:\/\/token\.api\.cx\.metamask\.io\/tokens\/search/u)
     .always()
     .thenCallback((request) => {
       const url = new URL(request.url);
@@ -696,8 +696,10 @@ describe('Import flow', function () {
           '0x89',
           '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
           'USDT',
-          '6',
         );
+
+        console.log(`Imported token ++++++++++`);
+
         const tokenList = new AssetListPage(driver);
 
         // Native Tokens: Polygon POL

@@ -59,7 +59,7 @@ describe('Token List via StorageService', function () {
           await mockPriceApiSupportedNetworks(mockServer),
           // Token Search API – /tokens/search
           await mockServer
-            .forGet('https://token.api.cx.metamask.io/tokens/search')
+            .forGet(/^https:\/\/token\.api\.cx\.metamask\.io\/tokens\/search/u)
             .always()
             .thenCallback((request) => {
               const url = new URL(request.url);

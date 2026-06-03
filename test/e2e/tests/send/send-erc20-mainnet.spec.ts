@@ -44,7 +44,7 @@ async function mockSpotPriceV3ForDai(mockServer: Mockttp) {
         return { statusCode: 200, json: result };
       }),
     await mockServer
-      .forGet('https://token.api.cx.metamask.io/tokens/search')
+      .forGet(/^https:\/\/token\.api\.cx\.metamask\.io\/tokens\/search/u)
       .always()
       .thenCallback((request) => {
         const url = new URL(request.url);

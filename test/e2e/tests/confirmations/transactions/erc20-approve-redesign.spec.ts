@@ -50,8 +50,6 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
           await assetListPage.importCustomTokenByChain(
             '0x539',
             '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
-            'TST',
-            '4',
           );
 
           // Create ERC20 approve transaction

@@ -960,7 +960,7 @@ export const ImportTokensModal = ({ onClose }) => {
                   tabListProps={{ className: 'px-4' }}
                   onTabClick={() => clearAllFormData()}
                 >
-                  {shouldShowSearchTab && (
+                  {(
                     <Tab
                       tabKey={TAB_NAMES.SEARCH}
                       name={t('search')}
