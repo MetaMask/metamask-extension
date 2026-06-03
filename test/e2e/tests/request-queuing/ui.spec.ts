@@ -207,7 +207,7 @@ async function validateBalanceAndActivity(
   // Ensure there's an activity entry of "Sent" and "Confirmed"
   if (expectedActivityEntries) {
     const activityList = new ActivityListPage(driver);
-    await activityList.openActivityTab();
+    await activityList.goToActivityList();
     await activityList.checkTxAction({ action: 'Sent' });
     await activityList.checkConfirmedTxNumberDisplayedInActivity(
       expectedActivityEntries,
