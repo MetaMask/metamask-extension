@@ -7,9 +7,7 @@ import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic
 
 import { captureException } from '../shared/lib/sentry';
 import { withResolvers } from '../shared/lib/promise-with-resolvers';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../app/scripts/lib/util';
+import { getEnvironmentType } from '../shared/lib/environment-type';
 import { AlertTypes } from '../shared/constants/alerts';
 import { maskObject } from '../shared/lib/object.utils';
 // TODO: Remove restricted import
