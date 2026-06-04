@@ -113,7 +113,6 @@ describe('Transaction Controller Hooks', () => {
       expect(hooks).toStrictEqual(
         expect.objectContaining({
           afterAdd: expect.any(Function),
-          beforeCheckPendingTransaction: expect.any(Function),
           beforePublish: expect.any(Function),
           beforeSign: expect.any(Function),
           publish: expect.any(Function),
@@ -183,18 +182,14 @@ describe('Transaction Controller Hooks', () => {
   });
 
   describe('beforeCheckPendingTransaction', () => {
-    it('calls InstitutionalSnapController:beforeCheckPendingTransactionHook with transactionMeta', () => {
-      const messenger = buildMockMessenger();
-      const request = buildMockRequest({ messenger });
-      const { beforeCheckPendingTransaction } =
-        getTransactionControllerHooks(request);
+    // Not returned by getTransactionControllerHooks — omitted pending assessment
+    // of its impact on EIP-7702 delegation transactions. The hook is intentionally
+    // kept here until it can be safely re-enabled.
+    it('is not included in the returned hooks', () => {
+      const request = buildMockRequest();
+      const hooks = getTransactionControllerHooks(request);
 
-      beforeCheckPendingTransaction?.(mockTransactionMeta);
-
-      expect(messenger.call).toHaveBeenCalledWith(
-        'InstitutionalSnapController:beforeCheckPendingTransactionHook',
-        mockTransactionMeta,
-      );
+      expect(hooks).not.toHaveProperty('beforeCheckPendingTransaction');
     });
   });
 

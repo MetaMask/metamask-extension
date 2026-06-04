@@ -46,12 +46,18 @@ const TRANSACTION_SUBMISSION_METHOD = {
   SENTINEL_RELAY: 'sentinel_relay',
 };
 
+/**
+ * @param request - The hook request dependencies.
+ * @returns The hooks to pass to TransactionController. Note:
+ * `beforeCheckPendingTransaction` is intentionally omitted — it was previously
+ * silently inactive due to a misspelled key and requires further assessment
+ * before enabling.
+ */
 export function getTransactionControllerHooks(
   request: TransactionControllerHookRequest,
 ): TransactionControllerOptions['hooks'] {
   return {
     afterAdd: afterAddHook(request),
-    beforeCheckPendingTransaction: beforeCheckPendingTransactionsHook(request),
     beforePublish: beforePublishHook(request),
     beforeSign: beforeSignHook(request),
     // @ts-expect-error - Controller type is missing signedTx parameter
