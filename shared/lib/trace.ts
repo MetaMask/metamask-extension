@@ -1,5 +1,5 @@
 import type * as Sentry from '@sentry/browser';
-import {
+import type {
   MeasurementUnit,
   Span,
   StartSpanOptions,
