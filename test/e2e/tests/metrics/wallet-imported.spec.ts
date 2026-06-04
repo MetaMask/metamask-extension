@@ -45,11 +45,41 @@ describe('Wallet Created Events - Imported Account', function () {
           participateInMetaMetrics: true,
         });
 
-        const events = await getEventPayloads(driver, mockedEndpoints);
+        // Poll until every expected event has actually been received
+        const expectedEventCounts = new Map<string, number>();
+        for (const expectedEvent of expectedEvents) {
+          expectedEventCounts.set(
+            expectedEvent,
+            (expectedEventCounts.get(expectedEvent) ?? 0) + 1,
+          );
+        }
 
-        // Only include track events not identify events
-        const trackEvents = events.filter(
-          (e: { type?: string }) => e.type === 'track',
+        let trackEvents: {
+          type?: string;
+          event: string;
+          properties?: Record<string, unknown>;
+        }[] = [];
+        await driver.wait(
+          async () => {
+            const events = await getEventPayloads(
+              driver,
+              mockedEndpoints,
+              false,
+            );
+
+            // Only include track events not identify events
+            trackEvents = events.filter(
+              (e: { type?: string }) => e.type === 'track',
+            );
+
+            return [...expectedEventCounts.entries()].every(
+              ([eventName, expectedCount]) =>
+                trackEvents.filter((e) => e.event === eventName).length >=
+                expectedCount,
+            );
+          },
+          driver.timeout,
+          true,
         );
 
         const eventTypes = trackEvents.map(
