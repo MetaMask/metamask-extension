@@ -924,4 +924,27 @@ describe('mapEvmTransactions', () => {
       },
     });
   });
+
+  it('maps a Standard transaction on a chain outside the swaps registry without throwing', () => {
+    // chainId 4657 (0x1231) is not in the bridge swaps registry, so the native
+    // asset lookup throws; mapping should degrade gracefully instead.
+    const transaction = {
+      timestamp: '2026-05-12T13:37:47.000Z',
+      chainId: 4657,
+      from: subjectAddress,
+      to: baseRecipientAddress,
+      transactionCategory: 'STANDARD',
+      value: '1000000000000000000',
+      valueTransfers: [],
+    } as unknown as V1TransactionByHashResponse;
+
+    expect(() =>
+      mapApiEvmTransactions({ subjectAddress, transaction }),
+    ).not.toThrow();
+
+    const item = mapApiEvmTransactions({ subjectAddress, transaction });
+
+    expect(item.type).toBe('send');
+    expect(item.chainId).toBe('eip155:4657');
+  });
 });

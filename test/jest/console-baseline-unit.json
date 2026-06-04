@@ -213,7 +213,7 @@
       "Test errors: Uncaught Errors": 1
     },
     "ui/components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar.test.tsx": {
-      "MetaMask: Background connection not initialized": 7
+      "MetaMask: Background connection not initialized": 9
     },
     "ui/components/app/assets/asset-list/asset-list.test.tsx": {
       "Reselect: Identity function warnings": 1
@@ -324,14 +324,16 @@
       "React: Missing key props in lists": 1
     },
     "ui/components/app/snaps/snap-ui-renderer/components/account-selector.test.ts": {
-      "MetaMask: Background connection not initialized": 2,
-      "React: DOM nesting violations": 1
+      "MetaMask: Background connection not initialized": 4,
+      "React: DOM nesting violations": 1,
+      "Reselect: Identity function warnings": 2
     },
     "ui/components/app/snaps/snap-ui-renderer/components/address-input.test.ts": {
-      "MetaMask: Background connection not initialized": 4
+      "MetaMask: Background connection not initialized": 8,
+      "Reselect: Identity function warnings": 3
     },
     "ui/components/app/snaps/snap-ui-renderer/components/asset-selector.test.ts": {
-      "MetaMask: Background connection not initialized": 2
+      "MetaMask: Background connection not initialized": 4
     },
     "ui/components/app/snaps/snap-ui-renderer/components/date-time-picker.test.ts": {
       "warn: Material-UI: You are trying to": 5
@@ -370,6 +372,9 @@
     },
     "ui/components/multichain-accounts/add-multichain-account/add-multichain-account.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 3
+    },
+    "ui/components/multichain-accounts/multichain-account-list/multichain-account-list.test.tsx": {
+      "MetaMask: Background connection not initialized": 73
     },
     "ui/components/multichain-accounts/multichain-address-rows-triggered-list/default-address.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
@@ -488,9 +493,6 @@
     "ui/components/ui/qr-code-view/qr-code-view.test.tsx": {
       "React: DOM nesting violations": 1
     },
-    "ui/components/ui/slider/slider.component.test.js": {
-      "Material-UI: JSS warnings": 4
-    },
     "ui/components/ui/survey-toast/survey-toast.test.tsx": {
       "MetaMask: Background connection not initialized": 1
     },
@@ -511,6 +513,9 @@
     },
     "ui/helpers/utils/tags.test.ts": {
       "Reselect: Input stability warnings": 1
+    },
+    "ui/hooks/accounts/useAccountsOperationsLoadingStates.test.ts": {
+      "MetaMask: Background connection not initialized": 2
     },
     "ui/hooks/bridge/useInitialBridgeTokens.test.ts": {
       "React: Act warnings (component updates not wrapped)": 1,
@@ -949,11 +954,15 @@
       "React: Missing key props in lists": 1
     },
     "ui/pages/multichain-accounts/multichain-accounts-connect-page/multichain-accounts-connect-page.test.tsx": {
+      "MetaMask: Background connection not initialized": 4,
       "React: DOM nesting violations": 3
     },
     "ui/pages/multichain-accounts/smart-account-page/smart-account-page.test.tsx": {
       "MetaMask: Background connection not initialized": 2,
       "React: Act warnings (component updates not wrapped)": 2
+    },
+    "ui/pages/multichain-accounts/wallet-details-page/wallet-details-page.test.tsx": {
+      "MetaMask: Background connection not initialized": 4
     },
     "ui/pages/musd/index.test.tsx": {
       "Reselect: Identity function warnings": 1
@@ -962,7 +971,7 @@
       "React: Act warnings (component updates not wrapped)": 3
     },
     "ui/pages/networks/networks-page.test.tsx": {
-      "MetaMask: Background connection not initialized": 1,
+      "MetaMask: Background connection not initialized": 2,
       "React: Act warnings (component updates not wrapped)": 2
     },
     "ui/pages/notifications-settings/notifications-settings-allow-notifications.test.tsx": {
@@ -982,11 +991,26 @@
     "ui/pages/notifications/notifications.test.tsx": {
       "Reselect: Input stability warnings": 3
     },
+    "ui/pages/onboarding-flow/account-exist/account-exist.test.tsx": {
+      "MetaMask: Background connection not initialized": 1
+    },
+    "ui/pages/onboarding-flow/account-not-found/account-not-found.test.tsx": {
+      "MetaMask: Background connection not initialized": 1
+    },
     "ui/pages/onboarding-flow/create-password/create-password.test.tsx": {
+      "MetaMask: Background connection not initialized": 1
+    },
+    "ui/pages/onboarding-flow/creation-successful/creation-successful.test.tsx": {
+      "error: Error opening side panel: Error:": 4
+    },
+    "ui/pages/onboarding-flow/import-srp/import-srp.test.tsx": {
       "MetaMask: Background connection not initialized": 1
     },
     "ui/pages/onboarding-flow/metametrics/metametrics.test.tsx": {
       "React: Act usage warnings (incorrect await)": 4
+    },
+    "ui/pages/onboarding-flow/onboarding-flow.test.tsx": {
+      "MetaMask: Background connection not initialized": 13
     },
     "ui/pages/onboarding-flow/privacy-settings/privacy-settings.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,
@@ -1102,6 +1126,9 @@
     "ui/pages/shield/transaction-shield/transaction-shield.test.tsx": {
       "MetaMask: Background connection not initialized": 3,
       "React: Act warnings (component updates not wrapped)": 13
+    },
+    "ui/pages/snaps/snap-view/hooks/useUpdate.test.ts": {
+      "MetaMask: Background connection not initialized": 1
     },
     "ui/pages/snaps/snap-view/snap-view.test.js": {
       "React: Missing key props in lists": 1,

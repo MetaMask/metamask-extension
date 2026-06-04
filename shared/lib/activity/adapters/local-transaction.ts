@@ -1,5 +1,4 @@
 import { TransactionType } from '@metamask/transaction-controller';
-import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
 import { SWAPS_WRAPPED_TOKENS_ADDRESSES } from '../../../constants/swaps';
 import { toAssetId } from '../../asset-utils';
@@ -14,17 +13,13 @@ import {
   withdrawMethodIds,
   wrapMethodIds,
 } from './constants';
-import { getKnownTokenMetadata, getLocalTransactionStatus } from './helpers';
+import {
+  getKnownTokenMetadata,
+  getLocalTransactionStatus,
+  getNativeAssetSafe,
+} from './helpers';
 
 const EVM_NATIVE_DECIMALS = 18;
-
-function getNativeAsset(chainId: string) {
-  try {
-    return getNativeAssetForChainId(chainId);
-  } catch {
-    return undefined;
-  }
-}
 
 // Converts local TransactionController groups into activity items
 export function mapLocalTransaction(
@@ -41,7 +36,7 @@ export function mapLocalTransaction(
     KnownCaipNamespace.Eip155,
     Number.parseInt(initialTransaction.chainId, 16).toString(),
   );
-  const nativeAsset = getNativeAsset(initialTransaction.chainId);
+  const nativeAsset = getNativeAssetSafe(initialTransaction.chainId);
   // Prefer the network-configured ticker (resolved by the selector from
   // NetworkController state) over the bridge-controller swaps registry,
   // which hard-codes synthetic symbols like `TESTETH` for chains such as
