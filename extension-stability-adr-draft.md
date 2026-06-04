@@ -76,11 +76,10 @@ flowchart TD
   H --> F
 ```
 
-The committed draft implementation on branch
-`david/chromium-storage-resilience` changes the persistence model so new state
-writes publish fresh generated storage keys, mirrored metadata, per-logical-key
-pointers, and tombstones. Generated metadata becomes authoritative once present,
-so stale fixed legacy keys are not touched unless no generated signal exists.
+This proposal changes the persistence model so new state writes publish fresh
+generated storage keys, mirrored metadata, per-logical-key pointers, and
+tombstones. Generated metadata becomes authoritative once present, so stale
+fixed legacy keys are not touched unless no generated signal exists.
 
 ## Considered Options
 
@@ -97,11 +96,10 @@ so stale fixed legacy keys are not touched unless no generated signal exists.
 Chosen option: "Generated value keys with mirrored manifests, key lists,
 pointers, tombstones, chunking, and fail-closed legacy fallback"
 
-This ADR is proposed, and the implementation exists as a draft branch. The
-decision is not yet formally accepted by the owning teams, but the committed
-solution is the recommended direction because it directly addresses the
-extension-side root cause: fixed-key reuse and repeated reads of old corrupt
-keys.
+This ADR is proposed. The decision is not yet formally accepted by the owning
+teams, but this solution is the recommended direction because it directly
+addresses the extension-side root cause: fixed-key reuse and repeated reads of
+old corrupt keys.
 
 The proposal changes the persistence model from "rewrite known keys forever" to
 "write immutable generated values and publish small redundant pointers to the
@@ -200,6 +198,47 @@ sequenceDiagram
   Store->>Values: Best-effort cleanup of obsolete generated values/chunks
 ```
 
+### Logical Write Batching
+
+Generated physical keys must not be interpreted as permission to commit every
+logical key independently. MetaMask controllers can carry cross-controller
+invariants, where one controller's persisted state assumes that another
+controller's persisted state has advanced with it. Examples include account,
+permission, network, transaction, and approval surfaces that may duplicate or
+index related wallet facts for different workflows.
+
+For that reason, `ExtensionStore` should preserve a serialized logical batch
+boundary for state persistence:
+
+1. Collect the logical keys included in the state update.
+2. Write fresh generated values and chunks for those logical keys.
+3. Publish metadata that identifies the batch's latest logical-key-to-physical
+   key mapping.
+4. Expose the new mapping to future readers only after enough metadata has been
+   published for recovery.
+5. Keep the previous generated values recoverable until cleanup is safe.
+
+This is not a true transaction in Chromium `storage.local`; the browser API does
+not provide multi-key atomic commits. It is a commit protocol that reduces torn
+state exposure by making readers prefer the last coherent published mapping
+instead of whichever individual physical value happened to write most recently.
+
+```mermaid
+flowchart LR
+  A["Controller update"] --> B["Logical write batch"]
+  B --> C["Write generated values for all changed logical keys"]
+  C --> D["Publish batch metadata and pointers"]
+  D --> E["Readers use latest coherent mapping"]
+  C -. partial write failure .-> F["Previous mapping remains recoverable"]
+  D -. metadata copy failure .-> G["Mirrors and pointers recover mapping"]
+```
+
+This batching strategy is especially important until controller ownership and
+recovery semantics are audited. A simpler per-key persistence model is only safe
+when stale or missing paired state can be lazily repaired. MetaMask cannot assume
+that across all controllers today, so the storage layer should avoid creating
+new partially advanced controller combinations during normal writes.
+
 ### Read and Recovery Rules
 
 The read path should request storage keys individually or in tightly scoped
@@ -232,6 +271,42 @@ flowchart TD
   J --> K["Read legacy manifest or data/meta individually"]
   K --> L["Return legacy state or empty state"]
 ```
+
+### Critical vs Non-Critical Controller State
+
+The draft implementation deliberately treats only `data`, `meta`, and
+`KeyringController` as critical persisted keys. If one of those keys, or the
+generated physical value behind one of those keys, cannot be read, startup fails
+closed rather than constructing a wallet from incomplete vault-critical state.
+
+Other manifest-listed logical keys are currently treated as recoverable. If a
+logical key such as an account-related controller maps to a generated physical
+key that cannot be read, the read error is captured and startup can continue
+without that persisted slice. The owning controller will then typically
+initialize from its default state.
+
+That behavior is an availability tradeoff, not a blanket guarantee of safety.
+Many controllers may not be resilient to having their persisted state disappear
+while adjacent controllers keep their previous persisted state. Some controller
+defaults are designed for first-run initialization, not for partial corruption
+recovery after a mature wallet has accumulated related state elsewhere. Making
+this fallback safe may require extensive controller refactoring, including:
+
+- classifying every persisted controller slice as critical, reconstructable, or
+  safely degradable;
+- making default-state initialization idempotent when neighboring controllers
+  still have old persisted state;
+- rebuilding derived or cache-like controller state from authoritative sources;
+- adding explicit invariant checks for cross-controller state dependencies;
+- adding controller-specific recovery or tombstone semantics where default
+  initialization would be misleading; and
+- emitting telemetry when a non-critical slice is skipped so teams can identify
+  which controllers need hardening.
+
+Until that audit is complete, the generated-key storage layer should be viewed
+as reducing storage-level blast radius. It does not automatically prove that
+every controller can safely reinitialize from defaults after its own persisted
+slice is lost.
 
 ### StorageService Data
 
@@ -336,7 +411,7 @@ flowchart LR
 | `data` fixed key | Startup could repeatedly fail when solid fallback requested `data` | Generated metadata suppresses fixed-key fallback once generated ownership exists |
 | `meta` fixed key | Startup could repeatedly fail when solid fallback requested `meta` | Same as `data`; only read if no generated signal exists |
 | `manifest` fixed key | Split-state reads could repeatedly fail before individual state keys were considered | Legacy manifest is lazy and only read when generated metadata cannot determine ownership |
-| One split-state key | Batched reads could fail the whole read | Reads are individual; critical keys fail closed, non-critical keys can be skipped/captured |
+| One split-state key | Batched reads could fail the whole read | Reads are individual; critical keys fail closed, non-critical keys can be skipped/captured, but controller resilience must be audited before default reinitialization is assumed safe |
 | Root generated manifest copy | Could block if single metadata key were authoritative | Four manifest copies plus key lists plus per-key pointers |
 | All root manifest copies | Previous design had no generated fallback layer | Values can still be recovered through key lists and pointers |
 | Pointer slot | Single pointer corruption could lose latest value | Eight pointer slots per logical key |
@@ -481,7 +556,7 @@ Move some wallet state recovery responsibility to a remote service.
 
 ## Implementation Summary
 
-The draft branch implements the proposed option across these files:
+An initial implementation of the proposed option touches these areas:
 
 | Area | Files | Summary |
 | --- | --- | --- |
@@ -553,20 +628,21 @@ Security-sensitive behavior should be reviewed around these points:
 
 ```mermaid
 flowchart TD
-  A["Draft PR"] --> B["Unit and E2E validation"]
-  B --> C["Canary or limited rollout"]
-  C --> D["Sentry key-class dashboard"]
-  D --> E{"Generated failure rate acceptable?"}
-  E -->|Yes| F["Expand rollout"]
-  E -->|No| G["Inspect key class and failing surface"]
-  G --> H["Patch targeted storage surface"]
-  H --> C
-  F --> I["Formal ADR acceptance"]
+  A["ADR"] --> B["Initial Implementation"]
+  B --> C["Unit and E2E validation"]
+  C --> D["Canary or limited rollout"]
+  D --> E["Sentry key-class dashboard"]
+  E --> F{"Generated failure rate acceptable?"}
+  F -->|Yes| G["Expand rollout"]
+  F -->|No| H["Inspect key class and failing surface"]
+  H --> I["Patch targeted storage surface"]
+  I --> D
+  G --> J["Formal ADR acceptance"]
 ```
 
-## Validation Performed on Draft Branch
+## Validation Performed
 
-The draft branch has been validated with:
+The initial implementation has been validated with:
 
 - `yarn test:unit shared/lib/stores/extension-store.test.ts --runInBand`
 - `yarn test:unit shared/lib/stores/browser-storage-adapter.test.ts app/scripts/lib/use-split-state-storage.test.ts --runInBand`
@@ -587,13 +663,12 @@ The draft branch has been validated with:
   or should this remain Sentry-only?
 - Should we eventually remove legacy fixed-key fallback after sufficient
   adoption time?
+- Which controller state slices should be promoted to critical, and which
+  controllers require refactoring before they can safely reinitialize from
+  defaults after a persisted-slice read failure?
 
 ## More Information
 
-- Draft implementation branch:
-  `david/chromium-storage-resilience`
-- Draft implementation commit:
-  `7633133e58f7b22e18de5365302dc9ae94daf182`
 - Chromium issue: https://issues.chromium.org/issues/432503402
 - Chromium manual recovery investigation:
   https://issues.chromium.org/issues/432497646
