@@ -199,20 +199,6 @@ class NetworkManager {
     console.log(`Network ${networkName} is listed`);
   }
 
-  async checkContextMenuHasOption(
-    chainId: string,
-    optionText: string,
-  ): Promise<void> {
-    console.log(
-      `Checking context menu for ${chainId} has option: ${optionText}`,
-    );
-    await this.driver.clickElement(
-      this.networkItemMenuButtonByChainId(chainId),
-    );
-    await this.driver.waitForSelector({ text: optionText });
-    console.log(`Context menu for ${chainId} has option: ${optionText}`);
-  }
-
   async waitForCategoryContent(networkCategory: string): Promise<void> {
     console.log(`Waiting for ${networkCategory} tab content to load`);
     if (networkCategory === 'Custom') {
