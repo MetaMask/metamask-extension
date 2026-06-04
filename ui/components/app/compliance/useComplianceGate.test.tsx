@@ -327,4 +327,61 @@ describe('useComplianceGate', () => {
     expect(action).toHaveBeenCalledTimes(1);
     expect(mockShowAccessRestrictedModal).not.toHaveBeenCalled();
   });
+
+  it('abandons the gated action when the wallet switches while a check is in flight', async () => {
+    const deferredA = createDeferred<WalletComplianceStatus[]>();
+    mockSubmitRequestToBackground
+      .mockReturnValueOnce(deferredA.promise) // wallet A prefetch (in flight)
+      .mockResolvedValueOnce([getStatus(ADDRESS, false)]); // wallet B prefetch
+    const action = jest.fn();
+    const { result, rerender } = renderHook<
+      { address: string },
+      ReturnType<typeof useComplianceGate>
+    >(({ address }) => useComplianceGate(address), {
+      initialProps: { address: BLOCKED_ADDRESS },
+      wrapper: getWrapper(),
+    });
+
+    // Start the gated action while wallet A's prefetch is still in flight, then
+    // switch to wallet B before A resolves.
+    const gatePromise = result.current.gate(action);
+    rerender({ address: ADDRESS });
+
+    await act(async () => {
+      deferredA.resolve([getStatus(BLOCKED_ADDRESS, false)]);
+      await gatePromise;
+    });
+
+    // The action belonged to wallet A, which is no longer selected: run nothing.
+    expect(action).not.toHaveBeenCalled();
+    expect(mockShowAccessRestrictedModal).not.toHaveBeenCalled();
+  });
+
+  it('does not show a stale restricted modal when the wallet switches mid-check', async () => {
+    const deferredA = createDeferred<WalletComplianceStatus[]>();
+    mockSubmitRequestToBackground
+      .mockReturnValueOnce(deferredA.promise) // wallet A prefetch (in flight)
+      .mockResolvedValueOnce([getStatus(ADDRESS, false)]); // wallet B prefetch
+    const action = jest.fn();
+    const { result, rerender } = renderHook<
+      { address: string },
+      ReturnType<typeof useComplianceGate>
+    >(({ address }) => useComplianceGate(address), {
+      initialProps: { address: BLOCKED_ADDRESS },
+      wrapper: getWrapper(),
+    });
+
+    const gatePromise = result.current.gate(action);
+    rerender({ address: ADDRESS });
+
+    await act(async () => {
+      // Wallet A resolves blocked, but the user already switched to wallet B.
+      deferredA.resolve([getStatus(BLOCKED_ADDRESS, true)]);
+      await gatePromise;
+    });
+
+    // Wallet A's blocked verdict must not surface a modal for wallet B.
+    expect(mockShowAccessRestrictedModal).not.toHaveBeenCalled();
+    expect(action).not.toHaveBeenCalled();
+  });
 });

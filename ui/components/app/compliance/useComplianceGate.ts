@@ -28,9 +28,13 @@ export function useComplianceGate(address?: AddressInput) {
   const { showAccessRestrictedModal } = useAccessRestrictedModal();
   const isBlocked = isComplianceEnabled && rawIsBlocked;
 
-  // Holds the in-flight prefetch promise so gate() can await it if the user
-  // acts before the prefetch has resolved.
-  const prefetchRef = useRef<Promise<unknown> | null>(null);
+  // Holds the in-flight prefetch (tagged with the address set it belongs to) so
+  // gate() can await it if the user acts before it resolves — and only when it
+  // belongs to the currently selected address set.
+  const prefetchRef = useRef<{
+    addressKey: string;
+    promise: Promise<unknown>;
+  } | null>(null);
 
   // Stores the resolved blocked status from the most recent prefetch.
   // Default false = fail-open: assume not blocked until the API says otherwise.
@@ -41,6 +45,13 @@ export function useComplianceGate(address?: AddressInput) {
   // Guards against an in-flight prefetch for a previous address resolving late
   // and overwriting the result for the current address.
   const requestIdRef = useRef(0);
+
+  // Latest-value refs, assigned during render so they reflect the currently
+  // selected wallet the instant a switch re-renders — before the prefetch
+  // effect runs. gate() reads these to detect a wallet switch that happens
+  // while a compliance check is in flight.
+  const currentAddressKeyRef = useRef(addressKey);
+  currentAddressKeyRef.current = addressKey;
 
   const checkCompliance = useCallback(async () => {
     if (addresses.length === 0) {
@@ -53,6 +64,11 @@ export function useComplianceGate(address?: AddressInput) {
     );
   }, [addresses]);
 
+  // gate() must call the current checkCompliance (bound to the current address
+  // set), never a stale closure copy — its deps are intentionally minimal.
+  const checkComplianceRef = useRef(checkCompliance);
+  checkComplianceRef.current = checkCompliance;
+
   // Prefetch compliance status on mount and whenever the address changes.
   // `checkCompliance` is memoized on `addresses`, so its identity changes
   // exactly when the address set changes — that (not `addresses.length`, which
@@ -60,13 +76,14 @@ export function useComplianceGate(address?: AddressInput) {
   useEffect(() => {
     if (!isComplianceEnabled) {
       prefetchBlockedRef.current = false;
+      prefetchRef.current = null;
       return;
     }
 
     const requestId = requestIdRef.current + 1;
     requestIdRef.current = requestId;
     prefetchBlockedRef.current = false; // reset while in-flight
-    prefetchRef.current = checkCompliance()
+    const promise = checkCompliance()
       .then((results) => {
         if (requestIdRef.current === requestId) {
           prefetchBlockedRef.current =
@@ -78,7 +95,8 @@ export function useComplianceGate(address?: AddressInput) {
           prefetchBlockedRef.current = false; // fail-open on error
         }
       });
-  }, [checkCompliance, isComplianceEnabled]);
+    prefetchRef.current = { addressKey, promise };
+  }, [addressKey, checkCompliance, isComplianceEnabled]);
 
   const gate = useCallback(
     async <ResultValue>(
@@ -88,16 +106,40 @@ export function useComplianceGate(address?: AddressInput) {
         return await action();
       }
 
-      // Await the in-flight prefetch if the user acted before it settled; if it
-      // already resolved this is effectively instant. We deliberately do NOT
-      // re-check here: core's ComplianceController performs no request dedup, so
-      // every check is a real network call, and in the extension that call also
-      // crosses the UI -> background (MV3) boundary (and can wake an evicted
-      // service worker). Trusting the prefetch — mobile's contract — is the
-      // cheapest correct behavior; we fail open if the prefetch rejected.
-      await prefetchRef.current;
+      const gateAddressKey = currentAddressKeyRef.current;
+      const prefetch = prefetchRef.current;
 
-      if (prefetchBlockedRef.current) {
+      let blocked: boolean;
+      if (prefetch && prefetch.addressKey === gateAddressKey) {
+        // Common path: trust the prefetch for the current wallet. Await it in
+        // case the user acted before it settled (instant if already resolved).
+        // We deliberately do NOT re-check: core's ComplianceController performs
+        // no request dedup, so every check is a real network call that also
+        // crosses the UI -> background (MV3) boundary. Trusting the prefetch is
+        // the cheapest correct behavior; it fails open if the prefetch rejected.
+        await prefetch.promise;
+        blocked = prefetchBlockedRef.current;
+      } else {
+        // No prefetch for the current wallet yet (transient window right after a
+        // switch, before the effect runs). Do a one-off check for the current
+        // wallet, failing open on error.
+        let results: WalletComplianceStatus[] | undefined;
+        try {
+          results = await checkComplianceRef.current();
+        } catch {
+          results = undefined;
+        }
+        blocked = results?.some((result) => result.blocked) ?? false;
+      }
+
+      // If the selected wallet changed while the check was in flight, abandon:
+      // the action was initiated under the previous wallet. Run nothing and show
+      // nothing; the user can retry under the new wallet, which has its own check.
+      if (currentAddressKeyRef.current !== gateAddressKey) {
+        return undefined;
+      }
+
+      if (blocked) {
         showAccessRestrictedModal();
         return undefined;
       }
