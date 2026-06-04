@@ -62,9 +62,9 @@ export default function DefiProtocolCell({
       headerLeftDisplay={<AssetCellTitle title={position.title} />}
       headerRightDisplay={
         <SensitiveText
+          className="text-s-body-md @compact:text-s-body-sm"
           isHidden={privacyMode}
           data-testid="defi-list-market-value"
-          className="text-s-body-md @compact:text-s-body-sm"
         >
           {position.marketValue}
         </SensitiveText>

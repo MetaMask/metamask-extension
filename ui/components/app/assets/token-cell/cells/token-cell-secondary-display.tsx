@@ -95,16 +95,16 @@ export const TokenCellSecondaryDisplay = React.memo(
       >
         <SensitiveText
           fontWeight={token.secondary ? FontWeight.Medium : FontWeight.Normal}
+          className={cn(
+            token.secondary ? 'text-s-body-md' : 'text-s-body-sm',
+            '@compact:text-s-body-sm',
+          )}
           textAlign={TextAlign.End}
           data-testid="multichain-token-list-item-secondary-value"
           ellipsis={token.isStakeable}
           isHidden={privacyMode}
           length={SensitiveTextLength.Medium}
           style={secondaryDisplayStyle}
-          className={cn(
-            token.secondary ? 'text-s-body-md' : 'text-s-body-sm',
-            '@compact:text-s-body-sm',
-          )}
         >
           {secondaryDisplayText}
         </SensitiveText>

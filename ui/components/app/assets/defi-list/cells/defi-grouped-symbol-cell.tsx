@@ -40,11 +40,11 @@ export function DeFiSymbolGroup({
   return (
     <SensitiveText
       color={TextColor.textAlternative}
+      className="text-s-body-md @compact:text-s-body-sm"
       textAlign={TextAlign.End}
       data-testid="defi-list-symbol-group"
       isHidden={privacyMode}
       length={SensitiveTextLength.Medium}
-      className="text-s-body-md @compact:text-s-body-sm"
     >
       {symbolGroup}
     </SensitiveText>

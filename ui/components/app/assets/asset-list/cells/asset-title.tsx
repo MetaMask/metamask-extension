@@ -18,9 +18,9 @@ export const AssetCellTitle = ({ title }: AssetCellTitleProps) => {
   return (
     <Text
       fontWeight={FontWeight.Medium}
+      className="text-s-body-md @compact:text-s-body-sm"
       ellipsis
       data-testid="multichain-token-list-item-token-name"
-      className="text-s-body-md @compact:text-s-body-sm"
     >
       {networkTitleOverrides(t as TranslateFunction, { title })}
     </Text>
