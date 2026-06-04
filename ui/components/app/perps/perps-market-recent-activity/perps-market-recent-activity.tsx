@@ -31,7 +31,7 @@ const RecentActivitySkeleton: React.FC = () => (
     className="overflow-hidden rounded-xl"
   >
     {SKELETON_ITEMS.map((i) => (
-      <Skeleton key={i} className="h-[72px] w-full rounded-none" />
+      <Skeleton key={i} className="h-[72px] w-full rounded-none" data-testid="perps-recent-activity-skeleton" />
     ))}
   </Box>
 );
