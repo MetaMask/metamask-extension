@@ -36,7 +36,7 @@ async function main() {
   // Abort individual GitHub API requests that hang instead of letting them
   // stall the whole job until the workflow-level timeout. When a request times
   // out it surfaces as an error that callers already handle gracefully.
-  const REQUEST_TIMEOUT_MS = Number(process.env.REQUEST_TIMEOUT_MS) || 30_000;
+  const REQUEST_TIMEOUT_MS = 30_000;
 
   const github = new Octokit({
     auth: env.GITHUB_TOKEN,
