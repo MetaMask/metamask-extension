@@ -4,6 +4,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import type { Hex } from 'viem';
 import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../constants/bridge';
 import { CHAIN_IDS } from '../../../constants/network';
@@ -21,6 +22,21 @@ import type { Status, TokenAmount } from '../types';
 export type ValueTransfer = NonNullable<
   V1TransactionByHashResponse['valueTransfers']
 >[number];
+
+/**
+ * Looks up the native asset for a chain, returning `undefined` instead of
+ * throwing when the chain is outside the bridge swaps registry
+ *
+ * @param chainId - Hex, numeric, or CAIP chain id.
+ * @returns The native asset metadata, or `undefined` if unsupported.
+ */
+export function getNativeAssetSafe(chainId: string | number) {
+  try {
+    return getNativeAssetForChainId(chainId);
+  } catch {
+    return undefined;
+  }
+}
 
 const resolveAssetId = (
   chainId: CaipChainId,

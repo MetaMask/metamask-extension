@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import React, { ReactChildren } from 'react';
+import React from 'react';
 import mockTestState from '../../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
@@ -16,7 +16,7 @@ const mockMetaMetricsContext = {
   onboardingParentContext: { current: null },
 };
 
-const Container = ({ children }: { children: ReactChildren }) => (
+const Container = ({ children }: { children: React.ReactNode }) => (
   <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
     {children}
   </MetaMetricsContext.Provider>

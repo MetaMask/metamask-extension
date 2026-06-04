@@ -1,10 +1,12 @@
 import type { V1TransactionByHashResponse } from '@metamask/core-backend';
 import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
 import { NATIVE_TOKEN_ADDRESS as zeroAddress } from '../../../constants/transaction';
+import { toAssetId } from '../../asset-utils';
 import { isEqualCaseInsensitive as equalsIgnoreCase } from '../../string-utils';
 import type { ActivityListItem, Status, TokenAmount } from '../types';
-import { supplyMethodIds } from './constants';
+import { supplyMethodIds, withdrawMethodIds, wrapMethodIds } from './constants';
 import {
+  getNativeAssetSafe,
   getTokenMetadataFromKnownToken,
   getTokenAmountFromTransfer,
   withFallbackTokenAssetId,
@@ -57,6 +59,10 @@ export function mapApiEvmTransactions({
     valueTransfers?.some(({ transferType }) => transferType === 'normal');
   const hasSupplyMethodId =
     transaction.methodId && supplyMethodIds.has(transaction.methodId);
+  const hasWithdrawMethodId =
+    transaction.methodId && withdrawMethodIds.has(transaction.methodId);
+  const hasWrapMethodId =
+    transaction.methodId && wrapMethodIds.has(transaction.methodId);
   if (transactionCategory === 'SWAP' || transactionCategory === 'EXCHANGE') {
     if (!receivedTransfer?.symbol) {
       return {
@@ -88,11 +94,11 @@ export function mapApiEvmTransactions({
 
   if (transactionCategory === 'APPROVE') {
     // TODO: Categorize REVOKE in the backend
-    const approveTransfer = sentTransfer ?? receivedTransfer;
-    const approveDirection = receivedTransfer && !sentTransfer ? 'in' : 'out';
-    const approveToken =
-      getToken(approveTransfer, approveDirection) ??
-      getTokenMetadataFromKnownToken(transaction.to, approveDirection, chainId);
+    const direction = receivedTransfer && !sentTransfer ? 'in' : 'out';
+    const assetId = toAssetId(transaction.to, chainId);
+    const token =
+      getTokenMetadataFromKnownToken(transaction.to, direction, chainId) ??
+      (assetId ? { direction, assetId } : undefined);
 
     return {
       type: 'approveSpendingCap',
@@ -102,7 +108,7 @@ export function mapApiEvmTransactions({
       raw: { type: 'apiEvmTransaction', data: transaction },
       data: {
         hash,
-        token: approveToken,
+        token,
       },
     };
   }
@@ -183,6 +189,16 @@ export function mapApiEvmTransactions({
         !equalsIgnoreCase(transaction.from, subjectAddress));
 
     const transfer = isReceive ? receivedTransfer : sentTransfer;
+    const direction = isReceive ? 'in' : 'out';
+    const nativeAsset = getNativeAssetSafe(chainId);
+    const nativeToken =
+      transactionCategory === 'STANDARD' && nativeAsset
+        ? ({
+            ...nativeAsset,
+            amount: transaction.value,
+            direction,
+          } as TokenAmount)
+        : undefined;
 
     // TODO: Handle mUSD converts in the backend
     // Falls back to "send" without a matching local transaction
@@ -196,12 +212,13 @@ export function mapApiEvmTransactions({
       data: {
         from: transfer?.from ?? transaction.from,
         to: transfer?.to ?? transaction.to,
-        token: withFallbackTokenAssetId(
-          getToken(transfer, isReceive ? 'in' : 'out'),
-          transaction.to,
-          transfer?.transferType,
-          chainId,
-        ),
+        token:
+          withFallbackTokenAssetId(
+            getToken(transfer, direction),
+            transaction.to,
+            transfer?.transferType,
+            chainId,
+          ) ?? nativeToken,
         hash,
       },
     };
@@ -238,21 +255,6 @@ export function mapApiEvmTransactions({
     };
   }
 
-  if (transactionCategory === 'WITHDRAW') {
-    return {
-      type: 'lendingWithdrawal',
-      chainId,
-      status,
-      timestamp,
-      raw: { type: 'apiEvmTransaction', data: transaction },
-      data: {
-        hash,
-        sourceToken: getToken(sentTransfer, 'out'),
-        destinationToken: getToken(receivedTransfer, 'in'),
-      },
-    };
-  }
-
   if (transactionCategory === 'BRIDGE_WITHDRAW') {
     return {
       type: 'bridge',
@@ -267,10 +269,56 @@ export function mapApiEvmTransactions({
     };
   }
 
+  // lending withdrawal - applies to Earn features only
+  if (transactionCategory === 'WITHDRAW' && hasWithdrawMethodId) {
+    return {
+      type: 'lendingWithdrawal',
+      chainId,
+      status,
+      timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
+      data: {
+        hash,
+        sourceToken: getToken(sentTransfer, 'out'),
+        destinationToken: getToken(receivedTransfer, 'in'),
+      },
+    };
+  }
+
   // TODO: Categorize Deposit/Stake in the backend
   if (sentTransfer && hasSupplyMethodId) {
     return {
       type: 'lendingDeposit',
+      chainId,
+      status,
+      timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
+      data: {
+        hash,
+        sourceToken: getToken(sentTransfer, 'out'),
+        destinationToken: getToken(receivedTransfer, 'in'),
+      },
+    };
+  }
+
+  // TODO: Not sure if this is specific enough, may need separate category in backend
+  if (receivedTransfer && hasWrapMethodId) {
+    return {
+      type: 'wrap',
+      chainId,
+      status,
+      timestamp,
+      raw: { type: 'apiEvmTransaction', data: transaction },
+      data: {
+        hash,
+        sourceToken: getToken(sentTransfer, 'out'),
+        destinationToken: getToken(receivedTransfer, 'in'),
+      },
+    };
+  }
+  if (transactionCategory === 'UNWRAP') {
+    return {
+      type: 'unwrap',
       chainId,
       status,
       timestamp,
@@ -304,40 +352,6 @@ export function mapApiEvmTransactions({
     };
   }
 
-  // TODO: Not sure if this is specific enough, may need separate category in backend
-  if (
-    transactionCategory === 'DEPOSIT' &&
-    receivedTransfer &&
-    !hasSupplyMethodId
-  ) {
-    return {
-      type: 'wrap',
-      chainId,
-      status,
-      timestamp,
-      raw: { type: 'apiEvmTransaction', data: transaction },
-      data: {
-        hash,
-        sourceToken: getToken(sentTransfer, 'out'),
-        destinationToken: getToken(receivedTransfer, 'in'),
-      },
-    };
-  }
-  if (transactionCategory === 'UNWRAP') {
-    return {
-      type: 'unwrap',
-      chainId,
-      status,
-      timestamp,
-      raw: { type: 'apiEvmTransaction', data: transaction },
-      data: {
-        hash,
-        sourceToken: getToken(sentTransfer, 'out'),
-        destinationToken: getToken(receivedTransfer, 'in'),
-      },
-    };
-  }
-
   if (transactionCategory === 'DEPOSIT') {
     return {
       type: 'deposit',
@@ -351,6 +365,15 @@ export function mapApiEvmTransactions({
       },
     };
   }
+
+  const contractInteractionTransfer = sentTransfer ?? receivedTransfer;
+  const contractInteractionToken = getToken(
+    contractInteractionTransfer,
+    sentTransfer ? 'out' : 'in',
+  );
+  const contractInteractionTokenWithAmount = contractInteractionToken?.amount
+    ? contractInteractionToken
+    : undefined;
 
   return {
     type: 'contractInteraction',
@@ -366,6 +389,9 @@ export function mapApiEvmTransactions({
       transactionCategory,
       transactionProtocol: transaction.transactionProtocol,
       transactionType: transaction.transactionType,
+      ...(contractInteractionTokenWithAmount
+        ? { token: contractInteractionTokenWithAmount }
+        : {}),
     },
   };
 }
