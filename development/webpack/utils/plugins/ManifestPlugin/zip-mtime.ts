@@ -12,24 +12,6 @@ export const ZIP_MTIME_EXCLUSIVE_MAXIMUM = Date.UTC(2100, 0, 1);
  */
 export const DEFAULT_ZIP_MTIME = Date.UTC(2016, 6, 14);
 
-export const ZIP_MTIME_DESCRIPTION =
-  'Modification time for all files in the zip, specified as a UNIX timestamp (milliseconds since 1 January 1970 UTC). This property sets a uniform modification time for the contents of the zip file. Note: Zip files use FAT file timestamps, which have a limited range. Therefore, datetimes before 1980-01-01 (timestamp value of 315532800000) are invalid in standard Zip files, and datetimes on or after 2100-01-01 (timestamp value of 4102444800000) are also invalid. Values must fall within this range.';
-
-/**
- * Returns the shared JSON schema for zip entry mtime values.
- *
- * @returns The zip mtime JSON schema fragment.
- */
-export function getZipMtimeSchema() {
-  return {
-    description: ZIP_MTIME_DESCRIPTION,
-    type: 'number',
-    minimum: ZIP_MTIME_MINIMUM,
-    exclusiveMaximum: ZIP_MTIME_EXCLUSIVE_MAXIMUM,
-    default: DEFAULT_ZIP_MTIME,
-  } as const;
-}
-
 /**
  * Checks whether the given value can be used as a standard zip entry mtime.
  *
