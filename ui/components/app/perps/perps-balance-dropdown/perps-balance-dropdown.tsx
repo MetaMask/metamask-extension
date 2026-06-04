@@ -248,9 +248,7 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
             fontWeight={FontWeight.Medium}
             color={isProfit ? TextColor.SuccessDefault : TextColor.ErrorDefault}
           >
-            {privacyMode
-              ? HIDDEN_BALANCE
-              : `${formattedPnl} (${formattedRoe})`}
+            {privacyMode ? HIDDEN_BALANCE : `${formattedPnl} (${formattedRoe})`}
           </Text>
         </Box>
       )}

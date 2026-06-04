@@ -97,9 +97,7 @@ describe('PerpsMarketBalanceActions', () => {
       expect(
         screen.getByTestId('perps-balance-actions-available'),
       ).toHaveTextContent(/available/iu);
-      expect(
-        screen.queryByText(/\$[\d,]/u),
-      ).not.toBeInTheDocument();
+      expect(screen.queryByText(/\$[\d,]/u)).not.toBeInTheDocument();
       expect(
         screen.getByTestId('perps-balance-actions-add-funds'),
       ).toBeInTheDocument();
