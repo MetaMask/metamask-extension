@@ -1,6 +1,6 @@
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
-import { Skeleton } from '../../../../../../components/component-library/skeleton';
 import React from 'react';
+import { Skeleton } from '../../../../../../components/component-library/skeleton';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 
 const ShieldSubscriptionApproveLoader = () => {
