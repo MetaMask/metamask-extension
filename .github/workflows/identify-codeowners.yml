@@ -28,7 +28,6 @@ jobs:
     environment: pr-comment
     steps:
       - name: Get token
-        if: ${{ steps.is-cross-repo.outputs.IS_CROSS_REPO_PR == 'false' }}
         id: token
         uses: MetaMask/github-tools/.github/actions/get-token@v1
         with:
