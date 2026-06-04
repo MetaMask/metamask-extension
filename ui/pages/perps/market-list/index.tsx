@@ -16,8 +16,14 @@ import {
   TextColor,
   ButtonBase,
 } from '@metamask/design-system-react';
-import type { PerpsMarketData, MarketType } from '@metamask/perps-controller';
-import { HIP3_ASSET_MARKET_TYPES, MarketCategory } from '@metamask/perps-controller';
+import {
+  HIP3_ASSET_MARKET_TYPES,
+  MARKET_CATEGORIES,
+  MarketCategory,
+  type MarketType,
+  type MarketTypeFilter,
+  type PerpsMarketData,
+} from '@metamask/perps-controller';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
@@ -45,10 +51,6 @@ import {
   type SortField,
   type SortDirection,
 } from '../utils/sortMarkets';
-import {
-  VALID_MARKET_FILTERS,
-  type MarketFilter,
-} from '../../../../shared/constants/perps';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { usePerpsEventTracking } from '../../../hooks/perps';
 import { getTradeableBalance } from '../../../hooks/perps/getTradeableBalance';
@@ -109,7 +111,7 @@ const isUncategorizedHip3Market = (
  */
 const filterByType = (
   markets: PerpsMarketData[],
-  filter: MarketFilter,
+  filter: MarketTypeFilter,
   allowedHip3Sources: Set<string>,
 ): PerpsMarketData[] => {
   switch (filter) {
@@ -176,14 +178,17 @@ export const MarketListView = () => {
     usePerpsLiveMarketListData();
   const { account } = usePerpsLiveAccount();
 
-  // Read initial filter from URL params (set by deeplink)
-  const initialFilter = useMemo<MarketFilter>(() => {
+  // Read initial filter from URL params (set by deeplink).
+  // Validate against MARKET_CATEGORIES (the 7 data-model categories) plus 'all' and 'new' sentinels.
+  const initialFilter = useMemo<MarketTypeFilter>(() => {
     const filterParam = searchParams.get('filter');
     if (
       filterParam &&
-      VALID_MARKET_FILTERS.includes(filterParam as MarketFilter)
+      (filterParam === 'all' ||
+        filterParam === 'new' ||
+        (MARKET_CATEGORIES as readonly string[]).includes(filterParam))
     ) {
-      return filterParam as MarketFilter;
+      return filterParam as MarketTypeFilter;
     }
     return 'all';
   }, [searchParams]);
@@ -193,7 +198,7 @@ export const MarketListView = () => {
   const [sortField, setSortField] = useState<SortField>('volume');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [selectedFilter, setSelectedFilter] =
-    useState<MarketFilter>(initialFilter);
+    useState<MarketTypeFilter>(initialFilter);
 
   // Use stream loading state
   const isLoading = marketsLoading;
@@ -272,7 +277,7 @@ export const MarketListView = () => {
   );
 
   const handleFilterChange = useCallback(
-    (filter: MarketFilter) => {
+    (filter: MarketTypeFilter) => {
       track(MetaMetricsEventName.PerpsUiInteraction, {
         [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
           PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,

@@ -86,10 +86,9 @@ export const MARKET_SORTING_CONFIG = {
  *
  * The list of supported sources is controlled by the `perpsHip3AllowlistMarkets`
  * feature flag. Use the `getHip3AllowedSourcesSet` selector to get the current
- * allowed sources, or the `useHip3MarketFilter` hook for filtering utilities.
+ * allowed sources.
  *
  * @see ui/selectors/perps/feature-flags.ts for the selector
- * @see ui/hooks/perps/useHip3MarketFilter.ts for the hook
  */
 export const HIP3_MARKET_CONFIG = {
   /**

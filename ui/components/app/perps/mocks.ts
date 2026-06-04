@@ -161,7 +161,7 @@ export const mockPositions: Position[] = [
     takeProfitCount: 0,
     stopLossCount: 0,
   },
-  // HIP-3 Equity positions (stocks)
+  // HIP-3 Stock positions
   {
     symbol: 'xyz:TSLA',
     size: '10.0',
@@ -363,7 +363,7 @@ export const mockOrders: Order[] = [
     timestamp: Date.now() - 10800000, // 3 hours ago
     lastUpdated: Date.now() - 10800000,
   },
-  // HIP-3 Equity orders (stocks)
+  // HIP-3 Stock orders
   {
     orderId: 'order-007',
     symbol: 'xyz:AAPL',

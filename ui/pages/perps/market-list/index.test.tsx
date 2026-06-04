@@ -21,6 +21,9 @@ jest.mock('@metamask/perps-controller', () => ({
     'xyz:CL': 'commodity',
     'xyz:EUR': 'forex',
     'xyz:JPY': 'forex',
+    'xyz:SPACEX': 'pre-ipo',
+    'xyz:SP500': 'index',
+    'xyz:SPY': 'etf',
   },
   MarketCategory: {
     CryptoCurrency: 'crypto',
@@ -31,6 +34,15 @@ jest.mock('@metamask/perps-controller', () => ({
     Commodity: 'commodity',
     Forex: 'forex',
   },
+  MARKET_CATEGORIES: [
+    'crypto',
+    'stocks',
+    'pre-ipo',
+    'indices',
+    'etfs',
+    'commodities',
+    'forex',
+  ],
 }));
 
 // eslint-disable-next-line import-x/first
@@ -49,6 +61,75 @@ jest.mock('../../../hooks/perps/stream', () => ({
   usePerpsLiveAccount: () => ({ account: null }),
 }));
 
+const mockExtraHip3Markets = [
+  {
+    symbol: 'xyz:EUR',
+    name: 'EUR/USD',
+    maxLeverage: '20x',
+    price: '$1.085',
+    change24h: '+$0.002',
+    change24hPercent: '+0.18%',
+    volume: '$50M',
+    openInterest: '$200M',
+    nextFundingTime: Date.now() + 3600000,
+    fundingIntervalHours: 8,
+    fundingRate: 0.00005,
+    marketSource: 'xyz',
+    marketType: 'forex',
+  },
+  {
+    symbol: 'xyz:SPACEX',
+    name: 'SpaceX',
+    maxLeverage: '5x',
+    price: '$250.00',
+    change24h: '+$10.00',
+    change24hPercent: '+4.17%',
+    volume: '$30M',
+    openInterest: '$100M',
+    nextFundingTime: Date.now() + 3600000,
+    fundingIntervalHours: 8,
+    fundingRate: 0.0002,
+    marketSource: 'xyz',
+    marketType: 'pre-ipo',
+  },
+  {
+    symbol: 'xyz:SP500',
+    name: 'S&P 500',
+    maxLeverage: '10x',
+    price: '$5,200.00',
+    change24h: '+$25.00',
+    change24hPercent: '+0.48%',
+    volume: '$60M',
+    openInterest: '$300M',
+    nextFundingTime: Date.now() + 3600000,
+    fundingIntervalHours: 8,
+    fundingRate: 0.00007,
+    marketSource: 'xyz',
+    marketType: 'index',
+  },
+  {
+    symbol: 'xyz:SPY',
+    name: 'SPDR S&P 500 ETF',
+    maxLeverage: '10x',
+    price: '$520.00',
+    change24h: '+$2.50',
+    change24hPercent: '+0.48%',
+    volume: '$40M',
+    openInterest: '$150M',
+    nextFundingTime: Date.now() + 3600000,
+    fundingIntervalHours: 8,
+    fundingRate: 0.00006,
+    marketSource: 'xyz',
+    marketType: 'etf',
+  },
+];
+
+const allMockMarkets = [
+  ...mockCryptoMarkets,
+  ...mockHip3Markets,
+  ...mockExtraHip3Markets,
+];
+
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,
@@ -63,9 +144,9 @@ describe('MarketListView', () => {
     jest.clearAllMocks();
     // Default mock returns loaded state with markets
     mockUsePerpsLiveMarketListData.mockReturnValue({
-      markets: [...mockCryptoMarkets, ...mockHip3Markets],
+      markets: allMockMarkets,
       cryptoMarkets: mockCryptoMarkets,
-      hip3Markets: mockHip3Markets,
+      hip3Markets: [...mockHip3Markets, ...mockExtraHip3Markets],
       isInitialLoading: false,
       error: null,
       refresh: jest.fn(),
@@ -313,6 +394,78 @@ describe('MarketListView', () => {
         expect(
           screen.queryByTestId('market-row-xyz-TSLA'),
         ).not.toBeInTheDocument();
+      });
+    });
+
+    it('shows pre-ipo markets on Pre-IPO tab', async () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      const filterButton = screen.getByTestId('filter-select-button');
+      fireEvent.click(filterButton);
+      await waitFor(() => screen.getByTestId('filter-select-menu'));
+      fireEvent.click(screen.getByTestId('filter-select-option-pre-ipo'));
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('market-row-xyz-SPACEX'),
+        ).toBeInTheDocument();
+        expect(
+          screen.queryByTestId('market-row-xyz-TSLA'),
+        ).not.toBeInTheDocument();
+        expect(screen.queryByTestId('market-row-BTC')).not.toBeInTheDocument();
+      });
+    });
+
+    it('shows index markets on Indices tab', async () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      const filterButton = screen.getByTestId('filter-select-button');
+      fireEvent.click(filterButton);
+      await waitFor(() => screen.getByTestId('filter-select-menu'));
+      fireEvent.click(screen.getByTestId('filter-select-option-indices'));
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('market-row-xyz-SP500'),
+        ).toBeInTheDocument();
+        expect(
+          screen.queryByTestId('market-row-xyz-TSLA'),
+        ).not.toBeInTheDocument();
+        expect(screen.queryByTestId('market-row-BTC')).not.toBeInTheDocument();
+      });
+    });
+
+    it('shows etf markets on ETFs tab', async () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      const filterButton = screen.getByTestId('filter-select-button');
+      fireEvent.click(filterButton);
+      await waitFor(() => screen.getByTestId('filter-select-menu'));
+      fireEvent.click(screen.getByTestId('filter-select-option-etfs'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('market-row-xyz-SPY')).toBeInTheDocument();
+        expect(
+          screen.queryByTestId('market-row-xyz-TSLA'),
+        ).not.toBeInTheDocument();
+        expect(screen.queryByTestId('market-row-BTC')).not.toBeInTheDocument();
+      });
+    });
+
+    it('shows forex markets on Forex tab', async () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      const filterButton = screen.getByTestId('filter-select-button');
+      fireEvent.click(filterButton);
+      await waitFor(() => screen.getByTestId('filter-select-menu'));
+      fireEvent.click(screen.getByTestId('filter-select-option-forex'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('market-row-xyz-EUR')).toBeInTheDocument();
+        expect(
+          screen.queryByTestId('market-row-xyz-TSLA'),
+        ).not.toBeInTheDocument();
+        expect(screen.queryByTestId('market-row-BTC')).not.toBeInTheDocument();
       });
     });
   });

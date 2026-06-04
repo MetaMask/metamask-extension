@@ -102,7 +102,17 @@ describe('perpsRoute', () => {
     });
 
     (
-      ['all', 'crypto', 'stocks', 'commodities', 'forex', 'new'] as const
+      [
+        'all',
+        'crypto',
+        'stocks',
+        'pre-ipo',
+        'indices',
+        'etfs',
+        'commodities',
+        'forex',
+        'new',
+      ] as const
     ).forEach((tab) => {
       it(`maps tab=${tab} to filter=${tab}`, () => {
         const result = perps.handler(

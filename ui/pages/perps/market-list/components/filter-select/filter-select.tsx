@@ -1,13 +1,13 @@
 import React, { useMemo } from 'react';
-import type { MarketFilter } from '../../../../../../shared/constants/perps';
+import type { MarketTypeFilter } from '@metamask/perps-controller';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Dropdown, type DropdownOption } from '../dropdown';
 
 export type FilterSelectProps = {
   /** Currently selected filter */
-  value: MarketFilter;
+  value: MarketTypeFilter;
   /** Callback when filter changes */
-  onChange: (filter: MarketFilter) => void;
+  onChange: (filter: MarketTypeFilter) => void;
   /** Whether to show the "New" filter option (only shown if there are uncategorized assets) */
   showNewFilter?: boolean;
 };
@@ -27,8 +27,8 @@ export const FilterSelect = ({
 }: FilterSelectProps) => {
   const t = useI18nContext();
 
-  const options: DropdownOption<MarketFilter>[] = useMemo(() => {
-    const baseOptions: DropdownOption<MarketFilter>[] = [
+  const options: DropdownOption<MarketTypeFilter>[] = useMemo(() => {
+    const baseOptions: DropdownOption<MarketTypeFilter>[] = [
       { id: 'all', label: t('perpsFilterAll') },
       { id: 'crypto', label: t('perpsFilterCrypto') },
       { id: 'stocks', label: t('perpsFilterStocks') },
