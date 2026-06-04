@@ -437,11 +437,15 @@ export function mapLocalTransaction(
           ({ isDecrease, standard }) =>
             !isDecrease && isNftStandard(standard),
         );
+      let hasNativeValue = false;
 
-      if (
-        incomingNftBalanceChange &&
-        initialTransaction.simulationData?.nativeBalanceChange?.isDecrease
-      ) {
+      try {
+        hasNativeValue = BigInt(initialTransaction.txParams.value ?? '0') > 0n;
+      } catch {
+        hasNativeValue = false;
+      }
+
+      if (incomingNftBalanceChange && hasNativeValue) {
         return {
           type: 'nftBuy',
           chainId,
