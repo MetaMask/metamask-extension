@@ -156,6 +156,8 @@ jobs:
 
       - name: Checkout pull request
         if: ${{ env.VALIDATION_FAILED == 'true' }}
+        env:
+          GH_TOKEN: ${{ steps.token.outputs.token }}
         run: gh pr checkout "${PR_NUMBER}"
 
       - name: Download policy diffs from CI
