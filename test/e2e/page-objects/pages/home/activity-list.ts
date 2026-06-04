@@ -1,21 +1,15 @@
 import { strict as assert } from 'assert';
-import { Driver } from '../../../webdriver/driver';
+import HomePage from './homepage';
 
-class ActivityListPage {
-  private readonly driver: Driver;
-
+class ActivityListPage extends HomePage {
   private readonly activityListAction =
     '[data-testid="activity-list-item-action"]';
-
-  private readonly activityTab =
-    '[data-testid="account-overview__activity-tab"]';
 
   private readonly baseFeeLabel = {
     xpath: "//div[contains(text(), 'Base fee')]",
   };
 
-  private readonly bridgeTransactionCompleted =
-    '.transaction-status-label--confirmed';
+  private readonly bridgeTransactionCompleted = '[data-tx-status="confirmed"]';
 
   private readonly bridgeTransactionPending =
     '.bridge-transaction-details__segment--pending';
@@ -27,20 +21,14 @@ class ActivityListPage {
 
   private readonly completedTransactions = '[data-testid="activity-list-item"]';
 
-  private readonly confirmedTransactions = {
-    text: 'Confirmed',
-    css: '.transaction-status-label--confirmed',
-  };
+  private readonly confirmedTransactions = '[data-tx-status="confirmed"]';
 
   private readonly copyTransactionHashButton = {
     text: 'Copy transaction ID',
     tag: 'button',
   };
 
-  private readonly failedTransactions = {
-    text: 'Failed',
-    css: '.transaction-status-label--failed',
-  };
+  private readonly failedTransactions = '[data-tx-status="failed"]';
 
   private readonly feeValues = '.currency-display-component__text';
 
@@ -48,7 +36,7 @@ class ActivityListPage {
     '[data-testid="transaction-breakdown__gas-price"]';
 
   private readonly pendingTransactionItems =
-    '.transaction-status-label--pending';
+    '[data-tx-status="submitted"], [data-tx-status="approved"], [data-tx-status="unapproved"], [data-tx-status="pending"]';
 
   private readonly speedupInlineButton = '[data-testid="speed-up-button"]';
 
@@ -72,15 +60,6 @@ class ActivityListPage {
     text: 'View on block explorer',
     tag: 'button',
   };
-
-  constructor(driver: Driver) {
-    this.driver = driver;
-  }
-
-  async openActivityTab(): Promise<void> {
-    console.log('Opening activity tab');
-    await this.driver.clickElement(this.activityTab);
-  }
 
   /**
    * This function clicks on the activity at the specified index.
@@ -534,6 +513,9 @@ class ActivityListPage {
   }
 
   async clickCancelTransaction() {
+    // Ensure the Speed Up button is present before canceling
+    // to avoid component re-render, resulting in auto-closing the modal
+    await this.checkSpeedUpInlineButtonIsPresent();
     await this.driver.clickElement(this.cancelTransactionButton);
   }
 
@@ -551,7 +533,7 @@ class ActivityListPage {
   async checkWaitForTransactionStatus(
     status: 'confirmed' | 'cancelled' | 'pending',
   ) {
-    await this.driver.waitForSelector(`.transaction-status-label--${status}`, {
+    await this.driver.waitForSelector(`[data-tx-status="${status}"]`, {
       timeout: 5000,
     });
   }
@@ -596,7 +578,7 @@ class ActivityListPage {
     swapTo: string;
     amount: string;
   }): Promise<void> {
-    await this.openActivityTab();
+    await this.goToActivityList();
     await this.driver.waitForSelector(this.completedTransactionItems);
 
     const swapLabel = `Swap ${options.swapFrom} to ${options.swapTo}`;

@@ -194,6 +194,7 @@ describe('./utils/config.ts', () => {
       rcVars.SEGMENT_PROD_WRITE_KEY = 'SEGMENT_PROD_WRITE_KEY';
       rcVars.APPLE_PROD_CLIENT_ID = 'APPLE_PROD_CLIENT_ID';
       rcVars.GOOGLE_PROD_CLIENT_ID = 'GOOGLE_PROD_CLIENT_ID';
+      rcVars.TELEGRAM_PROD_CLIENT_ID = 'TELEGRAM_PROD_CLIENT_ID';
 
       const buildTypes = loadBuildTypesConfig();
       const { args } = parseArgv(

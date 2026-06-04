@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -6,11 +6,15 @@ import {
   ONBOARDING_UNLOCK_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
+  getAccountTypeForOnboardingMetrics,
   getFirstTimeFlowType,
   getSocialLoginEmail,
   getSocialLoginType,
 } from '../../../selectors';
-import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import {
+  AuthConnection,
+  FirstTimeFlowType,
+} from '../../../../shared/constants/onboarding';
 import {
   forceUpdateMetamaskState,
   resetOnboarding,
@@ -19,7 +23,6 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-  MetaMetricsEventAccountType,
 } from '../../../../shared/constants/metametrics';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { AccountStatusLayout } from '../account-status-layout';
@@ -32,12 +35,27 @@ export default function AccountExist() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const userSocialLoginEmail = useSelector(getSocialLoginEmail);
   const socialLoginType = useSelector(getSocialLoginType);
+  const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
   const {
     trackEvent,
     bufferedTrace,
     bufferedEndTrace,
     onboardingParentContext,
   } = useContext(MetaMetricsContext);
+
+  const descriptionKey = useMemo(() => {
+    if (socialLoginType === AuthConnection.Telegram) {
+      return 'accountAlreadyExistsLoginDescriptionTelegram';
+    }
+    return 'accountAlreadyExistsLoginDescription';
+  }, [socialLoginType]);
+
+  const descriptionInterpolation = useMemo(() => {
+    if (socialLoginType === AuthConnection.Telegram) {
+      return [socialLoginType];
+    }
+    return [userSocialLoginEmail || '-'];
+  }, [socialLoginType, userSocialLoginEmail]);
 
   const onLoginWithDifferentMethod = async (
     e?: React.MouseEvent<HTMLButtonElement>,
@@ -55,7 +73,7 @@ export default function AccountExist() {
       properties: {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: `${MetaMetricsEventAccountType.Imported}_${socialLoginType}`,
+        account_type: accountTypeForMetrics,
       },
     });
     bufferedTrace?.({
@@ -101,8 +119,8 @@ export default function AccountExist() {
     <AccountStatusLayout
       dataTestId="account-exist"
       titleKey="accountAlreadyExistsTitle"
-      descriptionKey="accountAlreadyExistsLoginDescription"
-      descriptionInterpolation={[userSocialLoginEmail || '-']}
+      descriptionKey={descriptionKey}
+      descriptionInterpolation={descriptionInterpolation}
       primaryButtonTextKey="accountAlreadyExistsLogin"
       onPrimaryButtonClick={onDone}
       secondaryButtonTextKey="useDifferentLoginMethod"

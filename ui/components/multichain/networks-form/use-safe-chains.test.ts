@@ -1,6 +1,7 @@
 import * as FetchWithCacheModule from '../../../../shared/lib/fetch-with-cache';
 import { renderHookWithProviderTyped } from '../../../../test/lib/render-helpers-navigate';
 import {
+  resetSafeChainsCacheForTesting,
   rpcIdentifierUtility,
   SafeChain,
   useSafeChains,
@@ -94,6 +95,7 @@ describe('rpcIdentifierUtility', () => {
 describe('useSafeChains', () => {
   beforeEach(() => {
     jest.resetAllMocks();
+    resetSafeChainsCacheForTesting();
   });
 
   const arrange = () => {
@@ -139,6 +141,22 @@ describe('useSafeChains', () => {
 
     await waitFor(() => expect(result.current.safeChains).toHaveLength(1));
     expect(mockFetchWithCache).toHaveBeenCalled();
+  });
+
+  it('reuses cached safe chains across hook mounts', async () => {
+    const { result, mockFetchWithCache, mockState, unmount, waitFor } =
+      arrangeAct();
+
+    await waitFor(() => expect(result.current.safeChains).toHaveLength(1));
+    unmount();
+
+    const secondHook = renderHookWithProviderTyped(
+      () => useSafeChains(),
+      mockState,
+    );
+
+    expect(secondHook.result.current.safeChains).toHaveLength(1);
+    expect(mockFetchWithCache).toHaveBeenCalledTimes(1);
   });
 
   it('does not fetch safe chains when useSafeChainsListValidation is disabled', async () => {

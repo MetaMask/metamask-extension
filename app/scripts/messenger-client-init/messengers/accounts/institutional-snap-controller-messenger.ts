@@ -1,28 +1,10 @@
-import { AccountsControllerGetAccountByAddressAction } from '@metamask/accounts-controller';
-import { Messenger } from '@metamask/messenger';
-import { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
-import { TransactionControllerUpdateCustodialTransactionAction } from '@metamask/transaction-controller';
-
-import { InstitutionalSnapControllerMethodActions } from '../../../controllers/institutional-snap/InstitutionalSnapController-method-action-types';
+import {
+  Messenger,
+  type MessengerActions,
+  type MessengerEvents,
+} from '@metamask/messenger';
 import { RootMessenger } from '../../../lib/messenger';
-
-export type InstitutionalSnapRequestSearchParameters = {
-  from: string;
-  to: string;
-  value: string;
-  data: string;
-  chainId: string;
-};
-
-type Actions =
-  | SnapControllerHandleRequestAction
-  | AccountsControllerGetAccountByAddressAction
-  | TransactionControllerUpdateCustodialTransactionAction
-  | InstitutionalSnapControllerMethodActions;
-
-export type InstitutionalSnapControllerMessenger = ReturnType<
-  typeof getInstitutionalSnapControllerMessenger
->;
+import type { InstitutionalSnapControllerMessenger } from '../../../controllers/institutional-snap/InstitutionalSnapController';
 
 /**
  * Get a restricted controller messenger for the rate limit controller. This is
@@ -33,17 +15,16 @@ export type InstitutionalSnapControllerMessenger = ReturnType<
  * @returns The controller messenger.
  */
 export function getInstitutionalSnapControllerMessenger(
-  messenger: RootMessenger<Actions, never>,
+  messenger: RootMessenger<
+    MessengerActions<InstitutionalSnapControllerMessenger>,
+    MessengerEvents<InstitutionalSnapControllerMessenger>
+  >,
 ) {
-  const institutionalSnapControllerMessenger = new Messenger<
-    'InstitutionalSnapController',
-    Actions,
-    never,
-    typeof messenger
-  >({
-    namespace: 'InstitutionalSnapController',
-    parent: messenger,
-  });
+  const institutionalSnapControllerMessenger: InstitutionalSnapControllerMessenger =
+    new Messenger({
+      namespace: 'InstitutionalSnapController',
+      parent: messenger,
+    });
   messenger.delegate({
     messenger: institutionalSnapControllerMessenger,
     actions: [

@@ -43,12 +43,12 @@ type PermitSimulationValueDisplayParams = {
   debit?: boolean;
 };
 
-const NativeValueDisplay: React.FC<PermitSimulationValueDisplayParams> = ({
+const NativeValueDisplay = ({
   chainId,
   value,
   credit,
   debit,
-}) => {
+}: PermitSimulationValueDisplayParams) => {
   const conversionRate = useSelector((state) =>
     selectConversionRateByChainId(state, chainId),
   );

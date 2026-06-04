@@ -1,9 +1,11 @@
-import { NameController } from '@metamask/name-controller';
+import {
+  NameController,
+  NameControllerMessenger,
+} from '@metamask/name-controller';
 import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
   getNameControllerMessenger,
-  NameControllerMessenger,
   getNameControllerInitMessenger,
   NameControllerInitMessenger,
 } from '../messengers';

@@ -9,6 +9,7 @@ import * as en from '../../app/_locales/en/messages.json';
 import { setupInitialStore, connectToBackground } from '../../ui';
 import Root from '../../ui/pages';
 
+/** @type {import('react').FC<{ currentLocale?: string; current?: object; en?: object; children?: import('react').ReactNode }>} */
 export const I18nProvider = (props) => {
   const { currentLocale, current, en: eng } = props;
 

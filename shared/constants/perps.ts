@@ -1,4 +1,15 @@
 /**
+ * Fallback fee rates used when the perpsCalculateFees RPC call fails or times
+ * out. Values match HyperLiquid's base taker rate (0.00045) plus MetaMask
+ * builder fee (0.001).
+ */
+export const PERPS_FALLBACK_FEE_RATES = {
+  feeRate: 0.00145,
+  protocolFeeRate: 0.00045,
+  metamaskFeeRate: 0.001,
+} as const;
+
+/**
  * i18n keys referenced from Perps tests via `enLocale`. Quoted literals are picked
  * up by `yarn verify-locales` (development/verify-locale-strings.js).
  */

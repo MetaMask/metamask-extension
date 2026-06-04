@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 import type { NetworkConfiguration } from '@metamask/network-controller';
@@ -8,7 +8,7 @@ import mockState from '../../../../../../test/data/mock-state.json';
 import * as actions from '../../../../../store/actions';
 import { setBackgroundConnection } from '../../../../../store/background-connection';
 import {
-  SECURITY_ROUTE,
+  ASSETS_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
 } from '../../../../../helpers/constants/routes';
 import AssetListControlBar from './asset-list-control-bar';
@@ -190,7 +190,9 @@ describe('NFTs options', () => {
     expect(autodetectButton).toBeInTheDocument();
 
     fireEvent.click(autodetectButton);
-    expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      `${ASSETS_ROUTE}#autodetect-tokens`,
+    );
   });
 
   it('shows Manage tokens instead of Import tokens when the token management feature flag is enabled', async () => {
@@ -245,5 +247,25 @@ describe('NFTs options', () => {
       'Import tokens',
     );
     expect(queryByTestId('manageTokens__button')).not.toBeInTheDocument();
+  });
+
+  it('calls onNetworkSelect with CAIP IDs when one network is enabled', async () => {
+    const onNetworkSelect = jest.fn();
+    const state = createMockState();
+    state.metamask.enabledNetworkMap = {
+      eip155: {
+        '0x1': true,
+      },
+    };
+    const store = configureMockStore([thunk])(state);
+
+    renderWithProvider(
+      <AssetListControlBar onNetworkSelect={onNetworkSelect} />,
+      store,
+    );
+
+    await waitFor(() =>
+      expect(onNetworkSelect).toHaveBeenCalledWith(['eip155:1']),
+    );
   });
 });

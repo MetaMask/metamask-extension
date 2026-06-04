@@ -31,13 +31,13 @@ export type EditMarginExpandableProps = {
  * @param options0.isExpanded
  * @param options0.onToggle
  */
-export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
+export const EditMarginExpandable = ({
   position,
   account,
   currentPrice,
   isExpanded,
   onToggle,
-}) => {
+}: EditMarginExpandableProps) => {
   const t = useI18nContext();
   const [marginMode, setMarginMode] = useState<'add' | 'remove'>('add');
   const [isSaving, setIsSaving] = useState(false);
