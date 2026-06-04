@@ -1,0 +1,176 @@
+test/agents/visual-testing/prompts/system.md
+  s_7a5deea35b4c0d::t_e97710321e9b14 1-2,4-6
+  h_d6a04d82b61d5e 3,7-10
+test/agents/visual-testing/artifacts/summary.ts
+  s_7a5deea35b4c0d::t_889321027d9784 1,3-35,37-77,79-94,97-98,101,113-126
+  s_12cd51de488d84::t_52a231bdbf39cd 110-112
+test/agents/visual-testing/types.ts
+  s_7a5deea35b4c0d::t_8b3c883bc41e33 1-23,25-34,36-61,63-76,79-90
+  s_12cd51de488d84::t_0626f0be6257b6 35
+test/agents/visual-testing/tsconfig.json
+  s_7a5deea35b4c0d::t_c75eaa90367798 1-9
+test/agents/visual-testing/runner/teardown.ts
+  s_7a5deea35b4c0d::t_a484440559dd00 1-23
+test/agents/visual-testing/scoring/judge-prompt.md
+  s_7a5deea35b4c0d::t_d2a9729a7dbabc 1-50
+test/agents/visual-testing/runner/setup.ts
+  s_7a5deea35b4c0d::t_27d7be224d8d3e 1-5,7-39,41-44,47-48,54,56-59,66-90
+  h_d6a04d82b61d5e 6,45-46,49,63-65
+  s_1e49f8f50255a7::t_596cf41fef5ec8 40,50-53,60-62
+  s_7a5deea35b4c0d::t_aa6c2b43833477 55
+test/agents/visual-testing/prompts/load-prompt.ts
+  s_7a5deea35b4c0d::t_a2c13ff7173666 1-26
+test/agents/visual-testing/config/schema.ts
+  s_7a5deea35b4c0d::t_587549e3b975f4 1-29,32-35
+test/agents/visual-testing/runner/assertions.ts
+  s_7a5deea35b4c0d::t_acdf5ed44d19f4 1-16,28-36,38-42,44-73,75
+  s_bfd361c56aec76::t_5b8d4b3f2adb22 17-18,21-23
+test/agents/visual-testing/runner/batch-runner.ts
+  s_7a5deea35b4c0d::t_18dae8ed26ce34 1,4,6-8,54-66,68-81
+  s_bfd361c56aec76::t_6db8f95dba7b92 11,33-35
+test/agents/visual-testing/scoring/message-counter.ts
+  s_6249f933af5293::t_c03fd30fd162be 1,6,13-18,27-28,31
+  s_7a5deea35b4c0d::t_a7a1bc11220259 2-5,7-12,19-26,29-30,32-38
+test/agents/visual-testing/scenarios/types.ts
+  s_7a5deea35b4c0d::t_d11345535fce35 1-2,7-13,15-18
+test/agents/visual-testing/cli.ts
+  s_a89786aaf92b03::t_3cb7e686ad34a7 1,4,12-14
+  s_7a5deea35b4c0d::t_d64a214ce9167c 2,6,10,16,22-49,51-54,58,60-73,75-84,88-93,95-114,118,121-126,128,132-138
+  s_7a5deea35b4c0d::t_00d5b3ae76715a 3,5,11,15
+  s_a89786aaf92b03::t_07acc1cef52ea5 50
+  s_bfd361c56aec76::t_e7540fd1df876f 55-57,74
+  s_a89786aaf92b03::t_fd30e4a158208e 59
+  s_a89786aaf92b03::t_0d4ece1e9fc64d 87
+  s_a89786aaf92b03::t_adf32b49f3c172 94
+  s_bfd361c56aec76::t_1c48a7302841ca 127
+test/agents/visual-testing/artifacts/paths.ts
+  s_7a5deea35b4c0d::t_12c061b7d963ef 1-54
+test/agents/visual-testing/config/load-config.ts
+  s_a89786aaf92b03::t_f5b347e5bedff3 1
+  s_7a5deea35b4c0d::t_db7608a0502848 2-27,30-31,33-35,37-63,71-89
+  s_a89786aaf92b03::t_5b0169d966df20 28-29
+  h_d6a04d82b61d5e 36
+  s_a89786aaf92b03::t_0302c8116ec563 64-70
+  s_bfd361c56aec76::t_921f54595f6ea7 90
+.agents.env.template
+  s_7a5deea35b4c0d::t_f035715a52cc35 1-14
+test/agents/visual-testing/constants.ts
+  s_7a5deea35b4c0d::t_af8f029c8d1678 1-2,5,8-30,42-47
+  h_d6a04d82b61d5e 4,6-7
+  s_7372c3fee1910c::t_6b05404ab07779 31-41
+test/agents/visual-testing/runner/trial-runner.ts
+  s_975deee22dd1db::t_4267287caaab4c 1-2,4,7-9,11,29-30,33-36
+  h_d6a04d82b61d5e 3,5,69,140,142,144,146,148-149,151-152,165,200,207-213,215-216
+  s_975deee22dd1db::t_59722c4eafc224 6
+  s_975deee22dd1db::t_e3535771d97e1c 10
+  s_7a5deea35b4c0d::t_ae5d3e3837af12 12-13,15-19,21-28,39-66,68,71-73,75-76,78,82-139,143,145,153-164,166-171
+  s_7372c3fee1910c::t_2bd9c27a070505 14
+  s_bfd361c56aec76::t_4cb624f64fbf23 67
+  s_975deee22dd1db::t_d726321d79d170 77
+  s_975deee22dd1db::t_b251a25c4a7678 79
+  s_12cd51de488d84::t_72c627865d72a5 80-81
+  s_7372c3fee1910c::t_6b3a6095084655 141
+  s_6249f933af5293::t_8abba70fdb7c45 147
+  s_975deee22dd1db::t_a1674492cc6381 172,175,177,188,202-206,218,221,223-224,230-231,234-239
+  s_975deee22dd1db::t_2be309af58cf44 174
+  s_975deee22dd1db::t_704d978cced466 176
+  s_1f60a6143b5367::t_16b442b8100e94 197
+  s_975deee22dd1db::t_11dd8bb3b9542c 219
+  s_12cd51de488d84::t_79bae52b087fe2 240-242
+.gitignore
+  s_7a5deea35b4c0d::t_4641f4ec1f7d70 23
+test/agents/visual-testing/scenarios/rename-happy-path.ts
+  s_7a5deea35b4c0d::t_2aec3966247ef5 1-18,20-39
+  h_d6a04d82b61d5e 19
+test/agents/visual-testing/scoring/harness-metrics.ts
+  s_7a5deea35b4c0d::t_bb6452f5d8e941 1-14
+test/agents/visual-testing/scoring/status.ts
+  s_7a5deea35b4c0d::t_68d379bce99c1f 1-24
+test/agents/visual-testing/artifacts/writer.ts
+  s_7a5deea35b4c0d::t_03344d58521eab 1-46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.3",
+  "base_commit_sha": "df0fc02f273b38e4ecfe8615ab52760abc813b33",
+  "prompts": {},
+  "humans": {
+    "h_d6a04d82b61d5e": {
+      "author": "cryptotavares <joao.tavares@consensys.net>"
+    }
+  },
+  "sessions": {
+    "s_12cd51de488d84": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_1ce9b3f27ffehIUBFgPweKM7Uh",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    },
+    "s_1e49f8f50255a7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_1e681deeeffelIjQRW4F3BaxHX",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    },
+    "s_1f60a6143b5367": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_1c575b31fffeaoKz3DKI6KI0OV",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    },
+    "s_6249f933af5293": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_1d4af771bffegBBo33kGlc7eyy",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    },
+    "s_7372c3fee1910c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_1e461dfe5ffeZUqBPHp4PI2FZ7",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    },
+    "s_7a5deea35b4c0d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_1e6b59f09ffeIVyxqVsU0sBJEj",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    },
+    "s_975deee22dd1db": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_1d9a5244effe4esU0d1GLs7e9T",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    },
+    "s_a89786aaf92b03": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_1e674639cffeKURfB49luS03mV",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    },
+    "s_bfd361c56aec76": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_1c426b594ffe2uFnEg4e6Yeu1L",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    }
+  }
+}
