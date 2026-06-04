@@ -12,10 +12,10 @@ import type {
   TransactionGroup,
   TransactionViewModel,
 } from '../../../../shared/lib/multichain/types';
+import { calculateFiatFromMarketRates } from '../../../../shared/lib/activity/fiat';
 import {
   enrichApiWithLocal,
   getPrimaryAmount,
-  calculateFiatFromMarketRates,
   mergeAllTransactionsByTime,
   groupAndFlattenMergedTransactions,
   resolveTransactionType,
