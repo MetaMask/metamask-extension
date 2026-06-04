@@ -1,3 +1,5 @@
+export const MOCK_REDIRECT_URL = 'https://metamask.github.io/mock-redirect';
+
 /**
  * Mock the WebAuthenticator object for the Seedless Onboarding flow e2e tests.
  *
@@ -8,23 +10,24 @@ export function mockWebAuthenticator() {
   const state = JSON.stringify({
     nonce,
   });
+  const redirectUrlWithAuthData = new URL(MOCK_REDIRECT_URL);
+  redirectUrlWithAuthData.searchParams.set('nonce', nonce);
+  redirectUrlWithAuthData.searchParams.set('state', state);
+  redirectUrlWithAuthData.searchParams.set('code', 'mock-code');
+
   return {
     generateNonce: () => nonce,
     launchWebAuthFlow: (
       _options: Record<string, unknown>,
       callback?: (url: string) => void,
     ) => {
-      return Promise.resolve(
-        callback?.(
-          `https://mock-redirect-url.com?nonce=${nonce}&state=${state}&code=mock-code`,
-        ),
-      );
+      return Promise.resolve(callback?.(redirectUrlWithAuthData.toString()));
     },
     generateCodeVerifierAndChallenge: () =>
       Promise.resolve({
         codeVerifier: 'mock-code-verifier',
         challenge: 'mock-challenge',
       }),
-    getRedirectURL: () => 'https://mock-redirect-url.com',
+    getRedirectURL: () => MOCK_REDIRECT_URL,
   };
 }
