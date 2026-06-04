@@ -1,5 +1,11 @@
 import type * as Sentry from '@sentry/browser';
-import { MeasurementUnit, Span, StartSpanOptions } from '@sentry/types';
+import {
+  MeasurementUnit,
+  Span,
+  StartSpanOptions,
+  TraceparentData,
+} from '@sentry/types';
+import { extractTraceparentData } from '@sentry/utils';
 import { createModuleLogger, hasProperty, isObject } from '@metamask/utils';
 import type {
   TraceCallback as ControllerTraceCallback,
@@ -117,6 +123,25 @@ const log = createModuleLogger(sentryLogger, 'trace');
 const ID_DEFAULT = 'default';
 const OP_DEFAULT = 'custom';
 
+/**
+ * Current W3C `traceparent` version byte. Both producer and consumer ship in
+ * lockstep within the extension binary, so we always emit version `00`.
+ */
+const W3C_TRACEPARENT_VERSION = '00';
+
+/**
+ * W3C `trace-flags` sampled bit (bit 0). When set, the trace is recorded.
+ */
+const TRACE_FLAG_SAMPLED = 0x1;
+
+/**
+ * Matches a W3C `traceparent` string:
+ * `{version}-{traceId}-{parentId}-{flags}` with lowercase-hex fields of the
+ * canonical lengths (2 / 32 / 16 / 2). Capture groups: traceId, parentId, flags.
+ */
+const W3C_TRACEPARENT_REGEXP =
+  /^[0-9a-f]{2}-([0-9a-f]{32})-([0-9a-f]{16})-([0-9a-f]{2})$/u;
+
 const tracesByKey: Map<string, PendingTrace> = new Map();
 const durationsByName: { [name: string]: number } = {};
 
@@ -138,14 +163,13 @@ export type TraceContext = unknown;
 
 /**
  * Serialized trace context for cross-boundary propagation.
- * Contains trace/span IDs for distributed tracing and optional name/id for
- * same-process parent lookup via the tracesByKey map.
+ * Carries a W3C `traceparent` string for distributed tracing and optional
+ * name/id for same-process parent lookup via the tracesByKey map.
  */
 export type SerializedTraceContext = {
   _name?: string;
   _id?: string;
-  _traceId?: string;
-  _spanId?: string;
+  traceparent?: string;
 };
 
 /**
@@ -317,11 +341,9 @@ export function endTrace(request: EndTraceRequest): void {
  * are correctly nested under the originating UI trace regardless of whether
  * wrapper spans themselves are sub-sampled in.
  *
- * @returns Serialized context with traceId/spanId, or undefined if no active span or kill switch is set.
+ * @returns A W3C `traceparent` string, or undefined if no active span or kill switch is set.
  */
-export function getSerializedTraceContext():
-  | SerializedTraceContext
-  | undefined {
+export function getSerializedTraceContext(): string | undefined {
   if (process.env.SENTRY_DISTRIBUTED_TRACING_DISABLED) {
     return undefined;
   }
@@ -330,9 +352,7 @@ export function getSerializedTraceContext():
     return undefined;
   }
   try {
-    const ctx = activeSpan.spanContext();
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    return { _traceId: ctx.traceId, _spanId: ctx.spanId };
+    return spanContextToTraceparent(activeSpan.spanContext());
   } catch {
     return undefined;
   }
@@ -340,33 +360,33 @@ export function getSerializedTraceContext():
 
 /**
  * Extract trace context appended by submitRequestToBackground from RPC params.
- * Returns the clean params (without trace context) and the trace context if present.
- * Only strips when the last param has `_traceContext` with our expected shape
- * (`_traceId`, `_spanId`) to avoid eating legitimate params.
+ * Returns the clean params (without trace context) and the parsed trace context
+ * if present. Only strips when the last param has `_traceContext` holding a
+ * valid W3C `traceparent` string, to avoid eating legitimate params.
  *
  * @param params - RPC call parameters.
- * @returns Clean params (without the trace wrapper) and the extracted context
- * if present, or `undefined` if no valid trace context was found.
+ * @returns Clean params (without the trace wrapper) and the parsed
+ * {@link TraceparentData} if present, or `undefined` if no valid trace context
+ * was found.
  */
 export function extractTraceContext(
   params: unknown,
 ):
-  | { cleanParams: unknown[]; traceContext: SerializedTraceContext }
+  | { cleanParams: unknown[]; traceContext: TraceparentData }
   | { cleanParams: unknown; traceContext: undefined } {
   if (!Array.isArray(params) || params.length === 0) {
     return { cleanParams: params, traceContext: undefined };
   }
 
   const lastParam = params[params.length - 1];
-  if (
-    isObject(lastParam) &&
-    hasProperty(lastParam, '_traceContext') &&
-    hasDistributedTraceIds(lastParam._traceContext)
-  ) {
-    return {
-      cleanParams: params.slice(0, -1),
-      traceContext: lastParam._traceContext,
-    };
+  if (isObject(lastParam) && hasProperty(lastParam, '_traceContext')) {
+    const traceContext = parseTraceparent(lastParam._traceContext);
+    if (traceContext) {
+      return {
+        cleanParams: params.slice(0, -1),
+        traceContext,
+      };
+    }
   }
 
   return { cleanParams: params, traceContext: undefined };
@@ -380,18 +400,18 @@ export function extractTraceContext(
  * span itself (e.g. when `shouldSampleWrappers` rejects the wrapper but
  * trace continuity for downstream spans is still desired).
  *
- * @param parentContext - Serialized trace context with `_traceId` / `_spanId`.
+ * @param parentContext - Parsed trace context with `traceId` / `parentSpanId`.
  * @param fn - Callback to run within the propagated trace scope.
  * @returns The callback's return value.
  */
 export function continueTraceContext<ResultType>(
-  parentContext: SerializedTraceContext | undefined,
+  parentContext: TraceparentData | undefined,
   fn: () => ResultType,
 ): ResultType {
-  if (!hasDistributedTraceIds(parentContext)) {
+  if (!hasTraceparentData(parentContext)) {
     return fn();
   }
-  const sentryTrace = `${parentContext._traceId}-${parentContext._spanId}-1`;
+  const sentryTrace = traceparentDataToSentryTrace(parentContext);
   return sentryContinueTrace(sentryTrace, () =>
     sentryWithIsolationScope(() => fn()),
   );
@@ -399,10 +419,10 @@ export function continueTraceContext<ResultType>(
 
 /**
  * Serialize a trace context from a specific span and request metadata.
- * Includes both name/id (for same-process map lookup) and traceId/spanId
- * (for cross-process distributed tracing).
+ * Includes both name/id (for same-process map lookup) and a W3C `traceparent`
+ * string (for cross-process distributed tracing).
  *
- * @param span - The Sentry span to extract IDs from.
+ * @param span - The Sentry span to build the `traceparent` from.
  * @param request - Request metadata for same-process lookup fallback.
  * @param request.name - The trace name for same-process map lookup.
  * @param request.id - Optional trace ID for same-process map lookup.
@@ -416,9 +436,10 @@ export function serializeTraceContext(
   const ctx: SerializedTraceContext = { _name: request.name, _id: request.id };
   if (span) {
     try {
-      const spanCtx = span.spanContext();
-      ctx._traceId = spanCtx.traceId;
-      ctx._spanId = spanCtx.spanId;
+      const traceparent = spanContextToTraceparent(span.spanContext());
+      if (traceparent) {
+        ctx.traceparent = traceparent;
+      }
     } catch {
       // Span may have ended or be invalid
     }
@@ -536,15 +557,100 @@ function resolveParentSpan(parentContext: unknown): Sentry.Span | null {
   return null;
 }
 
-function hasDistributedTraceIds(
+/**
+ * Subset of a Sentry span context used to build a W3C `traceparent`.
+ */
+type SpanContextLike = {
+  traceId?: string;
+  spanId?: string;
+  traceFlags?: number;
+};
+
+/**
+ * Parsed trace context whose distributed-tracing ids are guaranteed present.
+ */
+type ResolvedTraceparentData = {
+  traceId: string;
+  parentSpanId: string;
+  parentSampled?: boolean;
+};
+
+/**
+ * Whether a W3C `trace-flags` byte has the sampled bit (bit 0) set. Uses
+ * modulo rather than a bitwise mask, which lint disallows.
+ *
+ * @param flags - The decimal value of the `trace-flags` byte.
+ * @returns True when the sampled bit is set.
+ */
+function isSampled(flags: number): boolean {
+  return flags % 2 === TRACE_FLAG_SAMPLED;
+}
+
+/**
+ * Build a W3C `traceparent` string (`{version}-{traceId}-{spanId}-{flags}`)
+ * from a Sentry span context. Returns undefined when the IDs are missing.
+ *
+ * @param spanContext - The span context returned by `span.spanContext()`.
+ * @returns A W3C `traceparent` string, or undefined.
+ */
+function spanContextToTraceparent(
+  spanContext: SpanContextLike,
+): string | undefined {
+  const { traceId, spanId, traceFlags } = spanContext;
+  if (!traceId || !spanId) {
+    return undefined;
+  }
+  // Spans only propagate from a recorded UI trace, so treat the sampled bit as
+  // set when `traceFlags` is unavailable.
+  const flags = isSampled(traceFlags ?? TRACE_FLAG_SAMPLED) ? '01' : '00';
+  return `${W3C_TRACEPARENT_VERSION}-${traceId}-${spanId}-${flags}`;
+}
+
+/**
+ * Validate and unpack a W3C `traceparent` string into Sentry `TraceparentData`.
+ * `@sentry/utils`' `extractTraceparentData` parses the `sentry-trace` shape
+ * (`{traceId}-{spanId}-{sampled}`), so the W3C version byte is dropped and the
+ * 2-hex trace-flags reduced to the single sampled bit before unpacking.
+ *
+ * @param value - The candidate `_traceContext` value from the last RPC param.
+ * @returns Parsed trace context, or undefined when `value` is not a valid W3C
+ * `traceparent` string.
+ */
+function parseTraceparent(value: unknown): TraceparentData | undefined {
+  if (typeof value !== 'string') {
+    return undefined;
+  }
+  const match = W3C_TRACEPARENT_REGEXP.exec(value.trim());
+  if (!match) {
+    return undefined;
+  }
+  const [, traceId, spanId, flags] = match;
+  const sampled = isSampled(parseInt(flags, 16)) ? '1' : '0';
+  return extractTraceparentData(`${traceId}-${spanId}-${sampled}`);
+}
+
+/**
+ * Build a Sentry `sentry-trace` header (`{traceId}-{spanId}-{sampled}`) from
+ * parsed trace context. Defaults the sampled bit to set, since trace context
+ * only propagates from recorded traces.
+ *
+ * @param data - Parsed trace context with `traceId` and `parentSpanId`.
+ * @returns A `sentry-trace` header string.
+ */
+function traceparentDataToSentryTrace(data: ResolvedTraceparentData): string {
+  const sampled = data.parentSampled === false ? '0' : '1';
+  return `${data.traceId}-${data.parentSpanId}-${sampled}`;
+}
+
+function hasTraceparentData(
   value: unknown,
-): value is { _traceId: string; _spanId: string } {
+): value is TraceparentData & ResolvedTraceparentData {
   return (
     isObject(value) &&
-    hasProperty(value, '_traceId') &&
-    hasProperty(value, '_spanId') &&
-    typeof value._traceId === 'string' &&
-    typeof value._spanId === 'string'
+    hasProperty(value, 'traceId') &&
+    hasProperty(value, 'parentSpanId') &&
+    typeof value.traceId === 'string' &&
+    typeof value.parentSpanId === 'string'
   );
 }
 
@@ -580,10 +686,10 @@ function startSpan<T>(
     forceTransaction,
   };
 
-  // Cross-process propagation via continueTrace when we have serialized
-  // trace/span IDs but couldn't resolve a local parent span from the map.
-  if (!parentSpan && hasDistributedTraceIds(parentContext)) {
-    const sentryTrace = `${parentContext._traceId}-${parentContext._spanId}-1`;
+  // Cross-process propagation via continueTrace when we have parsed trace
+  // context but couldn't resolve a local parent span from the map.
+  if (!parentSpan && hasTraceparentData(parentContext)) {
+    const sentryTrace = traceparentDataToSentryTrace(parentContext);
     return sentryContinueTrace(sentryTrace, () =>
       sentryWithIsolationScope((scope: Sentry.Scope) => {
         initScope(scope, request);
