@@ -49,7 +49,6 @@ import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountT
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useRewardsModal } from '../../../hooks/rewards/useRewardsModal';
-import { useDebouncedValue } from '../../../hooks/useDebouncedValue';
 import { Skeleton } from '../../component-library/skeleton';
 import { isZeroAmount } from '../../../helpers/utils/number-utils';
 import { BalanceEmptyState } from '../balance-empty-state';
@@ -71,11 +70,6 @@ export type CoinOverviewProps = {
   isSwapsChain: boolean;
   isSigningEnabled: boolean;
 };
-
-/**
- * Debounced delay to show the empty balance state (e.g "Fund your wallet" section).
- */
-const DEBOUNCED_SHOW_BALANCE_EMPTY_STATE_MS = 500;
 
 export const LegacyAggregatedBalance = ({
   classPrefix,
@@ -222,17 +216,6 @@ export const CoinOverview = ({
     !hasBalance &&
     !balanceIsLoading;
 
-  // To prevent a flash of the empty state on initial render, we debounce this
-  // value since there is no reliable way to determine that the balance is loading
-  // (either for EVM or non-EVMs).
-  // NOTE: The initial render will always show a balance skeleton loading, so this
-  // will always be false on the first render and then update after the debounce
-  // delay if the balance is really empty.
-  const debouncedShouldShowBalanceEmptyState = useDebouncedValue(
-    shouldShowBalanceEmptyState,
-    DEBOUNCED_SHOW_BALANCE_EMPTY_STATE_MS,
-  );
-
   const handleSensitiveToggle = () => {
     dispatch(setPrivacyMode(!privacyMode));
   };
@@ -317,7 +300,7 @@ export const CoinOverview = ({
     <WalletOverview
       // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
       balance={
-        debouncedShouldShowBalanceEmptyState ? (
+        shouldShowBalanceEmptyState ? (
           <BalanceEmptyState
             className="w-full max-w-[460px] self-center"
             data-testid="coin-overview-balance-empty-state"
@@ -334,13 +317,13 @@ export const CoinOverview = ({
             >
               <div className={`${classPrefix}-overview__primary-container`}>
                 {balanceSection}
-                {balanceIsCached && !debouncedShouldShowBalanceEmptyState && (
+                {balanceIsCached && !shouldShowBalanceEmptyState && (
                   <span className={`${classPrefix}-overview__cached-star`}>
                     *
                   </span>
                 )}
               </div>
-              {!debouncedShouldShowBalanceEmptyState &&
+              {!shouldShowBalanceEmptyState &&
                 renderPercentageAndAmountChange()}
             </div>
           </Tooltip>
