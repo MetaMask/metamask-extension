@@ -153,6 +153,10 @@ export const ImportTokensModal = ({ onClose }) => {
   const assetPreferences = useSelector(getAssetsControllerAssetPreferences);
 
   const [selectedNetwork, setSelectedNetwork] = useState(chainId);
+  // Ref so the initialization effect can read the current value without
+  // becoming a reactive dependency (which would cause an infinite loop).
+  const selectedNetworkRef = useRef(selectedNetwork);
+  selectedNetworkRef.current = selectedNetwork;
 
   const allNetworkConfigurations = useSelector(
     getAllNetworkConfigurationsByCaipChainId,
@@ -176,9 +180,11 @@ export const ImportTokensModal = ({ onClose }) => {
     enabledNetworksByNamespace,
   );
 
-  // Initialize selected network with current multichain network, handling both EVM and non-EVM
+  // Initialize selected network with current multichain network, handling both EVM and non-EVM.
+  // selectedNetworkRef (not selectedNetwork) is used so that the effect only
+  // re-runs when the chain changes, not whenever the user picks a network.
   useEffect(() => {
-    if (!selectedNetwork || selectedNetwork === chainId) {
+    if (!selectedNetworkRef.current || selectedNetworkRef.current === chainId) {
       // Initialize or update with the current multichain network
       if (currentMultichainChainId) {
         if (isEvmChainId(currentMultichainChainId)) {
@@ -189,12 +195,12 @@ export const ImportTokensModal = ({ onClose }) => {
           // For non-EVM networks, use the chain ID directly
           setSelectedNetwork(currentMultichainChainId);
         }
-      } else if (!selectedNetwork) {
+      } else if (!selectedNetworkRef.current) {
         // Fallback to default EVM chain if no multichain network selected
         setSelectedNetwork(chainId);
       }
     }
-  }, [currentMultichainChainId, chainId]); // This should not be executed when selectedNetwork changes
+  }, [currentMultichainChainId, chainId]);
 
   const useTokenDetection = useSelector(
     ({ metamask }) => metamask.useTokenDetection,
@@ -960,79 +966,77 @@ export const ImportTokensModal = ({ onClose }) => {
                   tabListProps={{ className: 'px-4' }}
                   onTabClick={() => clearAllFormData()}
                 >
-                  {
-                    <Tab
-                      tabKey={TAB_NAMES.SEARCH}
-                      name={t('search')}
-                      className="flex-1"
-                    >
-                      <Box paddingTop={4}>
-                        {!useTokenDetection && (
-                          <Box paddingLeft={4} paddingRight={4}>
-                            <BannerAlert
-                              severity={Severity.Info}
-                              marginBottom={4}
-                              paddingLeft={4}
-                              paddingRight={4}
-                            >
-                              <Text variant={TextVariant.bodyMd} fontSize="16">
-                                {t('enhancedTokenDetectionAlertMessage', [
-                                  networkName,
-                                  <ButtonLink
-                                    key="token-detection-announcement"
-                                    className="import-tokens-modal__autodetect"
-                                    onClick={() => {
-                                      onClose();
-                                      navigate(
-                                        `${ASSETS_ROUTE}#autodetect-tokens`,
-                                      );
-                                    }}
-                                  >
-                                    {t('enableFromSettings')}
-                                  </ButtonLink>,
-                                ])}
-                              </Text>
-                            </BannerAlert>
-                          </Box>
-                        )}
-
-                        <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-                          <TokenSearch
-                            searchClassName="import-tokens-modal__button-search"
-                            onSearch={({ results = [] }) =>
-                              setSearchResults(results)
-                            }
-                            error={tokenSelectorError}
-                            tokenList={tokenListByChain}
-                            networkFilter={networkFilter}
-                            setSearchResults={setSearchResults}
-                            chainId={selectedNetwork}
-                          />
-                        </Box>
-
-                        {searchResults.length === 0 ? (
-                          <Box
+                  <Tab
+                    tabKey={TAB_NAMES.SEARCH}
+                    name={t('search')}
+                    className="flex-1"
+                  >
+                    <Box paddingTop={4}>
+                      {!useTokenDetection && (
+                        <Box paddingLeft={4} paddingRight={4}>
+                          <BannerAlert
+                            severity={Severity.Info}
+                            marginBottom={4}
                             paddingLeft={4}
                             paddingRight={4}
-                            className="token-list__empty-list"
                           >
-                            <TokenListPlaceholder />
-                          </Box>
-                        ) : (
-                          <TokenList
-                            currentNetwork={networkFilter[selectedNetwork]}
-                            testNetworkBackgroundColor={
-                              testNetworkBackgroundColor
-                            }
-                            results={searchResults}
-                            selectedTokens={selectedTokens}
-                            onToggleToken={(token) => handleToggleToken(token)}
-                            accountAddress={accountAddress}
-                          />
-                        )}
+                            <Text variant={TextVariant.bodyMd} fontSize="16">
+                              {t('enhancedTokenDetectionAlertMessage', [
+                                networkName,
+                                <ButtonLink
+                                  key="token-detection-announcement"
+                                  className="import-tokens-modal__autodetect"
+                                  onClick={() => {
+                                    onClose();
+                                    navigate(
+                                      `${ASSETS_ROUTE}#autodetect-tokens`,
+                                    );
+                                  }}
+                                >
+                                  {t('enableFromSettings')}
+                                </ButtonLink>,
+                              ])}
+                            </Text>
+                          </BannerAlert>
+                        </Box>
+                      )}
+
+                      <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+                        <TokenSearch
+                          searchClassName="import-tokens-modal__button-search"
+                          onSearch={({ results = [] }) =>
+                            setSearchResults(results)
+                          }
+                          error={tokenSelectorError}
+                          tokenList={tokenListByChain}
+                          networkFilter={networkFilter}
+                          setSearchResults={setSearchResults}
+                          chainId={selectedNetwork}
+                        />
                       </Box>
-                    </Tab>
-                  }
+
+                      {searchResults.length === 0 ? (
+                        <Box
+                          paddingLeft={4}
+                          paddingRight={4}
+                          className="token-list__empty-list"
+                        >
+                          <TokenListPlaceholder />
+                        </Box>
+                      ) : (
+                        <TokenList
+                          currentNetwork={networkFilter[selectedNetwork]}
+                          testNetworkBackgroundColor={
+                            testNetworkBackgroundColor
+                          }
+                          results={searchResults}
+                          selectedTokens={selectedTokens}
+                          onToggleToken={(token) => handleToggleToken(token)}
+                          accountAddress={accountAddress}
+                        />
+                      )}
+                    </Box>
+                  </Tab>
 
                   {shouldShowCustomTab && (
                     <Tab
