@@ -332,15 +332,7 @@ export async function onboardingMetricsFlow(
   }
 
   await onboardingMetricsPage.clickOnContinueButton();
-
-  // When opting in, `setParticipateInMetaMetrics` generates the `metaMetricsId`
-  // and flushes any events that were queued before opt-in. Until that id is
-  // reflected in the UI state, `trackEvent` treats metrics as "not ready yet"
-  // and queues events into `eventsBeforeMetricsOptIn`. On flows where opt-in
-  // happens before later screens (e.g. Firefox, where the welcome screen comes
-  // after this step and fires 'Wallet Import Started'), an event fired in that
-  // window would be queued *after* the flush already ran and silently dropped.
-  // Wait for the id to be present so subsequent screens track events
+  // Wait for the metaMetricsId to be present so subsequent screens track events
   // immediately and deterministically.
   if (participateInMetaMetrics) {
     await driver.wait(async () => {
