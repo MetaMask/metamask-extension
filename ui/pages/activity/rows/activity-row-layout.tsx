@@ -55,7 +55,7 @@ const Subtitle = ({
   }
 
   return null;
-}
+};
 
 export function ActivityRowLayout({
   avatar,
