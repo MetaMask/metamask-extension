@@ -178,32 +178,13 @@ describe('useComplianceGate', () => {
     expect(action).toHaveBeenCalledTimes(1);
   });
 
-  it('runs a fresh check after a successful prefetch', async () => {
-    mockSubmitRequestToBackground
-      .mockResolvedValueOnce([getStatus(ADDRESS, false)])
-      .mockResolvedValueOnce([getStatus(ADDRESS, true)]);
-    const action = jest.fn();
-    const { result } = renderHook(() => useComplianceGate(ADDRESS), {
-      wrapper: getWrapper(),
-    });
-
-    await act(async () => {
-      await Promise.resolve();
-    });
-
-    await act(async () => {
-      await result.current.gate(action);
-    });
-
-    expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
-    expect(action).not.toHaveBeenCalled();
-    expect(mockShowAccessRestrictedModal).toHaveBeenCalledTimes(1);
-  });
-
-  it('allows a later action when a fresh check clears a previously blocked result', async () => {
-    mockSubmitRequestToBackground
-      .mockResolvedValueOnce([getStatus(ADDRESS, true)])
-      .mockResolvedValueOnce([getStatus(ADDRESS, false)]);
+  it('does not make a second compliance call when a prefetch has settled', async () => {
+    // The mount prefetch is the only request the hook should make; gate() must
+    // trust its result rather than firing another (cross-process + network)
+    // check. The call-count assertion below proves no second request is made.
+    mockSubmitRequestToBackground.mockResolvedValueOnce([
+      getStatus(ADDRESS, false),
+    ]);
     const action = jest.fn().mockReturnValue('allowed');
     const { result } = renderHook(() => useComplianceGate(ADDRESS), {
       wrapper: getWrapper(),
@@ -218,10 +199,32 @@ describe('useComplianceGate', () => {
       value = await result.current.gate(action);
     });
 
-    expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
     expect(action).toHaveBeenCalledTimes(1);
     expect(value).toBe('allowed');
     expect(mockShowAccessRestrictedModal).not.toHaveBeenCalled();
+  });
+
+  it('trusts a blocked prefetch result without re-checking on gate', async () => {
+    mockSubmitRequestToBackground.mockResolvedValueOnce([
+      getStatus(ADDRESS, true),
+    ]);
+    const action = jest.fn();
+    const { result } = renderHook(() => useComplianceGate(ADDRESS), {
+      wrapper: getWrapper(),
+    });
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    await act(async () => {
+      await result.current.gate(action);
+    });
+
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+    expect(action).not.toHaveBeenCalled();
+    expect(mockShowAccessRestrictedModal).toHaveBeenCalledTimes(1);
   });
 
   it('fails open when the compliance API rejects', async () => {
@@ -241,30 +244,38 @@ describe('useComplianceGate', () => {
     expect(mockShowAccessRestrictedModal).not.toHaveBeenCalled();
   });
 
-  it('retries compliance checks after a rejected prefetch', async () => {
-    mockSubmitRequestToBackground
-      .mockRejectedValueOnce(new Error('offline'))
-      .mockResolvedValueOnce([getStatus(ADDRESS, true)]);
+  it('fails open and does not retry after a rejected prefetch', async () => {
+    // A rejected prefetch fails open (not blocked). gate() must not issue its
+    // own retry check — subsequent actions simply proceed until the next
+    // address-change prefetch refreshes the cached status. The call-count
+    // assertion below proves no retry request is made.
+    mockSubmitRequestToBackground.mockRejectedValueOnce(new Error('offline'));
     const firstAction = jest.fn().mockReturnValue('allowed');
-    const secondAction = jest.fn();
+    const secondAction = jest.fn().mockReturnValue('allowed-again');
     const { result } = renderHook(() => useComplianceGate(ADDRESS), {
       wrapper: getWrapper(),
     });
 
-    let value: string | undefined;
     await act(async () => {
-      value = await result.current.gate(firstAction);
+      await Promise.resolve();
     });
 
+    let firstValue: string | undefined;
     await act(async () => {
-      await result.current.gate(secondAction);
+      firstValue = await result.current.gate(firstAction);
+    });
+
+    let secondValue: string | undefined;
+    await act(async () => {
+      secondValue = await result.current.gate(secondAction);
     });
 
     expect(firstAction).toHaveBeenCalledTimes(1);
-    expect(value).toBe('allowed');
-    expect(secondAction).not.toHaveBeenCalled();
-    expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
-    expect(mockShowAccessRestrictedModal).toHaveBeenCalledTimes(1);
+    expect(secondAction).toHaveBeenCalledTimes(1);
+    expect(firstValue).toBe('allowed');
+    expect(secondValue).toBe('allowed-again');
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+    expect(mockShowAccessRestrictedModal).not.toHaveBeenCalled();
   });
 
   it('blocks when the background returns a cached blocked status', async () => {

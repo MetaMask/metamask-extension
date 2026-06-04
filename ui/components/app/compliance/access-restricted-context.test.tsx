@@ -75,11 +75,13 @@ describe('AccessRestrictedProvider', () => {
     );
   });
 
-  it('throws when missing access-restricted modal context is used', () => {
+  it('throws when used outside the access-restricted modal provider', () => {
     const { result } = renderHook(() => useAccessRestrictedModal());
 
-    expect(() => result.current.showAccessRestrictedModal()).toThrow(
-      'useAccessRestrictedModal must be used within AccessRestrictedProvider',
+    expect(result.error).toEqual(
+      new Error(
+        'useAccessRestrictedModal must be used within AccessRestrictedProvider',
+      ),
     );
   });
 });

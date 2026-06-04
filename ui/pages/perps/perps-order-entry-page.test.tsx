@@ -33,10 +33,28 @@ import {
   mockCryptoMarkets,
   mockHip3Markets,
 } from '../../components/app/perps/mocks';
-import { AccessRestrictedProvider } from '../../components/app/compliance';
 import PerpsOrderEntryPage, {
   shouldShowPerpsOrderSubmissionToasts,
 } from './perps-order-entry-page';
+
+// Mobile test convention: mock the Compliance barrel so the gate hook never runs
+// (and never reaches the now-strict AccessRestrictedProvider context throw). The
+// default gate is a passthrough; the blocked case is simulated per-test below.
+const mockComplianceGate = jest.fn(async (action: () => unknown) => action());
+jest.mock('../../components/app/compliance', () => ({
+  useComplianceGate: () => ({
+    gate: mockComplianceGate,
+    isComplianceEnabled: false,
+    isBlocked: false,
+    checkCompliance: jest.fn(),
+  }),
+  useSelectedAccountComplianceGate: () => ({
+    gate: mockComplianceGate,
+    isComplianceEnabled: false,
+    isBlocked: false,
+    checkCompliance: jest.fn(),
+  }),
+}));
 
 const mockUsePerpsMarketInfo = jest.fn(() => undefined);
 
@@ -626,43 +644,21 @@ describe('PerpsOrderEntryPage', () => {
     });
 
     it('gates the amount input add funds action when compliance blocks the selected wallet', async () => {
-      const selectedAccountId = mockState.metamask.internalAccounts
-        .selectedAccount as keyof typeof mockState.metamask.internalAccounts.accounts;
-      const selectedAddress =
-        mockState.metamask.internalAccounts.accounts[selectedAccountId].address;
-      mockSubmitRequestToBackground.mockResolvedValue([
-        {
-          address: selectedAddress,
-          blocked: true,
-          checkedAt: '2026-05-05T00:00:00.000Z',
-        },
-      ]);
-      const state = createMockState();
-      state.metamask.remoteFeatureFlags = {
-        ...state.metamask.remoteFeatureFlags,
-        complianceEnabled: true,
-      };
-      const store = mockStore(state);
+      // Simulate a blocked wallet: the gate short-circuits and never runs the
+      // wrapped add-funds action. Real compliance check + access-restricted modal
+      // are covered in useComplianceGate.test.tsx and
+      // access-restricted-context.test.tsx.
+      mockComplianceGate.mockImplementationOnce(async () => undefined);
+      const store = mockStore(createMockState());
 
-      renderWithProvider(
-        <AccessRestrictedProvider>
-          <PerpsOrderEntryPage />
-        </AccessRestrictedProvider>,
-        store,
-      );
+      renderWithProvider(<PerpsOrderEntryPage />, store);
 
       await act(async () => {
         fireEvent.click(screen.getByTestId('amount-input-add-funds'));
       });
 
-      await waitFor(() => {
-        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-          'complianceCheckWalletsCompliance',
-          [[selectedAddress]],
-        );
-      });
+      await waitFor(() => expect(mockComplianceGate).toHaveBeenCalled());
       expect(mockTriggerDeposit).not.toHaveBeenCalled();
-      expect(screen.getByTestId('access-restricted-modal')).toBeInTheDocument();
     });
 
     it('shows geo-block modal instead of placing order when user is not eligible and has balance', async () => {

@@ -28,10 +28,18 @@ export function useComplianceGate(address?: AddressInput) {
   const { showAccessRestrictedModal } = useAccessRestrictedModal();
   const isBlocked = isComplianceEnabled && rawIsBlocked;
 
-  const prefetchRef = useRef<Promise<
-    WalletComplianceStatus[] | undefined
-  > | null>(null);
-  const latestSuccessfulBlockedRef = useRef(false);
+  // Holds the in-flight prefetch promise so gate() can await it if the user
+  // acts before the prefetch has resolved.
+  const prefetchRef = useRef<Promise<unknown> | null>(null);
+
+  // Stores the resolved blocked status from the most recent prefetch.
+  // Default false = fail-open: assume not blocked until the API says otherwise.
+  // Reset to false at the start of each prefetch (while in-flight) so gate()
+  // never reads a stale result from a previous address.
+  const prefetchBlockedRef = useRef<boolean>(false);
+
+  // Guards against an in-flight prefetch for a previous address resolving late
+  // and overwriting the result for the current address.
   const requestIdRef = useRef(0);
 
   const checkCompliance = useCallback(async () => {
@@ -45,38 +53,32 @@ export function useComplianceGate(address?: AddressInput) {
     );
   }, [addresses]);
 
+  // Prefetch compliance status on mount and whenever the address changes.
+  // `checkCompliance` is memoized on `addresses`, so its identity changes
+  // exactly when the address set changes — that (not `addresses.length`, which
+  // stays constant across an account switch) is the correct re-fetch signal.
   useEffect(() => {
-    if (!isComplianceEnabled || addresses.length === 0) {
-      requestIdRef.current += 1;
-      latestSuccessfulBlockedRef.current = false;
-      prefetchRef.current = null;
+    if (!isComplianceEnabled) {
+      prefetchBlockedRef.current = false;
       return;
     }
 
     const requestId = requestIdRef.current + 1;
     requestIdRef.current = requestId;
-    latestSuccessfulBlockedRef.current = false;
-    const request = checkCompliance();
-    prefetchRef.current = request;
-    request
+    prefetchBlockedRef.current = false; // reset while in-flight
+    prefetchRef.current = checkCompliance()
       .then((results) => {
         if (requestIdRef.current === requestId) {
-          latestSuccessfulBlockedRef.current =
+          prefetchBlockedRef.current =
             results?.some((result) => result.blocked) ?? false;
-          if (prefetchRef.current === request) {
-            prefetchRef.current = null;
-          }
         }
       })
       .catch(() => {
         if (requestIdRef.current === requestId) {
-          latestSuccessfulBlockedRef.current = false;
-          if (prefetchRef.current === request) {
-            prefetchRef.current = null;
-          }
+          prefetchBlockedRef.current = false; // fail-open on error
         }
       });
-  }, [addresses.length, checkCompliance, isComplianceEnabled]);
+  }, [checkCompliance, isComplianceEnabled]);
 
   const gate = useCallback(
     async <ResultValue>(
@@ -86,31 +88,23 @@ export function useComplianceGate(address?: AddressInput) {
         return await action();
       }
 
-      let latestResults: WalletComplianceStatus[] | undefined;
-      const prefetch = prefetchRef.current;
-      try {
-        latestResults = prefetch ? await prefetch : await checkCompliance();
-      } catch {
-        latestSuccessfulBlockedRef.current = false;
-        if (prefetchRef.current === prefetch) {
-          prefetchRef.current = null;
-        }
-      }
+      // Await the in-flight prefetch if the user acted before it settled; if it
+      // already resolved this is effectively instant. We deliberately do NOT
+      // re-check here: core's ComplianceController performs no request dedup, so
+      // every check is a real network call, and in the extension that call also
+      // crosses the UI -> background (MV3) boundary (and can wake an evicted
+      // service worker). Trusting the prefetch — mobile's contract — is the
+      // cheapest correct behavior; we fail open if the prefetch rejected.
+      await prefetchRef.current;
 
-      const isLatestResultBlocked =
-        latestResults?.some((result) => result.blocked) ?? false;
-      if (latestResults !== undefined) {
-        latestSuccessfulBlockedRef.current = isLatestResultBlocked;
-      }
-
-      if (latestSuccessfulBlockedRef.current) {
+      if (prefetchBlockedRef.current) {
         showAccessRestrictedModal();
         return undefined;
       }
 
       return await action();
     },
-    [checkCompliance, isComplianceEnabled, showAccessRestrictedModal],
+    [isComplianceEnabled, showAccessRestrictedModal],
   );
 
   return useMemo(

@@ -4,9 +4,27 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
-import { AccessRestrictedProvider } from '../../compliance';
 import { mockPositions } from '../mocks';
 import { ReversePositionModal } from './reverse-position-modal';
+
+// Mobile test convention: mock the Compliance barrel so the gate hook never runs
+// (and never reaches the now-strict AccessRestrictedProvider context throw). The
+// default gate is a passthrough; the blocked case is simulated per-test below.
+const mockComplianceGate = jest.fn(async (action: () => unknown) => action());
+jest.mock('../../compliance', () => ({
+  useComplianceGate: () => ({
+    gate: mockComplianceGate,
+    isComplianceEnabled: false,
+    isBlocked: false,
+    checkCompliance: jest.fn(),
+  }),
+  useSelectedAccountComplianceGate: () => ({
+    gate: mockComplianceGate,
+    isComplianceEnabled: false,
+    isBlocked: false,
+    checkCompliance: jest.fn(),
+  }),
+}));
 
 const mockUsePerpsOrderFees = jest.fn();
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
@@ -143,11 +161,6 @@ const mockStore = configureStore({
     ...mockState.metamask,
   },
 });
-const selectedAccountId = mockState.metamask.internalAccounts
-  .selectedAccount as keyof typeof mockState.metamask.internalAccounts.accounts;
-const selectedAccountAddress =
-  mockState.metamask.internalAccounts.accounts[selectedAccountId].address;
-
 const longPosition = mockPositions[0];
 const shortPosition = mockPositions[1];
 
@@ -336,43 +349,24 @@ describe('ReversePositionModal', () => {
 
   describe('successful save', () => {
     it('does not call perpsFlipPosition when the selected wallet is compliance blocked', async () => {
-      mockSubmitRequestToBackground.mockResolvedValue([
-        {
-          address: selectedAccountAddress,
-          blocked: true,
-          checkedAt: '2026-05-05T00:00:00.000Z',
-        },
-      ]);
-      const blockedStore = configureStore({
-        metamask: {
-          ...mockState.metamask,
-          remoteFeatureFlags: {
-            ...mockState.metamask.remoteFeatureFlags,
-            complianceEnabled: true,
-          },
-        },
-      });
+      // Simulate a blocked wallet: the gate short-circuits and never runs the
+      // wrapped flip action. The real compliance check + access-restricted modal
+      // are covered in useComplianceGate.test.tsx and
+      // access-restricted-context.test.tsx.
+      mockComplianceGate.mockImplementationOnce(async () => undefined);
 
       renderWithProvider(
-        <AccessRestrictedProvider>
-          <ReversePositionModal {...defaultProps} />
-        </AccessRestrictedProvider>,
-        blockedStore,
+        <ReversePositionModal {...defaultProps} />,
+        mockStore,
       );
 
       fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
 
-      await waitFor(() => {
-        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-          'complianceCheckWalletsCompliance',
-          [[selectedAccountAddress]],
-        );
-      });
+      await waitFor(() => expect(mockComplianceGate).toHaveBeenCalled());
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
         'perpsFlipPosition',
         expect.anything(),
       );
-      expect(screen.getByTestId('access-restricted-modal')).toBeInTheDocument();
     });
 
     it('calls perpsFlipPosition once with symbol and position payload', async () => {

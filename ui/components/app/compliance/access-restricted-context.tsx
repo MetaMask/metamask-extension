@@ -24,18 +24,6 @@ type AccessRestrictedContextValue = {
 const AccessRestrictedContext =
   createContext<AccessRestrictedContextValue | null>(null);
 
-const throwMissingProviderError = () => {
-  throw new Error(
-    'useAccessRestrictedModal must be used within AccessRestrictedProvider',
-  );
-};
-
-const MISSING_PROVIDER_VALUE: AccessRestrictedContextValue = {
-  showAccessRestrictedModal: throwMissingProviderError,
-  hideAccessRestrictedModal: throwMissingProviderError,
-  isAccessRestricted: false,
-};
-
 export type AccessRestrictedProviderProps = {
   children: ReactNode;
 };
@@ -87,7 +75,9 @@ export const AccessRestrictedProvider = ({
 export const useAccessRestrictedModal = (): AccessRestrictedContextValue => {
   const context = useContext(AccessRestrictedContext);
   if (!context) {
-    return MISSING_PROVIDER_VALUE;
+    throw new Error(
+      'useAccessRestrictedModal must be used within AccessRestrictedProvider',
+    );
   }
   return context;
 };
