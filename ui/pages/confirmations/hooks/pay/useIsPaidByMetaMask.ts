@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 import { TransactionType } from '@metamask/transaction-controller';
+import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
 import { useTransactionMetadataRequestOptional } from '../transactions/useTransactionMetadataRequest';
 import { useTransactionPayTotals } from './useTransactionPayData';
 
@@ -16,11 +17,7 @@ export function useIsPaidByMetaMask(): boolean {
   const transactionMeta = useTransactionMetadataRequestOptional();
   const totals = useTransactionPayTotals();
 
-  if (
-    !transactionMeta?.type ||
-    !SUPPORTED_TYPES.includes(transactionMeta.type) ||
-    !totals?.fees
-  ) {
+  if (!hasTransactionType(transactionMeta, SUPPORTED_TYPES) || !totals?.fees) {
     return false;
   }
 
