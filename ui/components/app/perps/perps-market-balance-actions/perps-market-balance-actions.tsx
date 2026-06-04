@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box,
   Button,
@@ -18,6 +19,7 @@ import {
   PERPS_EVENT_VALUE,
 } from '../../../../../shared/constants/perps-events';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import {
   usePerpsEligibility,
   usePerpsEventTracking,
@@ -31,6 +33,9 @@ import {
   type PerpsBalanceActionHandler,
 } from '../perps-balance-dropdown';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
+
+/** Placeholder shown in place of fiat balances when privacy mode is enabled. */
+const MASKED_BALANCE = '••••••';
 
 type PerpsMarketBalanceActionsProps = {
   /** Whether to show the action buttons (Add funds, Withdraw) */
@@ -57,6 +62,7 @@ const PerpsMarketBalanceActions = ({
   const { formatCurrency } = useFormatters();
   const { account } = usePerpsLiveAccount();
   const { isEligible } = usePerpsEligibility();
+  const { privacyMode } = useSelector(getPreferences);
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
   // Use account data or defaults
@@ -198,7 +204,7 @@ const PerpsMarketBalanceActions = ({
         fontWeight={FontWeight.Medium}
         data-testid="perps-balance-actions-total"
       >
-        {formatCurrency(accountValue, 'USD')}
+        {privacyMode ? MASKED_BALANCE : formatCurrency(accountValue, 'USD')}
       </Text>
 
       {/* Available Balance */}
@@ -208,7 +214,9 @@ const PerpsMarketBalanceActions = ({
           color={TextColor.TextAlternative}
           data-testid="perps-balance-actions-available"
         >
-          {formatCurrency(parseFloat(availableBalance), 'USD')}{' '}
+          {privacyMode
+            ? MASKED_BALANCE
+            : formatCurrency(parseFloat(availableBalance), 'USD')}{' '}
           {t('perpsAvailable').toLowerCase()}
         </Text>
       </Box>
