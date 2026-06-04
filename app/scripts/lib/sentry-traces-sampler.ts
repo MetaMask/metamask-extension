@@ -25,9 +25,16 @@ export const DEFAULT_TRANSACTION_SAMPLE_RATES: Readonly<
  */
 export type TransactionSamplingContext = {
   /**
-   * The transaction name.
+   * The transaction name (current Sentry field, top-level on `SamplingContext`).
    */
   name?: string;
+  /**
+   * Deprecated duplicate of `name` carried by older SDK shapes. Still populated
+   * in `@sentry/types` 8.x (marked `@deprecated`, "will be removed eventually"),
+   * so we read it as a fallback to stay robust across SDK version drift. Harmless
+   * once the SDK drops it — the fallback simply resolves to `undefined`.
+   */
+  transactionContext?: { name?: string };
   /**
    * Whether the head-of-trace sampling decision was positive.
    */
@@ -55,6 +62,9 @@ type SampleRateOptions = {
  * decision when there is one (so we don't split traces), otherwise falls back to
  * the global default rate.
  *
+ * The transaction name is read from `name`, falling back to the deprecated
+ * `transactionContext.name`, so the lookup is robust across SDK shapes.
+ *
  * @param samplingContext - The (subset of the) Sentry sampling context.
  * @param options - Default rate and per-name overrides.
  * @param options.defaultSampleRate - Rate applied to transactions with no
@@ -66,7 +76,12 @@ export function getTransactionSampleRate(
   samplingContext: TransactionSamplingContext,
   { defaultSampleRate, sampleRatesByName }: SampleRateOptions,
 ): number {
-  const { name, parentSampled } = samplingContext ?? {};
+  const { parentSampled } = samplingContext ?? {};
+  // Prefer the current top-level `name`; fall back to the deprecated-but-still-
+  // populated `transactionContext.name` so the sampler works regardless of which
+  // field a given SDK version sets.
+  const name =
+    samplingContext?.name ?? samplingContext?.transactionContext?.name;
 
   if (
     name !== undefined &&

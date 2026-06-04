@@ -92,6 +92,27 @@ describe('getTransactionSampleRate', () => {
       ),
     ).toBe(defaultSampleRate);
   });
+
+  it('falls back to the deprecated transactionContext.name when top-level name is absent', () => {
+    expect(
+      getTransactionSampleRate(
+        { transactionContext: { name: 'Dropped Transaction' } },
+        { defaultSampleRate, sampleRatesByName },
+      ),
+    ).toBe(0);
+  });
+
+  it('prefers the top-level name over the deprecated transactionContext.name', () => {
+    expect(
+      getTransactionSampleRate(
+        {
+          name: 'Unlisted Transaction',
+          transactionContext: { name: 'Dropped Transaction' },
+        },
+        { defaultSampleRate, sampleRatesByName },
+      ),
+    ).toBe(defaultSampleRate);
+  });
 });
 
 describe('createTracesSampler', () => {
