@@ -21,6 +21,7 @@ jobs:
       COMMENT_ID: ${{ github.event.comment.id }}
     permissions:
       contents: read
+      pull-requests: read
       id-token: write
     outputs:
       IS_CROSS_REPO_PR: ${{ steps.is-cross-repo.outputs.IS_CROSS_REPO_PR }}
@@ -33,6 +34,8 @@ jobs:
     steps:
       - name: Determine whether this PR is cross-repo
         id: is-cross-repo
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: echo "IS_CROSS_REPO_PR=$(gh pr view "${PR_NUMBER}" --repo "${REPO}" --json isCrossRepository --jq '.isCrossRepository')" >> "$GITHUB_OUTPUT"
 
       - name: Get token
