@@ -95,6 +95,10 @@ import {
   GeolocationApiService,
   GeolocationController,
 } from '@metamask/geolocation-controller';
+import {
+  ComplianceController,
+  ComplianceService,
+} from '@metamask/compliance-controller';
 import { PerpsController } from '@metamask/perps-controller';
 import { PasskeyController } from '@metamask/passkey-controller';
 import { OnboardingController } from '../controllers/onboarding';
@@ -222,6 +226,8 @@ export type MessengerClient =
   | NetworkEnablementController
   | ClaimsService
   | ClientController
+  | ComplianceController
+  | ComplianceService
   | StaticAssetsController
   | ProfileMetricsController
   | ProfileMetricsService
@@ -246,6 +252,7 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   BridgeStatusController['state'] &
   ClaimsController['state'] &
   ClientController['state'] &
+  ComplianceController['state'] &
   CronjobController['state'] &
   CurrencyRateController['state'] &
   DeFiPositionsController['state'] &
