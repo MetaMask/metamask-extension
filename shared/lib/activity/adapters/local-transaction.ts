@@ -5,7 +5,9 @@ import { toAssetId } from '../../asset-utils';
 import type { TransactionGroup } from '../../multichain/types';
 import { isEqualCaseInsensitive } from '../../string-utils';
 import { parseStandardTokenTransactionData } from '../../transaction.utils';
-import { TOKEN_TRANSFER_LOG_TOPIC_HASH } from '../../transactions-controller-utils';
+import {
+  TOKEN_TRANSFER_LOG_TOPIC_HASH as tokenTransferLogTopicHash,
+} from '../../transactions-controller-utils';
 import type { ActivityListItem, TokenAmount } from '../types';
 import {
   supplyMethodIds,
@@ -17,6 +19,7 @@ import {
   getKnownTokenMetadata,
   getLocalTransactionStatus,
   getNativeAssetSafe,
+  isNftStandard,
 } from './helpers';
 
 const EVM_NATIVE_DECIMALS = 18;
@@ -175,6 +178,7 @@ export function mapLocalTransaction(
   const from = initialTransaction.txParams.from ?? '';
   const to = initialTransaction.txParams.to ?? '';
   const methodId = initialTransaction.txParams.data?.slice(0, 10);
+
   switch (initialTransaction.type) {
     case TransactionType.simpleSend: {
       return {
@@ -427,6 +431,31 @@ export function mapLocalTransaction(
         initialTransaction.simulationData?.tokenBalanceChanges?.find(
           ({ isDecrease, standard }) => isDecrease && standard === 'erc20',
         );
+      const incomingNftBalanceChange =
+        initialTransaction.type === TransactionType.contractInteraction &&
+        initialTransaction.simulationData?.tokenBalanceChanges?.find(
+          ({ isDecrease, standard }) =>
+            !isDecrease && isNftStandard(standard),
+        );
+
+      if (
+        incomingNftBalanceChange &&
+        initialTransaction.simulationData?.nativeBalanceChange?.isDecrease
+      ) {
+        return {
+          type: 'nftBuy',
+          chainId,
+          status,
+          timestamp,
+          raw: { type: 'localTransaction', data: transactionGroup },
+          data: {
+            hash,
+            token: {
+              direction: 'in',
+            },
+          },
+        };
+      }
 
       if (suppliedTokenBalanceChange) {
         return {
@@ -458,7 +487,7 @@ export function mapLocalTransaction(
             : undefined;
 
           return (
-            eventTopic?.toLowerCase() === TOKEN_TRANSFER_LOG_TOPIC_HASH &&
+            eventTopic?.toLowerCase() === tokenTransferLogTopicHash &&
             toAddress === fromAddress
           );
         });

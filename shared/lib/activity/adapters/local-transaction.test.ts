@@ -16,6 +16,7 @@ const baseAavePool = '0xa238dd80c259a72e81d7e4664a9801593f98d1c5';
 const lineaDai = '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5';
 const lineaMusd = '0xaca92e438df0b2401ff60da7e4337b687a2435da';
 const merklDistributor = '0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae';
+const flufScenesAndSounds = '0x6fad73936527d2a82aea5384d252462941b44042';
 
 const MERKL_CLAIM_ABI = [
   'function claim(address[] calldata users, address[] calldata tokens, uint256[] calldata amounts, bytes32[][] calldata proofs)',
@@ -824,6 +825,67 @@ describe('mapLocalTransaction', () => {
         },
         methodId: '0xd0e30db0',
         transactionType: TransactionType.contractInteraction,
+      },
+    });
+  });
+
+  it('maps a local contract interaction with an incoming NFT simulation change to an NFT buy', () => {
+    const transaction = {
+      chainId: CHAIN_IDS.MAINNET,
+      id: 'nft-buy-id',
+      hash: '0x2fda37c5b591c30367649c3c317621429bb5c59ff6a77b0a8cd48b56897168bc',
+      status: TransactionStatus.confirmed,
+      time: 1780606867763,
+      type: TransactionType.contractInteraction,
+      txParams: {
+        from,
+        to: '0x0000000000000068f116a894984e2db1123eb395',
+        value: '0x51d91a3da280',
+        data: '0x00000000',
+      },
+      simulationData: {
+        nativeBalanceChange: {
+          previousBalance: '0x49bfcb2d8362e',
+          newBalance: '0x44a23989a93ae',
+          difference: '0x51d91a3da280',
+          isDecrease: true,
+        },
+        tokenBalanceChanges: [
+          {
+            address: flufScenesAndSounds,
+            standard: 'erc1155',
+            id: '0x39',
+            previousBalance: '0x0',
+            newBalance: '0x1',
+            difference: '0x1',
+            isDecrease: false,
+          },
+        ],
+      },
+    };
+    const transactionGroup = {
+      hasCancelled: false,
+      hasRetried: false,
+      initialTransaction: transaction,
+      nonce: '0xd8',
+      primaryTransaction: transaction,
+      transactions: [transaction],
+    } as unknown as TransactionGroup;
+
+    const item = mapLocalTransaction(transactionGroup);
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
+      type: 'nftBuy',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1780606867763,
+      data: {
+        hash: '0x2fda37c5b591c30367649c3c317621429bb5c59ff6a77b0a8cd48b56897168bc',
+        token: {
+          direction: 'in',
+        },
       },
     });
   });
