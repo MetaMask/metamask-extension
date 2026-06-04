@@ -16,6 +16,7 @@ import {
 } from './sentry-get-state';
 import { makeTransport } from './sentry-make-transport';
 import { getInstallType, initInstallType } from './install-type';
+import { createTracesSampler } from './sentry-traces-sampler';
 
 const internalLog = createModuleLogger(log, 'internal');
 
@@ -87,6 +88,7 @@ function safeCloneReport(report) {
 function getClientOptions() {
   const environment = getSentryEnvironment();
   const sentryTarget = getSentryTarget();
+  const tracesSampleRate = getTracesSampleRate(sentryTarget);
 
   return {
     beforeBreadcrumb: beforeBreadcrumb(),
@@ -121,7 +123,12 @@ function getClientOptions() {
     // we can safely turn them off by setting the `sendClientReports` option to
     // `false`.
     sendClientReports: false,
-    tracesSampleRate: getTracesSampleRate(sentryTarget),
+    tracesSampleRate,
+    // Per-transaction sampler: caps high-volume custom transactions (seeded with
+    // the assets-controller spans that breached quota in 13.32.0 — see #43226)
+    // while every other transaction keeps the global `tracesSampleRate`.
+    // `tracesSampler` takes precedence over `tracesSampleRate` in Sentry.
+    tracesSampler: createTracesSampler({ defaultSampleRate: tracesSampleRate }),
     // If we are reporting to SENTRY_DSN_PERFORMANCE, we want to ignore all errors.
     ignoreErrors: sentryTarget === SENTRY_DSN_PERFORMANCE ? [/.*/u] : undefined,
     transport: makeTransport,

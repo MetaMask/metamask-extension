@@ -65,6 +65,13 @@ export type ManifestFlags = {
      */
     lazyLoadSubSampleRate?: number;
     /**
+     * Per-transaction sample-rate overrides, keyed by Sentry transaction name.
+     *
+     * Merged over the built-in defaults so high-volume custom transactions can be
+     * re-budgeted (or dropped) without shipping a new release.
+     */
+    sampleRatesByName?: Record<string, number>;
+    /**
      * Force enable Sentry (this is typically set by individual E2E tests in spec files)
      */
     forceEnable?: boolean;
