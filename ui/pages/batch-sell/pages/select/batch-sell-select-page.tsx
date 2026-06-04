@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { CaipChainId } from '@metamask/utils';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
@@ -41,13 +35,11 @@ export const BatchSellSelectPage = () => {
   const {
     selectedNetworkChainId,
     selectedAssetsId,
+    assetsOrderByBalance,
     setSelectedNetworkChainId,
     setSelectedAssetsId,
+    setAssetsOrderByBalance,
   } = useBatchSellSelection();
-
-  const [assetsOrderByBalance, setAssetsOrderByBalance] = useState<
-    'asc' | 'desc'
-  >('desc');
 
   const availableBatchSellNetworksList = useSelector(
     getAvailableBatchSellNetworks,

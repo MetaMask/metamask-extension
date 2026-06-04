@@ -16,6 +16,7 @@ type Args = {
   quotes?: BatchSellQuotesResults['quotes'];
   totalNetworkFee?: string | number;
   feeAssetId?: string;
+  isLoadingFees?: boolean;
 };
 
 export const useBatchSellAggregateValidation = ({
@@ -23,6 +24,7 @@ export const useBatchSellAggregateValidation = ({
   quotes,
   totalNetworkFee,
   feeAssetId,
+  isLoadingFees,
 }: Args): BatchSellValidationResult => {
   const sendAssetEntries = useMemo(
     () => Object.values(sendAssetsConfig),
@@ -48,7 +50,18 @@ export const useBatchSellAggregateValidation = ({
   }, [quotes]);
 
   const isInsufficientGasForFee = useMemo(() => {
-    if (totalNetworkFee === undefined || !nativeAsset) {
+    if (totalNetworkFee === undefined) {
+      // Fees are still being fetched — do not block the user yet.
+      if (isLoadingFees) {
+        return false;
+      }
+      // Fees finished loading but no value was returned, meaning the fee
+      // estimate could not be retrieved. Treat this as insufficient gas so
+      // the UI can surface an appropriate error.
+      return true;
+    }
+
+    if (!nativeAsset) {
       return false;
     }
 
@@ -89,6 +102,7 @@ export const useBatchSellAggregateValidation = ({
     return remainingNativeBalance.lt(new BigNumber(totalNetworkFee.toString()));
   }, [
     totalNetworkFee,
+    isLoadingFees,
     feeAssetId,
     nativeAsset,
     sourceChainId,

@@ -14,10 +14,15 @@ import { BatchSellReviewStateActionType } from '../types';
 import { batchSellReviewStateReducer } from '../reducers';
 import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
 import { useBatchSellSelection } from '../../../providers/batch-sell-selection-provider';
+import { useSortBatchSellAssetsByBalance } from '../../../../../hooks/batch-sell/useSortBatchSellAssetsByBalance';
 
 export const useBatchSellQuotesConfig = () => {
-  const { selectedNetworkChainId, selectedAssetsId, setSelectedAssetsId } =
-    useBatchSellSelection();
+  const {
+    selectedNetworkChainId,
+    selectedAssetsId,
+    assetsOrderByBalance,
+    setSelectedAssetsId,
+  } = useBatchSellSelection();
 
   const receivedAssets = useSelector((_state: BridgeAppState) =>
     getAvailableBatchSellReceivedAssetsForNetwork(
@@ -26,13 +31,19 @@ export const useBatchSellQuotesConfig = () => {
     ),
   );
 
-  const availableBatchSellAssetsForNetworkList = useSelector(
+  const selectedAvailableBatchSellAssetsForNetworkList = useSelector(
     (_state: BridgeAppState) =>
       getAvailableBatchSellSwapAssetsForNetwork(
         _state,
         selectedNetworkChainId ?? null,
       ).filter((asset) => selectedAssetsId?.includes(asset.assetId)),
   );
+
+  const availableBatchSellAssetsForNetworkList =
+    useSortBatchSellAssetsByBalance(
+      selectedAvailableBatchSellAssetsForNetworkList,
+      assetsOrderByBalance,
+    );
 
   const hasInitialSelection =
     Boolean(selectedAssetsId?.length) &&

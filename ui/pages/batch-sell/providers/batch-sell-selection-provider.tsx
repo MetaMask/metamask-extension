@@ -4,16 +4,20 @@ import type { CaipAssetType, CaipChainId } from '@metamask/utils';
 type BatchSellSelectionContextValue = {
   selectedNetworkChainId: CaipChainId | null;
   selectedAssetsId: CaipAssetType[];
+  assetsOrderByBalance: 'asc' | 'desc';
   setSelectedNetworkChainId: (chainId: CaipChainId | null) => void;
   setSelectedAssetsId: React.Dispatch<React.SetStateAction<CaipAssetType[]>>;
+  setAssetsOrderByBalance: React.Dispatch<React.SetStateAction<'asc' | 'desc'>>;
 };
 
 const BatchSellSelectionContext = createContext<BatchSellSelectionContextValue>(
   {
     selectedNetworkChainId: null,
     selectedAssetsId: [],
+    assetsOrderByBalance: 'desc',
     setSelectedNetworkChainId: () => undefined,
     setSelectedAssetsId: () => undefined,
+    setAssetsOrderByBalance: () => undefined,
   },
 );
 
@@ -28,15 +32,20 @@ export const BatchSellSelectionProvider = ({
   const [selectedNetworkChainId, setSelectedNetworkChainId] =
     useState<CaipChainId | null>(null);
   const [selectedAssetsId, setSelectedAssetsId] = useState<CaipAssetType[]>([]);
+  const [assetsOrderByBalance, setAssetsOrderByBalance] = useState<
+    'asc' | 'desc'
+  >('desc');
 
   const contextValue = useMemo(
     () => ({
       selectedNetworkChainId,
       selectedAssetsId,
+      assetsOrderByBalance,
       setSelectedNetworkChainId,
       setSelectedAssetsId,
+      setAssetsOrderByBalance,
     }),
-    [selectedNetworkChainId, selectedAssetsId],
+    [selectedNetworkChainId, selectedAssetsId, assetsOrderByBalance],
   );
 
   return (

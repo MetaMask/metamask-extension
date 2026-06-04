@@ -15,8 +15,10 @@ import { useBatchSellQuotesConfig } from './useBatchSellQuotesConfig';
 let mockSelectionState = {
   selectedNetworkChainId: null as string | null,
   selectedAssetsId: [] as string[],
+  assetsOrderByBalance: 'desc' as 'asc' | 'desc',
   setSelectedNetworkChainId: jest.fn(),
   setSelectedAssetsId: jest.fn(),
+  setAssetsOrderByBalance: jest.fn(),
 };
 
 jest.mock('../../../providers/batch-sell-selection-provider', () => ({
@@ -426,6 +428,57 @@ describe('useBatchSellQuotesConfig', () => {
       });
 
       expect(result.current.selectedReceiveAsset).toBe(initialAsset);
+    });
+  });
+
+  describe('sendAssetsConfig ordering', () => {
+    const ASSET_LOW_ID = 'eip155:1/erc20:0x111' as CaipAssetType;
+    const ASSET_HIGH_ID = 'eip155:1/erc20:0x222' as CaipAssetType;
+
+    const makeSortableAsset = (assetId: CaipAssetType, fiatAmount: number) =>
+      buildBatchSellAsset({
+        assetId,
+        chainId: ETH_CHAIN_ID,
+        tokenFiatAmount: fiatAmount,
+      });
+
+    beforeEach(() => {
+      mockSelectionState = {
+        ...mockSelectionState,
+        selectedAssetsId: [ASSET_LOW_ID, ASSET_HIGH_ID],
+      };
+      mockGetSwapAssets.mockReturnValue([
+        makeSortableAsset(ASSET_LOW_ID, 50),
+        makeSortableAsset(ASSET_HIGH_ID, 200),
+      ] as never);
+    });
+
+    it('orders sendAssetsConfig keys by balance descending when assetsOrderByBalance is desc', () => {
+      mockSelectionState = {
+        ...mockSelectionState,
+        assetsOrderByBalance: 'desc',
+      };
+
+      const { result } = renderHook(() => useBatchSellQuotesConfig());
+
+      expect(Object.keys(result.current.sendAssetsConfig)).toStrictEqual([
+        ASSET_HIGH_ID,
+        ASSET_LOW_ID,
+      ]);
+    });
+
+    it('orders sendAssetsConfig keys by balance ascending when assetsOrderByBalance is asc', () => {
+      mockSelectionState = {
+        ...mockSelectionState,
+        assetsOrderByBalance: 'asc',
+      };
+
+      const { result } = renderHook(() => useBatchSellQuotesConfig());
+
+      expect(Object.keys(result.current.sendAssetsConfig)).toStrictEqual([
+        ASSET_LOW_ID,
+        ASSET_HIGH_ID,
+      ]);
     });
   });
 

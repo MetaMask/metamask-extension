@@ -75,6 +75,7 @@ export const BatchSellReviewPage = () => {
     quotes: data?.quotes,
     totalNetworkFee: batchFees?.amount,
     feeAssetId: batchFees?.asset.assetId,
+    isLoadingFees: feesAreLoading,
   });
 
   const atLeastOneQuoteAvailable = useMemo(

@@ -17,14 +17,17 @@ const TestConsumer = () => {
   const {
     selectedNetworkChainId,
     selectedAssetsId,
+    assetsOrderByBalance,
     setSelectedNetworkChainId,
     setSelectedAssetsId,
+    setAssetsOrderByBalance,
   } = useBatchSellSelection();
 
   return (
     <div>
       <span data-testid="chain-id">{selectedNetworkChainId ?? 'null'}</span>
       <span data-testid="assets">{selectedAssetsId.join(',')}</span>
+      <span data-testid="order">{assetsOrderByBalance}</span>
       <button onClick={() => setSelectedNetworkChainId(CHAIN_ID)}>
         set chain
       </button>
@@ -35,6 +38,12 @@ const TestConsumer = () => {
         set assets
       </button>
       <button onClick={() => setSelectedAssetsId([])}>clear assets</button>
+      <button onClick={() => setAssetsOrderByBalance('asc')}>
+        set order asc
+      </button>
+      <button onClick={() => setAssetsOrderByBalance('desc')}>
+        set order desc
+      </button>
     </div>
   );
 };
@@ -58,6 +67,12 @@ describe('BatchSellSelectionProvider', () => {
       renderWithProvider();
 
       expect(screen.getByTestId('assets')).toHaveTextContent('');
+    });
+
+    it('exposes assetsOrderByBalance as desc', () => {
+      renderWithProvider();
+
+      expect(screen.getByTestId('order')).toHaveTextContent('desc');
     });
 
     it('renders children', () => {
@@ -119,17 +134,46 @@ describe('BatchSellSelectionProvider', () => {
     });
   });
 
+  describe('setAssetsOrderByBalance', () => {
+    it('updates assetsOrderByBalance to asc', () => {
+      renderWithProvider();
+
+      act(() => {
+        fireEvent.click(screen.getByText('set order asc'));
+      });
+
+      expect(screen.getByTestId('order')).toHaveTextContent('asc');
+    });
+
+    it('updates assetsOrderByBalance back to desc', () => {
+      renderWithProvider();
+
+      act(() => {
+        fireEvent.click(screen.getByText('set order asc'));
+      });
+      act(() => {
+        fireEvent.click(screen.getByText('set order desc'));
+      });
+
+      expect(screen.getByTestId('order')).toHaveTextContent('desc');
+    });
+  });
+
   describe('useBatchSellSelection', () => {
     it('returns the default context values when used outside the provider', () => {
       const DefaultConsumer = () => {
-        const { selectedNetworkChainId, selectedAssetsId } =
-          useBatchSellSelection();
+        const {
+          selectedNetworkChainId,
+          selectedAssetsId,
+          assetsOrderByBalance,
+        } = useBatchSellSelection();
         return (
           <div>
             <span data-testid="chain-id">
               {selectedNetworkChainId ?? 'null'}
             </span>
             <span data-testid="assets">{selectedAssetsId.join(',')}</span>
+            <span data-testid="order">{assetsOrderByBalance}</span>
           </div>
         );
       };
@@ -138,6 +182,7 @@ describe('BatchSellSelectionProvider', () => {
 
       expect(screen.getByTestId('chain-id')).toHaveTextContent('null');
       expect(screen.getByTestId('assets')).toHaveTextContent('');
+      expect(screen.getByTestId('order')).toHaveTextContent('desc');
     });
   });
 });

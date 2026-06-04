@@ -167,17 +167,32 @@ describe('useBatchSellAggregateValidation', () => {
   });
 
   describe('isInsufficientGasForFee', () => {
-    it('returns false when totalNetworkFee is undefined', () => {
+    it('returns false when totalNetworkFee is undefined and fees are still loading', () => {
       mockUseSelector.mockReturnValue(MOCK_NATIVE_ASSET);
 
       const { result } = renderHook(() =>
         useBatchSellAggregateValidation({
           sendAssetsConfig: makeTokenSendAssetsConfig(),
           totalNetworkFee: undefined,
+          isLoadingFees: true,
         }),
       );
 
       expect(result.current.isInsufficientGasForFee).toBe(false);
+    });
+
+    it('returns true when totalNetworkFee is undefined and fees have finished loading (fee retrieval failed)', () => {
+      mockUseSelector.mockReturnValue(MOCK_NATIVE_ASSET);
+
+      const { result } = renderHook(() =>
+        useBatchSellAggregateValidation({
+          sendAssetsConfig: makeTokenSendAssetsConfig(),
+          totalNetworkFee: undefined,
+          isLoadingFees: false,
+        }),
+      );
+
+      expect(result.current.isInsufficientGasForFee).toBe(true);
     });
 
     it('returns false when nativeAsset is undefined', () => {
@@ -342,12 +357,13 @@ describe('useBatchSellAggregateValidation', () => {
   });
 
   describe('empty sendAssetsConfig', () => {
-    it('handles an empty sendAssetsConfig gracefully', () => {
+    it('handles an empty sendAssetsConfig gracefully when fees are loading', () => {
       mockUseSelector.mockReturnValue(undefined);
 
       const { result } = renderHook(() =>
         useBatchSellAggregateValidation({
           sendAssetsConfig: {},
+          isLoadingFees: true,
         }),
       );
 
