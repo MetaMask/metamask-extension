@@ -33,7 +33,24 @@ async function main() {
     GITHUB_ACTIONS: process.env.GITHUB_ACTIONS === 'true',
   };
 
-  const github = new Octokit({ auth: env.GITHUB_TOKEN });
+  // Abort individual GitHub API requests that hang instead of letting them
+  // stall the whole job until the workflow-level timeout. When a request times
+  // out it surfaces as an error that callers already handle gracefully.
+  const REQUEST_TIMEOUT_MS = Number(process.env.REQUEST_TIMEOUT_MS) || 30_000;
+
+  const github = new Octokit({
+    auth: env.GITHUB_TOKEN,
+    request: {
+      fetch: (
+        url: Parameters<typeof fetch>[0],
+        options: Parameters<typeof fetch>[1] = {},
+      ) =>
+        fetch(url, {
+          ...options,
+          signal: options.signal ?? AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+        }),
+    },
+  });
 
   const jobsCache: { [runId: number]: Job[] } = {};
 
