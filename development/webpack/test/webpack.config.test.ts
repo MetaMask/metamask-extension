@@ -20,7 +20,10 @@ import { ManifestPluginOptions } from '../utils/plugins/ManifestPlugin/types';
 import { version as packageVersion } from '../../../package.json';
 import { CHROME_MANIFEST_KEY_NON_PRODUCTION } from '../utils/constants';
 import { BUNDLE_SIZE_SUMMARY_FILE } from '../utils/plugins/ManifestPlugin/stats';
-import { DEFAULT_ZIP_MTIME } from '../utils/plugins/ManifestPlugin/zip-mtime';
+import {
+  DEFAULT_ZIP_MTIME,
+  isValidZipMtime,
+} from '../utils/plugins/ManifestPlugin/zip-mtime';
 
 function getWebpackInstance(config: Configuration) {
   // webpack logs a warning if we pass config.watch to it without a callback
@@ -28,6 +31,14 @@ function getWebpackInstance(config: Configuration) {
   // so we just delete the watch property.
   delete config.watch;
   return webpack(config);
+}
+
+function getExpectedDefaultZipMtime() {
+  const latestCommitTimestamp = getLatestCommit().timestamp();
+  if (isValidZipMtime(latestCommitTimestamp)) {
+    return latestCommitTimestamp;
+  }
+  return DEFAULT_ZIP_MTIME;
 }
 
 async function getWebpackWarnings(config: Configuration): Promise<string[]> {
@@ -442,7 +453,10 @@ inquire('long');
       manifestPlugin.options.zipOptions.outFilePath,
       `../builds/metamask-[browser]-${packageVersion}.zip`,
     );
-    assert.strictEqual(manifestPlugin.options.zipOptions.mtime, DEFAULT_ZIP_MTIME);
+    assert.strictEqual(
+      manifestPlugin.options.zipOptions.mtime,
+      getExpectedDefaultZipMtime(),
+    );
     assert.deepStrictEqual(manifestPlugin.options.transform, undefined);
     assert(manifestPlugin.options.stats, 'Stats options should be present');
     assert.strictEqual(

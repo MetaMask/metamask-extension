@@ -1,3 +1,5 @@
+import { getLatestCommit } from '../../git';
+
 /**
  * Zip file entries use FAT timestamps. Standard zip timestamps must be in the
  * range 1980-01-01 through 2099-12-31.
@@ -68,13 +70,21 @@ export function validateZipMtime(
  * SOURCE_DATE_EPOCH is specified in seconds. Zip mtime values are represented
  * in milliseconds throughout this build tool.
  *
- * @param sourceDateEpoch - Optional SOURCE_DATE_EPOCH override.
+ * If SOURCE_DATE_EPOCH is not set, fall back to the timestamp of the latest commit.
+ * If git is not available or there is no commit, fall back to the default zip
+ * mtime (MetaMask's birthday).
+ *
  * @returns The zip mtime in milliseconds.
  */
-export function getDefaultZipMtime(
-  sourceDateEpoch = process.env.SOURCE_DATE_EPOCH,
-): number {
+export function getDefaultZipMtime(): number {
+  // Implement the SOURCE_DATE_EPOCH standard:
+  // https://reproducible-builds.org/docs/source-date-epoch/
+  const sourceDateEpoch = process.env.SOURCE_DATE_EPOCH;
   if (sourceDateEpoch === undefined) {
+    const fallbackMtime = getLatestCommit().timestamp();
+    if (isValidZipMtime(fallbackMtime)) {
+      return fallbackMtime;
+    }
     return DEFAULT_ZIP_MTIME;
   }
 
