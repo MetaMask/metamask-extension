@@ -9,10 +9,7 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import {
-  SmartTransactionsController,
-  SmartTransactionStatuses,
-} from '@metamask/smart-transactions-controller';
+import { SmartTransactionsController } from '@metamask/smart-transactions-controller';
 import {
   TransactionPayControllerMessenger,
   TransactionPayPublishHook,
@@ -88,27 +85,12 @@ export const TransactionControllerInit: MessengerClientInitFunction<
   } = request;
 
   const {
-    gasFeeController,
     keyringController,
-    networkController,
-    onboardingController,
     preferencesController,
     smartTransactionsController,
   } = getControllers(request);
 
   const messengerClient: TransactionController = new TransactionController({
-    getCurrentNetworkEIP1559Compatibility: () =>
-      // @ts-expect-error Controller type does not support undefined return value
-      initMessenger.call('NetworkController:getEIP1559Compatibility'),
-    getCurrentAccountEIP1559Compatibility: async () => true,
-    // @ts-expect-error Mismatched types
-    getExternalPendingTransactions: (address) =>
-      getExternalPendingTransactions(smartTransactionsController(), address),
-    getGasFeeEstimates: (...args) =>
-      gasFeeController().fetchGasFeeEstimates(...args),
-    getNetworkClientRegistry: (...args) =>
-      networkController().getNetworkClientRegistry(...args),
-    getNetworkState: () => networkController().state,
     // @ts-expect-error Controller type does not support undefined return value
     getPermittedAccounts,
     getSavedGasFees: (chainId) => {
@@ -169,9 +151,6 @@ export const TransactionControllerInit: MessengerClientInitFunction<
     isSimulationEnabled: () =>
       preferencesController().state.useTransactionSimulations,
     messenger: controllerMessenger,
-    pendingTransactions: {
-      isResubmitEnabled: () => false,
-    },
     publicKeyEIP7702: process.env.EIP_7702_PUBLIC_KEY as Hex | undefined,
     testGasFeeFlows: Boolean(process.env.TEST_GAS_FEE_FLOWS === 'true'),
     // @ts-expect-error Controller uses string for names rather than enum
@@ -259,8 +238,6 @@ export const TransactionControllerInit: MessengerClientInitFunction<
         return result;
       },
     },
-    // @ts-expect-error Keyring controller expects TxData returned but TransactionController expects TypedTransaction
-    sign: (...args) => keyringController().signTransaction(...args),
     state: persistedState.TransactionController,
   });
 
@@ -310,28 +287,12 @@ function getControllers(
   >,
 ) {
   return {
-    gasFeeController: () => request.getMessengerClient('GasFeeController'),
     keyringController: () => request.getMessengerClient('KeyringController'),
-    networkController: () => request.getMessengerClient('NetworkController'),
-    onboardingController: () =>
-      request.getMessengerClient('OnboardingController'),
     preferencesController: () =>
       request.getMessengerClient('PreferencesController'),
     smartTransactionsController: () =>
       request.getMessengerClient('SmartTransactionsController'),
-    institutionalSnapController: () =>
-      request.getMessengerClient('InstitutionalSnapController'),
   };
-}
-
-function getExternalPendingTransactions(
-  smartTransactionsController: SmartTransactionsController,
-  address: string,
-) {
-  return smartTransactionsController.getTransactions({
-    addressFrom: address,
-    status: SmartTransactionStatuses.PENDING,
-  });
 }
 
 function addTransactionControllerListeners(
