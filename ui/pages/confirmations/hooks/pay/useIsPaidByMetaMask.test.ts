@@ -1,5 +1,8 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import type { TransactionPayTotals } from '@metamask/transaction-pay-controller';
 import { useTransactionMetadataRequestOptional } from '../transactions/useTransactionMetadataRequest';
 import { useTransactionPayTotals } from './useTransactionPayData';
@@ -14,7 +17,9 @@ const useTransactionMetadataRequestOptionalMock = jest.mocked(
 const useTransactionPayTotalsMock = jest.mocked(useTransactionPayTotals);
 
 function mockConfirmation(type: TransactionType) {
-  useTransactionMetadataRequestOptionalMock.mockReturnValue({ type });
+  useTransactionMetadataRequestOptionalMock.mockReturnValue({
+    type,
+  } as TransactionMeta);
 }
 
 function mockTotals(overrides?: Partial<TransactionPayTotals['fees']>) {
