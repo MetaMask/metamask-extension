@@ -30,6 +30,11 @@ describe('Token List Sorting', function () {
       {
         ...testFixtures,
         title: (this as Context).test?.fullTitle(),
+        manifestFlags: {
+          remoteFeatureFlags: {
+            extensionUxTokenManagementFilter: false,
+          },
+        },
         testSpecificMock: async (mockServer: MockttpServer) => {
           await mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': {
