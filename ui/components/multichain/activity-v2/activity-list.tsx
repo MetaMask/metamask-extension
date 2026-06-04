@@ -271,7 +271,7 @@ export const ActivityList = ({ filter }: Props) => {
               return (
                 <div
                   key={String(virtualItem.key)}
-                  className="absolute top-0 left-0 w-full"
+                  className="absolute top-0 left-0 w-full [container-type:inline-size]"
                   data-index={virtualItem.index}
                   ref={(node) => {
                     virtualizer.measureElement(node);
