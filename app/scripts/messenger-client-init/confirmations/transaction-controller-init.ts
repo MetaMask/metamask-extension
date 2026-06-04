@@ -60,25 +60,15 @@ export const TransactionControllerInit: MessengerClientInitFunction<
   const messengerClient: TransactionController = new TransactionController({
     // @ts-expect-error Controller type does not support undefined return value
     getPermittedAccounts,
-    getSavedGasFees: (chainId) => {
-      const { advancedGasFee } = initMessenger.call(
-        'PreferencesController:getState',
-      );
-      return advancedGasFee[chainId] as unknown as SavedGasFees | undefined;
-    },
-    getSimulationConfig: async (url, opts) => {
-      const getToken = () =>
-        initMessenger.call('AuthenticationController:getBearerToken');
-      const getShieldSubscription = () =>
-        initMessenger.call(
-          'SubscriptionController:getSubscriptionByProduct',
-          PRODUCT_TYPES.SHIELD,
-        );
-      const origin = opts?.txMeta?.origin;
-      return getShieldGatewayConfig(getToken, getShieldSubscription, url, {
-        origin,
-      });
-    },
+    getSavedGasFees: getSavedGasFees.bind(null, { messenger: initMessenger }),
+    getSimulationConfig: getSimulationConfig.bind(null, {
+      messenger: initMessenger,
+    }),
+    hooks: getTransactionControllerHooks({
+      getFlatState,
+      getTransactionMetricsRequest,
+      messenger: initMessenger,
+    }),
     incomingTransactions: {
       client: `extension-${process.env.METAMASK_VERSION?.replace(/\./gu, '-')}`,
       includeTokenTransfers: false,
@@ -86,34 +76,10 @@ export const TransactionControllerInit: MessengerClientInitFunction<
       updateTransactions: true,
     },
     isAutomaticGasFeeUpdateEnabled,
-    isEIP7702GasFeeTokensEnabled: async (transactionMeta) => {
-      if (
-        !(await accountSupports7702(
-          transactionMeta.txParams?.from,
-          getKeyringController(initMessenger),
-        ))
-      ) {
-        return false;
-      }
-
-      const { chainId, isExternalSign } = transactionMeta;
-      const uiState = getUIState(getFlatState());
-
-      // @ts-expect-error Smart transaction selector types does not match controller state
-      const isSmartTransactionEnabled = getIsSmartTransaction(uiState, chainId);
-
-      const isSendBundleSupportedChain = await isSendBundleSupported(chainId);
-
-      // EIP7702 gas fee tokens are enabled when:
-      // - Smart transactions are NOT enabled, OR
-      // - Send bundle is NOT supported, OR
-      // - Gas fee token was provided when creating transaction
-      return (
-        !isSmartTransactionEnabled ||
-        !isSendBundleSupportedChain ||
-        Boolean(isExternalSign)
-      );
-    },
+    isEIP7702GasFeeTokensEnabled: isEIP7702GasFeeTokensEnabled.bind(null, {
+      getFlatState,
+      messenger: initMessenger,
+    }),
     isFirstTimeInteractionEnabled: () =>
       initMessenger.call('PreferencesController:getState').securityAlertsEnabled,
     isSimulationEnabled: () =>
@@ -121,15 +87,10 @@ export const TransactionControllerInit: MessengerClientInitFunction<
         .useTransactionSimulations,
     messenger: controllerMessenger,
     publicKeyEIP7702: process.env.EIP_7702_PUBLIC_KEY as Hex | undefined,
+    state: persistedState.TransactionController,
     testGasFeeFlows: Boolean(process.env.TEST_GAS_FEE_FLOWS === 'true'),
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
-    hooks: getTransactionControllerHooks({
-      getFlatState,
-      getTransactionMetricsRequest,
-      messenger: initMessenger,
-    }),
-    state: persistedState.TransactionController,
   });
 
   addTransactionControllerListeners(
@@ -233,6 +194,70 @@ function addTransactionControllerListeners(
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     handleTransactionSubmitted.bind(null, transactionMetricsRequest),
+  );
+}
+
+function getSavedGasFees(
+  { messenger }: { messenger: TransactionControllerInitMessenger },
+  chainId: string,
+): SavedGasFees | undefined {
+  const { advancedGasFee } = messenger.call('PreferencesController:getState');
+  return advancedGasFee[chainId] as unknown as SavedGasFees | undefined;
+}
+
+async function getSimulationConfig(
+  { messenger }: { messenger: TransactionControllerInitMessenger },
+  url: string,
+  opts?: { txMeta?: { origin?: string } },
+) {
+  const getToken = () =>
+    messenger.call('AuthenticationController:getBearerToken');
+  const getShieldSubscription = () =>
+    messenger.call(
+      'SubscriptionController:getSubscriptionByProduct',
+      PRODUCT_TYPES.SHIELD,
+    );
+  const origin = opts?.txMeta?.origin;
+  return getShieldGatewayConfig(getToken, getShieldSubscription, url, {
+    origin,
+  });
+}
+
+async function isEIP7702GasFeeTokensEnabled(
+  {
+    getFlatState,
+    messenger,
+  }: {
+    getFlatState: () => MessengerClientFlatState;
+    messenger: TransactionControllerInitMessenger;
+  },
+  transactionMeta: TransactionMeta,
+): Promise<boolean> {
+  if (
+    !(await accountSupports7702(
+      transactionMeta.txParams?.from,
+      getKeyringController(messenger),
+    ))
+  ) {
+    return false;
+  }
+
+  const { chainId, isExternalSign } = transactionMeta;
+  const uiState = getUIState(getFlatState());
+
+  // @ts-expect-error Smart transaction selector types does not match controller state
+  const isSmartTransactionEnabled = getIsSmartTransaction(uiState, chainId);
+
+  const isSendBundleSupportedChain = await isSendBundleSupported(chainId);
+
+  // EIP7702 gas fee tokens are enabled when:
+  // - Smart transactions are NOT enabled, OR
+  // - Send bundle is NOT supported, OR
+  // - Gas fee token was provided when creating transaction
+  return (
+    !isSmartTransactionEnabled ||
+    !isSendBundleSupportedChain ||
+    Boolean(isExternalSign)
   );
 }
 
