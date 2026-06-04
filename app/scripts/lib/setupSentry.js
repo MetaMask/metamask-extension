@@ -10,6 +10,10 @@ import { getSentryRelease } from '../../../shared/lib/sentry-release';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { metaMetricsIntegration } from './sentry-metametrics';
 import {
+  BACKEND_TRACE_PROPAGATION_TARGETS,
+  consensysTracePropagationIntegration,
+} from './sentry-trace-propagation';
+import {
   getMetaMetricsState,
   getMetaMetricsStateFromAppState,
   getState,
@@ -88,6 +92,39 @@ function getClientOptions() {
   const environment = getSentryEnvironment();
   const sentryTarget = getSentryTarget();
 
+  // Distributed-trace propagation to backend hosts (W3C `traceparent` + RAPID
+  // baggage) is gated by the same kill switch as the cross-boundary RPC
+  // envelope, so a single flag short-circuits all outbound propagation.
+  const distributedTracingEnabled =
+    !process.env.SENTRY_DISTRIBUTED_TRACING_DISABLED;
+
+  const integrations = [
+    Sentry.dedupeIntegration(),
+    Sentry.extraErrorDataIntegration(),
+    Sentry.browserTracingIntegration({
+      // Creates ui.long-animation-frame spans (falls back to ui.long-task).
+      // Pairs with TBT aggregate measurements from performance-observers.ts.
+      enableLongAnimationFrame: true,
+      shouldCreateSpanForRequest,
+      // Unblocks automatic `sentry-trace` / `baggage` header injection on
+      // outbound HTTPS to backend API hosts (v8 defaults to same-origin only).
+      ...(distributedTracingEnabled && {
+        tracePropagationTargets: BACKEND_TRACE_PROPAGATION_TARGETS,
+      }),
+    }),
+    metaMetricsIntegration({
+      getMetaMetricsState,
+      log,
+    }),
+  ];
+
+  if (distributedTracingEnabled) {
+    // Registered after `browserTracingIntegration` so the SDK's
+    // `sentry-trace` / `baggage` headers are already attached when this
+    // integration appends the W3C `traceparent` and RAPID baggage.
+    integrations.push(consensysTracePropagationIntegration({ log }));
+  }
+
   return {
     beforeBreadcrumb: beforeBreadcrumb(),
     // Clone before rewriteReport so we never mutate the event object that dedupeIntegration
@@ -99,20 +136,7 @@ function getClientOptions() {
     dist: isManifestV3 ? 'mv3' : 'mv2',
     dsn: sentryTarget,
     environment,
-    integrations: [
-      Sentry.dedupeIntegration(),
-      Sentry.extraErrorDataIntegration(),
-      Sentry.browserTracingIntegration({
-        // Creates ui.long-animation-frame spans (falls back to ui.long-task).
-        // Pairs with TBT aggregate measurements from performance-observers.ts.
-        enableLongAnimationFrame: true,
-        shouldCreateSpanForRequest,
-      }),
-      metaMetricsIntegration({
-        getMetaMetricsState,
-        log,
-      }),
-    ],
+    integrations,
     release: RELEASE,
     // Client reports are automatically sent when a page's visibility changes to
     // "hidden", but cancelled (with an Error) that gets logged to the console.
