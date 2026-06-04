@@ -19,6 +19,9 @@ jobs:
       REPO: ${{ github.repository }}
       PR_NUMBER: ${{ github.event.issue.number }}
       COMMENT_ID: ${{ github.event.comment.id }}
+    permissions:
+      contents: read
+      id-token: write
     outputs:
       IS_CROSS_REPO_PR: ${{ steps.is-cross-repo.outputs.IS_CROSS_REPO_PR }}
       RUN_ID: ${{ steps.find-ci-run.outputs.RUN_ID }}
@@ -131,6 +134,9 @@ jobs:
       VALIDATION_FAILED: ${{ needs.prepare.outputs.VALIDATION_FAILED }}
       FAILED_JOBS: ${{ needs.prepare.outputs.FAILED_JOBS }}
       ACTION_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - name: Get token
         id: token

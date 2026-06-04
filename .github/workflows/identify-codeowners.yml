@@ -26,6 +26,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: pr-comment
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - name: Get token
         id: token
