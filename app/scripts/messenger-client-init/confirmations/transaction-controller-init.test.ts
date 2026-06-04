@@ -524,20 +524,10 @@ describe('Transaction Controller Init', () => {
           ({
             upsertTransactionUIMetricsFragment: upsertFragmentMock,
           }) as unknown as ReturnType<PHArgs['getTransactionMetricsRequest']>,
-        initMessenger: {
+        messenger: {
           call: jest.fn(),
         } as unknown as TransactionControllerInitMessenger,
-        keyringController: {
-          getKeyringForAccount: jest
-            .fn()
-            .mockResolvedValue({ type: 'HD Key Tree' }),
-        },
         signedTx: '0xsigned',
-        smartTransactionsController:
-          {} as PHArgs['smartTransactionsController'],
-        transactionController: {
-          isAtomicBatchSupported: jest.fn(),
-        } as unknown as PHArgs['transactionController'],
         transactionMeta: {
           ...mockTransactionMeta,
           isExternalSign: true,
@@ -578,18 +568,10 @@ describe('Transaction Controller Init', () => {
           ({
             upsertTransactionUIMetricsFragment: upsertFragmentMock,
           }) as unknown as ReturnType<PHArgs['getTransactionMetricsRequest']>,
-        initMessenger: {
+        messenger: {
           call: jest.fn(),
         } as unknown as TransactionControllerInitMessenger,
-        keyringController: {
-          getKeyringForAccount: jest
-            .fn()
-            .mockResolvedValue({ type: 'Ledger Hardware' }),
-        },
         signedTx: '0xsigned',
-        smartTransactionsController:
-          {} as PHArgs['smartTransactionsController'],
-        transactionController: {} as PHArgs['transactionController'],
         transactionMeta: mockTransactionMeta,
       });
 
@@ -620,20 +602,10 @@ describe('Transaction Controller Init', () => {
                 throw new Error('metrics error');
               }),
           }) as unknown as ReturnType<PHArgs['getTransactionMetricsRequest']>,
-        initMessenger: {
+        messenger: {
           call: jest.fn(),
         } as unknown as TransactionControllerInitMessenger,
-        keyringController: {
-          getKeyringForAccount: jest
-            .fn()
-            .mockResolvedValue({ type: 'HD Key Tree' }),
-        },
         signedTx: '0xsigned',
-        smartTransactionsController:
-          {} as PHArgs['smartTransactionsController'],
-        transactionController: {
-          isAtomicBatchSupported: jest.fn(),
-        } as unknown as PHArgs['transactionController'],
         transactionMeta: {
           ...mockTransactionMeta,
           isExternalSign: true,
@@ -673,18 +645,10 @@ describe('Transaction Controller Init', () => {
                 throw new Error('metrics error');
               }),
           }) as unknown as ReturnType<PHArgs['getTransactionMetricsRequest']>,
-        initMessenger: {
+        messenger: {
           call: jest.fn(),
         } as unknown as TransactionControllerInitMessenger,
-        keyringController: {
-          getKeyringForAccount: jest
-            .fn()
-            .mockResolvedValue({ type: 'Ledger Hardware' }),
-        },
         signedTx: '0xsigned',
-        smartTransactionsController:
-          {} as PHArgs['smartTransactionsController'],
-        transactionController: {} as PHArgs['transactionController'],
         transactionMeta: mockTransactionMeta,
       });
 
@@ -784,20 +748,10 @@ describe('Transaction Controller Init', () => {
           ({
             upsertTransactionUIMetricsFragment: jest.fn(),
           }) as unknown as ReturnType<PHArgs['getTransactionMetricsRequest']>,
-        initMessenger: {
+        messenger: {
           call: jest.fn(),
         } as unknown as TransactionControllerInitMessenger,
-        keyringController: {
-          getKeyringForAccount: jest
-            .fn()
-            .mockResolvedValue({ type: 'HD Key Tree' }),
-        },
         signedTx: '0xsigned',
-        smartTransactionsController:
-          {} as PHArgs['smartTransactionsController'],
-        transactionController: {
-          isAtomicBatchSupported: jest.fn(),
-        } as unknown as PHArgs['transactionController'],
         transactionMeta: {
           ...mockTransactionMeta,
           type: TransactionType.revokeDelegation,

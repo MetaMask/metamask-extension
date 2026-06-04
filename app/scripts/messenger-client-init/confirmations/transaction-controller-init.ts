@@ -9,7 +9,7 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { SmartTransactionsController } from '@metamask/smart-transactions-controller';
+import type { SmartTransactionsController } from '@metamask/smart-transactions-controller';
 import {
   TransactionPayControllerMessenger,
   TransactionPayPublishHook,
@@ -48,7 +48,6 @@ import { MessengerClientFlatState } from '../controller-list';
 import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 import {
   MessengerClientInitFunction,
-  MessengerClientInitRequest,
   MessengerClientInitResult,
 } from '../types';
 
@@ -84,19 +83,14 @@ export const TransactionControllerInit: MessengerClientInitFunction<
     persistedState,
   } = request;
 
-  const {
-    keyringController,
-    preferencesController,
-    smartTransactionsController,
-  } = getControllers(request);
-
   const messengerClient: TransactionController = new TransactionController({
     // @ts-expect-error Controller type does not support undefined return value
     getPermittedAccounts,
     getSavedGasFees: (chainId) => {
-      return preferencesController().state.advancedGasFee[
-        chainId
-      ] as unknown as SavedGasFees | undefined;
+      const { advancedGasFee } = initMessenger.call(
+        'PreferencesController:getState',
+      );
+      return advancedGasFee[chainId] as unknown as SavedGasFees | undefined;
     },
     getSimulationConfig: async (url, opts) => {
       const getToken = () =>
@@ -122,7 +116,7 @@ export const TransactionControllerInit: MessengerClientInitFunction<
       if (
         !(await accountSupports7702(
           transactionMeta.txParams?.from,
-          keyringController as Parameters<typeof accountSupports7702>[1],
+          getKeyringController(initMessenger),
         ))
       ) {
         return false;
@@ -147,9 +141,10 @@ export const TransactionControllerInit: MessengerClientInitFunction<
       );
     },
     isFirstTimeInteractionEnabled: () =>
-      preferencesController().state.securityAlertsEnabled,
+      initMessenger.call('PreferencesController:getState').securityAlertsEnabled,
     isSimulationEnabled: () =>
-      preferencesController().state.useTransactionSimulations,
+      initMessenger.call('PreferencesController:getState')
+        .useTransactionSimulations,
     messenger: controllerMessenger,
     publicKeyEIP7702: process.env.EIP_7702_PUBLIC_KEY as Hex | undefined,
     testGasFeeFlows: Boolean(process.env.TEST_GAS_FEE_FLOWS === 'true'),
@@ -197,19 +192,13 @@ export const TransactionControllerInit: MessengerClientInitFunction<
         publishHook({
           flatState: getFlatState(),
           getTransactionMetricsRequest,
-          initMessenger,
-          keyringController,
+          messenger: initMessenger,
           signedTx,
-          smartTransactionsController: smartTransactionsController(),
-          transactionController: messengerClient,
           transactionMeta,
         }),
       publishBatch: async (_request: PublishBatchHookRequest) => {
         const result = await publishBatchHook({
-          transactionController: messengerClient,
-          smartTransactionsController: smartTransactionsController(),
-          hookControllerMessenger:
-            initMessenger as SmartTransactionHookMessenger,
+          messenger: initMessenger,
           flatState: getFlatState(),
           transactions: _request.transactions as PublishBatchHookTransaction[],
         });
@@ -280,21 +269,6 @@ function getApi(
   };
 }
 
-function getControllers(
-  request: MessengerClientInitRequest<
-    TransactionControllerMessenger,
-    TransactionControllerInitMessenger
-  >,
-) {
-  return {
-    keyringController: () => request.getMessengerClient('KeyringController'),
-    preferencesController: () =>
-      request.getMessengerClient('PreferencesController'),
-    smartTransactionsController: () =>
-      request.getMessengerClient('SmartTransactionsController'),
-  };
-}
-
 function addTransactionControllerListeners(
   initMessenger: TransactionControllerInitMessenger,
   getTransactionMetricsRequest: () => TransactionMetricsRequest,
@@ -360,6 +334,28 @@ function addTransactionControllerListeners(
   );
 }
 
+function getKeyringController(messenger: TransactionControllerInitMessenger) {
+  return {
+    getKeyringForAccount: (address: string) =>
+      messenger.call('KeyringController:getKeyringForAccount', address),
+  };
+}
+
+function getSmartTransactionsController(
+  messenger: TransactionControllerInitMessenger,
+): SmartTransactionsController {
+  return {
+    getFees: messenger.call.bind(
+      messenger,
+      'SmartTransactionsController:getFees',
+    ),
+    submitSignedTransactions: messenger.call.bind(
+      messenger,
+      'SmartTransactionsController:submitSignedTransactions',
+    ),
+  } as unknown as SmartTransactionsController;
+}
+
 function getUIState(flatState: MessengerClientFlatState) {
   return { metamask: flatState };
 }
@@ -367,20 +363,14 @@ function getUIState(flatState: MessengerClientFlatState) {
 export async function publishHook({
   flatState,
   getTransactionMetricsRequest,
-  initMessenger,
-  keyringController,
+  messenger,
   signedTx,
-  smartTransactionsController,
-  transactionController,
   transactionMeta,
 }: {
   flatState: MessengerClientFlatState;
   getTransactionMetricsRequest: () => TransactionMetricsRequest;
-  initMessenger: TransactionControllerInitMessenger;
-  keyringController: Parameters<typeof accountSupports7702>[1];
+  messenger: TransactionControllerInitMessenger;
   signedTx: string;
-  smartTransactionsController: SmartTransactionsController;
-  transactionController: TransactionController;
   transactionMeta: TransactionMeta;
 }) {
   const { isSmartTransaction, featureFlags } = getSmartTransactionCommonParams(
@@ -393,7 +383,7 @@ export async function publishHook({
 
   const payResult = await new TransactionPayPublishHook({
     isSmartTransaction: () => isSmartTransaction,
-    messenger: initMessenger as unknown as TransactionPayControllerMessenger,
+    messenger: messenger as unknown as TransactionPayControllerMessenger,
   }).getHook()(transactionMeta, signedTx as Hex);
 
   if (payResult?.transactionHash) {
@@ -404,7 +394,7 @@ export async function publishHook({
 
   const keyringSupports7702 = await accountSupports7702(
     transactionMeta.txParams?.from,
-    keyringController,
+    getKeyringController(messenger),
   );
 
   const isRevokeDelegation =
@@ -423,7 +413,7 @@ export async function publishHook({
   ) {
     attemptedHook = true;
     const hook = new Delegation7702PublishHook({
-      messenger: initMessenger,
+      messenger,
     }).getHook();
 
     const result = await hook(transactionMeta, signedTx);
@@ -451,12 +441,16 @@ export async function publishHook({
     (sendBundleSupport || transactionMeta.selectedGasFeeToken === undefined)
   ) {
     attemptedHook = true;
+    const transactionController = {
+      state: messenger.call('TransactionController:getState'),
+    } as unknown as TransactionController;
+
     const result = await submitSmartTransactionHook({
       transactionMeta,
       signedTransactionInHex: signedTx as Hex,
       transactionController,
-      smartTransactionsController,
-      controllerMessenger: initMessenger,
+      smartTransactionsController: getSmartTransactionsController(messenger),
+      controllerMessenger: messenger,
       isSmartTransaction,
       featureFlags,
     });
@@ -482,7 +476,7 @@ export async function publishHook({
 
   if (attemptedHook) {
     try {
-      await initMessenger.call(
+      await messenger.call(
         'AppStateController:setDefaultHomeActiveTabName',
         AccountOverviewTabKey.Activity,
       );
@@ -498,18 +492,18 @@ export async function publishHook({
 }
 
 export function publishBatchHook({
-  transactionController,
-  smartTransactionsController,
-  hookControllerMessenger,
+  messenger,
   flatState,
   transactions,
 }: {
-  transactionController: TransactionController;
-  smartTransactionsController: SmartTransactionsController;
-  hookControllerMessenger: SmartTransactionHookMessenger;
+  messenger: TransactionControllerInitMessenger;
   flatState: MessengerClientFlatState;
   transactions: PublishBatchHookTransaction[];
 }) {
+  const transactionController = {
+    state: messenger.call('TransactionController:getState'),
+  } as unknown as TransactionController;
+
   // Get transactionMeta based on the last transaction ID
   const lastTransaction = transactions[transactions.length - 1];
   const transactionMeta = getTransactionById(
@@ -536,8 +530,8 @@ export function publishBatchHook({
   return submitBatchSmartTransactionHook({
     transactions,
     transactionController,
-    smartTransactionsController,
-    controllerMessenger: hookControllerMessenger,
+    smartTransactionsController: getSmartTransactionsController(messenger),
+    controllerMessenger: messenger as unknown as SmartTransactionHookMessenger,
     isSmartTransaction,
     featureFlags,
     transactionMeta,
