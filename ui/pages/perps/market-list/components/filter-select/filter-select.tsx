@@ -20,11 +20,11 @@ export type FilterSelectProps = {
  * @param props.onChange - Callback when filter changes
  * @param props.showNewFilter - Whether to show the "New" filter option
  */
-export const FilterSelect: React.FC<FilterSelectProps> = ({
+export const FilterSelect = ({
   value,
   onChange,
   showNewFilter = false,
-}) => {
+}: FilterSelectProps) => {
   const t = useI18nContext();
 
   const options: DropdownOption<MarketFilter>[] = useMemo(() => {

@@ -79,10 +79,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
-import {
-  SECURITY_ROUTE,
-  DEFAULT_ROUTE,
-} from '../../../helpers/constants/routes';
+import { ASSETS_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import {
   isValidHexAddress,
@@ -987,7 +984,7 @@ export const ImportTokensModal = ({ onClose }) => {
                                     onClick={() => {
                                       onClose();
                                       navigate(
-                                        `${SECURITY_ROUTE}#auto-detect-tokens`,
+                                        `${ASSETS_ROUTE}#autodetect-tokens`,
                                       );
                                     }}
                                   >

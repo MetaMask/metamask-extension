@@ -1,4 +1,4 @@
-import { Component, createContext, useContext } from 'react';
+import React, { Component, createContext, useContext } from 'react';
 import PropTypes from 'prop-types';
 
 import { RouteMessenger } from '../messengers/route-messenger';
@@ -34,7 +34,9 @@ export function useRouteMessenger(): RouteMessenger {
  *
  * @see {@link RouteWithMessenger}
  */
-export class LegacyRouteMessengerProvider extends Component {
+export class LegacyRouteMessengerProvider extends Component<{
+  children?: React.ReactNode;
+}> {
   static propTypes = {
     children: PropTypes.node,
   };

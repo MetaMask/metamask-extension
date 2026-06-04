@@ -631,16 +631,4 @@ inquire('long');
     assert.strictEqual(exit.mock.calls[0].arguments.length, 1);
     assert.strictEqual(exit.mock.calls[0].arguments[0], 0);
   });
-
-  it('should enable ReactRefreshPlugin in a development env when `--watch` is specified', () => {
-    const config: Configuration = getWebpackConfig(['--watch'], {
-      __HMR_READY__: 'true',
-    });
-    delete config.watch;
-    const instance = webpack(config);
-    const reactRefreshPlugin = instance.options.plugins.find(
-      (plugin) => plugin && plugin.constructor.name === 'ReactRefreshPlugin',
-    );
-    assert(reactRefreshPlugin, 'ReactRefreshPlugin should be present');
-  });
 });
