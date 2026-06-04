@@ -355,10 +355,7 @@ describe('ReversePositionModal', () => {
       // access-restricted-context.test.tsx.
       mockComplianceGate.mockImplementationOnce(async () => undefined);
 
-      renderWithProvider(
-        <ReversePositionModal {...defaultProps} />,
-        mockStore,
-      );
+      renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
 
       fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
 
