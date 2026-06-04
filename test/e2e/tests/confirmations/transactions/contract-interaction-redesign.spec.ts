@@ -150,7 +150,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           const activityList = new ActivityListPage(driver);
           await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
           await activityList.checkTxAction({
-            action: 'Smart contract interaction',
+            action: 'Contract interaction',
           });
         },
       );

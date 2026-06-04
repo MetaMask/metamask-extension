@@ -318,7 +318,7 @@
     "description": "$1 is the shortened contract address"
   },
   "activity_contractInteraction_success_title": {
-    "message": "Smart contract interaction"
+    "message": "Contract interaction"
   },
   "activity_convert_failed_description": {
     "message": "Conversion failed"

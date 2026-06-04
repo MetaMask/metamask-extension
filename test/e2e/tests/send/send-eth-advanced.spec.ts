@@ -193,7 +193,7 @@ describe('Send ETH - Advanced', function () {
           await activityListPage.goToActivityList();
           await activityListPage.checkConfirmedTxNumberDisplayedInActivity(1);
           await activityListPage.checkTxAction({
-            action: 'Smart contract interaction',
+            action: 'Contract interaction',
           });
 
           // Verify the transaction has the expected gas values
