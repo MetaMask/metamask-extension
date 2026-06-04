@@ -11,7 +11,7 @@ import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboar
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { mockSegment } from './mocks/segment';
 
-describe('Wallet Created Events - Imported Account', function () {
+describe('Wallet Created Events - Imported Account TEST', function () {
   it('are sent when onboarding user who chooses to opt in metrics', async function () {
     // We need to distinguish between browsers, because routes differ (MetaMetrics screen)
     const expectedEvents = [
@@ -45,41 +45,11 @@ describe('Wallet Created Events - Imported Account', function () {
           participateInMetaMetrics: true,
         });
 
-        // Poll until every expected event has actually been received
-        const expectedEventCounts = new Map<string, number>();
-        for (const expectedEvent of expectedEvents) {
-          expectedEventCounts.set(
-            expectedEvent,
-            (expectedEventCounts.get(expectedEvent) ?? 0) + 1,
-          );
-        }
+        const events = await getEventPayloads(driver, mockedEndpoints);
 
-        let trackEvents: {
-          type?: string;
-          event: string;
-          properties?: Record<string, unknown>;
-        }[] = [];
-        await driver.wait(
-          async () => {
-            const events = await getEventPayloads(
-              driver,
-              mockedEndpoints,
-              false,
-            );
-
-            // Only include track events not identify events
-            trackEvents = events.filter(
-              (e: { type?: string }) => e.type === 'track',
-            );
-
-            return [...expectedEventCounts.entries()].every(
-              ([eventName, expectedCount]) =>
-                trackEvents.filter((e) => e.event === eventName).length >=
-                expectedCount,
-            );
-          },
-          driver.timeout,
-          true,
+        // Only include track events not identify events
+        const trackEvents = events.filter(
+          (e: { type?: string }) => e.type === 'track',
         );
 
         const eventTypes = trackEvents.map(
