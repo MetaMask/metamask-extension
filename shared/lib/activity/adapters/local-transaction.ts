@@ -5,9 +5,7 @@ import { toAssetId } from '../../asset-utils';
 import type { TransactionGroup } from '../../multichain/types';
 import { isEqualCaseInsensitive } from '../../string-utils';
 import { parseStandardTokenTransactionData } from '../../transaction.utils';
-import {
-  TOKEN_TRANSFER_LOG_TOPIC_HASH as tokenTransferLogTopicHash,
-} from '../../transactions-controller-utils';
+import { TOKEN_TRANSFER_LOG_TOPIC_HASH } from '../../transactions-controller-utils';
 import type { ActivityListItem, TokenAmount } from '../types';
 import {
   supplyMethodIds,
@@ -491,7 +489,7 @@ export function mapLocalTransaction(
             : undefined;
 
           return (
-            eventTopic?.toLowerCase() === tokenTransferLogTopicHash &&
+            eventTopic?.toLowerCase() === TOKEN_TRANSFER_LOG_TOPIC_HASH &&
             toAddress === fromAddress
           );
         });
