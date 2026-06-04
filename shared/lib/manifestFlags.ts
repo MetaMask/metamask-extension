@@ -70,7 +70,7 @@ export type ManifestFlags = {
      * Merged over the built-in defaults so high-volume custom transactions can be
      * re-budgeted (or dropped) without shipping a new release.
      */
-    sampleRatesByName?: Record<string, number>;
+    sampleRateOverrides?: Record<string, number>;
     /**
      * Force enable Sentry (this is typically set by individual E2E tests in spec files)
      */
