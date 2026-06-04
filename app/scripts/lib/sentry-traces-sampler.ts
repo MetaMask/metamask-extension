@@ -1,5 +1,3 @@
-import { getManifestFlags } from '../../../shared/lib/manifestFlags';
-
 /**
  * Sentry transaction sample rates keyed by transaction `name` (which, for our
  * custom `trace()` spans, is the `TraceName` / span description). A name listed
@@ -11,7 +9,8 @@ import { getManifestFlags } from '../../../shared/lib/manifestFlags';
  * span quota in 13.32.0 (see #43211 / #43226). They are pinned to `0` so that if
  * the instrumentation is re-enabled — the controller `trace` callback was removed
  * in PR #43213 — these spans stay dropped until a deliberate, budgeted rate is
- * set here or via the `sentry.sampleRateOverrides` manifest flag.
+ * set here, or supplied per build/release via the `SENTRY_SAMPLE_RATE_OVERRIDES`
+ * env var (declared in `builds.yml`).
  */
 export const DEFAULT_TRANSACTION_SAMPLE_RATES: Readonly<
   Record<string, number>
@@ -98,12 +97,46 @@ export function getTransactionSampleRate(
 }
 
 /**
+ * Parse the build-time `SENTRY_SAMPLE_RATE_OVERRIDES` env var: a JSON object of
+ * `{ "<transaction name>": <rate 0..1> }`, inlined per build/release from
+ * `builds.yml` (or `.metamaskprodrc` / CI). Absent or malformed yields no
+ * overrides — defensive so a bad value can never break Sentry init.
+ *
+ * @param raw - The raw env-var string, if any.
+ * @returns A validated name -> rate map; entries with non-numeric or
+ * out-of-[0,1] values are dropped.
+ */
+function parseSampleRateOverridesEnv(
+  raw: string | undefined,
+): Record<string, number> {
+  if (!raw) {
+    return {};
+  }
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (typeof parsed !== 'object' || parsed === null) {
+      return {};
+    }
+    const overrides: Record<string, number> = {};
+    for (const [name, rate] of Object.entries(parsed)) {
+      if (typeof rate === 'number' && rate >= 0 && rate <= 1) {
+        overrides[name] = rate;
+      }
+    }
+    return overrides;
+  } catch {
+    return {};
+  }
+}
+
+/**
  * Build the `tracesSampler` callback passed to `Sentry.init`.
  *
  * The override map is resolved once, when the SDK is configured, from the
- * built-in {@link DEFAULT_TRANSACTION_SAMPLE_RATES} merged with any
- * `sentry.sampleRateOverrides` manifest flag — letting rates be re-budgeted via
- * manifest injection without shipping a new release.
+ * built-in {@link DEFAULT_TRANSACTION_SAMPLE_RATES} merged with the build-time
+ * `SENTRY_SAMPLE_RATE_OVERRIDES` env var (declared in `builds.yml`, settable per
+ * release via CI / `.metamaskprodrc`). This is build-time: changing a rate still
+ * requires a new build, not a runtime/remote toggle.
  *
  * @param options - Sampler options.
  * @param options.defaultSampleRate - Global fallback rate (the value that would
@@ -117,7 +150,7 @@ export function createTracesSampler({
 }): (samplingContext: TransactionSamplingContext) => number {
   const sampleRateOverrides: Record<string, number> = {
     ...DEFAULT_TRANSACTION_SAMPLE_RATES,
-    ...(getManifestFlags().sentry?.sampleRateOverrides ?? {}),
+    ...parseSampleRateOverridesEnv(process.env.SENTRY_SAMPLE_RATE_OVERRIDES),
   };
 
   return (samplingContext) =>

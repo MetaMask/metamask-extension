@@ -302,6 +302,10 @@ env:
   - SENTRY_DSN: null
   - SENTRY_DSN_DEV: null
   - SENTRY_DSN_PERFORMANCE: null
+  # JSON map of Sentry transaction name -> sample rate (0..1), merged over the
+  # built-in defaults in app/scripts/lib/sentry-traces-sampler.ts to throttle
+  # high-volume custom transactions per release. Null/absent = defaults only.
+  - SENTRY_SAMPLE_RATE_OVERRIDES: null
   # also INFURA_PROJECT_ID below
 
   ###

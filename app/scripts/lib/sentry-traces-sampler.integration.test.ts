@@ -1,12 +1,5 @@
 import * as Sentry from '@sentry/browser';
-import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { createTracesSampler } from './sentry-traces-sampler';
-
-jest.mock('../../../shared/lib/manifestFlags', () => ({
-  getManifestFlags: jest.fn(() => ({})),
-}));
-
-const getManifestFlagsMock = jest.mocked(getManifestFlags);
 
 /**
  * No-op transport so `Sentry.init` never touches the network. Sampling
@@ -28,11 +21,12 @@ function stubTransport() {
  */
 describe('createTracesSampler (integration with Sentry.init)', () => {
   let sentTransactions: string[];
+  const originalEnv = process.env.SENTRY_SAMPLE_RATE_OVERRIDES;
 
   beforeEach(() => {
     sentTransactions = [];
-    getManifestFlagsMock.mockReturnValue({
-      sentry: { sampleRateOverrides: { 'Throttled Transaction': 0 } },
+    process.env.SENTRY_SAMPLE_RATE_OVERRIDES = JSON.stringify({
+      'Throttled Transaction': 0,
     });
     (globalThis as typeof globalThis & { nw?: object }).nw = {};
 
@@ -53,6 +47,11 @@ describe('createTracesSampler (integration with Sentry.init)', () => {
 
   afterEach(async () => {
     await Sentry.close(2000);
+    if (originalEnv === undefined) {
+      delete process.env.SENTRY_SAMPLE_RATE_OVERRIDES;
+    } else {
+      process.env.SENTRY_SAMPLE_RATE_OVERRIDES = originalEnv;
+    }
   });
 
   it('drops a throttled root transaction and keeps a non-throttled one', async () => {
