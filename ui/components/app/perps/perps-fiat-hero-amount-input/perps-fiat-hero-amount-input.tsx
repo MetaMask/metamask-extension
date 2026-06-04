@@ -10,7 +10,7 @@ import {
   TextColor,
   twMerge,
 } from '@metamask/design-system-react';
-import { Skeleton } from '../../../component-library/skeleton';
+import { Skeleton } from '@metamask/design-system-react';
 import { getCurrencySymbol } from '../../../../helpers/utils/common.util';
 import type { PerpsFiatHeroAmountInputProps } from './perps-fiat-hero-amount-input.types';
 

@@ -20,7 +20,7 @@ import { TransactionCard } from '../transaction-card';
 import { PERPS_CONSTANTS } from '../constants';
 import { PERPS_EVENT_VALUE } from '../../../../../shared/constants/perps-events';
 import { PERPS_ACTIVITY_ROUTE } from '../../../../helpers/constants/routes';
-import { Skeleton } from '../../../component-library/skeleton';
+import { Skeleton } from '@metamask/design-system-react';
 import type { PerpsTransaction } from '../types';
 
 const SKELETON_ITEMS = [1, 2, 3];
