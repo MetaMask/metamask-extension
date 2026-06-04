@@ -6,7 +6,7 @@ import type {
   EthereumSignedTx,
   Manifest,
   PROTO,
-  Response,
+  Response as TrezorResponse,
   Params,
   EthereumSignMessage,
   EthereumSignTransaction,
@@ -21,10 +21,10 @@ const SUITE_DESKTOP_REQUIRED_ERROR =
   'Trezor Suite Desktop is required to use Trezor with Firefox. ' +
   'Please install and open Trezor Suite (suite.trezor.io) and try again.';
 
-// The resolved value type of Response<T> = Promise<SuccessWithDevice<T> | Unsuccessful>.
+// The resolved value type of TrezorResponse<T> = Promise<SuccessWithDevice<T> | Unsuccessful>.
 // `.then()` callbacks receive this type, not the Promise itself.
-type TrezorResult<T> =
-  | { success: true; payload: T }
+type TrezorResult<PayloadType> =
+  | { success: true; payload: PayloadType }
   | { success: false; payload: { error: string; code?: string } };
 
 /**
@@ -32,8 +32,13 @@ type TrezorResult<T> =
  * CoreInSuiteDesktop.call() always resolves (never throws), returning
  * { success: false, payload: { code: 'Desktop_ConnectionMissing' } }
  * when Suite Desktop is unreachable.
+ *
+ * @param result - Trezor SDK response to normalize on connection failure.
+ * @returns The original result, or a user-readable error when Suite Desktop is missing.
  */
-function mapError<T>(result: TrezorResult<T>): TrezorResult<T> {
+function mapError<PayloadType>(
+  result: TrezorResult<PayloadType>,
+): TrezorResult<PayloadType> {
   if (!result.success && result.payload.code === SUITE_DESKTOP_ERROR_CODE) {
     return {
       success: false,
@@ -51,8 +56,8 @@ function mapError<T>(result: TrezorResult<T>): TrezorResult<T> {
  *
  * Firefox MV2 does not support chrome.offscreen (MV3 only), so the standard
  * TrezorOffscreenBridge cannot be used. The remote iframe used by
- * @trezor/connect-web v9 in webextension mode hangs indefinitely in Firefox MV2
- * because IFRAME.LOADED is never received. Using the main @trezor/connect-web
+ * `@trezor/connect-web` v9 in webextension mode hangs indefinitely in Firefox MV2
+ * because IFRAME.LOADED is never received. Using the main `@trezor/connect-web`
  * export (TrezorConnectDynamic) with coreMode:'suite-desktop' also hangs:
  * when Suite Desktop is absent, TrezorConnectDynamic intercepts the
  * Desktop_ConnectionMissing response and falls back to the hanging iframe.
@@ -115,7 +120,7 @@ export class TrezorMv2Bridge implements TrezorBridge {
   getPublicKey(params: {
     path: string;
     coin: string;
-  }): Response<{ publicKey: string; chainCode: string }> {
+  }): TrezorResponse<{ publicKey: string; chainCode: string }> {
     return (
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (SuiteDesktopConnect as any)
@@ -123,13 +128,13 @@ export class TrezorMv2Bridge implements TrezorBridge {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .then((r: any) =>
           mapError<{ publicKey: string; chainCode: string }>(r),
-        ) as unknown as Response<{ publicKey: string; chainCode: string }>
+        ) as unknown as TrezorResponse<{ publicKey: string; chainCode: string }>
     );
   }
 
   ethereumSignTransaction(
     params: Params<EthereumSignTransaction>,
-  ): Response<EthereumSignedTx> {
+  ): TrezorResponse<EthereumSignedTx> {
     return (
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (SuiteDesktopConnect as any)
@@ -137,13 +142,13 @@ export class TrezorMv2Bridge implements TrezorBridge {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .then((r: any) =>
           mapError<EthereumSignedTx>(r),
-        ) as unknown as Response<EthereumSignedTx>
+        ) as unknown as TrezorResponse<EthereumSignedTx>
     );
   }
 
   ethereumSignMessage(
     params: Params<EthereumSignMessage>,
-  ): Response<PROTO.MessageSignature> {
+  ): TrezorResponse<PROTO.MessageSignature> {
     return (
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (SuiteDesktopConnect as any)
@@ -151,13 +156,13 @@ export class TrezorMv2Bridge implements TrezorBridge {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .then((r: any) =>
           mapError<PROTO.MessageSignature>(r),
-        ) as unknown as Response<PROTO.MessageSignature>
+        ) as unknown as TrezorResponse<PROTO.MessageSignature>
     );
   }
 
-  ethereumSignTypedData<T extends EthereumSignTypedDataTypes>(
-    params: Params<EthereumSignTypedHash<T>>,
-  ): Response<PROTO.EthereumTypedDataSignature> {
+  ethereumSignTypedData<TypedDataType extends EthereumSignTypedDataTypes>(
+    params: Params<EthereumSignTypedHash<TypedDataType>>,
+  ): TrezorResponse<PROTO.EthereumTypedDataSignature> {
     return (
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (SuiteDesktopConnect as any)
@@ -165,11 +170,11 @@ export class TrezorMv2Bridge implements TrezorBridge {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .then((r: any) =>
           mapError<PROTO.EthereumTypedDataSignature>(r),
-        ) as unknown as Response<PROTO.EthereumTypedDataSignature>
+        ) as unknown as TrezorResponse<PROTO.EthereumTypedDataSignature>
     );
   }
 
-  getFeatures(): Response<Features> {
+  getFeatures(): TrezorResponse<Features> {
     return (
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (SuiteDesktopConnect as any)
@@ -177,7 +182,7 @@ export class TrezorMv2Bridge implements TrezorBridge {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .then((r: any) =>
           mapError<Features>(r),
-        ) as unknown as Response<Features>
+        ) as unknown as TrezorResponse<Features>
     );
   }
 }
