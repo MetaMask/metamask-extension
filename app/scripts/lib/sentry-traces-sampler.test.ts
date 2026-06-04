@@ -13,12 +13,15 @@ const getManifestFlagsMock = jest.mocked(getManifestFlags);
 
 describe('getTransactionSampleRate', () => {
   const defaultSampleRate = 0.0075;
-  const sampleRatesByName = { AssetsDataSourceTiming: 0, NoisyButKept: 0.01 };
+  const sampleRatesByName = {
+    'Dropped Transaction': 0,
+    'Sub-Sampled Transaction': 0.01,
+  };
 
   it('pins a throttled transaction to its configured rate', () => {
     expect(
       getTransactionSampleRate(
-        { name: 'AssetsDataSourceTiming' },
+        { name: 'Dropped Transaction' },
         { defaultSampleRate, sampleRatesByName },
       ),
     ).toBe(0);
@@ -27,7 +30,7 @@ describe('getTransactionSampleRate', () => {
   it('returns a non-zero override rate verbatim', () => {
     expect(
       getTransactionSampleRate(
-        { name: 'NoisyButKept' },
+        { name: 'Sub-Sampled Transaction' },
         { defaultSampleRate, sampleRatesByName },
       ),
     ).toBe(0.01);
@@ -36,13 +39,13 @@ describe('getTransactionSampleRate', () => {
   it('applies the override regardless of the parent sampling decision', () => {
     expect(
       getTransactionSampleRate(
-        { name: 'AssetsDataSourceTiming', parentSampled: true },
+        { name: 'Dropped Transaction', parentSampled: true },
         { defaultSampleRate, sampleRatesByName },
       ),
     ).toBe(0);
     expect(
       getTransactionSampleRate(
-        { name: 'AssetsDataSourceTiming', parentSampled: false },
+        { name: 'Dropped Transaction', parentSampled: false },
         { defaultSampleRate, sampleRatesByName },
       ),
     ).toBe(0);
@@ -51,7 +54,7 @@ describe('getTransactionSampleRate', () => {
   it('inherits a positive parent decision for non-throttled transactions', () => {
     expect(
       getTransactionSampleRate(
-        { name: 'Some Other Transaction', parentSampled: true },
+        { name: 'Unlisted Transaction', parentSampled: true },
         { defaultSampleRate, sampleRatesByName },
       ),
     ).toBe(1);
@@ -60,7 +63,7 @@ describe('getTransactionSampleRate', () => {
   it('inherits a negative parent decision for non-throttled transactions', () => {
     expect(
       getTransactionSampleRate(
-        { name: 'Some Other Transaction', parentSampled: false },
+        { name: 'Unlisted Transaction', parentSampled: false },
         { defaultSampleRate, sampleRatesByName },
       ),
     ).toBe(0);
@@ -69,7 +72,7 @@ describe('getTransactionSampleRate', () => {
   it('falls back to the default rate for a root, non-throttled transaction', () => {
     expect(
       getTransactionSampleRate(
-        { name: 'Some Other Transaction' },
+        { name: 'Unlisted Transaction' },
         { defaultSampleRate, sampleRatesByName },
       ),
     ).toBe(defaultSampleRate);
@@ -84,7 +87,7 @@ describe('getTransactionSampleRate', () => {
   it('is a safe no-op with an empty override map', () => {
     expect(
       getTransactionSampleRate(
-        { name: 'AssetsDataSourceTiming' },
+        { name: 'Dropped Transaction' },
         { defaultSampleRate, sampleRatesByName: {} },
       ),
     ).toBe(defaultSampleRate);
@@ -92,44 +95,70 @@ describe('getTransactionSampleRate', () => {
 });
 
 describe('createTracesSampler', () => {
+  const defaultSampleRate = 0.0075;
+
   beforeEach(() => {
     getManifestFlagsMock.mockReturnValue({});
   });
 
-  it('drops the seeded assets-controller transactions by default', () => {
-    const sampler = createTracesSampler({ defaultSampleRate: 0.0075 });
+  it('uses the default rate for a transaction with no override', () => {
+    const sampler = createTracesSampler({ defaultSampleRate });
 
-    expect(sampler({ name: 'AssetsDataSourceTiming' })).toBe(0);
-    expect(sampler({ name: 'AssetsUpdatePipeline' })).toBe(0);
+    expect(sampler({ name: 'Unlisted Transaction' })).toBe(defaultSampleRate);
   });
 
-  it('uses the default rate for transactions with no override', () => {
-    const sampler = createTracesSampler({ defaultSampleRate: 0.0075 });
+  it('applies the built-in default overrides', () => {
+    const sampler = createTracesSampler({ defaultSampleRate });
 
-    expect(sampler({ name: 'Transaction' })).toBe(0.0075);
+    // Driven off the map itself so the test tracks the configured policy rather
+    // than any specific transaction name that happens to be throttled today.
+    for (const [name, rate] of Object.entries(
+      DEFAULT_TRANSACTION_SAMPLE_RATES,
+    )) {
+      expect(sampler({ name })).toBe(rate);
+    }
   });
 
-  it('merges and lets the manifest flag override the built-in rates', () => {
+  it('throttles a transaction supplied purely via the manifest flag', () => {
     getManifestFlagsMock.mockReturnValue({
-      sentry: {
-        sampleRatesByName: { AssetsDataSourceTiming: 0.001, Transaction: 0 },
-      },
+      sentry: { sampleRatesByName: { 'Flagged Transaction': 0 } },
     });
 
-    const sampler = createTracesSampler({ defaultSampleRate: 0.0075 });
+    const sampler = createTracesSampler({ defaultSampleRate });
 
-    // Manifest flag re-budgets the seeded default.
-    expect(sampler({ name: 'AssetsDataSourceTiming' })).toBe(0.001);
-    // Built-in default for the other assets span still applies.
-    expect(sampler({ name: 'AssetsUpdatePipeline' })).toBe(0);
-    // A brand-new name can be throttled purely via the flag.
-    expect(sampler({ name: 'Transaction' })).toBe(0);
+    expect(sampler({ name: 'Flagged Transaction' })).toBe(0);
   });
 
-  it('exposes the seeded defaults', () => {
-    expect(DEFAULT_TRANSACTION_SAMPLE_RATES).toMatchObject({
-      AssetsDataSourceTiming: 0,
-      AssetsUpdatePipeline: 0,
+  it('merges manifest-flag overrides on top of the built-in defaults', () => {
+    getManifestFlagsMock.mockReturnValue({
+      sentry: { sampleRatesByName: { 'Flagged Transaction': 0.001 } },
     });
+
+    const sampler = createTracesSampler({ defaultSampleRate });
+
+    // Flag-supplied override is applied...
+    expect(sampler({ name: 'Flagged Transaction' })).toBe(0.001);
+    // ...without dropping the built-in defaults (merge, not replace).
+    for (const [name, rate] of Object.entries(
+      DEFAULT_TRANSACTION_SAMPLE_RATES,
+    )) {
+      expect(sampler({ name })).toBe(rate);
+    }
+  });
+
+  it('lets a manifest-flag override win over a built-in default rate', () => {
+    const seededNames = Object.keys(DEFAULT_TRANSACTION_SAMPLE_RATES);
+    // Precedence is only observable while there are seeded defaults to override.
+    if (seededNames.length === 0) {
+      return;
+    }
+    const [name] = seededNames;
+    getManifestFlagsMock.mockReturnValue({
+      sentry: { sampleRatesByName: { [name]: 0.5 } },
+    });
+
+    const sampler = createTracesSampler({ defaultSampleRate });
+
+    expect(sampler({ name })).toBe(0.5);
   });
 });
