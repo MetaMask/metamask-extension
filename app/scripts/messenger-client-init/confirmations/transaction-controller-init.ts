@@ -81,7 +81,8 @@ export const TransactionControllerInit: MessengerClientInitFunction<
       messenger: initMessenger,
     }),
     isFirstTimeInteractionEnabled: () =>
-      initMessenger.call('PreferencesController:getState').securityAlertsEnabled,
+      initMessenger.call('PreferencesController:getState')
+        .securityAlertsEnabled,
     isSimulationEnabled: () =>
       initMessenger.call('PreferencesController:getState')
         .useTransactionSimulations,

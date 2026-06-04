@@ -250,9 +250,10 @@ describe('Transaction Controller Hooks', () => {
       const request = buildMockRequest({ messenger });
       const { publish } = getTransactionControllerHooks(request);
 
-      await publish?.(
-        { ...mockTransactionMeta, isExternalSign: true } as TransactionMeta,
-      );
+      await publish?.({
+        ...mockTransactionMeta,
+        isExternalSign: true,
+      } as TransactionMeta);
 
       expect(jest.mocked(Delegation7702PublishHook)).toHaveBeenCalled();
     });
@@ -286,9 +287,10 @@ describe('Transaction Controller Hooks', () => {
 
       const { publish } = getTransactionControllerHooks(request);
 
-      await publish?.(
-        { ...mockTransactionMeta, isExternalSign: true } as TransactionMeta,
-      );
+      await publish?.({
+        ...mockTransactionMeta,
+        isExternalSign: true,
+      } as TransactionMeta);
 
       expect(upsertFragmentMock).toHaveBeenCalledWith(mockTransactionMeta.id, {
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -365,9 +367,10 @@ describe('Transaction Controller Hooks', () => {
 
       const { publish } = getTransactionControllerHooks(request);
 
-      const result = await publish?.(
-        { ...mockTransactionMeta, isExternalSign: true } as TransactionMeta,
-      );
+      const result = await publish?.({
+        ...mockTransactionMeta,
+        isExternalSign: true,
+      } as TransactionMeta);
 
       expect(result).toStrictEqual({ transactionHash: '0xdelHash' });
     });
@@ -439,9 +442,10 @@ describe('Transaction Controller Hooks', () => {
       const request = buildMockRequest({ messenger });
       const { publish } = getTransactionControllerHooks(request);
 
-      await publish?.(
-        { ...mockTransactionMeta, isExternalSign: true } as TransactionMeta,
-      );
+      await publish?.({
+        ...mockTransactionMeta,
+        isExternalSign: true,
+      } as TransactionMeta);
 
       expect(messenger.call).toHaveBeenCalledWith(
         'AppStateController:setDefaultHomeActiveTabName',
@@ -479,12 +483,10 @@ describe('Transaction Controller Hooks', () => {
       const request = buildMockRequest();
       const { publish } = getTransactionControllerHooks(request);
 
-      const result = await publish?.(
-        {
-          ...mockTransactionMeta,
-          type: TransactionType.revokeDelegation,
-        } as TransactionMeta,
-      );
+      const result = await publish?.({
+        ...mockTransactionMeta,
+        type: TransactionType.revokeDelegation,
+      } as TransactionMeta);
 
       expect(delegation7702HookFn).not.toHaveBeenCalled();
       expect(result).toBeDefined();

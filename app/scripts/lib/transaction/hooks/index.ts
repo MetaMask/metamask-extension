@@ -70,16 +70,12 @@ function afterAddHook({ messenger }: TransactionControllerHookRequest) {
   };
 }
 
-function beforePublishHook({
-  messenger,
-}: TransactionControllerHookRequest) {
+function beforePublishHook({ messenger }: TransactionControllerHookRequest) {
   return (transactionMeta: TransactionMeta) =>
     messenger.call('InstitutionalSnapController:publishHook', transactionMeta);
 }
 
-function beforeSignHook({
-  messenger,
-}: TransactionControllerHookRequest) {
+function beforeSignHook({ messenger }: TransactionControllerHookRequest) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const m = messenger as any;
   return new EnforceSimulationHook({

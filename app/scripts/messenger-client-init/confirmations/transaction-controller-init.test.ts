@@ -167,8 +167,9 @@ describe('Transaction Controller Init', () => {
 
   describe('determines incoming transactions is disabled', () => {
     it('when useExternalServices is enabled in preferences and onboarding complete', () => {
-      const incomingTransactionsIsEnabled =
-        testConstructorOption('incomingTransactions')?.isEnabled;
+      const incomingTransactionsIsEnabled = testConstructorOption(
+        'incomingTransactions',
+      )?.isEnabled;
 
       expect(incomingTransactionsIsEnabled?.()).toBe(false);
     });
