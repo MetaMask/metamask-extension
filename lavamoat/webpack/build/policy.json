@@ -2010,7 +2010,7 @@
       },
       "packages": {
         "postcss>picocolors": true,
-        "webpack-dev-server>launch-editor>shell-quote": true
+        "browserify>shell-quote": true
       }
     },
     "@lavamoat/webpack>lavamoat-core": {
