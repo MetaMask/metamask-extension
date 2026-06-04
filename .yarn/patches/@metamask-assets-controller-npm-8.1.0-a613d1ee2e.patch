@@ -1,0 +1,276 @@
+diff --git a/dist/AssetsController.cjs b/dist/AssetsController.cjs
+index 084ffd8bc6b15a3474bb4ae65eeb6b195c2aaf2d..7869c149db4678616dd467723a686b722629ec96 100644
+--- a/dist/AssetsController.cjs
++++ b/dist/AssetsController.cjs
+@@ -1439,7 +1439,16 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
+                     }
+                     for (const [assetId, balance] of Object.entries(effective)) {
+                         const previousBalance = previousBalances[assetId];
+-                        const newAmount = balance.amount;
++                        // Coerce amounts (e.g. "1e-18" from a data source stringifying
++                        // a JS Number) into a plain decimal so downstream BigInt()
++                        // consumers don't crash. Decimals are read from the freshest
++                        // merged metadata when available; when metadata is not yet
++                        // known, the amount is left at its natural precision (only
++                        // exponent form is rewritten) so balances arriving before
++                        // their metadata aren't lossily truncated.
++                        const assetDecimals = metadata[assetId]?.decimals;
++                        const newAmount = (0, utils_2.normalizeAmountString)(balance.amount, assetDecimals);
++                        effective[assetId] = { ...balance, amount: newAmount };
+                         const oldAmount = previousBalance?.amount;
+                         const isNewDefaultNativeZero = oldAmount === undefined &&
+                             newAmount === '0' &&
+diff --git a/dist/AssetsController.mjs b/dist/AssetsController.mjs
+index b6b746b6635e48808e056f89b5d8d39cd31bf1ef..38adf901aeda59fe9183ba7d8f25212a7da2c41c 100644
+--- a/dist/AssetsController.mjs
++++ b/dist/AssetsController.mjs
+@@ -1432,7 +1432,16 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
+                     }
+                     for (const [assetId, balance] of Object.entries(effective)) {
+                         const previousBalance = previousBalances[assetId];
+-                        const newAmount = balance.amount;
++                        // Coerce amounts (e.g. "1e-18" from a data source stringifying
++                        // a JS Number) into a plain decimal so downstream BigInt()
++                        // consumers don't crash. Decimals are read from the freshest
++                        // merged metadata when available; when metadata is not yet
++                        // known, the amount is left at its natural precision (only
++                        // exponent form is rewritten) so balances arriving before
++                        // their metadata aren't lossily truncated.
++                        const assetDecimals = metadata[assetId]?.decimals;
++                        const newAmount = normalizeAmountString(balance.amount, assetDecimals);
++                        effective[assetId] = { ...balance, amount: newAmount };
+                         const oldAmount = previousBalance?.amount;
+                         const isNewDefaultNativeZero = oldAmount === undefined &&
+                             newAmount === '0' &&
+diff --git a/dist/data-sources/BackendWebsocketDataSource.cjs b/dist/data-sources/BackendWebsocketDataSource.cjs
+index 6ab620a777a04aaa2b75bfdb7ff8c34a13a07319..f6bab9ecd7fa082e80257f9aae9d96baa82f7f86 100644
+--- a/dist/data-sources/BackendWebsocketDataSource.cjs
++++ b/dist/data-sources/BackendWebsocketDataSource.cjs
+@@ -479,7 +479,7 @@ async function _BackendWebsocketDataSource_initializeActiveChains() {
+         // Convert to human-readable using asset decimals (match RpcDataSource / pipeline format)
+         const humanReadableAmount = new bignumber_js_1.default(rawBalanceStr)
+             .dividedBy(new bignumber_js_1.default(10).pow(asset.decimals))
+-            .toString();
++            .toFixed();
+         assetsBalance[accountId][assetId] = {
+             amount: humanReadableAmount,
+         };
+diff --git a/dist/utils/normalizeAmountString.cjs b/dist/utils/normalizeAmountString.cjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..967c53c77957f4871d6af72fb201cbd939a6a7db
+--- /dev/null
++++ b/dist/utils/normalizeAmountString.cjs
+@@ -0,0 +1,64 @@
++"use strict";
++var __importDefault = (this && this.__importDefault) || function (mod) {
++    return (mod && mod.__esModule) ? mod : { "default": mod };
++};
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.normalizeAmountString = void 0;
++const bignumber_js_1 = __importDefault(require("bignumber.js"));
++/**
++ * Normalize an asset balance `amount` string into a canonical plain-decimal
++ * form (no scientific notation), optionally truncating to the asset's decimal
++ * precision.
++ *
++ * Amounts entering `assetsBalance` state come from external sources (snaps,
++ * accounts API, websocket, RPC) and may be serialized from JavaScript Numbers
++ * as `"1e-18"`. Downstream consumers (e.g. the extension's
++ * `parseBalanceWithDecimals`) split on `'.'` and feed the result to `BigInt()`,
++ * which throws on exponent-form strings. Normalizing at the controller
++ * boundary keeps the invariant that `amount` is always a plain decimal so
++ * every current and future data source is safe without per-source changes.
++ *
++ * When `decimals` is provided (i.e. the asset's metadata is registered),
++ * fractional digits beyond `decimals` are truncated using round-toward-zero
++ * to match the extension's `parseBalanceWithDecimals`, which slices off any
++ * fractional digits beyond `decimals`.
++ *
++ * When `decimals` is omitted (metadata not yet known for this asset), the
++ * amount is left at its natural precision — exponent form is still converted
++ * to plain decimal, but no digits are dropped. This preserves balances that
++ * arrive before their metadata without lossy truncation.
++ *
++ * Non-finite or non-string inputs collapse to `'0'` rather than throwing,
++ * because controller state must remain JSON-serializable and a malformed
++ * upstream payload should not corrupt the rest of the update.
++ *
++ * @param amount - The raw amount string from a data source.
++ * @param decimals - The asset's decimal precision (from `assetsInfo`). Pass
++ * `undefined` when metadata is unknown to skip truncation.
++ * @returns A plain decimal string (e.g. `"0.000000000000000001"`), or `'0'`
++ * for non-finite / non-string input.
++ */
++function normalizeAmountString(amount, decimals) {
++    if (typeof amount !== 'string' || amount.length === 0) {
++        return '0';
++    }
++    const bn = new bignumber_js_1.default(amount);
++    if (!bn.isFinite()) {
++        return '0';
++    }
++    let fixed;
++    if (decimals === undefined || !Number.isFinite(decimals) || decimals < 0) {
++        // Metadata unknown — preserve full precision, just defeat exponent form.
++        fixed = bn.toFixed();
++    }
++    else {
++        fixed = bn.toFixed(Math.floor(decimals), bignumber_js_1.default.ROUND_DOWN);
++    }
++    if (!fixed.includes('.')) {
++        return fixed;
++    }
++    // Trim trailing zeros and a dangling dot: "1.500" -> "1.5", "1.000" -> "1".
++    return fixed.replace(/0+$/u, '').replace(/\.$/u, '');
++}
++exports.normalizeAmountString = normalizeAmountString;
++//# sourceMappingURL=normalizeAmountString.cjs.map
+\ No newline at end of file
+diff --git a/dist/utils/normalizeAmountString.d.cts b/dist/utils/normalizeAmountString.d.cts
+new file mode 100644
+index 0000000000000000000000000000000000000000..2d84f9ff7045e4d46f90fc6db340cc6dfa06969d
+--- /dev/null
++++ b/dist/utils/normalizeAmountString.d.cts
+@@ -0,0 +1,35 @@
++/**
++ * Normalize an asset balance `amount` string into a canonical plain-decimal
++ * form (no scientific notation), optionally truncating to the asset's decimal
++ * precision.
++ *
++ * Amounts entering `assetsBalance` state come from external sources (snaps,
++ * accounts API, websocket, RPC) and may be serialized from JavaScript Numbers
++ * as `"1e-18"`. Downstream consumers (e.g. the extension's
++ * `parseBalanceWithDecimals`) split on `'.'` and feed the result to `BigInt()`,
++ * which throws on exponent-form strings. Normalizing at the controller
++ * boundary keeps the invariant that `amount` is always a plain decimal so
++ * every current and future data source is safe without per-source changes.
++ *
++ * When `decimals` is provided (i.e. the asset's metadata is registered),
++ * fractional digits beyond `decimals` are truncated using round-toward-zero
++ * to match the extension's `parseBalanceWithDecimals`, which slices off any
++ * fractional digits beyond `decimals`.
++ *
++ * When `decimals` is omitted (metadata not yet known for this asset), the
++ * amount is left at its natural precision — exponent form is still converted
++ * to plain decimal, but no digits are dropped. This preserves balances that
++ * arrive before their metadata without lossy truncation.
++ *
++ * Non-finite or non-string inputs collapse to `'0'` rather than throwing,
++ * because controller state must remain JSON-serializable and a malformed
++ * upstream payload should not corrupt the rest of the update.
++ *
++ * @param amount - The raw amount string from a data source.
++ * @param decimals - The asset's decimal precision (from `assetsInfo`). Pass
++ * `undefined` when metadata is unknown to skip truncation.
++ * @returns A plain decimal string (e.g. `"0.000000000000000001"`), or `'0'`
++ * for non-finite / non-string input.
++ */
++export declare function normalizeAmountString(amount: unknown, decimals?: number): string;
++//# sourceMappingURL=normalizeAmountString.d.cts.map
+\ No newline at end of file
+diff --git a/dist/utils/normalizeAmountString.d.mts b/dist/utils/normalizeAmountString.d.mts
+new file mode 100644
+index 0000000000000000000000000000000000000000..768efeec7cc29ae691c603041b37276cc0d5199d
+--- /dev/null
++++ b/dist/utils/normalizeAmountString.d.mts
+@@ -0,0 +1,35 @@
++/**
++ * Normalize an asset balance `amount` string into a canonical plain-decimal
++ * form (no scientific notation), optionally truncating to the asset's decimal
++ * precision.
++ *
++ * Amounts entering `assetsBalance` state come from external sources (snaps,
++ * accounts API, websocket, RPC) and may be serialized from JavaScript Numbers
++ * as `"1e-18"`. Downstream consumers (e.g. the extension's
++ * `parseBalanceWithDecimals`) split on `'.'` and feed the result to `BigInt()`,
++ * which throws on exponent-form strings. Normalizing at the controller
++ * boundary keeps the invariant that `amount` is always a plain decimal so
++ * every current and future data source is safe without per-source changes.
++ *
++ * When `decimals` is provided (i.e. the asset's metadata is registered),
++ * fractional digits beyond `decimals` are truncated using round-toward-zero
++ * to match the extension's `parseBalanceWithDecimals`, which slices off any
++ * fractional digits beyond `decimals`.
++ *
++ * When `decimals` is omitted (metadata not yet known for this asset), the
++ * amount is left at its natural precision — exponent form is still converted
++ * to plain decimal, but no digits are dropped. This preserves balances that
++ * arrive before their metadata without lossy truncation.
++ *
++ * Non-finite or non-string inputs collapse to `'0'` rather than throwing,
++ * because controller state must remain JSON-serializable and a malformed
++ * upstream payload should not corrupt the rest of the update.
++ *
++ * @param amount - The raw amount string from a data source.
++ * @param decimals - The asset's decimal precision (from `assetsInfo`). Pass
++ * `undefined` when metadata is unknown to skip truncation.
++ * @returns A plain decimal string (e.g. `"0.000000000000000001"`), or `'0'`
++ * for non-finite / non-string input.
++ */
++export declare function normalizeAmountString(amount: unknown, decimals?: number): string;
++//# sourceMappingURL=normalizeAmountString.d.mts.map
+\ No newline at end of file
+diff --git a/dist/utils/normalizeAmountString.mjs b/dist/utils/normalizeAmountString.mjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..e4c4fbc3ec954d7f851ff3cfbbc6eaa57e08aef9
+--- /dev/null
++++ b/dist/utils/normalizeAmountString.mjs
+@@ -0,0 +1,57 @@
++import BigNumberJS from "bignumber.js";
++/**
++ * Normalize an asset balance `amount` string into a canonical plain-decimal
++ * form (no scientific notation), optionally truncating to the asset's decimal
++ * precision.
++ *
++ * Amounts entering `assetsBalance` state come from external sources (snaps,
++ * accounts API, websocket, RPC) and may be serialized from JavaScript Numbers
++ * as `"1e-18"`. Downstream consumers (e.g. the extension's
++ * `parseBalanceWithDecimals`) split on `'.'` and feed the result to `BigInt()`,
++ * which throws on exponent-form strings. Normalizing at the controller
++ * boundary keeps the invariant that `amount` is always a plain decimal so
++ * every current and future data source is safe without per-source changes.
++ *
++ * When `decimals` is provided (i.e. the asset's metadata is registered),
++ * fractional digits beyond `decimals` are truncated using round-toward-zero
++ * to match the extension's `parseBalanceWithDecimals`, which slices off any
++ * fractional digits beyond `decimals`.
++ *
++ * When `decimals` is omitted (metadata not yet known for this asset), the
++ * amount is left at its natural precision — exponent form is still converted
++ * to plain decimal, but no digits are dropped. This preserves balances that
++ * arrive before their metadata without lossy truncation.
++ *
++ * Non-finite or non-string inputs collapse to `'0'` rather than throwing,
++ * because controller state must remain JSON-serializable and a malformed
++ * upstream payload should not corrupt the rest of the update.
++ *
++ * @param amount - The raw amount string from a data source.
++ * @param decimals - The asset's decimal precision (from `assetsInfo`). Pass
++ * `undefined` when metadata is unknown to skip truncation.
++ * @returns A plain decimal string (e.g. `"0.000000000000000001"`), or `'0'`
++ * for non-finite / non-string input.
++ */
++export function normalizeAmountString(amount, decimals) {
++    if (typeof amount !== 'string' || amount.length === 0) {
++        return '0';
++    }
++    const bn = new BigNumberJS(amount);
++    if (!bn.isFinite()) {
++        return '0';
++    }
++    let fixed;
++    if (decimals === undefined || !Number.isFinite(decimals) || decimals < 0) {
++        // Metadata unknown — preserve full precision, just defeat exponent form.
++        fixed = bn.toFixed();
++    }
++    else {
++        fixed = bn.toFixed(Math.floor(decimals), BigNumberJS.ROUND_DOWN);
++    }
++    if (!fixed.includes('.')) {
++        return fixed;
++    }
++    // Trim trailing zeros and a dangling dot: "1.500" -> "1.5", "1.000" -> "1".
++    return fixed.replace(/0+$/u, '').replace(/\.$/u, '');
++}
++//# sourceMappingURL=normalizeAmountString.mjs.map
+\ No newline at end of file
