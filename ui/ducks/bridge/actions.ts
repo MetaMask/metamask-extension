@@ -1,7 +1,5 @@
 import {
-  BRIDGE_CONTROLLER_NAME,
   type BridgeController,
-  BridgeControllerActions,
   type RequiredEventContextFromClient,
   UnifiedSwapBridgeEventName,
   isCrossChain,
@@ -79,7 +77,7 @@ export {
 };
 
 const callBridgeControllerMethod = (
-  bridgeAction: BridgeControllerActions['type'],
+  bridgeAction: keyof BridgeController,
   ...args: unknown[]
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -91,9 +89,7 @@ const callBridgeControllerMethod = (
 // Background actions
 export const resetBridgeController = () => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(
-      callBridgeControllerMethod(`${BRIDGE_CONTROLLER_NAME}:resetState`),
-    );
+    dispatch(callBridgeControllerMethod('resetState'));
     await clearAllBridgeCacheItems();
   };
 };
@@ -110,7 +106,7 @@ export const trackUnifiedSwapBridgeEvent = <
   return async (dispatch: MetaMaskReduxDispatch) => {
     await dispatch(
       callBridgeControllerMethod(
-        `${BRIDGE_CONTROLLER_NAME}:trackUnifiedSwapBridgeEvent`,
+        'trackUnifiedSwapBridgeEvent',
         eventName,
         propertiesFromClient,
       ),
@@ -130,7 +126,7 @@ export const updateQuoteRequestParams = (
   return async (dispatch: MetaMaskReduxDispatch) => {
     await dispatch(
       callBridgeControllerMethod(
-        `${BRIDGE_CONTROLLER_NAME}:updateBridgeQuoteRequestParams`,
+        'updateBridgeQuoteRequestParams',
         params,
         context,
         quoteRequestIndex,
@@ -144,12 +140,7 @@ export const updateBatchSellTrades = (
   ...[quotes]: Parameters<BridgeController['updateBatchSellTrades']>
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await dispatch(
-      callBridgeControllerMethod(
-        `${BRIDGE_CONTROLLER_NAME}:updateBatchSellTrades`,
-        quotes,
-      ),
-    );
+    await dispatch(callBridgeControllerMethod('updateBatchSellTrades', quotes));
   };
 };
 

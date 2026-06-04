@@ -57,9 +57,9 @@ setBackgroundConnection({
   getNetworkConfigurationByNetworkClientId: jest
     .fn()
     .mockResolvedValue({ chainId: '0x1' }),
-  'BridgeController:trackUnifiedSwapBridgeEvent': jest.fn(),
+  trackUnifiedSwapBridgeEvent: jest.fn(),
   selectSrcNetwork: jest.fn(),
-  'BridgeController:resetState': () => mockResetBridgeState(),
+  resetState: () => mockResetBridgeState(),
   tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
   isRelaySupported: jest.fn().mockResolvedValue(true),
   isSendBundleSupported: jest.fn().mockResolvedValue(true),

@@ -14,7 +14,7 @@ import { setBackgroundConnection } from '../../../store/background-connection';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 setBackgroundConnection({
-  'BridgeController:trackUnifiedSwapBridgeEvent': jest.fn(),
+  trackUnifiedSwapBridgeEvent: jest.fn(),
   getStatePatches: jest.fn(),
 } as never);
 

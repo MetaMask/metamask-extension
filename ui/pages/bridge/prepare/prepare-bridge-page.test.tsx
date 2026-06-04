@@ -50,9 +50,9 @@ jest.mock('../../../contexts/hardware-wallets', () => ({
 }));
 
 setBackgroundConnection({
-  'BridgeController:resetState': async () => jest.fn(),
+  resetState: async () => jest.fn(),
   getStatePatches: async () => jest.fn(),
-  'BridgeController:updateBridgeQuoteRequestParams': async () => jest.fn(),
+  updateBridgeQuoteRequestParams: async () => jest.fn(),
 } as never);
 
 describe('PrepareBridgePage', () => {
@@ -448,13 +448,10 @@ describe('PrepareBridgePage', () => {
       .fn()
       .mockResolvedValue(undefined);
     setBackgroundConnection({
-      'BridgeController:resetState': jest.fn().mockResolvedValue(undefined),
+      resetState: jest.fn().mockResolvedValue(undefined),
       getStatePatches: jest.fn().mockResolvedValue([]),
-      'BridgeController:updateBridgeQuoteRequestParams':
-        updateBridgeQuoteRequestParams,
-      'BridgeController:trackUnifiedSwapBridgeEvent': jest
-        .fn()
-        .mockResolvedValue(undefined),
+      updateBridgeQuoteRequestParams,
+      trackUnifiedSwapBridgeEvent: jest.fn().mockResolvedValue(undefined),
     } as never);
 
     const btcAsset = getNativeAssetForChainId(ChainId.BTC);
@@ -626,10 +623,10 @@ describe('PrepareBridgePage', () => {
       });
 
     const backgroundWithAllMethods = {
-      'BridgeController:resetState': jest.fn(),
+      resetState: jest.fn(),
       getStatePatches: jest.fn(),
-      'BridgeController:updateBridgeQuoteRequestParams': jest.fn(),
-      'BridgeController:trackUnifiedSwapBridgeEvent': jest.fn(),
+      updateBridgeQuoteRequestParams: jest.fn(),
+      trackUnifiedSwapBridgeEvent: jest.fn(),
       setEnabledAllPopularNetworks: jest.fn(),
       setActiveNetwork: jest.fn(),
     } as never;

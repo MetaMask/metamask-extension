@@ -3623,31 +3623,26 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // Bridge
-      [`${BRIDGE_CONTROLLER_NAME}:resetState`]:
-        this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          `${BRIDGE_CONTROLLER_NAME}:resetState`,
-        ),
-      [`${BRIDGE_CONTROLLER_NAME}:updateBridgeQuoteRequestParams`]:
-        this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          `${BRIDGE_CONTROLLER_NAME}:updateBridgeQuoteRequestParams`,
-        ),
-      [`${BRIDGE_CONTROLLER_NAME}:updateBatchSellTrades`]:
-        this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          `${BRIDGE_CONTROLLER_NAME}:updateBatchSellTrades`,
-        ),
-      [`${BRIDGE_CONTROLLER_NAME}:trackUnifiedSwapBridgeEvent`]:
-        this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          `${BRIDGE_CONTROLLER_NAME}:trackUnifiedSwapBridgeEvent`,
-        ),
-      [`${BRIDGE_CONTROLLER_NAME}:fetchQuotes`]:
-        this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          `${BRIDGE_CONTROLLER_NAME}:fetchQuotes`,
-        ),
+      resetState: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_CONTROLLER_NAME}:resetState`,
+      ),
+      updateBridgeQuoteRequestParams: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_CONTROLLER_NAME}:updateBridgeQuoteRequestParams`,
+      ),
+      trackUnifiedSwapBridgeEvent: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_CONTROLLER_NAME}:trackUnifiedSwapBridgeEvent`,
+      ),
+      fetchQuotes: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_CONTROLLER_NAME}:fetchQuotes`,
+      ),
+      updateBatchSellTrades: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_CONTROLLER_NAME}:updateBatchSellTrades`,
+      ),
 
       // Bridge Tx submission
       submitTx: this.controllerMessenger.call.bind(
