@@ -121,7 +121,7 @@ describe('BTC Account - Activity', function (this: Suite) {
     );
   });
 
-  it('Transaction details show Title / Time / Status / TXID / From / To / Amount / Network fee / View details', async function () {
+  it('Transaction details show Title / Time / Status / TXID / From / To / Amount / View details', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),

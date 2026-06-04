@@ -17,11 +17,6 @@ class BitcoinTransactionDetailsPage {
     text,
   });
 
-  private readonly networkFee = (text: string) => ({
-    css: '[data-testid="transaction-base-fee"]',
-    text,
-  });
-
   private readonly statusSelector = (text: string) => ({ tag: 'p', text });
 
   private readonly titleSelector = (text: string) => ({
@@ -58,10 +53,6 @@ class BitcoinTransactionDetailsPage {
 
   async checkAmount(text: string): Promise<void> {
     await this.driver.waitForSelector(this.amount(text));
-  }
-
-  async checkNetworkFee(fee: string): Promise<void> {
-    await this.driver.waitForSelector(this.networkFee(fee));
   }
 
   async checkHashLinkPresent(): Promise<void> {
