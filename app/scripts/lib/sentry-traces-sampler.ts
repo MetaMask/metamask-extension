@@ -11,7 +11,7 @@ import { getManifestFlags } from '../../../shared/lib/manifestFlags';
  * span quota in 13.32.0 (see #43211 / #43226). They are pinned to `0` so that if
  * the instrumentation is re-enabled — the controller `trace` callback was removed
  * in PR #43213 — these spans stay dropped until a deliberate, budgeted rate is
- * set here or via the `sentry.sampleRatesByName` manifest flag.
+ * set here or via the `sentry.sampleRateOverrides` manifest flag.
  */
 export const DEFAULT_TRANSACTION_SAMPLE_RATES: Readonly<
   Record<string, number>
@@ -49,7 +49,7 @@ type SampleRateOptions = {
   /**
    * Per-name overrides, e.g. {@link DEFAULT_TRANSACTION_SAMPLE_RATES}.
    */
-  sampleRatesByName: Record<string, number>;
+  sampleRateOverrides: Record<string, number>;
 };
 
 /**
@@ -69,12 +69,12 @@ type SampleRateOptions = {
  * @param options - Default rate and per-name overrides.
  * @param options.defaultSampleRate - Rate applied to transactions with no
  * per-name override.
- * @param options.sampleRatesByName - Per-name sample-rate overrides.
+ * @param options.sampleRateOverrides - Per-name sample-rate overrides.
  * @returns A sample rate in the range [0, 1].
  */
 export function getTransactionSampleRate(
   samplingContext: TransactionSamplingContext,
-  { defaultSampleRate, sampleRatesByName }: SampleRateOptions,
+  { defaultSampleRate, sampleRateOverrides }: SampleRateOptions,
 ): number {
   const { parentSampled } = samplingContext ?? {};
   // Prefer the current top-level `name`; fall back to the deprecated-but-still-
@@ -85,9 +85,9 @@ export function getTransactionSampleRate(
 
   if (
     name !== undefined &&
-    Object.prototype.hasOwnProperty.call(sampleRatesByName, name)
+    Object.prototype.hasOwnProperty.call(sampleRateOverrides, name)
   ) {
-    return sampleRatesByName[name];
+    return sampleRateOverrides[name];
   }
 
   if (typeof parentSampled === 'boolean') {
@@ -102,7 +102,7 @@ export function getTransactionSampleRate(
  *
  * The override map is resolved once, when the SDK is configured, from the
  * built-in {@link DEFAULT_TRANSACTION_SAMPLE_RATES} merged with any
- * `sentry.sampleRatesByName` manifest flag — letting rates be re-budgeted via
+ * `sentry.sampleRateOverrides` manifest flag — letting rates be re-budgeted via
  * manifest injection without shipping a new release.
  *
  * @param options - Sampler options.
@@ -115,14 +115,14 @@ export function createTracesSampler({
 }: {
   defaultSampleRate: number;
 }): (samplingContext: TransactionSamplingContext) => number {
-  const sampleRatesByName: Record<string, number> = {
+  const sampleRateOverrides: Record<string, number> = {
     ...DEFAULT_TRANSACTION_SAMPLE_RATES,
-    ...(getManifestFlags().sentry?.sampleRatesByName ?? {}),
+    ...(getManifestFlags().sentry?.sampleRateOverrides ?? {}),
   };
 
   return (samplingContext) =>
     getTransactionSampleRate(samplingContext, {
       defaultSampleRate,
-      sampleRatesByName,
+      sampleRateOverrides,
     });
 }

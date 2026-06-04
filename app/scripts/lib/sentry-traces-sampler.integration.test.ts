@@ -32,7 +32,7 @@ describe('createTracesSampler (integration with Sentry.init)', () => {
   beforeEach(() => {
     sentTransactions = [];
     getManifestFlagsMock.mockReturnValue({
-      sentry: { sampleRatesByName: { 'Throttled Transaction': 0 } },
+      sentry: { sampleRateOverrides: { 'Throttled Transaction': 0 } },
     });
     (globalThis as typeof globalThis & { nw?: object }).nw = {};
 

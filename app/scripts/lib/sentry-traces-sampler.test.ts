@@ -13,7 +13,7 @@ const getManifestFlagsMock = jest.mocked(getManifestFlags);
 
 describe('getTransactionSampleRate', () => {
   const defaultSampleRate = 0.0075;
-  const sampleRatesByName = {
+  const sampleRateOverrides = {
     'Dropped Transaction': 0,
     'Sub-Sampled Transaction': 0.01,
   };
@@ -22,7 +22,7 @@ describe('getTransactionSampleRate', () => {
     expect(
       getTransactionSampleRate(
         { name: 'Dropped Transaction' },
-        { defaultSampleRate, sampleRatesByName },
+        { defaultSampleRate, sampleRateOverrides },
       ),
     ).toBe(0);
   });
@@ -31,7 +31,7 @@ describe('getTransactionSampleRate', () => {
     expect(
       getTransactionSampleRate(
         { name: 'Sub-Sampled Transaction' },
-        { defaultSampleRate, sampleRatesByName },
+        { defaultSampleRate, sampleRateOverrides },
       ),
     ).toBe(0.01);
   });
@@ -40,13 +40,13 @@ describe('getTransactionSampleRate', () => {
     expect(
       getTransactionSampleRate(
         { name: 'Dropped Transaction', parentSampled: true },
-        { defaultSampleRate, sampleRatesByName },
+        { defaultSampleRate, sampleRateOverrides },
       ),
     ).toBe(0);
     expect(
       getTransactionSampleRate(
         { name: 'Dropped Transaction', parentSampled: false },
-        { defaultSampleRate, sampleRatesByName },
+        { defaultSampleRate, sampleRateOverrides },
       ),
     ).toBe(0);
   });
@@ -55,7 +55,7 @@ describe('getTransactionSampleRate', () => {
     expect(
       getTransactionSampleRate(
         { name: 'Unlisted Transaction', parentSampled: true },
-        { defaultSampleRate, sampleRatesByName },
+        { defaultSampleRate, sampleRateOverrides },
       ),
     ).toBe(1);
   });
@@ -64,7 +64,7 @@ describe('getTransactionSampleRate', () => {
     expect(
       getTransactionSampleRate(
         { name: 'Unlisted Transaction', parentSampled: false },
-        { defaultSampleRate, sampleRatesByName },
+        { defaultSampleRate, sampleRateOverrides },
       ),
     ).toBe(0);
   });
@@ -73,14 +73,14 @@ describe('getTransactionSampleRate', () => {
     expect(
       getTransactionSampleRate(
         { name: 'Unlisted Transaction' },
-        { defaultSampleRate, sampleRatesByName },
+        { defaultSampleRate, sampleRateOverrides },
       ),
     ).toBe(defaultSampleRate);
   });
 
   it('falls back to the default rate when no name is present', () => {
     expect(
-      getTransactionSampleRate({}, { defaultSampleRate, sampleRatesByName }),
+      getTransactionSampleRate({}, { defaultSampleRate, sampleRateOverrides }),
     ).toBe(defaultSampleRate);
   });
 
@@ -88,7 +88,7 @@ describe('getTransactionSampleRate', () => {
     expect(
       getTransactionSampleRate(
         { name: 'Dropped Transaction' },
-        { defaultSampleRate, sampleRatesByName: {} },
+        { defaultSampleRate, sampleRateOverrides: {} },
       ),
     ).toBe(defaultSampleRate);
   });
@@ -97,7 +97,7 @@ describe('getTransactionSampleRate', () => {
     expect(
       getTransactionSampleRate(
         { transactionContext: { name: 'Dropped Transaction' } },
-        { defaultSampleRate, sampleRatesByName },
+        { defaultSampleRate, sampleRateOverrides },
       ),
     ).toBe(0);
   });
@@ -109,7 +109,7 @@ describe('getTransactionSampleRate', () => {
           name: 'Unlisted Transaction',
           transactionContext: { name: 'Dropped Transaction' },
         },
-        { defaultSampleRate, sampleRatesByName },
+        { defaultSampleRate, sampleRateOverrides },
       ),
     ).toBe(defaultSampleRate);
   });
@@ -142,7 +142,7 @@ describe('createTracesSampler', () => {
 
   it('throttles a transaction supplied purely via the manifest flag', () => {
     getManifestFlagsMock.mockReturnValue({
-      sentry: { sampleRatesByName: { 'Flagged Transaction': 0 } },
+      sentry: { sampleRateOverrides: { 'Flagged Transaction': 0 } },
     });
 
     const sampler = createTracesSampler({ defaultSampleRate });
@@ -152,7 +152,7 @@ describe('createTracesSampler', () => {
 
   it('merges manifest-flag overrides on top of the built-in defaults', () => {
     getManifestFlagsMock.mockReturnValue({
-      sentry: { sampleRatesByName: { 'Flagged Transaction': 0.001 } },
+      sentry: { sampleRateOverrides: { 'Flagged Transaction': 0.001 } },
     });
 
     const sampler = createTracesSampler({ defaultSampleRate });
@@ -175,7 +175,7 @@ describe('createTracesSampler', () => {
     }
     const [name] = seededNames;
     getManifestFlagsMock.mockReturnValue({
-      sentry: { sampleRatesByName: { [name]: 0.5 } },
+      sentry: { sampleRateOverrides: { [name]: 0.5 } },
     });
 
     const sampler = createTracesSampler({ defaultSampleRate });
