@@ -4,7 +4,6 @@ import { KeyringClass } from '@metamask/keyring-utils';
 import LatticeKeyring from 'eth-lattice-keyring';
 import {
   OneKeyKeyring,
-  TrezorConnectBridge,
   TrezorKeyring,
 } from '@metamask/eth-trezor-keyring';
 import {

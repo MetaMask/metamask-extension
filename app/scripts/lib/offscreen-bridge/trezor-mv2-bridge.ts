@@ -1,35 +1,46 @@
-import { TrezorConnectBridge } from '@metamask/eth-trezor-keyring';
+// eslint-disable-next-line import/no-internal-modules
+import { TrezorConnect as SuiteDesktopConnect } from '@trezor/connect-web/lib/impl/core-in-suite-desktop';
+import { DEVICE_EVENT, DEVICE } from '@trezor/connect-web';
+import type { TrezorBridge } from '@metamask/eth-trezor-keyring';
 import type {
   ConnectSettings,
+  EthereumSignedTx,
   Manifest,
+  PROTO,
+  Response,
   Params,
   EthereumSignMessage,
   EthereumSignTransaction,
   EthereumSignTypedDataTypes,
   EthereumSignTypedHash,
-  EthereumSignedTx,
-  PROTO,
-  Response as TrezorResponse,
 } from '@trezor/connect-web';
 
-// How long to wait for a bridge call before surfacing a clear error.
-// Trezor Suite Desktop connects via WebSocket within ~1-2 s when running.
-// Without this timeout, a missing Suite Desktop causes @trezor/connect-web to
-// fall back to its remote iframe path which hangs indefinitely in Firefox MV2.
-const CALL_TIMEOUT_MS = 20_000;
+const SUITE_DESKTOP_ERROR_CODE = 'Desktop_ConnectionMissing';
 
 const SUITE_DESKTOP_REQUIRED_ERROR =
   'Trezor Suite Desktop is required to use Trezor with Firefox. ' +
   'Please install and open Trezor Suite (suite.trezor.io) and try again.';
 
-function withTimeout<T>(promise: TrezorResponse<T>): TrezorResponse<T> {
-  const timeout = new Promise<never>((_, reject) =>
-    setTimeout(
-      () => reject(new Error(SUITE_DESKTOP_REQUIRED_ERROR)),
-      CALL_TIMEOUT_MS,
-    ),
-  );
-  return Promise.race([promise, timeout]) as TrezorResponse<T>;
+// The resolved value type of Response<T> = Promise<SuccessWithDevice<T> | Unsuccessful>.
+// `.then()` callbacks receive this type, not the Promise itself.
+type TrezorResult<T> =
+  | { success: true; payload: T }
+  | { success: false; payload: { error: string; code?: string } };
+
+/**
+ * Re-map Desktop_ConnectionMissing to a user-readable message.
+ * CoreInSuiteDesktop.call() always resolves (never throws), returning
+ * { success: false, payload: { code: 'Desktop_ConnectionMissing' } }
+ * when Suite Desktop is unreachable.
+ */
+function mapError<T>(result: TrezorResult<T>): TrezorResult<T> {
+  if (!result.success && result.payload.code === SUITE_DESKTOP_ERROR_CODE) {
+    return {
+      success: false,
+      payload: { error: SUITE_DESKTOP_REQUIRED_ERROR, code: SUITE_DESKTOP_ERROR_CODE },
+    };
+  }
+  return result;
 }
 
 /**
@@ -38,38 +49,111 @@ function withTimeout<T>(promise: TrezorResponse<T>): TrezorResponse<T> {
  * Firefox MV2 does not support chrome.offscreen (MV3 only), so the standard
  * TrezorOffscreenBridge cannot be used. The remote iframe used by
  * @trezor/connect-web v9 in webextension mode hangs indefinitely in Firefox MV2
- * (IFRAME.LOADED is never received). Popup mode also has compatibility issues.
+ * because IFRAME.LOADED is never received. Using the main @trezor/connect-web
+ * export (TrezorConnectDynamic) with coreMode:'suite-desktop' also hangs:
+ * when Suite Desktop is absent, TrezorConnectDynamic intercepts the
+ * Desktop_ConnectionMissing response and falls back to the hanging iframe.
  *
- * This bridge forces coreMode: 'suite-desktop', which connects to Trezor Suite
- * Desktop via WebSocket. A per-call timeout prevents the UI from hanging
- * indefinitely when Suite Desktop is not running.
+ * This bridge imports CoreInSuiteDesktop's own TrezorConnect instance directly,
+ * bypassing TrezorConnectDynamic. CoreInSuiteDesktop connects to Trezor Suite
+ * Desktop via WebSocket and handles all failures internally — it never touches
+ * the iframe. When Suite Desktop is absent, calls resolve immediately with a
+ * clear error response.
  */
-export class TrezorMv2Bridge extends TrezorConnectBridge {
+export class TrezorMv2Bridge implements TrezorBridge {
+  model: string | undefined;
+
+  #initiated = false;
+
+  #listenerAdded = false;
+
   async init(
     settings: { manifest: Manifest } & Partial<ConnectSettings>,
   ): Promise<void> {
-    return await super.init({ ...settings, coreMode: 'suite-desktop' });
+    if (!this.#listenerAdded) {
+      // SuiteDesktopConnect properties resolve to `any` via the & Record<string, any>
+      // intersection in its type, so the event listener is untyped here.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      SuiteDesktopConnect.on(DEVICE_EVENT as any, (event: any) => {
+        if (event?.type !== DEVICE.CONNECT) {
+          return;
+        }
+        this.model = event?.payload?.features?.model;
+      });
+      this.#listenerAdded = true;
+    }
+
+    if (this.#initiated) {
+      return;
+    }
+
+    try {
+      // init() on CoreInSuiteDesktop opens a WebSocket to Suite Desktop.
+      // It throws Desktop_ConnectionMissing if the connection cannot be made.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await (SuiteDesktopConnect as any).init(settings);
+      this.#initiated = true;
+    } catch (err) {
+      // #initiated stays false so a retry after the user opens Suite Desktop
+      // will re-attempt the connection.
+      if ((err as { code?: string })?.code === SUITE_DESKTOP_ERROR_CODE) {
+        throw new Error(SUITE_DESKTOP_REQUIRED_ERROR);
+      }
+      throw err;
+    }
   }
 
-  getPublicKey(params: { path: string; coin: string }) {
-    return withTimeout(super.getPublicKey(params));
+  async dispose(): Promise<void> {
+    this.#initiated = false;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (SuiteDesktopConnect as any).dispose();
+  }
+
+  getPublicKey(
+    params: { path: string; coin: string },
+  ): Response<{ publicKey: string; chainCode: string }> {
+    return (
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (SuiteDesktopConnect as any)
+        .getPublicKey(params)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .then((r: any) => mapError<{ publicKey: string; chainCode: string }>(r))
+    ) as unknown as Response<{ publicKey: string; chainCode: string }>;
   }
 
   ethereumSignTransaction(
     params: Params<EthereumSignTransaction>,
-  ): TrezorResponse<EthereumSignedTx> {
-    return withTimeout(super.ethereumSignTransaction(params));
+  ): Response<EthereumSignedTx> {
+    return (
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (SuiteDesktopConnect as any)
+        .ethereumSignTransaction(params)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .then((r: any) => mapError<EthereumSignedTx>(r))
+    ) as unknown as Response<EthereumSignedTx>;
   }
 
   ethereumSignMessage(
     params: Params<EthereumSignMessage>,
-  ): TrezorResponse<PROTO.MessageSignature> {
-    return withTimeout(super.ethereumSignMessage(params));
+  ): Response<PROTO.MessageSignature> {
+    return (
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (SuiteDesktopConnect as any)
+        .ethereumSignMessage(params)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .then((r: any) => mapError<PROTO.MessageSignature>(r))
+    ) as unknown as Response<PROTO.MessageSignature>;
   }
 
   ethereumSignTypedData<T extends EthereumSignTypedDataTypes>(
     params: Params<EthereumSignTypedHash<T>>,
-  ): TrezorResponse<PROTO.EthereumTypedDataSignature> {
-    return withTimeout(super.ethereumSignTypedData(params));
+  ): Response<PROTO.EthereumTypedDataSignature> {
+    return (
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (SuiteDesktopConnect as any)
+        .ethereumSignTypedData(params)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .then((r: any) => mapError<PROTO.EthereumTypedDataSignature>(r))
+    ) as unknown as Response<PROTO.EthereumTypedDataSignature>;
   }
 }
