@@ -1780,7 +1780,7 @@ describe('MetaMaskController', function () {
         ).rejects.toThrow('invalid assertion');
       });
 
-      it('throws when the passkey vault key does not match the current vault key', async function () {
+      it('throws when the passkey vault key cannot decrypt the vault', async function () {
         jest
           .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
           .mockReturnValue(true);
@@ -1791,12 +1791,8 @@ describe('MetaMaskController', function () {
           )
           .mockResolvedValue('passkey-vault-key');
         jest
-          .spyOn(metamaskController.keyringController, 'exportEncryptionKey')
-          .mockResolvedValue('different-vault-key');
-        const verifySeedPhraseSpy = jest.spyOn(
-          metamaskController.keyringController,
-          'verifySeedPhrase',
-        );
+          .spyOn(metamaskController.keyringController, 'exportSeedPhrase')
+          .mockRejectedValue(new Error('Incorrect encryption key'));
 
         await expect(
           metamaskController.requestRevealSeedWordsWithPasskey(
@@ -1805,7 +1801,6 @@ describe('MetaMaskController', function () {
         ).rejects.toMatchObject({
           code: PasskeyControllerErrorCode.AuthenticationVerificationFailed,
         });
-        expect(verifySeedPhraseSpy).not.toHaveBeenCalled();
       });
 
       it('returns the encoded seed phrase for the given keyring after verification', async function () {
@@ -1819,11 +1814,8 @@ describe('MetaMaskController', function () {
             'retrieveVaultKeyWithPasskey',
           )
           .mockResolvedValue('vault-key');
-        jest
-          .spyOn(metamaskController.keyringController, 'exportEncryptionKey')
-          .mockResolvedValue('vault-key');
-        const verifySeedPhraseSpy = jest
-          .spyOn(metamaskController.keyringController, 'verifySeedPhrase')
+        const exportSeedPhraseSpy = jest
+          .spyOn(metamaskController.keyringController, 'exportSeedPhrase')
           .mockResolvedValue(mnemonic);
 
         const result =
@@ -1832,7 +1824,10 @@ describe('MetaMaskController', function () {
             'keyring-id',
           );
 
-        expect(verifySeedPhraseSpy).toHaveBeenCalledWith('keyring-id');
+        expect(exportSeedPhraseSpy).toHaveBeenCalledWith(
+          { encryptionKey: 'vault-key' },
+          'keyring-id',
+        );
         expect(result).toStrictEqual(
           convertEnglishWordlistIndicesToCodepoints(mnemonic),
         );
@@ -1848,18 +1843,18 @@ describe('MetaMaskController', function () {
             'retrieveVaultKeyWithPasskey',
           )
           .mockResolvedValue('vault-key');
-        jest
-          .spyOn(metamaskController.keyringController, 'exportEncryptionKey')
-          .mockResolvedValue('vault-key');
-        const verifySeedPhraseSpy = jest
-          .spyOn(metamaskController.keyringController, 'verifySeedPhrase')
+        const exportSeedPhraseSpy = jest
+          .spyOn(metamaskController.keyringController, 'exportSeedPhrase')
           .mockResolvedValue(new Uint8Array([0, 0, 0, 1]));
 
         await metamaskController.requestRevealSeedWordsWithPasskey(
           authenticationResponse,
         );
 
-        expect(verifySeedPhraseSpy).toHaveBeenCalledWith(undefined);
+        expect(exportSeedPhraseSpy).toHaveBeenCalledWith(
+          { encryptionKey: 'vault-key' },
+          undefined,
+        );
       });
     });
 

@@ -4729,8 +4729,8 @@ export default class MetamaskController extends EventEmitter {
    *
    * The vault is already unlocked here, so the passkey assertion only acts as a
    * step-up re-authentication gate. We additionally require the passkey-derived
-   * vault key to match the currently-unlocked vault key, binding the passkey to
-   * this vault. Non-social-login only.
+   * vault key to decrypt the vault (via exportSeedPhrase), binding the passkey
+   * to this vault. Non-social-login only.
    *
    * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse - WebAuthn authentication response from the passkey ceremony.
    * @param {string} [keyringId] - The id of the HD keyring to reveal. Defaults to the primary keyring.
@@ -4745,24 +4745,18 @@ export default class MetamaskController extends EventEmitter {
     }
 
     // Use retrieveVaultKeyWithPasskey (not verifyPasskeyAuthentication) so we
-    // can bind-check the derived key against the currently-unlocked vault key
-    // below. This also cryptographically verifies the assertion, throwing on an
-    // invalid passkey.
-    const vaultKeyFromPasskey =
+    // obtain the passkey-wrapped vault key. This also cryptographically
+    // verifies the assertion, throwing on an invalid passkey.
+    const vaultKey =
       await this.passkeyController.retrieveVaultKeyWithPasskey(
         authenticationResponse,
       );
 
-    // Defense-in-depth: the passkey must wrap the currently-unlocked vault key.
-    const currentVaultKey = await this.keyringController.exportEncryptionKey();
-    if (vaultKeyFromPasskey !== currentVaultKey) {
-      throw new PasskeyControllerError(
-        PasskeyControllerErrorMessage.AuthenticationVerificationFailed,
-        { code: PasskeyControllerErrorCode.AuthenticationVerificationFailed },
-      );
-    }
+    const mnemonic = await this.keyringController.exportSeedPhrase(
+      { encryptionKey: vaultKey },
+      keyringId,
+    );
 
-    const mnemonic = await this.keyringController.verifySeedPhrase(keyringId);
     return convertEnglishWordlistIndicesToCodepoints(mnemonic);
   }
 
