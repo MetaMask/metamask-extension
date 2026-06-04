@@ -7,8 +7,7 @@ import { getLatestCommit } from '../../git';
 export const ZIP_MTIME_MINIMUM = Date.UTC(1980, 0, 1);
 export const ZIP_MTIME_EXCLUSIVE_MAXIMUM = Date.UTC(2100, 0, 1);
 const ZIP_MTIME_MINIMUM_SECONDS = ZIP_MTIME_MINIMUM / 1000;
-const ZIP_MTIME_EXCLUSIVE_MAXIMUM_SECONDS =
-  ZIP_MTIME_EXCLUSIVE_MAXIMUM / 1000;
+const ZIP_MTIME_EXCLUSIVE_MAXIMUM_SECONDS = ZIP_MTIME_EXCLUSIVE_MAXIMUM / 1000;
 
 /**
  * MetaMask's birthday.
@@ -54,11 +53,7 @@ export function getDefaultZipMtime(): number {
   }
 
   const epoch = Number(sourceDateEpoch);
-  if (
-    sourceDateEpoch.trim() === '' ||
-    !Number.isInteger(epoch) ||
-    epoch < 0
-  ) {
+  if (sourceDateEpoch.trim() === '' || !Number.isInteger(epoch) || epoch < 0) {
     throw new Error(
       `Invalid SOURCE_DATE_EPOCH value "${sourceDateEpoch}": expected a non-negative integer number of seconds since the Unix epoch`,
     );
