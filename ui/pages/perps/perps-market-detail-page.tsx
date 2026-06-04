@@ -182,14 +182,14 @@ type PopoverMenuItemProps = {
   'data-testid'?: string;
 };
 
-const PopoverMenuItem: React.FC<PopoverMenuItemProps> = ({
+const PopoverMenuItem = ({
   icon,
   label,
   description,
   onClick,
   className = '',
   'data-testid': testId,
-}) => (
+}: PopoverMenuItemProps) => (
   <Box
     className={`w-full text-left px-4 py-4 bg-transparent hover:bg-hover active:bg-pressed flex items-start gap-3 cursor-pointer ${className}`}
     onClick={onClick}
@@ -264,7 +264,7 @@ const parsePerpsToastRouteState = (
  * Displays detailed market information for a specific perps market
  * Accessible via /perps/market/:symbol route
  */
-const PerpsMarketDetailPage: React.FC = () => {
+const PerpsMarketDetailPage = () => {
   const t = useI18nContext();
   const theme = useTheme();
   const isDark = theme === 'dark';

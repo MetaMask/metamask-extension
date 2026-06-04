@@ -7,7 +7,7 @@ import { SOLANA_DEVNET_URL } from '../../tests/solana/common-solana';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
-import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 
 export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
 
@@ -88,15 +88,15 @@ export const switchToAccount = async (
   driver: Driver,
   accountName: string,
 ): Promise<void> => {
-  const nonEvmHomepage = new NonEvmHomepage(driver);
-  await nonEvmHomepage.checkPageIsLoaded();
-  await nonEvmHomepage.headerNavbar.openAccountMenu();
+  const homePage = new HomePage(driver);
+  await homePage.checkPageIsLoaded();
+  await homePage.headerNavbar.openAccountMenu();
 
   const accountListPage = new AccountListPage(driver);
   await accountListPage.checkPageIsLoaded();
   await accountListPage.checkAccountDisplayedInAccountList(accountName);
   await accountListPage.switchToAccount(accountName);
-  await nonEvmHomepage.headerNavbar.checkAccountLabel(accountName);
+  await homePage.headerNavbar.checkAccountLabel(accountName);
 };
 
 /**
