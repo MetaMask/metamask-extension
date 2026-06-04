@@ -1,0 +1,860 @@
+diff --git a/dist/AssetsController.cjs b/dist/AssetsController.cjs
+index 084ffd8bc6b15a3474bb4ae65eeb6b195c2aaf2d..7552c96a765368243d30f099187c739b88c838c2 100644
+--- a/dist/AssetsController.cjs
++++ b/dist/AssetsController.cjs
+@@ -1,4 +1,3 @@
+-"use strict";
+ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+     if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+@@ -10,36 +9,32 @@ var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (
+     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+     return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+ };
+-var __importDefault = (this && this.__importDefault) || function (mod) {
+-    return (mod && mod.__esModule) ? mod : { "default": mod };
+-};
+ var _AssetsController_instances, _AssetsController_isEnabled, _AssetsController_isBasicFunctionality, _AssetsController_defaultUpdateInterval, _AssetsController_trace, _AssetsController_captureException, _AssetsController_firstInitFetchReported, _AssetsController_stateSizeReported, _AssetsController_emitTrace, _AssetsController_emitStateSizeTrace, _AssetsController_uiOpen, _AssetsController_keyringUnlocked, _AssetsController_controllerMutex, _AssetsController_activeSubscriptions, _AssetsController_enabledChains, _AssetsController_lastKnownAccountIds, _AssetsController_getSelectedAccounts, _AssetsController_backendWebsocketDataSource, _AssetsController_accountsApiDataSource, _AssetsController_snapDataSource, _AssetsController_rpcDataSource, _AssetsController_stakedBalanceDataSource, _AssetsController_allBalanceDataSources_get, _AssetsController_priceDataSource, _AssetsController_detectionMiddleware, _AssetsController_customAssetGraduationMiddleware, _AssetsController_rpcFallbackMiddleware, _AssetsController_tokenDataSource, _AssetsController_unsubscribeBasicFunctionality, _AssetsController_queryApiClient, _AssetsController_onActiveChainsUpdated, _AssetsController_initializeNativeAssetsMap, _AssetsController_initializeState, _AssetsController_extractEnabledChains, _AssetsController_normalizeChainReference, _AssetsController_subscribeToEvents, _AssetsController_onUnapprovedTransactionAdded, _AssetsController_updateActive, _AssetsController_handleAccountTreeStateChange, _AssetsController_registerActionHandlers, _AssetsController_handleActiveChainsUpdate, _AssetsController_executeMiddlewares, _AssetsController_getNativeAssetMap, _AssetsController_isNativeAsset, _AssetsController_resolveNativeAssetIds, _AssetsController_getNativeAssetIdsForEnabledChains, _AssetsController_getNativeAssetIdsForAccount, _AssetsController_ensureNativeBalancesDefaultZero, _AssetsController_ensureDefaultTrackedAssetsSeeded, _AssetsController_updateState, _AssetsController_getAssetsFromState, _AssetsController_shouldHideNativeToken, _AssetsController_tokenStandardToAssetType, _AssetsController_start, _AssetsController_stop, _AssetsController_subscribeAssets, _AssetsController_subscribeAssetsBalance, _AssetsController_subscribeRpcCustomAssetsSupplement, _AssetsController_unsubscribeBySubscriptionKey, _AssetsController_subscribeStakedBalance, _AssetsController_buildChainToAccountsMap, _AssetsController_subscribeDataSource, _AssetsController_unsubscribeDataSource, _AssetsController_buildDataRequest, _AssetsController_getEnabledChainsForAccount, _AssetsController_handleAccountGroupChanged, _AssetsController_handleEnabledNetworksChanged, _AssetsController_handleNetworkAdded, _AssetsController_refreshAssetsAfterNetworkChange;
+-Object.defineProperty(exports, "__esModule", { value: true });
+-exports.AssetsController = exports.getDefaultAssetsControllerState = void 0;
+-const base_controller_1 = require("@metamask/base-controller");
+-const client_controller_1 = require("@metamask/client-controller");
+-const utils_1 = require("@metamask/utils");
+-const async_mutex_1 = require("async-mutex");
+-const bignumber_js_1 = __importDefault(require("bignumber.js"));
+-const lodash_1 = require("lodash");
+-const AccountsApiDataSource_1 = require("./data-sources/AccountsApiDataSource.cjs");
+-const BackendWebsocketDataSource_1 = require("./data-sources/BackendWebsocketDataSource.cjs");
+-const assets_1 = require("./data-sources/evm-rpc-services/utils/assets.cjs");
+-const PriceDataSource_1 = require("./data-sources/PriceDataSource.cjs");
+-const RpcDataSource_1 = require("./data-sources/RpcDataSource.cjs");
+-const SnapDataSource_1 = require("./data-sources/SnapDataSource.cjs");
+-const StakedBalanceDataSource_1 = require("./data-sources/StakedBalanceDataSource.cjs");
+-const TokenDataSource_1 = require("./data-sources/TokenDataSource.cjs");
+-const defaults_1 = require("./defaults.cjs");
+-const errors_1 = require("./errors.cjs");
+-const logger_1 = require("./logger.cjs");
+-const CustomAssetGraduationMiddleware_1 = require("./middlewares/CustomAssetGraduationMiddleware.cjs");
+-const DetectionMiddleware_1 = require("./middlewares/DetectionMiddleware.cjs");
+-const ParallelMiddleware_1 = require("./middlewares/ParallelMiddleware.cjs");
+-const RpcFallbackMiddleware_1 = require("./middlewares/RpcFallbackMiddleware.cjs");
+-const utils_2 = require("./utils/index.cjs");
+-const constants_1 = require("./utils/constants.cjs");
+-const customAssetsRpcSupplement_1 = require("./utils/customAssetsRpcSupplement.cjs");
++import { BaseController } from "@metamask/base-controller";
++import { clientControllerSelectors } from "@metamask/client-controller";
++import { isCaipChainId, isStrictHexString, KnownCaipNamespace, parseCaipAssetType, parseCaipChainId } from "@metamask/utils";
++import { Mutex } from "async-mutex";
++import BigNumberJS from "bignumber.js";
++import $lodash from "lodash";
++const { isEqual } = $lodash;
++import { AccountsApiDataSource } from "./data-sources/AccountsApiDataSource.mjs";
++import { BackendWebsocketDataSource } from "./data-sources/BackendWebsocketDataSource.mjs";
++import { shouldSkipNativeForCaipChainId } from "./data-sources/evm-rpc-services/utils/assets.mjs";
++import { PriceDataSource } from "./data-sources/PriceDataSource.mjs";
++import { RpcDataSource } from "./data-sources/RpcDataSource.mjs";
++import { SnapDataSource } from "./data-sources/SnapDataSource.mjs";
++import { StakedBalanceDataSource } from "./data-sources/StakedBalanceDataSource.mjs";
++import { CaipAssetNamespace, TokenDataSource } from "./data-sources/TokenDataSource.mjs";
++import { CHAINS_WITH_DEFAULT_TRACKED_ASSETS, DEFAULT_TRACKED_ASSETS_BY_CHAIN, buildDefaultAssetsInfo, getDefaultAssetMetadata } from "./defaults.mjs";
++import { AssetsDataSourceError } from "./errors.mjs";
++import { projectLogger, createModuleLogger } from "./logger.mjs";
++import { CustomAssetGraduationMiddleware } from "./middlewares/CustomAssetGraduationMiddleware.mjs";
++import { DetectionMiddleware } from "./middlewares/DetectionMiddleware.mjs";
++import { createParallelBalanceMiddleware, createParallelMiddleware } from "./middlewares/ParallelMiddleware.mjs";
++import { RpcFallbackMiddleware } from "./middlewares/RpcFallbackMiddleware.mjs";
++import { normalizeAmountString, normalizeAssetId, formatExchangeRatesForBridge, formatStateForTransactionPay, buildNativeAssetsFromConstant, buildNativeAssetsFromApi } from "./utils/index.mjs";
++import { ZERO_ADDRESS } from "./utils/constants.mjs";
++import { pickRpcCustomAssetsSupplement } from "./utils/customAssetsRpcSupplement.mjs";
+ const NATIVE_ASSETS_QUERY_KEY = ['nativeAssets'];
+ // ============================================================================
+ // CONTROLLER CONSTANTS
+@@ -72,7 +67,7 @@ const TRACE_DATA_SOURCE_ERROR = 'AssetsDataSourceError';
+ const TRACE_UPDATE_PIPELINE = 'AssetsUpdatePipeline';
+ const TRACE_SUBSCRIPTION_ERROR = 'AssetsSubscriptionError';
+ const TRACE_STATE_SIZE = 'AssetsStateSize';
+-const log = (0, logger_1.createModuleLogger)(logger_1.projectLogger, CONTROLLER_NAME);
++const log = createModuleLogger(projectLogger, CONTROLLER_NAME);
+ /**
+  * Returns the default state for AssetsController.
+  *
+@@ -80,14 +75,14 @@ const log = (0, logger_1.createModuleLogger)(logger_1.projectLogger, CONTROLLER_
+  * asset maps start empty; `assetsInfo` is pre-seeded for default tracked
+  * assets (see {@link buildDefaultAssetsInfo}).
+  */
+-function getDefaultAssetsControllerState() {
++export function getDefaultAssetsControllerState() {
+     return {
+         // Pre-populate metadata for controller-managed default tracked assets
+         // (e.g. mUSD on Ethereum mainnet, Linea, Monad) so they are
+         // immediately renderable in the UI before any RPC poll completes.
+         // Per-account zero-balance entries are filled into `assetsBalance`
+         // by `#ensureDefaultTrackedAssetsSeeded` once accounts are known.
+-        assetsInfo: (0, defaults_1.buildDefaultAssetsInfo)(),
++        assetsInfo: buildDefaultAssetsInfo(),
+         assetsBalance: {},
+         assetsPrice: {},
+         customAssets: {},
+@@ -95,7 +90,6 @@ function getDefaultAssetsControllerState() {
+         selectedCurrency: 'usd',
+     };
+ }
+-exports.getDefaultAssetsControllerState = getDefaultAssetsControllerState;
+ // ============================================================================
+ // STATE METADATA
+ // ============================================================================
+@@ -141,7 +135,7 @@ const stateMetadata = {
+ // HELPER FUNCTIONS
+ // ============================================================================
+ function extractChainId(assetId) {
+-    const parsed = (0, utils_1.parseCaipAssetType)(assetId);
++    const parsed = parseCaipAssetType(assetId);
+     return parsed.chainId;
+ }
+ /**
+@@ -157,14 +151,14 @@ function normalizeResponse(response) {
+     if (response.assetsInfo) {
+         normalized.assetsInfo = {};
+         for (const [assetId, metadata] of Object.entries(response.assetsInfo)) {
+-            const normalizedId = (0, utils_2.normalizeAssetId)(assetId);
++            const normalizedId = normalizeAssetId(assetId);
+             normalized.assetsInfo[normalizedId] = metadata;
+         }
+     }
+     if (response.assetsPrice) {
+         normalized.assetsPrice = {};
+         for (const [assetId, price] of Object.entries(response.assetsPrice)) {
+-            const normalizedId = (0, utils_2.normalizeAssetId)(assetId);
++            const normalizedId = normalizeAssetId(assetId);
+             normalized.assetsPrice[normalizedId] = price;
+         }
+     }
+@@ -173,7 +167,7 @@ function normalizeResponse(response) {
+         for (const [accountId, balances] of Object.entries(response.assetsBalance)) {
+             normalized.assetsBalance[accountId] = {};
+             for (const [assetId, balance] of Object.entries(balances)) {
+-                const normalizedId = (0, utils_2.normalizeAssetId)(assetId);
++                const normalizedId = normalizeAssetId(assetId);
+                 normalized.assetsBalance[accountId][normalizedId] = balance;
+             }
+         }
+@@ -182,7 +176,7 @@ function normalizeResponse(response) {
+     if (response.detectedAssets) {
+         normalized.detectedAssets = {};
+         for (const [accountId, assetIds] of Object.entries(response.detectedAssets)) {
+-            normalized.detectedAssets[accountId] = assetIds.map((assetId) => (0, utils_2.normalizeAssetId)(assetId));
++            normalized.detectedAssets[accountId] = assetIds.map((assetId) => normalizeAssetId(assetId));
+         }
+     }
+     // Preserve errors (chain IDs don't need normalization)
+@@ -224,7 +218,7 @@ function normalizeResponse(response) {
+  * - Data sources are responsible for their own update mechanisms (WebSocket, polling, events)
+  * - The controller does NOT manage polling - it simply receives pushed updates
+  */
+-class AssetsController extends base_controller_1.BaseController {
++export class AssetsController extends BaseController {
+     constructor({ messenger, state = {}, defaultUpdateInterval = DEFAULT_POLLING_INTERVAL_MS, isEnabled = () => true, isBasicFunctionality, subscribeToBasicFunctionalityChange, queryApiClient, rpcDataSourceConfig, trace, captureException, accountsApiDataSourceConfig, priceDataSourceConfig, stakedBalanceDataSourceConfig, isOnboarded, }) {
+         super({
+             name: CONTROLLER_NAME,
+@@ -254,7 +248,7 @@ class AssetsController extends base_controller_1.BaseController {
+         _AssetsController_uiOpen.set(this, false);
+         /** Whether the keyring is unlocked. Combined with #uiOpen for #updateActive. */
+         _AssetsController_keyringUnlocked.set(this, false);
+-        _AssetsController_controllerMutex.set(this, new async_mutex_1.Mutex());
++        _AssetsController_controllerMutex.set(this, new Mutex());
+         /**
+          * Active balance subscriptions keyed by account ID.
+          * Each account has one logical subscription that may span multiple data sources.
+@@ -302,26 +296,26 @@ class AssetsController extends base_controller_1.BaseController {
+                 });
+             }
+         }, "f");
+-        __classPrivateFieldSet(this, _AssetsController_backendWebsocketDataSource, new BackendWebsocketDataSource_1.BackendWebsocketDataSource({
++        __classPrivateFieldSet(this, _AssetsController_backendWebsocketDataSource, new BackendWebsocketDataSource({
+             messenger: this.messenger,
+             queryApiClient,
+             onActiveChainsUpdated: __classPrivateFieldGet(this, _AssetsController_onActiveChainsUpdated, "f"),
+             isNativeAsset: (assetId) => __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_isNativeAsset).call(this, assetId),
+         }), "f");
+-        __classPrivateFieldSet(this, _AssetsController_accountsApiDataSource, new AccountsApiDataSource_1.AccountsApiDataSource({
++        __classPrivateFieldSet(this, _AssetsController_accountsApiDataSource, new AccountsApiDataSource({
+             queryApiClient,
+             onActiveChainsUpdated: __classPrivateFieldGet(this, _AssetsController_onActiveChainsUpdated, "f"),
+             ...accountsApiDataSourceConfig,
+         }), "f");
+-        __classPrivateFieldSet(this, _AssetsController_snapDataSource, new SnapDataSource_1.SnapDataSource({
++        __classPrivateFieldSet(this, _AssetsController_snapDataSource, new SnapDataSource({
+             messenger: this.messenger,
+             onActiveChainsUpdated: __classPrivateFieldGet(this, _AssetsController_onActiveChainsUpdated, "f"),
+         }), "f");
+-        __classPrivateFieldSet(this, _AssetsController_rpcDataSource, new RpcDataSource_1.RpcDataSource({
++        __classPrivateFieldSet(this, _AssetsController_rpcDataSource, new RpcDataSource({
+             messenger: this.messenger,
+             onActiveChainsUpdated: __classPrivateFieldGet(this, _AssetsController_onActiveChainsUpdated, "f"),
+             getNativeAssetForChain: (chainId) => __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_getNativeAssetMap).call(this)[chainId] ??
+-                `${chainId}/erc20:${constants_1.ZERO_ADDRESS}`,
++                `${chainId}/erc20:${ZERO_ADDRESS}`,
+             // Share the API platform's TanStack Query client so the RPC token
+             // detector caches/dedupes its top-token-list fetches alongside the rest
+             // of the package's API calls. Caller-provided rpcConfig.queryClient
+@@ -330,24 +324,24 @@ class AssetsController extends base_controller_1.BaseController {
+             ...rpcConfig,
+             isOnboarded: rpcConfig.isOnboarded ?? isOnboarded,
+         }), "f");
+-        __classPrivateFieldSet(this, _AssetsController_stakedBalanceDataSource, new StakedBalanceDataSource_1.StakedBalanceDataSource({
++        __classPrivateFieldSet(this, _AssetsController_stakedBalanceDataSource, new StakedBalanceDataSource({
+             messenger: this.messenger,
+             onActiveChainsUpdated: __classPrivateFieldGet(this, _AssetsController_onActiveChainsUpdated, "f"),
+             ...stakedBalanceDataSourceConfig,
+         }), "f");
+-        __classPrivateFieldSet(this, _AssetsController_tokenDataSource, new TokenDataSource_1.TokenDataSource(this.messenger, {
++        __classPrivateFieldSet(this, _AssetsController_tokenDataSource, new TokenDataSource(this.messenger, {
+             queryApiClient,
+             getNativeAssetIds: () => {
+                 return __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_getNativeAssetIdsForEnabledChains).call(this);
+             },
+         }), "f");
+-        __classPrivateFieldSet(this, _AssetsController_priceDataSource, new PriceDataSource_1.PriceDataSource({
++        __classPrivateFieldSet(this, _AssetsController_priceDataSource, new PriceDataSource({
+             queryApiClient,
+             getSelectedCurrency: () => this.state.selectedCurrency,
+             ...priceDataSourceConfig,
+         }), "f");
+-        __classPrivateFieldSet(this, _AssetsController_detectionMiddleware, new DetectionMiddleware_1.DetectionMiddleware(), "f");
+-        __classPrivateFieldSet(this, _AssetsController_customAssetGraduationMiddleware, new CustomAssetGraduationMiddleware_1.CustomAssetGraduationMiddleware({
++        __classPrivateFieldSet(this, _AssetsController_detectionMiddleware, new DetectionMiddleware(), "f");
++        __classPrivateFieldSet(this, _AssetsController_customAssetGraduationMiddleware, new CustomAssetGraduationMiddleware({
+             getSelectedAccountId: () => {
+                 try {
+                     return __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_getSelectedAccounts).call(this)[0]?.id;
+@@ -358,7 +352,7 @@ class AssetsController extends base_controller_1.BaseController {
+             },
+             removeCustomAsset: (accountId, assetId) => this.removeCustomAsset(accountId, assetId),
+         }), "f");
+-        __classPrivateFieldSet(this, _AssetsController_rpcFallbackMiddleware, new RpcFallbackMiddleware_1.RpcFallbackMiddleware({
++        __classPrivateFieldSet(this, _AssetsController_rpcFallbackMiddleware, new RpcFallbackMiddleware({
+             rpcDataSource: __classPrivateFieldGet(this, _AssetsController_rpcDataSource, "f"),
+         }), "f");
+         log('Initializing AssetsController', {
+@@ -421,7 +415,7 @@ class AssetsController extends base_controller_1.BaseController {
+             // would wipe balances from the sources handled by the other pipeline.
+             const fastSources = __classPrivateFieldGet(this, _AssetsController_isBasicFunctionality, "f").call(this)
+                 ? [
+-                    (0, ParallelMiddleware_1.createParallelBalanceMiddleware)([
++                    createParallelBalanceMiddleware([
+                         __classPrivateFieldGet(this, _AssetsController_accountsApiDataSource, "f"),
+                         __classPrivateFieldGet(this, _AssetsController_stakedBalanceDataSource, "f"),
+                     ]),
+@@ -431,7 +425,7 @@ class AssetsController extends base_controller_1.BaseController {
+                     __classPrivateFieldGet(this, _AssetsController_customAssetGraduationMiddleware, "f"),
+                     __classPrivateFieldGet(this, _AssetsController_rpcFallbackMiddleware, "f"),
+                     __classPrivateFieldGet(this, _AssetsController_detectionMiddleware, "f"),
+-                    (0, ParallelMiddleware_1.createParallelMiddleware)([
++                    createParallelMiddleware([
+                         __classPrivateFieldGet(this, _AssetsController_tokenDataSource, "f"),
+                         __classPrivateFieldGet(this, _AssetsController_priceDataSource, "f"),
+                     ]),
+@@ -450,11 +444,11 @@ class AssetsController extends base_controller_1.BaseController {
+                 ? [__classPrivateFieldGet(this, _AssetsController_snapDataSource, "f"), __classPrivateFieldGet(this, _AssetsController_rpcDataSource, "f")]
+                 : [__classPrivateFieldGet(this, _AssetsController_rpcDataSource, "f")];
+             __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_executeMiddlewares).call(this, [
+-                (0, ParallelMiddleware_1.createParallelBalanceMiddleware)(slowSources),
++                createParallelBalanceMiddleware(slowSources),
+                 __classPrivateFieldGet(this, _AssetsController_detectionMiddleware, "f"),
+                 ...(__classPrivateFieldGet(this, _AssetsController_isBasicFunctionality, "f").call(this)
+                     ? [
+-                        (0, ParallelMiddleware_1.createParallelMiddleware)([
++                        createParallelMiddleware([
+                             __classPrivateFieldGet(this, _AssetsController_tokenDataSource, "f"),
+                             __classPrivateFieldGet(this, _AssetsController_priceDataSource, "f"),
+                         ]),
+@@ -542,7 +536,7 @@ class AssetsController extends base_controller_1.BaseController {
+      */
+     getExchangeRatesForBridge() {
+         const { networkConfigurationsByChainId } = this.messenger.call('NetworkController:getState');
+-        return (0, utils_2.formatExchangeRatesForBridge)({
++        return formatExchangeRatesForBridge({
+             assetsInfo: this.state.assetsInfo,
+             assetsPrice: this.state.assetsPrice,
+             selectedCurrency: this.state.selectedCurrency,
+@@ -562,7 +556,7 @@ class AssetsController extends base_controller_1.BaseController {
+     getStateForTransactionPay() {
+         const accounts = __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_getSelectedAccounts).call(this);
+         const { networkConfigurationsByChainId } = this.messenger.call('NetworkController:getState');
+-        return (0, utils_2.formatStateForTransactionPay)({
++        return formatStateForTransactionPay({
+             assetsBalance: this.state.assetsBalance,
+             assetsInfo: this.state.assetsInfo,
+             assetsPrice: this.state.assetsPrice,
+@@ -589,7 +583,7 @@ class AssetsController extends base_controller_1.BaseController {
+      * @param pendingMetadata - Optional token metadata from the UI (pendingTokens format).
+      */
+     async addCustomAsset(accountId, assetId, pendingMetadata) {
+-        const normalizedAssetId = (0, utils_2.normalizeAssetId)(assetId);
++        const normalizedAssetId = normalizeAssetId(assetId);
+         log('Adding custom asset', { accountId, assetId: normalizedAssetId });
+         this.update((state) => {
+             var _a;
+@@ -611,13 +605,13 @@ class AssetsController extends base_controller_1.BaseController {
+             }
+             // Persist metadata from the UI so the token is immediately renderable
+             if (pendingMetadata) {
+-                const parsed = (0, utils_1.parseCaipAssetType)(normalizedAssetId);
++                const parsed = parseCaipAssetType(normalizedAssetId);
+                 let tokenType = 'erc20';
+                 if (__classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_isNativeAsset).call(this, normalizedAssetId)) {
+                     tokenType = 'native';
+                 }
+-                else if (parsed.chain.namespace === utils_1.KnownCaipNamespace.Solana &&
+-                    parsed.assetNamespace === TokenDataSource_1.CaipAssetNamespace.Token) {
++                else if (parsed.chain.namespace === KnownCaipNamespace.Solana &&
++                    parsed.assetNamespace === CaipAssetNamespace.Token) {
+                     tokenType = 'spl';
+                 }
+                 const assetMetadata = {
+@@ -661,7 +655,7 @@ class AssetsController extends base_controller_1.BaseController {
+      * @param assetId - The CAIP-19 asset ID to remove.
+      */
+     removeCustomAsset(accountId, assetId) {
+-        const normalizedAssetId = (0, utils_2.normalizeAssetId)(assetId);
++        const normalizedAssetId = normalizeAssetId(assetId);
+         log('Removing custom asset', { accountId, assetId: normalizedAssetId });
+         this.update((state) => {
+             if (state.customAssets[accountId]) {
+@@ -696,7 +690,7 @@ class AssetsController extends base_controller_1.BaseController {
+      * @param assetId - The CAIP-19 asset ID to hide.
+      */
+     hideAsset(assetId) {
+-        const normalizedAssetId = (0, utils_2.normalizeAssetId)(assetId);
++        const normalizedAssetId = normalizeAssetId(assetId);
+         log('Hiding asset', { assetId: normalizedAssetId });
+         this.update((state) => {
+             if (!state.assetPreferences[normalizedAssetId]) {
+@@ -711,7 +705,7 @@ class AssetsController extends base_controller_1.BaseController {
+      * @param assetId - The CAIP-19 asset ID to unhide.
+      */
+     unhideAsset(assetId) {
+-        const normalizedAssetId = (0, utils_2.normalizeAssetId)(assetId);
++        const normalizedAssetId = normalizeAssetId(assetId);
+         log('Unhiding asset', { assetId: normalizedAssetId });
+         this.update((state) => {
+             const prefs = state.assetPreferences[normalizedAssetId];
+@@ -860,7 +854,7 @@ class AssetsController extends base_controller_1.BaseController {
+             __classPrivateFieldGet(this, _AssetsController_detectionMiddleware, "f"),
+         ];
+         if (__classPrivateFieldGet(this, _AssetsController_isBasicFunctionality, "f").call(this)) {
+-            enrichmentSources.push((0, ParallelMiddleware_1.createParallelMiddleware)([
++            enrichmentSources.push(createParallelMiddleware([
+                 __classPrivateFieldGet(this, _AssetsController_tokenDataSource, "f"),
+                 __classPrivateFieldGet(this, _AssetsController_priceDataSource, "f"),
+             ]));
+@@ -913,7 +907,6 @@ class AssetsController extends base_controller_1.BaseController {
+         this.messenger.unregisterActionHandler('AssetsController:setSelectedCurrency');
+     }
+ }
+-exports.AssetsController = AssetsController;
+ _AssetsController_isEnabled = new WeakMap(), _AssetsController_isBasicFunctionality = new WeakMap(), _AssetsController_defaultUpdateInterval = new WeakMap(), _AssetsController_trace = new WeakMap(), _AssetsController_captureException = new WeakMap(), _AssetsController_firstInitFetchReported = new WeakMap(), _AssetsController_stateSizeReported = new WeakMap(), _AssetsController_uiOpen = new WeakMap(), _AssetsController_keyringUnlocked = new WeakMap(), _AssetsController_controllerMutex = new WeakMap(), _AssetsController_activeSubscriptions = new WeakMap(), _AssetsController_enabledChains = new WeakMap(), _AssetsController_lastKnownAccountIds = new WeakMap(), _AssetsController_backendWebsocketDataSource = new WeakMap(), _AssetsController_accountsApiDataSource = new WeakMap(), _AssetsController_snapDataSource = new WeakMap(), _AssetsController_rpcDataSource = new WeakMap(), _AssetsController_stakedBalanceDataSource = new WeakMap(), _AssetsController_priceDataSource = new WeakMap(), _AssetsController_detectionMiddleware = new WeakMap(), _AssetsController_customAssetGraduationMiddleware = new WeakMap(), _AssetsController_rpcFallbackMiddleware = new WeakMap(), _AssetsController_tokenDataSource = new WeakMap(), _AssetsController_unsubscribeBasicFunctionality = new WeakMap(), _AssetsController_queryApiClient = new WeakMap(), _AssetsController_onActiveChainsUpdated = new WeakMap(), _AssetsController_instances = new WeakSet(), _AssetsController_emitTrace = function _AssetsController_emitTrace(name, data, tags = {
+     controller: 'AssetsController',
+ }) {
+@@ -981,7 +974,7 @@ _AssetsController_isEnabled = new WeakMap(), _AssetsController_isBasicFunctional
+     queryApiClient.queryClient
+         .fetchQuery({
+         queryKey: NATIVE_ASSETS_QUERY_KEY,
+-        queryFn: utils_2.buildNativeAssetsFromApi,
++        queryFn: buildNativeAssetsFromApi,
+         staleTime: Infinity,
+         gcTime: Infinity,
+     })
+@@ -994,7 +987,7 @@ _AssetsController_isEnabled = new WeakMap(), _AssetsController_isBasicFunctional
+     // #isNativeAsset, #resolveNativeAssetIds) have data available immediately.
+     // When fetchQuery resolves (currently instant, future: API), it overwrites
+     // this with potentially fresher data.
+-    const initialNativeAssetMap = (0, utils_2.buildNativeAssetsFromConstant)();
++    const initialNativeAssetMap = buildNativeAssetsFromConstant();
+     queryApiClient.setCachedData(NATIVE_ASSETS_QUERY_KEY, initialNativeAssetMap);
+ }, _AssetsController_initializeState = function _AssetsController_initializeState() {
+     const { enabledNetworkMap } = this.messenger.call('NetworkEnablementController:getState');
+@@ -1023,7 +1016,7 @@ _AssetsController_isEnabled = new WeakMap(), _AssetsController_isBasicFunctional
+     }
+     return chains;
+ }, _AssetsController_normalizeChainReference = function _AssetsController_normalizeChainReference(namespace, reference) {
+-    if (namespace === 'eip155' && (0, utils_1.isStrictHexString)(reference)) {
++    if (namespace === 'eip155' && isStrictHexString(reference)) {
+         // Convert hex to decimal for EIP155 chains
+         return parseInt(reference, 16).toString();
+     }
+@@ -1064,7 +1057,7 @@ _AssetsController_isEnabled = new WeakMap(), _AssetsController_isBasicFunctional
+     this.messenger.subscribe('ClientController:stateChange', (isUiOpen) => {
+         __classPrivateFieldSet(this, _AssetsController_uiOpen, isUiOpen, "f");
+         __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_updateActive).call(this);
+-    }, client_controller_1.clientControllerSelectors.selectIsUiOpen);
++    }, clientControllerSelectors.selectIsUiOpen);
+     this.messenger.subscribe('KeyringController:unlock', () => {
+         __classPrivateFieldSet(this, _AssetsController_keyringUnlocked, true, "f");
+         __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_updateActive).call(this);
+@@ -1241,7 +1234,7 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
+     // Failed middlewares: Issues (optional) + perf/Dashboard spans
+     if (middlewareErrors.length > 0) {
+         const failedSources = middlewareErrors.join(',');
+-        const assetsError = new errors_1.AssetsDataSourceError({
++        const assetsError = new AssetsDataSourceError({
+             failedSources,
+             errorCount: middlewareErrors.length,
+             chainCount: request.chainIds.length,
+@@ -1266,7 +1259,7 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
+ }, _AssetsController_getNativeAssetMap = function _AssetsController_getNativeAssetMap() {
+     return (__classPrivateFieldGet(this, _AssetsController_queryApiClient, "f").getCachedData(NATIVE_ASSETS_QUERY_KEY) ?? {});
+ }, _AssetsController_isNativeAsset = function _AssetsController_isNativeAsset(assetId) {
+-    const parsed = (0, utils_1.parseCaipAssetType)(assetId);
++    const parsed = parseCaipAssetType(assetId);
+     if (parsed.assetNamespace === 'slip44') {
+         return true;
+     }
+@@ -1276,7 +1269,7 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
+         return true;
+     }
+     if (parsed.assetNamespace === 'erc20' &&
+-        parsed.assetReference === constants_1.ZERO_ADDRESS) {
++        parsed.assetReference === ZERO_ADDRESS) {
+         return true;
+     }
+     return false;
+@@ -1334,7 +1327,7 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
+     // enabled at startup) but only appears on Monad once the user
+     // turns the Monad network on.
+     const candidateChains = chainsToSeed ?? [...__classPrivateFieldGet(this, _AssetsController_enabledChains, "f")];
+-    const targetChains = candidateChains.filter((chainId) => defaults_1.CHAINS_WITH_DEFAULT_TRACKED_ASSETS.has(chainId));
++    const targetChains = candidateChains.filter((chainId) => CHAINS_WITH_DEFAULT_TRACKED_ASSETS.has(chainId));
+     if (targetChains.length === 0) {
+         return;
+     }
+@@ -1343,12 +1336,12 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
+         const balances = state.assetsBalance;
+         const metadata = state.assetsInfo;
+         for (const chainId of targetChains) {
+-            const defaultAssetIds = defaults_1.DEFAULT_TRACKED_ASSETS_BY_CHAIN.get(chainId) ?? [];
++            const defaultAssetIds = DEFAULT_TRACKED_ASSETS_BY_CHAIN.get(chainId) ?? [];
+             for (const assetId of defaultAssetIds) {
+                 // Re-seed metadata if state was hydrated from a prior version
+                 // that didn't include defaults.
+                 if (!metadata[assetId]) {
+-                    const seed = (0, defaults_1.getDefaultAssetMetadata)(assetId);
++                    const seed = getDefaultAssetMetadata(assetId);
+                     if (seed) {
+                         metadata[assetId] = seed;
+                     }
+@@ -1380,7 +1373,7 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
+             const prices = state.assetsPrice;
+             if (normalizedResponse.assetsInfo) {
+                 for (const [key, value] of Object.entries(normalizedResponse.assetsInfo)) {
+-                    if (!(0, lodash_1.isEqual)(previousState.assetsInfo[key], value)) {
++                    if (!isEqual(previousState.assetsInfo[key], value)) {
+                         changedMetadata.push(key);
+                     }
+                     const existing = metadata[key];
+@@ -1439,7 +1432,16 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
+                     }
+                     for (const [assetId, balance] of Object.entries(effective)) {
+                         const previousBalance = previousBalances[assetId];
+-                        const newAmount = balance.amount;
++                        // Coerce amounts (e.g. "1e-18" from a data source stringifying
++                        // a JS Number) into a plain decimal so downstream BigInt()
++                        // consumers don't crash. Decimals are read from the freshest
++                        // merged metadata when available; when metadata is not yet
++                        // known, the amount is left at its natural precision (only
++                        // exponent form is rewritten) so balances arriving before
++                        // their metadata aren't lossily truncated.
++                        const assetDecimals = metadata[assetId]?.decimals;
++                        const newAmount = normalizeAmountString(balance.amount, assetDecimals);
++                        effective[assetId] = { ...balance, amount: newAmount };
+                         const oldAmount = previousBalance?.amount;
+                         const isNewDefaultNativeZero = oldAmount === undefined &&
+                             newAmount === '0' &&
+@@ -1467,7 +1469,7 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
+         __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_emitStateSizeTrace).call(this);
+         // Calculate changed prices
+         const changedPriceAssets = normalizedResponse.assetsPrice
+-            ? Object.keys(normalizedResponse.assetsPrice).filter((assetId) => !(0, lodash_1.isEqual)(previousPrices[assetId], normalizedResponse.assetsPrice?.[assetId]))
++            ? Object.keys(normalizedResponse.assetsPrice).filter((assetId) => !isEqual(previousPrices[assetId], normalizedResponse.assetsPrice?.[assetId]))
+             : [];
+         // Log only actual changes
+         if (changedBalances.length > 0 ||
+@@ -1566,7 +1568,7 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
+             // Compute fiat value using BigNumber for precision
+             // Note: typedBalance.amount is already in human-readable format (e.g., "1" for 1 ETH)
+             // so we do NOT divide by 10^decimals here
+-            const balanceAmount = new bignumber_js_1.default(typedBalance.amount || '0');
++            const balanceAmount = new BigNumberJS(typedBalance.amount || '0');
+             const fiatValue = balanceAmount
+                 .multipliedBy(price.price || 0)
+                 .toNumber();
+@@ -1584,7 +1586,7 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
+     return result;
+ }, _AssetsController_shouldHideNativeToken = function _AssetsController_shouldHideNativeToken(chainId, metadata) {
+     // Check if it's a chain that should skip native tokens
+-    if (!(0, assets_1.shouldSkipNativeForCaipChainId)(chainId)) {
++    if (!shouldSkipNativeForCaipChainId(chainId)) {
+         return false;
+     }
+     return metadata.type === 'native';
+@@ -1717,7 +1719,7 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
+ }, _AssetsController_subscribeRpcCustomAssetsSupplement = function _AssetsController_subscribeRpcCustomAssetsSupplement(accounts, chainToAccounts, rpcAssignedChains) {
+     const rpc = __classPrivateFieldGet(this, _AssetsController_rpcDataSource, "f");
+     const supplementalKey = `ds:${rpc.getName()}:custom`;
+-    const decision = (0, customAssetsRpcSupplement_1.pickRpcCustomAssetsSupplement)({
++    const decision = pickRpcCustomAssetsSupplement({
+         accountIds: accounts.map((account) => account.id),
+         customAssetsByAccount: this.state.customAssets,
+         rpcAssignedChains,
+@@ -1843,17 +1845,17 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
+     const result = [];
+     for (const scope of scopes) {
+         const scopeStr = scope;
+-        if (!(0, utils_1.isCaipChainId)(scopeStr)) {
++        if (!isCaipChainId(scopeStr)) {
+             result.push(scope);
+             continue;
+         }
+-        const { namespace, reference } = (0, utils_1.parseCaipChainId)(scopeStr);
++        const { namespace, reference } = parseCaipChainId(scopeStr);
+         // Wildcard scope (e.g., "eip155:0" means all enabled chains in that namespace)
+         if (reference === '0') {
+             // Add enabled chains
+             for (const chain of __classPrivateFieldGet(this, _AssetsController_enabledChains, "f")) {
+-                if ((0, utils_1.isCaipChainId)(chain)) {
+-                    const chainParsed = (0, utils_1.parseCaipChainId)(chain);
++                if (isCaipChainId(chain)) {
++                    const chainParsed = parseCaipChainId(chain);
+                     if (chainParsed.namespace === namespace) {
+                         result.push(chain);
+                     }
+@@ -1861,15 +1863,15 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
+             }
+             // Add additional chains
+             for (const chain of additionalChains ?? []) {
+-                if ((0, utils_1.isCaipChainId)(chain)) {
+-                    const chainParsed = (0, utils_1.parseCaipChainId)(chain);
++                if (isCaipChainId(chain)) {
++                    const chainParsed = parseCaipChainId(chain);
+                     if (chainParsed.namespace === namespace) {
+                         result.push(chain);
+                     }
+                 }
+             }
+         }
+-        else if (namespace === 'eip155' && (0, utils_1.isStrictHexString)(reference)) {
++        else if (namespace === 'eip155' && isStrictHexString(reference)) {
+             // Normalize hex to decimal for EIP155
+             result.push(`eip155:${parseInt(reference, 16)}`);
+         }
+@@ -1950,7 +1952,7 @@ async function _AssetsController_handleAccountGroupChanged() {
+     catch {
+         return;
+     }
+-    if (!defaults_1.CHAINS_WITH_DEFAULT_TRACKED_ASSETS.has(caipChainId)) {
++    if (!CHAINS_WITH_DEFAULT_TRACKED_ASSETS.has(caipChainId)) {
+         return;
+     }
+     log('Network added — seeding default tracked assets', {
+@@ -1965,4 +1967,4 @@ async function _AssetsController_handleAccountGroupChanged() {
+         log('Failed to refresh assets after network change', { error });
+     });
+ };
+-//# sourceMappingURL=AssetsController.cjs.map
+\ No newline at end of file
++//# sourceMappingURL=AssetsController.mjs.map
+\ No newline at end of file
+diff --git a/dist/data-sources/BackendWebsocketDataSource.cjs b/dist/data-sources/BackendWebsocketDataSource.cjs
+index 6ab620a777a04aaa2b75bfdb7ff8c34a13a07319..f6bab9ecd7fa082e80257f9aae9d96baa82f7f86 100644
+--- a/dist/data-sources/BackendWebsocketDataSource.cjs
++++ b/dist/data-sources/BackendWebsocketDataSource.cjs
+@@ -479,7 +479,7 @@ async function _BackendWebsocketDataSource_initializeActiveChains() {
+         // Convert to human-readable using asset decimals (match RpcDataSource / pipeline format)
+         const humanReadableAmount = new bignumber_js_1.default(rawBalanceStr)
+             .dividedBy(new bignumber_js_1.default(10).pow(asset.decimals))
+-            .toString();
++            .toFixed();
+         assetsBalance[accountId][assetId] = {
+             amount: humanReadableAmount,
+         };
+diff --git a/dist/data-sources/BackendWebsocketDataSource.mjs b/dist/data-sources/BackendWebsocketDataSource.mjs
+index 3146c71ce035a4418663a0792964a31d52a5f7cd..3c6079804b2979b51ab5761b9dad64731c2be9fe 100644
+--- a/dist/data-sources/BackendWebsocketDataSource.mjs
++++ b/dist/data-sources/BackendWebsocketDataSource.mjs
+@@ -472,7 +472,7 @@ async function _BackendWebsocketDataSource_initializeActiveChains() {
+         // Convert to human-readable using asset decimals (match RpcDataSource / pipeline format)
+         const humanReadableAmount = new BigNumberJS(rawBalanceStr)
+             .dividedBy(new BigNumberJS(10).pow(asset.decimals))
+-            .toString();
++            .toFixed();
+         assetsBalance[accountId][assetId] = {
+             amount: humanReadableAmount,
+         };
+diff --git a/dist/utils/index.cjs b/dist/utils/index.cjs
+index 37e71a422b379a2da9cf13b591b242888b2413b1..b3fbf65e4d4f7b1ed297047c5ccdc82b13b48455 100644
+--- a/dist/utils/index.cjs
++++ b/dist/utils/index.cjs
+@@ -1,9 +1,10 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+-exports.buildNativeAssetsFromApi = exports.buildNativeAssetsFromConstant = exports.formatStateForTransactionPay = exports.formatExchangeRatesForBridge = exports.normalizeAssetId = exports.fetchWithTimeout = void 0;
++exports.buildNativeAssetsFromApi = exports.buildNativeAssetsFromConstant = exports.formatStateForTransactionPay = exports.formatExchangeRatesForBridge = exports.normalizeAssetId = exports.normalizeAmountString = exports.fetchWithTimeout = void 0;
+ var fetchWithTimeout_1 = require("./fetchWithTimeout.cjs");
+ Object.defineProperty(exports, "fetchWithTimeout", { enumerable: true, get: function () { return fetchWithTimeout_1.fetchWithTimeout; } });
+ var normalizeAssetId_1 = require("./normalizeAssetId.cjs");
++Object.defineProperty(exports, "normalizeAmountString", { enumerable: true, get: function () { return normalizeAssetId_1.normalizeAmountString; } });
+ Object.defineProperty(exports, "normalizeAssetId", { enumerable: true, get: function () { return normalizeAssetId_1.normalizeAssetId; } });
+ var formatExchangeRatesForBridge_1 = require("./formatExchangeRatesForBridge.cjs");
+ Object.defineProperty(exports, "formatExchangeRatesForBridge", { enumerable: true, get: function () { return formatExchangeRatesForBridge_1.formatExchangeRatesForBridge; } });
+diff --git a/dist/utils/index.d.cts b/dist/utils/index.d.cts
+index 0552bb4b12b487716792843b54d316456648e613..4f8ca320158aeb7f8f5d1255e35199bdefbdc4bc 100644
+--- a/dist/utils/index.d.cts
++++ b/dist/utils/index.d.cts
+@@ -1,5 +1,5 @@
+ export { fetchWithTimeout } from "./fetchWithTimeout.cjs";
+-export { normalizeAssetId } from "./normalizeAssetId.cjs";
++export { normalizeAmountString, normalizeAssetId } from "./normalizeAssetId.cjs";
+ export { formatExchangeRatesForBridge } from "./formatExchangeRatesForBridge.cjs";
+ export { formatStateForTransactionPay } from "./formatStateForTransactionPay.cjs";
+ export type { BridgeExchangeRatesFormat } from "./formatExchangeRatesForBridge.cjs";
+diff --git a/dist/utils/index.d.mts b/dist/utils/index.d.mts
+index a98d3a36c84325a382331a1a6c24a129834ddb66..79ecf2e541e5a3b726a9ebfbf1afe289ffcd74a8 100644
+--- a/dist/utils/index.d.mts
++++ b/dist/utils/index.d.mts
+@@ -1,5 +1,5 @@
+ export { fetchWithTimeout } from "./fetchWithTimeout.mjs";
+-export { normalizeAssetId } from "./normalizeAssetId.mjs";
++export { normalizeAmountString, normalizeAssetId } from "./normalizeAssetId.mjs";
+ export { formatExchangeRatesForBridge } from "./formatExchangeRatesForBridge.mjs";
+ export { formatStateForTransactionPay } from "./formatStateForTransactionPay.mjs";
+ export type { BridgeExchangeRatesFormat } from "./formatExchangeRatesForBridge.mjs";
+diff --git a/dist/utils/index.mjs b/dist/utils/index.mjs
+index a9a9234828cf7e2aa2a9e794d957fa9ddd8ebdb4..e1b595524c4d91865e8bf66712718019ce9033fe 100644
+--- a/dist/utils/index.mjs
++++ b/dist/utils/index.mjs
+@@ -1,5 +1,5 @@
+ export { fetchWithTimeout } from "./fetchWithTimeout.mjs";
+-export { normalizeAssetId } from "./normalizeAssetId.mjs";
++export { normalizeAmountString, normalizeAssetId } from "./normalizeAssetId.mjs";
+ export { formatExchangeRatesForBridge } from "./formatExchangeRatesForBridge.mjs";
+ export { formatStateForTransactionPay } from "./formatStateForTransactionPay.mjs";
+ export { buildNativeAssetsFromConstant, buildNativeAssetsFromApi } from "./native-assets.mjs";
+diff --git a/dist/utils/normalizeAssetId.cjs b/dist/utils/normalizeAssetId.cjs
+index 0514327b5b9a5faa48b0348723f464b7ba41d586..c76330a1f14bef56fc3357b2b160c8c2c9cc1798 100644
+--- a/dist/utils/normalizeAssetId.cjs
++++ b/dist/utils/normalizeAssetId.cjs
+@@ -25,4 +25,60 @@ function normalizeAssetId(assetId) {
+     return assetId;
+ }
+ exports.normalizeAssetId = normalizeAssetId;
++/**
++ * Normalize an asset balance `amount` string into a canonical plain-decimal
++ * form (no scientific notation), optionally truncating to the asset's decimal
++ * precision.
++ *
++ * Amounts entering `assetsBalance` state come from external sources (snaps,
++ * accounts API, websocket, RPC) and may be serialized from JavaScript Numbers
++ * as `"1e-18"`. Downstream consumers (e.g. the extension's
++ * `parseBalanceWithDecimals`) split on `'.'` and feed the result to `BigInt()`,
++ * which throws on exponent-form strings. Normalizing at the controller
++ * boundary keeps the invariant that `amount` is always a plain decimal so
++ * every current and future data source is safe without per-source changes.
++ *
++ * When `decimals` is provided (i.e. the asset's metadata is registered),
++ * fractional digits beyond `decimals` are truncated using round-toward-zero
++ * to match the extension's `parseBalanceWithDecimals`, which slices off any
++ * fractional digits beyond `decimals`.
++ *
++ * When `decimals` is omitted (metadata not yet known for this asset), the
++ * amount is left at its natural precision — exponent form is still converted
++ * to plain decimal, but no digits are dropped. This preserves balances that
++ * arrive before their metadata without lossy truncation.
++ *
++ * Non-finite or non-string inputs collapse to `'0'` rather than throwing,
++ * because controller state must remain JSON-serializable and a malformed
++ * upstream payload should not corrupt the rest of the update.
++ *
++ * @param amount - The raw amount string from a data source.
++ * @param decimals - The asset's decimal precision (from `assetsInfo`). Pass
++ * `undefined` when metadata is unknown to skip truncation.
++ * @returns A plain decimal string (e.g. `"0.000000000000000001"`), or `'0'`
++ * for non-finite / non-string input.
++ */
++function normalizeAmountString(amount, decimals) {
++    if (typeof amount !== 'string' || amount.length === 0) {
++        return '0';
++    }
++    const bn = new bignumber_js_1.default(amount);
++    if (!bn.isFinite()) {
++        return '0';
++    }
++    let fixed;
++    if (decimals === undefined || !Number.isFinite(decimals) || decimals < 0) {
++        // Metadata unknown — preserve full precision, just defeat exponent form.
++        fixed = bn.toFixed();
++    }
++    else {
++        fixed = bn.toFixed(Math.floor(decimals), bignumber_js_1.default.ROUND_DOWN);
++    }
++    if (!fixed.includes('.')) {
++        return fixed;
++    }
++    // Trim trailing zeros and a dangling dot: "1.500" -> "1.5", "1.000" -> "1".
++    return fixed.replace(/0+$/u, '').replace(/\.$/u, '');
++}
++exports.normalizeAmountString = normalizeAmountString;
+ //# sourceMappingURL=normalizeAssetId.cjs.map
+\ No newline at end of file
+diff --git a/dist/utils/normalizeAssetId.d.cts b/dist/utils/normalizeAssetId.d.cts
+index 7649083cf58f4eeb1c2a3c28d68e984a28c186d3..96b1b7f9b69502361b4968a7399cddce0e5f9502 100644
+--- a/dist/utils/normalizeAssetId.d.cts
++++ b/dist/utils/normalizeAssetId.d.cts
+@@ -10,4 +10,38 @@ import type { Caip19AssetId } from "../types.cjs";
+  * @returns The normalized asset ID with checksummed address (for EVM tokens)
+  */
+ export declare function normalizeAssetId(assetId: Caip19AssetId): Caip19AssetId;
++/**
++ * Normalize an asset balance `amount` string into a canonical plain-decimal
++ * form (no scientific notation), optionally truncating to the asset's decimal
++ * precision.
++ *
++ * Amounts entering `assetsBalance` state come from external sources (snaps,
++ * accounts API, websocket, RPC) and may be serialized from JavaScript Numbers
++ * as `"1e-18"`. Downstream consumers (e.g. the extension's
++ * `parseBalanceWithDecimals`) split on `'.'` and feed the result to `BigInt()`,
++ * which throws on exponent-form strings. Normalizing at the controller
++ * boundary keeps the invariant that `amount` is always a plain decimal so
++ * every current and future data source is safe without per-source changes.
++ *
++ * When `decimals` is provided (i.e. the asset's metadata is registered),
++ * fractional digits beyond `decimals` are truncated using round-toward-zero
++ * to match the extension's `parseBalanceWithDecimals`, which slices off any
++ * fractional digits beyond `decimals`.
++ *
++ * When `decimals` is omitted (metadata not yet known for this asset), the
++ * amount is left at its natural precision — exponent form is still converted
++ * to plain decimal, but no digits are dropped. This preserves balances that
++ * arrive before their metadata without lossy truncation.
++ *
++ * Non-finite or non-string inputs collapse to `'0'` rather than throwing,
++ * because controller state must remain JSON-serializable and a malformed
++ * upstream payload should not corrupt the rest of the update.
++ *
++ * @param amount - The raw amount string from a data source.
++ * @param decimals - The asset's decimal precision (from `assetsInfo`). Pass
++ * `undefined` when metadata is unknown to skip truncation.
++ * @returns A plain decimal string (e.g. `"0.000000000000000001"`), or `'0'`
++ * for non-finite / non-string input.
++ */
++export declare function normalizeAmountString(amount: unknown, decimals?: number): string;
+ //# sourceMappingURL=normalizeAssetId.d.cts.map
+\ No newline at end of file
+diff --git a/dist/utils/normalizeAssetId.d.mts b/dist/utils/normalizeAssetId.d.mts
+index ca75d3cecd75eb5f8186ce20e23502c23b5a497e..d78100443178b5440fe3ee86b9cd6aa5f2114e52 100644
+--- a/dist/utils/normalizeAssetId.d.mts
++++ b/dist/utils/normalizeAssetId.d.mts
+@@ -10,4 +10,38 @@ import type { Caip19AssetId } from "../types.mjs";
+  * @returns The normalized asset ID with checksummed address (for EVM tokens)
+  */
+ export declare function normalizeAssetId(assetId: Caip19AssetId): Caip19AssetId;
++/**
++ * Normalize an asset balance `amount` string into a canonical plain-decimal
++ * form (no scientific notation), optionally truncating to the asset's decimal
++ * precision.
++ *
++ * Amounts entering `assetsBalance` state come from external sources (snaps,
++ * accounts API, websocket, RPC) and may be serialized from JavaScript Numbers
++ * as `"1e-18"`. Downstream consumers (e.g. the extension's
++ * `parseBalanceWithDecimals`) split on `'.'` and feed the result to `BigInt()`,
++ * which throws on exponent-form strings. Normalizing at the controller
++ * boundary keeps the invariant that `amount` is always a plain decimal so
++ * every current and future data source is safe without per-source changes.
++ *
++ * When `decimals` is provided (i.e. the asset's metadata is registered),
++ * fractional digits beyond `decimals` are truncated using round-toward-zero
++ * to match the extension's `parseBalanceWithDecimals`, which slices off any
++ * fractional digits beyond `decimals`.
++ *
++ * When `decimals` is omitted (metadata not yet known for this asset), the
++ * amount is left at its natural precision — exponent form is still converted
++ * to plain decimal, but no digits are dropped. This preserves balances that
++ * arrive before their metadata without lossy truncation.
++ *
++ * Non-finite or non-string inputs collapse to `'0'` rather than throwing,
++ * because controller state must remain JSON-serializable and a malformed
++ * upstream payload should not corrupt the rest of the update.
++ *
++ * @param amount - The raw amount string from a data source.
++ * @param decimals - The asset's decimal precision (from `assetsInfo`). Pass
++ * `undefined` when metadata is unknown to skip truncation.
++ * @returns A plain decimal string (e.g. `"0.000000000000000001"`), or `'0'`
++ * for non-finite / non-string input.
++ */
++export declare function normalizeAmountString(amount: unknown, decimals?: number): string;
+ //# sourceMappingURL=normalizeAssetId.d.mts.map
+\ No newline at end of file
+diff --git a/dist/utils/normalizeAssetId.mjs b/dist/utils/normalizeAssetId.mjs
+index 189175728fa850d31f3dbdc7da0a509c7d1a325c..3dce831eea2c2428792d303cd0f72e1a174cc91b 100644
+--- a/dist/utils/normalizeAssetId.mjs
++++ b/dist/utils/normalizeAssetId.mjs
+@@ -21,4 +21,59 @@ export function normalizeAssetId(assetId) {
+     }
+     return assetId;
+ }
++/**
++ * Normalize an asset balance `amount` string into a canonical plain-decimal
++ * form (no scientific notation), optionally truncating to the asset's decimal
++ * precision.
++ *
++ * Amounts entering `assetsBalance` state come from external sources (snaps,
++ * accounts API, websocket, RPC) and may be serialized from JavaScript Numbers
++ * as `"1e-18"`. Downstream consumers (e.g. the extension's
++ * `parseBalanceWithDecimals`) split on `'.'` and feed the result to `BigInt()`,
++ * which throws on exponent-form strings. Normalizing at the controller
++ * boundary keeps the invariant that `amount` is always a plain decimal so
++ * every current and future data source is safe without per-source changes.
++ *
++ * When `decimals` is provided (i.e. the asset's metadata is registered),
++ * fractional digits beyond `decimals` are truncated using round-toward-zero
++ * to match the extension's `parseBalanceWithDecimals`, which slices off any
++ * fractional digits beyond `decimals`.
++ *
++ * When `decimals` is omitted (metadata not yet known for this asset), the
++ * amount is left at its natural precision — exponent form is still converted
++ * to plain decimal, but no digits are dropped. This preserves balances that
++ * arrive before their metadata without lossy truncation.
++ *
++ * Non-finite or non-string inputs collapse to `'0'` rather than throwing,
++ * because controller state must remain JSON-serializable and a malformed
++ * upstream payload should not corrupt the rest of the update.
++ *
++ * @param amount - The raw amount string from a data source.
++ * @param decimals - The asset's decimal precision (from `assetsInfo`). Pass
++ * `undefined` when metadata is unknown to skip truncation.
++ * @returns A plain decimal string (e.g. `"0.000000000000000001"`), or `'0'`
++ * for non-finite / non-string input.
++ */
++export function normalizeAmountString(amount, decimals) {
++    if (typeof amount !== 'string' || amount.length === 0) {
++        return '0';
++    }
++    const bn = new BigNumberJS(amount);
++    if (!bn.isFinite()) {
++        return '0';
++    }
++    let fixed;
++    if (decimals === undefined || !Number.isFinite(decimals) || decimals < 0) {
++        // Metadata unknown — preserve full precision, just defeat exponent form.
++        fixed = bn.toFixed();
++    }
++    else {
++        fixed = bn.toFixed(Math.floor(decimals), BigNumberJS.ROUND_DOWN);
++    }
++    if (!fixed.includes('.')) {
++        return fixed;
++    }
++    // Trim trailing zeros and a dangling dot: "1.500" -> "1.5", "1.000" -> "1".
++    return fixed.replace(/0+$/u, '').replace(/\.$/u, '');
++}
+ //# sourceMappingURL=normalizeAssetId.mjs.map
+\ No newline at end of file
