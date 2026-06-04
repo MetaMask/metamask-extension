@@ -163,9 +163,9 @@ const SET_ENVIRONMENT_VARIABLES_DECLARED_VARIABLES = [
   'DEEP_LINK_PUBLIC_KEY',
   'SEEDLESS_ONBOARDING_ENABLED',
   'METAMASK_SHIELD_ENABLED',
-  'TELEGRAM_LOGIN_ENABLED',
   'PERPS_ENABLED',
   'ASSETS_UNIFIED_STATE_ENABLED',
+  'COMPLIANCE_API_URL',
 ];
 
 function getVariablesForSetEnvironmentVariables() {
@@ -188,9 +188,9 @@ function getVariablesForSetEnvironmentVariables() {
     DEEP_LINK_PUBLIC_KEY: 'public-key',
     SEEDLESS_ONBOARDING_ENABLED: 'false',
     METAMASK_SHIELD_ENABLED: 'false',
-    TELEGRAM_LOGIN_ENABLED: 'true',
     PERPS_ENABLED: 'false',
     ASSETS_UNIFIED_STATE_ENABLED: 'false',
+    COMPLIANCE_API_URL: 'https://compliance.example.test',
     GOOGLE_CLIENT_ID: 'google-dev-client-id',
     APPLE_CLIENT_ID: 'apple-dev-client-id',
     TELEGRAM_CLIENT_ID: 'telegram-dev-client-id',
@@ -321,54 +321,4 @@ describe('getOAuthClientId', () => {
       });
     });
   }
-});
-
-describe('setEnvironmentVariables', () => {
-  it('forces TELEGRAM_LOGIN_ENABLED to false for production builds', () => {
-    const variables = getVariablesForSetEnvironmentVariables();
-
-    setEnvironmentVariables({
-      buildName: 'MetaMask',
-      buildType: 'main',
-      environment: ENVIRONMENT.PRODUCTION,
-      isDevBuild: false,
-      isTestBuild: false,
-      variables,
-      version: '1.0.0',
-    });
-
-    expect(variables.get('TELEGRAM_LOGIN_ENABLED')).toBe('false');
-  });
-
-  it('forces TELEGRAM_LOGIN_ENABLED to false for release candidate builds', () => {
-    const variables = getVariablesForSetEnvironmentVariables();
-
-    setEnvironmentVariables({
-      buildName: 'MetaMask',
-      buildType: 'main',
-      environment: ENVIRONMENT.RELEASE_CANDIDATE,
-      isDevBuild: false,
-      isTestBuild: false,
-      variables,
-      version: '1.0.0',
-    });
-
-    expect(variables.get('TELEGRAM_LOGIN_ENABLED')).toBe('false');
-  });
-
-  it('preserves TELEGRAM_LOGIN_ENABLED outside production and release builds', () => {
-    const variables = getVariablesForSetEnvironmentVariables();
-
-    setEnvironmentVariables({
-      buildName: 'MetaMask',
-      buildType: 'main',
-      environment: ENVIRONMENT.TESTING,
-      isDevBuild: false,
-      isTestBuild: true,
-      variables,
-      version: '1.0.0',
-    });
-
-    expect(variables.get('TELEGRAM_LOGIN_ENABLED')).toBe('true');
-  });
 });

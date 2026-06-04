@@ -17,7 +17,6 @@ import CopyPlugin from 'copy-webpack-plugin';
 import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
 import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
-import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
 import tailwindcss from 'tailwindcss';
 import { discardFontFace } from '../postcss-plugins/discard-font-face';
 import { loadBuildTypesConfig } from '../lib/build-type';
@@ -25,7 +24,6 @@ import {
   getMinimizers,
   NODE_MODULES_RE,
   UI_COMPONENT_RE,
-  __HMR_READY__,
   SNOW_MODULE_RE,
   TREZOR_MODULE_RE,
   UI_DIR_RE,
@@ -39,7 +37,7 @@ import { getThreadLoader } from './utils/loaders/threadLoader';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import type { BundleSizeCategory } from './utils/plugins/ManifestPlugin/types';
 import { getLatestCommit } from './utils/git';
-import { MODES } from './utils/constants';
+import { MODES, DEV_SERVER_CLIENT_ENTRY_NAME } from './utils/constants';
 import { BUNDLE_SIZE_SUMMARY_FILE } from './utils/plugins/ManifestPlugin/stats';
 import { getDefaultZipMtime } from './utils/plugins/ManifestPlugin/zip-mtime';
 
@@ -198,6 +196,25 @@ const plugins: WebpackPluginInstance[] = [
     minify: args.minify,
     test: /\.html$/u, // default is eta/html, we only want html
     data: { isTest: args.test },
+    // In watch mode, inject a `<script>` tag for the bundled
+    // webpack-dev-server client into every UI page (identified by the
+    // `#app-content` mount point — every page that renders the React UI
+    // has it via `partial-body.html`, no other extension page does). Kept
+    // out of the MV3 service worker, the Firefox MV2 background page, and
+    // the offscreen page — reloading those would break the message ports
+    // connecting them to the UI.
+    beforeEmit: (content, _entry, compilation) => {
+      if (!args.watch || !content.includes('id="app-content"')) return content;
+      const entrypoint = compilation.entrypoints.get(
+        DEV_SERVER_CLIENT_ENTRY_NAME,
+      );
+      if (!entrypoint) return content;
+      const tags = entrypoint
+        .getFiles()
+        .map((file) => `<script src="${file}" defer></script>`)
+        .join('');
+      return content.replace('</head>', `${tags}</head>`);
+    },
     preload: [
       {
         attributes: { as: 'font', crossorigin: true },
@@ -283,11 +300,6 @@ if (args.lavamoat) {
   } = require('./utils/plugins/LavamoatPlugin');
   plugins.push(lavamoatPlugin(args), lavamoatUnsafeLayerPlugin);
 }
-// enable React Refresh in 'development' mode when `watch` is enabled
-if (__HMR_READY__ && isDevelopment && args.watch) {
-  const ReactRefreshWebpackPlugin: typeof ReactRefreshPluginType = require('@pmmmwh/react-refresh-webpack-plugin');
-  plugins.push(new ReactRefreshWebpackPlugin());
-}
 if (args.progress) {
   const { ProgressPlugin } = require('webpack');
   plugins.push(new ProgressPlugin());
@@ -308,7 +320,7 @@ if (args.bundleAnalyzer) {
 
 // #endregion plugins
 
-const swcConfig = { args, browsersListQuery, isDevelopment };
+const swcConfig = { browsersListQuery, isDevelopment };
 const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
