@@ -36,6 +36,7 @@ import {
   parseCaipAccountId,
   parseCaipChainId,
 } from '@metamask/utils';
+import { Box } from '@metamask/design-system-react';
 import { toRelativeRoutePath } from '../routes/utils';
 import {
   isEthAddress,
@@ -73,7 +74,6 @@ import {
 } from '../../store/actions';
 import { getAccountGroupWithInternalAccounts } from '../../selectors/multichain-accounts/account-tree';
 import PermissionPageContainer from '../../components/app/permission-page-container';
-import { Box } from '../../components/component-library';
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header/snap-authorship-header';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { MultichainAccountsConnectPage } from '../multichain-accounts/multichain-accounts-connect-page/multichain-accounts-connect-page';

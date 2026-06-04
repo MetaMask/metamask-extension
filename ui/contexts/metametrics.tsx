@@ -20,9 +20,7 @@ import type { Span } from '@sentry/types';
 import { omit } from 'lodash';
 
 import { captureException, captureMessage } from '../../shared/lib/sentry';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../shared/lib/environment-type';
 import {
   PATH_NAME_MAP,
   getPaths,
@@ -368,8 +366,10 @@ export type WithMetaMetricsProps = MetaMetricsContextValue;
  * @returns Wrapped component with MetaMetrics context
  */
 export function withMetaMetrics<Props extends Record<string, unknown>>(
-  WrappedComponent: ComponentType<Props>,
-): ComponentType<Omit<Props, keyof WithMetaMetricsProps>> {
+  WrappedComponent: ComponentType<React.PropsWithChildren<Props>>,
+): ComponentType<
+  React.PropsWithChildren<Omit<Props, keyof WithMetaMetricsProps>>
+> {
   const WithMetaMetrics = (props: Omit<Props, keyof WithMetaMetricsProps>) => {
     const {
       trackEvent,

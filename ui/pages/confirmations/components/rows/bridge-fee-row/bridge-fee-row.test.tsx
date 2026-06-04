@@ -115,7 +115,7 @@ describe('BridgeFeeRow', () => {
     const user = userEvent.setup();
     const { getByTestId, findByText } = render();
 
-    await user.hover(getByTestId('bridge-fee-row-tooltip'));
+    await user.click(getByTestId('bridge-fee-tooltip-popover-button'));
 
     const tooltip = await findByText((content) =>
       content.includes(`${messages.networkFee.message}:`),
@@ -135,7 +135,7 @@ describe('BridgeFeeRow', () => {
       variant: ConfirmInfoRowSize.Small,
     });
 
-    await user.hover(getByTestId('bridge-fee-row-tooltip'));
+    await user.click(getByTestId('bridge-fee-tooltip-popover-button'));
 
     const tooltip = await findByText((content) =>
       content.includes(`${messages.networkFee.message}:`),
@@ -151,14 +151,15 @@ describe('BridgeFeeRow', () => {
       tooltipDescription: messages.musdConversionFeeTooltipDescription.message,
     });
 
-    await user.hover(getByTestId('bridge-fee-row-tooltip'));
+    await user.click(getByTestId('bridge-fee-tooltip-popover-button'));
 
     const tooltip = await findByText((content) =>
       content.includes(messages.musdConversionFeeTooltipDescription.message),
     );
     expect(tooltip.textContent).toContain(
-      `${messages.musdConversionFeeTooltipDescription.message}\n\n${messages.networkFee.message}:`,
+      messages.musdConversionFeeTooltipDescription.message,
     );
+    expect(tooltip.textContent).toContain(`${messages.networkFee.message}:`);
     expect(tooltip.textContent).toContain(`${messages.bridgeFee.message}:`);
     expect(tooltip.textContent).toContain(`${messages.metamaskFee.message}:`);
   });
@@ -180,7 +181,9 @@ describe('BridgeFeeRow', () => {
     const { getByTestId, queryByTestId } = render();
 
     expect(getByTestId('bridge-fee-row')).toBeInTheDocument();
-    expect(queryByTestId('bridge-fee-row-tooltip')).not.toBeInTheDocument();
+    expect(
+      queryByTestId('bridge-fee-tooltip-popover-button'),
+    ).not.toBeInTheDocument();
   });
 
   it('always renders fee in USD even when user currency is EUR', () => {
@@ -238,7 +241,7 @@ describe('BridgeFeeRow', () => {
       getPerpsWithdrawState(),
     );
 
-    await user.hover(getByTestId('bridge-fee-row-tooltip'));
+    await user.click(getByTestId('bridge-fee-tooltip-popover-button'));
 
     const tooltip = await findByText((content) =>
       content.includes(`${messages.networkFee.message}:`),
@@ -263,7 +266,7 @@ describe('BridgeFeeRow', () => {
         variant: ConfirmInfoRowSize.Small,
       });
 
-      await user.hover(getByTestId('bridge-fee-row-tooltip'));
+      await user.click(getByTestId('bridge-fee-tooltip-popover-button'));
 
       const tooltip = await findByText((content) =>
         content.includes(`${messages.metamaskFee.message}:`),
@@ -288,7 +291,7 @@ describe('BridgeFeeRow', () => {
         variant: ConfirmInfoRowSize.Small,
       });
 
-      await user.hover(getByTestId('bridge-fee-row-tooltip'));
+      await user.click(getByTestId('bridge-fee-tooltip-popover-button'));
 
       const tooltip = await findByText((content) =>
         content.includes(`${messages.metamaskFee.message}:`),
@@ -313,7 +316,7 @@ describe('BridgeFeeRow', () => {
         variant: ConfirmInfoRowSize.Small,
       });
 
-      await user.hover(getByTestId('bridge-fee-row-tooltip'));
+      await user.click(getByTestId('bridge-fee-tooltip-popover-button'));
 
       const tooltip = await findByText((content) =>
         content.includes(`${messages.metamaskFee.message}:`),

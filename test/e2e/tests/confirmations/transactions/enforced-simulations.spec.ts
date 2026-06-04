@@ -367,7 +367,7 @@ async function confirmAndGetTransaction(
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 
   const activityList = new ActivityListPage(driver);
-  await activityList.openActivityTab();
+  await activityList.goToActivityList();
 
   if (expectedStatus === 'confirmed') {
     await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
