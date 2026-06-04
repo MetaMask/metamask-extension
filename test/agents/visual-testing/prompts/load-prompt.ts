@@ -14,7 +14,7 @@ export function loadSystemPrompt(extensionCwd: string): string {
       '## Tool reference',
       '',
       'For detailed command reference, error codes, and workflows, refer to the',
-      'metamask-visual-testing skill documentation available in the repository.',
+      'mms-visual-testing skill documentation available in the repository.',
     ].join('\n');
   }
 

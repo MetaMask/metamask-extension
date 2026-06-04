@@ -192,7 +192,7 @@ async function executeAgent(
       allowedTools: DEFAULT_ALLOWED_TOOLS,
       settingSources:['user', 'project'],
       disallowedTools,
-      skills: ["metamask-visual-testing"]
+      skills: ["mms-visual-testing"]
     },
     onMessage: (message) => {
       counter.process(message)
