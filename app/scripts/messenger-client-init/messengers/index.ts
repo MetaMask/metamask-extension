@@ -201,6 +201,8 @@ import { getProfileMetricsControllerMessenger } from './profile-metrics-controll
 import { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
 import { getGeolocationApiServiceMessenger } from './geolocation-api-service-messenger';
 import { getGeolocationControllerMessenger } from './geolocation-controller-messenger';
+import { getComplianceControllerMessenger } from './compliance-controller-messenger';
+import { getComplianceServiceMessenger } from './compliance-service-messenger';
 import { getPerpsControllerMessenger } from './perps-controller-messenger';
 import { getDataDeletionServiceMessenger } from './data-deletion-service-messenger';
 import { getLegacyBackgroundApiServiceMessenger } from './legacy-background-api-service-messenger';
@@ -279,6 +281,10 @@ export {
 export { getPermissionLogControllerMessenger } from './permission-log-controller-messenger';
 export { getGeolocationApiServiceMessenger } from './geolocation-api-service-messenger';
 export { getGeolocationControllerMessenger } from './geolocation-controller-messenger';
+export type { ComplianceControllerMessenger } from './compliance-controller-messenger';
+export { getComplianceControllerMessenger } from './compliance-controller-messenger';
+export type { ComplianceServiceMessenger } from './compliance-service-messenger';
+export { getComplianceServiceMessenger } from './compliance-service-messenger';
 export type { PerpsControllerMessenger } from './perps-controller-messenger';
 export { getPerpsControllerMessenger } from './perps-controller-messenger';
 export { getPhishingControllerMessenger } from './phishing-controller-messenger';
@@ -400,6 +406,14 @@ export const MESSENGER_FACTORIES = {
   },
   ClientController: {
     getMessenger: getClientControllerMessenger,
+    getInitMessenger: noop,
+  },
+  ComplianceService: {
+    getMessenger: getComplianceServiceMessenger,
+    getInitMessenger: noop,
+  },
+  ComplianceController: {
+    getMessenger: getComplianceControllerMessenger,
     getInitMessenger: noop,
   },
   CronjobController: {
