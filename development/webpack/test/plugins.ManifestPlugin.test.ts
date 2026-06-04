@@ -685,6 +685,46 @@ describe('ManifestPlugin', () => {
       });
     });
 
+    it('uses a deterministic default zip mtime when the latest commit timestamp is unavailable', () => {
+      const childProcess = require('node:child_process');
+      const { mock: testMock } = require('node:test');
+      const zipMtimePath = require.resolve(
+        '../utils/plugins/ManifestPlugin/zip-mtime.ts',
+      );
+      const gitPath = require.resolve('../utils/git.ts');
+      const originalZipMtimeCache = require.cache[zipMtimePath];
+      const originalGitCache = require.cache[gitPath];
+
+      try {
+        testMock.method(childProcess, 'spawnSync', () => ({
+          stdout: Buffer.alloc(0),
+        }));
+        delete require.cache[zipMtimePath];
+        delete require.cache[gitPath];
+
+        const {
+          DEFAULT_ZIP_MTIME: defaultZipMtime,
+          getDefaultZipMtime: getFreshDefaultZipMtime,
+        } = require('../utils/plugins/ManifestPlugin/zip-mtime.ts');
+
+        withSourceDateEpoch(undefined, () => {
+          assert.strictEqual(getFreshDefaultZipMtime(), defaultZipMtime);
+        });
+      } finally {
+        testMock.restoreAll();
+        if (originalZipMtimeCache) {
+          require.cache[zipMtimePath] = originalZipMtimeCache;
+        } else {
+          delete require.cache[zipMtimePath];
+        }
+        if (originalGitCache) {
+          require.cache[gitPath] = originalGitCache;
+        } else {
+          delete require.cache[gitPath];
+        }
+      }
+    });
+
     it('uses SOURCE_DATE_EPOCH as the default zip mtime', () => {
       withSourceDateEpoch('1711141205', () => {
         assert.strictEqual(getDefaultZipMtime(), 1711141205000);
