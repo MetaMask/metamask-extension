@@ -141,10 +141,11 @@ export class TestDappBitcoin {
   }
 
   async verifySignedMessage(signedMessage: string) {
-    await this.driver.findElement({
-      css: `[data-testid="${dataTestIds.testPage.signMessage.signedMessage}"]`,
-      text: signedMessage,
-    });
+    const signedMessageElement = await this.driver.waitForSelector(
+      `[data-testid="${dataTestIds.testPage.signMessage.signedMessage}"]`,
+    );
+
+    assert.strictEqual(await signedMessageElement.getText(), signedMessage);
   }
 
   async setRecepient(message: string) {
