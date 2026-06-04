@@ -32,7 +32,7 @@ const networkConfigs: NetworkConfig[] = [
   },
   {
     name: 'MegaETH Testnet',
-    tokenSymbol: 'ETH',
+    tokenSymbol: 'MegaETH',
     fixtureMethod: (builder) =>
       builder.withSelectedNetwork(NETWORK_CLIENT_ID.MEGAETH_TESTNET_V2),
     testTitle: 'MegaETH Network Connection Tests',
@@ -81,7 +81,9 @@ networkConfigs.forEach((config) => {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await login(driver, { validateBalance: false });
+          await login(driver, {
+            expectedBalance: `25 ${config.tokenSymbol}`,
+          });
 
           const assetListPage = new AssetListPage(driver);
           await driver.switchToWindowWithTitle(
