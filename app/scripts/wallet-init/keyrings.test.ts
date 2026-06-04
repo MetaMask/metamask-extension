@@ -1,9 +1,6 @@
 import { QrKeyring } from '@metamask/eth-qr-keyring';
 import { QrKeyring as QrKeyringV2 } from '@metamask/eth-qr-keyring/v2';
-import {
-  OneKeyKeyring,
-  TrezorKeyring,
-} from '@metamask/eth-trezor-keyring';
+import { OneKeyKeyring, TrezorKeyring } from '@metamask/eth-trezor-keyring';
 import {
   OneKeyKeyring as OneKeyKeyringV2,
   TrezorKeyring as TrezorKeyringV2,
