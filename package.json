@@ -2,6 +2,12 @@
   "name": "metamask-crx",
   "version": "13.36.0",
   "private": true,
+  "previewBuilds": {
+    "@metamask/transaction-controller": {
+      "type": "breaking",
+      "previewVersion": "66.0.0-preview-a836b7b16"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/metamask-extension.git"
@@ -438,7 +444,7 @@
     "@metamask/solana-wallet-standard": "^1.0.0",
     "@metamask/storage-service": "^1.0.0",
     "@metamask/subscription-controller": "^6.1.2",
-    "@metamask/transaction-controller": "patch:@metamask/transaction-controller@npm%3A66.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-66.0.0-23fe4d7dfe.patch",
+    "@metamask/transaction-controller": "^66.0.0",
     "@metamask/transaction-pay-controller": "^22.6.0",
     "@metamask/tron-wallet-snap": "^1.25.6",
     "@metamask/user-operation-controller": "^41.2.0",
