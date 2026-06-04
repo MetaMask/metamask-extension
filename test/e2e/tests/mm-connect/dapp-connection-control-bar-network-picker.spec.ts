@@ -12,8 +12,8 @@ import {
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
+import { connectSolanaTestDapp } from '../../page-objects/flows/solana-dapp.flow';
 import { approveConnect } from '../../page-objects/flows/connect.flow';
-import { connectSolanaTestDapp } from '../../flask/solana-wallet-standard/testHelpers';
 import { Driver, PAGES } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { TestDappMmConnect as TestDapp } from '../../page-objects/pages/test-dapp-mm-connect';
