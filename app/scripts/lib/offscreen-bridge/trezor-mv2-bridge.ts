@@ -48,52 +48,28 @@ export class TrezorMv2Bridge extends TrezorConnectBridge {
   async init(
     settings: { manifest: Manifest } & Partial<ConnectSettings>,
   ): Promise<void> {
-    console.log('>> DEBUG TREZOR TrezorMv2Bridge.init start', {
-      forcedCoreMode: 'suite-desktop',
-    });
-    const result = await super.init({ ...settings, coreMode: 'suite-desktop' });
-    console.log('>> DEBUG TREZOR TrezorMv2Bridge.init resolved');
-    return result;
+    return await super.init({ ...settings, coreMode: 'suite-desktop' });
   }
 
   getPublicKey(params: { path: string; coin: string }) {
-    console.log('>> DEBUG TREZOR TrezorMv2Bridge.getPublicKey start', {
-      path: params.path,
-    });
-    const promise = withTimeout(super.getPublicKey(params));
-    promise.then(
-      (r) =>
-        console.log('>> DEBUG TREZOR TrezorMv2Bridge.getPublicKey resolved', {
-          success: r.success,
-          errorCode: (r.payload as Record<string, unknown>)?.code,
-          errorMessage: (r.payload as Record<string, unknown>)?.error,
-        }),
-      (err) =>
-        console.log('>> DEBUG TREZOR TrezorMv2Bridge.getPublicKey rejected', {
-          error: String(err),
-        }),
-    );
-    return promise;
+    return withTimeout(super.getPublicKey(params));
   }
 
   ethereumSignTransaction(
     params: Params<EthereumSignTransaction>,
   ): TrezorResponse<EthereumSignedTx> {
-    console.log('>> DEBUG TREZOR TrezorMv2Bridge.ethereumSignTransaction start');
     return withTimeout(super.ethereumSignTransaction(params));
   }
 
   ethereumSignMessage(
     params: Params<EthereumSignMessage>,
   ): TrezorResponse<PROTO.MessageSignature> {
-    console.log('>> DEBUG TREZOR TrezorMv2Bridge.ethereumSignMessage start');
     return withTimeout(super.ethereumSignMessage(params));
   }
 
   ethereumSignTypedData<T extends EthereumSignTypedDataTypes>(
     params: Params<EthereumSignTypedHash<T>>,
   ): TrezorResponse<PROTO.EthereumTypedDataSignature> {
-    console.log('>> DEBUG TREZOR TrezorMv2Bridge.ethereumSignTypedData start');
     return withTimeout(super.ethereumSignTypedData(params));
   }
 }
