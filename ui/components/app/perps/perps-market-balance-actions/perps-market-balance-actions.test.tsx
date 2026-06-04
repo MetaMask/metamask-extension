@@ -68,9 +68,9 @@ describe('PerpsMarketBalanceActions', () => {
     expect(
       screen.getByTestId('perps-balance-actions-add-funds'),
     ).toBeInTheDocument();
-    expect(
-      screen.getByTestId('perps-balance-actions-total'),
-    ).toHaveTextContent('$15,250.00');
+    expect(screen.getByTestId('perps-balance-actions-total')).toHaveTextContent(
+      '$15,250.00',
+    );
   });
 
   it('masks the balances when privacy mode is enabled', () => {
@@ -79,12 +79,10 @@ describe('PerpsMarketBalanceActions', () => {
       mockPrivacyModeStore,
     );
 
-    expect(
-      screen.queryByText('$15,250.00'),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.getByTestId('perps-balance-actions-total'),
-    ).toHaveTextContent('••••••');
+    expect(screen.queryByText('$15,250.00')).not.toBeInTheDocument();
+    expect(screen.getByTestId('perps-balance-actions-total')).toHaveTextContent(
+      '••••••',
+    );
     expect(
       screen.getByTestId('perps-balance-actions-available'),
     ).toHaveTextContent('••••••');
