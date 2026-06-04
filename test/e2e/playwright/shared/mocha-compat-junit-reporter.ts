@@ -168,10 +168,10 @@ export default class MochaCompatJunitReporter implements Reporter {
     const failureText =
       result.status === 'passed' || result.status === 'skipped'
         ? undefined
-        : ((result.errors ?? [])
+        : (result.errors ?? [])
             .map((err) => err.stack ?? err.message ?? '')
             .join('\n')
-            .trim() || `Test failed with status: ${result.status}`);
+            .trim() || `Test failed with status: ${result.status}`;
 
     // Overwrite (don't append) — the latest attempt's outcome is the one
     // we want in the report. See `TestRecord` for why.
@@ -243,8 +243,7 @@ export default class MochaCompatJunitReporter implements Reporter {
       bucket.testCases.push({
         name: record.fullName,
         durationSeconds: record.durationSeconds,
-        failure:
-          record.failure ?? `Test failed with status: ${record.status}`,
+        failure: record.failure ?? `Test failed with status: ${record.status}`,
       });
     }
 
