@@ -55,6 +55,24 @@ type SpecBucket = {
   }[];
 };
 
+/**
+ * The latest known outcome for a single Playwright test, keyed in the
+ * reporter by `TestCase.id`. PW calls `onTestEnd` for every attempt
+ * when `--retries` is enabled, so the reporter overwrites this record
+ * on each call — the last write wins. At `onEnd` we fold the surviving
+ * per-test records into the per-file suite buckets. This matches the
+ * behavior of `mocha-junit-reporter`, which only ever records the
+ * final outcome of a test (passed if any attempt passed; otherwise
+ * the final failure).
+ */
+type TestRecord = {
+  filePath: string;
+  fullName: string;
+  durationSeconds: number;
+  status: TestResult['status'];
+  failure?: string;
+};
+
 function escapeXml(value: string): string {
   return value
     .replace(/&/gu, '&amp;')
@@ -99,7 +117,12 @@ function parseProperties(): { name: string; value: string }[] {
 export default class MochaCompatJunitReporter implements Reporter {
   readonly #outputFile: string | undefined;
 
-  readonly #buckets = new Map<string, SpecBucket>();
+  /**
+   * One entry per logical test (keyed by `TestCase.id`). Overwritten on
+   * every `onTestEnd` so retried tests collapse to their final outcome
+   * before we render the suite buckets at `onEnd`.
+   */
+  readonly #testRecords = new Map<string, TestRecord>();
 
   readonly #properties = parseProperties();
 
@@ -123,22 +146,6 @@ export default class MochaCompatJunitReporter implements Reporter {
       .relative(process.cwd(), test.location.file)
       .replace(/\\/gu, '/');
 
-    let bucket = this.#buckets.get(filePath);
-    if (!bucket) {
-      bucket = {
-        filePath,
-        total: 0,
-        failures: 0,
-        skipped: 0,
-        totalDurationMs: 0,
-        testCases: [],
-      };
-      this.#buckets.set(filePath, bucket);
-    }
-
-    bucket.total += 1;
-    bucket.totalDurationMs += result.duration;
-
     // titlePath() yields [project, file, ...describes, test]. We want
     // just the describe-chain + the test, matching mocha-junit-reporter's
     // `test.fullTitle()`. Filter out empties, the project name, and any
@@ -158,47 +165,92 @@ export default class MochaCompatJunitReporter implements Reporter {
         .join(' ')
         .trim() || test.title;
 
-    if (result.status === 'skipped') {
-      bucket.skipped += 1;
-      // mocha-junit-reporter omits skipped tests from <testcase>; the
-      // parser derives skipped count from `tests - testcase.length`.
-      return;
-    }
+    const failureText =
+      result.status === 'passed' || result.status === 'skipped'
+        ? undefined
+        : ((result.errors ?? [])
+            .map((err) => err.stack ?? err.message ?? '')
+            .join('\n')
+            .trim() || `Test failed with status: ${result.status}`);
 
-    if (result.status === 'passed') {
-      bucket.testCases.push({
-        name: fullName,
-        durationSeconds: result.duration / 1000,
-      });
-      return;
-    }
-
-    bucket.failures += 1;
-    const failureText = (result.errors ?? [])
-      .map((err) => err.stack ?? err.message ?? '')
-      .join('\n')
-      .trim();
-    bucket.testCases.push({
-      name: fullName,
+    // Overwrite (don't append) — the latest attempt's outcome is the one
+    // we want in the report. See `TestRecord` for why.
+    this.#testRecords.set(test.id, {
+      filePath,
+      fullName,
       durationSeconds: result.duration / 1000,
-      failure: failureText || `Test failed with status: ${result.status}`,
+      status: result.status,
+      failure: failureText,
     });
   }
 
   async onEnd(_result: FullResult): Promise<void> {
-    if (!this.#outputFile || this.#buckets.size === 0) {
+    if (!this.#outputFile || this.#testRecords.size === 0) {
       return;
     }
 
-    const buckets = [...this.#buckets.values()].sort((a, b) =>
-      a.filePath.localeCompare(b.filePath),
-    );
+    const buckets = this.#foldRecordsIntoBuckets();
     const xml = this.#renderXml(buckets);
 
     await fs.promises.mkdir(path.dirname(this.#outputFile), {
       recursive: true,
     });
     await fs.promises.writeFile(this.#outputFile, xml, 'utf8');
+  }
+
+  /**
+   * Folds the per-test records (one per logical test, post-retry-dedupe)
+   * into per-spec-file buckets and sorts the buckets alphabetically.
+   *
+   * @returns The bucketed suite data the XML renderer consumes.
+   */
+  #foldRecordsIntoBuckets(): SpecBucket[] {
+    const buckets = new Map<string, SpecBucket>();
+
+    for (const record of this.#testRecords.values()) {
+      let bucket = buckets.get(record.filePath);
+      if (!bucket) {
+        bucket = {
+          filePath: record.filePath,
+          total: 0,
+          failures: 0,
+          skipped: 0,
+          totalDurationMs: 0,
+          testCases: [],
+        };
+        buckets.set(record.filePath, bucket);
+      }
+
+      bucket.total += 1;
+      bucket.totalDurationMs += record.durationSeconds * 1000;
+
+      if (record.status === 'skipped') {
+        bucket.skipped += 1;
+        // mocha-junit-reporter omits skipped tests from <testcase>; the
+        // parser derives skipped count from `tests - testcase.length`.
+        continue;
+      }
+
+      if (record.status === 'passed') {
+        bucket.testCases.push({
+          name: record.fullName,
+          durationSeconds: record.durationSeconds,
+        });
+        continue;
+      }
+
+      bucket.failures += 1;
+      bucket.testCases.push({
+        name: record.fullName,
+        durationSeconds: record.durationSeconds,
+        failure:
+          record.failure ?? `Test failed with status: ${record.status}`,
+      });
+    }
+
+    return [...buckets.values()].sort((a, b) =>
+      a.filePath.localeCompare(b.filePath),
+    );
   }
 
   #renderXml(buckets: SpecBucket[]): string {

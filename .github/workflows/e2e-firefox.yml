@@ -115,8 +115,8 @@ jobs:
       matrix: ${{ fromJson(inputs.use-matrix)['test-e2e-firefox-playwright'] }}
     with:
       test-suite-name: test-e2e-firefox-playwright
-      build-artifact: build-test-mv2-browserify
-      build-command: yarn build:test:mv2
+      build-artifact: build-test-mv2-webpack
+      build-command: yarn build:test:webpack:mv2
       playwright-browsers: firefox
       test-command: E2E_DEBUG=true PLAYWRIGHT_JUNIT_OUTPUT_FILE=test/test-results/e2e/junit-pw-firefox-$((MATRIX_INDEX + 1)).xml PLAYWRIGHT_BROWSER=firefox yarn test:e2e:playwright:firefox --shard=$((MATRIX_INDEX + 1))/${MATRIX_TOTAL}
       builds-from-run: ${{ inputs.builds-from-run }}
