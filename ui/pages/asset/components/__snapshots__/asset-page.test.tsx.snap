@@ -220,7 +220,7 @@ exports[`AssetPage should render a native asset 1`] = `
         Your balance
       </h4>
       <div
-        class="flex-row gap-4 flex h-full w-full [container-type:inline-size]"
+        class="flex-row gap-4 flex h-full w-full [container-name:list-item] [container-type:inline-size]"
       >
         <a
           class="flex w-full flex-row py-2 px-4 "
@@ -588,7 +588,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
         Your balance
       </h4>
       <div
-        class="flex-row gap-4 flex h-full w-full [container-type:inline-size]"
+        class="flex-row gap-4 flex h-full w-full [container-name:list-item] [container-type:inline-size]"
       >
         <a
           class="flex w-full flex-row py-2 px-4 "
@@ -1009,7 +1009,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         Your balance
       </h4>
       <div
-        class="flex-row gap-4 flex h-full w-full [container-type:inline-size]"
+        class="flex-row gap-4 flex h-full w-full [container-name:list-item] [container-type:inline-size]"
       >
         <a
           class="flex w-full flex-row py-2 px-4 "

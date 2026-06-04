@@ -28,7 +28,7 @@ module.exports = {
   },
   plugins: [
     plugin(({ addVariant }) => {
-      addVariant('@compact', '@container (max-width: 399px)');
+      addVariant('@compact', '@container list-item (max-width: 399px)');
     }),
   ],
 };
