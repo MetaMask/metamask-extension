@@ -84,47 +84,140 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
 
-      - name: Find and download dist artifact
+      # The build-reuse feature skips the build jobs on a PR's Main run
+      # when its build-source hash matches a prior run (commonly a `main` run).
+      # In that case the artifact does NOT exist on the PR branch's own run,
+      # so we mirror the build-reuse lookup: find the donor run by matching
+      # the `build-source-hash` commit status, searching the PR branch first
+      # and then the base branch.
+      - name: Find dist artifact run
+        id: find-dist
+        uses: actions/github-script@v8
+        env:
+          PR_NUMBER: ${{ github.event.issue.number }}
+        with:
+          github-token: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
+          script: |
+            const { owner, repo } = context.repo;
+            const ARTIFACT_NAME = 'build-dist-webpack';
+            const prNumber = parseInt(process.env.PR_NUMBER, 10);
+            const { stdout: headOut } = await exec.getExecOutput('git', ['rev-parse', 'HEAD'], { silent: true });
+            const headSha = headOut.trim();
+
+            const { data: pr } = await github.rest.pulls.get({ owner, repo, pull_number: prNumber });
+            const branch = pr.head.ref;
+            const baseBranch = pr.base.ref;
+            core.info(`PR #${prNumber} HEAD: ${headSha} (branch '${branch}' -> base '${baseBranch}')`);
+
+            async function runHasArtifact(runId) {
+              const artifacts = await github.paginate(
+                github.rest.actions.listWorkflowRunArtifacts,
+                { owner, repo, run_id: runId, per_page: 100 },
+              );
+              return artifacts.some((a) => a.name === ARTIFACT_NAME);
+            }
+
+            async function buildHashForSha(sha) {
+              const { data: { statuses } } = await github.rest.repos.getCombinedStatusForRef({
+                owner, repo, ref: sha, per_page: 100,
+              });
+              return statuses.find((s) => s.context === 'build-source-hash')?.description;
+            }
+
+            // The build-dist-webpack job runs via the reusable run-build.yml,
+            // so it appears as 'build-dist-webpack / build-dist-webpack'.
+            async function distBuildJob(runId) {
+              const jobs = await github.paginate(
+                github.rest.actions.listJobsForWorkflowRun,
+                { owner, repo, run_id: runId, per_page: 100 },
+              );
+              return jobs.find((j) => j.name.includes(ARTIFACT_NAME));
+            }
+
+            // 1. Locate the PR branch's own Main run for the current HEAD commit.
+            const { data: { workflow_runs: branchRuns } } = await github.rest.actions.listWorkflowRuns({
+              owner, repo, workflow_id: 'main.yml', branch, per_page: 10,
+            });
+            const headRun = branchRuns.find((r) => r.head_sha === headSha);
+            if (!headRun) {
+              core.setFailed(`No 'Main' workflow run found for the PR HEAD commit ${headSha} on branch '${branch}'. Ensure the Main workflow has run for the latest commit on this branch.`);
+              return;
+            }
+            core.info(`Found branch run ${headRun.id} (status: ${headRun.status}, conclusion: ${headRun.conclusion ?? ''})`);
+
+            // Fast path: the artifact is already available on the branch run.
+            if (await runHasArtifact(headRun.id)) {
+              core.info(`-> Using '${ARTIFACT_NAME}' from branch run ${headRun.id}`);
+              core.setOutput('run-id', String(headRun.id));
+              return;
+            }
+
+            // No artifact on the branch run yet — determine why before falling back.
+            const buildJob = await distBuildJob(headRun.id);
+            const reused = buildJob?.conclusion === 'skipped';
+
+            if (!reused) {
+              // Builds are fresh on this run, so the artifact must originate here.
+              // Fail fast with an actionable message rather than searching for a
+              // donor that cannot exist (a fresh build means no prior run matched).
+              if (!buildJob || buildJob.status !== 'completed') {
+                core.setFailed(`The '${ARTIFACT_NAME}' build is still in progress for commit ${headSha} (run ${headRun.id}). Re-run '@metamaskbot update-e2e-fixture' once the Main workflow's build has completed.`);
+              } else if (buildJob.conclusion !== 'success') {
+                core.setFailed(`The '${ARTIFACT_NAME}' build ${buildJob.conclusion} for commit ${headSha} (run ${headRun.id}). Fix the build and re-run '@metamaskbot update-e2e-fixture'.`);
+              } else {
+                core.setFailed(`The '${ARTIFACT_NAME}' build succeeded for commit ${headSha} (run ${headRun.id}) but its artifact is unavailable (it may have expired). Re-run the Main workflow on this branch, then '@metamaskbot update-e2e-fixture'.`);
+              }
+              return;
+            }
+
+            // 2. Builds were reused (the build job was skipped): find the donor
+            //    run by matching the build-source hash, mirroring get-requirements.yml.
+            core.info(`Branch run ${headRun.id} reused builds (build job skipped). Locating the donor run...`);
+            const buildHash = await buildHashForSha(headSha);
+            if (!buildHash) {
+              core.setFailed(`Builds were reused for commit ${headSha} but no 'build-source-hash' commit status was found, so the donor run cannot be located.`);
+              return;
+            }
+            core.info(`PR build-source-hash: ${buildHash}`);
+
+            async function findDonor(searchBranch) {
+              core.info(`Searching '${searchBranch}' for a run matching build hash ${buildHash}...`);
+              const { data: { workflow_runs } } = await github.rest.actions.listWorkflowRuns({
+                owner, repo, workflow_id: 'main.yml', branch: searchBranch, per_page: 20,
+              });
+              const allowed = new Set(['completed', 'in_progress']);
+              for (const run of workflow_runs) {
+                if (!allowed.has(run.status)) continue;
+                if ((await buildHashForSha(run.head_sha)) !== buildHash) continue;
+                if (await runHasArtifact(run.id)) {
+                  core.info(`-> Found donor run ${run.id} (SHA: ${run.head_sha})`);
+                  return String(run.id);
+                }
+              }
+              return null;
+            }
+
+            let donorId = await findDonor(branch);
+            if (!donorId && baseBranch !== branch) {
+              donorId = await findDonor(baseBranch);
+            }
+
+            if (!donorId) {
+              core.setFailed(`Builds were reused for commit ${headSha}, but no run with a matching build-source-hash (${buildHash}) and a '${ARTIFACT_NAME}' artifact was found on '${branch}' or '${baseBranch}'. The donor run's artifact may have expired — re-run the Main workflow on this branch to rebuild.`);
+              return;
+            }
+            core.setOutput('run-id', donorId);
+
+      - name: Download dist artifact
         run: |
-          COMMIT_SHA_FULL=$(git rev-parse HEAD)
-
-          # Get the most recent run for the Main workflow on this branch
-          RUN_INFO=$(gh run list --workflow "Main" --branch "${BRANCH}" --json databaseId,status,conclusion,headSha --limit 1 --jq 'first')
-
-          if [ -z "$RUN_INFO" ] || [ "$RUN_INFO" = "null" ]; then
-            echo "::error::No 'Main' workflow run found for branch ${BRANCH}"
-            exit 1
-          fi
-
-          RUN_ID=$(echo "$RUN_INFO" | jq -r '.databaseId')
-          RUN_STATUS=$(echo "$RUN_INFO" | jq -r '.status')
-          RUN_CONCLUSION=$(echo "$RUN_INFO" | jq -r '.conclusion')
-          RUN_HEAD_SHA=$(echo "$RUN_INFO" | jq -r '.headSha')
-
-          echo "Found run ${RUN_ID} with status: ${RUN_STATUS}, conclusion: ${RUN_CONCLUSION}, headSha: ${RUN_HEAD_SHA}"
-          echo "Current PR HEAD commit: ${COMMIT_SHA_FULL}"
-
-          if [ "${RUN_HEAD_SHA}" != "${COMMIT_SHA_FULL}" ]; then
-            echo "::error::The latest 'Main' workflow run (commit ${RUN_HEAD_SHA}) does not match the current PR HEAD (commit ${COMMIT_SHA_FULL}). Please ensure the Main workflow has run for the latest commit on this branch."
-            exit 1
-          fi
-
-          if [ "${RUN_STATUS}" != "completed" ]; then
-            echo "::notice::The latest 'Main' workflow run is still in progress (status: ${RUN_STATUS}). Attempting to download the dist artifact anyway."
-          elif [ "${RUN_CONCLUSION}" != "success" ]; then
-            echo "::warning::The latest 'Main' workflow run concluded with '${RUN_CONCLUSION}'. The build artifact may still be available, proceeding with download attempt."
-          fi
-
-          echo "Attempting to download dist artifact..."
-
+          echo "Attempting to download dist artifact from run ${RUN_ID}..."
           if ! gh run download "${RUN_ID}" -n build-dist-webpack -D build-dist-webpack; then
-            echo "::error::Failed to download the 'build-dist-webpack' artifact. The build job may not have completed yet, or may have failed. Please ensure the build-dist-webpack job has completed successfully."
+            echo "::error::Failed to download the 'build-dist-webpack' artifact from run ${RUN_ID}. The build job may not have completed yet, or may have failed. Please ensure the build-dist-webpack job has completed successfully."
             exit 1
           fi
-
           echo "Successfully downloaded dist artifact."
         env:
-          BRANCH: ${{ steps.branch.outputs.BRANCH }}
+          RUN_ID: ${{ steps.find-dist.outputs.run-id }}
           GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
 
       - name: Cache dist artifact
