@@ -9,8 +9,7 @@ import {
   Text,
   TextColor,
   TextVariant,
-} from '@metamask/design-system-react';
-import { Skeleton } from '../../../../../components/component-library/skeleton';
+ Skeleton } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 import { useMerklClaimAmount } from '../../../hooks/musd/useMerklClaimAmount';
