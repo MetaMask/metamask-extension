@@ -2,7 +2,8 @@ import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
- Skeleton } from '@metamask/design-system-react';
+} from '@metamask/design-system-react';
+import { Skeleton } from '../../../../../../../components/component-library/skeleton';
 import { NameType } from '@metamask/name-controller';
 import { BigNumber } from 'bignumber.js';
 import React from 'react';
