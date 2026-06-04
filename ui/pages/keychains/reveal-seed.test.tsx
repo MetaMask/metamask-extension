@@ -17,6 +17,14 @@ import RevealSeedPage from './reveal-seed';
 
 const mockUseParams = jest.fn().mockReturnValue({});
 
+jest.mock('@metamask/design-system-react', () => {
+  const actual = jest.requireActual('@metamask/design-system-react');
+  return {
+    ...actual,
+    toast: Object.assign(jest.fn(), { dismiss: jest.fn() }),
+  };
+});
+
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useParams: () => mockUseParams(),

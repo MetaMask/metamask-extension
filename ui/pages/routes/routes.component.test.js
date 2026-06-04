@@ -24,6 +24,14 @@ const mockShowNetworkDropdown = jest.fn();
 const mockHideNetworkDropdown = jest.fn();
 const mockFetchWithCache = jest.fn();
 
+jest.mock('@metamask/design-system-react', () => {
+  const actual = jest.requireActual('@metamask/design-system-react');
+  return {
+    ...actual,
+    toast: Object.assign(jest.fn(), { dismiss: jest.fn() }),
+  };
+});
+
 jest.mock('webextension-polyfill', () => ({
   runtime: {
     onMessage: {

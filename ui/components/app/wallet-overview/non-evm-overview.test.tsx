@@ -19,6 +19,14 @@ import useMultiPolling from '../../../hooks/useMultiPolling';
 import { BITCOIN_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/bitcoin-wallet-snap';
 import NonEvmOverview from './non-evm-overview';
 
+jest.mock('@metamask/design-system-react', () => {
+  const actual = jest.requireActual('@metamask/design-system-react');
+  return {
+    ...actual,
+    toast: Object.assign(jest.fn(), { dismiss: jest.fn() }),
+  };
+});
+
 // After BIP-44 refactor, CoinOverview always uses AccountGroupBalance and shows
 // BalanceEmptyState when selectAccountGroupBalanceForEmptyState is false. Mock
 // it so the balance section renders and we can assert on primary balance/skeleton.
