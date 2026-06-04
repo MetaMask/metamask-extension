@@ -8,8 +8,8 @@ import { BigNumber } from 'bignumber.js';
 import React from 'react';
 
 import { Hex } from '@metamask/utils';
-import { Skeleton } from '../../../../../../../components/component-library/skeleton';
 import { ConfirmInfoRowTextTokenUnits } from '../../../../../../../components/app/confirm/info/row/text-token-units';
+import { Skeleton } from '../../../../../../../components/component-library/skeleton';
 import Name from '../../../../../../../components/app/name';
 import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row';
 
