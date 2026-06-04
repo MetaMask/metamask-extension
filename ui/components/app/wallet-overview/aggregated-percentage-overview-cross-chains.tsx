@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
-import { Box , Skeleton } from '@metamask/design-system-react';
+import { Box, Skeleton } from '@metamask/design-system-react';
 import {
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,

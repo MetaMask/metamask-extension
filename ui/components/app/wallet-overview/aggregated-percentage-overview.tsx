@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import { Box , Skeleton } from '@metamask/design-system-react';
+import { Box, Skeleton } from '@metamask/design-system-react';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   getSelectedAccount,

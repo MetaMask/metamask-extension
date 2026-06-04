@@ -6,7 +6,7 @@ import { CaipChainId } from '@metamask/utils';
 import type { Hex } from '@metamask/utils';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { Box , Skeleton } from '@metamask/design-system-react';
+import { Box, Skeleton } from '@metamask/design-system-react';
 import { ButtonLink, IconName } from '../../component-library';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
