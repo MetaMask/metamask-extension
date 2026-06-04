@@ -311,17 +311,20 @@ export function shouldCreateSpanForRequest(url) {
   ) {
     return false;
   }
-  // Block span creation on ALL local extension file fetches.
-  // PR #41526 originally narrowed this to preinstalled snap manifests
-  // (fetched on every MV3 SW restart) and locale files (fetched on every
-  // popup open) under the `/snaps/` and `/_locales/` paths, but left a TODO
-  // to block all local extension fetches. This completes that TODO: the
-  // dominant remaining offenders are root-level content-hashed
-  // `chrome-extension://<id>/<hash>.json` preinstalled-snap bundles emitted
-  // by webpack as `asset/resource` (see app/scripts/constants/snaps.ts),
-  // which sit at the extension root and slipped past the old regex.
-  // These are all high-volume local file reads with no diagnostic value.
-  if (/^(?:chrome|moz)-extension:\/\//u.test(url)) {
+  // Block span creation on high-volume local extension file reads that have no
+  // diagnostic value:
+  // - Preinstalled snap manifests (fetched on every MV3 SW restart) and locale
+  //   files (fetched on every popup open), under `/snaps/` and `/_locales/`
+  //   (PR #41526).
+  // - Root-level content-hashed `chrome-extension://<id>/<hash>.json`
+  //   preinstalled-snap bundles emitted by webpack `asset/resource` (see
+  //   app/scripts/constants/snaps.ts). They sit at the extension root, so they
+  //   slipped past the #41526 regex. Scoped to hashed `.json` filenames so other
+  //   local extension fetches still get spans.
+  if (
+    /^(?:chrome|moz)-extension:\/\/[^/]+\/(?:snaps|_locales)\//u.test(url) ||
+    /^(?:chrome|moz)-extension:\/\/[^/]+\/[0-9a-f]{8,}\.json$/u.test(url)
+  ) {
     return false;
   }
   // Create spans for all other requests.

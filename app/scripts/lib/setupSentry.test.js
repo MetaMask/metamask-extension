@@ -197,15 +197,21 @@ describe('Setup Sentry', () => {
       ).toStrictEqual(false);
     });
 
-    it('should return false for all other local extension file fetches', () => {
+    it('should return true for other local extension file fetches (only hashed json is blocked)', () => {
+      // Non-hashed local fetches still get spans — the block is scoped to the
+      // content-hashed preinstalled-snap bundles, not all local files.
       expect(
         shouldCreateSpanForRequest('chrome-extension://abc/home.html'),
-      ).toStrictEqual(false);
+      ).toStrictEqual(true);
       expect(
         shouldCreateSpanForRequest(
           'chrome-extension://abcdefg/scripts/ppom-validator.wasm',
         ),
-      ).toStrictEqual(false);
+      ).toStrictEqual(true);
+      // A non-hex-named root json (e.g. a config file) is also still traced.
+      expect(
+        shouldCreateSpanForRequest('chrome-extension://abc/manifest.json'),
+      ).toStrictEqual(true);
     });
 
     it('should return false for sentry.io domains', () => {
