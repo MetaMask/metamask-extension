@@ -43,7 +43,10 @@ describe('Bitcoin network presence', function (this: Suite) {
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
-        await networkManager.checkContextMenuHasOption(BTC_CHAIN_ID, 'Discover');
+        await networkManager.checkContextMenuHasOption(
+          BTC_CHAIN_ID,
+          'Discover',
+        );
       },
     );
   });
