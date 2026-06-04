@@ -1,6 +1,6 @@
-/*
-Passing messages from background script to popup.
-Injected into connect.trezor.io/ by the MV2 manifest.
+/**
+ * Passing messages from background script to popup.
+ * Injected into connect.trezor.io by the MV2 manifest.
 */
 
 let port = chrome.runtime.connect({ name: 'trezor-connect' });
@@ -11,12 +11,9 @@ port.onDisconnect.addListener(() => {
     port = null;
 });
 
-/*
-Passing messages from popup to background script.
-Forward event.data directly (not wrapped in { data: ... }) so that
-@trezor/connect-web v9's ServiceWorkerWindowChannel can read top-level
-type/id/channel fields.
-*/
+/**
+ * Passing messages from popup to background script.
+ */
 window.addEventListener('message', event => {
     if (port && event.source === window && event.data) {
         port.postMessage(event.data);
