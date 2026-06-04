@@ -27,26 +27,6 @@ export function isValidZipMtime(mtime: number): boolean {
 }
 
 /**
- * Validates and returns a zip entry mtime.
- *
- * @param mtime - The timestamp to validate.
- * @param label - The value label to include in error messages.
- * @returns The validated timestamp.
- */
-export function validateZipMtime(
-  mtime: number,
-  label = 'zip mtime',
-): number {
-  if (isValidZipMtime(mtime)) {
-    return mtime;
-  }
-
-  throw new Error(
-    `Invalid ${label} value "${mtime}": expected a UNIX timestamp in milliseconds greater than or equal to ${ZIP_MTIME_MINIMUM} and less than ${ZIP_MTIME_EXCLUSIVE_MAXIMUM}`,
-  );
-}
-
-/**
  * Resolves the default zip entry mtime.
  *
  * SOURCE_DATE_EPOCH is specified in seconds. Zip mtime values are represented
@@ -78,5 +58,11 @@ export function getDefaultZipMtime(): number {
   }
 
   const mtime = epoch * 1000;
-  return validateZipMtime(mtime, 'SOURCE_DATE_EPOCH');
+  if (isValidZipMtime(mtime)) {
+    return mtime;
+  }
+
+  throw new Error(
+    `Invalid SOURCE_DATE_EPOCH value "${mtime}": expected a UNIX timestamp in milliseconds greater than or equal to ${ZIP_MTIME_MINIMUM} and less than ${ZIP_MTIME_EXCLUSIVE_MAXIMUM}`,
+  );
 }
