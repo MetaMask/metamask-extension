@@ -4,7 +4,6 @@ import { Skeleton } from '@metamask/design-system-react';
 import {
   TextAlign,
   TextColor,
-  TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import {
   SensitiveText,
@@ -36,7 +35,7 @@ export const TokenCellPrimaryDisplay = React.memo(
         <SensitiveText
           data-testid="multichain-token-list-item-value"
           color={TextColor.textAlternative}
-          variant={TextVariant.bodySmMedium}
+          className="text-s-body-md @compact:text-s-body-sm"
           textAlign={TextAlign.End}
           isHidden={privacyMode}
           length={SensitiveTextLength.Short}
