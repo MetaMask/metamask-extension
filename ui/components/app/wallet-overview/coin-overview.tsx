@@ -49,7 +49,7 @@ import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountT
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useRewardsModal } from '../../../hooks/rewards/useRewardsModal';
-import { Skeleton } from '../../component-library/skeleton';
+import { Skeleton } from '@metamask/design-system-react';
 import { isZeroAmount } from '../../../helpers/utils/number-utils';
 import { BalanceEmptyState } from '../balance-empty-state';
 import { selectAccountGroupBalanceForEmptyState } from '../../../selectors/assets';
@@ -144,10 +144,10 @@ export const LegacyAggregatedBalance = ({
 
   return (
     <Skeleton
-      isLoading={
+      hideChildren={
         !anyEnabledNetworksAreAvailable && isZeroAmount(balanceToDisplay)
       }
-      marginBottom={1}
+      className="mb-1"
     >
       <UserPreferencedCurrencyDisplay
         style={{ display: 'contents' }}

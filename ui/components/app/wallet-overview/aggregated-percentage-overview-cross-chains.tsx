@@ -28,7 +28,7 @@ import { SensitiveText } from '../../component-library';
 import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
-import { Skeleton } from '../../component-library/skeleton';
+import { Skeleton } from '@metamask/design-system-react';
 import { isZeroAmount } from '../../../helpers/utils/number-utils';
 import { TokenWithBalance } from '../../multichain/asset-picker-amount/asset-picker-modal/types';
 
@@ -162,7 +162,7 @@ export const AggregatedPercentageOverviewCrossChains = ({
 
   return (
     <Skeleton
-      isLoading={
+      hideChildren={
         !anyEnabledNetworksAreAvailable &&
         isZeroAmount(formattedAmountChangeCrossChains)
       }

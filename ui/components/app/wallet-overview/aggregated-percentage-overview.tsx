@@ -29,7 +29,7 @@ import { getHistoricalMultichainAggregatedBalance } from '../../../selectors/ass
 import { formatWithThreshold } from '../assets/util/formatWithThreshold';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { isZeroAmount } from '../../../helpers/utils/number-utils';
-import { Skeleton } from '../../component-library/skeleton';
+import { Skeleton } from '@metamask/design-system-react';
 
 // core already has this exported type but its not yet available in this version
 // todo remove this and use core type once available
@@ -124,7 +124,7 @@ export const AggregatedPercentageOverview = ({
 
   return (
     <Skeleton
-      isLoading={!anyEnabledNetworksAreAvailable && isZeroAmount(amountChange)}
+      hideChildren={!anyEnabledNetworksAreAvailable && isZeroAmount(amountChange)}
     >
       <Box className="flex gap-1">
         <SensitiveText
@@ -212,7 +212,7 @@ export const AggregatedMultichainPercentageOverview = ({
 
   return (
     <Skeleton
-      isLoading={
+      hideChildren={
         !anyEnabledNetworksAreAvailable && isZeroAmount(singleDayAmountChange)
       }
     >
