@@ -11,9 +11,6 @@ pwTest.describe('Auto-Lock Timer', () => {
   pwTest(
     'automatically locks the wallet once the idle time has elapsed',
     async (
-      // Playwright runner requires the first arg to be a destructuring pattern.
-      // We don't use any built-in PW fixtures — withFixtures provides our own
-      // driver — so the destructured object is empty.
       // eslint-disable-next-line no-empty-pattern
       {},
       testInfo,

@@ -60,8 +60,16 @@ yarn test:e2e:playwright:firefox
 # Run a single spec
 yarn playwright test --project=chrome-e2e auto-lock.pw.spec.ts
 
+# Verbose driver logs (`[driver] Called 'method' with arguments ...`),
+# same proxy wrapper Selenium uses in `helpers.js`.
+E2E_DEBUG=true yarn test:e2e:playwright:chrome auto-lock.pw.spec.ts
+
 # Debug a spec (headed + PWDEBUG step inspector)
 PWDEBUG=1 yarn playwright test --project=chrome-e2e auto-lock.pw.spec.ts
+
+# Local sharding sanity-check (mirrors what CI does)
+yarn test:e2e:playwright:chrome --shard=1/2
+yarn test:e2e:playwright:chrome --shard=2/2
 ```
 
 The Firefox path additionally requires `yarn playwright install firefox` once per machine (CI does this automatically via the `pre-test-command` input on the reusable workflow).
