@@ -1996,6 +1996,8 @@
         "os.release": true,
         "path.basename": true,
         "path.relative": true,
+        "path.resolve": true,
+        "path.win32.basename": true,
         "url.fileURLToPath": true
       },
       "globals": {
@@ -2008,7 +2010,7 @@
       },
       "packages": {
         "postcss>picocolors": true,
-        "browserify>shell-quote": true
+        "webpack-dev-server>launch-editor>shell-quote": true
       }
     },
     "@lavamoat/webpack>lavamoat-core": {
