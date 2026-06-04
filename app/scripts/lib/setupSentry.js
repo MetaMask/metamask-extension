@@ -128,7 +128,18 @@ function getClientOptions() {
     // the assets-controller spans that breached quota in 13.32.0 — see #43226)
     // while every other transaction keeps the global `tracesSampleRate`.
     // `tracesSampler` takes precedence over `tracesSampleRate` in Sentry.
-    tracesSampler: createTracesSampler({ defaultSampleRate: tracesSampleRate }),
+    //
+    // `release` is the BARE version (e.g. '13.32.0'), matching
+    // DEFAULT_DROPPED_RELEASES / SENTRY_DROP_RELEASES — NOT the full
+    // `metamask-extension@x.y.z` RELEASE string. When this build's own version
+    // is in the dropped set, every transaction is dropped. NOTE: this only
+    // affects this build's own release; a build's SDK cannot retroactively touch
+    // already-installed builds of a dropped release — for the installed base the
+    // mitigation is a forced-update drain (see #43226).
+    tracesSampler: createTracesSampler({
+      defaultSampleRate: tracesSampleRate,
+      release: process.env.METAMASK_VERSION,
+    }),
     // If we are reporting to SENTRY_DSN_PERFORMANCE, we want to ignore all errors.
     ignoreErrors: sentryTarget === SENTRY_DSN_PERFORMANCE ? [/.*/u] : undefined,
     transport: makeTransport,
