@@ -133,6 +133,11 @@ class TransactionConfirmation extends Confirmation {
   private readonly enforcedSimulationsToggleUnchecked: RawLocator =
     '[data-testid="enforced-simulations-toggle-input"]:not(:checked)';
 
+  private readonly reviewAlertButton: RawLocator = {
+    tag: 'span',
+    text: 'Review alert',
+  };
+
   private readonly simulationDetailsLayout: RawLocator =
     '[data-testid="simulation-details-layout"]';
 
@@ -682,6 +687,13 @@ class TransactionConfirmation extends Confirmation {
       text: fiatFee,
     });
     console.log('Send fees validation successful');
+  }
+
+  async waitForReviewAlertToDisappear(): Promise<void> {
+    // We need a guard because the review alert may not be present immediately
+    await this.driver.assertElementNotPresent(this.reviewAlertButton, {
+      waitAtLeastGuard: 2000,
+    });
   }
 }
 
