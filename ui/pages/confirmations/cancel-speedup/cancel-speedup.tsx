@@ -14,7 +14,8 @@ import {
   Text,
   TextColor,
   TextVariant,
- Skeleton } from '@metamask/design-system-react';
+  Skeleton,
+} from '@metamask/design-system-react';
 import {
   Modal,
   ModalOverlay,

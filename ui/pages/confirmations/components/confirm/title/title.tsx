@@ -264,7 +264,11 @@ export function TitleSkeleton() {
       paddingTop={4}
       paddingBottom={4}
     >
-      <Skeleton height="24px" width="200px" data-testid="confirm-title-skeleton" />
+      <Skeleton
+        height="24px"
+        width="200px"
+        data-testid="confirm-title-skeleton"
+      />
     </Box>
   );
 }

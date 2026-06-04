@@ -392,7 +392,11 @@ function SimulationDetailsSkeleton({
           justifyContent={JustifyContent.spaceBetween}
           alignItems={AlignItems.center}
         >
-          <Skeleton height={20} width={72} data-testid="simulation-details-skeleton" />
+          <Skeleton
+            height={20}
+            width={72}
+            data-testid="simulation-details-skeleton"
+          />
           <Skeleton height={20} width={100} />
         </Box>
         <Box display={Display.Flex} justifyContent={JustifyContent.flexEnd}>
