@@ -81,7 +81,7 @@ networkConfigs.forEach((config) => {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await login(driver);
+          await login(driver, { validateBalance: false });
 
           const assetListPage = new AssetListPage(driver);
           await driver.switchToWindowWithTitle(
