@@ -4506,7 +4506,10 @@ export function toggleDefaultView(): ThunkAction<
           await browserWithSidePanel.sidePanel.open({ windowId });
         } catch (error) {
           // Nothing was opened, so the popup stays and state is consistent.
-          log.error('Side panel failed to open; remaining in popup view', error);
+          log.error(
+            'Side panel failed to open; remaining in popup view',
+            error,
+          );
           return;
         }
 
