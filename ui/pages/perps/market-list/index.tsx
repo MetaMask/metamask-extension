@@ -71,10 +71,7 @@ import { FilterSelect } from './components/filter-select';
 const getResolvedMarketType = (
   market: PerpsMarketData,
 ): MarketType | undefined => {
-  return (
-    (HIP3_ASSET_MARKET_TYPES as Record<string, MarketType>)[market.symbol] ??
-    market.marketType
-  );
+  return HIP3_ASSET_MARKET_TYPES[market.symbol] ?? market.marketType;
 };
 
 /**
@@ -157,7 +154,8 @@ const filterByType = (
       );
     }
     default: {
-      return markets;
+      const _exhaustiveCheck: never = filter;
+      return _exhaustiveCheck;
     }
   }
 };
@@ -178,27 +176,26 @@ export const MarketListView = () => {
     usePerpsLiveMarketListData();
   const { account } = usePerpsLiveAccount();
 
-  // Read initial filter from URL params (set by deeplink).
-  // Validate against MARKET_CATEGORIES (the 7 data-model categories) plus 'all' and 'new' sentinels.
-  const initialFilter = useMemo<MarketTypeFilter>(() => {
-    const filterParam = searchParams.get('filter');
-    if (
-      filterParam &&
-      (filterParam === 'all' ||
-        filterParam === 'new' ||
-        (MARKET_CATEGORIES as readonly string[]).includes(filterParam))
-    ) {
-      return filterParam as MarketTypeFilter;
-    }
-    return 'all';
-  }, [searchParams]);
-
   // State
   const [searchQuery, setSearchQuery] = useState('');
   const [sortField, setSortField] = useState<SortField>('volume');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
-  const [selectedFilter, setSelectedFilter] =
-    useState<MarketTypeFilter>(initialFilter);
+  // Deeplink: read initial filter from URL ?filter= param. 'all' and 'new' are
+  // UI-only sentinels not in MARKET_CATEGORIES, so they're checked separately.
+  const [selectedFilter, setSelectedFilter] = useState<MarketTypeFilter>(
+    () => {
+      const filterParam = searchParams.get('filter');
+      if (
+        filterParam &&
+        (filterParam === 'all' ||
+          filterParam === 'new' ||
+          (MARKET_CATEGORIES as readonly string[]).includes(filterParam))
+      ) {
+        return filterParam as MarketTypeFilter;
+      }
+      return 'all';
+    },
+  );
 
   // Use stream loading state
   const isLoading = marketsLoading;

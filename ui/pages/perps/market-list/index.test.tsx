@@ -50,9 +50,11 @@ import { MarketListView } from '.';
 
 const mockNavigate = jest.fn();
 
+const mockSearchParams = new URLSearchParams();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
+  useSearchParams: () => [mockSearchParams],
 }));
 
 const mockUsePerpsLiveMarketListData = jest.fn();
@@ -142,6 +144,7 @@ const mockStore = configureStore({
 describe('MarketListView', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockSearchParams.delete('filter');
     // Default mock returns loaded state with markets
     mockUsePerpsLiveMarketListData.mockReturnValue({
       markets: allMockMarkets,
@@ -466,6 +469,62 @@ describe('MarketListView', () => {
           screen.queryByTestId('market-row-xyz-TSLA'),
         ).not.toBeInTheDocument();
         expect(screen.queryByTestId('market-row-BTC')).not.toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('deeplink URL filter initialization', () => {
+    it('initializes with stocks filter from URL param', async () => {
+      mockSearchParams.set('filter', 'stocks');
+      renderWithProvider(<MarketListView />, mockStore);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('market-row-xyz-TSLA')).toBeInTheDocument();
+        expect(screen.queryByTestId('market-row-BTC')).not.toBeInTheDocument();
+      });
+    });
+
+    it('initializes with pre-ipo filter from URL param', async () => {
+      mockSearchParams.set('filter', 'pre-ipo');
+      renderWithProvider(<MarketListView />, mockStore);
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('market-row-xyz-SPACEX'),
+        ).toBeInTheDocument();
+        expect(screen.queryByTestId('market-row-BTC')).not.toBeInTheDocument();
+      });
+    });
+
+    it('initializes with indices filter from URL param', async () => {
+      mockSearchParams.set('filter', 'indices');
+      renderWithProvider(<MarketListView />, mockStore);
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('market-row-xyz-SP500'),
+        ).toBeInTheDocument();
+        expect(screen.queryByTestId('market-row-BTC')).not.toBeInTheDocument();
+      });
+    });
+
+    it('initializes with etfs filter from URL param', async () => {
+      mockSearchParams.set('filter', 'etfs');
+      renderWithProvider(<MarketListView />, mockStore);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('market-row-xyz-SPY')).toBeInTheDocument();
+        expect(screen.queryByTestId('market-row-BTC')).not.toBeInTheDocument();
+      });
+    });
+
+    it('defaults to all filter for invalid URL param', async () => {
+      mockSearchParams.set('filter', 'bogus');
+      renderWithProvider(<MarketListView />, mockStore);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('market-row-BTC')).toBeInTheDocument();
+        expect(screen.getByTestId('market-row-xyz-TSLA')).toBeInTheDocument();
       });
     });
   });
