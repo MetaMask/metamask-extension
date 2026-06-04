@@ -1,9 +1,6 @@
 import { BigNumber } from 'bignumber.js';
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
-import { useConfirmContext } from '../../context/confirm';
+import { TransactionType } from '@metamask/transaction-controller';
+import { useTransactionMetadataRequestOptional } from '../transactions/useTransactionMetadataRequest';
 import { useTransactionPayTotals } from './useTransactionPayData';
 
 const SUPPORTED_TYPES: TransactionType[] = [TransactionType.musdConversion];
@@ -16,12 +13,12 @@ const SUPPORTED_TYPES: TransactionType[] = [TransactionType.musdConversion];
  * decision left for follow-up.
  */
 export function useIsPaidByMetaMask(): boolean {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequestOptional();
   const totals = useTransactionPayTotals();
 
   if (
-    !currentConfirmation?.type ||
-    !SUPPORTED_TYPES.includes(currentConfirmation.type) ||
+    !transactionMeta?.type ||
+    !SUPPORTED_TYPES.includes(transactionMeta.type) ||
     !totals?.fees
   ) {
     return false;

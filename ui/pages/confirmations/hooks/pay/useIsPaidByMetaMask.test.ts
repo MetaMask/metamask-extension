@@ -1,20 +1,20 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { TransactionType } from '@metamask/transaction-controller';
 import type { TransactionPayTotals } from '@metamask/transaction-pay-controller';
-import { useConfirmContext } from '../../context/confirm';
+import { useTransactionMetadataRequestOptional } from '../transactions/useTransactionMetadataRequest';
 import { useTransactionPayTotals } from './useTransactionPayData';
 import { useIsPaidByMetaMask } from './useIsPaidByMetaMask';
 
-jest.mock('../../context/confirm');
+jest.mock('../transactions/useTransactionMetadataRequest');
 jest.mock('./useTransactionPayData');
 
-const useConfirmContextMock = jest.mocked(useConfirmContext);
+const useTransactionMetadataRequestOptionalMock = jest.mocked(
+  useTransactionMetadataRequestOptional,
+);
 const useTransactionPayTotalsMock = jest.mocked(useTransactionPayTotals);
 
 function mockConfirmation(type: TransactionType) {
-  useConfirmContextMock.mockReturnValue({
-    currentConfirmation: { type },
-  } as ReturnType<typeof useConfirmContext>);
+  useTransactionMetadataRequestOptionalMock.mockReturnValue({ type });
 }
 
 function mockTotals(overrides?: Partial<TransactionPayTotals['fees']>) {
@@ -98,10 +98,8 @@ describe('useIsPaidByMetaMask', () => {
     expect(result.current).toBe(false);
   });
 
-  it('returns false when currentConfirmation is undefined', () => {
-    useConfirmContextMock.mockReturnValue({
-      currentConfirmation: undefined,
-    } as ReturnType<typeof useConfirmContext>);
+  it('returns false when transaction metadata is undefined', () => {
+    useTransactionMetadataRequestOptionalMock.mockReturnValue(undefined);
 
     const { result } = renderHook(() => useIsPaidByMetaMask());
     expect(result.current).toBe(false);
