@@ -185,14 +185,15 @@ describe('Actions', () => {
         .resolves(mockKeyrings[0]);
       const getSeedPhraseStub = sinon.stub().resolves(mockEncodedSeedPhrase);
 
-      background.getApi.returns({
-        createSeedPhraseBackup: createSeedPhraseBackupStub,
-        createNewVaultAndKeychain: createNewVaultAndKeychainStub,
-        getSeedPhrase: getSeedPhraseStub,
-        getStatePatches: sinon.stub().resolves([]),
-      });
-
-      setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background);
+      // background.getApi.returns({
+      //   createSeedPhraseBackup: createSeedPhraseBackupStub,
+      //   createNewVaultAndKeychain: createNewVaultAndKeychainStub,
+      //   getSeedPhrase: getSeedPhraseStub,
+      //   getStatePatches: sinon.stub().resolves([]),
+      // });
+      //
+      // setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.createNewVaultAndSyncWithSocial('password'));
 
@@ -833,11 +834,12 @@ describe('Actions', () => {
 
       const createNewVaultAndRestoreStub = sinon.stub().resolves();
 
-      background.getApi.returns({
-        createNewVaultAndRestore: createNewVaultAndRestoreStub,
-        unMarkPasswordForgotten: sinon.stub().resolves(),
-        getStatePatches: sinon.stub().resolves([]),
-      });
+      background.unMarkPasswordForgotten.resolves();
+      // background.getApi.returns({
+      //   createNewVaultAndRestore: createNewVaultAndRestoreStub,
+      //   unMarkPasswordForgotten: sinon.stub().resolves(),
+      //   getStatePatches: sinon.stub().resolves([]),
+      // });
 
       setBackgroundConnection(background.getApi());
 
@@ -850,11 +852,13 @@ describe('Actions', () => {
     it('calls the expected actions', async () => {
       const store = mockStore();
 
-      background.getApi.returns({
-        createNewVaultAndRestore: sinon.stub().resolves(),
-        unMarkPasswordForgotten: sinon.stub().resolves(),
-        getStatePatches: sinon.stub().resolves([]),
-      });
+      background.createNewVaultAndRestore.resolves();
+      background.unMarkPasswordForgotten.resolves();
+      // background.getApi.returns({
+      //   createNewVaultAndRestore: sinon.stub().resolves(),
+      //   unMarkPasswordForgotten: sinon.stub().resolves(),
+      //   getStatePatches: sinon.stub().resolves([]),
+      // });
 
       setBackgroundConnection(background.getApi());
 
@@ -946,11 +950,12 @@ describe('Actions', () => {
 
       const removeAccount = sinon.stub().resolves();
 
-      background.getApi.returns({
-        removeAccount,
-        getStatePatches: sinon.stub().resolves([]),
-      });
-      setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background);
+      // background.getApi.returns({
+      //   removeAccount,
+      //   getStatePatches: sinon.stub().resolves([]),
+      // });
+      // setBackgroundConnection(background.getApi());
 
       const expectedActions = [
         'SHOW_LOADING_INDICATION',
@@ -1046,12 +1051,13 @@ describe('Actions', () => {
 
       const importAccountWithStrategy = sinon.stub().resolves();
 
-      background.getApi.returns({
-        importAccountWithStrategy,
-        getStatePatches: sinon.stub().resolves([]),
-      });
-
-      setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background);
+      // background.getApi.returns({
+      //   importAccountWithStrategy,
+      //   getStatePatches: sinon.stub().resolves([]),
+      // });
+      //
+      // setBackgroundConnection(background.getApi());
 
       await store.dispatch(
         actions.importNewAccount(
@@ -3385,12 +3391,13 @@ describe('Actions', () => {
 
       const markPasswordForgottenStub = sinon.stub().resolves();
 
-      background.getApi.returns({
-        markPasswordForgotten: markPasswordForgottenStub,
-        getStatePatches: sinon.stub().resolves([]),
-      });
-
-      setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background);
+      // background.getApi.returns({
+      //   markPasswordForgotten: markPasswordForgottenStub,
+      //   getStatePatches: sinon.stub().resolves([]),
+      // });
+      //
+      // setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.markPasswordForgotten());
 
@@ -3404,12 +3411,13 @@ describe('Actions', () => {
         .stub()
         .rejects(new Error('error'));
 
-      background.getApi.returns({
-        markPasswordForgotten: markPasswordForgottenStub,
-        getStatePatches: sinon.stub().resolves([]),
-      });
-
-      setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background);
+      // background.getApi.returns({
+      //   markPasswordForgotten: markPasswordForgottenStub,
+      //   getStatePatches: sinon.stub().resolves([]),
+      // });
+      //
+      // setBackgroundConnection(background.getApi());
 
       const expectedActions = [{ type: 'HIDE_LOADING_INDICATION' }];
 
@@ -3427,12 +3435,13 @@ describe('Actions', () => {
 
       const unMarkPasswordForgottenStub = sinon.stub().resolves();
 
-      background.getApi.returns({
-        unMarkPasswordForgotten: unMarkPasswordForgottenStub,
-        getStatePatches: sinon.stub().resolves([]),
-      });
-
-      setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background);
+      // background.getApi.returns({
+      //   unMarkPasswordForgotten: unMarkPasswordForgottenStub,
+      //   getStatePatches: sinon.stub().resolves([]),
+      // });
+      //
+      // setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.unMarkPasswordForgotten());
 
