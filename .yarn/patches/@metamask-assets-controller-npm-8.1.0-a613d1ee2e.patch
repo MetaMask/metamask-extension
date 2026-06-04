@@ -1,0 +1,106 @@
+diff --git a/dist/AssetsController.cjs b/dist/AssetsController.cjs
+index 084ffd8bc6b15a3474bb4ae65eeb6b195c2aaf2d..da51ebda6a7927849a941075c12f141b3c182121 100644
+--- a/dist/AssetsController.cjs
++++ b/dist/AssetsController.cjs
+@@ -1439,7 +1439,34 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
+                     }
+                     for (const [assetId, balance] of Object.entries(effective)) {
+                         const previousBalance = previousBalances[assetId];
+-                        const newAmount = balance.amount;
++                        // Coerce amounts (e.g. "1e-18" from a data source stringifying
++                        // a JS Number) into a plain decimal so downstream BigInt()
++                        // consumers don't crash. Decimals are read from the freshest
++                        // merged metadata when available; when metadata is not yet
++                        // known, the amount is left at its natural precision (only
++                        // exponent form is rewritten) so balances arriving before
++                        // their metadata aren't lossily truncated.
++                        const assetDecimals = metadata[assetId]?.decimals;
++                        const rawAmount = balance.amount;
++                        const bn = typeof rawAmount === 'string' && rawAmount.length > 0
++                            ? new bignumber_js_1.default(rawAmount)
++                            : new bignumber_js_1.default(NaN);
++                        let newAmount;
++                        if (bn.isFinite()) {
++                            const fixed = assetDecimals === undefined ||
++                                !Number.isFinite(assetDecimals) ||
++                                assetDecimals < 0
++                                ? bn.toFixed()
++                                : bn.toFixed(Math.floor(assetDecimals), bignumber_js_1.default.ROUND_DOWN);
++                            // Trim trailing zeros and a dangling dot: "1.500" -> "1.5".
++                            newAmount = fixed.includes('.')
++                                ? fixed.replace(/0+$/u, '').replace(/\.$/u, '')
++                                : fixed;
++                        }
++                        else {
++                            newAmount = '0';
++                        }
++                        effective[assetId] = { ...balance, amount: newAmount };
+                         const oldAmount = previousBalance?.amount;
+                         const isNewDefaultNativeZero = oldAmount === undefined &&
+                             newAmount === '0' &&
+diff --git a/dist/AssetsController.mjs b/dist/AssetsController.mjs
+index b6b746b6635e48808e056f89b5d8d39cd31bf1ef..e2830a1d56381ff7eb85f8702c812a2ed939b4ae 100644
+--- a/dist/AssetsController.mjs
++++ b/dist/AssetsController.mjs
+@@ -1432,7 +1432,34 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
+                     }
+                     for (const [assetId, balance] of Object.entries(effective)) {
+                         const previousBalance = previousBalances[assetId];
+-                        const newAmount = balance.amount;
++                        // Coerce amounts (e.g. "1e-18" from a data source stringifying
++                        // a JS Number) into a plain decimal so downstream BigInt()
++                        // consumers don't crash. Decimals are read from the freshest
++                        // merged metadata when available; when metadata is not yet
++                        // known, the amount is left at its natural precision (only
++                        // exponent form is rewritten) so balances arriving before
++                        // their metadata aren't lossily truncated.
++                        const assetDecimals = metadata[assetId]?.decimals;
++                        const rawAmount = balance.amount;
++                        const bn = typeof rawAmount === 'string' && rawAmount.length > 0
++                            ? new BigNumberJS(rawAmount)
++                            : new BigNumberJS(NaN);
++                        let newAmount;
++                        if (bn.isFinite()) {
++                            const fixed = assetDecimals === undefined ||
++                                !Number.isFinite(assetDecimals) ||
++                                assetDecimals < 0
++                                ? bn.toFixed()
++                                : bn.toFixed(Math.floor(assetDecimals), BigNumberJS.ROUND_DOWN);
++                            // Trim trailing zeros and a dangling dot: "1.500" -> "1.5".
++                            newAmount = fixed.includes('.')
++                                ? fixed.replace(/0+$/u, '').replace(/\.$/u, '')
++                                : fixed;
++                        }
++                        else {
++                            newAmount = '0';
++                        }
++                        effective[assetId] = { ...balance, amount: newAmount };
+                         const oldAmount = previousBalance?.amount;
+                         const isNewDefaultNativeZero = oldAmount === undefined &&
+                             newAmount === '0' &&
+diff --git a/dist/data-sources/BackendWebsocketDataSource.cjs b/dist/data-sources/BackendWebsocketDataSource.cjs
+index 6ab620a777a04aaa2b75bfdb7ff8c34a13a07319..f6bab9ecd7fa082e80257f9aae9d96baa82f7f86 100644
+--- a/dist/data-sources/BackendWebsocketDataSource.cjs
++++ b/dist/data-sources/BackendWebsocketDataSource.cjs
+@@ -479,7 +479,7 @@ async function _BackendWebsocketDataSource_initializeActiveChains() {
+         // Convert to human-readable using asset decimals (match RpcDataSource / pipeline format)
+         const humanReadableAmount = new bignumber_js_1.default(rawBalanceStr)
+             .dividedBy(new bignumber_js_1.default(10).pow(asset.decimals))
+-            .toString();
++            .toFixed();
+         assetsBalance[accountId][assetId] = {
+             amount: humanReadableAmount,
+         };
+diff --git a/dist/data-sources/BackendWebsocketDataSource.mjs b/dist/data-sources/BackendWebsocketDataSource.mjs
+index 3146c71ce035a4418663a0792964a31d52a5f7cd..3c6079804b2979b51ab5761b9dad64731c2be9fe 100644
+--- a/dist/data-sources/BackendWebsocketDataSource.mjs
++++ b/dist/data-sources/BackendWebsocketDataSource.mjs
+@@ -472,7 +472,7 @@ async function _BackendWebsocketDataSource_initializeActiveChains() {
+         // Convert to human-readable using asset decimals (match RpcDataSource / pipeline format)
+         const humanReadableAmount = new BigNumberJS(rawBalanceStr)
+             .dividedBy(new BigNumberJS(10).pow(asset.decimals))
+-            .toString();
++            .toFixed();
+         assetsBalance[accountId][assetId] = {
+             amount: humanReadableAmount,
+         };
