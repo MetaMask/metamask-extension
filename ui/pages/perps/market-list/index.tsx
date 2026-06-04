@@ -163,7 +163,7 @@ const filterByType = (
 /**
  * MarketListView displays a searchable, sortable list of markets
  */
-export const MarketListView: React.FC = () => {
+export const MarketListView = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();

@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import { pipeline } from 'readable-stream';
+import { finished, pipeline } from 'readable-stream';
 import browser from 'webextension-polyfill';
 import {
   createAsyncMiddleware,
@@ -83,10 +83,6 @@ import {
   bytesToHex,
   parseCaipAssetType,
   KnownCaipNamespace,
-  hasProperty,
-  isObject,
-  isJsonRpcRequest,
-  isJsonRpcNotification,
   createDeferredPromise,
 } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
@@ -185,7 +181,6 @@ import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/lib/transaction.utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { START_UI_SYNC } from '../../shared/constants/ui-initialization';
-import { PATCH_STORE_SUBSTREAM_METHODS } from '../../shared/constants/patch-store-substream-methods';
 import {
   createEnsureOnboardingCompleteCallback,
   getTokenValueParam,
@@ -212,7 +207,6 @@ import {
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multichain/networks';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
-import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
 import {
@@ -238,7 +232,6 @@ import {
   toHardwareWalletError,
   // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../ui/contexts/hardware-wallets';
-import { onStreamClosed } from '../../shared/lib/stream-utils';
 import {
   DEFI_REFERRAL_PARTNERS,
   DefiReferralPartner,
@@ -431,7 +424,6 @@ import { AlertControllerInit } from './messenger-client-init/alert-controller-in
 import { MetaMetricsDataDeletionControllerInit } from './messenger-client-init/metametrics-data-deletion-controller-init';
 import { LoggingControllerInit } from './messenger-client-init/logging-controller-init';
 import { AppMetadataControllerInit } from './messenger-client-init/app-metadata-controller-init';
-import { StorageServiceInit } from './messenger-client-init/storage-service-init';
 import { ApprovalControllerInit } from './messenger-client-init/confirmations/approval-controller-init';
 import { AddressBookControllerInit } from './messenger-client-init/confirmations/address-book-controller-init';
 import { DecryptMessageManagerInit } from './messenger-client-init/confirmations/decrypt-message-manager-init';
@@ -475,10 +467,6 @@ export const METAMASK_CONTROLLER_EVENTS = {
 
 /**
  * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
- */
-
-/**
- * @typedef {import('@metamask/object-multiplex/dist/Substream').Substream} Substream
  */
 
 // Types of APIs
@@ -621,7 +609,6 @@ export default class MetamaskController extends EventEmitter {
     const messengerClientInitFunctions = {
       ApprovalController: ApprovalControllerInit,
       LoggingController: LoggingControllerInit,
-      StorageService: StorageServiceInit,
       AppMetadataController: AppMetadataControllerInit,
       PreferencesController: PreferencesControllerInit,
       AccountsController: AccountsControllerInit,
@@ -2911,8 +2898,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:getAccountsBySnapId',
       ),
-      checkIsSeedlessPasswordOutdated:
-        this.checkIsSeedlessPasswordOutdated.bind(this),
+      checkIsSeedlessPasswordOutdated: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
+      ),
       syncPasswordAndUnlockWallet: this.syncPasswordAndUnlockWallet.bind(this),
 
       // subscription
@@ -3953,14 +3942,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       setName: this.nameController.setName.bind(this.nameController),
 
-      // SnapKeyring
-      createSnapAccount: async (snapId, options, internalOptions) => {
-        // NOTE: We should probably start using `withKeyring` with `createIfMissing: true`
-        // in this case.
-        const keyring = await getSnapKeyring(this.controllerMessenger);
-        return await keyring.createAccount(snapId, options, internalOptions);
-      },
-
       // Multichain Assets Controller
       multichainAddAssets: (assetIds, accountId) =>
         this.multichainAssetsController.addAssets(assetIds, accountId),
@@ -4430,10 +4411,13 @@ export default class MetamaskController extends EventEmitter {
     let isPasswordOutdated = false;
     if (isSocialLoginFlow) {
       try {
-        isPasswordOutdated = await this.checkIsSeedlessPasswordOutdated({
-          skipCache: false,
-          captureSentryError: true,
-        });
+        isPasswordOutdated =
+          await this.legacyBackgroundApiService.checkIsSeedlessPasswordOutdated(
+            {
+              skipCache: false,
+              captureSentryError: true,
+            },
+          );
       } catch (error) {
         // we don't want to block the unlock flow if the password outdated check fails
         log.error('error while checking if password is outdated', error);
@@ -4519,7 +4503,7 @@ export default class MetamaskController extends EventEmitter {
         await this.syncKeyringEncryptionKey();
 
         // check password outdated again skip cache to reset the cache after successful syncing
-        await this.checkIsSeedlessPasswordOutdated({
+        await this.legacyBackgroundApiService.checkIsSeedlessPasswordOutdated({
           skipCache: true,
           captureSentryError: true,
         });
@@ -4592,7 +4576,9 @@ export default class MetamaskController extends EventEmitter {
     if (!this.passkeyController.isPasskeyEnrolled()) {
       throw new PasskeyControllerError(
         PasskeyControllerErrorMessage.NotEnrolled,
-        { code: PasskeyControllerErrorCode.NotEnrolled },
+        {
+          code: PasskeyControllerErrorCode.NotEnrolled,
+        },
       );
     }
     const vaultKey = await this.passkeyController.retrieveVaultKeyWithPasskey(
@@ -4611,7 +4597,9 @@ export default class MetamaskController extends EventEmitter {
     if (!this.passkeyController.isPasskeyEnrolled()) {
       throw new PasskeyControllerError(
         PasskeyControllerErrorMessage.NotEnrolled,
-        { code: PasskeyControllerErrorCode.NotEnrolled },
+        {
+          code: PasskeyControllerErrorCode.NotEnrolled,
+        },
       );
     }
     const verified = await this.passkeyController.verifyPasskeyAuthentication(
@@ -4637,7 +4625,9 @@ export default class MetamaskController extends EventEmitter {
     if (!this.passkeyController.isPasskeyEnrolled()) {
       throw new PasskeyControllerError(
         PasskeyControllerErrorMessage.NotEnrolled,
-        { code: PasskeyControllerErrorCode.NotEnrolled },
+        {
+          code: PasskeyControllerErrorCode.NotEnrolled,
+        },
       );
     }
     await this.verifyPassword(password);
@@ -4663,7 +4653,9 @@ export default class MetamaskController extends EventEmitter {
     if (!this.passkeyController.isPasskeyEnrolled()) {
       throw new PasskeyControllerError(
         PasskeyControllerErrorMessage.NotEnrolled,
-        { code: PasskeyControllerErrorCode.NotEnrolled },
+        {
+          code: PasskeyControllerErrorCode.NotEnrolled,
+        },
       );
     }
 
@@ -4737,45 +4729,6 @@ export default class MetamaskController extends EventEmitter {
     await this.seedlessOnboardingController.storeKeyringEncryptionKey(
       keyringEncryptionKey,
     );
-  }
-
-  /**
-   * Checks if the seedless password is outdated.
-   *
-   * @param {object} args - The arguments for the checkIsSeedlessPasswordOutdated method.
-   * @param {boolean} args.skipCache - whether to skip the cache @default false
-   * @param {boolean} args.captureSentryError - whether to capture the sentry error. @default false
-   * @returns {Promise<boolean | undefined>} true if the password is outdated, false otherwise, undefined if the flow is not seedless
-   */
-  async checkIsSeedlessPasswordOutdated(args) {
-    const skipCache = args?.skipCache || false;
-    const captureSentryError = args?.captureSentryError || false;
-    try {
-      const isSocialLoginFlow =
-        this.onboardingController.getIsSocialLoginFlow();
-      const { completedOnboarding } = this.onboardingController.state;
-
-      if (!isSocialLoginFlow || !completedOnboarding) {
-        // this is only available for seedless onboarding flow and completed onboarding
-        return false;
-      }
-
-      const isPasswordOutdated =
-        await this.seedlessOnboardingController.checkIsPasswordOutdated({
-          skipCache,
-        });
-      return isPasswordOutdated;
-    } catch (error) {
-      if (captureSentryError) {
-        this.controllerMessenger?.captureException?.(
-          createSentryError(
-            'Failed to check if seedless password is outdated',
-            error,
-          ),
-        );
-      }
-      throw error;
-    }
   }
 
   /**
@@ -5407,13 +5360,6 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  async _getMultichainWalletSnapClient(snapId) {
-    const keyring = await getSnapKeyring(this.controllerMessenger);
-    const messenger = this.controllerMessenger;
-
-    return new MultichainWalletSnapClient(snapId, keyring, messenger);
-  }
-
   /**
    * Imports accounts with balances to the keyring.
    */
@@ -5434,43 +5380,6 @@ export default class MetamaskController extends EventEmitter {
         await this.accountTreeController.syncWithUserStorageAtLeastOnce();
         await this.discoverAndCreateAccounts(metadata.id);
       }
-    }
-  }
-
-  /**
-   * Adds Snap account to the keyring.
-   *
-   * @param {string} keyringId - The ID of the keyring to add the account to.
-   * @param {object} client - The Snap client instance.
-   * @param {object} options - The options to pass to the createAccount method.
-   */
-  async _addSnapAccount(keyringId, client, options = {}) {
-    let entropySource = keyringId;
-    try {
-      if (!entropySource) {
-        // Get the entropy source from the first HD keyring
-        const id = await this.keyringController.withKeyring(
-          { type: KeyringTypes.hd },
-          async ({ metadata }) => {
-            return metadata.id;
-          },
-        );
-        entropySource = id;
-      }
-
-      return await client.createAccount(
-        { ...options, entropySource },
-        {
-          displayConfirmation: false,
-          displayAccountNameSuggestion: false,
-          setSelectedAccount: false,
-        },
-      );
-    } catch (e) {
-      // Do not block the onboarding flow if this fails
-      log.warn(`Failed to add Snap account. Error: ${e}`);
-      captureException(e);
-      return null;
     }
   }
 
@@ -6842,17 +6751,16 @@ export default class MetamaskController extends EventEmitter {
    * @param {*} connectionStream - The duplex stream to connect to.
    * @param {MessageSender} sender - The sender of the messages on this stream
    * @returns {Promise<void>} Resolves when the UI starts sending patches or
-   * when the patch-store substream closes first (so callers can run cleanup in `finally`).
+   * when the patch-store substream closes first (so callers can run cleanup in
+   * `finally`).
    */
   setupTrustedCommunication(connectionStream, sender) {
     // setup multiplexing
     const mux = setupMultiplex(connectionStream);
     // connect features
-    const { initializePatchStore, patchesPromise } =
-      this.setupPatchStoreConnection(mux.createStream('patch-store'));
-    this.setupControllerConnection(mux.createStream('controller'), {
-      initializePatchStore,
-    });
+    const { patchesPromise } = this.setupControllerConnection(
+      mux.createStream('controller'),
+    );
     this.setupProviderConnectionEip1193(
       mux.createStream('provider'),
       sender,
@@ -6944,28 +6852,15 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Sets up the substream responsible for collecting and sending state patches
-   * to a UI process.
+   * A method for providing our API over a stream using JSON-RPC.
    *
-   * Whenever the state of a controller changes, we need to update the Redux
-   * root store on the UI side. However, we want to control which part of Redux
-   * is updated to prevent excessive rerenders.
-   *
-   * To do this, we use `PatchStore`, which wraps `memStore`, captures state
-   * updates as a deduplicated set of JSON patch objects, and then releases them
-   * to the UI process only when requested.
-   *
-   * For the UI side of this, see `ui/store/patch-store-substream-connection.ts`.
-   *
-   * @param {Substream} outStream - The substream that patch store messages are
-   * sent through.
-   * @returns {{ initializePatchStore: () => void, patchesPromise: Promise<void> }}
-   * `patchesPromise` settles when the UI starts sending patches or when this
-   * substream closes first.
+   * @param {*} outStream - The stream to provide our API over.
+   * @returns {{ patchesPromise: Promise<void> }} `patchesPromise` settles when
+   * the UI starts sending patches or when this substream closes first.
    */
-  setupPatchStoreConnection(outStream) {
+  setupControllerConnection(outStream) {
     const patchStore = new PatchStore(this.memStore);
-    let isUiReady = false;
+    let uiReady = false;
 
     let isPromiseResolved = false;
     const { promise: patchesPromise, resolve: resolvePromise } =
@@ -6980,15 +6875,7 @@ export default class MetamaskController extends EventEmitter {
     };
 
     const handleUpdate = () => {
-      if (!isStreamWritable(outStream)) {
-        log.debug('Stream is closed, ignoring.');
-        return;
-      }
-
-      if (!isUiReady) {
-        log.debug(
-          "'startSendingPatches' has not been called yet, not calling 'sendUpdate'.",
-        );
+      if (!isStreamWritable(outStream) || !uiReady) {
         return;
       }
 
@@ -6996,96 +6883,11 @@ export default class MetamaskController extends EventEmitter {
 
       outStream.write({
         jsonrpc: '2.0',
-        method: PATCH_STORE_SUBSTREAM_METHODS.SendUpdate,
+        method: 'sendUpdate',
         params: [patches],
       });
     };
 
-    const initializePatchStore = () => {
-      patchStore.init();
-    };
-
-    const handleStartSendingPatches = () => {
-      onStartSendingPatchesOrStreamClosed(); //  UI invoking 'startSendingPatches' is a signal that UI<>Background connection is established and we won't need to listen for critical-error messages anymore.
-      isUiReady = true;
-      handleUpdate();
-    };
-
-    const handleGetStatePatches = (request) => {
-      const patches = patchStore.flushPendingPatches();
-      outStream.write({
-        id: request.id,
-        jsonrpc: '2.0',
-        result: patches,
-      });
-    };
-
-    const handleIncomingMessage = (message) => {
-      if (!isStreamWritable(outStream)) {
-        log.debug('Stream is closed, ignoring incoming message.');
-        return;
-      }
-
-      if (
-        !(
-          (isJsonRpcRequest(message) && typeof message.id === 'number') ||
-          isJsonRpcNotification(message)
-        )
-      ) {
-        outStream.write({
-          id:
-            isObject(message) && hasProperty(message, 'id') ? message.id : null,
-          jsonrpc: '2.0',
-          error: rpcErrors.invalidRequest(),
-        });
-        return;
-      }
-
-      const { method } = message;
-
-      if (method === PATCH_STORE_SUBSTREAM_METHODS.StartSendingPatches) {
-        handleStartSendingPatches();
-      } else if (method === PATCH_STORE_SUBSTREAM_METHODS.GetStatePatches) {
-        handleGetStatePatches(message);
-      } else if (message.id === undefined) {
-        console.error(
-          `Unrecognized patch-store substream notification method: ${method}`,
-        );
-      } else {
-        outStream.write({
-          id: message.id,
-          jsonrpc: '2.0',
-          error: rpcErrors.methodNotFound({
-            message: `${method} not found`,
-          }),
-        });
-      }
-    };
-
-    outStream.on('data', handleIncomingMessage);
-
-    this.on('update', handleUpdate);
-
-    onStreamClosed(outStream, () => {
-      onStartSendingPatchesOrStreamClosed(); //  Early close: settle patchesPromise so setupTrustedCommunication's finally still runs and we won't need to listen for critical-error messages anymore.
-      outStream.removeListener('data', handleIncomingMessage);
-      this.removeListener('update', handleUpdate);
-      patchStore.destroy();
-    });
-
-    return { initializePatchStore, patchesPromise };
-  }
-
-  /**
-   * A method for providing our API over a stream using JSON-RPC.
-   *
-   * @param {Substream} outStream - The stream to provide our API over.
-   * @param {object} args - Additional arguments.
-   * @param {() => void} args.initializePatchStore - Function to call after
-   * retrieving state but before emitting the `startUISync` event, in order to
-   * initialize the patch store.
-   */
-  setupControllerConnection(outStream, { initializePatchStore }) {
     // A UI reopened within the grace window. Keep the live perps WS and
     // cancel the deferred disconnect so positions/markets stay hot.
     this.#cancelPerpsDisconnectTimer();
@@ -7142,6 +6944,12 @@ export default class MetamaskController extends EventEmitter {
       ...this.getApi(),
       ...this.messengerClientApi,
       ...(perpsStream ? perpsStream.bridgeApi() : {}),
+      startSendingPatches: () => {
+        onStartSendingPatchesOrStreamClosed();
+        uiReady = true;
+        handleUpdate();
+      },
+      getStatePatches: () => patchStore.flushPendingPatches(),
       messengerSubscribe: messengerSubscriptions.subscribe.bind(
         messengerSubscriptions,
       ),
@@ -7151,6 +6959,8 @@ export default class MetamaskController extends EventEmitter {
       messengerCall: (method, params = []) =>
         this.controllerMessenger.call(method, ...params),
     };
+
+    this.on('update', handleUpdate);
 
     // report new active controller connection
     this.activeControllerConnections += 1;
@@ -7163,13 +6973,12 @@ export default class MetamaskController extends EventEmitter {
       if (!isStreamWritable(outStream)) {
         return;
       }
-
+      // Start tracking patches immediately after retrieving initial state for this UI connection
+      // to ensure we don't miss any patches, or include extra patches.
       const initialState = this.getState();
-      // Start tracking patches immediately after retrieving initial state for
-      // this UI connection (to include with the `startUISync` notification) to
-      // ensure we don't miss any patches or include extra patches.
-      initializePatchStore();
+      patchStore.init();
 
+      // send notification to client-side
       outStream.write({
         jsonrpc: '2.0',
         method: START_UI_SYNC,
@@ -7183,21 +6992,51 @@ export default class MetamaskController extends EventEmitter {
       this.once('startUISync', startUISync);
     }
 
-    onStreamClosed(outStream, () => {
-      this.activeControllerConnections -= 1;
-      this.emit(
-        'controllerConnectionChanged',
-        this.activeControllerConnections,
-      );
-      messengerSubscriptions.clear();
-      perpsStream?.destroy();
-      if (this.activeControllerConnections === 0) {
-        // Defer the controller-owned Perps WS teardown so a brief close/reopen
-        // within PERPS_DISCONNECT_GRACE_MS reuses the live session instead of
-        // re-fetching markets + positions and flashing a skeleton.
-        this.#schedulePerpsDisconnect();
+    const outstreamEndHandler = () => {
+      if (!outStream.mmFinished) {
+        this.activeControllerConnections -= 1;
+        this.emit(
+          'controllerConnectionChanged',
+          this.activeControllerConnections,
+        );
+        outStream.mmFinished = true;
+        onStartSendingPatchesOrStreamClosed();
+        this.removeListener('update', handleUpdate);
+        patchStore.destroy();
+        messengerSubscriptions.clear();
+        perpsStream?.destroy();
+        if (this.activeControllerConnections === 0) {
+          // Defer the controller-owned Perps WS teardown so a brief close/reopen
+          // within PERPS_DISCONNECT_GRACE_MS reuses the live session instead of
+          // re-fetching markets + positions and flashing a skeleton.
+          this.#schedulePerpsDisconnect();
+        }
       }
-    });
+    };
+
+    // The presence of both of the below handlers may be redundant.
+    // After upgrading metamask/object-multiples to v2.0.0, which included
+    // an upgrade of readable-streams from v2 to v3, we saw that the
+    // `outStream.on('end'` handler was almost never being called. This seems to
+    // related to how v3 handles errors vs how v2 handles errors; there
+    // are "premature close" errors in both cases, although in the case
+    // of v2 they don't prevent `outStream.on('end'` from being called.
+    // At the time that this comment was committed, it was known that we
+    // need to investigate and resolve the underlying error, however,
+    // for expediency, we are not addressing them at this time. Instead, we
+    // can observe that `readableStream.finished` preserves the same
+    // functionality as we had when we relied on readable-stream v2. Meanwhile,
+    // the `outStream.on('end')` handler was observed to have been called at least once.
+    // In an abundance of caution to prevent against unexpected future behavioral changes in
+    // streams implementations, we redundantly use multiple paths to attach the same event handler.
+    // The outstreamEndHandler therefore needs to be idempotent, which introduces the `mmFinished` property.
+
+    outStream.mmFinished = false;
+    finished(outStream, outstreamEndHandler);
+    outStream.once('close', outstreamEndHandler);
+    outStream.once('end', outstreamEndHandler);
+
+    return { patchesPromise };
   }
 
   /**
@@ -7636,7 +7475,10 @@ export default class MetamaskController extends EventEmitter {
           grantPermissions: (approvedPermissions) =>
             this.controllerMessenger.call(
               'PermissionController:grantPermissions',
-              { approvedPermissions, subject: { origin } },
+              {
+                approvedPermissions,
+                subject: { origin },
+              },
             ),
         }),
       );

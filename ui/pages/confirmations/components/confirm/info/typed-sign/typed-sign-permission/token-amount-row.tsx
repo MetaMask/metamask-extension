@@ -25,14 +25,21 @@ import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info
  * @param props.tooltip - (Optional) Tooltip text to display for additional information.
  * @returns JSX element showing the token amount and name.
  */
-export const TokenAmountRow: React.FC<{
+export const TokenAmountRow = ({
+  label,
+  value,
+  tokenAddress,
+  chainId,
+  decimals,
+  tooltip,
+}: {
   label: string;
   value: BigNumber;
   tokenAddress: string;
   chainId: Hex;
   decimals: number | undefined;
   tooltip?: string;
-}> = ({ label, value, tokenAddress, chainId, decimals, tooltip }) => {
+}) => {
   return (
     <ConfirmInfoRow label={label} tooltip={tooltip}>
       <Box

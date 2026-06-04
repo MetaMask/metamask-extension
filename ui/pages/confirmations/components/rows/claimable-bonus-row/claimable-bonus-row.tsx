@@ -58,7 +58,8 @@ export function ClaimableBonusRow({
       rowVariant={rowVariant}
       labelChildren={
         <InfoPopoverTooltip
-          position={PopoverPosition.TopStart}
+          position={PopoverPosition.Top}
+          offset={[0, 32]}
           iconName={IconName.Question}
           iconColor={IconColor.IconAlternative}
           iconMarginLeft={1}
