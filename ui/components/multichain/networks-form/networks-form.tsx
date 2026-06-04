@@ -304,14 +304,12 @@ export const NetworksForm = ({
         };
 
         if (existingNetwork) {
-          const options = toggleNetworkMenuAfterSubmit
-            ? {
-                replacementSelectedRpcEndpointIndex:
-                  chainIdHex === existingNetwork.chainId
-                    ? rpcUrls?.defaultRpcEndpointIndex
-                    : undefined,
-              }
-            : {};
+          const options = {
+            replacementSelectedRpcEndpointIndex:
+              chainIdHex === existingNetwork.chainId
+                ? rpcUrls?.defaultRpcEndpointIndex
+                : undefined,
+          };
           await dispatch(updateNetwork(networkPayload, options));
           if (
             toggleNetworkMenuAfterSubmit &&
