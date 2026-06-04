@@ -118,3 +118,32 @@ export function consoleBold(str: string): string {
     .replaceAll('<strong>', '\x1b[1m')
     .replaceAll('</strong>', '\x1b[0m');
 }
+
+/**
+ * Race a promise against a timeout. The timer is always cleared in `finally`
+ * so it does not keep the Node process alive. The rejection error includes
+ * the operation label to aid diagnosis.
+ */
+export async function withTimeout<T>(
+  promise: Promise<T>,
+  timeoutMs: number,
+  operation: string,
+): Promise<T> {
+  let timer: ReturnType<typeof globalThis.setTimeout> | undefined;
+  try {
+    return await Promise.race([
+      promise,
+      new Promise<T>((_, reject) => {
+        timer = globalThis.setTimeout(() => {
+          reject(
+            new Error(
+              `Timed out after ${timeoutMs}ms waiting for ${operation}`,
+            ),
+          );
+        }, timeoutMs);
+      }),
+    ]);
+  } finally {
+    if (timer) globalThis.clearTimeout(timer);
+  }
+}

@@ -196,6 +196,7 @@ jobs:
       - test-e2e-chrome-api-specs-webpack
       - test-e2e-chrome-api-specs-multichain-webpack
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     if: ${{ !cancelled() }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

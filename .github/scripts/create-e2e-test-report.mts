@@ -1,3 +1,4 @@
+import type { Endpoints } from '@octokit/types';
 import * as fs from 'fs/promises';
 import path from 'path';
 import type {
@@ -10,12 +11,17 @@ import {
   consoleBold,
   formatTime,
   normalizeTestPath,
+  withTimeout,
   XML,
 } from './shared/utils.mts';
-import type { Endpoints } from '@octokit/types';
 
 type Job =
   Endpoints['GET /repos/{owner}/{repo}/actions/runs/{run_id}/jobs']['response']['data']['jobs'][number];
+
+// Maximum time to wait for the GitHub jobs API for a single workflow run.
+// If exceeded, the lookup is abandoned and the report is generated without
+// job-link enrichment for that run.
+const JOBS_LOOKUP_TIMEOUT_MS = 30_000;
 
 async function main() {
   const { Octokit } = await import('octokit');
@@ -35,29 +41,45 @@ async function main() {
 
   const github = new Octokit({ auth: env.GITHUB_TOKEN });
 
+  // Successful lookups are cached. Failed lookups are recorded in
+  // failedRunIds so we don't retry (and re-warn) for the same runId, and so
+  // the final summary can list everything that was skipped.
   const jobsCache: { [runId: number]: Job[] } = {};
+  const failedRunIds = new Map<number, string>();
 
   async function getJobs(runId: number) {
     if (!runId) {
       return [];
-    } else if (jobsCache[runId]) {
+    }
+    if (jobsCache[runId]) {
       return jobsCache[runId];
-    } else {
-      try {
-        const jobs = await github.paginate(
-          github.rest.actions.listJobsForWorkflowRun,
-          {
-            owner: env.OWNER,
-            repo: env.REPOSITORY,
-            run_id: runId,
-            per_page: 100,
-          },
-        );
-        jobsCache[runId] = jobs;
-        return jobsCache[runId];
-      } catch (error) {
-        return [];
-      }
+    }
+    if (failedRunIds.has(runId)) {
+      return [];
+    }
+    try {
+      const jobs = await withTimeout(
+        github.paginate(github.rest.actions.listJobsForWorkflowRun, {
+          owner: env.OWNER,
+          repo: env.REPOSITORY,
+          run_id: runId,
+          per_page: 100,
+        }),
+        JOBS_LOOKUP_TIMEOUT_MS,
+        `listJobsForWorkflowRun(runId=${runId})`,
+      );
+      jobsCache[runId] = jobs;
+      return jobsCache[runId];
+    } catch (error) {
+      // Best-effort: degrade to no job-link enrichment for this runId rather
+      // than failing report generation. Returning [] makes downstream code
+      // emit the report without "Job: [name](url)" lines for affected suites.
+      const reason = error instanceof Error ? error.message : String(error);
+      failedRunIds.set(runId, reason);
+      console.warn(
+        `⚠️ Skipping job-link enrichment for runId=${runId}: ${reason}`,
+      );
+      return [];
     }
   }
 
@@ -87,13 +109,36 @@ async function main() {
     const testRuns: TestRun[] = [];
     const filenames = await fs.readdir(env.TEST_RESULTS_PATH);
 
-    for (const filename of filenames) {
-      const file = await fs.readFile(
-        path.join(env.TEST_RESULTS_PATH, filename),
-        'utf8',
-      );
-      const results = await XML.parse(file);
+    // Three-phase structure so that a slow GitHub jobs API can't serialize
+    // N timeouts back-to-back and exceed the workflow step's overall budget.
+    // Phase 1: parse every XML in parallel.
+    const parsedFiles = await Promise.all(
+      filenames.map(async (filename) => {
+        const file = await fs.readFile(
+          path.join(env.TEST_RESULTS_PATH, filename),
+          'utf8',
+        );
+        return XML.parse(file);
+      }),
+    );
 
+    // Phase 2: collect every unique runId referenced by any suite, then
+    // prefetch their jobs concurrently. Worst-case wall time becomes ~one
+    // timeout regardless of how many runIds, instead of N × timeout.
+    const uniqueRunIds = new Set<number>();
+    for (const results of parsedFiles) {
+      for (const suite of results.testsuites.testsuite || []) {
+        const runId = suite.properties?.[0].property?.[1]?.$.value
+          ? +suite.properties?.[0].property?.[1]?.$.value
+          : 0;
+        if (runId) uniqueRunIds.add(runId);
+      }
+    }
+    await Promise.all([...uniqueRunIds].map((id) => getJobs(id)));
+
+    // Phase 3: build the report. getJobId() below now hits jobsCache (or
+    // failedRunIds) synchronously and never makes a network call.
+    for (const results of parsedFiles) {
       for (const suite of results.testsuites.testsuite || []) {
         if (!suite.testcase || !suite.$.file) continue;
         const tests = +suite.$.tests;
@@ -336,6 +381,14 @@ async function main() {
 
     await core.summary.write();
     await fs.writeFile(env.TEST_RUNS_PATH, JSON.stringify(testRuns, null, 2));
+
+    if (failedRunIds.size > 0) {
+      console.warn(
+        `⚠️ Job-link enrichment was skipped for ${failedRunIds.size} workflow run(s): ${[
+          ...failedRunIds.keys(),
+        ].join(', ')}`,
+      );
+    }
   } catch (error) {
     core.setFailed(`Error creating the test report: ${error}`);
   }
