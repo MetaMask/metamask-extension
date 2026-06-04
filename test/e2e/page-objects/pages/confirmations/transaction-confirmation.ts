@@ -134,7 +134,7 @@ class TransactionConfirmation extends Confirmation {
     '[data-testid="enforced-simulations-toggle-input"]:not(:checked)';
 
   private readonly reviewAlertButton: RawLocator = {
-    tag: 'span',
+    tag: 'button',
     text: 'Review alert',
   };
 
