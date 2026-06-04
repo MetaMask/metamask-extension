@@ -292,6 +292,7 @@ env:
   - QUICKNODE_SEI_URL: null
   - QUICKNODE_MONAD_URL: null
   - QUICKNODE_HYPEREVM_URL: null
+  - QUICKNODE_ARC_URL: null
 
   ###
   # API keys to 3rd party services
@@ -454,7 +455,6 @@ env:
   - GOOGLE_CLIENT_ID_UAT: ''
   - APPLE_CLIENT_ID_UAT: ''
   - TELEGRAM_CLIENT_ID_UAT: ''
-  - TELEGRAM_LOGIN_ENABLED: 'false'
 
   # Metamask Shield
   - METAMASK_SHIELD_ENABLED: 'true'
