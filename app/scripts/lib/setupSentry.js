@@ -303,16 +303,25 @@ export function beforeBreadcrumb() {
  * @returns {boolean} Whether to create a span for the request.
  */
 export function shouldCreateSpanForRequest(url) {
-  // Do not create spans for outgoing requests to a 'sentry.io' domain.
-  if (/^https?:\/\/(?:[\w\d.@-]+\.)?sentry\.io(?:\/|$)/u.test(url)) {
+  // Do not create spans for outgoing requests to telemetry domains
+  // ('sentry.io' and 'segment.io'). These are reporting endpoints, so
+  // tracing them adds high-volume spans with no diagnostic value.
+  if (
+    /^https?:\/\/(?:[\w\d.@-]+\.)?(?:sentry|segment)\.io(?:\/|$)/u.test(url)
+  ) {
     return false;
   }
-  // Block span creation on fetches for preinstalled snap manifest and locale files.
-  // Snap manifests are fetched on every MV3 SW restart,
-  // and locale files are fetched on every popup open.
-  // These are high volume, local file reads with no diagnostic value.
-  // TODO: Consider blocking all local extension file fetches.
-  if (/^(?:chrome|moz)-extension:\/\/[^/]+\/(?:snaps|_locales)\//u.test(url)) {
+  // Block span creation on ALL local extension file fetches.
+  // PR #41526 originally narrowed this to preinstalled snap manifests
+  // (fetched on every MV3 SW restart) and locale files (fetched on every
+  // popup open) under the `/snaps/` and `/_locales/` paths, but left a TODO
+  // to block all local extension fetches. This completes that TODO: the
+  // dominant remaining offenders are root-level content-hashed
+  // `chrome-extension://<id>/<hash>.json` preinstalled-snap bundles emitted
+  // by webpack as `asset/resource` (see app/scripts/constants/snaps.ts),
+  // which sit at the extension root and slipped past the old regex.
+  // These are all high-volume local file reads with no diagnostic value.
+  if (/^(?:chrome|moz)-extension:\/\//u.test(url)) {
     return false;
   }
   // Create spans for all other requests.

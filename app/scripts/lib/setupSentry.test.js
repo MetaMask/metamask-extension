@@ -186,6 +186,28 @@ describe('Setup Sentry', () => {
       ).toStrictEqual(false);
     });
 
+    it('should return false for root content-hashed json fetches (preinstalled snap bundles)', () => {
+      // These are the webpack `asset/resource` preinstalled-snap bundles that
+      // sit at the extension root and slipped past the old `/snaps/` regex.
+      expect(
+        shouldCreateSpanForRequest('chrome-extension://abc/deadbeef.json'),
+      ).toStrictEqual(false);
+      expect(
+        shouldCreateSpanForRequest('moz-extension://abc/deadbeef.json'),
+      ).toStrictEqual(false);
+    });
+
+    it('should return false for all other local extension file fetches', () => {
+      expect(
+        shouldCreateSpanForRequest('chrome-extension://abc/home.html'),
+      ).toStrictEqual(false);
+      expect(
+        shouldCreateSpanForRequest(
+          'chrome-extension://abcdefg/scripts/ppom-validator.wasm',
+        ),
+      ).toStrictEqual(false);
+    });
+
     it('should return false for sentry.io domains', () => {
       expect(
         shouldCreateSpanForRequest('https://sentry.io/api/123'),
@@ -195,15 +217,10 @@ describe('Setup Sentry', () => {
       ).toStrictEqual(false);
     });
 
-    it('should return true for other local extension file fetches', () => {
+    it('should return false for segment.io domains', () => {
       expect(
-        shouldCreateSpanForRequest(
-          'chrome-extension://abcdefg/scripts/ppom-validator.wasm',
-        ),
-      ).toStrictEqual(true);
-      expect(
-        shouldCreateSpanForRequest('chrome-extension://abcdefg/home.html'),
-      ).toStrictEqual(true);
+        shouldCreateSpanForRequest('https://api.segment.io/v1/batch'),
+      ).toStrictEqual(false);
     });
 
     it('should return true for external API URLs', () => {
@@ -212,6 +229,9 @@ describe('Setup Sentry', () => {
       ).toStrictEqual(true);
       expect(
         shouldCreateSpanForRequest('https://api.coingecko.com/v3/simple/price'),
+      ).toStrictEqual(true);
+      expect(
+        shouldCreateSpanForRequest('https://example.com/foo'),
       ).toStrictEqual(true);
     });
   });
