@@ -449,9 +449,6 @@ describe('Welcome Page', () => {
       jest
         .spyOn(Environment, 'getIsSeedlessOnboardingFeatureEnabled')
         .mockReturnValue(true);
-      jest
-        .spyOn(Environment, 'getIsTelegramLoginFeatureEnabled')
-        .mockReturnValue(true);
       const noopThunk = () => Promise.resolve();
       jest
         .spyOn(Actions, 'setParticipateInMetaMetrics')
