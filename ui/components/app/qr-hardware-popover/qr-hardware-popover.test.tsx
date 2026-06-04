@@ -247,6 +247,23 @@ describe('QRHardwarePopover', () => {
       ).toBeInTheDocument();
     });
 
+    it('keeps the close button on the right when the title is hidden', async () => {
+      renderPopover(
+        buildStore({
+          type: QrScanRequestType.SIGN,
+          request: { requestId: 'req-1', payload: {} },
+        }),
+      );
+
+      await userEvent.click(screen.getByTestId('sign-set-error-active'));
+
+      const closeButton = screen.getByRole('button', { name: /close/iu });
+      const header = closeButton.closest('.mm-header-base');
+      expect(header).not.toBeNull();
+      expect(header?.children.length).toBeGreaterThanOrEqual(2);
+      expect(header?.lastElementChild?.contains(closeButton)).toBe(true);
+    });
+
     it('prioritizes errorTitle over errorActive suppression', async () => {
       renderPopover(
         buildStore({

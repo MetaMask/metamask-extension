@@ -25,6 +25,9 @@ import type { ConfirmTransactionSlice } from './qr-hardware-popover.types';
 import QRHardwareWalletImporter from './qr-hardware-wallet-importer';
 import QRHardwareSignRequest from './qr-hardware-sign-request';
 
+// Keeps the ModalHeader children slot rendered so the close button stays on the right.
+const EMPTY_HEADER_PLACEHOLDER = '\u00A0';
+
 /**
  * Top-level popover that hosts QR-based hardware wallet flows.
  *
@@ -134,7 +137,9 @@ const QRHardwarePopover = () => {
           style: { maxHeight: '94vh', overflowY: 'auto' },
         }}
       >
-        <ModalHeader onClose={onClose}>{title || undefined}</ModalHeader>
+        <ModalHeader onClose={onClose}>
+          {title || EMPTY_HEADER_PLACEHOLDER}
+        </ModalHeader>
         {activeScanRequest.type === QrScanRequestType.PAIR && (
           <QRHardwareWalletImporter
             handleCancel={walletImporterCancel}
