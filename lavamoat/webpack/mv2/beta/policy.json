@@ -3370,15 +3370,9 @@
     },
     "@metamask/assets-controllers>@tanstack/query-core": {
       "globals": {
-        "AbortController": true,
-        "addEventListener": true,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console.error": true,
+        "document": false,
         "document.visibilityState": true,
-        "removeEventListener": true,
-        "setInterval": true,
-        "setTimeout": true
+        "addEventListener": false
       }
     },
     "@metamask/core-backend>@tanstack/query-core": {
