@@ -727,11 +727,27 @@ describe('ManifestPlugin', () => {
       });
     });
 
-    it('rejects invalid SOURCE_DATE_EPOCH values', () => {
-      for (const sourceDateEpoch of ['1711141205.825', '-1', '', '0']) {
+    it('rejects non-integer or negative SOURCE_DATE_EPOCH values', () => {
+      for (const sourceDateEpoch of ['1711141205.825', '-1', '']) {
         withSourceDateEpoch(sourceDateEpoch, () => {
           assert.throws(() => getDefaultZipMtime(), {
-            message: /Invalid SOURCE_DATE_EPOCH value/u,
+            message: new RegExp(
+              `Invalid SOURCE_DATE_EPOCH value "${sourceDateEpoch}": expected a non-negative integer number of seconds since the Unix epoch`,
+              'u',
+            ),
+          });
+        });
+      }
+    });
+
+    it('rejects SOURCE_DATE_EPOCH values outside the zip mtime range', () => {
+      for (const sourceDateEpoch of ['0', '4102444800']) {
+        withSourceDateEpoch(sourceDateEpoch, () => {
+          assert.throws(() => getDefaultZipMtime(), {
+            message: new RegExp(
+              `Invalid SOURCE_DATE_EPOCH value "${sourceDateEpoch}": expected a Unix timestamp in seconds greater than or equal to 315532800 and less than 4102444800`,
+              'u',
+            ),
           });
         });
       }

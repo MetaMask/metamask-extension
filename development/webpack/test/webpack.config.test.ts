@@ -687,7 +687,8 @@ inquire('long');
           SOURCE_DATE_EPOCH: '0',
         }),
       {
-        message: /Invalid SOURCE_DATE_EPOCH value/u,
+        message:
+          /Invalid SOURCE_DATE_EPOCH value "0": expected a Unix timestamp in seconds greater than or equal to 315532800 and less than 4102444800/u,
       },
     );
   });
