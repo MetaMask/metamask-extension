@@ -30,6 +30,7 @@ import {
   Button,
   ButtonVariant,
   ButtonSize,
+  Skeleton,
 } from '@metamask/design-system-react';
 import { brandColor } from '@metamask/design-tokens';
 import type { PriceUpdate } from '@metamask/perps-controller';
@@ -101,7 +102,6 @@ import {
   normalizeMarketDetailsOrders,
 } from '../../components/app/perps/utils/orderUtils';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
-import { Skeleton } from '@metamask/design-system-react';
 import { Popover, PopoverPosition } from '../../components/component-library';
 import { useFormatters } from '../../hooks/useFormatters';
 import { EditMarginModal } from '../../components/app/perps/edit-margin';
@@ -1000,9 +1000,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   // or the live chart once data is available.
   const renderChartContent = () => {
     if (isCandleLoading && !candleData) {
-      return (
-        <Skeleton className="h-[250px] w-full rounded-lg" />
-      );
+      return <Skeleton className="h-[250px] w-full rounded-lg" />;
     }
 
     if (candleError && !candleData) {

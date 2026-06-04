@@ -7,7 +7,6 @@ import {
   Skeleton,
 } from '@metamask/design-system-react';
 
-
 /**
  * MarketRowSkeleton component displays a loading skeleton for market rows
  * Matches the layout of MarketRow for smooth loading transitions
