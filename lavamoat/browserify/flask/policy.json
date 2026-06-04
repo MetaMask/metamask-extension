@@ -906,7 +906,7 @@
         "@metamask/base-controller": true,
         "@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
-        "@metamask/accounts-controller>@metamask/keyring-controller": true,
+        "@metamask/keyring-controller": true,
         "@metamask/keyring-sdk": true,
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
@@ -1659,7 +1659,7 @@
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-internal-api": true,
-        "@metamask/keyring-internal-snap-client": true,
+        "@metamask/eth-snap-keyring>@metamask/keyring-internal-snap-client": true,
         "@metamask/keyring-sdk": true,
         "@metamask/eth-snap-keyring>@metamask/keyring-snap-sdk": true,
         "@metamask/keyring-utils": true,
@@ -1932,7 +1932,7 @@
         "@metamask/keyring-controller>ulid": true
       }
     },
-    "@metamask/accounts-controller>@metamask/keyring-controller": {
+    "@metamask/transaction-pay-controller>@metamask/assets-controller>@metamask/keyring-controller": {
       "globals": {
         "console.error": true
       },
@@ -1984,23 +1984,6 @@
       }
     },
     "@metamask/multichain-account-service>@metamask/keyring-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/base-controller": true,
-        "@metamask/eth-hd-keyring": true,
-        "@metamask/eth-sig-util": true,
-        "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
-        "@metamask/utils": true,
-        "async-mutex": true,
-        "@metamask/keyring-controller>ethereumjs-wallet": true,
-        "lodash": true,
-        "@metamask/keyring-controller>ulid": true
-      }
-    },
-    "@metamask/profile-sync-controller>@metamask/keyring-controller": {
       "globals": {
         "console.error": true
       },
