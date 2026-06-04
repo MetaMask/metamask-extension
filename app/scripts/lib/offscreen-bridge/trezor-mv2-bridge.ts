@@ -12,6 +12,7 @@ import type {
   EthereumSignTransaction,
   EthereumSignTypedDataTypes,
   EthereumSignTypedHash,
+  Features,
 } from '@trezor/connect-web';
 
 const SUITE_DESKTOP_ERROR_CODE = 'Desktop_ConnectionMissing';
@@ -165,6 +166,18 @@ export class TrezorMv2Bridge implements TrezorBridge {
         .then((r: any) =>
           mapError<PROTO.EthereumTypedDataSignature>(r),
         ) as unknown as Response<PROTO.EthereumTypedDataSignature>
+    );
+  }
+
+  getFeatures(): Response<Features> {
+    return (
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (SuiteDesktopConnect as any)
+        .getFeatures()
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .then((r: any) =>
+          mapError<Features>(r),
+        ) as unknown as Response<Features>
     );
   }
 }
