@@ -101,9 +101,11 @@ jobs:
       test-command: yarn test:e2e:firefox:dist
       builds-from-run: ${{ inputs.builds-from-run }}
 
-  # Playwright-driven Firefox E2E job. The `pre-test-command` installs
-  # the Playwright-bundled Firefox so the Firefox extension harness can
-  # patch its `omni.ja` for Juggler-compatible moz-extension targets.
+  # Playwright-driven Firefox E2E job. The `playwright-browsers: firefox`
+  # input installs the Playwright-bundled Firefox (via the cached
+  # `install-playwright-browsers` composite action) so the Firefox
+  # extension harness can patch its `omni.ja` for Juggler-compatible
+  # moz-extension targets.
   test-e2e-firefox-playwright:
     uses: ./.github/workflows/run-e2e.yml
     secrets:

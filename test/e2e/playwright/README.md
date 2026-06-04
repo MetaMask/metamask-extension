@@ -72,7 +72,7 @@ yarn test:e2e:playwright:chrome --shard=1/2
 yarn test:e2e:playwright:chrome --shard=2/2
 ```
 
-The Firefox path additionally requires `yarn playwright install firefox` once per machine (CI does this automatically via the `pre-test-command` input on the reusable workflow).
+The Firefox path additionally requires `yarn playwright install firefox` once per machine (CI does this automatically via the `playwright-browsers: firefox` input on the reusable workflow, which routes through the cached `install-playwright-browsers` composite action).
 
 ### Architecture pointers
 
