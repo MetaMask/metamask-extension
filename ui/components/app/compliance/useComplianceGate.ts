@@ -10,6 +10,29 @@ import { useAccessRestrictedModal } from './access-restricted-context';
 
 type AddressInput = string | string[];
 
+/**
+ * Guards an async action behind an OFAC compliance check for the given address.
+ *
+ * On mount (and whenever `address` changes) the hook prefetches compliance
+ * status in the background. When `gate(action)` is called it:
+ *
+ * - Skips the check entirely and runs the action when compliance is disabled.
+ * - Awaits the in-flight prefetch for the current address (instant once it has
+ * settled) rather than issuing a fresh check, since the underlying
+ * ComplianceController performs no request dedup and the call crosses the UI ->
+ * background (MV3) boundary. It fails open if the prefetch rejected.
+ * - Abandons the action (returns `undefined`, shows nothing) if the selected
+ * wallet changed while the check was in flight — the action belonged to the
+ * previous wallet, so the user retries under the new one.
+ * - Shows `AccessRestrictedModal` and returns `undefined` if any address is
+ * blocked; otherwise runs the action and returns its result.
+ *
+ * @param address - A single wallet address or array of addresses to check.
+ * @returns `{ isComplianceEnabled, isBlocked, checkCompliance, gate }`.
+ * @example
+ * const { gate } = useComplianceGate(recipientAddress);
+ * const handleSend = useCallback(() => gate(async () => send()), [gate]);
+ */
 export function useComplianceGate(address?: AddressInput) {
   const addressKey = useMemo(() => {
     if (!address) {
