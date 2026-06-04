@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-internal-modules
 import { TrezorConnect as SuiteDesktopConnect } from '@trezor/connect-web/lib/impl/core-in-suite-desktop';
 import { DEVICE_EVENT, DEVICE } from '@trezor/connect-web';
 import type { TrezorBridge } from '@metamask/eth-trezor-keyring';
@@ -37,7 +36,10 @@ function mapError<T>(result: TrezorResult<T>): TrezorResult<T> {
   if (!result.success && result.payload.code === SUITE_DESKTOP_ERROR_CODE) {
     return {
       success: false,
-      payload: { error: SUITE_DESKTOP_REQUIRED_ERROR, code: SUITE_DESKTOP_ERROR_CODE },
+      payload: {
+        error: SUITE_DESKTOP_REQUIRED_ERROR,
+        code: SUITE_DESKTOP_ERROR_CODE,
+      },
     };
   }
   return result;
@@ -109,16 +111,19 @@ export class TrezorMv2Bridge implements TrezorBridge {
     return (SuiteDesktopConnect as any).dispose();
   }
 
-  getPublicKey(
-    params: { path: string; coin: string },
-  ): Response<{ publicKey: string; chainCode: string }> {
+  getPublicKey(params: {
+    path: string;
+    coin: string;
+  }): Response<{ publicKey: string; chainCode: string }> {
     return (
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (SuiteDesktopConnect as any)
         .getPublicKey(params)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .then((r: any) => mapError<{ publicKey: string; chainCode: string }>(r))
-    ) as unknown as Response<{ publicKey: string; chainCode: string }>;
+        .then((r: any) =>
+          mapError<{ publicKey: string; chainCode: string }>(r),
+        ) as unknown as Response<{ publicKey: string; chainCode: string }>
+    );
   }
 
   ethereumSignTransaction(
@@ -129,8 +134,10 @@ export class TrezorMv2Bridge implements TrezorBridge {
       (SuiteDesktopConnect as any)
         .ethereumSignTransaction(params)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .then((r: any) => mapError<EthereumSignedTx>(r))
-    ) as unknown as Response<EthereumSignedTx>;
+        .then((r: any) =>
+          mapError<EthereumSignedTx>(r),
+        ) as unknown as Response<EthereumSignedTx>
+    );
   }
 
   ethereumSignMessage(
@@ -141,8 +148,10 @@ export class TrezorMv2Bridge implements TrezorBridge {
       (SuiteDesktopConnect as any)
         .ethereumSignMessage(params)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .then((r: any) => mapError<PROTO.MessageSignature>(r))
-    ) as unknown as Response<PROTO.MessageSignature>;
+        .then((r: any) =>
+          mapError<PROTO.MessageSignature>(r),
+        ) as unknown as Response<PROTO.MessageSignature>
+    );
   }
 
   ethereumSignTypedData<T extends EthereumSignTypedDataTypes>(
@@ -153,7 +162,9 @@ export class TrezorMv2Bridge implements TrezorBridge {
       (SuiteDesktopConnect as any)
         .ethereumSignTypedData(params)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .then((r: any) => mapError<PROTO.EthereumTypedDataSignature>(r))
-    ) as unknown as Response<PROTO.EthereumTypedDataSignature>;
+        .then((r: any) =>
+          mapError<PROTO.EthereumTypedDataSignature>(r),
+        ) as unknown as Response<PROTO.EthereumTypedDataSignature>
+    );
   }
 }

@@ -2,10 +2,7 @@ import { keyringBuilderFactory } from '@metamask/keyring-controller';
 import { QrKeyring, QrKeyringScannerBridge } from '@metamask/eth-qr-keyring';
 import { KeyringClass } from '@metamask/keyring-utils';
 import LatticeKeyring from 'eth-lattice-keyring';
-import {
-  OneKeyKeyring,
-  TrezorKeyring,
-} from '@metamask/eth-trezor-keyring';
+import { OneKeyKeyring, TrezorKeyring } from '@metamask/eth-trezor-keyring';
 import {
   LedgerIframeBridge,
   LedgerKeyring,
