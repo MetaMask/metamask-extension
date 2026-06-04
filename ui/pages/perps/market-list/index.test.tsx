@@ -409,9 +409,7 @@ describe('MarketListView', () => {
       fireEvent.click(screen.getByTestId('filter-select-option-pre-ipo'));
 
       await waitFor(() => {
-        expect(
-          screen.getByTestId('market-row-xyz-SPACEX'),
-        ).toBeInTheDocument();
+        expect(screen.getByTestId('market-row-xyz-SPACEX')).toBeInTheDocument();
         expect(
           screen.queryByTestId('market-row-xyz-TSLA'),
         ).not.toBeInTheDocument();
@@ -428,9 +426,7 @@ describe('MarketListView', () => {
       fireEvent.click(screen.getByTestId('filter-select-option-indices'));
 
       await waitFor(() => {
-        expect(
-          screen.getByTestId('market-row-xyz-SP500'),
-        ).toBeInTheDocument();
+        expect(screen.getByTestId('market-row-xyz-SP500')).toBeInTheDocument();
         expect(
           screen.queryByTestId('market-row-xyz-TSLA'),
         ).not.toBeInTheDocument();
@@ -489,9 +485,7 @@ describe('MarketListView', () => {
       renderWithProvider(<MarketListView />, mockStore);
 
       await waitFor(() => {
-        expect(
-          screen.getByTestId('market-row-xyz-SPACEX'),
-        ).toBeInTheDocument();
+        expect(screen.getByTestId('market-row-xyz-SPACEX')).toBeInTheDocument();
         expect(screen.queryByTestId('market-row-BTC')).not.toBeInTheDocument();
       });
     });
@@ -501,9 +495,7 @@ describe('MarketListView', () => {
       renderWithProvider(<MarketListView />, mockStore);
 
       await waitFor(() => {
-        expect(
-          screen.getByTestId('market-row-xyz-SP500'),
-        ).toBeInTheDocument();
+        expect(screen.getByTestId('market-row-xyz-SP500')).toBeInTheDocument();
         expect(screen.queryByTestId('market-row-BTC')).not.toBeInTheDocument();
       });
     });

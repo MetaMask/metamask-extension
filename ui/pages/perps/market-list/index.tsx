@@ -182,20 +182,18 @@ export const MarketListView = () => {
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   // Deeplink: read initial filter from URL ?filter= param. 'all' and 'new' are
   // UI-only sentinels not in MARKET_CATEGORIES, so they're checked separately.
-  const [selectedFilter, setSelectedFilter] = useState<MarketTypeFilter>(
-    () => {
-      const filterParam = searchParams.get('filter');
-      if (
-        filterParam &&
-        (filterParam === 'all' ||
-          filterParam === 'new' ||
-          (MARKET_CATEGORIES as readonly string[]).includes(filterParam))
-      ) {
-        return filterParam as MarketTypeFilter;
-      }
-      return 'all';
-    },
-  );
+  const [selectedFilter, setSelectedFilter] = useState<MarketTypeFilter>(() => {
+    const filterParam = searchParams.get('filter');
+    if (
+      filterParam &&
+      (filterParam === 'all' ||
+        filterParam === 'new' ||
+        (MARKET_CATEGORIES as readonly string[]).includes(filterParam))
+    ) {
+      return filterParam as MarketTypeFilter;
+    }
+    return 'all';
+  });
 
   // Use stream loading state
   const isLoading = marketsLoading;

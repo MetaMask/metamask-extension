@@ -105,4 +105,3 @@ export const HIP3_MARKET_CONFIG = {
     return Boolean(marketSource && allowedSources.has(marketSource));
   },
 } as const;
-
