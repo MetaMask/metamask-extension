@@ -662,6 +662,36 @@ inquire('long');
     assert.strictEqual(exit.mock.calls[0].arguments[0], 0);
   });
 
+  it('includes the resolved zip mtime in the dry-run message when zipping', () => {
+    const exit = mock.method(process, 'exit', noop, { times: 1 });
+    const error = mock.method(console, 'error', noop, { times: 1 });
+
+    getWebpackConfig(['--zip', '--dry-run'], {
+      SOURCE_DATE_EPOCH: '1711141205',
+    });
+
+    assert.strictEqual(error.mock.calls.length, 1);
+    assert.match(
+      error.mock.calls[0].arguments[0] as string,
+      /Zip mtime: 1711141205000 \(2024-03-22T21:00:05\.000Z\)/u,
+    );
+
+    assert.strictEqual(exit.mock.calls.length, 1);
+    assert.strictEqual(exit.mock.calls[0].arguments[0], 0);
+  });
+
+  it('validates SOURCE_DATE_EPOCH during zip dry-run', () => {
+    assert.throws(
+      () =>
+        getWebpackConfig(['--zip', '--dry-run'], {
+          SOURCE_DATE_EPOCH: '0',
+        }),
+      {
+        message: /Invalid SOURCE_DATE_EPOCH value/u,
+      },
+    );
+  });
+
   it('should enable ReactRefreshPlugin in a development env when `--watch` is specified', () => {
     const config: Configuration = getWebpackConfig(['--watch'], {
       __HMR_READY__: 'true',
