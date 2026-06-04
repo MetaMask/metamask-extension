@@ -42,7 +42,10 @@ export function activityMatchesAssetId(
   );
 }
 
-export function getActivityCellStatus(data: ActivityListItem) {
+export function getActivityCellStatus(data: ActivityListItem): {
+  txStatus: string;
+  pendingSubtitleKey?: string;
+} {
   const transactionGroup =
     data.raw?.type === 'localTransaction' ? data.raw.data : undefined;
   const { primaryTransaction } = transactionGroup ?? {};
