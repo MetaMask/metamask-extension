@@ -303,11 +303,14 @@ export function beforeBreadcrumb() {
  * @returns {boolean} Whether to create a span for the request.
  */
 export function shouldCreateSpanForRequest(url) {
-  // Do not create spans for outgoing requests to telemetry domains
-  // ('sentry.io' and 'segment.io'). These are reporting endpoints, so
-  // tracing them adds high-volume spans with no diagnostic value.
+  // Do not create spans for high-volume remote fetches with no per-request
+  // diagnostic value: telemetry endpoints (sentry.io, segment.io) and static
+  // config files re-fetched on a constant poll cadence (chainid.network chain
+  // registry; acl.execution.metamask.io PPOM allowlist registry/signature).
   if (
-    /^https?:\/\/(?:[\w\d.@-]+\.)?(?:sentry|segment)\.io(?:\/|$)/u.test(url)
+    /^https?:\/\/(?:[\w\d.@-]+\.)?(?:sentry\.io|segment\.io|chainid\.network|acl\.execution\.metamask\.io)(?:\/|$)/u.test(
+      url,
+    )
   ) {
     return false;
   }

@@ -229,6 +229,22 @@ describe('Setup Sentry', () => {
       ).toStrictEqual(false);
     });
 
+    it('should return false for static config domains', () => {
+      expect(
+        shouldCreateSpanForRequest('https://chainid.network/chains.json'),
+      ).toStrictEqual(false);
+      expect(
+        shouldCreateSpanForRequest(
+          'https://acl.execution.metamask.io/latest/registry.json',
+        ),
+      ).toStrictEqual(false);
+      expect(
+        shouldCreateSpanForRequest(
+          'https://acl.execution.metamask.io/latest/signature.json',
+        ),
+      ).toStrictEqual(false);
+    });
+
     it('should return true for external API URLs', () => {
       expect(
         shouldCreateSpanForRequest('https://mainnet.infura.io/v3/abc'),
@@ -238,6 +254,16 @@ describe('Setup Sentry', () => {
       ).toStrictEqual(true);
       expect(
         shouldCreateSpanForRequest('https://example.com/foo'),
+      ).toStrictEqual(true);
+      // Other cx.metamask.io APIs are real calls — still traced (only the static
+      // `acl.execution.metamask.io` config is excluded, not all of metamask.io).
+      expect(
+        shouldCreateSpanForRequest(
+          'https://accounts.api.cx.metamask.io/v2/supportedNetworks',
+        ),
+      ).toStrictEqual(true);
+      expect(
+        shouldCreateSpanForRequest('https://token.api.cx.metamask.io/tokens/1'),
       ).toStrictEqual(true);
     });
   });
