@@ -454,7 +454,6 @@ env:
   - GOOGLE_CLIENT_ID_UAT: ''
   - APPLE_CLIENT_ID_UAT: ''
   - TELEGRAM_CLIENT_ID_UAT: ''
-  - TELEGRAM_LOGIN_ENABLED: 'false'
 
   # Metamask Shield
   - METAMASK_SHIELD_ENABLED: 'true'
