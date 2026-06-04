@@ -107,7 +107,9 @@ describe('BTC Account - Send', function (this: Suite) {
     );
   });
 
-  it('blocks Continue when the amount leaves no room for fees', async function () {
+  it('surfaces an insufficient-fee error after Continue when the amount leaves no room for fees', async function () {
+    const sendAmount = '0.9999999';
+
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -119,14 +121,17 @@ describe('BTC Account - Send', function (this: Suite) {
         const { sendPage } = await landOnBitcoinSendForm(driver);
 
         await sendPage.fillRecipient(RECIPIENT_ADDRESS);
-        await sendPage.fillAmount(String(DEFAULT_BTC_BALANCE));
-        await sendPage.checkInsufficientBalanceToCoverFeesError();
+        await sendPage.fillAmount(sendAmount);
+
         const enabled = await sendPage.isContinueButtonEnabled();
-        if (enabled) {
+        if (!enabled) {
           throw new Error(
-            'Continue button should be disabled when amount leaves no room for fees',
+            'Continue should be enabled: amount is within balance; the fee shortfall is only detected on confirm',
           );
         }
+
+        await sendPage.pressContinueButton();
+        await sendPage.checkInsufficientBalanceToCoverFeesError();
       },
     );
   });
