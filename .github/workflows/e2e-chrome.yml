@@ -179,11 +179,6 @@ jobs:
       test-artifacts-path: html-report-multichain
       builds-from-run: ${{ inputs.builds-from-run }}
 
-  # Playwright-driven Chrome E2E job. Mirrors the structure of the
-  # Selenium browserify job above but runs the `chrome-e2e` Playwright
-  # project (test/e2e/tests/**/*.pw.spec.ts). See
-  # docs/superpowers/specs/2026-05-26-selenium-to-playwright-e2e-migration-design.md
-  # for the migration plan and §4.3 for the CI rollout.
   test-e2e-chrome-playwright:
     uses: ./.github/workflows/run-e2e.yml
     secrets:
@@ -196,12 +191,7 @@ jobs:
       build-artifact: build-test-browserify
       build-command: yarn build:test
       playwright-browsers: chromium
-      # MATRIX_INDEX is 0-based (GitHub); Playwright's --shard is 1-based.
-      # The JUnit filename embeds the shard index so each parallel job writes
-      # to a unique artifact path and the aggregator can pick them all up.
-      # Keep on one line — `run-e2e.yml` appends `--retries 1` to this string,
-      # which would land on its own line under a `|` block-scalar.
-      test-command: PLAYWRIGHT_JUNIT_OUTPUT_FILE=test/test-results/e2e/junit-pw-chrome-$((MATRIX_INDEX + 1)).xml yarn test:e2e:playwright:chrome --shard=$((MATRIX_INDEX + 1))/${MATRIX_TOTAL}
+      test-command: E2E_DEBUG=true PLAYWRIGHT_JUNIT_OUTPUT_FILE=test/test-results/e2e/junit-pw-chrome-$((MATRIX_INDEX + 1)).xml yarn test:e2e:playwright:chrome --shard=$((MATRIX_INDEX + 1))/${MATRIX_TOTAL}
       builds-from-run: ${{ inputs.builds-from-run }}
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}

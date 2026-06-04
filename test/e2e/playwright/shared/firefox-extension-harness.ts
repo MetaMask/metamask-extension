@@ -410,7 +410,30 @@ export type FirefoxHarnessOptions = {
   extensionDirectory?: string;
   headless?: boolean;
   rdpPort?: number;
+  /**
+   * Optional mock-server port. Defaults to 8000 (matches Selenium and
+   * `helpers.js`). All browser network traffic is routed through this
+   * proxy so PW tests see the same canned mockttp responses as Selenium.
+   */
+  proxyPort?: number;
 };
+
+/**
+ * Resolves the mockttp proxy URL the browser should route requests through.
+ * Mirrors the Selenium `firefox.js` `getProxyServerURL` helper so PW tests
+ * see the same canned responses as Selenium ones.
+ *
+ * Order of precedence: explicit `proxyPort` arg → `SELENIUM_HTTPS_PROXY`
+ * env var → `http://127.0.0.1:8000` (matches `helpers.js` `mockServer.start(8000)`).
+ *
+ * @param proxyPort - Optional explicit mock-server port.
+ */
+function resolveMockServerProxy(proxyPort?: number): string {
+  if (proxyPort) {
+    return `http://127.0.0.1:${proxyPort}`;
+  }
+  return process.env.SELENIUM_HTTPS_PROXY ?? 'http://127.0.0.1:8000';
+}
 
 export type FirefoxHarnessSetup = {
   context: BrowserContext;
@@ -463,6 +486,21 @@ export async function launchMetaMaskFirefoxExtension(
   // the await site, which still throws.
   xpiPromise.catch(() => undefined);
 
+  // Route all browser traffic through the e2e mock server (mockttp on
+  // 127.0.0.1:8000 by default). Without this, requests bypass the mock
+  // server entirely, real backends get called, fixtures that depend on
+  // canned responses silently fail, and dependent UI never transitions.
+  // Mirrors the proxy prefs + acceptInsecureCerts set by `firefox.js`.
+  //
+  // See `chrome-extension-harness.ts` for the long-form explanation of
+  // why an explicit loopback `bypass` list is required: Playwright's
+  // `proxy:` option does NOT inherit Chromium/Firefox's implicit
+  // loopback bypass, so the fixture server (`localhost:12345`), Anvil
+  // (`127.0.0.1:8545`), and the WS/test-dapp servers (`localhost:8080-8090`)
+  // would otherwise be intercepted by mockttp — breaking onboarding
+  // skip, RPC, and dapp flows.
+  const proxyServer = resolveMockServerProxy(options.proxyPort);
+
   const context = await firefox.launchPersistentContext(userDataDir, {
     headless,
     args: ['-start-debugger-server', String(rdpPort)],
@@ -470,6 +508,11 @@ export async function launchMetaMaskFirefoxExtension(
       'devtools.debugger.remote-enabled': true,
       'devtools.debugger.prompt-connection': false,
     },
+    proxy: {
+      server: proxyServer,
+      bypass: 'localhost, 127.0.0.1',
+    },
+    ignoreHTTPSErrors: true,
   });
 
   try {

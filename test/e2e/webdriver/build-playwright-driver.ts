@@ -22,6 +22,12 @@ export type BuildPlaywrightDriverOptions = {
    * parallel.
    */
   rdpPort?: number;
+  /**
+   * Optional mock-server port. Forwarded to both harnesses so the browser
+   * routes traffic through mockttp. Defaults to 8000 (matches Selenium and
+   * `helpers.js`).
+   */
+  proxyPort?: number;
 };
 
 export type PlaywrightDriverHarness = {
@@ -40,8 +46,15 @@ export type PlaywrightDriverHarness = {
 export async function buildPlaywrightDriver(
   options: BuildPlaywrightDriverOptions,
 ): Promise<PlaywrightDriverHarness> {
-  const { browser, timeout, extensionDirectory, headless, extraArgs, rdpPort } =
-    options;
+  const {
+    browser,
+    timeout,
+    extensionDirectory,
+    headless,
+    extraArgs,
+    rdpPort,
+    proxyPort,
+  } = options;
 
   const harness =
     browser === 'firefox'
@@ -49,11 +62,13 @@ export async function buildPlaywrightDriver(
           extensionDirectory,
           headless,
           rdpPort,
+          proxyPort,
         })
       : await launchMetaMaskChromeExtension({
           extensionDirectory,
           headless,
           extraArgs,
+          proxyPort,
         });
 
   const driver = new PlaywrightDriver({
