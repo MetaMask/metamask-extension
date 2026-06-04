@@ -385,6 +385,34 @@ This is required for rollout analysis. Without key-class tags, we cannot tell
 whether remaining corruption events come from old legacy keys, generated
 metadata, generated values, chunks, or unrelated storage users.
 
+Recent Sentry samples show why this distinction matters. Similar-looking
+persistence events include several different failure families:
+
+- Primary `storage.local` or Chromium LevelDB failures, including checksum,
+  compressed block, manifest, and log-file errors.
+- `FILE_ERROR_NO_SPACE` failures, which are storage-capacity failures rather
+  than corrupt-key reuse failures.
+- Backup IndexedDB failures, including closing database connections,
+  IndexedDB-specific `FILE_ERROR_NO_SPACE`, and contexts where IndexedDB does
+  not allow mutations.
+- `Data persistence recovered after temporary failure` messages, which indicate
+  that a previous `set` or `persist` write failed and a later write succeeded in
+  the same runtime.
+
+The recovery message should not be treated as evidence that a corrupt
+`storage.local` key became readable, or that durable state fully repaired
+itself. It is write-liveness telemetry. During rollout analysis, recovery
+messages must be joined to the preceding failure class, such as `set-failed`,
+`persist-failed`, `set-backup-failed`, or `persist-backup-failed`. Backup
+IndexedDB failures can otherwise make primary storage appear healthier or more
+self-healing than it is.
+
+No-space failures should also be tracked separately from corruption events. The
+generated-key design reduces repeated reads and writes of corrupt fixed keys,
+but it cannot make disk-full writes succeed. Metadata mirroring and chunking add
+bounded write overhead, so capacity-related errors should remain part of the
+rollout dashboard.
+
 ## Resilience Model
 
 The proposal does not claim that Chromium LevelDB corruption disappears. It
@@ -673,7 +701,14 @@ The initial implementation has been validated with:
 - Chromium manual recovery investigation:
   https://issues.chromium.org/issues/432497646
 - Related Sentry shares:
+  - https://metamask.sentry.io/share/issue/61c25635cfd7469a8bcbb3c5738a15d4/
+  - https://metamask.sentry.io/share/issue/9792491dfe0c4f42975c7ec5c0572913/
   - https://metamask.sentry.io/share/issue/1696fc55419f483182f3a8d428480b9c/
+  - https://metamask.sentry.io/share/issue/9fb6ba5b1722408abfc4728df1b19be9/
+  - https://metamask.sentry.io/share/issue/aef70d1ea18746f396b8ca3c9c24cbde/
+  - https://metamask.sentry.io/share/issue/9562c9d27c944f3fb58f941372744b62/
+  - https://metamask.sentry.io/share/issue/98dc4567d3d2442fbcc415368b46a7b6/
+  - https://metamask.sentry.io/share/issue/0bf0dd450bf24fff9f07f1024122b4f8/
   - https://metamask.sentry.io/share/issue/c9ec59c2ac7a4a1dafe04645e1064013/
   - https://metamask.sentry.io/share/issue/02b0db1899634837a7d06588e7d7e45c/
   - https://metamask.sentry.io/share/issue/6e83deb5ca764707933fe8ee3381011d/
