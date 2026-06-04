@@ -98,12 +98,12 @@ export type UpdateTPSLModalContentProps = {
  * @param options0.onClose
  * @param options0.onSubmitStateChange
  */
-export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
+export const UpdateTPSLModalContent = ({
   position,
   currentPrice,
   onClose,
   onSubmitStateChange,
-}) => {
+}: UpdateTPSLModalContentProps) => {
   const t = useI18nContext();
   const { track } = usePerpsEventTracking();
   const { isEligible } = usePerpsEligibility();
@@ -731,7 +731,6 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
           </Text>
         )}
       </Box>
-
       {/* Stop Loss */}
       <Box flexDirection={BoxFlexDirection.Column} gap={2}>
         <Text

@@ -78,7 +78,7 @@ const MUSD_EDUCATION_COIN_IMAGE_LIGHT =
  * - Central illustration (coin + MetaMask fox + bonus)
  * - "Get started" primary button and "Not now" link button
  */
-const MusdEducationScreen: React.FC = () => {
+const MusdEducationScreen = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();

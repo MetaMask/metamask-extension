@@ -2,10 +2,10 @@
 /* eslint-disable import-x/no-useless-path-segments */
 /* eslint-disable import-x/extensions */
 import classnames from 'clsx';
-import React, { Suspense, useEffect } from 'react';
+import React, { Suspense, useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useLocation, Navigate, Outlet } from 'react-router-dom';
-import IdleTimer from 'react-idle-timer';
+import { useIdleTimer } from 'react-idle-timer';
 
 import type { ApprovalRequest } from '@metamask/approval-controller';
 import type { Json } from '@metamask/utils';
@@ -645,26 +645,35 @@ export default function Routes() {
     }
   }, [currentCurrency, dispatch]);
 
-  const renderRoutes = () => {
-    const routes = (
-      <Suspense fallback={null}>
-        <Outlet />
-      </Suspense>
-    );
+  const handleIdleAction = useCallback(() => {
+    dispatch(setLastActiveTime());
+  }, [dispatch]);
 
+  const { reset: resetIdleTimer, pause: pauseIdleTimer } = useIdleTimer({
+    onAction: autoLockTimeLimit > 0 ? handleIdleAction : undefined,
+    throttle: 1000,
+    // Never auto-start on mount; the effect below drives the timer so it
+    // correctly starts or stops whenever autoLockTimeLimit changes at runtime.
+    startOnMount: false,
+  });
+
+  // Start the idle timer whenever auto-lock is enabled, and stop it when the
+  // user sets the timeout to "Never" (0). Using reset() instead of relying on
+  // startOnMount means the timer also starts correctly when the user switches
+  // from "Never" to a positive timeout after the component has already mounted.
+  useEffect(() => {
     if (autoLockTimeLimit > 0) {
-      return (
-        <IdleTimer
-          onAction={() => dispatch(setLastActiveTime())}
-          throttle={1000}
-        >
-          {routes}
-        </IdleTimer>
-      );
+      resetIdleTimer();
+    } else {
+      pauseIdleTimer();
     }
+  }, [autoLockTimeLimit, resetIdleTimer, pauseIdleTimer]);
 
-    return routes;
-  };
+  const renderRoutes = () => (
+    <Suspense fallback={null}>
+      <Outlet />
+    </Suspense>
+  );
 
   const t = useI18nContext();
 
