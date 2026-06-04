@@ -297,7 +297,12 @@ export function beforeBreadcrumb() {
 
 /**
  * Returns whether a span should be created for a given request URL.
- * Filters out Sentry domain requests and local extension file fetches.
+ *
+ * Filters out high-volume fetches with no per-request diagnostic value:
+ * telemetry endpoints (sentry.io, segment.io), static config files re-fetched on
+ * a constant poll cadence (chainid.network, acl.execution.metamask.io), and local
+ * extension reads (snap manifests / locale files, and content-hashed
+ * preinstalled-snap `<hash>.json` bundles). All other requests are traced.
  *
  * @param {string} url - The request URL.
  * @returns {boolean} Whether to create a span for the request.
