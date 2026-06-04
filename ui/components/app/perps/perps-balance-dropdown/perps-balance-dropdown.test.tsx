@@ -109,9 +109,9 @@ describe('PerpsBalanceDropdown', () => {
 
     expect(screen.queryByText(/\+\$375/u)).not.toBeInTheDocument();
     expect(screen.queryByText(/7\.32%/u)).not.toBeInTheDocument();
-    expect(
-      screen.getByTestId('perps-balance-dropdown-pnl'),
-    ).toHaveTextContent('••••••');
+    expect(screen.getByTestId('perps-balance-dropdown-pnl')).toHaveTextContent(
+      '••••••',
+    );
   });
 
   it('renders loading skeleton when account data is still loading', () => {
