@@ -9,7 +9,7 @@ import { WINDOW_TITLES } from '../../constants';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
 import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
-import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
+import Homepage from '../../page-objects/pages/home/homepage';
 import {
   account1Short,
   account2Short,
@@ -161,8 +161,8 @@ describe('Bitcoin Wallet Standard Connect - e2e tests', function () {
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
-          const nonEvmHomepage = new NonEvmHomepage(driver);
-          await nonEvmHomepage.headerNavbar.openAccountMenu();
+          const homepage = new Homepage(driver);
+          await homepage.headerNavbar.openAccountMenu();
           const accountListPage = new AccountListPage(driver);
           await accountListPage.switchToAccount('Account 2');
 
