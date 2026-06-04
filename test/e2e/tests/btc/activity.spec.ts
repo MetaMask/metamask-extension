@@ -7,7 +7,7 @@ import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
-import BitcoinHomepage from '../../page-objects/pages/home/bitcoin-homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 import BitcoinTransactionDetailsPage from '../../page-objects/pages/home/bitcoin-transaction-details';
 import SendPage from '../../page-objects/pages/send/send-page';
 import BitcoinReviewTxPage from '../../page-objects/pages/send/bitcoin-review-tx-page';
@@ -40,12 +40,11 @@ async function mockBtcActivityMocks(mockServer: Mockttp) {
   ];
 }
 
-async function landOnBitcoinHomepage(driver: Driver): Promise<BitcoinHomepage> {
+async function landOnBitcoinHomepage(driver: Driver): Promise<HomePage> {
   await login(driver);
-  const homePage = new BitcoinHomepage(driver);
+  const homePage = new HomePage(driver);
   await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
   await homePage.checkPageIsLoaded();
-  await homePage.checkIsExpectedBitcoinBalanceDisplayed(DEFAULT_BTC_BALANCE);
   return homePage;
 }
 
