@@ -383,7 +383,6 @@
     "@metamask/keyring-api": "^23.1.0",
     "@metamask/keyring-controller": "^26.0.0",
     "@metamask/keyring-internal-api": "^11.0.1",
-    "@metamask/keyring-internal-snap-client": "^10.0.3",
     "@metamask/keyring-sdk": "^2.1.1",
     "@metamask/keyring-snap-client": "^9.0.2",
     "@metamask/keyring-utils": "^3.2.0",
