@@ -65,8 +65,8 @@ Run `yarn webpack --help` for the list of options.
 
 Note: multiple array options cannot be set this way, due to this bug in yargs: https://github.com/yargs/yargs/issues/821
 
-`SOURCE_DATE_EPOCH` is also supported for reproducible zip artifacts. It is the standard unprefixed environment variable,
-specified as a Unix timestamp in seconds:
+[`SOURCE_DATE_EPOCH`](https://reproducible-builds.org/specs/source-date-epoch/) is also supported for reproducible zip
+artifacts. It is the standard unprefixed environment variable, specified as a Unix timestamp in seconds:
 
 ```bash
 SOURCE_DATE_EPOCH=1711141205 yarn webpack --zip
