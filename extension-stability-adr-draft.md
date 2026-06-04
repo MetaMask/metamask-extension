@@ -11,19 +11,24 @@ Extension Reliability owners
 ## TL;DR
 
 MetaMask should stop rewriting the same fixed Chromium extension storage keys
-for current wallet state. Instead, each persistence batch should write fresh
-generated value keys, then publish small redundant metadata pointers that mark
-the latest coherent state. Future reads should follow those generated pointers
-and avoid old fixed keys once generated storage has taken ownership, so one
-corrupt historical key is less likely to block every startup.
+for current wallet state. Instead, persistence batches should write generated
+value keys, then publish small redundant metadata pointers that mark the latest
+coherent state. Fresh generated value keys should remain the default for
+critical state, while audited high-churn keys may reuse their current generated
+value key and rotate only after read or write failure. Future reads should
+follow generated pointers and avoid old fixed keys once generated storage has
+taken ownership, so one corrupt historical key is less likely to block every
+startup.
 
 ## ELI5
 
 Today, MetaMask keeps putting important notes in the same few labeled drawers.
 If one drawer breaks, MetaMask keeps trying to open that same broken drawer and
-can get stuck. The proposed fix is to put each new note in a new drawer, keep
-several small maps that point to the newest good drawers, and stop depending on
-old broken drawers after the new map system exists.
+can get stuck. The proposed fix is to use new drawers for the most important
+notes, let noisy low-risk notes keep using a healthy new-style drawer when that
+is safer for performance, keep several small maps that point to the newest good
+drawers, and stop depending on old broken drawers after the new map system
+exists.
 
 ## Problem Statement
 
@@ -93,10 +98,12 @@ flowchart TD
   H --> F
 ```
 
-This proposal changes the persistence model so new state writes publish fresh
-generated storage keys, mirrored metadata, per-logical-key pointers, and
-tombstones. Generated metadata becomes authoritative once present, so stale
-fixed legacy keys are not touched unless no generated signal exists.
+This proposal changes the persistence model so state writes publish generated
+storage keys, mirrored metadata, per-logical-key pointers, and tombstones.
+Generated metadata becomes authoritative once present, so stale fixed legacy
+keys are not touched unless no generated signal exists. Fresh generated values
+remain the default, and selected high-churn values may reuse generated keys only
+after they have been explicitly audited for that behavior.
 
 ## Considered Options
 
@@ -105,25 +112,27 @@ fixed legacy keys are not touched unless no generated signal exists.
 - Attempt browser or LevelDB repair from the extension
 - Keep split state, but only narrow read batching
 - Add read-after-write verification after every storage write
-- Generated value keys with mirrored manifests, key lists, pointers, tombstones,
-  chunking, and fail-closed legacy fallback
+- Generated value keys with selective high-churn reuse, mirrored manifests, key
+  lists, pointers, tombstones, chunking, and fail-closed legacy fallback
 - Remote backup or server-side wallet state recovery
 
 ## Decision Outcome
 
-Chosen option: "Generated value keys with mirrored manifests, key lists,
-pointers, tombstones, chunking, and fail-closed legacy fallback"
+Chosen option: "Generated value keys with selective high-churn reuse, mirrored
+manifests, key lists, pointers, tombstones, chunking, and fail-closed legacy
+fallback"
 
 This ADR is proposed. The decision is not yet formally accepted by the owning
 teams, but this solution is the recommended direction because it directly
 addresses the extension-side root cause: fixed-key reuse and repeated reads of
 old corrupt keys.
 
-The proposal changes the persistence model from "rewrite known keys forever" to
-"write immutable generated values and publish small redundant pointers to the
-latest value". Reads use generated metadata first and avoid legacy fixed keys
-once generated metadata, generated key lists, generated pointers, or unreadable
-generated metadata indicate that the new system has taken ownership.
+The proposal changes the persistence model from "rewrite known legacy keys
+forever" to "write generated values and publish small redundant pointers to the
+latest healthy generated value". Reads use generated metadata first and avoid
+legacy fixed keys once generated metadata, generated key lists, generated
+pointers, or unreadable generated metadata indicate that the new system has
+taken ownership.
 
 ```mermaid
 flowchart LR
@@ -163,11 +172,20 @@ flowchart LR
 
 ### Core State Storage
 
-`ExtensionStore` should no longer persist current state under stable logical
-keys such as `data`, `meta`, or `KeyringController`. Each write creates a new
-generated value key:
+`ExtensionStore` should no longer persist current state under stable legacy
+logical keys such as `data`, `meta`, or `KeyringController`. By default, each
+durable state write creates a new generated value key:
 
 - `__metamaskState:<logical-key>:<generated-id>`
+
+The generated value key is a physical storage key, not the controller's logical
+identity. The default fresh-key behavior should be retained for critical state
+and for state with unaudited cross-controller invariants. A narrower
+high-churn policy can allow selected logical keys, or explicitly defined groups
+of logical keys, to reuse their current generated physical keys while those keys
+remain writable and readable. If a reused generated key fails to read or write,
+the store should rotate that logical key or reuse group to fresh generated value
+keys and publish updated metadata.
 
 The latest mapping from logical key to generated value key is published through
 three redundant metadata layers:
@@ -204,7 +222,7 @@ sequenceDiagram
   participant Manifests as Mirrored Metadata
 
   Controller->>Store: Persist data/meta or split key updates
-  Store->>Values: Write fresh generated value keys
+  Store->>Values: Write generated value keys
   Store->>Manifests: Try root manifest copies
   alt Root manifest writable
     Store->>Pointers: Publish per-key pointers
@@ -229,7 +247,8 @@ For that reason, `ExtensionStore` should preserve a serialized logical batch
 boundary for state persistence:
 
 1. Collect the logical keys included in the state update.
-2. Write fresh generated values and chunks for those logical keys.
+2. Write generated values and chunks for those logical keys, using fresh keys by
+   default and reuse only for audited high-churn keys or reuse groups.
 3. Publish metadata that identifies the batch's latest logical-key-to-physical
    key mapping.
 4. Expose the new mapping to future readers only after enough metadata has been
@@ -257,10 +276,87 @@ when stale or missing paired state can be lazily repaired. MetaMask cannot assum
 that across all controllers today, so the storage layer should avoid creating
 new partially advanced controller combinations during normal writes.
 
+### High-Churn Generated Key Reuse
+
+Some controller slices may change frequently, potentially every few seconds.
+Always rotating those slices to fresh generated value keys can create avoidable
+write amplification: more distinct LevelDB user keys, more obsolete generated
+keys to remove, more delete markers, and more metadata churn.
+
+LevelDB is already append-oriented, so reusing a key is not an in-place disk
+update. An overwrite still appends a newer version to the write-ahead log and
+memtable. However, reusing an existing generated physical key can reduce
+distinct key cardinality and cleanup pressure compared with creating a new
+physical key and deleting the previous one on every high-frequency update.
+
+Chromium's extension storage implementation also makes reuse a useful
+best-effort liveness check. `storage.local.set` reads the old value before
+writing so Chromium can generate `onChanged` events. If the current generated
+physical key is unreadable, the write to that key should fail before the batch
+is committed. The store can then fall back to writing a fresh generated value
+key and updating metadata.
+
+```mermaid
+flowchart TD
+  A["High-churn logical key or reuse group"] --> B["Try current generated value key"]
+  B --> C{"Write succeeds?"}
+  C -->|Yes| D["Keep same physical key"]
+  C -->|No| E["Allocate fresh generated value key"]
+  E --> F["Publish updated manifest and pointers"]
+  D --> G["Continue monitoring read/write failures"]
+  F --> G
+```
+
+This reuse policy is not equivalent to the fresh-key commit protocol. Fresh keys
+allow the store to write new values without exposing them until metadata points
+at the new keys, and they keep the previous generated values recoverable until
+cleanup. Reused keys overwrite the already-published physical location, so the
+previous value is no longer separately recoverable through metadata once the
+overwrite succeeds.
+
+Compared with an always-fresh strategy, selective reuse is a performance and
+storage-pressure optimization rather than a stronger corruption guarantee.
+LevelDB writes are append-oriented in both cases. Always-fresh writes create a
+new LevelDB user key and later delete the old generated key; reuse appends a
+newer version under the same LevelDB user key. Reuse therefore does not remove
+write-ahead log or compaction work, but it can reduce distinct key growth,
+obsolete-key cleanup, delete markers, and metadata churn for noisy controller
+state.
+
+```mermaid
+flowchart LR
+  A["High-frequency update"] --> B{"Key is reuse eligible?"}
+  B -->|No| C["Fresh generated key"]
+  B -->|Yes| D["Reuse current generated key"]
+  D --> E{"Read or write failure?"}
+  E -->|No| F["Keep reusing"]
+  E -->|Yes| C
+  C --> G["Publish updated metadata"]
+```
+
+For that reason, generated-key reuse should be opt-in and constrained:
+
+- Use fresh generated value keys by default for `data`, `meta`,
+  `KeyringController`, and other critical or unaudited controller state.
+- Reuse only high-churn logical keys, or explicit reuse groups, that have been
+  audited for partial-update and default-reinitialization safety.
+- Preserve serialized write batching for reuse groups so paired logical keys
+  are overwritten together.
+- Rotate to fresh generated value keys after read failure, write failure,
+  pointer disagreement, or telemetry indicating a reused key family is becoming
+  unhealthy.
+- Treat chunked values carefully. The descriptor key may be reused, but chunk
+  keys should remain generated per value unless a separate chunk reuse strategy
+  is designed and tested.
+- Measure write latency, generated-key cardinality, obsolete-key cleanup,
+  LevelDB no-space errors, and corruption events separately for fresh-key and
+  reuse-eligible key classes.
+
 ### Read and Recovery Rules
 
-The read path should request storage keys individually or in tightly scoped
-sets. It should prefer generated metadata in this order:
+The read path should request generated metadata individually or in tightly
+scoped sets, because metadata keys define ownership and recovery behavior. It
+should prefer generated metadata in this order:
 
 1. Read mirrored root manifests.
 2. Read mirrored key lists.
@@ -268,6 +364,41 @@ sets. It should prefer generated metadata in this order:
 4. Read the generated value keys referenced by metadata.
 5. Only read legacy fixed keys when no generated metadata or unreadable
    generated metadata is present.
+
+Once a readable generated manifest, key list, or pointer set identifies the
+current physical value keys, the store can optimize value reads with a
+batch-then-degrade strategy:
+
+1. Read the resolved generated value keys in one bounded
+   `chrome.storage.local.get([...keys])` call, or a small number of bounded
+   batches.
+2. If the batch succeeds, use the full coherent state.
+3. If the batch fails, retry the same physical keys individually.
+4. Build a failure map from logical key to physical key to status, such as
+   readable, missing, unreadable, corrupt, or chunk failure.
+5. Use controller safety classification to decide whether startup can continue
+   with partial state.
+6. Persist repaired manifests, pointers, or tombstones only after a safe
+   replacement state has been constructed.
+
+```mermaid
+flowchart TD
+  A["Generated metadata chooses physical keys"] --> B["Bounded batch read"]
+  B --> C{"Batch succeeds?"}
+  C -->|Yes| D["Start with coherent generated state"]
+  C -->|No| E["Read physical keys individually"]
+  E --> F["Build logical-key failure map"]
+  F --> G{"Only safely recoverable keys failed?"}
+  G -->|Yes| H["Start with partial/defaulted state"]
+  H --> I["Persist repaired mapping after controllers rebuild"]
+  G -->|No| J["Fail closed"]
+```
+
+This fallback should be conservative. A failed individual read should not
+immediately delete a manifest entry or tombstone a logical key. The failure may
+be transient, caused by storage pressure, or caused by a broader database
+problem rather than one damaged key. Manifest repair should happen as a later
+commit after the application has produced a state that is safe to persist.
 
 Generated metadata ownership is intentionally conservative. If generated
 metadata exists, or if generated metadata is unreadable, the store must not
@@ -431,6 +562,14 @@ but it cannot make disk-full writes succeed. Metadata mirroring and chunking add
 bounded write overhead, so capacity-related errors should remain part of the
 rollout dashboard.
 
+The batch-then-degrade read path should also report when a bounded value batch
+fails and individual probing identifies bad logical keys. Useful dimensions
+include the logical key, physical key class, failure status, whether the key was
+critical, and whether startup continued with defaulted or rebuilt state. This is
+how rollout dashboards can distinguish "one generated value failed but was
+safely skipped" from "critical generated state failed and startup correctly
+failed closed".
+
 ### Why Not Read-After-Write Verification
 
 This ADR does not propose immediate read-after-write verification as a primary
@@ -490,14 +629,14 @@ avoidable.
 
 ```mermaid
 flowchart LR
-  C["Chromium key-level corruption"] --> O1["Old design: fixed key reused"]
-  C --> N1["New design: fresh generated key per write"]
+  C["Chromium key-level corruption"] --> O1["Old design: fixed legacy key reused"]
+  C --> N1["New design: generated key mapping"]
 
   O1 --> O2["Startup keeps requesting damaged key"]
   O2 --> O3["Repeated initialization failure"]
 
-  N1 --> N2["Latest pointer can move to a new key"]
-  N2 --> N3["Old damaged value is no longer requested"]
+  N1 --> N2["Latest pointer can rotate to a healthy key"]
+  N2 --> N3["Damaged generated or legacy value is no longer requested"]
   N3 --> N4["Best-effort cleanup may remove obsolete generated keys"]
 ```
 
@@ -526,7 +665,7 @@ Scores use 1 as weakest and 5 as strongest.
 | Browser/LevelDB repair | 2 | 5 | 5 | 5 | 1 | 2 |
 | Narrow split-state reads only | 2 | 5 | 5 | 5 | 4 | 3 |
 | Read-after-write verification | 2 | 5 | 5 | 3 | 4 | 3 |
-| Generated keys and mirrored metadata | 5 | 5 | 5 | 4 | 3 | 5 |
+| Generated keys, selective reuse, and mirrored metadata | 5 | 5 | 5 | 4 | 3 | 5 |
 | Remote recovery | 4 | 1 | 5 | 3 | 2 | 4 |
 
 ```mermaid
@@ -543,7 +682,7 @@ quadrantChart
   Read-after-write verification: [0.38, 0.30]
   More backup reliance: [0.50, 0.55]
   Remote recovery: [0.80, 0.70]
-  Generated keys and mirrored metadata: [0.62, 0.92]
+  Generated keys, selective reuse, and mirrored metadata: [0.62, 0.92]
   Browser repair: [0.90, 0.30]
 ```
 
@@ -634,17 +773,21 @@ cleanly.
   latency and storage pressure.
 - Bad, because it does not stop repeated reads of old corrupt fixed keys.
 
-### Generated value keys with mirrored manifests, key lists, pointers, tombstones, chunking, and fail-closed legacy fallback
+### Generated value keys with selective high-churn reuse, mirrored manifests, key lists, pointers, tombstones, chunking, and fail-closed legacy fallback
 
-Write new values to generated keys, publish redundant metadata that points to
-the latest keys, use tombstones for deletion/format transitions, and treat
-generated metadata as authoritative once present. Read generated metadata and
-state keys individually, and only use legacy fixed-key fallback when there is no
-generated metadata signal.
+Write values to generated keys, publish redundant metadata that points to the
+latest keys, use tombstones for deletion/format transitions, and treat
+generated metadata as authoritative once present. Fresh generated value keys are
+the default for critical or unaudited state. Audited high-churn state may reuse
+healthy generated value keys and rotate to fresh keys after read/write failure
+or unhealthy telemetry. Read generated metadata and state keys individually, and
+only use legacy fixed-key fallback when there is no generated metadata signal.
 
 - Good, because it directly avoids repeated reads of corrupt fixed keys.
-- Good, because fresh generated value keys allow future writes to move away from
-  old damaged values.
+- Good, because generated value keys allow future writes or failure recovery to
+  move away from old damaged values.
+- Good, because selective reuse can reduce distinct-key growth and cleanup
+  pressure for audited high-churn state.
 - Good, because mirrored manifests, key lists, and pointer slots remove a single
   metadata key as the only recovery path.
 - Good, because tombstones prevent stale legacy or stale generated split keys
@@ -659,7 +802,10 @@ generated metadata signal.
 - Bad, because there are more metadata writes per logical write.
 - Bad, because correctness depends on carefully enforcing generated metadata
   authority and avoiding accidental fixed-key fallback.
-- Bad, because old generated values and chunks require best-effort cleanup.
+- Bad, because old generated values and chunks require best-effort cleanup when
+  keys rotate.
+- Bad, because selective reuse is weaker than always-fresh writes as a commit
+  protocol and must be limited to audited key classes.
 
 ### Remote backup or server-side wallet state recovery
 
@@ -707,10 +853,18 @@ not duplicate all wallet state. In exchange, it removes repeated writes to the
 same large fixed value and allows future writes to move current state away from
 old corrupt keys.
 
+For high-churn state, the architecture should avoid turning generated storage
+into an append-like stream of one physical value key per small update. Reusing a
+healthy generated value key for audited high-churn slices can lower distinct-key
+growth and cleanup work while preserving the ability to rotate away from a key
+once Chromium reports that it is unreadable or unwritable.
+
 Read performance should remain acceptable because the implementation avoids
 `get(null)` scans and uses targeted reads. Startup performs more small metadata
 reads, but those reads are individually scoped and provide fallback paths when a
-single metadata key fails.
+single metadata key fails. Generated value reads can remain fast by using
+bounded batches on the happy path and falling back to individual reads only when
+a batch fails.
 
 The proposal intentionally avoids normal-path read-after-write verification.
 Such verification would add more storage calls without proving durable
@@ -792,6 +946,9 @@ The initial implementation has been validated with:
 - Which controller state slices should be promoted to critical, and which
   controllers require refactoring before they can safely reinitialize from
   defaults after a persisted-slice read failure?
+- Which controller slices or logical-key groups are high-churn enough to justify
+  generated-key reuse, and what invariants must they satisfy before reuse is
+  enabled?
 
 ## More Information
 
@@ -806,6 +963,11 @@ The initial implementation has been validated with:
   https://github.com/google/leveldb/blob/7ee830d02b623e8ffe0b95d59a74db1e58da04c5/include/leveldb/options.h
 - LevelDB write and read implementation:
   https://github.com/google/leveldb/blob/7ee830d02b623e8ffe0b95d59a74db1e58da04c5/db/db_impl.cc
+- LevelDB version lookup and table selection:
+  https://github.com/google/leveldb/blob/7ee830d02b623e8ffe0b95d59a74db1e58da04c5/db/version_set.cc
+- LevelDB table cache and block checksum paths:
+  https://github.com/google/leveldb/blob/7ee830d02b623e8ffe0b95d59a74db1e58da04c5/db/table_cache.cc
+  https://github.com/google/leveldb/blob/7ee830d02b623e8ffe0b95d59a74db1e58da04c5/table/format.cc
 - Related Sentry shares:
   - https://metamask.sentry.io/share/issue/61c25635cfd7469a8bcbb3c5738a15d4/
   - https://metamask.sentry.io/share/issue/9792491dfe0c4f42975c7ec5c0572913/
