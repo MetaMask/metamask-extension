@@ -251,11 +251,9 @@ export class OAuthService {
     loginHandler: BaseLoginHandler,
     authConnection: AuthConnection,
   ): Promise<OAuthLoginResult> {
-    const authUrl = await loginHandler.getAuthUrl();
     const isRehydration = this.#isRehydrationFlow();
     const redirectUrlFromOAuth = await this.#performOAuthProviderLogin({
       authConnection,
-      authUrl,
       isRehydration,
       loginHandler,
     });
@@ -270,12 +268,10 @@ export class OAuthService {
 
   async #performOAuthProviderLogin({
     authConnection,
-    authUrl,
     isRehydration,
     loginHandler,
   }: {
     authConnection: AuthConnection;
-    authUrl: string;
     isRehydration: boolean | null;
     loginHandler: BaseLoginHandler;
   }): Promise<string> {
@@ -288,7 +284,6 @@ export class OAuthService {
       });
       const redirectUrlFromOAuth = await this.#launchAuthFlow(
         authConnection,
-        authUrl,
         loginHandler,
       );
       providerLoginSuccess = true;
@@ -492,9 +487,9 @@ export class OAuthService {
 
   async #launchAuthFlow(
     authConnection: AuthConnection,
-    authUrl: string,
     loginHandler: BaseLoginHandler,
   ): Promise<string> {
+    const authUrl = await loginHandler.getAuthUrl();
     if (authConnection === AuthConnection.Telegram) {
       return this.#launchTabAuthFlow(
         authUrl,

@@ -106,7 +106,9 @@ describe('Ledger Hardware', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.goToActivityList();
         const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkTransactionActivityByText('Deposit');
+        await activityListPage.checkTransactionActivityByText(
+          'Contract interaction',
+        );
         await activityListPage.checkWaitForTransactionStatus('confirmed');
 
         // Check that NFT image is displayed in NFT tab on homepage
@@ -170,7 +172,7 @@ describe('Ledger Hardware', function (this: Suite) {
         await homePage.goToActivityList();
         const activityListPage = new ActivityListPage(driver);
         await activityListPage.checkTransactionActivityByText(
-          'Approve TDN spending cap',
+          'Approved spending cap',
         );
         await activityListPage.checkWaitForTransactionStatus('confirmed');
       },
@@ -235,7 +237,7 @@ describe('Ledger Hardware', function (this: Suite) {
         const activityListPage = new ActivityListPage(driver);
         await homePage.goToActivityList();
         await activityListPage.checkTransactionActivityByText(
-          'Approve TDN with no spend limit',
+          'Approved spending cap',
         );
         await activityListPage.checkWaitForTransactionStatus('confirmed');
       },
