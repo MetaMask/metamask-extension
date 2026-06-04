@@ -17,7 +17,6 @@ import {
   ProfileSyncServer,
   SSSBaseUrlRgx,
   SSSNodeKeyPairs,
-  E2E_REDIRECT_URL,
 } from './constants';
 import {
   ToprfAuthenticateResponse,
@@ -399,16 +398,6 @@ export class OAuthMockttpService {
     };
   }
 
-  mockTelegramRedirectPage() {
-    return {
-      statusCode: 200,
-      headers: {
-        'content-type': 'text/html; charset=utf-8',
-      },
-      body: '<html><body>Telegram login complete</body></html>',
-    };
-  }
-
   onPostRevokeToken() {
     return this.mockAuthServerRevokeToken();
   }
@@ -437,10 +426,6 @@ export class OAuthMockttpService {
 
   onPostProfileSyncOidcToken() {
     return this.mockProfileSyncOidcToken();
-  }
-
-  onGetTelegramRedirectPage() {
-    return this.mockTelegramRedirectPage();
   }
 
   async onPostToprfCommitment(
@@ -633,12 +618,6 @@ export class OAuthMockttpService {
         .always()
         .thenCallback(() => {
           return this.onPostProfileSyncOidcToken();
-        }),
-      await server
-        .forGet(E2E_REDIRECT_URL)
-        .always()
-        .thenCallback(() => {
-          return this.onGetTelegramRedirectPage();
         }),
     ];
 

@@ -62,9 +62,6 @@ jest.mock('../../ui/contexts/hardware-wallets', () => ({
 jest.mock('webextension-polyfill', () => ({
   runtime: {
     id: 'fake-extension-id',
-    getURL: jest
-      .fn()
-      .mockReturnValue('chrome-extension://fake-extension-id/home.html'),
     onInstalled: {
       addListener: () => undefined,
     },

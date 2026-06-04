@@ -142,15 +142,12 @@ export const createNewWalletWithSocialLoginOnboardingFlow = async ({
   });
 
   const originalWindowHandle = await driver.getCurrentWindowHandle();
-  const originalWindowHandles = await driver.getAllWindowHandles();
-
   await startOnboardingPage.createWalletWithSocialLogin(authConnection);
 
   if (authConnection === AuthConnection.Telegram) {
     await recoverFromTelegramAuthTab({
       driver,
       originalWindowHandle,
-      originalWindowCount: originalWindowHandles.length,
     });
   }
 
@@ -197,15 +194,12 @@ export const importWalletWithSocialLoginOnboardingFlow = async ({
   });
 
   const originalWindowHandle = await driver.getCurrentWindowHandle();
-  const originalWindowHandles = await driver.getAllWindowHandles();
-
   await startOnboardingPage.importWalletWithSocialLogin(authConnection);
 
   if (authConnection === AuthConnection.Telegram) {
     await recoverFromTelegramAuthTab({
       driver,
       originalWindowHandle,
-      originalWindowCount: originalWindowHandles.length,
     });
   }
 
@@ -224,26 +218,12 @@ export const importWalletWithSocialLoginOnboardingFlow = async ({
 async function recoverFromTelegramAuthTab({
   driver,
   originalWindowHandle,
-  originalWindowCount,
 }: {
   driver: Driver;
   originalWindowHandle: string;
-  originalWindowCount: number;
 }): Promise<void> {
-  try {
-    await driver.waitUntilXWindowHandles(originalWindowCount + 1, 500, 10_000);
-  } catch {
-    // The auth tab can open and close quickly, so continue to restore focus.
-  }
-
-  await driver.switchToWindow(originalWindowHandle);
-
-  try {
-    await driver.waitUntilXWindowHandles(originalWindowCount, 500, 10_000);
-  } catch {
-    // If the auth tab is still closing, keeping focus on the extension tab is enough.
-  }
-
+  // OAuthService resolves after the redirect is handled and the auth tab close
+  // is already in flight, so the E2E flow only needs to restore focus.
   await driver.switchToWindow(originalWindowHandle);
 }
 

@@ -17,8 +17,6 @@ export const AuthServer = {
   MintToken: 'https://auth-service.dev-api.cx.metamask.io/api/v1/oauth/mint',
 };
 
-export const E2E_REDIRECT_URL = 'https://metamask.github.io/mock-redirect';
-
 export const ProfileSyncServer = {
   // Initiating Telegram login flow
   OAuthInitiate: /\/api\/v2\/telegram\/login\/initiate/u,
