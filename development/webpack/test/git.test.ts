@@ -65,9 +65,7 @@ describe('getLatestCommit', () => {
         },
       );
 
-      const { timestamp } = getLatestCommit(
-        join(repositoryDirectory, '.git'),
-      );
+      const { timestamp } = getLatestCommit(join(repositoryDirectory, '.git'));
 
       assert.strictEqual(timestamp(), 1711388630000);
     } finally {

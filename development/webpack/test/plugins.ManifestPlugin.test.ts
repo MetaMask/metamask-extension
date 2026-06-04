@@ -678,19 +678,15 @@ describe('ManifestPlugin', () => {
   describe('zip helpers', () => {
     it('uses the latest commit timestamp when SOURCE_DATE_EPOCH is unset', () => {
       withSourceDateEpoch(undefined, () => {
-        assert.strictEqual(
-          getDefaultZipMtime(),
-          getExpectedDefaultZipMtime(),
-        );
+        assert.strictEqual(getDefaultZipMtime(), getExpectedDefaultZipMtime());
       });
     });
 
     it('uses a deterministic default zip mtime when the latest commit timestamp is unavailable', () => {
       const childProcess = require('node:child_process');
       const { mock: testMock } = require('node:test');
-      const zipMtimePath = require.resolve(
-        '../utils/plugins/ManifestPlugin/zip-mtime.ts',
-      );
+      const zipMtimePath =
+        require.resolve('../utils/plugins/ManifestPlugin/zip-mtime.ts');
       const gitPath = require.resolve('../utils/git.ts');
       const originalZipMtimeCache = require.cache[zipMtimePath];
       const originalGitCache = require.cache[gitPath];
