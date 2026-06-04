@@ -20,6 +20,14 @@ import {
 } from '../../../../shared/constants/metametrics';
 import EthOverview from './eth-overview';
 
+jest.mock('@metamask/design-system-react', () => {
+  const actual = jest.requireActual('@metamask/design-system-react');
+  return {
+    ...actual,
+    toast: Object.assign(jest.fn(), { dismiss: jest.fn() }),
+  };
+});
+
 // TODO: Remove this mock when multichain accounts feature flag is entirely removed.
 // TODO: Convert any old tests (UI/UX state 1) to its state 2 equivalent (if possible).
 jest.mock(

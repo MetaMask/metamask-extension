@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Box,
   BoxAlignItems,
@@ -9,6 +9,7 @@ import {
   ButtonSize,
   ButtonVariant,
   Button,
+  toast,
 } from '@metamask/design-system-react';
 import {
   FormTextField,
@@ -29,7 +30,6 @@ import {
   removePasskeyWithPasswordVerification,
   verifyPassword,
 } from '../../../store/actions';
-import { toast, ToastContent } from '../../../components/ui/toast/toast';
 import { SECOND } from '../../../../shared/constants/time';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -108,12 +108,10 @@ export default function PasskeyTurnOffSubPage() {
             duration_ms: Date.now() - startedAt,
           },
         });
-        toast.success(
-          <ToastContent title={t('passkeyTurnedOff', [passkeyMethodLabel])} />,
-          {
-            duration: PASSKEY_SETTINGS_TOAST_DURATION_MS,
-          },
-        );
+        toast({
+          severity: 'success',
+          title: t('passkeyTurnedOff', [passkeyMethodLabel]),
+        });
         trackEvent({
           category: MetaMetricsEventCategory.Settings,
           event: MetaMetricsEventName.SettingsUpdated,
@@ -145,14 +143,10 @@ export default function PasskeyTurnOffSubPage() {
           createSentryError('Passkey turn off in settings failed', error),
           { extra: { verificationMethod: 'password', durationMs, errorCode } },
         );
-        toast.error(
-          <ToastContent
-            title={t('turnOffPasskeyFailed', [passkeyMethodLabel])}
-          />,
-          {
-            duration: PASSKEY_SETTINGS_TOAST_DURATION_MS,
-          },
-        );
+        toast({
+          severity: 'danger',
+          title: t('turnOffPasskeyFailed', [passkeyMethodLabel]),
+        });
         goToSettings();
       }
     } finally {

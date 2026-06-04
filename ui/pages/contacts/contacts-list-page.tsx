@@ -1,7 +1,7 @@
-import React, { useMemo, useState, useEffect, useContext } from 'react';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { sortBy } from 'lodash';
+import React, { useMemo, useState, useEffect, useContext } from 'react';
 import {
   Box,
   BoxAlignItems,
@@ -15,10 +15,9 @@ import {
   IconColor,
   ButtonIcon,
   ButtonIconSize,
+  toast,
 } from '@metamask/design-system-react';
 import { Header, Page } from '../../components/multichain/pages/page';
-import { Toast, ToastContainer } from '../../components/multichain/toast';
-import { BorderRadius } from '../../helpers/constants/design-system';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   CONTACTS_ADD_ROUTE,
@@ -42,8 +41,6 @@ import { buildDuplicateContactMap, hasDuplicateContacts } from './utils';
 import { ContactListItem } from './components/contact-list-item';
 import { ContactsEmptyState } from './components/contacts-empty-state';
 
-const TOAST_AUTO_HIDE_MS = 2500;
-
 export function ContactsListPage() {
   const t = useI18nContext();
   const navigate = useNavigate();
@@ -57,6 +54,7 @@ export function ContactsListPage() {
   const [showUpdatedToast, setShowUpdatedToast] = useState(false);
 
   const TOAST_CLEAR_STATE_DELAY_MS = 100;
+  const TOAST_VISIBLE_DURATION_MS = 2500;
 
   const contacts = useMemo(() => {
     const list = (completeAddressBook ?? []).filter(
@@ -84,6 +82,11 @@ export function ContactsListPage() {
       ),
     [completeAddressBook, internalAccounts],
   );
+
+  const showDeletedToastNow =
+    showDeletedToast || Boolean(location.state?.showContactDeletedToast);
+  const showUpdatedToastNow =
+    showUpdatedToast || Boolean(location.state?.showContactUpdatedToast);
 
   useEffect(() => {
     trackEvent({
@@ -128,6 +131,52 @@ export function ContactsListPage() {
     return () => clearTimeout(id);
   }, [showUpdatedToast, navigate]);
 
+  useEffect(() => {
+    if (!showDeletedToastNow) {
+      return undefined;
+    }
+
+    const timeoutId = setTimeout(() => {
+      setShowDeletedToast(false);
+    }, TOAST_VISIBLE_DURATION_MS);
+
+    toast({
+      severity: 'success',
+      title: t('contactDeleted'),
+      'data-testid': 'contact-deleted-toast',
+      hasNoTimeout: true,
+      onClose: () => setShowDeletedToast(false),
+    });
+
+    return () => {
+      clearTimeout(timeoutId);
+      toast.dismiss();
+    };
+  }, [showDeletedToastNow, t]);
+
+  useEffect(() => {
+    if (!showUpdatedToastNow) {
+      return undefined;
+    }
+
+    const timeoutId = setTimeout(() => {
+      setShowUpdatedToast(false);
+    }, TOAST_VISIBLE_DURATION_MS);
+
+    toast({
+      severity: 'success',
+      title: t('contactUpdated'),
+      'data-testid': 'contact-updated-toast',
+      hasNoTimeout: true,
+      onClose: () => setShowUpdatedToast(false),
+    });
+
+    return () => {
+      clearTimeout(timeoutId);
+      toast.dismiss();
+    };
+  }, [showUpdatedToastNow, t]);
+
   const handleBack = () => {
     if (fromPath === DEFAULT_ROUTE) {
       navigate(PREVIOUS_ROUTE);
@@ -136,49 +185,8 @@ export function ContactsListPage() {
     }
   };
 
-  const showDeletedToastNow =
-    showDeletedToast || Boolean(location.state?.showContactDeletedToast);
-  const showUpdatedToastNow =
-    showUpdatedToast || Boolean(location.state?.showContactUpdatedToast);
-
-  const toastContent = (
-    <>
-      {showDeletedToastNow && (
-        <Toast
-          startAdornment={
-            <Icon name={IconName.CheckBold} color={IconColor.SuccessDefault} />
-          }
-          text={t('contactDeleted')}
-          onClose={() => setShowDeletedToast(false)}
-          autoHideTime={TOAST_AUTO_HIDE_MS}
-          onAutoHideToast={() => setShowDeletedToast(false)}
-          borderRadius={BorderRadius.LG}
-          textClassName="text-base"
-          data-testid="contact-deleted-toast"
-        />
-      )}
-      {showUpdatedToastNow && (
-        <Toast
-          startAdornment={
-            <Icon name={IconName.CheckBold} color={IconColor.SuccessDefault} />
-          }
-          text={t('contactUpdated')}
-          onClose={() => setShowUpdatedToast(false)}
-          autoHideTime={TOAST_AUTO_HIDE_MS}
-          onAutoHideToast={() => setShowUpdatedToast(false)}
-          borderRadius={BorderRadius.LG}
-          textClassName="text-base"
-          data-testid="contact-updated-toast"
-        />
-      )}
-    </>
-  );
-
   return (
     <Page data-testid="contacts-page">
-      {!contacts.length && (showDeletedToastNow || showUpdatedToastNow) && (
-        <ToastContainer>{toastContent}</ToastContainer>
-      )}
       <Header
         startAccessory={
           <ButtonIcon
@@ -275,9 +283,6 @@ export function ContactsListPage() {
             paddingTop={4}
             className="shrink-0 bg-background-default"
           >
-            {(showDeletedToastNow || showUpdatedToastNow) && (
-              <Box marginBottom={4}>{toastContent}</Box>
-            )}
             <Button
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}

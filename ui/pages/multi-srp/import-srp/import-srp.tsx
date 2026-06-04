@@ -1,4 +1,3 @@
-import React, { useEffect, useState, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -9,7 +8,9 @@ import {
   Button,
   Text,
   TextVariant,
+  toast,
 } from '@metamask/design-system-react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   hideWarning,
@@ -17,7 +18,6 @@ import {
   importMnemonicToVault,
 } from '../../../store/actions';
 import { SECOND } from '../../../../shared/constants/time';
-import { toast, ToastContent } from '../../../components/ui/toast/toast';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { Header, Page } from '../../../components/multichain/pages/page';
 import {
@@ -79,16 +79,11 @@ export const ImportSrp = () => {
 
       await dispatch(importMnemonicToVault(secretRecoveryPhrase));
 
-      toast.success(
-        <ToastContent
-          dataTestId={toastId}
-          title={t('importWalletSuccess', [hdKeyrings.length + 1])}
-        />,
-        {
-          id: toastId,
-          duration: autoHideToastDelay,
-        },
-      );
+      toast({
+        severity: 'success',
+        title: t('importWalletSuccess', [hdKeyrings.length + 1]),
+        'data-testid': toastId,
+      });
       navigate(DEFAULT_ROUTE);
     } catch (error) {
       switch ((error as Error)?.message) {

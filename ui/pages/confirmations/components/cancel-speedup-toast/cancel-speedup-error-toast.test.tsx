@@ -83,10 +83,13 @@ describe('CancelSpeedupErrorToast', () => {
       />,
     );
 
-    const banner = screen.getByTestId('cancel-speedup-error-toast-banner-base');
-    const closeButton = banner.querySelector('[aria-label="Close"]');
-    expect(closeButton).toBeTruthy();
-    (closeButton as HTMLElement).click();
+    expect(
+      screen.getByTestId('cancel-speedup-error-toast'),
+    ).toBeInTheDocument();
+
+    const closeButton = screen.getByRole('button', { name: /close toast/i });
+    expect(closeButton).toBeInTheDocument();
+    closeButton.click();
 
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });

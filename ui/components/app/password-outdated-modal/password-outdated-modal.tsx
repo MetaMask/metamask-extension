@@ -1,4 +1,3 @@
-import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -15,8 +14,9 @@ import {
   BoxJustifyContent,
   BoxFlexDirection,
   BoxAlignItems,
+  toast,
 } from '@metamask/design-system-react';
-import { toast } from 'react-hot-toast';
+import React, { useContext, useEffect } from 'react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Modal,

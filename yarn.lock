@@ -5563,6 +5563,54 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask-previews/design-system-react@npm:0.24.0-preview.a0fe3894, @metamask/design-system-react@npm:@metamask-previews/design-system-react@0.24.0-preview.a0fe3894":
+  version: 0.24.0-preview.a0fe3894
+  resolution: "@metamask-previews/design-system-react@npm:0.24.0-preview.a0fe3894"
+  dependencies:
+    "@metamask-previews/design-system-shared": "npm:0.20.0-preview.a0fe3894"
+    "@metamask/jazzicon": "npm:^2.0.0"
+    "@radix-ui/react-slot": "npm:^1.1.0"
+    blo: "npm:^2.0.0"
+    react-focus-lock: "npm:^2.9.4"
+    tailwind-merge: "npm:^2.0.0"
+  peerDependencies:
+    "@metamask/design-system-tailwind-preset": ^0.8.0
+    "@metamask/design-tokens": ^8.1.0
+    "@metamask/utils": ^11.11.0
+    react: ^17.0.0 || ^18.0.0 || ^19.0.0
+    react-dom: ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 10/c7dc9f1bb1241ead01c52f0f0672fcdc48a3165ac60656fce305df439cc2a8a1f93e75d7fc89f9d63c7a43f70e6cfb0416a072e4f6ac8a39e2e0e2689fe1c02c
+  languageName: node
+  linkType: hard
+
+"@metamask-previews/design-system-shared@npm:0.20.0-preview.a0fe3894, @metamask/design-system-shared@npm:@metamask-previews/design-system-shared@0.20.0-preview.a0fe3894":
+  version: 0.20.0-preview.a0fe3894
+  resolution: "@metamask-previews/design-system-shared@npm:0.20.0-preview.a0fe3894"
+  dependencies:
+    "@metamask/utils": "npm:^11.11.0"
+  peerDependencies:
+    react: ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 10/ba1a2f35941e1ecef348b1128fa8cfa31f5841526bdff8ccbd771c1afe086a571720780fceadb186ed6d71df17700e9e4b8fc204c6e6768029886a6f3acf551c
+  languageName: node
+  linkType: hard
+
+"@metamask-previews/design-system-tailwind-preset@npm:0.8.0-preview.a0fe3894, @metamask/design-system-tailwind-preset@npm:@metamask-previews/design-system-tailwind-preset@0.8.0-preview.a0fe3894":
+  version: 0.8.0-preview.a0fe3894
+  resolution: "@metamask-previews/design-system-tailwind-preset@npm:0.8.0-preview.a0fe3894"
+  peerDependencies:
+    "@metamask/design-tokens": ^8.0.0
+    tailwindcss: ^3.0.0
+  checksum: 10/5c54b017158e39c012e3be997b2cf093b8d667b665d9189230c6c75cf75ce8eb458fdaf06de9feeeca57560b29328a1c110fa11ace891f9c0fe401aff130771b
+  languageName: node
+  linkType: hard
+
+"@metamask-previews/design-tokens@npm:8.4.0-preview.a0fe3894, @metamask/design-tokens@npm:@metamask-previews/design-tokens@8.4.0-preview.a0fe3894":
+  version: 8.4.0-preview.a0fe3894
+  resolution: "@metamask-previews/design-tokens@npm:8.4.0-preview.a0fe3894"
+  checksum: 10/1b94555799bb6f1e71038503702644e3cf49ad9eca50836f1501161737afde3c45c319fa9136fa4f4b72b5cc1cbe0266162db4b1bfe11a21933e625ac33670a9
+  languageName: node
+  linkType: hard
+
 "@metamask/7715-permission-types@npm:^0.7.1":
   version: 0.7.1
   resolution: "@metamask/7715-permission-types@npm:0.7.1"
@@ -6327,61 +6375,6 @@ __metadata:
   version: 1.4.0
   resolution: "@metamask/delegation-deployments@npm:1.4.0"
   checksum: 10/e5e7b83e27daec5b1b61482647d43d4b685954818ff02687e2dbe8169a4dfe199cc8d2ed444242b60425ac2e7d2cf2a5ca29f3e69936abe6a8391f578ec693bb
-  languageName: node
-  linkType: hard
-
-"@metamask/design-system-react@npm:^0.22.0":
-  version: 0.22.0
-  resolution: "@metamask/design-system-react@npm:0.22.0"
-  dependencies:
-    "@metamask/design-system-shared": "npm:^0.17.0"
-    "@metamask/jazzicon": "npm:^2.0.0"
-    "@radix-ui/react-slot": "npm:^1.1.0"
-    blo: "npm:^2.0.0"
-    react-focus-lock: "npm:^2.9.4"
-    tailwind-merge: "npm:^2.0.0"
-  peerDependencies:
-    "@metamask/design-system-tailwind-preset": ^0.8.0
-    "@metamask/design-tokens": ^8.1.0
-    "@metamask/utils": ^11.11.0
-    react: ^17.0.0 || ^18.0.0 || ^19.0.0
-    react-dom: ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10/4f86c279a58fe042f363e587617431bb07416fd62bdfd542f70bdb106b04158bb9f0303024f98771e50840bcf038ea7d749a87f8a726bc81763996d9835f5105
-  languageName: node
-  linkType: hard
-
-"@metamask/design-system-shared@npm:^0.17.0":
-  version: 0.17.0
-  resolution: "@metamask/design-system-shared@npm:0.17.0"
-  dependencies:
-    "@metamask/utils": "npm:^11.11.0"
-  peerDependencies:
-    react: ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10/168af1fe87414eec9e12f31cea7d9c6081b0671dd6752b3fb4e57311384a2a59f4fd795bc883923d4a2b59162cdae7cdbcdfc3b6ad1bdb432c1f75c6a7b40341
-  languageName: node
-  linkType: hard
-
-"@metamask/design-system-tailwind-preset@npm:^0.8.0":
-  version: 0.8.0
-  resolution: "@metamask/design-system-tailwind-preset@npm:0.8.0"
-  peerDependencies:
-    "@metamask/design-tokens": ^8.0.0
-    tailwindcss: ^3.0.0
-  checksum: 10/15d4c565d3ba4edd0f9e14ae2d9b9a4cfdd893ea77265be0b1264b9437f4cf2c6da5a928b3c54e1ffff4342b3ce5abc054bd8f3c966f9215a5f3b59746526ac8
-  languageName: node
-  linkType: hard
-
-"@metamask/design-tokens@npm:^7.1.0":
-  version: 7.1.0
-  resolution: "@metamask/design-tokens@npm:7.1.0"
-  checksum: 10/a4f1379bdf5f6b99c9a228ce4f5bb07ace4ed5abc61384e7f04cf5bdf943b32dd13ec9676a88f6b6c7314cdba6e2967b9fd99707a64a645865f21f8d8a2566d9
-  languageName: node
-  linkType: hard
-
-"@metamask/design-tokens@npm:^8.4.0":
-  version: 8.4.0
-  resolution: "@metamask/design-tokens@npm:8.4.0"
-  checksum: 10/8127e4793e03e1ab547bba05f561bfe6455b5779c8a12043dc18395690eda4d43b51a8367d14ecf5b365d927946795ac8479c5a6a10d8a5def1192b89a7884a7
   languageName: node
   linkType: hard
 
@@ -20115,11 +20108,11 @@ __metadata:
   linkType: hard
 
 "baseline-browser-mapping@npm:^2.9.0":
-  version: 2.9.11
-  resolution: "baseline-browser-mapping@npm:2.9.11"
+  version: 2.10.33
+  resolution: "baseline-browser-mapping@npm:2.10.33"
   bin:
-    baseline-browser-mapping: dist/cli.js
-  checksum: 10/d71fe6693f999ee0bf1fcd72b31c01390f2bfac40d179175817f24cdb11b19d14a102227a8fa28e0a4733a17c780458c17384c75f2227e45b0e8a0080caf6532
+    baseline-browser-mapping: dist/cli.cjs
+  checksum: 10/e5ea31ff7988d631af72cc579825d109f1b8ab70af2490b875daaef5eba9257c60e108a768f7bd949394ca6a9e33469ea48e7367aea680671f8073733514f101
   languageName: node
   linkType: hard
 
@@ -21202,9 +21195,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.30001109, caniuse-lite@npm:^1.0.30001599, caniuse-lite@npm:^1.0.30001759":
-  version: 1.0.30001762
-  resolution: "caniuse-lite@npm:1.0.30001762"
-  checksum: 10/d60a589180198ac759fa1775e521862f03503286cc9354144adcd88e76d275f03b2b6e9cab1c606790eee9d6af5cedbedb048ec652f5ff77a2b229992b7c4845
+  version: 1.0.30001793
+  resolution: "caniuse-lite@npm:1.0.30001793"
+  checksum: 10/5a1ac39f2f174e86d8320f394a5dfbeab98041722b13d02a21fe47afc2723bc754ea3716a1f276f8462bcbbc3016e82e6f155ebde0881e537af463b5eac1816b
   languageName: node
   linkType: hard
 
@@ -27954,15 +27947,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"goober@npm:^2.1.16":
-  version: 2.1.18
-  resolution: "goober@npm:2.1.18"
-  peerDependencies:
-    csstype: ^3.0.10
-  checksum: 10/eca3db81a709a03f6ec9bb2624027e157c0b6fab6dccbe53b2ddd25a155a7e6e23a0b864574c33bdb0a05e0d0b865de8cc5151401e5a00d63f51be08fe7ccde6
-  languageName: node
-  linkType: hard
-
 "google-auth-library@npm:^10.3.0":
   version: 10.5.0
   resolution: "google-auth-library@npm:10.5.0"
@@ -33444,6 +33428,10 @@ __metadata:
     "@lydell/node-pty": "npm:^1.1.0"
     "@material-ui/core": "npm:^4.12.4"
     "@material-ui/pickers": "npm:^3.3.11"
+    "@metamask-previews/design-system-react": "npm:0.24.0-preview.a0fe3894"
+    "@metamask-previews/design-system-shared": "npm:0.20.0-preview.a0fe3894"
+    "@metamask-previews/design-system-tailwind-preset": "npm:0.8.0-preview.a0fe3894"
+    "@metamask-previews/design-tokens": "npm:8.4.0-preview.a0fe3894"
     "@metamask/7715-permission-types": "npm:^0.7.1"
     "@metamask/abi-utils": "npm:^3.0.0"
     "@metamask/account-api": "npm:^1.0.4"
@@ -33476,10 +33464,10 @@ __metadata:
     "@metamask/delegation-controller": "npm:^3.0.0"
     "@metamask/delegation-core": "npm:^2.0.0"
     "@metamask/delegation-deployments": "npm:^1.3.0"
-    "@metamask/design-system-react": "npm:^0.22.0"
-    "@metamask/design-system-shared": "npm:^0.17.0"
-    "@metamask/design-system-tailwind-preset": "npm:^0.8.0"
-    "@metamask/design-tokens": "npm:^8.4.0"
+    "@metamask/design-system-react": "npm:@metamask-previews/design-system-react@0.24.0-preview.a0fe3894"
+    "@metamask/design-system-shared": "npm:@metamask-previews/design-system-shared@0.20.0-preview.a0fe3894"
+    "@metamask/design-system-tailwind-preset": "npm:@metamask-previews/design-system-tailwind-preset@0.8.0-preview.a0fe3894"
+    "@metamask/design-tokens": "npm:@metamask-previews/design-tokens@8.4.0-preview.a0fe3894"
     "@metamask/eip-5792-middleware": "npm:3.0.3"
     "@metamask/eip-7702-internal-rpc-middleware": "npm:^0.1.0"
     "@metamask/ens-controller": "npm:^19.1.0"
@@ -33841,7 +33829,6 @@ __metadata:
     react-devtools-core: "npm:^6.1.5"
     react-dom: "npm:^17.0.2"
     react-focus-lock: "npm:^2.9.4"
-    react-hot-toast: "npm:^2.6.0"
     react-idle-timer: "npm:4.5.6"
     react-markdown: "npm:^6.0.3"
     react-popper: "npm:^2.2.3"
@@ -38027,19 +38014,6 @@ __metadata:
   peerDependencies:
     react: ">=16.3.0"
   checksum: 10/eff25231384bb0a229870a0552839953a59af17f0ff5e8bca1b8c8fdf19a329e4c00c7fa2fcedc8be5d73f5c7bebb30cf9a32ea58efc7c8f726a10dba51f48a2
-  languageName: node
-  linkType: hard
-
-"react-hot-toast@npm:^2.6.0":
-  version: 2.6.0
-  resolution: "react-hot-toast@npm:2.6.0"
-  dependencies:
-    csstype: "npm:^3.1.3"
-    goober: "npm:^2.1.16"
-  peerDependencies:
-    react: ">=16"
-    react-dom: ">=16"
-  checksum: 10/825ebbaa03c63dc2f22795ac8d535b40f1066c3ace5b792d0de740070693f195b910c98f46a00f7f6195f804ecf41b03201f6ff6950a540098dd2b7a0069df5b
   languageName: node
   linkType: hard
 

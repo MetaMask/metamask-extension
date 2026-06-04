@@ -1,20 +1,27 @@
 import { act } from '@testing-library/react-hooks';
+import { toast } from '@metamask/design-system-react';
 import { HardwareWalletSignatureStatus } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 import { createSignatureState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine.test-helpers';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { useHwSwapNavigation } from './useHwSwapNavigation';
 
-jest.mock('../../components/app/toast-listener/shared', () => ({
-  showSuccessToast: jest.fn(),
-}));
+jest.mock('@metamask/design-system-react', () => {
+  const actual = jest.requireActual('@metamask/design-system-react');
+  const mockToast = jest.fn();
+  mockToast.dismiss = jest.fn();
+  return {
+    ...actual,
+    toast: mockToast,
+  };
+});
 
 jest.mock('../bridge/useBridgeNavigation', () => ({
   useBridgeNavigation: jest.fn(),
 }));
 
-const mockShowSuccessToast = jest.requireMock(
-  '../../components/app/toast-listener/shared',
-).showSuccessToast;
+const mockToast = toast as jest.MockedFunction<typeof toast> & {
+  dismiss: jest.Mock;
+};
 const mockUseBridgeNavigation = jest.requireMock(
   '../bridge/useBridgeNavigation',
 ).useBridgeNavigation;
@@ -49,7 +56,7 @@ describe('useHwSwapNavigation', () => {
       jest.advanceTimersByTime(1000);
     });
 
-    expect(mockShowSuccessToast).toHaveBeenCalledTimes(1);
+    expect(mockToast).toHaveBeenCalledTimes(1);
     expect(mockNavigateToDefaultRoute).toHaveBeenCalledTimes(1);
   });
 
@@ -69,7 +76,7 @@ describe('useHwSwapNavigation', () => {
     });
 
     expect(mockNavigateToDefaultRoute).not.toHaveBeenCalled();
-    expect(mockShowSuccessToast).not.toHaveBeenCalled();
+    expect(mockToast).not.toHaveBeenCalled();
   });
 
   it('does not navigate twice when status remains Submitted', async () => {
@@ -124,7 +131,7 @@ describe('useHwSwapNavigation', () => {
       jest.advanceTimersByTime(1000);
     });
 
-    expect(mockShowSuccessToast).toHaveBeenCalledTimes(1);
+    expect(mockToast).toHaveBeenCalledTimes(1);
     expect(mockNavigateToDefaultRoute).not.toHaveBeenCalled();
     expect(updatedNavigateToDefaultRoute).toHaveBeenCalledTimes(1);
   });
@@ -154,7 +161,7 @@ describe('useHwSwapNavigation', () => {
       jest.advanceTimersByTime(1000);
     });
 
-    expect(mockShowSuccessToast).toHaveBeenCalledTimes(1);
+    expect(mockToast).toHaveBeenCalledTimes(1);
     expect(mockNavigateToDefaultRoute).toHaveBeenCalledTimes(1);
 
     rerender();
@@ -163,7 +170,7 @@ describe('useHwSwapNavigation', () => {
       jest.advanceTimersByTime(1000);
     });
 
-    expect(mockShowSuccessToast).toHaveBeenCalledTimes(1);
+    expect(mockToast).toHaveBeenCalledTimes(1);
     expect(mockNavigateToDefaultRoute).toHaveBeenCalledTimes(1);
     expect(updatedNavigateToDefaultRoute).not.toHaveBeenCalled();
   });

@@ -1,4 +1,7 @@
 import EventEmitter from 'events';
+import log from 'loglevel';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import React, {
   useCallback,
   useContext,
@@ -6,9 +9,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import log from 'loglevel';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { type PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
 import {
   Box,
@@ -23,6 +23,7 @@ import {
   BoxJustifyContent,
   BoxAlignItems,
   FontWeight,
+  toast,
 } from '@metamask/design-system-react';
 import {
   FormTextField,
@@ -70,7 +71,6 @@ import {
   SECURITY_AND_PASSWORD_ROUTE,
   SECURITY_PASSWORD_CHANGE_V2_ROUTE,
 } from '../../../helpers/constants/routes';
-import { toast, ToastContent } from '../../ui/toast/toast';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -301,16 +301,17 @@ const ChangePassword = ({
             passkeyMethodLabel,
           ])
         : t('securityChangePasswordToastSuccess');
-      toast.success(<ToastContent title={toastTitle} />, {
-        duration: autoHideToastDelay,
+      toast({
+        severity: 'success',
+        title: toastTitle,
       });
     } catch (error) {
       console.error(error);
       setStep(ChangePasswordSteps.ChangePassword);
-      toast.error(
-        <ToastContent title={t('securityChangePasswordToastError')} />,
-        { duration: autoHideToastDelay },
-      );
+      toast({
+        severity: 'danger',
+        title: t('securityChangePasswordToastError'),
+      });
     }
   };
 
@@ -376,18 +377,15 @@ const ChangePassword = ({
             error,
           ),
         );
-        toast.error(
-          <ToastContent
-            title={
-              translatePasskeyError(
-                error,
-                t as (key: string, substitutions?: string[]) => string,
-                passkeyMethodLabel,
-              ) ?? t('passkeyErrorVerificationFailed', [passkeyMethodLabel])
-            }
-          />,
-          { duration: autoHideToastDelay },
-        );
+        toast({
+          severity: 'danger',
+          title:
+            translatePasskeyError(
+              error,
+              t as (key: string, substitutions?: string[]) => string,
+              passkeyMethodLabel,
+            ) ?? t('passkeyErrorVerificationFailed', [passkeyMethodLabel]),
+        });
       }
       return null;
     } finally {

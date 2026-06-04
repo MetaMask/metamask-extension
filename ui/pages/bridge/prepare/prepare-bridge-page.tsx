@@ -1,4 +1,3 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import classnames from 'clsx';
 import { debounce } from 'lodash';
@@ -11,7 +10,8 @@ import {
   type BridgeController,
   formatAddressToCaipReference,
 } from '@metamask/bridge-controller';
-import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
+import { Box, BoxBackgroundColor, toast } from '@metamask/design-system-react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { BRIDGE_ONLY_CHAINS } from '../../../../shared/constants/bridge';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import {
@@ -69,7 +69,6 @@ import { SECOND } from '../../../../shared/constants/time';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainProviderConfig } from '../../../selectors/multichain';
-import { Toast, ToastContainer } from '../../../components/multichain';
 import type { BridgeToken } from '../../../ducks/bridge/types';
 import { useLatestBalance } from '../../../hooks/bridge/useLatestBalance';
 import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
@@ -306,7 +305,45 @@ const PrepareBridgePage = ({
   const [blockExplorerToken, setBlockExplorerToken] =
     useState<BridgeToken | null>(null);
   const [toastTriggerCounter, setToastTriggerCounter] = useState(0);
+  const blockExplorerToastTriggerRef = useRef<number | null>(null);
   const isInitialQuoteLoading = isLoading && !unvalidatedQuote;
+
+  useEffect(() => {
+    if (!showBlockExplorerToast || !blockExplorerToken) {
+      blockExplorerToastTriggerRef.current = null;
+      return undefined;
+    }
+
+    if (blockExplorerToastTriggerRef.current === toastTriggerCounter) {
+      return undefined;
+    }
+
+    blockExplorerToastTriggerRef.current = toastTriggerCounter;
+
+    toast({
+      severity: 'default',
+      title: t('bridgeBlockExplorerLinkCopied'),
+      onClose: () => setShowBlockExplorerToast(false),
+      hasNoTimeout: false,
+      startAccessory: (
+        <AvatarFavicon
+          name={blockExplorerToken.symbol}
+          size={AvatarFaviconSize.Sm}
+          src={toToken.iconUrl ?? undefined}
+        />
+      ),
+    });
+
+    return () => {
+      toast.dismiss();
+    };
+  }, [
+    blockExplorerToken,
+    t,
+    toastTriggerCounter,
+    toToken.iconUrl,
+    showBlockExplorerToast,
+  ]);
 
   const [alertModalProps, setAlertModalProps] = useState<
     Pick<
@@ -636,37 +673,6 @@ const PrepareBridgePage = ({
         )}
         <div ref={footerRef} />
       </Column>
-
-      {showBlockExplorerToast && blockExplorerToken && (
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 50,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            zIndex: 1000,
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-          }}
-        >
-          <ToastContainer>
-            <Toast
-              key={toastTriggerCounter}
-              text={t('bridgeBlockExplorerLinkCopied')}
-              onClose={() => setShowBlockExplorerToast(false)}
-              autoHideTime={2500}
-              startAdornment={
-                <AvatarFavicon
-                  name={blockExplorerToken.symbol}
-                  size={AvatarFaviconSize.Sm}
-                  src={toToken.iconUrl ?? undefined}
-                />
-              }
-            />
-          </ToastContainer>
-        </div>
-      )}
     </>
   );
 };

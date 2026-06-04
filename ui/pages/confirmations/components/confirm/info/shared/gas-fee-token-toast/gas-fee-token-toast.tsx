@@ -1,10 +1,8 @@
-import React, { useCallback, useState } from 'react';
-
 import { Hex } from '@metamask/utils';
+import { toast } from '@metamask/design-system-react';
 
+import React, { useEffect, useRef } from 'react';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
-import { Box } from '../../../../../../../components/component-library';
-import { Toast } from '../../../../../../../components/multichain';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import {
   useGasFeeToken,
@@ -18,7 +16,6 @@ const TOAST_TIMEOUT_MILLISECONDS = 5 * 1000; // 5 Seconds
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function GasFeeTokenToast() {
   const t = useI18nContext();
-  const [showToast, setShowToast] = useState(false);
 
   const nativeGasFeeToken = useGasFeeToken({
     tokenAddress: NATIVE_TOKEN_ADDRESS,
@@ -26,46 +23,40 @@ export function GasFeeTokenToast() {
 
   const selectedGasFeeToken = useSelectedGasFeeToken() ?? nativeGasFeeToken;
 
-  const [previousGasFeeToken, setPreviousGasFeeToken] =
-    useState<Hex>(NATIVE_TOKEN_ADDRESS);
+  const previousGasFeeTokenRef = useRef<Hex>(NATIVE_TOKEN_ADDRESS);
 
-  const hideToast = useCallback(() => {
-    setShowToast(false);
-  }, []);
+  useEffect(() => {
+    const selectedTokenAddress =
+      selectedGasFeeToken?.tokenAddress ?? NATIVE_TOKEN_ADDRESS;
 
-  if (selectedGasFeeToken?.tokenAddress !== previousGasFeeToken) {
-    setPreviousGasFeeToken(
-      selectedGasFeeToken?.tokenAddress ?? NATIVE_TOKEN_ADDRESS,
-    );
+    if (selectedTokenAddress === previousGasFeeTokenRef.current) {
+      return undefined;
+    }
 
-    setShowToast(true);
+    previousGasFeeTokenRef.current = selectedTokenAddress;
 
-    setTimeout(() => {
-      hideToast();
+    const timeoutId = setTimeout(() => {
+      toast.dismiss();
     }, TOAST_TIMEOUT_MILLISECONDS);
-  }
 
-  if (!showToast) {
-    return null;
-  }
+    toast({
+      severity: 'default',
+      onClose: () => {
+        clearTimeout(timeoutId);
+        toast.dismiss();
+      },
+      title: t('confirmGasFeeTokenToast', [
+        <b key="symbol">{selectedGasFeeToken?.symbol}</b>,
+      ]),
+      startAccessory: <GasFeeTokenIcon tokenAddress={selectedTokenAddress} />,
+      hasNoTimeout: true,
+    });
 
-  return (
-    <Box className="toast_wrapper">
-      <Toast
-        onClose={hideToast}
-        text={t('confirmGasFeeTokenToast', [
-          <b key="symbol">{selectedGasFeeToken?.symbol}</b>,
-        ])}
-        startAdornment={
-          <>
-            <GasFeeTokenIcon
-              tokenAddress={
-                selectedGasFeeToken?.tokenAddress ?? NATIVE_TOKEN_ADDRESS
-              }
-            />
-          </>
-        }
-      />
-    </Box>
-  );
+    return () => {
+      clearTimeout(timeoutId);
+      toast.dismiss();
+    };
+  }, [selectedGasFeeToken?.symbol, selectedGasFeeToken?.tokenAddress, t]);
+
+  return null;
 }

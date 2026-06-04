@@ -1,4 +1,5 @@
 import React from 'react';
+import { toast } from '@metamask/design-system-react';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import configureStore from '../../../../../../../store/store';
 
@@ -8,6 +9,20 @@ import { renderWithConfirmContextProvider } from '../../../../../../../../test/l
 import { GasFeeTokenToast } from './gas-fee-token-toast';
 
 jest.mock('../../../../../../../../shared/lib/selectors');
+
+jest.mock('@metamask/design-system-react', () => {
+  const actual = jest.requireActual('@metamask/design-system-react');
+  const mockToast = jest.fn();
+  mockToast.dismiss = jest.fn();
+  return {
+    ...actual,
+    toast: mockToast,
+  };
+});
+
+const mockToast = toast as jest.MockedFunction<typeof toast> & {
+  dismiss: jest.Mock;
+};
 
 function getStore({
   noSelectedGasFeeToken,
@@ -32,12 +47,22 @@ function getStore({
 }
 
 describe('GasFeeTokenToast', () => {
-  it('renders token symbol', () => {
-    const result = renderWithConfirmContextProvider(
-      <GasFeeTokenToast />,
-      getStore(),
-    );
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
-    expect(result.getByText(GAS_FEE_TOKEN_MOCK.symbol)).toBeInTheDocument();
+  it('dispatches an MMDS toast for the selected gas fee token', async () => {
+    renderWithConfirmContextProvider(<GasFeeTokenToast />, getStore());
+
+    await Promise.resolve();
+
+    expect(mockToast).toHaveBeenCalledWith(
+      expect.objectContaining({
+        severity: 'default',
+        hasNoTimeout: true,
+        title: expect.anything(),
+        startAccessory: expect.anything(),
+      }),
+    );
   });
 });

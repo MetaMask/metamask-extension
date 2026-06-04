@@ -1,12 +1,23 @@
 /**
  * @jest-environment jsdom
  */
+import { act, render, waitFor } from '@testing-library/react';
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { toast } from '@metamask/design-system-react';
 import { MerklClaimToast } from './merkl-claim-toast';
 
 const mockDismissToast = jest.fn();
 const mockUseMerklClaimStatus = jest.fn();
+
+jest.mock('@metamask/design-system-react', () => {
+  const actual = jest.requireActual('@metamask/design-system-react');
+  const mockToast = jest.fn();
+  mockToast.dismiss = jest.fn();
+  return {
+    ...actual,
+    toast: mockToast,
+  };
+});
 
 jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => {
@@ -23,34 +34,31 @@ jest.mock('../../../hooks/musd/useMerklClaimStatus', () => ({
   useMerklClaimStatus: () => mockUseMerklClaimStatus(),
 }));
 
-let capturedToastProps: Record<string, unknown> | null = null;
-jest.mock('../../multichain/toast', () => ({
-  Toast: (props: Record<string, unknown>) => {
-    capturedToastProps = props;
-    return (
-      <div data-testid={props.dataTestId as string}>{props.text as string}</div>
-    );
-  },
-}));
+const mockToast = toast as jest.MockedFunction<typeof toast> & {
+  dismiss: jest.Mock;
+};
 
 describe('MerklClaimToast', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    capturedToastProps = null;
   });
 
-  it('renders nothing when toastState is null', () => {
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  it('dismisses when toastState is null', async () => {
     mockUseMerklClaimStatus.mockReturnValue({
       toastState: null,
       dismissToast: mockDismissToast,
     });
 
-    const { container } = render(<MerklClaimToast />);
+    render(<MerklClaimToast />);
 
-    expect(container.innerHTML).toBe('');
+    await waitFor(() => expect(mockToast).not.toHaveBeenCalled());
   });
 
-  it('renders in-progress toast without autoHide', () => {
+  it('renders in-progress toast without timeout', async () => {
     mockUseMerklClaimStatus.mockReturnValue({
       toastState: 'in-progress',
       dismissToast: mockDismissToast,
@@ -58,14 +66,21 @@ describe('MerklClaimToast', () => {
 
     render(<MerklClaimToast />);
 
-    expect(screen.getByTestId('merkl-claim-toast')).toHaveTextContent(
-      'Claiming rewards...',
+    await waitFor(() => expect(mockToast).toHaveBeenCalled());
+
+    expect(mockToast).toHaveBeenCalledWith(
+      expect.objectContaining({
+        severity: 'default',
+        title: 'Claiming rewards...',
+        hasNoTimeout: true,
+        'data-testid': 'merkl-claim-toast',
+      }),
     );
-    expect(capturedToastProps).not.toHaveProperty('autoHideTime');
-    expect(capturedToastProps).not.toHaveProperty('onAutoHideToast');
   });
 
-  it('renders success toast with autoHide', () => {
+  it('renders success toast with timeout', async () => {
+    jest.useFakeTimers();
+
     mockUseMerklClaimStatus.mockReturnValue({
       toastState: 'success',
       dismissToast: mockDismissToast,
@@ -73,17 +88,24 @@ describe('MerklClaimToast', () => {
 
     render(<MerklClaimToast />);
 
-    expect(screen.getByTestId('merkl-claim-toast')).toHaveTextContent(
-      'Rewards claimed!',
+    await waitFor(() => expect(mockToast).toHaveBeenCalled());
+
+    expect(mockToast).toHaveBeenCalledWith(
+      expect.objectContaining({
+        severity: 'success',
+        title: 'Rewards claimed!',
+        hasNoTimeout: false,
+      }),
     );
-    expect(capturedToastProps).toHaveProperty('autoHideTime', 5000);
-    expect(capturedToastProps).toHaveProperty(
-      'onAutoHideToast',
-      mockDismissToast,
-    );
+
+    act(() => {
+      jest.advanceTimersByTime(5000);
+    });
+
+    expect(mockDismissToast).toHaveBeenCalled();
   });
 
-  it('renders failed toast with autoHide', () => {
+  it('renders failed toast with timeout', async () => {
     mockUseMerklClaimStatus.mockReturnValue({
       toastState: 'failed',
       dismissToast: mockDismissToast,
@@ -91,24 +113,14 @@ describe('MerklClaimToast', () => {
 
     render(<MerklClaimToast />);
 
-    expect(screen.getByTestId('merkl-claim-toast')).toHaveTextContent(
-      'Claim failed.',
+    await waitFor(() => expect(mockToast).toHaveBeenCalled());
+
+    expect(mockToast).toHaveBeenCalledWith(
+      expect.objectContaining({
+        severity: 'danger',
+        title: 'Claim failed.',
+        hasNoTimeout: false,
+      }),
     );
-    expect(capturedToastProps).toHaveProperty('autoHideTime', 5000);
-    expect(capturedToastProps).toHaveProperty(
-      'onAutoHideToast',
-      mockDismissToast,
-    );
-  });
-
-  it('passes dismissToast as onClose', () => {
-    mockUseMerklClaimStatus.mockReturnValue({
-      toastState: 'success',
-      dismissToast: mockDismissToast,
-    });
-
-    render(<MerklClaimToast />);
-
-    expect(capturedToastProps).toHaveProperty('onClose', mockDismissToast);
   });
 });

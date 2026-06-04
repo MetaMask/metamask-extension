@@ -167,7 +167,7 @@ describe('BridgeAlertModal', () => {
         'ProceedLoading',
         'Cancel',
       ]);
-      expect(getByRole('button', { name: 'Proceed Loading' })).toBeDisabled();
+      expect(getByRole('button', { name: 'Loading' })).toBeDisabled();
       expect(
         getByRole('button', { name: messages.cancel.message }),
       ).toBeDisabled();

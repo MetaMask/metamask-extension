@@ -1,3 +1,6 @@
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import log from 'loglevel';
 import React, {
   useCallback,
   useContext,
@@ -5,10 +8,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import log from 'loglevel';
-import { TextButton, TextColor } from '@metamask/design-system-react';
+import { TextButton, TextColor, toast } from '@metamask/design-system-react';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
@@ -27,7 +27,6 @@ import {
 } from '../../../../shared/lib/passkey';
 import { captureException } from '../../../../shared/lib/sentry';
 import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
-import { toast, ToastContent } from '../../../components/ui/toast/toast';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   SECURITY_AND_PASSWORD_ROUTE,
@@ -154,12 +153,10 @@ const PasskeyItem = () => {
         },
       });
 
-      toast.success(
-        <ToastContent title={t('passkeyTurnedOff', [passkeyMethodLabel])} />,
-        {
-          duration: PASSKEY_SETTINGS_TOAST_DURATION_MS,
-        },
-      );
+      toast({
+        severity: 'success',
+        title: t('passkeyTurnedOff', [passkeyMethodLabel]),
+      });
 
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
@@ -190,15 +187,12 @@ const PasskeyItem = () => {
           createSentryError('Passkey turn off in settings failed', error),
           { extra: { verificationMethod, durationMs, errorCode } },
         );
-        toast.error(
-          <ToastContent
-            title={
-              translatePasskeyError(error, t, passkeyMethodLabel) ??
-              t('passkeyErrorVerificationFailed', [passkeyMethodLabel])
-            }
-          />,
-          { duration: PASSKEY_SETTINGS_TOAST_DURATION_MS },
-        );
+        toast({
+          severity: 'danger',
+          title:
+            translatePasskeyError(error, t, passkeyMethodLabel) ??
+            t('passkeyErrorVerificationFailed', [passkeyMethodLabel]),
+        });
       }
 
       trackEvent({

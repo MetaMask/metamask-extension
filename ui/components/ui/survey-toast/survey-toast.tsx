@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useContext, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Icon, IconName, IconSize } from '@metamask/design-system-react';
+import { Icon, IconName, IconSize, toast } from '@metamask/design-system-react';
+import React, { useEffect, useState, useContext, useMemo } from 'react';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { DAY } from '../../../../shared/constants/time';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -17,7 +17,6 @@ import {
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { ACCOUNTS_API_BASE_URL } from '../../../../shared/constants/accounts';
 import { setLastViewedUserSurvey } from '../../../store/actions';
-import { Toast } from '../../multichain';
 
 type Survey = {
   url: string;
@@ -94,57 +93,65 @@ export function SurveyToast() {
     lastViewedUserSurvey,
     basicFunctionality,
     metaMetricsId,
+    participateInMetaMetrics,
+    surveyUrl,
     dispatch,
   ]);
 
-  function handleActionClick() {
-    if (!survey) {
-      return;
+  useEffect(() => {
+    if (!survey || survey.id <= lastViewedUserSurvey) {
+      return undefined;
     }
-    global.platform.openTab({
-      url: survey.url,
+
+    const trackAction = (response: 'accept' | 'deny') => {
+      if (!participateInMetaMetrics) {
+        return;
+      }
+
+      trackEvent({
+        event: MetaMetricsEventName.SurveyToast,
+        category: MetaMetricsEventCategory.Feedback,
+        properties: {
+          response,
+          survey: survey.id,
+        },
+      });
+    };
+
+    const handleActionClick = () => {
+      global.platform.openTab({
+        url: survey.url,
+      });
+      dispatch(setLastViewedUserSurvey(survey.id));
+      trackAction('accept');
+    };
+
+    const handleClose = () => {
+      dispatch(setLastViewedUserSurvey(survey.id));
+      trackAction('deny');
+    };
+
+    toast({
+      severity: 'default',
+      'data-testid': 'survey-toast',
+      title: survey.description,
+      description: survey.content,
+      actionButtonLabel: survey.cta,
+      actionButtonOnClick: handleActionClick,
+      onClose: handleClose,
+      startAccessory: <Icon name={IconName.Feedback} size={IconSize.Lg} />,
     });
-    dispatch(setLastViewedUserSurvey(survey.id));
-    trackAction('accept');
-  }
 
-  function handleClose() {
-    if (!survey) {
-      return;
-    }
-    dispatch(setLastViewedUserSurvey(survey.id));
-    trackAction('deny');
-  }
+    return () => {
+      toast.dismiss();
+    };
+  }, [
+    dispatch,
+    lastViewedUserSurvey,
+    participateInMetaMetrics,
+    survey,
+    trackEvent,
+  ]);
 
-  function trackAction(response: 'accept' | 'deny') {
-    if (!participateInMetaMetrics || !survey) {
-      return;
-    }
-
-    trackEvent({
-      event: MetaMetricsEventName.SurveyToast,
-      category: MetaMetricsEventCategory.Feedback,
-      properties: {
-        response,
-        survey: survey.id,
-      },
-    });
-  }
-
-  if (!survey || survey.id <= lastViewedUserSurvey) {
-    return null;
-  }
-
-  return (
-    <Toast
-      dataTestId="survey-toast"
-      key="survey-toast"
-      text={survey.description}
-      description={survey.content}
-      actionText={survey.cta}
-      onActionClick={handleActionClick}
-      onClose={handleClose}
-      startAdornment={<Icon name={IconName.Feedback} size={IconSize.Lg} />}
-    />
-  );
+  return null;
 }

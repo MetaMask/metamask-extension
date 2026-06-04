@@ -1,17 +1,17 @@
-import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Icon as DsIcon,
   IconColor as DsIconColor,
   IconName as DsIconName,
   IconSize as DsIconSize,
+  toast,
 } from '@metamask/design-system-react';
 import { SECOND } from '../../../../shared/constants/time';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { selectPerpsLastWithdrawResult } from '../../../selectors/perps-controller';
-import { Toast } from '../../multichain/toast';
 
 /**
  * Home-screen toast for Perps withdrawal completion.
@@ -39,50 +39,60 @@ export function PerpsWithdrawToast() {
 
   const autoHideDelay = 5 * SECOND;
 
-  if (dismissed || !lastWithdrawResult) {
-    return null;
-  }
+  useEffect(() => {
+    if (dismissed || !lastWithdrawResult) {
+      return undefined;
+    }
 
-  const isSuccess = lastWithdrawResult.success === true;
-  const amountNum = parseFloat(lastWithdrawResult.amount);
-  const amountLabel = Number.isFinite(amountNum)
-    ? formatCurrency(amountNum, 'USD')
-    : lastWithdrawResult.amount;
+    const isSuccess = lastWithdrawResult.success === true;
+    const amountNum = parseFloat(lastWithdrawResult.amount);
+    const amountLabel = Number.isFinite(amountNum)
+      ? formatCurrency(amountNum, 'USD')
+      : lastWithdrawResult.amount;
 
-  const toastText = isSuccess
-    ? t('perpsWithdrawToastSuccessTitle')
-    : t('perpsWithdrawToastErrorTitle');
+    const timeoutId = setTimeout(() => {
+      dismissToast();
+    }, autoHideDelay);
 
-  const description = isSuccess
-    ? t('perpsWithdrawToastSuccessDescription', [amountLabel])
-    : lastWithdrawResult.error || t('perpsWithdrawFailed');
+    toast({
+      severity: isSuccess ? 'success' : 'danger',
+      title: isSuccess
+        ? t('perpsWithdrawToastSuccessTitle')
+        : t('perpsWithdrawToastErrorTitle'),
+      description: isSuccess
+        ? t('perpsWithdrawToastSuccessDescription', [amountLabel])
+        : lastWithdrawResult.error || t('perpsWithdrawFailed'),
+      startAccessory: isSuccess ? (
+        <DsIcon
+          name={DsIconName.Confirmation}
+          color={DsIconColor.SuccessDefault}
+          size={DsIconSize.Lg}
+        />
+      ) : (
+        <DsIcon
+          name={DsIconName.CircleX}
+          color={DsIconColor.ErrorDefault}
+          size={DsIconSize.Lg}
+        />
+      ),
+      'data-testid': 'perps-withdraw-toast',
+      className: 'perps-toast self-center w-full max-w-[408px]',
+      onClose: dismissToast,
+      hasNoTimeout: true,
+    });
 
-  const startAdornment = isSuccess ? (
-    <DsIcon
-      name={DsIconName.Confirmation}
-      color={DsIconColor.SuccessDefault}
-      size={DsIconSize.Lg}
-    />
-  ) : (
-    <DsIcon
-      name={DsIconName.CircleX}
-      color={DsIconColor.ErrorDefault}
-      size={DsIconSize.Lg}
-    />
-  );
+    return () => {
+      clearTimeout(timeoutId);
+      toast.dismiss();
+    };
+  }, [
+    autoHideDelay,
+    dismissed,
+    dismissToast,
+    formatCurrency,
+    lastWithdrawResult,
+    t,
+  ]);
 
-  return (
-    <Toast
-      key={`perps-withdraw-toast-${lastWithdrawResult.timestamp}`}
-      dataTestId="perps-withdraw-toast"
-      className="perps-toast self-center w-full max-w-[408px]"
-      contentProps={{ className: 'items-center' }}
-      text={toastText}
-      description={description}
-      startAdornment={startAdornment}
-      onClose={dismissToast}
-      autoHideTime={autoHideDelay}
-      onAutoHideToast={dismissToast}
-    />
-  );
+  return null;
 }

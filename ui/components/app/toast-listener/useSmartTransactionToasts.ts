@@ -1,7 +1,8 @@
-import { useEffect, useRef } from 'react';
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller';
 import { TransactionStatus as EvmTransactionStatus } from '@metamask/transaction-controller';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { type TransactionStatus } from '../../../helpers/utils/transaction-display';
 import { resolvePendingApproval } from '../../../store/actions';
 import { selectSmartTransactions } from '../../../selectors/toast';
@@ -59,6 +60,7 @@ function mapToastStatus(
 // Relies on pendingApprovals being managed via the SmartTransactionHook
 export function useSmartTransactionToasts() {
   const dispatch = useDispatch();
+  const t = useI18nContext();
   const transactions = useSelector(selectSmartTransactions);
   const previousStatusesRef = useRef<
     Record<string, TransactionStatus | undefined>
@@ -78,7 +80,9 @@ export function useSmartTransactionToasts() {
       nextStatuses[toastId] = currentStatus;
 
       if (previousStatus === undefined && currentStatus === 'pending') {
-        showPendingToast(toastId);
+        showPendingToast(toastId, {
+          title: t('transactionSubmitted'),
+        });
         continue;
       }
 
@@ -87,13 +91,17 @@ export function useSmartTransactionToasts() {
       }
 
       if (currentStatus === 'success') {
-        showSuccessToast(toastId);
+        showSuccessToast(toastId, {
+          title: t('transactionConfirmed'),
+        });
         dispatch(resolvePendingApproval(tx.approvalId, true));
         continue;
       }
 
       if (currentStatus === 'failed') {
-        showFailedToast(toastId);
+        showFailedToast(toastId, {
+          title: t('transactionFailed'),
+        });
         dispatch(resolvePendingApproval(tx.approvalId, true));
       }
     }
@@ -108,5 +116,5 @@ export function useSmartTransactionToasts() {
     }
 
     previousStatusesRef.current = nextStatuses;
-  }, [dispatch, transactions]);
+  }, [dispatch, t, transactions]);
 }

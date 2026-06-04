@@ -6,6 +6,7 @@ import { getTokenTrackerLink, getAccountLink } from '@metamask/etherscan-link';
 import { Nft } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
 import { ERC721, ERC1155 } from '@metamask/controller-utils';
+import { toast } from '@metamask/design-system-react';
 import {
   BlockSize,
   BorderColor,
@@ -41,7 +42,6 @@ import {
   removeAndIgnoreNft,
   setActiveNetworkWithError,
 } from '../../../../../store/actions';
-import { toast, ToastContent } from '../../../../ui/toast/toast';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import NftOptions from '../nft-options/nft-options';
 import InfoTooltip from '../../../../ui/info-tooltip';
@@ -228,19 +228,17 @@ export function NftDetailsComponent({
   const onRemove = async () => {
     try {
       await dispatch(removeAndIgnoreNft(address, tokenId, nftNetworkClientId));
-      toast.success(
-        <ToastContent
-          dataTestId="nft-remove-success-toast"
-          title={t('removeNftMessage')}
-        />,
-      );
+      toast({
+        severity: 'success',
+        title: t('removeNftMessage'),
+        'data-testid': 'nft-remove-success-toast',
+      });
     } catch {
-      toast.error(
-        <ToastContent
-          dataTestId="nft-remove-error-toast"
-          title={t('removeNftErrorMessage')}
-        />,
-      );
+      toast({
+        severity: 'danger',
+        title: t('removeNftErrorMessage'),
+        'data-testid': 'nft-remove-error-toast',
+      });
     } finally {
       navigate(DEFAULT_ROUTE);
     }

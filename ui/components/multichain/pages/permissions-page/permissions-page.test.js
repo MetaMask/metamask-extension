@@ -9,6 +9,14 @@ import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../share
 import * as actions from '../../../../store/actions';
 import PermissionsPage from './permissions-page';
 
+jest.mock('@metamask/design-system-react', () => {
+  const actual = jest.requireActual('@metamask/design-system-react');
+  return {
+    ...actual,
+    toast: Object.assign(jest.fn(), { dismiss: jest.fn() }),
+  };
+});
+
 mockState.metamask.subjectMetadata = {
   'https://metamask.github.io': {
     iconUrl: 'https://metamask.github.io/test-dapp/metamask-fox.svg',

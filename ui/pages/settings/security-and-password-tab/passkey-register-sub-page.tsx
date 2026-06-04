@@ -1,7 +1,7 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
 import log from 'loglevel';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import {
   Box,
   Text,
@@ -14,6 +14,7 @@ import {
   TextVariant,
   TextColor,
   TextAlign,
+  toast,
 } from '@metamask/design-system-react';
 import {
   FormTextField,
@@ -40,7 +41,6 @@ import {
   forceUpdateMetamaskState,
   verifyPassword,
 } from '../../../store/actions';
-import { toast, ToastContent } from '../../../components/ui/toast/toast';
 import { SECOND } from '../../../../shared/constants/time';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -204,12 +204,10 @@ export default function PasskeyRegisterSubPage() {
       await new Promise((resolve) => {
         setTimeout(resolve, PASSKEY_ENROLLMENT_SUCCESS_DISPLAY_MS);
       });
-      toast.success(
-        <ToastContent title={t('passkeyTurnedOn', [passkeyMethodLabel])} />,
-        {
-          duration: PASSKEY_SETTINGS_TOAST_DURATION_MS,
-        },
-      );
+      toast({
+        severity: 'success',
+        title: t('passkeyTurnedOn', [passkeyMethodLabel]),
+      });
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.SettingsUpdated,

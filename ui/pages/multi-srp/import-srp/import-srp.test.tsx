@@ -1,14 +1,14 @@
-import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { toast } from '@metamask/design-system-react';
+import React from 'react';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { importMnemonicToVault } from '../../../store/actions';
-import { toast, ToastContent } from '../../../components/ui/toast/toast';
 import { ImportSrp } from './import-srp';
 
 jest.mock('../../../store/actions', () => ({
@@ -23,14 +23,13 @@ jest.mock('../../../store/actions', () => ({
   hideWarning: jest.fn().mockReturnValue({ type: 'HIDE_WARNING' }),
 }));
 
-jest.mock('../../../components/ui/toast/toast', () => ({
-  toast: {
-    success: jest.fn(),
-  },
-  ToastContent: jest.fn(({ title, dataTestId }) => (
-    <div data-testid={dataTestId}>{title}</div>
-  )),
-}));
+jest.mock('@metamask/design-system-react', () => {
+  const actual = jest.requireActual('@metamask/design-system-react');
+  return {
+    ...actual,
+    toast: Object.assign(jest.fn(), { dismiss: jest.fn() }),
+  };
+});
 
 const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
@@ -99,16 +98,16 @@ describe('ImportSrp', () => {
     await waitFor(() => {
       // Verify that importMnemonicToVault was called with the correct SRP
       expect(importMnemonicToVault).toHaveBeenCalledWith(VALID_SEED);
-      expect(toast.success).toHaveBeenCalledWith(
-        <ToastContent
-          title={messages.importWalletSuccess.message.replace('$1', '2')}
-          dataTestId="new-srp-added-toast"
-        />,
-        { id: 'new-srp-added-toast', duration: 5000 },
+      expect(toast).toHaveBeenCalledWith(
+        expect.objectContaining({
+          severity: 'success',
+          title: messages.importWalletSuccess.message.replace('$1', '2'),
+          'data-testid': 'new-srp-added-toast',
+        }),
       );
-      expect(
-        jest.mocked(toast.success).mock.invocationCallOrder[0],
-      ).toBeLessThan(mockNavigate.mock.invocationCallOrder[0]);
+      expect(jest.mocked(toast).mock.invocationCallOrder[0]).toBeLessThan(
+        mockNavigate.mock.invocationCallOrder[0],
+      );
       // Verify that navigation happened after import
       expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     });

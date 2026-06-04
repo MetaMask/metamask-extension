@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import { toast } from '@metamask/design-system-react';
 import { SECOND } from '../../../../shared/constants/time';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../store/background-connection';
@@ -8,7 +9,6 @@ import {
   selectPerpsLastDepositResult,
   selectPerpsShouldShowDepositToast,
 } from '../../../selectors/perps-controller';
-import { toast, ToastContent } from '../../ui/toast/toast';
 
 const id = 'perps-deposit-toast';
 const duration = 5 * SECOND;
@@ -40,16 +40,12 @@ export function PerpsDepositToast() {
     const description = isSuccess
       ? t('perpsDepositToastSuccessDescription')
       : lastDepositResultError || t('perpsDepositToastErrorDescription');
-    const content = (
-      <ToastContent title={title} description={description} dataTestId={id} />
-    );
-    const options = { id, duration };
-
-    if (isSuccess) {
-      toast.success(content, options);
-    } else {
-      toast.error(content, options);
-    }
+    toast({
+      severity: isSuccess ? 'success' : 'danger',
+      title,
+      description,
+      'data-testid': id,
+    });
 
     const timeoutId = setTimeout(() => {
       clearDepositResult();
@@ -57,7 +53,7 @@ export function PerpsDepositToast() {
 
     return () => {
       clearTimeout(timeoutId);
-      toast.dismiss(id);
+      toast.dismiss();
     };
   }, [
     hasDepositResult,
@@ -73,29 +69,25 @@ export function PerpsDepositToast() {
     }
 
     if (!shouldShowDepositToast) {
-      toast.dismiss(id);
+      toast.dismiss();
       return;
     }
 
     if (!depositInProgress) {
-      toast.dismiss(id);
+      toast.dismiss();
       return;
     }
 
-    toast.loading(
-      <ToastContent
-        title={t('perpsDepositToastPendingTitle')}
-        description={t('perpsDepositToastPendingDescription')}
-        dataTestId={id}
-      />,
-      {
-        id,
-        duration: Infinity,
-      },
-    );
+    toast({
+      severity: 'default',
+      title: t('perpsDepositToastPendingTitle'),
+      description: t('perpsDepositToastPendingDescription'),
+      'data-testid': id,
+      hasNoTimeout: true,
+    });
 
     return () => {
-      toast.dismiss(id);
+      toast.dismiss();
     };
   }, [depositInProgress, hasDepositResult, shouldShowDepositToast, t]);
 

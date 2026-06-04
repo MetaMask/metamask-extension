@@ -1,12 +1,12 @@
-import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { act, fireEvent, waitFor } from '@testing-library/react';
+import React from 'react';
+import { toast } from '@metamask/design-system-react';
 import { ExtensionPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
 import {
   startPasskeyAuthentication,
   cancelPasskeyCeremony,
 } from '../../../../shared/lib/passkey';
-import { toast } from '../../ui/toast/toast';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
@@ -21,18 +21,11 @@ import ChangePassword from './change-password';
 
 const PASSKEY_LABEL_BIOMETRICS = tEn('passkeyAuthMethodBiometrics');
 
-jest.mock('../../ui/toast/toast', () => {
-  const actual = jest.requireActual<typeof import('../../ui/toast/toast')>(
-    '../../ui/toast/toast',
-  );
+jest.mock('@metamask/design-system-react', () => {
+  const actual = jest.requireActual('@metamask/design-system-react');
   return {
     ...actual,
-    toast: {
-      ...actual.toast,
-      error: jest.fn(),
-      success: jest.fn(),
-    },
-    ToastContent: actual.ToastContent,
+    toast: Object.assign(jest.fn(), { dismiss: jest.fn() }),
   };
 });
 
@@ -976,14 +969,20 @@ describe('ChangePassword', () => {
       fireEvent.click(getByTestId('change-password-button'));
 
       await waitFor(() => {
-        expect(jest.mocked(toast.success)).toHaveBeenCalled();
+        expect(jest.mocked(toast)).toHaveBeenCalledWith(
+          expect.objectContaining({
+            severity: 'success',
+            title: tEn('securityChangePasswordToastPasskeyRenewalFailed', [
+              PASSKEY_LABEL_BIOMETRICS,
+            ]),
+          }),
+        );
       });
 
-      const toastSuccess = jest.mocked(toast.success);
-      const firstArg = toastSuccess.mock.calls[0][0] as {
-        props: { title: string };
+      const firstArg = jest.mocked(toast).mock.calls[0][0] as {
+        title: string;
       };
-      expect(firstArg.props.title).toBe(
+      expect(firstArg.title).toBe(
         tEn('securityChangePasswordToastPasskeyRenewalFailed', [
           PASSKEY_LABEL_BIOMETRICS,
         ]),
