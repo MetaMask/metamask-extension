@@ -8,6 +8,23 @@ Status: Proposed
 Deciders: Extension Platform, Wallet Framework, Security, Performance, and
 Extension Reliability owners
 
+## TL;DR
+
+MetaMask should stop rewriting the same fixed Chromium extension storage keys
+for current wallet state. Instead, each persistence batch should write fresh
+generated value keys, then publish small redundant metadata pointers that mark
+the latest coherent state. Future reads should follow those generated pointers
+and avoid old fixed keys once generated storage has taken ownership, so one
+corrupt historical key is less likely to block every startup.
+
+## ELI5
+
+Today, MetaMask keeps putting important notes in the same few labeled drawers.
+If one drawer breaks, MetaMask keeps trying to open that same broken drawer and
+can get stuck. The proposed fix is to put each new note in a new drawer, keep
+several small maps that point to the newest good drawers, and stop depending on
+old broken drawers after the new map system exists.
+
 ## Problem Statement
 
 MetaMask Extension is seeing Chromium `chrome.storage.local` stability failures
@@ -87,6 +104,7 @@ fixed legacy keys are not touched unless no generated signal exists.
 - Increase backup reliance using IndexedDB or another local database
 - Attempt browser or LevelDB repair from the extension
 - Keep split state, but only narrow read batching
+- Add read-after-write verification after every storage write
 - Generated value keys with mirrored manifests, key lists, pointers, tombstones,
   chunking, and fail-closed legacy fallback
 - Remote backup or server-side wallet state recovery
@@ -413,6 +431,57 @@ but it cannot make disk-full writes succeed. Metadata mirroring and chunking add
 bounded write overhead, so capacity-related errors should remain part of the
 rollout dashboard.
 
+### Why Not Read-After-Write Verification
+
+This ADR does not propose immediate read-after-write verification as a primary
+corruption mitigation. The idea is to call `chrome.storage.local.get` for keys
+immediately after `chrome.storage.local.set`, compare the returned values, and
+treat a mismatch as evidence that the write failed or the key is corrupt.
+
+That check can catch application-level serialization mistakes, unexpected API
+failures, or same-runtime logical inconsistencies. It does not prove that
+Chromium durably persisted the bytes or that the on-disk LevelDB structures are
+healthy.
+
+Chromium's extension storage path writes through LevelDB using the default
+`leveldb::WriteOptions`, where `sync` is `false`. LevelDB documents this as an
+asynchronous write: the operation returns after data is pushed from the process
+to the operating system, while transfer to persistent storage can happen later.
+LevelDB then makes the update visible through its in-memory memtable. A read
+immediately after the write can therefore return the value from memory before
+forcing LevelDB to re-read the persisted log, table file, or manifest from disk.
+
+```mermaid
+flowchart LR
+  A["chrome.storage.local.set"] --> B["Chromium ValueStore Set"]
+  B --> C["LevelDB WriteBatch"]
+  C --> D["Append write-ahead log record"]
+  D --> E["Insert into in-memory memtable"]
+  E --> F["set resolves"]
+  F --> G["Immediate get"]
+  G --> H["Read can return from memtable"]
+  H --> I["Value matches"]
+  I -.-> J["No proof of durable fsync or future table/manifest health"]
+```
+
+This matters because the observed corruption classes can surface after the
+immediate write path:
+
+- a machine, operating system, or storage-device crash can lose recent async
+  writes that were accepted by LevelDB but not yet forced to stable storage;
+- log replay can encounter malformed or checksum-failing records;
+- compaction can later move values into `.ldb` or `.sst` table files whose
+  blocks are verified by checksum on future reads;
+- metadata files such as `CURRENT` and `MANIFEST-*` can be missing, corrupt, or
+  unreadable during later database open/recovery; and
+- no-space or other IO failures can occur while appending logs, writing table
+  files, syncing manifests, or opening database files.
+
+Read-after-write verification would also add extra storage operations on every
+persist, increasing latency and storage pressure while producing a false sense
+of durability. It is therefore best treated as a diagnostic tool for narrow
+experiments, not as the storage resilience strategy.
+
 ## Resilience Model
 
 The proposal does not claim that Chromium LevelDB corruption disappears. It
@@ -456,6 +525,7 @@ Scores use 1 as weakest and 5 as strongest.
 | More backup reliance | 3 | 4 | 1 | 2 | 3 | 3 |
 | Browser/LevelDB repair | 2 | 5 | 5 | 5 | 1 | 2 |
 | Narrow split-state reads only | 2 | 5 | 5 | 5 | 4 | 3 |
+| Read-after-write verification | 2 | 5 | 5 | 3 | 4 | 3 |
 | Generated keys and mirrored metadata | 5 | 5 | 5 | 4 | 3 | 5 |
 | Remote recovery | 4 | 1 | 5 | 3 | 2 | 4 |
 
@@ -470,6 +540,7 @@ quadrantChart
   quadrant-4 Easy but insufficient
   Status quo: [0.12, 0.15]
   Narrow reads only: [0.35, 0.35]
+  Read-after-write verification: [0.38, 0.30]
   More backup reliance: [0.50, 0.55]
   Remote recovery: [0.80, 0.70]
   Generated keys and mirrored metadata: [0.62, 0.92]
@@ -540,6 +611,28 @@ to smaller or individual key reads.
   failure point.
 - Bad, because it does not avoid stale fixed keys after a newer value has been
   written.
+
+### Add read-after-write verification after every storage write
+
+After every `chrome.storage.local.set`, immediately call
+`chrome.storage.local.get` for the same keys and compare the returned values.
+Treat read mismatches or read failures as evidence that the write did not land
+cleanly.
+
+- Good, because it can catch application-level serialization bugs or
+  unexpected same-runtime API failures.
+- Good, because it can provide targeted telemetry during experiments.
+- Neutral, because it verifies same-runtime read visibility, not durable
+  persistence.
+- Bad, because Chromium extension storage writes through LevelDB with
+  asynchronous durability semantics by default.
+- Bad, because an immediate LevelDB read can be served from the in-memory
+  memtable rather than from persisted table, log, or manifest bytes.
+- Bad, because corruption can appear later during database reopen, log replay,
+  checksum verification, compaction output reads, or manifest recovery.
+- Bad, because it doubles normal-path storage operations and can increase write
+  latency and storage pressure.
+- Bad, because it does not stop repeated reads of old corrupt fixed keys.
 
 ### Generated value keys with mirrored manifests, key lists, pointers, tombstones, chunking, and fail-closed legacy fallback
 
@@ -618,6 +711,11 @@ Read performance should remain acceptable because the implementation avoids
 `get(null)` scans and uses targeted reads. Startup performs more small metadata
 reads, but those reads are individually scoped and provide fallback paths when a
 single metadata key fails.
+
+The proposal intentionally avoids normal-path read-after-write verification.
+Such verification would add more storage calls without proving durable
+persistence, because LevelDB can satisfy the immediate read from in-memory state
+after an asynchronous write.
 
 ## Privacy and Security Considerations
 
@@ -700,6 +798,14 @@ The initial implementation has been validated with:
 - Chromium issue: https://issues.chromium.org/issues/432503402
 - Chromium manual recovery investigation:
   https://issues.chromium.org/issues/432497646
+- Chromium extension storage `LeveldbValueStore`:
+  https://chromium.googlesource.com/chromium/src/+/main/components/value_store/leveldb_value_store.cc
+- Chromium extension storage `LazyLevelDb`:
+  https://chromium.googlesource.com/chromium/src/+/main/components/value_store/lazy_leveldb.cc
+- LevelDB write options and synchronous write documentation:
+  https://github.com/google/leveldb/blob/7ee830d02b623e8ffe0b95d59a74db1e58da04c5/include/leveldb/options.h
+- LevelDB write and read implementation:
+  https://github.com/google/leveldb/blob/7ee830d02b623e8ffe0b95d59a74db1e58da04c5/db/db_impl.cc
 - Related Sentry shares:
   - https://metamask.sentry.io/share/issue/61c25635cfd7469a8bcbb3c5738a15d4/
   - https://metamask.sentry.io/share/issue/9792491dfe0c4f42975c7ec5c0572913/
