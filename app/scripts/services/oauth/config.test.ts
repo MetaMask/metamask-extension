@@ -131,6 +131,10 @@ describe('loadOAuthConfig', () => {
         environment: ENVIRONMENT.STAGING,
         expectedBuildTypeEnv: BuildTypeEnv.UatBeta,
       },
+      {
+        environment: ENVIRONMENT.PULL_REQUEST,
+        expectedBuildTypeEnv: BuildTypeEnv.UatBeta,
+      },
     ];
 
     for (const { environment, expectedBuildTypeEnv } of testCases) {
