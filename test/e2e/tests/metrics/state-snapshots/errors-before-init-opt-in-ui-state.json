@@ -214,6 +214,7 @@
         "defaultAddressScope": "string",
         "dismissSmartAccountSuggestionEnabled": "boolean",
         "featureNotificationsEnabled": "boolean",
+        "gasSponsorshipOptOutByChainId": "object",
         "hideZeroBalanceTokens": false,
         "privacyMode": "boolean",
         "showConfirmationAdvancedDetails": false,
@@ -227,7 +228,6 @@
         "smartTransactionsMigrationApplied": "boolean",
         "smartTransactionsOptInStatus": true,
         "tokenNetworkFilter": { "0x539": "boolean" },
-        "gasSponsorshipOptOutByChainId": "object",
         "tokenSortConfig": "object",
         "useNativeCurrencyAsPrimaryCurrency": "boolean",
         "useSidePanelAsDefault": "boolean"
