@@ -1,5 +1,6 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import { getActiveQrCodeScanRequest } from '../../../selectors';
@@ -21,6 +22,10 @@ import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../../../../shared/constants/app';
+import {
+  CROSS_CHAIN_SWAP_ROUTE,
+  HARDWARE_WALLET_SIGNATURES_ROUTE,
+} from '../../../helpers/constants/routes';
 import type { ConfirmTransactionSlice } from './qr-hardware-popover.types';
 import QRHardwareWalletImporter from './qr-hardware-wallet-importer';
 import QRHardwareSignRequest from './qr-hardware-sign-request';
@@ -41,6 +46,9 @@ const EMPTY_HEADER_PLACEHOLDER = '\u00A0';
 const QRHardwarePopover = () => {
   const t = useI18nContext();
   const activeScanRequest = useSelector(getActiveQrCodeScanRequest);
+  const { pathname } = useLocation();
+  const isBridgeHardwareWalletSigningPage =
+    pathname === `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`;
 
   const environmentType = getEnvironmentType();
   const isRestrictedEnv =
@@ -113,6 +121,13 @@ const QRHardwarePopover = () => {
   // checkEnvironment() to open a duplicate fullscreen tab, stealing focus
   // from the tab that shows the "Select an account" list after scanning.
   if (isRestrictedEnv && activeScanRequest?.type === QrScanRequestType.PAIR) {
+    return null;
+  }
+
+  if (
+    isBridgeHardwareWalletSigningPage &&
+    activeScanRequest?.type === QrScanRequestType.SIGN
+  ) {
     return null;
   }
 
