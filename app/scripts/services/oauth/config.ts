@@ -1,5 +1,6 @@
 import { Web3AuthNetwork } from '@metamask/seedless-onboarding-controller';
-import { ENVIRONMENT } from '../../../../development/build/constants';
+import { Env as ProfileSyncEnv } from '@metamask/profile-sync-controller/sdk';
+import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { OAuthConfig } from './types';
 
 export enum BuildTypeEnv {
@@ -52,6 +53,8 @@ export const OauthConfigMap: Record<BuildTypeEnv, OAuthConfig> = {
     appleAuthConnectionId: 'mm-apple-dev-common',
     googleGroupedAuthConnectionId: 'mm-google-dev',
     appleGroupedAuthConnectionId: 'mm-apple-dev',
+    telegramAuthConnectionId: 'mm-telegram-auth-dev-common',
+    telegramGroupedAuthConnectionId: 'mm-telegram-auth-dev',
     authServerUrl: 'https://auth-service.dev-api.cx.metamask.io',
     web3AuthNetwork: Web3AuthNetwork.Devnet,
   },
@@ -60,6 +63,8 @@ export const OauthConfigMap: Record<BuildTypeEnv, OAuthConfig> = {
     appleAuthConnectionId: 'mm-apple-flask-dev-common',
     googleGroupedAuthConnectionId: 'mm-google-flask-dev',
     appleGroupedAuthConnectionId: 'mm-apple-flask-dev',
+    telegramAuthConnectionId: 'mm-telegram-auth-dev-common',
+    telegramGroupedAuthConnectionId: 'mm-telegram-auth-dev',
     authServerUrl: 'https://auth-service.dev-api.cx.metamask.io',
     web3AuthNetwork: Web3AuthNetwork.Devnet,
   },
@@ -68,6 +73,8 @@ export const OauthConfigMap: Record<BuildTypeEnv, OAuthConfig> = {
     appleAuthConnectionId: 'mm-apple-uat-common',
     googleGroupedAuthConnectionId: 'mm-google-uat',
     appleGroupedAuthConnectionId: 'mm-apple-uat',
+    telegramAuthConnectionId: 'mm-telegram-uat-common',
+    telegramGroupedAuthConnectionId: 'mm-telegram-uat',
     authServerUrl: 'https://auth-service.uat-api.cx.metamask.io',
     web3AuthNetwork: Web3AuthNetwork.Mainnet,
   },
@@ -76,6 +83,8 @@ export const OauthConfigMap: Record<BuildTypeEnv, OAuthConfig> = {
     appleAuthConnectionId: 'mm-apple-flask-uat-common',
     googleGroupedAuthConnectionId: 'mm-google-flask-uat',
     appleGroupedAuthConnectionId: 'mm-apple-flask-uat',
+    telegramAuthConnectionId: 'mm-telegram-flask-uat-common',
+    telegramGroupedAuthConnectionId: 'mm-telegram-flask-uat',
     authServerUrl: 'https://auth-service.uat-api.cx.metamask.io',
     web3AuthNetwork: Web3AuthNetwork.Mainnet,
   },
@@ -84,6 +93,8 @@ export const OauthConfigMap: Record<BuildTypeEnv, OAuthConfig> = {
     appleAuthConnectionId: 'mm-apple-main-common',
     googleGroupedAuthConnectionId: 'mm-google-main',
     appleGroupedAuthConnectionId: 'mm-apple-main',
+    telegramAuthConnectionId: 'mm-telegram-main-common',
+    telegramGroupedAuthConnectionId: 'mm-telegram-main',
     authServerUrl: 'https://auth-service.api.cx.metamask.io',
     web3AuthNetwork: Web3AuthNetwork.Mainnet,
   },
@@ -92,6 +103,8 @@ export const OauthConfigMap: Record<BuildTypeEnv, OAuthConfig> = {
     appleAuthConnectionId: 'mm-apple-flask-main-common',
     googleGroupedAuthConnectionId: 'mm-google-flask-main',
     appleGroupedAuthConnectionId: 'mm-apple-flask-main',
+    telegramAuthConnectionId: 'mm-telegram-flask-main-common',
+    telegramGroupedAuthConnectionId: 'mm-telegram-flask-main',
     authServerUrl: 'https://auth-service.api.cx.metamask.io',
     web3AuthNetwork: Web3AuthNetwork.Mainnet,
   },
@@ -100,6 +113,8 @@ export const OauthConfigMap: Record<BuildTypeEnv, OAuthConfig> = {
     appleAuthConnectionId: 'mm-apple-main-common',
     googleGroupedAuthConnectionId: 'mm-google-main',
     appleGroupedAuthConnectionId: 'mm-apple-main',
+    telegramAuthConnectionId: 'mm-telegram-main-common',
+    telegramGroupedAuthConnectionId: 'mm-telegram-main',
     authServerUrl: 'https://auth-service.api.cx.metamask.io',
     web3AuthNetwork: Web3AuthNetwork.Mainnet,
   },
@@ -122,7 +137,7 @@ export function isDevOrTestBuild() {
  *
  * @returns true if the build is a Production build, false otherwise
  */
-function isProductionBuild() {
+export function isProductionBuild() {
   return process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.PRODUCTION;
 }
 
@@ -132,8 +147,17 @@ function isProductionBuild() {
  *
  * @returns true if the build is from the release candidate branch, false otherwise
  */
-function isReleaseCandidateBuild() {
+export function isReleaseCandidateBuild() {
   return process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.RELEASE_CANDIDATE;
+}
+
+export function getProfilePairingEnv(): ProfileSyncEnv {
+  if (isProductionBuild() || isReleaseCandidateBuild()) {
+    return ProfileSyncEnv.PRD;
+  } else if (isDevOrTestBuild()) {
+    return ProfileSyncEnv.DEV;
+  }
+  return ProfileSyncEnv.UAT;
 }
 
 /**

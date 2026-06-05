@@ -60,7 +60,7 @@
       }
     },
     "^ background; v popup": {},
-    "axios": {
+    "wait-on>axios": {
       "globals": {
         "Buffer": false,
         "Buffer.alloc": true,

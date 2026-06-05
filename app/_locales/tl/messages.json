@@ -37,20 +37,8 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "Error"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "Di-wastong QR code. Paki-scan ang sync QR code ng wallet na hardware."
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "Mag-scan ng QR code"
-  },
-  "QRHardwareWalletSteps1Description": {
-    "message": "Maaari kang pumili mula sa isang listahan ng mga opisyal na ka-partner sa pagsuporta sa QR-code sa ibaba."
-  },
-  "QRHardwareWalletSteps1Title": {
-    "message": "Ikonekta ang iyong QR na wallet na hardware"
-  },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
   },
   "SrpListHideAccounts": {
     "message": "Itago ang $1 (na) account",
@@ -561,9 +549,6 @@
   },
   "airDropPatternTitle": {
     "message": "Pattern ng Airdrop"
-  },
-  "airgapVault": {
-    "message": "AirGap Vault"
   },
   "alert": {
     "message": "Alerto"
@@ -1190,15 +1175,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "Kakailanganin mong kumpirmahin ang 2 transaksyon sa iyong hardware wallet:"
   },
-  "bridgeCreateSolanaAccount": {
-    "message": "Gumawa ng Solana account"
-  },
-  "bridgeCreateSolanaAccountDescription": {
-    "message": "Para mag-swap papunta sa Solana network, kailangan mo ng account at tatanggap na address."
-  },
-  "bridgeCreateSolanaAccountTitle": {
-    "message": "Kailangan mo muna ng Solana account."
-  },
   "bridgeDetailsTitle": {
     "message": "Mga detalye ng bridge",
     "description": "Title for the modal showing details about a bridge transaction."
@@ -1474,9 +1450,6 @@
   "bridgeSendLoading": {
     "message": "Ipinapadala mula sa chain ng pinagmulan"
   },
-  "bridgeSolanaAccountCreated": {
-    "message": "Nakagawa ng Solana account"
-  },
   "bridgeStatusComplete": {
     "message": "Kumpleto na",
     "description": "Status text indicating a bridge transaction has successfully completed."
@@ -1617,9 +1590,6 @@
   "buyMoreAsset": {
     "message": "Bumili pa ng $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyNow": {
-    "message": "Bilhin Ngayon"
   },
   "buyTabOpenedToastDescription": {
     "message": "Nagbukas kami ng bagong tab para sa pagbili.",
@@ -1927,9 +1897,6 @@
   "confirmTitleDescERC20ApproveTransaction": {
     "message": "Gusto ng site na ito ng pahintulot na i-withdraw ang iyong mga token"
   },
-  "confirmTitleDescERC20Revocation": {
-    "message": "Humihingi ng mga pahintulot ang site na ito para bawiin ang iyong mga pag-apruba sa ERC-20 token."
-  },
   "confirmTitleDescPermission": {
     "message": "Kailangan ng site na ito ng mga pahintulot para gastusin ang mga token mo."
   },
@@ -2141,9 +2108,6 @@
   "convertTokenToNFTExistDescription": {
     "message": "Napansin namin na naidagdag ang asset na ito bilang NFT. Gusto mo ba itong alisin mula sa listahan ng iyong token?"
   },
-  "coolWallet": {
-    "message": "CoolWallet"
-  },
   "copiedExclamation": {
     "message": "Nakopya na."
   },
@@ -2307,12 +2271,6 @@
   "dappConnections": {
     "message": "Mga koneksyon ng Dapp"
   },
-  "dappScanMaliciousTitle": {
-    "message": "Natukoy ang mapanganib na website"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "Na-flag ang website na ito bilang potensyal na mapanganib. Kapag ipinakita mo ang iyong Secret Recovery Phrase, maaari mong mailagay sa panganib ang mga pondo mo."
-  },
   "dappSuggested": {
     "message": "Iminungkahing site"
   },
@@ -2361,9 +2319,6 @@
   },
   "dateCreated": {
     "message": "Petsa ng paggawa"
-  },
-  "dcent": {
-    "message": "D'Cent"
   },
   "debitCreditPurchaseOptions": {
     "message": "Mga opsyon sa pagbili gamit ang debit o credit card"
@@ -2689,9 +2644,6 @@
   "downloadAppTitle": {
     "message": "I-scan ang QR code at i-download ang app"
   },
-  "downloadGoogleChrome": {
-    "message": "I-download ang Google Chrome"
-  },
   "downloadMetaMaskMobileDescription": {
     "message": "Pinahihintulutan ka ng Face ID na makapag-log in kahit nakalimutan mo ang iyong password. Dalhin ang MetaMask saan ka man magpunta!"
   },
@@ -2700,9 +2652,6 @@
   },
   "downloadMetaMaskMobileTitle": {
     "message": "I-download ang aming mobile app"
-  },
-  "downloadNow": {
-    "message": "I-download Ngayon"
   },
   "downloadStateLogs": {
     "message": "I-download ang mga log ng estado"
@@ -3467,9 +3416,6 @@
   "hardwareWalletSubmissionWarningTitle": {
     "message": "Bago i-click ang Isumite:"
   },
-  "hardwareWalletSupportLinkConversion": {
-    "message": "mag-click dito"
-  },
   "hardwareWalletTitleEthAppNotOpen": {
     "message": "Buksan ang Ethereum app"
   },
@@ -3479,12 +3425,6 @@
   },
   "hardwareWallets": {
     "message": "Magkonekta ng wallet na hardware"
-  },
-  "hardwareWalletsInfo": {
-    "message": "Gumagamit ng mga API call ang mga integration ng wallet na hardware sa mga external server, na nakakakita sa IP address mo at sa mga address ng smart na kontrata kung saan ka nakikipag-ugnayan."
-  },
-  "hardwareWalletsMsg": {
-    "message": "Pumili ng wallet na hardware na gusto mong gamitin kasama ng MetaMask."
   },
   "helpAndSettings": {
     "message": "Tulong at mga setting"
@@ -3850,9 +3790,6 @@
     "message": "File na JSON",
     "description": "format for importing an account"
   },
-  "keycardShell": {
-    "message": "Keycard Shell"
-  },
   "keyringAccountName": {
     "message": "Pangalan ng account"
   },
@@ -3905,9 +3842,6 @@
   },
   "learnMoreAboutPrivacy": {
     "message": "Matuto pa tungkol sa pinakamahusay na mga gawain sa pagkapribado."
-  },
-  "learnMoreKeystone": {
-    "message": "Matuto Pa"
   },
   "learnMoreUpperCase": {
     "message": "Matuto pa"
@@ -3976,17 +3910,8 @@
   "ledgerFirefoxNotSupportedTitle": {
     "message": "Hindi Sinusuportahan ang Firefox"
   },
-  "ledgerLiveApp": {
-    "message": "Ledger Live App"
-  },
   "ledgerLocked": {
     "message": "Hindi makakonekta sa Ledger device. Siguruhin na ang device mo ay naka-unlock at bukas ang Ethereum."
-  },
-  "ledgerMultipleDevicesUnsupportedInfoDescription": {
-    "message": "Para magkonekta ng bagong device, idiskonekta ang isa na nauna."
-  },
-  "ledgerMultipleDevicesUnsupportedInfoTitle": {
-    "message": "Maaari ka lamang magkonekta ng isang Ledger sa isang pagkakataon"
   },
   "ledgerTimeout": {
     "message": "Masyadong natatagalan ang Ledger Live upang tumugon o mag-timeout ng koneksyon. Tiyaking nakabukas ang Ledger Live app at naka-unlock ang iyong device."
@@ -5271,10 +5196,6 @@
   },
   "onboardingMetametricsTitle": {
     "message": "Tulungan kaming mapahusay ang MetaMask"
-  },
-  "onboardingOptionIcon": {
-    "message": "$1 icon",
-    "description": "$1 is the icon name"
   },
   "onboardingSignInWith": {
     "message": "Mag-sign in gamit ang $1",
@@ -7519,11 +7440,11 @@
   },
   "securitySocialLoginEnabledDescription": {
     "message": "Gamitin ng iyong $1 na login at password sa MetaMask para mabawi ang iyong account at mga Lihim na Parirala sa Pagbawi.",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySocialLoginLabel": {
     "message": "PAGBAWI SA $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySrpLabel": {
     "message": "MGA LIHIM NA PARIRALA SA PAGBAWI"
@@ -8976,34 +8897,6 @@
   },
   "statusNotConnected": {
     "message": "Hindi konektado"
-  },
-  "step1LatticeWallet": {
-    "message": "Ikonekta ang iyong Lattice1"
-  },
-  "step1LatticeWalletMsg": {
-    "message": "Maaari mong ikonekta ang MetaMask sa iyong Lattice1 device kapag na-set up na ito at online. I-unlock ang iyong device at ihanda ang iyong Device ID.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step1LedgerWallet": {
-    "message": "Mag-download ng Ledger app"
-  },
-  "step1LedgerWalletMsg": {
-    "message": "Mag-download, mag-set up, at maglagay ng password para ma-unlock ang $1.",
-    "description": "$1 represents the `ledgerLiveApp` localization value"
-  },
-  "step1TrezorWallet": {
-    "message": "Ikonekta ang iyong Trezor"
-  },
-  "step1TrezorWalletMsg": {
-    "message": "Direktang ikonekta ang iyong Trezor sa iyong computer at i-unlock ito. Tiyaking ginagamit mo ang tamang passphrase.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step2LedgerWallet": {
-    "message": "Ikonekta ang iyong Ledger"
-  },
-  "step2LedgerWalletMsg": {
-    "message": "Direktang ikonekta ang iyong Ledger sa iyong computer, pagkatapos ay i-unlock ito at buksan ang Ethereum app.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "stillConnectingTo": {
     "message": "Kasalukuyan pa ring kumokonekta sa $1...",

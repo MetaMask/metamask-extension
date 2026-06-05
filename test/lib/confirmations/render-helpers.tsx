@@ -1,4 +1,4 @@
-import React, { ReactChildren, ReactElement } from 'react';
+import React, { ReactElement } from 'react';
 import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
 import type { Store } from 'redux';
@@ -46,7 +46,7 @@ function renderWithContext(
   store: Store,
   contextValue: ConfirmContextType,
 ) {
-  const wrapper = ({ children }: { children: ReactElement }) => (
+  const wrapper = ({ children }: { children: React.ReactNode }) => (
     <Provider store={store}>
       <I18nProvider currentLocale="en" current={en} en={en}>
         <ConfirmContext.Provider value={contextValue}>
@@ -97,7 +97,7 @@ export function renderHookWithConfirmContextProvider(
   confirmationId?: string,
 ) {
   const contextContainer = Container
-    ? ({ children }: { children: ReactChildren }) => (
+    ? ({ children }: { children: React.ReactNode }) => (
         <HardwareWalletErrorProvider>
           <ConfirmContextProvider confirmationId={confirmationId}>
             <DappSwapContextProvider>
@@ -108,12 +108,12 @@ export function renderHookWithConfirmContextProvider(
           </ConfirmContextProvider>
         </HardwareWalletErrorProvider>
       )
-    : ({ children }: { children: ReactElement }) => (
+    : ({ children }: { children: React.ReactNode }) => (
         <HardwareWalletErrorProvider>
           <ConfirmContextProvider confirmationId={confirmationId}>
             <DappSwapContextProvider>
               <GasFeeModalContextProvider>
-                {children as ReactElement}
+                {children}
               </GasFeeModalContextProvider>
             </DappSwapContextProvider>
           </ConfirmContextProvider>

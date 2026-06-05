@@ -193,9 +193,6 @@
   "done": {
     "message": "Hotovo"
   },
-  "downloadGoogleChrome": {
-    "message": "Stiahnuť Google Chrome"
-  },
   "downloadStateLogs": {
     "message": "Stáhnout stavové protokoly"
   },
@@ -253,9 +250,6 @@
   },
   "hardwareWallets": {
     "message": "Pripojiť hardvérovú peňaženku"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Vyberte hardvérovú peňaženku, ktorú chcete používať s MetaMask"
   },
   "here": {
     "message": "zde",

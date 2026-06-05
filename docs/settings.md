@@ -22,7 +22,7 @@ The exception is onboarding. Settings-like screens that are part of onboarding p
 1. Pick the owning Settings tab and add the item to that tab's item list, for example `TRANSACTION_SETTING_ITEMS` in `ui/pages/settings/transactions-tab/transactions-tab.tsx`.
 2. Use an existing shared factory when possible:
    - Use `createToggleItem` for a boolean setting.
-   - Use `createSelectItem` for a select/dropdown setting.
+   - Use `createSelectItem` for a setting that links to a sub-page list and shows the selected value.
    - Use a custom component only when the setting needs richer layout, async state, nested navigation, or custom side effects.
 3. Add or reuse selectors and actions for the setting state. Keep persisted controller state changes covered by the relevant controller migration and tests when the state shape changes.
 4. Add title and description strings to `app/_locales/en/messages.json`.
@@ -46,7 +46,7 @@ The exception is onboarding. Settings-like screens that are part of onboarding p
 2. Add a `SETTINGS_ROUTES` entry with `isTab: true`, an `iconName`, a `labelKey`, and a lazy component.
 3. Place the route in `SETTINGS_ROOT_SECTIONS` so the Settings root groups it correctly.
 4. Add a tab component under `ui/pages/settings/<tab-name>/`.
-5. Add searchable items in `ui/pages/settings/search-config.ts`.
+5. Add a `*_ITEMS` record and a `SETTINGS_SEARCH_CONFIG` entry in `ui/pages/settings/search-config.ts`; `tabId` must match the last segment of the tab route path.
 6. Add tests for registry order, root grouping, search, and the tab UI.
 
 ## Review Checklist
@@ -56,3 +56,4 @@ The exception is onboarding. Settings-like screens that are part of onboarding p
 - Confirm labels, descriptions, and test IDs are stable and localized.
 - Confirm any metric for `MetaMetricsEventName.SettingsUpdated` uses the expected property name.
 - Confirm Settings works in popup, full-screen, and sidepanel layouts.
+- Confirm in full-screen that route urls are as expected.

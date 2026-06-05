@@ -157,10 +157,12 @@ describe('BridgeVipFeeMessage', () => {
   });
 
   it('renders discounted fee copy and VIP badge when a VIP discount applies', async () => {
-    renderWithProvider(
-      <BridgeVipFeeMessage />,
-      configureStore(createBridgeStoreWithQuotes(createDiscountedQuotes())),
-    );
+    const store = createBridgeStoreWithQuotes(createDiscountedQuotes());
+    store.metamask.remoteFeatureFlags.vipProgramEnabled = {
+      enabled: true,
+      minimumVersion: '0.0.0',
+    };
+    renderWithProvider(<BridgeVipFeeMessage />, configureStore(store));
 
     expect(screen.getByText(messages.includes.message)).toBeInTheDocument();
     expect(
@@ -172,7 +174,7 @@ describe('BridgeVipFeeMessage', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('rewards-vip-badge')).toBeInTheDocument();
-      expect(screen.getByText('VIP Fox 5')).toBeInTheDocument();
+      expect(screen.getByText('VIP 5')).toBeInTheDocument();
     });
     expect(mockGetVipTierForAccount).toHaveBeenCalledTimes(1);
   });
@@ -180,10 +182,12 @@ describe('BridgeVipFeeMessage', () => {
   it('renders fee copy without VIP badge when tier fetch returns null', async () => {
     mockGetVipTierForAccount.mockResolvedValueOnce(null);
 
-    renderWithProvider(
-      <BridgeVipFeeMessage />,
-      configureStore(createBridgeStoreWithQuotes(createDiscountedQuotes())),
-    );
+    const store = createBridgeStoreWithQuotes(createDiscountedQuotes());
+    store.metamask.remoteFeatureFlags.vipProgramEnabled = {
+      enabled: true,
+      minimumVersion: '0.0.0',
+    };
+    renderWithProvider(<BridgeVipFeeMessage />, configureStore(store));
 
     expect(screen.getByText(messages.includes.message)).toBeInTheDocument();
     expect(
