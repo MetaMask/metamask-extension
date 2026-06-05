@@ -4903,8 +4903,7 @@ export default class MetamaskController extends EventEmitter {
       this.accountTreeController.reinit();
 
       // We "force-create" the Snap keyring right after now to ensure it is available as soon
-      // as possible after vault creation, and will (potentially) avoid locking up the
-      // `KeyringController` mutex.
+      // as possible after vault creation (enabling faster keyring access for future operations).
       await getSnapKeyring(this.controllerMessenger);
 
       return primaryKeyring;
@@ -5254,8 +5253,7 @@ export default class MetamaskController extends EventEmitter {
       this.accountTreeController.reinit();
 
       // We "force-create" the Snap keyring right after now to ensure it is available as soon
-      // as possible after vault creation, and will (potentially) avoid locking up the
-      // `KeyringController` mutex.
+      // as possible after vault creation (enabling faster keyring access for future operations).
       await getSnapKeyring(this.controllerMessenger);
 
       if (completedOnboarding) {
@@ -5417,8 +5415,7 @@ export default class MetamaskController extends EventEmitter {
     this.accountTreeController.init();
 
     // We "force-create" the Snap keyring right after unlocking the vault to ensure it is
-    // available as soon as possible, and will (potentially) avoid locking up the
-    // `KeyringController` mutex.
+    // available as soon as possible (enabling faster keyring access for future operations).
     await getSnapKeyring(this.controllerMessenger);
 
     const resyncAndAlignAccounts = async () => {
