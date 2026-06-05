@@ -1,5 +1,5 @@
 import { Browser } from 'selenium-webdriver';
-import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import { getCleanAppState } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import OnboardingMetricsPage from '../pages/onboarding/onboarding-metrics-page';
 import OnboardingPasswordPage from '../pages/onboarding/onboarding-password-page';
@@ -14,6 +14,7 @@ import HeaderNavbar from '../pages/header-navbar';
 import HomePage from '../pages/home/homepage';
 import LoginPage from '../pages/login-page';
 import TermsOfUseUpdateModal from '../pages/dialog/terms-of-use-update-modal';
+import { AuthConnection } from '../../../../shared/constants/onboarding';
 
 /**
  * Helper function to handle post-onboarding navigation for sidepanel builds.
@@ -141,7 +142,16 @@ export const createNewWalletWithSocialLoginOnboardingFlow = async ({
     dataCollectionForMarketing,
   });
 
+  const originalWindowHandle = await driver.getCurrentWindowHandle();
   await startOnboardingPage.createWalletWithSocialLogin(authConnection);
+
+  if (authConnection === AuthConnection.Telegram) {
+    await recoverFromTelegramAuthTab({
+      driver,
+      originalWindowHandle,
+    });
+  }
+
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
   await onboardingPasswordPage.checkPageIsLoaded();
 
@@ -184,7 +194,15 @@ export const importWalletWithSocialLoginOnboardingFlow = async ({
     dataCollectionForMarketing,
   });
 
+  const originalWindowHandle = await driver.getCurrentWindowHandle();
   await startOnboardingPage.importWalletWithSocialLogin(authConnection);
+
+  if (authConnection === AuthConnection.Telegram) {
+    await recoverFromTelegramAuthTab({
+      driver,
+      originalWindowHandle,
+    });
+  }
 
   const loginPage = new LoginPage(driver);
   await loginPage.checkPageIsLoaded();
@@ -197,6 +215,18 @@ export const importWalletWithSocialLoginOnboardingFlow = async ({
   //   });
   // }
 };
+
+async function recoverFromTelegramAuthTab({
+  driver,
+  originalWindowHandle,
+}: {
+  driver: Driver;
+  originalWindowHandle: string;
+}): Promise<void> {
+  // OAuthService resolves after the redirect is handled and the auth tab close
+  // is already in flight, so the E2E flow only needs to restore focus.
+  await driver.switchToWindow(originalWindowHandle);
+}
 
 /**
  * Create new wallet onboarding flow
@@ -331,6 +361,14 @@ export async function onboardingMetricsFlow(
   }
 
   await onboardingMetricsPage.clickOnContinueButton();
+  // Wait for the metaMetricsId to be present so subsequent screens track events
+  // immediately and deterministically.
+  if (participateInMetaMetrics) {
+    await driver.wait(async () => {
+      const uiState = await getCleanAppState(driver);
+      return Boolean(uiState?.metamask?.metaMetricsId);
+    }, driver.timeout);
+  }
 }
 
 /**

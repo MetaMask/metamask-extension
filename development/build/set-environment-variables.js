@@ -102,6 +102,7 @@ function setEnvironmentVariables({
     ASSETS_UNIFIED_STATE_ENABLED: variables.getMaybe(
       'ASSETS_UNIFIED_STATE_ENABLED',
     ),
+    COMPLIANCE_API_URL: variables.getMaybe('COMPLIANCE_API_URL'),
     GOOGLE_CLIENT_ID,
     APPLE_CLIENT_ID,
     TELEGRAM_CLIENT_ID,
