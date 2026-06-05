@@ -109,7 +109,9 @@ describe('Address Book', function (this: Suite) {
           amount: '2',
         });
 
-        await new TransactionConfirmation(driver).clickFooterConfirmButton();
+        const confirmation = new TransactionConfirmation(driver);
+        await confirmation.waitForReviewAlertToDisappear();
+        await confirmation.clickFooterConfirmButton();
 
         // Select Linea to check the Activity list
         const networkSelector = new NetworkManager(driver);

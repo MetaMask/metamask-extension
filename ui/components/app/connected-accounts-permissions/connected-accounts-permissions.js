@@ -5,6 +5,11 @@ import { flatten } from 'lodash';
 import { useSelector } from 'react-redux';
 import {
   Box,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   ButtonIcon,
   ButtonIconSize,
   Checkbox,
@@ -14,11 +19,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getPermissionDescription } from '../../../helpers/utils/permission';
 import {
-  BackgroundColor,
   BlockSize,
-  Display,
-  FlexDirection,
-  JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { getSnapName } from '../../../helpers/utils/util';
@@ -51,29 +52,25 @@ const ConnectedAccountsPermissions = ({ permissions }) => {
   return (
     <Box className="connected-accounts-permissions" width={BlockSize.Full}>
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        as="button"
-        onClick={toggleExpanded}
+        className="flex connected-accounts-permissions__header"
+        flexDirection={BoxFlexDirection.Row}
+        asChild
         width={BlockSize.Full}
-        justifyContent={JustifyContent.spaceBetween}
-        className="connected-accounts-permissions__header"
+        justifyContent={BoxJustifyContent.Between}
         padding={0}
-        backgroundColor={BackgroundColor.backgroundDefault}
+        backgroundColor={BoxBackgroundColor.BackgroundDefault}
       >
-        <Text
-          onClick={toggleExpanded}
-          as="h6"
-          variant={TextVariant.bodyMdMedium}
-        >
-          {t('permissions')}
-        </Text>
+        <button onClick={toggleExpanded}>
+          <Text as="h6" variant={TextVariant.bodyMdMedium}>
+            {t('permissions')}
+          </Text>
 
-        <ButtonIcon
-          size={ButtonIconSize.Sm}
-          iconName={expanded ? IconName.ArrowUp : IconName.ArrowDown}
-          ariaLabel={t('showPermissions')}
-        />
+          <ButtonIcon
+            size={ButtonIconSize.Sm}
+            iconName={expanded ? IconName.ArrowUp : IconName.ArrowDown}
+            ariaLabel={t('showPermissions')}
+          />
+        </button>
       </Box>
       {expanded ? (
         <Box
