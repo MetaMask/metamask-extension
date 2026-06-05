@@ -98,6 +98,31 @@ async function getAllInfuraJsonRpcRequests(
   return allInfuraJsonRpcRequests;
 }
 
+async function getInfuraJsonRpcRequestsAfterTimestamp(
+  mockedEndpoint: MockedEndpoint[],
+  timestamp: number,
+  methodsToGet: string[],
+): Promise<JsonRpcRequest[]> {
+  const infuraJsonRpcRequestsAfterTimestamp: JsonRpcRequest[] = [];
+
+  for (const m of mockedEndpoint) {
+    const seenRequests = (await m.getSeenRequests()).filter(
+      (request) =>
+        request.url.match('infura') &&
+        request.timingEvents.startTime > timestamp,
+    );
+
+    for (const r of seenRequests) {
+      const json = (await r.body.getJson()) as JsonRpcRequest | undefined;
+      if (json !== undefined && methodsToGet.includes(json.method)) {
+        infuraJsonRpcRequestsAfterTimestamp.push(json);
+      }
+    }
+  }
+
+  return infuraJsonRpcRequestsAfterTimestamp;
+}
+
 function getSpecifiedJsonRpcRequests(
   jsonRpcRequestArray: JsonRpcRequest[],
   methodsToGet: string[],
@@ -170,6 +195,7 @@ describe('Account Tracker API Usage', function () {
       'eth_call',
       'eth_getBalance',
     ];
+    const DELAY_UNTIL_NEXT_POLL = 20000;
 
     await withFixtures(
       {
@@ -185,34 +211,40 @@ describe('Account Tracker API Usage', function () {
         testSpecificMock: mockInfura,
       },
       async ({ driver, mockedEndpoint }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver, {
+          validateBalance: false,
+          waitForNonEvmAccounts: false,
+        });
         const homepage = new HomePage(driver);
         await homepage.checkPageIsLoaded();
-        await driver.delay(veryLargeDelayMs);
-        const initialInfuraJsonRpcRequests =
-          await getAllInfuraJsonRpcRequests(mockedEndpoint);
+        // Ensure account tracker polling has started while the UI is open.
+        await driver.waitUntil(
+          async () => {
+            const accountTrackerRequests = getSpecifiedJsonRpcRequests(
+              await getAllInfuraJsonRpcRequests(mockedEndpoint),
+              ['eth_call', 'eth_getBalance'],
+            );
 
+            return accountTrackerRequests.length > 0;
+          },
+          { timeout: 30000, interval: 500 },
+        );
+
+        const uiClosedTimestamp = Date.now();
         await driver.openNewURL('about:blank');
         // The delay is intentionally 20000, to ensure we cover at least 1 polling
         // loop of time for the block tracker.
-        await driver.delay(20000);
+        await driver.delay(DELAY_UNTIL_NEXT_POLL);
 
-        const currentInfuraJsonRpcRequests =
-          await getAllInfuraJsonRpcRequests(mockedEndpoint);
-
-        const initialRpcMethodsToTestRequests = getSpecifiedJsonRpcRequests(
-          initialInfuraJsonRpcRequests,
-          RPC_METHODS_TO_TEST,
-        );
-
-        const currentRpcMethodsToTestRequests = getSpecifiedJsonRpcRequests(
-          currentInfuraJsonRpcRequests,
-          RPC_METHODS_TO_TEST,
-        );
+        const rpcMethodsToTestRequestsAfterUiClosed =
+          await getInfuraJsonRpcRequestsAfterTimestamp(
+            mockedEndpoint,
+            uiClosedTimestamp,
+            RPC_METHODS_TO_TEST,
+          );
 
         assert.ok(
-          initialRpcMethodsToTestRequests.length ===
-            currentRpcMethodsToTestRequests.length,
+          rpcMethodsToTestRequestsAfterUiClosed.length === 0,
           `An ${RPC_METHODS_TO_TEST.join(
             ' or ',
           )} request has been made to infura after closing the UI`,
