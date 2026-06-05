@@ -58,7 +58,11 @@ import { ERC1155, ERC20, ERC721, toHex } from '@metamask/controller-utils';
 
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
-import { BRIDGE_CONTROLLER_NAME } from '@metamask/bridge-controller';
+import {
+  BRIDGE_CONTROLLER_NAME,
+  BridgeUserAction,
+  BridgeBackgroundAction,
+} from '@metamask/bridge-controller';
 
 import {
   TransactionStatus,
@@ -385,7 +389,6 @@ import { ShieldControllerInit } from './messenger-client-init/shield/shield-cont
 import { GatorPermissionsControllerInit } from './messenger-client-init/gator-permissions/gator-permissions-controller-init';
 
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
-import { AnalyticsControllerInit } from './messenger-client-init/analytics-controller-init';
 import { MetaMetricsControllerInit } from './messenger-client-init/metametrics-controller-init';
 import { TokenListControllerInit } from './messenger-client-init/token-list-controller-init';
 import { TokenDetectionControllerInit } from './messenger-client-init/token-detection-controller-init';
@@ -626,7 +629,6 @@ export default class MetamaskController extends EventEmitter {
       PasskeyController: PasskeyControllerInit,
       RemoteFeatureFlagController: RemoteFeatureFlagControllerInit,
       NetworkController: NetworkControllerInit,
-      AnalyticsController: AnalyticsControllerInit,
       MetaMetricsController: MetaMetricsControllerInit,
       DataDeletionService: DataDeletionServiceInit,
       MetaMetricsDataDeletionController: MetaMetricsDataDeletionControllerInit,
@@ -754,7 +756,6 @@ export default class MetamaskController extends EventEmitter {
       messengerClientsByName.SubjectMetadataController;
     this.appStateController = messengerClientsByName.AppStateController;
     this.networkController = messengerClientsByName.NetworkController;
-    this.analyticsController = messengerClientsByName.AnalyticsController;
     this.metaMetricsController = messengerClientsByName.MetaMetricsController;
     this.dataDeletionService = messengerClientsByName.DataDeletionService;
     this.metaMetricsDataDeletionController =
@@ -1367,7 +1368,6 @@ export default class MetamaskController extends EventEmitter {
       AppMetadataController: this.appMetadataController,
       KeyringController: this.keyringController,
       PreferencesController: this.preferencesController,
-      AnalyticsController: this.analyticsController,
       MetaMetricsController: this.metaMetricsController,
       MetaMetricsDataDeletionController: this.metaMetricsDataDeletionController,
       AddressBookController: this.addressBookController,
@@ -1428,7 +1428,6 @@ export default class MetamaskController extends EventEmitter {
         NetworkController: this.networkController,
         KeyringController: this.keyringController,
         PreferencesController: this.preferencesController,
-        AnalyticsController: this.analyticsController,
         MetaMetricsController: this.metaMetricsController,
         MetaMetricsDataDeletionController:
           this.metaMetricsDataDeletionController,
@@ -1708,7 +1707,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   stopNetworkRequests() {
-    this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
     if (
       !this.controllerMessenger.call(
@@ -2645,16 +2643,10 @@ export default class MetamaskController extends EventEmitter {
     const { vault } = this.keyringController.state;
     const isInitialized = Boolean(vault);
     const flatState = this.memStore.getFlatState();
-    const { completedMetaMetricsOnboarding } = this.metaMetricsController.state;
-    const { optedIn, analyticsId } = this.analyticsController.state;
-    const participateInMetaMetrics =
-      completedMetaMetricsOnboarding === true ? optedIn : null;
 
     return {
       isInitialized,
       ...sanitizeUIState(flatState),
-      participateInMetaMetrics,
-      metaMetricsId: analyticsId,
     };
   }
 
@@ -3626,21 +3618,23 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // Bridge
-      resetState: this.controllerMessenger.call.bind(
+      [BridgeBackgroundAction.RESET_STATE]: this.controllerMessenger.call.bind(
         this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:resetState`,
+        `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.RESET_STATE}`,
       ),
-      updateBridgeQuoteRequestParams: this.controllerMessenger.call.bind(
+      [BridgeUserAction.UPDATE_QUOTE_PARAMS]:
+        this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          `${BRIDGE_CONTROLLER_NAME}:${BridgeUserAction.UPDATE_QUOTE_PARAMS}`,
+        ),
+      [BridgeBackgroundAction.TRACK_METAMETRICS_EVENT]:
+        this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.TRACK_METAMETRICS_EVENT}`,
+        ),
+      [BridgeBackgroundAction.FETCH_QUOTES]: this.controllerMessenger.call.bind(
         this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:updateBridgeQuoteRequestParams`,
-      ),
-      trackUnifiedSwapBridgeEvent: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:trackUnifiedSwapBridgeEvent`,
-      ),
-      fetchQuotes: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:fetchQuotes`,
+        `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.FETCH_QUOTES}`,
       ),
 
       // Bridge Tx submission
@@ -6814,7 +6808,7 @@ export default class MetamaskController extends EventEmitter {
       metaMetricsId,
       dataCollectionForMarketing,
       participateInMetaMetrics,
-    } = this.getState();
+    } = this.metaMetricsController.state;
 
     if (
       metaMetricsId &&
@@ -7416,7 +7410,7 @@ export default class MetamaskController extends EventEmitter {
       createDappSwapMiddleware({
         fetchQuotes: this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          `${BRIDGE_CONTROLLER_NAME}:fetchQuotes`,
+          `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.FETCH_QUOTES}`,
         ),
         setDappSwapComparisonData:
           this.appStateController.setDappSwapComparisonData.bind(
@@ -7465,7 +7459,6 @@ export default class MetamaskController extends EventEmitter {
         snapAndHardwareMessenger,
         appStateController: this.appStateController,
         metaMetricsController: this.metaMetricsController,
-        analyticsController: this.analyticsController,
       }),
     );
 
@@ -7747,7 +7740,6 @@ export default class MetamaskController extends EventEmitter {
         snapAndHardwareMessenger,
         appStateController: this.appStateController,
         metaMetricsController: this.metaMetricsController,
-        analyticsController: this.analyticsController,
       }),
     );
 
@@ -8285,12 +8277,9 @@ export default class MetamaskController extends EventEmitter {
       upsertTransactionUIMetricsFragment:
         this.upsertTransactionUIMetricsFragment.bind(this),
       // Metametrics Actions
-      getParticipateInMetrics: () => {
-        const { completedMetaMetricsOnboarding } =
-          this.metaMetricsController.state;
-        const { optedIn } = this.analyticsController.state;
-        return completedMetaMetricsOnboarding === true && optedIn === true;
-      },
+      getParticipateInMetrics: () =>
+        this.controllerMessenger.call('MetaMetricsController:getState')
+          .participateInMetaMetrics,
       trackEvent: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'MetaMetricsController:trackEvent',

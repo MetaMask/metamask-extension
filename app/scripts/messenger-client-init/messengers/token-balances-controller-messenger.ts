@@ -52,10 +52,8 @@ export function getTokenBalancesControllerMessenger(
       'KeyringController:lock',
       'KeyringController:unlock',
       'AccountActivityService:balanceUpdated',
-      'AccountActivityService:statusChanged',
       'AccountsController:selectedEvmAccountChange',
       'TransactionController:transactionConfirmed',
-      'TransactionController:incomingTransactionsReceived',
     ],
   });
   return controllerMessenger;
