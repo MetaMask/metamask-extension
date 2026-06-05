@@ -347,12 +347,11 @@ export class CriticalStartupErrorHandler {
       if (!this.#criticalErrorAlreadyDisplayed) {
         this.#criticalErrorAlreadyDisplayed = true;
         if (theme) {
-          const resolvedTheme =
-            theme === 'os'
-              ? window?.matchMedia('(prefers-color-scheme: dark)')?.matches
-                ? 'dark'
-                : 'light'
-              : theme;
+          const osTheme = window?.matchMedia('(prefers-color-scheme: dark)')
+            ?.matches
+            ? 'dark'
+            : 'light';
+          const resolvedTheme = theme === 'os' ? osTheme : theme;
           document.documentElement.setAttribute('data-theme', resolvedTheme);
         }
         displayStateCorruptionError(
