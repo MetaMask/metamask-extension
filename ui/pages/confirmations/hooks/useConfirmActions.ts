@@ -65,7 +65,7 @@ export const useConfirmActions = () => {
       await rejectApproval({ location });
       resetTransactionState();
       if (navigateBackToPreviousPage) {
-        navigate(goBackTo ?? DEFAULT_ROUTE);
+        navigate(goBackTo ?? DEFAULT_ROUTE, { replace: true });
       }
     },
     [
