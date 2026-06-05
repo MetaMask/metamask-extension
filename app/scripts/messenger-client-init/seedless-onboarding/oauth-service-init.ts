@@ -1,7 +1,6 @@
 import { AnalyticsController } from '@metamask/analytics-controller';
 import { MessengerClientInitFunction } from '../types';
 import { OAuthService } from '../../services/oauth/oauth-service';
-import { getProfilePairingEnv } from '../../services/oauth/config';
 import { webAuthenticatorFactory } from '../../services/oauth/web-authenticator-factory';
 import { OAuthServiceMessenger } from '../../services/oauth/types';
 import { MetaMetricsController } from '../../controllers/metametrics-controller';
@@ -20,16 +19,8 @@ export const OAuthServiceInit: MessengerClientInitFunction<
     'AnalyticsController',
   ) as AnalyticsController;
 
-  const profileSyncEnv = getProfilePairingEnv();
-
   const messengerClient = new OAuthService({
     messenger: controllerMessenger,
-    env: {
-      googleClientId: process.env.GOOGLE_CLIENT_ID ?? '',
-      appleClientId: process.env.APPLE_CLIENT_ID ?? '',
-      telegramClientId: process.env.TELEGRAM_CLIENT_ID ?? '',
-      profileSyncEnv,
-    },
     webAuthenticator: webAuthenticatorFactory(),
     platform: new ExtensionPlatform(),
 
