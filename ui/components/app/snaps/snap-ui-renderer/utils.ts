@@ -265,7 +265,7 @@ export const muiPickerTheme = createTheme({
         },
       },
     },
-    PrivatePickersToolbarText: {
+    MuiPickersToolbarText: {
       styleOverrides: {
         root: {
           color: 'var(--color-text-alternative)',
@@ -322,7 +322,7 @@ export const muiPickerTheme = createTheme({
         },
       },
     },
-    MuiDayPicker: {
+    MuiDayCalendar: {
       styleOverrides: {
         weekDayLabel: {
           color: 'var(--color-text-alternative)',

@@ -18,7 +18,6 @@ const selectors = {
   exampleTimePicker: '.snap-ui-renderer__date-time-picker--time',
   datePickerPreviousMonthButton:
     '.MuiPickersCalendarHeader-root .MuiPickersArrowSwitcher-root button:first-child',
-  dateTimePickerOkButton: '.MuiDialogActions-root button:last-child',
 } satisfies Record<string, string | Record<string, string>>;
 
 class SnapInteractiveDialog {
@@ -71,7 +70,7 @@ class SnapInteractiveDialog {
   }
 
   /**
-   * Opens a MUI v5 mobile picker dialog by clicking its read-only field.
+   * Opens a MUI mobile picker dialog by clicking its read-only field.
    *
    * @param pickerSelector - Selector for the picker input element.
    */
@@ -83,7 +82,7 @@ class SnapInteractiveDialog {
   }
 
   /**
-   * Navigates the calendar inside an open MUI v5 picker dialog to the
+   * Navigates the calendar inside an open MUI picker dialog to the
    * previous month and clicks the specified day.
    *
    * @param day - Day of the month to select (1–31).
@@ -91,7 +90,7 @@ class SnapInteractiveDialog {
   async #selectCalendarDay(day: number): Promise<void> {
     await this.driver.clickElement(selectors.datePickerPreviousMonthButton);
     await this.driver.waitForElementToStopMoving(
-      '.MuiDayPicker-slideTransition',
+      '.MuiDayCalendar-slideTransition',
     );
     await this.driver.clickElement({
       text: String(day),
@@ -100,7 +99,7 @@ class SnapInteractiveDialog {
   }
 
   /**
-   * Clicks an hour on the MUI v5 analog clock (24h mode) via `clickPoint`
+   * Clicks an hour on the MUI analog clock (24h mode) via `clickPoint`
    * so the event lands on the transparent mask that handles selection.
    * Hour 0 is displayed as "00"; all others display without zero-padding.
    *
@@ -117,7 +116,7 @@ class SnapInteractiveDialog {
   }
 
   /**
-   * Clicks a minute on the MUI v5 analog clock via `clickPoint`.
+   * Clicks a minute on the MUI analog clock via `clickPoint`.
    * Minutes are always zero-padded (e.g. "05", "30", "00").
    *
    * @param minute - Minute to select (must be a multiple of 5: 0, 5, 10, …, 55).
@@ -136,7 +135,7 @@ class SnapInteractiveDialog {
    * Confirms the current picker selection by clicking "OK".
    */
   async #confirmPicker(): Promise<void> {
-    await this.driver.clickElement(selectors.dateTimePickerOkButton);
+    await this.driver.clickElement({ text: 'OK', tag: 'button' });
     await this.driver.delay(200);
   }
 

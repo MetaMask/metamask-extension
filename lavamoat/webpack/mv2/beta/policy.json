@@ -10,14 +10,6 @@
         "SuppressedError": true
       }
     },
-    "@mui/x-date-pickers>@date-io/luxon": {
-      "globals": {
-        "Intl": true
-      },
-      "packages": {
-        "luxon": true
-      }
-    },
     "@emotion/react>@emotion/cache": {
       "globals": {
         "document.head": true,
@@ -2798,7 +2790,8 @@
         "console.error": true,
         "console.warn": true,
         "document.createElement": true,
-        "document.querySelector": true
+        "document.querySelector": true,
+        "matchMedia": true
       },
       "meta": {
         "webpack-optimization": [
@@ -2830,9 +2823,24 @@
         "@mui/system>@mui/utils>react-is": true
       }
     },
+    "@mui/x-date-pickers>@mui/utils": {
+      "globals": {
+        "URL": true,
+        "console.error": true
+      },
+      "packages": {
+        "clsx": true,
+        "prop-types": true,
+        "react": true
+      }
+    },
     "@mui/x-date-pickers": {
       "globals": {
+        "Intl": true,
+        "Range": true,
         "addEventListener": true,
+        "clearTimeout": true,
+        "console.error": true,
         "console.warn": true,
         "document": true,
         "innerHeight": true,
@@ -2844,7 +2852,6 @@
       },
       "meta": {
         "webpack-optimization": [
-          "Dependency '@mui/material' reexports from '@mui/system>@mui/utils' and webpack collapsed that to a direct import.",
           "Dependency '@mui/material' reexports from '@mui/system' and webpack collapsed that to a direct import."
         ]
       },
@@ -2852,12 +2859,13 @@
         "@babel/runtime": true,
         "@mui/material": true,
         "@mui/system": true,
-        "@mui/system>@mui/utils": true,
-        "@mui/x-date-pickers>clsx": true,
+        "@mui/x-date-pickers>@mui/utils": true,
+        "@mui/x-date-pickers>@mui/x-internals": true,
+        "clsx": true,
+        "luxon": true,
         "prop-types": true,
         "react": true,
-        "react-transition-group": true,
-        "@mui/x-date-pickers>rifm": true
+        "react-transition-group": true
       }
     },
     "@ngraveio/bc-ur": {
@@ -6348,17 +6356,6 @@
       },
       "packages": {
         "buffer": true
-      }
-    },
-    "@mui/x-date-pickers>rifm": {
-      "globals": {
-        "console.error": true,
-        "console.warn": true,
-        "document.addEventListener": true,
-        "document.removeEventListener": true
-      },
-      "packages": {
-        "react": true
       }
     },
     "ethereumjs-util>create-hash>ripemd160": {
