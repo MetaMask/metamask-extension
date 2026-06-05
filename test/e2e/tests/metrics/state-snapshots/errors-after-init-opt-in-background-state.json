@@ -88,6 +88,7 @@
     "pendingApprovalCount": "number",
     "pendingApprovals": "object"
   },
+  "AssetsController": "object",
   "AuthenticationController": {
     "isSignedIn": "boolean",
     "needsProfilePairing": "boolean",
@@ -111,6 +112,10 @@
   "ClaimsController": "object",
   "ClaimsService": "undefined",
   "ClientController": "object",
+  "ComplianceController": {
+    "lastCheckedAt": null,
+    "walletComplianceStatusMap": "object"
+  },
   "ConnectivityController": { "connectivityStatus": "online" },
   "CronjobController": { "events": "object" },
   "CurrencyController": {
@@ -121,9 +126,9 @@
         "usdConversionRate": null
       },
       "ETH": {
-        "conversionDate": "number",
+        "conversionDate": "object",
         "conversionRate": 1700,
-        "usdConversionRate": 1700
+        "usdConversionRate": null
       },
       "MON": {
         "conversionDate": "object",

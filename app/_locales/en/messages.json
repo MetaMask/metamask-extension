@@ -300,22 +300,25 @@
     "message": "Contract deployed"
   },
   "activity_contractInteraction_failed_description": {
-    "message": ""
+    "message": "With $1",
+    "description": "$1 is the shortened contract address"
   },
   "activity_contractInteraction_failed_title": {
     "message": "Interaction failed"
   },
   "activity_contractInteraction_pending_description": {
-    "message": ""
+    "message": "With $1",
+    "description": "$1 is the shortened contract address"
   },
   "activity_contractInteraction_pending_title": {
     "message": "Interaction in progress"
   },
   "activity_contractInteraction_success_description": {
-    "message": ""
+    "message": "With $1",
+    "description": "$1 is the shortened contract address"
   },
   "activity_contractInteraction_success_title": {
-    "message": "Smart contract interaction"
+    "message": "Contract interaction"
   },
   "activity_convert_failed_description": {
     "message": "Conversion failed"
@@ -336,7 +339,7 @@
     "description": "$1 is the token symbol"
   },
   "activity_convert_success_title": {
-    "message": "Converted to $1",
+    "message": "Converted $1",
     "description": "$1 is the token symbol"
   },
   "activity_deposit_failed_description": {
@@ -398,15 +401,13 @@
     "message": ""
   },
   "activity_lendingDeposit_pending_title": {
-    "message": "Depositing $1",
-    "description": "$1 is the token symbol"
+    "message": "Lending deposit"
   },
   "activity_lendingDeposit_success_description": {
     "message": ""
   },
   "activity_lendingDeposit_success_title": {
-    "message": "Deposited $1",
-    "description": "$1 is the token symbol"
+    "message": "Lending deposit"
   },
   "activity_lendingWithdrawal_failed_description": {
     "message": "Withdrawal failed"
@@ -423,10 +424,10 @@
     "description": "$1 is the token symbol"
   },
   "activity_lendingWithdrawal_success_description": {
-    "message": "Lending withdrawal"
+    "message": ""
   },
   "activity_lendingWithdrawal_success_title": {
-    "message": "Lending withdrawal"
+    "message": "Lending withdraw"
   },
   "activity_marketCloseShort_failed_description": {
     "message": "Close short failed"
@@ -463,6 +464,17 @@
   },
   "activity_marketShort_success_title": {
     "message": "Closed short - market"
+  },
+  "activity_nftBuy_failed_title": {
+    "message": "Buy failed"
+  },
+  "activity_nftBuy_pending_title": {
+    "message": "Buying $1",
+    "description": "$1 is the NFT token symbol"
+  },
+  "activity_nftBuy_success_title": {
+    "message": "Bought $1",
+    "description": "$1 is the NFT token symbol"
   },
   "activity_nftMint_failed_description": {
     "message": ""
@@ -5556,7 +5568,7 @@
     "message": "“$1” was successfully added!"
   },
   "newNFTDetectedInImportNFTsMessageStrongText": {
-    "message": "Settings > Security and privacy"
+    "message": "Settings > Assets"
   },
   "newNFTDetectedInImportNFTsMsg": {
     "message": "To use Opensea to see your NFTs, turn on 'Display NFT Media' in $1.",
@@ -6696,6 +6708,12 @@
   "perpsCloseAll": {
     "message": "Close all"
   },
+  "perpsCloseAllDescription": {
+    "message": "We'll close all your open positions at current market price."
+  },
+  "perpsCloseAllPositions": {
+    "message": "Close all positions"
+  },
   "perpsCloseAmount": {
     "message": "Close amount"
   },
@@ -6847,6 +6865,9 @@
   },
   "perpsInsufficientMargin": {
     "message": "Insufficient margin to place this order."
+  },
+  "perpsKeepPositions": {
+    "message": "Keep positions"
   },
   "perpsLearnBasics": {
     "message": "Learn the basics of perps"
@@ -7132,6 +7153,22 @@
   "perpsToastCancelOrderSuccess": {
     "message": "Order cancelled",
     "description": "Success toast text shown when a perps limit order is successfully cancelled"
+  },
+  "perpsToastCloseAllFailed": {
+    "message": "Failed to close all positions",
+    "description": "Error toast text shown when batch closing all perps positions fails"
+  },
+  "perpsToastCloseAllInProgress": {
+    "message": "Closing all positions",
+    "description": "In-progress toast text shown while batch closing all perps positions"
+  },
+  "perpsToastCloseAllPartial": {
+    "message": "Closed $1 of $2 positions",
+    "description": "Warning toast text shown when only some perps positions were successfully closed. $1 is success count, $2 is total attempted count."
+  },
+  "perpsToastCloseAllSuccess": {
+    "message": "All positions closed",
+    "description": "Success toast text shown when all perps positions are successfully closed"
   },
   "perpsToastCloseFailed": {
     "message": "Failed to close position",

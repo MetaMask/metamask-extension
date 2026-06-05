@@ -32,7 +32,7 @@ import {
   ONBOARDING_METAMETRICS,
   ONBOARDING_ACCOUNT_EXIST,
   ONBOARDING_ACCOUNT_NOT_FOUND,
-  SECURITY_ROUTE,
+  SECURITY_AND_PASSWORD_ROUTE,
   ONBOARDING_REVEAL_SRP_ROUTE,
   ONBOARDING_DOWNLOAD_APP_ROUTE,
   ONBOARDING_SETUP_PASSKEY_ROUTE,
@@ -60,8 +60,7 @@ import {
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { submitRequestToBackgroundAndCatch } from '../../components/app/toast-master/utils';
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -98,7 +97,9 @@ import SetupPasskey from './setup-passkey/setup-passkey';
 const ExperimentalArea = mmLazy(
   // eslint-disable-next-line import-x/extensions, import-x/no-useless-path-segments -- these are needed for mmLazy
   () => import('../../components/app/flask/experimental-area/index.js'),
-) as React.LazyExoticComponent<React.ComponentType<{ redirectTo: string }>>;
+) as React.LazyExoticComponent<
+  React.ComponentType<React.PropsWithChildren<{ redirectTo: string }>>
+>;
 
 // Helper to convert onboarding paths to relative paths for nested route matching
 const toRelativePath = (path: string) =>
@@ -189,9 +190,12 @@ export default function OnboardingFlow() {
       isSRPBackupRoute &&
       completedOnboarding
     ) {
-      navigate(isFromSettingsSecurity ? SECURITY_ROUTE : DEFAULT_ROUTE, {
-        replace: true,
-      });
+      navigate(
+        isFromSettingsSecurity ? SECURITY_AND_PASSWORD_ROUTE : DEFAULT_ROUTE,
+        {
+          replace: true,
+        },
+      );
     }
   }, [
     isUnlocked,

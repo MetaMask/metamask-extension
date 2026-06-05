@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import React, { ReactChildren } from 'react';
+import React from 'react';
 
 import mockState from '../../../../../../test/data/mock-state.json';
 import {
@@ -36,7 +36,7 @@ jest.mock('../../../context/send-metrics', () => ({
 jest.mock('../useSendAssets');
 jest.mock('../useSendType');
 
-const Container = ({ children }: { children: ReactChildren }) => (
+const Container = ({ children }: { children: React.ReactNode }) => (
   <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
     {children}
   </MetaMetricsContext.Provider>

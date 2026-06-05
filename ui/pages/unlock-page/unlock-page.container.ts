@@ -3,9 +3,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { Location as RouterLocation, NavigateFunction } from 'react-router-dom';
 import type { PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -158,9 +156,11 @@ const mergeProps = (
 const UnlockPageConnected = compose(
   withRouterHooks,
   connect(mapStateToProps, mapDispatchToProps, mergeProps),
-)(UnlockPage) as React.ComponentType<{
-  onSubmit?: (password: string) => Promise<void>;
-  navigateAfterUnlock?: () => Promise<void>;
-}>;
+)(UnlockPage) as React.ComponentType<
+  React.PropsWithChildren<{
+    onSubmit?: (password: string) => Promise<void>;
+    navigateAfterUnlock?: () => Promise<void>;
+  }>
+>;
 
 export default UnlockPageConnected;

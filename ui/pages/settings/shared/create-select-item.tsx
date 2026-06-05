@@ -23,7 +23,7 @@ export type SelectItemConfig = {
  */
 export const createSelectItem = (
   config: SelectItemConfig,
-): React.FC<SettingItemProps> => {
+): React.ComponentType<SettingItemProps> => {
   const SelectItem = () => {
     const t = useI18nContext();
     const value = useSelector(config.valueSelector);

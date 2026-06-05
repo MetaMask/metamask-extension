@@ -1,5 +1,4 @@
 import React, { useContext, useState, useEffect } from 'react';
-import type { FC } from 'react';
 import type { OnChainRawNotificationsWithNetworkFields } from '@metamask/notification-services-controller/notification-services';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -85,9 +84,9 @@ const FeeDetail = ({ label, value }: { label: string; value: string }) => (
  * @returns The NotificationDetailNetworkFee component.
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/naming-convention
-const NotificationDetailNetworkFee_: FC<NotificationDetailNetworkFeeProps> = ({
+const NotificationDetailNetworkFee_ = ({
   notification,
-}) => {
+}: NotificationDetailNetworkFeeProps) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const { value: isOpen, toggle } = useBoolean();
@@ -101,9 +100,7 @@ const NotificationDetailNetworkFee_: FC<NotificationDetailNetworkFeeProps> = ({
   useEffect(() => {
     const fetchNetworkFees = async () => {
       try {
-        const networkFeesData = await getNetworkFees(
-          notification as Parameters<typeof getNetworkFees>[0],
-        );
+        const networkFeesData = await getNetworkFees(notification);
         if (networkFeesData) {
           setNetworkFees({
             transactionFee: {
