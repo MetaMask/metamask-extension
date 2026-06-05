@@ -364,51 +364,56 @@ exports[`<SetApprovalForAllInfo /> renders component for approve request 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center mm-box--text-align-center"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end"
         >
-          <button
-            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-            data-testid="edit-gas-fee-icon"
-            style="text-decoration: none;"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
-              style="mask-image: url('./images/icons/edit.svg');"
-            />
-            <span
-              class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
-            />
-          </button>
-          <p
-            class="mm-box mm-text mm-text--body-md"
-            data-testid="native-currency"
-          >
-            $1.26
-          </p>
           <div
-            class="mm-box mm-box--margin-left-1 mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill"
-            data-testid="selected-gas-fee-token"
-            style="cursor: default; padding-inline-end: 6px; padding: 0px;"
+            class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center mm-box--text-align-center"
+            style="cursor: default;"
           >
+            <button
+              class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+              data-testid="edit-gas-fee-icon"
+              style="text-decoration: none;"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
+                style="mask-image: url('./images/icons/edit.svg');"
+              />
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
+              />
+            </button>
+            <p
+              class="mm-box mm-text mm-text--body-md"
+              data-testid="native-currency"
+            >
+              $1.26
+            </p>
             <div
-              class=""
-              data-testid="native-icon"
+              class="mm-box mm-box--margin-left-1 mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill"
+              data-testid="selected-gas-fee-token"
+              style="cursor: default; padding-inline-end: 6px; padding: 0px;"
             >
               <div
-                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+                class=""
+                data-testid="native-icon"
               >
-                <span
-                  class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
+                <div
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
                 >
-                  E
-                </span>
+                  <span
+                    class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
+                  >
+                    E
+                  </span>
+                </div>
               </div>
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              >
+                ETH
+              </p>
             </div>
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-            >
-              ETH
-            </p>
           </div>
         </div>
       </div>

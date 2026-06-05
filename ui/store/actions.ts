@@ -4410,6 +4410,10 @@ export function setTokenNetworkFilter(value: Record<string, boolean>) {
   return setPreference('tokenNetworkFilter', value, false);
 }
 
+export function setGasSponsorshipOptOut(value: Record<string, boolean>) {
+  return setPreference('gasSponsorshipOptOutByChainId', value, false);
+}
+
 export function setSmartTransactionsPreferenceEnabled(
   value: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {

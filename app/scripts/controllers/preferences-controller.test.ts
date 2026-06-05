@@ -1253,6 +1253,7 @@ describe('preferences controller', () => {
               sortCallback: 'stringNumeric',
             },
             tokenNetworkFilter: {},
+            gasSponsorshipOptOutByChainId: {},
           },
         },
       });

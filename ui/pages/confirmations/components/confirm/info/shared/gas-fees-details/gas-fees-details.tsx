@@ -1,4 +1,7 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Box } from '../../../../../../../components/component-library';
@@ -19,6 +22,8 @@ import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { useAutomaticGasFeeTokenSelect } from '../../../../../hooks/useAutomaticGasFeeTokenSelect';
 import { useEstimationFailed } from '../../../../../hooks/gas/useEstimationFailed';
+import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
+import { useGasSponsorshipPreference } from '../../../../../hooks/gas/useGasSponsorshipPreference';
 
 export const GasFeesDetails = (): JSX.Element | null => {
   const t = useI18nContext();
@@ -46,6 +51,18 @@ export const GasFeesDetails = (): JSX.Element | null => {
 
   const estimationFailed = useEstimationFailed();
 
+  const { isSupported: isGaslessSupported } = useIsGaslessSupported();
+  const { isOptedOut: isSponsorshipOptedOut } = useGasSponsorshipPreference(
+    transactionMeta?.chainId,
+  );
+
+  const isSponsorshipEligible =
+    isGaslessSupported &&
+    transactionMeta?.isGasFeeSponsored &&
+    transactionMeta?.type !== TransactionType.revokeDelegation;
+
+  const isGasFeeSponsored = isSponsorshipEligible && !isSponsorshipOptedOut;
+
   if (!transactionMeta?.txParams) {
     return null;
   }
@@ -59,7 +76,7 @@ export const GasFeesDetails = (): JSX.Element | null => {
       />
       {supportsEIP1559 &&
         !transactionMeta.selectedGasFeeToken &&
-        !transactionMeta.isGasFeeSponsored && (
+        !isGasFeeSponsored && (
           <ConfirmInfoAlertRow
             alertKey={RowAlertKey.Speed}
             data-testid="gas-fee-details-speed"
@@ -78,7 +95,7 @@ export const GasFeesDetails = (): JSX.Element | null => {
         )}
       {showAdvancedDetails &&
         !transactionMeta.selectedGasFeeToken &&
-        !transactionMeta.isGasFeeSponsored &&
+        !isGasFeeSponsored &&
         !estimationFailed && (
           <GasFeesRow
             data-testid="gas-fee-details-max-fee"
