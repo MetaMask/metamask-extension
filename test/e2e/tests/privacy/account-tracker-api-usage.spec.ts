@@ -98,31 +98,6 @@ async function getAllInfuraJsonRpcRequests(
   return allInfuraJsonRpcRequests;
 }
 
-async function getInfuraJsonRpcRequestsAfterTimestamp(
-  mockedEndpoint: MockedEndpoint[],
-  timestamp: number,
-  methodsToGet: string[],
-): Promise<JsonRpcRequest[]> {
-  const infuraJsonRpcRequestsAfterTimestamp: JsonRpcRequest[] = [];
-
-  for (const m of mockedEndpoint) {
-    const seenRequests = (await m.getSeenRequests()).filter(
-      (request) =>
-        request.url.match('infura') &&
-        request.timingEvents.startTime > timestamp,
-    );
-
-    for (const r of seenRequests) {
-      const json = (await r.body.getJson()) as JsonRpcRequest | undefined;
-      if (json !== undefined && methodsToGet.includes(json.method)) {
-        infuraJsonRpcRequestsAfterTimestamp.push(json);
-      }
-    }
-  }
-
-  return infuraJsonRpcRequestsAfterTimestamp;
-}
-
 function getSpecifiedJsonRpcRequests(
   jsonRpcRequestArray: JsonRpcRequest[],
   methodsToGet: string[],
@@ -217,7 +192,7 @@ describe('Account Tracker API Usage', function () {
         });
         const homepage = new HomePage(driver);
         await homepage.checkPageIsLoaded();
-        // Ensure account tracker polling has started while the UI is open.
+
         await driver.waitUntil(
           async () => {
             const accountTrackerRequests = getSpecifiedJsonRpcRequests(
@@ -230,21 +205,28 @@ describe('Account Tracker API Usage', function () {
           { timeout: 30000, interval: 500 },
         );
 
+        // Wait for at least one account tracker polling cycle while the UI is
+        // still open so in-flight requests finish before the UI is closed.
+        await driver.delay(DELAY_UNTIL_NEXT_POLL);
+
+        const initialRpcMethodsToTestRequests = getSpecifiedJsonRpcRequests(
+          await getAllInfuraJsonRpcRequests(mockedEndpoint),
+          RPC_METHODS_TO_TEST,
+        );
+
         await driver.openNewURL('about:blank');
-        const uiClosedTimestamp = Date.now();
         // The delay is intentionally 20000, to ensure we cover at least 1 polling
         // loop of time for the block tracker.
         await driver.delay(DELAY_UNTIL_NEXT_POLL);
 
-        const rpcMethodsToTestRequestsAfterUiClosed =
-          await getInfuraJsonRpcRequestsAfterTimestamp(
-            mockedEndpoint,
-            uiClosedTimestamp,
-            RPC_METHODS_TO_TEST,
-          );
+        const currentRpcMethodsToTestRequests = getSpecifiedJsonRpcRequests(
+          await getAllInfuraJsonRpcRequests(mockedEndpoint),
+          RPC_METHODS_TO_TEST,
+        );
 
         assert.ok(
-          rpcMethodsToTestRequestsAfterUiClosed.length === 0,
+          initialRpcMethodsToTestRequests.length ===
+            currentRpcMethodsToTestRequests.length,
           `An ${RPC_METHODS_TO_TEST.join(
             ' or ',
           )} request has been made to infura after closing the UI`,
