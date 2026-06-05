@@ -17,7 +17,7 @@ type NftDetailInformationFrameProps = {
   frameTextTitleStyle?: React.CSSProperties;
   frameTextValueStyle?: React.CSSProperties;
   icon?: React.ReactNode;
-  buttonAddressValue?: React.ButtonHTMLAttributes<HTMLButtonElement>;
+  buttonAddressValue?: React.ReactNode;
 };
 
 const NftDetailInformationFrame = ({
@@ -45,9 +45,7 @@ const NftDetailInformationFrame = ({
           className="flex"
         >
           {' '}
-          {buttonAddressValue ? (
-            { ...buttonAddressValue }
-          ) : (
+          {buttonAddressValue ?? (
             <Text style={frameTextValueStyle} {...frameTextValueProps}>
               {value}
             </Text>

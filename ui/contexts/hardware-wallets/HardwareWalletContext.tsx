@@ -158,9 +158,9 @@ export const useHardwareWalletActions =
  * @param options0
  * @param options0.children
  */
-export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
+export const HardwareWalletProvider = ({
   children,
-}) => {
+}: React.PropsWithChildren<{ children: ReactNode }>) => {
   const { state, refs, setters } = useHardwareWalletStateManager();
 
   const {

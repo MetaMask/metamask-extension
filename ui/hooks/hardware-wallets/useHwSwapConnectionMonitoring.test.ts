@@ -9,15 +9,7 @@ import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigat
 import { useHwSwapConnectionMonitoring } from './useHwSwapConnectionMonitoring';
 
 jest.mock('../../contexts/hardware-wallets', () => ({
-  ConnectionStatus: {
-    Disconnected: 'disconnected',
-    Connecting: 'connecting',
-    Connected: 'connected',
-    Ready: 'ready',
-    AwaitingConfirmation: 'awaiting_confirmation',
-    AwaitingApp: 'awaiting_app',
-    ErrorState: 'error',
-  },
+  ...jest.requireActual('../../contexts/hardware-wallets'),
   useHardwareWalletState: jest.fn(),
   getHardwareWalletErrorCode: jest.fn(),
   isUserRejectedHardwareWalletError: jest.fn(),

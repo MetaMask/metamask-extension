@@ -220,7 +220,7 @@ exports[`AssetPage should render a native asset 1`] = `
         Your balance
       </h4>
       <div
-        class="flex-row gap-4 flex h-full w-full"
+        class="flex-row gap-4 flex h-full w-full [container-name:list-item] [container-type:inline-size]"
       >
         <a
           class="flex w-full flex-row py-2 px-4 "
@@ -264,7 +264,7 @@ exports[`AssetPage should render a native asset 1`] = `
                 class="flex flex-row gap-2 min-w-0"
               >
                 <p
-                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                  class="mm-box mm-text text-s-body-md @compact:text-s-body-sm mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
                   data-testid="multichain-token-list-item-token-name"
                 >
                   TEST
@@ -297,7 +297,7 @@ exports[`AssetPage should render a native asset 1`] = `
                 </button>
               </div>
               <p
-                class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-end mm-box--color-text-default"
+                class="mm-box mm-text text-s-body-md @compact:text-s-body-sm mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-end mm-box--color-text-default"
                 data-testid="multichain-token-list-item-secondary-value"
                 style="white-space: nowrap; padding-inline-start: 8px;"
               >
@@ -318,7 +318,7 @@ exports[`AssetPage should render a native asset 1`] = `
                 </p>
               </div>
               <p
-                class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
+                class="mm-box mm-text text-s-body-md @compact:text-s-body-sm mm-text--body-md mm-text--text-align-end mm-box--color-text-alternative"
                 data-testid="multichain-token-list-item-value"
               >
                 0 TEST
@@ -588,7 +588,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
         Your balance
       </h4>
       <div
-        class="flex-row gap-4 flex h-full w-full"
+        class="flex-row gap-4 flex h-full w-full [container-name:list-item] [container-type:inline-size]"
       >
         <a
           class="flex w-full flex-row py-2 px-4 "
@@ -632,14 +632,14 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                 class="flex flex-row gap-2 min-w-0"
               >
                 <p
-                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                  class="mm-box mm-text text-s-body-md @compact:text-s-body-sm mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
                   data-testid="multichain-token-list-item-token-name"
                 >
                   TEST
                 </p>
               </div>
               <p
-                class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
+                class="mm-box mm-text text-s-body-md @compact:text-s-body-sm mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
                 data-testid="multichain-token-list-item-secondary-value"
                 style="white-space: nowrap; padding-inline-start: 8px;"
               >
@@ -660,7 +660,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                 </p>
               </div>
               <p
-                class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
+                class="mm-box mm-text text-s-body-md @compact:text-s-body-sm mm-text--body-md mm-text--text-align-end mm-box--color-text-alternative"
                 data-testid="multichain-token-list-item-value"
               >
                 0 TEST
@@ -1009,7 +1009,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         Your balance
       </h4>
       <div
-        class="flex-row gap-4 flex h-full w-full"
+        class="flex-row gap-4 flex h-full w-full [container-name:list-item] [container-type:inline-size]"
       >
         <a
           class="flex w-full flex-row py-2 px-4 "
@@ -1053,14 +1053,14 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                 class="flex flex-row gap-2 min-w-0"
               >
                 <p
-                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                  class="mm-box mm-text text-s-body-md @compact:text-s-body-sm mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
                   data-testid="multichain-token-list-item-token-name"
                 >
                   TEST
                 </p>
               </div>
               <p
-                class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
+                class="mm-box mm-text text-s-body-md @compact:text-s-body-sm mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
                 data-testid="multichain-token-list-item-secondary-value"
                 style="white-space: nowrap; padding-inline-start: 8px;"
               >
@@ -1081,7 +1081,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                 </p>
               </div>
               <p
-                class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
+                class="mm-box mm-text text-s-body-md @compact:text-s-body-sm mm-text--body-md mm-text--text-align-end mm-box--color-text-alternative"
                 data-testid="multichain-token-list-item-value"
               >
                 0 TEST

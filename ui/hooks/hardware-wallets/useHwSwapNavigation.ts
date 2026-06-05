@@ -35,13 +35,9 @@ export function useHwSwapNavigation({
       return;
     }
 
-    console.log(
-      '[HW-Batch] useHwSwapNavigation: Submitted → scheduling toast + navigate in 1s',
-    );
-    hasNavigatedAfterSubmission.current = true;
-
     const toastId = `bridge-hw-submitted-${Date.now()}`;
     const timer = setTimeout(async () => {
+      hasNavigatedAfterSubmission.current = true;
       showSuccessToast(toastId);
       await navigateToDefaultRoute();
     }, 1000);

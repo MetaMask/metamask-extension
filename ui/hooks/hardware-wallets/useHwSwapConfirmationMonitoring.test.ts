@@ -179,7 +179,7 @@ describe('useHwSwapConfirmationMonitoring', () => {
   });
 
   it('resets previous tx id when retryGeneration changes', () => {
-    const retryGenerationRef = { current: 0 };
+    const retryGenerationCounterRef = { current: 0 };
 
     mockUseSelector.mockReturnValue({ id: 'tx-123' });
 
@@ -191,12 +191,12 @@ describe('useHwSwapConfirmationMonitoring', () => {
             HardwareWalletSignatureStatus.AwaitingFirstSignature,
           ),
           dispatchSignatureEvent: mockDispatchSignatureEvent,
-          retryGenerationRef,
+          retryGenerationCounterRef,
         }),
       {},
     );
 
-    retryGenerationRef.current = 1;
+    retryGenerationCounterRef.current = 1;
 
     mockUseSelector.mockReturnValue(undefined);
 

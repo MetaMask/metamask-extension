@@ -19,9 +19,9 @@ type UseHardwareWalletConnectionMonitoringOptions = {
 };
 
 type HardwareWalletConnectionAction =
-  | { type: HardwareWalletSignatureEvent.TransactionRejected }
-  | { type: HardwareWalletSignatureEvent.TransactionFailed }
-  | { type: HardwareWalletSignatureEvent.DeviceDisconnected };
+  | { type: typeof HardwareWalletSignatureEvent.TransactionRejected }
+  | { type: typeof HardwareWalletSignatureEvent.TransactionFailed }
+  | { type: typeof HardwareWalletSignatureEvent.DeviceDisconnected };
 
 /**
  * Monitors the hardware wallet connection during a swap/bridge signature flow.
@@ -48,20 +48,6 @@ export function useHwSwapConnectionMonitoring({
   const isDeviceDisconnectedRef = useRef(false);
 
   useEffect(() => {
-    const connectionError =
-      connectionState.status === ConnectionStatus.ErrorState
-        ? String(connectionState.error)
-        : undefined;
-    console.log(
-      '[HW-Batch] connectionState changed',
-      JSON.stringify({
-        status: connectionState.status,
-        error: connectionError,
-      }),
-      'signatureState:',
-      signatureState.status,
-    );
-
     if (
       signatureState.status !==
         HardwareWalletSignatureStatus.AwaitingFirstSignature &&
@@ -77,9 +63,6 @@ export function useHwSwapConnectionMonitoring({
       }
       handledConnectionErrorRef.current = 'disconnected';
       isDeviceDisconnectedRef.current = true;
-      console.log(
-        '[HW-Batch] device disconnected (status) → DeviceDisconnected',
-      );
       dispatchSignatureEvent({
         type: HardwareWalletSignatureEvent.DeviceDisconnected,
       });
@@ -98,26 +81,12 @@ export function useHwSwapConnectionMonitoring({
     handledConnectionErrorRef.current = connectionState.error;
 
     const errorCode = getHardwareWalletErrorCode(connectionState.error);
-    console.log(
-      '[HW-Batch] connection error',
-      JSON.stringify({
-        errorCode,
-        errorMessage:
-          connectionState.error instanceof Error
-            ? connectionState.error.message
-            : String(connectionState.error),
-        connectionStatus: connectionState.status,
-      }),
-    );
 
     if (
       errorCode === ErrorCode.ConnectionClosed ||
       errorCode === ErrorCode.DeviceDisconnected
     ) {
       isDeviceDisconnectedRef.current = true;
-      console.log(
-        '[HW-Batch] device disconnected (error) → DeviceDisconnected',
-      );
       dispatchSignatureEvent({
         type: HardwareWalletSignatureEvent.DeviceDisconnected,
       });
@@ -129,12 +98,6 @@ export function useHwSwapConnectionMonitoring({
         ? HardwareWalletSignatureEvent.TransactionRejected
         : HardwareWalletSignatureEvent.TransactionFailed,
     });
-    console.log(
-      '[HW-Batch] connection error result',
-      isUserRejectedHardwareWalletError(connectionState.error)
-        ? 'TransactionRejected'
-        : 'TransactionFailed',
-    );
   }, [connectionState, signatureState.status, dispatchSignatureEvent]);
 
   const resetConnectionError = useCallback((preserveError?: unknown) => {

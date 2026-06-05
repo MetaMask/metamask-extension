@@ -63,7 +63,7 @@ describe('Address Book', function (this: Suite) {
         await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);
         await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
-        await activityList.checkTxAction({ action: 'Sent' });
+        await activityList.checkTxAction({ action: 'Sent ETH' });
         await activityList.checkTxAmountInActivity(`-2 ETH`, 1);
       },
     );
@@ -121,7 +121,7 @@ describe('Address Book', function (this: Suite) {
         await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);
         await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
-        await activityList.checkTxAction({ action: 'Sent' });
+        await activityList.checkTxAction({ action: 'Sent ETH' });
         await activityList.checkTxAmountInActivity(`-2 ETH`, 1);
       },
     );
