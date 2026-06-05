@@ -111,7 +111,9 @@ ui/components/app/metamask-template-renderer @MetaMask/confirmations @MetaMask/c
 # Core Extension UX
 ui/components/app/whats-new-popup               @MetaMask/core-extension-ux
 ui/css                                          @MetaMask/core-extension-ux
+shared/lib/activity                             @MetaMask/core-extension-ux
 ui/pages/home                                   @MetaMask/core-extension-ux
+ui/pages/activity                               @MetaMask/core-extension-ux
 ui/pages/core                                   @MetaMask/core-extension-ux
 ui/pages/settings                               @MetaMask/core-extension-ux
 ui/components/multichain/                       @MetaMask/core-extension-ux
