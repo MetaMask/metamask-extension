@@ -1,10 +1,6 @@
 import React from 'react';
 import { useInsightSnaps } from '../../../../../../hooks/snaps/useInsightSnaps';
-import { Box } from '../../../../../../components/component-library';
-import {
-  Display,
-  FlexDirection,
-} from '../../../../../../helpers/constants/design-system';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { useConfirmContext } from '../../../../context/confirm';
 import { SnapInsight } from './snap-insight';
 
@@ -18,8 +14,8 @@ export const SnapsSection = () => {
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
+      className="flex"
+      flexDirection={BoxFlexDirection.Column}
       gap={4}
       marginBottom={4}
     >

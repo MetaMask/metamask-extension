@@ -10,6 +10,11 @@ import { ConfirmInfoRow } from '../../../../../components/app/confirm/info/row';
 import { ConfirmInfoRowCurrency } from '../../../../../components/app/confirm/info/row/currency';
 import {
   Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
@@ -24,12 +29,8 @@ import { AddressCopyButton } from '../../../../../components/multichain';
 import Tooltip from '../../../../../components/ui/tooltip/tooltip';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
-  AlignItems,
-  Display,
-  FlexDirection,
   FontWeight,
   IconColor,
-  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
@@ -106,8 +107,8 @@ const HeaderInfo = () => {
   return (
     <>
       <Box
-        display={Display.Flex}
-        justifyContent={JustifyContent.flexEnd}
+        className="flex"
+        justifyContent={BoxJustifyContent.End}
         gap={4}
         style={{
           alignSelf: 'flex-end',
@@ -139,16 +140,16 @@ const HeaderInfo = () => {
         <ModalContent>
           <ModalHeader>
             <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.center}
+              className="flex"
+              justifyContent={BoxJustifyContent.Center}
               style={{ position: 'relative' }}
             >
               <Box
                 style={{ margin: '0 auto' }}
-                display={Display.Flex}
-                justifyContent={JustifyContent.center}
-                flexDirection={FlexDirection.Column}
-                alignItems={AlignItems.center}
+                className="flex"
+                justifyContent={BoxJustifyContent.Center}
+                flexDirection={BoxFlexDirection.Column}
+                alignItems={BoxAlignItems.Center}
               >
                 <PreferredAvatar
                   address={fromAddress}

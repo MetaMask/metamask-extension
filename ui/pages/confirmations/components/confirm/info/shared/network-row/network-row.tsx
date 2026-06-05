@@ -6,16 +6,16 @@ import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../../../share
 import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/lib/selectors/networks';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import {
+  Box,
+  BoxAlignItems,
+  BoxFlexWrap,
+} from '@metamask/design-system-react';
+import {
   AvatarNetwork,
   AvatarNetworkSize,
-  Box,
   Text,
 } from '../../../../../../../components/component-library';
 import {
-  AlignItems,
-  BlockSize,
-  Display,
-  FlexWrap,
   TextColor,
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
@@ -52,11 +52,11 @@ export const NetworkRow = ({
       isShownWithAlertsOnly={isShownWithAlertsOnly}
     >
       <Box
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        flexWrap={FlexWrap.Wrap}
+        className="flex"
+        alignItems={BoxAlignItems.Center}
+        flexWrap={BoxFlexWrap.Wrap}
         gap={2}
-        minWidth={BlockSize.Zero}
+        style={{ minWidth: 0 }}
       >
         <AvatarNetwork
           size={AvatarNetworkSize.Xs}

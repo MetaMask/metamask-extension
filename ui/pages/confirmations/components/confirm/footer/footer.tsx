@@ -9,8 +9,8 @@ import { useNavigate } from 'react-router-dom';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 import { ConfirmAlertModal } from '../../../../../components/app/alert-system/confirm-alert-modal';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import {
-  Box,
   Button,
   ButtonSize,
   ButtonVariant,
@@ -19,7 +19,6 @@ import {
 import { Footer as PageFooter } from '../../../../../components/multichain/pages/page';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import {
-  Display,
   FlexDirection,
   Severity,
 } from '../../../../../helpers/constants/design-system';
@@ -462,7 +461,7 @@ const Footer = () => {
           isOpen={showOriginThrottleModal}
           onConfirmationCancel={onCancel}
         />
-        <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={4}>
+        <Box className="flex" flexDirection={BoxFlexDirection.Row} gap={4}>
           <CancelButton handleFooterCancel={handleFooterCancel} />
           {shouldShowReconnectButton ? (
             <Button

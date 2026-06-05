@@ -3,14 +3,13 @@ import { Hex } from '@metamask/utils';
 
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 import {
-  AlignItems,
-  Display,
-  JustifyContent,
-} from '../../../../../helpers/constants/design-system';
+  Box,
+  BoxAlignItems,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import {
   BannerAlert,
   BannerAlertSeverity,
-  Box,
   ButtonLink,
   ButtonLinkSize,
   Text,
@@ -51,9 +50,9 @@ export const SmartAccountTab = ({ address }: { address: Hex }) => {
         <Box
           paddingTop={12}
           paddingBottom={12}
-          display={Display.Flex}
-          justifyContent={JustifyContent.center}
-          alignItems={AlignItems.center}
+          className="flex"
+          justifyContent={BoxJustifyContent.Center}
+          alignItems={BoxAlignItems.Center}
           data-testid="network-loader"
         >
           <Preloader size={18} />

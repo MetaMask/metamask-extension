@@ -1,18 +1,13 @@
 import React from 'react';
-import { Box } from '../../../../../../../components/component-library';
+import { Box, BoxAlignItems, BoxJustifyContent } from '@metamask/design-system-react';
 import Preloader from '../../../../../../../components/ui/icon/preloader';
-import {
-  AlignItems,
-  Display,
-  JustifyContent,
-} from '../../../../../../../helpers/constants/design-system';
 
 export const ConfirmLoader = () => {
   return (
     <Box
-      display={Display.Flex}
-      justifyContent={JustifyContent.center}
-      alignItems={AlignItems.center}
+      className="flex"
+      justifyContent={BoxJustifyContent.Center}
+      alignItems={BoxAlignItems.Center}
       paddingTop={4}
       paddingBottom={4}
     >

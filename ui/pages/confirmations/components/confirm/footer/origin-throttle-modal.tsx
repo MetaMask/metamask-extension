@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { useModalProps } from '../../../../../hooks/useModalProps';
+import { Box, BoxJustifyContent } from '@metamask/design-system-react';
 import {
-  Box,
   ButtonSize,
   Modal,
   ModalOverlay,
@@ -17,11 +17,9 @@ import {
 } from '../../../../../components/component-library';
 import {
   AlignItems,
-  Display,
   FlexDirection,
   TextAlign,
   IconColor,
-  JustifyContent,
 } from '../../../../../helpers/constants/design-system';
 import { I18nContext } from '../../../../../contexts/i18n';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
@@ -45,8 +43,8 @@ const MultipleRequestContent = ({
   return (
     <ModalContent size={ModalContentSize.Md}>
       <Box
-        justifyContent={JustifyContent.center}
-        display={Display.Flex}
+        className="flex"
+        justifyContent={BoxJustifyContent.Center}
         marginBottom={4}
       >
         <Icon
@@ -113,8 +111,8 @@ const OriginBlockedContent = ({
   return (
     <ModalContent size={ModalContentSize.Md}>
       <Box
-        justifyContent={JustifyContent.center}
-        display={Display.Flex}
+        className="flex"
+        justifyContent={BoxJustifyContent.Center}
         marginBottom={4}
       >
         <Icon

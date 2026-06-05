@@ -1,10 +1,6 @@
 import React from 'react';
 import { TransactionType } from '@metamask/transaction-controller';
-import { Box } from '../../../../../components/component-library';
-import {
-  Display,
-  FlexDirection,
-} from '../../../../../helpers/constants/design-system';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { ConfirmInfoRowDivider } from '../../../../../components/app/confirm/info/row';
 import { TransactionDetailsHero } from '../transaction-details-hero';
 import { TransactionDetailsStatusRow } from '../transaction-details-status-row';
@@ -30,8 +26,8 @@ export function TransactionDetails() {
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
+      className="flex"
+      flexDirection={BoxFlexDirection.Column}
       data-testid="transaction-details"
     >
       <TransactionDetailsHero />

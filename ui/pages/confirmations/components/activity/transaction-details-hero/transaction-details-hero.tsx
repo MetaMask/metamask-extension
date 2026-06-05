@@ -1,10 +1,7 @@
 import React, { useMemo } from 'react';
-import { Text, Box } from '../../../../../components/component-library';
-import {
-  Display,
-  AlignItems,
-  TextVariant,
-} from '../../../../../helpers/constants/design-system';
+import { Box, BoxAlignItems } from '@metamask/design-system-react';
+import { Text } from '../../../../../components/component-library';
+import { TextVariant } from '../../../../../helpers/constants/design-system';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
 import { useTransactionDetails } from '../transaction-details-context';
 
@@ -29,8 +26,8 @@ export function TransactionDetailsHero() {
 
   return (
     <Box
-      display={Display.Flex}
-      alignItems={AlignItems.center}
+      className="flex"
+      alignItems={BoxAlignItems.Center}
       style={{ justifyContent: 'center' }}
       paddingTop={4}
       paddingBottom={4}

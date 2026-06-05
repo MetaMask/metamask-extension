@@ -1,8 +1,7 @@
 import React from 'react';
 
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { Box } from '../../../../../../components/component-library';
-import { BlockSize } from '../../../../../../helpers/constants/design-system';
+import { Box } from '@metamask/design-system-react';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowText,
@@ -28,7 +27,7 @@ export const ConfirmInfoRowTypedSignData = ({
   const { sanitizedMessage, primaryType } = parseSanitizeTypedDataMessage(data);
 
   return (
-    <Box width={BlockSize.Full}>
+    <Box className="w-full">
       <ConfirmInfoRow
         label={`${t('primaryType')}:`}
         style={{ paddingLeft: 0, paddingRight: 0 }}

@@ -4,12 +4,14 @@ import {
 } from '@metamask/transaction-controller';
 import React from 'react';
 import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
-import { Box, Text } from '../../../../../components/component-library';
+import {
+  Box,
+  BoxAlignItems,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import { Text } from '../../../../../components/component-library';
 import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
 import {
-  AlignItems,
-  Display,
-  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
@@ -52,14 +54,13 @@ const Header = () => {
 
   const DefaultHeader = (
     <Box
-      display={Display.Flex}
-      className="confirm_header__wrapper"
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.spaceBetween}
+      className="flex confirm_header__wrapper"
+      alignItems={BoxAlignItems.Center}
+      justifyContent={BoxJustifyContent.Between}
       data-testid="confirm-header"
     >
-      <Box alignItems={AlignItems.flexStart} display={Display.Flex} padding={4}>
-        <Box display={Display.Flex} marginTop={2}>
+      <Box className="flex" alignItems={BoxAlignItems.Start} padding={4}>
+        <Box className="flex" marginTop={2}>
           <PreferredAvatar address={fromAddress} />
         </Box>
         <Box marginInlineStart={4} marginTop={secondaryText ? 0 : 3}>
@@ -80,7 +81,7 @@ const Header = () => {
           )}
         </Box>
       </Box>
-      <Box alignItems={AlignItems.flexEnd} display={Display.Flex} padding={4}>
+      <Box className="flex" alignItems={BoxAlignItems.End} padding={4}>
         <HeaderInfo />
       </Box>
     </Box>

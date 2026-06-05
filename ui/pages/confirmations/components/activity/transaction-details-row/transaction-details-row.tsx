@@ -1,9 +1,11 @@
 import React from 'react';
-import { Box, Text } from '../../../../../components/component-library';
 import {
-  Display,
-  FlexDirection,
-  JustifyContent,
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import { Text } from '../../../../../components/component-library';
+import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
@@ -22,9 +24,9 @@ export function TransactionDetailsRow({
 }: TransactionDetailsRowProps) {
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      justifyContent={JustifyContent.spaceBetween}
+      className="flex"
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Between}
       data-testid={dataTestId}
     >
       <Text
