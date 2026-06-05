@@ -114,6 +114,10 @@
   "ClaimsController": "object",
   "ClaimsService": "undefined",
   "ClientController": "object",
+  "ComplianceController": {
+    "lastCheckedAt": null,
+    "walletComplianceStatusMap": "object"
+  },
   "ConnectivityController": { "connectivityStatus": "online" },
   "CronjobController": { "events": "object" },
   "CurrencyController": {

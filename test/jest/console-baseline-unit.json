@@ -301,9 +301,6 @@
     "ui/components/app/perps/perps-tutorial-modal/PerpsTutorialModal.test.tsx": {
       "MetaMask: Background connection not initialized": 4
     },
-    "ui/components/app/qr-hardware-popover/base-reader.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 8
-    },
     "ui/components/app/reveal-srp-list/reveal-srp-list.test.tsx": {
       "Reselect: Identity function warnings": 1
     },

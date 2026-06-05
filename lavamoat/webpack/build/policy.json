@@ -1989,12 +1989,14 @@
     },
     "webpack-dev-server>launch-editor": {
       "builtin": {
+        "child_process.exec": true,
         "child_process.execSync": true,
         "child_process.spawn": true,
         "fs.existsSync": true,
         "os.release": true,
         "path.basename": true,
-        "path.relative": true
+        "path.relative": true,
+        "url.fileURLToPath": true
       },
       "globals": {
         "console.log": true,

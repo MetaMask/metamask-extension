@@ -2138,6 +2138,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  extensionUxActivityListRedesign: {
+    name: 'extensionUxActivityListRedesign',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: {
+      enabled: true,
+      minimumVersion: '0.0.0',
+    },
+    status: FeatureFlagStatus.Active,
+  },
+
   extensionUxDefiReferral: {
     name: 'extensionUxDefiReferral',
     type: FeatureFlagType.Remote,

@@ -22,7 +22,7 @@ import {
   resolveAutoThreads,
 } from './loaders/threadLoader';
 
-const ENV_PREFIX = 'BUNDLE';
+const ENV_PREFIX = 'BUNDLE_';
 const addFeat = 'addFeature' as const;
 const omitFeat = 'omitFeature' as const;
 type YargsOptionsMap = { [key: string]: YargsOptions };
@@ -370,7 +370,7 @@ function getCli<T extends YargsOptionsMap = Options>(options: T, name: string) {
     })
     // enable ENV parsing, which allows the user to specify webpack options via
     // environment variables prefixed with `BUNDLE_`
-    // TODO: choose a better name than `BUNDLE` (it looks like `MM` is already being used in CI for ✨something✨)
+    // TODO: choose a better name than `BUNDLE_` (it looks like `MM` is already being used in CI for ✨something✨)
     .env(ENV_PREFIX)
     // TODO: enable completion once https://github.com/yargs/yargs/pull/2422 is released.
     // enable the `completion` command, which outputs a bash completion script

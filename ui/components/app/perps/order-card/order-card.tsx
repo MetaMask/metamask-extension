@@ -92,6 +92,7 @@ export const OrderCard = ({
         baseStyles,
         heightStyle,
         variantStyles,
+        '[container-name:list-item] [container-type:inline-size]',
       )}
       isFullWidth
       onClick={handleClick}
@@ -113,14 +114,24 @@ export const OrderCard = ({
         {isTriggerBasedOrder ? (
           // TP/SL: render label directly in the column so it wraps freely.
           // The symbol is redundant here — it appears after the size below.
-          <Text fontWeight={FontWeight.Medium}>{formatOrderLabel(order)}</Text>
+          <Text
+            fontWeight={FontWeight.Medium}
+            className="text-s-body-md @compact:text-s-body-sm"
+          >
+            {formatOrderLabel(order)}
+          </Text>
         ) : (
           <Box
             flexDirection={BoxFlexDirection.Row}
             alignItems={BoxAlignItems.Center}
             gap={1}
           >
-            <Text fontWeight={FontWeight.Medium}>{displayName}</Text>
+            <Text
+              fontWeight={FontWeight.Medium}
+              className="text-s-body-md @compact:text-s-body-sm"
+            >
+              {displayName}
+            </Text>
             <Text
               variant={TextVariant.BodySm}
               color={TextColor.TextAlternative}
@@ -140,7 +151,10 @@ export const OrderCard = ({
         alignItems={BoxAlignItems.End}
         gap={1}
       >
-        <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+        <Text
+          fontWeight={FontWeight.Medium}
+          className="text-s-body-md @compact:text-s-body-sm"
+        >
           {orderValueUsd ?? t('perpsMarket')}
         </Text>
         {isTriggerBasedOrder && orderValueUsd && (
