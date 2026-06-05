@@ -57,7 +57,7 @@ const QRHardwarePopover = () => {
   });
   const isBridgeHardwareWalletSigningPage = Boolean(
     bridgeHardwareWalletSigningMatch ||
-      bridgeHardwareWalletSigningTrailingSlashMatch,
+    bridgeHardwareWalletSigningTrailingSlashMatch,
   );
 
   const environmentType = getEnvironmentType();
