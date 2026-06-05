@@ -1747,14 +1747,14 @@ describe('MetaMaskController', function () {
       });
     });
 
-    describe('#requestRevealSeedWordsWithPasskey', function () {
+    describe('#revealSeedWordsWithPasskey', function () {
       it('throws when passkey is not registered', async function () {
         jest
           .spyOn(metamaskController.passkeyController, 'isPasskeyEnrolled')
           .mockReturnValue(false);
 
         await expect(
-          metamaskController.requestRevealSeedWordsWithPasskey(
+          metamaskController.revealSeedWordsWithPasskey(
             authenticationResponse,
           ),
         ).rejects.toMatchObject({
@@ -1774,7 +1774,7 @@ describe('MetaMaskController', function () {
           .mockRejectedValue(new Error('invalid assertion'));
 
         await expect(
-          metamaskController.requestRevealSeedWordsWithPasskey(
+          metamaskController.revealSeedWordsWithPasskey(
             authenticationResponse,
           ),
         ).rejects.toThrow('invalid assertion');
@@ -1795,7 +1795,7 @@ describe('MetaMaskController', function () {
           .mockRejectedValue(new Error('Incorrect encryption key'));
 
         await expect(
-          metamaskController.requestRevealSeedWordsWithPasskey(
+          metamaskController.revealSeedWordsWithPasskey(
             authenticationResponse,
           ),
         ).rejects.toMatchObject({
@@ -1819,7 +1819,7 @@ describe('MetaMaskController', function () {
           .mockResolvedValue(mnemonic);
 
         const result =
-          await metamaskController.requestRevealSeedWordsWithPasskey(
+          await metamaskController.revealSeedWordsWithPasskey(
             authenticationResponse,
             'keyring-id',
           );
@@ -1847,7 +1847,7 @@ describe('MetaMaskController', function () {
           .spyOn(metamaskController.keyringController, 'exportSeedPhrase')
           .mockResolvedValue(new Uint8Array([0, 0, 0, 1]));
 
-        await metamaskController.requestRevealSeedWordsWithPasskey(
+        await metamaskController.revealSeedWordsWithPasskey(
           authenticationResponse,
         );
 
@@ -1922,7 +1922,7 @@ describe('MetaMaskController', function () {
             removePasskeyWithPasskeyVerification: expect.any(Function),
             removePasskeyWithPasswordVerification: expect.any(Function),
             changePasswordWithPasskeyVerification: expect.any(Function),
-            requestRevealSeedWordsWithPasskey: expect.any(Function),
+            revealSeedWordsWithPasskey: expect.any(Function),
           }),
         );
       });

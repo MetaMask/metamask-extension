@@ -30,6 +30,10 @@ import PasskeyTroubleshootModal from '../passkey-troubleshoot-modal';
 
 type TranslateFn = (key: string, substitutions?: string[]) => string;
 
+function getPasskeyVerificationSentryContext(flow: string): string {
+  return `Passkey verification in ${flow}`;
+}
+
 export type RunPasskeyVerificationCeremonyOptions = {
   sentryContext: string;
   passkeyMethodLabel: string;
@@ -83,8 +87,7 @@ export async function runPasskeyVerificationCeremony({
 }
 
 export type PasskeyVerificationProps = Readonly<{
-  testIdPrefix: string;
-  sentryContext: string;
+  flow: string;
   autoRunOnMount?: boolean;
   deferToBrowserTab?: boolean;
   troubleshootLocation: string;
@@ -94,12 +97,10 @@ export type PasskeyVerificationProps = Readonly<{
   onCeremonyFailed?: () => void;
   showErrorToast?: boolean;
   toastDurationMs?: number;
-  spinnerClassName?: string;
 }>;
 
 export function PasskeyVerification({
-  testIdPrefix,
-  sentryContext,
+  flow,
   autoRunOnMount = true,
   deferToBrowserTab = false,
   troubleshootLocation,
@@ -109,13 +110,13 @@ export function PasskeyVerification({
   onCeremonyFailed,
   showErrorToast = true,
   toastDurationMs,
-  spinnerClassName = 'w-6 h-6',
 }: PasskeyVerificationProps) {
   const t = useI18nContext();
   const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
   const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
   const [isVerifying, setIsVerifying] = useState(false);
   const [showTroubleshootModal, setShowTroubleshootModal] = useState(false);
+  const sentryContext = getPasskeyVerificationSentryContext(flow);
 
   const verify = useCallback(async () => {
     setIsVerifying(true);
@@ -184,9 +185,9 @@ export function PasskeyVerification({
         alignItems={BoxAlignItems.Center}
         marginTop={12}
         gap={4}
-        data-testid={`${testIdPrefix}-passkey-verifying`}
+        data-testid={`${flow}-passkey-verifying`}
       >
-        <Spinner className={spinnerClassName} />
+        <Spinner className="w-6 h-6" />
         <Text
           variant={TextVariant.BodyLg}
           fontWeight={FontWeight.Medium}
@@ -204,7 +205,7 @@ export function PasskeyVerification({
         {isSidePanel && isVerifying && !deferToBrowserTab ? (
           <TextButton
             type="button"
-            data-testid={`${testIdPrefix}-passkey-verifying-open-full-screen`}
+            data-testid={`${flow}-passkey-verifying-open-full-screen`}
             color={TextColor.PrimaryDefault}
             className="text-center"
             onClick={() => setShowTroubleshootModal(true)}
@@ -214,7 +215,7 @@ export function PasskeyVerification({
         ) : null}
         <TextButton
           type="button"
-          data-testid={`${testIdPrefix}-verify-passkey-use-password`}
+          data-testid={`${flow}-verify-passkey-use-password`}
           color={TextColor.PrimaryDefault}
           className="text-center mt-4"
           onClick={handleUsePassword}

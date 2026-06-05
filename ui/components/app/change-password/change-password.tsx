@@ -53,13 +53,9 @@ import {
   verifyPassword,
 } from '../../../store/actions';
 import {
-  getIsPasskeyFeatureAvailable,
-  getIsPasskeyRegistered,
   getIsSocialLoginFlow,
-  getIsEnrolledPasskeyIncompatibleWithSidepanel,
 } from '../../../selectors';
-import { getEnvironmentType } from '../../../../shared/lib/environment-type';
-import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
+import { useIsPasskeyActive, useIsPasskeyIncompatibleInSidepanel } from '../../../hooks/usePasskeyAvailability';
 import PasswordForm from '../password-form/password-form';
 import {
   SECURITY_AND_PASSWORD_ROUTE,
@@ -79,6 +75,8 @@ import {
   PasskeyVerification,
   runPasskeyVerificationCeremony,
 } from '../passkey-verification';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
+import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import ChangePasswordWarning from './change-password-warning';
 
 const ChangePasswordSteps = {
@@ -103,17 +101,10 @@ const ChangePassword = ({
   const navigate = useNavigate();
   const { trackEvent } = useContext(MetaMetricsContext);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
-  const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
-  const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
-  const isPasskeyActive = isPasskeyRegistered && isPasskeyFeatureAvailable;
-  const isEnrolledPasskeyIncompatibleWithSidepanel = useSelector(
-    getIsEnrolledPasskeyIncompatibleWithSidepanel,
-  );
+  const isPasskeyActive = useIsPasskeyActive();
+  const isPasskeyIncompatibleWithSidepanel = useIsPasskeyIncompatibleInSidepanel();
+  const mustDeferPasskeyToBrowserTab = isPasskeyActive && isPasskeyIncompatibleWithSidepanel;
   const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
-  const mustDeferPasskeyToBrowserTab =
-    isSidePanel &&
-    isEnrolledPasskeyIncompatibleWithSidepanel &&
-    isPasskeyActive;
   const animationEventEmitter = useRef(new EventEmitter());
   const hasDeferredPasskeyToBrowserTabRef = useRef(false);
 
@@ -271,7 +262,7 @@ const ChangePassword = ({
       } else {
         // Remove enrollment before changing the password so a failure after
         // `changePassword` cannot leave an enrolled-but-invalid passkey on disk.
-        if (isPasskeyRegistered) {
+        if (isPasskeyActive) {
           await removePasskeyWithPasswordVerification(currentPassword);
           await forceUpdateMetamaskState(dispatch);
         }
@@ -492,15 +483,13 @@ const ChangePassword = ({
 
       {step === ChangePasswordSteps.VerifyPasskey && (
         <PasskeyVerification
-          testIdPrefix="change-password"
-          sentryContext="Passkey verification during change password"
+          flow="change-password"
           autoRunOnMount={!mustDeferPasskeyToBrowserTab}
           deferToBrowserTab={mustDeferPasskeyToBrowserTab}
           troubleshootLocation="settings-change-password"
           onOpenFullScreen={openChangePasswordInFullScreen}
           showErrorToast
           toastDurationMs={autoHideToastDelay}
-          spinnerClassName="change-password__spinner"
           onVerified={handlePasskeyVerified}
           onCeremonyFailed={handlePasskeyCeremonyFailed}
           onUsePassword={handleUseVerifyPassword}

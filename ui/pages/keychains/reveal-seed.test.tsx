@@ -71,7 +71,7 @@ jest.mock('../../store/actions.ts', () => ({
   ...jest.requireActual('../../store/actions.ts'),
   requestRevealSeedWords: (userPassword: string, keyringId?: string) =>
     mockRequestRevealSeedWords(userPassword, keyringId),
-  requestRevealSeedWordsWithPasskey: (
+  revealSeedWordsWithPasskey: (
     authenticationResponse: unknown,
     keyringId?: string,
   ) => mockRequestRevealSeedWordsWithPasskey(authenticationResponse, keyringId),

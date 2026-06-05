@@ -4,6 +4,7 @@ import { type AccountGroupId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
+import { type PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
 import {
   Text,
   TextColor,
@@ -27,7 +28,15 @@ import {
   getInternalAccountListSpreadByScopesByGroupId,
   getInternalAccountsFromGroupById,
 } from '../../../selectors/multichain-accounts/account-tree';
-import { verifyPassword, exportAccounts } from '../../../store/actions';
+import {
+  verifyPassword,
+  exportAccounts,
+  exportAccountsWithPasskey,
+} from '../../../store/actions';
+import { useIsPasskeyActive, useIsPasskeyIncompatibleInSidepanel } from '../../../hooks/usePasskeyAvailability';
+import { cancelPasskeyCeremony } from '../../../../shared/lib/passkey';
+import { createSentryError } from '../../../../shared/lib/error';
+import { captureException } from '../../../../shared/lib/sentry';
 import {
   endTrace,
   trace,
@@ -35,6 +44,11 @@ import {
   TraceOperation,
 } from '../../../../shared/lib/trace';
 import { MINUTE } from '../../../../shared/constants/time';
+import { MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
+import { PasskeyVerification } from '../../app/passkey-verification';
+
+const VERIFY_PASSKEY_SCREEN = 'VERIFY_PASSKEY_SCREEN';
+const VERIFY_PASSWORD_SCREEN = 'VERIFY_PASSWORD_SCREEN';
 
 /**
  * Check if the account has the private key available according to its keyring type.
@@ -69,11 +83,19 @@ const MultichainPrivateKeyList = ({
   const [reveal, setReveal] = useState<boolean>(false);
   const [privateKeys, setPrivateKeys] = useState<Record<string, string>>({});
 
+  const isPasskeyActive = useIsPasskeyActive();
+  const isPasskeyIncompatibleInSidepanel = useIsPasskeyIncompatibleInSidepanel();
+
+  const [screen, setScreen] = useState<string>(
+    isPasskeyActive && !isPasskeyIncompatibleInSidepanel ? VERIFY_PASSKEY_SCREEN : VERIFY_PASSWORD_SCREEN,
+  );
+
   const cleanStateVariables = useCallback(() => {
     setPrivateKeys({});
     setPassword('');
     setWrongPassword(false);
     setReveal(false);
+    setScreen(VERIFY_PASSWORD_SCREEN);
   }, []);
 
   useEffect(
@@ -117,32 +139,77 @@ const MultichainPrivateKeyList = ({
     }
   }, [password]);
 
+  const exportableAddresses = useMemo(
+    () =>
+      accounts
+        .filter((account: InternalAccount) => hasPrivateKeyAvailable(account))
+        .map((account) => account.address),
+    [accounts],
+  );
+
+  const buildPrivateKeyMap = useCallback(
+    (privateKeysList: string[]) =>
+      exportableAddresses.reduce(
+        (acc, address, index) => {
+          acc[address] = privateKeysList[index];
+          return acc;
+        },
+        {} as Record<string, string>,
+      ),
+    [exportableAddresses],
+  );
+
   const unlockPrivateKeys = useCallback(async () => {
-    const pkAccounts = accounts.filter((account: InternalAccount) =>
-      hasPrivateKeyAvailable(account),
-    );
-
-    const addresses = pkAccounts.map((account) => account.address);
-
     const pks = (await dispatch(
-      exportAccounts(password, addresses),
+      exportAccounts(password, exportableAddresses),
     )) as unknown as string[];
 
-    const privateKeyMap = await addresses.reduce(
-      (acc, address, index) => {
-        acc[address] = pks[index];
-        return acc;
-      },
-      {} as Record<string, string>,
-    );
-
-    setPrivateKeys(privateKeyMap);
-  }, [accounts, dispatch, password]);
+    setPrivateKeys(buildPrivateKeyMap(pks));
+  }, [buildPrivateKeyMap, dispatch, exportableAddresses, password]);
 
   const onSubmit = useCallback(async () => {
     await validatePassword();
     await unlockPrivateKeys();
   }, [validatePassword, unlockPrivateKeys]);
+
+  const handleRevealWithPasskey = useCallback(
+    async (authenticationResponse: PasskeyAuthenticationResponse) => {
+      try {
+        trace({
+          name: TraceName.ShowAccountPrivateKeyList,
+          op: TraceOperation.AccountUi,
+        });
+        const pks = (await dispatch(
+          exportAccountsWithPasskey(
+            authenticationResponse,
+            exportableAddresses,
+          ),
+        )) as unknown as string[];
+
+        setPrivateKeys(buildPrivateKeyMap(pks));
+        setReveal(true);
+      } catch (error) {
+        captureException(
+          createSentryError('Export private keys with passkey failed', error),
+        );
+        // Fall back to password verification on any passkey reveal failure.
+        setScreen(VERIFY_PASSWORD_SCREEN);
+      }
+    },
+    [buildPrivateKeyMap, dispatch, exportableAddresses],
+  );
+
+  const handleUsePassword = useCallback(() => {
+    setScreen(VERIFY_PASSWORD_SCREEN);
+  }, []);
+
+  const openInFullScreen = useCallback(() => {
+    cancelPasskeyCeremony();
+    globalThis.platform?.openExtensionInBrowser?.(
+      MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
+      `accountGroupId=${encodeURIComponent(groupId)}`,
+    );
+  }, [groupId]);
 
   const onCancel = useCallback(() => {
     cleanStateVariables();
@@ -255,13 +322,29 @@ const MultichainPrivateKeyList = ({
     }
   }, [reveal]);
 
+  const renderUnrevealedContent = () => {
+    if (screen === VERIFY_PASSKEY_SCREEN) {
+      return (
+        <PasskeyVerification
+          flow="export-private-keys"
+          troubleshootLocation="export-private-keys"
+          onOpenFullScreen={openInFullScreen}
+          onVerified={handleRevealWithPasskey}
+          onCeremonyFailed={handleUsePassword}
+          onUsePassword={handleUsePassword}
+        />
+      );
+    }
+    return renderedPasswordInput;
+  };
+
   return (
     <Box
       className="flex"
       flexDirection={BoxFlexDirection.Column}
       data-testid="multichain-private-keyring-list"
     >
-      {reveal ? renderedRows : renderedPasswordInput}
+      {reveal ? renderedRows : renderUnrevealedContent()}
     </Box>
   );
 };

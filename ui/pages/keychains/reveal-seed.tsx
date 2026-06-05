@@ -28,19 +28,14 @@ import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   requestRevealSeedWords,
-  requestRevealSeedWordsWithPasskey,
+  revealSeedWordsWithPasskey,
   scanUrlForPhishing,
 } from '../../store/actions';
 import {
   getHDEntropyIndex,
-  getIsEnrolledPasskeyIncompatibleWithSidepanel,
-  getIsPasskeyFeatureAvailable,
-  getIsPasskeyRegistered,
-  getIsSocialLoginFlow,
   getOriginOfCurrentTab,
 } from '../../selectors';
-import { getEnvironmentType } from '../../../shared/lib/environment-type';
-import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../shared/constants/app';
+import { useIsPasskeyActive, useIsPasskeyIncompatibleInSidepanel } from '../../hooks/usePasskeyAvailability';
 import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
 import {
   PREVIOUS_ROUTE,
@@ -75,28 +70,14 @@ function RevealSeedPage() {
   const locationState = useLocation().state as RevealSeedLocationState | null;
   const skipQuiz = locationState?.skipQuiz ?? false;
 
-  const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
-  const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
-  const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
-  const isEnrolledPasskeyIncompatibleWithSidepanel = useSelector(
-    getIsEnrolledPasskeyIncompatibleWithSidepanel,
-  );
-  const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
-  // Passkey reveal is not supported for social-login (seedless) wallets. It is
-  // also unavailable in the side panel when the enrolled passkey's authenticator
-  // is incompatible with WebAuthn there; in that case we fall back to the
-  // password prompt (which is always available for non-social wallets) rather
-  // than handing off to a full browser tab.
-  const isPasskeyActive =
-    isPasskeyRegistered &&
-    isPasskeyFeatureAvailable &&
-    !isSocialLoginFlow &&
-    !(isSidePanel && isEnrolledPasskeyIncompatibleWithSidepanel);
+  const isPasskeyActive = useIsPasskeyActive();
+  const isPasskeyIncompatibleInSidepanel = useIsPasskeyIncompatibleInSidepanel();
 
   // The credential step after the quiz: passkey when active, else password.
-  const initialCredentialScreen = isPasskeyActive
-    ? VERIFY_PASSKEY_SCREEN
-    : PASSWORD_PROMPT_SCREEN;
+  const initialCredentialScreen =
+    isPasskeyActive && !isPasskeyIncompatibleInSidepanel
+      ? VERIFY_PASSKEY_SCREEN
+      : PASSWORD_PROMPT_SCREEN;
 
   const [screen, setScreen] = useState<RevealSeedScreen>(
     skipQuiz ? initialCredentialScreen : QUIZ_INTRODUCTION_SCREEN,
@@ -304,7 +285,7 @@ function RevealSeedPage() {
 
       try {
         const revealedSeedWords = (await (dispatch(
-          requestRevealSeedWordsWithPasskey(authenticationResponse, keyringId),
+          revealSeedWordsWithPasskey(authenticationResponse, keyringId),
         ) as unknown as Promise<string>)) as string;
 
         trackEvent({
@@ -498,8 +479,7 @@ function RevealSeedPage() {
     if (screen === VERIFY_PASSKEY_SCREEN) {
       return (
         <PasskeyVerification
-          testIdPrefix="reveal-seed"
-          sentryContext="Passkey verification during reveal SRP"
+          flow="reveal-seed"
           troubleshootLocation="reveal-srp"
           onOpenFullScreen={openRevealSeedInFullScreen}
           onVerified={handlePasskeyVerified}

@@ -328,7 +328,7 @@ export class LegacyBackgroundApiService {
   async getSeedPhrase(password: string, keyringId?: string): Promise<Buffer> {
     const seedPhrase = await this.#messenger.call(
       'KeyringController:exportSeedPhrase',
-      password,
+      { password },
       keyringId,
     );
 

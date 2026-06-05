@@ -96,8 +96,7 @@ describe('PasskeyVerification', () => {
 
     renderWithProvider(
       <PasskeyVerification
-        testIdPrefix="test-flow"
-        sentryContext="Passkey verification test"
+        flow="test-flow"
         troubleshootLocation="reveal-srp"
         onOpenFullScreen={jest.fn()}
         onVerified={onVerified}
@@ -120,8 +119,7 @@ describe('PasskeyVerification', () => {
 
     renderWithProvider(
       <PasskeyVerification
-        testIdPrefix="test-flow"
-        sentryContext="Passkey verification test"
+        flow="test-flow"
         troubleshootLocation="reveal-srp"
         onOpenFullScreen={jest.fn()}
         onVerified={jest.fn()}
@@ -144,8 +142,7 @@ describe('PasskeyVerification', () => {
 
     const { getByTestId } = renderWithProvider(
       <PasskeyVerification
-        testIdPrefix="test-flow"
-        sentryContext="Passkey verification test"
+        flow="test-flow"
         autoRunOnMount={false}
         troubleshootLocation="reveal-srp"
         onOpenFullScreen={jest.fn()}

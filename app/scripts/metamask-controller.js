@@ -3085,8 +3085,6 @@ export default class MetamaskController extends EventEmitter {
         this.removePasskeyWithPasswordVerification.bind(this),
       changePasswordWithPasskeyVerification:
         this.changePasswordWithPasskeyVerification.bind(this),
-      requestRevealSeedWordsWithPasskey:
-        this.requestRevealSeedWordsWithPasskey.bind(this),
 
       // network management
       setActiveNetwork: async (id) => {
@@ -3493,6 +3491,9 @@ export default class MetamaskController extends EventEmitter {
       createNewVaultAndRestore: this.createNewVaultAndRestore.bind(this),
       importMnemonicToVault: this.importMnemonicToVault.bind(this),
       exportAccount: this.exportAccount.bind(this),
+      exportAccountsWithPasskey: this.exportAccountsWithPasskey.bind(this),
+      revealSeedWordsWithPasskey:
+        this.revealSeedWordsWithPasskey.bind(this),
 
       // txController
       updateTransaction: txController.updateTransaction.bind(txController),
@@ -4062,7 +4063,7 @@ export default class MetamaskController extends EventEmitter {
 
   async exportAccount(address, password) {
     await this.verifyPassword(password);
-    return this.keyringController.exportAccount(password, address);
+    return this.keyringController.exportAccount({ password }, address);
   }
 
   async getTokenStandardAndDetails(address, userAddress, tokenId) {
@@ -4736,7 +4737,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} [keyringId] - The id of the HD keyring to reveal. Defaults to the primary keyring.
    * @returns {Promise<Buffer>} The seed phrase encoded as an array of UTF-8 bytes.
    */
-  async requestRevealSeedWordsWithPasskey(authenticationResponse, keyringId) {
+  async revealSeedWordsWithPasskey(authenticationResponse, keyringId) {
     if (!this.passkeyController.isPasskeyEnrolled()) {
       throw new PasskeyControllerError(
         PasskeyControllerErrorMessage.NotEnrolled,
@@ -4758,6 +4759,40 @@ export default class MetamaskController extends EventEmitter {
     );
 
     return convertEnglishWordlistIndicesToCodepoints(mnemonic);
+  }
+
+  /**
+   * Reveals the private keys of multiple accounts after verifying a single
+   * passkey assertion, used as a password-less alternative to
+   * {@link exportAccounts} for the multichain account group reveal.
+   *
+   * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse - WebAuthn authentication response from the passkey ceremony.
+   * @param {string[]} addresses - The addresses whose private keys should be revealed.
+   * @returns {Promise<string[]>} The private keys as hex strings, in the same order as `addresses`.
+   */
+  async exportAccountsWithPasskey(authenticationResponse, addresses) {
+    if (!this.passkeyController.isPasskeyEnrolled()) {
+      throw new PasskeyControllerError(
+        PasskeyControllerErrorMessage.NotEnrolled,
+        { code: PasskeyControllerErrorCode.NotEnrolled },
+      );
+    }
+
+    // Retrieve the passkey-wrapped vault key once. This also cryptographically
+    // verifies the assertion, throwing on an invalid passkey.
+    const vaultKey =
+      await this.passkeyController.retrieveVaultKeyWithPasskey(
+        authenticationResponse,
+      );
+
+    return Promise.all(
+      addresses.map((address) =>
+        this.keyringController.exportAccount(
+          { encryptionKey: vaultKey },
+          address,
+        ),
+      ),
+    );
   }
 
   /**

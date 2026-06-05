@@ -1388,7 +1388,7 @@ export function requestRevealSeedWords(
  * @param keyringId - The id of the HD keyring to reveal. Defaults to the primary keyring.
  * @returns The decoded seed phrase.
  */
-export function requestRevealSeedWordsWithPasskey(
+export function revealSeedWordsWithPasskey(
   authenticationResponse: PasskeyAuthenticationResponse,
   keyringId?: string,
 ): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
@@ -1396,7 +1396,7 @@ export function requestRevealSeedWordsWithPasskey(
     dispatch(showLoadingIndication());
     try {
       const encodedSeedPhrase = await submitRequestToBackground<string>(
-        'requestRevealSeedWordsWithPasskey',
+        'revealSeedWordsWithPasskey',
         [authenticationResponse, keyringId],
       );
       return Buffer.from(encodedSeedPhrase).toString('utf8');
@@ -4238,6 +4238,31 @@ export function exportAccounts(
         }
       }),
     );
+  };
+}
+
+/**
+ * Reveals the private keys of multiple accounts using a single verified passkey
+ * assertion instead of the wallet password.
+ *
+ * @param authenticationResponse - WebAuthn authentication response from the passkey ceremony.
+ * @param addresses - The addresses whose private keys should be revealed.
+ * @returns The private keys as hex strings, in the same order as `addresses`.
+ */
+export function exportAccountsWithPasskey(
+  authenticationResponse: PasskeyAuthenticationResponse,
+  addresses: string[],
+): ThunkAction<Promise<string[]>, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    try {
+      return await submitRequestToBackground<string[]>(
+        'exportAccountsWithPasskey',
+        [authenticationResponse, addresses],
+      );
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
   };
 }
 
