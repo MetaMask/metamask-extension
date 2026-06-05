@@ -1,8 +1,10 @@
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import Fuse from 'fuse.js';
 import { SETTINGS_TABS, SETTINGS_ROUTES } from './settings-registry';
 import { SETTINGS_SEARCH_CONFIG } from './search-config';
 import { useSettingsI18n } from './useSettingsI18n';
+import { getIsPasskeyFeatureAvailable } from '../../selectors';
 
 export const MIN_SEARCH_LENGTH = 3;
 
@@ -66,9 +68,13 @@ function buildSearchableItems(): SettingsSearchResult[] {
  */
 export function useSettingsSearch(searchValue: string): SettingsSearchResult[] {
   const t = useSettingsI18n();
+  const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
 
   const fuse = useMemo(() => {
-    const items = buildSearchableItems();
+    const allItems = buildSearchableItems();
+    const items = isPasskeyFeatureAvailable
+      ? allItems
+      : allItems.filter((item) => item.settingId !== 'passkey');
     return new Fuse(items, {
       shouldSort: true,
       threshold: 0.3,
@@ -81,7 +87,7 @@ export function useSettingsSearch(searchValue: string): SettingsSearchResult[] {
         return t(item[key as 'tabLabelKey' | 'titleKey']);
       },
     });
-  }, [t]);
+  }, [t, isPasskeyFeatureAvailable]);
 
   return useMemo(() => {
     const query = searchValue.trim();

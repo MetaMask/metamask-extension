@@ -1,4 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks';
+import { getIsPasskeyFeatureAvailable } from '../../selectors';
 import { useSettingsSearch } from './useSettingsSearch';
 
 jest.mock('../../../shared/lib/passkey', () => ({
@@ -12,6 +13,15 @@ jest.mock('../../hooks/useI18nContext', () => ({
     }
     return key;
   },
+}));
+
+jest.mock('react-redux', () => ({
+  useSelector: (selector: (state: Record<string, unknown>) => unknown) =>
+    selector({}),
+}));
+
+jest.mock('../../selectors', () => ({
+  getIsPasskeyFeatureAvailable: jest.fn(),
 }));
 
 jest.mock('./settings-registry', () => ({
@@ -28,6 +38,13 @@ jest.mock('./settings-registry', () => ({
       path: '/settings/preferences-and-display',
       labelKey: 'preferencesAndDisplay',
       iconName: 'Customize',
+      component: () => null,
+    },
+    {
+      id: 'security-and-password',
+      path: '/settings/security',
+      labelKey: 'securityAndPrivacy',
+      iconName: 'Key',
       component: () => null,
     },
   ],
@@ -47,10 +64,18 @@ jest.mock('./search-config', () => ({
         { id: 'local-currency', titleKey: 'localCurrency' },
       ],
     },
+    {
+      tabId: 'security-and-password',
+      items: [{ id: 'passkey', titleKey: 'unlockWithPasskey' }],
+    },
   ],
 }));
 
 describe('useSettingsSearch', () => {
+  beforeEach(() => {
+    jest.mocked(getIsPasskeyFeatureAvailable).mockReturnValue(false);
+  });
+
   it('returns empty results for queries shorter than 3 characters', () => {
     const { result } = renderHook(() => useSettingsSearch('th'));
     expect(result.current).toEqual([]);
@@ -78,5 +103,19 @@ describe('useSettingsSearch', () => {
   it('returns empty array for non-matching queries', () => {
     const { result } = renderHook(() => useSettingsSearch('xyznonexistent'));
     expect(result.current).toEqual([]);
+  });
+
+  it('excludes passkey item from results when passkey feature is unavailable', () => {
+    jest.mocked(getIsPasskeyFeatureAvailable).mockReturnValue(false);
+    const { result } = renderHook(() => useSettingsSearch('passkey'));
+    const settingIds = result.current.map((item) => item.settingId);
+    expect(settingIds).not.toContain('passkey');
+  });
+
+  it('includes passkey item in results when passkey feature is available', () => {
+    jest.mocked(getIsPasskeyFeatureAvailable).mockReturnValue(true);
+    const { result } = renderHook(() => useSettingsSearch('passkey'));
+    const settingIds = result.current.map((item) => item.settingId);
+    expect(settingIds).toContain('passkey');
   });
 });
