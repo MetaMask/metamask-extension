@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Ledger BTC Test</title>
+  <style>
+    body { font-family: system-ui; max-width: 600px; margin: 40px auto; padding: 0 20px; }
+    button { padding: 10px 20px; margin: 8px 4px; font-size: 14px; cursor: pointer; }
+    pre { background: #f5f5f5; padding: 12px; overflow-x: auto; white-space: pre-wrap; font-size: 13px; }
+    .success { color: green; } .error { color: red; }
+    #status { margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <h1>Ledger BTC Test</h1>
+  <p>Step 1: Connect your Ledger and open the Bitcoin app.</p>
+  <p>Step 2: Click "Grant USB Permission" to allow WebHID access.</p>
+  <p>Step 3: Click "Run Test" to test xpub, address, and signing.</p>
+  <div>
+    <button id="grant">Grant USB Permission</button>
+    <button id="test" disabled>Run Test</button>
+  </div>
+  <div id="status"></div>
+  <script src="../../ledger-btc-test.ts" defer></script>
+</body>
+</html>

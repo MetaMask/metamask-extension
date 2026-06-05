@@ -12,6 +12,8 @@ export enum OffscreenCommunicationTarget {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   ledgerOffscreen = 'ledger-offscreen',
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  ledgerBtcOffscreen = 'ledger-btc-offscreen',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   latticeOffscreen = 'lattice-offscreen',
@@ -94,6 +96,15 @@ export enum LedgerAction {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   getAppConfiguration = 'ledger-get-app-configuration',
+}
+
+/**
+ * Defines actions for testing Bitcoin Ledger signing via the new DMK-based
+ * entropy controller.
+ */
+export enum LedgerBtcAction {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  test = 'ledger-btc-test',
 }
 
 /**

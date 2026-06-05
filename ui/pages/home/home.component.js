@@ -874,6 +874,25 @@ export default class Home extends PureComponent {
             ? this.renderPopover()
             : null}
           <div className="home__main-view">
+            <button
+              style={{
+                margin: '8px 16px',
+                padding: '10px 16px',
+                cursor: 'pointer',
+                background: '#037dd6',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                fontSize: '14px',
+              }}
+              onClick={() => {
+                global.platform.openTab({
+                  url: chrome.runtime.getURL('ledger-btc-test.html'),
+                });
+              }}
+            >
+              Ledger BTC Test
+            </button>
             <AccountOverview
               onSupportLinkClick={this.onSupportLinkClick}
               useExternalServices={useExternalServices}

@@ -34,6 +34,13 @@ async function init(): Promise<void> {
   initializePostMessageStream();
   initTrezor();
   initLattice();
+  try {
+    const { default: initLedgerBtc } = await import('./ledger-btc');
+    initLedgerBtc();
+    console.log('[offscreen] ledger-btc initialized');
+  } catch (error) {
+    console.error('[offscreen] ledger-btc init failed:', error);
+  }
 
   try {
     const ledgerInitTimeout = new Promise((_, reject) => {
