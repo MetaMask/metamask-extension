@@ -158,8 +158,6 @@ export type ControllerStatePropertiesEnumerated = {
   quoteStreamComplete: BridgeControllerState['quoteStreamComplete'];
   minimumBalanceForRentExemptionInLamports: BridgeControllerState['minimumBalanceForRentExemptionInLamports'];
   assetExchangeRates: BridgeControllerState['assetExchangeRates'];
-  batchSellTrades: BridgeControllerState['batchSellTrades'];
-  batchSellTradesLoadingStatus: BridgeControllerState['batchSellTradesLoadingStatus'];
   tokenSecurityTypeDestination: BridgeControllerState['tokenSecurityTypeDestination'];
   tokenWarnings: BridgeControllerState['tokenWarnings'];
   batchSellTrades: BridgeControllerState['batchSellTrades'];

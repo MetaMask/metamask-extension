@@ -87,8 +87,10 @@ describe('useBatchSellQuotesConfig', () => {
     mockSelectionState = {
       selectedNetworkChainId: ETH_CHAIN_ID,
       selectedAssetsId: [ASSET_A_ID, ASSET_B_ID],
+      assetsOrderByBalance: 'desc',
       setSelectedNetworkChainId: jest.fn(),
       setSelectedAssetsId: jest.fn(),
+      setAssetsOrderByBalance: jest.fn(),
     };
 
     mockGetReceivedAssets.mockReturnValue([
@@ -487,8 +489,10 @@ describe('useBatchSellQuotesConfig', () => {
       mockSelectionState = {
         selectedNetworkChainId: null,
         selectedAssetsId: [],
+        assetsOrderByBalance: 'desc',
         setSelectedNetworkChainId: jest.fn(),
         setSelectedAssetsId: jest.fn(),
+        setAssetsOrderByBalance: jest.fn(),
       };
       mockGetSwapAssets.mockReturnValue([] as never);
 
