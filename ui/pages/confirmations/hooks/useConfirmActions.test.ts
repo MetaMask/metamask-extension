@@ -88,7 +88,9 @@ describe('useConfirmActions', () => {
       location: 'dummy',
       navigateBackToPreviousPage: true,
     });
-    expect(mockNavigate).toHaveBeenCalledWith('/asset/0x1/0xabc');
+    expect(mockNavigate).toHaveBeenCalledWith('/asset/0x1/0xabc', {
+      replace: true,
+    });
   });
 
   it('navigates to DEFAULT_ROUTE when navigateBackToPreviousPage is true but no goBackTo', async () => {
@@ -98,7 +100,7 @@ describe('useConfirmActions', () => {
       location: 'dummy',
       navigateBackToPreviousPage: true,
     });
-    expect(mockNavigate).toHaveBeenCalledWith('/');
+    expect(mockNavigate).toHaveBeenCalledWith('/', { replace: true });
   });
 
   it('does not navigate back by default', async () => {
