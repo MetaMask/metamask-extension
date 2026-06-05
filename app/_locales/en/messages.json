@@ -465,6 +465,17 @@
   "activity_marketShort_success_title": {
     "message": "Closed short - market"
   },
+  "activity_nftBuy_failed_title": {
+    "message": "Buy failed"
+  },
+  "activity_nftBuy_pending_title": {
+    "message": "Buying $1",
+    "description": "$1 is the NFT token symbol"
+  },
+  "activity_nftBuy_success_title": {
+    "message": "Bought $1",
+    "description": "$1 is the NFT token symbol"
+  },
   "activity_nftMint_failed_description": {
     "message": ""
   },
