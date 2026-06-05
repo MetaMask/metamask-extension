@@ -438,6 +438,79 @@ describe('CriticalStartupErrorHandler', () => {
       expect(mockDisplayCriticalErrorMessage).not.toHaveBeenCalled();
     });
 
+    afterEach(() => {
+      document.documentElement.removeAttribute('data-theme');
+    });
+
+    it('applies data-theme to document.documentElement when theme param is provided', async () => {
+      const handler = new CriticalStartupErrorHandler(port, container);
+      handler.install();
+
+      port.simulateMessage({
+        data: {
+          method: METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
+          params: {
+            error: { message: 'corruption', name: 'Error', stack: '' },
+            hasBackup: true,
+            currentLocale: 'en',
+            theme: 'light',
+          },
+        },
+      });
+      await flushMicrotasks();
+
+      expect(document.documentElement.getAttribute('data-theme')).toBe('light');
+
+      handler.uninstall();
+    });
+
+    it('resolves os theme via matchMedia and sets data-theme', async () => {
+      Object.defineProperty(window, 'matchMedia', {
+        writable: true,
+        value: jest.fn().mockReturnValue({ matches: false }),
+      });
+
+      const handler = new CriticalStartupErrorHandler(port, container);
+      handler.install();
+
+      port.simulateMessage({
+        data: {
+          method: METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
+          params: {
+            error: { message: 'corruption', name: 'Error', stack: '' },
+            hasBackup: true,
+            theme: 'os',
+          },
+        },
+      });
+      await flushMicrotasks();
+
+      expect(document.documentElement.getAttribute('data-theme')).toBe('light');
+
+      handler.uninstall();
+    });
+
+    it('does not set data-theme when theme param is absent', async () => {
+      const handler = new CriticalStartupErrorHandler(port, container);
+      handler.install();
+
+      port.simulateMessage({
+        data: {
+          method: METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
+          params: {
+            error: { message: 'corruption', name: 'Error', stack: '' },
+            hasBackup: true,
+            currentLocale: 'en',
+          },
+        },
+      });
+      await flushMicrotasks();
+
+      expect(document.documentElement.getAttribute('data-theme')).toBeNull();
+
+      handler.uninstall();
+    });
+
     it('does not call displayStateCorruptionError when METHOD_DISPLAY_STATE_CORRUPTION_ERROR has no valid params', async () => {
       const handler = new CriticalStartupErrorHandler(port, container);
       handler.install();
