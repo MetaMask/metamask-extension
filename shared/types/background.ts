@@ -160,6 +160,8 @@ export type ControllerStatePropertiesEnumerated = {
   assetExchangeRates: BridgeControllerState['assetExchangeRates'];
   tokenSecurityTypeDestination: BridgeControllerState['tokenSecurityTypeDestination'];
   tokenWarnings: BridgeControllerState['tokenWarnings'];
+  batchSellTrades: BridgeControllerState['batchSellTrades'];
+  batchSellTradesLoadingStatus: BridgeControllerState['batchSellTradesLoadingStatus'];
   txHistory: BridgeStatusControllerState['txHistory'];
   events: CronjobControllerState['events'];
   currentCurrency: CurrencyRateState['currentCurrency'];

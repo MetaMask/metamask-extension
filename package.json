@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "13.35.0",
+  "version": "13.36.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -161,7 +161,7 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
-    "@metamask/bridge-controller": "72.0.0",
+    "@metamask/bridge-controller": "73.2.0",
     "@metamask/messenger@npm:^0.3.0": "^1.2.0",
     "@metamask/network-controller": "32.0.0",
     "follow-redirects": "^1.16.0",
@@ -341,8 +341,8 @@
     "@metamask/assets-controllers": "^108.4.0",
     "@metamask/base-controller": "^9.0.1",
     "@metamask/bitcoin-wallet-snap": "^1.12.0",
-    "@metamask/bridge-controller": "^72.0.0",
-    "@metamask/bridge-status-controller": "^71.2.0",
+    "@metamask/bridge-controller": "^73.2.0",
+    "@metamask/bridge-status-controller": "^72.0.1",
     "@metamask/browser-passworder": "^6.0.0",
     "@metamask/chain-agnostic-permission": "^1.6.0",
     "@metamask/claims-controller": "^0.4.2",
@@ -724,7 +724,7 @@
     "gulp-sourcemaps": "^3.0.0",
     "gulp-watch": "^5.0.1",
     "gulp-zip": "^5.1.0",
-    "html-bundler-webpack-plugin": "patch:html-bundler-webpack-plugin@npm%3A4.22.0#~/.yarn/patches/html-bundler-webpack-plugin-npm-4.22.0-5c9a1ad61e.patch",
+    "html-bundler-webpack-plugin": "patch:html-bundler-webpack-plugin@npm%3A4.23.2#~/.yarn/patches/html-bundler-webpack-plugin-npm-4.23.2-c360a7b7fc.patch",
     "http-server": "^14.1.1",
     "https-browserify": "^1.0.0",
     "husky": "^8.0.3",

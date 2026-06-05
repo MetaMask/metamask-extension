@@ -448,13 +448,17 @@ export async function publishHook({
 
   const isRevokeDelegation =
     transactionMeta.type === TransactionType.revokeDelegation;
+  const isSwapGasIncluded7702 = transactionMeta.isGasFeeIncluded;
 
   let attemptedHook = false;
 
   if (
     keyringSupports7702 &&
     !isRevokeDelegation &&
-    (!isSmartTransaction || !sendBundleSupport || isExternalSign)
+    (isSwapGasIncluded7702 ||
+      !isSmartTransaction ||
+      !sendBundleSupport ||
+      isExternalSign)
   ) {
     attemptedHook = true;
     const hook = new Delegation7702PublishHook({
