@@ -35,7 +35,9 @@ jest.mock('../../components/app/modals/pna25-modal', () => ({
 jest.mock('../connected-sites', () => () => null);
 jest.mock('../connected-accounts', () => () => null);
 jest.mock('./beta-and-flask-home-footer.component', () => () => null);
-jest.mock('./HomeDeepLinkActions', () => ({ HomeDeepLinkActions: () => null }));
+jest.mock('./HomeDeepLinkActions', () => ({
+  HomeDeepLinkActions: () => null,
+}));
 jest.mock('../../../shared/lib/mv3.utils', () => ({
   isMv3ButOffscreenDocIsMissing: jest.fn().mockReturnValue(false),
 }));
@@ -319,26 +321,23 @@ describe('Home — checkLastVisitedPerpsRoute', () => {
 });
 
 describe('Home — renderOnboardingPopover', () => {
-  it(
-    'renders disagree button with mm-button-secondary class and accept button with mm-button-primary class',
-    () => {
-      const { getByText } = renderHome({
-        participateInMetaMetrics: true,
-        dataCollectionForMarketing: null,
-        completedOnboarding: true,
-      });
+  it('renders disagree button with mm-button-secondary class and accept button with mm-button-primary class', () => {
+    const { getByText } = renderHome({
+      participateInMetaMetrics: true,
+      dataCollectionForMarketing: null,
+      completedOnboarding: true,
+    });
 
-      const disagreeButton = getByText('onboardedMetametricsDisagree').closest(
-        'button',
-      );
-      const acceptButton = getByText('onboardedMetametricsAccept').closest(
-        'button',
-      );
+    const disagreeButton = getByText('onboardedMetametricsDisagree').closest(
+      'button',
+    );
+    const acceptButton = getByText('onboardedMetametricsAccept').closest(
+      'button',
+    );
 
-      expect(disagreeButton).toHaveClass('mm-button-secondary');
-      expect(acceptButton).toHaveClass('mm-button-primary');
-    },
-  );
+    expect(disagreeButton).toHaveClass('mm-button-secondary');
+    expect(acceptButton).toHaveClass('mm-button-primary');
+  });
 });
 
 describe('Home — renderPopover', () => {
