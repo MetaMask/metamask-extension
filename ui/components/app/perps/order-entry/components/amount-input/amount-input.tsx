@@ -63,7 +63,7 @@ const handleNumericFocusSelectAll = (
  * @param options0.usdPlaceholder
  * @param options0.usdInputRef
  */
-export const AmountInput: React.FC<AmountInputProps> = ({
+export const AmountInput = ({
   amount,
   onAmountChange,
   balancePercent,
@@ -78,7 +78,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   autoFocus = false,
   usdPlaceholder = '0.00',
   usdInputRef,
-}) => {
+}: AmountInputProps) => {
   const t = useI18nContext();
   const { formatNumber } = useFormatters();
   const [percentInputValue, setPercentInputValue] = useState<string>(
@@ -253,7 +253,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   }, []);
 
   const handleSliderChange = useCallback(
-    (_event: React.ChangeEvent<unknown>, value: number | number[]) => {
+    (_event: Event, value: number | number[]) => {
       const percent = Array.isArray(value) ? value[0] : value;
       onBalancePercentChange(percent);
       setPercentInputValue(String(percent));

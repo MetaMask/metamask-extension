@@ -1,16 +1,15 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { Skeleton } from '@metamask/design-system-react';
 import {
   TextAlign,
   TextColor,
-  TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import {
   SensitiveText,
   SensitiveTextLength,
 } from '../../../../component-library';
 import { TokenFiatDisplayInfo } from '../../types';
-import { Skeleton } from '../../../../component-library/skeleton';
 import { selectAnyEnabledNetworksAreAvailable } from '../../../../../selectors';
 import { isZeroAmount } from '../../../../../helpers/utils/number-utils';
 import { useFormatters } from '../../../../../hooks/useFormatters';
@@ -29,14 +28,14 @@ export const TokenCellPrimaryDisplay = React.memo(
 
     return (
       <Skeleton
-        isLoading={
+        hideChildren={
           !anyEnabledNetworksAreAvailable && isZeroAmount(token.balance)
         }
       >
         <SensitiveText
           data-testid="multichain-token-list-item-value"
           color={TextColor.textAlternative}
-          variant={TextVariant.bodySmMedium}
+          className="text-s-body-md @compact:text-s-body-sm"
           textAlign={TextAlign.End}
           isHidden={privacyMode}
           length={SensitiveTextLength.Short}

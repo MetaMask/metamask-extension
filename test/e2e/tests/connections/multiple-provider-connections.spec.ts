@@ -28,10 +28,8 @@ import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flo
 import { getPermissionsPageForHost } from '../../page-objects/flows/permissions.flow';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
-import {
-  connectSolanaTestDapp,
-  account1 as SOLANA_ADDRESS_ONE,
-} from '../../flask/solana-wallet-standard/testHelpers';
+import { connectSolanaTestDapp } from '../../page-objects/flows/solana-dapp.flow';
+import { account1 as SOLANA_ADDRESS_ONE } from '../../flask/solana-wallet-standard/testHelpers';
 import { Driver } from '../../webdriver/driver';
 import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
 import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';

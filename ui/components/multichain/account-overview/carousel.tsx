@@ -43,9 +43,11 @@ export const Carousel = () => {
   const handleCarouselClick = (id: string) => {
     const slide = slideById.get(id);
     const key = slide?.variableName ?? id;
+    let clickHandled = false;
 
     if (key === 'downloadMobileApp') {
       setShowDownloadMobileAppModal(true);
+      clickHandled = true;
     }
 
     trackEvent({
@@ -57,6 +59,8 @@ export const Carousel = () => {
         banner_name: key,
       },
     });
+
+    return clickHandled;
   };
 
   const handleRemoveSlide = (slideId: string, isLastSlide: boolean) => {

@@ -2,6 +2,13 @@ const { readFileSync } = require('node:fs');
 const assert = require('node:assert');
 const { ENVIRONMENT } = require('./constants');
 
+function isProductionOrReleaseCandidateBuild(environment) {
+  return (
+    environment === ENVIRONMENT.PRODUCTION ||
+    environment === ENVIRONMENT.RELEASE_CANDIDATE
+  );
+}
+
 /**
  * Sets environment variables to inject in the current build.
  *
@@ -40,6 +47,10 @@ function setEnvironmentVariables({
 
   const GOOGLE_CLIENT_ID = isSeedlessOnboardingEnabled
     ? getOAuthClientId({ ...oauthClientIdOptions, provider: 'GOOGLE' })
+    : '';
+
+  const TELEGRAM_CLIENT_ID = isSeedlessOnboardingEnabled
+    ? getOAuthClientId({ ...oauthClientIdOptions, provider: 'TELEGRAM' })
     : '';
 
   variables.set({
@@ -88,11 +99,13 @@ function setEnvironmentVariables({
       ? 'true'
       : variables.getMaybe('METAMASK_SHIELD_ENABLED'),
     PERPS_ENABLED: isTestBuild ? 'true' : variables.getMaybe('PERPS_ENABLED'),
-    ASSETS_UNIFIED_STATE_ENABLED: isTestBuild
-      ? 'false'
-      : variables.getMaybe('ASSETS_UNIFIED_STATE_ENABLED') || 'false',
+    ASSETS_UNIFIED_STATE_ENABLED: variables.getMaybe(
+      'ASSETS_UNIFIED_STATE_ENABLED',
+    ),
+    COMPLIANCE_API_URL: variables.getMaybe('COMPLIANCE_API_URL'),
     GOOGLE_CLIENT_ID,
     APPLE_CLIENT_ID,
+    TELEGRAM_CLIENT_ID,
   });
 }
 
@@ -182,7 +195,7 @@ function getInfuraProjectId({ buildType, variables, environment, testing }) {
  * Get the OAuth client ID for the current build.
  *
  * @param {object} options - The OAuth client ID options.
- * @param {'APPLE' | 'GOOGLE'} options.provider - The OAuth provider.
+ * @param {'APPLE' | 'GOOGLE' | 'TELEGRAM'} options.provider - The OAuth provider.
  * @param {string} options.buildType - The current build type.
  * @param {ENVIRONMENT[keyof ENVIRONMENT]} options.environment - The current build environment.
  * @param {boolean} options.testing - Whether this is a test build or not.
@@ -200,10 +213,7 @@ function getOAuthClientId({
 }) {
   const clientIdEnv = `${provider}_CLIENT_ID`;
 
-  if (
-    environment === ENVIRONMENT.PRODUCTION ||
-    environment === ENVIRONMENT.RELEASE_CANDIDATE
-  ) {
+  if (isProductionOrReleaseCandidateBuild(environment)) {
     // Production and release-candidate builds resolve the client ID indirectly so
     // each build can point at the right secret without changing code.
     const clientIdRef = assertAndLoadEnvVar(

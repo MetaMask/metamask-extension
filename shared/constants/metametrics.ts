@@ -1066,6 +1066,7 @@ export enum MetaMetricsEventName {
   ImportCustomTokenInteracted = 'Import Custom Token Interacted',
   TokenScreenOpened = 'Token Screen Opened',
   TokenAdded = 'Token Added',
+  LowValueAssetsToggled = 'Low Value Assets Toggled',
   TokenSortPreference = 'Token Sort Preference Updated',
   EmptyNFTTabButtonClicked = 'Empty NFT Tab Button Clicked',
   TokenDetected = 'Token Detected',
@@ -1212,6 +1213,7 @@ export enum MetaMetricsEventName {
   HardwareWalletRecoveryModalViewed = 'Hardware Wallet Recovery Modal Viewed',
   HardwareWalletRecoverySuccessModalViewed = 'Hardware Wallet Recovery Success Modal Viewed',
   HardwareWalletRecoveryCtaClicked = 'Hardware Wallet Recovery CTA Clicked',
+  HardwareWalletRecoveryRepairCtaClicked = 'Hardware Wallet Recovery Repair CTA Clicked',
   ViewportSwitched = 'Viewport Switched',
   // Rewards
   RewardsOptInStarted = 'REWARDS_OPT_IN_STARTED',

@@ -314,20 +314,6 @@ export function matchesNonEvmTransaction(
   });
 }
 
-export function calculateFiatFromMarketRates(
-  amount: string | undefined,
-  token: Token | undefined,
-  marketRates: Record<number, Record<string, number>>,
-) {
-  if (amount === undefined || !token) {
-    return undefined;
-  }
-
-  const parsed = parseFloat(amount);
-  const rate = marketRates[parseInt(token.chainId, 16)]?.[token.address];
-  return rate === undefined ? undefined : parsed * rate;
-}
-
 // Map API transactionCategory to TransactionType for legacy modal
 export function resolveTransactionType(
   tx: TransactionViewModel,

@@ -1,12 +1,12 @@
-import { SelectedNetworkController } from '@metamask/selected-network-controller';
+import {
+  SelectedNetworkController,
+  SelectedNetworkControllerMessenger,
+} from '@metamask/selected-network-controller';
 import { WeakRefObjectMap } from '../lib/WeakRefObjectMap';
 import { getRootMessenger } from '../lib/messenger';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
-import {
-  getSelectedNetworkControllerMessenger,
-  SelectedNetworkControllerMessenger,
-} from './messengers';
+import { getSelectedNetworkControllerMessenger } from './messengers';
 import { SelectedNetworkControllerInit } from './selected-network-controller-init';
 
 jest.mock('@metamask/selected-network-controller');

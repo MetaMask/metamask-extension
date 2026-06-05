@@ -1,11 +1,12 @@
-import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import { AuthConnection } from '../../../../shared/constants/onboarding';
 import { AppleLoginHandler } from './apple-login-handler';
 import { GoogleLoginHandler } from './google-login-handler';
-import type {
-  LoginHandlerOptions,
-  OAuthConfig,
-  OAuthLoginEnv,
-  WebAuthenticator,
+import { TelegramLoginHandler } from './telegram-login-handler';
+import {
+  type LoginHandlerOptions,
+  type OAuthConfig,
+  type OAuthLoginEnv,
+  type WebAuthenticator,
 } from './types';
 
 export function createLoginHandler(
@@ -29,6 +30,12 @@ export function createLoginHandler(
       return new AppleLoginHandler({
         ...commonHandlerOptions,
         oAuthClientId: config.appleClientId,
+      });
+    case AuthConnection.Telegram:
+      return new TelegramLoginHandler({
+        ...commonHandlerOptions,
+        profileSyncEnv: config.profileSyncEnv,
+        oAuthClientId: config.telegramClientId,
       });
     default:
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
