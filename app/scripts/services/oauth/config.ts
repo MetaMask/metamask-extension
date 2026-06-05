@@ -49,6 +49,10 @@ export enum BuildTypeEnv {
 
 export const OauthConfigMap: Record<BuildTypeEnv, OAuthConfig> = {
   [BuildTypeEnv.DevMain]: {
+    googleClientId:
+      '615965109465-i8oeh9kuvl1n6lk1ffkobpvth27bmi41.apps.googleusercontent.com',
+    appleClientId: 'io.metamask.appleloginclient.dev',
+    telegramClientId: '8648706996',
     googleAuthConnectionId: 'mm-google-dev-extension',
     appleAuthConnectionId: 'mm-apple-dev-common',
     googleGroupedAuthConnectionId: 'mm-google-dev',
@@ -57,8 +61,13 @@ export const OauthConfigMap: Record<BuildTypeEnv, OAuthConfig> = {
     telegramGroupedAuthConnectionId: 'mm-telegram-auth-dev',
     authServerUrl: 'https://auth-service.dev-api.cx.metamask.io',
     web3AuthNetwork: Web3AuthNetwork.Devnet,
+    profileSyncEnv: ProfileSyncEnv.DEV,
   },
   [BuildTypeEnv.DevFlask]: {
+    googleClientId:
+      '615965109465-ab20kuqbls6fj5s50fvmvbnket8nv1sh.apps.googleusercontent.com',
+    appleClientId: 'io.metamask.appleloginclient.flask.dev',
+    telegramClientId: '8935500495',
     googleAuthConnectionId: 'mm-google-flask-dev-extension',
     appleAuthConnectionId: 'mm-apple-flask-dev-common',
     googleGroupedAuthConnectionId: 'mm-google-flask-dev',
@@ -67,8 +76,13 @@ export const OauthConfigMap: Record<BuildTypeEnv, OAuthConfig> = {
     telegramGroupedAuthConnectionId: 'mm-telegram-auth-dev',
     authServerUrl: 'https://auth-service.dev-api.cx.metamask.io',
     web3AuthNetwork: Web3AuthNetwork.Devnet,
+    profileSyncEnv: ProfileSyncEnv.DEV,
   },
   [BuildTypeEnv.UatMain]: {
+    googleClientId:
+      '387141446914-olajr83p1bbvabh1u8tfglt1k4u6jlcb.apps.googleusercontent.com',
+    appleClientId: 'io.metamask.appleloginclient.uat',
+    telegramClientId: '8645620447',
     googleAuthConnectionId: 'mm-google-uat-extension',
     appleAuthConnectionId: 'mm-apple-uat-common',
     googleGroupedAuthConnectionId: 'mm-google-uat',
@@ -77,8 +91,12 @@ export const OauthConfigMap: Record<BuildTypeEnv, OAuthConfig> = {
     telegramGroupedAuthConnectionId: 'mm-telegram-uat',
     authServerUrl: 'https://auth-service.uat-api.cx.metamask.io',
     web3AuthNetwork: Web3AuthNetwork.Mainnet,
+    profileSyncEnv: ProfileSyncEnv.UAT,
   },
   [BuildTypeEnv.UatFlask]: {
+    googleClientId: '387141446914-f03k9ivc2jrmi1s53lne88mh529372kj.apps.googleusercontent.com',
+    appleClientId: 'io.metamask.appleloginclient.flask.uat',
+    telegramClientId: '8490765053',
     googleAuthConnectionId: 'mm-google-flask-uat-extension',
     appleAuthConnectionId: 'mm-apple-flask-uat-common',
     googleGroupedAuthConnectionId: 'mm-google-flask-uat',
@@ -87,8 +105,13 @@ export const OauthConfigMap: Record<BuildTypeEnv, OAuthConfig> = {
     telegramGroupedAuthConnectionId: 'mm-telegram-flask-uat',
     authServerUrl: 'https://auth-service.uat-api.cx.metamask.io',
     web3AuthNetwork: Web3AuthNetwork.Mainnet,
+    profileSyncEnv: ProfileSyncEnv.UAT,
   },
   [BuildTypeEnv.ProdMain]: {
+    googleClientId:
+      '795351133007-6d0s31utj13knv440fgjo2ur93241gb6.apps.googleusercontent.com',
+    appleClientId: 'io.metamask.appleloginclient.prod',
+    telegramClientId: '8775377623',
     googleAuthConnectionId: 'mm-google-main-extension',
     appleAuthConnectionId: 'mm-apple-main-common',
     googleGroupedAuthConnectionId: 'mm-google-main',
@@ -97,8 +120,12 @@ export const OauthConfigMap: Record<BuildTypeEnv, OAuthConfig> = {
     telegramGroupedAuthConnectionId: 'mm-telegram-main',
     authServerUrl: 'https://auth-service.api.cx.metamask.io',
     web3AuthNetwork: Web3AuthNetwork.Mainnet,
+    profileSyncEnv: ProfileSyncEnv.PRD,
   },
   [BuildTypeEnv.ProdFlask]: {
+    googleClientId: '795351133007-gh67d3hot6ib24htu9d7sh01bg90lpdu.apps.googleusercontent.com',
+    appleClientId: 'io.metamask.appleloginclient.flask.prod',
+    telegramClientId: '8510781700',
     googleAuthConnectionId: 'mm-google-flask-main-extension',
     appleAuthConnectionId: 'mm-apple-flask-main-common',
     googleGroupedAuthConnectionId: 'mm-google-flask-main',
@@ -107,8 +134,13 @@ export const OauthConfigMap: Record<BuildTypeEnv, OAuthConfig> = {
     telegramGroupedAuthConnectionId: 'mm-telegram-flask-main',
     authServerUrl: 'https://auth-service.api.cx.metamask.io',
     web3AuthNetwork: Web3AuthNetwork.Mainnet,
+    profileSyncEnv: ProfileSyncEnv.PRD,
   },
   [BuildTypeEnv.Beta]: {
+    googleClientId:
+      '795351133007-6d0s31utj13knv440fgjo2ur93241gb6.apps.googleusercontent.com',
+    appleClientId: 'io.metamask.appleloginclient.prod',
+    telegramClientId: '8775377623',
     googleAuthConnectionId: 'mm-google-main-extension',
     appleAuthConnectionId: 'mm-apple-main-common',
     googleGroupedAuthConnectionId: 'mm-google-main',
@@ -117,6 +149,7 @@ export const OauthConfigMap: Record<BuildTypeEnv, OAuthConfig> = {
     telegramGroupedAuthConnectionId: 'mm-telegram-main',
     authServerUrl: 'https://auth-service.api.cx.metamask.io',
     web3AuthNetwork: Web3AuthNetwork.Mainnet,
+    profileSyncEnv: ProfileSyncEnv.PRD,
   },
 };
 
