@@ -9,20 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.34.0]
 
-### Uncategorized
-
-- Bump the `@metamask/tron-wallet-snap` to `^1.25.6` (#42701)
-- Bumped bitcoin snap v1.11.0 (#42993)
-- perf(6634): extract gas estimate side-effects, strip unused withRouter props (#42687)
-- Add support for `token-approval-revocation` permission via `wallet_requestExecutionPermissions` RPC (#42954)
-- Show hidden tokens in Send Flow (#42934)
-- Fixed the VIP tier label to display "VIP" instead of "VIP Fox" (#42856)
-- chore: Replace `await-semaphore` with `async-mutex` (#42818)
-- Updated Activity tab empty states to show context-specific messaging and actions when users have no transaction (#42786)
-  history.
-- Removed outdated translations from community-contributed ga, pt_BR, and zh_TW locales. (#40974)
-- Add Sentry distributed tracing instrumentation for Background RPC calls and inter-controller messenger calls. (#39891)
-- perf(6633): strip unused `withRouterHooks` props in lock and unlock-page containers (#42688)
 
 ### Added
 
@@ -44,6 +30,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add new user traits in metametrics, `account_type`. (#42855)
 - Adds new ERC-7715 permission type `token-approval-revocation` that can be granted via (#42841)
   `wallet_requestExecutionPermissions`
+- Add support for `token-approval-revocation` permission via `wallet_requestExecutionPermissions` RPC (#42954)
+- Show hidden tokens in Send Flow (#42934)
+- Add Sentry distributed tracing instrumentation for Background RPC calls and inter-controller messenger calls. (#39891)
+
+  ### Fixed
+
+- perf(6634): extract gas estimate side-effects, strip unused withRouter props (#42687)
+- Fixed the VIP tier label to display "VIP" instead of "VIP Fox" (#42856)
+- perf(6633): strip unused `withRouterHooks` props in lock and unlock-page containers (#42688)
+- Updated Activity tab empty states to show context-specific messaging and actions when users have no transaction (#42786)
+  history
+- Removed outdated translations from community-contributed ga, pt_BR, and zh_TW locales. (#40974)
+
+### Changed
+
+- Bump the `@metamask/tron-wallet-snap` to `^1.25.6` (#42701)
+- Bumped bitcoin snap v1.11.0 (#42993)
+- chore: Replace `await-semaphore` with `async-mutex` (#42818)
+
+
 ## [13.33.0]
 
 ### Added
