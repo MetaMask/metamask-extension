@@ -26,21 +26,13 @@ const VARIABLES_REQUIRED_IN_PRODUCTION = {
     'QUICKNODE_HYPEREVM_URL',
     'QUICKNODE_ARC_URL',
   ],
-  beta: [
-    'INFURA_BETA_PROJECT_ID',
-    'SEGMENT_BETA_WRITE_KEY',
-    'SENTRY_DSN',
-  ],
+  beta: ['INFURA_BETA_PROJECT_ID', 'SEGMENT_BETA_WRITE_KEY', 'SENTRY_DSN'],
   experimental: [
     'INFURA_EXPERIMENTAL_PROJECT_ID',
     'SEGMENT_EXPERIMENTAL_WRITE_KEY',
     'SENTRY_DSN',
   ],
-  flask: [
-    'INFURA_FLASK_PROJECT_ID',
-    'SEGMENT_FLASK_WRITE_KEY',
-    'SENTRY_DSN',
-  ],
+  flask: ['INFURA_FLASK_PROJECT_ID', 'SEGMENT_FLASK_WRITE_KEY', 'SENTRY_DSN'],
 };
 
 /** @type {readonly string[] | undefined} */
