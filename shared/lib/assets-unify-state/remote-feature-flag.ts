@@ -1,4 +1,4 @@
-import { RemoteFeatureFlagControllerState } from "@metamask/remote-feature-flag-controller";
+import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 
 export const ASSETS_UNIFY_STATE_FLAG = 'assetsUnifyState';
 
@@ -34,7 +34,6 @@ export const isAssetsUnifyStateFeatureEnabled = (
     featureFlag?.featureVersion === featureVersion
   );
 };
-
 
 /**
  * Returns true if the given controller is listed as deprecated in the

@@ -22,7 +22,10 @@ export const TokenListControllerInit: MessengerClientInitFunction<
       const { remoteFeatureFlags } = initMessenger.call(
         'RemoteFeatureFlagController:getState',
       );
-      return getIsDeprecatedController(remoteFeatureFlags, 'TokenListController');
+      return getIsDeprecatedController(
+        remoteFeatureFlags,
+        'TokenListController',
+      );
     },
   });
 

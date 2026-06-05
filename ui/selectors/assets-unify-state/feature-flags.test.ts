@@ -177,7 +177,9 @@ describe('Assets Unify State Feature Flags', () => {
   });
 
   describe('getIsTokenListControllerDeprecated', () => {
-    const buildState = (deprecatedControllers: string[] = ['TokenListController']) => ({
+    const buildState = (
+      deprecatedControllers: string[] = ['TokenListController'],
+    ) => ({
       metamask: {
         remoteFeatureFlags: {
           [ASSETS_UNIFY_STATE_FLAG]: {
@@ -191,7 +193,9 @@ describe('Assets Unify State Feature Flags', () => {
     });
 
     const setAssetsUnifyStateEnabled = (enabled: boolean) => {
-      jest.mocked(getIsAssetsUnifiedStateIncludedInBuild).mockReturnValue(enabled);
+      jest
+        .mocked(getIsAssetsUnifiedStateIncludedInBuild)
+        .mockReturnValue(enabled);
       jest.mocked(isAssetsUnifyStateFeatureEnabled).mockReturnValue(enabled);
     };
 
@@ -229,7 +233,11 @@ describe('Assets Unify State Feature Flags', () => {
       it('returns false when the controller is not in the deprecated list', () => {
         setAssetsUnifyStateEnabled(true);
 
-        expect(getIsTokenListControllerDeprecated(buildState(['SomeOtherController']))).toBe(false);
+        expect(
+          getIsTokenListControllerDeprecated(
+            buildState(['SomeOtherController']),
+          ),
+        ).toBe(false);
       });
 
       it('returns false when deprecatedControllers is absent from the flag', () => {
