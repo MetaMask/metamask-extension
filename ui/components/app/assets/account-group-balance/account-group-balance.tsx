@@ -30,7 +30,7 @@ import { isZeroAmount } from '../../../../helpers/utils/number-utils';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../selectors/multichain-accounts/account-tree';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { hexWEIToDecETH } from '../../../../../shared/lib/conversion.utils';
-import { TEST_CHAINS } from '../../../../../shared/constants/network';
+import { CAIP_FORMATTED_TEST_CHAINS } from '../../../../../shared/constants/network';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
 
 export type AccountGroupBalanceProps = {
@@ -72,9 +72,8 @@ export const AccountGroupBalance = ({
 
   const isEvm = isEvmChainId(chainId);
 
-  const isTestnetSelected = Boolean(
-    Object.keys(enabledNetworks).length === 1 &&
-    TEST_CHAINS.includes(Object.keys(enabledNetworks)[0] as `0x${string}`),
+  const isTestnetSelected = CAIP_FORMATTED_TEST_CHAINS.includes(
+    caipChainId as CaipChainId,
   );
 
   const networkConfigurationsByChainId = useSelector(

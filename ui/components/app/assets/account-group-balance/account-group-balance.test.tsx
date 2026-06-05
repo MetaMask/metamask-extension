@@ -178,6 +178,26 @@ describe('AccountGroupBalance', () => {
     });
   });
 
+  it('renders native balance on testnet chainId when multiple networks are enabled in filter and showFiatInTestnets is false', () => {
+    // Regression: when the dapp switches from Sepolia to a mainnet, the
+    // enabledNetworksByNamespace filter may contain multiple chains. The old
+    // code used Object.keys(enabledNetworks).length === 1 so it would set
+    // isTestnetSelected=false and display fiat instead of the native balance.
+    arrange({
+      selectedGroupBalance: createMockBalance(),
+      enabledNetworksByNamespace: {
+        [SEPOLIA_CHAIN_ID]: true,
+        [MAINNET_CHAIN_ID]: true,
+      },
+      showFiatInTestnets: false,
+    });
+    actAssertBalanceContent({
+      amount: '0.000589',
+      balance: '0x0217b4f7389e02',
+      chainId: SEPOLIA_CHAIN_ID,
+    });
+  });
+
   it('does not treat a single non-testnet network as testnet-selected', () => {
     arrange({
       selectedGroupBalance: createMockBalance(),
