@@ -34,6 +34,8 @@ function setEnvironmentVariables({
     development: isDevBuild,
   };
 
+  const TELEGRAM_LOGIN_ENABLED = variables.getMaybe('TELEGRAM_LOGIN_ENABLED');
+
   const APPLE_CLIENT_ID = isSeedlessOnboardingEnabled
     ? getOAuthClientId({ ...oauthClientIdOptions, provider: 'APPLE' })
     : '';
@@ -41,6 +43,11 @@ function setEnvironmentVariables({
   const GOOGLE_CLIENT_ID = isSeedlessOnboardingEnabled
     ? getOAuthClientId({ ...oauthClientIdOptions, provider: 'GOOGLE' })
     : '';
+
+  const TELEGRAM_CLIENT_ID =
+    isSeedlessOnboardingEnabled && TELEGRAM_LOGIN_ENABLED.toString() === 'true'
+      ? getOAuthClientId({ ...oauthClientIdOptions, provider: 'TELEGRAM' })
+      : '';
 
   variables.set({
     DEBUG: isDevBuild || isTestBuild ? variables.getMaybe('DEBUG') : undefined,
@@ -87,12 +94,14 @@ function setEnvironmentVariables({
     METAMASK_SHIELD_ENABLED: isTestBuild
       ? 'true'
       : variables.getMaybe('METAMASK_SHIELD_ENABLED'),
+    TELEGRAM_LOGIN_ENABLED,
     PERPS_ENABLED: isTestBuild ? 'true' : variables.getMaybe('PERPS_ENABLED'),
     ASSETS_UNIFIED_STATE_ENABLED: isTestBuild
       ? 'false'
       : variables.getMaybe('ASSETS_UNIFIED_STATE_ENABLED') || 'false',
     GOOGLE_CLIENT_ID,
     APPLE_CLIENT_ID,
+    TELEGRAM_CLIENT_ID,
   });
 }
 
@@ -182,7 +191,7 @@ function getInfuraProjectId({ buildType, variables, environment, testing }) {
  * Get the OAuth client ID for the current build.
  *
  * @param {object} options - The OAuth client ID options.
- * @param {'APPLE' | 'GOOGLE'} options.provider - The OAuth provider.
+ * @param {'APPLE' | 'GOOGLE' | 'TELEGRAM'} options.provider - The OAuth provider.
  * @param {string} options.buildType - The current build type.
  * @param {ENVIRONMENT[keyof ENVIRONMENT]} options.environment - The current build environment.
  * @param {boolean} options.testing - Whether this is a test build or not.

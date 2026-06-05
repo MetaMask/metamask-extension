@@ -1,30 +1,10 @@
-import { Messenger } from '@metamask/messenger';
 import {
-  AccountsControllerListMultichainAccountsAction,
-  AccountsControllerSelectedAccountChangeEvent,
-} from '@metamask/accounts-controller';
-import {
-  type NetworkControllerSetActiveNetworkAction,
-  type NetworkControllerGetStateAction,
-  type NetworkControllerRemoveNetworkAction,
-  type NetworkControllerGetSelectedChainIdAction,
-  type NetworkControllerFindNetworkClientIdByChainIdAction,
-} from '@metamask/network-controller';
+  Messenger,
+  type MessengerActions,
+  type MessengerEvents,
+} from '@metamask/messenger';
+import { MultichainNetworkControllerMessenger } from '@metamask/multichain-network-controller';
 import { RootMessenger } from '../../../lib/messenger';
-
-type Actions =
-  | NetworkControllerGetStateAction
-  | NetworkControllerSetActiveNetworkAction
-  | NetworkControllerRemoveNetworkAction
-  | NetworkControllerGetSelectedChainIdAction
-  | NetworkControllerFindNetworkClientIdByChainIdAction
-  | AccountsControllerListMultichainAccountsAction;
-
-type Events = AccountsControllerSelectedAccountChangeEvent;
-
-export type MultichainNetworkControllerMessenger = ReturnType<
-  typeof getMultichainNetworkControllerMessenger
->;
 
 /**
  * Get a restricted messenger for the Multichain Network controller. This is scoped to the
@@ -34,17 +14,16 @@ export type MultichainNetworkControllerMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getMultichainNetworkControllerMessenger(
-  messenger: RootMessenger<Actions, Events>,
-) {
-  const controllerMessenger = new Messenger<
-    'MultichainNetworkController',
-    Actions,
-    Events,
-    typeof messenger
-  >({
-    namespace: 'MultichainNetworkController',
-    parent: messenger,
-  });
+  messenger: RootMessenger<
+    MessengerActions<MultichainNetworkControllerMessenger>,
+    MessengerEvents<MultichainNetworkControllerMessenger>
+  >,
+): MultichainNetworkControllerMessenger {
+  const controllerMessenger: MultichainNetworkControllerMessenger =
+    new Messenger({
+      namespace: 'MultichainNetworkController',
+      parent: messenger,
+    });
   messenger.delegate({
     messenger: controllerMessenger,
     actions: [

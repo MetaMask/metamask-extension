@@ -3,6 +3,19 @@ import { CameraPermissionState } from '../../../../contexts/hardware-wallets/con
 import { DOMExceptionName } from '../base-reader.types';
 
 /**
+ * Expected UR types for the wallet-pairing flow.
+ */
+export const PAIRING_EXPECTED_TYPES = [
+  'crypto-hdkey',
+  'crypto-account',
+] as const;
+
+/**
+ * Expected UR types for the transaction-signing flow.
+ */
+export const SIGNING_EXPECTED_TYPES = ['eth-signature'] as const;
+
+/**
  * Determines whether the camera-access-blocked UI should be shown
  * based on the current permission state and browser type.
  *

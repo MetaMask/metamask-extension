@@ -7,7 +7,6 @@ import type { PreferencesState } from '@metamask/preferences-controller';
 import { createApiPlatformClient } from '@metamask/core-backend';
 import { type MessengerClientInitFunction } from '../types';
 import { type AssetsControllerInitMessenger } from '../messengers/assets/assets-controller-messenger';
-import { traceAsControllerCallback } from '../../../../shared/lib/trace';
 import type { OnboardingControllerState } from '../../controllers/onboarding';
 
 /**
@@ -158,27 +157,25 @@ export const AssetsControllerInit: MessengerClientInitFunction<
 
   // Create the controller - it now creates all data sources internally.
   // queryApiClient is cast to the package's type to avoid duplicate @metamask/core-backend type conflicts.
-  const TWENTY_FOUR_HOURS = 1000 * 60 * 60 * 24;
   const messengerClient = new AssetsController({
     messenger: controllerMessenger,
     state: persistedState.AssetsController,
-    isEnabled: () => false,
+    isEnabled: () => clientController().state.isUiOpen,
     isBasicFunctionality,
     subscribeToBasicFunctionalityChange,
     queryApiClient: getApiClient(initMessenger),
     rpcDataSourceConfig: {
       tokenDetectionEnabled: () => tokenDetectionEnabled,
-      balanceInterval: TWENTY_FOUR_HOURS,
-      detectionInterval: TWENTY_FOUR_HOURS,
+      balanceInterval: 30_000,
+      detectionInterval: 180_000,
     },
     priceDataSourceConfig: {
-      pollInterval: TWENTY_FOUR_HOURS,
+      pollInterval: 180_000,
     },
     stakedBalanceDataSourceConfig: {
-      pollInterval: TWENTY_FOUR_HOURS,
+      pollInterval: 30_000,
       enabled: false,
     },
-    trace: traceAsControllerCallback,
     isOnboarded: () => {
       try {
         const { completedOnboarding } = initMessenger.call(

@@ -1,6 +1,6 @@
 import {
   AssetsController,
-  AssetsControllerMessenger,
+  type AssetsControllerMessenger,
 } from '@metamask/assets-controller';
 import { ClientController } from '@metamask/client-controller';
 import { createApiPlatformClient } from '@metamask/core-backend';
@@ -15,7 +15,6 @@ import {
 import { AssetsControllerInit } from './assets-controller-init';
 
 jest.mock('@metamask/assets-controller', () => ({
-  ...jest.requireActual('@metamask/assets-controller'),
   AssetsController: jest.fn().mockImplementation(() => ({
     state: {},
   })),
@@ -133,15 +132,14 @@ describe('AssetsControllerInit', () => {
       queryApiClient: expect.any(Object),
       rpcDataSourceConfig: {
         tokenDetectionEnabled: expect.any(Function),
-        balanceInterval: 86400000,
-        detectionInterval: 86400000,
+        balanceInterval: 30_000,
+        detectionInterval: 180_000,
       },
-      priceDataSourceConfig: { pollInterval: 86400000 },
+      priceDataSourceConfig: { pollInterval: 180_000 },
       stakedBalanceDataSourceConfig: {
-        pollInterval: 86400000,
+        pollInterval: 30_000,
         enabled: false,
       },
-      trace: expect.any(Function),
       isOnboarded: expect.any(Function),
     });
   });
@@ -169,15 +167,14 @@ describe('AssetsControllerInit', () => {
       queryApiClient: expect.any(Object),
       rpcDataSourceConfig: {
         tokenDetectionEnabled: expect.any(Function),
-        balanceInterval: 86400000,
-        detectionInterval: 86400000,
+        balanceInterval: 30_000,
+        detectionInterval: 180_000,
       },
-      priceDataSourceConfig: { pollInterval: 86400000 },
+      priceDataSourceConfig: { pollInterval: 180_000 },
       stakedBalanceDataSourceConfig: {
-        pollInterval: 86400000,
+        pollInterval: 30_000,
         enabled: false,
       },
-      trace: expect.any(Function),
       isOnboarded: expect.any(Function),
     });
   });
@@ -255,6 +252,23 @@ describe('AssetsControllerInit', () => {
   describe('isEnabled', () => {
     it('returns ClientController isUiOpen state when UI is open', () => {
       const requestMock = getInitRequestMock();
+
+      AssetsControllerInit(requestMock);
+
+      const constructorCall = jest.mocked(AssetsController).mock.calls[0][0];
+      const isEnabled = constructorCall.isEnabled as () => boolean;
+
+      expect(isEnabled()).toBe(true);
+      expect(requestMock.getMessengerClient).toHaveBeenCalledWith(
+        'ClientController',
+      );
+    });
+
+    it('returns false when ClientController isUiOpen is false', () => {
+      const requestMock = getInitRequestMock();
+      requestMock.getMessengerClient.mockReturnValue(
+        buildClientControllerMock(false),
+      );
 
       AssetsControllerInit(requestMock);
 
