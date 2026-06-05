@@ -469,6 +469,7 @@ describe('preferences controller', () => {
           sortCallback: 'stringNumeric',
         },
         tokenNetworkFilter: {},
+        gasSponsorshipOptOutByChainId: {},
       });
     });
 
@@ -501,6 +502,7 @@ describe('preferences controller', () => {
           sortCallback: 'stringNumeric',
         },
         tokenNetworkFilter: {},
+        gasSponsorshipOptOutByChainId: {},
       });
     });
 
@@ -683,6 +685,7 @@ describe('preferences controller', () => {
             "defaultAddressScope": "eip155",
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
+            "gasSponsorshipOptOutByChainId": {},
             "hideZeroBalanceTokens": false,
             "privacyMode": false,
             "showConfirmationAdvancedDetails": false,
@@ -752,6 +755,7 @@ describe('preferences controller', () => {
             "defaultAddressScope": "eip155",
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
+            "gasSponsorshipOptOutByChainId": {},
             "hideZeroBalanceTokens": false,
             "privacyMode": false,
             "showConfirmationAdvancedDetails": false,
@@ -834,6 +838,7 @@ describe('preferences controller', () => {
             "defaultAddressScope": "eip155",
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
+            "gasSponsorshipOptOutByChainId": {},
             "hideZeroBalanceTokens": false,
             "privacyMode": false,
             "showConfirmationAdvancedDetails": false,
@@ -917,6 +922,7 @@ describe('preferences controller', () => {
             "defaultAddressScope": "eip155",
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
+            "gasSponsorshipOptOutByChainId": {},
             "hideZeroBalanceTokens": false,
             "privacyMode": false,
             "showConfirmationAdvancedDetails": false,

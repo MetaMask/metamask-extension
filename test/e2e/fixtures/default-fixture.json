@@ -1073,6 +1073,7 @@
         "tokenNetworkFilter": {
           "0x539": true
         },
+        "gasSponsorshipOptOutByChainId": {},
         "tokenSortConfig": {
           "key": "tokenFiatAmount",
           "order": "dsc",
