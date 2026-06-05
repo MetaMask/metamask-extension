@@ -16,10 +16,7 @@ import {
   ButtonBase,
 } from '@metamask/design-system-react';
 import type { Position } from '@metamask/perps-controller';
-import {
-  SensitiveText,
-  SensitiveTextLength,
-} from '../../../component-library';
+import { SensitiveText, SensitiveTextLength } from '../../../component-library';
 import {
   TextVariant as LegacyTextVariant,
   TextColor as LegacyTextColor,
