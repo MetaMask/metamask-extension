@@ -143,9 +143,7 @@ class SnapInteractiveDialog {
    * Confirms the current picker selection by clicking "OK".
    */
   async #confirmPicker(): Promise<void> {
-    await this.driver.clickElementAndWaitToDisappear(
-      selectors.pickerOkButton,
-    );
+    await this.driver.clickElementAndWaitToDisappear(selectors.pickerOkButton);
   }
 
   /**
