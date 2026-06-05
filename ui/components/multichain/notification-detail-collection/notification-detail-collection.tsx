@@ -1,11 +1,5 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import {
-  Box,
-  BoxBackgroundColor,
-  BoxBorderColor,
-  BoxJustifyContent,
-} from '@metamask/design-system-react';
 import { getIpfsGateway, getOpenSeaEnabled } from '../../../selectors';
 import NftDefaultImage from '../../app/assets/nfts/nft-default-image/nft-default-image';
 import { isIpfsURL } from '../../../helpers/utils/notification.util';
@@ -15,6 +9,7 @@ import {
   AvatarToken,
   BadgeWrapper,
   BadgeWrapperPosition,
+  Box,
   Text,
   AvatarTokenSize,
 } from '../../component-library';
@@ -22,7 +17,9 @@ import {
   BackgroundColor,
   BorderColor,
   BorderRadius,
+  Display,
   FontWeight,
+  JustifyContent,
   TextVariant,
   TextColor,
 } from '../../../helpers/constants/design-system';
@@ -65,13 +62,14 @@ export const NotificationDetailCollection = ({
     <BadgeWrapper position={BadgeWrapperPosition.topRight} badge={badgeIcon}>
       {ipfsImageIsRenderable || openseaImageIsRenderable ? (
         <Box
-          asChild
-          justifyContent={BoxJustifyContent.Center}
-          backgroundColor={BoxBackgroundColor.PrimaryMuted}
-          className="block rounded-lg notification-detail-collection__image"
-        >
-          <img src={src} />
-        </Box>
+          as="img"
+          src={src}
+          display={Display.Block}
+          justifyContent={JustifyContent.center}
+          backgroundColor={BackgroundColor.primaryMuted}
+          borderRadius={BorderRadius.LG}
+          className="notification-detail-collection__image"
+        />
       ) : (
         <NftDefaultImage
           className="nft-item__default-image notification-detail-collection__image"

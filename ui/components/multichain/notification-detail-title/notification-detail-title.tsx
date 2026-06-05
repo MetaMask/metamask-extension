@@ -1,17 +1,16 @@
 import React from 'react';
 
 import {
-  Box,
-  BoxAlignItems,
-  BoxFlexDirection,
-  BoxJustifyContent,
-} from '@metamask/design-system-react';
-import {
+  AlignItems,
+  BlockSize,
+  Display,
+  FlexDirection,
+  JustifyContent,
   TextVariant,
   TextAlign,
   OverflowWrap,
 } from '../../../helpers/constants/design-system';
-import { Text } from '../../component-library';
+import { Box, Text } from '../../component-library';
 
 export type NotificationDetailTitleProps = {
   title: string;
@@ -33,10 +32,11 @@ export const NotificationDetailTitle = ({
 }: NotificationDetailTitleProps): JSX.Element => {
   return (
     <Box
-      justifyContent={BoxJustifyContent.Center}
-      alignItems={BoxAlignItems.Center}
-      className="w-full"
-      flexDirection={BoxFlexDirection.Column}
+      display={Display.Flex}
+      justifyContent={JustifyContent.center}
+      alignItems={AlignItems.center}
+      width={BlockSize.Full}
+      flexDirection={FlexDirection.Column}
       paddingInlineStart={8}
       paddingInlineEnd={8}
     >

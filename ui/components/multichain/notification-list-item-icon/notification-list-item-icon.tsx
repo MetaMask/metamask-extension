@@ -1,11 +1,5 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import {
-  Box,
-  BoxBackgroundColor,
-  BoxBorderColor,
-  BoxJustifyContent,
-} from '@metamask/design-system-react';
 import { getIpfsGateway, getOpenSeaEnabled } from '../../../selectors';
 import NftDefaultImage from '../../app/assets/nfts/nft-default-image/nft-default-image';
 import { isIpfsURL } from '../../../helpers/utils/notification.util';
@@ -17,14 +11,18 @@ import {
   AvatarTokenSize,
   BadgeWrapper,
   BadgeWrapperPosition,
+  Box,
   IconName,
   IconSize,
 } from '../../component-library';
 import {
   BackgroundColor,
   BorderColor,
+  BorderRadius,
   BorderStyle,
+  Display,
   IconColor,
+  JustifyContent,
 } from '../../../helpers/constants/design-system';
 
 export enum NotificationListItemIconType {
@@ -72,13 +70,14 @@ const NftImage = ({ src }: { src: string }): JSX.Element => {
   return ipfsImageIsRenderable || openseaImageIsRenderable ? (
     <Box
       data-testid="nft-image"
-      asChild
-      justifyContent={BoxJustifyContent.Center}
-      backgroundColor={BoxBackgroundColor.PrimaryMuted}
-      className="block rounded-sm notification-list-item-icon__image"
-    >
-      <img src={src} />
-    </Box>
+      as="img"
+      src={src}
+      display={Display.Block}
+      justifyContent={JustifyContent.center}
+      backgroundColor={BackgroundColor.primaryMuted}
+      borderRadius={BorderRadius.SM}
+      className="notification-list-item-icon__image"
+    />
   ) : (
     <NftDefaultImage
       className="nft-item__default-image notification-list-item-icon__image"
@@ -91,12 +90,12 @@ const NftImage = ({ src }: { src: string }): JSX.Element => {
 const DefaultIcon = (): JSX.Element => (
   <Box
     data-testid="default-icon"
-    asChild
-    backgroundColor={BoxBackgroundColor.BackgroundDefault}
-    className="block rounded-sm notification-list-item-icon__image"
-  >
-    <img />
-  </Box>
+    as="img"
+    display={Display.Block}
+    borderRadius={BorderRadius.SM}
+    backgroundColor={BackgroundColor.backgroundDefault}
+    className="notification-list-item-icon__image"
+  />
 );
 
 const getBadge = (badge: BadgeProps, children: JSX.Element): JSX.Element => {
@@ -156,7 +155,7 @@ export const NotificationListItemIcon = ({
       {badge ? (
         getBadge(badge, NotificationIcon)
       ) : (
-        <Box className="rounded-xl">{NotificationIcon}</Box>
+        <Box borderRadius={BorderRadius.XL}>{NotificationIcon}</Box>
       )}
     </>
   );

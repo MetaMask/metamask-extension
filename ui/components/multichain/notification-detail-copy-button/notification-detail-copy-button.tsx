@@ -1,15 +1,20 @@
 import React, { useContext } from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-import { Box } from '@metamask/design-system-react';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { ButtonBase, IconName, ButtonBaseSize } from '../../component-library';
+import {
+  ButtonBase,
+  IconName,
+  Box,
+  ButtonBaseSize,
+} from '../../component-library';
 import {
   AlignItems,
   BackgroundColor,
+  Display,
   FontWeight,
   TextColor,
   TextVariant,
@@ -103,7 +108,7 @@ export const NotificationDetailCopyButton = ({
         data-testid="address-copy-button-text"
         size={ButtonBaseSize.Sm}
       >
-        <Box>{displayText}</Box>
+        <Box display={Display.Flex}>{displayText}</Box>
       </ButtonBase>
     </Tooltip>
   );

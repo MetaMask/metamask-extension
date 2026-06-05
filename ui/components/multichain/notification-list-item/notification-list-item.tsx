@@ -8,17 +8,19 @@ import {
   IconName,
   IconColor,
   IconSize,
-  Box,
-  BoxAlignItems,
-  BoxBackgroundColor,
-  BoxFlexDirection,
-  BoxJustifyContent,
 } from '@metamask/design-system-react';
-import { Text } from '../../component-library';
+import { Box, Text } from '../../component-library';
 import {
+  AlignItems,
+  BlockSize,
+  BackgroundColor,
+  Display,
+  FlexDirection,
   FontWeight,
+  JustifyContent,
   TextColor,
   TextVariant,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
 import type { NotificationListItemIconProps } from '../notification-list-item-icon/notification-list-item-icon';
 import type { NotificationListItemTextProps } from '../notification-list-item-text/notification-list-item-text';
@@ -96,11 +98,14 @@ export const NotificationListItem = ({
 
   return (
     <Box
-      justifyContent={BoxJustifyContent.Between}
-      alignItems={BoxAlignItems.Start}
-      className={`w-full flex-col notification-list-item ${
+      className={`notification-list-item ${
         isRead ? '' : 'notification-list-item--unread'
       }`}
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      justifyContent={JustifyContent.spaceBetween}
+      alignItems={AlignItems.flexStart}
+      width={BlockSize.Full}
       paddingBottom={3}
       paddingRight={5}
       paddingLeft={5}
@@ -109,77 +114,85 @@ export const NotificationListItem = ({
       key={id}
     >
       <Box
-        asChild
-        justifyContent={BoxJustifyContent.Between}
-        flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Start}
-        className="w-full"
-        backgroundColor={BoxBackgroundColor.Transparent}
+        display={Display.Flex}
+        justifyContent={JustifyContent.spaceBetween}
+        flexDirection={FlexDirection.Row}
+        alignItems={AlignItems.flexStart}
+        as="button"
+        onClick={handleClick}
+        width={BlockSize.Full}
+        backgroundColor={BackgroundColor.transparent}
       >
-        <button onClick={handleClick}>
-          {!isRead && (
-            <Box className="block notification-list-item__unread-dot__wrapper">
-              <Icon
-                name={IconName.FullCircle}
-                color={IconColor.InfoDefault}
-                size={IconSize.Xs}
-                className="notification-list-item__unread-dot__dot"
-                data-testid="unread-dot"
-              />
-            </Box>
-          )}
-
+        {!isRead && (
           <Box
-            gap={4}
-            paddingRight={4}
-            className="h-full"
-            alignItems={BoxAlignItems.Start}
+            display={Display.Block}
+            className="notification-list-item__unread-dot__wrapper"
           >
-            <Box className="h-full notification-list-item__icon">
-              <NotificationListItemIcon {...icon} />
-            </Box>
-
-            <Box
-              className="block w-full text-left"
-              flexDirection={BoxFlexDirection.Column}
-              alignItems={BoxAlignItems.Start}
-            >
-              {/* Notification Title */}
-              <NotificationListItemText
-                {...title}
-                color={TextColor.textAlternative}
-              />
-              {/* Notification Description */}
-              <NotificationListItemText {...description} />
-            </Box>
+            <Icon
+              name={IconName.FullCircle}
+              color={IconColor.InfoDefault}
+              size={IconSize.Xs}
+              className="notification-list-item__unread-dot__dot"
+              data-testid="unread-dot"
+            />
           </Box>
+        )}
+
+        <Box
+          display={Display.Flex}
+          gap={4}
+          paddingRight={4}
+          height={BlockSize.Full}
+          alignItems={AlignItems.flexStart}
+        >
+          <Box height={BlockSize.Full} className="notification-list-item__icon">
+            <NotificationListItemIcon {...icon} />
+          </Box>
+
           <Box
-            flexDirection={BoxFlexDirection.Column}
-            alignItems={BoxAlignItems.End}
-            className="text-right notification-list-item__right-container"
+            display={Display.Block}
+            flexDirection={FlexDirection.Column}
+            alignItems={AlignItems.flexStart}
+            textAlign={TextAlign.Left}
+            width={BlockSize.Full}
           >
-            {/* Date */}
+            {/* Notification Title */}
+            <NotificationListItemText
+              {...title}
+              color={TextColor.textAlternative}
+            />
+            {/* Notification Description */}
+            <NotificationListItemText {...description} />
+          </Box>
+        </Box>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          alignItems={AlignItems.flexEnd}
+          textAlign={TextAlign.Right}
+          className="notification-list-item__right-container"
+        >
+          {/* Date */}
+          <Text
+            color={TextColor.textMuted}
+            variant={TextVariant.bodySm}
+            fontWeight={FontWeight.Normal}
+            as="p"
+          >
+            {formatMenuItemDate(createdAt)}
+          </Text>
+          {/* Amount */}
+          {'amount' in restProps && (
             <Text
-              color={TextColor.textMuted}
-              variant={TextVariant.bodySm}
+              color={TextColor.textDefault}
+              variant={TextVariant.bodyMd}
               fontWeight={FontWeight.Normal}
               as="p"
             >
-              {formatMenuItemDate(createdAt)}
+              {restProps.amount}
             </Text>
-            {/* Amount */}
-            {'amount' in restProps && (
-              <Text
-                color={TextColor.textDefault}
-                variant={TextVariant.bodyMd}
-                fontWeight={FontWeight.Normal}
-                as="p"
-              >
-                {restProps.amount}
-              </Text>
-            )}
-          </Box>
-        </button>
+          )}
+        </Box>
       </Box>
 
       {/* CTA Button */}

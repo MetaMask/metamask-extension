@@ -1,13 +1,15 @@
 import React from 'react';
 
+import { Box } from '../../component-library';
 import {
-  Box,
-  BoxAlignItems,
-  BoxBackgroundColor,
-  BoxFlexDirection,
-  BoxJustifyContent,
-} from '@metamask/design-system-react';
-import { TextAlign } from '../../../helpers/constants/design-system';
+  AlignItems,
+  BackgroundColor,
+  BlockSize,
+  Display,
+  FlexDirection,
+  JustifyContent,
+  TextAlign,
+} from '../../../helpers/constants/design-system';
 
 export type NotificationDetailProps = {
   icon: JSX.Element;
@@ -37,27 +39,32 @@ export const NotificationDetail = ({
 }: NotificationDetailProps): JSX.Element => {
   return (
     <Box
-      justifyContent={BoxJustifyContent.Between}
-      alignItems={BoxAlignItems.Start}
-      className="w-full"
+      display={Display.Flex}
+      justifyContent={JustifyContent.spaceBetween}
+      alignItems={AlignItems.flexStart}
+      width={BlockSize.Full}
       paddingBottom={2}
       paddingRight={4}
       paddingLeft={4}
       paddingTop={2}
-      backgroundColor={BoxBackgroundColor.Transparent}
+      backgroundColor={BackgroundColor.transparent}
     >
       <Box
+        display={Display.Flex}
         gap={4}
         paddingRight={4}
-        className="h-full"
-        alignItems={BoxAlignItems.Start}
+        height={BlockSize.Full}
+        alignItems={AlignItems.flexStart}
       >
-        <Box className="h-full notification-detail__icon">{icon}</Box>
+        <Box height={BlockSize.Full} className="notification-detail__icon">
+          {icon}
+        </Box>
 
         <Box
-          className="block text-left"
-          flexDirection={BoxFlexDirection.Column}
-          alignItems={BoxAlignItems.Start}
+          display={Display.Block}
+          flexDirection={FlexDirection.Column}
+          alignItems={AlignItems.flexStart}
+          textAlign={TextAlign.Left}
         >
           {/* The item in the left side of the primary row */}
           {primaryTextLeft}
@@ -66,9 +73,11 @@ export const NotificationDetail = ({
         </Box>
       </Box>
       <Box
-        flexDirection={BoxFlexDirection.Column}
-        alignItems={BoxAlignItems.End}
-        className="text-right notification-detail__right-container"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        alignItems={AlignItems.flexEnd}
+        textAlign={TextAlign.Right}
+        className="notification-detail__right-container"
       >
         {/* The item in the right side of the primary row */}
         {primaryTextRight ?? null}
