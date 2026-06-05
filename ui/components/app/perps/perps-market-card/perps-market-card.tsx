@@ -19,7 +19,7 @@ import {
 } from '../utils';
 
 const CARD_STYLES =
-  'justify-start rounded-none min-w-0 h-[62px] gap-4 text-left cursor-pointer bg-default pt-2 pb-2 px-4 hover:bg-hover active:bg-pressed';
+  'justify-start rounded-none min-w-0 h-[62px] gap-4 text-left cursor-pointer bg-default pt-2 pb-2 px-4 hover:bg-hover active:bg-pressed [container-name:list-item] [container-type:inline-size]';
 
 export type PerpsMarketCardProps = {
   symbol: string;
@@ -63,7 +63,12 @@ export const PerpsMarketCard = ({
         alignItems={BoxAlignItems.Start}
         gap={1}
       >
-        <Text fontWeight={FontWeight.Medium}>{displayName}</Text>
+        <Text
+          fontWeight={FontWeight.Medium}
+          className="text-s-body-md @compact:text-s-body-sm"
+        >
+          {displayName}
+        </Text>
         {volume ? (
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
             {volume}
@@ -76,7 +81,10 @@ export const PerpsMarketCard = ({
         alignItems={BoxAlignItems.End}
         gap={1}
       >
-        <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+        <Text
+          fontWeight={FontWeight.Medium}
+          className="text-s-body-md @compact:text-s-body-sm"
+        >
           {price}
         </Text>
         <Text
