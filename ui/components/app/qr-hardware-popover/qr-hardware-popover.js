@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useMatch } from 'react-router-dom';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import { getActiveQrCodeScanRequest } from '../../../selectors';
@@ -27,9 +27,19 @@ const QRHardwarePopover = () => {
   const t = useI18nContext();
 
   const activeScanRequest = useSelector(getActiveQrCodeScanRequest);
-  const { pathname } = useLocation();
-  const isBridgeHardwareWalletSigningPage =
-    pathname === `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`;
+  const bridgeHardwareWalletSigningPath = `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`;
+  const bridgeHardwareWalletSigningMatch = useMatch({
+    path: bridgeHardwareWalletSigningPath,
+    end: true,
+  });
+  const bridgeHardwareWalletSigningTrailingSlashMatch = useMatch({
+    path: `${bridgeHardwareWalletSigningPath}/`,
+    end: true,
+  });
+  const isBridgeHardwareWalletSigningPage = Boolean(
+    bridgeHardwareWalletSigningMatch ||
+      bridgeHardwareWalletSigningTrailingSlashMatch,
+  );
 
   const environmentType = getEnvironmentType();
   const isRestrictedEnv =
@@ -44,9 +54,9 @@ const QRHardwarePopover = () => {
   // the confirmTransaction will change after the previous tx is confirmed or cancel,
   // we want to block the changing by sign request id;
   const txDataRef = useRef(txData);
-  const requestIdRef = useRef(activeScanRequest?.requestId);
-  if (requestIdRef.current !== activeScanRequest?.requestId) {
-    requestIdRef.current = activeScanRequest?.requestId;
+  const requestIdRef = useRef(activeScanRequest?.request?.requestId);
+  if (requestIdRef.current !== activeScanRequest?.request?.requestId) {
+    requestIdRef.current = activeScanRequest?.request?.requestId;
     txDataRef.current = txData;
   }
   const _txData = txDataRef.current;
@@ -69,10 +79,10 @@ const QRHardwarePopover = () => {
   }, [dispatch, _txData]);
 
   const title = useMemo(() => {
-    if (activeScanRequest === QrScanRequestType.SIGN) {
+    if (activeScanRequest?.type === QrScanRequestType.SIGN) {
       return t('QRHardwareSignRequestTitle');
     }
-    if (activeScanRequest === QrScanRequestType.PAIR) {
+    if (activeScanRequest?.type === QrScanRequestType.PAIR) {
       return t('QRHardwareWalletImporterTitle');
     }
     if (errorTitle !== '') {

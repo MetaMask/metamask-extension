@@ -26,6 +26,14 @@ let mockPathname = '/';
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useLocation: () => ({ pathname: mockPathname }),
+  useMatch: ({ path }: { path: string }) => {
+    const normalized = mockPathname.replace(/\/+$/, '');
+    const normalizedPattern = path.replace(/\/+$/, '');
+    if (normalized === normalizedPattern) {
+      return { path };
+    }
+    return null;
+  },
 }));
 
 jest.mock('./qr-hardware-wallet-importer', () => {
@@ -145,5 +153,31 @@ describe('QRHardwarePopover', () => {
     );
 
     expect(container.firstChild).toBeNull();
+  });
+
+  it('does not render the SIGN popover on the bridge hardware wallet signing page with a trailing slash', () => {
+    mockPathname = `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}/`;
+
+    const { container } = renderPopover(
+      buildStore({
+        type: QrScanRequestType.SIGN,
+        request: { requestId: 'req-1', payload: {} },
+      }),
+    );
+
+    expect(container.firstChild).toBeNull();
+  });
+
+  it('still renders the SIGN popover on a deeper subpath under the signing route', () => {
+    mockPathname = `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}/something-else`;
+
+    renderPopover(
+      buildStore({
+        type: QrScanRequestType.SIGN,
+        request: { requestId: 'req-1', payload: {} },
+      }),
+    );
+
+    expect(screen.getByTestId('qr-hardware-sign-request')).toBeInTheDocument();
   });
 });
