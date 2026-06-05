@@ -173,6 +173,7 @@
     "bn.js": "^5.2.3",
     "git-url-parse@^12.0.0": "^13.1.0",
     "glob-parent": "^6.0.2",
+    "launch-editor": "^2.9.0",
     "js-sha3": "^0.9.2",
     "@metamask/keyring-internal-api": "^11.0.1",
     "@metamask/account-tree-controller": "^7.2.0",
@@ -297,7 +298,9 @@
     "@metamask/permission-controller@npm:^12.2.0": "^13.0.0",
     "@metamask/permission-controller@npm:^12.2.1": "^13.0.0",
     "@metamask/permission-controller@npm:^12.3.0": "^13.0.0",
-    "@metamask/transaction-controller": "patch:@metamask/transaction-controller@npm%3A66.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-66.0.0-23fe4d7dfe.patch"
+    "@metamask/transaction-controller": "patch:@metamask/transaction-controller@npm%3A66.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-66.0.0-23fe4d7dfe.patch",
+    "@metamask/assets-controller@npm:^7.1.2": "patch:@metamask/assets-controller@npm%3A8.1.0#~/.yarn/patches/@metamask-assets-controller-npm-8.1.0-a613d1ee2e.patch",
+    "@metamask/assets-controller@npm:^6.4.0": "patch:@metamask/assets-controller@npm%3A8.1.0#~/.yarn/patches/@metamask-assets-controller-npm-8.1.0-a613d1ee2e.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -334,7 +337,7 @@
     "@metamask/address-book-controller": "^7.1.2",
     "@metamask/announcement-controller": "^8.0.0",
     "@metamask/approval-controller": "^9.0.0",
-    "@metamask/assets-controller": "^8.1.0",
+    "@metamask/assets-controller": "patch:@metamask/assets-controller@npm%3A8.1.0#~/.yarn/patches/@metamask-assets-controller-npm-8.1.0-a613d1ee2e.patch",
     "@metamask/assets-controllers": "^108.1.0",
     "@metamask/base-controller": "^9.0.1",
     "@metamask/bitcoin-wallet-snap": "^1.11.0",
@@ -513,7 +516,7 @@
     "react-markdown": "^6.0.3",
     "react-popper": "^2.2.3",
     "react-redux": "^7.2.9",
-    "react-router-dom": "^6.28.0",
+    "react-router-dom": "^6.30.4",
     "react-simple-file-input": "^2.0.0",
     "react-tippy": "^1.2.2",
     "react-toggle-button": "^2.2.0",
