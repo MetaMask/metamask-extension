@@ -11,7 +11,7 @@ import {
 } from '@metamask/design-system-react';
 import { isInteractiveUI } from '../../../../shared/lib/environment-type';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { StatusIcon } from '../icon/status-icon';
+import { StatusIcon } from '../status-icon/status-icon';
 
 export { toast } from 'react-hot-toast';
 

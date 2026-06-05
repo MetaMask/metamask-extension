@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon, IconName, IconSize, Text } from '@metamask/design-system-react';
-import { StatusIcon } from '../../../components/ui/icon/status-icon';
+import { StatusIcon } from '../../../components/ui/status-icon/status-icon';
 
 export type ActivityRowLayoutProps = {
   txStatus: string;
