@@ -16,7 +16,7 @@ import { useIsOriginalNativeTokenSymbol } from '../../hooks/useIsOriginalNativeT
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import useMultiPolling from '../../hooks/useMultiPolling';
-import Routes, { TokenManagementFeatureRoute } from '.';
+import Routes, { routeConfig, TokenManagementFeatureRoute } from '.';
 
 const middlewares = [thunk];
 
@@ -279,6 +279,34 @@ describe('Routes Component', () => {
         },
       ],
       { initialEntries: [TOKEN_MANAGEMENT_ROUTE] },
+    );
+
+    rtlRender(
+      <Provider store={store}>
+        <RouterProvider
+          router={router}
+          future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+        />
+      </Provider>,
+    );
+
+    expect(await screen.findByTestId('home-route')).toBeInTheDocument();
+  });
+
+  it('redirects unknown paths to the default route instead of crashing', async () => {
+    const wildcardEntry = routeConfig.find(({ path }) => path === '*');
+    expect(wildcardEntry).toBeDefined();
+
+    const store = configureMockStore(middlewares)(mockState);
+    const router = createMemoryRouter(
+      [
+        wildcardEntry,
+        {
+          path: DEFAULT_ROUTE,
+          element: <div data-testid="home-route" />,
+        },
+      ],
+      { initialEntries: ['/perps'] },
     );
 
     rtlRender(

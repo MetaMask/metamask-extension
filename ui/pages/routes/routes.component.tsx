@@ -530,6 +530,10 @@ export const routeConfig = [
       },
     ],
   },
+  {
+    path: '*',
+    element: <Navigate to={DEFAULT_ROUTE} replace />,
+  },
 ];
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
