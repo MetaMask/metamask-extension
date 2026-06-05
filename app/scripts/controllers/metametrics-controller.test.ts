@@ -476,6 +476,80 @@ describe('MetaMetricsController', function () {
     });
   });
 
+  describe('finalizeAbandonedFragments', function () {
+    it('does not process a fragment if its timeout has not elapsed', async function () {
+      await withController(
+        {
+          options: {
+            state: {
+              fragments: {
+                timeoutFragment: {
+                  ...SAMPLE_PERSISTED_EVENT_NO_ID,
+                  id: 'timeoutFragment',
+                  timeout: 30,
+                  lastUpdated: 1730798301000,
+                },
+              },
+            },
+          },
+        },
+        ({ controller }) => {
+          jest.useFakeTimers().setSystemTime(1730798330000);
+          const processAbandonedFragmentSpy = jest.spyOn(
+            controller,
+            'processAbandonedFragment',
+          );
+
+          controller.finalizeAbandonedFragments();
+
+          expect(processAbandonedFragmentSpy).not.toHaveBeenCalled();
+          expect(controller.state.fragments.timeoutFragment).toStrictEqual({
+            ...SAMPLE_PERSISTED_EVENT_NO_ID,
+            id: 'timeoutFragment',
+            timeout: 30,
+            lastUpdated: 1730798301000,
+          });
+        },
+      );
+    });
+
+    it('processes a fragment if its timeout has elapsed', async function () {
+      await withController(
+        {
+          options: {
+            state: {
+              fragments: {
+                timeoutFragment: {
+                  ...SAMPLE_PERSISTED_EVENT_NO_ID,
+                  id: 'timeoutFragment',
+                  timeout: 30,
+                  lastUpdated: 1730798299000,
+                },
+              },
+            },
+          },
+        },
+        ({ controller }) => {
+          jest.useFakeTimers().setSystemTime(1730798330000);
+          const processAbandonedFragmentSpy = jest.spyOn(
+            controller,
+            'processAbandonedFragment',
+          );
+
+          controller.finalizeAbandonedFragments();
+
+          expect(processAbandonedFragmentSpy).toHaveBeenCalledTimes(1);
+          expect(processAbandonedFragmentSpy).toHaveBeenCalledWith(
+            expect.objectContaining({
+              id: 'timeoutFragment',
+            }),
+          );
+          expect(controller.state.fragments.timeoutFragment).toBeUndefined();
+        },
+      );
+    });
+  });
+
   describe('getMetaMetricsId', function () {
     it('should generate or return the metametrics id', async function () {
       await withController(

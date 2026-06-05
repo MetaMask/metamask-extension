@@ -603,7 +603,7 @@ export class MetaMetricsController extends BaseController<
       if (
         fragment.timeout &&
         fragment.lastUpdated &&
-        Date.now() - fragment.lastUpdated / 1000 > fragment.timeout
+        Date.now() - fragment.lastUpdated > fragment.timeout * 1000
       ) {
         this.processAbandonedFragment(fragment);
       }
