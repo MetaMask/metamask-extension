@@ -319,19 +319,26 @@ describe('Home — checkLastVisitedPerpsRoute', () => {
 });
 
 describe('Home — renderOnboardingPopover', () => {
-  it('renders disagree button with mm-button-secondary class and accept button with mm-button-primary class', () => {
-    const { getByText } = renderHome({
-      participateInMetaMetrics: true,
-      dataCollectionForMarketing: null,
-      completedOnboarding: true,
-    });
+  it(
+    'renders disagree button with mm-button-secondary class and accept button with mm-button-primary class',
+    () => {
+      const { getByText } = renderHome({
+        participateInMetaMetrics: true,
+        dataCollectionForMarketing: null,
+        completedOnboarding: true,
+      });
 
-    const disagreeButton = getByText('onboardedMetametricsDisagree').closest('button');
-    const acceptButton = getByText('onboardedMetametricsAccept').closest('button');
+      const disagreeButton = getByText(
+        'onboardedMetametricsDisagree',
+      ).closest('button');
+      const acceptButton = getByText('onboardedMetametricsAccept').closest(
+        'button',
+      );
 
-    expect(disagreeButton).toHaveClass('mm-button-secondary');
-    expect(acceptButton).toHaveClass('mm-button-primary');
-  });
+      expect(disagreeButton).toHaveClass('mm-button-secondary');
+      expect(acceptButton).toHaveClass('mm-button-primary');
+    },
+  );
 });
 
 describe('Home — renderPopover', () => {

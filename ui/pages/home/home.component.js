@@ -741,10 +741,16 @@ export default class Home extends PureComponent {
               gap={2}
               width={BlockSize.Full}
             >
-              <Button variant={ButtonVariant.Secondary} onClick={() => handleConsent(false)}>
+              <Button
+                variant={ButtonVariant.Secondary}
+                onClick={() => handleConsent(false)}
+              >
                 {t('onboardedMetametricsDisagree')}
               </Button>
-              <Button variant={ButtonVariant.Primary} onClick={() => handleConsent(true)}>
+              <Button
+                variant={ButtonVariant.Primary}
+                onClick={() => handleConsent(true)}
+              >
                 {t('onboardedMetametricsAccept')}
               </Button>
             </Box>
