@@ -1,4 +1,5 @@
 import { Browser } from 'selenium-webdriver';
+import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { getCleanAppState } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import OnboardingMetricsPage from '../pages/onboarding/onboarding-metrics-page';
