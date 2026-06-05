@@ -14,12 +14,30 @@ import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { Driver } from '../../../webdriver/driver';
 import { mockEip7702FeatureFlag } from '../helpers';
-import { mockSpotPrices } from '../../tokens/utils/mocks';
+import { getMockAssetsPrice, mockSpotPrices } from '../../tokens/utils/mocks';
 import { login } from '../../../page-objects/flows/login.flow';
+
+const ETH_CONVERSION_RATE_USD = 1700;
 
 const UUID = '1234-5678';
 const TRANSACTION_HASH =
   '0xf25183af3bf64af01e9210201a2ede3c1dcd6d16091283152d13265242939fc4';
+
+// Token addresses returned in the simulated `tokenFees` response below.
+const USDC_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678';
+const DAI_ADDRESS = '0x01234567890abcdef1234567890abcdef1234567';
+const USDC_ASSET_ID = `eip155:1/erc20:${USDC_ADDRESS}`;
+const DAI_ASSET_ID = `eip155:1/erc20:${DAI_ADDRESS}`;
+
+const SPOT_PRICES = {
+  'eip155:1/slip44:60': {
+    price: ETH_CONVERSION_RATE_USD,
+    marketCap: 382623505141,
+    pricePercentChange1d: 0,
+  },
+  [DAI_ASSET_ID]: { price: 1, marketCap: 0, pricePercentChange1d: 0 },
+  [USDC_ASSET_ID]: { price: 1, marketCap: 0, pricePercentChange1d: 0 },
+};
 
 describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
   it('confirms transaction if successful', async function () {
@@ -30,6 +48,9 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
           .withSmartTransactionsOptedOut()
+          .withAssetsController({
+            assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
+          })
           .build(),
         localNodeOptions: {
           loadState:
@@ -42,13 +63,9 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
           mockTransactionRelaySubmit(mockServer);
           mockTransactionRelayStatus(mockServer);
           mockSmartTransactionFeatureFlags(mockServer);
-          mockSpotPrices(mockServer, {
-            'eip155:1/slip44:60': {
-              price: 1700,
-              marketCap: 382623505141,
-              pricePercentChange1d: 0,
-            },
-          });
+          mockTokenAssets(mockServer);
+          mockTokensSupportedNetworks(mockServer);
+          mockSpotPrices(mockServer, SPOT_PRICES);
         },
         title: this.test?.fullTitle(),
       },
@@ -99,6 +116,9 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
         fixtures: new FixtureBuilderV2()
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
+          .withAssetsController({
+            assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
+          })
           .build(),
         localNodeOptions: {
           loadState:
@@ -111,13 +131,9 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
           mockTransactionRelaySubmit(mockServer);
           mockTransactionRelayStatus(mockServer, { success: false });
           mockSmartTransactionFeatureFlags(mockServer);
-          mockSpotPrices(mockServer, {
-            'eip155:1/slip44:60': {
-              price: 1700,
-              marketCap: 382623505141,
-              pricePercentChange1d: 0,
-            },
-          });
+          mockSpotPrices(mockServer, SPOT_PRICES);
+          mockTokenAssets(mockServer);
+          mockTokensSupportedNetworks(mockServer);
         },
         title: this.test?.fullTitle(),
       },
@@ -179,7 +195,7 @@ async function mockSimulationResponse(mockServer: MockttpServer) {
                     tokenFees: [
                       {
                         token: {
-                          address: '0x1234567890abcdef1234567890abcdef12345678',
+                          address: USDC_ADDRESS,
                           decimals: 6,
                           symbol: 'USDC',
                         },
@@ -192,7 +208,7 @@ async function mockSimulationResponse(mockServer: MockttpServer) {
                       },
                       {
                         token: {
-                          address: '0x01234567890abcdef1234567890abcdef1234567',
+                          address: DAI_ADDRESS,
                           decimals: 3,
                           symbol: 'DAI',
                         },
@@ -288,5 +304,57 @@ async function mockSmartTransactionFeatureFlags(mockServer: MockttpServer) {
         statusCode: 200,
         json: {},
       };
+    });
+}
+
+// Test-only DAI/USDC token addresses are not in any real registry, so the
+// global `/v3/assets` mock returns nothing for them. Provide metadata here so
+// the AssetsController can resolve symbols/decimals for the gas-fee tokens.
+async function mockTokenAssets(mockServer: MockttpServer) {
+  await mockServer
+    .forGet('https://tokens.api.cx.metamask.io/v3/assets')
+    .always()
+    .thenCallback((request) => {
+      const url = new URL(request.url);
+      const assetIds = url.searchParams.get('assetIds') ?? '';
+      const lower = assetIds.toLowerCase();
+      const results: unknown[] = [];
+
+      if (lower.includes('eip155:1/slip44:60')) {
+        results.push({
+          assetId: 'eip155:1/slip44:60',
+          name: 'Ether',
+          symbol: 'ETH',
+          decimals: 18,
+        });
+      }
+      if (lower.includes(DAI_ADDRESS.toLowerCase())) {
+        results.push({
+          assetId: DAI_ASSET_ID,
+          name: 'Dai Stablecoin',
+          symbol: 'DAI',
+          decimals: 3,
+        });
+      }
+      if (lower.includes(USDC_ADDRESS.toLowerCase())) {
+        results.push({
+          assetId: USDC_ASSET_ID,
+          name: 'USD Coin',
+          symbol: 'USDC',
+          decimals: 6,
+        });
+      }
+
+      return { statusCode: 200, json: results };
+    });
+}
+
+async function mockTokensSupportedNetworks(mockServer: MockttpServer) {
+  await mockServer
+    .forGet('https://tokens.api.cx.metamask.io/v2/supportedNetworks')
+    .always()
+    .thenJson(200, {
+      fullSupport: ['eip155:1', 'eip155:1337'],
+      partialSupport: [],
     });
 }

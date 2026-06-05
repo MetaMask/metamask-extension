@@ -14,6 +14,7 @@ import { login } from '../../../page-objects/flows/login.flow';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
+import AssetListPage from '../../../page-objects/pages/home/asset-list';
 import { skipOnFirefox } from '../helpers';
 import { arrangeTestUtils } from './helpers';
 
@@ -61,7 +62,8 @@ describe('Account syncing - Unsupported Account types', function () {
         await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
 
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();
@@ -129,7 +131,8 @@ describe('Account syncing - Unsupported Account types', function () {
         await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
 
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();

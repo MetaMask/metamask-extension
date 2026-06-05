@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
 import {
   TextVariant,
@@ -12,7 +13,6 @@ import {
 
 import {
   Text,
-  Box,
   BannerAlert,
   Button,
   BUTTON_VARIANT,
@@ -72,10 +72,9 @@ export default function ImportToken({
           width={BlockSize.Full}
         />
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
+          className="flex w-full"
+          flexDirection={BoxFlexDirection.Row}
           gap={4}
-          width={BlockSize.Full}
         >
           <Button
             variant={BUTTON_VARIANT.SECONDARY}

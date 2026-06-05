@@ -31,7 +31,8 @@ import { useTransactionConfirm } from './useTransactionConfirm';
 
 const mockGetEnvironmentType = jest.fn();
 
-jest.mock('../../../../../app/scripts/lib/util', () => ({
+jest.mock('../../../../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../../../../shared/lib/environment-type'),
   getEnvironmentType: (...args: unknown[]) => mockGetEnvironmentType(...args),
 }));
 const mockIsHardwareWalletError = jest.fn();

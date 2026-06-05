@@ -349,6 +349,7 @@
     "os": "mac",
     "browser": "chrome"
   },
+  "completedMetaMetricsOnboarding": true,
   "completedOnboarding": true,
   "confirmationExchangeRates": {},
   "connectedStatusPopoverHasBeenShown": true,
@@ -823,8 +824,8 @@
     }
   },
   "openSeaEnabled": false,
+  "optedIn": false,
   "orderedNetworkList": [],
-  "participateInMetaMetrics": false,
   "pendingApprovalCount": 0,
   "pendingApprovals": {},
   "permissionHistory": {

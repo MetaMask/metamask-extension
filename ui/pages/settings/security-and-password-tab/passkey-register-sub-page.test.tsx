@@ -84,6 +84,13 @@ jest.mock('../../../../shared/lib/passkey', () => ({
   }),
 }));
 
+jest.mock('../../../../shared/lib/sentry', () => ({
+  ...jest.requireActual<typeof import('../../../../shared/lib/sentry')>(
+    '../../../../shared/lib/sentry',
+  ),
+  captureException: jest.fn(),
+}));
+
 const mockVerifyPassword = jest.fn().mockResolvedValue(undefined);
 
 jest.mock('../../../store/actions', () => ({
