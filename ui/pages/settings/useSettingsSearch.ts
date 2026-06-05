@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import Fuse from 'fuse.js';
+import { getIsPasskeyFeatureAvailable } from '../../selectors';
 import { SETTINGS_TABS, SETTINGS_ROUTES } from './settings-registry';
 import { SETTINGS_SEARCH_CONFIG } from './search-config';
 import { useSettingsI18n } from './useSettingsI18n';
-import { getIsPasskeyFeatureAvailable } from '../../selectors';
 
 export const MIN_SEARCH_LENGTH = 3;
 
