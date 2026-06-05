@@ -6,6 +6,11 @@ import {
 } from '@metamask/network-controller';
 import {
   Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   Text,
   AvatarNetwork,
   AvatarNetworkSize,
@@ -15,15 +20,10 @@ import {
   ButtonVariant,
 } from '../../../component-library';
 import {
-  AlignItems,
   BackgroundColor,
-  Display,
-  FlexDirection,
   TextColor,
   TextVariant,
   TextAlign,
-  JustifyContent,
-  BlockSize,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { setEditedNetwork, toggleNetworkMenu } from '../../../../store/actions';
@@ -59,18 +59,14 @@ const NetworkListItem = ({
 
   return (
     <Box
-      display={Display.Flex}
-      alignItems={AlignItems.center}
-      flexDirection={FlexDirection.Row}
-      justifyContent={JustifyContent.spaceBetween}
+      className="flex"
+      alignItems={BoxAlignItems.Center}
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Between}
       paddingBottom={4}
       paddingTop={4}
     >
-      <Box
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        width={BlockSize.EightTwelfths}
-      >
+      <Box className="flex w-8/12" alignItems={BoxAlignItems.Center}>
         <AvatarNetwork
           size={AvatarNetworkSize.Md}
           src={
@@ -80,11 +76,7 @@ const NetworkListItem = ({
           }
           name={networkConfiguration.name}
         />
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          width={BlockSize.ElevenTwelfths}
-        >
+        <Box className="flex w-11/12" flexDirection={BoxFlexDirection.Column}>
           <Box marginLeft={4}>
             <Text
               color={TextColor.textDefault}
@@ -95,8 +87,8 @@ const NetworkListItem = ({
             </Text>
           </Box>
           <Box
-            display={Display.Flex}
-            alignItems={AlignItems.center}
+            className="flex"
+            alignItems={BoxAlignItems.Center}
             marginLeft={4}
           >
             <Text
@@ -133,7 +125,7 @@ const NetworkListItem = ({
         </Box>
       </Box>
 
-      <Box display={Display.Flex} alignItems={AlignItems.center} marginLeft={1}>
+      <Box className="flex" alignItems={BoxAlignItems.Center} marginLeft={1}>
         <Button
           type="button"
           variant={ButtonVariant.Link}
