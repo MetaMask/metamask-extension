@@ -1,7 +1,7 @@
 import React from 'react';
 import { act } from '@testing-library/react';
 
-import messages from '../../../../../../../../app/_locales/en/messages.json';
+import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
