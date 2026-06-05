@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.34.0]
 
+### Uncategorized
+
+- chore: sync stable into release/13.34.0 (#43086)
+
 ### Added
 
 - Added section to manage networks (#42944)
@@ -47,6 +51,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bump the `@metamask/tron-wallet-snap` to `^1.25.6` (#42701)
 - Bumped bitcoin snap v1.11.0 (#42993)
 - chore: Replace `await-semaphore` with `async-mutex` (#42818)
+
+### Fixed
+
+- Fixed dust token balances that could break balance display due to scientific notation amounts (#43240)
 
 ## [13.33.0]
 
