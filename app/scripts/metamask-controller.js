@@ -58,11 +58,7 @@ import { ERC1155, ERC20, ERC721, toHex } from '@metamask/controller-utils';
 
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
-import {
-  BRIDGE_CONTROLLER_NAME,
-  BridgeUserAction,
-  BridgeBackgroundAction,
-} from '@metamask/bridge-controller';
+import { BRIDGE_CONTROLLER_NAME } from '@metamask/bridge-controller';
 
 import {
   TransactionStatus,
@@ -342,6 +338,8 @@ import { TransactionControllerInit } from './messenger-client-init/confirmations
 import { TransactionPayControllerInit } from './messenger-client-init/transaction-pay-controller-init';
 import { GeolocationApiServiceInit } from './messenger-client-init/geolocation-api-service-init';
 import { GeolocationControllerInit } from './messenger-client-init/geolocation-controller-init';
+import { ComplianceServiceInit } from './messenger-client-init/compliance-service-init';
+import { ComplianceControllerInit } from './messenger-client-init/compliance-controller-init';
 import { PerpsControllerInit } from './messenger-client-init/perps-controller-init';
 import { PerpsStreamBridge } from './controllers/perps/perps-stream-bridge';
 import { PPOMControllerInit } from './messenger-client-init/confirmations/ppom-controller-init';
@@ -646,6 +644,8 @@ export default class MetamaskController extends EventEmitter {
       AccountActivityService: AccountActivityServiceInit,
       GeolocationApiService: GeolocationApiServiceInit,
       GeolocationController: GeolocationControllerInit,
+      ComplianceService: ComplianceServiceInit,
+      ComplianceController: ComplianceControllerInit,
       ...(getIsPerpsIncludedInBuild()
         ? { PerpsController: PerpsControllerInit }
         : {}),
@@ -3615,23 +3615,21 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // Bridge
-      [BridgeBackgroundAction.RESET_STATE]: this.controllerMessenger.call.bind(
+      resetState: this.controllerMessenger.call.bind(
         this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.RESET_STATE}`,
+        `${BRIDGE_CONTROLLER_NAME}:resetState`,
       ),
-      [BridgeUserAction.UPDATE_QUOTE_PARAMS]:
-        this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          `${BRIDGE_CONTROLLER_NAME}:${BridgeUserAction.UPDATE_QUOTE_PARAMS}`,
-        ),
-      [BridgeBackgroundAction.TRACK_METAMETRICS_EVENT]:
-        this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.TRACK_METAMETRICS_EVENT}`,
-        ),
-      [BridgeBackgroundAction.FETCH_QUOTES]: this.controllerMessenger.call.bind(
+      updateBridgeQuoteRequestParams: this.controllerMessenger.call.bind(
         this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.FETCH_QUOTES}`,
+        `${BRIDGE_CONTROLLER_NAME}:updateBridgeQuoteRequestParams`,
+      ),
+      trackUnifiedSwapBridgeEvent: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_CONTROLLER_NAME}:trackUnifiedSwapBridgeEvent`,
+      ),
+      fetchQuotes: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_CONTROLLER_NAME}:fetchQuotes`,
       ),
 
       // Bridge Tx submission
@@ -7407,7 +7405,7 @@ export default class MetamaskController extends EventEmitter {
       createDappSwapMiddleware({
         fetchQuotes: this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.FETCH_QUOTES}`,
+          `${BRIDGE_CONTROLLER_NAME}:fetchQuotes`,
         ),
         setDappSwapComparisonData:
           this.appStateController.setDappSwapComparisonData.bind(

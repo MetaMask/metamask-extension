@@ -1,6 +1,6 @@
 import { isFirefoxBrowser } from '../../../../../shared/lib/browser-runtime.utils';
 import { CameraPermissionState } from '../../../../contexts/hardware-wallets/constants';
-import { DOMExceptionName } from '../base-reader.types';
+import { DOMExceptionName } from '../base-qr-reader/base-qr-reader.types';
 import {
   shouldShowBlockedUi,
   isNotAllowedError,

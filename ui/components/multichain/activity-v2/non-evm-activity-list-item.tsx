@@ -91,7 +91,7 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
       // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
       rightContent={
         <Text
-          className="activity-list-item__primary-currency"
+          className="activity-list-item__primary-currency text-s-body-md @compact:text-s-body-sm"
           data-testid="transaction-list-item-primary-currency"
           ellipsis
         >

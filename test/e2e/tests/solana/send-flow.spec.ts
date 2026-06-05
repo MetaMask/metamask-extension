@@ -92,8 +92,8 @@ describe('Send flow', function (this: Suite) {
         await confirmation.clickFooterConfirmButton();
 
         const activityList = new ActivityListPage(driver);
-        await activityList.checkTxAction({ action: 'Sent' });
-        await activityList.checkTxAmountInActivity('-0.00708 SOL', 1);
+        await activityList.checkTxAction({ action: 'Sent SOL' });
+        await activityList.checkTxAmountInActivity('-0.007079 SOL', 1);
         await activityList.checkNoFailedTransactions();
       },
     );
@@ -144,7 +144,7 @@ describe('Send flow', function (this: Suite) {
         const activityList = new ActivityListPage(driver);
         await activityList.checkFailedTxNumberDisplayedInActivity();
         await activityList.checkTxAction({
-          action: 'Interaction',
+          action: 'Interaction failed',
           confirmedTx: 0,
         });
       },

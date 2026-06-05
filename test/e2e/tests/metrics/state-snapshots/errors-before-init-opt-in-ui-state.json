@@ -71,6 +71,10 @@
     },
     "BridgeStatusController": { "txHistory": "object" },
     "ClaimsController": "object",
+    "ComplianceController": {
+      "lastCheckedAt": null,
+      "walletComplianceStatusMap": "object"
+    },
     "CurrencyController": {
       "currencyRates": {
         "BNB": {

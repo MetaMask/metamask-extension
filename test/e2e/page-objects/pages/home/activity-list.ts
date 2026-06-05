@@ -11,8 +11,7 @@ class ActivityListPage extends HomePage {
 
   private readonly bridgeTransactionCompleted = '[data-tx-status="confirmed"]';
 
-  private readonly bridgeTransactionPending =
-    '.bridge-transaction-details__segment--pending';
+  private readonly bridgeTransactionPending = '[data-tx-status="pending"]';
 
   private readonly cancelTransactionButton = '[data-testid="cancel-button"]';
 
@@ -39,8 +38,6 @@ class ActivityListPage extends HomePage {
     '[data-tx-status="submitted"], [data-tx-status="approved"], [data-tx-status="unapproved"], [data-tx-status="pending"]';
 
   private readonly speedupInlineButton = '[data-testid="speed-up-button"]';
-
-  private readonly speedupModalButton = '[data-testid="speedup-button"]';
 
   private readonly tooltip = '.tippy-tooltip-content';
 
@@ -100,10 +97,14 @@ class ActivityListPage extends HomePage {
       `Wait for ${expectedNumber} completed transactions to be displayed in activity list`,
     );
     await this.driver.wait(async () => {
-      const completedTxs = await this.driver.findElements(
-        this.completedTransactions,
-      );
-      return completedTxs.length === expectedNumber;
+      try {
+        const completedTxs = await this.driver.findElements(
+          this.completedTransactions,
+        );
+        return completedTxs.length === expectedNumber;
+      } catch {
+        return false;
+      }
     }, 10000);
     console.log(
       `${expectedNumber} completed transactions found in activity list on homepage`,
@@ -124,10 +125,14 @@ class ActivityListPage extends HomePage {
       `Wait for ${expectedNumber} confirmed transactions to be displayed in activity list`,
     );
     await this.driver.wait(async () => {
-      const confirmedTxs = await this.driver.findElements(
-        this.confirmedTransactions,
-      );
-      return confirmedTxs.length === expectedNumber;
+      try {
+        const confirmedTxs = await this.driver.findElements(
+          this.confirmedTransactions,
+        );
+        return confirmedTxs.length === expectedNumber;
+      } catch {
+        return false;
+      }
     }, 60000);
     console.log(
       `${expectedNumber} confirmed transactions found in activity list on homepage`,
@@ -177,8 +182,14 @@ class ActivityListPage extends HomePage {
       `Wait for ${expectedNumber} failed transactions to be displayed in activity list`,
     );
     await this.driver.wait(async () => {
-      const failedTxs = await this.driver.findElements(this.failedTransactions);
-      return failedTxs.length === expectedNumber;
+      try {
+        const failedTxs = await this.driver.findElements(
+          this.failedTransactions,
+        );
+        return failedTxs.length === expectedNumber;
+      } catch {
+        return false;
+      }
     }, 60000);
     console.log(
       `${expectedNumber} failed transactions found in activity list on homepage`,
@@ -199,10 +210,14 @@ class ActivityListPage extends HomePage {
       `Wait for ${expectedNumber} pending transactions to be displayed in activity list`,
     );
     await this.driver.wait(async () => {
-      const pendingTxs = await this.driver.findElements(
-        this.pendingTransactionItems,
-      );
-      return pendingTxs.length === expectedNumber;
+      try {
+        const pendingTxs = await this.driver.findElements(
+          this.pendingTransactionItems,
+        );
+        return pendingTxs.length === expectedNumber;
+      } catch {
+        return false;
+      }
     }, 10000);
     console.log(
       `${expectedNumber} pending transactions found in activity list on homepage`,
@@ -255,13 +270,17 @@ class ActivityListPage extends HomePage {
     if (confirmedTx) {
       await this.checkConfirmedTxNumberDisplayedInActivity(confirmedTx);
     }
-    const transactionActions = await this.driver.findElements(
-      this.activityListAction,
-    );
     await this.driver.wait(async () => {
-      const transactionActionText =
-        await transactionActions[txIndex - 1].getText();
-      return transactionActionText === action;
+      try {
+        const transactionActions = await this.driver.findElements(
+          this.activityListAction,
+        );
+        const transactionActionText =
+          await transactionActions[txIndex - 1]?.getText();
+        return transactionActionText === action;
+      } catch {
+        return false;
+      }
     }, 60000);
     console.log(`Action for transaction ${txIndex} is displayed as ${action}`);
   }
@@ -280,10 +299,14 @@ class ActivityListPage extends HomePage {
       `Wait for ${expectedNumber} Bridge pending transactions to be displayed in activity list`,
     );
     await this.driver.wait(async () => {
-      const completedTxs = await this.driver.findElements(
-        this.bridgeTransactionPending,
-      );
-      return completedTxs.length === expectedNumber;
+      try {
+        const completedTxs = await this.driver.findElements(
+          this.bridgeTransactionPending,
+        );
+        return completedTxs.length === expectedNumber;
+      } catch {
+        return false;
+      }
     }, 60000);
     console.log(
       `${expectedNumber} Bridge pending transactions found in activity list on homepage`,
@@ -304,10 +327,14 @@ class ActivityListPage extends HomePage {
       `Wait for ${expectedNumber} Bridge completed transactions to be displayed in activity list`,
     );
     await this.driver.wait(async () => {
-      const completedTxs = await this.driver.findElements(
-        this.bridgeTransactionCompleted,
-      );
-      return completedTxs.length === expectedNumber;
+      try {
+        const completedTxs = await this.driver.findElements(
+          this.bridgeTransactionCompleted,
+        );
+        return completedTxs.length === expectedNumber;
+      } catch {
+        return false;
+      }
     }, 60000);
     console.log(
       `${expectedNumber} Bridge transactions found in activity list on homepage`,
@@ -520,7 +547,7 @@ class ActivityListPage extends HomePage {
   }
 
   async clickSpeedUpTransaction() {
-    await this.driver.clickElement(this.speedupModalButton);
+    await this.driver.clickElement(this.speedupInlineButton);
   }
 
   /**

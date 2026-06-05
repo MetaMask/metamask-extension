@@ -621,6 +621,8 @@
         }
       }
     },
+    "batchSellTrades": "null",
+    "batchSellTradesLoadingStatus": "null",
     "browserEnvironment": {
       "browser": "string",
       "os": "string"
@@ -1049,6 +1051,7 @@
       }
     ],
     "knownMethodData": {},
+    "lastCheckedAt": "null",
     "lastCompletedWithdrawalTimestamp": "null",
     "lastCompletedWithdrawalTxHashes": [],
     "lastDepositResult": "null",
@@ -1549,6 +1552,7 @@
     "useNftDetection": "boolean",
     "usePhishDetect": "boolean",
     "userOperations": {},
+    "walletComplianceStatusMap": {},
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": "boolean",
     "useTransactionSimulations": "boolean",
