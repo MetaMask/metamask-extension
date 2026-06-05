@@ -8,8 +8,6 @@ import { I18nContext } from '../../../contexts/i18n';
 import ButtonGroup from '../../../components/ui/button-group';
 import Button from '../../../components/ui/button';
 import InfoTooltip from '../../../components/ui/info-tooltip';
-import Box from '../../../components/ui/box';
-
 import {
   AlignItems,
   JustifyContent,
@@ -26,6 +24,7 @@ import {
 } from '../../../../shared/constants/swaps';
 import {
   BannerAlert,
+  Box,
   Modal,
   ModalOverlay,
   ButtonPrimary,
