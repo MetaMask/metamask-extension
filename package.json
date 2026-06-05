@@ -723,7 +723,7 @@
     "gulp-sourcemaps": "^3.0.0",
     "gulp-watch": "^5.0.1",
     "gulp-zip": "^5.1.0",
-    "html-bundler-webpack-plugin": "patch:html-bundler-webpack-plugin@npm%3A4.22.0#~/.yarn/patches/html-bundler-webpack-plugin-npm-4.22.0-5c9a1ad61e.patch",
+    "html-bundler-webpack-plugin": "patch:html-bundler-webpack-plugin@npm%3A4.23.2#~/.yarn/patches/html-bundler-webpack-plugin-npm-4.23.2-c360a7b7fc.patch",
     "http-server": "^14.1.1",
     "https-browserify": "^1.0.0",
     "husky": "^8.0.3",
