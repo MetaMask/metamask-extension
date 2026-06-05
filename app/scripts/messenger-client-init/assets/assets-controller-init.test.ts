@@ -15,7 +15,6 @@ import {
 import { AssetsControllerInit } from './assets-controller-init';
 
 jest.mock('@metamask/assets-controller', () => ({
-  ...jest.requireActual('@metamask/assets-controller'),
   AssetsController: jest.fn().mockImplementation(() => ({
     state: {},
   })),
@@ -141,7 +140,6 @@ describe('AssetsControllerInit', () => {
         pollInterval: 30_000,
         enabled: false,
       },
-      trace: expect.any(Function),
       isOnboarded: expect.any(Function),
     });
   });
@@ -177,7 +175,6 @@ describe('AssetsControllerInit', () => {
         pollInterval: 30_000,
         enabled: false,
       },
-      trace: expect.any(Function),
       isOnboarded: expect.any(Function),
     });
   });
