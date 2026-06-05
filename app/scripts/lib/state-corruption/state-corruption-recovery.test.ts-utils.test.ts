@@ -149,6 +149,7 @@ export type Scenario = {
   result: {
     hasBackup: boolean;
     currentLocale: string | null;
+    theme: string | null;
   };
 
   /**
@@ -205,7 +206,7 @@ function buildStore(
   }
 
   if (locale !== 'missing') {
-    store.PreferencesController = { currentLocale: locale };
+    store.PreferencesController = { currentLocale: locale, theme: 'light' };
   }
 
   return Object.keys(store).length ? store : {};
@@ -268,9 +269,13 @@ export function generateScenarios(): Scenario[] {
           const currentLocale =
             root === 'object' && locale === 'en' ? 'en' : null;
 
+          const theme =
+            root === 'object' && locale !== 'missing' ? 'light' : null;
+
           const baseResult = {
             hasBackup,
             currentLocale,
+            theme,
           };
 
           const baseName = `vault:${getShortLabel(

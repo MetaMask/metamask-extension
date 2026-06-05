@@ -181,6 +181,44 @@ describe('displayCriticalError', () => {
     ).toContain('critical-error-button');
   });
 
+  it('applies the saved theme from the backup to the document before rendering', async () => {
+    // The system color-scheme mock resolves to light, so we use a saved theme
+    // of 'dark' to ensure the assertion fails if the saved theme is ignored.
+    const previousGetBackupState = globalThis.stateHooks?.getBackupState;
+    globalThis.stateHooks = {
+      ...(globalThis.stateHooks ?? {}),
+      getBackupState: async () => ({
+        ...MOCK_BACKUP_WITH_VAULT,
+        PreferencesController: { theme: 'dark' },
+      }),
+    };
+
+    try {
+      const error = new Error(MOCK_ERROR_MESSAGE);
+      const mockPort = createMockPort();
+
+      await expect(
+        displayCriticalErrorMessage(
+          container,
+          CriticalErrorTranslationKey.TroubleStarting,
+          error,
+          'en',
+          mockPort,
+          CriticalErrorType.Other,
+        ),
+      ).rejects.toThrow(error);
+
+      expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
+    } finally {
+      if (previousGetBackupState) {
+        globalThis.stateHooks.getBackupState = previousGetBackupState;
+      } else {
+        delete globalThis.stateHooks.getBackupState;
+      }
+      document.documentElement.removeAttribute('data-theme');
+    }
+  });
+
   it('clicking restart button calls fetch and reload if checkbox checked', async () => {
     const error = new Error(MOCK_ERROR_MESSAGE);
     const mockPort = createMockPort();

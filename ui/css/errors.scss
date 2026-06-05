@@ -14,8 +14,8 @@
   max-width: 360px;
   padding: 0;
   border-radius: 8px;
-  background-color: var(--brand-colors-grey-grey800);
-  color: var(--brand-colors-grey-grey000);
+  background-color: var(--color-background-default);
+  color: var(--color-text-default);
 
   &__inner {
     display: flex;
@@ -37,7 +37,7 @@
   &__icon {
     flex-shrink: 0;
     line-height: 0;
-    color: var(--brand-colors-yellow-yellow200);
+    color: var(--color-warning-default);
 
     svg {
       display: block;
@@ -51,7 +51,7 @@
     font-size: 16px;
     font-weight: 600;
     line-height: 24px;
-    color: var(--brand-colors-grey-grey000);
+    color: var(--color-text-default);
     text-align: left;
   }
 
@@ -72,7 +72,7 @@
     font-size: 14px;
     font-weight: 400;
     line-height: 22px;
-    color: var(--brand-colors-grey-grey400);
+    color: var(--color-text-alternative);
     text-align: left;
 
     &:empty {
@@ -87,7 +87,7 @@
     font-size: 14px;
     font-weight: 500;
     line-height: 22px;
-    color: var(--brand-colors-grey-grey400);
+    color: var(--color-text-alternative);
     text-align: center;
 
     > span {
@@ -111,9 +111,7 @@
     align-self: stretch;
     margin: 0;
     padding: 0;
-    border:
-      1px solid
-      color-mix(in srgb, var(--brand-colors-grey-grey400) 20%, transparent);
+    border: 1px solid var(--color-border-muted);
     border-radius: 8px;
     background-color: var(--color-background-muted);
   }
@@ -123,10 +121,8 @@
     margin: 0;
     overflow: auto;
     padding: 12px 16px;
-    border-bottom:
-      1px solid
-      color-mix(in srgb, var(--brand-colors-grey-grey400) 20%, transparent);
-    color: var(--brand-colors-grey-grey400);
+    border-bottom: 1px solid var(--color-border-muted);
+    color: var(--color-text-alternative);
     text-align: left;
 
     code {
@@ -156,7 +152,7 @@
     font-size: 14px;
     font-weight: 400;
     line-height: 22px;
-    color: var(--brand-colors-grey-grey000);
+    color: var(--color-text-default);
     cursor: pointer;
     user-select: none;
   }
@@ -174,13 +170,13 @@
     appearance: none;
     cursor: pointer;
     background-color: transparent;
-    border: 2px solid var(--brand-colors-grey-grey000);
+    border: 2px solid var(--color-icon-default);
     border-radius: 4px;
     transition: background 0.2s ease;
 
     &:checked {
-      background-color: var(--brand-colors-grey-grey000);
-      border-color: var(--brand-colors-grey-grey000);
+      background-color: var(--color-icon-default);
+      border-color: var(--color-icon-default);
     }
 
     &:checked::after {
@@ -188,7 +184,7 @@
       position: absolute;
       width: 5px;
       height: 10px;
-      border: solid var(--brand-colors-grey-grey900);
+      border: solid var(--color-background-default);
       border-width: 0 2px 2px 0;
       transform: rotate(45deg);
     }
@@ -211,7 +207,7 @@
       display: block;
       width: 20px;
       height: 20px;
-      fill: var(--brand-colors-grey-grey400);
+      fill: var(--color-icon-alternative);
     }
   }
 
@@ -225,13 +221,11 @@
     font-size: 14px;
     line-height: 1.2;
     text-align: left;
-    background-color: var(--brand-colors-grey-grey800);
-    border:
-      1px solid
-      color-mix(in srgb, var(--brand-colors-grey-grey400) 20%, transparent);
+    background-color: var(--color-background-default);
+    border: 1px solid var(--color-border-muted);
     border-radius: 8px;
     box-shadow: var(--shadow-size-md) var(--color-shadow-default);
-    color: var(--brand-colors-grey-grey000);
+    color: var(--color-text-default);
 
     span {
       display: block;
@@ -263,19 +257,14 @@
     font-size: 14px;
     font-weight: 400;
     line-height: 22px;
-    color: var(--brand-colors-grey-grey400);
+    color: var(--color-text-alternative);
 
     &::before,
     &::after {
       flex: 1 1 auto;
       height: 1px;
       content: "";
-      background-color:
-        color-mix(
-          in srgb,
-          var(--brand-colors-grey-grey400) 20%,
-          transparent
-        );
+      background-color: var(--color-border-muted);
     }
 
     > span {
@@ -291,9 +280,9 @@
     font-size: 16px;
     font-weight: 500;
     line-height: 24px;
-    color: var(--brand-colors-grey-grey900);
+    color: var(--color-background-default);
     cursor: pointer;
-    background-color: var(--brand-colors-grey-grey000);
+    background-color: var(--color-icon-default);
     border: none;
     border-radius: 12px;
     height: 48px;
@@ -319,7 +308,7 @@
     font-size: 16px;
     font-weight: 500;
     line-height: 24px;
-    color: var(--brand-colors-grey-grey000);
+    color: var(--color-text-default);
     text-decoration: none;
     cursor: pointer;
     background-color: var(--color-background-muted);
@@ -328,7 +317,7 @@
     transition: background-color 0.2s ease;
 
     &:hover {
-      color: var(--brand-colors-grey-grey000);
+      color: var(--color-text-default);
       background-color: var(--color-background-muted-hover);
     }
 
@@ -350,7 +339,7 @@
     font-size: 14px;
     font-weight: 400;
     line-height: 22px;
-    color: var(--brand-colors-grey-grey400);
+    color: var(--color-text-alternative);
     text-align: left;
 
     & + p {

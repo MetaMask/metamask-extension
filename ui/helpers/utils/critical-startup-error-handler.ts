@@ -338,10 +338,11 @@ export class CriticalStartupErrorHandler {
         return;
       }
 
-      const { error, hasBackup, currentLocale } = data.params as {
+      const { error, hasBackup, currentLocale, theme } = data.params as {
         error: ErrorLike;
         hasBackup: boolean;
         currentLocale?: string;
+        theme?: string;
       };
       if (!this.#criticalErrorAlreadyDisplayed) {
         this.#criticalErrorAlreadyDisplayed = true;
@@ -351,6 +352,7 @@ export class CriticalStartupErrorHandler {
           error,
           hasBackup,
           currentLocale,
+          theme,
         );
       }
     } else if (method === DISPLAY_GENERAL_STARTUP_ERROR) {

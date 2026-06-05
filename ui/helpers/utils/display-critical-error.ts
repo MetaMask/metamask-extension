@@ -1,7 +1,9 @@
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import { v4 as uuidv4 } from 'uuid';
+import { hasProperty, isObject } from '@metamask/utils';
 import { ErrorLike } from '../../../shared/constants/errors';
+import { ThemeType } from '../../../shared/constants/preferences';
 import {
   getErrorHtml,
   maybeGetLocaleContext,
@@ -37,6 +39,48 @@ async function safeGetVaultBackup(
   });
   const backupPromise = getBackupState().catch(() => null);
   return Promise.race([backupPromise, timeoutPromise]);
+}
+
+/**
+ * Reads the user's selected theme from the backup, if present.
+ *
+ * @param backup - The backup object to extract the theme from.
+ * @returns The saved theme, or undefined when it cannot be read.
+ */
+function getThemeFromBackup(backup: Backup | null): string | undefined {
+  // Defensive: the database may be in any state, so we don't assume any shape.
+  if (isObject(backup) && hasProperty(backup, 'PreferencesController')) {
+    const preferencesController = backup.PreferencesController;
+    if (
+      isObject(preferencesController) &&
+      hasProperty(preferencesController, 'theme') &&
+      typeof preferencesController.theme === 'string'
+    ) {
+      return preferencesController.theme;
+    }
+  }
+  return undefined;
+}
+
+/**
+ * Applies the user's saved theme to the document before the critical error
+ * dialog is rendered.
+ *
+ * Critical error dialogs are shown before the React app boots and calls
+ * `setTheme`, so `documentElement` would otherwise have no `data-theme`
+ * attribute and the dialog's semantic color tokens would default to dark.
+ *
+ * @param theme - The saved theme (`light`, `dark`, or `os`). When undefined or
+ * `os`, the system color-scheme preference is used.
+ */
+export function applyCriticalErrorTheme(theme?: string): void {
+  let resolvedTheme = theme;
+  if (!resolvedTheme || resolvedTheme === ThemeType.os) {
+    resolvedTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? ThemeType.dark
+      : ThemeType.light;
+  }
+  document.documentElement.setAttribute('data-theme', resolvedTheme);
 }
 
 /**
@@ -209,6 +253,9 @@ export async function displayCriticalErrorMessage(
   criticalErrorType?: CriticalErrorType,
 ): Promise<never> {
   const backup = port ? await safeGetVaultBackup() : null;
+  // Apply the saved theme before rendering so the dialog respects the user's
+  // selected theme instead of always defaulting to dark.
+  applyCriticalErrorTheme(getThemeFromBackup(backup));
   const canTriggerRestore = port && hasVault(backup);
 
   try {

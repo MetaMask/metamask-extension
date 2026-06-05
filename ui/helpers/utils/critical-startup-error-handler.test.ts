@@ -371,6 +371,7 @@ describe('CriticalStartupErrorHandler', () => {
             error: { message: 'corruption', name: 'Error', stack: '' },
             hasBackup: true,
             currentLocale: 'en',
+            theme: 'light',
           },
         },
       });
@@ -382,6 +383,7 @@ describe('CriticalStartupErrorHandler', () => {
         { message: 'corruption', name: 'Error', stack: '' },
         true,
         'en',
+        'light',
       );
 
       handler.uninstall();

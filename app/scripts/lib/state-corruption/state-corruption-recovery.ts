@@ -84,6 +84,28 @@ function maybeGetCurrentLocale(backup: Backup | null): string | null {
 }
 
 /**
+ * Attempts to get the user's selected theme from the backup.
+ *
+ * @param backup - The backup object to extract the theme from.
+ * @returns The theme if found, otherwise null.
+ */
+function maybeGetTheme(backup: Backup | null): string | null {
+  // we're overly defensive here because we have no idea what happened to the
+  // database, and we don't want to throw another error on some unexpected object.
+  if (isObject(backup) && hasProperty(backup, 'PreferencesController')) {
+    const preferencesController = backup.PreferencesController;
+    if (
+      isObject(preferencesController) &&
+      hasProperty(preferencesController, 'theme') &&
+      typeof preferencesController.theme === 'string'
+    ) {
+      return preferencesController.theme;
+    }
+  }
+  return null;
+}
+
+/**
  * Attempts to get the cause message from a PersistenceError.
  * This provides additional context about the original error that caused
  * the persistence failure (e.g., Firefox's "Error: An unexpected error occurred").
@@ -148,6 +170,7 @@ export class CorruptionHandler {
     const { connectedPorts } = this;
     const backup = await maybeGetBackup(error, database);
     const currentLocale = maybeGetCurrentLocale(backup);
+    const theme = maybeGetTheme(backup);
     // it is not worth claiming we have a backup if the vault doesn't actually
     // exist
     const hasBackup = Boolean(hasVault(backup));
@@ -164,6 +187,7 @@ export class CorruptionHandler {
         causeMessage,
       },
       currentLocale,
+      theme,
       hasBackup,
     });
     if (!sent) {

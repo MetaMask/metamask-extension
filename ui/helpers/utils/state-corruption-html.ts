@@ -14,7 +14,10 @@ import { switchDirectionForPreferredLocale } from '../../../shared/lib/switch-di
 import getFirstPreferredLangCode from '../../../shared/lib/get-first-preferred-lang-code';
 import { METHOD_REPAIR_DATABASE } from '../../../shared/constants/state-corruption';
 import { t, updateCurrentLocale } from '../../../shared/lib/translate';
-import { displayCriticalErrorPage } from './display-critical-error';
+import {
+  applyCriticalErrorTheme,
+  displayCriticalErrorPage,
+} from './display-critical-error';
 
 export async function getStateCorruptionErrorHtml(
   vaultRecoveryLink: string,
@@ -100,8 +103,13 @@ export async function displayStateCorruptionError(
   err: ErrorLike,
   hasBackup: boolean,
   currentLocale?: string,
+  theme?: string,
 ) {
   log.error(err);
+
+  // Apply the saved theme before rendering so the restore dialog respects the
+  // user's selected theme instead of always defaulting to dark.
+  applyCriticalErrorTheme(theme);
 
   function handleRestoreClick(this: HTMLButtonElement) {
     // eslint-disable-next-line no-alert
