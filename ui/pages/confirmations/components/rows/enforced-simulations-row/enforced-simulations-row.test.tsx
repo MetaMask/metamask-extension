@@ -237,9 +237,7 @@ describe('EnforcedSimulationsRow', () => {
 
   it('logs the error and restores the checkbox when the toggle fails', async () => {
     const error = new Error('failed to apply containers');
-    jest
-      .mocked(applyTransactionContainersExisting)
-      .mockRejectedValue(error);
+    jest.mocked(applyTransactionContainersExisting).mockRejectedValue(error);
 
     const consoleErrorSpy = jest
       .spyOn(console, 'error')
