@@ -64,7 +64,7 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
         {/* Left side - Action and Details */}
         <div className="flex-1 min-w-0">
           <Text
-            className="font-medium truncate"
+            className="font-medium truncate text-s-body-md @compact:text-s-body-sm"
             data-testid="activity-list-item-action"
           >
             {title}
@@ -90,7 +90,7 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
         <div className="flex flex-col items-end">
           {amount && token && (
             <Text
-              className="font-medium"
+              className="font-medium text-s-body-md @compact:text-s-body-sm"
               data-testid="transaction-list-item-primary-currency"
             >
               {formatTokenAmount(amount, token.symbol)}
