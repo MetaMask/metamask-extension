@@ -17,6 +17,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
+import type { CaipAssetType } from '@metamask/utils';
 import BigNumber from 'bignumber.js';
 import { BRIDGE_MM_FEE_RATE } from '@metamask/bridge-controller';
 import {
@@ -276,8 +277,11 @@ export const ReviewAndConfirmModal = ({
   const t = useI18nContext();
   const [isYouSellExpanded, setIsYouSellExpanded] = useState(false);
   const quoteResponses = useMemo(
-    () => Object.values(quotes ?? {}).map(({ quote }) => quote),
-    [quotes],
+    () =>
+      Object.entries(sendAssetsConfig)
+        .filter(([, config]) => config.enabled)
+        .map(([assetId]) => quotes?.[assetId as CaipAssetType]?.quote ?? null),
+    [quotes, sendAssetsConfig],
   );
   const { submitBatchSellQuotes, isSubmitting } = useBatchSellSubmitQuotes({
     quoteResponses,

@@ -329,6 +329,96 @@ describe('ReviewAndConfirmModal', () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
+  describe('quoteResponses passed to useBatchSellSubmitQuotes', () => {
+    it('excludes disabled send slots and only passes enabled quotes', () => {
+      const QUOTE_A = { requestId: 'req-a' } as never;
+      const QUOTE_B = { requestId: 'req-b' } as never;
+
+      const quotes: BatchSellQuotesResults['quotes'] = {
+        [ASSET_A]: {
+          asset: {} as never,
+          quote: QUOTE_A,
+          hasQuote: true,
+          isLoadingQuote: false,
+        },
+        [ASSET_B]: {
+          asset: {} as never,
+          quote: QUOTE_B,
+          hasQuote: true,
+          isLoadingQuote: false,
+        },
+      };
+
+      // ASSET_A is enabled, ASSET_B is disabled (see makeSendAssetsConfig).
+      render(<ReviewAndConfirmModal {...defaultProps} quotes={quotes} />);
+
+      expect(mockUseBatchSellSubmitQuotes).toHaveBeenCalledWith(
+        expect.objectContaining({ quoteResponses: [QUOTE_A] }),
+      );
+    });
+
+    it('preserves the enabled-slot order matching controller slot indices', () => {
+      const ASSET_C = 'eip155:1/erc20:0xCCC' as CaipAssetType;
+      const QUOTE_A = { requestId: 'req-a' } as never;
+      const QUOTE_C = { requestId: 'req-c' } as never;
+
+      const config: BatchSellQuotesConfig['sendAssetsConfig'] = {
+        [ASSET_A]: {
+          asset: buildBatchSellAsset({ assetId: ASSET_A }) as never,
+          sendAmountPercent: 100,
+          slippagePercent: 0.5,
+          enabled: true,
+        },
+        [ASSET_B]: {
+          asset: buildBatchSellAsset({ assetId: ASSET_B }) as never,
+          sendAmountPercent: 0,
+          slippagePercent: 0.5,
+          enabled: false,
+        },
+        [ASSET_C]: {
+          asset: buildBatchSellAsset({ assetId: ASSET_C }) as never,
+          sendAmountPercent: 100,
+          slippagePercent: 0.5,
+          enabled: true,
+        },
+      };
+
+      const quotes: BatchSellQuotesResults['quotes'] = {
+        [ASSET_A]: {
+          asset: {} as never,
+          quote: QUOTE_A,
+          hasQuote: true,
+          isLoadingQuote: false,
+        },
+        [ASSET_B]: {
+          asset: {} as never,
+          quote: null as never,
+          hasQuote: false,
+          isLoadingQuote: false,
+        },
+        [ASSET_C]: {
+          asset: {} as never,
+          quote: QUOTE_C,
+          hasQuote: true,
+          isLoadingQuote: false,
+        },
+      };
+
+      render(
+        <ReviewAndConfirmModal
+          {...defaultProps}
+          sendAssetsConfig={config}
+          quotes={quotes}
+        />,
+      );
+
+      // quoteResponses must be [QUOTE_A, QUOTE_C] — disabled slot B excluded.
+      expect(mockUseBatchSellSubmitQuotes).toHaveBeenCalledWith(
+        expect.objectContaining({ quoteResponses: [QUOTE_A, QUOTE_C] }),
+      );
+    });
+  });
+
   it('uses the MM fee rate from the first quote that exposes a quoteBpsFee', () => {
     const quotes: BatchSellQuotesResults['quotes'] = {
       [ASSET_A]: {
