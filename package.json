@@ -174,6 +174,7 @@
     "git-url-parse@^12.0.0": "^13.1.0",
     "glob-parent": "^6.0.2",
     "js-sha3": "^0.9.2",
+    "@metamask/keyring-api": "^23.1.0",
     "@metamask/keyring-internal-api": "^11.0.1",
     "@metamask/account-tree-controller": "^7.2.0",
     "ast-types": "^0.14.2",
@@ -300,6 +301,12 @@
     "@metamask/transaction-controller": "patch:@metamask/transaction-controller@npm%3A66.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-66.0.0-23fe4d7dfe.patch",
     "@metamask/transaction-pay-controller@npm:^22.6.0": "patch:@metamask/transaction-pay-controller@npm%3A22.6.0#~/.yarn/patches/@metamask-transaction-pay-controller-npm-22.6.0-ecc6df0372.patch"
   },
+  "previewBuilds": {
+    "@metamask/keyring-controller": {
+      "type": "non-breaking",
+      "previewVersion": "26.0.0-preview-834f9ac8f"
+    }
+  },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
     "@blockaid/ppom_release": "^1.5.3",
@@ -379,7 +386,7 @@
     "@metamask/json-rpc-engine": "^10.3.0",
     "@metamask/json-rpc-middleware-stream": "^8.0.4",
     "@metamask/keyring-api": "^23.1.0",
-    "@metamask/keyring-controller": "^25.4.0",
+    "@metamask/keyring-controller": "^26.0.0",
     "@metamask/keyring-internal-api": "^11.0.1",
     "@metamask/keyring-snap-client": "^9.0.2",
     "@metamask/keyring-utils": "^3.2.0",
