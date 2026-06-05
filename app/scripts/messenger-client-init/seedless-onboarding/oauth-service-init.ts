@@ -1,3 +1,4 @@
+import { AnalyticsController } from '@metamask/analytics-controller';
 import { MessengerClientInitFunction } from '../types';
 import { OAuthService } from '../../services/oauth/oauth-service';
 import { getProfilePairingEnv } from '../../services/oauth/config';
@@ -15,6 +16,9 @@ export const OAuthServiceInit: MessengerClientInitFunction<
   const metaMetricsController = getMessengerClient(
     'MetaMetricsController',
   ) as MetaMetricsController;
+  const analyticsController = getMessengerClient(
+    'AnalyticsController',
+  ) as AnalyticsController;
 
   const profileSyncEnv = getProfilePairingEnv();
 
@@ -45,7 +49,9 @@ export const OAuthServiceInit: MessengerClientInitFunction<
       ),
 
     getParticipateInMetaMetrics: () =>
-      metaMetricsController.state.participateInMetaMetrics,
+      metaMetricsController.state.completedMetaMetricsOnboarding
+        ? analyticsController.state.optedIn
+        : null,
   });
 
   return {

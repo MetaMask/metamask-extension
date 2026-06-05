@@ -42,7 +42,7 @@ describe('Onboarding Create Password', () => {
         accounts: {},
         selectedAccount: '',
       },
-      metaMetricsId: '0x00000000',
+      analyticsId: '0x00000000',
     },
   };
 
@@ -619,7 +619,8 @@ describe('Onboarding Create Password', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          participateInMetaMetrics: true,
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
         },
       };
       const mockStore = configureMockStore([thunk])(state);
@@ -639,7 +640,8 @@ describe('Onboarding Create Password', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          participateInMetaMetrics: false,
+          completedMetaMetricsOnboarding: true,
+          optedIn: false,
         },
       };
       const mockStore = configureMockStore()(state);

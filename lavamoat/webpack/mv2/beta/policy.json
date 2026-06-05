@@ -864,6 +864,14 @@
         "@metamask/controller-utils": true
       }
     },
+    "@metamask/analytics-controller": {
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/utils": true,
+        "lodash": true,
+        "uuid": true
+      }
+    },
     "@metamask/announcement-controller": {
       "packages": {
         "@metamask/base-controller": true
