@@ -432,8 +432,7 @@ export function mapLocalTransaction(
       const incomingNftBalanceChange =
         initialTransaction.type === TransactionType.contractInteraction &&
         initialTransaction.simulationData?.tokenBalanceChanges?.find(
-          ({ isDecrease, standard }) =>
-            !isDecrease && isNftStandard(standard),
+          ({ isDecrease, standard }) => !isDecrease && isNftStandard(standard),
         );
       let hasNativeValue = false;
 
