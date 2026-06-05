@@ -221,6 +221,39 @@ export const getMockAssetsPrice = (
 });
 
 /**
+ * Returns native ETH asset-info entries for the same chains covered by
+ * {@link getMockAssetsPrice}.
+ *
+ * `getCurrencyRateControllerCurrencyRates` (assets-migration.ts) iterates
+ * `assetsInfo` to locate native EVM entries before reading `assetsPrice`.
+ * Tests that seed `assetsPrice` without `assetsInfo` will never produce a fiat
+ * conversion rate, so the balance stays in native-token form.
+ *
+ * Always seed both together:
+ * ```ts
+ * .withAssetsController({
+ *   assetsInfo:  getMockAssetsInfo(),
+ *   assetsPrice: getMockAssetsPrice(1700),
+ * })
+ * ```
+ */
+const ETH_NATIVE_INFO_ENTRY = {
+  aggregators: [] as string[],
+  decimals: 18,
+  image: '',
+  name: 'Ethereum',
+  symbol: 'ETH',
+  type: 'native' as const,
+};
+
+export const getMockAssetsInfo = () => ({
+  'eip155:1/slip44:60': ETH_NATIVE_INFO_ENTRY,
+  'eip155:59144/slip44:60': ETH_NATIVE_INFO_ENTRY,
+  'eip155:8453/slip44:60': ETH_NATIVE_INFO_ENTRY,
+  'eip155:42161/slip44:60': ETH_NATIVE_INFO_ENTRY,
+});
+
+/**
  * Mocks the v3 historical prices endpoint used by `useHistoricalPrices`.
  *
  * The v3 endpoint path is `/v3/historical-prices/{caipChainId}/{assetType}`,

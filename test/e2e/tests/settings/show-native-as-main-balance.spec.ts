@@ -6,6 +6,7 @@ import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 import PreferencesAndDisplaySettings from '../../page-objects/pages/settings/preferences-and-display-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
+import { getMockAssetsInfo, getMockAssetsPrice } from '../tokens/utils/mocks';
 import { login } from '../../page-objects/flows/login.flow';
 
 async function mockPriceApi(mockServer: Mockttp) {
@@ -75,6 +76,10 @@ describe('Settings: Show native token as main balance', function () {
         fixtures: new FixtureBuilderV2()
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .withShowNativeTokenAsMainBalanceDisabled()
+          .withAssetsController({
+            assetsInfo: getMockAssetsInfo(),
+            assetsPrice: getMockAssetsPrice(1700),
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
@@ -109,6 +114,10 @@ describe('Settings: Show native token as main balance', function () {
         fixtures: new FixtureBuilderV2()
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .withShowNativeTokenAsMainBalanceDisabled()
+          .withAssetsController({
+            assetsInfo: getMockAssetsInfo(),
+            assetsPrice: getMockAssetsPrice(1700),
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
