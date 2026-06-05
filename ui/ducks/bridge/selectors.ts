@@ -18,6 +18,7 @@ import {
   isCrossChain,
   RequestStatus,
   isNonEvmChainId,
+  isStellarChainId,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
@@ -274,6 +275,13 @@ export const getFromChains = createDeepEqualSelector(
           MultichainNetworks.TRON,
         ),
       ),
+    (state: BridgeAppState) =>
+      Boolean(
+        getInternalAccountBySelectedAccountGroupAndCaip(
+          state,
+          MultichainNetworks.STELLAR,
+        ),
+      ),
   ],
   (
     allBridgeableNetworks,
@@ -281,6 +289,7 @@ export const getFromChains = createDeepEqualSelector(
     hasSolanaAccount,
     hasBitcoinAccount,
     hasTronAccount,
+    hasStellarAccount,
   ) => {
     const allChains: Record<CaipChainId, BridgeNetwork> = {
       ...Object.fromEntries(
@@ -313,12 +322,16 @@ export const getFromChains = createDeepEqualSelector(
         ? hasBitcoinAccount
         : true;
       const shouldAddTron = isTronChainId(chainId) ? hasTronAccount : true;
+      const shouldAddStellar = isStellarChainId(chainId)
+        ? hasStellarAccount
+        : true;
       const matchedNetwork = allChains[chainId];
       if (
         [
           shouldAddSolana,
           shouldAddBitcoin,
           shouldAddTron,
+          shouldAddStellar,
           matchedNetwork,
         ].every(Boolean)
       ) {

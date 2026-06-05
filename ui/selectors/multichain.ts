@@ -435,6 +435,7 @@ const SYNTHETIC_MULTICHAIN_CHAIN_IDS: readonly MultichainNetworks[] = [
   MultichainNetworks.TRON,
   MultichainNetworks.TRON_NILE,
   MultichainNetworks.TRON_SHASTA,
+  MultichainNetworks.STELLAR,
 ];
 
 /**
