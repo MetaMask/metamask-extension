@@ -37,7 +37,7 @@ export const getAvatarTokenSrc = (
       return getNativeCurrencyForChain(opts.chainId);
     }
 
-    if (!opts.tokenImage && opts.assetId && !opts.isNative) {
+    if (!opts.tokenImage && opts.assetId) {
       return getAssetImageUrl(opts.assetId, opts.chainId) ?? '';
     }
 
