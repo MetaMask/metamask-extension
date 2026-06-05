@@ -269,6 +269,7 @@ env:
   - TRIGGERS_SERVICE_URL: https://trigger.api.cx.metamask.io
   - PUSH_NOTIFICATIONS_SERVICE_URL: https://push.api.cx.metamask.io
   - VAPID_KEY:
+  - COMPLIANCE_API_URL: https://compliance.api.cx.metamask.io
   - FIREBASE_API_KEY:
   - FIREBASE_AUTH_DOMAIN:
   - FIREBASE_STORAGE_BUCKET:
@@ -292,6 +293,7 @@ env:
   - QUICKNODE_SEI_URL: null
   - QUICKNODE_MONAD_URL: null
   - QUICKNODE_HYPEREVM_URL: null
+  - QUICKNODE_ARC_URL: null
 
   ###
   # API keys to 3rd party services
