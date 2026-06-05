@@ -328,9 +328,9 @@ describe('Home — renderOnboardingPopover', () => {
         completedOnboarding: true,
       });
 
-      const disagreeButton = getByText(
-        'onboardedMetametricsDisagree',
-      ).closest('button');
+      const disagreeButton = getByText('onboardedMetametricsDisagree').closest(
+        'button',
+      );
       const acceptButton = getByText('onboardedMetametricsAccept').closest(
         'button',
       );
