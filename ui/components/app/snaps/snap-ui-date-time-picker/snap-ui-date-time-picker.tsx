@@ -144,7 +144,10 @@ export const SnapUIDateTimePicker: FunctionComponent<
     setPickerValue(normalizeDate(date, type) as DateTime);
   };
 
+  const didAcceptRef = React.useRef(false);
+
   const handleAccept = (date: DateTime | null) => {
+    didAcceptRef.current = true;
     if (!date) {
       setCommitted(false);
       handleInputChange(name, null, form);
@@ -157,13 +160,24 @@ export const SnapUIDateTimePicker: FunctionComponent<
   };
 
   const handleOpen = useCallback(() => {
-    // Refresh "now" each time the dialog opens when nothing is committed yet
     if (!committed) {
       setPickerValue(normalizeDate(DateTime.now(), type) as DateTime);
     }
     setOpen(true);
   }, [committed, type]);
-  const handleClose = useCallback(() => setOpen(false), []);
+
+  const handleClose = useCallback(() => {
+    setOpen(false);
+    if (!didAcceptRef.current) {
+      const currentValue = getValue(name, form) as string | undefined | null;
+      const parsed = parseInitialIsoValue(currentValue, type);
+      setCommitted(parsed !== null);
+      setPickerValue(
+        parsed ?? (normalizeDate(DateTime.now(), type) as DateTime),
+      );
+    }
+    didAcceptRef.current = false;
+  }, [form, getValue, name, type]);
 
   const pickerSlotProps = useMemo(
     () => ({
