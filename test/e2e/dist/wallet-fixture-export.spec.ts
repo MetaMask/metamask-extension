@@ -157,7 +157,7 @@ describe('Wallet State', function () {
           driver,
           seedPhrase: E2E_SRP,
           password: WALLET_PASSWORD,
-          participateInMetaMetrics: true,
+          participateInMetaMetrics: false,
           dataCollectionForMarketing: true,
           needNavigateToNewPage: false,
         });
