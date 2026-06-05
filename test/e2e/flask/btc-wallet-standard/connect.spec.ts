@@ -4,12 +4,11 @@ import {
   availableConnectionTypes,
 } from '../../page-objects/pages/test-dapp-bitcoin';
 import { connectBitcoinTestDapp } from '../../page-objects/flows/bitcoin-dapp.flow';
-import AccountListPage from '../../page-objects/pages/account-list-page';
+import { switchToAccount } from '../../page-objects/flows/account-list.flow';
 import { WINDOW_TITLES } from '../../constants';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
 import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
-import Homepage from '../../page-objects/pages/home/homepage';
 import {
   account1Short,
   account2Short,
@@ -161,10 +160,7 @@ describe('Bitcoin Wallet Standard Connect - e2e tests', function () {
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
-          const homepage = new Homepage(driver);
-          await homepage.headerNavbar.openAccountMenu();
-          const accountListPage = new AccountListPage(driver);
-          await accountListPage.switchToAccount('Account 2');
+          await switchToAccount(driver, 'Account 2');
 
           await testDapp.switchTo();
 
