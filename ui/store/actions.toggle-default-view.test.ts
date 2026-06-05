@@ -44,7 +44,8 @@ const browserMock = browser as unknown as {
 };
 
 const middleware = [thunk];
-const mockStore = configureStore(middleware);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockStore = configureStore<any>(middleware);
 
 /**
  * Reads the `(preference, value)` pairs passed to the background `setPreference`
@@ -84,7 +85,7 @@ describe('toggleDefaultView', () => {
     mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
     const store = mockStore();
 
-    await store.dispatch(toggleDefaultView());
+    await store.dispatch(toggleDefaultView() as never);
 
     expect(browserMock.sidePanel.open).not.toHaveBeenCalled();
     expect(setPreferenceBackground).not.toHaveBeenCalled();
@@ -96,7 +97,7 @@ describe('toggleDefaultView', () => {
       mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
       const store = mockStore();
 
-      await store.dispatch(toggleDefaultView());
+      await store.dispatch(toggleDefaultView() as never);
 
       expect(setPreferenceCalls(setPreferenceBackground)).toContainEqual([
         'useSidePanelAsDefault',
@@ -112,7 +113,7 @@ describe('toggleDefaultView', () => {
       mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
       const store = mockStore();
 
-      await store.dispatch(toggleDefaultView());
+      await store.dispatch(toggleDefaultView() as never);
 
       expect(browserMock.sidePanel.open).toHaveBeenCalledWith({ windowId: 1 });
       expect(setPreferenceCalls(setPreferenceBackground)).toContainEqual([
@@ -134,7 +135,7 @@ describe('toggleDefaultView', () => {
       mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
       const store = mockStore();
 
-      await store.dispatch(toggleDefaultView());
+      await store.dispatch(toggleDefaultView() as never);
 
       expect(getContextsSpy).not.toHaveBeenCalled();
       expect(setPreferenceCalls(setPreferenceBackground)).toContainEqual([
@@ -151,7 +152,7 @@ describe('toggleDefaultView', () => {
       mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
       const store = mockStore();
 
-      await store.dispatch(toggleDefaultView());
+      await store.dispatch(toggleDefaultView() as never);
 
       expect(browserMock.sidePanel.open).toHaveBeenCalledWith({ windowId: 1 });
       expect(setPreferenceCalls(setPreferenceBackground)).not.toContainEqual([
@@ -166,7 +167,7 @@ describe('toggleDefaultView', () => {
       mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
       const store = mockStore();
 
-      await store.dispatch(toggleDefaultView());
+      await store.dispatch(toggleDefaultView() as never);
 
       expect(browserMock.sidePanel.open).not.toHaveBeenCalled();
       expect(setPreferenceBackground).not.toHaveBeenCalled();
