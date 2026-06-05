@@ -1156,6 +1156,95 @@ describe('Aggregated balance recomputation behavior', () => {
       (calculateBalanceForAllWallets as jest.Mock).mock.calls.length,
     ).toBeGreaterThan(1);
   });
+
+  it('merges native-ETH from accountsByChainId into tokenBalances when tokenBalances is empty', () => {
+    const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+    const nativeBalance = '0x15af1d78b58c40000'; // 25 ETH in wei
+
+    const stateWithAccountTracker: BalanceCalculationState = {
+      metamask: {
+        accountsByChainId: {
+          '0x1': {
+            // checksummed address (as AccountTracker stores it)
+            '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1': {
+              balance: nativeBalance,
+            },
+          },
+        },
+      } as unknown as BalanceCalculationState['metamask'],
+    };
+
+    selectBalanceForAllWallets(stateWithAccountTracker);
+
+    const callArgs = (calculateBalanceForAllWallets as jest.Mock).mock.calls[0];
+    const tokenBalancesState = callArgs[2] as {
+      tokenBalances: Record<string, Record<string, Record<string, string>>>;
+    };
+
+    // Address must be normalised to lowercase to match internal account format.
+    const lowerAddr = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
+    expect(tokenBalancesState.tokenBalances).toHaveProperty(lowerAddr);
+    expect(tokenBalancesState.tokenBalances[lowerAddr]).toHaveProperty('0x1');
+    expect(tokenBalancesState.tokenBalances[lowerAddr]['0x1'][ZERO_ADDRESS]).toBe(
+      nativeBalance,
+    );
+  });
+
+  it('does not overwrite existing tokenBalances native-ETH with accountsByChainId data', () => {
+    const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+    const existingBalance = '0x29a2241af62c0000'; // 3 ETH from TokenBalancesController
+    const accountTrackerBalance = '0x15af1d78b58c40000'; // 25 ETH from AccountTracker
+    const lowerAddr = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
+
+    const stateWithBoth: BalanceCalculationState = {
+      metamask: {
+        tokenBalances: {
+          [lowerAddr]: {
+            '0x1': {
+              [ZERO_ADDRESS]: existingBalance,
+            },
+          },
+        },
+        accountsByChainId: {
+          '0x1': {
+            '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1': {
+              balance: accountTrackerBalance,
+            },
+          },
+        },
+      } as unknown as BalanceCalculationState['metamask'],
+    };
+
+    selectBalanceForAllWallets(stateWithBoth);
+
+    const callArgs = (calculateBalanceForAllWallets as jest.Mock).mock.calls[0];
+    const tokenBalancesState = callArgs[2] as {
+      tokenBalances: Record<string, Record<string, Record<string, string>>>;
+    };
+
+    // Existing TokenBalancesController data must not be overwritten.
+    expect(tokenBalancesState.tokenBalances[lowerAddr]['0x1'][ZERO_ADDRESS]).toBe(
+      existingBalance,
+    );
+  });
+
+  it('returns original tokenBalances reference when accountsByChainId is empty', () => {
+    const tokenBalances = { '0xabc': { '0x1': { '0x000': '0x1' as const } } };
+
+    const state: BalanceCalculationState = {
+      metamask: {
+        tokenBalances,
+        accountsByChainId: {},
+      } as unknown as BalanceCalculationState['metamask'],
+    };
+
+    selectBalanceForAllWallets(state);
+
+    const callArgs = (calculateBalanceForAllWallets as jest.Mock).mock.calls[0];
+    const tokenBalancesState = callArgs[2] as { tokenBalances: unknown };
+    // Fast path – the original reference should be passed unchanged.
+    expect(tokenBalancesState.tokenBalances).toBe(tokenBalances);
+  });
 });
 
 describe('Balance change selectors', () => {

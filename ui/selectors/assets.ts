@@ -816,11 +816,79 @@ const selectAccountsStateForBalances = createSelector(
 );
 
 /**
+ * Zero address used as the canonical key for native EVM token entries in
+ * TokenBalancesController's `tokenBalances` map.
+ */
+const NATIVE_EVM_TOKEN_ADDRESS =
+  '0x0000000000000000000000000000000000000000' as Hex;
+
+/**
  * Wraps token balances for core balance computations.
+ *
+ * Also merges native-ETH balances from AccountTracker.accountsByChainId so
+ * that calculateBalanceForAllWallets can compute a fiat value via the
+ * CurrencyController fallback rate when isAssetsUnifyStateEnabled=false and
+ * TokenBalancesController.tokenBalances has not yet been populated by the
+ * poller (e.g. on first boot or in test fixtures).  Existing entries are
+ * never overwritten.
  */
 const selectTokenBalancesStateForBalances = createSelector(
-  [getTokenBalances],
-  (tokenBalances) => ({ tokenBalances }),
+  [getTokenBalances, getAccountTrackerControllerAccountsByChainId],
+  (tokenBalances, accountsByChainId) => {
+    // Fast path: no AccountTracker data to merge.
+    if (!accountsByChainId || Object.keys(accountsByChainId).length === 0) {
+      return { tokenBalances };
+    }
+
+    // Build a shallow-merged copy only when needed.
+    let result: typeof tokenBalances | null = null;
+
+    for (const [chainId, chainAccounts] of Object.entries(accountsByChainId)) {
+      if (!isObject(chainAccounts)) {
+        continue;
+      }
+      for (const [address, accountData] of Object.entries(
+        chainAccounts as Record<string, unknown>,
+      )) {
+        if (!isObject(accountData)) {
+          continue;
+        }
+        const rawBalance = (accountData as { balance?: string }).balance;
+        if (!rawBalance || isEmptyHexString(rawBalance)) {
+          continue;
+        }
+
+        // Normalize to lowercase to match internal account address format
+        // used as the key in tokenBalances by getTokenBalancesControllerTokenBalances.
+        const normalizedAddress = address.toLowerCase() as Hex;
+
+        // Only fill gaps – never overwrite data from TokenBalancesController
+        // or AssetsController (unified path).
+        if (
+          tokenBalances[normalizedAddress]?.[chainId]?.[
+            NATIVE_EVM_TOKEN_ADDRESS
+          ]
+        ) {
+          continue;
+        }
+
+        // Lazy-initialise the mutable copy the first time we need to write.
+        if (!result) {
+          result = { ...tokenBalances };
+        }
+
+        result[normalizedAddress] = {
+          ...(result[normalizedAddress] ?? {}),
+          [chainId]: {
+            ...(result[normalizedAddress]?.[chainId] ?? {}),
+            [NATIVE_EVM_TOKEN_ADDRESS]: rawBalance as Hex,
+          },
+        };
+      }
+    }
+
+    return { tokenBalances: result ?? tokenBalances };
+  },
 );
 
 /**
