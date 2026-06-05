@@ -1,5 +1,6 @@
 import {
   Box,
+  BoxBackgroundColor,
   BoxFlexDirection,
   Text,
   TextVariant,
@@ -289,6 +290,10 @@ export const PerpsView = () => {
   }, [isEligible, applyOrdersSnapshot, orders.length, t]);
 
   const hasPositions = positions.length > 0;
+  // ADR58 POC (DO NOT MERGE): detect an open ETH perps position to gate the debug banner
+  const hasEthPosition = positions.some(
+    (position) => position.symbol === 'ETH',
+  );
   // Only the single-position view can mirror a card-level RoE; for zero or
   // multiple positions, summary RoE remains the account aggregate.
   const singlePosition = positions.length === 1 ? positions[0] : undefined;
@@ -368,6 +373,20 @@ export const PerpsView = () => {
         <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
           {batchActionError}
         </Text>
+      ) : null}
+
+      {/* ADR58 POC (DO NOT MERGE): debug banner shown above positions when an open ETH position exists */}
+      {process.env.METAMASK_DEBUG && hasEthPosition ? (
+        <Box
+          backgroundColor={BoxBackgroundColor.ErrorDefault}
+          padding={2}
+          paddingInline={4}
+          data-testid="adr58-eth-banner"
+        >
+          <Text variant={TextVariant.BodyMd} color={TextColor.OverlayInverse}>
+            ADR58 POC: ETH POSITION DETECTED
+          </Text>
+        </Box>
       ) : null}
 
       <PerpsPositionsOrders
