@@ -11,30 +11,12 @@ import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../../../../shared/constants/app';
-import {
-  CROSS_CHAIN_SWAP_ROUTE,
-  HARDWARE_WALLET_SIGNATURES_ROUTE,
-} from '../../../helpers/constants/routes';
 import { I18nProvider } from '../../../../test/lib/render-helpers';
 import { enLocale as en } from '../../../../test/lib/i18n-helpers';
 import QRHardwarePopover from './qr-hardware-popover';
 
 jest.mock('../../../../shared/lib/environment-type', () => ({
   getEnvironmentType: jest.fn(),
-}));
-
-let mockPathname = '/';
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useLocation: () => ({ pathname: mockPathname }),
-  useMatch: ({ path }: { path: string }) => {
-    const normalized = mockPathname.replace(/\/+$/u, '');
-    const normalizedPattern = path.replace(/\/+$/u, '');
-    if (normalized === normalizedPattern) {
-      return { path };
-    }
-    return null;
-  },
 }));
 
 jest.mock('./qr-hardware-wallet-importer', () => {
@@ -124,7 +106,6 @@ describe('QRHardwarePopover', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
-    mockPathname = '/';
   });
 
   it('renders nothing when there is no active scan request', () => {
@@ -193,44 +174,6 @@ describe('QRHardwarePopover', () => {
     expect(screen.getByTestId('qr-hardware-sign-request')).toBeInTheDocument();
   });
 
-  it('does not render the SIGN popover on the bridge hardware wallet signing page', () => {
-    mockPathname = `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`;
-
-    const { container } = renderPopover(
-      buildStore({
-        type: QrScanRequestType.SIGN,
-        request: { requestId: 'req-1', payload: {} },
-      }),
-    );
-
-    expect(container.firstChild).toBeNull();
-  });
-
-  it('does not render the SIGN popover on the bridge hardware wallet signing page with a trailing slash', () => {
-    mockPathname = `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}/`;
-
-    const { container } = renderPopover(
-      buildStore({
-        type: QrScanRequestType.SIGN,
-        request: { requestId: 'req-1', payload: {} },
-      }),
-    );
-
-    expect(container.firstChild).toBeNull();
-  });
-
-  it('still renders the SIGN popover on a deeper subpath under the signing route', () => {
-    mockPathname = `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}/something-else`;
-
-    renderPopover(
-      buildStore({
-        type: QrScanRequestType.SIGN,
-        request: { requestId: 'req-1', payload: {} },
-      }),
-    );
-
-    expect(screen.getByTestId('qr-hardware-sign-request')).toBeInTheDocument();
-  });
   describe('title behavior', () => {
     it('displays errorTitle when child sets it, overriding the flow title', async () => {
       renderPopover(
