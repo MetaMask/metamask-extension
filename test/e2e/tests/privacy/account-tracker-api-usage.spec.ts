@@ -230,8 +230,8 @@ describe('Account Tracker API Usage', function () {
           { timeout: 30000, interval: 500 },
         );
 
-        const uiClosedTimestamp = Date.now();
         await driver.openNewURL('about:blank');
+        const uiClosedTimestamp = Date.now();
         // The delay is intentionally 20000, to ensure we cover at least 1 polling
         // loop of time for the block tracker.
         await driver.delay(DELAY_UNTIL_NEXT_POLL);
