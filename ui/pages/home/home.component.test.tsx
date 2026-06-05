@@ -317,3 +317,34 @@ describe('Home — checkLastVisitedPerpsRoute', () => {
     }
   });
 });
+
+describe('Home — renderOnboardingPopover', () => {
+  it('renders disagree button with mm-button-secondary class and accept button with mm-button-primary class', () => {
+    const { getByText } = renderHome({
+      participateInMetaMetrics: true,
+      dataCollectionForMarketing: null,
+      completedOnboarding: true,
+    });
+
+    const disagreeButton = getByText('onboardedMetametricsDisagree').closest('button');
+    const acceptButton = getByText('onboardedMetametricsAccept').closest('button');
+
+    expect(disagreeButton).toHaveClass('mm-button-secondary');
+    expect(acceptButton).toHaveClass('mm-button-primary');
+  });
+});
+
+describe('Home — renderPopover', () => {
+  it('renders dismiss button with mm-button-primary class', () => {
+    const { getByText } = renderHome({
+      isPopup: true,
+      connectedStatusPopoverHasBeenShown: false,
+      completedOnboarding: true,
+      setConnectedStatusPopoverHasBeenShown: jest.fn(),
+    });
+
+    const dismissButton = getByText('dismiss').closest('button');
+
+    expect(dismissButton).toHaveClass('mm-button-primary');
+  });
+});

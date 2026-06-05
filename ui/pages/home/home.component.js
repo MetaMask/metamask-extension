@@ -15,7 +15,6 @@ import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminde
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
-import Button from '../../components/ui/button';
 import Popover from '../../components/ui/popover';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import ConnectedSites from '../connected-sites';
@@ -34,6 +33,8 @@ import {
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
 import {
+  Button,
+  ButtonVariant,
   ButtonIcon,
   ButtonIconSize,
   IconName,
@@ -740,10 +741,10 @@ export default class Home extends PureComponent {
               gap={2}
               width={BlockSize.Full}
             >
-              <Button type="secondary" onClick={() => handleConsent(false)}>
+              <Button variant={ButtonVariant.Secondary} onClick={() => handleConsent(false)}>
                 {t('onboardedMetametricsDisagree')}
               </Button>
-              <Button type="primary" onClick={() => handleConsent(true)}>
+              <Button variant={ButtonVariant.Primary} onClick={() => handleConsent(true)}>
                 {t('onboardedMetametricsAccept')}
               </Button>
             </Box>
@@ -782,7 +783,7 @@ export default class Home extends PureComponent {
               {t('learnMoreUpperCase')}
             </a>
             <Button
-              type="primary"
+              variant={ButtonVariant.Primary}
               onClick={setConnectedStatusPopoverHasBeenShown}
             >
               {t('dismiss')}
