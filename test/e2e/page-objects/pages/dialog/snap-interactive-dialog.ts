@@ -16,9 +16,27 @@ const selectors = {
   exampleDateTimePicker: '.snap-ui-renderer__date-time-picker--datetime',
   exampleDatePicker: '.snap-ui-renderer__date-time-picker--date',
   exampleTimePicker: '.snap-ui-renderer__date-time-picker--time',
+  muiDialogRoot: '.MuiDialog-root',
   datePickerPreviousMonthButton:
     '.MuiPickersCalendarHeader-root .MuiPickersArrowSwitcher-root button:first-child',
+  datePickerCalendarSlideTransition: '.MuiDayCalendar-slideTransition',
+  pickerCalendarDay:
+    '.MuiPickersDay-root:not(.MuiPickersDay-hiddenDaySpacingFiller)',
+  pickerClockNumber: {
+    tag: 'span',
+    css: '.MuiClockNumber-root',
+  },
+  muiClock: '.MuiClock-clock',
+  pickerOkButton: {
+    text: 'OK',
+    tag: 'button',
+  },
 } satisfies Record<string, string | Record<string, string>>;
+
+const pickerClockNumberWithLabel = (label: string) => ({
+  ...selectors.pickerClockNumber,
+  text: label,
+});
 
 class SnapInteractiveDialog {
   private driver: Driver;
@@ -75,10 +93,8 @@ class SnapInteractiveDialog {
    * @param pickerSelector - Selector for the picker input element.
    */
   async #openPickerDialog(pickerSelector: string): Promise<void> {
-    const picker = await this.driver.findElement(pickerSelector);
-    await this.driver.scrollToElement(picker);
     await this.driver.clickElement(pickerSelector);
-    await this.driver.waitForSelector('.MuiDialog-root');
+    await this.driver.waitForSelector(selectors.muiDialogRoot);
   }
 
   /**
@@ -90,11 +106,11 @@ class SnapInteractiveDialog {
   async #selectCalendarDay(day: number): Promise<void> {
     await this.driver.clickElement(selectors.datePickerPreviousMonthButton);
     await this.driver.waitForElementToStopMoving(
-      '.MuiDayCalendar-slideTransition',
+      selectors.datePickerCalendarSlideTransition,
     );
     await this.driver.clickElement({
       text: String(day),
-      css: '.MuiPickersDay-root:not(.MuiPickersDay-hiddenDaySpacingFiller)',
+      css: selectors.pickerCalendarDay,
     });
   }
 
@@ -107,12 +123,8 @@ class SnapInteractiveDialog {
    */
   async #selectClockHour(hour: number): Promise<void> {
     const label = hour === 0 ? '00' : String(hour);
-    await this.driver.clickPoint(
-      { text: label, tag: 'span', css: '.MuiClockNumber-root' },
-      1,
-      1,
-    );
-    await this.driver.delay(300);
+    await this.driver.clickPoint(pickerClockNumberWithLabel(label), 1, 1);
+    await this.driver.waitForElementToStopMoving(selectors.muiClock);
   }
 
   /**
@@ -123,20 +135,18 @@ class SnapInteractiveDialog {
    */
   async #selectClockMinute(minute: number): Promise<void> {
     const label = String(minute).padStart(2, '0');
-    await this.driver.clickPoint(
-      { text: label, tag: 'span', css: '.MuiClockNumber-root' },
-      1,
-      1,
-    );
-    await this.driver.delay(300);
+    await this.driver.clickPoint(pickerClockNumberWithLabel(label), 1, 1);
+    await this.driver.waitForElementToStopMoving(selectors.muiClock);
   }
 
   /**
    * Confirms the current picker selection by clicking "OK".
    */
   async #confirmPicker(): Promise<void> {
-    await this.driver.clickElement({ text: 'OK', tag: 'button' });
-    await this.driver.delay(200);
+    await this.driver.clickElement(selectors.pickerOkButton);
+    await this.driver.waitForSelector(selectors.muiDialogRoot, {
+      state: 'detached',
+    });
   }
 
   /**
