@@ -9,7 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.34.0]
 
-
 ### Added
 
 - Added section to manage networks (#42944)
@@ -49,7 +48,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bumped bitcoin snap v1.11.0 (#42993)
 - chore: Replace `await-semaphore` with `async-mutex` (#42818)
 
-
 ## [13.33.0]
 
 ### Added
@@ -67,6 +65,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update toggle (#42714)
 - Show enforced-simulations protection state ("Cancelled" status + info banner) in transaction details and Activity v2; rename (#42368)
   `FORCE_ENABLE_SIMULATIONS` dev flag.
+
+### Changed
+
+- Show enforced-simulations protection state ("Cancelled" status + info banner) in transaction details and Activity v2; rename `FORCE_ENABLE_SIMULATIONS` dev flag (#42368)
+- Update toggle (#42714)
+- Patched assets controller 7.0.0 (#42666)
 
 ### Fixed
 
@@ -91,31 +95,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed open order price display to use correct number of decimals matching market price precision (#42405)
 - Prevented BTC swap when BTC network fees not retrieved (#42632)
 - Null (#42698)
-
-## **Related issues**
-
-Fixes:
-
-- Monad swap activity in asset details (#42669)
-
-### Changed
-
-- Show enforced-simulations protection state ("Cancelled" status + info banner) in transaction details and Activity v2; rename `FORCE_ENABLE_SIMULATIONS` dev flag (#42368)
-- Update toggle (#42714)
-- Patched assets controller 7.0.0 (#42666)
-
-### Fixed
-
 - Fixed a bug that stopped Solana and Tron tokens from being imported (#42854)
-- Fixed merging RPC and token list metadata on custom import (#42840)
-- Removed the number of promises waiting for unlock from the badge (#42825)
-- Fixed sponsored hardware wallet send max native (#42494)
-- Fixed a perps bug where market orders submitted with TP/SL left the Auto-close section empty and surfaced the TP/SL orders in the Orders section of the market detail page (#42661)
-- Fixed a bug that made only the Recent activity arrow tappable in Perps (#42676)
-- Fixed Perps withdraw validation and activity details (#42751)
-- Fixed Perps market token logos that were difficult to see in dark mode (#42689)
-- Fixed open order price display to use correct number of decimals matching market price precision (#42405)
-- Fixed BTC swap when BTC network fees not retrieved (#42632)
 - Fixed Monad swap activity in asset details (#42669)
 
 ## [13.32.1]
@@ -2473,8 +2453,7 @@ Fixes:
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.34.0...HEAD
-[13.34.0]: https://github.com/MetaMask/metamask-extension/compare/v13.32.1...v13.34.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.33.0...HEAD
+[13.34.0]: https://github.com/MetaMask/metamask-extension/compare/v13.33.0...v13.34.0
 [13.33.0]: https://github.com/MetaMask/metamask-extension/compare/v13.32.1...v13.33.0
 [13.32.1]: https://github.com/MetaMask/metamask-extension/compare/v13.32.0...v13.32.1
 [13.32.0]: https://github.com/MetaMask/metamask-extension/compare/v13.31.0...v13.32.0
