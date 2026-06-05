@@ -661,6 +661,7 @@ export const SCROLL_IMAGE_URL = './images/scroll.svg';
 export const NUMBERS_MAINNET_IMAGE_URL = './images/numbers-mainnet.svg';
 export const NUMBERS_TOKEN_IMAGE_URL = './images/numbers-token.png';
 export const SEI_IMAGE_URL = './images/sei.svg';
+export const SEI_NATIVE_TOKEN_IMAGE_URL = './images/sei-native.svg';
 export const NEAR_IMAGE_URL = './images/near.svg';
 export const B3_IMAGE_URL = './images/b3.svg';
 export const GRAVITY_ALPHA_MAINNET_IMAGE_URL = './images/gravity.svg';
@@ -1326,7 +1327,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.SCROLL]: SCROLL_IMAGE_URL,
   [CHAIN_IDS.SCROLL_SEPOLIA]: SCROLL_IMAGE_URL,
   [CHAIN_IDS.NUMBERS]: NUMBERS_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.SEI]: SEI_IMAGE_URL,
+  [CHAIN_IDS.SEI]: SEI_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.MONAD]: MONAD_IMAGE_URL,
   [CHAIN_IDS.NEAR]: NEAR_IMAGE_URL,
   [CHAIN_IDS.NEAR_TESTNET]: NEAR_IMAGE_URL,
