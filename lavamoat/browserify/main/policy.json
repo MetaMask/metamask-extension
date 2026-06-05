@@ -1446,7 +1446,8 @@
     },
     "@metamask/design-system-shared": {
       "packages": {
-        "@metamask/utils": true
+        "@metamask/utils": true,
+        "react": true
       }
     },
     "@metamask/eip-5792-middleware": {
