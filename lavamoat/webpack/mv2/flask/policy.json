@@ -2032,7 +2032,6 @@
       "globals": {
         "clearTimeout": true,
         "console.error": true,
-        "console.log": true,
         "console.warn": true,
         "performance.now": true,
         "setTimeout": true
@@ -3678,7 +3677,6 @@
     },
     "@trezor/connect-web>@trezor/connect-common": {
       "globals": {
-        "console.log": true,
         "console.warn": true,
         "localStorage.getItem": true,
         "localStorage.setItem": true,
@@ -3707,7 +3705,6 @@
         "chrome": true,
         "clearInterval": true,
         "clearTimeout": true,
-        "console.log": true,
         "console.warn": true,
         "document.body": true,
         "document.createElement": true,
@@ -3732,9 +3729,6 @@
       }
     },
     "@trezor/connect-web>@trezor/connect": {
-      "globals": {
-        "console.log": true
-      },
       "packages": {
         "@trezor/connect-web>@trezor/connect>@trezor/device-utils": true,
         "@trezor/connect-web>@trezor/connect>@trezor/protobuf": true,
@@ -3819,7 +3813,6 @@
       "globals": {
         "WebSocket": true,
         "clearTimeout": true,
-        "console.log": true,
         "setTimeout": true
       },
       "packages": {
