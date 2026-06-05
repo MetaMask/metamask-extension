@@ -1,4 +1,5 @@
 import { Browser } from 'selenium-webdriver';
+import { getCleanAppState } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import OnboardingMetricsPage from '../pages/onboarding/onboarding-metrics-page';
 import OnboardingPasswordPage from '../pages/onboarding/onboarding-password-page';
@@ -360,6 +361,14 @@ export async function onboardingMetricsFlow(
   }
 
   await onboardingMetricsPage.clickOnContinueButton();
+  // Wait for the metaMetricsId to be present so subsequent screens track events
+  // immediately and deterministically.
+  if (participateInMetaMetrics) {
+    await driver.wait(async () => {
+      const uiState = await getCleanAppState(driver);
+      return Boolean(uiState?.metamask?.metaMetricsId);
+    }, driver.timeout);
+  }
 }
 
 /**
