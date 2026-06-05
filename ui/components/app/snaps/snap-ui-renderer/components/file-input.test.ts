@@ -100,7 +100,7 @@ describe('SnapUIFileInput', () => {
     fireEvent.click(button);
 
     expect(submitRequestToBackground).toHaveBeenNthCalledWith(
-      3,
+      5,
       'handleSnapRequest',
       [
         {
@@ -120,7 +120,7 @@ describe('SnapUIFileInput', () => {
     );
 
     expect(submitRequestToBackground).toHaveBeenNthCalledWith(
-      4,
+      6,
       'handleSnapRequest',
       [
         {

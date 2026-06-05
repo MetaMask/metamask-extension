@@ -27,6 +27,7 @@ import {
   getPendingShieldCohort,
   getPendingRedirectRoute,
   getLastVisitedPerpsRoute,
+  getParticipateInMetaMetrics,
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/lib/selectors/networks';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
@@ -62,9 +63,7 @@ import {
   selectRewardsModalOpen,
 } from '../../ducks/rewards/selectors';
 import { selectShowPna25Modal } from '../../components/app/toast-master/selectors';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { getIsBrowserDeprecated } from '../../helpers/utils/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -91,7 +90,6 @@ const mapStateToProps = (state) => {
     seedPhraseBackedUp,
     connectedStatusPopoverHasBeenShown,
     dataCollectionForMarketing,
-    participateInMetaMetrics,
     firstTimeFlowType,
     completedOnboarding,
     forgottenPassword,
@@ -133,7 +131,7 @@ const mapStateToProps = (state) => {
     dataCollectionForMarketing,
     selectedAddress,
     totalUnapprovedCount,
-    participateInMetaMetrics,
+    participateInMetaMetrics: getParticipateInMetaMetrics(state),
     hasApprovalFlows: getApprovalFlows(state)?.length > 0,
     connectedStatusPopoverHasBeenShown,
     firstTimeFlowType,

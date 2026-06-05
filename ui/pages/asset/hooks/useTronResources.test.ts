@@ -19,7 +19,7 @@ jest.mock('@metamask/keyring-snap-client', () => ({
   })),
 }));
 
-jest.mock('../../../hooks/accounts/useMultichainWalletSnapClient', () => ({
+jest.mock('../../../hooks/accounts/useMultichainWalletSnapSender', () => ({
   MultichainWalletSnapSender: jest.fn(),
 }));
 

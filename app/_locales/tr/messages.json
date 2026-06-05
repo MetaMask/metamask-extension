@@ -1139,15 +1139,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "Donanım cüzdanınızda 2 işlemi onaylamanız gerekecek:"
   },
-  "bridgeCreateSolanaAccount": {
-    "message": "Solana hesabı oluştur"
-  },
-  "bridgeCreateSolanaAccountDescription": {
-    "message": "Solana ağına swap gerçekleştirmek için bir hesaba ve alıcı adresine ihtiyacınız var."
-  },
-  "bridgeCreateSolanaAccountTitle": {
-    "message": "Önce bir Solana hesabına ihtiyacınız olacak."
-  },
   "bridgeDetailsTitle": {
     "message": "Köprü bilgileri",
     "description": "Title for the modal showing details about a bridge transaction."
@@ -1422,9 +1413,6 @@
   },
   "bridgeSendLoading": {
     "message": "Kaynak zincirden gönderiliyor"
-  },
-  "bridgeSolanaAccountCreated": {
-    "message": "Solana hesabı oluşturuldu"
   },
   "bridgeStatusComplete": {
     "message": "Tamamlandı",

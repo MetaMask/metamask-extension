@@ -17,14 +17,13 @@ import {
   getMetaMetricsId,
   getParticipateInMetaMetrics,
   getIsSocialLoginFlow,
-  getSocialLoginType,
   getIsParticipateInMetaMetricsSet,
   getIsPasskeyFeatureAvailable,
+  getAccountTypeForOnboardingMetrics,
 } from '../../../selectors';
 import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsUserTrait,
@@ -76,7 +75,6 @@ export default function CreatePassword({
   const currentKeyring = useSelector(getCurrentKeyring);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
-  const socialLoginType = useSelector(getSocialLoginType);
   const isWalletResetInProgress = useSelector(getIsWalletResetInProgress);
 
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
@@ -84,6 +82,7 @@ export default function CreatePassword({
     getIsParticipateInMetaMetricsSet,
   );
   const metametricsId = useSelector(getMetaMetricsId);
+  const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
   const base64MetametricsId = Buffer.from(metametricsId ?? '').toString(
     'base64',
   );
@@ -172,18 +171,6 @@ export default function CreatePassword({
     })();
   }, [isSocialLoginFlow, validateSocialLoginAuthenticatedState]);
 
-  // Helper function to determine account type for analytics
-  const getAccountType = (
-    baseType: MetaMetricsEventAccountType,
-    includesSocialLogin: boolean = false,
-  ) => {
-    if (includesSocialLogin && socialLoginType) {
-      const socialProvider = String(socialLoginType).toLowerCase();
-      return `${baseType}_${socialProvider}`;
-    }
-    return baseType;
-  };
-
   const handleWalletImport = async (password: string) => {
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
@@ -213,10 +200,7 @@ export default function CreatePassword({
         // eslint-disable-next-line @typescript-eslint/naming-convention
         new_wallet: false,
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: getAccountType(
-          MetaMetricsEventAccountType.Imported,
-          isSocialLoginFlow,
-        ),
+        account_type: accountTypeForMetrics,
       },
     });
 
@@ -238,10 +222,7 @@ export default function CreatePassword({
       event: MetaMetricsEventName.WalletCreationAttempted,
       properties: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: getAccountType(
-          MetaMetricsEventAccountType.Default,
-          isSocialLoginFlow,
-        ),
+        account_type: accountTypeForMetrics,
       },
     });
 
@@ -260,10 +241,7 @@ export default function CreatePassword({
         // eslint-disable-next-line @typescript-eslint/naming-convention
         biometrics_enabled: false,
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: getAccountType(
-          MetaMetricsEventAccountType.Default,
-          isSocialLoginFlow,
-        ),
+        account_type: accountTypeForMetrics,
       },
     });
 
@@ -276,10 +254,7 @@ export default function CreatePassword({
         // eslint-disable-next-line @typescript-eslint/naming-convention
         new_wallet: true,
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: getAccountType(
-          MetaMetricsEventAccountType.Default,
-          isSocialLoginFlow,
-        ),
+        account_type: accountTypeForMetrics,
       },
     });
     if (isSocialLoginFlow) {
