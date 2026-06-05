@@ -137,7 +137,6 @@ export const SnapUIDateTimePicker: FunctionComponent<
   const handleChange = (date: DateTime | null) => {
     if (!date) {
       setCommitted(false);
-      handleInputChange(name, null, form);
       setPickerValue(normalizeDate(DateTime.now(), type) as DateTime);
       return;
     }
