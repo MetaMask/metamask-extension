@@ -118,6 +118,16 @@ export type ActivityListItem =
       }
     >
   | ActivityData<
+      'perpsWithdrawFunds',
+      {
+        fiat?: {
+          amount: string;
+          currency?: string;
+        };
+        token?: TokenAmount;
+      }
+    >
+  | ActivityData<
       'claimMusdBonus',
       {
         token?: TokenAmount;

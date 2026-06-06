@@ -11,19 +11,9 @@ import {
   SIGNING_PSUEDO_STATUS,
 } from '../../components/app/transaction-status-label';
 
-const hidePlusSignActivityTypes = new Set<ActivityListItem['type']>([
-  'approveSpendingCap',
-  'increaseSpendingCap',
-  'revokeSpendingCap',
-]);
-
 export type ActivityListFilter =
   | { assetId: CaipAssetType }
   | { networks: string[] };
-
-export function shouldShowPlusSign(activityType: ActivityListItem['type']) {
-  return !hidePlusSignActivityTypes.has(activityType);
-}
 
 export function activityMatchesAssetId(
   item: ActivityListItem,
