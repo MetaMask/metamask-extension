@@ -4,7 +4,7 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
-import { StatusTypes } from '@metamask/bridge-controller';
+import { isCrossChain, StatusTypes } from '@metamask/bridge-controller';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import type { TransactionPayControllerState } from '@metamask/transaction-pay-controller';
 import type { Transaction as KeyringTransaction } from '@metamask/keyring-api';
@@ -125,6 +125,28 @@ export const selectProtectedLocalTransactions = createSelector(
   },
 );
 
+export const selectLocalTransactionsByHash = createSelector(
+  selectLocalTransactions,
+  (transactionGroups) => {
+    const transactionsByHash = new Map<string, TransactionGroup>();
+
+    for (const transactionGroup of transactionGroups) {
+      for (const transaction of [
+        transactionGroup.primaryTransaction,
+        transactionGroup.initialTransaction,
+      ]) {
+        const hash = transaction.hash?.toLowerCase();
+
+        if (hash) {
+          transactionsByHash.set(hash, transactionGroup);
+        }
+      }
+    }
+
+    return transactionsByHash;
+  },
+);
+
 export const selectNonEvmTransactionsForActivity = createSelector(
   [
     selectCurrentAccountNonEvmTransactions,
@@ -165,6 +187,23 @@ export const selectNonEvmActivityItems = createSelector(
         transaction: patchKeyringTransaction(transaction, assetsMetadata),
       }),
     ),
+);
+
+export const selectNonEvmActivityItemsById = createSelector(
+  selectNonEvmActivityItems,
+  (items) => {
+    const itemsById = new Map<string, (typeof items)[number]>();
+
+    for (const item of items) {
+      const id = item.data.hash?.toLowerCase();
+
+      if (id) {
+        itemsById.set(id, item);
+      }
+    }
+
+    return itemsById;
+  },
 );
 
 function patchKeyringTransaction(
@@ -282,19 +321,29 @@ function getSwapTokens(bridgeHistoryItem?: BridgeHistoryItem) {
 }
 
 function getBridgeActivityStatus(bridgeHistoryItem?: BridgeHistoryItem) {
-  if (bridgeHistoryItem?.status.status === StatusTypes.FAILED) {
-    return 'failed' as const;
+  if (!bridgeHistoryItem) {
+    return undefined;
   }
 
-  if (bridgeHistoryItem?.status.status === StatusTypes.COMPLETE) {
-    return 'success' as const;
+  const {
+    quote,
+    status: { status },
+  } = bridgeHistoryItem;
+
+  if (status === StatusTypes.FAILED) {
+    return 'failed';
+  }
+
+  if (status === StatusTypes.COMPLETE) {
+    return 'success';
   }
 
   if (
-    bridgeHistoryItem?.status.status === StatusTypes.PENDING ||
-    bridgeHistoryItem?.status.status === StatusTypes.SUBMITTED
+    // Same-chain swaps can leave bridge status pending after the local tx confirms
+    isCrossChain(quote.srcChainId, quote.destChainId) &&
+    (status === StatusTypes.PENDING || status === StatusTypes.SUBMITTED)
   ) {
-    return 'pending' as const;
+    return 'pending';
   }
 
   return undefined;

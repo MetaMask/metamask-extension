@@ -3,9 +3,15 @@ import {
   TransactionStatus as KeyringTransactionStatus,
   TransactionType as KeyringTransactionType,
 } from '@metamask/keyring-api';
-import type { ActivityListItem, Status, TokenAmount } from '../types';
+import type {
+  ActivityFee,
+  ActivityListItem,
+  Status,
+  TokenAmount,
+} from '../types';
 
 type Movement = Transaction['from'][number];
+type Fee = Transaction['fees'][number];
 type FungibleAsset = Extract<
   NonNullable<Movement['asset']>,
   { fungible: true }
@@ -54,6 +60,29 @@ function getToken(
     assetId: movement.asset.type,
     direction,
   };
+}
+
+function getFee(fee: Fee): ActivityFee | undefined {
+  const { asset } = fee;
+
+  if (asset.fungible !== true) {
+    return undefined;
+  }
+
+  return {
+    type: fee.type,
+    amount: asset.amount,
+    symbol: asset.unit,
+    assetId: asset.type,
+  };
+}
+
+function getFees(transaction: Transaction) {
+  return transaction.fees.flatMap((fee) => {
+    const mappedFee = getFee(fee);
+
+    return mappedFee ? [mappedFee] : [];
+  });
 }
 
 function aggregateMovementAmount(movements: Movement[]) {
@@ -113,6 +142,7 @@ export function mapKeyringTransaction({
   if (transaction.type === KeyringTransactionType.Send) {
     const fromToken = getToken(transaction.from, 'out');
     let token = fromToken;
+    const fees = getFees(transaction);
 
     // Bitcoin transaction.from can be empty, resulting in no token avatar or send amount displayed.
     // Workaround: use the same aggregated to-asset fallback strategy as tx details modal.
@@ -139,11 +169,14 @@ export function mapKeyringTransaction({
         from,
         to,
         token,
+        ...(fees.length ? { fees } : {}),
       },
     };
   }
 
   if (transaction.type === KeyringTransactionType.Receive) {
+    const fees = getFees(transaction);
+
     return {
       type: 'receive',
       chainId,
@@ -155,6 +188,7 @@ export function mapKeyringTransaction({
         from,
         to,
         token: getToken(transaction.to, 'in'),
+        ...(fees.length ? { fees } : {}),
       },
     };
   }

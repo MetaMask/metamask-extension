@@ -56,9 +56,16 @@ export type TokenAmount = {
   amount?: string;
   decimals?: number;
   symbol?: string;
-  // CAIP-19 asset id (from adapters)
   assetId?: string;
   direction: 'in' | 'out';
+};
+
+export type ActivityFee = {
+  type: string;
+  amount?: string;
+  decimals?: number;
+  symbol?: string;
+  assetId?: string;
 };
 
 type ActivityData<Type extends ActivityKind, Data> = {
@@ -67,11 +74,6 @@ type ActivityData<Type extends ActivityKind, Data> = {
   status: Status;
   timestamp: number;
   isEarliestNonce?: boolean;
-  /* Used by legacy details modals. Interim until redesigned details are implemented */
-  raw?:
-    | { type: 'apiEvmTransaction'; data: V1TransactionByHashResponse }
-    | { type: 'keyringTransaction'; data: Transaction }
-    | { type: 'localTransaction'; data: TransactionGroup };
   data: Data & {
     hash?: string;
   };
@@ -84,6 +86,7 @@ export type ActivityListItem =
         from: string;
         to: string;
         token?: TokenAmount;
+        fees?: ActivityFee[];
       }
     >
   | ActivityData<

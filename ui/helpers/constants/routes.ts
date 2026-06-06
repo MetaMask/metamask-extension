@@ -134,6 +134,7 @@ export const ENCRYPTION_PUBLIC_KEY_REQUEST_PATH =
   '/encryption-public-key-request';
 export const CROSS_CHAIN_SWAP_ROUTE = '/cross-chain';
 export const CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE = '/cross-chain/tx-details';
+export const TX_DETAILS_ROUTE = '/tx';
 export const PREPARE_SWAP_ROUTE = '/swaps/prepare-bridge-page';
 export const SWAP_PATH = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
 export const AWAITING_SIGNATURES_ROUTE = '/swaps/awaiting-signatures';
@@ -186,6 +187,11 @@ export const REWARDS_ROUTE = '/rewards';
 export const ROUTES = [
   { path: DEFAULT_ROUTE, label: 'Home', trackInAnalytics: true },
   { path: '', label: 'Home', trackInAnalytics: true }, // "" is an alias for the Home route
+  {
+    path: `${TX_DETAILS_ROUTE}/:caipChainId/:txIdentifier`,
+    label: 'Transaction Details',
+    trackInAnalytics: true,
+  },
   { path: UNLOCK_ROUTE, label: 'Unlock Page', trackInAnalytics: true },
   { path: LOCK_ROUTE, label: 'Lock Page', trackInAnalytics: true },
   { path: REWARDS_ROUTE, label: 'Rewards Page', trackInAnalytics: true },
