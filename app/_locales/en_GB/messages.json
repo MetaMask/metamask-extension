@@ -3892,6 +3892,12 @@
   "gasPriceFetchFailed": {
     "message": "Gas price estimation failed due to network error."
   },
+  "gasSponsorshipModalTitle": {
+    "message": "Network fee"
+  },
+  "gasSponsorshipOptOutTooltip": {
+    "message": "MetaMask covers the network fee for this transaction. This includes a one-time smart account activation."
+  },
   "gasSponsorshipReserveBalanceWarning": {
     "message": "This specific network requires maintaining a reserve of $1 $2 in your account.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
@@ -4430,6 +4436,9 @@
   },
   "includes": {
     "message": "Includes"
+  },
+  "includesSmartAccountActivation": {
+    "message": "Includes smart account activation"
   },
   "includesXTransactions": {
     "message": "Includes $1 transactions"
