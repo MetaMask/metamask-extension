@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 import {
   applyDisplaySign,
-  getHumanReadableTokenAmount,
   getDisplaySignPrefix,
+  getHumanReadableTokenAmount,
 } from '../../../../shared/lib/activity/fiat';
 import type { TokenAmount } from '../../../../shared/lib/activity/types';
 import { useFormatters } from '../../../hooks/useFormatters';
@@ -11,10 +11,7 @@ export function useFormatTokenAmount() {
   const { formatTokenAmount } = useFormatters();
 
   return useCallback(
-    (
-      token: TokenAmount | undefined,
-      options: { showPlus?: boolean } = {},
-    ) => {
+    (token: TokenAmount | undefined, options: { showPlus?: boolean } = {}) => {
       if (!token) {
         return undefined;
       }
