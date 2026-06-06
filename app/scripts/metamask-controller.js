@@ -3050,7 +3050,6 @@ export default class MetamaskController extends EventEmitter {
       getLedgerPublicKey: this.getLedgerPublicKey.bind(this),
       getLedgerAppConfiguration: this.getLedgerAppConfiguration.bind(this),
       getLedgerMode: this.getLedgerMode.bind(this),
-      getLedgerDeviceState: this.getLedgerDeviceState.bind(this),
       getTrezorFeatures: this.getTrezorFeatures.bind(this),
 
       // qr hardware devices
@@ -5626,26 +5625,6 @@ export default class MetamaskController extends EventEmitter {
     return state.remoteFeatureFlags?.ledgerDmkBridge
       ? 'bridge'
       : 'legacy';
-  }
-
-  /**
-   * Returns cached Ledger device state (connection status + current app name)
-   * pushed from the offscreen handler. Allows the UI to poll for app-state
-   * changes without a round-trip to the device.
-   *
-   * @returns {{ connected: boolean, appName: string | null }}
-   */
-  async getLedgerDeviceState() {
-    return await this.#withKeyringForDevice(
-      { name: HardwareDeviceNames.ledger },
-      async (keyring) => {
-        if (typeof keyring.bridge.getDeviceState === 'function') {
-          return keyring.bridge.getDeviceState();
-        }
-        // Legacy bridge doesn't cache device state.
-        return { connected: keyring.bridge.isDeviceConnected, appName: null };
-      },
-    );
   }
 
   /**

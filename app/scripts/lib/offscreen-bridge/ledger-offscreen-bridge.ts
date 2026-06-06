@@ -10,7 +10,6 @@ import {
 import { TransportStatusError } from '@ledgerhq/errors';
 import {
   LedgerAction,
-  OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../../../shared/constants/offscreen-communication';
 
@@ -37,18 +36,7 @@ type IFrameMessage<TAction extends LedgerAction> = {
  * communicates directly with the Ledger device via WebHID.
  */
 export class LedgerOffscreenBridge implements LedgerBridge<LedgerOffscreenBridgeOptions> {
-  isDeviceConnected = false;
-
   init() {
-    chrome.runtime.onMessage.addListener((msg) => {
-      if (
-        msg.target === OffscreenCommunicationTarget.extension &&
-        msg.event === OffscreenCommunicationEvents.ledgerDeviceConnect
-      ) {
-        this.isDeviceConnected = true;
-      }
-    });
-
     return Promise.resolve();
   }
 

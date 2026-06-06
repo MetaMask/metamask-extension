@@ -151,10 +151,6 @@ export class LedgerDMKBridgeHandler {
 
   private sessionStateSubscription: Subscription | null = null;
 
-  private appStateSubscription: Subscription | null = null;
-
-  private lastAppName: string | null = null;
-
   /**
    * Lazily creates and caches the `LedgerDMKBridge` instance.
    * Deduplicates concurrent calls via `bridgePromise`.
@@ -229,10 +225,6 @@ export class LedgerDMKBridgeHandler {
     // device is unplugged.
     this.setupDisconnectMonitoring(bridge);
 
-    // Push ETH app open/close events to the background so the UI can react
-    // proactively (option 2: proactive event detection).
-    this.setupAppStateMonitoring(bridge);
-
     return bridge;
   }
 
@@ -256,36 +248,6 @@ export class LedgerDMKBridgeHandler {
         }
       },
     });
-  }
-
-  /**
-   * Subscribes to rich session state to detect ETH app open/close transitions.
-   * Pushes `ledgerAppStateChanged` events to the background so the
-   * `LedgerOffscreenBridge` can cache the latest app state for UI polling.
-   *
-   * @param bridge - The DMK bridge instance.
-   */
-  private setupAppStateMonitoring(bridge: LedgerDMKBridge): void {
-    if (this.appStateSubscription) {
-      this.appStateSubscription.unsubscribe();
-    }
-    if (!this.sessionId) {
-      return;
-    }
-
-    this.appStateSubscription = bridge.dmk
-      .getDeviceSessionState({ sessionId: this.sessionId })
-      .subscribe((state: any) => {
-        const appName = state?.currentApp?.name ?? null;
-        if (appName !== this.lastAppName) {
-          this.lastAppName = appName;
-          chrome.runtime.sendMessage({
-            target: OffscreenCommunicationTarget.extension,
-            event: OffscreenCommunicationEvents.ledgerAppStateChanged,
-            payload: { appName },
-          });
-        }
-      });
   }
 
   /**
@@ -555,11 +517,6 @@ export class LedgerDMKBridgeHandler {
       this.sessionStateSubscription.unsubscribe();
       this.sessionStateSubscription = null;
     }
-    if (this.appStateSubscription) {
-      this.appStateSubscription.unsubscribe();
-      this.appStateSubscription = null;
-    }
-    this.lastAppName = null;
     if (this.bridge) {
       try {
         await this.bridge.destroy();
