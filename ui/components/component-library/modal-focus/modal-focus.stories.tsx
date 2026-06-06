@@ -5,8 +5,8 @@ import Box from '../../ui/box';
 
 import {
   BorderColor,
-  DISPLAY,
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
 } from '../../../helpers/constants/design-system';
 
 import { ModalFocus } from './modal-focus';
@@ -44,8 +44,8 @@ const Template: ComponentStory<typeof ModalFocus> = (args) => {
           <Box
             padding={4}
             borderColor={BorderColor.borderDefault}
-            display={DISPLAY.FLEX}
-            flexDirection={FLEX_DIRECTION.COLUMN}
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
             gap={4}
           >
             {args.children}
@@ -79,8 +79,8 @@ export const InitialFocusRef = (args) => {
           <Box
             padding={4}
             borderColor={BorderColor.borderDefault}
-            display={DISPLAY.FLEX}
-            flexDirection={FLEX_DIRECTION.COLUMN}
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
             gap={4}
           >
             <input />
@@ -103,7 +103,7 @@ export const FinalFocusRef = (args) => {
   const [open, setOpen] = React.useState(false);
   return (
     <>
-      <Box display={DISPLAY.FLEX} gap={4}>
+      <Box display={Display.Flex} gap={4}>
         <button onClick={() => setOpen(true)}>Open</button>
         <input placeholder="Focus will return here" ref={ref} />
       </Box>
@@ -112,8 +112,8 @@ export const FinalFocusRef = (args) => {
           <Box
             padding={4}
             borderColor={BorderColor.borderDefault}
-            display={DISPLAY.FLEX}
-            flexDirection={FLEX_DIRECTION.COLUMN}
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
             gap={4}
           >
             <p>Focus will be returned to the input once closed</p>
@@ -138,8 +138,8 @@ export const RestoreFocus = (args) => {
           <Box
             padding={4}
             borderColor={BorderColor.borderDefault}
-            display={DISPLAY.FLEX}
-            flexDirection={FLEX_DIRECTION.COLUMN}
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
             gap={4}
           >
             <p>Focus will be restored to the open button once closed</p>
