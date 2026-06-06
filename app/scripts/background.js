@@ -1297,7 +1297,7 @@ export async function loadStateFromPersistence(backup) {
  * @param {number} [frameId] - The frame ID from chrome.runtime.MessageSender (0 = top-level, >0 = iframe)
  */
 function emitDappViewedMetricEvent(origin, mainFrameOrigin, frameId) {
-  const { metaMetricsId } = controller.metaMetricsController.state;
+  const { metaMetricsId } = controller.getState();
   if (!shouldEmitDappViewedEvent(metaMetricsId)) {
     return;
   }
@@ -1391,11 +1391,10 @@ function trackDappView(remotePort) {
  * @param {string} environmentType - The environment type where the app is opening
  */
 function emitAppOpenedMetricEvent(environmentType) {
-  const { metaMetricsId, participateInMetaMetrics } =
-    controller.metaMetricsController.state;
+  const { participateInMetaMetrics } = controller.getState();
 
   // Skip if user hasn't opted into metrics
-  if (metaMetricsId === null && !participateInMetaMetrics) {
+  if (!participateInMetaMetrics) {
     return;
   }
 
@@ -2178,20 +2177,16 @@ const addAppInstalledEvent = async (installAttributionPromise) => {
     properties: eventProperties,
   };
 
-  const { participateInMetaMetrics, metaMetricsId } =
-    controller.metaMetricsController.state;
+  const { participateInMetaMetrics, metaMetricsId } = controller.getState();
 
   if (participateInMetaMetrics === false) {
     // We can skip tracking completely if they've already explicitly opted out
     return;
   }
 
-  // Track immediately only once consent is active and the controller has a
-  // persisted MetaMetrics ID. Otherwise keep the event buffered for the opt-in
-  // flush path so it is not dropped.
-  // No need to call getMetaMetricsId() first: setParticipateInMetaMetrics()
-  // generates and persists the ID before setting participation to true, and this
-  // install handler should not create a metrics ID outside that consent path.
+  // Track immediately only once consent is active and the compatibility
+  // MetaMetrics ID is available. Otherwise keep the event buffered for the
+  // opt-in flush path so it is not dropped.
   if (participateInMetaMetrics === true && metaMetricsId) {
     controller.metaMetricsController.trackEvent(appInstalledEvent);
   } else {

@@ -237,6 +237,7 @@ function isMultichainRequestMethod(method) {
  * tracked within the globalRateLimitTimeout time window.
  * @param {AppStateController} [opts.appStateController]
  * @param {MetaMetricsController} [opts.metaMetricsController]
+ * @param {AnalyticsController} [opts.analyticsController]
  * @returns {Function}
  */
 
@@ -251,6 +252,7 @@ export default function createRPCMethodTrackingMiddleware({
   snapAndHardwareMessenger,
   appStateController,
   metaMetricsController,
+  analyticsController,
   getHDEntropyIndex,
 }) {
   return async function rpcMethodTrackingMiddleware(
@@ -303,11 +305,11 @@ export default function createRPCMethodTrackingMiddleware({
       globalRateLimitMaxAmount > 0 &&
       globalRateLimitCount >= globalRateLimitMaxAmount;
 
-    // Get the participateInMetaMetrics state to determine if we should track
+    // Get the optedIn state to determine if we should track
     // anything. This is extra redundancy because this value is checked in
-    // the metametrics controller's trackEvent method as well.
-    const userParticipatingInMetaMetrics =
-      metaMetricsController.state.participateInMetaMetrics === true;
+    // the analytics controller's trackEvent method as well.
+    const { optedIn } = analyticsController.state;
+    const userParticipatingInMetaMetrics = optedIn === true;
 
     // Get the event type, each of which has APPROVED, REJECTED and REQUESTED
     // keys for the various events in the flow.
