@@ -47,6 +47,11 @@ const FILE_SOURCES: Array<{
     file: 'shared/constants/smartTransactions.ts',
     exportName: 'SMART_TRANSACTIONS_ALLOWED_RPC_HOSTS_FLAG',
   },
+  {
+    key: 'ENABLE_DMK_FEATURE_FLAG',
+    file: 'shared/lib/hardware-wallets/feature-flags.ts',
+    exportName: 'ENABLE_DMK_FEATURE_FLAG',
+  },
 ];
 
 /**

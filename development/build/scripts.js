@@ -981,20 +981,6 @@ function setupBundlerDefaults(
             './**/node_modules/@ledgerhq/hw-transport',
             './**/node_modules/@ledgerhq/hw-app-eth',
             './**/node_modules/@ledgerhq/devices',
-            // Ledger DMK (Device Management Kit) — ESM-only, needs babelify ESM→CJS
-            './**/node_modules/@ledgerhq/device-management-kit',
-            './**/node_modules/@ledgerhq/device-signer-kit-ethereum',
-            './**/node_modules/@ledgerhq/device-transport-kit-web-hid',
-            './**/node_modules/@ledgerhq/context-module',
-            './**/node_modules/@ledgerhq/signer-utils',
-            './**/node_modules/@ledgerhq/live-env',
-            // DMK transitive deps with modern syntax (private class methods, etc.)
-            './**/node_modules/xstate',
-            './**/node_modules/@inversifyjs/common',
-            './**/node_modules/@inversifyjs/container',
-            './**/node_modules/@inversifyjs/core',
-            './**/node_modules/@inversifyjs/prototype-utils',
-            './**/node_modules/@inversifyjs/reflect-metadata-utils',
             // jose (via @segment/analytics-node) ships ESM under "browser". Transpile for browserify.
             './**/node_modules/jose',
           ],

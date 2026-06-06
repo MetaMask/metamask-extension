@@ -113,6 +113,18 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  enableDmk: {
+    name: 'enableDmk',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: {
+      enabled: false,
+      featureVersion: null,
+      minimumVersion: null,
+    },
+    status: FeatureFlagStatus.Active,
+  },
+
   enableMultichainAccounts: {
     name: 'enableMultichainAccounts',
     type: FeatureFlagType.Remote,

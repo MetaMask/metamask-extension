@@ -526,7 +526,7 @@
         "mockttp>@peculiar/asn1-schema": true,
         "mockttp>@peculiar/asn1-x509": true,
         "mockttp>@peculiar/x509>pvtsutils": true,
-        "@ledgerhq/context-module>reflect-metadata": true,
+        "mockttp>@peculiar/x509>reflect-metadata": true,
         "tslib": true,
         "mockttp>@peculiar/x509>tsyringe": true
       }
@@ -2426,7 +2426,7 @@
         "micromatch>picomatch": true
       }
     },
-    "@ledgerhq/context-module>reflect-metadata": {
+    "mockttp>@peculiar/x509>reflect-metadata": {
       "globals": {
         "crypto": true,
         "msCrypto": true
@@ -2500,7 +2500,7 @@
         "process.nextTick": true
       }
     },
-    "rxjs": {
+    "wait-on>rxjs": {
       "globals": {
         "cancelAnimationFrame": true,
         "clearInterval": true,
@@ -2508,11 +2508,6 @@
         "performance": true,
         "requestAnimationFrame": true,
         "setInterval.apply": true,
-        "setTimeout.apply": true
-      }
-    },
-    "wait-on>rxjs": {
-      "globals": {
         "setTimeout": true
       }
     },
@@ -2557,7 +2552,6 @@
         "sass-embedded>@bufbuild/protobuf": true,
         "sass-embedded>buffer-builder": true,
         "sass-embedded>immutable": true,
-        "rxjs": true,
         "wait-on>rxjs": true,
         "mocha>supports-color": true,
         "sass-embedded>varint": true

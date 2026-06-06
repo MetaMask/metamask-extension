@@ -75,17 +75,18 @@ requestHardwareWalletPermission.mockImplementation(
 getConnectedDevices.mockResolvedValue([]);
 subscribeToWebHidEvents.mockReturnValue(jest.fn());
 subscribeToWebUsbEvents.mockReturnValue(jest.fn());
-subscribeToHardwareWalletEvents.mockReturnValue(jest.fn());
-isRestrictedCameraEnvironment.mockReturnValue(false);
-redirectToFullscreen.mockImplementation(() => undefined);
-handleContinueWithPermissionCheck.mockImplementation(
-  async (
-    onRetry: () => Promise<void>,
-    _redirectQueryString?: string | null,
-  ) => {
-    await onRetry();
-  },
-);
+  subscribeToHardwareWalletEvents.mockReturnValue(jest.fn());
+  isRestrictedCameraEnvironment.mockReturnValue(false);
+  redirectToFullscreen.mockImplementation(() => undefined);
+  handleContinueWithPermissionCheck.mockImplementation(
+    async (
+      onRetry: () => Promise<void>,
+      _redirectQueryString?: string | null,
+    ) => {
+      await onRetry();
+    },
+  );
+};
 
 // Reset all mocks to defaults
 export const resetwebConnectionUtilsMocks = () => {
