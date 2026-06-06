@@ -3042,6 +3042,7 @@ export default class MetamaskController extends EventEmitter {
       getAppNameAndVersion: this.getAppNameAndVersion.bind(this),
       getLedgerPublicKey: this.getLedgerPublicKey.bind(this),
       getLedgerAppConfiguration: this.getLedgerAppConfiguration.bind(this),
+      getLedgerMode: this.getLedgerMode.bind(this),
       getTrezorFeatures: this.getTrezorFeatures.bind(this),
 
       // qr hardware devices
@@ -5605,6 +5606,20 @@ export default class MetamaskController extends EventEmitter {
       { name: HardwareDeviceNames.ledger },
       async (keyring) => await keyring.bridge.getAppConfiguration(),
     );
+  }
+
+  /**
+   * Get the active Ledger handler mode based on the remote feature flag.
+   *
+   * @returns {'bridge' | 'legacy'}
+   */
+  async getLedgerMode() {
+    const state = this.controllerMessenger.call(
+      'RemoteFeatureFlagController:getState',
+    );
+    return state.remoteFeatureFlags?.ledgerDmkBridge
+      ? 'bridge'
+      : 'legacy';
   }
 
   /**

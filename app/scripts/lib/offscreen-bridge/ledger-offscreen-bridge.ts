@@ -1,8 +1,8 @@
 import {
   GetAppNameAndVersionResponse,
   LedgerBridge,
-  LedgerSignEip7702AuthorizationParams,
-  LedgerSignEip7702AuthorizationResponse,
+  LedgerSignDelegationAuthorizationParams,
+  LedgerSignDelegationAuthorizationResponse,
   LedgerSignTypedDataParams,
   LedgerSignTypedDataResponse,
   AppConfigurationResponse,
@@ -143,9 +143,9 @@ export class LedgerOffscreenBridge implements LedgerBridge<LedgerOffscreenBridge
     });
   }
 
-  deviceSignEip7702Authorization(
-    params: LedgerSignEip7702AuthorizationParams,
-  ): Promise<LedgerSignEip7702AuthorizationResponse> {
+  deviceSignDelegationAuthorization(
+    params: LedgerSignDelegationAuthorizationParams,
+  ): Promise<LedgerSignDelegationAuthorizationResponse> {
     return this.#sendMessage({
       action: LedgerAction.signEip7702Authorization,
       params,
@@ -249,7 +249,10 @@ export class LedgerOffscreenBridge implements LedgerBridge<LedgerOffscreenBridge
               responseSuccess: response?.success,
               errorStatusCode: error?.statusCode ?? null,
               errorMessage: error?.message ?? null,
-            }));
+              errorName: error?.name ?? null,
+              errorExtra: error?.extra ?? null,
+              rawResponse: response,
+            }, null, 2));
             if (
               error &&
               typeof error.statusCode === 'number' &&

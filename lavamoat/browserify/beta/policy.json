@@ -2198,13 +2198,16 @@
         "@ethereumjs/tx>@ethereumjs/rlp": true,
         "@ethereumjs/tx": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
+        "@ledgerhq/device-management-kit": true,
+        "@ledgerhq/device-signer-kit-ethereum": true,
         "@ledgerhq/hw-app-eth": true,
         "@ledgerhq/hw-transport": true,
         "@metamask/eth-sig-util": true,
         "@metamask/hw-wallet-sdk": true,
         "@metamask/utils": true,
         "browserify>buffer": true,
-        "@metamask/eth-qr-keyring>hdkey": true
+        "@metamask/eth-qr-keyring>hdkey": true,
+        "rxjs": true
       }
     },
     "@metamask/eth-qr-keyring": {
@@ -2649,6 +2652,7 @@
         "@ethereumjs/tx": true,
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-api": true,
+        "@metamask/keyring-utils": true,
         "@metamask/scure-bip39": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,

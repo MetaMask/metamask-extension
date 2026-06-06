@@ -5129,6 +5129,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ledgerhq/context-module@npm:^1.14.1":
+  version: 1.17.1
+  resolution: "@ledgerhq/context-module@npm:1.17.1"
+  dependencies:
+    crypto-js: "npm:^4.2.0"
+    ethers: "npm:6.14.1"
+    inversify: "npm:7.5.1"
+    purify-ts: "npm:2.1.0"
+    reflect-metadata: "npm:0.2.2"
+  peerDependencies:
+    "@ledgerhq/device-management-kit": ^1.3.0
+  checksum: 10/84add9bdf855d29ca0770b59e5940c82702eb024ee8b6ed82c819b55d0c5b8a5cd2ca312dfb7853095ecf99f44ad2a18450dd51659a161d4a7537c79526314c6
+  languageName: node
+  linkType: hard
+
 "@ledgerhq/context-module@patch:@ledgerhq/context-module@npm%3A2.0.0#~/.yarn/patches/@ledgerhq-context-module-npm-2.0.0-1108e1c058.patch":
   version: 2.0.0
   resolution: "@ledgerhq/context-module@patch:@ledgerhq/context-module@npm%3A2.0.0#~/.yarn/patches/@ledgerhq-context-module-npm-2.0.0-1108e1c058.patch::version=2.0.0&hash=0816e4"
@@ -5175,6 +5190,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ledgerhq/device-management-kit@npm:^1.5.0":
+  version: 1.5.1
+  resolution: "@ledgerhq/device-management-kit@npm:1.5.1"
+  dependencies:
+    "@noble/hashes": "npm:^1.8.0"
+    "@sentry/minimal": "npm:6.19.7"
+    inversify: "npm:7.5.1"
+    isomorphic-ws: "npm:^5.0.0"
+    purify-ts: "npm:2.1.0"
+    reflect-metadata: "npm:0.2.2"
+    semver: "npm:7.7.2"
+    url: "npm:^0.11.4"
+    uuid: "npm:11.0.3"
+    ws: "npm:^8.18.0"
+    xstate: "npm:5.19.2"
+  peerDependencies:
+    rxjs: 7.8.2
+  checksum: 10/b73a620b6955b70608672e8798e12611faa973bade7521694e1aeea8dc1e8b316475600108259fbad4aeb007b992bb812dd665d5a89c990ea3a6c31ec3c99c86
+  languageName: node
+  linkType: hard
+
 "@ledgerhq/device-management-kit@patch:@ledgerhq/device-management-kit@npm%3A1.5.0#~/.yarn/patches/@ledgerhq-device-management-kit-npm-1.5.0-36bd0a7cf1.patch":
   version: 1.5.0
   resolution: "@ledgerhq/device-management-kit@patch:@ledgerhq/device-management-kit@npm%3A1.5.0#~/.yarn/patches/@ledgerhq-device-management-kit-npm-1.5.0-36bd0a7cf1.patch::version=1.5.0&hash=841213"
@@ -5196,7 +5232,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/device-signer-kit-ethereum@npm:1.16.0":
+"@ledgerhq/device-signer-kit-ethereum@npm:1.16.0, @ledgerhq/device-signer-kit-ethereum@npm:^1.16.0":
   version: 1.16.0
   resolution: "@ledgerhq/device-signer-kit-ethereum@npm:1.16.0"
   dependencies:
@@ -6834,21 +6870,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-ledger-bridge-keyring@npm:^12.0.2":
-  version: 12.0.3
-  resolution: "@metamask/eth-ledger-bridge-keyring@npm:12.0.3"
+"@metamask/eth-ledger-bridge-keyring@npm:@metamask-previews/eth-ledger-bridge-keyring@12.1.0-c42f34c":
+  version: 12.1.0-c42f34c
+  resolution: "@metamask-previews/eth-ledger-bridge-keyring@npm:12.1.0-c42f34c"
   dependencies:
     "@ethereumjs/rlp": "npm:^5.0.2"
     "@ethereumjs/tx": "npm:^5.4.0"
     "@ethereumjs/util": "npm:^9.1.0"
+    "@ledgerhq/context-module": "npm:^1.14.1"
+    "@ledgerhq/device-management-kit": "npm:^1.5.0"
+    "@ledgerhq/device-signer-kit-ethereum": "npm:^1.16.0"
     "@ledgerhq/hw-app-eth": "npm:^6.42.0"
     "@ledgerhq/hw-transport": "npm:^6.31.3"
     "@metamask/eth-sig-util": "npm:^8.2.0"
-    "@metamask/hw-wallet-sdk": "npm:^0.8.0"
-    "@metamask/keyring-api": "npm:^23.1.0"
-    "@metamask/keyring-sdk": "npm:^2.1.1"
+    "@metamask/hw-wallet-sdk": "npm:0.8.0"
+    "@metamask/keyring-api": "npm:23.2.0"
+    "@metamask/keyring-sdk": "npm:2.2.0"
+    "@metamask/keyring-utils": "npm:3.3.1"
     hdkey: "npm:^2.1.0"
-  checksum: 10/476a5519cc21efc185ff7095211e07e23a2bc272a443048d083f68d95c47f5b566ef28f744e1388cfec00821787beec1eceae4672d6274eaa5f68adea0085062
+    rxjs: "npm:^7.8.2"
+  checksum: 10/96e515eaf381a150a3c595c64058f73af9321b6d8586b61f02d7b14eba69caca7a3bf614ff03bfa38e53fad4c3396717f2e4dbdccdd8bd8c1cb20e51e9f342b7
   languageName: node
   linkType: hard
 
@@ -7184,7 +7225,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/hw-wallet-sdk@npm:^0.8.0":
+"@metamask/hw-wallet-sdk@npm:0.8.0, @metamask/hw-wallet-sdk@npm:^0.8.0":
   version: 0.8.0
   resolution: "@metamask/hw-wallet-sdk@npm:0.8.0"
   checksum: 10/99e045af2f881d27b827e0f2a0546c056476f5704cbede5a7733f98bff482508e05f5cdcf3969666ccd16e97b6f362c84012390e403cd2da6b7f809fe6ad72e5
@@ -7269,6 +7310,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/keyring-api@npm:23.2.0, @metamask/keyring-api@npm:^23.1.0, @metamask/keyring-api@npm:^23.2.0":
+  version: 23.2.0
+  resolution: "@metamask/keyring-api@npm:23.2.0"
+  dependencies:
+    "@metamask/keyring-utils": "npm:^3.3.1"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.11.0"
+    bitcoin-address-validation: "npm:^2.2.3"
+  checksum: 10/31c3d14da1d24e7b0e1d1a73f22dc265a8223e3bccda546f4069f7ae6e6ac54e063640bed04a2934413cc85b8d5e914a4492d5f8a094a5d6ddf706182967dfa0
+  languageName: node
+  linkType: hard
+
 "@metamask/keyring-api@npm:^13.0.0":
   version: 13.0.0
   resolution: "@metamask/keyring-api@npm:13.0.0"
@@ -7307,18 +7360,6 @@ __metadata:
     "@metamask/utils": "npm:^11.1.0"
     bitcoin-address-validation: "npm:^2.2.3"
   checksum: 10/ff1e9537c7219fb906b61d6755de28890239ec44f634732bd8571801c662e8b801671e98961a1c5047e079cef314353297499a52f7091a2b5391325d575ec4f9
-  languageName: node
-  linkType: hard
-
-"@metamask/keyring-api@npm:^23.1.0":
-  version: 23.1.0
-  resolution: "@metamask/keyring-api@npm:23.1.0"
-  dependencies:
-    "@metamask/keyring-utils": "npm:^3.2.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.11.0"
-    bitcoin-address-validation: "npm:^2.2.3"
-  checksum: 10/ca7e1b49f8c30078ebd76f1f7e74c57846ac3e73ffdc2f7b446af6cb3c006cef75a13eec6a0aeae0bfefbb5549d576af410bb9df16196fcefe17ded64f8714f2
   languageName: node
   linkType: hard
 
@@ -7405,13 +7446,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-sdk@npm:^2.0.2, @metamask/keyring-sdk@npm:^2.1.1":
-  version: 2.1.1
-  resolution: "@metamask/keyring-sdk@npm:2.1.1"
+"@metamask/keyring-sdk@npm:2.2.0, @metamask/keyring-sdk@npm:^2.0.2, @metamask/keyring-sdk@npm:^2.1.1":
+  version: 2.2.0
+  resolution: "@metamask/keyring-sdk@npm:2.2.0"
   dependencies:
     "@ethereumjs/tx": "npm:^5.4.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
-    "@metamask/keyring-api": "npm:^23.1.0"
+    "@metamask/keyring-api": "npm:^23.2.0"
     "@metamask/keyring-utils": "npm:^3.3.1"
     "@metamask/scure-bip39": "npm:^2.1.1"
     "@metamask/superstruct": "npm:^3.1.0"
@@ -7419,7 +7460,7 @@ __metadata:
     async-mutex: "npm:^0.5.0"
     ethereum-cryptography: "npm:^2.2.1"
     uuid: "npm:^9.0.1"
-  checksum: 10/bd10f41e124a61dd53c3914ab8f53e3519bc90905668f83e386bd0c7053754e446396a39b88f88228b2a001ee02762b287495e284ff3052ff5b7636803ac437b
+  checksum: 10/5cb7f2496f0fc95e85eb97932b69da9c02c232e2310b5f390bfc7c56996bf8516d15db54260e68288f6d6f5604bfacc19b4b82b9b28b7f794a3ab5ee9a1f10d1
   languageName: node
   linkType: hard
 
@@ -7503,18 +7544,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-utils@npm:^1.0.0":
-  version: 1.3.1
-  resolution: "@metamask/keyring-utils@npm:1.3.1"
-  dependencies:
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.1.0"
-    bitcoin-address-validation: "npm:^2.2.3"
-  checksum: 10/9072791320108218875bdbcc7823a4ab4d8c29675deab3163373d31a997ae6fc23995a74ffa085e06534d14b72c2edb5e7192d371cd1ef69ac7fae70fa50d8d0
-  languageName: node
-  linkType: hard
-
-"@metamask/keyring-utils@npm:^3.1.0, @metamask/keyring-utils@npm:^3.2.0, @metamask/keyring-utils@npm:^3.2.1, @metamask/keyring-utils@npm:^3.3.1":
+"@metamask/keyring-utils@npm:3.3.1, @metamask/keyring-utils@npm:^3.1.0, @metamask/keyring-utils@npm:^3.2.0, @metamask/keyring-utils@npm:^3.2.1, @metamask/keyring-utils@npm:^3.3.1":
   version: 3.3.1
   resolution: "@metamask/keyring-utils@npm:3.3.1"
   dependencies:
@@ -7523,6 +7553,17 @@ __metadata:
     "@metamask/utils": "npm:^11.11.0"
     bitcoin-address-validation: "npm:^2.2.3"
   checksum: 10/d0917b2f634d9eb2f563827739fca00c1675ee90674ec49b2b68afcb604aee843d6c5be5d79e9780fa22d29f71fc876f40b2d3d0ed4cab7f5948937ddd276691
+  languageName: node
+  linkType: hard
+
+"@metamask/keyring-utils@npm:^1.0.0":
+  version: 1.3.1
+  resolution: "@metamask/keyring-utils@npm:1.3.1"
+  dependencies:
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.1.0"
+    bitcoin-address-validation: "npm:^2.2.3"
+  checksum: 10/9072791320108218875bdbcc7823a4ab4d8c29675deab3163373d31a997ae6fc23995a74ffa085e06534d14b72c2edb5e7192d371cd1ef69ac7fae70fa50d8d0
   languageName: node
   linkType: hard
 
@@ -33781,7 +33822,7 @@ __metadata:
     "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
     "@metamask/eth-json-rpc-middleware": "npm:^23.1.3"
     "@metamask/eth-json-rpc-provider": "npm:^6.0.0"
-    "@metamask/eth-ledger-bridge-keyring": "npm:^12.0.2"
+    "@metamask/eth-ledger-bridge-keyring": "npm:@metamask-previews/eth-ledger-bridge-keyring@12.1.0-c42f34c"
     "@metamask/eth-qr-keyring": "npm:^2.0.2"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/eth-snap-keyring": "npm:^22.0.1"

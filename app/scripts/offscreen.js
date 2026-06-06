@@ -156,3 +156,43 @@ export function addOffscreenConnectivityListener(onConnectivityChange) {
     }
   });
 }
+
+/**
+ * Sets up a listener for `getLedgerMode` queries from the offscreen document.
+ *
+ * The offscreen document sends this query during its initialization to
+ * determine which Ledger handler implementation to use (DMK bridge or legacy).
+ * The response is asynchronous because the controller may not be constructed
+ * yet when the offscreen boots.
+ *
+ * @param {Promise<object>} controllerPromise - A promise resolving to the
+ *   MetaMask controller instance.
+ */
+export function addLedgerModeResponder(controllerPromise) {
+  const { chrome } = globalThis;
+  if (!chrome?.runtime?.onMessage) {
+    return;
+  }
+
+  chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+    if (
+      message &&
+      message.target === OffscreenCommunicationTarget.extensionMain &&
+      message.action === 'getLedgerMode'
+    ) {
+      controllerPromise
+        .then((controller) => controller.getLedgerMode())
+        .then((mode) => {
+          sendResponse({ mode });
+        })
+        .catch((error) => {
+          // Default to 'legacy' on any error so the offscreen can continue booting.
+          console.warn('getLedgerMode failed, defaulting to legacy:', error);
+          sendResponse({ mode: 'legacy' });
+        });
+      // Return true to indicate we will sendResponse asynchronously.
+      return true;
+    }
+    return false;
+  });
+}

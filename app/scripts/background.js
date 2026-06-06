@@ -87,7 +87,11 @@ import {
   isWebOrigin,
   shouldEmitDappViewedEvent,
 } from './lib/util';
-import { createOffscreen, addOffscreenConnectivityListener } from './offscreen';
+import {
+  createOffscreen,
+  addOffscreenConnectivityListener,
+  addLedgerModeResponder,
+} from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
 import rawFirstTimeState from './first-time-state';
 import { onUpdate } from './on-update';
@@ -801,6 +805,19 @@ async function initialize(backup) {
   // This is fire-and-forget - we don't await it to avoid blocking initialization
   initInstallType();
 
+  // Set up a deferred controller promise so the offscreen's getLedgerMode
+  // query can wait for the controller to be constructed. The offscreen boots
+  // in parallel with controller construction; this lets the responder await
+  // controller readiness without blocking the offscreen's initialization.
+  let controllerResolve;
+  const controllerPromise = new Promise((resolve) => {
+    controllerResolve = resolve;
+  });
+
+  if (isManifestV3) {
+    addLedgerModeResponder(controllerPromise);
+  }
+
   const offscreenPromise = isManifestV3 ? createOffscreen() : null;
 
   // Set up connectivity listener IMMEDIATELY for MV3 (before any awaits)
@@ -875,6 +892,10 @@ async function initialize(backup) {
     preinstalledSnaps,
     cronjobControllerStorageManager,
   );
+
+  // Resolve the deferred so the offscreen's getLedgerMode responder (and any
+  // other deferred consumers) can now talk to the controller.
+  controllerResolve(controller);
 
   controller.metaMetricsController.updateTraits({
     [MetaMetricsUserTrait.StorageKind]: persistenceManager.storageKind,

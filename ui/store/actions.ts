@@ -6132,6 +6132,15 @@ export async function getLedgerPublicKey(
 }
 
 /**
+ * Get the active Ledger handler mode from the background.
+ *
+ * @returns Resolves to 'bridge' when the DMK bridge handler is active, or 'legacy' otherwise.
+ */
+export async function getLedgerMode(): Promise<'bridge' | 'legacy'> {
+  return await submitRequestToBackground('getLedgerMode');
+}
+
+/**
  * Fetch the features/capabilities of the connected Trezor device.
  *
  * @returns The Trezor device features response including model, capabilities, and session info
