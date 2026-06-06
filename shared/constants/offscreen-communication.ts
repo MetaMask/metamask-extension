@@ -103,6 +103,22 @@ export enum LedgerAction {
 }
 
 /**
+ * Selects which Ledger handler implementation the offscreen document should
+ * use. `DMK` uses the new `@metamask/eth-ledger-bridge-keyring` package
+ * (backed by the Ledger Device Management Kit). `Legacy` uses the historical
+ * `TransportWebHID` + `@ledgerhq/hw-app-eth` plumbing. Selection is driven by
+ * the `ledgerDmkBridge` remote feature flag via `getLedgerMode`.
+ */
+export enum LedgerHandlerMode {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  DMK = 'dmk',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  Legacy = 'legacy',
+}
+
+/**
  * Defines domain origins that we expect to interface with in our offscreen
  * document. Any reference to a domain as an origin should use this enum
  * instead of constants or literals so that it can be managed and overviewed.

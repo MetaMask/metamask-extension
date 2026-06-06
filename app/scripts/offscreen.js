@@ -1,6 +1,7 @@
 import { captureException } from '../../shared/lib/sentry';
 import {
   OFFSCREEN_LOAD_TIMEOUT,
+  LedgerHandlerMode,
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../shared/constants/offscreen-communication';
@@ -157,9 +158,9 @@ export function addLedgerModeResponder(controllerPromise) {
           sendResponse({ mode });
         })
         .catch((error) => {
-          // Default to 'legacy' on any error so the offscreen can continue booting.
+          // Default to legacy on any error so the offscreen can continue booting.
           console.warn('getLedgerMode failed, defaulting to legacy:', error);
-          sendResponse({ mode: 'legacy' });
+          sendResponse({ mode: LedgerHandlerMode.Legacy });
         });
       // Return true to indicate we will sendResponse asynchronously.
       return true;

@@ -21,8 +21,6 @@ import {
 } from '../../../shared/constants/offscreen-communication';
 import { LEDGER_USB_VENDOR_ID } from '../../../shared/constants/hardware-wallets';
 
-import { LedgerLegacyHandler } from './ledger';
-
 const DEVICE_DISCOVERY_TIMEOUT_MS = 15_000;
 
 function isWebHIDSupported(): boolean {
@@ -528,30 +526,4 @@ export class LedgerDMKBridgeHandler {
     this.bridgePromise = null;
     this.sessionId = null;
   }
-}
-
-/**
- * Initializes the Ledger offscreen handler.
- *
- * @param mode - `'bridge'` to use the new DMK bridge handler, `'legacy'` for
- *   the original `@ledgerhq/hw-app-eth` handler. Defaults to `'legacy'`.
- */
-export default async function initLedger(
-  mode: 'bridge' | 'legacy' = 'legacy',
-): Promise<void> {
-  console.debug(
-    '[LedgerOffscreen] Module init() — creating handler',
-    JSON.stringify({ mode }),
-  );
-  // if (mode === 'bridge') {
-  if (true) {
-    console.debug('[LedgerOffscreen] Module init() — using DMK bridge handler');
-    const handler = new LedgerDMKBridgeHandler();
-    await handler.init();
-  } else {
-    console.debug('[LedgerOffscreen] Module init() — using legacy handler');
-    const handler = new LedgerLegacyHandler();
-    await handler.init();
-  }
-  console.debug('[LedgerOffscreen] Module init() — handler ready');
 }

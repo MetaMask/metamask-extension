@@ -2,11 +2,12 @@ import { BrowserRuntimePostMessageStream } from '@metamask/post-message-stream';
 import { ProxySnapExecutor } from '@metamask/snaps-execution-environments';
 import { isObject } from '@metamask/utils';
 import {
+  LedgerHandlerMode,
   OFFSCREEN_LEDGER_INIT_TIMEOUT,
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../shared/constants/offscreen-communication';
-import initLedger from './hardware-wallets/ledger-dmk';
+import initLedger from './hardware-wallets/ledger-router';
 import initTrezor from './hardware-wallets/trezor';
 import initLattice from './hardware-wallets/lattice';
 import initConnectivityDetection from './connectivity';
@@ -30,17 +31,17 @@ function initializePostMessageStream() {
  * Query the background for the active Ledger handler mode.
  *
  * The background's `addLedgerModeResponder` listener replies asynchronously
- * with `{mode: 'bridge' | 'legacy'}` based on the `ledgerDmkBridge` remote
+ * with `{mode: LedgerHandlerMode}` based on the `ledgerDmkBridge` remote
  * feature flag. If the controller isn't ready yet, the query times out and
- * we fall back to `'legacy'`.
+ * we fall back to `LedgerHandlerMode.Legacy`.
  *
- * @returns `'bridge'` if the DMK bridge handler should be used, `'legacy'` otherwise.
+ * @returns The active ledger handler mode.
  */
-async function getLedgerMode(): Promise<'bridge' | 'legacy'> {
+async function getLedgerMode(): Promise<LedgerHandlerMode> {
   const GET_LEDGER_MODE_TIMEOUT_MS = 2000;
 
   try {
-    const response = await new Promise<{ mode?: 'bridge' | 'legacy' }>(
+    const response = await new Promise<{ mode?: LedgerHandlerMode }>(
       (resolve, reject) => {
         const timeout = setTimeout(() => {
           reject(new Error('getLedgerMode timed out'));
@@ -51,7 +52,7 @@ async function getLedgerMode(): Promise<'bridge' | 'legacy'> {
             target: OffscreenCommunicationTarget.extensionMain,
             action: 'getLedgerMode',
           },
-          (response: { mode?: 'bridge' | 'legacy' }) => {
+          (response: { mode?: LedgerHandlerMode }) => {
             clearTimeout(timeout);
             if (chrome.runtime.lastError) {
               reject(new Error(chrome.runtime.lastError.message));
@@ -63,13 +64,15 @@ async function getLedgerMode(): Promise<'bridge' | 'legacy'> {
       },
     );
 
-    return response?.mode === 'bridge' ? 'bridge' : 'legacy';
+    return response?.mode === LedgerHandlerMode.DMK
+      ? LedgerHandlerMode.DMK
+      : LedgerHandlerMode.Legacy;
   } catch (error) {
     console.warn(
       '[LedgerOffscreen] Failed to get Ledger mode, defaulting to legacy:',
       error,
     );
-    return 'legacy';
+    return LedgerHandlerMode.Legacy;
   }
 }
 

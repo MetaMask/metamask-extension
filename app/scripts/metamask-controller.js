@@ -11,7 +11,7 @@ import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import { debounce, uniq } from 'lodash';
+import { debounce, merge, uniq } from 'lodash';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
@@ -147,6 +147,8 @@ import {
   LedgerTransportTypes,
   KEYRING_DEVICE_PROPERTY_MAP,
 } from '../../shared/constants/hardware-wallets';
+import { LedgerHandlerMode } from '../../shared/constants/offscreen-communication';
+import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { KeyringType } from '../../shared/constants/keyring';
 import { RestrictedMethods } from '../../shared/constants/permissions';
 import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../shared/constants/passkey';
@@ -5616,15 +5618,24 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Get the active Ledger handler mode based on the remote feature flag.
    *
-   * @returns {'bridge' | 'legacy'}
+   * Reads from `RemoteFeatureFlagController` state and merges with manifest
+   * overrides so `.manifest-overrides.json` can flip the flag for dev/E2E
+   * builds without touching LaunchDarkly.
+   *
+   * @returns {LedgerHandlerMode}
    */
   async getLedgerMode() {
     const state = this.controllerMessenger.call(
       'RemoteFeatureFlagController:getState',
     );
-    return state.remoteFeatureFlags?.ledgerDmkBridge
-      ? 'bridge'
-      : 'legacy';
+    const merged = merge(
+      {},
+      state.remoteFeatureFlags ?? {},
+      getManifestFlags().remoteFeatureFlags ?? {},
+    );
+    return merged.ledgerDmkBridge
+      ? LedgerHandlerMode.DMK
+      : LedgerHandlerMode.Legacy;
   }
 
   /**
