@@ -1207,7 +1207,6 @@ function getScriptTags({
 
   const securityScripts = applyLavaMoat
     ? [
-        './scripts/reflect-metadata-preload.js',
         './scripts/runtime-lavamoat.js',
         './scripts/lockdown-more.js',
         './scripts/policy-load.js',
