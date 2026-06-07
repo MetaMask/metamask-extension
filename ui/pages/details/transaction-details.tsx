@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { Box } from '@metamask/design-system-react';
+import { V1TransactionByHashResponse } from '@metamask/core-backend';
 import { useSelector } from 'react-redux';
 import { mapApiEvmTransactions } from '../../../shared/lib/activity/adapters/api-evm-transactions';
 import { mapLocalTransaction } from '../../../shared/lib/activity/adapters/local-transaction';
@@ -14,7 +15,6 @@ import { SwapAgainButton } from './components/swap-again-button';
 import { TemplateLoader } from './templates/template-loader';
 import { useCachedEvmTransaction } from './useCachedEvmTransaction';
 import { useTransactionQuery } from './useTransactionQuery';
-import { V1TransactionByHashResponse } from '@metamask/core-backend';
 
 type Props = {
   chainId: string | undefined;

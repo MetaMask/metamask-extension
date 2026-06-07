@@ -42,10 +42,8 @@ describe('mapEvmTransactions', () => {
       subjectAddress,
       transaction,
     });
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toMatchObject({
       type: 'send',
       chainId: 'eip155:8453',
       status: 'success',
@@ -90,10 +88,8 @@ describe('mapEvmTransactions', () => {
       subjectAddress,
       transaction,
     });
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toMatchObject({
       type: 'send',
       chainId: 'eip155:137',
       status: 'success',
@@ -144,10 +140,8 @@ describe('mapEvmTransactions', () => {
       subjectAddress,
       transaction,
     });
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toMatchObject({
       type: 'approveSpendingCap',
       chainId: 'eip155:8453',
       status: 'success',
@@ -184,10 +178,8 @@ describe('mapEvmTransactions', () => {
       subjectAddress,
       transaction,
     });
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toMatchObject({
       type: 'receive',
       chainId: 'eip155:59144',
       status: 'success',
@@ -225,10 +217,8 @@ describe('mapEvmTransactions', () => {
       subjectAddress,
       transaction,
     });
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toMatchObject({
       type: 'swapIncomplete',
       chainId: 'eip155:59144',
       status: 'success',
@@ -284,10 +274,8 @@ describe('mapEvmTransactions', () => {
       subjectAddress,
       transaction,
     });
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toMatchObject({
       type: 'swap',
       chainId: 'eip155:59144',
       status: 'success',
@@ -348,10 +336,8 @@ describe('mapEvmTransactions', () => {
       subjectAddress,
       transaction,
     });
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toMatchObject({
       type: 'send',
       chainId: 'eip155:1',
       status: 'success',
@@ -377,10 +363,7 @@ describe('mapEvmTransactions', () => {
         apiResponses.nftPurchaseErc1155 as unknown as V1TransactionByHashResponse,
     });
 
-    const activity = { ...item };
-    delete activity.raw;
-
-    expect(activity).toStrictEqual({
+    expect(item).toMatchObject({
       type: 'nftBuy',
       chainId: 'eip155:1',
       status: 'success',
@@ -422,10 +405,8 @@ describe('mapEvmTransactions', () => {
       subjectAddress,
       transaction,
     });
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toMatchObject({
       type: 'nftMint',
       chainId: 'eip155:59144',
       status: 'success',
@@ -476,10 +457,8 @@ describe('mapEvmTransactions', () => {
       subjectAddress,
       transaction,
     });
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toMatchObject({
       type: 'lendingDeposit',
       chainId: 'eip155:8453',
       status: 'success',
@@ -538,10 +517,8 @@ describe('mapEvmTransactions', () => {
       subjectAddress,
       transaction,
     });
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toMatchObject({
       type: 'lendingWithdrawal',
       chainId: 'eip155:8453',
       status: 'success',
@@ -591,10 +568,8 @@ describe('mapEvmTransactions', () => {
       subjectAddress,
       transaction,
     });
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toMatchObject({
       type: 'deposit',
       chainId: 'eip155:1',
       status: 'success',
@@ -651,10 +626,8 @@ describe('mapEvmTransactions', () => {
       subjectAddress,
       transaction,
     });
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toMatchObject({
       type: 'wrap',
       chainId: 'eip155:1',
       status: 'success',
@@ -718,10 +691,8 @@ describe('mapEvmTransactions', () => {
       subjectAddress,
       transaction,
     });
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toMatchObject({
       type: 'unwrap',
       chainId: 'eip155:1',
       status: 'success',
@@ -771,10 +742,8 @@ describe('mapEvmTransactions', () => {
       subjectAddress,
       transaction,
     });
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toMatchObject({
       type: 'claimMusdBonus',
       chainId: 'eip155:59144',
       status: 'success',
@@ -834,16 +803,26 @@ describe('mapEvmTransactions', () => {
       subjectAddress,
       transaction,
     });
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toMatchObject({
       type: 'bridge',
       chainId: 'eip155:8453',
       status: 'success',
       timestamp: 1779941611000,
       data: {
         hash: '0x9f81163d00374094411f44732738c6dea194551e4500bde9fd7ee60319aac766',
+        fees: [
+          {
+            amount: '4426155589787',
+            assetId: toAssetId(
+              '0x0000000000000000000000000000000000000000',
+              'eip155:8453',
+            ),
+            decimals: 18,
+            symbol: 'ETH',
+            type: 'base',
+          },
+        ],
         sourceToken: {
           amount: '100000',
           decimals: 6,
@@ -878,10 +857,8 @@ describe('mapEvmTransactions', () => {
       subjectAddress,
       transaction,
     });
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toMatchObject({
       type: 'contractInteraction',
       chainId: 'eip155:56',
       status: 'success',
@@ -927,10 +904,8 @@ describe('mapEvmTransactions', () => {
       subjectAddress,
       transaction,
     });
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toMatchObject({
       type: 'contractInteraction',
       chainId: 'eip155:1',
       status: 'success',

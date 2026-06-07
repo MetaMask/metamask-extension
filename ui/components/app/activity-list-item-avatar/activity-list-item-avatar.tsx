@@ -48,7 +48,11 @@ const ActivityTokenAvatar = ({
   assetId,
   className,
   size = AvatarTokenSize.Md,
-}: Readonly<{ assetId: string; className?: string; size?: AvatarTokenSize }>) => {
+}: Readonly<{
+  assetId: string;
+  className?: string;
+  size?: AvatarTokenSize;
+}>) => {
   const { name, src } = getTokenAvatarData(assetId);
 
   return (

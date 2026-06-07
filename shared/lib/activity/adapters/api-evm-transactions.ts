@@ -63,6 +63,7 @@ export function mapApiEvmTransactions({
     transaction.methodId && withdrawMethodIds.has(transaction.methodId);
   const hasWrapMethodId =
     transaction.methodId && wrapMethodIds.has(transaction.methodId);
+
   if (transactionCategory === 'SWAP' || transactionCategory === 'EXCHANGE') {
     if (!receivedTransfer?.symbol) {
       return {
@@ -70,7 +71,6 @@ export function mapApiEvmTransactions({
         chainId,
         status,
         timestamp,
-        raw: { type: 'apiEvmTransaction', data: transaction },
         data: {
           sourceToken: getToken(sentTransfer, 'out'),
           hash,
@@ -105,7 +105,6 @@ export function mapApiEvmTransactions({
       chainId,
       status,
       timestamp,
-      raw: { type: 'apiEvmTransaction', data: transaction },
       data: {
         hash,
         token,
@@ -122,7 +121,6 @@ export function mapApiEvmTransactions({
           chainId,
           status,
           timestamp,
-          raw: { type: 'apiEvmTransaction', data: transaction },
           data: {
             hash,
             from: receivedNftTransfer.from,
@@ -138,7 +136,6 @@ export function mapApiEvmTransactions({
           chainId,
           status,
           timestamp,
-          raw: { type: 'apiEvmTransaction', data: transaction },
           data: {
             hash,
             from: receivedNftTransfer.from,
@@ -229,7 +226,6 @@ export function mapApiEvmTransactions({
       chainId,
       status,
       timestamp,
-      raw: { type: 'apiEvmTransaction', data: transaction },
       data: {
         hash,
         token: getToken(receivedTransfer, 'in'),
@@ -243,7 +239,6 @@ export function mapApiEvmTransactions({
       chainId,
       status,
       timestamp,
-      raw: { type: 'apiEvmTransaction', data: transaction },
       data: {
         hash,
         token: getToken(
@@ -357,7 +352,6 @@ export function mapApiEvmTransactions({
       chainId,
       status,
       timestamp,
-      raw: { type: 'apiEvmTransaction', data: transaction },
       data: {
         hash,
         token: getToken(sentTransfer, 'in'),
@@ -379,7 +373,6 @@ export function mapApiEvmTransactions({
     chainId,
     status,
     timestamp,
-    raw: { type: 'apiEvmTransaction', data: transaction },
     data: {
       hash,
       methodId: transaction.methodId,

@@ -184,7 +184,6 @@ export function mapLocalTransaction(
         chainId,
         status,
         timestamp,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
           from,
@@ -209,7 +208,6 @@ export function mapLocalTransaction(
         chainId,
         status,
         timestamp,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
           from,
@@ -230,7 +228,6 @@ export function mapLocalTransaction(
         chainId,
         status,
         timestamp,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
           from,
@@ -263,7 +260,6 @@ export function mapLocalTransaction(
           chainId,
           status,
           timestamp,
-          raw: { type: 'localTransaction', data: transactionGroup },
           data: {
             hash,
             sourceToken,
@@ -276,7 +272,6 @@ export function mapLocalTransaction(
         chainId,
         status,
         timestamp,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
           sourceToken,
@@ -295,7 +290,6 @@ export function mapLocalTransaction(
         chainId,
         status,
         timestamp,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
           sourceToken: enrichedSourceToken,
@@ -316,7 +310,6 @@ export function mapLocalTransaction(
         chainId,
         status,
         timestamp,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
           sourceToken: transactionGroup.sourceToken,
@@ -340,7 +333,6 @@ export function mapLocalTransaction(
         chainId,
         status,
         timestamp,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
           token: getContractToken({
@@ -357,7 +349,6 @@ export function mapLocalTransaction(
         chainId,
         status,
         timestamp,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
           token: getContractToken({
@@ -374,7 +365,6 @@ export function mapLocalTransaction(
         chainId,
         status,
         timestamp,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
           sourceToken: getContractToken({
@@ -391,7 +381,6 @@ export function mapLocalTransaction(
         chainId,
         status,
         timestamp,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
           token: getContractToken({
@@ -408,7 +397,6 @@ export function mapLocalTransaction(
         chainId,
         status,
         timestamp,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
         },
@@ -448,7 +436,6 @@ export function mapLocalTransaction(
           chainId,
           status,
           timestamp,
-          raw: { type: 'localTransaction', data: transactionGroup },
           data: {
             hash,
             token: {
@@ -464,7 +451,6 @@ export function mapLocalTransaction(
           chainId,
           status,
           timestamp,
-          raw: { type: 'localTransaction', data: transactionGroup },
           data: {
             hash,
             sourceToken: getContractToken({
@@ -506,7 +492,6 @@ export function mapLocalTransaction(
           chainId,
           status,
           timestamp,
-          raw: { type: 'localTransaction', data: transactionGroup },
           data: {
             hash,
             destinationToken,
@@ -529,10 +514,6 @@ export function mapLocalTransaction(
           isEqualCaseInsensitive(to, wrappedTokenAddress)
         ) {
           const normalizedMethodId = methodId.toLowerCase();
-          const activityRaw = {
-            type: 'localTransaction' as const,
-            data: transactionGroup,
-          };
 
           if (wrapMethodIds.has(normalizedMethodId)) {
             const { value: wrapAmount } = initialTransaction.txParams;
@@ -544,7 +525,6 @@ export function mapLocalTransaction(
                   chainId,
                   status,
                   timestamp,
-                  raw: activityRaw,
                   data: {
                     hash,
                     sourceToken: getNativeToken(initialTransaction, 'out'),
@@ -581,7 +561,6 @@ export function mapLocalTransaction(
               chainId,
               status,
               timestamp,
-              raw: activityRaw,
               data: {
                 hash,
                 sourceToken: getContractToken({
@@ -621,7 +600,6 @@ export function mapLocalTransaction(
         chainId,
         status,
         timestamp,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
           from,

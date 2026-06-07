@@ -10,6 +10,7 @@ import { useFormatters } from '../../hooks/useFormatters';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useItemInView } from '../../hooks/useItemInView';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
+// eslint-disable-next-line import-x/no-restricted-paths
 import { TransactionDetailsModal } from '../details/transaction-details-modal';
 import { ActivityRow } from './rows/activity-row';
 import {

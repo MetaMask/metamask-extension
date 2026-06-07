@@ -68,10 +68,8 @@ describe('mapLocalTransaction', () => {
     } as unknown as TransactionGroup;
 
     const item = mapLocalTransaction(transactionGroup);
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toStrictEqual({
       type: 'send',
       chainId: 'eip155:1',
       status: 'pending',
@@ -117,10 +115,8 @@ describe('mapLocalTransaction', () => {
     } as unknown as TransactionGroup;
 
     const item = mapLocalTransaction(transactionGroup);
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toStrictEqual({
       type: 'send',
       chainId: 'eip155:1338',
       status: 'success',
@@ -171,10 +167,8 @@ describe('mapLocalTransaction', () => {
     } as unknown as TransactionGroup;
 
     const item = mapLocalTransaction(transactionGroup);
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toStrictEqual({
       type: 'send',
       chainId: 'eip155:1',
       status: 'pending',
@@ -221,10 +215,8 @@ describe('mapLocalTransaction', () => {
     } as unknown as TransactionGroup;
 
     const item = mapLocalTransaction(transactionGroup);
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toStrictEqual({
       type: 'send',
       chainId: 'eip155:1',
       status: 'success',
@@ -320,10 +312,8 @@ describe('mapLocalTransaction', () => {
     } as unknown as TransactionGroup;
 
     const item = mapLocalTransaction(transactionGroup);
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toStrictEqual({
       type: 'approveSpendingCap',
       chainId: 'eip155:59144',
       status: 'pending',
@@ -373,10 +363,8 @@ describe('mapLocalTransaction', () => {
         symbol: 'DAI',
       },
     });
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toStrictEqual({
       type: 'convert',
       chainId: 'eip155:59144',
       status: 'success',
@@ -445,10 +433,8 @@ describe('mapLocalTransaction', () => {
     } as unknown as TransactionGroup;
 
     const item = mapLocalTransaction(transactionGroup);
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toStrictEqual({
       type: 'lendingDeposit',
       chainId: 'eip155:8453',
       status: 'success',
@@ -498,10 +484,8 @@ describe('mapLocalTransaction', () => {
     } as unknown as TransactionGroup;
 
     const item = mapLocalTransaction(transactionGroup);
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toStrictEqual({
       type: 'lendingWithdrawal',
       chainId: 'eip155:8453',
       status: 'success',
@@ -559,10 +543,8 @@ describe('mapLocalTransaction', () => {
         symbol: 'MUSD',
       },
     });
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toStrictEqual({
       type: 'swap',
       chainId: 'eip155:1',
       status: 'success',
@@ -648,10 +630,8 @@ describe('mapLocalTransaction', () => {
     } as unknown as TransactionGroup;
 
     const item = mapLocalTransaction(transactionGroup);
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toStrictEqual({
       type: 'swap',
       chainId: 'eip155:8453',
       status: 'success',
@@ -696,10 +676,8 @@ describe('mapLocalTransaction', () => {
     } as unknown as TransactionGroup;
 
     const item = mapLocalTransaction(transactionGroup);
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toStrictEqual({
       type: 'wrap',
       chainId: 'eip155:1',
       status: 'success',
@@ -751,10 +729,8 @@ describe('mapLocalTransaction', () => {
     } as unknown as TransactionGroup;
 
     const item = mapLocalTransaction(transactionGroup);
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toStrictEqual({
       type: 'unwrap',
       chainId: 'eip155:1',
       status: 'success',
@@ -804,10 +780,8 @@ describe('mapLocalTransaction', () => {
     } as unknown as TransactionGroup;
 
     const item = mapLocalTransaction(transactionGroup);
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toStrictEqual({
       type: 'contractInteraction',
       chainId: 'eip155:1',
       status: 'success',
@@ -834,10 +808,8 @@ describe('mapLocalTransaction', () => {
       localStateFixtures.nftPurchaseErc1155
         .transactionGroup as unknown as TransactionGroup,
     );
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toStrictEqual({
       type: 'nftBuy',
       chainId: 'eip155:1',
       status: 'success',
@@ -876,10 +848,8 @@ describe('mapLocalTransaction', () => {
     } as unknown as TransactionGroup;
 
     const item = mapLocalTransaction(transactionGroup);
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toStrictEqual({
+    expect(item).toStrictEqual({
       type: 'claimMusdBonus',
       chainId: 'eip155:59144',
       status: 'pending',

@@ -4,7 +4,7 @@ import {
   ModalContent,
   ModalContentSize,
   ModalOverlay,
-} from '@metamask/design-system-react';
+} from '../../components/component-library';
 import { TransactionDetails } from './transaction-details';
 
 export function TransactionDetailsModal({

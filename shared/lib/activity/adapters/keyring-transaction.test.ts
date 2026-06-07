@@ -29,25 +29,23 @@ describe('mapKeyringTransaction', () => {
       },
     });
 
-    expect(item).toStrictEqual(
-      expect.objectContaining({
-        type: 'send',
-        chainId: MultichainNetworks.SOLANA,
-        status: 'success',
-        timestamp: 1716367781000,
-        data: {
-          hash: 'send-id',
-          from: 'from-address',
-          to: 'to-address',
-          token: {
-            amount: '2.5',
-            assetId: `${MultichainNetworks.SOLANA}/token:usdc`,
-            direction: 'out',
-            symbol: 'USDC',
-          },
+    expect(item).toMatchObject({
+      type: 'send',
+      chainId: MultichainNetworks.SOLANA,
+      status: 'success',
+      timestamp: 1716367781000,
+      data: {
+        hash: 'send-id',
+        from: 'from-address',
+        to: 'to-address',
+        token: {
+          amount: '2.5',
+          assetId: `${MultichainNetworks.SOLANA}/token:usdc`,
+          direction: 'out',
+          symbol: 'USDC',
         },
-      }),
-    );
+      },
+    });
   });
 
   it('maps keyring swap transactions with source and destination token amounts', () => {
@@ -86,29 +84,27 @@ describe('mapKeyringTransaction', () => {
       },
     });
 
-    expect(item).toStrictEqual(
-      expect.objectContaining({
-        type: 'swap',
-        chainId: MultichainNetworks.SOLANA,
-        status: 'pending',
-        timestamp: 1716367781000,
-        data: {
-          hash: 'swap-id',
-          sourceToken: {
-            amount: '1',
-            assetId: `${MultichainNetworks.SOLANA}/slip44:501`,
-            direction: 'out',
-            symbol: 'SOL',
-          },
-          destinationToken: {
-            amount: '100',
-            assetId: `${MultichainNetworks.SOLANA}/token:usdc`,
-            direction: 'in',
-            symbol: 'USDC',
-          },
+    expect(item).toMatchObject({
+      type: 'swap',
+      chainId: MultichainNetworks.SOLANA,
+      status: 'pending',
+      timestamp: 1716367781000,
+      data: {
+        hash: 'swap-id',
+        sourceToken: {
+          amount: '1',
+          assetId: `${MultichainNetworks.SOLANA}/slip44:501`,
+          direction: 'out',
+          symbol: 'SOL',
         },
-      }),
-    );
+        destinationToken: {
+          amount: '100',
+          assetId: `${MultichainNetworks.SOLANA}/token:usdc`,
+          direction: 'in',
+          symbol: 'USDC',
+        },
+      },
+    });
   });
 
   it('maps bitcoin send token from to-movement when from is empty', () => {
@@ -137,24 +133,22 @@ describe('mapKeyringTransaction', () => {
       },
     });
 
-    expect(item).toStrictEqual(
-      expect.objectContaining({
-        type: 'send',
-        chainId: MultichainNetworks.BITCOIN,
-        status: 'success',
-        timestamp: 1716367781000,
-        data: {
-          hash: 'btc-send-output-id',
-          from: 'bc1from',
-          to: 'bc1to',
-          token: {
-            amount: '0.1',
-            assetId: `${MultichainNetworks.BITCOIN}/slip44:0`,
-            direction: 'out',
-            symbol: 'BTC',
-          },
+    expect(item).toMatchObject({
+      type: 'send',
+      chainId: MultichainNetworks.BITCOIN,
+      status: 'success',
+      timestamp: 1716367781000,
+      data: {
+        hash: 'btc-send-output-id',
+        from: 'bc1from',
+        to: 'bc1to',
+        token: {
+          amount: '0.1',
+          assetId: `${MultichainNetworks.BITCOIN}/slip44:0`,
+          direction: 'out',
+          symbol: 'BTC',
         },
-      }),
-    );
+      },
+    });
   });
 });

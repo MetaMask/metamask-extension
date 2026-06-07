@@ -1,5 +1,4 @@
 import React from 'react';
-import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import {
   Box,
   ButtonIcon,
@@ -7,6 +6,7 @@ import {
   IconName,
   Text,
 } from '@metamask/design-system-react';
+import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 type Props = {

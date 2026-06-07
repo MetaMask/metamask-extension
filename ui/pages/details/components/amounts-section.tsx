@@ -14,25 +14,28 @@ export function AmountsSection({ item }: { item: ActivityListItem }) {
     'fees' in item.data
       ? (item.data.fees?.filter((fee) => fee.amount) ?? [])
       : [];
-  const token =
-    item.type === 'send' || item.type === 'receive'
-      ? item.data.token
-      : 'sourceToken' in item.data
-        ? item.data.sourceToken
-        : undefined;
+  let token;
+
+  if (item.type === 'send' || item.type === 'receive') {
+    token = item.data.token;
+  } else if ('sourceToken' in item.data) {
+    token = item.data.sourceToken;
+  }
+
   let tokenValue;
 
   if (token?.amount) {
-    let amount = token.amount;
+    const { amount: tokenAmount, decimals, symbol } = token;
+    let amount = tokenAmount;
 
     try {
-      amount = formatUnits(BigInt(token.amount), token.decimals ?? 0);
+      amount = formatUnits(BigInt(tokenAmount), decimals ?? 0);
     } catch {
-      amount = token.amount;
+      amount = tokenAmount;
     }
 
-    tokenValue = token.symbol
-      ? formatToken(amount as `${number}`, token.symbol, {
+    tokenValue = symbol
+      ? formatToken(amount as `${number}`, symbol, {
           maximumFractionDigits,
         })
       : amount;
@@ -45,27 +48,28 @@ export function AmountsSection({ item }: { item: ActivityListItem }) {
   return (
     <Section>
       {visibleFees.map((fee, index) => {
-        let label = fee.type;
-        let amount = fee.amount;
+        const { amount: feeAmount, assetId, decimals, symbol, type } = fee;
+        let label = type;
+        let amount = feeAmount;
 
-        if (fee.type === 'base') {
+        if (type === 'base') {
           label = t('networkFee');
-        } else if (fee.type === 'priority') {
+        } else if (type === 'priority') {
           label = t('priorityFee');
         }
 
         try {
-          amount = formatUnits(BigInt(fee.amount ?? 0), fee.decimals ?? 0);
+          amount = formatUnits(BigInt(feeAmount ?? 0), decimals ?? 0);
         } catch {
-          amount = fee.amount;
+          amount = feeAmount;
         }
         return (
           <Row
-            key={`${fee.type}-${fee.assetId ?? fee.symbol ?? index}`}
+            key={`${type}-${assetId ?? symbol ?? index}`}
             label={label}
             value={
-              fee.symbol
-                ? formatToken(amount as `${number}`, fee.symbol, {
+              symbol
+                ? formatToken(amount as `${number}`, symbol, {
                     maximumFractionDigits,
                   })
                 : amount

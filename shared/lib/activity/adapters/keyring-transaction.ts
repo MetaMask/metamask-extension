@@ -208,7 +208,6 @@ export function mapKeyringTransaction({
     chainId,
     status,
     timestamp,
-    raw: { type: 'keyringTransaction', data: transaction },
     data: {
       hash: transaction.id,
       from,

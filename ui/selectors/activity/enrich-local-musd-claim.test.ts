@@ -74,12 +74,10 @@ function mapMusdClaimGroup(
     transactions: [fullTransaction],
   } as unknown as TransactionGroup;
 
-  const activity = enrichLocalMusdClaimActivity(
+  const result = enrichLocalMusdClaimActivity(
     mapLocalTransaction(transactionGroup),
     transactionGroup,
   );
-  const result = { ...activity };
-  delete result.raw;
   return result;
 }
 
@@ -299,10 +297,6 @@ describe('enrichLocalMusdClaimActivity', () => {
       chainId: 'eip155:59144' as const,
       status: 'success' as const,
       timestamp: 1,
-      raw: {
-        type: 'apiEvmTransaction' as const,
-        data: {},
-      },
       data: {
         hash: '0xapi',
         token: {
