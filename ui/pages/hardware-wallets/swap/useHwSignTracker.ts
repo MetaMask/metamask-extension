@@ -316,8 +316,8 @@ export function useHwSignTracker(
           if (useBatchTracking) {
             const batchId = transactionMeta.batchId ?? 'batch-unknown';
             seenBatchIdsRef.current.add(batchId);
+            trackedTxIdsRef.current.add(transactionMeta.id);
           }
-          trackedTxIdsRef.current.add(transactionMeta.id);
 
           if (handlePendingAbort(transactionMeta.id)) {
             return;
@@ -392,8 +392,8 @@ export function useHwSignTracker(
           if (useBatchTracking) {
             const batchId = transactionMeta.batchId ?? 'batch-unknown';
             seenBatchIdsRef.current.add(batchId);
+            trackedTxIdsRef.current.add(transactionMeta.id);
           }
-          trackedTxIdsRef.current.add(transactionMeta.id);
 
           if (handlePendingAbort(transactionMeta.id)) {
             return;
