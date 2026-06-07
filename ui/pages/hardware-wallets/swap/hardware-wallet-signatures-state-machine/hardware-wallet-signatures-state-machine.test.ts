@@ -3,7 +3,7 @@ import {
   HardwareWalletSignatureStatus,
   getInitialHardwareWalletSignaturesState,
   hardwareWalletSignaturesReducer,
-} from './hardware-wallet-signatures-state-machine';
+} from '.';
 
 describe('hardwareWalletSignaturesReducer', () => {
   describe('getInitialHardwareWalletSignaturesState', () => {

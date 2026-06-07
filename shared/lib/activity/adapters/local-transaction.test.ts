@@ -7,6 +7,7 @@ import { CHAIN_IDS } from '../../../constants/network';
 import { WETH_CONTRACT_ADDRESS } from '../../../constants/swaps';
 import { toAssetId } from '../../asset-utils';
 import type { TransactionGroup } from '../../multichain/types';
+import { localStateFixtures } from './fixtures/local-state';
 import { mapLocalTransaction } from './local-transaction';
 
 const from = '0x9bed78535d6a03a955f1504aadba974d9a29e292';
@@ -824,6 +825,28 @@ describe('mapLocalTransaction', () => {
         },
         methodId: '0xd0e30db0',
         transactionType: TransactionType.contractInteraction,
+      },
+    });
+  });
+
+  it('maps a local contract interaction with an incoming NFT simulation change to an NFT buy', () => {
+    const item = mapLocalTransaction(
+      localStateFixtures.nftPurchaseErc1155
+        .transactionGroup as unknown as TransactionGroup,
+    );
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
+      type: 'nftBuy',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1780606867763,
+      data: {
+        hash: '0x2fda37c5b591c30367649c3c317621429bb5c59ff6a77b0a8cd48b56897168bc',
+        token: {
+          direction: 'in',
+        },
       },
     });
   });

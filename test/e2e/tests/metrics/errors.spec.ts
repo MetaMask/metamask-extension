@@ -1121,13 +1121,15 @@ describe('Sentry errors', function () {
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const { level, extra } = mockJsonBody;
           const [{ type, value }] = mockJsonBody.exception.values;
-          const { participateInMetaMetrics } =
+          const { optedIn } = extra.appState.state.AnalyticsController;
+          const { completedMetaMetricsOnboarding } =
             extra.appState.state.MetaMetricsController;
           // Verify request
           assert.equal(type, 'TestError');
           assert.equal(value, 'Test Error');
           assert.equal(level, 'error');
-          assert.equal(participateInMetaMetrics, true);
+          assert.equal(optedIn, true);
+          assert.equal(completedMetaMetricsOnboarding, true);
         },
       );
     });
@@ -1304,12 +1306,14 @@ describe('Sentry errors', function () {
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const { level, extra } = mockJsonBody;
           const [{ type, value }] = mockJsonBody.exception.values;
-          const { participateInMetaMetrics } = extra.appState.state.metamask;
+          const { optedIn, completedMetaMetricsOnboarding } =
+            extra.appState.state.metamask;
           // Verify request
           assert.equal(type, 'TestError');
           assert.equal(value, 'Test Error');
           assert.equal(level, 'error');
-          assert.equal(participateInMetaMetrics, true);
+          assert.equal(optedIn, true);
+          assert.equal(completedMetaMetricsOnboarding, true);
         },
       );
     });
@@ -1467,6 +1471,8 @@ describe('Sentry errors', function () {
       // Filtered from UI state patches (sensitive auth tokens - see state-utils.ts)
       rewardsSubscriptionTokens: false,
       storageWriteErrorType: true,
+      // AnalyticsController keeps the queue out of UI state.
+      eventQueue: false,
       // Optional property on AppStateController; only set after a user
       // interacts with a Snap install dialog, so absent from initial state.
       snapsInstallPrivacyWarningShown: true,

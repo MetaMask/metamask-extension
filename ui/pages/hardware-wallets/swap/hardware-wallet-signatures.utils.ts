@@ -5,19 +5,19 @@ import {
   HardwareWalletSignatureStatus,
   type HardwareWalletSignaturesState,
 } from './hardware-wallet-signatures-state-machine';
-import type { BridgeStatusState, QrHardwareSignRequest } from './types';
+import {
+  SignatureStepStatus,
+  type BridgeTxHistory,
+  type QrHardwareSignRequest,
+} from './types';
 
-type BridgeTxHistory = NonNullable<BridgeStatusState['metamask']['txHistory']>;
-
-export enum SignatureStepStatus {
-  Pending = 'pending',
-  Active = 'active',
-  Complete = 'complete',
-  Rejected = 'rejected',
-  Failed = 'failed',
-  Disconnected = 'disconnected',
-}
-
+/**
+ * Type guard that checks whether an unknown value is a valid QR hardware
+ * wallet sign request.
+ *
+ * @param request - The value to check.
+ * @returns True if the value conforms to the QrHardwareSignRequest shape.
+ */
 export const isQrHardwareSignRequest = (
   request: unknown,
 ): request is QrHardwareSignRequest =>
@@ -40,6 +40,14 @@ export const isQrHardwareSignRequest = (
       typeof request.request.payload.cbor === 'string',
   );
 
+/**
+ * Extracts a 'from' or 'to' address string from a transaction object.
+ * Returns undefined if the field is missing or not a string.
+ *
+ * @param transaction - The transaction object to inspect.
+ * @param field - The field name to extract ('from' or 'to').
+ * @returns The address string, or undefined if not present or not a string.
+ */
 export const getTransactionField = (
   transaction: unknown,
   field: 'from' | 'to',
@@ -56,6 +64,15 @@ export const getTransactionField = (
   return undefined;
 };
 
+/**
+ * Checks whether bridge transaction history contains an approval transaction
+ * for the given request ID. Matches against both the history entry key and the
+ * nested quote.requestId field.
+ *
+ * @param txHistory - The bridge transaction history to search.
+ * @param requestId - The request ID to look up.
+ * @returns True if a matching entry with an approvalTxId exists.
+ */
 export const hasApprovalTxForRequestId = (
   txHistory: BridgeTxHistory | undefined,
   requestId: string | undefined,
@@ -72,6 +89,16 @@ export const hasApprovalTxForRequestId = (
   );
 };
 
+/**
+ * Returns the title text for the hardware wallet signature status UI based on
+ * the current state machine state.
+ *
+ * @param options - Configuration object.
+ * @param options.status - The current signature state machine status.
+ * @param options.needsTwoConfirmations - Whether the transaction requires two signatures.
+ * @param options.t - The i18n translation function.
+ * @returns The localized title string.
+ */
 export const getTitle = ({
   status,
   needsTwoConfirmations,
@@ -107,6 +134,17 @@ export const getTitle = ({
   return t('swapConfirmWithHwWallet');
 };
 
+/**
+ * Returns the label for the final step in the signature progress indicator.
+ *
+ * @param options - Configuration object.
+ * @param options.status - The current signature state machine status.
+ * @param options.finalStepStatus - The display status of the final step.
+ * @param options.fromAmount - The amount being sent.
+ * @param options.fromTokenSymbol - The symbol of the token being sent.
+ * @param options.t - The i18n translation function.
+ * @returns The localized step label.
+ */
 export const getFinalStepLabel = ({
   status,
   finalStepStatus,
@@ -131,6 +169,16 @@ export const getFinalStepLabel = ({
   return t('bridgeHwSendAmount', [fromAmount, fromTokenSymbol]);
 };
 
+/**
+ * Returns the description text for the first (approval) step in the signature
+ * progress indicator. Shows error states or the spender address.
+ *
+ * @param options - Configuration object.
+ * @param options.firstStepStatus - The display status of the first step.
+ * @param options.spenderAddress - The spender contract address, if applicable.
+ * @param options.t - The i18n translation function.
+ * @returns The localized description string, or undefined.
+ */
 export const getFirstStepDescription = ({
   firstStepStatus,
   spenderAddress,
@@ -159,6 +207,15 @@ export const getFirstStepDescription = ({
   return undefined;
 };
 
+/**
+ * Returns the description text for the final (send) step, showing the
+ * destination address.
+ *
+ * @param options - Configuration object.
+ * @param options.toAddress - The destination address, if available.
+ * @param options.t - The i18n translation function.
+ * @returns The localized description string, or undefined.
+ */
 export const getFinalStepDescription = ({
   toAddress,
   t,
@@ -173,6 +230,15 @@ export const getFinalStepDescription = ({
   return t('bridgeHwToAddress', [shortenAddress(toAddress)]);
 };
 
+/**
+ * Returns true when the first signature step should display as complete because
+ * the flow has already progressed to (or failed on) the final signature step.
+ *
+ * @param options - Configuration object.
+ * @param options.step - The signature step being evaluated.
+ * @param options.activeSignature - The signature step that is currently active or interrupted.
+ * @returns True when evaluating the first step while the active step is the final step.
+ */
 const isCompletedBeforeFinalSignature = ({
   step,
   activeSignature,
@@ -183,53 +249,49 @@ const isCompletedBeforeFinalSignature = ({
   step === HardwareWalletSignatureStatus.AwaitingFirstSignature &&
   activeSignature === HardwareWalletSignatureStatus.AwaitingFinalSignature;
 
-export const getStepStatus = (
+/**
+ * Computes the display status for a step when the flow was interrupted by
+ * rejection, failure, or device disconnection.
+ *
+ * @param options - Configuration object.
+ * @param options.step - The signature step to compute status for.
+ * @param options.interruptedSignature - The signature step that was interrupted.
+ * @param options.interruptedStepStatus - The display status to use when the step matches the interrupted signature.
+ * @returns The computed SignatureStepStatus for this step.
+ */
+const getInterruptedStepStatus = ({
+  step,
+  interruptedSignature,
+  interruptedStepStatus,
+}: {
+  step: HardwareWalletSignatureStatus;
+  interruptedSignature: HardwareWalletSignatureStatus;
+  interruptedStepStatus: SignatureStepStatus;
+}): SignatureStepStatus => {
+  if (interruptedSignature === step) {
+    return interruptedStepStatus;
+  }
+
+  return isCompletedBeforeFinalSignature({
+    step,
+    activeSignature: interruptedSignature,
+  })
+    ? SignatureStepStatus.Complete
+    : SignatureStepStatus.Pending;
+};
+
+/**
+ * Computes the display status for a step while the flow is actively awaiting
+ * one of the hardware wallet signatures.
+ *
+ * @param step - The signature step to compute status for.
+ * @param signatureState - The current state machine state.
+ * @returns The computed SignatureStepStatus for this step.
+ */
+const getActiveStepStatus = (
   step: HardwareWalletSignatureStatus,
   signatureState: HardwareWalletSignaturesState,
 ): SignatureStepStatus => {
-  if (signatureState.status === HardwareWalletSignatureStatus.Submitted) {
-    return SignatureStepStatus.Complete;
-  }
-
-  if (signatureState.status === HardwareWalletSignatureStatus.Rejected) {
-    if (signatureState.rejectedSignature === step) {
-      return SignatureStepStatus.Rejected;
-    }
-
-    return isCompletedBeforeFinalSignature({
-      step,
-      activeSignature: signatureState.rejectedSignature,
-    })
-      ? SignatureStepStatus.Complete
-      : SignatureStepStatus.Pending;
-  }
-
-  if (signatureState.status === HardwareWalletSignatureStatus.Failed) {
-    if (signatureState.failedSignature === step) {
-      return SignatureStepStatus.Failed;
-    }
-
-    return isCompletedBeforeFinalSignature({
-      step,
-      activeSignature: signatureState.failedSignature,
-    })
-      ? SignatureStepStatus.Complete
-      : SignatureStepStatus.Pending;
-  }
-
-  if (signatureState.status === HardwareWalletSignatureStatus.Disconnected) {
-    if (signatureState.disconnectedSignature === step) {
-      return SignatureStepStatus.Disconnected;
-    }
-
-    return isCompletedBeforeFinalSignature({
-      step,
-      activeSignature: signatureState.disconnectedSignature,
-    })
-      ? SignatureStepStatus.Complete
-      : SignatureStepStatus.Pending;
-  }
-
   if (signatureState.status === step) {
     return SignatureStepStatus.Active;
   }
@@ -243,4 +305,50 @@ export const getStepStatus = (
   }
 
   return SignatureStepStatus.Pending;
+};
+
+/**
+ * Computes the display status (pending/active/complete/rejected/failed/disconnected)
+ * for a given signature step based on the overall state machine state.
+ *
+ * @param step - The signature step to compute status for.
+ * @param signatureState - The current state machine state.
+ * @returns The computed SignatureStepStatus for this step.
+ */
+export const getStepStatus = (
+  step: HardwareWalletSignatureStatus,
+  signatureState: HardwareWalletSignaturesState,
+): SignatureStepStatus => {
+  switch (signatureState.status) {
+    case HardwareWalletSignatureStatus.Submitted:
+      return SignatureStepStatus.Complete;
+
+    case HardwareWalletSignatureStatus.Rejected:
+      return getInterruptedStepStatus({
+        step,
+        interruptedSignature: signatureState.rejectedSignature,
+        interruptedStepStatus: SignatureStepStatus.Rejected,
+      });
+
+    case HardwareWalletSignatureStatus.Failed:
+      return getInterruptedStepStatus({
+        step,
+        interruptedSignature: signatureState.failedSignature,
+        interruptedStepStatus: SignatureStepStatus.Failed,
+      });
+
+    case HardwareWalletSignatureStatus.Disconnected:
+      return getInterruptedStepStatus({
+        step,
+        interruptedSignature: signatureState.disconnectedSignature,
+        interruptedStepStatus: SignatureStepStatus.Disconnected,
+      });
+
+    case HardwareWalletSignatureStatus.AwaitingFirstSignature:
+    case HardwareWalletSignatureStatus.AwaitingFinalSignature:
+      return getActiveStepStatus(step, signatureState);
+
+    default:
+      return SignatureStepStatus.Pending;
+  }
 };

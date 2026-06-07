@@ -1,9 +1,7 @@
+import { QrScanRequestType } from '@metamask/eth-qr-keyring';
+import { HardwareWalletSignatureStatus } from './hardware-wallet-signatures-state-machine';
+import { SignatureStepStatus } from './types';
 import {
-  HardwareWalletSignatureStatus,
-  type HardwareWalletSignaturesState,
-} from './hardware-wallet-signatures-state-machine';
-import {
-  SignatureStepStatus,
   getStepStatus,
   hasApprovalTxForRequestId,
   getTitle,
@@ -15,7 +13,9 @@ import {
 } from './hardware-wallet-signatures.utils';
 
 const t = (key: string, params?: (string | undefined)[]) => {
-  if (params) return `${key}[${params.join(',')}]`;
+  if (params) {
+    return `${key}[${params.join(',')}]`;
+  }
   return key;
 };
 
@@ -102,34 +102,29 @@ describe('hardware-wallet-signatures utils', () => {
       expect(
         getStepStatus(HardwareWalletSignatureStatus.AwaitingFirstSignature, {
           status: HardwareWalletSignatureStatus.Rejected,
-          rejectedSignature: HardwareWalletSignatureStatus.AwaitingFirstSignature,
+          rejectedSignature:
+            HardwareWalletSignatureStatus.AwaitingFirstSignature,
         }),
       ).toBe(SignatureStepStatus.Rejected);
     });
 
     it('returns Complete when first step rejected but current step is first (before final)', () => {
       expect(
-        getStepStatus(
-          HardwareWalletSignatureStatus.AwaitingFirstSignature,
-          {
-            status: HardwareWalletSignatureStatus.Rejected,
-            rejectedSignature:
-              HardwareWalletSignatureStatus.AwaitingFinalSignature,
-          },
-        ),
+        getStepStatus(HardwareWalletSignatureStatus.AwaitingFirstSignature, {
+          status: HardwareWalletSignatureStatus.Rejected,
+          rejectedSignature:
+            HardwareWalletSignatureStatus.AwaitingFinalSignature,
+        }),
       ).toBe(SignatureStepStatus.Complete);
     });
 
     it('returns Pending when final step rejected on first step', () => {
       expect(
-        getStepStatus(
-          HardwareWalletSignatureStatus.AwaitingFinalSignature,
-          {
-            status: HardwareWalletSignatureStatus.Rejected,
-            rejectedSignature:
-              HardwareWalletSignatureStatus.AwaitingFirstSignature,
-          },
-        ),
+        getStepStatus(HardwareWalletSignatureStatus.AwaitingFinalSignature, {
+          status: HardwareWalletSignatureStatus.Rejected,
+          rejectedSignature:
+            HardwareWalletSignatureStatus.AwaitingFirstSignature,
+        }),
       ).toBe(SignatureStepStatus.Pending);
     });
 
@@ -144,14 +139,10 @@ describe('hardware-wallet-signatures utils', () => {
 
     it('returns Complete when failed on final step and checking first step', () => {
       expect(
-        getStepStatus(
-          HardwareWalletSignatureStatus.AwaitingFirstSignature,
-          {
-            status: HardwareWalletSignatureStatus.Failed,
-            failedSignature:
-              HardwareWalletSignatureStatus.AwaitingFinalSignature,
-          },
-        ),
+        getStepStatus(HardwareWalletSignatureStatus.AwaitingFirstSignature, {
+          status: HardwareWalletSignatureStatus.Failed,
+          failedSignature: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+        }),
       ).toBe(SignatureStepStatus.Complete);
     });
 
@@ -167,27 +158,21 @@ describe('hardware-wallet-signatures utils', () => {
 
     it('returns Complete when disconnected on final step and checking first step', () => {
       expect(
-        getStepStatus(
-          HardwareWalletSignatureStatus.AwaitingFirstSignature,
-          {
-            status: HardwareWalletSignatureStatus.Disconnected,
-            disconnectedSignature:
-              HardwareWalletSignatureStatus.AwaitingFinalSignature,
-          },
-        ),
+        getStepStatus(HardwareWalletSignatureStatus.AwaitingFirstSignature, {
+          status: HardwareWalletSignatureStatus.Disconnected,
+          disconnectedSignature:
+            HardwareWalletSignatureStatus.AwaitingFinalSignature,
+        }),
       ).toBe(SignatureStepStatus.Complete);
     });
 
     it('returns Pending when disconnected on first step but checking final', () => {
       expect(
-        getStepStatus(
-          HardwareWalletSignatureStatus.AwaitingFinalSignature,
-          {
-            status: HardwareWalletSignatureStatus.Disconnected,
-            disconnectedSignature:
-              HardwareWalletSignatureStatus.AwaitingFirstSignature,
-          },
-        ),
+        getStepStatus(HardwareWalletSignatureStatus.AwaitingFinalSignature, {
+          status: HardwareWalletSignatureStatus.Disconnected,
+          disconnectedSignature:
+            HardwareWalletSignatureStatus.AwaitingFirstSignature,
+        }),
       ).toBe(SignatureStepStatus.Pending);
     });
 
@@ -426,7 +411,7 @@ describe('hardware-wallet-signatures utils', () => {
     it('returns false when request is missing', () => {
       expect(
         isQrHardwareSignRequest({
-          type: 'sign',
+          type: QrScanRequestType.SIGN,
         }),
       ).toBe(false);
     });
@@ -434,7 +419,7 @@ describe('hardware-wallet-signatures utils', () => {
     it('returns false when requestId is not a string', () => {
       expect(
         isQrHardwareSignRequest({
-          type: 'sign',
+          type: QrScanRequestType.SIGN,
           request: {
             requestId: 123,
             payload: { type: 't', cbor: 'c' },
@@ -446,9 +431,24 @@ describe('hardware-wallet-signatures utils', () => {
     it('returns false when payload is missing', () => {
       expect(
         isQrHardwareSignRequest({
-          type: 'sign',
+          type: QrScanRequestType.SIGN,
           request: {
             requestId: 'id',
+          },
+        }),
+      ).toBe(false);
+    });
+
+    it('returns false for uppercase QR sign request type', () => {
+      expect(
+        isQrHardwareSignRequest({
+          type: 'SIGN',
+          request: {
+            requestId: 'request-id-123',
+            payload: {
+              type: 'eth-sign-request',
+              cbor: 'a201010203',
+            },
           },
         }),
       ).toBe(false);
@@ -457,7 +457,7 @@ describe('hardware-wallet-signatures utils', () => {
     it('returns true for valid QR sign request', () => {
       expect(
         isQrHardwareSignRequest({
-          type: 'sign',
+          type: QrScanRequestType.SIGN,
           request: {
             requestId: 'request-id-123',
             payload: {

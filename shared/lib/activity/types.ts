@@ -24,6 +24,8 @@ export type ActivityKind =
   | 'contractDeployment'
   | 'bridge'
   | 'convert'
+  | 'nftBuy'
+  | 'nftMint'
   | 'smartAccountUpgrade'
   | 'lendingDeposit'
   | 'lendingWithdrawal'
@@ -48,8 +50,7 @@ export type ActivityKind =
   | 'perpsCloseLongTakeProfit'
   | 'marketShort'
   | 'stopMarketCloseShort'
-  | 'marketCloseShort'
-  | 'nftMint';
+  | 'marketCloseShort';
 
 export type TokenAmount = {
   amount?: string;
@@ -129,10 +130,10 @@ export type ActivityListItem =
       }
     >
   | ActivityData<
-      'nftMint',
+      'nftBuy' | 'nftMint',
       {
-        from: string;
-        to: string;
+        from?: string;
+        to?: string;
         token?: TokenAmount;
       }
     >

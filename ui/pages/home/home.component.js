@@ -113,7 +113,7 @@ export default class Home extends PureComponent {
     showUpdateModal: PropTypes.bool.isRequired,
     newNetworkAddedConfigurationId: PropTypes.string,
     totalUnapprovedCount: PropTypes.number.isRequired,
-    participateInMetaMetrics: PropTypes.bool.isRequired,
+    participateInMetaMetrics: PropTypes.bool,
     setDataCollectionForMarketing: PropTypes.func.isRequired,
     dataCollectionForMarketing: PropTypes.bool,
     location: PropTypes.object,
