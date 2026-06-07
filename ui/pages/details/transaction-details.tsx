@@ -1,9 +1,8 @@
 import React, { useMemo } from 'react';
-import { Box, Text } from '@metamask/design-system-react';
+import { Box } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
 import { mapApiEvmTransactions } from '../../../shared/lib/activity/adapters/api-evm-transactions';
 import { mapLocalTransaction } from '../../../shared/lib/activity/adapters/local-transaction';
-import { useI18nContext } from '../../hooks/useI18nContext';
 import { selectEvmAddress } from '../../selectors/accounts';
 import {
   selectLocalTransactionsByHash,
@@ -12,7 +11,9 @@ import {
 import { BlockExplorerFooter } from './components/block-explorer-footer';
 import { Header } from './components/header';
 import { TemplateLoader } from './templates/template-loader';
+import { useCachedEvmTransaction } from './useCachedEvmTransaction';
 import { useTransactionQuery } from './useTransactionQuery';
+import { V1TransactionByHashResponse } from '@metamask/core-backend';
 
 type Props = {
   chainId: string | undefined;
@@ -35,10 +36,17 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
       ? nonEvmActivityItems.get(txIdentifier.toLowerCase())
       : undefined;
 
+  const cachedApiTransaction = useCachedEvmTransaction({
+    chainId,
+    txHash: txIdentifier,
+  });
+
   const { data: apiTransaction } = useTransactionQuery({
     chainId,
     txHash: txIdentifier,
-    enabled: Boolean(isEvm && !localTransaction && selectedAddress),
+    enabled: Boolean(
+      isEvm && !localTransaction && !cachedApiTransaction && selectedAddress,
+    ),
   });
 
   const transaction = useMemo(() => {
@@ -50,17 +58,24 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
       return nonEvmActivityItem;
     }
 
-    if (apiTransaction && selectedAddress) {
+    const evmTransaction = (cachedApiTransaction ??
+      apiTransaction) as V1TransactionByHashResponse;
+
+    if (evmTransaction && selectedAddress) {
       return mapApiEvmTransactions({
         subjectAddress: selectedAddress,
-        transaction: apiTransaction as Parameters<
-          typeof mapApiEvmTransactions
-        >[0]['transaction'],
+        transaction: evmTransaction,
       });
     }
 
     return undefined;
-  }, [apiTransaction, localTransaction, nonEvmActivityItem, selectedAddress]);
+  }, [
+    apiTransaction,
+    cachedApiTransaction,
+    localTransaction,
+    nonEvmActivityItem,
+    selectedAddress,
+  ]);
 
   return (
     <Box className="flex min-h-full flex-col bg-background-default p-4">

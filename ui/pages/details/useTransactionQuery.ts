@@ -43,9 +43,5 @@ export function useTransactionQuery({
     ...queryOptions,
     enabled: enabled && Boolean(numericChainId && txHash),
     retry: false,
-    select: (response) =>
-      'data' in response
-        ? (response.data as typeof response | undefined)
-        : response,
   });
 }
