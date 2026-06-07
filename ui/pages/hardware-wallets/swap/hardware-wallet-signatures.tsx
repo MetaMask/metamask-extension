@@ -57,8 +57,7 @@ import {
   getInitialHardwareWalletSignaturesState,
   hardwareWalletSignaturesReducer,
 } from './hardware-wallet-signatures-state-machine';
-import { useHwBatchSignTracker } from './useHwBatchSignTracker';
-import { useHwSequentialSignTracker } from './useHwSequentialSignTracker';
+import { useHwSignTracker } from './useHwSignTracker';
 import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
 
 const SIGNATURE_STUCK_TIMEOUT_MS = 5_000;
@@ -192,25 +191,14 @@ export default function HardwareWalletSignatures() {
 
   useHwSwapNavigation({ signatureState });
 
-  const { cancelCurrentBatch: cancelBatch } = useHwBatchSignTracker(
+  const { cancelCurrentBatch } = useHwSignTracker(
     fromAddress,
     hardwareWalletUsed,
     needsTwoConfirmations,
     dispatchSignatureEvent,
+    { enabled: true, useBatchTracking: isStxEnabled },
     retryGenerationRef,
-    { enabled: isStxEnabled },
   );
-
-  const { cancelCurrentBatch: cancelSequential } = useHwSequentialSignTracker(
-    fromAddress,
-    hardwareWalletUsed,
-    needsTwoConfirmations,
-    dispatchSignatureEvent,
-    retryGenerationRef,
-    { enabled: !isStxEnabled },
-  );
-
-  const cancelCurrentBatch = isStxEnabled ? cancelBatch : cancelSequential;
 
   // WORKAROUND: Set the Trezor signing-in-progress flag to suppress
   // spurious WebUSB disconnect teardowns during signing. See
