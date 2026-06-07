@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  AvatarToken,
-  AvatarTokenSize,
-} from '@metamask/design-system-react';
+import { AvatarToken, AvatarTokenSize } from '@metamask/design-system-react';
 import {
   applyDisplaySign,
   getDisplaySignPrefix,
@@ -12,14 +9,20 @@ import type { TokenAmount } from '../../../../shared/lib/activity/types';
 import { getAssetImageUrl } from '../../../../shared/lib/asset-utils';
 import { useFormatters } from '../../../hooks/useFormatters';
 
+const maximumFractionDigits = 20;
+
 export function TokenAmountRow({ token }: { token: TokenAmount }) {
-  const { formatTokenAmount } = useFormatters();
+  const { formatToken } = useFormatters();
   const humanAmount = getHumanReadableTokenAmount(token);
   const formattedAmount =
     humanAmount === undefined
       ? token.symbol
       : applyDisplaySign(
-          formatTokenAmount(humanAmount as `${number}`, token.symbol ?? ''),
+          token.symbol
+            ? formatToken(humanAmount as `${number}`, token.symbol, {
+                maximumFractionDigits,
+              })
+            : humanAmount,
           getDisplaySignPrefix(token.direction, { showPlus: true }),
         );
 

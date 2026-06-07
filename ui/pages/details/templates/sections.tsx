@@ -1,11 +1,9 @@
 import React from 'react';
 import type {
-  ActivityFee,
   ActivityListItem,
   Status,
   TokenAmount,
 } from '../../../../shared/lib/activity/types';
-import { formatUnits } from '../../../../shared/lib/unit';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { NetworkName } from '../components/network-name';
@@ -60,59 +58,6 @@ export function MetadataSection({ item }: { item: ActivityListItem }) {
         label={t('network')}
         value={<NetworkName chainId={item.chainId} />}
       />
-    </Section>
-  );
-}
-
-function getFeeLabel(fee: ActivityFee, t: ReturnType<typeof useI18nContext>) {
-  if (fee.type === 'base') {
-    return t('networkFee');
-  }
-
-  if (fee.type === 'priority') {
-    return t('priorityFee');
-  }
-
-  return fee.type;
-}
-
-function getFeeValue(
-  fee: ActivityFee,
-  formatTokenAmount: ReturnType<typeof useFormatters>['formatTokenAmount'],
-) {
-  if (!fee.amount) {
-    return '-';
-  }
-
-  let amount = fee.amount;
-
-  try {
-    amount = formatUnits(BigInt(fee.amount), fee.decimals ?? 0);
-  } catch {
-    amount = fee.amount;
-  }
-
-  return formatTokenAmount(amount as `${number}`, fee.symbol ?? '');
-}
-
-export function AmountsSection({ fees }: { fees?: ActivityFee[] }) {
-  const t = useI18nContext();
-  const { formatTokenAmount } = useFormatters();
-  const visibleFees = fees?.filter((fee) => fee.amount) ?? [];
-
-  if (!visibleFees.length) {
-    return null;
-  }
-
-  return (
-    <Section>
-      {visibleFees.map((fee, index) => (
-        <Row
-          key={`${fee.type}-${fee.assetId ?? fee.symbol ?? index}`}
-          label={getFeeLabel(fee, t)}
-          value={getFeeValue(fee, formatTokenAmount)}
-        />
-      ))}
     </Section>
   );
 }

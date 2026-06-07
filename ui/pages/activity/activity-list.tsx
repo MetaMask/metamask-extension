@@ -1,18 +1,16 @@
 import React, { useMemo, useState } from 'react';
 import { Box, Text } from '@metamask/design-system-react';
-import { useNavigate } from 'react-router-dom';
 import { PendingTransactionCancelSpeedUpProvider } from '../../components/app/pending-transaction-action-buttons/pending-transaction-cancel-speed-up-provider';
 import AssetListControlBar from '../../components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar';
 import { TransactionActivityEmptyState } from '../../components/app/transaction-activity-empty-state';
 import { SectionHeader } from '../../components/ui/section-header';
 import { VirtualizedList } from '../../components/ui/virtualized-list/virtualized-list';
-import { transitionForward } from '../../components/ui/transition';
 import { useScrollContainer } from '../../contexts/scroll-container';
 import { useFormatters } from '../../hooks/useFormatters';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useItemInView } from '../../hooks/useItemInView';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
-import { TX_DETAILS_ROUTE } from '../../helpers/constants/routes';
+import { TransactionDetailsModal } from '../details/transaction-details-modal';
 import { ActivityRow } from './rows/activity-row';
 import {
   dedupeItems,
@@ -30,10 +28,10 @@ const headerHeight = 40;
 
 export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
   const t = useI18nContext();
-  const navigate = useNavigate();
   const { formatMediumDate } = useFormatters();
   const scrollContainerRef = useScrollContainer();
   const [networks, setNetworks] = useState<string[]>([]);
+  const [selectedItem, setSelectedItem] = useState<ActivityListItem>();
   const filters = filter ?? { networks };
 
   const { data, isInitialLoading, fetchNextVisiblePage } =
@@ -68,11 +66,8 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
       return;
     }
 
-    transitionForward(() =>
-      navigate(`${TX_DETAILS_ROUTE}/${item.chainId}/${item.data.hash}`),
-    );
+    setSelectedItem(item);
   };
-
   return (
     <PendingTransactionCancelSpeedUpProvider>
       {!filter && (
@@ -119,6 +114,12 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
             />
           );
         }}
+      />
+      <TransactionDetailsModal
+        isOpen={Boolean(selectedItem?.data.hash)}
+        chainId={selectedItem?.chainId}
+        txIdentifier={selectedItem?.data.hash}
+        onClose={() => setSelectedItem(undefined)}
       />
     </PendingTransactionCancelSpeedUpProvider>
   );

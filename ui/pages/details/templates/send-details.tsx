@@ -1,7 +1,8 @@
 import React from 'react';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { AmountsSection, MetadataSection, TokensSection } from './sections';
+import { AmountsSection } from '../components/amounts-section';
+import { MetadataSection, TokensSection } from './sections';
 
 export function SendDetails({
   item,
@@ -15,7 +16,7 @@ export function SendDetails({
     <div className="divide-y divide-border-muted">
       <TokensSection tokens={[{ label, token: item.data.token }]} />
       <MetadataSection item={item} />
-      <AmountsSection fees={item.data.fees} />
+      <AmountsSection item={item} />
     </div>
   );
 }

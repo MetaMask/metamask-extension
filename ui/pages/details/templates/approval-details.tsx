@@ -1,6 +1,6 @@
 import React from 'react';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
-import { AmountsSection, MetadataSection, TokensSection } from './sections';
+import { MetadataSection, TokensSection } from './sections';
 
 export function ApprovalDetails({
   item,
@@ -16,7 +16,6 @@ export function ApprovalDetails({
     <div className="divide-y divide-border-muted">
       <TokensSection tokens={[{ label: 'Token', token: item.data.token }]} />
       <MetadataSection item={item} />
-      <AmountsSection />
     </div>
   );
 }

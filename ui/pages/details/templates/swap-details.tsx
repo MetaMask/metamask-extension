@@ -1,7 +1,7 @@
 import React from 'react';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { AmountsSection, MetadataSection, TokensSection } from './sections';
+import { MetadataSection, TokensSection } from './sections';
 
 export function SwapDetails({
   item,
@@ -31,7 +31,6 @@ export function SwapDetails({
         ]}
       />
       <MetadataSection item={item} />
-      <AmountsSection />
     </div>
   );
 }
