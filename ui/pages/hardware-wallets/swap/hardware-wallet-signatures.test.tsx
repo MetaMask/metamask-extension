@@ -188,7 +188,7 @@ describe('HardwareWalletSignatures', () => {
     expect(getByRole('button', { name: 'Cancel' })).toBeDefined();
   });
 
-  it('subscribes to TransactionController events via useHwBatchSignTracker', async () => {
+  it('subscribes to TransactionController events via useHwSignTracker', async () => {
     const { callbacks } = mockSubscriptions();
     mockUseSubmitBridgeTransaction.mockReturnValue(defaultMockSubmitReturn());
     const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
