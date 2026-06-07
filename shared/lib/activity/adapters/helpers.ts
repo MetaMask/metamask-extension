@@ -17,7 +17,7 @@ import {
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../constants/tokens';
 import { toAssetId } from '../../asset-utils';
 import type { TransactionGroup } from '../../multichain/types';
-import type { Status, TokenAmount } from '../types';
+import type { ActivityFee, Status, TokenAmount } from '../types';
 
 export type ValueTransfer = NonNullable<
   V1TransactionByHashResponse['valueTransfers']
@@ -40,6 +40,43 @@ export function getNativeAssetSafe(chainId: string | number) {
   } catch {
     return undefined;
   }
+}
+
+const nativeTokenDecimals = 18;
+
+function getNetworkFee(
+  transaction: V1TransactionByHashResponse,
+  chainId: string,
+): ActivityFee | undefined {
+  const { effectiveGasPrice, gasUsed } = transaction;
+  const nativeAsset = getNativeAssetSafe(chainId);
+
+  if (!effectiveGasPrice || gasUsed === undefined) {
+    return undefined;
+  }
+
+  try {
+    return {
+      type: 'base',
+      amount: String(BigInt(gasUsed) * BigInt(effectiveGasPrice)),
+      ...(nativeAsset?.decimals === undefined
+        ? { decimals: nativeTokenDecimals }
+        : { decimals: nativeAsset.decimals }),
+      ...(nativeAsset?.symbol ? { symbol: nativeAsset.symbol } : {}),
+      ...(nativeAsset?.assetId ? { assetId: nativeAsset.assetId } : {}),
+    };
+  } catch {
+    return undefined;
+  }
+}
+
+export function getFees(
+  transaction: V1TransactionByHashResponse,
+  chainId: string,
+): ActivityFee[] | undefined {
+  const networkFee = getNetworkFee(transaction, chainId);
+
+  return networkFee ? [networkFee] : undefined;
 }
 
 const resolveAssetId = (

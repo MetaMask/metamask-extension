@@ -31,7 +31,7 @@ export function TransactionDetailsModal({
         size={ModalContentSize.Lg}
         modalDialogProps={{
           className:
-            'h-full max-w-[clamp(var(--width-sm),85vw,var(--width-max))] rounded-none shadow-none p-0',
+            'h-screen max-h-screen max-w-[clamp(var(--width-sm),85vw,var(--width-max))] overflow-y-auto rounded-none shadow-none p-0',
         }}
       >
         <TransactionDetails

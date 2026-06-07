@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import type { V1TransactionByHashResponse } from '@metamask/core-backend';
 import { type CaipChainId, hexToNumber } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
@@ -43,5 +44,7 @@ export function useTransactionQuery({
     ...queryOptions,
     enabled: enabled && Boolean(numericChainId && txHash),
     retry: false,
+    select: (response) =>
+      (response as unknown as { data: V1TransactionByHashResponse }).data,
   });
 }

@@ -89,15 +89,13 @@ export function BlockExplorerFooter({ chainId, txHash }: Props) {
   }
 
   return (
-    <div className="cta-footer mt-auto pt-6">
-      <Button
-        className="w-full"
-        size={ButtonSize.Lg}
-        variant={ButtonVariant.Secondary}
-        onClick={handleClick}
-      >
-        {t('viewOnBlockExplorer')}
-      </Button>
-    </div>
+    <Button
+      className="w-full"
+      size={ButtonSize.Lg}
+      variant={ButtonVariant.Secondary}
+      onClick={handleClick}
+    >
+      {t('viewOnBlockExplorer')}
+    </Button>
   );
 }

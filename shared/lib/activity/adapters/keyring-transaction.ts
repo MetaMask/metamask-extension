@@ -142,7 +142,6 @@ export function mapKeyringTransaction({
   if (transaction.type === KeyringTransactionType.Send) {
     const fromToken = getToken(transaction.from, 'out');
     let token = fromToken;
-    const fees = getFees(transaction);
 
     // Bitcoin transaction.from can be empty, resulting in no token avatar or send amount displayed.
     // Workaround: use the same aggregated to-asset fallback strategy as tx details modal.
@@ -163,32 +162,28 @@ export function mapKeyringTransaction({
       chainId,
       status,
       timestamp,
-      raw: { type: 'keyringTransaction', data: transaction },
       data: {
         hash: transaction.id,
         from,
         to,
         token,
-        ...(fees.length ? { fees } : {}),
+        fees: getFees(transaction),
       },
     };
   }
 
   if (transaction.type === KeyringTransactionType.Receive) {
-    const fees = getFees(transaction);
-
     return {
       type: 'receive',
       chainId,
       status,
       timestamp,
-      raw: { type: 'keyringTransaction', data: transaction },
       data: {
         hash: transaction.id,
         from,
         to,
         token: getToken(transaction.to, 'in'),
-        ...(fees.length ? { fees } : {}),
+        fees: getFees(transaction),
       },
     };
   }
@@ -199,11 +194,11 @@ export function mapKeyringTransaction({
       chainId,
       status,
       timestamp,
-      raw: { type: 'keyringTransaction', data: transaction },
       data: {
         hash: transaction.id,
         destinationToken: getToken(transaction.to, 'in'),
         sourceToken: getToken(transaction.from, 'out'),
+        fees: getFees(transaction),
       },
     };
   }

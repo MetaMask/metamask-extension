@@ -99,6 +99,7 @@ export type ActivityListItem =
       {
         sourceToken?: TokenAmount;
         destinationToken?: TokenAmount;
+        fees?: ActivityFee[];
       }
     >
   | ActivityData<
@@ -112,6 +113,7 @@ export type ActivityListItem =
       {
         sourceToken?: TokenAmount;
         destinationToken?: TokenAmount;
+        fees?: ActivityFee[];
       }
     >
   | ActivityData<

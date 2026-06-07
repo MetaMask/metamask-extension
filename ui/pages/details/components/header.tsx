@@ -29,10 +29,12 @@ function getDefinedArgs(...args: (string | undefined)[]) {
 function getTitleArgs(item: ActivityListItem) {
   switch (item.type) {
     case 'swap': {
-      return getDefinedArgs(
+      const args = getDefinedArgs(
         item.data.sourceToken?.symbol,
         item.data.destinationToken?.symbol,
       );
+
+      return args.length === 2 ? args : undefined;
     }
     case 'convert': {
       return getDefinedArgs(
@@ -70,7 +72,8 @@ function getTitleArgs(item: ActivityListItem) {
 export function Header({ item, onBack }: Props) {
   const t = useI18nContext();
   const titleKey = getTitleKey(item);
-  const title = titleKey ? t(titleKey, item ? getTitleArgs(item) : []) : null;
+  const titleArgs = item ? getTitleArgs(item) : undefined;
+  const title = titleKey && titleArgs ? t(titleKey, titleArgs) : item?.type;
 
   return (
     <Box className="grid grid-cols-[40px_1fr_40px] items-center pb-8">

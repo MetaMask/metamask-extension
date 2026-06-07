@@ -1,8 +1,5 @@
 import React from 'react';
-import type {
-  ActivityFee,
-  ActivityListItem,
-} from '../../../../shared/lib/activity/types';
+import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { formatUnits } from '../../../../shared/lib/unit';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
@@ -10,28 +7,19 @@ import { Row, Section } from './shared';
 
 const maximumFractionDigits = 8;
 
-function getFeeLabel(fee: ActivityFee, t: ReturnType<typeof useI18nContext>) {
-  if (fee.type === 'base') {
-    return t('networkFee');
-  }
-
-  if (fee.type === 'priority') {
-    return t('priorityFee');
-  }
-
-  return fee.type;
-}
-
 export function AmountsSection({ item }: { item: ActivityListItem }) {
   const t = useI18nContext();
   const { formatToken } = useFormatters();
-
-  if (item.type !== 'send' && item.type !== 'receive') {
-    return null;
-  }
-
-  const visibleFees = item.data.fees?.filter((fee) => fee.amount) ?? [];
-  const token = item.data.token;
+  const visibleFees =
+    'fees' in item.data
+      ? (item.data.fees?.filter((fee) => fee.amount) ?? [])
+      : [];
+  const token =
+    item.type === 'send' || item.type === 'receive'
+      ? item.data.token
+      : 'sourceToken' in item.data
+        ? item.data.sourceToken
+        : undefined;
   let tokenValue;
 
   if (token?.amount) {
@@ -57,7 +45,14 @@ export function AmountsSection({ item }: { item: ActivityListItem }) {
   return (
     <Section>
       {visibleFees.map((fee, index) => {
+        let label = fee.type;
         let amount = fee.amount;
+
+        if (fee.type === 'base') {
+          label = t('networkFee');
+        } else if (fee.type === 'priority') {
+          label = t('priorityFee');
+        }
 
         try {
           amount = formatUnits(BigInt(fee.amount ?? 0), fee.decimals ?? 0);
@@ -67,7 +62,7 @@ export function AmountsSection({ item }: { item: ActivityListItem }) {
         return (
           <Row
             key={`${fee.type}-${fee.assetId ?? fee.symbol ?? index}`}
-            label={getFeeLabel(fee, t)}
+            label={label}
             value={
               fee.symbol
                 ? formatToken(amount as `${number}`, fee.symbol, {
