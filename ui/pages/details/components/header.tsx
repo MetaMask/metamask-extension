@@ -14,43 +14,63 @@ type Props = {
   onBack: () => void;
 };
 
-function getTitle(
-  item: ActivityListItem | undefined,
-  t: ReturnType<typeof useI18nContext>,
-) {
+function getTitleKey(item: ActivityListItem | undefined) {
   if (!item) {
     return undefined;
   }
 
-  switch (item.type) {
-    case 'send':
-    case 'receive': {
-      const action = item.type === 'receive' ? t('received') : t('sent');
-      return item.data.token?.symbol
-        ? `${action} ${item.data.token.symbol}`
-        : item.type;
-    }
-    case 'swap':
-    case 'convert':
-    case 'lendingDeposit':
-    case 'lendingWithdrawal':
-    case 'wrap':
-    case 'unwrap':
-    case 'bridge': {
-      const sourceSymbol = item.data.sourceToken?.symbol;
-      const destinationSymbol = item.data.destinationToken?.symbol;
+  return `activity_${item.type}_${item.status}_title`;
+}
 
-      return sourceSymbol && destinationSymbol
-        ? `${t('bridgeTxDetailsSwapped')} ${sourceSymbol} ${t('to').toLowerCase()} ${destinationSymbol}`
-        : item.type;
+function getDefinedArgs(...args: (string | undefined)[]) {
+  return args.filter((arg) => Boolean(arg));
+}
+
+function getTitleArgs(item: ActivityListItem) {
+  switch (item.type) {
+    case 'swap': {
+      return getDefinedArgs(
+        item.data.sourceToken?.symbol,
+        item.data.destinationToken?.symbol,
+      );
+    }
+    case 'convert': {
+      return getDefinedArgs(
+        item.data.destinationToken?.symbol ?? item.data.sourceToken?.symbol,
+      );
+    }
+    case 'bridge':
+    case 'wrap':
+    case 'unwrap': {
+      return getDefinedArgs(item.data.sourceToken?.symbol);
+    }
+    case 'lendingWithdrawal': {
+      return getDefinedArgs(
+        item.data.sourceToken?.symbol ?? item.data.destinationToken?.symbol,
+      );
+    }
+    case 'send':
+    case 'receive':
+    case 'buy':
+    case 'claim':
+    case 'claimMusdBonus':
+    case 'deposit':
+    case 'nftBuy':
+    case 'nftMint': {
+      return getDefinedArgs(item.data.token?.symbol);
+    }
+    case 'swapIncomplete': {
+      return getDefinedArgs(item.data.sourceToken?.symbol);
     }
     default:
-      return item.type;
+      return [];
   }
 }
 
 export function Header({ item, onBack }: Props) {
   const t = useI18nContext();
+  const titleKey = getTitleKey(item);
+  const title = titleKey ? t(titleKey, item ? getTitleArgs(item) : []) : null;
 
   return (
     <Box className="grid grid-cols-[40px_1fr_40px] items-center pb-8">
@@ -60,9 +80,7 @@ export function Header({ item, onBack }: Props) {
         size={ButtonIconSize.Sm}
         onClick={onBack}
       />
-      {getTitle(item, t) ? (
-        <Text className="text-center font-medium">{getTitle(item, t)}</Text>
-      ) : null}
+      {title ? <Text className="text-center font-medium">{title}</Text> : null}
     </Box>
   );
 }

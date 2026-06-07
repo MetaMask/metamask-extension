@@ -8,7 +8,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { Row, Section } from './shared';
 
-const maximumFractionDigits = 20;
+const maximumFractionDigits = 8;
 
 function getFeeLabel(fee: ActivityFee, t: ReturnType<typeof useI18nContext>) {
   if (fee.type === 'base') {

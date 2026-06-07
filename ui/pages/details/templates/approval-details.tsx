@@ -1,6 +1,10 @@
 import React from 'react';
+import { AvatarTokenSize } from '@metamask/design-system-react';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
-import { MetadataSection, TokensSection } from './sections';
+import { ActivityAvatar } from '../../../components/app/activity-list-item-avatar';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useTokensData } from '../../../hooks/useTokensData';
+import { MetadataSection } from './sections';
 
 export function ApprovalDetails({
   item,
@@ -14,8 +18,45 @@ export function ApprovalDetails({
 }) {
   return (
     <div className="divide-y divide-border-muted">
-      <TokensSection tokens={[{ label: 'Token', token: item.data.token }]} />
+      <ApprovalTokenSection item={item} />
       <MetadataSection item={item} />
     </div>
+  );
+}
+
+function ApprovalTokenSection({
+  item,
+}: {
+  item: Extract<
+    ActivityListItem,
+    {
+      type: 'approveSpendingCap' | 'revokeSpendingCap' | 'increaseSpendingCap';
+    }
+  >;
+}) {
+  const t = useI18nContext();
+  const token = item.data.token;
+  const tokensByAssetId = useTokensData(token?.assetId ? [token.assetId] : []);
+  const tokenMetadata = token?.assetId
+    ? tokensByAssetId[token.assetId.toLowerCase()]
+    : undefined;
+  const tokenLabel =
+    token?.symbol ??
+    tokenMetadata?.symbol ??
+    tokenMetadata?.name ??
+    token?.assetId;
+
+  return (
+    <section className="py-3">
+      <p className="text-alternative">{`${t('you')} ${t('approved').toLowerCase()}`}</p>
+
+      <div className="flex items-center gap-3 py-4">
+        <ActivityAvatar tokens={[token?.assetId]} size={AvatarTokenSize.Lg} />
+
+        <p className="text-l-heading-lg leading-l-heading-lg tracking-l-heading-lg font-semibold">
+          {tokenLabel}
+        </p>
+      </div>
+    </section>
   );
 }
