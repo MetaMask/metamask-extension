@@ -20,11 +20,11 @@ import {
 } from '../../../contexts/hardware-wallets';
 import { createHardwareWalletError } from '../../../contexts/hardware-wallets/errors';
 import * as backgroundConnection from '../../../store/background-connection';
-import useSubmitBridgeTransaction from '../../bridge/hooks/useSubmitBridgeTransaction';
+import useSubmitBridgeTransaction from '../../../hooks/bridge/useSubmitBridgeTransaction';
 import { HardwareWalletSignatureEvent } from './hardware-wallet-signatures-state-machine';
 import HardwareWalletSignatures from '.';
 
-jest.mock('../../bridge/hooks/useSubmitBridgeTransaction');
+jest.mock('../../../hooks/bridge/useSubmitBridgeTransaction');
 jest.mock('../../../components/app/toast-listener/shared', () => ({
   showSuccessToast: jest.fn(),
 }));

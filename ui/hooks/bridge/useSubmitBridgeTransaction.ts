@@ -7,14 +7,14 @@ import {
 } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import { useNavigate } from 'react-router-dom';
-import { getExtensionSkipTransactionStatusPage } from '../../../../shared/lib/selectors/smart-transactions';
-import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
-import { captureException } from '../../../../shared/lib/sentry';
+import { getExtensionSkipTransactionStatusPage } from '../../../shared/lib/selectors/smart-transactions';
+import { isHardwareWallet } from '../../../shared/lib/selectors/keyring';
+import { captureException } from '../../../shared/lib/sentry';
 import {
   submitBridgeIntent,
   submitBridgeTx,
-} from '../../../ducks/bridge-status/actions';
-import { setWasTxDeclined } from '../../../ducks/bridge/actions';
+} from '../../ducks/bridge-status/actions';
+import { setWasTxDeclined } from '../../ducks/bridge/actions';
 import {
   getBridgeQuotes,
   getFromAccount,
@@ -23,17 +23,17 @@ import {
   getToToken,
   getWarningLabels,
   type BridgeAppState,
-} from '../../../ducks/bridge/selectors';
+} from '../../ducks/bridge/selectors';
 import {
   ConnectionStatus,
   useHardwareWalletActions,
   useHardwareWalletConfig,
   useHardwareWalletState,
-} from '../../../contexts/hardware-wallets';
-import { isUserRejectedHardwareWalletError } from '../../../contexts/hardware-wallets/rpcErrorUtils';
-import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { type MetaMaskReduxDispatch } from '../../../store/store';
+} from '../../contexts/hardware-wallets';
+import { isUserRejectedHardwareWalletError } from '../../contexts/hardware-wallets/rpcErrorUtils';
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import { type MetaMaskReduxDispatch } from '../../store/store';
+import { useBridgeNavigation } from './useBridgeNavigation';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';

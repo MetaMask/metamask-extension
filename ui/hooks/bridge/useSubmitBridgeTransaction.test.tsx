@@ -3,30 +3,30 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from '@testing-library/react';
-import { createMemoryRouterWrapper } from '../../../../test/lib/render-helpers-navigate';
+import { createMemoryRouterWrapper } from '../../../test/lib/render-helpers-navigate';
 import {
   createBridgeMockStore,
   MOCK_LEDGER_ACCOUNT,
-} from '../../../../test/data/bridge/mock-bridge-store';
+} from '../../../test/data/bridge/mock-bridge-store';
 import {
   DummyQuotesNoApproval,
   DummyQuotesWithApproval,
-} from '../../../../test/data/bridge/dummy-quotes';
+} from '../../../test/data/bridge/dummy-quotes';
 import {
   CROSS_CHAIN_SWAP_ROUTE,
   DEFAULT_ROUTE,
   HARDWARE_WALLET_SIGNATURES_ROUTE,
-} from '../../../helpers/constants/routes';
-import * as keyringSelectors from '../../../../shared/lib/selectors/keyring';
-import * as sentry from '../../../../shared/lib/sentry';
-import * as bridgeStatusActions from '../../../ducks/bridge-status/actions';
-import * as bridgeActions from '../../../ducks/bridge/actions';
-import { setBackgroundConnection } from '../../../store/background-connection';
-import { HardwareWalletProvider } from '../../../contexts/hardware-wallets';
+} from '../../helpers/constants/routes';
+import * as keyringSelectors from '../../../shared/lib/selectors/keyring';
+import * as sentry from '../../../shared/lib/sentry';
+import * as bridgeStatusActions from '../../ducks/bridge-status/actions';
+import * as bridgeActions from '../../ducks/bridge/actions';
+import { setBackgroundConnection } from '../../store/background-connection';
+import { HardwareWalletProvider } from '../../contexts/hardware-wallets';
 import useSubmitBridgeTransaction from './useSubmitBridgeTransaction';
 
-jest.mock('../../../../shared/lib/sentry', () => ({
-  ...jest.requireActual('../../../../shared/lib/sentry'),
+jest.mock('../../../shared/lib/sentry', () => ({
+  ...jest.requireActual('../../../shared/lib/sentry'),
   captureException: jest.fn(),
 }));
 
@@ -38,8 +38,8 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-jest.mock('../../../ducks/bridge/utils', () => ({
-  ...jest.requireActual('../../../ducks/bridge/utils'),
+jest.mock('../../ducks/bridge/utils', () => ({
+  ...jest.requireActual('../../ducks/bridge/utils'),
   getTxGasEstimates: jest.fn(() => ({
     baseAndPriorityFeePerGas: '0',
     maxFeePerGas: '0x1036640',
@@ -103,9 +103,9 @@ const MOCK_NETWORK_CONFIGURATIONS_BY_CHAIN_ID = {
   },
 };
 
-jest.mock('../../../../shared/lib/selectors/networks', () => {
+jest.mock('../../../shared/lib/selectors/networks', () => {
   const original = jest.requireActual(
-    '../../../../shared/lib/selectors/networks',
+    '../../../shared/lib/selectors/networks',
   );
   return {
     ...original,
@@ -137,8 +137,8 @@ jest.mock('../../../../shared/lib/selectors/networks', () => {
   };
 });
 
-jest.mock('../../../selectors', () => {
-  const original = jest.requireActual('../../../selectors');
+jest.mock('../../selectors', () => {
+  const original = jest.requireActual('../../selectors');
   return {
     ...original,
     getIsBridgeEnabled: () => true,
@@ -146,8 +146,8 @@ jest.mock('../../../selectors', () => {
     checkNetworkAndAccountSupports1559: () => true,
   };
 });
-jest.mock('../../../../shared/lib/selectors/keyring', () => ({
-  ...jest.requireActual('../../../../shared/lib/selectors/keyring'),
+jest.mock('../../../shared/lib/selectors/keyring', () => ({
+  ...jest.requireActual('../../../shared/lib/selectors/keyring'),
   getHardwareWalletType: jest.fn(() => undefined),
   isHardwareWallet: jest.fn(() => false),
 }));
@@ -197,7 +197,7 @@ const captureExceptionSpy = jest.spyOn(sentry, 'captureException');
 const mockResetState = jest.fn();
 const resetBridgeStoreSpy = jest.spyOn(bridgeActions, 'resetInputFields');
 
-describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
+describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
   describe('submitBridgeTransaction', () => {
     beforeEach(() => {
       jest.clearAllMocks();

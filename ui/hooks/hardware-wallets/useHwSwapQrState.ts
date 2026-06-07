@@ -81,7 +81,7 @@ export function useHwSwapQrState({
       : undefined;
 
   const handleQrScanSuccess = useCallback(
-    (response: SerializedUR) => dispatch(completeQrCodeScan(response)),
+    async (response: SerializedUR) => dispatch(completeQrCodeScan(response)),
     [dispatch],
   );
 

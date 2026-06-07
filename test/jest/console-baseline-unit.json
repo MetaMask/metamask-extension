@@ -632,10 +632,10 @@
       "React: DOM nesting violations": 2,
       "Reselect: Identity function warnings": 1
     },
-    "ui/pages/bridge/hooks/useEnableMissingNetwork.test.ts": {
+    "ui/hooks/bridge/useEnableMissingNetwork.test.ts": {
       "MetaMask: Background connection not initialized": 1
     },
-    "ui/pages/bridge/hooks/useSubmitBridgeTransaction.test.tsx": {
+    "ui/hooks/bridge/useSubmitBridgeTransaction.test.tsx": {
       "Reselect: Identity function warnings": 1
     },
     "ui/pages/bridge/index.test.tsx": {

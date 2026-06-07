@@ -7,25 +7,38 @@ import {
 } from '../../../store/background-connection';
 import { HardwareWalletSignatureEvent } from './hardware-wallet-signatures-state-machine';
 
+/** Bridge/swap transaction types that correspond to token approval signatures. */
 const APPROVAL_TYPES = new Set([
   TransactionType.bridgeApproval,
   TransactionType.swapApproval,
 ]);
 
+/** Bridge/swap transaction types that correspond to the final trade signature. */
 const TRADE_TYPES = new Set([TransactionType.bridge, TransactionType.swap]);
+/** All tracked bridge/swap transaction types (approval + trade). */
 const ALL_BATCH_TYPES = new Set([...APPROVAL_TYPES, ...TRADE_TYPES]);
 
+/** Action types dispatched by useHwSignTracker to the hardware wallet state machine. */
 export type HwSignTrackerAction =
   | { type: typeof HardwareWalletSignatureEvent.FirstSignatureSubmitted }
   | { type: typeof HardwareWalletSignatureEvent.TransactionSubmitted }
   | { type: typeof HardwareWalletSignatureEvent.TransactionRejected }
   | { type: typeof HardwareWalletSignatureEvent.TransactionFailed };
 
+/** Options for configuring the hardware wallet signature tracker. */
 export type UseHwSignTrackerOptions = {
   enabled?: boolean;
   useBatchTracking: boolean;
 };
 
+/**
+ * Checks whether a transaction matches the expected sender address and is one
+ * of the tracked bridge/swap types.
+ *
+ * @param transactionMeta - The transaction metadata to check.
+ * @param targetFrom - The expected sender address (lowercased).
+ * @returns True if the transaction matches.
+ */
 function matchesTx(
   transactionMeta: TransactionMeta,
   targetFrom: string | undefined,
@@ -40,6 +53,16 @@ function matchesTx(
   return ALL_BATCH_TYPES.has(transactionMeta.type as TransactionType);
 }
 
+/**
+ * Checks whether a transaction belongs to the currently tracked batch (or is
+ * from a stale batch that should be ignored).
+ *
+ * @param transactionMeta - The transaction metadata to check.
+ * @param currentBatchId - The current batch ID. `undefined` accepts all,
+ * `null` rejects all (retry pending), a string only matches that batch.
+ * @param staleBatchIds - Set of batch IDs that have been superceded by retries.
+ * @returns True if the transaction belongs to the current batch.
+ */
 function isFromCurrentBatch(
   transactionMeta: TransactionMeta,
   currentBatchId: string | null | undefined,
@@ -55,12 +78,34 @@ function isFromCurrentBatch(
   return batchId === currentBatchId;
 }
 
+/**
+ * Returns true when no batch has been identified yet, meaning rejection and
+ * finished events should be blocked until the first signed event establishes
+ * the active batch.
+ *
+ * @param currentBatchId - The current batch ID state.
+ * @returns True when currentBatchId is undefined (no batch yet).
+ */
 function shouldBlockPendingEvent(
   currentBatchId: string | null | undefined,
 ): boolean {
   return currentBatchId === undefined;
 }
 
+/**
+ * Subscribes to TransactionController events to track hardware wallet signing
+ * progress for bridge/swap transactions. Supports both batch tracking (STX
+ * enabled, keyed by batchId) and sequential tracking (STX disabled, keyed by
+ * tx ID). Returns a cancelCurrentBatch function to abort in-flight signing.
+ *
+ * @param fromAddress - The sender address to filter transactions by.
+ * @param hardwareWalletUsed - Whether a hardware wallet is being used.
+ * @param _needsTwoConfirmations - Whether the transaction requires approval + trade.
+ * @param dispatchSignatureEvent - Dispatcher for the hardware wallet state machine.
+ * @param options - Tracking options (enabled, useBatchTracking).
+ * @param retryGenerationRef - Ref incremented on retry to mark old batches as stale.
+ * @returns An object with cancelCurrentBatch to abort tracked transactions.
+ */
 export function useHwSignTracker(
   fromAddress: string | undefined,
   hardwareWalletUsed: boolean | undefined,
@@ -73,7 +118,7 @@ export function useHwSignTracker(
   dispatchRef.current = dispatchSignatureEvent;
 
   const enabled = options?.enabled ?? true;
-  const useBatchTracking = options.useBatchTracking;
+  const {useBatchTracking} = options;
 
   // Shared refs (both modes)
   const trackedTxIdsRef = useRef<Set<string>>(new Set());
@@ -86,6 +131,11 @@ export function useHwSignTracker(
   const staleBatchIdsRef = useRef<Set<string>>(new Set());
   const seenBatchIdsRef = useRef<Set<string>>(new Set());
 
+  /**
+   * Aborts all currently tracked transactions by calling the background
+   * abortTransactionSigning RPC. Waits up to 5 seconds for abort events to
+   * settle to prevent stale events from triggering false state transitions.
+   */
   const cancelCurrentBatch = useCallback(async () => {
     if (!enabled) {
       return;
@@ -347,10 +397,8 @@ export function useHwSignTracker(
               );
               return;
             }
-          } else {
-            if (!trackedTxIdsRef.current.has(transactionMeta.id)) {
-              return;
-            }
+          } else if (!trackedTxIdsRef.current.has(transactionMeta.id)) {
+            return;
           }
 
           console.log(`${logPrefix} tx rejected → TransactionRejected`);
@@ -423,10 +471,8 @@ export function useHwSignTracker(
               );
               return;
             }
-          } else {
-            if (!trackedTxIdsRef.current.has(transactionMeta.id)) {
-              return;
-            }
+          } else if (!trackedTxIdsRef.current.has(transactionMeta.id)) {
+            return;
           }
 
           if (status === 'rejected') {

@@ -1,6 +1,6 @@
-import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
-import * as ActionsModule from '../../../store/actions';
+import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
+import * as ActionsModule from '../../store/actions';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 
 describe('useEnableMissingNetwork', () => {

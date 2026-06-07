@@ -38,7 +38,8 @@ import {
   useHardwareWalletActions,
   useHardwareWalletState,
 } from '../../../contexts/hardware-wallets';
-import useSubmitBridgeTransaction from '../../bridge/hooks/useSubmitBridgeTransaction';
+import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
+import useSubmitBridgeTransaction from '../../../hooks/bridge/useSubmitBridgeTransaction';
 import SignatureStatusIcon from './signature-status-icon';
 import QrSignatureCode from './qr-signature-code';
 import GenericHardwareWalletAnimation from './generic-hardware-wallet-animation';
@@ -58,10 +59,16 @@ import {
   hardwareWalletSignaturesReducer,
 } from './hardware-wallet-signatures-state-machine';
 import { useHwSignTracker } from './useHwSignTracker';
-import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
 
 const SIGNATURE_STUCK_TIMEOUT_MS = 5_000;
 
+/**
+ * Checks whether the current state machine status represents a step where the
+ * user is expected to sign on their hardware device.
+ *
+ * @param status - The current signature state machine status.
+ * @returns True when the status is AwaitingFirstSignature or AwaitingFinalSignature.
+ */
 function isAwaitingSignature(status: HardwareWalletSignatureStatus): boolean {
   return (
     status === HardwareWalletSignatureStatus.AwaitingFirstSignature ||
@@ -69,6 +76,12 @@ function isAwaitingSignature(status: HardwareWalletSignatureStatus): boolean {
   );
 }
 
+/**
+ * Signing page for hardware wallet bridge/swap transactions. Manages the
+ * full lifecycle: quote display, device connection monitoring, signature
+ * progress tracking (approval + trade), QR code signing, retry on failure
+ * or disconnection, and post-submission navigation.
+ */
 export default function HardwareWalletSignatures() {
   const t = useI18nContext();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
@@ -114,6 +127,10 @@ export default function HardwareWalletSignatures() {
   const [hasSignatureTimedOut, setHasSignatureTimedOut] = useState(false);
   const { connectionState } = useHardwareWalletState();
 
+  /**
+   * Called when the hardware wallet transaction submission succeeds.
+   * Dispatches TransactionSubmitted unless a retry is in flight.
+   */
   const handleHardwareWalletSubmitted = useCallback(() => {
     if (isRetryingRef.current) {
       return;
@@ -123,6 +140,10 @@ export default function HardwareWalletSignatures() {
     });
   }, [dispatchSignatureEvent]);
 
+  /**
+   * Called when the user rejects the signature on the hardware device.
+   * Dispatches TransactionRejected unless a retry is in flight.
+   */
   const handleHardwareWalletRejected = useCallback(() => {
     if (isRetryingRef.current) {
       return;
@@ -136,6 +157,10 @@ export default function HardwareWalletSignatures() {
     });
   }, [dispatchSignatureEvent, signatureState.status]);
 
+  /**
+   * Called when the hardware wallet signing fails due to an error.
+   * Dispatches TransactionFailed unless a retry is in flight.
+   */
   const handleHardwareWalletFailed = useCallback(() => {
     if (isRetryingRef.current) {
       return;
@@ -172,7 +197,7 @@ export default function HardwareWalletSignatures() {
     hardwareWalletUsed,
     signatureState,
     dispatchSignatureEvent,
-    retryGenerationRef,
+    retryGenerationCounterRef: retryGenerationRef,
     isDeviceDisconnectedRef,
   });
 
@@ -356,6 +381,11 @@ export default function HardwareWalletSignatures() {
   };
   const displayedTitle = showInlineQrSigning ? getQrTitle() : title;
 
+  /**
+   * Retries the hardware wallet signing flow after a rejection, failure, or
+   * device disconnection. Cancels the current batch, resets the state machine,
+   * and re-submits the bridge transaction.
+   */
   const handleRetry = useCallback(async () => {
     if (isRetryingRef.current) {
       return;
@@ -418,6 +448,10 @@ export default function HardwareWalletSignatures() {
     retrySubmission,
     signatureState.status,
   ]);
+  /**
+   * Cancels the hardware wallet signing flow. Aborts the current batch, stops
+   * any active QR scan, and navigates back to the bridge page.
+   */
   const handleCancel = useCallback(async () => {
     await cancelCurrentBatch();
     handleQrSignatureCancel();
@@ -467,6 +501,7 @@ export default function HardwareWalletSignatures() {
                   submitQRHardwareSignature={handleQrScanSuccess}
                   requestId={qrSignRequest.request.requestId}
                   setErrorTitle={() => undefined}
+                  setErrorActive={() => undefined}
                 />
               </Box>
             )}
