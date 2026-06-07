@@ -25,7 +25,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
-import Reader from '../../../components/app/qr-hardware-popover/qr-hardware-sign-request/reader';
+import Reader from '../../../components/app/qr-hardware-popover/qr-hardware-sign-request/qr-reader';
 
 import { useHwSwapQuoteData } from '../../../hooks/hardware-wallets/useHwSwapQuoteData';
 import { useHwSwapSubmission } from '../../../hooks/hardware-wallets/useHwSwapSubmission';

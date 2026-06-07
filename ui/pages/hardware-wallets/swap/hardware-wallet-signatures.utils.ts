@@ -11,6 +11,12 @@ import {
   type QrHardwareSignRequest,
 } from './types';
 
+export {
+  SignatureStepStatus,
+  type BridgeTxHistory,
+  type QrHardwareSignRequest,
+};
+
 /**
  * Type guard that checks whether an unknown value is a valid QR hardware
  * wallet sign request.
