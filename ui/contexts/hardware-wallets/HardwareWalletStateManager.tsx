@@ -72,7 +72,7 @@ export type HardwareWalletRefs = {
    * When this flag is true, the native WebUSB disconnect handler in
    * `useHardwareWalletAutoConnect` skips teardown. Real physical disconnects
    * during signing will cause the signing operation itself to fail, which
-   * the batch tracker (`useHwBatchSignTracker`) handles via
+   * the tracker (`useHwSignTracker` in batch mode) handles via
    * `TransactionFailed`.
    *
    * This flag is set by the bridge signing page
