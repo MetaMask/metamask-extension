@@ -380,6 +380,95 @@ describe.each([
         type: HardwareWalletSignatureEvent.FirstSignatureSubmitted,
       });
     });
+
+    it('does not dispatch transactionRejected when cancel runs twice during settle', async () => {
+      const { dispatchEvent, fire, result } = await setupTracker({
+        useBatchTracking,
+      });
+
+      await fire(STATUS_UPDATED, {
+        id: 'tx-abort',
+        batchId: 'batch-1',
+      });
+      dispatchEvent.mockClear();
+
+      const firstCancelPromise = result.current.cancelCurrentBatch();
+      await act(async () => {
+        await result.current.cancelCurrentBatch();
+      });
+
+      await fire(REJECTED, { id: 'tx-abort', batchId: 'batch-1' });
+      expect(dispatchEvent).not.toHaveBeenCalled();
+
+      await act(async () => {
+        await jest.advanceTimersByTimeAsync(6_000);
+      });
+      await firstCancelPromise;
+
+      expect(dispatchEvent).not.toHaveBeenCalled();
+    });
+
+    it('does not dispatch transactionRejected when enabled toggles during settle', async () => {
+      const callbacks = setupCallbacks();
+      const dispatchEvent = jest.fn();
+
+      const { result, rerender } = renderHook(
+        ({ enabled }) =>
+          useHwSignTracker(FROM_ADDRESS, true, true, dispatchEvent, {
+            useBatchTracking,
+            enabled,
+          }),
+        { initialProps: { enabled: true } },
+      );
+
+      await act(async () => {
+        await jest.runAllTimersAsync();
+      });
+
+      const statusCb = callbacks.get(STATUS_UPDATED);
+      await act(async () => {
+        statusCb?.([
+          {
+            transactionMeta: createTxMeta({
+              id: 'tx-abort',
+              batchId: 'batch-1',
+            }),
+          },
+        ]);
+      });
+
+      dispatchEvent.mockClear();
+
+      const cancelPromise = result.current.cancelCurrentBatch();
+
+      rerender({ enabled: false });
+      rerender({ enabled: true });
+
+      await act(async () => {
+        await jest.runAllTimersAsync();
+      });
+
+      const rejectedCb = callbacks.get(REJECTED);
+      await act(async () => {
+        rejectedCb?.([
+          {
+            transactionMeta: createTxMeta({
+              id: 'tx-abort',
+              batchId: 'batch-1',
+            }),
+          },
+        ]);
+      });
+
+      expect(dispatchEvent).not.toHaveBeenCalled();
+
+      await act(async () => {
+        await jest.advanceTimersByTimeAsync(6_000);
+      });
+      await cancelPromise;
+
+      expect(dispatchEvent).not.toHaveBeenCalled();
+    });
   });
 
   describe('subscription lifecycle', () => {

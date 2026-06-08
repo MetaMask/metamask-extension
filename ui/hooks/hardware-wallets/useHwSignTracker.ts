@@ -135,18 +135,8 @@ export function useHwSignTracker(
   // Sequential-mode-only refs (unused in batch mode)
   const staleTxIdsRef = useRef<Set<string>>(new Set());
 
-  /**
-   * Aborts all currently tracked transactions by calling the background
-   * abortTransactionSigning RPC. Waits up to 5 seconds for abort events to
-   * settle to prevent stale events from triggering false state transitions.
-   */
-  const resetTrackingRefs = useCallback(() => {
+  const clearSubscriptionTracking = useCallback(() => {
     trackedTxIdsRef.current = new Set();
-    pendingAbortTxIdsRef.current.clear();
-    if (abortSettleResolveRef.current) {
-      abortSettleResolveRef.current();
-      abortSettleResolveRef.current = null;
-    }
     if (useBatchTracking) {
       currentBatchIdRef.current = undefined;
       staleBatchIdsRef.current = new Set();
@@ -155,6 +145,8 @@ export function useHwSignTracker(
       staleTxIdsRef.current = new Set();
     }
   }, [useBatchTracking]);
+
+  const isAbortSettling = () => pendingAbortTxIdsRef.current.size > 0;
 
   const cancelCurrentBatch = useCallback(async () => {
     if (!enabled) {
@@ -165,7 +157,10 @@ export function useHwSignTracker(
     trackedTxIdsRef.current = new Set();
 
     if (txIds.length === 0) {
-      resetTrackingRefs();
+      if (isAbortSettling()) {
+        return;
+      }
+      clearSubscriptionTracking();
       return;
     }
 
@@ -187,7 +182,7 @@ export function useHwSignTracker(
 
     if (pendingAbortTxIdsRef.current.size === 0) {
       abortSettleResolveRef.current = null;
-      resetTrackingRefs();
+      clearSubscriptionTracking();
       return;
     }
 
@@ -199,8 +194,8 @@ export function useHwSignTracker(
     abortSettleResolveRef.current = null;
     // Stop swallowing events if abort confirmations never arrived (timeout path).
     pendingAbortTxIdsRef.current.clear();
-    resetTrackingRefs();
-  }, [enabled, resetTrackingRefs]);
+    clearSubscriptionTracking();
+  }, [clearSubscriptionTracking, enabled]);
 
   useEffect(() => {
     if (!fromAddress || !hardwareWalletUsed || !enabled) {
@@ -550,7 +545,7 @@ export function useHwSignTracker(
 
     return () => {
       cancelled = true;
-      resetTrackingRefs();
+      clearSubscriptionTracking();
       for (const unsub of unsubscribes) {
         unsub().catch(
           // eslint-disable-next-line no-empty-function
