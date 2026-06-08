@@ -22,6 +22,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
+  MetaMetricsEventVerificationMethod,
 } from '../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
@@ -197,6 +198,8 @@ function RevealSeedPage() {
               // eslint-disable-next-line @typescript-eslint/naming-convention
               key_type: MetaMetricsEventKeyType.Srp,
               // eslint-disable-next-line @typescript-eslint/naming-convention
+              verification_method: MetaMetricsEventVerificationMethod.Password,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               hd_entropy_index: hdEntropyIndex,
             },
           });
@@ -210,6 +213,8 @@ function RevealSeedPage() {
             properties: {
               // eslint-disable-next-line @typescript-eslint/naming-convention
               key_type: MetaMetricsEventKeyType.Srp,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              verification_method: MetaMetricsEventVerificationMethod.Password,
               reason: e.message,
               // eslint-disable-next-line @typescript-eslint/naming-convention
               hd_entropy_index: hdEntropyIndex,
@@ -272,12 +277,12 @@ function RevealSeedPage() {
       trace({ name: TraceName.RevealSeed });
       trackEvent({
         category: MetaMetricsEventCategory.Keys,
-        event: MetaMetricsEventName.SrpRevealWithPasskey,
+        event: MetaMetricsEventName.KeyExportRequested,
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          status: 'started',
+          verification_method: MetaMetricsEventVerificationMethod.Passkey,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: hdEntropyIndex,
         },
@@ -290,24 +295,14 @@ function RevealSeedPage() {
 
         trackEvent({
           category: MetaMetricsEventCategory.Keys,
-          event: MetaMetricsEventName.SrpRevealWithPasskey,
-          properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            key_type: MetaMetricsEventKeyType.Srp,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            status: 'completed',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            duration_ms: Date.now() - startedAt,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            hd_entropy_index: hdEntropyIndex,
-          },
-        });
-        trackEvent({
-          category: MetaMetricsEventCategory.Keys,
           event: MetaMetricsEventName.KeyExportRevealed,
           properties: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             key_type: MetaMetricsEventKeyType.Srp,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            verification_method: MetaMetricsEventVerificationMethod.Passkey,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            duration_ms: Date.now() - startedAt,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             hd_entropy_index: hdEntropyIndex,
           },
@@ -321,12 +316,12 @@ function RevealSeedPage() {
         const errorCode = getPasskeyErrorCode(revealError);
         trackEvent({
           category: MetaMetricsEventCategory.Keys,
-          event: MetaMetricsEventName.SrpRevealWithPasskey,
+          event: MetaMetricsEventName.KeyExportFailed,
           properties: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             key_type: MetaMetricsEventKeyType.Srp,
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            status: 'failed',
+            verification_method: MetaMetricsEventVerificationMethod.Passkey,
             reason: errorCode,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             duration_ms: Date.now() - startedAt,
@@ -428,6 +423,8 @@ function RevealSeedPage() {
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          verification_method: MetaMetricsEventVerificationMethod.Password,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: hdEntropyIndex,
         },

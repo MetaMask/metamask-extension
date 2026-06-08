@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useState, useEffect } from 'react';
+import React, { useMemo, useCallback, useState, useEffect, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { type AccountGroupId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
@@ -35,8 +35,17 @@ import {
 } from '../../../store/actions';
 import { useIsPasskeyActive, useIsPasskeyIncompatibleInSidepanel } from '../../../hooks/usePasskeyAvailability';
 import { cancelPasskeyCeremony } from '../../../../shared/lib/passkey';
-import { createSentryError } from '../../../../shared/lib/error';
+import { getPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
+import { createSentryError, getErrorMessage } from '../../../../shared/lib/error';
 import { captureException } from '../../../../shared/lib/sentry';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventKeyType,
+  MetaMetricsEventName,
+  MetaMetricsEventVerificationMethod,
+} from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 import {
   endTrace,
   trace,
@@ -78,6 +87,8 @@ const MultichainPrivateKeyList = ({
 }: MultichainPrivateKeyListProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const { trackEvent } = useContext(MetaMetricsContext);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const [password, setPassword] = useState<string>('');
   const [wrongPassword, setWrongPassword] = useState<boolean>(false);
   const [reveal, setReveal] = useState<boolean>(false);
@@ -124,21 +135,6 @@ const MultichainPrivateKeyList = ({
     [setPassword],
   );
 
-  const validatePassword = useCallback(async () => {
-    try {
-      await verifyPassword(password);
-      setWrongPassword(false);
-      setReveal(true);
-      trace({
-        name: TraceName.ShowAccountPrivateKeyList,
-        op: TraceOperation.AccountUi,
-      });
-    } catch (error) {
-      setWrongPassword(true);
-      setReveal(false);
-    }
-  }, [password]);
-
   const exportableAddresses = useMemo(
     () =>
       accounts
@@ -159,21 +155,89 @@ const MultichainPrivateKeyList = ({
     [exportableAddresses],
   );
 
-  const unlockPrivateKeys = useCallback(async () => {
-    const pks = (await dispatch(
-      exportAccounts(password, exportableAddresses),
-    )) as unknown as string[];
-
-    setPrivateKeys(buildPrivateKeyMap(pks));
-  }, [buildPrivateKeyMap, dispatch, exportableAddresses, password]);
-
   const onSubmit = useCallback(async () => {
-    await validatePassword();
-    await unlockPrivateKeys();
-  }, [validatePassword, unlockPrivateKeys]);
+    trackEvent({
+      category: MetaMetricsEventCategory.Keys,
+      event: MetaMetricsEventName.KeyExportRequested,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        key_type: MetaMetricsEventKeyType.Pkey,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        verification_method: MetaMetricsEventVerificationMethod.Password,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        hd_entropy_index: hdEntropyIndex,
+      },
+    });
+
+    try {
+      await verifyPassword(password);
+      setWrongPassword(false);
+      trace({
+        name: TraceName.ShowAccountPrivateKeyList,
+        op: TraceOperation.AccountUi,
+      });
+
+      const pks = (await dispatch(
+        exportAccounts(password, exportableAddresses),
+      )) as unknown as string[];
+
+      setPrivateKeys(buildPrivateKeyMap(pks));
+      setReveal(true);
+
+      trackEvent({
+        category: MetaMetricsEventCategory.Keys,
+        event: MetaMetricsEventName.KeyExportRevealed,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          key_type: MetaMetricsEventKeyType.Pkey,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          verification_method: MetaMetricsEventVerificationMethod.Password,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: hdEntropyIndex,
+        },
+      });
+    } catch (error) {
+      setWrongPassword(true);
+      setReveal(false);
+      trackEvent({
+        category: MetaMetricsEventCategory.Keys,
+        event: MetaMetricsEventName.KeyExportFailed,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          key_type: MetaMetricsEventKeyType.Pkey,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          verification_method: MetaMetricsEventVerificationMethod.Password,
+          reason: getErrorMessage(error),
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: hdEntropyIndex,
+        },
+      });
+    }
+  }, [
+    buildPrivateKeyMap,
+    dispatch,
+    exportableAddresses,
+    hdEntropyIndex,
+    password,
+    trackEvent,
+  ]);
 
   const handleRevealWithPasskey = useCallback(
     async (authenticationResponse: PasskeyAuthenticationResponse) => {
+      const startedAt = Date.now();
+      trackEvent({
+        category: MetaMetricsEventCategory.Keys,
+        event: MetaMetricsEventName.KeyExportRequested,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          key_type: MetaMetricsEventKeyType.Pkey,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          verification_method: MetaMetricsEventVerificationMethod.Passkey,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: hdEntropyIndex,
+        },
+      });
+
       try {
         trace({
           name: TraceName.ShowAccountPrivateKeyList,
@@ -188,7 +252,37 @@ const MultichainPrivateKeyList = ({
 
         setPrivateKeys(buildPrivateKeyMap(pks));
         setReveal(true);
+
+        trackEvent({
+          category: MetaMetricsEventCategory.Keys,
+          event: MetaMetricsEventName.KeyExportRevealed,
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            key_type: MetaMetricsEventKeyType.Pkey,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            verification_method: MetaMetricsEventVerificationMethod.Passkey,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            duration_ms: Date.now() - startedAt,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            hd_entropy_index: hdEntropyIndex,
+          },
+        });
       } catch (error) {
+        trackEvent({
+          category: MetaMetricsEventCategory.Keys,
+          event: MetaMetricsEventName.KeyExportFailed,
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            key_type: MetaMetricsEventKeyType.Pkey,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            verification_method: MetaMetricsEventVerificationMethod.Passkey,
+            reason: getPasskeyErrorCode(error),
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            duration_ms: Date.now() - startedAt,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            hd_entropy_index: hdEntropyIndex,
+          },
+        });
         captureException(
           createSentryError('Export private keys with passkey failed', error),
         );
@@ -196,7 +290,13 @@ const MultichainPrivateKeyList = ({
         setScreen(VERIFY_PASSWORD_SCREEN);
       }
     },
-    [buildPrivateKeyMap, dispatch, exportableAddresses],
+    [
+      buildPrivateKeyMap,
+      dispatch,
+      exportableAddresses,
+      hdEntropyIndex,
+      trackEvent,
+    ],
   );
 
   const handleUsePassword = useCallback(() => {
@@ -212,9 +312,21 @@ const MultichainPrivateKeyList = ({
   }, [groupId]);
 
   const onCancel = useCallback(() => {
+    if (!reveal) {
+      trackEvent({
+        category: MetaMetricsEventCategory.Keys,
+        event: MetaMetricsEventName.KeyExportCanceled,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          key_type: MetaMetricsEventKeyType.Pkey,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: hdEntropyIndex,
+        },
+      });
+    }
     cleanStateVariables();
     goBack();
-  }, [cleanStateVariables, goBack]);
+  }, [cleanStateVariables, goBack, hdEntropyIndex, reveal, trackEvent]);
 
   const renderedPasswordInput = useMemo(
     () => (
@@ -290,6 +402,18 @@ const MultichainPrivateKeyList = ({
 
       const handleCopyClick = () => {
         handleCopy(privateKey);
+        trackEvent({
+          category: MetaMetricsEventCategory.Keys,
+          event: MetaMetricsEventName.KeyExportCopied,
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            key_type: MetaMetricsEventKeyType.Pkey,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            copy_method: 'clipboard',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            hd_entropy_index: hdEntropyIndex,
+          },
+        });
       };
 
       return (
@@ -305,7 +429,7 @@ const MultichainPrivateKeyList = ({
         />
       );
     },
-    [handleCopy, privateKeys, t],
+    [handleCopy, hdEntropyIndex, privateKeys, t, trackEvent],
   );
 
   const renderedRows = useMemo(() => {

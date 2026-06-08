@@ -4728,11 +4728,6 @@ export default class MetamaskController extends EventEmitter {
    * Reveals the Secret Recovery Phrase after verifying a passkey assertion,
    * used as a password-less alternative to {@link getSeedPhrase}.
    *
-   * The vault is already unlocked here, so the passkey assertion only acts as a
-   * step-up re-authentication gate. We additionally require the passkey-derived
-   * vault key to decrypt the vault (via exportSeedPhrase), binding the passkey
-   * to this vault. Non-social-login only.
-   *
    * @param {import('@metamask/passkey-controller').PasskeyAuthenticationResponse} authenticationResponse - WebAuthn authentication response from the passkey ceremony.
    * @param {string} [keyringId] - The id of the HD keyring to reveal. Defaults to the primary keyring.
    * @returns {Promise<Buffer>} The seed phrase encoded as an array of UTF-8 bytes.
@@ -4745,9 +4740,6 @@ export default class MetamaskController extends EventEmitter {
       );
     }
 
-    // Use retrieveVaultKeyWithPasskey (not verifyPasskeyAuthentication) so we
-    // obtain the passkey-wrapped vault key. This also cryptographically
-    // verifies the assertion, throwing on an invalid passkey.
     const vaultKey =
       await this.passkeyController.retrieveVaultKeyWithPasskey(
         authenticationResponse,

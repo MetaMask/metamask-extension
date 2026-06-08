@@ -1,16 +1,33 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AccountGroupId } from '@metamask/account-api';
+import {
+  startPasskeyAuthentication,
+  cancelPasskeyCeremony,
+  isPasskeyCeremonySilentError,
+} from '../../../../shared/lib/passkey';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventKeyType,
+  MetaMetricsEventName,
+  MetaMetricsEventVerificationMethod,
+} from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { TraceName, trace, endTrace } from '../../../../shared/lib/trace';
 import { MultichainPrivateKeyList } from './multichain-private-key-list';
 
 jest.mock('../../../../shared/lib/trace', () => ({
-  ...jest.requireActual('../../../../shared/lib/trace'),
   trace: jest.fn(),
   endTrace: jest.fn(),
+  TraceName: {
+    ShowAccountPrivateKeyList: 'Show Account Private Key List',
+  },
+  TraceOperation: {
+    AccountUi: 'account.ui',
+  },
 }));
 
 const mockTrace = trace as jest.MockedFunction<typeof trace>;
@@ -25,6 +42,61 @@ const mockHandleCopy = jest.fn();
 jest.mock('../../../hooks/useCopyToClipboard', () => ({
   useCopyToClipboard: () => [false, mockHandleCopy],
 }));
+
+const mockUseIsPasskeyActive = jest.fn().mockReturnValue(false);
+const mockUseIsPasskeyIncompatibleInSidepanel = jest.fn().mockReturnValue(false);
+
+jest.mock('../../../hooks/usePasskeyAvailability', () => ({
+  useIsPasskeyActive: () => mockUseIsPasskeyActive(),
+  useIsPasskeyIncompatibleInSidepanel: () =>
+    mockUseIsPasskeyIncompatibleInSidepanel(),
+}));
+
+jest.mock('../../../../shared/lib/sentry', () => ({
+  captureException: jest.fn(),
+}));
+
+jest.mock('../../../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../../../shared/lib/environment-type'),
+  getEnvironmentType: jest.fn().mockReturnValue('popup'),
+}));
+
+jest.mock('../../../../shared/lib/passkey', () => ({
+  ...jest.requireActual('../../../../shared/lib/passkey'),
+  startPasskeyAuthentication: jest.fn(),
+  cancelPasskeyCeremony: jest.fn(),
+  isPasskeyCeremonySilentError: jest.fn(),
+}));
+
+const mockStartPasskeyAuthentication =
+  startPasskeyAuthentication as jest.MockedFunction<
+    typeof startPasskeyAuthentication
+  >;
+const mockCancelPasskeyCeremony = cancelPasskeyCeremony as jest.MockedFunction<
+  typeof cancelPasskeyCeremony
+>;
+const mockIsPasskeyCeremonySilentError =
+  isPasskeyCeremonySilentError as jest.MockedFunction<
+    typeof isPasskeyCeremonySilentError
+  >;
+
+const mockPasskeyAuthResponse = {
+  id: 'assertion-id',
+  type: 'public-key',
+};
+
+const createMockMetaMetricsContext = () => {
+  const mockTrackEvent = jest.fn();
+  return {
+    context: {
+      trackEvent: mockTrackEvent,
+      bufferedTrace: jest.fn(),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
+    },
+    mockTrackEvent,
+  };
+};
 
 const mockStore = configureStore([]);
 
@@ -90,6 +162,13 @@ const ACCOUNT_TREE_MOCK = {
 const createMockState = () => ({
   metamask: {
     completedOnboarding: true,
+    keyrings: [
+      {
+        type: 'HD Key Tree',
+        accounts: [ACCOUNT_ONE_ADDRESS_MOCK],
+        metadata: { id: 'entropy-source-id' },
+      },
+    ],
     internalAccounts: {
       accounts: INTERNAL_ACCOUNTS_MOCK,
       selectedAccount: ACCOUNT_ONE_ID_MOCK,
@@ -208,6 +287,18 @@ const mockExportAccounts = jest
     return Promise.resolve([ACCOUNT_ONE_PRIVATE_KEY_MOCK]);
   });
 
+const mockExportAccountsWithPasskey = jest
+  .fn()
+  .mockImplementation(
+    (_authenticationResponse: unknown, _addresses: string[]) => {
+      return Promise.resolve([ACCOUNT_ONE_PRIVATE_KEY_MOCK]);
+    },
+  );
+
+const mockGeneratePasskeyAuthenticationOptions = jest
+  .fn()
+  .mockResolvedValue({ challenge: 'challenge' });
+
 jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
   return {
@@ -223,21 +314,48 @@ jest.mock('../../../store/actions', () => ({
   exportAccounts: (_pwd: string, _addresses: string[]) => {
     return mockExportAccounts(_pwd, _addresses);
   },
+  exportAccountsWithPasskey: (
+    authenticationResponse: unknown,
+    addresses: string[],
+  ) => {
+    return mockExportAccountsWithPasskey(authenticationResponse, addresses);
+  },
+  generatePasskeyAuthenticationOptions: () =>
+    mockGeneratePasskeyAuthenticationOptions(),
 }));
 
-const renderComponent = (groupId: AccountGroupId = GROUP_ID_MOCK) => {
+const renderComponent = (
+  groupId: AccountGroupId = GROUP_ID_MOCK,
+  metricsContext?: ReturnType<typeof createMockMetaMetricsContext>['context'],
+) => {
   const store = mockStore(createMockState());
-  return render(
+  const content = (
     <Provider store={store}>
       <MultichainPrivateKeyList groupId={groupId} goBack={mockGoBack} />
-    </Provider>,
+    </Provider>
   );
+
+  if (metricsContext) {
+    return render(
+      <MetaMetricsContext.Provider value={metricsContext}>
+        {content}
+      </MetaMetricsContext.Provider>,
+    );
+  }
+
+  return render(content);
 };
 
 describe('MultichainPrivateKeyList', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseI18nContext.mockReturnValue((key: string) => key);
+    mockUseIsPasskeyActive.mockReturnValue(false);
+    mockUseIsPasskeyIncompatibleInSidepanel.mockReturnValue(false);
+    mockStartPasskeyAuthentication.mockResolvedValue(
+      mockPasskeyAuthResponse as never,
+    );
+    mockIsPasskeyCeremonySilentError.mockReturnValue(false);
   });
 
   it('renders with password input', () => {
@@ -250,8 +368,71 @@ describe('MultichainPrivateKeyList', () => {
     expect(screen.getByTestId('confirm-button')).toBeInTheDocument();
   });
 
-  it('fires trace and endTrace around successful reveal', async () => {
-    renderComponent();
+  it('shows wrong password message when password verification fails', async () => {
+    const { context: metricsContext, mockTrackEvent } =
+      createMockMetaMetricsContext();
+    renderComponent(GROUP_ID_MOCK, metricsContext);
+
+    const passwordInput = await screen.findByPlaceholderText('password');
+    fireEvent.change(passwordInput, { target: { value: 'wrongpassword' } });
+    fireEvent.click(screen.getByTestId('confirm-button'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('wrong-password-msg')).toBeInTheDocument();
+    });
+
+    expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
+      category: MetaMetricsEventCategory.Keys,
+      event: MetaMetricsEventName.KeyExportRequested,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        key_type: MetaMetricsEventKeyType.Pkey,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        verification_method: MetaMetricsEventVerificationMethod.Password,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        hd_entropy_index: 0,
+      },
+    });
+    expect(mockTrackEvent).toHaveBeenLastCalledWith({
+      category: MetaMetricsEventCategory.Keys,
+      event: MetaMetricsEventName.KeyExportFailed,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        key_type: MetaMetricsEventKeyType.Pkey,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        verification_method: MetaMetricsEventVerificationMethod.Password,
+        reason: 'Invalid password',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        hd_entropy_index: 0,
+      },
+    });
+    expect(mockExportAccounts).not.toHaveBeenCalled();
+  });
+
+  it('emits KeyExportCanceled when cancel is clicked before reveal', async () => {
+    const { context: metricsContext, mockTrackEvent } =
+      createMockMetaMetricsContext();
+    renderComponent(GROUP_ID_MOCK, metricsContext);
+
+    fireEvent.click(screen.getByTestId('cancel-button'));
+
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      category: MetaMetricsEventCategory.Keys,
+      event: MetaMetricsEventName.KeyExportCanceled,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        key_type: MetaMetricsEventKeyType.Pkey,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        hd_entropy_index: 0,
+      },
+    });
+    expect(mockGoBack).toHaveBeenCalled();
+  });
+
+  it('fires trace and endTrace around successful password reveal', async () => {
+    const { context: metricsContext, mockTrackEvent } =
+      createMockMetaMetricsContext();
+    renderComponent(GROUP_ID_MOCK, metricsContext);
 
     const passwordInput = await screen.findByPlaceholderText('password');
     fireEvent.change(passwordInput, { target: { value: 'correctpassword' } });
@@ -260,6 +441,9 @@ describe('MultichainPrivateKeyList', () => {
     fireEvent.click(confirmButton);
 
     await screen.findByTestId('multichain-private-keyring-list');
+    expect(mockExportAccounts).toHaveBeenCalledWith('correctpassword', [
+      ACCOUNT_ONE_ADDRESS_MOCK,
+    ]);
     expect(mockTrace).toHaveBeenCalledWith(
       expect.objectContaining({
         name: TraceName.ShowAccountPrivateKeyList,
@@ -270,5 +454,198 @@ describe('MultichainPrivateKeyList', () => {
         name: TraceName.ShowAccountPrivateKeyList,
       }),
     );
+
+    expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
+      category: MetaMetricsEventCategory.Keys,
+      event: MetaMetricsEventName.KeyExportRequested,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        key_type: MetaMetricsEventKeyType.Pkey,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        verification_method: MetaMetricsEventVerificationMethod.Password,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        hd_entropy_index: 0,
+      },
+    });
+    expect(mockTrackEvent).toHaveBeenLastCalledWith({
+      category: MetaMetricsEventCategory.Keys,
+      event: MetaMetricsEventName.KeyExportRevealed,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        key_type: MetaMetricsEventKeyType.Pkey,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        verification_method: MetaMetricsEventVerificationMethod.Password,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        hd_entropy_index: 0,
+      },
+    });
+
+    mockTrackEvent.mockClear();
+    fireEvent.click(
+      screen.getAllByTestId('multichain-address-row-copy-button')[0],
+    );
+
+    expect(mockHandleCopy).toHaveBeenCalledWith(ACCOUNT_ONE_PRIVATE_KEY_MOCK);
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      category: MetaMetricsEventCategory.Keys,
+      event: MetaMetricsEventName.KeyExportCopied,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        key_type: MetaMetricsEventKeyType.Pkey,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        copy_method: 'clipboard',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        hd_entropy_index: 0,
+      },
+    });
+  });
+
+  describe('passkey reveal', () => {
+    beforeEach(() => {
+      mockUseIsPasskeyActive.mockReturnValue(true);
+      mockUseIsPasskeyIncompatibleInSidepanel.mockReturnValue(false);
+    });
+
+    it('verifies via passkey and reveals private keys without a password', async () => {
+      const { context: metricsContext, mockTrackEvent } =
+        createMockMetaMetricsContext();
+      renderComponent(GROUP_ID_MOCK, metricsContext);
+
+      await waitFor(() => {
+        expect(mockExportAccountsWithPasskey).toHaveBeenCalledWith(
+          mockPasskeyAuthResponse,
+          [ACCOUNT_ONE_ADDRESS_MOCK],
+        );
+      });
+      expect(mockExportAccounts).not.toHaveBeenCalled();
+      expect(
+        screen.queryByTestId('multichain-private-key-password-input'),
+      ).not.toBeInTheDocument();
+      expect(mockTrace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: TraceName.ShowAccountPrivateKeyList,
+        }),
+      );
+      expect(mockEndTrace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: TraceName.ShowAccountPrivateKeyList,
+        }),
+      );
+
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
+        category: MetaMetricsEventCategory.Keys,
+        event: MetaMetricsEventName.KeyExportRequested,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          key_type: MetaMetricsEventKeyType.Pkey,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          verification_method: MetaMetricsEventVerificationMethod.Passkey,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: 0,
+        },
+      });
+      expect(mockTrackEvent).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          category: MetaMetricsEventCategory.Keys,
+          event: MetaMetricsEventName.KeyExportRevealed,
+          properties: expect.objectContaining({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            key_type: MetaMetricsEventKeyType.Pkey,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            verification_method: MetaMetricsEventVerificationMethod.Passkey,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            hd_entropy_index: 0,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            duration_ms: expect.any(Number),
+          }),
+        }),
+      );
+    });
+
+    it('falls back to the password prompt when the passkey ceremony is cancelled', async () => {
+      mockStartPasskeyAuthentication.mockRejectedValue(new Error('cancelled'));
+      mockIsPasskeyCeremonySilentError.mockReturnValue(true);
+
+      renderComponent();
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('multichain-private-key-password-input'),
+        ).toBeInTheDocument();
+      });
+      expect(mockExportAccountsWithPasskey).not.toHaveBeenCalled();
+    });
+
+    it('falls back to the password prompt when "Use password" is clicked', async () => {
+      mockStartPasskeyAuthentication.mockReturnValue(new Promise(() => {
+        // never resolves
+      }));
+
+      renderComponent();
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('export-private-keys-verify-passkey-use-password'),
+        ).toBeInTheDocument();
+      });
+
+      fireEvent.click(
+        screen.getByTestId('export-private-keys-verify-passkey-use-password'),
+      );
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('multichain-private-key-password-input'),
+        ).toBeInTheDocument();
+      });
+      expect(mockCancelPasskeyCeremony).toHaveBeenCalled();
+    });
+
+    it('falls back to the password prompt when passkey export fails', async () => {
+      mockExportAccountsWithPasskey.mockRejectedValueOnce(
+        new Error('export failed'),
+      );
+      const { context: metricsContext, mockTrackEvent } =
+        createMockMetaMetricsContext();
+      renderComponent(GROUP_ID_MOCK, metricsContext);
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('multichain-private-key-password-input'),
+        ).toBeInTheDocument();
+      });
+
+      expect(mockTrackEvent).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          category: MetaMetricsEventCategory.Keys,
+          event: MetaMetricsEventName.KeyExportFailed,
+          properties: expect.objectContaining({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            key_type: MetaMetricsEventKeyType.Pkey,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            verification_method: MetaMetricsEventVerificationMethod.Passkey,
+            reason: 'unknown',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            hd_entropy_index: 0,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            duration_ms: expect.any(Number),
+          }),
+        }),
+      );
+    });
+
+    it('uses the password prompt when passkey is incompatible in the side panel', () => {
+      mockUseIsPasskeyIncompatibleInSidepanel.mockReturnValue(true);
+
+      renderComponent();
+
+      expect(
+        screen.getByTestId('multichain-private-key-password-input'),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('export-private-keys-passkey-verifying'),
+      ).not.toBeInTheDocument();
+      expect(mockStartPasskeyAuthentication).not.toHaveBeenCalled();
+    });
   });
 });

@@ -10,6 +10,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
+  MetaMetricsEventVerificationMethod,
 } from '../../../shared/constants/metametrics';
 import configureStore from '../../store/store';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
@@ -393,6 +394,8 @@ describe('Reveal Seed Page', () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
           // eslint-disable-next-line @typescript-eslint/naming-convention
+          verification_method: MetaMetricsEventVerificationMethod.Password,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         },
       });
@@ -410,6 +413,8 @@ describe('Reveal Seed Page', () => {
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          verification_method: MetaMetricsEventVerificationMethod.Password,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
           reason: 'bad password',
@@ -433,6 +438,8 @@ describe('Reveal Seed Page', () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
           // eslint-disable-next-line @typescript-eslint/naming-convention
+          verification_method: MetaMetricsEventVerificationMethod.Password,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         },
       });
@@ -450,6 +457,8 @@ describe('Reveal Seed Page', () => {
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          verification_method: MetaMetricsEventVerificationMethod.Password,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: 0,
         },
