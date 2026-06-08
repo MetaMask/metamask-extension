@@ -112,16 +112,20 @@ export function buildQrScanFailedTrackEventArgs(
   properties: Record<string, Json>;
 } {
   const properties: Record<string, Json> = {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment analytics payload keys use snake_case
     error_category: classification.category,
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment analytics payload keys use snake_case
     is_ur_format: classification.isUrFormat,
     flow,
   };
 
   if (classification.category === ScanErrorCategory.WrongUrType) {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment analytics payload keys use snake_case
     properties.received_ur_type = classification.receivedUrType;
   }
 
   if (classification.category === ScanErrorCategory.ScanException) {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment analytics payload keys use snake_case
     properties.raw_message = classification.rawMessage;
   }
 
