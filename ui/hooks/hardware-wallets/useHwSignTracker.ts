@@ -165,6 +165,7 @@ export function useHwSignTracker(
     trackedTxIdsRef.current = new Set();
 
     if (txIds.length === 0) {
+      resetTrackingRefs();
       return;
     }
 
@@ -186,6 +187,7 @@ export function useHwSignTracker(
 
     if (pendingAbortTxIdsRef.current.size === 0) {
       abortSettleResolveRef.current = null;
+      resetTrackingRefs();
       return;
     }
 
@@ -197,7 +199,8 @@ export function useHwSignTracker(
     abortSettleResolveRef.current = null;
     // Stop swallowing events if abort confirmations never arrived (timeout path).
     pendingAbortTxIdsRef.current.clear();
-  }, [enabled]);
+    resetTrackingRefs();
+  }, [enabled, resetTrackingRefs]);
 
   useEffect(() => {
     if (!fromAddress || !hardwareWalletUsed || !enabled) {

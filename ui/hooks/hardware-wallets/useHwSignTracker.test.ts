@@ -851,6 +851,30 @@ describe('useHwSignTracker (batch mode specific)', () => {
         ['tx-finished'],
       );
     });
+
+    it('resets batch tracking after cancel so a new batch can dispatch signed events', async () => {
+      const { dispatchEvent, fire, cancelAndWait } = await setupTracker({
+        useBatchTracking: true,
+      });
+
+      await fire(STATUS_UPDATED, { batchId: 'batch-1' });
+      expect(dispatchEvent).toHaveBeenCalledWith({
+        type: HardwareWalletSignatureEvent.FirstSignatureSubmitted,
+      });
+
+      await cancelAndWait();
+
+      dispatchEvent.mockClear();
+      await fire(STATUS_UPDATED, {
+        batchId: 'batch-2',
+        id: 'tx-2',
+        type: TransactionType.bridgeApproval,
+      });
+
+      expect(dispatchEvent).toHaveBeenCalledWith({
+        type: HardwareWalletSignatureEvent.FirstSignatureSubmitted,
+      });
+    });
   });
 });
 
