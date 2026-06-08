@@ -16,6 +16,7 @@ import {
   extractTrezorCodeFromMessage,
   extractMessageFromUnknownError,
   hasUserRejectedMessage,
+  isTrezorDesktopConnectionMissingError,
 } from './rpcErrorUtils';
 
 describe('rpcErrorUtils', () => {
@@ -1022,6 +1023,44 @@ describe('rpcErrorUtils', () => {
       };
 
       expect(isUserRejectedHardwareWalletError(error)).toBe(false);
+    });
+  });
+
+  describe('isTrezorDesktopConnectionMissingError', () => {
+    it('returns true for errors tagged with the Trezor SDK code', () => {
+      expect(
+        isTrezorDesktopConnectionMissingError(
+          Object.assign(new Error('Desktop_ConnectionMissing'), {
+            code: 'Desktop_ConnectionMissing',
+          }),
+        ),
+      ).toBe(true);
+    });
+
+    it('returns true when the error message is the Trezor SDK code', () => {
+      expect(
+        isTrezorDesktopConnectionMissingError(
+          new Error('Desktop_ConnectionMissing'),
+        ),
+      ).toBe(true);
+    });
+
+    it('returns true when the Trezor SDK code appears in a wrapped message', () => {
+      expect(
+        isTrezorDesktopConnectionMissingError(
+          new Error(
+            'Trezor desktop connection unavailable (Desktop_ConnectionMissing)',
+          ),
+        ),
+      ).toBe(true);
+    });
+
+    it('returns false for unrelated errors', () => {
+      expect(
+        isTrezorDesktopConnectionMissingError(
+          new Error('Transport is missing'),
+        ),
+      ).toBe(false);
     });
   });
 

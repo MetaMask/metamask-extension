@@ -14,12 +14,7 @@ import type {
   EthereumSignTypedHash,
   Features,
 } from '@trezor/connect-web';
-
-const SUITE_DESKTOP_ERROR_CODE = 'Desktop_ConnectionMissing';
-
-const SUITE_DESKTOP_REQUIRED_ERROR =
-  'Trezor Suite Desktop is required to use Trezor with Firefox. ' +
-  'Please install and open Trezor Suite (suite.trezor.io) and try again.';
+import { TREZOR_DESKTOP_CONNECTION_MISSING_CODE } from '../../../../shared/constants/hardware-wallets';
 
 // The resolved value type of TrezorResponse<T> = Promise<SuccessWithDevice<T> | Unsuccessful>.
 // `.then()` callbacks receive this type, not the Promise itself.
@@ -28,27 +23,43 @@ type TrezorResult<PayloadType> =
   | { success: false; payload: { error: string; code?: string } };
 
 /**
- * Re-map Desktop_ConnectionMissing to a user-readable message.
+ * Re-map Desktop_ConnectionMissing to a machine-readable error code.
  * CoreInSuiteDesktop.call() always resolves (never throws), returning
  * { success: false, payload: { code: 'Desktop_ConnectionMissing' } }
  * when Suite Desktop is unreachable.
  *
+ * Translation to user-facing copy happens in the UI layer.
+ *
  * @param result - Trezor SDK response to normalize on connection failure.
- * @returns The original result, or a user-readable error when Suite Desktop is missing.
+ * @returns The original result, or a normalized error when Suite Desktop is missing.
  */
 function mapError<PayloadType>(
   result: TrezorResult<PayloadType>,
 ): TrezorResult<PayloadType> {
-  if (!result.success && result.payload.code === SUITE_DESKTOP_ERROR_CODE) {
+  if (
+    !result.success &&
+    result.payload.code === TREZOR_DESKTOP_CONNECTION_MISSING_CODE
+  ) {
     return {
       success: false,
       payload: {
-        error: SUITE_DESKTOP_REQUIRED_ERROR,
-        code: SUITE_DESKTOP_ERROR_CODE,
+        error: TREZOR_DESKTOP_CONNECTION_MISSING_CODE,
+        code: TREZOR_DESKTOP_CONNECTION_MISSING_CODE,
       },
     };
   }
   return result;
+}
+
+/**
+ * Create an error that preserves the Trezor SDK code for UI-layer translation.
+ *
+ * @returns Error tagged with the Trezor SDK code.
+ */
+function createSuiteDesktopMissingError(): Error {
+  return Object.assign(new Error(TREZOR_DESKTOP_CONNECTION_MISSING_CODE), {
+    code: TREZOR_DESKTOP_CONNECTION_MISSING_CODE,
+  });
 }
 
 /**
@@ -101,13 +112,21 @@ export class TrezorMv2Bridge implements TrezorBridge {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await (SuiteDesktopConnect as any).init(settings);
       this.#initiated = true;
-    } catch (err) {
+    } catch (err: unknown) {
       // #initiated stays false so a retry after the user opens Suite Desktop
       // will re-attempt the connection.
-      if ((err as { code?: string })?.code === SUITE_DESKTOP_ERROR_CODE) {
-        throw new Error(SUITE_DESKTOP_REQUIRED_ERROR);
+      if (
+        typeof err === 'object' &&
+        err !== null &&
+        (err as { code?: unknown }).code ===
+          TREZOR_DESKTOP_CONNECTION_MISSING_CODE
+      ) {
+        throw createSuiteDesktopMissingError();
       }
-      throw err;
+      if (err instanceof Error) {
+        throw err;
+      }
+      throw new Error(String(err));
     }
   }
 

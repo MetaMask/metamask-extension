@@ -26,6 +26,7 @@ import {
   type Infer,
 } from '@metamask/superstruct';
 import { KeyringControllerError } from '@metamask/keyring-controller';
+import { TREZOR_DESKTOP_CONNECTION_MISSING_CODE } from '../../../shared/constants/hardware-wallets';
 import { HardwareWalletType } from './types';
 import { createHardwareWalletError } from './errors';
 
@@ -442,6 +443,35 @@ export function extractTrezorCodeFromMessage(message: string): string | null {
   const TREZOR_CODE_REGEX = /code:\s*([A-Za-z]+_\w+)/u;
   const match = TREZOR_CODE_REGEX.exec(message);
   return match?.[1] ?? null;
+}
+
+/**
+ * Check whether an error indicates Trezor Suite Desktop is unavailable.
+ * Used to map background Trezor SDK errors to localized UI copy.
+ *
+ * @param error - The error to inspect.
+ * @returns True when the Trezor SDK reports Desktop_ConnectionMissing.
+ */
+export function
+isTrezorDesktopConnectionMissingError(error: unknown): boolean {
+  const errorCode = (error as { code?: unknown })?.code;
+  if (errorCode === TREZOR_DESKTOP_CONNECTION_MISSING_CODE) {
+    return true;
+  }
+
+  const message = extractMessageFromUnknownError(error);
+  if (message === TREZOR_DESKTOP_CONNECTION_MISSING_CODE) {
+    return true;
+  }
+
+  if (message.includes(TREZOR_DESKTOP_CONNECTION_MISSING_CODE)) {
+    return true;
+  }
+
+  return (
+    extractTrezorCodeFromMessage(message) ===
+    TREZOR_DESKTOP_CONNECTION_MISSING_CODE
+  );
 }
 
 /**

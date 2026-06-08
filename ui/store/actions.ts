@@ -97,7 +97,10 @@ import type {
   PasskeyAuthenticationOptions,
   PasskeyRegistrationResponse,
 } from '@metamask/passkey-controller';
-import { toHardwareWalletError } from '../contexts/hardware-wallets/rpcErrorUtils';
+import {
+  toHardwareWalletError,
+  isTrezorDesktopConnectionMissingError,
+} from '../contexts/hardware-wallets/rpcErrorUtils';
 import { HardwareWalletType } from '../contexts/hardware-wallets/types';
 import { ModalType } from '../selectors/subscription/subscription';
 import { captureException } from '../../shared/lib/sentry';
@@ -1588,6 +1591,14 @@ export function connectHardware(
     } catch (error) {
       logErrorWithMessage(error);
       const message = getErrorMessage(error);
+      if (
+        deviceName === HardwareDeviceNames.trezor &&
+        isTrezorDesktopConnectionMissingError(error)
+      ) {
+        const translatedError = new Error(t('trezorDesktopAppRequiredError'));
+        dispatch(displayWarning(translatedError));
+        throw translatedError;
+      }
       if (
         deviceName === HardwareDeviceNames.ledger &&
         ledgerTransportType === LedgerTransportTypes.webhid &&
