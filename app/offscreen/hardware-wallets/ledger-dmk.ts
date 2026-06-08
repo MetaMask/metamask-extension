@@ -1,6 +1,9 @@
 import { LedgerDMKBridge } from '@metamask/eth-ledger-bridge-keyring';
 
-import { DeviceManagementKit } from '@ledgerhq/device-management-kit';
+import {
+  DeviceManagementKit,
+  DeviceSessionStateType,
+} from '@ledgerhq/device-management-kit';
 import { webHidTransportFactory } from '@ledgerhq/device-transport-kit-web-hid';
 
 import {
@@ -150,7 +153,11 @@ export class LedgerDMKBridgeHandler {
   private sessionStateSubscription: Subscription | null = null;
 
   private messageListenerFn:
-    | ((msg: any, sender: any, sendResponse: any) => boolean)
+    | ((
+        msg: Record<string, unknown>,
+        sender: unknown,
+        sendResponse: (response: unknown) => void,
+      ) => boolean)
     | null = null;
 
   /**
@@ -212,8 +219,9 @@ export class LedgerDMKBridgeHandler {
     await firstValueFrom(
       state$.pipe(
         filter(
-          (s: any) =>
-            (s.sessionStateType === 1 || s.sessionStateType === 2) &&
+          (s) =>
+            (s.sessionStateType === DeviceSessionStateType.ReadyWithoutSecureChannel ||
+              s.sessionStateType === DeviceSessionStateType.ReadyWithSecureChannel) &&
             s.currentApp,
         ),
       ),
@@ -456,8 +464,8 @@ export class LedgerDMKBridgeHandler {
             'Missing required parameters: hdPath, chainId, contractAddress, nonce',
           );
         }
-        const bridge = await this.ensureBridge();
-        return bridge.deviceSignDelegationAuthorization({
+        const signedBridge = await this.ensureBridge();
+        return signedBridge.deviceSignDelegationAuthorization({
           hdPath: params.hdPath,
           chainId: params.chainId,
           contractAddress: params.contractAddress,
@@ -475,8 +483,8 @@ export class LedgerDMKBridgeHandler {
    * Sets up device event listeners and message handlers.
    *
    * @param skipMessageListener - When true, the handler does NOT register its
-   *   own chrome.runtime.onMessage listener.  This is used when a central
-   *   router (ledger-router.ts) manages the listener instead.
+   * own chrome.runtime.onMessage listener.  This is used when a central
+   * router (ledger-router.ts) manages the listener instead.
    */
   async init(skipMessageListener = false): Promise<void> {
     console.debug('[LedgerDMK] init() — starting');

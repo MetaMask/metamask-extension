@@ -144,51 +144,16 @@ export class LedgerOffscreenBridge implements LedgerBridge<LedgerOffscreenBridge
     message: IFrameMessage<TAction>,
     { timeout }: { timeout?: number } = {},
   ): Promise<ResponsePayload> {
-    const MAX_RETRIES = 2;
-    let lastError: Error | null = null;
-
     console.debug('[LedgerBridge] #sendMessage', JSON.stringify({
       action: message.action,
       hasParams: Boolean(message.params),
       timeout: timeout ?? 'none',
     }));
 
-    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
-      try {
-        const result = await this.#attemptSendMessage<TAction, ResponsePayload>(
-          message,
-          { timeout },
-        );
-        console.debug('[LedgerBridge] #sendMessage succeeded', JSON.stringify({
-          action: message.action,
-          attempt,
-        }));
-        return result;
-      } catch (error) {
-        lastError = error instanceof Error ? error : new Error(String(error));
-
-        const isOffscreenUnavailable =
-          lastError.message.includes('Receiving end does not exist') ||
-          lastError.message.includes('Could not establish connection');
-
-        console.warn('[LedgerBridge] #sendMessage attempt failed', JSON.stringify({
-          action: message.action,
-          attempt,
-          maxRetries: MAX_RETRIES,
-          errorMessage: lastError.message,
-          isOffscreenUnavailable,
-        }));
-
-        if (isOffscreenUnavailable && attempt < MAX_RETRIES) {
-          await new Promise((resolve) => setTimeout(resolve, 500));
-          continue;
-        }
-
-        throw lastError;
-      }
-    }
-
-    throw lastError;
+    return this.#attemptSendMessage<TAction, ResponsePayload>(
+      message,
+      { timeout },
+    );
   }
 
   #attemptSendMessage<TAction extends LedgerAction, ResponsePayload>(

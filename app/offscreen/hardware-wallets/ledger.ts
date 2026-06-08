@@ -632,8 +632,8 @@ export class LedgerLegacyHandler {
    * Sets up device event listeners and message handlers.
    *
    * @param skipMessageListener - When true, the handler does NOT register its
-   *   own chrome.runtime.onMessage listener.  This is used when a central
-   *   router (ledger-router.ts) manages the listener instead.
+   * own chrome.runtime.onMessage listener.  This is used when a central
+   * router (ledger-router.ts) manages the listener instead.
    */
   async init(skipMessageListener = false): Promise<void> {
     this.setupDeviceEventListeners();
