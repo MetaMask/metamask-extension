@@ -156,6 +156,7 @@ export const CustomAmountInfo = React.memo(
         >
           {children}
         </CenterContainer>
+        <AlertMessage />
         {overrideBottomContent ?? (
           <BottomContainer
             amountFiat={amountFiat}
@@ -291,7 +292,6 @@ function BottomContainer({
       gap={2}
       paddingBottom={4}
     >
-      <AlertMessage />
       {disablePay !== true && hasTokens && <PayWithRow />}
       {isResultReady && !hideResults && (
         <>
