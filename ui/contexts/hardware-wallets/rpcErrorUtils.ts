@@ -452,8 +452,7 @@ export function extractTrezorCodeFromMessage(message: string): string | null {
  * @param error - The error to inspect.
  * @returns True when the Trezor SDK reports Desktop_ConnectionMissing.
  */
-export function
-isTrezorDesktopConnectionMissingError(error: unknown): boolean {
+export function isTrezorDesktopConnectionMissingError(error: unknown): boolean {
   const errorCode = (error as { code?: unknown })?.code;
   if (errorCode === TREZOR_DESKTOP_CONNECTION_MISSING_CODE) {
     return true;
