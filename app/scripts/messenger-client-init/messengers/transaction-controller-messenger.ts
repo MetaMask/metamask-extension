@@ -94,7 +94,6 @@ export function getTransactionControllerMessenger(
       'KeyringController:signEip7702Authorization',
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getNetworkClientById',
-      'NetworkController:getNetworkClientRegistry',
       'RemoteFeatureFlagController:getState',
     ],
     events: [
