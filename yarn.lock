@@ -8790,18 +8790,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/wallet@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/wallet@npm:2.0.0"
+"@metamask/wallet@npm:@metamask-previews/wallet@2.0.0-preview-ecd6b75":
+  version: 2.0.0-preview-ecd6b75
+  resolution: "@metamask-previews/wallet@npm:2.0.0-preview-ecd6b75"
   dependencies:
+    "@metamask/approval-controller": "npm:^9.0.1"
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/browser-passworder": "npm:^6.0.0"
+    "@metamask/controller-utils": "npm:^12.1.0"
     "@metamask/keyring-controller": "npm:^26.0.0"
     "@metamask/messenger": "npm:^1.2.0"
     "@metamask/scure-bip39": "npm:^2.1.1"
     "@metamask/storage-service": "npm:^1.0.1"
     "@metamask/utils": "npm:^11.9.0"
-  checksum: 10/f38c50e55e9333b68c1972b898de95bb8681814d851ed2cf4b12f2b58af18b2f0c78d341563d490cbb4258871c2fd134508e0cff4a0b48d179aa46cda0a5c057
+  checksum: 10/fd5a6d3835837f382a404dc88378bf64027cab35d3ebfd9fa2c17f0b0b06321af8c3d6a1167dc4b4a34493e968f8b627fce0d9cb094be0471898b272e176c167
   languageName: node
   linkType: hard
 

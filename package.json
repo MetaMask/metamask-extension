@@ -160,6 +160,12 @@
     "yarn-binary:download": "corepack pack -o .yarn/yarn-corepack.tgz",
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
+  "previewBuilds": {
+    "@metamask/wallet": {
+      "type": "breaking",
+      "previewVersion": "2.0.0-preview-ecd6b75"
+    }
+  },
   "resolutions": {
     "@metamask/bridge-controller": "73.2.0",
     "@metamask/messenger@npm:^0.3.0": "^1.2.0",
