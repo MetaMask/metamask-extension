@@ -194,6 +194,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         return {
           avatarTokens: [token?.assetId],
           title: t(labelKeys.title.key),
+          subtitle: t('perpsBalance'),
           primaryAmount:
             fiatAmount !== undefined && Number.isFinite(fiatAmount)
               ? formatCurrencyWithMinThreshold(fiatAmount, PERPS_CURRENCY)

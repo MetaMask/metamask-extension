@@ -6654,6 +6654,9 @@
   "perpsAutoClose": {
     "message": "Auto close"
   },
+  "perpsBalance": {
+    "message": "Perps balance"
+  },
   "perpsAutoDeleveraging": {
     "message": "Auto-deleveraging",
     "description": "Badge label for trades executed via auto-deleveraging (ADL)"
