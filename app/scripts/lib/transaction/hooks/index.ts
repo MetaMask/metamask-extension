@@ -143,12 +143,17 @@ function publishHook({
     const isRevokeDelegation =
       transactionMeta.type === TransactionType.revokeDelegation;
 
+    const isSwapGasIncluded7702 = transactionMeta.isGasFeeIncluded;
+
     let attemptedHook = false;
 
     if (
       keyringSupports7702 &&
       !isRevokeDelegation &&
-      (!isSmartTransaction || !sendBundleSupport || isExternalSign)
+      (isSwapGasIncluded7702 ||
+        !isSmartTransaction ||
+        !sendBundleSupport ||
+        isExternalSign)
     ) {
       attemptedHook = true;
       const hook = new Delegation7702PublishHook({
@@ -228,6 +233,7 @@ function publishHook({
 
 function publishBatchHook({
   getFlatState,
+  getTransactionMetricsRequest,
   messenger,
 }: TransactionControllerHookRequest) {
   return async (request: PublishBatchHookRequest) => {
@@ -257,7 +263,7 @@ function publishBatchHook({
       return undefined;
     }
 
-    return submitBatchSmartTransactionHook({
+    const result = await submitBatchSmartTransactionHook({
       transactions,
       transactionController,
       smartTransactionsController: getSmartTransactionsController(messenger),
@@ -267,6 +273,31 @@ function publishBatchHook({
       featureFlags,
       transactionMeta,
     });
+
+    if (result) {
+      for (const batchTx of request.transactions) {
+        if (batchTx.id) {
+          try {
+            getTransactionMetricsRequest().upsertTransactionUIMetricsFragment(
+              batchTx.id,
+              {
+                properties: {
+                  [TRANSACTION_SUBMISSION_METHOD_METRIC_NAME]:
+                    TRANSACTION_SUBMISSION_METHOD.SENTINEL_STX,
+                },
+              },
+            );
+          } catch (e) {
+            console.error(
+              'Failed to record sentinel_stx batch metrics fragment',
+              e,
+            );
+          }
+        }
+      }
+    }
+
+    return result;
   };
 }
 
