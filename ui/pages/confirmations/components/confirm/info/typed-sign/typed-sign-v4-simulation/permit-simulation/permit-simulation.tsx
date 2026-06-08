@@ -3,11 +3,7 @@ import React from 'react';
 import { PrimaryType } from '../../../../../../../../../shared/constants/signatures';
 import { parseTypedDataMessage } from '../../../../../../../../../shared/lib/transaction.utils';
 import { ConfirmInfoRow } from '../../../../../../../../components/app/confirm/info/row';
-import { Box } from '../../../../../../../../components/component-library';
-import {
-  Display,
-  FlexDirection,
-} from '../../../../../../../../helpers/constants/design-system';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../../../context/confirm';
 import { SignatureRequestType } from '../../../../../../types/confirm';
@@ -92,8 +88,8 @@ const PermitSimulation = () => {
       <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
         {Array.isArray(tokenDetails) ? (
           <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
+            className="flex"
+            flexDirection={BoxFlexDirection.Column}
             gap={2}
           >
             {tokenDetails.map(({ token, amount }, i: number) => (

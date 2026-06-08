@@ -1,11 +1,7 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Box } from '../../../../../../../components/component-library';
-import {
-  AlignItems,
-  Display,
-} from '../../../../../../../helpers/constants/design-system';
+import { Box, BoxAlignItems } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { useConfirmContext } from '../../../../../context/confirm';
@@ -66,7 +62,7 @@ export const GasFeesDetails = (): JSX.Element | null => {
             label={t('speed')}
             ownerId={transactionMeta.id}
           >
-            <Box display={Display.Flex} alignItems={AlignItems.center}>
+            <Box className="flex" alignItems={BoxAlignItems.Center}>
               <GasTiming
                 chainId={transactionMeta.chainId}
                 maxFeePerGas={maxFeePerGas}

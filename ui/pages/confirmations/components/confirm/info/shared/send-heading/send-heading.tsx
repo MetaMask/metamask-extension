@@ -2,18 +2,16 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
+import { Box, BoxAlignItems } from '@metamask/design-system-react';
 import {
   AvatarToken,
   AvatarTokenSize,
-  Box,
   Text,
 } from '../../../../../../../components/component-library';
 import { Skeleton } from '../../../../../../../components/component-library/skeleton';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import {
-  AlignItems,
   BackgroundColor,
-  Display,
   TextColor,
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
@@ -63,7 +61,7 @@ const SendHeading = () => {
   );
 
   const TokenValueSkeleton = (
-    <Box display={Display.InlineFlex} alignItems={AlignItems.center} gap={2}>
+    <Box className="inline-flex" alignItems={BoxAlignItems.Center} gap={2}>
       <Skeleton width={40} height={32} />
       {tokenSymbol}
     </Box>

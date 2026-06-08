@@ -6,14 +6,15 @@ import {
   ConfirmInfoRow,
   ConfirmInfoRowVariant,
 } from '../../../../../../../components/app/confirm/info/row';
-import { Box, Text } from '../../../../../../../components/component-library';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import { Text } from '../../../../../../../components/component-library';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  JustifyContent,
-  TextAlign,
   TextColor,
 } from '../../../../../../../helpers/constants/design-system';
 import { getPreferences } from '../../../../../../../../shared/lib/selectors/preferences';
@@ -51,11 +52,11 @@ export const GasFeesRow = ({
       variant={ConfirmInfoRowVariant.Default}
     >
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        alignItems={AlignItems.center}
-        textAlign={TextAlign.Center}
+        className="flex"
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
+        alignItems={BoxAlignItems.Center}
+        style={{ textAlign: 'center' }}
         marginLeft={8}
       >
         <Text marginRight={1} color={TextColor.textDefault}>
