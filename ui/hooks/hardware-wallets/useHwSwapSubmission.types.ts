@@ -18,4 +18,5 @@ export type UseHwSwapSubmissionOptions = {
     quote: QuoteResponse & QuoteMetadata,
     options?: { rpcTimeoutMs?: number },
   ) => Promise<void>;
+  firstSignatureDoneRef?: React.MutableRefObject<boolean>;
 };

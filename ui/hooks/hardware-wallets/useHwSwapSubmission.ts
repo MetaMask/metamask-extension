@@ -20,6 +20,7 @@ const RETRY_RPC_TIMEOUT_MS = 120_000;
  * @param options.signatureState - The current hardware-wallet signature state-machine state.
  * @param options.dispatchSignatureEvent - Dispatcher for signature state-machine events.
  * @param options.submitBridgeTransaction - Function that submits a bridge transaction given a quote and optional RPC timeout.
+ * @param options.firstSignatureDoneRef
  * @returns An object containing:
  * - `submitActiveQuote` — callback to submit the current locked quote.
  * - `retrySubmission` — callback to retry submission with an extended timeout.
@@ -31,6 +32,7 @@ export function useHwSwapSubmission({
   signatureState,
   dispatchSignatureEvent,
   submitBridgeTransaction,
+  firstSignatureDoneRef,
 }: UseHwSwapSubmissionOptions) {
   const submitActiveQuote = useCallback(async () => {
     if (!lockedQuote) {
@@ -54,6 +56,10 @@ export function useHwSwapSubmission({
 
     quoteRequestIdRef.current = requestId;
     hasStartedSubmission.current = false;
+    if (firstSignatureDoneRef) {
+      // eslint-disable-next-line react-compiler/react-compiler
+      firstSignatureDoneRef.current = false;
+    }
     dispatchSignatureEvent({
       type: HardwareWalletSignatureEvent.Reset,
       needsTwoConfirmations,
@@ -62,6 +68,7 @@ export function useHwSwapSubmission({
     lockedQuote?.quote.requestId,
     needsTwoConfirmations,
     dispatchSignatureEvent,
+    firstSignatureDoneRef,
   ]);
 
   useEffect(() => {
@@ -81,14 +88,21 @@ export function useHwSwapSubmission({
       return;
     }
 
+    const shouldSkipApproval =
+      firstSignatureDoneRef?.current === true && Boolean(lockedQuote.approval);
+
+    const quoteToSubmit = shouldSkipApproval
+      ? { ...lockedQuote, approval: undefined }
+      : lockedQuote;
+
     try {
-      await submitBridgeTransaction(lockedQuote, {
+      await submitBridgeTransaction(quoteToSubmit, {
         rpcTimeoutMs: RETRY_RPC_TIMEOUT_MS,
       });
     } catch (error) {
       console.warn('[useHwSwapSubmission] Retry submission failed:', error);
     }
-  }, [lockedQuote, submitBridgeTransaction]);
+  }, [lockedQuote, submitBridgeTransaction, firstSignatureDoneRef]);
 
   return {
     submitActiveQuote,
