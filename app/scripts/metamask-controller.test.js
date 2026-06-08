@@ -34,6 +34,7 @@ import {
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { TrezorKeyring } from '@metamask/eth-trezor-keyring';
 import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
+import { QrKeyring } from '@metamask/eth-qr-keyring';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -2563,6 +2564,47 @@ describe('MetaMaskController', () => {
           await expect(result).rejects.toThrow(
             'MetamaskController:#withKeyringForDevice - Unknown device',
           );
+        });
+
+        it('creates the QR keyring before probing reconnect status', async () => {
+          const addNewKeyring = jest.fn().mockResolvedValue(undefined);
+          const setHdPath = jest.fn();
+          const isUnlocked = jest.fn().mockReturnValue(true);
+          const withControllerSpy = jest
+            .spyOn(metamaskController.keyringController, 'withController')
+            .mockImplementation(async (callback) => {
+              return await callback({
+                keyrings: [],
+                addNewKeyring,
+              });
+            });
+          const withKeyringV2Spy = jest
+            .spyOn(metamaskController.keyringController, 'withKeyringV2')
+            .mockImplementation(async (selector, callback) => {
+              expect(selector).toStrictEqual({ type: KeyringTypeV2.Qr });
+
+              return await callback({
+                keyring: {
+                  isUnlocked,
+                  setHdPath,
+                },
+              });
+            });
+
+          try {
+            const status = await metamaskController.checkHardwareStatus(
+              HardwareDeviceNames.qr,
+              `m/44'/60'/0'/0`,
+            );
+
+            expect(status).toStrictEqual(true);
+            expect(addNewKeyring).toHaveBeenCalledWith(QrKeyring.type);
+            expect(setHdPath).toHaveBeenCalledWith(`m/44'/60'/0'/0`);
+            expect(isUnlocked).toHaveBeenCalledTimes(1);
+          } finally {
+            withControllerSpy.mockRestore();
+            withKeyringV2Spy.mockRestore();
+          }
         });
 
         [HardwareDeviceNames.trezor, HardwareDeviceNames.ledger].forEach(

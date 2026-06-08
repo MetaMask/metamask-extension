@@ -5649,7 +5649,11 @@ export default class MetamaskController extends EventEmitter {
    */
   async checkHardwareStatus(deviceName, hdPath) {
     return this.#withKeyringForDevice(
-      { name: deviceName, hdPath },
+      {
+        name: deviceName,
+        hdPath,
+        create: deviceName === HardwareDeviceNames.qr,
+      },
       async (keyring) => {
         return keyring.isUnlocked();
       },
@@ -9538,10 +9542,11 @@ export default class MetamaskController extends EventEmitter {
         );
     }
 
-    // `withKeyringV2` has no `createIfMissing` option. Only the
-    // connect-device flow legitimately creates a hardware keyring; every
-    // other caller operates on a keyring that should already exist, and
-    // should let the controller throw `KeyringNotFound` if it doesn't.
+    // `withKeyringV2` has no `createIfMissing` option. The connect-device
+    // flow and QR reconnect status probe may legitimately create a hardware
+    // keyring; every other caller operates on a keyring that should already
+    // exist, and should let the controller throw `KeyringNotFound` if it
+    // doesn't.
     // `withController` runs the check-and-create as a mutually exclusive
     // transaction so a concurrent caller can't slip in between.
     if (options.create) {
