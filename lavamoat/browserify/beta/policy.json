@@ -6804,7 +6804,6 @@
         "crypto": true
       }
     },
-<<<<<<< HEAD
     "@metamask/multichain-account-service>@metamask/eth-snap-keyring>uuid": {
       "globals": {
         "crypto": true
@@ -6816,9 +6815,6 @@
       }
     },
     "@metamask/keyring-sdk>uuid": {
-=======
-    "@metamask/eth-hd-keyring>@metamask/keyring-sdk>uuid": {
->>>>>>> origin/main
       "globals": {
         "crypto": true
       }
