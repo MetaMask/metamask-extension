@@ -624,9 +624,9 @@ function parseTraceparent(value: unknown): TraceparentData | undefined {
   if (!match) {
     return undefined;
   }
-  const [, traceId, spanId, flags] = match;
+  const [, traceId, parentId, flags] = match;
   const sampled = isSampled(parseInt(flags, 16)) ? '1' : '0';
-  return extractTraceparentData(`${traceId}-${spanId}-${sampled}`);
+  return extractTraceparentData(`${traceId}-${parentId}-${sampled}`);
 }
 
 /**
