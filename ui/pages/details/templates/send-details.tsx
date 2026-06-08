@@ -15,7 +15,10 @@ export function SendDetails({
   return (
     <div className="divide-y divide-border-muted">
       <TokensSection tokens={[{ label, token: item.data.token }]} />
-      <MetadataSection item={item} />
+      <MetadataSection
+        item={item}
+        addressRows={{ from: item.data.from, to: item.data.to }}
+      />
       <AmountsSection item={item} />
     </div>
   );

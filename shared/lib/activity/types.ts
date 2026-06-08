@@ -73,6 +73,7 @@ type ActivityData<Type extends ActivityKind, Data> = {
   isEarliestNonce?: boolean;
   data: Data & {
     hash?: string;
+    from?: string;
   };
 };
 

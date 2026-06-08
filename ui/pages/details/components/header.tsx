@@ -1,10 +1,12 @@
 import React from 'react';
 import {
-  Box,
   ButtonIcon,
   ButtonIconSize,
+  HeaderBase,
   IconName,
   Text,
+  TextAlign,
+  TextVariant,
 } from '@metamask/design-system-react';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -76,14 +78,22 @@ export function Header({ item, onBack }: Props) {
   const title = titleKey && titleArgs ? t(titleKey, titleArgs) : item?.type;
 
   return (
-    <Box className="grid grid-cols-[40px_1fr_40px] items-center pb-8">
-      <ButtonIcon
-        iconName={IconName.ArrowLeft}
-        ariaLabel={t('back')}
-        size={ButtonIconSize.Sm}
-        onClick={onBack}
-      />
-      {title ? <Text className="text-center font-medium">{title}</Text> : null}
-    </Box>
+    <HeaderBase
+      className="pb-8"
+      startAccessory={
+        <ButtonIcon
+          iconName={IconName.ArrowLeft}
+          ariaLabel={t('back')}
+          size={ButtonIconSize.Md}
+          onClick={onBack}
+        />
+      }
+    >
+      {title ? (
+        <Text variant={TextVariant.HeadingSm} textAlign={TextAlign.Center}>
+          {title}
+        </Text>
+      ) : null}
+    </HeaderBase>
   );
 }

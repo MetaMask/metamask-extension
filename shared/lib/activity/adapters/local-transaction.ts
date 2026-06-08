@@ -262,6 +262,7 @@ export function mapLocalTransaction(
           timestamp,
           data: {
             hash,
+            from,
             sourceToken,
           },
         };
@@ -274,6 +275,7 @@ export function mapLocalTransaction(
         timestamp,
         data: {
           hash,
+          from,
           sourceToken,
           destinationToken,
         },
@@ -292,6 +294,7 @@ export function mapLocalTransaction(
         timestamp,
         data: {
           hash,
+          from,
           sourceToken: enrichedSourceToken,
           destinationToken: enrichedDestinationToken,
         },
@@ -312,6 +315,7 @@ export function mapLocalTransaction(
         timestamp,
         data: {
           hash,
+          from,
           sourceToken: transactionGroup.sourceToken,
           destinationToken: getContractToken({
             amount: amount?.toString(),
@@ -335,6 +339,7 @@ export function mapLocalTransaction(
         timestamp,
         data: {
           hash,
+          from,
           token: getContractToken({
             transaction: initialTransaction,
             direction: 'out',
@@ -351,6 +356,7 @@ export function mapLocalTransaction(
         timestamp,
         data: {
           hash,
+          from,
           token: getContractToken({
             transaction: initialTransaction,
             direction: 'out',
@@ -367,6 +373,7 @@ export function mapLocalTransaction(
         timestamp,
         data: {
           hash,
+          from,
           sourceToken: getContractToken({
             transaction: initialTransaction,
             direction: 'out',
@@ -383,6 +390,7 @@ export function mapLocalTransaction(
         timestamp,
         data: {
           hash,
+          from,
           token: getContractToken({
             transaction: initialTransaction,
             direction: 'out',
@@ -438,6 +446,7 @@ export function mapLocalTransaction(
           timestamp,
           data: {
             hash,
+            from,
             token: {
               direction: 'in',
             },
@@ -453,6 +462,7 @@ export function mapLocalTransaction(
           timestamp,
           data: {
             hash,
+            from,
             sourceToken: getContractToken({
               amount: BigInt(suppliedTokenBalanceChange.difference).toString(),
               transaction: initialTransaction,
@@ -494,6 +504,7 @@ export function mapLocalTransaction(
           timestamp,
           data: {
             hash,
+            from,
             destinationToken,
           },
         };
@@ -527,6 +538,7 @@ export function mapLocalTransaction(
                   timestamp,
                   data: {
                     hash,
+                    from,
                     sourceToken: getNativeToken(initialTransaction, 'out'),
                     destinationToken: getContractToken({
                       amount: wrapAmount,
@@ -563,6 +575,7 @@ export function mapLocalTransaction(
               timestamp,
               data: {
                 hash,
+                from,
                 sourceToken: getContractToken({
                   amount: unwrapAmount,
                   transaction: initialTransaction,

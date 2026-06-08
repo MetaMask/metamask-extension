@@ -27,11 +27,21 @@ export function TransactionDetailsModal({
     >
       <ModalOverlay />
       <ModalContent
-        className="p-0 sm:p-0 md:p-0"
         size={ModalContentSize.Lg}
+        style={{
+          alignItems: 'center',
+          height: '100vh',
+          justifyContent: 'flex-start',
+          padding: 0,
+        }}
         modalDialogProps={{
-          className:
-            'h-screen max-h-screen max-w-[clamp(var(--width-sm),85vw,var(--width-max))] overflow-y-auto rounded-none shadow-none p-0',
+          className: 'overflow-y-auto rounded-none shadow-none p-0',
+          style: {
+            height: '100vh',
+            marginInline: 'auto',
+            maxHeight: '100vh',
+            width: 'clamp(320px, 100vw, var(--width-sm))',
+          },
         }}
       >
         <TransactionDetails

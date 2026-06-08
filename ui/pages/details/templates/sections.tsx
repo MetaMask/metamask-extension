@@ -6,6 +6,7 @@ import type {
 } from '../../../../shared/lib/activity/types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
+import { AccountName } from '../components/account-name';
 import { NetworkName } from '../components/network-name';
 import { Row, Section } from '../components/shared';
 import { TokenAmountRow } from '../components/token-amount-row';
@@ -43,17 +44,51 @@ export function TokensSection({
   );
 }
 
-export function MetadataSection({ item }: { item: ActivityListItem }) {
+export function MetadataSection({
+  item,
+  addressRows,
+}: {
+  item: ActivityListItem;
+  addressRows?: { from?: string; to?: string };
+}) {
   const t = useI18nContext();
   const { formatDateTime } = useFormatters();
+  const accountAddress = item.data.from;
+  const showAddressRows = Boolean(addressRows?.from || addressRows?.to);
 
   return (
     <Section>
       <Row label={t('status')} value={getStatusValue(item.status)} />
       <Row label={t('date')} value={formatDateTime(item.timestamp)} />
-
-      {/* todo: this part is dynamic */}
-
+      {showAddressRows ? (
+        <>
+          <Row
+            label={t('from')}
+            value={
+              addressRows?.from ? (
+                <AccountName address={addressRows.from} />
+              ) : undefined
+            }
+          />
+          <Row
+            label={t('to')}
+            value={
+              addressRows?.to ? (
+                <AccountName address={addressRows.to} />
+              ) : undefined
+            }
+          />
+        </>
+      ) : (
+        <Row
+          label={t('account')}
+          value={
+            accountAddress ? (
+              <AccountName address={accountAddress} />
+            ) : undefined
+          }
+        />
+      )}
       <Row
         label={t('network')}
         value={<NetworkName chainId={item.chainId} />}

@@ -196,6 +196,7 @@ export function mapKeyringTransaction({
       timestamp,
       data: {
         hash: transaction.id,
+        from,
         destinationToken: getToken(transaction.to, 'in'),
         sourceToken: getToken(transaction.from, 'out'),
         fees: getFees(transaction),
