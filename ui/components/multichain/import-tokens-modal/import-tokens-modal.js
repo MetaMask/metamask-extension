@@ -79,18 +79,13 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
-import {
-  SECURITY_ROUTE,
-  DEFAULT_ROUTE,
-} from '../../../helpers/constants/routes';
+import { ASSETS_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import {
   isValidHexAddress,
   toChecksumHexAddress,
 } from '../../../../shared/lib/hexstring-utils';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { addHexPrefix } from '../../../../app/scripts/lib/util';
+import { addHexPrefix } from '../../../../shared/lib/add-hex-prefix';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../../shared/constants/tokens';
 import {
   AssetType,
@@ -989,7 +984,7 @@ export const ImportTokensModal = ({ onClose }) => {
                                     onClick={() => {
                                       onClose();
                                       navigate(
-                                        `${SECURITY_ROUTE}#auto-detect-tokens`,
+                                        `${ASSETS_ROUTE}#autodetect-tokens`,
                                       );
                                     }}
                                   >

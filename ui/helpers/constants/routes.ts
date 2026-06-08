@@ -38,8 +38,6 @@ export const SECURITY_TURN_OFF_PASSKEY_ROUTE =
   '/settings/security-and-password/turn-off-passkey';
 export const DEVELOPER_TOOLS_ROUTE = '/settings/developer-tools';
 export const DEBUG_ROUTE = '/settings/debug';
-export const GENERAL_ROUTE = '/settings/general';
-export const ADVANCED_ROUTE = '/settings/advanced';
 export const DEVELOPER_OPTIONS_ROUTE = DEBUG_ROUTE;
 export const EXPERIMENTAL_ROUTE = '/settings/experimental';
 export const TRANSACTION_SHIELD_ROUTE = '/settings/transaction-shield';
@@ -68,7 +66,6 @@ export const TRANSACTION_SHIELD_CLAIM_ROUTES = {
     RELATIVE: '/view-history-claim',
   },
 } as const;
-export const SECURITY_ROUTE = '/settings/security';
 export const ABOUT_US_ROUTE = '/settings/about-us';
 export const NETWORKS_ROUTE = '/networks';
 export const NETWORKS_FORM_ROUTE = '/networks/form';
@@ -140,6 +137,8 @@ export const CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE = '/cross-chain/tx-details';
 export const PREPARE_SWAP_ROUTE = '/swaps/prepare-bridge-page';
 export const SWAP_PATH = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
 export const AWAITING_SIGNATURES_ROUTE = '/swaps/awaiting-signatures';
+export const HARDWARE_WALLET_SIGNATURES_ROUTE =
+  '/swaps/hardware-wallet-signatures';
 export const ONBOARDING_ROUTE = '/onboarding';
 export const ONBOARDING_REVEAL_SRP_ROUTE = '/onboarding/reveal-recovery-phrase';
 export const ONBOARDING_REVIEW_SRP_ROUTE = '/onboarding/review-recovery-phrase';
@@ -304,16 +303,6 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
-    path: GENERAL_ROUTE,
-    label: 'General Settings Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: ADVANCED_ROUTE,
-    label: 'Advanced Settings Page',
-    trackInAnalytics: true,
-  },
-  {
     path: DEVELOPER_OPTIONS_ROUTE,
     label: 'Developer Options Page',
     // DEVELOPER_OPTIONS_ROUTE not in PATH_NAME_MAP because we're not tracking analytics for this page
@@ -322,11 +311,6 @@ export const ROUTES = [
   {
     path: EXPERIMENTAL_ROUTE,
     label: 'Experimental Settings Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: SECURITY_ROUTE,
-    label: 'Security Settings Page',
     trackInAnalytics: true,
   },
   {
@@ -650,6 +634,11 @@ export const ROUTES = [
   {
     path: AWAITING_SIGNATURES_ROUTE,
     label: 'Swaps Awaiting Signatures',
+    trackInAnalytics: false,
+  },
+  {
+    path: HARDWARE_WALLET_SIGNATURES_ROUTE,
+    label: 'Swaps Hardware Wallet Signatures',
     trackInAnalytics: false,
   },
   {

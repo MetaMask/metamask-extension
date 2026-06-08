@@ -40,6 +40,14 @@ export const getAllowedSmartTransactionsChainIds = (): string[] => {
 
 export const SKIP_STX_RPC_URL_CHECK_CHAIN_IDS: string[] = [CHAIN_IDS.SEPOLIA];
 
+export const SMART_TRANSACTIONS_ALLOWED_RPC_HOSTS_FLAG =
+  'smartTransactionsAllowedRpcHosts';
+
+export const DEFAULT_SMART_TRANSACTIONS_ALLOWED_RPC_HOSTS: string[] = [
+  '.infura.io',
+  '.binance.org',
+];
+
 export const CANCEL_GAS_LIMIT_DEC = 21000;
 
 export const SMART_TRANSACTIONS_LEARN_MORE_URL =

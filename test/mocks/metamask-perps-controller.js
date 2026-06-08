@@ -95,8 +95,20 @@ const mockPerpsAnalyticsEventNames = {
   PerpsError: 'Perp Error',
 };
 
+/**
+ * Proxy-based mock for PERPS_ERROR_CODES.
+ * Any property access returns the property name as a string, so code like
+ * `PERPS_ERROR_CODES.CLIENT_NOT_INITIALIZED` evaluates to `'CLIENT_NOT_INITIALIZED'`
+ * without needing to enumerate every key.
+ */
+const mockPerpsErrorCodes = new Proxy(
+  {},
+  { get: (_target, prop) => String(prop) },
+);
+
 module.exports = {
   PERPS_EVENT_PROPERTY: mockPerpsEventPropertyKeys,
   PERPS_EVENT_VALUE: mockPerpsEventValueLiterals,
   PerpsAnalyticsEvent: mockPerpsAnalyticsEventNames,
+  PERPS_ERROR_CODES: mockPerpsErrorCodes,
 };

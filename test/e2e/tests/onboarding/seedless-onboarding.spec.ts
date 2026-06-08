@@ -16,9 +16,12 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import {
   MOCK_GOOGLE_ACCOUNT,
   MOCK_GOOGLE_ACCOUNT_WALLET_ADDRESS,
+  MOCK_TELEGRAM_ACCOUNT,
+  MOCK_TELEGRAM_ACCOUNT_WALLET_ADDRESS,
 } from '../../constants';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import { normalizeSafeAddress } from '../../../../shared/lib/multichain/address';
+import { AuthConnection } from '../../../../shared/constants/onboarding';
 
 describe('Metamask onboarding (with social login)', function () {
   it('Creates a new wallet with Google login and completes the onboarding process', async function () {
@@ -35,6 +38,39 @@ describe('Metamask onboarding (with social login)', function () {
       async ({ driver }: { driver: Driver }) => {
         await createNewWalletWithSocialLoginOnboardingFlow({
           driver,
+        });
+
+        const onboardingCompletePage = new OnboardingCompletePage(driver);
+        await onboardingCompletePage.displayDownloadAppPageAndContinue();
+        await onboardingCompletePage.checkPageIsLoaded();
+        await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
+        await onboardingCompletePage.completeOnboarding();
+
+        // Handle sidepanel navigation if needed
+        await handleSidepanelPostOnboarding(driver);
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('0');
+      },
+    );
+  });
+
+  it('Creates a new wallet with Telegram login and completes the onboarding process', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: (server: Mockttp) => {
+          // using this to mock the OAuth Service (Web Authentication flow + Auth server)
+          const oAuthMockttpService = new OAuthMockttpService();
+          return oAuthMockttpService.setup(server);
+        },
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await createNewWalletWithSocialLoginOnboardingFlow({
+          driver,
+          authConnection: AuthConnection.Telegram,
         });
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
@@ -88,6 +124,48 @@ describe('Metamask onboarding (with social login)', function () {
         await addressListModal.checkNetworkAddressIsDisplayed(
           shortenAddress(
             normalizeSafeAddress(MOCK_GOOGLE_ACCOUNT_WALLET_ADDRESS),
+          ),
+        );
+      },
+    );
+  });
+
+  it('Imports an existing wallet with Telegram login and completes the onboarding process', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2({ onboarding: true })
+          .withShowNativeTokenAsMainBalanceEnabled()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: (server: Mockttp) => {
+          // using this to mock the OAuth Service (Web Authentication flow + Auth server)
+          const oAuthMockttpService = new OAuthMockttpService();
+          return oAuthMockttpService.setup(server, {
+            userEmail: MOCK_TELEGRAM_ACCOUNT,
+          });
+        },
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await importWalletWithSocialLoginOnboardingFlow({
+          driver,
+          authConnection: AuthConnection.Telegram,
+        });
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('25', 'ETH');
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openAccountMenu();
+        const accountListPage = new AccountListPage(driver);
+
+        await accountListPage.openMultichainAccountMenu({
+          accountLabel: 'Account 1',
+        });
+        await accountListPage.clickMultichainAccountMenuItem('Addresses');
+        const addressListModal = new AddressListModal(driver);
+        await addressListModal.checkNetworkAddressIsDisplayed(
+          shortenAddress(
+            normalizeSafeAddress(MOCK_TELEGRAM_ACCOUNT_WALLET_ADDRESS),
           ),
         );
       },
