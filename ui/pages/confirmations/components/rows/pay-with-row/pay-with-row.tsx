@@ -33,6 +33,8 @@ import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransacti
 import { PayWithModal } from '../../modals/pay-with-modal';
 import { TokenIcon } from '../../token-icon';
 
+export { ConfirmInfoRowSize };
+
 type PayWithRowContentProps = {
   displayToken: {
     chainId: string;
@@ -46,7 +48,9 @@ type PayWithRowContentProps = {
   isPerpsWithdraw: boolean;
 };
 
-export type PayWithRowProps = Record<string, never>;
+export type PayWithRowProps = {
+  variant?: ConfirmInfoRowSize;
+};
 
 export const PayWithRowSkeleton = () => {
   return (
@@ -71,7 +75,9 @@ export const PayWithRowSkeleton = () => {
   );
 };
 
-export function PayWithRow() {
+export function PayWithRow({
+  variant = ConfirmInfoRowSize.Small,
+}: PayWithRowProps = {}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { payToken } = useTransactionPayToken();
   const requiredTokens = useTransactionPayRequiredTokens();
@@ -125,6 +131,7 @@ export function PayWithRow() {
         onOpenModal={handleOpenModal}
         isPerpsWithdraw={isPerpsWithdraw}
         ownerId={currentConfirmation?.id ?? ''}
+        rowVariant={variant}
       />
     </>
   );
@@ -137,7 +144,11 @@ function PayWithRowInline({
   onOpenModal,
   ownerId,
   isPerpsWithdraw,
-}: PayWithRowContentProps & { ownerId: string }) {
+  rowVariant,
+}: PayWithRowContentProps & {
+  ownerId: string;
+  rowVariant: ConfirmInfoRowSize;
+}) {
   const t = useI18nContext();
 
   return (
@@ -146,7 +157,7 @@ function PayWithRowInline({
       ownerId={ownerId}
       data-testid="pay-with-row"
       label={isPerpsWithdraw ? t('withdrawTo') : t('payWith')}
-      rowVariant={ConfirmInfoRowSize.Small}
+      rowVariant={rowVariant}
     >
       <Box
         data-testid="pay-with-pill"
@@ -189,5 +200,3 @@ function PayWithRowInline({
     </ConfirmInfoAlertRow>
   );
 }
-
-

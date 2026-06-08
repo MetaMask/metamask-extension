@@ -317,7 +317,6 @@ describe('PayWithRow', () => {
       expect(screen.queryByTestId('pay-with-arrow')).not.toBeInTheDocument();
     });
   });
-
 });
 
 describe('PayWithRowSkeleton', () => {
