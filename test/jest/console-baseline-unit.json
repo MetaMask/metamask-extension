@@ -1130,9 +1130,6 @@
     "ui/pages/snaps/snap-view/hooks/useUpdate.test.ts": {
       "MetaMask: Background connection not initialized": 1
     },
-    "ui/pages/snaps/snap-view/hooks/useUpdate.test.ts": {
-      "MetaMask: Background connection not initialized": 1
-    },
     "ui/pages/snaps/snap-view/snap-view.test.js": {
       "React: Missing key props in lists": 1,
       "React: componentWill* lifecycle deprecations": 1,

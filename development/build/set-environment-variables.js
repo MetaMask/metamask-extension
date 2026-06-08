@@ -69,7 +69,6 @@ function setEnvironmentVariables({
     METAMASK_SHIELD_ENABLED: isTestBuild
       ? 'true'
       : variables.getMaybe('METAMASK_SHIELD_ENABLED'),
-    TELEGRAM_LOGIN_ENABLED,
     PERPS_ENABLED: isTestBuild ? 'true' : variables.getMaybe('PERPS_ENABLED'),
     ASSETS_UNIFIED_STATE_ENABLED: variables.getMaybe(
       'ASSETS_UNIFIED_STATE_ENABLED',
