@@ -136,10 +136,18 @@ export const selectLocalTransactionsByHash = createSelector(
         transactionGroup.primaryTransaction,
         transactionGroup.initialTransaction,
       ]) {
+        // Index by tx hash when available (confirmed/submitted transactions)
         const hash = transaction.hash?.toLowerCase();
-
         if (hash) {
           transactionsByHash.set(hash, transactionGroup);
+        }
+
+        // Also index by id so signing/queued transactions (no hash yet) can be
+        // looked up — the activity adapter sets data.hash = primaryTransaction.id
+        // as a fallback when no real tx hash exists.
+        const id = transaction.id?.toLowerCase();
+        if (id && !transactionsByHash.has(id)) {
+          transactionsByHash.set(id, transactionGroup);
         }
       }
     }
