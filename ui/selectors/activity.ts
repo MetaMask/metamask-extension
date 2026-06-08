@@ -27,6 +27,7 @@ import { toAssetId } from '../../shared/lib/asset-utils';
 import { mapKeyringTransaction } from '../../shared/lib/activity/adapters/keyring-transaction';
 import { mapLocalTransaction } from '../../shared/lib/activity/adapters/local-transaction';
 import { isProtectedByEnforcedSimulations } from '../pages/confirmations/utils/confirm';
+import { Status } from '../../shared/lib/activity/types';
 import { enrichLocalMusdClaimActivity } from './activity/enrich-local-musd-claim';
 import { getAssetsMetadata } from './assets';
 import {
@@ -320,7 +321,9 @@ function getSwapTokens(bridgeHistoryItem?: BridgeHistoryItem) {
   };
 }
 
-function getBridgeActivityStatus(bridgeHistoryItem?: BridgeHistoryItem) {
+function getBridgeActivityStatus(
+  bridgeHistoryItem?: BridgeHistoryItem,
+): Status | undefined {
   if (!bridgeHistoryItem) {
     return undefined;
   }
