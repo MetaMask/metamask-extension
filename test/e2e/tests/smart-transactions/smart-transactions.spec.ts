@@ -154,8 +154,8 @@ describe('Smart Transactions', function () {
         await activityList.checkCompletedTxNumberDisplayedInActivity();
         await activityList.checkNoFailedTransactions();
         await activityList.checkConfirmedTxNumberDisplayedInActivity();
-        await activityList.checkTxAction({ action: 'Swap ETH to DAI' });
-        await activityList.checkTxAmountInActivity(`-2 ETH`, 1);
+        await activityList.checkTxAction({ action: 'Swapped ETH to DAI' });
+        await activityList.checkTxAmountInActivity(`+4,625.9799 DAI`, 1);
       },
     );
   });

@@ -63,7 +63,7 @@ describe('Address Book', function (this: Suite) {
         await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);
         await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
-        await activityList.checkTxAction({ action: 'Sent' });
+        await activityList.checkTxAction({ action: 'Sent ETH' });
         await activityList.checkTxAmountInActivity(`-2 ETH`, 1);
       },
     );
@@ -109,7 +109,9 @@ describe('Address Book', function (this: Suite) {
           amount: '2',
         });
 
-        await new TransactionConfirmation(driver).clickFooterConfirmButton();
+        const confirmation = new TransactionConfirmation(driver);
+        await confirmation.waitForReviewAlertToDisappear();
+        await confirmation.clickFooterConfirmButton();
 
         // Select Linea to check the Activity list
         const networkSelector = new NetworkManager(driver);
@@ -121,7 +123,7 @@ describe('Address Book', function (this: Suite) {
         await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);
         await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
-        await activityList.checkTxAction({ action: 'Sent' });
+        await activityList.checkTxAction({ action: 'Sent ETH' });
         await activityList.checkTxAmountInActivity(`-2 ETH`, 1);
       },
     );

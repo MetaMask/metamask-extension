@@ -7,7 +7,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
 import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
 import NetworkManager from '../../page-objects/pages/network-manager';
-import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import SendPage from '../../page-objects/pages/send/send-page';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
@@ -288,14 +288,15 @@ describe('Send flow - SPL Token', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
-        const homePage = new NonEvmHomepage(driver);
+        const homePage = new HomePage(driver);
 
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
-        await homePage.checkPageIsLoaded({ amount: '50' });
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('50');
         await homePage.clickOnSendButton();
 
         const sendPage = new SendPage(driver);
@@ -326,7 +327,7 @@ describe('Send flow - SPL Token', function (this: Suite) {
         await confirmation.clickFooterConfirmButton();
 
         const activityList = new ActivityListPage(driver);
-        await activityList.checkTxAction({ action: 'Sent' });
+        await activityList.checkTxAction({ action: 'Sent USDC' });
 
         if (isUnifiedAssetsEnabled) {
           await driver.waitForSelector({
@@ -371,14 +372,15 @@ describe('Send flow - SPL Token', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
 
-        const homePage = new NonEvmHomepage(driver);
+        const homePage = new HomePage(driver);
 
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
         await networkManager.selectNetworkByNameWithWait('Solana');
 
-        await homePage.checkPageIsLoaded({ amount: '50' });
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('50');
         await homePage.clickOnSendButton();
 
         const sendPage = new SendPage(driver);
@@ -411,7 +413,7 @@ describe('Send flow - SPL Token', function (this: Suite) {
         const activityList = new ActivityListPage(driver);
         await activityList.checkFailedTxNumberDisplayedInActivity();
         await activityList.checkTxAction({
-          action: 'Interaction',
+          action: 'Interaction failed',
           confirmedTx: 0,
         });
       },

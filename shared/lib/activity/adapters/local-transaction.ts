@@ -1,5 +1,4 @@
 import { TransactionType } from '@metamask/transaction-controller';
-import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
 import { SWAPS_WRAPPED_TOKENS_ADDRESSES } from '../../../constants/swaps';
 import { toAssetId } from '../../asset-utils';
@@ -14,17 +13,14 @@ import {
   withdrawMethodIds,
   wrapMethodIds,
 } from './constants';
-import { getKnownTokenMetadata, getLocalTransactionStatus } from './helpers';
+import {
+  getKnownTokenMetadata,
+  getLocalTransactionStatus,
+  getNativeAssetSafe,
+  isNftStandard,
+} from './helpers';
 
 const EVM_NATIVE_DECIMALS = 18;
-
-function getNativeAsset(chainId: string) {
-  try {
-    return getNativeAssetForChainId(chainId);
-  } catch {
-    return undefined;
-  }
-}
 
 // Converts local TransactionController groups into activity items
 export function mapLocalTransaction(
@@ -41,7 +37,7 @@ export function mapLocalTransaction(
     KnownCaipNamespace.Eip155,
     Number.parseInt(initialTransaction.chainId, 16).toString(),
   );
-  const nativeAsset = getNativeAsset(initialTransaction.chainId);
+  const nativeAsset = getNativeAssetSafe(initialTransaction.chainId);
   // Prefer the network-configured ticker (resolved by the selector from
   // NetworkController state) over the bridge-controller swaps registry,
   // which hard-codes synthetic symbols like `TESTETH` for chains such as
@@ -52,7 +48,7 @@ export function mapLocalTransaction(
   const getNativeToken = (
     transaction: TransactionGroup['initialTransaction'],
     direction: TokenAmount['direction'],
-  ) => {
+  ): TokenAmount | undefined => {
     if (nativeSymbol === undefined) {
       return undefined;
     }
@@ -78,16 +74,28 @@ export function mapLocalTransaction(
     contractAddress?: string;
     direction: TokenAmount['direction'];
     transaction: TransactionGroup['initialTransaction'];
-  }) => {
+  }): TokenAmount | undefined => {
     if (contractAddress === undefined) {
       return undefined;
     }
 
     const tokenMetadata = getKnownTokenMetadata(chainId, contractAddress);
+
+    const isWrappedNativeToken = isEqualCaseInsensitive(
+      contractAddress,
+      SWAPS_WRAPPED_TOKENS_ADDRESSES[
+        initialTransaction.chainId as keyof typeof SWAPS_WRAPPED_TOKENS_ADDRESSES
+      ] || '',
+    );
+    const wrappedNativeTokenDecimals = isWrappedNativeToken
+      ? (nativeAsset?.decimals ?? EVM_NATIVE_DECIMALS)
+      : undefined;
+
     const decimals =
       transaction.transferInformation?.amount === undefined
         ? (tokenMetadata?.decimals ??
-          transactionGroup.contractTokenMetadata?.decimals)
+          transactionGroup.contractTokenMetadata?.decimals ??
+          wrappedNativeTokenDecimals)
         : transaction.transferInformation.decimals;
     const tokenAmount = transaction.transferInformation?.amount ?? amount;
     const symbol =
@@ -168,6 +176,7 @@ export function mapLocalTransaction(
   const from = initialTransaction.txParams.from ?? '';
   const to = initialTransaction.txParams.to ?? '';
   const methodId = initialTransaction.txParams.data?.slice(0, 10);
+
   switch (initialTransaction.type) {
     case TransactionType.simpleSend: {
       return {
@@ -420,6 +429,34 @@ export function mapLocalTransaction(
         initialTransaction.simulationData?.tokenBalanceChanges?.find(
           ({ isDecrease, standard }) => isDecrease && standard === 'erc20',
         );
+      const incomingNftBalanceChange =
+        initialTransaction.type === TransactionType.contractInteraction &&
+        initialTransaction.simulationData?.tokenBalanceChanges?.find(
+          ({ isDecrease, standard }) => !isDecrease && isNftStandard(standard),
+        );
+      let hasNativeValue = false;
+
+      try {
+        hasNativeValue = BigInt(initialTransaction.txParams.value ?? '0') > 0n;
+      } catch {
+        hasNativeValue = false;
+      }
+
+      if (incomingNftBalanceChange && hasNativeValue) {
+        return {
+          type: 'nftBuy',
+          chainId,
+          status,
+          timestamp,
+          raw: { type: 'localTransaction', data: transactionGroup },
+          data: {
+            hash,
+            token: {
+              direction: 'in',
+            },
+          },
+        };
+      }
 
       if (suppliedTokenBalanceChange) {
         return {
@@ -440,6 +477,7 @@ export function mapLocalTransaction(
         };
       }
 
+      // lending withdrawal - applies to Earn features only
       if (isWithdrawContractInteraction) {
         const fromAddress = from.toLowerCase();
         const receivedTokenLog = (

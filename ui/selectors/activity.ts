@@ -7,6 +7,7 @@ import {
 import { StatusTypes } from '@metamask/bridge-controller';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import type { TransactionPayControllerState } from '@metamask/transaction-pay-controller';
+import type { Transaction as KeyringTransaction } from '@metamask/keyring-api';
 import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
 import { ResultType } from '../../shared/lib/trust-signals';
 import { EXCLUDED_TRANSACTION_TYPES } from '../helpers/constants/transactions';
@@ -27,6 +28,7 @@ import { mapKeyringTransaction } from '../../shared/lib/activity/adapters/keyrin
 import { mapLocalTransaction } from '../../shared/lib/activity/adapters/local-transaction';
 import { isProtectedByEnforcedSimulations } from '../pages/confirmations/utils/confirm';
 import { enrichLocalMusdClaimActivity } from './activity/enrich-local-musd-claim';
+import { getAssetsMetadata } from './assets';
 import {
   groupAndSortTransactionsByNonce,
   smartTransactionsListSelector,
@@ -155,10 +157,56 @@ export const selectNonEvmTransactionsForActivity = createSelector(
 );
 
 export const selectNonEvmActivityItems = createSelector(
-  selectNonEvmTransactionsForActivity,
-  (transactions) =>
-    transactions.map((transaction) => mapKeyringTransaction({ transaction })),
+  [selectNonEvmTransactionsForActivity, getAssetsMetadata],
+  (transactions, assetsMetadata) =>
+    transactions.map((transaction) =>
+      mapKeyringTransaction({
+        // Unified assets caused Snap token movements with empty or placeholder units.
+        transaction: patchKeyringTransaction(transaction, assetsMetadata),
+      }),
+    ),
 );
+
+function patchKeyringTransaction(
+  transaction: KeyringTransaction,
+  assetsMetadata: ReturnType<typeof getAssetsMetadata>,
+) {
+  return {
+    ...transaction,
+    from: transaction.from.map((movement) =>
+      patchUnit(movement, assetsMetadata),
+    ),
+    to: transaction.to.map((movement) => patchUnit(movement, assetsMetadata)),
+  };
+}
+
+function patchUnit(
+  movement: KeyringTransaction['from'][number],
+  assetsMetadata: ReturnType<typeof getAssetsMetadata>,
+) {
+  if (!movement.asset?.fungible) {
+    return movement;
+  }
+
+  if (movement.asset.unit && movement.asset.unit !== 'UNKNOWN') {
+    return movement;
+  }
+
+  const metadata =
+    assetsMetadata[movement.asset.type as keyof typeof assetsMetadata];
+
+  if (!metadata?.symbol) {
+    return movement;
+  }
+
+  return {
+    ...movement,
+    asset: {
+      ...movement.asset,
+      unit: metadata.symbol,
+    },
+  };
+}
 
 function normalizeBridgeHistoryLookupKey(value: unknown) {
   return typeof value === 'string' || typeof value === 'number'
