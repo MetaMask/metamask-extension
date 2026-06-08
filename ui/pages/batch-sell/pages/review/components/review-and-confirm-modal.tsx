@@ -61,9 +61,9 @@ type ReviewAndConfirmModalProps = {
   totalNetworkFee?: string | null;
   totalNetworkFeeFiat?: string | null;
   totalNetworkFeeAssetSymbol?: string;
-  isInsufficientGasForFee: boolean;
   isBatchSellTradeAvailable: boolean;
-  totalNetworkfeeAreLoading: boolean;
+  totalNetworkFeeAreLoading: boolean;
+  totalNetworkFeeHasError: boolean;
 };
 
 type YouSellRowProps = {
@@ -169,10 +169,6 @@ const NetworkFeeRow = ({
     totalNetworkFeeFiat !== undefined && totalNetworkFeeFiat !== null;
 
   const networkFeeTokenAmount = useMemo(() => {
-    if (error && !loading) {
-      return '-';
-    }
-
     return hasTokenAmount
       ? formatTokenAmount(
           locale,
@@ -180,18 +176,14 @@ const NetworkFeeRow = ({
           feeAssetSymbol,
           BigNumber.ROUND_DOWN,
         )
-      : '12.34'; // arbitary value to allow skeleton rendering
-  }, [hasTokenAmount, locale, totalNetworkFee, feeAssetSymbol, error, loading]);
+      : '-'; // renders when network fee is unavailable or due to error
+  }, [hasTokenAmount, locale, totalNetworkFee, feeAssetSymbol]);
 
   const networkFeeFiatAmount = useMemo(() => {
-    if (error && !loading) {
-      return;
-    }
-
     return hasFiatAmount
       ? formatCurrencyAmount(totalNetworkFeeFiat, currency, 2)
-      : '12.34'; // arbitary value to allow skeleton rendering
-  }, [hasFiatAmount, totalNetworkFeeFiat, currency, error, loading]);
+      : '-'; // renders when network fee is unavailable or due to error
+  }, [hasFiatAmount, totalNetworkFeeFiat, currency]);
 
   return (
     <Box>
@@ -270,9 +262,9 @@ export const ReviewAndConfirmModal = ({
   totalNetworkFee,
   totalNetworkFeeFiat,
   totalNetworkFeeAssetSymbol,
-  isInsufficientGasForFee,
   isBatchSellTradeAvailable,
-  totalNetworkfeeAreLoading,
+  totalNetworkFeeAreLoading,
+  totalNetworkFeeHasError,
 }: ReviewAndConfirmModalProps) => {
   const t = useI18nContext();
   const [isYouSellExpanded, setIsYouSellExpanded] = useState(false);
@@ -287,14 +279,9 @@ export const ReviewAndConfirmModal = ({
     quoteResponses,
     receivedAsset,
   });
-  const submitLabel = isInsufficientGasForFee
-    ? t('alertReasonInsufficientBalance')
-    : t('sellAll');
-  const isSubmitDisabled =
-    isInsufficientGasForFee ||
-    !isBatchSellTradeAvailable ||
-    isSubmitting ||
-    totalNetworkfeeAreLoading;
+  const submitLabel = isBatchSellTradeAvailable
+    ? t('sellAll')
+    : t('alertReasonInsufficientBalance');
 
   // All quotes in a batch share the same MM fee rate, so we read it from the
   // first quote that has one and fall back to the bridge default. Mirrors the
@@ -305,11 +292,6 @@ export const ReviewAndConfirmModal = ({
     )?.quoteBpsFee;
     return bpsToPercentage(quoteBpsFee) ?? BRIDGE_MM_FEE_RATE;
   }, [quotes]);
-
-  const networkFeeHasError =
-    isInsufficientGasForFee ||
-    (!totalNetworkfeeAreLoading &&
-      (totalNetworkFee === null || totalNetworkFee === undefined));
 
   return (
     <Modal
@@ -348,18 +330,18 @@ export const ReviewAndConfirmModal = ({
             isLoading={minimumReceivedAmount === undefined}
           />
           <NetworkFeeRow
-            loading={totalNetworkfeeAreLoading}
+            loading={totalNetworkFeeAreLoading}
             feeAssetSymbol={totalNetworkFeeAssetSymbol ?? receivedAsset.symbol}
             totalNetworkFee={totalNetworkFee}
             totalNetworkFeeFiat={totalNetworkFeeFiat}
-            error={networkFeeHasError}
+            error={totalNetworkFeeHasError}
           />
         </ModalBody>
         <ModalFooter className="flex flex-col gap-2">
           <ButtonHero
             isFullWidth
             size={ButtonHeroSize.Lg}
-            disabled={isSubmitDisabled}
+            disabled={!isBatchSellTradeAvailable}
             isLoading={isSubmitting}
             onClick={submitBatchSellQuotes}
           >

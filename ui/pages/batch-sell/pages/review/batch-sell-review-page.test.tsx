@@ -142,16 +142,16 @@ jest.mock('./components/review-and-confirm-modal', () => ({
   ReviewAndConfirmModal: ({
     open,
     onClose,
-    totalNetworkfeeAreLoading,
+    totalNetworkFeeAreLoading,
   }: {
     open: boolean;
     onClose: () => void;
-    totalNetworkfeeAreLoading: boolean;
+    totalNetworkFeeAreLoading: boolean;
   }) =>
     open ? (
       <div
         data-testid="review-confirm-modal"
-        data-fees-loading={String(totalNetworkfeeAreLoading)}
+        data-fees-loading={String(totalNetworkFeeAreLoading)}
       >
         <button data-testid="review-confirm-close" onClick={onClose} />
       </div>
@@ -198,7 +198,6 @@ const defaultQuotesFetching = {
 
 const defaultValidation = {
   isNoQuotesAvailable: false,
-  isInsufficientGasForFee: false,
   nativeAssetSymbol: 'ETH',
 } satisfies Partial<ReturnType<typeof useBatchSellAggregateValidation>>;
 
@@ -400,7 +399,7 @@ describe('BatchSellReviewPage', () => {
       ).not.toBeInTheDocument();
     });
 
-    describe('totalNetworkfeeAreLoading', () => {
+    describe('totalNetworkFeeAreLoading', () => {
       it('passes false when network fee is not loading', () => {
         renderPage({ trades: { isLoading: false } });
 

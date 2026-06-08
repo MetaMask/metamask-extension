@@ -99,7 +99,6 @@ export type BatchSellReviewState = {
 
 export type BatchSellValidationResult = {
   isNoQuotesAvailable: boolean;
-  isInsufficientGasForFee: boolean;
   nativeAssetSymbol?: string;
 };
 

@@ -1,33 +1,35 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { debounce } from 'lodash';
-import { updateBatchSellTrades } from '../../../../../ducks/bridge/actions';
 import {
   BatchSellQuotesControllerResult,
   BatchSellQuotesResults,
   SendAssetEntry,
 } from '../types';
 import { TRADES_REQUEST_DEBOUNCE_MS } from '../../../../../constants/batch-sell';
+import { updateBatchSellTrades } from '../../../../../ducks/batch-sell/actions';
 
 export const useBatchSellTradesFetching = (
   {
     data,
     entries,
     quotesLastFetchedMs,
+    chain,
   }: {
     data: BatchSellQuotesResults | undefined;
     entries: SendAssetEntry[];
     quotesLastFetchedMs: BatchSellQuotesControllerResult['quotesLastFetchedMs'];
+    chain: string;
   },
   { enabled }: { enabled: boolean },
 ) => {
   const dispatch = useDispatch();
-  const latestArgsRef = useRef({ data, entries });
-  latestArgsRef.current = { data, entries };
+  const latestArgsRef = useRef({ data, entries, chain });
+  latestArgsRef.current = { data, entries, chain };
 
   const debouncedDispatch = useRef(
-    debounce((quotes) => {
-      dispatch(updateBatchSellTrades(quotes));
+    debounce((quotes, chainId: string) => {
+      dispatch(updateBatchSellTrades(quotes, chainId));
     }, TRADES_REQUEST_DEBOUNCE_MS),
   );
 
@@ -36,7 +38,11 @@ export const useBatchSellTradesFetching = (
       return;
     }
 
-    const { data: latestData, entries: latestEntries } = latestArgsRef.current;
+    const {
+      data: latestData,
+      entries: latestEntries,
+      chain: latestChain,
+    } = latestArgsRef.current;
 
     const quotes = latestEntries
       .filter((entry) => entry.enabled)
@@ -46,7 +52,7 @@ export const useBatchSellTradesFetching = (
       return;
     }
 
-    debouncedDispatch.current(quotes);
+    debouncedDispatch.current(quotes, latestChain);
   }, [enabled, quotesLastFetchedMs]);
 
   useEffect(() => {

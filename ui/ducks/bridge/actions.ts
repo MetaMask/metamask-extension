@@ -136,14 +136,6 @@ export const updateQuoteRequestParams = (
   };
 };
 
-export const updateBatchSellTrades = (
-  ...[quotes]: Parameters<BridgeController['updateBatchSellTrades']>
-) => {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await dispatch(callBridgeControllerMethod('updateBatchSellTrades', quotes));
-  };
-};
-
 export const setEvmBalances = (assetId: CaipAssetType) => {
   return async (
     dispatch: MetaMaskReduxDispatch,

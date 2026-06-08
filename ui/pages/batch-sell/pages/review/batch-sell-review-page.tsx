@@ -59,8 +59,10 @@ export const BatchSellReviewPage = () => {
     { enabled: hasInitialSelection },
   );
 
+  const batchSellChain = entries[0]?.asset.chainId ?? '';
+
   useBatchSellTradesFetching(
-    { data, entries, quotesLastFetchedMs },
+    { data, entries, quotesLastFetchedMs, chain: batchSellChain },
     { enabled: hasInitialSelection && !quotesAreLoading },
   );
 
@@ -73,9 +75,6 @@ export const BatchSellReviewPage = () => {
   const validation = useBatchSellAggregateValidation({
     sendAssetsConfig,
     quotes: data?.quotes,
-    totalNetworkFee: batchFees?.amount,
-    feeAssetId: batchFees?.asset.assetId,
-    isLoadingFees: feesAreLoading,
   });
 
   const atLeastOneQuoteAvailable = useMemo(
@@ -182,8 +181,8 @@ export const BatchSellReviewPage = () => {
         totalNetworkFee={batchFees?.amount}
         totalNetworkFeeFiat={batchFees?.valueInCurrency}
         totalNetworkFeeAssetSymbol={batchFees?.asset.symbol}
-        totalNetworkfeeAreLoading={feesAreLoading}
-        isInsufficientGasForFee={validation.isInsufficientGasForFee}
+        totalNetworkFeeAreLoading={feesAreLoading}
+        totalNetworkFeeHasError={!isBatchSellTradeAvailable}
         isBatchSellTradeAvailable={isBatchSellTradeAvailable}
       />
     </Box>
