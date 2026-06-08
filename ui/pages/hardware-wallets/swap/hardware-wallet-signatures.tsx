@@ -41,6 +41,7 @@ import {
 } from '../../../contexts/hardware-wallets';
 import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
 import useSubmitBridgeTransaction from '../../../hooks/bridge/useSubmitBridgeTransaction';
+import { useHwSignTracker } from '../../../hooks/hardware-wallets/useHwSignTracker';
 import SignatureStatusIcon from './signature-status-icon';
 import QrSignatureCode from './qr-signature-code';
 import GenericHardwareWalletAnimation from './generic-hardware-wallet-animation';
@@ -59,7 +60,6 @@ import {
   getInitialHardwareWalletSignaturesState,
   hardwareWalletSignaturesReducer,
 } from './hardware-wallet-signatures-state-machine';
-import { useHwSignTracker } from './useHwSignTracker';
 
 const SIGNATURE_STUCK_TIMEOUT_MS = 5_000;
 

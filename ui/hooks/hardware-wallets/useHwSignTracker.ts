@@ -5,8 +5,8 @@ import log from 'loglevel';
 import {
   subscribeToMessengerEvent,
   submitRequestToBackground,
-} from '../../../store/background-connection';
-import { HardwareWalletSignatureEvent } from './hardware-wallet-signatures-state-machine';
+} from '../../store/background-connection';
+import { HardwareWalletSignatureEvent } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 
 /** Bridge/swap transaction types that correspond to token approval signatures. */
 const APPROVAL_TYPES = new Set([

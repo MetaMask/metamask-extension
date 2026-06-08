@@ -3,11 +3,11 @@ import { TransactionType } from '@metamask/transaction-controller';
 import {
   subscribeToMessengerEvent,
   submitRequestToBackground,
-} from '../../../store/background-connection';
-import { HardwareWalletSignatureEvent } from './hardware-wallet-signatures-state-machine';
+} from '../../store/background-connection';
+import { HardwareWalletSignatureEvent } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 import { useHwSignTracker } from './useHwSignTracker';
 
-jest.mock('../../../store/background-connection', () => {
+jest.mock('../../store/background-connection', () => {
   const createMockUnsubscribe = () => {
     const fn = jest.fn().mockResolvedValue(undefined) as jest.Mock & {
       catch: jest.Mock;
