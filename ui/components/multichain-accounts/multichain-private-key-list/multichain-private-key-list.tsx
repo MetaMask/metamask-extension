@@ -394,7 +394,7 @@ const MultichainPrivateKeyList = ({
         networkName: string;
       },
       index: number,
-    ): React.JSX.Element => {
+    ): JSX.Element => {
       const privateKey = privateKeys[item.account.address];
       if (!privateKey) {
         return <></>;

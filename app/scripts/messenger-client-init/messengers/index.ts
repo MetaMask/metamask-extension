@@ -1,4 +1,5 @@
 import { noop } from 'lodash';
+import { getAnalyticsControllerMessenger } from './analytics-controller-messenger';
 import {
   getPPOMControllerMessenger,
   getPPOMControllerInitMessenger,
@@ -71,6 +72,7 @@ import {
   getAccountTreeControllerInitMessenger,
   getMultichainAccountServiceMessenger,
   getMultichainAccountServiceInitMessenger,
+  getSnapAccountServiceMessenger,
 } from './accounts';
 import {
   getOAuthServiceMessenger,
@@ -199,9 +201,10 @@ import {
 import { getClaimsServiceMessenger } from './claims/claims-service-messenger';
 import { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
 import { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
-import { getStorageServiceMessenger } from './storage-service-messenger';
 import { getGeolocationApiServiceMessenger } from './geolocation-api-service-messenger';
 import { getGeolocationControllerMessenger } from './geolocation-controller-messenger';
+import { getComplianceControllerMessenger } from './compliance-controller-messenger';
+import { getComplianceServiceMessenger } from './compliance-service-messenger';
 import { getPerpsControllerMessenger } from './perps-controller-messenger';
 import { getDataDeletionServiceMessenger } from './data-deletion-service-messenger';
 import { getLegacyBackgroundApiServiceMessenger } from './legacy-background-api-service-messenger';
@@ -246,15 +249,13 @@ export {
   getEnsControllerMessenger,
   getEnsControllerInitMessenger,
 } from './ens-controller-messenger';
-export type { StorageServiceMessenger } from './storage-service-messenger';
-export { getStorageServiceMessenger } from './storage-service-messenger';
 export type { GasFeeControllerInitMessenger } from './gas-fee-controller-messenger';
 export {
   getGasFeeControllerMessenger,
   getGasFeeControllerInitMessenger,
 } from './gas-fee-controller-messenger';
 export { getLoggingControllerMessenger } from './logging-controller-messenger';
-
+export { getAnalyticsControllerMessenger } from './analytics-controller-messenger';
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
 export type { NetworkControllerInitMessenger } from './network-controller-messenger';
@@ -282,6 +283,10 @@ export {
 export { getPermissionLogControllerMessenger } from './permission-log-controller-messenger';
 export { getGeolocationApiServiceMessenger } from './geolocation-api-service-messenger';
 export { getGeolocationControllerMessenger } from './geolocation-controller-messenger';
+export type { ComplianceControllerMessenger } from './compliance-controller-messenger';
+export { getComplianceControllerMessenger } from './compliance-controller-messenger';
+export type { ComplianceServiceMessenger } from './compliance-service-messenger';
+export { getComplianceServiceMessenger } from './compliance-service-messenger';
 export type { PerpsControllerMessenger } from './perps-controller-messenger';
 export { getPerpsControllerMessenger } from './perps-controller-messenger';
 export { getPhishingControllerMessenger } from './phishing-controller-messenger';
@@ -373,6 +378,10 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getAppStateControllerMessenger,
     getInitMessenger: noop,
   },
+  AnalyticsController: {
+    getMessenger: getAnalyticsControllerMessenger,
+    getInitMessenger: noop,
+  },
   AssetsController: {
     getMessenger: getAssetsControllerMessenger,
     getInitMessenger: getAssetsControllerInitMessenger,
@@ -403,6 +412,14 @@ export const MESSENGER_FACTORIES = {
   },
   ClientController: {
     getMessenger: getClientControllerMessenger,
+    getInitMessenger: noop,
+  },
+  ComplianceService: {
+    getMessenger: getComplianceServiceMessenger,
+    getInitMessenger: noop,
+  },
+  ComplianceController: {
+    getMessenger: getComplianceControllerMessenger,
     getInitMessenger: noop,
   },
   CronjobController: {
@@ -444,10 +461,6 @@ export const MESSENGER_FACTORIES = {
   EnsController: {
     getMessenger: getEnsControllerMessenger,
     getInitMessenger: getEnsControllerInitMessenger,
-  },
-  StorageService: {
-    getMessenger: getStorageServiceMessenger,
-    getInitMessenger: noop,
   },
   ExecutionService: {
     getMessenger: getExecutionServiceMessenger,
@@ -584,6 +597,10 @@ export const MESSENGER_FACTORIES = {
   SignatureController: {
     getMessenger: getSignatureControllerMessenger,
     getInitMessenger: getSignatureControllerInitMessenger,
+  },
+  SnapAccountService: {
+    getMessenger: getSnapAccountServiceMessenger,
+    getInitMessenger: noop,
   },
   SnapsNameProvider: {
     getMessenger: getSnapsNameProviderMessenger,

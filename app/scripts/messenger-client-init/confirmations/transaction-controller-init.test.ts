@@ -697,6 +697,65 @@ describe('Transaction Controller Init', () => {
       expect(result).toStrictEqual({ transactionHash: '0xstxHash' });
     });
 
+    it('calls Delegation7702PublishHook when isGasFeeIncluded is true even with STX and send bundle supported', async () => {
+      jest
+        .mocked(sentinelApiModule.isSendBundleSupported)
+        .mockResolvedValue(true);
+
+      jest
+        .mocked(smartTransactionsModule.getSmartTransactionCommonParams)
+        .mockReturnValue({
+          isSmartTransaction: true,
+          featureFlags: {
+            extensionReturnTxHashAsap: false,
+            extensionReturnTxHashAsapBatch: false,
+            extensionSkipTransactionStatusPage: false,
+            mobileActive: false,
+            extensionActive: false,
+          },
+          isHardwareWalletAccount: false,
+        });
+
+      const delegation7702HookFn: jest.MockedFn<PublishHook> = jest.fn();
+      delegation7702HookFn.mockResolvedValue({ transactionHash: '0xdelHash' });
+      jest.mocked(Delegation7702PublishHook).mockImplementation(
+        () =>
+          ({
+            getHook: () => delegation7702HookFn,
+          }) as unknown as Delegation7702PublishHook,
+      );
+
+      type PHArgs = Parameters<typeof publishHook>[0];
+      const result = await publishHook({
+        flatState: {} as PHArgs['flatState'],
+        getTransactionMetricsRequest: () =>
+          ({
+            upsertTransactionUIMetricsFragment: jest.fn(),
+          }) as unknown as ReturnType<PHArgs['getTransactionMetricsRequest']>,
+        initMessenger: {
+          call: jest.fn(),
+        } as unknown as TransactionControllerInitMessenger,
+        keyringController: {
+          getKeyringForAccount: jest
+            .fn()
+            .mockResolvedValue({ type: 'HD Key Tree' }),
+        },
+        signedTx: '0xsigned',
+        smartTransactionsController:
+          {} as PHArgs['smartTransactionsController'],
+        transactionController: {
+          isAtomicBatchSupported: jest.fn(),
+        } as unknown as PHArgs['transactionController'],
+        transactionMeta: {
+          ...mockTransactionMeta,
+          isGasFeeIncluded: true,
+        } as TransactionMeta,
+      });
+
+      expect(delegation7702HookFn).toHaveBeenCalledTimes(1);
+      expect(result).toStrictEqual({ transactionHash: '0xdelHash' });
+    });
+
     it('bypasses Delegation7702PublishHook for revokeDelegation on a sponsored chain', async () => {
       jest
         .mocked(sentinelApiModule.isSendBundleSupported)

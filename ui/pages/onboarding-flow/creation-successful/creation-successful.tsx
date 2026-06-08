@@ -305,21 +305,16 @@ export default function CreationSuccessful() {
     // this is to ensure that the `Metrics Opt In/Out` event will not be tracked if basic functionality is disabled.
     if (!isOnboardingCompleted) {
       // before onboarding completion, we track the MetricsOptIn/Out event
-      trackEvent(
-        {
-          category: MetaMetricsEventCategory.Onboarding,
-          event: participateInMetaMetrics
-            ? MetaMetricsEventName.MetricsOptIn
-            : MetaMetricsEventName.MetricsOptOut,
-          properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            account_type: accountTypeForMetrics,
-          },
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: participateInMetaMetrics
+          ? MetaMetricsEventName.MetricsOptIn
+          : MetaMetricsEventName.MetricsOptOut,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: accountTypeForMetrics,
         },
-        {
-          isOptIn: !participateInMetaMetrics, // Force the event to be tracked even if participateInMetaMetrics is false
-        },
-      );
+      });
     }
 
     // Side Panel - only if feature flag is enabled

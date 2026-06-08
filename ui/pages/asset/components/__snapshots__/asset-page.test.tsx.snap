@@ -220,7 +220,7 @@ exports[`AssetPage should render a native asset 1`] = `
         Your balance
       </h4>
       <div
-        class="flex-row gap-4 flex h-full w-full"
+        class="flex-row gap-4 flex h-full w-full [container-name:list-item] [container-type:inline-size]"
       >
         <a
           class="flex w-full flex-row py-2 px-4 "
@@ -264,7 +264,7 @@ exports[`AssetPage should render a native asset 1`] = `
                 class="flex flex-row gap-2 min-w-0"
               >
                 <p
-                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                  class="mm-box mm-text text-s-body-md @compact:text-s-body-sm mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
                   data-testid="multichain-token-list-item-token-name"
                 >
                   TEST
@@ -297,7 +297,7 @@ exports[`AssetPage should render a native asset 1`] = `
                 </button>
               </div>
               <p
-                class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-end mm-box--color-text-default"
+                class="mm-box mm-text text-s-body-md @compact:text-s-body-sm mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-end mm-box--color-text-default"
                 data-testid="multichain-token-list-item-secondary-value"
                 style="white-space: nowrap; padding-inline-start: 8px;"
               >
@@ -385,7 +385,7 @@ exports[`AssetPage should render a native asset 1`] = `
                 class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
               >
                 <a
-                  class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed asset-page__spending-caps"
+                  class="inline-flex items-center justify-center font-medium overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed asset-page__spending-caps"
                   href="https://portfolio.test/?metamaskEntry=asset_page&metametricsId=&metricsEnabled=false&marketingEnabled=false&accountAddress=cf8dace4-9439-4bd4-b3a8-88c821c8fcb3&tab=spending-caps"
                   rel="noopener noreferrer"
                   target="_blank"
@@ -588,7 +588,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
         Your balance
       </h4>
       <div
-        class="flex-row gap-4 flex h-full w-full"
+        class="flex-row gap-4 flex h-full w-full [container-name:list-item] [container-type:inline-size]"
       >
         <a
           class="flex w-full flex-row py-2 px-4 "
@@ -632,14 +632,14 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                 class="flex flex-row gap-2 min-w-0"
               >
                 <p
-                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                  class="mm-box mm-text text-s-body-md @compact:text-s-body-sm mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
                   data-testid="multichain-token-list-item-token-name"
                 >
                   TEST
                 </p>
               </div>
               <p
-                class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
+                class="mm-box mm-text text-s-body-md @compact:text-s-body-sm mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
                 data-testid="multichain-token-list-item-secondary-value"
                 style="white-space: nowrap; padding-inline-start: 8px;"
               >
@@ -795,7 +795,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                 class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
               >
                 <a
-                  class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed asset-page__spending-caps"
+                  class="inline-flex items-center justify-center font-medium overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed asset-page__spending-caps"
                   href="https://portfolio.test/?metamaskEntry=asset_page&metametricsId=&metricsEnabled=false&marketingEnabled=false&accountAddress=cf8dace4-9439-4bd4-b3a8-88c821c8fcb3&tab=spending-caps"
                   rel="noopener noreferrer"
                   target="_blank"
@@ -1009,7 +1009,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         Your balance
       </h4>
       <div
-        class="flex-row gap-4 flex h-full w-full"
+        class="flex-row gap-4 flex h-full w-full [container-name:list-item] [container-type:inline-size]"
       >
         <a
           class="flex w-full flex-row py-2 px-4 "
@@ -1053,14 +1053,14 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                 class="flex flex-row gap-2 min-w-0"
               >
                 <p
-                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                  class="mm-box mm-text text-s-body-md @compact:text-s-body-sm mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
                   data-testid="multichain-token-list-item-token-name"
                 >
                   TEST
                 </p>
               </div>
               <p
-                class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
+                class="mm-box mm-text text-s-body-md @compact:text-s-body-sm mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
                 data-testid="multichain-token-list-item-secondary-value"
                 style="white-space: nowrap; padding-inline-start: 8px;"
               >
@@ -1216,7 +1216,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                 class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
               >
                 <a
-                  class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed asset-page__spending-caps"
+                  class="inline-flex items-center justify-center font-medium overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed asset-page__spending-caps"
                   href="https://portfolio.test/?metamaskEntry=asset_page&metametricsId=&metricsEnabled=false&marketingEnabled=false&accountAddress=cf8dace4-9439-4bd4-b3a8-88c821c8fcb3&tab=spending-caps"
                   rel="noopener noreferrer"
                   target="_blank"

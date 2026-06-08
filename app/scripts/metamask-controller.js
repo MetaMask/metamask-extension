@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import { pipeline } from 'readable-stream';
+import { finished, pipeline } from 'readable-stream';
 import browser from 'webextension-polyfill';
 import {
   createAsyncMiddleware,
@@ -58,11 +58,7 @@ import { ERC1155, ERC20, ERC721, toHex } from '@metamask/controller-utils';
 
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
-import {
-  BRIDGE_CONTROLLER_NAME,
-  BridgeUserAction,
-  BridgeBackgroundAction,
-} from '@metamask/bridge-controller';
+import { BRIDGE_CONTROLLER_NAME } from '@metamask/bridge-controller';
 
 import {
   TransactionStatus,
@@ -83,10 +79,6 @@ import {
   bytesToHex,
   parseCaipAssetType,
   KnownCaipNamespace,
-  hasProperty,
-  isObject,
-  isJsonRpcRequest,
-  isJsonRpcNotification,
   createDeferredPromise,
 } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
@@ -185,7 +177,6 @@ import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/lib/transaction.utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { START_UI_SYNC } from '../../shared/constants/ui-initialization';
-import { PATCH_STORE_SUBSTREAM_METHODS } from '../../shared/constants/patch-store-substream-methods';
 import {
   createEnsureOnboardingCompleteCallback,
   getTokenValueParam,
@@ -237,7 +228,6 @@ import {
   toHardwareWalletError,
   // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../ui/contexts/hardware-wallets';
-import { onStreamClosed } from '../../shared/lib/stream-utils';
 import {
   DEFI_REFERRAL_PARTNERS,
   DefiReferralPartner,
@@ -348,6 +338,8 @@ import { TransactionControllerInit } from './messenger-client-init/confirmations
 import { TransactionPayControllerInit } from './messenger-client-init/transaction-pay-controller-init';
 import { GeolocationApiServiceInit } from './messenger-client-init/geolocation-api-service-init';
 import { GeolocationControllerInit } from './messenger-client-init/geolocation-controller-init';
+import { ComplianceServiceInit } from './messenger-client-init/compliance-service-init';
+import { ComplianceControllerInit } from './messenger-client-init/compliance-controller-init';
 import { PerpsControllerInit } from './messenger-client-init/perps-controller-init';
 import { PerpsStreamBridge } from './controllers/perps/perps-stream-bridge';
 import { PPOMControllerInit } from './messenger-client-init/confirmations/ppom-controller-init';
@@ -379,6 +371,7 @@ import { isRelaySupported } from './lib/transaction/transaction-relay';
 import { openUpdateTabAndReload } from './lib/open-update-tab-and-reload';
 import { AccountTreeControllerInit } from './messenger-client-init/accounts/account-tree-controller-init';
 import { MultichainAccountServiceInit } from './messenger-client-init/multichain/multichain-account-service-init';
+import { SnapAccountServiceInit } from './messenger-client-init/accounts/snap-account-service-init';
 import {
   OAuthServiceInit,
   SeedlessOnboardingControllerInit,
@@ -393,6 +386,7 @@ import { ShieldControllerInit } from './messenger-client-init/shield/shield-cont
 import { GatorPermissionsControllerInit } from './messenger-client-init/gator-permissions/gator-permissions-controller-init';
 
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
+import { AnalyticsControllerInit } from './messenger-client-init/analytics-controller-init';
 import { MetaMetricsControllerInit } from './messenger-client-init/metametrics-controller-init';
 import { TokenListControllerInit } from './messenger-client-init/token-list-controller-init';
 import { TokenDetectionControllerInit } from './messenger-client-init/token-detection-controller-init';
@@ -430,7 +424,6 @@ import { AlertControllerInit } from './messenger-client-init/alert-controller-in
 import { MetaMetricsDataDeletionControllerInit } from './messenger-client-init/metametrics-data-deletion-controller-init';
 import { LoggingControllerInit } from './messenger-client-init/logging-controller-init';
 import { AppMetadataControllerInit } from './messenger-client-init/app-metadata-controller-init';
-import { StorageServiceInit } from './messenger-client-init/storage-service-init';
 import { ApprovalControllerInit } from './messenger-client-init/confirmations/approval-controller-init';
 import { AddressBookControllerInit } from './messenger-client-init/confirmations/address-book-controller-init';
 import { DecryptMessageManagerInit } from './messenger-client-init/confirmations/decrypt-message-manager-init';
@@ -474,10 +467,6 @@ export const METAMASK_CONTROLLER_EVENTS = {
 
 /**
  * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
- */
-
-/**
- * @typedef {import('@metamask/object-multiplex/dist/Substream').Substream} Substream
  */
 
 // Types of APIs
@@ -620,7 +609,6 @@ export default class MetamaskController extends EventEmitter {
     const messengerClientInitFunctions = {
       ApprovalController: ApprovalControllerInit,
       LoggingController: LoggingControllerInit,
-      StorageService: StorageServiceInit,
       AppMetadataController: AppMetadataControllerInit,
       PreferencesController: PreferencesControllerInit,
       AccountsController: AccountsControllerInit,
@@ -639,6 +627,7 @@ export default class MetamaskController extends EventEmitter {
       PasskeyController: PasskeyControllerInit,
       RemoteFeatureFlagController: RemoteFeatureFlagControllerInit,
       NetworkController: NetworkControllerInit,
+      AnalyticsController: AnalyticsControllerInit,
       MetaMetricsController: MetaMetricsControllerInit,
       DataDeletionService: DataDeletionServiceInit,
       MetaMetricsDataDeletionController: MetaMetricsDataDeletionControllerInit,
@@ -658,6 +647,8 @@ export default class MetamaskController extends EventEmitter {
       AccountActivityService: AccountActivityServiceInit,
       GeolocationApiService: GeolocationApiServiceInit,
       GeolocationController: GeolocationControllerInit,
+      ComplianceService: ComplianceServiceInit,
+      ComplianceController: ComplianceControllerInit,
       ...(getIsPerpsIncludedInBuild()
         ? { PerpsController: PerpsControllerInit }
         : {}),
@@ -689,6 +680,7 @@ export default class MetamaskController extends EventEmitter {
       // FIXME: Must be init before `MultichainAccountService` to make sure account-tree is updated before
       // reacting to any `:multichainAccountGroup*` events.
       AccountTreeController: AccountTreeControllerInit,
+      SnapAccountService: SnapAccountServiceInit,
       MultichainAssetsController: MultichainAssetsControllerInit,
       MultichainAssetsRatesController: MultichainAssetsRatesControllerInit,
       MultichainBalancesController: MultichainBalancesControllerInit,
@@ -749,6 +741,7 @@ export default class MetamaskController extends EventEmitter {
     this.appMetadataController = messengerClientsByName.AppMetadataController;
     this.preferencesController = messengerClientsByName.PreferencesController;
     this.keyringController = this.wallet.getInstance('KeyringController');
+    this.snapAccountService = messengerClientsByName.SnapAccountService;
     this.accountsController = messengerClientsByName.AccountsController;
     this.addressBookController = messengerClientsByName.AddressBookController;
     this.alertController = messengerClientsByName.AlertController;
@@ -764,6 +757,7 @@ export default class MetamaskController extends EventEmitter {
       messengerClientsByName.SubjectMetadataController;
     this.appStateController = messengerClientsByName.AppStateController;
     this.networkController = messengerClientsByName.NetworkController;
+    this.analyticsController = messengerClientsByName.AnalyticsController;
     this.metaMetricsController = messengerClientsByName.MetaMetricsController;
     this.dataDeletionService = messengerClientsByName.DataDeletionService;
     this.metaMetricsDataDeletionController =
@@ -1376,6 +1370,7 @@ export default class MetamaskController extends EventEmitter {
       AppMetadataController: this.appMetadataController,
       KeyringController: this.keyringController,
       PreferencesController: this.preferencesController,
+      AnalyticsController: this.analyticsController,
       MetaMetricsController: this.metaMetricsController,
       MetaMetricsDataDeletionController: this.metaMetricsDataDeletionController,
       AddressBookController: this.addressBookController,
@@ -1436,6 +1431,7 @@ export default class MetamaskController extends EventEmitter {
         NetworkController: this.networkController,
         KeyringController: this.keyringController,
         PreferencesController: this.preferencesController,
+        AnalyticsController: this.analyticsController,
         MetaMetricsController: this.metaMetricsController,
         MetaMetricsDataDeletionController:
           this.metaMetricsDataDeletionController,
@@ -1803,58 +1799,6 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
-  /**
-   * Get the snap keyring instance if available.
-   *
-   * @returns {SnapKeyring}
-   */
-  getSnapKeyringIfAvailable() {
-    // Check if the controller has been unlocked, otherwise this will throw.
-    if (this.keyringController.isUnlocked()) {
-      // TODO: Use `withKeyring` instead
-      const [snapKeyring] = this.keyringController.getKeyringsByType(
-        KeyringType.snap,
-      );
-
-      return snapKeyring;
-    }
-    return undefined;
-  }
-
-  /**
-   * Forward currently selected account group to the Snap keyring.
-   *
-   * @param snapKeyring - Snap keyring instance or undefined if not available.
-   * @param groupId - Currently selected account group.
-   */
-  async forwardSelectedAccountGroupToSnapKeyring(snapKeyring, groupId) {
-    if (!snapKeyring) {
-      // Nothing to forward if the Snap keyring is not available.
-      return;
-    }
-
-    if (groupId) {
-      const group = this.accountTreeController.getAccountGroupObject(groupId);
-      if (group) {
-        // FIXME: For now, only our non-EVM Snaps support this `keyring_setSelectedAccounts`
-        // method. There's also no way to know which optional method is supported on an
-        // account management Snap for now.
-        // Calling this on the SSK has an undesired side-effect on the Snap itself, to avoid
-        // making it fail, we ONLY scope this call to "multichain account groups" which are
-        // backed by non-EVM Snaps.
-        const hasNonEvmAccounts = group.accounts.some((id) => {
-          const account = this.accountsController.getAccount(id);
-
-          return Boolean(account) && !isEvmAccountType(account.type);
-        });
-
-        if (hasNonEvmAccounts) {
-          await snapKeyring.setSelectedAccounts(group.accounts);
-        }
-      }
-    }
-  }
-
   trackInsightSnapView(snapId) {
     this.metaMetricsController.trackEvent({
       event: MetaMetricsEventName.InsightSnapViewed,
@@ -2133,7 +2077,7 @@ export default class MetamaskController extends EventEmitter {
     // wallet_notify for multichain accountChanged when selected account group changes
     this.controllerMessenger.subscribe(
       `${this.accountTreeController.name}:selectedAccountGroupChange`,
-      (groupId) => {
+      () => {
         const authorizationsByOrigin = getAuthorizedScopesByOrigin(
           this.permissionController.state,
         );
@@ -2144,14 +2088,6 @@ export default class MetamaskController extends EventEmitter {
         ] of authorizationsByOrigin.entries()) {
           this._notifyAuthorizationChange(origin, authorization);
         }
-
-        // TODO: Move this logic to the SnapKeyring directly.
-        // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
-        // eslint-disable-next-line no-void
-        void this.forwardSelectedAccountGroupToSnapKeyring(
-          this.getSnapKeyringIfAvailable(),
-          groupId,
-        );
 
         NON_EVM_ACCOUNT_CHANGED_CONFIGS.forEach(
           ({ network, accountType, notificationProperty, chains }) => {
@@ -2204,23 +2140,6 @@ export default class MetamaskController extends EventEmitter {
             }
           },
         );
-      },
-    );
-
-    // TODO: Move this logic to the SnapKeyring directly.
-    // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
-    this.controllerMessenger.subscribe(
-      `${this.multichainAccountService.name}:multichainAccountGroupUpdated`,
-      (group) => {
-        // If the current group gets updated, then maybe there are more accounts being "selected"
-        // now, so we have to forward them to the Snap keyring too!
-        if (this.accountTreeController.getSelectedAccountGroup() === group.id) {
-          // eslint-disable-next-line no-void
-          void this.forwardSelectedAccountGroupToSnapKeyring(
-            this.getSnapKeyringIfAvailable(),
-            group.id,
-          );
-        }
       },
     );
 
@@ -2652,10 +2571,16 @@ export default class MetamaskController extends EventEmitter {
     const { vault } = this.keyringController.state;
     const isInitialized = Boolean(vault);
     const flatState = this.memStore.getFlatState();
+    const { completedMetaMetricsOnboarding } = this.metaMetricsController.state;
+    const { optedIn, analyticsId } = this.analyticsController.state;
+    const participateInMetaMetrics =
+      completedMetaMetricsOnboarding === true ? optedIn : null;
 
     return {
       isInitialized,
       ...sanitizeUIState(flatState),
+      participateInMetaMetrics,
+      metaMetricsId: analyticsId,
     };
   }
 
@@ -3630,23 +3555,21 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // Bridge
-      [BridgeBackgroundAction.RESET_STATE]: this.controllerMessenger.call.bind(
+      resetState: this.controllerMessenger.call.bind(
         this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.RESET_STATE}`,
+        `${BRIDGE_CONTROLLER_NAME}:resetState`,
       ),
-      [BridgeUserAction.UPDATE_QUOTE_PARAMS]:
-        this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          `${BRIDGE_CONTROLLER_NAME}:${BridgeUserAction.UPDATE_QUOTE_PARAMS}`,
-        ),
-      [BridgeBackgroundAction.TRACK_METAMETRICS_EVENT]:
-        this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.TRACK_METAMETRICS_EVENT}`,
-        ),
-      [BridgeBackgroundAction.FETCH_QUOTES]: this.controllerMessenger.call.bind(
+      updateBridgeQuoteRequestParams: this.controllerMessenger.call.bind(
         this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.FETCH_QUOTES}`,
+        `${BRIDGE_CONTROLLER_NAME}:updateBridgeQuoteRequestParams`,
+      ),
+      trackUnifiedSwapBridgeEvent: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_CONTROLLER_NAME}:trackUnifiedSwapBridgeEvent`,
+      ),
+      fetchQuotes: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_CONTROLLER_NAME}:fetchQuotes`,
       ),
 
       // Bridge Tx submission
@@ -4591,7 +4514,9 @@ export default class MetamaskController extends EventEmitter {
     if (!this.passkeyController.isPasskeyEnrolled()) {
       throw new PasskeyControllerError(
         PasskeyControllerErrorMessage.NotEnrolled,
-        { code: PasskeyControllerErrorCode.NotEnrolled },
+        {
+          code: PasskeyControllerErrorCode.NotEnrolled,
+        },
       );
     }
     const vaultKey = await this.passkeyController.retrieveVaultKeyWithPasskey(
@@ -4610,7 +4535,9 @@ export default class MetamaskController extends EventEmitter {
     if (!this.passkeyController.isPasskeyEnrolled()) {
       throw new PasskeyControllerError(
         PasskeyControllerErrorMessage.NotEnrolled,
-        { code: PasskeyControllerErrorCode.NotEnrolled },
+        {
+          code: PasskeyControllerErrorCode.NotEnrolled,
+        },
       );
     }
     const verified = await this.passkeyController.verifyPasskeyAuthentication(
@@ -4636,7 +4563,9 @@ export default class MetamaskController extends EventEmitter {
     if (!this.passkeyController.isPasskeyEnrolled()) {
       throw new PasskeyControllerError(
         PasskeyControllerErrorMessage.NotEnrolled,
-        { code: PasskeyControllerErrorCode.NotEnrolled },
+        {
+          code: PasskeyControllerErrorCode.NotEnrolled,
+        },
       );
     }
     await this.verifyPassword(password);
@@ -4662,7 +4591,9 @@ export default class MetamaskController extends EventEmitter {
     if (!this.passkeyController.isPasskeyEnrolled()) {
       throw new PasskeyControllerError(
         PasskeyControllerErrorMessage.NotEnrolled,
-        { code: PasskeyControllerErrorCode.NotEnrolled },
+        {
+          code: PasskeyControllerErrorCode.NotEnrolled,
+        },
       );
     }
 
@@ -5038,14 +4969,13 @@ export default class MetamaskController extends EventEmitter {
       // accounts (they should be up-to-date already, but we still run `updateAccounts` as
       // there are some account migration happening in that function).
       await this.accountsController.updateAccounts();
+
       // Then we can build the initial tree.
       this.accountTreeController.reinit();
-      // TODO: Move this logic to the SnapKeyring directly.
-      // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
-      await this.forwardSelectedAccountGroupToSnapKeyring(
-        await getSnapKeyring(this.controllerMessenger),
-        this.accountTreeController.getSelectedAccountGroup(),
-      );
+
+      // We "force-create" the Snap keyring right after now to ensure it is available as soon
+      // as possible after vault creation (enabling faster keyring access for future operations).
+      await getSnapKeyring(this.controllerMessenger);
 
       return primaryKeyring;
     } finally {
@@ -5392,18 +5322,15 @@ export default class MetamaskController extends EventEmitter {
       // TODO: Remove this once the `accounts-controller` once only
       // depends only on keyrings `:stateChange`.
       this.accountTreeController.reinit();
-      // TODO: Move this logic to the SnapKeyring directly.
-      // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
-      await this.forwardSelectedAccountGroupToSnapKeyring(
-        await getSnapKeyring(this.controllerMessenger),
-        this.accountTreeController.getSelectedAccountGroup(),
-      );
+
+      // We "force-create" the Snap keyring right after now to ensure it is available as soon
+      // as possible after vault creation (enabling faster keyring access for future operations).
+      await getSnapKeyring(this.controllerMessenger);
 
       if (completedOnboarding) {
         // check if external services are enabled
         const { useExternalServices } = this.preferencesController.state;
         if (useExternalServices) {
-          await getSnapKeyring(this.controllerMessenger);
           await this.accountTreeController.syncWithUserStorageAtLeastOnce();
         }
         await this.discoverAndCreateAccounts(id);
@@ -5548,6 +5475,8 @@ export default class MetamaskController extends EventEmitter {
       }
     }
 
+    // Re-create accounts in the accounts-controller, after the keyring-controller gets
+    // unlocked.
     await this.accountsController.updateAccounts();
 
     // Init multichain accounts after creating internal accounts.
@@ -5556,17 +5485,9 @@ export default class MetamaskController extends EventEmitter {
     // Force account-tree refresh after all accounts have been updated.
     this.accountTreeController.init();
 
-    // TODO: Move this logic to the SnapKeyring directly.
-    // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
-    // It is not necessary to await this since it is just expected for the snap to receive
-    // the information without blocking the login flow. Despite not awaiting for
-    // forwardSelectedAccountGroupToSnapKeyring to be completed, we still want to await for
-    // getSnapKeyring to ensure the Snap keyring is available.
-    // eslint-disable-next-line no-void
-    void this.forwardSelectedAccountGroupToSnapKeyring(
-      await getSnapKeyring(this.controllerMessenger),
-      this.accountTreeController.getSelectedAccountGroup(),
-    );
+    // We "force-create" the Snap keyring right after unlocking the vault to ensure it is
+    // available as soon as possible (enabling faster keyring access for future operations).
+    await getSnapKeyring(this.controllerMessenger);
 
     const resyncAndAlignAccounts = async () => {
       // READ THIS CAREFULLY:
@@ -6821,17 +6742,16 @@ export default class MetamaskController extends EventEmitter {
    * @param {*} connectionStream - The duplex stream to connect to.
    * @param {MessageSender} sender - The sender of the messages on this stream
    * @returns {Promise<void>} Resolves when the UI starts sending patches or
-   * when the patch-store substream closes first (so callers can run cleanup in `finally`).
+   * when the patch-store substream closes first (so callers can run cleanup in
+   * `finally`).
    */
   setupTrustedCommunication(connectionStream, sender) {
     // setup multiplexing
     const mux = setupMultiplex(connectionStream);
     // connect features
-    const { initializePatchStore, patchesPromise } =
-      this.setupPatchStoreConnection(mux.createStream('patch-store'));
-    this.setupControllerConnection(mux.createStream('controller'), {
-      initializePatchStore,
-    });
+    const { patchesPromise } = this.setupControllerConnection(
+      mux.createStream('controller'),
+    );
     this.setupProviderConnectionEip1193(
       mux.createStream('provider'),
       sender,
@@ -6876,7 +6796,7 @@ export default class MetamaskController extends EventEmitter {
       metaMetricsId,
       dataCollectionForMarketing,
       participateInMetaMetrics,
-    } = this.metaMetricsController.state;
+    } = this.getState();
 
     if (
       metaMetricsId &&
@@ -6923,28 +6843,15 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Sets up the substream responsible for collecting and sending state patches
-   * to a UI process.
+   * A method for providing our API over a stream using JSON-RPC.
    *
-   * Whenever the state of a controller changes, we need to update the Redux
-   * root store on the UI side. However, we want to control which part of Redux
-   * is updated to prevent excessive rerenders.
-   *
-   * To do this, we use `PatchStore`, which wraps `memStore`, captures state
-   * updates as a deduplicated set of JSON patch objects, and then releases them
-   * to the UI process only when requested.
-   *
-   * For the UI side of this, see `ui/store/patch-store-substream-connection.ts`.
-   *
-   * @param {Substream} outStream - The substream that patch store messages are
-   * sent through.
-   * @returns {{ initializePatchStore: () => void, patchesPromise: Promise<void> }}
-   * `patchesPromise` settles when the UI starts sending patches or when this
-   * substream closes first.
+   * @param {*} outStream - The stream to provide our API over.
+   * @returns {{ patchesPromise: Promise<void> }} `patchesPromise` settles when
+   * the UI starts sending patches or when this substream closes first.
    */
-  setupPatchStoreConnection(outStream) {
+  setupControllerConnection(outStream) {
     const patchStore = new PatchStore(this.memStore);
-    let isUiReady = false;
+    let uiReady = false;
 
     let isPromiseResolved = false;
     const { promise: patchesPromise, resolve: resolvePromise } =
@@ -6959,15 +6866,7 @@ export default class MetamaskController extends EventEmitter {
     };
 
     const handleUpdate = () => {
-      if (!isStreamWritable(outStream)) {
-        log.debug('Stream is closed, ignoring.');
-        return;
-      }
-
-      if (!isUiReady) {
-        log.debug(
-          "'startSendingPatches' has not been called yet, not calling 'sendUpdate'.",
-        );
+      if (!isStreamWritable(outStream) || !uiReady) {
         return;
       }
 
@@ -6975,96 +6874,11 @@ export default class MetamaskController extends EventEmitter {
 
       outStream.write({
         jsonrpc: '2.0',
-        method: PATCH_STORE_SUBSTREAM_METHODS.SendUpdate,
+        method: 'sendUpdate',
         params: [patches],
       });
     };
 
-    const initializePatchStore = () => {
-      patchStore.init();
-    };
-
-    const handleStartSendingPatches = () => {
-      onStartSendingPatchesOrStreamClosed(); //  UI invoking 'startSendingPatches' is a signal that UI<>Background connection is established and we won't need to listen for critical-error messages anymore.
-      isUiReady = true;
-      handleUpdate();
-    };
-
-    const handleGetStatePatches = (request) => {
-      const patches = patchStore.flushPendingPatches();
-      outStream.write({
-        id: request.id,
-        jsonrpc: '2.0',
-        result: patches,
-      });
-    };
-
-    const handleIncomingMessage = (message) => {
-      if (!isStreamWritable(outStream)) {
-        log.debug('Stream is closed, ignoring incoming message.');
-        return;
-      }
-
-      if (
-        !(
-          (isJsonRpcRequest(message) && typeof message.id === 'number') ||
-          isJsonRpcNotification(message)
-        )
-      ) {
-        outStream.write({
-          id:
-            isObject(message) && hasProperty(message, 'id') ? message.id : null,
-          jsonrpc: '2.0',
-          error: rpcErrors.invalidRequest(),
-        });
-        return;
-      }
-
-      const { method } = message;
-
-      if (method === PATCH_STORE_SUBSTREAM_METHODS.StartSendingPatches) {
-        handleStartSendingPatches();
-      } else if (method === PATCH_STORE_SUBSTREAM_METHODS.GetStatePatches) {
-        handleGetStatePatches(message);
-      } else if (message.id === undefined) {
-        console.error(
-          `Unrecognized patch-store substream notification method: ${method}`,
-        );
-      } else {
-        outStream.write({
-          id: message.id,
-          jsonrpc: '2.0',
-          error: rpcErrors.methodNotFound({
-            message: `${method} not found`,
-          }),
-        });
-      }
-    };
-
-    outStream.on('data', handleIncomingMessage);
-
-    this.on('update', handleUpdate);
-
-    onStreamClosed(outStream, () => {
-      onStartSendingPatchesOrStreamClosed(); //  Early close: settle patchesPromise so setupTrustedCommunication's finally still runs and we won't need to listen for critical-error messages anymore.
-      outStream.removeListener('data', handleIncomingMessage);
-      this.removeListener('update', handleUpdate);
-      patchStore.destroy();
-    });
-
-    return { initializePatchStore, patchesPromise };
-  }
-
-  /**
-   * A method for providing our API over a stream using JSON-RPC.
-   *
-   * @param {Substream} outStream - The stream to provide our API over.
-   * @param {object} args - Additional arguments.
-   * @param {() => void} args.initializePatchStore - Function to call after
-   * retrieving state but before emitting the `startUISync` event, in order to
-   * initialize the patch store.
-   */
-  setupControllerConnection(outStream, { initializePatchStore }) {
     // A UI reopened within the grace window. Keep the live perps WS and
     // cancel the deferred disconnect so positions/markets stay hot.
     this.#cancelPerpsDisconnectTimer();
@@ -7121,6 +6935,12 @@ export default class MetamaskController extends EventEmitter {
       ...this.getApi(),
       ...this.messengerClientApi,
       ...(perpsStream ? perpsStream.bridgeApi() : {}),
+      startSendingPatches: () => {
+        onStartSendingPatchesOrStreamClosed();
+        uiReady = true;
+        handleUpdate();
+      },
+      getStatePatches: () => patchStore.flushPendingPatches(),
       messengerSubscribe: messengerSubscriptions.subscribe.bind(
         messengerSubscriptions,
       ),
@@ -7130,6 +6950,8 @@ export default class MetamaskController extends EventEmitter {
       messengerCall: (method, params = []) =>
         this.controllerMessenger.call(method, ...params),
     };
+
+    this.on('update', handleUpdate);
 
     // report new active controller connection
     this.activeControllerConnections += 1;
@@ -7142,13 +6964,12 @@ export default class MetamaskController extends EventEmitter {
       if (!isStreamWritable(outStream)) {
         return;
       }
-
+      // Start tracking patches immediately after retrieving initial state for this UI connection
+      // to ensure we don't miss any patches, or include extra patches.
       const initialState = this.getState();
-      // Start tracking patches immediately after retrieving initial state for
-      // this UI connection (to include with the `startUISync` notification) to
-      // ensure we don't miss any patches or include extra patches.
-      initializePatchStore();
+      patchStore.init();
 
+      // send notification to client-side
       outStream.write({
         jsonrpc: '2.0',
         method: START_UI_SYNC,
@@ -7162,21 +6983,51 @@ export default class MetamaskController extends EventEmitter {
       this.once('startUISync', startUISync);
     }
 
-    onStreamClosed(outStream, () => {
-      this.activeControllerConnections -= 1;
-      this.emit(
-        'controllerConnectionChanged',
-        this.activeControllerConnections,
-      );
-      messengerSubscriptions.clear();
-      perpsStream?.destroy();
-      if (this.activeControllerConnections === 0) {
-        // Defer the controller-owned Perps WS teardown so a brief close/reopen
-        // within PERPS_DISCONNECT_GRACE_MS reuses the live session instead of
-        // re-fetching markets + positions and flashing a skeleton.
-        this.#schedulePerpsDisconnect();
+    const outstreamEndHandler = () => {
+      if (!outStream.mmFinished) {
+        this.activeControllerConnections -= 1;
+        this.emit(
+          'controllerConnectionChanged',
+          this.activeControllerConnections,
+        );
+        outStream.mmFinished = true;
+        onStartSendingPatchesOrStreamClosed();
+        this.removeListener('update', handleUpdate);
+        patchStore.destroy();
+        messengerSubscriptions.clear();
+        perpsStream?.destroy();
+        if (this.activeControllerConnections === 0) {
+          // Defer the controller-owned Perps WS teardown so a brief close/reopen
+          // within PERPS_DISCONNECT_GRACE_MS reuses the live session instead of
+          // re-fetching markets + positions and flashing a skeleton.
+          this.#schedulePerpsDisconnect();
+        }
       }
-    });
+    };
+
+    // The presence of both of the below handlers may be redundant.
+    // After upgrading metamask/object-multiples to v2.0.0, which included
+    // an upgrade of readable-streams from v2 to v3, we saw that the
+    // `outStream.on('end'` handler was almost never being called. This seems to
+    // related to how v3 handles errors vs how v2 handles errors; there
+    // are "premature close" errors in both cases, although in the case
+    // of v2 they don't prevent `outStream.on('end'` from being called.
+    // At the time that this comment was committed, it was known that we
+    // need to investigate and resolve the underlying error, however,
+    // for expediency, we are not addressing them at this time. Instead, we
+    // can observe that `readableStream.finished` preserves the same
+    // functionality as we had when we relied on readable-stream v2. Meanwhile,
+    // the `outStream.on('end')` handler was observed to have been called at least once.
+    // In an abundance of caution to prevent against unexpected future behavioral changes in
+    // streams implementations, we redundantly use multiple paths to attach the same event handler.
+    // The outstreamEndHandler therefore needs to be idempotent, which introduces the `mmFinished` property.
+
+    outStream.mmFinished = false;
+    finished(outStream, outstreamEndHandler);
+    outStream.once('close', outstreamEndHandler);
+    outStream.once('end', outstreamEndHandler);
+
+    return { patchesPromise };
   }
 
   /**
@@ -7547,7 +7398,7 @@ export default class MetamaskController extends EventEmitter {
       createDappSwapMiddleware({
         fetchQuotes: this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.FETCH_QUOTES}`,
+          `${BRIDGE_CONTROLLER_NAME}:fetchQuotes`,
         ),
         setDappSwapComparisonData:
           this.appStateController.setDappSwapComparisonData.bind(
@@ -7596,6 +7447,7 @@ export default class MetamaskController extends EventEmitter {
         snapAndHardwareMessenger,
         appStateController: this.appStateController,
         metaMetricsController: this.metaMetricsController,
+        analyticsController: this.analyticsController,
       }),
     );
 
@@ -7615,7 +7467,10 @@ export default class MetamaskController extends EventEmitter {
           grantPermissions: (approvedPermissions) =>
             this.controllerMessenger.call(
               'PermissionController:grantPermissions',
-              { approvedPermissions, subject: { origin } },
+              {
+                approvedPermissions,
+                subject: { origin },
+              },
             ),
         }),
       );
@@ -7874,6 +7729,7 @@ export default class MetamaskController extends EventEmitter {
         snapAndHardwareMessenger,
         appStateController: this.appStateController,
         metaMetricsController: this.metaMetricsController,
+        analyticsController: this.analyticsController,
       }),
     );
 
@@ -8411,9 +8267,12 @@ export default class MetamaskController extends EventEmitter {
       upsertTransactionUIMetricsFragment:
         this.upsertTransactionUIMetricsFragment.bind(this),
       // Metametrics Actions
-      getParticipateInMetrics: () =>
-        this.controllerMessenger.call('MetaMetricsController:getState')
-          .participateInMetaMetrics,
+      getParticipateInMetrics: () => {
+        const { completedMetaMetricsOnboarding } =
+          this.metaMetricsController.state;
+        const { optedIn } = this.analyticsController.state;
+        return completedMetaMetricsOnboarding === true && optedIn === true;
+      },
       trackEvent: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'MetaMetricsController:trackEvent',

@@ -34,7 +34,6 @@ import * as passkeyCapabilities from '../../shared/lib/passkey/passkey-capabilit
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
-import { getStatePatches } from './patch-store-substream-connection';
 
 jest.mock(
   '../../app/scripts/messenger-client-init/perps-controller-init',
@@ -48,9 +47,6 @@ jest.mock(
     }),
   }),
 );
-jest.mock('./patch-store-substream-connection');
-
-const getStatePatchesMock = jest.mocked(getStatePatches);
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -136,6 +132,7 @@ describe('Actions', () => {
     background.signTypedMessage = sinon.stub();
     background.abortTransactionSigning = sinon.stub();
     background.toggleExternalServices = sinon.stub();
+    background.getStatePatches = sinon.stub().resolves([]);
     background.removePermittedChain = sinon.stub();
     background.requestAccountsAndChainPermissionsWithId = sinon.stub();
     background.grantPermissions = sinon.stub();
@@ -192,6 +189,7 @@ describe('Actions', () => {
         createSeedPhraseBackup: createSeedPhraseBackupStub,
         createNewVaultAndKeychain: createNewVaultAndKeychainStub,
         getSeedPhrase: getSeedPhraseStub,
+        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -238,7 +236,7 @@ describe('Actions', () => {
       expect(
         background.setDataCollectionForMarketing.calledOnceWith(true),
       ).toStrictEqual(true);
-      expect(getStatePatchesMock).toHaveBeenCalled();
+      expect(background.getStatePatches.calledOnce).toStrictEqual(true);
       expect(store.getActions()).toStrictEqual([
         {
           type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
@@ -380,7 +378,9 @@ describe('Actions', () => {
         actions.changePasswordWithPasskeyVerification(
           newPassword,
           authenticationResponse,
-          { renewVaultKeyProtection: false },
+          {
+            renewVaultKeyProtection: false,
+          },
         ),
       );
 
@@ -427,7 +427,6 @@ describe('Actions', () => {
     });
 
     it('#tryUnlockMetamaskWithPasskey dispatches success actions when unlock succeeds', async () => {
-      getStatePatchesMock.mockResolvedValue([]);
       const store = mockStore();
       background.unlockWithPasskey.resolves();
       setBackgroundConnection(background);
@@ -460,7 +459,6 @@ describe('Actions', () => {
     });
 
     it('#tryUnlockMetamaskWithPasskey dispatches failure and rethrows when unlock fails', async () => {
-      getStatePatchesMock.mockResolvedValue([]);
       const store = mockStore();
       background.unlockWithPasskey.rejects(new Error('unlock failed'));
       setBackgroundConnection(background);
@@ -838,6 +836,7 @@ describe('Actions', () => {
       background.getApi.returns({
         createNewVaultAndRestore: createNewVaultAndRestoreStub,
         unMarkPasswordForgotten: sinon.stub().resolves(),
+        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -854,6 +853,7 @@ describe('Actions', () => {
       background.getApi.returns({
         createNewVaultAndRestore: sinon.stub().resolves(),
         unMarkPasswordForgotten: sinon.stub().resolves(),
+        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -1077,7 +1077,10 @@ describe('Actions', () => {
 
       const removeAccount = sinon.stub().resolves();
 
-      background.getApi.returns({ removeAccount });
+      background.getApi.returns({
+        removeAccount,
+        getStatePatches: sinon.stub().resolves([]),
+      });
       setBackgroundConnection(background.getApi());
 
       const expectedActions = [
@@ -1174,7 +1177,11 @@ describe('Actions', () => {
 
       const importAccountWithStrategy = sinon.stub().resolves();
 
-      background.getApi.returns({ importAccountWithStrategy });
+      background.getApi.returns({
+        importAccountWithStrategy,
+        getStatePatches: sinon.stub().resolves([]),
+      });
+
       setBackgroundConnection(background.getApi());
 
       await store.dispatch(
@@ -1858,6 +1865,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         updateTransaction: updateTransactionStub,
+        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -1880,6 +1888,7 @@ describe('Actions', () => {
         updateTransaction: () => {
           throw new Error('error');
         },
+        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -2207,6 +2216,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         addToken: addTokenStub,
+        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -2235,6 +2245,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         addToken: addTokenStub,
+        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -2269,6 +2280,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         ignoreTokens: ignoreTokensStub,
+        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -2284,6 +2296,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         ignoreTokens: sinon.stub().rejects(new Error('error')),
+        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -2316,6 +2329,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         hideAsset: hideAssetStub,
+        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -2334,6 +2348,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         hideAsset: sinon.stub().rejects(error),
+        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -2365,6 +2380,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         addCustomAsset: addCustomAssetStub,
+        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -2384,6 +2400,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         addCustomAsset: sinon.stub().rejects(error),
+        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -2410,6 +2427,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         unhideAsset: unhideAssetStub,
+        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -2428,6 +2446,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         unhideAsset: sinon.stub().rejects(error),
+        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -2455,6 +2474,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         removeCustomAsset: removeCustomAssetStub,
+        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -2476,6 +2496,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         removeCustomAsset: sinon.stub().rejects(error),
+        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -2503,6 +2524,7 @@ describe('Actions', () => {
       background.getApi.returns({
         unhideAsset: unhideAssetStub,
         addCustomAsset: addCustomAssetStub,
+        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -2548,6 +2570,7 @@ describe('Actions', () => {
       background.getApi.returns({
         unhideAsset: sinon.stub().rejects(new Error('unhide failed')),
         addCustomAsset: addCustomAssetStub,
+        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -2927,6 +2950,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         setAddressBook: setAddressBookStub,
+        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -3494,6 +3518,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         markPasswordForgotten: markPasswordForgottenStub,
+        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -3512,6 +3537,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         markPasswordForgotten: markPasswordForgottenStub,
+        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -3534,6 +3560,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         unMarkPasswordForgotten: unMarkPasswordForgottenStub,
+        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -3567,6 +3594,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         rejectPendingApproval: sinon.stub().resolves(),
+        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -5314,6 +5342,7 @@ describe('Actions', () => {
     it('calls background setPendingRedirectRoute with a route', async () => {
       const store = mockStore();
       background.setPendingRedirectRoute = sinon.stub().resolves();
+      background.getStatePatches = sinon.stub().resolves([]);
       setBackgroundConnection(background);
 
       const route = { path: '/shield-plan' };
@@ -5327,6 +5356,7 @@ describe('Actions', () => {
     it('calls background setPendingRedirectRoute with null', async () => {
       const store = mockStore();
       background.setPendingRedirectRoute = sinon.stub().resolves();
+      background.getStatePatches = sinon.stub().resolves([]);
       setBackgroundConnection(background);
 
       await store.dispatch(actions.setPendingRedirectRoute(null));
@@ -5341,6 +5371,7 @@ describe('Actions', () => {
       background.setPendingRedirectRoute = sinon
         .stub()
         .rejects(new Error('error'));
+      background.getStatePatches = sinon.stub().resolves([]);
       setBackgroundConnection(background);
 
       const expectedActions = [{ type: 'DISPLAY_WARNING', payload: 'error' }];

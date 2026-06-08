@@ -59,7 +59,7 @@ type SelectorItemProps = {
   style?: CSSProperties;
 };
 
-const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
+const SelectorItem = ({
   className,
   value,
   children,
@@ -67,7 +67,7 @@ const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
   onSelect,
   disabled,
   style,
-}) => {
+}: SelectorItemProps) => {
   const handleClick = () => {
     onSelect(value);
   };
@@ -124,7 +124,7 @@ const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
   );
 };
 
-export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
+export const SnapUISelector = ({
   className,
   name,
   title,
@@ -137,7 +137,7 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
   onSelect,
   style,
   itemStyle,
-}) => {
+}: SnapUISelectorProps) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
 
   const initialValue = getValue(name, form);
