@@ -223,10 +223,10 @@
   "activity_perpsOpenLong_success_title": {
     "message": "Long pozisyon açıldı"
   },
-  "activity_perpsWithdrawFunds_failed_description": {
+  "activity_perpsWithdraw_failed_description": {
     "message": "Para çekme işlemi başarısız"
   },
-  "activity_perpsWithdrawFunds_failed_title": {
+  "activity_perpsWithdraw_failed_title": {
     "message": "Para çekme işlemi başarısız"
   },
   "activity_predictionCashedOut_pending_description": {
@@ -6469,7 +6469,7 @@
   "perpsWithdrawFee": {
     "message": "Sağlayıcı Ücreti"
   },
-  "perpsWithdrawFundsTitle": {
+  "perpsWithdrawTitle": {
     "message": "Çek"
   },
   "perpsWithdrawInsufficient": {

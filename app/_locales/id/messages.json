@@ -247,10 +247,10 @@
   "activity_perpsOpenLong_success_title": {
     "message": "Long terbuka"
   },
-  "activity_perpsWithdrawFunds_failed_description": {
+  "activity_perpsWithdraw_failed_description": {
     "message": "Penarikan gagal"
   },
-  "activity_perpsWithdrawFunds_failed_title": {
+  "activity_perpsWithdraw_failed_title": {
     "message": "Penarikan gagal"
   },
   "activity_predictionCashedOut_pending_description": {
@@ -6505,7 +6505,7 @@
   "perpsWithdrawFee": {
     "message": "Biaya Penyedia"
   },
-  "perpsWithdrawFundsTitle": {
+  "perpsWithdrawTitle": {
     "message": "Tarik"
   },
   "perpsWithdrawInsufficient": {

@@ -187,7 +187,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           secondaryAmount: formatAsFiat(token),
         };
       }
-      case 'perpsWithdrawFunds': {
+      case 'perpsWithdraw': {
         const { fiat, token } = activity.data;
         const symbol = token?.symbol ?? '';
         const fiatAmount = fiat ? -Number(fiat.amount) : undefined;

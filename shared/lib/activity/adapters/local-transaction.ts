@@ -353,7 +353,7 @@ export function mapLocalTransaction(
         : undefined;
 
       return {
-        type: 'perpsWithdrawFunds',
+        type: 'perpsWithdraw',
         chainId: payChainId ?? chainId,
         status,
         timestamp,

@@ -408,7 +408,7 @@ describe('mapLocalTransaction', () => {
     delete activity.raw;
 
     expect(activity).toMatchObject({
-      type: 'perpsWithdrawFunds',
+      type: 'perpsWithdraw',
       chainId: 'eip155:1',
       status: 'success',
       timestamp: 1780690942752,

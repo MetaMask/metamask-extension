@@ -247,10 +247,10 @@
   "activity_perpsOpenLong_success_title": {
     "message": "已开设多头仓位"
   },
-  "activity_perpsWithdrawFunds_failed_description": {
+  "activity_perpsWithdraw_failed_description": {
     "message": "提款失败"
   },
-  "activity_perpsWithdrawFunds_failed_title": {
+  "activity_perpsWithdraw_failed_title": {
     "message": "提款失败"
   },
   "activity_predictionCashedOut_success_description": {
@@ -6495,7 +6495,7 @@
   "perpsWithdrawFee": {
     "message": "服务商费用"
   },
-  "perpsWithdrawFundsTitle": {
+  "perpsWithdrawTitle": {
     "message": "提取"
   },
   "perpsWithdrawInsufficient": {

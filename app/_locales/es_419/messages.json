@@ -247,10 +247,10 @@
   "activity_perpsOpenLong_success_title": {
     "message": "Posición larga abierta"
   },
-  "activity_perpsWithdrawFunds_failed_description": {
+  "activity_perpsWithdraw_failed_description": {
     "message": "Retiro fallido"
   },
-  "activity_perpsWithdrawFunds_failed_title": {
+  "activity_perpsWithdraw_failed_title": {
     "message": "Retiro fallido"
   },
   "activity_predictionCashedOut_pending_description": {
@@ -6505,7 +6505,7 @@
   "perpsWithdrawFee": {
     "message": "Tarifa del proveedor"
   },
-  "perpsWithdrawFundsTitle": {
+  "perpsWithdrawTitle": {
     "message": "Retirar"
   },
   "perpsWithdrawInsufficient": {

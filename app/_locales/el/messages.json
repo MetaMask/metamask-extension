@@ -247,10 +247,10 @@
   "activity_perpsOpenLong_success_title": {
     "message": "Άνοιξε θέση αγοράς (long)"
   },
-  "activity_perpsWithdrawFunds_failed_description": {
+  "activity_perpsWithdraw_failed_description": {
     "message": "Η ανάληψη απέτυχε"
   },
-  "activity_perpsWithdrawFunds_failed_title": {
+  "activity_perpsWithdraw_failed_title": {
     "message": "Η ανάληψη απέτυχε"
   },
   "activity_predictionCashedOut_pending_description": {
@@ -6501,7 +6501,7 @@
   "perpsWithdrawFee": {
     "message": "Τέλη παρόχου"
   },
-  "perpsWithdrawFundsTitle": {
+  "perpsWithdrawTitle": {
     "message": "Ανάληψη"
   },
   "perpsWithdrawInsufficient": {

@@ -432,7 +432,7 @@ const PerpsWithdrawPage = () => {
           variant={TextVariant.HeadingSm}
           data-testid="perps-withdraw-header-title"
         >
-          {t('perpsWithdrawFundsTitle')}
+          {t('perpsWithdrawTitle')}
         </Text>
         <Box style={{ width: 32 }} />
       </Box>

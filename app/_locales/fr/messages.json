@@ -247,10 +247,10 @@
   "activity_perpsOpenLong_success_title": {
     "message": "Position longue ouverte"
   },
-  "activity_perpsWithdrawFunds_failed_description": {
+  "activity_perpsWithdraw_failed_description": {
     "message": "Le retrait a échoué"
   },
-  "activity_perpsWithdrawFunds_failed_title": {
+  "activity_perpsWithdraw_failed_title": {
     "message": "Le retrait a échoué"
   },
   "activity_predictionCashedOut_success_description": {
@@ -6495,7 +6495,7 @@
   "perpsWithdrawFee": {
     "message": "Commission du fournisseur"
   },
-  "perpsWithdrawFundsTitle": {
+  "perpsWithdrawTitle": {
     "message": "Retirer"
   },
   "perpsWithdrawInsufficient": {

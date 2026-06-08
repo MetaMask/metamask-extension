@@ -28,7 +28,7 @@ export class PerpsWithdrawConfirmation {
 
   private readonly headerTitle = {
     xpath: `//*[@data-testid='wallet-initiated-header-back-button']/following-sibling::*[normalize-space(.)='${tEn(
-      'perpsWithdrawFundsTitle',
+      'perpsWithdrawTitle',
     )}']`,
   };
 

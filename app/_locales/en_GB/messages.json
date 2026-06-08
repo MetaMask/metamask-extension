@@ -730,22 +730,22 @@
   "activity_perpsReceivedFundingFees_success_title": {
     "message": "Received funding fee"
   },
-  "activity_perpsWithdrawFunds_failed_description": {
+  "activity_perpsWithdraw_failed_description": {
     "message": "Withdrawal failed"
   },
-  "activity_perpsWithdrawFunds_failed_title": {
+  "activity_perpsWithdraw_failed_title": {
     "message": "Withdrawal failed"
   },
-  "activity_perpsWithdrawFunds_pending_description": {
+  "activity_perpsWithdraw_pending_description": {
     "message": "Withdrawing funds"
   },
-  "activity_perpsWithdrawFunds_pending_title": {
+  "activity_perpsWithdraw_pending_title": {
     "message": "Withdrawing funds"
   },
-  "activity_perpsWithdrawFunds_success_description": {
+  "activity_perpsWithdraw_success_description": {
     "message": "Perps withdrawal"
   },
-  "activity_perpsWithdrawFunds_success_title": {
+  "activity_perpsWithdraw_success_title": {
     "message": "Perps withdrawal"
   },
   "activity_predictionCashedOut_failed_description": {
@@ -7358,7 +7358,7 @@
   "perpsWithdrawFee": {
     "message": "Provider Fee"
   },
-  "perpsWithdrawFundsTitle": {
+  "perpsWithdrawTitle": {
     "message": "Withdraw"
   },
   "perpsWithdrawInsufficient": {

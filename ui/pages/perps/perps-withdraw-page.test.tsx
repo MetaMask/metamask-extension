@@ -268,7 +268,7 @@ describe('PerpsWithdrawPage', () => {
       screen.getByTestId('perps-withdraw-back-button'),
     ).toBeInTheDocument();
     expect(screen.getByTestId('perps-withdraw-header-title')).toHaveTextContent(
-      messages.perpsWithdrawFundsTitle.message,
+      messages.perpsWithdrawTitle.message,
     );
   });
 
