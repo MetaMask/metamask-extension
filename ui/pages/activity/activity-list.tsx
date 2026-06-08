@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { Box, Text } from '@metamask/design-system-react';
 import { PendingTransactionCancelSpeedUpProvider } from '../../components/app/pending-transaction-action-buttons/pending-transaction-cancel-speed-up-provider';
 import AssetListControlBar from '../../components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar';
@@ -9,6 +9,11 @@ import { useScrollContainer } from '../../contexts/scroll-container';
 import { useFormatters } from '../../hooks/useFormatters';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useItemInView } from '../../hooks/useItemInView';
+import { MetaMetricsContext } from '../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import { LegacyDetails } from './legacy-details';
 import { ActivityRow } from './rows/activity-row';
@@ -28,6 +33,7 @@ const headerHeight = 40;
 
 export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
   const t = useI18nContext();
+  const { trackEvent } = useContext(MetaMetricsContext);
   const { formatMediumDate } = useFormatters();
   const scrollContainerRef = useScrollContainer();
   const [networks, setNetworks] = useState<string[]>([]);
@@ -64,7 +70,29 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
   });
 
   const handleClick = (item: ActivityListItem) => {
+    trackEvent({
+      event: MetaMetricsEventName.ActivityDetailsOpened,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        activity_type: item.type,
+      },
+    });
     setSelectedItem(item);
+  };
+
+  const handleClose = () => {
+    if (selectedItem) {
+      trackEvent({
+        event: MetaMetricsEventName.ActivityDetailsClosed,
+        category: MetaMetricsEventCategory.Navigation,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          activity_type: selectedItem.type,
+        },
+      });
+    }
+    setSelectedItem(null);
   };
 
   return (
@@ -115,10 +143,7 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
         }}
       />
 
-      <LegacyDetails
-        item={selectedItem}
-        onClose={() => setSelectedItem(null)}
-      />
+      <LegacyDetails item={selectedItem} onClose={handleClose} />
     </PendingTransactionCancelSpeedUpProvider>
   );
 }
