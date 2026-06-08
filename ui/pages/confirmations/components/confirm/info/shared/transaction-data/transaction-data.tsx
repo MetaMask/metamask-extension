@@ -6,6 +6,11 @@ import { hexStripZeros } from '@ethersproject/bytes';
 import _ from 'lodash';
 import { Hex, isHexString } from '@metamask/utils';
 
+import {
+  Box,
+  BoxFlexWrap,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { APPROVAL_METHOD_NAMES } from '../../../../../../../../shared/constants/transaction';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
@@ -15,11 +20,6 @@ import {
   ConfirmInfoRowDivider,
   ConfirmInfoRowText,
 } from '../../../../../../../components/app/confirm/info/row';
-import {
-  Box,
-  BoxFlexWrap,
-  BoxJustifyContent,
-} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { ConfirmInfoExpandableRow } from '../../../../../../../components/app/confirm/info/row/expandable-row';
 import Preloader from '../../../../../../../components/ui/icon/preloader';

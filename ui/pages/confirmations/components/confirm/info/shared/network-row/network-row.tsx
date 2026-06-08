@@ -2,14 +2,10 @@ import React from 'react';
 import { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 
+import { Box, BoxAlignItems, BoxFlexWrap } from '@metamask/design-system-react';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../../../shared/constants/network';
 import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/lib/selectors/networks';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import {
-  Box,
-  BoxAlignItems,
-  BoxFlexWrap,
-} from '@metamask/design-system-react';
 import {
   AvatarNetwork,
   AvatarNetworkSize,

@@ -1,6 +1,7 @@
 import { Hex } from '@metamask/utils';
 import React, { memo } from 'react';
 
+import { Box } from '@metamask/design-system-react';
 import {
   PrimaryType,
   PRIMARY_TYPES_ORDER,
@@ -9,7 +10,6 @@ import {
 import { isValidHexAddress } from '../../../../../../shared/lib/hexstring-utils';
 
 import { sanitizeString } from '../../../../../helpers/utils/util';
-import { Box } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   ConfirmInfoRow,

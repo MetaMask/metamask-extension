@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
-import { useModalProps } from '../../../../../hooks/useModalProps';
 import { Box, BoxJustifyContent } from '@metamask/design-system-react';
+import { useModalProps } from '../../../../../hooks/useModalProps';
 import {
   ButtonSize,
   Modal,

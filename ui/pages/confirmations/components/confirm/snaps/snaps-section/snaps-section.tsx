@@ -1,6 +1,6 @@
 import React from 'react';
-import { useInsightSnaps } from '../../../../../../hooks/snaps/useInsightSnaps';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
+import { useInsightSnaps } from '../../../../../../hooks/snaps/useInsightSnaps';
 import { useConfirmContext } from '../../../../context/confirm';
 import { SnapInsight } from './snap-insight';
 

@@ -1,9 +1,9 @@
 import { Hex } from '@metamask/utils';
 import React from 'react';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { PrimaryType } from '../../../../../../../../../shared/constants/signatures';
 import { parseTypedDataMessage } from '../../../../../../../../../shared/lib/transaction.utils';
 import { ConfirmInfoRow } from '../../../../../../../../components/app/confirm/info/row';
-import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../../../context/confirm';
 import { SignatureRequestType } from '../../../../../../types/confirm';
@@ -87,11 +87,7 @@ const PermitSimulation = () => {
     <ConfirmInfoRow label={t(infoRowLabelKey)}>
       <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
         {Array.isArray(tokenDetails) ? (
-          <Box
-            className="flex"
-            flexDirection={BoxFlexDirection.Column}
-            gap={2}
-          >
+          <Box className="flex" flexDirection={BoxFlexDirection.Column} gap={2}>
             {tokenDetails.map(({ token, amount }, i: number) => (
               <TokenDetail
                 token={token}

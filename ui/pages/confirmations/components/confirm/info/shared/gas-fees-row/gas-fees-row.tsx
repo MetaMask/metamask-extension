@@ -1,22 +1,20 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowVariant,
-} from '../../../../../../../components/app/confirm/info/row';
 import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
+import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
+import {
+  ConfirmInfoRow,
+  ConfirmInfoRowVariant,
+} from '../../../../../../../components/app/confirm/info/row';
 import { Text } from '../../../../../../../components/component-library';
 import Tooltip from '../../../../../../../components/ui/tooltip';
-import {
-  TextColor,
-} from '../../../../../../../helpers/constants/design-system';
+import { TextColor } from '../../../../../../../helpers/constants/design-system';
 import { getPreferences } from '../../../../../../../../shared/lib/selectors/preferences';
 import { useConfirmContext } from '../../../../../context/confirm';
 

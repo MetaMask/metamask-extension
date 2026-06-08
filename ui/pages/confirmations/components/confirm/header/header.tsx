@@ -3,12 +3,12 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import React from 'react';
-import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
 import {
   Box,
   BoxAlignItems,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
+import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
 import { Text } from '../../../../../components/component-library';
 import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
 import {

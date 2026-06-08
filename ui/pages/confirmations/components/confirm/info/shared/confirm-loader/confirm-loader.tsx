@@ -1,5 +1,9 @@
 import React from 'react';
-import { Box, BoxAlignItems, BoxJustifyContent } from '@metamask/design-system-react';
+import {
+  Box,
+  BoxAlignItems,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import Preloader from '../../../../../../../components/ui/icon/preloader';
 
 export const ConfirmLoader = () => {

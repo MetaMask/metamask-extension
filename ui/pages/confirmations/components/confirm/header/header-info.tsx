@@ -1,6 +1,12 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
-import { AvatarAccountSize } from '@metamask/design-system-react';
+import {
+  AvatarAccountSize,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLocation,
@@ -8,12 +14,6 @@ import {
 } from '../../../../../../shared/constants/metametrics';
 import { ConfirmInfoRow } from '../../../../../components/app/confirm/info/row';
 import { ConfirmInfoRowCurrency } from '../../../../../components/app/confirm/info/row/currency';
-import {
-  Box,
-  BoxAlignItems,
-  BoxFlexDirection,
-  BoxJustifyContent,
-} from '@metamask/design-system-react';
 import {
   ButtonIcon,
   ButtonIconSize,

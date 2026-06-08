@@ -4,13 +4,13 @@ import {
 } from '@metamask/transaction-controller';
 import React, { memo, useMemo } from 'react';
 
-import { TokenStandard } from '../../../../../../shared/constants/transaction';
-import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
 import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
 } from '@metamask/design-system-react';
+import { TokenStandard } from '../../../../../../shared/constants/transaction';
+import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
 import { Text } from '../../../../../components/component-library';
 import {
   TextAlign,

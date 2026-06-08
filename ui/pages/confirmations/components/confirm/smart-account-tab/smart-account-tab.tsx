@@ -1,12 +1,12 @@
 import React from 'react';
 import { Hex } from '@metamask/utils';
 
-import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 import {
   Box,
   BoxAlignItems,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
+import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 import {
   BannerAlert,
   BannerAlertSeverity,
