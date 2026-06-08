@@ -11,6 +11,12 @@ import {
   type QrHardwareSignRequest,
 } from './types';
 
+export {
+  SignatureStepStatus,
+  type BridgeTxHistory,
+  type QrHardwareSignRequest,
+};
+
 /**
  * Type guard that checks whether an unknown value is a valid QR hardware
  * wallet sign request.
@@ -23,21 +29,21 @@ export const isQrHardwareSignRequest = (
 ): request is QrHardwareSignRequest =>
   Boolean(
     request &&
-    typeof request === 'object' &&
-    'type' in request &&
-    request.type === QrScanRequestType.SIGN &&
-    'request' in request &&
-    request.request &&
-    typeof request.request === 'object' &&
-    'requestId' in request.request &&
-    typeof request.request.requestId === 'string' &&
-    'payload' in request.request &&
-    request.request.payload &&
-    typeof request.request.payload === 'object' &&
-    'type' in request.request.payload &&
-    typeof request.request.payload.type === 'string' &&
-    'cbor' in request.request.payload &&
-    typeof request.request.payload.cbor === 'string',
+      typeof request === 'object' &&
+      'type' in request &&
+      request.type === QrScanRequestType.SIGN &&
+      'request' in request &&
+      request.request &&
+      typeof request.request === 'object' &&
+      'requestId' in request.request &&
+      typeof request.request.requestId === 'string' &&
+      'payload' in request.request &&
+      request.request.payload &&
+      typeof request.request.payload === 'object' &&
+      'type' in request.request.payload &&
+      typeof request.request.payload.type === 'string' &&
+      'cbor' in request.request.payload &&
+      typeof request.request.payload.cbor === 'string',
   );
 
 /**

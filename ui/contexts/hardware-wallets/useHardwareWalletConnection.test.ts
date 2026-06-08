@@ -27,6 +27,7 @@ describe('useHardwareWalletConnection', () => {
     connectRef: { current: (() => Promise<void>) | null };
     walletTypeRef: { current: HardwareWalletType | null };
     previousWalletTypeRef: { current: HardwareWalletType | null };
+    isSigningInProgressRef: { current: boolean };
   };
   let mockSetters: {
     setConnectionState: jest.Mock;
@@ -55,6 +56,7 @@ describe('useHardwareWalletConnection', () => {
       connectRef: { current: null },
       walletTypeRef: { current: HardwareWalletType.Ledger },
       previousWalletTypeRef: { current: null },
+      isSigningInProgressRef: { current: false },
     };
 
     mockSetters = {
