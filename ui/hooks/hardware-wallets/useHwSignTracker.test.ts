@@ -174,6 +174,40 @@ describe.each([
     expect(mockSubscribe).toHaveBeenCalledWith(FINISHED, expect.any(Function));
   });
 
+  it('unsubscribes subscriptions that complete after effect cleanup', async () => {
+    const pendingResolvers: (() => void)[] = [];
+    const unsubs: jest.Mock[] = [];
+
+    mockSubscribe.mockImplementation(async () => {
+      const unsub = jest.fn().mockResolvedValue(undefined);
+      unsubs.push(unsub);
+      return new Promise<() => Promise<void>>((resolve) => {
+        pendingResolvers.push(() => resolve(unsub));
+      });
+    });
+
+    const dispatchEvent = jest.fn();
+    const { unmount } = renderHook(() =>
+      useHwSignTracker(FROM_ADDRESS, true, true, dispatchEvent, {
+        useBatchTracking,
+      }),
+    );
+
+    expect(mockSubscribe).toHaveBeenCalledTimes(3);
+    expect(pendingResolvers).toHaveLength(3);
+
+    unmount();
+
+    await act(async () => {
+      pendingResolvers.forEach((complete) => complete());
+      await Promise.resolve();
+    });
+
+    for (const unsub of unsubs) {
+      expect(unsub).toHaveBeenCalledTimes(1);
+    }
+  });
+
   it('dispatches FirstSignatureSubmitted when approval tx is signed', async () => {
     const { dispatchEvent, fire } = await setupTracker({ useBatchTracking });
     await fire(STATUS_UPDATED);
@@ -317,6 +351,132 @@ describe.each([
         'abortTransactionSigning',
         ['tx-trade'],
       );
+    });
+
+    it('allows reused tx ids to dispatch after cancel times out without abort events', async () => {
+      const { dispatchEvent, fire, result } = await setupTracker({
+        useBatchTracking,
+      });
+
+      await fire(STATUS_UPDATED, {
+        id: 'tx-reuse',
+        batchId: 'batch-1',
+      });
+      dispatchEvent.mockClear();
+
+      const cancelPromise = result.current.cancelCurrentBatch();
+      await act(async () => {
+        await jest.advanceTimersByTimeAsync(6_000);
+      });
+      await cancelPromise;
+
+      dispatchEvent.mockClear();
+      await fire(STATUS_UPDATED, {
+        id: 'tx-reuse',
+        batchId: 'batch-1',
+      });
+
+      expect(dispatchEvent).toHaveBeenCalledWith({
+        type: HardwareWalletSignatureEvent.FirstSignatureSubmitted,
+      });
+    });
+  });
+
+  describe('subscription lifecycle', () => {
+    it('clears tracked tx ids when enabled toggles off and on', async () => {
+      const callbacks = setupCallbacks();
+      const dispatchEvent = jest.fn();
+
+      const { rerender } = renderHook(
+        ({ enabled }) =>
+          useHwSignTracker(FROM_ADDRESS, true, true, dispatchEvent, {
+            useBatchTracking,
+            enabled,
+          }),
+        { initialProps: { enabled: true } },
+      );
+
+      await act(async () => {
+        await jest.runAllTimersAsync();
+      });
+
+      const statusCb = callbacks.get(STATUS_UPDATED);
+      await act(async () => {
+        statusCb?.([
+          {
+            transactionMeta: createTxMeta({
+              id: 'tx-old',
+              batchId: 'batch-old',
+            }),
+          },
+        ]);
+      });
+
+      rerender({ enabled: false });
+      rerender({ enabled: true });
+
+      await act(async () => {
+        await jest.runAllTimersAsync();
+      });
+
+      dispatchEvent.mockClear();
+
+      const rejectedCb = callbacks.get(REJECTED);
+      await act(async () => {
+        rejectedCb?.([
+          {
+            transactionMeta: createTxMeta({
+              id: 'tx-old',
+              batchId: 'batch-old',
+            }),
+          },
+        ]);
+      });
+
+      expect(dispatchEvent).not.toHaveBeenCalled();
+    });
+
+    it('does not abort stale txs after fromAddress changes', async () => {
+      const callbacks = setupCallbacks();
+      const dispatchEvent = jest.fn();
+      const otherAddress = '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+
+      const { result, rerender } = renderHook(
+        ({ fromAddress }) =>
+          useHwSignTracker(fromAddress, true, true, dispatchEvent, {
+            useBatchTracking,
+          }),
+        { initialProps: { fromAddress: FROM_ADDRESS } },
+      );
+
+      await act(async () => {
+        await jest.runAllTimersAsync();
+      });
+
+      const statusCb = callbacks.get(STATUS_UPDATED);
+      await act(async () => {
+        statusCb?.([
+          {
+            transactionMeta: createTxMeta({
+              id: 'tx-old',
+              batchId: 'batch-old',
+            }),
+          },
+        ]);
+      });
+
+      rerender({ fromAddress: otherAddress });
+
+      await act(async () => {
+        await jest.runAllTimersAsync();
+      });
+
+      mockSubmitRequestToBackground.mockClear();
+      await act(async () => {
+        await result.current.cancelCurrentBatch();
+      });
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
     });
   });
 });

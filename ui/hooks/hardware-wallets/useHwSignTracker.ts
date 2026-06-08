@@ -137,6 +137,20 @@ export function useHwSignTracker(
    * abortTransactionSigning RPC. Waits up to 5 seconds for abort events to
    * settle to prevent stale events from triggering false state transitions.
    */
+  const resetTrackingRefs = useCallback(() => {
+    trackedTxIdsRef.current = new Set();
+    pendingAbortTxIdsRef.current.clear();
+    if (abortSettleResolveRef.current) {
+      abortSettleResolveRef.current();
+      abortSettleResolveRef.current = null;
+    }
+    if (useBatchTracking) {
+      currentBatchIdRef.current = undefined;
+      staleBatchIdsRef.current = new Set();
+      seenBatchIdsRef.current = new Set();
+    }
+  }, [useBatchTracking]);
+
   const cancelCurrentBatch = useCallback(async () => {
     if (!enabled) {
       return;
@@ -176,6 +190,8 @@ export function useHwSignTracker(
     ]);
 
     abortSettleResolveRef.current = null;
+    // Stop swallowing events if abort confirmations never arrived (timeout path).
+    pendingAbortTxIdsRef.current.clear();
   }, [enabled]);
 
   useEffect(() => {
@@ -222,278 +238,289 @@ export function useHwSignTracker(
       return false;
     };
 
+    const registerSubscription = async (
+      subscribe: () => Promise<() => Promise<void>>,
+    ) => {
+      const unsubscribe = await subscribe();
+      if (cancelled) {
+        await unsubscribe().catch(
+          // eslint-disable-next-line no-empty-function
+          () => {},
+        );
+        return;
+      }
+      unsubscribes.push(unsubscribe);
+    };
+
     const subscribeAll = async () => {
-      const unsubscribeStatusUpdated = await subscribeToMessengerEvent<
-        [{ transactionMeta: TransactionMeta }]
-      >(
-        'TransactionController:transactionStatusUpdated',
-        ([{ transactionMeta }]) => {
-          if (cancelled) {
-            return;
-          }
+      await Promise.all([
+        registerSubscription(() =>
+          subscribeToMessengerEvent<[{ transactionMeta: TransactionMeta }]>(
+            'TransactionController:transactionStatusUpdated',
+            ([{ transactionMeta }]) => {
+              if (cancelled) {
+                return;
+              }
 
-          checkGeneration();
+              checkGeneration();
 
-          const { status, type } = transactionMeta;
+              const { status, type } = transactionMeta;
 
-          log.debug(
-            `${logPrefix} transactionStatusUpdated`,
-            JSON.stringify({
-              id: transactionMeta.id,
-              status,
-              type,
-              from: transactionMeta.txParams.from,
-              batchId: transactionMeta.batchId,
-            }),
-          );
+              log.debug(
+                `${logPrefix} transactionStatusUpdated`,
+                JSON.stringify({
+                  id: transactionMeta.id,
+                  status,
+                  type,
+                  from: transactionMeta.txParams.from,
+                  batchId: transactionMeta.batchId,
+                }),
+              );
 
-          if (!matchesTx(transactionMeta, targetFrom)) {
-            return;
-          }
+              if (!matchesTx(transactionMeta, targetFrom)) {
+                return;
+              }
 
-          const batchId = transactionMeta.batchId ?? 'batch-unknown';
-          if (useBatchTracking) {
-            seenBatchIdsRef.current.add(batchId);
-          }
-          trackedTxIdsRef.current.add(transactionMeta.id);
+              const batchId = transactionMeta.batchId ?? 'batch-unknown';
+              if (useBatchTracking) {
+                seenBatchIdsRef.current.add(batchId);
+              }
+              trackedTxIdsRef.current.add(transactionMeta.id);
 
-          if (handlePendingAbort(transactionMeta.id)) {
-            return;
-          }
+              if (handlePendingAbort(transactionMeta.id)) {
+                return;
+              }
 
-          if (status === 'signed') {
-            if (useBatchTracking) {
-              if (currentBatchIdRef.current === undefined) {
-                currentBatchIdRef.current = batchId;
-              } else if (currentBatchIdRef.current === null) {
-                if (staleBatchIdsRef.current.has(batchId)) {
+              if (status === 'signed') {
+                if (useBatchTracking) {
+                  if (currentBatchIdRef.current === undefined) {
+                    currentBatchIdRef.current = batchId;
+                  } else if (currentBatchIdRef.current === null) {
+                    if (staleBatchIdsRef.current.has(batchId)) {
+                      log.debug(
+                        `${logPrefix} skipping stale signed event after retry`,
+                        JSON.stringify({
+                          eventBatchId: batchId,
+                          staleBatchIds: [...staleBatchIdsRef.current],
+                        }),
+                      );
+                      return;
+                    }
+                    currentBatchIdRef.current = batchId;
+                  } else if (batchId !== currentBatchIdRef.current) {
+                    log.debug(
+                      `${logPrefix} skipping signed event from stale batch`,
+                      JSON.stringify({
+                        eventBatchId: batchId,
+                        currentBatchId: currentBatchIdRef.current,
+                      }),
+                    );
+                    return;
+                  }
+                }
+
+                if (APPROVAL_TYPES.has(type as TransactionType)) {
                   log.debug(
-                    `${logPrefix} skipping stale signed event after retry`,
+                    `${logPrefix} approval signed → FirstSignatureSubmitted`,
+                  );
+                  dispatchRef.current({
+                    type: HardwareWalletSignatureEvent.FirstSignatureSubmitted,
+                  });
+                } else if (TRADE_TYPES.has(type as TransactionType)) {
+                  log.debug(`${logPrefix} trade signed → TransactionSubmitted`);
+                  dispatchRef.current({
+                    type: HardwareWalletSignatureEvent.TransactionSubmitted,
+                  });
+                }
+              } else if (status === 'failed') {
+                if (useBatchTracking) {
+                  if (shouldBlockPendingEvent(currentBatchIdRef.current)) {
+                    log.debug(
+                      `${logPrefix} skipping transactionStatusUpdated failed: no batch identified yet`,
+                    );
+                    return;
+                  }
+                  if (
+                    currentBatchIdRef.current !== undefined &&
+                    !isFromCurrentBatch(
+                      transactionMeta,
+                      currentBatchIdRef.current,
+                      staleBatchIdsRef.current,
+                    )
+                  ) {
+                    log.debug(
+                      `${logPrefix} skipping transactionStatusUpdated failed from stale batch`,
+                      JSON.stringify({
+                        eventBatchId: transactionMeta.batchId,
+                        currentBatchId: currentBatchIdRef.current,
+                      }),
+                    );
+                    return;
+                  }
+                }
+                log.debug(
+                  `${logPrefix} transactionStatusUpdated failed → TransactionFailed`,
+                );
+                dispatchRef.current({
+                  type: HardwareWalletSignatureEvent.TransactionFailed,
+                });
+              }
+            },
+          ),
+        ),
+        registerSubscription(() =>
+          subscribeToMessengerEvent<[{ transactionMeta: TransactionMeta }]>(
+            'TransactionController:transactionRejected',
+            ([{ transactionMeta }]) => {
+              if (cancelled) {
+                return;
+              }
+
+              checkGeneration();
+
+              log.debug(
+                `${logPrefix} transactionRejected`,
+                JSON.stringify({
+                  id: transactionMeta.id,
+                  type: transactionMeta.type,
+                  from: transactionMeta.txParams.from,
+                  batchId: transactionMeta.batchId,
+                }),
+              );
+
+              if (!matchesTx(transactionMeta, targetFrom)) {
+                return;
+              }
+
+              if (useBatchTracking) {
+                const batchId = transactionMeta.batchId ?? 'batch-unknown';
+                seenBatchIdsRef.current.add(batchId);
+                trackedTxIdsRef.current.add(transactionMeta.id);
+              }
+
+              if (handlePendingAbort(transactionMeta.id)) {
+                return;
+              }
+
+              if (useBatchTracking) {
+                if (shouldBlockPendingEvent(currentBatchIdRef.current)) {
+                  log.debug(
+                    `${logPrefix} skipping transactionRejected: no batch identified yet`,
+                  );
+                  return;
+                }
+                if (
+                  currentBatchIdRef.current !== undefined &&
+                  !isFromCurrentBatch(
+                    transactionMeta,
+                    currentBatchIdRef.current,
+                    staleBatchIdsRef.current,
+                  )
+                ) {
+                  log.debug(
+                    `${logPrefix} skipping transactionRejected from stale batch`,
                     JSON.stringify({
-                      eventBatchId: batchId,
-                      staleBatchIds: [...staleBatchIdsRef.current],
+                      eventBatchId: transactionMeta.batchId,
+                      currentBatchId: currentBatchIdRef.current,
                     }),
                   );
                   return;
                 }
-                currentBatchIdRef.current = batchId;
-              } else if (batchId !== currentBatchIdRef.current) {
-                log.debug(
-                  `${logPrefix} skipping signed event from stale batch`,
-                  JSON.stringify({
-                    eventBatchId: batchId,
-                    currentBatchId: currentBatchIdRef.current,
-                  }),
-                );
+              } else if (!trackedTxIdsRef.current.has(transactionMeta.id)) {
                 return;
               }
-            }
 
-            if (APPROVAL_TYPES.has(type as TransactionType)) {
-              log.debug(
-                `${logPrefix} approval signed → FirstSignatureSubmitted`,
-              );
+              log.debug(`${logPrefix} tx rejected → TransactionRejected`);
               dispatchRef.current({
-                type: HardwareWalletSignatureEvent.FirstSignatureSubmitted,
+                type: HardwareWalletSignatureEvent.TransactionRejected,
               });
-            } else if (TRADE_TYPES.has(type as TransactionType)) {
-              log.debug(`${logPrefix} trade signed → TransactionSubmitted`);
-              dispatchRef.current({
-                type: HardwareWalletSignatureEvent.TransactionSubmitted,
-              });
-            }
-          } else if (status === 'failed') {
-            if (useBatchTracking) {
-              if (shouldBlockPendingEvent(currentBatchIdRef.current)) {
-                log.debug(
-                  `${logPrefix} skipping transactionStatusUpdated failed: no batch identified yet`,
-                );
+            },
+          ),
+        ),
+        registerSubscription(() =>
+          subscribeToMessengerEvent<[{ transactionMeta: TransactionMeta }]>(
+            'TransactionController:transactionFinished',
+            ([{ transactionMeta }]) => {
+              if (cancelled) {
                 return;
               }
-              if (
-                currentBatchIdRef.current !== undefined &&
-                !isFromCurrentBatch(
-                  transactionMeta,
-                  currentBatchIdRef.current,
-                  staleBatchIdsRef.current,
-                )
-              ) {
-                log.debug(
-                  `${logPrefix} skipping transactionStatusUpdated failed from stale batch`,
-                  JSON.stringify({
-                    eventBatchId: transactionMeta.batchId,
-                    currentBatchId: currentBatchIdRef.current,
-                  }),
-                );
-                return;
-              }
-            }
-            log.debug(
-              `${logPrefix} transactionStatusUpdated failed → TransactionFailed`,
-            );
-            dispatchRef.current({
-              type: HardwareWalletSignatureEvent.TransactionFailed,
-            });
-          }
-        },
-      );
-      unsubscribes.push(unsubscribeStatusUpdated);
 
-      const unsubscribeRejected = await subscribeToMessengerEvent<
-        [{ transactionMeta: TransactionMeta }]
-      >(
-        'TransactionController:transactionRejected',
-        ([{ transactionMeta }]) => {
-          if (cancelled) {
-            return;
-          }
+              checkGeneration();
 
-          checkGeneration();
+              const { status, type } = transactionMeta;
 
-          log.debug(
-            `${logPrefix} transactionRejected`,
-            JSON.stringify({
-              id: transactionMeta.id,
-              type: transactionMeta.type,
-              from: transactionMeta.txParams.from,
-              batchId: transactionMeta.batchId,
-            }),
-          );
-
-          if (!matchesTx(transactionMeta, targetFrom)) {
-            return;
-          }
-
-          if (useBatchTracking) {
-            const batchId = transactionMeta.batchId ?? 'batch-unknown';
-            seenBatchIdsRef.current.add(batchId);
-            trackedTxIdsRef.current.add(transactionMeta.id);
-          }
-
-          if (handlePendingAbort(transactionMeta.id)) {
-            return;
-          }
-
-          if (useBatchTracking) {
-            if (shouldBlockPendingEvent(currentBatchIdRef.current)) {
               log.debug(
-                `${logPrefix} skipping transactionRejected: no batch identified yet`,
-              );
-              return;
-            }
-            if (
-              currentBatchIdRef.current !== undefined &&
-              !isFromCurrentBatch(
-                transactionMeta,
-                currentBatchIdRef.current,
-                staleBatchIdsRef.current,
-              )
-            ) {
-              log.debug(
-                `${logPrefix} skipping transactionRejected from stale batch`,
+                `${logPrefix} transactionFinished`,
                 JSON.stringify({
-                  eventBatchId: transactionMeta.batchId,
-                  currentBatchId: currentBatchIdRef.current,
+                  id: transactionMeta.id,
+                  status,
+                  type,
+                  from: transactionMeta.txParams.from,
+                  batchId: transactionMeta.batchId,
                 }),
               );
-              return;
-            }
-          } else if (!trackedTxIdsRef.current.has(transactionMeta.id)) {
-            return;
-          }
 
-          log.debug(`${logPrefix} tx rejected → TransactionRejected`);
-          dispatchRef.current({
-            type: HardwareWalletSignatureEvent.TransactionRejected,
-          });
-        },
-      );
-      unsubscribes.push(unsubscribeRejected);
+              if (!matchesTx(transactionMeta, targetFrom)) {
+                return;
+              }
 
-      const unsubscribeFinished = await subscribeToMessengerEvent<
-        [{ transactionMeta: TransactionMeta }]
-      >(
-        'TransactionController:transactionFinished',
-        ([{ transactionMeta }]) => {
-          if (cancelled) {
-            return;
-          }
+              if (useBatchTracking) {
+                const batchId = transactionMeta.batchId ?? 'batch-unknown';
+                seenBatchIdsRef.current.add(batchId);
+                trackedTxIdsRef.current.add(transactionMeta.id);
+              }
 
-          checkGeneration();
+              if (handlePendingAbort(transactionMeta.id)) {
+                return;
+              }
 
-          const { status, type } = transactionMeta;
+              if (useBatchTracking) {
+                if (shouldBlockPendingEvent(currentBatchIdRef.current)) {
+                  log.debug(
+                    `${logPrefix} skipping transactionFinished: no batch identified yet`,
+                  );
+                  return;
+                }
+                if (
+                  currentBatchIdRef.current !== undefined &&
+                  !isFromCurrentBatch(
+                    transactionMeta,
+                    currentBatchIdRef.current,
+                    staleBatchIdsRef.current,
+                  )
+                ) {
+                  log.debug(
+                    `${logPrefix} skipping transactionFinished from stale batch`,
+                    JSON.stringify({
+                      eventBatchId: transactionMeta.batchId,
+                      currentBatchId: currentBatchIdRef.current,
+                    }),
+                  );
+                  return;
+                }
+              } else if (!trackedTxIdsRef.current.has(transactionMeta.id)) {
+                return;
+              }
 
-          log.debug(
-            `${logPrefix} transactionFinished`,
-            JSON.stringify({
-              id: transactionMeta.id,
-              status,
-              type,
-              from: transactionMeta.txParams.from,
-              batchId: transactionMeta.batchId,
-            }),
-          );
-
-          if (!matchesTx(transactionMeta, targetFrom)) {
-            return;
-          }
-
-          if (useBatchTracking) {
-            const batchId = transactionMeta.batchId ?? 'batch-unknown';
-            seenBatchIdsRef.current.add(batchId);
-            trackedTxIdsRef.current.add(transactionMeta.id);
-          }
-
-          if (handlePendingAbort(transactionMeta.id)) {
-            return;
-          }
-
-          if (useBatchTracking) {
-            if (shouldBlockPendingEvent(currentBatchIdRef.current)) {
-              log.debug(
-                `${logPrefix} skipping transactionFinished: no batch identified yet`,
-              );
-              return;
-            }
-            if (
-              currentBatchIdRef.current !== undefined &&
-              !isFromCurrentBatch(
-                transactionMeta,
-                currentBatchIdRef.current,
-                staleBatchIdsRef.current,
-              )
-            ) {
-              log.debug(
-                `${logPrefix} skipping transactionFinished from stale batch`,
-                JSON.stringify({
-                  eventBatchId: transactionMeta.batchId,
-                  currentBatchId: currentBatchIdRef.current,
-                }),
-              );
-              return;
-            }
-          } else if (!trackedTxIdsRef.current.has(transactionMeta.id)) {
-            return;
-          }
-
-          if (status === 'rejected') {
-            log.debug(
-              `${logPrefix} transactionFinished rejected → TransactionRejected`,
-            );
-            dispatchRef.current({
-              type: HardwareWalletSignatureEvent.TransactionRejected,
-            });
-          } else if (status === 'failed') {
-            log.debug(
-              `${logPrefix} transactionFinished failed → TransactionFailed`,
-            );
-            dispatchRef.current({
-              type: HardwareWalletSignatureEvent.TransactionFailed,
-            });
-          }
-        },
-      );
-      unsubscribes.push(unsubscribeFinished);
+              if (status === 'rejected') {
+                log.debug(
+                  `${logPrefix} transactionFinished rejected → TransactionRejected`,
+                );
+                dispatchRef.current({
+                  type: HardwareWalletSignatureEvent.TransactionRejected,
+                });
+              } else if (status === 'failed') {
+                log.debug(
+                  `${logPrefix} transactionFinished failed → TransactionFailed`,
+                );
+                dispatchRef.current({
+                  type: HardwareWalletSignatureEvent.TransactionFailed,
+                });
+              }
+            },
+          ),
+        ),
+      ]);
     };
 
     subscribeAll().catch((err: unknown) => {
@@ -502,6 +529,7 @@ export function useHwSignTracker(
 
     return () => {
       cancelled = true;
+      resetTrackingRefs();
       for (const unsub of unsubscribes) {
         unsub().catch(
           // eslint-disable-next-line no-empty-function
