@@ -48,6 +48,7 @@ describe('Swap tests', function (this: Suite) {
           },
           submitDelay: 10000,
           expectedDestAmount: '3,839',
+          expectedActivityAmount: '+3,839.4478',
         });
 
         const events = await getEventPayloads(driver, mockedEndpoints);
@@ -125,6 +126,7 @@ describe('Swap tests', function (this: Suite) {
             tokenTo: 'MUSD',
           },
           expectedDestAmount: '0.369',
+          expectedActivityAmount: '+0.3695',
           skipStatusPage: true,
         });
 
@@ -233,6 +235,8 @@ describe('Swap tests', function (this: Suite) {
             tokenFrom: 'ETH',
             tokenTo: 'MUSD',
           },
+          expectedDestAmount: '0.369',
+          expectedActivityAmount: '+0.3695',
         });
       },
     );
@@ -326,6 +330,8 @@ describe('Swap tests', function (this: Suite) {
             tokenFrom: 'ETH',
             tokenTo: 'MUSD',
           },
+          expectedDestAmount: '3,839',
+          expectedActivityAmount: '+3,839.4478',
         });
       },
     );
@@ -408,6 +414,8 @@ describe('Swap tests', function (this: Suite) {
             tokenFrom: 'ETH',
             tokenTo: 'MUSD',
           },
+          expectedDestAmount: '0.369',
+          expectedActivityAmount: '+0.3695',
         });
       },
     );

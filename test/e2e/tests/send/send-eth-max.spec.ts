@@ -192,7 +192,7 @@ describe('Send ETH - Max Amount', function () {
           // confirms the transaction
           await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
 
-          await validateTransaction(driver, '-24.99957065');
+          await validateTransaction(driver, '-24.9996');
         },
       );
     });
@@ -265,7 +265,7 @@ describe('Send ETH - Max Amount', function () {
 
         // confirms the transaction
         await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
-        await validateTransaction(driver, '-24.99893303');
+        await validateTransaction(driver, '-24.9989');
       },
     );
   });
