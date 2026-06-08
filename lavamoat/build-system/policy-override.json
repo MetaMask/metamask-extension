@@ -236,6 +236,11 @@
         "string.prototype.matchall>has-symbols": true
       }
     },
+    "mockttp>express>qs": {
+      "packages": {
+        "string.prototype.matchall>side-channel": true
+      }
+    },
     "tsutils": {
       "packages": {
         "typescript": true,

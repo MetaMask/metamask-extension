@@ -4582,6 +4582,11 @@
         "gulp>vinyl-fs>pumpify>pump": true
       }
     },
+    "mockttp>express>qs": {
+      "packages": {
+        "string.prototype.matchall>side-channel": true
+      }
+    },
     "browserify>url>qs": {
       "packages": {
         "string.prototype.matchall>side-channel": true
