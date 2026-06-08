@@ -12,10 +12,12 @@ import {
   BridgeStatusControllerStateChangeEvent,
 } from '@metamask/bridge-status-controller';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
+import { GasFeeControllerFetchGasFeeEstimatesAction } from '@metamask/gas-fee-controller';
 import {
   KeyringControllerGetKeyringForAccountAction,
   KeyringControllerGetStateAction,
   KeyringControllerSignEip7702AuthorizationAction,
+  KeyringControllerSignTransactionAction,
   KeyringControllerSignTypedMessageAction,
 } from '@metamask/keyring-controller';
 import {
@@ -28,6 +30,7 @@ import {
   NetworkControllerGetEIP1559CompatibilityAction,
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetNetworkClientRegistryAction,
+  NetworkControllerGetStateAction,
   NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
 import type { AuthenticationController } from '@metamask/profile-sync-controller';
@@ -90,10 +93,15 @@ export function getTransactionControllerMessenger(
       'AccountsController:getSelectedAccount',
       'AccountsController:getState',
       `ApprovalController:addRequest`,
+      'GasFeeController:fetchGasFeeEstimates',
       'KeyringController:getState',
       'KeyringController:signEip7702Authorization',
+      'KeyringController:signTransaction',
       'NetworkController:findNetworkClientIdByChainId',
+      'NetworkController:getEIP1559Compatibility',
       'NetworkController:getNetworkClientById',
+      'NetworkController:getNetworkClientRegistry',
+      'NetworkController:getState',
       'RemoteFeatureFlagController:getState',
     ],
     events: [
@@ -122,17 +130,19 @@ type InitMessengerActions =
   | BridgeStatusControllerActions
   | CurrencyRateControllerActions
   | DelegationControllerSignDelegationAction
+  | GasFeeControllerFetchGasFeeEstimatesAction
   | InstitutionalSnapControllerPublishHookAction
   | InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction
   | KeyringControllerGetKeyringForAccountAction
-  | KeyringControllerGetKeyringForAccountAction
   | KeyringControllerGetStateAction
   | KeyringControllerSignEip7702AuthorizationAction
+  | KeyringControllerSignTransactionAction
   | KeyringControllerSignTypedMessageAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetEIP1559CompatibilityAction
   | NetworkControllerGetNetworkClientByIdAction
   | NetworkControllerGetNetworkClientRegistryAction
+  | NetworkControllerGetStateAction
   | PreferencesControllerGetStateAction
   | RemoteFeatureFlagControllerGetStateAction
   | SmartTransactionsControllerGetFeesAction
