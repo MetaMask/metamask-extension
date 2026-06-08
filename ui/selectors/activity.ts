@@ -126,6 +126,28 @@ export const selectProtectedLocalTransactions = createSelector(
   },
 );
 
+export const selectLocalTransactionsByHash = createSelector(
+  selectLocalTransactions,
+  (transactionGroups) => {
+    const transactionsByHash = new Map<string, TransactionGroup>();
+
+    for (const transactionGroup of transactionGroups) {
+      for (const transaction of [
+        transactionGroup.primaryTransaction,
+        transactionGroup.initialTransaction,
+      ]) {
+        const hash = transaction.hash?.toLowerCase();
+
+        if (hash) {
+          transactionsByHash.set(hash, transactionGroup);
+        }
+      }
+    }
+
+    return transactionsByHash;
+  },
+);
+
 export const selectNonEvmTransactionsForActivity = createSelector(
   [
     selectCurrentAccountNonEvmTransactions,
@@ -166,6 +188,23 @@ export const selectNonEvmActivityItems = createSelector(
         transaction: patchKeyringTransaction(transaction, assetsMetadata),
       }),
     ),
+);
+
+export const selectNonEvmActivityItemsById = createSelector(
+  selectNonEvmActivityItems,
+  (items) => {
+    const itemsById = new Map<string, (typeof items)[number]>();
+
+    for (const item of items) {
+      const id = item.data.hash?.toLowerCase();
+
+      if (id) {
+        itemsById.set(id, item);
+      }
+    }
+
+    return itemsById;
+  },
 );
 
 function patchKeyringTransaction(
@@ -449,6 +488,23 @@ export const selectLocalActivityItems = createSelector(
         transactionGroup,
       );
     });
+  },
+);
+
+export const selectLocalActivityItemsByIdentifier = createSelector(
+  selectLocalActivityItems,
+  (items) => {
+    const itemsByIdentifier = new Map();
+
+    for (const item of items) {
+      const hash = item.data.hash?.toLowerCase();
+
+      if (hash) {
+        itemsByIdentifier.set(hash, item);
+      }
+    }
+
+    return itemsByIdentifier;
   },
 );
 
