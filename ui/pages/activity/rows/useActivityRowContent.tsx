@@ -189,12 +189,11 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
       }
       case 'perpsWithdraw': {
         const { fiat, token } = activity.data;
-        const symbol = token?.symbol ?? '';
         const fiatAmount = fiat ? -Number(fiat.amount) : undefined;
 
         return {
           avatarTokens: [token?.assetId],
-          title: t(labelKeys.title.key, [symbol]),
+          title: t(labelKeys.title.key),
           primaryAmount:
             fiatAmount !== undefined && Number.isFinite(fiatAmount)
               ? formatCurrencyWithMinThreshold(fiatAmount, PERPS_CURRENCY)

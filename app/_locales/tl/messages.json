@@ -6501,7 +6501,7 @@
   "perpsWithdrawFee": {
     "message": "Bayad sa Provider"
   },
-  "perpsWithdrawTitle": {
+  "perpsWithdrawFundsTitle": {
     "message": "Mag-withdraw"
   },
   "perpsWithdrawInsufficient": {

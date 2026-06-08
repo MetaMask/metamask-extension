@@ -6505,7 +6505,7 @@
   "perpsWithdrawFee": {
     "message": "Tarifa del proveedor"
   },
-  "perpsWithdrawTitle": {
+  "perpsWithdrawFundsTitle": {
     "message": "Retirar"
   },
   "perpsWithdrawInsufficient": {

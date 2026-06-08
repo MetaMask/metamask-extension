@@ -6505,7 +6505,7 @@
   "perpsWithdrawFee": {
     "message": "Biaya Penyedia"
   },
-  "perpsWithdrawTitle": {
+  "perpsWithdrawFundsTitle": {
     "message": "Tarik"
   },
   "perpsWithdrawInsufficient": {

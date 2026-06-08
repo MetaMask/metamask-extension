@@ -6501,7 +6501,7 @@
   "perpsWithdrawFee": {
     "message": "Taxa do provedor"
   },
-  "perpsWithdrawTitle": {
+  "perpsWithdrawFundsTitle": {
     "message": "Sacar"
   },
   "perpsWithdrawInsufficient": {

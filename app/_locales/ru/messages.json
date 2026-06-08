@@ -6501,7 +6501,7 @@
   "perpsWithdrawFee": {
     "message": "Комиссия поставщика"
   },
-  "perpsWithdrawTitle": {
+  "perpsWithdrawFundsTitle": {
     "message": "Вывести средства"
   },
   "perpsWithdrawInsufficient": {

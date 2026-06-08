@@ -111,7 +111,7 @@ describe('TransactionDetailsModal', () => {
     const { getByRole } = render(TransactionType.perpsWithdraw);
     expect(
       getByRole('heading', {
-        name: messages.perpsWithdrawTitle.message,
+        name: messages.perpsWithdrawFundsTitle.message,
       }),
     ).toBeInTheDocument();
   });

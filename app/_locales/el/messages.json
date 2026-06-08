@@ -6501,7 +6501,7 @@
   "perpsWithdrawFee": {
     "message": "Τέλη παρόχου"
   },
-  "perpsWithdrawTitle": {
+  "perpsWithdrawFundsTitle": {
     "message": "Ανάληψη"
   },
   "perpsWithdrawInsufficient": {

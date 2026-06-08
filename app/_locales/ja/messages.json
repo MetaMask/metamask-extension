@@ -6501,7 +6501,7 @@
   "perpsWithdrawFee": {
     "message": "プロバイダーの手数料"
   },
-  "perpsWithdrawTitle": {
+  "perpsWithdrawFundsTitle": {
     "message": "出金"
   },
   "perpsWithdrawInsufficient": {

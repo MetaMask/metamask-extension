@@ -6495,7 +6495,7 @@
   "perpsWithdrawFee": {
     "message": "Anbietergebühr"
   },
-  "perpsWithdrawTitle": {
+  "perpsWithdrawFundsTitle": {
     "message": "Auszahlen"
   },
   "perpsWithdrawInsufficient": {

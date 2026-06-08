@@ -92,7 +92,7 @@ export const WalletInitiatedHeader = () => {
       return t('perpsDepositFundsTitle');
     }
     if (currentConfirmation?.type === TransactionType.perpsWithdraw) {
-      return t('perpsWithdrawTitle');
+      return t('perpsWithdrawFundsTitle');
     }
     return t('review');
   };

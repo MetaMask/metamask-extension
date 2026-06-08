@@ -6505,7 +6505,7 @@
   "perpsWithdrawFee": {
     "message": "공급자 수수료"
   },
-  "perpsWithdrawTitle": {
+  "perpsWithdrawFundsTitle": {
     "message": "출금"
   },
   "perpsWithdrawInsufficient": {

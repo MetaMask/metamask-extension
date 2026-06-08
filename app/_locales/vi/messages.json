@@ -6505,7 +6505,7 @@
   "perpsWithdrawFee": {
     "message": "Phí nhà cung cấp"
   },
-  "perpsWithdrawTitle": {
+  "perpsWithdrawFundsTitle": {
     "message": "Rút tiền"
   },
   "perpsWithdrawInsufficient": {

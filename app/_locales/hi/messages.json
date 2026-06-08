@@ -6495,7 +6495,7 @@
   "perpsWithdrawFee": {
     "message": "प्रदाता फीस"
   },
-  "perpsWithdrawTitle": {
+  "perpsWithdrawFundsTitle": {
     "message": "निकालें"
   },
   "perpsWithdrawInsufficient": {

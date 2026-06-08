@@ -6469,7 +6469,7 @@
   "perpsWithdrawFee": {
     "message": "Sağlayıcı Ücreti"
   },
-  "perpsWithdrawTitle": {
+  "perpsWithdrawFundsTitle": {
     "message": "Çek"
   },
   "perpsWithdrawInsufficient": {

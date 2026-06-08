@@ -147,10 +147,10 @@ describe('<WalletInitiatedHeader />', () => {
     });
   });
 
-  it('shows perpsWithdrawTitle as the header title for perpsWithdraw', () => {
+  it('shows perpsWithdrawFundsTitle as the header title for perpsWithdraw', () => {
     const { getByText } = render(getPerpsWithdrawState());
 
-    expect(getByText(tEn('perpsWithdrawTitle'))).toBeInTheDocument();
+    expect(getByText(tEn('perpsWithdrawFundsTitle'))).toBeInTheDocument();
   });
 
   it('hides AdvancedDetailsButton visually for perpsWithdraw', () => {

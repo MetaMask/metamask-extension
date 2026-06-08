@@ -6495,7 +6495,7 @@
   "perpsWithdrawFee": {
     "message": "服务商费用"
   },
-  "perpsWithdrawTitle": {
+  "perpsWithdrawFundsTitle": {
     "message": "提取"
   },
   "perpsWithdrawInsufficient": {
