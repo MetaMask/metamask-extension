@@ -4,6 +4,7 @@ import {
   TransactionPayStrategy,
 } from '@metamask/transaction-pay-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
 import {
   type DelegationMessenger,
   getDelegationTransaction,
@@ -70,7 +71,7 @@ function getApi(
       transactionId: string,
       options: {
         isPostQuote?: boolean;
-        accountOverride?: string | null;
+        accountOverride?: Hex | null;
       },
     ) => {
       messengerClient.setTransactionConfig(transactionId, (config) => {

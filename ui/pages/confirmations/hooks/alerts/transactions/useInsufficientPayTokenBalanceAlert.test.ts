@@ -100,11 +100,13 @@ function runHookForTransactionPayPostQuote(
   }) as TransactionMeta;
 
   const state = getMockConfirmStateForTransaction(transaction);
-  state.metamask.transactionData = {
-    [transaction.id]: {
-      isPostQuote: true,
+  Object.assign(state.metamask, {
+    transactionData: {
+      [transaction.id]: {
+        isPostQuote: true,
+      },
     },
-  } as never;
+  });
 
   return renderHookWithConfirmContextProvider(
     () => useInsufficientPayTokenBalanceAlert(props),
