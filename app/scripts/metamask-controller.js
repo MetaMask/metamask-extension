@@ -406,7 +406,6 @@ import {
 import { ConnectivityControllerInit } from './messenger-client-init/connectivity';
 import { AccountTrackerControllerInit } from './messenger-client-init/account-tracker-controller-init';
 import { OnboardingControllerInit } from './messenger-client-init/onboarding-controller-init';
-import { RemoteFeatureFlagControllerInit } from './messenger-client-init/remote-feature-flag-controller-init';
 import { BridgeControllerInit } from './messenger-client-init/bridge-controller-init';
 import { BridgeStatusControllerInit } from './messenger-client-init/bridge-status-controller-init';
 import { PreferencesControllerInit } from './messenger-client-init/preferences-controller-init';
@@ -447,6 +446,7 @@ import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-s
 import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
 import { getSnapKeyring } from './lib/snap-keyring/utils/getSnapKeyring';
 import { initializeWallet } from './wallet-init/initialization';
+import { setupRemoteFeatureFlagToggle } from './wallet-init/remote-feature-flags';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -536,6 +536,9 @@ export default class MetamaskController extends EventEmitter {
       state: initState,
       encryptor: this.opts.encryptor,
       showApprovalRequest: this.opts.showUserConfirmation,
+      // Resolved lazily: `this.metaMetricsController` is assigned below from the
+      // wallet/messenger-client instances, before any feature-flag fetch runs.
+      getMetaMetricsId: () => this.metaMetricsController.getMetaMetricsId(),
     });
 
     this.controllerMessenger = controllerMessenger;
@@ -624,7 +627,6 @@ export default class MetamaskController extends EventEmitter {
       AppStateController: AppStateControllerInit,
       OnboardingController: OnboardingControllerInit,
       PasskeyController: PasskeyControllerInit,
-      RemoteFeatureFlagController: RemoteFeatureFlagControllerInit,
       NetworkController: NetworkControllerInit,
       AnalyticsController: AnalyticsControllerInit,
       MetaMetricsController: MetaMetricsControllerInit,
@@ -761,8 +763,9 @@ export default class MetamaskController extends EventEmitter {
     this.dataDeletionService = messengerClientsByName.DataDeletionService;
     this.metaMetricsDataDeletionController =
       messengerClientsByName.MetaMetricsDataDeletionController;
-    this.remoteFeatureFlagController =
-      messengerClientsByName.RemoteFeatureFlagController;
+    this.remoteFeatureFlagController = this.wallet.getInstance(
+      'RemoteFeatureFlagController',
+    );
     this.gasFeeController = messengerClientsByName.GasFeeController;
     this.userOperationController =
       messengerClientsByName.UserOperationController;
@@ -1905,6 +1908,17 @@ export default class MetamaskController extends EventEmitter {
         return true;
       }, this.preferencesController.state),
     );
+
+    // Remote feature flags are constructed through `@metamask/wallet` with an
+    // initial `disabled` value; the dynamic enable/disable toggling (driven by
+    // onboarding completion and the external-services preference) stays here, in
+    // the extension.
+    setupRemoteFeatureFlagToggle({
+      messenger: this.controllerMessenger,
+      remoteFeatureFlagController: this.remoteFeatureFlagController,
+      preferencesState: this.preferencesController.state,
+      onboardingState: this.onboardingController.state,
+    });
 
     this.controllerMessenger.subscribe(
       `${this.accountsController.name}:selectedAccountChange`,

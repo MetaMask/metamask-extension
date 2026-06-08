@@ -140,10 +140,6 @@ import {
 import { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
 import { getPasskeyControllerMessenger } from './passkey-controller-messenger';
 import {
-  getRemoteFeatureFlagControllerInitMessenger,
-  getRemoteFeatureFlagControllerMessenger,
-} from './remote-feature-flag-controller-messenger';
-import {
   getRewardsControllerInitMessenger,
   getRewardsControllerMessenger,
 } from './rewards-controller-messenger';
@@ -288,11 +284,6 @@ export { getComplianceServiceMessenger } from './compliance-service-messenger';
 export type { PerpsControllerMessenger } from './perps-controller-messenger';
 export { getPerpsControllerMessenger } from './perps-controller-messenger';
 export { getPhishingControllerMessenger } from './phishing-controller-messenger';
-export type { RemoteFeatureFlagControllerInitMessenger } from './remote-feature-flag-controller-messenger';
-export {
-  getRemoteFeatureFlagControllerMessenger,
-  getRemoteFeatureFlagControllerInitMessenger,
-} from './remote-feature-flag-controller-messenger';
 export { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
 export type { SignatureControllerInitMessenger } from './signature-controller-messenger';
 export {
@@ -571,10 +562,6 @@ export const MESSENGER_FACTORIES = {
   RatesController: {
     getMessenger: getRatesControllerMessenger,
     getInitMessenger: noop,
-  },
-  RemoteFeatureFlagController: {
-    getMessenger: getRemoteFeatureFlagControllerMessenger,
-    getInitMessenger: getRemoteFeatureFlagControllerInitMessenger,
   },
   SeedlessOnboardingController: {
     getMessenger: getSeedlessOnboardingControllerMessenger,
