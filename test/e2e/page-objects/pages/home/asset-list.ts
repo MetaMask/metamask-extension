@@ -222,22 +222,7 @@ class AssetListPage extends HomePage {
   }
 
   private async expandLowValueAssetsIfPresent(): Promise<void> {
-    let toggle;
-
-    try {
-      toggle = await this.driver.findElement(this.lowValueAssetsToggle, 1000);
-    } catch {
-      return;
-    }
-
-    if ((await toggle.getAttribute('aria-expanded')) === 'true') {
-      return;
-    }
-
-    await this.driver.clickElement(this.lowValueAssetsToggle);
-    await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded, {
-      timeout: 5000,
-    });
+    await this.driver.clickElementSafe(this.lowValueAssetsToggle);
   }
 
   async getCurrentNetworksOptionTotal(): Promise<string> {
