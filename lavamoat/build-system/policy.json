@@ -6727,7 +6727,8 @@
         "gulp-livereload>tiny-lr>debug": true,
         "gulp-livereload>tiny-lr>faye-websocket": true,
         "react>object-assign": true,
-        "browserify>url>qs": true
+        "browserify>url>qs": true,
+        "mockttp>express>qs": true
       }
     },
     "copy-webpack-plugin>tinyglobby": {
