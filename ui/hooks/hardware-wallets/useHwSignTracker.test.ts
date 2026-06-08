@@ -526,6 +526,81 @@ describe.each<string, boolean>([
       expect(dispatchEvent).not.toHaveBeenCalled();
     });
 
+    it('dispatches transactionRejected for re-subscribed flow after stale cancel timeout', async () => {
+      const callbacks = setupCallbacks();
+      const dispatchEvent = jest.fn();
+
+      const { result, rerender } = renderHook(
+        ({ enabled }) =>
+          useHwSignTracker(FROM_ADDRESS, true, true, dispatchEvent, {
+            useBatchTracking,
+            enabled,
+          }),
+        { initialProps: { enabled: true } },
+      );
+
+      await act(async () => {
+        await jest.runAllTimersAsync();
+      });
+
+      const statusCb = callbacks.get(STATUS_UPDATED);
+      await act(async () => {
+        statusCb?.([
+          {
+            transactionMeta: createTxMeta({
+              id: 'tx-old',
+              batchId: 'batch-old',
+            }),
+          },
+        ]);
+      });
+
+      const cancelPromise = result.current.cancelCurrentBatch();
+
+      rerender({ enabled: false });
+      rerender({ enabled: true });
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      const statusCbAfterResubscribe = callbacks.get(STATUS_UPDATED);
+      const rejectedCbAfterResubscribe = callbacks.get(REJECTED);
+
+      dispatchEvent.mockClear();
+      await act(async () => {
+        statusCbAfterResubscribe?.([
+          {
+            transactionMeta: createTxMeta({
+              id: 'tx-new',
+              batchId: 'batch-new',
+            }),
+          },
+        ]);
+      });
+
+      await act(async () => {
+        await jest.advanceTimersByTimeAsync(6_000);
+      });
+      await cancelPromise;
+
+      dispatchEvent.mockClear();
+      await act(async () => {
+        rejectedCbAfterResubscribe?.([
+          {
+            transactionMeta: createTxMeta({
+              id: 'tx-new',
+              batchId: 'batch-new',
+            }),
+          },
+        ]);
+      });
+
+      expect(dispatchEvent).toHaveBeenCalledWith({
+        type: HardwareWalletSignatureEvent.TransactionRejected,
+      });
+    });
+
     it('does not abort stale txs after fromAddress changes', async () => {
       const callbacks = setupCallbacks();
       const dispatchEvent = jest.fn();

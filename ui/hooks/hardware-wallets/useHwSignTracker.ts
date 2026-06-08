@@ -126,6 +126,8 @@ export function useHwSignTracker(
   const lastSeenGenerationRef = useRef(retryGenerationRef?.current ?? 0);
   const pendingAbortTxIdsRef = useRef<Set<string>>(new Set());
   const abortSettleResolveRef = useRef<((value: void) => void) | null>(null);
+  /** Bumped when the subscription effect re-runs so stale cancel cleanup cannot wipe a new flow. */
+  const subscriptionGenerationRef = useRef(0);
 
   // Batch-mode-only refs (unused in sequential mode)
   const currentBatchIdRef = useRef<string | null | undefined>();
@@ -153,6 +155,16 @@ export function useHwSignTracker(
       return;
     }
 
+    const cancelGeneration = subscriptionGenerationRef.current;
+    const finishCancelCleanup = () => {
+      if (cancelGeneration !== subscriptionGenerationRef.current) {
+        return;
+      }
+      abortSettleResolveRef.current = null;
+      pendingAbortTxIdsRef.current.clear();
+      clearSubscriptionTracking();
+    };
+
     const txIds = [...trackedTxIdsRef.current];
     trackedTxIdsRef.current = new Set();
 
@@ -160,7 +172,7 @@ export function useHwSignTracker(
       if (isAbortSettling()) {
         return;
       }
-      clearSubscriptionTracking();
+      finishCancelCleanup();
       return;
     }
 
@@ -175,14 +187,15 @@ export function useHwSignTracker(
         try {
           await submitRequestToBackground('abortTransactionSigning', [txId]);
         } catch {
-          pendingAbortTxIdsRef.current.delete(txId);
+          if (cancelGeneration === subscriptionGenerationRef.current) {
+            pendingAbortTxIdsRef.current.delete(txId);
+          }
         }
       }),
     );
 
     if (pendingAbortTxIdsRef.current.size === 0) {
-      abortSettleResolveRef.current = null;
-      clearSubscriptionTracking();
+      finishCancelCleanup();
       return;
     }
 
@@ -191,16 +204,16 @@ export function useHwSignTracker(
       new Promise((resolve) => setTimeout(resolve, 5_000)),
     ]);
 
-    abortSettleResolveRef.current = null;
     // Stop swallowing events if abort confirmations never arrived (timeout path).
-    pendingAbortTxIdsRef.current.clear();
-    clearSubscriptionTracking();
+    finishCancelCleanup();
   }, [clearSubscriptionTracking, enabled]);
 
   useEffect(() => {
     if (!fromAddress || !hardwareWalletUsed || !enabled) {
       return undefined;
     }
+
+    subscriptionGenerationRef.current += 1;
 
     let cancelled = false;
     const targetFrom = fromAddress.toLowerCase();
