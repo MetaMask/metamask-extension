@@ -945,10 +945,57 @@ export const getRatesControllerFiatCurrency = createDeepEqualSelector(
   },
 ) as unknown as ControllerStateSelector<RatesControllerState, 'fiatCurrency'>;
 
+
+/**
+ * Converts a scientific notation balance string (e.g. "1e-18") to its raw
+ * base-unit bigint representation given the token's decimal precision.
+ * Sub-unit values are truncated toward zero (e.g. "1e-19" with 18 decimals
+ * yields 0n). Returns 0n for any string that is not valid scientific notation.
+ *
+ * @param balanceString - The balance in scientific notation (e.g. "1e-18").
+ * @param decimals - The token's decimal precision.
+ * @returns The raw base-unit value as a bigint.
+ */
+function parseScientificNotationBalance(
+  balanceString: string,
+  decimals: number,
+): bigint {
+  const match = balanceString.match(/^([+-]?\d+(?:\.\d+)?)[eE]([+-]?\d+)$/u);
+  if (!match) {
+    return 0n;
+  }
+
+  const [, coefficient, rawExponent] = match;
+  const exponent = parseInt(rawExponent, 10);
+  const isNegative = coefficient.startsWith('-');
+  const absCoefficient = coefficient.replace(/^[+-]/u, '');
+  const [coefInt, coefFrac = ''] = absCoefficient.split('.');
+  const coefDigits = coefInt + coefFrac;
+  const finalExponent = exponent + decimals - coefFrac.length;
+
+  let result: bigint;
+  if (finalExponent >= 0) {
+    result = BigInt(coefDigits) * 10n ** BigInt(finalExponent);
+  } else {
+    // Fractional base units are truncated by keeping only the leading digits.
+    const digitsToKeep = coefDigits.length + finalExponent;
+    result = digitsToKeep <= 0 ? 0n : BigInt(coefDigits.slice(0, digitsToKeep));
+  }
+
+  return isNegative ? -result : result;
+}
+
 function parseBalanceWithDecimals(
   balanceString: string,
   decimals: number,
 ): Hex {
+  // Scientific notation (e.g. "1e-18") cannot be split on "." correctly —
+  // handle it separately before the normal fixed-point path.
+  if (balanceString.includes('e') || balanceString.includes('E')) {
+    const raw = parseScientificNotationBalance(balanceString, decimals);
+    return bigIntToHex(raw < 0n ? 0n : raw);
+  }
+
   const [integerPart, fractionalPart = ''] = balanceString.split('.');
 
   if (decimals === 0) {
