@@ -201,10 +201,10 @@
     "assetsMetadata": "object"
   },
   "MultichainAssetsRatesController": {
-    "conversionRates": {},
-    "historicalPrices": {}
+    "conversionRates": "object",
+    "historicalPrices": "object"
   },
-  "MultichainBalancesController": { "balances": {} },
+  "MultichainBalancesController": { "balances": "object" },
   "MultichainNetworkController": "object",
   "MultichainRatesController": {
     "cryptocurrencies": ["btc", "sol"],
