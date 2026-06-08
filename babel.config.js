@@ -9,7 +9,7 @@ module.exports = function (api) {
       strictMode: true,
     },
     targets: {
-      browsers: ['chrome >= 113', 'firefox >= 115'],
+      browsers: ['chrome >= 123', 'firefox >= 128'],
     },
     overrides: [
       {
@@ -26,6 +26,7 @@ module.exports = function (api) {
       // syntax transforms enabled even when our browser support floor is high
       // enough to run them natively.
       '@babel/plugin-transform-class-properties',
+      '@babel/plugin-transform-class-static-block',
       '@babel/plugin-transform-private-methods',
       '@babel/plugin-transform-private-property-in-object',
       '@babel/plugin-transform-logical-assignment-operators',

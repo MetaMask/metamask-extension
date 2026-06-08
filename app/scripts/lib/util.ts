@@ -1,13 +1,9 @@
-import ipRegex from 'ip-regex';
 import { AccessList } from '@ethereumjs/tx';
 import {
   TransactionEnvelopeType,
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import type { Provider } from '@metamask/network-controller';
-import { CaipAssetType, parseCaipAssetType } from '@metamask/utils';
-import { MultichainAssetsRatesControllerState } from '@metamask/assets-controllers';
-import { AssetConversion, FungibleAssetMarketData } from '@metamask/snaps-sdk';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import {
   DEVICE_TYPE,
@@ -45,6 +41,7 @@ import {
   getIsQuicknodeEndpointUrl,
   KNOWN_CUSTOM_ENDPOINT_URLS,
 } from '../../../shared/lib/network-utils';
+import { isLocalhostOrIPAddress } from '../../../shared/lib/url-utils';
 // Re-export install type utilities from dedicated module to avoid circular dependencies
 // and keep the sentry bundle lightweight
 export { getInstallType, initInstallType } from './install-type';
@@ -57,6 +54,8 @@ export {
   isWebOrigin,
 } from '../../../shared/lib/url-utils';
 export { formatValue, isValidAmount } from '../../../shared/lib/format-value';
+export { addHexPrefix } from '../../../shared/lib/add-hex-prefix';
+export { getConversionRatesForNativeAsset } from '../../../shared/lib/asset-conversion-rates';
 
 /**
  * Minimal type for User-Agent Client Hints API (NavigatorUAData).
@@ -340,28 +339,6 @@ export const getOs = (): Os => {
   return OS.UNKNOWN;
 };
 
-/**
- * Prefixes a hex string with '0x' or '-0x' and returns it. Idempotent.
- *
- * @param str - The string to prefix.
- * @returns The prefixed string.
- */
-const addHexPrefix = (str: string) => {
-  if (typeof str !== 'string' || str.match(/^-?0x/u)) {
-    return str;
-  }
-
-  if (str.match(/^-?0X/u)) {
-    return str.replace('0X', '0x');
-  }
-
-  if (str.startsWith('-')) {
-    return str.replace('-', '-0x');
-  }
-
-  return `0x${str}`;
-};
-
 function getChainType(chainId: string) {
   if (chainId === CHAIN_IDS.MAINNET) {
     return 'mainnet';
@@ -382,7 +359,7 @@ function checkAlarmExists(alarmList: { name: string }[], alarmName: string) {
   return alarmList.some((alarm) => alarm.name === alarmName);
 }
 
-export { addHexPrefix, checkAlarmExists, getChainType, getPlatform };
+export { checkAlarmExists, getChainType, getPlatform };
 
 // Taken from https://stackoverflow.com/a/1349426/3696652
 const characters =
@@ -587,38 +564,6 @@ export function getBooleanFlag(value: string | boolean | undefined): boolean {
   return value === true || value === 'true';
 }
 
-type AssetsRatesState = {
-  metamask: MultichainAssetsRatesControllerState;
-};
-
-export function getConversionRatesForNativeAsset({
-  conversionRates,
-  chainId,
-}: {
-  conversionRates: AssetsRatesState['metamask']['conversionRates'];
-  chainId: string;
-}): (AssetConversion & { marketData?: FungibleAssetMarketData }) | null {
-  // Return early if conversionRates is falsy
-  if (!conversionRates) {
-    return null;
-  }
-
-  let conversionRateResult = null;
-
-  Object.entries(conversionRates).forEach(
-    ([caip19Identifier, conversionRate]) => {
-      const { assetNamespace, chainId: caipChainId } = parseCaipAssetType(
-        caip19Identifier as CaipAssetType,
-      );
-      if (assetNamespace === 'slip44' && caipChainId === chainId) {
-        conversionRateResult = conversionRate;
-      }
-    },
-  );
-
-  return conversionRateResult;
-}
-
 // Cache for known domains
 let knownDomainsSet: Set<string> | null = null;
 let initPromise: Promise<void> | null = null;
@@ -636,33 +581,6 @@ function extractHostname(url: string): string | null {
   } catch {
     return null;
   }
-}
-
-/**
- * Check if a hostname is localhost or an IP address.
- * Public RPC providers use domain names, not raw IP addresses.
- * These should never be considered "public" endpoints even if they appear in chainlist.
- *
- * @param hostname - The hostname to check.
- * @returns True if the hostname is localhost or an IP address (v4 or v6).
- */
-function isLocalhostOrIPAddress(hostname: string): boolean {
-  const lowerHostname = hostname.toLowerCase();
-
-  // Check for localhost
-  if (lowerHostname === 'localhost') {
-    return true;
-  }
-
-  // Remove brackets from IPv6 addresses for testing (e.g., [::1] -> ::1)
-  const hostnameWithoutBrackets = lowerHostname.replace(/^\[|\]$/gu, '');
-
-  // Check for IP address (v4 or v6)
-  if (ipRegex({ exact: true }).test(hostnameWithoutBrackets)) {
-    return true;
-  }
-
-  return false;
 }
 
 // RFC 6761 special-use TLDs that should never be used by real public RPC providers

@@ -3,9 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'clsx';
 
 import { isHexString } from '@metamask/utils';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { addHexPrefix } from '../../../../../../app/scripts/lib/util';
+import { addHexPrefix } from '../../../../../../shared/lib/add-hex-prefix';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import {
   isBurnAddress,
