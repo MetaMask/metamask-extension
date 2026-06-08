@@ -43,7 +43,7 @@ jest.mock('../../../../selectors/perps-controller', () => ({
   selectPerpsIsTestnet: jest.fn(() => false),
 }));
 
-describe('Develop options tab', () => {
+describe('Debug tab', () => {
   const mockStore = configureMockStore([thunk])(mockState);
 
   it('renders remote feature flags', () => {
