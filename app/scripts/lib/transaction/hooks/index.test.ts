@@ -680,7 +680,8 @@ describe('Transaction Controller Hooks', () => {
 
       jest
         .mocked(smartTransactionsModule.submitBatchSmartTransactionHook)
-        .mockResolvedValue(undefined);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .mockResolvedValue(undefined as any);
 
       const messenger = buildMockMessenger();
       (messenger.call as jest.Mock).mockReturnValue({
