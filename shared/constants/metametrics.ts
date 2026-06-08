@@ -1,3 +1,4 @@
+import type { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { Json } from '@metamask/utils';
 import type {
   DeviceType,
@@ -99,10 +100,6 @@ export type MetaMetricsEventPayload = {
    */
   category?: string;
   /**
-   * The action ID to deduplicate event requests from the UI.
-   */
-  actionId?: string;
-  /**
    * The type of environment this event occurred in. Defaults to the background
    * process type.
    */
@@ -139,10 +136,6 @@ export type MetaMetricsEventPayload = {
    * The origin of the dapp that triggered this event.
    */
   referrer?: MetaMetricsReferrerObject;
-  /*
-   * The unique identifier for the event.
-   */
-  uniqueIdentifier?: string;
   /**
    * Whether the event is a duplicate of an anonymized event.
    */
@@ -163,26 +156,9 @@ export type UnsanitizedMetaMetricsEventPayload = Omit<
 
 export type MetaMetricsEventOptions = {
   /**
-   * Whether or not the event happened during the opt-in workflow.
-   */
-  isOptIn?: boolean;
-  /**
-   * Whether the segment queue should be flushed after tracking the event.
-   * Recommended if the result of tracking the event must be known before UI
-   * transition or update.
-   */
-  flushImmediately?: boolean;
-  /**
    * Whether to exclude the user's `metaMetricsId` for anonymity.
    */
   excludeMetaMetricsId?: boolean;
-  /**
-   * An override for the `metaMetricsId` in the event (no pun intended) one is
-   * created as a part of an asynchronous workflow, such as awaiting the result
-   * of the MetaMetrics opt-in function that generates the user's
-   * `metaMetricsId`.
-   */
-  metaMetricsId?: string;
   /**
    * Is this event a holdover from Matomo that needs further migration? When
    * true, sends the data to a special Segment source that marks the event data
@@ -196,10 +172,6 @@ export type MetaMetricsEventOptions = {
 };
 
 export type MetaMetricsEventFragment = {
-  /**
-   * The action ID of transaction metadata object.
-   */
-  actionId?: string;
   /**
    * The event name to fire when the fragment is closed in an affirmative action.
    */
@@ -378,19 +350,6 @@ export type MetaMetricsPagePayload = {
    * The dapp that triggered the page view.
    */
   referrer?: MetaMetricsReferrerObject;
-  /**
-   * The action ID of the page view.
-   */
-  actionId?: string;
-};
-
-export type MetaMetricsPageOptions = {
-  /**
-   * Is the current path one of the pages in the onboarding workflow? (If this
-   * is true and participateInMetaMetrics is null, then the page view will be
-   * tracked.)
-   */
-  isOptInPath?: boolean;
 };
 
 /**
@@ -575,6 +534,15 @@ export type MetaMetricsUserTraits = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   profile_id?: string;
+  /**
+   * The account type derived from the user's onboarding flow.
+   */
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  account_type?:
+    | 'metamask'
+    | 'imported'
+    | `metamask_${AuthConnection}`
+    | `imported_${AuthConnection}`;
   /**
    * The configured EVM and non-EVM chain ids in CAIP-2 format.
    */
@@ -778,6 +746,10 @@ export enum MetaMetricsUserTrait {
    * Identified when the user signs in
    */
   ProfileId = 'profile_id',
+  /**
+   * Identifies the account type derived from the user's onboarding flow.
+   */
+  AccountType = 'account_type',
   /**
    * Identified when the user adds or removes configured chains (evm or non-evm)
    */
@@ -1052,6 +1024,7 @@ export enum MetaMetricsEventName {
   ImportCustomTokenInteracted = 'Import Custom Token Interacted',
   TokenScreenOpened = 'Token Screen Opened',
   TokenAdded = 'Token Added',
+  LowValueAssetsToggled = 'Low Value Assets Toggled',
   TokenSortPreference = 'Token Sort Preference Updated',
   EmptyNFTTabButtonClicked = 'Empty NFT Tab Button Clicked',
   TokenDetected = 'Token Detected',
@@ -1198,6 +1171,7 @@ export enum MetaMetricsEventName {
   HardwareWalletRecoveryModalViewed = 'Hardware Wallet Recovery Modal Viewed',
   HardwareWalletRecoverySuccessModalViewed = 'Hardware Wallet Recovery Success Modal Viewed',
   HardwareWalletRecoveryCtaClicked = 'Hardware Wallet Recovery CTA Clicked',
+  HardwareWalletRecoveryRepairCtaClicked = 'Hardware Wallet Recovery Repair CTA Clicked',
   ViewportSwitched = 'Viewport Switched',
   // Rewards
   RewardsOptInStarted = 'REWARDS_OPT_IN_STARTED',

@@ -5,7 +5,7 @@ import { NETWORK_CLIENT_ID, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import TokenList from '../../page-objects/pages/token-list';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
 import ConfirmAlertModal from '../../page-objects/pages/dialog/confirm-alert';
 import { WALLET_ADDRESS } from '../confirmations/signatures/signature-helpers';
 import { Driver } from '../../webdriver/driver';
@@ -32,7 +32,7 @@ const networkConfigs: NetworkConfig[] = [
   },
   {
     name: 'MegaETH Testnet',
-    tokenSymbol: 'ETH',
+    tokenSymbol: 'MegaETH',
     fixtureMethod: (builder) =>
       builder.withSelectedNetwork(NETWORK_CLIENT_ID.MEGAETH_TESTNET_V2),
     testTitle: 'MegaETH Network Connection Tests',
@@ -81,15 +81,17 @@ networkConfigs.forEach((config) => {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await login(driver);
+          await login(driver, {
+            expectedBalance: `25 ${config.tokenSymbol}`,
+          });
 
-          const tokenList = new TokenList(driver);
+          const assetListPage = new AssetListPage(driver);
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
 
           // Verify token is displayed
-          await tokenList.checkTokenName(config.tokenSymbol);
+          await assetListPage.checkTokenExistsInList(config.tokenSymbol);
 
           // Open the test dapp and verify balance
           const testDapp = new TestDapp(driver);

@@ -1150,11 +1150,15 @@ describe('PerpsOrderEntryPage', () => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsClosePosition',
         [
-          {
+          expect.objectContaining({
             symbol: 'ETH',
             orderType: 'market',
             currentPrice: 3025.5,
-          },
+            trackingData: expect.objectContaining({
+              totalFee: expect.any(Number),
+              marketPrice: 3025.5,
+            }),
+          }),
         ],
       );
       expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
@@ -1185,8 +1189,7 @@ describe('PerpsOrderEntryPage', () => {
       const slider = within(
         screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
-      fireEvent.keyDown(slider, { key: 'ArrowLeft' });
+      fireEvent.change(slider, { target: { value: '99' } });
 
       await act(async () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
@@ -1807,8 +1810,7 @@ describe('PerpsOrderEntryPage', () => {
       const slider = within(
         screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
-      fireEvent.keyDown(slider, { key: 'ArrowLeft' });
+      fireEvent.change(slider, { target: { value: '99' } });
 
       await act(async () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));

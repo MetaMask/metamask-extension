@@ -2,11 +2,12 @@
  * @file The main webpack configuration file for the browser extension.
  */
 
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { argv, exit } from 'node:process';
 import {
   ProvidePlugin,
+  type Chunk,
   type Configuration,
   type WebpackPluginInstance,
   type MemoryCacheOptions,
@@ -16,7 +17,6 @@ import CopyPlugin from 'copy-webpack-plugin';
 import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
 import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
-import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
 import tailwindcss from 'tailwindcss';
 import { discardFontFace } from '../postcss-plugins/discard-font-face';
 import { loadBuildTypesConfig } from '../lib/build-type';
@@ -24,7 +24,6 @@ import {
   getMinimizers,
   NODE_MODULES_RE,
   UI_COMPONENT_RE,
-  __HMR_READY__,
   SNOW_MODULE_RE,
   TREZOR_MODULE_RE,
   UI_DIR_RE,
@@ -36,8 +35,10 @@ import { getVariables } from './utils/config';
 import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader';
 import { getThreadLoader } from './utils/loaders/threadLoader';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
+import type { BundleSizeCategory } from './utils/plugins/ManifestPlugin/types';
 import { getLatestCommit } from './utils/git';
-import { MODES } from './utils/constants';
+import { MODES, DEV_SERVER_CLIENT_ENTRY_NAME } from './utils/constants';
+import { BUNDLE_SIZE_SUMMARY_FILE } from './utils/plugins/ManifestPlugin/stats';
 
 const buildTypes = loadBuildTypesConfig();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);
@@ -48,9 +49,10 @@ if (args.dryRun) {
 
 const context = join(__dirname, '../../app');
 const nodeModules = join(__dirname, '../../node_modules');
+const root = join(context, '..');
 const isDevelopment = args.mode === MODES.DEVELOPMENT;
-const MANIFEST_VERSION = args.manifest_version;
-const browsersListPath = join(context, '../.browserslistrc');
+const MANIFEST_VERSION = args.manifestVersion;
+const browsersListPath = join(root, '.browserslistrc');
 // read .browserslist now to stop it from searching for the file over and over
 const browsersListQuery = readFileSync(browsersListPath, 'utf8');
 const { variables, safeVariables, version, buildEnvVarDeclarations } =
@@ -59,6 +61,57 @@ const webAccessibleResources =
   args.devtool === 'source-map'
     ? ['scripts/inpage.js.map', 'scripts/contentscript.js.map']
     : [];
+const bundleSizeUiEntrypoints = new Set([
+  'home',
+  'loading',
+  'notification',
+  'popup-init',
+  'popup',
+  'sidepanel',
+]);
+const bundleSizeOtherEntrypoints = new Set([
+  'offscreen',
+  'trezor-usb-permissions',
+  'usb-permissions',
+]);
+const bundleSizeOtherEntrypointPattern = /^offscreen\.\d+$/u;
+const bundleSizeContentScriptEntrypoints = new Set([
+  'scripts/contentscript.js',
+  'scripts/inpage.js',
+  'vendor/trezor/content-script.js',
+]);
+
+// TODO(#41847): Move HTML entrypoints into ownership-specific locations so
+// this classifier no longer needs to know about the current mixed page layout.
+const classifyBundleSizeEntrypoint = (
+  entrypointName: string,
+): BundleSizeCategory | null => {
+  if (
+    // MV3 uses the service-worker.ts entry point for the background script,
+    // while MV2 uses background
+    entrypointName === 'service-worker.ts' ||
+    entrypointName === 'background'
+  ) {
+    return 'background';
+  }
+
+  if (bundleSizeUiEntrypoints.has(entrypointName)) {
+    return 'ui';
+  }
+
+  if (
+    bundleSizeOtherEntrypoints.has(entrypointName) ||
+    bundleSizeOtherEntrypointPattern.test(entrypointName)
+  ) {
+    return 'other';
+  }
+
+  if (bundleSizeContentScriptEntrypoints.has(entrypointName)) {
+    return 'contentScripts';
+  }
+
+  return null;
+};
 
 // #region cache
 const cache = args.cache
@@ -80,9 +133,10 @@ const cache = args.cache
         // `buildDependencies`
         config: [
           __filename,
-          join(context, '../.metamaskprodrc'),
-          join(context, '../.metamaskrc'),
-          join(context, '../builds.yml'),
+          ...[join(root, '.metamaskprodrc'), join(root, '.metamaskrc')].filter(
+            existsSync,
+          ),
+          join(root, 'builds.yml'),
           browsersListPath,
         ],
       },
@@ -124,6 +178,13 @@ const manifestPlugin = new ManifestPlugin({
   // know if the build contents have changed. Can be useful during testing or
   // development.
   setBuildId: args.test,
+  stats: args.stats
+    ? {
+        outFile: BUNDLE_SIZE_SUMMARY_FILE,
+        debug: true,
+        classifyEntrypoint: classifyBundleSizeEntrypoint,
+      }
+    : false,
 });
 
 const plugins: WebpackPluginInstance[] = [
@@ -134,6 +195,25 @@ const plugins: WebpackPluginInstance[] = [
     minify: args.minify,
     test: /\.html$/u, // default is eta/html, we only want html
     data: { isTest: args.test },
+    // In watch mode, inject a `<script>` tag for the bundled
+    // webpack-dev-server client into every UI page (identified by the
+    // `#app-content` mount point — every page that renders the React UI
+    // has it via `partial-body.html`, no other extension page does). Kept
+    // out of the MV3 service worker, the Firefox MV2 background page, and
+    // the offscreen page — reloading those would break the message ports
+    // connecting them to the UI.
+    beforeEmit: (content, _entry, compilation) => {
+      if (!args.watch || !content.includes('id="app-content"')) return content;
+      const entrypoint = compilation.entrypoints.get(
+        DEV_SERVER_CLIENT_ENTRY_NAME,
+      );
+      if (!entrypoint) return content;
+      const tags = entrypoint
+        .getFiles()
+        .map((file) => `<script src="${file}" defer></script>`)
+        .join('');
+      return content.replace('</head>', `${tags}</head>`);
+    },
     preload: [
       {
         attributes: { as: 'font', crossorigin: true },
@@ -219,11 +299,6 @@ if (args.lavamoat) {
   } = require('./utils/plugins/LavamoatPlugin');
   plugins.push(lavamoatPlugin(args), lavamoatUnsafeLayerPlugin);
 }
-// enable React Refresh in 'development' mode when `watch` is enabled
-if (__HMR_READY__ && isDevelopment && args.watch) {
-  const ReactRefreshWebpackPlugin: typeof ReactRefreshPluginType = require('@pmmmwh/react-refresh-webpack-plugin');
-  plugins.push(new ReactRefreshWebpackPlugin());
-}
 if (args.progress) {
   const { ProgressPlugin } = require('webpack');
   plugins.push(new ProgressPlugin());
@@ -244,11 +319,15 @@ if (args.bundleAnalyzer) {
 
 // #endregion plugins
 
-const swcConfig = { args, browsersListQuery, isDevelopment };
+const swcConfig = { browsersListQuery, isDevelopment };
 const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
+const isChunkableInitial = (chunk: Chunk) =>
+  manifestPlugin.canBeChunked(chunk) && chunk.canBeInitial();
+const isChunkableAsync = (chunk: Chunk) =>
+  manifestPlugin.canBeChunked(chunk) && !chunk.canBeInitial();
 
 const threadLoader = getThreadLoader(args);
 const reactCompiler = getReactCompilerLoader({
@@ -266,7 +345,7 @@ const config = {
   plugins,
   context,
   mode: args.mode,
-  stats: args.stats ? 'normal' : 'none',
+  stats: 'none',
   name: `MetaMask – ${args.mode}`,
   // use the `.browserlistrc` file directly to avoid browserslist searching
   target: `browserslist:${browsersListPath}:defaults`,
@@ -381,6 +460,13 @@ const config = {
           loader: require.resolve('./utils/loaders/envValidationLoader'),
           options: { declarations: [...buildEnvVarDeclarations] },
         },
+      },
+      // @protobufjs/inquire intentionally uses `require(moduleName)` to probe
+      // optional modules such as `buffer` and `long`.
+      {
+        test: /[\\/]@protobufjs[\\/]inquire[\\/]index\.js$/u,
+        include: NODE_MODULES_RE,
+        parser: { exprContextCritical: false },
       },
       // thread-loader pool for UI component files (must appear before SWC rules)
       threadLoader && {
@@ -536,15 +622,23 @@ const config = {
       cacheGroups: {
         js: {
           // only our own ts/mts/tsx/js/mjs/jsx files (NOT in node_modules)
-          test: /(?!.*\/node_modules\/).+\.(?:m?[tj]s|[tj]sx?)?$/u,
+          test: /^(?!.*[\\/]node_modules[\\/]).+\.(?:m?[tj]s|[tj]sx?)?$/u,
           name: 'js',
-          chunks: manifestPlugin.canBeChunked,
+          chunks: isChunkableInitial,
         },
         vendor: {
           // js/mjs files in node_modules or subdirectories of node_modules
           test: /[\\/]node_modules[\\/].*?\.m?js$/u,
           name: 'vendor',
-          chunks: manifestPlugin.canBeChunked,
+          chunks: isChunkableInitial,
+        },
+        asyncJs: {
+          // only our own ts/mts/tsx/js/mjs/jsx files (NOT in node_modules)
+          test: /^(?!.*[\\/]node_modules[\\/]).+\.(?:m?[tj]s|[tj]sx?)?$/u,
+          chunks: isChunkableAsync,
+          // Avoid minChunks: 1: it creates extra single-use async chunks
+          // without reducing the initial entrypoint payload.
+          minChunks: 2,
         },
       },
     },

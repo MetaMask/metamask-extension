@@ -25,7 +25,7 @@ import type { PerpsTransaction } from '../types';
 
 const SKELETON_ITEMS = [1, 2, 3];
 
-const RecentActivitySkeleton: React.FC = () => (
+const RecentActivitySkeleton = () => (
   <Box
     flexDirection={BoxFlexDirection.Column}
     className="overflow-hidden rounded-xl"
@@ -36,7 +36,7 @@ const RecentActivitySkeleton: React.FC = () => (
   </Box>
 );
 
-const RecentActivityEmpty: React.FC = () => {
+const RecentActivityEmpty = () => {
   const t = useI18nContext();
   return (
     <Box paddingBottom={4}>
@@ -47,10 +47,13 @@ const RecentActivityEmpty: React.FC = () => {
   );
 };
 
-const RecentActivityList: React.FC<{
+const RecentActivityList = ({
+  transactions,
+  onTransactionClick,
+}: {
   transactions: PerpsTransaction[];
   onTransactionClick: () => void;
-}> = ({ transactions, onTransactionClick }) => (
+}) => (
   <Box
     flexDirection={BoxFlexDirection.Column}
     className="overflow-hidden rounded-xl"
@@ -72,9 +75,9 @@ export type PerpsMarketRecentActivityProps = {
   symbol: string;
 };
 
-export const PerpsMarketRecentActivity: React.FC<
-  PerpsMarketRecentActivityProps
-> = ({ symbol }) => {
+export const PerpsMarketRecentActivity = ({
+  symbol,
+}: PerpsMarketRecentActivityProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
 
@@ -96,12 +99,11 @@ export const PerpsMarketRecentActivity: React.FC<
   const handleSeeAll = () => navigate(PERPS_ACTIVITY_ROUTE);
 
   return (
-    <>
+    <Box flexDirection={BoxFlexDirection.Column} gap={3}>
       {hasTransactions ? (
         <ButtonBase
           onClick={handleSeeAll}
-          className="w-full flex flex-row justify-between items-center pt-4 pb-2 bg-transparent rounded-none hover:bg-hover active:bg-pressed"
-          style={{ paddingLeft: 0, paddingRight: 0 }}
+          className="w-full flex flex-row justify-between items-center px-4 py-2 bg-transparent rounded-none hover:bg-hover active:bg-pressed"
           data-testid="perps-market-detail-view-all-activity"
           aria-label={`${t('perpsRecentActivity')}, ${t('perpsSeeAll')}`}
         >
@@ -115,20 +117,22 @@ export const PerpsMarketRecentActivity: React.FC<
           />
         </ButtonBase>
       ) : (
-        <Box paddingTop={4} paddingBottom={2}>
+        <Box paddingLeft={4} paddingRight={4} paddingTop={2} paddingBottom={2}>
           <Text variant={TextVariant.HeadingSm} fontWeight={FontWeight.Medium}>
             {t('perpsRecentActivity')}
           </Text>
         </Box>
       )}
-      {showSkeleton && <RecentActivitySkeleton />}
-      {!showSkeleton && !hasTransactions && <RecentActivityEmpty />}
-      {!showSkeleton && hasTransactions && (
-        <RecentActivityList
-          transactions={transactions}
-          onTransactionClick={handleSeeAll}
-        />
-      )}
-    </>
+      <Box paddingLeft={4} paddingRight={4}>
+        {showSkeleton && <RecentActivitySkeleton />}
+        {!showSkeleton && !hasTransactions && <RecentActivityEmpty />}
+        {!showSkeleton && hasTransactions && (
+          <RecentActivityList
+            transactions={transactions}
+            onTransactionClick={handleSeeAll}
+          />
+        )}
+      </Box>
+    </Box>
   );
 };

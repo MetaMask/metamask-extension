@@ -22,6 +22,7 @@ import { selectAccountSupportsEnabledNetworks } from '../../../../../selectors/a
 import {
   getAllEnabledNetworksForAllNamespaces,
   getEnabledNetworksByNamespace,
+  selectEnabledNetworksAsCaipChainIds,
 } from '../../../../../selectors/multichain/networks';
 import {
   getAllNetworkConfigurationsByCaipChainId,
@@ -61,9 +62,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
@@ -87,7 +86,7 @@ import {
 } from '../../../../../selectors/multichain';
 import { useNftsCollections } from '../../../../../hooks/useNftsCollections';
 import {
-  SECURITY_ROUTE,
+  ASSETS_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
 } from '../../../../../helpers/constants/routes';
 import { getIsAssetsUnifyStateEnabled } from '../../../../../selectors/assets-unify-state/feature-flags';
@@ -97,12 +96,14 @@ type AssetListControlBarProps = {
   showTokensLinks?: boolean;
   showImportTokenButton?: boolean;
   showSortControl?: boolean;
+  onNetworkSelect?: (networks: string[]) => void;
 };
 
 const AssetListControlBar = ({
   showTokensLinks,
   showImportTokenButton = true,
   showSortControl = true,
+  onNetworkSelect,
 }: AssetListControlBarProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -133,6 +134,7 @@ const AssetListControlBar = ({
   const allEnabledNetworksForAllNamespaces = useSelector(
     getAllEnabledNetworksForAllNamespaces,
   );
+  const selectedCaipChainIds = useSelector(selectEnabledNetworksAsCaipChainIds);
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const [isTokenSortPopoverOpen, setIsTokenSortPopoverOpen] = useState(false);
   const [isImportTokensPopoverOpen, setIsImportTokensPopoverOpen] =
@@ -166,6 +168,13 @@ const AssetListControlBar = ({
     () => !shouldShowRefreshButtons && !useNftDetection,
     [shouldShowRefreshButtons, useNftDetection],
   );
+
+  useEffect(() => {
+    if (!onNetworkSelect) {
+      return;
+    }
+    onNetworkSelect(selectedCaipChainIds);
+  }, [onNetworkSelect, selectedCaipChainIds]);
 
   const isTestNetwork = useMemo(() => {
     return (TEST_CHAINS as string[]).includes(
@@ -293,7 +302,7 @@ const AssetListControlBar = ({
   };
 
   const onEnableAutoDetect = () => {
-    navigate(SECURITY_ROUTE);
+    navigate(`${ASSETS_ROUTE}#autodetect-tokens`);
   };
 
   const handleNetworkManager = useCallback(() => {

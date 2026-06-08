@@ -1,4 +1,4 @@
-import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import { AuthConnection } from '../../../../../shared/constants/onboarding';
 import { Driver } from '../../../webdriver/driver';
 
 class StartOnboardingPage {
@@ -27,6 +27,12 @@ class StartOnboardingPage {
 
   private readonly onboardingImportWithAppleButton =
     '[data-testid="onboarding-import-with-apple-button"]';
+
+  private readonly onboardingCreateWithTelegramButton =
+    '[data-testid="onboarding-create-with-telegram-button"]';
+
+  private readonly onboardingImportWithTelegramButton =
+    '[data-testid="onboarding-import-with-telegram-button"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -77,9 +83,7 @@ class StartOnboardingPage {
     await this.driver.clickElement(this.createWalletButton);
 
     const socialLoginButton =
-      authConnection === AuthConnection.Google
-        ? this.onboardingCreateWithGoogleButton
-        : this.onboardingCreateWithAppleButton;
+      this.getCreateWalletSocialLoginButton(authConnection);
 
     await this.driver.waitForSelector(socialLoginButton);
     await this.driver.clickElement(socialLoginButton);
@@ -91,9 +95,7 @@ class StartOnboardingPage {
     await this.driver.clickElement(this.importWalletButton);
 
     const socialLoginButton =
-      authConnection === AuthConnection.Google
-        ? this.onboardingImportWithGoogleButton
-        : this.onboardingImportWithAppleButton;
+      this.getImportWalletSocialLoginButton(authConnection);
 
     await this.driver.waitForSelector(socialLoginButton);
     await this.driver.clickElement(socialLoginButton);
@@ -110,6 +112,36 @@ class StartOnboardingPage {
       throw e;
     }
     console.log('Social sign up form is loaded');
+  }
+
+  private getCreateWalletSocialLoginButton(
+    authConnection: AuthConnection,
+  ): string {
+    switch (authConnection) {
+      case AuthConnection.Google:
+        return this.onboardingCreateWithGoogleButton;
+      case AuthConnection.Apple:
+        return this.onboardingCreateWithAppleButton;
+      case AuthConnection.Telegram:
+        return this.onboardingCreateWithTelegramButton;
+      default:
+        throw new Error('Unsupported social login connection');
+    }
+  }
+
+  private getImportWalletSocialLoginButton(
+    authConnection: AuthConnection,
+  ): string {
+    switch (authConnection) {
+      case AuthConnection.Google:
+        return this.onboardingImportWithGoogleButton;
+      case AuthConnection.Apple:
+        return this.onboardingImportWithAppleButton;
+      case AuthConnection.Telegram:
+        return this.onboardingImportWithTelegramButton;
+      default:
+        throw new Error('Unsupported social login connection');
+    }
   }
 }
 

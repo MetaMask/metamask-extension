@@ -21,15 +21,16 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 3. **ALWAYS update LavaMoat policies** after dependency changes: `yarn lavamoat:auto`
 4. **ALWAYS colocate tests** with source files (`.test.ts`/`.test.tsx`)
 5. **ALWAYS use yarn.cmd** if you're running in PowerShell
-6. **NEVER use class components** (use functional components with hooks)
-7. **NEVER modify git config** or run destructive git operations
-8. **NEVER commit** unless explicitly requested by user
-9. **NEVER stage changes** unless explicitly requested by user
-10. **WHEN asked to commit, use Conventional Commits** format for commit messages
-11. **WHEN asked to open a PR, use a Conventional Commits title** unless user specifies otherwise
-12. **WHEN asked to open a PR, open it as DRAFT** unless user specifies otherwise
-13. **WHEN using `.github/pull-request-template.md`, comment out non-applicable sections including the section title**
-14. **BEFORE modifying any `.github/workflows/` file**, read `.github/AGENTS.md` for CI-specific rules (consolidation patterns, required job wiring, merge queue considerations)
+6. **ALWAYS use `oxfmt` for code formatting**; Prettier is only for JSON formatting and changelog validation
+7. **NEVER use class components** (use functional components with hooks)
+8. **NEVER modify git config** or run destructive git operations
+9. **NEVER commit** unless explicitly requested by user
+10. **NEVER stage changes** unless explicitly requested by user
+11. **WHEN asked to commit, use Conventional Commits** format for commit messages
+12. **WHEN asked to open a PR, use a Conventional Commits title** unless user specifies otherwise
+13. **WHEN asked to open a PR, open it as DRAFT** unless user specifies otherwise
+14. **WHEN using `.github/pull-request-template.md`, comment out non-applicable sections including the section title**
+15. **BEFORE modifying any `.github/workflows/` file**, read `.github/AGENTS.md` for CI-specific rules (consolidation patterns, required job wiring, merge queue considerations)
 
 ### Comprehensive Guidelines Location
 
@@ -99,7 +100,7 @@ In `.metamaskrc`, you can also configure:
 | `command not found: yarn`        | Run `corepack enable`                                                                                   |
 | Build fails with policy errors   | Run `yarn lavamoat:auto`                                                                                |
 | Invalid Infura key error         | Check `INFURA_PROJECT_ID` in `.metamaskrc`                                                              |
-| Ganache won't start              | Ensure port 8545 is available                                                                           |
+| Anvil won't start                | Ensure port 8545 is available and `yarn foundryup` has installed the binary                             |
 | Git hooks not working in VS Code | Follow [Husky troubleshooting](https://typicode.github.io/husky/troubleshooting.html#command-not-found) |
 
 ---
@@ -176,23 +177,32 @@ yarn test:e2e:benchmark    # Performance benchmarks
 
 ```bash
 # Run all linters
-yarn lint                  # Prettier + ESLint + TypeScript + Styles + Images
+yarn lint                  # JSON formatting + oxfmt + ESLint + TypeScript + Styles + Images
 
 # Individual linters
+yarn lint:json             # Prettier JSON formatting check
+yarn lint:format           # oxfmt code formatting check
 yarn lint:eslint           # ESLint only
 yarn lint:tsc              # TypeScript type checking
-yarn lint:prettier         # Prettier formatting check
 yarn lint:styles           # Stylelint for SCSS
 
 # Auto-fix
 yarn lint:fix              # Fix all auto-fixable issues
+yarn lint:json:fix         # Fix JSON formatting with Prettier
+yarn lint:format:fix       # Fix code formatting with oxfmt
 yarn lint:eslint:fix       # Fix ESLint issues
-yarn lint:prettier:fix     # Fix formatting
 
 # Lint only changed files (faster)
 yarn lint:changed
 yarn lint:changed:fix
 ```
+
+**Formatter Notes:**
+
+- Use `yarn lint:changed:fix` for normal agent work; it applies the repo's formatter choices to changed files.
+- Use `yarn lint:format:fix` or `oxfmt -c oxfmt.config.mts` for JavaScript, TypeScript, JSX, TSX, and other code formatting.
+- Use `yarn lint:json:fix` for JSON files such as `package.json`; this is the main remaining Prettier formatting path.
+- Do not run Prettier directly on code files.
 
 ### Development Tools
 
@@ -201,7 +211,7 @@ yarn lint:changed:fix
 yarn dapp                  # Start test dapp on :8080
 yarn dapp-multichain       # Multichain test dapp
 yarn dapp-solana           # Solana test dapp
-yarn dapp-chain            # Dapp with local Ganache
+yarn dapp-chain            # Dapp with local Anvil
 
 # DevTools
 yarn devtools:react        # React DevTools
@@ -209,8 +219,7 @@ yarn devtools:redux        # Redux DevTools
 yarn start:dev             # Start with both DevTools
 
 # Local Blockchain
-yarn ganache:start         # Start Ganache on port 8545
-yarn anvil                 # Start Anvil (Foundry)
+yarn anvil                 # Start Anvil (Foundry) on port 8545
 
 # Storybook
 yarn storybook             # Component documentation/development
@@ -1505,7 +1514,7 @@ Before marking a component complete:
 | Problem                 | Solution                                          |
 | ----------------------- | ------------------------------------------------- |
 | E2E tests fail to start | Build test build first: `yarn build:test`         |
-| Tests hang indefinitely | Check if port 8545 (Ganache) is available         |
+| Tests hang indefinitely | Check if port 8545 (Anvil) is available           |
 | Snapshot tests fail     | Update snapshots: `yarn test:unit -u`             |
 | Browser not launching   | Check if browser is installed and in PATH         |
 | Random E2E failures     | Use `--retries` flag or check for race conditions |

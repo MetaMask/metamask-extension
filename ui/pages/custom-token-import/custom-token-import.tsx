@@ -18,9 +18,7 @@ import { ERC20, ERC721, ERC1155 } from '@metamask/controller-utils';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import { type CaipChainId, type Hex } from '@metamask/utils';
 import { isValidHexAddress } from '../../../shared/lib/hexstring-utils';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { addHexPrefix } from '../../../app/scripts/lib/util';
+import { addHexPrefix } from '../../../shared/lib/add-hex-prefix';
 
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { Header, Page } from '../../components/multichain/pages/page';
@@ -78,6 +76,45 @@ const METRICS_PROPERTIES = {
   tokenSymbol: 'token_symbol',
   viewState: 'view_state',
 } as const;
+
+type TokenMetadataSource = {
+  symbol?: string | null;
+  name?: string | null;
+  decimals?: string | number | null;
+};
+
+function trimImportedTokenField(value: unknown): string {
+  if (value === undefined || value === null) {
+    return '';
+  }
+  return String(value).trim();
+}
+
+/**
+ * Merges on-chain RPC metadata with token-list lookup for the import form.
+ *
+ * Prefer RPC first, then the token list. RPC-first avoids empty strings or a
+ * placeholder `decimals` of `'0'` from the list shadowing real contract
+ * values. When RPC omits a field (e.g. `name`), the list value is still used.
+ *
+ * @param rpcTokenInfo - Result from {@link getTokenStandardAndDetailsByChain}.
+ * @param info - Result from {@link tokenInfoGetter} for the current network.
+ */
+export function mergeCustomTokenMetadataForImport(
+  rpcTokenInfo: TokenMetadataSource | undefined,
+  info: TokenMetadataSource | undefined,
+): { symbol: string; name: string; decimals: string } {
+  const symbol =
+    trimImportedTokenField(rpcTokenInfo?.symbol) ||
+    trimImportedTokenField(info?.symbol);
+  const name =
+    trimImportedTokenField(rpcTokenInfo?.name) ||
+    trimImportedTokenField(info?.name);
+  const decimals =
+    trimImportedTokenField(rpcTokenInfo?.decimals) ||
+    trimImportedTokenField(info?.decimals);
+  return { symbol, name, decimals };
+}
 
 /**
  * Full-screen "Add a custom token" page.
@@ -264,15 +301,16 @@ export const CustomTokenImportPage = () => {
       // branches, matching the order of the legacy `import-tokens-modal`
       // switch.
       let standard: string | undefined;
+      let rpcTokenInfo;
       if (addressIsValid) {
         try {
-          const result = await getTokenStandardAndDetailsByChain(
+          rpcTokenInfo = await getTokenStandardAndDetailsByChain(
             standardAddress,
             selectedAccount?.address,
             undefined,
             selectedNetwork,
           );
-          standard = result?.standard;
+          standard = rpcTokenInfo?.standard;
         } catch {
           // ignore probe failures
         }
@@ -325,16 +363,16 @@ export const CustomTokenImportPage = () => {
         if (!isLatestLookup()) {
           return;
         }
-        const rawDecimals = info?.decimals;
-        const nextDecimals =
-          rawDecimals === undefined || rawDecimals === null
-            ? ''
-            : String(rawDecimals);
-        setSymbol(info?.symbol ?? '');
-        setName(info?.name ?? '');
-        setDecimals(nextDecimals);
+        const {
+          symbol: mergedSymbol,
+          name: mergedName,
+          decimals: mergedDecimals,
+        } = mergeCustomTokenMetadataForImport(rpcTokenInfo, info);
+        setSymbol(mergedSymbol);
+        setName(mergedName);
+        setDecimals(mergedDecimals);
         setShowSymbolAndDecimals(true);
-        if (!info?.symbol || nextDecimals === '') {
+        if (!mergedSymbol || mergedDecimals === '') {
           trackViewed(CUSTOM_TOKEN_IMPORT_LOOKUP_FAILED_VIEW_STATE);
         }
       } catch {

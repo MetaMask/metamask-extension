@@ -15,7 +15,10 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { AssetType } from '../../../shared/constants/transaction';
-import { CustomTokenImportPage } from './custom-token-import';
+import {
+  CustomTokenImportPage,
+  mergeCustomTokenMetadataForImport,
+} from './custom-token-import';
 
 const METRICS_PROPERTIES = {
   addedToken: 'added_token',
@@ -63,15 +66,25 @@ jest.mock('../../store/actions', () => {
 
 jest.mock('../../helpers/utils/token-util', () => {
   const actual = jest.requireActual('../../helpers/utils/token-util');
+  const mockTokenListLookup = jest.fn(async () => ({
+    symbol: 'APE',
+    decimals: 18,
+    name: 'ApeCoin',
+  }));
   return {
     ...actual,
-    tokenInfoGetter: () => async () => ({
-      symbol: 'APE',
-      decimals: 18,
-      name: 'ApeCoin',
-    }),
+    tokenInfoGetter: () => mockTokenListLookup,
+    mockTokenListLookup,
   };
 });
+
+type TokenUtilModuleWithMock =
+  typeof import('../../helpers/utils/token-util') & {
+    mockTokenListLookup: jest.Mock;
+  };
+
+const getMockedTokenUtil = () =>
+  jest.requireMock('../../helpers/utils/token-util') as TokenUtilModuleWithMock;
 
 const getMockedActions = () =>
   jest.requireMock('../../store/actions') as {
@@ -86,12 +99,74 @@ const ASSETS_UNIFY_STATE_FLAG_ON = {
   },
 };
 
+describe('mergeCustomTokenMetadataForImport', () => {
+  it('prefers RPC when the token list returns empty strings and placeholder decimals', () => {
+    expect(
+      mergeCustomTokenMetadataForImport(
+        { symbol: 'OSO', decimals: '18', name: '' },
+        { symbol: '', decimals: '0', name: '' },
+      ),
+    ).toStrictEqual({
+      symbol: 'OSO',
+      name: '',
+      decimals: '18',
+    });
+  });
+
+  it('falls back to the token list when RPC omits a field', () => {
+    expect(
+      mergeCustomTokenMetadataForImport(
+        { symbol: 'OSO', decimals: '18' },
+        { symbol: 'LIST', decimals: 6, name: 'Listed Name' },
+      ),
+    ).toStrictEqual({
+      symbol: 'OSO',
+      name: 'Listed Name',
+      decimals: '18',
+    });
+  });
+
+  it('uses the token list when RPC has no metadata', () => {
+    expect(
+      mergeCustomTokenMetadataForImport(undefined, {
+        symbol: 'DAI',
+        decimals: '18',
+        name: 'Dai Stablecoin',
+      }),
+    ).toStrictEqual({
+      symbol: 'DAI',
+      name: 'Dai Stablecoin',
+      decimals: '18',
+    });
+  });
+
+  it('trims whitespace from both sources', () => {
+    expect(
+      mergeCustomTokenMetadataForImport(
+        { symbol: '  OSO  ', decimals: '  18  ' },
+        { symbol: '  ', decimals: '0' },
+      ),
+    ).toStrictEqual({
+      symbol: 'OSO',
+      name: '',
+      decimals: '18',
+    });
+  });
+});
+
 describe('CustomTokenImportPage', () => {
   beforeEach(() => {
     mockNavigate.mockClear();
     const actions = getMockedActions();
     actions.addImportedTokens.mockClear();
     actions.importCustomAssetsBatch.mockClear();
+    const tokenUtil = getMockedTokenUtil();
+    tokenUtil.mockTokenListLookup.mockReset();
+    tokenUtil.mockTokenListLookup.mockResolvedValue({
+      symbol: 'APE',
+      decimals: 18,
+      name: 'ApeCoin',
+    });
   });
 
   const buildState = (metamaskOverrides: Record<string, unknown> = {}) => ({
@@ -211,6 +286,29 @@ describe('CustomTokenImportPage', () => {
     expect(
       screen.getByTestId('custom-token-import-submit-button'),
     ).toBeDisabled();
+  });
+
+  it('fills symbol and decimals from RPC when the token list returns only empty placeholders', async () => {
+    getMockedTokenUtil().mockTokenListLookup.mockResolvedValue({
+      symbol: '',
+      decimals: '0',
+      name: '',
+    });
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('custom-token-import-address-input'), {
+      target: { value: '0x1111111111111111111111111111111111111111' },
+    });
+
+    const symbolInput = await screen.findByTestId(
+      'custom-token-import-symbol-input',
+    );
+    await waitFor(() => {
+      expect(symbolInput).toHaveValue('APE');
+    });
+    expect(screen.getByTestId('custom-token-import-decimal-input')).toHaveValue(
+      18,
+    );
   });
 
   it('opens the custom import network selector when the network picker is clicked', () => {
@@ -447,14 +545,5 @@ describe('CustomTokenImportPage', () => {
     expect(
       screen.getByTestId('custom-token-import-submit-button'),
     ).toBeDisabled();
-  });
-
-  it('does not call importCustomAssetsBatch when the assets-unify-state remote feature flag is off', async () => {
-    const actions = getMockedActions();
-
-    await submitCustomToken();
-
-    await waitFor(() => expect(actions.addImportedTokens).toHaveBeenCalled());
-    expect(actions.importCustomAssetsBatch).not.toHaveBeenCalled();
   });
 });

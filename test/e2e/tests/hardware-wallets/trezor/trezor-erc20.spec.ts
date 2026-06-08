@@ -10,6 +10,7 @@ import WatchAssetConfirmation from '../../../page-objects/pages/confirmations/wa
 import HomePage from '../../../page-objects/pages/home/homepage';
 import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/token-transfer-confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import AssetListPage from '../../../page-objects/pages/home/asset-list';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 
@@ -59,7 +60,8 @@ describe('Trezor Hardware', function (this: Suite) {
         );
         const homePage = new HomePage(driver);
         await homePage.goToTokensTab();
-        await homePage.checkExpectedTokenBalanceIsDisplayed('10', symbol);
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.checkExpectedTokenBalanceIsDisplayed('10', symbol);
       },
     );
   });
@@ -149,7 +151,6 @@ describe('Trezor Hardware', function (this: Suite) {
         ],
       },
       async ({ driver, localNodes, contractRegistry }) => {
-        const symbol = 'TST';
         (await localNodes?.[0]?.setAccountBalance(
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x100000000000000000000',
@@ -178,7 +179,7 @@ describe('Trezor Hardware', function (this: Suite) {
         await homePage.goToActivityList();
         const activityListPage = new ActivityListPage(driver);
         await activityListPage.checkTransactionActivityByText(
-          `Approve ${symbol} spending cap`,
+          'Approved spending cap',
         );
         await activityListPage.checkWaitForTransactionStatus('confirmed');
       },
@@ -206,7 +207,6 @@ describe('Trezor Hardware', function (this: Suite) {
         ],
       },
       async ({ driver, localNodes, contractRegistry }) => {
-        const symbol = 'TST';
         (await localNodes?.[0]?.setAccountBalance(
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x100000000000000000000',
@@ -234,7 +234,7 @@ describe('Trezor Hardware', function (this: Suite) {
         );
         await homePage.goToActivityList();
         await activityListPage.checkTransactionActivityByText(
-          `Increase ${symbol} spending cap`,
+          'Increased spending cap',
         );
         await activityListPage.checkWaitForTransactionStatus('confirmed');
       },

@@ -1,9 +1,10 @@
-import { ENVIRONMENT } from '../../development/build/constants';
+import { ENVIRONMENT } from '../constants/build';
 import {
   getIsPerpsIncludedInBuild,
   getIsPasskeyFeatureEnabled,
   getIsAssetsUnifiedStateIncludedInBuild,
   getIsNewHardwareWalletOnboardingEnabled,
+  getIsSeedlessOnboardingFeatureEnabled,
   isProduction,
   isGatorPermissionsRevocationFeatureEnabled,
 } from './environment';
@@ -32,6 +33,33 @@ describe('isProduction', () => {
   it('should return false when ENVIRONMENT is "testing"', () => {
     process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.TESTING;
     expect(isProduction()).toBe(false);
+  });
+});
+
+describe('getIsSeedlessOnboardingFeatureEnabled', () => {
+  let originalValue: string | undefined;
+
+  beforeAll(() => {
+    originalValue = process.env.SEEDLESS_ONBOARDING_ENABLED;
+  });
+
+  afterAll(() => {
+    process.env.SEEDLESS_ONBOARDING_ENABLED = originalValue;
+  });
+
+  it('returns true when SEEDLESS_ONBOARDING_ENABLED is "true"', () => {
+    process.env.SEEDLESS_ONBOARDING_ENABLED = 'true';
+    expect(getIsSeedlessOnboardingFeatureEnabled()).toBe(true);
+  });
+
+  it('returns false when SEEDLESS_ONBOARDING_ENABLED is "false"', () => {
+    process.env.SEEDLESS_ONBOARDING_ENABLED = 'false';
+    expect(getIsSeedlessOnboardingFeatureEnabled()).toBe(false);
+  });
+
+  it('returns false when SEEDLESS_ONBOARDING_ENABLED is undefined', () => {
+    delete process.env.SEEDLESS_ONBOARDING_ENABLED;
+    expect(getIsSeedlessOnboardingFeatureEnabled()).toBe(false);
   });
 });
 

@@ -95,7 +95,7 @@ export const MetametricsToggleItem = () => {
       <SettingsToggleItem
         title={t(PRIVACY_ITEMS.metametrics)}
         description={t('participateInMetaMetricsDescription')}
-        value={participateInMetaMetrics}
+        value={participateInMetaMetrics === true}
         onToggle={handleToggle}
         dataTestId="participate-in-meta-metrics-input"
         containerDataTestId="participate-in-meta-metrics-toggle"

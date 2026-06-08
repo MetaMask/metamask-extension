@@ -1,6 +1,7 @@
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { Box, BoxJustifyContent } from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { getUseExternalServices } from '../../../selectors';
@@ -15,14 +16,9 @@ import {
   MetaMetricsEventName,
   MetaMetricsSwapsEventSource,
 } from '../../../../shared/constants/metametrics';
-import {
-  Display,
-  IconColor,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
+import { IconColor } from '../../../helpers/constants/design-system';
 import IconButton from '../../../components/ui/icon-button/icon-button';
 import {
-  Box,
   Icon,
   IconName,
   IconSize,
@@ -129,11 +125,7 @@ const TokenButtons = ({
   }, [token, openBridgeExperience]);
 
   return (
-    <Box
-      display={Display.Flex}
-      gap={3}
-      justifyContent={JustifyContent.spaceEvenly}
-    >
+    <Box className="flex" gap={3} justifyContent={BoxJustifyContent.Evenly}>
       <IconButton
         className="token-overview__button"
         Icon={

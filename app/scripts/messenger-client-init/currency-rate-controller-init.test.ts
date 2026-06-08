@@ -1,13 +1,13 @@
 import {
   CodefiTokenPricesServiceV2,
   CurrencyRateController,
+  CurrencyRateMessenger,
 } from '@metamask/assets-controllers';
 import { getRootMessenger } from '../lib/messenger';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getCurrencyRateControllerMessenger,
-  CurrencyRateControllerMessenger,
   getCurrencyRateControllerInitMessenger,
   CurrencyRateControllerInitMessenger,
 } from './messengers';
@@ -31,7 +31,7 @@ jest.mock('@metamask/assets-controllers', () => ({
 
 function getInitRequestMock(): jest.Mocked<
   MessengerClientInitRequest<
-    CurrencyRateControllerMessenger,
+    CurrencyRateMessenger,
     CurrencyRateControllerInitMessenger
   >
 > {
