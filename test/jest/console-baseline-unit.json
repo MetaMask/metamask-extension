@@ -757,6 +757,9 @@
     "ui/pages/confirmations/components/confirm/info/shared/edit-gas-fees-row/edit-gas-fees-row.test.tsx": {
       "MetaMask: Background connection not initialized": 132
     },
+    "ui/pages/confirmations/components/confirm/info/shared/edit-gas-icon/edit-gas-icon-button.test.tsx": {
+      "MetaMask: Background connection not initialized": 1
+    },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fee-token-list-item/gas-fee-token-list-item.test.tsx": {
       "MetaMask: Background connection not initialized": 48
     },

@@ -12,6 +12,7 @@ import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useG
 import { updateAndApproveTx } from '../../../../store/actions';
 import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
 import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
+import { useGasSponsorshipPreference } from '../gas/useGasSponsorshipPreference';
 import {
   isHardwareWalletError,
   isUserRejectedHardwareWalletError,
@@ -31,6 +32,9 @@ export function useTransactionConfirm() {
   const { isSupported: isGaslessSupportedSTX } =
     useGaslessSupportedSmartTransactions();
   const { isSupported: isGaslessSupported } = useIsGaslessSupported();
+  const { isOptedOut: isSponsorshipOptedOut } = useGasSponsorshipPreference(
+    transactionMeta?.chainId,
+  );
   const { onDappSwapCompleted, updateSwapWithQuoteDetailsIfRequired } =
     useDappSwapActions();
 
@@ -54,35 +58,13 @@ export function useTransactionConfirm() {
     newTransactionMeta.txParams.gas = selectedGasFeeToken.gas;
     newTransactionMeta.txParams.maxFeePerGas = selectedGasFeeToken.maxFeePerGas;
 
-    // If the gasless flow is not supported (e.g. stx is disabled by the user,
-    // or 7702 is not supported in the chain), we override the
-    // `isGasFeeSponsored` flag to `false` so the transaction meta object in
-    // state has the correct value for the transaction details on the activity
-    // list to not show as sponsored. One limitation on the activity list will
-    // be that pre-populated transactions on fresh installs will not show as
-    // sponsored even if they were because this is not easily observable onchain
-    // for all cases.
-    newTransactionMeta.isGasFeeSponsored =
-      isGaslessSupported && transactionMeta.isGasFeeSponsored;
-
     newTransactionMeta.txParams.maxPriorityFeePerGas =
       selectedGasFeeToken.maxPriorityFeePerGas;
-  }, [
-    isGaslessSupported,
-    newTransactionMeta,
-    selectedGasFeeToken,
-    transactionMeta?.isGasFeeSponsored,
-  ]);
+  }, [newTransactionMeta, selectedGasFeeToken]);
 
   const handleGasless7702 = useCallback(() => {
     newTransactionMeta.isExternalSign = true;
-    newTransactionMeta.isGasFeeSponsored =
-      isGaslessSupported && transactionMeta.isGasFeeSponsored;
-  }, [
-    isGaslessSupported,
-    newTransactionMeta,
-    transactionMeta?.isGasFeeSponsored,
-  ]);
+  }, [newTransactionMeta]);
 
   const {
     handleShieldSubscriptionApprovalTransactionAfterConfirm,
@@ -93,6 +75,19 @@ export function useTransactionConfirm() {
     newTransactionMeta.customNonceValue = customNonceValue;
 
     updateSwapWithQuoteDetailsIfRequired(newTransactionMeta);
+
+    // If the gasless flow is not supported (e.g. stx is disabled by the user,
+    // or 7702 is not supported in the chain), or the user has opted out of
+    // gas sponsorship, we override the `isGasFeeSponsored` flag to `false` so
+    // the transaction meta object in state has the correct value for the
+    // transaction details on the activity list to not show as sponsored. One
+    // limitation on the activity list will be that pre-populated transactions
+    // on fresh installs will not show as sponsored even if they were because
+    // this is not easily observable onchain for all cases.
+    newTransactionMeta.isGasFeeSponsored =
+      isGaslessSupported &&
+      transactionMeta.isGasFeeSponsored &&
+      !isSponsorshipOptedOut;
 
     if (isGaslessSupportedSTX) {
       handleSmartTransaction();
@@ -126,7 +121,10 @@ export function useTransactionConfirm() {
   }, [
     newTransactionMeta,
     customNonceValue,
+    isGaslessSupported,
     isGaslessSupportedSTX,
+    isSponsorshipOptedOut,
+    transactionMeta?.isGasFeeSponsored,
     dispatch,
     showErrorModal,
     handleSmartTransaction,

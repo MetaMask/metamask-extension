@@ -17,17 +17,21 @@ export const EditGasIconButton = (): JSX.Element => {
   const { updateTransactionEventFragment } = useTransactionEventFragment();
   const { openGasFeeModal } = useGasFeeModalContext();
 
-  const handleOpenGasFeeModal = useCallback(() => {
-    updateTransactionEventFragment(
-      {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        gas_edit_attempted: 'basic',
-      },
-      transactionMeta.id,
-    );
-    openGasFeeModal();
-  }, [updateTransactionEventFragment, transactionMeta.id, openGasFeeModal]);
+  const handleOpenGasFeeModal = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      updateTransactionEventFragment(
+        {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          gas_edit_attempted: 'basic',
+        },
+        transactionMeta.id,
+      );
+      openGasFeeModal();
+    },
+    [updateTransactionEventFragment, transactionMeta.id, openGasFeeModal],
+  );
 
   return (
     <Button
