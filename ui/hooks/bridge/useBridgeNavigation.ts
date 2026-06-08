@@ -25,8 +25,8 @@ import {
   DEFAULT_ROUTE,
 } from '../../../shared/lib/deep-links/routes/route';
 import {
-  AWAITING_SIGNATURES_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
+  HARDWARE_WALLET_SIGNATURES_ROUTE,
   PREPARE_SWAP_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
@@ -222,7 +222,7 @@ export const useBridgeNavigation = () => {
    * Navigates to the hw transaction signing page.
    */
   const navigateToHwSigningPage = useCallback(() => {
-    navigate(`${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`, {
+    navigate(`${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`, {
       state,
     });
   }, [state]);

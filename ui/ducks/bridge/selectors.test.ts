@@ -2373,7 +2373,7 @@ describe('Bridge selectors', () => {
       },
     );
 
-    it('should treat gasless quote as non-gasless for hardware wallets', () => {
+    it('should treat gas-sponsored quotes as non-gasless for hardware wallets', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
           toToken: toBridgeToken(getNativeAssetForChainId('0x1')),
@@ -2383,6 +2383,15 @@ describe('Bridge selectors', () => {
         },
         bridgeStateOverrides: {
           quotesLastFetched: Date.now(),
+          quotes: (
+            mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[]
+          ).map((quote) => ({
+            ...quote,
+            quote: {
+              ...quote.quote,
+              gasSponsored: true,
+            },
+          })),
           quoteRequest: { srcTokenAmount: '10000000000000000' },
         },
         metamaskStateOverrides: {
@@ -2393,7 +2402,7 @@ describe('Bridge selectors', () => {
       });
       const result = getValidationErrors(state as never);
 
-      expect(result.isInsufficientGasBalance).toStrictEqual(true);
+      expect(result.isInsufficientGasForQuote).toStrictEqual(true);
     });
 
     it('should return isInsufficientGasBalance=true for gasIncluded7702 on Monad when native balance after trade < 10 MON but user is using a Hardware Wallet', () => {
