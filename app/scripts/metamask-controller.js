@@ -402,7 +402,6 @@ import {
   SubscriptionControllerInit,
   SubscriptionServiceInit,
 } from './messenger-client-init/subscription';
-import { ConnectivityControllerInit } from './messenger-client-init/connectivity';
 import { AccountTrackerControllerInit } from './messenger-client-init/account-tracker-controller-init';
 import { OnboardingControllerInit } from './messenger-client-init/onboarding-controller-init';
 import { RemoteFeatureFlagControllerInit } from './messenger-client-init/remote-feature-flag-controller-init';
@@ -417,7 +416,6 @@ import { PermissionLogControllerInit } from './messenger-client-init/permission-
 import { NetworkControllerInit } from './messenger-client-init/network-controller-init';
 import { AnnouncementControllerInit } from './messenger-client-init/announcement-controller-init';
 import { AccountOrderControllerInit } from './messenger-client-init/account-order-controller-init';
-import { AccountsControllerInit } from './messenger-client-init/accounts-controller-init';
 import { PhishingControllerInit } from './messenger-client-init/phishing-controller-init';
 import { AlertControllerInit } from './messenger-client-init/alert-controller-init';
 import { MetaMetricsDataDeletionControllerInit } from './messenger-client-init/metametrics-data-deletion-controller-init';
@@ -531,11 +529,15 @@ export default class MetamaskController extends EventEmitter {
 
     this.initializeChainlist();
 
-    this.wallet = initializeWallet({
+    const { wallet, connectivityAdapter } = initializeWallet({
       messenger: controllerMessenger,
       state: initState,
       encryptor: this.opts.encryptor,
     });
+    this.wallet = wallet;
+    // The ConnectivityController is now owned by the wallet; keep a reference to
+    // its adapter so `background.js` can push connectivity status into it.
+    this.connectivityAdapter = connectivityAdapter;
 
     this.controllerMessenger = controllerMessenger;
     this.currentMigrationVersion = opts.currentMigrationVersion;
@@ -610,7 +612,6 @@ export default class MetamaskController extends EventEmitter {
       LoggingController: LoggingControllerInit,
       AppMetadataController: AppMetadataControllerInit,
       PreferencesController: PreferencesControllerInit,
-      AccountsController: AccountsControllerInit,
       AddressBookController: AddressBookControllerInit,
       AlertController: AlertControllerInit,
       DecryptMessageManager: DecryptMessageManagerInit,
@@ -696,7 +697,6 @@ export default class MetamaskController extends EventEmitter {
       SeedlessOnboardingController: SeedlessOnboardingControllerInit,
       SubscriptionController: SubscriptionControllerInit,
       SubscriptionService: SubscriptionServiceInit,
-      ConnectivityController: ConnectivityControllerInit,
       NetworkOrderController: NetworkOrderControllerInit,
       ShieldController: ShieldControllerInit,
       ClaimsController: ClaimsControllerInit,
@@ -739,7 +739,7 @@ export default class MetamaskController extends EventEmitter {
     this.appMetadataController = messengerClientsByName.AppMetadataController;
     this.preferencesController = messengerClientsByName.PreferencesController;
     this.keyringController = this.wallet.getInstance('KeyringController');
-    this.accountsController = messengerClientsByName.AccountsController;
+    this.accountsController = this.wallet.getInstance('AccountsController');
     this.addressBookController = messengerClientsByName.AddressBookController;
     this.alertController = messengerClientsByName.AlertController;
     this.decryptMessageController =
