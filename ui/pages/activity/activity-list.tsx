@@ -81,7 +81,6 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
         activity_type: item.type,
       },
     });
-
     setSelectedItem(item);
   };
 
@@ -96,7 +95,6 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
         },
       });
     }
-
     setSelectedItem(undefined);
   };
 

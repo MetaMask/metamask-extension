@@ -5,7 +5,7 @@ import type {
 } from '../../../../shared/lib/activity/types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
-import { NetworkName } from '../components/network-name';
+import { NetworkName } from '../../../components/app/transaction/network-name';
 import { Row, Section } from '../components/shared';
 import { TokenAmountRow } from '../components/token-amount-row';
 import { TransactionStatusLabel } from '../../../components/app/transaction/transaction-status-label';

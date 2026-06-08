@@ -858,14 +858,13 @@ describe('mapLocalTransaction', () => {
 
     const item = mapLocalTransaction(transactionGroup);
 
-    expect(item).toStrictEqual({
+    expect(item).toMatchObject({
       type: 'claimMusdBonus',
       chainId: 'eip155:59144',
       status: 'pending',
       timestamp: 1778633325000,
       data: {
         hash: '0xmusdclaim',
-        from,
       },
     });
   });

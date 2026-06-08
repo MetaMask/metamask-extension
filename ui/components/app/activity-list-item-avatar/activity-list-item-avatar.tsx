@@ -2,6 +2,7 @@ import React from 'react';
 import classnames from 'clsx';
 import {
   AvatarBase,
+  AvatarBaseSize,
   AvatarToken,
   AvatarTokenSize,
 } from '@metamask/design-system-react';
@@ -10,13 +11,6 @@ import { getAssetImageUrl } from '../../../../shared/lib/asset-utils';
 export type ActivityListItemAvatarTokens = readonly (string | undefined)[];
 
 const fallbackText = '?';
-const avatarSizeByTokenSize = {
-  [AvatarTokenSize.Xs]: 16,
-  [AvatarTokenSize.Sm]: 24,
-  [AvatarTokenSize.Md]: 32,
-  [AvatarTokenSize.Lg]: 40,
-  [AvatarTokenSize.Xl]: 48,
-};
 
 const sanitizeTokens = (tokens: ActivityListItemAvatarTokens): string[] =>
   tokens.filter((token): token is string => Boolean(token));
@@ -47,17 +41,12 @@ const getTokenAvatarData = (assetId: string) => {
 const ActivityTokenAvatar = ({
   assetId,
   className,
-  size = AvatarTokenSize.Md,
-}: Readonly<{
-  assetId: string;
-  className?: string;
-  size?: AvatarTokenSize;
-}>) => {
+}: Readonly<{ assetId: string; className?: string }>) => {
   const { name, src } = getTokenAvatarData(assetId);
 
   return (
     <AvatarToken
-      size={size}
+      size={AvatarTokenSize.Md}
       name={name}
       src={src}
       className={classnames(className)}
@@ -69,29 +58,23 @@ const ActivityTokenAvatar = ({
 
 const ActivityDualTokenAvatar = ({
   from,
-  size = AvatarTokenSize.Md,
   to,
-}: Readonly<{ from: string; size?: AvatarTokenSize; to: string }>) => {
-  const avatarSize = avatarSizeByTokenSize[size];
-
+}: Readonly<{ from: string; to: string }>) => {
   return (
     <div
       className="activity-list-item-avatar-dual"
-      style={{ width: avatarSize, height: avatarSize }}
       data-testid="activity-list-item-avatar-dual"
     >
       <div className="activity-list-item-avatar-dual__half activity-list-item-avatar-dual__half--left">
         <ActivityTokenAvatar
           assetId={from}
           className="activity-list-item-avatar-dual__token"
-          size={size}
         />
       </div>
       <div className="activity-list-item-avatar-dual__half activity-list-item-avatar-dual__half--right">
         <ActivityTokenAvatar
           assetId={to}
           className="activity-list-item-avatar-dual__token"
-          size={size}
         />
       </div>
     </div>
@@ -99,18 +82,14 @@ const ActivityDualTokenAvatar = ({
 };
 
 export const ActivityListItemAvatar = (
-  props: Readonly<{
-    tokens: ActivityListItemAvatarTokens;
-    size?: AvatarTokenSize;
-  }>,
+  props: Readonly<{ tokens: ActivityListItemAvatarTokens }>,
 ) => {
   const tokens = sanitizeTokens(props.tokens);
-  const size = props.size ?? AvatarTokenSize.Md;
 
   if (tokens.length === 0) {
     return (
       <AvatarBase
-        size={size}
+        size={AvatarBaseSize.Md}
         fallbackText={fallbackText}
         data-testid="activity-list-item-avatar-fallback"
       />
@@ -119,8 +98,8 @@ export const ActivityListItemAvatar = (
 
   if (tokens.length > 1) {
     const [from, to] = tokens;
-    return <ActivityDualTokenAvatar from={from} size={size} to={to} />;
+    return <ActivityDualTokenAvatar from={from} to={to} />;
   }
 
-  return <ActivityTokenAvatar assetId={tokens[0]} size={size} />;
+  return <ActivityTokenAvatar assetId={tokens[0]} />;
 };
