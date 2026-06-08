@@ -3,6 +3,7 @@
 
   &__content {
     text-align: left;
+    width: 100%;
   }
 
   &__steps {
@@ -48,35 +49,6 @@
 
   &__title {
     margin-bottom: 24px;
-  }
-
-  &__step-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 999px;
-    display: flex;
-    color: var(--color-text-default);
-    background: var(--color-background-muted);
-    flex: 0 0 auto;
-    z-index: 1;
-
-    &--active {
-      background: var(--color-background-muted);
-
-      .pulse-loader {
-        transform: scale(0.3);
-      }
-    }
-
-    &--complete {
-      color: var(--color-success-default);
-      background: var(--color-primary-muted);
-    }
-
-    &--rejected {
-      color: var(--color-error-default);
-      background: var(--color-error-muted);
-    }
   }
 
   &__qr-code {
