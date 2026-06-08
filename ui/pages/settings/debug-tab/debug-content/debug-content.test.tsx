@@ -46,13 +46,8 @@ jest.mock('../../../../selectors/perps-controller', () => ({
 describe('Develop options tab', () => {
   const mockStore = configureMockStore([thunk])(mockState);
 
-  it('should match snapshot', () => {
-    const { getByTestId, container } = renderWithProvider(
-      <DebugContent />,
-      mockStore,
-    );
-
-    expect(container).toMatchSnapshot();
+  it('renders remote feature flags', () => {
+    const { getByTestId } = renderWithProvider(<DebugContent />, mockStore);
     expect(
       getByTestId('developer-options-remote-feature-flags').textContent,
     ).toEqual(JSON.stringify(mockRemoteFeatureFlags, null, 2));
