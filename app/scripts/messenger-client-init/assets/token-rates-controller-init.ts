@@ -28,6 +28,7 @@ export const TokenRatesControllerInit: MessengerClientInitFunction<
     state: persistedState.TokenRatesController,
     tokenPricesService: new CodefiTokenPricesServiceV2(),
     disabled: !preferencesState.useCurrencyRateCheck,
+    isDeprecated: () => true,
   });
 
   initMessenger.subscribe(
