@@ -180,10 +180,14 @@ const BaseQrReader = ({
 
   // ---- QR scan-failed tracking --------------------------------------------
 
+  // Guards against duplicate events when trackEvent is recreated by context changes.
+  const lastTrackedScanErrorRef = useRef<typeof scanError>(null);
+
   useEffect(() => {
-    if (!scanError) {
+    if (!scanError || scanError === lastTrackedScanErrorRef.current) {
       return;
     }
+    lastTrackedScanErrorRef.current = scanError;
     const flow = isReadingWallet
       ? QrErrorFlowContext.Pairing
       : QrErrorFlowContext.Signing;
