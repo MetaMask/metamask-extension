@@ -881,5 +881,11 @@
       }
     },
     "version": "v0.3.0"
+  },
+  "previewBuilds": {
+    "@metamask/wallet": {
+      "type": "breaking",
+      "previewVersion": "3.0.0-preview-3bb0a08f0"
+    }
   }
 }

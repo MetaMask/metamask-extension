@@ -48,6 +48,7 @@ export function initializeWallet({
   messenger,
   state,
   encryptor,
+  infuraProjectId,
   showApprovalRequest,
   connectivityAdapter,
 }: {
@@ -56,6 +57,7 @@ export function initializeWallet({
   encryptor?: Encryptor;
   showApprovalRequest?: ShowApprovalRequest;
   connectivityAdapter: ConnectivityAdapter;
+  infuraProjectId: string;
 }) {
   const wallet = new Wallet({
     messenger,
@@ -71,6 +73,9 @@ export function initializeWallet({
         messenger,
         encryptor,
       }),
+      networkController: {
+        infuraProjectId,
+      },
       remoteFeatureFlagController:
         getRemoteFeatureFlagControllerInstanceOptions({ messenger, state }),
       storageService: getStorageServiceInstanceOptions(),
