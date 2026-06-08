@@ -7,6 +7,7 @@ import React, {
   useState,
 } from 'react';
 import { useSelector } from 'react-redux';
+import log from 'loglevel';
 
 import {
   Box,
@@ -94,7 +95,7 @@ export default function HardwareWalletSignatures() {
   const needsTwoConfirmations = Boolean(lockedQuote?.approval);
   const fromAmount = lockedQuote?.sentAmount?.amount;
 
-  console.log(
+  log.debug(
     '[HW-Batch] HardwareWalletSignatures render',
     JSON.stringify({
       hasLockedQuote: Boolean(lockedQuote),
@@ -148,7 +149,7 @@ export default function HardwareWalletSignatures() {
     if (isRetryingRef.current) {
       return;
     }
-    console.log(
+    log.debug(
       '[HW-Batch] handleHardwareWalletRejected, current state:',
       signatureState.status,
     );
@@ -391,7 +392,7 @@ export default function HardwareWalletSignatures() {
       return;
     }
 
-    console.log(
+    log.debug(
       '[HW-Batch] handleRetry',
       JSON.stringify({
         state: signatureState.status,
@@ -416,7 +417,7 @@ export default function HardwareWalletSignatures() {
         connectionState.status === ConnectionStatus.ErrorState;
 
       if (!canRetry) {
-        console.log(
+        log.debug(
           '[HW-Batch] handleRetry: cannot retry, device not connected',
         );
         return;
@@ -428,12 +429,12 @@ export default function HardwareWalletSignatures() {
         type: HardwareWalletSignatureEvent.Reset,
         needsTwoConfirmations,
       });
-      console.log(
+      log.debug(
         '[HW-Batch] handleRetry: calling retrySubmission',
         JSON.stringify({ state: signatureState.status }),
       );
       await retrySubmission();
-      console.log('[HW-Batch] handleRetry: retrySubmission completed');
+      log.debug('[HW-Batch] handleRetry: retrySubmission completed');
     } finally {
       isRetryingRef.current = false;
       setIsRetrying(false);

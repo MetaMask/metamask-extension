@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionType } from '@metamask/transaction-controller';
+import log from 'loglevel';
 import {
   subscribeToMessengerEvent,
   submitRequestToBackground,
@@ -222,7 +223,7 @@ export function useHwSignTracker(
     };
 
     const subscribeAll = async () => {
-      const unsub1 = await subscribeToMessengerEvent<
+      const unsubscribeStatusUpdated = await subscribeToMessengerEvent<
         [{ transactionMeta: TransactionMeta }]
       >(
         'TransactionController:transactionStatusUpdated',
@@ -235,7 +236,7 @@ export function useHwSignTracker(
 
           const { status, type } = transactionMeta;
 
-          console.log(
+          log.debug(
             `${logPrefix} transactionStatusUpdated`,
             JSON.stringify({
               id: transactionMeta.id,
@@ -266,7 +267,7 @@ export function useHwSignTracker(
                 currentBatchIdRef.current = batchId;
               } else if (currentBatchIdRef.current === null) {
                 if (staleBatchIdsRef.current.has(batchId)) {
-                  console.log(
+                  log.debug(
                     `${logPrefix} skipping stale signed event after retry`,
                     JSON.stringify({
                       eventBatchId: batchId,
@@ -277,7 +278,7 @@ export function useHwSignTracker(
                 }
                 currentBatchIdRef.current = batchId;
               } else if (batchId !== currentBatchIdRef.current) {
-                console.log(
+                log.debug(
                   `${logPrefix} skipping signed event from stale batch`,
                   JSON.stringify({
                     eventBatchId: batchId,
@@ -289,14 +290,14 @@ export function useHwSignTracker(
             }
 
             if (APPROVAL_TYPES.has(type as TransactionType)) {
-              console.log(
+              log.debug(
                 `${logPrefix} approval signed → FirstSignatureSubmitted`,
               );
               dispatchRef.current({
                 type: HardwareWalletSignatureEvent.FirstSignatureSubmitted,
               });
             } else if (TRADE_TYPES.has(type as TransactionType)) {
-              console.log(`${logPrefix} trade signed → TransactionSubmitted`);
+              log.debug(`${logPrefix} trade signed → TransactionSubmitted`);
               dispatchRef.current({
                 type: HardwareWalletSignatureEvent.TransactionSubmitted,
               });
@@ -304,7 +305,7 @@ export function useHwSignTracker(
           } else if (status === 'failed') {
             if (useBatchTracking) {
               if (shouldBlockPendingEvent(currentBatchIdRef.current)) {
-                console.log(
+                log.debug(
                   `${logPrefix} skipping transactionStatusUpdated failed: no batch identified yet`,
                 );
                 return;
@@ -317,7 +318,7 @@ export function useHwSignTracker(
                   staleBatchIdsRef.current,
                 )
               ) {
-                console.log(
+                log.debug(
                   `${logPrefix} skipping transactionStatusUpdated failed from stale batch`,
                   JSON.stringify({
                     eventBatchId: transactionMeta.batchId,
@@ -327,7 +328,7 @@ export function useHwSignTracker(
                 return;
               }
             }
-            console.log(
+            log.debug(
               `${logPrefix} transactionStatusUpdated failed → TransactionFailed`,
             );
             dispatchRef.current({
@@ -336,9 +337,9 @@ export function useHwSignTracker(
           }
         },
       );
-      unsubscribes.push(unsub1);
+      unsubscribes.push(unsubscribeStatusUpdated);
 
-      const unsub2 = await subscribeToMessengerEvent<
+      const unsubscribeRejected = await subscribeToMessengerEvent<
         [{ transactionMeta: TransactionMeta }]
       >(
         'TransactionController:transactionRejected',
@@ -349,7 +350,7 @@ export function useHwSignTracker(
 
           checkGeneration();
 
-          console.log(
+          log.debug(
             `${logPrefix} transactionRejected`,
             JSON.stringify({
               id: transactionMeta.id,
@@ -375,7 +376,7 @@ export function useHwSignTracker(
 
           if (useBatchTracking) {
             if (shouldBlockPendingEvent(currentBatchIdRef.current)) {
-              console.log(
+              log.debug(
                 `${logPrefix} skipping transactionRejected: no batch identified yet`,
               );
               return;
@@ -388,7 +389,7 @@ export function useHwSignTracker(
                 staleBatchIdsRef.current,
               )
             ) {
-              console.log(
+              log.debug(
                 `${logPrefix} skipping transactionRejected from stale batch`,
                 JSON.stringify({
                   eventBatchId: transactionMeta.batchId,
@@ -401,15 +402,15 @@ export function useHwSignTracker(
             return;
           }
 
-          console.log(`${logPrefix} tx rejected → TransactionRejected`);
+          log.debug(`${logPrefix} tx rejected → TransactionRejected`);
           dispatchRef.current({
             type: HardwareWalletSignatureEvent.TransactionRejected,
           });
         },
       );
-      unsubscribes.push(unsub2);
+      unsubscribes.push(unsubscribeRejected);
 
-      const unsub3 = await subscribeToMessengerEvent<
+      const unsubscribeFinished = await subscribeToMessengerEvent<
         [{ transactionMeta: TransactionMeta }]
       >(
         'TransactionController:transactionFinished',
@@ -422,7 +423,7 @@ export function useHwSignTracker(
 
           const { status, type } = transactionMeta;
 
-          console.log(
+          log.debug(
             `${logPrefix} transactionFinished`,
             JSON.stringify({
               id: transactionMeta.id,
@@ -449,7 +450,7 @@ export function useHwSignTracker(
 
           if (useBatchTracking) {
             if (shouldBlockPendingEvent(currentBatchIdRef.current)) {
-              console.log(
+              log.debug(
                 `${logPrefix} skipping transactionFinished: no batch identified yet`,
               );
               return;
@@ -462,7 +463,7 @@ export function useHwSignTracker(
                 staleBatchIdsRef.current,
               )
             ) {
-              console.log(
+              log.debug(
                 `${logPrefix} skipping transactionFinished from stale batch`,
                 JSON.stringify({
                   eventBatchId: transactionMeta.batchId,
@@ -476,14 +477,14 @@ export function useHwSignTracker(
           }
 
           if (status === 'rejected') {
-            console.log(
+            log.debug(
               `${logPrefix} transactionFinished rejected → TransactionRejected`,
             );
             dispatchRef.current({
               type: HardwareWalletSignatureEvent.TransactionRejected,
             });
           } else if (status === 'failed') {
-            console.log(
+            log.debug(
               `${logPrefix} transactionFinished failed → TransactionFailed`,
             );
             dispatchRef.current({
@@ -492,11 +493,11 @@ export function useHwSignTracker(
           }
         },
       );
-      unsubscribes.push(unsub3);
+      unsubscribes.push(unsubscribeFinished);
     };
 
     subscribeAll().catch((err: unknown) => {
-      console.error(`${logPrefix} subscription error`, err);
+      log.error(`${logPrefix} subscription error`, err);
     });
 
     return () => {
