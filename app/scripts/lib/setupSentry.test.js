@@ -246,6 +246,23 @@ describe('Setup Sentry', () => {
       expect(testReport.extra.nested.evmAddress).toStrictEqual('0x**');
     });
 
+    it('removes addresses from an array shared across multiple properties', () => {
+      const sharedAddresses = [
+        '7EYnhQoR9YM3N7UoaKRoA44Uy8JeaZV3qyouov87awMs',
+      ];
+      const testReport = {
+        message: 'An error occurred',
+        extra: {
+          first: sharedAddresses,
+          second: sharedAddresses,
+        },
+        request: {},
+      };
+      rewriteReport(testReport);
+      expect(testReport.extra.first).toStrictEqual(['**']);
+      expect(testReport.extra.second).toStrictEqual(['**']);
+    });
+
     it('removes addresses from report.contexts parameters', () => {
       const testReport = {
         message: 'An error occurred',

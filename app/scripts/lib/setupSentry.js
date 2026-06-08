@@ -527,7 +527,14 @@ function sanitizeAddressesFromObject(value, seen = new WeakSet()) {
     }
   }
   if (Array.isArray(value)) {
-    return value.map((item) => sanitizeAddressesFromObject(item, seen));
+    // Mutate in place (rather than returning a new mapped array) so that a
+    // reference shared across multiple properties is redacted for every holder:
+    // the first visit redacts the array, and later visits short-circuit on
+    // `seen` and return that same, already-redacted array.
+    for (let i = 0; i < value.length; i++) {
+      value[i] = sanitizeAddressesFromObject(value[i], seen);
+    }
+    return value;
   }
   for (const key of Object.keys(value)) {
     value[key] = sanitizeAddressesFromObject(value[key], seen);
