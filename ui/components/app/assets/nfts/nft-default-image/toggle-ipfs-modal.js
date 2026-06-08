@@ -4,12 +4,14 @@ import { useDispatch } from 'react-redux';
 import {
   Box,
   ButtonPrimary,
-  Modal,
-  ModalOverlay,
   Text,
 } from '../../../../component-library';
-import { ModalContent } from '../../../../component-library/modal-content/deprecated';
-import { ModalHeader } from '../../../../component-library/modal-header/deprecated';
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   hideIpfsModal,
@@ -31,7 +33,9 @@ export const ToggleIpfsModal = ({ onClose }) => {
     <Modal isOpen onClose={onClose} className="toggle-ipfs-modal">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader onClose={onClose}>{t('showNft')}</ModalHeader>
+        <ModalHeader onClose={onClose} closeButtonProps={{ ariaLabel: t('close') }}>
+          {t('showNft')}
+        </ModalHeader>
         <Box className="toggle-ipfs-modal" marginTop={6}>
           <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
             {t('ipfsToggleModalDescriptionOne')}
