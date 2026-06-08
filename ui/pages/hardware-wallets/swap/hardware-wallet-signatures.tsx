@@ -122,6 +122,7 @@ export default function HardwareWalletSignatures() {
   // "Resend transaction" button becomes eligible after SIGNATURE_STUCK_TIMEOUT_MS.
   const hasRetriedRef = useRef(false);
   const [isRetrying, setIsRetrying] = useState(false);
+  const firstSignatureDoneRef = useRef(false);
   // Set to true when the device has been in an awaiting-signature state for
   // longer than SIGNATURE_STUCK_TIMEOUT_MS without progressing. Resets when
   // the state leaves awaiting-signature or a retry starts.
@@ -186,6 +187,7 @@ export default function HardwareWalletSignatures() {
     signatureState,
     dispatchSignatureEvent,
     submitBridgeTransaction,
+    firstSignatureDoneRef: isStxEnabled ? undefined : firstSignatureDoneRef,
   });
 
   const { isDeviceDisconnectedRef, resetConnectionError } =
@@ -252,6 +254,15 @@ export default function HardwareWalletSignatures() {
       setSigningInProgress(false);
     };
   }, [setSigningInProgress]);
+
+  useEffect(() => {
+    if (
+      signatureState.status === HardwareWalletSignatureStatus.AwaitingFinalSignature ||
+      signatureState.status === HardwareWalletSignatureStatus.Submitted
+    ) {
+      firstSignatureDoneRef.current = true;
+    }
+  }, [signatureState.status]);
 
   useEffect(() => {
     if (!isAwaitingSignature(signatureState.status)) {
@@ -417,18 +428,40 @@ export default function HardwareWalletSignatures() {
         connectionState.status === ConnectionStatus.ErrorState;
 
       if (!canRetry) {
-        log.debug(
-          '[HW-Batch] handleRetry: cannot retry, device not connected',
-        );
+        log.debug('[HW-Batch] handleRetry: cannot retry, device not connected');
         return;
       }
 
       retryGenerationRef.current += 1;
       resetConnectionError();
-      dispatchSignatureEvent({
-        type: HardwareWalletSignatureEvent.Reset,
-        needsTwoConfirmations,
-      });
+      if (isStxEnabled) {
+        dispatchSignatureEvent({
+          type: HardwareWalletSignatureEvent.Reset,
+          needsTwoConfirmations,
+        });
+      } else {
+        let savedStep: HardwareWalletSignatureStatus | undefined;
+        if ('rejectedSignature' in signatureState) {
+          savedStep = signatureState.rejectedSignature;
+        } else if ('failedSignature' in signatureState) {
+          savedStep = signatureState.failedSignature;
+        } else if ('disconnectedSignature' in signatureState) {
+          savedStep = signatureState.disconnectedSignature;
+        }
+
+        if (
+          savedStep === HardwareWalletSignatureStatus.AwaitingFinalSignature
+        ) {
+          dispatchSignatureEvent({
+            type: HardwareWalletSignatureEvent.Retry,
+          });
+        } else {
+          dispatchSignatureEvent({
+            type: HardwareWalletSignatureEvent.Reset,
+            needsTwoConfirmations,
+          });
+        }
+      }
       log.debug(
         '[HW-Batch] handleRetry: calling retrySubmission',
         JSON.stringify({ state: signatureState.status }),
@@ -443,11 +476,12 @@ export default function HardwareWalletSignatures() {
     cancelCurrentBatch,
     connectionState.status,
     dispatchSignatureEvent,
+    isStxEnabled,
     needsTwoConfirmations,
     resetConnectionError,
     retryGenerationRef,
     retrySubmission,
-    signatureState.status,
+    signatureState,
   ]);
   /**
    * Cancels the hardware wallet signing flow. Aborts the current batch, stops
@@ -516,7 +550,10 @@ export default function HardwareWalletSignatures() {
                     status={firstStepStatus}
                     stepNumber={1}
                   />
-                  <Box flexDirection={BoxFlexDirection.Column}>
+                  <Box
+                    className="min-w-0 flex-1"
+                    flexDirection={BoxFlexDirection.Column}
+                  >
                     <Text
                       color={
                         firstStepStatus === SignatureStepStatus.Rejected ||
@@ -553,7 +590,10 @@ export default function HardwareWalletSignatures() {
                   status={finalStepStatus}
                   stepNumber={needsTwoConfirmations ? 2 : 1}
                 />
-                <Box flexDirection={BoxFlexDirection.Column}>
+                <Box
+                  className="min-w-0 flex-1"
+                  flexDirection={BoxFlexDirection.Column}
+                >
                   <Text
                     color={
                       finalStepStatus === SignatureStepStatus.Rejected ||
