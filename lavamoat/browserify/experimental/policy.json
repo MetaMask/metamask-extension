@@ -3141,6 +3141,7 @@
         "@metamask/controller-utils": true,
         "@metamask/keyring-controller": true,
         "@metamask/messenger": true,
+        "@metamask/remote-feature-flag-controller": true,
         "@metamask/scure-bip39": true,
         "@metamask/storage-service": true,
         "@metamask/utils": true
