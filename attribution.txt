@@ -39097,8 +39097,8 @@ SOFTWARE.
 
 ******************************
 
-react-beautiful-dnd
-13.1.1 <https://github.com/atlassian/react-beautiful-dnd>
+@hello-pangea/dnd
+16.6.0 <https://github.com/hello-pangea/dnd>
 Copyright 2019 Atlassian Pty Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");

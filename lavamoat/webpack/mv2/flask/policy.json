@@ -4369,14 +4369,14 @@
         "msCrypto": true
       }
     },
-    "react-beautiful-dnd>css-box-model": {
+    "@hello-pangea/dnd>css-box-model": {
       "globals": {
         "getComputedStyle": true,
         "pageXOffset": true,
         "pageYOffset": true
       },
       "packages": {
-        "react-beautiful-dnd>css-box-model>tiny-invariant": true
+        "@hello-pangea/dnd>css-box-model>tiny-invariant": true
       }
     },
     "@material-ui/core>@material-ui/styles>jss-plugin-vendor-prefixer>css-vendor": {
@@ -5688,7 +5688,7 @@
         "queueMicrotask": true
       }
     },
-    "react-beautiful-dnd>raf-schd": {
+    "@hello-pangea/dnd>raf-schd": {
       "globals": {
         "cancelAnimationFrame": true,
         "requestAnimationFrame": true
@@ -5723,7 +5723,7 @@
         "react>object-assign": true
       }
     },
-    "react-beautiful-dnd": {
+    "@hello-pangea/dnd": {
       "globals": {
         "Element.prototype": true,
         "__REDUX_DEVTOOLS_EXTENSION_COMPOSE__": true,
@@ -5740,14 +5740,14 @@
       },
       "packages": {
         "@babel/runtime": true,
-        "react-beautiful-dnd>css-box-model": true,
-        "react-beautiful-dnd>memoize-one": true,
-        "react-beautiful-dnd>raf-schd": true,
+        "@hello-pangea/dnd>css-box-model": true,
+        "@hello-pangea/dnd>memoize-one": true,
+        "@hello-pangea/dnd>raf-schd": true,
         "react": true,
         "react-dom": true,
         "react-redux": true,
         "redux": true,
-        "react-beautiful-dnd>use-memo-one": true
+        "@hello-pangea/dnd>use-memo-one": true
       }
     },
     "react-chartjs-2": {
@@ -6764,7 +6764,7 @@
         "react": true
       }
     },
-    "react-beautiful-dnd>use-memo-one": {
+    "@hello-pangea/dnd>use-memo-one": {
       "packages": {
         "react": true
       }
