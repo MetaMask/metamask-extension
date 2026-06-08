@@ -90,6 +90,16 @@ export const getHip3AllowedSourcesSet = createSelector(
   (allowedSources): Set<string> => new Set(allowedSources),
 );
 
+/**
+ * Whether the perps slippage configuration UI is enabled.
+ * Remote flag `perps-slippage-config2` — opt-in; disabled unless explicitly true.
+ */
+export const getIsPerpsSlippageConfigEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) =>
+    remoteFeatureFlags['perps-slippage-config2'] === true,
+);
+
 // Re-export the VIP program flag so perps consumers can import from this
 // domain module without reaching into the rewards duck directly.
 export { selectVipProgramEnabled as getIsVipProgramEnabled } from '../../ducks/rewards/selectors';

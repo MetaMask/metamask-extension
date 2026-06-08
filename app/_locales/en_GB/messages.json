@@ -7062,8 +7062,45 @@
   "perpsSize": {
     "message": "Size"
   },
+  "perpsSlippage": {
+    "message": "Slippage"
+  },
+  "perpsSlippageConfigDescription": {
+    "message": "Your transaction won't go through if the price shifts beyond this threshold."
+  },
+  "perpsSlippageConfigTitle": {
+    "message": "Set slippage"
+  },
+  "perpsSlippageCustom": {
+    "message": "Custom"
+  },
+  "perpsSlippageEditAriaLabel": {
+    "message": "Edit max slippage"
+  },
   "perpsSlippageExceeded": {
     "message": "Slippage exceeded. Adjust your slippage tolerance and try again."
+  },
+  "perpsSlippageExceedsMax": {
+    "message": "Estimated slippage ($1%) exceeds your max slippage ($2%). Increase the cap or reduce the order size.",
+    "description": "$1 is estimated slippage percent, $2 is max slippage percent"
+  },
+  "perpsSlippageInputLabel": {
+    "message": "Max slippage percentage"
+  },
+  "perpsSlippageOutOfRange": {
+    "message": "Enter a value between $1% and $2%",
+    "description": "$1 is min percent, $2 is max percent"
+  },
+  "perpsSlippageRowFormat": {
+    "message": "Est: $1% / Max: $2%",
+    "description": "$1 is estimated slippage percent, $2 is max slippage percent"
+  },
+  "perpsSlippageRowFormatPending": {
+    "message": "Est: -- / Max: $1%",
+    "description": "$1 is max slippage percent"
+  },
+  "perpsSlippageSet": {
+    "message": "Set"
   },
   "perpsSortByFundingRate": {
     "message": "Funding rate"

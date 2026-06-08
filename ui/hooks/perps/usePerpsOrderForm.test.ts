@@ -77,6 +77,20 @@ describe('usePerpsOrderForm', () => {
       expect(result.current.closePercent).toBe(100);
     });
 
+    it('pre-fills default order amount for new orders when balance is available', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            availableBalance: 100,
+            szDecimals: 6,
+          }),
+        mockStateWithLocale,
+      );
+
+      expect(result.current.formState.amount).toBe('10');
+    });
+
     it('uses initialLeverage when provided for new orders', () => {
       const { result } = renderHookWithProvider(
         () =>

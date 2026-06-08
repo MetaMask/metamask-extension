@@ -7,6 +7,10 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
   BoxAlignItems,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { PerpsFeesDisplay } from '../../../perps-fees-display';
@@ -21,6 +25,10 @@ import type { OrderSummaryProps } from '../../order-entry.types';
  * @param props.originalEstimatedFees - Estimated trading fees before discount
  * @param props.liquidationPrice - Estimated liquidation price
  * @param props.metamaskFeeRateDiscountPercentage - MetaMask fee discount percentage (whole numbers)
+ * @param props.showSlippageRow
+ * @param props.slippageDisplay
+ * @param props.exceedsMaxSlippage
+ * @param props.onSlippageClick
  */
 export const OrderSummary = ({
   marginRequired,
@@ -28,6 +36,10 @@ export const OrderSummary = ({
   originalEstimatedFees,
   liquidationPrice,
   metamaskFeeRateDiscountPercentage,
+  showSlippageRow = false,
+  slippageDisplay,
+  exceedsMaxSlippage = false,
+  onSlippageClick,
 }: OrderSummaryProps) => {
   const t = useI18nContext();
 
@@ -50,6 +62,52 @@ export const OrderSummary = ({
           {liquidationPrice ?? '-'}
         </Text>
       </Box>
+
+      {showSlippageRow && (
+        <Box
+          as="button"
+          type="button"
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Between}
+          alignItems={BoxAlignItems.Center}
+          onClick={onSlippageClick}
+          data-testid="perps-order-summary-slippage-row"
+          aria-label={t('perpsSlippageEditAriaLabel')}
+          className="w-full cursor-pointer border-0 bg-transparent p-0 text-left"
+        >
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {t('perpsSlippage')}
+          </Text>
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            gap={1}
+          >
+            <Text
+              variant={TextVariant.BodySm}
+              color={
+                exceedsMaxSlippage
+                  ? TextColor.ErrorDefault
+                  : TextColor.TextDefault
+              }
+              data-testid="perps-order-summary-slippage-value"
+            >
+              {slippageDisplay ?? '-'}
+            </Text>
+            {exceedsMaxSlippage ? (
+              <span
+                data-testid="perps-order-slippage-exceeds-indicator"
+                aria-hidden
+              />
+            ) : null}
+            <Icon
+              name={IconName.Edit}
+              size={IconSize.Sm}
+              color={IconColor.IconAlternative}
+            />
+          </Box>
+        </Box>
+      )}
 
       {/* Margin */}
       <Box

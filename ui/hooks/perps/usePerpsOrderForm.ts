@@ -1,5 +1,10 @@
-import type { OrderType } from '@metamask/perps-controller';
+import {
+  TRADING_DEFAULTS,
+  getMaxAllowedAmount,
+  type OrderType,
+} from '@metamask/perps-controller';
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import {
   calculateMarginRequired,
   calculatePositionSize,
@@ -16,6 +21,7 @@ import type {
   OrderMode,
   ExistingPositionData,
 } from '../../components/app/perps/order-entry/order-entry.types';
+import { selectPerpsIsTestnet } from '../../selectors/perps-controller';
 import { usePerpsLiquidationPrice } from './usePerpsLiquidationPrice';
 
 function calculateFallbackLiquidationPrice(
@@ -47,6 +53,27 @@ function calculateFallbackLiquidationPrice(
     0,
     entryPrice - (side * marginAvailable * entryPrice) / denominator,
   );
+}
+
+function buildDefaultNewOrderAmountFields(
+  amountValue: string,
+  leverage: number,
+  balance: number,
+): Partial<Pick<OrderFormState, 'amount' | 'balancePercent'>> {
+  if (!amountValue || amountValue === '0') {
+    return {};
+  }
+
+  const initialMarginRequired = Number.parseFloat(amountValue) / leverage;
+  const initialBalancePercent =
+    balance > 0
+      ? Math.min((initialMarginRequired / balance) * 100, 100)
+      : TRADING_DEFAULTS.marginPercent;
+
+  return {
+    amount: amountValue,
+    balancePercent: Math.round(initialBalancePercent * 100) / 100,
+  };
 }
 
 export type UsePerpsOrderFormOptions = {
@@ -187,6 +214,41 @@ export function usePerpsOrderForm({
   feeRate,
 }: UsePerpsOrderFormOptions): UsePerpsOrderFormReturn {
   const displayAssetSymbol = getDisplaySymbol(asset);
+  const isTestnet = useSelector(selectPerpsIsTestnet);
+  const defaultLeverage = initialLeverage ?? TRADING_DEFAULTS.leverage;
+  const hasSetInitialAmount = useRef(false);
+
+  const initialAmountValue = useMemo(() => {
+    if (mode !== 'new') {
+      return '';
+    }
+
+    const defaultAmount = isTestnet
+      ? TRADING_DEFAULTS.amount.testnet
+      : TRADING_DEFAULTS.amount.mainnet;
+
+    if (!currentPrice || currentPrice <= 0) {
+      return defaultAmount.toString();
+    }
+
+    const tempMaxAmount = getMaxAllowedAmount({
+      spendableBalance: availableBalance,
+      assetPrice: currentPrice,
+      assetSzDecimals: szDecimals ?? 6,
+      leverage: defaultLeverage,
+    });
+
+    return tempMaxAmount < defaultAmount
+      ? tempMaxAmount.toString()
+      : defaultAmount.toString();
+  }, [
+    mode,
+    isTestnet,
+    currentPrice,
+    availableBalance,
+    szDecimals,
+    defaultLeverage,
+  ]);
 
   /**
    * Compute TP/SL and leverage from an existing position for modify mode.
@@ -225,6 +287,11 @@ export function usePerpsOrderForm({
       direction: initialDirection,
       type: orderType,
       ...(initialLeverage !== undefined && { leverage: initialLeverage }),
+      ...buildDefaultNewOrderAmountFields(
+        initialAmountValue,
+        defaultLeverage,
+        availableBalance,
+      ),
     };
   });
 
@@ -241,6 +308,8 @@ export function usePerpsOrderForm({
   existingPositionRef.current = existingPosition;
   const orderTypeRef = useRef(orderType);
   orderTypeRef.current = orderType;
+  const initialAmountValueRef = useRef(initialAmountValue);
+  initialAmountValueRef.current = initialAmountValue;
 
   // Track which deps trigger a full form reset. orderType changes should NOT
   // reset amount/leverage—only the effect above updates formState.type.
@@ -288,7 +357,18 @@ export function usePerpsOrderForm({
 
     const pos = existingPositionRef.current;
     const typeForReset = orderTypeRef.current;
+    const resetLeverage = initialLeverage ?? TRADING_DEFAULTS.leverage;
+    const defaultAmountFields =
+      mode === 'new'
+        ? buildDefaultNewOrderAmountFields(
+            initialAmountValueRef.current,
+            resetLeverage,
+            availableBalanceRef.current,
+          )
+        : {};
+
     if (mode === 'modify' && pos) {
+      hasSetInitialAmount.current = false;
       setFormState({
         ...mockOrderFormDefaults,
         asset,
@@ -297,15 +377,38 @@ export function usePerpsOrderForm({
         ...deriveModifyFields(pos),
       });
     } else {
+      hasSetInitialAmount.current = Boolean(defaultAmountFields.amount);
       setFormState({
         ...mockOrderFormDefaults,
         asset,
         direction: initialDirection,
         type: typeForReset,
         ...(initialLeverage !== undefined && { leverage: initialLeverage }),
+        ...defaultAmountFields,
       });
     }
   }, [mode, asset, initialDirection, existingPosition, initialLeverage]);
+
+  useEffect(() => {
+    if (mode !== 'new' || hasSetInitialAmount.current) {
+      return;
+    }
+
+    const defaultAmountFields = buildDefaultNewOrderAmountFields(
+      initialAmountValue,
+      defaultLeverage,
+      availableBalance,
+    );
+    if (!defaultAmountFields.amount) {
+      return;
+    }
+
+    setFormState((prev) => ({
+      ...prev,
+      ...defaultAmountFields,
+    }));
+    hasSetInitialAmount.current = true;
+  }, [mode, initialAmountValue, defaultLeverage, availableBalance]);
 
   // Notify parent of form state changes
   useEffect(() => {

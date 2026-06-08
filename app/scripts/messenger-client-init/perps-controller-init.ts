@@ -184,6 +184,8 @@ type PerpsActionName =
   | 'perpsClearPendingTransactionRequests'
   | 'perpsSaveOrderBookGrouping'
   | 'perpsGetOrderBookGrouping'
+  | 'perpsGetMaxSlippage'
+  | 'perpsSetMaxSlippage'
   | 'perpsGetUserHistory'
   | 'perpsClearDepositResult'
   | 'perpsClearWithdrawResult'
@@ -468,6 +470,8 @@ function getApi(
       messengerClient.saveOrderBookGrouping.bind(messengerClient),
     perpsGetOrderBookGrouping:
       messengerClient.getOrderBookGrouping.bind(messengerClient),
+    perpsGetMaxSlippage: messengerClient.getMaxSlippage.bind(messengerClient),
+    perpsSetMaxSlippage: messengerClient.setMaxSlippage.bind(messengerClient),
 
     // -- Provider passthrough (read-guard) --
     perpsGetUserHistory: read(

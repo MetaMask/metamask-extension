@@ -48,6 +48,7 @@ const enterAmount = (value: string) => {
 };
 
 jest.mock('@metamask/perps-controller', () => ({
+  ...jest.requireActual('@metamask/perps-controller'),
   PERPS_ERROR_CODES: {
     CLIENT_NOT_INITIALIZED: 'CLIENT_NOT_INITIALIZED',
     CLIENT_REINITIALIZING: 'CLIENT_REINITIALIZING',
@@ -119,6 +120,25 @@ jest.mock('../../hooks/perps/usePerpsMarketInfo', () => ({
 
 jest.mock('../../hooks/perps/usePerpsOrderFees', () => ({
   usePerpsOrderFees: () => ({ feeRate: 0.00145, isLoading: false }),
+}));
+
+const mockUsePerpsEstimatedSlippage = jest.fn(() => ({
+  estimatedSlippageBps: null as number | null,
+  isReady: false,
+}));
+const mockUsePerpsMaxSlippage = jest.fn(() => ({
+  maxSlippageBps: 300,
+  maxSlippageSource: 'default' as const,
+  setMaxSlippage: jest.fn(),
+  isLoading: false,
+}));
+
+jest.mock('../../hooks/perps/usePerpsEstimatedSlippage', () => ({
+  usePerpsEstimatedSlippage: () => mockUsePerpsEstimatedSlippage(),
+}));
+
+jest.mock('../../hooks/perps/usePerpsMaxSlippage', () => ({
+  usePerpsMaxSlippage: () => mockUsePerpsMaxSlippage(),
 }));
 
 const mockStreamManagerBase = {
@@ -285,6 +305,7 @@ describe('PerpsOrderEntryPage', () => {
         perpsEnabledVersion: perpsEnabled
           ? { enabled: true, minimumVersion: '0.0.0' }
           : { enabled: false, minimumVersion: '99.99.99' },
+        'perps-slippage-config2': true,
       },
     },
   });
@@ -327,6 +348,16 @@ describe('PerpsOrderEntryPage', () => {
     mockLiveMarketData.mockReturnValue({
       markets: [...mockCryptoMarkets, ...mockHip3Markets],
       isInitialLoading: false,
+    });
+    mockUsePerpsEstimatedSlippage.mockReturnValue({
+      estimatedSlippageBps: null,
+      isReady: false,
+    });
+    mockUsePerpsMaxSlippage.mockReturnValue({
+      maxSlippageBps: 300,
+      maxSlippageSource: 'default',
+      setMaxSlippage: jest.fn(),
+      isLoading: false,
     });
   });
 
@@ -827,6 +858,42 @@ describe('PerpsOrderEntryPage', () => {
       expect(screen.getByTestId('submit-order-button')).not.toBeDisabled();
       expect(screen.getByTestId('submit-order-button')).not.toHaveTextContent(
         messages.insufficientFundsSend.message,
+      );
+    });
+
+    it('blocks submit and shows slippage error when estimated slippage exceeds max', async () => {
+      mockUsePerpsEstimatedSlippage.mockReturnValue({
+        estimatedSlippageBps: 50,
+        isReady: true,
+      });
+      mockUsePerpsMaxSlippage.mockReturnValue({
+        maxSlippageBps: 10,
+        maxSlippageSource: 'user_configured',
+        setMaxSlippage: jest.fn(),
+        isLoading: false,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('100');
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('perps-order-slippage-exceeds-indicator'),
+        ).toBeInTheDocument();
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsPlaceOrder',
+        expect.anything(),
+      );
+      expect(screen.getByTestId('perps-order-submit-error')).toHaveTextContent(
+        /Estimated slippage/iu,
       );
     });
 
