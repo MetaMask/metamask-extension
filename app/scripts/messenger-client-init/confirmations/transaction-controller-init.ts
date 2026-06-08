@@ -75,6 +75,9 @@ export const TransactionControllerInit: MessengerClientInitFunction<
       isEnabled: () => false,
       updateTransactions: true,
     },
+    getNetworkClientRegistry: () =>
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      initMessenger.call('NetworkController:getNetworkClientRegistry') as any,
     isAutomaticGasFeeUpdateEnabled,
     isEIP7702GasFeeTokensEnabled: isEIP7702GasFeeTokensEnabled.bind(null, {
       getFlatState,

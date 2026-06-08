@@ -27,6 +27,7 @@ import {
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetEIP1559CompatibilityAction,
   NetworkControllerGetNetworkClientByIdAction,
+  NetworkControllerGetNetworkClientRegistryAction,
   NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
 import type { AuthenticationController } from '@metamask/profile-sync-controller';
@@ -93,6 +94,7 @@ export function getTransactionControllerMessenger(
       'KeyringController:signEip7702Authorization',
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getNetworkClientById',
+      'NetworkController:getNetworkClientRegistry',
       'RemoteFeatureFlagController:getState',
     ],
     events: [
@@ -130,6 +132,7 @@ type InitMessengerActions =
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetEIP1559CompatibilityAction
   | NetworkControllerGetNetworkClientByIdAction
+  | NetworkControllerGetNetworkClientRegistryAction
   | PreferencesControllerGetStateAction
   | RemoteFeatureFlagControllerGetStateAction
   | SmartTransactionsControllerGetFeesAction
@@ -215,6 +218,7 @@ export function getTransactionControllerInitMessenger(
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getEIP1559Compatibility',
       'NetworkController:getNetworkClientById',
+      'NetworkController:getNetworkClientRegistry',
       'PreferencesController:getState',
       'RemoteFeatureFlagController:getState',
       'SmartTransactionsController:getFees',
