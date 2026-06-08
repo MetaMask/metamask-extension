@@ -448,6 +448,56 @@ describe('Transaction Controller Hooks', () => {
       );
     });
 
+    it('calls Delegation7702PublishHook when isGasFeeIncluded is true even on STX+sendBundle chain', async () => {
+      jest
+        .mocked(sentinelApiModule.isSendBundleSupported)
+        .mockResolvedValue(true);
+
+      jest
+        .mocked(smartTransactionsModule.getSmartTransactionCommonParams)
+        .mockReturnValue({
+          isSmartTransaction: true,
+          featureFlags: {
+            extensionReturnTxHashAsap: false,
+            extensionReturnTxHashAsapBatch: false,
+            extensionSkipTransactionStatusPage: false,
+            mobileActive: false,
+            extensionActive: false,
+          },
+          isHardwareWalletAccount: false,
+        });
+
+      const delegation7702HookFn: jest.MockedFn<PublishHook> = jest.fn();
+      delegation7702HookFn.mockResolvedValue({
+        transactionHash: '0xdelHash',
+      });
+      jest.mocked(Delegation7702PublishHook).mockImplementation(
+        () =>
+          ({
+            getHook: () => delegation7702HookFn,
+          }) as unknown as Delegation7702PublishHook,
+      );
+
+      const messenger = buildMockMessenger();
+      (messenger.call as jest.Mock).mockImplementation((action: string) => {
+        if (action === 'KeyringController:getKeyringForAccount') {
+          return { type: 'HD Key Tree' };
+        }
+        return undefined;
+      });
+
+      const request = buildMockRequest({ messenger });
+      const { publish } = getTransactionControllerHooks(request);
+
+      const result = await publish?.({
+        ...mockTransactionMeta,
+        isGasFeeIncluded: true,
+      } as TransactionMeta);
+
+      expect(delegation7702HookFn).toHaveBeenCalled();
+      expect(result).toStrictEqual({ transactionHash: '0xdelHash' });
+    });
+
     it('bypasses Delegation7702PublishHook for revokeDelegation on a sponsored chain', async () => {
       jest
         .mocked(sentinelApiModule.isSendBundleSupported)
@@ -558,6 +608,103 @@ describe('Transaction Controller Hooks', () => {
       ).rejects.toThrow(
         'publishBatchSmartTransactionHook: Could not find transaction with id nonexistent',
       );
+    });
+
+    it('records sentinel_stx metrics for each batch transaction on successful STX submission', async () => {
+      jest
+        .mocked(smartTransactionsModule.getSmartTransactionCommonParams)
+        .mockReturnValue({
+          isSmartTransaction: true,
+          featureFlags: {
+            extensionReturnTxHashAsap: false,
+            extensionReturnTxHashAsapBatch: false,
+            extensionSkipTransactionStatusPage: false,
+            mobileActive: false,
+            extensionActive: false,
+          },
+          isHardwareWalletAccount: false,
+        });
+
+      jest
+        .mocked(smartTransactionsModule.submitBatchSmartTransactionHook)
+        .mockResolvedValue({ results: [] });
+
+      const messenger = buildMockMessenger();
+      (messenger.call as jest.Mock).mockReturnValue({
+        transactions: [mockBatchTransactionMeta],
+      });
+
+      const upsertFragmentMock = jest.fn();
+      const request = buildMockRequest({
+        messenger,
+        getTransactionMetricsRequest: () =>
+          ({
+            upsertTransactionUIMetricsFragment: upsertFragmentMock,
+          }) as never,
+      });
+
+      const { publishBatch } = getTransactionControllerHooks(request);
+
+      await publishBatch?.({
+        transactions: [
+          { id: 'batch-tx-1' } as unknown as PublishBatchHookTransaction,
+          { id: 'batch-tx-last' } as unknown as PublishBatchHookTransaction,
+        ],
+      } as unknown as PublishBatchHookRequest);
+
+      expect(upsertFragmentMock).toHaveBeenCalledTimes(2);
+      expect(upsertFragmentMock).toHaveBeenCalledWith('batch-tx-1', {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        properties: { transaction_submission_method: 'sentinel_stx' },
+      });
+      expect(upsertFragmentMock).toHaveBeenCalledWith('batch-tx-last', {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        properties: { transaction_submission_method: 'sentinel_stx' },
+      });
+    });
+
+    it('does not record metrics when STX batch submission returns a falsy result', async () => {
+      jest
+        .mocked(smartTransactionsModule.getSmartTransactionCommonParams)
+        .mockReturnValue({
+          isSmartTransaction: true,
+          featureFlags: {
+            extensionReturnTxHashAsap: false,
+            extensionReturnTxHashAsapBatch: false,
+            extensionSkipTransactionStatusPage: false,
+            mobileActive: false,
+            extensionActive: false,
+          },
+          isHardwareWalletAccount: false,
+        });
+
+      jest
+        .mocked(smartTransactionsModule.submitBatchSmartTransactionHook)
+        .mockResolvedValue(undefined);
+
+      const messenger = buildMockMessenger();
+      (messenger.call as jest.Mock).mockReturnValue({
+        transactions: [mockBatchTransactionMeta],
+      });
+
+      const upsertFragmentMock = jest.fn();
+      const request = buildMockRequest({
+        messenger,
+        getTransactionMetricsRequest: () =>
+          ({
+            upsertTransactionUIMetricsFragment: upsertFragmentMock,
+          }) as never,
+      });
+
+      const { publishBatch } = getTransactionControllerHooks(request);
+
+      await publishBatch?.({
+        transactions: [
+          { id: 'batch-tx-last' } as unknown as PublishBatchHookTransaction,
+        ],
+      } as unknown as PublishBatchHookRequest);
+
+      expect(upsertFragmentMock).not.toHaveBeenCalled();
     });
 
     it('returns undefined when isSmartTransaction is false', async () => {
