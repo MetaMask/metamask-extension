@@ -3,9 +3,11 @@ export {
   getMultichainAssetsRatesControllerInitMessenger,
   getMultichainAssetsRatesControllerMessenger,
 } from './multichain-assets-rates-controller-messenger';
+export type { MultichainAssetsRatesControllerInitMessenger } from './multichain-assets-rates-controller-messenger';
 export {
   getMultichainBalancesControllerInitMessenger,
   getMultichainBalancesControllerMessenger,
 } from './multichain-balances-controller-messenger';
+export type { MultichainBalancesControllerInitMessenger } from './multichain-balances-controller-messenger';
 export { getMultichainTransactionsControllerMessenger } from './multichain-transactions-controller-messenger';
 export { getMultichainNetworkControllerMessenger } from './multichain-network-controller-messenger';

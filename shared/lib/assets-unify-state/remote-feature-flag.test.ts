@@ -104,9 +104,7 @@ describe('getIsDeprecatedController', () => {
   describe('in test environment (IN_TEST=true)', () => {
     it('returns true regardless of the remote feature flags', () => {
       process.env.IN_TEST = 'true';
-      expect(getIsDeprecatedController(undefined, 'TokenListController')).toBe(
-        true,
-      );
+      expect(getIsDeprecatedController({}, 'TokenListController')).toBe(true);
     });
   });
 
@@ -115,9 +113,9 @@ describe('getIsDeprecatedController', () => {
       delete process.env.IN_TEST;
     });
 
-    it('returns false when remoteFeatureFlags is undefined', () => {
+    it('returns false when remoteFeatureFlags is empty', () => {
       expect(
-        getIsDeprecatedController(undefined, 'MultichainBalancesController'),
+        getIsDeprecatedController({}, 'MultichainBalancesController'),
       ).toBe(false);
     });
 
