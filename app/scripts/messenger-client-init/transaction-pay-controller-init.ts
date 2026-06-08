@@ -66,11 +66,27 @@ function getApi(
         }
       });
     },
+    setTransactionPayConfig: (
+      transactionId: string,
+      options: { isPostQuote?: boolean; accountOverride?: string },
+    ) => {
+      messengerClient.setTransactionConfig(transactionId, (config) => {
+        if (options.isPostQuote !== undefined) {
+          config.isPostQuote = options.isPostQuote;
+        }
+        if (options.accountOverride !== undefined) {
+          config.accountOverride = options.accountOverride;
+        }
+      });
+    },
     updateTransactionPaymentToken:
       messengerClient.updatePaymentToken.bind(messengerClient),
   };
 }
 
-function getStrategy(_transaction: TransactionMeta): TransactionPayStrategy {
+function getStrategy(transaction: TransactionMeta): TransactionPayStrategy {
+  if ((transaction.type as string) === 'metamaskPayTest') {
+    return TransactionPayStrategy.Server;
+  }
   return TransactionPayStrategy.Relay;
 }

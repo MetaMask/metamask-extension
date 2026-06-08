@@ -38,3 +38,13 @@ export async function setPostQuote(
     options,
   ]);
 }
+
+export async function setTransactionPayConfig(
+  transactionId: string,
+  options: { isPostQuote?: boolean; accountOverride?: string },
+): Promise<void> {
+  return await submitRequestToBackground('setTransactionPayConfig', [
+    transactionId,
+    options,
+  ]);
+}

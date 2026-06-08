@@ -10205,6 +10205,12 @@
   "tapToRevealNote": {
     "message": "Make sure no one is watching your screen."
   },
+  "target": {
+    "message": "Target"
+  },
+  "targetToken": {
+    "message": "Target token"
+  },
   "tenPercentIncreased": {
     "message": "10% increase"
   },
