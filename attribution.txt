@@ -23146,8 +23146,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 
 ******************************
 
-@metamask/client-controller
-1.0.1 <https://github.com/MetaMask/core>
+@metamask/compliance-controller
+2.1.0 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2026 MetaMask

@@ -329,8 +329,7 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/components/app/snaps/snap-ui-renderer/components/asset-selector.test.ts": {
-      "MetaMask: Background connection not initialized": 4,
-      "Reselect: Identity function warnings": 4
+      "MetaMask: Background connection not initialized": 4
     },
     "ui/components/app/snaps/snap-ui-renderer/components/date-time-picker.test.ts": {
       "warn: Material-UI: You are trying to": 5
@@ -371,8 +370,7 @@
       "React: Act warnings (component updates not wrapped)": 3
     },
     "ui/components/multichain-accounts/multichain-account-list/multichain-account-list.test.tsx": {
-      "MetaMask: Background connection not initialized": 73,
-      "Reselect: Identity function warnings": 1
+      "MetaMask: Background connection not initialized": 73
     },
     "ui/components/multichain-accounts/multichain-address-rows-triggered-list/default-address.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
@@ -765,11 +763,8 @@
       "MetaMask: Background connection not initialized": 12
     },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fees-details/gas-fees-details.test.tsx": {
-      "MetaMask: Background connection not initialized": 416,
-      "Reselect: Identity function warnings": 5
-    },
-    "ui/pages/confirmations/components/confirm/info/shared/gas-fees-row/gas-fees-row.test.tsx": {
-      "Reselect: Identity function warnings": 3
+      "MetaMask: Background connection not initialized": 364,
+      "Reselect: Identity function warnings": 1
     },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fees-section/gas-fees-section.test.tsx": {
       "MetaMask: Background connection not initialized": 52,
@@ -956,16 +951,14 @@
     },
     "ui/pages/multichain-accounts/multichain-accounts-connect-page/multichain-accounts-connect-page.test.tsx": {
       "MetaMask: Background connection not initialized": 4,
-      "React: DOM nesting violations": 3,
-      "Reselect: Identity function warnings": 1
+      "React: DOM nesting violations": 3
     },
     "ui/pages/multichain-accounts/smart-account-page/smart-account-page.test.tsx": {
       "MetaMask: Background connection not initialized": 2,
       "React: Act warnings (component updates not wrapped)": 2
     },
     "ui/pages/multichain-accounts/wallet-details-page/wallet-details-page.test.tsx": {
-      "MetaMask: Background connection not initialized": 4,
-      "Reselect: Identity function warnings": 1
+      "MetaMask: Background connection not initialized": 4
     },
     "ui/pages/musd/index.test.tsx": {
       "Reselect: Identity function warnings": 1
@@ -1002,6 +995,9 @@
     },
     "ui/pages/onboarding-flow/create-password/create-password.test.tsx": {
       "MetaMask: Background connection not initialized": 1
+    },
+    "ui/pages/onboarding-flow/creation-successful/creation-successful.test.tsx": {
+      "error: Error opening side panel: Error:": 4
     },
     "ui/pages/onboarding-flow/import-srp/import-srp.test.tsx": {
       "MetaMask: Background connection not initialized": 1
@@ -1126,9 +1122,6 @@
     "ui/pages/shield/transaction-shield/transaction-shield.test.tsx": {
       "MetaMask: Background connection not initialized": 3,
       "React: Act warnings (component updates not wrapped)": 13
-    },
-    "ui/pages/snaps/snap-view/hooks/useUpdate.test.ts": {
-      "MetaMask: Background connection not initialized": 1
     },
     "ui/pages/snaps/snap-view/hooks/useUpdate.test.ts": {
       "MetaMask: Background connection not initialized": 1
