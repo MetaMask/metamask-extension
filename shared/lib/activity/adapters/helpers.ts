@@ -23,6 +23,10 @@ export type ValueTransfer = NonNullable<
   V1TransactionByHashResponse['valueTransfers']
 >[number];
 
+export function isNftStandard(value?: string) {
+  return value === 'erc721' || value === 'erc1155';
+}
+
 /**
  * Looks up the native asset for a chain, returning `undefined` instead of
  * throwing when the chain is outside the bridge swaps registry
@@ -182,12 +186,19 @@ export function getTokenAmountFromTransfer(
   direction: TokenAmount['direction'],
   chainId: CaipChainId,
 ) {
-  if (!transfer?.symbol && transfer?.amount === undefined) {
+  if (!transfer) {
     return undefined;
   }
 
-  const isNftTransfer =
-    transfer?.transferType === 'erc721' || transfer?.transferType === 'erc1155';
+  const { transferType, amount } = transfer;
+  const isNftTransfer = isNftStandard(transferType);
+  const symbol = isNftTransfer
+    ? transfer.name || transfer.symbol
+    : transfer.symbol;
+
+  if (!symbol && amount === undefined) {
+    return undefined;
+  }
 
   const assetId =
     transfer && !isNftTransfer
@@ -197,13 +208,14 @@ export function getTokenAmountFromTransfer(
         })
       : undefined;
 
+  const hasTransferAmount =
+    !isNftTransfer && amount !== null && amount !== undefined;
+
   return {
     direction,
-    ...(transfer.amount === null || transfer.amount === undefined
-      ? {}
-      : { amount: String(transfer.amount) }),
+    ...(hasTransferAmount ? { amount: String(amount) } : {}),
     ...(transfer.decimal === undefined ? {} : { decimals: transfer.decimal }),
-    ...(transfer.symbol ? { symbol: transfer.symbol } : {}),
+    ...(symbol ? { symbol } : {}),
     ...(assetId ? { assetId } : {}),
   };
 }

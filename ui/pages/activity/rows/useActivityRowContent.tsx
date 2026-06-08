@@ -165,13 +165,13 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           primaryToken: token,
         };
       }
+      case 'nftBuy':
       case 'nftMint': {
         const { token } = activity.data;
 
         return {
           avatarTokens: [token?.assetId],
           title: t(labelKeys.title.key, [token?.symbol ?? 'NFT']),
-          subtitle: t(labelKeys.description.key),
           primaryToken: token,
         };
       }
