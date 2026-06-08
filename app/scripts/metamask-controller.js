@@ -2909,10 +2909,7 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:removeAccount',
       ),
-      importAccountWithStrategy: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:importAccountWithStrategy',
-      ),
+      importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
       getAccountsBySnapId: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:getAccountsBySnapId',

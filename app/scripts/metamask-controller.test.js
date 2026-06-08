@@ -1022,6 +1022,29 @@ describe('MetaMaskController', () => {
         ]);
       });
 
+      it('exposes the controller import implementation on the public API', async () => {
+        const importAccountWithStrategySpy = jest
+          .spyOn(metamaskController, 'importAccountWithStrategy')
+          .mockResolvedValue();
+        const messengerCallSpy = jest
+          .spyOn(metamaskController.controllerMessenger, 'call')
+          .mockResolvedValue();
+
+        await metamaskController
+          .getApi()
+          .importAccountWithStrategy('privateKey', ['private-key']);
+
+        expect(importAccountWithStrategySpy).toHaveBeenCalledWith(
+          'privateKey',
+          ['private-key'],
+        );
+        expect(messengerCallSpy).not.toHaveBeenCalledWith(
+          'LegacyBackgroundApiService:importAccountWithStrategy',
+          'privateKey',
+          ['private-key'],
+        );
+      });
+
       it('adds private key to keyrings in KeyringController', async () => {
         const simpleKeyrings =
           metamaskController.keyringController.getKeyringsByType(
