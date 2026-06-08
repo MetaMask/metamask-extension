@@ -95,11 +95,41 @@ function GenerateBackgroundError() {
   );
 }
 
+// LOCAL TESTING ONLY — do not commit. Sample addresses for every format that
+// `setupSentry`'s redaction is meant to scrub, so we can verify masking end-to-end.
+const SAMPLE_ADDRESSES = {
+  evm: '0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235',
+  solana: '7EYnhQoR9YM3N7UoaKRoA44Uy8JeaZV3qyouov87awMs',
+  tron: 'TJRyWwFs9wTFGZg3JbrVriFbNfCug5tDeC',
+  stellar: 'GDUKMGUGDZQK6YHYA5Z6AY2G4XDSZPSZ3SW5UN3ARVMO6QSRDWP5YLEX',
+  bitcoinBech32: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
+  bitcoinLegacy: '17VZNX1SN5NtKa8UQFxwQbFeFc3iqRYhem',
+};
+
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function CaptureUIError() {
   const handleClick = useCallback(async () => {
-    await window.stateHooks.captureTestError?.('Developer Options');
+    const message =
+      `Addresses: EVM ${SAMPLE_ADDRESSES.evm}, ` +
+      `Solana ${SAMPLE_ADDRESSES.solana}, ` +
+      `Tron ${SAMPLE_ADDRESSES.tron}, ` +
+      `Stellar ${SAMPLE_ADDRESSES.stellar}, ` +
+      `BTC bech32 ${SAMPLE_ADDRESSES.bitcoinBech32}, ` +
+      `BTC legacy ${SAMPLE_ADDRESSES.bitcoinLegacy}`;
+
+    await window.stateHooks.captureTestError?.(message, {
+      // Exercises sanitizeAddressesFromObject on report.extra (incl. nesting + arrays).
+      extra: {
+        ...SAMPLE_ADDRESSES,
+        nested: { deep: { evm: SAMPLE_ADDRESSES.evm } },
+        list: [SAMPLE_ADDRESSES.solana, SAMPLE_ADDRESSES.tron],
+      },
+      // Exercises sanitizeAddressesFromObject on report.contexts.
+      contexts: {
+        account: { address: SAMPLE_ADDRESSES.solana },
+      },
+    });
   }, []);
 
   return (

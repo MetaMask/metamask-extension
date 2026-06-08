@@ -364,10 +364,13 @@ function setupStateHooks(store) {
      *
      * @param {string} [msg] - The error message to capture, defaults to 'Test Error'
      */
-    window.stateHooks.captureTestError = async function (msg = 'Test Error') {
+    window.stateHooks.captureTestError = async function (
+      msg = 'Test Error',
+      captureContext,
+    ) {
       const error = new Error(msg);
       error.name = 'TestError';
-      captureException(error);
+      captureException(error, captureContext);
     };
     /**
      * The following stateHook is a method intended to throw an error in the
