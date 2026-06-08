@@ -1555,7 +1555,7 @@ const PerpsMarketDetailPage = () => {
         {/* Orders Section - shown regardless of position, but only if there are orders */}
         {orders.length > 0 && (
           <Box paddingLeft={4} paddingRight={4}>
-            <Box paddingBottom={2}>
+            <Box paddingBottom={2} data-testid="perps-orders-section-header">
               <Text
                 variant={TextVariant.HeadingSm}
                 fontWeight={FontWeight.Medium}
@@ -1581,7 +1581,7 @@ const PerpsMarketDetailPage = () => {
 
         {/* Stats Section - always visible */}
         <Box paddingLeft={4} paddingRight={4}>
-          <Box paddingTop={4} paddingBottom={2}>
+          <Box paddingTop={4} paddingBottom={2} data-testid="perps-stats-section-header">
             <Text
               variant={TextVariant.HeadingSm}
               fontWeight={FontWeight.Medium}
