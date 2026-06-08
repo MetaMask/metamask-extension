@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { Box } from '@metamask/design-system-react';
 import { I18nContext } from '../../../../contexts/i18n';
 import { useModalProps } from '../../../../hooks/useModalProps';
 import { useMetamaskNotificationsContext } from '../../../../contexts/metamask-notifications/metamask-notifications';
@@ -22,7 +23,6 @@ import { NOTIFICATIONS_ROUTE } from '../../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 
 import {
-  Box,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -33,8 +33,6 @@ import {
 } from '../../../component-library';
 import {
   AlignItems,
-  BlockSize,
-  BorderRadius,
   FlexDirection,
   FontWeight,
   TextColor,
@@ -133,13 +131,9 @@ export default function TurnOnMetamaskNotifications() {
           {t('turnOnMetamaskNotifications')}
         </ModalHeader>
         <ModalBody>
-          <Box
-            as="img"
-            src="./images/turn-on-metamask-notifications.png"
-            width={BlockSize.Full}
-            borderRadius={BorderRadius.MD}
-            marginBottom={4}
-          />
+          <Box asChild className="w-full rounded-md" marginBottom={4}>
+            <img src="./images/turn-on-metamask-notifications.png" />
+          </Box>
           <Text as="p">{t('turnOnMetamaskNotificationsMessageFirst')}</Text>
           <Text as="p" paddingTop={4}>
             {
