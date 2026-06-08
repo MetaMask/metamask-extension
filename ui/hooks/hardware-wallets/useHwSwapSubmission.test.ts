@@ -7,7 +7,7 @@ import {
   HardwareWalletSignatureEvent,
   HardwareWalletSignatureStatus,
 } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
-import { createSignatureState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine.test-helpers';
+import { createSignatureState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine/test-helpers';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { rejectPendingApproval } from '../../store/actions';
 import { useHwSwapSubmission } from './useHwSwapSubmission';
