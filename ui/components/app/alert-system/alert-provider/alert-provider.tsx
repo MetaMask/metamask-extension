@@ -1,10 +1,10 @@
 import React from 'react';
+import { Box, BoxSpacing } from '@metamask/design-system-react';
 import {
   SECURITY_PROVIDER_CONFIG,
   SecurityProvider,
 } from '../../../../../shared/constants/security-provider';
 import {
-  Box,
   ButtonLink,
   ButtonLinkSize,
   Icon,
@@ -12,7 +12,6 @@ import {
   IconSize,
   Text,
 } from '../../../component-library';
-import { SizeNumber } from '../../../component-library/box/box.types';
 import {
   AlignItems,
   Display,
@@ -23,9 +22,15 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
+const TEXT_ALIGN_CLASS: Partial<Record<TextAlign, string>> = {
+  [TextAlign.Left]: 'text-left',
+  [TextAlign.Center]: 'text-center',
+  [TextAlign.Right]: 'text-right',
+};
+
 export type AlertProviderProps = {
   provider?: SecurityProvider;
-  paddingTop?: SizeNumber;
+  paddingTop?: BoxSpacing;
   textAlign?: TextAlign;
 };
 
@@ -43,7 +48,10 @@ export function AlertProvider({
   }
 
   return (
-    <Box paddingTop={paddingTop} textAlign={textAlign}>
+    <Box
+      paddingTop={paddingTop}
+      className={textAlign ? TEXT_ALIGN_CLASS[textAlign] : undefined}
+    >
       <Text
         marginTop={1}
         display={Display.InlineFlex}

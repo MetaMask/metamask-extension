@@ -125,6 +125,48 @@ jest.mock('./messenger-client-init/perps-controller-init', () => ({
   })),
 }));
 
+jest.mock('./messenger-client-init/accounts/snap-account-service-init', () => ({
+  SnapAccountServiceInit: jest
+    .fn()
+    .mockImplementation(({ controllerMessenger }) => {
+      controllerMessenger.registerActionHandler(
+        'SnapAccountService:ensureReady',
+        // Never-resolving promise: prevents any Snap provider from proceeding
+        // past `ensureReady`, so no Snap accounts get created during init.
+        () => new Promise(() => undefined),
+      );
+      controllerMessenger.registerActionHandler(
+        'SnapAccountService:getLegacySnapKeyring',
+        async () => {
+          const result = await controllerMessenger.call(
+            'KeyringController:withController',
+            async (controller) => {
+              const found = controller.keyrings.find(
+                ({ keyring }) => keyring.type === 'Snap Keyring',
+              );
+              let snapKeyring = found?.keyring;
+              if (!snapKeyring) {
+                const { keyring } =
+                  await controller.addNewKeyring('Snap Keyring');
+                snapKeyring = keyring;
+              }
+              return { snapKeyring };
+            },
+          );
+          return result.snapKeyring;
+        },
+      );
+      return {
+        memStateKey: null,
+        persistedStateKey: null,
+        messengerClient: {
+          init: jest.fn().mockResolvedValue(undefined),
+          name: 'SnapAccountService',
+        },
+      };
+    }),
+}));
+
 jest.mock('webextension-polyfill', () => ({
   runtime: {
     id: 'fake-extension-id',
@@ -2750,9 +2792,12 @@ describe('MetaMaskController', () => {
           encryptor: mockEncryptor,
           initState: {
             ...cloneDeep(firstTimeState),
+            AnalyticsController: {
+              analyticsId: 'MOCK_METRICS_ID',
+              optedIn: true,
+            },
             MetaMetricsController: {
-              metaMetricsId: 'MOCK_METRICS_ID',
-              participateInMetaMetrics: true,
+              completedMetaMetricsOnboarding: true,
               dataCollectionForMarketing: true,
             },
           },
@@ -4395,10 +4440,14 @@ describe('MetaMaskController', () => {
         jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
 
         await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
+        await metamaskController.submitPassword(password); // Force-unlock to trigger Snap keyring creation.
 
         const previousKeyrings = cloneDeep(
           metamaskController.keyringController.state.keyrings,
         );
+
+        // 0: Primary HD keyring, 1: Snap keyring
+        expect(previousKeyrings).toHaveLength(2);
 
         await metamaskController.importMnemonicToVault(TEST_SEED_ALT);
 
