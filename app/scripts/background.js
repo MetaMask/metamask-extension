@@ -48,6 +48,7 @@ import { maskObject } from '../../shared/lib/object.utils';
 import {
   OffscreenCommunicationTarget,
   OffscreenCommunicationEvents,
+  LedgerHandlerMode,
 } from '../../shared/constants/offscreen-communication';
 import { captureException } from '../../shared/lib/sentry';
 import { getCurrentChainId } from '../../shared/lib/selectors/networks';
@@ -63,13 +64,15 @@ import {
   backedUpStateKeys,
   hasVault,
 } from '../../shared/lib/stores/persistence-manager';
-import { CriticalErrorHandler } from './lib/critical-error/critical-error-recovery';
-import { CorruptionHandler } from './lib/state-corruption/state-corruption-recovery';
-import { getAttentionRequiredApprovalCount } from './lib/approval/utils';
-import { useSplitStateStorage } from './lib/use-split-state-storage';
-import migrations from './migrations';
-import Migrator from './lib/migrator';
+import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
+import { ENABLE_DMK_FEATURE_FLAG } from '../../shared/lib/hardware-wallets/feature-flags';
 import { updateRemoteFeatureFlags } from './lib/update-remote-feature-flags';
+import Migrator from './lib/migrator';
+import migrations from './migrations';
+import { useSplitStateStorage } from './lib/use-split-state-storage';
+import { getAttentionRequiredApprovalCount } from './lib/approval/utils';
+import { CorruptionHandler } from './lib/state-corruption/state-corruption-recovery';
+import { CriticalErrorHandler } from './lib/critical-error/critical-error-recovery';
 import ExtensionPlatform from './platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
 
@@ -87,11 +90,7 @@ import {
   isWebOrigin,
   shouldEmitDappViewedEvent,
 } from './lib/util';
-import {
-  createOffscreen,
-  addOffscreenConnectivityListener,
-  addLedgerModeResponder,
-} from './offscreen';
+import { createOffscreen, addOffscreenConnectivityListener } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
 import rawFirstTimeState from './first-time-state';
 import { onUpdate } from './on-update';
@@ -235,7 +234,9 @@ const frameIdMapping = {};
 if (inTest || process.env.METAMASK_DEBUG) {
   global.stateHooks.metamaskGetState = persistenceManager.get.bind(
     persistenceManager,
-    { validateVault: false },
+    {
+      validateVault: false,
+    },
   );
 }
 
@@ -805,19 +806,10 @@ async function initialize(backup) {
   // This is fire-and-forget - we don't await it to avoid blocking initialization
   initInstallType();
 
-  // Set up a deferred controller promise so the offscreen's getLedgerMode
-  // query can wait for the controller to be constructed. The offscreen boots
-  // in parallel with controller construction; this lets the responder await
-  // controller readiness without blocking the offscreen's initialization.
-  let controllerResolve;
-  const controllerPromise = new Promise((resolve) => {
-    controllerResolve = resolve;
-  });
-
-  if (isManifestV3) {
-    addLedgerModeResponder(controllerPromise);
-  }
-
+  // The offscreen document boots in parallel with controller construction.
+  // createOffscreen resolves once the offscreen sends isBooted. The
+  // offscreen always starts in Legacy mode — the correct mode is pushed
+  // via switchLedgerMode after the controller is ready.
   const offscreenPromise = isManifestV3 ? createOffscreen() : null;
 
   // Set up connectivity listener IMMEDIATELY for MV3 (before any awaits)
@@ -893,9 +885,49 @@ async function initialize(backup) {
     cronjobControllerStorageManager,
   );
 
-  // Resolve the deferred so the offscreen's getLedgerMode responder (and any
-  // other deferred consumers) can now talk to the controller.
-  controllerResolve(controller);
+  // Push the initial Ledger handler mode to the offscreen document.
+  // The offscreen boots as Legacy by default; if DMK is enabled via the
+  // remote feature flag we send a switchLedgerMode event to hot-swap.
+  if (isManifestV3) {
+    try {
+      const initialMode = controller.getLedgerMode();
+      chrome.runtime.sendMessage({
+        target: OffscreenCommunicationTarget.extension,
+        event: OffscreenCommunicationEvents.switchLedgerMode,
+        mode: initialMode,
+      });
+    } catch (error) {
+      console.error('[LedgerMode] Failed to push initial mode:', error);
+    }
+  }
+
+  // Subscribe to remote feature flag changes for the Ledger DMK bridge.
+  // When the `enableDmk` flag toggles, push a `switchLedgerMode` event to
+  // the offscreen document so it can hot-swap the active Ledger handler.
+  if (isManifestV3) {
+    controller.controllerMessenger.subscribe(
+      'RemoteFeatureFlagController:stateChange',
+      (isDmkEnabled) => {
+        const mode = isDmkEnabled
+          ? LedgerHandlerMode.DMK
+          : LedgerHandlerMode.Legacy;
+        try {
+          chrome.runtime.sendMessage({
+            target: OffscreenCommunicationTarget.extension,
+            event: OffscreenCommunicationEvents.switchLedgerMode,
+            mode,
+          });
+        } catch (error) {
+          console.warn('Failed to send switchLedgerMode to offscreen:', error);
+        }
+      },
+      (state) =>
+        getBooleanFeatureFlag(
+          state.remoteFeatureFlags[ENABLE_DMK_FEATURE_FLAG],
+          false,
+        ),
+    );
+  }
 
   controller.metaMetricsController.updateTraits({
     [MetaMetricsUserTrait.StorageKind]: persistenceManager.storageKind,
@@ -1866,7 +1898,9 @@ export function setupController(
       ) {
         const portStreamForCookieHandlerPage = new ExtensionPortStream(
           remotePort,
-          { chunkSize: 0 },
+          {
+            chunkSize: 0,
+          },
         );
         controller.setUpCookieHandlerCommunication({
           connectionStream: portStreamForCookieHandlerPage,

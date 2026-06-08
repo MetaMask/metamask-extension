@@ -149,6 +149,10 @@ export class LedgerDMKBridgeHandler {
 
   private sessionStateSubscription: Subscription | null = null;
 
+  private messageListenerFn:
+    | ((msg: any, sender: any, sendResponse: any) => boolean)
+    | null = null;
+
   /**
    * Lazily creates and caches the `LedgerDMKBridge` instance.
    * Deduplicates concurrent calls via `bridgePromise`.
@@ -309,53 +313,53 @@ export class LedgerDMKBridgeHandler {
    */
   private setupMessageListener(): void {
     console.debug('[LedgerDMK] Setting up message listener');
-    chrome.runtime.onMessage.addListener(
-      (
-        msg: {
-          target: string;
-          action: LedgerAction;
-          params?: Record<string, unknown>;
-        },
-        _sender,
-        sendResponse,
-      ) => {
-        if (msg.target !== OffscreenCommunicationTarget.ledgerOffscreen) {
-          return false;
-        }
-
-        console.debug(
-          '[LedgerDMK] Received message',
-          JSON.stringify({
-            action: msg.action,
-            hasParams: Boolean(msg.params),
-          }),
-        );
-
-        this.handleAction(msg.action, msg.params)
-          .then((result) => {
-            console.debug(
-              '[LedgerDMK] Action succeeded',
-              JSON.stringify({ action: msg.action }),
-            );
-            sendResponse({
-              success: true,
-              payload: result,
-            });
-          })
-          .catch((error) => {
-            console.error('[LedgerDMK] Action failed:', error);
-            sendResponse({
-              success: false,
-              payload: {
-                error: serializeError(error),
-              },
-            });
-          });
-
-        // Return true to indicate we will send response asynchronously
-        return true;
+    this.messageListenerFn = (
+      msg: {
+        target: string;
+        action: LedgerAction;
+        params?: Record<string, unknown>;
       },
-    );
+      _sender,
+      sendResponse,
+    ): boolean => {
+      if (msg.target !== OffscreenCommunicationTarget.ledgerOffscreen) {
+        return false;
+      }
+
+      console.debug(
+        '[LedgerDMK] Received message',
+        JSON.stringify({
+          action: msg.action,
+          hasParams: Boolean(msg.params),
+        }),
+      );
+
+      this.handleAction(msg.action, msg.params)
+        .then((result) => {
+          console.debug(
+            '[LedgerDMK] Action succeeded',
+            JSON.stringify({ action: msg.action }),
+          );
+          sendResponse({
+            success: true,
+            payload: result,
+          });
+        })
+        .catch((error) => {
+          console.error('[LedgerDMK] Action failed:', error);
+          sendResponse({
+            success: false,
+            payload: {
+              error: serializeError(error),
+            },
+          });
+        });
+
+      // Return true to indicate we will send response asynchronously
+      return true;
+    };
+
+    chrome.runtime.onMessage.addListener(this.messageListenerFn);
   }
 
   /**
@@ -469,11 +473,17 @@ export class LedgerDMKBridgeHandler {
   /**
    * Initializes the handler.
    * Sets up device event listeners and message handlers.
+   *
+   * @param skipMessageListener - When true, the handler does NOT register its
+   *   own chrome.runtime.onMessage listener.  This is used when a central
+   *   router (ledger-router.ts) manages the listener instead.
    */
-  async init(): Promise<void> {
+  async init(skipMessageListener = false): Promise<void> {
     console.debug('[LedgerDMK] init() — starting');
     this.setupDeviceEventListeners();
-    this.setupMessageListener();
+    if (!skipMessageListener) {
+      this.setupMessageListener();
+    }
     console.debug('[LedgerDMK] init() — listeners registered');
 
     // Notify extension if a Ledger is already permitted
@@ -511,6 +521,10 @@ export class LedgerDMKBridgeHandler {
    * Safe to call multiple times.
    */
   async destroy(): Promise<void> {
+    if (this.messageListenerFn) {
+      chrome.runtime.onMessage.removeListener(this.messageListenerFn);
+      this.messageListenerFn = null;
+    }
     if (this.sessionStateSubscription) {
       this.sessionStateSubscription.unsubscribe();
       this.sessionStateSubscription = null;

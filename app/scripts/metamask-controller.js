@@ -149,6 +149,8 @@ import {
 } from '../../shared/constants/hardware-wallets';
 import { LedgerHandlerMode } from '../../shared/constants/offscreen-communication';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
+import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
+import { ENABLE_DMK_FEATURE_FLAG } from '../../shared/lib/hardware-wallets/feature-flags';
 import { KeyringType } from '../../shared/constants/keyring';
 import { RestrictedMethods } from '../../shared/constants/permissions';
 import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../shared/constants/passkey';
@@ -5624,7 +5626,7 @@ export default class MetamaskController extends EventEmitter {
    *
    * @returns {LedgerHandlerMode}
    */
-  async getLedgerMode() {
+  getLedgerMode() {
     const state = this.controllerMessenger.call(
       'RemoteFeatureFlagController:getState',
     );
@@ -5633,7 +5635,7 @@ export default class MetamaskController extends EventEmitter {
       state.remoteFeatureFlags ?? {},
       getManifestFlags().remoteFeatureFlags ?? {},
     );
-    return merged.ledgerDmkBridge
+    return getBooleanFeatureFlag(merged[ENABLE_DMK_FEATURE_FLAG], false)
       ? LedgerHandlerMode.DMK
       : LedgerHandlerMode.Legacy;
   }

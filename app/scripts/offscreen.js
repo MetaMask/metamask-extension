@@ -1,7 +1,6 @@
 import { captureException } from '../../shared/lib/sentry';
 import {
   OFFSCREEN_LOAD_TIMEOUT,
-  LedgerHandlerMode,
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../shared/constants/offscreen-communication';
@@ -47,9 +46,6 @@ export async function createOffscreen() {
         msg.target === OffscreenCommunicationTarget.extensionMain &&
         msg.isBooted
       ) {
-        chrome.runtime.onMessage.removeListener(
-          offscreenDocumentLoadedListener,
-        );
         resolve();
 
         // If the Offscreen Document sees `navigator.webdriver === true` and we are in a test environment,
@@ -97,7 +93,16 @@ export async function createOffscreen() {
     setTimeout(resolve, OFFSCREEN_LOAD_TIMEOUT);
   });
 
-  await Promise.race([loadPromise, timeoutPromise]);
+  // Bug 3 fix: Always clean up the listener, whether the load promise
+  // wins (isBooted received) or the timeout wins. Without this, the
+  // listener leaks on timeout and may fire on subsequent boots.
+  try {
+    await Promise.race([loadPromise, timeoutPromise]);
+  } finally {
+    if (offscreenDocumentLoadedListener) {
+      chrome.runtime.onMessage.removeListener(offscreenDocumentLoadedListener);
+    }
+  }
 
   console.debug('Offscreen iframe loaded');
 }
@@ -126,45 +131,5 @@ export function addOffscreenConnectivityListener(onConnectivityChange) {
     ) {
       onConnectivityChange(message.isOnline);
     }
-  });
-}
-
-/**
- * Sets up a listener for `getLedgerMode` queries from the offscreen document.
- *
- * The offscreen document sends this query during its initialization to
- * determine which Ledger handler implementation to use (DMK bridge or legacy).
- * The response is asynchronous because the controller may not be constructed
- * yet when the offscreen boots.
- *
- * @param {Promise<object>} controllerPromise - A promise resolving to the
- *   MetaMask controller instance.
- */
-export function addLedgerModeResponder(controllerPromise) {
-  const { chrome } = globalThis;
-  if (!chrome?.runtime?.onMessage) {
-    return;
-  }
-
-  chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
-    if (
-      message &&
-      message.target === OffscreenCommunicationTarget.extensionMain &&
-      message.action === 'getLedgerMode'
-    ) {
-      controllerPromise
-        .then((controller) => controller.getLedgerMode())
-        .then((mode) => {
-          sendResponse({ mode });
-        })
-        .catch((error) => {
-          // Default to legacy on any error so the offscreen can continue booting.
-          console.warn('getLedgerMode failed, defaulting to legacy:', error);
-          sendResponse({ mode: LedgerHandlerMode.Legacy });
-        });
-      // Return true to indicate we will sendResponse asynchronously.
-      return true;
-    }
-    return false;
   });
 }

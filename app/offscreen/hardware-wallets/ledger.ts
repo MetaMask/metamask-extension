@@ -110,6 +110,14 @@ export class LedgerLegacyHandler {
   // Prevents concurrent makeApp calls from creating multiple transports
   private pendingMakeApp: Promise<boolean> | null = null;
 
+  private messageListenerFn:
+    | ((
+        msg: Record<string, unknown>,
+        sender: unknown,
+        sendResponse: (response: unknown) => void,
+      ) => boolean)
+    | null = null;
+
   /**
    * Attempts to open a transport to an already-permitted Ledger device.
    * This does NOT require a user gesture - it only works for devices
@@ -449,45 +457,45 @@ export class LedgerLegacyHandler {
    * Sets up the message listener for handling Ledger actions from the offscreen bridge.
    */
   private setupMessageListener(): void {
-    chrome.runtime.onMessage.addListener(
-      (
-        msg: {
-          target: string;
-          action: LedgerAction;
-          params?: Record<string, unknown>;
-        },
-        _sender,
-        sendResponse,
-      ) => {
-        if (msg.target !== OffscreenCommunicationTarget.ledgerOffscreen) {
-          return false;
-        }
-
-        // Handle the action asynchronously
-        this.handleLedgerAction(msg.action, msg.params)
-          .then((result) => {
-            sendResponse({
-              success: true,
-              payload: result,
-            });
-          })
-          .catch((error) => {
-            console.error(`Ledger action ${msg.action} failed:`, error);
-            sendResponse({
-              success: false,
-              payload: {
-                error: serializeError(error),
-              },
-            });
-          })
-          .finally(() => {
-            this.closeTransport();
-          });
-
-        // Return true to indicate we will send response asynchronously
-        return true;
+    this.messageListenerFn = (
+      msg: {
+        target: string;
+        action: LedgerAction;
+        params?: Record<string, unknown>;
       },
-    );
+      _sender,
+      sendResponse,
+    ): boolean => {
+      if (msg.target !== OffscreenCommunicationTarget.ledgerOffscreen) {
+        return false;
+      }
+
+      // Handle the action asynchronously
+      this.handleLedgerAction(msg.action, msg.params)
+        .then((result) => {
+          sendResponse({
+            success: true,
+            payload: result,
+          });
+        })
+        .catch((error) => {
+          console.error(`Ledger action ${msg.action} failed:`, error);
+          sendResponse({
+            success: false,
+            payload: {
+              error: serializeError(error),
+            },
+          });
+        })
+        .finally(() => {
+          this.closeTransport();
+        });
+
+      // Return true to indicate we will send response asynchronously
+      return true;
+    };
+
+    chrome.runtime.onMessage.addListener(this.messageListenerFn);
   }
 
   /**
@@ -591,12 +599,47 @@ export class LedgerLegacyHandler {
   }
 
   /**
+   * Public entry point for processing Ledger actions.
+   *
+   * Used by the centralized ledger-router so both DMK and Legacy handlers
+   * expose the same `handleAction` surface for the message listener.
+   * @param action
+   * @param params
+   */
+  async handleAction(
+    action: LedgerAction,
+    params?: Record<string, unknown>,
+  ): Promise<unknown> {
+    return this.handleLedgerAction(action, params);
+  }
+
+  /**
+   * Cleans up the handler: removes the chrome message listener and
+   * closes any open transport.
+   *
+   * Safe to call multiple times.
+   */
+  async destroy(): Promise<void> {
+    if (this.messageListenerFn) {
+      chrome.runtime.onMessage.removeListener(this.messageListenerFn);
+      this.messageListenerFn = null;
+    }
+    this.closeTransport();
+  }
+
+  /**
    * Initializes the Ledger offscreen handler.
    * Sets up device event listeners and message handlers.
+   *
+   * @param skipMessageListener - When true, the handler does NOT register its
+   *   own chrome.runtime.onMessage listener.  This is used when a central
+   *   router (ledger-router.ts) manages the listener instead.
    */
-  async init(): Promise<void> {
+  async init(skipMessageListener = false): Promise<void> {
     this.setupDeviceEventListeners();
-    this.setupMessageListener();
+    if (!skipMessageListener) {
+      this.setupMessageListener();
+    }
 
     // Check if there's already a permitted device connected
     if (!isWebHIDSupported()) {
@@ -627,10 +670,16 @@ export class LedgerLegacyHandler {
 }
 
 /**
- * Initializes the legacy Ledger offscreen handler.
- * Sets up device event listeners and message handlers.
+ * Creates a new legacy Ledger handler instance.
+ *
+ * The handler is returned WITHOUT calling init() — the central router
+ * (ledger-router.ts) calls handler.init(skipMessageListener) so it can
+ * control whether the handler registers its own chrome.runtime.onMessage
+ * listener.  This avoids double-dispatching messages through both the
+ * router's central listener and the handler's own listener.
+ *
+ * @returns A raw LedgerLegacyHandler instance (uninitialised).
  */
-export default async function init(): Promise<void> {
-  const handler = new LedgerLegacyHandler();
-  await handler.init();
+export default function initLegacy(): LedgerLegacyHandler {
+  return new LedgerLegacyHandler();
 }

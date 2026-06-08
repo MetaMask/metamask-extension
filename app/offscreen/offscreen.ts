@@ -2,12 +2,10 @@ import { BrowserRuntimePostMessageStream } from '@metamask/post-message-stream';
 import { ProxySnapExecutor } from '@metamask/snaps-execution-environments';
 import { isObject } from '@metamask/utils';
 import {
-  LedgerHandlerMode,
-  OFFSCREEN_LEDGER_INIT_TIMEOUT,
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../shared/constants/offscreen-communication';
-import initLedger from './hardware-wallets/ledger-router';
+import { bootstrapLedger } from './hardware-wallets/ledger-router';
 import initTrezor from './hardware-wallets/trezor';
 import initLattice from './hardware-wallets/lattice';
 import initConnectivityDetection from './connectivity';
@@ -28,55 +26,6 @@ function initializePostMessageStream() {
 }
 
 /**
- * Query the background for the active Ledger handler mode.
- *
- * The background's `addLedgerModeResponder` listener replies asynchronously
- * with `{mode: LedgerHandlerMode}` based on the `ledgerDmkBridge` remote
- * feature flag. If the controller isn't ready yet, the query times out and
- * we fall back to `LedgerHandlerMode.Legacy`.
- *
- * @returns The active ledger handler mode.
- */
-async function getLedgerMode(): Promise<LedgerHandlerMode> {
-  const GET_LEDGER_MODE_TIMEOUT_MS = 2000;
-
-  try {
-    const response = await new Promise<{ mode?: LedgerHandlerMode }>(
-      (resolve, reject) => {
-        const timeout = setTimeout(() => {
-          reject(new Error('getLedgerMode timed out'));
-        }, GET_LEDGER_MODE_TIMEOUT_MS);
-
-        chrome.runtime.sendMessage(
-          {
-            target: OffscreenCommunicationTarget.extensionMain,
-            action: 'getLedgerMode',
-          },
-          (response: { mode?: LedgerHandlerMode }) => {
-            clearTimeout(timeout);
-            if (chrome.runtime.lastError) {
-              reject(new Error(chrome.runtime.lastError.message));
-              return;
-            }
-            resolve(response ?? {});
-          },
-        );
-      },
-    );
-
-    return response?.mode === LedgerHandlerMode.DMK
-      ? LedgerHandlerMode.DMK
-      : LedgerHandlerMode.Legacy;
-  } catch (error) {
-    console.warn(
-      '[LedgerOffscreen] Failed to get Ledger mode, defaulting to legacy:',
-      error,
-    );
-    return LedgerHandlerMode.Legacy;
-  }
-}
-
-/**
  * Initialize the ledger, trezor, and lattice keyring connections, and the
  * post message stream for the Snaps environment.
  */
@@ -85,20 +34,25 @@ async function init(): Promise<void> {
   initTrezor();
   initLattice();
 
-  try {
-    const ledgerMode = await getLedgerMode();
-    const ledgerInitTimeout = new Promise((_, reject) => {
-      setTimeout(() => {
-        reject(new Error('Ledger initialization timed out'));
-      }, OFFSCREEN_LEDGER_INIT_TIMEOUT);
-    });
-    await Promise.race([initLedger(ledgerMode), ledgerInitTimeout]);
-  } catch (error) {
-    console.error('Ledger initialization failed:', error);
-  }
-}
+  // Signal that the offscreen document is booted.  The background's
+  // createOffscreen() isBooted handler resolves on this message.
+  // bootstrapLedger() starts the Legacy handler immediately; the
+  // background pushes the correct mode (DMK or Legacy) via
+  // switchLedgerMode once the controller is ready.
+  chrome.runtime.sendMessage({
+    target: OffscreenCommunicationTarget.extensionMain,
+    isBooted: true,
 
-init().then(() => {
+    // This message is being sent from the Offscreen Document to the Service Worker.
+    // The Service Worker has no way to query `navigator.webdriver`, so we send it here.
+    webdriverPresent: navigator.webdriver === true,
+  });
+
+  await bootstrapLedger();
+
+  // The background broadcasts `metamaskBackgroundReady` only after its
+  // initialize() function returns, which happens after the controller is
+  // built. So registering the test listener here cannot miss the event.
   if (process.env.IN_TEST) {
     chrome.runtime.onMessage.addListener((message) => {
       if (
@@ -113,14 +67,7 @@ init().then(() => {
     });
   }
 
-  chrome.runtime.sendMessage({
-    target: OffscreenCommunicationTarget.extensionMain,
-    isBooted: true,
-
-    // This message is being sent from the Offscreen Document to the Service Worker.
-    // The Service Worker has no way to query `navigator.webdriver`, so we send it here.
-    webdriverPresent: navigator.webdriver === true,
-  });
-
   initConnectivityDetection();
-});
+}
+
+init();

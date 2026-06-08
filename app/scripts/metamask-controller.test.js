@@ -2448,6 +2448,57 @@ describe('MetaMaskController', () => {
         });
       });
 
+      describe('getLedgerMode', () => {
+        let remoteFeatureFlags;
+
+        beforeEach(() => {
+          remoteFeatureFlags = {};
+          jest
+            .spyOn(
+              metamaskController.controllerMessenger,
+              'call',
+            )
+            .mockImplementation((action) => {
+              if (action === 'RemoteFeatureFlagController:getState') {
+                return { remoteFeatureFlags };
+              }
+              return {};
+            });
+        });
+
+        it('returns Legacy when the enableDmk flag is missing', () => {
+          const mode = metamaskController.getLedgerMode();
+          expect(mode).toBe('legacy');
+        });
+
+        it('returns Legacy when enableDmk is disabled', () => {
+          remoteFeatureFlags.enableDmk = {
+            enabled: false,
+            featureVersion: null,
+            minimumVersion: null,
+          };
+          const mode = metamaskController.getLedgerMode();
+          expect(mode).toBe('legacy');
+        });
+
+        it('returns DMK when enableDmk is enabled', () => {
+          remoteFeatureFlags.enableDmk = {
+            enabled: true,
+            featureVersion: '13.36.0',
+            minimumVersion: '13.36.0',
+          };
+          const mode = metamaskController.getLedgerMode();
+          expect(mode).toBe('dmk');
+        });
+
+        it('does NOT use ledgerDmkBridge as the flag key', () => {
+          // The old (broken) key should have no effect
+          remoteFeatureFlags.ledgerDmkBridge = true;
+          const mode = metamaskController.getLedgerMode();
+          expect(mode).toBe('legacy');
+        });
+      });
+
       describe('getHardwareTypeForMetric', () => {
         it.each(['ledger', 'lattice', 'trezor', 'oneKey', 'qr'])(
           'should return the correct type for %s',
