@@ -1916,14 +1916,6 @@
         "@metamask/keyring-utils": true
       }
     },
-    "@metamask/multichain-account-service>@metamask/eth-snap-keyring>@metamask/keyring-internal-snap-client": {
-      "packages": {
-        "@metamask/multichain-account-service>@metamask/eth-snap-keyring>@metamask/keyring-internal-snap-client>@metamask/keyring-api": true,
-        "@metamask/keyring-internal-api": true,
-        "@metamask/multichain-account-service>@metamask/keyring-snap-client": true,
-        "@metamask/keyring-utils": true
-      }
-    },
     "@metamask/keyring-sdk": {
       "globals": {
         "TextEncoder": true
@@ -6800,16 +6792,6 @@
       }
     },
     "@metamask/eth-snap-keyring>uuid": {
-      "globals": {
-        "crypto": true
-      }
-    },
-    "@metamask/multichain-account-service>@metamask/eth-snap-keyring>uuid": {
-      "globals": {
-        "crypto": true
-      }
-    },
-    "@metamask/multichain-account-service>@metamask/keyring-api>uuid": {
       "globals": {
         "crypto": true
       }
