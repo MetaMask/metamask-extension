@@ -224,23 +224,17 @@ class AssetListPage extends HomePage {
   private async expandLowValueAssetsIfPresent(): Promise<void> {
     // If the low value assets section is already expanded, no action is required.
     try {
-      await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded);
+      await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded, {
+        timeout: 2000,
+      });
       return;
     } catch {
-      // Not expanded yet, attempt to expand it below.
+      // Not expanded yet (or low value section not present), attempt to expand it below.
     }
 
     // Use the "safe" click and a guarded wait so a re-render that removes the
     // toggle does not fail the test.
     await this.driver.clickElementSafe(this.lowValueAssetsToggle);
-    try {
-      await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded, {
-        timeout: 5000,
-      });
-    } catch {
-      // The toggle disappeared or never expanded; proceed and let the caller's
-      // interaction determine success or failure.
-    }
   }
 
   async getCurrentNetworksOptionTotal(): Promise<string> {
