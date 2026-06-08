@@ -2,7 +2,6 @@ import { Context } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { NETWORK_CLIENT_ID } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -14,10 +13,11 @@ describe('Token List Sorting', function () {
   const mainnetChainId = CHAIN_IDS.MAINNET;
   const customTokenAddress = '0x2EFA2Cb29C2341d8E5Ba7D3262C9e9d6f1Bf3711';
   const customTokenSymbol = 'ABC';
+  const customTokenAssetId = `eip155:1/erc20:${customTokenAddress.toLowerCase()}`;
 
   const testFixtures = {
     fixtures: new FixtureBuilderV2()
-      .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+      .withNetworkRpcUrlOnLocalhost(mainnetChainId)
       .withEnabledNetworks({ eip155: { [mainnetChainId]: true } })
       .build(),
     localNodeOptions: {
@@ -25,20 +25,27 @@ describe('Token List Sorting', function () {
     },
   };
 
+  async function mockCustomTokenImport(mockServer: MockttpServer) {
+    await mockSpotPrices(mockServer, {
+      'eip155:1/slip44:60': {
+        price: 1700,
+        marketCap: 382623505141,
+        pricePercentChange1d: 0,
+      },
+      [customTokenAssetId]: {
+        price: 0,
+        marketCap: 0,
+        pricePercentChange1d: 0,
+      },
+    });
+  }
+
   it('should sort tokens alphabetically and by decreasing balance', async function () {
     await withFixtures(
       {
         ...testFixtures,
         title: (this as Context).test?.fullTitle(),
-        testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockSpotPrices(mockServer, {
-            'eip155:1/slip44:60': {
-              price: 1700,
-              marketCap: 382623505141,
-              pricePercentChange1d: 0,
-            },
-          });
-        },
+        testSpecificMock: mockCustomTokenImport,
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
@@ -48,10 +55,11 @@ describe('Token List Sorting', function () {
 
         await homePage.checkPageIsLoaded();
         await assetListPage.importCustomTokenByChain(
-          CHAIN_IDS.MAINNET,
+          mainnetChainId,
           customTokenAddress,
           customTokenSymbol,
         );
+        await assetListPage.dismissTokenImportedMessage();
 
         await assetListPage.checkTokenExistsInList('Ethereum');
         await assetListPage.sortTokenList('alphabetically');

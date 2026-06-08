@@ -321,6 +321,7 @@
         "depcheck>@babel/parser": true,
         "@lavamoat/webpack>@lavamoat/aa": true,
         "browserify>browser-resolve": true,
+        "@lavamoat/webpack>json-stable-stringify": true,
         "@lavamoat/webpack>lavamoat-core": true,
         "webpack": true
       }
