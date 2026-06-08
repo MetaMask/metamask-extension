@@ -119,7 +119,7 @@ export function useHwSignTracker(
   dispatchRef.current = dispatchSignatureEvent;
 
   const enabled = options?.enabled ?? true;
-  const {useBatchTracking} = options;
+  const { useBatchTracking } = options;
 
   // Shared refs (both modes)
   const trackedTxIdsRef = useRef<Set<string>>(new Set());

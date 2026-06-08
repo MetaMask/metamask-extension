@@ -65,10 +65,7 @@ function createTxMeta(overrides: TxMetaOverrides = {}) {
 function setupCallbacks() {
   const callbacks = new Map<string, (...args: unknown[]) => void>();
   mockSubscribe.mockImplementation(async (event, callback) => {
-    callbacks.set(
-      event as string,
-      callback as (...args: unknown[]) => void,
-    );
+    callbacks.set(event as string, callback as (...args: unknown[]) => void);
     const fn = jest.fn().mockResolvedValue(undefined) as jest.Mock & {
       catch: jest.Mock;
     };
