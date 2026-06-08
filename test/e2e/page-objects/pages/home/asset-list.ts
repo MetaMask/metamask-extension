@@ -232,8 +232,6 @@ class AssetListPage extends HomePage {
       // Not expanded yet (or low value section not present), attempt to expand it below.
     }
 
-    // Use the "safe" click and a guarded wait so a re-render that removes the
-    // toggle does not fail the test.
     await this.driver.clickElementSafe(this.lowValueAssetsToggle);
   }
 
