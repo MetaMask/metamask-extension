@@ -21,6 +21,9 @@ jest.mock('react-redux', () => ({
 }));
 
 jest.mock('../useChainNetworkNameAndImage');
+jest.mock('../pay/useTransactionAccountOverride', () => ({
+  useTransactionAccountOverride: jest.fn(() => undefined),
+}));
 jest.mock('../../../../hooks/useFiatFormatter');
 jest.mock('../../../../../shared/lib/asset-utils', () => ({
   ...jest.requireActual('../../../../../shared/lib/asset-utils'),
