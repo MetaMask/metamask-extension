@@ -1722,4 +1722,42 @@ describe('PerpsMarketDetailPage', () => {
       });
     });
   });
+
+  describe('orders section spacing (TAT-3264)', () => {
+    it('renders the orders section header with the same top spacing token as the stats section header', () => {
+      const store = mockStore(createMockState(true));
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      const ordersHeader = screen.getByTestId('perps-orders-section-header');
+      const statsHeader = screen.getByTestId('perps-stats-section-header');
+
+      // Both adjacent section headers must use the page's section-spacing token
+      // (paddingTop={4} → 16px → `pt-4`). Before the fix the orders header had no
+      // paddingTop, so it sat flush against the preceding block.
+      expect(ordersHeader).toHaveClass('pt-4');
+      expect(statsHeader).toHaveClass('pt-4');
+    });
+
+    it('does not render the orders section when there are no open orders (empty-state, no regression)', () => {
+      const savedOrders = mockOrders.splice(0, mockOrders.length);
+      mockLivePositions.mockReturnValue({
+        positions: [],
+        isInitialLoading: false,
+      });
+      try {
+        const store = mockStore(createMockState(true));
+        renderWithProvider(<PerpsMarketDetailPage />, store);
+
+        expect(
+          screen.queryByTestId('perps-orders-section-header'),
+        ).not.toBeInTheDocument();
+        // The rest of the page still renders correctly.
+        expect(
+          screen.getByTestId('perps-stats-section-header'),
+        ).toBeInTheDocument();
+      } finally {
+        mockOrders.push(...savedOrders);
+      }
+    });
+  });
 });
