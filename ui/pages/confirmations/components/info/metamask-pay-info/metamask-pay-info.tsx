@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { BigNumber } from 'bignumber.js';
 import type { Hex } from '@metamask/utils';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionType } from '@metamask/transaction-controller';
@@ -52,6 +53,7 @@ import {
   generateERC20TransferData,
 } from '../../developer/utils';
 import { getAllTokens } from '../../../../../selectors';
+import { setTransactionPayConfig } from '../../../../../store/controller-actions/transaction-pay-controller';
 
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -72,6 +74,12 @@ const MAINNET_USDC_ADDRESS =
   '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' as Hex;
 const MAINNET_CHAIN_ID = '0x1' as Hex;
 const USDC_DECIMALS = 6;
+
+// Dummy calldata for post-quote mode — non-transfer selector so TPC doesn't
+// try to decode an ERC-20 transfer; requiredAssets drives the token/amount.
+// The actual on-chain call will be a zero-value ETH self-transfer (to=from,
+// data=0x, value=0x0) — harmless and always succeeds.
+const POST_QUOTE_DATA = '0x' as Hex;
 
 const DEFAULT_TARGET_TOKEN: SelectedTargetToken = {
   address: MAINNET_USDC_ADDRESS,
@@ -125,6 +133,7 @@ export function MetaMaskPayInfo() {
     initialTargetToken,
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPostQuote, setIsPostQuote] = useState(false);
 
   useAddToken({
     tokenAddress: MAINNET_USDC_ADDRESS,
@@ -134,8 +143,10 @@ export function MetaMaskPayInfo() {
   });
 
   // Same-chain token change: push updated txParams.to + data to TC.
+  // No-op in post-quote mode — txParams.to is the self-transfer address there
+  // and requiredAssets[0].address tracks the target token instead.
   useEffect(() => {
-    if (!currentConfirmation) {
+    if (!currentConfirmation || isPostQuote) {
       return;
     }
 
@@ -251,10 +262,79 @@ export function MetaMaskPayInfo() {
     [currentConfirmation, dispatch, navigateToTransaction, targetToken.decimals],
   );
 
+  const handlePostQuoteToggle = useCallback(async () => {
+    if (!currentConfirmation) {
+      return;
+    }
+
+    const next = !isPostQuote;
+    setIsPostQuote(next);
+
+    const txId = currentConfirmation.id;
+
+    // Notify TPC so it switches quote mode.
+    await setTransactionPayConfig(txId, { isPostQuote: next });
+
+    const from = currentConfirmation.txParams?.from as Hex | undefined;
+    const currentData = currentConfirmation.txParams?.data as string | undefined;
+    const currentAmountHuman = currentData
+      ? decodeERC20TransferAmount(currentData, targetToken.decimals)
+      : '0';
+    const currentAmountRaw = `0x${new BigNumber(currentAmountHuman)
+      .times(new BigNumber(10).pow(targetToken.decimals))
+      .round(0, BigNumber.ROUND_UP)
+      .toString(16)}` as Hex;
+
+    const updated: TransactionMeta = next
+      ? {
+          ...currentConfirmation,
+          requiredAssets: [
+            {
+              address: targetToken.address,
+              amount: currentAmountRaw,
+              standard: 'erc20',
+            },
+          ],
+          txParams: {
+            ...currentConfirmation.txParams,
+            // Self-transfer: zero-value ETH send to own address.
+            // This is the transaction that executes on-chain in post-quote mode;
+            // it always succeeds and is visible in the activity list.
+            to: from,
+            data: POST_QUOTE_DATA,
+            value: '0x0',
+          },
+        }
+      : {
+          ...currentConfirmation,
+          requiredAssets: undefined,
+          txParams: {
+            ...currentConfirmation.txParams,
+            to: targetToken.address,
+            data: from
+              ? (generateERC20TransferData(
+                  from,
+                  currentAmountHuman,
+                  targetToken.decimals,
+                ) as Hex)
+              : currentConfirmation.txParams?.data,
+          },
+        };
+
+    dispatch(updateTransaction(updated, true));
+  }, [currentConfirmation, dispatch, isPostQuote, targetToken.address, targetToken.decimals]);
+
   return (
     <>
-      <CustomAmountInfo autoFocusAmount currency="usd" hasMax>
+      <CustomAmountInfo
+        autoFocusAmount
+        currency="usd"
+        hasMax
+        payWithLabelOverride={isPostQuote ? t('receive') : undefined}
+      >
+        <PostQuoteCheckbox isPostQuote={isPostQuote} onToggle={handlePostQuoteToggle} />
         <TargetTokenPill
+          isPostQuote={isPostQuote}
           targetToken={targetToken}
           balanceUsdFormatted={balanceUsdFormatted}
           onOpen={() => setIsModalOpen(true)}
@@ -279,13 +359,53 @@ export function MetaMaskPayInfo() {
 
 // ─── Private sub-components ──────────────────────────────────────────────────
 
+type PostQuoteCheckboxProps = {
+  isPostQuote: boolean;
+  onToggle: () => void;
+};
+
+function PostQuoteCheckbox({ isPostQuote, onToggle }: PostQuoteCheckboxProps) {
+  const t = useI18nContext();
+
+  return (
+    <Box
+      data-testid="post-quote-checkbox"
+      onClick={onToggle}
+      backgroundColor={BackgroundColor.backgroundAlternative}
+      borderRadius={BorderRadius.pill}
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
+      alignItems={AlignItems.center}
+      justifyContent={JustifyContent.center}
+      gap={3}
+      paddingTop={2}
+      paddingBottom={2}
+      paddingLeft={4}
+      paddingRight={4}
+      style={{ cursor: 'pointer' }}
+    >
+      <input
+        type="checkbox"
+        checked={isPostQuote}
+        onChange={onToggle}
+        style={{ cursor: 'pointer' }}
+      />
+      <Text variant={TextVariant.bodyMdMedium} color={TextColor.textDefault}>
+        {t('postQuote')}
+      </Text>
+    </Box>
+  );
+}
+
 type TargetTokenPillProps = {
+  isPostQuote: boolean;
   targetToken: SelectedTargetToken;
   balanceUsdFormatted: string;
   onOpen: () => void;
 };
 
 function TargetTokenPill({
+  isPostQuote,
   targetToken,
   balanceUsdFormatted,
   onOpen,
@@ -319,7 +439,7 @@ function TargetTokenPill({
         color={TextColor.textDefault}
         data-testid="target-token-symbol"
       >
-        {`${t('target')} ${targetToken.symbol}`}
+        {`${isPostQuote ? t('source') : t('target')} ${targetToken.symbol}`}
       </Text>
       <Text
         variant={TextVariant.bodyMdMedium}
