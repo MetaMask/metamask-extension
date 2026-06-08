@@ -8691,9 +8691,9 @@ __metadata:
   linkType: hard
 
 "@metamask/tron-wallet-snap@npm:^1.25.6":
-  version: 1.25.6
-  resolution: "@metamask/tron-wallet-snap@npm:1.25.6"
-  checksum: 10/8701c9cdcaa13d183f359963be9696b19151e723bfa682e76bbb03517f435ccdaa152e8e698ca4c18ab884f1e07463f91976fd4ec08f296f8496176e0a97d0dc
+  version: 1.25.8
+  resolution: "@metamask/tron-wallet-snap@npm:1.25.8"
+  checksum: 10/c533b566360b1587865b2e8f74125a301c348e6baa5a721e5629080b03fc47067b0275bec26183863ab5575a812bac8946c4fa1ac5c3daa645faec16b7ab3368
   languageName: node
   linkType: hard
 
