@@ -20,13 +20,6 @@ export const MultichainRoutingServiceInit: MessengerClientInitFunction<
   const snapAccountService = getMessengerClient('SnapAccountService');
   const appStateController = getMessengerClient('AppStateController');
 
-  const getSnapKeyring = async (): Promise<SnapKeyring> => {
-    // Ensure the client is unlocked before attempting to access keyrings.
-    await appStateController.getUnlockPromise(true);
-
-    return await snapAccountService.getLegacySnapKeyring();
-  };
-
   // @ts-expect-error: Types of `SnapKeyring` are incompatible.
   const withSnapKeyring: ConstructorParameters<
     typeof MultichainRoutingService
@@ -35,7 +28,10 @@ export const MultichainRoutingServiceInit: MessengerClientInitFunction<
   >(
     operation: Type,
   ) => {
-    const keyring = await getSnapKeyring();
+    // Ensure the client is unlocked before attempting to access keyrings.
+    await appStateController.getUnlockPromise(true);
+
+    const keyring = await snapAccountService.getLegacySnapKeyring();
 
     return operation({ keyring });
   };
