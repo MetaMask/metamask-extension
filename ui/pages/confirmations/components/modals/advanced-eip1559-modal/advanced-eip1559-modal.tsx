@@ -31,6 +31,8 @@ import { GasInput } from '../../gas-input/gas-input';
 import { useConfirmContext } from '../../../context/confirm';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { updateTransactionGasFees } from '../../../../../store/actions/update-transaction-gas-fees';
+import { hexWEIToDecGWEI } from '../../../../../../shared/lib/conversion.utils';
+import { usePersistGasFeePreference } from '../../../hooks/gas/usePersistGasFeePreference';
 
 export const AdvancedEIP1559Modal = ({
   setActiveModal,
@@ -41,6 +43,7 @@ export const AdvancedEIP1559Modal = ({
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const persistGasFeePreference = usePersistGasFeePreference();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
@@ -70,18 +73,29 @@ export const AdvancedEIP1559Modal = ({
     errors.gas || errors.maxFeePerGas || errors.maxPriorityFeePerGas,
   );
 
-  const handleSaveClick = useCallback(() => {
+  const handleSaveClick = useCallback(async () => {
     if (!transactionMeta?.id) {
       return;
     }
-    dispatch(
+    await dispatch(
       updateTransactionGasFees(transactionMeta.id, {
         userFeeLevel: UserFeeLevel.CUSTOM,
         ...pickBy(gasParams, Boolean),
       }),
     );
+    await persistGasFeePreference(transactionMeta, {
+      userFeeLevel: UserFeeLevel.CUSTOM,
+      maxBaseFee: hexWEIToDecGWEI(gasParams.maxFeePerGas),
+      priorityFee: hexWEIToDecGWEI(gasParams.maxPriorityFeePerGas),
+    });
     handleCloseModals();
-  }, [transactionMeta?.id, gasParams, handleCloseModals, dispatch]);
+  }, [
+    transactionMeta,
+    gasParams,
+    handleCloseModals,
+    dispatch,
+    persistGasFeePreference,
+  ]);
 
   const navigateToEstimatesModal = useCallback(() => {
     setActiveModal(GasModalType.EstimatesModal);

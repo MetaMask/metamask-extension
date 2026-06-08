@@ -157,6 +157,7 @@ export type PreferencesControllerSetUseTransactionSimulationsAction = {
  *
  * @param options
  * @param options.chainId - The chainId the advancedGasFees should be set on
+ * @param options.account - The account the advancedGasFees should be set for
  * @param options.gasFeePreferences - The advancedGasFee options to set
  */
 export type PreferencesControllerSetAdvancedGasFeeAction = {

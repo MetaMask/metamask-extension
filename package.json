@@ -6,6 +6,12 @@
     "type": "git",
     "url": "https://github.com/MetaMask/metamask-extension.git"
   },
+  "previewBuilds": {
+    "@metamask/transaction-controller": {
+      "type": "breaking",
+      "previewVersion": "68.0.0-preview-1a8241c"
+    }
+  },
   "scripts": {
     "webpack": "tsx ./development/webpack/launch.ts",
     "webpack:clearcache": "./development/clear-webpack-cache.js",

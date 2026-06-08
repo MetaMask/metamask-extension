@@ -836,7 +836,7 @@
         "@metamask/base-controller": true,
         "@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
-        "@metamask/keyring-controller": true,
+        "@metamask/accounts-controller>@metamask/keyring-controller": true,
         "@metamask/keyring-sdk": true,
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
@@ -1797,6 +1797,23 @@
         "@metamask/keyring-controller>ulid": true
       }
     },
+    "@metamask/accounts-controller>@metamask/keyring-controller": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/base-controller": true,
+        "@metamask/eth-hd-keyring": true,
+        "@metamask/eth-sig-util": true,
+        "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
+        "@metamask/utils": true,
+        "async-mutex": true,
+        "@metamask/keyring-controller>ethereumjs-wallet": true,
+        "lodash": true,
+        "@metamask/keyring-controller>ulid": true
+      }
+    },
     "@metamask/eip-5792-middleware>@metamask/transaction-controller>@metamask/accounts-controller>@metamask/keyring-controller": {
       "globals": {
         "console.error": true
@@ -2603,9 +2620,11 @@
     "@metamask/transaction-controller": {
       "globals": {
         "Buffer.from": true,
+        "clearInterval": true,
         "clearTimeout": true,
         "console.error": true,
         "fetch": true,
+        "setInterval": true,
         "setTimeout": true
       },
       "packages": {

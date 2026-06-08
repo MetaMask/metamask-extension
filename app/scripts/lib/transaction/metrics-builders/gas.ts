@@ -13,10 +13,10 @@ export const getGasMetricsProperties: TransactionMetricsBuilder = async ({
   transactionMeta,
   transactionMetricsRequest,
 }) => {
-  const gasFeeSelected =
-    transactionMeta.userFeeLevel === 'dappSuggested'
-      ? 'dapp_proposed'
-      : transactionMeta.userFeeLevel;
+  const gasFeeSelected = normalizeGasFeeLevel(transactionMeta.userFeeLevel);
+  const gasFeePresented = normalizeGasFeeLevel(
+    transactionMeta.defaultGasEstimates?.estimateType,
+  );
 
   const gasParams: Record<string, unknown> = {};
 
@@ -70,6 +70,7 @@ export const getGasMetricsProperties: TransactionMetricsBuilder = async ({
   }
   return {
     properties: {
+      gas_fee_presented: gasFeePresented,
       gas_fee_selected: gasFeeSelected,
     },
     sensitiveProperties: {
@@ -85,3 +86,7 @@ export const getGasMetricsProperties: TransactionMetricsBuilder = async ({
     },
   };
 };
+
+function normalizeGasFeeLevel(userFeeLevel: string | undefined) {
+  return userFeeLevel === 'dappSuggested' ? 'dapp_proposed' : userFeeLevel;
+}

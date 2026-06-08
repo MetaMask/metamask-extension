@@ -24,11 +24,29 @@ describe('gas builder', () => {
       }),
     );
     expect(result.properties.gas_fee_selected).toBe('dapp_proposed');
+    expect(result.properties.gas_fee_presented).toBe('medium');
     expect(result.sensitiveProperties.max_fee_per_gas).toBe(
       hexWEIToDecGWEI('0x3b9aca00'),
     );
     expect(result.sensitiveProperties.max_priority_fee_per_gas).toBe(
       hexWEIToDecGWEI('0x59682f00'),
     );
+  });
+
+  it('normalizes dapp suggested presented gas fee metrics', async () => {
+    const result = await getGasMetricsProperties(
+      createBuilderRequest({
+        transactionMeta: {
+          ...createBuilderRequest().transactionMeta,
+          userFeeLevel: 'custom',
+          defaultGasEstimates: {
+            estimateType: 'dappSuggested',
+          },
+        } as never,
+      }),
+    );
+
+    expect(result.properties.gas_fee_presented).toBe('dapp_proposed');
+    expect(result.properties.gas_fee_selected).toBe('custom');
   });
 });
