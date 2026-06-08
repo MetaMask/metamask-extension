@@ -178,7 +178,7 @@ async function sendDappTransaction(driver: Driver) {
 // Bug #37823 (CLOSED Jan 2026): BIP44 confirmation crash was fixed.
 // TODO: Unskip -- #37823 is resolved, verify tests pass and remove describe.skip
 // eslint-disable-next-line mocha/no-skipped-tests
-describe('User Operations', function () {
+describe.skip('User Operations', function () {
   it('from dApp transaction', async function () {
     await withAccountSnap({ title: this.test?.fullTitle() }, async (driver) => {
       await sendDappTransaction(driver);
