@@ -160,12 +160,6 @@
     "yarn-binary:download": "corepack pack -o .yarn/yarn-corepack.tgz",
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
-  "previewBuilds": {
-    "@metamask/wallet": {
-      "type": "breaking",
-      "previewVersion": "2.0.0-preview-ecd6b75"
-    }
-  },
   "resolutions": {
     "@metamask/bridge-controller": "73.2.0",
     "@metamask/messenger@npm:^0.3.0": "^1.2.0",
@@ -447,7 +441,7 @@
     "@metamask/tron-wallet-snap": "^1.25.6",
     "@metamask/user-operation-controller": "^41.2.0",
     "@metamask/utils": "^11.11.0",
-    "@metamask/wallet": "^2.0.0",
+    "@metamask/wallet": "npm:@metamask-previews/wallet@2.0.0-preview-ecd6b75",
     "@mui/material": "^5.18.0",
     "@mui/x-date-pickers": "^7.29.4",
     "@ngraveio/bc-ur": "^1.1.13",

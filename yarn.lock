@@ -33602,7 +33602,7 @@ __metadata:
     "@metamask/tron-wallet-snap": "npm:^1.25.6"
     "@metamask/user-operation-controller": "npm:^41.2.0"
     "@metamask/utils": "npm:^11.11.0"
-    "@metamask/wallet": "npm:^2.0.0"
+    "@metamask/wallet": "npm:@metamask-previews/wallet@2.0.0-preview-ecd6b75"
     "@mui/material": "npm:^5.18.0"
     "@mui/x-date-pickers": "npm:^7.29.4"
     "@ngraveio/bc-ur": "npm:^1.1.13"
