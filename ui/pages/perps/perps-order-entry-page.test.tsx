@@ -17,6 +17,7 @@ import thunk from 'redux-thunk';
 import mockState from '../../../test/data/mock-state.json';
 import { enLocale as messages, tEn } from '../../../test/lib/i18n-helpers';
 import { PERPS_MIN_MARKET_ORDER_USD } from '../../components/app/perps/constants';
+import { bpsToPercent } from '../../components/app/perps/constants/slippageConfig';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
@@ -862,12 +863,14 @@ describe('PerpsOrderEntryPage', () => {
     });
 
     it('blocks submit and shows slippage error when estimated slippage exceeds max', async () => {
+      const estimatedSlippageBps = 50;
+      const maxSlippageBps = 10;
       mockUsePerpsEstimatedSlippage.mockReturnValue({
-        estimatedSlippageBps: 50,
+        estimatedSlippageBps,
         isReady: true,
       });
       mockUsePerpsMaxSlippage.mockReturnValue({
-        maxSlippageBps: 10,
+        maxSlippageBps,
         maxSlippageSource: 'user_configured',
         setMaxSlippage: jest.fn(),
         isLoading: false,
@@ -893,7 +896,10 @@ describe('PerpsOrderEntryPage', () => {
         expect.anything(),
       );
       expect(screen.getByTestId('perps-order-submit-error')).toHaveTextContent(
-        /Estimated slippage/iu,
+        tEn('perpsSlippageExceedsMax', [
+          bpsToPercent(estimatedSlippageBps).toFixed(2),
+          bpsToPercent(maxSlippageBps).toFixed(2),
+        ]),
       );
     });
 
