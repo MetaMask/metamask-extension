@@ -28,7 +28,10 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { PermissionsRequest } from '@metamask/permission-controller';
 import { NonEmptyArray } from '@metamask/controller-utils';
-import type { PhishingDetectionScanResult } from '@metamask/phishing-controller';
+import type {
+  PhishingDetectionScanResult,
+  SimilarAddressMatch,
+} from '@metamask/phishing-controller';
 import {
   SetNameRequest,
   UpdateProposedNamesRequest,
@@ -64,7 +67,6 @@ import {
 } from '@metamask/account-tree-controller';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
-import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { SerializedUR } from '@metamask/eth-qr-keyring';
 import {
@@ -108,9 +110,10 @@ import {
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
 } from '../../shared/constants/app';
+import { getEnvironmentType } from '../../shared/lib/environment-type';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
+import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   getMetaMaskAccounts,
   hasTransactionPendingApprovals,
@@ -147,7 +150,6 @@ import {
   MetaMetricsEventOptions,
   MetaMetricsEventPayload,
   MetaMetricsPageObject,
-  MetaMetricsPageOptions,
   MetaMetricsPagePayload,
   MetaMetricsReferrerObject,
   MetaMetricsEventCategory,
@@ -173,7 +175,10 @@ import {
 } from '../../shared/lib/error';
 import type { DefaultAddressScope } from '../../shared/constants/default-address';
 import { ThemeType } from '../../shared/constants/preferences';
-import { FirstTimeFlowType } from '../../shared/constants/onboarding';
+import {
+  AuthConnection,
+  FirstTimeFlowType,
+} from '../../shared/constants/onboarding';
 import { getMethodDataAsync } from '../../shared/lib/four-byte';
 import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
 import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
@@ -220,7 +225,6 @@ import {
   generateActionId,
   submitRequestToBackground,
 } from './background-connection';
-import { getStatePatches } from './patch-store-substream-connection';
 import type {
   MetaMaskReduxDispatch,
   MetaMaskReduxState,
@@ -2249,6 +2253,12 @@ export async function scanUrlForPhishing(
   origin: string,
 ): Promise<PhishingDetectionScanResult | null> {
   return await submitRequestToBackground('scanUrlForPhishing', [origin]);
+}
+
+export async function checkAddressPoisoning(
+  address: string,
+): Promise<SimilarAddressMatch[]> {
+  return await submitRequestToBackground('checkAddressPoisoning', [address]);
 }
 
 // TODO: Clean this up.
@@ -4656,7 +4666,8 @@ export async function forceUpdateMetamaskState(
   let pendingPatches: Patch[] | undefined;
 
   try {
-    pendingPatches = await getStatePatches();
+    pendingPatches =
+      await submitRequestToBackground<Patch[]>('getStatePatches');
   } catch (error) {
     dispatch(displayWarning(error));
     throw error;
@@ -6488,19 +6499,13 @@ export function trackMetaMetricsEvent(
   payload: MetaMetricsEventPayload,
   options?: MetaMetricsEventOptions,
 ) {
-  return submitRequestToBackground('trackMetaMetricsEvent', [
-    { ...payload, actionId: generateActionId() },
-    options,
-  ]);
+  return submitRequestToBackground('trackMetaMetricsEvent', [payload, options]);
 }
 
 export function createEventFragment(
   options: MetaMetricsEventFragment,
 ): Promise<string> {
-  const actionId = generateActionId();
-  return submitRequestToBackground('createEventFragment', [
-    { ...options, actionId },
-  ]);
+  return submitRequestToBackground('createEventFragment', [options]);
 }
 
 export function upsertTransactionUIMetricsFragment(
@@ -6533,16 +6538,9 @@ export function finalizeEventFragment(
 
 /**
  * @param payload - details of the page viewed
- * @param options - options for handling the page view
  */
-export function trackMetaMetricsPage(
-  payload: MetaMetricsPagePayload,
-  options: MetaMetricsPageOptions,
-) {
-  return submitRequestToBackground('trackMetaMetricsPage', [
-    { ...payload, actionId: generateActionId() },
-    options,
-  ]);
+export function trackMetaMetricsPage(payload: MetaMetricsPagePayload) {
+  return submitRequestToBackground('trackMetaMetricsPage', [payload]);
 }
 
 export function updateMetaMetricsTraits(traits: MetaMetricsUserTraits) {
@@ -7951,18 +7949,6 @@ export async function sendMultichainTransaction(
       },
     },
   });
-}
-
-export async function createSnapAccount(
-  snapId: SnapId,
-  options: Record<string, Json>,
-  internalOptions?: SnapKeyringInternalOptions,
-): Promise<InternalAccount> {
-  return await submitRequestToBackground<InternalAccount>('createSnapAccount', [
-    snapId,
-    options,
-    internalOptions,
-  ]);
 }
 
 export async function getCode(address: Hex, networkClientId: string) {

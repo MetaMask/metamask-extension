@@ -267,8 +267,8 @@ function setupController({
     namespace: MOCK_ANY_NAMESPACE,
   });
   messenger.registerActionHandler(
-    'MetaMetricsController:getState',
-    jest.fn().mockReturnValue({ metaMetricsId }),
+    'AnalyticsController:getState',
+    jest.fn().mockReturnValue({ analyticsId: metaMetricsId }),
   );
   const mockCreateDataDeletionRegulationTaskResponse = 'mockRegulateId';
   const mockFetchDeletionRegulationStatusResponse = 'UNKNOWN';
@@ -293,11 +293,10 @@ function setupController({
   });
   messenger.delegate({
     messenger: controllerMessenger,
-    actions: ['MetaMetricsController:getState'],
+    actions: ['AnalyticsController:getState'],
   });
   const constructorOptions = {
     dataDeletionService: mockDataDeletionService,
-    getMetaMetricsId: jest.fn().mockReturnValue('mockMetaMetricsId'),
     messenger: controllerMessenger,
     ...options,
   };

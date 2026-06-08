@@ -3,11 +3,11 @@
 exports[`SmartContractAccountToggleSection Disabled State Handling disables all toggles when requests are pending 1`] = `
 <div>
   <div
-    class="mm-box mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--width-full mm-box--background-color-background-section"
+    class="pt-3 pr-2 pb-4 pl-4 bg-section w-full"
     style="border-radius: 8px;"
   >
     <div
-      class="mm-box mm-box--padding-right-2"
+      class="pr-2"
     >
       <p
         class="mm-box mm-text mm-text--body-md-medium mm-box--margin-bottom-2 mm-box--color-text-default"
@@ -30,10 +30,10 @@ exports[`SmartContractAccountToggleSection Disabled State Handling disables all 
       </p>
     </div>
     <div
-      class="mm-box"
+      class=""
     >
       <div
-        class="mm-box"
+        class=""
       >
         <div
           class="flex flex-row justify-between mt-4"
@@ -124,11 +124,11 @@ exports[`SmartContractAccountToggleSection Disabled State Handling disables all 
 exports[`SmartContractAccountToggleSection Learn More Button opens Zendesk article when clicked 1`] = `
 <div>
   <div
-    class="mm-box mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--width-full mm-box--background-color-background-section"
+    class="pt-3 pr-2 pb-4 pl-4 bg-section w-full"
     style="border-radius: 8px;"
   >
     <div
-      class="mm-box mm-box--padding-right-2"
+      class="pr-2"
     >
       <p
         class="mm-box mm-text mm-text--body-md-medium mm-box--margin-bottom-2 mm-box--color-text-default"
@@ -151,10 +151,10 @@ exports[`SmartContractAccountToggleSection Learn More Button opens Zendesk artic
       </p>
     </div>
     <div
-      class="mm-box"
+      class=""
     >
       <div
-        class="mm-box"
+        class=""
       />
     </div>
   </div>
@@ -164,11 +164,11 @@ exports[`SmartContractAccountToggleSection Learn More Button opens Zendesk artic
 exports[`SmartContractAccountToggleSection Loading State shows loading spinner while fetching networks 1`] = `
 <div>
   <div
-    class="mm-box mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--width-full mm-box--background-color-background-section"
+    class="pt-3 pr-2 pb-4 pl-4 bg-section w-full"
     style="border-radius: 8px;"
   >
     <div
-      class="mm-box mm-box--padding-right-2"
+      class="pr-2"
     >
       <p
         class="mm-box mm-text mm-text--body-md-medium mm-box--margin-bottom-2 mm-box--color-text-default"
@@ -191,10 +191,10 @@ exports[`SmartContractAccountToggleSection Loading State shows loading spinner w
       </p>
     </div>
     <div
-      class="mm-box"
+      class=""
     >
       <div
-        class="mm-box mm-box--padding-top-12 mm-box--padding-bottom-12 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
+        class="items-center justify-center pt-12 pb-12 flex"
         data-testid="network-loader"
       >
         <svg
@@ -245,11 +245,11 @@ exports[`SmartContractAccountToggleSection Loading State shows loading spinner w
 exports[`SmartContractAccountToggleSection Network Integration displays toggle for each available network 1`] = `
 <div>
   <div
-    class="mm-box mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--width-full mm-box--background-color-background-section"
+    class="pt-3 pr-2 pb-4 pl-4 bg-section w-full"
     style="border-radius: 8px;"
   >
     <div
-      class="mm-box mm-box--padding-right-2"
+      class="pr-2"
     >
       <p
         class="mm-box mm-text mm-text--body-md-medium mm-box--margin-bottom-2 mm-box--color-text-default"
@@ -272,10 +272,10 @@ exports[`SmartContractAccountToggleSection Network Integration displays toggle f
       </p>
     </div>
     <div
-      class="mm-box"
+      class=""
     >
       <div
-        class="mm-box"
+        class=""
       >
         <div
           class="flex flex-row justify-between mt-4"

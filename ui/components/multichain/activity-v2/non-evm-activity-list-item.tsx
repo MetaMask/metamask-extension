@@ -49,8 +49,9 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
   if (isRedeposit) {
     return (
       <LegacyActivityListItem
-        data-testid="activity-list-item"
+        status={statusKey}
         onClick={() => onClick(transaction)}
+        // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
         icon={
           <ChainBadge chainId={transaction.chain}>
             <TransactionIcon
@@ -60,6 +61,7 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
           </ChainBadge>
         }
         title="Redeposit"
+        // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
         subtitle={<TransactionStatusLabel error={{}} status={statusKey} />}
       />
     );
@@ -78,16 +80,18 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
 
   return (
     <LegacyActivityListItem
-      data-testid="activity-list-item"
+      status={statusKey}
       onClick={() => onClick(transaction)}
+      // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
       icon={
         <ChainBadge chainId={transaction.chain}>
           <TransactionIcon category={category} status={statusKey} />
         </ChainBadge>
       }
+      // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
       rightContent={
         <Text
-          className="activity-list-item__primary-currency"
+          className="activity-list-item__primary-currency text-s-body-md @compact:text-s-body-sm"
           data-testid="transaction-list-item-primary-currency"
           ellipsis
         >
@@ -95,6 +99,7 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
         </Text>
       }
       title={title}
+      // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
       subtitle={<TransactionStatusLabel error={{}} status={statusKey} />}
     />
   );

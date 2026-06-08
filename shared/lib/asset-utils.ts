@@ -237,6 +237,10 @@ export const fetchAssetMetadataForAssetIds = async (
  * @returns `true` if the chain ID is an EVM chain ID, `false` otherwise.
  */
 export const isEvmChainId = (chainId: CaipChainId | Hex) => {
+  if (typeof chainId !== 'string') {
+    return false;
+  }
+
   let chainIdInCaip: CaipChainId;
 
   if (isCaipChainId(chainId)) {

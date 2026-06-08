@@ -55,7 +55,9 @@ const store = configureMockStore()({
 
 function renderHook<Result>(callback: () => Result) {
   return renderHookBase(callback, {
-    wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
+    wrapper: ({ children }: React.PropsWithChildren) => (
+      <Provider store={store}>{children}</Provider>
+    ),
   });
 }
 
@@ -64,6 +66,7 @@ describe('useGetTitle', () => {
     jest
       .spyOn(useBridgeActivityDataHook, 'useBridgeActivityData')
       .mockReturnValue({
+        bridgeHistoryItem: undefined,
         isBridgeTx: false,
         isBridgeComplete: false,
         isBridgeFailed: false,
@@ -165,7 +168,7 @@ describe('useGetTitle', () => {
     } as unknown as TransactionViewModel;
 
     const { result } = renderHookBase(() => useGetTitle(tx), {
-      wrapper: ({ children }) => (
+      wrapper: ({ children }: React.PropsWithChildren) => (
         <Provider store={flaggedStore}>{children}</Provider>
       ),
     });
@@ -373,6 +376,7 @@ describe('useGetTitle', () => {
     jest
       .spyOn(useBridgeActivityDataHook, 'useBridgeActivityData')
       .mockReturnValue({
+        bridgeHistoryItem: undefined,
         isBridgeTx: true,
         isBridgeComplete: false,
         isBridgeFailed: false,
@@ -589,7 +593,7 @@ describe('useGetTitle', () => {
     } as unknown as TransactionViewModel;
 
     const { result } = renderHookBase(() => useGetTitle(tx), {
-      wrapper: ({ children }) => (
+      wrapper: ({ children }: React.PropsWithChildren) => (
         <Provider store={senderStore}>{children}</Provider>
       ),
     });
@@ -642,7 +646,7 @@ describe('useBridgeTxHistoryData', () => {
           } as never,
         }),
       {
-        wrapper: ({ children }) => (
+        wrapper: ({ children }: React.PropsWithChildren) => (
           <Provider store={bridgeStore}>{children}</Provider>
         ),
       },
@@ -684,7 +688,7 @@ describe('useBridgeTxHistoryData', () => {
           } as never,
         }),
       {
-        wrapper: ({ children }) => (
+        wrapper: ({ children }: React.PropsWithChildren) => (
           <Provider store={intentStore}>{children}</Provider>
         ),
       },
@@ -693,6 +697,9 @@ describe('useBridgeTxHistoryData', () => {
     expect(result.current.isBridgeFailed).toBe(true);
     expect(result.current.isBridgeComplete).toBe(false);
     expect(result.current.showBridgeTxDetails).toEqual(expect.any(Function));
+    expect(result.current.bridgeHistoryItem).toMatchObject({
+      originalTransactionId: 'intent-tx-meta-id',
+    });
 
     act(() => result.current.showBridgeTxDetails?.());
 

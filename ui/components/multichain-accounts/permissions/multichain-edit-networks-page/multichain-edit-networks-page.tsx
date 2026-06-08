@@ -1,8 +1,13 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { CaipChainId } from '@metamask/utils';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import {
   IconName,
   ButtonIcon,
   ButtonIconSize,
@@ -15,13 +20,8 @@ import {
 } from '../../../component-library';
 
 import {
-  AlignItems,
   BackgroundColor,
-  BlockSize,
-  Display,
-  FlexDirection,
   IconColor,
-  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
@@ -43,15 +43,13 @@ type MultichainEditNetworksPageProps = {
   onSubmit: (chainIds: CaipChainId[]) => void;
 };
 
-export const MultichainEditNetworksPage: React.FC<
-  MultichainEditNetworksPageProps
-> = ({
+export const MultichainEditNetworksPage = ({
   nonTestNetworks,
   testNetworks,
   defaultSelectedChainIds,
   onSubmit,
   onClose,
-}) => {
+}: MultichainEditNetworksPageProps) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const allNetworks = [...nonTestNetworks, ...testNetworks];
@@ -169,17 +167,16 @@ export const MultichainEditNetworksPage: React.FC<
       <Footer>
         {selectedChainIds.length === 0 ? (
           <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
+            flexDirection={BoxFlexDirection.Column}
             gap={4}
-            alignItems={AlignItems.center}
-            width={BlockSize.Full}
+            alignItems={BoxAlignItems.Center}
+            className="flex w-full"
           >
             <Box
-              display={Display.Flex}
+              className="flex"
               gap={1}
-              alignItems={AlignItems.center}
-              justifyContent={JustifyContent.center}
+              alignItems={BoxAlignItems.Center}
+              justifyContent={BoxJustifyContent.Center}
             >
               <Icon
                 name={IconName.Danger}

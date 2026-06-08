@@ -37,9 +37,6 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "エラー"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "QRコードが無効です。ハードウェアウォレットの同期QRコードをスキャンしてください。"
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "QRコードをスキャン"
   },
@@ -1178,15 +1175,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "ハードウェアウォレットで2つのトランザクションを確定する必要があります:"
   },
-  "bridgeCreateSolanaAccount": {
-    "message": "Solanaアカウントを作成"
-  },
-  "bridgeCreateSolanaAccountDescription": {
-    "message": "Solanaネットワークにスワップするには、アカウントと受取アドレスが必要です。"
-  },
-  "bridgeCreateSolanaAccountTitle": {
-    "message": "はじめにSolanaアカウントが必要です。"
-  },
   "bridgeDetailsTitle": {
     "message": "ブリッジの詳細",
     "description": "Title for the modal showing details about a bridge transaction."
@@ -1461,9 +1449,6 @@
   },
   "bridgeSendLoading": {
     "message": "ブリッジ元のチェーンから送金中"
-  },
-  "bridgeSolanaAccountCreated": {
-    "message": "Solanaアカウントが作成されました"
   },
   "bridgeStatusComplete": {
     "message": "完了",
@@ -2285,12 +2270,6 @@
   },
   "dappConnections": {
     "message": "DAppの接続"
-  },
-  "dappScanMaliciousTitle": {
-    "message": "悪質なWebサイトが検出されました"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "このWebサイトは、危険な可能性があるとフラグ付けされています。シークレットリカバリーフレーズを明かした場合、資金が危険に晒される可能性があります。"
   },
   "dappSuggested": {
     "message": "おすすめのサイト"
@@ -5218,10 +5197,6 @@
   "onboardingMetametricsTitle": {
     "message": "MetaMaskの改善にご協力ください"
   },
-  "onboardingOptionIcon": {
-    "message": "$1アイコン",
-    "description": "$1 is the icon name"
-  },
   "onboardingSignInWith": {
     "message": "$1でサインイン",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -7465,11 +7440,11 @@
   },
   "securitySocialLoginEnabledDescription": {
     "message": "$1のログイン情報とMetaMaskのパスワードを使って、アカウントとシークレットリカバリーフレーズを復元することができます。",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySocialLoginLabel": {
     "message": "$1の復元",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySrpLabel": {
     "message": "シークレットリカバリーフレーズ"

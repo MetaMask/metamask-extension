@@ -2,6 +2,11 @@ import classnames from 'clsx';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useRef, useState } from 'react';
 import {
+  Box,
+  BoxAlignItems,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
@@ -12,9 +17,8 @@ import {
   AlignItems,
   BlockSize,
   Display,
-  JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { Box, Button } from '../../component-library';
+import { Button } from '../../component-library';
 
 const radius = 14;
 const strokeWidth = 2;
@@ -131,10 +135,9 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
           </svg>
         </Box>
         <Box
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.center}
-          className="hold-to-reveal-button__lock-icon-container"
+          className="flex hold-to-reveal-button__lock-icon-container"
+          alignItems={BoxAlignItems.Center}
+          justifyContent={BoxJustifyContent.Center}
         >
           <img
             src="images/lock-icon.svg"
