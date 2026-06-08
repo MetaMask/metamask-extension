@@ -48,6 +48,7 @@ jobs:
       SLACK_WEBHOOK_FEATURE_FLAG_DRIFT: ${{ secrets.SLACK_WEBHOOK_FEATURE_FLAG_DRIFT }}
       SLACK_WEBHOOK_FLAKY_TESTS: ${{ secrets.SLACK_WEBHOOK_FLAKY_TESTS }}
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      METAMASKBOT_CROWDIN_TOKEN: ${{ secrets.METAMASKBOT_CROWDIN_TOKEN }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
