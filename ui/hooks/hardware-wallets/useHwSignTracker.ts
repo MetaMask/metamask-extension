@@ -132,6 +132,9 @@ export function useHwSignTracker(
   const staleBatchIdsRef = useRef<Set<string>>(new Set());
   const seenBatchIdsRef = useRef<Set<string>>(new Set());
 
+  // Sequential-mode-only refs (unused in batch mode)
+  const staleTxIdsRef = useRef<Set<string>>(new Set());
+
   /**
    * Aborts all currently tracked transactions by calling the background
    * abortTransactionSigning RPC. Waits up to 5 seconds for abort events to
@@ -148,6 +151,8 @@ export function useHwSignTracker(
       currentBatchIdRef.current = undefined;
       staleBatchIdsRef.current = new Set();
       seenBatchIdsRef.current = new Set();
+    } else {
+      staleTxIdsRef.current = new Set();
     }
   }, [useBatchTracking]);
 
@@ -220,6 +225,9 @@ export function useHwSignTracker(
         seenBatchIdsRef.current = new Set();
         currentBatchIdRef.current = null;
       } else {
+        for (const id of trackedTxIdsRef.current) {
+          staleTxIdsRef.current.add(id);
+        }
         trackedTxIdsRef.current = new Set();
       }
     };
@@ -284,6 +292,16 @@ export function useHwSignTracker(
               const batchId = transactionMeta.batchId ?? 'batch-unknown';
               if (useBatchTracking) {
                 seenBatchIdsRef.current.add(batchId);
+              } else if (staleTxIdsRef.current.has(transactionMeta.id)) {
+                log.debug(
+                  `${logPrefix} skipping transactionStatusUpdated from stale tx after retry`,
+                  JSON.stringify({
+                    txId: transactionMeta.id,
+                    status,
+                    staleTxIds: [...staleTxIdsRef.current],
+                  }),
+                );
+                return;
               }
               trackedTxIdsRef.current.add(transactionMeta.id);
 

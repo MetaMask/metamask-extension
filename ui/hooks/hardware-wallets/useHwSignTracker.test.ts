@@ -1000,6 +1000,44 @@ describe('useHwSignTracker (sequential mode specific)', () => {
         type: HardwareWalletSignatureEvent.TransactionRejected,
       });
     });
+
+    it('blocks stale signed events after retry generation change', async () => {
+      const retryGenerationRef = createRetryGenRef();
+      const { dispatchEvent, fire } = await setupTracker({
+        useBatchTracking: false,
+        retryGenerationRef,
+      });
+
+      await fire(STATUS_UPDATED, { id: 'tx-old' });
+      expect(dispatchEvent).toHaveBeenCalledWith({
+        type: HardwareWalletSignatureEvent.FirstSignatureSubmitted,
+      });
+
+      retryGenerationRef.current = 1;
+      dispatchEvent.mockClear();
+
+      await fire(STATUS_UPDATED, {
+        id: 'tx-old',
+        type: TransactionType.bridge,
+      });
+      expect(dispatchEvent).not.toHaveBeenCalled();
+    });
+
+    it('blocks stale failed events after retry generation change', async () => {
+      const retryGenerationRef = createRetryGenRef();
+      const { dispatchEvent, fire } = await setupTracker({
+        useBatchTracking: false,
+        retryGenerationRef,
+      });
+
+      await fire(STATUS_UPDATED, { id: 'tx-old' });
+
+      retryGenerationRef.current = 1;
+      dispatchEvent.mockClear();
+
+      await fire(STATUS_UPDATED, { id: 'tx-old', status: 'failed' });
+      expect(dispatchEvent).not.toHaveBeenCalled();
+    });
   });
 
   describe('cancelCurrentBatch (sequential-specific)', () => {
