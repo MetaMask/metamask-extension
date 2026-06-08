@@ -157,6 +157,108 @@ describe('Setup Sentry', () => {
       rewriteReport(testReport);
       expect(testReport.message).toStrictEqual('This is a simple report');
     });
+
+    it('removes Solana addresses from error messages', () => {
+      const testReport = {
+        message:
+          'There is a Solana address 7EYnhQoR9YM3N7UoaKRoA44Uy8JeaZV3qyouov87awMs in this message',
+        request: {},
+      };
+      rewriteReport(testReport);
+      expect(testReport.message).toStrictEqual(
+        'There is a Solana address ** in this message',
+      );
+    });
+
+    it('removes Tron addresses from error messages', () => {
+      const testReport = {
+        message:
+          'There is a Tron address TJRyWwFs9wTFGZg3JbrVriFbNfCug5tDeC in this message',
+        request: {},
+      };
+      rewriteReport(testReport);
+      expect(testReport.message).toStrictEqual(
+        'There is a Tron address ** in this message',
+      );
+    });
+
+    it('removes Stellar (XLM) addresses from error messages', () => {
+      const testReport = {
+        message:
+          'There is a Stellar address GDUKMGUGDZQK6YHYA5Z6AY2G4XDSZPSZ3SW5UN3ARVMO6QSRDWP5YLEX in this message',
+        request: {},
+      };
+      rewriteReport(testReport);
+      expect(testReport.message).toStrictEqual(
+        'There is a Stellar address ** in this message',
+      );
+    });
+
+    it('removes Bitcoin bech32 addresses from error messages', () => {
+      const testReport = {
+        message:
+          'There is a Bitcoin address bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq in this message',
+        request: {},
+      };
+      rewriteReport(testReport);
+      expect(testReport.message).toStrictEqual(
+        'There is a Bitcoin address ** in this message',
+      );
+    });
+
+    it('removes Bitcoin legacy addresses from error messages', () => {
+      const testReport = {
+        message:
+          'There is a Bitcoin address 17VZNX1SN5NtKa8UQFxwQbFeFc3iqRYhem in this message',
+        request: {},
+      };
+      rewriteReport(testReport);
+      expect(testReport.message).toStrictEqual(
+        'There is a Bitcoin address ** in this message',
+      );
+    });
+
+    it('removes multiple EVM addresses from a single error message', () => {
+      const testReport = {
+        message:
+          'Addresses 0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235 and 0x1234567890123456789012345678901234567890 failed',
+        request: {},
+      };
+      rewriteReport(testReport);
+      expect(testReport.message).toStrictEqual(
+        'Addresses 0x** and 0x** failed',
+      );
+    });
+
+    it('removes addresses from report.extra parameters', () => {
+      const testReport = {
+        message: 'An error occurred',
+        extra: {
+          accountAddress: '7EYnhQoR9YM3N7UoaKRoA44Uy8JeaZV3qyouov87awMs',
+          nested: {
+            evmAddress: '0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235',
+          },
+        },
+        request: {},
+      };
+      rewriteReport(testReport);
+      expect(testReport.extra.accountAddress).toStrictEqual('**');
+      expect(testReport.extra.nested.evmAddress).toStrictEqual('0x**');
+    });
+
+    it('removes addresses from report.contexts parameters', () => {
+      const testReport = {
+        message: 'An error occurred',
+        contexts: {
+          account: {
+            address: 'TJRyWwFs9wTFGZg3JbrVriFbNfCug5tDeC',
+          },
+        },
+        request: {},
+      };
+      rewriteReport(testReport);
+      expect(testReport.contexts.account.address).toStrictEqual('**');
+    });
   });
 
   describe('shouldCreateSpanForRequest', () => {
@@ -349,6 +451,30 @@ describe('Setup Sentry', () => {
         to: '',
         from: 'chrome-extension://abcefg/home.html',
       });
+    });
+
+    it('removes addresses from the breadcrumb message', () => {
+      const testBreadcrumb = {
+        message:
+          'Selected account 7EYnhQoR9YM3N7UoaKRoA44Uy8JeaZV3qyouov87awMs',
+        data: {
+          address: '0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235',
+        },
+      };
+      const rewrittenBreadcrumb = removeUrlsFromBreadCrumb(testBreadcrumb);
+      expect(rewrittenBreadcrumb.message).toStrictEqual('Selected account **');
+    });
+
+    it('removes addresses from the breadcrumb data', () => {
+      const testBreadcrumb = {
+        message:
+          'Selected account 7EYnhQoR9YM3N7UoaKRoA44Uy8JeaZV3qyouov87awMs',
+        data: {
+          address: '0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235',
+        },
+      };
+      const rewrittenBreadcrumb = removeUrlsFromBreadCrumb(testBreadcrumb);
+      expect(rewrittenBreadcrumb.data.address).toStrictEqual('0x**');
     });
   });
 });
