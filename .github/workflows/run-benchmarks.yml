@@ -51,7 +51,7 @@ jobs:
       MAIN_OR_RELEASE: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@c3d0059c68d2d22acc6edddb6ad294d1b83ce47c
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
@@ -141,7 +141,7 @@ jobs:
       MAIN_OR_RELEASE: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@c3d0059c68d2d22acc6edddb6ad294d1b83ce47c
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true

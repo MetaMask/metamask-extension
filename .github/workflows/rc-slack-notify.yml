@@ -102,7 +102,7 @@ jobs:
         if: >-
           github.event_name == 'workflow_dispatch' ||
           (github.event_name == 'workflow_run' && steps.gate.outputs.skip == 'false')
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@c3d0059c68d2d22acc6edddb6ad294d1b83ce47c
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
