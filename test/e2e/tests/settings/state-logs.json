@@ -621,6 +621,8 @@
         }
       }
     },
+    "batchSellTrades": "null",
+    "batchSellTradesLoadingStatus": "null",
     "browserEnvironment": {
       "browser": "string",
       "os": "string"
@@ -634,6 +636,7 @@
       "supportedNetworks": ["string"],
       "validSubmissionWindowDays": "number"
     },
+    "completedMetaMetricsOnboarding": "boolean",
     "completedOnboarding": "boolean",
     "connectedStatusPopoverHasBeenShown": "boolean",
     "connectivityStatus": "string",
@@ -1049,6 +1052,7 @@
       }
     ],
     "knownMethodData": {},
+    "lastCheckedAt": "null",
     "lastCompletedWithdrawalTimestamp": "null",
     "lastCompletedWithdrawalTxHashes": [],
     "lastDepositResult": "null",
@@ -1087,6 +1091,8 @@
     "metaMetricsDataDeletionId": "null",
     "metaMetricsDataDeletionTimestamp": "number",
     "metaMetricsId": "string",
+    "analyticsId": "string",
+    "optedIn": "boolean",
     "methodData": {},
     "minimumBalanceForRentExemptionInLamports": "string",
     "multichainNetworkConfigurationsByChainId": {
@@ -1320,7 +1326,6 @@
     "securityAlertsEnabled": "boolean",
     "seedPhraseBackedUp": "null",
     "passkeyRecord": "null",
-    "segmentApiCalls": {},
     "selectedAccountGroup": "string",
     "selectedCurrency": "string",
     "selectedMultichainNetworkChainId": "string",
@@ -1549,6 +1554,7 @@
     "useNftDetection": "boolean",
     "usePhishDetect": "boolean",
     "userOperations": {},
+    "walletComplianceStatusMap": {},
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": "boolean",
     "useTransactionSimulations": "boolean",

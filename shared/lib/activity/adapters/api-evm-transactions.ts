@@ -9,6 +9,7 @@ import {
   getNativeAssetSafe,
   getTokenMetadataFromKnownToken,
   getTokenAmountFromTransfer,
+  isNftStandard,
   withFallbackTokenAssetId,
   type ValueTransfer,
 } from './helpers';
@@ -41,13 +42,11 @@ export function mapApiEvmTransactions({
   );
   const sentNftTransfer = valueTransfers?.find(
     ({ from, transferType }) =>
-      equalsIgnoreCase(from, subjectAddress) &&
-      (transferType === 'erc721' || transferType === 'erc1155'),
+      equalsIgnoreCase(from, subjectAddress) && isNftStandard(transferType),
   );
   const receivedNftTransfer = valueTransfers?.find(
     ({ to, transferType }) =>
-      equalsIgnoreCase(to, subjectAddress) &&
-      (transferType === 'erc721' || transferType === 'erc1155'),
+      equalsIgnoreCase(to, subjectAddress) && isNftStandard(transferType),
   );
   const sentNativeTransfer = valueTransfers?.find(
     ({ from, transferType }) =>
@@ -134,13 +133,15 @@ export function mapApiEvmTransactions({
 
       if (sentNativeTransfer) {
         return {
-          type: 'buy',
+          type: 'nftBuy',
           chainId,
           status,
           timestamp,
           raw: { type: 'apiEvmTransaction', data: transaction },
           data: {
             hash,
+            from: receivedNftTransfer.from,
+            to: receivedNftTransfer.to,
             token: getToken(receivedNftTransfer, 'in'),
           },
         };

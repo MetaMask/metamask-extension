@@ -135,7 +135,8 @@ export default function reduceMetamask(state = initialState, action) {
     case actionConstants.SET_PARTICIPATE_IN_METAMETRICS:
       return {
         ...metamaskState,
-        participateInMetaMetrics: action.value,
+        completedMetaMetricsOnboarding: action.value !== null,
+        optedIn: action.value === true,
       };
 
     case actionConstants.SET_DATA_COLLECTION_FOR_MARKETING:

@@ -125,6 +125,11 @@ type TransactionControllerFixtureInput = Partial<
   transactions?: TransactionMeta[];
 };
 
+type MetaMetricsControllerFixturePatch = Partial<MetaMetricsControllerState> & {
+  participateInMetaMetrics?: boolean | null;
+  metaMetricsId?: string | null;
+};
+
 type StorageServiceNamespaceMap = {
   [STORAGE_SERVICE_NAMESPACE.SNAP_CONTROLLER]: {
     key: string;
@@ -277,8 +282,40 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  withMetaMetricsController(data: Partial<MetaMetricsControllerState>): this {
-    merge(this.fixture.data.MetaMetricsController, data);
+  withMetaMetricsController(data: MetaMetricsControllerFixturePatch): this {
+    const {
+      participateInMetaMetrics,
+      metaMetricsId,
+      ...metaMetricsControllerPatch
+    } = data;
+
+    merge(this.fixture.data.MetaMetricsController, metaMetricsControllerPatch);
+
+    if (participateInMetaMetrics !== undefined) {
+      merge(this.fixture.data.MetaMetricsController, {
+        completedMetaMetricsOnboarding: participateInMetaMetrics !== null,
+      });
+    }
+
+    if (participateInMetaMetrics !== undefined || metaMetricsId !== undefined) {
+      const fixtureData = this.fixture.data as Record<string, unknown>;
+      if (!fixtureData.AnalyticsController) {
+        fixtureData.AnalyticsController = {};
+      }
+      const analyticsController = fixtureData.AnalyticsController as Record<
+        string,
+        unknown
+      >;
+      const analyticsPatch: Record<string, unknown> = {};
+      if (typeof metaMetricsId === 'string') {
+        analyticsPatch.analyticsId = metaMetricsId;
+      }
+      if (participateInMetaMetrics !== undefined) {
+        analyticsPatch.optedIn = participateInMetaMetrics === true;
+      }
+      merge(analyticsController, analyticsPatch);
+    }
+
     return this;
   }
 
