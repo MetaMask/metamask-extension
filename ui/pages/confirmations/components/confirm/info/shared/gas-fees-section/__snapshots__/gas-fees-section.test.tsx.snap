@@ -133,7 +133,7 @@ exports[`<GasFeesSection /> renders component for gas fees section 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--align-items-center"
+        class="items-center flex"
       >
         <div
           class="mm-box mm-box--margin-bottom-1 mm-box--display-flex mm-box--flex-wrap-wrap"

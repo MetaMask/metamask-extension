@@ -36,7 +36,7 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
         </div>
       </div>
       <div
-        class="mm-box"
+        class=""
       />
     </div>
     <div
@@ -87,7 +87,7 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
       </div>
     </div>
     <div
-      class="mm-box mm-box--padding-left-2"
+      class="pl-2"
       data-testid="advanced-details-safeTransferFrom-params"
     >
       <div
@@ -388,7 +388,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
         </div>
       </div>
       <div
-        class="mm-box"
+        class=""
       />
     </div>
     <div
@@ -443,7 +443,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
         style="margin-top: -8px;"
       >
         <div
-          class="mm-box mm-box--padding-left-2"
+          class="pl-2"
           data-testid="advanced-details-WRAP_ETH-params"
         >
           <div
@@ -613,7 +613,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
         style="margin-top: -8px;"
       >
         <div
-          class="mm-box mm-box--padding-left-2"
+          class="pl-2"
           data-testid="advanced-details-V3_SWAP_EXACT_IN-params"
         >
           <div
@@ -805,7 +805,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
               </div>
             </div>
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--justify-content-flex-end"
+              class="flex-wrap justify-end flex"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -1001,7 +1001,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
         style="margin-top: -8px;"
       >
         <div
-          class="mm-box mm-box--padding-left-2"
+          class="pl-2"
           data-testid="advanced-details-PAY_PORTION-params"
         >
           <div
@@ -1229,7 +1229,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
         style="margin-top: -8px;"
       >
         <div
-          class="mm-box mm-box--padding-left-2"
+          class="pl-2"
           data-testid="advanced-details-SWEEP-params"
         >
           <div
@@ -1438,7 +1438,7 @@ exports[`TransactionData renders decoded data with no names 1`] = `
         </div>
       </div>
       <div
-        class="mm-box"
+        class=""
       />
     </div>
     <div
@@ -1473,7 +1473,7 @@ exports[`TransactionData renders decoded data with no names 1`] = `
       </div>
     </div>
     <div
-      class="mm-box mm-box--padding-left-2"
+      class="pl-2"
       data-testid="advanced-details-someFunction-params"
     >
       <div
@@ -1669,7 +1669,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
         </div>
       </div>
       <div
-        class="mm-box"
+        class=""
       />
     </div>
     <div
@@ -1720,7 +1720,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
       </div>
     </div>
     <div
-      class="mm-box mm-box--padding-left-2"
+      class="pl-2"
       data-testid="advanced-details-permit-params"
     >
       <div
@@ -1819,7 +1819,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--padding-left-2"
+        class="pl-2"
       >
         <div
           class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -1859,7 +1859,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-box--padding-left-2"
+          class="pl-2"
         >
           <div
             class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -1899,7 +1899,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             </div>
           </div>
           <div
-            class="mm-box mm-box--padding-left-2"
+            class="pl-2"
           >
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -2139,7 +2139,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             </div>
           </div>
           <div
-            class="mm-box mm-box--padding-left-2"
+            class="pl-2"
           >
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -2379,7 +2379,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             </div>
           </div>
           <div
-            class="mm-box mm-box--padding-left-2"
+            class="pl-2"
           >
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -2778,7 +2778,7 @@ exports[`TransactionData renders raw hexadecimal if no decoded data 1`] = `
         </div>
       </div>
       <div
-        class="mm-box"
+        class=""
       />
     </div>
     <div

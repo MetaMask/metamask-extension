@@ -90,7 +90,7 @@ exports[`<AdvancedDetails /> renders component when the prop override is passed 
         </div>
       </div>
       <div
-        class="mm-box"
+        class=""
       >
         <svg
           class="preloader__icon"
@@ -225,7 +225,7 @@ exports[`<AdvancedDetails /> renders component when the state property is true 1
         </div>
       </div>
       <div
-        class="mm-box"
+        class=""
       >
         <svg
           class="preloader__icon"

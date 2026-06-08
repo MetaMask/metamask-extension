@@ -345,7 +345,8 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex-wrap gap-2 items-center flex"
+        style="min-width: 0;"
       >
         <div
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
@@ -600,7 +601,7 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--align-items-center"
+        class="items-center flex"
       >
         <div
           class="mm-box mm-box--margin-bottom-1 mm-box--display-flex mm-box--flex-wrap-wrap"

@@ -3,7 +3,7 @@
 exports[`DataTree correctly renders reverse strings 1`] = `
 <div>
   <div
-    class="mm-box mm-box--width-full"
+    class="w-full"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -74,7 +74,7 @@ exports[`DataTree correctly renders reverse strings 1`] = `
 exports[`DataTree should match snapshot 1`] = `
 <div>
   <div
-    class="mm-box mm-box--width-full"
+    class="w-full"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -128,7 +128,7 @@ exports[`DataTree should match snapshot 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--width-full"
+        class="w-full"
       >
         <div
           class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -182,7 +182,7 @@ exports[`DataTree should match snapshot 1`] = `
             </div>
           </div>
           <div
-            class="mm-box mm-box--width-full"
+            class="w-full"
           >
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -293,7 +293,7 @@ exports[`DataTree should match snapshot 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--width-full"
+        class="w-full"
       >
         <div
           class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -316,7 +316,7 @@ exports[`DataTree should match snapshot 1`] = `
             </div>
           </div>
           <div
-            class="mm-box mm-box--width-full"
+            class="w-full"
           >
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -370,7 +370,7 @@ exports[`DataTree should match snapshot 1`] = `
                 </div>
               </div>
               <div
-                class="mm-box mm-box--width-full"
+                class="w-full"
               >
                 <div
                   class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -542,7 +542,7 @@ exports[`DataTree should match snapshot 1`] = `
 exports[`DataTree should match snapshot for order signature type 1`] = `
 <div>
   <div
-    class="mm-box mm-box--width-full"
+    class="w-full"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -667,7 +667,7 @@ exports[`DataTree should match snapshot for order signature type 1`] = `
 exports[`DataTree should match snapshot for permit signature type 1`] = `
 <div>
   <div
-    class="mm-box mm-box--width-full"
+    class="w-full"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -794,7 +794,7 @@ exports[`DataTree should match snapshot for permit signature type 1`] = `
 exports[`DataTree should match snapshot for permit signature type and deadline is -1 (None) 1`] = `
 <div>
   <div
-    class="mm-box mm-box--width-full"
+    class="w-full"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"

@@ -6,7 +6,7 @@ exports[`ConfirmFooter should match snapshot with signature confirmation 1`] = `
     class="mm-box multichain-page-footer confirm-footer_page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full"
   >
     <div
-      class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row"
+      class="flex-row gap-4 flex"
     >
       <button
         class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
@@ -31,7 +31,7 @@ exports[`ConfirmFooter should match snapshot with transaction confirmation 1`] =
     class="mm-box multichain-page-footer confirm-footer_page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full"
   >
     <div
-      class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row"
+      class="flex-row gap-4 flex"
     >
       <button
         class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"

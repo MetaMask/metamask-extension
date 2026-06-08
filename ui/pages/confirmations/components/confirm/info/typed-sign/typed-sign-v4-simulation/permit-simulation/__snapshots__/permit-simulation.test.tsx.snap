@@ -71,7 +71,7 @@ exports[`PermitSimulation renders component correctly 1`] = `
         </div>
       </div>
       <div
-        class="mm-box"
+        class=""
         style="margin-left: auto; max-width: 100%;"
       >
         <div
@@ -204,7 +204,7 @@ exports[`PermitSimulation renders correctly for NFT permit 1`] = `
         </div>
       </div>
       <div
-        class="mm-box"
+        class=""
         style="margin-left: auto; max-width: 100%;"
       >
         <div

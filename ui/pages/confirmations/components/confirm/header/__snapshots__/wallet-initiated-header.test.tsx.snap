@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+// Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<WalletInitiatedHeader /> should match snapshot 1`] = `
 <div>
@@ -17,7 +17,7 @@ exports[`<WalletInitiatedHeader /> should match snapshot 1`] = `
       />
     </button>
     <div
-      class="mm-box mm-box--background-color-transparent mm-box--rounded-md"
+      class="bg-transparent rounded-md"
     >
       <div>
         <div
