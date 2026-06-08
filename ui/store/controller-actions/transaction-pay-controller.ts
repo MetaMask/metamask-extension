@@ -41,7 +41,7 @@ export async function setPostQuote(
 
 export async function setTransactionPayConfig(
   transactionId: string,
-  options: { isPostQuote?: boolean; accountOverride?: string },
+  options: { isPostQuote?: boolean; accountOverride?: string | null },
 ): Promise<void> {
   return await submitRequestToBackground('setTransactionPayConfig', [
     transactionId,

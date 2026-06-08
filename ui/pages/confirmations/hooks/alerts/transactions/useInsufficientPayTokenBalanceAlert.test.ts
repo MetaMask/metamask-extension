@@ -92,6 +92,26 @@ function runHookForPerpsWithdraw(
   );
 }
 
+function runHookForTransactionPayPostQuote(
+  props: Parameters<typeof useInsufficientPayTokenBalanceAlert>[0] = {},
+) {
+  const transaction = genUnapprovedContractInteractionConfirmation({
+    chainId: CHAIN_IDS.MAINNET,
+  }) as TransactionMeta;
+
+  const state = getMockConfirmStateForTransaction(transaction);
+  state.metamask.transactionData = {
+    [transaction.id]: {
+      isPostQuote: true,
+    },
+  } as never;
+
+  return renderHookWithConfirmContextProvider(
+    () => useInsufficientPayTokenBalanceAlert(props),
+    state,
+  );
+}
+
 describe('useInsufficientPayTokenBalanceAlert', () => {
   const useTransactionPayTotalsMock = jest.mocked(useTransactionPayTotals);
   const useTransactionPayTokenMock = jest.mocked(useTransactionPayToken);
@@ -527,6 +547,23 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
           key: AlertsName.InsufficientPayTokenNative,
         }),
       ]);
+    });
+  });
+
+  describe('post-quote (TransactionPayController state)', () => {
+    it('returns no input alert when pay token balance is less than required token amount', () => {
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          ...PAY_TOKEN_MOCK,
+          balanceUsd: '4.00',
+        },
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+
+      const { result } = runHookForTransactionPayPostQuote();
+
+      expect(result.current).toStrictEqual([]);
     });
   });
 });

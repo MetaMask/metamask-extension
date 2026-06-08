@@ -68,14 +68,18 @@ function getApi(
     },
     setTransactionPayConfig: (
       transactionId: string,
-      options: { isPostQuote?: boolean; accountOverride?: string },
+      options: {
+        isPostQuote?: boolean;
+        accountOverride?: string | null;
+      },
     ) => {
       messengerClient.setTransactionConfig(transactionId, (config) => {
         if (options.isPostQuote !== undefined) {
           config.isPostQuote = options.isPostQuote;
         }
         if (options.accountOverride !== undefined) {
-          config.accountOverride = options.accountOverride;
+          // null clears the override; a string sets it.
+          config.accountOverride = options.accountOverride ?? undefined;
         }
       });
     },

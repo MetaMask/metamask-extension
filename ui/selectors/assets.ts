@@ -1,12 +1,24 @@
 import {
-  AssetListState,
-  DeFiPositionsControllerState,
-  MultichainAssetsControllerState,
-  MultichainAssetsRatesControllerState,
   calculateBalanceChangeForAllWallets,
   calculateBalanceForAllWallets,
   calculateBalanceChangeForAccountGroup,
   selectAssetsBySelectedAccountGroup,
+  selectAllAssets,
+} from '@metamask/assets-controllers';
+import type {
+  AccountGroupAssets,
+  AssetListState,
+  DeFiPositionsControllerState,
+  MultichainAssetsControllerState,
+  MultichainAssetsRatesControllerState,
+  TokenBalancesControllerState,
+  TokenRatesControllerState,
+  MultichainBalancesControllerState,
+  TokensControllerState,
+  CurrencyRateState,
+  BalanceChangePeriod,
+  BalanceChangeResult,
+  AccountTrackerControllerState,
 } from '@metamask/assets-controllers';
 import {
   AssetsControllerState,
@@ -30,16 +42,6 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { createSelector } from 'reselect';
 import type { AccountTreeControllerState } from '@metamask/account-tree-controller';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
-import type {
-  TokenBalancesControllerState,
-  TokenRatesControllerState,
-  MultichainBalancesControllerState,
-  TokensControllerState,
-  CurrencyRateState,
-  BalanceChangePeriod,
-  BalanceChangeResult,
-  AccountTrackerControllerState,
-} from '@metamask/assets-controllers';
 import { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import { TEST_CHAINS } from '../../shared/constants/network';
 import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
@@ -1465,6 +1467,20 @@ export const getAssetsBySelectedAccountGroupIncludingHidden =
         allIgnoredAssets: EMPTY_OBJECT,
       }),
   );
+
+export const getAssetsByAccountGroupId = createDeepEqualSelector(
+  [
+    getStateForAssetSelector,
+    (_state: unknown, accountGroupId: string | undefined) => accountGroupId,
+  ],
+  (assetListState: AssetListState, accountGroupId: string | undefined): AccountGroupAssets | undefined => {
+    if (!accountGroupId) {
+      return undefined;
+    }
+    const all = selectAllAssets(assetListState) as Record<string, AccountGroupAssets>;
+    return all[accountGroupId] ?? undefined;
+  },
+);
 
 export const selectAccountSupportsEnabledNetworks = createSelector(
   [getSelectedInternalAccount, getAllEnabledNetworksForAllNamespaces],

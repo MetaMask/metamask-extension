@@ -17,6 +17,7 @@ import { type Asset as AssetType } from '../../../types/send';
 export type AssetProps = {
   hideNfts?: boolean;
   includeNoBalance?: boolean;
+  ignoreAccountOverride?: boolean;
   onAssetSelect?: (asset: AssetType) => void;
   tokenFilter?: (assets: AssetType[]) => AssetType[];
 };
@@ -24,6 +25,7 @@ export type AssetProps = {
 export const Asset = ({
   hideNfts = false,
   includeNoBalance = false,
+  ignoreAccountOverride = false,
   onAssetSelect,
   tokenFilter,
 }: AssetProps = {}) => {
@@ -32,7 +34,7 @@ export const Asset = ({
   const { addAssetFilterMethod, removeAssetFilterMethod, setAssetListSize } =
     useAssetSelectionMetrics();
 
-  const { tokens, nfts } = useSendAssets({ includeNoBalance });
+  const { tokens, nfts } = useSendAssets({ includeNoBalance, ignoreAccountOverride });
 
   const filteredByCustomFilter = useMemo(() => {
     return tokenFilter ? tokenFilter(tokens) : tokens;

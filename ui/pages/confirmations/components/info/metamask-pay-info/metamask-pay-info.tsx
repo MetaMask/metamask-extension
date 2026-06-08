@@ -37,6 +37,7 @@ import {
   addTransaction,
   findNetworkClientIdByChainId,
   rejectPendingApproval,
+  updateEditableParams,
   updateTransaction,
 } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
@@ -56,6 +57,7 @@ import {
   generateERC20TransferData,
 } from '../../developer/utils';
 import { getAllTokens, getEvmInternalAccounts } from '../../../../../selectors';
+import { getAllAccountGroups } from '../../../../../selectors/multichain-accounts/account-tree';
 import { setTransactionPayConfig } from '../../../../../store/controller-actions/transaction-pay-controller';
 import { PreferredAvatar } from '../../../../../components/app/preferred-avatar/preferred-avatar';
 
@@ -108,6 +110,23 @@ export function MetaMaskPayInfo() {
   const { navigateToTransaction } = useConfirmationNavigation();
   const allTokens = useSelector(getAllTokens);
   const evmAccounts = useSelector(getEvmInternalAccounts);
+  const accountGroups = useSelector(getAllAccountGroups);
+
+  // Resolve display names from account groups — account.metadata.name is empty;
+  // the actual label lives on the group that contains the account.
+  const evmAccountsWithNames = useMemo(
+    () =>
+      evmAccounts.map((account) => {
+        const groupName = accountGroups.find((g) =>
+          (g.accounts as string[]).includes(account.id),
+        )?.metadata.name;
+        return {
+          ...account,
+          metadata: { ...account.metadata, name: groupName ?? account.metadata.name },
+        };
+      }),
+    [evmAccounts, accountGroups],
+  );
 
   // Derive initial target token from the tx — handles the cross-chain recreate
   // case where the new tx already has the correct token address + chainId baked in.
@@ -150,7 +169,7 @@ export function MetaMaskPayInfo() {
     undefined,
   );
 
-  const walletTokens = useSendTokens();
+  const walletTokens = useSendTokens({ ignoreAccountOverride: true });
   const targetTokenBalanceUsd = useMemo(() => {
     const match = walletTokens.find(
       (tok) =>
@@ -303,6 +322,17 @@ export function MetaMaskPayInfo() {
       .round(0, BigNumber.ROUND_UP)
       .toString(16)}` as Hex;
 
+    // When accountOverride is set, the execution tx transfers funds from
+    // txParams.from → accountOverride; otherwise it's a self-transfer.
+    const postQuoteTo = accountOverride ? targetToken.address : from;
+    const postQuoteData = accountOverride
+      ? (generateERC20TransferData(
+          accountOverride,
+          currentAmountHuman,
+          targetToken.decimals,
+        ) as Hex)
+      : POST_QUOTE_DATA;
+
     const updated: TransactionMeta = next
       ? {
           ...currentConfirmation,
@@ -315,11 +345,8 @@ export function MetaMaskPayInfo() {
           ],
           txParams: {
             ...currentConfirmation.txParams,
-            // Self-transfer: zero-value ETH send to own address.
-            // This is the transaction that executes on-chain in post-quote mode;
-            // it always succeeds and is visible in the activity list.
-            to: from,
-            data: POST_QUOTE_DATA,
+            to: postQuoteTo,
+            data: postQuoteData,
             value: '0x0',
           },
         }
@@ -340,7 +367,7 @@ export function MetaMaskPayInfo() {
         };
 
     dispatch(updateTransaction(updated, true));
-  }, [currentConfirmation, dispatch, isPostQuote, targetToken.address, targetToken.decimals]);
+  }, [currentConfirmation, dispatch, isPostQuote, targetToken.address, targetToken.decimals, accountOverride]);
 
   const handleAccountOverrideChange = useCallback(
     async (address: Hex | undefined) => {
@@ -350,18 +377,69 @@ export function MetaMaskPayInfo() {
 
       const txFrom = currentConfirmation.txParams?.from as Hex | undefined;
       // Treat selecting the original from address as "no override" — clears it.
-      const next =
-        address && address.toLowerCase() !== txFrom?.toLowerCase()
-          ? address
-          : undefined;
+      // Send null (not undefined) so the value survives structured-clone serialization
+      // across the background bridge — undefined keys are stripped during postMessage.
+      const isOriginal =
+        !address || address.toLowerCase() === txFrom?.toLowerCase();
 
-      setAccountOverride(next);
+      setAccountOverride(isOriginal ? undefined : address);
       await setTransactionPayConfig(currentConfirmation.id, {
-        accountOverride: next,
+        accountOverride: isOriginal ? null : address,
       });
     },
     [currentConfirmation],
   );
+
+  // Sync tx data when accountOverride changes while post-quote is active.
+  // In post-quote + accountOverride mode the execution tx is a token transfer
+  // from txParams.from → accountOverride (the funds for the delegation).
+  // When accountOverride is cleared, reverts to the self-transfer (0x data).
+  // Uses updateEditableParams so only txParams is patched — requiredAssets
+  // (set by handlePostQuoteToggle) is left untouched.
+  // Does NOT run on isPostQuote changes — handlePostQuoteToggle handles that.
+  useEffect(() => {
+    if (!currentConfirmation || !isPostQuote) {
+      return;
+    }
+
+    const txId = currentConfirmation.id;
+    const from = currentConfirmation.txParams?.from as Hex | undefined;
+    if (!from) {
+      return;
+    }
+
+    if (accountOverride) {
+      const currentData = currentConfirmation.txParams?.data as string | undefined;
+      const currentAmountHuman =
+        currentData && currentData !== POST_QUOTE_DATA
+          ? decodeERC20TransferAmount(currentData, targetToken.decimals)
+          : '0';
+
+      const encoded = generateERC20TransferData(
+        accountOverride,
+        currentAmountHuman,
+        targetToken.decimals,
+      );
+
+      dispatch(
+        updateEditableParams(txId, {
+          to: targetToken.address,
+          data: encoded as Hex,
+          value: '0x0',
+          updateType: false,
+        }),
+      );
+    } else {
+      dispatch(
+        updateEditableParams(txId, {
+          to: from,
+          data: POST_QUOTE_DATA as Hex,
+          value: '0x0',
+          updateType: false,
+        }),
+      );
+    }
+  }, [accountOverride]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
@@ -379,7 +457,7 @@ export function MetaMaskPayInfo() {
           onOpen={() => setIsModalOpen(true)}
         />
         <AccountOverridePill
-          accounts={evmAccounts}
+          accounts={evmAccountsWithNames}
           selectedAddress={accountOverride ?? (currentConfirmation?.txParams?.from as Hex | undefined)}
           txFrom={currentConfirmation?.txParams?.from as Hex | undefined}
           onChange={handleAccountOverrideChange}
@@ -525,7 +603,7 @@ function TargetTokenModal({
       <ModalContent>
         <ModalHeader onClose={onClose}>{t('targetToken')}</ModalHeader>
         <ScrollContainer style={{ flex: 1, overflow: 'auto' }}>
-          <Asset includeNoBalance hideNfts onAssetSelect={onTokenSelect} />
+          <Asset includeNoBalance hideNfts ignoreAccountOverride onAssetSelect={onTokenSelect} />
         </ScrollContainer>
       </ModalContent>
     </Modal>
@@ -587,8 +665,8 @@ function AccountOverridePill({
           size={AvatarAccountSize.Xs}
         />
       )}
-      <Text variant={TextVariant.bodyMdMedium} color={TextColor.textAlternative}>
-        {t('accountOverride')}
+      <Text variant={TextVariant.bodyMdMedium} color={TextColor.textDefault}>
+        {t('account')}
       </Text>
       <select
         value={selectedAddress?.toLowerCase() ?? txFrom?.toLowerCase() ?? ''}

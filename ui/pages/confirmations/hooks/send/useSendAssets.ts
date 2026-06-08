@@ -16,13 +16,14 @@ type SendAssets = {
 
 type UseSendAssetsOptions = {
   includeNoBalance?: boolean;
+  ignoreAccountOverride?: boolean;
 };
 
 export const useSendAssets = (
   options: UseSendAssetsOptions = {},
 ): SendAssets => {
-  const { includeNoBalance = false } = options;
-  const tokens = useSendTokens({ includeNoBalance });
+  const { includeNoBalance = false, ignoreAccountOverride } = options;
+  const tokens = useSendTokens({ includeNoBalance, ignoreAccountOverride });
   const nfts = useSendNfts();
   const useExternalServices = useSelector(getUseExternalServices);
   const allMultichainNetworkConfigurations = useSelector(
