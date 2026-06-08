@@ -12,7 +12,10 @@ import {
   KeyringTypes,
 } from '@metamask/keyring-controller';
 import { add0x, hexToBytes } from '@metamask/utils';
-import { SecretType } from '@metamask/seedless-onboarding-controller';
+import {
+  EncAccountDataType,
+  SecretType,
+} from '@metamask/seedless-onboarding-controller';
 import { Caip25CaveatType } from '@metamask/chain-agnostic-permission';
 import { SnapId } from '@metamask/snaps-sdk';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
@@ -708,6 +711,26 @@ describe('LegacyBackgroundApiService', () => {
           jest.fn(),
         );
 
+        const runMigrationsHandler = jest.fn().mockResolvedValue(false);
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          // @ts-expect-error Partial onboarding state is sufficient for this test.
+          jest.fn().mockReturnValue({ completedOnboarding: true }),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:runMigrations',
+          runMigrationsHandler,
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:getState',
+          // @ts-expect-error Partial seedless onboarding state is sufficient for this test.
+          jest.fn().mockReturnValue({ migrationVersion: 0 }),
+        );
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:trackEvent',
+          jest.fn(),
+        );
+
         const callSpy = jest.spyOn(serviceMessenger, 'call');
 
         await expect(
@@ -724,6 +747,9 @@ describe('LegacyBackgroundApiService', () => {
           expect.any(Function),
         );
 
+        // Migrations run before adding the new secret data.
+        expect(runMigrationsHandler).toHaveBeenCalledTimes(1);
+
         expect(callSpy).toHaveBeenCalledWith(
           'SeedlessOnboardingController:addNewSecretData',
           hexToBytes(
@@ -731,7 +757,7 @@ describe('LegacyBackgroundApiService', () => {
               '0000000000000000000000000000000000000000000000000000000000000001',
             ),
           ),
-          SecretType.PrivateKey,
+          EncAccountDataType.ImportedPrivateKey,
           { keyringId: 'foo' },
         );
 
@@ -820,6 +846,13 @@ describe('LegacyBackgroundApiService', () => {
         rootMessenger.registerActionHandler(
           'KeyringController:removeAccount',
           jest.fn(),
+        );
+
+        // Onboarding is not yet complete, so migrations are skipped.
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          // @ts-expect-error Partial onboarding state is sufficient for this test.
+          jest.fn().mockReturnValue({ completedOnboarding: false }),
         );
 
         const callSpy = jest.spyOn(serviceMessenger, 'call');
@@ -1242,6 +1275,9 @@ function getMessenger(
       'PreferencesController:setPasswordForgotten',
       'OnboardingController:getState',
       'SeedlessOnboardingController:checkIsPasswordOutdated',
+      'SeedlessOnboardingController:getState',
+      'SeedlessOnboardingController:runMigrations',
+      'MetaMetricsController:trackEvent',
     ],
   });
 

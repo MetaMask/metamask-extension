@@ -54,6 +54,9 @@ export function getLegacyBackgroundApiServiceMessenger(
       'PreferencesController:setPasswordForgotten',
       'OnboardingController:getState',
       'SeedlessOnboardingController:checkIsPasswordOutdated',
+      'SeedlessOnboardingController:getState',
+      'SeedlessOnboardingController:runMigrations',
+      'MetaMetricsController:trackEvent',
     ],
   });
 

@@ -5018,14 +5018,20 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.onboardingController, 'state', 'get')
           .mockReturnValue({ completedOnboarding: true });
 
-        // Mock runMigrations (migration runs before adding new secret data)
-        // Returns false to indicate no migration was performed
+        // Migrations now run via the messenger action. Intercept that single
+        // action and let every other call fall through to the real handler.
+        // Returns false to indicate no migration was performed.
+        const realCall = metamaskController.controllerMessenger.call.bind(
+          metamaskController.controllerMessenger,
+        );
         jest
-          .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'runMigrations',
-          )
-          .mockResolvedValue(false);
+          .spyOn(metamaskController.controllerMessenger, 'call')
+          .mockImplementation((actionType, ...args) => {
+            if (actionType === 'SeedlessOnboardingController:runMigrations') {
+              return Promise.resolve(false);
+            }
+            return realCall(actionType, ...args);
+          });
 
         const addNewSecretDataSpy = jest
           .spyOn(
@@ -5050,199 +5056,6 @@ describe('MetaMaskController', () => {
           {
             keyringId: mockKeyringId,
           },
-        );
-      });
-    });
-
-    describe('#addNewPrivateKeyBackup', () => {
-      it('should call addNewSecretData with ImportedPrivateKey dataType', async () => {
-        await metamaskController.createNewVaultAndKeychain('test-password');
-
-        // Mock completedOnboarding to allow migration to run
-        jest
-          .spyOn(metamaskController.onboardingController, 'state', 'get')
-          .mockReturnValue({ completedOnboarding: true });
-
-        // Mock runMigrations (migration runs before adding new secret data)
-        // Returns false to indicate no migration was performed
-        jest
-          .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'runMigrations',
-          )
-          .mockResolvedValue(false);
-
-        const addNewSecretDataSpy = jest
-          .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'addNewSecretData',
-          )
-          .mockResolvedValue();
-
-        const mockPrivateKey =
-          '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef';
-        const mockKeyringId = 'test-keyring-id';
-
-        await metamaskController.addNewPrivateKeyBackup(
-          mockPrivateKey,
-          mockKeyringId,
-          true,
-        );
-
-        expect(addNewSecretDataSpy).toHaveBeenCalledWith(
-          expect.any(Uint8Array),
-          3, // EncAccountDataType.ImportedPrivateKey
-          {
-            keyringId: mockKeyringId,
-          },
-        );
-      });
-    });
-
-    describe('#_runSeedlessOnboardingMigrations', () => {
-      let runMigrationsSpy;
-      let trackEventSpy;
-
-      beforeEach(() => {
-        jest.spyOn(console, 'error').mockImplementation(jest.fn());
-        globalThis.sentry = {
-          ...globalThis.sentry,
-          captureException: jest.fn(),
-        };
-
-        jest
-          .spyOn(metamaskController.onboardingController, 'state', 'get')
-          .mockReturnValue({ completedOnboarding: true });
-
-        runMigrationsSpy = jest
-          .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'runMigrations',
-          )
-          .mockResolvedValue(false);
-
-        trackEventSpy = jest.spyOn(
-          metamaskController.metaMetricsController,
-          'trackEvent',
-        );
-      });
-
-      it('returns early and skips migration when onboarding is not completed', async () => {
-        jest
-          .spyOn(metamaskController.onboardingController, 'state', 'get')
-          .mockReturnValue({ completedOnboarding: false });
-
-        await metamaskController._runSeedlessOnboardingMigrations();
-
-        expect(runMigrationsSpy).not.toHaveBeenCalled();
-        expect(trackEventSpy).not.toHaveBeenCalled();
-      });
-
-      it('only tracks a completion event when a migration was actually performed', async () => {
-        jest
-          .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'state',
-            'get',
-          )
-          .mockReturnValue({ migrationVersion: 1 });
-
-        runMigrationsSpy.mockResolvedValue(false);
-        await metamaskController._runSeedlessOnboardingMigrations();
-        expect(trackEventSpy).not.toHaveBeenCalled();
-
-        runMigrationsSpy.mockResolvedValue(true);
-        await metamaskController._runSeedlessOnboardingMigrations();
-        expect(trackEventSpy).toHaveBeenCalledWith({
-          event: 'Seedless Onboarding Migration Completed',
-          category: 'Background',
-          properties: { migration_version: 1 },
-        });
-      });
-
-      it('tracks a failure event, reports to Sentry, and re-throws when migration fails', async () => {
-        const migrationError = new Error('migration failed');
-        runMigrationsSpy.mockRejectedValue(migrationError);
-        jest
-          .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'state',
-            'get',
-          )
-          .mockReturnValue({ migrationVersion: 0 });
-
-        await expect(
-          metamaskController._runSeedlessOnboardingMigrations(),
-        ).rejects.toThrow('migration failed');
-
-        expect(trackEventSpy).toHaveBeenCalledWith({
-          event: 'Seedless Onboarding Migration Failed',
-          category: 'Background',
-          properties: { migration_version: 0, error: 'migration failed' },
-        });
-        expect(globalThis.sentry.captureException).toHaveBeenCalledWith(
-          migrationError,
-        );
-      });
-
-      it('skips Sentry reporting but still tracks the failure event when reportToSentry is false', async () => {
-        runMigrationsSpy.mockRejectedValue(new Error('migration failed'));
-
-        await expect(
-          metamaskController._runSeedlessOnboardingMigrations({
-            reportToSentry: false,
-          }),
-        ).rejects.toThrow('migration failed');
-
-        expect(globalThis.sentry.captureException).not.toHaveBeenCalled();
-        expect(trackEventSpy).toHaveBeenCalledWith(
-          expect.objectContaining({
-            event: 'Seedless Onboarding Migration Failed',
-          }),
-        );
-      });
-
-      it('wraps non-Error thrown values in a new Error before re-throwing', async () => {
-        runMigrationsSpy.mockRejectedValue('string error');
-
-        await expect(
-          metamaskController._runSeedlessOnboardingMigrations(),
-        ).rejects.toThrow('Unknown error');
-
-        expect(trackEventSpy).toHaveBeenCalledWith(
-          expect.objectContaining({
-            event: 'Seedless Onboarding Migration Failed',
-            properties: expect.objectContaining({ error: 'Unknown error' }),
-          }),
-        );
-      });
-
-      it('logs warnings and still re-throws when MetaMetrics tracking or Sentry reporting fail', async () => {
-        runMigrationsSpy.mockRejectedValue(new Error('migration failed'));
-        trackEventSpy.mockImplementation(() => {
-          throw new Error('trackEvent failed');
-        });
-        globalThis.sentry = {
-          ...globalThis.sentry,
-          captureException: jest.fn().mockImplementation(() => {
-            throw new Error('sentry capture failed');
-          }),
-        };
-        const logWarnSpy = jest
-          .spyOn(log, 'warn')
-          .mockImplementation(jest.fn());
-
-        await expect(
-          metamaskController._runSeedlessOnboardingMigrations(),
-        ).rejects.toThrow('migration failed');
-
-        expect(logWarnSpy).toHaveBeenCalledWith(
-          'Failed to track seedless onboarding migration failure',
-          expect.any(Error),
-        );
-        expect(logWarnSpy).toHaveBeenCalledWith(
-          'Failed to capture seedless onboarding migration failure',
-          expect.any(Error),
         );
       });
     });

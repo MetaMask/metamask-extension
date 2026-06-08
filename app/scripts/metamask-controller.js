@@ -448,6 +448,7 @@ import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-t
 import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-service-init';
 import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
 import { getSnapKeyring } from './lib/snap-keyring/utils/getSnapKeyring';
+import { runSeedlessOnboardingMigrations } from './lib/seedless-onboarding/run-migrations';
 import { initializeWallet } from './wallet-init/initialization';
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -4845,9 +4846,7 @@ export default class MetamaskController extends EventEmitter {
         });
 
         // Run data type migration before adding new SRP to ensure data consistency.
-        await this._runSeedlessOnboardingMigrations({
-          reportToSentry: false,
-        });
+        await runSeedlessOnboardingMigrations(this.controllerMessenger);
 
         await this.seedlessOnboardingController.addNewSecretData(
           seedPhraseAsUint8Array,
@@ -8104,78 +8103,6 @@ export default class MetamaskController extends EventEmitter {
     // KeyringController event. Other controllers subscribe to the 'unlock'
     // event of the MetaMaskController itself.
     this.emit('unlock');
-  }
-
-  /**
-   * Run seedless onboarding migrations.
-   *
-   * Delegates to SeedlessOnboardingController.runMigrations() which handles
-   * version tracking and migration logic. Called before adding new secret data
-   * to ensure data type consistency and correct ordering.
-   *
-   * @param {object} options - Migration execution options.
-   * @param {boolean} [options.reportToSentry] - Whether to capture migration failures in Sentry. Defaults to true.
-   * @returns {Promise<void>}
-   */
-  async _runSeedlessOnboardingMigrations(options = {}) {
-    const { reportToSentry = true } = options;
-    const { completedOnboarding } = this.onboardingController.state;
-
-    if (!completedOnboarding) {
-      return;
-    }
-
-    try {
-      const migrationPerformed =
-        await this.seedlessOnboardingController.runMigrations();
-
-      if (migrationPerformed) {
-        this.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.SeedlessOnboardingMigrationCompleted,
-          category: MetaMetricsEventCategory.Background,
-          properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            migration_version:
-              this.seedlessOnboardingController.state?.migrationVersion,
-          },
-        });
-      }
-    } catch (error) {
-      const isError = error instanceof Error;
-      const errorMessage = isError ? error.message : 'Unknown error';
-      const migrationError = isError ? error : new Error(errorMessage);
-
-      try {
-        this.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.SeedlessOnboardingMigrationFailed,
-          category: MetaMetricsEventCategory.Background,
-          properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            migration_version:
-              this.seedlessOnboardingController.state?.migrationVersion,
-            error: errorMessage,
-          },
-        });
-      } catch (metaMetricsError) {
-        log.warn(
-          'Failed to track seedless onboarding migration failure',
-          metaMetricsError,
-        );
-      }
-
-      if (reportToSentry) {
-        try {
-          captureException(migrationError);
-        } catch (sentryError) {
-          log.warn(
-            'Failed to capture seedless onboarding migration failure',
-            sentryError,
-          );
-        }
-      }
-
-      throw migrationError;
-    }
   }
 
   /**
