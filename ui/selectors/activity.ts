@@ -190,23 +190,6 @@ export const selectNonEvmActivityItems = createSelector(
     ),
 );
 
-export const selectNonEvmActivityItemsById = createSelector(
-  selectNonEvmActivityItems,
-  (items) => {
-    const itemsById = new Map<string, (typeof items)[number]>();
-
-    for (const item of items) {
-      const id = item.data.hash?.toLowerCase();
-
-      if (id) {
-        itemsById.set(id, item);
-      }
-    }
-
-    return itemsById;
-  },
-);
-
 function patchKeyringTransaction(
   transaction: KeyringTransaction,
   assetsMetadata: ReturnType<typeof getAssetsMetadata>,
@@ -488,23 +471,6 @@ export const selectLocalActivityItems = createSelector(
         transactionGroup,
       );
     });
-  },
-);
-
-export const selectLocalActivityItemsByIdentifier = createSelector(
-  selectLocalActivityItems,
-  (items) => {
-    const itemsByIdentifier = new Map();
-
-    for (const item of items) {
-      const hash = item.data.hash?.toLowerCase();
-
-      if (hash) {
-        itemsByIdentifier.set(hash, item);
-      }
-    }
-
-    return itemsByIdentifier;
   },
 );
 
