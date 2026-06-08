@@ -531,20 +531,6 @@
         "mockttp>@peculiar/x509>tsyringe": true
       }
     },
-    "@pmmmwh/react-refresh-webpack-plugin": {
-      "builtin": {
-        "node:path.dirname": true,
-        "node:path.join": true
-      },
-      "globals": {
-        "__dirname": true,
-        "process.env.NODE_ENV": true
-      },
-      "packages": {
-        "schema-utils": true,
-        "webpack": true
-      }
-    },
     "jest-preview>sirv>@polka/url": {
       "builtin": {
         "querystring.parse": true

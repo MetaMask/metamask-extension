@@ -68,7 +68,9 @@ export const useShieldSubscriptionContext = () => {
  * @param props - Component props
  * @param props.children - Child elements to render
  */
-export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
+export const ShieldSubscriptionProvider = ({
+  children,
+}: React.PropsWithChildren<unknown>) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const isBasicFunctionalityEnabled = Boolean(
     useSelector(getUseExternalServices),
