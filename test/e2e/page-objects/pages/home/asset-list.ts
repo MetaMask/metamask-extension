@@ -225,7 +225,7 @@ class AssetListPage extends HomePage {
     // If the low value assets section is already expanded, no action is required.
     try {
       await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded, {
-        timeout: 2000,
+        timeout: 1000,
       });
       return;
     } catch {

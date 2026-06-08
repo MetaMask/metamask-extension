@@ -99,7 +99,7 @@ describe('Send ERC20 - Gas Customization', function () {
     );
   });
 
-  it('sends with custom gas from dApp TEST', async function () {
+  it('sends with custom gas from dApp', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
