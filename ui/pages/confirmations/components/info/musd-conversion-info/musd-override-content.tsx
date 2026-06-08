@@ -18,7 +18,6 @@ import {
 import { useTransactionPayAvailableTokens } from '../../../hooks/pay/useTransactionPayAvailableTokens';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import {
-  ConfirmInfoRowSize,
   PayWithRow,
   PayWithRowSkeleton,
 } from '../../rows/pay-with-row/pay-with-row';
@@ -62,7 +61,7 @@ export const MusdOverrideContent = ({
         />
       )}
       {hasTokens && payToken ? (
-        <PayWithRow variant={ConfirmInfoRowSize.Small} />
+        <PayWithRow />
       ) : (
         <PayWithRowSkeleton />
       )}
