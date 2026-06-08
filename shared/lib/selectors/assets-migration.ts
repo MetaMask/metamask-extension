@@ -4,12 +4,9 @@ import {
   Hex,
   bigIntToHex,
   KnownCaipNamespace,
-} from '@metamask/utils';
-import { toChecksumHexAddress } from '@metamask/controller-utils';
-import {
-  AssetsControllerState,
-  FungibleAssetPrice,
-} from '@metamask/assets-controller';
+} from "@metamask/utils";
+import { toChecksumHexAddress } from "@metamask/controller-utils";
+import { AssetsControllerState, FungibleAssetPrice } from "@metamask/assets-controller";
 import {
   AccountTrackerControllerState,
   MultichainAssetsControllerState,
@@ -23,21 +20,21 @@ import {
   MarketDataDetails,
   TokenRatesControllerState,
   RatesControllerState,
-} from '@metamask/assets-controllers';
-import { AccountsControllerState } from '@metamask/accounts-controller';
-import { isEvmAccountType } from '@metamask/keyring-api';
-import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
-import { NetworkState } from '@metamask/network-controller';
-import { decimalToPrefixedHex } from '../conversion.utils';
+} from "@metamask/assets-controllers";
+import { AccountsControllerState } from "@metamask/accounts-controller";
+import { isEvmAccountType } from "@metamask/keyring-api";
+import { RemoteFeatureFlagControllerState } from "@metamask/remote-feature-flag-controller";
+import { NetworkState } from "@metamask/network-controller";
+import { decimalToPrefixedHex } from "../conversion.utils";
 import {
   ASSETS_UNIFY_STATE_FLAG,
   ASSETS_UNIFY_STATE_VERSION_1,
   isAssetsUnifyStateFeatureEnabled,
   type AssetsUnifyStateFeatureFlag,
-} from '../assets-unify-state/remote-feature-flag';
-import { getIsAssetsUnifiedStateIncludedInBuild } from '../environment';
-import { AssetType } from '../../constants/transaction';
-import { createDeepEqualSelector } from './selector-creators';
+} from "../assets-unify-state/remote-feature-flag";
+import { getIsAssetsUnifiedStateIncludedInBuild } from "../environment";
+import { AssetType } from "../../constants/transaction";
+import { createDeepEqualSelector } from "./selector-creators";
 
 // Old state controllers and fields status
 //
@@ -82,9 +79,7 @@ import { createDeepEqualSelector } from './selector-creators';
 type ControllerStateSelector<
   InputState extends Record<string, unknown>,
   ResultField extends keyof InputState,
-> = (state: {
-  metamask: Pick<InputState, ResultField>;
-}) => InputState[ResultField];
+> = (state: { metamask: Pick<InputState, ResultField> }) => InputState[ResultField];
 
 const getIsAssetsUnifyStateEnabled = createDeepEqualSelector(
   [
@@ -99,96 +94,81 @@ const getIsAssetsUnifyStateEnabled = createDeepEqualSelector(
       | AssetsUnifyStateFeatureFlag
       | undefined;
 
-    return isAssetsUnifyStateFeatureEnabled(
-      featureFlag,
-      ASSETS_UNIFY_STATE_VERSION_1,
-    );
+    return isAssetsUnifyStateFeatureEnabled(featureFlag, ASSETS_UNIFY_STATE_VERSION_1);
   },
 );
 
 // ChainId (hex) -> AccountAddress (hex checksummed) -> Balance (hex)
-export const getAccountTrackerControllerAccountsByChainId =
-  createDeepEqualSelector(
-    [
-      getIsAssetsUnifyStateEnabled,
-      (state: {
-        metamask: Pick<AccountTrackerControllerState, 'accountsByChainId'>;
-      }) => state.metamask?.accountsByChainId ?? {},
-      (state: { metamask: Pick<AssetsControllerState, 'assetsBalance'> }) =>
-        state.metamask?.assetsBalance ?? {},
-      (state: { metamask: Pick<AssetsControllerState, 'assetsInfo'> }) =>
-        state.metamask?.assetsInfo ?? {},
-      (state: {
-        metamask: Pick<AccountsControllerState, 'internalAccounts'>;
-      }) => state.metamask?.internalAccounts?.accounts ?? {},
-    ],
-    (
-      isAssetsUnifyStateEnabled,
-      accountsByChainId,
-      assetsBalance,
-      assetsInfo,
-      internalAccountsById,
-    ) => {
-      if (!isAssetsUnifyStateEnabled) {
-        return accountsByChainId;
+export const getAccountTrackerControllerAccountsByChainId = createDeepEqualSelector(
+  [
+    getIsAssetsUnifyStateEnabled,
+    (state: { metamask: Pick<AccountTrackerControllerState, "accountsByChainId"> }) =>
+      state.metamask?.accountsByChainId ?? {},
+    (state: { metamask: Pick<AssetsControllerState, "assetsBalance"> }) =>
+      state.metamask?.assetsBalance ?? {},
+    (state: { metamask: Pick<AssetsControllerState, "assetsInfo"> }) =>
+      state.metamask?.assetsInfo ?? {},
+    (state: { metamask: Pick<AccountsControllerState, "internalAccounts"> }) =>
+      state.metamask?.internalAccounts?.accounts ?? {},
+  ],
+  (
+    isAssetsUnifyStateEnabled,
+    accountsByChainId,
+    assetsBalance,
+    assetsInfo,
+    internalAccountsById,
+  ) => {
+    if (!isAssetsUnifyStateEnabled) {
+      return accountsByChainId;
+    }
+
+    const result: AccountTrackerControllerState["accountsByChainId"] = {};
+
+    for (const [accountId, accountBalances] of Object.entries(assetsBalance)) {
+      const internalAccount = internalAccountsById[accountId];
+      if (!internalAccount || !isEvmAccountType(internalAccount.type)) {
+        continue;
       }
 
-      const result: AccountTrackerControllerState['accountsByChainId'] = {};
+      const checksummedAddress = toChecksumHexAddress(internalAccount.address);
 
-      for (const [accountId, accountBalances] of Object.entries(
-        assetsBalance,
-      )) {
-        const internalAccount = internalAccountsById[accountId];
-        if (!internalAccount || !isEvmAccountType(internalAccount.type)) {
+      for (const [assetId, balanceData] of Object.entries(accountBalances)) {
+        const metadata = assetsInfo[assetId];
+        if (metadata?.type !== "native") {
           continue;
         }
 
-        const checksummedAddress = toChecksumHexAddress(
-          internalAccount.address,
-        );
+        const { chain: parsedChain } = parseCaipAssetType(assetId as CaipAssetType);
 
-        for (const [assetId, balanceData] of Object.entries(accountBalances)) {
-          const metadata = assetsInfo[assetId];
-          if (metadata?.type !== 'native') {
-            continue;
-          }
+        // No need to check if the chain is EVM, we already filtered out non-EVM accounts
+        const hexChainId = decimalToPrefixedHex(parsedChain.reference);
+        const amount = balanceData?.amount ?? "0";
 
-          const { chain: parsedChain } = parseCaipAssetType(
-            assetId as CaipAssetType,
-          );
-
-          // No need to check if the chain is EVM, we already filtered out non-EVM accounts
-          const hexChainId = decimalToPrefixedHex(parsedChain.reference);
-          const amount = balanceData?.amount ?? '0';
-
-          result[hexChainId] ??= {};
-          result[hexChainId][checksummedAddress] = {
-            // TODO: Use raw value from state when available
-            balance: parseBalanceWithDecimals(amount, metadata.decimals),
-          };
-        }
+        result[hexChainId] ??= {};
+        result[hexChainId][checksummedAddress] = {
+          // TODO: Use raw value from state when available
+          balance: parseBalanceWithDecimals(amount, metadata.decimals),
+        };
       }
+    }
 
-      return result;
-    },
-  ) as unknown as ControllerStateSelector<
-    AccountTrackerControllerState,
-    'accountsByChainId'
-  >;
+    return result;
+  },
+) as unknown as ControllerStateSelector<AccountTrackerControllerState, "accountsByChainId">;
 
 // ChainId (hex) -> AccountAddress (hex lowercase) -> Array of Tokens
 export const getTokensControllerAllTokens = createDeepEqualSelector(
   [
     getIsAssetsUnifyStateEnabled,
-    (state: { metamask: Pick<TokensControllerState, 'allTokens'> }) =>
+    (state: { metamask: Pick<TokensControllerState, "allTokens"> }) =>
       state.metamask?.allTokens ?? {},
-    (state: { metamask: Pick<AssetsControllerState, 'assetsInfo'> }) =>
+    (state: { metamask: Pick<AssetsControllerState, "assetsInfo"> }) =>
       state.metamask?.assetsInfo ?? {},
-    (state: { metamask: Pick<AssetsControllerState, 'assetsBalance'> }) =>
+    (state: { metamask: Pick<AssetsControllerState, "assetsBalance"> }) =>
       state.metamask?.assetsBalance ?? {},
-    (state: { metamask: Pick<AssetsControllerState, 'customAssets'> }) =>
+    (state: { metamask: Pick<AssetsControllerState, "customAssets"> }) =>
       state.metamask?.customAssets ?? {},
-    (state: { metamask: Pick<AccountsControllerState, 'internalAccounts'> }) =>
+    (state: { metamask: Pick<AccountsControllerState, "internalAccounts"> }) =>
       state.metamask?.internalAccounts?.accounts ?? {},
   ],
   (
@@ -203,23 +183,17 @@ export const getTokensControllerAllTokens = createDeepEqualSelector(
       return allTokens;
     }
 
-    const result: TokensControllerState['allTokens'] = {};
+    const result: TokensControllerState["allTokens"] = {};
 
     // Merge assetsBalance and customAssets: accountId -> assetId[]
     const allAssets = Object.fromEntries(
-      [
-        ...new Set([
-          ...Object.keys(assetsBalance),
-          ...Object.keys(customAssets),
-        ]),
-      ].map((accountId) => {
-        const fromBalance = Object.keys(assetsBalance[accountId] ?? {});
-        const fromCustom = customAssets[accountId] ?? [];
-        return [
-          accountId,
-          [...new Set([...fromBalance, ...fromCustom])] as CaipAssetType[],
-        ];
-      }),
+      [...new Set([...Object.keys(assetsBalance), ...Object.keys(customAssets)])].map(
+        (accountId) => {
+          const fromBalance = Object.keys(assetsBalance[accountId] ?? {});
+          const fromCustom = customAssets[accountId] ?? [];
+          return [accountId, [...new Set([...fromBalance, ...fromCustom])] as CaipAssetType[]];
+        },
+      ),
     );
 
     for (const [accountId, assetIds] of Object.entries(allAssets)) {
@@ -230,7 +204,7 @@ export const getTokensControllerAllTokens = createDeepEqualSelector(
 
       for (const assetId of assetIds) {
         const metadata = assetsInfo[assetId];
-        if (!metadata || metadata.type === 'native') {
+        if (!metadata || metadata.type === "native") {
           continue;
         }
 
@@ -256,30 +230,25 @@ export const getTokensControllerAllTokens = createDeepEqualSelector(
 
     return result;
   },
-) as unknown as ControllerStateSelector<TokensControllerState, 'allTokens'>;
+) as unknown as ControllerStateSelector<TokensControllerState, "allTokens">;
 
 // ChainId (hex) -> AccountAddress (hex lowercase) -> Array of TokenAddress (hex lowercase)
 export const getTokensControllerAllIgnoredTokens = createDeepEqualSelector(
   [
     getIsAssetsUnifyStateEnabled,
-    (state: { metamask: Pick<TokensControllerState, 'allIgnoredTokens'> }) =>
+    (state: { metamask: Pick<TokensControllerState, "allIgnoredTokens"> }) =>
       state.metamask?.allIgnoredTokens ?? {},
-    (state: { metamask: Pick<AssetsControllerState, 'assetPreferences'> }) =>
+    (state: { metamask: Pick<AssetsControllerState, "assetPreferences"> }) =>
       state.metamask?.assetPreferences ?? {},
-    (state: { metamask: Pick<AccountsControllerState, 'internalAccounts'> }) =>
+    (state: { metamask: Pick<AccountsControllerState, "internalAccounts"> }) =>
       state.metamask?.internalAccounts?.accounts ?? {},
   ],
-  (
-    isAssetsUnifyStateEnabled,
-    allIgnoredTokens,
-    assetPreferences,
-    internalAccountsById,
-  ) => {
+  (isAssetsUnifyStateEnabled, allIgnoredTokens, assetPreferences, internalAccountsById) => {
     if (!isAssetsUnifyStateEnabled) {
       return allIgnoredTokens;
     }
 
-    const result: TokensControllerState['allIgnoredTokens'] = {};
+    const result: TokensControllerState["allIgnoredTokens"] = {};
 
     for (const [assetId, { hidden }] of Object.entries(assetPreferences)) {
       if (!hidden) {
@@ -301,33 +270,27 @@ export const getTokensControllerAllIgnoredTokens = createDeepEqualSelector(
 
         result[hexChainId] ??= {};
         result[hexChainId][internalAccount.address] ??= [];
-        result[hexChainId][internalAccount.address].push(
-          assetType.assetReference,
-        );
+        result[hexChainId][internalAccount.address].push(assetType.assetReference);
       }
     }
 
     return result;
   },
-) as unknown as ControllerStateSelector<
-  TokensControllerState,
-  'allIgnoredTokens'
->;
+) as unknown as ControllerStateSelector<TokensControllerState, "allIgnoredTokens">;
 
 // AcountAddress (hex lowercase) -> ChainId (hex) -> TokenAddress (hex checksummed) -> Balance (hex)
 export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
   [
     getIsAssetsUnifyStateEnabled,
-    (state: {
-      metamask: Pick<TokenBalancesControllerState, 'tokenBalances'>;
-    }) => state.metamask?.tokenBalances ?? {},
-    (state: { metamask: Pick<AssetsControllerState, 'assetsInfo'> }) =>
+    (state: { metamask: Pick<TokenBalancesControllerState, "tokenBalances"> }) =>
+      state.metamask?.tokenBalances ?? {},
+    (state: { metamask: Pick<AssetsControllerState, "assetsInfo"> }) =>
       state.metamask?.assetsInfo ?? {},
-    (state: { metamask: Pick<AssetsControllerState, 'assetsBalance'> }) =>
+    (state: { metamask: Pick<AssetsControllerState, "assetsBalance"> }) =>
       state.metamask?.assetsBalance ?? {},
-    (state: { metamask: Pick<AssetsControllerState, 'customAssets'> }) =>
+    (state: { metamask: Pick<AssetsControllerState, "customAssets"> }) =>
       state.metamask?.customAssets ?? {},
-    (state: { metamask: Pick<AccountsControllerState, 'internalAccounts'> }) =>
+    (state: { metamask: Pick<AccountsControllerState, "internalAccounts"> }) =>
       state.metamask?.internalAccounts?.accounts ?? {},
   ],
   (
@@ -342,7 +305,7 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
       return tokenBalances;
     }
 
-    const result: TokenBalancesControllerState['tokenBalances'] = {};
+    const result: TokenBalancesControllerState["tokenBalances"] = {};
     for (const [accountId, chainIdBalances] of Object.entries(assetsBalance)) {
       const internalAccount = internalAccountsById[accountId];
       if (!internalAccount || !isEvmAccountType(internalAccount.type)) {
@@ -362,9 +325,7 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
 
         const hexChainId = decimalToPrefixedHex(assetType.chain.reference);
         const assetAddress = toChecksumHexAddress(
-          metadata.type === 'native'
-            ? getNativeTokenAddress(hexChainId)
-            : assetType.assetReference,
+          metadata.type === "native" ? getNativeTokenAddress(hexChainId) : assetType.assetReference,
         ) as Hex;
 
         result[accountAddress][hexChainId] ??= {};
@@ -393,7 +354,7 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
         }
 
         const metadata = assetsInfo[assetId];
-        if (!metadata || metadata.type === 'native') {
+        if (!metadata || metadata.type === "native") {
           continue;
         }
 
@@ -404,224 +365,186 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
         }
 
         const hexChainId = decimalToPrefixedHex(assetType.chain.reference);
-        const assetAddress = toChecksumHexAddress(
-          assetType.assetReference,
-        ) as Hex;
+        const assetAddress = toChecksumHexAddress(assetType.assetReference) as Hex;
 
         if (!result[accountAddress]?.[hexChainId]?.[assetAddress]) {
           result[accountAddress][hexChainId] ??= {};
-          result[accountAddress][hexChainId][assetAddress] =
-            parseBalanceWithDecimals('0', metadata.decimals);
+          result[accountAddress][hexChainId][assetAddress] = parseBalanceWithDecimals(
+            "0",
+            metadata.decimals,
+          );
         }
       }
     }
 
     return result;
   },
-) as unknown as ControllerStateSelector<
-  TokenBalancesControllerState,
-  'tokenBalances'
->;
+) as unknown as ControllerStateSelector<TokenBalancesControllerState, "tokenBalances">;
 
 // AccountId -> Array of AssetIds
-export const getMultiChainAssetsControllerAccountsAssets =
-  createDeepEqualSelector(
-    [
-      getIsAssetsUnifyStateEnabled,
-      (state: {
-        metamask: Pick<MultichainAssetsControllerState, 'accountsAssets'>;
-      }) => state.metamask?.accountsAssets ?? {},
-      (state: { metamask: Pick<AssetsControllerState, 'assetsBalance'> }) =>
-        state.metamask?.assetsBalance ?? {},
-      (state: { metamask: Pick<AssetsControllerState, 'customAssets'> }) =>
-        state.metamask?.customAssets ?? {},
-      (state: {
-        metamask: Pick<AccountsControllerState, 'internalAccounts'>;
-      }) => state.metamask?.internalAccounts?.accounts ?? {},
-    ],
-    (
-      isAssetsUnifyStateEnabled,
-      accountsAssets,
-      assetsBalance,
-      customAssets,
-      internalAccountsById,
-    ) => {
-      if (!isAssetsUnifyStateEnabled) {
-        return accountsAssets;
-      }
+export const getMultiChainAssetsControllerAccountsAssets = createDeepEqualSelector(
+  [
+    getIsAssetsUnifyStateEnabled,
+    (state: { metamask: Pick<MultichainAssetsControllerState, "accountsAssets"> }) =>
+      state.metamask?.accountsAssets ?? {},
+    (state: { metamask: Pick<AssetsControllerState, "assetsBalance"> }) =>
+      state.metamask?.assetsBalance ?? {},
+    (state: { metamask: Pick<AssetsControllerState, "customAssets"> }) =>
+      state.metamask?.customAssets ?? {},
+    (state: { metamask: Pick<AccountsControllerState, "internalAccounts"> }) =>
+      state.metamask?.internalAccounts?.accounts ?? {},
+  ],
+  (
+    isAssetsUnifyStateEnabled,
+    accountsAssets,
+    assetsBalance,
+    customAssets,
+    internalAccountsById,
+  ) => {
+    if (!isAssetsUnifyStateEnabled) {
+      return accountsAssets;
+    }
 
-      const result: MultichainAssetsControllerState['accountsAssets'] = {};
+    const result: MultichainAssetsControllerState["accountsAssets"] = {};
 
-      // Merge assetsBalance and customAssets: accountId -> assetId[]
-      const allAssets = Object.fromEntries(
-        [
-          ...new Set([
-            ...Object.keys(assetsBalance),
-            ...Object.keys(customAssets),
-          ]),
-        ].map((accountId) => {
+    // Merge assetsBalance and customAssets: accountId -> assetId[]
+    const allAssets = Object.fromEntries(
+      [...new Set([...Object.keys(assetsBalance), ...Object.keys(customAssets)])].map(
+        (accountId) => {
           const fromBalance = Object.keys(assetsBalance[accountId] ?? {});
           const fromCustom = customAssets[accountId] ?? [];
-          return [
-            accountId,
-            [...new Set([...fromBalance, ...fromCustom])] as CaipAssetType[],
-          ];
-        }),
-      );
+          return [accountId, [...new Set([...fromBalance, ...fromCustom])] as CaipAssetType[]];
+        },
+      ),
+    );
 
-      for (const [accountId, assetIds] of Object.entries(allAssets)) {
-        const internalAccount = internalAccountsById[accountId];
-        if (!internalAccount || isEvmAccountType(internalAccount.type)) {
+    for (const [accountId, assetIds] of Object.entries(allAssets)) {
+      const internalAccount = internalAccountsById[accountId];
+      if (!internalAccount || isEvmAccountType(internalAccount.type)) {
+        continue;
+      }
+
+      result[accountId] = [];
+
+      for (const assetId of assetIds) {
+        const assetType = parseCaipAssetType(assetId);
+        if (assetType.chain.namespace === KnownCaipNamespace.Eip155) {
           continue;
         }
 
-        result[accountId] = [];
-
-        for (const assetId of assetIds) {
-          const assetType = parseCaipAssetType(assetId);
-          if (assetType.chain.namespace === KnownCaipNamespace.Eip155) {
-            continue;
-          }
-
-          result[accountId].push(assetId);
-        }
+        result[accountId].push(assetId);
       }
+    }
 
-      return result;
-    },
-  ) as unknown as ControllerStateSelector<
-    MultichainAssetsControllerState,
-    'accountsAssets'
-  >;
+    return result;
+  },
+) as unknown as ControllerStateSelector<MultichainAssetsControllerState, "accountsAssets">;
 
 // TODO There are issues with the new image url not matching the one in assetsMetadata iconUrl
 // AssetId -> AssetMetadata
-export const getMultiChainAssetsControllerAssetsMetadata =
-  createDeepEqualSelector(
-    [
-      getIsAssetsUnifyStateEnabled,
-      (state: {
-        metamask: Pick<MultichainAssetsControllerState, 'assetsMetadata'>;
-      }) => state.metamask?.assetsMetadata ?? {},
-      (state: { metamask: Pick<AssetsControllerState, 'assetsInfo'> }) =>
-        state.metamask?.assetsInfo ?? {},
-    ],
-    (isAssetsUnifyStateEnabled, assetsMetadata, assetsInfo) => {
-      if (!isAssetsUnifyStateEnabled) {
-        return assetsMetadata;
+export const getMultiChainAssetsControllerAssetsMetadata = createDeepEqualSelector(
+  [
+    getIsAssetsUnifyStateEnabled,
+    (state: { metamask: Pick<MultichainAssetsControllerState, "assetsMetadata"> }) =>
+      state.metamask?.assetsMetadata ?? {},
+    (state: { metamask: Pick<AssetsControllerState, "assetsInfo"> }) =>
+      state.metamask?.assetsInfo ?? {},
+  ],
+  (isAssetsUnifyStateEnabled, assetsMetadata, assetsInfo) => {
+    if (!isAssetsUnifyStateEnabled) {
+      return assetsMetadata;
+    }
+
+    const result: MultichainAssetsControllerState["assetsMetadata"] = {};
+
+    for (const [assetId, metadata] of Object.entries(assetsInfo)) {
+      const assetType = parseCaipAssetType(assetId as CaipAssetType);
+      if (assetType.chain.namespace === KnownCaipNamespace.Eip155) {
+        continue;
       }
 
-      const result: MultichainAssetsControllerState['assetsMetadata'] = {};
+      result[assetId as CaipAssetType] = {
+        fungible: true,
+        iconUrl: metadata.image ?? "",
+        units: [
+          {
+            decimals: metadata.decimals,
+            symbol: metadata.symbol,
+            name: metadata.name,
+          },
+        ],
+        symbol: metadata.symbol,
+        name: metadata.name,
+      };
+    }
 
-      for (const [assetId, metadata] of Object.entries(assetsInfo)) {
+    return result;
+  },
+) as unknown as ControllerStateSelector<MultichainAssetsControllerState, "assetsMetadata">;
+
+// AccountId -> Array of AssetIds
+export const getMultiChainAssetsControllerAllIgnoredAssets = createDeepEqualSelector(
+  [
+    getIsAssetsUnifyStateEnabled,
+    (state: { metamask: Pick<MultichainAssetsControllerState, "allIgnoredAssets"> }) =>
+      state.metamask?.allIgnoredAssets ?? {},
+    (state: { metamask: Pick<AssetsControllerState, "assetPreferences"> }) =>
+      state.metamask?.assetPreferences ?? {},
+    (state: { metamask: Pick<AccountsControllerState, "internalAccounts"> }) =>
+      state.metamask?.internalAccounts?.accounts ?? {},
+  ],
+  (isAssetsUnifyStateEnabled, allIgnoredAssets, assetPreferences, internalAccountsById) => {
+    if (!isAssetsUnifyStateEnabled) {
+      return allIgnoredAssets;
+    }
+
+    const result: MultichainAssetsControllerState["allIgnoredAssets"] = {};
+
+    for (const accountId of Object.keys(internalAccountsById)) {
+      const internalAccount = internalAccountsById[accountId];
+      if (!internalAccount || isEvmAccountType(internalAccount.type)) {
+        continue;
+      }
+
+      result[accountId] = [];
+
+      for (const [assetId, { hidden }] of Object.entries(assetPreferences)) {
+        if (!hidden) {
+          continue;
+        }
+
         const assetType = parseCaipAssetType(assetId as CaipAssetType);
         if (assetType.chain.namespace === KnownCaipNamespace.Eip155) {
           continue;
         }
 
-        result[assetId as CaipAssetType] = {
-          fungible: true,
-          iconUrl: metadata.image ?? '',
-          units: [
-            {
-              decimals: metadata.decimals,
-              symbol: metadata.symbol,
-              name: metadata.name,
-            },
-          ],
-          symbol: metadata.symbol,
-          name: metadata.name,
-        };
+        result[accountId].push(assetId as CaipAssetType);
       }
+    }
 
-      return result;
-    },
-  ) as unknown as ControllerStateSelector<
-    MultichainAssetsControllerState,
-    'assetsMetadata'
-  >;
-
-// AccountId -> Array of AssetIds
-export const getMultiChainAssetsControllerAllIgnoredAssets =
-  createDeepEqualSelector(
-    [
-      getIsAssetsUnifyStateEnabled,
-      (state: {
-        metamask: Pick<MultichainAssetsControllerState, 'allIgnoredAssets'>;
-      }) => state.metamask?.allIgnoredAssets ?? {},
-      (state: { metamask: Pick<AssetsControllerState, 'assetPreferences'> }) =>
-        state.metamask?.assetPreferences ?? {},
-      (state: {
-        metamask: Pick<AccountsControllerState, 'internalAccounts'>;
-      }) => state.metamask?.internalAccounts?.accounts ?? {},
-    ],
-    (
-      isAssetsUnifyStateEnabled,
-      allIgnoredAssets,
-      assetPreferences,
-      internalAccountsById,
-    ) => {
-      if (!isAssetsUnifyStateEnabled) {
-        return allIgnoredAssets;
-      }
-
-      const result: MultichainAssetsControllerState['allIgnoredAssets'] = {};
-
-      for (const accountId of Object.keys(internalAccountsById)) {
-        const internalAccount = internalAccountsById[accountId];
-        if (!internalAccount || isEvmAccountType(internalAccount.type)) {
-          continue;
-        }
-
-        result[accountId] = [];
-
-        for (const [assetId, { hidden }] of Object.entries(assetPreferences)) {
-          if (!hidden) {
-            continue;
-          }
-
-          const assetType = parseCaipAssetType(assetId as CaipAssetType);
-          if (assetType.chain.namespace === KnownCaipNamespace.Eip155) {
-            continue;
-          }
-
-          result[accountId].push(assetId as CaipAssetType);
-        }
-      }
-
-      return result;
-    },
-  ) as unknown as ControllerStateSelector<
-    MultichainAssetsControllerState,
-    'allIgnoredAssets'
-  >;
+    return result;
+  },
+) as unknown as ControllerStateSelector<MultichainAssetsControllerState, "allIgnoredAssets">;
 
 // AccountId -> AssetId -> Balance (amount + unit)
 export const getMultiChainBalancesControllerBalances = createDeepEqualSelector(
   [
     getIsAssetsUnifyStateEnabled,
-    (state: {
-      metamask: Pick<MultichainBalancesControllerState, 'balances'>;
-    }) => state.metamask?.balances ?? {},
-    (state: { metamask: Pick<AssetsControllerState, 'assetsBalance'> }) =>
+    (state: { metamask: Pick<MultichainBalancesControllerState, "balances"> }) =>
+      state.metamask?.balances ?? {},
+    (state: { metamask: Pick<AssetsControllerState, "assetsBalance"> }) =>
       state.metamask?.assetsBalance ?? {},
-    (state: { metamask: Pick<AssetsControllerState, 'assetsInfo'> }) =>
+    (state: { metamask: Pick<AssetsControllerState, "assetsInfo"> }) =>
       state.metamask?.assetsInfo ?? {},
-    (state: { metamask: Pick<AccountsControllerState, 'internalAccounts'> }) =>
+    (state: { metamask: Pick<AccountsControllerState, "internalAccounts"> }) =>
       state.metamask?.internalAccounts?.accounts ?? {},
   ],
-  (
-    isAssetsUnifyStateEnabled,
-    balances,
-    assetsBalance,
-    assetsInfo,
-    internalAccountsById,
-  ) => {
+  (isAssetsUnifyStateEnabled, balances, assetsBalance, assetsInfo, internalAccountsById) => {
     if (!isAssetsUnifyStateEnabled) {
       return balances;
     }
 
-    const result: MultichainBalancesControllerState['balances'] = {};
+    const result: MultichainBalancesControllerState["balances"] = {};
 
     for (const [accountId, chainIdBalances] of Object.entries(assetsBalance)) {
       const internalAccount = internalAccountsById[accountId];
@@ -635,10 +558,7 @@ export const getMultiChainBalancesControllerBalances = createDeepEqualSelector(
         const assetType = parseCaipAssetType(assetId as CaipAssetType);
         const metadata = assetsInfo[assetId];
 
-        if (
-          !metadata ||
-          assetType.chain.namespace === KnownCaipNamespace.Eip155
-        ) {
+        if (!metadata || assetType.chain.namespace === KnownCaipNamespace.Eip155) {
           continue;
         }
 
@@ -651,17 +571,13 @@ export const getMultiChainBalancesControllerBalances = createDeepEqualSelector(
 
     return result;
   },
-) as unknown as ControllerStateSelector<
-  MultichainBalancesControllerState,
-  'balances'
->;
+) as unknown as ControllerStateSelector<MultichainBalancesControllerState, "balances">;
 
 export const getCurrencyRateControllerCurrentCurrency = createDeepEqualSelector(
   [
     getIsAssetsUnifyStateEnabled,
     (state: { metamask: CurrencyRateState }) => state.metamask?.currentCurrency,
-    (state: { metamask: AssetsControllerState }) =>
-      state.metamask?.selectedCurrency,
+    (state: { metamask: AssetsControllerState }) => state.metamask?.selectedCurrency,
   ],
   (isAssetsUnifyStateEnabled, currentCurrency, selectedCurrency) => {
     if (!isAssetsUnifyStateEnabled) {
@@ -670,29 +586,26 @@ export const getCurrencyRateControllerCurrentCurrency = createDeepEqualSelector(
 
     return selectedCurrency;
   },
-) as unknown as ControllerStateSelector<CurrencyRateState, 'currentCurrency'>;
+) as unknown as ControllerStateSelector<CurrencyRateState, "currentCurrency">;
 
 // Native Symbol -> Rates (conversionRate, usdConversionRate, conversionDate)
 export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
   [
     getIsAssetsUnifyStateEnabled,
-    (state: { metamask: CurrencyRateState }) =>
-      state.metamask?.currencyRates ?? {},
-    (state: { metamask: AssetsControllerState }) =>
-      state.metamask?.assetsInfo ?? {},
-    (state: { metamask: AssetsControllerState }) =>
-      state.metamask?.assetsPrice ?? {},
+    (state: { metamask: CurrencyRateState }) => state.metamask?.currencyRates ?? {},
+    (state: { metamask: AssetsControllerState }) => state.metamask?.assetsInfo ?? {},
+    (state: { metamask: AssetsControllerState }) => state.metamask?.assetsPrice ?? {},
   ],
   (isAssetsUnifyStateEnabled, currencyRates, assetsInfo, assetsPrice) => {
     if (!isAssetsUnifyStateEnabled) {
       return currencyRates;
     }
 
-    const result: CurrencyRateState['currencyRates'] = {};
+    const result: CurrencyRateState["currencyRates"] = {};
 
     // Sorting just to ensure that we process mainnet (eip155:1) first
-    for (const [assetId, metadata] of Object.entries(assetsInfo).toSorted(
-      (a, b) => a[0].localeCompare(b[0]),
+    for (const [assetId, metadata] of Object.entries(assetsInfo).toSorted((a, b) =>
+      a[0].localeCompare(b[0]),
     )) {
       // Skip if we already have an entry for this symbol
       if (result[metadata.symbol]) {
@@ -702,16 +615,13 @@ export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
       const assetType = parseCaipAssetType(assetId as CaipAssetType);
 
       // Skip if not a native asset or not evm
-      if (
-        metadata.type !== 'native' ||
-        assetType.chain.namespace !== KnownCaipNamespace.Eip155
-      ) {
+      if (metadata.type !== "native" || assetType.chain.namespace !== KnownCaipNamespace.Eip155) {
         continue;
       }
 
       const price = assetsPrice[assetId];
 
-      if (price?.assetPriceType !== 'fungible') {
+      if (price?.assetPriceType !== "fungible") {
         continue;
       }
 
@@ -724,21 +634,17 @@ export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
 
     return result;
   },
-) as unknown as ControllerStateSelector<CurrencyRateState, 'currencyRates'>;
+) as unknown as ControllerStateSelector<CurrencyRateState, "currencyRates">;
 
 // ChainId (hex) -> TokenAddress (hex checksummed) -> MarketData
 export const getTokenRatesControllerMarketData = createDeepEqualSelector(
   [
     getIsAssetsUnifyStateEnabled,
-    (state: { metamask: TokenRatesControllerState }) =>
-      state.metamask?.marketData ?? {},
-    (state: { metamask: AssetsControllerState }) =>
-      state.metamask?.assetsPrice ?? {},
-    (state: { metamask: AssetsControllerState }) =>
-      state.metamask?.assetsInfo ?? {},
+    (state: { metamask: TokenRatesControllerState }) => state.metamask?.marketData ?? {},
+    (state: { metamask: AssetsControllerState }) => state.metamask?.assetsPrice ?? {},
+    (state: { metamask: AssetsControllerState }) => state.metamask?.assetsInfo ?? {},
     getCurrencyRateControllerCurrencyRates,
-    (state: { metamask: NetworkState }) =>
-      state.metamask?.networkConfigurationsByChainId ?? {},
+    (state: { metamask: NetworkState }) => state.metamask?.networkConfigurationsByChainId ?? {},
   ],
   (
     isAssetsUnifyStateEnabled,
@@ -752,7 +658,7 @@ export const getTokenRatesControllerMarketData = createDeepEqualSelector(
       return marketData;
     }
 
-    const result: TokenRatesControllerState['marketData'] = {};
+    const result: TokenRatesControllerState["marketData"] = {};
 
     for (const [assetId, price] of Object.entries(assetsPrice) as [
       CaipAssetType,
@@ -771,17 +677,13 @@ export const getTokenRatesControllerMarketData = createDeepEqualSelector(
 
       const hexChainId = decimalToPrefixedHex(assetType.chain.reference);
       const nativeAssetSymbol =
-        networkConfigurationsByChainId[hexChainId]?.nativeCurrency ??
-        AssetType.native;
+        networkConfigurationsByChainId[hexChainId]?.nativeCurrency ?? AssetType.native;
 
       const assetAddress = toChecksumHexAddress(
-        metadata.type === 'native'
-          ? getNativeTokenAddress(hexChainId)
-          : assetType.assetReference,
+        metadata.type === "native" ? getNativeTokenAddress(hexChainId) : assetType.assetReference,
       ) as Hex;
 
-      const nativeCurrencyRate =
-        currencyRates[nativeAssetSymbol]?.conversionRate;
+      const nativeCurrencyRate = currencyRates[nativeAssetSymbol]?.conversionRate;
       if (!nativeCurrencyRate) {
         continue;
       }
@@ -820,83 +722,72 @@ export const getTokenRatesControllerMarketData = createDeepEqualSelector(
 
     return result;
   },
-) as unknown as ControllerStateSelector<
-  TokenRatesControllerState,
-  'marketData'
->;
+) as unknown as ControllerStateSelector<TokenRatesControllerState, "marketData">;
 
-export const getMultichainAssetsRatesControllerConversionRates =
-  createDeepEqualSelector(
-    [
-      getIsAssetsUnifyStateEnabled,
-      (state: { metamask: MultichainAssetsRatesControllerState }) =>
-        state.metamask.conversionRates ?? {},
-      (state: { metamask: AssetsControllerState }) =>
-        state.metamask.assetsPrice ?? {},
-    ],
-    (isAssetsUnifyStateEnabled, conversionRates, assetsPrice) => {
-      if (!isAssetsUnifyStateEnabled) {
-        return conversionRates;
+export const getMultichainAssetsRatesControllerConversionRates = createDeepEqualSelector(
+  [
+    getIsAssetsUnifyStateEnabled,
+    (state: { metamask: MultichainAssetsRatesControllerState }) =>
+      state.metamask.conversionRates ?? {},
+    (state: { metamask: AssetsControllerState }) => state.metamask.assetsPrice ?? {},
+  ],
+  (isAssetsUnifyStateEnabled, conversionRates, assetsPrice) => {
+    if (!isAssetsUnifyStateEnabled) {
+      return conversionRates;
+    }
+
+    const result: MultichainAssetsRatesControllerState["conversionRates"] = {};
+
+    for (const [assetId, assetPrice] of Object.entries(assetsPrice) as [
+      CaipAssetType,
+      FungibleAssetPrice, // TODO: A type discriminator to AssetPrice is needed to be added to avoid this cast, but it is safe for now
+    ][]) {
+      const assetType = parseCaipAssetType(assetId);
+      if (assetType.chain.namespace === KnownCaipNamespace.Eip155) {
+        continue;
       }
 
-      const result: MultichainAssetsRatesControllerState['conversionRates'] =
-        {};
-
-      for (const [assetId, assetPrice] of Object.entries(assetsPrice) as [
-        CaipAssetType,
-        FungibleAssetPrice, // TODO: A type discriminator to AssetPrice is needed to be added to avoid this cast, but it is safe for now
-      ][]) {
-        const assetType = parseCaipAssetType(assetId);
-        if (assetType.chain.namespace === KnownCaipNamespace.Eip155) {
-          continue;
-        }
-
-        result[assetId] = {
-          rate: `${assetPrice.price}`,
-          conversionTime: assetPrice.lastUpdated,
-          expirationTime: undefined,
-          marketData: {
-            fungible: true,
-            allTimeHigh: `${assetPrice.allTimeHigh}`,
-            allTimeLow: `${assetPrice.allTimeLow}`,
-            circulatingSupply: `${assetPrice.circulatingSupply}`,
-            marketCap: `${assetPrice.marketCap}`,
-            totalVolume: `${assetPrice.totalVolume}`,
-            pricePercentChange: {
-              PT1H: assetPrice.pricePercentChange1h as number,
-              P1D: assetPrice.pricePercentChange1d as number,
-              P7D: assetPrice.pricePercentChange7d as number,
-              P14D: assetPrice.pricePercentChange14d as number,
-              P30D: assetPrice.pricePercentChange30d as number,
-              P200D: assetPrice.pricePercentChange200d as number,
-              P1Y: assetPrice.pricePercentChange1y as number,
-            },
+      result[assetId] = {
+        rate: `${assetPrice.price}`,
+        conversionTime: assetPrice.lastUpdated,
+        expirationTime: undefined,
+        marketData: {
+          fungible: true,
+          allTimeHigh: `${assetPrice.allTimeHigh}`,
+          allTimeLow: `${assetPrice.allTimeLow}`,
+          circulatingSupply: `${assetPrice.circulatingSupply}`,
+          marketCap: `${assetPrice.marketCap}`,
+          totalVolume: `${assetPrice.totalVolume}`,
+          pricePercentChange: {
+            PT1H: assetPrice.pricePercentChange1h as number,
+            P1D: assetPrice.pricePercentChange1d as number,
+            P7D: assetPrice.pricePercentChange7d as number,
+            P14D: assetPrice.pricePercentChange14d as number,
+            P30D: assetPrice.pricePercentChange30d as number,
+            P200D: assetPrice.pricePercentChange200d as number,
+            P1Y: assetPrice.pricePercentChange1y as number,
           },
-        };
-      }
+        },
+      };
+    }
 
-      return result;
-    },
-  ) as unknown as ControllerStateSelector<
-    MultichainAssetsRatesControllerState,
-    'conversionRates'
-  >;
+    return result;
+  },
+) as unknown as ControllerStateSelector<MultichainAssetsRatesControllerState, "conversionRates">;
 
 export const getRatesControllerRates = createDeepEqualSelector(
   [
     getIsAssetsUnifyStateEnabled,
     (state: { metamask: RatesControllerState }) => state.metamask.rates ?? {},
-    (state: { metamask: AssetsControllerState }) =>
-      state.metamask?.assetsInfo ?? {},
-    (state: { metamask: AssetsControllerState }) =>
-      state.metamask?.assetsPrice ?? {},
+    (state: { metamask: AssetsControllerState }) => state.metamask?.assetsInfo ?? {},
+    (state: { metamask: AssetsControllerState }) => state.metamask?.assetsPrice ?? {},
   ],
   (isAssetsUnifyStateEnabled, rates, assetsInfo, assetsPrice) => {
     if (!isAssetsUnifyStateEnabled) {
       return rates;
     }
 
-    const result: RatesControllerState['rates'] = {};
+    const result: RatesControllerState["rates"] = {};
 
     for (const [assetId, metadata] of Object.entries(assetsInfo)) {
       const symbol = metadata.symbol.toLowerCase();
@@ -911,9 +802,9 @@ export const getRatesControllerRates = createDeepEqualSelector(
 
       // Skip if not a native asset, if evm or if not fungible
       if (
-        metadata.type !== 'native' ||
+        metadata.type !== "native" ||
         assetType.chain.namespace === KnownCaipNamespace.Eip155 ||
-        price?.assetPriceType !== 'fungible'
+        price?.assetPriceType !== "fungible"
       ) {
         continue;
       }
@@ -927,14 +818,13 @@ export const getRatesControllerRates = createDeepEqualSelector(
 
     return result;
   },
-) as unknown as ControllerStateSelector<RatesControllerState, 'rates'>;
+) as unknown as ControllerStateSelector<RatesControllerState, "rates">;
 
 export const getRatesControllerFiatCurrency = createDeepEqualSelector(
   [
     getIsAssetsUnifyStateEnabled,
     (state: { metamask: RatesControllerState }) => state.metamask.fiatCurrency,
-    (state: { metamask: AssetsControllerState }) =>
-      state.metamask.selectedCurrency,
+    (state: { metamask: AssetsControllerState }) => state.metamask.selectedCurrency,
   ],
   (isAssetsUnifyStateEnabled, fiatCurrency, selectedCurrency) => {
     if (!isAssetsUnifyStateEnabled) {
@@ -943,8 +833,7 @@ export const getRatesControllerFiatCurrency = createDeepEqualSelector(
 
     return selectedCurrency;
   },
-) as unknown as ControllerStateSelector<RatesControllerState, 'fiatCurrency'>;
-
+) as unknown as ControllerStateSelector<RatesControllerState, "fiatCurrency">;
 
 /**
  * Converts a scientific notation balance string (e.g. "1e-18") to its raw
@@ -956,10 +845,7 @@ export const getRatesControllerFiatCurrency = createDeepEqualSelector(
  * @param decimals - The token's decimal precision.
  * @returns The raw base-unit value as a bigint.
  */
-function parseScientificNotationBalance(
-  balanceString: string,
-  decimals: number,
-): bigint {
+function parseScientificNotationBalance(balanceString: string, decimals: number): bigint {
   const match = balanceString.match(/^([+-]?\d+(?:\.\d+)?)[eE]([+-]?\d+)$/u);
   if (!match) {
     return 0n;
@@ -967,9 +853,9 @@ function parseScientificNotationBalance(
 
   const [, coefficient, rawExponent] = match;
   const exponent = parseInt(rawExponent, 10);
-  const isNegative = coefficient.startsWith('-');
-  const absCoefficient = coefficient.replace(/^[+-]/u, '');
-  const [coefInt, coefFrac = ''] = absCoefficient.split('.');
+  const isNegative = coefficient.startsWith("-");
+  const absCoefficient = coefficient.replace(/^[+-]/u, "");
+  const [coefInt, coefFrac = ""] = absCoefficient.split(".");
   const coefDigits = coefInt + coefFrac;
   const finalExponent = exponent + decimals - coefFrac.length;
 
@@ -985,34 +871,25 @@ function parseScientificNotationBalance(
   return isNegative ? -result : result;
 }
 
-function parseBalanceWithDecimals(
-  balanceString: string,
-  decimals: number,
-): Hex {
+function parseBalanceWithDecimals(balanceString: string, decimals: number): Hex {
   // Scientific notation (e.g. "1e-18") cannot be split on "." correctly —
   // handle it separately before the normal fixed-point path.
-  if (balanceString.includes('e') || balanceString.includes('E')) {
+  if (balanceString.includes("e") || balanceString.includes("E")) {
     const raw = parseScientificNotationBalance(balanceString, decimals);
     return bigIntToHex(raw < 0n ? 0n : raw);
   }
 
-  const [integerPart, fractionalPart = ''] = balanceString.split('.');
+  const [integerPart, fractionalPart = ""] = balanceString.split(".");
 
   if (decimals === 0) {
     return bigIntToHex(BigInt(integerPart));
   }
 
   if (fractionalPart.length >= decimals) {
-    return bigIntToHex(
-      BigInt(`${integerPart}${fractionalPart.slice(0, decimals)}`),
-    );
+    return bigIntToHex(BigInt(`${integerPart}${fractionalPart.slice(0, decimals)}`));
   }
 
   return bigIntToHex(
-    BigInt(
-      `${integerPart}${fractionalPart}${'0'.repeat(
-        decimals - fractionalPart.length,
-      )}`,
-    ),
+    BigInt(`${integerPart}${fractionalPart}${"0".repeat(decimals - fractionalPart.length)}`),
   );
 }
