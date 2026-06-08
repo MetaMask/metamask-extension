@@ -128,10 +128,11 @@ async function setupTracker(options: {
 // ============================================================
 // SHARED BEHAVIOR (both batch and sequential modes)
 // ============================================================
-describe.each([
+// @ts-expect-error The Mocha types are incorrect.
+describe.each<string, boolean>([
   ['batch', true],
   ['sequential', false],
-])('useHwSignTracker (%s mode)', (_mode, useBatchTracking) => {
+])('useHwSignTracker (%s mode)', (_mode: string, useBatchTracking: boolean) => {
   beforeEach(() => {
     jest.useFakeTimers();
     jest.clearAllMocks();
