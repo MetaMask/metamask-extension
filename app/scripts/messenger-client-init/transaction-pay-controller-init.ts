@@ -1,7 +1,6 @@
 import {
   TransactionPayController,
   TransactionPayControllerMessenger,
-  TransactionPayStrategy,
 } from '@metamask/transaction-pay-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
@@ -34,7 +33,6 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
 
   const messengerClient = new TransactionPayController({
     getDelegationTransaction: getDelegationTransactionCallback,
-    getStrategy,
     messenger: controllerMessenger,
     state: persistedState.TransactionPayController,
   });
@@ -87,11 +85,4 @@ function getApi(
     updateTransactionPaymentToken:
       messengerClient.updatePaymentToken.bind(messengerClient),
   };
-}
-
-function getStrategy(transaction: TransactionMeta): TransactionPayStrategy {
-  if ((transaction.type as string) === 'metamaskPayTest') {
-    return TransactionPayStrategy.Server;
-  }
-  return TransactionPayStrategy.Relay;
 }

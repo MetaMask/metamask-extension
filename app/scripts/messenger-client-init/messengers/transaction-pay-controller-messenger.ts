@@ -42,7 +42,6 @@ export function getTransactionPayControllerMessenger(
       'GasFeeController:getState',
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getNetworkClientById',
-      'NetworkController:getNetworkConfigurationByChainId',
       'RemoteFeatureFlagController:getState',
       'TokenBalancesController:getState',
       'TokenRatesController:getState',
