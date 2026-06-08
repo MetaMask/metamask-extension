@@ -33,6 +33,7 @@ import {
   mockCryptoMarkets,
   mockHip3Markets,
 } from '../../components/app/perps/mocks';
+import type { UsePerpsMaxSlippageReturn } from '../../hooks/perps/usePerpsMaxSlippage';
 import PerpsOrderEntryPage, {
   shouldShowPerpsOrderSubmissionToasts,
 } from './perps-order-entry-page';
@@ -126,12 +127,14 @@ const mockUsePerpsEstimatedSlippage = jest.fn(() => ({
   estimatedSlippageBps: null as number | null,
   isReady: false,
 }));
-const mockUsePerpsMaxSlippage = jest.fn(() => ({
-  maxSlippageBps: 300,
-  maxSlippageSource: 'default' as const,
-  setMaxSlippage: jest.fn(),
-  isLoading: false,
-}));
+const mockUsePerpsMaxSlippage = jest.fn(
+  (): UsePerpsMaxSlippageReturn => ({
+    maxSlippageBps: 300,
+    maxSlippageSource: 'default',
+    setMaxSlippage: jest.fn(),
+    isLoading: false,
+  }),
+);
 
 jest.mock('../../hooks/perps/usePerpsEstimatedSlippage', () => ({
   usePerpsEstimatedSlippage: () => mockUsePerpsEstimatedSlippage(),
@@ -453,7 +456,7 @@ describe('PerpsOrderEntryPage', () => {
       expect(amountInput?.placeholder).not.toMatch(/min\s*\$/iu);
     });
 
-    it('disables submit and shows the minimum-order message when no order size has been entered', () => {
+    it('prefills the default testnet market order amount on new market orders', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
@@ -461,11 +464,8 @@ describe('PerpsOrderEntryPage', () => {
       const amountContainer = screen.getByTestId('amount-input-field');
       const amountInput = amountContainer.querySelector('input');
 
-      expect(amountInput?.value).toBe('');
-      expect(submitButton).toBeDisabled();
-      expect(submitButton).toHaveTextContent(
-        tEn('perpsMinOrderSize', [`$${PERPS_MIN_MARKET_ORDER_USD}`]),
-      );
+      expect(amountInput?.value).toBe('10');
+      expect(submitButton).not.toBeDisabled();
     });
 
     it('disables submit when the user enters an amount below the $10 minimum', () => {

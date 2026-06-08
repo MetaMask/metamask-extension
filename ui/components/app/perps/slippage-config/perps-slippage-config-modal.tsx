@@ -19,6 +19,7 @@ import {
 import {
   Modal,
   ModalContent,
+  ModalContentSize,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
@@ -165,6 +166,11 @@ export const PerpsSlippageConfigModal = ({
         : {
             justifyContent: JustifyContent.center,
             alignItems: AlignItems.center,
+            dialogStyle: {
+              width: '100%',
+              maxWidth: '360px',
+              borderRadius: '20px',
+            },
           },
     [isCompactSheet],
   );
@@ -178,11 +184,19 @@ export const PerpsSlippageConfigModal = ({
       isOpen={isOpen}
       onClose={onClose}
       data-testid="perps-slippage-config-modal"
-      display={Display.FLEX}
-      {...modalLayoutProps}
     >
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent
+        size={ModalContentSize.Sm}
+        display={Display.Flex}
+        justifyContent={modalLayoutProps.justifyContent}
+        alignItems={modalLayoutProps.alignItems}
+        padding={0}
+        modalDialogProps={{
+          padding: 0,
+          style: modalLayoutProps.dialogStyle,
+        }}
+      >
         <ModalHeader onClose={onClose}>
           {t('perpsSlippageConfigTitle')}
         </ModalHeader>

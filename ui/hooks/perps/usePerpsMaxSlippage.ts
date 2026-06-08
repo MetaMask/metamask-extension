@@ -30,6 +30,7 @@ export function usePerpsMaxSlippage(): UsePerpsMaxSlippageReturn {
       );
       setStoredBps(typeof value === 'number' ? value : undefined);
     } catch {
+      // Fall back to the documented default when the controller read fails (offline / init race).
       setStoredBps(undefined);
     } finally {
       setIsLoading(false);

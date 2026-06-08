@@ -64,16 +64,12 @@ export const OrderSummary = ({
       </Box>
 
       {showSlippageRow && (
-        <Box
-          as="button"
+        <button
           type="button"
-          flexDirection={BoxFlexDirection.Row}
-          justifyContent={BoxJustifyContent.Between}
-          alignItems={BoxAlignItems.Center}
           onClick={onSlippageClick}
           data-testid="perps-order-summary-slippage-row"
           aria-label={t('perpsSlippageEditAriaLabel')}
-          className="w-full cursor-pointer border-0 bg-transparent p-0 text-left"
+          className="flex w-full cursor-pointer items-center justify-between border-0 bg-transparent p-0 text-left"
         >
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
             {t('perpsSlippage')}
@@ -106,7 +102,7 @@ export const OrderSummary = ({
               color={IconColor.IconAlternative}
             />
           </Box>
-        </Box>
+        </button>
       )}
 
       {/* Margin */}

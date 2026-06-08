@@ -981,12 +981,7 @@ const PerpsOrderEntryPage = () => {
       return;
     }
 
-    if (
-      exceedsMaxSlippage &&
-      typeof estimatedSlippageBps === 'number' &&
-      orderType === 'market' &&
-      orderMode !== 'close'
-    ) {
+    if (exceedsMaxSlippage && typeof estimatedSlippageBps === 'number') {
       const estPct = bpsToPercent(estimatedSlippageBps);
       const maxPct = bpsToPercent(maxSlippageBps);
       const message = t('perpsSlippageExceedsMax', [
@@ -1462,7 +1457,6 @@ const PerpsOrderEntryPage = () => {
     estimatedSlippageBps,
     maxSlippageBps,
     maxSlippageSource,
-    orderType,
     isSlippageConfigEnabled,
     slippageTradeProperties,
   ]);
@@ -1758,17 +1752,22 @@ const PerpsOrderEntryPage = () => {
           currentValueBps={maxSlippageBps}
           onClose={() => setIsSlippageModalOpen(false)}
           onSave={(valueBps) => {
-            setMaxSlippage(valueBps).catch(() => undefined);
-            track(MetaMetricsEventName.PerpsUiInteraction, {
-              [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
-                PERPS_EVENT_VALUE.INTERACTION_TYPE.SLIPPAGE_CONFIG_CHANGED,
-              [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
-              [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_PCT]: bpsToPercent(valueBps),
-              [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_SOURCE]:
-                PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE.USER_CONFIGURED,
-              [PERPS_EVENT_PROPERTY.SETTING_TYPE]:
-                PERPS_EVENT_VALUE.SETTING_TYPE.SLIPPAGE,
-            });
+            setMaxSlippage(valueBps)
+              .then(() => {
+                track(MetaMetricsEventName.PerpsUiInteraction, {
+                  [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+                    PERPS_EVENT_VALUE.INTERACTION_TYPE.SLIPPAGE_CONFIG_CHANGED,
+                  [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
+                  [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_PCT]: bpsToPercent(valueBps),
+                  [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_SOURCE]:
+                    PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE.USER_CONFIGURED,
+                  [PERPS_EVENT_PROPERTY.SETTING_TYPE]:
+                    PERPS_EVENT_VALUE.SETTING_TYPE.SLIPPAGE,
+                });
+              })
+              .catch(() => {
+                setSubmitError(t('somethingWentWrong'));
+              });
           }}
         />
       )}
