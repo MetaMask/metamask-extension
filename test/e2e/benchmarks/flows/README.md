@@ -102,7 +102,7 @@ const MY_BENCHMARK: ThresholdConfig = {
   myTimerId: {
     p75: { warn: 1000, fail: 1500 },
     p95: { warn: 2000, fail: 3000 },
-    ciMultiplier: DEFAULT_CI_MULTIPLIER,
+    ciMultiplier: CI_MULTIPLIER.DEFAULT,
   },
 };
 
@@ -115,6 +115,10 @@ const BENCHMARK_THRESHOLDS = {
 The key must be **camelCase matching the filename**: `my-benchmark.ts` → `myBenchmark`.
 
 For startup benchmarks, use the `startup` prefix: `standard-home.ts` → `startupStandardHome`.
+
+**Quality Gate enforcement:**
+
+`test/e2e/benchmarks/utils/gated-metrics.ts` lists which metrics block PRs on regression. Metrics in that file fail the `quality-gate` CI job when their threshold is breached; metrics not listed surface as warnings in the PR comment but do not fail the gate. Edit that file to graduate or demote a metric — its module JSDoc covers the mechanics. Both that file and `thresholds.ts` are co-owned by `@MetaMask/qa` and `@MetaMask/extension-platform`; either team can approve.
 
 ### 3. Add to a preset (optional)
 

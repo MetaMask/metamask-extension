@@ -89,6 +89,9 @@ jest.mock('../../../hooks/musd', () => {
 jest.mock('../../../components/multichain/activity-v2/activity-list', () => ({
   ActivityList: () => <div data-testid="mock-activity-list" />,
 }));
+jest.mock('../../activity/activity-list', () => ({
+  ActivityList: () => <div data-testid="mock-activity-list" />,
+}));
 
 jest.mock('../../../hooks/useMultiPolling', () => ({
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -446,6 +449,43 @@ describe('AssetPage', () => {
         url: expect.stringContaining(`/buy?metamaskEntry=ext_buy_sell_button`),
       }),
     );
+  });
+
+  it('hides the Send button when token balance is zero', () => {
+    const { queryByTestId } = renderWithProvider(
+      <AssetPage asset={token} optionsButton={null} />,
+      store,
+    );
+
+    expect(queryByTestId('eth-overview-send')).not.toBeInTheDocument();
+  });
+
+  it('shows the Send button when token balance is greater than zero', () => {
+    (
+      getAssetsBySelectedAccountGroup as unknown as jest.Mock
+    ).mockReturnValueOnce({
+      '0x1': [
+        {
+          assetId: '0x0000000000000000000000000000000000000000',
+          rawBalance: '0x0',
+          balance: '0',
+          fiat: { balance: 0 },
+        },
+        {
+          assetId: token.address,
+          rawBalance: '0x1',
+          balance: '1',
+          fiat: { balance: 0 },
+        },
+      ],
+    });
+
+    const { queryByTestId } = renderWithProvider(
+      <AssetPage asset={token} optionsButton={null} />,
+      store,
+    );
+
+    expect(queryByTestId('eth-overview-send')).toBeInTheDocument();
   });
 
   it('should show the Swap button if chain id is supported', async () => {

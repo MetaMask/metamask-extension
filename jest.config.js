@@ -7,6 +7,8 @@ module.exports = {
     '<rootDir>/shared/**/*.(js|ts|tsx)',
     '<rootDir>/ui/**/*.(js|ts|tsx)',
     '<rootDir>/development/build/transforms/**/*.js',
+    '<rootDir>/development/skills-postinstall.ts',
+    '<rootDir>/development/skills-sync.ts',
     '<rootDir>/development/metamaskbot-build-announce/**/*.(js|ts)',
     '<rootDir>/test/unit-global/**/*.test.(js|ts|tsx)',
   ],
@@ -16,6 +18,11 @@ module.exports = {
   moduleNameMapper: {
     // Mock lightweight-charts since it requires browser/canvas APIs not available in Jest
     '^lightweight-charts$': '<rootDir>/test/mocks/lightweight-charts.js',
+    // Stub @metamask/perps-controller so every test suite can resolve it without
+    // listing jest.mock() individually. Tests needing a fuller fake can still
+    // override with their own jest.mock() call.
+    '^@metamask/perps-controller$':
+      '<rootDir>/test/mocks/metamask-perps-controller.js',
   },
   // The path to the Prettier executable used to format snapshots
   // Jest doesn't support Prettier 3 yet, so we use Prettier 2

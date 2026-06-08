@@ -20,9 +20,7 @@ import type { Span } from '@sentry/types';
 import { omit } from 'lodash';
 
 import { captureException, captureMessage } from '../../shared/lib/sentry';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../shared/lib/environment-type';
 import {
   PATH_NAME_MAP,
   getPaths,
@@ -42,10 +40,7 @@ import {
   getMetaMetricsId,
   getParticipateInMetaMetrics,
 } from '../selectors';
-import {
-  generateActionId,
-  submitRequestToBackground,
-} from '../store/background-connection';
+import { submitRequestToBackground } from '../store/background-connection';
 import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
 import type {
   TraceName,
@@ -196,7 +191,7 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
         trackMetaMetricsEvent(fullPayload as MetaMetricsEventPayload, options);
       } else if (canMaybeTrackLater) {
         await submitRequestToBackground('addEventBeforeMetricsOptIn', [
-          { ...fullPayload, actionId: generateActionId() },
+          fullPayload,
         ]);
       }
     },
@@ -270,23 +265,15 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
       const { pattern, params } = match;
       const { path } = pattern;
       const name = PATH_NAME_MAP.get(path as AppRoutes['path']);
-      trackMetaMetricsPage(
-        {
-          name,
-          // We do not want to send addresses or accounts in any events
-          // Some routes include these as params.
-          params: omit(params, ['account', 'address']) as Record<
-            string,
-            string
-          >,
-          environmentType: environmentType as EnvironmentType,
-          page: context.page,
-          referrer: context.referrer,
-        },
-        {
-          isOptInPath: location.pathname.startsWith('/initialize'),
-        },
-      );
+      trackMetaMetricsPage({
+        name,
+        // We do not want to send addresses or accounts in any events
+        // Some routes include these as params.
+        params: omit(params, ['account', 'address']) as Record<string, string>,
+        environmentType: environmentType as EnvironmentType,
+        page: context.page,
+        referrer: context.referrer,
+      });
     }
     previousMatch.current = match?.pattern?.path;
   }, [
@@ -368,8 +355,10 @@ export type WithMetaMetricsProps = MetaMetricsContextValue;
  * @returns Wrapped component with MetaMetrics context
  */
 export function withMetaMetrics<Props extends Record<string, unknown>>(
-  WrappedComponent: ComponentType<Props>,
-): ComponentType<Omit<Props, keyof WithMetaMetricsProps>> {
+  WrappedComponent: ComponentType<React.PropsWithChildren<Props>>,
+): ComponentType<
+  React.PropsWithChildren<Omit<Props, keyof WithMetaMetricsProps>>
+> {
   const WithMetaMetrics = (props: Omit<Props, keyof WithMetaMetricsProps>) => {
     const {
       trackEvent,

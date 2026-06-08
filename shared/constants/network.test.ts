@@ -22,6 +22,8 @@ describe('NetworkConstants', () => {
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.LINEA_MAINNET]).toBe('Linea');
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.OPTIMISM]).toBe('OP');
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.POLYGON]).toBe('Polygon');
+    expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.TEMPO_MAINNET]).toBe('Tempo');
+    expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.ARC]).toBe('Arc');
   });
   describe('popularNetwork', () => {
     it('should have correct chainIds for all popular network', () => {
@@ -38,6 +40,8 @@ describe('NetworkConstants', () => {
         Monad: CHAIN_IDS.MONAD,
         HyperEVM: CHAIN_IDS.HYPE,
         MegaETH: CHAIN_IDS.MEGAETH_MAINNET,
+        Tempo: CHAIN_IDS.TEMPO_MAINNET,
+        Arc: CHAIN_IDS.ARC,
       };
 
       FEATURED_RPCS.forEach((rpc) => {

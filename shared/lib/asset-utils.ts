@@ -56,10 +56,9 @@ export const toAssetId = (
     try {
       return getNativeAssetForChainId(chainIdToUse)?.assetId;
     } catch {
-      // Return undefined for unsupported chains (e.g., custom networks)
+      // Skip error for unsupported chains (e.g., custom networks) so we obtain the assetId in another way
       // This allows the send flow to work for custom networks even if they're not in the swaps map
       // Format normalization in isEvmChainId should prevent most errors, but this is a defensive fallback
-      return undefined;
     }
   }
   if (chainIdToUse === MultichainNetworks.SOLANA) {
@@ -238,6 +237,10 @@ export const fetchAssetMetadataForAssetIds = async (
  * @returns `true` if the chain ID is an EVM chain ID, `false` otherwise.
  */
 export const isEvmChainId = (chainId: CaipChainId | Hex) => {
+  if (typeof chainId !== 'string') {
+    return false;
+  }
+
   let chainIdInCaip: CaipChainId;
 
   if (isCaipChainId(chainId)) {

@@ -139,11 +139,6 @@ jobs:
     timeout-minutes: 30
     needs:
       - prepare
-    container:
-      image: ghcr.io/metamask/metamask-extension-e2e-image:v24.13.0
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -183,9 +178,11 @@ jobs:
 
       - name: Update E2E fixtures
         run: |
-          Xvfb -ac :99 -screen 0 1280x1024x16 &
           yarn test:e2e:single test/e2e/dist/wallet-fixture-export.spec.ts --browser chrome --retries 1
-          yarn lint:prettier:fix
+          yarn lint:json:fix
+          yarn lint:format:fix
+        env:
+          SELENIUM_HEADLESS: true
 
       - name: Upload test artifacts
         if: ${{ !cancelled() }}

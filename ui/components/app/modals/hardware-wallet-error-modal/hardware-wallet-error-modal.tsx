@@ -8,40 +8,33 @@ import React, {
 } from 'react';
 import { ErrorCode, type HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
-  Icon,
-  IconName,
-  IconColor,
-  IconSize,
-} from '@metamask/design-system-react';
-import {
-  Text,
   Box,
   Button,
-  ButtonVariant,
   ButtonSize,
-  Modal,
+  ButtonVariant,
+  FontWeight,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
   ModalBody,
-  ModalContent,
   ModalFooter,
-  ModalHeader,
   ModalOverlay,
-} from '../../../component-library';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  JustifyContent,
+  Text,
+  TextButton,
+  TextButtonSize,
   TextAlign,
   TextColor,
   TextVariant,
-  BlockSize,
-} from '../../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
+import { Modal, ModalContent, ModalHeader } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useModalProps } from '../../../../hooks/useModalProps';
 import { useHardwareWalletRecoveryLocation } from '../../../../hooks/useHardwareWalletRecoveryLocation';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsHardwareWalletRecoveryLocation,
 } from '../../../../../shared/constants/metametrics';
 import {
   buildHardwareWalletRecoverySegmentProperties,
@@ -49,15 +42,20 @@ import {
   mapHardwareWalletRecoveryErrorType,
   mapHardwareWalletTypeToMetricDeviceType,
 } from '../../../../../shared/lib/hardware-wallet-recovery-metrics';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import {
+  MetaMetricsContext,
+  type UITrackEventMethod,
+} from '../../../../contexts/metametrics';
 import {
   HardwareWalletType,
+  handleContinueWithPermissionCheck,
   getHardwareWalletErrorCode,
   isUserRejectedHardwareWalletError,
   isRetryableHardwareWalletError,
   useHardwareWalletActions,
   useHardwareWalletConfig,
 } from '../../../../contexts/hardware-wallets';
+import { useBridgeRedirectQueryString } from '../../../../contexts/hardware-wallets/useBridgeRedirectQueryString';
 import {
   getChromiumExtensionCameraSiteSettingsUrl,
   getMozExtensionOriginForDisplay,
@@ -105,26 +103,39 @@ function shouldShowQrCameraBlockedVariant(
  * Renders the appropriate `CameraAccessErrorContent` variant for QR camera
  * permission errors (blocked vs. needed).
  *
+ * Clicking Continue checks the live permission state before acting:
+ * - If granted: retries camera access directly (works in any context).
+ * - If prompt + side panel: redirects to fullscreen for native prompt.
+ * - If prompt + fullscreen/popup: retries (browser will show native prompt).
+ * - If denied: does nothing (user must change settings first).
+ *
  * @param params - Render parameters.
  * @param params.errorCode - The hardware wallet error code.
  * @param params.onRetry - Callback invoked when the user clicks Continue.
  * @param params.isLoading - Whether the retry action is in progress.
+ * @param params.redirectQueryString - Optional query string forwarded to the
+ * fullscreen tab for restoring Swap / Bridge form parameters.
  * @returns The camera-access error content element.
  */
 function renderQrCameraFlowContent({
   errorCode,
   onRetry,
   isLoading,
+  redirectQueryString,
 }: {
   errorCode: ErrorCode | undefined;
   onRetry: () => Promise<void>;
   isLoading: boolean;
-}): React.JSX.Element {
+  redirectQueryString?: string | null;
+}): JSX.Element {
   const handleOpenSettings = () => {
     globalThis.platform.openTab({
       url: getChromiumExtensionCameraSiteSettingsUrl(),
     });
   };
+
+  const handleContinue = () =>
+    handleContinueWithPermissionCheck(onRetry, redirectQueryString);
 
   if (shouldShowQrCameraBlockedVariant(errorCode)) {
     return (
@@ -133,7 +144,7 @@ function renderQrCameraFlowContent({
         isFirefox={isFirefoxBrowser()}
         mozExtensionDisplay={getMozExtensionOriginForDisplay()}
         onOpenSettings={handleOpenSettings}
-        onContinue={onRetry}
+        onContinue={handleContinue}
         continueLoading={isLoading}
         rootPaddingHorizontal={0}
         rootPaddingBottom={0}
@@ -144,7 +155,7 @@ function renderQrCameraFlowContent({
   return (
     <CameraAccessErrorContent
       variant={CameraAccessErrorContentVariant.Needed}
-      onContinue={onRetry}
+      onContinue={handleContinue}
       continueLoading={isLoading}
       rootPaddingHorizontal={0}
       rootPaddingBottom={0}
@@ -153,22 +164,62 @@ function renderQrCameraFlowContent({
 }
 
 type HardwareWalletErrorModalProps = {
-  isOpen?: boolean;
   error?: HardwareWalletError;
   onCancel?: () => void;
   onClose?: () => void;
   onRetry?: () => void;
+  onRepairDevice?: (walletType: HardwareWalletType) => void;
 };
 
 const RECOVERY_SUCCESS_AUTO_DISMISS_MS = 3000;
 
 /**
- * Modal component to display hardware wallet errors with recovery instructions
+ * Fires a hardware wallet recovery MetaMetrics event when both `error` and
+ * `trackableMetricDeviceType` are present; otherwise no-ops.
  *
- * @param props - The component props
+ * @param error - The current hardware wallet error.
+ * @param trackableMetricDeviceType - MetaMetrics device type derived from the wallet type.
+ * @param eventName - The MetaMetrics event name to fire.
+ * @param recoveryLocation - Where in the UI the recovery was triggered.
+ * @param errorTypeViewCount - How many times this error type has been viewed.
+ * @param trackEvent - The MetaMetrics `trackEvent` function.
  */
-export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
-  React.memo((props) => {
+function trackHwRecoveryEvent(
+  error: HardwareWalletError | undefined,
+  trackableMetricDeviceType: ReturnType<
+    typeof mapHardwareWalletTypeToMetricDeviceType
+  >,
+  eventName: MetaMetricsEventName,
+  recoveryLocation: MetaMetricsHardwareWalletRecoveryLocation,
+  errorTypeViewCount: number,
+  trackEvent: UITrackEventMethod,
+): void {
+  if (!error || !trackableMetricDeviceType) {
+    return;
+  }
+  const deviceModel = getHardwareWalletMetricDeviceModel(error);
+  trackEvent({
+    category: MetaMetricsEventCategory.Accounts,
+    event: eventName,
+    properties: buildHardwareWalletRecoverySegmentProperties({
+      location: recoveryLocation,
+      deviceType: trackableMetricDeviceType,
+      deviceModel,
+      errorType: mapHardwareWalletRecoveryErrorType(error),
+      errorTypeViewCount,
+      error,
+    }),
+  });
+}
+
+export const HardwareWalletErrorModal = React.memo(
+  ({
+    error: errorProp,
+    onClose: onCloseProp,
+    onCancel: onCancelProp,
+    onRetry: onRetryProp,
+    onRepairDevice: onRepairDeviceProp,
+  }: HardwareWalletErrorModalProps) => {
     const t = useI18nContext();
     const { trackEvent } = useContext(MetaMetricsContext);
     const recoveryLocation = useHardwareWalletRecoveryLocation();
@@ -182,11 +233,19 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
     const lastTrackedErrorKeyRef = useRef<string | null>(null);
     const prevNonNullErrorIdentityKeyRef = useRef<string | null>(null);
     const successModalMetricSentRef = useRef(false);
-    const { error, onClose, onCancel, onRetry } = { ...modalProps, ...props };
+    const { error, onClose, onCancel, onRetry, onRepairDevice } = {
+      ...modalProps,
+      error: errorProp ?? modalProps?.error,
+      onClose: onCloseProp ?? modalProps?.onClose,
+      onCancel: onCancelProp ?? modalProps?.onCancel,
+      onRetry: onRetryProp ?? modalProps?.onRetry,
+      onRepairDevice: onRepairDeviceProp ?? modalProps?.onRepairDevice,
+    };
 
     const { walletType: selectedAccountWalletType } = useHardwareWalletConfig();
     const { ensureDeviceReady, clearError, setConnectionReady } =
       useHardwareWalletActions();
+    const getRedirectQueryString = useBridgeRedirectQueryString();
 
     // Prefer `walletType` from error metadata first (e.g. signature flows where the signing
     // account may differ from the selected account). Read both top-level `metadata` and RPC-style
@@ -289,21 +348,14 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
 
     const handleRetry = async () => {
       onRetry?.();
-      if (error && trackableMetricDeviceType) {
-        const deviceModel = getHardwareWalletMetricDeviceModel(error);
-        trackEvent({
-          category: MetaMetricsEventCategory.Accounts,
-          event: MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
-          properties: buildHardwareWalletRecoverySegmentProperties({
-            location: recoveryLocation,
-            deviceType: trackableMetricDeviceType,
-            deviceModel,
-            errorType: mapHardwareWalletRecoveryErrorType(error),
-            errorTypeViewCount: errorTypeViewCountRef.current,
-            error,
-          }),
-        });
-      }
+      trackHwRecoveryEvent(
+        error,
+        trackableMetricDeviceType,
+        MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
+        recoveryLocation,
+        errorTypeViewCountRef.current,
+        trackEvent,
+      );
 
       setIsLoading(true);
       try {
@@ -313,19 +365,14 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
           setRecovered(true);
         } else if (error && trackableMetricDeviceType) {
           errorTypeViewCountRef.current += 1;
-          const deviceModel = getHardwareWalletMetricDeviceModel(error);
-          trackEvent({
-            category: MetaMetricsEventCategory.Accounts,
-            event: MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
-            properties: buildHardwareWalletRecoverySegmentProperties({
-              location: recoveryLocation,
-              deviceType: trackableMetricDeviceType,
-              deviceModel,
-              errorType: mapHardwareWalletRecoveryErrorType(error),
-              errorTypeViewCount: errorTypeViewCountRef.current,
-              error,
-            }),
-          });
+          trackHwRecoveryEvent(
+            error,
+            trackableMetricDeviceType,
+            MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
+            recoveryLocation,
+            errorTypeViewCountRef.current,
+            trackEvent,
+          );
         }
       } finally {
         setIsLoading(false);
@@ -337,6 +384,32 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
       clearError();
       hideModal();
     }, [clearError, hideModal, onCancel]);
+
+    const handleRepairDevice = useCallback(() => {
+      if (error && trackableMetricDeviceType) {
+        const deviceModel = getHardwareWalletMetricDeviceModel(error);
+        trackEvent({
+          category: MetaMetricsEventCategory.Accounts,
+          event: MetaMetricsEventName.HardwareWalletRecoveryRepairCtaClicked,
+          properties: buildHardwareWalletRecoverySegmentProperties({
+            location: recoveryLocation,
+            deviceType: trackableMetricDeviceType,
+            deviceModel,
+            errorType: mapHardwareWalletRecoveryErrorType(error),
+            errorTypeViewCount: errorTypeViewCountRef.current,
+            error,
+          }),
+        });
+      }
+      onRepairDevice?.(displayWalletType);
+    }, [
+      displayWalletType,
+      error,
+      onRepairDevice,
+      recoveryLocation,
+      trackableMetricDeviceType,
+      trackEvent,
+    ]);
 
     const handleRecoveredClose = useCallback(() => {
       clearError();
@@ -439,9 +512,9 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
         />
       ) : (
         <Text
-          variant={TextVariant.headingMd}
+          variant={TextVariant.HeadingMd}
           textAlign={TextAlign.Center}
-          color={TextColor.textDefault}
+          color={TextColor.TextDefault}
         >
           {standardErrorContent.title}
         </Text>
@@ -472,11 +545,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
           <ModalOverlay />
           <ModalContent>
             <ModalHeader onClose={handleRecoveredClose}>
-              <Box
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                justifyContent={JustifyContent.center}
-              >
+              <Box className="flex items-center justify-center">
                 <Icon
                   name={IconName.Confirmation}
                   color={IconColor.SuccessDefault}
@@ -485,16 +554,11 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
               </Box>
             </ModalHeader>
             <ModalBody>
-              <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                alignItems={AlignItems.center}
-                gap={4}
-              >
+              <Box className="flex flex-col items-center gap-4">
                 <Text
-                  variant={TextVariant.headingSm}
+                  variant={TextVariant.HeadingSm}
                   textAlign={TextAlign.Center}
-                  color={TextColor.textAlternative}
+                  color={TextColor.TextAlternative}
                 >
                   {t('hardwareWalletTypeConnected', [t(displayWalletType)])}
                 </Text>
@@ -516,36 +580,28 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
         <ModalContent>
           <ModalHeader onClose={handleClose}>
             {headerContent && (
-              <Box
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                justifyContent={JustifyContent.center}
-              >
+              <Box className="flex items-center justify-center">
                 {headerContent}
               </Box>
             )}
           </ModalHeader>
 
           <ModalBody>
-            <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              alignItems={AlignItems.center}
-              gap={4}
-            >
+            <Box className="flex flex-col items-center gap-4">
               {isQrCameraFlow &&
                 renderQrCameraFlowContent({
                   errorCode: error.code,
                   onRetry: handleRetry,
                   isLoading,
+                  redirectQueryString: getRedirectQueryString(),
                 })}
               {!isQrCameraFlow && standardErrorContent ? (
                 <>
                   {standardErrorContent.icon && (
                     <Text
-                      variant={TextVariant.headingMd}
+                      variant={TextVariant.HeadingMd}
                       textAlign={TextAlign.Center}
-                      color={TextColor.textDefault}
+                      color={TextColor.TextDefault}
                     >
                       {standardErrorContent.title}
                     </Text>
@@ -553,9 +609,9 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
                   {standardErrorContent.variant ===
                     HardwareWalletErrorContentVariant.Description && (
                     <Text
-                      variant={TextVariant.bodyMd}
+                      variant={TextVariant.BodyMd}
                       textAlign={TextAlign.Center}
-                      color={TextColor.textDefault}
+                      color={TextColor.TextDefault}
                     >
                       {standardErrorContent.description}
                     </Text>
@@ -563,40 +619,40 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
 
                   {standardErrorContent.variant ===
                     HardwareWalletErrorContentVariant.Recovery && (
-                    <Box
-                      width={BlockSize.Full}
-                      display={Display.Flex}
-                      flexDirection={FlexDirection.Column}
-                      gap={2}
-                    >
+                    <Box className="flex w-full flex-col gap-2">
                       <Text
-                        variant={TextVariant.bodyMdMedium}
-                        color={TextColor.textDefault}
+                        variant={TextVariant.BodyMd}
+                        fontWeight={FontWeight.Medium}
+                        color={TextColor.TextDefault}
                       >
                         {t('hardwareWalletErrorRecoveryTitle')}
                       </Text>
-                      {standardErrorContent.recoveryInstructions.map(
-                        (instruction, index) => (
-                          <Box
-                            key={index}
-                            display={Display.Flex}
-                            flexDirection={FlexDirection.Row}
-                            gap={2}
-                            paddingLeft={4}
-                            paddingRight={4}
-                            alignItems={AlignItems.flexStart}
-                          >
-                            <Box as="li" key={index}>
+                      <ul className="m-0 flex list-disc flex-col gap-2 pl-4">
+                        {standardErrorContent.recoveryInstructions.map(
+                          (instruction, index) => (
+                            <li key={`${instruction}-${index}`}>
                               <Text
-                                variant={TextVariant.bodyMd}
-                                color={TextColor.textDefault}
+                                variant={TextVariant.BodyMd}
+                                color={TextColor.TextDefault}
                               >
                                 {instruction}
                               </Text>
-                            </Box>
-                          </Box>
-                        ),
-                      )}
+                            </li>
+                          ),
+                        )}
+                        {standardErrorContent.showRepairLink &&
+                          onRepairDevice && (
+                            <li>
+                              <TextButton
+                                size={TextButtonSize.BodyMd}
+                                onClick={handleRepairDevice}
+                                className="hover:bg-transparent active:bg-transparent w-fit"
+                              >
+                                {t('hardwareWalletRepairLink')}
+                              </TextButton>
+                            </li>
+                          )}
+                      </ul>
                     </Box>
                   )}
                 </>
@@ -606,17 +662,12 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
 
           {!isQrCameraFlow && (
             <ModalFooter>
-              <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Row}
-                gap={2}
-                width={BlockSize.Full}
-              >
+              <Box className="flex w-full flex-row gap-2">
                 {isRetryableHardwareWalletError(error) ? (
                   <Button
                     variant={ButtonVariant.Primary}
                     size={ButtonSize.Lg}
-                    block
+                    isFullWidth
                     onClick={handleRetry}
                   >
                     {retryButtonContent}
@@ -625,7 +676,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
                   <Button
                     variant={ButtonVariant.Primary}
                     size={ButtonSize.Lg}
-                    block
+                    isFullWidth
                     onClick={handleClose}
                   >
                     {t('confirm')}
@@ -637,4 +688,5 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
         </ModalContent>
       </Modal>
     );
-  });
+  },
+);

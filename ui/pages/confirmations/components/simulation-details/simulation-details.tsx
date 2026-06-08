@@ -7,6 +7,8 @@ import {
 } from '@metamask/transaction-controller';
 import React, { Fragment, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { RevertReason } from '../revert-reason/revert-reason';
+import { selectConfirmationAdvancedDetailsOpen } from '../../selectors/preferences';
 import { useAlertMetrics } from '../../../../components/app/alert-system/contexts/alertMetricsContext';
 import InlineAlert from '../../../../components/app/alert-system/inline-alert';
 import { MultipleAlertModal } from '../../../../components/app/alert-system/multiple-alert-modal';
@@ -47,17 +49,17 @@ import { useBalanceChanges } from './useBalanceChanges';
 import { useSimulationMetrics } from './useSimulationMetrics';
 
 export type StaticRow = {
-  label: string;
-  balanceChanges: BalanceChange[];
+  readonly label: string;
+  readonly balanceChanges: BalanceChange[];
 };
 
 export type SimulationDetailsProps = {
-  enableMetrics?: boolean;
-  isTransactionsRedesign?: boolean;
-  metricsOnly?: boolean;
-  staticRows?: StaticRow[];
-  transaction: TransactionMeta;
-  smartTransactionStatus?: string;
+  readonly enableMetrics?: boolean;
+  readonly isTransactionsRedesign?: boolean;
+  readonly metricsOnly?: boolean;
+  readonly staticRows?: StaticRow[];
+  readonly transaction: TransactionMeta;
+  readonly smartTransactionStatus?: string;
 };
 
 /**
@@ -66,7 +68,7 @@ export type SimulationDetailsProps = {
  * @param props
  * @param props.error
  */
-const ErrorContent: React.FC<{ error: SimulationError }> = ({ error }) => {
+const ErrorContent = ({ error }: { error: SimulationError }) => {
   const t = useI18nContext();
 
   function getMessage() {
@@ -97,7 +99,7 @@ const ErrorContent: React.FC<{ error: SimulationError }> = ({ error }) => {
 /**
  * Content when there are no balance changes.
  */
-const EmptyContent: React.FC = () => {
+const EmptyContent = () => {
   const t = useI18nContext();
   return (
     <Text
@@ -207,18 +209,18 @@ const LegacyHeader = () => {
  * @param props.title
  * @param props.titleTooltip
  */
-const HeaderLayout: React.FC<{
-  isTransactionsRedesign: boolean;
-  transactionId: string;
-  title?: string;
-  titleTooltip?: string;
-}> = ({
+const HeaderLayout = ({
   children,
   isTransactionsRedesign,
   transactionId,
   title,
   titleTooltip,
-}) => {
+}: React.PropsWithChildren<{
+  isTransactionsRedesign: boolean;
+  transactionId: string;
+  title?: string;
+  titleTooltip?: string;
+}>) => {
   return (
     <Box
       display={Display.Flex}
@@ -251,20 +253,20 @@ const HeaderLayout: React.FC<{
  * @param props.children
  * @param props.transactionId
  */
-export const SimulationDetailsLayout: React.FC<{
-  title?: string;
-  titleTooltip?: string;
-  inHeader?: React.ReactNode;
-  isTransactionsRedesign: boolean;
-  transactionId: string;
-}> = ({
+export const SimulationDetailsLayout = ({
   title,
   titleTooltip,
   inHeader,
   isTransactionsRedesign,
   transactionId,
   children,
-}) =>
+}: React.PropsWithChildren<{
+  title?: string;
+  titleTooltip?: string;
+  inHeader?: React.ReactNode;
+  isTransactionsRedesign: boolean;
+  transactionId: string;
+}>) =>
   isTransactionsRedesign ? (
     <ConfirmInfoSection noPadding>
       <Box
@@ -413,7 +415,7 @@ function SimulationDetailsSkeleton({
  * @param props.staticRows - Optional static rows to display.
  * @param props.smartTransactionStatus - Optional Smart Transaction status to override transaction status for immediate UI updates.
  */
-export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
+export const SimulationDetails = ({
   transaction,
   enableMetrics = false,
   isTransactionsRedesign = false,
@@ -425,6 +427,12 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   const { chainId, id: transactionId, simulationData } = transaction;
   const balanceChangesResult = useBalanceChanges({ chainId, simulationData });
   const loading = !simulationData || balanceChangesResult.pending;
+  const showAdvancedDetails = useSelector(
+    selectConfirmationAdvancedDetailsOpen,
+  );
+  const showSimulationRevert = Boolean(
+    showAdvancedDetails && transaction.revert?.simulation?.message,
+  );
 
   const hasStaticData =
     staticRows?.length > 0 &&
@@ -483,6 +491,12 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
       >
         {error.code === SimulationErrorCode.Reverted && (
           <ErrorContent error={error} />
+        )}
+        {showSimulationRevert && (
+          <RevertReason
+            source="simulation"
+            data-testid="simulation-details-revert-reason"
+          />
         )}
       </SimulationDetailsLayout>
     );

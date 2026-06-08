@@ -11,7 +11,6 @@ import {
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import TransactionIcon from '../../app/transaction-icon/transaction-icon';
 import TransactionStatusLabel from '../../app/transaction-status-label/transaction-status-label';
-import { formatTimestamp } from '../../app/multichain-transaction-details-modal/helpers';
 import { ActivityListItem as LegacyActivityListItem } from '../activity-list-item';
 import { ChainBadge } from '../../app/chain-badge/chain-badge';
 import { selectBridgeHistoryForAccountGroup } from '../../../ducks/bridge-status/selectors';
@@ -50,8 +49,9 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
   if (isRedeposit) {
     return (
       <LegacyActivityListItem
-        data-testid="activity-list-item"
+        status={statusKey}
         onClick={() => onClick(transaction)}
+        // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
         icon={
           <ChainBadge chainId={transaction.chain}>
             <TransactionIcon
@@ -61,14 +61,8 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
           </ChainBadge>
         }
         title="Redeposit"
-        subtitle={
-          <TransactionStatusLabel
-            date={formatTimestamp(timestamp)}
-            error={{}}
-            status={statusKey}
-            statusOnly
-          />
-        }
+        // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
+        subtitle={<TransactionStatusLabel error={{}} status={statusKey} />}
       />
     );
   }
@@ -86,16 +80,18 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
 
   return (
     <LegacyActivityListItem
-      data-testid="activity-list-item"
+      status={statusKey}
       onClick={() => onClick(transaction)}
+      // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
       icon={
         <ChainBadge chainId={transaction.chain}>
           <TransactionIcon category={category} status={statusKey} />
         </ChainBadge>
       }
+      // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
       rightContent={
         <Text
-          className="activity-list-item__primary-currency"
+          className="activity-list-item__primary-currency text-s-body-md @compact:text-s-body-sm"
           data-testid="transaction-list-item-primary-currency"
           ellipsis
         >
@@ -103,14 +99,8 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
         </Text>
       }
       title={title}
-      subtitle={
-        <TransactionStatusLabel
-          date={formatTimestamp(transaction.timestamp)}
-          error={{}}
-          status={statusKey}
-          statusOnly
-        />
-      }
+      // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
+      subtitle={<TransactionStatusLabel error={{}} status={statusKey} />}
     />
   );
 };

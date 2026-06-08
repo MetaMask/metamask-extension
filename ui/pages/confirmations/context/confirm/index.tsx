@@ -31,12 +31,16 @@ export const ConfirmContext = createContext<ConfirmContextType | undefined>(
   undefined,
 );
 
-export const ConfirmContextProvider: React.FC<{
+export const ConfirmContextProvider = ({
+  children,
+  confirmationId,
+  currentConfirmationOverride,
+}: React.PropsWithChildren<{
   children: ReactElement;
   confirmationId?: string;
   /** When provided, injects this as currentConfirmation (e.g. for gas modal opened from cancel-speedup). Skips route sync and navigation. */
   currentConfirmationOverride?: Confirmation;
-}> = ({ children, confirmationId, currentConfirmationOverride }) => {
+}>) => {
   const { goBackTo: goBackFromUrl } = useConfirmationNavigationOptions();
   const [goBackTo] = useState(goBackFromUrl);
   const [isScrollToBottomCompleted, setIsScrollToBottomCompleted] =
@@ -98,11 +102,13 @@ export const ConfirmContextProvider: React.FC<{
   );
 
   return (
-    <ConfirmContext.Provider value={value}>{children}</ConfirmContext.Provider>
+    <ConfirmContext.Provider value={value as ConfirmContextType}>
+      {children}
+    </ConfirmContext.Provider>
   );
 };
 
-export const useConfirmContext = <CurrentConfirmation = Confirmation,>() => {
+export const useConfirmContext = <CurrentConfirmation = Confirmation>() => {
   const context = useContext(ConfirmContext);
   if (!context) {
     throw new Error(

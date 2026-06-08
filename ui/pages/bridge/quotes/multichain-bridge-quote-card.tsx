@@ -6,7 +6,6 @@ import {
   UnifiedSwapBridgeEventName,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
-import { bpsToPercentage } from '../../../ducks/bridge/utils';
 import {
   SuccessPill,
   Text,
@@ -22,6 +21,7 @@ import {
   getFromToken,
   getSlippage,
   getIsSolanaSwap,
+  getIsRWASwap,
   getQuoteRequest,
   getIsToOrFromNonEvm,
   getIsStxEnabled,
@@ -29,7 +29,7 @@ import {
   getPriceImpact,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { formatNetworkFee, formatTokenAmount } from '../utils/quote';
+import { formatNetworkFee, formatTokenAmount, readMmFee } from '../utils/quote';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   IconColor,
@@ -46,10 +46,8 @@ import { useRewards } from '../../../hooks/bridge/useRewards';
 import { RewardsBadge } from '../../../components/app/rewards/RewardsBadge';
 import AddRewardsAccount from '../../../components/app/rewards/AddRewardsAccount';
 import { Skeleton } from '../../../components/component-library/skeleton';
-import {
-  getGasFeesSponsoredNetworkEnabled,
-  isHardwareWallet,
-} from '../../../selectors/selectors';
+import { getGasFeesSponsoredNetworkEnabled } from '../../../selectors/selectors';
+import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
 import { PriceImpactQuoteDetailsRow } from '../components/price-impact-quote-details-row';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
@@ -94,6 +92,7 @@ export const MultichainBridgeQuoteCard = ({
   const toToken = useSelector(getToToken);
   const slippage = useSelector(getSlippage);
   const isSolanaSwap = useSelector(getIsSolanaSwap);
+  const isRWASwap = useSelector(getIsRWASwap);
   const dispatch = useDispatch();
   const { isEstimatedReturnLow } = useSelector(
     getValidationErrors,
@@ -112,8 +111,8 @@ export const MultichainBridgeQuoteCard = ({
   const gasSponsored = activeQuote?.quote?.gasSponsored ?? false;
   const isCrossChainBridge = Boolean(
     fromToken?.chainId &&
-      toToken?.chainId &&
-      fromToken.chainId !== toToken.chainId,
+    toToken?.chainId &&
+    fromToken.chainId !== toToken.chainId,
   );
 
   const isCurrentNetworkGasSponsored = useMemo(() => {
@@ -126,6 +125,10 @@ export const MultichainBridgeQuoteCard = ({
       ],
     );
   }, [fromChain?.chainId, gasFeesSponsoredNetworkEnabled]);
+
+  const quoteFeePercentage = activeQuote
+    ? readMmFee(activeQuote).quoteFeePercentage
+    : undefined;
 
   const shouldShowGasSponsored = useMemo(() => {
     // HW wallets cannot use any form of gas sponsorship. Gate early as
@@ -212,10 +215,7 @@ export const MultichainBridgeQuoteCard = ({
             >
               {t('multichainQuoteCardRateExplanation', [
                 new BigNumber(activeQuote.quote.feeData.metabridge.amount).gt(0)
-                  ? (bpsToPercentage(
-                      // @ts-expect-error: controller types are not up to date yet
-                      activeQuote.quote.feeData.metabridge.quoteBpsFee,
-                    ) ?? BRIDGE_MM_FEE_RATE)
+                  ? (quoteFeePercentage ?? BRIDGE_MM_FEE_RATE)
                   : '0',
               ])}
             </Tooltip>
@@ -378,7 +378,7 @@ export const MultichainBridgeQuoteCard = ({
               variant={TextVariant.bodySm}
               color={TextColor.textAlternative}
             >
-              {slippage === undefined && isSolanaSwap
+              {slippage === undefined && (isSolanaSwap || isRWASwap)
                 ? t('slippageAuto')
                 : `${slippage}%`}
             </Text>

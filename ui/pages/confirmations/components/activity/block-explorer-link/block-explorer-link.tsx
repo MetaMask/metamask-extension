@@ -7,7 +7,10 @@ import {
   IconName,
 } from '../../../../../components/component-library';
 import { IconColor } from '../../../../../helpers/constants/design-system';
-import { selectNetworkConfigurationByChainId } from '../../../../../selectors';
+import {
+  selectNetworkConfigurationByChainId,
+  type NetworkConfigurationsByChainIdState,
+} from '../../../../../../shared/lib/selectors/networks';
 
 const HYPERLIQUID_EXPLORER_URL = 'https://app.hyperliquid.xyz/explorer';
 
@@ -34,8 +37,9 @@ export function BlockExplorerLink({
   hash,
   isHyperliquid = false,
 }: BlockExplorerLinkProps) {
-  const networkConfiguration = useSelector((state) =>
-    selectNetworkConfigurationByChainId(state, chainId),
+  const networkConfiguration = useSelector(
+    (state: NetworkConfigurationsByChainIdState) =>
+      selectNetworkConfigurationByChainId(state, chainId),
   );
 
   const blockExplorerUrl = useMemo(() => {

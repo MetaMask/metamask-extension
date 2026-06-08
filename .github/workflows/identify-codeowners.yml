@@ -26,14 +26,37 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: pr-comment
+    permissions:
+      contents: read
+      id-token: write
     steps:
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+      - name: Get token
+        id: token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
         with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            actions: read
+            contents: write
+            pull_requests: write
+
+      - name: Checkout .github/ directory
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: |
+            .github
+            .nvmrc
+          sparse-checkout-cone-mode: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install script dependencies
+        run: npm install --no-save @actions/core@^3.0.1 @actions/github@^9.1.1 micromatch@^4.0.8
 
       - name: Identify codeowners
         env:
-          PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
-        run: yarn tsx ./.github/scripts/identify-codeowners.ts
+          PR_COMMENT_TOKEN: ${{ steps.token.outputs.token }}
+        run: node ./.github/scripts/identify-codeowners.mts

@@ -1,8 +1,15 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import type { Rule } from '@metamask/7715-permission-types';
 import type { Hex } from '@metamask/utils';
 import { isSnapId } from '@metamask/snaps-utils';
-import { Text, TextVariant } from '@metamask/design-system-react';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  Text,
+  TextVariant,
+} from '@metamask/design-system-react';
 
 import {
   ConfirmInfoRow,
@@ -28,11 +35,9 @@ import {
   computeTotalExposureForPermission,
   isPermissionDataWithTotalExposure,
 } from '../../../../../../../../shared/lib/gator-permissions/compute-total-exposure';
-import {
-  PERMISSION_SCHEMAS,
-  assertPermissionSchemaEntry,
-} from '../../../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
+import { getPermissionSchemaEntry } from '../../../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
 import { throwUnhandledPermissionSchemaElement } from '../../../../../../../../shared/lib/gator-permissions/throw-unhandled-permission-schema-element';
+import { extractAddressesFromRuleByType } from '../../../../../../../../shared/lib/gator-permissions';
 import { translateI18nValue } from '../../../../../../../../shared/lib/gator-permissions/translate-i18n-value';
 import type {
   AmountField,
@@ -174,6 +179,34 @@ function renderElement(
       );
     }
 
+    case 'raw-text': {
+      return (
+        <ConfirmInfoRow
+          key={index}
+          label={t(element.labelKey)}
+          tooltip={element.tooltip}
+        >
+          <Text variant={TextVariant.BodyMd}>{element.getValue(ctx)}</Text>
+        </ConfirmInfoRow>
+      );
+    }
+
+    case 'list': {
+      return (
+        <ConfirmInfoRow
+          key={index}
+          label={t(element.labelKey)}
+          tooltip={element.tooltip}
+        >
+          <ul style={{ listStyle: 'disc', paddingLeft: 20 }}>
+            {element.getValue(ctx).map((value, valueIndex) => (
+              <li key={`${value}-${valueIndex}`}>{t(value)}</li>
+            ))}
+          </ul>
+        </ConfirmInfoRow>
+      );
+    }
+
     case 'date': {
       return (
         <DateAndTimeRow
@@ -245,12 +278,39 @@ function renderElement(
       );
     }
 
+    case 'rule-address': {
+      const addresses = element.getValue(ctx);
+      if (!addresses?.length) {
+        return null;
+      }
+      return (
+        <React.Fragment key={index}>
+          <ConfirmInfoRow label={t(element.labelKey)}>
+            <Box
+              flexDirection={BoxFlexDirection.Column}
+              alignItems={BoxAlignItems.End}
+            >
+              {addresses.map((address) => (
+                <ConfirmInfoRowAddress
+                  key={address}
+                  address={address}
+                  chainId={ctx.chainId}
+                />
+              ))}
+            </Box>
+          </ConfirmInfoRow>
+        </React.Fragment>
+      );
+    }
+
     case 'network': {
       return <NetworkRow key={index} />;
     }
 
-    default:
-      return throwUnhandledPermissionSchemaElement(element);
+    default: {
+      const neverElement: never = element;
+      return throwUnhandledPermissionSchemaElement(neverElement);
+    }
   }
 }
 
@@ -287,7 +347,15 @@ function renderSection(
 // Main renderer component
 // ---------------------------------------------------------------------------
 
-export const PermissionDetailRenderer: React.FC<{
+export const PermissionDetailRenderer = ({
+  permission,
+  expiry,
+  chainId,
+  origin,
+  to,
+  ownerId,
+  rules,
+}: {
   permission: {
     type: string;
     data: Record<string, unknown>;
@@ -298,16 +366,15 @@ export const PermissionDetailRenderer: React.FC<{
   origin: string;
   to?: string;
   ownerId: string;
-}> = ({ permission, expiry, chainId, origin, to, ownerId }) => {
+  rules?: Rule[];
+}) => {
   const t = useI18nContext() as I18nFunction;
 
-  const schemaEntry = PERMISSION_SCHEMAS[permission.type];
-  // Use an explicit branch (not `?.`) so React Compiler output cannot read
-  // `.tokenResolution` off an undefined schema entry during invalid types.
-  const tokenResolution: TokenResolution =
-    schemaEntry === undefined ? { kind: 'none' } : schemaEntry.tokenResolution;
+  const schemaEntry = getPermissionSchemaEntry(permission.type, true);
 
-  // Hooks must run before any code that can throw (invalid type / validate),
+  const { tokenResolution } = schemaEntry;
+
+  // Hooks must run before any code that can throw (validataion failures),
   // so hook order stays stable if permission data changes between renders.
   const nativeToken = useNativeTokenData(chainId, tokenResolution);
   const erc20Decimals = useErc20DecimalsResolved(
@@ -315,8 +382,6 @@ export const PermissionDetailRenderer: React.FC<{
     chainId,
     tokenResolution,
   );
-
-  assertPermissionSchemaEntry(permission.type, schemaEntry);
 
   if (schemaEntry.validate) {
     schemaEntry.validate(permission);
@@ -332,9 +397,17 @@ export const PermissionDetailRenderer: React.FC<{
     tokenInfo = { symbol: '', decimals: erc20Decimals };
   }
 
+  const redeemerAddresses = extractAddressesFromRuleByType(
+    rules ?? [],
+    'redeemer',
+  );
+  const payeeAddresses = extractAddressesFromRuleByType(rules ?? [], 'payee');
+
   const ctx: PermissionRenderContext = {
     permission,
     expiry,
+    redeemerAddresses,
+    payeeAddresses,
     chainId,
     origin,
     to,

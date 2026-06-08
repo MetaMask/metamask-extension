@@ -11,6 +11,11 @@ ignores:
   - 'react-compiler-runtime'
   - '@fortawesome/fontawesome-free'
   - 'punycode'
+  # peer deps of @mui/material v5; no direct imports in app source (MUI resolves them)
+  - '@emotion/react'
+  - '@emotion/styled'
+  # present for upcoming date-picker migration; not imported yet — depcheck would flag unused
+  - '@mui/x-date-pickers'
 
   #
   # dev deps
@@ -37,7 +42,6 @@ ignores:
   - 'chromedriver'
   - 'depcheck' # ooo meta
   - 'ethers' # ethers @5.7.0 expected by @account-abstraction/contracts, but conflicts with transitive ethers@6.x
-  - 'ganache-cli'
   - 'geckodriver'
   - 'jest'
   - 'mocha-junit-reporter'
@@ -66,7 +70,6 @@ ignores:
   # jest environments
   - 'jest-environment-jsdom'
   # webpack
-  - '@pmmmwh/react-refresh-webpack-plugin' # dev tool
   - 'webpack-dev-server' # dev tool
   - 'html-bundler-webpack-plugin' # build tool
   - 'webpack-bundle-analyzer' # build tool
@@ -108,8 +111,6 @@ ignores:
   - '@metamask/institutional-wallet-snap'
   - '@metamask/gator-permissions-snap'
   - '@metamask/permissions-kernel-snap'
-  # perps poc
-  - '@metamask/perps-controller'
 
 # files depcheck should not parse
 ignorePatterns:
@@ -118,3 +119,5 @@ ignorePatterns:
   # self-contained bundle used for testing
   - '**/send-eth-with-private-key-test/web3js.js'
   - '**/send-eth-with-private-key-test/ethereumjs-tx.js'
+  # vendored Yarn plugin bundles
+  - '.yarn/plugins/**'

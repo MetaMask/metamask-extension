@@ -329,6 +329,59 @@ describe('BridgeCTAButton', () => {
     expect(getByRole('button')).not.toBeDisabled();
   });
 
+  it('should render swap label for QR hardware wallet when disconnected', () => {
+    mockUseHardwareWalletConfig.mockReturnValue({
+      ...baseHardwareWalletConfig,
+      isHardwareWalletAccount: true,
+      walletType: HardwareWalletType.Qr,
+    });
+    mockUseHardwareWalletState.mockReturnValue({
+      connectionState: { status: ConnectionStatus.Disconnected },
+    });
+
+    const mockStore = createBridgeMockStore({
+      featureFlagOverrides: {
+        bridgeConfig: {
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET) },
+          ],
+        },
+      },
+      bridgeSliceOverrides: {
+        fromTokenInputValue: '1',
+        fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+        toToken: toBridgeToken(
+          getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
+        ),
+      },
+      bridgeStateOverrides: {
+        quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+        quotesLastFetched: Date.now(),
+        quotesLoadingStatus: RequestStatus.FETCHED,
+      },
+    });
+
+    const { getByText, queryByText, getByRole } = renderWithProvider(
+      <HardwareWalletProvider>
+        <BridgeCTAButton
+          onFetchNewQuotes={jest.fn()}
+          onOpenAlertModals={mockOnOpenPriceImpactWarningModal}
+          onOpenRecipientModal={jest.fn()}
+          onOpenMarketClosedModal={jest.fn()}
+        />
+      </HardwareWalletProvider>,
+      configureStore(mockStore),
+    );
+
+    const button = getByRole('button') as HTMLButtonElement;
+
+    expect(getByText(messages.swap.message)).toBeTruthy();
+    expect(queryByText('Connect QR')).toBeNull();
+    expect(button.disabled).toBe(false);
+  });
+
   // @ts-expect-error: each is a valid test function in jest
   it.each([
     {
@@ -489,8 +542,26 @@ describe('BridgeCTAButton', () => {
       { isInsufficientGasForQuote: true },
       messages.insufficientFundsSend.message,
     ],
+    [
+      'disable',
+      'there is insufficient native reserve',
+      { isInsufficientNativeReserve: true },
+      messages.insufficientFundsSend.message,
+    ],
     ['enable', 'the estimated return is low', { isEstimatedReturnLow: true }],
     ['enable', 'there are no validation errors', {}, messages.swap.message],
+    [
+      'disable',
+      'network fee is unavailable',
+      { isNetworkFeeUnavailable: true },
+      messages.insufficientFundsSend.message,
+    ],
+    [
+      'disable',
+      'network fee is unavailable with insufficient gas for quote',
+      { isNetworkFeeUnavailable: true, isInsufficientGasForQuote: true },
+      messages.insufficientFundsSend.message,
+    ],
     [
       'enable',
       'market is closed',
@@ -546,6 +617,8 @@ describe('BridgeCTAButton', () => {
         isInsufficientGasBalance: false,
         isInsufficientGasForQuote: false,
         isInsufficientBalance: false,
+        isInsufficientNativeReserve: false,
+        isNetworkFeeUnavailable: false,
         isEstimatedReturnLow: false,
         isTxAlertLoading: false,
         isStockMarketClosed: false,
@@ -613,6 +686,8 @@ describe('BridgeCTAButton', () => {
         isInsufficientGasBalance: false,
         isInsufficientGasForQuote: false,
         isInsufficientBalance: false,
+        isInsufficientNativeReserve: false,
+        isNetworkFeeUnavailable: false,
         isEstimatedReturnLow: false,
         isTxAlertLoading: false,
         isPriceImpactWarning: false,
@@ -737,6 +812,8 @@ describe('BridgeCTAButton', () => {
       isInsufficientGasBalance: false,
       isInsufficientGasForQuote: false,
       isInsufficientBalance: false,
+      isInsufficientNativeReserve: false,
+      isNetworkFeeUnavailable: false,
       isEstimatedReturnLow: false,
       isTxAlertLoading: false,
       isPriceImpactWarning: false,
@@ -799,7 +876,7 @@ describe('BridgeCTAButton', () => {
     expect(getByRole('button')).not.toBeDisabled();
     expect(getByRole('button')).toMatchInlineSnapshot(`
       <button
-        class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+        class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
         data-testid="bridge-cta-button"
         role="button"
         style="box-shadow: none;"

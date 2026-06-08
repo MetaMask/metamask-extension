@@ -57,8 +57,6 @@ const extendedMockState = {
             },
             snap: {
               id: 'npm:@metamask/solana-wallet-snap',
-              name: 'Solana',
-              enabled: true,
             },
             lastSelected: 1747401519439,
           },
@@ -67,6 +65,9 @@ const extendedMockState = {
       selectedAccount:
         typedMockState.metamask.internalAccounts.selectedAccount ||
         '499e262e-eed1-4743-b9bf-92b1a23b4a98',
+    },
+    snaps: {
+      'npm:@metamask/solana-wallet-snap': { enabled: true },
     },
   },
 };

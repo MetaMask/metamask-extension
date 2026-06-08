@@ -20,10 +20,7 @@ import ConnectedSitesList from '../../../components/app/connected-sites-list';
 import KeyringSnapRemovalWarning from '../../../components/app/snaps/keyring-snap-removal-warning';
 import {
   removeSnap,
-  disconnectOriginFromSnap,
-  updateSnap,
   showKeyringSnapRemovalModal,
-  getSnapAccountsById,
 } from '../../../store/actions';
 import {
   getSnaps,
@@ -31,7 +28,6 @@ import {
   getPermissions,
   getSnapLatestVersion,
   getSnapMetadata,
-  getInternalAccounts,
 } from '../../../selectors';
 import {
   Box,
@@ -46,52 +42,41 @@ import { DelineatorType } from '../../../helpers/constants/snaps';
 import SnapUpdateAlert from '../../../components/app/snaps/snap-update-alert';
 import { CONNECT_ROUTE } from '../../../helpers/constants/routes';
 import { ShowMore } from '../../../components/app/snaps/show-more';
+import { useMessenger } from '../../../hooks/useMessenger';
 import { KeyringSnapRemovalResultStatus } from './constants';
+import { useUpdate } from './hooks/useUpdate';
+import { useKeyringSnap } from './hooks/useKeyringSnap';
 
 function SnapSettings({ snapId, initRemove, resetInitRemove }) {
+  const messenger = useMessenger();
   const navigate = useNavigate();
   const t = useI18nContext();
   const snaps = useSelector(getSnaps);
   const dispatch = useDispatch();
 
-  const snap = Object.entries(snaps)
-    .map(([_, snapState]) => snapState)
-    .find((snapState) => snapState.id === snapId);
-
+  const [update, approvalId] = useUpdate();
   const [isShowingRemoveWarning, setIsShowingRemoveWarning] = useState(false);
   const [isRemovingKeyringSnap, setIsRemovingKeyringSnap] = useState(false);
 
-  const [keyringAccounts, setKeyringAccounts] = useState([]);
-  const internalAccounts = useSelector(getInternalAccounts);
+  const snap = snaps[snapId];
 
   const connectedSubjects = useSelector((state) =>
     getSubjectsWithSnapPermission(state, snap?.id),
   );
+
   const permissions = useSelector(
     (state) => snap && getPermissions(state, snap.id),
   );
+
+  const isKeyringSnap = Boolean(permissions?.snap_manageAccounts);
+  const keyringAccounts = useKeyringSnap(snapId, isKeyringSnap);
 
   const { name: snapName, description } = useSelector((state) =>
     getSnapMetadata(state, snapId),
   );
 
-  let isKeyringSnap = false;
-  isKeyringSnap = Boolean(permissions?.snap_manageAccounts);
-
-  useEffect(() => {
-    if (isKeyringSnap) {
-      (async () => {
-        const addresses = await getSnapAccountsById(snap.id);
-        const snapIdentities = internalAccounts.filter((internalAccount) =>
-          addresses.includes(internalAccount.address.toLowerCase()),
-        );
-        setKeyringAccounts(snapIdentities);
-      })();
-    }
-  }, [snap?.id, internalAccounts, isKeyringSnap]);
-
   const onDisconnect = (connectedOrigin) => {
-    dispatch(disconnectOriginFromSnap(connectedOrigin, snap.id));
+    messenger.call('SnapController:disconnectOrigin', connectedOrigin, snap.id);
   };
 
   const latestRegistryVersion = useSelector((state) =>
@@ -103,17 +88,18 @@ function SnapSettings({ snapId, initRemove, resetInitRemove }) {
     : false;
 
   const handleUpdate = async () => {
-    const snapToInstall = {
+    update({
       [snap.id]: {
         version: latestRegistryVersion,
       },
-    };
-    const approvalId = await dispatch(updateSnap('MetaMask', snapToInstall));
+    });
+  };
 
+  useEffect(() => {
     if (approvalId) {
       navigate(`${CONNECT_ROUTE}/${approvalId}`);
     }
-  };
+  }, [approvalId, navigate]);
 
   const connectedTitle = () => {
     if (connectedSubjects.every((subject) => isSnapId(subject.origin))) {

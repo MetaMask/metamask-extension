@@ -48,8 +48,8 @@ import {
   getAllPermittedAccountsForCurrentTab,
   getDefaultHomeActiveTabName,
   getHDEntropyIndex,
-  getPreferences,
 } from '../../../selectors';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MultichainAccountMenu } from '../multichain-account-menu';
 import { AddMultichainAccount } from '../add-multichain-account';
@@ -128,7 +128,9 @@ export const MultichainAccountList = ({
   const [isAccountRenameModalOpen, setIsAccountRenameModalOpen] =
     useState(false);
 
-  const [renameAccountGroupId, setRenameAccountGroupId] = useState(undefined);
+  const [renameAccountGroupId, setRenameAccountGroupId] = useState<
+    string | undefined
+  >(undefined);
 
   const [openMenuAccountId, setOpenMenuAccountId] =
     useState<AccountGroupId | null>(null);
@@ -181,7 +183,7 @@ export const MultichainAccountList = ({
   }, [setIsAccountRenameModalOpen, setRenameAccountGroupId]);
 
   const handleAccountRenameAction = useCallback(
-    (accountGroupId) => {
+    (accountGroupId: string) => {
       setRenameAccountGroupId(accountGroupId);
       setIsAccountRenameModalOpen(true);
       setOpenMenuAccountId(null);

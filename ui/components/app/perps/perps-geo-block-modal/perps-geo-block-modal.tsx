@@ -34,10 +34,10 @@ export type PerpsGeoBlockModalProps = {
  * @param options0.isOpen - Whether the modal is visible
  * @param options0.onClose - Callback to dismiss the modal
  */
-export const PerpsGeoBlockModal: React.FC<PerpsGeoBlockModalProps> = ({
+export const PerpsGeoBlockModal = ({
   isOpen,
   onClose,
-}) => {
+}: PerpsGeoBlockModalProps) => {
   const t = useI18nContext();
 
   return (

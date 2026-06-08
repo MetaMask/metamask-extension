@@ -5,7 +5,7 @@ import {
   MessengerEvents,
   MockAnyNamespace,
 } from '@metamask/messenger';
-import { ENVIRONMENT } from '../../../../development/build/constants';
+import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { REWARDS_API_URL } from '../../../../shared/constants/rewards';
 import {
   EstimatePointsDto,
@@ -1641,13 +1641,13 @@ describe('RewardsDataService', () => {
         json: jest.fn().mockResolvedValue({
           current: {
             id: 'season-1',
-            startDate: '2023-06-01T00:00:00Z',
-            endDate: '2023-08-31T23:59:59Z',
+            startDate: '2030-06-01T00:00:00Z',
+            endDate: '2030-08-31T23:59:59Z',
           },
           next: {
             id: 'season-2',
-            startDate: '2023-09-01T00:00:00Z',
-            endDate: '2023-11-30T23:59:59Z',
+            startDate: '2030-09-01T00:00:00Z',
+            endDate: '2030-11-30T23:59:59Z',
           },
         }),
       } as unknown as Response;
@@ -1681,8 +1681,8 @@ describe('RewardsDataService', () => {
           current: null,
           next: {
             id: 'season-2',
-            startDate: '2023-09-01T00:00:00Z',
-            endDate: '2023-11-30T23:59:59Z',
+            startDate: '2030-09-01T00:00:00Z',
+            endDate: '2030-11-30T23:59:59Z',
           },
         }),
       } as unknown as Response;
@@ -1702,8 +1702,8 @@ describe('RewardsDataService', () => {
         json: jest.fn().mockResolvedValue({
           current: {
             id: 'season-1',
-            startDate: '2023-06-01T00:00:00Z',
-            endDate: '2023-08-31T23:59:59Z',
+            startDate: '2030-06-01T00:00:00Z',
+            endDate: '2030-08-31T23:59:59Z',
           },
           next: null,
         }),
@@ -1716,6 +1716,32 @@ describe('RewardsDataService', () => {
       expect(result.current).toBeDefined();
       expect(result.current?.id).toBe('season-1');
       expect(result.next).toBeNull();
+    });
+
+    it('coerces an ended current season to previous', async () => {
+      const mockResponse = {
+        ok: true,
+        json: jest.fn().mockResolvedValue({
+          current: {
+            id: 'season-1',
+            startDate: '2023-06-01T00:00:00Z',
+            endDate: '2023-08-31T23:59:59Z', // in the past
+          },
+          next: {
+            id: 'season-2',
+            startDate: '2030-09-01T00:00:00Z',
+            endDate: '2030-11-30T23:59:59Z',
+          },
+        }),
+      } as unknown as Response;
+
+      mockFetch.mockResolvedValue(mockResponse);
+
+      const result = await service.getDiscoverSeasons();
+
+      expect(result.current).toBeNull();
+      expect(result.previous?.id).toBe('season-1');
+      expect(result.next?.id).toBe('season-2');
     });
 
     it('throws error when response is not ok', async () => {
@@ -1798,6 +1824,25 @@ describe('RewardsDataService', () => {
 
       expect(result.startDate).toBeInstanceOf(Date);
       expect(result.endDate).toBeInstanceOf(Date);
+    });
+
+    it('defaults activityTypes to empty array when missing from response', async () => {
+      const mockResponse = {
+        ok: true,
+        json: jest.fn().mockResolvedValue({
+          id: mockSeasonId,
+          name: 'Summer Season',
+          startDate: '2023-06-01T00:00:00Z',
+          endDate: '2023-08-31T23:59:59Z',
+          // activityTypes intentionally omitted
+        }),
+      } as unknown as Response;
+
+      mockFetch.mockResolvedValue(mockResponse);
+
+      const result = await service.getSeasonMetadata(mockSeasonId);
+
+      expect(result.activityTypes).toEqual([]);
     });
 
     it('throws error when response is not ok', async () => {
@@ -2178,6 +2223,67 @@ describe('RewardsDataService', () => {
       const result = await service.fetchGeoLocation();
 
       expect(result).toBe('UNKNOWN');
+    });
+  });
+
+  describe('getVipFees', () => {
+    const mockSubscriptionToken = 'token-vip-fees';
+    const mockVipFees = {
+      vipTier: 1,
+      fees: {
+        hyperliquid: { builderCode: '0xbuilder', builderFeeBips: '5' },
+        swaps: { feeBips: '50' },
+      },
+      updatedAt: '2026-05-01T00:00:00.000Z',
+    };
+
+    beforeEach(() => {
+      service = createService();
+      mockFetch.mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: jest.fn().mockResolvedValue(mockVipFees),
+      } as unknown as Response);
+    });
+
+    it('fetches VIP fees using the expected endpoint and auth headers', async () => {
+      const result = await service.getVipFees(mockSubscriptionToken);
+
+      expect(result).toEqual(mockVipFees);
+      expect(mockFetch).toHaveBeenCalledWith(
+        `${REWARDS_API_URL.UAT}/vip/fees`,
+        expect.objectContaining({
+          method: 'GET',
+          credentials: 'omit',
+          headers: expect.objectContaining({
+            'Content-Type': 'application/json',
+            'rewards-access-token': mockSubscriptionToken,
+          }),
+        }),
+      );
+    });
+
+    it('throws when the VIP fees response is not ok', async () => {
+      mockFetch.mockResolvedValue({
+        ok: false,
+        status: 500,
+      } as Response);
+
+      await expect(service.getVipFees(mockSubscriptionToken)).rejects.toThrow(
+        'Get VIP fees failed: 500',
+      );
+    });
+
+    it('throws AuthorizationFailedError when response status is 403', async () => {
+      mockFetch.mockResolvedValue({
+        ok: false,
+        status: 403,
+        json: jest.fn().mockResolvedValue({}),
+      } as unknown as Response);
+
+      await expect(service.getVipFees(mockSubscriptionToken)).rejects.toThrow(
+        AuthorizationFailedError,
+      );
     });
   });
 });

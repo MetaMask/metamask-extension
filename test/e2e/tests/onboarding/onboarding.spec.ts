@@ -19,13 +19,17 @@ import SecureWalletPage from '../../page-objects/pages/onboarding/secure-wallet-
 import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
 import {
   completeCreateNewWalletOnboardingFlow,
+  completeImportSRPOnboardingWithPasskey,
   completeImportSRPOnboardingFlow,
+  completeOnboardingWithPasskey,
+  handleSidepanelPostOnboarding,
   importSRPOnboardingFlow,
   incompleteCreateNewWalletOnboardingFlow,
   onboardingMetricsFlow,
-  handleSidepanelPostOnboarding,
+  skipPasskeySetup,
 } from '../../page-objects/flows/onboarding.flow';
 import LoginPage from '../../page-objects/pages/login-page';
+import { lockAndWaitForPasskeyUnlockPage } from '../../page-objects/flows/login.flow';
 
 const IMPORTED_SRP_ACCOUNT_1 = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 
@@ -59,6 +63,7 @@ describe('MetaMask onboarding', function () {
         const loginPage = new LoginPage(driver);
         await loginPage.checkPageIsLoaded();
         await loginPage.loginToHomepage();
+        await skipPasskeySetup(driver);
 
         const secureWalletPage = new SecureWalletPage(driver);
         await secureWalletPage.checkPageIsLoaded();
@@ -596,6 +601,54 @@ describe('MetaMask onboarding', function () {
           css: '[data-testid="deep-link-description"]',
           text: 'third party',
         });
+      },
+    );
+  });
+
+  it('Creates a new wallet and sets up passkey with virtual authenticator during onboarding', async function () {
+    // Firefox does not support Selenium's Virtual Authenticator API
+    if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+      this.skip();
+    }
+
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
+        virtualAuthenticator: true,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await completeOnboardingWithPasskey({ driver });
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('0');
+      },
+    );
+  });
+
+  it('Imports a wallet with SRP and sets up passkey during onboarding', async function () {
+    // Firefox does not support Selenium's Virtual Authenticator API
+    if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+      this.skip();
+    }
+
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
+        virtualAuthenticator: true,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await completeImportSRPOnboardingWithPasskey({ driver });
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+
+        await lockAndWaitForPasskeyUnlockPage(driver);
+
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPasskeyUnlockPageIsLoaded();
       },
     );
   });

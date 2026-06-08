@@ -78,9 +78,6 @@
   "autoLockTimeLimit": {
     "message": "טיימר התנתקות אוטומטית (דקות)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "הגדר/י את זמן היעדר הפעילות בדקות לפני ש-MetaMask יתנתק אוטומטית."
-  },
   "average": {
     "message": "ממוצע"
   },
@@ -181,12 +178,6 @@
   "createPassword": {
     "message": "יצירת ססמה"
   },
-  "currencyConversion": {
-    "message": "המרת מטבע"
-  },
-  "currentLanguage": {
-    "message": "שפה נוכחית"
-  },
   "custom": {
     "message": "מתקדם"
   },
@@ -207,9 +198,6 @@
   },
   "done": {
     "message": "סיום"
-  },
-  "downloadGoogleChrome": {
-    "message": "הורד/י את גוגל כרום"
   },
   "downloadStateLogs": {
     "message": "הורדת יומני מצב"
@@ -268,9 +256,6 @@
   },
   "hardwareWallets": {
     "message": "חבר ארנק חומרה"
-  },
-  "hardwareWalletsMsg": {
-    "message": "בחר/י ארנק חומרה שבו תרצה להשתמש עם MetaMask"
   },
   "here": {
     "message": "כאן",
@@ -339,12 +324,6 @@
   "likeToImportTokens": {
     "message": "האם ברצונך להוסיף טוקנים אלה?"
   },
-  "lineaGoerli": {
-    "message": "רשת בדיקה Linea Goerli"
-  },
-  "links": {
-    "message": "קישורים"
-  },
   "loading": {
     "message": "טוען..."
   },
@@ -381,9 +360,6 @@
   },
   "nevermind": {
     "message": "לא משנה"
-  },
-  "newAccount": {
-    "message": "חשבון חדש"
   },
   "newAccountNumberName": {
     "message": "חשבון $1",
@@ -490,9 +466,6 @@
   "restore": {
     "message": "שחזר"
   },
-  "revealSeedWords": {
-    "message": "גלה מילות Seed"
-  },
   "revealSeedWordsWarning": {
     "message": "במילים אלה עלול להיעשות שימוש כדי לגנוב את כל חשבונותיך.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -539,9 +512,6 @@
   "showFiatConversionInTestnets": {
     "message": "הצג המרה -Testnets"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "בחר/י באפשרות זו כדי להציג המרת פיאט ב- Testnets"
-  },
   "showHexData": {
     "message": "הצג מידע הקסדצימלי (Hex)"
   },
@@ -571,9 +541,6 @@
   },
   "stateLogs": {
     "message": "יומני מצב"
-  },
-  "stateLogsDescription": {
-    "message": "יומני המצב מכילים את כתובות החשבון הציבוריות שלך ועסקאות שנשלחו."
   },
   "submitted": {
     "message": "הוגש"

@@ -15,9 +15,8 @@ export const LOCK_ROUTE = '/lock';
 export const ASSET_ROUTE = '/asset';
 export const SETTINGS_ROUTE = '/settings';
 export const LEGACY_SETTINGS_V2_ROUTE = '/settings-v2';
-export const SETTINGS_V2_ROUTE = SETTINGS_ROUTE;
 export const ASSETS_ROUTE = '/settings/assets';
-export const CURRENCY_ROUTE = '/settings/assets/currency';
+export const CURRENCY_ROUTE = '/settings/preferences-and-display/currency';
 export const TRANSACTIONS_ROUTE = '/settings/transactions';
 export const PREFERENCES_AND_DISPLAY_ROUTE =
   '/settings/preferences-and-display';
@@ -33,10 +32,12 @@ export const MANAGE_WALLET_RECOVERY_ROUTE =
   '/settings/security-and-password/manage-wallet-recovery';
 export const SECURITY_PASSWORD_CHANGE_V2_ROUTE =
   '/settings/security-and-password/password';
+export const SECURITY_REGISTER_PASSKEY_ROUTE =
+  '/settings/security-and-password/register-passkey';
+export const SECURITY_TURN_OFF_PASSKEY_ROUTE =
+  '/settings/security-and-password/turn-off-passkey';
 export const DEVELOPER_TOOLS_ROUTE = '/settings/developer-tools';
 export const DEBUG_ROUTE = '/settings/debug';
-export const GENERAL_ROUTE = '/settings/general';
-export const ADVANCED_ROUTE = '/settings/advanced';
 export const DEVELOPER_OPTIONS_ROUTE = DEBUG_ROUTE;
 export const EXPERIMENTAL_ROUTE = '/settings/experimental';
 export const TRANSACTION_SHIELD_ROUTE = '/settings/transaction-shield';
@@ -65,7 +66,6 @@ export const TRANSACTION_SHIELD_CLAIM_ROUTES = {
     RELATIVE: '/view-history-claim',
   },
 } as const;
-export const SECURITY_ROUTE = '/settings/security';
 export const ABOUT_US_ROUTE = '/settings/about-us';
 export const NETWORKS_ROUTE = '/networks';
 export const NETWORKS_FORM_ROUTE = '/networks/form';
@@ -78,16 +78,15 @@ export const CONTACTS_ADD_ROUTE = '/contacts/add';
 export const CONTACTS_VIEW_ROUTE = '/contacts/view';
 export const CONTACTS_EDIT_ROUTE = '/contacts/edit';
 export const SNAP_SETTINGS_ROUTE = '/settings/snap';
-export const SECURITY_PASSWORD_CHANGE_ROUTE =
-  '/settings/security-and-privacy/password-change';
-export const BACKUPANDSYNC_ROUTE =
-  '/settings/security-and-privacy/backup-and-sync';
+export const BACKUPANDSYNC_ROUTE = '/settings/backup-and-sync';
 export const REVEAL_SEED_ROUTE = '/seed';
 export const IMPORT_SRP_ROUTE = '/import-srp';
 export const RESTORE_VAULT_ROUTE = '/restore-vault';
 export const IMPORT_TOKEN_ROUTE = '/import-token';
 export const IMPORT_TOKENS_ROUTE = '/import-tokens';
 export const CONFIRM_IMPORT_TOKEN_ROUTE = '/confirm-import-token';
+export const TOKEN_MANAGEMENT_ROUTE = '/token-management';
+export const CUSTOM_TOKEN_IMPORT_ROUTE = '/custom-token-import';
 export const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token';
 export const ACCOUNT_LIST_PAGE_ROUTE = '/account-list';
 export const MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE =
@@ -104,6 +103,7 @@ export const MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE = '/multichain-smart-account';
 export const NEW_ACCOUNT_ROUTE = '/new-account';
 export const CONFIRM_ADD_SUGGESTED_NFT_ROUTE = '/confirm-add-suggested-nft';
 export const CONNECT_HARDWARE_ROUTE = '/new-account/connect';
+export const HARDWARE_WALLET_REPAIR_ROUTE = '/hardware-wallet-repair';
 export const SEND_ROUTE = '/send';
 export const REMOTE_ROUTE = '/remote';
 export const REMOTE_ROUTE_SETUP_SWAPS = '/remote/setup-swaps';
@@ -137,6 +137,8 @@ export const CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE = '/cross-chain/tx-details';
 export const PREPARE_SWAP_ROUTE = '/swaps/prepare-bridge-page';
 export const SWAP_PATH = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
 export const AWAITING_SIGNATURES_ROUTE = '/swaps/awaiting-signatures';
+export const HARDWARE_WALLET_SIGNATURES_ROUTE =
+  '/swaps/hardware-wallet-signatures';
 export const ONBOARDING_ROUTE = '/onboarding';
 export const ONBOARDING_REVEAL_SRP_ROUTE = '/onboarding/reveal-recovery-phrase';
 export const ONBOARDING_REVIEW_SRP_ROUTE = '/onboarding/review-recovery-phrase';
@@ -154,9 +156,9 @@ export const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
 export const ONBOARDING_ACCOUNT_EXIST = '/onboarding/account-exist';
 export const ONBOARDING_ACCOUNT_NOT_FOUND = '/onboarding/account-not-found';
 export const ONBOARDING_DOWNLOAD_APP_ROUTE = '/onboarding/download-app';
-export const NONEVM_BALANCE_CHECK_ROUTE = '/nonevm-balance-check';
 export const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
+export const ONBOARDING_SETUP_PASSKEY_ROUTE = '/onboarding/setup-passkey';
 
 export const DEEP_LINK_ROUTE = '/link';
 
@@ -172,6 +174,11 @@ export const PERPS_ORDER_ENTRY_ROUTE = '/perps/trade';
 export const PERPS_ACTIVITY_ROUTE = '/perps/activity';
 export const PERPS_WITHDRAW_ROUTE = '/perps/withdraw';
 export const PERPS_MARKET_LIST_ROUTE = '/perps/market-list';
+
+// Window during which reopening the extension resumes the last Perps screen
+// instead of landing on the wallet home. Keeps the cap short so stale sessions
+// do not hijack the user's home view after a long break.
+export const PERPS_REOPEN_TTL_MS = 5 * 60 * 1000;
 
 export const SHIELD_PLAN_ROUTE = '/shield-plan';
 export const REWARDS_ROUTE = '/rewards';
@@ -266,6 +273,16 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
+    path: SECURITY_REGISTER_PASSKEY_ROUTE,
+    label: 'Register Passkey',
+    trackInAnalytics: true,
+  },
+  {
+    path: SECURITY_TURN_OFF_PASSKEY_ROUTE,
+    label: 'Turn Off Passkey',
+    trackInAnalytics: true,
+  },
+  {
     path: PREFERENCES_AND_DISPLAY_ROUTE,
     label: 'Preferences And Display Settings Page',
     trackInAnalytics: true,
@@ -286,16 +303,6 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
-    path: GENERAL_ROUTE,
-    label: 'General Settings Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: ADVANCED_ROUTE,
-    label: 'Advanced Settings Page',
-    trackInAnalytics: true,
-  },
-  {
     path: DEVELOPER_OPTIONS_ROUTE,
     label: 'Developer Options Page',
     // DEVELOPER_OPTIONS_ROUTE not in PATH_NAME_MAP because we're not tracking analytics for this page
@@ -304,11 +311,6 @@ export const ROUTES = [
   {
     path: EXPERIMENTAL_ROUTE,
     label: 'Experimental Settings Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: SECURITY_ROUTE,
-    label: 'Security Settings Page',
     trackInAnalytics: true,
   },
   {
@@ -362,11 +364,6 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
-    path: SECURITY_PASSWORD_CHANGE_ROUTE,
-    label: 'Change Password',
-    trackInAnalytics: true,
-  },
-  {
     path: BACKUPANDSYNC_ROUTE,
     label: 'Backup And Sync Settings Page',
     trackInAnalytics: true,
@@ -404,6 +401,16 @@ export const ROUTES = [
   {
     path: CONFIRM_IMPORT_TOKEN_ROUTE,
     label: 'Confirm Import Token Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: TOKEN_MANAGEMENT_ROUTE,
+    label: 'Token Management Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: CUSTOM_TOKEN_IMPORT_ROUTE,
+    label: 'Custom Token Import Page',
     trackInAnalytics: true,
   },
   {
@@ -630,6 +637,11 @@ export const ROUTES = [
     trackInAnalytics: false,
   },
   {
+    path: HARDWARE_WALLET_SIGNATURES_ROUTE,
+    label: 'Swaps Hardware Wallet Signatures',
+    trackInAnalytics: false,
+  },
+  {
     path: INITIALIZE_EXPERIMENTAL_AREA,
     label: 'Initialize Experimental Area',
     trackInAnalytics: false,
@@ -657,6 +669,11 @@ export const ROUTES = [
   {
     path: `${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`,
     label: 'Review Gator Permissions',
+    trackInAnalytics: false,
+  },
+  {
+    path: HARDWARE_WALLET_REPAIR_ROUTE,
+    label: 'Hardware Wallet Repair',
     trackInAnalytics: false,
   },
   ...MUSD_ROUTE_DEFINITIONS,

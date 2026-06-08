@@ -73,7 +73,8 @@ export type MinimalBridgeAlert = {
     | 'no-quotes'
     | 'insufficient-gas'
     | 'price-data-unavailable'
-    | 'token-security';
+    | 'token-security'
+    | 'insufficient-native-reserve';
   title?: string;
   description: string;
   severity: 'warning' | 'danger';

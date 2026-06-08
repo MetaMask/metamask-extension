@@ -2,33 +2,33 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
+import { Box, Skeleton } from '@metamask/design-system-react';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
   getTokensMarketData,
-  getPreferences,
-  getSelectedInternalAccount,
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../selectors';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
+import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { formatValue, isValidAmount } from '../../../../app/scripts/lib/util';
+import {
+  formatValue,
+  isValidAmount,
+} from '../../../../shared/lib/format-value';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import {
-  Display,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Box, SensitiveText } from '../../component-library';
+import { SensitiveText } from '../../component-library';
 import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
 import { getHistoricalMultichainAggregatedBalance } from '../../../selectors/assets';
 import { formatWithThreshold } from '../assets/util/formatWithThreshold';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { isZeroAmount } from '../../../helpers/utils/number-utils';
-import { Skeleton } from '../../component-library/skeleton';
 
 // core already has this exported type but its not yet available in this version
 // todo remove this and use core type once available
@@ -123,9 +123,11 @@ export const AggregatedPercentageOverview = ({
 
   return (
     <Skeleton
-      isLoading={!anyEnabledNetworksAreAvailable && isZeroAmount(amountChange)}
+      hideChildren={
+        !anyEnabledNetworksAreAvailable && isZeroAmount(amountChange)
+      }
     >
-      <Box display={Display.Flex} className="gap-1">
+      <Box className="flex gap-1">
         <SensitiveText
           variant={TextVariant.bodyMdMedium}
           color={color}
@@ -211,11 +213,11 @@ export const AggregatedMultichainPercentageOverview = ({
 
   return (
     <Skeleton
-      isLoading={
+      hideChildren={
         !anyEnabledNetworksAreAvailable && isZeroAmount(singleDayAmountChange)
       }
     >
-      <Box display={Display.Flex}>
+      <Box className="flex">
         <SensitiveText
           variant={TextVariant.bodyMdMedium}
           color={color}

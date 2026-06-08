@@ -1,27 +1,11 @@
 import { PRIVACY_POLICY_DATE } from '../../../helpers/constants/privacy-policy';
-import {
-  SURVEY_DATE,
-  SURVEY_END_TIME,
-  SURVEY_START_TIME,
-} from '../../../helpers/constants/survey';
 import { MetaMaskReduxState } from '../../../store/store';
-import {
-  ClaimSubmitToastType,
-  StorageWriteErrorType,
-} from '../../../../shared/constants/app-state';
+import { StorageWriteErrorType } from '../../../../shared/constants/app-state';
 import { getIsPrivacyToastRecent } from './utils';
 
 type State = {
   appState: Partial<
-    Pick<
-      MetaMaskReduxState['appState'],
-      | 'showNftDetectionEnablementToast'
-      | 'showNewSrpAddedToast'
-      | 'showPasswordChangeToast'
-      | 'showCopyAddressToast'
-      | 'showClaimSubmitToast'
-      | 'showInfuraSwitchToast'
-    >
+    Pick<MetaMaskReduxState['appState'], 'showInfuraSwitchToast'>
   >;
   metamask: Partial<
     Pick<
@@ -29,10 +13,10 @@ type State = {
       | 'newPrivacyPolicyToastClickedOrClosed'
       | 'newPrivacyPolicyToastShownDate'
       | 'onboardingDate'
-      | 'surveyLinkLastClickedOrClosed'
       | 'shieldEndingToastLastClickedOrClosed'
       | 'shieldPausedToastLastClickedOrClosed'
-      | 'participateInMetaMetrics'
+      | 'completedMetaMetricsOnboarding'
+      | 'optedIn'
       | 'remoteFeatureFlags'
       | 'pna25Acknowledged'
       | 'completedOnboarding'
@@ -41,24 +25,6 @@ type State = {
     >
   >;
 };
-
-/**
- * Determines if the survey toast should be shown based on the current time, survey start and end times, and whether the survey link was last clicked or closed.
- *
- * @param state - The application state containing the necessary survey data.
- * @returns True if the current time is between the survey start and end times and the survey link was not last clicked or closed. False otherwise.
- */
-export function selectShowSurveyToast(state: Pick<State, 'metamask'>): boolean {
-  if (state.metamask.surveyLinkLastClickedOrClosed) {
-    return false;
-  }
-
-  const startTime = new Date(`${SURVEY_DATE} ${SURVEY_START_TIME}`).getTime();
-  const endTime = new Date(`${SURVEY_DATE} ${SURVEY_END_TIME}`).getTime();
-  const now = Date.now();
-
-  return now > startTime && now < endTime;
-}
 
 /**
  * Determines if the privacy policy toast should be shown based on the current date and whether the new privacy policy toast was clicked or closed.
@@ -88,48 +54,6 @@ export function selectShowPrivacyPolicyToast(state: Pick<State, 'metamask'>): {
     (!onboardingDate || onboardingDate < newPrivacyPolicyDate.valueOf());
 
   return { showPrivacyPolicyToast, newPrivacyPolicyToastShownDate };
-}
-
-export function selectNftDetectionEnablementToast(
-  state: Pick<State, 'appState'>,
-): boolean {
-  return Boolean(state.appState.showNftDetectionEnablementToast);
-}
-
-/**
- * Retrieves the wallet number for the "New SRP Added" toast, or false if hidden.
- *
- * @param state - Redux state object.
- * @returns The new wallet number to display, or false if the toast should be hidden.
- */
-export function selectNewSrpAdded(
-  state: Pick<State, 'appState'>,
-): number | false {
-  return state.appState.showNewSrpAddedToast || false;
-}
-
-/**
- * Retrieves user preference to see the "Copy Address" toast
- *
- * @param state - Redux state object.
- * @returns Boolean preference value
- */
-export function selectShowCopyAddressToast(
-  state: Pick<State, 'appState'>,
-): boolean {
-  return Boolean(state.appState.showCopyAddressToast);
-}
-
-/**
- * Retrieves the state for the "Claim Submit" toast
- *
- * @param state - Redux state object.
- * @returns ClaimSubmitToastType or null
- */
-export function selectClaimSubmitToast(
-  state: Pick<State, 'appState'>,
-): ClaimSubmitToastType | null {
-  return state.appState.showClaimSubmitToast || null;
 }
 
 /**
@@ -218,8 +142,7 @@ export function selectShowSidePanelMigrationToast(
 /**
  * Determines if the PNA25 banner should be shown based on:
  * - User has completed onboarding (completedOnboarding === true)
- * - LaunchDarkly feature flag (extensionUxPna25) is enabled
- * - User has opted into metrics (participateInMetaMetrics === true)
+ * - User has opted into analytics (`optedIn === true`)
  * - User hasn't acknowledged the banner yet (pna25Acknowledged === false)
  *
  * Regular new users: Go through metametrics page → pna25Acknowledged = true → don't see banner
@@ -232,9 +155,9 @@ export function selectShowSidePanelMigrationToast(
 export function selectShowPna25Modal(state: Pick<State, 'metamask'>): boolean {
   const {
     completedOnboarding,
-    participateInMetaMetrics,
+    completedMetaMetricsOnboarding,
+    optedIn,
     pna25Acknowledged,
-    remoteFeatureFlags,
   } = state.metamask || {};
 
   // Only show to users who have completed onboarding
@@ -242,16 +165,8 @@ export function selectShowPna25Modal(state: Pick<State, 'metamask'>): boolean {
     return false; // User hasn't completed onboarding yet
   }
 
-  // For onboarding screen, we use local flag and for existing users, we use LaunchDarkly flag
-  const isPna25Enabled = remoteFeatureFlags?.extensionUxPna25;
-
-  // Check all conditions
-  if (!isPna25Enabled) {
-    return false; // LD flag not enabled
-  }
-
-  if (participateInMetaMetrics !== true) {
-    return false; // User hasn't opted into metrics
+  if (completedMetaMetricsOnboarding !== true || optedIn !== true) {
+    return false; // User hasn't opted into analytics
   }
 
   if (pna25Acknowledged === true) {

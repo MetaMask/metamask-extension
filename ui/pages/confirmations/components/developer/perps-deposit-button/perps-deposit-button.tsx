@@ -7,7 +7,7 @@ import {
   addTransaction,
   findNetworkClientIdByChainId,
 } from '../../../../../store/actions';
-import { getSelectedInternalAccount } from '../../../../../selectors';
+import { getSelectedInternalAccount } from '../../../../../../shared/lib/selectors/accounts';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { DeveloperButton } from '../developer-button';
 import {
@@ -23,7 +23,6 @@ import { generateERC20TransferData } from '../utils';
 export const PerpsDepositButton = () => {
   const { navigateToTransaction } = useConfirmationNavigation();
   const selectedAccount = useSelector(getSelectedInternalAccount);
-  const [hasTriggered, setHasTriggered] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleTrigger = useCallback(async () => {
@@ -58,8 +57,6 @@ export const PerpsDepositButton = () => {
         },
       );
 
-      setHasTriggered(true);
-
       navigateToTransaction(txMeta.id, {
         loader: ConfirmationLoader.CustomAmount,
       });
@@ -73,10 +70,7 @@ export const PerpsDepositButton = () => {
   return (
     <DeveloperButton
       title="Perps Deposit"
-      description="Triggers a Perps deposit confirmation."
-      buttonLabel={isLoading ? 'Loading...' : 'Trigger'}
       onPress={handleTrigger}
-      hasTriggered={hasTriggered}
       disabled={isLoading}
     />
   );
