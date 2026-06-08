@@ -197,6 +197,7 @@ import {
   getClaimsControllerMessenger,
 } from './claims/claims-controller-messenger';
 import { getClaimsServiceMessenger } from './claims/claims-service-messenger';
+import { getAuthenticatedUserStorageServiceMessenger } from './authenticated-user-storage-service-messenger';
 import { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
 import { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
 import { getStorageServiceMessenger } from './storage-service-messenger';
@@ -380,6 +381,10 @@ export const MESSENGER_FACTORIES = {
   AuthenticationController: {
     getMessenger: getAuthenticationControllerMessenger,
     getInitMessenger: getAuthenticationControllerInitMessenger,
+  },
+  AuthenticatedUserStorageService: {
+    getMessenger: getAuthenticatedUserStorageServiceMessenger,
+    getInitMessenger: noop,
   },
   BridgeController: {
     getMessenger: getBridgeControllerMessenger,

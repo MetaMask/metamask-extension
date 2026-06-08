@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useMemo,
-  useCallback,
-  useContext,
-} from 'react';
+import React, { useEffect, useMemo, useCallback, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Box,
@@ -26,6 +20,7 @@ import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import {
   useEnableNotifications,
   useDisableNotifications,
+  useSafeState,
 } from '../../hooks/metamask-notifications/useNotifications';
 import {
   selectIsMetamaskNotificationsEnabled,
@@ -57,7 +52,7 @@ export function NotificationsSettingsAllowNotifications({
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
-  const [toggleValue, setToggleValue] = useState(
+  const [toggleValue, setToggleValue] = useSafeState(
     isMetamaskNotificationsEnabled,
   );
   const isUpdatingMetamaskNotifications = useSelector(

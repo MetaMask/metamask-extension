@@ -2,7 +2,6 @@ import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import log from 'loglevel';
 import {
-  setFeatureAnnouncementsEnabled,
   checkAccountsPresence,
   disableAccounts,
   enableAccounts,
@@ -12,35 +11,6 @@ import {
   getIsUpdatingMetamaskNotificationsAccount,
   selectIsMetamaskNotificationsEnabled,
 } from '../../selectors/metamask-notifications/metamask-notifications';
-
-export function useSwitchFeatureAnnouncementsChange(): {
-  onChange: (state: boolean) => Promise<void>;
-  error: null | string;
-} {
-  const dispatch = useDispatch();
-
-  const [error, setError] = useState<null | string>(null);
-
-  const onChange = useCallback(
-    async (state: boolean) => {
-      setError(null);
-
-      try {
-        await dispatch(setFeatureAnnouncementsEnabled(state));
-      } catch (e) {
-        const errorMessage =
-          e instanceof Error ? e.message : JSON.stringify(e ?? '');
-        setError(errorMessage);
-      }
-    },
-    [dispatch],
-  );
-
-  return {
-    onChange,
-    error,
-  };
-}
 
 export type UseSwitchAccountNotificationsData = { [address: string]: boolean };
 

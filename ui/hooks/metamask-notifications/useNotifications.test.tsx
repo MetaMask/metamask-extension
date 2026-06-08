@@ -9,6 +9,7 @@ import { MetamaskNotificationsProvider } from '../../contexts/metamask-notificat
 import {
   useCreateNotifications,
   useDisableNotifications,
+  useEnableNotifications,
 } from './useNotifications';
 
 const middlewares = [thunk];
@@ -22,6 +23,7 @@ jest.mock('../../store/actions', () => ({
   markMetamaskNotificationsAsRead: jest.fn(),
   showLoadingIndication: jest.fn(),
   hideLoadingIndication: jest.fn(),
+  enableMetamaskNotifications: jest.fn(() => jest.fn()),
   disableMetamaskNotifications: jest.fn(),
 }));
 
@@ -33,6 +35,7 @@ describe('useNotifications', () => {
       metamask: {
         isMetamaskNotificationsEnabled: false,
         isBackupAndSyncEnabled: false,
+        dataCollectionForMarketing: true,
         internalAccounts: {
           accounts: [
             {
@@ -89,5 +92,20 @@ describe('useNotifications', () => {
     });
 
     expect(actions.disableMetamaskNotifications).toHaveBeenCalled();
+  });
+
+  it('should enable notifications with AUS marketing initialization options', async () => {
+    const { result } = renderHook(() => useEnableNotifications(), {
+      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
+    });
+
+    await act(async () => {
+      await result.current.enableNotifications();
+    });
+
+    expect(actions.enableMetamaskNotifications).toHaveBeenCalledWith({
+      hasMarketingConsent: true,
+      productAnnouncementEnabled: true,
+    });
   });
 });

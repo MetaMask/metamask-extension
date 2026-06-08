@@ -57,9 +57,9 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
      * - Add accounts again
      * - Verify settings:
      * → General notifications: requires manual re-enable
-     * → Product notifications: enabled (resets on new session)
+     * → Product notifications: disabled (persisted in AUS)
      * → First account: enabled
-     * → Second account: disabled (persisted from Part 1)
+     * → Second account: disabled (persisted in AUS from Part 1)
      */
     it('syncs notification settings on next onboarding after enabling for the first time', async function () {
       // server that persists trigger settings.
@@ -81,6 +81,7 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
           );
           await notificationsSettingsPage.assertMainNotificationSettingsTogglesEnabled(
             driver,
+            { productExpectedState: 'disabled' },
           );
 
           // Switch off address 2 and product notifications toggle

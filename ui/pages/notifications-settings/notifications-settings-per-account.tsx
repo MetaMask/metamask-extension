@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
@@ -10,7 +10,10 @@ import {
   NotificationsSettingsBox,
   NotificationsSettingsAccount,
 } from '../../components/multichain';
-import { useListNotifications } from '../../hooks/metamask-notifications/useNotifications';
+import {
+  useListNotifications,
+  useSafeState,
+} from '../../hooks/metamask-notifications/useNotifications';
 import { shortenAddress } from '../../helpers/utils/util';
 
 type NotificationsSettingsPerAccountProps = {
@@ -21,18 +24,20 @@ type NotificationsSettingsPerAccountProps = {
   isLoading?: boolean;
   disabledSwitch?: boolean;
   refetchAccountSettings: () => Promise<void>;
+  refetchNotificationPreferences?: () => Promise<unknown>;
 };
 
 function useUpdateAccountSetting(
   address: string,
   refetchAccountSettings: () => Promise<void>,
+  refetchNotificationPreferences?: () => Promise<unknown>,
 ) {
   const { onChange: switchAccountNotifications, error } =
     useSwitchAccountNotificationsChange();
   const { listNotifications: refetch } = useListNotifications();
 
   // Local states
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useSafeState(false);
 
   const toggleAccount = useCallback(
     async (state: boolean) => {
@@ -40,13 +45,20 @@ function useUpdateAccountSetting(
       try {
         await switchAccountNotifications([address], state);
         await refetchAccountSettings();
+        await refetchNotificationPreferences?.();
         refetch();
       } catch {
         // Do nothing (we don't need to propagate this)
       }
       setLoading(false);
     },
-    [address, refetch, refetchAccountSettings, switchAccountNotifications],
+    [
+      address,
+      refetch,
+      refetchAccountSettings,
+      refetchNotificationPreferences,
+      switchAccountNotifications,
+    ],
   );
 
   return { toggleAccount, loading, error };
@@ -59,6 +71,7 @@ export const NotificationsSettingsPerAccount = ({
   isLoading,
   disabledSwitch,
   refetchAccountSettings,
+  refetchNotificationPreferences,
 }: NotificationsSettingsPerAccountProps) => {
   const { trackEvent } = useContext(MetaMetricsContext);
 
@@ -66,7 +79,11 @@ export const NotificationsSettingsPerAccount = ({
     toggleAccount,
     loading: isUpdatingAccount,
     error: accountError,
-  } = useUpdateAccountSetting(address, refetchAccountSettings);
+  } = useUpdateAccountSetting(
+    address,
+    refetchAccountSettings,
+    refetchNotificationPreferences,
+  );
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing

@@ -5897,6 +5897,42 @@
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Learn how"
   },
+  "notificationsSettingsStatusPush": {
+    "message": "Push"
+  },
+  "notificationsSettingsStatusInApp": {
+    "message": "In-app"
+  },
+  "notificationsSettingsStatusOff": {
+    "message": "Off"
+  },
+  "notificationsSettingsWalletActivityDescription": {
+    "message": "Updates about activity from your selected accounts."
+  },
+  "notificationsSettingsPerpsTitle": {
+    "message": "Perps"
+  },
+  "notificationsSettingsPerpsDescription": {
+    "message": "Updates about Perps orders, positions, and account activity."
+  },
+  "notificationsSettingsMarketingDescription": {
+    "message": "Product news and feature updates from MetaMask."
+  },
+  "notificationsSettingsPushNotifications": {
+    "message": "Push notifications"
+  },
+  "notificationsSettingsInAppNotifications": {
+    "message": "In-app notifications"
+  },
+  "notificationsSettingsSelectAccounts": {
+    "message": "Select accounts"
+  },
+  "notificationsSettingsDeselectAll": {
+    "message": "Deselect all"
+  },
+  "notificationsSettingsMarketingConsent": {
+    "message": "By turning this on, you agree to receive product news and marketing updates from MetaMask."
+  },
   "numberOfTokens": {
     "message": "Number of tokens"
   },

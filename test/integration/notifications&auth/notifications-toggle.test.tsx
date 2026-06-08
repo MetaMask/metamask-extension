@@ -6,6 +6,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { createMockNotificationPreferences } from '../../../ui/hooks/metamask-notifications/mocks';
 import { getMockedNotificationsState } from './data/notification-state';
 
 jest.mock('../../../ui/store/background-connection', () => ({
@@ -24,6 +25,7 @@ const setupSubmitRequestToBackgroundMocks = (
 ) => {
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
+      getNotificationPreferences: createMockNotificationPreferences(),
       ...mockRequests,
     }),
   );
@@ -35,7 +37,8 @@ const selectors = {
   notificationsSettingsButton: 'notifications-settings-button',
   notificationsSettingsAllowToggleInput:
     'notifications-settings-allow-toggle-input',
-  productAnnouncementsToggleInput: 'product-announcements-toggle-input',
+  marketingSection: 'notifications-settings-section-marketing',
+  marketingInAppToggleInput: 'marketing-in-app-notifications-toggle-input',
 };
 
 const clickElement = async (testId: string) => {
@@ -149,8 +152,17 @@ describe('Notifications Toggle', () => {
     });
   });
 
-  it('enabling product announcements from settings', async () => {
+  it('enables marketing in-app notifications from settings', async () => {
     const mockedState = getMockedNotificationsState();
+    setupSubmitRequestToBackgroundMocks({
+      getNotificationPreferences: createMockNotificationPreferences({
+        marketing: {
+          pushNotificationsEnabled: false,
+          inAppNotificationsEnabled: false,
+        },
+      }),
+    });
+
     await act(async () => {
       await integrationTestRender({
         preloadedState: {
@@ -170,13 +182,15 @@ describe('Notifications Toggle', () => {
       await clickElement(selectors.notificationsMenuItem);
       await waitForElement(selectors.notificationsSettingsButton);
       await clickElement(selectors.notificationsSettingsButton);
-      await waitForElement(selectors.productAnnouncementsToggleInput);
-      await clickElement(selectors.productAnnouncementsToggleInput);
+      await waitForElement(selectors.marketingSection);
+      await clickElement(selectors.marketingSection);
+      await waitForElement(selectors.marketingInAppToggleInput);
+      await clickElement(selectors.marketingInAppToggleInput);
 
       await waitFor(() => {
-        const enableFeatureNotifications =
+        const putNotificationPreferencesCall =
           mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-            (call) => call[0] === 'setFeatureAnnouncementsEnabled',
+            (call) => call[0] === 'putNotificationPreferences',
           );
 
         const fetchAndUpdateMetamaskNotificationsCall =
@@ -184,10 +198,16 @@ describe('Notifications Toggle', () => {
             (call) => call[0] === 'fetchAndUpdateMetamaskNotifications',
           );
 
-        expect(enableFeatureNotifications?.[0]).toBe(
-          'setFeatureAnnouncementsEnabled',
+        expect(putNotificationPreferencesCall?.[0]).toBe(
+          'putNotificationPreferences',
         );
-        expect(enableFeatureNotifications?.[1]).toEqual([true]);
+        expect(putNotificationPreferencesCall?.[1]?.[0]).toMatchObject({
+          marketing: {
+            pushNotificationsEnabled: false,
+            inAppNotificationsEnabled: true,
+          },
+        });
+        expect(putNotificationPreferencesCall?.[1]?.[1]).toBe('extension');
 
         expect(fetchAndUpdateMetamaskNotificationsCall?.[0]).toBe(
           'fetchAndUpdateMetamaskNotifications',
@@ -200,7 +220,7 @@ describe('Notifications Toggle', () => {
         {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          settings_type: 'product_announcements',
+          settings_type: 'marketing_inAppNotificationsEnabled',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           old_value: false,

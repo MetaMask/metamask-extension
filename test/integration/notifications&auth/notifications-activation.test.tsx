@@ -12,6 +12,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { createMockNotificationPreferences } from '../../../ui/hooks/metamask-notifications/mocks';
 import { getMockedNotificationsState } from './data/notification-state';
 
 jest.mock('../../../ui/store/background-connection', () => ({
@@ -30,6 +31,7 @@ const setupSubmitRequestToBackgroundMocks = (
 ) => {
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
+      getNotificationPreferences: createMockNotificationPreferences(),
       ...mockRequests,
     }),
   );
@@ -122,6 +124,12 @@ describe('Notifications Activation', () => {
         expect(enableMetamaskNotificationsCall?.[0]).toBe(
           'enableMetamaskNotifications',
         );
+        expect(enableMetamaskNotificationsCall?.[1]).toStrictEqual([
+          {
+            hasMarketingConsent: false,
+            productAnnouncementEnabled: true,
+          },
+        ]);
       });
 
       await trackNotificationsActivatedMetaMetricsEvent('started', false);

@@ -76,9 +76,6 @@
   "account": {
     "message": "Account"
   },
-  "accountActivity": {
-    "message": "Account activity"
-  },
   "accountActivityText": {
     "message": "Select the accounts you want to be notified about:"
   },
@@ -5892,10 +5889,52 @@
     "message": "Something went wrong. Please try again."
   },
   "notificationsSettingsPageAllowNotifications": {
-    "message": "Stay in the loop on what’s happening in your wallet with notifications. To use notifications, we use a profile to sync some settings across your devices. $1 we protect your privacy while using this feature."
+    "message": "Choose what you're notified about and how."
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Learn how"
+  },
+  "notificationsSettingsStatusPush": {
+    "message": "Push"
+  },
+  "notificationsSettingsStatusInApp": {
+    "message": "In-app"
+  },
+  "notificationsSettingsStatusOff": {
+    "message": "Off"
+  },
+  "notificationsSettingsWalletActivityTitle": {
+    "message": "Wallet activity"
+  },
+  "notificationsSettingsWalletActivityDescription": {
+    "message": "Buys, sells, transfers, swaps and rewards"
+  },
+  "notificationsSettingsPerpsTitle": {
+    "message": "Trading activity"
+  },
+  "notificationsSettingsPerpsDescription": {
+    "message": "Perps position changes, liquidations, funding rates, and margin updates"
+  },
+  "notificationsSettingsMarketingTitle": {
+    "message": "Updates and rewards"
+  },
+  "notificationsSettingsMarketingDescription": {
+    "message": "Product updates, feature announcements, and new releases"
+  },
+  "notificationsSettingsPushNotifications": {
+    "message": "Push"
+  },
+  "notificationsSettingsInAppNotifications": {
+    "message": "In-app"
+  },
+  "notificationsSettingsSelectAccounts": {
+    "message": "Select accounts"
+  },
+  "notificationsSettingsDeselectAll": {
+    "message": "Deselect all"
+  },
+  "notificationsSettingsMarketingConsent": {
+    "message": "By turning this on, you agree to receive product news and marketing updates from MetaMask."
   },
   "numberOfTokens": {
     "message": "Number of tokens"
@@ -7504,9 +7543,6 @@
   },
   "proceedWithTransaction": {
     "message": "I want to proceed anyway"
-  },
-  "productAnnouncements": {
-    "message": "Product announcements"
   },
   "provide": {
     "message": "Provide"

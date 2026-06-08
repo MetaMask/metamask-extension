@@ -33,6 +33,7 @@ import classnames from 'clsx';
 import { useSelector } from 'react-redux';
 import {
   DEFAULT_ROUTE,
+  NOTIFICATIONS_SETTINGS_ROUTE,
   SETTINGS_ROUTE,
   SNAP_SETTINGS_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
@@ -110,6 +111,17 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   const backRoute = isOnSettingsRoot
     ? `${DEFAULT_ROUTE}?drawerOpen=true`
     : (meta?.parentPath ?? SETTINGS_ROUTE);
+  const isNotificationSection =
+    normalizedPathname === NOTIFICATIONS_SETTINGS_ROUTE &&
+    new URLSearchParams(location.search).has('section');
+  const handleBack = useCallback(() => {
+    if (isNotificationSection) {
+      navigate(NOTIFICATIONS_SETTINGS_ROUTE);
+      return;
+    }
+
+    navigate(backRoute);
+  }, [backRoute, isNotificationSection, navigate]);
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
@@ -426,7 +438,7 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
         title={headerTitle}
         isPopupOrSidepanel={isPopupOrSidepanel}
         isOnSettingsRoot={isOnSettingsRoot}
-        onClose={() => navigate(backRoute)}
+        onClose={handleBack}
         isSearchOpen={isSearchOpen}
         onOpenSearch={() => setIsSearchOpen(true)}
         onCloseSearch={handleCloseSearch}

@@ -53,6 +53,7 @@ import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
+import type { NotificationPreferences } from '@metamask/authenticated-user-storage';
 import { UserProfileLineage } from '@metamask/profile-sync-controller/sdk';
 import { Immer, Patch } from 'immer';
 import { HandlerType } from '@metamask/snaps-utils';
@@ -7756,6 +7757,51 @@ export function checkAccountsPresence(
     }
   };
 }
+
+/**
+ * Gets notification preferences from Authenticated User Storage.
+ *
+ * @returns A thunk action that retrieves the current notification preferences.
+ */
+export function getNotificationPreferences(): ThunkAction<
+  Promise<NotificationPreferences | null>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      return (await submitRequestToBackground(
+        'getNotificationPreferences',
+      )) as NotificationPreferences | null;
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
+/**
+ * Writes notification preferences to Authenticated User Storage.
+ *
+ * @param preferences - The complete notification preferences object to persist.
+ * @returns A thunk action that writes notification preferences.
+ */
+export function putNotificationPreferences(
+  preferences: NotificationPreferences,
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    try {
+      await submitRequestToBackground('putNotificationPreferences', [
+        preferences,
+        'extension',
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
 /**
  * Triggers a modal to confirm the action of turning on MetaMask notifications.
  * This function dispatches an action to show a modal dialog asking the user to confirm if they want to turn on MetaMask notifications.
@@ -7784,14 +7830,12 @@ export function showConfirmTurnOnMetamaskNotifications(): ThunkAction<
  *
  * @returns A thunk action that, when dispatched, attempts to enable MetaMask notifications.
  */
-export function enableMetamaskNotifications(): ThunkAction<
-  void,
-  unknown,
-  AnyAction
-> {
+export function enableMetamaskNotifications(
+  options?: NotificationServicesController.NotificationServicesControllerEnableMetamaskNotificationsOptions,
+): ThunkAction<void, unknown, unknown, AnyAction> {
   return async () => {
     try {
-      await submitRequestToBackground('enableMetamaskNotifications');
+      await submitRequestToBackground('enableMetamaskNotifications', [options]);
     } catch (error) {
       log.error(error);
       throw error;

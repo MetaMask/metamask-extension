@@ -9,6 +9,7 @@ import { setBackgroundConnection } from '../../store/background-connection';
 import {
   CURRENCY_ROUTE,
   DEFAULT_ROUTE,
+  NOTIFICATIONS_SETTINGS_ROUTE,
   PREFERENCES_AND_DISPLAY_ROUTE,
   SETTINGS_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
@@ -207,6 +208,21 @@ describe('Settings', () => {
         expect(mockNavigate).toHaveBeenCalledWith(
           PREFERENCES_AND_DISPLAY_ROUTE,
         );
+      });
+    });
+
+    it('navigates from a notification section back to the main notifications settings page', async () => {
+      mockPathname = `${NOTIFICATIONS_SETTINGS_ROUTE}?section=walletActivity`;
+      renderSettings(mockStore);
+
+      const backButton = await screen.findByTestId(
+        'settings-header-back-button',
+      );
+
+      fireEvent.click(backButton);
+
+      await waitFor(() => {
+        expect(mockNavigate).toHaveBeenCalledWith(NOTIFICATIONS_SETTINGS_ROUTE);
       });
     });
   });

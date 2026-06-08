@@ -50,9 +50,9 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
      * - Re-enable general notifications (required for each new session)
      * - Verify settings:
      * → General notifications: requires manual re-enable
-     * → Product notifications: enabled (resets on new session)
+     * → Product notifications: disabled (persisted in AUS)
      * → First account: enabled
-     * → Second account: disabled (persisted from Part 1)
+     * → Second account: disabled (persisted in AUS from Part 1)
      */
     // TODO: Re-write this test when multichain account syncing has been merged
     // eslint-disable-next-line mocha/no-skipped-tests
@@ -95,6 +95,7 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
           );
           await notificationsSettingsPage.assertMainNotificationSettingsTogglesEnabled(
             driver,
+            { productExpectedState: 'disabled' },
           );
           await assertAllAccountsEnabled(driver);
 

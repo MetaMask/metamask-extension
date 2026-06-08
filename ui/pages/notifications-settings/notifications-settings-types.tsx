@@ -1,8 +1,10 @@
-import React, { useState, useContext } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useMemo } from 'react';
 import {
   Box,
+  Icon,
+  IconColor,
   IconName,
+  IconSize,
   Text,
   BoxFlexDirection,
   BoxAlignItems,
@@ -11,71 +13,152 @@ import {
   TextColor,
   FontWeight,
 } from '@metamask/design-system-react';
-import { MetaMetricsContext } from '../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
-import { useSwitchFeatureAnnouncementsChange } from '../../hooks/metamask-notifications/useSwitchNotifications';
-import {
-  NotificationsSettingsBox,
-  NotificationsSettingsType,
-} from '../../components/multichain';
-import { selectIsFeatureAnnouncementsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
+import type {
+  NotificationStoragePreferences,
+  NotificationStoragePreferenceSection,
+} from '../../hooks/metamask-notifications/useNotificationStoragePreferences';
+import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export function NotificationsSettingsTypes({
-  disabled,
+export type NotificationsSettingsSectionType = Extract<
+  NotificationStoragePreferenceSection,
+  'walletActivity' | 'perps' | 'marketing'
+>;
+
+export type NotificationsSettingsSectionConfig = {
+  type: NotificationsSettingsSectionType;
+  title: string;
+  description: string;
+  iconName: IconName;
+};
+
+type NotificationsSettingsTypesProps = {
+  preferences?: NotificationStoragePreferences | null;
+  onSelectSection: (section: NotificationsSettingsSectionConfig) => void;
+};
+
+const getStatusText = (
+  t: ReturnType<typeof useI18nContext>,
+  prefs?: NotificationStoragePreferences[NotificationsSettingsSectionType],
+) => {
+  const active = [];
+  if (prefs?.pushNotificationsEnabled) {
+    active.push(t('notificationsSettingsStatusPush'));
+  }
+  if (prefs?.inAppNotificationsEnabled) {
+    active.push(t('notificationsSettingsStatusInApp'));
+  }
+
+  return active.length > 0
+    ? active.join(', ')
+    : t('notificationsSettingsStatusOff');
+};
+
+const NotificationSectionRow = ({
+  section,
+  status,
+  onClick,
 }: {
-  disabled: boolean;
-}) {
-  // Context
-  const t = useI18nContext();
-  const { listNotifications } = useMetamaskNotificationsContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
-
-  // Selectors
-  const isFeatureAnnouncementsEnabled = useSelector(
-    selectIsFeatureAnnouncementsEnabled,
+  section: NotificationsSettingsSectionConfig;
+  status: string;
+  onClick: () => void;
+}) => {
+  return (
+    <button
+      className="w-full border-0 bg-transparent p-0 text-left text-inherit cursor-pointer hover:bg-background-default-hover"
+      data-testid={`notifications-settings-section-${section.type}`}
+      onClick={onClick}
+    >
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Between}
+        className="w-full min-w-0 py-2"
+        gap={4}
+      >
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          className="min-w-0"
+          gap={4}
+        >
+          <Icon
+            name={section.iconName}
+            size={IconSize.Md}
+            color={IconColor.IconAlternative}
+          />
+          <Box
+            flexDirection={BoxFlexDirection.Column}
+            alignItems={BoxAlignItems.Start}
+            className="min-w-0"
+          >
+            <Text
+              variant={TextVariant.BodyMd}
+              fontWeight={FontWeight.Medium}
+              color={TextColor.TextDefault}
+            >
+              {section.title}
+            </Text>
+            <Text
+              variant={TextVariant.BodyMd}
+              fontWeight={FontWeight.Regular}
+              color={TextColor.TextAlternative}
+            >
+              {status}
+            </Text>
+          </Box>
+        </Box>
+        <Icon
+          name={IconName.ArrowRight}
+          size={IconSize.Sm}
+          color={IconColor.IconAlternative}
+        />
+      </Box>
+    </button>
   );
+};
 
-  // Hooks
-  const {
-    onChange: onChangeFeatureAnnouncements,
-    error: errorFeatureAnnouncements,
-  } = useSwitchFeatureAnnouncementsChange();
+export const getNotificationsSettingsSectionConfigs = (
+  t: ReturnType<typeof useI18nContext>,
+): NotificationsSettingsSectionConfig[] => {
+  const nextSections: NotificationsSettingsSectionConfig[] = [
+    {
+      type: 'walletActivity',
+      title: t('notificationsSettingsWalletActivityTitle'),
+      description: t('notificationsSettingsWalletActivityDescription'),
+      iconName: IconName.Clock,
+    },
+  ];
 
-  // States
-  const [featureAnnouncementsEnabled, setFeatureAnnouncementsEnabled] =
-    useState<boolean>(isFeatureAnnouncementsEnabled);
+  if (getIsPerpsIncludedInBuild()) {
+    nextSections.push({
+      type: 'perps',
+      title: t('notificationsSettingsPerpsTitle'),
+      description: t('notificationsSettingsPerpsDescription'),
+      iconName: IconName.Global,
+    });
+  }
 
-  const onToggleFeatureAnnouncements = async () => {
-    setFeatureAnnouncementsEnabled(!featureAnnouncementsEnabled);
-    try {
-      onChangeFeatureAnnouncements(!featureAnnouncementsEnabled);
-      trackEvent({
-        category: MetaMetricsEventCategory.NotificationSettings,
-        event: MetaMetricsEventName.NotificationsSettingsUpdated,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          settings_type: 'product_announcements',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          old_value: featureAnnouncementsEnabled,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          new_value: !featureAnnouncementsEnabled,
-        },
-      });
-      listNotifications();
-    } catch (error) {
-      setFeatureAnnouncementsEnabled(featureAnnouncementsEnabled);
-    }
-  };
+  nextSections.push({
+    type: 'marketing',
+    title: t('notificationsSettingsMarketingTitle'),
+    description: t('notificationsSettingsMarketingDescription'),
+    iconName: IconName.Star,
+  });
+
+  return nextSections;
+};
+
+export function NotificationsSettingsTypes({
+  preferences,
+  onSelectSection,
+}: NotificationsSettingsTypesProps) {
+  const t = useI18nContext();
+
+  const sections = useMemo<NotificationsSettingsSectionConfig[]>(
+    () => getNotificationsSettingsSectionConfigs(t),
+    [t],
+  );
 
   return (
     <Box
@@ -84,49 +167,14 @@ export function NotificationsSettingsTypes({
       gap={0}
       data-testid="notifications-settings-per-types"
     >
-      <Box
-        flexDirection={BoxFlexDirection.Column}
-        alignItems={BoxAlignItems.Start}
-        gap={2}
-        paddingBottom={4}
-      >
-        <Text
-          variant={TextVariant.BodyMd}
-          fontWeight={FontWeight.Medium}
-          color={TextColor.TextDefault}
-        >
-          {t('customizeYourNotifications')}
-        </Text>
-        <Text
-          variant={TextVariant.BodyMd}
-          fontWeight={FontWeight.Regular}
-          color={TextColor.TextAlternative}
-        >
-          {t('customizeYourNotificationsText')}
-        </Text>
-      </Box>
-      <Box
-        flexDirection={BoxFlexDirection.Column}
-        justifyContent={BoxJustifyContent.Start}
-        alignItems={BoxAlignItems.Stretch}
-        gap={6}
-      >
-        {/* Product announcements */}
-        <NotificationsSettingsBox
-          value={featureAnnouncementsEnabled}
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          onToggle={onToggleFeatureAnnouncements}
-          error={errorFeatureAnnouncements}
-          disabled={disabled}
-          dataTestId="product-announcements"
-        >
-          <NotificationsSettingsType
-            icon={IconName.Star}
-            title={t('productAnnouncements')}
-          />
-        </NotificationsSettingsBox>
-      </Box>
+      {sections.map((section) => (
+        <NotificationSectionRow
+          key={section.type}
+          section={section}
+          status={getStatusText(t, preferences?.[section.type])}
+          onClick={() => onSelectSection(section)}
+        />
+      ))}
     </Box>
   );
 }

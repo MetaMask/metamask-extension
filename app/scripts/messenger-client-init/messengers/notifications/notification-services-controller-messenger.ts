@@ -26,6 +26,9 @@ export function getNotificationServicesControllerMessenger(
       'AuthenticationController:getBearerToken',
       'AuthenticationController:isSignedIn',
       'AuthenticationController:performSignIn',
+      // Authenticated User Storage Actions
+      'AuthenticatedUserStorageService:getNotificationPreferences',
+      'AuthenticatedUserStorageService:putNotificationPreferences',
       // Push Actions
       'NotificationServicesPushController:addPushNotificationLinks',
       'NotificationServicesPushController:enablePushNotifications',
