@@ -7473,8 +7473,11 @@
   "popularNetworks": {
     "message": "Popular networks"
   },
+  "accountOverride": {
+    "message": "Account override"
+  },
   "postQuote": {
-    "message": "Post-quote"
+    "message": "Post quote"
   },
   "preferencesAndDisplay": {
     "message": "Preferences and display"

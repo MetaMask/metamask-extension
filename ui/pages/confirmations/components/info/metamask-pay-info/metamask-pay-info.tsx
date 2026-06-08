@@ -7,6 +7,7 @@ import type { TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionType } from '@metamask/transaction-controller';
 
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import {
   Box,
   Icon,
@@ -40,6 +41,8 @@ import {
 } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
 import { useAddToken } from '../../../hooks/tokens/useAddToken';
+import { useSendTokens } from '../../../hooks/send/useSendTokens';
+
 import {
   ConfirmationLoader,
   useConfirmationNavigation,
@@ -52,8 +55,9 @@ import {
   decodeERC20TransferAmount,
   generateERC20TransferData,
 } from '../../developer/utils';
-import { getAllTokens } from '../../../../../selectors';
+import { getAllTokens, getEvmInternalAccounts } from '../../../../../selectors';
 import { setTransactionPayConfig } from '../../../../../store/controller-actions/transaction-pay-controller';
+import { PreferredAvatar } from '../../../../../components/app/preferred-avatar/preferred-avatar';
 
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -63,7 +67,14 @@ type SelectedTargetToken = {
   chainId: Hex;
   symbol: string;
   decimals: number;
-  balanceUsd: number;
+};
+
+type AccountOverrideAccount = {
+  id: string;
+  address: string;
+  metadata: {
+    name: string;
+  };
 };
 
 // ─── Constants ───────────────────────────────────────────────────────────────
@@ -86,7 +97,6 @@ const DEFAULT_TARGET_TOKEN: SelectedTargetToken = {
   chainId: MAINNET_CHAIN_ID,
   symbol: 'USDC',
   decimals: USDC_DECIMALS,
-  balanceUsd: 0,
 };
 
 // ─── Exported component ──────────────────────────────────────────────────────
@@ -97,6 +107,7 @@ export function MetaMaskPayInfo() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { navigateToTransaction } = useConfirmationNavigation();
   const allTokens = useSelector(getAllTokens);
+  const evmAccounts = useSelector(getEvmInternalAccounts);
 
   // Derive initial target token from the tx — handles the cross-chain recreate
   // case where the new tx already has the correct token address + chainId baked in.
@@ -105,24 +116,25 @@ export function MetaMaskPayInfo() {
     const txTo = currentConfirmation?.txParams?.to as Hex | undefined;
     const txChainId = currentConfirmation?.chainId as Hex | undefined;
 
+    const lookupToken = (address: Hex, chainId: Hex) => {
+      const chainTokens = allTokens?.[chainId] ?? {};
+      return Object.values(chainTokens)
+        .flat()
+        .find((tok) => tok.address?.toLowerCase() === address.toLowerCase());
+    };
+
     if (
       txTo &&
       txChainId &&
       (txTo.toLowerCase() !== MAINNET_USDC_ADDRESS.toLowerCase() ||
         txChainId !== MAINNET_CHAIN_ID)
     ) {
-      // Try to find the token in any account's token list for this chain.
-      const chainTokens = allTokens?.[txChainId] ?? {};
-      const walletToken = Object.values(chainTokens)
-        .flat()
-        .find((tok) => tok.address?.toLowerCase() === txTo.toLowerCase());
-
+      const walletToken = lookupToken(txTo, txChainId);
       return {
         address: txTo,
         chainId: txChainId,
         symbol: walletToken?.symbol ?? '',
         decimals: Number(walletToken?.decimals ?? 18),
-        balanceUsd: 0,
       };
     }
 
@@ -134,6 +146,20 @@ export function MetaMaskPayInfo() {
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPostQuote, setIsPostQuote] = useState(false);
+  const [accountOverride, setAccountOverride] = useState<Hex | undefined>(
+    undefined,
+  );
+
+  const walletTokens = useSendTokens();
+  const targetTokenBalanceUsd = useMemo(() => {
+    const match = walletTokens.find(
+      (tok) =>
+        tok.address?.toLowerCase() === targetToken.address.toLowerCase() &&
+        String(tok.chainId) === String(targetToken.chainId),
+    );
+
+    return match?.fiat?.balance ?? 0;
+  }, [walletTokens, targetToken.address, targetToken.chainId]);
 
   useAddToken({
     tokenAddress: MAINNET_USDC_ADDRESS,
@@ -186,13 +212,6 @@ export function MetaMaskPayInfo() {
     dispatch(updateTransaction(updated, true));
   }, [targetToken]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const fiatFormatter = useFiatFormatter({ overrideCurrency: 'usd' });
-
-  const balanceUsdFormatted = useMemo(
-    () => fiatFormatter(targetToken.balanceUsd),
-    [fiatFormatter, targetToken.balanceUsd],
-  );
-
   const handleTokenSelect = useCallback(
     async (token: AssetType) => {
       if (!token.address || !token.chainId) {
@@ -204,7 +223,6 @@ export function MetaMaskPayInfo() {
         chainId: token.chainId as Hex,
         symbol: token.symbol ?? '',
         decimals: Number(token.decimals ?? 18),
-        balanceUsd: token.fiat?.balance ?? 0,
       };
 
       setIsModalOpen(false);
@@ -324,6 +342,27 @@ export function MetaMaskPayInfo() {
     dispatch(updateTransaction(updated, true));
   }, [currentConfirmation, dispatch, isPostQuote, targetToken.address, targetToken.decimals]);
 
+  const handleAccountOverrideChange = useCallback(
+    async (address: Hex | undefined) => {
+      if (!currentConfirmation) {
+        return;
+      }
+
+      const txFrom = currentConfirmation.txParams?.from as Hex | undefined;
+      // Treat selecting the original from address as "no override" — clears it.
+      const next =
+        address && address.toLowerCase() !== txFrom?.toLowerCase()
+          ? address
+          : undefined;
+
+      setAccountOverride(next);
+      await setTransactionPayConfig(currentConfirmation.id, {
+        accountOverride: next,
+      });
+    },
+    [currentConfirmation],
+  );
+
   return (
     <>
       <CustomAmountInfo
@@ -336,8 +375,14 @@ export function MetaMaskPayInfo() {
         <TargetTokenPill
           isPostQuote={isPostQuote}
           targetToken={targetToken}
-          balanceUsdFormatted={balanceUsdFormatted}
+          balanceUsd={targetTokenBalanceUsd}
           onOpen={() => setIsModalOpen(true)}
+        />
+        <AccountOverridePill
+          accounts={evmAccounts}
+          selectedAddress={accountOverride ?? (currentConfirmation?.txParams?.from as Hex | undefined)}
+          txFrom={currentConfirmation?.txParams?.from as Hex | undefined}
+          onChange={handleAccountOverrideChange}
         />
       </CustomAmountInfo>
 
@@ -400,17 +445,20 @@ function PostQuoteCheckbox({ isPostQuote, onToggle }: PostQuoteCheckboxProps) {
 type TargetTokenPillProps = {
   isPostQuote: boolean;
   targetToken: SelectedTargetToken;
-  balanceUsdFormatted: string;
+  balanceUsd: number;
   onOpen: () => void;
 };
 
 function TargetTokenPill({
   isPostQuote,
   targetToken,
-  balanceUsdFormatted,
+  balanceUsd,
   onOpen,
 }: TargetTokenPillProps) {
   const t = useI18nContext();
+  const fiatFormatter = useFiatFormatter({ overrideCurrency: 'usd' });
+
+  const balanceUsdFormatted = fiatFormatter(balanceUsd);
 
   return (
     <Box
@@ -501,4 +549,58 @@ function TokenAutoAdder({
 }: TokenAutoAdderProps) {
   useAddToken({ tokenAddress: address, chainId, symbol, decimals });
   return null;
+}
+
+type AccountOverridePillProps = {
+  accounts: AccountOverrideAccount[];
+  selectedAddress: Hex | undefined;
+  txFrom: Hex | undefined;
+  onChange: (address: Hex | undefined) => void;
+};
+
+function AccountOverridePill({
+  accounts,
+  selectedAddress,
+  txFrom,
+  onChange,
+}: AccountOverridePillProps) {
+  const t = useI18nContext();
+
+  return (
+    <Box
+      data-testid="account-override-pill"
+      backgroundColor={BackgroundColor.backgroundAlternative}
+      borderRadius={BorderRadius.pill}
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
+      alignItems={AlignItems.center}
+      justifyContent={JustifyContent.center}
+      gap={3}
+      paddingTop={2}
+      paddingBottom={2}
+      paddingLeft={2}
+      paddingRight={4}
+    >
+      {selectedAddress && (
+        <PreferredAvatar
+          address={selectedAddress}
+          size={AvatarAccountSize.Xs}
+        />
+      )}
+      <Text variant={TextVariant.bodyMdMedium} color={TextColor.textAlternative}>
+        {t('accountOverride')}
+      </Text>
+      <select
+        value={selectedAddress?.toLowerCase() ?? txFrom?.toLowerCase() ?? ''}
+        onChange={(e) => onChange(e.target.value as Hex)}
+        style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: 'inherit', color: 'inherit' }}
+      >
+        {accounts.map((account) => (
+          <option key={account.id} value={account.address.toLowerCase()}>
+            {account.metadata.name}
+          </option>
+        ))}
+      </select>
+    </Box>
+  );
 }
