@@ -424,7 +424,6 @@ import { AlertControllerInit } from './messenger-client-init/alert-controller-in
 import { MetaMetricsDataDeletionControllerInit } from './messenger-client-init/metametrics-data-deletion-controller-init';
 import { LoggingControllerInit } from './messenger-client-init/logging-controller-init';
 import { AppMetadataControllerInit } from './messenger-client-init/app-metadata-controller-init';
-import { ApprovalControllerInit } from './messenger-client-init/confirmations/approval-controller-init';
 import { AddressBookControllerInit } from './messenger-client-init/confirmations/address-book-controller-init';
 import { DecryptMessageManagerInit } from './messenger-client-init/confirmations/decrypt-message-manager-init';
 import { DecryptMessageControllerInit } from './messenger-client-init/confirmations/decrypt-message-controller-init';
@@ -536,6 +535,7 @@ export default class MetamaskController extends EventEmitter {
       messenger: controllerMessenger,
       state: initState,
       encryptor: this.opts.encryptor,
+      showApprovalRequest: this.opts.showUserConfirmation,
     });
 
     this.controllerMessenger = controllerMessenger;
@@ -607,7 +607,6 @@ export default class MetamaskController extends EventEmitter {
 
     /** @type {import('./messenger-client-init/utils').InitFunctions} */
     const messengerClientInitFunctions = {
-      ApprovalController: ApprovalControllerInit,
       LoggingController: LoggingControllerInit,
       AppMetadataController: AppMetadataControllerInit,
       PreferencesController: PreferencesControllerInit,
@@ -736,7 +735,7 @@ export default class MetamaskController extends EventEmitter {
     this.messengerClientsByName = messengerClientsByName;
 
     // Backwards compatibility for existing references
-    this.approvalController = messengerClientsByName.ApprovalController;
+    this.approvalController = this.wallet.getInstance('ApprovalController');
     this.loggingController = messengerClientsByName.LoggingController;
     this.appMetadataController = messengerClientsByName.AppMetadataController;
     this.preferencesController = messengerClientsByName.PreferencesController;
