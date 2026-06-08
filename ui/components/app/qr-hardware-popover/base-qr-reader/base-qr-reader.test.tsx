@@ -1104,5 +1104,69 @@ describe('BaseQrReader', () => {
       ).toBeInTheDocument();
       expect(mockTrackEvent).not.toHaveBeenCalled();
     });
+
+    // ---- QR scan-failed tracking ------------------------------------------
+
+    it('fires QrHardwareScanFailed with non_ur_qr_scanned for pairing flow', async () => {
+      setupWebcamUtilsSuccess();
+      mockEnhancedQrReader.mockImplementation((({
+        onFrame,
+      }: {
+        onFrame: (data: string) => void;
+      }) => {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        useEffect(() => {
+          onFrame('not-a-valid-ur-payload');
+        }, [onFrame]);
+        return null;
+      }) as unknown as typeof EnhancedQrReader);
+
+      await act(async () => {
+        renderWithMetrics(
+          <BaseQrReader {...defaultProps} isReadingWallet />,
+        );
+      });
+
+      const scanFailed = mockTrackEvent.mock.calls.filter(
+        (call: unknown[]) =>
+          (call[0] as { event: string }).event ===
+          MetaMetricsEventName.QrHardwareScanFailed,
+      );
+      expect(scanFailed).toHaveLength(1);
+      expect(scanFailed[0][0].properties).toStrictEqual({
+        error_category: 'non_ur_qr_scanned',
+        is_ur_format: false,
+        flow: 'pairing',
+      });
+    });
+
+    it('fires QrHardwareScanFailed with non_ur_qr_scanned for signing flow', async () => {
+      setupWebcamUtilsSuccess();
+      mockEnhancedQrReader.mockImplementation((({
+        onFrame,
+      }: {
+        onFrame: (data: string) => void;
+      }) => {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        useEffect(() => {
+          onFrame('not-a-valid-ur-payload');
+        }, [onFrame]);
+        return null;
+      }) as unknown as typeof EnhancedQrReader);
+
+      await act(async () => {
+        renderWithMetrics(
+          <BaseQrReader {...defaultProps} isReadingWallet={false} />,
+        );
+      });
+
+      const scanFailed = mockTrackEvent.mock.calls.filter(
+        (call: unknown[]) =>
+          (call[0] as { event: string }).event ===
+          MetaMetricsEventName.QrHardwareScanFailed,
+      );
+      expect(scanFailed).toHaveLength(1);
+      expect(scanFailed[0][0].properties.flow).toBe('signing');
+    });
   });
 });

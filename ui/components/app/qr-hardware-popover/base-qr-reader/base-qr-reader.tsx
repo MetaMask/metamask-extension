@@ -32,6 +32,7 @@ import EnhancedQrReader from '../enhanced-qr-reader';
 import {
   cameraReadyStateToErrorCode,
   buildQrCameraRecoveryTrackEventArgs,
+  buildQrScanFailedTrackEventArgs,
 } from './base-qr-reader-utils';
 import {
   CameraReadyState,
@@ -176,6 +177,18 @@ const BaseQrReader = ({
       ),
     );
   }, [readyState, trackEvent]);
+
+  // ---- QR scan-failed tracking --------------------------------------------
+
+  useEffect(() => {
+    if (!scanError) {
+      return;
+    }
+    const flow = isReadingWallet
+      ? QrErrorFlowContext.Pairing
+      : QrErrorFlowContext.Signing;
+    trackEvent(buildQrScanFailedTrackEventArgs(scanError, flow));
+  }, [scanError, isReadingWallet, trackEvent]);
 
   // ---- Decoder lifecycle --------------------------------------------------
 
