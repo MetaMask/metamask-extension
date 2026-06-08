@@ -1,4 +1,6 @@
 import {
+  ASSETS_UNIFY_STATE_FLAG,
+  getIsDeprecatedController,
   isAssetsUnifyStateFeatureEnabled,
   ASSETS_UNIFY_STATE_VERSION_1,
 } from './remote-feature-flag';
@@ -82,6 +84,69 @@ describe('isAssetsUnifyStateFeatureEnabled', () => {
         isAssetsUnifyStateFeatureEnabled(
           { enabled: true, featureVersion: ASSETS_UNIFY_STATE_VERSION_1 },
           ASSETS_UNIFY_STATE_VERSION_1,
+        ),
+      ).toBe(true);
+    });
+  });
+});
+
+describe('getIsDeprecatedController', () => {
+  const originalInTest = process.env.IN_TEST;
+
+  afterEach(() => {
+    if (originalInTest === undefined) {
+      delete process.env.IN_TEST;
+    } else {
+      process.env.IN_TEST = originalInTest;
+    }
+  });
+
+  describe('in test environment (IN_TEST=true)', () => {
+    it('returns true regardless of the remote feature flags', () => {
+      process.env.IN_TEST = 'true';
+      expect(getIsDeprecatedController(undefined, 'TokenListController')).toBe(
+        true,
+      );
+    });
+  });
+
+  describe('outside test environment (IN_TEST unset)', () => {
+    beforeEach(() => {
+      delete process.env.IN_TEST;
+    });
+
+    it('returns false when remoteFeatureFlags is undefined', () => {
+      expect(
+        getIsDeprecatedController(undefined, 'MultichainBalancesController'),
+      ).toBe(false);
+    });
+
+    it('returns false when controller is not in deprecatedControllers', () => {
+      expect(
+        getIsDeprecatedController(
+          {
+            [ASSETS_UNIFY_STATE_FLAG]: {
+              enabled: true,
+              featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
+              deprecatedControllers: ['TokenListController'],
+            },
+          },
+          'MultichainAssetsRatesController',
+        ),
+      ).toBe(false);
+    });
+
+    it('returns true when controller is in deprecatedControllers', () => {
+      expect(
+        getIsDeprecatedController(
+          {
+            [ASSETS_UNIFY_STATE_FLAG]: {
+              enabled: true,
+              featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
+              deprecatedControllers: ['MultichainBalancesController'],
+            },
+          },
+          'MultichainBalancesController',
         ),
       ).toBe(true);
     });

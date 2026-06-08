@@ -4,6 +4,7 @@ import {
   type MessengerEvents,
 } from '@metamask/messenger';
 import { MultichainBalancesControllerMessenger } from '@metamask/assets-controllers';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { RootMessenger } from '../../../lib/messenger';
 
 /**
@@ -40,4 +41,36 @@ export function getMultichainBalancesControllerMessenger(
     ],
   });
   return controllerMessenger;
+}
+
+type AllowedInitializationActions = RemoteFeatureFlagControllerGetStateAction;
+
+export type MultichainBalancesControllerInitMessenger = ReturnType<
+  typeof getMultichainBalancesControllerInitMessenger
+>;
+
+/**
+ * Create a messenger restricted to the allowed actions needed during
+ * initialization of the Multichain Balances controller.
+ *
+ * @param messenger - The base messenger used to create the restricted messenger.
+ */
+export function getMultichainBalancesControllerInitMessenger(
+  messenger: RootMessenger<AllowedInitializationActions, never>,
+) {
+  const controllerInitMessenger = new Messenger<
+    'MultichainBalancesControllerInit',
+    AllowedInitializationActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'MultichainBalancesControllerInit',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: ['RemoteFeatureFlagController:getState'],
+    events: [],
+  });
+  return controllerInitMessenger;
 }

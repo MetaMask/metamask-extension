@@ -4,14 +4,21 @@ import {
 } from '@metamask/assets-controllers';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { MessengerClientInitRequest } from '../types';
-import { getMultichainAssetsRatesControllerMessenger } from '../messengers/multichain';
+import {
+  getMultichainAssetsRatesControllerInitMessenger,
+  getMultichainAssetsRatesControllerMessenger,
+} from '../messengers/multichain';
 import { getRootMessenger } from '../../lib/messenger';
+import { MultichainAssetsRatesControllerInitMessenger } from '../messengers/multichain/multichain-assets-rates-controller-messenger';
 import { MultichainAssetsRatesControllerInit } from './multichain-rates-assets-controller-init';
 
 jest.mock('@metamask/assets-controllers');
 
 function buildInitRequestMock(): jest.Mocked<
-  MessengerClientInitRequest<MultichainAssetsRatesControllerMessenger>
+  MessengerClientInitRequest<
+    MultichainAssetsRatesControllerMessenger,
+    MultichainAssetsRatesControllerInitMessenger
+  >
 > {
   const baseControllerMessenger = getRootMessenger();
 
@@ -20,7 +27,9 @@ function buildInitRequestMock(): jest.Mocked<
     controllerMessenger: getMultichainAssetsRatesControllerMessenger(
       baseControllerMessenger,
     ),
-    initMessenger: undefined,
+    initMessenger: getMultichainAssetsRatesControllerInitMessenger(
+      baseControllerMessenger,
+    ),
   };
 }
 
@@ -48,6 +57,7 @@ describe('MultichainAssetsRatesControllerInit', () => {
       messenger: requestMock.controllerMessenger,
       state: requestMock.persistedState.MultichainAssetsRatesController,
       interval: 180000,
+      isDeprecated: expect.any(Function),
     });
   });
 });

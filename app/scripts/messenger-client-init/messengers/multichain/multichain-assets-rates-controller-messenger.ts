@@ -4,6 +4,7 @@ import {
   type MessengerEvents,
 } from '@metamask/messenger';
 import { MultichainAssetsRatesControllerMessenger } from '@metamask/assets-controllers';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { RootMessenger } from '../../../lib/messenger';
 
 /**
@@ -42,4 +43,36 @@ export function getMultichainAssetsRatesControllerMessenger(
     ],
   });
   return controllerMessenger;
+}
+
+type AllowedInitializationActions = RemoteFeatureFlagControllerGetStateAction;
+
+export type MultichainAssetsRatesControllerInitMessenger = ReturnType<
+  typeof getMultichainAssetsRatesControllerInitMessenger
+>;
+
+/**
+ * Create a messenger restricted to the allowed actions needed during
+ * initialization of the Multichain Assets Rates controller.
+ *
+ * @param messenger - The base messenger used to create the restricted messenger.
+ */
+export function getMultichainAssetsRatesControllerInitMessenger(
+  messenger: RootMessenger<AllowedInitializationActions, never>,
+) {
+  const controllerInitMessenger = new Messenger<
+    'MultichainAssetsRatesControllerInit',
+    AllowedInitializationActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'MultichainAssetsRatesControllerInit',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: ['RemoteFeatureFlagController:getState'],
+    events: [],
+  });
+  return controllerInitMessenger;
 }
