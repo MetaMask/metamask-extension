@@ -54,8 +54,6 @@ class AssetListPage extends HomePage {
   private readonly lowValueAssetsToggle =
     '[data-testid="low-value-assets-toggle"]';
 
-  private readonly lowValueAssetsToggleExpanded = `${this.lowValueAssetsToggle}[aria-expanded="true"]`;
-
   private readonly multichainTokenListButton = {
     testId: 'multichain-token-list-button',
   };
@@ -200,7 +198,6 @@ class AssetListPage extends HomePage {
 
   async clickOnAsset(assetName: string): Promise<void> {
     console.log(`Clicking on the token name `);
-    await this.expandLowValueAssetsIfPresent();
     await this.driver.clickElement({
       css: this.tokenName,
       text: assetName,
@@ -415,7 +412,6 @@ class AssetListPage extends HomePage {
    */
   async openTokenDetails(tokenSymbol: string): Promise<void> {
     console.log(`Opening token details for ${tokenSymbol}`);
-    await this.expandLowValueAssetsIfPresent();
     await this.driver.clickElement({
       text: tokenSymbol,
       css: this.tokenNameInDetails,
@@ -575,7 +571,6 @@ class AssetListPage extends HomePage {
     expectedTokenBalance: string,
     symbol: string,
   ): Promise<void> {
-    await this.expandLowValueAssetsIfPresent();
     await this.checkTokenAmountIsDisplayed(`${expectedTokenBalance} ${symbol}`);
   }
 
@@ -602,7 +597,6 @@ class AssetListPage extends HomePage {
     console.log(
       `Check that token amount ${tokenAmount} is displayed in token details modal for token ${tokenName}`,
     );
-    await this.expandLowValueAssetsIfPresent();
     await this.driver.clickElement({
       testId: 'multichain-token-list-item-token-name',
       text: tokenName,
@@ -643,7 +637,6 @@ class AssetListPage extends HomePage {
   ): Promise<void> {
     const { timeout, amountTimeout } = options;
     console.log(`Checking if token ${tokenName} exists in token list`);
-    await this.expandLowValueAssetsIfPresent();
     await this.driver.waitForSelector(
       {
         css: this.tokenName,
@@ -684,7 +677,6 @@ class AssetListPage extends HomePage {
     console.log(
       `Waiting for token at position ${position} to be "${tokenName}"`,
     );
-    await this.expandLowValueAssetsIfPresent();
     const index = position - 1;
     await this.driver.waitUntil(
       async () => {
@@ -707,7 +699,6 @@ class AssetListPage extends HomePage {
    */
   async checkTokenItemNumber(expectedNumber: number = 1): Promise<void> {
     console.log(`Waiting for ${expectedNumber} token items to be displayed`);
-    await this.expandLowValueAssetsIfPresent();
     await this.driver.wait(async () => {
       const tokenItemsNumber = await this.getNumberOfAssets();
       return tokenItemsNumber === expectedNumber;
@@ -731,7 +722,6 @@ class AssetListPage extends HomePage {
       console.log(
         `Checking token general change percentage for address ${address}`,
       );
-      await this.expandLowValueAssetsIfPresent();
       await this.driver.waitForSelector({
         css: this.tokenPercentage(address),
         text: expectedChange,
