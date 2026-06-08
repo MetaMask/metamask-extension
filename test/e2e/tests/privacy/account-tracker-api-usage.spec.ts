@@ -197,7 +197,7 @@ describe('Account Tracker API Usage', function () {
           async () => {
             const accountTrackerRequests = getSpecifiedJsonRpcRequests(
               await getAllInfuraJsonRpcRequests(mockedEndpoint),
-              ['eth_call', 'eth_getBalance'],
+              RPC_METHODS_TO_TEST,
             );
 
             return accountTrackerRequests.length > 0;
