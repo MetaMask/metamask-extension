@@ -52,6 +52,7 @@ import {
   Caip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
 import { SnapId } from '@metamask/snaps-sdk';
+import { SnapAccountServiceGetLegacySnapKeyringAction } from '@metamask/snap-account-service';
 import {
   convertEnglishWordlistIndicesToCodepoints,
   isPublicEndpointUrl,
@@ -136,7 +137,8 @@ type AllowedActions =
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
   | SmartTransactionsControllerWipeSmartTransactionsAction
   | TransactionControllerGetStateAction
-  | TransactionControllerWipeTransactionsAction;
+  | TransactionControllerWipeTransactionsAction
+  | SnapAccountServiceGetLegacySnapKeyringAction;
 
 /**
  * The {@link LegacyBackgroundApiService} messenger.
