@@ -1,5 +1,6 @@
 import React from 'react';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
+import { AmountsSection } from '../components/amounts-section';
 import { MetadataSection, TokensSection } from './sections';
 
 export function DefaultDetails({ item }: { item: ActivityListItem }) {
@@ -27,6 +28,7 @@ export function DefaultDetails({ item }: { item: ActivityListItem }) {
       />
 
       <MetadataSection item={item} />
+      <AmountsSection item={item} />
     </div>
   );
 }

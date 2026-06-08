@@ -320,6 +320,7 @@ describe('mapLocalTransaction', () => {
       timestamp: 1716367881000,
       data: {
         hash: '0xretry',
+        from,
         token: {
           assetId:
             'eip155:59144/erc20:0x239FD4B0c4DB49Fa8660E65B97619D43D0E0A79d',
@@ -371,6 +372,7 @@ describe('mapLocalTransaction', () => {
       timestamp: 1779805800000,
       data: {
         hash: '0xmusdconversion',
+        from,
         sourceToken: {
           assetId: toAssetId(lineaDai, 'eip155:59144'),
           decimals: 18,
@@ -441,6 +443,7 @@ describe('mapLocalTransaction', () => {
       timestamp: 1779892154611,
       data: {
         hash: '0x093844dd6200984f0e27d3c3a76b7a63b360bfb2136213237d693afd2cd69740',
+        from,
         sourceToken: {
           amount: '100000',
           assetId: toAssetId(baseUsdc, 'eip155:8453'),
@@ -492,6 +495,7 @@ describe('mapLocalTransaction', () => {
       timestamp: 1779912434153,
       data: {
         hash: '0x26f4911467b538702c0945e4ec5e303de44c0c1c174897141d1b548ea3161795',
+        from,
         destinationToken: {
           amount: '200000',
           assetId: toAssetId(baseUsdc, 'eip155:8453'),
@@ -551,6 +555,7 @@ describe('mapLocalTransaction', () => {
       timestamp: 1779392463306,
       data: {
         hash: '0xbridgeswap',
+        from,
         sourceToken: {
           amount: '10000000000000',
           assetId: 'eip155:1/slip44:60',
@@ -638,6 +643,7 @@ describe('mapLocalTransaction', () => {
       timestamp: 1716367781000,
       data: {
         hash: '0xswap',
+        from,
         sourceToken: {
           assetId: 'eip155:8453/slip44:60',
           direction: 'out',
@@ -684,6 +690,7 @@ describe('mapLocalTransaction', () => {
       timestamp: 1716367781000,
       data: {
         hash: '0xwrap',
+        from,
         sourceToken: {
           amount: '0x3782dace9d900000',
           assetId: 'eip155:1/slip44:60',
@@ -737,6 +744,7 @@ describe('mapLocalTransaction', () => {
       timestamp: 1716367781000,
       data: {
         hash: '0xunwrap',
+        from,
         sourceToken: {
           amount: unwrapAmount,
           assetId: toAssetId(WETH_CONTRACT_ADDRESS, 'eip155:1'),
@@ -816,6 +824,7 @@ describe('mapLocalTransaction', () => {
       timestamp: 1780606867763,
       data: {
         hash: '0x2fda37c5b591c30367649c3c317621429bb5c59ff6a77b0a8cd48b56897168bc',
+        from,
         token: {
           direction: 'in',
         },
@@ -856,6 +865,7 @@ describe('mapLocalTransaction', () => {
       timestamp: 1778633325000,
       data: {
         hash: '0xmusdclaim',
+        from,
       },
     });
   });

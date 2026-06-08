@@ -134,9 +134,10 @@ describe('Send ETH - Advanced', function () {
           await activityListPage.checkConfirmedTxNumberDisplayedInActivity(1);
           await activityListPage.checkTxAmountInActivity('-0 ETH');
 
-          // Verify the transaction has the expected gas price
           await activityListPage.clickOnActivity(1);
-          await activityListPage.checkGasPrice('100');
+          // Legacy details asserted the gas price row here. The Figma redesign
+          // does not include gas price details yet.
+          // await activityListPage.checkGasPrice('100');
         },
       );
     });
@@ -196,9 +197,10 @@ describe('Send ETH - Advanced', function () {
             action: 'Contract interaction',
           });
 
-          // Verify the transaction has the expected gas values
           await activityListPage.clickOnActivity(1);
-          await activityListPage.checkFeeValuesAreDisplayed();
+          // Legacy details asserted base fee values here. The Figma redesign
+          // does not include detailed EIP-1559 gas rows yet.
+          // await activityListPage.checkFeeValuesAreDisplayed();
         },
       );
     });

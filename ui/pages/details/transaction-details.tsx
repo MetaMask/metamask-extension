@@ -3,10 +3,9 @@ import { Box } from '@metamask/design-system-react';
 import { V1TransactionByHashResponse } from '@metamask/core-backend';
 import { useSelector } from 'react-redux';
 import { mapApiEvmTransactions } from '../../../shared/lib/activity/adapters/api-evm-transactions';
-import { mapLocalTransaction } from '../../../shared/lib/activity/adapters/local-transaction';
 import { selectEvmAddress } from '../../selectors/accounts';
 import {
-  selectLocalTransactionsByHash,
+  selectLocalActivityItemsByIdentifier,
   selectNonEvmActivityItemsById,
 } from '../../selectors/activity';
 import { BlockExplorerFooter } from './components/block-explorer-footer';
@@ -26,9 +25,11 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
   const selectedAddress = useSelector(selectEvmAddress);
   const isEvm = chainId?.startsWith('eip155:');
 
-  const localTransactions = useSelector(selectLocalTransactionsByHash);
-  const localTransaction = txIdentifier
-    ? localTransactions.get(txIdentifier.toLowerCase())
+  const localActivityItemsByIdentifier = useSelector(
+    selectLocalActivityItemsByIdentifier,
+  );
+  const localActivityItem = txIdentifier
+    ? localActivityItemsByIdentifier.get(txIdentifier.toLowerCase())
     : undefined;
 
   const nonEvmActivityItems = useSelector(selectNonEvmActivityItemsById);
@@ -46,13 +47,13 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
     chainId,
     txHash: txIdentifier,
     enabled: Boolean(
-      isEvm && !localTransaction && !cachedApiTransaction && selectedAddress,
+      isEvm && !localActivityItem && !cachedApiTransaction && selectedAddress,
     ),
   });
 
   const transaction = useMemo(() => {
-    if (localTransaction) {
-      return mapLocalTransaction(localTransaction);
+    if (localActivityItem) {
+      return localActivityItem;
     }
 
     if (nonEvmActivityItem) {
@@ -73,7 +74,7 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
   }, [
     apiTransaction,
     cachedApiTransaction,
-    localTransaction,
+    localActivityItem,
     nonEvmActivityItem,
     selectedAddress,
   ]);

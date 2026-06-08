@@ -213,6 +213,7 @@ export function mapKeyringTransaction({
       hash: transaction.id,
       from,
       to,
+      fees: getFees(transaction),
       transactionType: transaction.type,
     },
   };

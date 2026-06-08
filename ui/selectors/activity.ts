@@ -488,6 +488,23 @@ export const selectLocalActivityItems = createSelector(
   },
 );
 
+export const selectLocalActivityItemsByIdentifier = createSelector(
+  selectLocalActivityItems,
+  (items) => {
+    const itemsByIdentifier = new Map();
+
+    for (const item of items) {
+      const hash = item.data.hash?.toLowerCase();
+
+      if (hash) {
+        itemsByIdentifier.set(hash, item);
+      }
+    }
+
+    return itemsByIdentifier;
+  },
+);
+
 export const selectMarketRates = createSelector(
   [getMarketData, getCurrencyRates],
   (marketData, currencyRates) => {

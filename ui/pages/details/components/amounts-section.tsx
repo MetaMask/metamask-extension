@@ -67,6 +67,7 @@ export function AmountsSection({ item }: { item: ActivityListItem }) {
           <Row
             key={`${type}-${assetId ?? symbol ?? index}`}
             label={label}
+            testId={type === 'base' ? 'transaction-base-fee' : undefined}
             value={
               symbol
                 ? formatToken(amount as `${number}`, symbol, {

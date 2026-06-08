@@ -1,23 +1,15 @@
 import React from 'react';
 import type {
   ActivityListItem,
-  Status,
   TokenAmount,
 } from '../../../../shared/lib/activity/types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
-import { AccountName } from '../components/account-name';
 import { NetworkName } from '../components/network-name';
 import { Row, Section } from '../components/shared';
 import { TokenAmountRow } from '../components/token-amount-row';
-
-function getStatusValue(status: Status) {
-  if (status === 'success') {
-    return <span className="text-success-default">Confirmed</span>;
-  }
-
-  return status;
-}
+import { TransactionStatusLabel } from '../../../components/app/transaction/transaction-status-label';
+import { AccountName } from '../../../components/app/transaction/account-name';
 
 export function TokensSection({
   tokens,
@@ -54,41 +46,35 @@ export function MetadataSection({
   const t = useI18nContext();
   const { formatDateTime } = useFormatters();
   const accountAddress = item.data.from;
-  const showAddressRows = Boolean(addressRows?.from || addressRows?.to);
+  const showAddressRows = Boolean(addressRows?.from && addressRows?.to);
 
   return (
     <Section>
-      <Row label={t('status')} value={getStatusValue(item.status)} />
+      <Row
+        label={t('status')}
+        value={<TransactionStatusLabel status={item.status} />}
+      />
+
       <Row label={t('date')} value={formatDateTime(item.timestamp)} />
+
       {showAddressRows ? (
         <>
           <Row
             label={t('from')}
-            value={
-              addressRows?.from ? (
-                <AccountName address={addressRows.from} />
-              ) : undefined
-            }
+            value={<AccountName address={addressRows?.from} />}
           />
           <Row
             label={t('to')}
-            value={
-              addressRows?.to ? (
-                <AccountName address={addressRows.to} />
-              ) : undefined
-            }
+            value={<AccountName address={addressRows?.to} />}
           />
         </>
       ) : (
         <Row
           label={t('account')}
-          value={
-            accountAddress ? (
-              <AccountName address={accountAddress} />
-            ) : undefined
-          }
+          value={<AccountName address={accountAddress} />}
         />
       )}
+
       <Row
         label={t('network')}
         value={<NetworkName chainId={item.chainId} />}

@@ -37,6 +37,7 @@ export function TokenAmountRow({ token }: { token: TokenAmount }) {
         className={`text-l-heading-lg leading-l-heading-lg tracking-l-heading-lg font-semibold ${
           token.direction === 'in' ? 'text-success-default' : ''
         }`}
+        data-testid="transaction-list-item-primary-currency"
       >
         {formattedAmount}
       </p>

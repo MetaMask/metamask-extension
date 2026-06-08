@@ -91,6 +91,8 @@ export function BlockExplorerFooter({ chainId, txHash }: Props) {
   return (
     <Button
       className="w-full"
+      data-explorer-url={explorerTxUrl}
+      data-testid="transaction-details-block-explorer"
       size={ButtonSize.Lg}
       variant={ButtonVariant.Secondary}
       onClick={handleClick}
