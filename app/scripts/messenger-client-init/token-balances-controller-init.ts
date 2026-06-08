@@ -42,6 +42,7 @@ export const TokenBalancesControllerInit: MessengerClientInitFunction<
       );
       return completedOnboarding;
     },
+    isDeprecated: () => true,
   });
 
   return {

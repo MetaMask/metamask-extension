@@ -5855,9 +5855,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:@metamask-previews/assets-controllers@108.5.0-preview-2ddd3f0":
-  version: 108.5.0-preview-2ddd3f0
-  resolution: "@metamask-previews/assets-controllers@npm:108.5.0-preview-2ddd3f0"
+"@metamask/assets-controllers@npm:@metamask-previews/assets-controllers@108.5.0-preview-17b57e8":
+  version: 108.5.0-preview-17b57e8
+  resolution: "@metamask-previews/assets-controllers@npm:108.5.0-preview-17b57e8"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5908,7 +5908,7 @@ __metadata:
   peerDependencies:
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/e69c2874b783784d43a6799edf61ac1ab37c43fab0f01d9810ffbaa1779326a902b34aa123697ddbb175c69e046a5ed63a43159b4d352391360d03f787f78660
+  checksum: 10/54092f5302515b4e52d6fdf60296f4720ba54b4074423a3505a8767b1488fce70cd57aed82f1b03a7683dac6d6e9859c1aadec9a6eb97551fda68e40f6f7d5d4
   languageName: node
   linkType: hard
 

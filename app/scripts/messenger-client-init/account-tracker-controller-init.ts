@@ -52,6 +52,7 @@ export const AccountTrackerControllerInit: MessengerClientInitFunction<
       const { completedOnboarding } = onboardingController().state;
       return completedOnboarding;
     },
+    isDeprecated: () => true,
   });
 
   return {
