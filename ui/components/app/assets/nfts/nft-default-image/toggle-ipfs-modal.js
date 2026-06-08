@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
-import { Box, ButtonPrimary, Text } from '../../../../component-library';
 import {
   Modal,
   ModalContent,
   ModalHeader,
   ModalOverlay,
 } from '@metamask/design-system-react';
+import { Box, ButtonPrimary, Text } from '../../../../component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   hideIpfsModal,

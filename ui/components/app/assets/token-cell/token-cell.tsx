@@ -2,15 +2,6 @@ import type { Hex } from '@metamask/utils';
 import React, { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
-import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
-import { useMusdBalance, useMusdCtaVisibility } from '../../../../hooks/musd';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  getSafeNativeCurrencySymbol,
-  type SafeChain,
-} from '../../../multichain/networks-form/use-safe-chains';
-import { setEditedNetwork } from '../../../../store/actions';
 import {
   ButtonsAlignment,
   Modal,
@@ -20,6 +11,15 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '@metamask/design-system-react';
+import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
+import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
+import { useMusdBalance, useMusdCtaVisibility } from '../../../../hooks/musd';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import {
+  getSafeNativeCurrencySymbol,
+  type SafeChain,
+} from '../../../multichain/networks-form/use-safe-chains';
+import { setEditedNetwork } from '../../../../store/actions';
 import { ClaimBonusBadge, MusdConvertLink, useMerklRewards } from '../../musd';
 import { getBonusAmountRange } from '../../musd/merkl-bonus-analytics';
 import type {
