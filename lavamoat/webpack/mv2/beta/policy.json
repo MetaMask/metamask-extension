@@ -2745,7 +2745,9 @@
     },
     "@metamask/wallet": {
       "packages": {
+        "@metamask/approval-controller": true,
         "@metamask/browser-passworder": true,
+        "@metamask/controller-utils": true,
         "@metamask/keyring-controller": true,
         "@metamask/messenger": true,
         "@metamask/storage-service": true,

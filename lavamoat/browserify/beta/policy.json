@@ -3181,7 +3181,9 @@
     },
     "@metamask/wallet": {
       "packages": {
+        "@metamask/approval-controller": true,
         "@metamask/browser-passworder": true,
+        "@metamask/controller-utils": true,
         "@metamask/keyring-controller": true,
         "@metamask/messenger": true,
         "@metamask/scure-bip39": true,
