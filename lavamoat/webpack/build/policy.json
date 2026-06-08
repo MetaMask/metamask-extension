@@ -721,12 +721,6 @@
         "define": true
       }
     },
-    "webpack-bundle-analyzer>acorn": {
-      "globals": {
-        "console": true,
-        "define": true
-      }
-    },
     "schema-utils>ajv-formats": {
       "packages": {
         "schema-utils>ajv": true
@@ -849,7 +843,7 @@
         "koa>http-errors": true,
         "mockttp>body-parser>iconv-lite": true,
         "koa>on-finished": true,
-        "mockttp>body-parser>qs": true,
+        "mockttp>express>qs": true,
         "mockttp>body-parser>raw-body": true,
         "mockttp>body-parser>type-is": true,
         "mockttp>body-parser>unpipe": true
@@ -2417,11 +2411,6 @@
         "btoa": true
       }
     },
-    "mockttp>body-parser>qs": {
-      "packages": {
-        "string.prototype.matchall>side-channel": true
-      }
-    },
     "mockttp>express>qs": {
       "packages": {
         "string.prototype.matchall>side-channel": true
@@ -3320,12 +3309,12 @@
       "packages": {
         "webpack-cli>@discoveryjs/json-ext": true,
         "webpack-bundle-analyzer>acorn-walk": true,
-        "webpack-bundle-analyzer>acorn": true,
+        "jsdom>acorn": true,
         "webpack-bundle-analyzer>html-escaper": true,
         "http-server>opener": true,
         "postcss>picocolors": true,
         "webpack-bundle-analyzer>sirv": true,
-        "webpack-bundle-analyzer>ws": true
+        "ws": true
       }
     },
     "webpack-dev-server>webpack-dev-middleware": {
@@ -3461,44 +3450,6 @@
         "tls.connect": true,
         "url.URL": true,
         "util.types.isUint8Array": true,
-        "zlib.Z_DEFAULT_WINDOWBITS": true,
-        "zlib.Z_SYNC_FLUSH": true,
-        "zlib.createDeflateRaw": true,
-        "zlib.createInflateRaw": true
-      },
-      "globals": {
-        "Blob": true,
-        "Buffer": true,
-        "clearTimeout": true,
-        "process.env.WS_NO_BUFFER_UTIL": true,
-        "process.env.WS_NO_UTF_8_VALIDATE": true,
-        "process.nextTick": true,
-        "setImmediate": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "ws>bufferutil": true,
-        "ws>utf-8-validate": true
-      }
-    },
-    "webpack-bundle-analyzer>ws": {
-      "builtin": {
-        "buffer.isUtf8": true,
-        "crypto.createHash": true,
-        "crypto.randomBytes": true,
-        "crypto.randomFillSync": true,
-        "events": true,
-        "http.STATUS_CODES": true,
-        "http.createServer": true,
-        "http.request": true,
-        "https.request": true,
-        "net.connect": true,
-        "net.isIP": true,
-        "stream.Duplex": true,
-        "stream.Readable": true,
-        "stream.Writable": true,
-        "tls.connect": true,
-        "url.URL": true,
         "zlib.Z_DEFAULT_WINDOWBITS": true,
         "zlib.Z_SYNC_FLUSH": true,
         "zlib.createDeflateRaw": true,

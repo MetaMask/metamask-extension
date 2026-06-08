@@ -4587,11 +4587,6 @@
         "string.prototype.matchall>side-channel": true
       }
     },
-    "browserify>url>qs": {
-      "packages": {
-        "string.prototype.matchall>side-channel": true
-      }
-    },
     "randomcolor": {
       "globals": {
         "define": true
@@ -6727,7 +6722,6 @@
         "gulp-livereload>tiny-lr>debug": true,
         "gulp-livereload>tiny-lr>faye-websocket": true,
         "react>object-assign": true,
-        "browserify>url>qs": true,
         "mockttp>express>qs": true
       }
     },
@@ -6911,7 +6905,7 @@
         "process.versions.pnp": true
       },
       "packages": {
-        "eslint-import-resolver-typescript>unrs-resolver>@unrs/resolver-binding-darwin-arm64": true
+        "eslint-import-resolver-typescript>unrs-resolver>@unrs/resolver-binding-linux-x64-gnu": true
       }
     },
     "uri-js": {
