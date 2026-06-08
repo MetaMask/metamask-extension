@@ -21,7 +21,7 @@ export type PerpsWatchlistProps = {
   markets: PerpsMarketData[];
 };
 
-export const PerpsWatchlist: React.FC<PerpsWatchlistProps> = ({ markets }) => {
+export const PerpsWatchlist = ({ markets }: PerpsWatchlistProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
 

@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 import { formatWithThreshold } from '../components/app/assets/util/formatWithThreshold';
 import { getIntlLocale } from '../ducks/locale/locale';
 import { TransactionGroupStatus } from '../../shared/constants/transaction';
+import { getAssetsMetadata } from '../selectors/assets';
 import { useI18nContext } from './useI18nContext';
 
 export const KEYRING_TRANSACTION_STATUS_KEY = {
@@ -40,23 +41,28 @@ export function useMultichainTransactionDisplay(transaction: Transaction) {
   const locale = useSelector(getIntlLocale);
   const decimalPlaces = MULTICHAIN_NETWORK_DECIMAL_PLACES[transaction.chain];
   const t = useI18nContext();
+  const assetsMetadata = useSelector(getAssetsMetadata);
 
   const from = aggregateAmount(
     transaction.from as Movement[],
     true,
     locale,
     decimalPlaces,
+    assetsMetadata,
   );
   const to = aggregateAmount(
     transaction.to as Movement[],
     transaction.type === TransactionType.Send,
     locale,
     decimalPlaces,
+    assetsMetadata,
   );
   const baseFee = aggregateAmount(
     (transaction.fees || []).filter((fee) => fee.type === 'base') as Movement[],
     true,
     locale,
+    undefined,
+    assetsMetadata,
   );
   const priorityFee = aggregateAmount(
     (transaction.fees || []).filter(
@@ -64,6 +70,8 @@ export function useMultichainTransactionDisplay(transaction: Transaction) {
     ) as Movement[],
     true,
     locale,
+    undefined,
+    assetsMetadata,
   );
 
   const typeToTitle: Partial<Record<TransactionType, string>> = {
@@ -95,6 +103,7 @@ function aggregateAmount(
   isNegative: boolean,
   locale: string,
   decimals?: number,
+  assetsMetadata?: ReturnType<typeof getAssetsMetadata>,
 ) {
   const amountByAsset: Record<string, AggregatedMovement> = {};
 
@@ -103,11 +112,16 @@ function aggregateAmount(
       continue;
     }
     const assetId = mv.asset.type;
+    // The Snap sets unit:"" for SPL token movements; fall back to assetsMetadata symbol.
+    const unit =
+      mv.asset.unit ||
+      assetsMetadata?.[assetId as keyof typeof assetsMetadata]?.symbol ||
+      '';
     if (!amountByAsset[assetId]) {
       amountByAsset[assetId] = {
         amount: parseFloat(mv.asset.amount),
         address: mv.address,
-        unit: mv.asset.unit,
+        unit,
       };
       continue;
     }

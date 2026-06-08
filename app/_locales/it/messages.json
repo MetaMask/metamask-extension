@@ -29,9 +29,6 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "Errore"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "Codice QR non valido. Scansiona il codice QR di sincronizzazione del portafoglio hardware."
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "Scansiona Codice QR"
   },

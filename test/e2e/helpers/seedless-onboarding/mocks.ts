@@ -14,6 +14,7 @@ import {
   AuthServer,
   MetadataService,
   PasswordChangeItemId,
+  ProfileSyncServer,
   SSSBaseUrlRgx,
   SSSNodeKeyPairs,
 } from './constants';
@@ -50,6 +51,7 @@ function generateMockJwtToken(
   const payload = {
     iss: 'torus-key-test',
     aud: 'torus-key-test',
+    sub: userId,
     name: userId,
     email: userId,
     scope: 'email',
@@ -349,12 +351,115 @@ export class OAuthMockttpService {
     };
   }
 
+  mockAuthServerMint(overrides?: {
+    userEmail?: string;
+    forceTokenExpiration?: boolean;
+  }) {
+    const userEmail = overrides?.userEmail || `e2e-user-${crypto.randomUUID()}`;
+    const expiresIn = overrides?.forceTokenExpiration ? 0 : 120;
+    const idToken = generateMockJwtToken(userEmail, expiresIn);
+    const accessToken = generateMockJwtToken(userEmail, expiresIn, 'new');
+
+    return {
+      statusCode: 200,
+      json: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        access_token: accessToken,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        id_token: idToken,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        expires_in: 3600,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        refresh_token: 'mock-refresh-token',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        revoke_token: 'mock-revoke-token',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        metadata_access_token: idToken,
+      },
+    };
+  }
+
+  mockTelegramLoginInitiate(request: CompletedRequest) {
+    const requestUrl = new URL(request.url);
+    const appRedirectUri = requestUrl.searchParams.get('app_redirect_uri');
+    const state = requestUrl.searchParams.get('state') ?? '';
+
+    if (!appRedirectUri) {
+      throw new Error('Missing app_redirect_uri in Telegram initiate request');
+    }
+
+    const redirectUrl = new URL(appRedirectUri);
+    redirectUrl.searchParams.set('code', 'mock-telegram-auth-code');
+    redirectUrl.searchParams.set('state', state);
+
+    return {
+      statusCode: 302,
+      headers: {
+        Location: redirectUrl.toString(),
+      },
+    };
+  }
+
+  mockTelegramLoginVerify(overrides?: {
+    userEmail?: string;
+    forceTokenExpiration?: boolean;
+  }) {
+    const userEmail = overrides?.userEmail || `e2e-user-${crypto.randomUUID()}`;
+    const expiresIn = overrides?.forceTokenExpiration ? 0 : 120;
+
+    return {
+      statusCode: 200,
+      json: {
+        token: generateMockJwtToken(userEmail, expiresIn),
+      },
+    };
+  }
+
+  mockProfileSyncOidcToken() {
+    return {
+      statusCode: 200,
+      json: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        access_token: 'mocked-oidc-access-token',
+      },
+    };
+  }
+
   onPostRevokeToken() {
     return this.mockAuthServerRevokeToken();
   }
 
   onPostRenewRefreshToken() {
     return this.mockAuthServerRenewRefreshToken();
+  }
+
+  onPostMintToken(overrides?: {
+    userEmail?: string;
+    forceTokenExpiration?: boolean;
+  }) {
+    return this.mockAuthServerMint(overrides);
+  }
+
+  onGetTelegramLoginInitiate(request: CompletedRequest) {
+    return this.mockTelegramLoginInitiate(request);
+  }
+
+  onPostTelegramLoginVerify(overrides?: {
+    userEmail?: string;
+    forceTokenExpiration?: boolean;
+  }) {
+    return this.mockTelegramLoginVerify(overrides);
+  }
+
+  onPostProfileSyncOidcToken() {
+    return this.mockProfileSyncOidcToken();
   }
 
   async onPostToprfCommitment(
@@ -539,6 +644,30 @@ export class OAuthMockttpService {
         .always()
         .thenCallback(() => {
           return this.onPostRenewRefreshToken();
+        }),
+      await server
+        .forPost(AuthServer.MintToken)
+        .always()
+        .thenCallback(() => {
+          return this.onPostMintToken(options);
+        }),
+      await server
+        .forGet(ProfileSyncServer.OAuthInitiate)
+        .always()
+        .thenCallback((request) => {
+          return this.onGetTelegramLoginInitiate(request);
+        }),
+      await server
+        .forPost(ProfileSyncServer.OAuthVerify)
+        .always()
+        .thenCallback(() => {
+          return this.onPostTelegramLoginVerify(options);
+        }),
+      await server
+        .forPost(ProfileSyncServer.OIDCToken)
+        .always()
+        .thenCallback(() => {
+          return this.onPostProfileSyncOidcToken();
         }),
     ];
 

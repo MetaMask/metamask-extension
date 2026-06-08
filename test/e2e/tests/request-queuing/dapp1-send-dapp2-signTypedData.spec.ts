@@ -132,6 +132,8 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         // Check correct network on the send confirmation.
         await transactionConfirmation.checkNetworkIsDisplayed('Localhost 7777');
 
+        // The Review Alert appears while the balance is not yet loaded
+        await transactionConfirmation.waitForReviewAlertToDisappear();
         await transactionConfirmation.clickFooterConfirmButton();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);

@@ -1,93 +1,13 @@
-import type {
-  ControllerGetStateAction,
-  ControllerStateChangeEvent,
-} from '@metamask/base-controller';
-import { Messenger } from '@metamask/messenger';
-import type {
-  NetworkControllerGetNetworkClientByIdAction,
-  NetworkControllerGetStateAction,
-  NetworkControllerStateChangeEvent,
-} from '@metamask/network-controller';
-import { AuthenticationController } from '@metamask/profile-sync-controller';
 import {
-  AccountsControllerGetSelectedAccountAction,
-  AccountsControllerListAccountsAction,
-  AccountsControllerSelectedEvmAccountChangeEvent,
-} from '@metamask/accounts-controller';
-import {
-  AccountTrackerControllerUpdateNativeBalancesAction,
-  AccountTrackerControllerUpdateStakedBalancesAction,
-  AccountTrackerControllerGetStateAction,
-  TokensControllerState,
-  type TokenDetectionControllerAddDetectedTokensViaWsAction,
-  TokenDetectionControllerAddDetectedTokensViaPollingAction,
-  TokenDetectionControllerDetectTokensAction,
-} from '@metamask/assets-controllers';
-import {
-  TransactionControllerIncomingTransactionsReceivedEvent,
-  TransactionControllerTransactionConfirmedEvent,
-} from '@metamask/transaction-controller';
-import {
-  KeyringControllerAccountRemovedEvent,
-  KeyringControllerGetStateAction,
-  KeyringControllerLockEvent,
-  KeyringControllerUnlockEvent,
-} from '@metamask/keyring-controller';
+  Messenger,
+  type MessengerActions,
+  type MessengerEvents,
+} from '@metamask/messenger';
+import { TokenBalancesControllerMessenger } from '@metamask/assets-controllers';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
-import type {
-  AccountActivityServiceStatusChangedEvent,
-  AccountActivityServiceBalanceUpdatedEvent,
-} from '@metamask/core-backend';
-import type {
-  PreferencesControllerGetStateAction,
-  PreferencesControllerStateChangeEvent,
-} from '@metamask/preferences-controller';
+import type { PreferencesControllerGetStateAction } from '@metamask/preferences-controller';
 import { OnboardingControllerGetStateAction } from '../../controllers/onboarding';
 import { RootMessenger } from '../../lib/messenger';
-
-// Not exported from `@metamask/assets-controllers`.
-type TokensControllerGetStateAction = ControllerGetStateAction<
-  'TokensController',
-  TokensControllerState
->;
-
-type TokensControllerStateChangeEvent = ControllerStateChangeEvent<
-  'TokensController',
-  TokensControllerState
->;
-
-type AllowedActions =
-  | NetworkControllerGetNetworkClientByIdAction
-  | NetworkControllerGetStateAction
-  | TokensControllerGetStateAction
-  | TokenDetectionControllerAddDetectedTokensViaPollingAction
-  | TokenDetectionControllerAddDetectedTokensViaWsAction
-  | TokenDetectionControllerDetectTokensAction
-  | PreferencesControllerGetStateAction
-  | AccountsControllerGetSelectedAccountAction
-  | AccountsControllerListAccountsAction
-  | AccountTrackerControllerGetStateAction
-  | AccountTrackerControllerUpdateNativeBalancesAction
-  | AccountTrackerControllerUpdateStakedBalancesAction
-  | KeyringControllerGetStateAction
-  | AuthenticationController.AuthenticationControllerGetBearerTokenAction;
-
-type AllowedEvents =
-  | TokensControllerStateChangeEvent
-  | PreferencesControllerStateChangeEvent
-  | NetworkControllerStateChangeEvent
-  | KeyringControllerAccountRemovedEvent
-  | KeyringControllerLockEvent
-  | KeyringControllerUnlockEvent
-  | AccountActivityServiceBalanceUpdatedEvent
-  | AccountActivityServiceStatusChangedEvent
-  | AccountsControllerSelectedEvmAccountChangeEvent
-  | TransactionControllerTransactionConfirmedEvent
-  | TransactionControllerIncomingTransactionsReceivedEvent;
-
-export type TokenBalancesControllerMessenger = ReturnType<
-  typeof getTokenBalancesControllerMessenger
->;
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
@@ -97,14 +17,12 @@ export type TokenBalancesControllerMessenger = ReturnType<
  * messenger.
  */
 export function getTokenBalancesControllerMessenger(
-  messenger: RootMessenger<AllowedActions, AllowedEvents>,
-) {
-  const controllerMessenger = new Messenger<
-    'TokenBalancesController',
-    AllowedActions,
-    AllowedEvents,
-    typeof messenger
-  >({
+  messenger: RootMessenger<
+    MessengerActions<TokenBalancesControllerMessenger>,
+    MessengerEvents<TokenBalancesControllerMessenger>
+  >,
+): TokenBalancesControllerMessenger {
+  const controllerMessenger: TokenBalancesControllerMessenger = new Messenger({
     namespace: 'TokenBalancesController',
     parent: messenger,
   });

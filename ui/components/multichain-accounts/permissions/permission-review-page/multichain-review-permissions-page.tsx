@@ -8,11 +8,10 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import log from 'loglevel';
 import {
-  AlignItems,
-  BlockSize,
-  Display,
-  FlexDirection,
-} from '../../../../helpers/constants/design-system';
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
 import {
@@ -32,7 +31,6 @@ import {
 import {
   AvatarFavicon,
   AvatarFaviconSize,
-  Box,
   Button,
   ButtonPrimary,
   ButtonPrimarySize,
@@ -414,11 +412,10 @@ export const MultichainReviewPermissions = () => {
           <>
             {existingConnectedCaipAccountIds.length > 0 ? (
               <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                width={BlockSize.Full}
+                flexDirection={BoxFlexDirection.Column}
+                className="flex w-full"
                 gap={2}
-                alignItems={AlignItems.center}
+                alignItems={BoxAlignItems.Center}
               >
                 {showAccountToast ? (
                   <ToastContainer>
