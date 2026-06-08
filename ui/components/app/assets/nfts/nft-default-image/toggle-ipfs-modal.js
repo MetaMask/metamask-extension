@@ -1,11 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
-import {
-  Box,
-  ButtonPrimary,
-  Text,
-} from '../../../../component-library';
+import { Box, ButtonPrimary, Text } from '../../../../component-library';
 import {
   Modal,
   ModalContent,
@@ -33,7 +29,10 @@ export const ToggleIpfsModal = ({ onClose }) => {
     <Modal isOpen onClose={onClose} className="toggle-ipfs-modal">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader onClose={onClose} closeButtonProps={{ ariaLabel: t('close') }}>
+        <ModalHeader
+          onClose={onClose}
+          closeButtonProps={{ ariaLabel: t('close') }}
+        >
           {t('showNft')}
         </ModalHeader>
         <Box className="toggle-ipfs-modal" marginTop={6}>
