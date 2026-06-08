@@ -125,6 +125,7 @@ type InitMessengerActions =
   | InstitutionalSnapControllerPublishHookAction
   | InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction
   | KeyringControllerGetKeyringForAccountAction
+  | KeyringControllerGetKeyringForAccountAction
   | KeyringControllerGetStateAction
   | KeyringControllerSignEip7702AuthorizationAction
   | KeyringControllerSignTypedMessageAction
