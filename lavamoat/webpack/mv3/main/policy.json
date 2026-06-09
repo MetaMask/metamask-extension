@@ -109,7 +109,6 @@
     },
     "@ethereumjs/tx>@ethereumjs/util": {
       "globals": {
-        "console.warn": true,
         "fetch": true
       },
       "meta": {
@@ -450,18 +449,6 @@
         "ethers>@ethersproject/properties": true
       }
     },
-    "@keystonehq/bc-ur-registry-eth": {
-      "globals": {
-        "Buffer.from": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry": true,
-        "buffer": true,
-        "@metamask/eth-qr-keyring>hdkey": true,
-        "uuid": true
-      }
-    },
     "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth": {
       "globals": {
         "Buffer.from": true
@@ -472,18 +459,6 @@
         "buffer": true,
         "@metamask/eth-qr-keyring>hdkey": true,
         "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>uuid": true
-      }
-    },
-    "@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry": {
-      "globals": {
-        "Buffer": true,
-        "define": true
-      },
-      "packages": {
-        "@ngraveio/bc-ur": true,
-        "ethereumjs-util>ethereum-cryptography>bs58check": true,
-        "buffer": true,
-        "tslib": true
       }
     },
     "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry": {
@@ -3050,7 +3025,6 @@
         "module": true
       },
       "packages": {
-        "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography>@noble/curves": true,
         "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography>@noble/hashes": true
       }
     },
@@ -3940,15 +3914,6 @@
     "browserify>url>punycode": {
       "globals": {
         "define": true
-      }
-    },
-    "qrcode.react": {
-      "globals": {
-        "Path2D": true,
-        "devicePixelRatio": true
-      },
-      "packages": {
-        "react": true
       }
     },
     "mockttp>express>qs": {
