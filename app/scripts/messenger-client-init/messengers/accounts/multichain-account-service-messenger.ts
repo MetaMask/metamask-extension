@@ -33,8 +33,6 @@ export function getMultichainAccountServiceMessenger(
     events: [
       'AccountsController:accountAdded',
       'AccountsController:accountRemoved',
-      'KeyringController:stateChange',
-      'SnapController:stateChange',
     ],
     actions: [
       'AccountsController:listMultichainAccounts',
@@ -43,14 +41,15 @@ export function getMultichainAccountServiceMessenger(
       'AccountsController:getAccounts',
       'KeyringController:getState',
       'KeyringController:withKeyring',
+      'KeyringController:withKeyringV2',
       'KeyringController:addNewKeyring',
       'KeyringController:getKeyringsByType',
       'KeyringController:createNewVaultAndKeychain',
       'KeyringController:createNewVaultAndRestore',
       'NetworkController:getNetworkClientById',
       'NetworkController:findNetworkClientIdByChainId',
-      'SnapController:getState',
       'SnapController:handleRequest',
+      'SnapAccountService:ensureReady',
     ],
   });
   return serviceMessenger;
