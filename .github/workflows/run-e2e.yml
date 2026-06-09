@@ -83,23 +83,6 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
-      # Temporarily pin Firefox to mitigate flaky issues with e2e tests.
-      # The ubuntu-latest runner otherwise auto-updates Firefox, which can break tests with no
-      # repo change. Only runs for Firefox suites.
-      - name: Pin Firefox version
-        id: pin-firefox
-        if: ${{ contains(inputs.test-command, 'firefox') }}
-        uses: browser-actions/setup-firefox@v1
-        with:
-          firefox-version: '147.0.4'
-
-      - name: Verify pinned Firefox version
-        if: ${{ contains(inputs.test-command, 'firefox') }}
-        run: |
-          echo "setup-firefox reported: ${{ steps.pin-firefox.outputs.firefox-version }}"
-          echo "which firefox: $(which firefox || true)"
-          firefox --version || true
-
       - name: Restore .metamask folder
         id: restore-metamask
         uses: actions/cache/restore@v5

@@ -78,6 +78,11 @@ class FirefoxDriver {
       );
       options.addArguments('-headless');
     }
+
+    // Temporarily lock to version 147. The CI runner otherwise auto-updates
+    // Firefox, which can break tests with no repo change.
+    options.setBrowserVersion('147');
+
     const builder = new Builder()
       .forBrowser('firefox')
       .setFirefoxOptions(options);
