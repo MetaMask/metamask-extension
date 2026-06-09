@@ -44,10 +44,12 @@ describe('Check balance', function (this: Suite) {
         await homePage.checkPageIsLoaded();
 
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
-        // TRX_BALANCE = 6072392 SUN = ~6.07 TRX * $0.29469 = ~$1.79
-        // Total Fiat = TRX $1.79, HTX DAO $5.30, USDT $2.80, USDD $0.29 = $10.18
+
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
+
+        // TRX_BALANCE = 6072392 SUN = ~6.07 TRX * $0.29469 = ~$1.79
+        // Total Fiat = TRX $1.79, HTX DAO $5.30, USDT $2.80, USDD $0.29 = $10.18
         await homePage.checkExpectedBalanceIsDisplayed('$10.18');
       },
     );
@@ -66,9 +68,10 @@ describe('Check balance', function (this: Suite) {
         await homePage.checkPageIsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
 
-        // TRX_BALANCE = 6072392 SUN = ~6.07 TRX
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
+
+        // TRX_BALANCE = 6072392 SUN = ~6.07 TRX
         await homePage.checkExpectedBalanceIsDisplayed('6.072 TRX');
       },
     );
