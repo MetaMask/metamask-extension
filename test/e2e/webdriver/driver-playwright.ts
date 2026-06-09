@@ -14,8 +14,6 @@ import type { BrowserContext, Locator, Page } from '@playwright/test';
  * specs need are fully implemented; less common methods throw a clear error
  * pointing at the gap. As more specs migrate, gaps get filled in-place.
  *
- * See `docs/superpowers/specs/2026-05-26-selenium-to-playwright-e2e-migration-design.md`
- * for the migration plan and §3.1 for shim design notes.
  */
 
 const SELENIUM_KEY = {

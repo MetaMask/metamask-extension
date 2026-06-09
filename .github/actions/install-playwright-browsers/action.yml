@@ -27,7 +27,7 @@ runs:
 
     - name: Restore Playwright browser cache
       id: pw-cache
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ~/.cache/ms-playwright
         key: playwright-${{ runner.os }}-${{ steps.pw-version.outputs.version }}-${{ inputs.browsers }}

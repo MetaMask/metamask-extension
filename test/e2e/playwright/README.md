@@ -16,10 +16,6 @@ The bulk of the existing E2E suite still lives under `test/e2e/tests/` and runs 
 
 ## Selenium → Playwright migration
 
-> Design doc: [`docs/superpowers/specs/2026-05-26-selenium-to-playwright-e2e-migration-design.md`](../../../docs/superpowers/specs/2026-05-26-selenium-to-playwright-e2e-migration-design.md)
-
-### TL;DR
-
 - Selenium spec files (`*.spec.ts`) run via Mocha (`yarn test:e2e:chrome` / `yarn test:e2e:firefox`).
 - Playwright spec files (`*.pw.spec.ts`) run via Playwright's runner (`yarn test:e2e:playwright:chrome` / `yarn test:e2e:playwright:firefox`).
 - Both share the same `withFixtures`, page objects, flows, fixtures, and seeders. The only adapter is the **`PlaywrightDriver` shim** in `test/e2e/webdriver/driver-playwright.ts`, which mirrors the Selenium `Driver` public API on top of Playwright.

@@ -19,7 +19,6 @@
  * option is supplied), so non-e2e Playwright workflows (swap, global,
  * benchmark) are unaffected.
  *
- * See: docs/superpowers/specs/2026-05-26-selenium-to-playwright-e2e-migration-design.md
  */
 
 import * as fs from 'fs';

@@ -179,8 +179,7 @@ async function withFixtures(options, testSuite) {
     virtualAuthenticator,
     // 'selenium' (default) keeps the existing Selenium path untouched.
     // 'playwright' routes through the Playwright shim. Playwright spec files
-    // (`*.pw.spec.ts`) set this. See
-    // docs/superpowers/specs/2026-05-26-selenium-to-playwright-e2e-migration-design.md
+    // (`*.pw.spec.ts`) set this.
     driverType = process.env.E2E_DRIVER_TYPE === 'playwright'
       ? 'playwright'
       : 'selenium',
@@ -397,8 +396,7 @@ async function withFixtures(options, testSuite) {
     if (driverType === 'playwright') {
       if (virtualAuthenticator) {
         throw new Error(
-          'withFixtures: virtualAuthenticator is not supported on the Playwright path yet. ' +
-            'Track gap in docs/superpowers/specs/2026-05-26-selenium-to-playwright-e2e-migration-design.md',
+          'withFixtures: virtualAuthenticator is not supported on the Playwright path yet.',
         );
       }
       const pwBrowser =
