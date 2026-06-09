@@ -79,8 +79,6 @@ import {
   parseCaipAssetType,
   KnownCaipNamespace,
   createDeferredPromise,
-  hexToBytes,
-  add0x,
 } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
 
@@ -2837,7 +2835,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:removeAccount',
       ),
-      importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
+      importAccountWithStrategy: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:importAccountWithStrategy',
+      ),
       getAccountsBySnapId: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:getAccountsBySnapId',
@@ -6253,116 +6254,6 @@ export default class MetamaskController extends EventEmitter {
           targetAccount,
         ),
     );
-  }
-
-  /**
-   * Imports an account with the specified import strategy.
-   * These are defined in @metamask/keyring-controller
-   * Each strategy represents a different way of serializing an Ethereum key pair.
-   *
-   * @param {'privateKey' | 'json'} strategy - A unique identifier for an account import strategy.
-   * @param {any} args - The data required by that strategy to import an account.
-   * @param {object} options - The options for the import.
-   * @param {boolean} options.shouldCreateSocialBackup - whether to create a backup for the seedless onboarding flow
-   * @param {boolean} options.shouldSelectAccount - whether to select the new account in the wallet
-   */
-  async importAccountWithStrategy(
-    strategy,
-    args,
-    options = {
-      shouldCreateSocialBackup: true,
-      shouldSelectAccount: true,
-    },
-  ) {
-    const { shouldCreateSocialBackup, shouldSelectAccount } = options;
-
-    const importedAccountAddress =
-      await this.keyringController.importAccountWithStrategy(strategy, args);
-
-    if (this.onboardingController.getIsSocialLoginFlow()) {
-      const importedAccount = this.accountsController.getAccountByAddress(
-        importedAccountAddress,
-      );
-      if (!importedAccount) {
-        throw new Error(
-          `No account found for address: ${importedAccountAddress}`,
-        );
-      }
-      const { id: keyringId, privateKey: privateKeyFromKeyring } =
-        await this.keyringController.withKeyringV2(
-          { address: importedAccountAddress },
-          async ({ keyring, metadata }) => {
-            const privateKeyObj = await keyring.exportAccount(
-              importedAccount.id,
-            );
-            return { id: metadata.id, privateKey: privateKeyObj.privateKey };
-          },
-        );
-
-      try {
-        // if social backup is requested, add the seed phrase backup
-        await this.addNewPrivateKeyBackup(
-          privateKeyFromKeyring,
-          keyringId,
-          shouldCreateSocialBackup,
-        );
-      } catch (err) {
-        // handle seedless controller import error by reverting keyring controller mnemonic import
-        // KeyringController.removeAccount will remove keyring when it's emptied, currently there are no other method in keyring controller to remove keyring
-        await this.keyringController.removeAccount(importedAccountAddress);
-        throw err;
-      }
-    }
-
-    if (shouldSelectAccount) {
-      const account = this.accountsController.getAccountByAddress(
-        importedAccountAddress,
-      );
-      if (account) {
-        this.accountsController.setSelectedAccount(account.id);
-      } else {
-        throw new Error(
-          `No account found for address: ${importedAccountAddress}`,
-        );
-      }
-    }
-  }
-
-  /**
-   * Adds a new private key backup for the user
-   *
-   * If `syncWithSocial` is false, it will only update the local state,
-   * and not sync the private key to the server.
-   *
-   * @param {string} privateKey - The privateKey from keyring.
-   * @param {string} keyringId - The keyring id to add the private key backup to.
-   * @param {boolean} syncWithSocial - whether to skip syncing with social login
-   */
-  async addNewPrivateKeyBackup(privateKey, keyringId, syncWithSocial = true) {
-    const bufferedPrivateKey = hexToBytes(add0x(privateKey));
-
-    if (syncWithSocial) {
-      const releaseLock = await this.seedlessOperationMutex.acquire();
-      try {
-        await this.seedlessOnboardingController.addNewSecretData(
-          bufferedPrivateKey,
-          SecretType.PrivateKey,
-          { keyringId },
-        );
-      } catch (error) {
-        log.error('Error adding new private key backup', error);
-        throw error;
-      } finally {
-        releaseLock();
-      }
-    } else {
-      // Do not sync the seed phrase to the server, only update the local state
-      this.seedlessOnboardingController.updateBackupMetadataState({
-        keyringId,
-        data: bufferedPrivateKey,
-        type: SecretType.PrivateKey,
-      });
-    }
   }
 
   /**

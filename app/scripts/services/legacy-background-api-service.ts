@@ -14,7 +14,7 @@ import {
   KeyringControllerGetKeyringsByTypeAction,
   KeyringControllerImportAccountWithStrategyAction,
   KeyringControllerRemoveAccountAction,
-  KeyringControllerWithKeyringAction,
+  KeyringControllerWithKeyringV2Action,
 } from '@metamask/keyring-controller';
 import {
   AccountsControllerGetAccountByAddressAction,
@@ -115,7 +115,7 @@ type AllowedActions =
   | KeyringControllerGetKeyringsByTypeAction
   | KeyringControllerImportAccountWithStrategyAction
   | KeyringControllerRemoveAccountAction
-  | KeyringControllerWithKeyringAction
+  | KeyringControllerWithKeyringV2Action
   | NetworkControllerGetNetworkClientByIdAction
   | NetworkControllerGetStateAction
   | NetworkControllerResetConnectionAction
@@ -484,18 +484,27 @@ export class LegacyBackgroundApiService {
     );
 
     if (isSocialLoginFlow) {
-      // Use withKeyring to get keyring metadata for an address
+      const importedAccount = this.#messenger.call(
+        'AccountsController:getAccountByAddress',
+        importedAccountAddress,
+      );
+      if (!importedAccount) {
+        throw new Error(
+          `No account found for address: ${importedAccountAddress}`,
+        );
+      }
+
       const { id: keyringId, privateKey: privateKeyFromKeyring } =
         (await this.#messenger.call(
-          'KeyringController:withKeyring',
+          'KeyringController:withKeyringV2',
           { address: importedAccountAddress },
           async ({ keyring, metadata }) => {
-            // We can be sure that the keyring supports exporting accounts because this is a SimpleKeyring.
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const privateKey = await keyring.exportAccount!(
-              importedAccountAddress,
-            );
-            return { id: metadata.id, privateKey };
+            const { exportAccount } = keyring;
+            if (!exportAccount) {
+              throw new Error('Imported account keyring does not export accounts');
+            }
+            const privateKeyObj = await exportAccount(importedAccount.id);
+            return { id: metadata.id, privateKey: privateKeyObj.privateKey };
           },
         )) as { id: string; privateKey: string };
 
