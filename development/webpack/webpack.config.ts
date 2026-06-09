@@ -8,6 +8,7 @@ import { argv, exit } from 'node:process';
 import {
   ProvidePlugin,
   type Chunk,
+  type Compilation,
   type Configuration,
   type WebpackPluginInstance,
   type MemoryCacheOptions,
@@ -38,6 +39,11 @@ import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import type { BundleSizeCategory } from './utils/plugins/ManifestPlugin/types';
 import { getLatestCommit } from './utils/git';
 import { MODES, DEV_SERVER_CLIENT_ENTRY_NAME } from './utils/constants';
+import {
+  DEV_RELOAD_CLIENT_ENTRY_NAME,
+  BACKGROUND_ENTRY_NAMES,
+  CONTENT_SCRIPT_ENTRY_NAMES,
+} from './utils/devReload';
 import { BUNDLE_SIZE_SUMMARY_FILE } from './utils/plugins/ManifestPlugin/stats';
 
 const buildTypes = loadBuildTypesConfig();
@@ -52,6 +58,9 @@ const nodeModules = join(__dirname, '../../node_modules');
 const root = join(context, '..');
 const isDevelopment = args.mode === MODES.DEVELOPMENT;
 const MANIFEST_VERSION = args.manifestVersion;
+// Re-exported so the dev server (`build.ts`) can thread the manifest version
+// through to the extension auto-reload wiring.
+export const manifestVersion = MANIFEST_VERSION;
 const browsersListPath = join(root, '.browserslistrc');
 // read .browserslist now to stop it from searching for the file over and over
 const browsersListQuery = readFileSync(browsersListPath, 'utf8');
@@ -75,23 +84,19 @@ const bundleSizeOtherEntrypoints = new Set([
   'usb-permissions',
 ]);
 const bundleSizeOtherEntrypointPattern = /^offscreen\.\d+$/u;
-const bundleSizeContentScriptEntrypoints = new Set([
-  'scripts/contentscript.js',
-  'scripts/inpage.js',
-  'vendor/trezor/content-script.js',
-]);
+const bundleSizeBackgroundEntrypoints = new Set<string>(BACKGROUND_ENTRY_NAMES);
+const bundleSizeContentScriptEntrypoints = new Set<string>(
+  CONTENT_SCRIPT_ENTRY_NAMES,
+);
 
 // TODO(#41847): Move HTML entrypoints into ownership-specific locations so
 // this classifier no longer needs to know about the current mixed page layout.
 const classifyBundleSizeEntrypoint = (
   entrypointName: string,
 ): BundleSizeCategory | null => {
-  if (
-    // MV3 uses the service-worker.ts entry point for the background script,
-    // while MV2 uses background
-    entrypointName === 'service-worker.ts' ||
-    entrypointName === 'background'
-  ) {
+  if (bundleSizeBackgroundEntrypoints.has(entrypointName)) {
+    // MV3 uses the service-worker.ts entrypoint for the background script,
+    // while MV2 uses the `background` page.
     return 'background';
   }
 
@@ -111,6 +116,33 @@ const classifyBundleSizeEntrypoint = (
   }
 
   return null;
+};
+
+/**
+ * Injects a dev-server entry's JS output as `<script>` tags into an HTML page,
+ * just before `</head>`. Used in watch mode to add dev-only clients (the UI
+ * live-reload client, the extension reloader) without touching app source.
+ *
+ * @param content - The HTML page content.
+ * @param compilation - The current compilation.
+ * @param entryName - The dev-server entry whose output to inject.
+ * @returns The HTML content with the entry's scripts injected.
+ */
+const injectEntryScripts = (
+  content: string,
+  compilation: Compilation,
+  entryName: string,
+): string => {
+  const entrypoint = compilation.entrypoints.get(entryName);
+  if (!entrypoint) {
+    return content;
+  }
+  const tags = entrypoint
+    .getFiles()
+    .filter((file) => file.endsWith('.js'))
+    .map((file) => `<script src="${file}" defer></script>`)
+    .join('');
+  return content.replace('</head>', `${tags}</head>`);
 };
 
 // #region cache
@@ -195,24 +227,34 @@ const plugins: WebpackPluginInstance[] = [
     minify: args.minify,
     test: /\.html$/u, // default is eta/html, we only want html
     data: { isTest: args.test },
-    // In watch mode, inject a `<script>` tag for the bundled
-    // webpack-dev-server client into every UI page (identified by the
-    // `#app-content` mount point — every page that renders the React UI
-    // has it via `partial-body.html`, no other extension page does). Kept
-    // out of the MV3 service worker, the Firefox MV2 background page, and
-    // the offscreen page — reloading those would break the message ports
-    // connecting them to the UI.
-    beforeEmit: (content, _entry, compilation) => {
-      if (!args.watch || !content.includes('id="app-content"')) return content;
-      const entrypoint = compilation.entrypoints.get(
-        DEV_SERVER_CLIENT_ENTRY_NAME,
-      );
-      if (!entrypoint) return content;
-      const tags = entrypoint
-        .getFiles()
-        .map((file) => `<script src="${file}" defer></script>`)
-        .join('');
-      return content.replace('</head>', `${tags}</head>`);
+    // In watch mode, inject dev-only clients into the relevant HTML pages.
+    beforeEmit: (content, entry, compilation) => {
+      if (!args.watch) {
+        return content;
+      }
+      // UI pages (identified by the `#app-content` React mount point, present
+      // via `partial-body.html` on every page that renders the React UI and no
+      // other extension page) get the webpack-dev-server live-reload client,
+      // which reloads just the page — preserving background state.
+      if (content.includes('id="app-content"')) {
+        return injectEntryScripts(
+          content,
+          compilation,
+          DEV_SERVER_CLIENT_ENTRY_NAME,
+        );
+      }
+      // The MV2 (Firefox) background page gets the extension reloader, which
+      // triggers `chrome.runtime.reload()` only when a background or
+      // content-script bundle changes. (On MV3 the reloader is bundled into the
+      // service worker instead, since it loads a single JS file.)
+      if (MANIFEST_VERSION === 2 && entry.name === 'background') {
+        return injectEntryScripts(
+          content,
+          compilation,
+          DEV_RELOAD_CLIENT_ENTRY_NAME,
+        );
+      }
+      return content;
     },
     preload: [
       {

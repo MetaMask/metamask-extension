@@ -136,22 +136,35 @@ export function ignoreCacheShutdownSignal(process: NodeJS.Process) {
 }
 
 /**
- * Builds the webpack-dev-server client import URL from a
- * dev-server config. webpack preserves the query string as `__resourceQuery`,
- * which the client reads at runtime to know where to connect.
+ * Builds the WebSocket connection params (host/port/protocol) for a dev-server
+ * client from a dev-server config, encoded as a query string. webpack preserves
+ * the query string as `__resourceQuery`, which clients read at runtime to know
+ * where to connect.
  *
- * Only fields that are set are forwarded; anything omitted falls back to
- * webpack-dev-server's client defaults at runtime. `protocol=ws` is always
- * included because the extension page origin is `chrome-extension://...`,
- * so the client cannot auto-detect a WebSocket protocol.
+ * Only fields that are set are forwarded; anything omitted falls back to the
+ * client's defaults at runtime. `protocol=ws` is always included because the
+ * extension page origin is `chrome-extension://...`, so the client cannot
+ * auto-detect a WebSocket protocol.
+ *
+ * @param config - The webpack-dev-server configuration.
+ * @returns The connection params as a `URLSearchParams`.
+ */
+export const getDevServerWsParams = (config: Configuration): URLSearchParams => {
+  const params = new URLSearchParams({ protocol: 'ws' });
+  if (config.host !== undefined) params.set('hostname', config.host);
+  if (config.port !== undefined) params.set('port', config.port.toString());
+  return params;
+};
+
+/**
+ * Builds the webpack-dev-server client import URL from a
+ * dev-server config.
  *
  * @param config - The webpack-dev-server configuration.
  * @returns The import specifier for the dev-server client.
  */
 export const getDevServerClientUrl = (config: Configuration): string => {
-  const params = new URLSearchParams({ protocol: 'ws' });
-  if (config.host !== undefined) params.set('hostname', config.host);
-  if (config.port !== undefined) params.set('port', config.port.toString());
+  const params = getDevServerWsParams(config);
   if (config.hot !== undefined) params.set('hot', config.hot.toString());
   if (config.liveReload !== undefined) {
     params.set('live-reload', config.liveReload.toString());

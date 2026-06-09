@@ -18,6 +18,7 @@ import {
   type Browser,
 } from '../../helpers';
 import { DEV_SERVER_CLIENT_ENTRY_NAME } from '../../constants';
+import { DEV_RELOAD_CLIENT_ENTRY_NAME } from '../../devReload';
 import {
   createBundleSizeCategoryAssets,
   createBundleSizeSummary,
@@ -97,6 +98,7 @@ export class ManifestPlugin<Z extends boolean> {
     'use-snow',
     'bootstrap',
     DEV_SERVER_CLIENT_ENTRY_NAME,
+    DEV_RELOAD_CLIENT_ENTRY_NAME,
   ]);
 
   /**

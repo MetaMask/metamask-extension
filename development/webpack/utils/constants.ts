@@ -1,5 +1,6 @@
 import type { Configuration } from 'webpack-dev-server';
 import { getDevServerClientUrl } from './helpers';
+import { setupDevReload } from './devReload';
 
 export const MODES = {
   PRODUCTION: 'production',
@@ -8,13 +9,23 @@ export const MODES = {
 
 /**
  * Entry name for the webpack-dev-server client bundle. Used by
- * `DEV_SERVER_OPTIONS.setupMiddlewares` to register the entry, by
+ * `createDevServerOptions().setupMiddlewares` to register the entry, by
  * `ManifestPlugin` to mark it self-contained, and by
  * `HtmlBundlerPlugin.beforeEmit` to look up its output filename for `<script>` injection.
  */
 export const DEV_SERVER_CLIENT_ENTRY_NAME = 'dev-server-client';
 
-export const DEV_SERVER_OPTIONS: Configuration = {
+/**
+ * Builds the webpack-dev-server options. A factory (rather than a constant) so
+ * the manifest version can be threaded through to {@link setupDevReload}, which
+ * needs it to inject the extension reloader into the right background entry.
+ *
+ * @param manifestVersion - The manifest version being built (2 or 3).
+ * @returns The webpack-dev-server configuration.
+ */
+export const createDevServerOptions = (
+  manifestVersion: number,
+): Configuration => ({
   hot: false,
   liveReload: true,
   // always use loopback, as 0.0.0.0 tends to fail on some machines (WSL2?)
@@ -33,24 +44,28 @@ export const DEV_SERVER_OPTIONS: Configuration = {
   // we don't need/have a "static" directory, so disable it
   static: false,
   allowedHosts: 'all',
-  // Register the webpack-dev-server client here so that we can read the resolved port
-  // from `devServer.options` — by this point `port: 'auto'` has been replaced
-  // with the actual numeric port the server is listening on.
+  // Register dev-server clients here so that we can read the resolved port from
+  // `devServer.options` — by this point `port: 'auto'` has been replaced with
+  // the actual numeric port the server is listening on.
   setupMiddlewares: (middlewares, devServer) => {
     const compilers =
       'compilers' in devServer.compiler
         ? devServer.compiler.compilers
         : [devServer.compiler];
     for (const compiler of compilers) {
+      // Live-reload client for UI pages (injected by `HtmlBundlerPlugin`).
       new compiler.webpack.EntryPlugin(
         compiler.context,
         getDevServerClientUrl(devServer.options),
         { name: DEV_SERVER_CLIENT_ENTRY_NAME, chunkLoading: false },
       ).apply(compiler);
     }
+    // Auto-reload the whole extension when the background, service worker, or
+    // content scripts change (UI pages reload themselves via the client above).
+    setupDevReload(devServer, manifestVersion);
     return middlewares;
   },
-};
+});
 
 /**
  * The build environment. This describes the environment this build was produced in.
