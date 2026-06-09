@@ -3,12 +3,12 @@ import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { isCaipChainId } from '@metamask/utils';
 import {
+  getAllTokens,
   getEnabledNetworksByNamespace,
   getShowFiatInTestnets,
-  getTokenList,
   selectERC20TokensByChain,
 } from '../../../../selectors';
-import { TokenDisplayInfo, TokenWithFiatAmount } from '../types';
+import { Token, TokenDisplayInfo, TokenWithFiatAmount } from '../types';
 import {
   getImageForChainId,
   isChainIdMainnet,
@@ -31,7 +31,7 @@ export const useTokenDisplayInfo = ({
   fixCurrencyToUSD,
 }: UseTokenDisplayInfoProps): TokenDisplayInfo => {
   const isEvm = isEvmChainId(token.chainId);
-  const tokenList = useSelector(getTokenList) || {};
+  const allTokens = useSelector(getAllTokens);
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
   const currentCurrency = useSelector(getCurrentCurrency);
   const { formatCurrencyWithMinThreshold } = useFormatters();
@@ -86,10 +86,12 @@ export const useTokenDisplayInfo = ({
     token.isStakeable || (isEvmMainnet && isEvm && token.isNative);
 
   if (isEvm) {
-    const tokenData = Object.values(tokenList).find(
-      (tokenToFind) =>
-        isEqualCaseInsensitive(tokenToFind.symbol, token.symbol) &&
-        isEqualCaseInsensitive(tokenToFind.address, token.address),
+    const tokenData = (
+      Object.values(
+        allTokens[token.chainId as `0x${string}`] ?? {},
+      ).flat() as Token[]
+    ).find((tokenToFind) =>
+      isEqualCaseInsensitive(tokenToFind.address, token.address),
     );
 
     const title =
@@ -103,7 +105,7 @@ export const useTokenDisplayInfo = ({
       token.symbol;
 
     const tokenImage =
-      tokenData?.iconUrl ||
+      tokenData?.image ||
       (token.chainId &&
         erc20TokensByChain?.[token.chainId]?.data?.[token.address.toLowerCase()]
           ?.iconUrl) ||

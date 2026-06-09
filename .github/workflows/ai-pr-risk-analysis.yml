@@ -24,6 +24,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
+      checks: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -39,8 +40,6 @@ jobs:
 
       - name: Run AI PR Analysis
         uses: ./.ai-analyzer-action
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           mode: pr-risk-analysis
           add-comment: false
