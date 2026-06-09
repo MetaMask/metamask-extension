@@ -91,6 +91,7 @@ const AccountRow = ({ label, address, chain }: Props) => {
           as="a"
           externalLink
           href={getAddressUrl(address, chain)}
+          data-address={address}
         >
           {displayName || shortenAddress(address)}
           <Icon
@@ -249,6 +250,7 @@ export function MultichainTransactionDetailsModal({
                 <Text
                   variant={TextVariant.bodyMd}
                   color={getStatusColor(status)}
+                  data-testid={`transaction-details-status-${statusKey}`}
                 >
                   {capitalize(t(statusKey))}
                 </Text>
@@ -325,6 +327,8 @@ export function MultichainTransactionDetailsModal({
         <ModalFooter>
           <Button
             block
+            data-explorer-url={getTransactionUrl(id, chain)}
+            data-testid="transaction-details-block-explorer"
             size={ButtonSize.Md}
             variant={ButtonVariant.Link}
             onClick={() => {
