@@ -73,6 +73,8 @@ import {
   getIsStockMarketClosed,
   getWarningLabels,
   getBridgeUnavailableQuoteReason,
+  resolveMinimumBalanceToKeep,
+  computeHasSufficientGasForQuoteForMetrics,
 } from './selectors';
 import { toBridgeToken } from './utils';
 
@@ -4426,6 +4428,128 @@ describe('Bridge selectors', () => {
       });
       const result = getBridgeUnavailableQuoteReason(state as never);
       expect(result).toBe('noOptionsAvailableMessage');
+    });
+  });
+
+  describe('resolveMinimumBalanceToKeep', () => {
+    const SOL_RESERVE = '890880';
+
+    it('returns the SOL rent-exemption reserve for a Solana chain id', () => {
+      expect(resolveMinimumBalanceToKeep(SolScope.Mainnet, SOL_RESERVE)).toBe(
+        SOL_RESERVE,
+      );
+    });
+
+    it("returns '0' for a non-Solana EVM chain id", () => {
+      expect(resolveMinimumBalanceToKeep(CHAIN_IDS.MAINNET, SOL_RESERVE)).toBe(
+        '0',
+      );
+    });
+
+    it("returns '0' for a non-Solana non-EVM (Bitcoin) chain id", () => {
+      expect(
+        resolveMinimumBalanceToKeep(MultichainNetworks.BITCOIN, SOL_RESERVE),
+      ).toBe('0');
+    });
+
+    it("returns '0' when the chain id is undefined", () => {
+      expect(resolveMinimumBalanceToKeep(undefined, SOL_RESERVE)).toBe('0');
+    });
+  });
+
+  describe('computeHasSufficientGasForQuoteForMetrics', () => {
+    const buildQuote = (totalNetworkFee: string, sentAmount: string) =>
+      ({
+        totalNetworkFee: { amount: totalNetworkFee },
+        sentAmount: { amount: sentAmount },
+      }) as unknown as QuoteResponse & QuoteMetadata;
+
+    const nativeToken = {
+      assetId: zeroAddress(),
+    } as unknown as ReturnType<typeof getFromToken>;
+    const erc20Token = {
+      assetId: '0x6b175474e89094c44da98b954eedeac495271d0f',
+    } as unknown as ReturnType<typeof getFromToken>;
+
+    it('returns null when the native balance is missing', () => {
+      expect(
+        computeHasSufficientGasForQuoteForMetrics({
+          quote: buildQuote('10', '80'),
+          nativeBalance: '',
+          fromToken: nativeToken,
+          minimumBalanceToKeep: '5',
+        }),
+      ).toBeNull();
+    });
+
+    it('returns null when there is no quote', () => {
+      expect(
+        computeHasSufficientGasForQuoteForMetrics({
+          quote: null,
+          nativeBalance: '100',
+          fromToken: nativeToken,
+          minimumBalanceToKeep: '5',
+        }),
+      ).toBeNull();
+    });
+
+    it('returns null for the native MAX case (balance minus sent amount is not positive)', () => {
+      expect(
+        computeHasSufficientGasForQuoteForMetrics({
+          quote: buildQuote('10', '100'),
+          nativeBalance: '100',
+          fromToken: nativeToken,
+          minimumBalanceToKeep: '5',
+        }),
+      ).toBeNull();
+    });
+
+    describe('native source token', () => {
+      it('returns true when balance covers fee + sent amount + reserve', () => {
+        expect(
+          computeHasSufficientGasForQuoteForMetrics({
+            quote: buildQuote('10', '80'),
+            nativeBalance: '100',
+            fromToken: nativeToken,
+            minimumBalanceToKeep: '5',
+          }),
+        ).toBe(true);
+      });
+
+      it('returns false when balance does not cover fee + sent amount + reserve', () => {
+        expect(
+          computeHasSufficientGasForQuoteForMetrics({
+            quote: buildQuote('10', '80'),
+            nativeBalance: '100',
+            fromToken: nativeToken,
+            minimumBalanceToKeep: '15',
+          }),
+        ).toBe(false);
+      });
+    });
+
+    describe('non-native (ERC20) source token', () => {
+      it('returns true when balance is greater than the network fee', () => {
+        expect(
+          computeHasSufficientGasForQuoteForMetrics({
+            quote: buildQuote('50', '80'),
+            nativeBalance: '100',
+            fromToken: erc20Token,
+            minimumBalanceToKeep: '999',
+          }),
+        ).toBe(true);
+      });
+
+      it('returns false when balance is at or below the network fee', () => {
+        expect(
+          computeHasSufficientGasForQuoteForMetrics({
+            quote: buildQuote('50', '80'),
+            nativeBalance: '50',
+            fromToken: erc20Token,
+            minimumBalanceToKeep: '0',
+          }),
+        ).toBe(false);
+      });
     });
   });
 });
