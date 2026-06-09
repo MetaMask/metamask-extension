@@ -20,7 +20,7 @@ import {
 import {
   KeyringControllerWithKeyringAction,
   KeyringControllerWithKeyringV2Action,
-  KeyringControllerAddNewKeyringAction,
+  KeyringControllerWithKeyringV2UnsafeAction,
 } from '@metamask/keyring-controller';
 import { SnapAccountServiceHandleKeyringSnapMessageAction } from '@metamask/snap-account-service';
 import {
@@ -62,7 +62,7 @@ export type SnapPermissionSpecificationsActions =
   | SnapAccountServiceHandleKeyringSnapMessageAction
   | KeyringControllerWithKeyringAction
   | KeyringControllerWithKeyringV2Action
-  | KeyringControllerAddNewKeyringAction
+  | KeyringControllerWithKeyringV2UnsafeAction
   | MaybeUpdateState
   | PreferencesControllerGetStateAction
   | RateLimitControllerCallApiAction<RateLimitedApiMap>
