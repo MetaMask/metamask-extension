@@ -31,7 +31,7 @@ const TRACE_FLAG_SAMPLED = 1;
  * the extension's actual outbound call surface.
  */
 export const BACKEND_TRACE_PROPAGATION_TARGETS: RegExp[] = [
-  /^https:\/\/[a-z0-9.-]+\.api\.cx\.metamask\.io\//u,
+  /^https:\/\/[a-z0-9.-]+\.api\.cx\.metamask\.io(?:[/?#]|$)/u,
 ];
 
 // --- consensys-request-id provider seam -----------------------------------
