@@ -1473,11 +1473,17 @@ export const getAssetsByAccountGroupId = createDeepEqualSelector(
     getStateForAssetSelector,
     (_state: unknown, accountGroupId: string | undefined) => accountGroupId,
   ],
-  (assetListState: AssetListState, accountGroupId: string | undefined): AccountGroupAssets | undefined => {
+  (
+    assetListState: AssetListState,
+    accountGroupId: string | undefined,
+  ): AccountGroupAssets | undefined => {
     if (!accountGroupId) {
       return undefined;
     }
-    const all = selectAllAssets(assetListState) as Record<string, AccountGroupAssets>;
+    const all = selectAllAssets(assetListState) as Record<
+      string,
+      AccountGroupAssets
+    >;
     return all[accountGroupId] ?? undefined;
   },
 );

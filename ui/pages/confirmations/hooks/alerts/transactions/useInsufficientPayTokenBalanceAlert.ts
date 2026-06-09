@@ -51,7 +51,8 @@ export function useInsufficientPayTokenBalanceAlert({
   // Post-quote: `payToken` is the destination, not the source — skip
   // input/fees checks; gas check runs against the tx chain.
   const isPostQuote =
-    isPerpsWithdrawTransaction(currentConfirmation) || isTransactionPayPostQuote;
+    isPerpsWithdrawTransaction(currentConfirmation) ||
+    isTransactionPayPostQuote;
 
   const sourceChainId = (
     isPostQuote
@@ -85,8 +86,8 @@ export function useInsufficientPayTokenBalanceAlert({
     !isPostQuote &&
     Boolean(
       payToken &&
-      payToken.address.toLowerCase() === nativeTokenAddress.toLowerCase() &&
-      payToken.chainId === sourceChainId,
+        payToken.address.toLowerCase() === nativeTokenAddress.toLowerCase() &&
+        payToken.chainId === sourceChainId,
     );
 
   const { balanceUsd, balanceRaw } = payToken ?? {};

@@ -34,7 +34,10 @@ export const Asset = ({
   const { addAssetFilterMethod, removeAssetFilterMethod, setAssetListSize } =
     useAssetSelectionMetrics();
 
-  const { tokens, nfts } = useSendAssets({ includeNoBalance, ignoreAccountOverride });
+  const { tokens, nfts } = useSendAssets({
+    includeNoBalance,
+    ignoreAccountOverride,
+  });
 
   const filteredByCustomFilter = useMemo(() => {
     return tokenFilter ? tokenFilter(tokens) : tokens;

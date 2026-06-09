@@ -3,10 +3,7 @@ import { useDispatch } from 'react-redux';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
-import {
-  Box,
-  Text,
-} from '../../../../../components/component-library';
+import { Box, Text } from '../../../../../components/component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -109,7 +106,13 @@ export function PostQuoteRow() {
         true,
       ),
     );
-  }, [accountOverride, currentConfirmation, dispatch, isPostQuote, targetToken]);
+  }, [
+    accountOverride,
+    currentConfirmation,
+    dispatch,
+    isPostQuote,
+    targetToken,
+  ]);
 
   const handleInputClick = useCallback(
     (event: React.MouseEvent<HTMLInputElement>) => {

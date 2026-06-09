@@ -60,8 +60,7 @@ import {
 import { Asset } from '../../send/asset';
 import { TokenIcon } from '../../token-icon';
 
-const METAMASK_PAY_TEST_TYPE =
-  'metamaskPayTest' as unknown as TransactionType;
+const METAMASK_PAY_TEST_TYPE = 'metamaskPayTest' as unknown as TransactionType;
 
 // Non-transfer calldata so post-quote mode is driven by requiredAssets, not
 // ERC-20 transfer decoding. The execution tx is a zero-value self-transfer.
@@ -181,7 +180,10 @@ export function TargetTokenRow() {
             ),
           );
         } catch (error) {
-          console.error('Failed to recreate MetaMask Pay tx on new chain', error);
+          console.error(
+            'Failed to recreate MetaMask Pay tx on new chain',
+            error,
+          );
         }
 
         return;

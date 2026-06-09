@@ -6,7 +6,10 @@ import { Interface } from '@ethersproject/abi';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { setIsMaxAmount } from '../../../../store/controller-actions/transaction-pay-controller';
-import { upsertTransactionUIMetricsFragment, updateTransaction } from '../../../../store/actions';
+import {
+  upsertTransactionUIMetricsFragment,
+  updateTransaction,
+} from '../../../../store/actions';
 import { useTokenFiatRate } from '../tokens/useTokenFiatRates';
 import { useConfirmContext } from '../../context/confirm';
 import { useTransactionPayToken } from '../pay/useTransactionPayToken';
@@ -116,7 +119,15 @@ export function useTransactionCustomAmount({
     return () => {
       debouncedFn.cancel();
     };
-  }, [accountOverride, disableUpdate, dispatch, primaryRequiredToken?.decimals, transactionId, transactionMeta, updateTokenAmountCallback]);
+  }, [
+    accountOverride,
+    disableUpdate,
+    dispatch,
+    primaryRequiredToken?.decimals,
+    transactionId,
+    transactionMeta,
+    updateTokenAmountCallback,
+  ]);
 
   const [amountFiatState, setAmountFiat] = useState(
     new BigNumber(primaryRequiredToken?.amountUsd ?? '0')
@@ -338,7 +349,12 @@ function syncRequiredAssetsAndTransferDataAmount(
   dispatch: (action: any) => void,
 ): boolean {
   const existing = transactionMeta?.requiredAssets;
-  if (!transactionMeta || !existing?.length || decimals === undefined || !accountOverride) {
+  if (
+    !transactionMeta ||
+    !existing?.length ||
+    decimals === undefined ||
+    !accountOverride
+  ) {
     return false;
   }
 

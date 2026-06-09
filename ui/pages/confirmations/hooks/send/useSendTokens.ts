@@ -60,7 +60,9 @@ export const useSendTokens = (options: UseSendTokensOptions = {}): Asset[] => {
   // Callers that should always show the original account's tokens (e.g. target
   // token picker) pass ignoreAccountOverride: true to opt out.
   const rawAccountOverride = useTransactionAccountOverride();
-  const accountOverride = ignoreAccountOverride ? undefined : rawAccountOverride;
+  const accountOverride = ignoreAccountOverride
+    ? undefined
+    : rawAccountOverride;
   const overrideGroupId = useSelector((state: MultichainAccountsState) =>
     accountOverride
       ? getAccountGroupsByAddress(state, [accountOverride])[0]?.id
@@ -81,7 +83,10 @@ export const useSendTokens = (options: UseSendTokensOptions = {}): Asset[] => {
 
   // Flatten the per-chain override asset map into the same shape as globalAssets.
   const assets = useMemo(
-    () => (overrideGroupId && overrideAssets ? overrideAssets : globalAssets) as ReturnType<typeof getAssetsBySelectedAccountGroup>,
+    () =>
+      (overrideGroupId && overrideAssets
+        ? overrideAssets
+        : globalAssets) as ReturnType<typeof getAssetsBySelectedAccountGroup>,
     [overrideGroupId, overrideAssets, globalAssets],
   );
   const [enrichedTokensMetadata, setEnrichedTokensMetadata] = useState<

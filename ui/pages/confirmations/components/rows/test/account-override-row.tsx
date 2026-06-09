@@ -3,10 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AvatarAccountSize } from '@metamask/design-system-react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
-import {
-  Box,
-  Text,
-} from '../../../../../components/component-library';
+import { Box, Text } from '../../../../../components/component-library';
 import { PreferredAvatar } from '../../../../../components/app/preferred-avatar/preferred-avatar';
 import {
   AlignItems,
@@ -152,7 +149,10 @@ export function AccountOverrideRow() {
       paddingRight={4}
     >
       {selectedAddress && (
-        <PreferredAvatar address={selectedAddress} size={AvatarAccountSize.Xs} />
+        <PreferredAvatar
+          address={selectedAddress}
+          size={AvatarAccountSize.Xs}
+        />
       )}
       <Text variant={TextVariant.bodyMdMedium} color={TextColor.textDefault}>
         {t('account')}
