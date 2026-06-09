@@ -115,10 +115,7 @@ class SettingsPage {
    * waits for the home page. Kept E2E-local to avoid importing `ui` routes.
    */
   async clickBackButton(): Promise<void> {
-    await this.driver.executeScript(
-      `window.location.hash = ${JSON.stringify('/')}`,
-    );
-    await new HomePage(this.driver).checkPageIsLoaded();
+    await this.driver.navigate();
   }
 
   async waitForTransactionShieldButtonReady(): Promise<void> {
