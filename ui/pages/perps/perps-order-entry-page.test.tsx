@@ -309,7 +309,7 @@ describe('PerpsOrderEntryPage', () => {
         perpsEnabledVersion: perpsEnabled
           ? { enabled: true, minimumVersion: '0.0.0' }
           : { enabled: false, minimumVersion: '99.99.99' },
-        'perps-slippage-config2': true,
+        perpsSlippageConfig2: { enabled: true, minimumVersion: '0.0.0' },
       },
     },
   });

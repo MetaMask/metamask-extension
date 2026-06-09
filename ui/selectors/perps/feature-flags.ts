@@ -92,12 +92,16 @@ export const getHip3AllowedSourcesSet = createSelector(
 
 /**
  * Whether the perps slippage configuration UI is enabled.
- * Remote flag `perps-slippage-config2` — opt-in; disabled unless explicitly true.
+ *
+ * Remote flag `perpsSlippageConfig2` — the RemoteFeatureFlagController camelCases
+ * LaunchDarkly keys, so the stored key is camelCase (not kebab). The value follows
+ * the same `{ enabled, minimumVersion }` rollout shape as `perpsEnabledVersion`
+ * (boolean still supported for backward compatibility).
  */
 export const getIsPerpsSlippageConfigEnabled = createSelector(
   getRemoteFeatureFlags,
   (remoteFeatureFlags) =>
-    remoteFeatureFlags['perps-slippage-config2'] === true,
+    isPerpsRemoteConfigSatisfied(remoteFeatureFlags.perpsSlippageConfig2),
 );
 
 // Re-export the VIP program flag so perps consumers can import from this
