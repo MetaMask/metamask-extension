@@ -181,6 +181,23 @@ describe('buildAugmentedHeaders', () => {
     expect(headers.get('baggage')).toBe(CONSENSYS_BAGGAGE);
   });
 
+  it('lets init headers override Request headers (fetch init-wins semantics)', () => {
+    const request = new Request(BACKEND_URL, {
+      headers: { 'x-from-request': 'yes' },
+    });
+    const headers = buildAugmentedHeaders(
+      [request, { headers: { 'x-from-init': 'init' } }],
+      { traceparent: TRACEPARENT, requestId: 'uuid-fixed' },
+    );
+
+    // `fetch(request, { headers })` replaces the Request's headers with the init
+    // headers, so only the init headers survive — matching fetch semantics.
+    expect(headers.get('x-from-init')).toBe('init');
+    expect(headers.get('x-from-request')).toBeNull();
+    expect(headers.get('traceparent')).toBe(TRACEPARENT);
+    expect(headers.get('baggage')).toBe(CONSENSYS_BAGGAGE);
+  });
+
   it('omits traceparent when none is available but still adds baggage', () => {
     const headers = buildAugmentedHeaders([BACKEND_URL], {
       traceparent: undefined,
