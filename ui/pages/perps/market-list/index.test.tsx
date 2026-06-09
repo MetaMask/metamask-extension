@@ -1,6 +1,9 @@
 import React from 'react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import {
+  en as messages,
+  renderWithProvider,
+} from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import {
@@ -234,6 +237,27 @@ describe('MarketListView', () => {
         expect(screen.getByTestId('filter-select-menu')).toBeInTheDocument();
       });
     });
+
+    it.each([
+      ['pre-ipo', messages.perpsFilterPreIpo.message],
+      ['index', messages.perpsFilterIndex.message],
+      ['etf', messages.perpsFilterEtf.message],
+    ])(
+      'shows a visible label for the %s filter query param',
+      async (filter, expectedLabel) => {
+        renderWithProvider(
+          <MarketListView />,
+          mockStore,
+          `/perps/market-list?filter=${filter}`,
+        );
+
+        await waitFor(() => {
+          expect(screen.getByTestId('filter-select-button')).toHaveTextContent(
+            expectedLabel,
+          );
+        });
+      },
+    );
 
     it('shows stock markets on Stocks tab even when perpsHip3AllowlistMarkets flag is absent', async () => {
       // mockStore has no perpsHip3AllowlistMarkets flag → allowedHip3Sources defaults to Set()

@@ -32,6 +32,9 @@ export const FilterSelect = ({
       { id: 'all', label: t('perpsFilterAll') },
       { id: 'crypto', label: t('perpsFilterCrypto') },
       { id: 'stock', label: t('perpsFilterStocks') },
+      { id: 'pre-ipo', label: t('perpsFilterPreIpo') },
+      { id: 'index', label: t('perpsFilterIndex') },
+      { id: 'etf', label: t('perpsFilterEtf') },
       { id: 'commodity', label: t('perpsFilterCommodities') },
       { id: 'forex', label: t('perpsFilterForex') },
     ];
