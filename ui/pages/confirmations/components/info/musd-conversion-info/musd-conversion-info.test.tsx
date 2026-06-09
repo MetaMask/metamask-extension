@@ -13,7 +13,8 @@ import * as useTransactionPayDataModule from '../../../hooks/pay/useTransactionP
 import * as useTransactionPayTokenModule from '../../../hooks/pay/useTransactionPayToken';
 import * as useIsPaidByMetaMaskModule from '../../../hooks/pay/useIsPaidByMetaMask';
 import * as useMusdConversionTokensModule from '../../../../../hooks/musd';
-import * as useABTestModule from '../../../../../hooks/useABTest';
+import * as confirmationsFeatureFlagsModule from '../../../selectors/feature-flags';
+import * as useTransactionEventFragmentModule from '../../../hooks/useTransactionEventFragment';
 import { MusdConversionInfo } from './musd-conversion-info';
 
 const mockEndTrace = jest.fn();
@@ -29,7 +30,12 @@ jest.mock('../../../../../../shared/lib/trace', () => ({
   },
 }));
 
-jest.mock('../../../../../hooks/useABTest');
+jest.mock('../../../selectors/feature-flags', () => ({
+  ...jest.requireActual('../../../selectors/feature-flags'),
+  selectIsPayAmountPrefillEnabled: jest.fn(),
+}));
+
+jest.mock('../../../hooks/useTransactionEventFragment');
 
 jest.mock('../../../hooks/transactions/useTransactionCustomAmount');
 jest.mock('../../../hooks/transactions/useTransactionCustomAmountAlerts');
@@ -125,11 +131,14 @@ function setupDefaultMocks({
   prefillMax?: boolean;
   defaultPaymentToken?: { address: string; chainId: `0x${string}` } | null;
 } = {}) {
-  jest.mocked(useABTestModule.useABTest).mockReturnValue({
-    variant: { prefillMax },
-    variantName: prefillMax ? 'treatment' : 'control',
-    isActive: prefillMax,
-  });
+  jest
+    .mocked(confirmationsFeatureFlagsModule.selectIsPayAmountPrefillEnabled)
+    .mockReturnValue(prefillMax);
+  jest
+    .mocked(useTransactionEventFragmentModule.useTransactionEventFragment)
+    .mockReturnValue({
+      updateTransactionEventFragment: jest.fn(),
+    });
   jest
     .mocked(useTransactionCustomAmountModule.useTransactionCustomAmount)
     .mockReturnValue({
@@ -284,8 +293,8 @@ describe('MusdConversionInfo', () => {
     expect(getByTestId('custom-amount')).toBeInTheDocument();
   });
 
-  describe('pre-filled max amount A/B test', () => {
-    it('does not pre-fill the amount for the control variant', () => {
+  describe('pre-filled max amount', () => {
+    it('does not pre-fill the amount when the flag is disabled', () => {
       render();
 
       expect(
@@ -295,7 +304,7 @@ describe('MusdConversionInfo', () => {
       );
     });
 
-    it('pre-fills the max amount for the treatment variant', () => {
+    it('pre-fills the max amount when the flag is enabled', () => {
       render({ prefillMax: true });
 
       expect(

@@ -2394,6 +2394,20 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
   },
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
+  confirmations_pay_extended: {
+    name: 'confirmations_pay_extended',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: {
+      payStrategies: { relay: { gaslessEnabled: true } },
+      prefilledAmount: {
+        default: { enabled: false },
+      },
+    },
+    status: FeatureFlagStatus.Active,
+  },
+
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   confirmations_pay_post_quote: {
     name: 'confirmations_pay_post_quote',
     type: FeatureFlagType.Remote,
@@ -2490,23 +2504,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
       minimumVersion: '13.26.0',
       enabled: true,
     },
-    status: FeatureFlagStatus.Active,
-  },
-
-  earnCONF1385AbtestPrefilledMaxAmount: {
-    name: 'earnCONF1385AbtestPrefilledMaxAmount',
-    type: FeatureFlagType.Remote,
-    inProd: false,
-    productionDefault: [
-      {
-        name: 'control',
-        scope: { type: 'threshold', value: 0.5 },
-      },
-      {
-        name: 'treatment',
-        scope: { type: 'threshold', value: 1.0 },
-      },
-    ],
     status: FeatureFlagStatus.Active,
   },
 

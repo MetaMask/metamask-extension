@@ -36,8 +36,7 @@ export function useTransactionCustomAmount({
   balanceUsdOverride?: number;
   /**
    * When true, the amount field is pre-filled with the max balance once it is
-   * available, unless the user has already edited it. Used by the mUSD
-   * conversion A/B test (Variant B).
+   * available, unless the user has already edited it.
    */
   prefillMaxOnLoad?: boolean;
 } = {}) {
@@ -247,8 +246,8 @@ export function useTransactionCustomAmount({
     ],
   );
 
-  // Variant B (A/B test): pre-fill the max amount once the balance is known,
-  // unless the user has already edited the field.
+  // Pre-fill the max amount once the balance is known, unless the user has
+  // already edited the field.
   useEffect(() => {
     if (
       !prefillMaxOnLoad ||

@@ -11,12 +11,8 @@ import {
   selectTransactionPaymentTokenByTransactionId,
   type TransactionPayState,
 } from '../../../../../selectors/transactionPayController';
-import { useABTest } from '../../../../../hooks/useABTest';
-import {
-  MUSD_PREFILLED_AMOUNT_AB_TEST_KEY,
-  MUSD_PREFILLED_AMOUNT_AB_TEST_VARIANTS,
-  MUSD_PREFILLED_AMOUNT_AB_TEST_EXPOSURE_METADATA,
-} from '../../../../../../shared/lib/ab-testing/configs/musd-prefilled-amount';
+import { selectIsPayAmountPrefillEnabled } from '../../../selectors/feature-flags';
+import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 import { useConfirmContext } from '../../../context/confirm';
 import { CustomAmountInfo } from '../custom-amount-info';
 import { useTransactionCustomAmountAlerts } from '../../../hooks/transactions/useTransactionCustomAmountAlerts';
@@ -83,16 +79,23 @@ export const MusdConversionInfo = () => {
     selectTransactionPaymentTokenByTransactionId(state, transactionId),
   );
 
-  // A/B test (Variant B = treatment): pre-fill the max amount on load.
-  // `useABTest` resolves the remote assignment and emits `Experiment Viewed`.
-  // Conversion and drop-off events are enriched with `active_ab_tests` via the
-  // registered analytics mapping.
-  const { variant } = useABTest(
-    MUSD_PREFILLED_AMOUNT_AB_TEST_KEY,
-    MUSD_PREFILLED_AMOUNT_AB_TEST_VARIANTS,
-    MUSD_PREFILLED_AMOUNT_AB_TEST_EXPOSURE_METADATA,
+  // Treatment (max pre-filled) vs control (empty field) is configured under
+  // confirmations_pay_extended and split via LD targeting.
+  const prefillMaxOnLoad = useSelector((state) =>
+    selectIsPayAmountPrefillEnabled(state, TransactionType.musdConversion),
   );
-  const prefillMaxOnLoad = variant.prefillMax;
+
+  // Tag every Transaction event with the experience shown on load so the
+  // success rate of pre-filled vs empty can be compared.
+  const { updateTransactionEventFragment } = useTransactionEventFragment();
+  useEffect(() => {
+    updateTransactionEventFragment({
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        mm_pay_prefilled_amount: prefillMaxOnLoad,
+      },
+    });
+  }, [prefillMaxOnLoad, updateTransactionEventFragment]);
 
   // Track quote fetch time via Sentry trace
   useMusdConversionQuoteTrace();

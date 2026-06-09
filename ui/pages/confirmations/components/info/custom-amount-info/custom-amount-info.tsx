@@ -74,8 +74,7 @@ export type CustomAmountInfoProps = {
   hasMax?: boolean;
   hidePayTokenAmount?: boolean;
   /**
-   * When true, pre-fills the amount field with the max balance on load
-   * (mUSD conversion A/B test Variant B).
+   * When true, pre-fills the amount field with the max balance on load.
    */
   prefillMaxOnLoad?: boolean;
   preferredToken?: SetPayTokenRequest;
