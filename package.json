@@ -336,7 +336,7 @@
     "@metamask/analytics-controller": "^1.1.0",
     "@metamask/announcement-controller": "^8.0.0",
     "@metamask/approval-controller": "^9.0.0",
-    "@metamask/assets-controller": "^8.3.1",
+    "@metamask/assets-controller": "npm:@metamask-previews/assets-controller@8.3.2-preview-cf351fcd3",
     "@metamask/assets-controllers": "^108.5.0",
     "@metamask/base-controller": "^9.0.1",
     "@metamask/bitcoin-wallet-snap": "^1.12.0",
