@@ -1,3 +1,5 @@
+import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
+
 export const ASSETS_UNIFY_STATE_FLAG = 'assetsUnifyState';
 
 export const ASSETS_UNIFY_STATE_VERSION_1 = '1';
@@ -5,6 +7,8 @@ export const ASSETS_UNIFY_STATE_VERSION_1 = '1';
 export type AssetsUnifyStateFeatureFlag = {
   enabled: boolean;
   featureVersion: string | null;
+  minimumVersion?: string | null;
+  deprecatedControllers?: string[];
 };
 
 /**
@@ -29,4 +33,30 @@ export const isAssetsUnifyStateFeatureEnabled = (
     Boolean(featureFlag?.enabled) &&
     featureFlag?.featureVersion === featureVersion
   );
+};
+
+/**
+ * Returns true if the given controller is listed as deprecated in the
+ * assets-unify-state remote feature flag.
+ *
+ * In test environments the controller is always considered deprecated so that
+ * tests do not need to configure remote feature-flag state.
+ *
+ * @param remoteFeatureFlags - The remote feature flags state.
+ * @param controllerName - The controller name to check (e.g. 'TokenListController').
+ * @returns boolean
+ */
+export const getIsDeprecatedController = (
+  remoteFeatureFlags: RemoteFeatureFlagControllerState['remoteFeatureFlags'],
+  controllerName: string,
+): boolean => {
+  if (process.env.IN_TEST) {
+    return true;
+  }
+
+  const flag = remoteFeatureFlags?.[ASSETS_UNIFY_STATE_FLAG] as
+    | AssetsUnifyStateFeatureFlag
+    | undefined;
+
+  return flag?.deprecatedControllers?.includes(controllerName) ?? false;
 };
