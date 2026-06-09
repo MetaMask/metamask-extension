@@ -18,7 +18,15 @@ import { getConfig, mockFeatureFlagsWithoutNonEvmAccounts } from './helpers';
 describe('Vault Corruption', function () {
   this.timeout(120000); // This test is very long, so we need an unusually high timeout
 
-  const WAIT_FOR_SENTRY_MS = 10000;
+  // The missing-vault Sentry event is sent asynchronously: captureException runs
+  // in the background, then the metaMetricsIntegration's async opt-in resolution
+  // (which reads persisted/backup state) must complete before the event is
+  // transmitted. Under CI load this can take a while, so we allow a generous wait.
+  const WAIT_FOR_SENTRY_MS = 30000;
+
+  // The encrypted vault is mirrored to the backup IndexedDB asynchronously after
+  // onboarding, so we poll for it rather than reading once (which can race).
+  const WAIT_FOR_BACKUP_MS = 30000;
 
   /**
    * Script template to simulate a broken database.
@@ -189,8 +197,17 @@ describe('Vault Corruption', function () {
           },
         );
 
-        const backupVault =
-          await driver.executeAsyncScript(getBackupVaultScript);
+        // The vault is mirrored to the backup IndexedDB asynchronously, so poll
+        // until it is present. driver.wait does not return the condition value,
+        // so we capture it via closure.
+        let capturedVault: string | null = null;
+        await driver.wait(async () => {
+          capturedVault = (await driver.executeAsyncScript(
+            getBackupVaultScript,
+          )) as string | null;
+          return Boolean(capturedVault);
+        }, WAIT_FOR_BACKUP_MS);
+        const backupVault = capturedVault as string | null;
         assert.ok(backupVault, 'Expected backup vault to exist');
 
         await driver.wait(async () => {
