@@ -17,6 +17,7 @@ import {
   getKnownTokenMetadata,
   getLocalTransactionStatus,
   getNativeAssetSafe,
+  isNftStandard,
 } from './helpers';
 
 const EVM_NATIVE_DECIMALS = 18;
@@ -175,6 +176,7 @@ export function mapLocalTransaction(
   const from = initialTransaction.txParams.from ?? '';
   const to = initialTransaction.txParams.to ?? '';
   const methodId = initialTransaction.txParams.data?.slice(0, 10);
+
   switch (initialTransaction.type) {
     case TransactionType.simpleSend: {
       return {
@@ -427,6 +429,34 @@ export function mapLocalTransaction(
         initialTransaction.simulationData?.tokenBalanceChanges?.find(
           ({ isDecrease, standard }) => isDecrease && standard === 'erc20',
         );
+      const incomingNftBalanceChange =
+        initialTransaction.type === TransactionType.contractInteraction &&
+        initialTransaction.simulationData?.tokenBalanceChanges?.find(
+          ({ isDecrease, standard }) => !isDecrease && isNftStandard(standard),
+        );
+      let hasNativeValue = false;
+
+      try {
+        hasNativeValue = BigInt(initialTransaction.txParams.value ?? '0') > 0n;
+      } catch {
+        hasNativeValue = false;
+      }
+
+      if (incomingNftBalanceChange && hasNativeValue) {
+        return {
+          type: 'nftBuy',
+          chainId,
+          status,
+          timestamp,
+          raw: { type: 'localTransaction', data: transactionGroup },
+          data: {
+            hash,
+            token: {
+              direction: 'in',
+            },
+          },
+        };
+      }
 
       if (suppliedTokenBalanceChange) {
         return {

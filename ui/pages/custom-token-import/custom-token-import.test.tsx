@@ -60,6 +60,7 @@ jest.mock('../../store/actions', () => {
       standard: 'ERC20',
       symbol: 'APE',
       decimals: '18',
+      name: 'ApeCoin',
     }),
   };
 });

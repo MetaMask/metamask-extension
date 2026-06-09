@@ -28,7 +28,7 @@ describe('Clear account activity', function (this: Suite) {
         await homePage.goToActivityList();
         const activityList = new ActivityList(driver);
         await activityList.checkTxAction({
-          action: 'Sent',
+          action: 'Sent ETH',
           confirmedTx: 1,
         });
 
