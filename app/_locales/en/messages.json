@@ -3996,6 +3996,12 @@
     "message": "Max allowance",
     "description": "Label for the max allowance of a permission"
   },
+  "gatorPermissionsMetaMaskFacilitator": {
+    "message": "MetaMask facilitator"
+  },
+  "gatorPermissionsMetaMaskFacilitatorTooltip": {
+    "message": "May only be redeemed by the MetaMask facilitator"
+  },
   "gatorPermissionsPermit2ApproveRevocation": {
     "message": "Permit2 approve(token, spender, 0, 0)",
     "description": "Token approval revocation method for Permit2 approve reset"
@@ -7842,12 +7848,6 @@
   },
   "redeemers": {
     "message": "Redeemers"
-  },
-  "gatorPermissionsMetaMaskFacilitator": {
-    "message": "MetaMask facilitator"
-  },
-  "gatorPermissionsMetaMaskFacilitatorTooltip": {
-    "message": "May only be redeemed by the MetaMask facilitator"
   },
   "redeposit": {
     "message": "Redeposit"
