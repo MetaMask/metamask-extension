@@ -1,0 +1,106 @@
+diff --git a/dist/data-sources/RpcDataSource.cjs b/dist/data-sources/RpcDataSource.cjs
+index a30b5e647f38e2c1ccb7afa4dbdd58fa24aa59c5..b7e2fe62a4138f278cfb5eb48e07fdea6d756e5e 100644
+--- a/dist/data-sources/RpcDataSource.cjs
++++ b/dist/data-sources/RpcDataSource.cjs
+@@ -646,31 +646,25 @@ _RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated =
+         const existingMeta = existingMetadata[balance.assetId];
+         const isNative = existingMeta?.type === 'native' ||
+             balance.assetId.toLowerCase() === nativeAssetId?.toLowerCase();
+-        if (isNative) {
+-            // Prefer existing (richer) metadata in state — it may have been
+-            // enriched by the price/info API with image, description, etc.
+-            // Only emit a minimal stub when there's nothing in state yet,
+-            // so we don't clobber that richer metadata on every balance refresh.
+-            if (__classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_hasValidDecimals).call(this, existingMeta)) {
+-                assetsInfo[balance.assetId] = existingMeta;
+-            }
+-            else {
+-                const chainStatus = __classPrivateFieldGet(this, _RpcDataSource_chainStatuses, "f")[chainId];
+-                if (chainStatus) {
+-                    assetsInfo[balance.assetId] = {
+-                        type: 'native',
+-                        symbol: chainStatus.nativeCurrency,
+-                        name: chainStatus.nativeCurrency,
+-                        decimals: 18,
+-                    };
+-                }
++        if (isNative && !__classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_hasValidDecimals).call(this, existingMeta)) {
++            // Only emit a stub when no valid metadata exists in state yet.
++            // Re-emitting existing metadata into the response would overwrite
++            // richer entries (e.g. image/description added by AccountsAPI) with
++            // a simpler stub on every balance poll cycle.
++            const chainStatus = __classPrivateFieldGet(this, _RpcDataSource_chainStatuses, "f")[chainId];
++            if (chainStatus) {
++                assetsInfo[balance.assetId] = {
++                    type: 'native',
++                    symbol: chainStatus.nativeCurrency,
++                    name: chainStatus.nativeCurrency,
++                    decimals: 18,
++                };
+             }
+         }
+-        else if (existingMeta) {
+-            // For ERC20 tokens, use existing metadata from state if available.
+-            // Unknown ERC-20s are omitted until TokenDataSource enriches them.
+-            assetsInfo[balance.assetId] = existingMeta;
+-        }
++        // For ERC-20 tokens and native tokens with existing valid metadata:
++        // do not re-emit — the existing state entry is already correct.
++        // Decimals for balance conversion are resolved via stateMetadata in
++        // the callers (pickValidDecimals(stateMetadata, pipelineMetadata)).
+     }
+     return assetsInfo;
+ }, _RpcDataSource_hasValidDecimals = function _RpcDataSource_hasValidDecimals(metadata) {
+diff --git a/dist/data-sources/RpcDataSource.mjs b/dist/data-sources/RpcDataSource.mjs
+index 282d9110825cb2fc7790c7ba66226a68eb6523f6..a38293795df8ce035252c08c9ae00101fb28bfb1 100644
+--- a/dist/data-sources/RpcDataSource.mjs
++++ b/dist/data-sources/RpcDataSource.mjs
+@@ -638,31 +638,25 @@ _RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated =
+         const existingMeta = existingMetadata[balance.assetId];
+         const isNative = existingMeta?.type === 'native' ||
+             balance.assetId.toLowerCase() === nativeAssetId?.toLowerCase();
+-        if (isNative) {
+-            // Prefer existing (richer) metadata in state — it may have been
+-            // enriched by the price/info API with image, description, etc.
+-            // Only emit a minimal stub when there's nothing in state yet,
+-            // so we don't clobber that richer metadata on every balance refresh.
+-            if (__classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_hasValidDecimals).call(this, existingMeta)) {
+-                assetsInfo[balance.assetId] = existingMeta;
+-            }
+-            else {
+-                const chainStatus = __classPrivateFieldGet(this, _RpcDataSource_chainStatuses, "f")[chainId];
+-                if (chainStatus) {
+-                    assetsInfo[balance.assetId] = {
+-                        type: 'native',
+-                        symbol: chainStatus.nativeCurrency,
+-                        name: chainStatus.nativeCurrency,
+-                        decimals: 18,
+-                    };
+-                }
++        if (isNative && !__classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_hasValidDecimals).call(this, existingMeta)) {
++            // Only emit a stub when no valid metadata exists in state yet.
++            // Re-emitting existing metadata into the response would overwrite
++            // richer entries (e.g. image/description added by AccountsAPI) with
++            // a simpler stub on every balance poll cycle.
++            const chainStatus = __classPrivateFieldGet(this, _RpcDataSource_chainStatuses, "f")[chainId];
++            if (chainStatus) {
++                assetsInfo[balance.assetId] = {
++                    type: 'native',
++                    symbol: chainStatus.nativeCurrency,
++                    name: chainStatus.nativeCurrency,
++                    decimals: 18,
++                };
+             }
+         }
+-        else if (existingMeta) {
+-            // For ERC20 tokens, use existing metadata from state if available.
+-            // Unknown ERC-20s are omitted until TokenDataSource enriches them.
+-            assetsInfo[balance.assetId] = existingMeta;
+-        }
++        // For ERC-20 tokens and native tokens with existing valid metadata:
++        // do not re-emit — the existing state entry is already correct.
++        // Decimals for balance conversion are resolved via stateMetadata in
++        // the callers (pickValidDecimals(stateMetadata, pipelineMetadata)).
+     }
+     return assetsInfo;
+ }, _RpcDataSource_hasValidDecimals = function _RpcDataSource_hasValidDecimals(metadata) {
