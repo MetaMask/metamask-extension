@@ -12,7 +12,7 @@ class SettingsPage {
     '[data-testid="settings-tab-item-assets"]';
 
   private readonly backButton = {
-    testId: 'settings-header-back-button'
+    testId: 'settings-header-back-button',
   };
 
   private readonly developerToolsSettingsButton =
@@ -95,30 +95,40 @@ class SettingsPage {
 
   async checkPageIsLoaded(): Promise<void> {
     console.log('Check settings page is loaded');
-    await this.driver.wait(async () => {
-      return await this.isOnSettingsPage();
-    });
+    await this.driver.waitForSelector(this.settingsPageFullscreenRoot);
   }
 
-  async hasElement(
-    locator: string | { css?: string; text?: string; tag?: string },
-  ) {
-    const elements = await this.driver.findElements(locator);
-    return elements.length > 0;
+  async isOnSettingsPage(): Promise<boolean> {
+    const currentUrl = await this.driver.getCurrentUrl();
+    return currentUrl.includes('settings');
   }
 
-  async isOnSettingsPage() {
-    return await this.hasElement(this.settingsPageFullscreenRoot);
+  /**
+   * Click the Settings back button once. The back button only navigates one
+   * level up, so a single click may not fully close Settings when on a nested
+   * page. Use closeSettings to fully exit the Settings page.
+   */
+  async clickBackButton(): Promise<void> {
+    await this.driver.clickElementSafe(this.backButton);
   }
 
   /**
    * Close the Settings page and return to the wallet home with the navbar open.
-   * 2 clicks are required to fully close the settings due to UI issue.
-   * Use closeSettings to perform the full flow of closing settings AND navbar.
+   *
+   * The back button only navigates one level up, so when we are on a nested
+   * settings page (e.g. not Preferences) it must be clicked several times to
+   * fully close Settings. Click it while we are still on a Settings page, up to
+   * a few times, stopping as soon as we have left it.
    */
-  async clickBackButton(): Promise<void> {
-    await this.driver.clickElement(this.backButton);
-    await this.driver.clickElementSafe(this.backButton);
+  async closeSettings(): Promise<void> {
+    const maxAttempts = 5;
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      if (!(await this.isOnSettingsPage())) {
+        return;
+      }
+      await this.clickBackButton();
+      await this.driver.delay(1000);
+    }
   }
 
   async waitForTransactionShieldButtonReady(): Promise<void> {

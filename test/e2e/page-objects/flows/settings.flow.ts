@@ -18,7 +18,7 @@ import { lockAndWaitForLoginPage } from './login.flow';
  */
 export const closeSettings = async (driver: Driver): Promise<void> => {
   const settingsPage = new SettingsPage(driver);
-  await settingsPage.clickBackButton();
+  await settingsPage.closeSettings();
 
   const headerNavbar = new HeaderNavbar(driver);
   await headerNavbar.clickDrawerBackButton();
