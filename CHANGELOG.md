@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Bumped `@lavamoat/webpack` from 2.2.0 to 2.2.3, pulling in updated `lavamoat-core` and `lavamoat-tofu` transitive dependencies (#43333). These patch releases fix non-determinism in policy generation so that successive builds of the same source tree produce identical LavaMoat policy files, eliminating spurious policy diffs in CI and making supply-chain attestations more reliable.
+- Bumped `@lavamoat/webpack` from 2.2.0 to 2.2.3 (#43333)
 
 ### Fixed
 
