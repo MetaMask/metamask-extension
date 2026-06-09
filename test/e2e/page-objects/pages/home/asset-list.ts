@@ -573,13 +573,22 @@ class AssetListPage extends HomePage {
    * Checks if the specified token amount is displayed in the token list.
    *
    * @param tokenAmount - The token amount to be checked for.
+   * @param [options] - Optional settings.
+   * @param [options.timeout] - Max ms to wait for the amount (driver default when omitted).
    */
-  async checkTokenAmountIsDisplayed(tokenAmount: string): Promise<void> {
+  async checkTokenAmountIsDisplayed(
+    tokenAmount: string,
+    options: { timeout?: number } = {},
+  ): Promise<void> {
+    const { timeout } = options;
     console.log(`Waiting for token amount ${tokenAmount} to be displayed`);
-    await this.driver.waitForSelector({
-      css: this.tokenAmountValue,
-      text: tokenAmount,
-    });
+    await this.driver.waitForSelector(
+      {
+        css: this.tokenAmountValue,
+        text: tokenAmount,
+      },
+      timeout === undefined ? {} : { timeout },
+    );
     console.log(`Token amount ${tokenAmount} was found`);
   }
 
@@ -588,13 +597,19 @@ class AssetListPage extends HomePage {
    *
    * @param expectedTokenBalance - The expected balance to be displayed.
    * @param symbol - The symbol of the currency or token.
+   * @param [options] - Optional settings.
+   * @param [options.timeout] - Max ms to wait for the balance (driver default when omitted).
    */
   async checkExpectedTokenBalanceIsDisplayed(
     expectedTokenBalance: string,
     symbol: string,
+    options: { timeout?: number } = {},
   ): Promise<void> {
     await this.expandLowValueAssetsIfPresent();
-    await this.checkTokenAmountIsDisplayed(`${expectedTokenBalance} ${symbol}`);
+    await this.checkTokenAmountIsDisplayed(
+      `${expectedTokenBalance} ${symbol}`,
+      options,
+    );
   }
 
   /**
@@ -858,10 +873,7 @@ class AssetListPage extends HomePage {
       text: symbol,
     });
 
-    const expectedAddressFormat = `${tokenAddress.slice(
-      0,
-      7,
-    )}...${tokenAddress.slice(37)}`;
+    const expectedAddressFormat = `${tokenAddress.slice(0, 7)}...${tokenAddress.slice(37)}`;
 
     await this.driver.waitForSelector({
       css: this.tokenAddressInDetails,

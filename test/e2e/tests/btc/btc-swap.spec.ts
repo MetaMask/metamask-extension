@@ -23,6 +23,11 @@ import {
 } from './mocks';
 import { mockPriceMulti, mockPriceMultiBtcAndSol } from './mocks/min-api';
 
+// The Bitcoin balance is populated asynchronously once the Bitcoin snap's BDK
+// chain scan completes and pushes the balance, so allow extra time to avoid
+// flakiness from a slow/late snap balance update.
+const BTC_BALANCE_TIMEOUT = 150000;
+
 async function buildBtcSwapBaseMocks(mockServer: Mockttp) {
   return [
     await mockInitialFullScan(mockServer),
@@ -69,9 +74,12 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         const homePage = new HomePage(driver);
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
+        // The Bitcoin balance is derived asynchronously by the Bitcoin snap's
+        // BDK scan, which can take a while to settle, so use a longer timeout.
         await new AssetListPage(driver).checkExpectedTokenBalanceIsDisplayed(
           `${DEFAULT_BTC_BALANCE}`,
           'BTC',
+          { timeout: BTC_BALANCE_TIMEOUT },
         );
 
         // Click swap button to open bridge page
@@ -96,9 +104,12 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         const homePage = new HomePage(driver);
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
+        // The Bitcoin balance is derived asynchronously by the Bitcoin snap's
+        // BDK scan, which can take a while to settle, so use a longer timeout.
         await new AssetListPage(driver).checkExpectedTokenBalanceIsDisplayed(
           `${DEFAULT_BTC_BALANCE}`,
           'BTC',
+          { timeout: BTC_BALANCE_TIMEOUT },
         );
 
         // Click swap button
@@ -136,9 +147,12 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         const homePage = new HomePage(driver);
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
+        // The Bitcoin balance is derived asynchronously by the Bitcoin snap's
+        // BDK scan, which can take a while to settle, so use a longer timeout.
         await new AssetListPage(driver).checkExpectedTokenBalanceIsDisplayed(
           `${DEFAULT_BTC_BALANCE}`,
           'BTC',
+          { timeout: BTC_BALANCE_TIMEOUT },
         );
 
         // Click swap button
@@ -172,9 +186,12 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         const homePage = new HomePage(driver);
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
+        // The Bitcoin balance is derived asynchronously by the Bitcoin snap's
+        // BDK scan, which can take a while to settle, so use a longer timeout.
         await new AssetListPage(driver).checkExpectedTokenBalanceIsDisplayed(
           `${DEFAULT_BTC_BALANCE}`,
           'BTC',
+          { timeout: BTC_BALANCE_TIMEOUT },
         );
 
         // Click swap button
@@ -209,9 +226,12 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         const homePage = new HomePage(driver);
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
+        // The Bitcoin balance is derived asynchronously by the Bitcoin snap's
+        // BDK scan, which can take a while to settle, so use a longer timeout.
         await new AssetListPage(driver).checkExpectedTokenBalanceIsDisplayed(
           `${DEFAULT_BTC_BALANCE}`,
           'BTC',
+          { timeout: BTC_BALANCE_TIMEOUT },
         );
 
         // Click swap button
