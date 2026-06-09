@@ -37,7 +37,10 @@ import type {
   OrderParams,
   PriceUpdate,
 } from '@metamask/perps-controller';
-import { ORDER_SLIPPAGE_CONFIG } from '@metamask/perps-controller';
+import {
+  ORDER_SLIPPAGE_CONFIG,
+  PERFORMANCE_CONFIG,
+} from '@metamask/perps-controller';
 import {
   formatPerpsFiat,
   PRICE_RANGES_UNIVERSAL,
@@ -473,7 +476,10 @@ const PerpsOrderEntryPage = () => {
     }
     // Activate background orderBook stream for this symbol
     submitRequestToBackground('perpsActivateOrderBookStream', [
-      { symbol: decodedSymbol },
+      {
+        symbol: decodedSymbol,
+        levels: PERFORMANCE_CONFIG.SlippageEstimateBookLevels,
+      },
     ]).catch(() => {
       // Controller not ready
     });
