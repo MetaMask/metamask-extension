@@ -206,6 +206,7 @@ describe('ActivityList — ActivityScreenOpened metric', () => {
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
         event: MetaMetricsEventName.ActivityScreenOpened,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         properties: expect.objectContaining({ is_empty: false }),
       }),
     );
@@ -235,6 +236,7 @@ describe('ActivityList — ActivityScreenOpened metric', () => {
 
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         properties: expect.objectContaining({ pending_transactions: 2 }),
       }),
     );
