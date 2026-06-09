@@ -3,6 +3,7 @@ import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { formatUnits } from '../../../../shared/lib/unit';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
+import { TokenFiatValue } from '../../../components/app/transaction/token-fiat-value';
 import { Row, Section } from './shared';
 
 const maximumFractionDigits = 8;
@@ -22,26 +23,7 @@ export function AmountsSection({ item }: { item: ActivityListItem }) {
     token = item.data.sourceToken;
   }
 
-  let tokenValue;
-
-  if (token?.amount) {
-    const { amount: tokenAmount, decimals, symbol } = token;
-    let amount = tokenAmount;
-
-    try {
-      amount = formatUnits(BigInt(tokenAmount), decimals ?? 0);
-    } catch {
-      amount = tokenAmount;
-    }
-
-    tokenValue = symbol
-      ? formatToken(amount as `${number}`, symbol, {
-          maximumFractionDigits,
-        })
-      : amount;
-  }
-
-  if (!visibleFees.length && !tokenValue) {
+  if (!visibleFees.length && !token?.amount) {
     return null;
   }
 
@@ -78,7 +60,9 @@ export function AmountsSection({ item }: { item: ActivityListItem }) {
           />
         );
       })}
-      {tokenValue ? <Row label={t('amount')} value={tokenValue} /> : null}
+      {token?.amount ? (
+        <Row label={t('amount')} value={<TokenFiatValue token={token} />} />
+      ) : null}
     </Section>
   );
 }

@@ -21,13 +21,14 @@ export function NetworkName({ chainId }: { chainId: string }) {
   );
 
   return (
-    <span className="inline-flex items-center justify-end gap-2">
+    <div className="inline-flex items-center gap-2">
       <AvatarNetwork
         size={AvatarNetworkSize.Xs}
         name={networkName}
         src={networkImage}
       />
+
       <span>{networkName}</span>
-    </span>
+    </div>
   );
 }

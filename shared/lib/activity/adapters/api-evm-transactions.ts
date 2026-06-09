@@ -220,6 +220,7 @@ export function mapApiEvmTransactions({
             transfer?.transferType,
             chainId,
           ) ?? nativeToken,
+        fees: getFees(transaction, chainId),
         hash,
       },
     };
