@@ -68,6 +68,9 @@ export function usePerpsEstimatedSlippage({
     symbol,
     levels: PERFORMANCE_CONFIG.SlippageEstimateBookLevels,
     enabled,
+    // Order entry page already activates the shared order-book stream for
+    // top-of-book / limit mid-price; avoid deactivating it when slippage turns off.
+    manageStream: false,
   });
 
   const throttledOrderBook = useThrottledValue(

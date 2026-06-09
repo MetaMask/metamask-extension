@@ -18,6 +18,12 @@ export type UsePerpsLiveOrderBookOptions = {
   mantissa?: 2 | 5;
   /** When false, no background order-book stream is activated (default: true). */
   enabled?: boolean;
+  /**
+   * When false, only read from the shared channel; do not activate/deactivate the
+   * background stream (default: true). Use when another surface already owns
+   * order-book stream lifecycle (e.g. order entry page top-of-book).
+   */
+  manageStream?: boolean;
 };
 
 /**
@@ -45,7 +51,14 @@ const getOrderBookChannel = (sm: PerpsStreamManager) => sm.orderBook;
 export function usePerpsLiveOrderBook(
   options: UsePerpsLiveOrderBookOptions,
 ): UsePerpsLiveOrderBookReturn {
-  const { symbol, levels, nSigFigs, mantissa, enabled = true } = options;
+  const {
+    symbol,
+    levels,
+    nSigFigs,
+    mantissa,
+    enabled = true,
+    manageStream = true,
+  } = options;
   const activeSymbol = enabled ? symbol : undefined;
 
   const { data: orderBook, isInitialLoading } = usePerpsChannel(
@@ -55,7 +68,7 @@ export function usePerpsLiveOrderBook(
   );
 
   useEffect(() => {
-    if (!enabled || !symbol) {
+    if (!manageStream || !enabled || !symbol) {
       return undefined;
     }
     submitRequestToBackground('perpsActivateOrderBookStream', [
@@ -70,7 +83,7 @@ export function usePerpsLiveOrderBook(
         },
       );
     };
-  }, [enabled, symbol, levels, nSigFigs, mantissa]);
+  }, [manageStream, enabled, symbol, levels, nSigFigs, mantissa]);
 
   return {
     orderBook,
