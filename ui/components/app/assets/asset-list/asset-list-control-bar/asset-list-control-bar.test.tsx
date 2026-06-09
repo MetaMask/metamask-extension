@@ -268,4 +268,49 @@ describe('NFTs options', () => {
       expect(onNetworkSelect).toHaveBeenCalledWith(['eip155:1']),
     );
   });
+
+  it('opens the network filter modal and can navigate to manage networks', async () => {
+    const showModalSpy = jest.spyOn(actions, 'showModal');
+    const state = createMockState();
+    state.metamask.remoteFeatureFlags = {
+      ...state.metamask.remoteFeatureFlags,
+      extensionUxNetworkManagement: true,
+    };
+    const store = configureMockStore([thunk])(state);
+
+    const { findByTestId, findByText } = renderWithProvider(
+      <AssetListControlBar />,
+      store,
+    );
+
+    fireEvent.click(await findByTestId('sort-by-networks'));
+
+    expect(await findByText('Select network')).toBeInTheDocument();
+    expect(await findByText('All default networks')).toBeInTheDocument();
+    expect(await findByText('Default networks')).toBeInTheDocument();
+    expect(await findByText('Testnets')).toBeInTheDocument();
+
+    fireEvent.click(await findByTestId('home-network-filter-manage-networks'));
+
+    expect(showModalSpy).toHaveBeenCalledWith({ name: 'NETWORK_MANAGER' });
+  });
+
+  it('opens the legacy Network Manager modal when network management feature flag is disabled', async () => {
+    const state = createMockState();
+    state.metamask.remoteFeatureFlags = {
+      ...state.metamask.remoteFeatureFlags,
+      extensionUxNetworkManagement: false,
+    };
+    const store = configureMockStore([thunk])(state);
+
+    const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
+
+    fireEvent.click(await findByTestId('sort-by-networks'));
+
+    expect(store.getActions()).toContainEqual(
+      expect.objectContaining({
+        payload: { name: 'NETWORK_MANAGER' },
+      }),
+    );
+  });
 });
