@@ -75,7 +75,7 @@ export type PerpsSlippageConfigModalProps = {
   isOpen: boolean;
   currentValueBps: number;
   onClose: () => void;
-  onSave: (valueBps: number) => void;
+  onSave: (valueBps: number) => void | Promise<void>;
 };
 
 export const PerpsSlippageConfigModal = ({
@@ -137,15 +137,19 @@ export const PerpsSlippageConfigModal = ({
     );
   }, [selectedBps]);
 
-  const handleSet = useCallback(() => {
+  const handleSet = useCallback(async () => {
     if (!canSet) {
       return;
     }
     const valueBps = isCustomMode
       ? percentToBps(snapToStep(clampToRange(parsedDraft)))
       : selectedBps;
-    onSave(valueBps);
-    onClose();
+    try {
+      await onSave(valueBps);
+      onClose();
+    } catch {
+      // Persist failed — keep the modal open so the user can retry.
+    }
   }, [canSet, isCustomMode, onClose, onSave, parsedDraft, selectedBps]);
 
   const environmentType = getEnvironmentType();

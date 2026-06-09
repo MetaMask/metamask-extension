@@ -91,6 +91,31 @@ describe('usePerpsOrderForm', () => {
       expect(result.current.formState.amount).toBe('10');
     });
 
+    it('recaps default order amount when price resolves after mount', () => {
+      const props = {
+        ...defaultOptions,
+        currentPrice: 0,
+        availableBalance: 1,
+        szDecimals: 6,
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      expect(result.current.formState.amount).toBe('10');
+
+      props.currentPrice = 45000;
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.amount).not.toBe('10');
+      expect(Number.parseFloat(result.current.formState.amount)).toBeLessThan(
+        10,
+      );
+    });
+
     it('uses initialLeverage when provided for new orders', () => {
       const { result } = renderHookWithProvider(
         () =>

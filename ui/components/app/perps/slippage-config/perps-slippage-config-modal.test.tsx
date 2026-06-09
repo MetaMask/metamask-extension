@@ -30,10 +30,9 @@ const renderModal = (onSave = jest.fn()) => {
 
 describe('PerpsSlippageConfigModal custom value validation', () => {
   const typeDraft = (value: string) => {
-    fireEvent.change(
-      screen.getByTestId('perps-slippage-config-custom-input'),
-      { target: { value } },
-    );
+    fireEvent.change(screen.getByTestId('perps-slippage-config-custom-input'), {
+      target: { value },
+    });
   };
 
   const invalidValues = ['1abc', '1.2.3', '12x'];
@@ -67,5 +66,29 @@ describe('PerpsSlippageConfigModal custom value validation', () => {
 
     fireEvent.click(setButton);
     expect(onSave).toHaveBeenCalledWith(200);
+  });
+
+  it('keeps the modal open when onSave rejects', async () => {
+    const onClose = jest.fn();
+    const onSave = jest.fn().mockRejectedValue(new Error('persist failed'));
+
+    renderWithProvider(
+      <PerpsSlippageConfigModal
+        isOpen
+        currentValueBps={CUSTOM_VALUE_BPS}
+        onClose={onClose}
+        onSave={onSave}
+      />,
+      mockStore,
+    );
+
+    fireEvent.change(screen.getByTestId('perps-slippage-config-custom-input'), {
+      target: { value: '2' },
+    });
+    fireEvent.click(screen.getByTestId('perps-slippage-config-set'));
+
+    await screen.findByTestId('perps-slippage-config-modal');
+    expect(onSave).toHaveBeenCalledWith(200);
+    expect(onClose).not.toHaveBeenCalled();
   });
 });

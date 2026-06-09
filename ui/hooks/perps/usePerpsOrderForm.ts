@@ -310,6 +310,8 @@ export function usePerpsOrderForm({
   orderTypeRef.current = orderType;
   const initialAmountValueRef = useRef(initialAmountValue);
   initialAmountValueRef.current = initialAmountValue;
+  const currentPriceRef = useRef(currentPrice);
+  currentPriceRef.current = currentPrice;
 
   // Track which deps trigger a full form reset. orderType changes should NOT
   // reset amount/leverage—only the effect above updates formState.type.
@@ -377,7 +379,8 @@ export function usePerpsOrderForm({
         ...deriveModifyFields(pos),
       });
     } else {
-      hasSetInitialAmount.current = Boolean(defaultAmountFields.amount);
+      hasSetInitialAmount.current =
+        Boolean(defaultAmountFields.amount) && currentPriceRef.current > 0;
       setFormState({
         ...mockOrderFormDefaults,
         asset,
@@ -390,7 +393,7 @@ export function usePerpsOrderForm({
   }, [mode, asset, initialDirection, existingPosition, initialLeverage]);
 
   useEffect(() => {
-    if (mode !== 'new' || hasSetInitialAmount.current) {
+    if (mode !== 'new') {
       return;
     }
 
@@ -403,12 +406,26 @@ export function usePerpsOrderForm({
       return;
     }
 
+    const hasValidPrice = currentPrice > 0;
+    if (hasSetInitialAmount.current && hasValidPrice) {
+      return;
+    }
+
     setFormState((prev) => ({
       ...prev,
       ...defaultAmountFields,
     }));
-    hasSetInitialAmount.current = true;
-  }, [mode, initialAmountValue, defaultLeverage, availableBalance]);
+
+    if (hasValidPrice) {
+      hasSetInitialAmount.current = true;
+    }
+  }, [
+    mode,
+    initialAmountValue,
+    defaultLeverage,
+    availableBalance,
+    currentPrice,
+  ]);
 
   // Notify parent of form state changes
   useEffect(() => {
