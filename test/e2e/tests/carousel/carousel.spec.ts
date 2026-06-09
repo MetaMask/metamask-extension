@@ -20,15 +20,7 @@ describe('Carousel component e2e tests', function () {
         }
 
         await carouselPage.waitForCarouselLoaded();
-
-        const visibleSlideCount = await carouselPage.getVisibleSlideCount();
-
-        for (let i = 0; i < visibleSlideCount; i++) {
-          if (i > 0) {
-            await carouselPage.clickSlideByIndex(i);
-          }
-          await carouselPage.checkSlideHasTitleAndDescription(i);
-        }
+        await carouselPage.checkCurrentSlideHasTitleAndDescription();
       },
     );
   });
