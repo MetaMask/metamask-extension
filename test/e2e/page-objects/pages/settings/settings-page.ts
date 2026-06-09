@@ -1,5 +1,4 @@
-import HomePage from '../home/homepage';
-import { Driver } from '../../../webdriver/driver';
+import { Driver, PAGES } from '../../../webdriver/driver';
 
 class SettingsPage {
   private readonly driver: Driver;
@@ -115,7 +114,7 @@ class SettingsPage {
    * waits for the home page. Kept E2E-local to avoid importing `ui` routes.
    */
   async clickBackButton(): Promise<void> {
-    await this.driver.navigate();
+    await this.driver.navigate(PAGES.HOME, { waitForControllers: false });
   }
 
   async waitForTransactionShieldButtonReady(): Promise<void> {
