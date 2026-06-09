@@ -398,6 +398,9 @@ class AssetListPage extends HomePage {
 
     for (const name of tokenNames) {
       await this.driver.pasteIntoField(this.tokenSearchInput, name);
+      // Wait for the async search results to fully settle before interacting,
+      // mirroring the guard in importTokenBySearch.
+      await this.waitUntilTokenSearchMatch(1);
       await this.driver.waitForElementToStopMoving({ text: name, tag: 'p' });
       await this.driver.clickElement({ text: name, tag: 'p' });
       await this.driver.waitForSelector(this.tokenSearchSelected);

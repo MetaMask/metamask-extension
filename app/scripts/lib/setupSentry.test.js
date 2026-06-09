@@ -246,6 +246,21 @@ describe('Setup Sentry', () => {
       expect(testReport.extra.nested.evmAddress).toStrictEqual('0x**');
     });
 
+    it('removes addresses from an array shared across multiple properties', () => {
+      const sharedAddresses = ['7EYnhQoR9YM3N7UoaKRoA44Uy8JeaZV3qyouov87awMs'];
+      const testReport = {
+        message: 'An error occurred',
+        extra: {
+          first: sharedAddresses,
+          second: sharedAddresses,
+        },
+        request: {},
+      };
+      rewriteReport(testReport);
+      expect(testReport.extra.first).toStrictEqual(['**']);
+      expect(testReport.extra.second).toStrictEqual(['**']);
+    });
+
     it('removes addresses from report.contexts parameters', () => {
       const testReport = {
         message: 'An error occurred',
@@ -475,6 +490,35 @@ describe('Setup Sentry', () => {
       };
       const rewrittenBreadcrumb = removeUrlsFromBreadCrumb(testBreadcrumb);
       expect(rewrittenBreadcrumb.data.address).toStrictEqual('0x**');
+    });
+
+    it('redacts the breadcrumb data without mutating the live source objects', () => {
+      const liveError = new Error(
+        'Failed for 0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235',
+      );
+      const liveArgs = [
+        liveError,
+        '7EYnhQoR9YM3N7UoaKRoA44Uy8JeaZV3qyouov87awMs',
+      ];
+      const testBreadcrumb = {
+        message: 'console.error',
+        data: { arguments: liveArgs, logger: 'console' },
+      };
+
+      const rewrittenBreadcrumb = removeUrlsFromBreadCrumb(testBreadcrumb);
+
+      // The breadcrumb sent to Sentry is redacted...
+      expect(rewrittenBreadcrumb.data.arguments[0].message).toStrictEqual(
+        'Failed for 0x**',
+      );
+      expect(rewrittenBreadcrumb.data.arguments[1]).toStrictEqual('**');
+      // ...but the live Error and array the extension still holds are untouched.
+      expect(liveError.message).toStrictEqual(
+        'Failed for 0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235',
+      );
+      expect(liveArgs[1]).toStrictEqual(
+        '7EYnhQoR9YM3N7UoaKRoA44Uy8JeaZV3qyouov87awMs',
+      );
     });
   });
 });
