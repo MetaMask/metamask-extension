@@ -116,6 +116,29 @@ describe('usePerpsOrderForm', () => {
       );
     });
 
+    it('recaps default order amount when tradeable balance increases', () => {
+      const props = {
+        ...defaultOptions,
+        currentPrice: 45000,
+        availableBalance: 1,
+        szDecimals: 6,
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      const cappedAmount = Number.parseFloat(result.current.formState.amount);
+      expect(cappedAmount).toBeLessThan(10);
+
+      props.availableBalance = 1000;
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.amount).toBe('10');
+    });
+
     it('preserves user-edited amount when price resolves after mount', () => {
       const props = {
         ...defaultOptions,

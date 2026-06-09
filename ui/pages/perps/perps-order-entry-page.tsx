@@ -751,7 +751,8 @@ const PerpsOrderEntryPage = () => {
     isOrderPending ||
     (orderMode === 'new' && isLoadingAccount) ||
     hasNoAvailableBalance ||
-    (isMarketOrderWithAmount && isMaxSlippageLoading) ||
+    (isMarketOrderWithAmount &&
+      (isMaxSlippageLoading || !isEstimatedSlippageReady)) ||
     (isPrimaryTradeAction &&
       (isLimitPriceInvalid ||
         isLimitPriceUnfavorable ||
@@ -997,6 +998,13 @@ const PerpsOrderEntryPage = () => {
       return;
     }
     if (!orderFormState || !selectedAddress || currentPrice <= 0) {
+      return;
+    }
+
+    if (
+      isMarketOrderWithAmount &&
+      (isMaxSlippageLoading || !isEstimatedSlippageReady)
+    ) {
       return;
     }
 
@@ -1478,6 +1486,9 @@ const PerpsOrderEntryPage = () => {
     maxSlippageSource,
     isSlippageConfigEnabled,
     slippageTradeProperties,
+    isMarketOrderWithAmount,
+    isMaxSlippageLoading,
+    isEstimatedSlippageReady,
   ]);
 
   const handlePrimaryAction = useCallback(async () => {

@@ -125,8 +125,8 @@ jest.mock('../../hooks/perps/usePerpsOrderFees', () => ({
 }));
 
 const mockUsePerpsEstimatedSlippage = jest.fn(() => ({
-  estimatedSlippageBps: null as number | null,
-  isReady: false,
+  estimatedSlippageBps: 50 as number | null,
+  isReady: true,
 }));
 const mockUsePerpsMaxSlippage = jest.fn(
   (): UsePerpsMaxSlippageReturn => ({
@@ -354,8 +354,8 @@ describe('PerpsOrderEntryPage', () => {
       isInitialLoading: false,
     });
     mockUsePerpsEstimatedSlippage.mockReturnValue({
-      estimatedSlippageBps: null,
-      isReady: false,
+      estimatedSlippageBps: 50,
+      isReady: true,
     });
     mockUsePerpsMaxSlippage.mockReturnValue({
       maxSlippageBps: 300,
@@ -885,6 +885,28 @@ describe('PerpsOrderEntryPage', () => {
       expect(
         screen.queryByTestId('perps-order-slippage-exceeds-indicator'),
       ).not.toBeInTheDocument();
+    });
+
+    it('disables submit while slippage estimate is still loading', async () => {
+      mockUsePerpsEstimatedSlippage.mockReturnValue({
+        estimatedSlippageBps: null,
+        isReady: false,
+      });
+      mockUsePerpsMaxSlippage.mockReturnValue({
+        maxSlippageBps: 300,
+        maxSlippageSource: 'default',
+        setMaxSlippage: jest.fn(),
+        isLoading: false,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('100');
+
+      await waitFor(() => {
+        expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+      });
     });
 
     it('shows resolved max slippage while estimate is still loading', async () => {

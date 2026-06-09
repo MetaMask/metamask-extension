@@ -216,7 +216,7 @@ export function usePerpsOrderForm({
   const displayAssetSymbol = getDisplaySymbol(asset);
   const isTestnet = useSelector(selectPerpsIsTestnet);
   const defaultLeverage = initialLeverage ?? TRADING_DEFAULTS.leverage;
-  const hasSetInitialAmount = useRef(false);
+  const hasUserEditedAmount = useRef(false);
 
   const initialAmountValue = useMemo(() => {
     if (mode !== 'new') {
@@ -370,7 +370,7 @@ export function usePerpsOrderForm({
         : {};
 
     if (mode === 'modify' && pos) {
-      hasSetInitialAmount.current = false;
+      hasUserEditedAmount.current = false;
       setFormState({
         ...mockOrderFormDefaults,
         asset,
@@ -379,8 +379,7 @@ export function usePerpsOrderForm({
         ...deriveModifyFields(pos),
       });
     } else {
-      hasSetInitialAmount.current =
-        Boolean(defaultAmountFields.amount) && currentPriceRef.current > 0;
+      hasUserEditedAmount.current = false;
       setFormState({
         ...mockOrderFormDefaults,
         asset,
@@ -393,7 +392,7 @@ export function usePerpsOrderForm({
   }, [mode, asset, initialDirection, existingPosition, initialLeverage]);
 
   useEffect(() => {
-    if (mode !== 'new') {
+    if (mode !== 'new' || hasUserEditedAmount.current) {
       return;
     }
 
@@ -406,26 +405,16 @@ export function usePerpsOrderForm({
       return;
     }
 
-    const hasValidPrice = currentPrice > 0;
-    if (hasSetInitialAmount.current && hasValidPrice) {
-      return;
-    }
-
-    setFormState((prev) => ({
-      ...prev,
-      ...defaultAmountFields,
-    }));
-
-    if (hasValidPrice) {
-      hasSetInitialAmount.current = true;
-    }
-  }, [
-    mode,
-    initialAmountValue,
-    defaultLeverage,
-    availableBalance,
-    currentPrice,
-  ]);
+    setFormState((prev) => {
+      if (prev.amount === defaultAmountFields.amount) {
+        return prev;
+      }
+      return {
+        ...prev,
+        ...defaultAmountFields,
+      };
+    });
+  }, [mode, initialAmountValue, defaultLeverage, availableBalance]);
 
   // Notify parent of form state changes
   useEffect(() => {
@@ -590,7 +579,7 @@ export function usePerpsOrderForm({
 
   // Form state update handlers
   const handleAmountChange = useCallback((amount: string) => {
-    hasSetInitialAmount.current = true;
+    hasUserEditedAmount.current = true;
     setFormState((prev) => ({ ...prev, amount }));
   }, []);
 
