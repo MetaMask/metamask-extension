@@ -4,9 +4,9 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { mockTronApis } from './mocks/common-tron';
-import { switchToNetworkFromNetworkSelect } from 'test/e2e/page-objects/flows/network.flow';
 
 describe('Check balance', function (this: Suite) {
   it('Just created Tron account shows 0 TRX when native token is enabled', async function () {
