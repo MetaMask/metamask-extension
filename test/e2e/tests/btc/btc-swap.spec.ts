@@ -26,7 +26,7 @@ import { mockPriceMulti, mockPriceMultiBtcAndSol } from './mocks/min-api';
 // The Bitcoin balance is populated asynchronously once the Bitcoin snap's BDK
 // chain scan completes and pushes the balance, so allow extra time to avoid
 // flakiness from a slow/late snap balance update.
-const BTC_BALANCE_TIMEOUT = 150000;
+const BTC_BALANCE_TIMEOUT = 15000;
 
 async function buildBtcSwapBaseMocks(mockServer: Mockttp) {
   return [
