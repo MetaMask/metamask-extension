@@ -41,6 +41,16 @@ const mockStore = configureStore({
   },
 });
 
+const mockPrivacyModeStore = configureStore({
+  metamask: {
+    ...mockState.metamask,
+    preferences: {
+      ...mockState.metamask.preferences,
+      privacyMode: true,
+    },
+  },
+});
+
 describe('invokePerpsBalanceAction', () => {
   it('logs when callback returns a rejected promise', async () => {
     const consoleErrorSpy = jest
@@ -232,6 +242,33 @@ describe('PerpsBalanceDropdown', () => {
 
     expect(screen.getByText(/42\.00%/u)).toBeInTheDocument();
     expect(screen.queryByText(/1\.00%/u)).not.toBeInTheDocument();
+  });
+
+  describe('when global balance privacy mode is enabled', () => {
+    it('masks the total balance instead of showing the formatted amount', () => {
+      renderWithProvider(<PerpsBalanceDropdown />, mockPrivacyModeStore);
+
+      expect(screen.queryByText('$15,250')).not.toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-balance-dropdown-balance'),
+      ).toHaveTextContent('••••••');
+      // Label remains visible
+      expect(screen.getByText(/total balance/iu)).toBeInTheDocument();
+    });
+
+    it('masks the unrealized P&L while keeping the label visible', () => {
+      renderWithProvider(
+        <PerpsBalanceDropdown hasPositions />,
+        mockPrivacyModeStore,
+      );
+
+      expect(screen.queryByText(/\+\$375/u)).not.toBeInTheDocument();
+      expect(screen.queryByText(/7\.32%/u)).not.toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-balance-dropdown-pnl'),
+      ).toHaveTextContent('••••••');
+      expect(screen.getByText(/unrealized p&l/iu)).toBeInTheDocument();
+    });
   });
 
   describe('geo-blocking', () => {

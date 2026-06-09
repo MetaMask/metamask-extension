@@ -39,6 +39,16 @@ const mockStore = configureStore({
   },
 });
 
+const mockPrivacyModeStore = configureStore({
+  metamask: {
+    ...mockState.metamask,
+    preferences: {
+      ...mockState.metamask.preferences,
+      privacyMode: true,
+    },
+  },
+});
+
 describe('PerpsMarketBalanceActions', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -69,6 +79,29 @@ describe('PerpsMarketBalanceActions', () => {
 
     fireEvent.click(screen.getByTestId('perps-balance-actions-add-funds'));
     expect(onAddFunds).toHaveBeenCalledTimes(1);
+  });
+
+  describe('when global balance privacy mode is enabled', () => {
+    it('masks the account value and available balance while keeping actions visible', () => {
+      renderWithProvider(
+        <PerpsMarketBalanceActions showActionButtons />,
+        mockPrivacyModeStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-balance-actions-total'),
+      ).toHaveTextContent('••••••');
+      expect(
+        screen.getByTestId('perps-balance-actions-available'),
+      ).toHaveTextContent('••••••');
+      expect(
+        screen.getByTestId('perps-balance-actions-available'),
+      ).toHaveTextContent(/available/iu);
+      expect(screen.queryByText(/\$[\d,]/u)).not.toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-balance-actions-add-funds'),
+      ).toBeInTheDocument();
+    });
   });
 
   describe('geo-blocking', () => {

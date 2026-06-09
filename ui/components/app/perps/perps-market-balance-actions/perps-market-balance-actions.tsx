@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box,
   Button,
@@ -26,11 +27,15 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { usePerpsLiveAccount } from '../../../../hooks/perps/stream';
 import { getTradeableBalance } from '../../../../hooks/perps/getTradeableBalance';
+import { getPrivacyMode } from '../../../../selectors';
 import {
   invokePerpsBalanceAction,
   type PerpsBalanceActionHandler,
 } from '../perps-balance-dropdown';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
+
+/** Mask shown in place of fiat amounts when the global balance privacy mode is on. */
+const HIDDEN_BALANCE = '••••••';
 
 type PerpsMarketBalanceActionsProps = {
   /** Whether to show the action buttons (Add funds, Withdraw) */
@@ -57,6 +62,7 @@ const PerpsMarketBalanceActions = ({
   const { formatCurrency } = useFormatters();
   const { account } = usePerpsLiveAccount();
   const { isEligible } = usePerpsEligibility();
+  const privacyMode = useSelector(getPrivacyMode);
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
   // Use account data or defaults
@@ -198,7 +204,7 @@ const PerpsMarketBalanceActions = ({
         fontWeight={FontWeight.Medium}
         data-testid="perps-balance-actions-total"
       >
-        {formatCurrency(accountValue, 'USD')}
+        {privacyMode ? HIDDEN_BALANCE : formatCurrency(accountValue, 'USD')}
       </Text>
 
       {/* Available Balance */}
@@ -208,7 +214,9 @@ const PerpsMarketBalanceActions = ({
           color={TextColor.TextAlternative}
           data-testid="perps-balance-actions-available"
         >
-          {formatCurrency(parseFloat(availableBalance), 'USD')}{' '}
+          {privacyMode
+            ? HIDDEN_BALANCE
+            : formatCurrency(parseFloat(availableBalance), 'USD')}{' '}
           {t('perpsAvailable').toLowerCase()}
         </Text>
       </Box>
