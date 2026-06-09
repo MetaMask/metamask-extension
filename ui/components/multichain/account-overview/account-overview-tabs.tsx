@@ -115,7 +115,7 @@ export const AccountOverviewTabs = ({
         dispatch(detectNfts(selectedChainIds));
       }
       // For ActivityListV3, ActivityScreenOpened is deferred to the list
-      // component so it can include accurate is_empty / num_pending_transactions
+      // component so it can include accurate is_empty / pending_transactions
       // after all data sources have loaded. For ActivityListV2 there is no
       // equivalent deferred tracking, so fire immediately on click.
       if (
