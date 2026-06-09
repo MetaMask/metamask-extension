@@ -10,6 +10,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import { getMockAssetsPrice } from '../tokens/utils/mocks';
 import { login } from '../../page-objects/flows/login.flow';
+import { closeSettings } from '../../page-objects/flows/settings.flow';
 
 const infuraSepoliaUrl =
   'https://sepolia.infura.io/v3/00000000000000000000000000000000';
@@ -141,7 +142,7 @@ describe('Settings', function () {
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
         await settingsPage.toggleBalanceSetting();
-        await settingsPage.clickBackButton();
+        await closeSettings(driver);
         await homePage.checkExpectedBalanceIsDisplayed('25', 'SepoliaETH');
       },
     );

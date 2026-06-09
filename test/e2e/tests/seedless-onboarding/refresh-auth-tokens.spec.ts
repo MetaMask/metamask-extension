@@ -9,6 +9,7 @@ import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { lockAndWaitForLoginPage } from '../../page-objects/flows/login.flow';
+import { closeSettings } from '../../page-objects/flows/settings.flow';
 import { AuthServer } from '../../helpers/seedless-onboarding/constants';
 import LoginPage from '../../page-objects/pages/login-page';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
@@ -93,7 +94,7 @@ describe('Refresh Auth Tokens (Seedless Onboarding)', function () {
         assert.strictEqual(authServiceTokenRequests.length, 2);
 
         // close the settings page
-        await settingsPage.clickBackButton();
+        await closeSettings(driver);
 
         // Lock the wallet and wait for login page
         await lockAndWaitForLoginPage(driver);
