@@ -89,6 +89,9 @@
     "message": "'$1'을(를) 사용하는 지갑이 이미 존재합니다. 대신 로그인하시겠습니까?",
     "description": "$1 is the account email"
   },
+  "accountAlreadyExistsLoginDescriptionTelegram": {
+    "message": "지갑이 이미 이 Telegram 계정에 연결되어 있습니다. 이 지갑을 잠금 해제하시겠습니까?"
+  },
   "accountAlreadyExistsTitle": {
     "message": "이미 존재하는 지갑"
   },
@@ -123,6 +126,10 @@
   "accountNotFoundDescription": {
     "message": "'$1'에 대한 지갑을 찾을 수 없습니다. 이 로그인으로 새 지갑을 만드시겠습니까?",
     "description": "$1 is the account email"
+  },
+  "accountNotFoundDescriptionTelegram": {
+    "message": "이 $1 계정에 연결된 지갑을 찾을 수 없습니다. 이 로그인으로 새 지갑을 만드시겠습니까?",
+    "description": "$1 is the social login provider"
   },
   "accountNotFoundTitle": {
     "message": "지갑을 찾을 수 없음"
@@ -163,23 +170,68 @@
   "activity": {
     "message": "활동"
   },
+  "activityEmptyDescription": {
+    "message": "오늘 첫 토큰을 스왑하세요."
+  },
+  "activityEmptyNoFundsDescription": {
+    "message": "시작하려면 지갑에 자금을 추가하세요."
+  },
   "activity_approveSpendingCap_failed_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_failed_title": {
+    "message": "승인 실패"
   },
   "activity_approveSpendingCap_pending_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
   },
+  "activity_approveSpendingCap_pending_title": {
+    "message": "지출 한도 승인 중"
+  },
   "activity_approveSpendingCap_success_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_success_title": {
+    "message": "지출 한도 승인 완료"
   },
   "activity_bridge_failed_description": {
     "message": "브릿지 실패"
   },
   "activity_bridge_failed_title": {
     "message": "브릿지 실패"
+  },
+  "activity_bridge_pending_description": {
+    "message": "$1 브리징 중",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_pending_title": {
+    "message": "$1 브리징 중",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_success_description": {
+    "message": "$1 브리징 완료",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_success_title": {
+    "message": "$1 브리징 완료",
+    "description": "$1 is the token symbol"
+  },
+  "activity_buy_failed_description": {
+    "message": "매수 실패"
+  },
+  "activity_buy_failed_title": {
+    "message": "매수 실패"
+  },
+  "activity_buy_pending_description": {
+    "message": "$1 매수 중",
+    "description": "$1 is the token symbol"
+  },
+  "activity_buy_pending_title": {
+    "message": "$1 매수 중",
+    "description": "$1 is the token symbol"
   },
   "activity_buy_success_description": {
     "message": "$1 구매",
@@ -189,14 +241,100 @@
     "message": "$1 구매",
     "description": "$1 is the token symbol"
   },
-  "activity_contractInteraction_success_title": {
-    "message": "스마트 계약 인터렉션"
+  "activity_claimMusdBonus_failed_title": {
+    "message": "청구 실패"
+  },
+  "activity_claimMusdBonus_pending_title": {
+    "message": "mUSD 보너스 수령 중"
+  },
+  "activity_claimMusdBonus_success_title": {
+    "message": "mUSD 보너스 수령 완료"
+  },
+  "activity_claim_failed_description": {
+    "message": "청구 실패"
+  },
+  "activity_claim_failed_title": {
+    "message": "청구 실패"
+  },
+  "activity_claim_pending_description": {
+    "message": "$1 청구 중",
+    "description": "$1 is the token symbol"
+  },
+  "activity_claim_pending_title": {
+    "message": "$1 청구 중",
+    "description": "$1 is the token symbol"
+  },
+  "activity_claim_success_description": {
+    "message": "$1 청구 완료",
+    "description": "$1 is the token symbol"
+  },
+  "activity_claim_success_title": {
+    "message": "$1 청구 완료",
+    "description": "$1 is the token symbol"
+  },
+  "activity_contractDeployment_failed_description": {
+    "message": "배포 실패"
+  },
+  "activity_contractDeployment_failed_title": {
+    "message": "배포 실패"
+  },
+  "activity_contractDeployment_pending_description": {
+    "message": "계약 배포 중"
+  },
+  "activity_contractDeployment_pending_title": {
+    "message": "계약 배포 중"
+  },
+  "activity_contractDeployment_success_description": {
+    "message": "계약 배포 완료"
+  },
+  "activity_contractDeployment_success_title": {
+    "message": "계약 배포 완료"
+  },
+  "activity_contractInteraction_failed_title": {
+    "message": "상호작용 실패"
+  },
+  "activity_contractInteraction_pending_title": {
+    "message": "상호작용 진행 중"
+  },
+  "activity_convert_failed_description": {
+    "message": "전환 실패"
+  },
+  "activity_convert_failed_title": {
+    "message": "전환 실패"
+  },
+  "activity_convert_pending_description": {
+    "message": "$1(으)로 전환 중",
+    "description": "$1 is the token symbol"
+  },
+  "activity_convert_pending_title": {
+    "message": "$1(으)로 전환 중",
+    "description": "$1 is the token symbol"
+  },
+  "activity_convert_success_description": {
+    "message": "$1(으)로 전환 완료",
+    "description": "$1 is the token symbol"
   },
   "activity_deposit_failed_description": {
     "message": "예치 실패"
   },
   "activity_deposit_failed_title": {
     "message": "예치 실패"
+  },
+  "activity_deposit_pending_description": {
+    "message": "$1 예치 중",
+    "description": "$1 is the token symbol"
+  },
+  "activity_deposit_pending_title": {
+    "message": "$1 예치 중",
+    "description": "$1 is the token symbol"
+  },
+  "activity_deposit_success_description": {
+    "message": "$1 예치 완료",
+    "description": "$1 is the token symbol"
+  },
+  "activity_deposit_success_title": {
+    "message": "$1 예치 완료",
+    "description": "$1 is the token symbol"
   },
   "activity_fallback_description": {
     "message": "트랜잭션"
@@ -208,13 +346,22 @@
     "message": "$1",
     "description": "$1 is the token symbol"
   },
+  "activity_increaseSpendingCap_failed_title": {
+    "message": "증가 실패"
+  },
   "activity_increaseSpendingCap_pending_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
   },
+  "activity_increaseSpendingCap_pending_title": {
+    "message": "지출 한도 증액 중"
+  },
   "activity_increaseSpendingCap_success_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
+  },
+  "activity_increaseSpendingCap_success_title": {
+    "message": "지출 한도 증액 완료"
   },
   "activity_lendingDeposit_failed_title": {
     "message": "예치 실패"
@@ -225,15 +372,216 @@
   "activity_lendingWithdrawal_failed_title": {
     "message": "출금 실패"
   },
-  "activity_lendingWithdrawal_success_description": {
-    "message": "대출 출금"
+  "activity_lendingWithdrawal_pending_description": {
+    "message": "$1 출금 중",
+    "description": "$1 is the token symbol"
   },
-  "activity_lendingWithdrawal_success_title": {
-    "message": "대출 출금"
+  "activity_lendingWithdrawal_pending_title": {
+    "message": "$1 출금 중",
+    "description": "$1 is the token symbol"
+  },
+  "activity_marketCloseShort_failed_description": {
+    "message": "숏 청산 실패"
+  },
+  "activity_marketCloseShort_failed_title": {
+    "message": "숏 청산 실패"
+  },
+  "activity_marketCloseShort_pending_description": {
+    "message": "숏 청산 중 - 시장 마감"
+  },
+  "activity_marketCloseShort_pending_title": {
+    "message": "숏 청산 중 - 시장 마감"
+  },
+  "activity_marketCloseShort_success_description": {
+    "message": "숏 청산 완료 - 시장 마감"
+  },
+  "activity_marketCloseShort_success_title": {
+    "message": "숏 청산 완료 - 시장 마감"
+  },
+  "activity_marketShort_failed_description": {
+    "message": "숏 청산 실패"
+  },
+  "activity_marketShort_failed_title": {
+    "message": "숏 청산 실패"
+  },
+  "activity_marketShort_pending_description": {
+    "message": "숏 청산 중 - 시장가"
+  },
+  "activity_marketShort_pending_title": {
+    "message": "숏 청산 중 - 시장가"
+  },
+  "activity_marketShort_success_description": {
+    "message": "숏 청산 완료 - 시장가"
+  },
+  "activity_marketShort_success_title": {
+    "message": "숏 청산 완료 - 시장가"
+  },
+  "activity_nftMint_failed_title": {
+    "message": "민팅 실패"
+  },
+  "activity_nftMint_pending_title": {
+    "message": "$1 민팅 중",
+    "description": "$1 is the NFT token symbol"
   },
   "activity_nftMint_success_title": {
     "message": "$1 민팅",
     "description": "$1 is the NFT token symbol"
+  },
+  "activity_perpsAddFunds_failed_description": {
+    "message": "펀딩 실패"
+  },
+  "activity_perpsAddFunds_failed_title": {
+    "message": "펀딩 실패"
+  },
+  "activity_perpsAddFunds_pending_description": {
+    "message": "펀딩 진행 중"
+  },
+  "activity_perpsAddFunds_pending_title": {
+    "message": "펀딩 진행 중"
+  },
+  "activity_perpsAddFunds_success_description": {
+    "message": "계정 자금 예치 완료"
+  },
+  "activity_perpsAddFunds_success_title": {
+    "message": "계정 자금 예치 완료"
+  },
+  "activity_perpsCloseLongLiquidated_failed_description": {
+    "message": "롱 청산 - 강제 청산 실패"
+  },
+  "activity_perpsCloseLongLiquidated_failed_title": {
+    "message": "롱 청산 - 강제 청산 실패"
+  },
+  "activity_perpsCloseLongLiquidated_pending_description": {
+    "message": "롱 청산 중 - 강제 청산"
+  },
+  "activity_perpsCloseLongLiquidated_pending_title": {
+    "message": "롱 청산 중 - 강제 청산"
+  },
+  "activity_perpsCloseLongLiquidated_success_description": {
+    "message": "롱 청산 완료 - 강제 청산"
+  },
+  "activity_perpsCloseLongLiquidated_success_title": {
+    "message": "롱 청산 완료 - 강제 청산"
+  },
+  "activity_perpsCloseLongStopLoss_failed_description": {
+    "message": "롱 청산 - 손절 실패"
+  },
+  "activity_perpsCloseLongStopLoss_failed_title": {
+    "message": "롱 청산 - 손절 실패"
+  },
+  "activity_perpsCloseLongStopLoss_pending_description": {
+    "message": "롱 청산 중 - 손절"
+  },
+  "activity_perpsCloseLongStopLoss_pending_title": {
+    "message": "롱 청산 중 - 손절"
+  },
+  "activity_perpsCloseLongStopLoss_success_description": {
+    "message": "롱 청산 완료 - 손절"
+  },
+  "activity_perpsCloseLongStopLoss_success_title": {
+    "message": "롱 청산 완료 - 손절"
+  },
+  "activity_perpsCloseLongTakeProfit_failed_description": {
+    "message": "롱 청산 실패"
+  },
+  "activity_perpsCloseLongTakeProfit_failed_title": {
+    "message": "롱 청산 실패"
+  },
+  "activity_perpsCloseLongTakeProfit_pending_description": {
+    "message": "롱 청산 중 - 익절"
+  },
+  "activity_perpsCloseLongTakeProfit_pending_title": {
+    "message": "롱 청산 중 - 익절"
+  },
+  "activity_perpsCloseLongTakeProfit_success_description": {
+    "message": "롱 청산 완료 - 익절"
+  },
+  "activity_perpsCloseLongTakeProfit_success_title": {
+    "message": "롱 청산 완료 - 익절"
+  },
+  "activity_perpsCloseLong_failed_description": {
+    "message": "롱 청산 실패"
+  },
+  "activity_perpsCloseLong_failed_title": {
+    "message": "롱 청산 실패"
+  },
+  "activity_perpsCloseLong_pending_description": {
+    "message": "롱 청산 중"
+  },
+  "activity_perpsCloseLong_pending_title": {
+    "message": "롱 청산 중"
+  },
+  "activity_perpsCloseLong_success_description": {
+    "message": "롱 청산 완료"
+  },
+  "activity_perpsCloseLong_success_title": {
+    "message": "롱 청산 완료"
+  },
+  "activity_perpsCloseShortLiquidated_failed_description": {
+    "message": "숏 청산 - 강제 청산 실패"
+  },
+  "activity_perpsCloseShortLiquidated_failed_title": {
+    "message": "숏 청산 - 강제 청산 실패"
+  },
+  "activity_perpsCloseShortLiquidated_pending_description": {
+    "message": "숏 청산 중 - 강제 청산"
+  },
+  "activity_perpsCloseShortLiquidated_pending_title": {
+    "message": "숏 청산 중 - 강제 청산"
+  },
+  "activity_perpsCloseShortLiquidated_success_description": {
+    "message": "숏 청산 완료 - 강제 청산"
+  },
+  "activity_perpsCloseShortLiquidated_success_title": {
+    "message": "숏 청산 완료 - 강제 청산"
+  },
+  "activity_perpsCloseShortStopLoss_failed_description": {
+    "message": "숏 청산 실패"
+  },
+  "activity_perpsCloseShortStopLoss_failed_title": {
+    "message": "숏 청산 실패"
+  },
+  "activity_perpsCloseShortStopLoss_pending_description": {
+    "message": "숏 청산 중 - 손절"
+  },
+  "activity_perpsCloseShortStopLoss_pending_title": {
+    "message": "숏 청산 중 - 손절"
+  },
+  "activity_perpsCloseShortStopLoss_success_description": {
+    "message": "숏 청산 완료 - 손절"
+  },
+  "activity_perpsCloseShortStopLoss_success_title": {
+    "message": "숏 청산 완료 - 손절"
+  },
+  "activity_perpsCloseShortTakeProfit_failed_description": {
+    "message": "숏 청산 실패"
+  },
+  "activity_perpsCloseShortTakeProfit_failed_title": {
+    "message": "숏 청산 실패"
+  },
+  "activity_perpsCloseShortTakeProfit_pending_description": {
+    "message": "숏 청산 중 - 익절"
+  },
+  "activity_perpsCloseShortTakeProfit_pending_title": {
+    "message": "숏 청산 중 - 익절"
+  },
+  "activity_perpsCloseShortTakeProfit_success_description": {
+    "message": "숏 청산 완료 - 익절"
+  },
+  "activity_perpsCloseShortTakeProfit_success_title": {
+    "message": "숏 청산 완료 - 익절"
+  },
+  "activity_perpsCloseShort_failed_description": {
+    "message": "숏 청산 실패"
+  },
+  "activity_perpsCloseShort_failed_title": {
+    "message": "숏 청산 실패"
+  },
+  "activity_perpsCloseShort_pending_description": {
+    "message": "숏 청산 중"
+  },
+  "activity_perpsCloseShort_pending_title": {
+    "message": "숏 청산 중"
   },
   "activity_perpsCloseShort_success_description": {
     "message": "청산된 숏"
@@ -241,17 +589,101 @@
   "activity_perpsCloseShort_success_title": {
     "message": "청산된 숏"
   },
+  "activity_perpsOpenLong_failed_description": {
+    "message": "롱 포지션 열기 실패"
+  },
+  "activity_perpsOpenLong_failed_title": {
+    "message": "롱 포지션 열기 실패"
+  },
+  "activity_perpsOpenLong_pending_description": {
+    "message": "롱 포지션 여는 중"
+  },
+  "activity_perpsOpenLong_pending_title": {
+    "message": "롱 포지션 여는 중"
+  },
   "activity_perpsOpenLong_success_description": {
     "message": "오픈한 롱"
   },
   "activity_perpsOpenLong_success_title": {
     "message": "오픈한 롱"
   },
+  "activity_perpsOpenShort_failed_description": {
+    "message": "숏 포지션 열기 실패"
+  },
+  "activity_perpsOpenShort_failed_title": {
+    "message": "숏 포지션 열기 실패"
+  },
+  "activity_perpsOpenShort_pending_description": {
+    "message": "숏 포지션 여는 중"
+  },
+  "activity_perpsOpenShort_pending_title": {
+    "message": "숏 포지션 여는 중"
+  },
+  "activity_perpsOpenShort_success_description": {
+    "message": "숏 포지션 열기 완료"
+  },
+  "activity_perpsOpenShort_success_title": {
+    "message": "숏 포지션 열기 완료"
+  },
+  "activity_perpsPaidFundingFees_failed_description": {
+    "message": "펀딩 결제 실패"
+  },
+  "activity_perpsPaidFundingFees_failed_title": {
+    "message": "펀딩 결제 실패"
+  },
+  "activity_perpsPaidFundingFees_pending_description": {
+    "message": "펀딩 수수료 결제 중"
+  },
+  "activity_perpsPaidFundingFees_pending_title": {
+    "message": "펀딩 수수료 결제 중"
+  },
+  "activity_perpsPaidFundingFees_success_description": {
+    "message": "펀딩 수수료 결제 완료"
+  },
+  "activity_perpsPaidFundingFees_success_title": {
+    "message": "펀딩 수수료 결제 완료"
+  },
+  "activity_perpsReceivedFundingFees_failed_description": {
+    "message": "수수료 수령 실패"
+  },
+  "activity_perpsReceivedFundingFees_failed_title": {
+    "message": "수수료 수령 실패"
+  },
+  "activity_perpsReceivedFundingFees_pending_description": {
+    "message": "펀딩 수수료 수령 중"
+  },
+  "activity_perpsReceivedFundingFees_pending_title": {
+    "message": "펀딩 수수료 수령 중"
+  },
+  "activity_perpsReceivedFundingFees_success_description": {
+    "message": "펀딩 수수료 수령 완료"
+  },
+  "activity_perpsReceivedFundingFees_success_title": {
+    "message": "펀딩 수수료 수령 완료"
+  },
   "activity_perpsWithdrawFunds_failed_description": {
     "message": "출금 실패"
   },
   "activity_perpsWithdrawFunds_failed_title": {
     "message": "출금 실패"
+  },
+  "activity_perpsWithdrawFunds_pending_description": {
+    "message": "자금 출금 중"
+  },
+  "activity_perpsWithdrawFunds_pending_title": {
+    "message": "자금 출금"
+  },
+  "activity_perpsWithdrawFunds_success_description": {
+    "message": "무기한 선물 출금"
+  },
+  "activity_perpsWithdrawFunds_success_title": {
+    "message": "무기한 선물 출금"
+  },
+  "activity_predictionCashedOut_failed_description": {
+    "message": "현금화 실패"
+  },
+  "activity_predictionCashedOut_failed_title": {
+    "message": "현금화 실패"
   },
   "activity_predictionCashedOut_pending_description": {
     "message": "출금 중"
@@ -265,11 +697,59 @@
   "activity_predictionCashedOut_success_title": {
     "message": "출금 완료"
   },
+  "activity_predictionClaimWinnings_failed_description": {
+    "message": "청구 실패"
+  },
+  "activity_predictionClaimWinnings_failed_title": {
+    "message": "청구 실패"
+  },
+  "activity_predictionClaimWinnings_pending_description": {
+    "message": "수익금 수령 중"
+  },
+  "activity_predictionClaimWinnings_pending_title": {
+    "message": "수익금 수령 중"
+  },
+  "activity_predictionClaimWinnings_success_description": {
+    "message": "수익금 수령 완료"
+  },
+  "activity_predictionClaimWinnings_success_title": {
+    "message": "수익금 수령 완료"
+  },
+  "activity_predictionPlaced_failed_description": {
+    "message": "예측 실패"
+  },
+  "activity_predictionPlaced_failed_title": {
+    "message": "예측 실패"
+  },
+  "activity_predictionPlaced_pending_description": {
+    "message": "예측 제출 중"
+  },
+  "activity_predictionPlaced_pending_title": {
+    "message": "예측 제출 중"
+  },
   "activity_predictionPlaced_success_description": {
     "message": "예측 제출함"
   },
   "activity_predictionPlaced_success_title": {
     "message": "예측 제출함"
+  },
+  "activity_predictionsAddFunds_failed_description": {
+    "message": "펀딩 실패"
+  },
+  "activity_predictionsAddFunds_failed_title": {
+    "message": "펀딩 실패"
+  },
+  "activity_predictionsAddFunds_pending_description": {
+    "message": "펀딩 진행 중"
+  },
+  "activity_predictionsAddFunds_pending_title": {
+    "message": "펀딩 진행 중"
+  },
+  "activity_predictionsAddFunds_success_description": {
+    "message": "계정 자금 예치 완료"
+  },
+  "activity_predictionsAddFunds_success_title": {
+    "message": "계정 자금 예치 완료"
   },
   "activity_predictionsWithdrawFunds_failed_description": {
     "message": "출금 실패"
@@ -283,33 +763,84 @@
   "activity_predictionsWithdrawFunds_pending_title": {
     "message": "인출"
   },
+  "activity_predictionsWithdrawFunds_success_description": {
+    "message": "예측 자금 출금"
+  },
+  "activity_predictionsWithdrawFunds_success_title": {
+    "message": "예측 자금 출금"
+  },
   "activity_receive_failed_description": {
     "message": "발신: $1",
     "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_failed_title": {
+    "message": "받기 실패"
   },
   "activity_receive_pending_description": {
     "message": "발신: $1",
     "description": "$1 is the shortened sender address"
   },
+  "activity_receive_pending_title": {
+    "message": "$1 받는 중",
+    "description": "$1 is the token symbol"
+  },
   "activity_receive_success_description": {
     "message": "발신: $1",
     "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_success_title": {
+    "message": "$1 받음",
+    "description": "$1 is the token symbol"
   },
   "activity_revokeSpendingCap_failed_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
   },
+  "activity_revokeSpendingCap_failed_title": {
+    "message": "철회 실패"
+  },
   "activity_revokeSpendingCap_pending_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
+  },
+  "activity_revokeSpendingCap_pending_title": {
+    "message": "지출 한도 철회 중"
   },
   "activity_revokeSpendingCap_success_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
   },
+  "activity_revokeSpendingCap_success_title": {
+    "message": "지출 한도 철회 완료"
+  },
+  "activity_sell_failed_description": {
+    "message": "매도 실패"
+  },
+  "activity_sell_failed_title": {
+    "message": "매도 실패"
+  },
+  "activity_sell_pending_description": {
+    "message": "$1 매도 중",
+    "description": "$1 is the token symbol"
+  },
+  "activity_sell_pending_title": {
+    "message": "$1 매도 중",
+    "description": "$1 is the token symbol"
+  },
+  "activity_sell_success_description": {
+    "message": "$1 매도 완료",
+    "description": "$1 is the token symbol"
+  },
+  "activity_sell_success_title": {
+    "message": "$1 매도 완료",
+    "description": "$1 is the token symbol"
+  },
   "activity_send_failed_description": {
     "message": "수신: $1",
     "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_failed_title": {
+    "message": "전송 실패"
   },
   "activity_send_pending_description": {
     "message": "수신: $1",
@@ -327,11 +858,107 @@
     "message": "$1 전송됨",
     "description": "$1 is the token symbol"
   },
+  "activity_smartAccountUpgrade_failed_description": {
+    "message": "업그레이드 실패"
+  },
+  "activity_smartAccountUpgrade_failed_title": {
+    "message": "업그레이드 실패"
+  },
+  "activity_smartAccountUpgrade_pending_description": {
+    "message": "스마트 계정 업그레이드 중"
+  },
+  "activity_smartAccountUpgrade_pending_title": {
+    "message": "스마트 계정 업그레이드 중"
+  },
+  "activity_smartAccountUpgrade_success_description": {
+    "message": "스마트 계정 업그레이드 완료"
+  },
+  "activity_smartAccountUpgrade_success_title": {
+    "message": "스마트 계정 업그레이드 완료"
+  },
+  "activity_stopMarketCloseShort_failed_description": {
+    "message": "숏 청산 실패"
+  },
+  "activity_stopMarketCloseShort_failed_title": {
+    "message": "숏 청산 실패"
+  },
+  "activity_stopMarketCloseShort_pending_description": {
+    "message": "숏 청산 중 - 시장가 손절"
+  },
+  "activity_stopMarketCloseShort_pending_title": {
+    "message": "숏 청산 중 - 시장가 손절"
+  },
+  "activity_stopMarketCloseShort_success_description": {
+    "message": "숏 청산 완료 - 시장가 손절"
+  },
+  "activity_stopMarketCloseShort_success_title": {
+    "message": "숏 청산 완료 - 시장가 손절"
+  },
   "activity_swapIncomplete_failed_title": {
     "message": "스왑 실패"
   },
+  "activity_swapIncomplete_pending_title": {
+    "message": "$1 스왑 중",
+    "description": "$1 is the source token symbol"
+  },
+  "activity_swapIncomplete_success_title": {
+    "message": "$1 스왑 완료",
+    "description": "$1 is the source token symbol"
+  },
   "activity_swap_failed_title": {
     "message": "스왑 실패"
+  },
+  "activity_swap_pending_title": {
+    "message": "$1을(를) $2(으)로 스왑 중",
+    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+  },
+  "activity_swap_success_title": {
+    "message": "$1을(를) $2(으)로 스왑 완료",
+    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+  },
+  "activity_unwrap_failed_description": {
+    "message": "언랩 실패"
+  },
+  "activity_unwrap_failed_title": {
+    "message": "언랩 실패"
+  },
+  "activity_unwrap_pending_description": {
+    "message": "$1 언래핑 중",
+    "description": "$1 is the token symbol"
+  },
+  "activity_unwrap_pending_title": {
+    "message": "$1 언래핑 중",
+    "description": "$1 is the token symbol"
+  },
+  "activity_unwrap_success_description": {
+    "message": "$1 언래핑 완료",
+    "description": "$1 is the token symbol"
+  },
+  "activity_unwrap_success_title": {
+    "message": "$1 언래핑 완료",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_failed_description": {
+    "message": "래핑 실패"
+  },
+  "activity_wrap_failed_title": {
+    "message": "래핑 실패"
+  },
+  "activity_wrap_pending_description": {
+    "message": "$1 래핑 중",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_pending_title": {
+    "message": "$1 래핑 중",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_success_description": {
+    "message": "$1 래핑 완료",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_success_title": {
+    "message": "$1 래핑 완료",
+    "description": "$1 is the token symbol"
   },
   "add": {
     "message": "추가"
@@ -493,6 +1120,15 @@
   "addressMismatchPunycode": {
     "message": "Punycode 버전: $1",
     "description": "$1 replaced by punycode version of the URL in confirmation request"
+  },
+  "addressPoisoningBadge": {
+    "message": "오염됨"
+  },
+  "addressPoisoningMessage": {
+    "message": "이 주소는 사용자가 이전에 사용한 주소와 매우 유사합니다. 잘못된 수취인으로 자금을 송금하도록 속이기 위해 생성되었을 가능성이 있습니다."
+  },
+  "addressPoisoningTitle": {
+    "message": "주소 오염 공격이 감지되었습니다"
   },
   "addressQrCodeModalDescription": {
     "message": "이 주소를 사용하여 $1에서 토큰과 컬렉터블을 받으세요",
@@ -1716,6 +2352,9 @@
     "message": "커뮤니티 기여",
     "description": "Section heading on the language settings screen for locales maintained by community contributors."
   },
+  "compareAddresses": {
+    "message": "주소 비교"
+  },
   "completed": {
     "message": "완료"
   },
@@ -1908,6 +2547,9 @@
   },
   "confirmTitleDescSign": {
     "message": "컨펌하기 전에 요청 세부 사항을 검토하세요."
+  },
+  "confirmTitleDescTokenApprovalRevocation": {
+    "message": "이 사이트는 토큰 승인을 취소할 수 있는 권한을 요청합니다."
   },
   "confirmTitlePermission": {
     "message": "권한 요청"
@@ -2446,6 +3088,9 @@
   "default": {
     "message": "기본값"
   },
+  "defaultNetworks": {
+    "message": "기본 네트워크"
+  },
   "defaultRpcUrl": {
     "message": "기본 RPC URL"
   },
@@ -2880,6 +3525,9 @@
   "enterYourPasswordSocialLoginFlow": {
     "message": "MetaMask 비밀번호를 입력하세요"
   },
+  "enteredMalicious": {
+    "message": "입력하신 주소"
+  },
   "errorCode": {
     "message": "코드: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
@@ -3229,6 +3877,18 @@
     "message": "주간",
     "description": "Time period for weekly recurring permissions redemption"
   },
+  "gatorPermissionsAllTokenApprovalRevocationPrimitives": {
+    "message": "RC-20, ERC-1155, ERC-721에 대한 모든 승인 철회 기본 요소.",
+    "description": "Text shown when all token approval revocation primitives are enabled"
+  },
+  "gatorPermissionsErc20ApproveRevocation": {
+    "message": "ERC-20 승인(사용자, 0)",
+    "description": "Token approval revocation method for ERC-20 approve reset"
+  },
+  "gatorPermissionsErc721ApproveRevocation": {
+    "message": "ERC-721 승인(주소(0), 토큰Id)",
+    "description": "Token approval revocation method for ERC-721 single-token approve reset"
+  },
   "gatorPermissionsExpirationDate": {
     "message": "만료 날짜",
     "description": "Label for the expiration date of a permission"
@@ -3249,6 +3909,22 @@
     "message": "최대 허용량",
     "description": "Label for the max allowance of a permission"
   },
+  "gatorPermissionsPermit2ApproveRevocation": {
+    "message": "Permit2 승인(토큰, 사용자, 0, 0)",
+    "description": "Token approval revocation method for Permit2 approve reset"
+  },
+  "gatorPermissionsPermit2InvalidateNonces": {
+    "message": "Permit2 논스 무효화",
+    "description": "Token approval revocation method for Permit2 nonce invalidation"
+  },
+  "gatorPermissionsPermit2Lockdown": {
+    "message": "Permit2 록다운",
+    "description": "Token approval revocation method for Permit2 lockdown"
+  },
+  "gatorPermissionsRevocationMethods": {
+    "message": "철회 방법",
+    "description": "Label for the enabled token approval revocation methods"
+  },
   "gatorPermissionsRevocationPending": {
     "message": "철회 대기 중",
     "description": "Label for a gator permission that is pending a revocation transaction"
@@ -3256,6 +3932,10 @@
   "gatorPermissionsRevoke": {
     "message": "철회",
     "description": "Label for the revoke button of a gator permission"
+  },
+  "gatorPermissionsSetApprovalForAllRevocation": {
+    "message": "ERC-721/ERC-1155 모두 승인 세트(거짓)",
+    "description": "Token approval revocation method for setApprovalForAll reset"
   },
   "gatorPermissionsShowDetails": {
     "message": "세부 정보 표시",
@@ -3639,6 +4319,9 @@
     "message": "가져옴",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
+  "includes": {
+    "message": "포함됨"
+  },
   "includesXTransactions": {
     "message": "$1건의 트랜잭션 포함"
   },
@@ -3813,6 +4496,9 @@
   },
   "knownAddressRecipient": {
     "message": "알려진 계약 주소입니다."
+  },
+  "knownSafeAddress": {
+    "message": "알려진 주소"
   },
   "knownTokenWarning": {
     "message": "이 작업은 지갑에 목록에 등재되어 피싱에 사용될 수 있는 토큰을 편집합니다. 해당 토큰이 나타내는 내용을 변경하려는 경우에만 작업을 승인하세요. $1에 대해 알아보기"
@@ -3997,6 +4683,15 @@
   "loginErrorSessionExpiredTitle": {
     "message": "세션이 만료되었습니다"
   },
+  "loginErrorTelegramOutdatedButton": {
+    "message": "Telegram 업데이트"
+  },
+  "loginErrorTelegramOutdatedDescription": {
+    "message": "Telegram에 연결할 수 없습니다. Telegram 앱이 오래된 경우 주로 발생합니다. Telegram을 업데이트한 후 다시 시도하세요."
+  },
+  "loginErrorTelegramOutdatedTitle": {
+    "message": "Telegram으로 로그인할 수 없음"
+  },
   "logo": {
     "message": "$1 로고",
     "description": "$1 is the name of the ticker"
@@ -4010,6 +4705,10 @@
   },
   "lowLowercase": {
     "message": "낮음"
+  },
+  "lowValueAssets": {
+    "message": "저가치 토큰($1)",
+    "description": "$1 is the number of low value assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "이더리움 메인넷"
@@ -4190,6 +4889,9 @@
   },
   "mismatchedRpcUrl": {
     "message": "기록에 따르면 제출한 RPC URL 값이 이 체인 ID의 알려진 공급업체와 일치하지 않습니다."
+  },
+  "mmFee": {
+    "message": "$1% MM 수수료."
   },
   "month": {
     "message": "월"
@@ -4745,9 +5447,6 @@
   "newCustomTokenAdded": {
     "message": "“$1”(을)를 성공적으로 추가했습니다!"
   },
-  "newNFTDetectedInImportNFTsMessageStrongText": {
-    "message": "설정 > 보안 및 개인정보"
-  },
   "newNFTDetectedInImportNFTsMsg": {
     "message": "OpenSea를 사용하여 NFT를 확인하려면 $1에서 ‘NFT 미디어 표시’ 기능을 켜세요.",
     "description": "$1 is used for newNFTDetectedInImportNFTsMessageStrongText"
@@ -5252,6 +5951,9 @@
   "openWallet": {
     "message": "지갑 열기"
   },
+  "opensInNewTab": {
+    "message": "새 탭에서 열기"
+  },
   "options": {
     "message": "옵션"
   },
@@ -5279,6 +5981,9 @@
   },
   "otherPermissionsOnSiteTitle": {
     "message": "이 사이트에 부여된 기타 권한"
+  },
+  "otherQrWallet": {
+    "message": "기타 QR 지갑"
   },
   "otherSnaps": {
     "message": "기타 스냅",
@@ -8758,6 +9463,19 @@
     "message": "비밀복구구문 전체를 아무 입력란에 붙여넣을 수 있습니다",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
   },
+  "srpRevealMaliciousBlockBody": {
+    "message": "$1의 공격자가 비밀복구구문을 공유하도록 속이려 하고 있습니다. 이 구문을 가지는 사람은 지갑의 모든 자산을 훔칠 수 있습니다.",
+    "description": "Warning message shown when a malicious site is detected. $1 is the hostname of the current tab."
+  },
+  "srpRevealMaliciousBlockDismiss": {
+    "message": "안전성으로 돌아가기"
+  },
+  "srpRevealMaliciousBlockHeading": {
+    "message": "현재 사기를 당하고 있을 수 있습니다"
+  },
+  "srpRevealMaliciousBlockIconAriaLabel": {
+    "message": "위험"
+  },
   "srpSecurityQuizGetStarted": {
     "message": "시작하기"
   },
@@ -9537,6 +10255,10 @@
   "transactionIncludesTypes": {
     "message": "이 트랜잭션에 포함된 사항: $1."
   },
+  "transactionProtectedByEnforcedSimulations": {
+    "message": "이 트랜잭션은 보호되었습니다. 예상치 못한 자금 손실을 방지하기 위해 취소했습니다.",
+    "description": "Banner shown in the transaction details view when a failed transaction reverted because an enforced-simulations caveat enforcer rejected it."
+  },
   "transactionSettings": {
     "message": "트랜잭션 설정"
   },
@@ -9707,6 +10429,13 @@
   "unavailable": {
     "message": "사용 불가"
   },
+  "unavailableNetworkConnection": {
+    "message": "네트워크 연결을 사용할 수 없음"
+  },
+  "unavailableNetworkConnectionDescription": {
+    "message": "$1과(와)의 연결이 불안정합니다. 계속하기 전에 네트워크 연결 세부 정보를 업데이트하거나 나중에 다시 시도하세요.",
+    "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
+  },
   "unexpectedBehavior": {
     "message": "이 동작은 예상치 못한 것이며 계정이 복원되더라도 버그로 신고해야 합니다."
   },
@@ -9733,6 +10462,9 @@
   "unknownNetworkForKeyEntropy": {
     "message": "알 수 없는 네트워크",
     "description": "Displayed on places like Snap install warning when regular name is not available."
+  },
+  "unknownPermissionType": {
+    "message": "알 수 없는 권한 유형"
   },
   "unknownQrCode": {
     "message": "오류: QR 코드를 식별할 수 없습니다."
@@ -9910,6 +10642,10 @@
   "viewinExplorer": {
     "message": "Explorer에서 $1 보기",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
+  },
+  "vip": {
+    "message": "VIP $1",
+    "description": "$1 is the VIP tier number"
   },
   "visitSite": {
     "message": "사이트 방문"
