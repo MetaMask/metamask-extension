@@ -3328,10 +3328,6 @@ export default class MetamaskController extends EventEmitter {
         appStateController.addMusdConversionDismissedCtaKey.bind(
           appStateController,
         ),
-      updateNetworkConnectionBanner:
-        appStateController.updateNetworkConnectionBanner.bind(
-          appStateController,
-        ),
       setShowShieldEntryModalOnce:
         appStateController.setShowShieldEntryModalOnce.bind(appStateController),
       setPendingShieldCohort:

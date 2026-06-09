@@ -1,12 +1,8 @@
-import { useEffect, useCallback, useRef, useContext } from 'react';
+import { useCallback, useContext, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Hex, hexToNumber } from '@metamask/utils';
-import { selectFirstFailedNetworkForNetworkConnectionBanner } from '../selectors/multichain/networks';
-import {
-  getNetworkConnectionBanner,
-  getIsDeviceOffline,
-} from '../selectors/selectors';
-import { updateNetworkConnectionBanner, updateNetwork } from '../store/actions';
+import { getNetworkConnectionBanner } from '../selectors/selectors';
+import { updateNetwork } from '../store/actions';
 import { MetaMetricsContext } from '../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -32,47 +28,16 @@ type UseNetworkConnectionBannerResult = NetworkConnectionBanner & {
   switchToInfura: () => Promise<void>;
 };
 
-const DEGRADED_BANNER_TIMEOUT = 5 * 1000;
-const UNAVAILABLE_BANNER_TIMEOUT = 30 * 1000;
-
 export const useNetworkConnectionBanner =
   (): UseNetworkConnectionBannerResult => {
     const dispatch = useDispatch();
     const { trackEvent } = useContext(MetaMetricsContext);
-    const isOffline = useSelector(getIsDeviceOffline);
-    const failedNetwork = useSelector(
-      selectFirstFailedNetworkForNetworkConnectionBanner,
-    );
     const networkConnectionBannerState = useSelector(
       getNetworkConnectionBanner,
     );
     const networkConfigurationsByChainId = useSelector(
       getNetworkConfigurationsByChainId,
     );
-
-    const timersRef = useRef<{
-      degradedTimer?: NodeJS.Timeout;
-      unavailableTimer?: NodeJS.Timeout;
-    }>({});
-
-    const clearDegradedTimer = useCallback(() => {
-      if (timersRef.current.degradedTimer) {
-        clearTimeout(timersRef.current.degradedTimer);
-        timersRef.current.degradedTimer = undefined;
-      }
-    }, []);
-
-    const clearUnavailableTimer = useCallback(() => {
-      if (timersRef.current.unavailableTimer) {
-        clearTimeout(timersRef.current.unavailableTimer);
-        timersRef.current.unavailableTimer = undefined;
-      }
-    }, []);
-
-    const clearTimers = useCallback(() => {
-      clearDegradedTimer();
-      clearUnavailableTimer();
-    }, [clearDegradedTimer, clearUnavailableTimer]);
 
     const trackNetworkBannerEvent = useCallback(
       async ({
@@ -136,107 +101,29 @@ export const useNetworkConnectionBanner =
       [networkConfigurationsByChainId, trackEvent],
     );
 
-    const startUnavailableTimer = useCallback(() => {
-      clearUnavailableTimer();
-
-      timersRef.current.unavailableTimer = setTimeout(() => {
-        if (failedNetwork) {
-          trackNetworkBannerEvent({
-            bannerType: 'unavailable',
-            eventName: MetaMetricsEventName.NetworkConnectionBannerShown,
-            networkClientId: failedNetwork.networkClientId,
-          });
-          dispatch(
-            updateNetworkConnectionBanner({
-              status: 'unavailable',
-              networkName: failedNetwork.networkName,
-              networkClientId: failedNetwork.networkClientId,
-              chainId: failedNetwork.chainId,
-              isInfuraEndpoint: failedNetwork.isInfuraEndpoint,
-              infuraEndpointIndex: failedNetwork.infuraEndpointIndex,
-            }),
-          );
-        }
-      }, UNAVAILABLE_BANNER_TIMEOUT - DEGRADED_BANNER_TIMEOUT);
-    }, [
-      failedNetwork,
-      trackNetworkBannerEvent,
-      dispatch,
-      clearUnavailableTimer,
-    ]);
-
-    const startDegradedTimer = useCallback(() => {
-      clearDegradedTimer();
-
-      timersRef.current.degradedTimer = setTimeout(() => {
-        if (failedNetwork) {
-          trackNetworkBannerEvent({
-            bannerType: 'degraded',
-            eventName: MetaMetricsEventName.NetworkConnectionBannerShown,
-            networkClientId: failedNetwork.networkClientId,
-          });
-          dispatch(
-            updateNetworkConnectionBanner({
-              status: 'degraded',
-              networkName: failedNetwork.networkName,
-              networkClientId: failedNetwork.networkClientId,
-              chainId: failedNetwork.chainId,
-              isInfuraEndpoint: failedNetwork.isInfuraEndpoint,
-              infuraEndpointIndex: failedNetwork.infuraEndpointIndex,
-            }),
-          );
-
-          startUnavailableTimer();
-        }
-      }, DEGRADED_BANNER_TIMEOUT);
-    }, [
-      failedNetwork,
-      trackNetworkBannerEvent,
-      dispatch,
-      startUnavailableTimer,
-      clearDegradedTimer,
-    ]);
-
-    // If the failed network does not change but the banner status changes, start the degraded or unavailable timer
-    // If the failed network changes, reset all timers and change the status
-    // If the device is offline, don't show network banners - the issue is device connectivity, not the network
+    // Fire the banner-shown analytics when the banner transitions to a
+    // visible status. The 5s / 30s escalation lives inside the controller;
+    // here we just translate state changes to analytics.
+    const lastReportedKeyRef = useRef<string | null>(null);
     useEffect(() => {
-      // When device is offline, clear timers and reset banner state
-      // We don't want to show network degraded/unavailable banners when the real issue
-      // is the device's internet connectivity
-      if (isOffline) {
-        clearTimers();
-        if (networkConnectionBannerState.status !== 'available') {
-          dispatch(updateNetworkConnectionBanner({ status: 'available' }));
-        }
+      if (
+        networkConnectionBannerState.status !== 'degraded' &&
+        networkConnectionBannerState.status !== 'unavailable'
+      ) {
+        lastReportedKeyRef.current = null;
         return;
       }
-
-      if (failedNetwork) {
-        if (networkConnectionBannerState.status === 'degraded') {
-          startUnavailableTimer();
-        } else if (
-          networkConnectionBannerState.status === 'unknown' ||
-          networkConnectionBannerState.status === 'available'
-        ) {
-          startDegradedTimer();
-        }
-      } else if (networkConnectionBannerState.status !== 'available') {
-        dispatch(updateNetworkConnectionBanner({ status: 'available' }));
+      const key = `${networkConnectionBannerState.status}:${networkConnectionBannerState.networkClientId}`;
+      if (lastReportedKeyRef.current === key) {
+        return;
       }
-
-      return () => {
-        clearTimers();
-      };
-    }, [
-      isOffline,
-      failedNetwork,
-      clearTimers,
-      dispatch,
-      networkConnectionBannerState.status,
-      startDegradedTimer,
-      startUnavailableTimer,
-    ]);
+      lastReportedKeyRef.current = key;
+      trackNetworkBannerEvent({
+        bannerType: networkConnectionBannerState.status,
+        eventName: MetaMetricsEventName.NetworkConnectionBannerShown,
+        networkClientId: networkConnectionBannerState.networkClientId,
+      });
+    }, [networkConnectionBannerState, trackNetworkBannerEvent]);
 
     const switchToInfura = useCallback(async () => {
       if (
@@ -256,8 +143,6 @@ export const useNetworkConnectionBanner =
         return;
       }
 
-      // Update the network configuration to use the Infura endpoint as default
-      // Only show success toast if the update completes without error
       try {
         await dispatch(
           updateNetwork(
@@ -284,26 +169,6 @@ export const useNetworkConnectionBanner =
       networkConfigurationsByChainId,
       dispatch,
     ]);
-
-    // When in degraded/unavailable status, use fresh selector data for network details
-    // to prevent stale "Switch to MetaMask default RPC" button after switching endpoints
-    if (
-      (networkConnectionBannerState.status === 'degraded' ||
-        networkConnectionBannerState.status === 'unavailable') &&
-      failedNetwork
-    ) {
-      return {
-        ...networkConnectionBannerState,
-        // Override with fresh data from selector
-        networkClientId: failedNetwork.networkClientId,
-        networkName: failedNetwork.networkName,
-        chainId: failedNetwork.chainId,
-        isInfuraEndpoint: failedNetwork.isInfuraEndpoint,
-        infuraEndpointIndex: failedNetwork.infuraEndpointIndex,
-        trackNetworkBannerEvent,
-        switchToInfura,
-      };
-    }
 
     return {
       ...networkConnectionBannerState,

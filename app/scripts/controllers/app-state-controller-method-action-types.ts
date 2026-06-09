@@ -297,16 +297,6 @@ export type AppStateControllerSetProductTourAction = {
 };
 
 /**
- * Updates the network connection banner state
- *
- * @param networkConnectionBanner - The new banner state
- */
-export type AppStateControllerUpdateNetworkConnectionBannerAction = {
-  type: `AppStateController:updateNetworkConnectionBanner`;
-  handler: AppStateController['updateNetworkConnectionBanner'];
-};
-
-/**
  * Sets a unique ID for the current extension popup
  *
  * @param currentExtensionPopupId
@@ -587,7 +577,6 @@ export type AppStateControllerMethodActions =
   | AppStateControllerSetMusdConversionEducationSeenAction
   | AppStateControllerAddMusdConversionDismissedCtaKeyAction
   | AppStateControllerSetProductTourAction
-  | AppStateControllerUpdateNetworkConnectionBannerAction
   | AppStateControllerSetCurrentExtensionPopupIdAction
   | AppStateControllerSetTrezorModelAction
   | AppStateControllerUpdateNftDropDownStateAction
