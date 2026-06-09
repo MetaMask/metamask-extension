@@ -103,27 +103,16 @@ function connect(reconnectAttempt = 0): void {
       );
       // Close first so the impending teardown isn't logged as an unexpected
       // disconnect, then reload the whole extension.
-      try {
-        socket.close();
-      } catch {
-        // ignore
-      }
+      socket.close();
       runtime?.reload();
     }
   });
 
+  // A failed connection also fires `close` (after its `error`), so this handler
+  // covers both connection failures and later disconnects.
   socket.addEventListener('close', () => {
     if (!reloading) {
       scheduleReconnect(attempt);
-    }
-  });
-
-  socket.addEventListener('error', () => {
-    // Let the `close` handler schedule the reconnect.
-    try {
-      socket.close();
-    } catch {
-      // ignore
     }
   });
 }

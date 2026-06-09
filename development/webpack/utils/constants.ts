@@ -9,23 +9,13 @@ export const MODES = {
 
 /**
  * Entry name for the webpack-dev-server client bundle. Used by
- * `createDevServerOptions().setupMiddlewares` to register the entry, by
+ * `DEV_SERVER_OPTIONS.setupMiddlewares` to register the entry, by
  * `ManifestPlugin` to mark it self-contained, and by
  * `HtmlBundlerPlugin.beforeEmit` to look up its output filename for `<script>` injection.
  */
 export const DEV_SERVER_CLIENT_ENTRY_NAME = 'dev-server-client';
 
-/**
- * Builds the webpack-dev-server options. A factory (rather than a constant) so
- * the manifest version can be threaded through to {@link setupDevReload}, which
- * needs it to inject the extension reloader into the right background entry.
- *
- * @param manifestVersion - The manifest version being built (2 or 3).
- * @returns The webpack-dev-server configuration.
- */
-export const createDevServerOptions = (
-  manifestVersion: number,
-): Configuration => ({
+export const DEV_SERVER_OPTIONS: Configuration = {
   hot: false,
   liveReload: true,
   // always use loopback, as 0.0.0.0 tends to fail on some machines (WSL2?)
@@ -59,13 +49,13 @@ export const createDevServerOptions = (
         getDevServerClientUrl(devServer.options),
         { name: DEV_SERVER_CLIENT_ENTRY_NAME, chunkLoading: false },
       ).apply(compiler);
+      // Auto-reload the whole extension when the background, service worker, or
+      // content scripts change (UI pages reload themselves via the client above).
+      setupDevReload(compiler, devServer);
     }
-    // Auto-reload the whole extension when the background, service worker, or
-    // content scripts change (UI pages reload themselves via the client above).
-    setupDevReload(devServer, manifestVersion);
     return middlewares;
   },
-});
+};
 
 /**
  * The build environment. This describes the environment this build was produced in.

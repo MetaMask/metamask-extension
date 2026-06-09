@@ -58,9 +58,6 @@ const nodeModules = join(__dirname, '../../node_modules');
 const root = join(context, '..');
 const isDevelopment = args.mode === MODES.DEVELOPMENT;
 const MANIFEST_VERSION = args.manifestVersion;
-// Re-exported so the dev server (`build.ts`) can thread the manifest version
-// through to the extension auto-reload wiring.
-export const manifestVersion = MANIFEST_VERSION;
 const browsersListPath = join(root, '.browserslistrc');
 // read .browserslist now to stop it from searching for the file over and over
 const browsersListQuery = readFileSync(browsersListPath, 'utf8');
