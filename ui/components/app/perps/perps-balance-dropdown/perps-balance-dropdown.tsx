@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   twMerge,
   TextVariant,
@@ -20,12 +21,16 @@ import {
   formatPerpsFiat,
   PRICE_RANGES_MINIMAL_VIEW,
 } from '../../../../../shared/lib/perps-formatters';
+import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { usePerpsEligibility } from '../../../../hooks/perps';
 import { usePerpsLiveAccount } from '../../../../hooks/perps/stream';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import { PerpsControlBarSkeleton } from '../perps-skeletons';
+
+/** Placeholder shown in place of fiat balances when privacy mode is enabled. */
+const MASKED_BALANCE = '••••••';
 
 /** Handler from perps triggers (e.g. deposit / withdraw); may return a Promise. */
 export type PerpsBalanceActionHandler = () => void | Promise<unknown>;
@@ -76,6 +81,7 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
   const { account, isInitialLoading } = usePerpsLiveAccount();
   const { formatPercentWithMinThreshold } = useFormatters();
   const { isEligible } = usePerpsEligibility();
+  const { privacyMode } = useSelector(getPreferences);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
@@ -180,9 +186,11 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
               gap={2}
             >
               <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-                {formatPerpsFiat(accountValue, {
-                  ranges: PRICE_RANGES_MINIMAL_VIEW,
-                })}
+                {privacyMode
+                  ? MASKED_BALANCE
+                  : formatPerpsFiat(accountValue, {
+                      ranges: PRICE_RANGES_MINIMAL_VIEW,
+                    })}
               </Text>
               <Icon
                 name={isDropdownOpen ? IconName.ArrowUp : IconName.ArrowDown}
@@ -240,7 +248,7 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
             fontWeight={FontWeight.Medium}
             color={isProfit ? TextColor.SuccessDefault : TextColor.ErrorDefault}
           >
-            {formattedPnl} ({formattedRoe})
+            {privacyMode ? MASKED_BALANCE : `${formattedPnl} (${formattedRoe})`}
           </Text>
         </Box>
       )}
