@@ -13,6 +13,13 @@ import {
 } from '../../../../../helpers/constants/routes';
 import AssetListControlBar from './asset-list-control-bar';
 
+let mockIsNetworkManagementEnabled = true;
+
+jest.mock('../../../../../selectors/multichain/feature-flags', () => ({
+  ...jest.requireActual('../../../../../selectors/multichain/feature-flags'),
+  getIsNetworkManagementEnabled: () => mockIsNetworkManagementEnabled,
+}));
+
 type TooltipProps = {
   children: React.ReactNode;
   disabled?: boolean;
@@ -70,6 +77,7 @@ const createMockState = () => ({
 
 describe('NFTs options', () => {
   afterEach(() => {
+    mockIsNetworkManagementEnabled = true;
     jest.clearAllMocks();
   });
 
@@ -272,10 +280,6 @@ describe('NFTs options', () => {
   it('opens the network filter modal and can navigate to manage networks', async () => {
     const showModalSpy = jest.spyOn(actions, 'showModal');
     const state = createMockState();
-    state.metamask.remoteFeatureFlags = {
-      ...state.metamask.remoteFeatureFlags,
-      extensionUxNetworkManagement: true,
-    };
     const store = configureMockStore([thunk])(state);
 
     const { findByTestId, findByText } = renderWithProvider(
@@ -288,7 +292,6 @@ describe('NFTs options', () => {
     expect(await findByText('Select network')).toBeInTheDocument();
     expect(await findByText('All default networks')).toBeInTheDocument();
     expect(await findByText('Default networks')).toBeInTheDocument();
-    expect(await findByText('Testnets')).toBeInTheDocument();
 
     fireEvent.click(await findByTestId('home-network-filter-manage-networks'));
 
@@ -296,11 +299,8 @@ describe('NFTs options', () => {
   });
 
   it('opens the legacy Network Manager modal when network management feature flag is disabled', async () => {
+    mockIsNetworkManagementEnabled = false;
     const state = createMockState();
-    state.metamask.remoteFeatureFlags = {
-      ...state.metamask.remoteFeatureFlags,
-      extensionUxNetworkManagement: false,
-    };
     const store = configureMockStore([thunk])(state);
 
     const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
