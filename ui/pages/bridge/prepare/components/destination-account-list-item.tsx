@@ -10,6 +10,7 @@ import {
   IconColor,
   IconName,
   IconSize,
+  Box,
 } from '@metamask/design-system-react';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { shortenAddress } from '../../../../helpers/utils/util';
@@ -19,7 +20,6 @@ import {
   Tag,
   AvatarNetwork,
   AvatarNetworkSize,
-  Box,
 } from '../../../../components/component-library';
 import {
   AlignItems,
@@ -60,12 +60,12 @@ type DestinationAccountListItemProps = {
   isExternal?: boolean;
 };
 
-const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
+const DestinationAccountListItem = ({
   account,
   selected = false,
   onClick,
   isExternal = false,
-}) => {
+}: DestinationAccountListItemProps) => {
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );

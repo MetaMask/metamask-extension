@@ -7,6 +7,8 @@ import { join, resolve } from 'node:path';
 import {
   type Configuration,
   type FileCacheOptions,
+  type RuleSetRule,
+  type Stats,
   webpack,
   Compiler,
   WebpackPluginInstance,
@@ -17,6 +19,7 @@ import { getLatestCommit } from '../utils/git';
 import { ManifestPluginOptions } from '../utils/plugins/ManifestPlugin/types';
 import { version as packageVersion } from '../../../package.json';
 import { CHROME_MANIFEST_KEY_NON_PRODUCTION } from '../utils/constants';
+import { BUNDLE_SIZE_SUMMARY_FILE } from '../utils/plugins/ManifestPlugin/stats';
 
 function getWebpackInstance(config: Configuration) {
   // webpack logs a warning if we pass config.watch to it without a callback
@@ -24,6 +27,36 @@ function getWebpackInstance(config: Configuration) {
   // so we just delete the watch property.
   delete config.watch;
   return webpack(config);
+}
+
+async function getWebpackWarnings(config: Configuration): Promise<string[]> {
+  const compiler = webpack(config);
+
+  try {
+    const stats = await new Promise<Stats>((resolveStats, rejectStats) => {
+      compiler.run((error, result) => {
+        if (error) {
+          rejectStats(error);
+          return;
+        }
+
+        if (!result) {
+          rejectStats(new Error('Webpack finished without returning stats.'));
+          return;
+        }
+
+        resolveStats(result);
+      });
+    });
+
+    return (stats.toJson({ all: false, warnings: true }).warnings ?? []).map(
+      (warning) => warning.message,
+    );
+  } finally {
+    await new Promise<void>((resolveClose, rejectClose) =>
+      compiler.close((error) => (error ? rejectClose(error) : resolveClose())),
+    );
+  }
 }
 
 async function withWatching<T>(
@@ -86,6 +119,8 @@ describe('webpack.config.test.ts', () => {
     metamaskrc: resolve(__dirname, '../../../.metamaskrc'),
     metamaskprodrc: resolve(__dirname, '../../../.metamaskprodrc'),
   };
+  const protobufInquireWarning =
+    'Critical dependency: the request of a dependency is an expression';
 
   before(() => {
     // cache originals before we start messing with them
@@ -237,7 +272,6 @@ ${Object.entries(env)
       },
       'chrome',
     );
-    console.log('transformedManifest', transformedManifest);
     assert.deepStrictEqual(transformedManifest, {
       manifest_version: 3,
       name: 'name',
@@ -251,6 +285,7 @@ ${Object.entries(env)
     });
     assert.strictEqual(manifestPlugin.options.setBuildId, false);
     assert.strictEqual(manifestPlugin.options.zip, false);
+    assert.strictEqual(manifestPlugin.options.stats, false);
     const manifestOpts = manifestPlugin.options as ManifestPluginOptions<true>;
     assert.strictEqual(manifestOpts.zipOptions, undefined);
 
@@ -279,6 +314,71 @@ ${Object.entries(env)
     );
   });
 
+  it('suppresses the @protobufjs/inquire dynamic require warning only while it is still needed', async () => {
+    using tempDirectory = fs.mkdtempDisposableSync(
+      join(tmpdir(), 'protobuf-inquire-warning-test-'),
+    );
+    const entryPath = join(tempDirectory.path, 'entry.js');
+    fs.writeFileSync(
+      entryPath,
+      `
+const inquire = require('@protobufjs/inquire');
+inquire('long');
+`,
+    );
+
+    const config: Configuration = getWebpackConfig(['--no-progress']);
+    const protobufInquireRule = config.module?.rules?.find(
+      (rule) =>
+        rule &&
+        typeof rule === 'object' &&
+        'test' in rule &&
+        String(rule.test).includes('@protobufjs'),
+    ) as RuleSetRule | undefined;
+    assert(
+      protobufInquireRule,
+      'Expected a parser rule for @protobufjs/inquire.',
+    );
+
+    const getConfig = (name: string, rules: RuleSetRule[]): Configuration => ({
+      mode: 'development',
+      context: resolve(__dirname, '../../..'),
+      entry: entryPath,
+      output: {
+        path: join(tempDirectory.path, name),
+        filename: 'bundle.js',
+      },
+      cache: false,
+      stats: 'none',
+      infrastructureLogging: { level: 'none' },
+      resolve: {
+        modules: [join(__dirname, '../../../node_modules'), 'node_modules'],
+      },
+      module: { rules },
+    });
+
+    const warningsWithRule = await getWebpackWarnings(
+      getConfig('with-rule', [protobufInquireRule]),
+    );
+    assert.deepStrictEqual(
+      warningsWithRule.filter((warning) =>
+        warning.includes(protobufInquireWarning),
+      ),
+      [],
+      'Expected the @protobufjs/inquire parser rule to suppress the dynamic require warning.',
+    );
+
+    const warningsWithoutRule = await getWebpackWarnings(
+      getConfig('without-rule', []),
+    );
+    assert(
+      warningsWithoutRule.some((warning) =>
+        warning.includes(protobufInquireWarning),
+      ),
+      'Expected @protobufjs/inquire to still emit this warning without the workaround. If this fails, remove the parser rule.',
+    );
+  });
+
   it('should apply non-default options', () => {
     const removeUnsupportedFeatures = ['--no-lavamoat'];
     const config: Configuration = getWebpackConfig(
@@ -299,9 +399,6 @@ ${Object.entries(env)
         INFURA_PROD_PROJECT_ID: '00000000000000000000000000000000',
         SEGMENT_WRITE_KEY: '-',
         SEGMENT_PROD_WRITE_KEY: '-',
-        GOOGLE_PROD_CLIENT_ID: '00000000000',
-        APPLE_PROD_CLIENT_ID: '00000000000',
-        TELEGRAM_PROD_CLIENT_ID: '00000000000',
         METAMASK_REACT_REDUX_DEVTOOLS: 'true',
       },
     );
@@ -317,7 +414,7 @@ ${Object.entries(env)
     assert.strictEqual(instance.options.cache.type, 'memory');
     assert.strictEqual(instance.options.devtool, 'hidden-source-map');
     const stats = instance.options.stats as { preset: string };
-    assert.strictEqual(stats.preset, 'normal');
+    assert.strictEqual(stats.preset, 'none');
     const fallback = instance.options.resolve.fallback as Record<string, false>;
     assert.strictEqual(typeof fallback['react-devtools-core'], 'string');
     assert.strictEqual(typeof fallback['remote-redux-devtools'], 'string');
@@ -342,6 +439,42 @@ ${Object.entries(env)
       `../builds/metamask-[browser]-${packageVersion}.zip`,
     );
     assert.deepStrictEqual(manifestPlugin.options.transform, undefined);
+    assert(manifestPlugin.options.stats, 'Stats options should be present');
+    assert.strictEqual(
+      manifestPlugin.options.stats.outFile,
+      BUNDLE_SIZE_SUMMARY_FILE,
+    );
+    assert.strictEqual(manifestPlugin.options.stats.debug, true);
+    assert.strictEqual(
+      manifestPlugin.options.stats.classifyEntrypoint('service-worker.ts'),
+      'background',
+    );
+    assert.strictEqual(
+      manifestPlugin.options.stats.classifyEntrypoint('background'),
+      'background',
+    );
+    assert.strictEqual(
+      manifestPlugin.options.stats.classifyEntrypoint('home'),
+      'ui',
+    );
+    assert.strictEqual(
+      manifestPlugin.options.stats.classifyEntrypoint('offscreen'),
+      'other',
+    );
+    assert.strictEqual(
+      manifestPlugin.options.stats.classifyEntrypoint('offscreen.1'),
+      'other',
+    );
+    assert.strictEqual(
+      manifestPlugin.options.stats.classifyEntrypoint(
+        'scripts/contentscript.js',
+      ),
+      'contentScripts',
+    );
+    assert.strictEqual(
+      manifestPlugin.options.stats.classifyEntrypoint('unknown'),
+      null,
+    );
 
     const progressPlugin = instance.options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'ProgressPlugin',
@@ -365,6 +498,8 @@ ${Object.entries(env)
   it('should include BundleAnalyzerPlugin when --bundleAnalyzer is passed', () => {
     const config: Configuration = getWebpackConfig(['--bundleAnalyzer']);
     const instance = getWebpackInstance(config);
+    const stats = instance.options.stats as { preset: string };
+    assert.strictEqual(stats.preset, 'none');
     const bundleAnalyzerPlugin = instance.options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'BundleAnalyzerPlugin',
     );
@@ -492,17 +627,5 @@ ${Object.entries(env)
     assert.strictEqual(exit.mock.calls.length, 1);
     assert.strictEqual(exit.mock.calls[0].arguments.length, 1);
     assert.strictEqual(exit.mock.calls[0].arguments[0], 0);
-  });
-
-  it('should enable ReactRefreshPlugin in a development env when `--watch` is specified', () => {
-    const config: Configuration = getWebpackConfig(['--watch'], {
-      __HMR_READY__: 'true',
-    });
-    delete config.watch;
-    const instance = webpack(config);
-    const reactRefreshPlugin = instance.options.plugins.find(
-      (plugin) => plugin && plugin.constructor.name === 'ReactRefreshPlugin',
-    );
-    assert(reactRefreshPlugin, 'ReactRefreshPlugin should be present');
   });
 });

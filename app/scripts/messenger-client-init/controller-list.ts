@@ -1,4 +1,5 @@
 import { MultichainAccountService } from '@metamask/multichain-account-service';
+import { SnapAccountService } from '@metamask/snap-account-service';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { KeyringController } from '@metamask/keyring-controller';
 import { NetworkController } from '@metamask/network-controller';
@@ -94,8 +95,13 @@ import {
   GeolocationApiService,
   GeolocationController,
 } from '@metamask/geolocation-controller';
+import {
+  ComplianceController,
+  ComplianceService,
+} from '@metamask/compliance-controller';
 import { PerpsController } from '@metamask/perps-controller';
 import { PasskeyController } from '@metamask/passkey-controller';
+import { AnalyticsController } from '@metamask/analytics-controller';
 import { OnboardingController } from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import { InstitutionalSnapController } from '../controllers/institutional-snap/InstitutionalSnapController';
@@ -127,6 +133,7 @@ export type MessengerClient =
   | AccountsController
   | AddressBookController
   | AlertController
+  | AnalyticsController
   | AnnouncementController
   | AppMetadataController
   | ApprovalController
@@ -216,10 +223,13 @@ export type MessengerClient =
   | WebSocketService
   | BackendWebSocketService
   | AccountActivityService
+  | SnapAccountService
   | MultichainAccountService
   | NetworkEnablementController
   | ClaimsService
   | ClientController
+  | ComplianceController
+  | ComplianceService
   | StaticAssetsController
   | ProfileMetricsController
   | ProfileMetricsService
@@ -238,12 +248,14 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   AppMetadataController['state'] &
   ApprovalController['state'] &
   AppStateController['state'] &
+  AnalyticsController['state'] &
   AssetsController['state'] &
   AuthenticationController['state'] &
   BridgeController['state'] &
   BridgeStatusController['state'] &
   ClaimsController['state'] &
   ClientController['state'] &
+  ComplianceController['state'] &
   CronjobController['state'] &
   CurrencyRateController['state'] &
   DeFiPositionsController['state'] &

@@ -25,6 +25,10 @@
       "unconnectedAccountAlertShownOrigins": "object",
       "web3ShimUsageOrigins": "object"
     },
+    "AnalyticsController": {
+      "analyticsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
+      "optedIn": true
+    },
     "AnnouncementController": { "announcements": "object" },
     "AppMetadataController": {
       "currentMigrationVersion": "number",
@@ -42,13 +46,11 @@
       "isWalletResetInProgress": "boolean",
       "lastUpdatedAt": null,
       "lastViewedUserSurvey": null,
-      "lastVisitedRoute": null,
       "musdConversionDismissedCtaKeys": "object",
       "musdConversionEducationSeen": "boolean",
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
       "outdatedBrowserWarningLastShown": "object",
-      "passkeyAutoUnlockSuppressed": "boolean",
       "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
       "pna25Acknowledged": "boolean",
@@ -67,6 +69,10 @@
     "AuthenticationController": {},
     "BridgeStatusController": { "txHistory": "object" },
     "ClaimsController": "object",
+    "ComplianceController": {
+      "lastCheckedAt": null,
+      "walletComplianceStatusMap": "object"
+    },
     "CurrencyController": {
       "currencyRates": {
         "BNB": {
@@ -92,7 +98,6 @@
       },
       "currentCurrency": "usd"
     },
-    "DelegationController": "object",
     "EnsController": {
       "ensEntries": "object",
       "ensResolutionsByAddress": "object"
@@ -108,13 +113,11 @@
     "KeyringController": { "vault": "string" },
     "LoggingController": { "logs": "object" },
     "MetaMetricsController": {
+      "completedMetaMetricsOnboarding": true,
       "dataCollectionForMarketing": "boolean",
       "eventsBeforeMetricsOptIn": "object",
       "fragments": "object",
       "marketingCampaignCookieId": null,
-      "metaMetricsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
-      "participateInMetaMetrics": true,
-      "segmentApiCalls": "object",
       "tracesBeforeMetricsOptIn": "object",
       "traits": "object"
     },

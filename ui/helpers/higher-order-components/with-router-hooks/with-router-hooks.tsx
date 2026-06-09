@@ -39,8 +39,12 @@ function useLocationStable(location: RouterLocation): RouterLocation {
 }
 
 function withRouterHooks<Props extends object>(
-  WrappedComponent: React.ComponentType<Props & RouterHooksProps>,
-): React.ComponentType<Props & Partial<RouterHooksProps>> {
+  WrappedComponent: React.ComponentType<
+    React.PropsWithChildren<Props & RouterHooksProps>
+  >,
+): React.ComponentType<
+  React.PropsWithChildren<Props & Partial<RouterHooksProps>>
+> {
   const ComponentWithRouterHooks = (
     props: Props & Partial<RouterHooksProps>,
   ) => {

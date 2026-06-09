@@ -1,11 +1,6 @@
 import React, { useEffect } from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-import {
-  BlockSize,
-  Display,
-  FlexDirection,
-} from '../../../helpers/constants/design-system';
-import { Box } from '../../../components/component-library';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import BridgeStepList from './bridge-step-list';
 
 export default {
@@ -1741,10 +1736,9 @@ const Args = {
 export const DefaultStory: StoryFn<typeof BridgeStepList> = () => {
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
+      className="flex w-full"
+      flexDirection={BoxFlexDirection.Column}
       gap={1}
-      width={BlockSize.Full}
     >
       <BridgeStepList
         bridgeHistoryItem={Args.step1.bridgeHistoryItem as any}
@@ -1765,8 +1759,8 @@ DefaultStory.storyName = 'Default';
 export const LongNetworkNameStory: StoryFn<typeof BridgeStepList> = () => {
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
+      className="flex"
+      flexDirection={BoxFlexDirection.Column}
       gap={1}
       style={{ width: '350px' }}
     >

@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { HARDWARE_WALLET_REPAIR_ROUTE } from '../../helpers/constants/routes';
 import {
   checkHardwareWalletPermission,
   getConnectedDevices,
@@ -48,6 +49,7 @@ export const useHardwareWalletAutoConnect = ({
   const { isHardwareWalletAccount, walletType, accountAddress } = state;
   const location = useLocation();
   const isOnAutoConnectRoute = isHardwareWalletRoute(location.pathname);
+  const isOnRepairRoute = location.pathname === HARDWARE_WALLET_REPAIR_ROUTE;
 
   const {
     adapterRef,
@@ -62,6 +64,7 @@ export const useHardwareWalletAutoConnect = ({
     () => {
       if (
         !isHardwareWalletAccount ||
+        isOnRepairRoute ||
         !walletType ||
         hardwareConnectionPermissionState ===
           HardwareConnectionPermissionState.Denied
@@ -216,6 +219,7 @@ export const useHardwareWalletAutoConnect = ({
       isWebHidAvailable,
       isWebUsbAvailable,
       handleDisconnect,
+      isOnRepairRoute,
       isOnAutoConnectRoute,
       setHardwareConnectionPermissionState,
       updateConnectionState,
@@ -228,6 +232,7 @@ export const useHardwareWalletAutoConnect = ({
     () => {
       if (
         !isHardwareWalletAccount ||
+        isOnRepairRoute ||
         !walletType ||
         hardwareConnectionPermissionState !==
           HardwareConnectionPermissionState.Granted
@@ -299,6 +304,7 @@ export const useHardwareWalletAutoConnect = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       isHardwareWalletAccount,
+      isOnRepairRoute,
       accountAddress,
       walletType,
       hardwareConnectionPermissionState,

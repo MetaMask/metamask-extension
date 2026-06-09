@@ -95,10 +95,17 @@ const getFixtureIgnoredKeys = (): string[] => [
   // Version that changes on every release
   'data.AppMetadataController.currentAppVersion',
   // Random ids
+  'data.AnalyticsController.analyticsId',
   'data.MultichainBalancesController',
   'data.MultichainBalancesController.balances',
   'data.MultichainTransactionsController.nonEvmTransactions',
   'data.NetworkController.networkConfigurationsByChainId.0x539.rpcEndpoints[0].networkClientId',
+  'data.NetworkController.networkConfigurationsByChainId.0x1.rpcEndpoints[0].failoverUrls',
+  'data.NetworkController.networkConfigurationsByChainId.0x2105.rpcEndpoints[0].failoverUrls',
+  'data.NetworkController.networkConfigurationsByChainId.0x89.rpcEndpoints[0].failoverUrls',
+  'data.NetworkController.networkConfigurationsByChainId.0xa.rpcEndpoints[0].failoverUrls',
+  'data.NetworkController.networkConfigurationsByChainId.0xa4b1.rpcEndpoints[0].failoverUrls',
+  'data.NetworkController.networkConfigurationsByChainId.0xe708.rpcEndpoints[0].failoverUrls',
   'data.NetworkController.networksMetadata',
   'data.NetworkController.selectedNetworkClientId',
   'data.ProfileMetricsController.syncQueue',

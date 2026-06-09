@@ -309,6 +309,56 @@ describe('PersistenceManager', () => {
       );
     });
   });
+
+  describe('getBackup', () => {
+    it('returns all backed up controller state', async () => {
+      await manager.open();
+      await manager.reset();
+      manager.storageKind = 'data';
+      manager.setMetadata({ version: 10 });
+
+      mockStoreSet.mockResolvedValueOnce(undefined);
+
+      const [result, error] = await manager.set({
+        KeyringController: {
+          vault: 'encrypted-vault',
+        },
+        AppMetadataController: {
+          currentAppVersion: '13.34.0',
+        },
+        MetaMetricsController: {
+          completedMetaMetricsOnboarding: true,
+        },
+        AnalyticsController: {
+          analyticsId: '0xabc123',
+          optedIn: true,
+        },
+      } as unknown as MetaMaskStateType);
+
+      expect(result).toBe(true);
+      expect(error).toBeUndefined();
+      /* eslint-disable-next-line jest/prefer-strict-equal -- IndexedDB structuredClone can change object prototypes */
+      expect(await manager.getBackup()).toEqual({
+        KeyringController: {
+          vault: 'encrypted-vault',
+        },
+        AppMetadataController: {
+          currentAppVersion: '13.34.0',
+        },
+        MetaMetricsController: {
+          completedMetaMetricsOnboarding: true,
+        },
+        AnalyticsController: {
+          analyticsId: '0xabc123',
+          optedIn: true,
+        },
+        meta: {
+          version: 10,
+        },
+      });
+    });
+  });
+
   describe('persist', () => {
     it('throws if storageKind is not split', async () => {
       manager.storageKind = 'data';

@@ -52,6 +52,9 @@ export function getLegacyBackgroundApiServiceMessenger(
       'KeyringController:getKeyringsByType',
       'KeyringController:addNewKeyring',
       'PreferencesController:setPasswordForgotten',
+      'OnboardingController:getState',
+      'SeedlessOnboardingController:checkIsPasswordOutdated',
+      'SnapAccountService:getLegacySnapKeyring',
     ],
   });
 

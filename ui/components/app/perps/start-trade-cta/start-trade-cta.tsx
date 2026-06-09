@@ -29,7 +29,7 @@ export type StartTradeCtaProps = {
  * @param options0 - Component props
  * @param options0.onPress - Callback when the CTA is clicked
  */
-export const StartTradeCta: React.FC<StartTradeCtaProps> = ({ onPress }) => {
+export const StartTradeCta = ({ onPress }: StartTradeCtaProps) => {
   const t = useI18nContext();
   const { isEligible } = usePerpsEligibility();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
