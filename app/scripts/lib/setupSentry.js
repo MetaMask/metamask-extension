@@ -353,7 +353,7 @@ export function removeUrlsFromBreadCrumb(breadcrumb) {
   if (breadcrumb?.data?.from) {
     breadcrumb.data.from = hideUrlIfNotInternal(breadcrumb.data.from);
   }
-  // Redact any account addresses that may appear in the breadcrumb message or
+  // Sanitize any account addresses that may appear in the breadcrumb message or
   // remaining data values.
   if (typeof breadcrumb?.message === 'string') {
     breadcrumb.message = sanitizeAddressesFromString(breadcrumb.message);
@@ -459,7 +459,7 @@ function sanitizeAddressesFromErrorMessages(report) {
   );
 }
 
-// Patterns for redacting account addresses before sending events to Sentry.
+// Patterns for sanitizing account addresses before sending events to Sentry.
 // EVM is handled separately so it can keep its `0x**` replacement form.
 const EVM_ADDRESS_REGEX = /0x[A-Fa-f0-9]{40}/gu;
 const NON_EVM_ADDRESS_REGEXES = [
@@ -476,32 +476,35 @@ const NON_EVM_ADDRESS_REGEXES = [
 ];
 
 /**
- * Redacts EVM and non-EVM account addresses from a string.
+ * Sanitizes EVM and non-EVM account addresses from a string.
  *
- * @param {string} text - The string to redact addresses from.
+ * @param {string} text - The string to sanitize addresses from.
  * @returns {string} The string with any addresses replaced by a mask.
  */
 function sanitizeAddressesFromString(text) {
-  // Redact EVM addresses first so the resulting `0x**` cannot be re-matched by
+  // Sanitize EVM addresses first so the resulting `0x**` cannot be re-matched by
   // the base58 patterns below.
-  let redacted = text.replace(EVM_ADDRESS_REGEX, '0x**');
+  let sanitized = text.replace(EVM_ADDRESS_REGEX, '0x**');
   for (const regex of NON_EVM_ADDRESS_REGEXES) {
-    redacted = redacted.replace(regex, '**');
+    sanitized = sanitized.replace(regex, '**');
   }
-  return redacted;
+  return sanitized;
 }
 
 /**
- * Recursively redacts account addresses from the string values of an object,
- * mutating it in place. Used to scrub addresses that may appear in error
- * parameters such as `report.extra` and `report.contexts`.
+ * Recursively sanitizes account addresses from the string values of an object,
+ * returning a sanitized copy without mutating the input. Used to scrub addresses
+ * that may appear in error parameters such as `report.extra`/`report.contexts`
+ * and in breadcrumb data. Not mutating matters for breadcrumbs, whose
+ * `data.arguments` holds live references (e.g. the thrown `Error`) that the
+ * extension may still use after the event is sent.
  *
- * @param {*} value - The value to redact addresses from.
- * @param {WeakSet} [seen] - Objects already visited, used to guard against
- * cyclic references (which would otherwise recurse forever).
- * @returns {*} The redacted value.
+ * @param {*} value - The value to sanitize addresses from.
+ * @param {WeakMap} [seen] - Maps already-visited inputs to their sanitized copy,
+ * so shared references stay consistent and cyclic structures terminate.
+ * @returns {*} The sanitized value (a copy for objects/arrays).
  */
-function sanitizeAddressesFromObject(value, seen = new WeakSet()) {
+function sanitizeAddressesFromObject(value, seen = new WeakMap()) {
   if (typeof value === 'string') {
     return sanitizeAddressesFromString(value);
   }
@@ -509,41 +512,43 @@ function sanitizeAddressesFromObject(value, seen = new WeakSet()) {
   if (value === null || typeof value !== 'object') {
     return value;
   }
-  // Skip objects we've already visited so cyclic structures don't loop forever.
+  // Reuse the sanitized copy for any reference we've already processed, so shared
+  // references stay consistent and cyclic structures don't loop forever.
   if (seen.has(value)) {
-    return value;
+    return seen.get(value);
   }
-  seen.add(value);
+
+  if (Array.isArray(value)) {
+    const copy = [];
+    seen.set(value, copy);
+    for (let i = 0; i < value.length; i++) {
+      copy[i] = sanitizeAddressesFromObject(value[i], seen);
+    }
+    return copy;
+  }
+
+  const copy = {};
+  seen.set(value, copy);
   // `Error` carries its address-bearing data on `message`/`stack`, which are
   // non-enumerable and so invisible to the `Object.keys` walk below. These show
   // up e.g. in console breadcrumbs, whose `data.arguments` holds the raw thrown
-  // error. Redact them explicitly before walking the enumerable own properties.
+  // error. Copy them across explicitly, sanitized.
   if (value instanceof Error) {
     if (typeof value.message === 'string') {
-      value.message = sanitizeAddressesFromString(value.message);
+      copy.message = sanitizeAddressesFromString(value.message);
     }
     if (typeof value.stack === 'string') {
-      value.stack = sanitizeAddressesFromString(value.stack);
+      copy.stack = sanitizeAddressesFromString(value.stack);
     }
-  }
-  if (Array.isArray(value)) {
-    // Mutate in place (rather than returning a new mapped array) so that a
-    // reference shared across multiple properties is redacted for every holder:
-    // the first visit redacts the array, and later visits short-circuit on
-    // `seen` and return that same, already-redacted array.
-    for (let i = 0; i < value.length; i++) {
-      value[i] = sanitizeAddressesFromObject(value[i], seen);
-    }
-    return value;
   }
   for (const key of Object.keys(value)) {
-    value[key] = sanitizeAddressesFromObject(value[key], seen);
+    copy[key] = sanitizeAddressesFromObject(value[key], seen);
   }
-  return value;
+  return copy;
 }
 
 /**
- * Receives a Sentry event object and redacts account addresses from its
+ * Receives a Sentry event object and sanitizes account addresses from its
  * error parameters (`extra` and `contexts`).
  *
  * @param {object} report - the report to modify
