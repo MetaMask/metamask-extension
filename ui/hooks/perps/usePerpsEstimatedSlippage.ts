@@ -21,12 +21,29 @@ export type UsePerpsEstimatedSlippageReturn = {
   isReady: boolean;
 };
 
-function useThrottledValue<Value>(value: Value, throttleMs: number): Value {
+function useThrottledValue<Value>(
+  value: Value,
+  throttleMs: number,
+  resetKey?: string,
+): Value {
   const [throttled, setThrottled] = useState(value);
   const lastUpdateRef = useRef(0);
   const timeoutRef = useRef<number>();
+  const resetKeyRef = useRef(resetKey);
 
   useEffect(() => {
+    const resetKeyChanged =
+      resetKey !== undefined && resetKey !== resetKeyRef.current;
+
+    if (resetKeyChanged) {
+      resetKeyRef.current = resetKey;
+      lastUpdateRef.current = Date.now();
+      setThrottled(value);
+      return () => {
+        window.clearTimeout(timeoutRef.current);
+      };
+    }
+
     const now = Date.now();
     const elapsed = now - lastUpdateRef.current;
 
@@ -45,7 +62,7 @@ function useThrottledValue<Value>(value: Value, throttleMs: number): Value {
     return () => {
       window.clearTimeout(timeoutRef.current);
     };
-  }, [value, throttleMs]);
+  }, [value, throttleMs, resetKey]);
 
   return throttled;
 }
@@ -76,6 +93,7 @@ export function usePerpsEstimatedSlippage({
   const throttledOrderBook = useThrottledValue(
     orderBook,
     PERFORMANCE_CONFIG.SlippageEstimateThrottleMs,
+    symbol,
   );
 
   const estimatedSlippageBps = useMemo(() => {
