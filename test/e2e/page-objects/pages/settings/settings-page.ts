@@ -118,7 +118,7 @@ class SettingsPage {
    */
   async clickBackButton(): Promise<void> {
     await this.driver.clickElement(this.backButton);
-    await this.driver.clickElementAndWaitToDisappear(this.backButton);
+    await this.driver.clickElementSafe(this.backButton);
   }
 
   async waitForTransactionShieldButtonReady(): Promise<void> {
