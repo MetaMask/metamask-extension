@@ -1,3 +1,5 @@
+import type { MarketTypeFilter } from '@metamask/perps-controller';
+
 /**
  * Fallback fee rates used when the perpsCalculateFees RPC call fails or times
  * out. Values match HyperLiquid's base taker rate (0.00045) plus MetaMask
@@ -24,13 +26,34 @@ export const PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS = 5;
 export const VALID_MARKET_FILTERS = [
   'all',
   'crypto',
-  'stocks',
-  'commodities',
+  'stock',
+  'pre-ipo',
+  'index',
+  'etf',
+  'commodity',
   'forex',
   'new',
-] as const;
+] as const satisfies readonly MarketTypeFilter[];
 
 export type MarketFilter = (typeof VALID_MARKET_FILTERS)[number];
+
+export const LEGACY_MARKET_FILTER_ALIASES = {
+  stocks: 'stock',
+  commodities: 'commodity',
+} as const satisfies Record<string, MarketFilter>;
+
+export function normalizeMarketFilter(filter: string): MarketFilter | null {
+  const canonicalFilter =
+    LEGACY_MARKET_FILTER_ALIASES[
+      filter as keyof typeof LEGACY_MARKET_FILTER_ALIASES
+    ] ?? filter;
+
+  if (VALID_MARKET_FILTERS.includes(canonicalFilter as MarketFilter)) {
+    return canonicalFilter as MarketFilter;
+  }
+
+  return null;
+}
 
 /**
  * Contact support (Help Center). Single source of truth aligned with mobile perpsConfig.

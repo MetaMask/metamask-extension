@@ -235,7 +235,7 @@ describe('MarketListView', () => {
       });
     });
 
-    it('shows equity markets on Stocks tab even when perpsHip3AllowlistMarkets flag is absent', async () => {
+    it('shows stock markets on Stocks tab even when perpsHip3AllowlistMarkets flag is absent', async () => {
       // mockStore has no perpsHip3AllowlistMarkets flag → allowedHip3Sources defaults to Set()
       renderWithProvider(<MarketListView />, mockStore);
 
@@ -243,10 +243,10 @@ describe('MarketListView', () => {
       const filterButton = screen.getByTestId('filter-select-button');
       fireEvent.click(filterButton);
       await waitFor(() => screen.getByTestId('filter-select-menu'));
-      fireEvent.click(screen.getByTestId('filter-select-option-stocks'));
+      fireEvent.click(screen.getByTestId('filter-select-option-stock'));
 
       await waitFor(() => {
-        // TSLA and AAPL are equity markets in mockHip3Markets
+        // TSLA and AAPL are stock markets in mockHip3Markets
         expect(screen.getByTestId('market-row-xyz-TSLA')).toBeInTheDocument();
         expect(screen.getByTestId('market-row-xyz-AAPL')).toBeInTheDocument();
         // BTC is a crypto market and should be absent
@@ -260,7 +260,7 @@ describe('MarketListView', () => {
       const filterButton = screen.getByTestId('filter-select-button');
       fireEvent.click(filterButton);
       await waitFor(() => screen.getByTestId('filter-select-menu'));
-      fireEvent.click(screen.getByTestId('filter-select-option-commodities'));
+      fireEvent.click(screen.getByTestId('filter-select-option-commodity'));
 
       await waitFor(() => {
         // GOLD and SILVER are commodity markets in mockHip3Markets
@@ -282,7 +282,7 @@ describe('MarketListView', () => {
       await waitFor(() => {
         const btcRow = screen.queryByTestId('market-row-BTC');
         expect(btcRow).toBeInTheDocument();
-        // HIP-3 equity market should not appear under Crypto
+        // HIP-3 stock market should not appear under Crypto
         expect(
           screen.queryByTestId('market-row-xyz-TSLA'),
         ).not.toBeInTheDocument();

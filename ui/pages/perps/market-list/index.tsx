@@ -16,7 +16,10 @@ import {
   TextColor,
   ButtonBase,
 } from '@metamask/design-system-react';
-import type { PerpsMarketData } from '@metamask/perps-controller';
+import {
+  getMarketTypeFilter,
+  type PerpsMarketData,
+} from '@metamask/perps-controller';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
@@ -31,7 +34,6 @@ import {
   isHip3Market,
   isCryptoMarket,
 } from '../../../components/app/perps/utils';
-import { getHip3MarketType } from '../../../components/app/perps/constants';
 import {
   DEFAULT_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
@@ -47,6 +49,7 @@ import {
 } from '../utils/sortMarkets';
 import {
   VALID_MARKET_FILTERS,
+  normalizeMarketFilter,
   type MarketFilter,
 } from '../../../../shared/constants/perps';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
@@ -59,19 +62,8 @@ import { SearchInput } from './components/search-input';
 import { FilterSelect } from './components/filter-select';
 
 /**
- * Get the resolved market type for a market.
- * Uses the HIP3_ASSET_MARKET_TYPES mapping first, then falls back to the market's own marketType.
- *
- * @param market - The market data
- * @returns The resolved market type
- */
-const getResolvedMarketType = (market: PerpsMarketData): string | undefined => {
-  return getHip3MarketType(market.symbol, market.marketType);
-};
-
-/**
  * Check if a market is an uncategorized HIP-3 market (no market type mapping).
- * These are HIP-3 assets that haven't been classified as equity, commodity, or forex.
+ * These are HIP-3 assets that haven't been classified by the controller.
  *
  * @param market - The market data
  * @param allowedHip3Sources - Set of allowed HIP-3 market sources
@@ -82,7 +74,8 @@ const isUncategorizedHip3Market = (
   allowedHip3Sources: Set<string>,
 ): boolean => {
   return (
-    isHip3Market(market, allowedHip3Sources) && !getResolvedMarketType(market)
+    isHip3Market(market, allowedHip3Sources) &&
+    getMarketTypeFilter(market) === 'new'
   );
 };
 
@@ -90,7 +83,8 @@ const isUncategorizedHip3Market = (
  * Filter markets by market type
  *
  * Crypto markets have no marketSource (main DEX).
- * Stocks / commodities / forex are identified purely by resolved market type —
+ * Stock / commodity / forex markets are identified by the controller's v8
+ * category helper —
  * intentionally not gated on the allowlist so categories work even when the
  * remote feature flag has not yet loaded (the controller's own fallback already
  * limits which HIP-3 markets reach the UI).
@@ -113,20 +107,18 @@ const filterByType = (
     case 'crypto': {
       return markets.filter(isCryptoMarket);
     }
-    case 'stocks': {
-      return markets.filter((m) => getResolvedMarketType(m) === 'equity');
-    }
-    case 'commodities': {
-      return markets.filter((m) => getResolvedMarketType(m) === 'commodity');
-    }
-    case 'forex': {
-      return markets.filter((m) => getResolvedMarketType(m) === 'forex');
-    }
     case 'new': {
       return markets.filter((m) =>
         isUncategorizedHip3Market(m, allowedHip3Sources),
       );
     }
+    case 'stock':
+    case 'pre-ipo':
+    case 'index':
+    case 'etf':
+    case 'commodity':
+    case 'forex':
+      return markets.filter((m) => getMarketTypeFilter(m) === filter);
     default: {
       return markets;
     }
@@ -152,11 +144,14 @@ export const MarketListView = () => {
   // Read initial filter from URL params (set by deeplink)
   const initialFilter = useMemo<MarketFilter>(() => {
     const filterParam = searchParams.get('filter');
-    if (
-      filterParam &&
-      VALID_MARKET_FILTERS.includes(filterParam as MarketFilter)
-    ) {
-      return filterParam as MarketFilter;
+    if (filterParam) {
+      const normalizedFilter = normalizeMarketFilter(filterParam);
+      if (
+        normalizedFilter &&
+        VALID_MARKET_FILTERS.includes(normalizedFilter)
+      ) {
+        return normalizedFilter;
+      }
     }
     return 'all';
   }, [searchParams]);

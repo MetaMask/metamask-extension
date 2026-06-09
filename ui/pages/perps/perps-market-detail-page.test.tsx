@@ -753,7 +753,7 @@ describe('PerpsMarketDetailPage', () => {
       ).toBeInTheDocument();
     });
 
-    it('renders HIP-3 equity market (TSLA)', async () => {
+    it('renders HIP-3 stock market (TSLA)', async () => {
       mockUseParams.mockReturnValue({ symbol: 'xyz:TSLA' });
       const store = mockStore(createMockState(true));
 

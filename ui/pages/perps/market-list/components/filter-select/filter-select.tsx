@@ -31,8 +31,8 @@ export const FilterSelect = ({
     const baseOptions: DropdownOption<MarketFilter>[] = [
       { id: 'all', label: t('perpsFilterAll') },
       { id: 'crypto', label: t('perpsFilterCrypto') },
-      { id: 'stocks', label: t('perpsFilterStocks') },
-      { id: 'commodities', label: t('perpsFilterCommodities') },
+      { id: 'stock', label: t('perpsFilterStocks') },
+      { id: 'commodity', label: t('perpsFilterCommodities') },
       { id: 'forex', label: t('perpsFilterForex') },
     ];
 
