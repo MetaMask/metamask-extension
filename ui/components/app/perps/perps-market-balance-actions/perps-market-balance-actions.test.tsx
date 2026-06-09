@@ -39,6 +39,16 @@ const mockStore = configureStore({
   },
 });
 
+const mockPrivacyModeStore = configureStore({
+  metamask: {
+    ...mockState.metamask,
+    preferences: {
+      ...mockState.metamask.preferences,
+      privacyMode: true,
+    },
+  },
+});
+
 describe('PerpsMarketBalanceActions', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -58,6 +68,24 @@ describe('PerpsMarketBalanceActions', () => {
     expect(
       screen.getByTestId('perps-balance-actions-add-funds'),
     ).toBeInTheDocument();
+    expect(screen.getByTestId('perps-balance-actions-total')).toHaveTextContent(
+      '$15,250.00',
+    );
+  });
+
+  it('masks the balances when privacy mode is enabled', () => {
+    renderWithProvider(
+      <PerpsMarketBalanceActions showActionButtons />,
+      mockPrivacyModeStore,
+    );
+
+    expect(screen.queryByText('$15,250.00')).not.toBeInTheDocument();
+    expect(screen.getByTestId('perps-balance-actions-total')).toHaveTextContent(
+      '••••••',
+    );
+    expect(
+      screen.getByTestId('perps-balance-actions-available'),
+    ).toHaveTextContent('••••••');
   });
 
   it('calls onAddFunds when eligible', () => {
