@@ -6,9 +6,7 @@ import { Box, BoxFlexDirection, Skeleton } from '@metamask/design-system-react';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
-import { selectAnyEnabledNetworksAreAvailable } from '../../../../selectors';
 import { SensitiveText } from '../../../component-library';
-import { isZeroAmount } from '../../../../helpers/utils/number-utils';
 import { useAccountGroupBalanceDisplay } from './useAccountGroupBalanceDisplay';
 
 export type AccountGroupBalanceChangeProps = {
@@ -22,20 +20,13 @@ const AccountGroupBalanceChangeComponent = ({
   period,
   trailingChild,
 }: AccountGroupBalanceChangeProps) => {
-  const { privacyMode, color, amountChange, percentChange } =
+  const { privacyMode, color, amountChange, percentChange, isLoading } =
     useAccountGroupBalanceDisplay(period);
   const { formatCurrency, formatPercentWithMinThreshold } = useFormatters();
   const currency = useSelector(getCurrentCurrency);
-  const anyEnabledNetworksAreAvailable = useSelector(
-    selectAnyEnabledNetworksAreAvailable,
-  );
 
   return (
-    <Skeleton
-      hideChildren={
-        !anyEnabledNetworksAreAvailable && isZeroAmount(amountChange)
-      }
-    >
+    <Skeleton hideChildren={isLoading}>
       <Box flexDirection={BoxFlexDirection.Row} gap={1} className="flex">
         <SensitiveText
           variant={TextVariant.bodyMdMedium}
