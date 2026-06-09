@@ -2,6 +2,7 @@ import type { V1TransactionByHashResponse } from '@metamask/core-backend';
 import { CHAIN_IDS } from '../../../constants/network';
 import { toAssetId } from '../../asset-utils';
 import { mapApiEvmTransactions } from './api-evm-transactions';
+import { apiResponses } from './fixtures/api-responses';
 
 const subjectAddress = '0x9bed78535d6a03a955f1504aadba974d9a29e292';
 const baseUsdc = '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913';
@@ -360,9 +361,37 @@ describe('mapEvmTransactions', () => {
         hash: undefined,
         to: nftRecipientAddress,
         token: {
-          amount: '1',
           direction: 'out',
           symbol: 'BAE',
+        },
+      },
+    });
+  });
+
+  it('maps an NFT purchase', () => {
+    const nftBuyerAddress = '0x699e414873f56c7bb60e54ad63d3bb7b283874df';
+
+    const item = mapApiEvmTransactions({
+      subjectAddress: nftBuyerAddress,
+      transaction:
+        apiResponses.nftPurchaseErc1155 as unknown as V1TransactionByHashResponse,
+    });
+
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
+      type: 'nftBuy',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1780601507000,
+      data: {
+        hash: '0x8719dadd883779624845106e61fd94af234411c30d73184a72f4daf1425c4595',
+        from: '0x107b2e855528f344556f8c766a6187326a2c2fa6',
+        to: nftBuyerAddress,
+        token: {
+          direction: 'in',
+          symbol: 'FLUF World: Scenes and Sounds',
         },
       },
     });

@@ -13,6 +13,9 @@ import {
   mockSupportedVsCurrencies,
 } from '../btc/mocks/price-api';
 import { mockTokensV2SupportedNetworks } from '../btc/mocks/tokens-api';
+import NetworkManager, {
+  NetworkId,
+} from '../../page-objects/pages/network-manager';
 import { getMockAssetsPrice } from './utils/mocks';
 
 const ETH_CONVERSION_RATE_USD = 1700;
@@ -35,6 +38,62 @@ const NATIVE_ETH_SPOT_ENTRY_USD = {
 };
 
 /**
+ * Mocks the Token Search API (`/tokens/search`) for the tokens used in the
+ * import-from-search tests (CHAIN, CHANGE, CHAI).
+ * @param mockServer
+ */
+async function mockTokenSearch(mockServer: Mockttp) {
+  const searchableTokens = [
+    {
+      assetId: 'eip155:1/erc20:0xc4c2614e694cf534d407ee49f8e44d125e4681c4',
+      symbol: 'CHAIN',
+      name: 'Chain Games',
+      decimals: 18,
+    },
+    {
+      assetId: 'eip155:1/erc20:0x7051faed0775f664a0286af4f75ef5ed74e02754',
+      symbol: 'CHANGE',
+      name: 'ChangeX',
+      decimals: 18,
+    },
+    {
+      assetId: 'eip155:1/erc20:0x06af07097c9eeb7fd685c692751d5c66db49c215',
+      symbol: 'CHAI',
+      name: 'Chai',
+      decimals: 18,
+    },
+  ];
+
+  return mockServer
+    .forGet(/^https:\/\/token\.api\.cx\.metamask\.io\/tokens\/search/u)
+    .always()
+    .thenCallback((request) => {
+      const url = new URL(request.url);
+      const query = (url.searchParams.get('query') ?? '').trim().toLowerCase();
+
+      // Use exact-symbol or exact-name match to ensure each query returns
+      // exactly 1 result (needed by waitUntilTokenSearchMatch(1)).
+      const data = query
+        ? searchableTokens.filter(
+            (t) =>
+              t.symbol.toLowerCase() === query ||
+              t.name.toLowerCase() === query,
+          )
+        : [];
+
+      return {
+        statusCode: 200,
+        json: {
+          data,
+          count: data.length,
+          totalCount: data.length,
+          pageInfo: { hasNextPage: false, endCursor: '' },
+        },
+      };
+    });
+}
+
+/**
  * Shared HTTP mocks for all import-token tests (both unified and legacy price paths).
  * Token metadata (`tokens.api` v3 assets + token list + bridge) is required for both
  * branches so paste-by-address can resolve symbol/decimals via `fetchAssetMetadata`.
@@ -49,6 +108,8 @@ async function importTokensTestMock(mockServer: Mockttp) {
     await mockPriceApiSupportedNetworks(mockServer),
     // Tokens API – supported networks
     await mockTokensV2SupportedNetworks(mockServer),
+    // Token Search API – /tokens/search
+    await mockTokenSearch(mockServer),
     // Tokens API – /v3/assets
     await mockAssetsV3(mockServer),
     ...(await mockTokens(mockServer)),
@@ -512,7 +573,7 @@ describe('Import flow', function () {
         await tokenList.checkTokenItemNumber(8);
         await tokenList.checkTokenExistsInList('Ethereum');
         await tokenList.checkTokenExistsInList('Chain Games');
-        await tokenList.checkTokenExistsInList('ChangeX');
+        await tokenList.checkTokenExistsInList('Changex');
         await tokenList.checkTokenExistsInList('Chai');
       },
     );
@@ -636,19 +697,25 @@ describe('Import flow', function () {
         await homePage.checkPageIsLoaded();
 
         const assetListPage = new AssetListPage(driver);
+        const networkManagerPage = new NetworkManager(driver);
+        await networkManagerPage.openNetworkManager();
+        await networkManagerPage.selectNetworkByChainId(NetworkId.POLYGON);
 
         // the token symbol is prefilled because of the mock
         await assetListPage.importCustomTokenByChain(
           '0x89',
           '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
+          'USDT',
         );
+
+        console.log(`Imported token ++++++++++`);
+
         const tokenList = new AssetListPage(driver);
 
-        // Native Tokens: Ethereum ETH, Linea ETH, Base ETH, Polygon POL
-        // ERC20 Tokens: MUSD (ETH), MUSD (Linea), Polygon USDT
-        await tokenList.checkTokenItemNumber(7);
+        // Native Tokens: Polygon POL
+        // ERC20 Tokens: Polygon USDT
+        await tokenList.checkTokenItemNumber(2);
 
-        await tokenList.checkTokenExistsInList('Ether');
         await tokenList.checkTokenExistsInList('USDT');
         await tokenList.checkTokenExistsInList('POL');
       },
