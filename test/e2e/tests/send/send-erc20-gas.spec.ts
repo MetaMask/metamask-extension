@@ -1,7 +1,7 @@
 /**
  * Send ERC20 - Gas Customization Tests
  *
- * Tests for ERC20 token transfers with custom gas settings:
+ * Specs for ERC20 token transfers with custom gas settings:
  * - Custom gas values from extension
  * - Custom gas values from dApp
  * - Transfers without specifying gas
