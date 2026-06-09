@@ -11,7 +11,7 @@ import { MetaMaskReduxDispatch } from '../../store/store';
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const callBridgeStatusControllerMethod = <T extends unknown[]>(
-  bridgeAction: 'submitTx' | 'submitIntent',
+  bridgeAction: 'submitTx' | 'submitIntent' | 'submitBatchSell',
   args?: T,
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -75,3 +75,28 @@ export const submitBridgeIntent = (params: {
   tokenSecurityTypeDestination?: string | null;
 }) =>
   callBridgeStatusControllerMethod<[typeof params]>('submitIntent', [params]);
+
+/**
+ * Submit a batch-sell trade through the bridge status controller. The
+ * controller accepts a list of recommended quotes (one per send asset slot)
+ * and submits them together as a gasless batch.
+ *
+ * @param params - Batch-sell submission payload.
+ * @param params.quoteResponses - Recommended quote per send slot. `null` slots
+ * are filtered out by the controller.
+ * @param params.accountAddress - Account submitting the batch.
+ * @param params.isStxEnabled - Whether smart transactions are enabled for the client.
+ * @param params.quotesReceivedContext - Optional metrics context captured when quotes were received.
+ * @param params.tokenSecurityTypeDestination - Security classification of the destination token, or null when unavailable.
+ * @returns A thunk that dispatches the `submitBatchSell` bridge status action.
+ */
+export const submitBatchSellTrade = (params: {
+  quoteResponses: ((QuoteResponse & QuoteMetadata) | null)[];
+  accountAddress: string;
+  isStxEnabled: boolean;
+  quotesReceivedContext?: RequiredEventContextFromClient[UnifiedSwapBridgeEventName.QuotesReceived];
+  tokenSecurityTypeDestination?: string | null;
+}) =>
+  callBridgeStatusControllerMethod<[typeof params]>('submitBatchSell', [
+    params,
+  ]);
