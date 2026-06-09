@@ -858,7 +858,10 @@ class AssetListPage extends HomePage {
       text: symbol,
     });
 
-    const expectedAddressFormat = `${tokenAddress.slice(0, 7)}...${tokenAddress.slice(37)}`;
+    const expectedAddressFormat = `${tokenAddress.slice(
+      0,
+      7,
+    )}...${tokenAddress.slice(37)}`;
 
     await this.driver.waitForSelector({
       css: this.tokenAddressInDetails,
