@@ -5,13 +5,9 @@ import {
 } from '@metamask/transaction-controller';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { StatusTypes } from '@metamask/bridge-controller';
-import { Box, Text } from '../../../components/component-library';
-import {
-  BlockSize,
-  Display,
-  FlexDirection,
-  TextColor,
-} from '../../../helpers/constants/design-system';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
+import { Text } from '../../../components/component-library';
+import { TextColor } from '../../../helpers/constants/design-system';
 import type { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Segment from './segment';
@@ -74,11 +70,11 @@ export default function BridgeActivityItemTxSegments({
   const txIndex = getTxIndex(srcTxStatus);
 
   return (
-    <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={2}>
+    <Box className="flex" flexDirection={BoxFlexDirection.Column} gap={2}>
       <Text color={TextColor.textAlternative}>
         {t('bridgeTransactionProgress', [txIndex])}
       </Text>
-      <Box display={Display.Flex} gap={2} width={BlockSize.Full}>
+      <Box className="flex w-full" gap={2}>
         <Segment type={srcTxStatus} />
         <Segment type={destTxStatus} />
       </Box>

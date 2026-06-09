@@ -3,19 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { capitalize } from 'lodash';
-import { Box, Icon, IconName, IconSize, Text } from '../../component-library';
+import { Box, BoxAlignItems } from '@metamask/design-system-react';
+import { Icon, IconName, IconSize, Text } from '../../component-library';
 import { SrpList } from '../../multichain/multi-srp/srp-list/srp-list';
 import {
   TextVariant,
   TextColor,
   TextTransform,
   BackgroundColor,
-  Display,
-  FlexDirection,
-  AlignItems,
   IconColor,
   FontWeight,
-  BlockSize,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -76,16 +73,11 @@ export const RevealSrpList = () => {
             border={false}
           >
             <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Row}
-              alignItems={AlignItems.center}
+              className="flex flex-row"
+              alignItems={BoxAlignItems.Center}
               gap={3}
             >
-              <Box
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                gap={2}
-              >
+              <Box className="flex" alignItems={BoxAlignItems.Center} gap={2}>
                 {socialLoginType === AuthConnection.Apple ? (
                   <Icon
                     name={IconName.Apple}
@@ -100,7 +92,7 @@ export const RevealSrpList = () => {
                   />
                 )}
               </Box>
-              <Box flexDirection={FlexDirection.Column}>
+              <Box className="flex-col flex">
                 <Text fontWeight={FontWeight.Medium}>
                   {t('securitySocialLoginEnabled')}
                 </Text>
@@ -124,11 +116,7 @@ export const RevealSrpList = () => {
               capitalize(socialLoginType),
             ])}
           </Text>
-          <Box
-            width={BlockSize.Full}
-            className="srp-reveal-list__divider"
-            marginTop={4}
-          />
+          <Box className="srp-reveal-list__divider w-full" marginTop={4} />
         </Box>
       )}
       <Box

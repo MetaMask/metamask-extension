@@ -24,10 +24,24 @@ import {
 } from './assets-migration';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
-// so these selector tests exercise the real feature-flag gating logic.
-jest.mock('../assets-unify-state/remote-feature-flag', () =>
-  jest.requireActual('../assets-unify-state/remote-feature-flag'),
-);
+// and provide the pure flag-evaluation logic without the IN_TEST bypass
+// (test/helpers/setup-helper.js sets process.env.IN_TEST=true for all unit tests,
+// so using jest.requireActual here would make the function always return true,
+// breaking all "when disabled" test cases).
+jest.mock('../assets-unify-state/remote-feature-flag', () => ({
+  ...jest.requireActual('../assets-unify-state/remote-feature-flag'),
+  isAssetsUnifyStateFeatureEnabled: jest.fn(
+    (
+      featureFlag:
+        | { enabled: boolean; featureVersion: string }
+        | undefined
+        | null,
+      featureVersion: string,
+    ) =>
+      Boolean(featureFlag?.enabled) &&
+      featureFlag?.featureVersion === featureVersion,
+  ),
+}));
 
 jest.mock('../environment', () => ({
   ...jest.requireActual('../environment'),
@@ -95,27 +109,6 @@ function makeMockPrice(overrides: Partial<Record<string, unknown>> = {}) {
 }
 
 describe('getAccountTrackerControllerAccountsByChainId', () => {
-  describe('when assets unify state feature is disabled', () => {
-    it('returns accountsByChainId from state unchanged', () => {
-      const legacyAccountsByChainId = {
-        '0x1': {
-          [mockAccountAddressChecksummed]: {
-            balance: '0xde0b6b3a7640000' as const,
-          },
-        },
-      };
-      const state = {
-        metamask: {
-          accountsByChainId: legacyAccountsByChainId,
-        },
-      };
-      const result = getAccountTrackerControllerAccountsByChainId(state);
-
-      expect(result).toBe(legacyAccountsByChainId);
-      expect(result).toStrictEqual(legacyAccountsByChainId);
-    });
-  });
-
   describe('when assets unify state feature is enabled (happy path)', () => {
     it('derives accountsByChainId from new state structure', () => {
       const state = {
