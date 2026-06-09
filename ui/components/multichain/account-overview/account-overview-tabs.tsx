@@ -114,11 +114,14 @@ export const AccountOverviewTabs = ({
       if (tabName === AccountOverviewTabKey.Nfts) {
         dispatch(detectNfts(selectedChainIds));
       }
-      // ActivityScreenOpened is tracked inside ActivityListV3 once all data
-      // sources (local, remote EVM, non-EVM) have loaded. Skip it here.
+      // For ActivityListV3, ActivityScreenOpened is deferred to the list
+      // component so it can include accurate is_empty / num_pending_transactions
+      // after all data sources have loaded. For ActivityListV2 there is no
+      // equivalent deferred tracking, so fire immediately on click.
       if (
         tabName in ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP &&
-        tabName !== AccountOverviewTabKey.Activity
+        (tabName !== AccountOverviewTabKey.Activity ||
+          !isActivityListRedesignEnabled)
       ) {
         trackEvent({
           category: MetaMetricsEventCategory.Home,
@@ -140,6 +143,7 @@ export const AccountOverviewTabs = ({
     },
     [
       activeTabKey,
+      isActivityListRedesignEnabled,
       networkFilterForMetrics,
       setActiveTabKey,
       dispatch,
