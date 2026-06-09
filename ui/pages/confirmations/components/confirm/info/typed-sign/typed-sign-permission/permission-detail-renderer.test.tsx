@@ -532,7 +532,9 @@ describe('PermissionDetailRenderer', () => {
       });
 
       await waitFor(() => {
-        expect(screen.getByText(messages.redeemers.message)).toBeInTheDocument();
+        expect(
+          screen.getByText(messages.redeemers.message),
+        ).toBeInTheDocument();
       });
       expect(
         screen.getByText(messages.gatorPermissionsMetaMaskFacilitator.message),

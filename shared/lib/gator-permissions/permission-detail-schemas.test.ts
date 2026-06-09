@@ -195,15 +195,13 @@ describe('permissionInfoSection field accessors', () => {
     };
 
     expect(namedRedeemerElement.isVisible(exactFacilitatorContext)).toBe(true);
-    expect(namedRedeemerElement.getValue(exactFacilitatorContext)).toStrictEqual(
-      { key: 'gatorPermissionsMetaMaskFacilitator' },
-    );
+    expect(
+      namedRedeemerElement.getValue(exactFacilitatorContext),
+    ).toStrictEqual({ key: 'gatorPermissionsMetaMaskFacilitator' });
     expect(redeemerAddressElement.isVisible(exactFacilitatorContext)).toBe(
       false,
     );
-    expect(namedRedeemerElement.isVisible(facilitatorSubsetContext)).toBe(
-      true,
-    );
+    expect(namedRedeemerElement.isVisible(facilitatorSubsetContext)).toBe(true);
     expect(redeemerAddressElement.isVisible(facilitatorSubsetContext)).toBe(
       false,
     );
