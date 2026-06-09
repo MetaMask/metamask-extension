@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { AuthConnection } from '../../../../shared/constants/onboarding';
 import { capitalize } from 'lodash';
 import {
   Box,
@@ -16,6 +15,7 @@ import {
   TextTransform,
   Text,
 } from '@metamask/design-system-react';
+import { AuthConnection } from '../../../../shared/constants/onboarding';
 import { SrpList } from '../../multichain/multi-srp/srp-list/srp-list';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
