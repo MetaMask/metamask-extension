@@ -5843,6 +5843,10 @@ export default class MetamaskController extends EventEmitter {
             );
         }
 
+        if (!createdAccount) {
+          throw new Error(`No account created for device: ${deviceName}`);
+        }
+
         return {
           address: normalize(createdAccount.address),
           label: this.getAccountLabel(

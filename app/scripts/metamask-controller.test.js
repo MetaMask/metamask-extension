@@ -2733,6 +2733,35 @@ describe('MetaMaskController', () => {
       describe('unlockHardwareWalletAccount', () => {
         const accountToUnlock = 0;
 
+        it('throws if the keyring does not create an account', async () => {
+          const withKeyringV2Spy = jest
+            .spyOn(metamaskController.keyringController, 'withKeyringV2')
+            .mockImplementation(async (selector, callback) => {
+              expect(selector).toStrictEqual({ type: KeyringTypeV2.Lattice });
+
+              return await callback({
+                keyring: {
+                  entropySource: 'test-entropy-source',
+                  createAccounts: jest.fn().mockResolvedValue([]),
+                  network: null,
+                },
+              });
+            });
+
+          try {
+            await expect(
+              metamaskController.unlockHardwareWalletAccount(
+                accountToUnlock,
+                HardwareDeviceNames.lattice,
+              ),
+            ).rejects.toThrow(
+              `No account created for device: ${HardwareDeviceNames.lattice}`,
+            );
+          } finally {
+            withKeyringV2Spy.mockRestore();
+          }
+        });
+
         [HardwareDeviceNames.trezor, HardwareDeviceNames.ledger].forEach(
           (device) => {
             describe(`using ${device}`, () => {
