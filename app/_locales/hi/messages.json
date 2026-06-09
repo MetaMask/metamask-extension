@@ -10392,9 +10392,6 @@
     "message": "$1 के साथ कनेक्शन विश्वसनीय नहीं है। आगे बढ़ने से पहले नेटवर्क कनेक्टिविटी विवरण अपडेट करें या बाद में फिर से प्रयास करें।",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
   },
-  "unexpectedBehavior": {
-    "message": "यह व्यवहार अप्रत्याशित है और इसे बग के रूप में रिपोर्ट किया जाना चाहिए, भले ही आपके एकाउंट्स रिस्टोर कर दिए गए हों।"
-  },
   "unifiedSwapAllowSwappingOf": {
     "message": "स्वैपिंग के लिए $3 पर $1 $2 तक सटीक पहुंच की अनुमति दें"
   },

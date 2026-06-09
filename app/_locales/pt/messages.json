@@ -10392,9 +10392,6 @@
     "message": "A conexão com $1 não é confiável. Atualize os detalhes de conectividade da rede antes de continuar ou tente novamente mais tarde.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
   },
-  "unexpectedBehavior": {
-    "message": "Esse comportamento é inesperado e deve ser relatado como um bug, mesmo que suas contas sejam restauradas."
-  },
   "unifiedSwapAllowSwappingOf": {
     "message": "Permitir acesso exato a $1 $2 em $3 para realizar troca"
   },

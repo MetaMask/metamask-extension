@@ -10392,9 +10392,6 @@
     "message": "Η σύνδεση στο $1 δεν είναι αξιόπιστη. Ενημερώστε τα στοιχεία σύνδεσης δικτύου πριν συνεχίσετε ή προσπαθήστε ξανά αργότερα.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
   },
-  "unexpectedBehavior": {
-    "message": "Αυτή η συμπεριφορά είναι απρόβλεπτη και πρέπει να αναφερθεί ως σφάλμα, ακόμη κι αν οι λογαριασμοί σας έχουν αποκατασταθεί."
-  },
   "unifiedSwapAllowSwappingOf": {
     "message": "Επιτρέψτε την ακριβή πρόσβαση των $1 $2 στο $3 για ανταλλαγή"
   },

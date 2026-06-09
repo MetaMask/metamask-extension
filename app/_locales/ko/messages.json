@@ -10400,9 +10400,6 @@
     "message": "$1과(와)의 연결이 불안정합니다. 계속하기 전에 네트워크 연결 세부 정보를 업데이트하거나 나중에 다시 시도하세요.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
   },
-  "unexpectedBehavior": {
-    "message": "이 동작은 예상치 못한 것이며 계정이 복원되더라도 버그로 신고해야 합니다."
-  },
   "unifiedSwapAllowSwappingOf": {
     "message": "스왑을 위해 $3의 $1 $2에 대한 정확한 액세스 허용"
   },

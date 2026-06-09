@@ -10400,9 +10400,6 @@
     "message": "Koneksi $1 tidak dapat diandalkan. Perbarui detail konektivitas jaringan sebelum melanjutkan atau coba lagi nanti.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
   },
-  "unexpectedBehavior": {
-    "message": "Perilaku ini tidak terduga dan harus dilaporkan sebagai bug, bahkan jika akun Anda dipulihkan."
-  },
   "unifiedSwapAllowSwappingOf": {
     "message": "Izinkan akses yang tepat ke $1 $2 pada $3 untuk swap"
   },

@@ -10392,9 +10392,6 @@
     "message": "Hindi maaasahan ang koneksyon sa $1. I-update ang mga detalye ng pagkakakonekta sa network bago magpatuloy o subukan muli mamaya.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
   },
-  "unexpectedBehavior": {
-    "message": "Hindi inaasahan ang pangyayaring ito at dapat itong iulat bilang bug, kahit na maibalik ang iyong mga account."
-  },
   "unifiedSwapAllowSwappingOf": {
     "message": "Pahintulutan ang eksaktong access sa $1 $2 sa $3 para sa pag-swap"
   },

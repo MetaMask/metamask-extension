@@ -10396,9 +10396,6 @@
     "message": "$1との接続が利用できません。続行する前にネットワーク接続情報を更新するか、後でもう一度お試しください。",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
   },
-  "unexpectedBehavior": {
-    "message": "これは予期せぬ動作なので、アカウントが復元されたとしても、バグとして報告すべきです。"
-  },
   "unifiedSwapAllowSwappingOf": {
     "message": "スワップ用に$3での$1 $2への正確なアクセスを許可してください"
   },

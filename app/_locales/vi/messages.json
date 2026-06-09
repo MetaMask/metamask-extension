@@ -10400,9 +10400,6 @@
     "message": "Kết nối với $1 không ổn định. Hãy cập nhật thông tin kết nối mạng trước khi tiếp tục hoặc thử lại sau.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
   },
-  "unexpectedBehavior": {
-    "message": "Đây là hành vi bất thường và cần được báo cáo như một lỗi, ngay cả khi tài khoản của bạn đã được khôi phục."
-  },
   "unifiedSwapAllowSwappingOf": {
     "message": "Cho phép truy cập chính xác vào $1 $2 trên $3 để thực hiện hoán đổi"
   },

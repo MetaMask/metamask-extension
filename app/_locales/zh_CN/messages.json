@@ -10392,9 +10392,6 @@
     "message": "与 $1 的连接不稳定。请先更新网络连接详情再继续，或稍后重试。",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
   },
-  "unexpectedBehavior": {
-    "message": "该行为属异常行为，即使账户已成功恢复，仍须作为漏洞提交报告。"
-  },
   "unifiedSwapAllowSwappingOf": {
     "message": "允许在 $3 上精准授权 $1 $2 用于兑换"
   },
