@@ -40,6 +40,22 @@ const GENESIS_BLOCK_HASH =
   '000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f';
 
 /**
+ * Chain tip and the block immediately before the funding block.
+ *
+ * These must stay consistent across the `/blocks`, `/blocks/tip/hash` and
+ * `/block-height/{height}` endpoints. If `block-height/{height}` returns a hash
+ * that disagrees with `/blocks` for a height BDK already knows about, BDK treats
+ * it as a reorg and may evict the funding block checkpoint, dropping the funding
+ * transaction's confirmation anchor and reporting a 0 balance.
+ */
+const TIP_BLOCK_HEIGHT = FUNDING_BLOCK_HEIGHT + 1;
+const TIP_BLOCK_HASH =
+  '00000000000000000001d3a19bc9dbde9d1d26b25aa49269b575282bb6d74409';
+const PRE_FUNDING_BLOCK_HEIGHT = FUNDING_BLOCK_HEIGHT - 1;
+const PRE_FUNDING_BLOCK_HASH =
+  '00000000000000000000b64f4ad246c16dfcbb1e9a236639b4d1f256c9a4450c';
+
+/**
  * Funding transaction that sends DEFAULT_BTC_BALANCE to the E2E test address.
  * The scriptPubKey matches the derived address from E2E_SRP.
  *
@@ -111,8 +127,8 @@ const mockBlocks = (mockServer: Mockttp) =>
         statusCode: 200,
         json: [
           {
-            id: '00000000000000000001d3a19bc9dbde9d1d26b25aa49269b575282bb6d74409',
-            height: 932936,
+            id: TIP_BLOCK_HASH,
+            height: TIP_BLOCK_HEIGHT,
             version: 1073676288,
             timestamp: 1768825157,
             tx_count: 1104,
@@ -136,16 +152,15 @@ const mockBlocks = (mockServer: Mockttp) =>
             weight: 3993186,
             merkle_root:
               'd7ee3bf9abfd65a43de37042f52a889e68634c0332af467d90c2e1997d230888',
-            previousblockhash:
-              '00000000000000000000b64f4ad246c16dfcbb1e9a236639b4d1f256c9a4450c',
+            previousblockhash: PRE_FUNDING_BLOCK_HASH,
             mediantime: 1768823066,
             nonce: 1134465253,
             bits: 386001906,
             difficulty: 146472570619930.78,
           },
           {
-            id: '00000000000000000000b64f4ad246c16dfcbb1e9a236639b4d1f256c9a4450c',
-            height: 932934,
+            id: PRE_FUNDING_BLOCK_HASH,
+            height: PRE_FUNDING_BLOCK_HEIGHT,
             version: 609419264,
             timestamp: 1768824375,
             tx_count: 1075,
@@ -353,8 +368,7 @@ const mockBlockDetails = (mockServer: Mockttp) =>
             weight: 3993186,
             merkle_root:
               'd7ee3bf9abfd65a43de37042f52a889e68634c0332af467d90c2e1997d230888',
-            previousblockhash:
-              '00000000000000000000b64f4ad246c16dfcbb1e9a236639b4d1f256c9a4450c',
+            previousblockhash: PRE_FUNDING_BLOCK_HASH,
             mediantime: 1768823066,
             nonce: 1134465253,
             bits: 386001906,
@@ -388,8 +402,18 @@ const mockBlockHeight = (mockServer: Mockttp) =>
         return { statusCode: 200, body: GENESIS_BLOCK_HASH };
       }
 
-      if (height === String(FUNDING_BLOCK_HEIGHT)) {
-        return { statusCode: 200, body: FUNDING_BLOCK_HASH };
+      // Return hashes consistent with the `/blocks` response so BDK never sees a
+      // phantom reorg (which would drop the funding tx anchor and report a 0
+      // balance). The order of esplora responses is non-deterministic under
+      // near-zero-latency mocks, so every height BDK might look up must agree.
+      const blockHashByHeight: Record<string, string> = {
+        [String(PRE_FUNDING_BLOCK_HEIGHT)]: PRE_FUNDING_BLOCK_HASH,
+        [String(FUNDING_BLOCK_HEIGHT)]: FUNDING_BLOCK_HASH,
+        [String(TIP_BLOCK_HEIGHT)]: TIP_BLOCK_HASH,
+      };
+
+      if (height && blockHashByHeight[height]) {
+        return { statusCode: 200, body: blockHashByHeight[height] };
       }
 
       // Return a generic hash for other heights
@@ -527,7 +551,7 @@ const mockBlocksTipHeight = (mockServer: Mockttp) =>
     )
     .always()
     .thenCallback(() => {
-      return { statusCode: 200, body: '932936' };
+      return { statusCode: 200, body: String(TIP_BLOCK_HEIGHT) };
     });
 
 /**
@@ -543,10 +567,7 @@ const mockBlocksTipHash = (mockServer: Mockttp) =>
     )
     .always()
     .thenCallback(() => {
-      return {
-        statusCode: 200,
-        body: '00000000000000000001d3a19bc9dbde9d1d26b25aa49269b575282bb6d74409',
-      };
+      return { statusCode: 200, body: TIP_BLOCK_HASH };
     });
 
 /**
