@@ -46,7 +46,9 @@ describe('usePerpsNetworkManagement', () => {
   });
 
   it('does not add the network when it is already configured', async () => {
-    mockNetworkConfigs = { [CHAIN_IDS.ARBITRUM]: { chainId: CHAIN_IDS.ARBITRUM } };
+    mockNetworkConfigs = {
+      [CHAIN_IDS.ARBITRUM]: { chainId: CHAIN_IDS.ARBITRUM },
+    };
 
     const { result } = renderHook(() => usePerpsNetworkManagement());
 

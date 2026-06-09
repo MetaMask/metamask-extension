@@ -17,9 +17,7 @@ jest.mock('./createPerpsDepositTransaction', () => ({
   createPerpsDepositTransaction: jest.fn(),
 }));
 
-const mockEnsureArbitrumNetworkExists = jest
-  .fn()
-  .mockResolvedValue(undefined);
+const mockEnsureArbitrumNetworkExists = jest.fn().mockResolvedValue(undefined);
 
 jest.mock('./usePerpsNetworkManagement', () => ({
   usePerpsNetworkManagement: () => ({
