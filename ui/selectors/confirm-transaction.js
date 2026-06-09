@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
+import { toChecksumHexAddress } from '@metamask/controller-utils';
 import txHelper from '../helpers/utils/tx-helper';
 import {
   getTransactionFee,
@@ -238,9 +239,22 @@ export function selectTransactionAvailableBalance(
   transactionId,
   chainId,
 ) {
-  const accounts = getMetaMaskAccounts(state, chainId);
   const sender = selectTransactionSender(state, transactionId);
 
+  // Read directly from raw accountsByChainId to get the balance for the transaction's chain.
+  // getMetaMaskAccounts filters through getMetaMaskCachedBalances which only returns balances
+  // for networks enabled in the Network Manager, causing stale/zero balances on cross-chain sends.
+  if (chainId && sender) {
+    const { accountsByChainId } = state.metamask;
+    const checksummedSender = toChecksumHexAddress(sender);
+    const chainBalance =
+      accountsByChainId?.[chainId]?.[checksummedSender]?.balance;
+    if (chainBalance) {
+      return chainBalance;
+    }
+  }
+
+  const accounts = getMetaMaskAccounts(state, chainId);
   return accounts[sender]?.balance;
 }
 const maxValueModeSelector = (state) => state.confirmTransaction.maxValueMode;
