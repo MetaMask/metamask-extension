@@ -11,7 +11,9 @@ class SettingsPage {
   private readonly assetsSettingsButton =
     '[data-testid="settings-tab-item-assets"]';
 
-  private readonly backButton = 'button[aria-label="Back"]';
+  private readonly backButton = {
+    testId: 'settings-header-back-button'
+  };
 
   private readonly developerToolsSettingsButton =
     '[data-testid="settings-tab-item-developer-tools"]';
@@ -111,11 +113,12 @@ class SettingsPage {
 
   /**
    * Close the Settings page and return to the wallet home with the navbar open.
+   * 2 clicks are required to fully close the settings due to UI issue.
    * Use closeSettings to perform the full flow of closing settings AND navbar.
    */
   async clickBackButton(): Promise<void> {
     await this.driver.clickElement(this.backButton);
-    await this.driver.clickElementSafe(this.backButton);
+    await this.driver.clickElementAndWaitToDisappear(this.backButton);
   }
 
   async waitForTransactionShieldButtonReady(): Promise<void> {
