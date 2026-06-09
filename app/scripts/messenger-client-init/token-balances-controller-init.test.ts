@@ -4,7 +4,10 @@ import {
   MockAnyNamespace,
   MOCK_ANY_NAMESPACE,
 } from '@metamask/messenger';
-import { TokenBalancesController } from '@metamask/assets-controllers';
+import {
+  TokenBalancesController,
+  TokenBalancesControllerMessenger,
+} from '@metamask/assets-controllers';
 import { PreferencesControllerGetStateAction } from '../controllers/preferences-controller';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
@@ -12,7 +15,6 @@ import {
   getTokenBalancesControllerInitMessenger,
   getTokenBalancesControllerMessenger,
   TokenBalancesControllerInitMessenger,
-  TokenBalancesControllerMessenger,
 } from './messengers';
 import { TokenBalancesControllerInit } from './token-balances-controller-init';
 

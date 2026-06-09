@@ -1,10 +1,10 @@
-import { ENVIRONMENT } from '../../development/build/constants';
+import { ENVIRONMENT } from '../constants/build';
 import {
-  getEnabledAdvancedPermissions,
   getIsPerpsIncludedInBuild,
   getIsPasskeyFeatureEnabled,
   getIsAssetsUnifiedStateIncludedInBuild,
   getIsNewHardwareWalletOnboardingEnabled,
+  getIsSeedlessOnboardingFeatureEnabled,
   isProduction,
   isGatorPermissionsRevocationFeatureEnabled,
 } from './environment';
@@ -36,53 +36,30 @@ describe('isProduction', () => {
   });
 });
 
-describe('getEnabledAdvancedPermissions', () => {
-  let originalGatorEnabledPermissionTypes: string | undefined;
+describe('getIsSeedlessOnboardingFeatureEnabled', () => {
+  let originalValue: string | undefined;
 
   beforeAll(() => {
-    originalGatorEnabledPermissionTypes =
-      process.env.GATOR_ENABLED_PERMISSION_TYPES;
+    originalValue = process.env.SEEDLESS_ONBOARDING_ENABLED;
   });
 
   afterAll(() => {
-    process.env.GATOR_ENABLED_PERMISSION_TYPES =
-      originalGatorEnabledPermissionTypes;
+    process.env.SEEDLESS_ONBOARDING_ENABLED = originalValue;
   });
 
-  it('should return an empty array when GATOR_ENABLED_PERMISSION_TYPES is not set', () => {
-    delete process.env.GATOR_ENABLED_PERMISSION_TYPES;
-    expect(getEnabledAdvancedPermissions()).toStrictEqual([]);
+  it('returns true when SEEDLESS_ONBOARDING_ENABLED is "true"', () => {
+    process.env.SEEDLESS_ONBOARDING_ENABLED = 'true';
+    expect(getIsSeedlessOnboardingFeatureEnabled()).toBe(true);
   });
 
-  it('should return an empty array when GATOR_ENABLED_PERMISSION_TYPES is an empty string', () => {
-    process.env.GATOR_ENABLED_PERMISSION_TYPES = '';
-    expect(getEnabledAdvancedPermissions()).toStrictEqual([]);
+  it('returns false when SEEDLESS_ONBOARDING_ENABLED is "false"', () => {
+    process.env.SEEDLESS_ONBOARDING_ENABLED = 'false';
+    expect(getIsSeedlessOnboardingFeatureEnabled()).toBe(false);
   });
 
-  it('should parse comma-separated values correctly', () => {
-    process.env.GATOR_ENABLED_PERMISSION_TYPES =
-      'native-token-stream,native-token-periodic,erc20-token-stream';
-    expect(getEnabledAdvancedPermissions()).toStrictEqual([
-      'native-token-stream',
-      'native-token-periodic',
-      'erc20-token-stream',
-    ]);
-  });
-
-  it('should filter out empty strings from the result', () => {
-    process.env.GATOR_ENABLED_PERMISSION_TYPES =
-      'native-token-stream,,erc20-token-stream';
-    expect(getEnabledAdvancedPermissions()).toStrictEqual([
-      'native-token-stream',
-      'erc20-token-stream',
-    ]);
-  });
-
-  it('should handle a single permission type', () => {
-    process.env.GATOR_ENABLED_PERMISSION_TYPES = 'native-token-stream';
-    expect(getEnabledAdvancedPermissions()).toStrictEqual([
-      'native-token-stream',
-    ]);
+  it('returns false when SEEDLESS_ONBOARDING_ENABLED is undefined', () => {
+    delete process.env.SEEDLESS_ONBOARDING_ENABLED;
+    expect(getIsSeedlessOnboardingFeatureEnabled()).toBe(false);
   });
 });
 

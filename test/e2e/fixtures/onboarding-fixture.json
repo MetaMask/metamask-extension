@@ -35,7 +35,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 211,
+      "currentMigrationVersion": 212,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -172,6 +172,10 @@
     "LoggingController": {
       "logs": {}
     },
+    "AnalyticsController": {
+      "analyticsId": null,
+      "optedIn": false
+    },
     "MetaMetricsController": {
       "dataCollectionForMarketing": null,
       "eventsBeforeMetricsOptIn": [
@@ -184,9 +188,7 @@
       "fragments": {},
       "latestNonAnonymousEventTimestamp": 0,
       "marketingCampaignCookieId": null,
-      "metaMetricsId": null,
-      "participateInMetaMetrics": null,
-      "segmentApiCalls": {},
+      "completedMetaMetricsOnboarding": false,
       "tracesBeforeMetricsOptIn": [
         {
           "request": {
@@ -596,6 +598,10 @@
     "NotificationServicesPushController": {
       "fcmToken": "",
       "isPushEnabled": true
+    },
+    "ComplianceController": {
+      "lastCheckedAt": null,
+      "walletComplianceStatusMap": {}
     },
     "OnboardingController": {
       "completedOnboarding": false,
@@ -2088,7 +2094,8 @@
       "rewardsSeasonStatuses": {},
       "rewardsSeasons": {},
       "rewardsSubscriptionTokens": {},
-      "rewardsSubscriptions": {}
+      "rewardsSubscriptions": {},
+      "rewardsVipPerpsFees": {}
     },
     "SeedlessOnboardingController": {
       "isSeedlessOnboardingUserAuthenticated": false,
@@ -2266,6 +2273,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 211
+    "version": 212
   }
 }

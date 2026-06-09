@@ -1,56 +1,29 @@
 import { Mockttp } from 'mockttp';
+import { Browser } from 'selenium-webdriver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import ChangePasswordPage from '../../page-objects/pages/settings/change-password-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import LoginPage from '../../page-objects/pages/login-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import {
   completeCreateNewWalletOnboardingFlow,
+  completeOnboardingWithPasskey,
   importWalletWithSocialLoginOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
-import { lockAndWaitForLoginPage } from '../../page-objects/flows/login.flow';
+import {
+  lockAndWaitForPasskeyUnlockPage,
+  login,
+} from '../../page-objects/flows/login.flow';
+import {
+  changePasswordAndLockWallet,
+  closeSettings,
+  navigateToSecurityAndPassword,
+} from '../../page-objects/flows/settings.flow';
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
 import { Driver } from '../../webdriver/driver';
 import { MOCK_GOOGLE_ACCOUNT, WALLET_PASSWORD } from '../../constants';
-
-async function doPasswordChangeAndLockWallet(
-  driver: Driver,
-  currentPassword: string,
-  newPassword: string,
-  isSocialLogin: boolean = false,
-) {
-  // navigate to security and password settings
-  const headerNavbar = new HeaderNavbar(driver);
-  await headerNavbar.openSettingsPage();
-  const settingsPage = new SettingsPage(driver);
-  await settingsPage.checkPageIsLoaded();
-  await settingsPage.goToSecurityAndPasswordSettings();
-
-  const privacySettings = new PrivacySettings(driver);
-  await privacySettings.checkSecurityAndPasswordPageIsLoaded();
-  await privacySettings.openChangePassword();
-
-  const changePasswordPage = new ChangePasswordPage(driver);
-  await changePasswordPage.checkPageIsLoaded();
-
-  await changePasswordPage.confirmCurrentPassword(currentPassword);
-
-  await changePasswordPage.changePassword(newPassword);
-  if (isSocialLogin) {
-    await changePasswordPage.checkPasswordChangedWarning();
-    await changePasswordPage.confirmChangePasswordWarning();
-  }
-
-  // Wait for the password change to be applied
-  await driver.delay(2_000);
-
-  await settingsPage.clickBackButton();
-
-  await lockAndWaitForLoginPage(driver);
-}
+import { DUMMY_PASSKEY_RECORD } from '../../webdriver/virtual-authenticator';
 
 describe('Change wallet password', function () {
   const OLD_PASSWORD = WALLET_PASSWORD;
@@ -60,7 +33,6 @@ describe('Change wallet password', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
-        ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -72,7 +44,7 @@ describe('Change wallet password', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        await doPasswordChangeAndLockWallet(driver, OLD_PASSWORD, NEW_PASSWORD);
+        await changePasswordAndLockWallet(driver, OLD_PASSWORD, NEW_PASSWORD);
 
         const loginPage = new LoginPage(driver);
 
@@ -91,7 +63,6 @@ describe('Change wallet password', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
-        ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) => {
           // using this to mock the OAuth Service (Web Authentication flow + Auth server)
@@ -109,8 +80,9 @@ describe('Change wallet password', function () {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+        await homePage.waitForNonEvmAccountsLoaded();
 
-        await doPasswordChangeAndLockWallet(
+        await changePasswordAndLockWallet(
           driver,
           OLD_PASSWORD,
           NEW_PASSWORD,
@@ -125,6 +97,91 @@ describe('Change wallet password', function () {
 
         // Login with new password, should login successfully
         await loginPage.loginToHomepage(NEW_PASSWORD);
+        await homePage.checkPageIsLoaded();
+      },
+    );
+  });
+
+  it('Changes password with passkey fallback to password verification + turn off biometrics', async function () {
+    // Firefox does not support Selenium's Virtual Authenticator API
+    if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+      this.skip();
+    }
+
+    const PASSKEY_NEW_PASSWORD = 'newSecurePassword123!';
+
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2()
+          .withPasskeyController({ passkeyRecord: DUMMY_PASSKEY_RECORD })
+          .build(),
+        title: this.test?.fullTitle(),
+        virtualAuthenticator: true,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver, { ignorePasskeyUnlock: true });
+
+        await changePasswordAndLockWallet(
+          driver,
+          OLD_PASSWORD,
+          PASSKEY_NEW_PASSWORD,
+        );
+
+        const loginPage = new LoginPage(driver);
+        await loginPage.loginToHomepage(OLD_PASSWORD);
+        await loginPage.checkIncorrectPasswordMessageIsDisplayed();
+
+        await loginPage.loginToHomepage(PASSKEY_NEW_PASSWORD);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+      },
+    );
+  });
+
+  it('Changes password with passkey verification (real enrollment) + keep biometrics on', async function () {
+    // Firefox does not support Selenium's Virtual Authenticator API
+    if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+      this.skip();
+    }
+
+    const PASSKEY_NEW_PASSWORD = 'passkeyNewPassword456!';
+
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
+        virtualAuthenticator: true,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await completeOnboardingWithPasskey({ driver });
+
+        await navigateToSecurityAndPassword(driver);
+
+        const privacySettings = new PrivacySettings(driver);
+        await privacySettings.openChangePassword();
+
+        const changePasswordPage = new ChangePasswordPage(driver);
+        await changePasswordPage.waitForPasskeyVerificationToComplete();
+
+        await changePasswordPage.changePassword(PASSKEY_NEW_PASSWORD);
+
+        // Password change triggers an async vault re-encryption. No UI element
+        // reliably signals completion, so a brief delay avoids navigating away
+        // before the new password is persisted.
+        await driver.delay(2_000);
+
+        await closeSettings(driver);
+
+        await lockAndWaitForPasskeyUnlockPage(driver);
+
+        const loginPage = new LoginPage(driver);
+        await loginPage.clickUsePassword();
+        await loginPage.checkPageIsLoaded();
+        await loginPage.loginToHomepage(OLD_PASSWORD);
+        await loginPage.checkIncorrectPasswordMessageIsDisplayed();
+
+        await loginPage.loginToHomepage(PASSKEY_NEW_PASSWORD);
+        const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
       },
     );

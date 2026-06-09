@@ -10,12 +10,10 @@ const mockBtcAddress = 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq';
 const render = (
   {
     Qr,
-    warning,
   }: // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  { Qr: { message: string; data: string }; warning: null | string } = {
+  { Qr: { message: string; data: string } } = {
     Qr: { data: mockEthAddress, message: '' },
-    warning: '',
   },
 ) => {
   const store = configureStore({
@@ -23,8 +21,7 @@ const render = (
       ...mockState.metamask,
     },
   });
-  // @ts-expect-error TODO: Remove once `react-redux` is upgraded to v8 and `connect` type is fixed.
-  return renderWithProvider(<QRCodeView Qr={Qr} warning={warning} />, store);
+  return renderWithProvider(<QRCodeView Qr={Qr} />, store);
 };
 
 describe('QRCodeView', () => {
@@ -60,7 +57,6 @@ describe('QRCodeView', () => {
     async ({ data, message }: { data: string; message: string }) => {
       const { container } = render({
         Qr: { data, message },
-        warning: '',
       });
       const qrCodeImage = container.querySelector(
         '[data-testid="qr-code-image"]',

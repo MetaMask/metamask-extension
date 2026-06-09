@@ -1,4 +1,5 @@
-import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
 import SendPage from '../../page-objects/pages/send/send-page';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import { SOLANA_MAINNET_SCOPE } from '../../constants';
@@ -25,13 +26,14 @@ describe('Send Solana', function () {
         // back to the default network because the snap is not yet initialized
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         const sendPage = new SendPage(driver);
-        const nonEvmHomepage = new NonEvmHomepage(driver);
-        await nonEvmHomepage.checkExpectedTokenBalanceIsDisplayed('50', 'SOL');
+        const homePage = new HomePage(driver);
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.checkExpectedTokenBalanceIsDisplayed('50', 'SOL');
         const snapTransactionConfirmation = new SnapTransactionConfirmation(
           driver,
         );
 
-        await nonEvmHomepage.clickOnSendButton();
+        await homePage.clickOnSendButton();
 
         // Navigating immediate will not work - we wait in the asset page to catch up
         await driver.waitForSelector({

@@ -280,7 +280,7 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-webpack
-      build-command: yarn webpack:lavamoat:build --zip
+      build-command: yarn webpack:lavamoat:build --zip --stats
       bundle-analyzer: true
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
@@ -385,7 +385,7 @@ jobs:
     secrets: inherit
 
   run-benchmarks:
-    if: ${{ needs.get-requirements.outputs.needs-benchmarks == 'true' }}
+    if: ${{ !cancelled() && needs.get-requirements.outputs.needs-benchmarks == 'true' && !contains(needs.*.result, 'failure') }}
     permissions:
       contents: read
       id-token: write

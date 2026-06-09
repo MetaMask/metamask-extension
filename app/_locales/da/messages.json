@@ -199,9 +199,6 @@
   "done": {
     "message": "Færdig"
   },
-  "downloadGoogleChrome": {
-    "message": "Hent Google Chrome"
-  },
   "downloadStateLogs": {
     "message": "Download tilstandslogs"
   },
@@ -256,9 +253,6 @@
   },
   "hardwareWallets": {
     "message": "Tilslut en hardware-tegnebog"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Vælg en hardware-pung du vil bruge med MetaMask"
   },
   "here": {
     "message": "her",
@@ -360,9 +354,6 @@
   },
   "nevermind": {
     "message": "Lige meget"
-  },
-  "newAccount": {
-    "message": "Ny konto"
   },
   "newAccountNumberName": {
     "message": "Konto $1",

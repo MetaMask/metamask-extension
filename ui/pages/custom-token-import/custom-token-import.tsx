@@ -1,5 +1,6 @@
 import React, {
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -13,19 +14,18 @@ import {
   ButtonIconSize,
   IconName,
 } from '@metamask/design-system-react';
-import { ERC721, ERC1155 } from '@metamask/controller-utils';
+import { ERC20, ERC721, ERC1155 } from '@metamask/controller-utils';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import { type CaipChainId, type Hex } from '@metamask/utils';
 import { isValidHexAddress } from '../../../shared/lib/hexstring-utils';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { addHexPrefix } from '../../../app/scripts/lib/util';
+import { addHexPrefix } from '../../../shared/lib/add-hex-prefix';
 
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { Header, Page } from '../../components/multichain/pages/page';
 import {
   addImportedTokens,
   getTokenStandardAndDetailsByChain,
+  importCustomAssetsBatch,
 } from '../../store/actions';
 import {
   TOKEN_MANAGEMENT_ROUTE,
@@ -42,17 +42,78 @@ import {
   getAllTokens,
   selectERC20TokensByChain,
 } from '../../selectors';
+import { getIsAssetsUnifyStateEnabled } from '../../selectors/assets-unify-state/feature-flags';
+import {
+  getAssetsControllerAssetPreferences,
+  isAssetIdHiddenInPreferencesMap,
+} from '../../selectors/assets-unify-state/asset-preferences';
 import { checkExistingAddresses } from '../../helpers/utils/util';
-import { tokenInfoGetter } from '../../helpers/utils/token-util';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import { isEvmChainId } from '../../../shared/lib/asset-utils';
+import { isEvmChainId, toAssetId } from '../../../shared/lib/asset-utils';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
+import { AssetType } from '../../../shared/constants/transaction';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 import { type CustomTokenImportNetworkOption } from './custom-token-import-network-selector';
 import { CustomTokenImportForm } from './custom-token-import-form';
 
 const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000';
 const MIN_DECIMAL_VALUE = 0;
 const MAX_DECIMAL_VALUE = 36;
+const CUSTOM_TOKEN_IMPORT_DEFAULT_VIEW_STATE = 'default';
+const CUSTOM_TOKEN_IMPORT_LOOKUP_FAILED_VIEW_STATE = 'lookup_failed';
+const METRICS_PROPERTIES = {
+  addedToken: 'added_token',
+  assetType: 'asset_type',
+  chainId: 'chain_id',
+  clickedSecurityLink: 'clicked_security_link',
+  tokenContractAddress: 'token_contract_address',
+  tokenStandard: 'token_standard',
+  tokenSymbol: 'token_symbol',
+  viewState: 'view_state',
+} as const;
+
+type TokenMetadataSource = {
+  symbol?: string | null;
+  name?: string | null;
+  decimals?: string | number | null;
+};
+
+function trimImportedTokenField(value: unknown): string {
+  if (value === undefined || value === null) {
+    return '';
+  }
+  return String(value).trim();
+}
+
+/**
+ * Merges on-chain RPC metadata with token-list lookup for the import form.
+ *
+ * Prefer RPC first, then the token list. RPC-first avoids empty strings or a
+ * placeholder `decimals` of `'0'` from the list shadowing real contract
+ * values. When RPC omits a field (e.g. `name`), the list value is still used.
+ *
+ * @param rpcTokenInfo - Result from {@link getTokenStandardAndDetailsByChain}.
+ * @param info - Token-list entry for the address on the current network.
+ */
+export function mergeCustomTokenMetadataForImport(
+  rpcTokenInfo: TokenMetadataSource | undefined,
+  info: TokenMetadataSource | undefined,
+): { symbol: string; name: string; decimals: string } {
+  const symbol =
+    trimImportedTokenField(rpcTokenInfo?.symbol) ||
+    trimImportedTokenField(info?.symbol);
+  const name =
+    trimImportedTokenField(rpcTokenInfo?.name) ||
+    trimImportedTokenField(info?.name);
+  const decimals =
+    trimImportedTokenField(rpcTokenInfo?.decimals) ||
+    trimImportedTokenField(info?.decimals);
+  return { symbol, name, decimals };
+}
 
 /**
  * Full-screen "Add a custom token" page.
@@ -61,6 +122,7 @@ export const CustomTokenImportPage = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const currentChainId = useSelector(getCurrentChainId) as Hex;
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
@@ -75,10 +137,13 @@ export const CustomTokenImportPage = () => {
     string,
     Record<string, { address: string }[]>
   >;
+  const assetsUnifyStateFeatureEnabled = useSelector(
+    getIsAssetsUnifyStateEnabled,
+  );
+  const assetPreferences = useSelector(getAssetsControllerAssetPreferences);
   // Chain-scoped token-list cache, same source the backend uses inside
-  // `getTokenStandardAndDetailsByChain`. Provides the metadata fallback for
-  // `tokenInfoGetter` when on-chain `symbol()`/`decimals()`/`name()` calls
-  // can't return a value.
+  // `getTokenStandardAndDetailsByChain`. Provides a metadata fallback when
+  // on-chain `symbol()`/`decimals()`/`name()` calls can't return a value.
   const erc20TokensByChain = useSelector(selectERC20TokensByChain) as Record<
     string,
     { data?: Record<string, unknown> } | undefined
@@ -117,16 +182,48 @@ export const CustomTokenImportPage = () => {
       ]?.networkClientId
     : undefined;
 
-  const existingTokens = useMemo(
-    () => allTokens?.[selectedNetwork]?.[selectedAccount?.address ?? ''] ?? [],
-    [allTokens, selectedNetwork, selectedAccount?.address],
-  );
+  const existingTokens = useMemo(() => {
+    const tokens =
+      allTokens?.[selectedNetwork]?.[selectedAccount?.address ?? ''] ?? [];
+
+    // When assets-unify-state is enabled, `allTokens` is derived from
+    // AssetsController state. Hiding a token only flips
+    // `assetPreferences[assetId].hidden = true`; the token stays in
+    // `customAssets`, so it still appears in `allTokens`. Treat hidden tokens
+    // as not-yet-imported so users can re-import them — `handleSubmit`
+    // dispatches `importCustomAssetsBatch` with `isHidden: true`, which
+    // unhides the asset rather than adding a duplicate.
+    if (!assetsUnifyStateFeatureEnabled) {
+      return tokens;
+    }
+
+    return tokens.filter((token) => {
+      if (!token?.address) {
+        return true;
+      }
+      const assetId = toAssetId(
+        token.address as Hex,
+        selectedNetwork as CaipChainId | Hex,
+      );
+      if (!assetId) {
+        return true;
+      }
+      return !isAssetIdHiddenInPreferencesMap(assetPreferences, assetId);
+    });
+  }, [
+    allTokens,
+    assetPreferences,
+    assetsUnifyStateFeatureEnabled,
+    selectedAccount?.address,
+    selectedNetwork,
+  ]);
 
   const tokenListForSelectedNetwork =
     erc20TokensByChain?.[selectedNetwork]?.data;
 
   const [address, setAddress] = useState('');
   const [symbol, setSymbol] = useState('');
+  const [name, setName] = useState('');
   const [decimals, setDecimals] = useState('');
   const [addressError, setAddressError] = useState<string | null>(null);
   const [symbolError, setSymbolError] = useState<string | null>(null);
@@ -135,10 +232,27 @@ export const CustomTokenImportPage = () => {
   const [showSymbolAndDecimals, setShowSymbolAndDecimals] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const infoGetter = useRef(tokenInfoGetter());
+  const clickedSecurityLinkRef = useRef(false);
   // Tracks the in-flight `handleAddressChange` invocation so async results
   // from previous calls (stale address or stale network) can be discarded.
   const addressLookupRef = useRef(0);
+
+  const trackViewed = useCallback(
+    (viewState: string) => {
+      trackEvent({
+        category: MetaMetricsEventCategory.Wallet,
+        event: MetaMetricsEventName.ImportCustomTokenViewed,
+        properties: {
+          [METRICS_PROPERTIES.viewState]: viewState,
+        },
+      });
+    },
+    [trackEvent],
+  );
+
+  useEffect(() => {
+    trackViewed(CUSTOM_TOKEN_IMPORT_DEFAULT_VIEW_STATE);
+  }, [trackViewed]);
 
   const resetValidation = useCallback(() => {
     setAddressError(null);
@@ -151,6 +265,7 @@ export const CustomTokenImportPage = () => {
   const clearFormData = useCallback(() => {
     setAddress('');
     setSymbol('');
+    setName('');
     setDecimals('');
     resetValidation();
   }, [resetValidation]);
@@ -161,6 +276,7 @@ export const CustomTokenImportPage = () => {
       setAddress(trimmed);
       resetValidation();
       setSymbol('');
+      setName('');
       setDecimals('');
 
       // Invalidate any in-flight lookup so its eventual result is ignored.
@@ -182,15 +298,16 @@ export const CustomTokenImportPage = () => {
       // branches, matching the order of the legacy `import-tokens-modal`
       // switch.
       let standard: string | undefined;
+      let rpcTokenInfo;
       if (addressIsValid) {
         try {
-          const result = await getTokenStandardAndDetailsByChain(
+          rpcTokenInfo = await getTokenStandardAndDetailsByChain(
             standardAddress,
             selectedAccount?.address,
             undefined,
             selectedNetwork,
           );
-          standard = result?.standard;
+          standard = rpcTokenInfo?.standard;
         } catch {
           // ignore probe failures
         }
@@ -235,27 +352,20 @@ export const CustomTokenImportPage = () => {
       }
 
       // Mirror `attemptToAutoFillTokenParams` from the legacy modal.
-      try {
-        const info = await infoGetter.current(
-          standardAddress,
-          tokenListForSelectedNetwork,
-        );
-        if (!isLatestLookup()) {
-          return;
-        }
-        const rawDecimals = info?.decimals;
-        const nextDecimals =
-          rawDecimals === undefined || rawDecimals === null
-            ? ''
-            : String(rawDecimals);
-        setSymbol(info?.symbol ?? '');
-        setDecimals(nextDecimals);
-        setShowSymbolAndDecimals(true);
-      } catch {
-        if (!isLatestLookup()) {
-          return;
-        }
-        setShowSymbolAndDecimals(true);
+      const info = tokenListForSelectedNetwork?.[
+        standardAddress.toLowerCase()
+      ] as TokenMetadataSource | undefined;
+      const {
+        symbol: mergedSymbol,
+        name: mergedName,
+        decimals: mergedDecimals,
+      } = mergeCustomTokenMetadataForImport(rpcTokenInfo, info);
+      setSymbol(mergedSymbol);
+      setName(mergedName);
+      setDecimals(mergedDecimals);
+      setShowSymbolAndDecimals(true);
+      if (!mergedSymbol || mergedDecimals === '') {
+        trackViewed(CUSTOM_TOKEN_IMPORT_LOOKUP_FAILED_VIEW_STATE);
       }
     },
     [
@@ -265,6 +375,7 @@ export const CustomTokenImportPage = () => {
       selectedAccount?.address,
       selectedNetwork,
       t,
+      trackViewed,
       tokenListForSelectedNetwork,
     ],
   );
@@ -347,6 +458,30 @@ export const CustomTokenImportPage = () => {
 
   const parsedDecimals = Number(decimals);
 
+  const handleSecurityLinkClick = useCallback(() => {
+    clickedSecurityLinkRef.current = true;
+  }, []);
+
+  const trackSubmitAttempt = useCallback(
+    (addedToken: 0 | 1) => {
+      trackEvent({
+        category: MetaMetricsEventCategory.Wallet,
+        event: MetaMetricsEventName.ImportCustomTokenInteracted,
+        sensitiveProperties: {
+          [METRICS_PROPERTIES.addedToken]: addedToken,
+          [METRICS_PROPERTIES.tokenSymbol]: symbol,
+          [METRICS_PROPERTIES.tokenContractAddress]: address,
+          [METRICS_PROPERTIES.chainId]: selectedNetwork,
+          [METRICS_PROPERTIES.clickedSecurityLink]:
+            clickedSecurityLinkRef.current,
+          [METRICS_PROPERTIES.assetType]: AssetType.token,
+          [METRICS_PROPERTIES.tokenStandard]: ERC20,
+        },
+      });
+    },
+    [address, selectedNetwork, symbol, trackEvent],
+  );
+
   const handleSubmit = useCallback(async () => {
     if (Number.isNaN(parsedDecimals) || !isValid || isSubmitting) {
       return;
@@ -366,19 +501,73 @@ export const CustomTokenImportPage = () => {
           networkClientId,
         ),
       );
-      navigate(TOKEN_MANAGEMENT_ROUTE);
+
+      // When assets-unify-state is enabled, the manage-tokens list reads from
+      // AssetsController (customAssets + assetsInfo) rather than
+      // TokensController.allTokens.
+      if (assetsUnifyStateFeatureEnabled && selectedAccount?.id) {
+        const assetId = toAssetId(
+          address as Hex,
+          selectedNetwork as CaipChainId | Hex,
+        );
+        if (assetId) {
+          await dispatch(
+            importCustomAssetsBatch(
+              selectedAccount.id,
+              [
+                {
+                  assetId,
+                  isHidden: isAssetIdHiddenInPreferencesMap(
+                    assetPreferences,
+                    assetId,
+                  ),
+                },
+              ],
+              {
+                [assetId]: {
+                  address,
+                  symbol,
+                  name: name || symbol,
+                  decimals: parsedDecimals,
+                  chainId: selectedNetwork,
+                  unlisted: true,
+                },
+              },
+            ),
+          );
+        }
+      }
+
+      trackSubmitAttempt(1);
+      navigate(TOKEN_MANAGEMENT_ROUTE, {
+        state: {
+          tokenManagementToast: {
+            type: 'customTokenAdded',
+            symbol,
+          },
+        },
+      });
+    } catch (error) {
+      trackSubmitAttempt(0);
+      throw error;
     } finally {
       setIsSubmitting(false);
     }
   }, [
     address,
+    assetPreferences,
+    assetsUnifyStateFeatureEnabled,
     dispatch,
     isSubmitting,
     isValid,
+    name,
     navigate,
     networkClientId,
     parsedDecimals,
+    selectedAccount?.id,
+    selectedNetwork,
     symbol,
+    trackSubmitAttempt,
   ]);
 
   return (
@@ -424,6 +613,7 @@ export const CustomTokenImportPage = () => {
         onAddressChange={handleAddressChange}
         onSymbolChange={handleSymbolChange}
         onDecimalsChange={handleDecimalsChange}
+        onSecurityLinkClick={handleSecurityLinkClick}
         onSubmit={handleSubmit}
       />
     </Page>

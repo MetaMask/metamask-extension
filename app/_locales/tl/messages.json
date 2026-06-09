@@ -37,20 +37,8 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "Error"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "Di-wastong QR code. Paki-scan ang sync QR code ng wallet na hardware."
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "Mag-scan ng QR code"
-  },
-  "QRHardwareWalletSteps1Description": {
-    "message": "Maaari kang pumili mula sa isang listahan ng mga opisyal na ka-partner sa pagsuporta sa QR-code sa ibaba."
-  },
-  "QRHardwareWalletSteps1Title": {
-    "message": "Ikonekta ang iyong QR na wallet na hardware"
-  },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
   },
   "SrpListHideAccounts": {
     "message": "Itago ang $1 (na) account",
@@ -101,6 +89,9 @@
     "message": "Ang wallet na gumagamit ng “$1” ay umiiral na. Nais mo bang subukan na mag-log in na lang?",
     "description": "$1 is the account email"
   },
+  "accountAlreadyExistsLoginDescriptionTelegram": {
+    "message": "May naka-link ng wallet sa Telegram account na ito. Gusto mo bang i-unlock ang wallet na ito?"
+  },
   "accountAlreadyExistsTitle": {
     "message": "Mayroon ng wallet na umiiral"
   },
@@ -135,6 +126,10 @@
   "accountNotFoundDescription": {
     "message": "Hindi namin mahanap ang wallet para sa “$1”. Nais mo bang gumawa ng bago gamit ang login na ito?",
     "description": "$1 is the account email"
+  },
+  "accountNotFoundDescriptionTelegram": {
+    "message": "Hindi namin mahanap ang wallet na naka-link sa $1 account na ito. Gusto mo bang gumawa ng bago gamit ang login na ito?",
+    "description": "$1 is the social login provider"
   },
   "accountNotFoundTitle": {
     "message": "Hindi nahanap ang wallet"
@@ -176,7 +171,794 @@
     "message": "Aktibidad"
   },
   "activityEmptyDescription": {
-    "message": "Wala pang bago sa ngayon. I-swap na ang iyong unang token ngayon."
+    "message": "I-swap ang una mong token ngayon."
+  },
+  "activityEmptyNoFundsDescription": {
+    "message": "Magdagdag ng pondo sa wallet mo para makapagsimula."
+  },
+  "activity_approveSpendingCap_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_failed_title": {
+    "message": "Nabigo ang pag-apruba"
+  },
+  "activity_approveSpendingCap_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_pending_title": {
+    "message": "Inaaprubahan ang cap sa paggastos"
+  },
+  "activity_approveSpendingCap_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_success_title": {
+    "message": "Inaprubahan ang cap sa paggastos"
+  },
+  "activity_bridge_failed_description": {
+    "message": "Nabigo ang pag-bridge"
+  },
+  "activity_bridge_failed_title": {
+    "message": "Nabigo ang pag-bridge"
+  },
+  "activity_bridge_pending_description": {
+    "message": "Ibini-bridge ang $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_pending_title": {
+    "message": "Ibini-bridge ang $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_success_description": {
+    "message": "Na-bridge ang $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_success_title": {
+    "message": "Na-bridge ang $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_buy_failed_description": {
+    "message": "Nabigo ang pagbili"
+  },
+  "activity_buy_failed_title": {
+    "message": "Nabigo ang pagbili"
+  },
+  "activity_buy_pending_description": {
+    "message": "Bumibili ng $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_buy_pending_title": {
+    "message": "Bumibili ng $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_buy_success_description": {
+    "message": "Bumili ng $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_buy_success_title": {
+    "message": "Bumili ng $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_claimMusdBonus_failed_title": {
+    "message": "Nabigo ang pag-claim"
+  },
+  "activity_claimMusdBonus_pending_title": {
+    "message": "Kini-claim ang mUSD bonus"
+  },
+  "activity_claimMusdBonus_success_title": {
+    "message": "Na-claim ang mUSD bonus"
+  },
+  "activity_claim_failed_description": {
+    "message": "Nabigo ang pag-claim"
+  },
+  "activity_claim_failed_title": {
+    "message": "Nabigo ang pag-claim"
+  },
+  "activity_claim_pending_description": {
+    "message": "Kini-claim ang $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_claim_pending_title": {
+    "message": "Kini-claim ang $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_claim_success_description": {
+    "message": "Na-claim ang $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_claim_success_title": {
+    "message": "Na-claim ang $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_contractDeployment_failed_description": {
+    "message": "Nabigo ang pag-deploy"
+  },
+  "activity_contractDeployment_failed_title": {
+    "message": "Nabigo ang pag-deploy"
+  },
+  "activity_contractDeployment_pending_description": {
+    "message": "Dini-deploy ang kontrata"
+  },
+  "activity_contractDeployment_pending_title": {
+    "message": "Dini-deploy ang kontrata"
+  },
+  "activity_contractDeployment_success_description": {
+    "message": "Na-deploy ang kontrata"
+  },
+  "activity_contractDeployment_success_title": {
+    "message": "Na-deploy ang kontrata"
+  },
+  "activity_contractInteraction_failed_title": {
+    "message": "Nabigo ang interaksyon"
+  },
+  "activity_contractInteraction_pending_title": {
+    "message": "Isinasagawa ang interaksyon"
+  },
+  "activity_convert_failed_description": {
+    "message": "Nabigo ang pag-convert"
+  },
+  "activity_convert_failed_title": {
+    "message": "Nabigo ang pag-convert"
+  },
+  "activity_convert_pending_description": {
+    "message": "Kino-convert sa $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_convert_pending_title": {
+    "message": "Kino-convert sa $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_convert_success_description": {
+    "message": "Na-convert sa $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_deposit_failed_description": {
+    "message": "Nabigo ang pagdeposito"
+  },
+  "activity_deposit_failed_title": {
+    "message": "Nabigo ang pagdeposito"
+  },
+  "activity_deposit_pending_description": {
+    "message": "Nagdedeposito ng $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_deposit_pending_title": {
+    "message": "Nagdedeposito ng $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_deposit_success_description": {
+    "message": "Naideposito ang $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_deposit_success_title": {
+    "message": "Naideposito ang $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_fallback_description": {
+    "message": "Transaksyon"
+  },
+  "activity_fallback_title": {
+    "message": "Transaksyon"
+  },
+  "activity_increaseSpendingCap_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_increaseSpendingCap_failed_title": {
+    "message": "Nabigong taasan"
+  },
+  "activity_increaseSpendingCap_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_increaseSpendingCap_pending_title": {
+    "message": "Tinataasan ang cap sa paggastos"
+  },
+  "activity_increaseSpendingCap_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_increaseSpendingCap_success_title": {
+    "message": "Nataasan ang cap sa paggastos"
+  },
+  "activity_lendingDeposit_failed_title": {
+    "message": "Nabigo ang pagdeposito"
+  },
+  "activity_lendingWithdrawal_failed_description": {
+    "message": "Pumalya ang pag-withdraw"
+  },
+  "activity_lendingWithdrawal_failed_title": {
+    "message": "Pumalya ang pag-withdraw"
+  },
+  "activity_lendingWithdrawal_pending_description": {
+    "message": "Wini-withdraw ang $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_lendingWithdrawal_pending_title": {
+    "message": "Wini-withdraw ang $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_marketCloseShort_failed_description": {
+    "message": "Nabigong isara ang short"
+  },
+  "activity_marketCloseShort_failed_title": {
+    "message": "Nabigong isara ang short"
+  },
+  "activity_marketCloseShort_pending_description": {
+    "message": "Isinasara ang short - sarado ang market"
+  },
+  "activity_marketCloseShort_pending_title": {
+    "message": "Isinasara ang short - sarado ang market"
+  },
+  "activity_marketCloseShort_success_description": {
+    "message": "Naisara ang short - sarado ang market"
+  },
+  "activity_marketCloseShort_success_title": {
+    "message": "Naisara ang short - sarado ang market"
+  },
+  "activity_marketShort_failed_description": {
+    "message": "Nabigong isara ang short"
+  },
+  "activity_marketShort_failed_title": {
+    "message": "Nabigong isara ang short"
+  },
+  "activity_marketShort_pending_description": {
+    "message": "Isinasara ang short - market"
+  },
+  "activity_marketShort_pending_title": {
+    "message": "Isinasara ang short - market"
+  },
+  "activity_marketShort_success_description": {
+    "message": "Naisara ang short - market"
+  },
+  "activity_marketShort_success_title": {
+    "message": "Naisara ang short - market"
+  },
+  "activity_nftMint_failed_title": {
+    "message": "Nabigong mag-mint"
+  },
+  "activity_nftMint_pending_title": {
+    "message": "Nagmi-mint ng $1",
+    "description": "$1 is the NFT token symbol"
+  },
+  "activity_nftMint_success_title": {
+    "message": "Nag-mint ng $1",
+    "description": "$1 is the NFT token symbol"
+  },
+  "activity_perpsAddFunds_failed_description": {
+    "message": "Nabigo ang pagpopondo"
+  },
+  "activity_perpsAddFunds_failed_title": {
+    "message": "Nabigo ang pagpopondo"
+  },
+  "activity_perpsAddFunds_pending_description": {
+    "message": "Isinasagawa ang pagpopondo"
+  },
+  "activity_perpsAddFunds_pending_title": {
+    "message": "Isinasagawa ang pagpopondo"
+  },
+  "activity_perpsAddFunds_success_description": {
+    "message": "Napondohan ang account"
+  },
+  "activity_perpsAddFunds_success_title": {
+    "message": "Napondohan ang account"
+  },
+  "activity_perpsCloseLongLiquidated_failed_description": {
+    "message": "Isara ang long - nabigo ang liquidation"
+  },
+  "activity_perpsCloseLongLiquidated_failed_title": {
+    "message": "Isara ang long - nabigo ang liquidation"
+  },
+  "activity_perpsCloseLongLiquidated_pending_description": {
+    "message": "Isinasara ang long - na-liquidate"
+  },
+  "activity_perpsCloseLongLiquidated_pending_title": {
+    "message": "Isinasara ang long - na-liquidate"
+  },
+  "activity_perpsCloseLongLiquidated_success_description": {
+    "message": "Naisara ang long - na-liquidate"
+  },
+  "activity_perpsCloseLongLiquidated_success_title": {
+    "message": "Naisara ang long - na-liquidate"
+  },
+  "activity_perpsCloseLongStopLoss_failed_description": {
+    "message": "Isara ang long - nabigo ang stop loss"
+  },
+  "activity_perpsCloseLongStopLoss_failed_title": {
+    "message": "Isara ang long - nabigo ang stop loss"
+  },
+  "activity_perpsCloseLongStopLoss_pending_description": {
+    "message": "Isinasara ang long - stop loss"
+  },
+  "activity_perpsCloseLongStopLoss_pending_title": {
+    "message": "Isinasara ang long - stop loss"
+  },
+  "activity_perpsCloseLongStopLoss_success_description": {
+    "message": "Naisara ang long - stop loss"
+  },
+  "activity_perpsCloseLongStopLoss_success_title": {
+    "message": "Naisara ang long - stop loss"
+  },
+  "activity_perpsCloseLongTakeProfit_failed_description": {
+    "message": "Nabigong isara ang long"
+  },
+  "activity_perpsCloseLongTakeProfit_failed_title": {
+    "message": "Nabigong isara ang long"
+  },
+  "activity_perpsCloseLongTakeProfit_pending_description": {
+    "message": "Isinasara ang long - take profit"
+  },
+  "activity_perpsCloseLongTakeProfit_pending_title": {
+    "message": "Isinasara ang long - take profit"
+  },
+  "activity_perpsCloseLongTakeProfit_success_description": {
+    "message": "Naisara ang long - take profit"
+  },
+  "activity_perpsCloseLongTakeProfit_success_title": {
+    "message": "Naisara ang long - take profit"
+  },
+  "activity_perpsCloseLong_failed_description": {
+    "message": "Nabigong isara ang long"
+  },
+  "activity_perpsCloseLong_failed_title": {
+    "message": "Nabigong isara ang long"
+  },
+  "activity_perpsCloseLong_pending_description": {
+    "message": "Isinasara ang long"
+  },
+  "activity_perpsCloseLong_pending_title": {
+    "message": "Isinasara ang long"
+  },
+  "activity_perpsCloseLong_success_description": {
+    "message": "Naisara ang long"
+  },
+  "activity_perpsCloseLong_success_title": {
+    "message": "Naisara ang long"
+  },
+  "activity_perpsCloseShortLiquidated_failed_description": {
+    "message": "Isara ang short - nabigo ang liquidation"
+  },
+  "activity_perpsCloseShortLiquidated_failed_title": {
+    "message": "Isara ang short - nabigo ang liquidation"
+  },
+  "activity_perpsCloseShortLiquidated_pending_description": {
+    "message": "Isinasara ang short - na-liquidate"
+  },
+  "activity_perpsCloseShortLiquidated_pending_title": {
+    "message": "Isinasara ang short - na-liquidate"
+  },
+  "activity_perpsCloseShortLiquidated_success_description": {
+    "message": "Naisara ang short - na-liquidate"
+  },
+  "activity_perpsCloseShortLiquidated_success_title": {
+    "message": "Naisara ang short - na-liquidate"
+  },
+  "activity_perpsCloseShortStopLoss_failed_description": {
+    "message": "Nabigong isara ang short"
+  },
+  "activity_perpsCloseShortStopLoss_failed_title": {
+    "message": "Nabigong isara ang short"
+  },
+  "activity_perpsCloseShortStopLoss_pending_description": {
+    "message": "Isinasara ang short - stop loss"
+  },
+  "activity_perpsCloseShortStopLoss_pending_title": {
+    "message": "Isinasara ang short - stop loss"
+  },
+  "activity_perpsCloseShortStopLoss_success_description": {
+    "message": "Naisara ang short - stop loss"
+  },
+  "activity_perpsCloseShortStopLoss_success_title": {
+    "message": "Naisara ang short - stop loss"
+  },
+  "activity_perpsCloseShortTakeProfit_failed_description": {
+    "message": "Nabigong isara ang short"
+  },
+  "activity_perpsCloseShortTakeProfit_failed_title": {
+    "message": "Nabigong isara ang short"
+  },
+  "activity_perpsCloseShortTakeProfit_pending_description": {
+    "message": "Isinasara ang short - take profit"
+  },
+  "activity_perpsCloseShortTakeProfit_pending_title": {
+    "message": "Isinasara ang short - take profit"
+  },
+  "activity_perpsCloseShortTakeProfit_success_description": {
+    "message": "Naisara ang short - take profit"
+  },
+  "activity_perpsCloseShortTakeProfit_success_title": {
+    "message": "Naisara ang short - take profit"
+  },
+  "activity_perpsCloseShort_failed_description": {
+    "message": "Nabigong isara ang short"
+  },
+  "activity_perpsCloseShort_failed_title": {
+    "message": "Nabigong isara ang short"
+  },
+  "activity_perpsCloseShort_pending_description": {
+    "message": "Isinasara ang short"
+  },
+  "activity_perpsCloseShort_pending_title": {
+    "message": "Isinasara ang short"
+  },
+  "activity_perpsCloseShort_success_description": {
+    "message": "Naisara ang short"
+  },
+  "activity_perpsCloseShort_success_title": {
+    "message": "Naisara ang short"
+  },
+  "activity_perpsOpenLong_failed_description": {
+    "message": "Nabigong buksan ang long"
+  },
+  "activity_perpsOpenLong_failed_title": {
+    "message": "Nabigong buksan ang long"
+  },
+  "activity_perpsOpenLong_pending_description": {
+    "message": "Binubuksan ang long"
+  },
+  "activity_perpsOpenLong_pending_title": {
+    "message": "Binubuksan ang long"
+  },
+  "activity_perpsOpenLong_success_description": {
+    "message": "Bukas na long"
+  },
+  "activity_perpsOpenLong_success_title": {
+    "message": "Bukas na long"
+  },
+  "activity_perpsOpenShort_failed_description": {
+    "message": "Nabigong buksan ang short"
+  },
+  "activity_perpsOpenShort_failed_title": {
+    "message": "Nabigong buksan ang short"
+  },
+  "activity_perpsOpenShort_pending_description": {
+    "message": "Binubuksan ang short"
+  },
+  "activity_perpsOpenShort_pending_title": {
+    "message": "Binubuksan ang short"
+  },
+  "activity_perpsOpenShort_success_description": {
+    "message": "Binuksan ang short"
+  },
+  "activity_perpsOpenShort_success_title": {
+    "message": "Nabuksan ang short"
+  },
+  "activity_perpsPaidFundingFees_failed_description": {
+    "message": "Nabigo ang pagbabayad sa pagpopondo"
+  },
+  "activity_perpsPaidFundingFees_failed_title": {
+    "message": "Nabigo ang pagbabayad sa pagpopondo"
+  },
+  "activity_perpsPaidFundingFees_pending_description": {
+    "message": "Binabayaran ang bayad sa pagpopondo"
+  },
+  "activity_perpsPaidFundingFees_pending_title": {
+    "message": "Binabayaran ang bayad sa pagpopondo"
+  },
+  "activity_perpsPaidFundingFees_success_description": {
+    "message": "Nabayaran ang bayad sa pagpopondo"
+  },
+  "activity_perpsPaidFundingFees_success_title": {
+    "message": "Nabayaran ang bayad sa pagpopondo"
+  },
+  "activity_perpsReceivedFundingFees_failed_description": {
+    "message": "Nabigong matanggap ang bayad"
+  },
+  "activity_perpsReceivedFundingFees_failed_title": {
+    "message": "Nabigong matanggap ang bayad"
+  },
+  "activity_perpsReceivedFundingFees_pending_description": {
+    "message": "Tinatanggap ang bayad sa pagpopondo"
+  },
+  "activity_perpsReceivedFundingFees_pending_title": {
+    "message": "Tinatanggap ang bayad sa pagpopondo"
+  },
+  "activity_perpsReceivedFundingFees_success_description": {
+    "message": "Natanggap ang bayad sa pagpopondo"
+  },
+  "activity_perpsReceivedFundingFees_success_title": {
+    "message": "Natanggap ang bayad sa pagpopondo"
+  },
+  "activity_perpsWithdrawFunds_failed_description": {
+    "message": "Pumalya ang pag-withdraw"
+  },
+  "activity_perpsWithdrawFunds_failed_title": {
+    "message": "Pumalya ang pag-withdraw"
+  },
+  "activity_perpsWithdrawFunds_pending_description": {
+    "message": "Wini-withdraw ang mga pondo"
+  },
+  "activity_perpsWithdrawFunds_pending_title": {
+    "message": "Wini-withdraw ang mga pondo"
+  },
+  "activity_perpsWithdrawFunds_success_description": {
+    "message": "Pagwi-withdraw ng perps"
+  },
+  "activity_perpsWithdrawFunds_success_title": {
+    "message": "Pagwi-withdraw ng perps"
+  },
+  "activity_predictionCashedOut_failed_description": {
+    "message": "Nabigong mag-cash out"
+  },
+  "activity_predictionCashedOut_failed_title": {
+    "message": "Nabigong mag-cash out"
+  },
+  "activity_predictionCashedOut_pending_description": {
+    "message": "Nagca-cash out"
+  },
+  "activity_predictionCashedOut_pending_title": {
+    "message": "Nagca-cash out"
+  },
+  "activity_predictionCashedOut_success_description": {
+    "message": "Nag-cash out"
+  },
+  "activity_predictionCashedOut_success_title": {
+    "message": "Nag-cash out"
+  },
+  "activity_predictionClaimWinnings_failed_description": {
+    "message": "Nabigo ang pag-claim"
+  },
+  "activity_predictionClaimWinnings_failed_title": {
+    "message": "Nabigo ang pag-claim"
+  },
+  "activity_predictionClaimWinnings_pending_description": {
+    "message": "Kini-claim ang mga napanalunan"
+  },
+  "activity_predictionClaimWinnings_pending_title": {
+    "message": "Kini-claim ang mga napanalunan"
+  },
+  "activity_predictionClaimWinnings_success_description": {
+    "message": "Nai-claim ang mga napanalunan"
+  },
+  "activity_predictionClaimWinnings_success_title": {
+    "message": "Nai-claim ang mga napanalunan"
+  },
+  "activity_predictionPlaced_failed_description": {
+    "message": "Nabigo ang prediksyon"
+  },
+  "activity_predictionPlaced_failed_title": {
+    "message": "Nabigo ang prediksyon"
+  },
+  "activity_predictionPlaced_pending_description": {
+    "message": "Inilalagay ang prediksyon"
+  },
+  "activity_predictionPlaced_pending_title": {
+    "message": "Inilalagay ang prediksyon"
+  },
+  "activity_predictionPlaced_success_description": {
+    "message": "Nailagay na prediksyon"
+  },
+  "activity_predictionPlaced_success_title": {
+    "message": "Nailagay na prediksyon"
+  },
+  "activity_predictionsAddFunds_failed_description": {
+    "message": "Nabigo ang pagpopondo"
+  },
+  "activity_predictionsAddFunds_failed_title": {
+    "message": "Nabigo ang pagpopondo"
+  },
+  "activity_predictionsAddFunds_pending_description": {
+    "message": "Isinasagawa ang pagpopondo"
+  },
+  "activity_predictionsAddFunds_pending_title": {
+    "message": "Isinasagawa ang pagpopondo"
+  },
+  "activity_predictionsAddFunds_success_description": {
+    "message": "Napondohan ang account"
+  },
+  "activity_predictionsAddFunds_success_title": {
+    "message": "Napondohan ang account"
+  },
+  "activity_predictionsWithdrawFunds_failed_description": {
+    "message": "Pumalya ang pag-withdraw"
+  },
+  "activity_predictionsWithdrawFunds_failed_title": {
+    "message": "Pumalya ang pag-withdraw"
+  },
+  "activity_predictionsWithdrawFunds_pending_description": {
+    "message": "Wini-withdraw"
+  },
+  "activity_predictionsWithdrawFunds_pending_title": {
+    "message": "Wini-withdraw"
+  },
+  "activity_predictionsWithdrawFunds_success_description": {
+    "message": "Mga prediksyon sa pag-withdraw"
+  },
+  "activity_predictionsWithdrawFunds_success_title": {
+    "message": "Mga prediksyon sa pag-withdraw"
+  },
+  "activity_receive_failed_description": {
+    "message": "Mula kay/sa: $1",
+    "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_failed_title": {
+    "message": "Nabigong matanggap"
+  },
+  "activity_receive_pending_description": {
+    "message": "Mula kay/sa: $1",
+    "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_pending_title": {
+    "message": "Tinatanggap ang $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_receive_success_description": {
+    "message": "Mula kay/sa: $1",
+    "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_success_title": {
+    "message": "Natanggap ang $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_revokeSpendingCap_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_revokeSpendingCap_failed_title": {
+    "message": "Nabigo ang pagbawi"
+  },
+  "activity_revokeSpendingCap_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_revokeSpendingCap_pending_title": {
+    "message": "Binabawi ang cap sa paggastos"
+  },
+  "activity_revokeSpendingCap_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_revokeSpendingCap_success_title": {
+    "message": "Nabawi ang cap sa paggastos"
+  },
+  "activity_sell_failed_description": {
+    "message": "Nabigo ang pagbebenta"
+  },
+  "activity_sell_failed_title": {
+    "message": "Nabigo ang pagbebenta"
+  },
+  "activity_sell_pending_description": {
+    "message": "Ibinibenta ang $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_sell_pending_title": {
+    "message": "Ibinibenta ang $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_sell_success_description": {
+    "message": "Naibenta ang $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_sell_success_title": {
+    "message": "Naibenta ang $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_send_failed_description": {
+    "message": "Para kay/sa: $1",
+    "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_failed_title": {
+    "message": "Nabigong ipadala"
+  },
+  "activity_send_pending_description": {
+    "message": "Para kay/sa: $1",
+    "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_pending_title": {
+    "message": "Ipinapadala ang $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_send_success_description": {
+    "message": "Para kay/sa: $1",
+    "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_success_title": {
+    "message": "Nagpadala ng $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_smartAccountUpgrade_failed_description": {
+    "message": "Nabigong i-upgrade"
+  },
+  "activity_smartAccountUpgrade_failed_title": {
+    "message": "Nabigong i-upgrade"
+  },
+  "activity_smartAccountUpgrade_pending_description": {
+    "message": "Ina-upgrade ang smart account"
+  },
+  "activity_smartAccountUpgrade_pending_title": {
+    "message": "Ina-upgrade ang smart account"
+  },
+  "activity_smartAccountUpgrade_success_description": {
+    "message": "Na-upgrade na smart account"
+  },
+  "activity_smartAccountUpgrade_success_title": {
+    "message": "Na-upgrade na smart account"
+  },
+  "activity_stopMarketCloseShort_failed_description": {
+    "message": "Nabigong isara ang short"
+  },
+  "activity_stopMarketCloseShort_failed_title": {
+    "message": "Nabigong isara ang short"
+  },
+  "activity_stopMarketCloseShort_pending_description": {
+    "message": "Isinasara ang short - stop market"
+  },
+  "activity_stopMarketCloseShort_pending_title": {
+    "message": "Isinasara ang short - stop market"
+  },
+  "activity_stopMarketCloseShort_success_description": {
+    "message": "Naisara ang short - stop market"
+  },
+  "activity_stopMarketCloseShort_success_title": {
+    "message": "Naisara ang short - stop market"
+  },
+  "activity_swapIncomplete_failed_title": {
+    "message": "Nabigo ang pag-swap"
+  },
+  "activity_swapIncomplete_pending_title": {
+    "message": "Nagsu-swap ng $1",
+    "description": "$1 is the source token symbol"
+  },
+  "activity_swapIncomplete_success_title": {
+    "message": "Nai-swap ang $1",
+    "description": "$1 is the source token symbol"
+  },
+  "activity_swap_failed_title": {
+    "message": "Nabigo ang pag-swap"
+  },
+  "activity_swap_pending_title": {
+    "message": "Nagsu-swap ng $1 para sa $2",
+    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+  },
+  "activity_swap_success_title": {
+    "message": "Nai-swap ang $1 para sa $2",
+    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+  },
+  "activity_unwrap_failed_description": {
+    "message": "Nabigo ang pag-unwrap"
+  },
+  "activity_unwrap_failed_title": {
+    "message": "Nabigo ang pag-unwrap"
+  },
+  "activity_unwrap_pending_description": {
+    "message": "Ina-unwrap ang $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_unwrap_pending_title": {
+    "message": "Ina-unwrap ang $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_unwrap_success_description": {
+    "message": "Na-unwrap ang $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_unwrap_success_title": {
+    "message": "Na-unwrap ang $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_failed_description": {
+    "message": "Nabigo ang pag-wrap"
+  },
+  "activity_wrap_failed_title": {
+    "message": "Nabigo ang pag-wrap"
+  },
+  "activity_wrap_pending_description": {
+    "message": "Inira-wrap ang $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_pending_title": {
+    "message": "Inira-wrap ang $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_success_description": {
+    "message": "Na-wrap na $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_success_title": {
+    "message": "Na-wrap na $1",
+    "description": "$1 is the token symbol"
   },
   "add": {
     "message": "Idagdag"
@@ -199,21 +981,11 @@
   "addAccount": {
     "message": "Magdagdag ng account"
   },
-  "addAccountFromNetwork": {
-    "message": "Magdagdag ng $1 account",
-    "description": "$1 is the network name, e.g. Bitcoin or Solana"
-  },
-  "addAccountOrWallet": {
-    "message": "Magdagdag ng account o wallet"
-  },
   "addAcquiredTokens": {
     "message": "Idagdag ang mga token na nakuha mo gamit ang MetaMask"
   },
   "addAlias": {
     "message": "Magdagdag ng alias"
-  },
-  "addBitcoinAccountLabel": {
-    "message": "Bitcoin account (Beta)"
   },
   "addBlockExplorer": {
     "message": "Magdagdag ng block explorer"
@@ -226,6 +998,9 @@
   },
   "addCustomNetwork": {
     "message": "Magdagdag ng custom na network"
+  },
+  "addCustomToken": {
+    "message": "Magdagdag ng custom na token"
   },
   "addEthereumChainWarningModalHeader": {
     "message": "Idagdag lamang ang RPC provider na ito kung sigurado kang mapagkakatiwalaan ito. $1",
@@ -267,9 +1042,6 @@
   "addFundsModalSwapTokens": {
     "message": "Ipagpalit ang mga token"
   },
-  "addHardwareWalletLabel": {
-    "message": "Hardware wallet"
-  },
   "addMemo": {
     "message": "Magdagdag ng memo"
   },
@@ -283,31 +1055,11 @@
   "addNetworkDescription": {
     "message": "Nagmumungkahi ng dagdag na detalye ng network ang isang site."
   },
-  "addNewAccount": {
-    "message": "Magdagdag ng bagong account sa Ethereum"
-  },
-  "addNewEthereumAccountLabel": {
-    "message": "Ethereum account"
-  },
-  "addNewSolanaAccountLabel": {
-    "message": "Solana account"
-  },
-  "addNewTronAccountLabel": {
-    "message": "Account sa Tron"
-  },
   "addNft": {
     "message": "Magdagdag ng NFT"
   },
   "addNfts": {
     "message": "Magdagdag ng mga NFT"
-  },
-  "addNonEvmAccount": {
-    "message": "Magdagdag ng $1 account",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
-  },
-  "addNonEvmAccountFromNetworkPicker": {
-    "message": "Para i-enable ang $1 network, kailangan mong gumawa ng $2 account.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "Magdagdag ng RPC URL"
@@ -369,6 +1121,15 @@
     "message": "Bersyon ng Punycode: $1",
     "description": "$1 replaced by punycode version of the URL in confirmation request"
   },
+  "addressPoisoningBadge": {
+    "message": "Na-poison"
+  },
+  "addressPoisoningMessage": {
+    "message": "Halos kapareho ang address na ito ng address na ginamit mo dati. Posibleng idinisenyo ito upang linlangin ka na magpadala ng mga pondo sa maling tatanggap."
+  },
+  "addressPoisoningTitle": {
+    "message": "May natukoy na address poisoning"
+  },
   "addressQrCodeModalDescription": {
     "message": "Gamitin ang address na ito para makatanggap ng mga token at collectible sa $1",
     "description": "$1 is the network name"
@@ -424,9 +1185,6 @@
   },
   "airDropPatternTitle": {
     "message": "Pattern ng Airdrop"
-  },
-  "airgapVault": {
-    "message": "AirGap Vault"
   },
   "alert": {
     "message": "Alerto"
@@ -525,6 +1283,9 @@
   "alertMessageTokenTrustSignalWarning": {
     "message": "Nagpapakita ng matibay na senyales ng panganib ang token na ito. Maaaring magdulot ng pagkawala ng pondo ang pagpapatuloy."
   },
+  "alertMinimumReserve": {
+    "message": "Kinakailangan ng reserbang balanse"
+  },
   "alertModalAcknowledge": {
     "message": "Kinikilala ko ang panganib at gusto ko pa ring magpatuloy"
   },
@@ -605,6 +1366,9 @@
   },
   "all": {
     "message": "Lahat"
+  },
+  "allDefaultNetworks": {
+    "message": "Lahat ng default na network"
   },
   "allNetworks": {
     "message": "Lahat ng network"
@@ -894,9 +1658,6 @@
   "basicFunctionalityRequired_goToHome": {
     "message": "Pumunta sa home page"
   },
-  "basicFunctionalityRequired_openCreateSnapAccountPage": {
-    "message": "Buksan ang page ng Gumawa ng Account"
-  },
   "basicFunctionalityRequired_openDefiPage": {
     "message": "Buksan ang page ng DeFi"
   },
@@ -1049,15 +1810,6 @@
   },
   "bridgeConfirmTwoTransactions": {
     "message": "Kakailanganin mong kumpirmahin ang 2 transaksyon sa iyong hardware wallet:"
-  },
-  "bridgeCreateSolanaAccount": {
-    "message": "Gumawa ng Solana account"
-  },
-  "bridgeCreateSolanaAccountDescription": {
-    "message": "Para mag-swap papunta sa Solana network, kailangan mo ng account at tatanggap na address."
-  },
-  "bridgeCreateSolanaAccountTitle": {
-    "message": "Kailangan mo muna ng Solana account."
   },
   "bridgeDetailsTitle": {
     "message": "Mga detalye ng bridge",
@@ -1334,9 +2086,6 @@
   "bridgeSendLoading": {
     "message": "Ipinapadala mula sa chain ng pinagmulan"
   },
-  "bridgeSolanaAccountCreated": {
-    "message": "Nakagawa ng Solana account"
-  },
   "bridgeStatusComplete": {
     "message": "Kumpleto na",
     "description": "Status text indicating a bridge transaction has successfully completed."
@@ -1449,7 +2198,7 @@
     "message": "Kailangan pa ng $1 para sa gas"
   },
   "bridgeValidationInsufficientNativeReserveMessage": {
-    "message": "Hinihingi ng partikular na network na ito na magpanatili ka ng reserbang $1 $3 sa account mo. Sa kasalukuyan mong balanse, puwede kang gumamit ng maximum na $2 $3",
+    "message": "Hinihingi ng partikular na network na ito na panatilihin ang reserbang $1 $3 sa account mo. Sa kasalukuyan mong balanse, puwede kang gumamit ng maximum na $2 $3",
     "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
   },
   "bridgeValidationInsufficientNativeReserveTitle": {
@@ -1477,9 +2226,6 @@
   "buyMoreAsset": {
     "message": "Bumili pa ng $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyNow": {
-    "message": "Bilhin Ngayon"
   },
   "buyTabOpenedToastDescription": {
     "message": "Nagbukas kami ng bagong tab para sa pagbili.",
@@ -1605,6 +2351,9 @@
   "communityContributedLanguagesSectionTitle": {
     "message": "Nag-ambag ang komunidad",
     "description": "Section heading on the language settings screen for locales maintained by community contributors."
+  },
+  "compareAddresses": {
+    "message": "Magkumpara ng mga address"
   },
   "completed": {
     "message": "Nakumpleto"
@@ -1787,9 +2536,6 @@
   "confirmTitleDescERC20ApproveTransaction": {
     "message": "Gusto ng site na ito ng pahintulot na i-withdraw ang iyong mga token"
   },
-  "confirmTitleDescERC20Revocation": {
-    "message": "Humihingi ng mga pahintulot ang site na ito para bawiin ang iyong mga pag-apruba sa ERC-20 token."
-  },
   "confirmTitleDescPermission": {
     "message": "Kailangan ng site na ito ng mga pahintulot para gastusin ang mga token mo."
   },
@@ -1801,6 +2547,9 @@
   },
   "confirmTitleDescSign": {
     "message": "Suriin ang mga detalye ng kahilingan bago mo kumpirmahin."
+  },
+  "confirmTitleDescTokenApprovalRevocation": {
+    "message": "Humihingi ng mga pahintulot ang site na ito para bawiin ang iyong mga pag-apruba sa token."
   },
   "confirmTitlePermission": {
     "message": "Kahilingan sa pahintulot"
@@ -1859,18 +2608,12 @@
   "connectAccounts": {
     "message": "Ikonekta ang mga account"
   },
-  "connectAnAccountHeader": {
-    "message": "Magkonekta ng account"
-  },
   "connectHardwareDevice": {
     "message": "Ikonekta ang $1",
     "description": "$1 is the hardware wallet device name"
   },
   "connectManually": {
     "message": "Manu-manong kumonekta sa kasalukuyang site"
-  },
-  "connectMoreAccounts": {
-    "message": "Ikonekta ang higit pang mga account"
   },
   "connectSnap": {
     "message": "Ikonekta ang $1",
@@ -1888,10 +2631,6 @@
   },
   "connectedAccountsEmptyDescription": {
     "message": "Ang MetaMask ay hindi konektado sa site na ito. Upang kumonekta sa isang web3 site, hanapin at i-click ang button na kumonekta."
-  },
-  "connectedAccountsListTooltip": {
-    "message": "Maaaring makita ng $1 ang balanse ng account, address, aktibidad, at magmungkahi ng mga transaksyon na aprubahan para sa mga konektadong account.",
-    "description": "$1 is the origin name"
   },
   "connectedSites": {
     "message": "Mga konektadong site"
@@ -1924,10 +2663,6 @@
   "connectedWithNetwork": {
     "message": "$1 (na) network ang nakakonekta",
     "description": "$1 represents network length"
-  },
-  "connectedWithNetworkName": {
-    "message": "Nakakonekta sa $1",
-    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "Kumonekta"
@@ -1962,9 +2697,6 @@
   "connectionFailedDescription": {
     "message": "Nabigo ang pagkuha ng $1, suriin ang iyong network at subukan ulit.",
     "description": "$1 is the name of the snap being fetched."
-  },
-  "connectionPopoverDescription": {
-    "message": "Upang kumonekta sa isang site, piliin ang button para sa pagkonekta. Sa mga web3 site lang puwedeng kumonekta ang MetaMask."
   },
   "connectionRequest": {
     "message": "Kahilingan sa koneksyon"
@@ -2018,9 +2750,6 @@
   "convertTokenToNFTExistDescription": {
     "message": "Napansin namin na naidagdag ang asset na ito bilang NFT. Gusto mo ba itong alisin mula sa listahan ng iyong token?"
   },
-  "coolWallet": {
-    "message": "CoolWallet"
-  },
   "copiedExclamation": {
     "message": "Nakopya na."
   },
@@ -2056,9 +2785,6 @@
     "message": "Nagdadagdag ng account...",
     "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
   },
-  "createNewAccountHeader": {
-    "message": "Gumawa ng bagong account"
-  },
   "createPassword": {
     "message": "Gumawa ng password"
   },
@@ -2083,9 +2809,6 @@
   },
   "createSnapAccountTitle": {
     "message": "Gumawa ng account"
-  },
-  "createSolanaAccount": {
-    "message": "Gumawa ng Solana account"
   },
   "creatorAddress": {
     "message": "Address ng creator"
@@ -2190,12 +2913,6 @@
   "dappConnections": {
     "message": "Mga koneksyon ng Dapp"
   },
-  "dappScanMaliciousTitle": {
-    "message": "Natukoy ang mapanganib na website"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "Na-flag ang website na ito bilang potensyal na mapanganib. Kapag ipinakita mo ang iyong Secret Recovery Phrase, maaari mong mailagay sa panganib ang mga pondo mo."
-  },
   "dappSuggested": {
     "message": "Iminungkahing site"
   },
@@ -2244,9 +2961,6 @@
   },
   "dateCreated": {
     "message": "Petsa ng paggawa"
-  },
-  "dcent": {
-    "message": "D'Cent"
   },
   "debitCreditPurchaseOptions": {
     "message": "Mga opsyon sa pagbili gamit ang debit o credit card"
@@ -2368,14 +3082,14 @@
   "deepLink_theSwapsPage": {
     "message": "ang pahina ng mga swap"
   },
-  "deepLink_theSwapsRampsPage": {
-    "message": "pahina ng mga Swap/Ramp"
-  },
   "deepLink_theTransactionShieldPage": {
     "message": "ang page ng transaction shield"
   },
   "default": {
     "message": "Default"
+  },
+  "defaultNetworks": {
+    "message": "Mga default na network"
   },
   "defaultRpcUrl": {
     "message": "Default na RPC URL"
@@ -2514,9 +3228,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Sigurado ka bang gusto mong idiskonekta? Maaaring mawala ang functionality ng site."
   },
-  "disconnectAllAccountsText": {
-    "message": "mga account"
-  },
   "disconnectAllDescriptionText": {
     "message": "Kapag idiniskonekta mo sa site na ito, kakailanganin mong muling ikonekta ang mga account at network mo para magamit muli ang site na ito."
   },
@@ -2531,9 +3242,6 @@
   },
   "disconnectAllSitesSuccess": {
     "message": "Matagumpay na naidiskonekta ang lahat ng dapp."
-  },
-  "disconnectAllSnapsText": {
-    "message": "Mga Snap"
   },
   "disconnectMessage": {
     "message": "Ididiskonekta ka nito mula sa site na ito"
@@ -2581,9 +3289,6 @@
   "downloadAppTitle": {
     "message": "I-scan ang QR code at i-download ang app"
   },
-  "downloadGoogleChrome": {
-    "message": "I-download ang Google Chrome"
-  },
   "downloadMetaMaskMobileDescription": {
     "message": "Pinahihintulutan ka ng Face ID na makapag-log in kahit nakalimutan mo ang iyong password. Dalhin ang MetaMask saan ka man magpunta!"
   },
@@ -2592,9 +3297,6 @@
   },
   "downloadMetaMaskMobileTitle": {
     "message": "I-download ang aming mobile app"
-  },
-  "downloadNow": {
-    "message": "I-download Ngayon"
   },
   "downloadStateLogs": {
     "message": "I-download ang mga log ng estado"
@@ -2805,8 +3507,14 @@
   "enterSymbol": {
     "message": "Ilagay ang simbolo"
   },
+  "enterTokenAddress": {
+    "message": "Ilagay ang address ng token"
+  },
   "enterTokenNameOrAddress": {
     "message": "Ilagay ang pangalan ng token o i-paste ang address"
+  },
+  "enterTokenNameOrAddressManageTokens": {
+    "message": "Ilagay ang pangalan o address ng token"
   },
   "enterYourPassword": {
     "message": "Ilagay ang iyong password"
@@ -2816,6 +3524,9 @@
   },
   "enterYourPasswordSocialLoginFlow": {
     "message": "Ilagay ang MetaMask password"
+  },
+  "enteredMalicious": {
+    "message": "Ang Address Na Inilagay Mo"
   },
   "errorCode": {
     "message": "Code: $1",
@@ -3106,7 +3817,7 @@
     "message": "Ang pagtantya ng presyo ng gas ay nabigo dahil sa network error."
   },
   "gasSponsorshipReserveBalanceWarning": {
-    "message": "Hindi available ang pag-iisponsor ng gas para sa transaksyong ito. Kakailanganin mo ng hindi bababa sa $1 $2 sa account mo.",
+    "message": "Kailangan ng partikular na network na ito ang pagpapanatili ng reserba na $1 $2 sa iyong account.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
   "gasTimingHoursShort": {
@@ -3166,6 +3877,18 @@
     "message": "Lingguhan",
     "description": "Time period for weekly recurring permissions redemption"
   },
+  "gatorPermissionsAllTokenApprovalRevocationPrimitives": {
+    "message": "Ang lahat ng primitibong pagbawi para sa ERC-20, ERC-1155, ERC-721.",
+    "description": "Text shown when all token approval revocation primitives are enabled"
+  },
+  "gatorPermissionsErc20ApproveRevocation": {
+    "message": "aprubado ng ERC-20(spender, 0)",
+    "description": "Token approval revocation method for ERC-20 approve reset"
+  },
+  "gatorPermissionsErc721ApproveRevocation": {
+    "message": "aprubado ng ERC-721(address(0), tokenId)",
+    "description": "Token approval revocation method for ERC-721 single-token approve reset"
+  },
   "gatorPermissionsExpirationDate": {
     "message": "Petsa ng pag-expire",
     "description": "Label for the expiration date of a permission"
@@ -3185,6 +3908,22 @@
   "gatorPermissionsMaxAllowance": {
     "message": "Max na allowance",
     "description": "Label for the max allowance of a permission"
+  },
+  "gatorPermissionsPermit2ApproveRevocation": {
+    "message": "aprubado ng Permit2(token, spender, 0, 0)",
+    "description": "Token approval revocation method for Permit2 approve reset"
+  },
+  "gatorPermissionsPermit2InvalidateNonces": {
+    "message": "Pinawalang-bisa ng Permit2 angmga nonce",
+    "description": "Token approval revocation method for Permit2 nonce invalidation"
+  },
+  "gatorPermissionsPermit2Lockdown": {
+    "message": "Permit2 lockdown",
+    "description": "Token approval revocation method for Permit2 lockdown"
+  },
+  "gatorPermissionsRevocationMethods": {
+    "message": "Mga paraan ng pagbawi",
+    "description": "Label for the enabled token approval revocation methods"
   },
   "gatorPermissionsRevocationPending": {
     "message": "Nakabinbin ang revocation",
@@ -3353,9 +4092,6 @@
   "hardwareWalletSubmissionWarningTitle": {
     "message": "Bago i-click ang Isumite:"
   },
-  "hardwareWalletSupportLinkConversion": {
-    "message": "mag-click dito"
-  },
   "hardwareWalletTitleEthAppNotOpen": {
     "message": "Buksan ang Ethereum app"
   },
@@ -3365,12 +4101,6 @@
   },
   "hardwareWallets": {
     "message": "Magkonekta ng wallet na hardware"
-  },
-  "hardwareWalletsInfo": {
-    "message": "Gumagamit ng mga API call ang mga integration ng wallet na hardware sa mga external server, na nakakakita sa IP address mo at sa mga address ng smart na kontrata kung saan ka nakikipag-ugnayan."
-  },
-  "hardwareWalletsMsg": {
-    "message": "Pumili ng wallet na hardware na gusto mong gamitin kasama ng MetaMask."
   },
   "helpAndSettings": {
     "message": "Tulong at mga setting"
@@ -3562,9 +4292,6 @@
   "importNFTTokenIdToolTip": {
     "message": "Ang ID ng NFT ay isang natatanging pagkakakilanlan dahil walang dalawang NFT ang magkatulad. Muli, sa OpenSea ang numerong ito ay nasa ilalim ng 'Mga Detalye'. Itala ito, o kopyahin ito sa iyong clipboard."
   },
-  "importPrivateKey": {
-    "message": "Pribadong Key"
-  },
   "importSecretRecoveryPhrase": {
     "message": "Mag-import ng Secret Recovery Phrase"
   },
@@ -3580,9 +4307,6 @@
   "importTokensError": {
     "message": "Hindi namin ma-import ang mga token. Pakisubukan ulit mamaya."
   },
-  "importWalletOrAccountHeader": {
-    "message": "Mag-import ng wallet o account"
-  },
   "importWalletSuccess": {
     "message": "Na-import ang wallet na $1",
     "description": "$1 is the index of the secret recovery phrase"
@@ -3590,6 +4314,9 @@
   "imported": {
     "message": "Na-import",
     "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "includes": {
+    "message": "Kabilang ang"
   },
   "includesXTransactions": {
     "message": "Kabilang ang $1 (na) transaksyon"
@@ -3742,9 +4469,6 @@
     "message": "File na JSON",
     "description": "format for importing an account"
   },
-  "keycardShell": {
-    "message": "Keycard Shell"
-  },
   "keyringAccountName": {
     "message": "Pangalan ng account"
   },
@@ -3768,6 +4492,9 @@
   },
   "knownAddressRecipient": {
     "message": "Kilalang address ng kontrata."
+  },
+  "knownSafeAddress": {
+    "message": "Kilalang Address"
   },
   "knownTokenWarning": {
     "message": "Mae-edit ng aksyong ito ang mga token na nakalista na sa iyong wallet, na puwedeng gamitin para i-phish ka. Aprubahan lang kung sigurado kang gusto mong baguhin kung ano ang kinakatawan ng mga token na ito. Alamin pa ang tungkol sa $1"
@@ -3797,9 +4524,6 @@
   },
   "learnMoreAboutPrivacy": {
     "message": "Matuto pa tungkol sa pinakamahusay na mga gawain sa pagkapribado."
-  },
-  "learnMoreKeystone": {
-    "message": "Matuto Pa"
   },
   "learnMoreUpperCase": {
     "message": "Matuto pa"
@@ -3868,17 +4592,8 @@
   "ledgerFirefoxNotSupportedTitle": {
     "message": "Hindi Sinusuportahan ang Firefox"
   },
-  "ledgerLiveApp": {
-    "message": "Ledger Live App"
-  },
   "ledgerLocked": {
     "message": "Hindi makakonekta sa Ledger device. Siguruhin na ang device mo ay naka-unlock at bukas ang Ethereum."
-  },
-  "ledgerMultipleDevicesUnsupportedInfoDescription": {
-    "message": "Para magkonekta ng bagong device, idiskonekta ang isa na nauna."
-  },
-  "ledgerMultipleDevicesUnsupportedInfoTitle": {
-    "message": "Maaari ka lamang magkonekta ng isang Ledger sa isang pagkakataon"
   },
   "ledgerTimeout": {
     "message": "Masyadong natatagalan ang Ledger Live upang tumugon o mag-timeout ng koneksyon. Tiyaking nakabukas ang Ledger Live app at naka-unlock ang iyong device."
@@ -3964,6 +4679,15 @@
   "loginErrorSessionExpiredTitle": {
     "message": "Nag-expire ang sesyon"
   },
+  "loginErrorTelegramOutdatedButton": {
+    "message": "I-update ang Telegram"
+  },
+  "loginErrorTelegramOutdatedDescription": {
+    "message": "Hindi kami makakonekta sa Telegram. Kadalasang nangyayari ito kapag ang iyong Telegram app ay luma na. Paki-update ang Telegram at subukan muli."
+  },
+  "loginErrorTelegramOutdatedTitle": {
+    "message": "Hindi makapag-sign in gamit ang Telegram"
+  },
   "logo": {
     "message": "$1 logo",
     "description": "$1 is the name of the ticker"
@@ -3977,6 +4701,10 @@
   },
   "lowLowercase": {
     "message": "low"
+  },
+  "lowValueAssets": {
+    "message": "Mga token na mababa ang halaga ($1)",
+    "description": "$1 is the number of low value assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "Ethereum Mainnet"
@@ -4010,6 +4738,9 @@
   },
   "managePermissions": {
     "message": "Pamahalaan ang mga pahintulot"
+  },
+  "manageTokens": {
+    "message": "Pamahalaan ang mga token"
   },
   "manageWalletRecovery": {
     "message": "Pamahalaan ang pag-recover sa wallet"
@@ -4154,6 +4885,9 @@
   },
   "mismatchedRpcUrl": {
     "message": "Ayon sa aming mga talaan, ang isinumiteng RPC URL value ay hindi tumutugma sa isang kilalang provider para sa ID ng chain na ito."
+  },
+  "mmFee": {
+    "message": "$1% MM ang bayad."
   },
   "month": {
     "message": "buwan"
@@ -4692,9 +5426,6 @@
   "new": {
     "message": "Bago!"
   },
-  "newAccount": {
-    "message": "Bagong account"
-  },
   "newAccountIconMessage": {
     "message": "Ni-refresh namin ang mga icon ng account para matulungan kang makilala nang mas madali ang iyong mga account. Maaari mong palitan ang estilo nito sa $1 > $2 > $3.",
     "description": "$1, $2, and $3 are bold text for Settings, General, and Account icon respectively"
@@ -4709,8 +5440,8 @@
   "newContract": {
     "message": "Bagong kontrata"
   },
-  "newNFTDetectedInImportNFTsMessageStrongText": {
-    "message": "Settings > Seguridad at pagkapribado"
+  "newCustomTokenAdded": {
+    "message": "Ang “$1” matagumpay na naidagdag!"
   },
   "newNFTDetectedInImportNFTsMsg": {
     "message": "Upang gamitin ang Opensea para makita ang iyong NFT, i-on ang 'I-display ang NFT Media'' sa $1.",
@@ -4844,8 +5575,14 @@
   "noSnaps": {
     "message": "Wala kang naka-install na snaps."
   },
+  "noTokensMatchSearch": {
+    "message": "Walang mga token na tumutugma sa paghahanap mo"
+  },
   "noTokensMatchingYourFilters": {
     "message": "Walang token na tumutugma sa mga filter mo"
+  },
+  "noTokensToManage": {
+    "message": "Wala ka pang kahit anong token. Maghanap ayon sa pangalan o address para malaman ang mga sikat na token."
   },
   "noWebcamFound": {
     "message": "Hindi nakita ang webcam ng iyong computer. Pakisubukan ulit."
@@ -5155,10 +5892,6 @@
   "onboardingMetametricsTitle": {
     "message": "Tulungan kaming mapahusay ang MetaMask"
   },
-  "onboardingOptionIcon": {
-    "message": "$1 icon",
-    "description": "$1 is the icon name"
-  },
   "onboardingSignInWith": {
     "message": "Mag-sign in gamit ang $1",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -5214,6 +5947,9 @@
   "openWallet": {
     "message": "Buksan ang wallet"
   },
+  "opensInNewTab": {
+    "message": "magbubukas sa bagong tab"
+  },
   "options": {
     "message": "Mga Opsyon"
   },
@@ -5241,6 +5977,9 @@
   },
   "otherPermissionsOnSiteTitle": {
     "message": "Iba pang mga pahintulot sa site na ito"
+  },
+  "otherQrWallet": {
+    "message": "Iba pang QR wallet"
   },
   "otherSnaps": {
     "message": "iba pang mga snap",
@@ -5432,6 +6171,9 @@
     "message": "Magbayad gamit ang",
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
   },
+  "payee": {
+    "message": "Payee"
+  },
   "pending": {
     "message": "Nakabinbin"
   },
@@ -5453,6 +6195,9 @@
   },
   "perSecond": {
     "message": "bawat segundo"
+  },
+  "percent": {
+    "message": "$1%"
   },
   "percentChange": {
     "message": "Pagbabago ng porsiyento"
@@ -5782,6 +6527,10 @@
   "perpsAutoClose": {
     "message": "Awtomatikong nagsasara"
   },
+  "perpsAutoDeleveraging": {
+    "message": "Awtomatikong pag-deleverage",
+    "description": "Badge label for trades executed via auto-deleveraging (ADL)"
+  },
   "perpsAvailable": {
     "message": "available",
     "description": "is the available balance amount"
@@ -5874,6 +6623,9 @@
   "perpsDepositActivityTitle": {
     "message": "Mga Pinondohang Perp"
   },
+  "perpsDepositErrorBridgeFailed": {
+    "message": "Nabigo ang pag-bridge"
+  },
   "perpsDepositFailed": {
     "message": "Hindi makumpleto ang pagdedeposito. Subukan muli."
   },
@@ -5896,10 +6648,10 @@
     "message": "Nagdadagdag ng mga pondo sa Perps"
   },
   "perpsDepositToastSuccessDescription": {
-    "message": "Handa nang mai-trade ang iyong mga pondo."
+    "message": "Ang mga pondo ay handa ng i-trade"
   },
   "perpsDepositToastSuccessTitle": {
-    "message": "Mga pondong naidagdag sa Perps"
+    "message": "Napondohan ang iyong Perps account"
   },
   "perpsDeposits": {
     "message": "Mga deposito"
@@ -6004,6 +6756,10 @@
   },
   "perpsLimitPriceNearLiquidation": {
     "message": "Ang kasalukuyang presyo ay malapit sa tinatayang liquidation price"
+  },
+  "perpsLiquidated": {
+    "message": "Na-liquidate",
+    "description": "Badge label for trades that were liquidated"
   },
   "perpsLiquidationDistance": {
     "message": "Layo sa liquidation"
@@ -6188,11 +6944,14 @@
   "perpsSortByPriceChange": {
     "message": "Pagbabago ng presyo"
   },
+  "perpsSortByRank": {
+    "message": "Rank"
+  },
   "perpsSortBySection": {
     "message": "I-sort ayon sa"
   },
   "perpsSortByTitle": {
-    "message": "Isaayos"
+    "message": "Filter"
   },
   "perpsSortByVolume": {
     "message": "Volume"
@@ -6364,6 +7123,9 @@
   "perpsTrades": {
     "message": "Mga Trade"
   },
+  "perpsTransactionTitleOpenedLong": {
+    "message": "Bukas na long"
+  },
   "perpsTriggerPrice": {
     "message": "Trigger price"
   },
@@ -6462,6 +7224,28 @@
   },
   "perpsWithdrawNoAccount": {
     "message": "Walang piniling account. Pumili ng account at subukan muli."
+  },
+  "perpsWithdrawPostQuoteToastErrorDescription": {
+    "message": "Nabigong magpatuloy sa pag-withdraw"
+  },
+  "perpsWithdrawPostQuoteToastErrorTitle": {
+    "message": "Mayroong nang mali"
+  },
+  "perpsWithdrawPostQuoteToastPendingDescription": {
+    "message": "Available sa loob ng humigit-kumulang 1 minuto"
+  },
+  "perpsWithdrawPostQuoteToastPendingTitle": {
+    "message": "Kasalukuyang nagwi-withdraw"
+  },
+  "perpsWithdrawPostQuoteToastSuccessDescription": {
+    "message": "Nailipat ang $1 $2 sa iyong wallet",
+    "description": "$1 is the formatted USD amount, e.g. '$20.73'. $2 is the destination token symbol, e.g. 'BNB'."
+  },
+  "perpsWithdrawPostQuoteToastSuccessGenericDescription": {
+    "message": "Nailipat ang mga pondo sa iyong wallet"
+  },
+  "perpsWithdrawPostQuoteToastSuccessTitle": {
+    "message": "Tapos ng mag-withdraw"
   },
   "perpsWithdrawReceive": {
     "message": "Tumanggap"
@@ -6794,6 +7578,46 @@
     "message": "Kailangan ang access sa camera",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
+  "qrErrorNonUrPairingBody": {
+    "message": "Bumalik sa wallet na hardware mo at hanapin ang opsyon na ibahagi o i-export ang mga account mo, piliin ang MetaMask, at pagkatapos, i-scan ang QR code.",
+    "description": "Body text for the non-UR QR code error during pairing."
+  },
+  "qrErrorNonUrPairingTitle": {
+    "message": "I-scan ang pag-sync ng QR code sa wallet",
+    "description": "Title shown when scanned QR data is not a UR code during the pairing/import flow."
+  },
+  "qrErrorNonUrSigningBody": {
+    "message": "Bumalik sa wallet na hardware mo at aprubahan ang transaksyon, saka i-scan ang QR code na ipapakita nito.",
+    "description": "Body text for the non-UR QR code error during signing."
+  },
+  "qrErrorNonUrSigningTitle": {
+    "message": "I-scan ang QR code ng lagda",
+    "description": "Title shown when scanned QR data is not a UR code during the signing flow."
+  },
+  "qrErrorUrDecodeBody": {
+    "message": "Siguraduhing nakikita nang buo at may sapat na liwanag ang QR code at subukan ulit. Kung may isyu pa rin, baka kailanganin mong i-update ang firmware ng wallet na hardware mo.",
+    "description": "Body text for the UR decode error (universal for pairing and signing)."
+  },
+  "qrErrorUrDecodeTitle": {
+    "message": "Hindi mabasa ang QR code",
+    "description": "Title shown when the UR decoder encounters an error (universal for pairing and signing)."
+  },
+  "qrErrorWrongUrTypePairingBody": {
+    "message": "Bumalik sa wallet na hardware mo, piliin ang MetaMask sa uri ng wallet, at bumuo at mag-scan ng bagong QR code.",
+    "description": "Body text for the wrong UR type error during pairing."
+  },
+  "qrErrorWrongUrTypePairingTitle": {
+    "message": "Maling QR code",
+    "description": "Title shown when the UR type does not match what is expected during pairing."
+  },
+  "qrErrorWrongUrTypeSigningBody": {
+    "message": "Bumalik sa wallet na hardware mo at aprubahan ang transaksyon, saka i-scan ang QR code na ipapakita nito.",
+    "description": "Body text for the wrong UR type error during signing."
+  },
+  "qrErrorWrongUrTypeSigningTitle": {
+    "message": "Maling QR code",
+    "description": "Title shown when the UR type does not match what is expected during signing."
+  },
   "queued": {
     "message": "Naka-queue"
   },
@@ -6856,6 +7680,9 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Protektahan ang iyong pondo"
+  },
+  "redeemer": {
+    "message": "Taga-redeem"
   },
   "redeposit": {
     "message": "Muling magdeposito"
@@ -6947,14 +7774,6 @@
   },
   "requestingFor": {
     "message": "Humihiling ng"
-  },
-  "requestingForAccount": {
-    "message": "Humihiling ng $1",
-    "description": "Name of Account"
-  },
-  "requestingForNetwork": {
-    "message": "Hinihiling para sa $1",
-    "description": "Name of Network"
   },
   "required": {
     "message": "Kinakailangan"
@@ -7114,6 +7933,12 @@
   "rewardsLinkAccountError": {
     "message": "Bigong maidagdag ang account"
   },
+  "rewardsOnboardingCheckingRegion": {
+    "message": "Sinusuri ang rehiyon..."
+  },
+  "rewardsOnboardingDescription": {
+    "message": "Manalo ng mga premyo, mag-claim ng perks, at alamin ang mas maraming paraan para kumita sa paggamit lang ng MetaMask."
+  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "Hindi namin matukoy kung pinapayagan ng iyong bansa na mag-opt in sa programa ng mga reward. Suriin ang iyong koneksyon at subukang muli."
   },
@@ -7132,6 +7957,46 @@
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "Hindi sinusuportahan ang rehiyon"
   },
+  "rewardsOnboardingLegalDisclaimer": {
+    "message": "Sa pamamagitan ng pagsali, sumasang-ayon ka sa aming $1. Mag-opt in sa lahat ng account sa device na ito at subaybayan ang aktibidad sa chain para awtomatiko kang makatanggap ng reward.$2",
+    "description": "$1 is the Terms and Privacy Notice link, $2 is the Learn more link"
+  },
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
+    "message": "Matuto pa."
+  },
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
+    "message": "Abiso sa Mga Tuntunin at Pagkapribado"
+  },
+  "rewardsOnboardingOptInError": {
+    "message": "Nabigong mag-opt-in"
+  },
+  "rewardsOnboardingReferralCodeError": {
+    "message": "Hindi valid na referral code"
+  },
+  "rewardsOnboardingReferralCodePlaceholder": {
+    "message": "Referral code (opsyonal)"
+  },
+  "rewardsOnboardingReferralCodeUnknownError": {
+    "message": "Hindi ma-validate ang referral code."
+  },
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
+    "message": "Suriin ang iyong koneksyon at subukang muli."
+  },
+  "rewardsOnboardingReferralHide": {
+    "message": "Itago ang code"
+  },
+  "rewardsOnboardingReferralPrompt": {
+    "message": "May referral code ka ba?"
+  },
+  "rewardsOnboardingSignUp": {
+    "message": "Sumali sa Mga Reward"
+  },
+  "rewardsOnboardingSignUpLoading": {
+    "message": "Sumasali..."
+  },
+  "rewardsOnboardingTitle": {
+    "message": "Simulang makaipon ng mga reward"
+  },
   "rewardsOptInVerifyingReferralCode": {
     "message": "Vine-verify ang referral code...",
     "description": "Text shown while verifying a referral code during rewards opt-in"
@@ -7147,6 +8012,12 @@
   "rewardsPointsIcon": {
     "message": "Mga point ng mga reward",
     "description": "Alt text for the rewards points icon"
+  },
+  "rewardsQRCodeDescription": {
+    "message": "Para ma-access ang mga Reward ng MetaMask, i-scan ang QR code gamit ang iyong mobile device."
+  },
+  "rewardsQRCodeTitle": {
+    "message": "Magpatuloy sa mobile"
   },
   "rewardsSignInFailed": {
     "message": "Hindi nakapag-sign in",
@@ -7215,10 +8086,6 @@
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
   },
-  "secretRecoveryPhrasePlusNumber": {
-    "message": "Secret Recovery Phrase $1",
-    "description": "The $1 is the order of the Secret Recovery Phrase"
-  },
   "secureWallet": {
     "message": "I-secure ang wallet"
   },
@@ -7274,11 +8141,11 @@
   },
   "securitySocialLoginEnabledDescription": {
     "message": "Gamitin ng iyong $1 na login at password sa MetaMask para mabawi ang iyong account at mga Lihim na Parirala sa Pagbawi.",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySocialLoginLabel": {
     "message": "PAGBAWI SA $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
+    "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
   "securitySrpLabel": {
     "message": "MGA LIHIM NA PARIRALA SA PAGBAWI"
@@ -8457,12 +9324,6 @@
     "message": "Makipag-ugnayan sa mga tagalikha ng $1 para sa karagdagang suporta.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "solanaAccountRequested": {
-    "message": "Humihiling ng Solana account ang site na ito."
-  },
-  "solanaAccountRequired": {
-    "message": "Kinakailangan ng Solana account para kumonekta sa site na ito."
-  },
   "someNetworks": {
     "message": "Mga network ng $1"
   },
@@ -8593,6 +9454,19 @@
   "srpPasteTip": {
     "message": "Maaari mong i-paste ang iyong buong lihim na parirala sa pagbawi sa alinmang patlang",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpRevealMaliciousBlockBody": {
+    "message": "Sinusubukan ng mga umaatake sa $1 na linlangin ka para ibahagi ang iyong Secret Recovery Phrase. Maaaring nakawin ng sinumang may hawak ng phrase mo ang lahat ng nasa wallet mo.",
+    "description": "Warning message shown when a malicious site is detected. $1 is the hostname of the current tab."
+  },
+  "srpRevealMaliciousBlockDismiss": {
+    "message": "Bumalik sa ligtas"
+  },
+  "srpRevealMaliciousBlockHeading": {
+    "message": "Baka nai-scam ka na ngayon"
+  },
+  "srpRevealMaliciousBlockIconAriaLabel": {
+    "message": "Panganib"
   },
   "srpSecurityQuizGetStarted": {
     "message": "Magsimula"
@@ -8737,34 +9611,6 @@
   },
   "statusNotConnected": {
     "message": "Hindi konektado"
-  },
-  "step1LatticeWallet": {
-    "message": "Ikonekta ang iyong Lattice1"
-  },
-  "step1LatticeWalletMsg": {
-    "message": "Maaari mong ikonekta ang MetaMask sa iyong Lattice1 device kapag na-set up na ito at online. I-unlock ang iyong device at ihanda ang iyong Device ID.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step1LedgerWallet": {
-    "message": "Mag-download ng Ledger app"
-  },
-  "step1LedgerWalletMsg": {
-    "message": "Mag-download, mag-set up, at maglagay ng password para ma-unlock ang $1.",
-    "description": "$1 represents the `ledgerLiveApp` localization value"
-  },
-  "step1TrezorWallet": {
-    "message": "Ikonekta ang iyong Trezor"
-  },
-  "step1TrezorWalletMsg": {
-    "message": "Direktang ikonekta ang iyong Trezor sa iyong computer at i-unlock ito. Tiyaking ginagamit mo ang tamang passphrase.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step2LedgerWallet": {
-    "message": "Ikonekta ang iyong Ledger"
-  },
-  "step2LedgerWalletMsg": {
-    "message": "Direktang ikonekta ang iyong Ledger sa iyong computer, pagkatapos ay i-unlock ito at buksan ang Ethereum app.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "stillConnectingTo": {
     "message": "Kasalukuyan pa ring kumokonekta sa $1...",
@@ -9261,6 +10107,9 @@
   "tokenAddress": {
     "message": "Address ng token"
   },
+  "tokenAllowance": {
+    "message": "Allowance sa token"
+  },
   "tokenAlreadyAdded": {
     "message": "Naidagdag na ang token."
   },
@@ -9302,6 +10151,9 @@
   "tokenPermissionsCount": {
     "message": "$1 token permissions",
     "description": "$1 is the count of token permissions (plural form)"
+  },
+  "tokenSearchError": {
+    "message": "Hindi mai-load ang mga resulta ng paghahanap. Pakisubukan muli."
   },
   "tokenStandard": {
     "message": "Pamantayan ng token"
@@ -9394,6 +10246,10 @@
   },
   "transactionIncludesTypes": {
     "message": "Kabilang sa transaksyong ito ang: $1."
+  },
+  "transactionProtectedByEnforcedSimulations": {
+    "message": "Protektado ang transaksyong ito. Kinansela namin ito para maiwasan ang hindi inaasahang pagkawala ng pondo.",
+    "description": "Banner shown in the transaction details view when a failed transaction reverted because an enforced-simulations caveat enforcer rejected it."
   },
   "transactionSettings": {
     "message": "Mga setting ng transaksyon"
@@ -9565,6 +10421,13 @@
   "unavailable": {
     "message": "Hindi available"
   },
+  "unavailableNetworkConnection": {
+    "message": "Hindi available na koneksyon ng network"
+  },
+  "unavailableNetworkConnectionDescription": {
+    "message": "Hindi maaasahan ang koneksyon sa $1. I-update ang mga detalye ng pagkakakonekta sa network bago magpatuloy o subukan muli mamaya.",
+    "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
+  },
   "unexpectedBehavior": {
     "message": "Hindi inaasahan ang pangyayaring ito at dapat itong iulat bilang bug, kahit na maibalik ang iyong mga account."
   },
@@ -9591,6 +10454,9 @@
   "unknownNetworkForKeyEntropy": {
     "message": "Hindi kilalang network",
     "description": "Displayed on places like Snap install warning when regular name is not available."
+  },
+  "unknownPermissionType": {
+    "message": "Hindi kilalang uri ng pahintulot"
   },
   "unknownQrCode": {
     "message": "Error: Hindi namin matukoy ang QR code na iyon"
@@ -9673,9 +10539,6 @@
   },
   "urlErrorMsg": {
     "message": "Kinakailangan ng mga URL ang naaangkop na HTTP/HTTPS prefix."
-  },
-  "urlUnknown": {
-    "message": "Hindi kilalang URL"
   },
   "use4ByteResolution": {
     "message": "I-decode ang mga smart na kontrata"
@@ -9771,6 +10634,10 @@
   "viewinExplorer": {
     "message": "Tingnan ang $1 sa Explorer",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
+  },
+  "vip": {
+    "message": "VIP $1",
+    "description": "$1 is the VIP tier number"
   },
   "visitSite": {
     "message": "Bisitahin ang site"

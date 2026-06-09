@@ -14,6 +14,8 @@ import { useConfirmContext } from '../../../context/confirm';
 import { useTransactionPayPrimaryRequiredToken } from '../../pay/useTransactionPayData';
 import { AlertsName } from '../constants';
 
+const PERPS_WITHDRAW_AMOUNT_DECIMALS = 6;
+
 /**
  * Blocking alert when the entered amount exceeds the HL withdrawable balance.
  *
@@ -47,8 +49,7 @@ export function usePerpsWithdrawInsufficientBalanceAlert(): Alert[] {
 
   const exceedsBalance =
     isPerpsWithdraw &&
-    enteredAmount.gt(0) &&
-    enteredAmount.gt(availableBalance);
+    exceedsPerpsWithdrawBalance(enteredAmount, availableBalance);
 
   return useMemo(() => {
     if (!exceedsBalance) {
@@ -60,10 +61,32 @@ export function usePerpsWithdrawInsufficientBalanceAlert(): Alert[] {
         field: RowAlertKey.EstimatedFee,
         isBlocking: true,
         key: AlertsName.InsufficientPayTokenBalance,
-        message: t('perpsWithdrawInsufficient'),
-        reason: t('perpsWithdrawInvalidAmount'),
+        message: t('alertInsufficientPayTokenBalance'),
+        reason: t('alertInsufficientPayTokenBalance'),
         severity: Severity.Danger,
       },
     ];
   }, [exceedsBalance, t]);
+}
+
+function exceedsPerpsWithdrawBalance(
+  enteredAmount: BigNumber,
+  availableBalance: BigNumber,
+): boolean {
+  if (!enteredAmount.gt(0)) {
+    return false;
+  }
+
+  if (!availableBalance.gt(0)) {
+    return true;
+  }
+
+  return enteredAmount
+    .round(PERPS_WITHDRAW_AMOUNT_DECIMALS, BigNumber.ROUND_DOWN)
+    .gt(
+      availableBalance.round(
+        PERPS_WITHDRAW_AMOUNT_DECIMALS,
+        BigNumber.ROUND_DOWN,
+      ),
+    );
 }

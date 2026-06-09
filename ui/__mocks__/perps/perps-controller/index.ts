@@ -806,6 +806,10 @@ export type TrackingData = {
 
   // Entry source for analytics (e.g., 'trending' for Trending page discovery)
   source?: string;
+
+  // VIP program context (used by TradingService analytics events)
+  vipTier?: number;
+  vipDiscount?: number;
 };
 
 // TP/SL-specific tracking data for analytics events
@@ -968,6 +972,7 @@ export type MarginResult = {
 export type FlipPositionParams = {
   symbol: string; // Asset identifier to flip (e.g., 'BTC', 'ETH', 'xyz:TSLA')
   position: Position; // Current position to flip
+  trackingData?: TrackingData;
 };
 
 export type InitializeResult = {

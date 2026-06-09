@@ -26,7 +26,7 @@ export const ActivityListItem = ({
   rightContent,
   onClick,
   className,
-  'data-testid': dataTestId,
+  status,
 }) => {
   const primaryClassName = classnames('activity-list-item', className, {
     'activity-list-item--single-content-row': !(subtitle || children),
@@ -43,7 +43,8 @@ export const ActivityListItem = ({
           onClick();
         }
       }}
-      data-testid={dataTestId}
+      data-testid="activity-list-item"
+      data-tx-status={status}
       paddingInline={4}
       paddingTop={3}
       paddingBottom={3}
@@ -92,6 +93,7 @@ export const ActivityListItem = ({
                 variant={TextVariant.bodyMdMedium}
                 fontWeight={FontWeight.Medium}
                 data-testid="activity-list-item-action"
+                className="text-s-body-md @compact:text-s-body-sm"
               >
                 {title}
               </Text>
@@ -102,6 +104,7 @@ export const ActivityListItem = ({
                 ellipsis
                 textAlign={TextAlign.Left}
                 variant={TextVariant.bodySmMedium}
+                className="text-s-body-md @compact:text-s-body-sm"
               >
                 {subtitle}
               </Text>
@@ -174,7 +177,7 @@ ActivityListItem.propTypes = {
    */
   className: PropTypes.string,
   /**
-   * Test ID for this component
+   * Status key for this component
    */
-  'data-testid': PropTypes.string,
+  status: PropTypes.string,
 };

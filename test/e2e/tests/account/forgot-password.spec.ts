@@ -1,16 +1,18 @@
+import { Browser } from 'selenium-webdriver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { E2E_SRP } from '../../constants';
 import { Anvil } from '../../seeder/anvil';
-import { Ganache } from '../../seeder/ganache';
 import HomePage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
 import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
 import {
   lockAndWaitForLoginPage,
+  lockAndWaitForPasskeyUnlockPage,
   login,
 } from '../../page-objects/flows/login.flow';
+import SetupPasskeyPage from '../../page-objects/pages/onboarding/setup-passkey-page';
 
 const newPassword = 'this is the best password ever';
 
@@ -21,7 +23,6 @@ describe('Forgot password', function () {
         fixtures: new FixtureBuilderV2().build(),
         // to avoid a race condition where some authentication requests are triggered once the wallet is locked
         ignoredConsoleErrors: [
-          'unable to proceed, wallet is locked',
           'The snap "npm:@metamask/message-signing-snap" has been terminated during execution', // issue #37342
           'npm:@metamask/message-signing-snap was stopped and the request was cancelled. This is likely because the Snap crashed.', // issue #37498
           'Legacy syncing failed for wallet', // issue #37053
@@ -33,7 +34,7 @@ describe('Forgot password', function () {
         localNodes,
       }: {
         driver: Driver;
-        localNodes: Anvil[] | Ganache[] | undefined[];
+        localNodes: Anvil[] | undefined[];
       }) => {
         await login(driver, { localNode: localNodes[0] });
         // Giving sometime for network calls to settle before locking metamask
@@ -51,6 +52,15 @@ describe('Forgot password', function () {
 
         await resetPasswordPage.resetPassword(E2E_SRP, newPassword);
         await resetPasswordPage.waitForPasswordInputToNotBeVisible();
+
+        // Assert passkey setup is shown for chrome
+        const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
+        if (!isFirefox) {
+          const setupPasskeyPage = new SetupPasskeyPage(driver);
+          await setupPasskeyPage.checkPageIsLoaded();
+          await setupPasskeyPage.skipPasskeySetup();
+        }
+
         await homePage.headerNavbar.checkPageIsLoaded();
         await driver.delay(1000); // to avoid a race condition where the wallet is not locked yet
         // Lock wallet again
@@ -61,6 +71,59 @@ describe('Forgot password', function () {
           localNode: localNodes[0],
           password: newPassword,
         });
+      },
+    );
+  });
+
+  it('resets password and sets up biometrics with passkey', async function () {
+    // Firefox does not support Selenium's Virtual Authenticator API
+    if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+      this.skip();
+    }
+
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2().build(),
+        ignoredConsoleErrors: [
+          'The snap "npm:@metamask/message-signing-snap" has been terminated during execution', // issue #37342
+          'npm:@metamask/message-signing-snap was stopped and the request was cancelled. This is likely because the Snap crashed.', // issue #37498
+          'Legacy syncing failed for wallet', // issue #37053
+        ],
+        title: this.test?.fullTitle(),
+        virtualAuthenticator: true,
+      },
+      async ({
+        driver,
+        localNodes,
+      }: {
+        driver: Driver;
+        localNodes: Anvil[] | undefined[];
+      }) => {
+        await login(driver, { localNode: localNodes[0] });
+        await driver.delay(3000);
+
+        const homePage = new HomePage(driver);
+        await homePage.headerNavbar.checkPageIsLoaded();
+        await lockAndWaitForLoginPage(driver);
+
+        await new LoginPage(driver).gotoResetPasswordPage();
+
+        const resetPasswordPage = new ResetPasswordPage(driver);
+        await resetPasswordPage.checkPageIsLoaded();
+        await resetPasswordPage.resetPassword(E2E_SRP, newPassword);
+        await resetPasswordPage.waitForPasswordInputToNotBeVisible();
+
+        const setupPasskeyPage = new SetupPasskeyPage(driver);
+        await setupPasskeyPage.checkPageIsLoaded();
+        await setupPasskeyPage.clickSetUpPasskey();
+        await setupPasskeyPage.waitForEnrollmentSteps();
+        await setupPasskeyPage.waitForEnrollmentSuccess();
+
+        await homePage.headerNavbar.checkPageIsLoaded();
+        await lockAndWaitForPasskeyUnlockPage(driver);
+
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPasskeyUnlockPageIsLoaded();
       },
     );
   });

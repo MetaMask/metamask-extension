@@ -41,7 +41,11 @@ import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import { isLegacyTransaction } from '../../../../shared/lib/transaction.utils';
 import { MessengerClientFlatState } from '../../messenger-client-init/controller-list';
 import { getTransactionById } from '../transaction/util';
-import { getClientForTransactionMetadata, sanitizeOrigin } from './utils';
+import {
+  getClientForTransactionMetadata,
+  getClientVersionForTransactionMetadata,
+  sanitizeOrigin,
+} from './utils';
 
 const namespace = 'SmartTransactions';
 
@@ -62,6 +66,16 @@ export type SmartTransactionHookMessenger = Messenger<
 export type FeatureFlags = SmartTransactionsNetworkConfig & {
   extensionSkipTransactionStatusPage?: boolean;
 };
+
+type SmartTransactionSubmitSignedTransactionsRequest = Parameters<
+  SmartTransactionsController['submitSignedTransactions']
+>[0];
+
+type SmartTransactionSentinelMeta = NonNullable<
+  SignedTransactionWithMetadata['metadata']
+>;
+
+type SmartTransactionTxType = SmartTransactionSentinelMeta['txType'];
 
 export type SubmitSmartTransactionRequest = {
   transactionMeta: TransactionMeta;
@@ -113,6 +127,20 @@ class SmartTransactionHook {
 
   // UI rendering only
   #shouldRenderStatusPage: boolean;
+
+  #getSentinelMetadata(
+    transactionMeta: TransactionMeta,
+  ): SmartTransactionSentinelMeta {
+    return {
+      // smart-transactions-controller still depends on transaction-controller
+      // 64.x, while extension consumes 65.x. The enum values are strings at
+      // runtime, so bridge the duplicate package types at this boundary.
+      txType: transactionMeta.type as SmartTransactionTxType,
+      client: getClientForTransactionMetadata(),
+      clientVersion: getClientVersionForTransactionMetadata(),
+      origin: sanitizeOrigin(transactionMeta.origin),
+    };
+  }
 
   constructor(request: SubmitSmartTransactionRequest) {
     const {
@@ -498,11 +526,7 @@ class SmartTransactionHook {
           );
           const signedTx: SignedTransactionWithMetadata = { tx: tx.signedTx };
           if (transactionMeta) {
-            signedTx.metadata = {
-              txType: transactionMeta.type,
-              client: getClientForTransactionMetadata(),
-              origin: sanitizeOrigin(transactionMeta.origin),
-            };
+            signedTx.metadata = this.#getSentinelMetadata(transactionMeta);
           }
           return signedTx;
         });
@@ -511,11 +535,7 @@ class SmartTransactionHook {
       signedTransactionsWithMetadata = [
         {
           tx: this.#signedTransactionInHex,
-          metadata: {
-            txType: this.#transactionMeta.type,
-            client: getClientForTransactionMetadata(),
-            origin: sanitizeOrigin(this.#transactionMeta.origin),
-          },
+          metadata: this.#getSentinelMetadata(this.#transactionMeta),
         },
       ];
     } else if (getFeesResponse) {
@@ -526,23 +546,28 @@ class SmartTransactionHook {
       );
       signedTransactionsWithMetadata = signed.map((signedTx) => ({
         tx: signedTx,
-        metadata: {
-          txType: this.#transactionMeta.type,
-          client: getClientForTransactionMetadata(),
-          origin: sanitizeOrigin(this.#transactionMeta.origin),
-        },
+        metadata: this.#getSentinelMetadata(this.#transactionMeta),
       }));
     }
     signedTransactions = signedTransactionsWithMetadata.map((tx) => tx.tx);
 
-    return await this.#smartTransactionsController.submitSignedTransactions({
+    const txParams =
+      this.#txParams as SmartTransactionSubmitSignedTransactionsRequest['txParams'];
+    const transactionMeta =
+      this.#transactionMeta as SmartTransactionSubmitSignedTransactionsRequest['transactionMeta'];
+
+    const submitRequest: SmartTransactionSubmitSignedTransactionsRequest = {
       signedTransactions,
       signedTransactionsWithMetadata,
       signedCanceledTransactions: [],
-      txParams: this.#txParams,
-      transactionMeta: this.#transactionMeta,
+      txParams,
+      transactionMeta,
       networkClientId: this.#transactionMeta.networkClientId,
-    });
+    };
+
+    return await this.#smartTransactionsController.submitSignedTransactions(
+      submitRequest,
+    );
   }
 
   #applyFeeToTransaction(fee: Fee, isCancel: boolean): TransactionParams {

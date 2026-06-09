@@ -10,7 +10,7 @@ import '@lavamoat/lavadome-react';
 // This import sets up global functions required for Sentry to function.
 // It must be run as soon as possible in case an error is thrown later during initialization.
 import './lib/setup-initial-state-hooks';
-import '../../development/wdyr';
+import './development/wdyr';
 
 // Import this very early, so globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS is always defined
 import '../../shared/constants/infura-project-id';
@@ -33,7 +33,6 @@ import {
   launchMetamaskUi,
   CriticalStartupErrorHandler,
   connectToBackground,
-  connectToBackgroundViaPatchStoreSubstream,
   displayCriticalErrorMessage,
   CriticalErrorTranslationKey,
   // TODO: Remove restricted import
@@ -116,7 +115,6 @@ async function start() {
   const subStreams = connectSubstreams(connectionStream);
   const backgroundConnection = metaRPCClientFactory(subStreams.controller);
   connectToBackground(backgroundConnection, handleStartUISync);
-  connectToBackgroundViaPatchStoreSubstream(subStreams.patch);
 
   async function handleStartUISync(initialState) {
     endTrace({ name: TraceName.BackgroundConnect });
@@ -136,7 +134,7 @@ async function start() {
 
     await initializeUiWithTab(
       activeTab,
-      subStreams.patch,
+      backgroundConnection,
       windowType,
       traceContext,
       initialState,
@@ -239,7 +237,7 @@ async function loadPhishingWarningPage() {
 
 async function initializeUiWithTab(
   activeTab,
-  patchSubstream,
+  backgroundConnection,
   windowType,
   traceContext,
   initialState,
@@ -248,7 +246,7 @@ async function initializeUiWithTab(
     const store = await launchMetamaskUi({
       activeTab,
       container,
-      patchSubstream,
+      backgroundConnection,
       traceContext,
       initialState,
     });
@@ -334,14 +332,12 @@ function connectSubstreams(connectionStream) {
 
   const controllerSubstream = mx.createStream('controller');
   const providerSubstream = mx.createStream('provider');
-  const patchSubstream = mx.createStream('patch-store');
   mx.ignoreStream('background-liveness');
   mx.ignoreStream('app-init-liveness');
 
   return {
     controller: controllerSubstream,
     provider: providerSubstream,
-    patch: patchSubstream,
   };
 }
 

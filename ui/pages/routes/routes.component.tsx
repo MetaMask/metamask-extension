@@ -2,10 +2,10 @@
 /* eslint-disable import-x/no-useless-path-segments */
 /* eslint-disable import-x/extensions */
 import classnames from 'clsx';
-import React, { Suspense, useEffect } from 'react';
+import React, { Suspense, useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useLocation, Navigate, Outlet } from 'react-router-dom';
-import IdleTimer from 'react-idle-timer';
+import { useIdleTimer } from 'react-idle-timer';
 
 import type { ApprovalRequest } from '@metamask/approval-controller';
 import type { Json } from '@metamask/utils';
@@ -57,7 +57,6 @@ import {
   MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
   MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
-  NONEVM_BALANCE_CHECK_ROUTE,
   NETWORKS_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
   CUSTOM_TOKEN_IMPORT_ROUTE,
@@ -74,6 +73,8 @@ import {
   PERPS_ACTIVITY_ROUTE,
   PERPS_WITHDRAW_ROUTE,
   CONTACTS_ROUTE,
+  HARDWARE_WALLET_REPAIR_ROUTE,
+  BATCH_SELL_ROOT_ROUTE,
 } from '../../helpers/constants/routes';
 import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
@@ -106,9 +107,7 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
 } from '../../../shared/constants/app';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 import { ToggleIpfsModal } from '../../components/app/assets/nfts/nft-default-image/toggle-ipfs-modal';
 import { BasicConfigurationModal } from '../../components/app/basic-configuration-modal';
@@ -138,6 +137,7 @@ import { Toaster } from '../../components/ui/toast/toast';
 import { ToastListener } from '../../components/app/toast-listener/toast-listener';
 import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '../snaps/snap-view/messenger';
 import { createRouteWithMessenger } from '../../helpers/route-messenger-helpers';
+import BatchSell from '../batch-sell/batch-sell-page';
 import { getIsTokenManagementFilterEnabled } from '../../selectors/multichain/feature-flags';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationRouter } from './confirmation-router';
@@ -226,9 +226,6 @@ const MultichainAccountDetailsPage = mmLazy(
 const SmartAccountPage = mmLazy(
   () => import('../multichain-accounts/smart-account-page/index.ts'),
 );
-const NonEvmBalanceCheck = mmLazy(
-  () => import('../nonevm-balance-check/index.tsx'),
-);
 const ShieldPlan = mmLazy(() => import('../shield/plan/index.ts'));
 const PerpsMarketDetailPage = mmLazy(
   () => import('../perps/perps-market-detail-page.tsx'),
@@ -245,6 +242,9 @@ const PerpsOrderEntryPage = mmLazy(
 );
 const MusdConversionPage = mmLazy(() => import('../musd/index.tsx'));
 const PerpsLayout = mmLazy(() => import('../perps/perps-layout.tsx'));
+const HardwareWalletRepair = mmLazy(
+  () => import('../hardware-wallet-repair/index.ts'),
+);
 // End Lazy Routes
 
 const SettingsV2LegacyRedirect = () => {
@@ -322,6 +322,10 @@ export const routeConfig = [
       {
         path: `${REVEAL_SEED_ROUTE}/:keyringId?`,
         element: <RevealSeedConfirmation />,
+      },
+      {
+        path: HARDWARE_WALLET_REPAIR_ROUTE,
+        element: <HardwareWalletRepair />,
       },
       {
         path: IMPORT_SRP_ROUTE,
@@ -476,6 +480,10 @@ export const routeConfig = [
             element: <SnapView />,
           }),
           {
+            path: `${BATCH_SELL_ROOT_ROUTE}/*`,
+            element: <BatchSell />,
+          },
+          {
             path: `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:txHash`,
             element: <CrossChainSwapTxDetails />,
           },
@@ -490,10 +498,6 @@ export const routeConfig = [
           {
             path: `${MUSD_CONVERSION_ROUTE}/*`,
             element: <MusdConversionPage />,
-          },
-          {
-            path: NONEVM_BALANCE_CHECK_ROUTE,
-            element: <NonEvmBalanceCheck />,
           },
           {
             path: SHIELD_PLAN_ROUTE,
@@ -641,26 +645,35 @@ export default function Routes() {
     }
   }, [currentCurrency, dispatch]);
 
-  const renderRoutes = () => {
-    const routes = (
-      <Suspense fallback={null}>
-        <Outlet />
-      </Suspense>
-    );
+  const handleIdleAction = useCallback(() => {
+    dispatch(setLastActiveTime());
+  }, [dispatch]);
 
+  const { reset: resetIdleTimer, pause: pauseIdleTimer } = useIdleTimer({
+    onAction: autoLockTimeLimit > 0 ? handleIdleAction : undefined,
+    throttle: 1000,
+    // Never auto-start on mount; the effect below drives the timer so it
+    // correctly starts or stops whenever autoLockTimeLimit changes at runtime.
+    startOnMount: false,
+  });
+
+  // Start the idle timer whenever auto-lock is enabled, and stop it when the
+  // user sets the timeout to "Never" (0). Using reset() instead of relying on
+  // startOnMount means the timer also starts correctly when the user switches
+  // from "Never" to a positive timeout after the component has already mounted.
+  useEffect(() => {
     if (autoLockTimeLimit > 0) {
-      return (
-        <IdleTimer
-          onAction={() => dispatch(setLastActiveTime())}
-          throttle={1000}
-        >
-          {routes}
-        </IdleTimer>
-      );
+      resetIdleTimer();
+    } else {
+      pauseIdleTimer();
     }
+  }, [autoLockTimeLimit, resetIdleTimer, pauseIdleTimer]);
 
-    return routes;
-  };
+  const renderRoutes = () => (
+    <Suspense fallback={null}>
+      <Outlet />
+    </Suspense>
+  );
 
   const t = useI18nContext();
 

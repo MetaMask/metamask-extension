@@ -8,6 +8,7 @@ import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToke
 import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
 import { useSendTokens } from '../../../hooks/send/useSendTokens';
 import { useConfirmContext } from '../../../context/confirm';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { isHardwareAccount } from '../../../../multichain-accounts/account-details/account-type-utils';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
 import {
@@ -178,6 +179,20 @@ describe('PayWithRow', () => {
 
     expect(screen.getByTestId('pay-with-row')).toBeInTheDocument();
     expect(screen.getByTestId('pay-with-symbol')).toHaveTextContent('ETH');
+  });
+
+  it('renders the receive token fallback icon when metadata is missing', () => {
+    useSendTokensMock.mockReturnValue([]);
+
+    const store = mockStore(getMockState());
+    const { container } = renderWithProvider(<PayWithRow />, store);
+
+    const img = container.querySelector('.mm-avatar-token img');
+    expect(img).toHaveAttribute(
+      'src',
+      `https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/${ADDRESS_MOCK}.png`,
+    );
+    expect(img).toHaveAttribute('alt', 'ETH logo');
   });
 
   it('opens modal when clicked', () => {

@@ -49,9 +49,7 @@ type MultichainEditAccountsPageProps = {
   snapsPermissionsRequestType?: SnapsPermissionsRequestType;
 };
 
-export const MultichainEditAccountsPage: React.FC<
-  MultichainEditAccountsPageProps
-> = ({
+export const MultichainEditAccountsPage = ({
   title,
   confirmButtonText,
   defaultSelectedAccountGroups,
@@ -59,7 +57,7 @@ export const MultichainEditAccountsPage: React.FC<
   onSubmit,
   onClose,
   snapsPermissionsRequestType = SnapsPermissionsRequestType.None,
-}) => {
+}: MultichainEditAccountsPageProps) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const [selectedAccountGroups, setSelectedAccountGroups] = useState(
@@ -138,18 +136,11 @@ export const MultichainEditAccountsPage: React.FC<
   return (
     <Page
       data-testid="modal-page"
-      className={classnames(
-        'main-container',
-        'connect-page',
-        'multichain-edit-accounts-page',
-        {
-          'multichain-edit-accounts-page--snap':
-            snapsPermissionsRequestType ===
-              SnapsPermissionsRequestType.Initial ||
-            snapsPermissionsRequestType ===
-              SnapsPermissionsRequestType.Existing,
-        },
-      )}
+      className={classnames('main-container', 'multichain-edit-accounts-page', {
+        'multichain-edit-accounts-page--snap':
+          snapsPermissionsRequestType === SnapsPermissionsRequestType.Initial ||
+          snapsPermissionsRequestType === SnapsPermissionsRequestType.Existing,
+      })}
       backgroundColor={BackgroundColor.backgroundDefault}
     >
       {snapsPermissionsRequestType === SnapsPermissionsRequestType.None && (

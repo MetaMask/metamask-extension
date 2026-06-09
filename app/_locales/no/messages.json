@@ -196,9 +196,6 @@
   "done": {
     "message": "Ferdig"
   },
-  "downloadGoogleChrome": {
-    "message": "Last ned Google Chrome "
-  },
   "downloadStateLogs": {
     "message": "Last ned tilstandslogg"
   },
@@ -253,9 +250,6 @@
   },
   "hardwareWallets": {
     "message": "Koble til en hardware-lommebok"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Velg maskinvarelommeboken som du vil bruke med MetaMask"
   },
   "here": {
     "message": "her",
@@ -360,9 +354,6 @@
   },
   "nevermind": {
     "message": "Bare glem det"
-  },
-  "newAccount": {
-    "message": "Ny konto "
   },
   "newAccountNumberName": {
     "message": "Konto $1",

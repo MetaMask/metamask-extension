@@ -193,9 +193,6 @@
   "done": {
     "message": "Klart"
   },
-  "downloadGoogleChrome": {
-    "message": "Ladda ner Google Chrome"
-  },
   "downloadStateLogs": {
     "message": "Ladda ner statusloggar"
   },
@@ -253,9 +250,6 @@
   },
   "hardwareWallets": {
     "message": "Anslut en hårdvaruplånbok"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Välj en hårdvaruplånbok som du vill använda med MetaMask"
   },
   "here": {
     "message": "här",
@@ -357,9 +351,6 @@
   },
   "nevermind": {
     "message": "Strunt i det"
-  },
-  "newAccount": {
-    "message": "Nytt konto"
   },
   "newAccountNumberName": {
     "message": "Konto $1",

@@ -5,9 +5,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import isMobileView from '../../../helpers/utils/is-mobile-view';
 import * as actions from '../../../store/actions';
@@ -30,7 +28,6 @@ import ConfirmDeleteNetwork from './confirm-delete-network';
 import ConvertTokenToNftModal from './convert-token-to-nft-modal/convert-token-to-nft-modal';
 import CustomizeNonceModal from './customize-nonce';
 import FadeModal from './fade-modal';
-import NewAccountModal from './new-account-modal';
 // Metamask Notifications
 import TurnOnMetamaskNotifications from './turn-on-metamask-notifications/turn-on-metamask-notifications';
 
@@ -55,33 +52,6 @@ const modalContainerMobileStyle = {
 };
 
 const MODALS = {
-  NEW_ACCOUNT: {
-    contents: <NewAccountModal />,
-    mobileModalStyle: {
-      width: '95%',
-      top: '10%',
-      boxShadow: 'var(--shadow-size-xs) var(--color-shadow-default)',
-      transform: 'none',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
-      borderRadius: '10px',
-    },
-    laptopModalStyle: {
-      width: '375px',
-      top: '10%',
-      boxShadow: 'var(--shadow-size-xs) var(--color-shadow-default)',
-      transform: 'none',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
-      borderRadius: '10px',
-    },
-    contentStyle: {
-      borderRadius: '10px',
-    },
-  },
-
   HIDE_TOKEN_CONFIRMATION: {
     contents: <HideTokenConfirmationModal />,
     testId: 'hide-token-confirmation-modal',

@@ -8,6 +8,7 @@ import { useGasEstimateFailedAlerts } from './alerts/transactions/useGasEstimate
 import { useGasFeeLowAlerts } from './alerts/transactions/useGasFeeLowAlerts';
 import { useGasSponsorshipWarningAlerts } from './alerts/transactions/useGasSponsorshipWarningAlerts';
 import { useGasTooLowAlerts } from './alerts/transactions/useGasTooLowAlerts';
+import { useAddressPoisoningAlert } from './alerts/transactions/useAddressPoisoningAlert';
 import { useSuggestedGasFeeHighAlert } from './alerts/transactions/useSuggestedGasFeeHighAlert';
 import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
 import { useInsufficientPayTokenBalanceAlert } from './alerts/transactions/useInsufficientPayTokenBalanceAlert';
@@ -45,6 +46,7 @@ function useSignatureAlerts(): Alert[] {
 
 function useTransactionAlerts(): Alert[] {
   const accountTypeUpgradeAlerts = useAccountTypeUpgrade();
+  const addressPoisoningAlert = useAddressPoisoningAlert();
   const burnAddressAlert = useBurnAddressAlert();
   const firstTimeInteractionAlert = useFirstTimeInteractionAlert();
   const gasEstimateFailedAlerts = useGasEstimateFailedAlerts();
@@ -72,6 +74,7 @@ function useTransactionAlerts(): Alert[] {
   return useMemo(
     () => [
       ...accountTypeUpgradeAlerts,
+      ...addressPoisoningAlert,
       ...burnAddressAlert,
       ...firstTimeInteractionAlert,
       ...gasEstimateFailedAlerts,
@@ -96,6 +99,7 @@ function useTransactionAlerts(): Alert[] {
     ],
     [
       accountTypeUpgradeAlerts,
+      addressPoisoningAlert,
       burnAddressAlert,
       firstTimeInteractionAlert,
       gasEstimateFailedAlerts,

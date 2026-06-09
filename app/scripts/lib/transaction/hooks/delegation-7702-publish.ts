@@ -22,6 +22,7 @@ import {
 } from '../transaction-relay';
 import {
   getClientForTransactionMetadata,
+  getClientVersionForTransactionMetadata,
   sanitizeOrigin,
 } from '../../smart-transaction/utils';
 import {
@@ -34,6 +35,10 @@ const POLLING_INTERVAL_MS = 1000; // 1 Second
 const EMPTY_RESULT = {
   transactionHash: undefined,
 };
+
+type RelayTransactionTxType = NonNullable<
+  RelaySubmitRequest['metadata']
+>['txType'];
 
 const log = createProjectLogger('delegation-7702-publish-hook');
 
@@ -165,8 +170,9 @@ export class Delegation7702PublishHook {
       data,
       to,
       metadata: {
-        txType: transactionMeta.type,
+        txType: transactionMeta.type as RelayTransactionTxType,
         client: getClientForTransactionMetadata(),
+        clientVersion: getClientVersionForTransactionMetadata(),
         origin: sanitizeOrigin(transactionMeta.origin),
       },
     };
