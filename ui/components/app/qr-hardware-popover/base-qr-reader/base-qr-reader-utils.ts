@@ -113,6 +113,8 @@ export function buildQrScanFailedTrackEventArgs(
 } {
   const properties: Record<string, Json> = {
     // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment analytics payload keys use snake_case
+    device_type: MetaMetricsHardwareWalletDeviceType.QrHardware,
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment analytics payload keys use snake_case
     error_category: classification.category,
     // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment analytics payload keys use snake_case
     is_ur_format: classification.isUrFormat,

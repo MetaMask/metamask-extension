@@ -1133,6 +1133,8 @@ describe('BaseQrReader', () => {
       expect(scanFailed).toHaveLength(1);
       expect(scanFailed[0][0].properties).toStrictEqual({
         // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment analytics payload keys use snake_case
+        device_type: 'QR Hardware',
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment analytics payload keys use snake_case
         error_category: 'non_ur_qr_scanned',
         // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment analytics payload keys use snake_case
         is_ur_format: false,

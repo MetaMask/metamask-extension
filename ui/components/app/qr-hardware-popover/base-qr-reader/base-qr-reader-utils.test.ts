@@ -182,6 +182,7 @@ describe('base-qr-reader-utils', () => {
         QrErrorFlowContext.Pairing,
       );
       expect(properties).toStrictEqual({
+        device_type: MetaMetricsHardwareWalletDeviceType.QrHardware,
         error_category: 'non_ur_qr_scanned',
         is_ur_format: false,
         flow: 'pairing',
@@ -199,6 +200,7 @@ describe('base-qr-reader-utils', () => {
         QrErrorFlowContext.Pairing,
       );
       expect(properties).toStrictEqual({
+        device_type: MetaMetricsHardwareWalletDeviceType.QrHardware,
         error_category: 'wrong_ur_type',
         is_ur_format: true,
         flow: 'pairing',
@@ -217,6 +219,7 @@ describe('base-qr-reader-utils', () => {
         QrErrorFlowContext.Signing,
       );
       expect(properties).toStrictEqual({
+        device_type: MetaMetricsHardwareWalletDeviceType.QrHardware,
         error_category: 'scan_exception',
         is_ur_format: true,
         flow: 'signing',
@@ -234,6 +237,7 @@ describe('base-qr-reader-utils', () => {
         QrErrorFlowContext.Signing,
       );
       expect(properties).toStrictEqual({
+        device_type: MetaMetricsHardwareWalletDeviceType.QrHardware,
         error_category: 'ur_decode_error',
         is_ur_format: true,
         flow: 'signing',
