@@ -67,6 +67,7 @@ export function usePerpsEstimatedSlippage({
   const { orderBook, isInitialLoading } = usePerpsLiveOrderBook({
     symbol,
     levels: PERFORMANCE_CONFIG.SlippageEstimateBookLevels,
+    enabled,
   });
 
   const throttledOrderBook = useThrottledValue(

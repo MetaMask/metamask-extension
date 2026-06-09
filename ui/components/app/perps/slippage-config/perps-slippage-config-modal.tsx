@@ -108,11 +108,18 @@ export const PerpsSlippageConfigModal = ({
     }
   }, [isOpen, isCustomMode]);
 
-  const parsedDraft = Number.parseFloat(draftValue);
-  const draftIsEmpty = draftValue.trim() === '' || draftValue === '.';
-  const draftIsFiniteNumber = Number.isFinite(parsedDraft);
+  const trimmedDraft = draftValue.trim();
+  const parsedDraft = Number.parseFloat(trimmedDraft);
+  const draftIsEmpty = trimmedDraft === '' || trimmedDraft === '.';
+  // Require the entire value to be a single numeric token so partial/invalid
+  // strings like '1abc' or '1.2.3' are rejected instead of silently truncated
+  // by parseFloat.
+  const draftIsNumeric = /^(?:\d+\.?\d*|\.\d+)$/u.test(trimmedDraft);
   const draftIsInRange =
-    draftIsFiniteNumber && parsedDraft >= MIN_PCT && parsedDraft <= MAX_PCT;
+    draftIsNumeric &&
+    Number.isFinite(parsedDraft) &&
+    parsedDraft >= MIN_PCT &&
+    parsedDraft <= MAX_PCT;
   const showCustomError = isCustomMode && !draftIsEmpty && !draftIsInRange;
 
   const canSet = isCustomMode ? draftIsInRange : true;

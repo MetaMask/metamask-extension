@@ -217,10 +217,20 @@ export class PerpsStreamBridge {
       perpsDeactivatePriceStream: () => {
         this.#tearDownChannel('prices');
       },
-      perpsActivateOrderBookStream: async ({ symbol }: { symbol: string }) => {
+      perpsActivateOrderBookStream: async ({
+        symbol,
+        levels,
+        nSigFigs,
+        mantissa,
+      }: {
+        symbol: string;
+        levels?: number;
+        nSigFigs?: 2 | 3 | 4 | 5;
+        mantissa?: 2 | 5;
+      }) => {
         await this.#initAndActivate();
         if (this.#isConnectionAlive()) {
-          this.#activateOrderBookStream(symbol);
+          this.#activateOrderBookStream({ symbol, levels, nSigFigs, mantissa });
         }
       },
       perpsDeactivateOrderBookStream: () => {
@@ -586,12 +596,18 @@ export class PerpsStreamBridge {
     );
   }
 
-  #activateOrderBookStream(symbol: string): void {
+  #activateOrderBookStream(params: {
+    symbol: string;
+    levels?: number;
+    nSigFigs?: 2 | 3 | 4 | 5;
+    mantissa?: 2 | 5;
+  }): void {
+    const { symbol } = params;
     this.#tearDownChannel('orderBook');
     if (symbol) {
       this.#addDynamicSubscription('orderBook', () =>
         this.#controller.subscribeToOrderBook({
-          symbol,
+          ...params,
           callback: (data: unknown) => this.#emit('orderBook', data),
         }),
       );

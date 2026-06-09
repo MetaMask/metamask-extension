@@ -16,8 +16,8 @@ export type UsePerpsLiveOrderBookOptions = {
   nSigFigs?: 2 | 3 | 4 | 5;
   /** Mantissa for aggregation when nSigFigs is 5 */
   mantissa?: 2 | 5;
-  /** Callback for errors */
-  onError?: (error: Error) => void;
+  /** When false, no background order-book stream is activated (default: true). */
+  enabled?: boolean;
 };
 
 /**
@@ -45,20 +45,21 @@ const getOrderBookChannel = (sm: PerpsStreamManager) => sm.orderBook;
 export function usePerpsLiveOrderBook(
   options: UsePerpsLiveOrderBookOptions,
 ): UsePerpsLiveOrderBookReturn {
-  const { symbol } = options;
+  const { symbol, levels, nSigFigs, mantissa, enabled = true } = options;
+  const activeSymbol = enabled ? symbol : undefined;
 
   const { data: orderBook, isInitialLoading } = usePerpsChannel(
     getOrderBookChannel,
     null,
-    symbol || undefined,
+    activeSymbol || undefined,
   );
 
   useEffect(() => {
-    if (!symbol) {
+    if (!enabled || !symbol) {
       return undefined;
     }
     submitRequestToBackground('perpsActivateOrderBookStream', [
-      { symbol },
+      { symbol, levels, nSigFigs, mantissa },
     ]).catch(() => {
       // Controller not ready yet — stream will activate on retry when symbol changes.
     });
@@ -69,10 +70,10 @@ export function usePerpsLiveOrderBook(
         },
       );
     };
-  }, [symbol]);
+  }, [enabled, symbol, levels, nSigFigs, mantissa]);
 
   return {
     orderBook,
-    isInitialLoading: isInitialLoading || !symbol,
+    isInitialLoading: isInitialLoading || !activeSymbol,
   };
 }
