@@ -247,9 +247,7 @@ describe('Setup Sentry', () => {
     });
 
     it('removes addresses from an array shared across multiple properties', () => {
-      const sharedAddresses = [
-        '7EYnhQoR9YM3N7UoaKRoA44Uy8JeaZV3qyouov87awMs',
-      ];
+      const sharedAddresses = ['7EYnhQoR9YM3N7UoaKRoA44Uy8JeaZV3qyouov87awMs'];
       const testReport = {
         message: 'An error occurred',
         extra: {
