@@ -129,7 +129,7 @@ export const MultichainAddressRowsList = ({
         normalizedAddress: string;
       },
       index: number,
-    ): JSX.Element => {
+    ): React.JSX.Element => {
       const handleCopyClick = () => {
         handleCopy(item.normalizedAddress);
       };
