@@ -3572,6 +3572,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         `${BRIDGE_CONTROLLER_NAME}:fetchQuotes`,
       ),
+      updateBatchSellTrades: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_CONTROLLER_NAME}:updateBatchSellTrades`,
+      ),
 
       // Bridge Tx submission
       submitTx: this.controllerMessenger.call.bind(
@@ -3581,6 +3585,10 @@ export default class MetamaskController extends EventEmitter {
       submitIntent: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         `${BRIDGE_STATUS_CONTROLLER_NAME}:${'submitIntent'}`,
+      ),
+      submitBatchSell: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_STATUS_CONTROLLER_NAME}:${'submitBatchSell'}`,
       ),
 
       // Smart Transactions

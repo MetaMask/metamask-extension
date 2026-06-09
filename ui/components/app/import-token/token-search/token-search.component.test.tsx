@@ -1,49 +1,59 @@
 import React from 'react';
-import { screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent, act } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import * as tokenSearchApi from '../../../../../shared/lib/token-search/token-search-api';
 import TokenSearch from './token-search.component';
 
-const MOCK_TOKEN_LIST = {
-  '0x1': {
-    data: {
-      '0xaaa': {
-        address: '0xaaa',
-        symbol: 'AAA',
-        name: 'Token AAA',
-        decimals: 18,
-      },
-      '0xbbb': {
-        address: '0xbbb',
-        symbol: 'BBB',
-        name: 'Token BBB',
-        decimals: 18,
-      },
-    },
-  },
-  '0x89': {
-    data: {
-      '0xccc': {
-        address: '0xccc',
-        symbol: 'CCC',
-        name: 'Token CCC',
-        decimals: 18,
-      },
-    },
-  },
+jest.mock('../../../../../shared/lib/token-search/token-search-api');
+
+const mockSearchTokens = jest.mocked(tokenSearchApi.searchTokens);
+
+const emptyResponse = {
+  data: [],
+  count: 0,
+  totalCount: 0,
+  pageInfo: { hasNextPage: false, endCursor: '' },
+};
+
+const MOCK_AAA = {
+  assetId: 'eip155:1/erc20:0xaaa',
+  symbol: 'AAA',
+  name: 'Token AAA',
+  decimals: 18,
+  iconUrl: '',
+};
+
+const MOCK_CCC = {
+  assetId: 'eip155:137/erc20:0xccc',
+  symbol: 'CCC',
+  name: 'Token CCC',
+  decimals: 18,
+  iconUrl: '',
 };
 
 describe('TokenSearch', () => {
   const defaultProps = {
     onSearch: jest.fn(),
-    tokenList: MOCK_TOKEN_LIST,
     searchClassName: 'token-search-class',
     networkFilter: { '0x1': true },
     setSearchResults: jest.fn(),
     chainId: '0x1',
   };
 
-  afterEach(() => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+    mockSearchTokens.mockResolvedValue(emptyResponse);
+  });
+
+  afterEach(async () => {
+    // Flush any pending debounce timers inside act so React does not emit
+    // "state update outside of act" warnings.
+    await act(async () => {
+      jest.runOnlyPendingTimers();
+      await Promise.resolve();
+    });
+    jest.useRealTimers();
     jest.clearAllMocks();
   });
 
@@ -52,10 +62,25 @@ describe('TokenSearch', () => {
     expect(screen.getByRole('searchbox')).toBeInTheDocument();
   });
 
-  it('calls onSearch when user types a query', () => {
+  it('calls onSearch when user types a query', async () => {
+    mockSearchTokens.mockResolvedValue({
+      ...emptyResponse,
+      data: [MOCK_AAA],
+      count: 1,
+      totalCount: 1,
+    });
+
     renderWithProvider(<TokenSearch {...defaultProps} />);
     const input = screen.getByRole('searchbox');
+
     fireEvent.change(input, { target: { value: 'AAA' } });
+
+    // Flush the 300 ms debounce, then flush the resolved promise.
+    await act(async () => {
+      jest.advanceTimersByTime(400);
+      await Promise.resolve();
+    });
+
     expect(defaultProps.onSearch).toHaveBeenCalledWith(
       expect.objectContaining({
         newSearchQuery: 'AAA',
@@ -64,13 +89,12 @@ describe('TokenSearch', () => {
     );
   });
 
-  it('clears search when clear callback is invoked', () => {
+  it('clears search when clear callback is invoked', async () => {
     renderWithProvider(<TokenSearch {...defaultProps} />);
     const input = screen.getByRole('searchbox') as HTMLInputElement;
     fireEvent.change(input, { target: { value: 'AAA' } });
     expect(input.value).toBe('AAA');
 
-    // Click clear button
     const clearButton = screen.getByLabelText(messages.clear.message);
     fireEvent.click(clearButton);
 
@@ -78,15 +102,13 @@ describe('TokenSearch', () => {
     expect(defaultProps.setSearchResults).toHaveBeenCalledWith([]);
   });
 
-  it('calls clear when network filter changes', () => {
+  it('calls clear when network filter changes', async () => {
     const { rerender } = renderWithProvider(<TokenSearch {...defaultProps} />);
     const input = screen.getByRole('searchbox') as HTMLInputElement;
 
-    // Type something
     fireEvent.change(input, { target: { value: 'AAA' } });
     expect(input.value).toBe('AAA');
 
-    // Change network filter (triggers clear via useEffect)
     rerender(
       <TokenSearch
         {...defaultProps}
@@ -97,17 +119,27 @@ describe('TokenSearch', () => {
     expect(defaultProps.setSearchResults).toHaveBeenCalledWith([]);
   });
 
-  it('filters tokenList for multi-network when networkFilter has multiple keys', () => {
+  it('filters tokenList for multi-network when networkFilter has multiple keys', async () => {
+    mockSearchTokens.mockResolvedValue({
+      ...emptyResponse,
+      data: [MOCK_CCC],
+      count: 1,
+      totalCount: 1,
+    });
+
     const multiNetworkProps = {
       ...defaultProps,
       networkFilter: { '0x1': true, '0x89': true },
     };
 
     renderWithProvider(<TokenSearch {...multiNetworkProps} />);
-
-    // Search for a token available on the second network
     const input = screen.getByRole('searchbox');
     fireEvent.change(input, { target: { value: 'CCC' } });
+
+    await act(async () => {
+      jest.advanceTimersByTime(400);
+      await Promise.resolve();
+    });
 
     expect(defaultProps.onSearch).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -117,10 +149,22 @@ describe('TokenSearch', () => {
     );
   });
 
-  it('returns exact address match results', () => {
+  it('returns exact address match results', async () => {
+    mockSearchTokens.mockResolvedValue({
+      ...emptyResponse,
+      data: [MOCK_AAA],
+      count: 1,
+      totalCount: 1,
+    });
+
     renderWithProvider(<TokenSearch {...defaultProps} />);
     const input = screen.getByRole('searchbox');
     fireEvent.change(input, { target: { value: '0xaaa' } });
+
+    await act(async () => {
+      jest.advanceTimersByTime(400);
+      await Promise.resolve();
+    });
 
     expect(defaultProps.onSearch).toHaveBeenCalledWith(
       expect.objectContaining({
