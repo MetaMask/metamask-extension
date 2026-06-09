@@ -97,8 +97,6 @@ export async function changePasswordAndLockWallet(
   // before the new password is persisted.
   await driver.delay(3_000);
 
-  await changePasswordPage.closePasswordChangedToast();
-
   const settingsPage = new SettingsPage(driver);
   await settingsPage.clickBackButton();
 

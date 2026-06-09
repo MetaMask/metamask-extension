@@ -14,9 +14,6 @@ export default class ChangePasswordPage {
 
   private readonly newPasswordInput = '[data-testid="change-password-input"]';
 
-  private readonly passwordChangedToastCloseButton =
-    'button[aria-label="Close"]';
-
   private readonly passwordChangedWarning = {
     text: 'Changing your password here will lock MetaMask on other devices you’re using. You’ll need to log in again with your new password.',
     css: 'p',
@@ -49,16 +46,6 @@ export default class ChangePasswordPage {
   async checkPasswordChangedWarning(): Promise<void> {
     console.log('Check password changed warning');
     await this.driver.waitForSelector(this.passwordChangedWarning);
-  }
-
-  async closePasswordChangedToast(): Promise<void> {
-    console.log(
-      'Close password changed toast if displayed (transient element)',
-    );
-    await this.driver.clickElementSafe(
-      this.passwordChangedToastCloseButton,
-      5000,
-    );
   }
 
   async confirmChangePasswordWarning(): Promise<void> {

@@ -51,7 +51,7 @@ describe('Unlock wallet - ', function () {
     );
   });
 
-  it('should show connections removed modal when max key chain length is reached for social account', async function () {
+  it('should show connections removed modal when max key chain length is reached for social account TEST', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
