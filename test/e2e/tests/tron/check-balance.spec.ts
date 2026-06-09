@@ -5,8 +5,8 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import NetworkManager from '../../page-objects/pages/network-manager';
 import { mockTronApis } from './mocks/common-tron';
+import { switchToNetworkFromNetworkSelect } from 'test/e2e/page-objects/flows/network.flow';
 
 describe('Check balance', function (this: Suite) {
   it('Just created Tron account shows 0 TRX when native token is enabled', async function () {
@@ -19,13 +19,10 @@ describe('Check balance', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Tron');
-
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
+        await driver.refresh();
         await homePage.checkExpectedBalanceIsDisplayed('0 TRX');
       },
     );
@@ -41,16 +38,14 @@ describe('Check balance', function (this: Suite) {
         testSpecificMock: mockTronApis,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Tron');
-
+        await login(driver);
         const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
         // TRX_BALANCE = 6072392 SUN = ~6.07 TRX * $0.29469 = ~$1.79
         // Total Fiat = TRX $1.79, HTX DAO $5.30, USDT $2.80, USDD $0.29 = $10.18
-        await homePage.checkPageIsLoaded();
+        await driver.refresh();
         await homePage.checkExpectedBalanceIsDisplayed('$10.18');
       },
     );
@@ -65,14 +60,12 @@ describe('Check balance', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Tron');
-
         const homePage = new HomePage(driver);
-        // TRX_BALANCE = 6072392 SUN = ~6.07 TRX
         await homePage.checkPageIsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Tron');
+
+        // TRX_BALANCE = 6072392 SUN = ~6.07 TRX
+        await driver.refresh();
         await homePage.checkExpectedBalanceIsDisplayed('6.072 TRX');
       },
     );

@@ -96,6 +96,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        await driver.refresh();
         await new AssetListPage(driver).checkExpectedTokenBalanceIsDisplayed(
           `${DEFAULT_BTC_BALANCE}`,
           'BTC',
@@ -136,6 +137,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        await driver.refresh();
         await new AssetListPage(driver).checkExpectedTokenBalanceIsDisplayed(
           `${DEFAULT_BTC_BALANCE}`,
           'BTC',
@@ -172,6 +174,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        await driver.refresh();
         await new AssetListPage(driver).checkExpectedTokenBalanceIsDisplayed(
           `${DEFAULT_BTC_BALANCE}`,
           'BTC',
@@ -209,6 +212,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        await driver.refresh();
         await new AssetListPage(driver).checkExpectedTokenBalanceIsDisplayed(
           `${DEFAULT_BTC_BALANCE}`,
           'BTC',

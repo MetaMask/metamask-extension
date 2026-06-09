@@ -18,8 +18,9 @@ describe('Check balance', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new HomePage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
+        await driver.refresh();
         await homePage.checkExpectedBalanceIsDisplayed('0 SOL');
       },
     );
@@ -36,8 +37,9 @@ describe('Check balance', function (this: Suite) {
       async ({ driver }) => {
         await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
+        await driver.refresh();
         await homePage.checkExpectedBalanceIsDisplayed('$0');
       },
     );
@@ -56,8 +58,9 @@ describe('Check balance', function (this: Suite) {
       async ({ driver }) => {
         await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
+        await driver.refresh();
         await homePage.checkExpectedBalanceIsDisplayed('$5,643.50');
       },
     );
@@ -72,8 +75,9 @@ describe('Check balance', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new HomePage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         await homePage.checkPageIsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
+        await driver.refresh();
         await homePage.checkExpectedBalanceIsDisplayed('50 SOL');
       },
     );
