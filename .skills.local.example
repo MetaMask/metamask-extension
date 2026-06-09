@@ -13,10 +13,10 @@
 #   CONSENSYS_SKILLS_DIR         path to Consensys/skills checkout (private overlay)
 #   METAMASK_SKILLS_TARGET_REPO  canonical repo overlay for forks/unusual remotes
 #
-# Example local setup (only if you want to override the cache):
+# Default local setup (set only if you want to override the cache):
 #   METAMASK_SKILLS_DIR=~/dev/metamask/skills
 #   CONSENSYS_SKILLS_DIR=~/dev/Consensys/skills
-#   METAMASK_SKILLS_TARGET_REPO=metamask-mobile   # optional fork override
+#   METAMASK_SKILLS_TARGET_REPO=metamask-extension
 #
 # Default behavior installs ALL domains. Set SKILLS_DOMAINS to opt out of some:
 #   SKILLS_DOMAINS=                          # all (default)

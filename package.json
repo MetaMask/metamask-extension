@@ -19,6 +19,7 @@
     "foundryup": "yarn mm-foundryup",
     "postinstall": "yarn webpack:clearcache && yarn foundryup && yarn skills:postinstall",
     "skills": "metamask-skills sync",
+    "skills:postinstall": "metamask-skills postinstall",
     "env:e2e": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn",
     "start": "yarn webpack --watch",
     "start:with-state": "node ./app/scripts/start-with-wallet-state.mjs",
@@ -158,8 +159,7 @@
     "feature-flags:sync:check": "tsx test/e2e/feature-flags/sync-production-flags.ts --check",
     "feature-flags:sync:update": "tsx test/e2e/feature-flags/sync-production-flags.ts --update",
     "yarn-binary:download": "corepack pack -o .yarn/yarn-corepack.tgz",
-    "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate",
-    "skills:postinstall": "metamask-skills postinstall"
+    "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
     "@metamask/bridge-controller": "72.0.0",

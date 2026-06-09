@@ -85,8 +85,8 @@ AI coding agents (Cursor, Claude Code, Codex) consume shared skills from the [Me
 Zero-config setup:
 
 ```bash
-yarn install # refreshes the MetaMask/skills cache via the shared @metamask/skills CLI
-yarn skills  # syncs all default skills through metamask-skills sync
+yarn install # refreshes the MetaMask/skills cache via the shared `@metamask/skills` CLI
+yarn skills  # syncs all default skills through the `metamask-skills sync` command
 ```
 
 Optional local configuration:
