@@ -2,7 +2,7 @@
 // TODO: find similar functionality in extession
 // import { getSubscriptionToken } from '../utils/multi-subscription-token-vault';
 import log from 'loglevel';
-import { ENVIRONMENT } from '../../../../development/build/constants';
+import { ENVIRONMENT } from '../../../../shared/constants/build';
 import ExtensionPlatform from '../../platforms/extension';
 import {
   REWARDS_API_URL,

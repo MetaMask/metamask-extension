@@ -27,10 +27,10 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
           0:30
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -70,10 +70,10 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
           Network fee
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -101,10 +101,10 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
           Slippage
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -145,10 +145,10 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
           Minimum received
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -175,10 +175,10 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
       Includes 0.875% MM fee. Approves token for bridge.
     </p>
     <div
-      class="mm-box"
+      class=""
     >
       <div
-        class="mm-box mm-box--display-flex"
+        class="flex"
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -213,10 +213,10 @@ exports[`MultichainBridgeQuoteCard should render gas sponsored text when gasSpon
           0:30
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -256,10 +256,10 @@ exports[`MultichainBridgeQuoteCard should render gas sponsored text when gasSpon
           Network fee
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -295,10 +295,10 @@ exports[`MultichainBridgeQuoteCard should render gas sponsored text when gasSpon
           Slippage
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -339,10 +339,10 @@ exports[`MultichainBridgeQuoteCard should render gas sponsored text when gasSpon
           Minimum received
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -369,10 +369,10 @@ exports[`MultichainBridgeQuoteCard should render gas sponsored text when gasSpon
       Approves token for bridge.
     </p>
     <div
-      class="mm-box"
+      class=""
     >
       <div
-        class="mm-box mm-box--display-flex"
+        class="flex"
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -463,10 +463,10 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fe
           0:30
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -506,10 +506,10 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fe
           Network fee
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -537,10 +537,10 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fe
           Slippage
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -581,10 +581,10 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fe
           Minimum received
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -611,10 +611,10 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fe
       Approves token for bridge.
     </p>
     <div
-      class="mm-box"
+      class=""
     >
       <div
-        class="mm-box mm-box--display-flex"
+        class="flex"
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -649,10 +649,10 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
           0:00
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -692,10 +692,10 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
           Network fee
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -723,10 +723,10 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
           Slippage
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -767,10 +767,10 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
           Price impact
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -801,10 +801,10 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
           Minimum received
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"

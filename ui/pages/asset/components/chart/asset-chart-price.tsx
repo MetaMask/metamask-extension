@@ -1,16 +1,15 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
+import { Box, BoxFlexDirection, Skeleton } from '@metamask/design-system-react';
 import {
   BorderRadius,
   Display,
-  FlexDirection,
   FontWeight,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { Box, Text } from '../../../../components/component-library';
+import { Text } from '../../../../components/component-library';
 import { loadingOpacity, getDynamicShortDate } from '../../util';
 import { useFormatters } from '../../../../hooks/useFormatters';
-import { Skeleton } from '../../../../components/component-library/skeleton';
 import { TokenCellPercentChange } from '../../../../components/app/assets/token-cell/cells';
 import { TokenFiatDisplayInfo } from '../../../../components/app/assets/types';
 
@@ -20,7 +19,7 @@ import { TokenFiatDisplayInfo } from '../../../../components/app/assets/types';
  * does not shift when switching from price-loading to price-available.
  */
 const AssetChartMainPriceLoading = () => (
-  <Skeleton width="25%" marginBottom={1} borderRadius={BorderRadius.LG}>
+  <Skeleton hideChildren width="25%" className="mb-1 rounded-lg">
     <Text variant={TextVariant.displayMd}>{'\u00A0'}</Text>
   </Skeleton>
 );
@@ -43,7 +42,7 @@ const AssetChartMainPriceEmptyState = () => (
  * price-delta-available.
  */
 const AssetChartDeltaLoading = () => (
-  <Skeleton width="33%" borderRadius={BorderRadius.LG}>
+  <Skeleton hideChildren width="33%" className="rounded-lg">
     <Text variant={TextVariant.bodyMdMedium}>{'\u00A0'}</Text>
   </Skeleton>
 );
@@ -119,8 +118,8 @@ const AssetChartPrice = forwardRef(
         {(shouldShowDelta || shouldShowDeltaMuted) && (
           <Box
             style={{ opacity: loading ? loadingOpacity : 1 }}
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
+            className="flex"
+            flexDirection={BoxFlexDirection.Row}
           >
             {props.asset && (
               <TokenCellPercentChange

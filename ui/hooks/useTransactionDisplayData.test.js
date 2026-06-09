@@ -144,12 +144,29 @@ const getMockState = () => ({
       selectedAccount: MOCK_INTERNAL_ACCOUNT.id,
     },
     allTokens: {
+      // Transactions in test/data/transaction-data.json use chainId '0x4'
+      // (Rinkeby); include ABC there so the token-symbol lookup succeeds.
+      '0x4': {
+        [ADDRESS_MOCK]: [
+          {
+            address: '0xabca64466f257793eaa52fcfff5066894b76a149',
+            symbol: 'ABC',
+            decimals: 18,
+          },
+        ],
+      },
       [CHAIN_IDS.MAINNET]: {
         [ADDRESS_MOCK]: [
           {
             address: '0xabca64466f257793eaa52fcfff5066894b76a149',
             symbol: 'ABC',
             decimals: 18,
+          },
+          // USDT — needed by resolveTargetToken in the post-quote pay tests
+          {
+            address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+            symbol: 'USDT',
+            decimals: 6,
           },
         ],
       },

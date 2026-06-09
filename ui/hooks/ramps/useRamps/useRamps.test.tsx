@@ -17,11 +17,11 @@ const mockedMetametricsId = '0xtestMetaMetricsId';
 let mockStoreState = {
   metamask: {
     ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-    metaMetricsId: mockedMetametricsId,
+    analyticsId: mockedMetametricsId,
   },
 };
 
-const wrapper: FC = ({ children }) => (
+const wrapper = ({ children }: React.PropsWithChildren<unknown>) => (
   <Provider store={configureStore(mockStoreState)}>{children}</Provider>
 );
 

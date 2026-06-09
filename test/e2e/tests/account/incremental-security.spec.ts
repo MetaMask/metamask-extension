@@ -18,8 +18,18 @@ import {
   skipPasskeySetup,
 } from '../../page-objects/flows/onboarding.flow';
 
+// 1 ETH in wei, hex-encoded
+const ONE_ETH_IN_WEI_HEX = '0xde0b6b3a7640000';
+
+// ABI-encoded uint256[] with a single element of 1 ETH (for BalanceChecker response)
+const BALANCE_CHECKER_1_ETH_RESULT =
+  '0x' +
+  '0000000000000000000000000000000000000000000000000000000000000020' +
+  '0000000000000000000000000000000000000000000000000000000000000001' +
+  '0000000000000000000000000000000000000000000000000de0b6b3a7640000';
+
 async function mockSpotPrices(mockServer: Mockttp) {
-  return await mockServer
+  await mockServer
     .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
     .thenCallback(() => ({
       statusCode: 200,
@@ -31,6 +41,27 @@ async function mockSpotPrices(mockServer: Mockttp) {
           pricePercentChange1d: 0,
         },
       },
+    }));
+
+  await mockServer
+    .forPost(/^https:\/\/mainnet\.infura\.io\//u)
+    .withJsonBodyIncluding({ method: 'eth_getBalance' })
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: { jsonrpc: '2.0', id: '1', result: ONE_ETH_IN_WEI_HEX },
+    }));
+
+  await mockServer
+    .forPost(/^https:\/\/mainnet\.infura\.io\//u)
+    .withJsonBodyIncluding({
+      method: 'eth_call',
+      params: [{ to: '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39' }],
+    })
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: { jsonrpc: '2.0', id: '1', result: BALANCE_CHECKER_1_ETH_RESULT },
     }));
 }
 

@@ -1,61 +1,16 @@
-import { Messenger } from '@metamask/messenger';
-import type {
-  NetworkControllerFindNetworkClientIdByChainIdAction,
-  NetworkControllerGetNetworkClientByIdAction,
-  NetworkControllerGetNetworkConfigurationByNetworkClientId,
-  NetworkControllerGetStateAction,
-  NetworkControllerNetworkDidChangeEvent,
-} from '@metamask/network-controller';
-import { AuthenticationController } from '@metamask/profile-sync-controller';
 import {
-  AccountsControllerGetAccountAction,
-  AccountsControllerGetSelectedAccountAction,
-  AccountsControllerSelectedEvmAccountChangeEvent,
-} from '@metamask/accounts-controller';
+  Messenger,
+  type MessengerActions,
+  type MessengerEvents,
+} from '@metamask/messenger';
 import {
-  KeyringControllerGetStateAction,
-  KeyringControllerLockEvent,
-  KeyringControllerUnlockEvent,
-} from '@metamask/keyring-controller';
-import {
-  TokensControllerAddDetectedTokensAction,
-  TokensControllerAddTokensAction,
-  TokensControllerGetStateAction,
+  TokenDetectionControllerMessenger,
   AssetsContractControllerGetBalancesInSingleCallAction,
 } from '@metamask/assets-controllers';
-import { TransactionControllerTransactionConfirmedEvent } from '@metamask/transaction-controller';
-import type {
-  PreferencesControllerGetStateAction,
-  PreferencesControllerStateChangeEvent,
-} from '@metamask/preferences-controller';
+import type { NetworkControllerGetStateAction } from '@metamask/network-controller';
+import type { PreferencesControllerGetStateAction } from '@metamask/preferences-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller-method-action-types';
 import { RootMessenger } from '../../lib/messenger';
-
-type AllowedActions =
-  | AccountsControllerGetSelectedAccountAction
-  | AccountsControllerGetAccountAction
-  | NetworkControllerGetNetworkClientByIdAction
-  | NetworkControllerGetNetworkConfigurationByNetworkClientId
-  | NetworkControllerGetStateAction
-  | KeyringControllerGetStateAction
-  | PreferencesControllerGetStateAction
-  | TokensControllerGetStateAction
-  | TokensControllerAddDetectedTokensAction
-  | TokensControllerAddTokensAction
-  | NetworkControllerFindNetworkClientIdByChainIdAction
-  | AuthenticationController.AuthenticationControllerGetBearerTokenAction;
-
-type AllowedEvents =
-  | AccountsControllerSelectedEvmAccountChangeEvent
-  | NetworkControllerNetworkDidChangeEvent
-  | KeyringControllerLockEvent
-  | KeyringControllerUnlockEvent
-  | PreferencesControllerStateChangeEvent
-  | TransactionControllerTransactionConfirmedEvent;
-
-export type TokenDetectionControllerMessenger = ReturnType<
-  typeof getTokenDetectionControllerMessenger
->;
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
@@ -65,14 +20,12 @@ export type TokenDetectionControllerMessenger = ReturnType<
  * messenger.
  */
 export function getTokenDetectionControllerMessenger(
-  messenger: RootMessenger<AllowedActions, AllowedEvents>,
-) {
-  const controllerMessenger = new Messenger<
-    'TokenDetectionController',
-    AllowedActions,
-    AllowedEvents,
-    typeof messenger
-  >({
+  messenger: RootMessenger<
+    MessengerActions<TokenDetectionControllerMessenger>,
+    MessengerEvents<TokenDetectionControllerMessenger>
+  >,
+): TokenDetectionControllerMessenger {
+  const controllerMessenger: TokenDetectionControllerMessenger = new Messenger({
     namespace: 'TokenDetectionController',
     parent: messenger,
   });

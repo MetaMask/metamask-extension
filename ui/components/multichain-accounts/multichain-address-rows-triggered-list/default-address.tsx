@@ -15,7 +15,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import ToggleButton from '../../ui/toggle-button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { GENERAL_ROUTE } from '../../../helpers/constants/routes';
+import { PREFERENCES_AND_DISPLAY_ROUTE } from '../../../helpers/constants/routes';
 import {
   DEFAULT_ADDRESS_DISPLAY_KEY_BY_SCOPE,
   DefaultAddressScope,
@@ -81,7 +81,9 @@ export const DefaultAddress = () => {
                     settings_type: 'show_default_address',
                   },
                 });
-                navigate(`${GENERAL_ROUTE}#show-default-address`);
+                navigate(
+                  `${PREFERENCES_AND_DISPLAY_ROUTE}#show-default-address`,
+                );
               }}
               data-testid="change-in-settings-link"
             >

@@ -22,7 +22,7 @@ import {
   resolveAutoThreads,
 } from './loaders/threadLoader';
 
-const ENV_PREFIX = 'BUNDLE';
+const ENV_PREFIX = 'BUNDLE_';
 const addFeat = 'addFeature' as const;
 const omitFeat = 'omitFeature' as const;
 type YargsOptionsMap = { [key: string]: YargsOptions };
@@ -370,7 +370,7 @@ function getCli<T extends YargsOptionsMap = Options>(options: T, name: string) {
     })
     // enable ENV parsing, which allows the user to specify webpack options via
     // environment variables prefixed with `BUNDLE_`
-    // TODO: choose a better name than `BUNDLE` (it looks like `MM` is already being used in CI for ✨something✨)
+    // TODO: choose a better name than `BUNDLE_` (it looks like `MM` is already being used in CI for ✨something✨)
     .env(ENV_PREFIX)
     // TODO: enable completion once https://github.com/yargs/yargs/pull/2422 is released.
     // enable the `completion` command, which outputs a bash completion script
@@ -558,7 +558,7 @@ function getOptions(
       group: toOrange('Build options:'),
       type: 'string',
     },
-    manifest_version: {
+    manifestVersion: {
       alias: 'v',
       array: false,
       choices: [2, 3] as Manifest['manifest_version'][],
@@ -668,7 +668,7 @@ function getOptions(
     stats: {
       array: false,
       default: false,
-      description: 'Display build stats after building',
+      description: 'Emit the bundle-size summary artifact',
       group: toOrange('Options:'),
       type: 'boolean',
     },
@@ -709,7 +709,7 @@ Threads: ${args.threads}
 Jobs per thread: ${args.jobsPerThread}
 Free RAM: ${Math.floor(getAvailableMemoryMB())}MB
 Validate Env: ${args.validateEnv}
-Manifest version: ${args.manifest_version}
+Manifest version: ${args.manifestVersion}
 Release version: ${args.releaseVersion}
 Browsers: ${args.browser.join(', ')}
 Devtool: ${args.devtool}
