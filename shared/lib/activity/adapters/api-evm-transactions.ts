@@ -113,6 +113,7 @@ export function mapApiEvmTransactions({
         hash,
         from,
         token,
+        fees: getFees(transaction, chainId),
       },
     };
   }

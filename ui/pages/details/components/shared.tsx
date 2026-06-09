@@ -37,5 +37,5 @@ export function Row({
 }
 
 export function Section({ children }: { children: ReactNode }) {
-  return <section className="py-3">{children}</section>;
+  return <section className="py-2">{children}</section>;
 }

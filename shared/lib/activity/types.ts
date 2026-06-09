@@ -130,6 +130,7 @@ export type ActivityListItem =
       'approveSpendingCap' | 'revokeSpendingCap' | 'increaseSpendingCap',
       {
         token?: TokenAmount;
+        fees?: ActivityFee[];
       }
     >
   | ActivityData<

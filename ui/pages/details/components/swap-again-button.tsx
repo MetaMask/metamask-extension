@@ -8,6 +8,7 @@ import type { TokenAmount } from '../../../../shared/lib/activity/types';
 import { getHumanReadableTokenAmount } from '../../../../shared/lib/activity/fiat';
 import { BridgeQueryParams } from '../../../../shared/lib/deep-links/routes/swap';
 import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { transitionForward } from '../../../components/ui/transition';
 
 export function SwapAgainButton({
@@ -17,7 +18,19 @@ export function SwapAgainButton({
   destinationToken: TokenAmount | undefined;
   sourceToken: TokenAmount | undefined;
 }) {
+  const t = useI18nContext();
   const { navigateToBridgePage } = useBridgeNavigation();
+  const buttonLabelKey = useMemo(() => {
+    if (!sourceToken?.assetId || !destinationToken?.assetId) {
+      return 'swapAgain';
+    }
+
+    const sourceChainId = sourceToken.assetId.split('/')[0];
+    const destinationChainId = destinationToken.assetId.split('/')[0];
+
+    return sourceChainId === destinationChainId ? 'swapAgain' : 'bridgeAgain';
+  }, [destinationToken?.assetId, sourceToken?.assetId]);
+
   const searchParams = useMemo(() => {
     if (!sourceToken?.assetId || !destinationToken?.assetId) {
       return undefined;
@@ -61,7 +74,7 @@ export function SwapAgainButton({
       variant={ButtonVariant.Primary}
       onClick={handleClick}
     >
-      Swap again
+      {t(buttonLabelKey)}
     </Button>
   );
 }

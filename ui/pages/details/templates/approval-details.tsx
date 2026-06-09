@@ -1,9 +1,9 @@
 import React from 'react';
-import { AvatarTokenSize } from '@metamask/design-system-react';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { ActivityAvatar } from '../../../components/app/activity-list-item-avatar';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTokensData } from '../../../hooks/useTokensData';
+import { AmountsSection } from '../components/amounts-section';
 import { MetadataSection } from './sections';
 
 const ApprovalTokenSection = ({
@@ -34,7 +34,7 @@ const ApprovalTokenSection = ({
       <p className="text-alternative">{`${t('you')} ${t('approved').toLowerCase()}`}</p>
 
       <div className="flex items-center gap-3 py-4">
-        <ActivityAvatar tokens={[token?.assetId]} size={AvatarTokenSize.Lg} />
+        <ActivityAvatar tokens={[token?.assetId]} />
 
         <p className="text-l-heading-lg leading-l-heading-lg tracking-l-heading-lg font-semibold">
           {tokenLabel}
@@ -58,6 +58,7 @@ export function ApprovalDetails({
     <div className="divide-y divide-border-muted">
       <ApprovalTokenSection item={item} />
       <MetadataSection item={item} />
+      <AmountsSection item={item} />
     </div>
   );
 }

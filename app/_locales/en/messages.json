@@ -1875,6 +1875,9 @@
   "boughtFor": {
     "message": "Bought for"
   },
+  "bridgeAgain": {
+    "message": "Bridge again"
+  },
   "bridge": {
     "message": "Bridge"
   },
@@ -3042,6 +3045,9 @@
   },
   "dataUnavailable": {
     "message": "data unavailable"
+  },
+  "day": {
+    "message": "Day"
   },
   "date": {
     "message": "Date"
@@ -9872,6 +9878,9 @@
   "supportedLanguagesSectionTitle": {
     "message": "Supported languages",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
+  },
+  "swapAgain": {
+    "message": "Swap again"
   },
   "swap": {
     "message": "Swap"
