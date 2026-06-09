@@ -1,8 +1,6 @@
 import { Driver } from '../../../webdriver/driver';
 
 export default class ChangePasswordPage {
-  private readonly driver: Driver;
-
   private readonly confirmNewPasswordInput =
     '[data-testid="change-password-confirm-input"]';
 
@@ -11,6 +9,8 @@ export default class ChangePasswordPage {
 
   private readonly currentPasswordInput =
     '[data-testid="verify-current-password-input"]';
+
+  private readonly driver: Driver;
 
   private readonly newPasswordInput = '[data-testid="change-password-input"]';
 
