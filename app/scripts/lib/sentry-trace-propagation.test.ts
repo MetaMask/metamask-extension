@@ -181,21 +181,42 @@ describe('buildAugmentedHeaders', () => {
     expect(headers.get('baggage')).toBe(CONSENSYS_BAGGAGE);
   });
 
-  it('lets init headers override Request headers (fetch init-wins semantics)', () => {
+  it('preserves Request headers and lets init headers override duplicate keys', () => {
     const request = new Request(BACKEND_URL, {
-      headers: { 'x-from-request': 'yes' },
+      headers: { 'x-from-request': 'yes', 'x-override': 'from-request' },
     });
     const headers = buildAugmentedHeaders(
-      [request, { headers: { 'x-from-init': 'init' } }],
+      [
+        request,
+        {
+          headers: { 'x-from-init': 'init', 'x-override': 'from-init' },
+        },
+      ],
       { traceparent: TRACEPARENT, requestId: 'uuid-fixed' },
     );
 
-    // `fetch(request, { headers })` replaces the Request's headers with the init
-    // headers, so only the init headers survive — matching fetch semantics.
     expect(headers.get('x-from-init')).toBe('init');
-    expect(headers.get('x-from-request')).toBeNull();
+    expect(headers.get('x-from-request')).toBe('yes');
+    expect(headers.get('x-override')).toBe('from-init');
     expect(headers.get('traceparent')).toBe(TRACEPARENT);
     expect(headers.get('baggage')).toBe(CONSENSYS_BAGGAGE);
+  });
+
+  it('does not overwrite an existing traceparent header', () => {
+    const headers = buildAugmentedHeaders(
+      [
+        BACKEND_URL,
+        {
+          headers: {
+            traceparent: `00-${TRACE_ID}-${SPAN_ID}-00`,
+          },
+        },
+      ],
+      { traceparent: TRACEPARENT, requestId: 'uuid-fixed' },
+    );
+
+    expect(headers.get('traceparent')).toBe(`00-${TRACE_ID}-${SPAN_ID}-00`);
+    expect(headers.get('baggage')).toContain(CONSENSYS_BAGGAGE);
   });
 
   it('omits traceparent when none is available but still adds baggage', () => {
@@ -307,6 +328,24 @@ describe('consensysTracePropagationIntegration', () => {
       } as SentryEvent) as SentryEvent;
 
       expect(event.tags?.consensysRequestId).toBe('uuid-fixed');
+    });
+
+    it('does not tag consensysRequestId for a different trace id', () => {
+      mockActiveSpan(1);
+      const handler = getFetchHandler();
+      handler({
+        fetchData: { url: BACKEND_URL, method: 'GET' },
+        args: [BACKEND_URL, undefined],
+      } as unknown as Parameters<typeof handler>[0]);
+
+      const event = enrich({
+        contexts: {
+          trace: { trace_id: '11111111111111111111111111111111' },
+        },
+      } as SentryEvent) as SentryEvent;
+
+      expect(event.tags?.otelTraceId).toBe('11111111111111111111111111111111');
+      expect(event.tags?.consensysRequestId).toBeUndefined();
     });
 
     it('leaves events untouched when no trace context or request id exists', () => {

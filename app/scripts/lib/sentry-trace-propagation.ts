@@ -44,6 +44,8 @@ export const BACKEND_TRACE_PROPAGATION_TARGETS: RegExp[] = [
 
 let requestIdProvider: () => string = () => uuidv4();
 let currentConsensysRequestId: string | undefined;
+const requestIdByTraceId = new Map<string, string>();
+const MAX_TRACE_REQUEST_ID_ENTRIES = 100;
 
 /**
  * Override the `consensys-request-id` source (e.g. a per-operation provider
@@ -61,6 +63,7 @@ export function setConsensysRequestIdProvider(provider: () => string): void {
 export function resetConsensysRequestIdProvider(): void {
   requestIdProvider = () => uuidv4();
   currentConsensysRequestId = undefined;
+  requestIdByTraceId.clear();
 }
 
 /**
@@ -200,9 +203,13 @@ export function buildAugmentedHeaders(
     unknown,
     { headers?: unknown } | undefined,
   ];
-  const existing =
-    options?.headers ?? (isRequest(request) ? request.headers : undefined);
-  const headers = toHeaders(existing);
+  const requestHeaders = isRequest(request) ? request.headers : undefined;
+  const headers = toHeaders(requestHeaders);
+  const initHeaders = toHeaders(options?.headers);
+
+  initHeaders.forEach((value, key) => {
+    headers.set(key, value);
+  });
   // Respect a caller- or SDK-provided `traceparent`; only set ours when absent.
   if (traceparent && !headers.has('traceparent')) {
     headers.set('traceparent', traceparent);
@@ -211,6 +218,23 @@ export function buildAugmentedHeaders(
   // browser, so this preserves the SDK's Sentry-prefixed entries.
   headers.append('baggage', buildConsensysBaggage(requestId));
   return headers;
+}
+
+function getTraceIdFromTraceparent(traceparent: string): string | undefined {
+  const [, traceId] = traceparent.split('-');
+  return traceId || undefined;
+}
+
+function setRequestIdForTraceId(traceId: string, requestId: string): void {
+  requestIdByTraceId.set(traceId, requestId);
+  if (requestIdByTraceId.size <= MAX_TRACE_REQUEST_ID_ENTRIES) {
+    return;
+  }
+
+  const oldestTraceId = requestIdByTraceId.keys().next().value;
+  if (oldestTraceId) {
+    requestIdByTraceId.delete(oldestTraceId);
+  }
 }
 
 /**
@@ -249,6 +273,12 @@ export function consensysTracePropagationIntegration({
           const requestId = requestIdProvider();
           currentConsensysRequestId = requestId;
           const traceparent = getCurrentTraceparent();
+          if (traceparent) {
+            const traceId = getTraceIdFromTraceparent(traceparent);
+            if (traceId) {
+              setRequestIdForTraceId(traceId, requestId);
+            }
+          }
           const headers = buildAugmentedHeaders(handlerData.args, {
             traceparent,
             requestId,
@@ -267,12 +297,13 @@ export function consensysTracePropagationIntegration({
       const traceId = event.contexts?.trace?.trace_id;
       if (traceId) {
         event.tags = { ...event.tags, otelTraceId: traceId };
-      }
-      if (currentConsensysRequestId) {
-        event.tags = {
-          ...event.tags,
-          consensysRequestId: currentConsensysRequestId,
-        };
+        const requestId = requestIdByTraceId.get(traceId);
+        if (requestId) {
+          event.tags = {
+            ...event.tags,
+            consensysRequestId: requestId,
+          };
+        }
       }
       return event;
     },
