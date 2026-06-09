@@ -35,7 +35,7 @@ function getCaptureExceptionHintWithTraceId(
 
   const hintWithTags = hint as SentryCaptureExceptionHintWithTags | undefined;
 
-  if (!traceId || hintWithTags?.tags?.[TRACE_ID_TAG]) {
+  if (!traceId || TRACE_ID_TAG in (hintWithTags?.tags ?? {})) {
     return hint;
   }
 
