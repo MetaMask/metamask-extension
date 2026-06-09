@@ -48,7 +48,6 @@ import {
   type SortDirection,
 } from '../utils/sortMarkets';
 import {
-  VALID_MARKET_FILTERS,
   normalizeMarketFilter,
   type MarketFilter,
 } from '../../../../shared/constants/perps';
@@ -112,15 +111,11 @@ const filterByType = (
         isUncategorizedHip3Market(m, allowedHip3Sources),
       );
     }
-    case 'stock':
-    case 'pre-ipo':
-    case 'index':
-    case 'etf':
-    case 'commodity':
-    case 'forex':
-      return markets.filter((m) => getMarketTypeFilter(m) === filter);
     default: {
-      return markets;
+      // Any controller market category (stock, pre-ipo, index, etf, commodity,
+      // forex, …) is matched generically so a new category works without a new
+      // case here.
+      return markets.filter((m) => getMarketTypeFilter(m) === filter);
     }
   }
 };
@@ -145,8 +140,10 @@ export const MarketListView = () => {
   const initialFilter = useMemo<MarketFilter>(() => {
     const filterParam = searchParams.get('filter');
     if (filterParam) {
+      // normalizeMarketFilter resolves legacy aliases (e.g. `stocks`) and returns
+      // null for unknown values, so no extra validation is needed here.
       const normalizedFilter = normalizeMarketFilter(filterParam);
-      if (normalizedFilter && VALID_MARKET_FILTERS.includes(normalizedFilter)) {
+      if (normalizedFilter) {
         return normalizedFilter;
       }
     }

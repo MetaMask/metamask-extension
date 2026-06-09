@@ -1,4 +1,7 @@
-import type { MarketTypeFilter } from '@metamask/perps-controller';
+import {
+  MARKET_CATEGORIES,
+  type MarketTypeFilter,
+} from '@metamask/perps-controller';
 
 /**
  * Fallback fee rates used when the perpsCalculateFees RPC call fails or times
@@ -23,15 +26,12 @@ export const PERPS_TEST_EN_LOCALE_KEYS = {
 /** Max items shown in the Perps tab Recent Activity preview (matches Activity page slice). */
 export const PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS = 5;
 
+// Market categories are owned by the controller (v8 `MARKET_CATEGORIES`); the UI
+// only adds the `all` and `new` pseudo-filters, so a new core category does not
+// require a change here.
 export const VALID_MARKET_FILTERS = [
   'all',
-  'crypto',
-  'stock',
-  'pre-ipo',
-  'index',
-  'etf',
-  'commodity',
-  'forex',
+  ...MARKET_CATEGORIES,
   'new',
 ] as const satisfies readonly MarketTypeFilter[];
 
