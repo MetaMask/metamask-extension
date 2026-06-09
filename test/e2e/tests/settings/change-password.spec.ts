@@ -2,7 +2,6 @@ import { Mockttp } from 'mockttp';
 import { Browser } from 'selenium-webdriver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import ChangePasswordPage from '../../page-objects/pages/settings/change-password-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import LoginPage from '../../page-objects/pages/login-page';
@@ -18,6 +17,7 @@ import {
 } from '../../page-objects/flows/login.flow';
 import {
   changePasswordAndLockWallet,
+  closeSettings,
   navigateToSecurityAndPassword,
 } from '../../page-objects/flows/settings.flow';
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
@@ -170,8 +170,7 @@ describe('Change wallet password', function () {
         // before the new password is persisted.
         await driver.delay(2_000);
 
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.clickBackButton();
+        await closeSettings(driver);
 
         await lockAndWaitForPasskeyUnlockPage(driver);
 

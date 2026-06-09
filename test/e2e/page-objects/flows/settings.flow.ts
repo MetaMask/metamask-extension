@@ -9,6 +9,22 @@ import ChangePasswordPage from '../pages/settings/change-password-page';
 import { lockAndWaitForLoginPage } from './login.flow';
 
 /**
+ * Close the Settings page and return to the wallet home.
+ *
+ * Clicking the Settings back button returns to home with the account drawer
+ * still open, so this also closes the drawer via the navbar back button.
+ *
+ * @param driver - The WebDriver instance
+ */
+export const closeSettings = async (driver: Driver): Promise<void> => {
+  const settingsPage = new SettingsPage(driver);
+  await settingsPage.clickBackButton();
+
+  const headerNavbar = new HeaderNavbar(driver);
+  await headerNavbar.clickDrawerBackButton();
+};
+
+/**
  * Enable test networks (testnets) from Settings → Networks (opens the network
  * list menu; toggles "Show test networks").
  *
@@ -45,7 +61,7 @@ export const enableNativeTokenAsMainBalance = async (
   await assetsSettings.checkAssetsPageIsLoaded();
   await assetsSettings.toggleShowNativeTokenAsMainBalance();
 
-  await settingsPage.clickBackButton();
+  await closeSettings(driver);
 };
 
 export async function navigateToSecurityAndPassword(
@@ -95,10 +111,9 @@ export async function changePasswordAndLockWallet(
   // Password change triggers an async vault re-encryption. No UI element
   // reliably signals completion, so a brief delay avoids navigating away
   // before the new password is persisted.
-  await driver.delay(3_000);
+  await driver.delay(2_000);
 
-  const settingsPage = new SettingsPage(driver);
-  await settingsPage.clickBackButton();
+  await closeSettings(driver);
 
   await lockAndWaitForLoginPage(driver);
 }

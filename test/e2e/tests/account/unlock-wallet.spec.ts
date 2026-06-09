@@ -11,6 +11,7 @@ import {
   lockAndWaitForPasskeyUnlockPage,
   login,
 } from '../../page-objects/flows/login.flow';
+import { closeSettings } from '../../page-objects/flows/settings.flow';
 import { MOCK_GOOGLE_ACCOUNT, WALLET_PASSWORD } from '../../constants';
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
 import {
@@ -51,7 +52,7 @@ describe('Unlock wallet - ', function () {
     );
   });
 
-  it('should show connections removed modal when max key chain length is reached for social account TEST', async function () {
+  it('should show connections removed modal when max key chain length is reached for social account', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
@@ -95,7 +96,7 @@ describe('Unlock wallet - ', function () {
         // Wait for the password change to be applied to the social login user
         await driver.delay(2_000);
 
-        await settingsPage.clickBackButton();
+        await closeSettings(driver);
 
         await lockAndWaitForLoginPage(driver);
         const loginPage = new LoginPage(driver);

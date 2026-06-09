@@ -1,4 +1,4 @@
-import { Driver, PAGES } from '../../../webdriver/driver';
+import { Driver } from '../../../webdriver/driver';
 
 class SettingsPage {
   private readonly driver: Driver;
@@ -10,6 +10,8 @@ class SettingsPage {
 
   private readonly assetsSettingsButton =
     '[data-testid="settings-tab-item-assets"]';
+
+  private readonly backButton = 'button[aria-label="Back"]';
 
   private readonly developerToolsSettingsButton =
     '[data-testid="settings-tab-item-developer-tools"]';
@@ -39,8 +41,6 @@ class SettingsPage {
 
   private readonly searchButton =
     '[data-testid="settings-header-search-button"]';
-
-  private readonly settingsPageRoot = '[data-testid="settings-root"]';
 
   private readonly settingsPageFullscreenRoot =
     '[data-testid="settings-tab-bar-grouped"]';
@@ -110,11 +110,12 @@ class SettingsPage {
   }
 
   /**
-   * Navigates to wallet home (`/` — same path as app `DEFAULT_ROUTE`) and
-   * waits for the home page. Kept E2E-local to avoid importing `ui` routes.
+   * Close the Settings page and return to the wallet home with the navbar open.
+   * Use closeSettings to perform the full flow of closing settings AND navbar.
    */
   async clickBackButton(): Promise<void> {
-    await this.driver.navigate(PAGES.HOME, { waitForControllers: false });
+    await this.driver.clickElement(this.backButton);
+    await this.driver.clickElementSafe(this.backButton);
   }
 
   async waitForTransactionShieldButtonReady(): Promise<void> {
