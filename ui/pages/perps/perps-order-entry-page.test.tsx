@@ -906,7 +906,9 @@ describe('PerpsOrderEntryPage', () => {
       enterAmount('100');
 
       await waitFor(() => {
-        expect(screen.getByTestId('perps-order-summary-slippage-row')).toBeDisabled();
+        expect(
+          screen.getByTestId('perps-order-summary-slippage-row'),
+        ).toBeDisabled();
       });
 
       fireEvent.click(screen.getByTestId('perps-order-summary-slippage-row'));

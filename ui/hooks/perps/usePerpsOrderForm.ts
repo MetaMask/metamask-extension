@@ -218,37 +218,38 @@ export function usePerpsOrderForm({
   const defaultLeverage = initialLeverage ?? TRADING_DEFAULTS.leverage;
   const hasUserEditedAmount = useRef(false);
 
-  const initialAmountValue = useMemo(() => {
-    if (mode !== 'new') {
-      return '';
-    }
+  const computeInitialAmountValue = useCallback(
+    (leverage: number): string => {
+      if (mode !== 'new') {
+        return '';
+      }
 
-    const defaultAmount = isTestnet
-      ? TRADING_DEFAULTS.amount.testnet
-      : TRADING_DEFAULTS.amount.mainnet;
+      const defaultAmount = isTestnet
+        ? TRADING_DEFAULTS.amount.testnet
+        : TRADING_DEFAULTS.amount.mainnet;
 
-    if (!currentPrice || currentPrice <= 0) {
-      return defaultAmount.toString();
-    }
+      if (!currentPrice || currentPrice <= 0) {
+        return defaultAmount.toString();
+      }
 
-    const tempMaxAmount = getMaxAllowedAmount({
-      spendableBalance: availableBalance,
-      assetPrice: currentPrice,
-      assetSzDecimals: szDecimals ?? 6,
-      leverage: defaultLeverage,
-    });
+      const tempMaxAmount = getMaxAllowedAmount({
+        spendableBalance: availableBalance,
+        assetPrice: currentPrice,
+        assetSzDecimals: szDecimals ?? 6,
+        leverage,
+      });
 
-    return tempMaxAmount < defaultAmount
-      ? tempMaxAmount.toString()
-      : defaultAmount.toString();
-  }, [
-    mode,
-    isTestnet,
-    currentPrice,
-    availableBalance,
-    szDecimals,
-    defaultLeverage,
-  ]);
+      return tempMaxAmount < defaultAmount
+        ? tempMaxAmount.toString()
+        : defaultAmount.toString();
+    },
+    [mode, isTestnet, currentPrice, availableBalance, szDecimals],
+  );
+
+  const initialAmountValue = useMemo(
+    () => computeInitialAmountValue(defaultLeverage),
+    [computeInitialAmountValue, defaultLeverage],
+  );
 
   /**
    * Compute TP/SL and leverage from an existing position for modify mode.
@@ -397,8 +398,8 @@ export function usePerpsOrderForm({
     }
 
     const defaultAmountFields = buildDefaultNewOrderAmountFields(
-      initialAmountValue,
-      defaultLeverage,
+      computeInitialAmountValue(formState.leverage),
+      formState.leverage,
       availableBalance,
     );
     if (!defaultAmountFields.amount) {
@@ -406,7 +407,10 @@ export function usePerpsOrderForm({
     }
 
     setFormState((prev) => {
-      if (prev.amount === defaultAmountFields.amount) {
+      if (
+        prev.amount === defaultAmountFields.amount &&
+        prev.balancePercent === defaultAmountFields.balancePercent
+      ) {
         return prev;
       }
       return {
@@ -414,7 +418,12 @@ export function usePerpsOrderForm({
         ...defaultAmountFields,
       };
     });
-  }, [mode, initialAmountValue, defaultLeverage, availableBalance]);
+  }, [
+    mode,
+    computeInitialAmountValue,
+    formState.leverage,
+    availableBalance,
+  ]);
 
   // Notify parent of form state changes
   useEffect(() => {

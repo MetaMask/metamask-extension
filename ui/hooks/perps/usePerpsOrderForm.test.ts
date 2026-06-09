@@ -116,6 +116,43 @@ describe('usePerpsOrderForm', () => {
       );
     });
 
+    it('recaps default order amount using current leverage after balance increases', () => {
+      const props = {
+        ...defaultOptions,
+        currentPrice: 45000,
+        availableBalance: 10,
+        szDecimals: 6,
+        initialLeverage: 3,
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleLeverageChange(10);
+      });
+
+      props.availableBalance = 1000;
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.amount).toBe('10');
+      const marginAtTenX = 10 / 10;
+      const expectedBalancePercent =
+        Math.round((marginAtTenX / 1000) * 100 * 100) / 100;
+      expect(result.current.formState.balancePercent).toBe(
+        expectedBalancePercent,
+      );
+      const marginAtDefaultLeverage = 10 / 3;
+      const balancePercentAtDefaultLeverage =
+        Math.round((marginAtDefaultLeverage / 1000) * 100 * 100) / 100;
+      expect(result.current.formState.balancePercent).not.toBe(
+        balancePercentAtDefaultLeverage,
+      );
+    });
+
     it('recaps default order amount when tradeable balance increases', () => {
       const props = {
         ...defaultOptions,
