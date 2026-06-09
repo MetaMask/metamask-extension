@@ -84,13 +84,21 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
     networkFilterForMetrics,
   };
 
+  const hasTrackedScreenOpenedRef = useRef(false);
+
   // Fire ActivityScreenOpened once the list has settled — same condition the
   // VirtualizedList uses to choose between loading state and empty state.
   // Guarded by `!filter` so it never fires on asset detail pages.
   useEffect(() => {
-    if (filter || networks === null || isInitialLoading) {
+    if (
+      filter ||
+      networks === null ||
+      isInitialLoading ||
+      hasTrackedScreenOpenedRef.current
+    ) {
       return;
     }
+    hasTrackedScreenOpenedRef.current = true;
 
     const {
       groupedItems: grouped,
