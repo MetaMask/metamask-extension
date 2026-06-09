@@ -26,6 +26,11 @@
     "unconnectedAccountAlertShownOrigins": "object",
     "web3ShimUsageOrigins": "object"
   },
+  "AnalyticsController": {
+    "analyticsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
+    "eventQueue": "object",
+    "optedIn": true
+  },
   "AnnouncementController": { "announcements": "object" },
   "AppMetadataController": {
     "currentAppVersion": "string",
@@ -88,6 +93,7 @@
     "pendingApprovalCount": "number",
     "pendingApprovals": "object"
   },
+  "AssetsController": "object",
   "AuthenticationController": {
     "isSignedIn": "boolean",
     "needsProfilePairing": "boolean",
@@ -95,6 +101,8 @@
   },
   "BridgeController": {
     "assetExchangeRates": "object",
+    "batchSellTrades": null,
+    "batchSellTradesLoadingStatus": null,
     "minimumBalanceForRentExemptionInLamports": "string",
     "quoteFetchError": null,
     "quoteRequest": "object",
@@ -111,6 +119,10 @@
   "ClaimsController": "object",
   "ClaimsService": "undefined",
   "ClientController": "object",
+  "ComplianceController": {
+    "lastCheckedAt": null,
+    "walletComplianceStatusMap": "object"
+  },
   "ConnectivityController": { "connectivityStatus": "online" },
   "CronjobController": { "events": "object" },
   "CurrencyController": {
@@ -121,9 +133,9 @@
         "usdConversionRate": null
       },
       "ETH": {
-        "conversionDate": "number",
+        "conversionDate": "object",
         "conversionRate": 1700,
-        "usdConversionRate": 1700
+        "usdConversionRate": null
       },
       "MON": {
         "conversionDate": "object",
@@ -171,13 +183,11 @@
   },
   "LoggingController": { "logs": "object" },
   "MetaMetricsController": {
+    "completedMetaMetricsOnboarding": true,
     "dataCollectionForMarketing": "boolean",
     "eventsBeforeMetricsOptIn": "object",
     "fragments": "object",
     "marketingCampaignCookieId": null,
-    "metaMetricsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
-    "participateInMetaMetrics": true,
-    "segmentApiCalls": "object",
     "tracesBeforeMetricsOptIn": "object",
     "traits": "object"
   },
@@ -381,7 +391,7 @@
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SubscriptionController": "object",
   "TokenBalancesController": { "tokenBalances": "object" },
-  "TokenListController": { "tokensChainsCache": { "0x539": "object" } },
+  "TokenListController": { "tokensChainsCache": {} },
   "TokenRatesController": { "marketData": "object" },
   "TokensController": {
     "allDetectedTokens": {},

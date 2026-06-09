@@ -43,6 +43,35 @@ async function mockSpotPriceV3ForDai(mockServer: Mockttp) {
         }
         return { statusCode: 200, json: result };
       }),
+    await mockServer
+      .forGet(/^https:\/\/token\.api\.cx\.metamask\.io\/tokens\/search/u)
+      .always()
+      .thenCallback((request) => {
+        const url = new URL(request.url);
+        const query = (url.searchParams.get('query') ?? '')
+          .trim()
+          .toLowerCase();
+        const data =
+          query === 'dai'
+            ? [
+                {
+                  assetId: DAI_CAIP_ASSET,
+                  symbol: 'DAI',
+                  name: 'Dai Stablecoin',
+                  decimals: 18,
+                },
+              ]
+            : [];
+        return {
+          statusCode: 200,
+          json: {
+            data,
+            count: data.length,
+            totalCount: data.length,
+            pageInfo: { hasNextPage: false, endCursor: '' },
+          },
+        };
+      }),
   ];
 }
 
@@ -79,6 +108,7 @@ describe('Send ERC20 - Mainnet', function () {
           tokenName: 'DAI',
           networkName: MAINNET_DISPLAY_NAME,
         });
+        await assetListPage.dismissTokenImportedMessage();
         await assetListPage.clickOnAsset('Dai Stablecoin');
 
         // Send DAI

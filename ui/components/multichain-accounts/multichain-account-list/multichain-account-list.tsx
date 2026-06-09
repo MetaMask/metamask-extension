@@ -128,7 +128,9 @@ export const MultichainAccountList = ({
   const [isAccountRenameModalOpen, setIsAccountRenameModalOpen] =
     useState(false);
 
-  const [renameAccountGroupId, setRenameAccountGroupId] = useState(undefined);
+  const [renameAccountGroupId, setRenameAccountGroupId] = useState<
+    string | undefined
+  >(undefined);
 
   const [openMenuAccountId, setOpenMenuAccountId] =
     useState<AccountGroupId | null>(null);
@@ -181,7 +183,7 @@ export const MultichainAccountList = ({
   }, [setIsAccountRenameModalOpen, setRenameAccountGroupId]);
 
   const handleAccountRenameAction = useCallback(
-    (accountGroupId) => {
+    (accountGroupId: string) => {
       setRenameAccountGroupId(accountGroupId);
       setIsAccountRenameModalOpen(true);
       setOpenMenuAccountId(null);

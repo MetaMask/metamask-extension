@@ -1,0 +1,199 @@
+import React, { useCallback, useEffect, useLayoutEffect, useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import { CaipChainId } from '@metamask/utils';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
+import { formatAddressToCaipReference } from '@metamask/bridge-controller';
+import {
+  getAvailableBatchSellSwapAssetsForNetwork,
+  getAvailableBatchSellNetworks,
+  getBatchSellDestStablecoinsForNetwork,
+} from '../../../../ducks/batch-sell/selectors';
+import type { BridgeAppState } from '../../../../ducks/bridge/selectors';
+import { BatchSellAsset } from '../../../../ducks/batch-sell/types';
+import { useSortBatchSellAssetsByBalance } from '../../../../hooks/batch-sell/useSortBatchSellAssetsByBalance';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useBatchSellInfoModal } from '../../hooks/useBatchSellInfoModal';
+import { useBatchSellNavigation } from '../../../../hooks/batch-sell/useBatchSellNavigation';
+import { useBatchSellSelection } from '../../providers/batch-sell-selection-provider';
+import { MIN_SELECTED_ALLOWED_TOKENS } from '../../../../constants/batch-sell';
+import { transitionForward } from '../../../../components/ui/transition';
+import useBridging from '../../../../hooks/bridge/useBridging';
+import { MetaMetricsSwapsEventSource } from '../../../../../shared/constants/metametrics';
+import { endTrace, TraceName } from '../../../../../shared/lib/trace';
+import { SortingToolbar } from './components/sorting-toolbar';
+import { NetworkToolbar } from './components/network-toolbar';
+import { Header } from './components/header';
+import { Footer } from './components/footer';
+import { AssetList } from './components/asset-list';
+import { BatchSellEmptySelectTokens } from './components/batch-sell-empty-select-tokens';
+
+export const BatchSellSelectPage = () => {
+  const t = useI18nContext();
+  const { openBridgeExperience } = useBridging();
+  const { openModal, closeModal } = useBatchSellInfoModal();
+  const { navigateToBatchSellConfirmPage } = useBatchSellNavigation();
+  const {
+    selectedNetworkChainId,
+    selectedAssetsId,
+    assetsOrderByBalance,
+    setSelectedNetworkChainId,
+    setSelectedAssetsId,
+    setAssetsOrderByBalance,
+  } = useBatchSellSelection();
+
+  const availableBatchSellNetworksList = useSelector(
+    getAvailableBatchSellNetworks,
+  );
+
+  const availableNetworkChainIds = useMemo(
+    () => availableBatchSellNetworksList.map((n) => n.chainId),
+    [availableBatchSellNetworksList],
+  );
+
+  useEffect(() => {
+    endTrace({ name: TraceName.BatchSellModal });
+  }, []);
+
+  useLayoutEffect(() => {
+    // Default to the first available network when none is selected yet.
+    if (!selectedNetworkChainId && availableNetworkChainIds[0]) {
+      setSelectedNetworkChainId(availableNetworkChainIds[0]);
+    }
+  }, [
+    availableNetworkChainIds,
+    selectedNetworkChainId,
+    setSelectedNetworkChainId,
+  ]);
+
+  const availableBatchSellAssetsForNetworkList = useSelector(
+    (state: BridgeAppState) =>
+      getAvailableBatchSellSwapAssetsForNetwork(state, selectedNetworkChainId),
+  );
+
+  const batchSellDestStablecoins = useSelector((state: BridgeAppState) =>
+    getBatchSellDestStablecoinsForNetwork(
+      state,
+      selectedNetworkChainId ?? undefined,
+    ),
+  );
+
+  const orderedAvailableBatchSellAssetsForNetworkList =
+    useSortBatchSellAssetsByBalance(
+      availableBatchSellAssetsForNetworkList,
+      assetsOrderByBalance,
+    );
+
+  const onNetworkSelect = useCallback(
+    (chainId: CaipChainId) => {
+      setSelectedAssetsId([]);
+      setSelectedNetworkChainId(chainId);
+    },
+    [setSelectedAssetsId, setSelectedNetworkChainId],
+  );
+
+  const onSelectAsset = useCallback(
+    (asset: BatchSellAsset) =>
+      setSelectedAssetsId((assets) =>
+        assets.includes(asset.assetId) ? assets : [...assets, asset.assetId],
+      ),
+    [setSelectedAssetsId],
+  );
+
+  const onDeselectAsset = useCallback(
+    (asset: BatchSellAsset) => {
+      setSelectedAssetsId((assets) =>
+        assets.filter((_assetId) => _assetId !== asset.assetId),
+      );
+    },
+    [setSelectedAssetsId],
+  );
+
+  const navigateToBridgePageAndPreselect = useCallback(() => {
+    closeModal();
+    const selectedAsset = availableBatchSellAssetsForNetworkList.find(
+      (asset) => asset.assetId === selectedAssetsId[0],
+    );
+    const sourceToken = selectedAsset
+      ? {
+          symbol: selectedAsset.symbol,
+          address: formatAddressToCaipReference(selectedAsset.assetId),
+          name: selectedAsset.name,
+          chainId: selectedAsset.chainId,
+        }
+      : undefined;
+
+    const destTokenAssetId = batchSellDestStablecoins[0];
+
+    transitionForward(() =>
+      openBridgeExperience(
+        MetaMetricsSwapsEventSource.MainView,
+        sourceToken,
+        destTokenAssetId,
+      ),
+    );
+  }, [
+    availableBatchSellAssetsForNetworkList,
+    batchSellDestStablecoins,
+    closeModal,
+    openBridgeExperience,
+    selectedAssetsId,
+  ]);
+
+  const onSubmit = useCallback(() => {
+    if (selectedAssetsId.length < MIN_SELECTED_ALLOWED_TOKENS) {
+      openModal({
+        titleProps: {
+          children: t('batchSellHighRateAlert'),
+        },
+        descriptionProps: {
+          children: t('batchSellHightRateAlertModalDescription'),
+        },
+        ctaProps: {
+          text: t('yesSwap'),
+          onClick: navigateToBridgePageAndPreselect,
+        },
+      });
+      return;
+    }
+
+    transitionForward(navigateToBatchSellConfirmPage);
+  }, [
+    selectedAssetsId,
+    openModal,
+    navigateToBatchSellConfirmPage,
+    navigateToBridgePageAndPreselect,
+    t,
+  ]);
+
+  if (!selectedNetworkChainId) {
+    return <BatchSellEmptySelectTokens />;
+  }
+
+  return (
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      className="h-full"
+      data-testid="batch-sell-select-page"
+    >
+      <Header />
+      <NetworkToolbar
+        networks={availableBatchSellNetworksList}
+        selectedNetworkChainId={selectedNetworkChainId}
+        onClick={onNetworkSelect}
+      />
+      <SortingToolbar
+        balance={{
+          order: assetsOrderByBalance,
+          onClick: setAssetsOrderByBalance,
+        }}
+      />
+      <AssetList
+        selectedAssetsId={selectedAssetsId}
+        assets={orderedAvailableBatchSellAssetsForNetworkList}
+        onSelect={onSelectAsset}
+        onDeselect={onDeselectAsset}
+      />
+      <Footer selectedAssetsId={selectedAssetsId} onSubmit={onSubmit} />
+    </Box>
+  );
+};

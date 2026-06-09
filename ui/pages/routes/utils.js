@@ -1,6 +1,5 @@
 import { matchPath } from 'react-router-dom';
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
@@ -28,6 +27,7 @@ import {
   GATOR_PERMISSIONS,
   TOKEN_TRANSFER_ROUTE,
   REVIEW_GATOR_PERMISSIONS_ROUTE,
+  BATCH_SELL_ROOT_ROUTE,
 } from '../../helpers/constants/routes';
 
 export function isConfirmTransactionRoute(pathname) {
@@ -252,6 +252,20 @@ export function hideAppHeader(props) {
     ),
   );
   if (isCrossChainSwapsPage) {
+    return true;
+  }
+
+  const isBatchSellPage = Boolean(
+    matchPath(
+      {
+        path: `${BATCH_SELL_ROOT_ROUTE}`,
+        end: false,
+      },
+      location.pathname,
+    ),
+  );
+
+  if (isBatchSellPage) {
     return true;
   }
 

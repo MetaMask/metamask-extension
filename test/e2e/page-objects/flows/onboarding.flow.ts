@@ -1,5 +1,4 @@
 import { Browser } from 'selenium-webdriver';
-import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { getCleanAppState } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import OnboardingMetricsPage from '../pages/onboarding/onboarding-metrics-page';
@@ -15,6 +14,7 @@ import HeaderNavbar from '../pages/header-navbar';
 import HomePage from '../pages/home/homepage';
 import LoginPage from '../pages/login-page';
 import TermsOfUseUpdateModal from '../pages/dialog/terms-of-use-update-modal';
+import { AuthConnection } from '../../../../shared/constants/onboarding';
 
 /**
  * Helper function to handle post-onboarding navigation for sidepanel builds.
@@ -142,7 +142,16 @@ export const createNewWalletWithSocialLoginOnboardingFlow = async ({
     dataCollectionForMarketing,
   });
 
+  const originalWindowHandle = await driver.getCurrentWindowHandle();
   await startOnboardingPage.createWalletWithSocialLogin(authConnection);
+
+  if (authConnection === AuthConnection.Telegram) {
+    await recoverFromTelegramAuthTab({
+      driver,
+      originalWindowHandle,
+    });
+  }
+
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
   await onboardingPasswordPage.checkPageIsLoaded();
 
@@ -185,7 +194,15 @@ export const importWalletWithSocialLoginOnboardingFlow = async ({
     dataCollectionForMarketing,
   });
 
+  const originalWindowHandle = await driver.getCurrentWindowHandle();
   await startOnboardingPage.importWalletWithSocialLogin(authConnection);
+
+  if (authConnection === AuthConnection.Telegram) {
+    await recoverFromTelegramAuthTab({
+      driver,
+      originalWindowHandle,
+    });
+  }
 
   const loginPage = new LoginPage(driver);
   await loginPage.checkPageIsLoaded();
@@ -198,6 +215,18 @@ export const importWalletWithSocialLoginOnboardingFlow = async ({
   //   });
   // }
 };
+
+async function recoverFromTelegramAuthTab({
+  driver,
+  originalWindowHandle,
+}: {
+  driver: Driver;
+  originalWindowHandle: string;
+}): Promise<void> {
+  // OAuthService resolves after the redirect is handled and the auth tab close
+  // is already in flight, so the E2E flow only needs to restore focus.
+  await driver.switchToWindow(originalWindowHandle);
+}
 
 /**
  * Create new wallet onboarding flow
@@ -491,6 +520,66 @@ export const completeOnboardingWithPasskey = async ({
   const secureWalletPage = new SecureWalletPage(driver);
   await secureWalletPage.checkPageIsLoaded();
   await secureWalletPage.revealAndConfirmSRP();
+
+  if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
+    await onboardingMetricsFlow(driver);
+  }
+
+  const onboardingCompletePage = new OnboardingCompletePage(driver);
+  await onboardingCompletePage.checkPageIsLoaded();
+  await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
+  await onboardingCompletePage.completeOnboarding();
+
+  await handleSidepanelPostOnboarding(driver);
+
+  const homePage = new HomePage(driver);
+  await homePage.checkPageIsLoaded();
+  await homePage.waitForLoadingOverlayToDisappear();
+};
+
+/**
+ * Complete import SRP onboarding flow with passkey enrollment.
+ * Uses the real WebAuthn enrollment flow (requires a virtual authenticator
+ * to be attached to the browser before calling this).
+ *
+ * @param options - The options object.
+ * @param options.driver - The WebDriver instance.
+ * @param [options.seedPhrase] - The seed phrase to import. Defaults to E2E_SRP.
+ * @param [options.password] - The password to use. Defaults to WALLET_PASSWORD.
+ */
+export const completeImportSRPOnboardingWithPasskey = async ({
+  driver,
+  seedPhrase = E2E_SRP,
+  password = WALLET_PASSWORD,
+}: {
+  driver: Driver;
+  seedPhrase?: string;
+  password?: string;
+}): Promise<void> => {
+  console.log('Starting import SRP onboarding with passkey enrollment');
+
+  const startOnboardingPage = await goToOnboardingWelcomeLoginPage({
+    driver,
+    participateInMetaMetrics: false,
+    needNavigateToNewPage: true,
+    dataCollectionForMarketing: false,
+  });
+  await startOnboardingPage.importWallet();
+
+  const onboardingSrpPage = new OnboardingSrpPage(driver);
+  await onboardingSrpPage.checkPageIsLoaded();
+  await onboardingSrpPage.fillSrp(seedPhrase);
+  await onboardingSrpPage.clickConfirmButton();
+
+  const onboardingPasswordPage = new OnboardingPasswordPage(driver);
+  await onboardingPasswordPage.checkPageIsLoaded();
+  await onboardingPasswordPage.createWalletPassword(password);
+
+  const setupPasskeyPage = new SetupPasskeyPage(driver);
+  await setupPasskeyPage.checkPageIsLoaded();
+  await setupPasskeyPage.clickSetUpPasskey();
+  await setupPasskeyPage.waitForEnrollmentSteps();
+  await setupPasskeyPage.waitForEnrollmentSuccess();
 
   if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
     await onboardingMetricsFlow(driver);

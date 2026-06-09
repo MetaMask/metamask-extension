@@ -13,11 +13,11 @@ type TutorialFooterProps = {
   isLastStep: boolean;
 };
 
-const TutorialFooter: React.FC<TutorialFooterProps> = ({
+const TutorialFooter = ({
   onContinue,
   onSkip,
   isLastStep,
-}) => {
+}: TutorialFooterProps) => {
   const t = useI18nContext();
 
   return (

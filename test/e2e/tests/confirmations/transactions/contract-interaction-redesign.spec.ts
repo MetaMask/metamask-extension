@@ -149,7 +149,9 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           await homePage.goToActivityList();
           const activityList = new ActivityListPage(driver);
           await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
-          await activityList.checkTxAction({ action: 'Deposit' });
+          await activityList.checkTxAction({
+            action: 'Contract interaction',
+          });
         },
       );
     });

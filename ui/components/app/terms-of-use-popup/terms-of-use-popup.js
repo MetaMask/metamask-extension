@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
+import { Box, BoxAlignItems } from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
 import {
-  Box,
   Button,
   ButtonLink,
   ButtonPrimary,
@@ -27,8 +27,6 @@ import {
   AlignItems,
   BlockSize,
   BorderRadius,
-  Display,
-  FlexDirection,
   TextAlign,
   TextColor,
   TextVariant,
@@ -110,10 +108,7 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
             {t('termsOfUseTitle')}
           </Text>
         </ModalHeader>
-        <Box
-          display={Display.Flex}
-          className="terms-of-use-popup__body-container"
-        >
+        <Box className="flex terms-of-use-popup__body-container">
           <Box ref={scrollContainerRef} className="terms-of-use-popup__body">
             <Text variant={TextVariant.bodySm} marginBottom={4}>
               IMPORTANT NOTICE: THIS AGREEMENT IS SUBJECT TO BINDING ARBITRATION
@@ -998,38 +993,36 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
               please provide us a written notice at the address below with the
               following information:
             </Text>
-            <Box
-              as="ol"
-              marginLeft={4}
-              className="terms-of-use-old__terms-list"
-            >
-              <Text as="li" variant={TextVariant.bodySm} marginBottom={2}>
-                an electronic or physical signature of the person authorized to
-                act on behalf of the owner of the copyright or other
-                intellectual property interest;
-              </Text>
-              <Text as="li" variant={TextVariant.bodySm} marginBottom={2}>
-                a description of the copyrighted work or other intellectual
-                property that you claim has been infringed;
-              </Text>
-              <Text as="li" variant={TextVariant.bodySm} marginBottom={2}>
-                a description of where the material that you claim is infringing
-                is located with respect to the Offerings;
-              </Text>
-              <Text as="li" variant={TextVariant.bodySm} marginBottom={2}>
-                your address, telephone number, and email address;
-              </Text>
-              <Text as="li" variant={TextVariant.bodySm} marginBottom={2}>
-                a statement by you that you have a good faith belief that the
-                disputed use is not authorized by the copyright owner, its
-                agent, or the law;
-              </Text>
-              <Text as="li" variant={TextVariant.bodySm} marginBottom={2}>
-                a statement by you, made under penalty of perjury, that the
-                above information in your notice is accurate and that you are
-                the copyright or intellectual property owner or authorized to
-                act on the copyright or intellectual property owner’s behalf.
-              </Text>
+            <Box asChild marginLeft={4}>
+              <ol className="terms-of-use-old__terms-list">
+                <Text as="li" variant={TextVariant.bodySm} marginBottom={2}>
+                  an electronic or physical signature of the person authorized
+                  to act on behalf of the owner of the copyright or other
+                  intellectual property interest;
+                </Text>
+                <Text as="li" variant={TextVariant.bodySm} marginBottom={2}>
+                  a description of the copyrighted work or other intellectual
+                  property that you claim has been infringed;
+                </Text>
+                <Text as="li" variant={TextVariant.bodySm} marginBottom={2}>
+                  a description of where the material that you claim is
+                  infringing is located with respect to the Offerings;
+                </Text>
+                <Text as="li" variant={TextVariant.bodySm} marginBottom={2}>
+                  your address, telephone number, and email address;
+                </Text>
+                <Text as="li" variant={TextVariant.bodySm} marginBottom={2}>
+                  a statement by you that you have a good faith belief that the
+                  disputed use is not authorized by the copyright owner, its
+                  agent, or the law;
+                </Text>
+                <Text as="li" variant={TextVariant.bodySm} marginBottom={2}>
+                  a statement by you, made under penalty of perjury, that the
+                  above information in your notice is accurate and that you are
+                  the copyright or intellectual property owner or authorized to
+                  act on the copyright or intellectual property owner’s behalf.
+                </Text>
+              </ol>
             </Box>
             <Text variant={TextVariant.bodySm} marginBottom={4}>
               You can reach us at:
@@ -1057,50 +1050,48 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
               may be updated by us from time to time. You agree not to, and not
               to allow third parties to, use the Offerings:
             </Text>
-            <Box
-              as="ol"
-              marginLeft={4}
-              className="terms-of-use-old__terms-list"
-            >
-              <Text as="li" variant={TextVariant.bodySm} marginBottom={2}>
-                to violate, or encourage the violation of, the legal rights of
-                others (for example, this may include allowing End Users to
-                infringe or misappropriate the intellectual property rights of
-                others in violation of the Digital Millennium Copyright Act);
-              </Text>
-              <Text as="li" variant={TextVariant.bodySm} marginBottom={2}>
-                to engage in, promote or encourage any illegal or infringing
-                content;
-              </Text>
-              <Text as="li" variant={TextVariant.bodySm} marginBottom={2}>
-                for any unlawful, invasive, infringing, defamatory or fraudulent
-                purpose (for example, this may include phishing, creating a
-                pyramid scheme or mirroring a website);
-              </Text>
-              <Text as="li" variant={TextVariant.bodySm} marginBottom={2}>
-                to intentionally distribute viruses, worms, Trojan horses,
-                corrupted files, hoaxes, or other items of a destructive or
-                deceptive nature;
-              </Text>
-              <Text as="li" variant={TextVariant.bodySm} marginBottom={2}>
-                to interfere with the use of the Offerings, or the equipment
-                used to provide the Offerings, by customers, authorized
-                resellers, or other authorized users;
-              </Text>
-              <Text as="li" variant={TextVariant.bodySm} marginBottom={2}>
-                to disable, interfere with or circumvent any aspect of the
-                Offerings (for example, any thresholds or limits);
-              </Text>
-              <Text as="li" variant={TextVariant.bodySm} marginBottom={2}>
-                to generate, distribute, publish or facilitate unsolicited mass
-                email, promotions, advertising or other solicitation; or
-              </Text>
-              <Text as="li" variant={TextVariant.bodySm} marginBottom={2}>
-                to use the Offerings, or any interfaces provided with the
-                Offerings, to access any other product or service in a manner
-                that violates the terms of service of such other product or
-                service.
-              </Text>
+            <Box asChild marginLeft={4}>
+              <ol className="terms-of-use-old__terms-list">
+                <Text as="li" variant={TextVariant.bodySm} marginBottom={2}>
+                  to violate, or encourage the violation of, the legal rights of
+                  others (for example, this may include allowing End Users to
+                  infringe or misappropriate the intellectual property rights of
+                  others in violation of the Digital Millennium Copyright Act);
+                </Text>
+                <Text as="li" variant={TextVariant.bodySm} marginBottom={2}>
+                  to engage in, promote or encourage any illegal or infringing
+                  content;
+                </Text>
+                <Text as="li" variant={TextVariant.bodySm} marginBottom={2}>
+                  for any unlawful, invasive, infringing, defamatory or
+                  fraudulent purpose (for example, this may include phishing,
+                  creating a pyramid scheme or mirroring a website);
+                </Text>
+                <Text as="li" variant={TextVariant.bodySm} marginBottom={2}>
+                  to intentionally distribute viruses, worms, Trojan horses,
+                  corrupted files, hoaxes, or other items of a destructive or
+                  deceptive nature;
+                </Text>
+                <Text as="li" variant={TextVariant.bodySm} marginBottom={2}>
+                  to interfere with the use of the Offerings, or the equipment
+                  used to provide the Offerings, by customers, authorized
+                  resellers, or other authorized users;
+                </Text>
+                <Text as="li" variant={TextVariant.bodySm} marginBottom={2}>
+                  to disable, interfere with or circumvent any aspect of the
+                  Offerings (for example, any thresholds or limits);
+                </Text>
+                <Text as="li" variant={TextVariant.bodySm} marginBottom={2}>
+                  to generate, distribute, publish or facilitate unsolicited
+                  mass email, promotions, advertising or other solicitation; or
+                </Text>
+                <Text as="li" variant={TextVariant.bodySm} marginBottom={2}>
+                  to use the Offerings, or any interfaces provided with the
+                  Offerings, to access any other product or service in a manner
+                  that violates the terms of service of such other product or
+                  service.
+                </Text>
+              </ol>
             </Box>
             <Text variant={TextVariant.bodySm} marginBottom={4}>
               “API” means an application program interface.
@@ -1224,12 +1215,9 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
         </Box>
         {/* Not using ModalFooter since the confirm button text can't be changed to `agree`*/}
         <Box
-          className="terms-of-use-popup__footer"
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          alignItems={AlignItems.center}
+          className="terms-of-use-popup__footer flex flex-col mx-4"
+          alignItems={BoxAlignItems.Center}
           marginTop={6}
-          marginInline={4}
           paddingTop={6}
           gap={6}
         >
