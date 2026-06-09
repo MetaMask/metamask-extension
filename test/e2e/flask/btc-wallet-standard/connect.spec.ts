@@ -1,6 +1,7 @@
 // import { strict as assert } from 'assert';
 import {
   TestDappBitcoin,
+  WalletConnectionType,
   availableConnectionTypes,
 } from '../../page-objects/pages/test-dapp-bitcoin';
 import { connectBitcoinTestDapp } from '../../page-objects/flows/bitcoin-dapp.flow';
@@ -165,6 +166,32 @@ describe('Bitcoin Wallet Standard Connect - e2e tests', function () {
           await testDapp.switchTo();
 
           await testDapp.findConnectedAccount(account2Short);
+        },
+      );
+    });
+  });
+
+  describe('Page refresh', function () {
+    it('Should not disconnect the dapp', async function () {
+      await withBtcWalletStandardSnap(
+        {
+          ...DEFAULT_BITCOIN_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappBitcoin(driver);
+          await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
+          await connectBitcoinTestDapp(driver, testDapp, {
+            connectionLibrary: WalletConnectionType.Standard,
+          });
+
+          await testDapp.findConnectedAccount(account1Short);
+
+          await driver.refresh();
+
+          await testDapp.checkPageIsLoaded();
+          await testDapp.findConnectedAccount(account1Short);
         },
       );
     });
