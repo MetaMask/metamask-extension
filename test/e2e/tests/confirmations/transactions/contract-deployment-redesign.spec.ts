@@ -42,7 +42,9 @@ describe('Confirmation Redesign Contract Deployment Component', function () {
         await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);
         await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
-        await activityList.checkTxAction({ action: 'Contract deployment' });
+        await activityList.checkTxAction({
+          action: 'Contract interaction',
+        });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
       },
     );

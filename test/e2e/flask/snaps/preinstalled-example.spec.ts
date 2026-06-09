@@ -3,6 +3,7 @@ import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
+import { closeSettings } from '../../page-objects/flows/settings.flow';
 import {
   DAPP_PATH,
   MOCK_META_METRICS_ID,
@@ -67,7 +68,6 @@ describe('Preinstalled example Snap', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
-        const settingsPage = new SettingsPage(driver);
         const preInstalledExample = new PreinstalledExampleSettings(driver);
         await navigateToPreInstalledExample(driver);
 
@@ -77,7 +77,7 @@ describe('Preinstalled example Snap', function () {
         await preInstalledExample.checkIsToggleOn();
         await preInstalledExample.checkSelectedRadioOption('option2');
         await preInstalledExample.checkSelectedDropdownOption('option2');
-        await settingsPage.clickBackButton();
+        await closeSettings(driver);
 
         // Navigate to `test-snaps` page, we don't need to connect because the Snap uses
         // initialConnections to pre-approve the dapp.
