@@ -15,11 +15,18 @@ const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
 const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 
 export class TestDappBitcoin {
-  private readonly driver: Driver;
-
   private readonly bitcoinChainDisplay = {
     selector: dataTestIds.testPage.header.network,
     value: 'bitcoin:mainnet',
+  };
+
+  private readonly connectedAccountSelectorTestId = `[data-testid="${dataTestIds.testPage.header.account}"]`;
+
+  private readonly driver: Driver;
+
+  private readonly headerConnectionNotConnectedStateSelector = {
+    css: `[data-testid="${dataTestIds.testPage.header.connectionStatus}"]`,
+    text: 'Not connected',
   };
 
   private readonly headerConnectionStateSelector = {
@@ -27,24 +34,8 @@ export class TestDappBitcoin {
     text: 'Connected',
   };
 
-  private readonly headerConnectionNotConnectedStateSelector = {
-    css: `[data-testid="${dataTestIds.testPage.header.connectionStatus}"]`,
-    text: 'Not connected',
-  };
-
-  private readonly connectedAccountSelectorTestId = `[data-testid="${dataTestIds.testPage.header.account}"]`;
-
   constructor(driver: Driver) {
     this.driver = driver;
-  }
-
-  async openTestDappPage({
-    url = DAPP_URL,
-  }: {
-    url?: string;
-  } = {}): Promise<void> {
-    await this.driver.openNewPage(url);
-    await this.checkPageIsLoaded();
   }
 
   async checkPageIsLoaded(): Promise<void> {
@@ -61,21 +52,6 @@ export class TestDappBitcoin {
       throw e;
     }
     console.log('Bitcoin Test Dapp page is loaded');
-  }
-
-  async switchTo() {
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.BitcoinTestDApp);
-    await this.checkPageIsLoaded();
-  }
-
-  async findHeaderConnectedState() {
-    await this.driver.findElement(this.headerConnectionStateSelector);
-  }
-
-  async findHeaderNotConnectedState() {
-    await this.driver.findElement(
-      this.headerConnectionNotConnectedStateSelector,
-    );
   }
 
   async connectToWallet(
@@ -123,6 +99,25 @@ export class TestDappBitcoin {
     });
   }
 
+  async findHeaderConnectedState() {
+    await this.driver.findElement(this.headerConnectionStateSelector);
+  }
+
+  async findHeaderNotConnectedState() {
+    await this.driver.findElement(
+      this.headerConnectionNotConnectedStateSelector,
+    );
+  }
+
+  async openTestDappPage({
+    url = DAPP_URL,
+  }: {
+    url?: string;
+  } = {}): Promise<void> {
+    await this.driver.openNewPage(url);
+    await this.checkPageIsLoaded();
+  }
+
   async selectNetwork(label: 'Mainnet' | 'Testnet') {
     const selectEl = await this.driver.findElement({
       testId: dataTestIds.testPage.header.network,
@@ -130,29 +125,10 @@ export class TestDappBitcoin {
     await selectEl.sendKeys(label);
   }
 
-  async setMessage(message: string) {
-    await this.setInputValue(dataTestIds.testPage.signMessage.message, message);
-  }
-
-  async signMessage() {
+  async sendTransaction() {
     await this.driver.clickElement({
-      testId: dataTestIds.testPage.signMessage.signMessage,
+      testId: dataTestIds.testPage.sendTransaction.sendTransaction,
     });
-  }
-
-  async verifySignedMessage(signedMessage: string) {
-    const signedMessageElement = await this.driver.waitForSelector(
-      `[data-testid="${dataTestIds.testPage.signMessage.signedMessage}"]`,
-    );
-
-    assert.strictEqual(await signedMessageElement.getText(), signedMessage);
-  }
-
-  async setRecepient(message: string) {
-    await this.setInputValue(
-      dataTestIds.testPage.sendTransaction.recipient,
-      message,
-    );
   }
 
   async setAmount(message: string) {
@@ -162,27 +138,58 @@ export class TestDappBitcoin {
     );
   }
 
-  async sendTransaction() {
-    await this.driver.clickElement({
-      testId: dataTestIds.testPage.sendTransaction.sendTransaction,
-    });
+  private async setInputValue(id: string, value: string) {
+    await this.driver.fill({ testId: id }, value);
   }
 
-  async verifyTransactionHash(transactionHash: string) {
-    await this.driver.findElement({
-      css: `[data-testid="${dataTestIds.testPage.sendTransaction.txId}"]`,
-      text: transactionHash,
-    });
+  async setMessage(message: string) {
+    await this.setInputValue(dataTestIds.testPage.signMessage.message, message);
   }
 
   async setPsbt(psbt: string) {
     await this.setInputValue(dataTestIds.testPage.signTransaction.psbt, psbt);
   }
 
+  async setRecepient(message: string) {
+    await this.setInputValue(
+      dataTestIds.testPage.sendTransaction.recipient,
+      message,
+    );
+  }
+
+  async signMessage() {
+    await this.driver.clickElement({
+      testId: dataTestIds.testPage.signMessage.signMessage,
+    });
+  }
+
   async signPsbt() {
     await this.driver.clickElement({
       testId: dataTestIds.testPage.signTransaction.signTransaction,
     });
+  }
+
+  async switchTo() {
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.BitcoinTestDApp);
+    await this.checkPageIsLoaded();
+  }
+
+  async switchToMainnet() {
+    await this.driver.clickElement({
+      testId: dataTestIds.testPage.header.network,
+    });
+
+    await this.driver.clickElement({
+      testId: dataTestIds.testPage.header.networks.mainnet,
+    });
+  }
+
+  async verifySignedMessage(signedMessage: string) {
+    const signedMessageElement = await this.driver.waitForSelector(
+      `[data-testid="${dataTestIds.testPage.signMessage.signedMessage}"]`,
+    );
+
+    assert.strictEqual(await signedMessageElement.getText(), signedMessage);
   }
 
   async verifySignedPsbt(unsignedPsbt: string) {
@@ -199,17 +206,10 @@ export class TestDappBitcoin {
     );
   }
 
-  async switchToMainnet() {
-    await this.driver.clickElement({
-      testId: dataTestIds.testPage.header.network,
+  async verifyTransactionHash(transactionHash: string) {
+    await this.driver.findElement({
+      css: `[data-testid="${dataTestIds.testPage.sendTransaction.txId}"]`,
+      text: transactionHash,
     });
-
-    await this.driver.clickElement({
-      testId: dataTestIds.testPage.header.networks.mainnet,
-    });
-  }
-
-  private async setInputValue(id: string, value: string) {
-    await this.driver.fill({ testId: id }, value);
   }
 }
