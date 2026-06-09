@@ -6256,18 +6256,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Removes an account from state / storage.
-   *
-   * @param {string} address - A hex address
-   */
-  async removeAccount(address) {
-    this._onAccountRemoved(address);
-    await this.keyringController.removeAccount(address);
-
-    return address;
-  }
-
-  /**
    * Imports an account with the specified import strategy.
    * These are defined in @metamask/keyring-controller
    * Each strategy represents a different way of serializing an Ethereum key pair.
