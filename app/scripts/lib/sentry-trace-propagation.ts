@@ -203,7 +203,8 @@ export function buildAugmentedHeaders(
   const existing =
     options?.headers ?? (isRequest(request) ? request.headers : undefined);
   const headers = toHeaders(existing);
-  if (traceparent) {
+  // Respect a caller- or SDK-provided `traceparent`; only set ours when absent.
+  if (traceparent && !headers.has('traceparent')) {
     headers.set('traceparent', traceparent);
   }
   // `baggage` is appended (not set): repeated baggage headers are merged by the
