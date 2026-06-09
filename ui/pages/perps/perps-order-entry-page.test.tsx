@@ -928,6 +928,55 @@ describe('PerpsOrderEntryPage', () => {
       );
     });
 
+    it('clears slippage submit error after max slippage is saved from config modal', async () => {
+      const estimatedSlippageBps = 50;
+      const maxSlippageBps = 10;
+      const setMaxSlippage = jest.fn().mockResolvedValue(undefined);
+      mockUsePerpsEstimatedSlippage.mockReturnValue({
+        estimatedSlippageBps,
+        isReady: true,
+      });
+      mockUsePerpsMaxSlippage.mockReturnValue({
+        maxSlippageBps,
+        maxSlippageSource: 'user_configured',
+        setMaxSlippage,
+        isLoading: false,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('100');
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('perps-order-slippage-exceeds-indicator'),
+        ).toBeInTheDocument();
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(screen.getByTestId('perps-order-submit-error')).toBeInTheDocument();
+
+      fireEvent.click(screen.getByTestId('perps-order-summary-slippage-row'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('perps-slippage-config-set')).toBeInTheDocument();
+      });
+
+      fireEvent.click(screen.getByTestId('perps-slippage-config-preset-3'));
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('perps-slippage-config-set'));
+      });
+
+      expect(setMaxSlippage).toHaveBeenCalledWith(300);
+      expect(
+        screen.queryByTestId('perps-order-submit-error'),
+      ).not.toBeInTheDocument();
+    });
+
     it('disables submit when auto-close take profit is invalid', async () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);

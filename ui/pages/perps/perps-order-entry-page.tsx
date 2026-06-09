@@ -1764,6 +1764,7 @@ const PerpsOrderEntryPage = () => {
           onSave={(valueBps) =>
             setMaxSlippage(valueBps)
               .then(() => {
+                setSubmitError(null);
                 track(MetaMetricsEventName.PerpsUiInteraction, {
                   [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
                     PERPS_EVENT_VALUE.INTERACTION_TYPE.SLIPPAGE_CONFIG_CHANGED,
