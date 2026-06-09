@@ -131,7 +131,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
       // Token in title. API bridge rows may only include the source leg.
       case 'bridge': {
         const { sourceToken, destinationToken } = activity.data;
-        const symbol = destinationToken?.symbol ?? sourceToken?.symbol ?? '';
+        const symbol = sourceToken?.symbol ?? destinationToken?.symbol ?? '';
 
         return {
           avatarTokens: destinationToken
@@ -161,7 +161,6 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         return {
           avatarTokens: [token?.assetId],
           title: t(labelKeys.title.key, [symbol]),
-          subtitle: t(labelKeys.description.key, [symbol]),
           primaryToken: token,
         };
       }

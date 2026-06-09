@@ -115,9 +115,16 @@ export type ActivityListItem =
       }
     >
   | ActivityData<
-      'buy' | 'claim' | 'deposit',
+      'buy' | 'claim',
       {
         token?: TokenAmount;
+      }
+    >
+  | ActivityData<
+      'deposit',
+      {
+        token?: TokenAmount;
+        from?: string;
       }
     >
   | ActivityData<

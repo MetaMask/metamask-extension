@@ -367,7 +367,8 @@ export function mapApiEvmTransactions({
       timestamp,
       data: {
         hash,
-        token: getToken(sentTransfer, 'in'),
+        from,
+        token: getToken(sentTransfer, 'out'),
       },
     };
   }
