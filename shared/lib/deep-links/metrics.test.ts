@@ -13,7 +13,7 @@ describe('createEvent', () => {
 
       const result = createEvent({ signature, url });
 
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         category: MetaMetricsEventCategory.DeepLink,
         event: MetaMetricsEventName.DeepLinkUsed,
         properties: {
@@ -115,7 +115,7 @@ describe('createEvent', () => {
 
       const result = createEvent({ signature, url });
 
-      expect(result.sensitiveProperties).toEqual({
+      expect(result.sensitiveProperties).toStrictEqual({
         customParam: 'secret-value',
         userToken: 'abc123',
         sessionId: 'xyz789',
@@ -137,7 +137,7 @@ describe('createEvent', () => {
 
       const result = createEvent({ signature, url });
 
-      expect(result.properties).toEqual({
+      expect(result.properties).toStrictEqual({
         route: '/deep-link',
         signature: VALID,
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -154,7 +154,7 @@ describe('createEvent', () => {
         utm_medium: 'cpc',
       });
 
-      expect(result.sensitiveProperties).toEqual({
+      expect(result.sensitiveProperties).toStrictEqual({
         privateData: 'sensitive',
         userId: 'user123',
       });
@@ -180,11 +180,11 @@ describe('createEvent', () => {
 
       const result = createEvent({ signature, url });
 
-      expect(result.properties).toEqual({
+      expect(result.properties).toStrictEqual({
         route: '/test',
         signature: VALID,
       });
-      expect(result.sensitiveProperties).toEqual({});
+      expect(result.sensitiveProperties).toStrictEqual({});
     });
 
     it('should handle URL with encoded parameters', () => {
