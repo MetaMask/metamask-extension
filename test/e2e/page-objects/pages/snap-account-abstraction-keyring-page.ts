@@ -3,9 +3,6 @@ import { Driver } from '../../webdriver/driver';
 import SnapInstall from './dialog/snap-install';
 
 class SnapAccountAbstractionKeyringPage {
-  // eslint-disable-next-line @typescript-eslint/member-ordering, driver should be first
-  private readonly driver: Driver;
-
   private readonly addAccountButton = {
     tag: 'button',
     text: 'Add account',
@@ -42,6 +39,8 @@ class SnapAccountAbstractionKeyringPage {
 
   private readonly customVerifyingPaymasterSKInput =
     '[data-testid="customVerifyingPaymasterSK"]';
+
+  private readonly driver: Driver;
 
   private readonly entryPointInput = '[data-testid="entryPoint"]';
 
