@@ -9,17 +9,21 @@ import {
 } from '@metamask/bridge-controller';
 import type { CaipChainId } from '@metamask/utils';
 import { useSelector } from 'react-redux';
+import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
 import { getImageForChainId } from '../../../selectors/multichain';
+import type { MetaMaskReduxState } from '../../../store/store';
 import { NetworkName } from '../../../components/app/transaction/network-name';
 import { TransactionStatusLabel } from '../../../components/app/transaction/transaction-status-label';
 import { AccountName } from '../../../components/app/transaction/account-name';
-import { Row, Section } from '../components/shared';
+import { Footer, Row, Section } from '../components/shared';
 import { TokenAmountRow } from '../components/token-amount-row';
 import { AmountsSection } from '../components/amounts-section';
+import { BridgeExplorerButtons } from '../components/bridge-explorer-buttons';
+import { SwapAgainButton } from '../components/swap-again-button';
 
 function BridgeNetworkRow({
   fromChainId,
@@ -60,6 +64,9 @@ function BridgeNetworkRow({
   );
 }
 
+const selectBridgeHistory = (state: MetaMaskReduxState) =>
+  (state.metamask.txHistory ?? {}) as Record<string, BridgeHistoryItem>;
+
 export function BridgeDetails({
   item,
 }: {
@@ -75,55 +82,80 @@ export function BridgeDetails({
     destinationChainId && destinationChainId !== sourceChainId,
   );
 
+  const bridgeHistory = useSelector(selectBridgeHistory);
+  const sourceTxHash = item.data.hash;
+  const destTxHash = sourceTxHash
+    ? Object.values(bridgeHistory).find(
+        (h) =>
+          h.status.srcChain?.txHash?.toLowerCase() ===
+            sourceTxHash.toLowerCase() ||
+          h.txMetaId?.toLowerCase() === sourceTxHash.toLowerCase(),
+      )?.status.destChain?.txHash
+    : undefined;
+
   return (
-    <div className="divide-y divide-border-muted">
-      <Section>
-        {item.data.sourceToken && (
-          <div>
-            <p className="text-alternative">{t('youSent')}</p>
-            <TokenAmountRow
-              token={item.data.sourceToken}
-              showNetworkBadge={showFromTo}
-            />
-          </div>
-        )}
-        {item.data.destinationToken && (
-          <div>
-            <p className="text-alternative">{t('youReceived')}</p>
-            <TokenAmountRow
-              token={item.data.destinationToken}
-              showNetworkBadge={showFromTo}
-            />
-          </div>
-        )}
-      </Section>
-
-      <Section>
-        <Row
-          label={t('status')}
-          value={<TransactionStatusLabel status={item.status} />}
-        />
-        <Row label={t('date')} value={formatDateTime(item.timestamp)} />
-        <Row
-          label={t('account')}
-          value={<AccountName address={item.data.from} />}
-        />
-        <Row
-          label={t('network')}
-          value={
-            showFromTo && destinationChainId ? (
-              <BridgeNetworkRow
-                fromChainId={sourceChainId}
-                toChainId={destinationChainId}
+    <div className="flex grow flex-col">
+      <div className="divide-y divide-border-muted">
+        <Section>
+          {item.data.sourceToken && (
+            <div>
+              <p className="text-alternative">{t('youSent')}</p>
+              <TokenAmountRow
+                token={item.data.sourceToken}
+                showNetworkBadge={showFromTo}
               />
-            ) : (
-              <NetworkName chainId={sourceChainId} />
-            )
-          }
-        />
-      </Section>
+            </div>
+          )}
+          {item.data.destinationToken && (
+            <div>
+              <p className="text-alternative">{t('youReceived')}</p>
+              <TokenAmountRow
+                token={item.data.destinationToken}
+                showNetworkBadge={showFromTo}
+              />
+            </div>
+          )}
+        </Section>
 
-      <AmountsSection item={item} />
+        <Section>
+          <Row
+            label={t('status')}
+            value={<TransactionStatusLabel status={item.status} />}
+          />
+          <Row label={t('date')} value={formatDateTime(item.timestamp)} />
+          <Row
+            label={t('account')}
+            value={<AccountName address={item.data.from} />}
+          />
+          <Row
+            label={t('network')}
+            value={
+              showFromTo && destinationChainId ? (
+                <BridgeNetworkRow
+                  fromChainId={sourceChainId}
+                  toChainId={destinationChainId}
+                />
+              ) : (
+                <NetworkName chainId={sourceChainId} />
+              )
+            }
+          />
+        </Section>
+
+        <AmountsSection item={item} />
+      </div>
+      <Footer>
+        <BridgeExplorerButtons
+          sourceChainId={item.chainId}
+          sourceTxHash={sourceTxHash}
+          destChainId={destinationChainId}
+          destTxHash={destTxHash}
+        />
+        <SwapAgainButton
+          sourceToken={item.data.sourceToken}
+          destinationToken={item.data.destinationToken}
+        />
+      </Footer>
     </div>
   );
 }

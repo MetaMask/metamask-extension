@@ -10776,6 +10776,9 @@
   "viewDetails": {
     "message": "View details"
   },
+  "bridgeExplorerPopupDescription": {
+    "message": "This transaction lives on two networks. One link shows the source, the other shows the destination once confirmed."
+  },
   "viewOnBlockExplorer": {
     "message": "View on block explorer"
   },

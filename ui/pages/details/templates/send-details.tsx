@@ -2,6 +2,8 @@ import React from 'react';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { AmountsSection } from '../components/amounts-section';
+import { Footer } from '../components/shared';
+import { BlockExplorerButton } from '../components/block-explorer-button';
 import { MetadataSection, TokensSection } from './sections';
 
 export function SendDetails({
@@ -13,13 +15,18 @@ export function SendDetails({
   const label = item.type === 'receive' ? t('youReceived') : t('youSent');
 
   return (
-    <div className="divide-y divide-border-muted">
-      <TokensSection tokens={[{ label, token: item.data.token }]} />
-      <MetadataSection
-        item={item}
-        addressRows={{ from: item.data.from, to: item.data.to }}
-      />
-      <AmountsSection item={item} />
+    <div className="flex grow flex-col">
+      <div className="divide-y divide-border-muted">
+        <TokensSection tokens={[{ label, token: item.data.token }]} />
+        <MetadataSection
+          item={item}
+          addressRows={{ from: item.data.from, to: item.data.to }}
+        />
+        <AmountsSection item={item} />
+      </div>
+      <Footer>
+        <BlockExplorerButton chainId={item.chainId} txHash={item.data.hash} />
+      </Footer>
     </div>
   );
 }

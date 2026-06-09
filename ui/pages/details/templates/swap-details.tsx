@@ -2,6 +2,9 @@ import React from 'react';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { AmountsSection } from '../components/amounts-section';
+import { Footer } from '../components/shared';
+import { BlockExplorerButton } from '../components/block-explorer-button';
+import { SwapAgainButton } from '../components/swap-again-button';
 import { MetadataSection, TokensSection } from './sections';
 
 export function SwapDetails({
@@ -16,23 +19,33 @@ export function SwapDetails({
         | 'lendingDeposit'
         | 'lendingWithdrawal'
         | 'wrap'
-        | 'unwrap'
-        | 'bridge';
+        | 'unwrap';
     }
   >;
 }) {
   const t = useI18nContext();
 
   return (
-    <div className="divide-y divide-border-muted">
-      <TokensSection
-        tokens={[
-          { label: t('youSent'), token: item.data.sourceToken },
-          { label: t('youReceived'), token: item.data.destinationToken },
-        ]}
-      />
-      <MetadataSection item={item} />
-      <AmountsSection item={item} />
+    <div className="flex grow flex-col">
+      <div className="divide-y divide-border-muted">
+        <TokensSection
+          tokens={[
+            { label: t('youSent'), token: item.data.sourceToken },
+            { label: t('youReceived'), token: item.data.destinationToken },
+          ]}
+        />
+        <MetadataSection item={item} />
+        <AmountsSection item={item} />
+      </div>
+      <Footer>
+        <BlockExplorerButton chainId={item.chainId} txHash={item.data.hash} />
+        {'sourceToken' in item.data && (
+          <SwapAgainButton
+            sourceToken={item.data.sourceToken}
+            destinationToken={item.data.destinationToken}
+          />
+        )}
+      </Footer>
     </div>
   );
 }

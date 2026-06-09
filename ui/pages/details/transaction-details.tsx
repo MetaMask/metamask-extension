@@ -8,9 +8,7 @@ import {
   selectLocalActivityItemsByIdentifier,
   selectNonEvmActivityItemsById,
 } from '../../selectors/activity';
-import { BlockExplorerFooter } from './components/block-explorer-footer';
 import { Header } from './components/header';
-import { SwapAgainButton } from './components/swap-again-button';
 import { TemplateLoader } from './templates/template-loader';
 import { useCachedEvmTransaction } from './useCachedEvmTransaction';
 import { useTransactionQuery } from './useTransactionQuery';
@@ -84,19 +82,6 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
       <Header item={transaction} onBack={onBack} />
 
       <TemplateLoader item={transaction} />
-
-      <div className="cta-footer mt-auto flex flex-col gap-3 pb-1">
-        <BlockExplorerFooter
-          chainId={transaction?.chainId}
-          txHash={transaction?.data.hash}
-        />
-        {transaction?.type === 'swap' || transaction?.type === 'bridge' ? (
-          <SwapAgainButton
-            destinationToken={transaction.data.destinationToken}
-            sourceToken={transaction.data.sourceToken}
-          />
-        ) : null}
-      </div>
     </Box>
   );
 }

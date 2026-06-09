@@ -1,5 +1,66 @@
 import React, { ReactNode } from 'react';
 import { Text } from '@metamask/design-system-react';
+import { useSelector } from 'react-redux';
+import { getMaybeHexChainId } from '../../../ducks/bridge/utils';
+import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
+import {
+  MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP,
+  MultichainNetworks,
+} from '../../../../shared/constants/multichain/networks';
+import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
+import { formatBlockExplorerTransactionUrl } from '../../../../shared/lib/multichain/networks';
+
+export function getExplorerTxUrl({
+  chainId,
+  txHash,
+  blockExplorerUrl,
+}: {
+  chainId: string;
+  txHash: string | undefined;
+  blockExplorerUrl: string | undefined;
+}): string | undefined {
+  if (!txHash) {
+    return undefined;
+  }
+
+  const nonEvmExplorerUrls =
+    MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+      chainId as MultichainNetworks
+    ];
+
+  if (nonEvmExplorerUrls) {
+    return formatBlockExplorerTransactionUrl(nonEvmExplorerUrls, txHash);
+  }
+
+  const hexChainId = getMaybeHexChainId(chainId);
+  const explorerRoot =
+    blockExplorerUrl ??
+    (hexChainId ? CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[hexChainId] : '');
+
+  if (!explorerRoot) {
+    return undefined;
+  }
+
+  return `${explorerRoot.replace(/\/$/u, '')}/tx/${txHash}`;
+}
+
+export function useBlockExplorerUrl(
+  chainId: string,
+  txHash: string | undefined,
+): string | undefined {
+  const networkConfigurations = useSelector(
+    getAllNetworkConfigurationsByCaipChainId,
+  );
+  const networkConfig = networkConfigurations[chainId];
+  const blockExplorerUrl =
+    networkConfig && 'blockExplorerUrls' in networkConfig
+      ? networkConfig.blockExplorerUrls?.[
+          networkConfig.defaultBlockExplorerUrlIndex ?? -1
+        ]
+      : undefined;
+
+  return getExplorerTxUrl({ chainId, txHash, blockExplorerUrl });
+}
 
 export function Row({
   label,
@@ -38,4 +99,10 @@ export function Row({
 
 export function Section({ children }: { children: ReactNode }) {
   return <section className="py-2">{children}</section>;
+}
+
+export function Footer({ children }: { children: ReactNode }) {
+  return (
+    <div className="mt-auto flex flex-col gap-3 pb-1 pt-3">{children}</div>
+  );
 }
