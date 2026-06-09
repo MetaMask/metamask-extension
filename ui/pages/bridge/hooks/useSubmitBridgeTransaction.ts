@@ -28,10 +28,10 @@ import {
   useHardwareWalletActions,
   useHardwareWalletConfig,
 } from '../../../contexts/hardware-wallets/HardwareWalletContext';
-import { isUserRejectedHardwareWalletError } from '../../../contexts/hardware-wallets/rpcErrorUtils';
 import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { type MetaMaskReduxDispatch } from '../../../store/store';
+import { isHardwareWalletUserRejection } from '../utils/hardware-wallet-errors';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
@@ -45,23 +45,6 @@ export const isAllowanceResetError = (error: unknown): boolean => {
 export const isApprovalTxError = (error: unknown): boolean => {
   const errorMessage = (error as Error).message ?? '';
   return errorMessage.includes(APPROVAL_TX_ERROR);
-};
-
-const isHardwareWalletUserRejection = (error: unknown): boolean => {
-  if (isUserRejectedHardwareWalletError(error)) {
-    return true;
-  }
-
-  const errorMessage = (error as Error).message?.toLowerCase() ?? '';
-
-  return (
-    (errorMessage.includes('trezor') &&
-      (errorMessage.includes('cancelled') ||
-        errorMessage.includes('rejected'))) ||
-    (errorMessage.includes('lattice') && errorMessage.includes('rejected')) ||
-    errorMessage.includes('user rejected') ||
-    errorMessage.includes('user cancelled')
-  );
 };
 
 export default function useSubmitBridgeTransaction() {

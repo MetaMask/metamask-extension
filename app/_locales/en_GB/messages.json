@@ -1778,6 +1778,54 @@
   "basicFunctionalityRequired_toggleLabel": {
     "message": "Basic functionality"
   },
+  "batchSell": {
+    "message": "Batch Sell"
+  },
+  "batchSellContinueNAssetsCTAPlural": {
+    "message": "Continue with ($1) tokens"
+  },
+  "batchSellContinueNAssetsCTASingle": {
+    "message": "Continue with ($1) token"
+  },
+  "batchSellEmptyStateDescription": {
+    "message": "No tokens. No problem. Explore and buy tokens to batch sell."
+  },
+  "batchSellGetNewQuotes": {
+    "message": "Get new quotes"
+  },
+  "batchSellHighRateAlert": {
+    "message": "High rate alert"
+  },
+  "batchSellHightRateAlertModalDescription": {
+    "message": "Batch selling one token could lead to a higher rate. Want to do a swap instead?"
+  },
+  "batchSellMaxSelectedTokens": {
+    "message": "Max $1 tokens allowed"
+  },
+  "batchSellMinimumReceiveExplanation": {
+    "message": "The minimum amount you'll receive if the price changes while your transaction is processing, based on your slippage tolerance. This is an estimate from our liquidity providers. Final amounts may differ."
+  },
+  "batchSellNetworkFeeTooltip": {
+    "message": "Network fees depend on how busy the network is and how complex your transaction is."
+  },
+  "batchSellReceiveStablecoin": {
+    "message": "Select a stablecoin"
+  },
+  "batchSellSelectHeaderSubtitle": {
+    "message": "All tokens need to be on the same network."
+  },
+  "batchSellSelectHeaderTitle": {
+    "message": "Select up to 5 tokens"
+  },
+  "batchSellSlippageDescription": {
+    "message": "Your transaction won't go through if the price changes more than the slippage percent."
+  },
+  "batchSellYouSellTokenCount": {
+    "message": "$1 token"
+  },
+  "batchSellYouSellTokenCountPlural": {
+    "message": "$1 tokens"
+  },
   "bestQuote": {
     "message": "Best quote"
   },
@@ -3205,6 +3253,9 @@
   "defiEmptyDescription": {
     "message": "Lend, borrow, and trade, right in your wallet."
   },
+  "defiIcon": {
+    "message": "Defi Icon"
+  },
   "defiReferralCheckboxLabel": {
     "message": "Allow MetaMask to add a referral code. This is permanent. The site offers discounts per their terms. MetaMask earns a fee.",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
@@ -3743,6 +3794,9 @@
   },
   "exploreDefi": {
     "message": "Explore DeFi"
+  },
+  "exploreTokens": {
+    "message": "Explore Tokens"
   },
   "exportYourData": {
     "message": "Export your data"
@@ -5710,6 +5764,9 @@
   },
   "noOptionsAvailableMessage": {
     "message": "This trade route isn't available right now. Try changing the amount, network, or token and we'll find the best option."
+  },
+  "noQuoteAvailable": {
+    "message": "No quote available"
   },
   "noSnaps": {
     "message": "You don't have any snaps installed."
@@ -8248,6 +8305,9 @@
     "message": "Search your accounts",
     "description": "Placeholder in a searchbar. Used on multichain account list page."
   },
+  "searchingForBestQuotes": {
+    "message": "Searching for best quotes"
+  },
   "second": {
     "message": "sec"
   },
@@ -8382,6 +8442,9 @@
   },
   "selectedAccountMismatch": {
     "message": "Different account selected"
+  },
+  "sellAll": {
+    "message": "Sell all"
   },
   "send": {
     "message": "Send"
@@ -10318,6 +10381,9 @@
   "total": {
     "message": "Total"
   },
+  "totalReceived": {
+    "message": "Total received"
+  },
   "totalVolume": {
     "message": "Total volume"
   },
@@ -10879,6 +10945,9 @@
   "yes": {
     "message": "Yes"
   },
+  "yesSwap": {
+    "message": "Yes, swap"
+  },
   "you": {
     "message": "You"
   },
@@ -10891,6 +10960,9 @@
   "youReceived": {
     "message": "You received",
     "description": "Label indicating the amount and asset the user received."
+  },
+  "youSell": {
+    "message": "You sell"
   },
   "youSent": {
     "message": "You sent",
