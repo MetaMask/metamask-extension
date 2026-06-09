@@ -676,7 +676,7 @@ const PerpsOrderEntryPage = () => {
     usePerpsEstimatedSlippage({
       symbol: decodedSymbol ?? '',
       sizeUsd: isMarketOrderWithAmount ? orderUsdAmount : undefined,
-      isBuy: orderDirection === 'long',
+      isBuy: (orderFormState?.direction ?? orderDirection) === 'long',
       enabled: isMarketOrderWithAmount,
     });
 
