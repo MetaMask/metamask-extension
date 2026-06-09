@@ -33,15 +33,11 @@ import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
 import type { Compilation, Compiler, Entrypoint, Module } from 'webpack';
 import type WebpackDevServer from 'webpack-dev-server';
-import { DEV_RELOAD_MESSAGE_TYPE } from '../runtime/devReloadProtocol';
-import type { ManifestPlugin } from './plugins/ManifestPlugin';
-
-/**
- * Entry name for the reloader bundle on MV2 (Firefox), where it is injected as a
- * `<script>` into the background page by `HtmlBundlerPlugin`. On MV3 the reloader
- * is bundled directly into the service worker instead.
- */
-export const DEV_RELOAD_CLIENT_ENTRY_NAME = 'dev-reload-client';
+import {
+  DEV_RELOAD_CLIENT_ENTRY_NAME,
+  DEV_RELOAD_MESSAGE_TYPE,
+} from '../runtime/devReloadProtocol';
+import { ManifestPlugin } from './plugins/ManifestPlugin';
 
 /**
  * Matches the entries of privileged HTML pages that cannot self-reload: the
@@ -58,10 +54,7 @@ export const DEV_RELOAD_CLIENT_ENTRY_NAME = 'dev-reload-client';
 const PRIVILEGED_PAGE_ENTRY_RE = /^(?:background|bootstrap|offscreen)(?:\.\d+)?$/u;
 
 /**
- * Finds the {@link ManifestPlugin} instance registered on a compiler. Checked
- * structurally (with a type-only import) because a runtime import of the class
- * would create an import cycle — `ManifestPlugin` imports
- * {@link DEV_RELOAD_CLIENT_ENTRY_NAME} from this module.
+ * Finds the {@link ManifestPlugin} instance registered on a compiler.
  *
  * @param compiler - The compiler to search.
  * @returns The plugin instance, if present.
@@ -71,9 +64,7 @@ const findManifestPlugin = (
 ): ManifestPlugin<boolean> | undefined =>
   compiler.options.plugins.find(
     (plugin): plugin is ManifestPlugin<boolean> =>
-      typeof plugin === 'object' &&
-      plugin !== null &&
-      'manifestScriptEntryNames' in plugin,
+      plugin instanceof ManifestPlugin,
   );
 
 /**
@@ -106,17 +97,21 @@ const getServiceWorkerEntryName = (
  *
  * @param compilation - The finished compilation.
  * @param entrypoint - The entrypoint to walk.
+ * @param seen - Modules already visited; shared across entrypoints so graphs
+ * they have in common (each page has its own `bootstrap` entry over the same
+ * modules) are only walked and hashed once. A source change updates a module's
+ * hash under every runtime, so deduplication doesn't lose change detection.
  * @param hashes - The array to append the module hashes to.
  */
 const collectEntrypointModuleHashes = (
   compilation: Compilation,
   entrypoint: Entrypoint,
+  seen: Set<Module>,
   hashes: string[],
 ): void => {
   const { chunkGraph, moduleGraph } = compilation;
   const { runtime } = entrypoint.getEntrypointChunk();
   const queue: Module[] = [];
-  const seen = new Set<Module>();
   for (const chunk of entrypoint.chunks) {
     for (const module of chunkGraph.getChunkEntryModulesIterable(chunk)) {
       if (!seen.has(module)) {
@@ -157,13 +152,14 @@ const fingerprintCompilation = (
   compilation: Compilation,
   manifestScriptEntryNames: ReadonlySet<string>,
 ): string => {
+  const seen = new Set<Module>();
   const hashes: string[] = [];
   for (const [name, entrypoint] of compilation.entrypoints) {
     if (
       manifestScriptEntryNames.has(name) ||
       PRIVILEGED_PAGE_ENTRY_RE.test(name)
     ) {
-      collectEntrypointModuleHashes(compilation, entrypoint, hashes);
+      collectEntrypointModuleHashes(compilation, entrypoint, seen, hashes);
     }
   }
   // Sort to be independent of graph traversal order, which webpack does not

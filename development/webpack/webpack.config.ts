@@ -39,7 +39,7 @@ import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import type { BundleSizeCategory } from './utils/plugins/ManifestPlugin/types';
 import { getLatestCommit } from './utils/git';
 import { MODES, DEV_SERVER_CLIENT_ENTRY_NAME } from './utils/constants';
-import { DEV_RELOAD_CLIENT_ENTRY_NAME } from './utils/devReload';
+import { DEV_RELOAD_CLIENT_ENTRY_NAME } from './runtime/devReloadProtocol';
 import { BUNDLE_SIZE_SUMMARY_FILE } from './utils/plugins/ManifestPlugin/stats';
 
 const buildTypes = loadBuildTypesConfig();

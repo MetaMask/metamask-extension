@@ -99,6 +99,8 @@ async function onFingerprint(
   socket: WebSocket,
 ): Promise<void> {
   const applied = await getAppliedFingerprint();
+  // Re-check `reloading` after the await: another announcement may have begun
+  // a reload while this one was reading storage.
   if (reloading || applied === fingerprint) {
     return;
   }
@@ -125,27 +127,29 @@ async function onFingerprint(
 /**
  * Schedules a reconnection attempt with exponential backoff.
  *
+ * @param url - The WebSocket URL to reconnect to.
  * @param previousAttempt - The number of the attempt that just failed.
  */
-function scheduleReconnect(previousAttempt: number): void {
+function scheduleReconnect(url: string, previousAttempt: number): void {
   const attempt = previousAttempt + 1;
   const delay = Math.min(2 ** attempt * 100, MAX_RECONNECT_DELAY_MS);
-  setTimeout(() => connect(attempt), delay);
+  setTimeout(() => connect(url, attempt), delay);
 }
 
 /**
  * Opens the dev-server WebSocket and processes its fingerprint announcements.
  *
+ * @param url - The WebSocket URL to connect to.
  * @param reconnectAttempt - The current reconnection attempt count (0 on first
  * connect).
  */
-function connect(reconnectAttempt = 0): void {
+function connect(url: string, reconnectAttempt = 0): void {
   let attempt = reconnectAttempt;
   let socket: WebSocket;
   try {
-    socket = new WebSocket(socketUrl ?? '');
+    socket = new WebSocket(url);
   } catch {
-    scheduleReconnect(attempt);
+    scheduleReconnect(url, attempt);
     return;
   }
 
@@ -175,7 +179,7 @@ function connect(reconnectAttempt = 0): void {
   // covers both connection failures and later disconnects.
   socket.addEventListener('close', () => {
     if (!reloading) {
-      scheduleReconnect(attempt);
+      scheduleReconnect(url, attempt);
     }
   });
 }
@@ -184,5 +188,5 @@ function connect(reconnectAttempt = 0): void {
 // extension, and where WebSocket is available (MV3 service workers support it in
 // current browsers). Otherwise this is a no-op rather than a reconnect loop.
 if (runtime && typeof WebSocket !== 'undefined' && socketUrl) {
-  connect();
+  connect(socketUrl);
 }

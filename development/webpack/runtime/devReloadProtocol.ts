@@ -1,7 +1,7 @@
 /**
- * @file Shared protocol constant for the dev-server extension auto-reload,
- * imported by both the server-side wiring (`utils/devReload`) and the runtime
- * reloader client (`runtime/devReloadClient`).
+ * @file Shared constants for the dev-server extension auto-reload, imported by
+ * the server-side wiring (`utils/devReload`), the runtime reloader client
+ * (`runtime/devReloadClient`), and the build config.
  *
  * Kept dependency-free so it is safe to bundle into the browser/service-worker
  * context — the client cannot import `utils/devReload` directly, as that would
@@ -22,3 +22,12 @@
  * don't recognize, so announcing to all clients is safe.
  */
 export const DEV_RELOAD_MESSAGE_TYPE = 'mm:dev-reload-fingerprint';
+
+/**
+ * Entry name for the reloader bundle on MV2 (Firefox), where it is injected as
+ * a `<script>` into the background page by `HtmlBundlerPlugin`. On MV3 the
+ * reloader is bundled directly into the service worker instead. Lives here
+ * (rather than in `utils/devReload`) so `ManifestPlugin` can import it without
+ * creating an import cycle with the server wiring.
+ */
+export const DEV_RELOAD_CLIENT_ENTRY_NAME = 'dev-reload-client';
