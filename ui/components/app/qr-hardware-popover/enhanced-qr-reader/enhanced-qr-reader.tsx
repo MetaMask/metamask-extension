@@ -14,14 +14,13 @@ const SCAN_ATTEMPT_DELAY_MS = MILLISECOND * 80;
 // animated multi-part UR QR codes are captured faster.
 const SCAN_SUCCESS_DELAY_MS = MILLISECOND * 50;
 
-// Video constraints requesting HD resolution for clearer QR detection.
-// The `ideal` values let the browser negotiate the best available
-// resolution without failing if the camera cannot reach 720p.
+// Request HD resolution for clearer QR detection. Uses `ideal` rather
+// than `min` so cameras that cannot deliver 720p still work.
 const VIDEO_CONSTRAINTS: MediaStreamConstraints = {
   audio: false,
   video: {
-    width: { min: 640, ideal: 1280 },
-    height: { min: 480, ideal: 720 },
+    width: { ideal: 1280 },
+    height: { ideal: 720 },
   },
 };
 
@@ -86,6 +85,10 @@ const EnhancedQrReader = ({ onFrame }: EnhancedQrReaderProps) => {
         }
       },
     );
+
+    // Prevent unhandled rejection if the stream fails to start (e.g.
+    // camera disconnected between the permission probe and here).
+    promise.catch(log.debug);
 
     return () => {
       promise.then((controls) => controls?.stop()).catch(log.debug);
