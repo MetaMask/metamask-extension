@@ -86,8 +86,8 @@ export function useInsufficientPayTokenBalanceAlert({
     !isPostQuote &&
     Boolean(
       payToken &&
-        payToken.address.toLowerCase() === nativeTokenAddress.toLowerCase() &&
-        payToken.chainId === sourceChainId,
+      payToken.address.toLowerCase() === nativeTokenAddress.toLowerCase() &&
+      payToken.chainId === sourceChainId,
     );
 
   const { balanceUsd, balanceRaw } = payToken ?? {};
