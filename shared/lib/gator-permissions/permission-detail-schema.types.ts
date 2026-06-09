@@ -133,7 +133,8 @@ export type AddressField = BaseField<'address', string | undefined>;
 export type RuleAddressField = BaseField<'rule-address', string[] | undefined>;
 
 /** Displays a named group when rule addresses exactly match a known address set. */
-export type NamedRuleAddressField = BaseField<'named-rule-address', I18nValue>;
+export type NamedRuleAddressField = BaseField<'named-rule-address', I18nValue> &
+  TooltipFieldConfig;
 
 /** Displays the network row. */
 export type NetworkField = {
