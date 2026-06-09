@@ -714,7 +714,6 @@ describe('LegacyBackgroundApiService', () => {
         const runMigrationsHandler = jest.fn().mockResolvedValue(false);
         rootMessenger.registerActionHandler(
           'OnboardingController:getState',
-          // @ts-expect-error Partial onboarding state is sufficient for this test.
           jest.fn().mockReturnValue({ completedOnboarding: true }),
         );
         rootMessenger.registerActionHandler(
@@ -723,7 +722,6 @@ describe('LegacyBackgroundApiService', () => {
         );
         rootMessenger.registerActionHandler(
           'SeedlessOnboardingController:getState',
-          // @ts-expect-error Partial seedless onboarding state is sufficient for this test.
           jest.fn().mockReturnValue({ migrationVersion: 0 }),
         );
         rootMessenger.registerActionHandler(
@@ -851,7 +849,6 @@ describe('LegacyBackgroundApiService', () => {
         // Onboarding is not yet complete, so migrations are skipped.
         rootMessenger.registerActionHandler(
           'OnboardingController:getState',
-          // @ts-expect-error Partial onboarding state is sufficient for this test.
           jest.fn().mockReturnValue({ completedOnboarding: false }),
         );
 
