@@ -41,6 +41,16 @@ const mockStore = configureStore({
   },
 });
 
+const mockPrivacyModeStore = configureStore({
+  metamask: {
+    ...mockState.metamask,
+    preferences: {
+      ...mockState.metamask.preferences,
+      privacyMode: true,
+    },
+  },
+});
+
 describe('invokePerpsBalanceAction', () => {
   it('logs when callback returns a rejected promise', async () => {
     const consoleErrorSpy = jest
@@ -85,6 +95,23 @@ describe('PerpsBalanceDropdown', () => {
     renderWithProvider(<PerpsBalanceDropdown />, mockStore);
 
     expect(screen.getByText('$15,250')).toBeInTheDocument();
+  });
+
+  it('masks the total balance when privacy mode is enabled', () => {
+    renderWithProvider(<PerpsBalanceDropdown />, mockPrivacyModeStore);
+
+    expect(screen.queryByText('$15,250')).not.toBeInTheDocument();
+    expect(screen.getByText(/•+/u)).toBeInTheDocument();
+  });
+
+  it('masks the unrealized P&L when privacy mode is enabled', () => {
+    renderWithProvider(
+      <PerpsBalanceDropdown hasPositions />,
+      mockPrivacyModeStore,
+    );
+
+    expect(screen.queryByText(/\+\$375/u)).not.toBeInTheDocument();
+    expect(screen.queryByText(/7\.32%/u)).not.toBeInTheDocument();
   });
 
   it('renders loading skeleton when account data is still loading', () => {

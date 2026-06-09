@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   twMerge,
   TextVariant,
@@ -12,10 +13,15 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
   BoxAlignItems,
-  FontWeight,
   ButtonBase,
 } from '@metamask/design-system-react';
 import type { Position } from '@metamask/perps-controller';
+import { SensitiveText, SensitiveTextLength } from '../../../component-library';
+import {
+  TextVariant as LegacyTextVariant,
+  TextColor as LegacyTextColor,
+} from '../../../../helpers/constants/design-system';
+import { getPrivacyMode } from '../../../../selectors';
 import {
   formatPerpsFiat,
   PRICE_RANGES_MINIMAL_VIEW,
@@ -73,6 +79,7 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
   onWithdraw,
 }) => {
   const t = useI18nContext();
+  const privacyMode = useSelector(getPrivacyMode);
   const { account, isInitialLoading } = usePerpsLiveAccount();
   const { formatPercentWithMinThreshold } = useFormatters();
   const { isEligible } = usePerpsEligibility();
@@ -179,11 +186,15 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
               alignItems={BoxAlignItems.Center}
               gap={2}
             >
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+              <SensitiveText
+                variant={LegacyTextVariant.bodySmMedium}
+                isHidden={privacyMode}
+                length={SensitiveTextLength.Medium}
+              >
                 {formatPerpsFiat(accountValue, {
                   ranges: PRICE_RANGES_MINIMAL_VIEW,
                 })}
-              </Text>
+              </SensitiveText>
               <Icon
                 name={isDropdownOpen ? IconName.ArrowUp : IconName.ArrowDown}
                 size={IconSize.Xs}
@@ -235,13 +246,18 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
             {t('perpsUnrealizedPnl')}
           </Text>
-          <Text
-            variant={TextVariant.BodySm}
-            fontWeight={FontWeight.Medium}
-            color={isProfit ? TextColor.SuccessDefault : TextColor.ErrorDefault}
+          <SensitiveText
+            variant={LegacyTextVariant.bodySmMedium}
+            color={
+              isProfit
+                ? LegacyTextColor.successDefault
+                : LegacyTextColor.errorDefault
+            }
+            isHidden={privacyMode}
+            length={SensitiveTextLength.Medium}
           >
             {formattedPnl} ({formattedRoe})
-          </Text>
+          </SensitiveText>
         </Box>
       )}
       <PerpsGeoBlockModal
