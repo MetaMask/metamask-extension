@@ -1,7 +1,7 @@
-import type { OrderBookData } from '@metamask/perps-controller';
-
-/** Basis-point denominator (10000 bps = 100%). Matches HyperLiquid config. */
-const BASIS_POINTS_DIVISOR = 10000;
+import {
+  BASIS_POINTS_DIVISOR,
+  type OrderBookData,
+} from '@metamask/perps-controller';
 
 export type EstimatedSlippageParams = {
   /** Live order book snapshot (typically from usePerpsLiveOrderBook). */

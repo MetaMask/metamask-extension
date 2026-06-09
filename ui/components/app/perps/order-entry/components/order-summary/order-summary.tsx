@@ -92,9 +92,12 @@ export const OrderSummary = ({
             </Text>
             {exceedsMaxSlippage ? (
               <span
+                className="sr-only"
+                aria-live="polite"
                 data-testid="perps-order-slippage-exceeds-indicator"
-                aria-hidden
-              />
+              >
+                {t('perpsSlippageExceeded')}
+              </span>
             ) : null}
             <Icon
               name={IconName.Edit}

@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { PERPS_EVENT_VALUE } from '../../../shared/constants/perps-events';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { PERPS_SLIPPAGE_DEFAULT_BPS } from '../../components/app/perps/constants/slippageConfig';
 
-type MaxSlippageSource = 'default' | 'user_configured';
+type MaxSlippageSource =
+  (typeof PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE)[keyof typeof PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE];
 
 export type UsePerpsMaxSlippageReturn = {
   /** Resolved max slippage in basis points (falls back to the documented default). */
@@ -51,7 +53,9 @@ export function usePerpsMaxSlippage(): UsePerpsMaxSlippageReturn {
   return useMemo(() => {
     const maxSlippageBps = storedBps ?? PERPS_SLIPPAGE_DEFAULT_BPS;
     const maxSlippageSource: MaxSlippageSource =
-      storedBps === undefined ? 'default' : 'user_configured';
+      storedBps === undefined
+        ? PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE.DEFAULT
+        : PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE.USER_CONFIGURED;
     return {
       maxSlippageBps,
       maxSlippageSource,
