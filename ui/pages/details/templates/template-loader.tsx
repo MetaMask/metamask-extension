@@ -1,6 +1,7 @@
 import React from 'react';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { ApprovalDetails } from './approval-details';
+import { BridgeDetails } from './bridge-details';
 import { DefaultDetails } from './default-details';
 import { SendDetails } from './send-details';
 import { SwapDetails } from './swap-details';
@@ -18,13 +19,14 @@ export function TemplateLoader({ item }: Props) {
     case 'send':
     case 'receive':
       return <SendDetails item={item} />;
+    case 'bridge':
+      return <BridgeDetails item={item} />;
     case 'swap':
     case 'convert':
     case 'lendingDeposit':
     case 'lendingWithdrawal':
     case 'wrap':
     case 'unwrap':
-    case 'bridge':
       return <SwapDetails item={item} />;
     case 'approveSpendingCap':
     case 'revokeSpendingCap':

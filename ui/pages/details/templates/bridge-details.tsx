@@ -1,0 +1,129 @@
+import React from 'react';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+} from '@metamask/design-system-react';
+import {
+  formatChainIdToHex,
+  isNonEvmChainId,
+} from '@metamask/bridge-controller';
+import type { CaipChainId } from '@metamask/utils';
+import { useSelector } from 'react-redux';
+import type { ActivityListItem } from '../../../../shared/lib/activity/types';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useFormatters } from '../../../hooks/useFormatters';
+import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
+import { getImageForChainId } from '../../../selectors/multichain';
+import { NetworkName } from '../../../components/app/transaction/network-name';
+import { TransactionStatusLabel } from '../../../components/app/transaction/transaction-status-label';
+import { AccountName } from '../../../components/app/transaction/account-name';
+import { Row, Section } from '../components/shared';
+import { TokenAmountRow } from '../components/token-amount-row';
+import { AmountsSection } from '../components/amounts-section';
+
+function BridgeNetworkRow({
+  fromChainId,
+  toChainId,
+}: {
+  fromChainId: string;
+  toChainId: string;
+}) {
+  const config = useSelector(getAllNetworkConfigurationsByCaipChainId);
+
+  const fromNetwork = config[fromChainId as CaipChainId];
+  const toNetwork = config[toChainId as CaipChainId];
+
+  const fromName = fromNetwork?.name ?? fromChainId;
+  const toName = toNetwork?.name ?? toChainId;
+
+  const fromSrc = getImageForChainId(
+    isNonEvmChainId(fromChainId)
+      ? fromChainId
+      : formatChainIdToHex(fromChainId),
+  );
+  const toSrc = getImageForChainId(
+    isNonEvmChainId(toChainId) ? toChainId : formatChainIdToHex(toChainId),
+  );
+
+  return (
+    <div className="inline-flex items-center gap-2">
+      <AvatarNetwork
+        size={AvatarNetworkSize.Xs}
+        name={fromName}
+        src={fromSrc}
+      />
+      <span>{fromName}</span>
+      <span>→</span>
+      <AvatarNetwork size={AvatarNetworkSize.Xs} name={toName} src={toSrc} />
+      <span>{toName}</span>
+    </div>
+  );
+}
+
+export function BridgeDetails({
+  item,
+}: {
+  item: Extract<ActivityListItem, { type: 'bridge' }>;
+}) {
+  const t = useI18nContext();
+  const { formatDateTime } = useFormatters();
+
+  const sourceChainId = item.chainId;
+  const destinationChainId = item.data.destinationToken?.assetId?.split('/')[0];
+
+  const showFromTo = Boolean(
+    destinationChainId && destinationChainId !== sourceChainId,
+  );
+
+  return (
+    <div className="divide-y divide-border-muted">
+      <Section>
+        {item.data.sourceToken && (
+          <div>
+            <p className="text-alternative">{t('youSent')}</p>
+            <TokenAmountRow
+              token={item.data.sourceToken}
+              showNetworkBadge={showFromTo}
+            />
+          </div>
+        )}
+        {item.data.destinationToken && (
+          <div>
+            <p className="text-alternative">{t('youReceived')}</p>
+            <TokenAmountRow
+              token={item.data.destinationToken}
+              showNetworkBadge={showFromTo}
+            />
+          </div>
+        )}
+      </Section>
+
+      <Section>
+        <Row
+          label={t('status')}
+          value={<TransactionStatusLabel status={item.status} />}
+        />
+        <Row label={t('date')} value={formatDateTime(item.timestamp)} />
+        <Row
+          label={t('account')}
+          value={<AccountName address={item.data.from} />}
+        />
+        <Row
+          label={t('network')}
+          value={
+            showFromTo && destinationChainId ? (
+              <BridgeNetworkRow
+                fromChainId={sourceChainId}
+                toChainId={destinationChainId}
+              />
+            ) : (
+              <NetworkName chainId={sourceChainId} />
+            )
+          }
+        />
+      </Section>
+
+      <AmountsSection item={item} />
+    </div>
+  );
+}

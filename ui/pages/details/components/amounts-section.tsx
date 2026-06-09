@@ -61,7 +61,10 @@ export function AmountsSection({ item }: { item: ActivityListItem }) {
         );
       })}
       {token?.amount ? (
-        <Row label={t('amount')} value={<TokenFiatValue token={token} />} />
+        <Row
+          label={t('totalAmount')}
+          value={<TokenFiatValue token={token} />}
+        />
       ) : null}
     </Section>
   );

@@ -1875,11 +1875,11 @@
   "boughtFor": {
     "message": "Bought for"
   },
-  "bridgeAgain": {
-    "message": "Bridge again"
-  },
   "bridge": {
     "message": "Bridge"
+  },
+  "bridgeAgain": {
+    "message": "Bridge again"
   },
   "bridgeAllowSwappingOf": {
     "message": "Allow exact access to $1 $2 on $3 for bridging",
@@ -3046,14 +3046,14 @@
   "dataUnavailable": {
     "message": "data unavailable"
   },
-  "day": {
-    "message": "Day"
-  },
   "date": {
     "message": "Date"
   },
   "dateCreated": {
     "message": "Date created"
+  },
+  "day": {
+    "message": "Day"
   },
   "debitCreditPurchaseOptions": {
     "message": "Debit or credit card purchase options"
@@ -9879,14 +9879,14 @@
     "message": "Supported languages",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
   },
-  "swapAgain": {
-    "message": "Swap again"
-  },
   "swap": {
     "message": "Swap"
   },
   "swapAdjustSlippage": {
     "message": "Adjust slippage"
+  },
+  "swapAgain": {
+    "message": "Swap again"
   },
   "swapAggregator": {
     "message": "Aggregator"
@@ -10353,6 +10353,9 @@
   },
   "total": {
     "message": "Total"
+  },
+  "totalAmount": {
+    "message": "Total amount"
   },
   "totalVolume": {
     "message": "Total volume"

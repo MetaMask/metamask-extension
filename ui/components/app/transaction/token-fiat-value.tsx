@@ -4,7 +4,10 @@ import { parseCaipAssetType } from '@metamask/utils';
 import type { TokenAmount } from '../../../../shared/lib/activity/types';
 import { formatUnits } from '../../../../shared/lib/unit';
 import { useFormatters } from '../../../hooks/useFormatters';
-import { getCurrentCurrency, getCurrencyRates } from '../../../ducks/metamask/metamask';
+import {
+  getCurrentCurrency,
+  getCurrencyRates,
+} from '../../../ducks/metamask/metamask';
 import { getAssetsPrice } from '../../../selectors/assets';
 import { selectMarketRates } from '../../../selectors/activity';
 import { getMultichainAssetsRatesControllerConversionRates } from '../../../../shared/lib/selectors/assets-migration';
@@ -17,7 +20,9 @@ export function TokenFiatValue({ token }: { token: TokenAmount }) {
   const assetsPrice = useSelector(getAssetsPrice);
   const marketRates = useSelector(selectMarketRates);
   const currencyRates = useSelector(getCurrencyRates);
-  const conversionRates = useSelector(getMultichainAssetsRatesControllerConversionRates);
+  const conversionRates = useSelector(
+    getMultichainAssetsRatesControllerConversionRates,
+  );
 
   const { amount: tokenAmount, decimals, symbol } = token;
 
@@ -39,16 +44,25 @@ export function TokenFiatValue({ token }: { token: TokenAmount }) {
 
     // 1. assetsPrice covers all chains (EVM + non-EVM), price already in user's currency.
     if (token.assetId) {
-      const prices = assetsPrice as Record<string, { assetPriceType?: string; price?: number } | undefined>;
+      const prices = assetsPrice as Record<
+        string,
+        { assetPriceType?: string; price?: number } | undefined
+      >;
       const priceEntry = prices[token.assetId];
-      if (priceEntry?.assetPriceType === 'fungible' && priceEntry.price !== undefined) {
+      if (
+        priceEntry?.assetPriceType === 'fungible' &&
+        priceEntry.price !== undefined
+      ) {
         return Number(humanAmount) * priceEntry.price;
       }
     }
 
     // 2. conversionRates (MultichainAssetsRatesController) keyed by CAIP assetId — covers non-EVM like Solana.
     if (token.assetId) {
-      const rates = conversionRates as Record<string, { rate?: string } | undefined>;
+      const rates = conversionRates as Record<
+        string,
+        { rate?: string } | undefined
+      >;
       const entry = rates[token.assetId];
       if (entry?.rate) {
         return Number(humanAmount) * Number(entry.rate);
@@ -80,7 +94,15 @@ export function TokenFiatValue({ token }: { token: TokenAmount }) {
     }
 
     return undefined;
-  }, [token.assetId, humanAmount, symbol, assetsPrice, conversionRates, currencyRates, marketRates]);
+  }, [
+    token.assetId,
+    humanAmount,
+    symbol,
+    assetsPrice,
+    conversionRates,
+    currencyRates,
+    marketRates,
+  ]);
 
   if (fiatValue !== undefined) {
     return <>{formatCurrencyWithMinThreshold(fiatValue, currentCurrency)}</>;
