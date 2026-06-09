@@ -411,6 +411,7 @@ import {
   SubscriptionServiceInit,
 } from './messenger-client-init/subscription';
 import { ConfigRegistryControllerInit } from './messenger-client-init/config-registry-controller-init';
+import { NetworkConnectionBannerControllerInit } from './messenger-client-init/network-connection-banner';
 import { AccountTrackerControllerInit } from './messenger-client-init/account-tracker-controller-init';
 import { OnboardingControllerInit } from './messenger-client-init/onboarding-controller-init';
 import { BridgeControllerInit } from './messenger-client-init/bridge-controller-init';
@@ -711,6 +712,7 @@ export default class MetamaskController extends EventEmitter {
       SeedlessOnboardingController: SeedlessOnboardingControllerInit,
       SubscriptionController: SubscriptionControllerInit,
       SubscriptionService: SubscriptionServiceInit,
+      NetworkConnectionBannerController: NetworkConnectionBannerControllerInit,
       NetworkOrderController: NetworkOrderControllerInit,
       ShieldController: ShieldControllerInit,
       ClaimsController: ClaimsControllerInit,
