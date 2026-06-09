@@ -33,7 +33,6 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 15. **WHEN using `.github/pull-request-template.md`, the manual testing section
     should contain instructions for how to _manually_ test the changes. It must not
     list steps for automated testing.**
-
     - Good Instructions:
       - Run extension
       - Go to homepage, asset list
