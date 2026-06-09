@@ -8486,6 +8486,8 @@ export default class MetamaskController extends EventEmitter {
    * @param keyring
    * @deprecated This method is deprecated and will be removed in the future.
    * Only webhid connections are supported in chrome and u2f in firefox.
+   * @returns {Promise<boolean | undefined>} The bridge result if available,
+   * otherwise `undefined`.
    */
   async setLedgerTransportPreference(keyring) {
     const transportType = window.navigator.hid
@@ -8502,7 +8504,7 @@ export default class MetamaskController extends EventEmitter {
     // returned a raw value before being aligned with the real bridge's
     // Promise contract).
     if (keyring?.bridge?.updateTransportMethod) {
-      await keyring.bridge.updateTransportMethod(transportType);
+      return await keyring.bridge.updateTransportMethod(transportType);
     }
 
     return undefined;

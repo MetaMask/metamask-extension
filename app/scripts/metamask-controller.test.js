@@ -2507,11 +2507,11 @@ describe('MetaMaskController', () => {
 
           const mockKeyring = {
             bridge: {
+              updateTransportMethod: jest.fn().mockResolvedValue(true),
               getAppConfiguration: jest
                 .fn()
                 .mockResolvedValue(mockConfiguration),
             },
-            updateTransportMethod: jest.fn().mockResolvedValue(undefined),
           };
 
           const withKeyringSpy = jest
@@ -2524,12 +2524,48 @@ describe('MetaMaskController', () => {
             const result = await metamaskController.getLedgerAppConfiguration();
 
             expect(
+              mockKeyring.bridge.updateTransportMethod,
+            ).toHaveBeenCalledTimes(1);
+            expect(
               mockKeyring.bridge.getAppConfiguration,
             ).toHaveBeenCalledTimes(1);
             expect(result).toStrictEqual(mockConfiguration);
           } finally {
             withKeyringSpy.mockRestore();
           }
+        });
+      });
+
+      describe('setLedgerTransportPreference', () => {
+        it('returns the bridge transport update result', async () => {
+          const updateTransportMethod = jest.fn().mockResolvedValue(true);
+
+          const result = await metamaskController.setLedgerTransportPreference({
+            bridge: { updateTransportMethod },
+          });
+
+          expect(updateTransportMethod).toHaveBeenCalledTimes(1);
+          expect(result).toBe(true);
+        });
+
+        it('returns undefined if the bridge does not expose transport updates', async () => {
+          const result = await metamaskController.setLedgerTransportPreference({
+            bridge: {},
+          });
+
+          expect(result).toBeUndefined();
+        });
+
+        it('rethrows errors from the bridge transport update', async () => {
+          const error = new Error('transport failed');
+
+          await expect(
+            metamaskController.setLedgerTransportPreference({
+              bridge: {
+                updateTransportMethod: jest.fn().mockRejectedValue(error),
+              },
+            }),
+          ).rejects.toThrow(error);
         });
       });
 
