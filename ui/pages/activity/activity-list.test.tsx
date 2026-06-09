@@ -108,9 +108,7 @@ const defaultQueryResult = {
   fetchNextVisiblePage: jest.fn(),
 };
 
-function makeItem(
-  overrides: Partial<ActivityListItem> = {},
-): ActivityListItem {
+function makeItem(overrides: Partial<ActivityListItem> = {}): ActivityListItem {
   return {
     type: 'send',
     chainId: 'eip155:1',
@@ -215,11 +213,21 @@ describe('ActivityList — ActivityScreenOpened metric', () => {
 
   it('counts pending local and non-evm transactions', () => {
     mockUseLocalTransactions.mockReturnValue([
-      makeItem({ status: 'pending', data: { hash: '0x1', from: '0xa', to: '0xb' } }),
-      makeItem({ status: 'success', data: { hash: '0x2', from: '0xa', to: '0xb' } }),
+      makeItem({
+        status: 'pending',
+        data: { hash: '0x1', from: '0xa', to: '0xb' },
+      }),
+      makeItem({
+        status: 'success',
+        data: { hash: '0x2', from: '0xa', to: '0xb' },
+      }),
     ]);
     mockUseNonEvmTransactions.mockReturnValue([
-      makeItem({ chainId: 'solana:mainnet', status: 'pending', data: { hash: 'sol1', from: '0xa', to: '0xb' } }),
+      makeItem({
+        chainId: 'solana:mainnet',
+        status: 'pending',
+        data: { hash: 'sol1', from: '0xa', to: '0xb' },
+      }),
     ]);
 
     renderList();
