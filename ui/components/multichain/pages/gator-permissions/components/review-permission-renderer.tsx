@@ -329,6 +329,17 @@ function renderElement({
         />
       );
 
+    case 'named-rule-address':
+      return (
+        <GatorPermissionDetailRow
+          key={rowKey}
+          label={t(element.labelKey)}
+          value={translateI18nValue(t, element.getValue(ctx))}
+          testId={element.testId}
+          tooltip={element.tooltip ? t(element.tooltip) : undefined}
+        />
+      );
+
     case 'list':
       return (
         <GatorPermissionDetailRow

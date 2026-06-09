@@ -191,6 +191,21 @@ function renderElement(
       );
     }
 
+    case 'named-rule-address': {
+      return (
+        <ConfirmInfoRow
+          key={index}
+          label={t(element.labelKey)}
+          tooltip={element.tooltip ? t(element.tooltip) : undefined}
+          data-testid={element.testId}
+        >
+          <Text variant={TextVariant.BodyMd}>
+            {translateI18nValue(t, element.getValue(ctx))}
+          </Text>
+        </ConfirmInfoRow>
+      );
+    }
+
     case 'list': {
       return (
         <ConfirmInfoRow

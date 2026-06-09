@@ -7840,6 +7840,15 @@
   "redeemer": {
     "message": "Redeemer"
   },
+  "redeemers": {
+    "message": "Redeemers"
+  },
+  "gatorPermissionsMetaMaskFacilitator": {
+    "message": "MetaMask facilitator"
+  },
+  "gatorPermissionsMetaMaskFacilitatorTooltip": {
+    "message": "May only be redeemed by the MetaMask facilitator"
+  },
   "redeposit": {
     "message": "Redeposit"
   },

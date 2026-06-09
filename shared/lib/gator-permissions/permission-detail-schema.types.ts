@@ -132,6 +132,9 @@ export type AddressField = BaseField<'address', string | undefined>;
 /** Displays addresses extracted from permission rules. */
 export type RuleAddressField = BaseField<'rule-address', string[] | undefined>;
 
+/** Displays a named group when rule addresses exactly match a known address set. */
+export type NamedRuleAddressField = BaseField<'named-rule-address', I18nValue>;
+
 /** Displays the network row. */
 export type NetworkField = {
   type: 'network';
@@ -152,7 +155,8 @@ export type SchemaElement =
   | OriginField
   | AddressField
   | NetworkField
-  | RuleAddressField;
+  | RuleAddressField
+  | NamedRuleAddressField;
 
 /** A section groups elements visually. */
 export type SchemaSection = {
