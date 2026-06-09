@@ -268,10 +268,10 @@ describe('EthOverview', () => {
     });
 
     it('preloads send and swap routes on hover or focus', () => {
-      const { queryByTestId } = renderWithProvider(<EthOverview />, store);
+      const { getByTestId } = renderWithProvider(<EthOverview />, store);
 
-      fireEvent.mouseEnter(queryByTestId(ETH_OVERVIEW_SEND));
-      fireEvent.focus(queryByTestId(ETH_OVERVIEW_SWAP));
+      fireEvent.mouseEnter(getByTestId(ETH_OVERVIEW_SEND));
+      fireEvent.focus(getByTestId(ETH_OVERVIEW_SWAP));
 
       expect(SendPage.preload).toHaveBeenCalledTimes(1);
       expect(CrossChainSwap.preload).toHaveBeenCalledTimes(1);

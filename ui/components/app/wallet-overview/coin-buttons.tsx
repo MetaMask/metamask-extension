@@ -399,7 +399,7 @@ const CoinButtons = ({
   }, [chainId, account, setCorrectChain, handleSendNonEvm, trackingLocation]);
 
   const handleSendIntent = useCallback(() => {
-    SendPage.preload();
+    SendPage.preload().catch(() => undefined);
   }, []);
 
   const handleBuyAndSellOnClick = useCallback(() => {
@@ -447,7 +447,7 @@ const CoinButtons = ({
   }, [location, openBridgeExperience]);
 
   const handleSwapIntent = useCallback(() => {
-    CrossChainSwap.preload();
+    CrossChainSwap.preload().catch(() => undefined);
   }, []);
 
   const handleReceiveOnClick = useCallback(() => {
