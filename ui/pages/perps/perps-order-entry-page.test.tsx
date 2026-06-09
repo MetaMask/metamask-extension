@@ -862,6 +862,31 @@ describe('PerpsOrderEntryPage', () => {
       );
     });
 
+    it('disables submit while max slippage preference is loading', async () => {
+      mockUsePerpsEstimatedSlippage.mockReturnValue({
+        estimatedSlippageBps: 50,
+        isReady: true,
+      });
+      mockUsePerpsMaxSlippage.mockReturnValue({
+        maxSlippageBps: 300,
+        maxSlippageSource: 'default',
+        setMaxSlippage: jest.fn(),
+        isLoading: true,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('100');
+
+      await waitFor(() => {
+        expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+      });
+      expect(
+        screen.queryByTestId('perps-order-slippage-exceeds-indicator'),
+      ).not.toBeInTheDocument();
+    });
+
     it('blocks submit and shows slippage error when estimated slippage exceeds max', async () => {
       const estimatedSlippageBps = 50;
       const maxSlippageBps = 10;

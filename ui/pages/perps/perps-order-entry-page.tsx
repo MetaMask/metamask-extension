@@ -334,8 +334,12 @@ const PerpsOrderEntryPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSlippageModalOpen, setIsSlippageModalOpen] = useState(false);
-  const { maxSlippageBps, maxSlippageSource, setMaxSlippage } =
-    usePerpsMaxSlippage();
+  const {
+    maxSlippageBps,
+    maxSlippageSource,
+    setMaxSlippage,
+    isLoading: isMaxSlippageLoading,
+  } = usePerpsMaxSlippage();
 
   const isOrderPending = isSubmitting;
 
@@ -684,6 +688,7 @@ const PerpsOrderEntryPage = () => {
   );
 
   const exceedsMaxSlippage =
+    !isMaxSlippageLoading &&
     isMarketOrderWithAmount &&
     typeof estimatedSlippageBps === 'number' &&
     estimatedSlippageBps > maxSlippageBps;
@@ -696,6 +701,9 @@ const PerpsOrderEntryPage = () => {
     ) {
       return null;
     }
+    if (isMaxSlippageLoading) {
+      return t('perpsSlippageRowFormatPending', ['--']);
+    }
     const maxPct = bpsToPercent(maxSlippageBps);
     if (estimatedSlippagePctDisplay === null) {
       return t('perpsSlippageRowFormatPending', [`${maxPct}`]);
@@ -706,6 +714,7 @@ const PerpsOrderEntryPage = () => {
     ]);
   }, [
     estimatedSlippagePctDisplay,
+    isMaxSlippageLoading,
     isSlippageConfigEnabled,
     maxSlippageBps,
     orderMode,
@@ -733,6 +742,7 @@ const PerpsOrderEntryPage = () => {
     isOrderPending ||
     (orderMode === 'new' && isLoadingAccount) ||
     hasNoAvailableBalance ||
+    (isMarketOrderWithAmount && isMaxSlippageLoading) ||
     (isPrimaryTradeAction &&
       (isLimitPriceInvalid ||
         isLimitPriceUnfavorable ||
