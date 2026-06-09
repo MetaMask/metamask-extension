@@ -92,7 +92,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
     );
   });
 
-  it('can select destination token and see quote TEST', async function () {
+  it('can select destination token and see quote', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
