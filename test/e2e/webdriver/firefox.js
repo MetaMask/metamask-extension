@@ -100,6 +100,21 @@ class FirefoxDriver {
     builder.setFirefoxService(service);
     const driver = builder.build();
 
+    // Log the browser + driver versions resolved for this session
+    try {
+      const caps = await driver.getCapabilities();
+      console.log(
+        `[Firefox E2E] Resolved browserVersion=${caps.getBrowserVersion()} platform=${caps.getPlatform()} geckodriver=${caps.get(
+          'moz:geckodriverVersion',
+        )}`,
+      );
+    } catch (capsError) {
+      console.warn(
+        '[Firefox E2E] Could not read resolved capabilities:',
+        capsError,
+      );
+    }
+
     // Ensure Firefox is cleaned up if anything below fails (XPI build,
     // extension install, etc.).  Without this, a partial failure orphans
     // the browser.
