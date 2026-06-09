@@ -129,7 +129,7 @@ export const MultichainAddressRowsList = ({
         normalizedAddress: string;
       },
       index: number,
-    ): React.JSX.Element => {
+    ): JSX.Element => {
       const handleCopyClick = () => {
         handleCopy(item.normalizedAddress);
       };
@@ -164,7 +164,6 @@ export const MultichainAddressRowsList = ({
     >
       <Box paddingLeft={4} paddingRight={4}>
         <TextFieldSearch
-          className="mm-text-field-search--inset-focus-outline"
           size={TextFieldSearchSize.Lg}
           placeholder={t('searchNetworks')}
           value={searchPattern}
