@@ -233,6 +233,8 @@ export type OrderSummaryProps = {
   exceedsMaxSlippage?: boolean;
   /** Opens the max-slippage configuration modal. */
   onSlippageClick?: () => void;
+  /** Disables slippage row interaction while the persisted cap is still loading. */
+  isSlippageRowDisabled?: boolean;
 };
 
 /**

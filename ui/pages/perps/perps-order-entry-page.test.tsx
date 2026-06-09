@@ -887,6 +887,36 @@ describe('PerpsOrderEntryPage', () => {
       ).not.toBeInTheDocument();
     });
 
+    it('does not open slippage config modal while max slippage preference is loading', async () => {
+      const setMaxSlippage = jest.fn().mockResolvedValue(undefined);
+      mockUsePerpsEstimatedSlippage.mockReturnValue({
+        estimatedSlippageBps: 50,
+        isReady: true,
+      });
+      mockUsePerpsMaxSlippage.mockReturnValue({
+        maxSlippageBps: 300,
+        maxSlippageSource: 'default',
+        setMaxSlippage,
+        isLoading: true,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('100');
+
+      await waitFor(() => {
+        expect(screen.getByTestId('perps-order-summary-slippage-row')).toBeDisabled();
+      });
+
+      fireEvent.click(screen.getByTestId('perps-order-summary-slippage-row'));
+
+      expect(
+        screen.queryByTestId('perps-slippage-config-modal'),
+      ).not.toBeInTheDocument();
+      expect(setMaxSlippage).not.toHaveBeenCalled();
+    });
+
     it('disables submit while slippage estimate is still loading', async () => {
       mockUsePerpsEstimatedSlippage.mockReturnValue({
         estimatedSlippageBps: null,

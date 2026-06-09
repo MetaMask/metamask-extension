@@ -1733,7 +1733,11 @@ const PerpsOrderEntryPage = () => {
             }
             slippageDisplay={slippageDisplay}
             exceedsMaxSlippage={exceedsMaxSlippage}
+            isSlippageRowDisabled={isMaxSlippageLoading}
             onSlippageClick={() => {
+              if (isMaxSlippageLoading) {
+                return;
+              }
               setIsSlippageModalOpen(true);
               track(MetaMetricsEventName.PerpsUiInteraction, {
                 [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
@@ -1778,7 +1782,7 @@ const PerpsOrderEntryPage = () => {
       />
       {isSlippageConfigEnabled && (
         <PerpsSlippageConfigModal
-          isOpen={isSlippageModalOpen}
+          isOpen={isSlippageModalOpen && !isMaxSlippageLoading}
           currentValueBps={maxSlippageBps}
           onClose={() => setIsSlippageModalOpen(false)}
           onSave={(valueBps) =>

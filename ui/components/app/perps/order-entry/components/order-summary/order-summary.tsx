@@ -11,6 +11,7 @@ import {
   IconColor,
   IconName,
   IconSize,
+  twMerge,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { PerpsFeesDisplay } from '../../../perps-fees-display';
@@ -29,6 +30,7 @@ import type { OrderSummaryProps } from '../../order-entry.types';
  * @param props.slippageDisplay
  * @param props.exceedsMaxSlippage
  * @param props.onSlippageClick
+ * @param props.isSlippageRowDisabled
  */
 export const OrderSummary = ({
   marginRequired,
@@ -40,6 +42,7 @@ export const OrderSummary = ({
   slippageDisplay,
   exceedsMaxSlippage = false,
   onSlippageClick,
+  isSlippageRowDisabled = false,
 }: OrderSummaryProps) => {
   const t = useI18nContext();
 
@@ -67,9 +70,15 @@ export const OrderSummary = ({
         <button
           type="button"
           onClick={onSlippageClick}
+          disabled={isSlippageRowDisabled}
           data-testid="perps-order-summary-slippage-row"
           aria-label={t('perpsSlippageEditAriaLabel')}
-          className="flex w-full cursor-pointer items-center justify-between border-0 bg-transparent p-0 text-left"
+          className={twMerge(
+            'flex w-full items-center justify-between border-0 bg-transparent p-0 text-left',
+            isSlippageRowDisabled
+              ? 'cursor-not-allowed opacity-70'
+              : 'cursor-pointer',
+          )}
         >
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
             {t('perpsSlippage')}
