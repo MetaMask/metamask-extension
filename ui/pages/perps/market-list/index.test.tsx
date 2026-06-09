@@ -238,13 +238,14 @@ describe('MarketListView', () => {
       });
     });
 
-    it.each([
+    const filterLabelCases: [filter: string, expectedLabel: string][] = [
       ['pre-ipo', messages.perpsFilterPreIpo.message],
       ['index', messages.perpsFilterIndex.message],
       ['etf', messages.perpsFilterEtf.message],
-    ])(
-      'shows a visible label for the %s filter query param',
-      async (filter, expectedLabel) => {
+    ];
+
+    filterLabelCases.forEach(([filter, expectedLabel]) => {
+      it(`shows a visible label for the ${filter} filter query param`, async () => {
         renderWithProvider(
           <MarketListView />,
           mockStore,
@@ -256,8 +257,8 @@ describe('MarketListView', () => {
             expectedLabel,
           );
         });
-      },
-    );
+      });
+    });
 
     it('shows stock markets on Stocks tab even when perpsHip3AllowlistMarkets flag is absent', async () => {
       // mockStore has no perpsHip3AllowlistMarkets flag → allowedHip3Sources defaults to Set()
