@@ -495,7 +495,13 @@ export class LedgerLegacyHandler {
       return true;
     };
 
-    chrome.runtime.onMessage.addListener(this.messageListenerFn);
+    // Cast to satisfy Chrome's permissive callback type signature.
+    // The internal implementation validates msg structure before use.
+    chrome.runtime.onMessage.addListener(
+      this.messageListenerFn as Parameters<
+        typeof chrome.runtime.onMessage.addListener
+      >[0],
+    );
   }
 
   /**
@@ -621,7 +627,11 @@ export class LedgerLegacyHandler {
    */
   async destroy(): Promise<void> {
     if (this.messageListenerFn) {
-      chrome.runtime.onMessage.removeListener(this.messageListenerFn);
+      chrome.runtime.onMessage.removeListener(
+        this.messageListenerFn as Parameters<
+          typeof chrome.runtime.onMessage.removeListener
+        >[0],
+      );
       this.messageListenerFn = null;
     }
     this.closeTransport();
