@@ -40,11 +40,6 @@ describe('Send ERC20 - Contract Warning', function () {
         smartContract,
         title: this.test?.fullTitle(),
         testSpecificMock: mocks,
-        manifestFlags: {
-          remoteFeatureFlags: {
-            extensionUxTokenManagementFilter: false,
-          },
-        },
       },
       async ({ driver, contractRegistry, localNodes }) => {
         const contractAddress: string =

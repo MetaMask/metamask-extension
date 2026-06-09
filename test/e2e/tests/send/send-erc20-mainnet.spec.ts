@@ -89,11 +89,6 @@ describe('Send ERC20 - Mainnet', function () {
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSpotPriceV3ForDai,
-        manifestFlags: {
-          remoteFeatureFlags: {
-            extensionUxTokenManagementFilter: false,
-          },
-        },
         localNodeOptions: [
           {
             type: 'anvil',

@@ -45,11 +45,6 @@ describe('Token List Sorting', function () {
       {
         ...testFixtures,
         title: (this as Context).test?.fullTitle(),
-        manifestFlags: {
-          remoteFeatureFlags: {
-            extensionUxTokenManagementFilter: false,
-          },
-        },
         testSpecificMock: mockCustomTokenImport,
       },
       async ({ driver }: { driver: Driver }) => {

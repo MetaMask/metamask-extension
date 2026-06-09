@@ -50,11 +50,6 @@ describe('Token List via StorageService', function () {
         localNodeOptions: {
           chainId: parseInt(chainId, 16),
         },
-        manifestFlags: {
-          remoteFeatureFlags: {
-            extensionUxTokenManagementFilter: false,
-          },
-        },
         title: (this as Context).test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => [
           // Price API

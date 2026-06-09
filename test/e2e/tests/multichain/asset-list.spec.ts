@@ -95,11 +95,6 @@ function buildFixtures(title: string) {
     smartContract: SMART_CONTRACTS.HST,
     title,
     testSpecificMock: mockSetup,
-    manifestFlags: {
-      remoteFeatureFlags: {
-        extensionUxTokenManagementFilter: false,
-      },
-    },
   };
 }
 
