@@ -4,6 +4,7 @@ import { TEN_SECONDS_IN_MILLISECONDS } from '../transactions-controller-utils';
 const TOKEN_SEARCH_BASE_URL = 'https://token.api.cx.metamask.io';
 const TOKEN_V3_BASE_URL = 'https://tokens.api.cx.metamask.io';
 const DEFAULT_BROWSE_OCCURRENCE_FLOOR = 3;
+const EVM_CHAIN_NAMESPACE = 'eip155:';
 
 export type TokenSearchResult = {
   assetId: string;
@@ -140,10 +141,12 @@ export const browseTokens = async (
       if (typeof options.first === 'number') {
         url.searchParams.set('first', String(options.first));
       }
-      url.searchParams.set(
-        'occurrenceFloor',
-        String(DEFAULT_BROWSE_OCCURRENCE_FLOOR),
-      );
+      if (chainId.startsWith(EVM_CHAIN_NAMESPACE)) {
+        url.searchParams.set(
+          'occurrenceFloor',
+          String(DEFAULT_BROWSE_OCCURRENCE_FLOOR),
+        );
+      }
 
       const chainCursor = cursorState[chainId];
       if (chainCursor) {

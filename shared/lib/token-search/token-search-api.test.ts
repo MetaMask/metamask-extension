@@ -130,7 +130,7 @@ describe('browseTokens', () => {
     jest.restoreAllMocks();
   });
 
-  it('fetches chain assets with occurrences and merges paginated results', async () => {
+  it('applies occurrence floor only to EVM chains and merges paginated results', async () => {
     const fetchMock = jest
       .fn()
       .mockResolvedValueOnce({
@@ -212,7 +212,7 @@ describe('browseTokens', () => {
     );
     const [secondUrl] = fetchMock.mock.calls[1];
     expect(secondUrl).toBe(
-      'https://tokens.api.cx.metamask.io/v3/chains/solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/assets?first=25&occurrenceFloor=3',
+      'https://tokens.api.cx.metamask.io/v3/chains/solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/assets?first=25',
     );
   });
 
