@@ -16,7 +16,13 @@ import { ExternalLinkButton } from './annonucement-footer-buttons';
 import type { FeatureAnnouncementNotification } from './types';
 
 const mockTrackEvent = jest.fn();
+const mockNavigate = jest.fn();
 const linkText = 'Learn more';
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
 
 const metametricsContext = {
   trackEvent: mockTrackEvent,
@@ -65,6 +71,8 @@ describe('Feature announcement footer buttons', () => {
     renderExternalLinkButton('https://example.com');
 
     const link = screen.getByRole('link', { name: linkText });
+    await waitFor(() => expect(link).toHaveAttribute('target', '_blank'));
+
     const clickEvent = createEvent.click(link);
 
     fireEvent(link, clickEvent);
@@ -84,22 +92,25 @@ describe('Feature announcement footer buttons', () => {
       'https://link.metamask.io/shield?showShieldEntryModal=true&utm_source=contentful',
     );
 
-    fireEvent.click(screen.getByRole('link', { name: linkText }));
+    const link = screen.getByRole('link', { name: linkText });
+    await waitFor(() => expect(link).not.toHaveAttribute('target'));
+
+    fireEvent.click(link);
 
     await waitFor(() =>
-      expect(global.platform.openExtensionInBrowser).toHaveBeenCalledWith(
+      expect(mockNavigate).toHaveBeenCalledWith(
         '/settings?showShieldEntryModal=true&utm_source=contentful',
-        null,
-        true,
       ),
     );
+    expect(global.platform.openExtensionInBrowser).not.toHaveBeenCalled();
     expect(global.platform.openTab).not.toHaveBeenCalled();
   });
 
-  it('lets modified clicks use native link navigation', () => {
+  it('lets modified clicks use native link navigation', async () => {
     renderExternalLinkButton('https://example.com');
 
     const link = screen.getByRole('link', { name: linkText });
+    await waitFor(() => expect(link).toHaveAttribute('target', '_blank'));
     const clickEvent = createEvent.click(link, { ctrlKey: true });
 
     fireEvent(link, clickEvent);
@@ -109,10 +120,11 @@ describe('Feature announcement footer buttons', () => {
     expect(global.platform.openExtensionInBrowser).not.toHaveBeenCalled();
   });
 
-  it('lets non-primary clicks use native link navigation', () => {
+  it('lets non-primary clicks use native link navigation', async () => {
     renderExternalLinkButton('https://example.com');
 
     const link = screen.getByRole('link', { name: linkText });
+    await waitFor(() => expect(link).toHaveAttribute('target', '_blank'));
     const clickEvent = createEvent.click(link, { button: 1 });
 
     fireEvent(link, clickEvent);
@@ -125,7 +137,10 @@ describe('Feature announcement footer buttons', () => {
   it('opens a deep link redirect URL in a new tab', async () => {
     renderExternalLinkButton('https://link.metamask.io/buy?amount=100');
 
-    fireEvent.click(screen.getByRole('link', { name: linkText }));
+    const link = screen.getByRole('link', { name: linkText });
+    await waitFor(() => expect(link).toHaveAttribute('target', '_blank'));
+
+    fireEvent.click(link);
 
     await waitFor(() =>
       expect(global.platform.openTab).toHaveBeenCalledWith({

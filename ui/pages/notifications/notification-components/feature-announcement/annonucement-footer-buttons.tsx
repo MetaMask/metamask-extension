@@ -1,4 +1,5 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -83,6 +84,7 @@ export const ExtensionLinkButton = (props: {
 export const ExternalLinkButton = (props: {
   notification: FeatureAnnouncementNotification;
 }) => {
+  const navigate = useNavigate();
   const { notification } = props;
   const analyticCallback = useAnalyticEventCallback({
     id: notification.id,
@@ -90,17 +92,48 @@ export const ExternalLinkButton = (props: {
     clickType: 'external_link',
   });
 
-  if (!notification.data.externalLink) {
+  const {externalLink} = notification.data;
+  const externalLinkUrl = externalLink?.externalLinkUrl;
+  const [resolvedHref, setResolvedHref] = useState<string | undefined>();
+
+  useEffect(() => {
+    if (!externalLinkUrl) {
+      return undefined;
+    }
+
+    let isMounted = true;
+
+    setResolvedHref(undefined);
+    resolveTrustedDeepLinkHref(externalLinkUrl)
+      .then((href) => {
+        if (isMounted) {
+          setResolvedHref(href);
+        }
+      })
+      .catch((error) => {
+        console.error('[ExternalLinkButton] error resolving external link', error);
+        if (isMounted) {
+          setResolvedHref(externalLinkUrl);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [externalLinkUrl]);
+
+  if (!externalLinkUrl || !externalLink) {
     return null;
   }
 
-  const { externalLinkUrl, externalLinkText } = notification.data.externalLink;
+  const { externalLinkText } = externalLink;
 
   const openResolvedLink = async () => {
-    const href = await resolveTrustedDeepLinkHref(externalLinkUrl);
+    const href =
+      resolvedHref ?? (await resolveTrustedDeepLinkHref(externalLinkUrl));
 
     if (isInternalRouteHref(href)) {
-      global.platform.openExtensionInBrowser(href, null, true);
+      navigate(href);
       return;
     }
 
@@ -125,7 +158,7 @@ export const ExternalLinkButton = (props: {
       variant={ButtonVariant.Secondary}
       text={externalLinkText}
       href={externalLinkUrl}
-      isExternal={true}
+      isExternal={resolvedHref ? !isInternalRouteHref(resolvedHref) : false}
       onClick={onClick}
     />
   );
