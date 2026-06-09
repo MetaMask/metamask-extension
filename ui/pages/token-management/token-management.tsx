@@ -1515,7 +1515,10 @@ export const TokenManagementPage = () => {
         }}
       >
         {hasQuery && isSearching && !hasResults ? loadingState : null}
-        {!hasQuery && !isSearchFetching && searchError && tokenListItems.length === 0
+        {!hasQuery &&
+        !isSearchFetching &&
+        searchError &&
+        tokenListItems.length === 0
           ? searchErrorState
           : null}
         {hasQuery && !isSearching && searchError && !hasResults

@@ -135,9 +135,7 @@ export const browseTokens = async (
 
   const settledResponses = await Promise.allSettled(
     options.networks.map(async (chainId) => {
-      const url = new URL(
-        `${TOKEN_V3_BASE_URL}/v3/chains/${chainId}/assets`,
-      );
+      const url = new URL(`${TOKEN_V3_BASE_URL}/v3/chains/${chainId}/assets`);
       if (typeof options.first === 'number') {
         url.searchParams.set('first', String(options.first));
       }
