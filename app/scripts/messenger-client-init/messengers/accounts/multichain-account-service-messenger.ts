@@ -43,7 +43,6 @@ export function getMultichainAccountServiceMessenger(
       'AccountsController:getAccounts',
       'KeyringController:getState',
       'KeyringController:withKeyring',
-      'KeyringController:withKeyringV2',
       'KeyringController:addNewKeyring',
       'KeyringController:getKeyringsByType',
       'KeyringController:createNewVaultAndKeychain',
@@ -52,7 +51,6 @@ export function getMultichainAccountServiceMessenger(
       'NetworkController:findNetworkClientIdByChainId',
       'SnapController:getState',
       'SnapController:handleRequest',
-      'SnapAccountService:ensureReady',
     ],
   });
   return serviceMessenger;
