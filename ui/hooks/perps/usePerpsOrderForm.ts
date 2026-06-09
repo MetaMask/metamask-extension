@@ -590,6 +590,7 @@ export function usePerpsOrderForm({
 
   // Form state update handlers
   const handleAmountChange = useCallback((amount: string) => {
+    hasSetInitialAmount.current = true;
     setFormState((prev) => ({ ...prev, amount }));
   }, []);
 
