@@ -202,6 +202,13 @@ describe('OrderEntry', () => {
     it('shows dash when no amount entered', () => {
       renderWithProvider(<OrderEntry {...defaultProps} />, mockStore);
 
+      const container = screen.getByTestId('amount-input-field');
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '' },
+      });
+
       const dashElements = screen.getAllByText('-');
       expect(dashElements.length).toBeGreaterThanOrEqual(3);
     });

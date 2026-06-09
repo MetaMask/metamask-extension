@@ -17,6 +17,7 @@ import { PERPS_LIQUIDATION_PRICE_FALLBACK } from '../../components/app/perps/uti
 import { PERPS_ACTIVITY_ROUTE } from '../../helpers/constants/routes';
 
 jest.mock('@metamask/perps-controller', () => ({
+  ...jest.requireActual('@metamask/perps-controller'),
   PERPS_ERROR_CODES: {
     CLIENT_NOT_INITIALIZED: 'CLIENT_NOT_INITIALIZED',
     CLIENT_REINITIALIZING: 'CLIENT_REINITIALIZING',

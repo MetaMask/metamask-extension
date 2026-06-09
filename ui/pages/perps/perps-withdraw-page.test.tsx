@@ -14,6 +14,7 @@ import { usePerpsLiveAccount } from '../../hooks/perps/stream';
 import PerpsWithdrawPage from './perps-withdraw-page';
 
 jest.mock('@metamask/perps-controller', () => ({
+  ...jest.requireActual('@metamask/perps-controller'),
   HYPERLIQUID_ASSET_CONFIGS: {
     usdc: {
       mainnet: 'eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
