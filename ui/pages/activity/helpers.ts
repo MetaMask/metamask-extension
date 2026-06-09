@@ -137,12 +137,9 @@ export function dedupeItems(...sources: ActivityListItem[][]) {
       continue;
     }
 
-    // More categorized items take precedence
+    // More categorized items take precedence, unless it's a generic interaction
     const existingItem = dedupedItems[existingIndex];
-    if (
-      item.type === 'contractInteraction' &&
-      existingItem.type !== 'contractInteraction'
-    ) {
+    if (existingItem.type !== 'contractInteraction') {
       continue;
     }
 
