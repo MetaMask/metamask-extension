@@ -146,10 +146,7 @@ export const MarketListView = () => {
     const filterParam = searchParams.get('filter');
     if (filterParam) {
       const normalizedFilter = normalizeMarketFilter(filterParam);
-      if (
-        normalizedFilter &&
-        VALID_MARKET_FILTERS.includes(normalizedFilter)
-      ) {
+      if (normalizedFilter && VALID_MARKET_FILTERS.includes(normalizedFilter)) {
         return normalizedFilter;
       }
     }

@@ -1,6 +1,4 @@
-import {
-  normalizeMarketFilter,
-} from '../../../constants/perps';
+import { normalizeMarketFilter } from '../../../constants/perps';
 import {
   DEFAULT_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
