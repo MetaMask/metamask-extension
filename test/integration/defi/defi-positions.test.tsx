@@ -58,9 +58,10 @@ const accountName = getSelectedAccountGroupName(mockMetaMaskState);
 
 const withMetamaskConnectedToMainnet = {
   ...mockMetaMaskState,
-  participateInMetaMetrics: true,
+  analyticsId: 'test-metametrics-id',
+  completedMetaMetricsOnboarding: true,
+  optedIn: true,
   dataCollectionForMarketing: false,
-  metaMetricsId: 'test-metametrics-id',
   selectedNetworkClientId: 'testNetworkConfigurationId',
   preferences: {
     ...mockMetaMaskState.preferences,

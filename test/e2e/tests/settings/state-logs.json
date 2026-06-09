@@ -636,6 +636,7 @@
       "supportedNetworks": ["string"],
       "validSubmissionWindowDays": "number"
     },
+    "completedMetaMetricsOnboarding": "boolean",
     "completedOnboarding": "boolean",
     "connectedStatusPopoverHasBeenShown": "boolean",
     "connectivityStatus": "string",
@@ -1090,6 +1091,8 @@
     "metaMetricsDataDeletionId": "null",
     "metaMetricsDataDeletionTimestamp": "number",
     "metaMetricsId": "string",
+    "analyticsId": "string",
+    "optedIn": "boolean",
     "methodData": {},
     "minimumBalanceForRentExemptionInLamports": "string",
     "multichainNetworkConfigurationsByChainId": {
@@ -1323,7 +1326,6 @@
     "securityAlertsEnabled": "boolean",
     "seedPhraseBackedUp": "null",
     "passkeyRecord": "null",
-    "segmentApiCalls": {},
     "selectedAccountGroup": "string",
     "selectedCurrency": "string",
     "selectedMultichainNetworkChainId": "string",
@@ -1483,39 +1485,7 @@
     "tokenBalances": {},
     "tokenScanCache": {},
     "tokenSecurityTypeDestination": "null",
-    "tokensChainsCache": {
-      "0x539": {
-        "data": {
-          "0x0d8775f648430679a709e98d2b0cb6250d2887ef": {
-            "address": "string",
-            "aggregators": ["string"],
-            "decimals": "number",
-            "iconUrl": "string",
-            "name": "string",
-            "occurrences": "number",
-            "symbol": "string"
-          },
-          "0x6b175474e89094c44da98b954eedeac495271d0f": {
-            "address": "string",
-            "aggregators": ["string"],
-            "decimals": "number",
-            "erc20Permit": "boolean",
-            "fees": {
-              "0xb0da5965d43369968574d399dbe6374683773a65": "number"
-            },
-            "iconUrl": "string",
-            "name": "string",
-            "occurrences": "number",
-            "storage": {
-              "balance": "number"
-            },
-            "symbol": "string",
-            "type": "string"
-          }
-        },
-        "timestamp": "number"
-      }
-    },
+    "tokensChainsCache": {},
     "tokenWarnings": [],
     "tradeConfigurations": {
       "testnet": {},

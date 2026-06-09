@@ -7,8 +7,7 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 
 // Hide/unhide is not available in BIP44 stage 2
-// eslint-disable-next-line
-describe.skip('Account list - hide/unhide functionality', function (this: Suite) {
+describe('Account list - hide/unhide functionality', function (this: Suite) {
   it('hide and unhide account by clicking hide and unhide button', async function () {
     await withFixtures(
       {
@@ -22,13 +21,11 @@ describe.skip('Account list - hide/unhide functionality', function (this: Suite)
         // hide account
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
-        await accountListPage.openAccountOptionsMenu();
         await accountListPage.hideAccount();
         await accountListPage.checkHiddenAccountsListExists();
 
         // unhide account
         await accountListPage.openHiddenAccountsList();
-        await accountListPage.openHiddenAccountOptions();
         await accountListPage.unhideAccount();
         await accountListPage.checkAccountDisplayedInAccountList();
       },

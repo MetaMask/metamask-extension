@@ -59,6 +59,7 @@ import type {
 } from '@metamask/notification-services-controller';
 import type { SmartTransactionsControllerState } from '@metamask/smart-transactions-controller';
 import type { ConnectivityControllerState } from '@metamask/connectivity-controller';
+import type { AnalyticsControllerState } from '@metamask/analytics-controller';
 
 import type { ClaimsControllerState } from '@metamask/claims-controller';
 import type { NetworkOrderControllerState } from '../../app/scripts/controllers/network-order';
@@ -188,10 +189,10 @@ export type ControllerStatePropertiesEnumerated = {
   eventsBeforeMetricsOptIn: MetaMetricsControllerState['eventsBeforeMetricsOptIn'];
   tracesBeforeMetricsOptIn: MetaMetricsControllerState['tracesBeforeMetricsOptIn'];
   fragments: MetaMetricsControllerState['fragments'];
-  metaMetricsId: MetaMetricsControllerState['metaMetricsId'];
-  participateInMetaMetrics: MetaMetricsControllerState['participateInMetaMetrics'];
+  completedMetaMetricsOnboarding: MetaMetricsControllerState['completedMetaMetricsOnboarding'];
+  optedIn: AnalyticsControllerState['optedIn'];
+  analyticsId: AnalyticsControllerState['analyticsId'];
   passkeyRecord: PasskeyControllerState['passkeyRecord'];
-  segmentApiCalls: MetaMetricsControllerState['segmentApiCalls'];
   traits: MetaMetricsControllerState['traits'];
   dataCollectionForMarketing: MetaMetricsControllerState['dataCollectionForMarketing'];
   marketingCampaignCookieId: MetaMetricsControllerState['marketingCampaignCookieId'];
@@ -356,6 +357,7 @@ type ControllerStateTypesMerged = AccountsControllerState &
   } & KeyringControllerState &
   LoggingControllerState &
   MetaMetricsControllerState &
+  AnalyticsControllerState &
   MetaMetricsDataDeletionState &
   MultichainBalancesControllerState &
   MultichainTransactionsControllerState &
