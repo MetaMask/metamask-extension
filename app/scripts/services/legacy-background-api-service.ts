@@ -501,7 +501,9 @@ export class LegacyBackgroundApiService {
           async ({ keyring, metadata }) => {
             const { exportAccount } = keyring;
             if (!exportAccount) {
-              throw new Error('Imported account keyring does not export accounts');
+              throw new Error(
+                'Imported account keyring does not export accounts',
+              );
             }
             const privateKeyObj = await exportAccount(importedAccount.id);
             return { id: metadata.id, privateKey: privateKeyObj.privateKey };
