@@ -186,7 +186,10 @@ export function useTransactionCustomAmount({
   );
 
   const updatePendingAmountPercentage = useCallback(
-    (percentage: number, { isPrefill = false }: { isPrefill?: boolean } = {}) => {
+    (
+      percentage: number,
+      { isPrefill = false }: { isPrefill?: boolean } = {},
+    ) => {
       const balanceUsdValue = new BigNumber(String(balanceUsd ?? 0));
 
       if (!balanceUsdValue.isFinite() || balanceUsdValue.lte(0)) {
@@ -214,7 +217,9 @@ export function useTransactionCustomAmount({
         upsertTransactionUIMetricsFragment(transactionId, {
           properties: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            mm_pay_amount_input_type: isPrefill ? 'prefilled_max' : `${percentage}%`,
+            mm_pay_amount_input_type: isPrefill
+              ? 'prefilled_max'
+              : `${percentage}%`,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             mm_pay_quote_requested: true,
           },

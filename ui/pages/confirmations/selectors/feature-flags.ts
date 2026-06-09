@@ -154,7 +154,10 @@ export const selectPayQuoteConfig = createSelector(
  * @param transactionType
  */
 export const selectIsPayAmountPrefillEnabled = createSelector(
-  [selectPayExtendedFlag, (_state, transactionType?: string) => transactionType],
+  [
+    selectPayExtendedFlag,
+    (_state, transactionType?: string) => transactionType,
+  ],
   (flag, transactionType): boolean => {
     const prefill = flag?.prefilledAmount;
     const defaultEnabled = prefill?.default?.enabled ?? false;
