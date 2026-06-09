@@ -49,6 +49,7 @@ type PayWithRowContentProps = {
   };
   canEdit: boolean;
   from: string | undefined;
+  labelOverride?: string;
   onOpenModal: () => void;
   isPerpsWithdraw: boolean;
 };
@@ -58,6 +59,7 @@ type PayWithRowPillProps = PayWithRowContentProps & {
 };
 
 export type PayWithRowProps = {
+  labelOverride?: string;
   variant?: ConfirmInfoRowSize;
 };
 
@@ -85,6 +87,7 @@ export const PayWithRowSkeleton = () => {
 };
 
 export function PayWithRow({
+  labelOverride,
   variant = ConfirmInfoRowSize.Default,
 }: PayWithRowProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -139,6 +142,7 @@ export function PayWithRow({
     },
     canEdit,
     from,
+    labelOverride,
     onOpenModal: handleOpenModal,
     isPerpsWithdraw,
   };
@@ -169,18 +173,21 @@ function PayWithRowInline({
   displayToken,
   canEdit,
   from,
+  labelOverride,
   onOpenModal,
   ownerId,
   isPerpsWithdraw,
 }: PayWithRowContentProps & { ownerId: string }) {
   const t = useI18nContext();
+  const rowLabel =
+    labelOverride ?? (isPerpsWithdraw ? t('withdrawTo') : t('payWith'));
 
   return (
     <ConfirmInfoAlertRow
       alertKey={RowAlertKey.PayWith}
       ownerId={ownerId}
       data-testid="pay-with-row"
-      label={isPerpsWithdraw ? t('withdrawTo') : t('payWith')}
+      label={rowLabel}
       rowVariant={ConfirmInfoRowSize.Default}
     >
       <Box
@@ -230,10 +237,13 @@ function PayWithRowPill({
   balanceUsdFormatted,
   canEdit,
   from,
+  labelOverride,
   onOpenModal,
   isPerpsWithdraw,
 }: PayWithRowPillProps) {
   const t = useI18nContext();
+  const pillLabel =
+    labelOverride ?? (isPerpsWithdraw ? t('withdrawTo') : t('payWith'));
 
   return (
     <Box
@@ -264,7 +274,7 @@ function PayWithRowPill({
         color={TextColor.textDefault}
         data-testid="pay-with-symbol"
       >
-        {`${isPerpsWithdraw ? t('withdrawTo') : t('payWith')} ${displayToken.symbol}`}
+        {`${pillLabel} ${displayToken.symbol}`}
       </Text>
       <Text
         variant={TextVariant.bodyMdMedium}

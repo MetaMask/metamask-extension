@@ -22,6 +22,10 @@ import {
 } from '../../pay/useTransactionPayData';
 import { getNativeTokenInfo } from '../../../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
+import {
+  selectTransactionPayIsPostQuoteByTransactionId,
+  TransactionPayState,
+} from '../../../../../selectors/transactionPayController';
 import { AlertsName } from '../constants';
 
 export function useInsufficientPayTokenBalanceAlert({
@@ -31,6 +35,7 @@ export function useInsufficientPayTokenBalanceAlert({
 } = {}): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const transactionId = currentConfirmation?.id ?? '';
   const { payToken } = useTransactionPayToken();
   const requiredTokens = useTransactionPayRequiredTokens();
   const totals = useTransactionPayTotals();
@@ -39,9 +44,15 @@ export function useInsufficientPayTokenBalanceAlert({
   const isPendingAlert = Boolean(pendingAmountUsd !== undefined);
   const isMax = useTransactionPayIsMaxAmount();
 
-  // Post-quote (perps withdraw): `payToken` is the destination, not the
-  // source — skip input/fees checks; gas check runs against the tx chain.
-  const isPostQuote = isPerpsWithdrawTransaction(currentConfirmation);
+  const isTransactionPayPostQuote = useSelector((state: TransactionPayState) =>
+    selectTransactionPayIsPostQuoteByTransactionId(state, transactionId),
+  );
+
+  // Post-quote: `payToken` is the destination, not the source — skip
+  // input/fees checks; gas check runs against the tx chain.
+  const isPostQuote =
+    isPerpsWithdrawTransaction(currentConfirmation) ||
+    isTransactionPayPostQuote;
 
   const sourceChainId = (
     isPostQuote

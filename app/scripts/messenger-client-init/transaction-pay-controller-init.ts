@@ -1,9 +1,9 @@
 import {
   TransactionPayController,
   TransactionPayControllerMessenger,
-  TransactionPayStrategy,
 } from '@metamask/transaction-pay-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
 import {
   type DelegationMessenger,
   getDelegationTransaction,
@@ -33,7 +33,6 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
 
   const messengerClient = new TransactionPayController({
     getDelegationTransaction: getDelegationTransactionCallback,
-    getStrategy,
     messenger: controllerMessenger,
     state: persistedState.TransactionPayController,
   });
@@ -66,11 +65,24 @@ function getApi(
         }
       });
     },
+    setTransactionPayConfig: (
+      transactionId: string,
+      options: {
+        isPostQuote?: boolean;
+        accountOverride?: Hex | null;
+      },
+    ) => {
+      messengerClient.setTransactionConfig(transactionId, (config) => {
+        if (options.isPostQuote !== undefined) {
+          config.isPostQuote = options.isPostQuote;
+        }
+        if (options.accountOverride !== undefined) {
+          // null clears the override; a string sets it.
+          config.accountOverride = options.accountOverride ?? undefined;
+        }
+      });
+    },
     updateTransactionPaymentToken:
       messengerClient.updatePaymentToken.bind(messengerClient),
   };
-}
-
-function getStrategy(_transaction: TransactionMeta): TransactionPayStrategy {
-  return TransactionPayStrategy.Relay;
 }

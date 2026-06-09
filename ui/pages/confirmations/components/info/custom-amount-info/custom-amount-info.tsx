@@ -73,6 +73,10 @@ export type CustomAmountInfoProps = {
   disablePay?: boolean;
   hasMax?: boolean;
   hidePayTokenAmount?: boolean;
+  /**
+   * Optional label override for the Pay With row (e.g. "Receive" for post-quote flows).
+   */
+  payWithLabelOverride?: string;
   preferredToken?: SetPayTokenRequest;
   overrideBottomContent?: ReactNode;
   overrideCenterContent?: (amountHuman: string) => ReactNode;
@@ -88,6 +92,7 @@ export const CustomAmountInfo = React.memo(
     disablePay,
     hasMax,
     hidePayTokenAmount,
+    payWithLabelOverride,
     overrideBottomContent,
     overrideCenterContent,
     preferredToken,
@@ -151,6 +156,7 @@ export const CustomAmountInfo = React.memo(
           hasMax={hasMax}
           hasTokens={hasTokens}
           hidePayTokenAmount={hidePayTokenAmount}
+          payWithLabelOverride={payWithLabelOverride}
           onAmountChange={handleAmountChange}
           onPercentageClick={handlePercentageClick}
           overrideCenterContent={overrideCenterContent}
@@ -186,6 +192,7 @@ type CenterContainerProps = {
   hasMax?: boolean;
   hasTokens: boolean;
   hidePayTokenAmount?: boolean;
+  payWithLabelOverride?: string;
   onAmountChange: (value: string) => void;
   onPercentageClick: (percentage: number) => void;
   overrideCenterContent?: (amountHuman: string) => ReactNode;
@@ -201,6 +208,7 @@ function CenterContainer({
   hasMax,
   hasTokens,
   hidePayTokenAmount,
+  payWithLabelOverride,
   onAmountChange,
   onPercentageClick,
   overrideCenterContent,
@@ -236,7 +244,10 @@ function CenterContainer({
           )}
           {children}
           {disablePay !== true && hasTokens && (
-            <PayWithRow variant={ConfirmInfoRowSize.Small} />
+            <PayWithRow
+              labelOverride={payWithLabelOverride}
+              variant={ConfirmInfoRowSize.Small}
+            />
           )}
         </Box>
       )}

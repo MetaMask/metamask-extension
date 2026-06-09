@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import {
   isCaipAssetType,
@@ -21,10 +21,14 @@ import {
 import {
   getAssetsBySelectedAccountGroup,
   getAssetsBySelectedAccountGroupIncludingHidden,
+  getAssetsByAccountGroupId,
 } from '../../../../selectors/assets';
 import { getIsTokenManagementFilterEnabled } from '../../../../selectors/multichain/feature-flags';
+import { getAccountGroupsByAddress } from '../../../../selectors/multichain-accounts/account-tree';
+import type { MultichainAccountsState } from '../../../../selectors/multichain-accounts/account-tree.types';
 import { AssetStandard, type Asset } from '../../types/send';
 import { useChainNetworkNameAndImageMap } from '../useChainNetworkNameAndImage';
+import { useTransactionAccountOverride } from '../pay/useTransactionAccountOverride';
 
 export type EnrichTokenRequest = {
   chainId: Hex;
@@ -35,6 +39,8 @@ type UseSendTokensOptions = {
   includeNoBalance?: boolean;
   tokenFilter?: (chainId: string, address: string) => boolean;
   enrichTokenRequests?: EnrichTokenRequest[];
+  /** When true, ignores accountOverride and always returns the globally selected account's tokens. */
+  ignoreAccountOverride?: boolean;
 };
 
 const EMPTY_ENRICH_TOKEN_REQUESTS: EnrichTokenRequest[] = [];
@@ -44,13 +50,44 @@ export const useSendTokens = (options: UseSendTokensOptions = {}): Asset[] => {
     includeNoBalance = false,
     tokenFilter,
     enrichTokenRequests = EMPTY_ENRICH_TOKEN_REQUESTS,
+    ignoreAccountOverride = false,
   } = options;
   const chainNetworkNAmeAndImageMap = useChainNetworkNameAndImageMap();
   const includeHiddenTokens = useSelector(getIsTokenManagementFilterEnabled);
-  const assets = useSelector(
+
+  // When an accountOverride is active on the current Pay confirmation, scope
+  // the token list to that account's group — mirrors mobile's useAccountGroupAssets.
+  // Callers that should always show the original account's tokens (e.g. target
+  // token picker) pass ignoreAccountOverride: true to opt out.
+  const rawAccountOverride = useTransactionAccountOverride();
+  const accountOverride = ignoreAccountOverride
+    ? undefined
+    : rawAccountOverride;
+  const overrideGroupId = useSelector((state: MultichainAccountsState) =>
+    accountOverride
+      ? getAccountGroupsByAddress(state, [accountOverride])[0]?.id
+      : undefined,
+  );
+  const selectOverrideAssets = useCallback(
+    (state: Parameters<typeof getAssetsByAccountGroupId>[0]) =>
+      getAssetsByAccountGroupId(state, overrideGroupId),
+    [overrideGroupId],
+  );
+  const overrideAssets = useSelector(selectOverrideAssets);
+
+  const globalAssets = useSelector(
     includeHiddenTokens
       ? getAssetsBySelectedAccountGroupIncludingHidden
       : getAssetsBySelectedAccountGroup,
+  );
+
+  // Flatten the per-chain override asset map into the same shape as globalAssets.
+  const assets = useMemo(
+    () =>
+      (overrideGroupId && overrideAssets
+        ? overrideAssets
+        : globalAssets) as ReturnType<typeof getAssetsBySelectedAccountGroup>,
+    [overrideGroupId, overrideAssets, globalAssets],
   );
   const [enrichedTokensMetadata, setEnrichedTokensMetadata] = useState<
     Record<CaipAssetType, AssetMetadata>

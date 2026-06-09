@@ -182,6 +182,7 @@ const ConfirmButton = ({
               ? IconName.SecuritySearch
               : IconName.Danger
           }
+          title={alerts.map((a) => a.key).join(', ')}
         >
           {reviewAlertButtonText(unconfirmedFieldDangerAlerts, t)}
         </Button>

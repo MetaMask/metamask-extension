@@ -6,6 +6,7 @@ import {
   FlexWrap,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
+import { MetaMaskPayButton } from '../metamask-pay-button';
 import { MusdConversionButton } from '../musd-conversion-button';
 import { PerpsDepositButton } from '../perps-deposit-button';
 import { PerpsWithdrawButton } from '../perps-withdraw-button';
@@ -37,6 +38,7 @@ export const ConfirmationsDeveloperOptions = () => {
         <PerpsDepositButton />
         <PerpsWithdrawButton />
         <MusdConversionButton />
+        <MetaMaskPayButton />
       </Box>
     </>
   );

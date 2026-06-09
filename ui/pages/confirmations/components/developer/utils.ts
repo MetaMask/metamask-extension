@@ -30,3 +30,26 @@ export const generateERC20TransferData = (
     `0x${amountRaw.toString(16)}`,
   ]) as Hex;
 };
+
+/**
+ * Decodes the human-readable amount from an ERC-20 `transfer(address,uint256)`
+ * calldata blob previously produced by `generateERC20TransferData`.
+ *
+ * @param data - Encoded calldata hex string.
+ * @param decimals - Token decimals used to scale the raw integer back to a
+ * human-readable value.
+ * @returns Human-readable amount string, or `'0'` if decoding fails.
+ */
+export const decodeERC20TransferAmount = (
+  data: string,
+  decimals: number,
+): string => {
+  try {
+    const decoded = erc20Interface.decodeFunctionData('transfer', data);
+    const rawAmount = new BigNumber(decoded[1].toString());
+    const divisor = new BigNumber(10).pow(decimals);
+    return rawAmount.dividedBy(divisor).toString(10);
+  } catch {
+    return '0';
+  }
+};
