@@ -19,20 +19,20 @@ const CollapsedSectionStyles = {
   justifyContent: JustifyContent.spaceBetween,
 };
 
-const StaticSimulation: React.FC<{
-  title: string;
-  titleTooltip: string;
-  description?: string;
-  simulationElements: React.ReactNode;
-  isLoading?: boolean;
-  isCollapsed?: boolean;
-}> = ({
+const StaticSimulation = ({
   title,
   titleTooltip,
   description,
   simulationElements,
   isLoading,
   isCollapsed = false,
+}: {
+  title: string;
+  titleTooltip: string;
+  description?: string;
+  simulationElements: React.ReactNode;
+  isLoading?: boolean;
+  isCollapsed?: boolean;
 }) => {
   return (
     <ConfirmInfoSection

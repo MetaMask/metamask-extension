@@ -141,6 +141,7 @@ function normalizeSmartContracts(smartContract) {
 /**
  * @typedef {object} UnifiedEvmAccountsApiBalances
  * @property {string} [mainnetNativeEthHuman] - Mainnet (eip155:1) native balance string for the default fixture account (Accounts API v5).
+ * @property {string} [localhostNativeEthHuman] - Localhost (eip155:1337) native balance string. Auto-populated from the local node when omitted, so smart-contract deployment gas is reflected.
  * @property {{ assetId: string, balance: string }[]} [mainnetAdditionalBalances] - Extra v5 rows for mainnet (e.g. ERC-20s).
  */
 
@@ -324,6 +325,22 @@ async function withFixtures(options, testSuite) {
       [WEBSOCKET_SERVICES.perps]: { mocks: perpsWebSocketSpecificMocks },
     });
 
+    // Sync the localhost native balance to what's actually on the node.
+    // This ensures the Accounts API v5 mock returns the correct balance
+    // even after smart-contract deployment has consumed gas.
+    let effectiveUnifiedEvmAccountsApiBalances =
+      unifiedEvmAccountsApiBalances ?? {};
+    if (
+      localNodes[0] &&
+      !effectiveUnifiedEvmAccountsApiBalances.localhostNativeEthHuman
+    ) {
+      const nodeBalance = await localNodes[0].getBalance();
+      effectiveUnifiedEvmAccountsApiBalances = {
+        ...effectiveUnifiedEvmAccountsApiBalances,
+        localhostNativeEthHuman: Number(nodeBalance.toFixed(3)).toString(),
+      };
+    }
+
     // Decide between the regular setupMocking and the passThrough version
     const mockingSetupFunction = useMockingPassThrough
       ? setupMockingPassThrough
@@ -339,7 +356,7 @@ async function withFixtures(options, testSuite) {
       chainId: localNodeOptsNormalized[0]?.options.chainId || 1337,
       ethConversionInUsd,
       monConversionInUsd,
-      unifiedEvmAccountsApiBalances,
+      unifiedEvmAccountsApiBalances: effectiveUnifiedEvmAccountsApiBalances,
     });
 
     if ((await detectPort(8000)) !== 8000) {
