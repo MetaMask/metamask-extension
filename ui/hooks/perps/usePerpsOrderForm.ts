@@ -418,12 +418,7 @@ export function usePerpsOrderForm({
         ...defaultAmountFields,
       };
     });
-  }, [
-    mode,
-    computeInitialAmountValue,
-    formState.leverage,
-    availableBalance,
-  ]);
+  }, [mode, computeInitialAmountValue, formState.leverage, availableBalance]);
 
   // Notify parent of form state changes
   useEffect(() => {
