@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.34.1]
 
+### Changed
+
+- Bumped `@lavamoat/webpack` from 2.2.0 to 2.2.3 (#43333)
+
+### Fixed
+
+- Fixed handling of scientific notation in `parseBalanceWithDecimals` to prevent BigInt crash (#43314)
+
 ## [13.34.0]
 
 ### Added
