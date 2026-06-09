@@ -72,6 +72,7 @@ import {
   getAccountTreeControllerInitMessenger,
   getMultichainAccountServiceMessenger,
   getMultichainAccountServiceInitMessenger,
+  getSnapAccountServiceMessenger,
 } from './accounts';
 import {
   getOAuthServiceMessenger,
@@ -596,6 +597,10 @@ export const MESSENGER_FACTORIES = {
   SignatureController: {
     getMessenger: getSignatureControllerMessenger,
     getInitMessenger: getSignatureControllerInitMessenger,
+  },
+  SnapAccountService: {
+    getMessenger: getSnapAccountServiceMessenger,
+    getInitMessenger: noop,
   },
   SnapsNameProvider: {
     getMessenger: getSnapsNameProviderMessenger,
