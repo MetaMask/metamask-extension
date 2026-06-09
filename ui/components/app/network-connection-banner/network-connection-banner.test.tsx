@@ -11,9 +11,6 @@ import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { NetworkConnectionBanner } from './network-connection-banner';
 
 jest.mock('../../../store/actions', () => ({
-  updateNetworkConnectionBanner: jest.fn(() => ({
-    type: 'UPDATE_NETWORK_CONNECTION_BANNER',
-  })),
   setEditedNetwork: jest.fn(() => ({
     type: 'SET_EDITED_NETWORK',
   })),

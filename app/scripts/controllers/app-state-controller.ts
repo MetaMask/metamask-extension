@@ -42,7 +42,6 @@ import { SecurityAlertResponse } from '../lib/ppom/types';
 import {
   AccountOverviewTabKey,
   CarouselSlide,
-  NetworkConnectionBanner,
   StorageWriteErrorType,
 } from '../../../shared/constants/app-state';
 import type {
@@ -117,7 +116,6 @@ export type AppStateControllerState = {
   lastUpdatedAt: number | null;
   lastUpdatedFromVersion: string | null;
   lastViewedUserSurvey: number | null;
-  networkConnectionBanner: NetworkConnectionBanner;
   newPrivacyPolicyToastClickedOrClosed: boolean | null;
   newPrivacyPolicyToastShownDate: number | null;
   pna25Acknowledged: boolean;
@@ -265,7 +263,6 @@ type AppStateControllerInitState = Partial<
     | 'signatureSecurityAlertResponses'
     | 'addressSecurityAlertResponses'
     | 'currentExtensionPopupId'
-    | 'networkConnectionBanner'
   >
 >;
 
@@ -340,9 +337,6 @@ function getInitialStateOverrides() {
     currentExtensionPopupId: 0,
     nftsDropdownState: {},
     signatureSecurityAlertResponses: {},
-    networkConnectionBanner: {
-      status: 'unknown' as const,
-    },
   };
 }
 
@@ -449,12 +443,6 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  networkConnectionBanner: {
-    includeInStateLogs: false,
-    persist: false,
-    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   newPrivacyPolicyToastClickedOrClosed: {
@@ -769,7 +757,6 @@ const MESSENGER_EXPOSED_METHODS = [
   'setTermsOfUseLastAgreed',
   'setTrezorModel',
   'setUpdateModalLastDismissedAt',
-  'updateNetworkConnectionBanner',
   'updateNftDropDownState',
   'updateSlides',
   'updateThrottledOriginState',
@@ -1371,19 +1358,6 @@ export class AppStateController extends BaseController<
   setProductTour(productTour: string): void {
     this.update((state) => {
       state.productTour = productTour;
-    });
-  }
-
-  /**
-   * Updates the network connection banner state
-   *
-   * @param networkConnectionBanner - The new banner state
-   */
-  updateNetworkConnectionBanner(
-    networkConnectionBanner: AppStateControllerState['networkConnectionBanner'],
-  ): void {
-    this.update((state) => {
-      state.networkConnectionBanner = networkConnectionBanner;
     });
   }
 
