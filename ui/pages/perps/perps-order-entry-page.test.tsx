@@ -958,12 +958,16 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(screen.getByTestId('perps-order-submit-error')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-order-submit-error'),
+      ).toBeInTheDocument();
 
       fireEvent.click(screen.getByTestId('perps-order-summary-slippage-row'));
 
       await waitFor(() => {
-        expect(screen.getByTestId('perps-slippage-config-set')).toBeInTheDocument();
+        expect(
+          screen.getByTestId('perps-slippage-config-set'),
+        ).toBeInTheDocument();
       });
 
       fireEvent.click(screen.getByTestId('perps-slippage-config-preset-3'));
