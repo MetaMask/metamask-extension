@@ -18,6 +18,7 @@ import * as useTransactionEventFragmentModule from '../../../hooks/useTransactio
 import { MusdConversionInfo } from './musd-conversion-info';
 
 const mockEndTrace = jest.fn();
+const mockUpdateTransactionEventFragment = jest.fn();
 jest.mock('../../../../../../shared/lib/trace', () => ({
   trace: jest.fn(),
   endTrace: (...args: unknown[]) => mockEndTrace(...args),
@@ -137,7 +138,7 @@ function setupDefaultMocks({
   jest
     .mocked(useTransactionEventFragmentModule.useTransactionEventFragment)
     .mockReturnValue({
-      updateTransactionEventFragment: jest.fn(),
+      updateTransactionEventFragment: mockUpdateTransactionEventFragment,
     });
   jest
     .mocked(useTransactionCustomAmountModule.useTransactionCustomAmount)
@@ -312,6 +313,28 @@ describe('MusdConversionInfo', () => {
       ).toHaveBeenCalledWith(
         expect.objectContaining({ prefillMaxOnLoad: true }),
       );
+    });
+
+    it('tags transaction events with mm_pay_prefilled_amount false when disabled', () => {
+      render();
+
+      expect(mockUpdateTransactionEventFragment).toHaveBeenCalledWith({
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          mm_pay_prefilled_amount: false,
+        },
+      });
+    });
+
+    it('tags transaction events with mm_pay_prefilled_amount true when enabled', () => {
+      render({ prefillMax: true });
+
+      expect(mockUpdateTransactionEventFragment).toHaveBeenCalledWith({
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          mm_pay_prefilled_amount: true,
+        },
+      });
     });
   });
 
