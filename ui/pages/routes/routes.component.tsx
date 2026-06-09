@@ -143,7 +143,7 @@ const OnboardingFlow = mmLazy(() => import('../onboarding-flow/index.ts'));
 const Lock = mmLazy(() => import('../lock/index.ts'));
 const UnlockPage = mmLazy(() => import('../unlock-page/index.ts'));
 const QRHardwarePopover = mmLazy(
-  () => import('../../components/app/qr-hardware-popover/index.js'),
+  () => import('../../components/app/qr-hardware-popover/index.ts'),
 );
 const ToggleIpfsModal = mmLazy(
   () =>

@@ -124,7 +124,7 @@ jest.mock('../../hooks/useMultichainAccountsIntroModal', () => ({
   })),
 }));
 
-jest.mock('../../components/app/qr-hardware-popover/index.js', () => {
+jest.mock('../../components/app/qr-hardware-popover/index.ts', () => {
   const MockQrHardwarePopover = () => <div data-testid="qr-hardware-popover" />;
   MockQrHardwarePopover.displayName = 'MockQrHardwarePopover';
   return MockQrHardwarePopover;
