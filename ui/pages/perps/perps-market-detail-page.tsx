@@ -1585,7 +1585,11 @@ const PerpsMarketDetailPage = () => {
 
         {/* Stats Section - always visible */}
         <Box paddingLeft={4} paddingRight={4}>
-          <Box paddingTop={4} paddingBottom={2} data-testid="perps-stats-section-header">
+          <Box
+            paddingTop={4}
+            paddingBottom={2}
+            data-testid="perps-stats-section-header"
+          >
             <Text
               variant={TextVariant.HeadingSm}
               fontWeight={FontWeight.Medium}
