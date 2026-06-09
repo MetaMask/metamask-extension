@@ -672,12 +672,13 @@ const PerpsOrderEntryPage = () => {
     orderMode !== 'close' &&
     isSlippageConfigEnabled;
 
-  const { estimatedSlippageBps } = usePerpsEstimatedSlippage({
-    symbol: decodedSymbol ?? '',
-    sizeUsd: isMarketOrderWithAmount ? orderUsdAmount : undefined,
-    isBuy: orderDirection === 'long',
-    enabled: isMarketOrderWithAmount,
-  });
+  const { estimatedSlippageBps, isReady: isEstimatedSlippageReady } =
+    usePerpsEstimatedSlippage({
+      symbol: decodedSymbol ?? '',
+      sizeUsd: isMarketOrderWithAmount ? orderUsdAmount : undefined,
+      isBuy: orderDirection === 'long',
+      enabled: isMarketOrderWithAmount,
+    });
 
   const estimatedSlippagePct = useMemo(
     () =>
@@ -696,6 +697,7 @@ const PerpsOrderEntryPage = () => {
   const exceedsMaxSlippage =
     !isMaxSlippageLoading &&
     isMarketOrderWithAmount &&
+    isEstimatedSlippageReady &&
     typeof estimatedSlippageBps === 'number' &&
     estimatedSlippageBps > maxSlippageBps;
 
@@ -707,7 +709,7 @@ const PerpsOrderEntryPage = () => {
     ) {
       return null;
     }
-    if (isMaxSlippageLoading) {
+    if (isMaxSlippageLoading || !isEstimatedSlippageReady) {
       return t('perpsSlippageRowFormatPending', ['--']);
     }
     const maxPct = bpsToPercent(maxSlippageBps);
@@ -720,6 +722,7 @@ const PerpsOrderEntryPage = () => {
     ]);
   }, [
     estimatedSlippagePctDisplay,
+    isEstimatedSlippageReady,
     isMaxSlippageLoading,
     isSlippageConfigEnabled,
     maxSlippageBps,
@@ -1770,7 +1773,13 @@ const PerpsOrderEntryPage = () => {
           onSave={(valueBps) =>
             setMaxSlippage(valueBps)
               .then(() => {
-                setSubmitError(null);
+                const savedCapStillExceeded =
+                  isEstimatedSlippageReady &&
+                  typeof estimatedSlippageBps === 'number' &&
+                  estimatedSlippageBps > valueBps;
+                if (!savedCapStillExceeded) {
+                  setSubmitError(null);
+                }
                 track(MetaMetricsEventName.PerpsUiInteraction, {
                   [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
                     PERPS_EVENT_VALUE.INTERACTION_TYPE.SLIPPAGE_CONFIG_CHANGED,
