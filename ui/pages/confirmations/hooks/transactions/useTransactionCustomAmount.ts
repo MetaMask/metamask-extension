@@ -201,6 +201,12 @@ export function useTransactionCustomAmount({
         return;
       }
 
+      // A user-initiated percentage click counts as an edit so prefill won't
+      // later override it.
+      if (!isPrefill) {
+        userEditedRef.current = true;
+      }
+
       const newAmountFiatValue = new BigNumber(percentage)
         .dividedBy(100)
         .times(balanceUsdValue);
@@ -259,26 +265,29 @@ export function useTransactionCustomAmount({
     ],
   );
 
+  // Reset the prefill guards when the confirmation changes so a new
+  // transaction in the same UI instance can prefill again.
+  useEffect(() => {
+    hasPrefilledMaxRef.current = false;
+    userEditedRef.current = false;
+  }, [transactionId]);
+
   // Pre-fill the max amount once the balance is known, unless the user has
-  // already edited the field.
+  // already edited the field. `userEditedRef` is used instead of
+  // `isInputChanged` because the latter also flips from debounced sync of
+  // existing required-token USD, which would wrongly block prefill.
   useEffect(() => {
     if (
       !prefillMaxOnLoad ||
       hasPrefilledMaxRef.current ||
       userEditedRef.current ||
-      isInputChanged ||
       !(balanceUsd > 0)
     ) {
       return;
     }
     hasPrefilledMaxRef.current = true;
     updatePendingAmountPercentage(100, { isPrefill: true });
-  }, [
-    prefillMaxOnLoad,
-    balanceUsd,
-    isInputChanged,
-    updatePendingAmountPercentage,
-  ]);
+  }, [prefillMaxOnLoad, balanceUsd, updatePendingAmountPercentage]);
 
   return {
     amountFiat,
