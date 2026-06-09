@@ -1092,6 +1092,10 @@ export type PerpsMarketData = {
    */
   marketSource?: string | null;
   /**
+   * Whether this is a HIP-3 market.
+   */
+  isHip3?: boolean;
+  /**
    * Market asset type classification (optional)
    * - crypto: Cryptocurrency (default for most markets)
    * - stock: Individual stocks (HIP-3)
