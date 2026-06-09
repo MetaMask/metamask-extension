@@ -1,4 +1,5 @@
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Box, Text } from '@metamask/design-system-react';
 import { PendingTransactionCancelSpeedUpProvider } from '../../components/app/pending-transaction-action-buttons/pending-transaction-cancel-speed-up-provider';
 import AssetListControlBar from '../../components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar';
@@ -14,6 +15,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { selectEnabledNetworksAsCaipChainIds } from '../../selectors/multichain/networks';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import { LegacyDetails } from './legacy-details';
 import { ActivityRow } from './rows/activity-row';
@@ -36,11 +38,12 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
   const { trackEvent } = useContext(MetaMetricsContext);
   const { formatMediumDate } = useFormatters();
   const scrollContainerRef = useScrollContainer();
-  const [networks, setNetworks] = useState<string[]>([]);
+  // null = not yet initialised by AssetListControlBar; [] = no filter applied
+  const [networks, setNetworks] = useState<string[] | null>(null);
   const [selectedItem, setSelectedItem] = useState<ActivityListItem | null>(
     null,
   );
-  const filters = filter ?? { networks };
+  const filters = filter ?? { networks: networks ?? [] };
 
   const { data, isInitialLoading, fetchNextVisiblePage } =
     useTransactionsQuery(filters);
@@ -62,6 +65,54 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
     () => getLastEvmItemIndex(groupedItems, evmItems),
     [evmItems, groupedItems],
   );
+
+  const networkFilterForMetrics = useSelector(
+    selectEnabledNetworksAsCaipChainIds,
+  );
+
+  // Latest values for the metric effect, updated each render without triggering it
+  const metricsDataRef = useRef({
+    groupedItems,
+    localItems,
+    nonEvmItems,
+    networkFilterForMetrics,
+  });
+  metricsDataRef.current = {
+    groupedItems,
+    localItems,
+    nonEvmItems,
+    networkFilterForMetrics,
+  };
+
+  // Fire ActivityScreenOpened once the list has settled — same condition the
+  // VirtualizedList uses to choose between loading state and empty state.
+  // Guarded by `!filter` so it never fires on asset detail pages.
+  useEffect(() => {
+    if (filter || networks === null || isInitialLoading) {
+      return;
+    }
+
+    const {
+      groupedItems: grouped,
+      localItems: local,
+      nonEvmItems: nonEvm,
+      networkFilterForMetrics: networkFilter,
+    } = metricsDataRef.current;
+
+    trackEvent({
+      category: MetaMetricsEventCategory.Home,
+      event: MetaMetricsEventName.ActivityScreenOpened,
+      properties: {
+        /* eslint-disable @typescript-eslint/naming-convention */
+        network_filter: networkFilter,
+        is_empty: grouped.length === 0,
+        pending_transactions: [...local, ...nonEvm].filter(
+          (item) => item.status === 'pending',
+        ).length,
+        /* eslint-enable @typescript-eslint/naming-convention */
+      },
+    });
+  }, [filter, isInitialLoading, networks, trackEvent]);
 
   const itemRef = useItemInView({
     targetIndex: lastEvmItemIndex,
