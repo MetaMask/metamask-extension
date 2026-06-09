@@ -39,7 +39,7 @@ export const BatchSellEmptySelectTokens = () => {
       'explore/tokens',
       'ext_batch_sell_empty',
       metaMetricsId,
-      isMetaMetricsEnabled,
+      isMetaMetricsEnabled ?? undefined,
       isMarketingEnabled,
     );
     globalThis.platform.openTab({ url });
