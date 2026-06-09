@@ -941,7 +941,7 @@ export default class Home extends PureComponent {
           {showDeepLinkQrCodeModal ? (
             <Modal
               data-testid="deeplink-qrcode-modal"
-              isOpen={true}
+              isOpen
               onClose={this.hideDeepLinkQrCode}
             >
               <ModalOverlay />
