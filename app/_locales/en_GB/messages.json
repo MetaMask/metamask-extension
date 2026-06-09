@@ -3081,6 +3081,12 @@
   "decryptRequest": {
     "message": "Decrypt request"
   },
+  "deepLinkQrPredictDescription": {
+    "message": "To access MetaMask Prediction Markets, scan the QR code with your mobile device."
+  },
+  "deepLinkQrPredictTitle": {
+    "message": "Open Prediction Markets on mobile"
+  },
   "deepLink_Caution": {
     "message": "Proceed with caution"
   },
