@@ -1,7 +1,4 @@
-import {
-  getDeferredDeepLinkRoute,
-  buildInterstitialRoute,
-} from './utils';
+import { getDeferredDeepLinkRoute, buildInterstitialRoute } from './utils';
 import { DeferredDeepLinkRouteType } from './types';
 import * as parseModule from './parse';
 import { VALID, MISSING, INVALID } from './verify';

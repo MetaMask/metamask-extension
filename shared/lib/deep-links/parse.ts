@@ -36,7 +36,9 @@ export async function parse<Options extends ParseOptions = { verify: true }>(
   let destination: Destination;
   try {
     const canonicalUrl = new URL(canonicalize(url));
-    const canonicalSearchParams = new URLSearchParams(canonicalUrl.searchParams);
+    const canonicalSearchParams = new URLSearchParams(
+      canonicalUrl.searchParams,
+    );
     // canonicalize does not remove sig_params, as it is needed for verification
     // but canonical route handlers should not receive it.
     canonicalSearchParams.delete(SIG_PARAMS_PARAM);
