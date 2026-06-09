@@ -709,11 +709,11 @@ const PerpsOrderEntryPage = () => {
     ) {
       return null;
     }
-    if (isMaxSlippageLoading || !isEstimatedSlippageReady) {
+    if (isMaxSlippageLoading) {
       return t('perpsSlippageRowFormatPending', ['--']);
     }
     const maxPct = bpsToPercent(maxSlippageBps);
-    if (estimatedSlippagePctDisplay === null) {
+    if (!isEstimatedSlippageReady || estimatedSlippagePctDisplay === null) {
       return t('perpsSlippageRowFormatPending', [`${maxPct}`]);
     }
     return t('perpsSlippageRowFormat', [

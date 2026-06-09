@@ -887,6 +887,32 @@ describe('PerpsOrderEntryPage', () => {
       ).not.toBeInTheDocument();
     });
 
+    it('shows resolved max slippage while estimate is still loading', async () => {
+      mockUsePerpsEstimatedSlippage.mockReturnValue({
+        estimatedSlippageBps: null,
+        isReady: false,
+      });
+      mockUsePerpsMaxSlippage.mockReturnValue({
+        maxSlippageBps: 300,
+        maxSlippageSource: 'default',
+        setMaxSlippage: jest.fn(),
+        isLoading: false,
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('100');
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('perps-order-summary-slippage-value'),
+        ).toHaveTextContent(
+          tEn('perpsSlippageRowFormatPending', [`${bpsToPercent(300)}`]),
+        );
+      });
+    });
+
     it('blocks submit and shows slippage error when estimated slippage exceeds max', async () => {
       const estimatedSlippageBps = 50;
       const maxSlippageBps = 10;
