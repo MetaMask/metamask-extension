@@ -62,6 +62,7 @@ export function useTransactionCustomAmount({
     null,
   );
   const hasPrefilledMaxRef = useRef(false);
+  const userEditedRef = useRef(false);
 
   // Create and update debounced function
   useEffect(() => {
@@ -157,6 +158,10 @@ export function useTransactionCustomAmount({
 
   const updatePendingAmount = useCallback(
     (value: string) => {
+      // Record the manual edit synchronously so prefill can't overwrite it
+      // before the debounced `isInputChanged` catches up.
+      userEditedRef.current = true;
+
       let newAmount = value.replace(/^0+/u, '') || '0';
 
       if (newAmount.startsWith('.') || newAmount.startsWith(',')) {
@@ -234,6 +239,9 @@ export function useTransactionCustomAmount({
         hasBalanceUsdOverride,
       );
 
+      // Percentage / prefill updates apply immediately, so drop any pending
+      // debounced typing update that would otherwise overwrite them.
+      debounceRef.current?.cancel();
       setAmountHumanDebounced(newAmountHuman);
       if (!disableUpdate) {
         updateTokenAmountCallback(newAmountHuman);
@@ -257,6 +265,7 @@ export function useTransactionCustomAmount({
     if (
       !prefillMaxOnLoad ||
       hasPrefilledMaxRef.current ||
+      userEditedRef.current ||
       isInputChanged ||
       !(balanceUsd > 0)
     ) {
