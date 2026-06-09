@@ -39,11 +39,7 @@ import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import type { BundleSizeCategory } from './utils/plugins/ManifestPlugin/types';
 import { getLatestCommit } from './utils/git';
 import { MODES, DEV_SERVER_CLIENT_ENTRY_NAME } from './utils/constants';
-import {
-  DEV_RELOAD_CLIENT_ENTRY_NAME,
-  BACKGROUND_ENTRY_NAMES,
-  CONTENT_SCRIPT_ENTRY_NAMES,
-} from './utils/devReload';
+import { DEV_RELOAD_CLIENT_ENTRY_NAME } from './utils/devReload';
 import { BUNDLE_SIZE_SUMMARY_FILE } from './utils/plugins/ManifestPlugin/stats';
 
 const buildTypes = loadBuildTypesConfig();
@@ -81,19 +77,23 @@ const bundleSizeOtherEntrypoints = new Set([
   'usb-permissions',
 ]);
 const bundleSizeOtherEntrypointPattern = /^offscreen\.\d+$/u;
-const bundleSizeBackgroundEntrypoints = new Set<string>(BACKGROUND_ENTRY_NAMES);
-const bundleSizeContentScriptEntrypoints = new Set<string>(
-  CONTENT_SCRIPT_ENTRY_NAMES,
-);
+const bundleSizeContentScriptEntrypoints = new Set([
+  'scripts/contentscript.js',
+  'scripts/inpage.js',
+  'vendor/trezor/content-script.js',
+]);
 
 // TODO(#41847): Move HTML entrypoints into ownership-specific locations so
 // this classifier no longer needs to know about the current mixed page layout.
 const classifyBundleSizeEntrypoint = (
   entrypointName: string,
 ): BundleSizeCategory | null => {
-  if (bundleSizeBackgroundEntrypoints.has(entrypointName)) {
-    // MV3 uses the service-worker.ts entrypoint for the background script,
-    // while MV2 uses the `background` page.
+  if (
+    // MV3 uses the service-worker.ts entry point for the background script,
+    // while MV2 uses background
+    entrypointName === 'service-worker.ts' ||
+    entrypointName === 'background'
+  ) {
     return 'background';
   }
 

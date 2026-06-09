@@ -49,10 +49,10 @@ export const DEV_SERVER_OPTIONS: Configuration = {
         getDevServerClientUrl(devServer.options),
         { name: DEV_SERVER_CLIENT_ENTRY_NAME, chunkLoading: false },
       ).apply(compiler);
-      // Auto-reload the whole extension when the background, service worker, or
-      // content scripts change (UI pages reload themselves via the client above).
-      setupDevReload(compiler, devServer);
     }
+    // Auto-reload the whole extension when the background, service worker, or
+    // content scripts change (UI pages reload themselves via the client above).
+    setupDevReload(devServer, compilers);
     return middlewares;
   },
 };

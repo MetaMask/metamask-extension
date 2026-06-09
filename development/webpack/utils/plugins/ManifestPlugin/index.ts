@@ -114,6 +114,17 @@ export class ManifestPlugin<Z extends boolean> {
     return !name || !this.selfContainedScripts.has(name);
   };
 
+  /**
+   * Entry names of every script this plugin registered from the extension
+   * manifests: content scripts, MV2 background scripts, the MV3 service
+   * worker, and web-accessible `.js` resources. Used by the dev server's
+   * auto-reload (`utils/devReload`) to know which entries require a full
+   * extension reload when they change, without hard-coding manifest contents.
+   */
+  get manifestScriptEntryNames(): ReadonlySet<string> {
+    return this.addedScripts;
+  }
+
   constructor(options: ManifestPluginOptions<Z>) {
     validate(schema, options, { name: NAME });
     this.options = options;

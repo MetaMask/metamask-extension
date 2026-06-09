@@ -9,9 +9,16 @@
  */
 
 /**
- * Custom WebSocket message the dev server broadcasts when a background or
- * content-script bundle changes. The reloader client listens for it and triggers
- * `chrome.runtime.reload()`. webpack-dev-server's own UI clients ignore message
- * types they don't recognize, so broadcasting to all clients is safe.
+ * Custom WebSocket message the dev server uses to announce the fingerprint of
+ * the current build's privileged code (background, service worker, content
+ * scripts, offscreen). The `data` field carries the fingerprint string.
+ *
+ * It is broadcast after every successful build and pushed to every newly
+ * connected client. The reloader client compares it against the fingerprint of
+ * the code it is currently running and triggers `chrome.runtime.reload()` on a
+ * mismatch — so a change that was built while the client was disconnected
+ * (e.g. the MV3 service worker was idle-terminated) is still picked up on
+ * reconnect. webpack-dev-server's own UI clients ignore message types they
+ * don't recognize, so announcing to all clients is safe.
  */
-export const DEV_RELOAD_MESSAGE_TYPE = 'mm:reload-extension';
+export const DEV_RELOAD_MESSAGE_TYPE = 'mm:dev-reload-fingerprint';
