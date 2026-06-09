@@ -36,8 +36,7 @@ export type RunSeedlessOnboardingMigrationsMessenger = Messenger<
  * and the `LegacyBackgroundApiService`).
  *
  * @param messenger - The messenger used to call the required controller actions.
- * @param options - Migration execution options.
- * @param options.reportToSentry - Whether to capture migration failures in
+ *
  * Sentry. Defaults to `true`.
  * @returns A promise that resolves once migrations have run (or been skipped).
  */
