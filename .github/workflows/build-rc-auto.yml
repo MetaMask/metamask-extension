@@ -167,7 +167,8 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-webpack
-      build-command: yarn webpack:lavamoat:build --zip
+      build-command: yarn webpack:lavamoat:build --zip --stats
+      bundle-analyzer: true
       builds-from-run: ${{ github.run_id }}
     secrets: inherit
 
