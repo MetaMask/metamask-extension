@@ -95,6 +95,15 @@ jest.mock('@metamask/perps-controller', () => ({
     SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
     NETWORK_ERROR: 'NETWORK_ERROR',
   },
+  MARKET_CATEGORIES: [
+    'crypto',
+    'stock',
+    'pre-ipo',
+    'index',
+    'etf',
+    'commodity',
+    'forex',
+  ],
 }));
 
 // Mock lightweight-charts to prevent DOM rendering issues in tests
@@ -773,7 +782,7 @@ describe('PerpsMarketDetailPage', () => {
       ).toBeInTheDocument();
     });
 
-    it('renders HIP-3 equity market (TSLA)', async () => {
+    it('renders HIP-3 stock market (TSLA)', async () => {
       mockUseParams.mockReturnValue({ symbol: 'xyz:TSLA' });
       const store = mockStore(createMockState(true));
 
