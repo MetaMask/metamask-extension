@@ -7,10 +7,7 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 import { SupportedCurrency } from '@metamask/core-backend';
-import {
-  AccountImportStrategy,
-  KeyringTypes,
-} from '@metamask/keyring-controller';
+import { AccountImportStrategy } from '@metamask/keyring-controller';
 import { add0x, hexToBytes } from '@metamask/utils';
 import {
   EncAccountDataType,
@@ -999,16 +996,10 @@ describe('LegacyBackgroundApiService', () => {
 
   describe('getAccountsBySnapId', () => {
     it('returns the address from the snap keyring', async () => {
-      const snapKeyring = {
-        id: 'foo',
-        type: KeyringTypes.snap,
-        getAccountsBySnapId: jest.fn().mockReturnValue(['0x123']),
-      };
-
       await withService(async ({ rootMessenger }) => {
         rootMessenger.registerActionHandler(
-          'SnapAccountService:getLegacySnapKeyring',
-          jest.fn().mockResolvedValue(snapKeyring),
+          'KeyringController:withKeyringV2',
+          jest.fn().mockResolvedValue(['0x123']),
         );
 
         const result = await rootMessenger.call(
@@ -1267,7 +1258,6 @@ function getMessenger(
       'SeedlessOnboardingController:addNewSecretData',
       'SeedlessOnboardingController:updateBackupMetadataState',
       'PermissionController:updatePermissionsByCaveat',
-      'SnapAccountService:getLegacySnapKeyring',
       'PreferencesController:setPasswordForgotten',
       'OnboardingController:getState',
       'SeedlessOnboardingController:checkIsPasswordOutdated',
