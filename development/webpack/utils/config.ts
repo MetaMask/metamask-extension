@@ -4,7 +4,7 @@ import { AssertionError } from 'node:assert';
 import { parse } from 'dotenv';
 import { setEnvironmentVariables } from '../../build/set-environment-variables';
 import type { Variables } from '../../lib/variables';
-import type { BuildTypesConfig } from '../../lib/build-type';
+import type { BuildTypesConfig, BuildType } from '../../lib/build-type';
 import { type Args } from './cli';
 import { getExtensionVersion } from './version';
 import {
@@ -181,7 +181,7 @@ export function getVariables(
  * @returns
  */
 function loadConfigVars(
-  activeBuild: BuildTypesConfig['buildTypes'][string],
+  activeBuild: Pick<BuildType, 'env' | 'features'>,
   { env }: BuildTypesConfig,
 ) {
   const variables = loadEnv();
