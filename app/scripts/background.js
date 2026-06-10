@@ -42,7 +42,10 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../shared/constants/metametrics';
-import { getActiveTabDomainForMetrics } from '../../shared/lib/active-tab-domain-metrics';
+import {
+  getActiveTabDomainAllowlist,
+  getActiveTabDomainForMetrics,
+} from '../../shared/lib/active-tab-domain-metrics';
 import { checkForLastErrorAndLog } from '../../shared/lib/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/lib/mv3.utils';
 import { maskObject } from '../../shared/lib/object.utils';
@@ -1379,7 +1382,10 @@ function emitAppOpenedMetricEvent(environmentType) {
   }
 
   const activeTabOrigin = controller.appStateController.state.appActiveTab?.origin;
-  const activeTabDomain = getActiveTabDomainForMetrics(activeTabOrigin);
+  const allowlist = getActiveTabDomainAllowlist(
+    controller.remoteFeatureFlagController.state,
+  );
+  const activeTabDomain = getActiveTabDomainForMetrics(activeTabOrigin, allowlist);
 
   controller.metaMetricsController.trackEvent({
     event: MetaMetricsEventName.AppOpened,

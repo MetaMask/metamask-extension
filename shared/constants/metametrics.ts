@@ -1422,9 +1422,3 @@ export enum MetaMetricsEventTransactionEstimateType {
   DappProposed = 'dapp_proposed',
   DefaultEstimate = 'default_estimate',
 }
-
-/**
- * V1 allowlist: x.com / twitter.com only.
- * Adding new domains requires a governance/privacy review before inclusion.
- */
-export const ACTIVE_TAB_DOMAIN_ALLOWLIST = ['x.com', 'twitter.com'] as const;
