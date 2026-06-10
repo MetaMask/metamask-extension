@@ -2,11 +2,10 @@ import React, { useMemo, useState, useEffect } from 'react';
 import {
   AvatarToken,
   AvatarTokenSize,
+  Skeleton,
   twMerge,
 } from '@metamask/design-system-react';
 import { getDisplaySymbol, getAssetIconUrls } from '../utils';
-import { Skeleton } from '../../../component-library/skeleton';
-import { BorderRadius } from '../../../../helpers/constants/design-system';
 import { useTheme } from '../../../../hooks/useTheme';
 import { ThemeType } from '../../../../../shared/constants/preferences';
 import {
@@ -112,8 +111,7 @@ export const PerpsTokenLogo = ({
   if (isResolving) {
     return (
       <Skeleton
-        className={`shrink-0 ${AVATAR_SIZE_CLASS[size]} ${className ?? ''}`}
-        borderRadius={BorderRadius.full}
+        className={`shrink-0 rounded-full ${AVATAR_SIZE_CLASS[size]} ${className ?? ''}`}
         data-testid={`perps-token-logo-${sanitizedSymbol}`}
       />
     );

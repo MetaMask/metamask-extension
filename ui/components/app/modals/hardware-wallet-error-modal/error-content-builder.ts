@@ -3,6 +3,7 @@ import { IconName, IconColor } from '@metamask/design-system-react';
 import {
   getHardwareWalletErrorCode,
   HardwareWalletType,
+  isTrezorDesktopConnectionMissingError,
 } from '../../../../contexts/hardware-wallets';
 
 /** Discriminant values for {@link ErrorContent}; use for comparisons and `buildErrorContent` returns. */
@@ -84,6 +85,21 @@ export function buildErrorContent(
   const errorCode = getHardwareWalletErrorCode(error);
   const showRepairLink =
     errorCode !== null && REPAIR_LINK_ERROR_CODES.has(errorCode);
+
+  if (
+    (walletType === HardwareWalletType.Trezor ||
+      walletType === HardwareWalletType.OneKey) &&
+    isTrezorDesktopConnectionMissingError(error)
+  ) {
+    return {
+      variant: HardwareWalletErrorContentVariant.Description,
+      icon: IconName.Danger,
+      iconColor: IconColor.WarningDefault,
+      title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),
+      showRepairLink: true,
+      description: t('trezorDesktopAppRequiredError'),
+    };
+  }
 
   switch (errorCode) {
     // Locked device errors
