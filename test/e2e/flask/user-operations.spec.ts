@@ -22,7 +22,7 @@ import SnapAccountAbstractionKeyringPage from '../page-objects/pages/snap-accoun
 import ActivityListPage from '../page-objects/pages/home/activity-list';
 import TransactionConfirmation from '../page-objects/pages/confirmations/transaction-confirmation';
 import { mockSnapAccountAbstractionKeyRingAndSite } from '../mock-response-data/snaps/snap-local-sites/account-abstraction-keyring-site-mocks';
-import { createInternalTransaction } from '../page-objects/flows/transaction';
+import { createInternalTransaction } from '../page-objects/flows/transaction.flow';
 import { login } from '../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../page-objects/flows/test-dapp.flow';
 
