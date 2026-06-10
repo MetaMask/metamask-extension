@@ -72,11 +72,11 @@ import {
   getIsTronTestnetSupportEnabled,
 } from './multichain/feature-flags';
 
+import { getEnvironmentType } from '../../shared/lib/environment-type';
 // TODO: Remove restricted import
 import {
   addHexPrefix,
   getDeviceType,
-  getEnvironmentType,
   // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../app/scripts/lib/util';
 import {
@@ -371,8 +371,8 @@ export function getNetworkIdentifier(state) {
 }
 
 export function getMetaMetricsId(state) {
-  const { metaMetricsId } = state.metamask;
-  return metaMetricsId;
+  const { analyticsId } = state.metamask;
+  return analyticsId;
 }
 
 export function isCurrentProviderCustom(state) {

@@ -142,7 +142,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   }, [splitSecretRecoveryPhrase]);
 
   const handleQuizInput = useCallback(
-    (inputValue) => {
+    (inputValue: { index: number; word: string }[]) => {
       const isNotAnswered = inputValue.some(
         (answer: { word: string }) => !answer.word,
       );

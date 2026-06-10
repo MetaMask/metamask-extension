@@ -1,20 +1,16 @@
-import {
-  KeyringControllerAddNewKeyringAction,
-  KeyringControllerGetKeyringsByTypeAction,
-  KeyringTypes,
-} from '@metamask/keyring-controller';
+import { SnapKeyring } from '@metamask/eth-snap-keyring';
 import {
   Messenger,
   MOCK_ANY_NAMESPACE,
   MockAnyNamespace,
 } from '@metamask/messenger';
+import { SnapAccountServiceGetLegacySnapKeyringAction } from '@metamask/snap-account-service';
 import { getSnapKeyring } from './getSnapKeyring';
 
 describe('getSnapKeyring', () => {
   let messenger: Messenger<
     MockAnyNamespace,
-    | KeyringControllerGetKeyringsByTypeAction
-    | KeyringControllerAddNewKeyringAction
+    SnapAccountServiceGetLegacySnapKeyringAction
   >;
 
   beforeEach(() => {
@@ -23,46 +19,19 @@ describe('getSnapKeyring', () => {
     });
   });
 
-  it('should initialize the snap keyring if it is not present', async () => {
-    const getKeyringByTypeMock = jest
+  it('should return the snap keyring from SnapAccountService', async () => {
+    const mockSnapKeyring = { type: 'Snap Keyring' } as unknown as SnapKeyring;
+    const getLegacySnapKeyringMock = jest
       .fn()
-      .mockReturnValueOnce([undefined])
-      .mockReturnValueOnce([{ id: 'foo', type: KeyringTypes.snap }]);
+      .mockResolvedValue(mockSnapKeyring);
     messenger.registerActionHandler(
-      'KeyringController:getKeyringsByType',
-      getKeyringByTypeMock,
-    );
-
-    const addNewKeyringMock = jest.fn().mockResolvedValue(undefined);
-    messenger.registerActionHandler(
-      'KeyringController:addNewKeyring',
-      addNewKeyringMock,
+      'SnapAccountService:getLegacySnapKeyring',
+      getLegacySnapKeyringMock,
     );
 
     const snapKeyring = await getSnapKeyring(messenger);
 
-    expect(addNewKeyringMock).toHaveBeenCalledWith(KeyringTypes.snap);
-    expect(snapKeyring).toStrictEqual({ id: 'foo', type: KeyringTypes.snap });
-  });
-
-  it('should return the snap keyring if it is already initialized', async () => {
-    const getKeyringByTypeMock = jest
-      .fn()
-      .mockReturnValue([{ id: 'foo', type: KeyringTypes.snap }]);
-    messenger.registerActionHandler(
-      'KeyringController:getKeyringsByType',
-      getKeyringByTypeMock,
-    );
-
-    const addNewKeyringMock = jest.fn().mockResolvedValue(undefined);
-    messenger.registerActionHandler(
-      'KeyringController:addNewKeyring',
-      addNewKeyringMock,
-    );
-
-    const snapKeyring = await getSnapKeyring(messenger);
-
-    expect(addNewKeyringMock).not.toHaveBeenCalled();
-    expect(snapKeyring).toStrictEqual({ id: 'foo', type: KeyringTypes.snap });
+    expect(getLegacySnapKeyringMock).toHaveBeenCalledTimes(1);
+    expect(snapKeyring).toBe(mockSnapKeyring);
   });
 });

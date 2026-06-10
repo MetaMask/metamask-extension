@@ -25,6 +25,7 @@
     },
     "deprecatedNetworkModalOpen": "boolean",
     "errorInSettings": "null",
+    "backupAndSyncOnboardingToggleState": "boolean",
     "externalServicesOnboardingToggleState": "boolean",
     "gasLoadingAnimationIsShowing": "boolean",
     "importNftsModal": {
@@ -295,6 +296,24 @@
     },
     "approvalFlows": [],
     "assetExchangeRates": {},
+    "assetPreferences": {},
+    "assetsBalance": {
+      "*": {
+        "*": {
+          "amount": "string"
+        }
+      }
+    },
+    "assetsInfo": {
+      "*": {
+        "type": "string",
+        "name": "string",
+        "symbol": "string",
+        "decimals": "number",
+        "aggregators": [],
+        "image": "string"
+      }
+    },
     "assetsMetadata": {
       "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501": {
         "name": "string",
@@ -453,6 +472,19 @@
         ]
       }
     },
+    "assetsPrice": {
+      "*": {
+        "id": "string",
+        "price": "number",
+        "assetPriceType": "string",
+        "usdPrice": "number",
+        "marketCap": "number",
+        "totalVolume": "number",
+        "dilutedMarketCap": "number",
+        "pricePercentChange1d": "number",
+        "lastUpdated": "number"
+      }
+    },
     "balances": {
       "<solana-account-1>": {
         "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501": {
@@ -589,6 +621,8 @@
         }
       }
     },
+    "batchSellTrades": "null",
+    "batchSellTradesLoadingStatus": "null",
     "browserEnvironment": {
       "browser": "string",
       "os": "string"
@@ -602,26 +636,41 @@
       "supportedNetworks": ["string"],
       "validSubmissionWindowDays": "number"
     },
+    "completedMetaMetricsOnboarding": "boolean",
     "completedOnboarding": "boolean",
     "connectedStatusPopoverHasBeenShown": "boolean",
     "connectivityStatus": "string",
-    "conversionRates": {},
+    "conversionRates": {
+      "*": {
+        "currency": "string",
+        "rate": "string",
+        "conversionTime": "number",
+        "expirationTime": "number",
+        "marketData": {
+          "fungible": "boolean",
+          "allTimeHigh": "string",
+          "allTimeLow": "string",
+          "circulatingSupply": "string",
+          "marketCap": "string",
+          "totalVolume": "string",
+          "pricePercentChange": {
+            "PT1H": "number",
+            "P1D": "number",
+            "P7D": "number",
+            "P14D": "number",
+            "P30D": "number",
+            "P200D": "number",
+            "P1Y": "number"
+          }
+        }
+      }
+    },
     "coverageResults": {},
     "cryptocurrencies": ["string"],
     "currencyRates": {
-      "BNB": {
+      "*": {
         "conversionDate": "null",
-        "conversionRate": "null",
-        "usdConversionRate": "null"
-      },
-      "ETH": {
-        "conversionDate": "number",
         "conversionRate": "number",
-        "usdConversionRate": "number"
-      },
-      "POL": {
-        "conversionDate": "null",
-        "conversionRate": "null",
         "usdConversionRate": "null"
       }
     },
@@ -631,6 +680,7 @@
     "dappSwapComparisonData": {},
     "currentLocale": "string",
     "currentMigrationVersion": "number",
+    "customAssets": {},
     "database": {
       "blockedSnaps": [
         {
@@ -879,9 +929,7 @@
               "type": "string"
             },
             "snap": {
-              "id": "string",
-              "name": "string",
-              "enabled": "boolean"
+              "id": "string"
             },
             "lastSelected": "number"
           }
@@ -909,9 +957,7 @@
               "type": "string"
             },
             "snap": {
-              "id": "string",
-              "name": "string",
-              "enabled": "boolean"
+              "id": "string"
             },
             "lastSelected": "number"
           }
@@ -943,9 +989,7 @@
               "type": "string"
             },
             "snap": {
-              "id": "string",
-              "name": "string",
-              "enabled": "boolean"
+              "id": "string"
             },
             "lastSelected": "number"
           }
@@ -998,6 +1042,7 @@
       }
     ],
     "knownMethodData": {},
+    "lastCheckedAt": "null",
     "lastCompletedWithdrawalTimestamp": "null",
     "lastCompletedWithdrawalTxHashes": [],
     "lastDepositResult": "null",
@@ -1009,6 +1054,7 @@
     "lastUpdated": "number",
     "lastUpdatedAt": "null",
     "lastUpdatedFromVersion": "null",
+    "lastVisitedRoute": "null",
     "lastViewedUserSurvey": "null",
     "latestNonAnonymousEventTimestamp": "number",
     "ledgerTransportType": "string",
@@ -1016,14 +1062,7 @@
     "lastWithdrawResult": "null",
     "manageInstitutionalWallets": "boolean",
     "marketData": {
-      "0x1": {},
-      "0x2105": {},
-      "0x38": {},
-      "0x539": {},
-      "0x89": {},
-      "0xa": {},
-      "0xa4b1": {},
-      "0xe708": {}
+      "*": {}
     },
     "marketFilterPreferences": {
       "optionId": "string",
@@ -1035,7 +1074,10 @@
     "metaMetricsDataDeletionId": "null",
     "metaMetricsDataDeletionTimestamp": "number",
     "metaMetricsId": "string",
+    "analyticsId": "string",
+    "optedIn": "boolean",
     "methodData": {},
+    "migrationVersion": "number",
     "minimumBalanceForRentExemptionInLamports": "string",
     "multichainNetworkConfigurationsByChainId": {
       "bip122:000000000019d6689c085ae165831e93": {
@@ -1111,6 +1153,7 @@
       "ethereumAddress": {}
     },
     "nameSources": {},
+    "needsProfilePairing": "boolean",
     "networkConfigurations": {},
     "networkConfigurationsByChainId": {},
     "networkConnectionBanner": {
@@ -1202,9 +1245,11 @@
     "previousMigrationVersion": "number",
     "productTour": "string",
     "quoteFetchError": "null",
-    "quoteRequest": {
-      "srcTokenAddress": "string"
-    },
+    "quoteRequest": [
+      {
+        "srcTokenAddress": "string"
+      }
+    ],
     "quoteStreamComplete": "null",
     "quotes": [],
     "quotesInitialLoadTime": "null",
@@ -1255,7 +1300,15 @@
     },
     "localOverrides": {},
     "location": "string",
-    "rewardsAccounts": {},
+    "rewardsAccounts": {
+      "*": {
+        "account": "string",
+        "lastFreshOptInStatusCheck": "number",
+        "lastPerpsDiscountRateFetched": "null",
+        "perpsFeeDiscount": "null",
+        "subscriptionId": "null"
+      }
+    },
     "rewardsActiveAccount": "null",
     "rewardsPointsEstimateHistory": [],
     "rewardsSeasons": {},
@@ -1265,8 +1318,8 @@
     "securityAlertsEnabled": "boolean",
     "seedPhraseBackedUp": "null",
     "passkeyRecord": "null",
-    "segmentApiCalls": {},
     "selectedAccountGroup": "string",
+    "selectedCurrency": "string",
     "selectedMultichainNetworkChainId": "string",
     "selectedPaymentToken": "null",
     "selectedNetworkClientId": "string",
@@ -1326,6 +1379,7 @@
     "srpSessionData": {
       "01KA0MT07W98B2G9474CFDC6VM": {
         "profile": {
+          "canonicalProfileId": "string",
           "identifierId": "string",
           "metaMetricsId": "string",
           "profileId": "string"
@@ -1420,47 +1474,10 @@
     "theme": "string",
     "throttledOrigins": {},
     "timeoutMinutes": "number",
-    "tokenBalances": {
-      "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
-        "0x539": {
-          "0x0000000000000000000000000000000000000000": "string"
-        }
-      }
-    },
+    "tokenBalances": {},
     "tokenScanCache": {},
-    "tokensChainsCache": {
-      "0x539": {
-        "data": {
-          "0x0d8775f648430679a709e98d2b0cb6250d2887ef": {
-            "address": "string",
-            "aggregators": ["string"],
-            "decimals": "number",
-            "iconUrl": "string",
-            "name": "string",
-            "occurrences": "number",
-            "symbol": "string"
-          },
-          "0x6b175474e89094c44da98b954eedeac495271d0f": {
-            "address": "string",
-            "aggregators": ["string"],
-            "decimals": "number",
-            "erc20Permit": "boolean",
-            "fees": {
-              "0xb0da5965d43369968574d399dbe6374683773a65": "number"
-            },
-            "iconUrl": "string",
-            "name": "string",
-            "occurrences": "number",
-            "storage": {
-              "balance": "number"
-            },
-            "symbol": "string",
-            "type": "string"
-          }
-        },
-        "timestamp": "number"
-      }
-    },
+    "tokenSecurityTypeDestination": "null",
+    "tokensChainsCache": {},
     "tokenWarnings": [],
     "tradeConfigurations": {
       "testnet": {},
@@ -1497,6 +1514,7 @@
     "useNftDetection": "boolean",
     "usePhishDetect": "boolean",
     "userOperations": {},
+    "walletComplianceStatusMap": {},
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": "boolean",
     "useTransactionSimulations": "boolean",
@@ -1545,7 +1563,7 @@
     "optinAllowedForGeo": "null",
     "optinAllowedForGeoLoading": "boolean",
     "optinAllowedForGeoError": "boolean",
-    "candidateSubscriptionId": "string",
+    "candidateSubscriptionId": "null",
     "seasonStatus": "null",
     "seasonStatusError": "null",
     "seasonStatusLoading": "boolean",

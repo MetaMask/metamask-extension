@@ -38,8 +38,6 @@ export const SECURITY_TURN_OFF_PASSKEY_ROUTE =
   '/settings/security-and-password/turn-off-passkey';
 export const DEVELOPER_TOOLS_ROUTE = '/settings/developer-tools';
 export const DEBUG_ROUTE = '/settings/debug';
-export const GENERAL_ROUTE = '/settings/general';
-export const ADVANCED_ROUTE = '/settings/advanced';
 export const DEVELOPER_OPTIONS_ROUTE = DEBUG_ROUTE;
 export const EXPERIMENTAL_ROUTE = '/settings/experimental';
 export const TRANSACTION_SHIELD_ROUTE = '/settings/transaction-shield';
@@ -68,7 +66,6 @@ export const TRANSACTION_SHIELD_CLAIM_ROUTES = {
     RELATIVE: '/view-history-claim',
   },
 } as const;
-export const SECURITY_ROUTE = '/settings/security';
 export const ABOUT_US_ROUTE = '/settings/about-us';
 export const NETWORKS_ROUTE = '/networks';
 export const NETWORKS_FORM_ROUTE = '/networks/form';
@@ -140,6 +137,8 @@ export const CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE = '/cross-chain/tx-details';
 export const PREPARE_SWAP_ROUTE = '/swaps/prepare-bridge-page';
 export const SWAP_PATH = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
 export const AWAITING_SIGNATURES_ROUTE = '/swaps/awaiting-signatures';
+export const HARDWARE_WALLET_SIGNATURES_ROUTE =
+  '/swaps/hardware-wallet-signatures';
 export const ONBOARDING_ROUTE = '/onboarding';
 export const ONBOARDING_REVEAL_SRP_ROUTE = '/onboarding/reveal-recovery-phrase';
 export const ONBOARDING_REVIEW_SRP_ROUTE = '/onboarding/review-recovery-phrase';
@@ -160,7 +159,9 @@ export const ONBOARDING_DOWNLOAD_APP_ROUTE = '/onboarding/download-app';
 export const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
 export const ONBOARDING_SETUP_PASSKEY_ROUTE = '/onboarding/setup-passkey';
-
+export const BATCH_SELL_ROOT_ROUTE = '/batch-sell';
+export const BATCH_SELL_SELECT_ROUTE = `${BATCH_SELL_ROOT_ROUTE}/select`;
+export const BATCH_SELL_REVIEW_ROUTE = `${BATCH_SELL_ROOT_ROUTE}/review`;
 export const DEEP_LINK_ROUTE = '/link';
 
 /** Shown when Basic Functionality is off and user opens a route that requires it (e.g. swap, rewards). */
@@ -304,16 +305,6 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
-    path: GENERAL_ROUTE,
-    label: 'General Settings Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: ADVANCED_ROUTE,
-    label: 'Advanced Settings Page',
-    trackInAnalytics: true,
-  },
-  {
     path: DEVELOPER_OPTIONS_ROUTE,
     label: 'Developer Options Page',
     // DEVELOPER_OPTIONS_ROUTE not in PATH_NAME_MAP because we're not tracking analytics for this page
@@ -322,11 +313,6 @@ export const ROUTES = [
   {
     path: EXPERIMENTAL_ROUTE,
     label: 'Experimental Settings Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: SECURITY_ROUTE,
-    label: 'Security Settings Page',
     trackInAnalytics: true,
   },
   {
@@ -653,6 +639,11 @@ export const ROUTES = [
     trackInAnalytics: false,
   },
   {
+    path: HARDWARE_WALLET_SIGNATURES_ROUTE,
+    label: 'Swaps Hardware Wallet Signatures',
+    trackInAnalytics: false,
+  },
+  {
     path: INITIALIZE_EXPERIMENTAL_AREA,
     label: 'Initialize Experimental Area',
     trackInAnalytics: false,
@@ -681,6 +672,16 @@ export const ROUTES = [
     path: `${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`,
     label: 'Review Gator Permissions',
     trackInAnalytics: false,
+  },
+  {
+    path: BATCH_SELL_SELECT_ROUTE,
+    label: 'Batch Sell Select',
+    trackInAnalytics: true,
+  },
+  {
+    path: BATCH_SELL_REVIEW_ROUTE,
+    label: 'Batch Sell Review',
+    trackInAnalytics: true,
   },
   {
     path: HARDWARE_WALLET_REPAIR_ROUTE,

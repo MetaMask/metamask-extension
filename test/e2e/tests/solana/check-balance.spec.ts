@@ -1,5 +1,5 @@
 import { Suite } from 'mocha';
-import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
@@ -17,9 +17,12 @@ describe('Check balance', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
-        const homePage = new NonEvmHomepage(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
-        await homePage.checkPageIsLoaded({ amount: '0 SOL' });
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
+        await homePage.checkExpectedBalanceIsDisplayed('0 SOL');
       },
     );
   });
@@ -33,10 +36,13 @@ describe('Check balance', function (this: Suite) {
         testSpecificMock: buildSolanaTestSpecificMock({ balance: 0 }),
       },
       async ({ driver }) => {
-        await login(driver, { validateBalance: false });
-        const homePage = new NonEvmHomepage(driver);
+        await login(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
-        await homePage.checkPageIsLoaded({ amount: '$0' });
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
+        await homePage.checkExpectedBalanceIsDisplayed('$0');
       },
     );
   });
@@ -52,10 +58,13 @@ describe('Check balance', function (this: Suite) {
         testSpecificMock: buildSolanaTestSpecificMock(),
       },
       async ({ driver }) => {
-        await login(driver, { validateBalance: false });
-        const homePage = new NonEvmHomepage(driver);
+        await login(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
-        await homePage.checkPageIsLoaded({ amount: '$5,643.50' });
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
+        await homePage.checkExpectedBalanceIsDisplayed('$5,643.50');
       },
     );
   });
@@ -68,9 +77,12 @@ describe('Check balance', function (this: Suite) {
       },
       async ({ driver }) => {
         await login(driver);
-        const homePage = new NonEvmHomepage(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
-        await homePage.checkPageIsLoaded({ amount: '50 SOL' });
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
+        await homePage.checkExpectedBalanceIsDisplayed('50 SOL');
       },
     );
   });

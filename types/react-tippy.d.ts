@@ -22,6 +22,7 @@ declare module 'react-tippy' {
   export type Theme = 'dark' | 'light' | 'transparent';
 
   export type TooltipProps = {
+    children?: React.ReactNode;
     title?: string;
     disabled?: boolean;
     open?: boolean;

@@ -19,6 +19,7 @@ import { getLatestCommit } from '../utils/git';
 import { ManifestPluginOptions } from '../utils/plugins/ManifestPlugin/types';
 import { version as packageVersion } from '../../../package.json';
 import { CHROME_MANIFEST_KEY_NON_PRODUCTION } from '../utils/constants';
+import { BUNDLE_SIZE_SUMMARY_FILE } from '../utils/plugins/ManifestPlugin/stats';
 
 function getWebpackInstance(config: Configuration) {
   // webpack logs a warning if we pass config.watch to it without a callback
@@ -271,7 +272,6 @@ ${Object.entries(env)
       },
       'chrome',
     );
-    console.log('transformedManifest', transformedManifest);
     assert.deepStrictEqual(transformedManifest, {
       manifest_version: 3,
       name: 'name',
@@ -285,6 +285,7 @@ ${Object.entries(env)
     });
     assert.strictEqual(manifestPlugin.options.setBuildId, false);
     assert.strictEqual(manifestPlugin.options.zip, false);
+    assert.strictEqual(manifestPlugin.options.stats, false);
     const manifestOpts = manifestPlugin.options as ManifestPluginOptions<true>;
     assert.strictEqual(manifestOpts.zipOptions, undefined);
 
@@ -398,9 +399,6 @@ inquire('long');
         INFURA_PROD_PROJECT_ID: '00000000000000000000000000000000',
         SEGMENT_WRITE_KEY: '-',
         SEGMENT_PROD_WRITE_KEY: '-',
-        GOOGLE_PROD_CLIENT_ID: '00000000000',
-        APPLE_PROD_CLIENT_ID: '00000000000',
-        TELEGRAM_PROD_CLIENT_ID: '00000000000',
         METAMASK_REACT_REDUX_DEVTOOLS: 'true',
       },
     );
@@ -416,7 +414,7 @@ inquire('long');
     assert.strictEqual(instance.options.cache.type, 'memory');
     assert.strictEqual(instance.options.devtool, 'hidden-source-map');
     const stats = instance.options.stats as { preset: string };
-    assert.strictEqual(stats.preset, 'normal');
+    assert.strictEqual(stats.preset, 'none');
     const fallback = instance.options.resolve.fallback as Record<string, false>;
     assert.strictEqual(typeof fallback['react-devtools-core'], 'string');
     assert.strictEqual(typeof fallback['remote-redux-devtools'], 'string');
@@ -441,6 +439,42 @@ inquire('long');
       `../builds/metamask-[browser]-${packageVersion}.zip`,
     );
     assert.deepStrictEqual(manifestPlugin.options.transform, undefined);
+    assert(manifestPlugin.options.stats, 'Stats options should be present');
+    assert.strictEqual(
+      manifestPlugin.options.stats.outFile,
+      BUNDLE_SIZE_SUMMARY_FILE,
+    );
+    assert.strictEqual(manifestPlugin.options.stats.debug, true);
+    assert.strictEqual(
+      manifestPlugin.options.stats.classifyEntrypoint('service-worker.ts'),
+      'background',
+    );
+    assert.strictEqual(
+      manifestPlugin.options.stats.classifyEntrypoint('background'),
+      'background',
+    );
+    assert.strictEqual(
+      manifestPlugin.options.stats.classifyEntrypoint('home'),
+      'ui',
+    );
+    assert.strictEqual(
+      manifestPlugin.options.stats.classifyEntrypoint('offscreen'),
+      'other',
+    );
+    assert.strictEqual(
+      manifestPlugin.options.stats.classifyEntrypoint('offscreen.1'),
+      'other',
+    );
+    assert.strictEqual(
+      manifestPlugin.options.stats.classifyEntrypoint(
+        'scripts/contentscript.js',
+      ),
+      'contentScripts',
+    );
+    assert.strictEqual(
+      manifestPlugin.options.stats.classifyEntrypoint('unknown'),
+      null,
+    );
 
     const progressPlugin = instance.options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'ProgressPlugin',
@@ -464,6 +498,8 @@ inquire('long');
   it('should include BundleAnalyzerPlugin when --bundleAnalyzer is passed', () => {
     const config: Configuration = getWebpackConfig(['--bundleAnalyzer']);
     const instance = getWebpackInstance(config);
+    const stats = instance.options.stats as { preset: string };
+    assert.strictEqual(stats.preset, 'none');
     const bundleAnalyzerPlugin = instance.options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'BundleAnalyzerPlugin',
     );
@@ -591,17 +627,5 @@ inquire('long');
     assert.strictEqual(exit.mock.calls.length, 1);
     assert.strictEqual(exit.mock.calls[0].arguments.length, 1);
     assert.strictEqual(exit.mock.calls[0].arguments[0], 0);
-  });
-
-  it('should enable ReactRefreshPlugin in a development env when `--watch` is specified', () => {
-    const config: Configuration = getWebpackConfig(['--watch'], {
-      __HMR_READY__: 'true',
-    });
-    delete config.watch;
-    const instance = webpack(config);
-    const reactRefreshPlugin = instance.options.plugins.find(
-      (plugin) => plugin && plugin.constructor.name === 'ReactRefreshPlugin',
-    );
-    assert(reactRefreshPlugin, 'ReactRefreshPlugin should be present');
   });
 });

@@ -4,16 +4,14 @@ import {
   BoxBackgroundColor,
   BoxFlexDirection,
   BoxAlignItems,
+  Skeleton,
 } from '@metamask/design-system-react';
-
-import { Skeleton } from '../../../../../components/component-library/skeleton';
-import { BorderRadius } from '../../../../../helpers/constants/design-system';
 
 /**
  * MarketRowSkeleton component displays a loading skeleton for market rows
  * Matches the layout of MarketRow for smooth loading transitions
  */
-export const MarketRowSkeleton: React.FC = () => {
+export const MarketRowSkeleton = () => {
   return (
     <Box
       className="px-4 py-3"
@@ -24,10 +22,7 @@ export const MarketRowSkeleton: React.FC = () => {
       data-testid="market-row-skeleton"
     >
       {/* Token Logo Skeleton */}
-      <Skeleton
-        className="h-10 w-10 shrink-0"
-        borderRadius={BorderRadius.pill}
-      />
+      <Skeleton className="h-10 w-10 shrink-0 rounded-full" />
 
       {/* Left side: Symbol and metric */}
       <Box
