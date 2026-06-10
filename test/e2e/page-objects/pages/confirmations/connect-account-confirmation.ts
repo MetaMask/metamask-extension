@@ -83,6 +83,22 @@ class ConnectAccountConfirmation {
     );
   }
 
+  async tryConfirmConnect(timeout = 3000): Promise<boolean> {
+    try {
+      await this.driver.waitForMultipleSelectors(
+        [
+          this.connectAccountConfirmationTitle,
+          this.connectAccountConfirmationButton,
+        ],
+        { timeout },
+      );
+      await this.confirmConnect();
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   async goToPermissionsTab(): Promise<void> {
     await this.driver.clickElement(this.permissionsTab);
   }
