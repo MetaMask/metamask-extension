@@ -6896,11 +6896,20 @@
   "perpsFilterCrypto": {
     "message": "Crypto"
   },
+  "perpsFilterEtf": {
+    "message": "ETF"
+  },
   "perpsFilterForex": {
     "message": "Forex"
   },
+  "perpsFilterIndex": {
+    "message": "Index"
+  },
   "perpsFilterNew": {
     "message": "New"
+  },
+  "perpsFilterPreIpo": {
+    "message": "Pre-IPO"
   },
   "perpsFilterStocks": {
     "message": "Stocks"
@@ -10522,6 +10531,10 @@
   "trezor": {
     "message": "Trezor",
     "description": "Hardware device name"
+  },
+  "trezorDesktopAppRequiredError": {
+    "message": "Trezor Suite Desktop is required to use Trezor with Firefox. Please install and open Trezor Suite (suite.trezor.io) and try again.",
+    "description": "An error message shown to the user during the hardware connect flow."
   },
   "tronBandwidth": {
     "message": "Bandwidth"

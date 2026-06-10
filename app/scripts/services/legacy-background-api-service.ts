@@ -37,9 +37,12 @@ import {
 import { SmartTransactionsControllerWipeSmartTransactionsAction } from '@metamask/smart-transactions-controller';
 import { BridgeStatusControllerWipeBridgeStatusAction } from '@metamask/bridge-status-controller';
 import {
+  EncAccountDataType,
   SecretType,
   SeedlessOnboardingControllerAddNewSecretDataAction,
   SeedlessOnboardingControllerCheckIsPasswordOutdatedAction,
+  SeedlessOnboardingControllerGetStateAction,
+  SeedlessOnboardingControllerRunMigrationsAction,
   SeedlessOnboardingControllerUpdateBackupMetadataStateAction,
 } from '@metamask/seedless-onboarding-controller';
 import { PermissionControllerUpdatePermissionsByCaveatAction } from '@metamask/permission-controller';
@@ -67,6 +70,8 @@ import { getAccountsBySnapId } from '../lib/snap-keyring';
 import { PreferencesControllerSetPasswordForgottenAction } from '../controllers/preferences-controller-method-action-types';
 import { getSnapKeyring } from '../lib/snap-keyring/utils/getSnapKeyring';
 import { OnboardingControllerGetStateAction } from '../controllers/onboarding';
+import { MetaMetricsControllerTrackEventAction } from '../controllers/metametrics-controller-method-action-types';
+import { runSeedlessOnboardingMigrations } from '../lib/seedless-onboarding/run-migrations';
 import { createSentryError } from '../../../shared/lib/error';
 import { LegacyBackgroundApiServiceMethodActions } from './legacy-background-api-service-method-action-types';
 
@@ -116,6 +121,7 @@ type AllowedActions =
   | KeyringControllerImportAccountWithStrategyAction
   | KeyringControllerRemoveAccountAction
   | KeyringControllerWithKeyringAction
+  | MetaMetricsControllerTrackEventAction
   | NetworkControllerGetNetworkClientByIdAction
   | NetworkControllerGetStateAction
   | NetworkControllerResetConnectionAction
@@ -126,6 +132,8 @@ type AllowedActions =
   | RemoteFeatureFlagControllerGetStateAction
   | SeedlessOnboardingControllerAddNewSecretDataAction
   | SeedlessOnboardingControllerCheckIsPasswordOutdatedAction
+  | SeedlessOnboardingControllerGetStateAction
+  | SeedlessOnboardingControllerRunMigrationsAction
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
   | SmartTransactionsControllerWipeSmartTransactionsAction
   | TransactionControllerGetStateAction
@@ -555,10 +563,14 @@ export class LegacyBackgroundApiService {
     if (syncWithSocial) {
       await this.#seedlessOperationMutex.runExclusive(async () => {
         try {
+          // Run data type migration before adding new secret data to ensure
+          // data consistency.
+          await runSeedlessOnboardingMigrations(this.#messenger);
+
           await this.#messenger.call(
             'SeedlessOnboardingController:addNewSecretData',
             privateKeyBytes,
-            SecretType.PrivateKey,
+            EncAccountDataType.ImportedPrivateKey,
             { keyringId },
           );
         } catch (error) {

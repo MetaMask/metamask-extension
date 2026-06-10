@@ -3539,34 +3539,34 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@floating-ui/core@npm:^1.4.2":
-  version: 1.5.0
-  resolution: "@floating-ui/core@npm:1.5.0"
+"@floating-ui/core@npm:^1.7.5":
+  version: 1.7.5
+  resolution: "@floating-ui/core@npm:1.7.5"
   dependencies:
-    "@floating-ui/utils": "npm:^0.1.3"
-  checksum: 10/3182715a30493f44a32158f4d77ab5b6c212064b160cb84b5b8405ec2845bd8a9167c25292709e841cad9e70c6b9efdc30f876044e3b0909139fea8eca00c631
+    "@floating-ui/utils": "npm:^0.2.11"
+  checksum: 10/fecdc9b3ce93f02bf78a6114b93730a4cb9fa8234c62f9a949016186297a039c9f9cd3c5c81ff74b93ebddf0b32048c4af7a528afe7904b75423ed2e7491b888
   languageName: node
   linkType: hard
 
-"@floating-ui/dom@npm:^1.5.1":
-  version: 1.5.3
-  resolution: "@floating-ui/dom@npm:1.5.3"
+"@floating-ui/dom@npm:^1.7.6":
+  version: 1.7.6
+  resolution: "@floating-ui/dom@npm:1.7.6"
   dependencies:
-    "@floating-ui/core": "npm:^1.4.2"
-    "@floating-ui/utils": "npm:^0.1.3"
-  checksum: 10/d2d5ae7a0949c0ebf7fbf97a21612bf94dbd29cb6c847e00588b8e2a5575ade27c47cb19f5d230fc21a571d99aa0c714b301c9221d33921047408c0ed9d91a30
+    "@floating-ui/core": "npm:^1.7.5"
+    "@floating-ui/utils": "npm:^0.2.11"
+  checksum: 10/84dff2ffdf85c8b92d7edafc543c55869abbeaeb3007fa983159467e050153b507a0f5fe8e84f88c3f28c35a82de9df9c20a6eef5560cbba3afae19141444ff2
   languageName: node
   linkType: hard
 
-"@floating-ui/react-dom@npm:^2.0.0":
-  version: 2.0.2
-  resolution: "@floating-ui/react-dom@npm:2.0.2"
+"@floating-ui/react-dom@npm:^2.0.0, @floating-ui/react-dom@npm:^2.1.2":
+  version: 2.1.8
+  resolution: "@floating-ui/react-dom@npm:2.1.8"
   dependencies:
-    "@floating-ui/dom": "npm:^1.5.1"
+    "@floating-ui/dom": "npm:^1.7.6"
   peerDependencies:
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
-  checksum: 10/63a26f3c36f00a2bdede202cb7a3be74b3c6599463c0a069745f6aed3181a33ce72936158209f6fd1c284d85fd494aa656e6cbc4266c096f3189ce1c13f83dfe
+  checksum: 10/39c3e3e5538a111a3eadf1b9ca486d7dc17c7eb24b83a0ea9b4c189fa7dbe5abe01357388d8cf6a4badb2d3fec2b1090e10529537bde91acbcfe19b0a8d10f90
   languageName: node
   linkType: hard
 
@@ -3584,17 +3584,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@floating-ui/utils@npm:^0.1.3":
-  version: 0.1.6
-  resolution: "@floating-ui/utils@npm:0.1.6"
-  checksum: 10/450ec4ecc1dd8161b1904d4e1e9d95e653cc06f79af6c3b538b79efb10541d90bcc88646ab3cdffc5b92e00c4804ca727b025d153ad285f42dbbb39aec219ec9
-  languageName: node
-  linkType: hard
-
-"@floating-ui/utils@npm:^0.2.0":
-  version: 0.2.1
-  resolution: "@floating-ui/utils@npm:0.2.1"
-  checksum: 10/33c9ab346e7b05c5a1e6a95bc902aafcfc2c9d513a147e2491468843bd5607531b06d0b9aa56aa491cbf22a6c2495c18ccfc4c0344baec54a689a7bb8e4898d6
+"@floating-ui/utils@npm:^0.2.0, @floating-ui/utils@npm:^0.2.11":
+  version: 0.2.11
+  resolution: "@floating-ui/utils@npm:0.2.11"
+  checksum: 10/72150138ba1c274d757a1da85233202fa9fdfd2272ec1fb0883eb0ffdf138863af81573049ed2c20b98adb4b7ae2236065541ce14037fe328955089831a678d5
   languageName: node
   linkType: hard
 
@@ -5731,16 +5724,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/analytics-controller@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@metamask/analytics-controller@npm:1.1.0"
+"@metamask/analytics-controller@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "@metamask/analytics-controller@npm:1.1.1"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/messenger": "npm:^1.2.0"
     "@metamask/utils": "npm:^11.9.0"
     lodash: "npm:^4.17.21"
     uuid: "npm:^8.3.2"
-  checksum: 10/de713c2af1db74f8c8f2e512ea17e4ceebfa3788ff34e1960dcdf11e59ffd8b75d28933900674cfd9106b244c80a78199bc2612420d38cc0ed1def3241c29688
+  checksum: 10/2a64ac0e397a27ac029a324646ebd91c8f9afa6ae2d1b5786042eaf5ad9b4b946c85b6d311ad75319562f8952649c54e80a9e8efb37879bef82ee1b5afe3513b
   languageName: node
   linkType: hard
 
@@ -6286,44 +6279,45 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-system-react@npm:^0.23.1":
-  version: 0.23.1
-  resolution: "@metamask/design-system-react@npm:0.23.1"
+"@metamask/design-system-react@npm:^0.25.0":
+  version: 0.25.0
+  resolution: "@metamask/design-system-react@npm:0.25.0"
   dependencies:
-    "@metamask/design-system-shared": "npm:^0.19.0"
+    "@floating-ui/react-dom": "npm:^2.1.2"
+    "@metamask/design-system-shared": "npm:^0.21.0"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@radix-ui/react-slot": "npm:^1.1.0"
     blo: "npm:^2.0.0"
     react-focus-lock: "npm:^2.9.4"
     tailwind-merge: "npm:^2.0.0"
   peerDependencies:
-    "@metamask/design-system-tailwind-preset": ^0.8.0
+    "@metamask/design-system-tailwind-preset": ^0.9.0
     "@metamask/design-tokens": ^8.1.0
     "@metamask/utils": ^11.11.0
     react: ^17.0.0 || ^18.0.0 || ^19.0.0
     react-dom: ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10/a210745995282fd53e0d82740fd2c4388f0137d3814ec3dacbc05fa1a6e7c15f528abd98f1cb4f08b366389ad453a34a5c6be50adb6e140dcf47fc180b504f1f
+  checksum: 10/778c4a1ccea0f920e80db6d76a97e58fa456f2bebc4391b1096a61e0946a9bcc289d051f202e9534c8b6bf594c615860a34198af526bbee02ed6e5430993de82
   languageName: node
   linkType: hard
 
-"@metamask/design-system-shared@npm:^0.19.0":
-  version: 0.19.0
-  resolution: "@metamask/design-system-shared@npm:0.19.0"
+"@metamask/design-system-shared@npm:^0.21.0":
+  version: 0.21.0
+  resolution: "@metamask/design-system-shared@npm:0.21.0"
   dependencies:
     "@metamask/utils": "npm:^11.11.0"
   peerDependencies:
     react: ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10/72b178fb72250db0f39b3d83686cefb2ec7ac46b75acb8ca5c903f84175f329897a4a728d739b0cba198b205efd11614fc69eea4a924023712cfa1c49b7c96dc
+  checksum: 10/77839755eba0c6e8efeb503a98cf0cd1b4891c551bbbf3bc43482867ab89cc24d2653fd4618f2e513f9d8652f3ce33c55dfd6d8d24151720c57ed762488668ee
   languageName: node
   linkType: hard
 
-"@metamask/design-system-tailwind-preset@npm:^0.8.0":
-  version: 0.8.0
-  resolution: "@metamask/design-system-tailwind-preset@npm:0.8.0"
+"@metamask/design-system-tailwind-preset@npm:^0.9.0":
+  version: 0.9.0
+  resolution: "@metamask/design-system-tailwind-preset@npm:0.9.0"
   peerDependencies:
     "@metamask/design-tokens": ^8.0.0
     tailwindcss: ^3.0.0
-  checksum: 10/15d4c565d3ba4edd0f9e14ae2d9b9a4cfdd893ea77265be0b1264b9437f4cf2c6da5a928b3c54e1ffff4342b3ce5abc054bd8f3c966f9215a5f3b59746526ac8
+  checksum: 10/1c1385cd3750ca496cb545d9fc413c28f32e515cc0c2751649973904125374b70c88814691f1f2167d80a4df85984fc951413390189baa839561d3e5b8788197
   languageName: node
   linkType: hard
 
@@ -6334,10 +6328,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-tokens@npm:^8.4.0":
-  version: 8.4.0
-  resolution: "@metamask/design-tokens@npm:8.4.0"
-  checksum: 10/8127e4793e03e1ab547bba05f561bfe6455b5779c8a12043dc18395690eda4d43b51a8367d14ecf5b365d927946795ac8479c5a6a10d8a5def1192b89a7884a7
+"@metamask/design-tokens@npm:^8.5.0":
+  version: 8.5.0
+  resolution: "@metamask/design-tokens@npm:8.5.0"
+  checksum: 10/55374e1d9a0866f6062a1f0191b0a7d7bdb2efaa703eb870204bd123dcdb9958058ddd1bfa06cc39f9be06bdc662414a7ca59b0fe2c0099433988e156652535f
   languageName: node
   linkType: hard
 
@@ -7637,9 +7631,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/perps-controller@npm:^6.3.0":
-  version: 6.3.0
-  resolution: "@metamask/perps-controller@npm:6.3.0"
+"@metamask/perps-controller@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "@metamask/perps-controller@npm:8.0.0"
   dependencies:
     "@metamask/abi-utils": "npm:^2.0.3"
     "@metamask/base-controller": "npm:^9.1.0"
@@ -7654,7 +7648,7 @@ __metadata:
   dependenciesMeta:
     "@myx-trade/sdk":
       optional: true
-  checksum: 10/5dd4a69ad2749e661b8cd3eccf06196039c709b630f364d989989fbe41bcb8dbe5f2db6bb0f6ca556c498dff67b02b3efc3ce4cbe405c15429704fe2002bfb03
+  checksum: 10/7b06134fbb3a945a44a5349a29a120094069d66f011af9989ae560099e1bd12a4932aa1c5cb66a5a5c40b41f96738d7e633d3332e482b3e01d9b7f52be6363aa
   languageName: node
   linkType: hard
 
@@ -7981,22 +7975,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/seedless-onboarding-controller@npm:^9.1.0":
-  version: 9.1.0
-  resolution: "@metamask/seedless-onboarding-controller@npm:9.1.0"
+"@metamask/seedless-onboarding-controller@npm:^10.0.1":
+  version: 10.0.1
+  resolution: "@metamask/seedless-onboarding-controller@npm:10.0.1"
   dependencies:
     "@metamask/auth-network-utils": "npm:^0.3.0"
-    "@metamask/base-controller": "npm:^9.0.1"
+    "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/browser-passworder": "npm:^6.0.0"
-    "@metamask/keyring-controller": "npm:^25.1.1"
-    "@metamask/messenger": "npm:^1.0.0"
-    "@metamask/toprf-secure-backup": "npm:^0.11.0"
+    "@metamask/keyring-controller": "npm:^26.0.0"
+    "@metamask/messenger": "npm:^1.2.0"
+    "@metamask/toprf-secure-backup": "npm:^1.0.0"
     "@metamask/utils": "npm:^11.9.0"
     "@noble/ciphers": "npm:^1.3.0"
     "@noble/curves": "npm:^1.9.2"
     "@noble/hashes": "npm:^1.8.0"
     async-mutex: "npm:^0.5.0"
-  checksum: 10/cb5e232888c4e6388e5b09ef2ad166822cde8abfe445ec776eb112d82739e30ff615bcd21335ac45150ffd16053c591b7cabf1626ee66c53bf4d9e6e63e77771
+  checksum: 10/8ea21268dd212c8d0059fca6d246ceb266e218cb21195695588120dd58fb99366af91f16353d3727afc7a49fa6fe3736d579517b1ff9900f6c896ba94516d441
   languageName: node
   linkType: hard
 
@@ -8436,9 +8430,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/toprf-secure-backup@npm:^0.11.0":
-  version: 0.11.0
-  resolution: "@metamask/toprf-secure-backup@npm:0.11.0"
+"@metamask/toprf-secure-backup@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/toprf-secure-backup@npm:1.0.0"
   dependencies:
     "@metamask/auth-network-utils": "npm:^0.4.0"
     "@noble/ciphers": "npm:^1.2.1"
@@ -8450,7 +8444,7 @@ __metadata:
     "@toruslabs/fetch-node-details": "npm:^15.0.0"
     "@toruslabs/http-helpers": "npm:^8.1.1"
     bn.js: "npm:^5.2.2"
-  checksum: 10/15ff309c59c978e4dc6939337d0384b914778e15f222fc52dac1b3b43705e741403e4648aadecb88c4c47a1c5e07fd2b97699757f79decd5a659e1968504ef7f
+  checksum: 10/f34d788c9f411fff45f9f1e38de0c91e01f23be014b60d6d8747f73c7352c14c38f9ce6cd435ba90375f298e6fc593061adbb33c1752d5717b54fda65cb1e9aa
   languageName: node
   linkType: hard
 
@@ -33464,7 +33458,7 @@ __metadata:
     "@metamask/account-watcher": "npm:^4.1.3"
     "@metamask/accounts-controller": "npm:^39.0.0"
     "@metamask/address-book-controller": "npm:^7.1.2"
-    "@metamask/analytics-controller": "npm:^1.1.0"
+    "@metamask/analytics-controller": "npm:^1.1.1"
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
@@ -33490,10 +33484,10 @@ __metadata:
     "@metamask/delegation-controller": "npm:^3.0.0"
     "@metamask/delegation-core": "npm:^2.0.0"
     "@metamask/delegation-deployments": "npm:^1.3.0"
-    "@metamask/design-system-react": "npm:^0.23.1"
-    "@metamask/design-system-shared": "npm:^0.19.0"
-    "@metamask/design-system-tailwind-preset": "npm:^0.8.0"
-    "@metamask/design-tokens": "npm:^8.4.0"
+    "@metamask/design-system-react": "npm:^0.25.0"
+    "@metamask/design-system-shared": "npm:^0.21.0"
+    "@metamask/design-system-tailwind-preset": "npm:^0.9.0"
+    "@metamask/design-tokens": "npm:^8.5.0"
     "@metamask/eip-5792-middleware": "npm:3.0.3"
     "@metamask/eip-7702-internal-rpc-middleware": "npm:^0.1.0"
     "@metamask/ens-controller": "npm:^19.1.0"
@@ -33553,7 +33547,7 @@ __metadata:
     "@metamask/permission-controller": "npm:^13.0.0"
     "@metamask/permission-log-controller": "npm:^5.0.0"
     "@metamask/permissions-kernel-snap": "npm:^1.3.0"
-    "@metamask/perps-controller": "npm:^6.3.0"
+    "@metamask/perps-controller": "npm:^8.0.0"
     "@metamask/phishing-controller": "npm:^17.2.0"
     "@metamask/phishing-warning": "npm:^5.1.0"
     "@metamask/polling-controller": "npm:^16.0.2"
@@ -33570,7 +33564,7 @@ __metadata:
     "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
-    "@metamask/seedless-onboarding-controller": "npm:^9.1.0"
+    "@metamask/seedless-onboarding-controller": "npm:^10.0.1"
     "@metamask/selected-network-controller": "npm:^26.0.3"
     "@metamask/shield-controller": "npm:^5.0.1"
     "@metamask/signature-controller": "npm:^39.2.0"

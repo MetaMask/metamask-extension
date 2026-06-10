@@ -25,6 +25,7 @@ import {
   groupActivityListItems,
   type ActivityListFilter,
 } from './helpers';
+import { useActivityScreenOpened } from './useActivityScreenOpened';
 import { useLocalTransactions } from './useLocalTransactions';
 import { useNonEvmTransactions } from './useNonEvmTransactions';
 import { useTransactionsQuery } from './useTransactionsQuery';
@@ -37,9 +38,12 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
   const { trackEvent } = useContext(MetaMetricsContext);
   const { formatMediumDate } = useFormatters();
   const scrollContainerRef = useScrollContainer();
-  const [networks, setNetworks] = useState<string[]>([]);
-  const [selectedItem, setSelectedItem] = useState<ActivityListItem>();
-  const filters = filter ?? { networks };
+  // null = not yet initialised by AssetListControlBar; [] = no filter applied
+  const [networks, setNetworks] = useState<string[] | null>(null);
+  const [selectedItem, setSelectedItem] = useState<ActivityListItem | null>(
+    null,
+  );
+  const filters = filter ?? { networks: networks ?? [] };
 
   const { data, isInitialLoading, fetchNextVisiblePage } =
     useTransactionsQuery(filters);
@@ -61,6 +65,15 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
     () => getLastEvmItemIndex(groupedItems, evmItems),
     [evmItems, groupedItems],
   );
+
+  useActivityScreenOpened({
+    filter,
+    isSettled: networks !== null && !isInitialLoading,
+    isEmpty: groupedItems.length === 0,
+    pendingLength: [...localItems, ...nonEvmItems].filter(
+      (item) => item.status === 'pending',
+    ).length,
+  });
 
   const itemRef = useItemInView({
     targetIndex: lastEvmItemIndex,
@@ -95,7 +108,7 @@ export function ActivityList({ filter }: { filter?: ActivityListFilter } = {}) {
         },
       });
     }
-    setSelectedItem(undefined);
+    setSelectedItem(null);
   };
 
   return (

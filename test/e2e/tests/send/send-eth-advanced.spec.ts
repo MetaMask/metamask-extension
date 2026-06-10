@@ -22,7 +22,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { Anvil } from '../../seeder/anvil';
-import { createInternalTransaction } from '../../page-objects/flows/transaction';
+import { createInternalTransaction } from '../../page-objects/flows/transaction.flow';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 const ETH_USD_PRICE = 1700;
