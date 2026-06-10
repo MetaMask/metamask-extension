@@ -14,11 +14,9 @@ import * as useTransactionPayTokenModule from '../../../hooks/pay/useTransaction
 import * as useIsPaidByMetaMaskModule from '../../../hooks/pay/useIsPaidByMetaMask';
 import * as useMusdConversionTokensModule from '../../../../../hooks/musd';
 import * as confirmationsFeatureFlagsModule from '../../../selectors/feature-flags';
-import * as useTransactionEventFragmentModule from '../../../hooks/useTransactionEventFragment';
 import { MusdConversionInfo } from './musd-conversion-info';
 
 const mockEndTrace = jest.fn();
-const mockUpdateTransactionEventFragment = jest.fn();
 jest.mock('../../../../../../shared/lib/trace', () => ({
   trace: jest.fn(),
   endTrace: (...args: unknown[]) => mockEndTrace(...args),
@@ -35,8 +33,6 @@ jest.mock('../../../selectors/feature-flags', () => ({
   ...jest.requireActual('../../../selectors/feature-flags'),
   selectIsPayAmountPrefillEnabled: jest.fn(),
 }));
-
-jest.mock('../../../hooks/useTransactionEventFragment');
 
 jest.mock('../../../hooks/transactions/useTransactionCustomAmount');
 jest.mock('../../../hooks/transactions/useTransactionCustomAmountAlerts');
@@ -135,11 +131,6 @@ function setupDefaultMocks({
   jest
     .mocked(confirmationsFeatureFlagsModule.selectIsPayAmountPrefillEnabled)
     .mockReturnValue(prefillMax);
-  jest
-    .mocked(useTransactionEventFragmentModule.useTransactionEventFragment)
-    .mockReturnValue({
-      updateTransactionEventFragment: mockUpdateTransactionEventFragment,
-    });
   jest
     .mocked(useTransactionCustomAmountModule.useTransactionCustomAmount)
     .mockReturnValue({
@@ -313,28 +304,6 @@ describe('MusdConversionInfo', () => {
       ).toHaveBeenCalledWith(
         expect.objectContaining({ prefillMaxOnLoad: true }),
       );
-    });
-
-    it('tags transaction events with mm_pay_prefilled_amount false when disabled', () => {
-      render();
-
-      expect(mockUpdateTransactionEventFragment).toHaveBeenCalledWith({
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          mm_pay_prefilled_amount: false,
-        },
-      });
-    });
-
-    it('tags transaction events with mm_pay_prefilled_amount true when enabled', () => {
-      render({ prefillMax: true });
-
-      expect(mockUpdateTransactionEventFragment).toHaveBeenCalledWith({
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          mm_pay_prefilled_amount: true,
-        },
-      });
     });
   });
 

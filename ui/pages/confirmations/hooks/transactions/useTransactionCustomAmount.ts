@@ -233,6 +233,14 @@ export function useTransactionCustomAmount({
               : `${percentage}%`,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             mm_pay_quote_requested: true,
+            // Record the USD amount prefilled at load so the controller metrics
+            // builder can attach it to the executed transaction events.
+            ...(isPrefill
+              ? {
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  mm_pay_prefilled_amount: Number(newAmountFiat),
+                }
+              : {}),
           },
         });
       }

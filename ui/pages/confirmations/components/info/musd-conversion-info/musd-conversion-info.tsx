@@ -12,7 +12,6 @@ import {
   type TransactionPayState,
 } from '../../../../../selectors/transactionPayController';
 import { selectIsPayAmountPrefillEnabled } from '../../../selectors/feature-flags';
-import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 import { useConfirmContext } from '../../../context/confirm';
 import { CustomAmountInfo } from '../custom-amount-info';
 import { useTransactionCustomAmountAlerts } from '../../../hooks/transactions/useTransactionCustomAmountAlerts';
@@ -80,22 +79,12 @@ export const MusdConversionInfo = () => {
   );
 
   // Treatment (max pre-filled) vs control (empty field) is configured under
-  // confirmations_pay_extended and split via LD targeting.
+  // confirmations_pay_extended and split via LD targeting. The matching
+  // mm_pay_prefilled_amount metric is emitted from the MetaMask Pay metrics
+  // builder so it reaches the executed transactions' events.
   const prefillMaxOnLoad = useSelector((state) =>
     selectIsPayAmountPrefillEnabled(state, TransactionType.musdConversion),
   );
-
-  // Tag every Transaction event with the experience shown on load so the
-  // success rate of pre-filled vs empty can be compared.
-  const { updateTransactionEventFragment } = useTransactionEventFragment();
-  useEffect(() => {
-    updateTransactionEventFragment({
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        mm_pay_prefilled_amount: prefillMaxOnLoad,
-      },
-    });
-  }, [prefillMaxOnLoad, updateTransactionEventFragment]);
 
   // Track quote fetch time via Sentry trace
   useMusdConversionQuoteTrace();
