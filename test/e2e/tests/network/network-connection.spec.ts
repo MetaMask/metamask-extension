@@ -67,6 +67,7 @@ networkConfigs.forEach((config) => {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
+          localNodeOptions: { chainId: parseInt(config.chainId, 16) },
           fixtures: config
             .fixtureMethod(new FixtureBuilderV2())
             .withPermissionControllerConnectedToTestDapp({
