@@ -73,9 +73,7 @@ export const ExtensionLinkButton = (props: {
       variant={ButtonVariant.Primary}
       text={notification.data.extensionLink.extensionLinkText}
       href={`/${notification.data.extensionLink.extensionLinkRoute}`}
-      // Even if the link is not external, it will open in a new tab
-      // to avoid breaking the popup
-      isExternal={true}
+      isExternal={false}
       onClick={onClick}
     />
   );
@@ -92,7 +90,7 @@ export const ExternalLinkButton = (props: {
     clickType: 'external_link',
   });
 
-  const {externalLink} = notification.data;
+  const { externalLink } = notification.data;
   const externalLinkUrl = externalLink?.externalLinkUrl;
   const [resolvedHref, setResolvedHref] = useState<string | undefined>();
 
@@ -111,7 +109,10 @@ export const ExternalLinkButton = (props: {
         }
       })
       .catch((error) => {
-        console.error('[ExternalLinkButton] error resolving external link', error);
+        console.error(
+          '[ExternalLinkButton] error resolving external link',
+          error,
+        );
         if (isMounted) {
           setResolvedHref(externalLinkUrl);
         }

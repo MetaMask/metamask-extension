@@ -12,7 +12,10 @@ import {
   MetaMetricsContext,
   type MetaMetricsContextValue,
 } from '../../../../contexts/metametrics';
-import { ExternalLinkButton } from './annonucement-footer-buttons';
+import {
+  ExtensionLinkButton,
+  ExternalLinkButton,
+} from './annonucement-footer-buttons';
 import type { FeatureAnnouncementNotification } from './types';
 
 const mockTrackEvent = jest.fn();
@@ -48,11 +51,36 @@ function createFeatureAnnouncementNotification(
   }) as FeatureAnnouncementNotification;
 }
 
+function createFeatureAnnouncementNotificationWithExtensionLink(): FeatureAnnouncementNotification {
+  const rawNotification = createMockFeatureAnnouncementRaw();
+
+  return processNotification({
+    ...rawNotification,
+    data: {
+      ...rawNotification.data,
+      extensionLink: {
+        extensionLinkText: 'Home',
+        extensionLinkRoute: 'home.html',
+      },
+    },
+  }) as FeatureAnnouncementNotification;
+}
+
 function renderExternalLinkButton(externalLinkUrl: string) {
   render(
     <MetaMetricsContext.Provider value={metametricsContext}>
       <ExternalLinkButton
         notification={createFeatureAnnouncementNotification(externalLinkUrl)}
+      />
+    </MetaMetricsContext.Provider>,
+  );
+}
+
+function renderExtensionLinkButton() {
+  render(
+    <MetaMetricsContext.Provider value={metametricsContext}>
+      <ExtensionLinkButton
+        notification={createFeatureAnnouncementNotificationWithExtensionLink()}
       />
     </MetaMetricsContext.Provider>,
   );
@@ -85,6 +113,16 @@ describe('Feature announcement footer buttons', () => {
       }),
     );
     expect(global.platform.openExtensionInBrowser).not.toHaveBeenCalled();
+  });
+
+  it('opens the extension link in the current tab', () => {
+    renderExtensionLinkButton();
+
+    const link = screen.getByRole('link', { name: 'Home' });
+
+    expect(link).toHaveAttribute('href', '/home.html');
+    expect(link).not.toHaveAttribute('target');
+    expect(link).not.toHaveAttribute('rel');
   });
 
   it('opens an internal deep link route in an extension tab', async () => {
