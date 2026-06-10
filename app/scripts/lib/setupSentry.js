@@ -106,11 +106,6 @@ function getClientOptions() {
       // Pairs with TBT aggregate measurements from performance-observers.ts.
       enableLongAnimationFrame: true,
       shouldCreateSpanForRequest,
-      // Unblocks automatic `sentry-trace` / `baggage` header injection on
-      // outbound HTTPS to backend API hosts (v8 defaults to same-origin only).
-      ...(distributedTracingEnabled && {
-        tracePropagationTargets: BACKEND_TRACE_PROPAGATION_TARGETS,
-      }),
     }),
     metaMetricsIntegration({
       getMetaMetricsState,
@@ -138,6 +133,14 @@ function getClientOptions() {
     environment,
     integrations,
     release: RELEASE,
+    // Unblocks the SDK's automatic `sentry-trace` / `baggage` header injection
+    // on outbound HTTPS to backend API hosts. Must be a top-level init option:
+    // in v8 `browserTracingIntegration` reads it exclusively from
+    // `client.getOptions()` and ignores it as an integration option (defaults
+    // to localhost + same-origin only).
+    ...(distributedTracingEnabled && {
+      tracePropagationTargets: BACKEND_TRACE_PROPAGATION_TARGETS,
+    }),
     // Client reports are automatically sent when a page's visibility changes to
     // "hidden", but cancelled (with an Error) that gets logged to the console.
     // Our test infra sometimes reports these errors as unexpected failures,
