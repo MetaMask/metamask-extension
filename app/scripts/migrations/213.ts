@@ -98,7 +98,11 @@ function userReliesOnInfura(
   return Object.entries(networkConfigurationsByChainId)
     .filter(
       ([chainId]) =>
-        ![...infuraChainIdsTestNets, CHAIN_IDS.LINEA_MAINNET].includes(chainId),
+        ![
+          ...infuraChainIdsTestNets,
+          CHAIN_IDS.LINEA_MAINNET,
+          CHAIN_IDS.ZKSYNC_ERA,
+        ].includes(chainId),
     )
     .some(([, networkConfig]) => {
       if (

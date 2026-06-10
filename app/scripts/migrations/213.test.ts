@@ -174,6 +174,26 @@ describe(`migration #${version}`, () => {
     expect(changed.size).toBe(0);
   });
 
+  it('is a no-op when zkSync own Infura is the only Infura (self should not satisfy the gate)', async () => {
+    const state = buildState({
+      [ZKSYNC_CHAIN_ID]: {
+        rpcEndpoints: [
+          { url: ZKSYNC_LEGACY_URL, type: 'custom' },
+          {
+            url: `https://zksync-mainnet.infura.io/v3/${infuraProjectId}`,
+            type: 'infura',
+          },
+        ],
+        defaultRpcEndpointIndex: 1,
+      },
+      '0x1': customDefault('https://my-alchemy-key.alchemy.com'),
+    });
+    const changed = new Set<string>();
+    await migrate(state, changed);
+    expect(zksyncEndpoints(state)[0].url).toEqual(ZKSYNC_LEGACY_URL);
+    expect(changed.size).toBe(0);
+  });
+
   it('preserves non-url fields on the rewritten endpoint', async () => {
     const state = buildState({
       [ZKSYNC_CHAIN_ID]: {
