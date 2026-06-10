@@ -10,22 +10,25 @@ exports[`SmartContractAccountToggleSection Disabled State Handling disables all 
       class="pr-2"
     >
       <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--margin-bottom-2 mm-box--color-text-default"
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default mb-2"
       >
         Use smart account
       </p>
       <p
-        class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
       >
         Unlock faster transactions, lower network fees, and added security on supported networks.
          
         <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-          rel="noopener noreferrer"
+          class="inline-flex items-center justify-center font-medium overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed"
+          role="button"
           style="height: 22px; font-size: 14px; line-height: 22px; vertical-align: baseline;"
-          target="_blank"
         >
-          Learn more
+          <span
+            class="text-inherit text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default"
+          >
+            Learn more
+          </span>
         </button>
       </p>
     </div>
@@ -131,22 +134,25 @@ exports[`SmartContractAccountToggleSection Learn More Button opens Zendesk artic
       class="pr-2"
     >
       <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--margin-bottom-2 mm-box--color-text-default"
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default mb-2"
       >
         Use smart account
       </p>
       <p
-        class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
       >
         Unlock faster transactions, lower network fees, and added security on supported networks.
          
         <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-          rel="noopener noreferrer"
+          class="inline-flex items-center justify-center font-medium overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed"
+          role="button"
           style="height: 22px; font-size: 14px; line-height: 22px; vertical-align: baseline;"
-          target="_blank"
         >
-          Learn more
+          <span
+            class="text-inherit text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default"
+          >
+            Learn more
+          </span>
         </button>
       </p>
     </div>
@@ -171,22 +177,25 @@ exports[`SmartContractAccountToggleSection Loading State shows loading spinner w
       class="pr-2"
     >
       <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--margin-bottom-2 mm-box--color-text-default"
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default mb-2"
       >
         Use smart account
       </p>
       <p
-        class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
       >
         Unlock faster transactions, lower network fees, and added security on supported networks.
          
         <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-          rel="noopener noreferrer"
+          class="inline-flex items-center justify-center font-medium overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed"
+          role="button"
           style="height: 22px; font-size: 14px; line-height: 22px; vertical-align: baseline;"
-          target="_blank"
         >
-          Learn more
+          <span
+            class="text-inherit text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default"
+          >
+            Learn more
+          </span>
         </button>
       </p>
     </div>
@@ -252,22 +261,25 @@ exports[`SmartContractAccountToggleSection Network Integration displays toggle f
       class="pr-2"
     >
       <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--margin-bottom-2 mm-box--color-text-default"
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default mb-2"
       >
         Use smart account
       </p>
       <p
-        class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
       >
         Unlock faster transactions, lower network fees, and added security on supported networks.
          
         <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-          rel="noopener noreferrer"
+          class="inline-flex items-center justify-center font-medium overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed"
+          role="button"
           style="height: 22px; font-size: 14px; line-height: 22px; vertical-align: baseline;"
-          target="_blank"
         >
-          Learn more
+          <span
+            class="text-inherit text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default"
+          >
+            Learn more
+          </span>
         </button>
       </p>
     </div>
