@@ -18,6 +18,12 @@ class CriticalErrorPage {
 
   protected readonly repairButton = '#critical-error-repair-button';
 
+  // After a (re)load, the critical-error page only renders the repair button
+  // once the UI has reconnected to the background, received the state-corruption
+  // error, and resolved the async backup lookup that decides the repair action.
+  // On CI this chain can exceed the default 10s selector wait, so we allow more.
+  protected readonly repairButtonTimeoutMs = 30000;
+
   protected readonly reinstallMetamaskLink = '#critical-error-reinstall-link';
 
   constructor(driver: Driver) {
@@ -123,7 +129,9 @@ class CriticalErrorPage {
       `Click repair button and ${confirm ? 'confirm' : 'dismiss'} the alert`,
     );
 
-    await this.driver.waitForSelector(this.repairButton);
+    await this.driver.waitForSelector(this.repairButton, {
+      timeout: this.repairButtonTimeoutMs,
+    });
     await this.driver.clickElement(this.repairButton);
 
     await this.driver.driver.wait(until.alertIsPresent(), 20000);
@@ -143,7 +151,9 @@ class CriticalErrorPage {
    */
   async checkRepairButtonIsDisplayed(): Promise<void> {
     console.log('Check repair button is displayed');
-    await this.driver.waitForSelector(this.repairButton);
+    await this.driver.waitForSelector(this.repairButton, {
+      timeout: this.repairButtonTimeoutMs,
+    });
   }
 
   /**
