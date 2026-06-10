@@ -9,6 +9,7 @@ import * as actions from '../../../../../store/actions';
 import { setBackgroundConnection } from '../../../../../store/background-connection';
 import {
   ASSETS_ROUTE,
+  NETWORKS_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
 } from '../../../../../helpers/constants/routes';
 import AssetListControlBar from './asset-list-control-bar';
@@ -257,6 +258,21 @@ describe('NFTs options', () => {
     expect(queryByTestId('manageTokens__button')).not.toBeInTheDocument();
   });
 
+  it('navigates to the dedicated networks page from manage networks in the home modal', async () => {
+    setBackgroundConnection(backgroundConnectionMock as never);
+    const state = createMockState();
+    const store = configureMockStore([thunk])(state);
+
+    const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
+
+    fireEvent.click(await findByTestId('sort-by-networks'));
+    fireEvent.click(await findByTestId('home-network-filter-manage-networks'));
+
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      `${NETWORKS_ROUTE}?drawerOpen=true`,
+    );
+  });
+
   it('calls onNetworkSelect with CAIP IDs when one network is enabled', async () => {
     const onNetworkSelect = jest.fn();
     const state = createMockState();
@@ -278,7 +294,6 @@ describe('NFTs options', () => {
   });
 
   it('opens the network filter modal and can navigate to manage networks', async () => {
-    const showModalSpy = jest.spyOn(actions, 'showModal');
     const state = createMockState();
     const store = configureMockStore([thunk])(state);
 
@@ -295,7 +310,9 @@ describe('NFTs options', () => {
 
     fireEvent.click(await findByTestId('home-network-filter-manage-networks'));
 
-    expect(showModalSpy).toHaveBeenCalledWith({ name: 'NETWORK_MANAGER' });
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      `${NETWORKS_ROUTE}?drawerOpen=true`,
+    );
   });
 
   it('opens the legacy Network Manager modal when network management feature flag is disabled', async () => {

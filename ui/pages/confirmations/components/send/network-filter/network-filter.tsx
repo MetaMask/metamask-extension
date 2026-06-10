@@ -1,4 +1,5 @@
 import React, { useCallback, useState, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
 import {
   Box,
@@ -36,6 +37,11 @@ import { useChainNetworkNameAndImageMap } from '../../../hooks/useChainNetworkNa
 import { AssetFilterMethod } from '../../../context/send-metrics';
 import { type Asset } from '../../../types/send';
 import { getNetworkSections } from '../../../../../helpers/utils/network-sections';
+import { getIsNetworkManagementEnabled } from '../../../../../selectors/multichain/feature-flags';
+import {
+  NetworkSelectionModal,
+  type NetworkSelectionSection,
+} from '../../../../../components/app/assets/asset-list/asset-list-control-bar/home-network-filter-modal';
 
 type NetworkFilterProps = {
   tokens: Asset[];
@@ -51,6 +57,7 @@ export const NetworkFilter = ({
   onChainIdChange,
 }: NetworkFilterProps) => {
   const t = useI18nContext();
+  const isNetworkManagementEnabled = useSelector(getIsNetworkManagementEnabled);
   const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
     useState(false);
   const { addAssetFilterMethod, removeAssetFilterMethod } =
@@ -154,6 +161,37 @@ export const NetworkFilter = ({
     ],
   );
 
+  const sharedModalSections = useMemo<NetworkSelectionSection[]>(
+    () =>
+      networkSections.map((section) => ({
+        key: section.key,
+        title: section.titleKey ? t(section.titleKey) : undefined,
+        items: section.items.map(({ chainId }) => {
+          const networkName =
+            chainNetworkNAmeAndImageMap.get(chainId)?.networkName;
+          const networkImage =
+            chainNetworkNAmeAndImageMap.get(chainId)?.networkImage;
+
+          return {
+            key: chainId,
+            chainId,
+            name: networkName || `Chain ${chainId}`,
+            iconSrc: networkImage || '',
+            selected: selectedChainId === chainId,
+            onClick: () => handleNetworkSelection(chainId),
+            testId: `send-network-filter-${chainId}`,
+          };
+        }),
+      })),
+    [
+      chainNetworkNAmeAndImageMap,
+      handleNetworkSelection,
+      networkSections,
+      selectedChainId,
+      t,
+    ],
+  );
+
   return (
     <>
       <Box marginLeft={4} marginBottom={2}>
@@ -161,7 +199,6 @@ export const NetworkFilter = ({
           data-testid="send-network-filter-toggle"
           onClick={handleNetworkFilterClick}
           size={ButtonBaseSize.Md}
-          startIconName={IconName.Filter}
           endIconName={IconName.ArrowDown}
           backgroundColor={BackgroundColor.backgroundDefault}
           color={TextColor.textDefault}
@@ -185,87 +222,104 @@ export const NetworkFilter = ({
           </Box>
         </ButtonBase>
       </Box>
-      <Modal
-        isOpen={isNetworkFilterPopoverOpen}
-        onClose={closePopover}
-        isClosedOnOutsideClick={true}
-        isClosedOnEscapeKey={true}
-      >
-        <ModalOverlay />
-        <ModalContent
-          size={ModalContentSize.Md}
-          padding={0}
-          modalDialogProps={{ padding: 0, height: BlockSize.Full }}
+      {isNetworkManagementEnabled ? (
+        <NetworkSelectionModal
+          isOpen={isNetworkFilterPopoverOpen}
+          onClose={closePopover}
+          title={t('bridgeSelectNetwork')}
+          topItem={{
+            key: 'all-networks',
+            name: t('allNetworks'),
+            iconSrc: IconName.Global,
+            selected: selectedChainId === null,
+            onClick: () => handleNetworkSelection(null),
+            testId: 'send-network-filter-all-networks',
+          }}
+          sections={sharedModalSections}
+        />
+      ) : (
+        <Modal
+          isOpen={isNetworkFilterPopoverOpen}
+          onClose={closePopover}
+          isClosedOnOutsideClick={true}
+          isClosedOnEscapeKey={true}
         >
-          <ModalHeader
-            endAccessory={
-              <ButtonIcon
-                ariaLabel="Close recipient modal"
-                data-testid="close-recipient-modal-btn"
-                iconName={IconName.Close}
-                onClick={closePopover}
-                size={ButtonIconSize.Sm}
+          <ModalOverlay />
+          <ModalContent
+            size={ModalContentSize.Md}
+            padding={0}
+            modalDialogProps={{ padding: 0, height: BlockSize.Full }}
+          >
+            <ModalHeader
+              endAccessory={
+                <ButtonIcon
+                  ariaLabel="Close recipient modal"
+                  data-testid="close-recipient-modal-btn"
+                  iconName={IconName.Close}
+                  onClick={closePopover}
+                  size={ButtonIconSize.Sm}
+                />
+              }
+            >
+              {t('selectNetworkToFilter')}
+            </ModalHeader>
+            <ModalBody
+              paddingLeft={0}
+              paddingRight={0}
+              className="flex min-h-0 flex-1 flex-col overflow-auto"
+            >
+              <NetworkListItem
+                name={t('allNetworks')}
+                iconSrc={IconName.Global}
+                iconSize={IconSize.Sm}
+                selected={selectedChainId === null}
+                onClick={() => handleNetworkSelection(null)}
+                focus={false}
               />
-            }
-          >
-            {t('selectNetworkToFilter')}
-          </ModalHeader>
-          <ModalBody
-            paddingLeft={0}
-            paddingRight={0}
-            className="flex min-h-0 flex-1 flex-col overflow-auto"
-          >
-            <NetworkListItem
-              name={t('allNetworks')}
-              iconSrc={IconName.Global}
-              iconSize={IconSize.Sm}
-              selected={selectedChainId === null}
-              onClick={() => handleNetworkSelection(null)}
-              focus={false}
-            />
-            {networkSections.map((section) => (
-              <Box
-                key={section.key}
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                width={BlockSize.Full}
-              >
-                {section.titleKey ? (
-                  <Text
-                    paddingLeft={4}
-                    paddingRight={4}
-                    paddingTop={4}
-                    paddingBottom={2}
-                    variant={TextVariant.bodyMd}
-                    color={TextColor.textAlternative}
-                  >
-                    {t(section.titleKey)}
-                  </Text>
-                ) : null}
-                {section.items.map(({ chainId }) => {
-                  const networkName = chainNetworkNAmeAndImageMap.get(chainId)
-                    ?.networkName;
-                  const networkImage = chainNetworkNAmeAndImageMap.get(chainId)
-                    ?.networkImage;
+              {networkSections.map((section) => (
+                <Box
+                  key={section.key}
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Column}
+                  width={BlockSize.Full}
+                >
+                  {section.titleKey ? (
+                    <Text
+                      paddingLeft={4}
+                      paddingRight={4}
+                      paddingTop={4}
+                      paddingBottom={2}
+                      variant={TextVariant.bodyMd}
+                      color={TextColor.textAlternative}
+                    >
+                      {t(section.titleKey)}
+                    </Text>
+                  ) : null}
+                  {section.items.map(({ chainId }) => {
+                    const networkName =
+                      chainNetworkNAmeAndImageMap.get(chainId)?.networkName;
+                    const networkImage =
+                      chainNetworkNAmeAndImageMap.get(chainId)?.networkImage;
 
-                  return (
-                    <NetworkListItem
-                      key={chainId}
-                      chainId={chainId}
-                      name={networkName || `Chain ${chainId}`}
-                      iconSrc={networkImage || ''}
-                      iconSize={AvatarNetworkSize.Sm}
-                      selected={selectedChainId === chainId}
-                      onClick={() => handleNetworkSelection(chainId)}
-                      focus={false}
-                    />
-                  );
-                })}
-              </Box>
-            ))}
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+                    return (
+                      <NetworkListItem
+                        key={chainId}
+                        chainId={chainId}
+                        name={networkName || `Chain ${chainId}`}
+                        iconSrc={networkImage || ''}
+                        iconSize={AvatarNetworkSize.Sm}
+                        selected={selectedChainId === chainId}
+                        onClick={() => handleNetworkSelection(chainId)}
+                        focus={false}
+                      />
+                    );
+                  })}
+                </Box>
+              ))}
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+      )}
     </>
   );
 };

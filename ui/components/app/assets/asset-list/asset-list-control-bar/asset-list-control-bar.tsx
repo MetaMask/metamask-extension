@@ -534,6 +534,7 @@ const AssetListControlBar = ({
           <SelectableListItem
             onClick={handleOpenTokenManagement}
             testId="manageTokens"
+            className="min-h-12"
           >
             <Icon
               name={IconName.Setting}

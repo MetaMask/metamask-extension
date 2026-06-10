@@ -1,6 +1,12 @@
 import React from 'react';
 import { formatChainIdToHex } from '@metamask/bridge-controller';
-import { Box, FontWeight, Text, TextColor, TextVariant } from '@metamask/design-system-react';
+import {
+  Box,
+  FontWeight,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { type CaipChainId } from '@metamask/utils';
 
 import {
