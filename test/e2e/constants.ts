@@ -170,6 +170,7 @@ export const DAPP_PATHS: Readonly<Record<string, readonly string[]>> =
     'test-dapp-solana': mm('test-dapp-solana', 'dist'),
     'test-dapp-tron': mm('test-dapp-tron', 'dist'),
     'test-dapp-bitcoin': mm('test-dapp-bitcoin', 'dist'),
+    'test-dapp-stellar': mm('test-dapp-stellar', 'dist'),
     'test-snaps': mm('test-snaps', 'dist'),
   });
 
@@ -181,6 +182,7 @@ export const DAPP_PATH = Object.freeze({
   TEST_DAPP_SOLANA: 'test-dapp-solana',
   TEST_DAPP_TRON: 'test-dapp-tron',
   TEST_DAPP_BITCOIN: 'test-dapp-bitcoin',
+  TEST_DAPP_STELLAR: 'test-dapp-stellar',
   TEST_SNAPS: 'test-snaps',
   SNAP_SIMPLE_KEYRING_SITE: 'snap-simple-keyring-site',
   SNAP_ACCOUNT_ABSTRACTION_KEYRING: 'snap-account-abstraction-keyring',
@@ -259,6 +261,17 @@ export const DEFAULT_SOLANA_BALANCE = 1; // SOL
 
 /* Title of Portfolio page */
 export const PORTFOLIO_PAGE_TITLE = 'MetaMask Portfolio';
+
+/* Default Stellar address created from default fixture SRP via stellar-wallet-snap */
+export const DEFAULT_STELLAR_ADDRESS =
+  'GDEM2RN4QLPSSPGSPSKSEQ3XXFGM4X4BRH4X4EOPABHAXBVV6OQ6YE6K';
+
+/* Default Stellar address short form */
+export const DEFAULT_STELLAR_ADDRESS_SHORT = 'GDEM...YE6K';
+
+/* Default Stellar USDC send recipient from @metamask/test-dapp-stellar */
+export const DEFAULT_STELLAR_RECIPIENT =
+  'GCM5WPR4DDR24FSAX5LIEM4J7AI3KOWJYANSXEPKYXCSZOTAYXE75AFN';
 
 /* Default TRON address created using test SRP (Account 1) */
 export const DEFAULT_TRON_ADDRESS = 'TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3';
@@ -405,6 +418,7 @@ export const WINDOW_TITLES = Object.freeze({
   SolanaTestDApp: 'Solana Test Dapp',
   BitcoinTestDApp: 'Bitcoin Test Dapp',
   TronTestDApp: 'Tron Test Dapp',
+  StellarTestDApp: 'Stellar Test Dapp',
   TestE2EPage: 'E2E Test Page',
   TestSnaps: 'Test Snaps',
   ERC4337Snap: 'Account Abstraction Snap',
