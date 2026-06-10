@@ -108,7 +108,13 @@ describe('sentry-make-transport', () => {
         getSentryState: () => emptySentrySnapshot(),
         getPersistedState: async () => ({
           data: {
-            MetaMetricsController: { participateInMetaMetrics: false },
+            AnalyticsController: {
+              analyticsId: 'transport-test-id',
+              optedIn: false,
+            },
+            MetaMetricsController: {
+              completedMetaMetricsOnboarding: true,
+            },
           },
         }),
         getBackupState: async () => ({}),
@@ -143,9 +149,12 @@ describe('sentry-make-transport', () => {
         getSentryState: () => emptySentrySnapshot(),
         getPersistedState: async () => ({
           data: {
+            AnalyticsController: {
+              analyticsId: 'transport-test-id',
+              optedIn: true,
+            },
             MetaMetricsController: {
-              participateInMetaMetrics: true,
-              metaMetricsId: 'transport-test-id',
+              completedMetaMetricsOnboarding: true,
             },
           },
         }),
@@ -177,9 +186,12 @@ describe('sentry-make-transport', () => {
         getSentryState: () => ({
           ...emptySentrySnapshot(),
           state: {
+            AnalyticsController: {
+              analyticsId: 'app-state-id',
+              optedIn: true,
+            },
             MetaMetricsController: {
-              participateInMetaMetrics: true,
-              metaMetricsId: 'app-state-id',
+              completedMetaMetricsOnboarding: true,
             },
           },
         }),
@@ -214,9 +226,12 @@ describe('sentry-make-transport', () => {
           throw new Error('persisted unavailable');
         },
         getBackupState: async () => ({
+          AnalyticsController: {
+            analyticsId: 'backup-id',
+            optedIn: true,
+          },
           MetaMetricsController: {
-            participateInMetaMetrics: true,
-            metaMetricsId: 'backup-id',
+            completedMetaMetricsOnboarding: true,
           },
         }),
       };
@@ -288,7 +303,13 @@ describe('sentry-make-transport', () => {
         getSentryState: () => emptySentrySnapshot(),
         getPersistedState: async () => ({
           data: {
-            MetaMetricsController: { participateInMetaMetrics: false },
+            AnalyticsController: {
+              analyticsId: 'init-session-test-id',
+              optedIn: false,
+            },
+            MetaMetricsController: {
+              completedMetaMetricsOnboarding: true,
+            },
           },
         }),
         getBackupState: async () => ({}),
@@ -325,9 +346,12 @@ describe('sentry-make-transport', () => {
         getSentryState: () => emptySentrySnapshot(),
         getPersistedState: async () => ({
           data: {
+            AnalyticsController: {
+              analyticsId: 'init-session-test-id',
+              optedIn: true,
+            },
             MetaMetricsController: {
-              participateInMetaMetrics: true,
-              metaMetricsId: 'init-session-test-id',
+              completedMetaMetricsOnboarding: true,
             },
           },
         }),

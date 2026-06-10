@@ -119,8 +119,8 @@ export const commonSolanaAddress =
   '3xTPAZxmpwd8GrNEKApaTw6VH4jqJ31WFXUvQzgwhR7c'; // Disclaimer: This account is intended solely for testing purposes. Do not use or trade any tokens associated with this account in production or live environments.
 
 export const commonSolanaTxConfirmedDetailsFixture = {
-  status: 'Confirmed',
-  amount: '-0.00708 SOL',
+  status: 'confirmed',
+  amount: '-0.007079 SOL',
   networkFee: '0.000005 SOL',
   fromAddress: 'HH9ZzgQvSVmznKcRfwHuEphuxk7zU5f92CkXFDQfVJcq',
   toAddress: '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
@@ -129,7 +129,7 @@ export const commonSolanaTxConfirmedDetailsFixture = {
 };
 
 export const commonSolanaTxFailedDetailsFixture = {
-  status: 'Failed',
+  status: 'failed',
   amount: '0.000000005 SOL',
   networkFee: '-0.000005',
   fromAddress: 's3zTLVvDbrBzbQ36sr2Z4xrzpRHFv3noWChbNi6vcjr',

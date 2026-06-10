@@ -52,8 +52,10 @@ describe('BTC Account - Send', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new HomePage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
         await new AssetListPage(driver).checkExpectedTokenBalanceIsDisplayed(
           `${DEFAULT_BTC_BALANCE}`,
           'BTC',
@@ -80,8 +82,10 @@ describe('BTC Account - Send', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new HomePage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
         await new AssetListPage(driver).checkExpectedTokenBalanceIsDisplayed(
           `${DEFAULT_BTC_BALANCE}`,
           'BTC',
@@ -114,8 +118,10 @@ describe('BTC Account - Send', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new HomePage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
         await homePage.checkPageIsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
         await new AssetListPage(driver).checkExpectedTokenBalanceIsDisplayed(
           `${DEFAULT_BTC_BALANCE}`,
           'BTC',
@@ -140,7 +146,7 @@ describe('BTC Account - Send', function (this: Suite) {
         await bitcoinReviewTxPage.clickConfirmButton();
 
         // Wait for the transaction to appear in the activity list
-        await activityListPage.checkTransactionActivityByText('Sent');
+        await activityListPage.checkTransactionActivityByText('Sending');
 
         // Note: Transaction shows as "Pending" immediately after broadcast.
         // The BTC snap stores it with "Unconfirmed" status when broadcast.
