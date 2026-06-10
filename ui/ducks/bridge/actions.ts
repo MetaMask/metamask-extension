@@ -14,10 +14,7 @@ import {
   setEnabledAllPopularNetworks,
 } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
-import type {
-  MetaMaskReduxDispatch,
-  MetaMaskReduxState,
-} from '../../store/store';
+import type { MetaMaskReduxDispatch } from '../../store/store';
 import {
   getMultichainNetworkConfigurationsByChainId,
   getMultichainProviderConfig,
@@ -150,11 +147,9 @@ export const updateBatchSellTrades = (
 export const setEvmBalances = (assetId: CaipAssetType) => {
   return async (
     dispatch: MetaMaskReduxDispatch,
-    getState: () => MetaMaskReduxState,
+    getState: () => BridgeAppState,
   ) => {
-    const selectedAddress = getFromAccount(
-      getState() as unknown as BridgeAppState,
-    )?.address;
+    const selectedAddress = getFromAccount(getState())?.address;
     if (!selectedAddress) {
       return;
     }
@@ -179,9 +174,8 @@ export const setEvmBalances = (assetId: CaipAssetType) => {
 export const setFromToken = (token: TokenPayload) => {
   return async (
     dispatch: MetaMaskReduxDispatch,
-    getState: () => MetaMaskReduxState,
+    getState: () => BridgeAppState,
   ) => {
-    const bridgeState = getState() as unknown as BridgeAppState;
     const { assetId } = token;
     const { chainId } = parseCaipAssetType(assetId);
     const isNonEvm = isNonEvmChainId(chainId);
@@ -196,7 +190,7 @@ export const setFromToken = (token: TokenPayload) => {
 
     if (maybeHexChainId) {
       const networkConfigs =
-        getMultichainNetworkConfigurationsByChainId(bridgeState);
+        getMultichainNetworkConfigurationsByChainId(getState());
       if (!networkConfigs[maybeHexChainId]) {
         const featuredRpc = FEATURED_RPCS.find(
           (rpc) => rpc.chainId === maybeHexChainId,
@@ -218,7 +212,7 @@ export const setFromToken = (token: TokenPayload) => {
       }
     }
 
-    const currentChainId = getMultichainProviderConfig(bridgeState).chainId;
+    const currentChainId = getMultichainProviderConfig(getState()).chainId;
     const currentNetworkMatchesToken = [chainId, maybeHexChainId].some(
       (c) => c && c === currentChainId,
     );
@@ -227,7 +221,7 @@ export const setFromToken = (token: TokenPayload) => {
     if (!currentNetworkMatchesToken) {
       // If the source chain changes, enable All Networks view so the user
       // can see their bridging activity on the new chain
-      const lastSelectedChainId = getLastSelectedChainId(bridgeState);
+      const lastSelectedChainId = getLastSelectedChainId(getState());
       if (isCrossChain(chainId, lastSelectedChainId)) {
         dispatch(setEnabledAllPopularNetworks());
       }
@@ -235,7 +229,7 @@ export const setFromToken = (token: TokenPayload) => {
         dispatch(setActiveNetworkWithError(chainId));
       } else if (maybeHexChainId) {
         const networkId =
-          selectDefaultNetworkClientIdsByChainId(bridgeState)[maybeHexChainId];
+          selectDefaultNetworkClientIdsByChainId(getState())[maybeHexChainId];
         if (networkId) {
           dispatch(setActiveNetworkWithError(networkId));
         }
@@ -249,9 +243,9 @@ export const setFromToken = (token: TokenPayload) => {
 export const setToToken = (newToToken: TokenPayload) => {
   return async (
     dispatch: MetaMaskReduxDispatch,
-    getState: () => MetaMaskReduxState,
+    getState: () => BridgeAppState,
   ) => {
-    const state = getState() as unknown as BridgeAppState;
+    const state = getState();
     const currentFromAmount = getFromAmount(state);
     const fromToken = getFromToken(state);
     const toToken = getToToken(state);
@@ -273,6 +267,7 @@ export const setToToken = (newToToken: TokenPayload) => {
           fromToken.assetId,
         );
       }
+
       await dispatch(
         setFromToken(fromTokenToUse) as unknown as Parameters<
           typeof dispatch
