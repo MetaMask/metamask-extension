@@ -4054,10 +4054,7 @@ describe('Bridge selectors', () => {
             ...quote,
             quote: {
               ...quote.quote,
-              priceData: {
-                ...quote.quote.priceData,
-                priceImpact: undefined,
-              },
+              priceData: { ...quote.quote.priceData, priceImpact: undefined },
             },
           })) as unknown as QuoteResponse[],
         },
@@ -4303,10 +4300,7 @@ describe('Bridge selectors', () => {
             ...quote,
             quote: {
               ...quote.quote,
-              priceData: {
-                ...quote.quote.priceData,
-                priceImpact: '0.07',
-              },
+              priceData: { ...quote.quote.priceData, priceImpact: '0.07' },
             },
           })) as unknown as QuoteResponse[],
           quoteRequest: {
