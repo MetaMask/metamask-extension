@@ -207,6 +207,8 @@ export function getPerpsGeoBlockConfig(title?: string) {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         confirmations_pay_post_quote:
           PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS.confirmations_pay_post_quote,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        confirmations_pay: { name: 'empty' },
         perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: ['US'] },
       });
       await server
@@ -253,6 +255,8 @@ async function mockEligibleFeatureFlags(server: Mockttp): Promise<void> {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     confirmations_pay_post_quote:
       PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS.confirmations_pay_post_quote,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    confirmations_pay: { name: 'empty' },
     perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: [] },
   });
   await server
