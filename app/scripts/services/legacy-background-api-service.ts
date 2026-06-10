@@ -608,10 +608,7 @@ export class LegacyBackgroundApiService {
    * @returns The addresses of the accounts managed by the snap.
    */
   async getAccountsBySnapId(snapId: SnapId): Promise<string[]> {
-    return getAccountsBySnapId(
-      this.#messenger,
-      snapId,
-    );
+    return getAccountsBySnapId(this.#messenger, snapId);
   }
 
   /**

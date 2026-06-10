@@ -97,8 +97,7 @@ function buildHardwareV2Builder<Wrapper, Legacy>(
  *
  * @returns The V2 keyring builders to register with the `KeyringController`.
  */
-export function getKeyringV2Builders(
-): KeyringV2Builder[] {
+export function getKeyringV2Builders(): KeyringV2Builder[] {
   return [
     buildHardwareV2Builder(LatticeKeyringV2, LatticeKeyring.type),
     buildHardwareV2Builder(LedgerKeyringV2, LedgerKeyring.type),
