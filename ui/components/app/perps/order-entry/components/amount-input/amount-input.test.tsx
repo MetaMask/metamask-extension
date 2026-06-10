@@ -380,7 +380,9 @@ describe('AmountInput', () => {
       const slider = screen
         .getByTestId('amount-slider')
         .querySelector('input[type="range"]');
-      fireEvent.change(slider as HTMLInputElement, { target: { value: '100' } });
+      fireEvent.change(slider as HTMLInputElement, {
+        target: { value: '100' },
+      });
 
       expect(onAmountChange).toHaveBeenCalledWith('64.14');
       const amount = Number.parseFloat(
