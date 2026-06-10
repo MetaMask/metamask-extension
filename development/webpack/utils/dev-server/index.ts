@@ -1,11 +1,3 @@
-/**
- * @file webpack-dev-server configuration for development (`--watch`) builds,
- * and the wiring that auto-reloads the extension as code changes: UI pages
- * reload themselves in place via the UI reload client (`./ui-reload`), and
- * the whole extension reloads when privileged code changes via the background
- * reload client (`./background-reload`).
- */
-
 import type { Compilation, Compiler, Stats } from 'webpack';
 import type { Configuration } from 'webpack-dev-server';
 import { logStats } from '../helpers';
@@ -31,7 +23,7 @@ export const DEV_SERVER_OPTIONS: Configuration = {
   // we don't need/have a "static" directory, so disable it
   static: false,
   allowedHosts: 'all',
-  // Wire up the reload clients here so that we can read the resolved port from
+  // Wire up the ui and background reload clients here so that we can read the resolved port from
   // `devServer.options` — by this point `port: 'auto'` has been replaced with
   // the actual numeric port the server is listening on.
   setupMiddlewares: (middlewares, devServer) => {
@@ -39,10 +31,9 @@ export const DEV_SERVER_OPTIONS: Configuration = {
       'compilers' in devServer.compiler
         ? devServer.compiler.compilers
         : [devServer.compiler];
-    // UI pages reload themselves in place when their code changes; the
-    // background reload restarts the whole extension when the background,
-    // service worker, or content scripts change.
+    // UI pages reload themselves when their code changes.
     setupUiReload(devServer, compilers);
+    // Background page, service worker, and content scripts reload themselves when their code changes.
     setupBackgroundReload(devServer, compilers);
     return middlewares;
   },
@@ -69,6 +60,7 @@ export const injectEntryScripts = (
   }
   const tags = entrypoint
     .getFiles()
+    .filter((file) => file.endsWith('.js'))
     .map((file) => `<script src="${file}" defer></script>`)
     .join('');
   return content.replace('</head>', `${tags}</head>`);

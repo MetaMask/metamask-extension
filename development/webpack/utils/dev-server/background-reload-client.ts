@@ -1,28 +1,3 @@
-/**
- * @file The background reload client: a dev-only extension reloader, bundled
- * into the privileged background context (the MV3 service worker or the MV2
- * background page) by the webpack dev server.
- *
- * The UI reload client reloads UI pages with `location.reload()`, but that
- * primitive doesn't work for the service worker, background, content scripts,
- * or the offscreen document: a service worker can't reload itself meaningfully,
- * and a content script can't even call `runtime.reload`. The only way to pick
- * up changes to those surfaces is a full `chrome.runtime.reload()`, which must
- * run from a privileged context.
- *
- * This module connects to the dev server's WebSocket and listens for the
- * server's fingerprint announcements (the fingerprint of the current build's
- * privileged code, sent after every build and on every connection). It records
- * the fingerprint of the code it is running and reloads the whole extension
- * when the announced fingerprint differs — so changes built while this client
- * was disconnected (e.g. the service worker was idle-terminated) are still
- * applied on reconnect. UI state is lost on reload, which is acceptable in
- * development.
- *
- * It is only ever added as a webpack entry while the dev server is running
- * (`--watch`), so it never ships in production builds.
- */
-
 import { BACKGROUND_RELOAD_MESSAGE_TYPE } from './background-reload-protocol';
 
 // `__resourceQuery` is the query string of the request that pulled this module
@@ -33,7 +8,7 @@ declare const __resourceQuery: string;
 
 const MAX_RECONNECT_DELAY_MS = 5_000;
 
-/** Storage key holding the fingerprint of the currently running code. */
+// Storage key holding the fingerprint of the currently running code.
 const FINGERPRINT_KEY = 'MM_BACKGROUND_RELOAD_FINGERPRINT';
 
 // `chrome` in Chrome/MV3 service workers; `browser` (with a `chrome` alias) in

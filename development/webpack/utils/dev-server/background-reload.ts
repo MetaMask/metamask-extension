@@ -1,34 +1,3 @@
-/**
- * @file Dev-server wiring that auto-reloads the extension when privileged code
- * — the background/service worker, content scripts, or the offscreen document —
- * changes.
- *
- * The UI reload client reloads UI pages with `location.reload()`, but that
- * primitive doesn't work for the privileged surfaces: a service worker can't
- * reload itself meaningfully, and a content script can't even call
- * `runtime.reload`. The only way to pick up changes to them is a full
- * `chrome.runtime.reload()`, which must run from a privileged context.
- *
- * So a tiny client (`./background-reload-client`) is injected into the
- * background context, and after each rebuild this module fingerprints the
- * privileged code and announces the fingerprint to all connected clients (and
- * to every client that connects later — so a change built while the client was
- * disconnected, e.g. an idle-terminated service worker, still takes effect on
- * reconnect). The client reloads the extension when the announced fingerprint
- * differs from the one its running code recorded.
- *
- * Fingerprints are computed per *module*, by walking the module graph from the
- * privileged entrypoints. Chunk hashes would be too coarse: the MV2 background
- * page shares the split `js`/`vendor` chunks with the UI pages, so a UI-only
- * edit changes those chunks without changing any code the background actually
- * runs. With module fingerprints, UI-only edits never trigger a reload — the
- * UI reload client already handles those, and reloading the extension
- * would needlessly discard background state.
- *
- * All of this is only wired up while the dev server runs (`--watch`), so none
- * of it ships in production builds.
- */
-
 import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
 import type { Compilation, Compiler, Entrypoint, Module } from 'webpack';
@@ -180,9 +149,6 @@ const fingerprintCompilation = (
  * there are no reload loops on startup and no missed reloads after a
  * disconnect.
  *
- * Called from `DEV_SERVER_OPTIONS.setupMiddlewares`, where the resolved
- * dev-server port is known.
- *
  * @param devServer - The running webpack dev server.
  * @param compilers - The compilers attached to the dev server.
  */
@@ -190,8 +156,6 @@ export function setupBackgroundReload(
   devServer: WebpackDevServer,
   compilers: Compiler[],
 ): void {
-  // The dev server's WebSocket URL; `port: 'auto'` has already been resolved
-  // to the real port by the time `setupMiddlewares` calls this.
   const { host, port } = devServer.options;
   const url = `ws://${host ?? 'localhost'}:${port}/ws`;
   const clientRequest = `${resolve(__dirname, 'background-reload-client.ts')}?url=${encodeURIComponent(url)}`;
@@ -245,18 +209,17 @@ export function setupBackgroundReload(
     }
     const serviceWorkerEntryName = getServiceWorkerEntryName(manifestPlugin);
 
-    const { EntryPlugin } = compiler.webpack;
     if (serviceWorkerEntryName) {
       // MV3: the service worker loads exactly one file, so the client must be
       // part of that chunk. Pass only `name` so webpack merges this dependency
       // into the existing entry without a conflicting-entry-option error.
-      new EntryPlugin(compiler.context, clientRequest, {
+      new compiler.webpack.EntryPlugin(compiler.context, clientRequest, {
         name: serviceWorkerEntryName,
       }).apply(compiler);
     } else {
       // MV2: register a standalone entry; `HtmlBundlerPlugin.beforeEmit` injects
       // it as a `<script>` into the background page.
-      new EntryPlugin(compiler.context, clientRequest, {
+      new compiler.webpack.EntryPlugin(compiler.context, clientRequest, {
         name: BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
         chunkLoading: false,
       }).apply(compiler);
