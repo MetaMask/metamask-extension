@@ -102,7 +102,17 @@ describe('perpsRoute', () => {
     });
 
     (
-      ['all', 'crypto', 'stocks', 'commodities', 'forex', 'new'] as const
+      [
+        'all',
+        'crypto',
+        'stock',
+        'pre-ipo',
+        'index',
+        'etf',
+        'commodity',
+        'forex',
+        'new',
+      ] as const
     ).forEach((tab) => {
       it(`maps tab=${tab} to filter=${tab}`, () => {
         const result = perps.handler(
@@ -112,6 +122,23 @@ describe('perpsRoute', () => {
         assertPathDestination(result);
         expect(result.path).toBe(PERPS_MARKET_LIST_ROUTE);
         expect(result.query.get('filter')).toBe(tab);
+      });
+    });
+
+    (
+      [
+        ['stocks', 'stock'],
+        ['commodities', 'commodity'],
+      ] as const
+    ).forEach(([legacyTab, canonicalFilter]) => {
+      it(`maps legacy tab=${legacyTab} to filter=${canonicalFilter}`, () => {
+        const result = perps.handler(
+          new URLSearchParams({ screen: 'market-list', tab: legacyTab }),
+        );
+
+        assertPathDestination(result);
+        expect(result.path).toBe(PERPS_MARKET_LIST_ROUTE);
+        expect(result.query.get('filter')).toBe(canonicalFilter);
       });
     });
 

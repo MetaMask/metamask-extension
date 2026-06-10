@@ -10,6 +10,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import { getMockAssetsPrice } from '../tokens/utils/mocks';
 import { login } from '../../page-objects/flows/login.flow';
+import { closeSettings } from '../../page-objects/flows/settings.flow';
 
 const infuraSepoliaUrl =
   'https://sepolia.infura.io/v3/00000000000000000000000000000000';
@@ -34,10 +35,7 @@ async function mockInfura(mockServer: Mockttp): Promise<void> {
 const ETH_CONVERSION_RATE_USD = 1700;
 
 async function mockPriceApi(mockServer: Mockttp) {
-  const price =
-    process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true'
-      ? ETH_CONVERSION_RATE_USD
-      : 1;
+  const price = ETH_CONVERSION_RATE_USD;
   await mockServer
     .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
     .always()
@@ -144,7 +142,7 @@ describe('Settings', function () {
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
         await settingsPage.toggleBalanceSetting();
-        await settingsPage.clickBackButton();
+        await closeSettings(driver);
         await homePage.checkExpectedBalanceIsDisplayed('25', 'SepoliaETH');
       },
     );
