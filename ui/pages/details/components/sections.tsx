@@ -6,10 +6,10 @@ import type {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { NetworkName } from '../../../components/app/transaction/network-name';
-import { Row, Section } from '../components/shared';
-import { TokenAmountRow } from '../components/token-amount-row';
-import { TransactionStatusLabel } from '../../../components/app/transaction/transaction-status-label';
+import { TransactionStatus } from '../../../components/app/transaction/transaction-status';
 import { AccountName } from '../../../components/app/transaction/account-name';
+import { Row, Section } from './shared';
+import { TokenRow } from './token-row';
 
 export function TokensSection({
   tokens,
@@ -29,7 +29,7 @@ export function TokensSection({
       {visibleTokens.map(({ label, token }) => (
         <div key={token?.assetId}>
           {label && <p className="text-alternative mb-1">{label}</p>}
-          <TokenAmountRow token={token} />
+          <TokenRow token={token} />
         </div>
       ))}
     </div>
@@ -52,7 +52,7 @@ export function MetadataSection({
     <Section>
       <Row
         label={t('status')}
-        value={<TransactionStatusLabel status={item.status} />}
+        value={<TransactionStatus status={item.status} />}
       />
 
       <Row label={t('date')} value={formatDateTime(item.timestamp)} />

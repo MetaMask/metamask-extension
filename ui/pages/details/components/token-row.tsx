@@ -16,7 +16,7 @@ import { useFormatters } from '../../../hooks/useFormatters';
 
 const maximumFractionDigits = 8;
 
-export function TokenAmountRow({
+export function TokenRow({
   token,
   showNetworkBadge,
 }: {

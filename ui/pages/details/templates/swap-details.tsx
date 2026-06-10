@@ -5,7 +5,7 @@ import { AmountsSection } from '../components/amounts-section';
 import { Footer } from '../components/shared';
 import { BlockExplorerButton } from '../components/block-explorer-button';
 import { SwapAgainButton } from '../components/swap-again-button';
-import { MetadataSection, TokensSection } from './sections';
+import { MetadataSection, TokensSection } from '../components/sections';
 
 export function SwapDetails({
   item,

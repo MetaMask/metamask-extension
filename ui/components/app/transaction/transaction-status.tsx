@@ -30,7 +30,7 @@ const statusConfig: Record<
   },
 };
 
-export function TransactionStatusLabel({ status }: { status: string }) {
+export function TransactionStatus({ status }: { status: string }) {
   const t = useI18nContext();
   const config = statusConfig[status];
 

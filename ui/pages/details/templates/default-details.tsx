@@ -3,7 +3,7 @@ import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { AmountsSection } from '../components/amounts-section';
 import { Footer } from '../components/shared';
 import { BlockExplorerButton } from '../components/block-explorer-button';
-import { MetadataSection, TokensSection } from './sections';
+import { MetadataSection, TokensSection } from '../components/sections';
 
 export function DefaultDetails({ item }: { item: ActivityListItem }) {
   return (

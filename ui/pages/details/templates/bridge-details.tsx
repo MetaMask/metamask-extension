@@ -17,10 +17,10 @@ import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/lib
 import { getImageForChainId } from '../../../selectors/multichain';
 import type { MetaMaskReduxState } from '../../../store/store';
 import { NetworkName } from '../../../components/app/transaction/network-name';
-import { TransactionStatusLabel } from '../../../components/app/transaction/transaction-status-label';
+import { TransactionStatus } from '../../../components/app/transaction/transaction-status';
 import { AccountName } from '../../../components/app/transaction/account-name';
 import { Footer, Row, Section } from '../components/shared';
-import { TokenAmountRow } from '../components/token-amount-row';
+import { TokenRow } from '../components/token-row';
 import { AmountsSection } from '../components/amounts-section';
 import { BridgeExplorerButtons } from '../components/bridge-explorer-buttons';
 import { SwapAgainButton } from '../components/swap-again-button';
@@ -106,7 +106,7 @@ export function BridgeDetails({
           {item.data.sourceToken && (
             <div>
               <p className="text-alternative mb-1">{t('youSent')}</p>
-              <TokenAmountRow
+              <TokenRow
                 token={item.data.sourceToken}
                 showNetworkBadge={showFromTo}
               />
@@ -115,7 +115,7 @@ export function BridgeDetails({
           {item.data.destinationToken && (
             <div>
               <p className="text-alternative mb-1">{t('youReceived')}</p>
-              <TokenAmountRow
+              <TokenRow
                 token={item.data.destinationToken}
                 showNetworkBadge={showFromTo}
               />
@@ -126,7 +126,7 @@ export function BridgeDetails({
         <Section>
           <Row
             label={t('status')}
-            value={<TransactionStatusLabel status={item.status} />}
+            value={<TransactionStatus status={item.status} />}
           />
           <Row label={t('date')} value={formatDateTime(item.timestamp)} />
           <Row
