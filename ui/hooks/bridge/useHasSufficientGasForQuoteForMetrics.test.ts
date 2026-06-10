@@ -8,7 +8,10 @@ import { zeroAddress } from 'ethereumjs-util';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import * as bridgeSelectors from '../../ducks/bridge/selectors';
-import { useHasSufficientGasForQuoteForMetrics } from './useHasSufficientGasForQuoteForMetrics';
+import {
+  computeHasSufficientGasForQuoteForMetrics,
+  useHasSufficientGasForQuoteForMetrics,
+} from './useHasSufficientGasForQuoteForMetrics';
 
 jest.mock('@metamask/bridge-controller', () => ({
   ...jest.requireActual('@metamask/bridge-controller'),
@@ -127,5 +130,95 @@ describe('useHasSufficientGasForQuoteForMetrics', () => {
     rerender();
 
     expect(result.current).toBe(firstCallback);
+  });
+});
+
+describe('computeHasSufficientGasForQuoteForMetrics', () => {
+  const nativeToken = NATIVE_TOKEN as unknown as ReturnType<
+    typeof bridgeSelectors.getFromToken
+  >;
+  const erc20Token = ERC20_TOKEN as unknown as ReturnType<
+    typeof bridgeSelectors.getFromToken
+  >;
+
+  it('returns null when the native balance is missing', () => {
+    expect(
+      computeHasSufficientGasForQuoteForMetrics({
+        quote: buildQuote('10', '80'),
+        nativeBalance: '',
+        fromToken: nativeToken,
+        minimumBalanceToKeep: '5',
+      }),
+    ).toBeNull();
+  });
+
+  it('returns null when there is no quote', () => {
+    expect(
+      computeHasSufficientGasForQuoteForMetrics({
+        quote: null,
+        nativeBalance: '100',
+        fromToken: nativeToken,
+        minimumBalanceToKeep: '5',
+      }),
+    ).toBeNull();
+  });
+
+  it('returns null for the native MAX case (balance minus sent amount is not positive)', () => {
+    expect(
+      computeHasSufficientGasForQuoteForMetrics({
+        quote: buildQuote('10', '100'),
+        nativeBalance: '100',
+        fromToken: nativeToken,
+        minimumBalanceToKeep: '5',
+      }),
+    ).toBeNull();
+  });
+
+  describe('native source token', () => {
+    it('returns true when balance covers fee + sent amount + reserve', () => {
+      expect(
+        computeHasSufficientGasForQuoteForMetrics({
+          quote: buildQuote('10', '80'),
+          nativeBalance: '100',
+          fromToken: nativeToken,
+          minimumBalanceToKeep: '5',
+        }),
+      ).toBe(true);
+    });
+
+    it('returns false when balance does not cover fee + sent amount + reserve', () => {
+      expect(
+        computeHasSufficientGasForQuoteForMetrics({
+          quote: buildQuote('10', '80'),
+          nativeBalance: '100',
+          fromToken: nativeToken,
+          minimumBalanceToKeep: '15',
+        }),
+      ).toBe(false);
+    });
+  });
+
+  describe('non-native (ERC20) source token', () => {
+    it('returns true when balance is greater than the network fee', () => {
+      expect(
+        computeHasSufficientGasForQuoteForMetrics({
+          quote: buildQuote('50', '80'),
+          nativeBalance: '100',
+          fromToken: erc20Token,
+          minimumBalanceToKeep: '999',
+        }),
+      ).toBe(true);
+    });
+
+    it('returns false when balance is at or below the network fee', () => {
+      expect(
+        computeHasSufficientGasForQuoteForMetrics({
+          quote: buildQuote('50', '80'),
+          nativeBalance: '50',
+          fromToken: erc20Token,
+          minimumBalanceToKeep: '0',
+        }),
+      ).toBe(false);
+    });
   });
 });

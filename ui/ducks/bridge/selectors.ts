@@ -966,7 +966,7 @@ const getQuoteStreamComplete = (state: BridgeAppState) =>
  * @param fromToken - The selected source token
  * @param minimumBalanceToKeep - Native amount to reserve (e.g. Solana rent exemption)
  */
-const isNativeBalanceInsufficientForQuote = (
+export const isNativeBalanceInsufficientForQuote = (
   quote: QuoteResponse & QuoteMetadata,
   nativeBalance: string,
   fromToken: ReturnType<typeof getFromToken>,
@@ -1193,45 +1193,6 @@ export const getValidationErrors = (
       ? false
       : getIsStockMarketClosed(state, currentTimeInMs),
 });
-
-/**
- * Computes whether the native balance covers the gas cost of a given quote.
- * Mirrors the `isInsufficientGasForQuote` balance math (negated) but omits the
- * `isGasless` and `isNetworkFeeUnavailable` gates so the value reflects raw gas
- * sufficiency for the passed quote. Used only for the `hasSufficientGasForQuote`
- * analytics property.
- *
- * @param options
- * @param options.quote - The quote to evaluate (e.g. the active or submitted quote)
- * @param options.nativeBalance - The from-account native balance
- * @param options.fromToken - The selected source token
- * @param options.minimumBalanceToKeep - Native amount to reserve on the source chain
- * @returns `true`/`false` when computable, or `null` when a required input is missing
- */
-export const computeHasSufficientGasForQuoteForMetrics = ({
-  quote,
-  nativeBalance,
-  fromToken,
-  minimumBalanceToKeep,
-}: {
-  quote: (QuoteResponse & QuoteMetadata) | null;
-  nativeBalance: ReturnType<typeof getFromNativeBalance>;
-  fromToken: ReturnType<typeof getFromToken>;
-  minimumBalanceToKeep: string;
-}): boolean | null =>
-  // For the MAX native case we return null because it does not make sense to check this (gas is substrated from the sent amount)
-  !nativeBalance ||
-  !quote ||
-  !fromToken ||
-  (isNativeAddress(fromToken.assetId) &&
-    new BigNumber(nativeBalance).sub(quote.sentAmount.amount).lte(0))
-    ? null
-    : !isNativeBalanceInsufficientForQuote(
-        quote,
-        nativeBalance,
-        fromToken,
-        minimumBalanceToKeep,
-      );
 
 /**
  * Returns warning labels for metrics. Pass `currentTimeInMs` to include
