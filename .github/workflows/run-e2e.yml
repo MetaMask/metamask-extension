@@ -139,25 +139,6 @@ jobs:
           name: ${{ env.JOB_NAME }}
           path: ./previous-test-results/
 
-      # TEMPORARY: pin geckodriver to 0.36.0 for Firefox e2e runs.
-      # geckodriver 0.37.0 (released 2026-06-03) regresses the temporary-addon
-      # dapp-connection flow in Firefox (the dapp can't detect the wallet),
-      # failing every dapp test. Selenium Manager otherwise auto-floats to the
-      # latest driver, which is why this broke with no repo change. Remove this
-      # step once a fixed geckodriver release is verified.
-      # See: https://github.com/mozilla/geckodriver/releases/tag/v0.37.0
-      - name: Pin geckodriver 0.36.0 (Firefox only)
-        if: ${{ contains(inputs.test-command, 'firefox') }}
-        run: |
-          GECKO_VERSION=0.36.0
-          GECKO_DIR="$RUNNER_TEMP/geckodriver-${GECKO_VERSION}"
-          mkdir -p "$GECKO_DIR"
-          curl -fsSL "https://github.com/mozilla/geckodriver/releases/download/v${GECKO_VERSION}/geckodriver-v${GECKO_VERSION}-linux64.tar.gz" \
-            | tar -xz -C "$GECKO_DIR"
-          chmod +x "$GECKO_DIR/geckodriver"
-          echo "GECKODRIVER_PATH=$GECKO_DIR/geckodriver" >> "$GITHUB_ENV"
-          "$GECKO_DIR/geckodriver" --version
-
       - name: Run E2E tests
         timeout-minutes: ${{ inputs.test-timeout-minutes }}
         run: ${{ inputs.test-command }} --retries 1
