@@ -182,14 +182,14 @@ type PopoverMenuItemProps = {
   'data-testid'?: string;
 };
 
-const PopoverMenuItem: React.FC<PopoverMenuItemProps> = ({
+const PopoverMenuItem = ({
   icon,
   label,
   description,
   onClick,
   className = '',
   'data-testid': testId,
-}) => (
+}: PopoverMenuItemProps) => (
   <Box
     className={`w-full text-left px-4 py-4 bg-transparent hover:bg-hover active:bg-pressed flex items-start gap-3 cursor-pointer ${className}`}
     onClick={onClick}
@@ -264,7 +264,7 @@ const parsePerpsToastRouteState = (
  * Displays detailed market information for a specific perps market
  * Accessible via /perps/market/:symbol route
  */
-const PerpsMarketDetailPage: React.FC = () => {
+const PerpsMarketDetailPage = () => {
   const t = useI18nContext();
   const theme = useTheme();
   const isDark = theme === 'dark';
@@ -1752,46 +1752,48 @@ const PerpsMarketDetailPage: React.FC = () => {
         </Box>
 
         {/* Recent Activity Section - always visible */}
-        <Box paddingLeft={4} paddingRight={4}>
+        <Box paddingTop={4} paddingBottom={4}>
           <PerpsMarketRecentActivity symbol={decodedSymbol} />
 
-          {/* Learn Section */}
-          <Box
-            className="mt-4 w-full cursor-pointer rounded-xl bg-muted px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed"
-            flexDirection={BoxFlexDirection.Row}
-            justifyContent={BoxJustifyContent.Between}
-            alignItems={BoxAlignItems.Center}
-            data-testid="perps-learn-basics"
-            onClick={() => {
-              track(MetaMetricsEventName.PerpsUiInteraction, {
-                [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
-                  PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-                [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
-                  PERPS_EVENT_VALUE.BUTTON_CLICKED.TUTORIAL,
-                [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
-                  PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
-              });
-              dispatch(setTutorialModalOpen(true));
-            }}
-          >
-            <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-              {t('perpsLearnBasics')}
-            </Text>
-            <Icon
-              name={IconName.ArrowRight}
-              size={IconSize.Sm}
-              color={IconColor.IconAlternative}
-            />
-          </Box>
-
-          {/* Disclaimer */}
-          <Box paddingTop={4} paddingBottom={4}>
-            <Text
-              variant={TextVariant.BodyXs}
-              color={TextColor.TextAlternative}
+          <Box paddingLeft={4} paddingRight={4}>
+            {/* Learn Section */}
+            <Box
+              className="mt-4 w-full cursor-pointer rounded-xl bg-muted px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed"
+              flexDirection={BoxFlexDirection.Row}
+              justifyContent={BoxJustifyContent.Between}
+              alignItems={BoxAlignItems.Center}
+              data-testid="perps-learn-basics"
+              onClick={() => {
+                track(MetaMetricsEventName.PerpsUiInteraction, {
+                  [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+                    PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+                  [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+                    PERPS_EVENT_VALUE.BUTTON_CLICKED.TUTORIAL,
+                  [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+                    PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
+                });
+                dispatch(setTutorialModalOpen(true));
+              }}
             >
-              {t('perpsDisclaimer')}
-            </Text>
+              <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+                {t('perpsLearnBasics')}
+              </Text>
+              <Icon
+                name={IconName.ArrowRight}
+                size={IconSize.Sm}
+                color={IconColor.IconAlternative}
+              />
+            </Box>
+
+            {/* Disclaimer */}
+            <Box paddingTop={4} paddingBottom={4}>
+              <Text
+                variant={TextVariant.BodyXs}
+                color={TextColor.TextAlternative}
+              >
+                {t('perpsDisclaimer')}
+              </Text>
+            </Box>
           </Box>
         </Box>
       </>

@@ -11,6 +11,7 @@ import {
   lockAndWaitForPasskeyUnlockPage,
   login,
 } from '../../page-objects/flows/login.flow';
+import { closeSettings } from '../../page-objects/flows/settings.flow';
 import { MOCK_GOOGLE_ACCOUNT, WALLET_PASSWORD } from '../../constants';
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
 import {
@@ -30,7 +31,6 @@ describe('Unlock wallet - ', function () {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
       },
       async ({
         driver,
@@ -56,7 +56,6 @@ describe('Unlock wallet - ', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
-        ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) => {
           // using this to mock the OAuth Service (Web Authentication flow + Auth server)
@@ -97,7 +96,7 @@ describe('Unlock wallet - ', function () {
         // Wait for the password change to be applied to the social login user
         await driver.delay(2_000);
 
-        await settingsPage.clickBackButton();
+        await closeSettings(driver);
 
         await lockAndWaitForLoginPage(driver);
         const loginPage = new LoginPage(driver);
@@ -132,7 +131,6 @@ describe('Unlock wallet - ', function () {
       {
         fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
-        ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
         virtualAuthenticator: true,
       },
       async ({ driver }: { driver: Driver }) => {

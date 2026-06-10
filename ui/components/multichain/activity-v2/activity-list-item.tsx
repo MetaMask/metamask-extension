@@ -52,6 +52,7 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
       className="px-4 py-3 bg-background-default cursor-pointer hover:bg-hover activity-list-item"
       onClick={onClick}
       data-testid="activity-list-item"
+      data-tx-status={transactionStatus}
     >
       <div className="flex gap-4 items-center">
         <div className="flex-shrink-0">
@@ -63,7 +64,7 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
         {/* Left side - Action and Details */}
         <div className="flex-1 min-w-0">
           <Text
-            className="font-medium truncate"
+            className="font-medium truncate text-s-body-md @compact:text-s-body-sm"
             data-testid="activity-list-item-action"
           >
             {title}
@@ -89,7 +90,7 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
         <div className="flex flex-col items-end">
           {amount && token && (
             <Text
-              className="font-medium"
+              className="font-medium text-s-body-md @compact:text-s-body-sm"
               data-testid="transaction-list-item-primary-currency"
             >
               {formatTokenAmount(amount, token.symbol)}

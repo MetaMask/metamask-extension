@@ -9,10 +9,10 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
     />
     <div>
       <div
-        class="mm-box confirm-add-suggested-nft page-container h-full confirm-add-suggested-nft--has-app-header-multichain mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+        class="flex-col flex w-full confirm-add-suggested-nft page-container h-full confirm-add-suggested-nft--has-app-header-multichain"
       >
         <div
-          class="mm-box confirm-add-suggested-nft__header mm-box--padding-bottom-2"
+          class="pb-2 confirm-add-suggested-nft__header"
         >
           <div
             class="box network-account-balance-header box--padding-4 box--display-flex box--flex-direction-row box--justify-content-space-between box--align-items-center"
@@ -111,7 +111,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
             </div>
           </div>
           <div
-            class="mm-box mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center"
+            class="justify-center pt-4 pr-4 pl-4 flex"
           >
             <div
               class="site-origin"
@@ -158,27 +158,27 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
           </p>
         </div>
         <div
-          class="mm-box page-container__content confirm-add-suggested-nft__content"
+          class="page-container__content confirm-add-suggested-nft__content"
         >
           <div
-            class="mm-box confirm-add-suggested-nft__card mm-box--padding-2 mm-box--rounded-md"
+            class="p-2 rounded-md confirm-add-suggested-nft__card"
           >
             <div
-              class="mm-box"
+              class=""
             >
               <div
-                class="mm-box confirm-add-suggested-nft__nft-single mm-box--margin-0 mm-box--padding-0 mm-box--rounded-md"
+                class="m-0 p-0 rounded-md confirm-add-suggested-nft__nft-single"
               >
                 <div
-                  class="mm-box confirm-add-suggested-nft__nft-single-image-default nft-default mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-lg"
+                  class="flex-row items-center justify-center flex confirm-add-suggested-nft__nft-single-image-default nft-default rounded-lg"
                   data-testid="nft-default-image"
                   tabindex="0"
                 />
                 <div
-                  class="mm-box mm-box--padding-1 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+                  class="flex-row items-center justify-between p-1 flex"
                 >
                   <div
-                    class="mm-box confirm-add-suggested-nft__nft-single-sub-details mm-box--display-flex mm-box--flex-direction-column mm-box--flex-wrap-nowrap mm-box--justify-content-space-evenly mm-box--width-full"
+                    class="flex-col flex-nowrap justify-evenly flex w-full confirm-add-suggested-nft__nft-single-sub-details"
                   >
                     <a
                       class="mm-box mm-text mm-button-base confirm-add-suggested-nft__nft-name mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
@@ -223,10 +223,10 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
   </body>,
   "container": <div>
     <div
-      class="mm-box confirm-add-suggested-nft page-container h-full confirm-add-suggested-nft--has-app-header-multichain mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+      class="flex-col flex w-full confirm-add-suggested-nft page-container h-full confirm-add-suggested-nft--has-app-header-multichain"
     >
       <div
-        class="mm-box confirm-add-suggested-nft__header mm-box--padding-bottom-2"
+        class="pb-2 confirm-add-suggested-nft__header"
       >
         <div
           class="box network-account-balance-header box--padding-4 box--display-flex box--flex-direction-row box--justify-content-space-between box--align-items-center"
@@ -325,7 +325,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center"
+          class="justify-center pt-4 pr-4 pl-4 flex"
         >
           <div
             class="site-origin"
@@ -372,27 +372,27 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
         </p>
       </div>
       <div
-        class="mm-box page-container__content confirm-add-suggested-nft__content"
+        class="page-container__content confirm-add-suggested-nft__content"
       >
         <div
-          class="mm-box confirm-add-suggested-nft__card mm-box--padding-2 mm-box--rounded-md"
+          class="p-2 rounded-md confirm-add-suggested-nft__card"
         >
           <div
-            class="mm-box"
+            class=""
           >
             <div
-              class="mm-box confirm-add-suggested-nft__nft-single mm-box--margin-0 mm-box--padding-0 mm-box--rounded-md"
+              class="m-0 p-0 rounded-md confirm-add-suggested-nft__nft-single"
             >
               <div
-                class="mm-box confirm-add-suggested-nft__nft-single-image-default nft-default mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-lg"
+                class="flex-row items-center justify-center flex confirm-add-suggested-nft__nft-single-image-default nft-default rounded-lg"
                 data-testid="nft-default-image"
                 tabindex="0"
               />
               <div
-                class="mm-box mm-box--padding-1 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+                class="flex-row items-center justify-between p-1 flex"
               >
                 <div
-                  class="mm-box confirm-add-suggested-nft__nft-single-sub-details mm-box--display-flex mm-box--flex-direction-column mm-box--flex-wrap-nowrap mm-box--justify-content-space-evenly mm-box--width-full"
+                  class="flex-col flex-nowrap justify-evenly flex w-full confirm-add-suggested-nft__nft-single-sub-details"
                 >
                   <a
                     class="mm-box mm-text mm-button-base confirm-add-suggested-nft__nft-name mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"

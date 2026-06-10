@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -6,17 +6,20 @@ import {
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
+  getAccountTypeForOnboardingMetrics,
   getFirstTimeFlowType,
   getSocialLoginEmail,
   getSocialLoginType,
 } from '../../../selectors';
-import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import {
+  AuthConnection,
+  FirstTimeFlowType,
+} from '../../../../shared/constants/onboarding';
 import {
   forceUpdateMetamaskState,
   resetOnboarding,
 } from '../../../store/actions';
 import {
-  MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
@@ -32,12 +35,27 @@ export default function AccountNotFound() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const userSocialLoginEmail = useSelector(getSocialLoginEmail);
   const socialLoginType = useSelector(getSocialLoginType);
+  const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
   const {
     trackEvent,
     bufferedTrace,
     bufferedEndTrace,
     onboardingParentContext,
   } = useContext(MetaMetricsContext);
+
+  const descriptionKey = useMemo(() => {
+    if (socialLoginType === AuthConnection.Telegram) {
+      return 'accountNotFoundDescriptionTelegram';
+    }
+    return 'accountNotFoundDescription';
+  }, [socialLoginType]);
+
+  const descriptionInterpolation = useMemo(() => {
+    if (socialLoginType === AuthConnection.Telegram) {
+      return [socialLoginType];
+    }
+    return [userSocialLoginEmail || '-'];
+  }, [socialLoginType, userSocialLoginEmail]);
 
   const onLoginWithDifferentMethod = async () => {
     await dispatch(resetOnboarding());
@@ -52,7 +70,7 @@ export default function AccountNotFound() {
       properties: {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: `${MetaMetricsEventAccountType.Default}_${socialLoginType}`,
+        account_type: accountTypeForMetrics,
       },
     });
     bufferedTrace?.({
@@ -98,8 +116,8 @@ export default function AccountNotFound() {
     <AccountStatusLayout
       dataTestId="account-not-found"
       titleKey="accountNotFoundTitle"
-      descriptionKey="accountNotFoundDescription"
-      descriptionInterpolation={[userSocialLoginEmail || '-']}
+      descriptionKey={descriptionKey}
+      descriptionInterpolation={descriptionInterpolation}
       primaryButtonTextKey="accountNotFoundCreateOne"
       onPrimaryButtonClick={onCreateNewAccount}
       secondaryButtonTextKey="useDifferentLoginMethod"

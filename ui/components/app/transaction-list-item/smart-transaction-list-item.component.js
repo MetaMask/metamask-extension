@@ -56,6 +56,7 @@ export default function SmartTransactionListItem({
     <>
       <ActivityListItem
         className={className}
+        status={displayedStatusKey}
         title={title}
         onClick={toggleShowDetails}
         icon={
