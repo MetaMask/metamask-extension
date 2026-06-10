@@ -1,7 +1,6 @@
 const path = require('path');
 const { readFileSync, writeFileSync } = require('fs');
 const semver = require('semver');
-const { capitalize } = require('lodash');
 const { loadBuildTypesConfig } = require('../lib/build-type');
 const { BUILD_TARGETS, ENVIRONMENT } = require('./constants');
 
@@ -295,9 +294,9 @@ function getPathInsideNodeModules(packageName, pathToFiles) {
  *
  * @param {object} options - The build options.
  * @param {string} options.buildType - The build type of the current build.
- * @param {boolean} options.applyLavaMoat - Flag if lavamoat was applied.
- * @param {boolean} options.shouldIncludeSnow - Flag if snow should be included in the build name.
- * @param {boolean} options.isManifestV3 - Flag if mv3 should be included in the build name.
+ * @param {boolean} [options.applyLavaMoat] - Flag if lavamoat was applied.
+ * @param {boolean} [options.shouldIncludeSnow] - Flag if snow should be included in the build name.
+ * @param {boolean} [options.isManifestV3] - Flag if mv3 should be included in the build name.
  * @param options.environment
  * @returns {string} The build name.
  */
@@ -309,10 +308,7 @@ function getBuildName({
   isManifestV3,
 }) {
   const config = loadBuildTypesConfig();
-
-  let name =
-    config.buildTypes[buildType].buildNameOverride ||
-    `MetaMask ${capitalize(buildType)}`;
+  let { name } = config.buildTypes[buildType];
 
   if (environment !== ENVIRONMENT.PRODUCTION) {
     const mv3Str = isManifestV3 ? ' MV3' : '';

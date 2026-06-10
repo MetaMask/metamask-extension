@@ -1,4 +1,33 @@
-import { getBuildTargetFromTask, getEnvironment } from './utils';
+import { getBuildName, getBuildTargetFromTask, getEnvironment } from './utils';
+
+describe('getBuildName', () => {
+  it('returns the configured production build name', () => {
+    expect(
+      getBuildName({
+        environment: 'production',
+        buildType: 'main',
+      }),
+    ).toBe('MetaMask');
+    expect(
+      getBuildName({
+        environment: 'production',
+        buildType: 'beta',
+      }),
+    ).toBe('MetaMask Beta');
+  });
+
+  it('adds non-production suffixes to the configured build name', () => {
+    expect(
+      getBuildName({
+        environment: 'development',
+        buildType: 'flask',
+        applyLavaMoat: true,
+        shouldIncludeSnow: true,
+        isManifestV3: true,
+      }),
+    ).toBe('MetaMask Flask MV3 lavamoat snow');
+  });
+});
 
 describe('getBuildTargetFromTask', () => {
   it('passes through valid build targets unchanged', () => {
