@@ -276,6 +276,12 @@
         "document.visibilityState": true,
         "addEventListener": false
       }
+    },
+    "@metamask/account-tree-controller": {
+      "packages": {
+        "@metamask/keyring-controller": true,
+        "@metamask/account-tree-controller>@metamask/keyring-controller": true
+      }
     }
   }
 }
