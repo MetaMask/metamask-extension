@@ -12,7 +12,7 @@ exports[`AdditionalNetworksInfo renders correctly 1`] = `
         class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
       >
         <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
         >
           Additional networks
         </p>
