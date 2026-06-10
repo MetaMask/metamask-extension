@@ -22,12 +22,13 @@ const PINNED_GECKODRIVER_VERSION = '0.36.0';
  * Resolve the geckodriver binary to use.
  *
  * Resolution order:
- * 1. `GECKODRIVER_PATH` env var, if set (manual override, e.g. to test a
- *    different driver version).
+ * 1. `GECKODRIVER_PATH` env var, if set. CI sets this explicitly via the
+ *    "Pin geckodriver" step in `.github/workflows/run-e2e.yml` (also usable as
+ *    a manual override to test a different driver version).
  * 2. The pinned {@link PINNED_GECKODRIVER_VERSION}, resolved (and downloaded +
  *    cached cross-platform) via the `selenium-manager` binary that ships with
- *    `selenium-webdriver`. This is the default for both local and CI runs, so
- *    no env var or extra CI setup is required.
+ *    `selenium-webdriver`. This is the fallback that fixes local runs without
+ *    requiring any env var.
  * 3. `undefined` on failure, so Selenium Manager falls back to its default
  *    auto-resolution rather than hard-failing.
  *
