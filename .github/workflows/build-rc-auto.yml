@@ -176,7 +176,12 @@ jobs:
       always() &&
       needs.validate-and-find-pr.outputs.has-pr == 'true' &&
       needs.validate-and-find-pr.outputs.rc-frozen != 'true' &&
-      needs.build-dist-browserify.result == 'success'
+      needs.build-dist-browserify.result == 'success' &&
+      needs.build-dist-mv2-browserify.result == 'success' &&
+      needs.build-beta-browserify.result == 'success' &&
+      needs.build-beta-mv2-browserify.result == 'success' &&
+      needs.build-flask-browserify.result == 'success' &&
+      needs.build-flask-mv2-browserify.result == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
