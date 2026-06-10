@@ -4,7 +4,7 @@ import {
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../../shared/constants/offscreen-communication';
-import { LedgerDMKBridgeHandler } from './ledger-dmk';
+import { LedgerDMKBridgeHandler, serializeLedgerError } from './ledger-dmk';
 import initLegacy from './ledger';
 
 /** Interface that both DMK and Legacy handlers share for action dispatch. */
@@ -25,7 +25,11 @@ let currentMode: LedgerHandlerMode | null = null;
 
 /** Reference to the router's own chrome.runtime.onMessage listener. */
 let messageListener:
-  | ((msg: any, sender: any, sendResponse: any) => boolean)
+  | ((
+      msg: Record<string, unknown>,
+      sender: unknown,
+      sendResponse: (response: unknown) => void,
+    ) => boolean)
   | null = null;
 
 /**
@@ -74,14 +78,11 @@ function registerMessageListener(): void {
           payload: result,
         });
       })
-      .catch((error) => {
+      .catch((error: unknown) => {
         sendResponse({
           success: false,
           payload: {
-            error: {
-              message: (error as Error).message ?? 'Unknown error',
-              stack: (error as Error).stack,
-            },
+            error: serializeLedgerError(error),
           },
         });
       });

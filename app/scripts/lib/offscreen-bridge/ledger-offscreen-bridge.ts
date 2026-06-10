@@ -1,5 +1,7 @@
 import {
+  createLedgerError,
   GetAppNameAndVersionResponse,
+  isKnownLedgerError,
   LedgerBridge,
   LedgerSignDelegationAuthorizationParams,
   LedgerSignDelegationAuthorizationResponse,
@@ -8,6 +10,7 @@ import {
   AppConfigurationResponse,
 } from '@metamask/eth-ledger-bridge-keyring';
 import { TransportStatusError } from '@ledgerhq/errors';
+import { HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   LedgerAction,
   OffscreenCommunicationTarget,
@@ -36,6 +39,8 @@ type IFrameMessage<TAction extends LedgerAction> = {
  * communicates directly with the Ledger device via WebHID.
  */
 export class LedgerOffscreenBridge implements LedgerBridge<LedgerOffscreenBridgeOptions> {
+  isDeviceConnected = false;
+
   init() {
     return Promise.resolve();
   }
@@ -208,10 +213,28 @@ export class LedgerOffscreenBridge implements LedgerBridge<LedgerOffscreenBridge
             }, null, 2));
             if (
               error &&
+              error.name === 'HardwareWalletError' &&
+              typeof error.code === 'number'
+            ) {
+              reject(
+                new HardwareWalletError(error.message, {
+                  code: error.code,
+                  severity: error.severity,
+                  category: error.category,
+                  userMessage: error.userMessage,
+                }),
+              );
+            } else if (
+              error &&
               typeof error.statusCode === 'number' &&
               error.statusCode > 0
             ) {
-              reject(new TransportStatusError(error.statusCode));
+              const statusCodeHex = `0x${error.statusCode.toString(16)}`;
+              if (isKnownLedgerError(statusCodeHex)) {
+                reject(createLedgerError(statusCodeHex));
+              } else {
+                reject(new TransportStatusError(error.statusCode));
+              }
             } else if (error?.message) {
               reject(new Error(error.message, { cause: error }));
             } else {

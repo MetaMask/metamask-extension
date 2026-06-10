@@ -1,4 +1,8 @@
-import { LedgerDMKBridge } from '@metamask/eth-ledger-bridge-keyring';
+import {
+  createLedgerError,
+  isKnownLedgerError,
+  LedgerDMKBridge,
+} from '@metamask/eth-ledger-bridge-keyring';
 
 import {
   DeviceManagementKit,
@@ -111,6 +115,49 @@ function serializeError(error: unknown): {
   return { message: safeStringify(error) };
 }
 
+/**
+ * Serializes a Ledger device error, converting known APDU status codes
+ * (e.g. 0x6985 user rejection) into a HardwareWalletError shape so that
+ * downstream consumers (offscreen bridge, keyring, UI) receive a
+ * structured error rather than a raw transport error.
+ *
+ * @param error - The error to serialize.
+ * @returns Serialized error object.
+ */
+export function serializeLedgerError(error: unknown): {
+  message: string;
+  statusCode?: number;
+  name?: string;
+  code?: number;
+  severity?: string;
+  category?: string;
+  userMessage?: string;
+  extra?: unknown;
+} {
+  if (
+    error instanceof Error &&
+    'statusCode' in error &&
+    typeof error.statusCode === 'number'
+  ) {
+    const statusCodeHex = `0x${error.statusCode.toString(16)}`;
+
+    if (isKnownLedgerError(statusCodeHex)) {
+      const hwError = createLedgerError(statusCodeHex);
+      return {
+        message: hwError.message,
+        name: hwError.name,
+        code: hwError.code,
+        severity: hwError.severity,
+        category: hwError.category,
+        userMessage: hwError.userMessage,
+        statusCode: error.statusCode,
+      };
+    }
+  }
+
+  return serializeError(error);
+}
+
 type LedgerDevice = Parameters<DeviceManagementKit['connect']>[0]['device'];
 
 /**
@@ -200,7 +247,14 @@ export class LedgerDMKBridgeHandler {
     const device = await this.findPermittedDevice(bridge.dmk);
     console.debug(
       '[LedgerDMK] Device discovered, connecting...',
-      JSON.stringify({ device: device.name }),
+      JSON.stringify({
+        deviceId: device.id,
+        deviceName: device.name,
+        deviceModel: device.deviceModel
+          ? { id: device.deviceModel.id, model: device.deviceModel.model, name: device.deviceModel.name }
+          : undefined,
+        transport: device.transport,
+      }),
     );
 
     this.sessionId = await bridge.connect({ device });
@@ -216,7 +270,7 @@ export class LedgerDMKBridgeHandler {
     const state$ = bridge.dmk.getDeviceSessionState({
       sessionId: this.sessionId,
     });
-    await firstValueFrom(
+    const sessionState = await firstValueFrom(
       state$.pipe(
         filter(
           (s) =>
@@ -228,7 +282,18 @@ export class LedgerDMKBridgeHandler {
     );
     console.debug(
       '[LedgerDMK] Session ready',
-      JSON.stringify({ sessionId: this.sessionId }),
+      JSON.stringify({
+        sessionId: this.sessionId,
+        deviceModelId: sessionState.deviceModelId,
+        deviceName: sessionState.deviceName,
+        currentApp: sessionState.currentApp
+          ? { name: sessionState.currentApp.name, version: sessionState.currentApp.version }
+          : undefined,
+        firmwareVersion: sessionState.firmwareVersion,
+        batteryStatus: sessionState.batteryStatus
+          ? { level: sessionState.batteryStatus.level, status: sessionState.batteryStatus.status }
+          : undefined,
+      }),
     );
 
     // Subscribe to disconnect events so we tear down the bridge when the
@@ -322,43 +387,49 @@ export class LedgerDMKBridgeHandler {
   private setupMessageListener(): void {
     console.debug('[LedgerDMK] Setting up message listener');
     this.messageListenerFn = (
-      msg: {
-        target: string;
-        action: LedgerAction;
-        params?: Record<string, unknown>;
-      },
-      _sender,
-      sendResponse,
+      msg: Record<string, unknown>,
+      _sender: unknown,
+      sendResponse: (response: unknown) => void,
     ): boolean => {
-      if (msg.target !== OffscreenCommunicationTarget.ledgerOffscreen) {
+      if (
+        msg.target !== OffscreenCommunicationTarget.ledgerOffscreen ||
+        typeof msg.action !== 'string'
+      ) {
         return false;
       }
+
+      const action = msg.action as LedgerAction;
+      const params =
+        msg.params && typeof msg.params === 'object'
+          ? (msg.params as Record<string, unknown>)
+          : undefined;
 
       console.debug(
         '[LedgerDMK] Received message',
         JSON.stringify({
-          action: msg.action,
-          hasParams: Boolean(msg.params),
+          action,
+          hasParams: Boolean(params),
         }),
       );
 
-      this.handleAction(msg.action, msg.params)
+      this.handleAction(action, params)
         .then((result) => {
           console.debug(
             '[LedgerDMK] Action succeeded',
-            JSON.stringify({ action: msg.action }),
+            JSON.stringify({ action }),
           );
           sendResponse({
             success: true,
             payload: result,
           });
         })
-        .catch((error) => {
+        .catch((error: unknown) => {
           console.error('[LedgerDMK] Action failed:', error);
+          const serialized = serializeLedgerError(error);
           sendResponse({
             success: false,
             payload: {
-              error: serializeError(error),
+              error: serialized,
             },
           });
         });

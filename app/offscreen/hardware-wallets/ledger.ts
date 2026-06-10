@@ -458,20 +458,25 @@ export class LedgerLegacyHandler {
    */
   private setupMessageListener(): void {
     this.messageListenerFn = (
-      msg: {
-        target: string;
-        action: LedgerAction;
-        params?: Record<string, unknown>;
-      },
-      _sender,
-      sendResponse,
+      msg: Record<string, unknown>,
+      _sender: unknown,
+      sendResponse: (response: unknown) => void,
     ): boolean => {
-      if (msg.target !== OffscreenCommunicationTarget.ledgerOffscreen) {
+      if (
+        msg.target !== OffscreenCommunicationTarget.ledgerOffscreen ||
+        typeof msg.action !== 'string'
+      ) {
         return false;
       }
 
+      const action = msg.action as LedgerAction;
+      const params =
+        msg.params && typeof msg.params === 'object'
+          ? (msg.params as Record<string, unknown>)
+          : undefined;
+
       // Handle the action asynchronously
-      this.handleLedgerAction(msg.action, msg.params)
+      this.handleLedgerAction(action, params)
         .then((result) => {
           sendResponse({
             success: true,
@@ -479,7 +484,7 @@ export class LedgerLegacyHandler {
           });
         })
         .catch((error) => {
-          console.error(`Ledger action ${msg.action} failed:`, error);
+          console.error(`Ledger action ${action} failed:`, error);
           sendResponse({
             success: false,
             payload: {
@@ -495,8 +500,6 @@ export class LedgerLegacyHandler {
       return true;
     };
 
-    // Cast to satisfy Chrome's permissive callback type signature.
-    // The internal implementation validates msg structure before use.
     chrome.runtime.onMessage.addListener(
       this.messageListenerFn as Parameters<
         typeof chrome.runtime.onMessage.addListener
