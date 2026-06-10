@@ -95,11 +95,9 @@ function buildHardwareV2Builder<Wrapper, Legacy>(
  * legacy builders, the V2 wrappers are identical across MV2 and MV3 because
  * `LatticeKeyringOffscreen.type` mirrors `LatticeKeyring.type`.
  *
- * @param messenger - The root messenger.
  * @returns The V2 keyring builders to register with the `KeyringController`.
  */
 export function getKeyringV2Builders(
-  messenger: RootMessenger<RootMessengerActions, RootMessengerEvents>,
 ): KeyringV2Builder[] {
   return [
     buildHardwareV2Builder(LatticeKeyringV2, LatticeKeyring.type),
