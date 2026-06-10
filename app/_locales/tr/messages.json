@@ -3448,9 +3448,6 @@
   "enabled": {
     "message": "Etkinleştirildi"
   },
-  "enabledNetworks": {
-    "message": "Etkinleştirilen ağlar"
-  },
   "encryptionPublicKeyNotice": {
     "message": "$1 genel şifreleme anahtarınızı istiyor. Bunu onayladığınızda bu site sizin için şifrelenmiş mesajlar oluşturabilecektir.",
     "description": "$1 is the web3 site name"
@@ -10077,9 +10074,6 @@
   },
   "termsOfUseTitle": {
     "message": "Kullanım Şartları bölümümüzü inceleyin"
-  },
-  "testNetworks": {
-    "message": "Test ağları"
   },
   "testnets": {
     "message": "Testnet'ler"

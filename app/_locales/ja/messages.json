@@ -3448,9 +3448,6 @@
   "enabled": {
     "message": "有効にしました"
   },
-  "enabledNetworks": {
-    "message": "ネットワークが有効になりました"
-  },
   "encryptionPublicKeyNotice": {
     "message": "$1は公開暗号鍵を必要とします。同意することによって、このサイトは暗号化されたメッセージを作成できます。",
     "description": "$1 is the web3 site name"
@@ -10073,9 +10070,6 @@
   },
   "termsOfUseTitle": {
     "message": "利用規約が更新されました"
-  },
-  "testNetworks": {
-    "message": "テストネットワーク"
   },
   "testnets": {
     "message": "テストネット"
