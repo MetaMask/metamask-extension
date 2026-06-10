@@ -11,10 +11,8 @@ class TransactionDetailsPage {
     this.driver = driver;
   }
 
-  private readonly addressInActivityLog = (address: string) => ({
-    css: '.name__value',
-    text: address,
-  });
+  private readonly addressInActivityLog = (address: string) =>
+    `[data-address="${address}"]`;
 
   private readonly amount = (amount: string) => ({
     testId: 'transaction-list-item-primary-currency',
