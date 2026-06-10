@@ -63,7 +63,7 @@ describe('useNotifications', () => {
 
   it('should create notifications', async () => {
     const { result } = renderHook(() => useCreateNotifications(), {
-      wrapper: ({ children }) => (
+      wrapper: ({ children }: React.PropsWithChildren) => (
         <Provider store={store}>
           <MetamaskNotificationsProvider>
             {children}
@@ -81,7 +81,9 @@ describe('useNotifications', () => {
 
   it('should disable notifications and handle states', async () => {
     const { result } = renderHook(() => useDisableNotifications(), {
-      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
+      wrapper: ({ children }: React.PropsWithChildren) => (
+        <Provider store={store}>{children}</Provider>
+      ),
     });
 
     act(() => {

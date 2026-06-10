@@ -1,19 +1,28 @@
 import React from 'react';
 import classnames from 'clsx';
 import PropTypes from 'prop-types';
+import {
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { shortenAddress } from '../../../../helpers/utils/util';
 
-import { Box, Text } from '../../../component-library';
+import { Text } from '../../../component-library';
 import { PreferredAvatar } from '../../preferred-avatar';
 import {
-  AlignItems,
   BackgroundColor,
-  Display,
-  FlexDirection,
-  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+
+// Map legacy BackgroundColor values to DSR BoxBackgroundColor
+const LEGACY_BG_TO_DSR = {
+  [BackgroundColor.backgroundDefault]: BoxBackgroundColor.BackgroundDefault,
+  [BackgroundColor.warningMuted]: BoxBackgroundColor.WarningMuted,
+};
 
 export default function ConnectedAccountsListItem({
   address,
@@ -24,21 +33,21 @@ export default function ConnectedAccountsListItem({
   options = null,
   backgroundColor,
 }) {
+  const legacyBg = backgroundColor ?? BackgroundColor.backgroundDefault;
   const containerbackgroundColor =
-    backgroundColor ?? BackgroundColor.backgroundDefault;
+    LEGACY_BG_TO_DSR[legacyBg] ?? BoxBackgroundColor.BackgroundDefault;
   return (
     <Box
-      className={classnames('connected-accounts-list__row', className)}
+      className={classnames('flex connected-accounts-list__row', className)}
       padding={4}
       backgroundColor={containerbackgroundColor}
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      justifyContent={JustifyContent.spaceBetween}
-      alignItems={AlignItems.center}
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Between}
+      alignItems={BoxAlignItems.Center}
     >
       <Box className="connected-accounts-list__row-content" gap={4}>
         <PreferredAvatar address={address} />
-        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+        <Box className="flex" flexDirection={BoxFlexDirection.Column}>
           <Box>
             <Text
               variant={TextVariant.bodyLgMedium}
@@ -57,7 +66,7 @@ export default function ConnectedAccountsListItem({
               </Text>
             ) : null}
           </Box>
-          <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+          <Box className="flex" flexDirection={BoxFlexDirection.Column}>
             {action}
           </Box>
         </Box>

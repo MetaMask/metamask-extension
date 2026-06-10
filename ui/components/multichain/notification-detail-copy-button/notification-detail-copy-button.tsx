@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import type { FC } from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -44,14 +43,12 @@ export type NotificationDetailCopyButtonProps = {
  * @param [props.color] - The color of the text.
  * @returns The rendered component.
  */
-export const NotificationDetailCopyButton: FC<
-  NotificationDetailCopyButtonProps
-> = ({
+export const NotificationDetailCopyButton = ({
   notification,
   text,
   displayText,
   color = TextColor.textAlternative,
-}): JSX.Element => {
+}: NotificationDetailCopyButtonProps): JSX.Element => {
   // useCopyToClipboard analysis: Copies the text of the notification detail, which is never a private key
   const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
   const t = useI18nContext();

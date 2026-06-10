@@ -50,7 +50,7 @@ const useRamps = (
         if (metaMetricsId) {
           params.set('metametricsId', metaMetricsId);
         }
-        params.set('metricsEnabled', String(isMetaMetricsEnabled));
+        params.set('metricsEnabled', String(isMetaMetricsEnabled === true));
         if (isMarketingEnabled) {
           params.set('marketingEnabled', String(isMarketingEnabled));
         }

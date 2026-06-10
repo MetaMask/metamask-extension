@@ -157,7 +157,7 @@ describe('BridgeAlertModal', () => {
           submitBridgeTransaction: jest.fn(),
           isSubmitting: true,
         });
-      const { baseElement, getByRole, getAllByRole } = renderModal(
+      const { baseElement, getByRole, getAllByRole, getByTestId } = renderModal(
         'submit-cta',
         '0.9',
       );
@@ -167,7 +167,7 @@ describe('BridgeAlertModal', () => {
         'ProceedLoading',
         'Cancel',
       ]);
-      expect(getByRole('button', { name: 'Proceed Loading' })).toBeDisabled();
+      expect(getByTestId('bridge-alert-modal-proceed-button')).toBeDisabled();
       expect(
         getByRole('button', { name: messages.cancel.message }),
       ).toBeDisabled();

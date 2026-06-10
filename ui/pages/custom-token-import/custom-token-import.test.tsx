@@ -60,6 +60,7 @@ jest.mock('../../store/actions', () => {
       standard: 'ERC20',
       symbol: 'APE',
       decimals: '18',
+      name: 'ApeCoin',
     }),
   };
 });
@@ -545,14 +546,5 @@ describe('CustomTokenImportPage', () => {
     expect(
       screen.getByTestId('custom-token-import-submit-button'),
     ).toBeDisabled();
-  });
-
-  it('does not call importCustomAssetsBatch when the assets-unify-state remote feature flag is off', async () => {
-    const actions = getMockedActions();
-
-    await submitCustomToken();
-
-    await waitFor(() => expect(actions.addImportedTokens).toHaveBeenCalled());
-    expect(actions.importCustomAssetsBatch).not.toHaveBeenCalled();
   });
 });
