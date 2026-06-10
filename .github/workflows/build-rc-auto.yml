@@ -1,0 +1,204 @@
+##############################################################################################
+#
+# Auto RC builds for Extension - triggers on every push to release branches.
+# Aligned with Mobile's build-rc-auto.yml workflow.
+#
+# Rolling builds: when a new run starts for the same release branch, any queued or
+# in-progress run is cancelled (one branch + one workflow at a time).
+#
+# Freezing auto RC builds:
+#   Add the 'rc-freeze' label to the release PR to stop auto RC builds.
+#   Remove the label to resume normal auto RC builds.
+#
+##############################################################################################
+name: Auto RC builds
+
+on:
+  push:
+    branches:
+      - 'release/*'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: read
+  actions: read
+  id-token: write
+
+env:
+  BRANCH: ${{ github.ref_name }}
+
+jobs:
+  validate-and-find-pr:
+    name: Validate branch and find PR
+    runs-on: ubuntu-latest
+    outputs:
+      semver: ${{ steps.extract-version.outputs.semver }}
+      has-pr: ${{ steps.find-pr.outputs.has-pr }}
+      branch-name: ${{ steps.extract-version.outputs.branch-name }}
+      pr-number: ${{ steps.find-pr.outputs.pr-number }}
+      rc-frozen: ${{ steps.find-pr.outputs.rc-frozen }}
+    permissions:
+      pull-requests: read
+    steps:
+      - name: Extract semver from branch name
+        id: extract-version
+        run: |
+          BRANCH_NAME="${{ github.ref_name }}"
+          echo "Checking branch: $BRANCH_NAME"
+          echo "branch-name=$BRANCH_NAME" >> "$GITHUB_OUTPUT"
+
+          if [[ "$BRANCH_NAME" =~ ^release/[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            VERSION="${BRANCH_NAME#release/}"
+            echo "Valid release branch detected: $BRANCH_NAME (version: $VERSION)"
+            echo "semver=$VERSION" >> "$GITHUB_OUTPUT"
+          else
+            echo "Branch '$BRANCH_NAME' does not match release/x.y.z pattern. Skipping."
+            echo "semver=" >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
+
+      - name: Find associated PR
+        id: find-pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH_NAME="${{ github.ref_name }}"
+          echo "Looking for PR with head branch: $BRANCH_NAME"
+
+          PR_JSON=$(gh pr list --head "$BRANCH_NAME" --json number,labels --jq '.[0]' || echo "")
+          PR_NUMBER=$(echo "$PR_JSON" | jq -r '.number // empty')
+
+          if [[ -z "$PR_NUMBER" ]]; then
+            echo "No PR found for branch $BRANCH_NAME. Skipping."
+            echo "has-pr=false" >> "$GITHUB_OUTPUT"
+            echo "rc-frozen=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          RC_FROZEN=$(echo "$PR_JSON" | jq -r '[.labels[].name] | map(select(. == "rc-freeze")) | length > 0')
+
+          if [[ "$RC_FROZEN" == "true" ]]; then
+            echo "::notice::PR #$PR_NUMBER has the 'rc-freeze' label — auto RC build skipped."
+            echo "rc-frozen=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Found PR #$PR_NUMBER - proceeding with RC build"
+            echo "rc-frozen=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          echo "pr-number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+          echo "has-pr=true" >> "$GITHUB_OUTPUT"
+
+  # Build jobs - only run if PR exists and not frozen
+  build-dist-browserify:
+    name: Build dist (Chrome MV3)
+    needs: validate-and-find-pr
+    if: needs.validate-and-find-pr.outputs.has-pr == 'true' && needs.validate-and-find-pr.outputs.rc-frozen != 'true'
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-dist-browserify
+      build-command: yarn build dist
+      builds-from-run: ${{ github.run_id }}
+    secrets: inherit
+
+  build-dist-mv2-browserify:
+    name: Build dist (Firefox MV2)
+    needs: validate-and-find-pr
+    if: needs.validate-and-find-pr.outputs.has-pr == 'true' && needs.validate-and-find-pr.outputs.rc-frozen != 'true'
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-dist-mv2-browserify
+      build-command: yarn build dist
+      builds-from-run: ${{ github.run_id }}
+    secrets: inherit
+
+  build-beta-browserify:
+    name: Build beta (Chrome MV3)
+    needs: validate-and-find-pr
+    if: needs.validate-and-find-pr.outputs.has-pr == 'true' && needs.validate-and-find-pr.outputs.rc-frozen != 'true'
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-beta-browserify
+      build-command: yarn build --build-type beta dist
+      builds-from-run: ${{ github.run_id }}
+    secrets: inherit
+
+  build-beta-mv2-browserify:
+    name: Build beta (Firefox MV2)
+    needs: validate-and-find-pr
+    if: needs.validate-and-find-pr.outputs.has-pr == 'true' && needs.validate-and-find-pr.outputs.rc-frozen != 'true'
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-beta-mv2-browserify
+      build-command: yarn build --build-type beta dist
+      builds-from-run: ${{ github.run_id }}
+    secrets: inherit
+
+  build-flask-browserify:
+    name: Build Flask (Chrome MV3)
+    needs: validate-and-find-pr
+    if: needs.validate-and-find-pr.outputs.has-pr == 'true' && needs.validate-and-find-pr.outputs.rc-frozen != 'true'
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-flask-browserify
+      build-command: yarn build --build-type flask dist
+      builds-from-run: ${{ github.run_id }}
+    secrets: inherit
+
+  build-flask-mv2-browserify:
+    name: Build Flask (Firefox MV2)
+    needs: validate-and-find-pr
+    if: needs.validate-and-find-pr.outputs.has-pr == 'true' && needs.validate-and-find-pr.outputs.rc-frozen != 'true'
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-flask-mv2-browserify
+      build-command: yarn build --build-type flask dist
+      builds-from-run: ${{ github.run_id }}
+    secrets: inherit
+
+  # Note: PR comments are handled by main.yml -> publish-prerelease.yml to avoid duplicates
+
+  # Slack notification
+  slack-notification:
+    name: Slack RC notification
+    needs:
+      - validate-and-find-pr
+      - build-dist-browserify
+      - build-dist-mv2-browserify
+      - build-beta-browserify
+      - build-beta-mv2-browserify
+      - build-flask-browserify
+      - build-flask-mv2-browserify
+    if: >-
+      always() &&
+      needs.validate-and-find-pr.outputs.has-pr == 'true' &&
+      needs.validate-and-find-pr.outputs.rc-frozen != 'true' &&
+      needs.build-dist-browserify.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Post Slack notification
+        env:
+          SEMVER: ${{ needs.validate-and-find-pr.outputs.semver }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
+          PR_NUMBER: ${{ needs.validate-and-find-pr.outputs.pr-number }}
+        run: yarn exec tsx ./.github/scripts/slack-rc-notification.mts
