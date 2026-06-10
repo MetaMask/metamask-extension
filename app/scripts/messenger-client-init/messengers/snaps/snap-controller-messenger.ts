@@ -122,8 +122,6 @@ export function getSnapControllerInitMessenger(
   messenger.delegate({
     messenger: controllerInitMessenger,
     actions: [
-      'KeyringController:withKeyring',
-      'KeyringController:withKeyringV2',
       'KeyringController:withKeyringV2Unsafe',
       'PreferencesController:getState',
       'MetaMetricsController:trackEvent',
