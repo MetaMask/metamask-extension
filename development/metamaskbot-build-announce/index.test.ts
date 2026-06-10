@@ -57,9 +57,7 @@ function configureMocks(): void {
     mergeBase: 'base123',
     previousTag: 'v13.32.0',
   });
-  cherryPicks.buildWhatsInRcSection.mockReturnValue(
-    '<p>whats-in-this-rc</p>',
-  );
+  cherryPicks.buildWhatsInRcSection.mockReturnValue('<p>whats-in-this-rc</p>');
   cherryPicks.buildWhatsInRcFailureSection.mockReturnValue(
     '<p>whats-in-rc-failure</p>',
   );
