@@ -212,7 +212,7 @@ describe('useHwSwapQrState', () => {
     );
   });
 
-  it('returns undefined activeQrStep when isReadingQrSignature is true', () => {
+  it('returns activeQrStep matching state when isReadingQrSignature is true', () => {
     const mockQrSignRequest = {
       type: QrScanRequestType.SIGN,
       request: {
@@ -238,7 +238,9 @@ describe('useHwSwapQrState', () => {
       result.current.setIsReadingQrSignature(true);
     });
 
-    expect(result.current.activeQrStep).toBeUndefined();
+    expect(result.current.activeQrStep).toBe(
+      HardwareWalletSignatureStatus.AwaitingFirstSignature,
+    );
   });
 
   it('resets isReadingQrSignature when currentQrRequestId changes', () => {
@@ -392,6 +394,182 @@ describe('useHwSwapQrState', () => {
       expect(mockDispatch).toHaveBeenCalledWith({
         type: 'CANCEL_QR_CODE_SCAN',
       });
+    });
+  });
+
+  describe('activeQrStep', () => {
+    const step1Request = {
+      type: QrScanRequestType.SIGN,
+      request: {
+        requestId: 'step-1-request',
+        payload: { type: 'test', cbor: '0x1' },
+      },
+    };
+
+    const step2Request = {
+      type: QrScanRequestType.SIGN,
+      request: {
+        requestId: 'step-2-request',
+        payload: { type: 'test', cbor: '0x2' },
+      },
+    };
+
+    function setupQrWallet(request: typeof step1Request | undefined) {
+      mockGetHardwareWalletType.mockReturnValue(HardwareKeyringType.qr);
+      mockGetActiveQrCodeScanRequest.mockReturnValue(request);
+      mockIsQrHardwareSignRequest.mockReturnValue(Boolean(request));
+    }
+
+    it('returns AwaitingFirstSignature when step 1 request is active and state is AwaitingFirstSignature', () => {
+      setupQrWallet(step1Request);
+
+      const { result } = renderHook(() =>
+        useHwSwapQrState({
+          signatureState: createSignatureState(
+            HardwareWalletSignatureStatus.AwaitingFirstSignature,
+          ),
+          confirmationTxData: undefined,
+        }),
+      );
+
+      expect(result.current.activeQrStep).toBe(
+        HardwareWalletSignatureStatus.AwaitingFirstSignature,
+      );
+    });
+
+    it('returns AwaitingFinalSignature for single-step flow (no approval)', () => {
+      setupQrWallet(step1Request);
+
+      const { result } = renderHook(() =>
+        useHwSwapQrState({
+          signatureState: createSignatureState(
+            HardwareWalletSignatureStatus.AwaitingFinalSignature,
+          ),
+          confirmationTxData: undefined,
+        }),
+      );
+
+      expect(result.current.activeQrStep).toBe(
+        HardwareWalletSignatureStatus.AwaitingFinalSignature,
+      );
+    });
+
+    it('returns AwaitingFinalSignature when step 2 request arrives even if state is still AwaitingFirstSignature', () => {
+      setupQrWallet(step1Request);
+
+      const { result, rerender } = renderHook(
+        ({ signatureState }) =>
+          useHwSwapQrState({
+            signatureState,
+            confirmationTxData: undefined,
+          }),
+        {
+          initialProps: {
+            signatureState: createSignatureState(
+              HardwareWalletSignatureStatus.AwaitingFirstSignature,
+            ),
+          },
+        },
+      );
+
+      expect(result.current.activeQrStep).toBe(
+        HardwareWalletSignatureStatus.AwaitingFirstSignature,
+      );
+
+      mockGetActiveQrCodeScanRequest.mockReturnValue(step2Request);
+      rerender({
+        signatureState: createSignatureState(
+          HardwareWalletSignatureStatus.AwaitingFirstSignature,
+        ),
+      });
+
+      expect(result.current.activeQrStep).toBe(
+        HardwareWalletSignatureStatus.AwaitingFinalSignature,
+      );
+    });
+
+    it('returns undefined when state transitioned to AwaitingFinalSignature but request is still step 1 (stale)', () => {
+      setupQrWallet(step1Request);
+
+      const { result, rerender } = renderHook(
+        ({ signatureState }) =>
+          useHwSwapQrState({
+            signatureState,
+            confirmationTxData: undefined,
+          }),
+        {
+          initialProps: {
+            signatureState: createSignatureState(
+              HardwareWalletSignatureStatus.AwaitingFirstSignature,
+            ),
+          },
+        },
+      );
+
+      expect(result.current.activeQrStep).toBe(
+        HardwareWalletSignatureStatus.AwaitingFirstSignature,
+      );
+
+      rerender({
+        signatureState: createSignatureState(
+          HardwareWalletSignatureStatus.AwaitingFinalSignature,
+        ),
+      });
+
+      expect(result.current.activeQrStep).toBeUndefined();
+    });
+
+    it('returns AwaitingFinalSignature when step 2 request arrives after stale period', () => {
+      setupQrWallet(step1Request);
+
+      const { result, rerender } = renderHook(
+        ({ signatureState }) =>
+          useHwSwapQrState({
+            signatureState,
+            confirmationTxData: undefined,
+          }),
+        {
+          initialProps: {
+            signatureState: createSignatureState(
+              HardwareWalletSignatureStatus.AwaitingFirstSignature,
+            ),
+          },
+        },
+      );
+
+      rerender({
+        signatureState: createSignatureState(
+          HardwareWalletSignatureStatus.AwaitingFinalSignature,
+        ),
+      });
+
+      expect(result.current.activeQrStep).toBeUndefined();
+
+      mockGetActiveQrCodeScanRequest.mockReturnValue(step2Request);
+      rerender({
+        signatureState: createSignatureState(
+          HardwareWalletSignatureStatus.AwaitingFinalSignature,
+        ),
+      });
+
+      expect(result.current.activeQrStep).toBe(
+        HardwareWalletSignatureStatus.AwaitingFinalSignature,
+      );
+    });
+
+    it('returns undefined when not in an awaiting-signature state', () => {
+      setupQrWallet(step1Request);
+
+      const { result } = renderHook(() =>
+        useHwSwapQrState({
+          signatureState: createSignatureState(
+            HardwareWalletSignatureStatus.Submitted,
+          ),
+          confirmationTxData: undefined,
+        }),
+      );
+
+      expect(result.current.activeQrStep).toBeUndefined();
     });
   });
 });

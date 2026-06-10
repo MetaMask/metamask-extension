@@ -623,8 +623,100 @@ describe('HardwareWalletSignatures', () => {
       getByRole('button', { name: "I've signed, scan signature" }),
     ).toBeDefined();
     expect(
-      container.querySelector('.hardware-wallet-signatures__qr-code svg'),
+      container.querySelector('[data-testid="hardware-wallet-signatures__steps"] svg'),
     ).not.toBeNull();
+  });
+
+  describe('QR toggle button', () => {
+    const qrAccount = {
+      ...MOCK_LEDGER_ACCOUNT,
+      metadata: {
+        ...MOCK_LEDGER_ACCOUNT.metadata,
+        keyring: {
+          type: HardwareKeyringType.qr,
+        },
+      },
+    };
+
+    function renderQrWallet() {
+      mockUseSubmitBridgeTransaction.mockReturnValue(defaultMockSubmitReturn());
+      const quote = DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0];
+      const store = configureStore(
+        createBridgeMockStore({
+          bridgeSliceOverrides: {
+            fromToken: {
+              address: quote.quote.srcAsset.address,
+              symbol: quote.quote.srcAsset.symbol,
+            },
+            toToken: {
+              address: quote.quote.destAsset.address,
+              symbol: quote.quote.destAsset.symbol,
+            },
+          },
+          bridgeStateOverrides: {
+            quotes: [quote as never],
+            quotesLastFetched: 100,
+            activeQrCodeScanRequest: {
+              type: QrScanRequestType.SIGN,
+              request: {
+                requestId: 'sign-request-id',
+                payload: {
+                  type: 'eth-sign-request',
+                  cbor: 'a201010203',
+                },
+              },
+            },
+          } as never,
+          metamaskStateOverrides: {
+            internalAccounts: {
+              selectedAccount: qrAccount.id,
+              accounts: {
+                [qrAccount.id]: qrAccount,
+              },
+            },
+          },
+        }),
+      );
+      return renderWithProvider(<HardwareWalletSignatures />, store);
+    }
+
+    it('shows scan signature button initially', () => {
+      const { getByRole } = renderQrWallet();
+
+      expect(
+        getByRole('button', { name: "I've signed, scan signature" }),
+      ).toBeDefined();
+    });
+
+    it('shows Show QR code button after clicking scan signature', () => {
+      const { getByRole } = renderQrWallet();
+
+      fireEvent.click(
+        getByRole('button', { name: "I've signed, scan signature" }),
+      );
+
+      expect(
+        getByRole('button', { name: 'Show QR code' }),
+      ).toBeDefined();
+    });
+
+    it('shows scan signature button again after clicking Show QR code', () => {
+      const { getByRole } = renderQrWallet();
+
+      fireEvent.click(
+        getByRole('button', { name: "I've signed, scan signature" }),
+      );
+
+      expect(
+        getByRole('button', { name: 'Show QR code' }),
+      ).toBeDefined();
+
+      fireEvent.click(getByRole('button', { name: 'Show QR code' }));
+
+      expect(
+        getByRole('button', { name: "I've signed, scan signature" }),
+      ).toBeDefined();
+    });
   });
 
   describe('hardware wallet error monitoring', () => {
