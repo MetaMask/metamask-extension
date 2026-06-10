@@ -7,12 +7,6 @@
     "message": "Thời gian tải lâu hơn bình thường.",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
-  "QRHardwareInvalidTransactionTitle": {
-    "message": "Lỗi"
-  },
-  "QRHardwareMismatchedSignId": {
-    "message": "Dữ liệu giao dịch không đồng nhất. Vui lòng kiểm tra chi tiết giao dịch."
-  },
   "QRHardwarePubkeyAccountOutOfRange": {
     "message": "Không còn tài khoản nào. Nếu bạn muốn truy cập một tài khoản khác không được liệt kê bên dưới, vui lòng kết nối lại với ví cứng và chọn tài khoản đó."
   },
