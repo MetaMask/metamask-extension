@@ -6,7 +6,6 @@ import React, {
   useState,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { type CaipChainId, type Hex } from '@metamask/utils';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import {
   Box,
@@ -21,6 +20,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { CaipChainId, Hex } from '@metamask/utils';
 import TokenCell from '../token-cell';
 import { ASSET_CELL_HEIGHT } from '../constants';
 import {
@@ -50,6 +50,7 @@ import { SafeChain } from '../../../multichain/networks-form/use-safe-chains';
 import {
   isEvmChainId,
   isTronSpecialAsset,
+  toAssetId,
 } from '../../../../../shared/lib/asset-utils';
 import { sortAssetsWithPriority } from '../util/sortAssetsWithPriority';
 import { VirtualizedList } from '../../../ui/virtualized-list/virtualized-list';
@@ -73,6 +74,10 @@ type TokenListDisplayItem =
     };
 
 const LOW_VALUE_ASSET_FIAT_THRESHOLD = 1;
+const TOKENS_EXCLUDED_FROM_LOW_VALUE_ASSETS = new Set([
+  // USDC on Arc (the ERC20 version of it, which we want to force-show)
+  'eip155:5042/erc20:0x3600000000000000000000000000000000000000',
+]);
 let lowValueAssetsExpandedSessionValue = false;
 
 type CurrencyRate = {
@@ -116,10 +121,11 @@ const isLowValueAsset = (
   lowValueAssetFiatThreshold: number,
 ) => {
   const { tokenFiatAmount } = token;
-
+  const caipAssetId = toAssetId(token.address, token.chainId);
   return (
     !token.isNative &&
     !isMusdToken(token.address) &&
+    !TOKENS_EXCLUDED_FROM_LOW_VALUE_ASSETS.has(caipAssetId ?? '') &&
     tokenFiatAmount !== null &&
     tokenFiatAmount !== undefined &&
     Number.isFinite(tokenFiatAmount) &&
