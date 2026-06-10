@@ -326,7 +326,7 @@ export const MultichainAccountList = ({
             }
             startAccessory={
               showAccountCheckbox ? (
-                <Box>
+                <Box onClick={(event) => event.stopPropagation()}>
                   <Checkbox
                     id={`multichain-account-checkbox-${groupId}`}
                     isSelected={selectedAccountGroupsSet.has(

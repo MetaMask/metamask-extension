@@ -621,6 +621,21 @@ describe('MultichainAccountList', () => {
       expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     });
 
+    it('invokes toggle handler only once when checkbox is clicked', () => {
+      const handleAccountClick = jest.fn();
+
+      renderComponent({
+        selectedAccountGroups: [walletOneGroupId],
+        showAccountCheckbox: true,
+        handleAccountClick,
+      });
+
+      fireEvent.click(screen.getAllByRole('checkbox')[1]);
+
+      expect(handleAccountClick).toHaveBeenCalledTimes(1);
+      expect(handleAccountClick).toHaveBeenCalledWith(walletTwoGroupId);
+    });
+
     it('handles checkbox click to deselect selected account', () => {
       renderComponent({
         selectedAccountGroups: [walletOneGroupId],
