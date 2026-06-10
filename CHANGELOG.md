@@ -7,6 +7,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.35.0]
+
+### Added
+
+- Reduced false-positive RPC connection banners — single-provider outages no longer pop the banner, even when many popular (#43073)
+  networks fail at once.
+- Added "Paid by MetaMask" label on the mUSD conversion confirmation screen when all transaction fees are sponsored (#43168)
+- Add Arc as Default Network (network/native logo + native price + multicall) (#43114)
+- Added a confirmation modal when closing all perpetual positions (#42613)
+- Reduced false-positive RPC connection banners — single-provider outages no longer pop the banner, even when many popular
+  networks fail at once. (#43073)
+- Add Telegram provider to Social Login options (#43125)
+
+### Changed
+
+- Raised the minimum supported browser versions for Chromium-based browsers to 123 and Firefox to ESR 128. (#41067)
+- chore(6936): migrate core UI components from MUI v4 → v5 (#41955)
+- Bump assets controller v8.3.1 (#43163)
+- chore(6921): upgrade React type definitions to v18 and codemod explicit children typing (#42616)
+- Updated the Sei network and token logo to Sei's new brand mark. (#43117)
+- chore: migrate `checkIsSeedlessPasswordOutdated` to `LegacyBackgroundApiService` (#43131)
+
+### Fixed
+
+- Fixed missing token icons (e.g. mUSD) in transaction confirmation rows and estimated changes. (#43133)
+- Removes `toggleNetworkMenuAfterSubmit ?` pre-condition for replacement RPC networks-form (#42980)
+- Update legacy settings routes to new correct ones (#43111)
+- Fixed navigation issue where tapping "Add Funds" in the perps order screen caused the back button to require two taps (#43002)
+- Add new hardware wallet reconnection page. (#42680)
+- Fix aggregated balance (#43061)
+- Disabled passkey unlock and setup on mobile browsers where the experience is unreliable. (#43009)
+- Fix routing after hardware wallet onboarding (#42952)
+- Updated onboarding metrics for Telegram Login. fixed onboarding unlock metrics. (#43052)
+
+## [13.34.1]
+
+### Changed
+
+- Bumped `@lavamoat/webpack` from 2.2.0 to 2.2.3 (#43333)
+
+### Fixed
+
+- Fixed handling of scientific notation in `parseBalanceWithDecimals` to prevent BigInt crash (#43314)
+
 ## [13.34.0]
 
 ### Added
@@ -33,7 +77,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Show hidden tokens in Send Flow (#42934)
 - Add Sentry distributed tracing instrumentation for Background RPC calls and inter-controller messenger calls. (#39891)
 
-  ### Fixed
+### Changed
+
+- Bump the `@metamask/tron-wallet-snap` to `^1.25.6` (#42701)
+- Bumped bitcoin snap v1.11.0 (#42993)
+- chore: Replace `await-semaphore` with `async-mutex` (#42818)
+
+### Fixed
 
 - perf(6634): extract gas estimate side-effects, strip unused withRouter props (#42687)
 - Fixed the VIP tier label to display "VIP" instead of "VIP Fox" (#42856)
@@ -41,12 +91,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated Activity tab empty states to show context-specific messaging and actions when users have no transaction (#42786)
   history
 - Removed outdated translations from community-contributed ga, pt_BR, and zh_TW locales. (#40974)
-
-### Changed
-
-- Bump the `@metamask/tron-wallet-snap` to `^1.25.6` (#42701)
-- Bumped bitcoin snap v1.11.0 (#42993)
-- chore: Replace `await-semaphore` with `async-mutex` (#42818)
 
 ## [13.33.0]
 
@@ -2452,7 +2496,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.34.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.35.0...HEAD
+[13.35.0]: https://github.com/MetaMask/metamask-extension/compare/v13.34.1...v13.35.0
+[13.34.1]: https://github.com/MetaMask/metamask-extension/compare/v13.34.0...v13.34.1
 [13.34.0]: https://github.com/MetaMask/metamask-extension/compare/v13.33.0...v13.34.0
 [13.33.0]: https://github.com/MetaMask/metamask-extension/compare/v13.32.1...v13.33.0
 [13.32.1]: https://github.com/MetaMask/metamask-extension/compare/v13.32.0...v13.32.1
