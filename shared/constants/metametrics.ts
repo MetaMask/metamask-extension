@@ -1422,3 +1422,33 @@ export enum MetaMetricsEventTransactionEstimateType {
   DappProposed = 'dapp_proposed',
   DefaultEstimate = 'default_estimate',
 }
+
+/**
+ * V1 allowlist: x.com / twitter.com only.
+ * Adding new domains requires a governance/privacy review before inclusion.
+ */
+export const ACTIVE_TAB_DOMAIN_ALLOWLIST = ['x.com', 'twitter.com'] as const;
+
+/**
+ * Returns the origin if it is a secure (HTTPS) origin whose hostname is in
+ * the active-tab domain allowlist, undefined otherwise.
+ *
+ * @param origin - The raw origin string from the active browser tab.
+ */
+export const getActiveTabDomainForMetrics = (
+  origin: string | undefined,
+): string | undefined => {
+  if (!origin) {
+    return undefined;
+  }
+  try {
+    const { hostname } = new URL(origin);
+    return ACTIVE_TAB_DOMAIN_ALLOWLIST.some(
+      (domain) => hostname === domain || hostname.endsWith(`.${domain}`),
+    )
+      ? new URL(origin).origin
+      : undefined;
+  } catch {
+    return undefined;
+  }
+}

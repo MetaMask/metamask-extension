@@ -41,6 +41,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsUserTrait,
+  getActiveTabDomainForMetrics,
 } from '../../shared/constants/metametrics';
 import { checkForLastErrorAndLog } from '../../shared/lib/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/lib/mv3.utils';
@@ -1377,10 +1378,16 @@ function emitAppOpenedMetricEvent(environmentType) {
     return;
   }
 
+  const activeTabOrigin = controller.appStateController.state.appActiveTab?.origin;
+  const activeTabDomain = getActiveTabDomainForMetrics(activeTabOrigin);
+
   controller.metaMetricsController.trackEvent({
     event: MetaMetricsEventName.AppOpened,
     category: MetaMetricsEventCategory.App,
     environmentType,
+    properties: {
+      ...(activeTabDomain ? { active_tab_domain: activeTabDomain } : {}),
+    },
   });
 }
 
