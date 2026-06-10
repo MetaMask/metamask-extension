@@ -17,6 +17,7 @@ export const verifySubmittedSwapTransaction = async ({
   expectedWalletBalance,
   expectedSwapTokens,
   expectedDestAmount,
+  expectedDetailsDestAmount,
   expectedActivityAmount,
 }: {
   driver: Driver;
@@ -26,6 +27,7 @@ export const verifySubmittedSwapTransaction = async ({
   expectedWalletBalance?: string;
   expectedSwapTokens?: Pick<BridgeQuote, 'tokenFrom' | 'tokenTo'>;
   expectedDestAmount?: string;
+  expectedDetailsDestAmount?: string;
   expectedActivityAmount?: string;
 }) => {
   const homePage = new HomePage(driver);
@@ -47,7 +49,7 @@ export const verifySubmittedSwapTransaction = async ({
 
   if (quote.unapproved) {
     action = isBridge
-      ? `Bridged ${expectedDestToken}`
+      ? `Bridged ${expectedSrcToken}`
       : `Swapped ${expectedSrcToken} to ${expectedDestToken}`;
     await activityList.checkTxAction({
       action,
@@ -60,7 +62,7 @@ export const verifySubmittedSwapTransaction = async ({
     });
   } else {
     action = isBridge
-      ? `Bridged ${expectedDestToken}`
+      ? `Bridged ${expectedSrcToken}`
       : `Swapped ${expectedSrcToken} to ${expectedDestToken}`;
     await activityList.checkTxAction({
       action,
@@ -78,7 +80,7 @@ export const verifySubmittedSwapTransaction = async ({
     expectedStatus,
     undefined,
     expectedSrcToken,
-    expectedDestAmount,
+    expectedDetailsDestAmount ?? expectedDestAmount,
     expectedDestToken,
   );
 
@@ -114,6 +116,7 @@ export const bridgeTransaction = async ({
   expectedWalletBalance,
   expectedSwapTokens,
   expectedDestAmount,
+  expectedDetailsDestAmount,
   expectedActivityAmount,
   submitDelay,
   skipStatusPage,
@@ -125,6 +128,7 @@ export const bridgeTransaction = async ({
   expectedWalletBalance?: string;
   expectedSwapTokens?: Pick<BridgeQuote, 'tokenFrom' | 'tokenTo'>;
   expectedDestAmount: string;
+  expectedDetailsDestAmount?: string;
   expectedActivityAmount?: string;
   submitDelay?: number;
   skipStatusPage?: boolean;
@@ -158,6 +162,7 @@ export const bridgeTransaction = async ({
     expectedWalletBalance,
     expectedSwapTokens,
     expectedDestAmount,
+    expectedDetailsDestAmount,
     expectedActivityAmount,
   });
 };

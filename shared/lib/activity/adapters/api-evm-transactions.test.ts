@@ -579,7 +579,7 @@ describe('mapEvmTransactions', () => {
         token: {
           amount: '1000000000000000000',
           decimals: 18,
-          direction: 'in',
+          direction: 'out',
           symbol: 'ETH',
           assetId: toAssetId(
             '0x0000000000000000000000000000000000000000',

@@ -25,13 +25,13 @@ import { FeesRows, TotalAmountRow } from '../components/amounts-section';
 import { BridgeExplorerButtons } from '../components/bridge-explorer-buttons';
 import { SwapAgainButton } from '../components/swap-again-button';
 
-function BridgeNetworkRow({
+const BridgeNetworkRow = ({
   fromChainId,
   toChainId,
 }: {
   fromChainId: string;
   toChainId: string;
-}) {
+}) => {
   const config = useSelector(getAllNetworkConfigurationsByCaipChainId);
 
   const fromNetwork = config[fromChainId as CaipChainId];
@@ -68,7 +68,7 @@ function BridgeNetworkRow({
       <span>{toName}</span>
     </div>
   );
-}
+};
 
 const selectBridgeHistory = (state: MetaMaskReduxState) =>
   (state.metamask.txHistory ?? {}) as Record<string, BridgeHistoryItem>;
