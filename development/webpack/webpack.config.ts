@@ -198,16 +198,14 @@ const plugins: WebpackPluginInstance[] = [
     minify: args.minify,
     test: /\.html$/u, // default is eta/html, we only want html
     data: { isTest: args.test },
-    // In watch mode, inject dev-only clients into the relevant HTML pages.
+    // In watch mode, inject dev-only ui and background reload clients into the relevant HTML pages.
     beforeEmit: (content, entry, compilation) => {
       if (!args.watch) {
         return content;
       }
       // UI pages (identified by the `#app-content` React mount point, present
       // via `partial-body.html` on every page that renders the React UI and no
-      // other extension page) get the UI reload client (webpack-dev-server's
-      // live-reload client), which reloads just the page — preserving
-      // background state.
+      // other extension page) get the UI reload client
       if (content.includes('id="app-content"')) {
         return injectEntryScripts(
           content,
