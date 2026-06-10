@@ -77,6 +77,7 @@ describe('Swap tests', function (this: Suite) {
           },
           submitDelay: 10000,
           expectedDestAmount: '3,839',
+          expectedDetailsDestAmount: '3,839.4478',
           expectedActivityAmount: '+3,839.4478',
         });
 
@@ -158,6 +159,7 @@ describe('Swap tests', function (this: Suite) {
             tokenTo: 'MUSD',
           },
           expectedDestAmount: '0.369',
+          expectedDetailsDestAmount: '0.3695',
           expectedActivityAmount: '+0.3695',
           skipStatusPage: true,
         });
@@ -269,7 +271,7 @@ describe('Swap tests', function (this: Suite) {
             tokenFrom: 'ETH',
             tokenTo: 'MUSD',
           },
-          expectedDestAmount: '0.369',
+          expectedDestAmount: '0.3695',
           expectedActivityAmount: '+0.3695',
         });
       },
@@ -364,7 +366,7 @@ describe('Swap tests', function (this: Suite) {
             tokenFrom: 'ETH',
             tokenTo: 'MUSD',
           },
-          expectedDestAmount: '3,839',
+          expectedDestAmount: '3,839.4478',
           expectedActivityAmount: '+3,839.4478',
         });
       },
@@ -448,7 +450,7 @@ describe('Swap tests', function (this: Suite) {
             tokenFrom: 'ETH',
             tokenTo: 'MUSD',
           },
-          expectedDestAmount: '0.369',
+          expectedDestAmount: '0.3695',
           expectedActivityAmount: '+0.3695',
         });
       },
