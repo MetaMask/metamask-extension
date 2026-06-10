@@ -543,7 +543,7 @@ describe('useNetworkConnectionBanner', () => {
       // Use 'unknown' so it will try to start timers when coming back online
       mockGetNetworkConnectionBanner.mockReturnValue({ status: 'unknown' });
 
-      const { rerender } = renderHookWithProviderTyped(
+      const { store } = renderHookWithProviderTyped(
         () => useNetworkConnectionBanner(),
         mockState,
       );
@@ -553,7 +553,9 @@ describe('useNetworkConnectionBanner', () => {
 
       // Device comes back online
       mockGetIsDeviceOffline.mockReturnValue(false);
-      rerender();
+      act(() => {
+        store.dispatch({ type: 'FORCE_UPDATE' });
+      });
 
       // Advance timer to trigger degraded
       act(() => {

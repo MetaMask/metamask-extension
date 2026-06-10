@@ -43,7 +43,7 @@ describe('#getShowPrivacyPolicyToast', () => {
         ),
       );
       const result = selectShowPrivacyPolicyToast(mockStateData);
-      expect(result.showPrivacyPolicyToast).toBe(true);
+      expect(result).toBe(true);
     });
 
     it('does not show the privacy policy toast when seen, even if on or after the policy date and onboardingDate is before the policy date', () => {
@@ -55,14 +55,14 @@ describe('#getShowPrivacyPolicyToast', () => {
           ),
         ),
       });
-      expect(result.showPrivacyPolicyToast).toBe(false);
+      expect(result).toBe(false);
     });
 
     it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is not set', () => {
       const result = selectShowPrivacyPolicyToast({
         ...createMockPrivacyPolicyState(false, undefined),
       });
-      expect(result.showPrivacyPolicyToast).toBe(true);
+      expect(result).toBe(true);
     });
   });
 
@@ -86,7 +86,7 @@ describe('#getShowPrivacyPolicyToast', () => {
           ),
         ),
       });
-      expect(result.showPrivacyPolicyToast).toBe(true);
+      expect(result).toBe(true);
     });
 
     it('does not show the privacy policy toast when seen, even if on or after the policy date and onboardingDate is before the policy date', () => {
@@ -98,14 +98,14 @@ describe('#getShowPrivacyPolicyToast', () => {
           ),
         ),
       });
-      expect(result.showPrivacyPolicyToast).toBe(false);
+      expect(result).toBe(false);
     });
 
     it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is not set', () => {
       const result = selectShowPrivacyPolicyToast({
         ...createMockPrivacyPolicyState(false, undefined),
       });
-      expect(result.showPrivacyPolicyToast).toBe(true);
+      expect(result).toBe(true);
     });
   });
 
@@ -132,14 +132,14 @@ describe('#getShowPrivacyPolicyToast', () => {
           ),
         ),
       });
-      expect(result.showPrivacyPolicyToast).toBe(false);
+      expect(result).toBe(false);
     });
 
     it('does not show the privacy policy toast before the policy date even if onboardingDate is not set', () => {
       const result = selectShowPrivacyPolicyToast({
         ...createMockPrivacyPolicyState(false, undefined),
       });
-      expect(result.showPrivacyPolicyToast).toBe(false);
+      expect(result).toBe(false);
     });
   });
 });

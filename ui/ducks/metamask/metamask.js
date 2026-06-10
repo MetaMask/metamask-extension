@@ -135,7 +135,8 @@ export default function reduceMetamask(state = initialState, action) {
     case actionConstants.SET_PARTICIPATE_IN_METAMETRICS:
       return {
         ...metamaskState,
-        participateInMetaMetrics: action.value,
+        completedMetaMetricsOnboarding: action.value !== null,
+        optedIn: action.value === true,
       };
 
     case actionConstants.SET_DATA_COLLECTION_FOR_MARKETING:
@@ -269,6 +270,9 @@ export function getNftsDropdownState(state) {
   return state.metamask.nftsDropdownState;
 }
 
+const EMPTY_NFTS = Object.freeze([]);
+const EMPTY_NFT_CONTRACTS = Object.freeze([]);
+
 export const getNfts = (state) => {
   const {
     metamask: { allNfts },
@@ -277,7 +281,7 @@ export const getNfts = (state) => {
 
   const { chainId } = getProviderConfig(state);
 
-  return allNfts?.[selectedAddress]?.[chainId] ?? [];
+  return allNfts?.[selectedAddress]?.[chainId] ?? EMPTY_NFTS;
 };
 
 export const getAllNfts = (state) => {
@@ -286,7 +290,7 @@ export const getAllNfts = (state) => {
   } = state;
   const { address: selectedAddress } = getSelectedInternalAccount(state);
 
-  return allNfts?.[selectedAddress] ?? [];
+  return allNfts?.[selectedAddress] ?? EMPTY_NFTS;
 };
 
 export const getNFTsByChainId = (state, chainId) => {
@@ -295,7 +299,7 @@ export const getNFTsByChainId = (state, chainId) => {
   } = state;
   const { address: selectedAddress } = getSelectedInternalAccount(state);
 
-  return allNfts?.[selectedAddress]?.[chainId] ?? [];
+  return allNfts?.[selectedAddress]?.[chainId] ?? EMPTY_NFTS;
 };
 
 export const getNftContracts = (state) => {
@@ -304,7 +308,7 @@ export const getNftContracts = (state) => {
   } = state;
   const { address: selectedAddress } = getSelectedInternalAccount(state);
   const { chainId } = getProviderConfig(state);
-  return allNftContracts?.[selectedAddress]?.[chainId] ?? [];
+  return allNftContracts?.[selectedAddress]?.[chainId] ?? EMPTY_NFT_CONTRACTS;
 };
 
 export function getNativeCurrency(state) {

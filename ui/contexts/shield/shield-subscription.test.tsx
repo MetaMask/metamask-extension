@@ -14,6 +14,11 @@ import {
   useShieldSubscriptionContext,
 } from './shield-subscription';
 
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+  useDispatch: jest.fn(),
+  useSelector: jest.fn(),
+}));
 jest.mock('../../hooks/subscription/useSubscription');
 jest.mock('../../hooks/shield/metrics/useSubscriptionMetrics');
 jest.mock('../../store/actions', () => ({
@@ -23,6 +28,9 @@ jest.mock('../../store/actions', () => ({
   subscriptionsStartPolling: jest.fn(),
 }));
 
+const mockUseDispatch = jest.mocked(redux.useDispatch);
+const mockUseSelector = jest.mocked(redux.useSelector);
+
 describe('ShieldSubscriptionProvider', () => {
   const mockDispatch = jest.fn();
   const mockGetSubscriptionEligibility = jest.fn();
@@ -31,9 +39,8 @@ describe('ShieldSubscriptionProvider', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    // Mock Redux hooks
-    jest.spyOn(redux, 'useDispatch').mockReturnValue(mockDispatch);
-    jest.spyOn(redux, 'useSelector').mockImplementation((selector) => {
+    mockUseDispatch.mockReturnValue(mockDispatch);
+    mockUseSelector.mockImplementation((selector) => {
       if (selector === selectors.getUseExternalServices) {
         return true;
       }
@@ -236,7 +243,7 @@ describe('ShieldSubscriptionProvider', () => {
     it('accesses current values even with stable callback', async () => {
       let isBasicFunctionalityEnabled = false;
 
-      jest.spyOn(redux, 'useSelector').mockImplementation((selector) => {
+      mockUseSelector.mockImplementation((selector) => {
         if (selector === selectors.getUseExternalServices) {
           return isBasicFunctionalityEnabled;
         }

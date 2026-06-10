@@ -1,7 +1,7 @@
 import React from 'react';
-import { DefaultRootState } from 'react-redux';
 import { act, fireEvent } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
+import type { MetaMaskReduxState } from '../../../../../store/store';
 
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
@@ -31,7 +31,7 @@ jest.mock('react-router-dom', () => ({
 
 function render(
   type: TransactionType = TransactionType.musdConversion,
-  state?: DefaultRootState,
+  state?: MetaMaskReduxState,
 ) {
   const store = configureStore(
     state ?? getMockConfirmStateForTransaction(genConfirmation(type)),

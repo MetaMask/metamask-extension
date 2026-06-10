@@ -300,6 +300,8 @@ describe('ConfirmFooter', () => {
       loading: false,
       subscriptions: [],
       error: undefined,
+      customerId: undefined,
+      lastSubscription: undefined,
     });
     mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_NOTIFICATION);
   });

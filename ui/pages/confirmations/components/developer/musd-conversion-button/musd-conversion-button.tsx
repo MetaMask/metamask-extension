@@ -19,7 +19,6 @@ import { generateERC20TransferData } from '../utils';
 export const MusdConversionButton = () => {
   const { navigateToTransaction } = useConfirmationNavigation();
   const selectedAccount = useSelector(getSelectedInternalAccount);
-  const [hasTriggered, setHasTriggered] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleTrigger = useCallback(async () => {
@@ -54,8 +53,6 @@ export const MusdConversionButton = () => {
         },
       );
 
-      setHasTriggered(true);
-
       navigateToTransaction(txMeta.id, {
         loader: ConfirmationLoader.CustomAmount,
       });
@@ -69,10 +66,7 @@ export const MusdConversionButton = () => {
   return (
     <DeveloperButton
       title="MUSD Conversion"
-      description="Triggers a MUSD conversion confirmation."
-      buttonLabel={isLoading ? 'Loading...' : 'Trigger'}
       onPress={handleTrigger}
-      hasTriggered={hasTriggered}
       disabled={isLoading}
     />
   );

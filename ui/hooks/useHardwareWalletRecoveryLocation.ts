@@ -1,6 +1,6 @@
 import { TransactionType } from '@metamask/transaction-controller';
-import { useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
+import { useAppSelector } from '../store/store';
 import { MetaMetricsHardwareWalletRecoveryLocation } from '../../shared/constants/metametrics';
 import {
   CONFIRM_TRANSACTION_ROUTE,
@@ -28,12 +28,12 @@ export function useHardwareWalletRecoveryLocation(): MetaMetricsHardwareWalletRe
   const { pathname } = useLocation();
   const { id: confirmationId } = useParams();
 
-  const transaction = useSelector((state) =>
+  const transaction = useAppSelector((state) =>
     confirmationId
       ? getUnapprovedTransaction(state, confirmationId)
       : undefined,
   );
-  const message = useSelector((state) =>
+  const message = useAppSelector((state) =>
     confirmationId
       ? selectUnapprovedSignatureRequestById(state, confirmationId)
       : undefined,

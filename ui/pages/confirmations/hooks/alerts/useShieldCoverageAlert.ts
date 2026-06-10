@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { CoverageStatus } from '@metamask/shield-controller';
+import isEqual from 'lodash/isEqual';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import {
@@ -191,11 +192,13 @@ export function useShieldCoverageAlert(): Alert[] {
   const { updateSignatureEventFragment } = useSignatureEventFragment();
   const { updateTransactionEventFragment } = useTransactionEventFragment();
   const { id } = currentConfirmation ?? {};
-  const { reasonCode, status } = useSelector((state) =>
-    getCoverageStatus(state as ShieldState, id),
+  const { reasonCode, status } = useSelector(
+    (state) => getCoverageStatus(state as ShieldState, id),
+    isEqual,
   );
-  const metrics = useSelector((state) =>
-    getCoverageMetrics(state as ShieldState, id),
+  const metrics = useSelector(
+    (state) => getCoverageMetrics(state as ShieldState, id),
+    isEqual,
   );
 
   const { isEnabled, isPaused } = useEnableShieldCoverageChecks();

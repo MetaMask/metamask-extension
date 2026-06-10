@@ -66,7 +66,7 @@ const SnapUIRendererComponent = ({
     (state) => getInterface(state, interfaceId),
     // We only want to update the state if the content has changed.
     // We do this to avoid useless re-renders.
-    (oldState, newState) => isEqual(oldState.content, newState.content),
+    (oldState, newState) => isEqual(oldState?.content, newState?.content),
   );
 
   useEffect(() => {

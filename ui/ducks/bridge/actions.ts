@@ -1,7 +1,5 @@
 import {
-  BridgeBackgroundAction,
   type BridgeController,
-  BridgeUserAction,
   type RequiredEventContextFromClient,
   UnifiedSwapBridgeEventName,
   isCrossChain,
@@ -16,7 +14,10 @@ import {
   setEnabledAllPopularNetworks,
 } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
-import type { MetaMaskReduxDispatch } from '../../store/store';
+import type {
+  MetaMaskReduxDispatch,
+  MetaMaskReduxState,
+} from '../../store/store';
 import {
   getMultichainNetworkConfigurationsByChainId,
   getMultichainProviderConfig,
@@ -79,7 +80,7 @@ export {
 };
 
 const callBridgeControllerMethod = (
-  bridgeAction: BridgeUserAction | BridgeBackgroundAction,
+  bridgeAction: keyof BridgeController,
   ...args: unknown[]
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -91,7 +92,7 @@ const callBridgeControllerMethod = (
 // Background actions
 export const resetBridgeController = () => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(callBridgeControllerMethod(BridgeBackgroundAction.RESET_STATE));
+    dispatch(callBridgeControllerMethod('resetState'));
     await clearAllBridgeCacheItems();
   };
 };
@@ -108,7 +109,7 @@ export const trackUnifiedSwapBridgeEvent = <
   return async (dispatch: MetaMaskReduxDispatch) => {
     await dispatch(
       callBridgeControllerMethod(
-        BridgeBackgroundAction.TRACK_METAMETRICS_EVENT,
+        'trackUnifiedSwapBridgeEvent',
         eventName,
         propertiesFromClient,
       ),
@@ -128,7 +129,7 @@ export const updateQuoteRequestParams = (
   return async (dispatch: MetaMaskReduxDispatch) => {
     await dispatch(
       callBridgeControllerMethod(
-        BridgeUserAction.UPDATE_QUOTE_PARAMS,
+        'updateBridgeQuoteRequestParams',
         params,
         context,
         quoteRequestIndex,
@@ -138,12 +139,22 @@ export const updateQuoteRequestParams = (
   };
 };
 
+export const updateBatchSellTrades = (
+  ...[quotes]: Parameters<BridgeController['updateBatchSellTrades']>
+) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await dispatch(callBridgeControllerMethod('updateBatchSellTrades', quotes));
+  };
+};
+
 export const setEvmBalances = (assetId: CaipAssetType) => {
   return async (
     dispatch: MetaMaskReduxDispatch,
-    getState: () => BridgeAppState,
+    getState: () => MetaMaskReduxState,
   ) => {
-    const selectedAddress = getFromAccount(getState())?.address;
+    const selectedAddress = getFromAccount(
+      getState() as unknown as BridgeAppState,
+    )?.address;
     if (!selectedAddress) {
       return;
     }
@@ -168,8 +179,9 @@ export const setEvmBalances = (assetId: CaipAssetType) => {
 export const setFromToken = (token: TokenPayload) => {
   return async (
     dispatch: MetaMaskReduxDispatch,
-    getState: () => BridgeAppState,
+    getState: () => MetaMaskReduxState,
   ) => {
+    const bridgeState = getState() as unknown as BridgeAppState;
     const { assetId } = token;
     const { chainId } = parseCaipAssetType(assetId);
     const isNonEvm = isNonEvmChainId(chainId);
@@ -184,7 +196,7 @@ export const setFromToken = (token: TokenPayload) => {
 
     if (maybeHexChainId) {
       const networkConfigs =
-        getMultichainNetworkConfigurationsByChainId(getState());
+        getMultichainNetworkConfigurationsByChainId(bridgeState);
       if (!networkConfigs[maybeHexChainId]) {
         const featuredRpc = FEATURED_RPCS.find(
           (rpc) => rpc.chainId === maybeHexChainId,
@@ -206,7 +218,7 @@ export const setFromToken = (token: TokenPayload) => {
       }
     }
 
-    const currentChainId = getMultichainProviderConfig(getState()).chainId;
+    const currentChainId = getMultichainProviderConfig(bridgeState).chainId;
     const currentNetworkMatchesToken = [chainId, maybeHexChainId].some(
       (c) => c && c === currentChainId,
     );
@@ -215,7 +227,7 @@ export const setFromToken = (token: TokenPayload) => {
     if (!currentNetworkMatchesToken) {
       // If the source chain changes, enable All Networks view so the user
       // can see their bridging activity on the new chain
-      const lastSelectedChainId = getLastSelectedChainId(getState());
+      const lastSelectedChainId = getLastSelectedChainId(bridgeState);
       if (isCrossChain(chainId, lastSelectedChainId)) {
         dispatch(setEnabledAllPopularNetworks());
       }
@@ -223,7 +235,7 @@ export const setFromToken = (token: TokenPayload) => {
         dispatch(setActiveNetworkWithError(chainId));
       } else if (maybeHexChainId) {
         const networkId =
-          selectDefaultNetworkClientIdsByChainId(getState())[maybeHexChainId];
+          selectDefaultNetworkClientIdsByChainId(bridgeState)[maybeHexChainId];
         if (networkId) {
           dispatch(setActiveNetworkWithError(networkId));
         }
@@ -237,9 +249,9 @@ export const setFromToken = (token: TokenPayload) => {
 export const setToToken = (newToToken: TokenPayload) => {
   return async (
     dispatch: MetaMaskReduxDispatch,
-    getState: () => BridgeAppState,
+    getState: () => MetaMaskReduxState,
   ) => {
-    const state = getState();
+    const state = getState() as unknown as BridgeAppState;
     const currentFromAmount = getFromAmount(state);
     const fromToken = getFromToken(state);
     const toToken = getToToken(state);
@@ -261,8 +273,11 @@ export const setToToken = (newToToken: TokenPayload) => {
           fromToken.assetId,
         );
       }
-      // @ts-expect-error - GasFeeState's nested union type is causing a type mismatch
-      dispatch(setFromToken(fromTokenToUse));
+      await dispatch(
+        setFromToken(fromTokenToUse) as unknown as Parameters<
+          typeof dispatch
+        >[0],
+      );
     }
 
     dispatch(setToTokenAction(newToToken));

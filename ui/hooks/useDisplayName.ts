@@ -1,7 +1,8 @@
 import { NameOrigin, NameType } from '@metamask/name-controller';
 import { Hex, isStrictHexString } from '@metamask/utils';
 import { useSelector } from 'react-redux';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
+import isEqual from 'lodash/isEqual';
 import {
   EXPERIENCES_TYPE,
   FIRST_PARTY_CONTRACT_NAMES,
@@ -17,6 +18,7 @@ import {
   getAccountTree,
 } from '../selectors/multichain-accounts/account-tree';
 import { buildEvmCaip19AssetId } from '../../shared/lib/multichain/buildEvmCaip19AssetId';
+import { getAssetImageUrl } from '../../shared/lib/asset-utils';
 import { useNames } from './useName';
 import { TrustSignalDisplayState, useTrustSignals } from './useTrustSignals';
 import { useTokensData } from './useTokensData';
@@ -146,7 +148,16 @@ function useERC20Tokens(
       const name =
         preferContractSymbol && token?.symbol ? token.symbol : token?.name;
 
-      return { name, image: token?.iconUrl };
+      // The token API omits `iconUrl` for some recognized tokens (e.g. mUSD)
+      // even though the canonical icon exists, so derive it from the address.
+      const image =
+        token &&
+        (token.iconUrl ||
+          (isStrictHexString(variation)
+            ? getAssetImageUrl(value as Hex, variation as Hex)
+            : undefined));
+
+      return { name, image: image || undefined };
     },
   );
 }
@@ -283,25 +294,30 @@ function useAccountGroupNames(
       .filter((item) => item.address !== null);
   }, [requests]);
 
-  const namesByAddress = useSelector((state: MultichainAccountsState) => {
-    const result: Record<string, UseAccountGroupNamesResponse> = {};
-    ethereumAddresses.forEach(({ address }) => {
-      if (address) {
-        const accountGroupName = selectAccountGroupNameByInternalAccount(
-          state,
-          address,
-        );
-        const walletInfo = getWalletIdAndNameByAccountAddress(state, address);
-        const walletName = walletInfo?.name || null;
+  const selectNamesByAddress = useCallback(
+    (state: MultichainAccountsState) => {
+      const result: Record<string, UseAccountGroupNamesResponse> = {};
+      ethereumAddresses.forEach(({ address }) => {
+        if (address) {
+          const accountGroupName = selectAccountGroupNameByInternalAccount(
+            state,
+            address,
+          );
+          const walletInfo = getWalletIdAndNameByAccountAddress(state, address);
+          const walletName = walletInfo?.name || null;
 
-        result[address] = {
-          accountGroupName,
-          walletName,
-        };
-      }
-    });
-    return result;
-  });
+          result[address] = {
+            accountGroupName,
+            walletName,
+          };
+        }
+      });
+      return result;
+    },
+    [ethereumAddresses],
+  );
+
+  const namesByAddress = useSelector(selectNamesByAddress, isEqual);
 
   return useMemo(() => {
     return requests.map(({ type, value }, index) => {

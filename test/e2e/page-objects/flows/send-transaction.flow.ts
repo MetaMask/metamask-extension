@@ -109,6 +109,6 @@ export const validateTransaction = async (driver: Driver, quantity: string) => {
   const activityList = new ActivityListPage(driver);
   await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
 
-  await activityList.checkTxAction({ action: 'Sent' });
+  await activityList.checkTxAction({ action: 'Sent ETH' });
   await activityList.checkTxAmountInActivity(`${quantity} ETH`, 1);
 };

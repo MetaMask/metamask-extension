@@ -371,8 +371,8 @@ export function getNetworkIdentifier(state) {
 }
 
 export function getMetaMetricsId(state) {
-  const { metaMetricsId } = state.metamask;
-  return metaMetricsId;
+  const { analyticsId } = state.metamask;
+  return analyticsId;
 }
 
 export function isCurrentProviderCustom(state) {
@@ -1078,21 +1078,24 @@ export const getTokenExchangeRates = createSelector(
   },
 );
 
-export const getCrossChainTokenExchangeRates = (state) => {
-  const contractMarketData = getTokenRatesControllerMarketData(state) ?? {};
+export const getCrossChainTokenExchangeRates = createSelector(
+  getTokenRatesControllerMarketData,
+  (contractMarketData) => {
+    const marketData = contractMarketData ?? {};
 
-  return Object.keys(contractMarketData).reduce((acc, topLevelKey) => {
-    acc[topLevelKey] = Object.keys(contractMarketData[topLevelKey]).reduce(
-      (innerAcc, innerKey) => {
-        innerAcc[innerKey] = contractMarketData[topLevelKey][innerKey]?.price;
-        return innerAcc;
-      },
-      {},
-    );
+    return Object.keys(marketData).reduce((acc, topLevelKey) => {
+      acc[topLevelKey] = Object.keys(marketData[topLevelKey]).reduce(
+        (innerAcc, innerKey) => {
+          innerAcc[innerKey] = marketData[topLevelKey][innerKey]?.price;
+          return innerAcc;
+        },
+        {},
+      );
 
-    return acc;
-  }, {});
-};
+      return acc;
+    }, {});
+  },
+);
 
 /**
  * Get market data for tokens on the current chain
@@ -3430,6 +3433,8 @@ export const getHdKeyringOfSelectedAccountOrPrimaryKeyring = createSelector(
  * @returns {object} The subject metadata object.
  */
 
+const EMPTY_SUBJECTS = Object.freeze({});
+
 /**
  * Selector to get the permission subjects object.
  *
@@ -3437,7 +3442,7 @@ export const getHdKeyringOfSelectedAccountOrPrimaryKeyring = createSelector(
  * @returns {object} The permissions subjects object.
  */
 export function getPermissionSubjects(state) {
-  return state.metamask.subjects || {};
+  return state.metamask.subjects || EMPTY_SUBJECTS;
 }
 
 /**
