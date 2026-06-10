@@ -84,9 +84,14 @@ class FirefoxDriver {
 
     // For cases where Firefox is installed as snap (Linux)
     const FF_SNAP_GECKO_PATH = '/snap/bin/geckodriver';
+    // `GECKODRIVER_PATH` lets us pin an explicit geckodriver binary instead of
+    // letting Selenium Manager auto-resolve (and silently float to) the latest
+    // release. This is currently used to pin 0.36.0, since geckodriver 0.37.0
+    // regresses the Firefox temporary-addon dapp-connection flow. When unset,
+    // behaviour is unchanged (Selenium Manager resolves the driver).
     const service = process.env.FIREFOX_SNAP
       ? new firefox.ServiceBuilder(FF_SNAP_GECKO_PATH)
-      : new firefox.ServiceBuilder();
+      : new firefox.ServiceBuilder(process.env.GECKODRIVER_PATH || undefined);
 
     if (port) {
       service.setPort(port);
