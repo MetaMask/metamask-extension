@@ -1,106 +1,270 @@
 diff --git a/dist/data-sources/RpcDataSource.cjs b/dist/data-sources/RpcDataSource.cjs
-index a30b5e647f38e2c1ccb7afa4dbdd58fa24aa59c5..b7e2fe62a4138f278cfb5eb48e07fdea6d756e5e 100644
+index a30b5e647f38e2c1ccb7afa4dbdd58fa24aa59c5..0c6e41f07f12844c32ddfe1423b21562ecf50433 100644
 --- a/dist/data-sources/RpcDataSource.cjs
 +++ b/dist/data-sources/RpcDataSource.cjs
-@@ -646,31 +646,25 @@ _RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated =
+@@ -13,7 +13,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+ var __importDefault = (this && this.__importDefault) || function (mod) {
+     return (mod && mod.__esModule) ? mod : { "default": mod };
+ };
+-var _RpcDataSource_instances, _RpcDataSource_messenger, _RpcDataSource_onActiveChainsUpdated, _RpcDataSource_getNativeAssetForChain, _RpcDataSource_timeout, _RpcDataSource_tokenDetectionEnabled, _RpcDataSource_useExternalService, _RpcDataSource_isOnboarded, _RpcDataSource_activeChains, _RpcDataSource_chainStatuses, _RpcDataSource_providerCache, _RpcDataSource_activeSubscriptions, _RpcDataSource_unsubscribeTransactionConfirmed, _RpcDataSource_unsubscribeIncomingTransactions, _RpcDataSource_multicallClient, _RpcDataSource_balanceFetcher, _RpcDataSource_tokenDetector, _RpcDataSource_convertToHumanReadable, _RpcDataSource_collectMetadataForBalances, _RpcDataSource_hasValidDecimals, _RpcDataSource_pickValidDecimals, _RpcDataSource_handleBalanceUpdate, _RpcDataSource_handleDetectionUpdate, _RpcDataSource_subscribeToNetworkController, _RpcDataSource_subscribeToTransactionEvents, _RpcDataSource_onTransactionConfirmed, _RpcDataSource_onIncomingTransactions, _RpcDataSource_refreshBalanceForChains, _RpcDataSource_initializeFromNetworkController, _RpcDataSource_updateFromNetworkState, _RpcDataSource_getProvider, _RpcDataSource_getMulticallProvider, _RpcDataSource_clearProviderCache, _RpcDataSource_fetchDecimalsViaRpc, _RpcDataSource_getExistingAssetsMetadata;
++var _RpcDataSource_instances, _RpcDataSource_messenger, _RpcDataSource_onActiveChainsUpdated, _RpcDataSource_getNativeAssetForChain, _RpcDataSource_timeout, _RpcDataSource_tokenDetectionEnabled, _RpcDataSource_useExternalService, _RpcDataSource_isOnboarded, _RpcDataSource_activeChains, _RpcDataSource_chainStatuses, _RpcDataSource_providerCache, _RpcDataSource_activeSubscriptions, _RpcDataSource_unsubscribeTransactionConfirmed, _RpcDataSource_multicallClient, _RpcDataSource_balanceFetcher, _RpcDataSource_tokenDetector, _RpcDataSource_convertToHumanReadable, _RpcDataSource_collectMetadataForBalances, _RpcDataSource_hasValidDecimals, _RpcDataSource_getAssetType, _RpcDataSource_pickValidDecimals, _RpcDataSource_handleBalanceUpdate, _RpcDataSource_handleDetectionUpdate, _RpcDataSource_subscribeToNetworkController, _RpcDataSource_subscribeToTransactionEvents, _RpcDataSource_onTransactionConfirmed, _RpcDataSource_refreshBalanceForChains, _RpcDataSource_initializeFromNetworkController, _RpcDataSource_updateFromNetworkState, _RpcDataSource_getProvider, _RpcDataSource_getMulticallProvider, _RpcDataSource_clearProviderCache, _RpcDataSource_fetchDecimalsViaRpc, _RpcDataSource_getExistingAssetsMetadata;
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.createRpcDataSource = exports.RpcDataSource = exports.caipChainIdToHex = void 0;
+ const providers_1 = require("@ethersproject/providers");
+@@ -84,7 +84,6 @@ class RpcDataSource extends AbstractDataSource_1.AbstractDataSource {
+         /** Active subscriptions by ID */
+         _RpcDataSource_activeSubscriptions.set(this, new Map());
+         _RpcDataSource_unsubscribeTransactionConfirmed.set(this, undefined);
+-        _RpcDataSource_unsubscribeIncomingTransactions.set(this, undefined);
+         // Rpc-datasource components
+         _RpcDataSource_multicallClient.set(this, void 0);
+         _RpcDataSource_balanceFetcher.set(this, void 0);
+@@ -260,7 +259,7 @@ class RpcDataSource extends AbstractDataSource_1.AbstractDataSource {
+                             const parsed = (0, utils_1.parseCaipAssetType)(assetId);
+                             const assetChainId = `${parsed.chain.namespace}:${parsed.chain.reference}`;
+                             if (assetChainId === chainId &&
+-                                parsed.assetNamespace === 'erc20') {
++                                __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_getAssetType).call(this, assetId) === 'erc20') {
+                                 const tokenAddress = parsed.assetReference.toLowerCase();
+                                 const normalizedId = (0, utils_2.normalizeAssetId)(assetId);
+                                 const decimals = existingMetadata[normalizedId]?.decimals;
+@@ -300,7 +299,7 @@ class RpcDataSource extends AbstractDataSource_1.AbstractDataSource {
+                         let decimals = __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_pickValidDecimals).call(this, stateMetadata, pipelineMetadata);
+                         if (decimals === undefined) {
+                             const parsed = (0, utils_1.parseCaipAssetType)(balance.assetId);
+-                            if (parsed.assetNamespace === 'erc20') {
++                            if (__classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_getAssetType).call(this, balance.assetId) === 'erc20') {
+                                 decimals = await __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_fetchDecimalsViaRpc).call(this, chainId, parsed.assetReference);
+                             }
+                         }
+@@ -404,7 +403,7 @@ class RpcDataSource extends AbstractDataSource_1.AbstractDataSource {
+             for (const asset of result.detectedAssets) {
+                 if (asset.symbol && asset.decimals !== undefined) {
+                     assetsInfo[asset.assetId] = {
+-                        type: 'erc20',
++                        type: __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_getAssetType).call(this, asset.assetId),
+                         symbol: asset.symbol,
+                         name: asset.name ?? asset.symbol,
+                         decimals: asset.decimals,
+@@ -612,7 +611,6 @@ class RpcDataSource extends AbstractDataSource_1.AbstractDataSource {
+     destroy() {
+         log('Destroying RpcDataSource');
+         __classPrivateFieldGet(this, _RpcDataSource_unsubscribeTransactionConfirmed, "f")?.call(this);
+-        __classPrivateFieldGet(this, _RpcDataSource_unsubscribeIncomingTransactions, "f")?.call(this);
+         // Stop all polling
+         __classPrivateFieldGet(this, _RpcDataSource_balanceFetcher, "f").stopAllPolling();
+         __classPrivateFieldGet(this, _RpcDataSource_tokenDetector, "f").stopAllPolling();
+@@ -623,7 +621,7 @@ class RpcDataSource extends AbstractDataSource_1.AbstractDataSource {
+     }
+ }
+ exports.RpcDataSource = RpcDataSource;
+-_RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated = new WeakMap(), _RpcDataSource_getNativeAssetForChain = new WeakMap(), _RpcDataSource_timeout = new WeakMap(), _RpcDataSource_tokenDetectionEnabled = new WeakMap(), _RpcDataSource_useExternalService = new WeakMap(), _RpcDataSource_isOnboarded = new WeakMap(), _RpcDataSource_activeChains = new WeakMap(), _RpcDataSource_chainStatuses = new WeakMap(), _RpcDataSource_providerCache = new WeakMap(), _RpcDataSource_activeSubscriptions = new WeakMap(), _RpcDataSource_unsubscribeTransactionConfirmed = new WeakMap(), _RpcDataSource_unsubscribeIncomingTransactions = new WeakMap(), _RpcDataSource_multicallClient = new WeakMap(), _RpcDataSource_balanceFetcher = new WeakMap(), _RpcDataSource_tokenDetector = new WeakMap(), _RpcDataSource_instances = new WeakSet(), _RpcDataSource_convertToHumanReadable = function _RpcDataSource_convertToHumanReadable(rawBalance, decimals) {
++_RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated = new WeakMap(), _RpcDataSource_getNativeAssetForChain = new WeakMap(), _RpcDataSource_timeout = new WeakMap(), _RpcDataSource_tokenDetectionEnabled = new WeakMap(), _RpcDataSource_useExternalService = new WeakMap(), _RpcDataSource_isOnboarded = new WeakMap(), _RpcDataSource_activeChains = new WeakMap(), _RpcDataSource_chainStatuses = new WeakMap(), _RpcDataSource_providerCache = new WeakMap(), _RpcDataSource_activeSubscriptions = new WeakMap(), _RpcDataSource_unsubscribeTransactionConfirmed = new WeakMap(), _RpcDataSource_multicallClient = new WeakMap(), _RpcDataSource_balanceFetcher = new WeakMap(), _RpcDataSource_tokenDetector = new WeakMap(), _RpcDataSource_instances = new WeakSet(), _RpcDataSource_convertToHumanReadable = function _RpcDataSource_convertToHumanReadable(rawBalance, decimals) {
+     if (!Number.isFinite(decimals) || decimals < 0) {
+         log('Invalid decimals — defaulting balance to "0"', {
+             rawBalance,
+@@ -645,7 +643,8 @@ _RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated =
+     for (const balance of balances) {
          const existingMeta = existingMetadata[balance.assetId];
          const isNative = existingMeta?.type === 'native' ||
-             balance.assetId.toLowerCase() === nativeAssetId?.toLowerCase();
--        if (isNative) {
--            // Prefer existing (richer) metadata in state — it may have been
--            // enriched by the price/info API with image, description, etc.
--            // Only emit a minimal stub when there's nothing in state yet,
--            // so we don't clobber that richer metadata on every balance refresh.
--            if (__classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_hasValidDecimals).call(this, existingMeta)) {
--                assetsInfo[balance.assetId] = existingMeta;
--            }
--            else {
--                const chainStatus = __classPrivateFieldGet(this, _RpcDataSource_chainStatuses, "f")[chainId];
--                if (chainStatus) {
--                    assetsInfo[balance.assetId] = {
--                        type: 'native',
--                        symbol: chainStatus.nativeCurrency,
--                        name: chainStatus.nativeCurrency,
--                        decimals: 18,
--                    };
--                }
-+        if (isNative && !__classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_hasValidDecimals).call(this, existingMeta)) {
-+            // Only emit a stub when no valid metadata exists in state yet.
-+            // Re-emitting existing metadata into the response would overwrite
-+            // richer entries (e.g. image/description added by AccountsAPI) with
-+            // a simpler stub on every balance poll cycle.
-+            const chainStatus = __classPrivateFieldGet(this, _RpcDataSource_chainStatuses, "f")[chainId];
-+            if (chainStatus) {
-+                assetsInfo[balance.assetId] = {
-+                    type: 'native',
-+                    symbol: chainStatus.nativeCurrency,
-+                    name: chainStatus.nativeCurrency,
-+                    decimals: 18,
-+                };
-             }
-         }
--        else if (existingMeta) {
--            // For ERC20 tokens, use existing metadata from state if available.
--            // Unknown ERC-20s are omitted until TokenDataSource enriches them.
--            assetsInfo[balance.assetId] = existingMeta;
--        }
-+        // For ERC-20 tokens and native tokens with existing valid metadata:
-+        // do not re-emit — the existing state entry is already correct.
-+        // Decimals for balance conversion are resolved via stateMetadata in
-+        // the callers (pickValidDecimals(stateMetadata, pipelineMetadata)).
-     }
+-            balance.assetId.toLowerCase() === nativeAssetId?.toLowerCase();
++            balance.assetId.toLowerCase() === nativeAssetId?.toLowerCase() ||
++            __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_getAssetType).call(this, balance.assetId) === 'native';
+         if (isNative) {
+             // Prefer existing (richer) metadata in state — it may have been
+             // enriched by the price/info API with image, description, etc.
+@@ -675,6 +674,25 @@ _RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated =
      return assetsInfo;
  }, _RpcDataSource_hasValidDecimals = function _RpcDataSource_hasValidDecimals(metadata) {
+     return Boolean(metadata && Number.isFinite(metadata.decimals) && metadata.decimals >= 0);
++}, _RpcDataSource_getAssetType = function _RpcDataSource_getAssetType(assetId) {
++    const parsed = (0, utils_1.parseCaipAssetType)(assetId);
++    if (parsed.assetNamespace === 'slip44') {
++        return 'native';
++    }
++    if (parsed.assetNamespace === 'erc20' &&
++        parsed.assetReference === constants_1.ZERO_ADDRESS) {
++        return 'native';
++    }
++    const chainId = `${parsed.chain.namespace}:${parsed.chain.reference}`;
++    const nativeId = __classPrivateFieldGet(this, _RpcDataSource_getNativeAssetForChain, "f").call(this, chainId);
++    if (nativeId?.toLowerCase() === assetId.toLowerCase()) {
++        return 'native';
++    }
++    if (parsed.chain.namespace === 'solana' &&
++        parsed.assetNamespace === 'token') {
++        return 'spl';
++    }
++    return 'erc20';
+ }, _RpcDataSource_pickValidDecimals = function _RpcDataSource_pickValidDecimals(...metadatas) {
+     for (const metadata of metadatas) {
+         if (__classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_hasValidDecimals).call(this, metadata)) {
+@@ -749,7 +767,7 @@ async function _RpcDataSource_handleBalanceUpdate(result) {
+             // Only include if we have metadata (symbol and decimals at minimum)
+             if (asset.symbol && asset.decimals !== undefined) {
+                 newMetadata[asset.assetId] = {
+-                    type: 'erc20',
++                    type: __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_getAssetType).call(this, asset.assetId),
+                     symbol: asset.symbol,
+                     name: asset.name ?? asset.symbol,
+                     decimals: asset.decimals,
+@@ -806,8 +824,6 @@ async function _RpcDataSource_handleBalanceUpdate(result) {
+ }, _RpcDataSource_subscribeToTransactionEvents = function _RpcDataSource_subscribeToTransactionEvents() {
+     const unsubConfirmed = __classPrivateFieldGet(this, _RpcDataSource_messenger, "f").subscribe('TransactionController:transactionConfirmed', __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_onTransactionConfirmed).bind(this));
+     __classPrivateFieldSet(this, _RpcDataSource_unsubscribeTransactionConfirmed, typeof unsubConfirmed === 'function' ? unsubConfirmed : undefined, "f");
+-    const unsubIncoming = __classPrivateFieldGet(this, _RpcDataSource_messenger, "f").subscribe('TransactionController:incomingTransactionsReceived', __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_onIncomingTransactions).bind(this));
+-    __classPrivateFieldSet(this, _RpcDataSource_unsubscribeIncomingTransactions, typeof unsubIncoming === 'function' ? unsubIncoming : undefined, "f");
+ }, _RpcDataSource_onTransactionConfirmed = function _RpcDataSource_onTransactionConfirmed(payload) {
+     const hexChainId = payload?.chainId;
+     if (!hexChainId) {
+@@ -817,15 +833,6 @@ async function _RpcDataSource_handleBalanceUpdate(result) {
+     __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_refreshBalanceForChains).call(this, [caipChainId]).catch((error) => {
+         log('Failed to refresh balance after transaction confirmed', { error });
+     });
+-}, _RpcDataSource_onIncomingTransactions = function _RpcDataSource_onIncomingTransactions(payload) {
+-    const chainIds = Array.from(new Set((payload ?? [])
+-        .map((item) => item?.chainId)
+-        .filter((id) => Boolean(id))));
+-    const caipChainIds = chainIds.map((hexChainId) => `eip155:${parseInt(hexChainId, 16)}`);
+-    const toRefresh = caipChainIds.length > 0 ? caipChainIds : [...__classPrivateFieldGet(this, _RpcDataSource_activeChains, "f")];
+-    __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_refreshBalanceForChains).call(this, toRefresh).catch((error) => {
+-        log('Failed to refresh balance after incoming transactions', { error });
+-    });
+ }, _RpcDataSource_refreshBalanceForChains = 
+ /**
+  * Fetch balances for the given chains across all active subscriptions and
 diff --git a/dist/data-sources/RpcDataSource.mjs b/dist/data-sources/RpcDataSource.mjs
-index 282d9110825cb2fc7790c7ba66226a68eb6523f6..a38293795df8ce035252c08c9ae00101fb28bfb1 100644
+index 282d9110825cb2fc7790c7ba66226a68eb6523f6..39e0ad823624304e066500287955c73ff910f8bd 100644
 --- a/dist/data-sources/RpcDataSource.mjs
 +++ b/dist/data-sources/RpcDataSource.mjs
-@@ -638,31 +638,25 @@ _RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated =
+@@ -9,7 +9,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+ };
+-var _RpcDataSource_instances, _RpcDataSource_messenger, _RpcDataSource_onActiveChainsUpdated, _RpcDataSource_getNativeAssetForChain, _RpcDataSource_timeout, _RpcDataSource_tokenDetectionEnabled, _RpcDataSource_useExternalService, _RpcDataSource_isOnboarded, _RpcDataSource_activeChains, _RpcDataSource_chainStatuses, _RpcDataSource_providerCache, _RpcDataSource_activeSubscriptions, _RpcDataSource_unsubscribeTransactionConfirmed, _RpcDataSource_unsubscribeIncomingTransactions, _RpcDataSource_multicallClient, _RpcDataSource_balanceFetcher, _RpcDataSource_tokenDetector, _RpcDataSource_convertToHumanReadable, _RpcDataSource_collectMetadataForBalances, _RpcDataSource_hasValidDecimals, _RpcDataSource_pickValidDecimals, _RpcDataSource_handleBalanceUpdate, _RpcDataSource_handleDetectionUpdate, _RpcDataSource_subscribeToNetworkController, _RpcDataSource_subscribeToTransactionEvents, _RpcDataSource_onTransactionConfirmed, _RpcDataSource_onIncomingTransactions, _RpcDataSource_refreshBalanceForChains, _RpcDataSource_initializeFromNetworkController, _RpcDataSource_updateFromNetworkState, _RpcDataSource_getProvider, _RpcDataSource_getMulticallProvider, _RpcDataSource_clearProviderCache, _RpcDataSource_fetchDecimalsViaRpc, _RpcDataSource_getExistingAssetsMetadata;
++var _RpcDataSource_instances, _RpcDataSource_messenger, _RpcDataSource_onActiveChainsUpdated, _RpcDataSource_getNativeAssetForChain, _RpcDataSource_timeout, _RpcDataSource_tokenDetectionEnabled, _RpcDataSource_useExternalService, _RpcDataSource_isOnboarded, _RpcDataSource_activeChains, _RpcDataSource_chainStatuses, _RpcDataSource_providerCache, _RpcDataSource_activeSubscriptions, _RpcDataSource_unsubscribeTransactionConfirmed, _RpcDataSource_multicallClient, _RpcDataSource_balanceFetcher, _RpcDataSource_tokenDetector, _RpcDataSource_convertToHumanReadable, _RpcDataSource_collectMetadataForBalances, _RpcDataSource_hasValidDecimals, _RpcDataSource_getAssetType, _RpcDataSource_pickValidDecimals, _RpcDataSource_handleBalanceUpdate, _RpcDataSource_handleDetectionUpdate, _RpcDataSource_subscribeToNetworkController, _RpcDataSource_subscribeToTransactionEvents, _RpcDataSource_onTransactionConfirmed, _RpcDataSource_refreshBalanceForChains, _RpcDataSource_initializeFromNetworkController, _RpcDataSource_updateFromNetworkState, _RpcDataSource_getProvider, _RpcDataSource_getMulticallProvider, _RpcDataSource_clearProviderCache, _RpcDataSource_fetchDecimalsViaRpc, _RpcDataSource_getExistingAssetsMetadata;
+ import { Web3Provider } from "@ethersproject/providers";
+ import { toHex } from "@metamask/controller-utils";
+ import { isStrictHexString, isCaipChainId, parseCaipAssetType, parseCaipChainId } from "@metamask/utils";
+@@ -77,7 +77,6 @@ export class RpcDataSource extends AbstractDataSource {
+         /** Active subscriptions by ID */
+         _RpcDataSource_activeSubscriptions.set(this, new Map());
+         _RpcDataSource_unsubscribeTransactionConfirmed.set(this, undefined);
+-        _RpcDataSource_unsubscribeIncomingTransactions.set(this, undefined);
+         // Rpc-datasource components
+         _RpcDataSource_multicallClient.set(this, void 0);
+         _RpcDataSource_balanceFetcher.set(this, void 0);
+@@ -253,7 +252,7 @@ export class RpcDataSource extends AbstractDataSource {
+                             const parsed = parseCaipAssetType(assetId);
+                             const assetChainId = `${parsed.chain.namespace}:${parsed.chain.reference}`;
+                             if (assetChainId === chainId &&
+-                                parsed.assetNamespace === 'erc20') {
++                                __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_getAssetType).call(this, assetId) === 'erc20') {
+                                 const tokenAddress = parsed.assetReference.toLowerCase();
+                                 const normalizedId = normalizeAssetId(assetId);
+                                 const decimals = existingMetadata[normalizedId]?.decimals;
+@@ -293,7 +292,7 @@ export class RpcDataSource extends AbstractDataSource {
+                         let decimals = __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_pickValidDecimals).call(this, stateMetadata, pipelineMetadata);
+                         if (decimals === undefined) {
+                             const parsed = parseCaipAssetType(balance.assetId);
+-                            if (parsed.assetNamespace === 'erc20') {
++                            if (__classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_getAssetType).call(this, balance.assetId) === 'erc20') {
+                                 decimals = await __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_fetchDecimalsViaRpc).call(this, chainId, parsed.assetReference);
+                             }
+                         }
+@@ -397,7 +396,7 @@ export class RpcDataSource extends AbstractDataSource {
+             for (const asset of result.detectedAssets) {
+                 if (asset.symbol && asset.decimals !== undefined) {
+                     assetsInfo[asset.assetId] = {
+-                        type: 'erc20',
++                        type: __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_getAssetType).call(this, asset.assetId),
+                         symbol: asset.symbol,
+                         name: asset.name ?? asset.symbol,
+                         decimals: asset.decimals,
+@@ -605,7 +604,6 @@ export class RpcDataSource extends AbstractDataSource {
+     destroy() {
+         log('Destroying RpcDataSource');
+         __classPrivateFieldGet(this, _RpcDataSource_unsubscribeTransactionConfirmed, "f")?.call(this);
+-        __classPrivateFieldGet(this, _RpcDataSource_unsubscribeIncomingTransactions, "f")?.call(this);
+         // Stop all polling
+         __classPrivateFieldGet(this, _RpcDataSource_balanceFetcher, "f").stopAllPolling();
+         __classPrivateFieldGet(this, _RpcDataSource_tokenDetector, "f").stopAllPolling();
+@@ -615,7 +613,7 @@ export class RpcDataSource extends AbstractDataSource {
+         __classPrivateFieldGet(this, _RpcDataSource_providerCache, "f").clear();
+     }
+ }
+-_RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated = new WeakMap(), _RpcDataSource_getNativeAssetForChain = new WeakMap(), _RpcDataSource_timeout = new WeakMap(), _RpcDataSource_tokenDetectionEnabled = new WeakMap(), _RpcDataSource_useExternalService = new WeakMap(), _RpcDataSource_isOnboarded = new WeakMap(), _RpcDataSource_activeChains = new WeakMap(), _RpcDataSource_chainStatuses = new WeakMap(), _RpcDataSource_providerCache = new WeakMap(), _RpcDataSource_activeSubscriptions = new WeakMap(), _RpcDataSource_unsubscribeTransactionConfirmed = new WeakMap(), _RpcDataSource_unsubscribeIncomingTransactions = new WeakMap(), _RpcDataSource_multicallClient = new WeakMap(), _RpcDataSource_balanceFetcher = new WeakMap(), _RpcDataSource_tokenDetector = new WeakMap(), _RpcDataSource_instances = new WeakSet(), _RpcDataSource_convertToHumanReadable = function _RpcDataSource_convertToHumanReadable(rawBalance, decimals) {
++_RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated = new WeakMap(), _RpcDataSource_getNativeAssetForChain = new WeakMap(), _RpcDataSource_timeout = new WeakMap(), _RpcDataSource_tokenDetectionEnabled = new WeakMap(), _RpcDataSource_useExternalService = new WeakMap(), _RpcDataSource_isOnboarded = new WeakMap(), _RpcDataSource_activeChains = new WeakMap(), _RpcDataSource_chainStatuses = new WeakMap(), _RpcDataSource_providerCache = new WeakMap(), _RpcDataSource_activeSubscriptions = new WeakMap(), _RpcDataSource_unsubscribeTransactionConfirmed = new WeakMap(), _RpcDataSource_multicallClient = new WeakMap(), _RpcDataSource_balanceFetcher = new WeakMap(), _RpcDataSource_tokenDetector = new WeakMap(), _RpcDataSource_instances = new WeakSet(), _RpcDataSource_convertToHumanReadable = function _RpcDataSource_convertToHumanReadable(rawBalance, decimals) {
+     if (!Number.isFinite(decimals) || decimals < 0) {
+         log('Invalid decimals — defaulting balance to "0"', {
+             rawBalance,
+@@ -637,7 +635,8 @@ _RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated =
+     for (const balance of balances) {
          const existingMeta = existingMetadata[balance.assetId];
          const isNative = existingMeta?.type === 'native' ||
-             balance.assetId.toLowerCase() === nativeAssetId?.toLowerCase();
--        if (isNative) {
--            // Prefer existing (richer) metadata in state — it may have been
--            // enriched by the price/info API with image, description, etc.
--            // Only emit a minimal stub when there's nothing in state yet,
--            // so we don't clobber that richer metadata on every balance refresh.
--            if (__classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_hasValidDecimals).call(this, existingMeta)) {
--                assetsInfo[balance.assetId] = existingMeta;
--            }
--            else {
--                const chainStatus = __classPrivateFieldGet(this, _RpcDataSource_chainStatuses, "f")[chainId];
--                if (chainStatus) {
--                    assetsInfo[balance.assetId] = {
--                        type: 'native',
--                        symbol: chainStatus.nativeCurrency,
--                        name: chainStatus.nativeCurrency,
--                        decimals: 18,
--                    };
--                }
-+        if (isNative && !__classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_hasValidDecimals).call(this, existingMeta)) {
-+            // Only emit a stub when no valid metadata exists in state yet.
-+            // Re-emitting existing metadata into the response would overwrite
-+            // richer entries (e.g. image/description added by AccountsAPI) with
-+            // a simpler stub on every balance poll cycle.
-+            const chainStatus = __classPrivateFieldGet(this, _RpcDataSource_chainStatuses, "f")[chainId];
-+            if (chainStatus) {
-+                assetsInfo[balance.assetId] = {
-+                    type: 'native',
-+                    symbol: chainStatus.nativeCurrency,
-+                    name: chainStatus.nativeCurrency,
-+                    decimals: 18,
-+                };
-             }
-         }
--        else if (existingMeta) {
--            // For ERC20 tokens, use existing metadata from state if available.
--            // Unknown ERC-20s are omitted until TokenDataSource enriches them.
--            assetsInfo[balance.assetId] = existingMeta;
--        }
-+        // For ERC-20 tokens and native tokens with existing valid metadata:
-+        // do not re-emit — the existing state entry is already correct.
-+        // Decimals for balance conversion are resolved via stateMetadata in
-+        // the callers (pickValidDecimals(stateMetadata, pipelineMetadata)).
-     }
+-            balance.assetId.toLowerCase() === nativeAssetId?.toLowerCase();
++            balance.assetId.toLowerCase() === nativeAssetId?.toLowerCase() ||
++            __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_getAssetType).call(this, balance.assetId) === 'native';
+         if (isNative) {
+             // Prefer existing (richer) metadata in state — it may have been
+             // enriched by the price/info API with image, description, etc.
+@@ -667,6 +666,25 @@ _RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated =
      return assetsInfo;
  }, _RpcDataSource_hasValidDecimals = function _RpcDataSource_hasValidDecimals(metadata) {
+     return Boolean(metadata && Number.isFinite(metadata.decimals) && metadata.decimals >= 0);
++}, _RpcDataSource_getAssetType = function _RpcDataSource_getAssetType(assetId) {
++    const parsed = parseCaipAssetType(assetId);
++    if (parsed.assetNamespace === 'slip44') {
++        return 'native';
++    }
++    if (parsed.assetNamespace === 'erc20' &&
++        parsed.assetReference === ZERO_ADDRESS) {
++        return 'native';
++    }
++    const chainId = `${parsed.chain.namespace}:${parsed.chain.reference}`;
++    const nativeId = __classPrivateFieldGet(this, _RpcDataSource_getNativeAssetForChain, "f").call(this, chainId);
++    if (nativeId?.toLowerCase() === assetId.toLowerCase()) {
++        return 'native';
++    }
++    if (parsed.chain.namespace === 'solana' &&
++        parsed.assetNamespace === 'token') {
++        return 'spl';
++    }
++    return 'erc20';
+ }, _RpcDataSource_pickValidDecimals = function _RpcDataSource_pickValidDecimals(...metadatas) {
+     for (const metadata of metadatas) {
+         if (__classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_hasValidDecimals).call(this, metadata)) {
+@@ -741,7 +759,7 @@ async function _RpcDataSource_handleBalanceUpdate(result) {
+             // Only include if we have metadata (symbol and decimals at minimum)
+             if (asset.symbol && asset.decimals !== undefined) {
+                 newMetadata[asset.assetId] = {
+-                    type: 'erc20',
++                    type: __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_getAssetType).call(this, asset.assetId),
+                     symbol: asset.symbol,
+                     name: asset.name ?? asset.symbol,
+                     decimals: asset.decimals,
+@@ -798,8 +816,6 @@ async function _RpcDataSource_handleBalanceUpdate(result) {
+ }, _RpcDataSource_subscribeToTransactionEvents = function _RpcDataSource_subscribeToTransactionEvents() {
+     const unsubConfirmed = __classPrivateFieldGet(this, _RpcDataSource_messenger, "f").subscribe('TransactionController:transactionConfirmed', __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_onTransactionConfirmed).bind(this));
+     __classPrivateFieldSet(this, _RpcDataSource_unsubscribeTransactionConfirmed, typeof unsubConfirmed === 'function' ? unsubConfirmed : undefined, "f");
+-    const unsubIncoming = __classPrivateFieldGet(this, _RpcDataSource_messenger, "f").subscribe('TransactionController:incomingTransactionsReceived', __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_onIncomingTransactions).bind(this));
+-    __classPrivateFieldSet(this, _RpcDataSource_unsubscribeIncomingTransactions, typeof unsubIncoming === 'function' ? unsubIncoming : undefined, "f");
+ }, _RpcDataSource_onTransactionConfirmed = function _RpcDataSource_onTransactionConfirmed(payload) {
+     const hexChainId = payload?.chainId;
+     if (!hexChainId) {
+@@ -809,15 +825,6 @@ async function _RpcDataSource_handleBalanceUpdate(result) {
+     __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_refreshBalanceForChains).call(this, [caipChainId]).catch((error) => {
+         log('Failed to refresh balance after transaction confirmed', { error });
+     });
+-}, _RpcDataSource_onIncomingTransactions = function _RpcDataSource_onIncomingTransactions(payload) {
+-    const chainIds = Array.from(new Set((payload ?? [])
+-        .map((item) => item?.chainId)
+-        .filter((id) => Boolean(id))));
+-    const caipChainIds = chainIds.map((hexChainId) => `eip155:${parseInt(hexChainId, 16)}`);
+-    const toRefresh = caipChainIds.length > 0 ? caipChainIds : [...__classPrivateFieldGet(this, _RpcDataSource_activeChains, "f")];
+-    __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_refreshBalanceForChains).call(this, toRefresh).catch((error) => {
+-        log('Failed to refresh balance after incoming transactions', { error });
+-    });
+ }, _RpcDataSource_refreshBalanceForChains = 
+ /**
+  * Fetch balances for the given chains across all active subscriptions and

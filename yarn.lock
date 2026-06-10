@@ -5833,7 +5833,7 @@ __metadata:
 
 "@metamask/assets-controller@patch:@metamask/assets-controller@npm%3A8.3.2#~/.yarn/patches/@metamask-assets-controller-npm-8.3.2-f205cdbfee.patch":
   version: 8.3.2
-  resolution: "@metamask/assets-controller@patch:@metamask/assets-controller@npm%3A8.3.2#~/.yarn/patches/@metamask-assets-controller-npm-8.3.2-f205cdbfee.patch::version=8.3.2&hash=c59100"
+  resolution: "@metamask/assets-controller@patch:@metamask/assets-controller@npm%3A8.3.2#~/.yarn/patches/@metamask-assets-controller-npm-8.3.2-f205cdbfee.patch::version=8.3.2&hash=64a878"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5864,7 +5864,7 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     lodash: "npm:^4.17.21"
     p-limit: "npm:^3.1.0"
-  checksum: 10/4419ca03648c4a6b2537631e9639cf199b1f1ba85abcb857d50a4f296d11f79413072fcfbc52a2bdfed187081f52390b257bdfb583ff13aa72c3f947215aaceb
+  checksum: 10/dcfe106935cc704e87e74724aa7b97890b4945f81c382a042b7d9d1d8ff86a784bd9be3a62ba044f50d67537b691d7a6d385b460f98eee32075ae3231daef176
   languageName: node
   linkType: hard
 
