@@ -13,6 +13,7 @@ import {
   IconName,
   IconSize,
   IconColor,
+  Skeleton,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -20,8 +21,6 @@ import { TransactionCard } from '../transaction-card';
 import { PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS } from '../../../../../shared/constants/perps';
 import { PERPS_EVENT_VALUE } from '../../../../../shared/constants/perps-events';
 import { PERPS_ACTIVITY_ROUTE } from '../../../../helpers/constants/routes';
-import { BorderRadius } from '../../../../helpers/constants/design-system';
-import { Skeleton } from '../../../component-library/skeleton';
 import { PerpsCardSkeleton } from '../perps-skeletons/perps-card-skeleton';
 import type { PerpsTransaction } from '../types';
 
@@ -84,8 +83,8 @@ export const PerpsRecentActivity = ({
           paddingTop={3}
           paddingBottom={3}
         >
-          <Skeleton className="h-5 w-36" borderRadius={BorderRadius.SM} />
-          <Skeleton className="h-4 w-14" borderRadius={BorderRadius.SM} />
+          <Skeleton className="h-5 w-36 rounded" />
+          <Skeleton className="h-4 w-14 rounded" />
         </Box>
         <Box flexDirection={BoxFlexDirection.Column}>
           {[1, 2, 3].map((cardIndex) => (
