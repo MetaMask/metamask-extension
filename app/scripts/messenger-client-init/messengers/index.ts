@@ -73,13 +73,6 @@ import {
   getAccountTreeControllerInitMessenger,
   getMultichainAccountServiceMessenger,
   getMultichainAccountServiceInitMessenger,
-<<<<<<< HEAD
-  getSnapKeyringBuilderMessenger,
-  getSnapKeyringBuilderInitMessenger,
-  getSnapKeyringV2BuilderMessenger,
-  getSnapKeyringV2BuilderInitMessenger,
-=======
->>>>>>> main
   getSnapAccountServiceMessenger,
 } from './accounts';
 import {
@@ -630,17 +623,6 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getSnapInterfaceControllerMessenger,
     getInitMessenger: noop,
   },
-<<<<<<< HEAD
-  SnapKeyringBuilder: {
-    getMessenger: getSnapKeyringBuilderMessenger,
-    getInitMessenger: getSnapKeyringBuilderInitMessenger,
-  },
-  SnapKeyringV2Builder: {
-    getMessenger: getSnapKeyringV2BuilderMessenger,
-    getInitMessenger: getSnapKeyringV2BuilderInitMessenger,
-  },
-=======
->>>>>>> main
   StaticAssetsController: {
     getMessenger: getStaticAssetsControllerMessenger,
     getInitMessenger: getStaticAssetsControllerInitMessenger,

@@ -749,11 +749,7 @@ export default class MetamaskController extends EventEmitter {
     this.loggingController = messengerClientsByName.LoggingController;
     this.appMetadataController = messengerClientsByName.AppMetadataController;
     this.preferencesController = messengerClientsByName.PreferencesController;
-<<<<<<< HEAD
-    this.keyringController = messengerClientsByName.KeyringController;
-=======
     this.keyringController = this.wallet.getInstance('KeyringController');
->>>>>>> main
     this.snapAccountService = messengerClientsByName.SnapAccountService;
     this.accountsController = messengerClientsByName.AccountsController;
     this.addressBookController = messengerClientsByName.AddressBookController;
@@ -1026,10 +1022,6 @@ export default class MetamaskController extends EventEmitter {
           // If not, discovery will fallback to the primary keyring ID anyway.
           const id = selected?.options?.entropy?.id;
 
-<<<<<<< HEAD
-=======
-          await getSnapKeyring(this.controllerMessenger);
->>>>>>> main
           await this.accountTreeController.syncWithUserStorageAtLeastOnce();
 
           if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
@@ -2832,16 +2824,6 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // primary keyring management
-<<<<<<< HEAD
-      getSeedPhrase: this.getSeedPhrase.bind(this),
-      resetAccount: this.resetAccount.bind(this),
-      removeAccount: this.removeAccount.bind(this),
-      importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
-      getAccountsBySnapId: (snapId) =>
-        getAccountsBySnapId(this.controllerMessenger, snapId),
-      checkIsSeedlessPasswordOutdated:
-        this.checkIsSeedlessPasswordOutdated.bind(this),
-=======
       getSeedPhrase: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:getSeedPhrase',
@@ -2866,7 +2848,6 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
       ),
->>>>>>> main
       syncPasswordAndUnlockWallet: this.syncPasswordAndUnlockWallet.bind(this),
 
       // subscription
@@ -3212,10 +3193,6 @@ export default class MetamaskController extends EventEmitter {
           this.accountTreeController,
         ),
       syncAccountTreeWithUserStorage: async () => {
-<<<<<<< HEAD
-=======
-        await getSnapKeyring(this.controllerMessenger);
->>>>>>> main
         await this.accountTreeController.syncWithUserStorage();
       },
 
@@ -3916,27 +3893,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       setName: this.nameController.setName.bind(this.nameController),
 
-<<<<<<< HEAD
-      // SnapKeyring
-      createSnapAccount: async (snapId, options) => {
-        await this.controllerMessenger.call(
-          'SnapAccountService:ensureReady',
-          snapId,
-        );
-        return await this.keyringController.withKeyringV2(
-          {
-            filter: (keyring) =>
-              isSnapKeyring(keyring) && keyring.snapId === snapId,
-          },
-          async ({ keyring }) => {
-            const [account] = await keyring.createAccounts(options);
-            return account;
-          },
-        );
-      },
-
-=======
->>>>>>> main
       // Multichain Assets Controller
       multichainAddAssets: (assetIds, accountId) =>
         this.multichainAssetsController.addAssets(assetIds, accountId),
@@ -4966,13 +4922,6 @@ export default class MetamaskController extends EventEmitter {
 
       // Then we can build the initial tree.
       this.accountTreeController.reinit();
-<<<<<<< HEAD
-=======
-
-      // We "force-create" the Snap keyring right after now to ensure it is available as soon
-      // as possible after vault creation (enabling faster keyring access for future operations).
-      await getSnapKeyring(this.controllerMessenger);
->>>>>>> main
 
       return primaryKeyring;
     } finally {
@@ -5034,11 +4983,6 @@ export default class MetamaskController extends EventEmitter {
         throw new Error('No keyring id to discover accounts for');
       }
 
-<<<<<<< HEAD
-=======
-      // Ensure the snap keyring is initialized
-      await getSnapKeyring(this.controllerMessenger);
->>>>>>> main
       const wallet = this.multichainAccountService.getMultichainAccountWallet({
         entropySource: keyringIdToDiscover,
       });
@@ -5323,13 +5267,6 @@ export default class MetamaskController extends EventEmitter {
       // TODO: Remove this once the `accounts-controller` once only
       // depends only on keyrings `:stateChange`.
       this.accountTreeController.reinit();
-<<<<<<< HEAD
-=======
-
-      // We "force-create" the Snap keyring right after now to ensure it is available as soon
-      // as possible after vault creation (enabling faster keyring access for future operations).
-      await getSnapKeyring(this.controllerMessenger);
->>>>>>> main
 
       if (completedOnboarding) {
         // check if external services are enabled
@@ -5377,10 +5314,6 @@ export default class MetamaskController extends EventEmitter {
         },
       );
       if (isHdKeyring) {
-<<<<<<< HEAD
-=======
-        await getSnapKeyring(this.controllerMessenger);
->>>>>>> main
         await this.accountTreeController.syncWithUserStorageAtLeastOnce();
         await this.discoverAndCreateAccounts(metadata.id);
       }
@@ -5492,13 +5425,6 @@ export default class MetamaskController extends EventEmitter {
     // Force account-tree refresh after all accounts have been updated.
     this.accountTreeController.init();
 
-<<<<<<< HEAD
-=======
-    // We "force-create" the Snap keyring right after unlocking the vault to ensure it is
-    // available as soon as possible (enabling faster keyring access for future operations).
-    await getSnapKeyring(this.controllerMessenger);
-
->>>>>>> main
     const resyncAndAlignAccounts = async () => {
       // READ THIS CAREFULLY:
       // There is/was a bug with Snap accounts that can be desynchronized (Solana). To

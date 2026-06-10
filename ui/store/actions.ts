@@ -7964,19 +7964,6 @@ export async function sendMultichainTransaction(
   });
 }
 
-<<<<<<< HEAD
-export async function createSnapAccount(
-  snapId: SnapId,
-  options: Record<string, Json>,
-): Promise<InternalAccount> {
-  return await submitRequestToBackground<InternalAccount>('createSnapAccount', [
-    snapId,
-    options,
-  ]);
-}
-
-=======
->>>>>>> main
 export async function getCode(address: Hex, networkClientId: string) {
   return await submitRequestToBackground<string>('getCode', [
     address,
