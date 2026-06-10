@@ -79,7 +79,6 @@ export function Header({ item, onBack }: Props) {
 
   return (
     <HeaderBase
-      className="pb-8"
       startAccessory={
         <ButtonIcon
           iconName={IconName.ArrowLeft}

@@ -39,12 +39,11 @@ export function SwapDetails({
       </div>
       <Footer>
         <BlockExplorerButton chainId={item.chainId} txHash={item.data.hash} />
-        {'sourceToken' in item.data && (
-          <SwapAgainButton
-            sourceToken={item.data.sourceToken}
-            destinationToken={item.data.destinationToken}
-          />
-        )}
+
+        <SwapAgainButton
+          sourceToken={item.data.sourceToken}
+          destinationToken={item.data.destinationToken}
+        />
       </Footer>
     </div>
   );

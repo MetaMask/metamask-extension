@@ -29,10 +29,10 @@ export function DefaultDetails({ item }: { item: ActivityListItem }) {
             },
           ]}
         />
-
         <MetadataSection item={item} />
         <AmountsSection item={item} />
       </div>
+
       <Footer>
         <BlockExplorerButton chainId={item.chainId} txHash={item.data.hash} />
       </Footer>

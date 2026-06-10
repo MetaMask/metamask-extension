@@ -81,14 +81,14 @@ export function Row({
       data-testid={testId}
     >
       <Text
-        className="text-alternative"
+        className="text-alternative @compact:text-s-body-sm"
         data-testid="transaction-breakdown-row-title"
       >
         {label}
       </Text>
 
       <div
-        className="min-w-0 break-words text-right text-default"
+        className="min-w-0 break-words text-end @compact:text-s-body-sm"
         data-testid="transaction-breakdown-row-value"
       >
         {value}
@@ -102,7 +102,5 @@ export function Section({ children }: { children: ReactNode }) {
 }
 
 export function Footer({ children }: { children: ReactNode }) {
-  return (
-    <div className="mt-auto flex flex-col gap-3 pb-1 pt-3">{children}</div>
-  );
+  return <div className="mt-auto flex flex-col gap-4 pt-4">{children}</div>;
 }

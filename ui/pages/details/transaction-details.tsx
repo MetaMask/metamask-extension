@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { Box } from '@metamask/design-system-react';
 import { V1TransactionByHashResponse } from '@metamask/core-backend';
 import { useSelector } from 'react-redux';
 import { mapApiEvmTransactions } from '../../../shared/lib/activity/adapters/api-evm-transactions';
@@ -78,10 +77,14 @@ export function TransactionDetails({ chainId, txIdentifier, onBack }: Props) {
   ]);
 
   return (
-    <Box className="flex min-h-full flex-col bg-background-default p-4">
-      <Header item={transaction} onBack={onBack} />
+    <div className="flex h-full flex-col bg-background-default [container-name:list-item] [container-type:inline-size]">
+      <div className="shrink-0 px-4 py-4">
+        <Header item={transaction} onBack={onBack} />
+      </div>
 
-      <TemplateLoader item={transaction} />
-    </Box>
+      <div className="flex flex-col flex-1 overflow-y-auto px-4 pb-4">
+        <TemplateLoader item={transaction} />
+      </div>
+    </div>
   );
 }

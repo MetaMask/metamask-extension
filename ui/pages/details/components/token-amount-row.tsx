@@ -3,6 +3,7 @@ import {
   formatChainIdToHex,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
+import { Text } from '@metamask/design-system-react';
 import {
   applyDisplaySign,
   getDisplaySignPrefix,
@@ -54,20 +55,21 @@ export function TokenAmountRow({
   const avatar = <ActivityAvatar tokens={[token.assetId]} />;
 
   return (
-    <div className="flex items-center gap-4 py-4">
+    <div className="flex items-center gap-2">
       {hexChainId ? (
         <ChainBadge chainId={hexChainId}>{avatar}</ChainBadge>
       ) : (
         avatar
       )}
-      <p
-        className={`text-l-heading-lg leading-l-heading-lg tracking-l-heading-lg font-semibold ${
-          token.direction === 'in' ? 'text-success-default' : ''
-        }`}
+      <Text
+        variant="heading-lg"
+        color={
+          token.direction === 'in' ? 'text-success-default' : 'text-default'
+        }
         data-testid="transaction-list-item-primary-currency"
       >
         {formattedAmount}
-      </p>
+      </Text>
     </div>
   );
 }

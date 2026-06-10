@@ -23,6 +23,7 @@ export function NetworkName({ chainId }: { chainId: string }) {
   return (
     <div className="inline-flex items-center gap-2">
       <AvatarNetwork
+        className="rounded"
         size={AvatarNetworkSize.Xs}
         name={networkName}
         src={networkImage}

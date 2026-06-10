@@ -1,10 +1,5 @@
-import React from 'react';
-import {
-  Modal,
-  ModalContent,
-  ModalContentSize,
-  ModalOverlay,
-} from '../../components/component-library';
+import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { TransactionDetails } from './transaction-details';
 
 export function TransactionDetailsModal({
@@ -18,38 +13,38 @@ export function TransactionDetailsModal({
   txIdentifier: string | undefined;
   onClose: () => void;
 }) {
-  return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      isClosedOnOutsideClick={false}
-      className="transaction-details-modal"
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      // Next tick so the initial opacity:0 / translateY state is painted first
+      const id = requestAnimationFrame(() => setVisible(true));
+      return () => cancelAnimationFrame(id);
+    }
+    setVisible(false);
+    return undefined;
+  }, [isOpen]);
+
+  if (!isOpen) {
+    return null;
+  }
+
+  return createPortal(
+    <div
+      className="fixed inset-0 z-[9999] flex flex-col w-full max-w-[clamp(var(--width-sm),85vw,var(--width-max))] group-[.app--sidepanel]:max-w-[var(--width-max-sidepanel)] mx-auto"
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'scale(1)' : 'scale(0.97)',
+        transition:
+          'opacity 180ms cubic-bezier(0.4,0,0.2,1), transform 180ms cubic-bezier(0.4,0,0.2,1)',
+      }}
     >
-      <ModalOverlay />
-      <ModalContent
-        size={ModalContentSize.Lg}
-        style={{
-          alignItems: 'center',
-          height: '100vh',
-          justifyContent: 'flex-start',
-          padding: 0,
-        }}
-        modalDialogProps={{
-          className: 'overflow-y-auto rounded-none shadow-none p-0',
-          style: {
-            height: '100vh',
-            marginInline: 'auto',
-            maxHeight: '100vh',
-            width: 'clamp(320px, 100vw, var(--width-sm))',
-          },
-        }}
-      >
-        <TransactionDetails
-          chainId={chainId}
-          txIdentifier={txIdentifier}
-          onBack={onClose}
-        />
-      </ModalContent>
-    </Modal>
+      <TransactionDetails
+        chainId={chainId}
+        txIdentifier={txIdentifier}
+        onBack={onClose}
+      />
+    </div>,
+    document.body,
   );
 }

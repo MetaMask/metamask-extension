@@ -1,10 +1,9 @@
 import React from 'react';
-import { Text, TextColor } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 const statusConfig: Record<
   string,
-  { messageKey: string; color?: TextColor; testId: string }
+  { messageKey: string; className?: string; testId: string }
 > = {
   cancelled: {
     messageKey: 'cancelled',
@@ -12,12 +11,12 @@ const statusConfig: Record<
   },
   failed: {
     messageKey: 'failed',
-    color: TextColor.ErrorDefault,
+    className: 'text-error-default',
     testId: 'transaction-details-status-failed',
   },
   confirmed: {
     messageKey: 'confirmed',
-    color: TextColor.SuccessDefault,
+    className: 'text-success-default',
     testId: 'transaction-details-status-confirmed',
   },
   pending: {
@@ -26,7 +25,7 @@ const statusConfig: Record<
   },
   success: {
     messageKey: 'confirmed',
-    color: TextColor.SuccessDefault,
+    className: 'text-success-default',
     testId: 'transaction-details-status-success',
   },
 };
@@ -40,8 +39,8 @@ export function TransactionStatusLabel({ status }: { status: string }) {
   }
 
   return (
-    <Text color={config.color} data-testid={config.testId}>
+    <span className={config.className} data-testid={config.testId}>
       {t(config.messageKey)}
-    </Text>
+    </span>
   );
 }

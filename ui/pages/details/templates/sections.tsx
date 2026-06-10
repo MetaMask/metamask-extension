@@ -14,7 +14,7 @@ import { AccountName } from '../../../components/app/transaction/account-name';
 export function TokensSection({
   tokens,
 }: {
-  tokens: { label: string; token?: TokenAmount }[];
+  tokens: { label?: string; token?: TokenAmount }[];
 }) {
   const visibleTokens = tokens.flatMap(({ label, token }) =>
     token ? [{ label, token }] : [],
@@ -25,14 +25,14 @@ export function TokensSection({
   }
 
   return (
-    <Section>
+    <div className="flex flex-col gap-2 pb-4">
       {visibleTokens.map(({ label, token }) => (
-        <div key={label}>
-          <p className="text-alternative">{label}</p>
+        <div key={token?.assetId}>
+          {label && <p className="text-alternative mb-1">{label}</p>}
           <TokenAmountRow token={token} />
         </div>
       ))}
-    </Section>
+    </div>
   );
 }
 

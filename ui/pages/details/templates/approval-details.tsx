@@ -1,7 +1,6 @@
 import React from 'react';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { ActivityAvatar } from '../../../components/app/activity-list-item-avatar';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTokensData } from '../../../hooks/useTokensData';
 import { AmountsSection } from '../components/amounts-section';
 import { Footer } from '../components/shared';
@@ -18,7 +17,6 @@ const ApprovalTokenSection = ({
     }
   >;
 }) => {
-  const t = useI18nContext();
   const { token } = item.data;
   const tokenAssetId = token?.assetId;
   const tokensByAssetId = useTokensData(tokenAssetId ? [tokenAssetId] : []);
@@ -33,8 +31,6 @@ const ApprovalTokenSection = ({
 
   return (
     <section className="py-3">
-      <p className="text-alternative">{`${t('you')} ${t('approved').toLowerCase()}`}</p>
-
       <div className="flex items-center gap-3 py-4">
         <ActivityAvatar tokens={[token?.assetId]} />
 

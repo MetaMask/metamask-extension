@@ -52,13 +52,19 @@ function BridgeNetworkRow({
   return (
     <div className="inline-flex items-center gap-2">
       <AvatarNetwork
+        className="rounded"
         size={AvatarNetworkSize.Xs}
         name={fromName}
         src={fromSrc}
       />
       <span>{fromName}</span>
       <span>→</span>
-      <AvatarNetwork size={AvatarNetworkSize.Xs} name={toName} src={toSrc} />
+      <AvatarNetwork
+        className="rounded"
+        size={AvatarNetworkSize.Xs}
+        name={toName}
+        src={toSrc}
+      />
       <span>{toName}</span>
     </div>
   );
@@ -96,10 +102,10 @@ export function BridgeDetails({
   return (
     <div className="flex grow flex-col">
       <div className="divide-y divide-border-muted">
-        <Section>
+        <div className="flex flex-col gap-2 pb-4">
           {item.data.sourceToken && (
             <div>
-              <p className="text-alternative">{t('youSent')}</p>
+              <p className="text-alternative mb-1">{t('youSent')}</p>
               <TokenAmountRow
                 token={item.data.sourceToken}
                 showNetworkBadge={showFromTo}
@@ -108,14 +114,14 @@ export function BridgeDetails({
           )}
           {item.data.destinationToken && (
             <div>
-              <p className="text-alternative">{t('youReceived')}</p>
+              <p className="text-alternative mb-1">{t('youReceived')}</p>
               <TokenAmountRow
                 token={item.data.destinationToken}
                 showNetworkBadge={showFromTo}
               />
             </div>
           )}
-        </Section>
+        </div>
 
         <Section>
           <Row
