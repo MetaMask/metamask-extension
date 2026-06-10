@@ -1,4 +1,3 @@
-import HomePage from '../home/homepage';
 import { Driver } from '../../../webdriver/driver';
 
 class SettingsPage {
@@ -11,6 +10,10 @@ class SettingsPage {
 
   private readonly assetsSettingsButton =
     '[data-testid="settings-tab-item-assets"]';
+
+  private readonly backButton = {
+    testId: 'settings-header-back-button',
+  };
 
   private readonly developerToolsSettingsButton =
     '[data-testid="settings-tab-item-developer-tools"]';
@@ -40,8 +43,6 @@ class SettingsPage {
 
   private readonly searchButton =
     '[data-testid="settings-header-search-button"]';
-
-  private readonly settingsPageRoot = '[data-testid="settings-root"]';
 
   private readonly settingsPageFullscreenRoot =
     '[data-testid="settings-tab-bar-grouped"]';
@@ -94,31 +95,40 @@ class SettingsPage {
 
   async checkPageIsLoaded(): Promise<void> {
     console.log('Check settings page is loaded');
-    await this.driver.wait(async () => {
-      return await this.isOnSettingsPage();
-    });
+    await this.driver.waitForSelector(this.settingsPageFullscreenRoot);
   }
 
-  async hasElement(
-    locator: string | { css?: string; text?: string; tag?: string },
-  ) {
-    const elements = await this.driver.findElements(locator);
-    return elements.length > 0;
-  }
-
-  async isOnSettingsPage() {
-    return await this.hasElement(this.settingsPageFullscreenRoot);
+  async isOnSettingsPage(): Promise<boolean> {
+    const currentUrl = await this.driver.getCurrentUrl();
+    return currentUrl.includes('settings');
   }
 
   /**
-   * Navigates to wallet home (`/` — same path as app `DEFAULT_ROUTE`) and
-   * waits for the home page. Kept E2E-local to avoid importing `ui` routes.
+   * Click the Settings back button once. The back button only navigates one
+   * level up, so a single click may not fully close Settings when on a nested
+   * page. Use closeSettings to fully exit the Settings page.
    */
   async clickBackButton(): Promise<void> {
-    await this.driver.executeScript(
-      `window.location.hash = ${JSON.stringify('/')}`,
-    );
-    await new HomePage(this.driver).checkPageIsLoaded();
+    await this.driver.clickElementSafe(this.backButton);
+  }
+
+  /**
+   * Close the Settings page and return to the wallet home with the navbar open.
+   *
+   * The back button only navigates one level up, so when we are on a nested
+   * settings page (e.g. not Preferences) it must be clicked several times to
+   * fully close Settings. Click it while we are still on a Settings page, up to
+   * a few times, stopping as soon as we have left it.
+   */
+  async closeSettings(): Promise<void> {
+    const maxAttempts = 5;
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      if (!(await this.isOnSettingsPage())) {
+        return;
+      }
+      await this.clickBackButton();
+      await this.driver.delay(1000);
+    }
   }
 
   async waitForTransactionShieldButtonReady(): Promise<void> {

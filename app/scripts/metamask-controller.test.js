@@ -124,6 +124,48 @@ jest.mock('./messenger-client-init/perps-controller-init', () => ({
   })),
 }));
 
+jest.mock('./messenger-client-init/accounts/snap-account-service-init', () => ({
+  SnapAccountServiceInit: jest
+    .fn()
+    .mockImplementation(({ controllerMessenger }) => {
+      controllerMessenger.registerActionHandler(
+        'SnapAccountService:ensureReady',
+        // Never-resolving promise: prevents any Snap provider from proceeding
+        // past `ensureReady`, so no Snap accounts get created during init.
+        () => new Promise(() => undefined),
+      );
+      controllerMessenger.registerActionHandler(
+        'SnapAccountService:getLegacySnapKeyring',
+        async () => {
+          const result = await controllerMessenger.call(
+            'KeyringController:withController',
+            async (controller) => {
+              const found = controller.keyrings.find(
+                ({ keyring }) => keyring.type === 'Snap Keyring',
+              );
+              let snapKeyring = found?.keyring;
+              if (!snapKeyring) {
+                const { keyring } =
+                  await controller.addNewKeyring('Snap Keyring');
+                snapKeyring = keyring;
+              }
+              return { snapKeyring };
+            },
+          );
+          return result.snapKeyring;
+        },
+      );
+      return {
+        memStateKey: null,
+        persistedStateKey: null,
+        messengerClient: {
+          init: jest.fn().mockResolvedValue(undefined),
+          name: 'SnapAccountService',
+        },
+      };
+    }),
+}));
+
 jest.mock('webextension-polyfill', () => ({
   runtime: {
     id: 'fake-extension-id',
@@ -4288,10 +4330,14 @@ describe('MetaMaskController', () => {
         jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
 
         await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
+        await metamaskController.submitPassword(password); // Force-unlock to trigger Snap keyring creation.
 
         const previousKeyrings = cloneDeep(
           metamaskController.keyringController.state.keyrings,
         );
+
+        // 0: Primary HD keyring, 1: Snap keyring
+        expect(previousKeyrings).toHaveLength(2);
 
         await metamaskController.importMnemonicToVault(TEST_SEED_ALT);
 
@@ -4802,6 +4848,8 @@ describe('MetaMaskController', () => {
           type: 'mnemonic',
           timestamp: Date.now(),
           version: 1,
+          itemId: 'primary-srp-id',
+          dataType: 1, // PrimarySrp
         };
         const mockRemainingSecretData = [
           {
@@ -4809,6 +4857,8 @@ describe('MetaMaskController', () => {
             type: 'mnemonic',
             timestamp: Date.now(),
             version: 1,
+            itemId: 'imported-srp-id',
+            dataType: 2, // ImportedSrp
           },
         ];
 
@@ -4846,6 +4896,8 @@ describe('MetaMaskController', () => {
           type: 'mnemonic',
           timestamp: Date.now(),
           version: 1,
+          itemId: 'primary-srp-id',
+          dataType: 1, // PrimarySrp
         };
 
         metamaskController.seedlessOnboardingController.fetchAllSecretData.mockResolvedValue(
@@ -4876,6 +4928,8 @@ describe('MetaMaskController', () => {
           type: 'mnemonic',
           timestamp: Date.now(),
           version: 1,
+          itemId: 'primary-srp-id',
+          dataType: 1, // PrimarySrp
         };
         const mockRemainingSecretData = [
           {
@@ -4883,18 +4937,24 @@ describe('MetaMaskController', () => {
             type: 'mnemonic',
             timestamp: Date.now(),
             version: 1,
+            itemId: 'imported-srp-id-1',
+            dataType: 2, // ImportedSrp
           },
           {
             data: new Uint8Array([15, 16, 17, 18]),
             type: 'privateKey',
             timestamp: Date.now(),
             version: 1,
+            itemId: 'imported-pk-id',
+            dataType: 3, // ImportedPrivateKey
           },
           {
             data: new Uint8Array([19, 20, 21, 22]),
             type: 'mnemonic',
             timestamp: Date.now(),
             version: 1,
+            itemId: 'imported-srp-id-2',
+            dataType: 2, // ImportedSrp
           },
         ];
 
@@ -4934,6 +4994,8 @@ describe('MetaMaskController', () => {
           type: 'mnemonic',
           timestamp: Date.now(),
           version: 1,
+          itemId: 'primary-srp-id',
+          dataType: 1, // PrimarySrp
         };
 
         metamaskController.seedlessOnboardingController.fetchAllSecretData.mockResolvedValue(
@@ -4960,6 +5022,8 @@ describe('MetaMaskController', () => {
           type: 'mnemonic',
           timestamp: Date.now(),
           version: 1,
+          itemId: 'primary-srp-id',
+          dataType: 1, // PrimarySrp
         };
         const mockRemainingSecretData = [
           {
@@ -4967,6 +5031,8 @@ describe('MetaMaskController', () => {
             type: 'mnemonic',
             timestamp: Date.now(),
             version: 1,
+            itemId: 'imported-srp-id',
+            dataType: 2, // ImportedSrp
           },
         ];
 
@@ -4986,6 +5052,57 @@ describe('MetaMaskController', () => {
         await expect(
           metamaskController.restoreSocialBackupAndGetSeedPhrase(mockPassword),
         ).rejects.toThrow('Failed to restore seed phrases');
+      });
+    });
+
+    describe('#addNewSeedPhraseBackup', () => {
+      it('should call addNewSecretData with ImportedSrp dataType', async () => {
+        await metamaskController.createNewVaultAndKeychain('test-password');
+
+        // Mock completedOnboarding to allow migration to run
+        jest
+          .spyOn(metamaskController.onboardingController, 'state', 'get')
+          .mockReturnValue({ completedOnboarding: true });
+
+        // Migrations now run via the messenger action. Intercept that single
+        // action and let every other call fall through to the real handler.
+        // Returns false to indicate no migration was performed.
+        const realCall = metamaskController.controllerMessenger.call.bind(
+          metamaskController.controllerMessenger,
+        );
+        jest
+          .spyOn(metamaskController.controllerMessenger, 'call')
+          .mockImplementation((actionType, ...args) => {
+            if (actionType === 'SeedlessOnboardingController:runMigrations') {
+              return Promise.resolve(false);
+            }
+            return realCall(actionType, ...args);
+          });
+
+        const addNewSecretDataSpy = jest
+          .spyOn(
+            metamaskController.seedlessOnboardingController,
+            'addNewSecretData',
+          )
+          .mockResolvedValue();
+
+        const mockMnemonic =
+          'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
+        const mockKeyringId = 'test-keyring-id';
+
+        await metamaskController.addNewSeedPhraseBackup(
+          mockMnemonic,
+          mockKeyringId,
+          true,
+        );
+
+        expect(addNewSecretDataSpy).toHaveBeenCalledWith(
+          expect.any(Uint8Array),
+          2, // EncAccountDataType.ImportedSrp
+          {
+            keyringId: mockKeyringId,
+          },
+        );
       });
     });
 

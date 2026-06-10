@@ -122,8 +122,10 @@ import { BRIDGE_STATUS_CONTROLLER_NAME } from '@metamask/bridge-status-controlle
 
 import {
   SeedlessOnboardingControllerErrorMessage,
+  SeedlessOnboardingMigrationVersion,
   SecretType,
   RecoveryError,
+  EncAccountDataType,
 } from '@metamask/seedless-onboarding-controller';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { isSnapId } from '@metamask/snaps-utils';
@@ -371,6 +373,7 @@ import { isRelaySupported } from './lib/transaction/transaction-relay';
 import { openUpdateTabAndReload } from './lib/open-update-tab-and-reload';
 import { AccountTreeControllerInit } from './messenger-client-init/accounts/account-tree-controller-init';
 import { MultichainAccountServiceInit } from './messenger-client-init/multichain/multichain-account-service-init';
+import { SnapAccountServiceInit } from './messenger-client-init/accounts/snap-account-service-init';
 import {
   OAuthServiceInit,
   SeedlessOnboardingControllerInit,
@@ -446,6 +449,7 @@ import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-t
 import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-service-init';
 import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
 import { getSnapKeyring } from './lib/snap-keyring/utils/getSnapKeyring';
+import { runSeedlessOnboardingMigrations } from './lib/seedless-onboarding/run-migrations';
 import { initializeWallet } from './wallet-init/initialization';
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -466,6 +470,7 @@ export const METAMASK_CONTROLLER_EVENTS = {
 
 /**
  * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
+ * @typedef {import('@metamask/seedless-onboarding-controller').SecretMetadata} SecretMetadata
  */
 
 // Types of APIs
@@ -679,6 +684,7 @@ export default class MetamaskController extends EventEmitter {
       // FIXME: Must be init before `MultichainAccountService` to make sure account-tree is updated before
       // reacting to any `:multichainAccountGroup*` events.
       AccountTreeController: AccountTreeControllerInit,
+      SnapAccountService: SnapAccountServiceInit,
       MultichainAssetsController: MultichainAssetsControllerInit,
       MultichainAssetsRatesController: MultichainAssetsRatesControllerInit,
       MultichainBalancesController: MultichainBalancesControllerInit,
@@ -739,6 +745,7 @@ export default class MetamaskController extends EventEmitter {
     this.appMetadataController = messengerClientsByName.AppMetadataController;
     this.preferencesController = messengerClientsByName.PreferencesController;
     this.keyringController = this.wallet.getInstance('KeyringController');
+    this.snapAccountService = messengerClientsByName.SnapAccountService;
     this.accountsController = messengerClientsByName.AccountsController;
     this.addressBookController = messengerClientsByName.AddressBookController;
     this.alertController = messengerClientsByName.AlertController;
@@ -1796,58 +1803,6 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
-  /**
-   * Get the snap keyring instance if available.
-   *
-   * @returns {SnapKeyring}
-   */
-  getSnapKeyringIfAvailable() {
-    // Check if the controller has been unlocked, otherwise this will throw.
-    if (this.keyringController.isUnlocked()) {
-      // TODO: Use `withKeyring` instead
-      const [snapKeyring] = this.keyringController.getKeyringsByType(
-        KeyringType.snap,
-      );
-
-      return snapKeyring;
-    }
-    return undefined;
-  }
-
-  /**
-   * Forward currently selected account group to the Snap keyring.
-   *
-   * @param snapKeyring - Snap keyring instance or undefined if not available.
-   * @param groupId - Currently selected account group.
-   */
-  async forwardSelectedAccountGroupToSnapKeyring(snapKeyring, groupId) {
-    if (!snapKeyring) {
-      // Nothing to forward if the Snap keyring is not available.
-      return;
-    }
-
-    if (groupId) {
-      const group = this.accountTreeController.getAccountGroupObject(groupId);
-      if (group) {
-        // FIXME: For now, only our non-EVM Snaps support this `keyring_setSelectedAccounts`
-        // method. There's also no way to know which optional method is supported on an
-        // account management Snap for now.
-        // Calling this on the SSK has an undesired side-effect on the Snap itself, to avoid
-        // making it fail, we ONLY scope this call to "multichain account groups" which are
-        // backed by non-EVM Snaps.
-        const hasNonEvmAccounts = group.accounts.some((id) => {
-          const account = this.accountsController.getAccount(id);
-
-          return Boolean(account) && !isEvmAccountType(account.type);
-        });
-
-        if (hasNonEvmAccounts) {
-          await snapKeyring.setSelectedAccounts(group.accounts);
-        }
-      }
-    }
-  }
-
   trackInsightSnapView(snapId) {
     this.metaMetricsController.trackEvent({
       event: MetaMetricsEventName.InsightSnapViewed,
@@ -2126,7 +2081,7 @@ export default class MetamaskController extends EventEmitter {
     // wallet_notify for multichain accountChanged when selected account group changes
     this.controllerMessenger.subscribe(
       `${this.accountTreeController.name}:selectedAccountGroupChange`,
-      (groupId) => {
+      () => {
         const authorizationsByOrigin = getAuthorizedScopesByOrigin(
           this.permissionController.state,
         );
@@ -2137,14 +2092,6 @@ export default class MetamaskController extends EventEmitter {
         ] of authorizationsByOrigin.entries()) {
           this._notifyAuthorizationChange(origin, authorization);
         }
-
-        // TODO: Move this logic to the SnapKeyring directly.
-        // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
-        // eslint-disable-next-line no-void
-        void this.forwardSelectedAccountGroupToSnapKeyring(
-          this.getSnapKeyringIfAvailable(),
-          groupId,
-        );
 
         NON_EVM_ACCOUNT_CHANGED_CONFIGS.forEach(
           ({ network, accountType, notificationProperty, chains }) => {
@@ -2197,23 +2144,6 @@ export default class MetamaskController extends EventEmitter {
             }
           },
         );
-      },
-    );
-
-    // TODO: Move this logic to the SnapKeyring directly.
-    // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
-    this.controllerMessenger.subscribe(
-      `${this.multichainAccountService.name}:multichainAccountGroupUpdated`,
-      (group) => {
-        // If the current group gets updated, then maybe there are more accounts being "selected"
-        // now, so we have to forward them to the Snap keyring too!
-        if (this.accountTreeController.getSelectedAccountGroup() === group.id) {
-          // eslint-disable-next-line no-void
-          void this.forwardSelectedAccountGroupToSnapKeyring(
-            this.getSnapKeyringIfAvailable(),
-            group.id,
-          );
-        }
       },
     );
 
@@ -3642,6 +3572,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         `${BRIDGE_CONTROLLER_NAME}:fetchQuotes`,
       ),
+      updateBatchSellTrades: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_CONTROLLER_NAME}:updateBatchSellTrades`,
+      ),
 
       // Bridge Tx submission
       submitTx: this.controllerMessenger.call.bind(
@@ -3651,6 +3585,10 @@ export default class MetamaskController extends EventEmitter {
       submitIntent: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         `${BRIDGE_STATUS_CONTROLLER_NAME}:${'submitIntent'}`,
+      ),
+      submitBatchSell: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_STATUS_CONTROLLER_NAME}:${'submitBatchSell'}`,
       ),
 
       // Smart Transactions
@@ -4362,6 +4300,11 @@ export default class MetamaskController extends EventEmitter {
       );
       createSeedPhraseBackupSuccess = true;
 
+      // Set migration version for new users so migration never runs
+      this.seedlessOnboardingController.setMigrationVersion(
+        SeedlessOnboardingMigrationVersion.V1,
+      );
+
       await this.syncKeyringEncryptionKey();
     } catch (error) {
       this.controllerMessenger?.captureException?.(
@@ -4382,10 +4325,10 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Fetches and restores all the backed-up Secret Data (SRPs and Private keys)
+   * Fetches all backed-up Secret Data (SRPs and Private keys) from the server.
    *
    * @param {string} password - The user's password.
-   * @returns {Promise<Buffer[]>} The seed phrase.
+   * @returns {Promise<SecretMetadata[]>} Array of secret metadata items.
    */
   async fetchAllSecretData(password) {
     let fetchAllSeedPhrasesSuccess = false;
@@ -4835,9 +4778,13 @@ export default class MetamaskController extends EventEmitter {
           name: TraceName.OnboardingAddSrp,
           op: TraceOperation.OnboardingSecurityOp,
         });
+
+        // Run data type migration before adding new SRP to ensure data consistency.
+        await runSeedlessOnboardingMigrations(this.controllerMessenger);
+
         await this.seedlessOnboardingController.addNewSecretData(
           seedPhraseAsUint8Array,
-          SecretType.Mnemonic,
+          EncAccountDataType.ImportedSrp,
           {
             keyringId,
           },
@@ -4977,14 +4924,13 @@ export default class MetamaskController extends EventEmitter {
       // accounts (they should be up-to-date already, but we still run `updateAccounts` as
       // there are some account migration happening in that function).
       await this.accountsController.updateAccounts();
+
       // Then we can build the initial tree.
       this.accountTreeController.reinit();
-      // TODO: Move this logic to the SnapKeyring directly.
-      // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
-      await this.forwardSelectedAccountGroupToSnapKeyring(
-        await getSnapKeyring(this.controllerMessenger),
-        this.accountTreeController.getSelectedAccountGroup(),
-      );
+
+      // We "force-create" the Snap keyring right after now to ensure it is available as soon
+      // as possible after vault creation (enabling faster keyring access for future operations).
+      await getSnapKeyring(this.controllerMessenger);
 
       return primaryKeyring;
     } finally {
@@ -5158,11 +5104,9 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Restores an array of seed phrases to the vault and updates the SocialBackupMetadataState if import is successful.
+   * Restores an array of seed phrases to the vault.
    *
-   * This method is used to restore seed phrases from the Social Backup.
-   *
-   * @param {{data: Uint8Array, type: SecretType, timestamp: number, version: number}[]} secretDatas - The seed phrases to restore.
+   * @param {SecretMetadata[]} secretDatas - The secret metadata items to restore.
    * @returns {Promise<void>}
    */
   async restoreSeedPhrasesToVault(secretDatas) {
@@ -5331,18 +5275,15 @@ export default class MetamaskController extends EventEmitter {
       // TODO: Remove this once the `accounts-controller` once only
       // depends only on keyrings `:stateChange`.
       this.accountTreeController.reinit();
-      // TODO: Move this logic to the SnapKeyring directly.
-      // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
-      await this.forwardSelectedAccountGroupToSnapKeyring(
-        await getSnapKeyring(this.controllerMessenger),
-        this.accountTreeController.getSelectedAccountGroup(),
-      );
+
+      // We "force-create" the Snap keyring right after now to ensure it is available as soon
+      // as possible after vault creation (enabling faster keyring access for future operations).
+      await getSnapKeyring(this.controllerMessenger);
 
       if (completedOnboarding) {
         // check if external services are enabled
         const { useExternalServices } = this.preferencesController.state;
         if (useExternalServices) {
-          await getSnapKeyring(this.controllerMessenger);
           await this.accountTreeController.syncWithUserStorageAtLeastOnce();
         }
         await this.discoverAndCreateAccounts(id);
@@ -5487,6 +5428,8 @@ export default class MetamaskController extends EventEmitter {
       }
     }
 
+    // Re-create accounts in the accounts-controller, after the keyring-controller gets
+    // unlocked.
     await this.accountsController.updateAccounts();
 
     // Init multichain accounts after creating internal accounts.
@@ -5495,17 +5438,9 @@ export default class MetamaskController extends EventEmitter {
     // Force account-tree refresh after all accounts have been updated.
     this.accountTreeController.init();
 
-    // TODO: Move this logic to the SnapKeyring directly.
-    // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
-    // It is not necessary to await this since it is just expected for the snap to receive
-    // the information without blocking the login flow. Despite not awaiting for
-    // forwardSelectedAccountGroupToSnapKeyring to be completed, we still want to await for
-    // getSnapKeyring to ensure the Snap keyring is available.
-    // eslint-disable-next-line no-void
-    void this.forwardSelectedAccountGroupToSnapKeyring(
-      await getSnapKeyring(this.controllerMessenger),
-      this.accountTreeController.getSelectedAccountGroup(),
-    );
+    // We "force-create" the Snap keyring right after unlocking the vault to ensure it is
+    // available as soon as possible (enabling faster keyring access for future operations).
+    await getSnapKeyring(this.controllerMessenger);
 
     const resyncAndAlignAccounts = async () => {
       // READ THIS CAREFULLY:
