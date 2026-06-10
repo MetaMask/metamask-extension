@@ -272,11 +272,9 @@ const BuildTypesStruct = refine(
       validateUniqueBuildTypeProperty(value.buildTypes, 'id'),
       validateUniqueBuildTypeProperty(value.buildTypes, 'name'),
     ].filter((result) => result !== true);
-
     if (uniquenessErrors.length > 0) {
       return uniquenessErrors.join('\n');
     }
-
     return true;
   },
 );
