@@ -8,6 +8,7 @@ import {
   getFromAccount,
   type BridgeAppState,
 } from '../../../../../ducks/bridge/selectors';
+import { getMaybeHexChainId } from '../../../../../ducks/bridge/utils';
 import { getIsSmartTransaction } from '../../../../../../shared/lib/selectors';
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import type { MetaMaskReduxDispatch } from '../../../../../store/store';
@@ -38,8 +39,9 @@ export default function useBatchSellSubmitQuotes({
   const navigate = useNavigate();
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const srcChainId = quoteResponses.find((q) => q)?.quote.srcChainId;
+  const srcChainIdHex = getMaybeHexChainId(srcChainId?.toString());
   const isStxEnabled = useSelector((state) =>
-    getIsSmartTransaction(state as BridgeAppState, srcChainId?.toString()),
+    getIsSmartTransaction(state as BridgeAppState, srcChainIdHex),
   );
   const fromAccount = useSelector(getFromAccount);
   const [isSubmitting, setIsSubmitting] = useState(false);

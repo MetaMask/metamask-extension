@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { captureException } from '../../../../../../shared/lib/sentry';
 import { submitBatchSellTrade } from '../../../../../ducks/bridge-status/actions';
 import { getFromAccount } from '../../../../../ducks/bridge/selectors';
+import { getMaybeHexChainId } from '../../../../../ducks/bridge/utils';
 import { getIsSmartTransaction } from '../../../../../../shared/lib/selectors';
 import type { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
 import useBatchSellSubmitQuotes from './useBatchSellSubmitQuotes';
@@ -32,6 +33,12 @@ jest.mock('../../../../../ducks/bridge/selectors', () => ({
   getFromAccount: jest.fn(),
 }));
 
+jest.mock('../../../../../ducks/bridge/utils', () => ({
+  getMaybeHexChainId: jest.fn((chainId?: string) =>
+    chainId ? `0x${Number(chainId).toString(16)}` : undefined,
+  ),
+}));
+
 jest.mock('../../../../../../shared/lib/selectors', () => ({
   getIsSmartTransaction: jest.fn(),
 }));
@@ -44,6 +51,7 @@ const mockDispatch = jest.fn();
 const mockUseDispatch = jest.mocked(useDispatch);
 const mockUseSelector = jest.mocked(useSelector);
 const mockGetFromAccount = jest.mocked(getFromAccount);
+const mockGetMaybeHexChainId = jest.mocked(getMaybeHexChainId);
 const mockGetIsSmartTransaction = jest.mocked(getIsSmartTransaction);
 const mockCaptureException = jest.mocked(captureException);
 const mockSubmitBatchSellTrade = jest.mocked(submitBatchSellTrade);
@@ -197,6 +205,22 @@ describe('useBatchSellSubmitQuotes', () => {
 
       expect(mockSubmitBatchSellTrade).toHaveBeenCalledWith(
         expect.objectContaining({ isStxEnabled: false }),
+      );
+    });
+
+    it('converts numeric srcChainId to hex before querying STX enablement', async () => {
+      const quoteWithNumericChainId = {
+        quote: { requestId: 'req-chain', srcChainId: 1 },
+      } as never;
+
+      mockGetMaybeHexChainId.mockReturnValue('0x1');
+
+      renderDefault({ quoteResponses: [quoteWithNumericChainId] });
+
+      expect(mockGetMaybeHexChainId).toHaveBeenCalledWith('1');
+      expect(mockGetIsSmartTransaction).toHaveBeenCalledWith(
+        expect.anything(),
+        '0x1',
       );
     });
 

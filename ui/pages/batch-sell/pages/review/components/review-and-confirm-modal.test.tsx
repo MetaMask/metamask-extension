@@ -127,6 +127,7 @@ const defaultProps = {
   isBatchSellTradeAvailable: true,
   totalNetworkFeeAreLoading: false,
   totalNetworkFeeHasError: false,
+  quotesAreLoading: false,
 };
 
 describe('ReviewAndConfirmModal', () => {
@@ -561,6 +562,61 @@ describe('ReviewAndConfirmModal', () => {
       );
 
       expect(screen.queryByTestId('skeleton-loading')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('quotesAreLoading', () => {
+    it('shows the sellAll label while quotes are loading even when the trade is unavailable', () => {
+      render(
+        <ReviewAndConfirmModal
+          {...defaultProps}
+          isBatchSellTradeAvailable={false}
+          quotesAreLoading={true}
+        />,
+      );
+
+      expect(screen.getByText('sellAll')).toBeInTheDocument();
+      expect(
+        screen.queryByText('alertReasonInsufficientBalance'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('shows the insufficient balance label once quotes finish loading and trade is still unavailable', () => {
+      render(
+        <ReviewAndConfirmModal
+          {...defaultProps}
+          isBatchSellTradeAvailable={false}
+          quotesAreLoading={false}
+        />,
+      );
+
+      expect(
+        screen.getByText('alertReasonInsufficientBalance'),
+      ).toBeInTheDocument();
+    });
+
+    it('keeps the button disabled while quotes are loading and trade is unavailable', () => {
+      render(
+        <ReviewAndConfirmModal
+          {...defaultProps}
+          isBatchSellTradeAvailable={false}
+          quotesAreLoading={true}
+        />,
+      );
+
+      expect(screen.getByRole('button', { name: 'sellAll' })).toBeDisabled();
+    });
+
+    it('does not affect the label or button state when trade is available', () => {
+      render(
+        <ReviewAndConfirmModal
+          {...defaultProps}
+          isBatchSellTradeAvailable={true}
+          quotesAreLoading={true}
+        />,
+      );
+
+      expect(screen.getByRole('button', { name: 'sellAll' })).toBeEnabled();
     });
   });
 

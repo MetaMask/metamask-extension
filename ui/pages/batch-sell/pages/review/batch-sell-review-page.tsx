@@ -175,6 +175,7 @@ export const BatchSellReviewPage = () => {
         onClose={() => setReviewAndConfirmModalIsOpen(false)}
         sendAssetsConfig={sendAssetsConfig}
         quotes={data?.quotes}
+        quotesAreLoading={quotesAreLoading}
         receivedAsset={selectedReceiveAsset}
         totalReceivedAmount={data?.totalReceivedAmount}
         minimumReceivedAmount={data?.minimumReceivedAmount}

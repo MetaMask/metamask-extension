@@ -64,6 +64,7 @@ type ReviewAndConfirmModalProps = {
   isBatchSellTradeAvailable: boolean;
   totalNetworkFeeAreLoading: boolean;
   totalNetworkFeeHasError: boolean;
+  quotesAreLoading: boolean;
 };
 
 type YouSellRowProps = {
@@ -265,6 +266,7 @@ export const ReviewAndConfirmModal = ({
   isBatchSellTradeAvailable,
   totalNetworkFeeAreLoading,
   totalNetworkFeeHasError,
+  quotesAreLoading,
 }: ReviewAndConfirmModalProps) => {
   const t = useI18nContext();
   const [isYouSellExpanded, setIsYouSellExpanded] = useState(false);
@@ -279,9 +281,10 @@ export const ReviewAndConfirmModal = ({
     quoteResponses,
     receivedAsset,
   });
-  const submitLabel = isBatchSellTradeAvailable
-    ? t('sellAll')
-    : t('alertReasonInsufficientBalance');
+  const submitLabel =
+    isBatchSellTradeAvailable || totalNetworkFeeAreLoading || quotesAreLoading
+      ? t('sellAll')
+      : t('alertReasonInsufficientBalance');
 
   // All quotes in a batch share the same MM fee rate, so we read it from the
   // first quote that has one and fall back to the bridge default. Mirrors the
