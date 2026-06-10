@@ -1,5 +1,5 @@
 import { join, sep } from 'node:path';
-import type { Compiler, EntryObject, Stats } from 'webpack';
+import type { Compilation, Compiler, EntryObject, Stats } from 'webpack';
 import type { Configuration } from 'webpack-dev-server';
 import type TerserPluginType from 'terser-webpack-plugin';
 
@@ -157,6 +157,32 @@ export const getDevServerClientUrl = (config: Configuration): string => {
     params.set('live-reload', config.liveReload.toString());
   }
   return `webpack-dev-server/client/index?${params}`;
+};
+
+/**
+ * Injects an entrypoint's files as `<script>` tags into an HTML page, just before `</head>`.
+ *
+ * @param content - The HTML page content.
+ * @param compilation - The current compilation.
+ * @param entryName - The entrypoint whose files to inject.
+ * @returns The HTML content with the entrypoint's files injected.
+ */
+export const injectEntryScripts = (
+  content: string,
+  compilation: Compilation,
+  entryName: string,
+): string => {
+  const entrypoint = compilation.entrypoints.get(entryName);
+  if (!entrypoint) {
+    throw new Error(
+      `Entry "${entryName}" is missing from the compilation; it should have been registered by the dev-server middleware.`,
+    );
+  }
+  const tags = entrypoint
+    .getFiles()
+    .map((file) => `<script src="${file}" defer></script>`)
+    .join('');
+  return content.replace('</head>', `${tags}</head>`);
 };
 
 /**

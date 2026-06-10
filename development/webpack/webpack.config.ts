@@ -8,7 +8,6 @@ import { argv, exit } from 'node:process';
 import {
   ProvidePlugin,
   type Chunk,
-  type Compilation,
   type Configuration,
   type WebpackPluginInstance,
   type MemoryCacheOptions,
@@ -23,6 +22,7 @@ import { discardFontFace } from '../postcss-plugins/discard-font-face';
 import { loadBuildTypesConfig } from '../lib/build-type';
 import {
   getMinimizers,
+  injectEntryScripts,
   NODE_MODULES_RE,
   UI_COMPONENT_RE,
   SNOW_MODULE_RE,
@@ -114,33 +114,6 @@ const classifyBundleSizeEntrypoint = (
   }
 
   return null;
-};
-
-/**
- * Injects a dev-server entry's JS output as `<script>` tags into an HTML page,
- * just before `</head>`. Used in watch mode to add dev-only clients (the UI
- * reload client, the background reload client) without touching app source.
- *
- * @param content - The HTML page content.
- * @param compilation - The current compilation.
- * @param entryName - The dev-server entry whose output to inject.
- * @returns The HTML content with the entry's scripts injected.
- */
-const injectEntryScripts = (
-  content: string,
-  compilation: Compilation,
-  entryName: string,
-): string => {
-  const entrypoint = compilation.entrypoints.get(entryName);
-  if (!entrypoint) {
-    return content;
-  }
-  const tags = entrypoint
-    .getFiles()
-    .filter((file) => file.endsWith('.js'))
-    .map((file) => `<script src="${file}" defer></script>`)
-    .join('');
-  return content.replace('</head>', `${tags}</head>`);
 };
 
 // #region cache

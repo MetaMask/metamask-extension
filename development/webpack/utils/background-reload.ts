@@ -51,7 +51,8 @@ import { ManifestPlugin } from './plugins/ManifestPlugin';
  * share the same source file — and that code runs in the background page too,
  * so changes to it genuinely require an extension reload.
  */
-const PRIVILEGED_PAGE_ENTRY_RE = /^(?:background|bootstrap|offscreen)(?:\.\d+)?$/u;
+const PRIVILEGED_PAGE_ENTRY_RE =
+  /^(?:background|bootstrap|offscreen)(?:\.\d+)?$/u;
 
 /**
  * Finds the {@link ManifestPlugin} instance registered on a compiler.
