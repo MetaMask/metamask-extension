@@ -57,25 +57,41 @@ const useAnalyticEventCallback = (props: {
 export const ExtensionLinkButton = (props: {
   notification: FeatureAnnouncementNotification;
 }) => {
+  const navigate = useNavigate();
   const { notification } = props;
-  const onClick = useAnalyticEventCallback({
+  const analyticCallback = useAnalyticEventCallback({
     id: notification.id,
     type: notification.type,
     clickType: 'internal_link',
   });
 
-  if (!notification.data.extensionLink) {
+  const { extensionLink } = notification.data;
+
+  if (!extensionLink) {
     return null;
   }
+
+  const href = extensionLink.extensionLinkRoute.startsWith('/')
+    ? extensionLink.extensionLinkRoute
+    : `/${extensionLink.extensionLinkRoute}`;
+
+  const onClick: React.MouseEventHandler<HTMLElement> = (event) => {
+    analyticCallback();
+
+    if (shouldUseDefaultLinkNavigation(event)) {
+      return;
+    }
+
+    event.preventDefault();
+    navigate(href);
+  };
 
   return (
     <NotificationDetailButton
       variant={ButtonVariant.Primary}
-      text={notification.data.extensionLink.extensionLinkText}
-      href={`/${notification.data.extensionLink.extensionLinkRoute}`}
-      // Even if the link is not external, it will open in a new tab
-      // to avoid breaking the popup
-      isExternal={true}
+      text={extensionLink.extensionLinkText}
+      href={href}
+      isExternal={false}
       onClick={onClick}
     />
   );
@@ -92,7 +108,7 @@ export const ExternalLinkButton = (props: {
     clickType: 'external_link',
   });
 
-  const {externalLink} = notification.data;
+  const { externalLink } = notification.data;
   const externalLinkUrl = externalLink?.externalLinkUrl;
   const [resolvedHref, setResolvedHref] = useState<string | undefined>();
 
@@ -111,7 +127,10 @@ export const ExternalLinkButton = (props: {
         }
       })
       .catch((error) => {
-        console.error('[ExternalLinkButton] error resolving external link', error);
+        console.error(
+          '[ExternalLinkButton] error resolving external link',
+          error,
+        );
         if (isMounted) {
           setResolvedHref(externalLinkUrl);
         }

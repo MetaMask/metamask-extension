@@ -12,7 +12,10 @@ import {
   MetaMetricsContext,
   type MetaMetricsContextValue,
 } from '../../../../contexts/metametrics';
-import { ExternalLinkButton } from './annonucement-footer-buttons';
+import {
+  ExtensionLinkButton,
+  ExternalLinkButton,
+} from './annonucement-footer-buttons';
 import type { FeatureAnnouncementNotification } from './types';
 
 const mockTrackEvent = jest.fn();
@@ -48,11 +51,48 @@ function createFeatureAnnouncementNotification(
   }) as FeatureAnnouncementNotification;
 }
 
+function createFeatureAnnouncementNotificationWithExtensionLink({
+  extensionLinkRoute,
+  extensionLinkText,
+}: {
+  extensionLinkRoute: string;
+  extensionLinkText: string;
+}): FeatureAnnouncementNotification {
+  const rawNotification = createMockFeatureAnnouncementRaw();
+
+  return processNotification({
+    ...rawNotification,
+    data: {
+      ...rawNotification.data,
+      extensionLink: {
+        extensionLinkText,
+        extensionLinkRoute,
+      },
+    },
+  }) as FeatureAnnouncementNotification;
+}
+
 function renderExternalLinkButton(externalLinkUrl: string) {
   render(
     <MetaMetricsContext.Provider value={metametricsContext}>
       <ExternalLinkButton
         notification={createFeatureAnnouncementNotification(externalLinkUrl)}
+      />
+    </MetaMetricsContext.Provider>,
+  );
+}
+
+function renderExtensionLinkButton({
+  extensionLinkRoute = 'home.html',
+  extensionLinkText = 'Home',
+} = {}) {
+  render(
+    <MetaMetricsContext.Provider value={metametricsContext}>
+      <ExtensionLinkButton
+        notification={createFeatureAnnouncementNotificationWithExtensionLink({
+          extensionLinkRoute,
+          extensionLinkText,
+        })}
       />
     </MetaMetricsContext.Provider>,
   );
@@ -85,6 +125,35 @@ describe('Feature announcement footer buttons', () => {
       }),
     );
     expect(global.platform.openExtensionInBrowser).not.toHaveBeenCalled();
+  });
+
+  it('opens an extension link route with client-side navigation', () => {
+    renderExtensionLinkButton({
+      extensionLinkRoute: 'settings/security',
+      extensionLinkText: 'Security',
+    });
+
+    const link = screen.getByRole('link', { name: 'Security' });
+    const clickEvent = createEvent.click(link);
+
+    expect(link).toHaveAttribute('href', '/settings/security');
+    expect(link).not.toHaveAttribute('target');
+    expect(link).not.toHaveAttribute('rel');
+
+    fireEvent(link, clickEvent);
+
+    expect(clickEvent.defaultPrevented).toBe(true);
+    expect(mockNavigate).toHaveBeenCalledWith('/settings/security');
+    expect(global.platform.openExtensionInBrowser).not.toHaveBeenCalled();
+    expect(global.platform.openTab).not.toHaveBeenCalled();
+  });
+
+  it('does not add another slash when the extension link route is already absolute', () => {
+    renderExtensionLinkButton({ extensionLinkRoute: '/home.html' });
+
+    const link = screen.getByRole('link', { name: 'Home' });
+
+    expect(link).toHaveAttribute('href', '/home.html');
   });
 
   it('opens an internal deep link route in an extension tab', async () => {
