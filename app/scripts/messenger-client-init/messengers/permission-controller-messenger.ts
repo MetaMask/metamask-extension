@@ -121,7 +121,6 @@ export function getPermissionControllerInitMessenger(
       'SnapController:clearSnapState',
       'SnapController:getSnap',
       'SnapController:getSnapState',
-      'SnapAccountService:handleKeyringSnapMessage',
       'SnapController:handleRequest',
       'SnapController:updateSnapState',
       'SnapInterfaceController:createInterface',
