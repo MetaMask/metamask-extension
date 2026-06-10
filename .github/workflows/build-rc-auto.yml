@@ -69,16 +69,16 @@ jobs:
           BRANCH_NAME="${{ github.ref_name }}"
           echo "Looking for PR with head branch: $BRANCH_NAME"
 
-          PR_JSON=$(gh pr list --head "$BRANCH_NAME" --base stable --json number,labels --jq '.[0]' || echo "")
-          PR_NUMBER=$(echo "$PR_JSON" | jq -r '.number // empty')
+          PR_JSON="$(gh pr list --head "$BRANCH_NAME" --base stable --json number,labels --jq '.[0]' 2>/dev/null || true)"
 
-          if [[ -z "$PR_NUMBER" ]]; then
+          if [[ -z "$PR_JSON" || "$PR_JSON" == "null" ]]; then
             echo "No PR found for branch $BRANCH_NAME. Skipping."
             echo "has-pr=false" >> "$GITHUB_OUTPUT"
             echo "rc-frozen=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
+          PR_NUMBER=$(echo "$PR_JSON" | jq -r '.number')
           RC_FROZEN=$(echo "$PR_JSON" | jq -r '[.labels[].name] | map(select(. == "rc-freeze")) | length > 0')
 
           if [[ "$RC_FROZEN" == "true" ]]; then
