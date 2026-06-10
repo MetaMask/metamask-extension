@@ -69,7 +69,7 @@ jobs:
           BRANCH_NAME="${{ github.ref_name }}"
           echo "Looking for PR with head branch: $BRANCH_NAME"
 
-          PR_JSON=$(gh pr list --head "$BRANCH_NAME" --json number,labels --jq '.[0]' || echo "")
+          PR_JSON=$(gh pr list --head "$BRANCH_NAME" --base stable --json number,labels --jq '.[0]' || echo "")
           PR_NUMBER=$(echo "$PR_JSON" | jq -r '.number // empty')
 
           if [[ -z "$PR_NUMBER" ]]; then
