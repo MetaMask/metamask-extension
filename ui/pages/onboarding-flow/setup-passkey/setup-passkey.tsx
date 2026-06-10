@@ -9,7 +9,7 @@ import {
 import {
   getAccountTypeForOnboardingMetrics,
   getFirstTimeFlowType,
-  getIsParticipateInMetaMetricsSet,
+  getCompletedMetaMetricsOnboarding,
 } from '../../../selectors';
 import SetupPasskeyContent from '../../../components/app/setup-passkey-content';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
@@ -23,8 +23,8 @@ import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
 export default function SetupPasskey() {
   const navigate = useNavigate();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const isParticipateInMetaMetricsSet = useSelector(
-    getIsParticipateInMetaMetricsSet,
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
   );
 
   const handleNext = useCallback(() => {
@@ -38,7 +38,7 @@ export default function SetupPasskey() {
       if (isFirefox) {
         nextRoute = ONBOARDING_COMPLETION_ROUTE;
       } else {
-        nextRoute = isParticipateInMetaMetricsSet
+        nextRoute = completedMetaMetricsOnboarding
           ? ONBOARDING_COMPLETION_ROUTE
           : ONBOARDING_METAMETRICS;
       }
@@ -47,7 +47,7 @@ export default function SetupPasskey() {
     }
 
     navigate(nextRoute, { replace: true });
-  }, [firstTimeFlowType, navigate, isParticipateInMetaMetricsSet]);
+  }, [firstTimeFlowType, navigate, completedMetaMetricsOnboarding]);
 
   return <SetupPasskeyContent onNext={handleNext} />;
 }

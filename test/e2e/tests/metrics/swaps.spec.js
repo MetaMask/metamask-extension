@@ -29,7 +29,7 @@ const {
   TRADES_API_MOCK_RESULT,
   NETWORKS_2_API_MOCK_RESULT,
 } = require('../../../data/mock-data');
-const { MOCK_META_METRICS_ID } = require('../../constants');
+const { MOCK_ANALYTICS_ID } = require('../../constants');
 
 const numberOfSegmentRequests = 19;
 
@@ -98,8 +98,9 @@ describe.skip('Swap Eth for another Token', function () {
       {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .build(),
         localNodeOptions: {

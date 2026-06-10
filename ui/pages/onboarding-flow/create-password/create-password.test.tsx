@@ -91,7 +91,8 @@ describe('Onboarding Create Password', () => {
         metamask: {
           ...initializedMockState.metamask,
           firstTimeFlowType: FirstTimeFlowType.import,
-          participateInMetaMetrics: null,
+          completedMetaMetricsOnboarding: false,
+          optedIn: false,
           passkeyRecord: null,
         },
       };
@@ -117,7 +118,8 @@ describe('Onboarding Create Password', () => {
         metamask: {
           ...initializedMockState.metamask,
           firstTimeFlowType: FirstTimeFlowType.import,
-          participateInMetaMetrics: null,
+          completedMetaMetricsOnboarding: false,
+          optedIn: false,
           passkeyRecord: {
             credentialId: 'cred',
             derivationMethod: 'prf',
@@ -148,7 +150,8 @@ describe('Onboarding Create Password', () => {
         metamask: {
           ...initializedMockState.metamask,
           firstTimeFlowType: FirstTimeFlowType.import,
-          participateInMetaMetrics: true,
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
           passkeyRecord: {
             credentialId: 'cred',
             derivationMethod: 'prf',

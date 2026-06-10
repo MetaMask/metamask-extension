@@ -22,8 +22,9 @@ jest.mock('../../../../../hooks/useTheme', () => ({
 }));
 
 jest.mock('../../../../../selectors', () => ({
-  getMetaMetricsId: jest.fn(),
-  getParticipateInMetaMetrics: jest.fn(),
+  getAnalyticsId: jest.fn(),
+  getCompletedMetaMetricsOnboarding: jest.fn(),
+  getOptedIn: jest.fn(),
   getDataCollectionForMarketing: jest.fn(),
 }));
 
@@ -38,19 +39,22 @@ jest.mock('../../../../../helpers/utils/portfolio', () => ({
 const mockUseSelector = jest.mocked(useSelector);
 const mockGetPortfolioUrl = jest.mocked(getPortfolioUrl);
 
-// Seed the three useSelector calls in component order:
-// 1. getMetaMetricsId
-// 2. getParticipateInMetaMetrics
-// 3. getDataCollectionForMarketing
+// Seed the useSelector calls in component order:
+// 1. getAnalyticsId
+// 2. getCompletedMetaMetricsOnboarding
+// 3. getOptedIn
+// 4. getDataCollectionForMarketing
 function seedSelectors({
-  metaMetricsId = 'mock-metrics-id',
-  isMetaMetricsEnabled = true,
+  analyticsId = 'mock-metrics-id',
+  completedMetaMetricsOnboarding = true,
+  isOptedIn = true,
   isMarketingEnabled = false,
 } = {}) {
   mockUseSelector.mockReset();
   mockUseSelector
-    .mockReturnValueOnce(metaMetricsId as never)
-    .mockReturnValueOnce(isMetaMetricsEnabled as never)
+    .mockReturnValueOnce(analyticsId as never)
+    .mockReturnValueOnce(completedMetaMetricsOnboarding as never)
+    .mockReturnValueOnce(isOptedIn as never)
     .mockReturnValueOnce(isMarketingEnabled as never);
 }
 
@@ -124,8 +128,9 @@ describe('BatchSellEmptySelectTokens', () => {
 
     it('passes the correct arguments to getPortfolioUrl', () => {
       seedSelectors({
-        metaMetricsId: 'test-id',
-        isMetaMetricsEnabled: true,
+        analyticsId: 'test-id',
+        completedMetaMetricsOnboarding: true,
+        isOptedIn: true,
         isMarketingEnabled: true,
       });
 
@@ -143,8 +148,9 @@ describe('BatchSellEmptySelectTokens', () => {
 
     it('passes updated selector values when they change between renders', () => {
       seedSelectors({
-        metaMetricsId: 'id-a',
-        isMetaMetricsEnabled: false,
+        analyticsId: 'id-a',
+        completedMetaMetricsOnboarding: true,
+        isOptedIn: false,
         isMarketingEnabled: false,
       });
       const { unmount } = render(<BatchSellEmptySelectTokens />);
@@ -162,8 +168,9 @@ describe('BatchSellEmptySelectTokens', () => {
       jest.clearAllMocks();
 
       seedSelectors({
-        metaMetricsId: 'id-b',
-        isMetaMetricsEnabled: true,
+        analyticsId: 'id-b',
+        completedMetaMetricsOnboarding: true,
+        isOptedIn: true,
         isMarketingEnabled: true,
       });
       render(<BatchSellEmptySelectTokens />);

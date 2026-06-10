@@ -5,8 +5,9 @@ import { MenuItem } from '../../ui/menu';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import {
   getDataCollectionForMarketing,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
+  getAnalyticsId,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -23,8 +24,12 @@ export const DiscoverMenuItem = ({
   closeMenu: () => void;
   metricsLocation: string;
 }) => {
-  const metaMetricsId = useSelector(getMetaMetricsId);
-  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const analyticsId = useSelector(getAnalyticsId);
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
+  );
+  const isOptedIn = useSelector(getOptedIn);
+  const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const { trackEvent } = useContext(MetaMetricsContext);
   const t = useI18nContext();
@@ -33,7 +38,7 @@ export const DiscoverMenuItem = ({
     const url = getPortfolioUrl(
       'explore/tokens',
       'ext_portfolio_button',
-      metaMetricsId,
+      analyticsId,
       isMetaMetricsEnabled === true,
       isMarketingEnabled === true,
     );
@@ -51,7 +56,7 @@ export const DiscoverMenuItem = ({
     closeMenu,
     isMarketingEnabled,
     isMetaMetricsEnabled,
-    metaMetricsId,
+    analyticsId,
     trackEvent,
   ]);
 

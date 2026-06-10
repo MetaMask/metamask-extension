@@ -69,7 +69,7 @@ import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import {
   getMetaMaskHdKeyrings,
-  getMetaMetricsId,
+  getAnalyticsId,
   getModalTypeForShieldEntryModal,
   getUnapprovedConfirmations,
   getUpdatedAndSortedAccountsWithCaipAccountId,
@@ -735,7 +735,7 @@ export const useHandleSubscriptionSupportAction = () => {
   const version = process.env.METAMASK_VERSION as string;
   const sessionData = useSelector(selectSessionData);
   const profileId = sessionData?.profile?.profileId;
-  const metaMetricsId = useSelector(getMetaMetricsId);
+  const analyticsId = useSelector(getAnalyticsId);
   const { customerId: shieldCustomerId } = useUserSubscriptions();
 
   const handleClickContactSupport = useCallback(() => {
@@ -744,8 +744,8 @@ export const useHandleSubscriptionSupportAction = () => {
     if (profileId) {
       url.searchParams.append('metamask_profile_id', profileId);
     }
-    if (metaMetricsId) {
-      url.searchParams.append('metamask_metametrics_id', metaMetricsId);
+    if (analyticsId) {
+      url.searchParams.append('metamask_metametrics_id', analyticsId);
     }
     if (shieldCustomerId) {
       url.searchParams.append('shield_id', shieldCustomerId);
@@ -754,7 +754,7 @@ export const useHandleSubscriptionSupportAction = () => {
     const supportLinkWithUserId = url.toString();
 
     openWindow(supportLinkWithUserId);
-  }, [version, profileId, metaMetricsId, shieldCustomerId]);
+  }, [version, profileId, analyticsId, shieldCustomerId]);
 
   return {
     handleClickContactSupport,

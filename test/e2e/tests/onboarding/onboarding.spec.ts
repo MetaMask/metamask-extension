@@ -328,8 +328,9 @@ describe('MetaMask onboarding', function () {
             seedPhraseBackedUp: null,
           })
           .withMetaMetricsController({
-            participateInMetaMetrics: null,
-            metaMetricsId: null,
+            completedMetaMetricsOnboarding: false,
+            optedIn: false,
+            analyticsId: null,
           })
           .build(),
         title: this.test?.fullTitle(),

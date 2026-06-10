@@ -283,6 +283,7 @@
     "allNftContracts": {},
     "allNfts": {},
     "allTokens": {},
+    "analyticsId": "string",
     "announcements": {},
     "appActiveTab": {
       "favIconUrl": "null",
@@ -793,6 +794,7 @@
     "ensResolutionsByAddress": {},
     "error": "null",
     "estimatedGasFeeTimeBounds": {},
+    "eventQueue": "object",
     "events": {
       "cronjob-npm:@metamask/tron-wallet-snap-0": {
         "date": "string",
@@ -1073,9 +1075,6 @@
     "metamaskNotificationsReadList": [],
     "metaMetricsDataDeletionId": "null",
     "metaMetricsDataDeletionTimestamp": "number",
-    "metaMetricsId": "string",
-    "analyticsId": "string",
-    "optedIn": "boolean",
     "methodData": {},
     "minimumBalanceForRentExemptionInLamports": "string",
     "multichainNetworkConfigurationsByChainId": {
@@ -1180,6 +1179,7 @@
     "onboardingDate": "null",
     "onboardingTabs": {},
     "openSeaEnabled": "boolean",
+    "optedIn": "boolean",
     "orderedNetworkList": [
       {
         "networkId": "string"
@@ -1188,7 +1188,6 @@
     "orderedTransactionHistory": [],
     "outdatedBrowserWarningLastShown": "null",
     "overrideContentSecurityPolicyHeader": "boolean",
-    "participateInMetaMetrics": "boolean",
     "passkeyAutoUnlockSuppressed": "boolean",
     "pendingRedirectRoute": "null",
     "pendingApprovalCount": "number",
@@ -1380,7 +1379,7 @@
         "profile": {
           "canonicalProfileId": "string",
           "identifierId": "string",
-          "metaMetricsId": "string",
+          "analyticsId": "string",
           "profileId": "string"
         },
         "token": {

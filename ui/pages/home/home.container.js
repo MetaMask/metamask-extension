@@ -27,7 +27,8 @@ import {
   getPendingShieldCohort,
   getPendingRedirectRoute,
   getLastVisitedPerpsRoute,
-  getParticipateInMetaMetrics,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/lib/selectors/networks';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
@@ -131,7 +132,8 @@ const mapStateToProps = (state) => {
     dataCollectionForMarketing,
     selectedAddress,
     totalUnapprovedCount,
-    participateInMetaMetrics: getParticipateInMetaMetrics(state),
+    isMetaMetricsEnabled:
+      getCompletedMetaMetricsOnboarding(state) && getOptedIn(state),
     hasApprovalFlows: getApprovalFlows(state)?.length > 0,
     connectedStatusPopoverHasBeenShown,
     firstTimeFlowType,

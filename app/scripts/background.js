@@ -1276,8 +1276,8 @@ export async function loadStateFromPersistence(backup) {
  * @param {number} [frameId] - The frame ID from chrome.runtime.MessageSender (0 = top-level, >0 = iframe)
  */
 function emitDappViewedMetricEvent(origin, mainFrameOrigin, frameId) {
-  const { metaMetricsId } = controller.getState();
-  if (!shouldEmitDappViewedEvent(metaMetricsId)) {
+  const { analyticsId } = controller.getState();
+  if (!shouldEmitDappViewedEvent(analyticsId)) {
     return;
   }
 
@@ -1370,10 +1370,10 @@ function trackDappView(remotePort) {
  * @param {string} environmentType - The environment type where the app is opening
  */
 function emitAppOpenedMetricEvent(environmentType) {
-  const { participateInMetaMetrics } = controller.getState();
+  const { completedMetaMetricsOnboarding, optedIn } = controller.getState();
 
   // Skip if user hasn't opted into metrics
-  if (!participateInMetaMetrics) {
+  if (!completedMetaMetricsOnboarding || !optedIn) {
     return;
   }
 
@@ -2156,21 +2156,25 @@ const addAppInstalledEvent = async (installAttributionPromise) => {
     properties: eventProperties,
   };
 
-  const { participateInMetaMetrics, metaMetricsId } = controller.getState();
+  const { completedMetaMetricsOnboarding, optedIn, analyticsId } =
+    controller.getState();
 
-  if (participateInMetaMetrics === false) {
+  if (completedMetaMetricsOnboarding === true && optedIn === false) {
     // We can skip tracking completely if they've already explicitly opted out
     return;
   }
 
-  // Track immediately only once consent is active and the compatibility
-  // MetaMetrics ID is available. Otherwise keep the event buffered for the
-  // opt-in flush path so it is not dropped.
-  if (participateInMetaMetrics === true && metaMetricsId) {
+  // Track immediately only once consent is active and the analytics ID is
+  // available. Otherwise keep the event buffered for the opt-in flush path so
+  // it is not dropped.
+  if (
+    completedMetaMetricsOnboarding === true &&
+    optedIn === true &&
+    analyticsId
+  ) {
     controller.metaMetricsController.trackEvent(appInstalledEvent);
   } else {
-    // participateInMetaMetrics is either `null` (not opted in or out yet) or
-    // `true` (opted in, but for some reason we don't have a MetaMetrics ID yet),
+    // Onboarding is incomplete, or the user opted in without an analytics ID yet,
     // so we queue the metrics event for possible submission later.
     controller.metaMetricsController.addEventBeforeMetricsOptIn(
       appInstalledEvent,

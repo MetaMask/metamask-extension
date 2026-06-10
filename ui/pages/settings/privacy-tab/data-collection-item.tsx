@@ -2,8 +2,9 @@ import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  getCompletedMetaMetricsOnboarding,
   getDataCollectionForMarketing,
-  getParticipateInMetaMetrics,
+  getOptedIn,
 } from '../../../selectors/metametrics';
 import {
   getUseExternalServices,
@@ -31,7 +32,10 @@ export const DataCollectionToggleItem = () => {
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
   const useExternalServices = useSelector(getUseExternalServices);
   const socialLoginEnabled = useSelector(getIsSocialLoginFlow);
-  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
+  );
+  const isOptedIn = useSelector(getOptedIn);
 
   // Match legacy Security tab: fetch remote marketing consent when the user is in
   // a social login flow (firstTimeFlowType stays set after seedless import completes).
@@ -52,7 +56,8 @@ export const DataCollectionToggleItem = () => {
     };
   }, [socialLoginEnabled, dispatch]);
 
-  const isDisabled = !useExternalServices || !participateInMetaMetrics;
+  const isDisabled =
+    !useExternalServices || !(completedMetaMetricsOnboarding && isOptedIn);
 
   const handleToggle = (currentValue: boolean) => {
     const newValue = !currentValue;

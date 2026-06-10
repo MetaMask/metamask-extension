@@ -23,10 +23,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  getParticipateInMetaMetrics,
-  getUseExternalServices,
-} from '../../../selectors';
+import { getOptedIn, getUseExternalServices } from '../../../selectors';
 
 const MetametricsToggle = ({
   dataCollectionForMarketing,
@@ -49,7 +46,7 @@ const MetametricsToggle = ({
   const error = enableMetametricsError || disableMetametricsError;
 
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
-  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+  const isOptedIn = useSelector(getOptedIn);
   const useExternalServices = useSelector(getUseExternalServices);
 
   const handleUseParticipateInMetaMetrics = async (isParticipated: boolean) => {
@@ -60,7 +57,7 @@ const MetametricsToggle = ({
         event: MetaMetricsEventName.TurnOnMetaMetrics,
         properties: {
           isProfileSyncingEnabled: isBackupAndSyncEnabled,
-          participateInMetaMetrics,
+          participateInMetaMetrics: isOptedIn,
           location: fromDefaultSettings ? 'Default Settings' : 'Settings',
         },
       });
@@ -75,7 +72,7 @@ const MetametricsToggle = ({
         event: MetaMetricsEventName.TurnOffMetaMetrics,
         properties: {
           isProfileSyncingEnabled: isBackupAndSyncEnabled,
-          participateInMetaMetrics,
+          participateInMetaMetrics: isOptedIn,
         },
       });
 
@@ -114,7 +111,7 @@ const MetametricsToggle = ({
           data-testid="participate-in-meta-metrics-toggle"
         >
           <ToggleButton
-            value={participateInMetaMetrics}
+            value={isOptedIn}
             disabled={!useExternalServices}
             onToggle={(value) => handleUseParticipateInMetaMetrics(!value)}
             offLabel={t('off')}

@@ -20,8 +20,9 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getMetaMetricsDataDeletionTimestamp,
   getMetaMetricsDataDeletionStatus,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
+  getAnalyticsId,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
   getShowDataDeletionErrorModal,
   getShowDeleteMetaMetricsDataModal,
   getLatestMetricsEventTimestamp,
@@ -58,7 +59,7 @@ const DeleteMetaMetricsDataButton: DeleteMetaMetricsDataButtonComponent =
       const t = useI18nContext();
       const dispatch = useDispatch();
 
-      const metaMetricsId = useSelector(getMetaMetricsId);
+      const analyticsId = useSelector(getAnalyticsId);
       const metaMetricsDataDeletionStatus: DeleteRegulationStatus = useSelector(
         getMetaMetricsDataDeletionStatus,
       );
@@ -79,7 +80,11 @@ const DeleteMetaMetricsDataButton: DeleteMetaMetricsDataButtonComponent =
       const latestMetricsEventTimestamp = useSelector(
         getLatestMetricsEventTimestamp,
       );
-      const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+      const completedMetaMetricsOnboarding = useSelector(
+        getCompletedMetaMetricsOnboarding,
+      );
+      const isOptedIn = useSelector(getOptedIn);
+      const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
       let dataDeletionButtonDisabled = !isMetaMetricsEnabled;
       if (!dataDeletionButtonDisabled && metaMetricsDataDeletionStatus) {
         dataDeletionButtonDisabled =
@@ -111,7 +116,7 @@ const DeleteMetaMetricsDataButton: DeleteMetaMetricsDataButtonComponent =
             <div className="settings-page__content-item">
               <span>{t('deleteMetaMetricsData')}</span>
               <div className="settings-page__content-description">
-                {dataDeletionButtonDisabled && Boolean(metaMetricsId)
+                {dataDeletionButtonDisabled && Boolean(analyticsId)
                   ? t('deleteMetaMetricsDataRequestedDescription', [
                       formatedDate,
                       privacyPolicyLink,
@@ -122,7 +127,7 @@ const DeleteMetaMetricsDataButton: DeleteMetaMetricsDataButtonComponent =
             <div
               className={`settings-page__content-item-col ${defaultPrivacySettings ? 'settings-page__button-defaut-settings' : ''}`}
             >
-              {Boolean(!metaMetricsId) && (
+              {Boolean(!analyticsId) && (
                 <Box className="inline-flex">
                   <Icon name={IconName.Info} size={IconSize.Sm} />
                   <Text

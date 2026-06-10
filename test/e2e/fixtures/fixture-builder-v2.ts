@@ -126,8 +126,10 @@ type TransactionControllerFixtureInput = Partial<
 };
 
 type MetaMetricsControllerFixturePatch = Partial<MetaMetricsControllerState> & {
-  participateInMetaMetrics?: boolean | null;
-  metaMetricsId?: string | null;
+  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
+  analyticsId?: string | null;
+  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
+  optedIn?: boolean;
 };
 
 type StorageServiceNamespaceMap = {
@@ -283,37 +285,26 @@ class FixtureBuilderV2 {
   }
 
   withMetaMetricsController(data: MetaMetricsControllerFixturePatch): this {
-    const {
-      participateInMetaMetrics,
-      metaMetricsId,
-      ...metaMetricsControllerPatch
-    } = data;
+    const { analyticsId, optedIn, ...metaMetricsControllerPatch } = data;
 
     merge(this.fixture.data.MetaMetricsController, metaMetricsControllerPatch);
 
-    if (participateInMetaMetrics !== undefined) {
-      merge(this.fixture.data.MetaMetricsController, {
-        completedMetaMetricsOnboarding: participateInMetaMetrics !== null,
-      });
-    }
-
-    if (participateInMetaMetrics !== undefined || metaMetricsId !== undefined) {
+    if (analyticsId !== undefined || optedIn !== undefined) {
       const fixtureData = this.fixture.data as Record<string, unknown>;
       if (!fixtureData.AnalyticsController) {
         fixtureData.AnalyticsController = {};
       }
-      const analyticsController = fixtureData.AnalyticsController as Record<
-        string,
-        unknown
-      >;
-      const analyticsPatch: Record<string, unknown> = {};
-      if (typeof metaMetricsId === 'string') {
-        analyticsPatch.analyticsId = metaMetricsId;
+      const analyticsControllerPatch: Record<string, unknown> = {};
+      if (analyticsId !== undefined) {
+        analyticsControllerPatch.analyticsId = analyticsId;
       }
-      if (participateInMetaMetrics !== undefined) {
-        analyticsPatch.optedIn = participateInMetaMetrics === true;
+      if (optedIn !== undefined) {
+        analyticsControllerPatch.optedIn = optedIn;
       }
-      merge(analyticsController, analyticsPatch);
+      merge(
+        fixtureData.AnalyticsController as Record<string, unknown>,
+        analyticsControllerPatch,
+      );
     }
 
     return this;

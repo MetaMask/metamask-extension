@@ -16,7 +16,7 @@ import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { openWindow } from '../../../../helpers/utils/window';
 import { useUserSubscriptions } from '../../../../hooks/subscription/useSubscription';
 import { selectSessionData } from '../../../../selectors/identity/authentication';
-import { getMetaMetricsId } from '../../../../selectors/selectors';
+import { getAnalyticsId } from '../../../../selectors/selectors';
 import VisitSupportDataConsentModal from './visit-support-data-consent-modal';
 
 jest.mock('react-redux', () => ({
@@ -43,7 +43,7 @@ describe('VisitSupportDataConsentModal', () => {
   };
   const mockOnClose = jest.fn();
   const mockProfileId = 'test-profile-id';
-  const mockMetaMetricsId = 'test-metrics-id';
+  const mockAnalyticsId = 'test-metrics-id';
   const mockShieldCustomerId = 'test-shield-customer-id';
   const useSelectorMock = useSelector as jest.Mock;
   const useUserSubscriptionsMock = useUserSubscriptions as jest.Mock;
@@ -53,8 +53,8 @@ describe('VisitSupportDataConsentModal', () => {
       if (selector === selectSessionData) {
         return { profile: { profileId: mockProfileId } };
       }
-      if (selector === getMetaMetricsId) {
-        return mockMetaMetricsId;
+      if (selector === getAnalyticsId) {
+        return mockAnalyticsId;
       }
       return undefined;
     });
@@ -105,7 +105,7 @@ describe('VisitSupportDataConsentModal', () => {
     const url = new URL(SUPPORT_LINK as string);
     url.searchParams.append('metamask_version', 'MOCK_VERSION');
     url.searchParams.append('metamask_profile_id', mockProfileId);
-    url.searchParams.append('metamask_metametrics_id', mockMetaMetricsId);
+    url.searchParams.append('metamask_metametrics_id', mockAnalyticsId);
     url.searchParams.append('shield_id', mockShieldCustomerId);
     const expectedUrl = url.toString();
 
@@ -171,7 +171,7 @@ describe('VisitSupportDataConsentModal', () => {
     const url = new URL(SUPPORT_LINK as string);
     url.searchParams.append('metamask_version', 'MOCK_VERSION');
     url.searchParams.append('metamask_profile_id', mockProfileId);
-    url.searchParams.append('metamask_metametrics_id', mockMetaMetricsId);
+    url.searchParams.append('metamask_metametrics_id', mockAnalyticsId);
     const expectedUrl = url.toString();
 
     expect(mockTrackEvent).toHaveBeenCalledWith(
@@ -194,7 +194,7 @@ describe('VisitSupportDataConsentModal', () => {
       if (selector === selectSessionData) {
         return { profile: { profileId: undefined } };
       }
-      if (selector === getMetaMetricsId) {
+      if (selector === getAnalyticsId) {
         return undefined;
       }
       return undefined;
@@ -314,8 +314,8 @@ describe('VisitSupportDataConsentModal', () => {
       if (selector === selectSessionData) {
         return null;
       }
-      if (selector === getMetaMetricsId) {
-        return mockMetaMetricsId;
+      if (selector === getAnalyticsId) {
+        return mockAnalyticsId;
       }
       return undefined;
     });
@@ -330,7 +330,7 @@ describe('VisitSupportDataConsentModal', () => {
 
     const url = new URL(SUPPORT_LINK as string);
     url.searchParams.append('metamask_version', 'MOCK_VERSION');
-    url.searchParams.append('metamask_metametrics_id', mockMetaMetricsId);
+    url.searchParams.append('metamask_metametrics_id', mockAnalyticsId);
     url.searchParams.append('shield_id', mockShieldCustomerId);
     const expectedUrl = url.toString();
 
@@ -342,8 +342,8 @@ describe('VisitSupportDataConsentModal', () => {
       if (selector === selectSessionData) {
         return { profile: null };
       }
-      if (selector === getMetaMetricsId) {
-        return mockMetaMetricsId;
+      if (selector === getAnalyticsId) {
+        return mockAnalyticsId;
       }
       return undefined;
     });
@@ -358,7 +358,7 @@ describe('VisitSupportDataConsentModal', () => {
 
     const url = new URL(SUPPORT_LINK as string);
     url.searchParams.append('metamask_version', 'MOCK_VERSION');
-    url.searchParams.append('metamask_metametrics_id', mockMetaMetricsId);
+    url.searchParams.append('metamask_metametrics_id', mockAnalyticsId);
     url.searchParams.append('shield_id', mockShieldCustomerId);
     const expectedUrl = url.toString();
 
@@ -370,8 +370,8 @@ describe('VisitSupportDataConsentModal', () => {
       if (selector === selectSessionData) {
         return { profile: { profileId: undefined } };
       }
-      if (selector === getMetaMetricsId) {
-        return mockMetaMetricsId;
+      if (selector === getAnalyticsId) {
+        return mockAnalyticsId;
       }
       return undefined;
     });
@@ -394,7 +394,7 @@ describe('VisitSupportDataConsentModal', () => {
 
     const url = new URL(SUPPORT_LINK as string);
     url.searchParams.append('metamask_version', 'MOCK_VERSION');
-    url.searchParams.append('metamask_metametrics_id', mockMetaMetricsId);
+    url.searchParams.append('metamask_metametrics_id', mockAnalyticsId);
     const expectedUrl = url.toString();
 
     expect(openWindow).toHaveBeenCalledWith(expectedUrl);

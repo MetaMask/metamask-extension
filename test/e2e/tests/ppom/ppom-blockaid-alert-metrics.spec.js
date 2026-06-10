@@ -6,11 +6,11 @@ const { withFixtures, getEventPayloads } = require('../../helpers');
 const { login } = require('../../page-objects/flows/login.flow');
 const {
   DAPP_URL_LOCALHOST,
+  MOCK_ANALYTICS_ID,
   NETWORK_CLIENT_ID,
   WINDOW_TITLES,
 } = require('../../constants');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
-const { MOCK_META_METRICS_ID } = require('./constants');
 
 const selectedAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
 const selectedAddressWithoutPrefix = '5cfe73b6021e818b776b421b1c4db2474086a7e1';
@@ -271,8 +271,9 @@ describe('Confirmation Security Alert - Blockaid', function () {
             },
           })
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .build(),
         title: this.test.fullTitle(),
@@ -325,7 +326,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
             ppom_debug_traceCall_count: 3,
             ppom_eth_call_count: 1,
           },
-          userId: MOCK_META_METRICS_ID,
+          userId: MOCK_ANALYTICS_ID,
           type: 'track',
         };
 
@@ -359,7 +360,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
             ppom_eth_call_count: 1,
             ppom_debug_traceCall_count: 1,
           },
-          userId: MOCK_META_METRICS_ID,
+          userId: MOCK_ANALYTICS_ID,
           type: 'track',
         };
 

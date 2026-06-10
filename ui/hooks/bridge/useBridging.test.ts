@@ -38,7 +38,7 @@ jest.mock('react-redux', () => ({
 
 const resetInputFieldsSpy = jest.spyOn(bridgeActions, 'resetInputFields');
 
-const MOCK_METAMETRICS_ID = '0xtestMetaMetricsId';
+const MOCK_ANALYTICS_ID = '0xtestMetaMetricsId';
 const BRIDGE_PREPARE_PATH = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
 
 const renderUseBridging = (mockStoreState: object, pathname?: string) =>
@@ -144,7 +144,7 @@ describe('useBridging', () => {
           createBridgeMockStore({
             metamaskStateOverrides: {
               useExternalServices: true,
-              metaMetricsId: MOCK_METAMETRICS_ID,
+              analyticsId: MOCK_ANALYTICS_ID,
               enabledNetworkMap: {
                 eip155: {
                   '1': true,
@@ -241,7 +241,7 @@ describe('useBridging', () => {
         createBridgeMockStore({
           metamaskStateOverrides: {
             useExternalServices: true,
-            metaMetricsId: MOCK_METAMETRICS_ID,
+            analyticsId: MOCK_ANALYTICS_ID,
             enabledNetworkMap: {
               eip155: { '1': true, '10': true, '56': true },
             },
@@ -294,7 +294,7 @@ describe('useBridging', () => {
         createBridgeMockStore({
           metamaskStateOverrides: {
             useExternalServices: true,
-            metaMetricsId: MOCK_METAMETRICS_ID,
+            analyticsId: MOCK_ANALYTICS_ID,
             enabledNetworkMap: {
               eip155: { '1': true, '10': true, '56': true },
             },
@@ -479,7 +479,7 @@ describe('useBridging', () => {
                 { chainId: CHAIN_IDS.BSC },
                 { chainId: CHAIN_IDS.OPTIMISM },
               ),
-              metaMetricsId: MOCK_METAMETRICS_ID,
+              analyticsId: MOCK_ANALYTICS_ID,
               enabledNetworkMap: {
                 eip155: {
                   '10': true,

@@ -370,7 +370,7 @@ export function getNetworkIdentifier(state) {
   return nickname || rpcUrl || type;
 }
 
-export function getMetaMetricsId(state) {
+export function getAnalyticsId(state) {
   const { analyticsId } = state.metamask;
   return analyticsId;
 }

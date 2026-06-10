@@ -51,7 +51,7 @@ const meta: Meta<typeof Home> = {
     isNotification: false,
     totalUnapprovedCount: 0,
     defaultHomeActiveTabName: null,
-    participateInMetaMetrics: false,
+    isMetaMetricsEnabled: false,
     haveSwapsQuotes: false,
     showAwaitingSwapScreen: false,
     haveBridgeQuotes: false,

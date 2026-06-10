@@ -4,11 +4,7 @@ import { Driver } from '../../webdriver/driver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
 import { closeSettings } from '../../page-objects/flows/settings.flow';
-import {
-  DAPP_PATH,
-  MOCK_META_METRICS_ID,
-  WINDOW_TITLES,
-} from '../../constants';
+import { DAPP_PATH, MOCK_ANALYTICS_ID, WINDOW_TITLES } from '../../constants';
 import { withFixtures, sentryRegEx } from '../../helpers';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PreinstalledExampleSettings from '../../page-objects/pages/settings/preinstalled-example-settings';
@@ -138,8 +134,9 @@ describe('Preinstalled example Snap', function () {
         },
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -190,8 +187,9 @@ describe('Preinstalled example Snap', function () {
         },
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -238,8 +236,9 @@ describe('Preinstalled example Snap', function () {
         },
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            completedMetaMetricsOnboarding: true,
+            optedIn: true,
           })
           .build(),
         title: this.test?.fullTitle(),

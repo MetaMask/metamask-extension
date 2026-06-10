@@ -148,6 +148,9 @@ export type MetaMaskState = Pick<
   | 'keyrings'
   | 'multichainNetworkConfigurationsByChainId'
   | 'firstTimeFlowType'
+  | 'analyticsId'
+  | 'optedIn'
+  | 'completedMetaMetricsOnboarding'
   // TODO: Remove as this is no longer a top-level property of the flattened background state object.
   // | 'security_providers'
 > & {
@@ -158,10 +161,6 @@ export type MetaMaskState = Pick<
     | 'showNativeTokenAsMainBalance'
     | 'tokenSortConfig'
   >;
-} & {
-  /** Legacy fields derived by `MetamaskController.getState()`. */
-  participateInMetaMetrics: boolean | null;
-  metaMetricsId: string | null;
 };
 
 /**
@@ -757,7 +756,7 @@ export class MetaMetricsController extends BaseController<
   // This method should only be called after the user has made a decision about MetaMetrics participation.
   updateExtensionUninstallUrl(
     participateInMetaMetrics: boolean,
-    metaMetricsId: string,
+    analyticsId: string,
   ): void {
     const query: {
       mmi?: string;
@@ -768,7 +767,7 @@ export class MetaMetricsController extends BaseController<
     };
     if (participateInMetaMetrics) {
       // We only want to track these things if a user opted into metrics.
-      query.mmi = Buffer.from(metaMetricsId).toString('base64');
+      query.mmi = Buffer.from(analyticsId).toString('base64');
       query.env = this.#environment;
     }
     const queryString = new URLSearchParams(query);
@@ -1453,7 +1452,9 @@ export class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.PetnameAddressCount]:
         this.#getPetnameAddressCount(metamaskState),
       [MetaMetricsUserTrait.IsMetricsOptedIn]:
-        metamaskState.participateInMetaMetrics,
+        metamaskState.completedMetaMetricsOnboarding === true
+          ? metamaskState.optedIn === true
+          : null,
       [MetaMetricsUserTrait.HasMarketingConsent]:
         metamaskState.dataCollectionForMarketing,
       [MetaMetricsUserTrait.TokenSortPreference]:
@@ -1484,7 +1485,11 @@ export class MetaMetricsController extends BaseController<
       currentTraits[MetaMetricsUserTrait.GaClientId] = gaClientIdTrait;
     }
 
-    if (!this.previousUserTraits && metamaskState.participateInMetaMetrics) {
+    if (
+      !this.previousUserTraits &&
+      metamaskState.completedMetaMetricsOnboarding === true &&
+      metamaskState.optedIn === true
+    ) {
       this.previousUserTraits = currentTraits;
       return currentTraits;
     }
@@ -1499,7 +1504,10 @@ export class MetaMetricsController extends BaseController<
         return !isEqual(previous, v);
       });
 
-      if (metamaskState.participateInMetaMetrics) {
+      if (
+        metamaskState.completedMetaMetricsOnboarding === true &&
+        metamaskState.optedIn === true
+      ) {
         this.previousUserTraits = currentTraits;
       }
 

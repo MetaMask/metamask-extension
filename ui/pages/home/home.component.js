@@ -113,7 +113,7 @@ export default class Home extends PureComponent {
     showUpdateModal: PropTypes.bool.isRequired,
     newNetworkAddedConfigurationId: PropTypes.string,
     totalUnapprovedCount: PropTypes.number.isRequired,
-    participateInMetaMetrics: PropTypes.bool,
+    isMetaMetricsEnabled: PropTypes.bool,
     setDataCollectionForMarketing: PropTypes.func.isRequired,
     dataCollectionForMarketing: PropTypes.bool,
     location: PropTypes.object,
@@ -804,7 +804,7 @@ export default class Home extends PureComponent {
       useExternalServices,
       setBasicFunctionalityModalOpen,
       forgottenPassword,
-      participateInMetaMetrics,
+      isMetaMetricsEnabled,
       dataCollectionForMarketing,
       connectedStatusPopoverHasBeenShown,
       isPopup,
@@ -896,8 +896,7 @@ export default class Home extends PureComponent {
     return (
       <ScrollContainer className="main-container main-container--has-shadow">
         <div className="home__container">
-          {dataCollectionForMarketing === null &&
-          participateInMetaMetrics === true
+          {dataCollectionForMarketing === null && isMetaMetricsEnabled === true
             ? this.renderOnboardingPopover()
             : null}
           {isSeedlessPasswordOutdated && <PasswordOutdatedModal />}
