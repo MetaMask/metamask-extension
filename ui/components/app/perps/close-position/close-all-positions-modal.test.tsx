@@ -31,7 +31,6 @@ jest.mock('../../../../../shared/lib/perps-formatters', () => ({
   },
 }));
 
-
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,
