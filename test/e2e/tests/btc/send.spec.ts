@@ -162,7 +162,7 @@ describe('BTC Account - Send', function (this: Suite) {
         await reviewPage.clickConfirmButton();
 
         const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkTransactionActivityByText('Sent');
+        await activityListPage.checkTransactionActivityByText('Sending BTC');
         await activityListPage.checkWaitForTransactionStatus('pending');
       },
     );
