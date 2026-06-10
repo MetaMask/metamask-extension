@@ -2645,7 +2645,7 @@
         "@metamask/post-message-stream": true,
         "@metamask/rpc-errors": true,
         "@metamask/snaps-registry": true,
-        "@metamask/snaps-rpc-methods": true,
+        "@metamask/snaps-controllers>@metamask/snaps-rpc-methods": true,
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
@@ -2686,6 +2686,20 @@
       }
     },
     "@metamask/snaps-rpc-methods": {
+      "packages": {
+        "@metamask/json-rpc-engine": true,
+        "@metamask/snaps-sdk>@metamask/key-tree": true,
+        "@metamask/permission-controller": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/snaps-sdk": true,
+        "@metamask/snaps-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "@noble/hashes": true,
+        "async-mutex": true
+      }
+    },
+    "@metamask/snaps-controllers>@metamask/snaps-rpc-methods": {
       "packages": {
         "@metamask/json-rpc-engine": true,
         "@metamask/snaps-sdk>@metamask/key-tree": true,
