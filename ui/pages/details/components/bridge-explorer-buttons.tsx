@@ -50,6 +50,7 @@ export function BridgeExplorerButtons({
     return (
       <Button
         className="w-full"
+        data-testid="transaction-details-block-explorer"
         size={ButtonSize.Lg}
         variant={ButtonVariant.Secondary}
         onClick={() => global.platform.openTab({ url: sourceUrl })}
@@ -63,6 +64,7 @@ export function BridgeExplorerButtons({
     <div className="relative">
       <Button
         className="w-full"
+        data-testid="transaction-details-block-explorer"
         size={ButtonSize.Lg}
         variant={ButtonVariant.Secondary}
         onClick={() => setShowPopup(true)}
