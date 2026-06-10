@@ -10,7 +10,7 @@ import { Keyring } from '@metamask/keyring-utils';
 import { assert } from '@metamask/utils';
 import { isFlask } from '../../../../shared/lib/build-types';
 import { SnapKeyringBuilderV2Messenger } from './types';
-import { SnapKeyringImpl, SnapKeyringHelpers } from './snap-keyring';
+import { SnapKeyringImpl } from './snap-keyring';
 
 /**
  * Builder type for the v2 Snap keyring.
@@ -22,11 +22,6 @@ export type SnapKeyringBuilderV2 = {
   v1Builder: KeyringBuilder;
   v2Builder: KeyringV2Builder;
 };
-
-/**
- * Helpers for the v2 Snap keyring implementation.
- */
-export type SnapKeyringV2Helpers = SnapKeyringHelpers;
 
 export class SnapKeyringV2Impl extends SnapKeyringImpl {
   async assertAccountCanBeUsed(_account: KeyringAccount) {
@@ -44,12 +39,11 @@ export class SnapKeyringV2Impl extends SnapKeyringImpl {
  */
 export function snapKeyringBuilderV2(
   messenger: SnapKeyringBuilderV2Messenger,
-  helpers: SnapKeyringV2Helpers,
 ): SnapKeyringBuilderV2 {
   const SnapKeyringBuilderV2AdapterV1 = () => {
     const v2 = new SnapKeyringV2({
       messenger,
-      callbacks: new SnapKeyringV2Impl(messenger, helpers),
+      callbacks: new SnapKeyringV2Impl(messenger),
       // Enables generic account creation for new chain integration. It's
       // Flask-only since production should use defined account types.
       isAnyAccountTypeAllowed: isFlask(),

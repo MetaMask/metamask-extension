@@ -26,6 +26,8 @@ import { isFlask } from '../../../../shared/lib/build-types';
 import { SnapKeyringBuilderMessenger } from './types';
 import { isBlockedUrl } from './utils/isBlockedUrl';
 import { showError, showSuccess } from './utils/showResult';
+import { Messenger } from '@metamask/messenger';
+import { RootMessenger, RootMessengerActions, RootMessengerEvents } from '../messenger';
 
 /**
  * Builder type for the Snap keyring.
@@ -485,6 +487,44 @@ export class SnapKeyringImpl implements SnapKeyringCallbacks {
       });
     }
   }
+}
+
+export function getSnapKeyringMessenger(messenger: RootMessenger<RootMessengerActions, RootMessengerEvents>) {
+  const snapKeyringMessenger: SnapKeyringBuilderMessenger = new Messenger({
+    namespace: 'SnapKeyring',
+    parent: messenger,
+  });
+
+  messenger.delegate({
+    messenger: snapKeyringMessenger,
+    actions: [
+      'ApprovalController:addRequest',
+      'ApprovalController:acceptRequest',
+      'ApprovalController:rejectRequest',
+      'ApprovalController:startFlow',
+      'ApprovalController:endFlow',
+      'ApprovalController:showSuccess',
+      'ApprovalController:showError',
+      'PhishingController:testOrigin',
+      'PhishingController:maybeUpdateState',
+      'KeyringController:getAccounts',
+      'KeyringController:persistAllKeyrings',
+      'AccountsController:setSelectedAccount',
+      'AccountsController:getAccountByAddress',
+      'AccountsController:setAccountName',
+      'AccountsController:listMultichainAccounts',
+      'AccountsController:updateAccounts',
+      'SnapController:handleRequest',
+      'SnapController:getSnap',
+      'SnapController:isMinimumPlatformVersion',
+      'PreferencesController:getState',
+      'RemoteFeatureFlagController:getState',
+      'MetaMetricsController:trackEvent',
+      'LegacyBackgroundApiService:removeAccount',
+    ],
+  });
+
+  return snapKeyringMessenger;
 }
 
 /**

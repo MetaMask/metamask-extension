@@ -167,42 +167,8 @@ export function getKeyringBuilders(
     );
   }
 
-  const snapKeyringMessenger: SnapKeyringBuilderMessenger = new Messenger({
-    namespace: 'SnapKeyring',
-    parent: messenger,
-  });
-
-  messenger.delegate({
-    messenger: snapKeyringMessenger,
-    actions: [
-      'ApprovalController:addRequest',
-      'ApprovalController:acceptRequest',
-      'ApprovalController:rejectRequest',
-      'ApprovalController:startFlow',
-      'ApprovalController:endFlow',
-      'ApprovalController:showSuccess',
-      'ApprovalController:showError',
-      'PhishingController:testOrigin',
-      'PhishingController:maybeUpdateState',
-      'KeyringController:getAccounts',
-      'KeyringController:persistAllKeyrings',
-      'AccountsController:setSelectedAccount',
-      'AccountsController:getAccountByAddress',
-      'AccountsController:setAccountName',
-      'AccountsController:listMultichainAccounts',
-      'AccountsController:updateAccounts',
-      'SnapController:handleRequest',
-      'SnapController:getSnap',
-      'SnapController:isMinimumPlatformVersion',
-      'PreferencesController:getState',
-      'RemoteFeatureFlagController:getState',
-      'MetaMetricsController:trackEvent',
-      'LegacyBackgroundApiService:removeAccount',
-    ],
-  });
-
   // @ts-expect-error: `addAccounts` is missing in `SnapKeyring` type.
-  keyrings.push(snapKeyringBuilder(snapKeyringMessenger));
+  keyrings.push(snapKeyringBuilder(getSnapKeyringMessenger(messenger)));
 
   return keyrings;
 }
