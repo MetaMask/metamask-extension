@@ -1,4 +1,5 @@
 import { TransactionType } from '@metamask/transaction-controller';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
 import { SWAPS_WRAPPED_TOKENS_ADDRESSES } from '../../../constants/swaps';
 import { toAssetId } from '../../asset-utils';
@@ -20,6 +21,7 @@ import {
   getKnownTokenMetadata,
   getLocalTransactionStatus,
   getNativeAssetSafe,
+  getTokenMetadataFromKnownToken,
   isNftStandard,
 } from './helpers';
 
@@ -326,6 +328,40 @@ export function mapLocalTransaction(
             direction: 'in',
             contractAddress: initialTransaction.txParams.to,
           }),
+        },
+      };
+    }
+
+    case TransactionType.perpsWithdraw: {
+      const { metamaskPay } = initialTransaction;
+      const payChainId = metamaskPay?.chainId
+        ? toEvmCaipChainId(metamaskPay.chainId)
+        : undefined;
+
+      const token = payChainId
+        ? getTokenMetadataFromKnownToken(
+            metamaskPay?.tokenAddress,
+            'out',
+            payChainId,
+          )
+        : undefined;
+
+      const fiat = metamaskPay?.targetFiat
+        ? {
+            amount: metamaskPay.targetFiat,
+          }
+        : undefined;
+
+      return {
+        type: 'perpsWithdraw',
+        chainId: payChainId ?? chainId,
+        status,
+        timestamp,
+        raw: { type: 'localTransaction', data: transactionGroup },
+        data: {
+          hash,
+          token,
+          fiat,
         },
       };
     }

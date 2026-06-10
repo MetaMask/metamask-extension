@@ -32,7 +32,7 @@ export type ActivityKind =
   | 'predictionCashedOut'
   | 'predictionPlaced'
   | 'perpsAddFunds'
-  | 'perpsWithdrawFunds'
+  | 'perpsWithdraw'
   | 'perpsOpenLong'
   | 'perpsCloseLong'
   | 'perpsCloseLongLiquidated'
@@ -125,6 +125,16 @@ export type ActivityListItem =
       {
         token?: TokenAmount;
         from?: string;
+      }
+    >
+  | ActivityData<
+      'perpsWithdraw',
+      {
+        fiat?: {
+          amount: string;
+          currency?: string;
+        };
+        token?: TokenAmount;
       }
     >
   | ActivityData<

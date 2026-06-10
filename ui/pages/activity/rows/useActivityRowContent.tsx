@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { type ReactNode } from 'react';
 import cn from 'clsx';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
@@ -10,7 +10,10 @@ import type { ActivityListItemAvatarTokens } from '../../../components/app/activ
 import { ChainBadge } from '../../../components/app/chain-badge/chain-badge';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+// eslint-disable-next-line import-x/no-restricted-paths
+import { PERPS_CURRENCY } from '../../confirmations/constants/perps';
 import type { TokenAmount } from '../../../../shared/lib/activity/types';
+import { useFormatters } from '../../../hooks/useFormatters';
 import type { ActivityRowProps } from '../types';
 import { useFormatFiatAmount } from './useFormatFiatAmount';
 import { useFormatTokenAmount } from './useFormatTokenAmount';
@@ -18,8 +21,9 @@ import { useFormatTokenAmount } from './useFormatTokenAmount';
 type ActivityContent = {
   title: string;
   subtitle?: string;
-  primaryToken?: TokenAmount;
-  secondaryToken?: TokenAmount;
+  primaryAmount?: ReactNode;
+  primaryDirection?: TokenAmount['direction'];
+  secondaryAmount?: ReactNode;
   avatarTokens: ActivityListItemAvatarTokens;
 };
 
@@ -42,6 +46,9 @@ function getChainDisplay(activity: ActivityRowProps['data']) {
 export function useActivityRowContent(activity: ActivityRowProps['data']) {
   const t = useI18nContext();
   const formatTokenAmount = useFormatTokenAmount();
+  const { formatCurrencyWithMinThreshold } = useFormatters();
+  const { chainId } = getChainDisplay(activity);
+  const formatAsFiat = useFormatFiatAmount(chainId);
   const labelKeys = getLabelKeys({
     type: activity.type,
     status: activity.status,
@@ -61,7 +68,9 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           subtitle: t(labelKeys.description.key, [
             shortenAddress(address) || t('unknown'),
           ]),
-          primaryToken: token,
+          primaryAmount: formatTokenAmount(token),
+          primaryDirection: token?.direction,
+          secondaryAmount: formatAsFiat(token),
         };
       }
       // Source and destination in title; two tokens in avatar
@@ -74,8 +83,9 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           avatarTokens: [sourceToken?.assetId, destinationToken?.assetId],
           title: t(labelKeys.title.key, [sourceSymbol, destinationSymbol]),
           subtitle: t(labelKeys.description.key),
-          primaryToken: destinationToken,
-          secondaryToken: sourceToken,
+          primaryAmount: formatTokenAmount(destinationToken),
+          primaryDirection: destinationToken?.direction,
+          secondaryAmount: formatTokenAmount(sourceToken),
         };
       }
       // Token in title; source and destination in subtitle; token being wrapped in avatar
@@ -92,8 +102,9 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           avatarTokens: [sourceToken?.assetId],
           title: t(labelKeys.title.key, [sourceSymbol ?? '']),
           subtitle,
-          primaryToken: destinationToken,
-          secondaryToken: sourceToken,
+          primaryAmount: formatTokenAmount(destinationToken),
+          primaryDirection: destinationToken?.direction,
+          secondaryAmount: formatTokenAmount(sourceToken),
         };
       }
       // Token in title; source and destination in subtitle; destination token in avatar
@@ -111,8 +122,9 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           avatarTokens: [destinationToken?.assetId],
           title: t(labelKeys.title.key, [destinationSymbol ?? '']),
           subtitle,
-          primaryToken: destinationToken,
-          secondaryToken: sourceToken,
+          primaryAmount: formatTokenAmount(destinationToken),
+          primaryDirection: destinationToken?.direction,
+          secondaryAmount: formatTokenAmount(sourceToken),
         };
       }
       // Token being received in avatar
@@ -124,8 +136,9 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           avatarTokens: [destinationToken?.assetId ?? sourceToken?.assetId],
           title: t(labelKeys.title.key, [symbol]),
           subtitle: t(labelKeys.description.key, [symbol]),
-          primaryToken: destinationToken,
-          secondaryToken: sourceToken,
+          primaryAmount: formatTokenAmount(destinationToken),
+          primaryDirection: destinationToken?.direction,
+          secondaryAmount: formatTokenAmount(sourceToken),
         };
       }
       // Token in title. API bridge rows may only include the source leg.
@@ -138,8 +151,13 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
             ? [sourceToken?.assetId, destinationToken?.assetId]
             : [sourceToken?.assetId],
           title: t(labelKeys.title.key, [symbol]),
-          primaryToken: destinationToken ?? sourceToken,
-          ...(destinationToken ? { secondaryToken: sourceToken } : {}),
+          primaryAmount: formatTokenAmount(destinationToken ?? sourceToken),
+          primaryDirection: (destinationToken ?? sourceToken)?.direction,
+          ...(destinationToken
+            ? {
+                secondaryAmount: formatTokenAmount(sourceToken),
+              }
+            : { secondaryAmount: formatAsFiat(sourceToken) }),
         };
       }
       case 'swapIncomplete': {
@@ -149,7 +167,9 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           avatarTokens: [sourceToken?.assetId],
           title: t(labelKeys.title.key, [sourceToken?.symbol ?? '']),
           subtitle: t(labelKeys.description.key),
-          primaryToken: sourceToken,
+          primaryAmount: formatTokenAmount(sourceToken),
+          primaryDirection: sourceToken?.direction,
+          secondaryAmount: formatAsFiat(sourceToken),
         };
       }
       case 'buy':
@@ -161,7 +181,24 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         return {
           avatarTokens: [token?.assetId],
           title: t(labelKeys.title.key, [symbol]),
-          primaryToken: token,
+          subtitle: t(labelKeys.description.key, [symbol]),
+          primaryAmount: formatTokenAmount(token),
+          primaryDirection: token?.direction,
+          secondaryAmount: formatAsFiat(token),
+        };
+      }
+      case 'perpsWithdraw': {
+        const { fiat, token } = activity.data;
+        const fiatAmount = fiat ? -Number(fiat.amount) : undefined;
+
+        return {
+          avatarTokens: [token?.assetId],
+          title: t(labelKeys.title.key),
+          subtitle: t('perpsBalance'),
+          primaryAmount:
+            fiatAmount !== undefined && Number.isFinite(fiatAmount)
+              ? formatCurrencyWithMinThreshold(fiatAmount, PERPS_CURRENCY)
+              : undefined,
         };
       }
       case 'nftBuy':
@@ -171,7 +208,9 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         return {
           avatarTokens: [token?.assetId],
           title: t(labelKeys.title.key, [token?.symbol ?? 'NFT']),
-          primaryToken: token,
+          primaryAmount: formatTokenAmount(token),
+          primaryDirection: token?.direction,
+          secondaryAmount: formatAsFiat(token),
         };
       }
       case 'contractInteraction': {
@@ -183,7 +222,9 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           subtitle: t(labelKeys.description.key, [
             shortenAddress(to) || 'Contract',
           ]),
-          primaryToken: token,
+          primaryAmount: formatTokenAmount(token),
+          primaryDirection: token?.direction,
+          secondaryAmount: formatAsFiat(token),
         };
       }
       case 'approveSpendingCap':
@@ -195,7 +236,13 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           avatarTokens: [token?.assetId],
           title: t(labelKeys.title.key),
           subtitle: t(labelKeys.description.key, [token?.symbol ?? '']),
-          primaryToken: token?.amount ? token : undefined,
+          primaryAmount: token?.amount
+            ? formatTokenAmount(token, { showPlus: false })
+            : undefined,
+          primaryDirection: token?.direction,
+          secondaryAmount: token?.amount
+            ? formatAsFiat(token, { showPlus: false })
+            : undefined,
         };
       }
       // Token being lent in avatar
@@ -208,8 +255,9 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           avatarTokens: [secondaryToken?.assetId],
           title: t(labelKeys.title.key),
           subtitle: t(labelKeys.description.key),
-          primaryToken,
-          secondaryToken,
+          primaryAmount: formatTokenAmount(primaryToken),
+          primaryDirection: primaryToken?.direction,
+          secondaryAmount: formatTokenAmount(secondaryToken),
         };
       }
       case 'claimMusdBonus': {
@@ -219,7 +267,9 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           avatarTokens: [token?.assetId],
           title: t(labelKeys.title.key),
           subtitle: t(labelKeys.description.key),
-          primaryToken: token,
+          primaryAmount: formatTokenAmount(token),
+          primaryDirection: token?.direction,
+          secondaryAmount: formatAsFiat(token),
         };
       }
       default:
@@ -232,13 +282,8 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
   };
 
   const content = getContent();
-  const { primaryToken, secondaryToken, avatarTokens } = content;
-  const { chainId } = getChainDisplay(activity);
-  const fiatAmount = useFormatFiatAmount(
-    activity,
-    secondaryToken ? undefined : primaryToken,
-    chainId,
-  );
+  const { primaryAmount, primaryDirection, secondaryAmount, avatarTokens } =
+    content;
 
   return {
     avatar: (
@@ -258,16 +303,10 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
     ),
     subtitle: content.subtitle,
     primaryAmount: (
-      <span
-        className={cn(
-          primaryToken?.direction === 'in' && 'text-success-default',
-        )}
-      >
-        {formatTokenAmount(primaryToken, activity.type)}
+      <span className={cn(primaryDirection === 'in' && 'text-success-default')}>
+        {primaryAmount}
       </span>
     ),
-    secondaryAmount: secondaryToken
-      ? formatTokenAmount(secondaryToken, activity.type)
-      : fiatAmount,
+    secondaryAmount,
   };
 }
