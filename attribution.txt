@@ -1116,7 +1116,7 @@ THE SOFTWARE.
 ******************************
 
 @babel/parser
-7.29.2 <https://github.com/babel/babel>
+7.29.3 <https://github.com/babel/babel>
 Copyright (C) 2012-2014 by various contributors (see AUTHORS)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19982,7 +19982,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 ******************************
 
 lavamoat-core
-18.0.2 <https://github.com/LavaMoat/lavamoat>
+18.0.4 <https://github.com/LavaMoat/lavamoat>
 The MIT License (MIT)
 
 Copyright (c) 2020 Consensys Software
@@ -20078,7 +20078,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 ******************************
 
 lavamoat-tofu
-9.0.1 <https://github.com/LavaMoat/lavamoat>
+9.0.2 <https://github.com/LavaMoat/lavamoat>
 The MIT License (MIT)
 
 Copyright (c) 2020 Consensys Software
@@ -20107,7 +20107,7 @@ authors: boneskull
 ******************************
 
 @lavamoat/webpack
-2.2.0 <https://github.com/LavaMoat/lavamoat>
+2.2.3 <https://github.com/LavaMoat/lavamoat>
 The MIT License (MIT)
 
 Copyright (c) 2020 Consensys Software
@@ -27151,7 +27151,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ******************************
 
 @metamask/tron-wallet-snap
-1.25.6 <https://github.com/MetaMask/snap-tron-wallet>
+1.25.8 <https://github.com/MetaMask/snap-tron-wallet>
 license: (MIT-0 OR Apache-2.0)
 authors: undefined
 
