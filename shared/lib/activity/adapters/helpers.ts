@@ -4,6 +4,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import type { Hex } from 'viem';
 import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../constants/bridge';
 import { CHAIN_IDS } from '../../../constants/network';
@@ -21,6 +22,25 @@ import type { Status, TokenAmount } from '../types';
 export type ValueTransfer = NonNullable<
   V1TransactionByHashResponse['valueTransfers']
 >[number];
+
+export function isNftStandard(value?: string) {
+  return value === 'erc721' || value === 'erc1155';
+}
+
+/**
+ * Looks up the native asset for a chain, returning `undefined` instead of
+ * throwing when the chain is outside the bridge swaps registry
+ *
+ * @param chainId - Hex, numeric, or CAIP chain id.
+ * @returns The native asset metadata, or `undefined` if unsupported.
+ */
+export function getNativeAssetSafe(chainId: string | number) {
+  try {
+    return getNativeAssetForChainId(chainId);
+  } catch {
+    return undefined;
+  }
+}
 
 const resolveAssetId = (
   chainId: CaipChainId,
@@ -166,12 +186,19 @@ export function getTokenAmountFromTransfer(
   direction: TokenAmount['direction'],
   chainId: CaipChainId,
 ) {
-  if (!transfer?.symbol && transfer?.amount === undefined) {
+  if (!transfer) {
     return undefined;
   }
 
-  const isNftTransfer =
-    transfer?.transferType === 'erc721' || transfer?.transferType === 'erc1155';
+  const { transferType, amount } = transfer;
+  const isNftTransfer = isNftStandard(transferType);
+  const symbol = isNftTransfer
+    ? transfer.name || transfer.symbol
+    : transfer.symbol;
+
+  if (!symbol && amount === undefined) {
+    return undefined;
+  }
 
   const assetId =
     transfer && !isNftTransfer
@@ -181,13 +208,14 @@ export function getTokenAmountFromTransfer(
         })
       : undefined;
 
+  const hasTransferAmount =
+    !isNftTransfer && amount !== null && amount !== undefined;
+
   return {
     direction,
-    ...(transfer.amount === null || transfer.amount === undefined
-      ? {}
-      : { amount: String(transfer.amount) }),
+    ...(hasTransferAmount ? { amount: String(amount) } : {}),
     ...(transfer.decimal === undefined ? {} : { decimals: transfer.decimal }),
-    ...(transfer.symbol ? { symbol: transfer.symbol } : {}),
+    ...(symbol ? { symbol } : {}),
     ...(assetId ? { assetId } : {}),
   };
 }

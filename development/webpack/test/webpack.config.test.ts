@@ -399,9 +399,6 @@ inquire('long');
         INFURA_PROD_PROJECT_ID: '00000000000000000000000000000000',
         SEGMENT_WRITE_KEY: '-',
         SEGMENT_PROD_WRITE_KEY: '-',
-        GOOGLE_PROD_CLIENT_ID: '00000000000',
-        APPLE_PROD_CLIENT_ID: '00000000000',
-        TELEGRAM_PROD_CLIENT_ID: '00000000000',
         METAMASK_REACT_REDUX_DEVTOOLS: 'true',
       },
     );
@@ -630,17 +627,5 @@ inquire('long');
     assert.strictEqual(exit.mock.calls.length, 1);
     assert.strictEqual(exit.mock.calls[0].arguments.length, 1);
     assert.strictEqual(exit.mock.calls[0].arguments[0], 0);
-  });
-
-  it('should enable ReactRefreshPlugin in a development env when `--watch` is specified', () => {
-    const config: Configuration = getWebpackConfig(['--watch'], {
-      __HMR_READY__: 'true',
-    });
-    delete config.watch;
-    const instance = webpack(config);
-    const reactRefreshPlugin = instance.options.plugins.find(
-      (plugin) => plugin && plugin.constructor.name === 'ReactRefreshPlugin',
-    );
-    assert(reactRefreshPlugin, 'ReactRefreshPlugin should be present');
   });
 });

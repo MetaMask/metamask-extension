@@ -321,22 +321,38 @@ export function beforeBreadcrumb() {
 
 /**
  * Returns whether a span should be created for a given request URL.
- * Filters out Sentry domain requests and local extension file fetches.
+ *
+ * Filters out high-volume fetches with no per-request diagnostic value:
+ * telemetry endpoints (sentry.io, segment.io), static config files re-fetched on
+ * a constant poll cadence (chainid.network, acl.execution.metamask.io), and local
+ * extension reads (snap manifests / locale files, and content-hashed
+ * preinstalled-snap `<hash>.json` bundles). All other requests are traced.
  *
  * @param {string} url - The request URL.
  * @returns {boolean} Whether to create a span for the request.
  */
 export function shouldCreateSpanForRequest(url) {
-  // Do not create spans for outgoing requests to a 'sentry.io' domain.
-  if (/^https?:\/\/(?:[\w\d.@-]+\.)?sentry\.io(?:\/|$)/u.test(url)) {
+  // Do not create spans for high-volume remote fetches with no per-request
+  // diagnostic value: telemetry endpoints (sentry.io, segment.io) and static
+  // config files re-fetched on a constant poll cadence (chainid.network chain
+  // registry; acl.execution.metamask.io PPOM allowlist registry/signature).
+  if (
+    /^https?:\/\/(?:[\w\d.@-]+\.)?(?:sentry\.io|segment\.io|chainid\.network|acl\.execution\.metamask\.io)(?:\/|$)/u.test(
+      url,
+    )
+  ) {
     return false;
   }
-  // Block span creation on fetches for preinstalled snap manifest and locale files.
-  // Snap manifests are fetched on every MV3 SW restart,
-  // and locale files are fetched on every popup open.
-  // These are high volume, local file reads with no diagnostic value.
-  // TODO: Consider blocking all local extension file fetches.
-  if (/^(?:chrome|moz)-extension:\/\/[^/]+\/(?:snaps|_locales)\//u.test(url)) {
+  // Skip spans for high-volume local extension reads with no diagnostic value:
+  // snap manifests and locale files (under `/snaps/` and `/_locales/`, read on
+  // every SW restart / popup open) and the content-hashed preinstalled-snap
+  // bundles webpack emits at the extension root (`<hash>.json`, see
+  // app/scripts/constants/snaps.ts). Other local fetches keep their spans.
+  if (
+    /^(?:chrome|moz)-extension:\/\/[^/]+\/(?:(?:snaps|_locales)\/|[0-9a-f]{8,}\.json$)/u.test(
+      url,
+    )
+  ) {
     return false;
   }
   // Create spans for all other requests.

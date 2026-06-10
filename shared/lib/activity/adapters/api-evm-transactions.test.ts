@@ -2,9 +2,11 @@ import type { V1TransactionByHashResponse } from '@metamask/core-backend';
 import { CHAIN_IDS } from '../../../constants/network';
 import { toAssetId } from '../../asset-utils';
 import { mapApiEvmTransactions } from './api-evm-transactions';
+import { apiResponses } from './fixtures/api-responses';
 
 const subjectAddress = '0x9bed78535d6a03a955f1504aadba974d9a29e292';
 const baseUsdc = '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913';
+const mainnetUsdc = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
 const baseAaveUsdc = '0x4e65fe4dba92790696d040ac24aa414708f5c0ab';
 const baseAavePool = '0xa238dd80c259a72e81d7e4664a9801593f98d1c5';
 const baseRecipientAddress = '0x6fdb1e9d93c1279177b00baaf44524055455e92e';
@@ -359,9 +361,37 @@ describe('mapEvmTransactions', () => {
         hash: undefined,
         to: nftRecipientAddress,
         token: {
-          amount: '1',
           direction: 'out',
           symbol: 'BAE',
+        },
+      },
+    });
+  });
+
+  it('maps an NFT purchase', () => {
+    const nftBuyerAddress = '0x699e414873f56c7bb60e54ad63d3bb7b283874df';
+
+    const item = mapApiEvmTransactions({
+      subjectAddress: nftBuyerAddress,
+      transaction:
+        apiResponses.nftPurchaseErc1155 as unknown as V1TransactionByHashResponse,
+    });
+
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
+      type: 'nftBuy',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1780601507000,
+      data: {
+        hash: '0x8719dadd883779624845106e61fd94af234411c30d73184a72f4daf1425c4595',
+        from: '0x107b2e855528f344556f8c766a6187326a2c2fa6',
+        to: nftBuyerAddress,
+        token: {
+          direction: 'in',
+          symbol: 'FLUF World: Scenes and Sounds',
         },
       },
     });
@@ -469,6 +499,68 @@ describe('mapEvmTransactions', () => {
           direction: 'in',
           symbol: 'aBasUSDC',
           assetId: toAssetId(baseAaveUsdc, 'eip155:8453'),
+        },
+      },
+    });
+  });
+
+  it('maps an Aave withdraw with a known method id to a Lending withdrawal activity', () => {
+    const transaction = {
+      hash: '0x26f4911467b538702c0945e4ec5e303de44c0c1c174897141d1b548ea3161795',
+      timestamp: '2026-05-27T14:47:14.000Z',
+      chainId: Number(CHAIN_IDS.BASE),
+      from: subjectAddress,
+      to: baseAavePool,
+      methodId: '0x69328dec',
+      transactionCategory: 'WITHDRAW',
+      transactionType: 'GENERIC_CONTRACT_CALL',
+      valueTransfers: [
+        {
+          from: subjectAddress,
+          to: baseAaveUsdc,
+          amount: '100000',
+          decimal: 6,
+          contractAddress: baseAaveUsdc,
+          symbol: 'aBasUSDC',
+        },
+        {
+          from: baseAavePool,
+          to: subjectAddress,
+          amount: '200000',
+          decimal: 6,
+          contractAddress: baseUsdc,
+          symbol: 'USDC',
+        },
+      ],
+    } as V1TransactionByHashResponse;
+
+    const item = mapApiEvmTransactions({
+      subjectAddress,
+      transaction,
+    });
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
+      type: 'lendingWithdrawal',
+      chainId: 'eip155:8453',
+      status: 'success',
+      timestamp: 1779893234000,
+      data: {
+        hash: '0x26f4911467b538702c0945e4ec5e303de44c0c1c174897141d1b548ea3161795',
+        sourceToken: {
+          amount: '100000',
+          decimals: 6,
+          direction: 'out',
+          symbol: 'aBasUSDC',
+          assetId: toAssetId(baseAaveUsdc, 'eip155:8453'),
+        },
+        destinationToken: {
+          amount: '200000',
+          decimals: 6,
+          direction: 'in',
+          symbol: 'USDC',
+          assetId: toAssetId(baseUsdc, 'eip155:8453'),
         },
       },
     });
@@ -804,5 +896,84 @@ describe('mapEvmTransactions', () => {
         transactionType: 'GENERIC_CONTRACT_CALL',
       },
     });
+  });
+
+  it('maps the reported generic contract call to a contract interaction with its token amount', () => {
+    const transaction = {
+      hash: '0xd206cc6c16974409bae072ce4cd1559743041af40c2bae84775a0bbb4dff5fee',
+      timestamp: '2026-05-01T13:39:47.000Z',
+      chainId: Number(CHAIN_IDS.MAINNET),
+      from: subjectAddress,
+      to: subjectAddress,
+      methodId: '0xe9ae5c53',
+      value: '0',
+      transactionCategory: 'CONTRACT_CALL',
+      transactionType: 'GENERIC_CONTRACT_CALL',
+      valueTransfers: [
+        {
+          from: subjectAddress,
+          to: '0x4cd00e387622c35bddb9b4c962c136462338bc31',
+          amount: '580060',
+          decimal: 6,
+          contractAddress: mainnetUsdc,
+          symbol: 'USDC',
+          name: 'USD Coin',
+          transferType: 'erc20',
+        },
+      ],
+    } as V1TransactionByHashResponse;
+
+    const item = mapApiEvmTransactions({
+      subjectAddress,
+      transaction,
+    });
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
+      type: 'contractInteraction',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1777642787000,
+      data: {
+        from: subjectAddress,
+        hash: '0xd206cc6c16974409bae072ce4cd1559743041af40c2bae84775a0bbb4dff5fee',
+        methodId: '0xe9ae5c53',
+        to: subjectAddress,
+        transactionCategory: 'CONTRACT_CALL',
+        transactionProtocol: undefined,
+        transactionType: 'GENERIC_CONTRACT_CALL',
+        token: {
+          amount: '580060',
+          assetId: toAssetId(mainnetUsdc, 'eip155:1'),
+          decimals: 6,
+          direction: 'out',
+          symbol: 'USDC',
+        },
+      },
+    });
+  });
+
+  it('maps a Standard transaction on a chain outside the swaps registry without throwing', () => {
+    // chainId 4657 (0x1231) is not in the bridge swaps registry, so the native
+    // asset lookup throws; mapping should degrade gracefully instead.
+    const transaction = {
+      timestamp: '2026-05-12T13:37:47.000Z',
+      chainId: 4657,
+      from: subjectAddress,
+      to: baseRecipientAddress,
+      transactionCategory: 'STANDARD',
+      value: '1000000000000000000',
+      valueTransfers: [],
+    } as unknown as V1TransactionByHashResponse;
+
+    expect(() =>
+      mapApiEvmTransactions({ subjectAddress, transaction }),
+    ).not.toThrow();
+
+    const item = mapApiEvmTransactions({ subjectAddress, transaction });
+
+    expect(item.type).toBe('send');
+    expect(item.chainId).toBe('eip155:4657');
   });
 });

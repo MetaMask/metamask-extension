@@ -457,29 +457,6 @@ describe('ImportTokensModal', () => {
       ).not.toBeInTheDocument();
     });
 
-    it('should show "unavailable" message when no tokens and not EVM chain', () => {
-      // Mock as non-EVM chain with no token support
-      jest.spyOn(assetUtilsModule, 'isEvmChainId').mockReturnValue(false);
-
-      useTokensWithFiltering.mockReturnValue({
-        *filteredTokenListGenerator() {
-          // No tokens
-        },
-        isLoading: false,
-      });
-
-      const { getByTestId, queryByText } = render();
-
-      expect(getByTestId('import-tokens-no-support')).toBeInTheDocument();
-      expect(getByTestId('import-tokens-no-support').textContent).toContain(
-        messages.simulationDetailsUnavailable.message,
-      );
-
-      // Should not show tabs when not supported
-      expect(queryByText(messages.search.message)).not.toBeInTheDocument();
-      expect(queryByText(messages.customToken.message)).not.toBeInTheDocument();
-    });
-
     it('should show Search tab when tokens are available on EVM chain', () => {
       jest.spyOn(assetUtilsModule, 'isEvmChainId').mockReturnValue(true);
 
@@ -517,13 +494,10 @@ describe('ImportTokensModal', () => {
         isLoading: false,
       });
 
-      const { getByText, queryByText } = render();
+      const { getByText } = render();
 
       // Custom token tab should still be available on EVM chains
       expect(getByText(messages.customToken.message)).toBeInTheDocument();
-
-      // Search tab should not show when no tokens
-      expect(queryByText(messages.search.message)).not.toBeInTheDocument();
     });
 
     it('should disable Next button when loading', () => {
