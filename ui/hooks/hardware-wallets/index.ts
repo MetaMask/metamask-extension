@@ -7,7 +7,7 @@ export { useHwSwapSubmission } from './useHwSwapSubmission';
 export type {
   HwSignTrackerAction,
   UseHwSignTrackerOptions,
-} from './useHwSignTracker';
+} from './hw-sign-tracker/types';
 export type {
   LockedQuote,
   HardwareWalletSignatureAction,

@@ -93,7 +93,6 @@ async function setupTracker(options: {
     useHwSignTracker(
       options.fromAddress ?? FROM_ADDRESS,
       options.hardwareWalletUsed ?? true,
-      true,
       dispatchEvent,
       {
         enabled: options.enabled ?? true,
@@ -147,7 +146,7 @@ describe.each<string, boolean>([
     setupCallbacks();
     const dispatchEvent = jest.fn();
     renderHook(() =>
-      useHwSignTracker(undefined, true, true, dispatchEvent, {
+      useHwSignTracker(undefined, true, dispatchEvent, {
         useBatchTracking,
       }),
     );
@@ -189,7 +188,7 @@ describe.each<string, boolean>([
 
     const dispatchEvent = jest.fn();
     const { unmount } = renderHook(() =>
-      useHwSignTracker(FROM_ADDRESS, true, true, dispatchEvent, {
+      useHwSignTracker(FROM_ADDRESS, true, dispatchEvent, {
         useBatchTracking,
       }),
     );
@@ -270,7 +269,7 @@ describe.each<string, boolean>([
 
     const { rerender } = renderHook(
       ({ dispatch }) =>
-        useHwSignTracker(FROM_ADDRESS, true, true, dispatch, {
+        useHwSignTracker(FROM_ADDRESS, true, dispatch, {
           useBatchTracking,
         }),
       { initialProps: { dispatch: dispatch1 } },
@@ -415,7 +414,7 @@ describe.each<string, boolean>([
 
       const { result, rerender } = renderHook(
         ({ enabled }) =>
-          useHwSignTracker(FROM_ADDRESS, true, true, dispatchEvent, {
+          useHwSignTracker(FROM_ADDRESS, true, dispatchEvent, {
             useBatchTracking,
             enabled,
           }),
@@ -479,7 +478,7 @@ describe.each<string, boolean>([
 
       const { rerender } = renderHook(
         ({ enabled }) =>
-          useHwSignTracker(FROM_ADDRESS, true, true, dispatchEvent, {
+          useHwSignTracker(FROM_ADDRESS, true, dispatchEvent, {
             useBatchTracking,
             enabled,
           }),
@@ -532,7 +531,7 @@ describe.each<string, boolean>([
 
       const { result, rerender } = renderHook(
         ({ enabled }) =>
-          useHwSignTracker(FROM_ADDRESS, true, true, dispatchEvent, {
+          useHwSignTracker(FROM_ADDRESS, true, dispatchEvent, {
             useBatchTracking,
             enabled,
           }),
@@ -608,7 +607,7 @@ describe.each<string, boolean>([
 
       const { result, rerender } = renderHook(
         ({ fromAddress }) =>
-          useHwSignTracker(fromAddress, true, true, dispatchEvent, {
+          useHwSignTracker(fromAddress, true, dispatchEvent, {
             useBatchTracking,
           }),
         { initialProps: { fromAddress: FROM_ADDRESS } },
