@@ -71,7 +71,6 @@ import {
   TrxAccountType,
   BtcAccountType,
 } from '@metamask/keyring-api';
-import { isSnapKeyring } from '@metamask/eth-snap-keyring/v2';
 import {
   hexToBigInt,
   toCaipChainId,
@@ -449,7 +448,6 @@ import { ProfileMetricsServiceInit } from './messenger-client-init/profile-metri
 import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-tx-utils';
 import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-service-init';
 import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
-import { getSnapKeyring } from './lib/snap-keyring/utils/getSnapKeyring';
 import { initializeWallet } from './wallet-init/initialization';
 
 export const METAMASK_CONTROLLER_EVENTS = {

@@ -95,7 +95,6 @@ import {
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
 import MetaMaskController from './metamask-controller';
-import * as getSnapKeyringUtil from './lib/snap-keyring/utils/getSnapKeyring';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
 // and provide the pure flag-evaluation logic without the IN_TEST bypass

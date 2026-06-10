@@ -7,6 +7,7 @@ import {
 import browser from 'webextension-polyfill';
 import { SnapId } from '@metamask/snaps-sdk';
 import { assertIsValidSnapId } from '@metamask/snaps-utils';
+import { Messenger } from '@metamask/messenger';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
@@ -23,15 +24,14 @@ import {
   isMultichainWalletSnap,
 } from '../../../../shared/lib/accounts/snaps';
 import { isFlask } from '../../../../shared/lib/build-types';
-import { SnapKeyringBuilderMessenger } from './types';
-import { isBlockedUrl } from './utils/isBlockedUrl';
-import { showError, showSuccess } from './utils/showResult';
-import { Messenger } from '@metamask/messenger';
 import {
   RootMessenger,
   RootMessengerActions,
   RootMessengerEvents,
 } from '../messenger';
+import { SnapKeyringBuilderMessenger } from './types';
+import { isBlockedUrl } from './utils/isBlockedUrl';
+import { showError, showSuccess } from './utils/showResult';
 
 /**
  * Builder type for the Snap keyring.
