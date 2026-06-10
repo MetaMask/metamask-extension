@@ -298,10 +298,10 @@
     "@metamask/permission-controller@npm:^12.2.0": "^13.0.0",
     "@metamask/permission-controller@npm:^12.2.1": "^13.0.0",
     "@metamask/permission-controller@npm:^12.3.0": "^13.0.0",
-    "@metamask/snap-account-service": "npm:@metamask-previews/snap-account-service@0.2.0-preview-8e8c4f6f5",
-    "@metamask/multichain-account-service": "npm:@metamask-previews/multichain-account-service@10.0.0-preview-8e8c4f6f5",
-    "@metamask/snaps-rpc-methods@npm:^16.0.0": "patch:@metamask/snaps-rpc-methods@npm%3A16.0.0#~/.yarn/patches/@metamask-snaps-rpc-methods-npm-16.0.0-f7dc424d0a.patch",
-    "@metamask/transaction-pay-controller@npm:^22.6.0": "patch:@metamask/transaction-pay-controller@npm%3A22.6.0#~/.yarn/patches/@metamask-transaction-pay-controller-npm-22.6.0-ecc6df0372.patch"
+    "@metamask/transaction-pay-controller@npm:^22.6.0": "patch:@metamask/transaction-pay-controller@npm%3A22.6.0#~/.yarn/patches/@metamask-transaction-pay-controller-npm-22.6.0-ecc6df0372.patch",
+    "@metamask/snap-account-service": "npm:@metamask-previews/snap-account-service@0.3.1-preview-f188e628b",
+    "@metamask/multichain-account-service": "npm:@metamask-previews/multichain-account-service@10.0.3-preview-f188e628b",
+    "@metamask/snaps-rpc-methods@npm:^16.0.0": "patch:@metamask/snaps-rpc-methods@npm%3A16.0.0#~/.yarn/patches/@metamask-snaps-rpc-methods-npm-16.0.0-f7dc424d0a.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
