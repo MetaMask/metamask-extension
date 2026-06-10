@@ -65,7 +65,6 @@ import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/onboarding-method-action-types';
 import { getAccountsBySnapId } from '../lib/snap-keyring';
 import { PreferencesControllerSetPasswordForgottenAction } from '../controllers/preferences-controller-method-action-types';
-import { getSnapKeyring } from '../lib/snap-keyring/utils/getSnapKeyring';
 import { OnboardingControllerGetStateAction } from '../controllers/onboarding';
 import { createSentryError } from '../../../shared/lib/error';
 import { LegacyBackgroundApiServiceMethodActions } from './legacy-background-api-service-method-action-types';
@@ -598,7 +597,7 @@ export class LegacyBackgroundApiService {
    */
   async getAccountsBySnapId(snapId: SnapId): Promise<string[]> {
     return getAccountsBySnapId(
-      getSnapKeyring.bind(null, this.#messenger),
+      this.#messenger,
       snapId,
     );
   }
