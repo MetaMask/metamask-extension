@@ -13,3 +13,5 @@ export const BATCH_SELL_SUPPORTED_CHAIN_IDS = new Set([
   toEvmCaipChainId(CHAIN_IDS.ARBITRUM),
   toEvmCaipChainId(CHAIN_IDS.POLYGON),
 ]);
+
+export const ONDO_TOKENIZED_TOKEN_NAME = 'Ondo Tokenized';

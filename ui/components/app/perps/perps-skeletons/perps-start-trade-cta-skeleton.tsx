@@ -3,10 +3,8 @@ import {
   Box,
   BoxFlexDirection,
   BoxAlignItems,
+  Skeleton,
 } from '@metamask/design-system-react';
-
-import { Skeleton } from '../../../component-library/skeleton';
-import { BorderRadius } from '../../../../helpers/constants/design-system';
 
 /**
  * PerpsStartTradeCtaSkeleton displays a loading skeleton for the Start a new trade CTA
@@ -22,7 +20,7 @@ export const PerpsStartTradeCtaSkeleton = () => {
       data-testid="perps-start-trade-cta-skeleton"
     >
       {/* Icon circle - matches StartTradeCta (h-8 w-8) */}
-      <Skeleton className="h-8 w-8 shrink-0" borderRadius={BorderRadius.pill} />
+      <Skeleton className="h-8 w-8 shrink-0 rounded-full" />
       <Skeleton className="h-4 w-36" />
     </Box>
   );
