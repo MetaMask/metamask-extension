@@ -12,20 +12,7 @@ export function DefaultDetails({ item }: { item: ActivityListItem }) {
         <TokensSection
           tokens={[
             {
-              label: 'Token',
               token: 'token' in item.data ? item.data.token : undefined,
-            },
-            {
-              label: 'Source token',
-              token:
-                'sourceToken' in item.data ? item.data.sourceToken : undefined,
-            },
-            {
-              label: 'Destination token',
-              token:
-                'destinationToken' in item.data
-                  ? item.data.destinationToken
-                  : undefined,
             },
           ]}
         />
