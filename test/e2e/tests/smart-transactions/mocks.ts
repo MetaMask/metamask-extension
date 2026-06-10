@@ -527,6 +527,16 @@ export async function mockSmartTransactionRequests(mockServer: MockttpServer) {
     )
     .once()
     .thenJson(200, { uuid: STX_UUID, txHashes: [TRANSACTION_HASH] });
+
+  await mockServer
+    .forPost(`${TX_SENTINEL_URL}/v1/networks/1/submitTransactions`)
+    .once()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: { uuid: STX_UUID, txHashes: [TRANSACTION_HASH] },
+      };
+    });
 }
 
 export async function mockChooseGasFeeTokenRequests(mockServer: MockttpServer) {
@@ -563,6 +573,13 @@ export async function mockChooseGasFeeTokenRequests(mockServer: MockttpServer) {
     )
     .once()
     .thenJson(200, { uuid: STX_UUID });
+
+  await mockServer
+    .forPost(`${TX_SENTINEL_URL}/v1/networks/1/submitTransactions`)
+    .once()
+    .thenCallback(() => {
+      return { statusCode: 200, json: { uuid: STX_UUID } };
+    });
 }
 
 /**
@@ -704,6 +721,16 @@ export async function mockGasIncludedTransactionRequests(
     )
     .once()
     .thenJson(200, { uuid: STX_UUID, txHashes: [TRANSACTION_HASH] });
+
+  await mockServer
+    .forPost(`${TX_SENTINEL_URL}/v1/networks/1/submitTransactions`)
+    .once()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: { uuid: STX_UUID, txHashes: [TRANSACTION_HASH] },
+      };
+    });
 }
 
 export async function mockSmartTransactionBatchRequests(
@@ -730,6 +757,13 @@ export async function mockSmartTransactionBatchRequests(
     )
     .once()
     .thenJson(submitStatusCode, submitResponse);
+
+  await mockServer
+    .forPost(`${TX_SENTINEL_URL}/v1/networks/1/submitTransactions`)
+    .once()
+    .thenCallback(() => {
+      return { statusCode: submitStatusCode, json: submitResponse };
+    });
 
   for (const transactionHash of transactionHashes) {
     await mockServer
@@ -764,16 +798,38 @@ export async function mockSmartTransactionRequestsBase(
     .thenJson(200, GET_FEES_RESPONSE);
 
   await mockServer
+    .forPost(`${TX_SENTINEL_URL}/v1/networks/1/getFees`)
+    .thenCallback(() => {
+      return { statusCode: 200, json: GET_FEES_RESPONSE };
+    });
+
+  await mockServer
     .forGet('https://transaction.api.cx.metamask.io/networks/1/batchStatus')
     .withQuery({ uuids: STX_UUID })
     .once()
     .thenJson(200, GET_BATCH_STATUS_RESPONSE_PENDING);
 
   await mockServer
+    .forGet(`${TX_SENTINEL_URL}/v1/networks/1/batchStatus`)
+    .withQuery({ uuids: STX_UUID })
+    .once()
+    .thenCallback(() => {
+      return { statusCode: 200, json: GET_BATCH_STATUS_RESPONSE_PENDING };
+    });
+
+  await mockServer
     .forGet('https://transaction.api.cx.metamask.io/networks/1/batchStatus')
     .withQuery({ uuids: STX_UUID })
     .once()
     .thenJson(200, GET_BATCH_STATUS_RESPONSE_SUCCESS);
+
+  await mockServer
+    .forGet(`${TX_SENTINEL_URL}/v1/networks/1/batchStatus`)
+    .withQuery({ uuids: STX_UUID })
+    .once()
+    .thenCallback(() => {
+      return { statusCode: 200, json: GET_BATCH_STATUS_RESPONSE_SUCCESS };
+    });
 
   await mockServer
     .forJsonRpcRequest({

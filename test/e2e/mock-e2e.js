@@ -266,6 +266,13 @@ async function setupMocking(
       };
     });
 
+  // Rewards API
+  await server
+    .forPost('https://rewards.uat-api.cx.metamask.io/public/rewards/ois')
+    .thenCallback(() => {
+      return { statusCode: 200, json: { ois: [], sids: [] } };
+    });
+
   // User Profile Lineage
   await server
     .forGet('https://authentication.api.cx.metamask.io/api/v2/profile/lineage')
@@ -1418,6 +1425,13 @@ async function setupMocking(
         },
       };
     });
+
+  // Merkl rewards API: return empty rewards so mUSD reward polling doesn't crash
+  // tests with SyntaxError when the catch-all returns an empty body.
+  await server
+    .forGet(/^https:\/\/api\.merkl\.xyz\/v4\/users\/[^/]+\/rewards/u)
+    .always()
+    .thenCallback(() => ({ statusCode: 200, json: [] }));
 
   // Accounts API: v5 multi-account balances (used by AccountsApiDataSource when assetsUnifyState is enabled).
   // Default: 25 ETH native per requested chain for the default fixture account. Override via

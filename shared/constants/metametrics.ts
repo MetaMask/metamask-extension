@@ -294,6 +294,9 @@ export type SegmentEventPayload = {
     chain_id: string | null;
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
+    chain_id_caip?: string;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     environment_type?: string;
     revenue?: number;
     value?: number;
@@ -948,6 +951,7 @@ export enum MetaMetricsEventName {
   NavSendButtonClicked = 'Send Button Clicked',
   NavSwapButtonClicked = 'Swap Button Clicked',
   NavReceiveButtonClicked = 'Receive Button Clicked',
+  NavBatchSellButtonClicked = 'Batch Sell Button Clicked',
   NftAdded = 'NFT Added',
   NftDetected = 'NFT Detected',
   NoticeUpdateDisplayed = 'Notice Update Displayed',

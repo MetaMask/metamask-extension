@@ -54,6 +54,7 @@ export function getLegacyBackgroundApiServiceMessenger(
       'PreferencesController:setPasswordForgotten',
       'OnboardingController:getState',
       'SeedlessOnboardingController:checkIsPasswordOutdated',
+      'SnapAccountService:getLegacySnapKeyring',
     ],
   });
 

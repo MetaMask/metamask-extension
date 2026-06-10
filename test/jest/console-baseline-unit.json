@@ -43,6 +43,10 @@
     "app/scripts/lib/snap-keyring/utils/isBlockedUrl.test.ts": {
       "Test errors: Fetch failures": 6
     },
+    "app/scripts/lib/transaction/hooks/index.test.ts": {
+      "error: Failed to record sentinel_relay metrics": 1,
+      "error: Failed to record sentinel_stx metrics": 1
+    },
     "app/scripts/messenger-client-init/confirmations/transaction-controller-init.test.ts": {
       "error: Failed to record sentinel_relay metrics": 1,
       "error: Failed to record sentinel_stx metrics": 3

@@ -977,8 +977,8 @@ describe('LegacyBackgroundApiService', () => {
 
       await withService(async ({ rootMessenger }) => {
         rootMessenger.registerActionHandler(
-          'KeyringController:getKeyringsByType',
-          jest.fn().mockReturnValue([snapKeyring]),
+          'SnapAccountService:getLegacySnapKeyring',
+          jest.fn().mockResolvedValue(snapKeyring),
         );
 
         const result = await rootMessenger.call(
@@ -1237,8 +1237,7 @@ function getMessenger(
       'SeedlessOnboardingController:addNewSecretData',
       'SeedlessOnboardingController:updateBackupMetadataState',
       'PermissionController:updatePermissionsByCaveat',
-      'KeyringController:getKeyringsByType',
-      'KeyringController:addNewKeyring',
+      'SnapAccountService:getLegacySnapKeyring',
       'PreferencesController:setPasswordForgotten',
       'OnboardingController:getState',
       'SeedlessOnboardingController:checkIsPasswordOutdated',
