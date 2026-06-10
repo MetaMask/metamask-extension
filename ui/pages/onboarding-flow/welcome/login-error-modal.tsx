@@ -13,7 +13,7 @@ import {
   TextAlign,
   TextVariant,
   TextButton,
-  TextButtonSize,
+  
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -99,7 +99,7 @@ export default function LoginErrorModal({
     return t('loginErrorGenericDescription', [
       <TextButton
         key="loginErrorGenericDescription"
-        size={TextButtonSize.BodyMd}
+        variant={TextVariant.BodyMd}
         onClick={() => {
           trackEvent(
             {

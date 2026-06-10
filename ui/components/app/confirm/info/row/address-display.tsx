@@ -13,7 +13,7 @@ import {
   IconSize,
   Text,
   TextButton,
-  TextButtonSize,
+  
   TextColor,
   TextVariant,
   FontWeight,
@@ -141,7 +141,7 @@ export const ConfirmInfoRowAddressDisplay = memo(
         {name && isClickable && (
           <span className="address-display-clickable">
             <TextButton
-              size={TextButtonSize.BodyMd}
+              variant={TextVariant.BodyMd}
               onClick={handleClick}
               className="min-w-0 hover:bg-transparent active:bg-transparent"
               data-testid="confirm-info-row-display-name"
@@ -163,7 +163,7 @@ export const ConfirmInfoRowAddressDisplay = memo(
         {!name && isClickable && (
           <span className="address-display-clickable">
             <TextButton
-              size={TextButtonSize.BodyMd}
+              variant={TextVariant.BodyMd}
               onClick={handleClick}
               className="hover:bg-transparent active:bg-transparent whitespace-nowrap"
               data-testid="confirm-info-row-display-name"

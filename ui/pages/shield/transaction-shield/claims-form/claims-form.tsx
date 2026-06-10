@@ -14,7 +14,7 @@ import {
   Icon,
   Text,
   TextButton,
-  TextButtonSize,
+  
   TextColor,
   TextVariant,
   IconSize,
@@ -774,7 +774,7 @@ const ClaimsForm = ({
             >
               {`${t(errors.impactedTxHash?.msg, errors.impactedTxHash?.params)} `}
               <TextButton
-                size={TextButtonSize.BodySm}
+                variant={TextVariant.BodySm}
                 className="min-w-0"
                 onClick={onClickFindTransactionHash}
               >
@@ -788,7 +788,7 @@ const ClaimsForm = ({
             >
               {`${t('shieldClaimImpactedTxHashHelpText')} `}
               <TextButton
-                size={TextButtonSize.BodySm}
+                variant={TextVariant.BodySm}
                 className="min-w-0"
                 onClick={onClickFindTransactionHash}
               >

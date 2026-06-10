@@ -34,7 +34,7 @@ import {
   BoxAlignItems,
   BoxBackgroundColor,
   TextButton,
-  TextButtonSize,
+  
 } from '@metamask/design-system-react';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -335,7 +335,7 @@ const MusdEducationScreen = () => {
                 String(MUSD_CONVERSION_APY),
                 <TextButton
                   key="terms-link"
-                  size={TextButtonSize.BodyMd}
+                  variant={TextVariant.BodyMd}
                   asChild
                 >
                   <a

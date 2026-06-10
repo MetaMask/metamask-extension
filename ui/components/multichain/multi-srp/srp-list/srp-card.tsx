@@ -13,7 +13,7 @@ import {
   IconSize,
   Text,
   TextButton,
-  TextButtonSize,
+  
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
@@ -101,7 +101,7 @@ export const SrpCard = ({
           </Text>
           {!hideShowAccounts && (
             <TextButton
-              size={TextButtonSize.BodySm}
+              variant={TextVariant.BodySm}
               color={TextColor.PrimaryDefault}
               className="srp-list__show-accounts"
               data-testid={`srp-list-show-accounts-${index}`}

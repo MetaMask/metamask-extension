@@ -6,7 +6,7 @@ import {
   Text,
   TextAlign,
   TextButton,
-  TextButtonSize,
+  
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
@@ -48,7 +48,7 @@ export function useMusdConversionHeaderContent(): HeaderContent {
               String(MUSD_CONVERSION_APY),
               <TextButton
                 key="terms-link"
-                size={TextButtonSize.BodyMd}
+                variant={TextVariant.BodyMd}
                 isInverse
                 asChild
               >

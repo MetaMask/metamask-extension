@@ -11,7 +11,7 @@ import {
   IconSize,
   Text,
   TextButton,
-  TextButtonSize,
+  
   TextVariant,
 } from '@metamask/design-system-react';
 import {
@@ -320,7 +320,7 @@ const OnboardingMainStep: React.FC<OnboardingMainStepProps> = ({
         data-testid="rewards-onboarding-main-referral-toggle"
       >
         <TextButton
-          size={TextButtonSize.BodySm}
+          variant={TextVariant.BodySm}
           className="self-center text-alternative"
           onClick={toggleReferralInput}
         >
@@ -376,7 +376,7 @@ const OnboardingMainStep: React.FC<OnboardingMainStepProps> = ({
           {t('rewardsOnboardingLegalDisclaimer', [
             <TextButton
               key="terms"
-              size={TextButtonSize.BodySm}
+              variant={TextVariant.BodySm}
               className="text-primary-default"
               onClick={openTermsOfUse}
             >
@@ -384,7 +384,7 @@ const OnboardingMainStep: React.FC<OnboardingMainStepProps> = ({
             </TextButton>,
             <TextButton
               key="learnMore"
-              size={TextButtonSize.BodySm}
+              variant={TextVariant.BodySm}
               className="text-primary-default"
               onClick={openLearnMore}
             >

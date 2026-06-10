@@ -22,7 +22,7 @@ import {
   ModalOverlay,
   Text,
   TextButton,
-  TextButtonSize,
+  
   TextAlign,
   TextColor,
   TextVariant,
@@ -644,7 +644,7 @@ export const HardwareWalletErrorModal = React.memo(
                           onRepairDevice && (
                             <li>
                               <TextButton
-                                size={TextButtonSize.BodyMd}
+                                variant={TextVariant.BodyMd}
                                 onClick={handleRepairDevice}
                                 className="hover:bg-transparent active:bg-transparent w-fit"
                               >

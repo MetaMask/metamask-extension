@@ -7,7 +7,7 @@ import {
   BoxJustifyContent,
   Text,
   TextButton,
-  TextButtonSize,
+  
   TextColor,
   TextVariant,
   FontWeight,
@@ -69,7 +69,7 @@ export const DefaultAddress = () => {
               {t('default')}: {defaultScopeDisplayLabel}
             </Text>
             <TextButton
-              size={TextButtonSize.BodyXs}
+              variant={TextVariant.BodyXs}
               onClick={(e: React.MouseEvent) => {
                 e.stopPropagation();
                 trackEvent({

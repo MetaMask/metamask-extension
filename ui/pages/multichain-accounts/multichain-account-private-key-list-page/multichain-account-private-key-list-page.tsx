@@ -14,7 +14,7 @@ import {
   ButtonIconSize,
   IconName,
   TextButton,
-  TextButtonSize,
+  
 } from '@metamask/design-system-react';
 import { AccountGroupId } from '@metamask/account-api';
 import {
@@ -60,7 +60,7 @@ export const MultichainAccountPrivateKeyListPage = ({
   }, [account, t]);
 
   const learnMoreLink = (
-    <TextButton asChild size={TextButtonSize.BodyMd}>
+    <TextButton asChild variant={TextVariant.BodyMd}>
       <a
         className="items-start self-start"
         href={ZENDESK_URLS.PRIVATE_KEY_GUIDE}

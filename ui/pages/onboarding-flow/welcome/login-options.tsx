@@ -19,7 +19,7 @@ import {
   BoxFlexDirection,
   TextTransform,
   TextButton,
-  TextButtonSize,
+  
 } from '@metamask/design-system-react';
 import classnames from 'clsx';
 import { PolymorphicRef } from '../../../components/component-library';
@@ -196,7 +196,7 @@ export default function LoginOptions({
       >
         {t('onboardingLoginFooter', [
           <TextButton
-            size={TextButtonSize.BodySm}
+            variant={TextVariant.BodySm}
             key="onboardingLoginFooterTermsOfUse"
             asChild
           >
@@ -212,7 +212,7 @@ export default function LoginOptions({
             </a>
           </TextButton>,
           <TextButton
-            size={TextButtonSize.BodySm}
+            variant={TextVariant.BodySm}
             key="onboardingLoginFooterPrivacyNotice"
             asChild
           >

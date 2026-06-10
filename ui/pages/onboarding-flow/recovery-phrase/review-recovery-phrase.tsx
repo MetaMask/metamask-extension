@@ -19,7 +19,7 @@ import {
   BoxJustifyContent,
   BoxAlignItems,
   TextButton,
-  TextButtonSize,
+  
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -268,7 +268,7 @@ export default function RecoveryPhrase({
         </Button>
         {!isFromReminder && (
           <TextButton
-            size={TextButtonSize.BodyMd}
+            variant={TextVariant.BodyMd}
             onClick={handleRemindLater}
             className="w-full hover:bg-transparent active:bg-transparent"
             data-testid="recovery-phrase-remind-later"

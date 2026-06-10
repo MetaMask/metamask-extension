@@ -5,7 +5,7 @@ import {
   IconName,
   Text,
   TextButton,
-  TextButtonSize,
+  
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
@@ -71,7 +71,7 @@ export function ClaimableBonusRow({
             {t('musdClaimableBonusTooltip', [
               <TextButton
                 key="terms-link"
-                size={TextButtonSize.BodyMd}
+                variant={TextVariant.BodyMd}
                 isInverse
                 asChild
               >

@@ -3,7 +3,7 @@ import {
   Box,
   Text,
   TextButton,
-  TextButtonSize,
+  
   TextVariant,
   TextColor,
   BoxFlexDirection,
@@ -55,7 +55,7 @@ export default function AboutInfo(): React.ReactElement {
     const siteUrl = 'https://metamask.io/';
 
     const linkProps = {
-      size: TextButtonSize.BodyMd,
+      variant: TextVariant.BodyMd,
       className:
         'w-full justify-start text-default !bg-transparent p-0 text-left',
     };

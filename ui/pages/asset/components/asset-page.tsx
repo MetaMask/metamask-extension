@@ -14,7 +14,7 @@ import {
   IconName,
   Text,
   TextButton,
-  TextButtonSize,
+  
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
@@ -555,7 +555,7 @@ const AssetPage = ({
                 {shouldShowSpendingCaps &&
                   renderRow(
                     t('spendingCaps'),
-                    <TextButton size={TextButtonSize.BodyMd} asChild>
+                    <TextButton variant={TextVariant.BodyMd} asChild>
                       <a
                         className="asset-page__spending-caps"
                         href={portfolioSpendingCapsUrl}

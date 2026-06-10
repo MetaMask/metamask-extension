@@ -13,7 +13,7 @@ import {
   Text,
   TextAlign,
   TextButton,
-  TextButtonSize,
+  
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
@@ -314,8 +314,7 @@ export function MusdBonusSection({
                   String(MUSD_CONVERSION_APY),
                   <TextButton
                     key="terms"
-                    size={TextButtonSize.BodyMd}
-                    isInverse
+                    variant={TextVariant.BodyMd}
                     asChild
                   >
                     <a
@@ -338,7 +337,7 @@ export function MusdBonusSection({
               <Text variant={TextVariant.BodyMd} color={TextColor.InfoInverse}>
                 <strong>{t('musdAssetBonusLifetimeClaimed')}: </strong>
                 {t('musdAssetBonusInfoLifetimeClaimed')}{' '}
-                <TextButton isInverse asChild>
+                <TextButton asChild>
                   <a
                     href={MUSD_SUPPORT_ARTICLE_URL}
                     target="_blank"
