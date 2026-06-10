@@ -6,14 +6,17 @@ import { KeyringV1Adapter } from '@metamask/keyring-sdk/v2';
 import { SnapId } from '@metamask/snaps-sdk';
 import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { KeyringMetadata } from '@metamask/keyring-controller';
 import { getRootMessenger } from '../messenger';
 import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
 import { getSnapName } from '../../../../shared/lib/accounts/snaps';
 import { isFlask } from '../../../../shared/lib/build-types';
-import { SnapKeyringV2Impl, snapKeyringV2Builder } from './snap-keyring-v2';
 import {
-  SnapKeyringBuilderAllowActions,
+  SnapKeyringV2Impl,
+  snapKeyringV2Builder,
+  snapKeyringV2AdaptedAsV1Builder,
+} from './snap-keyring-v2';
+import {
+  SnapKeyringBuilderAllowedActions,
   SnapKeyringV2BuilderMessenger,
 } from './types';
 
@@ -25,11 +28,8 @@ const mockShowError = jest.fn();
 const mockGetAccounts = jest.fn();
 const mockSnapId = 'local:http://localhost:8080' as SnapId;
 const mockSnapName = 'mock-snap';
-const mockPersistKeyringHelper = jest.fn();
 const mockSetSelectedAccount = jest.fn();
 const mockSetAccountName = jest.fn();
-const mockRemoveAccountHelper = jest.fn();
-const mockTrackEvent = jest.fn();
 const mockGetAccountByAddress = jest.fn();
 const mockListMultichainAccounts = jest.fn();
 const mockLocale = 'en';
@@ -65,11 +65,6 @@ const mockInternalAccount = {
   },
 };
 
-const mockKeyringMetadata: KeyringMetadata = {
-  name: 'mock-keyring-name',
-  id: 'mock-keyring-id',
-};
-
 jest.mock('../../../../shared/lib/snaps/snaps', () => ({
   ...jest.requireActual('../../../../shared/lib/snaps/snaps'),
   isSnapPreinstalled: jest.fn(),
@@ -93,7 +88,7 @@ const createControllerMessenger = ({
   const rootMessenger = getRootMessenger();
   const messenger = new Messenger<
     'SnapKeyring',
-    SnapKeyringBuilderAllowActions,
+    SnapKeyringBuilderAllowedActions,
     never,
     typeof rootMessenger
   >({
@@ -189,7 +184,7 @@ const createControllerMessenger = ({
   return messenger;
 };
 
-const createSnapKeyringV2Builder = ({
+const setupAdapterMocks = ({
   snapName = mockSnapName,
   snapPreinstalled = true,
   flask = false,
@@ -201,16 +196,9 @@ const createSnapKeyringV2Builder = ({
   jest.mocked(isSnapPreinstalled).mockReturnValue(snapPreinstalled);
   jest.mocked(getSnapName).mockReturnValue(snapName);
   jest.mocked(isFlask).mockReturnValue(flask);
-
   mockRemoteFeatureFlagsGetStateRequest.mockReturnValue({
     remoteFeatureFlags: {},
   } as RemoteFeatureFlagControllerState);
-
-  return snapKeyringV2Builder(createControllerMessenger(), {
-    persistKeyringHelper: mockPersistKeyringHelper,
-    removeAccountHelper: mockRemoveAccountHelper,
-    trackEvent: mockTrackEvent,
-  });
 };
 
 describe('SnapKeyringV2Impl', () => {
@@ -222,11 +210,7 @@ describe('SnapKeyringV2Impl', () => {
     it('is a no-op (resolves without throwing or calling the messenger)', async () => {
       const messenger = createControllerMessenger();
       const callSpy = jest.spyOn(messenger, 'call');
-      const impl = new SnapKeyringV2Impl(messenger, {
-        persistKeyringHelper: mockPersistKeyringHelper,
-        removeAccountHelper: mockRemoveAccountHelper,
-        trackEvent: mockTrackEvent,
-      });
+      const impl = new SnapKeyringV2Impl(messenger);
 
       await expect(
         impl.assertAccountCanBeUsed(mockAccount),
@@ -241,63 +225,34 @@ describe('snapKeyringV2Builder', () => {
     jest.resetAllMocks();
   });
 
-  it('returns a builder with the expected shape', () => {
-    const builder = createSnapKeyringV2Builder();
+  it('returns a callable builder with the correct type marker', () => {
+    const builder = snapKeyringV2Builder();
 
-    expect(builder.name).toBe('SnapKeyringV2Builder');
-    expect(builder.state).toBeNull();
-    expect(typeof builder.v1Builder).toBe('function');
-    expect(typeof builder.v2Builder).toBe('function');
-    expect(builder.v1Builder.type).toBe(KeyringType.Snap);
-    expect(builder.v2Builder.type).toBe(KeyringType.Snap);
+    expect(typeof builder).toBe('function');
+    expect(builder.type).toBe(KeyringType.Snap);
   });
 
-  describe('v1Builder', () => {
-    it('creates a KeyringV1Adapter wrapping a SnapKeyringV2 instance', () => {
-      const builder = createSnapKeyringV2Builder();
+  it('unwraps a KeyringV1Adapter to return the underlying SnapKeyringV2 instance', () => {
+    setupAdapterMocks();
+    const v1BuilderFactory = snapKeyringV2AdaptedAsV1Builder(
+      createControllerMessenger(),
+    );
+    const adapter = v1BuilderFactory();
+    const inner = (adapter as unknown as KeyringV1Adapter).unwrap();
 
-      const keyring = builder.v1Builder();
+    const builder = snapKeyringV2Builder();
+    const v2 = builder(adapter);
 
-      expect(keyring).toBeInstanceOf(KeyringV1Adapter);
-      expect((keyring as unknown as KeyringV1Adapter).unwrap()).toBeInstanceOf(
-        SnapKeyringV2,
-      );
-    });
-
-    it('returns a fresh adapter on each call', () => {
-      const builder = createSnapKeyringV2Builder();
-
-      const first = builder.v1Builder();
-      const second = builder.v1Builder();
-
-      expect(first).not.toBe(second);
-      expect((first as unknown as KeyringV1Adapter).unwrap()).not.toBe(
-        (second as unknown as KeyringV1Adapter).unwrap(),
-      );
-    });
+    expect(v2).toBeInstanceOf(SnapKeyringV2);
+    expect(v2).toBe(inner);
   });
 
-  describe('v2Builder', () => {
-    it('unwraps the adapter to return the underlying SnapKeyringV2 instance', () => {
-      const builder = createSnapKeyringV2Builder();
+  it('throws when given a keyring that is not a KeyringV1Adapter', () => {
+    const builder = snapKeyringV2Builder();
+    const notAnAdapter = {
+      type: KeyringType.Snap,
+    } as unknown as Parameters<typeof builder>[0];
 
-      const adapter = builder.v1Builder();
-      const inner = (adapter as unknown as KeyringV1Adapter).unwrap();
-      const v2 = builder.v2Builder(adapter, mockKeyringMetadata);
-
-      expect(v2).toBeInstanceOf(SnapKeyringV2);
-      expect(v2).toBe(inner);
-    });
-
-    it('throws when given a keyring that is not a KeyringV1Adapter', () => {
-      const builder = createSnapKeyringV2Builder();
-      const notAnAdapter = {
-        type: KeyringType.Snap,
-      } as unknown as Parameters<typeof builder.v2Builder>[0];
-
-      expect(() =>
-        builder.v2Builder(notAnAdapter, mockKeyringMetadata),
-      ).toThrow();
-    });
+    expect(() => builder(notAnAdapter)).toThrow();
   });
 });
