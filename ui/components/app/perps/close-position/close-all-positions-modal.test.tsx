@@ -14,25 +14,17 @@ jest.mock('../../../../store/background-connection', () => ({
 
 jest.mock('../../../../../shared/lib/perps-formatters', () => ({
   PRICE_RANGES_UNIVERSAL: [],
-  formatPerpsFiat: (value: number | string) => {
+  formatPerpsFiat: (
+    value: number | string,
+    options?: { minimumDecimals?: number; maximumDecimals?: number },
+  ) => {
     const amount = Number(value);
+    const minDec = options?.minimumDecimals ?? 0;
+    const maxDec = options?.maximumDecimals ?? 6;
     return `$${amount
       .toLocaleString('en-US', {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 6,
-      })
-      .replace(/(\.\d*?[1-9])0+$/u, '$1')
-      .replace(/\.0+$/u, '')}`;
-  },
-}));
-
-jest.mock('../utils/formatPerpsDisplayPrice', () => ({
-  formatPerpsFiatUniversal: (value: number | string) => {
-    const amount = Number(value);
-    return `$${amount
-      .toLocaleString('en-US', {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 6,
+        minimumFractionDigits: minDec,
+        maximumFractionDigits: maxDec,
       })
       .replace(/(\.\d*?[1-9])0+$/u, '$1')
       .replace(/\.0+$/u, '')}`;
