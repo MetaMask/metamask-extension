@@ -150,7 +150,6 @@ import {
   MetaMetricsEventOptions,
   MetaMetricsEventPayload,
   MetaMetricsPageObject,
-  MetaMetricsPageOptions,
   MetaMetricsPagePayload,
   MetaMetricsReferrerObject,
   MetaMetricsEventCategory,
@@ -4488,23 +4487,36 @@ export function toggleDefaultView(): ThunkAction<
           currentWindow: true,
         });
 
-        if (tabs && tabs.length > 0 && tabs[0].windowId) {
-          await browserWithSidePanel.sidePanel.open({
-            windowId: tabs[0].windowId,
-          });
-          await new Promise((resolve) => setTimeout(resolve, 500));
-
-          const contexts = await chrome.runtime.getContexts({
-            contextTypes: ['SIDE_PANEL' as chrome.runtime.ContextType],
-          });
-
-          if (!contexts || contexts.length === 0) {
-            return;
-          }
-
-          await dispatch(setUseSidePanelAsDefault(true));
-          window.close();
+        const windowId = tabs?.[0]?.windowId;
+        if (!windowId) {
+          return;
         }
+
+        // `sidePanel.open()` rejects on browsers where the API exists but is
+        // non-functional (e.g. Arc), which is our signal that the switch
+        // failed. We intentionally avoid probing `chrome.runtime.getContexts`
+        // as a success gate: that probe races with side panel context
+        // teardown/setup (most notably right after a side panel -> popup ->
+        // side panel round-trip) and can report no context even when the panel
+        // opened. A false negative there used to leave the panel open, skip
+        // closing the popup, and skip persisting the preference, leaving both
+        // surfaces open and the next launch defaulting back to the popup.
+        try {
+          await browserWithSidePanel.sidePanel.open({ windowId });
+        } catch (error) {
+          // Nothing was opened, so the popup stays and state is consistent.
+          log.error(
+            'Side panel failed to open; remaining in popup view',
+            error,
+          );
+          return;
+        }
+
+        // Persist the preference before closing the popup so a reopen always
+        // honors the side panel choice and the background toolbar-behavior
+        // subscription flips to open-on-click.
+        await dispatch(setUseSidePanelAsDefault(true));
+        window.close();
       }
     } catch (error) {
       log.error('Error toggling default view:', error);
@@ -6500,19 +6512,13 @@ export function trackMetaMetricsEvent(
   payload: MetaMetricsEventPayload,
   options?: MetaMetricsEventOptions,
 ) {
-  return submitRequestToBackground('trackMetaMetricsEvent', [
-    { ...payload, actionId: generateActionId() },
-    options,
-  ]);
+  return submitRequestToBackground('trackMetaMetricsEvent', [payload, options]);
 }
 
 export function createEventFragment(
   options: MetaMetricsEventFragment,
 ): Promise<string> {
-  const actionId = generateActionId();
-  return submitRequestToBackground('createEventFragment', [
-    { ...options, actionId },
-  ]);
+  return submitRequestToBackground('createEventFragment', [options]);
 }
 
 export function upsertTransactionUIMetricsFragment(
@@ -6545,16 +6551,9 @@ export function finalizeEventFragment(
 
 /**
  * @param payload - details of the page viewed
- * @param options - options for handling the page view
  */
-export function trackMetaMetricsPage(
-  payload: MetaMetricsPagePayload,
-  options: MetaMetricsPageOptions,
-) {
-  return submitRequestToBackground('trackMetaMetricsPage', [
-    { ...payload, actionId: generateActionId() },
-    options,
-  ]);
+export function trackMetaMetricsPage(payload: MetaMetricsPagePayload) {
+  return submitRequestToBackground('trackMetaMetricsPage', [payload]);
 }
 
 export function updateMetaMetricsTraits(traits: MetaMetricsUserTraits) {

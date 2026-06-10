@@ -11,7 +11,7 @@ import TransactionConfirmation from '../../page-objects/pages/confirmations/tran
 import { login } from '../../page-objects/flows/login.flow';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import { TOKENS_API_MOCK_RESULT } from '../../../data/mock-data';
-import { createInternalTransaction } from '../../page-objects/flows/transaction';
+import { createInternalTransaction } from '../../page-objects/flows/transaction.flow';
 import { NETWORK_CLIENT_ID } from '../../constants';
 
 async function mockTokenList(mockServer: Mockttp) {
@@ -109,7 +109,9 @@ describe('Address Book', function (this: Suite) {
           amount: '2',
         });
 
-        await new TransactionConfirmation(driver).clickFooterConfirmButton();
+        const confirmation = new TransactionConfirmation(driver);
+        await confirmation.waitForReviewAlertToDisappear();
+        await confirmation.clickFooterConfirmButton();
 
         // Select Linea to check the Activity list
         const networkSelector = new NetworkManager(driver);

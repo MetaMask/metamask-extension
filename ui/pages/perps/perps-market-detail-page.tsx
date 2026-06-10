@@ -30,6 +30,7 @@ import {
   Button,
   ButtonVariant,
   ButtonSize,
+  Skeleton,
 } from '@metamask/design-system-react';
 import { brandColor } from '@metamask/design-tokens';
 import type { PriceUpdate } from '@metamask/perps-controller';
@@ -101,7 +102,6 @@ import {
   normalizeMarketDetailsOrders,
 } from '../../components/app/perps/utils/orderUtils';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
-import { Skeleton } from '../../components/component-library/skeleton';
 import { Popover, PopoverPosition } from '../../components/component-library';
 import { useFormatters } from '../../hooks/useFormatters';
 import { EditMarginModal } from '../../components/app/perps/edit-margin';
@@ -117,7 +117,6 @@ import {
   usePerpsToast,
 } from '../../components/app/perps/perps-toast';
 import Tooltip from '../../components/ui/tooltip';
-import { BorderRadius } from '../../helpers/constants/design-system';
 import type { MetaMaskReduxState } from '../../store/store';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
@@ -1001,9 +1000,7 @@ const PerpsMarketDetailPage = () => {
   // or the live chart once data is available.
   const renderChartContent = () => {
     if (isCandleLoading && !candleData) {
-      return (
-        <Skeleton className="h-[250px] w-full" borderRadius={BorderRadius.LG} />
-      );
+      return <Skeleton className="h-[250px] w-full rounded-lg" />;
     }
 
     if (candleError && !candleData) {

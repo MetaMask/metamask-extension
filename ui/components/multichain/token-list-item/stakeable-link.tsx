@@ -50,8 +50,8 @@ export const StakeableLink = ({ chainId, symbol }: StakeableLinkProps) => {
           'stake',
           'ext_stake_button',
           metaMetricsId,
-          isMetaMetricsEnabled,
-          isMarketingEnabled,
+          isMetaMetricsEnabled === true,
+          isMarketingEnabled === true,
         );
         global.platform.openTab({ url });
         trackEvent({
