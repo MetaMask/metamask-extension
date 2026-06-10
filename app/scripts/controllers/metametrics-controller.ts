@@ -26,6 +26,7 @@ import type {
   NetworkControllerNetworkDidChangeEvent,
 } from '@metamask/network-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import type { MultichainNetworkControllerGetStateAction } from '@metamask/multichain-network-controller';
 import type {
   SeedlessOnboardingControllerGetStateAction,
   SeedlessOnboardingControllerState,
@@ -292,6 +293,7 @@ export type AllowedActions =
   | NetworkControllerGetStateAction
   | NetworkControllerGetNetworkClientByIdAction
   | RemoteFeatureFlagControllerGetStateAction
+  | MultichainNetworkControllerGetStateAction
   | SeedlessOnboardingControllerGetStateAction
   | AnalyticsControllerActions;
 
@@ -1105,6 +1107,9 @@ export class MetaMetricsController extends BaseController<
   #buildTrackPagePayload(payload: MetaMetricsPagePayload): SegmentPagePayload {
     const { name, params, environmentType, page, referrer } = payload;
 
+    const { isEvmSelected, selectedMultichainNetworkChainId } =
+      this.messenger.call('MultichainNetworkController:getState');
+
     return {
       name: name ?? '',
       properties: omitBy(
@@ -1113,7 +1118,14 @@ export class MetaMetricsController extends BaseController<
           locale: this.locale,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: this.chainId,
+          chain_id: isEvmSelected ? this.chainId : null,
+          ...(isEvmSelected
+            ? {}
+            : {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                chain_id_caip: selectedMultichainNetworkChainId,
+              }),
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: environmentType,
