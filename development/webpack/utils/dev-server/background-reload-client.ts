@@ -1,3 +1,4 @@
+import browser from 'webextension-polyfill';
 import { BACKGROUND_RELOAD_MESSAGE_TYPE } from './background-reload-protocol';
 
 // `__resourceQuery` is the query string of the request that pulled this module
@@ -11,15 +12,6 @@ const MAX_RECONNECT_DELAY_MS = 5_000;
 // Storage key holding the fingerprint of the currently running code.
 const FINGERPRINT_KEY = 'MM_BACKGROUND_RELOAD_FINGERPRINT';
 
-// `chrome` in Chrome/MV3 service workers; `browser` (with a `chrome` alias) in
-// Firefox. `runtime.reload()` exists on both.
-const extension = globalThis as unknown as {
-  browser?: typeof chrome;
-  chrome?: typeof chrome;
-};
-const api = extension.browser ?? extension.chrome;
-const runtime = api?.runtime;
-
 const socketUrl = new URLSearchParams(__resourceQuery.slice(1)).get('url');
 
 // The recorded fingerprint must outlive the MV3 service worker, which Chrome
@@ -27,7 +19,7 @@ const socketUrl = new URLSearchParams(__resourceQuery.slice(1)).get('url');
 // script — `storage.session` survives that. The MV2 background page is
 // persistent, so the in-memory fallback suffices there. The extension's real
 // wallet state lives in `storage.local`, which we deliberately don't touch.
-const sessionStorage = api?.storage?.session;
+const sessionStorage = browser.storage?.session;
 let memoryFingerprint: string | undefined;
 
 /**
@@ -96,7 +88,7 @@ async function onFingerprint(
   // Close first so the impending teardown isn't logged as an unexpected
   // disconnect, then reload the whole extension.
   socket.close();
-  runtime?.reload();
+  browser.runtime.reload();
 }
 
 /**
@@ -159,9 +151,8 @@ function connect(url: string, reconnectAttempt = 0): void {
   });
 }
 
-// Only run inside a privileged extension context that can actually reload the
-// extension, and where WebSocket is available (MV3 service workers support it in
+// Only run where WebSocket is available (MV3 service workers support it in
 // current browsers). Otherwise this is a no-op rather than a reconnect loop.
-if (runtime && typeof WebSocket !== 'undefined' && socketUrl) {
+if (typeof WebSocket !== 'undefined' && socketUrl) {
   connect(socketUrl);
 }
