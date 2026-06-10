@@ -1,5 +1,313 @@
+diff --git a/dist/AssetsController.cjs b/dist/AssetsController.cjs
+index 7869c149db4678616dd467723a686b722629ec96..f0fb1feb6822dd3667945916073d6792854c8505 100644
+--- a/dist/AssetsController.cjs
++++ b/dist/AssetsController.cjs
+@@ -13,7 +13,7 @@ var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (
+ var __importDefault = (this && this.__importDefault) || function (mod) {
+     return (mod && mod.__esModule) ? mod : { "default": mod };
+ };
+-var _AssetsController_instances, _AssetsController_isEnabled, _AssetsController_isBasicFunctionality, _AssetsController_defaultUpdateInterval, _AssetsController_trace, _AssetsController_captureException, _AssetsController_firstInitFetchReported, _AssetsController_stateSizeReported, _AssetsController_emitTrace, _AssetsController_emitStateSizeTrace, _AssetsController_uiOpen, _AssetsController_keyringUnlocked, _AssetsController_controllerMutex, _AssetsController_activeSubscriptions, _AssetsController_enabledChains, _AssetsController_lastKnownAccountIds, _AssetsController_getSelectedAccounts, _AssetsController_backendWebsocketDataSource, _AssetsController_accountsApiDataSource, _AssetsController_snapDataSource, _AssetsController_rpcDataSource, _AssetsController_stakedBalanceDataSource, _AssetsController_allBalanceDataSources_get, _AssetsController_priceDataSource, _AssetsController_detectionMiddleware, _AssetsController_customAssetGraduationMiddleware, _AssetsController_rpcFallbackMiddleware, _AssetsController_tokenDataSource, _AssetsController_unsubscribeBasicFunctionality, _AssetsController_queryApiClient, _AssetsController_onActiveChainsUpdated, _AssetsController_initializeNativeAssetsMap, _AssetsController_initializeState, _AssetsController_extractEnabledChains, _AssetsController_normalizeChainReference, _AssetsController_subscribeToEvents, _AssetsController_onUnapprovedTransactionAdded, _AssetsController_updateActive, _AssetsController_handleAccountTreeStateChange, _AssetsController_registerActionHandlers, _AssetsController_handleActiveChainsUpdate, _AssetsController_executeMiddlewares, _AssetsController_getNativeAssetMap, _AssetsController_isNativeAsset, _AssetsController_resolveNativeAssetIds, _AssetsController_getNativeAssetIdsForEnabledChains, _AssetsController_getNativeAssetIdsForAccount, _AssetsController_ensureNativeBalancesDefaultZero, _AssetsController_ensureDefaultTrackedAssetsSeeded, _AssetsController_updateState, _AssetsController_getAssetsFromState, _AssetsController_shouldHideNativeToken, _AssetsController_tokenStandardToAssetType, _AssetsController_start, _AssetsController_stop, _AssetsController_subscribeAssets, _AssetsController_subscribeAssetsBalance, _AssetsController_subscribeRpcCustomAssetsSupplement, _AssetsController_unsubscribeBySubscriptionKey, _AssetsController_subscribeStakedBalance, _AssetsController_buildChainToAccountsMap, _AssetsController_subscribeDataSource, _AssetsController_unsubscribeDataSource, _AssetsController_buildDataRequest, _AssetsController_getEnabledChainsForAccount, _AssetsController_handleAccountGroupChanged, _AssetsController_handleEnabledNetworksChanged, _AssetsController_handleNetworkAdded, _AssetsController_refreshAssetsAfterNetworkChange;
++var _AssetsController_instances, _AssetsController_isEnabled, _AssetsController_isBasicFunctionality, _AssetsController_defaultUpdateInterval, _AssetsController_trace, _AssetsController_captureException, _AssetsController_firstInitFetchReported, _AssetsController_stateSizeReported, _AssetsController_emitTrace, _AssetsController_emitStateSizeTrace, _AssetsController_uiOpen, _AssetsController_keyringUnlocked, _AssetsController_controllerMutex, _AssetsController_activeSubscriptions, _AssetsController_enabledChains, _AssetsController_lastKnownAccountIds, _AssetsController_getSelectedAccounts, _AssetsController_backendWebsocketDataSource, _AssetsController_accountsApiDataSource, _AssetsController_snapDataSource, _AssetsController_rpcDataSource, _AssetsController_stakedBalanceDataSource, _AssetsController_allBalanceDataSources_get, _AssetsController_priceDataSource, _AssetsController_detectionMiddleware, _AssetsController_customAssetGraduationMiddleware, _AssetsController_rpcFallbackMiddleware, _AssetsController_tokenDataSource, _AssetsController_unsubscribeBasicFunctionality, _AssetsController_queryApiClient, _AssetsController_onActiveChainsUpdated, _AssetsController_initializeNativeAssetsMap, _AssetsController_initializeState, _AssetsController_extractEnabledChains, _AssetsController_normalizeChainReference, _AssetsController_subscribeToEvents, _AssetsController_onUnapprovedTransactionAdded, _AssetsController_updateActive, _AssetsController_handleAccountTreeStateChange, _AssetsController_registerActionHandlers, _AssetsController_handleActiveChainsUpdate, _AssetsController_executeMiddlewares, _AssetsController_getNativeAssetMap, _AssetsController_isNativeAsset, _AssetsController_getAssetType, _AssetsController_resolveNativeAssetIds, _AssetsController_getNativeAssetIdsForEnabledChains, _AssetsController_getNativeAssetIdsForAccount, _AssetsController_ensureNativeBalancesDefaultZero, _AssetsController_ensureDefaultTrackedAssetsSeeded, _AssetsController_updateState, _AssetsController_getAssetsFromState, _AssetsController_shouldHideNativeToken, _AssetsController_tokenStandardToAssetType, _AssetsController_start, _AssetsController_stop, _AssetsController_subscribeAssets, _AssetsController_subscribeAssetsBalance, _AssetsController_subscribeRpcCustomAssetsSupplement, _AssetsController_unsubscribeBySubscriptionKey, _AssetsController_subscribeStakedBalance, _AssetsController_buildChainToAccountsMap, _AssetsController_subscribeDataSource, _AssetsController_unsubscribeDataSource, _AssetsController_buildDataRequest, _AssetsController_getEnabledChainsForAccount, _AssetsController_handleAccountGroupChanged, _AssetsController_handleEnabledNetworksChanged, _AssetsController_handleNetworkAdded, _AssetsController_refreshAssetsAfterNetworkChange;
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.AssetsController = exports.getDefaultAssetsControllerState = void 0;
+ const base_controller_1 = require("@metamask/base-controller");
+@@ -306,7 +306,7 @@ class AssetsController extends base_controller_1.BaseController {
+             messenger: this.messenger,
+             queryApiClient,
+             onActiveChainsUpdated: __classPrivateFieldGet(this, _AssetsController_onActiveChainsUpdated, "f"),
+-            isNativeAsset: (assetId) => __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_isNativeAsset).call(this, assetId),
++            getAssetType: (assetId) => __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_getAssetType).call(this, assetId),
+         }), "f");
+         __classPrivateFieldSet(this, _AssetsController_accountsApiDataSource, new AccountsApiDataSource_1.AccountsApiDataSource({
+             queryApiClient,
+@@ -329,6 +329,7 @@ class AssetsController extends base_controller_1.BaseController {
+             queryClient: queryApiClient.queryClient,
+             ...rpcConfig,
+             isOnboarded: rpcConfig.isOnboarded ?? isOnboarded,
++            getAssetType: (assetId) => __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_getAssetType).call(this, assetId),
+         }), "f");
+         __classPrivateFieldSet(this, _AssetsController_stakedBalanceDataSource, new StakedBalanceDataSource_1.StakedBalanceDataSource({
+             messenger: this.messenger,
+@@ -340,6 +341,7 @@ class AssetsController extends base_controller_1.BaseController {
+             getNativeAssetIds: () => {
+                 return __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_getNativeAssetIdsForEnabledChains).call(this);
+             },
++            getAssetType: (assetId) => __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_getAssetType).call(this, assetId),
+         }), "f");
+         __classPrivateFieldSet(this, _AssetsController_priceDataSource, new PriceDataSource_1.PriceDataSource({
+             queryApiClient,
+@@ -1280,6 +1282,16 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
+         return true;
+     }
+     return false;
++}, _AssetsController_getAssetType = function _AssetsController_getAssetType(assetId) {
++    const parsed = (0, utils_1.parseCaipAssetType)(assetId);
++    if (__classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_isNativeAsset).call(this, assetId)) {
++        return 'native';
++    }
++    if (parsed.chain.namespace === utils_1.KnownCaipNamespace.Solana &&
++        parsed.assetNamespace === TokenDataSource_1.CaipAssetNamespace.Token) {
++        return 'spl';
++    }
++    return 'erc20';
+ }, _AssetsController_resolveNativeAssetIds = function _AssetsController_resolveNativeAssetIds(chains) {
+     const nativeAssetMap = __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_getNativeAssetMap).call(this);
+     const ids = [];
+@@ -1409,15 +1421,27 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
+                 for (const [accountId, accountBalances] of Object.entries(normalizedResponse.assetsBalance)) {
+                     const previousBalances = previousState.assetsBalance[accountId] ?? {};
+                     const customAssetIds = state.customAssets[accountId] ?? [];
+-                    // Full: response is authoritative; preserve custom assets not in response.
++                    // Full: response is authoritative for the chains it covered;
++                    //   balances for chains not in the response are preserved from
++                    //   previous state so unsupported chains (e.g. Ink on AccountsAPI)
++                    //   are never inadvertently reset to zero.
+                     // Merge: response overlays previous balances.
+-                    // Callers that fetch partial data (e.g. newly added chains) must set updateMode: 'merge'.
+                     const effective = mode === 'merge'
+                         ? { ...previousBalances, ...accountBalances }
+                         : (() => {
+-                            const next = {
+-                                ...accountBalances,
+-                            };
++                            // Determine which chain namespaces this response covers.
++                            const coveredChains = new Set(Object.keys(accountBalances).map((assetId) => assetId.split('/')[0]));
++                            // Start from previous balances, dropping only entries for
++                            // chains this response is authoritative over.
++                            const next = {};
++                            for (const [assetId, balance] of Object.entries(previousBalances)) {
++                                if (!coveredChains.has(assetId.split('/')[0])) {
++                                    next[assetId] = balance;
++                                }
++                            }
++                            // Apply the response (authoritative for covered chains).
++                            Object.assign(next, accountBalances);
++                            // Preserve custom assets that the response omitted.
+                             for (const customId of customAssetIds) {
+                                 if (!(customId in next)) {
+                                     const prev = previousBalances[customId];
+diff --git a/dist/AssetsController.mjs b/dist/AssetsController.mjs
+index 7552c96a765368243d30f099187c739b88c838c2..0d66bef6294dbc172775eab64b6224ebc609d06f 100644
+--- a/dist/AssetsController.mjs
++++ b/dist/AssetsController.mjs
+@@ -9,7 +9,7 @@ var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (
+     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+     return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+ };
+-var _AssetsController_instances, _AssetsController_isEnabled, _AssetsController_isBasicFunctionality, _AssetsController_defaultUpdateInterval, _AssetsController_trace, _AssetsController_captureException, _AssetsController_firstInitFetchReported, _AssetsController_stateSizeReported, _AssetsController_emitTrace, _AssetsController_emitStateSizeTrace, _AssetsController_uiOpen, _AssetsController_keyringUnlocked, _AssetsController_controllerMutex, _AssetsController_activeSubscriptions, _AssetsController_enabledChains, _AssetsController_lastKnownAccountIds, _AssetsController_getSelectedAccounts, _AssetsController_backendWebsocketDataSource, _AssetsController_accountsApiDataSource, _AssetsController_snapDataSource, _AssetsController_rpcDataSource, _AssetsController_stakedBalanceDataSource, _AssetsController_allBalanceDataSources_get, _AssetsController_priceDataSource, _AssetsController_detectionMiddleware, _AssetsController_customAssetGraduationMiddleware, _AssetsController_rpcFallbackMiddleware, _AssetsController_tokenDataSource, _AssetsController_unsubscribeBasicFunctionality, _AssetsController_queryApiClient, _AssetsController_onActiveChainsUpdated, _AssetsController_initializeNativeAssetsMap, _AssetsController_initializeState, _AssetsController_extractEnabledChains, _AssetsController_normalizeChainReference, _AssetsController_subscribeToEvents, _AssetsController_onUnapprovedTransactionAdded, _AssetsController_updateActive, _AssetsController_handleAccountTreeStateChange, _AssetsController_registerActionHandlers, _AssetsController_handleActiveChainsUpdate, _AssetsController_executeMiddlewares, _AssetsController_getNativeAssetMap, _AssetsController_isNativeAsset, _AssetsController_resolveNativeAssetIds, _AssetsController_getNativeAssetIdsForEnabledChains, _AssetsController_getNativeAssetIdsForAccount, _AssetsController_ensureNativeBalancesDefaultZero, _AssetsController_ensureDefaultTrackedAssetsSeeded, _AssetsController_updateState, _AssetsController_getAssetsFromState, _AssetsController_shouldHideNativeToken, _AssetsController_tokenStandardToAssetType, _AssetsController_start, _AssetsController_stop, _AssetsController_subscribeAssets, _AssetsController_subscribeAssetsBalance, _AssetsController_subscribeRpcCustomAssetsSupplement, _AssetsController_unsubscribeBySubscriptionKey, _AssetsController_subscribeStakedBalance, _AssetsController_buildChainToAccountsMap, _AssetsController_subscribeDataSource, _AssetsController_unsubscribeDataSource, _AssetsController_buildDataRequest, _AssetsController_getEnabledChainsForAccount, _AssetsController_handleAccountGroupChanged, _AssetsController_handleEnabledNetworksChanged, _AssetsController_handleNetworkAdded, _AssetsController_refreshAssetsAfterNetworkChange;
++var _AssetsController_instances, _AssetsController_isEnabled, _AssetsController_isBasicFunctionality, _AssetsController_defaultUpdateInterval, _AssetsController_trace, _AssetsController_captureException, _AssetsController_firstInitFetchReported, _AssetsController_stateSizeReported, _AssetsController_emitTrace, _AssetsController_emitStateSizeTrace, _AssetsController_uiOpen, _AssetsController_keyringUnlocked, _AssetsController_controllerMutex, _AssetsController_activeSubscriptions, _AssetsController_enabledChains, _AssetsController_lastKnownAccountIds, _AssetsController_getSelectedAccounts, _AssetsController_backendWebsocketDataSource, _AssetsController_accountsApiDataSource, _AssetsController_snapDataSource, _AssetsController_rpcDataSource, _AssetsController_stakedBalanceDataSource, _AssetsController_allBalanceDataSources_get, _AssetsController_priceDataSource, _AssetsController_detectionMiddleware, _AssetsController_customAssetGraduationMiddleware, _AssetsController_rpcFallbackMiddleware, _AssetsController_tokenDataSource, _AssetsController_unsubscribeBasicFunctionality, _AssetsController_queryApiClient, _AssetsController_onActiveChainsUpdated, _AssetsController_initializeNativeAssetsMap, _AssetsController_initializeState, _AssetsController_extractEnabledChains, _AssetsController_normalizeChainReference, _AssetsController_subscribeToEvents, _AssetsController_onUnapprovedTransactionAdded, _AssetsController_updateActive, _AssetsController_handleAccountTreeStateChange, _AssetsController_registerActionHandlers, _AssetsController_handleActiveChainsUpdate, _AssetsController_executeMiddlewares, _AssetsController_getNativeAssetMap, _AssetsController_isNativeAsset, _AssetsController_getAssetType, _AssetsController_resolveNativeAssetIds, _AssetsController_getNativeAssetIdsForEnabledChains, _AssetsController_getNativeAssetIdsForAccount, _AssetsController_ensureNativeBalancesDefaultZero, _AssetsController_ensureDefaultTrackedAssetsSeeded, _AssetsController_updateState, _AssetsController_getAssetsFromState, _AssetsController_shouldHideNativeToken, _AssetsController_tokenStandardToAssetType, _AssetsController_start, _AssetsController_stop, _AssetsController_subscribeAssets, _AssetsController_subscribeAssetsBalance, _AssetsController_subscribeRpcCustomAssetsSupplement, _AssetsController_unsubscribeBySubscriptionKey, _AssetsController_subscribeStakedBalance, _AssetsController_buildChainToAccountsMap, _AssetsController_subscribeDataSource, _AssetsController_unsubscribeDataSource, _AssetsController_buildDataRequest, _AssetsController_getEnabledChainsForAccount, _AssetsController_handleAccountGroupChanged, _AssetsController_handleEnabledNetworksChanged, _AssetsController_handleNetworkAdded, _AssetsController_refreshAssetsAfterNetworkChange;
+ import { BaseController } from "@metamask/base-controller";
+ import { clientControllerSelectors } from "@metamask/client-controller";
+ import { isCaipChainId, isStrictHexString, KnownCaipNamespace, parseCaipAssetType, parseCaipChainId } from "@metamask/utils";
+@@ -300,7 +300,7 @@ export class AssetsController extends BaseController {
+             messenger: this.messenger,
+             queryApiClient,
+             onActiveChainsUpdated: __classPrivateFieldGet(this, _AssetsController_onActiveChainsUpdated, "f"),
+-            isNativeAsset: (assetId) => __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_isNativeAsset).call(this, assetId),
++            getAssetType: (assetId) => __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_getAssetType).call(this, assetId),
+         }), "f");
+         __classPrivateFieldSet(this, _AssetsController_accountsApiDataSource, new AccountsApiDataSource({
+             queryApiClient,
+@@ -323,6 +323,7 @@ export class AssetsController extends BaseController {
+             queryClient: queryApiClient.queryClient,
+             ...rpcConfig,
+             isOnboarded: rpcConfig.isOnboarded ?? isOnboarded,
++            getAssetType: (assetId) => __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_getAssetType).call(this, assetId),
+         }), "f");
+         __classPrivateFieldSet(this, _AssetsController_stakedBalanceDataSource, new StakedBalanceDataSource({
+             messenger: this.messenger,
+@@ -334,6 +335,7 @@ export class AssetsController extends BaseController {
+             getNativeAssetIds: () => {
+                 return __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_getNativeAssetIdsForEnabledChains).call(this);
+             },
++            getAssetType: (assetId) => __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_getAssetType).call(this, assetId),
+         }), "f");
+         __classPrivateFieldSet(this, _AssetsController_priceDataSource, new PriceDataSource({
+             queryApiClient,
+@@ -1273,6 +1275,16 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
+         return true;
+     }
+     return false;
++}, _AssetsController_getAssetType = function _AssetsController_getAssetType(assetId) {
++    const parsed = parseCaipAssetType(assetId);
++    if (__classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_isNativeAsset).call(this, assetId)) {
++        return 'native';
++    }
++    if (parsed.chain.namespace === KnownCaipNamespace.Solana &&
++        parsed.assetNamespace === CaipAssetNamespace.Token) {
++        return 'spl';
++    }
++    return 'erc20';
+ }, _AssetsController_resolveNativeAssetIds = function _AssetsController_resolveNativeAssetIds(chains) {
+     const nativeAssetMap = __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_getNativeAssetMap).call(this);
+     const ids = [];
+@@ -1402,15 +1414,27 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
+                 for (const [accountId, accountBalances] of Object.entries(normalizedResponse.assetsBalance)) {
+                     const previousBalances = previousState.assetsBalance[accountId] ?? {};
+                     const customAssetIds = state.customAssets[accountId] ?? [];
+-                    // Full: response is authoritative; preserve custom assets not in response.
++                    // Full: response is authoritative for the chains it covered;
++                    //   balances for chains not in the response are preserved from
++                    //   previous state so unsupported chains (e.g. Ink on AccountsAPI)
++                    //   are never inadvertently reset to zero.
+                     // Merge: response overlays previous balances.
+-                    // Callers that fetch partial data (e.g. newly added chains) must set updateMode: 'merge'.
+                     const effective = mode === 'merge'
+                         ? { ...previousBalances, ...accountBalances }
+                         : (() => {
+-                            const next = {
+-                                ...accountBalances,
+-                            };
++                            // Determine which chain namespaces this response covers.
++                            const coveredChains = new Set(Object.keys(accountBalances).map((assetId) => assetId.split('/')[0]));
++                            // Start from previous balances, dropping only entries for
++                            // chains this response is authoritative over.
++                            const next = {};
++                            for (const [assetId, balance] of Object.entries(previousBalances)) {
++                                if (!coveredChains.has(assetId.split('/')[0])) {
++                                    next[assetId] = balance;
++                                }
++                            }
++                            // Apply the response (authoritative for covered chains).
++                            Object.assign(next, accountBalances);
++                            // Preserve custom assets that the response omitted.
+                             for (const customId of customAssetIds) {
+                                 if (!(customId in next)) {
+                                     const prev = previousBalances[customId];
+diff --git a/dist/data-sources/BackendWebsocketDataSource.cjs b/dist/data-sources/BackendWebsocketDataSource.cjs
+index 88f557ab6b2b6add5e3ca3620d230d01745bf168..9ab917c4cbe720e5e14fcc23ce7d1dfe9912ef28 100644
+--- a/dist/data-sources/BackendWebsocketDataSource.cjs
++++ b/dist/data-sources/BackendWebsocketDataSource.cjs
+@@ -13,7 +13,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+ var __importDefault = (this && this.__importDefault) || function (mod) {
+     return (mod && mod.__esModule) ? mod : { "default": mod };
+ };
+-var _BackendWebsocketDataSource_instances, _BackendWebsocketDataSource_messenger, _BackendWebsocketDataSource_apiClient, _BackendWebsocketDataSource_onActiveChainsUpdated, _BackendWebsocketDataSource_isNativeAsset, _BackendWebsocketDataSource_chainsRefreshTimer, _BackendWebsocketDataSource_supportedChains, _BackendWebsocketDataSource_isConnected, _BackendWebsocketDataSource_wsSubscriptions, _BackendWebsocketDataSource_pendingSubscriptions, _BackendWebsocketDataSource_subscriptionRequests, _BackendWebsocketDataSource_initializeActiveChains, _BackendWebsocketDataSource_refreshActiveChains, _BackendWebsocketDataSource_fetchActiveChains, _BackendWebsocketDataSource_subscribeToEvents, _BackendWebsocketDataSource_handleDisconnect, _BackendWebsocketDataSource_handleReconnect, _BackendWebsocketDataSource_handleNotification, _BackendWebsocketDataSource_processBalanceUpdates;
++var _BackendWebsocketDataSource_instances, _BackendWebsocketDataSource_messenger, _BackendWebsocketDataSource_apiClient, _BackendWebsocketDataSource_onActiveChainsUpdated, _BackendWebsocketDataSource_getAssetType, _BackendWebsocketDataSource_chainsRefreshTimer, _BackendWebsocketDataSource_supportedChains, _BackendWebsocketDataSource_isConnected, _BackendWebsocketDataSource_wsSubscriptions, _BackendWebsocketDataSource_pendingSubscriptions, _BackendWebsocketDataSource_subscriptionRequests, _BackendWebsocketDataSource_initializeActiveChains, _BackendWebsocketDataSource_refreshActiveChains, _BackendWebsocketDataSource_fetchActiveChains, _BackendWebsocketDataSource_subscribeToEvents, _BackendWebsocketDataSource_handleDisconnect, _BackendWebsocketDataSource_handleReconnect, _BackendWebsocketDataSource_handleNotification, _BackendWebsocketDataSource_processBalanceUpdates;
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.createBackendWebsocketDataSource = exports.BackendWebsocketDataSource = void 0;
+ const utils_1 = require("@metamask/utils");
+@@ -154,7 +154,7 @@ class BackendWebsocketDataSource extends AbstractDataSource_1.AbstractDataSource
+         _BackendWebsocketDataSource_messenger.set(this, void 0);
+         _BackendWebsocketDataSource_apiClient.set(this, void 0);
+         _BackendWebsocketDataSource_onActiveChainsUpdated.set(this, void 0);
+-        _BackendWebsocketDataSource_isNativeAsset.set(this, void 0);
++        _BackendWebsocketDataSource_getAssetType.set(this, void 0);
+         /** Chains refresh timer */
+         _BackendWebsocketDataSource_chainsRefreshTimer.set(this, null);
+         /** Chains the backend API reports as supported (preserved across disconnects). */
+@@ -170,7 +170,7 @@ class BackendWebsocketDataSource extends AbstractDataSource_1.AbstractDataSource
+         __classPrivateFieldSet(this, _BackendWebsocketDataSource_messenger, options.messenger, "f");
+         __classPrivateFieldSet(this, _BackendWebsocketDataSource_apiClient, options.queryApiClient, "f");
+         __classPrivateFieldSet(this, _BackendWebsocketDataSource_onActiveChainsUpdated, options.onActiveChainsUpdated, "f");
+-        __classPrivateFieldSet(this, _BackendWebsocketDataSource_isNativeAsset, options.isNativeAsset, "f");
++        __classPrivateFieldSet(this, _BackendWebsocketDataSource_getAssetType, options.getAssetType, "f");
+         __classPrivateFieldGet(this, _BackendWebsocketDataSource_instances, "m", _BackendWebsocketDataSource_subscribeToEvents).call(this);
+         __classPrivateFieldGet(this, _BackendWebsocketDataSource_instances, "m", _BackendWebsocketDataSource_initializeActiveChains).call(this).catch(console.error);
+     }
+@@ -320,7 +320,7 @@ class BackendWebsocketDataSource extends AbstractDataSource_1.AbstractDataSource
+     }
+ }
+ exports.BackendWebsocketDataSource = BackendWebsocketDataSource;
+-_BackendWebsocketDataSource_messenger = new WeakMap(), _BackendWebsocketDataSource_apiClient = new WeakMap(), _BackendWebsocketDataSource_onActiveChainsUpdated = new WeakMap(), _BackendWebsocketDataSource_isNativeAsset = new WeakMap(), _BackendWebsocketDataSource_chainsRefreshTimer = new WeakMap(), _BackendWebsocketDataSource_supportedChains = new WeakMap(), _BackendWebsocketDataSource_isConnected = new WeakMap(), _BackendWebsocketDataSource_wsSubscriptions = new WeakMap(), _BackendWebsocketDataSource_pendingSubscriptions = new WeakMap(), _BackendWebsocketDataSource_subscriptionRequests = new WeakMap(), _BackendWebsocketDataSource_instances = new WeakSet(), _BackendWebsocketDataSource_initializeActiveChains = 
++_BackendWebsocketDataSource_messenger = new WeakMap(), _BackendWebsocketDataSource_apiClient = new WeakMap(), _BackendWebsocketDataSource_onActiveChainsUpdated = new WeakMap(), _BackendWebsocketDataSource_getAssetType = new WeakMap(), _BackendWebsocketDataSource_chainsRefreshTimer = new WeakMap(), _BackendWebsocketDataSource_supportedChains = new WeakMap(), _BackendWebsocketDataSource_isConnected = new WeakMap(), _BackendWebsocketDataSource_wsSubscriptions = new WeakMap(), _BackendWebsocketDataSource_pendingSubscriptions = new WeakMap(), _BackendWebsocketDataSource_subscriptionRequests = new WeakMap(), _BackendWebsocketDataSource_instances = new WeakSet(), _BackendWebsocketDataSource_initializeActiveChains = 
+ // ============================================================================
+ // INITIALIZATION
+ // ============================================================================
+@@ -465,9 +465,7 @@ async function _BackendWebsocketDataSource_initializeActiveChains() {
+         // Asset type is in CAIP format: "eip155:1/erc20:0x..." or "eip155:1/slip44:60"
+         // We can use it directly as the asset ID
+         const assetId = asset.type;
+-        // Determine token type from asset type string
+-        const isNative = __classPrivateFieldGet(this, _BackendWebsocketDataSource_isNativeAsset, "f").call(this, assetId);
+-        const tokenType = isNative ? 'native' : 'erc20';
++        const tokenType = __classPrivateFieldGet(this, _BackendWebsocketDataSource_getAssetType, "f").call(this, assetId);
+         // We assume decimals are always present; skip malformed updates
+         if (asset.decimals === undefined) {
+             continue;
+diff --git a/dist/data-sources/BackendWebsocketDataSource.d.cts b/dist/data-sources/BackendWebsocketDataSource.d.cts
+index 2294a209b0818530757eb3b5a77e53258b9141ba..27ab52f35b7d5ab3e51080a14971b15bccb3e687 100644
+--- a/dist/data-sources/BackendWebsocketDataSource.d.cts
++++ b/dist/data-sources/BackendWebsocketDataSource.d.cts
+@@ -15,8 +15,8 @@ export type BackendWebsocketDataSourceOptions = {
+     queryApiClient: ApiPlatformClient;
+     /** Called when active chains are updated. Pass dataSourceName so the controller knows the source. */
+     onActiveChainsUpdated: (dataSourceName: string, chains: ChainId[], previousChains: ChainId[]) => void;
+-    /** Determines whether a CAIP-19 asset ID represents a native asset. */
+-    isNativeAsset: (assetId: Caip19AssetId) => boolean;
++    /** Returns the asset type ('native' | 'erc20' | 'spl') for a given CAIP-19 asset ID. */
++    getAssetType: (assetId: Caip19AssetId) => 'native' | 'erc20' | 'spl';
+     state?: Partial<BackendWebsocketDataSourceState>;
+ };
+ export declare class BackendWebsocketDataSource extends AbstractDataSource<typeof CONTROLLER_NAME, BackendWebsocketDataSourceState> {
+diff --git a/dist/data-sources/BackendWebsocketDataSource.d.mts b/dist/data-sources/BackendWebsocketDataSource.d.mts
+index 43fa1391e54a0074ccf36d301a6b1a131cdff062..4b88a735092b3dc425ea9b6fe09012613ff0d4a8 100644
+--- a/dist/data-sources/BackendWebsocketDataSource.d.mts
++++ b/dist/data-sources/BackendWebsocketDataSource.d.mts
+@@ -15,8 +15,8 @@ export type BackendWebsocketDataSourceOptions = {
+     queryApiClient: ApiPlatformClient;
+     /** Called when active chains are updated. Pass dataSourceName so the controller knows the source. */
+     onActiveChainsUpdated: (dataSourceName: string, chains: ChainId[], previousChains: ChainId[]) => void;
+-    /** Determines whether a CAIP-19 asset ID represents a native asset. */
+-    isNativeAsset: (assetId: Caip19AssetId) => boolean;
++    /** Returns the asset type ('native' | 'erc20' | 'spl') for a given CAIP-19 asset ID. */
++    getAssetType: (assetId: Caip19AssetId) => 'native' | 'erc20' | 'spl';
+     state?: Partial<BackendWebsocketDataSourceState>;
+ };
+ export declare class BackendWebsocketDataSource extends AbstractDataSource<typeof CONTROLLER_NAME, BackendWebsocketDataSourceState> {
+diff --git a/dist/data-sources/BackendWebsocketDataSource.mjs b/dist/data-sources/BackendWebsocketDataSource.mjs
+index 567e5b2407a7e925397c9c178e329f72895f40f3..a3a5d8497a12d7efee35ecd24ce5fab0ef09052b 100644
+--- a/dist/data-sources/BackendWebsocketDataSource.mjs
++++ b/dist/data-sources/BackendWebsocketDataSource.mjs
+@@ -9,7 +9,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+ };
+-var _BackendWebsocketDataSource_instances, _BackendWebsocketDataSource_messenger, _BackendWebsocketDataSource_apiClient, _BackendWebsocketDataSource_onActiveChainsUpdated, _BackendWebsocketDataSource_isNativeAsset, _BackendWebsocketDataSource_chainsRefreshTimer, _BackendWebsocketDataSource_supportedChains, _BackendWebsocketDataSource_isConnected, _BackendWebsocketDataSource_wsSubscriptions, _BackendWebsocketDataSource_pendingSubscriptions, _BackendWebsocketDataSource_subscriptionRequests, _BackendWebsocketDataSource_initializeActiveChains, _BackendWebsocketDataSource_refreshActiveChains, _BackendWebsocketDataSource_fetchActiveChains, _BackendWebsocketDataSource_subscribeToEvents, _BackendWebsocketDataSource_handleDisconnect, _BackendWebsocketDataSource_handleReconnect, _BackendWebsocketDataSource_handleNotification, _BackendWebsocketDataSource_processBalanceUpdates;
++var _BackendWebsocketDataSource_instances, _BackendWebsocketDataSource_messenger, _BackendWebsocketDataSource_apiClient, _BackendWebsocketDataSource_onActiveChainsUpdated, _BackendWebsocketDataSource_getAssetType, _BackendWebsocketDataSource_chainsRefreshTimer, _BackendWebsocketDataSource_supportedChains, _BackendWebsocketDataSource_isConnected, _BackendWebsocketDataSource_wsSubscriptions, _BackendWebsocketDataSource_pendingSubscriptions, _BackendWebsocketDataSource_subscriptionRequests, _BackendWebsocketDataSource_initializeActiveChains, _BackendWebsocketDataSource_refreshActiveChains, _BackendWebsocketDataSource_fetchActiveChains, _BackendWebsocketDataSource_subscribeToEvents, _BackendWebsocketDataSource_handleDisconnect, _BackendWebsocketDataSource_handleReconnect, _BackendWebsocketDataSource_handleNotification, _BackendWebsocketDataSource_processBalanceUpdates;
+ import { isCaipChainId, KnownCaipNamespace, toCaipChainId } from "@metamask/utils";
+ import BigNumberJS from "bignumber.js";
+ import { projectLogger, createModuleLogger } from "../logger.mjs";
+@@ -148,7 +148,7 @@ export class BackendWebsocketDataSource extends AbstractDataSource {
+         _BackendWebsocketDataSource_messenger.set(this, void 0);
+         _BackendWebsocketDataSource_apiClient.set(this, void 0);
+         _BackendWebsocketDataSource_onActiveChainsUpdated.set(this, void 0);
+-        _BackendWebsocketDataSource_isNativeAsset.set(this, void 0);
++        _BackendWebsocketDataSource_getAssetType.set(this, void 0);
+         /** Chains refresh timer */
+         _BackendWebsocketDataSource_chainsRefreshTimer.set(this, null);
+         /** Chains the backend API reports as supported (preserved across disconnects). */
+@@ -164,7 +164,7 @@ export class BackendWebsocketDataSource extends AbstractDataSource {
+         __classPrivateFieldSet(this, _BackendWebsocketDataSource_messenger, options.messenger, "f");
+         __classPrivateFieldSet(this, _BackendWebsocketDataSource_apiClient, options.queryApiClient, "f");
+         __classPrivateFieldSet(this, _BackendWebsocketDataSource_onActiveChainsUpdated, options.onActiveChainsUpdated, "f");
+-        __classPrivateFieldSet(this, _BackendWebsocketDataSource_isNativeAsset, options.isNativeAsset, "f");
++        __classPrivateFieldSet(this, _BackendWebsocketDataSource_getAssetType, options.getAssetType, "f");
+         __classPrivateFieldGet(this, _BackendWebsocketDataSource_instances, "m", _BackendWebsocketDataSource_subscribeToEvents).call(this);
+         __classPrivateFieldGet(this, _BackendWebsocketDataSource_instances, "m", _BackendWebsocketDataSource_initializeActiveChains).call(this).catch(console.error);
+     }
+@@ -313,7 +313,7 @@ export class BackendWebsocketDataSource extends AbstractDataSource {
+         super.destroy();
+     }
+ }
+-_BackendWebsocketDataSource_messenger = new WeakMap(), _BackendWebsocketDataSource_apiClient = new WeakMap(), _BackendWebsocketDataSource_onActiveChainsUpdated = new WeakMap(), _BackendWebsocketDataSource_isNativeAsset = new WeakMap(), _BackendWebsocketDataSource_chainsRefreshTimer = new WeakMap(), _BackendWebsocketDataSource_supportedChains = new WeakMap(), _BackendWebsocketDataSource_isConnected = new WeakMap(), _BackendWebsocketDataSource_wsSubscriptions = new WeakMap(), _BackendWebsocketDataSource_pendingSubscriptions = new WeakMap(), _BackendWebsocketDataSource_subscriptionRequests = new WeakMap(), _BackendWebsocketDataSource_instances = new WeakSet(), _BackendWebsocketDataSource_initializeActiveChains = 
++_BackendWebsocketDataSource_messenger = new WeakMap(), _BackendWebsocketDataSource_apiClient = new WeakMap(), _BackendWebsocketDataSource_onActiveChainsUpdated = new WeakMap(), _BackendWebsocketDataSource_getAssetType = new WeakMap(), _BackendWebsocketDataSource_chainsRefreshTimer = new WeakMap(), _BackendWebsocketDataSource_supportedChains = new WeakMap(), _BackendWebsocketDataSource_isConnected = new WeakMap(), _BackendWebsocketDataSource_wsSubscriptions = new WeakMap(), _BackendWebsocketDataSource_pendingSubscriptions = new WeakMap(), _BackendWebsocketDataSource_subscriptionRequests = new WeakMap(), _BackendWebsocketDataSource_instances = new WeakSet(), _BackendWebsocketDataSource_initializeActiveChains = 
+ // ============================================================================
+ // INITIALIZATION
+ // ============================================================================
+@@ -458,9 +458,7 @@ async function _BackendWebsocketDataSource_initializeActiveChains() {
+         // Asset type is in CAIP format: "eip155:1/erc20:0x..." or "eip155:1/slip44:60"
+         // We can use it directly as the asset ID
+         const assetId = asset.type;
+-        // Determine token type from asset type string
+-        const isNative = __classPrivateFieldGet(this, _BackendWebsocketDataSource_isNativeAsset, "f").call(this, assetId);
+-        const tokenType = isNative ? 'native' : 'erc20';
++        const tokenType = __classPrivateFieldGet(this, _BackendWebsocketDataSource_getAssetType, "f").call(this, assetId);
+         // We assume decimals are always present; skip malformed updates
+         if (asset.decimals === undefined) {
+             continue;
 diff --git a/dist/data-sources/RpcDataSource.cjs b/dist/data-sources/RpcDataSource.cjs
-index a30b5e647f38e2c1ccb7afa4dbdd58fa24aa59c5..0c6e41f07f12844c32ddfe1423b21562ecf50433 100644
+index a30b5e647f38e2c1ccb7afa4dbdd58fa24aa59c5..ca4d9f440fa061b7b5a40e01c9026df443ea197c 100644
 --- a/dist/data-sources/RpcDataSource.cjs
 +++ b/dist/data-sources/RpcDataSource.cjs
 @@ -13,7 +13,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
@@ -7,134 +315,167 @@ index a30b5e647f38e2c1ccb7afa4dbdd58fa24aa59c5..0c6e41f07f12844c32ddfe1423b21562
      return (mod && mod.__esModule) ? mod : { "default": mod };
  };
 -var _RpcDataSource_instances, _RpcDataSource_messenger, _RpcDataSource_onActiveChainsUpdated, _RpcDataSource_getNativeAssetForChain, _RpcDataSource_timeout, _RpcDataSource_tokenDetectionEnabled, _RpcDataSource_useExternalService, _RpcDataSource_isOnboarded, _RpcDataSource_activeChains, _RpcDataSource_chainStatuses, _RpcDataSource_providerCache, _RpcDataSource_activeSubscriptions, _RpcDataSource_unsubscribeTransactionConfirmed, _RpcDataSource_unsubscribeIncomingTransactions, _RpcDataSource_multicallClient, _RpcDataSource_balanceFetcher, _RpcDataSource_tokenDetector, _RpcDataSource_convertToHumanReadable, _RpcDataSource_collectMetadataForBalances, _RpcDataSource_hasValidDecimals, _RpcDataSource_pickValidDecimals, _RpcDataSource_handleBalanceUpdate, _RpcDataSource_handleDetectionUpdate, _RpcDataSource_subscribeToNetworkController, _RpcDataSource_subscribeToTransactionEvents, _RpcDataSource_onTransactionConfirmed, _RpcDataSource_onIncomingTransactions, _RpcDataSource_refreshBalanceForChains, _RpcDataSource_initializeFromNetworkController, _RpcDataSource_updateFromNetworkState, _RpcDataSource_getProvider, _RpcDataSource_getMulticallProvider, _RpcDataSource_clearProviderCache, _RpcDataSource_fetchDecimalsViaRpc, _RpcDataSource_getExistingAssetsMetadata;
-+var _RpcDataSource_instances, _RpcDataSource_messenger, _RpcDataSource_onActiveChainsUpdated, _RpcDataSource_getNativeAssetForChain, _RpcDataSource_timeout, _RpcDataSource_tokenDetectionEnabled, _RpcDataSource_useExternalService, _RpcDataSource_isOnboarded, _RpcDataSource_activeChains, _RpcDataSource_chainStatuses, _RpcDataSource_providerCache, _RpcDataSource_activeSubscriptions, _RpcDataSource_unsubscribeTransactionConfirmed, _RpcDataSource_multicallClient, _RpcDataSource_balanceFetcher, _RpcDataSource_tokenDetector, _RpcDataSource_convertToHumanReadable, _RpcDataSource_collectMetadataForBalances, _RpcDataSource_hasValidDecimals, _RpcDataSource_getAssetType, _RpcDataSource_pickValidDecimals, _RpcDataSource_handleBalanceUpdate, _RpcDataSource_handleDetectionUpdate, _RpcDataSource_subscribeToNetworkController, _RpcDataSource_subscribeToTransactionEvents, _RpcDataSource_onTransactionConfirmed, _RpcDataSource_refreshBalanceForChains, _RpcDataSource_initializeFromNetworkController, _RpcDataSource_updateFromNetworkState, _RpcDataSource_getProvider, _RpcDataSource_getMulticallProvider, _RpcDataSource_clearProviderCache, _RpcDataSource_fetchDecimalsViaRpc, _RpcDataSource_getExistingAssetsMetadata;
++var _RpcDataSource_instances, _RpcDataSource_messenger, _RpcDataSource_onActiveChainsUpdated, _RpcDataSource_getNativeAssetForChain, _RpcDataSource_timeout, _RpcDataSource_tokenDetectionEnabled, _RpcDataSource_useExternalService, _RpcDataSource_isOnboarded, _RpcDataSource_activeChains, _RpcDataSource_chainStatuses, _RpcDataSource_providerCache, _RpcDataSource_activeSubscriptions, _RpcDataSource_unsubscribeTransactionConfirmed, _RpcDataSource_unsubscribeIncomingTransactions, _RpcDataSource_multicallClient, _RpcDataSource_balanceFetcher, _RpcDataSource_tokenDetector, _RpcDataSource_getAssetType, _RpcDataSource_convertToHumanReadable, _RpcDataSource_collectMetadataForBalances, _RpcDataSource_hasValidDecimals, _RpcDataSource_pickValidDecimals, _RpcDataSource_handleBalanceUpdate, _RpcDataSource_handleDetectionUpdate, _RpcDataSource_subscribeToNetworkController, _RpcDataSource_subscribeToTransactionEvents, _RpcDataSource_onTransactionConfirmed, _RpcDataSource_onIncomingTransactions, _RpcDataSource_refreshBalanceForChains, _RpcDataSource_initializeFromNetworkController, _RpcDataSource_updateFromNetworkState, _RpcDataSource_getProvider, _RpcDataSource_getMulticallProvider, _RpcDataSource_clearProviderCache, _RpcDataSource_fetchDecimalsViaRpc, _RpcDataSource_getExistingAssetsMetadata;
  Object.defineProperty(exports, "__esModule", { value: true });
  exports.createRpcDataSource = exports.RpcDataSource = exports.caipChainIdToHex = void 0;
  const providers_1 = require("@ethersproject/providers");
-@@ -84,7 +84,6 @@ class RpcDataSource extends AbstractDataSource_1.AbstractDataSource {
-         /** Active subscriptions by ID */
-         _RpcDataSource_activeSubscriptions.set(this, new Map());
-         _RpcDataSource_unsubscribeTransactionConfirmed.set(this, undefined);
--        _RpcDataSource_unsubscribeIncomingTransactions.set(this, undefined);
-         // Rpc-datasource components
+@@ -89,9 +89,11 @@ class RpcDataSource extends AbstractDataSource_1.AbstractDataSource {
          _RpcDataSource_multicallClient.set(this, void 0);
          _RpcDataSource_balanceFetcher.set(this, void 0);
-@@ -260,7 +259,7 @@ class RpcDataSource extends AbstractDataSource_1.AbstractDataSource {
+         _RpcDataSource_tokenDetector.set(this, void 0);
++        _RpcDataSource_getAssetType.set(this, void 0);
+         __classPrivateFieldSet(this, _RpcDataSource_messenger, options.messenger, "f");
+         __classPrivateFieldSet(this, _RpcDataSource_onActiveChainsUpdated, options.onActiveChainsUpdated, "f");
+         __classPrivateFieldSet(this, _RpcDataSource_getNativeAssetForChain, options.getNativeAssetForChain, "f");
++        __classPrivateFieldSet(this, _RpcDataSource_getAssetType, options.getAssetType, "f");
+         __classPrivateFieldSet(this, _RpcDataSource_timeout, options.timeout ?? 10000, "f");
+         __classPrivateFieldSet(this, _RpcDataSource_tokenDetectionEnabled, options.tokenDetectionEnabled ?? (() => true), "f");
+         __classPrivateFieldSet(this, _RpcDataSource_useExternalService, options.useExternalService ?? (() => true), "f");
+@@ -260,7 +262,7 @@ class RpcDataSource extends AbstractDataSource_1.AbstractDataSource {
                              const parsed = (0, utils_1.parseCaipAssetType)(assetId);
                              const assetChainId = `${parsed.chain.namespace}:${parsed.chain.reference}`;
                              if (assetChainId === chainId &&
 -                                parsed.assetNamespace === 'erc20') {
-+                                __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_getAssetType).call(this, assetId) === 'erc20') {
++                                __classPrivateFieldGet(this, _RpcDataSource_getAssetType, "f").call(this, assetId) === 'erc20') {
                                  const tokenAddress = parsed.assetReference.toLowerCase();
                                  const normalizedId = (0, utils_2.normalizeAssetId)(assetId);
                                  const decimals = existingMetadata[normalizedId]?.decimals;
-@@ -300,7 +299,7 @@ class RpcDataSource extends AbstractDataSource_1.AbstractDataSource {
+@@ -300,7 +302,7 @@ class RpcDataSource extends AbstractDataSource_1.AbstractDataSource {
                          let decimals = __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_pickValidDecimals).call(this, stateMetadata, pipelineMetadata);
                          if (decimals === undefined) {
                              const parsed = (0, utils_1.parseCaipAssetType)(balance.assetId);
 -                            if (parsed.assetNamespace === 'erc20') {
-+                            if (__classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_getAssetType).call(this, balance.assetId) === 'erc20') {
++                            if (__classPrivateFieldGet(this, _RpcDataSource_getAssetType, "f").call(this, balance.assetId) === 'erc20') {
                                  decimals = await __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_fetchDecimalsViaRpc).call(this, chainId, parsed.assetReference);
                              }
                          }
-@@ -404,7 +403,7 @@ class RpcDataSource extends AbstractDataSource_1.AbstractDataSource {
+@@ -321,15 +323,11 @@ class RpcDataSource extends AbstractDataSource_1.AbstractDataSource {
+                     if (!shouldSkipNative) {
+                         assetsBalance[accountId][nativeAssetId] = { amount: '0' };
+                     }
+-                    // Even on error, include native token metadata. Prefer the richer
+-                    // metadata already in state (e.g. enriched with image/description
+-                    // by the price/info API) and fall back to a minimal stub only when
+-                    // nothing is in state yet, so we don't clobber that richer metadata.
++                    // On error, emit a stub only when no valid metadata exists in state
++                    // yet. Re-emitting existing metadata would overwrite richer entries
++                    // (e.g. image/description added by AccountsAPI) with a simpler stub.
+                     const existingNativeMeta = __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_getExistingAssetsMetadata).call(this)[nativeAssetId];
+-                    if (__classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_hasValidDecimals).call(this, existingNativeMeta)) {
+-                        assetsInfo[nativeAssetId] = existingNativeMeta;
+-                    }
+-                    else {
++                    if (!__classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_hasValidDecimals).call(this, existingNativeMeta)) {
+                         const chainStatus = __classPrivateFieldGet(this, _RpcDataSource_chainStatuses, "f")[chainId];
+                         if (chainStatus) {
+                             assetsInfo[nativeAssetId] = {
+@@ -404,7 +402,7 @@ class RpcDataSource extends AbstractDataSource_1.AbstractDataSource {
              for (const asset of result.detectedAssets) {
                  if (asset.symbol && asset.decimals !== undefined) {
                      assetsInfo[asset.assetId] = {
 -                        type: 'erc20',
-+                        type: __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_getAssetType).call(this, asset.assetId),
++                        type: __classPrivateFieldGet(this, _RpcDataSource_getAssetType, "f").call(this, asset.assetId),
                          symbol: asset.symbol,
                          name: asset.name ?? asset.symbol,
                          decimals: asset.decimals,
-@@ -612,7 +611,6 @@ class RpcDataSource extends AbstractDataSource_1.AbstractDataSource {
-     destroy() {
-         log('Destroying RpcDataSource');
-         __classPrivateFieldGet(this, _RpcDataSource_unsubscribeTransactionConfirmed, "f")?.call(this);
--        __classPrivateFieldGet(this, _RpcDataSource_unsubscribeIncomingTransactions, "f")?.call(this);
-         // Stop all polling
-         __classPrivateFieldGet(this, _RpcDataSource_balanceFetcher, "f").stopAllPolling();
-         __classPrivateFieldGet(this, _RpcDataSource_tokenDetector, "f").stopAllPolling();
 @@ -623,7 +621,7 @@ class RpcDataSource extends AbstractDataSource_1.AbstractDataSource {
      }
  }
  exports.RpcDataSource = RpcDataSource;
 -_RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated = new WeakMap(), _RpcDataSource_getNativeAssetForChain = new WeakMap(), _RpcDataSource_timeout = new WeakMap(), _RpcDataSource_tokenDetectionEnabled = new WeakMap(), _RpcDataSource_useExternalService = new WeakMap(), _RpcDataSource_isOnboarded = new WeakMap(), _RpcDataSource_activeChains = new WeakMap(), _RpcDataSource_chainStatuses = new WeakMap(), _RpcDataSource_providerCache = new WeakMap(), _RpcDataSource_activeSubscriptions = new WeakMap(), _RpcDataSource_unsubscribeTransactionConfirmed = new WeakMap(), _RpcDataSource_unsubscribeIncomingTransactions = new WeakMap(), _RpcDataSource_multicallClient = new WeakMap(), _RpcDataSource_balanceFetcher = new WeakMap(), _RpcDataSource_tokenDetector = new WeakMap(), _RpcDataSource_instances = new WeakSet(), _RpcDataSource_convertToHumanReadable = function _RpcDataSource_convertToHumanReadable(rawBalance, decimals) {
-+_RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated = new WeakMap(), _RpcDataSource_getNativeAssetForChain = new WeakMap(), _RpcDataSource_timeout = new WeakMap(), _RpcDataSource_tokenDetectionEnabled = new WeakMap(), _RpcDataSource_useExternalService = new WeakMap(), _RpcDataSource_isOnboarded = new WeakMap(), _RpcDataSource_activeChains = new WeakMap(), _RpcDataSource_chainStatuses = new WeakMap(), _RpcDataSource_providerCache = new WeakMap(), _RpcDataSource_activeSubscriptions = new WeakMap(), _RpcDataSource_unsubscribeTransactionConfirmed = new WeakMap(), _RpcDataSource_multicallClient = new WeakMap(), _RpcDataSource_balanceFetcher = new WeakMap(), _RpcDataSource_tokenDetector = new WeakMap(), _RpcDataSource_instances = new WeakSet(), _RpcDataSource_convertToHumanReadable = function _RpcDataSource_convertToHumanReadable(rawBalance, decimals) {
++_RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated = new WeakMap(), _RpcDataSource_getNativeAssetForChain = new WeakMap(), _RpcDataSource_timeout = new WeakMap(), _RpcDataSource_tokenDetectionEnabled = new WeakMap(), _RpcDataSource_useExternalService = new WeakMap(), _RpcDataSource_isOnboarded = new WeakMap(), _RpcDataSource_activeChains = new WeakMap(), _RpcDataSource_chainStatuses = new WeakMap(), _RpcDataSource_providerCache = new WeakMap(), _RpcDataSource_activeSubscriptions = new WeakMap(), _RpcDataSource_unsubscribeTransactionConfirmed = new WeakMap(), _RpcDataSource_unsubscribeIncomingTransactions = new WeakMap(), _RpcDataSource_multicallClient = new WeakMap(), _RpcDataSource_balanceFetcher = new WeakMap(), _RpcDataSource_tokenDetector = new WeakMap(), _RpcDataSource_getAssetType = new WeakMap(), _RpcDataSource_instances = new WeakSet(), _RpcDataSource_convertToHumanReadable = function _RpcDataSource_convertToHumanReadable(rawBalance, decimals) {
      if (!Number.isFinite(decimals) || decimals < 0) {
          log('Invalid decimals — defaulting balance to "0"', {
              rawBalance,
-@@ -645,7 +643,8 @@ _RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated =
+@@ -645,32 +643,27 @@ _RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated =
      for (const balance of balances) {
          const existingMeta = existingMetadata[balance.assetId];
          const isNative = existingMeta?.type === 'native' ||
 -            balance.assetId.toLowerCase() === nativeAssetId?.toLowerCase();
+-        if (isNative) {
+-            // Prefer existing (richer) metadata in state — it may have been
+-            // enriched by the price/info API with image, description, etc.
+-            // Only emit a minimal stub when there's nothing in state yet,
+-            // so we don't clobber that richer metadata on every balance refresh.
+-            if (__classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_hasValidDecimals).call(this, existingMeta)) {
+-                assetsInfo[balance.assetId] = existingMeta;
+-            }
+-            else {
+-                const chainStatus = __classPrivateFieldGet(this, _RpcDataSource_chainStatuses, "f")[chainId];
+-                if (chainStatus) {
+-                    assetsInfo[balance.assetId] = {
+-                        type: 'native',
+-                        symbol: chainStatus.nativeCurrency,
+-                        name: chainStatus.nativeCurrency,
+-                        decimals: 18,
+-                    };
+-                }
 +            balance.assetId.toLowerCase() === nativeAssetId?.toLowerCase() ||
-+            __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_getAssetType).call(this, balance.assetId) === 'native';
-         if (isNative) {
-             // Prefer existing (richer) metadata in state — it may have been
-             // enriched by the price/info API with image, description, etc.
-@@ -675,6 +674,25 @@ _RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated =
++            __classPrivateFieldGet(this, _RpcDataSource_getAssetType, "f").call(this, balance.assetId) === 'native';
++        if (isNative && !__classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_hasValidDecimals).call(this, existingMeta)) {
++            // Only emit a stub when no valid metadata exists in state yet.
++            // Re-emitting existing metadata into the response would overwrite
++            // richer entries (e.g. image/description added by AccountsAPI) with
++            // a simpler stub on every balance poll cycle.
++            const chainStatus = __classPrivateFieldGet(this, _RpcDataSource_chainStatuses, "f")[chainId];
++            if (chainStatus) {
++                assetsInfo[balance.assetId] = {
++                    type: 'native',
++                    symbol: chainStatus.nativeCurrency,
++                    name: chainStatus.nativeCurrency,
++                    decimals: 18,
++                };
+             }
+         }
+-        else if (existingMeta) {
+-            // For ERC20 tokens, use existing metadata from state if available.
+-            // Unknown ERC-20s are omitted until TokenDataSource enriches them.
+-            assetsInfo[balance.assetId] = existingMeta;
+-        }
++        // For ERC-20 tokens and native tokens with existing valid metadata:
++        // do not re-emit — the existing state entry is already correct.
++        // Decimals for balance conversion are resolved via stateMetadata in
++        // the callers (pickValidDecimals(stateMetadata, pipelineMetadata)).
+     }
      return assetsInfo;
  }, _RpcDataSource_hasValidDecimals = function _RpcDataSource_hasValidDecimals(metadata) {
-     return Boolean(metadata && Number.isFinite(metadata.decimals) && metadata.decimals >= 0);
-+}, _RpcDataSource_getAssetType = function _RpcDataSource_getAssetType(assetId) {
-+    const parsed = (0, utils_1.parseCaipAssetType)(assetId);
-+    if (parsed.assetNamespace === 'slip44') {
-+        return 'native';
-+    }
-+    if (parsed.assetNamespace === 'erc20' &&
-+        parsed.assetReference === constants_1.ZERO_ADDRESS) {
-+        return 'native';
-+    }
-+    const chainId = `${parsed.chain.namespace}:${parsed.chain.reference}`;
-+    const nativeId = __classPrivateFieldGet(this, _RpcDataSource_getNativeAssetForChain, "f").call(this, chainId);
-+    if (nativeId?.toLowerCase() === assetId.toLowerCase()) {
-+        return 'native';
-+    }
-+    if (parsed.chain.namespace === 'solana' &&
-+        parsed.assetNamespace === 'token') {
-+        return 'spl';
-+    }
-+    return 'erc20';
- }, _RpcDataSource_pickValidDecimals = function _RpcDataSource_pickValidDecimals(...metadatas) {
-     for (const metadata of metadatas) {
-         if (__classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_hasValidDecimals).call(this, metadata)) {
-@@ -749,7 +767,7 @@ async function _RpcDataSource_handleBalanceUpdate(result) {
+@@ -749,7 +742,7 @@ async function _RpcDataSource_handleBalanceUpdate(result) {
              // Only include if we have metadata (symbol and decimals at minimum)
              if (asset.symbol && asset.decimals !== undefined) {
                  newMetadata[asset.assetId] = {
 -                    type: 'erc20',
-+                    type: __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_getAssetType).call(this, asset.assetId),
++                    type: __classPrivateFieldGet(this, _RpcDataSource_getAssetType, "f").call(this, asset.assetId),
                      symbol: asset.symbol,
                      name: asset.name ?? asset.symbol,
                      decimals: asset.decimals,
-@@ -806,8 +824,6 @@ async function _RpcDataSource_handleBalanceUpdate(result) {
- }, _RpcDataSource_subscribeToTransactionEvents = function _RpcDataSource_subscribeToTransactionEvents() {
-     const unsubConfirmed = __classPrivateFieldGet(this, _RpcDataSource_messenger, "f").subscribe('TransactionController:transactionConfirmed', __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_onTransactionConfirmed).bind(this));
-     __classPrivateFieldSet(this, _RpcDataSource_unsubscribeTransactionConfirmed, typeof unsubConfirmed === 'function' ? unsubConfirmed : undefined, "f");
--    const unsubIncoming = __classPrivateFieldGet(this, _RpcDataSource_messenger, "f").subscribe('TransactionController:incomingTransactionsReceived', __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_onIncomingTransactions).bind(this));
--    __classPrivateFieldSet(this, _RpcDataSource_unsubscribeIncomingTransactions, typeof unsubIncoming === 'function' ? unsubIncoming : undefined, "f");
- }, _RpcDataSource_onTransactionConfirmed = function _RpcDataSource_onTransactionConfirmed(payload) {
-     const hexChainId = payload?.chainId;
-     if (!hexChainId) {
-@@ -817,15 +833,6 @@ async function _RpcDataSource_handleBalanceUpdate(result) {
-     __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_refreshBalanceForChains).call(this, [caipChainId]).catch((error) => {
-         log('Failed to refresh balance after transaction confirmed', { error });
-     });
--}, _RpcDataSource_onIncomingTransactions = function _RpcDataSource_onIncomingTransactions(payload) {
--    const chainIds = Array.from(new Set((payload ?? [])
--        .map((item) => item?.chainId)
--        .filter((id) => Boolean(id))));
--    const caipChainIds = chainIds.map((hexChainId) => `eip155:${parseInt(hexChainId, 16)}`);
--    const toRefresh = caipChainIds.length > 0 ? caipChainIds : [...__classPrivateFieldGet(this, _RpcDataSource_activeChains, "f")];
--    __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_refreshBalanceForChains).call(this, toRefresh).catch((error) => {
--        log('Failed to refresh balance after incoming transactions', { error });
--    });
- }, _RpcDataSource_refreshBalanceForChains = 
+diff --git a/dist/data-sources/RpcDataSource.d.cts b/dist/data-sources/RpcDataSource.d.cts
+index ca842d6c2b14b8a269143d93e157a607bea95d4e..459bf2b010ab465aa512e8bbb40966906bf844b7 100644
+--- a/dist/data-sources/RpcDataSource.d.cts
++++ b/dist/data-sources/RpcDataSource.d.cts
+@@ -63,6 +63,8 @@ export type RpcDataSourceOptions = {
+      * token-list responses across detector polls.
+      */
+     queryClient?: TokenListQueryClient;
++    /** Returns the asset type ('native' | 'erc20' | 'spl') for the given CAIP-19 asset ID */
++    getAssetType: (assetId: Caip19AssetId) => 'native' | 'erc20' | 'spl';
+ };
  /**
-  * Fetch balances for the given chains across all active subscriptions and
+  * Convert CAIP chain ID or hex chain ID to hex chain ID.
+diff --git a/dist/data-sources/RpcDataSource.d.mts b/dist/data-sources/RpcDataSource.d.mts
+index 2f82505783b6335cf9e0d6514cb69cd7e4fd99d1..45a38a4295de7a9c80bf702d2461582451b4d0c6 100644
+--- a/dist/data-sources/RpcDataSource.d.mts
++++ b/dist/data-sources/RpcDataSource.d.mts
+@@ -63,6 +63,8 @@ export type RpcDataSourceOptions = {
+      * token-list responses across detector polls.
+      */
+     queryClient?: TokenListQueryClient;
++    /** Returns the asset type ('native' | 'erc20' | 'spl') for the given CAIP-19 asset ID */
++    getAssetType: (assetId: Caip19AssetId) => 'native' | 'erc20' | 'spl';
+ };
+ /**
+  * Convert CAIP chain ID or hex chain ID to hex chain ID.
 diff --git a/dist/data-sources/RpcDataSource.mjs b/dist/data-sources/RpcDataSource.mjs
-index 282d9110825cb2fc7790c7ba66226a68eb6523f6..39e0ad823624304e066500287955c73ff910f8bd 100644
+index 282d9110825cb2fc7790c7ba66226a68eb6523f6..5d8bcc9dfd8978f2e1d467ef665960387f5667f9 100644
 --- a/dist/data-sources/RpcDataSource.mjs
 +++ b/dist/data-sources/RpcDataSource.mjs
 @@ -9,7 +9,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
@@ -142,129 +483,740 @@ index 282d9110825cb2fc7790c7ba66226a68eb6523f6..39e0ad823624304e066500287955c73f
      return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
  };
 -var _RpcDataSource_instances, _RpcDataSource_messenger, _RpcDataSource_onActiveChainsUpdated, _RpcDataSource_getNativeAssetForChain, _RpcDataSource_timeout, _RpcDataSource_tokenDetectionEnabled, _RpcDataSource_useExternalService, _RpcDataSource_isOnboarded, _RpcDataSource_activeChains, _RpcDataSource_chainStatuses, _RpcDataSource_providerCache, _RpcDataSource_activeSubscriptions, _RpcDataSource_unsubscribeTransactionConfirmed, _RpcDataSource_unsubscribeIncomingTransactions, _RpcDataSource_multicallClient, _RpcDataSource_balanceFetcher, _RpcDataSource_tokenDetector, _RpcDataSource_convertToHumanReadable, _RpcDataSource_collectMetadataForBalances, _RpcDataSource_hasValidDecimals, _RpcDataSource_pickValidDecimals, _RpcDataSource_handleBalanceUpdate, _RpcDataSource_handleDetectionUpdate, _RpcDataSource_subscribeToNetworkController, _RpcDataSource_subscribeToTransactionEvents, _RpcDataSource_onTransactionConfirmed, _RpcDataSource_onIncomingTransactions, _RpcDataSource_refreshBalanceForChains, _RpcDataSource_initializeFromNetworkController, _RpcDataSource_updateFromNetworkState, _RpcDataSource_getProvider, _RpcDataSource_getMulticallProvider, _RpcDataSource_clearProviderCache, _RpcDataSource_fetchDecimalsViaRpc, _RpcDataSource_getExistingAssetsMetadata;
-+var _RpcDataSource_instances, _RpcDataSource_messenger, _RpcDataSource_onActiveChainsUpdated, _RpcDataSource_getNativeAssetForChain, _RpcDataSource_timeout, _RpcDataSource_tokenDetectionEnabled, _RpcDataSource_useExternalService, _RpcDataSource_isOnboarded, _RpcDataSource_activeChains, _RpcDataSource_chainStatuses, _RpcDataSource_providerCache, _RpcDataSource_activeSubscriptions, _RpcDataSource_unsubscribeTransactionConfirmed, _RpcDataSource_multicallClient, _RpcDataSource_balanceFetcher, _RpcDataSource_tokenDetector, _RpcDataSource_convertToHumanReadable, _RpcDataSource_collectMetadataForBalances, _RpcDataSource_hasValidDecimals, _RpcDataSource_getAssetType, _RpcDataSource_pickValidDecimals, _RpcDataSource_handleBalanceUpdate, _RpcDataSource_handleDetectionUpdate, _RpcDataSource_subscribeToNetworkController, _RpcDataSource_subscribeToTransactionEvents, _RpcDataSource_onTransactionConfirmed, _RpcDataSource_refreshBalanceForChains, _RpcDataSource_initializeFromNetworkController, _RpcDataSource_updateFromNetworkState, _RpcDataSource_getProvider, _RpcDataSource_getMulticallProvider, _RpcDataSource_clearProviderCache, _RpcDataSource_fetchDecimalsViaRpc, _RpcDataSource_getExistingAssetsMetadata;
++var _RpcDataSource_instances, _RpcDataSource_messenger, _RpcDataSource_onActiveChainsUpdated, _RpcDataSource_getNativeAssetForChain, _RpcDataSource_timeout, _RpcDataSource_tokenDetectionEnabled, _RpcDataSource_useExternalService, _RpcDataSource_isOnboarded, _RpcDataSource_activeChains, _RpcDataSource_chainStatuses, _RpcDataSource_providerCache, _RpcDataSource_activeSubscriptions, _RpcDataSource_unsubscribeTransactionConfirmed, _RpcDataSource_unsubscribeIncomingTransactions, _RpcDataSource_multicallClient, _RpcDataSource_balanceFetcher, _RpcDataSource_tokenDetector, _RpcDataSource_getAssetType, _RpcDataSource_convertToHumanReadable, _RpcDataSource_collectMetadataForBalances, _RpcDataSource_hasValidDecimals, _RpcDataSource_pickValidDecimals, _RpcDataSource_handleBalanceUpdate, _RpcDataSource_handleDetectionUpdate, _RpcDataSource_subscribeToNetworkController, _RpcDataSource_subscribeToTransactionEvents, _RpcDataSource_onTransactionConfirmed, _RpcDataSource_onIncomingTransactions, _RpcDataSource_refreshBalanceForChains, _RpcDataSource_initializeFromNetworkController, _RpcDataSource_updateFromNetworkState, _RpcDataSource_getProvider, _RpcDataSource_getMulticallProvider, _RpcDataSource_clearProviderCache, _RpcDataSource_fetchDecimalsViaRpc, _RpcDataSource_getExistingAssetsMetadata;
  import { Web3Provider } from "@ethersproject/providers";
  import { toHex } from "@metamask/controller-utils";
  import { isStrictHexString, isCaipChainId, parseCaipAssetType, parseCaipChainId } from "@metamask/utils";
-@@ -77,7 +77,6 @@ export class RpcDataSource extends AbstractDataSource {
-         /** Active subscriptions by ID */
-         _RpcDataSource_activeSubscriptions.set(this, new Map());
-         _RpcDataSource_unsubscribeTransactionConfirmed.set(this, undefined);
--        _RpcDataSource_unsubscribeIncomingTransactions.set(this, undefined);
-         // Rpc-datasource components
+@@ -82,9 +82,11 @@ export class RpcDataSource extends AbstractDataSource {
          _RpcDataSource_multicallClient.set(this, void 0);
          _RpcDataSource_balanceFetcher.set(this, void 0);
-@@ -253,7 +252,7 @@ export class RpcDataSource extends AbstractDataSource {
+         _RpcDataSource_tokenDetector.set(this, void 0);
++        _RpcDataSource_getAssetType.set(this, void 0);
+         __classPrivateFieldSet(this, _RpcDataSource_messenger, options.messenger, "f");
+         __classPrivateFieldSet(this, _RpcDataSource_onActiveChainsUpdated, options.onActiveChainsUpdated, "f");
+         __classPrivateFieldSet(this, _RpcDataSource_getNativeAssetForChain, options.getNativeAssetForChain, "f");
++        __classPrivateFieldSet(this, _RpcDataSource_getAssetType, options.getAssetType, "f");
+         __classPrivateFieldSet(this, _RpcDataSource_timeout, options.timeout ?? 10000, "f");
+         __classPrivateFieldSet(this, _RpcDataSource_tokenDetectionEnabled, options.tokenDetectionEnabled ?? (() => true), "f");
+         __classPrivateFieldSet(this, _RpcDataSource_useExternalService, options.useExternalService ?? (() => true), "f");
+@@ -253,7 +255,7 @@ export class RpcDataSource extends AbstractDataSource {
                              const parsed = parseCaipAssetType(assetId);
                              const assetChainId = `${parsed.chain.namespace}:${parsed.chain.reference}`;
                              if (assetChainId === chainId &&
 -                                parsed.assetNamespace === 'erc20') {
-+                                __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_getAssetType).call(this, assetId) === 'erc20') {
++                                __classPrivateFieldGet(this, _RpcDataSource_getAssetType, "f").call(this, assetId) === 'erc20') {
                                  const tokenAddress = parsed.assetReference.toLowerCase();
                                  const normalizedId = normalizeAssetId(assetId);
                                  const decimals = existingMetadata[normalizedId]?.decimals;
-@@ -293,7 +292,7 @@ export class RpcDataSource extends AbstractDataSource {
+@@ -293,7 +295,7 @@ export class RpcDataSource extends AbstractDataSource {
                          let decimals = __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_pickValidDecimals).call(this, stateMetadata, pipelineMetadata);
                          if (decimals === undefined) {
                              const parsed = parseCaipAssetType(balance.assetId);
 -                            if (parsed.assetNamespace === 'erc20') {
-+                            if (__classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_getAssetType).call(this, balance.assetId) === 'erc20') {
++                            if (__classPrivateFieldGet(this, _RpcDataSource_getAssetType, "f").call(this, balance.assetId) === 'erc20') {
                                  decimals = await __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_fetchDecimalsViaRpc).call(this, chainId, parsed.assetReference);
                              }
                          }
-@@ -397,7 +396,7 @@ export class RpcDataSource extends AbstractDataSource {
+@@ -314,15 +316,11 @@ export class RpcDataSource extends AbstractDataSource {
+                     if (!shouldSkipNative) {
+                         assetsBalance[accountId][nativeAssetId] = { amount: '0' };
+                     }
+-                    // Even on error, include native token metadata. Prefer the richer
+-                    // metadata already in state (e.g. enriched with image/description
+-                    // by the price/info API) and fall back to a minimal stub only when
+-                    // nothing is in state yet, so we don't clobber that richer metadata.
++                    // On error, emit a stub only when no valid metadata exists in state
++                    // yet. Re-emitting existing metadata would overwrite richer entries
++                    // (e.g. image/description added by AccountsAPI) with a simpler stub.
+                     const existingNativeMeta = __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_getExistingAssetsMetadata).call(this)[nativeAssetId];
+-                    if (__classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_hasValidDecimals).call(this, existingNativeMeta)) {
+-                        assetsInfo[nativeAssetId] = existingNativeMeta;
+-                    }
+-                    else {
++                    if (!__classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_hasValidDecimals).call(this, existingNativeMeta)) {
+                         const chainStatus = __classPrivateFieldGet(this, _RpcDataSource_chainStatuses, "f")[chainId];
+                         if (chainStatus) {
+                             assetsInfo[nativeAssetId] = {
+@@ -397,7 +395,7 @@ export class RpcDataSource extends AbstractDataSource {
              for (const asset of result.detectedAssets) {
                  if (asset.symbol && asset.decimals !== undefined) {
                      assetsInfo[asset.assetId] = {
 -                        type: 'erc20',
-+                        type: __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_getAssetType).call(this, asset.assetId),
++                        type: __classPrivateFieldGet(this, _RpcDataSource_getAssetType, "f").call(this, asset.assetId),
                          symbol: asset.symbol,
                          name: asset.name ?? asset.symbol,
                          decimals: asset.decimals,
-@@ -605,7 +604,6 @@ export class RpcDataSource extends AbstractDataSource {
-     destroy() {
-         log('Destroying RpcDataSource');
-         __classPrivateFieldGet(this, _RpcDataSource_unsubscribeTransactionConfirmed, "f")?.call(this);
--        __classPrivateFieldGet(this, _RpcDataSource_unsubscribeIncomingTransactions, "f")?.call(this);
-         // Stop all polling
-         __classPrivateFieldGet(this, _RpcDataSource_balanceFetcher, "f").stopAllPolling();
-         __classPrivateFieldGet(this, _RpcDataSource_tokenDetector, "f").stopAllPolling();
 @@ -615,7 +613,7 @@ export class RpcDataSource extends AbstractDataSource {
          __classPrivateFieldGet(this, _RpcDataSource_providerCache, "f").clear();
      }
  }
 -_RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated = new WeakMap(), _RpcDataSource_getNativeAssetForChain = new WeakMap(), _RpcDataSource_timeout = new WeakMap(), _RpcDataSource_tokenDetectionEnabled = new WeakMap(), _RpcDataSource_useExternalService = new WeakMap(), _RpcDataSource_isOnboarded = new WeakMap(), _RpcDataSource_activeChains = new WeakMap(), _RpcDataSource_chainStatuses = new WeakMap(), _RpcDataSource_providerCache = new WeakMap(), _RpcDataSource_activeSubscriptions = new WeakMap(), _RpcDataSource_unsubscribeTransactionConfirmed = new WeakMap(), _RpcDataSource_unsubscribeIncomingTransactions = new WeakMap(), _RpcDataSource_multicallClient = new WeakMap(), _RpcDataSource_balanceFetcher = new WeakMap(), _RpcDataSource_tokenDetector = new WeakMap(), _RpcDataSource_instances = new WeakSet(), _RpcDataSource_convertToHumanReadable = function _RpcDataSource_convertToHumanReadable(rawBalance, decimals) {
-+_RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated = new WeakMap(), _RpcDataSource_getNativeAssetForChain = new WeakMap(), _RpcDataSource_timeout = new WeakMap(), _RpcDataSource_tokenDetectionEnabled = new WeakMap(), _RpcDataSource_useExternalService = new WeakMap(), _RpcDataSource_isOnboarded = new WeakMap(), _RpcDataSource_activeChains = new WeakMap(), _RpcDataSource_chainStatuses = new WeakMap(), _RpcDataSource_providerCache = new WeakMap(), _RpcDataSource_activeSubscriptions = new WeakMap(), _RpcDataSource_unsubscribeTransactionConfirmed = new WeakMap(), _RpcDataSource_multicallClient = new WeakMap(), _RpcDataSource_balanceFetcher = new WeakMap(), _RpcDataSource_tokenDetector = new WeakMap(), _RpcDataSource_instances = new WeakSet(), _RpcDataSource_convertToHumanReadable = function _RpcDataSource_convertToHumanReadable(rawBalance, decimals) {
++_RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated = new WeakMap(), _RpcDataSource_getNativeAssetForChain = new WeakMap(), _RpcDataSource_timeout = new WeakMap(), _RpcDataSource_tokenDetectionEnabled = new WeakMap(), _RpcDataSource_useExternalService = new WeakMap(), _RpcDataSource_isOnboarded = new WeakMap(), _RpcDataSource_activeChains = new WeakMap(), _RpcDataSource_chainStatuses = new WeakMap(), _RpcDataSource_providerCache = new WeakMap(), _RpcDataSource_activeSubscriptions = new WeakMap(), _RpcDataSource_unsubscribeTransactionConfirmed = new WeakMap(), _RpcDataSource_unsubscribeIncomingTransactions = new WeakMap(), _RpcDataSource_multicallClient = new WeakMap(), _RpcDataSource_balanceFetcher = new WeakMap(), _RpcDataSource_tokenDetector = new WeakMap(), _RpcDataSource_getAssetType = new WeakMap(), _RpcDataSource_instances = new WeakSet(), _RpcDataSource_convertToHumanReadable = function _RpcDataSource_convertToHumanReadable(rawBalance, decimals) {
      if (!Number.isFinite(decimals) || decimals < 0) {
          log('Invalid decimals — defaulting balance to "0"', {
              rawBalance,
-@@ -637,7 +635,8 @@ _RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated =
+@@ -637,32 +635,27 @@ _RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated =
      for (const balance of balances) {
          const existingMeta = existingMetadata[balance.assetId];
          const isNative = existingMeta?.type === 'native' ||
 -            balance.assetId.toLowerCase() === nativeAssetId?.toLowerCase();
+-        if (isNative) {
+-            // Prefer existing (richer) metadata in state — it may have been
+-            // enriched by the price/info API with image, description, etc.
+-            // Only emit a minimal stub when there's nothing in state yet,
+-            // so we don't clobber that richer metadata on every balance refresh.
+-            if (__classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_hasValidDecimals).call(this, existingMeta)) {
+-                assetsInfo[balance.assetId] = existingMeta;
+-            }
+-            else {
+-                const chainStatus = __classPrivateFieldGet(this, _RpcDataSource_chainStatuses, "f")[chainId];
+-                if (chainStatus) {
+-                    assetsInfo[balance.assetId] = {
+-                        type: 'native',
+-                        symbol: chainStatus.nativeCurrency,
+-                        name: chainStatus.nativeCurrency,
+-                        decimals: 18,
+-                    };
+-                }
 +            balance.assetId.toLowerCase() === nativeAssetId?.toLowerCase() ||
-+            __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_getAssetType).call(this, balance.assetId) === 'native';
-         if (isNative) {
-             // Prefer existing (richer) metadata in state — it may have been
-             // enriched by the price/info API with image, description, etc.
-@@ -667,6 +666,25 @@ _RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated =
++            __classPrivateFieldGet(this, _RpcDataSource_getAssetType, "f").call(this, balance.assetId) === 'native';
++        if (isNative && !__classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_hasValidDecimals).call(this, existingMeta)) {
++            // Only emit a stub when no valid metadata exists in state yet.
++            // Re-emitting existing metadata into the response would overwrite
++            // richer entries (e.g. image/description added by AccountsAPI) with
++            // a simpler stub on every balance poll cycle.
++            const chainStatus = __classPrivateFieldGet(this, _RpcDataSource_chainStatuses, "f")[chainId];
++            if (chainStatus) {
++                assetsInfo[balance.assetId] = {
++                    type: 'native',
++                    symbol: chainStatus.nativeCurrency,
++                    name: chainStatus.nativeCurrency,
++                    decimals: 18,
++                };
+             }
+         }
+-        else if (existingMeta) {
+-            // For ERC20 tokens, use existing metadata from state if available.
+-            // Unknown ERC-20s are omitted until TokenDataSource enriches them.
+-            assetsInfo[balance.assetId] = existingMeta;
+-        }
++        // For ERC-20 tokens and native tokens with existing valid metadata:
++        // do not re-emit — the existing state entry is already correct.
++        // Decimals for balance conversion are resolved via stateMetadata in
++        // the callers (pickValidDecimals(stateMetadata, pipelineMetadata)).
+     }
      return assetsInfo;
  }, _RpcDataSource_hasValidDecimals = function _RpcDataSource_hasValidDecimals(metadata) {
-     return Boolean(metadata && Number.isFinite(metadata.decimals) && metadata.decimals >= 0);
-+}, _RpcDataSource_getAssetType = function _RpcDataSource_getAssetType(assetId) {
-+    const parsed = parseCaipAssetType(assetId);
-+    if (parsed.assetNamespace === 'slip44') {
-+        return 'native';
-+    }
-+    if (parsed.assetNamespace === 'erc20' &&
-+        parsed.assetReference === ZERO_ADDRESS) {
-+        return 'native';
-+    }
-+    const chainId = `${parsed.chain.namespace}:${parsed.chain.reference}`;
-+    const nativeId = __classPrivateFieldGet(this, _RpcDataSource_getNativeAssetForChain, "f").call(this, chainId);
-+    if (nativeId?.toLowerCase() === assetId.toLowerCase()) {
-+        return 'native';
-+    }
-+    if (parsed.chain.namespace === 'solana' &&
-+        parsed.assetNamespace === 'token') {
-+        return 'spl';
-+    }
-+    return 'erc20';
- }, _RpcDataSource_pickValidDecimals = function _RpcDataSource_pickValidDecimals(...metadatas) {
-     for (const metadata of metadatas) {
-         if (__classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_hasValidDecimals).call(this, metadata)) {
-@@ -741,7 +759,7 @@ async function _RpcDataSource_handleBalanceUpdate(result) {
+@@ -741,7 +734,7 @@ async function _RpcDataSource_handleBalanceUpdate(result) {
              // Only include if we have metadata (symbol and decimals at minimum)
              if (asset.symbol && asset.decimals !== undefined) {
                  newMetadata[asset.assetId] = {
 -                    type: 'erc20',
-+                    type: __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_getAssetType).call(this, asset.assetId),
++                    type: __classPrivateFieldGet(this, _RpcDataSource_getAssetType, "f").call(this, asset.assetId),
                      symbol: asset.symbol,
                      name: asset.name ?? asset.symbol,
                      decimals: asset.decimals,
-@@ -798,8 +816,6 @@ async function _RpcDataSource_handleBalanceUpdate(result) {
- }, _RpcDataSource_subscribeToTransactionEvents = function _RpcDataSource_subscribeToTransactionEvents() {
-     const unsubConfirmed = __classPrivateFieldGet(this, _RpcDataSource_messenger, "f").subscribe('TransactionController:transactionConfirmed', __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_onTransactionConfirmed).bind(this));
-     __classPrivateFieldSet(this, _RpcDataSource_unsubscribeTransactionConfirmed, typeof unsubConfirmed === 'function' ? unsubConfirmed : undefined, "f");
--    const unsubIncoming = __classPrivateFieldGet(this, _RpcDataSource_messenger, "f").subscribe('TransactionController:incomingTransactionsReceived', __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_onIncomingTransactions).bind(this));
--    __classPrivateFieldSet(this, _RpcDataSource_unsubscribeIncomingTransactions, typeof unsubIncoming === 'function' ? unsubIncoming : undefined, "f");
- }, _RpcDataSource_onTransactionConfirmed = function _RpcDataSource_onTransactionConfirmed(payload) {
-     const hexChainId = payload?.chainId;
-     if (!hexChainId) {
-@@ -809,15 +825,6 @@ async function _RpcDataSource_handleBalanceUpdate(result) {
-     __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_refreshBalanceForChains).call(this, [caipChainId]).catch((error) => {
-         log('Failed to refresh balance after transaction confirmed', { error });
-     });
--}, _RpcDataSource_onIncomingTransactions = function _RpcDataSource_onIncomingTransactions(payload) {
--    const chainIds = Array.from(new Set((payload ?? [])
--        .map((item) => item?.chainId)
--        .filter((id) => Boolean(id))));
--    const caipChainIds = chainIds.map((hexChainId) => `eip155:${parseInt(hexChainId, 16)}`);
--    const toRefresh = caipChainIds.length > 0 ? caipChainIds : [...__classPrivateFieldGet(this, _RpcDataSource_activeChains, "f")];
--    __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_refreshBalanceForChains).call(this, toRefresh).catch((error) => {
--        log('Failed to refresh balance after incoming transactions', { error });
--    });
- }, _RpcDataSource_refreshBalanceForChains = 
+diff --git a/dist/data-sources/TokenDataSource.cjs b/dist/data-sources/TokenDataSource.cjs
+index fb38ba11a58bb1d6e2e678838286e4eff75346ef..e3db944242bcb8957a71a4064ab1e97e0984f381 100644
+--- a/dist/data-sources/TokenDataSource.cjs
++++ b/dist/data-sources/TokenDataSource.cjs
+@@ -10,7 +10,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+ };
+-var _TokenDataSource_instances, _TokenDataSource_apiClient, _TokenDataSource_getNativeAssetIds, _TokenDataSource_messenger, _TokenDataSource_fetchTimeoutMs, _TokenDataSource_getSupportedNetworks, _TokenDataSource_filterAssetsByNetwork, _TokenDataSource_filterBlockaidSpamTokens;
++var _TokenDataSource_instances, _TokenDataSource_apiClient, _TokenDataSource_getNativeAssetIds, _TokenDataSource_getAssetType, _TokenDataSource_messenger, _TokenDataSource_fetchTimeoutMs, _TokenDataSource_getSupportedNetworks, _TokenDataSource_filterAssetsByNetwork, _TokenDataSource_filterBlockaidSpamTokens;
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.TokenDataSource = exports.CaipAssetNamespace = void 0;
+ const core_backend_1 = require("@metamask/core-backend");
+@@ -56,24 +56,12 @@ const MUSD_ADDRESS_LOWERCASE = '0xaca92e438df0b2401ff60da7e4337b687a2435da';
+  *
+  * @param assetId - CAIP-19 asset ID used to derive token type.
+  * @param assetData - V3 API response data.
+- * @param nativeAssetIds - Set of known native asset IDs (lowercased) for membership checks.
++ * @param getAssetType - Returns the asset type for a given CAIP-19 asset ID.
+  * @returns FungibleAssetMetadata for state storage.
+  */
+-function transformV3AssetResponseToMetadata(assetId, assetData, nativeAssetIds) {
+-    const parsed = (0, utils_1.parseCaipAssetType)(assetId);
+-    let tokenType = 'erc20';
+-    if (nativeAssetIds.has(assetId.toLowerCase()) ||
+-        parsed.assetNamespace === CaipAssetNamespace.Slip44) {
+-        tokenType = 'native';
+-    }
+-    else if (parsed.chain.namespace === utils_1.KnownCaipNamespace.Solana &&
+-        parsed.assetNamespace === CaipAssetNamespace.Token) {
+-        tokenType = 'spl';
+-    }
+-    // TODO: Add support for Tron trc20 standard
++function transformV3AssetResponseToMetadata(assetId, assetData, getAssetType) {
+     const metadata = {
+-        // Type derived from assetId
+-        type: tokenType,
++        type: getAssetType(assetId),
+         // BaseAssetMetadata fields
+         name: assetData.name,
+         symbol: assetData.symbol,
+@@ -118,12 +106,15 @@ class TokenDataSource {
+         _TokenDataSource_apiClient.set(this, void 0);
+         /** Returns CAIP-19 native asset IDs from NetworkEnablementController state */
+         _TokenDataSource_getNativeAssetIds.set(this, void 0);
++        /** Returns the asset type for a given CAIP-19 asset ID */
++        _TokenDataSource_getAssetType.set(this, void 0);
+         /** Shared controller messenger — used for `PhishingController:bulkScanTokens`. */
+         _TokenDataSource_messenger.set(this, void 0);
+         _TokenDataSource_fetchTimeoutMs.set(this, void 0);
+         __classPrivateFieldSet(this, _TokenDataSource_messenger, messenger, "f");
+         __classPrivateFieldSet(this, _TokenDataSource_apiClient, options.queryApiClient, "f");
+         __classPrivateFieldSet(this, _TokenDataSource_getNativeAssetIds, options.getNativeAssetIds, "f");
++        __classPrivateFieldSet(this, _TokenDataSource_getAssetType, options.getAssetType, "f");
+         __classPrivateFieldSet(this, _TokenDataSource_fetchTimeoutMs, options.fetchTimeoutMs ?? DEFAULT_FETCH_TIMEOUT_MS, "f");
+     }
+     /**
+@@ -263,7 +254,7 @@ class TokenDataSource {
+                         continue;
+                     }
+                     const caipAssetId = assetData.assetId;
+-                    response.assetsInfo[caipAssetId] = transformV3AssetResponseToMetadata(caipAssetId, assetData, nativeAssetIds);
++                    response.assetsInfo[caipAssetId] = transformV3AssetResponseToMetadata(caipAssetId, assetData, __classPrivateFieldGet(this, _TokenDataSource_getAssetType, "f"));
+                 }
+                 if (filteredOutAssets.size > 0) {
+                     if (response.assetsBalance) {
+@@ -289,7 +280,7 @@ class TokenDataSource {
+     }
+ }
+ exports.TokenDataSource = TokenDataSource;
+-_TokenDataSource_apiClient = new WeakMap(), _TokenDataSource_getNativeAssetIds = new WeakMap(), _TokenDataSource_messenger = new WeakMap(), _TokenDataSource_fetchTimeoutMs = new WeakMap(), _TokenDataSource_instances = new WeakSet(), _TokenDataSource_getSupportedNetworks = 
++_TokenDataSource_apiClient = new WeakMap(), _TokenDataSource_getNativeAssetIds = new WeakMap(), _TokenDataSource_getAssetType = new WeakMap(), _TokenDataSource_messenger = new WeakMap(), _TokenDataSource_fetchTimeoutMs = new WeakMap(), _TokenDataSource_instances = new WeakSet(), _TokenDataSource_getSupportedNetworks = 
  /**
-  * Fetch balances for the given chains across all active subscriptions and
+  * Gets the supported networks from the API.
+  * Caching is handled by ApiPlatformClient.
+diff --git a/dist/data-sources/TokenDataSource.d.cts b/dist/data-sources/TokenDataSource.d.cts
+index 89ff9c849aeee960cc3c1156635afb843b9ef6f5..3a3e29c225ace80f9c7cb708f9e35b335116cf26 100644
+--- a/dist/data-sources/TokenDataSource.d.cts
++++ b/dist/data-sources/TokenDataSource.d.cts
+@@ -1,7 +1,7 @@
+ import { ApiPlatformClient } from "@metamask/core-backend";
+ import type { PhishingControllerBulkScanTokensAction } from "@metamask/phishing-controller";
+ import type { AssetsControllerMessenger } from "../AssetsController.cjs";
+-import type { Middleware } from "../types.cjs";
++import type { Caip19AssetId, Middleware } from "../types.cjs";
+ /** CAIP-19 `assetNamespace` segments used across filtering logic. */
+ export declare enum CaipAssetNamespace {
+     Slip44 = "slip44",
+@@ -13,6 +13,8 @@ export type TokenDataSourceOptions = {
+     queryApiClient: ApiPlatformClient;
+     /** Returns CAIP-19 native asset IDs from NetworkEnablementController state */
+     getNativeAssetIds: () => string[];
++    /** Returns the asset type ('native' | 'erc20' | 'spl') for a given CAIP-19 asset ID */
++    getAssetType: (assetId: Caip19AssetId) => 'native' | 'erc20' | 'spl';
+     /**
+      * Timeout in ms for a single Tokens API call (default: 15000). When it
+      * fires, the batch rejects so metadata enrichment proceeds without it.
+diff --git a/dist/data-sources/TokenDataSource.d.mts b/dist/data-sources/TokenDataSource.d.mts
+index a27fc22d1b074161e4f917cba4ed1e67669dfacc..f785d61b324fe44ce1251fbdc8c3737c814a2d21 100644
+--- a/dist/data-sources/TokenDataSource.d.mts
++++ b/dist/data-sources/TokenDataSource.d.mts
+@@ -1,7 +1,7 @@
+ import { ApiPlatformClient } from "@metamask/core-backend";
+ import type { PhishingControllerBulkScanTokensAction } from "@metamask/phishing-controller";
+ import type { AssetsControllerMessenger } from "../AssetsController.mjs";
+-import type { Middleware } from "../types.mjs";
++import type { Caip19AssetId, Middleware } from "../types.mjs";
+ /** CAIP-19 `assetNamespace` segments used across filtering logic. */
+ export declare enum CaipAssetNamespace {
+     Slip44 = "slip44",
+@@ -13,6 +13,8 @@ export type TokenDataSourceOptions = {
+     queryApiClient: ApiPlatformClient;
+     /** Returns CAIP-19 native asset IDs from NetworkEnablementController state */
+     getNativeAssetIds: () => string[];
++    /** Returns the asset type ('native' | 'erc20' | 'spl') for a given CAIP-19 asset ID */
++    getAssetType: (assetId: Caip19AssetId) => 'native' | 'erc20' | 'spl';
+     /**
+      * Timeout in ms for a single Tokens API call (default: 15000). When it
+      * fires, the batch rejects so metadata enrichment proceeds without it.
+diff --git a/dist/data-sources/TokenDataSource.mjs b/dist/data-sources/TokenDataSource.mjs
+index 9b5fb897c9ffffe9a0663f7aec99654c76496cc7..0f0e8529c6159c531c3bb92a678a9df1fdfd9a4c 100644
+--- a/dist/data-sources/TokenDataSource.mjs
++++ b/dist/data-sources/TokenDataSource.mjs
+@@ -9,7 +9,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+ };
+-var _TokenDataSource_instances, _TokenDataSource_apiClient, _TokenDataSource_getNativeAssetIds, _TokenDataSource_messenger, _TokenDataSource_fetchTimeoutMs, _TokenDataSource_getSupportedNetworks, _TokenDataSource_filterAssetsByNetwork, _TokenDataSource_filterBlockaidSpamTokens;
++var _TokenDataSource_instances, _TokenDataSource_apiClient, _TokenDataSource_getNativeAssetIds, _TokenDataSource_getAssetType, _TokenDataSource_messenger, _TokenDataSource_fetchTimeoutMs, _TokenDataSource_getSupportedNetworks, _TokenDataSource_filterAssetsByNetwork, _TokenDataSource_filterBlockaidSpamTokens;
+ import { ApiPlatformClient } from "@metamask/core-backend";
+ import { TokenScanResultType } from "@metamask/phishing-controller";
+ import { KnownCaipNamespace, parseCaipAssetType } from "@metamask/utils";
+@@ -53,24 +53,12 @@ const MUSD_ADDRESS_LOWERCASE = '0xaca92e438df0b2401ff60da7e4337b687a2435da';
+  *
+  * @param assetId - CAIP-19 asset ID used to derive token type.
+  * @param assetData - V3 API response data.
+- * @param nativeAssetIds - Set of known native asset IDs (lowercased) for membership checks.
++ * @param getAssetType - Returns the asset type for a given CAIP-19 asset ID.
+  * @returns FungibleAssetMetadata for state storage.
+  */
+-function transformV3AssetResponseToMetadata(assetId, assetData, nativeAssetIds) {
+-    const parsed = parseCaipAssetType(assetId);
+-    let tokenType = 'erc20';
+-    if (nativeAssetIds.has(assetId.toLowerCase()) ||
+-        parsed.assetNamespace === CaipAssetNamespace.Slip44) {
+-        tokenType = 'native';
+-    }
+-    else if (parsed.chain.namespace === KnownCaipNamespace.Solana &&
+-        parsed.assetNamespace === CaipAssetNamespace.Token) {
+-        tokenType = 'spl';
+-    }
+-    // TODO: Add support for Tron trc20 standard
++function transformV3AssetResponseToMetadata(assetId, assetData, getAssetType) {
+     const metadata = {
+-        // Type derived from assetId
+-        type: tokenType,
++        type: getAssetType(assetId),
+         // BaseAssetMetadata fields
+         name: assetData.name,
+         symbol: assetData.symbol,
+@@ -115,12 +103,15 @@ export class TokenDataSource {
+         _TokenDataSource_apiClient.set(this, void 0);
+         /** Returns CAIP-19 native asset IDs from NetworkEnablementController state */
+         _TokenDataSource_getNativeAssetIds.set(this, void 0);
++        /** Returns the asset type for a given CAIP-19 asset ID */
++        _TokenDataSource_getAssetType.set(this, void 0);
+         /** Shared controller messenger — used for `PhishingController:bulkScanTokens`. */
+         _TokenDataSource_messenger.set(this, void 0);
+         _TokenDataSource_fetchTimeoutMs.set(this, void 0);
+         __classPrivateFieldSet(this, _TokenDataSource_messenger, messenger, "f");
+         __classPrivateFieldSet(this, _TokenDataSource_apiClient, options.queryApiClient, "f");
+         __classPrivateFieldSet(this, _TokenDataSource_getNativeAssetIds, options.getNativeAssetIds, "f");
++        __classPrivateFieldSet(this, _TokenDataSource_getAssetType, options.getAssetType, "f");
+         __classPrivateFieldSet(this, _TokenDataSource_fetchTimeoutMs, options.fetchTimeoutMs ?? DEFAULT_FETCH_TIMEOUT_MS, "f");
+     }
+     /**
+@@ -260,7 +251,7 @@ export class TokenDataSource {
+                         continue;
+                     }
+                     const caipAssetId = assetData.assetId;
+-                    response.assetsInfo[caipAssetId] = transformV3AssetResponseToMetadata(caipAssetId, assetData, nativeAssetIds);
++                    response.assetsInfo[caipAssetId] = transformV3AssetResponseToMetadata(caipAssetId, assetData, __classPrivateFieldGet(this, _TokenDataSource_getAssetType, "f"));
+                 }
+                 if (filteredOutAssets.size > 0) {
+                     if (response.assetsBalance) {
+@@ -285,7 +276,7 @@ export class TokenDataSource {
+         });
+     }
+ }
+-_TokenDataSource_apiClient = new WeakMap(), _TokenDataSource_getNativeAssetIds = new WeakMap(), _TokenDataSource_messenger = new WeakMap(), _TokenDataSource_fetchTimeoutMs = new WeakMap(), _TokenDataSource_instances = new WeakSet(), _TokenDataSource_getSupportedNetworks = 
++_TokenDataSource_apiClient = new WeakMap(), _TokenDataSource_getNativeAssetIds = new WeakMap(), _TokenDataSource_getAssetType = new WeakMap(), _TokenDataSource_messenger = new WeakMap(), _TokenDataSource_fetchTimeoutMs = new WeakMap(), _TokenDataSource_instances = new WeakSet(), _TokenDataSource_getSupportedNetworks = 
+ /**
+  * Gets the supported networks from the API.
+  * Caching is handled by ApiPlatformClient.
+diff --git a/dist/data-sources/evm-rpc-services/clients/TokensApiClient.cjs b/dist/data-sources/evm-rpc-services/clients/TokensApiClient.cjs
+index 18193c6858c8a2a674eb0a79e1b7965844d7e3a9..bdfbeddb3e56e815a0d6b04c710ac0d3e0ae7752 100644
+--- a/dist/data-sources/evm-rpc-services/clients/TokensApiClient.cjs
++++ b/dist/data-sources/evm-rpc-services/clients/TokensApiClient.cjs
+@@ -10,7 +10,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+ };
+-var _TokensApiClient_instances, _TokensApiClient_fetch, _TokensApiClient_queryClient, _TokensApiClient_fetchTokenListUncached;
++var _TokensApiClient_instances, _TokensApiClient_fetch, _TokensApiClient_queryClient, _TokensApiClient_supportedChainIds, _TokensApiClient_supportedChainIdsCachedAt, _TokensApiClient_supportedChainIdsRefreshPromise, _TokensApiClient_isSupportedChain, _TokensApiClient_refreshSupportedChainIds, _TokensApiClient_fetchTokenListUncached;
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.TokensApiClient = void 0;
+ const controller_utils_1 = require("@metamask/controller-utils");
+@@ -21,6 +21,19 @@ const controller_utils_1 = require("@metamask/controller-utils");
+  * (occurrence floors, aggregator filters, icon URLs, etc.).
+  */
+ const TOKEN_END_POINT_API = 'https://token.api.cx.metamask.io';
++/**
++ * Endpoint that returns which CAIP chain IDs the Tokens API supports.
++ * Used to skip detection (and avoid unnecessary network requests) for chains
++ * that are not in the supported-networks list.
++ */
++const SUPPORTED_NETWORKS_URL = `${TOKEN_END_POINT_API}/v2/supportedNetworks`;
++/**
++ * How long to keep the supported-networks response in the instance-level
++ * cache before refreshing it. One hour is sufficient — the list rarely
++ * changes and a stale cache just means we may do an unnecessary token-list
++ * fetch for a newly-unsupported chain (harmless).
++ */
++const SUPPORTED_NETWORKS_CACHE_TTL_MS = 60 * 60000;
+ /**
+  * Tempo Mainnet — not yet present in `@metamask/controller-utils`'s `ChainId`
+  * map at the time of writing, so it's spelled out as a literal here exactly as
+@@ -63,26 +76,50 @@ const TOKEN_LIST_GC_TIME_MS = 60 * 60000;
+  * Linea aggregator filter. This keeps RPC token detection in lockstep with
+  * the wallet's primary token list.
+  *
+- * When constructed with a `queryClient`, results are cached and deduped via
+- * TanStack Query (5 min staleTime, 1 h gcTime), so concurrent detection cycles
+- * for the same chain coalesce into a single network request.
++ * Before fetching a chain's token list, the client checks
++ * `/v2/supportedNetworks` and returns `[]` immediately for chains that are
++ * not in the supported list, avoiding unnecessary API calls. The supported-
++ * networks response is cached in-memory for one hour.
++ *
++ * When constructed with a `queryClient`, token-list results are cached and
++ * deduped via TanStack Query (5 min staleTime, 1 h gcTime), so concurrent
++ * detection cycles for the same chain coalesce into a single network request.
+  */
+ class TokensApiClient {
+     constructor(config) {
+         _TokensApiClient_instances.add(this);
+         _TokensApiClient_fetch.set(this, void 0);
+         _TokensApiClient_queryClient.set(this, void 0);
++        /** CAIP chain IDs returned by `/v2/supportedNetworks` (both tiers). */
++        _TokensApiClient_supportedChainIds.set(this, void 0);
++        /** Timestamp of the last successful `/v2/supportedNetworks` fetch. */
++        _TokensApiClient_supportedChainIdsCachedAt.set(this, 0);
++        /**
++         * In-flight `/v2/supportedNetworks` request shared across concurrent callers
++         * so only one network request is made even when multiple `fetchTokenList`
++         * calls arrive before the first one resolves.
++         */
++        _TokensApiClient_supportedChainIdsRefreshPromise.set(this, void 0);
+         __classPrivateFieldSet(this, _TokensApiClient_fetch, config?.fetch ?? globalThis.fetch.bind(globalThis), "f");
+         __classPrivateFieldSet(this, _TokensApiClient_queryClient, config?.queryClient, "f");
+     }
+     /**
+      * Fetch the list of ERC-20 tokens for a chain from the Tokens API.
+      *
++     * Returns `[]` immediately (without hitting the token-list endpoint) when
++     * the chain is not in the `/v2/supportedNetworks` response, or when the
++     * supported-networks check fails for any reason.
++     *
+      * @param hexChainId - Chain ID in hex format (e.g. `'0x1'` for Ethereum mainnet).
+-     * @returns Array of token list entries with address and metadata.
+-     * @throws If the API responds with a non-2xx status.
++     * @returns Array of token list entries with address and metadata, or an empty
++     * array if the chain is unsupported or the request fails.
+      */
+     async fetchTokenList(hexChainId) {
++        // Treat any error from the supported-networks check as "not supported":
++        // the token-list endpoint is only contacted for known-supported chains.
++        if (!(await __classPrivateFieldGet(this, _TokensApiClient_instances, "m", _TokensApiClient_isSupportedChain).call(this, hexChainId).catch(() => false))) {
++            return [];
++        }
+         const queryClient = __classPrivateFieldGet(this, _TokensApiClient_queryClient, "f");
+         if (queryClient === undefined) {
+             return __classPrivateFieldGet(this, _TokensApiClient_instances, "m", _TokensApiClient_fetchTokenListUncached).call(this, hexChainId);
+@@ -103,7 +140,56 @@ class TokensApiClient {
+     }
+ }
+ exports.TokensApiClient = TokensApiClient;
+-_TokensApiClient_fetch = new WeakMap(), _TokensApiClient_queryClient = new WeakMap(), _TokensApiClient_instances = new WeakSet(), _TokensApiClient_fetchTokenListUncached = async function _TokensApiClient_fetchTokenListUncached(hexChainId) {
++_TokensApiClient_fetch = new WeakMap(), _TokensApiClient_queryClient = new WeakMap(), _TokensApiClient_supportedChainIds = new WeakMap(), _TokensApiClient_supportedChainIdsCachedAt = new WeakMap(), _TokensApiClient_supportedChainIdsRefreshPromise = new WeakMap(), _TokensApiClient_instances = new WeakSet(), _TokensApiClient_isSupportedChain = 
++/**
++ * Check whether the given chain is present in the supported-networks list.
++ *
++ * Uses an instance-level cache (1 h TTL). Throws if the network request
++ * fails — callers should handle this (e.g. via `.catch(() => false)`).
++ *
++ * @param hexChainId - Hex chain ID to check.
++ * @returns `true` when the chain is in the supported-networks list.
++ */
++async function _TokensApiClient_isSupportedChain(hexChainId) {
++    const now = Date.now();
++    if (__classPrivateFieldGet(this, _TokensApiClient_supportedChainIds, "f") === undefined ||
++        now - __classPrivateFieldGet(this, _TokensApiClient_supportedChainIdsCachedAt, "f") >= SUPPORTED_NETWORKS_CACHE_TTL_MS) {
++        await __classPrivateFieldGet(this, _TokensApiClient_instances, "m", _TokensApiClient_refreshSupportedChainIds).call(this, now);
++    }
++    const caipChainId = `eip155:${(0, controller_utils_1.convertHexToDecimal)(hexChainId)}`;
++    return __classPrivateFieldGet(this, _TokensApiClient_supportedChainIds, "f")?.has(caipChainId) ?? false;
++}, _TokensApiClient_refreshSupportedChainIds = 
++/**
++ * Fetch `/v2/supportedNetworks` and update the instance cache.
++ * Concurrent callers share the same in-flight Promise so only one network
++ * request is made. If the response is not 2xx the cache is left unchanged
++ * (the chain will be treated as unsupported this cycle).
++ *
++ * @param now - Current timestamp used to stamp the cache entry.
++ * @returns A promise that resolves once the cache has been refreshed.
++ */
++async function _TokensApiClient_refreshSupportedChainIds(now) {
++    if (__classPrivateFieldGet(this, _TokensApiClient_supportedChainIdsRefreshPromise, "f") !== undefined) {
++        return __classPrivateFieldGet(this, _TokensApiClient_supportedChainIdsRefreshPromise, "f");
++    }
++    __classPrivateFieldSet(this, _TokensApiClient_supportedChainIdsRefreshPromise, (async () => {
++        try {
++            const response = await __classPrivateFieldGet(this, _TokensApiClient_fetch, "f").call(this, SUPPORTED_NETWORKS_URL);
++            if (response.ok) {
++                const data = (await response.json());
++                __classPrivateFieldSet(this, _TokensApiClient_supportedChainIds, new Set([
++                    ...(data.fullSupport ?? []),
++                    ...(data.partialSupport ?? []),
++                ]), "f");
++                __classPrivateFieldSet(this, _TokensApiClient_supportedChainIdsCachedAt, now, "f");
++            }
++        }
++        finally {
++            __classPrivateFieldSet(this, _TokensApiClient_supportedChainIdsRefreshPromise, undefined, "f");
++        }
++    })(), "f");
++    return __classPrivateFieldGet(this, _TokensApiClient_supportedChainIdsRefreshPromise, "f");
++}, _TokensApiClient_fetchTokenListUncached = async function _TokensApiClient_fetchTokenListUncached(hexChainId) {
+     const decimalChainId = (0, controller_utils_1.convertHexToDecimal)(hexChainId);
+     const occurrenceFloor = getOccurrenceFloor(hexChainId);
+     // Mirrors `TokenListController.getTokensURL` exactly (token-service.ts).
+@@ -117,9 +203,17 @@ _TokensApiClient_fetch = new WeakMap(), _TokensApiClient_queryClient = new WeakM
+         `&includeERC20Permit=false` +
+         `&includeStorage=false` +
+         `&includeRwaData=true`;
+-    const response = await __classPrivateFieldGet(this, _TokensApiClient_fetch, "f").call(this, url);
++    let response;
++    try {
++        response = await __classPrivateFieldGet(this, _TokensApiClient_fetch, "f").call(this, url);
++    }
++    catch (error) {
++        console.error(`Tokens API request failed for chain ${hexChainId}:`, error);
++        return [];
++    }
+     if (!response.ok) {
+-        throw new Error(`Tokens API responded with ${response.status} for chain ${hexChainId}`);
++        console.error(`Tokens API responded with ${response.status} for chain ${hexChainId}`);
++        return [];
+     }
+     const raw = (await response.json());
+     const items = Array.isArray(raw)
+diff --git a/dist/data-sources/evm-rpc-services/clients/TokensApiClient.d.cts b/dist/data-sources/evm-rpc-services/clients/TokensApiClient.d.cts
+index ca75f70c759d8fad3307cd63905c4cea3cea9112..e71b6c58962b967b23811eeaf931da583b3ec7b5 100644
+--- a/dist/data-sources/evm-rpc-services/clients/TokensApiClient.d.cts
++++ b/dist/data-sources/evm-rpc-services/clients/TokensApiClient.d.cts
+@@ -32,9 +32,14 @@ export type TokensApiClientConfig = {
+  * Linea aggregator filter. This keeps RPC token detection in lockstep with
+  * the wallet's primary token list.
+  *
+- * When constructed with a `queryClient`, results are cached and deduped via
+- * TanStack Query (5 min staleTime, 1 h gcTime), so concurrent detection cycles
+- * for the same chain coalesce into a single network request.
++ * Before fetching a chain's token list, the client checks
++ * `/v2/supportedNetworks` and returns `[]` immediately for chains that are
++ * not in the supported list, avoiding unnecessary API calls. The supported-
++ * networks response is cached in-memory for one hour.
++ *
++ * When constructed with a `queryClient`, token-list results are cached and
++ * deduped via TanStack Query (5 min staleTime, 1 h gcTime), so concurrent
++ * detection cycles for the same chain coalesce into a single network request.
+  */
+ export declare class TokensApiClient {
+     #private;
+@@ -42,9 +47,13 @@ export declare class TokensApiClient {
+     /**
+      * Fetch the list of ERC-20 tokens for a chain from the Tokens API.
+      *
++     * Returns `[]` immediately (without hitting the token-list endpoint) when
++     * the chain is not in the `/v2/supportedNetworks` response, or when the
++     * supported-networks check fails for any reason.
++     *
+      * @param hexChainId - Chain ID in hex format (e.g. `'0x1'` for Ethereum mainnet).
+-     * @returns Array of token list entries with address and metadata.
+-     * @throws If the API responds with a non-2xx status.
++     * @returns Array of token list entries with address and metadata, or an empty
++     * array if the chain is unsupported or the request fails.
+      */
+     fetchTokenList(hexChainId: ChainId): Promise<TokenListEntry[]>;
+ }
+diff --git a/dist/data-sources/evm-rpc-services/clients/TokensApiClient.d.mts b/dist/data-sources/evm-rpc-services/clients/TokensApiClient.d.mts
+index dd60405cf480db43a1156b798a32f6a02fe1fc4e..e4cb81af6d496931bdb73ff956ad50ae12ef51a2 100644
+--- a/dist/data-sources/evm-rpc-services/clients/TokensApiClient.d.mts
++++ b/dist/data-sources/evm-rpc-services/clients/TokensApiClient.d.mts
+@@ -32,9 +32,14 @@ export type TokensApiClientConfig = {
+  * Linea aggregator filter. This keeps RPC token detection in lockstep with
+  * the wallet's primary token list.
+  *
+- * When constructed with a `queryClient`, results are cached and deduped via
+- * TanStack Query (5 min staleTime, 1 h gcTime), so concurrent detection cycles
+- * for the same chain coalesce into a single network request.
++ * Before fetching a chain's token list, the client checks
++ * `/v2/supportedNetworks` and returns `[]` immediately for chains that are
++ * not in the supported list, avoiding unnecessary API calls. The supported-
++ * networks response is cached in-memory for one hour.
++ *
++ * When constructed with a `queryClient`, token-list results are cached and
++ * deduped via TanStack Query (5 min staleTime, 1 h gcTime), so concurrent
++ * detection cycles for the same chain coalesce into a single network request.
+  */
+ export declare class TokensApiClient {
+     #private;
+@@ -42,9 +47,13 @@ export declare class TokensApiClient {
+     /**
+      * Fetch the list of ERC-20 tokens for a chain from the Tokens API.
+      *
++     * Returns `[]` immediately (without hitting the token-list endpoint) when
++     * the chain is not in the `/v2/supportedNetworks` response, or when the
++     * supported-networks check fails for any reason.
++     *
+      * @param hexChainId - Chain ID in hex format (e.g. `'0x1'` for Ethereum mainnet).
+-     * @returns Array of token list entries with address and metadata.
+-     * @throws If the API responds with a non-2xx status.
++     * @returns Array of token list entries with address and metadata, or an empty
++     * array if the chain is unsupported or the request fails.
+      */
+     fetchTokenList(hexChainId: ChainId): Promise<TokenListEntry[]>;
+ }
+diff --git a/dist/data-sources/evm-rpc-services/clients/TokensApiClient.mjs b/dist/data-sources/evm-rpc-services/clients/TokensApiClient.mjs
+index 27739623ad9fb4c556a0d1367d89e8f58927826c..9378ce05a607e280b393428fdb88a96d41dda5fb 100644
+--- a/dist/data-sources/evm-rpc-services/clients/TokensApiClient.mjs
++++ b/dist/data-sources/evm-rpc-services/clients/TokensApiClient.mjs
+@@ -9,7 +9,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+ };
+-var _TokensApiClient_instances, _TokensApiClient_fetch, _TokensApiClient_queryClient, _TokensApiClient_fetchTokenListUncached;
++var _TokensApiClient_instances, _TokensApiClient_fetch, _TokensApiClient_queryClient, _TokensApiClient_supportedChainIds, _TokensApiClient_supportedChainIdsCachedAt, _TokensApiClient_supportedChainIdsRefreshPromise, _TokensApiClient_isSupportedChain, _TokensApiClient_refreshSupportedChainIds, _TokensApiClient_fetchTokenListUncached;
+ import { ChainId as ControllerChainId, convertHexToDecimal } from "@metamask/controller-utils";
+ /**
+  * Same host + path that `TokenListController` (assets-controllers) uses
+@@ -18,6 +18,19 @@ import { ChainId as ControllerChainId, convertHexToDecimal } from "@metamask/con
+  * (occurrence floors, aggregator filters, icon URLs, etc.).
+  */
+ const TOKEN_END_POINT_API = 'https://token.api.cx.metamask.io';
++/**
++ * Endpoint that returns which CAIP chain IDs the Tokens API supports.
++ * Used to skip detection (and avoid unnecessary network requests) for chains
++ * that are not in the supported-networks list.
++ */
++const SUPPORTED_NETWORKS_URL = `${TOKEN_END_POINT_API}/v2/supportedNetworks`;
++/**
++ * How long to keep the supported-networks response in the instance-level
++ * cache before refreshing it. One hour is sufficient — the list rarely
++ * changes and a stale cache just means we may do an unnecessary token-list
++ * fetch for a newly-unsupported chain (harmless).
++ */
++const SUPPORTED_NETWORKS_CACHE_TTL_MS = 60 * 60000;
+ /**
+  * Tempo Mainnet — not yet present in `@metamask/controller-utils`'s `ChainId`
+  * map at the time of writing, so it's spelled out as a literal here exactly as
+@@ -60,26 +73,50 @@ const TOKEN_LIST_GC_TIME_MS = 60 * 60000;
+  * Linea aggregator filter. This keeps RPC token detection in lockstep with
+  * the wallet's primary token list.
+  *
+- * When constructed with a `queryClient`, results are cached and deduped via
+- * TanStack Query (5 min staleTime, 1 h gcTime), so concurrent detection cycles
+- * for the same chain coalesce into a single network request.
++ * Before fetching a chain's token list, the client checks
++ * `/v2/supportedNetworks` and returns `[]` immediately for chains that are
++ * not in the supported list, avoiding unnecessary API calls. The supported-
++ * networks response is cached in-memory for one hour.
++ *
++ * When constructed with a `queryClient`, token-list results are cached and
++ * deduped via TanStack Query (5 min staleTime, 1 h gcTime), so concurrent
++ * detection cycles for the same chain coalesce into a single network request.
+  */
+ export class TokensApiClient {
+     constructor(config) {
+         _TokensApiClient_instances.add(this);
+         _TokensApiClient_fetch.set(this, void 0);
+         _TokensApiClient_queryClient.set(this, void 0);
++        /** CAIP chain IDs returned by `/v2/supportedNetworks` (both tiers). */
++        _TokensApiClient_supportedChainIds.set(this, void 0);
++        /** Timestamp of the last successful `/v2/supportedNetworks` fetch. */
++        _TokensApiClient_supportedChainIdsCachedAt.set(this, 0);
++        /**
++         * In-flight `/v2/supportedNetworks` request shared across concurrent callers
++         * so only one network request is made even when multiple `fetchTokenList`
++         * calls arrive before the first one resolves.
++         */
++        _TokensApiClient_supportedChainIdsRefreshPromise.set(this, void 0);
+         __classPrivateFieldSet(this, _TokensApiClient_fetch, config?.fetch ?? globalThis.fetch.bind(globalThis), "f");
+         __classPrivateFieldSet(this, _TokensApiClient_queryClient, config?.queryClient, "f");
+     }
+     /**
+      * Fetch the list of ERC-20 tokens for a chain from the Tokens API.
+      *
++     * Returns `[]` immediately (without hitting the token-list endpoint) when
++     * the chain is not in the `/v2/supportedNetworks` response, or when the
++     * supported-networks check fails for any reason.
++     *
+      * @param hexChainId - Chain ID in hex format (e.g. `'0x1'` for Ethereum mainnet).
+-     * @returns Array of token list entries with address and metadata.
+-     * @throws If the API responds with a non-2xx status.
++     * @returns Array of token list entries with address and metadata, or an empty
++     * array if the chain is unsupported or the request fails.
+      */
+     async fetchTokenList(hexChainId) {
++        // Treat any error from the supported-networks check as "not supported":
++        // the token-list endpoint is only contacted for known-supported chains.
++        if (!(await __classPrivateFieldGet(this, _TokensApiClient_instances, "m", _TokensApiClient_isSupportedChain).call(this, hexChainId).catch(() => false))) {
++            return [];
++        }
+         const queryClient = __classPrivateFieldGet(this, _TokensApiClient_queryClient, "f");
+         if (queryClient === undefined) {
+             return __classPrivateFieldGet(this, _TokensApiClient_instances, "m", _TokensApiClient_fetchTokenListUncached).call(this, hexChainId);
+@@ -99,7 +136,56 @@ export class TokensApiClient {
+         });
+     }
+ }
+-_TokensApiClient_fetch = new WeakMap(), _TokensApiClient_queryClient = new WeakMap(), _TokensApiClient_instances = new WeakSet(), _TokensApiClient_fetchTokenListUncached = async function _TokensApiClient_fetchTokenListUncached(hexChainId) {
++_TokensApiClient_fetch = new WeakMap(), _TokensApiClient_queryClient = new WeakMap(), _TokensApiClient_supportedChainIds = new WeakMap(), _TokensApiClient_supportedChainIdsCachedAt = new WeakMap(), _TokensApiClient_supportedChainIdsRefreshPromise = new WeakMap(), _TokensApiClient_instances = new WeakSet(), _TokensApiClient_isSupportedChain = 
++/**
++ * Check whether the given chain is present in the supported-networks list.
++ *
++ * Uses an instance-level cache (1 h TTL). Throws if the network request
++ * fails — callers should handle this (e.g. via `.catch(() => false)`).
++ *
++ * @param hexChainId - Hex chain ID to check.
++ * @returns `true` when the chain is in the supported-networks list.
++ */
++async function _TokensApiClient_isSupportedChain(hexChainId) {
++    const now = Date.now();
++    if (__classPrivateFieldGet(this, _TokensApiClient_supportedChainIds, "f") === undefined ||
++        now - __classPrivateFieldGet(this, _TokensApiClient_supportedChainIdsCachedAt, "f") >= SUPPORTED_NETWORKS_CACHE_TTL_MS) {
++        await __classPrivateFieldGet(this, _TokensApiClient_instances, "m", _TokensApiClient_refreshSupportedChainIds).call(this, now);
++    }
++    const caipChainId = `eip155:${convertHexToDecimal(hexChainId)}`;
++    return __classPrivateFieldGet(this, _TokensApiClient_supportedChainIds, "f")?.has(caipChainId) ?? false;
++}, _TokensApiClient_refreshSupportedChainIds = 
++/**
++ * Fetch `/v2/supportedNetworks` and update the instance cache.
++ * Concurrent callers share the same in-flight Promise so only one network
++ * request is made. If the response is not 2xx the cache is left unchanged
++ * (the chain will be treated as unsupported this cycle).
++ *
++ * @param now - Current timestamp used to stamp the cache entry.
++ * @returns A promise that resolves once the cache has been refreshed.
++ */
++async function _TokensApiClient_refreshSupportedChainIds(now) {
++    if (__classPrivateFieldGet(this, _TokensApiClient_supportedChainIdsRefreshPromise, "f") !== undefined) {
++        return __classPrivateFieldGet(this, _TokensApiClient_supportedChainIdsRefreshPromise, "f");
++    }
++    __classPrivateFieldSet(this, _TokensApiClient_supportedChainIdsRefreshPromise, (async () => {
++        try {
++            const response = await __classPrivateFieldGet(this, _TokensApiClient_fetch, "f").call(this, SUPPORTED_NETWORKS_URL);
++            if (response.ok) {
++                const data = (await response.json());
++                __classPrivateFieldSet(this, _TokensApiClient_supportedChainIds, new Set([
++                    ...(data.fullSupport ?? []),
++                    ...(data.partialSupport ?? []),
++                ]), "f");
++                __classPrivateFieldSet(this, _TokensApiClient_supportedChainIdsCachedAt, now, "f");
++            }
++        }
++        finally {
++            __classPrivateFieldSet(this, _TokensApiClient_supportedChainIdsRefreshPromise, undefined, "f");
++        }
++    })(), "f");
++    return __classPrivateFieldGet(this, _TokensApiClient_supportedChainIdsRefreshPromise, "f");
++}, _TokensApiClient_fetchTokenListUncached = async function _TokensApiClient_fetchTokenListUncached(hexChainId) {
+     const decimalChainId = convertHexToDecimal(hexChainId);
+     const occurrenceFloor = getOccurrenceFloor(hexChainId);
+     // Mirrors `TokenListController.getTokensURL` exactly (token-service.ts).
+@@ -113,9 +199,17 @@ _TokensApiClient_fetch = new WeakMap(), _TokensApiClient_queryClient = new WeakM
+         `&includeERC20Permit=false` +
+         `&includeStorage=false` +
+         `&includeRwaData=true`;
+-    const response = await __classPrivateFieldGet(this, _TokensApiClient_fetch, "f").call(this, url);
++    let response;
++    try {
++        response = await __classPrivateFieldGet(this, _TokensApiClient_fetch, "f").call(this, url);
++    }
++    catch (error) {
++        console.error(`Tokens API request failed for chain ${hexChainId}:`, error);
++        return [];
++    }
+     if (!response.ok) {
+-        throw new Error(`Tokens API responded with ${response.status} for chain ${hexChainId}`);
++        console.error(`Tokens API responded with ${response.status} for chain ${hexChainId}`);
++        return [];
+     }
+     const raw = (await response.json());
+     const items = Array.isArray(raw)
