@@ -4,6 +4,7 @@ import {
   boolean,
   nullable,
   string,
+  array,
   assert,
   optional,
 } from '@metamask/superstruct';
@@ -25,6 +26,7 @@ const AssetsUnifyStateFeatureFlag = object({
   enabled: boolean(),
   featureVersion: nullable(string()),
   minimumVersion: optional(nullable(string())),
+  deprecatedControllers: optional(array(string())),
 });
 
 /**
@@ -75,3 +77,45 @@ export const getIsAssetsUnifyStateEnabled = (
     ASSETS_UNIFY_STATE_VERSION_1,
   );
 };
+
+/**
+ * Selector to check whether a given controller has been deprecated by the
+ * assets-unify-state rollout.
+ *
+ * In test environments (`IN_TEST`) the controller is always considered
+ * deprecated so that tests do not need to configure remote feature-flag state.
+ *
+ * Build-time and version gating is handled by {@link getIsAssetsUnifyStateEnabled}.
+ * When that returns true, this simply checks whether the controller name
+ * appears in the flag's `deprecatedControllers` list.
+ *
+ * @param state - The MetaMask state object
+ * @param controllerName - The controller name to check (e.g. 'TokenListController').
+ * @returns boolean - True if the controller is deprecated, false otherwise.
+ */
+export const getIsControllerDeprecated = (
+  state: RemoteFeatureFlagsState,
+  controllerName: string,
+): boolean => {
+  if (process.env.IN_TEST) {
+    return true;
+  }
+
+  if (!getIsAssetsUnifyStateEnabled(state)) {
+    return false;
+  }
+
+  const featureFlag = getAssetsUnifyStateRemoteFeatureFlag(state);
+  return featureFlag?.deprecatedControllers?.includes(controllerName) ?? false;
+};
+
+/**
+ * Selector to check whether the `TokenListController` has been deprecated by
+ * the assets-unify-state rollout for the running app version.
+ *
+ * @param state - The MetaMask state object
+ * @returns boolean - True if `TokenListController` is deprecated, false otherwise.
+ */
+export const getIsTokenListControllerDeprecated = (
+  state: RemoteFeatureFlagsState,
+): boolean => getIsControllerDeprecated(state, 'TokenListController');

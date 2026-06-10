@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import {
   twMerge,
   TextVariant,
@@ -27,6 +27,7 @@ import { usePerpsLiveAccount } from '../../../../hooks/perps/stream';
 import { useSelectedAccountComplianceGate } from '../../compliance';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import { PerpsControlBarSkeleton } from '../perps-skeletons';
+import { useOnClickOutside } from '../hooks/useClickOutside';
 
 /** Handler from perps triggers (e.g. deposit / withdraw); may return a Promise. */
 export type PerpsBalanceActionHandler = () => void | Promise<unknown>;
@@ -127,21 +128,11 @@ export const PerpsBalanceDropdown: React.FC<PerpsBalanceDropdownProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown when clicking outside
-  useEffect(() => {
-    if (!isDropdownOpen) {
-      return undefined;
-    }
-    const handleClickOutside = (e: MouseEvent) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(e.target as Node)
-      ) {
-        setIsDropdownOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isDropdownOpen]);
+  useOnClickOutside({
+    containerRef,
+    onClickOutside: () => setIsDropdownOpen(false),
+    active: isDropdownOpen,
+  });
 
   if (isInitialLoading) {
     return <PerpsControlBarSkeleton />;
