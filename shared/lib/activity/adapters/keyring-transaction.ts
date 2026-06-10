@@ -85,76 +85,35 @@ function getFees(transaction: Transaction) {
   });
 }
 
-function aggregateMovementAmount(movements: Movement[]) {
-  const amountByAssetType: Record<
-    string,
-    {
-      amount: number;
-      unit: string;
-    }
-  > = {};
-
-  for (const movement of movements) {
-    if (!hasFungibleAsset(movement)) {
-      continue;
-    }
-
-    const { type: assetType, unit } = movement.asset;
-    const parsedAmount = Number.parseFloat(movement.asset.amount);
-    const normalizedAmount = Number.isFinite(parsedAmount) ? parsedAmount : 0;
-
-    if (!amountByAssetType[assetType]) {
-      amountByAssetType[assetType] = {
-        amount: normalizedAmount,
-        unit,
-      };
-      continue;
-    }
-
-    amountByAssetType[assetType].amount += normalizedAmount;
-  }
-
-  const entries = Object.entries(amountByAssetType);
-  if (entries.length !== 1) {
-    return undefined;
-  }
-
-  const [assetType, aggregate] = entries[0];
-  return {
-    assetType,
-    amount: String(aggregate.amount),
-    unit: aggregate.unit,
-  };
-}
-
 // Converts keyring API transactions into the shared activity item shape
 export function mapKeyringTransaction({
   transaction,
+  subjectAddress,
 }: {
   transaction: Transaction;
+  subjectAddress?: string;
 }): ActivityListItem {
   const status = mapStatus(transaction.status);
   const timestamp = mapTimestamp(transaction.timestamp);
   const chainId = transaction.chain;
-  const from = getAddress(transaction.from);
-  const to = getAddress(transaction.to);
+
+  const from =
+    transaction.type === KeyringTransactionType.Send && subjectAddress
+      ? subjectAddress
+      : getAddress(transaction.from);
+
+  const to =
+    transaction.type === KeyringTransactionType.Receive && subjectAddress
+      ? subjectAddress
+      : getAddress(transaction.to);
 
   if (transaction.type === KeyringTransactionType.Send) {
     const fromToken = getToken(transaction.from, 'out');
     let token = fromToken;
 
     // Bitcoin transaction.from can be empty, resulting in no token avatar or send amount displayed.
-    // Workaround: use the same aggregated to-asset fallback strategy as tx details modal.
     if (!fromToken && chainId.startsWith('bip122:')) {
-      const aggregatedToAsset = aggregateMovementAmount(transaction.to);
-      if (aggregatedToAsset) {
-        token = {
-          direction: 'out',
-          assetId: aggregatedToAsset.assetType,
-          symbol: aggregatedToAsset.unit,
-          amount: aggregatedToAsset.amount,
-        };
-      }
+      token = getToken(transaction.to, 'out');
     }
 
     return {

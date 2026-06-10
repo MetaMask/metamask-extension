@@ -28,6 +28,7 @@ import { mapKeyringTransaction } from '../../shared/lib/activity/adapters/keyrin
 import { mapLocalTransaction } from '../../shared/lib/activity/adapters/local-transaction';
 import { isProtectedByEnforcedSimulations } from '../pages/confirmations/utils/confirm';
 import { Status } from '../../shared/lib/activity/types';
+import { getInternalAccountsObject } from './accounts';
 import { enrichLocalMusdClaimActivity } from './activity/enrich-local-musd-claim';
 import { getAssetsMetadata } from './assets';
 import {
@@ -188,12 +189,17 @@ export const selectNonEvmTransactionsForActivity = createSelector(
 );
 
 export const selectNonEvmActivityItems = createSelector(
-  [selectNonEvmTransactionsForActivity, getAssetsMetadata],
-  (transactions, assetsMetadata) =>
+  [
+    selectNonEvmTransactionsForActivity,
+    getAssetsMetadata,
+    getInternalAccountsObject,
+  ],
+  (transactions, assetsMetadata, internalAccountsById) =>
     transactions.map((transaction) =>
       mapKeyringTransaction({
         // Unified assets caused Snap token movements with empty or placeholder units.
         transaction: patchKeyringTransaction(transaction, assetsMetadata),
+        subjectAddress: internalAccountsById?.[transaction.account]?.address,
       }),
     ),
 );

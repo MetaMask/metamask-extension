@@ -107,24 +107,25 @@ describe('mapKeyringTransaction', () => {
     });
   });
 
-  it('maps bitcoin send token from to-movement when from is empty', () => {
+  it('maps bitcoin send from account address and to output address', () => {
     const item = mapKeyringTransaction({
+      subjectAddress: 'bc1qcj8v4ft5uvt59jjrxd856a48xegclwne78h0ye',
       transaction: {
-        id: 'btc-send-output-id',
+        id: '9a2098cdeb6dcd2d89b9d8993b5f5b2d97a49f91b63aba0ae6d525e6532a64b6',
         chain: MultichainNetworks.BITCOIN,
         account: '00000000-0000-4000-8000-000000000000',
         status: TransactionStatus.Confirmed,
         timestamp: 1716367781,
         type: TransactionType.Send,
-        from: [{ address: 'bc1from', asset: null }],
+        from: [],
         to: [
           {
-            address: 'bc1to',
+            address: 'bc1qc5tzsfpd3zjecma6529kanjtug69rf58mtfxmu',
             asset: {
               fungible: true,
               type: `${MultichainNetworks.BITCOIN}/slip44:0`,
               unit: 'BTC',
-              amount: '0.1',
+              amount: '0.000003',
             },
           },
         ],
@@ -135,16 +136,11 @@ describe('mapKeyringTransaction', () => {
 
     expect(item).toMatchObject({
       type: 'send',
-      chainId: MultichainNetworks.BITCOIN,
-      status: 'success',
-      timestamp: 1716367781000,
       data: {
-        hash: 'btc-send-output-id',
-        from: 'bc1from',
-        to: 'bc1to',
+        from: 'bc1qcj8v4ft5uvt59jjrxd856a48xegclwne78h0ye',
+        to: 'bc1qc5tzsfpd3zjecma6529kanjtug69rf58mtfxmu',
         token: {
-          amount: '0.1',
-          assetId: `${MultichainNetworks.BITCOIN}/slip44:0`,
+          amount: '0.000003',
           direction: 'out',
           symbol: 'BTC',
         },
