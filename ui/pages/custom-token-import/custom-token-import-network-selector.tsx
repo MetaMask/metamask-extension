@@ -75,9 +75,7 @@ export const CustomTokenImportNetworkSelector = ({
                   variant={TextVariant.BodyMd}
                   color={TextColor.TextAlternative}
                   fontWeight={FontWeight.Medium}
-                  paddingHorizontal={4}
-                  paddingTop={4}
-                  paddingBottom={2}
+                  className="px-4 pb-2 pt-4"
                 >
                   {t(section.titleKey)}
                 </Text>
