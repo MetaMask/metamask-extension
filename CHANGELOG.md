@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.35.0]
+
+### Added
+
+- Added "Paid by MetaMask" label on the mUSD conversion confirmation screen when all transaction fees are sponsored (#43168)
+- Add Arc as Default Network (network/native logo + native price + multicall) (#43114)
+- Added a confirmation modal when closing all perpetual positions (#42613)
+- Reduced false-positive RPC connection banners — single-provider outages no longer pop the banner, even when many popular
+  networks fail at once. (#43073)
+- Add Telegram provider to Social Login options (#43125)
+
+### Changed
+
+- Raised the minimum supported browser versions for Chromium-based browsers to 123 and Firefox to ESR 128. (#41067)
+- chore(6936): migrate core UI components from MUI v4 → v5 (#41955)
+- Bump assets controller v8.3.1 (#43163)
+- chore(6921): upgrade React type definitions to v18 and codemod explicit children typing (#42616)
+- Updated the Sei network and token logo to Sei's new brand mark. (#43117)
+- chore: migrate `checkIsSeedlessPasswordOutdated` to `LegacyBackgroundApiService` (#43131)
+
+### Fixed
+
+- Updated onboarding metrics for Telegram Login. fixed onboarding unlock metrics. (#43052)
+
 ## [13.34.1]
 
 ### Changed
@@ -43,7 +67,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Show hidden tokens in Send Flow (#42934)
 - Add Sentry distributed tracing instrumentation for Background RPC calls and inter-controller messenger calls. (#39891)
 
-  ### Fixed
+### Fixed
 
 - perf(6634): extract gas estimate side-effects, strip unused withRouter props (#42687)
 - Fixed the VIP tier label to display "VIP" instead of "VIP Fox" (#42856)
