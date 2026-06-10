@@ -9,7 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.35.0]
 
-
 ### Added
 
 - Reduced false-positive RPC connection banners — single-provider outages no longer pop the banner, even when many popular (#43073)
