@@ -16,9 +16,7 @@ export const selectMusdConversionEducationSeen = (
   state: MetaMaskReduxState,
 ): boolean => state.metamask.musdConversionEducationSeen ?? false;
 
-const EMPTY_DISMISSED_CTA_KEYS: string[] = Object.freeze(
-  [],
-) as unknown as string[];
+const EMPTY_DISMISSED_CTA_KEYS: readonly string[] = Object.freeze([]);
 
 /**
  * Select the list of dismissed mUSD asset-detail CTA keys (chainId-tokenAddress)
@@ -27,5 +25,5 @@ const EMPTY_DISMISSED_CTA_KEYS: string[] = Object.freeze(
  */
 export const selectMusdConversionDismissedCtaKeys = (
   state: MetaMaskReduxState,
-): string[] =>
+): readonly string[] =>
   state.metamask.musdConversionDismissedCtaKeys ?? EMPTY_DISMISSED_CTA_KEYS;

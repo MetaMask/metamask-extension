@@ -665,7 +665,7 @@ export type MultichainNetwork = {
   isEvmNetwork: boolean;
   chainId: CaipChainId;
   network: // TODO: Maybe updates ProviderConfig to add rpcPrefs.imageUrl field
-    ProviderConfigWithImageUrlAndExplorerUrl | MultichainProviderConfig;
+  ProviderConfigWithImageUrlAndExplorerUrl | MultichainProviderConfig;
 };
 
 const MULTICHAIN_NETWORK_PROVIDERS: MultichainProviderConfig[] = Object.values(
@@ -705,15 +705,21 @@ export const getMultichainNetwork = createSelector(
       state: MultichainNetworkConfigState & AccountsState,
       account?: InternalAccount,
     ) => getMultichainIsEvm(state, account),
-    (state: MultichainNetworkConfigState & AccountsState, account?: InternalAccount) =>
+    (
+      state: MultichainNetworkConfigState & AccountsState,
+      account?: InternalAccount,
+    ) =>
       getMultichainIsEvm(state, account)
         ? getCurrentChainId(state)
         : (undefined as never),
-    (state: MultichainNetworkConfigState & AccountsState, account?: InternalAccount) =>
+    (
+      state: MultichainNetworkConfigState & AccountsState,
+      account?: InternalAccount,
+    ) =>
       getMultichainIsEvm(state, account)
         ? getProviderConfig(state)
         : (undefined as never),
-      getNetworkConfigurationsByChainId(state),
+    getNetworkConfigurationsByChainId(state),
     (
       state: MultichainNetworkConfigState & AccountsState,
       account?: InternalAccount,
