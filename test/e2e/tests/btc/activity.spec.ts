@@ -70,7 +70,7 @@ describe('BTC Account - Activity', function (this: Suite) {
   const recipientAddress = 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf';
   const sendAmount = '0.5';
 
-  it('Send transaction is rendered with Sent label and pending status', async function () {
+  it('Send transaction is rendered with Sending label and pending status', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
@@ -82,11 +82,11 @@ describe('BTC Account - Activity', function (this: Suite) {
         await broadcastBitcoinSend(driver, recipientAddress, sendAmount);
 
         const activity = new ActivityListPage(driver);
-        await activity.checkTransactionActivityByText('Sent');
+        await activity.checkTransactionActivityByText('Sending BTC');
         await activity.checkWaitForTransactionStatus('pending');
         await activity.checkPendingTxNumberDisplayedInActivity(1);
         await activity.checkTxAction({
-          action: 'Sent',
+          action: 'Sending BTC',
           txIndex: 1,
           confirmedTx: 0,
         });
@@ -108,10 +108,10 @@ describe('BTC Account - Activity', function (this: Suite) {
         await homePage.goToActivityList();
 
         const activity = new ActivityListPage(driver);
-        await activity.checkTransactionActivityByText('Received');
+        await activity.checkTransactionActivityByText('Received BTC');
         await activity.checkConfirmedTxNumberDisplayedInActivity(1);
         await activity.checkTxAction({
-          action: 'Received',
+          action: 'Received BTC',
           txIndex: 1,
           confirmedTx: 1,
         });
@@ -132,7 +132,7 @@ describe('BTC Account - Activity', function (this: Suite) {
         await broadcastBitcoinSend(driver, recipientAddress, sendAmount);
 
         const activity = new ActivityListPage(driver);
-        await activity.checkTransactionActivityByText('Sent');
+        await activity.checkTransactionActivityByText('Sending BTC');
         await activity.checkPendingTxNumberDisplayedInActivity(1);
         await activity.clickOnActivity(1);
 
@@ -165,7 +165,7 @@ describe('BTC Account - Activity', function (this: Suite) {
 
         await homePage.goToActivityList();
         const activity = new ActivityListPage(driver);
-        await activity.checkTransactionActivityByText('Received');
+        await activity.checkTransactionActivityByText('Received BTC');
         await activity.checkConfirmedTxNumberDisplayedInActivity(1);
         await activity.checkTransactionAmount(`${DEFAULT_BTC_BALANCE} BTC`);
       },
