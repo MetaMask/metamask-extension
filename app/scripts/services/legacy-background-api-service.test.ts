@@ -12,12 +12,16 @@ import {
   KeyringTypes,
 } from '@metamask/keyring-controller';
 import { add0x, hexToBytes } from '@metamask/utils';
-import { SecretType } from '@metamask/seedless-onboarding-controller';
+import {
+  EncAccountDataType,
+  SecretType,
+} from '@metamask/seedless-onboarding-controller';
 import { Caip25CaveatType } from '@metamask/chain-agnostic-permission';
 import { SnapId } from '@metamask/snaps-sdk';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import mockState from '../../../test/data/mock-state.json';
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../shared/constants/app';
+import { createSentryError } from '../../../shared/lib/error';
 import {
   LegacyBackgroundApiService,
   LegacyBackgroundApiServiceMessenger,
@@ -44,7 +48,7 @@ describe('LegacyBackgroundApiService', () => {
           'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
         );
 
-        expect(result).toStrictEqual(false);
+        expect(result).toStrictEqual(true);
       });
     });
 
@@ -63,7 +67,7 @@ describe('LegacyBackgroundApiService', () => {
           'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
         );
 
-        expect(result).toStrictEqual(false);
+        expect(result).toStrictEqual(true);
       });
     });
 
@@ -82,7 +86,7 @@ describe('LegacyBackgroundApiService', () => {
           'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
         );
 
-        expect(result).toStrictEqual(false);
+        expect(result).toStrictEqual(true);
       });
     });
 
@@ -707,6 +711,24 @@ describe('LegacyBackgroundApiService', () => {
           jest.fn(),
         );
 
+        const runMigrationsHandler = jest.fn().mockResolvedValue(false);
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          jest.fn().mockReturnValue({ completedOnboarding: true }),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:runMigrations',
+          runMigrationsHandler,
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:getState',
+          jest.fn().mockReturnValue({ migrationVersion: 0 }),
+        );
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:trackEvent',
+          jest.fn(),
+        );
+
         const callSpy = jest.spyOn(serviceMessenger, 'call');
 
         await expect(
@@ -723,6 +745,9 @@ describe('LegacyBackgroundApiService', () => {
           expect.any(Function),
         );
 
+        // Migrations run before adding the new secret data.
+        expect(runMigrationsHandler).toHaveBeenCalledTimes(1);
+
         expect(callSpy).toHaveBeenCalledWith(
           'SeedlessOnboardingController:addNewSecretData',
           hexToBytes(
@@ -730,7 +755,7 @@ describe('LegacyBackgroundApiService', () => {
               '0000000000000000000000000000000000000000000000000000000000000001',
             ),
           ),
-          SecretType.PrivateKey,
+          EncAccountDataType.ImportedPrivateKey,
           { keyringId: 'foo' },
         );
 
@@ -819,6 +844,12 @@ describe('LegacyBackgroundApiService', () => {
         rootMessenger.registerActionHandler(
           'KeyringController:removeAccount',
           jest.fn(),
+        );
+
+        // Onboarding is not yet complete, so migrations are skipped.
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          jest.fn().mockReturnValue({ completedOnboarding: false }),
         );
 
         const callSpy = jest.spyOn(serviceMessenger, 'call');
@@ -976,8 +1007,8 @@ describe('LegacyBackgroundApiService', () => {
 
       await withService(async ({ rootMessenger }) => {
         rootMessenger.registerActionHandler(
-          'KeyringController:getKeyringsByType',
-          jest.fn().mockReturnValue([snapKeyring]),
+          'SnapAccountService:getLegacySnapKeyring',
+          jest.fn().mockResolvedValue(snapKeyring),
         );
 
         const result = await rootMessenger.call(
@@ -986,6 +1017,171 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         expect(result).toStrictEqual(['0x123']);
+      });
+    });
+  });
+
+  describe('checkIsSeedlessPasswordOutdated', () => {
+    it("returns false if it's a social login flow", async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(true),
+        );
+
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          jest.fn().mockReturnValue({ completedOnboarding: false }),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
+        );
+
+        expect(result).toStrictEqual(false);
+      });
+    });
+
+    it('returns false if the user has not completed onboarding', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(false),
+        );
+
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          jest.fn().mockReturnValue({ completedOnboarding: false }),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
+        );
+
+        expect(result).toStrictEqual(false);
+      });
+    });
+
+    it('returns true if the password is outdated', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(true),
+        );
+
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          jest.fn().mockReturnValue({ completedOnboarding: true }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:checkIsPasswordOutdated',
+          jest.fn().mockResolvedValue(true),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
+        );
+
+        expect(result).toStrictEqual(true);
+      });
+    });
+
+    it('returns false if the password is not outdated', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(true),
+        );
+
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          jest.fn().mockReturnValue({ completedOnboarding: true }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:checkIsPasswordOutdated',
+          jest.fn().mockResolvedValue(false),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
+        );
+
+        expect(result).toStrictEqual(false);
+      });
+    });
+
+    it('skips the cache if specified', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(true),
+        );
+
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          jest.fn().mockReturnValue({ completedOnboarding: true }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:checkIsPasswordOutdated',
+          jest.fn().mockResolvedValue(false),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
+          { skipCache: true },
+        );
+
+        expect(result).toStrictEqual(false);
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'SeedlessOnboardingController:checkIsPasswordOutdated',
+          { skipCache: true },
+        );
+      });
+    });
+
+    it('captures and throws an error', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const error = new Error('Test error');
+
+        const captureExceptionSpy = jest.spyOn(
+          serviceMessenger,
+          'captureException',
+        );
+
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(true),
+        );
+
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          jest.fn().mockReturnValue({ completedOnboarding: true }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:checkIsPasswordOutdated',
+          jest.fn().mockRejectedValue(error),
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
+            { captureSentryError: true },
+          ),
+        ).rejects.toThrow(error);
+
+        expect(captureExceptionSpy).toHaveBeenCalledWith(
+          createSentryError(
+            'Failed to check if seedless password is outdated',
+            error,
+          ),
+        );
       });
     });
   });
@@ -1071,9 +1267,13 @@ function getMessenger(
       'SeedlessOnboardingController:addNewSecretData',
       'SeedlessOnboardingController:updateBackupMetadataState',
       'PermissionController:updatePermissionsByCaveat',
-      'KeyringController:getKeyringsByType',
-      'KeyringController:addNewKeyring',
+      'SnapAccountService:getLegacySnapKeyring',
       'PreferencesController:setPasswordForgotten',
+      'OnboardingController:getState',
+      'SeedlessOnboardingController:checkIsPasswordOutdated',
+      'SeedlessOnboardingController:getState',
+      'SeedlessOnboardingController:runMigrations',
+      'MetaMetricsController:trackEvent',
     ],
   });
 

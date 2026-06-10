@@ -71,9 +71,7 @@ export const ExtensionLinkButton = (props: {
     return null;
   }
 
-  const href = extensionLink.extensionLinkRoute.startsWith('/')
-    ? extensionLink.extensionLinkRoute
-    : `/${extensionLink.extensionLinkRoute}`;
+  const href = `/${extensionLink.extensionLinkRoute}`;
 
   const onClick: React.MouseEventHandler<HTMLElement> = (event) => {
     analyticCallback();
@@ -91,7 +89,6 @@ export const ExtensionLinkButton = (props: {
       variant={ButtonVariant.Primary}
       text={extensionLink.extensionLinkText}
       href={href}
-      isExternal={false}
       onClick={onClick}
     />
   );

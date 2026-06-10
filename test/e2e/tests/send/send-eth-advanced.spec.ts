@@ -22,7 +22,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { Anvil } from '../../seeder/anvil';
-import { createInternalTransaction } from '../../page-objects/flows/transaction';
+import { createInternalTransaction } from '../../page-objects/flows/transaction.flow';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 const ETH_USD_PRICE = 1700;
@@ -73,7 +73,7 @@ describe('Send ETH - Advanced', function () {
           // Verify balance is displayed correctly (format: "X.XX ETH")
           await homePage.checkBalanceIsDisplayed();
 
-          await activityListPage.openActivityTab();
+          await activityListPage.goToActivityList();
           await activityListPage.checkConfirmedTxNumberDisplayedInActivity(1);
           await activityListPage.checkNoFailedTransactions();
         },
@@ -130,7 +130,7 @@ describe('Send ETH - Advanced', function () {
           );
 
           // Find the transaction in the transactions list
-          await activityListPage.openActivityTab();
+          await activityListPage.goToActivityList();
           await activityListPage.checkConfirmedTxNumberDisplayedInActivity(1);
           await activityListPage.checkTxAmountInActivity('-0 ETH');
 
@@ -190,9 +190,11 @@ describe('Send ETH - Advanced', function () {
           await homePage.checkBalanceIsDisplayed();
 
           // Find the transaction in the transactions list
-          await activityListPage.openActivityTab();
+          await activityListPage.goToActivityList();
           await activityListPage.checkConfirmedTxNumberDisplayedInActivity(1);
-          await activityListPage.checkTxAmountInActivity('-0 ETH');
+          await activityListPage.checkTxAction({
+            action: 'Contract interaction',
+          });
 
           // Verify the transaction has the expected gas values
           await activityListPage.clickOnActivity(1);

@@ -32,9 +32,9 @@ export type TransactionActivityEmptyStateProps = {
   className?: string;
 };
 
-export const TransactionActivityEmptyState: React.FC<
-  TransactionActivityEmptyStateProps
-> = ({ className }) => {
+export const TransactionActivityEmptyState = ({
+  className,
+}: TransactionActivityEmptyStateProps) => {
   const account = useSelector(getSelectedInternalAccount);
   const t = useI18nContext();
   const theme = useTheme();

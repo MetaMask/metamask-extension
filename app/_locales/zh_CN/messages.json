@@ -89,6 +89,9 @@
     "message": "使用 “$1” 的钱包已存在。是否改为尝试登录？",
     "description": "$1 is the account email"
   },
+  "accountAlreadyExistsLoginDescriptionTelegram": {
+    "message": "此 Telegram 账户已关联一个钱包。要解锁此钱包吗？"
+  },
   "accountAlreadyExistsTitle": {
     "message": "钱包已存在"
   },
@@ -123,6 +126,10 @@
   "accountNotFoundDescription": {
     "message": "我们找不到 “$1” 的钱包。您想使用此登录名创建新钱包吗？",
     "description": "$1 is the account email"
+  },
+  "accountNotFoundDescriptionTelegram": {
+    "message": "未找到与此 $1 账户关联的钱包。要使用此登录方式创建新钱包吗？",
+    "description": "$1 is the social login provider"
   },
   "accountNotFoundTitle": {
     "message": "未找到钱包"
@@ -163,23 +170,68 @@
   "activity": {
     "message": "活动"
   },
+  "activityEmptyDescription": {
+    "message": "今天就来兑换你的第一个代币。"
+  },
+  "activityEmptyNoFundsDescription": {
+    "message": "为钱包充值即可开始使用。"
+  },
   "activity_approveSpendingCap_failed_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_failed_title": {
+    "message": "授权失败"
   },
   "activity_approveSpendingCap_pending_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
   },
+  "activity_approveSpendingCap_pending_title": {
+    "message": "正在批准授权额度"
+  },
   "activity_approveSpendingCap_success_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_success_title": {
+    "message": "已批准授权额度"
   },
   "activity_bridge_failed_description": {
     "message": "跨链桥操作失败"
   },
   "activity_bridge_failed_title": {
     "message": "跨链桥操作失败"
+  },
+  "activity_bridge_pending_description": {
+    "message": "正在跨链桥转移 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_pending_title": {
+    "message": "正在跨链桥转移 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_success_description": {
+    "message": "已跨链桥转移 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_success_title": {
+    "message": "已跨链桥转移 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_buy_failed_description": {
+    "message": "购买失败"
+  },
+  "activity_buy_failed_title": {
+    "message": "购买失败"
+  },
+  "activity_buy_pending_description": {
+    "message": "正在购买 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_buy_pending_title": {
+    "message": "正在购买 $1",
+    "description": "$1 is the token symbol"
   },
   "activity_buy_success_description": {
     "message": "已购买 $1",
@@ -189,14 +241,100 @@
     "message": "已购买 $1",
     "description": "$1 is the token symbol"
   },
-  "activity_contractInteraction_success_title": {
-    "message": "智能合约交互"
+  "activity_claimMusdBonus_failed_title": {
+    "message": "领取失败"
+  },
+  "activity_claimMusdBonus_pending_title": {
+    "message": "正在领取 mUSD 奖励"
+  },
+  "activity_claimMusdBonus_success_title": {
+    "message": "已领取 mUSD 奖励"
+  },
+  "activity_claim_failed_description": {
+    "message": "领取失败"
+  },
+  "activity_claim_failed_title": {
+    "message": "领取失败"
+  },
+  "activity_claim_pending_description": {
+    "message": "正在领取 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_claim_pending_title": {
+    "message": "正在领取 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_claim_success_description": {
+    "message": "已领取 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_claim_success_title": {
+    "message": "已领取 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_contractDeployment_failed_description": {
+    "message": "部署失败"
+  },
+  "activity_contractDeployment_failed_title": {
+    "message": "部署失败"
+  },
+  "activity_contractDeployment_pending_description": {
+    "message": "正在部署合约"
+  },
+  "activity_contractDeployment_pending_title": {
+    "message": "正在部署合约"
+  },
+  "activity_contractDeployment_success_description": {
+    "message": "合约已部署"
+  },
+  "activity_contractDeployment_success_title": {
+    "message": "合约已部署"
+  },
+  "activity_contractInteraction_failed_title": {
+    "message": "交互失败"
+  },
+  "activity_contractInteraction_pending_title": {
+    "message": "正在交互"
+  },
+  "activity_convert_failed_description": {
+    "message": "兑换失败"
+  },
+  "activity_convert_failed_title": {
+    "message": "兑换失败"
+  },
+  "activity_convert_pending_description": {
+    "message": "正在兑换为 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_convert_pending_title": {
+    "message": "正在兑换为 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_convert_success_description": {
+    "message": "已兑换为 $1",
+    "description": "$1 is the token symbol"
   },
   "activity_deposit_failed_description": {
     "message": "存款失败"
   },
   "activity_deposit_failed_title": {
     "message": "存款失败"
+  },
+  "activity_deposit_pending_description": {
+    "message": "正在存入 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_deposit_pending_title": {
+    "message": "正在存入 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_deposit_success_description": {
+    "message": "已存入 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_deposit_success_title": {
+    "message": "已存入 $1",
+    "description": "$1 is the token symbol"
   },
   "activity_fallback_description": {
     "message": "交易"
@@ -208,13 +346,22 @@
     "message": "$1",
     "description": "$1 is the token symbol"
   },
+  "activity_increaseSpendingCap_failed_title": {
+    "message": "提高失败"
+  },
   "activity_increaseSpendingCap_pending_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
   },
+  "activity_increaseSpendingCap_pending_title": {
+    "message": "正在提高授权额度"
+  },
   "activity_increaseSpendingCap_success_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
+  },
+  "activity_increaseSpendingCap_success_title": {
+    "message": "已提高授权额度"
   },
   "activity_lendingDeposit_failed_title": {
     "message": "存款失败"
@@ -225,15 +372,216 @@
   "activity_lendingWithdrawal_failed_title": {
     "message": "提款失败"
   },
-  "activity_lendingWithdrawal_success_description": {
-    "message": "出借提款"
+  "activity_lendingWithdrawal_pending_description": {
+    "message": "正在提取 $1",
+    "description": "$1 is the token symbol"
   },
-  "activity_lendingWithdrawal_success_title": {
-    "message": "出借提款"
+  "activity_lendingWithdrawal_pending_title": {
+    "message": "正在提取 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_marketCloseShort_failed_description": {
+    "message": "平空失败"
+  },
+  "activity_marketCloseShort_failed_title": {
+    "message": "平空失败"
+  },
+  "activity_marketCloseShort_pending_description": {
+    "message": "正在市价平空"
+  },
+  "activity_marketCloseShort_pending_title": {
+    "message": "正在市价平空"
+  },
+  "activity_marketCloseShort_success_description": {
+    "message": "已市价平空"
+  },
+  "activity_marketCloseShort_success_title": {
+    "message": "已市价平空"
+  },
+  "activity_marketShort_failed_description": {
+    "message": "平空失败"
+  },
+  "activity_marketShort_failed_title": {
+    "message": "平空失败"
+  },
+  "activity_marketShort_pending_description": {
+    "message": "正在市价平空"
+  },
+  "activity_marketShort_pending_title": {
+    "message": "正在市价平空"
+  },
+  "activity_marketShort_success_description": {
+    "message": "已市价平空"
+  },
+  "activity_marketShort_success_title": {
+    "message": "已市价平空"
+  },
+  "activity_nftMint_failed_title": {
+    "message": "铸造失败"
+  },
+  "activity_nftMint_pending_title": {
+    "message": "正在铸造 $1",
+    "description": "$1 is the NFT token symbol"
   },
   "activity_nftMint_success_title": {
     "message": "已铸造 $1",
     "description": "$1 is the NFT token symbol"
+  },
+  "activity_perpsAddFunds_failed_description": {
+    "message": "入金失败"
+  },
+  "activity_perpsAddFunds_failed_title": {
+    "message": "入金失败"
+  },
+  "activity_perpsAddFunds_pending_description": {
+    "message": "正在入金"
+  },
+  "activity_perpsAddFunds_pending_title": {
+    "message": "正在入金"
+  },
+  "activity_perpsAddFunds_success_description": {
+    "message": "账户已入金"
+  },
+  "activity_perpsAddFunds_success_title": {
+    "message": "账户已入金"
+  },
+  "activity_perpsCloseLongLiquidated_failed_description": {
+    "message": "平多失败（强平）"
+  },
+  "activity_perpsCloseLongLiquidated_failed_title": {
+    "message": "平多失败（强平）"
+  },
+  "activity_perpsCloseLongLiquidated_pending_description": {
+    "message": "正在平多（强平）"
+  },
+  "activity_perpsCloseLongLiquidated_pending_title": {
+    "message": "正在平多（强平）"
+  },
+  "activity_perpsCloseLongLiquidated_success_description": {
+    "message": "已平多（强平）"
+  },
+  "activity_perpsCloseLongLiquidated_success_title": {
+    "message": "已平多（强平）"
+  },
+  "activity_perpsCloseLongStopLoss_failed_description": {
+    "message": "平多止损失败"
+  },
+  "activity_perpsCloseLongStopLoss_failed_title": {
+    "message": "平多止损失败"
+  },
+  "activity_perpsCloseLongStopLoss_pending_description": {
+    "message": "正在平多止损"
+  },
+  "activity_perpsCloseLongStopLoss_pending_title": {
+    "message": "正在平多止损"
+  },
+  "activity_perpsCloseLongStopLoss_success_description": {
+    "message": "已平多止损"
+  },
+  "activity_perpsCloseLongStopLoss_success_title": {
+    "message": "已平多止损"
+  },
+  "activity_perpsCloseLongTakeProfit_failed_description": {
+    "message": "平多失败"
+  },
+  "activity_perpsCloseLongTakeProfit_failed_title": {
+    "message": "平多失败"
+  },
+  "activity_perpsCloseLongTakeProfit_pending_description": {
+    "message": "正在平多止盈"
+  },
+  "activity_perpsCloseLongTakeProfit_pending_title": {
+    "message": "正在平多止盈"
+  },
+  "activity_perpsCloseLongTakeProfit_success_description": {
+    "message": "已平多止盈"
+  },
+  "activity_perpsCloseLongTakeProfit_success_title": {
+    "message": "已平多止盈"
+  },
+  "activity_perpsCloseLong_failed_description": {
+    "message": "平多失败"
+  },
+  "activity_perpsCloseLong_failed_title": {
+    "message": "平多失败"
+  },
+  "activity_perpsCloseLong_pending_description": {
+    "message": "正在平多"
+  },
+  "activity_perpsCloseLong_pending_title": {
+    "message": "正在平多"
+  },
+  "activity_perpsCloseLong_success_description": {
+    "message": "已平多"
+  },
+  "activity_perpsCloseLong_success_title": {
+    "message": "已平多"
+  },
+  "activity_perpsCloseShortLiquidated_failed_description": {
+    "message": "平空失败（强平）"
+  },
+  "activity_perpsCloseShortLiquidated_failed_title": {
+    "message": "平空失败（强平）"
+  },
+  "activity_perpsCloseShortLiquidated_pending_description": {
+    "message": "正在平空（强平）"
+  },
+  "activity_perpsCloseShortLiquidated_pending_title": {
+    "message": "正在平空（强平）"
+  },
+  "activity_perpsCloseShortLiquidated_success_description": {
+    "message": "已平空（强平）"
+  },
+  "activity_perpsCloseShortLiquidated_success_title": {
+    "message": "已平空（强平）"
+  },
+  "activity_perpsCloseShortStopLoss_failed_description": {
+    "message": "平空失败"
+  },
+  "activity_perpsCloseShortStopLoss_failed_title": {
+    "message": "平空失败"
+  },
+  "activity_perpsCloseShortStopLoss_pending_description": {
+    "message": "正在平空止损"
+  },
+  "activity_perpsCloseShortStopLoss_pending_title": {
+    "message": "正在平空止损"
+  },
+  "activity_perpsCloseShortStopLoss_success_description": {
+    "message": "已平空止损"
+  },
+  "activity_perpsCloseShortStopLoss_success_title": {
+    "message": "已平空止损"
+  },
+  "activity_perpsCloseShortTakeProfit_failed_description": {
+    "message": "平空失败"
+  },
+  "activity_perpsCloseShortTakeProfit_failed_title": {
+    "message": "平空失败"
+  },
+  "activity_perpsCloseShortTakeProfit_pending_description": {
+    "message": "正在平空止盈"
+  },
+  "activity_perpsCloseShortTakeProfit_pending_title": {
+    "message": "正在平空止盈"
+  },
+  "activity_perpsCloseShortTakeProfit_success_description": {
+    "message": "已平空止盈"
+  },
+  "activity_perpsCloseShortTakeProfit_success_title": {
+    "message": "已平空止盈"
+  },
+  "activity_perpsCloseShort_failed_description": {
+    "message": "平空失败"
+  },
+  "activity_perpsCloseShort_failed_title": {
+    "message": "平空失败"
+  },
+  "activity_perpsCloseShort_pending_description": {
+    "message": "正在平空"
+  },
+  "activity_perpsCloseShort_pending_title": {
+    "message": "正在平空"
   },
   "activity_perpsCloseShort_success_description": {
     "message": "平仓空头仓位"
@@ -241,11 +589,77 @@
   "activity_perpsCloseShort_success_title": {
     "message": "平仓空头仓位"
   },
+  "activity_perpsOpenLong_failed_description": {
+    "message": "开多失败"
+  },
+  "activity_perpsOpenLong_failed_title": {
+    "message": "开多失败"
+  },
+  "activity_perpsOpenLong_pending_description": {
+    "message": "正在开多"
+  },
+  "activity_perpsOpenLong_pending_title": {
+    "message": "正在开多"
+  },
   "activity_perpsOpenLong_success_description": {
     "message": "已开设多头仓位"
   },
   "activity_perpsOpenLong_success_title": {
     "message": "已开设多头仓位"
+  },
+  "activity_perpsOpenShort_failed_description": {
+    "message": "开空失败"
+  },
+  "activity_perpsOpenShort_failed_title": {
+    "message": "开空失败"
+  },
+  "activity_perpsOpenShort_pending_description": {
+    "message": "正在开空"
+  },
+  "activity_perpsOpenShort_pending_title": {
+    "message": "正在开空"
+  },
+  "activity_perpsOpenShort_success_description": {
+    "message": "已开空"
+  },
+  "activity_perpsOpenShort_success_title": {
+    "message": "已开空"
+  },
+  "activity_perpsPaidFundingFees_failed_description": {
+    "message": "资金费支付失败"
+  },
+  "activity_perpsPaidFundingFees_failed_title": {
+    "message": "资金费支付失败"
+  },
+  "activity_perpsPaidFundingFees_pending_description": {
+    "message": "正在支付资金费"
+  },
+  "activity_perpsPaidFundingFees_pending_title": {
+    "message": "正在支付资金费"
+  },
+  "activity_perpsPaidFundingFees_success_description": {
+    "message": "已支付资金费"
+  },
+  "activity_perpsPaidFundingFees_success_title": {
+    "message": "已支付资金费"
+  },
+  "activity_perpsReceivedFundingFees_failed_description": {
+    "message": "资金费收取失败"
+  },
+  "activity_perpsReceivedFundingFees_failed_title": {
+    "message": "资金费收取失败"
+  },
+  "activity_perpsReceivedFundingFees_pending_description": {
+    "message": "正在收取资金费"
+  },
+  "activity_perpsReceivedFundingFees_pending_title": {
+    "message": "正在收取资金费"
+  },
+  "activity_perpsReceivedFundingFees_success_description": {
+    "message": "已收取资金费"
+  },
+  "activity_perpsReceivedFundingFees_success_title": {
+    "message": "已收取资金费"
   },
   "activity_perpsWithdrawFunds_failed_description": {
     "message": "提款失败"
@@ -253,17 +667,89 @@
   "activity_perpsWithdrawFunds_failed_title": {
     "message": "提款失败"
   },
+  "activity_perpsWithdrawFunds_pending_description": {
+    "message": "正在提取资金"
+  },
+  "activity_perpsWithdrawFunds_pending_title": {
+    "message": "正在提取资金"
+  },
+  "activity_perpsWithdrawFunds_success_description": {
+    "message": "永续合约提现"
+  },
+  "activity_perpsWithdrawFunds_success_title": {
+    "message": "永续合约提现"
+  },
+  "activity_predictionCashedOut_failed_description": {
+    "message": "兑现失败"
+  },
+  "activity_predictionCashedOut_failed_title": {
+    "message": "兑现失败"
+  },
+  "activity_predictionCashedOut_pending_description": {
+    "message": "正在兑现"
+  },
+  "activity_predictionCashedOut_pending_title": {
+    "message": "正在兑现"
+  },
   "activity_predictionCashedOut_success_description": {
     "message": "已提现"
   },
   "activity_predictionCashedOut_success_title": {
     "message": "已提现"
   },
+  "activity_predictionClaimWinnings_failed_description": {
+    "message": "领取失败"
+  },
+  "activity_predictionClaimWinnings_failed_title": {
+    "message": "领取失败"
+  },
+  "activity_predictionClaimWinnings_pending_description": {
+    "message": "正在领取奖金"
+  },
+  "activity_predictionClaimWinnings_pending_title": {
+    "message": "正在领取奖金"
+  },
+  "activity_predictionClaimWinnings_success_description": {
+    "message": "奖金已领取"
+  },
+  "activity_predictionClaimWinnings_success_title": {
+    "message": "奖金已领取"
+  },
+  "activity_predictionPlaced_failed_description": {
+    "message": "预测失败"
+  },
+  "activity_predictionPlaced_failed_title": {
+    "message": "预测失败"
+  },
+  "activity_predictionPlaced_pending_description": {
+    "message": "正在提交预测"
+  },
+  "activity_predictionPlaced_pending_title": {
+    "message": "正在提交预测"
+  },
   "activity_predictionPlaced_success_description": {
     "message": "预测已提交"
   },
   "activity_predictionPlaced_success_title": {
     "message": "预测已提交"
+  },
+  "activity_predictionsAddFunds_failed_description": {
+    "message": "入金失败"
+  },
+  "activity_predictionsAddFunds_failed_title": {
+    "message": "入金失败"
+  },
+  "activity_predictionsAddFunds_pending_description": {
+    "message": "正在入金"
+  },
+  "activity_predictionsAddFunds_pending_title": {
+    "message": "正在入金"
+  },
+  "activity_predictionsAddFunds_success_description": {
+    "message": "账户已入金"
+  },
+  "activity_predictionsAddFunds_success_title": {
+    "message": "账户已入金"
   },
   "activity_predictionsWithdrawFunds_failed_description": {
     "message": "提款失败"
@@ -277,33 +763,84 @@
   "activity_predictionsWithdrawFunds_pending_title": {
     "message": "提取"
   },
+  "activity_predictionsWithdrawFunds_success_description": {
+    "message": "预测市场提现"
+  },
+  "activity_predictionsWithdrawFunds_success_title": {
+    "message": "预测市场提现"
+  },
   "activity_receive_failed_description": {
     "message": "从：$1",
     "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_failed_title": {
+    "message": "接收失败"
   },
   "activity_receive_pending_description": {
     "message": "从：$1",
     "description": "$1 is the shortened sender address"
   },
+  "activity_receive_pending_title": {
+    "message": "正在接收 $1",
+    "description": "$1 is the token symbol"
+  },
   "activity_receive_success_description": {
     "message": "从：$1",
     "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_success_title": {
+    "message": "已接收 $1",
+    "description": "$1 is the token symbol"
   },
   "activity_revokeSpendingCap_failed_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
   },
+  "activity_revokeSpendingCap_failed_title": {
+    "message": "撤销失败"
+  },
   "activity_revokeSpendingCap_pending_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
+  },
+  "activity_revokeSpendingCap_pending_title": {
+    "message": "正在撤销授权额度"
   },
   "activity_revokeSpendingCap_success_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
   },
+  "activity_revokeSpendingCap_success_title": {
+    "message": "已撤销授权额度"
+  },
+  "activity_sell_failed_description": {
+    "message": "出售失败"
+  },
+  "activity_sell_failed_title": {
+    "message": "出售失败"
+  },
+  "activity_sell_pending_description": {
+    "message": "正在出售 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_sell_pending_title": {
+    "message": "正在出售 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_sell_success_description": {
+    "message": "已出售 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_sell_success_title": {
+    "message": "已出售 $1",
+    "description": "$1 is the token symbol"
+  },
   "activity_send_failed_description": {
     "message": "至：$1",
     "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_failed_title": {
+    "message": "发送失败"
   },
   "activity_send_pending_description": {
     "message": "至：$1",
@@ -321,11 +858,107 @@
     "message": "已发送 $1",
     "description": "$1 is the token symbol"
   },
+  "activity_smartAccountUpgrade_failed_description": {
+    "message": "升级失败"
+  },
+  "activity_smartAccountUpgrade_failed_title": {
+    "message": "升级失败"
+  },
+  "activity_smartAccountUpgrade_pending_description": {
+    "message": "正在升级智能账户"
+  },
+  "activity_smartAccountUpgrade_pending_title": {
+    "message": "正在升级智能账户"
+  },
+  "activity_smartAccountUpgrade_success_description": {
+    "message": "智能账户已升级"
+  },
+  "activity_smartAccountUpgrade_success_title": {
+    "message": "智能账户已升级"
+  },
+  "activity_stopMarketCloseShort_failed_description": {
+    "message": "平空失败"
+  },
+  "activity_stopMarketCloseShort_failed_title": {
+    "message": "平空失败"
+  },
+  "activity_stopMarketCloseShort_pending_description": {
+    "message": "正在止损市价平空"
+  },
+  "activity_stopMarketCloseShort_pending_title": {
+    "message": "正在止损市价平空"
+  },
+  "activity_stopMarketCloseShort_success_description": {
+    "message": "已止损市价平空"
+  },
+  "activity_stopMarketCloseShort_success_title": {
+    "message": "已止损市价平空"
+  },
   "activity_swapIncomplete_failed_title": {
     "message": "交换失败"
   },
+  "activity_swapIncomplete_pending_title": {
+    "message": "正在兑换 $1",
+    "description": "$1 is the source token symbol"
+  },
+  "activity_swapIncomplete_success_title": {
+    "message": "已兑换 $1",
+    "description": "$1 is the source token symbol"
+  },
   "activity_swap_failed_title": {
     "message": "交换失败"
+  },
+  "activity_swap_pending_title": {
+    "message": "正在将 $1 兑换为 $2",
+    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+  },
+  "activity_swap_success_title": {
+    "message": "已将 $1 兑换为 $2",
+    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+  },
+  "activity_unwrap_failed_description": {
+    "message": "解除封装失败"
+  },
+  "activity_unwrap_failed_title": {
+    "message": "解除封装失败"
+  },
+  "activity_unwrap_pending_description": {
+    "message": "正在解除 $1 的封装",
+    "description": "$1 is the token symbol"
+  },
+  "activity_unwrap_pending_title": {
+    "message": "正在解除 $1 的封装",
+    "description": "$1 is the token symbol"
+  },
+  "activity_unwrap_success_description": {
+    "message": "已解除 $1 的封装",
+    "description": "$1 is the token symbol"
+  },
+  "activity_unwrap_success_title": {
+    "message": "已解除 $1 的封装",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_failed_description": {
+    "message": "封装失败"
+  },
+  "activity_wrap_failed_title": {
+    "message": "封装失败"
+  },
+  "activity_wrap_pending_description": {
+    "message": "正在封装 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_pending_title": {
+    "message": "正在封装 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_success_description": {
+    "message": "已封装 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_success_title": {
+    "message": "已封装 $1",
+    "description": "$1 is the token symbol"
   },
   "add": {
     "message": "添加"
@@ -487,6 +1120,15 @@
   "addressMismatchPunycode": {
     "message": "Punycode 版本：$1",
     "description": "$1 replaced by punycode version of the URL in confirmation request"
+  },
+  "addressPoisoningBadge": {
+    "message": "疑似投毒"
+  },
+  "addressPoisoningMessage": {
+    "message": "此地址与你之前使用过的地址非常相似，可能是有人故意用来诱导你把资金发送给错误的收款方。"
+  },
+  "addressPoisoningTitle": {
+    "message": "检测到地址投毒"
   },
   "addressQrCodeModalDescription": {
     "message": "使用此地址在 $1 上接收代币和收藏品",
@@ -1169,15 +1811,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "您需要在您的硬件钱包上确认 2 笔交易："
   },
-  "bridgeCreateSolanaAccount": {
-    "message": "创建 Solana 账户"
-  },
-  "bridgeCreateSolanaAccountDescription": {
-    "message": "如要将资产转移至 Solana 网络，您需拥有一个账户及接收地址。"
-  },
-  "bridgeCreateSolanaAccountTitle": {
-    "message": "您需要先创建一个 Solana 账户。"
-  },
   "bridgeDetailsTitle": {
     "message": "桥接详情",
     "description": "Title for the modal showing details about a bridge transaction."
@@ -1453,9 +2086,6 @@
   "bridgeSendLoading": {
     "message": "正从源链发送"
   },
-  "bridgeSolanaAccountCreated": {
-    "message": "Solana 账户已创建"
-  },
   "bridgeStatusComplete": {
     "message": "完成",
     "description": "Status text indicating a bridge transaction has successfully completed."
@@ -1722,6 +2352,9 @@
     "message": "社区贡献",
     "description": "Section heading on the language settings screen for locales maintained by community contributors."
   },
+  "compareAddresses": {
+    "message": "比较地址"
+  },
   "completed": {
     "message": "已完成"
   },
@@ -1914,6 +2547,9 @@
   },
   "confirmTitleDescSign": {
     "message": "在确认之前检查请求详情。"
+  },
+  "confirmTitleDescTokenApprovalRevocation": {
+    "message": "此网站请求获得撤销你的代币授权的权限。"
   },
   "confirmTitlePermission": {
     "message": "权限请求"
@@ -2452,6 +3088,9 @@
   "default": {
     "message": "默认"
   },
+  "defaultNetworks": {
+    "message": "默认网络"
+  },
   "defaultRpcUrl": {
     "message": "默认 RPC（远程过程调用）URL"
   },
@@ -2886,6 +3525,9 @@
   "enterYourPasswordSocialLoginFlow": {
     "message": "输入 MetaMask 密码"
   },
+  "enteredMalicious": {
+    "message": "你输入的地址"
+  },
   "errorCode": {
     "message": "代码：$1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
@@ -3235,6 +3877,18 @@
     "message": "每周",
     "description": "Time period for weekly recurring permissions redemption"
   },
+  "gatorPermissionsAllTokenApprovalRevocationPrimitives": {
+    "message": "适用于 ERC-20、ERC-1155、ERC-721 的所有撤销原语。",
+    "description": "Text shown when all token approval revocation primitives are enabled"
+  },
+  "gatorPermissionsErc20ApproveRevocation": {
+    "message": "ERC-20 授权(spender, 0)",
+    "description": "Token approval revocation method for ERC-20 approve reset"
+  },
+  "gatorPermissionsErc721ApproveRevocation": {
+    "message": "ERC-721 授权(address(0), tokenId)",
+    "description": "Token approval revocation method for ERC-721 single-token approve reset"
+  },
   "gatorPermissionsExpirationDate": {
     "message": "到期日",
     "description": "Label for the expiration date of a permission"
@@ -3254,6 +3908,22 @@
   "gatorPermissionsMaxAllowance": {
     "message": "最高授权额度",
     "description": "Label for the max allowance of a permission"
+  },
+  "gatorPermissionsPermit2ApproveRevocation": {
+    "message": "Permit2 授权(token, spender, 0, 0)",
+    "description": "Token approval revocation method for Permit2 approve reset"
+  },
+  "gatorPermissionsPermit2InvalidateNonces": {
+    "message": "Permit2 使 nonce 失效",
+    "description": "Token approval revocation method for Permit2 nonce invalidation"
+  },
+  "gatorPermissionsPermit2Lockdown": {
+    "message": "Permit2 锁定",
+    "description": "Token approval revocation method for Permit2 lockdown"
+  },
+  "gatorPermissionsRevocationMethods": {
+    "message": "撤销方法",
+    "description": "Label for the enabled token approval revocation methods"
   },
   "gatorPermissionsRevocationPending": {
     "message": "撤销待处理",
@@ -3645,6 +4315,9 @@
     "message": "已导入",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
+  "includes": {
+    "message": "包括"
+  },
   "includesXTransactions": {
     "message": "包含 $1 笔交易"
   },
@@ -3819,6 +4492,9 @@
   },
   "knownAddressRecipient": {
     "message": "已知合约地址。"
+  },
+  "knownSafeAddress": {
+    "message": "已知地址"
   },
   "knownTokenWarning": {
     "message": "此操作将编辑已经在您的钱包中列出的代币，有肯能被用来欺骗您。只有确定要更改这些代币的内容时，才通过此操作。了解更多关于 $1"
@@ -4003,6 +4679,15 @@
   "loginErrorSessionExpiredTitle": {
     "message": "会话已过期"
   },
+  "loginErrorTelegramOutdatedButton": {
+    "message": "更新 Telegram"
+  },
+  "loginErrorTelegramOutdatedDescription": {
+    "message": "无法连接到 Telegram。这通常是因为你的 Telegram 应用版本过旧。请更新 Telegram 后重试。"
+  },
+  "loginErrorTelegramOutdatedTitle": {
+    "message": "无法使用 Telegram 登录"
+  },
   "logo": {
     "message": "$1标志",
     "description": "$1 is the name of the ticker"
@@ -4016,6 +4701,10 @@
   },
   "lowLowercase": {
     "message": "低"
+  },
+  "lowValueAssets": {
+    "message": "低价值代币（$1）",
+    "description": "$1 is the number of low value assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "以太坊主网"
@@ -4196,6 +4885,9 @@
   },
   "mismatchedRpcUrl": {
     "message": "根据我们的记录，所提交的RPC URL值与此链 ID 的已知提供者不匹配。"
+  },
+  "mmFee": {
+    "message": "$1% MM 手续费。"
   },
   "month": {
     "message": "月"
@@ -4751,9 +5443,6 @@
   "newCustomTokenAdded": {
     "message": "成功添加了 “$1”！"
   },
-  "newNFTDetectedInImportNFTsMessageStrongText": {
-    "message": "“设置 > 安全和隐私”中"
-  },
   "newNFTDetectedInImportNFTsMsg": {
     "message": "要使用 Opensea 来查看您的 NFT，请在 $1 中打开“显示 NFT 媒体”。",
     "description": "$1 is used for newNFTDetectedInImportNFTsMessageStrongText"
@@ -5258,6 +5947,9 @@
   "openWallet": {
     "message": "打开钱包"
   },
+  "opensInNewTab": {
+    "message": "在新标签页中打开"
+  },
   "options": {
     "message": "期权"
   },
@@ -5285,6 +5977,9 @@
   },
   "otherPermissionsOnSiteTitle": {
     "message": "该网站上的其他许可"
+  },
+  "otherQrWallet": {
+    "message": "其他二维码钱包"
   },
   "otherSnaps": {
     "message": "其他 snap",
@@ -8760,6 +9455,19 @@
     "message": "您可以将整个私钥助记词粘贴到任何字段中",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
   },
+  "srpRevealMaliciousBlockBody": {
+    "message": "$1 上的攻击者正试图诱导你泄露助记词。任何人只要掌握你的助记词，就能窃取你钱包中的所有资产。",
+    "description": "Warning message shown when a malicious site is detected. $1 is the hostname of the current tab."
+  },
+  "srpRevealMaliciousBlockDismiss": {
+    "message": "返回以确保安全"
+  },
+  "srpRevealMaliciousBlockHeading": {
+    "message": "你现在可能正在遭遇诈骗"
+  },
+  "srpRevealMaliciousBlockIconAriaLabel": {
+    "message": "危险"
+  },
   "srpSecurityQuizGetStarted": {
     "message": "开始使用"
   },
@@ -9539,6 +10247,10 @@
   "transactionIncludesTypes": {
     "message": "本交易包含：$1。"
   },
+  "transactionProtectedByEnforcedSimulations": {
+    "message": "此交易已受到保护。我们已取消交易，以免造成意外资金损失。",
+    "description": "Banner shown in the transaction details view when a failed transaction reverted because an enforced-simulations caveat enforcer rejected it."
+  },
   "transactionSettings": {
     "message": "交易设置"
   },
@@ -9709,6 +10421,13 @@
   "unavailable": {
     "message": "不可用"
   },
+  "unavailableNetworkConnection": {
+    "message": "网络连接不可用"
+  },
+  "unavailableNetworkConnectionDescription": {
+    "message": "与 $1 的连接不稳定。请先更新网络连接详情再继续，或稍后重试。",
+    "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
+  },
   "unexpectedBehavior": {
     "message": "该行为属异常行为，即使账户已成功恢复，仍须作为漏洞提交报告。"
   },
@@ -9735,6 +10454,9 @@
   "unknownNetworkForKeyEntropy": {
     "message": "未知网络",
     "description": "Displayed on places like Snap install warning when regular name is not available."
+  },
+  "unknownPermissionType": {
+    "message": "未知权限类型"
   },
   "unknownQrCode": {
     "message": "错误：我们无法识别该二维码"
@@ -9912,6 +10634,10 @@
   "viewinExplorer": {
     "message": "在 Explorer 中查看 $1",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
+  },
+  "vip": {
+    "message": "VIP $1",
+    "description": "$1 is the VIP tier number"
   },
   "visitSite": {
     "message": "访问网站"
