@@ -33,7 +33,6 @@ import {
   type CaipChainId,
   type Hex,
 } from '@metamask/utils';
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { ERC20 } from '@metamask/controller-utils';
 
 import { TokenManagementCell } from '../../components/multichain/token-management-cell';
@@ -51,6 +50,7 @@ import {
   getEnabledNetworksByNamespace,
   getIsEvmMultichainNetworkSelected,
   getSelectedMultichainNetworkConfiguration,
+  selectEnabledNetworksAsCaipChainIds,
 } from '../../selectors/multichain/networks';
 import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
 import {
@@ -217,11 +217,6 @@ const normalizeToHexChainId = (chainId: string): string => {
     ? `0x${decimalChainId.toString(16)}`.toLowerCase()
     : chainId.toLowerCase();
 };
-
-const normalizeToCaipChainId = (chainId: string): CaipChainId =>
-  chainId.startsWith('0x')
-    ? formatChainIdToCaip(chainId as Hex)
-    : (chainId as CaipChainId);
 
 const getTokenAddressKey = (chainId: string, address: string) =>
   `${normalizeToHexChainId(chainId)}:${address.toLowerCase()}`;
@@ -489,6 +484,7 @@ export const TokenManagementPage = () => {
       return {} as Record<string, boolean>;
     }
   });
+  const enabledCaipChainIds = useSelector(selectEnabledNetworksAsCaipChainIds);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const allMultichainNetworkConfigurations = useSelector(
     getAllMultichainNetworkConfigurations,
@@ -616,11 +612,11 @@ export const TokenManagementPage = () => {
   const tokenSearchQuery = hasQuery ? debouncedSearchQuery : '';
 
   const searchNetworks = useMemo(() => {
-    if (allEnabledNetworksForAllNamespaces.length === 0) {
+    if (enabledCaipChainIds.length === 0) {
       return undefined;
     }
-    return allEnabledNetworksForAllNamespaces.map(normalizeToCaipChainId);
-  }, [allEnabledNetworksForAllNamespaces]);
+    return enabledCaipChainIds;
+  }, [enabledCaipChainIds]);
 
   const {
     data: searchResponse,
@@ -653,7 +649,7 @@ export const TokenManagementPage = () => {
   const isSearching =
     isWaitingForDebounce ||
     (hasQuery && debouncedSearchQuery.length > 0 && isSearchFetching);
-  const searchError = hasQuery ? searchQueryError : null;
+  const searchError = searchQueryError;
 
   const importedEvmTokensByChain = useMemo(() => {
     const map = new Map<string, Set<string>>();
@@ -1453,7 +1449,7 @@ export const TokenManagementPage = () => {
 
   const shouldShowTokenList = hasQuery
     ? hasResults || (!isSearching && !searchError)
-    : tokenListItems.length > 0 || !isSearchFetching;
+    : tokenListItems.length > 0 || (!isSearchFetching && !searchError);
 
   const startAccessory = (
     <Link to={DEFAULT_ROUTE} aria-label={t('back')} onClick={handleBack}>
@@ -1539,6 +1535,12 @@ export const TokenManagementPage = () => {
         }}
       >
         {hasQuery && isSearching && !hasResults ? loadingState : null}
+        {!hasQuery &&
+        !isSearchFetching &&
+        searchError &&
+        tokenListItems.length === 0
+          ? searchErrorState
+          : null}
         {hasQuery && !isSearching && searchError && !hasResults
           ? searchErrorState
           : null}
