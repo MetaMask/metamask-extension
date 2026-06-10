@@ -890,6 +890,7 @@
         "@metamask/accounts-controller": true,
         "@metamask/base-controller": true,
         "@metamask/keyring-api": true,
+        "@metamask/keyring-controller": true,
         "@metamask/account-tree-controller>@metamask/keyring-controller": true,
         "@metamask/profile-sync-controller": true,
         "@metamask/snaps-utils": true,
