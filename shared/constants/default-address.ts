@@ -2,7 +2,12 @@
  * Allowed values for default address scope: which chain namespace is used when
  * showing a single "default" address (e.g. in the account list hover or in Settings).
  */
-export type DefaultAddressScope = 'eip155' | 'solana' | 'bip122' | 'tron';
+export type DefaultAddressScope =
+  | 'eip155'
+  | 'solana'
+  | 'bip122'
+  | 'tron'
+  | 'stellar';
 
 /**
  * Default address scope: which chain namespace is used when showing a single
@@ -16,6 +21,7 @@ export const DEFAULT_ADDRESS_OPTIONS: {
   { value: 'solana', messageKey: 'networkNameSolana' },
   { value: 'bip122', messageKey: 'networkNameBitcoin' },
   { value: 'tron', messageKey: 'networkNameTron' },
+  { value: 'stellar', messageKey: 'networkNameStellar' },
 ];
 
 /**

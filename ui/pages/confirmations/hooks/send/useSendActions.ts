@@ -16,7 +16,7 @@ import { SendPages } from '../../constants/send';
 import { ConfirmationLoader } from '../useConfirmationNavigation';
 import { sendMultichainTransactionForReview } from '../../utils/multichain-snaps';
 import {
-  addLeadingZeroIfNeeded,
+  formatSnapAmountParam,
   normalizeAmount,
   submitEvmTransaction,
 } from '../../utils/send';
@@ -83,7 +83,7 @@ export const useSendActions = () => {
             fromAccountId: fromAccount?.id as string,
             toAddress: toAddress as string,
             assetId: asset.assetId as CaipAssetType,
-            amount: addLeadingZeroIfNeeded(normalizeAmount(value)) as string,
+            amount: formatSnapAmountParam(value, asset) as string,
           },
         )) as SnapConfirmSendResult;
 

@@ -201,7 +201,10 @@ import {
   TraceOperation,
 } from '../../shared/lib/trace';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
-import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multichain/networks';
+import {
+  NON_EVM_ACCOUNT_CHANGED_CONFIGS,
+  STELLAR_CHAINS,
+} from '../../shared/constants/multichain/networks';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
@@ -2024,6 +2027,18 @@ export default class MetamaskController extends EventEmitter {
       getAuthorizedScopesByOrigin,
     );
 
+    // wallet_sessionChanged for Stellar dapps when the wallet active network changes
+    this.controllerMessenger.subscribe(
+      'MultichainNetworkController:networkDidChange',
+      (chainId) => {
+        if (!chainId?.startsWith('stellar:')) {
+          return;
+        }
+
+        this._notifyActiveStellarScopeChange(chainId);
+      },
+    );
+
     // wallet_notify for multichain accountChanged when permission changes
     this.controllerMessenger.subscribe(
       `${this.permissionController.name}:stateChange`,
@@ -3015,7 +3030,14 @@ export default class MetamaskController extends EventEmitter {
       setActiveNetwork: async (id) => {
         // The multichain network controller will proxy the call to the network controller
         // in the case that the ID is an EVM network client ID.
-        return await this.multichainNetworkController.setActiveNetwork(id);
+        const result =
+          await this.multichainNetworkController.setActiveNetwork(id);
+
+        if (typeof id === 'string' && id.startsWith('stellar:')) {
+          this._notifyActiveStellarScopeChange(id);
+        }
+
+        return result;
       },
       findNetworkClientIdByChainId:
         this.networkController.findNetworkClientIdByChainId.bind(
@@ -8847,6 +8869,78 @@ export default class MetamaskController extends EventEmitter {
       },
       API_TYPE.CAIP_MULTICHAIN,
     );
+  }
+
+  /**
+   * Notifies connected Stellar dapps that the wallet active network scope changed.
+   * Sends a scoped `wallet_sessionChanged` event containing only the active
+   * Stellar scope so dapps can update their network selection.
+   *
+   * @param {string} activeStellarChainId - Active Stellar CAIP-2 chain ID.
+   */
+  _notifyActiveStellarScopeChange(activeStellarChainId) {
+    const authorizationsByOrigin = getAuthorizedScopesByOrigin(
+      this.permissionController.state,
+    );
+
+    for (const [origin, authorization] of authorizationsByOrigin.entries()) {
+      const permittedScopes = getAllScopesFromCaip25CaveatValue(authorization);
+
+      const hasStellarPermission = STELLAR_CHAINS.some((chainId) =>
+        permittedScopes.includes(chainId),
+      );
+
+      if (!hasStellarPermission) {
+        continue;
+      }
+
+      const sessionScopes = getSessionScopes(authorization, {
+        getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this),
+        sortAccountIdsByLastSelected:
+          this.sortAccountIdsByLastSelected.bind(this),
+      });
+
+      const scopeWithAccounts = STELLAR_CHAINS.map(
+        (chainId) => sessionScopes[chainId],
+      ).find((scopeObject) => scopeObject?.accounts?.length > 0);
+
+      let activeScopeObject = sessionScopes[activeStellarChainId];
+      if (!activeScopeObject && scopeWithAccounts) {
+        activeScopeObject = {
+          methods: scopeWithAccounts.methods,
+          notifications: scopeWithAccounts.notifications,
+          accounts: scopeWithAccounts.accounts,
+        };
+      }
+
+      if (!activeScopeObject) {
+        continue;
+      }
+
+      if (activeScopeObject.accounts.length === 0 && scopeWithAccounts) {
+        activeScopeObject = {
+          ...activeScopeObject,
+          accounts: scopeWithAccounts.accounts,
+        };
+      }
+
+      if (activeScopeObject.accounts.length === 0) {
+        continue;
+      }
+
+      this.notifyConnections(
+        origin,
+        {
+          method: MultichainApiNotifications.sessionChanged,
+          params: {
+            sessionScopes: {
+              [activeStellarChainId]: activeScopeObject,
+            },
+          },
+        },
+        API_TYPE.CAIP_MULTICHAIN,
+      );
+    }
   }
 
   /**

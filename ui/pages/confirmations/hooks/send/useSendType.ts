@@ -3,7 +3,7 @@ import { isBitcoinChainId, isSolanaChainId } from '@metamask/bridge-controller';
 import { useMemo } from 'react';
 
 import { useSendContext } from '../../context/send';
-import { isTronChainId } from '../../utils/network';
+import { isStellarChainId, isTronChainId } from '../../utils/network';
 
 export const useSendType = () => {
   const { asset, chainId } = useSendContext();
@@ -29,6 +29,10 @@ export const useSendType = () => {
     () => (chainId ? isTronChainId(chainId) : undefined),
     [chainId],
   );
+  const isStellarSendType = useMemo(
+    () => (chainId ? isStellarChainId(chainId) : undefined),
+    [chainId],
+  );
 
   const assetIsNative = asset ? asset?.isNative === true : undefined;
 
@@ -37,12 +41,18 @@ export const useSendType = () => {
       isBitcoinSendType,
       isEvmSendType,
       isEvmNativeSendType: isEvmSendType && assetIsNative,
-      isNonEvmSendType: isSolanaSendType || isBitcoinSendType || isTronSendType,
+      isNonEvmSendType:
+        isSolanaSendType ||
+        isBitcoinSendType ||
+        isTronSendType ||
+        isStellarSendType,
       isNonEvmNativeSendType:
         (isSolanaSendType && assetIsNative) ||
         (isBitcoinSendType && assetIsNative) ||
-        (isTronSendType && assetIsNative),
+        (isTronSendType && assetIsNative) ||
+        (isStellarSendType && assetIsNative),
       isSolanaSendType,
+      isStellarSendType,
       isTronSendType,
     }),
     [
@@ -51,6 +61,7 @@ export const useSendType = () => {
       assetIsNative,
       isBitcoinSendType,
       isTronSendType,
+      isStellarSendType,
     ],
   );
 };

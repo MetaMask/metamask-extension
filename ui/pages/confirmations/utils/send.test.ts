@@ -19,6 +19,7 @@ import {
   removeAdditionalDecimalPlaces,
   getFractionLength,
   addLeadingZeroIfNeeded,
+  formatSnapAmountParam,
   isValidPositiveNumericString,
   normalizeAmount,
 } from './send';
@@ -272,29 +273,51 @@ describe('Send - utils', () => {
 
   describe('normalizeAmount', () => {
     it('returns "0" for falsy values', () => {
-      expect(normalizeAmount(undefined)).toEqual('0');
-      expect(normalizeAmount('')).toEqual('0');
+      expect(normalizeAmount(undefined)).toStrictEqual('0');
+      expect(normalizeAmount('')).toStrictEqual('0');
     });
 
     it('returns "0" for a standalone decimal point', () => {
-      expect(normalizeAmount('.')).toEqual('0');
+      expect(normalizeAmount('.')).toStrictEqual('0');
     });
 
     it('strips trailing dot from intermediate inputs', () => {
-      expect(normalizeAmount('0.')).toEqual('0');
-      expect(normalizeAmount('5.')).toEqual('5');
-      expect(normalizeAmount('123.')).toEqual('123');
+      expect(normalizeAmount('0.')).toStrictEqual('0');
+      expect(normalizeAmount('5.')).toStrictEqual('5');
+      expect(normalizeAmount('123.')).toStrictEqual('123');
     });
 
     it('passes through valid numeric strings unchanged', () => {
-      expect(normalizeAmount('0')).toEqual('0');
-      expect(normalizeAmount('5.25')).toEqual('5.25');
-      expect(normalizeAmount('10')).toEqual('10');
-      expect(normalizeAmount('.01')).toEqual('.01');
+      expect(normalizeAmount('0')).toStrictEqual('0');
+      expect(normalizeAmount('5.25')).toStrictEqual('5.25');
+      expect(normalizeAmount('10')).toStrictEqual('10');
+      expect(normalizeAmount('.01')).toStrictEqual('.01');
     });
 
     it('coerces non-string values to string', () => {
-      expect(normalizeAmount(10 as unknown as string)).toEqual('10');
+      expect(normalizeAmount(10 as unknown as string)).toStrictEqual('10');
+    });
+  });
+
+  describe('formatSnapAmountParam', () => {
+    it('returns normalized human-readable amounts for Stellar', () => {
+      expect(
+        formatSnapAmountParam('1', {
+          chainId: 'stellar:pubnet',
+          isNative: true,
+          decimals: 7,
+        }),
+      ).toStrictEqual('1');
+    });
+
+    it('returns normalized amount for non-Stellar assets', () => {
+      expect(
+        formatSnapAmountParam('1.5', {
+          chainId: 'tron:728126428',
+          isNative: true,
+          decimals: 6,
+        }),
+      ).toStrictEqual('1.5');
     });
   });
 });

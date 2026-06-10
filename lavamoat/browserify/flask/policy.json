@@ -1074,7 +1074,7 @@
         "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/multichain-network-controller": true,
+        "@metamask/bridge-controller>@metamask/multichain-network-controller": true,
         "@metamask/polling-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -2093,6 +2093,32 @@
         "lodash": true
       }
     },
+    "@metamask/bridge-controller>@metamask/multichain-network-controller": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/keyring-api": true,
+        "@metamask/network-controller": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "lodash": true
+      }
+    },
+    "@metamask/network-enablement-controller>@metamask/multichain-network-controller": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/keyring-api": true,
+        "@metamask/network-controller": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "lodash": true
+      }
+    },
     "@metamask/multichain-transactions-controller": {
       "globals": {
         "console.error": true
@@ -2149,7 +2175,7 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
-        "@metamask/multichain-network-controller": true,
+        "@metamask/network-enablement-controller>@metamask/multichain-network-controller": true,
         "@metamask/snaps-utils>@metamask/slip44": true,
         "@metamask/utils": true,
         "reselect": true
@@ -3349,14 +3375,6 @@
       }
     },
     "eth-lattice-keyring>gridplus-sdk>ox>@noble/curves": {
-      "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
-        "@noble/hashes": true
-      }
-    },
-    "viem>ox>@noble/curves": {
       "globals": {
         "TextEncoder": true
       },
@@ -5970,7 +5988,7 @@
         "crypto.getRandomValues": true
       },
       "packages": {
-        "viem>ox>@noble/curves": true,
+        "viem>@noble/curves": true,
         "@noble/hashes": true,
         "viem>abitype": true
       }
@@ -7210,6 +7228,7 @@
     "viem": {
       "globals": {
         "AbortController": true,
+        "DOMException": true,
         "Image": true,
         "Request": true,
         "TextDecoder": true,

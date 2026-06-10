@@ -1,0 +1,186 @@
+diff --git a/dist/constants.cjs b/dist/constants.cjs
+index 22180631dd199fc9571f05f3f05b56b8706af625..1ec8e54643eecc938679a8043a36f9e9b8b52508 100644
+--- a/dist/constants.cjs
++++ b/dist/constants.cjs
+@@ -14,6 +14,8 @@ exports.SOL_DEVNET_NATIVE_ASSET = `${keyring_api_1.SolScope.Devnet}/slip44:501`;
+ exports.TRX_NATIVE_ASSET = `${keyring_api_1.TrxScope.Mainnet}/slip44:195`;
+ exports.TRX_NILE_NATIVE_ASSET = `${keyring_api_1.TrxScope.Nile}/slip44:195`;
+ exports.TRX_SHASTA_NATIVE_ASSET = `${keyring_api_1.TrxScope.Shasta}/slip44:195`;
++exports.XLM_NATIVE_ASSET = `${keyring_api_1.XlmScope.Pubnet}/slip44:148`;
++exports.XLM_TESTNET_NATIVE_ASSET = `${keyring_api_1.XlmScope.Testnet}/slip44:148`;
+ /**
+  * Supported networks by the MultichainNetworkController
+  */
+@@ -84,6 +86,18 @@ exports.AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS = {
+         nativeCurrency: exports.TRX_SHASTA_NATIVE_ASSET,
+         isEvm: false,
+     },
++    [keyring_api_1.XlmScope.Pubnet]: {
++        chainId: keyring_api_1.XlmScope.Pubnet,
++        name: 'Stellar',
++        nativeCurrency: exports.XLM_NATIVE_ASSET,
++        isEvm: false,
++    },
++    [keyring_api_1.XlmScope.Testnet]: {
++        chainId: keyring_api_1.XlmScope.Testnet,
++        name: 'Stellar Testnet',
++        nativeCurrency: exports.XLM_TESTNET_NATIVE_ASSET,
++        isEvm: false,
++    },
+ };
+ /**
+  * Array of all the Non-EVM chain IDs.
+@@ -99,6 +113,7 @@ exports.NON_EVM_TESTNET_IDS = [
+     keyring_api_1.SolScope.Devnet,
+     keyring_api_1.TrxScope.Nile,
+     keyring_api_1.TrxScope.Shasta,
++    keyring_api_1.XlmScope.Testnet,
+ ];
+ /**
+  * Metadata for the supported networks.
+@@ -116,6 +131,10 @@ exports.NETWORKS_METADATA = {
+         features: [],
+         status: network_controller_1.NetworkStatus.Available,
+     },
++    [keyring_api_1.XlmScope.Pubnet]: {
++        features: [],
++        status: network_controller_1.NetworkStatus.Available,
++    },
+ };
+ /**
+  * Default state of the {@link MultichainNetworkController}.
+@@ -178,6 +197,8 @@ exports.MULTICHAIN_NETWORK_TICKER = {
+     [keyring_api_1.TrxScope.Mainnet]: 'TRX',
+     [keyring_api_1.TrxScope.Nile]: 'tTRX',
+     [keyring_api_1.TrxScope.Shasta]: 'sTRX',
++    [keyring_api_1.XlmScope.Pubnet]: 'XLM',
++    [keyring_api_1.XlmScope.Testnet]: 'tXLM',
+ };
+ /**
+  * Multichain network asset decimals for the supported networks.
+@@ -195,5 +216,7 @@ exports.MULTICHAIN_NETWORK_DECIMAL_PLACES = {
+     [keyring_api_1.TrxScope.Mainnet]: 6,
+     [keyring_api_1.TrxScope.Nile]: 6,
+     [keyring_api_1.TrxScope.Shasta]: 6,
++    [keyring_api_1.XlmScope.Pubnet]: 7,
++    [keyring_api_1.XlmScope.Testnet]: 7,
+ };
+ //# sourceMappingURL=constants.cjs.map
+\ No newline at end of file
+diff --git a/dist/constants.mjs b/dist/constants.mjs
+index bcb4c0e947e4c34698120f34809752c663430682..45bdfdf699f5c3ac4e2d9aa289ec813f4a705117 100644
+--- a/dist/constants.mjs
++++ b/dist/constants.mjs
+@@ -1,4 +1,4 @@
+-import { BtcScope, SolScope, TrxScope } from "@metamask/keyring-api";
++import { BtcScope, SolScope, TrxScope, XlmScope } from "@metamask/keyring-api";
+ import { NetworkStatus } from "@metamask/network-controller";
+ export const BTC_NATIVE_ASSET = `${BtcScope.Mainnet}/slip44:0`;
+ export const BTC_TESTNET_NATIVE_ASSET = `${BtcScope.Testnet}/slip44:0`;
+@@ -11,6 +11,8 @@ export const SOL_DEVNET_NATIVE_ASSET = `${SolScope.Devnet}/slip44:501`;
+ export const TRX_NATIVE_ASSET = `${TrxScope.Mainnet}/slip44:195`;
+ export const TRX_NILE_NATIVE_ASSET = `${TrxScope.Nile}/slip44:195`;
+ export const TRX_SHASTA_NATIVE_ASSET = `${TrxScope.Shasta}/slip44:195`;
++export const XLM_NATIVE_ASSET = `${XlmScope.Pubnet}/slip44:148`;
++export const XLM_TESTNET_NATIVE_ASSET = `${XlmScope.Testnet}/slip44:148`;
+ /**
+  * Supported networks by the MultichainNetworkController
+  */
+@@ -81,6 +83,18 @@ export const AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS = {
+         nativeCurrency: TRX_SHASTA_NATIVE_ASSET,
+         isEvm: false,
+     },
++    [XlmScope.Pubnet]: {
++        chainId: XlmScope.Pubnet,
++        name: 'Stellar',
++        nativeCurrency: XLM_NATIVE_ASSET,
++        isEvm: false,
++    },
++    [XlmScope.Testnet]: {
++        chainId: XlmScope.Testnet,
++        name: 'Stellar Testnet',
++        nativeCurrency: XLM_TESTNET_NATIVE_ASSET,
++        isEvm: false,
++    },
+ };
+ /**
+  * Array of all the Non-EVM chain IDs.
+@@ -96,6 +110,7 @@ export const NON_EVM_TESTNET_IDS = [
+     SolScope.Devnet,
+     TrxScope.Nile,
+     TrxScope.Shasta,
++    XlmScope.Testnet,
+ ];
+ /**
+  * Metadata for the supported networks.
+@@ -113,6 +128,10 @@ export const NETWORKS_METADATA = {
+         features: [],
+         status: NetworkStatus.Available,
+     },
++    [XlmScope.Pubnet]: {
++        features: [],
++        status: NetworkStatus.Available,
++    },
+ };
+ /**
+  * Default state of the {@link MultichainNetworkController}.
+@@ -174,6 +193,8 @@ export const MULTICHAIN_NETWORK_TICKER = {
+     [TrxScope.Mainnet]: 'TRX',
+     [TrxScope.Nile]: 'tTRX',
+     [TrxScope.Shasta]: 'sTRX',
++    [XlmScope.Pubnet]: 'XLM',
++    [XlmScope.Testnet]: 'tXLM',
+ };
+ /**
+  * Multichain network asset decimals for the supported networks.
+@@ -191,5 +212,7 @@ export const MULTICHAIN_NETWORK_DECIMAL_PLACES = {
+     [TrxScope.Mainnet]: 6,
+     [TrxScope.Nile]: 6,
+     [TrxScope.Shasta]: 6,
++    [XlmScope.Pubnet]: 7,
++    [XlmScope.Testnet]: 7,
+ };
+ //# sourceMappingURL=constants.mjs.map
+\ No newline at end of file
+diff --git a/dist/types.d.cts b/dist/types.d.cts
+index 69564577d9308e716f758a1c21ad20b2a2c6f5ec..eb929aac64c86c074663138512ca2448927a6888 100644
+--- a/dist/types.d.cts
++++ b/dist/types.d.cts
+@@ -1,6 +1,6 @@
+ import type { AccountsControllerListMultichainAccountsAction } from "@metamask/accounts-controller";
+ import type { ControllerGetStateAction, ControllerStateChangeEvent } from "@metamask/base-controller";
+-import type { BtcScope, CaipAssetType, CaipChainId, SolScope, TrxScope } from "@metamask/keyring-api";
++import type { BtcScope, CaipAssetType, CaipChainId, SolScope, TrxScope, XlmScope } from "@metamask/keyring-api";
+ import type { InternalAccount } from "@metamask/keyring-internal-api";
+ import type { Messenger } from "@metamask/messenger";
+ import type { NetworkStatus, NetworkControllerSetActiveNetworkAction, NetworkControllerGetStateAction, NetworkControllerRemoveNetworkAction, NetworkControllerGetSelectedChainIdAction, NetworkControllerFindNetworkClientIdByChainIdAction, NetworkClientId } from "@metamask/network-controller";
+@@ -11,7 +11,7 @@ export type MultichainNetworkMetadata = {
+     features: string[];
+     status: NetworkStatus;
+ };
+-export type SupportedCaipChainId = BtcScope.Mainnet | BtcScope.Testnet | BtcScope.Testnet4 | BtcScope.Signet | BtcScope.Regtest | SolScope.Mainnet | SolScope.Testnet | SolScope.Devnet | TrxScope.Mainnet | TrxScope.Nile | TrxScope.Shasta;
++export type SupportedCaipChainId = BtcScope.Mainnet | BtcScope.Testnet | BtcScope.Testnet4 | BtcScope.Signet | BtcScope.Regtest | SolScope.Mainnet | SolScope.Testnet | SolScope.Devnet | TrxScope.Mainnet | TrxScope.Nile | TrxScope.Shasta | XlmScope.Pubnet | XlmScope.Testnet;
+ export type CommonNetworkConfiguration = {
+     /**
+      * EVM network flag.
+diff --git a/dist/types.d.mts b/dist/types.d.mts
+index b47aeae49c12a2b2c347fc9fb4be9430c7aacb88..f805e46ca8417e82ec97850212624a3265fd7bd3 100644
+--- a/dist/types.d.mts
++++ b/dist/types.d.mts
+@@ -1,6 +1,6 @@
+ import type { AccountsControllerListMultichainAccountsAction } from "@metamask/accounts-controller";
+ import type { ControllerGetStateAction, ControllerStateChangeEvent } from "@metamask/base-controller";
+-import type { BtcScope, CaipAssetType, CaipChainId, SolScope, TrxScope } from "@metamask/keyring-api";
++import type { BtcScope, CaipAssetType, CaipChainId, SolScope, TrxScope, XlmScope } from "@metamask/keyring-api";
+ import type { InternalAccount } from "@metamask/keyring-internal-api";
+ import type { Messenger } from "@metamask/messenger";
+ import type { NetworkStatus, NetworkControllerSetActiveNetworkAction, NetworkControllerGetStateAction, NetworkControllerRemoveNetworkAction, NetworkControllerGetSelectedChainIdAction, NetworkControllerFindNetworkClientIdByChainIdAction, NetworkClientId } from "@metamask/network-controller";
+@@ -11,7 +11,7 @@ export type MultichainNetworkMetadata = {
+     features: string[];
+     status: NetworkStatus;
+ };
+-export type SupportedCaipChainId = BtcScope.Mainnet | BtcScope.Testnet | BtcScope.Testnet4 | BtcScope.Signet | BtcScope.Regtest | SolScope.Mainnet | SolScope.Testnet | SolScope.Devnet | TrxScope.Mainnet | TrxScope.Nile | TrxScope.Shasta;
++export type SupportedCaipChainId = BtcScope.Mainnet | BtcScope.Testnet | BtcScope.Testnet4 | BtcScope.Signet | BtcScope.Regtest | SolScope.Mainnet | SolScope.Testnet | SolScope.Devnet | TrxScope.Mainnet | TrxScope.Nile | TrxScope.Shasta | XlmScope.Pubnet | XlmScope.Testnet;
+ export type CommonNetworkConfiguration = {
+     /**
+      * EVM network flag.

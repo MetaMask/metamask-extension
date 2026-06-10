@@ -5087,15 +5087,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/devices@npm:8.14.1, @ledgerhq/devices@npm:^8.4.4":
-  version: 8.14.1
-  resolution: "@ledgerhq/devices@npm:8.14.1"
+"@ledgerhq/devices@npm:8.15.0, @ledgerhq/devices@npm:^8.4.4":
+  version: 8.15.0
+  resolution: "@ledgerhq/devices@npm:8.15.0"
   dependencies:
-    "@ledgerhq/errors": "npm:^6.34.0"
+    "@ledgerhq/errors": "npm:^6.35.0"
     "@ledgerhq/logs": "npm:^6.17.0"
     rxjs: "npm:7.8.2"
     semver: "npm:7.7.3"
-  checksum: 10/d16875c3382d23de28cd575a4ac1dcd3e7de456dd2a03521349d89f8c5ec2d4d001dede98eb4e7eb24b5c3a187aad36b344a867a0fa68ccbfe5bfea7c287a081
+  checksum: 10/dc9966d52c41cd7129f51baaa736e93222cc9022991df6d5d04e1232b10bbc9829069c0ba0605d445639b91b8ab41f2fb9729d1b4627fe7c4794a3cc8c06c5aa
   languageName: node
   linkType: hard
 
@@ -5241,14 +5241,14 @@ __metadata:
   linkType: hard
 
 "@ledgerhq/hw-transport@npm:^6.31.0, @ledgerhq/hw-transport@npm:^6.31.3, @ledgerhq/hw-transport@npm:^6.31.4":
-  version: 6.35.1
-  resolution: "@ledgerhq/hw-transport@npm:6.35.1"
+  version: 6.35.3
+  resolution: "@ledgerhq/hw-transport@npm:6.35.3"
   dependencies:
-    "@ledgerhq/devices": "npm:8.14.1"
-    "@ledgerhq/errors": "npm:^6.34.0"
+    "@ledgerhq/devices": "npm:8.15.0"
+    "@ledgerhq/errors": "npm:^6.35.0"
     "@ledgerhq/logs": "npm:^6.17.0"
     events: "npm:^3.3.0"
-  checksum: 10/952214678c1ebe4e6f797ddfc605c692f72b5bd44a863f4a4c61c0aab24a9c2819c42d3ee92cf71789825bccf8acec37fcc89fc1fb16d9e63c37039521d41a49
+  checksum: 10/1451a9566915c86c7268cdaa04e3c0501a0d14be7019b1e1b3fc2a0e07d38c6033a3ba4c68aaffc088ad05ac9a334f6fbb0e40985592a8f992aa17fbf1b7911f
   languageName: node
   linkType: hard
 
@@ -5293,10 +5293,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lit-labs/ssr-dom-shim@npm:^1.2.0":
-  version: 1.3.0
-  resolution: "@lit-labs/ssr-dom-shim@npm:1.3.0"
-  checksum: 10/a15c5d145a20f367a392cff91f2091ffe54457119ac26569670bbbe32760f86d1e250f865dc1bd0604641106376776c4862a8fff9adb44f9881b510747c08680
+"@lit-labs/ssr-dom-shim@npm:^1.2.0, @lit-labs/ssr-dom-shim@npm:^1.5.0":
+  version: 1.6.0
+  resolution: "@lit-labs/ssr-dom-shim@npm:1.6.0"
+  checksum: 10/144432432e1749c4878a59baf41b2afaadef565675d64b2a8e088c6f54e36f26f67ef43aa93e49d3e6dd38a5e27c41059e981c33accdb4e8c6d47c1048696b80
   languageName: node
   linkType: hard
 
@@ -13729,8 +13729,8 @@ __metadata:
   linkType: hard
 
 "@solana/web3.js@npm:^1.32.0, @solana/web3.js@npm:^1.36.0, @solana/web3.js@npm:^1.91.4, @solana/web3.js@npm:^1.95.5":
-  version: 1.98.2
-  resolution: "@solana/web3.js@npm:1.98.2"
+  version: 1.98.4
+  resolution: "@solana/web3.js@npm:1.98.4"
   dependencies:
     "@babel/runtime": "npm:^7.25.0"
     "@noble/curves": "npm:^1.4.2"
@@ -13747,7 +13747,7 @@ __metadata:
     node-fetch: "npm:^2.7.0"
     rpc-websockets: "npm:^9.0.2"
     superstruct: "npm:^2.0.2"
-  checksum: 10/2fab48350531ade411dfcec9839b792b0dc87c4e6717e082c2f6f5d9782c1ac13bf0171b751a0ecca612492301771503696c4c10070e7cea74b27ebdc4ab034c
+  checksum: 10/cd7cc9c989b704d8af73d622823147f936329b76440f0b4fb12372f5b5904f5033bb8a16e03924360c627c828703156cd8d544281fad818569068ed10debd17c
   languageName: node
   linkType: hard
 
@@ -21328,9 +21328,9 @@ __metadata:
   linkType: hard
 
 "chalk@npm:^5.3.0, chalk@npm:^5.4.1":
-  version: 5.4.1
-  resolution: "chalk@npm:5.4.1"
-  checksum: 10/29df3ffcdf25656fed6e95962e2ef86d14dfe03cd50e7074b06bad9ffbbf6089adbb40f75c00744d843685c8d008adaf3aed31476780312553caf07fa86e5bc7
+  version: 5.6.2
+  resolution: "chalk@npm:5.6.2"
+  checksum: 10/1b2f48f6fba1370670d5610f9cd54c391d6ede28f4b7062dd38244ea5768777af72e5be6b74fb6c6d54cb84c4a2dff3f3afa9b7cb5948f7f022cfd3d087989e0
   languageName: node
   linkType: hard
 
@@ -22825,9 +22825,9 @@ __metadata:
   linkType: hard
 
 "csstype@npm:^3.0.11, csstype@npm:^3.0.2, csstype@npm:^3.1.3":
-  version: 3.1.3
-  resolution: "csstype@npm:3.1.3"
-  checksum: 10/f593cce41ff5ade23f44e77521e3a1bcc2c64107041e1bf6c3c32adc5187d0d60983292fda326154d20b01079e24931aa5b08e4467cc488b60bb1e7f6d478ade
+  version: 3.2.3
+  resolution: "csstype@npm:3.2.3"
+  checksum: 10/ad41baf7e2ffac65ab544d79107bf7cd1a4bb9bab9ac3302f59ab4ba655d5e30942a8ae46e10ba160c6f4ecea464cc95b975ca2fefbdeeacd6ac63f12f99fe1f
   languageName: node
   linkType: hard
 
@@ -32527,13 +32527,13 @@ __metadata:
   linkType: hard
 
 "lit-element@npm:^4.0.0":
-  version: 4.2.0
-  resolution: "lit-element@npm:4.2.0"
+  version: 4.2.2
+  resolution: "lit-element@npm:4.2.2"
   dependencies:
-    "@lit-labs/ssr-dom-shim": "npm:^1.2.0"
+    "@lit-labs/ssr-dom-shim": "npm:^1.5.0"
     "@lit/reactive-element": "npm:^2.1.0"
     lit-html: "npm:^3.3.0"
-  checksum: 10/0760140f9cf7eb71e327f04d51a41e3ae4c3fca2ddccca05fa3458d67124a2008044ef3d3812d021e2297ba8b3af7c06fa56b03860877bc09567c334b9d390ad
+  checksum: 10/268705c5a88c68ceeffb4dc871ffa7a9e5b5405b4907bc408cdc3336ea865b1690b4f4a34155af287200cc0737933c25326ed6816fa2c040b747925717bc21a6
   languageName: node
   linkType: hard
 
@@ -35619,9 +35619,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ox@npm:0.14.0":
-  version: 0.14.0
-  resolution: "ox@npm:0.14.0"
+"ox@npm:0.14.29":
+  version: 0.14.29
+  resolution: "ox@npm:0.14.29"
   dependencies:
     "@adraffy/ens-normalize": "npm:^1.11.0"
     "@noble/ciphers": "npm:^1.3.0"
@@ -35636,7 +35636,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10/b5cea2f9ce562f808a64b07e1f3f0527ca7eb6c840fbc704a035f89b65afeb42cc4ac518504525b9c59ceabc4bf08a16b80f42c2054ff766df7fff78eb52b3fa
+  checksum: 10/ac267c34e63c2e2e8b7a4e64f4a3635bb11ddaa58f8f7d4140dafbf921dc61379f3c27411d110fdb97a7b9c0b4c8cc420ea2336e055cae4ab351d4708fa0112e
   languageName: node
   linkType: hard
 
@@ -43427,10 +43427,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici-types@npm:^7.9.0, undici-types@npm:~7.16.0":
-  version: 7.16.0
-  resolution: "undici-types@npm:7.16.0"
-  checksum: 10/db43439f69c2d94cc29f75cbfe9de86df87061d6b0c577ebe9bb3255f49b22c50162a7d7eb413b0458b6510b8ca299ac7cff38c3a29fbd31af9f504bcf7fbc0d
+"undici-types@npm:^7.9.0":
+  version: 7.27.2
+  resolution: "undici-types@npm:7.27.2"
+  checksum: 10/ae1c00039de9d719b45b47ca011fcdab2c5f39034f4281ccb1d77855fca835917af5d43de7c28b82c9aaa29c28845fcd34660527ede3e4837ff5895dfe4213ca
   languageName: node
   linkType: hard
 
@@ -43445,6 +43445,13 @@ __metadata:
   version: 6.19.8
   resolution: "undici-types@npm:6.19.8"
   checksum: 10/cf0b48ed4fc99baf56584afa91aaffa5010c268b8842f62e02f752df209e3dea138b372a60a963b3b2576ed932f32329ce7ddb9cb5f27a6c83040d8cd74b7a70
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~7.16.0":
+  version: 7.16.0
+  resolution: "undici-types@npm:7.16.0"
+  checksum: 10/db43439f69c2d94cc29f75cbfe9de86df87061d6b0c577ebe9bb3255f49b22c50162a7d7eb413b0458b6510b8ca299ac7cff38c3a29fbd31af9f504bcf7fbc0d
   languageName: node
   linkType: hard
 
@@ -44465,8 +44472,8 @@ __metadata:
   linkType: hard
 
 "viem@npm:>=2.23.11, viem@npm:^2.21.8, viem@npm:^2.36.0, viem@npm:^2.37.8":
-  version: 2.47.0
-  resolution: "viem@npm:2.47.0"
+  version: 2.52.2
+  resolution: "viem@npm:2.52.2"
   dependencies:
     "@noble/curves": "npm:1.9.1"
     "@noble/hashes": "npm:1.8.0"
@@ -44474,14 +44481,14 @@ __metadata:
     "@scure/bip39": "npm:1.6.0"
     abitype: "npm:1.2.3"
     isows: "npm:1.0.7"
-    ox: "npm:0.14.0"
-    ws: "npm:8.18.3"
+    ox: "npm:0.14.29"
+    ws: "npm:8.20.1"
   peerDependencies:
     typescript: ">=5.0.4"
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10/bc32f71fbd3d3d9386cd5a0e715868df9c65d861c6d5b6974c6ff65c77226e088abd42f4cd5ce1ace2f8dadb305470e2d6df26607e7ff6356cac93f63b0c3454
+  checksum: 10/755530dd313edfc433d3c48492940871a122647e5cbed7eaffd0622064fa91aab6ae1b06617af751dcdcb4b60aac782b83f7a8d5960d77c2655a75c552d980d9
   languageName: node
   linkType: hard
 
@@ -45465,7 +45472,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:*, ws@npm:^8.0.0, ws@npm:^8.11.0, ws@npm:^8.13.0, ws@npm:^8.18.0, ws@npm:^8.18.3, ws@npm:^8.19.0, ws@npm:^8.2.3, ws@npm:^8.20.1, ws@npm:^8.5.0, ws@npm:^8.8.0":
+"ws@npm:*, ws@npm:8.20.1, ws@npm:^8.0.0, ws@npm:^8.11.0, ws@npm:^8.13.0, ws@npm:^8.18.0, ws@npm:^8.18.3, ws@npm:^8.19.0, ws@npm:^8.2.3, ws@npm:^8.20.1, ws@npm:^8.5.0, ws@npm:^8.8.0":
   version: 8.20.1
   resolution: "ws@npm:8.20.1"
   peerDependencies:

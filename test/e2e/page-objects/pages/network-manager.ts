@@ -91,8 +91,16 @@ class NetworkManager {
   async selectNetworkByNameWithWait(networkName: string): Promise<void> {
     console.log(`Selecting network by name: ${networkName}`);
     await this.driver.clickElementAndWaitToDisappear(
-      this.networkListItemByName(networkName),
+      this.multichainNetworkListItemByName(networkName),
     );
+  }
+
+  async selectNetworkByChainIdWithWait(chainId: string): Promise<void> {
+    console.log(`Selecting network by chain id: ${chainId}`);
+    const listItem = {
+      xpath: `//*[@data-testid="network-list-item-${chainId}"]`,
+    };
+    await this.driver.clickElementAndWaitToDisappear(listItem);
   }
 
   async deleteNetworkByChainId(chainId: `0x${string}`): Promise<void> {
