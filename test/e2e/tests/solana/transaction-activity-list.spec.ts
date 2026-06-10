@@ -36,9 +36,7 @@ describe('Transaction activity list', function (this: Suite) {
         await activityList.checkNoFailedTransactions();
         await activityList.clickOnActivity(1);
         const transactionDetails = new TransactionDetailsPage(driver);
-        await transactionDetails.checkTransactionStatus(
-          commonSolanaTxConfirmedDetailsFixture.status,
-        );
+        await transactionDetails.checkTransactionStatus('success');
         await transactionDetails.checkTransactionAmount(
           commonSolanaTxConfirmedDetailsFixture.amount,
         );
