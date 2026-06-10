@@ -1083,7 +1083,8 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/superstruct": true
+        "@metamask/superstruct": true,
+        "reselect": true
       }
     },
     "@metamask/connectivity-controller": {
@@ -1622,7 +1623,6 @@
         "@metamask/keyring-sdk": true,
         "@metamask/utils": true,
         "@metamask/eth-trezor-keyring>@trezor/connect-plugin-ethereum": true,
-        "@trezor/connect-web": true,
         "buffer": true,
         "@metamask/eth-qr-keyring>hdkey": true
       }

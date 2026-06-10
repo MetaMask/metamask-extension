@@ -6,11 +6,7 @@ import { QrKeyring, QrKeyringScannerBridge } from '@metamask/eth-qr-keyring';
 import { QrKeyring as QrKeyringV2 } from '@metamask/eth-qr-keyring/v2';
 import { KeyringClass } from '@metamask/keyring-utils';
 import LatticeKeyring from 'eth-lattice-keyring';
-import {
-  OneKeyKeyring,
-  TrezorConnectBridge,
-  TrezorKeyring,
-} from '@metamask/eth-trezor-keyring';
+import { OneKeyKeyring, TrezorKeyring } from '@metamask/eth-trezor-keyring';
 import {
   OneKeyKeyring as OneKeyKeyringV2,
   TrezorKeyring as TrezorKeyringV2,
@@ -23,6 +19,7 @@ import { LedgerKeyring as LedgerKeyringV2 } from '@metamask/eth-ledger-bridge-ke
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
 import { qrKeyringBuilderFactory } from '../lib/qr-keyring-builder-factory';
 import { TrezorOffscreenBridge } from '../lib/offscreen-bridge/trezor-offscreen-bridge';
+import { TrezorMv2Bridge } from '../lib/offscreen-bridge/trezor-mv2-bridge';
 import { LedgerOffscreenBridge } from '../lib/offscreen-bridge/ledger-offscreen-bridge';
 import { LatticeKeyringOffscreen } from '../lib/offscreen-bridge/lattice-offscreen-keyring';
 import { LatticeKeyringV2 } from '../lib/offscreen-bridge/lattice-keyring-v2';
@@ -154,11 +151,11 @@ export function getKeyringBuilders(
       keyringBuilderFactory(LatticeKeyring as unknown as KeyringClass),
       hardwareKeyringBuilderFactory(
         TrezorKeyring as unknown as KeyringClass,
-        overrides?.trezorBridge || TrezorConnectBridge,
+        overrides?.trezorBridge || TrezorMv2Bridge,
       ),
       hardwareKeyringBuilderFactory(
         OneKeyKeyring as unknown as KeyringClass,
-        TrezorConnectBridge,
+        TrezorMv2Bridge,
       ),
       hardwareKeyringBuilderFactory(
         LedgerKeyring as unknown as KeyringClass,

@@ -2204,6 +2204,34 @@ describe('getMultichainAssetsRatesControllerConversionRates', () => {
       expect(entry.marketData?.totalVolume).toBe('500000000');
     });
 
+    it('omits non-finite market data fields instead of stringifying them', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          conversionRates: {},
+          assetsPrice: {
+            [solanaTokenAssetId]: makeMockPrice({
+              id: 'sol-usdc',
+              price: 1.5,
+              allTimeHigh: null,
+              allTimeLow: undefined,
+              circulatingSupply: NaN,
+              marketCap: null,
+              totalVolume: Infinity,
+            }),
+          },
+        },
+      };
+      const result = getMultichainAssetsRatesControllerConversionRates(state);
+
+      const { marketData } = result[solanaTokenAssetId];
+      expect(marketData?.allTimeHigh).toBeUndefined();
+      expect(marketData?.allTimeLow).toBeUndefined();
+      expect(marketData?.circulatingSupply).toBeUndefined();
+      expect(marketData?.marketCap).toBeUndefined();
+      expect(marketData?.totalVolume).toBeUndefined();
+    });
+
     it('handles empty assetsPrice', () => {
       const state = {
         metamask: {

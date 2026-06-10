@@ -786,6 +786,13 @@
         "@metamask/claims-controller>@metamask/controller-utils": true
       }
     },
+    "@metamask/compliance-controller": {
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
+        "reselect": true
+      }
+    },
     "@metamask/controller-utils": {
       "globals": {
         "Buffer.from": true,
@@ -1333,6 +1340,11 @@
         "deep-freeze-strict": true,
         "immer": true,
         "nanoid": true
+      }
+    },
+    "@metamask/perps-controller": {
+      "packages": {
+        "@metamask/utils": true
       }
     },
     "@metamask/polling-controller": {
