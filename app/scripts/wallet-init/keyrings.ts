@@ -34,7 +34,11 @@ import {
   RootMessengerEvents,
 } from '../lib/messenger';
 import { getSnapKeyringBuilderMessenger } from '../lib/snap-keyring/snap-keyring';
-import { getSnapKeyringV2BuilderMessenger, snapKeyringV2AdaptedAsV1Builder, snapKeyringV2Builder } from '../lib/snap-keyring/snap-keyring-v2';
+import {
+  getSnapKeyringV2BuilderMessenger,
+  snapKeyringV2AdaptedAsV1Builder,
+  snapKeyringV2Builder,
+} from '../lib/snap-keyring/snap-keyring-v2';
 
 /**
  * Constructor signature shared by every V2 hardware-keyring wrapper.
@@ -190,7 +194,11 @@ export function getKeyringBuilders(
   // KeyringController vault management. The same inner instance is retrieved via
   // `unwrap()` below so both v1 and v2 entries share the same underlying object —
   // enabling both `withKeyring` (and v1-interface) and `withKeyringV2`.
-  keyrings.push(snapKeyringV2AdaptedAsV1Builder(getSnapKeyringV2BuilderMessenger(messenger)));
+  keyrings.push(
+    snapKeyringV2AdaptedAsV1Builder(
+      getSnapKeyringV2BuilderMessenger(messenger),
+    ),
+  );
 
   return keyrings;
 }

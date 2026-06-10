@@ -9,9 +9,16 @@ import { KeyringBuilder, KeyringV2Builder } from '@metamask/keyring-controller';
 import { Keyring } from '@metamask/keyring-utils';
 import { assert } from '@metamask/utils';
 import { isFlask } from '../../../../shared/lib/build-types';
-import { RootMessenger, RootMessengerActions, RootMessengerEvents } from '../messenger';
+import {
+  RootMessenger,
+  RootMessengerActions,
+  RootMessengerEvents,
+} from '../messenger';
 import { SnapKeyringV2BuilderMessenger } from './types';
-import { getSnapKeyringBuilderMessenger, SnapKeyringImpl } from './snap-keyring';
+import {
+  getSnapKeyringBuilderMessenger,
+  SnapKeyringImpl,
+} from './snap-keyring';
 
 /**
  * Builder type for the Snap keyring v2 (adapted as v1).
@@ -47,7 +54,9 @@ export class SnapKeyringV2Impl extends SnapKeyringImpl {
  * @param messenger - The root messenger instance, used to create a child messenger for the Snap keyring and to delegate necessary actions to it.
  * @returns The Snap keyring (v2) messenger instance.
  */
-export function getSnapKeyringV2BuilderMessenger(messenger: RootMessenger<RootMessengerActions, RootMessengerEvents>): SnapKeyringV2BuilderMessenger {
+export function getSnapKeyringV2BuilderMessenger(
+  messenger: RootMessenger<RootMessengerActions, RootMessengerEvents>,
+): SnapKeyringV2BuilderMessenger {
   return getSnapKeyringBuilderMessenger(messenger);
 }
 

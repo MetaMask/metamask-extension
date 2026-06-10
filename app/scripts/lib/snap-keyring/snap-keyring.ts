@@ -27,7 +27,11 @@ import { SnapKeyringBuilderMessenger } from './types';
 import { isBlockedUrl } from './utils/isBlockedUrl';
 import { showError, showSuccess } from './utils/showResult';
 import { Messenger } from '@metamask/messenger';
-import { RootMessenger, RootMessengerActions, RootMessengerEvents } from '../messenger';
+import {
+  RootMessenger,
+  RootMessengerActions,
+  RootMessengerEvents,
+} from '../messenger';
 
 /**
  * Builder type for the Snap keyring.
@@ -493,7 +497,9 @@ export class SnapKeyringImpl implements SnapKeyringCallbacks {
  * @param messenger - The root messenger instance, used to create a child messenger for the Snap keyring and to delegate necessary actions to it.
  * @returns The Snap keyring messenger instance.
  */
-export function getSnapKeyringBuilderMessenger(messenger: RootMessenger<RootMessengerActions, RootMessengerEvents>): SnapKeyringBuilderMessenger {
+export function getSnapKeyringBuilderMessenger(
+  messenger: RootMessenger<RootMessengerActions, RootMessengerEvents>,
+): SnapKeyringBuilderMessenger {
   const snapKeyringMessenger: SnapKeyringBuilderMessenger = new Messenger({
     namespace: 'SnapKeyring',
     parent: messenger,
