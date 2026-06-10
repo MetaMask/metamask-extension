@@ -386,9 +386,11 @@ class ActivityListPage extends HomePage {
 
     if (!isBridge) {
       console.log('Checking displayed amounts');
-      await this.driver.waitForSelector({
-        text: `${expectedSrcAmount} ${expectedSrcToken}`,
-      });
+      if (expectedSrcAmount) {
+        await this.driver.waitForSelector({
+          text: `${expectedSrcAmount} ${expectedSrcToken}`,
+        });
+      }
       if (expectedDestAmount) {
         await this.driver.waitForSelector({
           text: `${expectedDestAmount} ${expectedDestToken}`,

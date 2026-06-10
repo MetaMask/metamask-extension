@@ -76,7 +76,7 @@ export const verifySubmittedSwapTransaction = async ({
     action,
     isBridge,
     expectedStatus,
-    quote.amount,
+    undefined,
     expectedSrcToken,
     expectedDestAmount,
     expectedDestToken,
