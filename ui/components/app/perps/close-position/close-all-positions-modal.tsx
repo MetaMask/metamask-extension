@@ -21,7 +21,6 @@ import {
   formatPerpsFiat,
   PRICE_RANGES_UNIVERSAL,
 } from '../../../../../shared/lib/perps-formatters';
-import { formatPerpsFiatUniversal } from '../utils/formatPerpsDisplayPrice';
 import { PERPS_FALLBACK_FEE_RATES } from '../../../../../shared/constants/perps';
 import {
   Modal,
@@ -270,9 +269,10 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
                       >
                         <span>
                           {totalUnrealizedPnl >= 0 ? '+' : '-'}
-                          {formatPerpsFiatUniversal(
-                            Math.abs(totalUnrealizedPnl),
-                          )}
+                          {formatPerpsFiat(Math.abs(totalUnrealizedPnl), {
+                            minimumDecimals: 2,
+                            maximumDecimals: 2,
+                          })}
                         </span>
                       </Text>,
                     ])}
