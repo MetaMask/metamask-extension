@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   MetaMetricsEventCategory,
@@ -95,35 +101,63 @@ export const ExternalLinkButton = (props: {
   const { externalLink } = notification.data;
   const externalLinkUrl = externalLink?.externalLinkUrl;
   const [resolvedHref, setResolvedHref] = useState<string | undefined>();
+  const resolvedHrefRef = useRef<string | undefined>();
+  const pendingResolvedHrefRef = useRef<Promise<string> | undefined>();
+
+  useEffect(() => {
+    resolvedHrefRef.current = resolvedHref;
+  }, [resolvedHref]);
+
+  const resolveHref = useCallback(async (): Promise<string> => {
+    const linkUrl = externalLinkUrl;
+
+    if (!linkUrl) {
+      return '';
+    }
+
+    if (resolvedHrefRef.current) {
+      return resolvedHrefRef.current;
+    }
+
+    if (!pendingResolvedHrefRef.current) {
+      pendingResolvedHrefRef.current = resolveTrustedDeepLinkHref(
+        linkUrl,
+      ).catch((error) => {
+        console.error(
+          '[ExternalLinkButton] error resolving external link',
+          error,
+        );
+        return linkUrl;
+      });
+    }
+
+    return await pendingResolvedHrefRef.current;
+  }, [externalLinkUrl]);
 
   useEffect(() => {
     if (!externalLinkUrl) {
-      return undefined;
+      return;
     }
 
     let isMounted = true;
 
+    pendingResolvedHrefRef.current = undefined;
     setResolvedHref(undefined);
-    resolveTrustedDeepLinkHref(externalLinkUrl)
+    resolveHref()
       .then((href) => {
         if (isMounted) {
           setResolvedHref(href);
         }
       })
-      .catch((error) => {
-        console.error(
-          '[ExternalLinkButton] error resolving external link',
-          error,
-        );
-        if (isMounted) {
-          setResolvedHref(externalLinkUrl);
-        }
+      .finally(() => {
+        pendingResolvedHrefRef.current = undefined;
       });
 
     return () => {
       isMounted = false;
+      pendingResolvedHrefRef.current = undefined;
     };
-  }, [externalLinkUrl]);
+  }, [externalLinkUrl, resolveHref]);
 
   if (!externalLinkUrl || !externalLink) {
     return null;
@@ -132,8 +166,11 @@ export const ExternalLinkButton = (props: {
   const { externalLinkText } = externalLink;
 
   const openResolvedLink = async () => {
-    const href =
-      resolvedHref ?? (await resolveTrustedDeepLinkHref(externalLinkUrl));
+    const href = await resolveHref();
+
+    if (!href) {
+      return;
+    }
 
     if (isInternalRouteHref(href)) {
       navigate(href);
@@ -160,7 +197,7 @@ export const ExternalLinkButton = (props: {
     <NotificationDetailButton
       variant={ButtonVariant.Secondary}
       text={externalLinkText}
-      href={externalLinkUrl}
+      href={resolvedHref ?? externalLinkUrl}
       isExternal={resolvedHref ? !isInternalRouteHref(resolvedHref) : false}
       onClick={onClick}
     />
