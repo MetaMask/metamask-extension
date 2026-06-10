@@ -153,7 +153,8 @@ export const getMultichainDefaultToken = createSelector(
   [
     (state: MultichainState, account?: InternalAccount) =>
       getMultichainIsEvm(state, account),
-    (state: MultichainState) => getProviderConfig(state)?.ticker,
+    (state: MultichainState, account?: InternalAccount) =>
+      getMultichainIsEvm(state, account) ? getProviderConfig(state).ticker : undefined,
     (state: MultichainState, account?: InternalAccount) =>
       getMultichainProviderConfig(state, account).ticker,
   ],

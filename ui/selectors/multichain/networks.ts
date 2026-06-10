@@ -705,11 +705,14 @@ export const getMultichainNetwork = createSelector(
       state: MultichainNetworkConfigState & AccountsState,
       account?: InternalAccount,
     ) => getMultichainIsEvm(state, account),
-    (state: MultichainNetworkConfigState & AccountsState) =>
-      getCurrentChainId(state),
-    (state: MultichainNetworkConfigState & AccountsState) =>
-      getProviderConfig(state),
-    (state: MultichainNetworkConfigState & AccountsState) =>
+    (state: MultichainNetworkConfigState & AccountsState, account?: InternalAccount) =>
+      getMultichainIsEvm(state, account)
+        ? getCurrentChainId(state)
+        : (undefined as never),
+    (state: MultichainNetworkConfigState & AccountsState, account?: InternalAccount) =>
+      getMultichainIsEvm(state, account)
+        ? getProviderConfig(state)
+        : (undefined as never),
       getNetworkConfigurationsByChainId(state),
     (
       state: MultichainNetworkConfigState & AccountsState,
