@@ -46,6 +46,9 @@ export async function createOffscreen() {
         msg.target === OffscreenCommunicationTarget.extensionMain &&
         msg.isBooted
       ) {
+        chrome.runtime.onMessage.removeListener(
+          offscreenDocumentLoadedListener,
+        );
         resolve();
 
         // If the Offscreen Document sees `navigator.webdriver === true` and we are in a test environment,
@@ -88,21 +91,15 @@ export async function createOffscreen() {
     return;
   }
 
-  // In case we are in a bad state where the offscreen document is not loading, timeout and let execution continue.
+  // If the offscreen document fails to boot (e.g. crashes during init),
+  // loadPromise never resolves and createOffscreen() would hang forever.
+  // The race ensures we continue after a timeout, and the finally block
+  // cleans up the listener in both cases to prevent it from leaking and
+  // firing on subsequent boots.
   const timeoutPromise = new Promise((resolve) => {
     setTimeout(resolve, OFFSCREEN_LOAD_TIMEOUT);
   });
-
-  // Bug 3 fix: Always clean up the listener, whether the load promise
-  // wins (isBooted received) or the timeout wins. Without this, the
-  // listener leaks on timeout and may fire on subsequent boots.
-  try {
-    await Promise.race([loadPromise, timeoutPromise]);
-  } finally {
-    if (offscreenDocumentLoadedListener) {
-      chrome.runtime.onMessage.removeListener(offscreenDocumentLoadedListener);
-    }
-  }
+  await Promise.race([loadPromise, timeoutPromise]);
 
   console.debug('Offscreen iframe loaded');
 }
