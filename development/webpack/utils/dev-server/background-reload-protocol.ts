@@ -1,11 +1,11 @@
 /**
  * @file Shared constants for the dev-server background reload (the full
  * `chrome.runtime.reload()` triggered when privileged code changes), imported
- * by the server-side wiring (`utils/background-reload`), the runtime client
- * (`runtime/background-reload-client`), and the build config.
+ * by the server-side wiring (`./background-reload`), the runtime client
+ * (`./background-reload-client`), and the build config.
  *
  * Kept dependency-free so it is safe to bundle into the browser/service-worker
- * context — the client cannot import `utils/background-reload` directly, as
+ * context — the client cannot import `./background-reload` directly, as
  * that would pull `node:path` into the bundle and execute the server wiring.
  */
 
@@ -30,7 +30,7 @@ export const BACKGROUND_RELOAD_MESSAGE_TYPE =
  * Entry name for the background reload client bundle on MV2 (Firefox), where
  * it is injected as a `<script>` into the background page by
  * `HtmlBundlerPlugin`. On MV3 the client is bundled directly into the service
- * worker instead. Lives here (rather than in `utils/background-reload`) so
+ * worker instead. Lives here (rather than in `./background-reload`) so
  * `ManifestPlugin` can import it without creating an import cycle with the
  * server wiring.
  */

@@ -22,7 +22,6 @@ import { discardFontFace } from '../postcss-plugins/discard-font-face';
 import { loadBuildTypesConfig } from '../lib/build-type';
 import {
   getMinimizers,
-  injectEntryScripts,
   NODE_MODULES_RE,
   UI_COMPONENT_RE,
   SNOW_MODULE_RE,
@@ -39,8 +38,9 @@ import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import type { BundleSizeCategory } from './utils/plugins/ManifestPlugin/types';
 import { getLatestCommit } from './utils/git';
 import { MODES } from './utils/constants';
-import { UI_RELOAD_CLIENT_ENTRY_NAME } from './utils/ui-reload';
-import { BACKGROUND_RELOAD_CLIENT_ENTRY_NAME } from './runtime/background-reload-protocol';
+import { injectEntryScripts } from './utils/dev-server';
+import { UI_RELOAD_CLIENT_ENTRY_NAME } from './utils/dev-server/ui-reload';
+import { BACKGROUND_RELOAD_CLIENT_ENTRY_NAME } from './utils/dev-server/background-reload-protocol';
 import { BUNDLE_SIZE_SUMMARY_FILE } from './utils/plugins/ManifestPlugin/stats';
 
 const buildTypes = loadBuildTypesConfig();

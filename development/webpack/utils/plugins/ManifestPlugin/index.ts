@@ -17,8 +17,8 @@ import {
   type Manifest,
   type Browser,
 } from '../../helpers';
-import { UI_RELOAD_CLIENT_ENTRY_NAME } from '../../ui-reload';
-import { BACKGROUND_RELOAD_CLIENT_ENTRY_NAME } from '../../../runtime/background-reload-protocol';
+import { UI_RELOAD_CLIENT_ENTRY_NAME } from '../../dev-server/ui-reload';
+import { BACKGROUND_RELOAD_CLIENT_ENTRY_NAME } from '../../dev-server/background-reload-protocol';
 import {
   createBundleSizeCategoryAssets,
   createBundleSizeSummary,
@@ -118,7 +118,7 @@ export class ManifestPlugin<Z extends boolean> {
    * Entry names of every script this plugin registered from the extension
    * manifests: content scripts, MV2 background scripts, the MV3 service
    * worker, and web-accessible `.js` resources. Used by the dev server's
-   * background reload (`utils/background-reload`) to know which entries require
+   * background reload (`utils/dev-server/background-reload`) to know which entries require
    * a full extension reload when they change, without hard-coding manifest
    * contents.
    */

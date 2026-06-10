@@ -9,7 +9,7 @@
  * `runtime.reload`. The only way to pick up changes to them is a full
  * `chrome.runtime.reload()`, which must run from a privileged context.
  *
- * So a tiny client (`runtime/background-reload-client`) is injected into the
+ * So a tiny client (`./background-reload-client`) is injected into the
  * background context, and after each rebuild this module fingerprints the
  * privileged code and announces the fingerprint to all connected clients (and
  * to every client that connects later — so a change built while the client was
@@ -33,11 +33,11 @@ import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
 import type { Compilation, Compiler, Entrypoint, Module } from 'webpack';
 import type WebpackDevServer from 'webpack-dev-server';
+import { ManifestPlugin } from '../plugins/ManifestPlugin';
 import {
   BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
   BACKGROUND_RELOAD_MESSAGE_TYPE,
-} from '../runtime/background-reload-protocol';
-import { ManifestPlugin } from './plugins/ManifestPlugin';
+} from './background-reload-protocol';
 
 /**
  * Matches the entries of privileged HTML pages that cannot self-reload: the
@@ -194,7 +194,7 @@ export function setupBackgroundReload(
   // to the real port by the time `setupMiddlewares` calls this.
   const { host, port } = devServer.options;
   const url = `ws://${host ?? 'localhost'}:${port}/ws`;
-  const clientRequest = `${resolve(__dirname, '../runtime/background-reload-client.ts')}?url=${encodeURIComponent(url)}`;
+  const clientRequest = `${resolve(__dirname, 'background-reload-client.ts')}?url=${encodeURIComponent(url)}`;
 
   // The latest fingerprint per compiler, combined into the announced payload.
   const fingerprints = new Map<Compiler, string>();

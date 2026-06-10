@@ -1,47 +1,7 @@
-import type { Configuration } from 'webpack-dev-server';
-import { setupUiReload } from './ui-reload';
-import { setupBackgroundReload } from './background-reload';
-
 export const MODES = {
   PRODUCTION: 'production',
   DEVELOPMENT: 'development',
 } as const;
-
-export const DEV_SERVER_OPTIONS: Configuration = {
-  hot: false,
-  liveReload: true,
-  // always use loopback, as 0.0.0.0 tends to fail on some machines (WSL2?)
-  host: 'localhost',
-  // pick a free port at startup.
-  port: 'auto',
-  // client injection is disabled because the client is registered
-  // as a webpack entry by `setupMiddlewares` below
-  // and injected into UI pages by `HtmlBundlerPlugin`'s `beforeEmit` hook.
-  client: false,
-  devMiddleware: {
-    // browsers need actual files on disk; extension pages are loaded via
-    // `chrome-extension://`, not from the dev-server HTTP origin.
-    writeToDisk: true,
-  },
-  // we don't need/have a "static" directory, so disable it
-  static: false,
-  allowedHosts: 'all',
-  // Wire up the reload clients here so that we can read the resolved port from
-  // `devServer.options` — by this point `port: 'auto'` has been replaced with
-  // the actual numeric port the server is listening on.
-  setupMiddlewares: (middlewares, devServer) => {
-    const compilers =
-      'compilers' in devServer.compiler
-        ? devServer.compiler.compilers
-        : [devServer.compiler];
-    // UI pages reload themselves in place when their code changes; the
-    // background reload restarts the whole extension when the background,
-    // service worker, or content scripts change.
-    setupUiReload(devServer, compilers);
-    setupBackgroundReload(devServer, compilers);
-    return middlewares;
-  },
-};
 
 /**
  * The build environment. This describes the environment this build was produced in.
