@@ -6,6 +6,17 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { login } from '../../page-objects/flows/login.flow';
 
+const MOCK_X_COM_ACTIVE_TAB = {
+  id: 1,
+  title: 'X',
+  url: 'https://x.com/',
+  origin: 'https://x.com',
+  protocol: 'https:',
+  host: 'x.com',
+  href: 'https://x.com/',
+  favIconUrl: '',
+};
+
 /**
  * Mocks the segment API for the App Opened event that we expect to see when
  * these tests are run.
@@ -47,6 +58,65 @@ describe('App Opened metric', function () {
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 1);
         assert.equal(events[0].properties.category, 'App');
+      },
+    );
+  });
+
+  it('should include active_tab_domain when the active tab is an allowlisted origin', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2()
+          .withMetaMetricsController({
+            metaMetricsId: MOCK_META_METRICS_ID,
+            participateInMetaMetrics: true,
+          })
+          .withAppStateController({
+            appActiveTab: MOCK_X_COM_ACTIVE_TAB,
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockSegment,
+      },
+      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+        await login(driver);
+
+        const events = await getEventPayloads(driver, mockedEndpoints);
+        assert.equal(events.length, 1);
+        assert.equal(
+          events[0].properties.active_tab_domain,
+          'https://x.com',
+        );
+      },
+    );
+  });
+
+  it('should not include active_tab_domain when the active tab is a non-allowlisted HTTPS origin', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2()
+          .withMetaMetricsController({
+            metaMetricsId: MOCK_META_METRICS_ID,
+            participateInMetaMetrics: true,
+          })
+          .withAppStateController({
+            appActiveTab: {
+              ...MOCK_X_COM_ACTIVE_TAB,
+              url: 'https://example.com/',
+              origin: 'https://example.com',
+              host: 'example.com',
+              href: 'https://example.com/',
+            },
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockSegment,
+      },
+      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+        await login(driver);
+
+        const events = await getEventPayloads(driver, mockedEndpoints);
+        assert.equal(events.length, 1);
+        assert.equal(events[0].properties.active_tab_domain, undefined);
       },
     );
   });

@@ -41,8 +41,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsUserTrait,
-  getActiveTabDomainForMetrics,
 } from '../../shared/constants/metametrics';
+import { getActiveTabDomainForMetrics } from '../../shared/lib/active-tab-domain-metrics';
 import { checkForLastErrorAndLog } from '../../shared/lib/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/lib/mv3.utils';
 import { maskObject } from '../../shared/lib/object.utils';
