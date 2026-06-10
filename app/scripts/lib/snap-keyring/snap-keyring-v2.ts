@@ -15,10 +15,8 @@ import {
   RootMessengerEvents,
 } from '../messenger';
 import { SnapKeyringV2BuilderMessenger } from './types';
-import {
-  getSnapKeyringBuilderMessenger,
-  SnapKeyringImpl,
-} from './snap-keyring';
+import { getSnapKeyringBuilderMessenger } from '../../messenger-client-init/messengers/accounts/snap-keyring-builder-messenger';
+import { SnapKeyringImpl } from './snap-keyring';
 
 /**
  * Builder type for the Snap keyring v2 (adapted as v1).

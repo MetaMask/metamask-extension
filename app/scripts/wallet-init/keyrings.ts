@@ -33,7 +33,7 @@ import {
   RootMessengerActions,
   RootMessengerEvents,
 } from '../lib/messenger';
-import { getSnapKeyringBuilderMessenger } from '../lib/snap-keyring/snap-keyring';
+import { getSnapKeyringBuilderMessenger } from '../messenger-client-init/messengers/accounts/snap-keyring-builder-messenger';
 import {
   getSnapKeyringV2BuilderMessenger,
   snapKeyringV2AdaptedAsV1Builder,

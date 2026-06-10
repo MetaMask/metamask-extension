@@ -1,8 +1,5 @@
 import { MessengerClientInitFunction } from '../types';
-import {
-  SnapKeyringV2BuilderInitMessenger,
-  SnapKeyringV2BuilderMessenger,
-} from '../messengers/accounts';
+import { SnapKeyringV2BuilderMessenger } from '../messengers/accounts';
 import {
   snapKeyringV2Builder,
   SnapKeyringV2Builder,
@@ -14,28 +11,13 @@ import {
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the keyring
  * builder.
- * @param request.initMessenger
- * @param request.removeAccount
  * @returns The initialized controller.
  */
 export const SnapKeyringV2BuilderInit: MessengerClientInitFunction<
   SnapKeyringV2Builder,
-  SnapKeyringV2BuilderMessenger,
-  SnapKeyringV2BuilderInitMessenger
-> = ({ controllerMessenger, initMessenger, removeAccount }) => {
-  const builder = snapKeyringV2Builder(controllerMessenger, {
-    persistKeyringHelper: async () => {
-      await initMessenger.call('KeyringController:persistAllKeyrings');
-      await initMessenger.call('AccountsController:updateAccounts');
-    },
-    removeAccountHelper: async (address) => {
-      await removeAccount(address);
-    },
-    trackEvent: initMessenger.call.bind(
-      initMessenger,
-      'MetaMetricsController:trackEvent',
-    ),
-  });
+  SnapKeyringV2BuilderMessenger
+> = () => {
+  const builder = snapKeyringV2Builder();
 
   return {
     persistedStateKey: null,
