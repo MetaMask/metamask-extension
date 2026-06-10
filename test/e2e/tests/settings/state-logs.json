@@ -794,7 +794,6 @@
     "ensResolutionsByAddress": {},
     "error": "null",
     "estimatedGasFeeTimeBounds": {},
-    "eventQueue": "object",
     "events": {
       "cronjob-npm:@metamask/tron-wallet-snap-0": {
         "date": "string",
@@ -1379,7 +1378,7 @@
         "profile": {
           "canonicalProfileId": "string",
           "identifierId": "string",
-          "analyticsId": "string",
+          "metaMetricsId": "string",
           "profileId": "string"
         },
         "token": {
