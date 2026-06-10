@@ -1,5 +1,5 @@
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
-import { type CaipChainId } from '@metamask/utils';
+import { type CaipChainId, type Hex } from '@metamask/utils';
 import {
   FEATURED_NETWORK_CHAIN_IDS,
   TEST_CHAINS,
@@ -34,17 +34,30 @@ function normalizeChainId(chainId: string): string {
   return chainId;
 }
 
+function isHexChainId(chainId: string): chainId is Hex {
+  return chainId.startsWith('0x');
+}
+
 export function getNetworkSectionKey(chainId: string): NetworkSectionKey {
   const normalizedChainId = normalizeChainId(chainId);
+  const normalizedHexChainId = isHexChainId(normalizedChainId)
+    ? normalizedChainId
+    : undefined;
 
   if (
-    TEST_CHAINS.includes(normalizedChainId) ||
+    (normalizedHexChainId
+      ? TEST_CHAINS.includes(normalizedHexChainId)
+      : false) ||
     NON_EVM_TESTNET_IDS.includes(chainId as CaipChainId)
   ) {
     return 'test';
   }
 
-  if (FEATURED_NETWORK_CHAIN_IDS.includes(normalizedChainId)) {
+  if (
+    normalizedHexChainId
+      ? FEATURED_NETWORK_CHAIN_IDS.includes(normalizedHexChainId)
+      : false
+  ) {
     return 'default';
   }
 

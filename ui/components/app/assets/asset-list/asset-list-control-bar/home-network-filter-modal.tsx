@@ -229,8 +229,8 @@ export const NetworkSelectionModal = ({
                 {section.title ? (
                   <SectionHeader>{section.title}</SectionHeader>
                 ) : null}
-                {section.items.map((item) => (
-                  <HomeNetworkFilterRow key={item.key} {...item} />
+                {section.items.map(({ key, ...item }) => (
+                  <HomeNetworkFilterRow key={key} {...item} />
                 ))}
               </Box>
             ))}

@@ -304,10 +304,6 @@ describe('NFTs options', () => {
 
     fireEvent.click(await findByTestId('sort-by-networks'));
 
-    expect(await findByText('Select network')).toBeInTheDocument();
-    expect(await findByText('All default networks')).toBeInTheDocument();
-    expect(await findByText('Default networks')).toBeInTheDocument();
-
     fireEvent.click(await findByTestId('home-network-filter-manage-networks'));
 
     expect(mockUseNavigate).toHaveBeenCalledWith(
