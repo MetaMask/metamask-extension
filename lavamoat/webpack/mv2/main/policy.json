@@ -1622,7 +1622,6 @@
         "@metamask/keyring-sdk": true,
         "@metamask/utils": true,
         "@metamask/eth-trezor-keyring>@trezor/connect-plugin-ethereum": true,
-        "@trezor/connect-web": true,
         "buffer": true,
         "@metamask/eth-qr-keyring>hdkey": true
       }
