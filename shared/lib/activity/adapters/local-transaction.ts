@@ -4,7 +4,10 @@ import { SWAPS_WRAPPED_TOKENS_ADDRESSES } from '../../../constants/swaps';
 import { toAssetId } from '../../asset-utils';
 import type { TransactionGroup } from '../../multichain/types';
 import { isEqualCaseInsensitive } from '../../string-utils';
-import { parseStandardTokenTransactionData } from '../../transaction.utils';
+import {
+  parseApprovalTransactionData,
+  parseStandardTokenTransactionData,
+} from '../../transaction.utils';
 import { TOKEN_TRANSFER_LOG_TOPIC_HASH } from '../../transactions-controller-utils';
 import type { ActivityListItem, TokenAmount } from '../types';
 import {
@@ -330,7 +333,6 @@ export function mapLocalTransaction(
     case TransactionType.bridgeApproval:
     case TransactionType.shieldSubscriptionApprove:
     case TransactionType.swapApproval:
-    case TransactionType.tokenMethodApprove:
     case TransactionType.tokenMethodSetApprovalForAll:
       return {
         type: 'approveSpendingCap',
@@ -348,7 +350,39 @@ export function mapLocalTransaction(
         },
       };
 
-    case TransactionType.tokenMethodIncreaseAllowance:
+    case TransactionType.tokenMethodApprove: {
+      const approveData = initialTransaction.txParams.data
+        ? parseApprovalTransactionData(
+            initialTransaction.txParams.data as `0x${string}`,
+          )
+        : undefined;
+      const approveAmount = approveData?.amountOrTokenId?.toFixed(0);
+      return {
+        type:
+          approveAmount === '0' ? 'revokeSpendingCap' : 'approveSpendingCap',
+        chainId,
+        status,
+        timestamp,
+        data: {
+          hash,
+          from,
+          token: getContractToken({
+            amount: approveAmount,
+            transaction: initialTransaction,
+            direction: 'out',
+            contractAddress: initialTransaction.txParams.to,
+          }),
+        },
+      };
+    }
+
+    case TransactionType.tokenMethodIncreaseAllowance: {
+      const increaseData = initialTransaction.txParams.data
+        ? parseApprovalTransactionData(
+            initialTransaction.txParams.data as `0x${string}`,
+          )
+        : undefined;
+      const increaseAmount = increaseData?.amountOrTokenId?.toFixed(0);
       return {
         type: 'increaseSpendingCap',
         chainId,
@@ -358,12 +392,14 @@ export function mapLocalTransaction(
           hash,
           from,
           token: getContractToken({
+            amount: increaseAmount,
             transaction: initialTransaction,
             direction: 'out',
             contractAddress: initialTransaction.txParams.to,
           }),
         },
       };
+    }
 
     case TransactionType.lendingDeposit:
       return {

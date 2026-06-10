@@ -1,8 +1,8 @@
 import React from 'react';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { AmountsSection } from '../components/amounts-section';
-import { Footer } from '../components/shared';
+import { FeesRows, TotalAmountRow } from '../components/amounts-section';
+import { Footer, Section } from '../components/shared';
 import { BlockExplorerButton } from '../components/block-explorer-button';
 import { SwapAgainButton } from '../components/swap-again-button';
 import { MetadataSection, TokensSection } from '../components/sections';
@@ -35,7 +35,10 @@ export function SwapDetails({
           ]}
         />
         <MetadataSection item={item} />
-        <AmountsSection item={item} />
+        <Section>
+          <FeesRows item={item} />
+          <TotalAmountRow token={item.data.sourceToken} />
+        </Section>
       </div>
       <Footer>
         <BlockExplorerButton chainId={item.chainId} txHash={item.data.hash} />

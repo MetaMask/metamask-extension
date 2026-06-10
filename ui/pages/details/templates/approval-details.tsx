@@ -6,8 +6,8 @@ import type {
 } from '../../../../shared/lib/activity/types';
 import { ActivityAvatar } from '../../../components/app/activity-list-item-avatar';
 import { useTokensData } from '../../../hooks/useTokensData';
-import { AmountsSection } from '../components/amounts-section';
-import { Footer } from '../components/shared';
+import { FeesRows, TotalAmountRow } from '../components/amounts-section';
+import { Footer, Section } from '../components/shared';
 import { BlockExplorerButton } from '../components/block-explorer-button';
 import { MetadataSection } from '../components/sections';
 
@@ -47,7 +47,10 @@ export function ApprovalDetails({
       <div className="divide-y divide-border-muted">
         <ApprovalTokenSection token={item.data.token} />
         <MetadataSection item={item} />
-        <AmountsSection item={item} />
+        <Section>
+          <FeesRows item={item} />
+          <TotalAmountRow token={item.data.token} />
+        </Section>
       </div>
       <Footer>
         <BlockExplorerButton chainId={item.chainId} txHash={item.data.hash} />

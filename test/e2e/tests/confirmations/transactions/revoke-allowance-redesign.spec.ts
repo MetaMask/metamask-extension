@@ -18,6 +18,7 @@ describe('Confirmation Redesign ERC20 Revoke Allowance', function () {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
+          .withTokensControllerERC20()
           .build(),
         smartContract,
         testSpecificMock: mocked4BytesApprove,

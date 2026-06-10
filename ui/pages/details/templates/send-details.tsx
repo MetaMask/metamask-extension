@@ -1,7 +1,7 @@
 import React from 'react';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
-import { AmountsSection } from '../components/amounts-section';
-import { Footer } from '../components/shared';
+import { FeesRows, TotalAmountRow } from '../components/amounts-section';
+import { Footer, Section } from '../components/shared';
 import { BlockExplorerButton } from '../components/block-explorer-button';
 import { MetadataSection, TokensSection } from '../components/sections';
 
@@ -18,7 +18,10 @@ export function SendDetails({
           item={item}
           addressRows={{ from: item.data.from, to: item.data.to }}
         />
-        <AmountsSection item={item} />
+        <Section>
+          <FeesRows item={item} />
+          <TotalAmountRow token={item.data.token} />
+        </Section>
       </div>
       <Footer>
         <BlockExplorerButton chainId={item.chainId} txHash={item.data.hash} />

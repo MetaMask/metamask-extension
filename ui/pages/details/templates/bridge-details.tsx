@@ -21,7 +21,7 @@ import { TransactionStatus } from '../../../components/app/transaction/transacti
 import { AccountName } from '../../../components/app/transaction/account-name';
 import { Footer, Row, Section } from '../components/shared';
 import { TokenRow } from '../components/token-row';
-import { AmountsSection } from '../components/amounts-section';
+import { FeesRows, TotalAmountRow } from '../components/amounts-section';
 import { BridgeExplorerButtons } from '../components/bridge-explorer-buttons';
 import { SwapAgainButton } from '../components/swap-again-button';
 
@@ -148,7 +148,10 @@ export function BridgeDetails({
           />
         </Section>
 
-        <AmountsSection item={item} />
+        <Section>
+          <FeesRows item={item} />
+          <TotalAmountRow token={item.data.sourceToken} />
+        </Section>
       </div>
       <Footer>
         <BridgeExplorerButtons
