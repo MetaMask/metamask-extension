@@ -68,8 +68,11 @@ export const CustomTokenImportNetworkSelector = ({
           paddingRight={0}
           className="flex min-h-0 flex-1 flex-col overflow-auto"
         >
-          {networkSections.map((section) => (
-            <Box key={section.key}>
+          {networkSections.map((section, index) => (
+            <Box key={section.key} className="flex flex-col">
+              {index > 0 ? (
+                <hr className="mx-4 mt-2 w-[calc(100%-32px)] border-0 border-t border-border-muted" />
+              ) : null}
               {section.titleKey ? (
                 <Text
                   variant={TextVariant.BodyMd}

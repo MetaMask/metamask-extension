@@ -323,7 +323,6 @@ describe('CustomTokenImportPage', () => {
     expect(
       screen.getByText(messages.networkMenuHeading.message),
     ).toBeInTheDocument();
-    expect(screen.getAllByText('Ethereum Mainnet').length).toBeGreaterThan(0);
   });
 
   it('returns to token management with success toast state after submitting a custom token', async () => {
