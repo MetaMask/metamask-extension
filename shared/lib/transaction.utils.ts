@@ -25,6 +25,7 @@ import {
   TokenStandard,
 } from '../constants/transaction';
 import { readAddressAsContract } from './contract-utils';
+import { isValidHexAddress } from './hexstring-utils';
 import { isEqualCaseInsensitive } from './string-utils';
 
 const INFERRABLE_TRANSACTION_TYPES: TransactionType[] = [
@@ -518,6 +519,44 @@ export function parseApprovalTransactionData(data: Hex):
     tokenAddress,
     spender,
   };
+}
+
+/**
+ * Resolves the ERC-20 contract address for approval transactions.
+ * Permit2 approvals encode the token in calldata; standard ERC-20 approvals
+ * use `txParams.to`.
+ *
+ * @param transaction - Transaction metadata with tx params and transfer info.
+ * @returns Token contract address, if one can be resolved.
+ */
+export function resolveApprovalTokenContractAddress(
+  transaction: Pick<TransactionMeta, 'txParams' | 'transferInformation'>,
+) {
+  const { to, data } = transaction.txParams;
+  const transferContractAddress =
+    transaction.transferInformation?.contractAddress;
+  const parsed = data ? parseApprovalTransactionData(data as Hex) : undefined;
+
+  if (
+    parsed?.name === 'approve' &&
+    parsed.tokenAddress &&
+    isValidHexAddress(parsed.tokenAddress, { allowNonPrefixed: false })
+  ) {
+    return parsed.tokenAddress;
+  }
+
+  if (to && isValidHexAddress(to, { allowNonPrefixed: false })) {
+    return to;
+  }
+
+  if (
+    transferContractAddress &&
+    isValidHexAddress(transferContractAddress, { allowNonPrefixed: false })
+  ) {
+    return transferContractAddress;
+  }
+
+  return undefined;
 }
 
 /**

@@ -5,6 +5,7 @@ import type {
   TokenAmount,
 } from '../../../../shared/lib/activity/types';
 import { ActivityAvatar } from '../../../components/app/activity-list-item-avatar';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTokensData } from '../../../hooks/useTokensData';
 import { FeesRows, TotalAmountRow } from '../components/amounts-section';
 import { Footer, Section } from '../components/shared';
@@ -12,16 +13,14 @@ import { BlockExplorerButton } from '../components/block-explorer-button';
 import { MetadataSection } from '../components/sections';
 
 const ApprovalTokenSection = ({ token }: { token?: TokenAmount }) => {
+  const t = useI18nContext();
   const tokenAssetId = token?.assetId;
   const tokensByAssetId = useTokensData(tokenAssetId ? [tokenAssetId] : []);
   const tokenMetadata = tokenAssetId
     ? tokensByAssetId[tokenAssetId.toLowerCase()]
     : undefined;
   const tokenLabel =
-    token?.symbol ??
-    tokenMetadata?.symbol ??
-    tokenMetadata?.name ??
-    tokenAssetId;
+    token?.symbol ?? tokenMetadata?.symbol ?? tokenMetadata?.name ?? t('token');
 
   return (
     <div className="flex items-center gap-2 py-4">

@@ -8,6 +8,7 @@ import { isEqualCaseInsensitive } from '../../string-utils';
 import {
   parseApprovalTransactionData,
   parseStandardTokenTransactionData,
+  resolveApprovalTokenContractAddress,
 } from '../../transaction.utils';
 import { TOKEN_TRANSFER_LOG_TOPIC_HASH } from '../../transactions-controller-utils';
 import type { ActivityListItem, TokenAmount } from '../types';
@@ -116,6 +117,21 @@ export function mapLocalTransaction(
       ...(tokenAmount ? { amount: tokenAmount } : {}),
       ...(decimals === undefined ? {} : { decimals }),
     };
+  };
+
+  const mapApprovalToken = ({
+    amount,
+  }: {
+    amount?: string;
+  } = {}) => {
+    const contractAddress =
+      resolveApprovalTokenContractAddress(initialTransaction);
+    return getContractToken({
+      amount,
+      transaction: initialTransaction,
+      direction: 'out',
+      contractAddress,
+    });
   };
 
   const getLegacySwapToken = (direction: TokenAmount['direction']) => {
@@ -357,7 +373,6 @@ export function mapLocalTransaction(
         chainId: payChainId ?? chainId,
         status,
         timestamp,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
           token,
@@ -378,11 +393,7 @@ export function mapLocalTransaction(
         data: {
           hash,
           from,
-          token: getContractToken({
-            transaction: initialTransaction,
-            direction: 'out',
-            contractAddress: initialTransaction.txParams.to,
-          }),
+          token: mapApprovalToken(),
         },
       };
 
@@ -402,12 +413,7 @@ export function mapLocalTransaction(
         data: {
           hash,
           from,
-          token: getContractToken({
-            amount: approveAmount,
-            transaction: initialTransaction,
-            direction: 'out',
-            contractAddress: initialTransaction.txParams.to,
-          }),
+          token: mapApprovalToken({ amount: approveAmount }),
         },
       };
     }
@@ -427,12 +433,7 @@ export function mapLocalTransaction(
         data: {
           hash,
           from,
-          token: getContractToken({
-            amount: increaseAmount,
-            transaction: initialTransaction,
-            direction: 'out',
-            contractAddress: initialTransaction.txParams.to,
-          }),
+          token: mapApprovalToken({ amount: increaseAmount }),
         },
       };
     }

@@ -7,6 +7,10 @@ import { CHAIN_IDS } from '../../../constants/network';
 import { WETH_CONTRACT_ADDRESS } from '../../../constants/swaps';
 import { toAssetId } from '../../asset-utils';
 import type { TransactionGroup } from '../../multichain/types';
+import {
+  buildApproveTransactionData,
+  buildPermit2ApproveTransactionData,
+} from '../../../../test/data/confirmations/token-approve';
 import { localStateFixtures } from './fixtures/local-state';
 import { mapLocalTransaction } from './local-transaction';
 
@@ -331,6 +335,91 @@ describe('mapLocalTransaction', () => {
     });
   });
 
+  it('resolves Permit2 approval token address from calldata', () => {
+    const permit2Address = '0x000000000022D473030F116dDEE9FD8b9aFE764ad8';
+    const spender = '0x80181d3ba89220cdb80234fc7aa19d5cc56229cc';
+    const transaction = {
+      chainId: CHAIN_IDS.LINEA_MAINNET,
+      id: 'permit2-approve-id',
+      hash: '0xpermit2approve',
+      status: TransactionStatus.confirmed,
+      time: 1716367781000,
+      type: TransactionType.tokenMethodApprove,
+      txParams: {
+        from,
+        to: permit2Address,
+        data: buildPermit2ApproveTransactionData(lineaMusd, spender, 1000, 123),
+      },
+    };
+    const transactionGroup = {
+      hasCancelled: false,
+      hasRetried: false,
+      initialTransaction: transaction,
+      nonce: '0x4',
+      primaryTransaction: transaction,
+      transactions: [transaction],
+    } as unknown as TransactionGroup;
+
+    const item = mapLocalTransaction({
+      ...transactionGroup,
+      contractTokenMetadata: { symbol: 'mUSD', decimals: 18 },
+    });
+
+    expect(item).toMatchObject({
+      type: 'approveSpendingCap',
+      data: {
+        token: {
+          direction: 'out',
+          symbol: 'mUSD',
+          assetId: toAssetId(lineaMusd, 'eip155:59144'),
+        },
+      },
+    });
+  });
+
+  it('falls back to transferInformation when txParams.to is not a valid address', () => {
+    const spender = '0x80181d3ba89220cdb80234fc7aa19d5cc56229cc';
+    const transaction = {
+      chainId: CHAIN_IDS.LINEA_MAINNET,
+      id: 'invalid-to-approve-id',
+      hash: '0xinvalidtoapprove',
+      status: TransactionStatus.confirmed,
+      time: 1716367781000,
+      transferInformation: {
+        contractAddress: lineaMusd,
+        decimals: 18,
+        symbol: 'mUSD',
+      },
+      type: TransactionType.tokenMethodApprove,
+      txParams: {
+        from,
+        to: '0x23',
+        data: buildApproveTransactionData(spender, 1000),
+      },
+    };
+    const transactionGroup = {
+      hasCancelled: false,
+      hasRetried: false,
+      initialTransaction: transaction,
+      nonce: '0x5',
+      primaryTransaction: transaction,
+      transactions: [transaction],
+    } as unknown as TransactionGroup;
+
+    const item = mapLocalTransaction(transactionGroup);
+
+    expect(item).toMatchObject({
+      type: 'approveSpendingCap',
+      data: {
+        token: {
+          direction: 'out',
+          symbol: 'mUSD',
+          assetId: toAssetId(lineaMusd, 'eip155:59144'),
+        },
+      },
+    });
+  });
+
   it('maps an mUSD conversion to a Convert activity', () => {
     const transaction = {
       chainId: CHAIN_IDS.LINEA_MAINNET,
@@ -394,10 +483,8 @@ describe('mapLocalTransaction', () => {
     const transactionGroup = localStateFixtures.perpsWithdraw
       .transactionGroup as unknown as TransactionGroup;
     const item = mapLocalTransaction(transactionGroup);
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toMatchObject({
+    expect(item).toMatchObject({
       type: 'perpsWithdraw',
       chainId: 'eip155:1',
       status: 'success',

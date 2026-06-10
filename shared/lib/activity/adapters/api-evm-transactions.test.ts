@@ -72,10 +72,8 @@ describe('mapEvmTransactions', () => {
       subjectAddress: senderAddress,
       transaction,
     });
-    const activity = { ...item };
-    delete activity.raw;
 
-    expect(activity).toMatchObject({
+    expect(item).toMatchObject({
       type: 'send',
       chainId: 'eip155:59144',
       status: 'success',
@@ -187,6 +185,46 @@ describe('mapEvmTransactions', () => {
           symbol: 'USDC',
           decimals: 6,
           assetId: toAssetId(baseUsdc, 'eip155:8453'),
+        },
+      },
+    });
+  });
+
+  it('falls back to value transfer contract address when approval to is invalid', () => {
+    const transaction = {
+      hash: '0x91f89897197afcc09ad98ec4282366fd7938d8a9609e4fc2a0aa2d070664bc27',
+      timestamp: '2026-05-27T13:20:27.000Z',
+      chainId: Number(CHAIN_IDS.LINEA_MAINNET),
+      methodId: '0x095ea7b3',
+      value: '0',
+      to: '0x23',
+      from: subjectAddress,
+      isError: false,
+      valueTransfers: [
+        {
+          contractAddress: lineaMusd,
+          symbol: 'mUSD',
+          decimal: 18,
+          transferType: 'erc20',
+        },
+      ],
+      transactionCategory: 'APPROVE',
+      transactionType: 'ERC_20_APPROVE',
+    } as unknown as V1TransactionByHashResponse;
+
+    const item = mapApiEvmTransactions({
+      subjectAddress,
+      transaction,
+    });
+
+    expect(item).toMatchObject({
+      type: 'approveSpendingCap',
+      chainId: 'eip155:59144',
+      data: {
+        token: {
+          direction: 'out',
+          symbol: 'mUSD',
+          assetId: toAssetId(lineaMusd, 'eip155:59144'),
         },
       },
     });

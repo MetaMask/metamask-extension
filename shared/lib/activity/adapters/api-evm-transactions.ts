@@ -2,6 +2,7 @@ import type { V1TransactionByHashResponse } from '@metamask/core-backend';
 import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
 import { NATIVE_TOKEN_ADDRESS as zeroAddress } from '../../../constants/transaction';
 import { toAssetId } from '../../asset-utils';
+import { isValidHexAddress } from '../../hexstring-utils';
 import { isEqualCaseInsensitive as equalsIgnoreCase } from '../../string-utils';
 import type { ActivityListItem, Status, TokenAmount } from '../types';
 import { supplyMethodIds, withdrawMethodIds, wrapMethodIds } from './constants';
@@ -99,9 +100,27 @@ export function mapApiEvmTransactions({
   if (transactionCategory === 'APPROVE') {
     // TODO: Categorize REVOKE in the backend
     const direction = receivedTransfer && !sentTransfer ? 'in' : 'out';
-    const assetId = toAssetId(transaction.to, chainId);
+    const valueTransferContractAddress = valueTransfers?.find(
+      ({ contractAddress, transferType }) =>
+        contractAddress &&
+        transferType !== 'normal' &&
+        transferType !== 'internal',
+    )?.contractAddress;
+    const contractAddress =
+      (isValidHexAddress(transaction.to, { allowNonPrefixed: false })
+        ? transaction.to
+        : undefined) ??
+      (valueTransferContractAddress &&
+      isValidHexAddress(valueTransferContractAddress, {
+        allowNonPrefixed: false,
+      })
+        ? valueTransferContractAddress
+        : undefined);
+    const assetId = contractAddress
+      ? toAssetId(contractAddress, chainId)
+      : undefined;
     const token =
-      getTokenMetadataFromKnownToken(transaction.to, direction, chainId) ??
+      getTokenMetadataFromKnownToken(contractAddress, direction, chainId) ??
       (assetId ? { direction, assetId } : undefined);
 
     return {
