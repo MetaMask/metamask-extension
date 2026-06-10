@@ -77,6 +77,16 @@ const config: PlaywrightTestConfig = {
       fullyParallel: false,
       timeout: 600 * 1000, // 10 minutes
     },
+    {
+      name: 'firefox-extension-poc',
+      testMatch: '/global/specs/firefox-pw-poc.spec.ts',
+      use: {
+        ...devices['Desktop Firefox'],
+        headless: Boolean(process.env.CI),
+      },
+      fullyParallel: false,
+      timeout: 600 * 1000,
+    },
   ],
 
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */
