@@ -9,6 +9,7 @@ import NftListPage from '../../page-objects/pages/home/nft-list';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { login } from '../../page-objects/flows/login.flow';
+import { closeSettings } from '../../page-objects/flows/settings.flow';
 
 async function mockIPFSRequest(mockServer: MockttpServer) {
   return [
@@ -42,7 +43,7 @@ describe('Settings', function () {
         await privacySettings.checkPageIsLoaded();
         await privacySettings.goToThirdPartyApisSettings();
         await privacySettings.toggleIpfsGateway();
-        await settingsPage.clickBackButton();
+        await closeSettings(driver);
         const homePage = new Homepage(driver);
         await homePage.checkPageIsLoaded();
 
