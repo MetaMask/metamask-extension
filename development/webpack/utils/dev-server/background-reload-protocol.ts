@@ -30,8 +30,6 @@ export const BACKGROUND_RELOAD_MESSAGE_TYPE =
  * Entry name for the background reload client bundle on MV2 (Firefox), where
  * it is injected as a `<script>` into the background page by
  * `HtmlBundlerPlugin`. On MV3 the client is bundled directly into the service
- * worker instead. Lives here (rather than in `./background-reload`) so
- * `ManifestPlugin` can import it without creating an import cycle with the
- * server wiring.
+ * worker instead.
  */
 export const BACKGROUND_RELOAD_CLIENT_ENTRY_NAME = 'background-reload-client';

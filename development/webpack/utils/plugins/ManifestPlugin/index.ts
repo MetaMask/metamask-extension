@@ -91,7 +91,7 @@ export class ManifestPlugin<Z extends boolean> {
 
   private watchedFiles: string[] = [];
 
-  private addedScripts: Set<string> = new Set();
+  addedScripts: Set<string> = new Set();
 
   private selfContainedScripts: Set<string> = new Set([
     'snow.prod',
@@ -113,18 +113,6 @@ export class ManifestPlugin<Z extends boolean> {
   canBeChunked = ({ name }: { name?: string | null }): boolean => {
     return !name || !this.selfContainedScripts.has(name);
   };
-
-  /**
-   * Entry names of every script this plugin registered from the extension
-   * manifests: content scripts, MV2 background scripts, the MV3 service
-   * worker, and web-accessible `.js` resources. Used by the dev server's
-   * background reload (`utils/dev-server/background-reload`) to know which entries require
-   * a full extension reload when they change, without hard-coding manifest
-   * contents.
-   */
-  get manifestScriptEntryNames(): ReadonlySet<string> {
-    return this.addedScripts;
-  }
 
   constructor(options: ManifestPluginOptions<Z>) {
     validate(schema, options, { name: NAME });

@@ -243,7 +243,6 @@ export function setupBackgroundReload(
     if (!manifestPlugin) {
       continue;
     }
-    const { manifestScriptEntryNames } = manifestPlugin;
     const serviceWorkerEntryName = getServiceWorkerEntryName(manifestPlugin);
 
     const { EntryPlugin } = compiler.webpack;
@@ -271,7 +270,7 @@ export function setupBackgroundReload(
       }
       fingerprints.set(
         compiler,
-        fingerprintCompilation(stats.compilation, manifestScriptEntryNames),
+        fingerprintCompilation(stats.compilation, manifestPlugin.addedScripts),
       );
       announce();
     });
