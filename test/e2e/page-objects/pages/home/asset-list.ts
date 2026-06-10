@@ -222,22 +222,17 @@ class AssetListPage extends HomePage {
   }
 
   private async expandLowValueAssetsIfPresent(): Promise<void> {
-    let toggle;
-
+    // If the low value assets section is already expanded, no action is required.
     try {
-      toggle = await this.driver.findElement(this.lowValueAssetsToggle, 1000);
+      await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded, {
+        timeout: 1000,
+      });
+      return;
     } catch {
-      return;
+      // Not expanded yet (or low value section not present), attempt to expand it below.
     }
 
-    if ((await toggle.getAttribute('aria-expanded')) === 'true') {
-      return;
-    }
-
-    await this.driver.clickElement(this.lowValueAssetsToggle);
-    await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded, {
-      timeout: 5000,
-    });
+    await this.driver.clickElementSafe(this.lowValueAssetsToggle);
   }
 
   async getCurrentNetworksOptionTotal(): Promise<string> {
