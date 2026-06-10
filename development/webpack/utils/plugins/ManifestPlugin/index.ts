@@ -51,7 +51,7 @@ const NAME = 'ManifestPlugin';
 const SOURCEMAPS_DIRECTORY = 'sourcemaps';
 const HTML_ENTRYPOINT_DIRECTORIES = [
   path.join('html', 'ui'),
-  path.join('html', 'app'),
+  path.join('html', 'background'),
 ] as const;
 const HTML_SCRIPT_SRC_PATTERN =
   /<script\b[^>]*\bsrc\s*=\s*["']([^"']+)["'][^>]*>/giu;
