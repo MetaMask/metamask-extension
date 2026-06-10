@@ -181,6 +181,7 @@ describe('AssetPage', () => {
       ...mockMultichainNetworkState(),
       txHistory: {},
       remoteFeatureFlags: {
+        batchSell: { enabled: true },
         bridgeConfig: {
           support: true,
         },
