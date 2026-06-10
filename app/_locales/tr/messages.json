@@ -37,9 +37,6 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "Hata"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "Geçersiz QR kodu. Lütfen donanım cüzdanının senkronizasyon QR kodunu tarayın."
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "QR kodunu tara"
   },
@@ -92,6 +89,9 @@
     "message": "“$1” kullanan bir cüzdan zaten mevcut. Oturum açmayı denemek ister misiniz?",
     "description": "$1 is the account email"
   },
+  "accountAlreadyExistsLoginDescriptionTelegram": {
+    "message": "Bu Telegram hesabına zaten bir cüzdan bağlı. Bu cüzdanın kilidini açmak ister misiniz?"
+  },
   "accountAlreadyExistsTitle": {
     "message": "Cüzdan zaten mevcut"
   },
@@ -126,6 +126,10 @@
   "accountNotFoundDescription": {
     "message": "“$1” için bir cüzdan bulamadık. Bu oturum ile yeni bir cüzdan oluşturmak ister misiniz?",
     "description": "$1 is the account email"
+  },
+  "accountNotFoundDescriptionTelegram": {
+    "message": "Bu $1 hesabına bağlı bir cüzdan bulamadık. Bu giriş bilgileri ile yeni bir cüzdan oluşturmak ister misiniz?",
+    "description": "$1 is the social login provider"
   },
   "accountNotFoundTitle": {
     "message": "Cüzdan bulunamadı"
@@ -166,11 +170,68 @@
   "activity": {
     "message": "İşlem Geçmişi"
   },
+  "activityEmptyDescription": {
+    "message": "İlk token takas işleminizi bugün yapın."
+  },
+  "activityEmptyNoFundsDescription": {
+    "message": "Başlamak için cüzdanınıza fon ekleyin."
+  },
+  "activity_approveSpendingCap_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_failed_title": {
+    "message": "Onay başarısız oldu"
+  },
+  "activity_approveSpendingCap_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_pending_title": {
+    "message": "Harcama üst limiti onaylanıyor"
+  },
+  "activity_approveSpendingCap_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_success_title": {
+    "message": "Harcama üst limiti onaylandı"
+  },
   "activity_bridge_failed_description": {
     "message": "Köprü işlemi başarısız oldu"
   },
   "activity_bridge_failed_title": {
     "message": "Köprü işlemi başarısız oldu"
+  },
+  "activity_bridge_pending_description": {
+    "message": "$1 köprüleniyor",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_pending_title": {
+    "message": "$1 köprüleniyor",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_success_description": {
+    "message": "$1 köprülendi",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_success_title": {
+    "message": "$1 köprülendi",
+    "description": "$1 is the token symbol"
+  },
+  "activity_buy_failed_description": {
+    "message": "Alış işlemi başarısız oldu"
+  },
+  "activity_buy_failed_title": {
+    "message": "Alış işlemi başarısız oldu"
+  },
+  "activity_buy_pending_description": {
+    "message": "$1 alınıyor",
+    "description": "$1 is the token symbol"
+  },
+  "activity_buy_pending_title": {
+    "message": "$1 alınıyor",
+    "description": "$1 is the token symbol"
   },
   "activity_buy_success_description": {
     "message": "$1 satın alındı",
@@ -180,8 +241,78 @@
     "message": "$1 satın alındı",
     "description": "$1 is the token symbol"
   },
-  "activity_contractInteraction_success_title": {
-    "message": "Akıllı sözleşme etkileşimi"
+  "activity_claimMusdBonus_failed_title": {
+    "message": "Alınamadı"
+  },
+  "activity_claimMusdBonus_pending_title": {
+    "message": "mUSD bonusu alınıyor"
+  },
+  "activity_claimMusdBonus_success_title": {
+    "message": "mUSD bonusu alındı"
+  },
+  "activity_claim_failed_description": {
+    "message": "Alınamadı"
+  },
+  "activity_claim_failed_title": {
+    "message": "Alınamadı"
+  },
+  "activity_claim_pending_description": {
+    "message": "$1 alınıyor",
+    "description": "$1 is the token symbol"
+  },
+  "activity_claim_pending_title": {
+    "message": "$1 alınıyor",
+    "description": "$1 is the token symbol"
+  },
+  "activity_claim_success_description": {
+    "message": "$1 alındı",
+    "description": "$1 is the token symbol"
+  },
+  "activity_claim_success_title": {
+    "message": "$1 alındı",
+    "description": "$1 is the token symbol"
+  },
+  "activity_contractDeployment_failed_description": {
+    "message": "Dağıtım başarısız oldu"
+  },
+  "activity_contractDeployment_failed_title": {
+    "message": "Dağıtım başarısız oldu"
+  },
+  "activity_contractDeployment_pending_description": {
+    "message": "Sözleşme dağıtılıyor"
+  },
+  "activity_contractDeployment_pending_title": {
+    "message": "Sözleşme dağıtılıyor"
+  },
+  "activity_contractDeployment_success_description": {
+    "message": "Sözleşme dağıtıldı"
+  },
+  "activity_contractDeployment_success_title": {
+    "message": "Sözleşme dağıtıldı"
+  },
+  "activity_contractInteraction_failed_title": {
+    "message": "Etkileşim başarısız oldu"
+  },
+  "activity_contractInteraction_pending_title": {
+    "message": "Etkileşim sürüyor"
+  },
+  "activity_convert_failed_description": {
+    "message": "Dönüştürme işlemi başarısız oldu"
+  },
+  "activity_convert_failed_title": {
+    "message": "Dönüştürme işlemi başarısız oldu"
+  },
+  "activity_convert_pending_description": {
+    "message": "Şuna dönüştürülüyor: $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_convert_pending_title": {
+    "message": "Şuna dönüştürülüyor: $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_convert_success_description": {
+    "message": "Şuna dönüştürüldü: $1",
+    "description": "$1 is the token symbol"
   },
   "activity_deposit_failed_description": {
     "message": "Para yatırma işlemi başarısız oldu"
@@ -189,11 +320,48 @@
   "activity_deposit_failed_title": {
     "message": "Para yatırma işlemi başarısız oldu"
   },
+  "activity_deposit_pending_description": {
+    "message": "$1 yatırılıyor",
+    "description": "$1 is the token symbol"
+  },
+  "activity_deposit_pending_title": {
+    "message": "$1 yatırılıyor",
+    "description": "$1 is the token symbol"
+  },
+  "activity_deposit_success_description": {
+    "message": "$1 yatırıldı",
+    "description": "$1 is the token symbol"
+  },
+  "activity_deposit_success_title": {
+    "message": "$1 yatırıldı",
+    "description": "$1 is the token symbol"
+  },
   "activity_fallback_description": {
     "message": "İşlem"
   },
   "activity_fallback_title": {
     "message": "İşlem"
+  },
+  "activity_increaseSpendingCap_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_increaseSpendingCap_failed_title": {
+    "message": "Artırma işlemi başarısız oldu"
+  },
+  "activity_increaseSpendingCap_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_increaseSpendingCap_pending_title": {
+    "message": "Harcama üst limiti artırılıyor"
+  },
+  "activity_increaseSpendingCap_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_increaseSpendingCap_success_title": {
+    "message": "Harcama üst limiti artırıldı"
   },
   "activity_lendingDeposit_failed_title": {
     "message": "Para yatırma işlemi başarısız oldu"
@@ -204,15 +372,216 @@
   "activity_lendingWithdrawal_failed_title": {
     "message": "Para çekme işlemi başarısız"
   },
-  "activity_lendingWithdrawal_success_description": {
-    "message": "Borç verme para çekme işlemi"
+  "activity_lendingWithdrawal_pending_description": {
+    "message": "$1 çekiliyor",
+    "description": "$1 is the token symbol"
   },
-  "activity_lendingWithdrawal_success_title": {
-    "message": "Borç verme para çekme işlemi"
+  "activity_lendingWithdrawal_pending_title": {
+    "message": "$1 çekiliyor",
+    "description": "$1 is the token symbol"
+  },
+  "activity_marketCloseShort_failed_description": {
+    "message": "Short kapatılamadı"
+  },
+  "activity_marketCloseShort_failed_title": {
+    "message": "Short kapatılamadı"
+  },
+  "activity_marketCloseShort_pending_description": {
+    "message": "Short kapatılıyor - piyasa kapanışı"
+  },
+  "activity_marketCloseShort_pending_title": {
+    "message": "Short kapatılıyor - piyasa fiyatından kapanış"
+  },
+  "activity_marketCloseShort_success_description": {
+    "message": "Short kapatıldı - piyasa fiyatından kapanış"
+  },
+  "activity_marketCloseShort_success_title": {
+    "message": "Short kapatıldı - piyasa fiyatından kapanış"
+  },
+  "activity_marketShort_failed_description": {
+    "message": "Short kapatılamadı"
+  },
+  "activity_marketShort_failed_title": {
+    "message": "Short kapatılamadı"
+  },
+  "activity_marketShort_pending_description": {
+    "message": "Short kapatılıyor - piyasa"
+  },
+  "activity_marketShort_pending_title": {
+    "message": "Short kapatılıyor - piyasa"
+  },
+  "activity_marketShort_success_description": {
+    "message": "Short kapatıldı - piyasa"
+  },
+  "activity_marketShort_success_title": {
+    "message": "Short kapatıldı - piyasa"
+  },
+  "activity_nftMint_failed_title": {
+    "message": "Mint işlemi başarısız oldu"
+  },
+  "activity_nftMint_pending_title": {
+    "message": "$1 mint ediliyor",
+    "description": "$1 is the NFT token symbol"
   },
   "activity_nftMint_success_title": {
     "message": "$1 mint edildi",
     "description": "$1 is the NFT token symbol"
+  },
+  "activity_perpsAddFunds_failed_description": {
+    "message": "Fonlama başarısız oldu"
+  },
+  "activity_perpsAddFunds_failed_title": {
+    "message": "Fonlama başarısız oldu"
+  },
+  "activity_perpsAddFunds_pending_description": {
+    "message": "Fonlama sürüyor"
+  },
+  "activity_perpsAddFunds_pending_title": {
+    "message": "Fonlama sürüyor"
+  },
+  "activity_perpsAddFunds_success_description": {
+    "message": "Hesaba fon eklendi"
+  },
+  "activity_perpsAddFunds_success_title": {
+    "message": "Hesaba fon eklendi"
+  },
+  "activity_perpsCloseLongLiquidated_failed_description": {
+    "message": "Long kapatılamadı - likidasyon başarısız"
+  },
+  "activity_perpsCloseLongLiquidated_failed_title": {
+    "message": "Long kapatılamadı - likidasyon başarısız"
+  },
+  "activity_perpsCloseLongLiquidated_pending_description": {
+    "message": "Long kapatılıyor - likidasyon"
+  },
+  "activity_perpsCloseLongLiquidated_pending_title": {
+    "message": "Long kapatılıyor - likidasyon"
+  },
+  "activity_perpsCloseLongLiquidated_success_description": {
+    "message": "Long kapatıldı - likidasyon"
+  },
+  "activity_perpsCloseLongLiquidated_success_title": {
+    "message": "Long kapatıldı - likidasyon"
+  },
+  "activity_perpsCloseLongStopLoss_failed_description": {
+    "message": "Long kapatılamadı - zararda durdur başarısız"
+  },
+  "activity_perpsCloseLongStopLoss_failed_title": {
+    "message": "Long kapatılamadı - zararda durdur başarısız"
+  },
+  "activity_perpsCloseLongStopLoss_pending_description": {
+    "message": "Long kapatılıyor - zararda durdur"
+  },
+  "activity_perpsCloseLongStopLoss_pending_title": {
+    "message": "Long kapatılıyor - zararda durdur"
+  },
+  "activity_perpsCloseLongStopLoss_success_description": {
+    "message": "Long kapatıldı - zararda durdur"
+  },
+  "activity_perpsCloseLongStopLoss_success_title": {
+    "message": "Long kapatıldı - zararda durdur"
+  },
+  "activity_perpsCloseLongTakeProfit_failed_description": {
+    "message": "Long kapatılamadı"
+  },
+  "activity_perpsCloseLongTakeProfit_failed_title": {
+    "message": "Long kapatılamadı"
+  },
+  "activity_perpsCloseLongTakeProfit_pending_description": {
+    "message": "Long kapatılıyor - kazancı al"
+  },
+  "activity_perpsCloseLongTakeProfit_pending_title": {
+    "message": "Long kapatılıyor - kazancı al"
+  },
+  "activity_perpsCloseLongTakeProfit_success_description": {
+    "message": "Long kapatıldı - kazancı al"
+  },
+  "activity_perpsCloseLongTakeProfit_success_title": {
+    "message": "Long kapatıldı - kazancı al"
+  },
+  "activity_perpsCloseLong_failed_description": {
+    "message": "Long kapatılamadı"
+  },
+  "activity_perpsCloseLong_failed_title": {
+    "message": "Long kapatılamadı"
+  },
+  "activity_perpsCloseLong_pending_description": {
+    "message": "Long kapatılıyor"
+  },
+  "activity_perpsCloseLong_pending_title": {
+    "message": "Long kapatılıyor"
+  },
+  "activity_perpsCloseLong_success_description": {
+    "message": "Long kapatıldı"
+  },
+  "activity_perpsCloseLong_success_title": {
+    "message": "Long kapatıldı"
+  },
+  "activity_perpsCloseShortLiquidated_failed_description": {
+    "message": "Short kapatılamadı - likidasyon başarısız"
+  },
+  "activity_perpsCloseShortLiquidated_failed_title": {
+    "message": "Short kapatılamadı - likidasyon başarısız"
+  },
+  "activity_perpsCloseShortLiquidated_pending_description": {
+    "message": "Short kapatılıyor - likidasyon"
+  },
+  "activity_perpsCloseShortLiquidated_pending_title": {
+    "message": "Short kapatılıyor - likidasyon"
+  },
+  "activity_perpsCloseShortLiquidated_success_description": {
+    "message": "Short kapatıldı - likidasyon"
+  },
+  "activity_perpsCloseShortLiquidated_success_title": {
+    "message": "Short kapatıldı - likidasyon"
+  },
+  "activity_perpsCloseShortStopLoss_failed_description": {
+    "message": "Short kapatılamadı"
+  },
+  "activity_perpsCloseShortStopLoss_failed_title": {
+    "message": "Short kapatılamadı"
+  },
+  "activity_perpsCloseShortStopLoss_pending_description": {
+    "message": "Short kapatılıyor - zararda durdur"
+  },
+  "activity_perpsCloseShortStopLoss_pending_title": {
+    "message": "Short kapatılıyor - zararda durdur"
+  },
+  "activity_perpsCloseShortStopLoss_success_description": {
+    "message": "Short kapatıldı - zararda durdur"
+  },
+  "activity_perpsCloseShortStopLoss_success_title": {
+    "message": "Short kapatıldı - zararda durdur"
+  },
+  "activity_perpsCloseShortTakeProfit_failed_description": {
+    "message": "Short kapatılamadı"
+  },
+  "activity_perpsCloseShortTakeProfit_failed_title": {
+    "message": "Short kapatılamadı"
+  },
+  "activity_perpsCloseShortTakeProfit_pending_description": {
+    "message": "Short kapatılıyor - kazancı al"
+  },
+  "activity_perpsCloseShortTakeProfit_pending_title": {
+    "message": "Short kapatılıyor - kazancı al"
+  },
+  "activity_perpsCloseShortTakeProfit_success_description": {
+    "message": "Short kapatıldı - kazancı al"
+  },
+  "activity_perpsCloseShortTakeProfit_success_title": {
+    "message": "Short kapatıldı - kazancı al"
+  },
+  "activity_perpsCloseShort_failed_description": {
+    "message": "Short kapatılamadı"
+  },
+  "activity_perpsCloseShort_failed_title": {
+    "message": "Short kapatılamadı"
+  },
+  "activity_perpsCloseShort_pending_description": {
+    "message": "Short kapatılıyor"
+  },
+  "activity_perpsCloseShort_pending_title": {
+    "message": "Short kapatılıyor"
   },
   "activity_perpsCloseShort_success_description": {
     "message": "Short pozisyon kapatıldı"
@@ -220,17 +589,101 @@
   "activity_perpsCloseShort_success_title": {
     "message": "Short pozisyon kapatıldı"
   },
+  "activity_perpsOpenLong_failed_description": {
+    "message": "Long açılamadı"
+  },
+  "activity_perpsOpenLong_failed_title": {
+    "message": "Long açılamadı"
+  },
+  "activity_perpsOpenLong_pending_description": {
+    "message": "Long açılıyor"
+  },
+  "activity_perpsOpenLong_pending_title": {
+    "message": "Long açılıyor"
+  },
   "activity_perpsOpenLong_success_description": {
     "message": "Long pozisyon açıldı"
   },
   "activity_perpsOpenLong_success_title": {
     "message": "Long pozisyon açıldı"
   },
+  "activity_perpsOpenShort_failed_description": {
+    "message": "Short açılamadı"
+  },
+  "activity_perpsOpenShort_failed_title": {
+    "message": "Short açılamadı"
+  },
+  "activity_perpsOpenShort_pending_description": {
+    "message": "Short açılıyor"
+  },
+  "activity_perpsOpenShort_pending_title": {
+    "message": "Short açılıyor"
+  },
+  "activity_perpsOpenShort_success_description": {
+    "message": "Short açıldı"
+  },
+  "activity_perpsOpenShort_success_title": {
+    "message": "Short açıldı"
+  },
+  "activity_perpsPaidFundingFees_failed_description": {
+    "message": "Fonlama ödemesi başarısız oldu"
+  },
+  "activity_perpsPaidFundingFees_failed_title": {
+    "message": "Fonlama ödemesi başarısız oldu"
+  },
+  "activity_perpsPaidFundingFees_pending_description": {
+    "message": "Fonlama ücreti ödeniyor"
+  },
+  "activity_perpsPaidFundingFees_pending_title": {
+    "message": "Fonlama ücreti ödeniyor"
+  },
+  "activity_perpsPaidFundingFees_success_description": {
+    "message": "Fonlama ücreti ödendi"
+  },
+  "activity_perpsPaidFundingFees_success_title": {
+    "message": "Fonlama ücreti ödendi"
+  },
+  "activity_perpsReceivedFundingFees_failed_description": {
+    "message": "Ücret alınamadı"
+  },
+  "activity_perpsReceivedFundingFees_failed_title": {
+    "message": "Ücret alınamadı"
+  },
+  "activity_perpsReceivedFundingFees_pending_description": {
+    "message": "Fonlama ücreti alınıyor"
+  },
+  "activity_perpsReceivedFundingFees_pending_title": {
+    "message": "Fonlama ücreti alınıyor"
+  },
+  "activity_perpsReceivedFundingFees_success_description": {
+    "message": "Fonlama ücreti alındı"
+  },
+  "activity_perpsReceivedFundingFees_success_title": {
+    "message": "Fonlama ücreti alındı"
+  },
   "activity_perpsWithdrawFunds_failed_description": {
     "message": "Para çekme işlemi başarısız"
   },
   "activity_perpsWithdrawFunds_failed_title": {
     "message": "Para çekme işlemi başarısız"
+  },
+  "activity_perpsWithdrawFunds_pending_description": {
+    "message": "Fonlar çekiliyor"
+  },
+  "activity_perpsWithdrawFunds_pending_title": {
+    "message": "Fonlar çekiliyor"
+  },
+  "activity_perpsWithdrawFunds_success_description": {
+    "message": "Perps çekme işlemi"
+  },
+  "activity_perpsWithdrawFunds_success_title": {
+    "message": "Perps çekme işlemi"
+  },
+  "activity_predictionCashedOut_failed_description": {
+    "message": "Nakde çevirme işlemi başarısız oldu"
+  },
+  "activity_predictionCashedOut_failed_title": {
+    "message": "Nakde çevirme işlemi başarısız oldu"
   },
   "activity_predictionCashedOut_pending_description": {
     "message": "Paraya çevriliyor"
@@ -244,11 +697,59 @@
   "activity_predictionCashedOut_success_title": {
     "message": "Nakit çıkışı yapıldı"
   },
+  "activity_predictionClaimWinnings_failed_description": {
+    "message": "Alınamadı"
+  },
+  "activity_predictionClaimWinnings_failed_title": {
+    "message": "Alınamadı"
+  },
+  "activity_predictionClaimWinnings_pending_description": {
+    "message": "Kazançlar alınıyor"
+  },
+  "activity_predictionClaimWinnings_pending_title": {
+    "message": "Kazançlar alınıyor"
+  },
+  "activity_predictionClaimWinnings_success_description": {
+    "message": "Kazançlar alındı"
+  },
+  "activity_predictionClaimWinnings_success_title": {
+    "message": "Kazançlar alındı"
+  },
+  "activity_predictionPlaced_failed_description": {
+    "message": "Tahmin başarısız oldu"
+  },
+  "activity_predictionPlaced_failed_title": {
+    "message": "Tahmin başarısız oldu"
+  },
+  "activity_predictionPlaced_pending_description": {
+    "message": "Tahmin yapılıyor"
+  },
+  "activity_predictionPlaced_pending_title": {
+    "message": "Tahmin yapılıyor"
+  },
   "activity_predictionPlaced_success_description": {
     "message": "Tahmin yapıldı"
   },
   "activity_predictionPlaced_success_title": {
     "message": "Tahmin yapıldı"
+  },
+  "activity_predictionsAddFunds_failed_description": {
+    "message": "Fonlama başarısız oldu"
+  },
+  "activity_predictionsAddFunds_failed_title": {
+    "message": "Fonlama başarısız oldu"
+  },
+  "activity_predictionsAddFunds_pending_description": {
+    "message": "Fonlama sürüyor"
+  },
+  "activity_predictionsAddFunds_pending_title": {
+    "message": "Fonlama sürüyor"
+  },
+  "activity_predictionsAddFunds_success_description": {
+    "message": "Hesaba fon eklendi"
+  },
+  "activity_predictionsAddFunds_success_title": {
+    "message": "Hesaba fon eklendi"
   },
   "activity_predictionsWithdrawFunds_failed_description": {
     "message": "Para çekme işlemi başarısız"
@@ -262,21 +763,84 @@
   "activity_predictionsWithdrawFunds_pending_title": {
     "message": "Çekiliyor"
   },
+  "activity_predictionsWithdrawFunds_success_description": {
+    "message": "Tahmin bakiyesini çek"
+  },
+  "activity_predictionsWithdrawFunds_success_title": {
+    "message": "Tahmin bakiyesini çek"
+  },
   "activity_receive_failed_description": {
     "message": "Kimden: $1",
     "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_failed_title": {
+    "message": "Alınamadı"
   },
   "activity_receive_pending_description": {
     "message": "Kimden: $1",
     "description": "$1 is the shortened sender address"
   },
+  "activity_receive_pending_title": {
+    "message": "$1 alınıyor",
+    "description": "$1 is the token symbol"
+  },
   "activity_receive_success_description": {
     "message": "Kimden: $1",
     "description": "$1 is the shortened sender address"
   },
+  "activity_receive_success_title": {
+    "message": "$1 alındı",
+    "description": "$1 is the token symbol"
+  },
+  "activity_revokeSpendingCap_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_revokeSpendingCap_failed_title": {
+    "message": "İptal edilemedi"
+  },
+  "activity_revokeSpendingCap_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_revokeSpendingCap_pending_title": {
+    "message": "Harcama üst limiti iptal ediliyor"
+  },
+  "activity_revokeSpendingCap_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_revokeSpendingCap_success_title": {
+    "message": "Harcama üst limiti iptal edildi"
+  },
+  "activity_sell_failed_description": {
+    "message": "Satış işlemi başarısız oldu"
+  },
+  "activity_sell_failed_title": {
+    "message": "Satış işlemi başarısız oldu"
+  },
+  "activity_sell_pending_description": {
+    "message": "$1 satılıyor",
+    "description": "$1 is the token symbol"
+  },
+  "activity_sell_pending_title": {
+    "message": "$1 satılıyor",
+    "description": "$1 is the token symbol"
+  },
+  "activity_sell_success_description": {
+    "message": "$1 satıldı",
+    "description": "$1 is the token symbol"
+  },
+  "activity_sell_success_title": {
+    "message": "$1 satıldı",
+    "description": "$1 is the token symbol"
+  },
   "activity_send_failed_description": {
     "message": "Alıcı: $1",
     "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_failed_title": {
+    "message": "Gönderilemedi"
   },
   "activity_send_pending_description": {
     "message": "Alıcı: $1",
@@ -294,11 +858,107 @@
     "message": "$1 gönderildi",
     "description": "$1 is the token symbol"
   },
+  "activity_smartAccountUpgrade_failed_description": {
+    "message": "Yükseltilemedi"
+  },
+  "activity_smartAccountUpgrade_failed_title": {
+    "message": "Yükseltilemedi"
+  },
+  "activity_smartAccountUpgrade_pending_description": {
+    "message": "Akıllı hesaba yükseltiliyor"
+  },
+  "activity_smartAccountUpgrade_pending_title": {
+    "message": "Akıllı hesaba yükseltiliyor"
+  },
+  "activity_smartAccountUpgrade_success_description": {
+    "message": "Akıllı hesaba yükseltildi"
+  },
+  "activity_smartAccountUpgrade_success_title": {
+    "message": "Akıllı hesaba yükseltildi"
+  },
+  "activity_stopMarketCloseShort_failed_description": {
+    "message": "Short kapatılamadı"
+  },
+  "activity_stopMarketCloseShort_failed_title": {
+    "message": "Short kapatılamadı"
+  },
+  "activity_stopMarketCloseShort_pending_description": {
+    "message": "Short kapatılıyor - zararda durdur piyasa emri"
+  },
+  "activity_stopMarketCloseShort_pending_title": {
+    "message": "Short kapatılıyor - zararda durdur piyasa emri"
+  },
+  "activity_stopMarketCloseShort_success_description": {
+    "message": "Short kapatıldı - zararda durdur piyasa emri"
+  },
+  "activity_stopMarketCloseShort_success_title": {
+    "message": "Short kapatıldı - zararda durdur piyasa emri"
+  },
   "activity_swapIncomplete_failed_title": {
     "message": "Takas başarısız oldu"
   },
+  "activity_swapIncomplete_pending_title": {
+    "message": "$1 takas ediliyor",
+    "description": "$1 is the source token symbol"
+  },
+  "activity_swapIncomplete_success_title": {
+    "message": "$1 takas edildi",
+    "description": "$1 is the source token symbol"
+  },
   "activity_swap_failed_title": {
     "message": "Takas başarısız oldu"
+  },
+  "activity_swap_pending_title": {
+    "message": "$1 ile $2 takas ediliyor",
+    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+  },
+  "activity_swap_success_title": {
+    "message": "$1 ile $2 takas edildi",
+    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+  },
+  "activity_unwrap_failed_description": {
+    "message": "Çözme başarısız oldu"
+  },
+  "activity_unwrap_failed_title": {
+    "message": "Çözme başarısız oldu"
+  },
+  "activity_unwrap_pending_description": {
+    "message": "$1 çözülüyor",
+    "description": "$1 is the token symbol"
+  },
+  "activity_unwrap_pending_title": {
+    "message": "$1 çözülüyor",
+    "description": "$1 is the token symbol"
+  },
+  "activity_unwrap_success_description": {
+    "message": "$1 çözüldü",
+    "description": "$1 is the token symbol"
+  },
+  "activity_unwrap_success_title": {
+    "message": "$1 çözüldü",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_failed_description": {
+    "message": "Sarma başarısız oldu"
+  },
+  "activity_wrap_failed_title": {
+    "message": "Sarma başarısız oldu"
+  },
+  "activity_wrap_pending_description": {
+    "message": "$1 sarılıyor",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_pending_title": {
+    "message": "$1 sarılıyor",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_success_description": {
+    "message": "$1 sarıldı",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_success_title": {
+    "message": "$1 sarıldı",
+    "description": "$1 is the token symbol"
   },
   "add": {
     "message": "Ekle"
@@ -460,6 +1120,15 @@
   "addressMismatchPunycode": {
     "message": "Punycode sürümü: $1",
     "description": "$1 replaced by punycode version of the URL in confirmation request"
+  },
+  "addressPoisoningBadge": {
+    "message": "Zehirlenmiş"
+  },
+  "addressPoisoningMessage": {
+    "message": "Bu adres, daha önce kullandığınız bir adrese çok benziyor. Sizi yanıltarak fonları yanlış alıcıya göndermenizi sağlamak için tasarlanmış olabilir."
+  },
+  "addressPoisoningTitle": {
+    "message": "Adres zehirlenmesi algılandı"
   },
   "addressQrCodeModalDescription": {
     "message": "Bu adresi kullanarak $1 üzerinde token ve koleksiyon alın",
@@ -1142,15 +1811,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "Donanım cüzdanınızda 2 işlemi onaylamanız gerekecek:"
   },
-  "bridgeCreateSolanaAccount": {
-    "message": "Solana hesabı oluştur"
-  },
-  "bridgeCreateSolanaAccountDescription": {
-    "message": "Solana ağına swap gerçekleştirmek için bir hesaba ve alıcı adresine ihtiyacınız var."
-  },
-  "bridgeCreateSolanaAccountTitle": {
-    "message": "Önce bir Solana hesabına ihtiyacınız olacak."
-  },
   "bridgeDetailsTitle": {
     "message": "Köprü bilgileri",
     "description": "Title for the modal showing details about a bridge transaction."
@@ -1426,9 +2086,6 @@
   "bridgeSendLoading": {
     "message": "Kaynak zincirden gönderiliyor"
   },
-  "bridgeSolanaAccountCreated": {
-    "message": "Solana hesabı oluşturuldu"
-  },
   "bridgeStatusComplete": {
     "message": "Tamamlandı",
     "description": "Status text indicating a bridge transaction has successfully completed."
@@ -1695,6 +2352,9 @@
     "message": "Topluluk katkılı",
     "description": "Section heading on the language settings screen for locales maintained by community contributors."
   },
+  "compareAddresses": {
+    "message": "Adresleri karşılaştır"
+  },
   "completed": {
     "message": "Tamamlandı"
   },
@@ -1887,6 +2547,9 @@
   },
   "confirmTitleDescSign": {
     "message": "Onaylamadan önce talep bilgilerini inceleyin."
+  },
+  "confirmTitleDescTokenApprovalRevocation": {
+    "message": "Bu site, token onaylarınızı iptal etmek için izin istiyor."
   },
   "confirmTitlePermission": {
     "message": "İzin talebi"
@@ -2250,12 +2913,6 @@
   "dappConnections": {
     "message": "Dapp Bağlantıları"
   },
-  "dappScanMaliciousTitle": {
-    "message": "Kötü amaçlı web sitesi algılandı"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "Bu web sitesi potansiyel tehlike olarak işaretlenmiş. Gizli Kurtarma İfadenizi açığa çıkarırsanız paranızı riske atabilirsiniz."
-  },
   "dappSuggested": {
     "message": "Önerilen site"
   },
@@ -2430,6 +3087,9 @@
   },
   "default": {
     "message": "Varsayılan"
+  },
+  "defaultNetworks": {
+    "message": "Varsayılan ağlar"
   },
   "defaultRpcUrl": {
     "message": "Varsayılan RPC URL adresi"
@@ -2865,6 +3525,9 @@
   "enterYourPasswordSocialLoginFlow": {
     "message": "MetaMask şifresini girin"
   },
+  "enteredMalicious": {
+    "message": "Girdiğiniz Adres"
+  },
   "errorCode": {
     "message": "Kod: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
@@ -3214,6 +3877,18 @@
     "message": "Haftalık",
     "description": "Time period for weekly recurring permissions redemption"
   },
+  "gatorPermissionsAllTokenApprovalRevocationPrimitives": {
+    "message": "ERC-20, ERC-1155, ERC-721 için tüm izin iptal yöntemleri.",
+    "description": "Text shown when all token approval revocation primitives are enabled"
+  },
+  "gatorPermissionsErc20ApproveRevocation": {
+    "message": "ERC-20 approve(spender, 0)",
+    "description": "Token approval revocation method for ERC-20 approve reset"
+  },
+  "gatorPermissionsErc721ApproveRevocation": {
+    "message": "ERC-721 approve(address(0), tokenId)",
+    "description": "Token approval revocation method for ERC-721 single-token approve reset"
+  },
   "gatorPermissionsExpirationDate": {
     "message": "Son geçerlilik tarihi",
     "description": "Label for the expiration date of a permission"
@@ -3234,6 +3909,22 @@
     "message": "Maksimum izin",
     "description": "Label for the max allowance of a permission"
   },
+  "gatorPermissionsPermit2ApproveRevocation": {
+    "message": "Permit2 approve(token, spender, 0, 0)",
+    "description": "Token approval revocation method for Permit2 approve reset"
+  },
+  "gatorPermissionsPermit2InvalidateNonces": {
+    "message": "Permit2 invalidate nonces",
+    "description": "Token approval revocation method for Permit2 nonce invalidation"
+  },
+  "gatorPermissionsPermit2Lockdown": {
+    "message": "Permit2 lockdown",
+    "description": "Token approval revocation method for Permit2 lockdown"
+  },
+  "gatorPermissionsRevocationMethods": {
+    "message": "İzin iptal yöntemleri",
+    "description": "Label for the enabled token approval revocation methods"
+  },
   "gatorPermissionsRevocationPending": {
     "message": "İptal beklemede",
     "description": "Label for a gator permission that is pending a revocation transaction"
@@ -3241,6 +3932,10 @@
   "gatorPermissionsRevoke": {
     "message": "İptal",
     "description": "Label for the revoke button of a gator permission"
+  },
+  "gatorPermissionsSetApprovalForAllRevocation": {
+    "message": "ERC-721/ERC-1155 setApprovalForAll(false)",
+    "description": "Token approval revocation method for setApprovalForAll reset"
   },
   "gatorPermissionsShowDetails": {
     "message": "Bilgileri göster",
@@ -3624,6 +4319,9 @@
     "message": "İçe aktarıldı",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
+  "includes": {
+    "message": "Şunu içerir:"
+  },
   "includesXTransactions": {
     "message": "$1 işlem içerir"
   },
@@ -3798,6 +4496,9 @@
   },
   "knownAddressRecipient": {
     "message": "Bilinen sözleşme adresi."
+  },
+  "knownSafeAddress": {
+    "message": "Bilinen Adres"
   },
   "knownTokenWarning": {
     "message": "Bu eylem kimlik avı için kullanılabilecek şekilde cüzdanınızda zaten listelenmiş olan tokenları düzenleyecektir. Sadece bu tokenların neyi temsil ettiğini değiştirmek istediğinizden eminseniz onaylayın. $1 hakkında daha fazla bilgi edinin"
@@ -3982,6 +4683,15 @@
   "loginErrorSessionExpiredTitle": {
     "message": "Oturum sona erdi"
   },
+  "loginErrorTelegramOutdatedButton": {
+    "message": "Telegram'ı Güncelle"
+  },
+  "loginErrorTelegramOutdatedDescription": {
+    "message": "Telegram'a bağlanamadık. Bu durum Telegram uygulamanız güncel olmadığında meydana gelir. Lütfen Telegram'ı güncelleyip tekrar deneyin."
+  },
+  "loginErrorTelegramOutdatedTitle": {
+    "message": "Telegram ile giriş yapılamadı"
+  },
   "logo": {
     "message": "$1 logosu",
     "description": "$1 is the name of the ticker"
@@ -3995,6 +4705,10 @@
   },
   "lowLowercase": {
     "message": "düşük"
+  },
+  "lowValueAssets": {
+    "message": "Düşük değerli tokenlar ($1)",
+    "description": "$1 is the number of low value assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "Ethereum Mainnet"
@@ -4175,6 +4889,9 @@
   },
   "mismatchedRpcUrl": {
     "message": "Kayıtlarımıza göre, sunulan RPC URL adresi değeri bu zincir kimliğinin bilinen bir sağlayıcısı ile uyumlu değil."
+  },
+  "mmFee": {
+    "message": "%$1 MM ücreti."
   },
   "month": {
     "message": "ay"
@@ -4730,9 +5447,6 @@
   "newCustomTokenAdded": {
     "message": "\"$1\" başarılı bir şekilde eklendi!"
   },
-  "newNFTDetectedInImportNFTsMessageStrongText": {
-    "message": "Ayarlar > Güvenlik ve gizlilik"
-  },
   "newNFTDetectedInImportNFTsMsg": {
     "message": "Opensea'yi kullanmak için NFT'lerinize bakın, $1 üzerinde \"NFT Medyasını göster\" seçeneğini açın.",
     "description": "$1 is used for newNFTDetectedInImportNFTsMessageStrongText"
@@ -5237,6 +5951,9 @@
   "openWallet": {
     "message": "Cüzdanı aç"
   },
+  "opensInNewTab": {
+    "message": "yeni sekmede açılır"
+  },
   "options": {
     "message": "Seçenekler"
   },
@@ -5264,6 +5981,9 @@
   },
   "otherPermissionsOnSiteTitle": {
     "message": "Bu sitedeki diğer izinler"
+  },
+  "otherQrWallet": {
+    "message": "Diğer QR cüzdanı"
   },
   "otherSnaps": {
     "message": "diğer snapler",
@@ -6311,7 +7031,7 @@
     "description": "In-progress toast text shown while closing a perps position"
   },
   "perpsToastClosePnlSubtitle": {
-    "message": "Kâr ve Zararınız $1",
+    "message": "Kazancınız ve Zararınız $1",
     "description": "$1 is the formatted PnL percentage for a closed position"
   },
   "perpsToastMarginAddSuccess": {
@@ -8743,6 +9463,19 @@
     "message": "Gizli Kurtarma İfadenizin tamamını herhangi bir alana yapıştırabilirsiniz.",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
   },
+  "srpRevealMaliciousBlockBody": {
+    "message": "$1 üzerindeki saldırganlar, Gizli Kurtarma İfadenizi paylaşmanızı sağlamak için sizi kandırmaya çalışıyor. İfadenizi ele geçiren biri cüzdanınızdan her şeyi çalabilir.",
+    "description": "Warning message shown when a malicious site is detected. $1 is the hostname of the current tab."
+  },
+  "srpRevealMaliciousBlockDismiss": {
+    "message": "Güvenliğe geri dön"
+  },
+  "srpRevealMaliciousBlockHeading": {
+    "message": "Şu anda dolandırılıyor olabilirsiniz"
+  },
+  "srpRevealMaliciousBlockIconAriaLabel": {
+    "message": "Tehlike"
+  },
   "srpSecurityQuizGetStarted": {
     "message": "Başlarken"
   },
@@ -9522,6 +10255,10 @@
   "transactionIncludesTypes": {
     "message": "Bu işlem şunu içerir: $1."
   },
+  "transactionProtectedByEnforcedSimulations": {
+    "message": "Bu işlem koruma altına alındı.. Beklenmedik fon kaybını önlemek amacıyla işlemi iptal ettik.",
+    "description": "Banner shown in the transaction details view when a failed transaction reverted because an enforced-simulations caveat enforcer rejected it."
+  },
   "transactionSettings": {
     "message": "İşlem ayarları"
   },
@@ -9692,6 +10429,13 @@
   "unavailable": {
     "message": "Mevcut değil"
   },
+  "unavailableNetworkConnection": {
+    "message": "Ağ bağlantısı kullanılamıyor"
+  },
+  "unavailableNetworkConnectionDescription": {
+    "message": "$1 ile bağlantı güvenilir değil. Devam etmeden önce ağ bağlantı bilgilerini güncelleyin veya daha sonra tekrar deneyin.",
+    "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
+  },
   "unexpectedBehavior": {
     "message": "Bu davranış beklenmedik bir durumdur ve hesaplarınız geri yüklense bile hata olarak bildirilmelidir."
   },
@@ -9718,6 +10462,9 @@
   "unknownNetworkForKeyEntropy": {
     "message": "Bilinmeyen ağ",
     "description": "Displayed on places like Snap install warning when regular name is not available."
+  },
+  "unknownPermissionType": {
+    "message": "Bilinmeyen izin türü"
   },
   "unknownQrCode": {
     "message": "Hata: Bu QR kodunu tanımlayamadık"
@@ -9895,6 +10642,10 @@
   "viewinExplorer": {
     "message": "Explorer'da $1 görüntüle",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
+  },
+  "vip": {
+    "message": "VIP $1",
+    "description": "$1 is the VIP tier number"
   },
   "visitSite": {
     "message": "Siteyi ziyaret edin"

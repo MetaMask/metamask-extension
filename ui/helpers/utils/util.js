@@ -32,9 +32,7 @@ import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { hexToDecimal } from '../../../shared/lib/conversion.utils';
 import { SNAPS_VIEW_ROUTE } from '../constants/routes';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
+import { normalizeSafeAddress } from '../../../shared/lib/multichain/address';
 import { isMultichainWalletSnap } from '../../../shared/lib/accounts';
 
 export function formatDate(date, format = "M/d/y 'at' T") {

@@ -1,12 +1,16 @@
 import { Messenger } from '@metamask/messenger';
 import { MaybeUpdateState, TestOrigin } from '@metamask/phishing-controller';
-import type { KeyringControllerGetAccountsAction } from '@metamask/keyring-controller';
+import type {
+  KeyringControllerGetAccountsAction,
+  KeyringControllerPersistAllKeyringsAction,
+} from '@metamask/keyring-controller';
 import { GetSubjectMetadata } from '@metamask/permission-controller';
 import {
   AccountsControllerGetAccountByAddressAction,
   AccountsControllerListMultichainAccountsAction,
   AccountsControllerSetAccountNameAction,
   AccountsControllerSetSelectedAccountAction,
+  AccountsControllerUpdateAccountsAction,
 } from '@metamask/accounts-controller';
 import type {
   ApprovalControllerAcceptRequestAction,
@@ -24,8 +28,10 @@ import {
 } from '@metamask/snaps-controllers';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
+import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller-method-action-types';
+import { LegacyBackgroundApiServiceRemoveAccountAction } from '../../services/legacy-background-api-service-method-action-types';
 
-export type SnapKeyringBuilderAllowActions =
+export type SnapKeyringBuilderAllowedActions =
   | ApprovalControllerStartFlowAction
   | ApprovalControllerEndFlowAction
   | ApprovalControllerShowSuccessAction
@@ -41,15 +47,19 @@ export type SnapKeyringBuilderAllowActions =
   | AccountsControllerGetAccountByAddressAction
   | AccountsControllerSetAccountNameAction
   | AccountsControllerListMultichainAccountsAction
+  | AccountsControllerUpdateAccountsAction
   | SnapControllerHandleRequestAction
   | SnapControllerGetSnapAction
   | PreferencesControllerGetStateAction
   | SnapControllerIsMinimumPlatformVersionAction
-  | RemoteFeatureFlagControllerGetStateAction;
+  | RemoteFeatureFlagControllerGetStateAction
+  | KeyringControllerPersistAllKeyringsAction
+  | MetaMetricsControllerTrackEventAction
+  | LegacyBackgroundApiServiceRemoveAccountAction;
 
 export type SnapKeyringBuilderMessenger = Messenger<
   'SnapKeyring',
-  SnapKeyringBuilderAllowActions
+  SnapKeyringBuilderAllowedActions
 >;
 
 export type SnapKeyringBuilderV2Messenger = SnapKeyringBuilderMessenger;

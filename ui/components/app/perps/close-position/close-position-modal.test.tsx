@@ -171,6 +171,36 @@ describe('ClosePositionModal', () => {
     mockSubmitRequestToBackground.mockResolvedValue({ success: true });
   });
 
+  describe('perpsClosePosition call', () => {
+    it('includes trackingData with totalFee and marketPrice', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsClosePosition',
+          [
+            expect.objectContaining({
+              trackingData: expect.objectContaining({
+                totalFee: expect.any(Number),
+                marketPrice: 2900,
+              }),
+            }),
+          ],
+        );
+      });
+    });
+  });
+
   describe('auto-focus', () => {
     it('auto-focuses the Close Position submit button on mount', async () => {
       renderWithProvider(
@@ -327,8 +357,7 @@ describe('ClosePositionModal', () => {
       const slider = within(
         screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
-      fireEvent.keyDown(slider, { key: 'ArrowLeft' });
+      fireEvent.change(slider, { target: { value: '99' } });
 
       fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
 
@@ -397,8 +426,7 @@ describe('ClosePositionModal', () => {
       const slider = within(
         screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
-      fireEvent.keyDown(slider, { key: 'ArrowLeft' });
+      fireEvent.change(slider, { target: { value: '99' } });
 
       fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
 
@@ -425,8 +453,7 @@ describe('ClosePositionModal', () => {
       const slider = within(
         screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
-      fireEvent.keyDown(slider, { key: 'ArrowLeft' });
+      fireEvent.change(slider, { target: { value: '99' } });
 
       fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
 
@@ -459,8 +486,7 @@ describe('ClosePositionModal', () => {
       const slider = within(
         screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
-      fireEvent.keyDown(slider, { key: 'ArrowLeft' });
+      fireEvent.change(slider, { target: { value: '99' } });
 
       fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
 
@@ -519,8 +545,7 @@ describe('ClosePositionModal', () => {
       const slider = within(
         screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
-      fireEvent.keyDown(slider, { key: 'ArrowLeft' });
+      fireEvent.change(slider, { target: { value: '99' } });
 
       fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
 
@@ -577,8 +602,7 @@ describe('ClosePositionModal', () => {
       const slider = within(
         screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
-      fireEvent.keyDown(slider, { key: 'ArrowLeft' });
+      fireEvent.change(slider, { target: { value: '99' } });
 
       fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
 
@@ -593,7 +617,6 @@ describe('ClosePositionModal', () => {
 
   describe('partial close below minimum USD notional', () => {
     it('disables submit when partial notional is just under $10 even if rounded to cents it would be $10', async () => {
-      const user = userEvent.setup();
       const positionOneUnit = {
         ...basePosition,
         size: '1',
@@ -612,10 +635,7 @@ describe('ClosePositionModal', () => {
       const slider = within(
         screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
-      await user.keyboard(
-        Array.from({ length: 50 }, () => '{ArrowLeft}').join(''),
-      );
+      fireEvent.change(slider, { target: { value: '50' } });
 
       await waitFor(() => {
         const warningMessage = screen.getByText(PARTIAL_MIN_NOTIONAL_MESSAGE);
@@ -628,7 +648,6 @@ describe('ClosePositionModal', () => {
     });
 
     it('disables submit and shows warning when partial notional is under $10', async () => {
-      const user = userEvent.setup();
       const smallPosition = {
         ...basePosition,
         size: '0.01',
@@ -651,8 +670,7 @@ describe('ClosePositionModal', () => {
       const slider = within(
         screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
-      await user.keyboard('{ArrowLeft}');
+      fireEvent.change(slider, { target: { value: '99' } });
 
       await waitFor(() => {
         const warningMessage = screen.getByText(PARTIAL_MIN_NOTIONAL_MESSAGE);

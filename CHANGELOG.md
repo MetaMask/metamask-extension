@@ -7,6 +7,117 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.34.1]
+
+### Changed
+
+- Bumped `@lavamoat/webpack` from 2.2.0 to 2.2.3 (#43333)
+
+### Fixed
+
+- Fixed handling of scientific notation in `parseBalanceWithDecimals` to prevent BigInt crash (#43314)
+
+## [13.34.0]
+
+### Added
+
+- Added section to manage networks (#42944)
+- Added the client version to the transaction metadata (#43022)
+- Added address poisoning warnings when sending to suspiciously similar addresses (#42893)
+- Add new UI and error handling for QR scanning (#42905)
+- Added a volume value label on the Perps chart y-axis that appears when hovering a volume bar. (#42882)
+- Hardened the SRP Reveal malicious-site warning into a full-page block with no proceed-anyway path (#42737)
+- Add Telegram login to Social Login option (#42103)
+- Added low value tokens section (#42681)
+- Fix onboarding's backup & sync toggle being stuck when enabled (#42904)
+- Added a biometrics setup step after restoring a wallet (in forgot password flow) so users can enable passkey unlock before (#42865)
+  returning home.
+- Added new UI for hardware wallet onboarding process (#42720)
+- Fixed a bug that stopped Solana tokens from being imported (#42854)
+  Fixed a bug that stopped Tron assets for showing on
+  first import
+- Add new user traits in metametrics, `account_type`. (#42855)
+- Adds new ERC-7715 permission type `token-approval-revocation` that can be granted via (#42841)
+  `wallet_requestExecutionPermissions`
+- Add support for `token-approval-revocation` permission via `wallet_requestExecutionPermissions` RPC (#42954)
+- Show hidden tokens in Send Flow (#42934)
+- Add Sentry distributed tracing instrumentation for Background RPC calls and inter-controller messenger calls. (#39891)
+
+  ### Fixed
+
+- perf(6634): extract gas estimate side-effects, strip unused withRouter props (#42687)
+- Fixed the VIP tier label to display "VIP" instead of "VIP Fox" (#42856)
+- perf(6633): strip unused `withRouterHooks` props in lock and unlock-page containers (#42688)
+- Updated Activity tab empty states to show context-specific messaging and actions when users have no transaction (#42786)
+  history
+- Removed outdated translations from community-contributed ga, pt_BR, and zh_TW locales. (#40974)
+
+### Changed
+
+- Bump the `@metamask/tron-wallet-snap` to `^1.25.6` (#42701)
+- Bumped bitcoin snap v1.11.0 (#42993)
+- chore: Replace `await-semaphore` with `async-mutex` (#42818)
+
+## [13.33.0]
+
+### Added
+
+- Add Sentry distributed tracing instrumentation for Background RPC calls and inter-controller messenger calls (#39891)
+- Added current position size display on the increase exposure screen for perpetual trades (#42673)
+- Set up batch sell quotes (#42434)
+- Added new UI for hardware wallet onboarding process (#42720)
+- Add new user traits in metametrics, `account_type`. (#42855)
+- Adds new ERC-7715 permission type `token-approval-revocation` that can be granted via `wallet_requestExecutionPermissions` (#42841)
+- Added percentage and Max controls to the Perps withdraw confirmation flow. (#42783)
+- Added stop loss, take profit, liquidation, and auto-deleveraging badges to perps activity rows (#42645)
+- Added VIP tier badge and fee discount display for Perps trading and Bridge transactions (#42782)
+- Show VIP badge in swap page (#42771)
+- Update toggle (#42714)
+- Show enforced-simulations protection state ("Cancelled" status + info banner) in transaction details and Activity v2; rename (#42368)
+  `FORCE_ENABLE_SIMULATIONS` dev flag.
+
+### Changed
+
+- Show enforced-simulations protection state ("Cancelled" status + info banner) in transaction details and Activity v2; rename `FORCE_ENABLE_SIMULATIONS` dev flag (#42368)
+- Update toggle (#42714)
+- Patched assets controller 7.0.0 (#42666)
+
+### Fixed
+
+- Fixed carousel links so supported deep links open directly in MetaMask instead of going through an extra browser tab. (#42634)
+- Fixed an issue where EIP-7702 authorization signatures with leading zero bytes in `r` or `s` could be rejected by relays and (#42970)
+  public RPCs.
+- Add guard to asset-util to prevent infinite recursion (#42966)
+- Fix the inpage provider not being available via `window.ethereum` and EIP-6963 on websites with certain (#42338)
+  Content-Security-Policy settings configured.
+- Fixed a bug that could default transactions to gas station before the native balance finished loading, and corrected (#42857)
+  gasless native-balance metrics for nested and L1-fee transactions.
+- Merge RPC and token list metadata on custom import (#42840)
+- Remove the number of promises waiting for unlock from the badge (#42825)
+- Added current position size display on the increase exposure screen for perpetual trades (#42673)
+- Sponsored hardware wallet send max native (#42494)
+- Fixed a perps bug where market orders submitted with TP/SL left the Auto-close section empty and surfaced the TP/SL orders in (#42661)
+  the Orders section of the market detail page.
+- Fixed a bug that made only the Recent activity arrow tappable in Perps. (#42676)
+- Fixed Perps withdraw validation and activity details. (#42751)
+- N/A (#42770)
+- Fixed Perps market token logos that were difficult to see in dark mode (#42689)
+- Fixed open order price display to use correct number of decimals matching market price precision (#42405)
+- Prevented BTC swap when BTC network fees not retrieved (#42632)
+- Null (#42698)
+- Fixed a bug that stopped Solana and Tron tokens from being imported (#42854)
+- Fixed Monad swap activity in asset details (#42669)
+
+## [13.32.1]
+
+### Changed
+
+- Bumped `qs` to 6.15.2, `tmp` to 0.2.6, updated uuid audit ignore (#42999)
+
+### Fixed
+
+- Disabled unified assets controller to fix background calls issue (#42992)
+
 ## [13.32.0]
 
 ### Added
@@ -2351,7 +2462,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.32.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.34.1...HEAD
+[13.34.1]: https://github.com/MetaMask/metamask-extension/compare/v13.34.0...v13.34.1
+[13.34.0]: https://github.com/MetaMask/metamask-extension/compare/v13.33.0...v13.34.0
+[13.33.0]: https://github.com/MetaMask/metamask-extension/compare/v13.32.1...v13.33.0
+[13.32.1]: https://github.com/MetaMask/metamask-extension/compare/v13.32.0...v13.32.1
 [13.32.0]: https://github.com/MetaMask/metamask-extension/compare/v13.31.0...v13.32.0
 [13.31.0]: https://github.com/MetaMask/metamask-extension/compare/v13.30.0...v13.31.0
 [13.30.0]: https://github.com/MetaMask/metamask-extension/compare/v13.29.0...v13.30.0

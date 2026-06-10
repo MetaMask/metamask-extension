@@ -1,27 +1,14 @@
-import { Messenger } from '@metamask/messenger';
 import {
+  Messenger,
+  type MessengerActions,
+  type MessengerEvents,
+} from '@metamask/messenger';
+import { AssetsContractControllerMessenger } from '@metamask/assets-controllers';
+import type {
   NetworkControllerGetNetworkClientByIdAction,
-  NetworkControllerGetNetworkConfigurationByNetworkClientId,
-  NetworkControllerGetSelectedNetworkClientAction,
   NetworkControllerGetStateAction,
-  NetworkControllerNetworkDidChangeEvent,
 } from '@metamask/network-controller';
-import { PreferencesControllerStateChangeEvent } from '@metamask/preferences-controller';
 import { RootMessenger } from '../../../lib/messenger';
-
-type Actions =
-  | NetworkControllerGetNetworkClientByIdAction
-  | NetworkControllerGetNetworkConfigurationByNetworkClientId
-  | NetworkControllerGetSelectedNetworkClientAction
-  | NetworkControllerGetStateAction;
-
-type Events =
-  | PreferencesControllerStateChangeEvent
-  | NetworkControllerNetworkDidChangeEvent;
-
-export type AssetsContractControllerMessenger = ReturnType<
-  typeof getAssetsContractControllerMessenger
->;
 
 /**
  * Get a restricted messenger for the AssetsContractController. This is scoped to the
@@ -31,14 +18,12 @@ export type AssetsContractControllerMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getAssetsContractControllerMessenger(
-  messenger: RootMessenger<Actions, Events>,
-) {
-  const controllerMessenger = new Messenger<
-    'AssetsContractController',
-    Actions,
-    Events,
-    typeof messenger
-  >({
+  messenger: RootMessenger<
+    MessengerActions<AssetsContractControllerMessenger>,
+    MessengerEvents<AssetsContractControllerMessenger>
+  >,
+): AssetsContractControllerMessenger {
+  const controllerMessenger: AssetsContractControllerMessenger = new Messenger({
     namespace: 'AssetsContractController',
     parent: messenger,
   });

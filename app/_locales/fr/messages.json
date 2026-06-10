@@ -37,9 +37,6 @@
   "QRHardwareUnknownQRCodeTitle": {
     "message": "Erreur"
   },
-  "QRHardwareUnknownWalletQRCode": {
-    "message": "Code QR invalide. Scannez le code QR de synchronisation du portefeuille matériel."
-  },
   "QRHardwareWalletImporterTitle": {
     "message": "Scannez le code QR"
   },
@@ -92,6 +89,9 @@
     "message": "Un portefeuille utilisant « $1 » existe déjà. Voulez-vous essayer de vous y connecter à la place ?",
     "description": "$1 is the account email"
   },
+  "accountAlreadyExistsLoginDescriptionTelegram": {
+    "message": "Un portefeuille est déjà associé à ce compte Telegram. Voulez-vous déverrouiller ce portefeuille ?"
+  },
   "accountAlreadyExistsTitle": {
     "message": "Ce portefeuille existe déjà"
   },
@@ -126,6 +126,10 @@
   "accountNotFoundDescription": {
     "message": "Nous n’avons pas trouvé de portefeuille pour « $1 ». Voulez-vous en créer un nouveau avec cet identifiant ?",
     "description": "$1 is the account email"
+  },
+  "accountNotFoundDescriptionTelegram": {
+    "message": "Nous n’avons pas trouvé de portefeuille associé au compte $1. Voulez-vous en créer un nouveau avec cet identifiant ?",
+    "description": "$1 is the social login provider"
   },
   "accountNotFoundTitle": {
     "message": "Portefeuille non trouvé"
@@ -166,23 +170,68 @@
   "activity": {
     "message": "Activité"
   },
+  "activityEmptyDescription": {
+    "message": "Échangez votre premier jeton aujourd’hui."
+  },
+  "activityEmptyNoFundsDescription": {
+    "message": "Ajoutez des fonds à votre portefeuille pour démarrer."
+  },
   "activity_approveSpendingCap_failed_description": {
     "message": "$1 ",
     "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_failed_title": {
+    "message": "Échec de l’approbation"
   },
   "activity_approveSpendingCap_pending_description": {
     "message": "$1 ",
     "description": "$1 is the token symbol"
   },
+  "activity_approveSpendingCap_pending_title": {
+    "message": "Approuver le plafond de dépenses"
+  },
   "activity_approveSpendingCap_success_description": {
     "message": "$1 ",
     "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_success_title": {
+    "message": "Plafond de dépenses approuvé"
   },
   "activity_bridge_failed_description": {
     "message": "Échec de la passerelle"
   },
   "activity_bridge_failed_title": {
     "message": "Échec de la passerelle"
+  },
+  "activity_bridge_pending_description": {
+    "message": "Établir la passerelle vers $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_pending_title": {
+    "message": "Établir la passerelle vers $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_success_description": {
+    "message": "Passerelle établie vers $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_success_title": {
+    "message": "Passerelle établie vers $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_buy_failed_description": {
+    "message": "L’achat a échoué"
+  },
+  "activity_buy_failed_title": {
+    "message": "Échec de l’achat"
+  },
+  "activity_buy_pending_description": {
+    "message": "Acheter des $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_buy_pending_title": {
+    "message": "Acheter des $1",
+    "description": "$1 is the token symbol"
   },
   "activity_buy_success_description": {
     "message": "A acheté $1",
@@ -192,14 +241,100 @@
     "message": "A acheté $1",
     "description": "$1 is the token symbol"
   },
-  "activity_contractInteraction_success_title": {
-    "message": "Interaction de contrats intelligents"
+  "activity_claimMusdBonus_failed_title": {
+    "message": "Échec de réclamation"
+  },
+  "activity_claimMusdBonus_pending_title": {
+    "message": "Réclamer le bonus en mUSD"
+  },
+  "activity_claimMusdBonus_success_title": {
+    "message": "Bonus en mUSD réclamé"
+  },
+  "activity_claim_failed_description": {
+    "message": "La réclamation a échoué"
+  },
+  "activity_claim_failed_title": {
+    "message": "Échec de la réclamation"
+  },
+  "activity_claim_pending_description": {
+    "message": "Réclamer en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_claim_pending_title": {
+    "message": "Réclamer en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_claim_success_description": {
+    "message": "A réclamé en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_claim_success_title": {
+    "message": "$1 réclamé",
+    "description": "$1 is the token symbol"
+  },
+  "activity_contractDeployment_failed_description": {
+    "message": "Le déploiement a échoué"
+  },
+  "activity_contractDeployment_failed_title": {
+    "message": "Échec de déploiement"
+  },
+  "activity_contractDeployment_pending_description": {
+    "message": "Déployer un contrat"
+  },
+  "activity_contractDeployment_pending_title": {
+    "message": "Déployer un contrat"
+  },
+  "activity_contractDeployment_success_description": {
+    "message": "Contrat déployé"
+  },
+  "activity_contractDeployment_success_title": {
+    "message": "Contrat déployé"
+  },
+  "activity_contractInteraction_failed_title": {
+    "message": "Échec de l’interaction"
+  },
+  "activity_contractInteraction_pending_title": {
+    "message": "Interaction en cours"
+  },
+  "activity_convert_failed_description": {
+    "message": "La conversion a échoué"
+  },
+  "activity_convert_failed_title": {
+    "message": "Échec de la conversion"
+  },
+  "activity_convert_pending_description": {
+    "message": "Convertir en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_convert_pending_title": {
+    "message": "Convertir en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_convert_success_description": {
+    "message": "A converti en $1",
+    "description": "$1 is the token symbol"
   },
   "activity_deposit_failed_description": {
     "message": "Le dépôt a échoué"
   },
   "activity_deposit_failed_title": {
     "message": "Le dépôt a échoué"
+  },
+  "activity_deposit_pending_description": {
+    "message": "Déposer en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_deposit_pending_title": {
+    "message": "Déposer en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_deposit_success_description": {
+    "message": "Déposé en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_deposit_success_title": {
+    "message": "$1 déposé",
+    "description": "$1 is the token symbol"
   },
   "activity_fallback_description": {
     "message": "Transaction"
@@ -211,13 +346,22 @@
     "message": "$1 ",
     "description": "$1 is the token symbol"
   },
+  "activity_increaseSpendingCap_failed_title": {
+    "message": "L’augmentation a échoué"
+  },
   "activity_increaseSpendingCap_pending_description": {
     "message": "$1 ",
     "description": "$1 is the token symbol"
   },
+  "activity_increaseSpendingCap_pending_title": {
+    "message": "Augmenter le plafond de dépenses en cours"
+  },
   "activity_increaseSpendingCap_success_description": {
     "message": "$1 ",
     "description": "$1 is the token symbol"
+  },
+  "activity_increaseSpendingCap_success_title": {
+    "message": "Plafond des dépenses augmenté"
   },
   "activity_lendingDeposit_failed_title": {
     "message": "Le dépôt a échoué"
@@ -228,15 +372,216 @@
   "activity_lendingWithdrawal_failed_title": {
     "message": "Le retrait a échoué"
   },
-  "activity_lendingWithdrawal_success_description": {
-    "message": "Retrait de prêt"
+  "activity_lendingWithdrawal_pending_description": {
+    "message": "Retirer en $1",
+    "description": "$1 is the token symbol"
   },
-  "activity_lendingWithdrawal_success_title": {
-    "message": "Retrait de prêt"
+  "activity_lendingWithdrawal_pending_title": {
+    "message": "Retirer en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_marketCloseShort_failed_description": {
+    "message": "La position courte a échoué"
+  },
+  "activity_marketCloseShort_failed_title": {
+    "message": "Échec de la fermeture de position courte"
+  },
+  "activity_marketCloseShort_pending_description": {
+    "message": "Fermer la position courte - marché fermé"
+  },
+  "activity_marketCloseShort_pending_title": {
+    "message": "Fermer la position courte - marché fermé"
+  },
+  "activity_marketCloseShort_success_description": {
+    "message": "Position courte fermée - marché fermé"
+  },
+  "activity_marketCloseShort_success_title": {
+    "message": "Position courte fermée - marché fermé"
+  },
+  "activity_marketShort_failed_description": {
+    "message": "La fermeture de position courte a échoué"
+  },
+  "activity_marketShort_failed_title": {
+    "message": "Échec de fermeture de position courte"
+  },
+  "activity_marketShort_pending_description": {
+    "message": "Fermer la position courte - marché"
+  },
+  "activity_marketShort_pending_title": {
+    "message": "Fermer la position courte - marché"
+  },
+  "activity_marketShort_success_description": {
+    "message": "Position courte fermée - marché"
+  },
+  "activity_marketShort_success_title": {
+    "message": "Position courte fermée - marché"
+  },
+  "activity_nftMint_failed_title": {
+    "message": "Échec du Mint"
+  },
+  "activity_nftMint_pending_title": {
+    "message": "Minter des $1",
+    "description": "$1 is the NFT token symbol"
   },
   "activity_nftMint_success_title": {
     "message": "A minté $1",
     "description": "$1 is the NFT token symbol"
+  },
+  "activity_perpsAddFunds_failed_description": {
+    "message": "L’approvisionnement a échoué"
+  },
+  "activity_perpsAddFunds_failed_title": {
+    "message": "L’approvisionnement a échoué"
+  },
+  "activity_perpsAddFunds_pending_description": {
+    "message": "Approvisionnement en cours"
+  },
+  "activity_perpsAddFunds_pending_title": {
+    "message": "Approvisionnement en cours"
+  },
+  "activity_perpsAddFunds_success_description": {
+    "message": "Compte approvisionné"
+  },
+  "activity_perpsAddFunds_success_title": {
+    "message": "Compte approvisionné"
+  },
+  "activity_perpsCloseLongLiquidated_failed_description": {
+    "message": "Fermer une position longue - échec de liquidation"
+  },
+  "activity_perpsCloseLongLiquidated_failed_title": {
+    "message": "Fermer une position longue - échec de liquidation"
+  },
+  "activity_perpsCloseLongLiquidated_pending_description": {
+    "message": "Fermer la position longue - liquidée"
+  },
+  "activity_perpsCloseLongLiquidated_pending_title": {
+    "message": "Fermer la position longue - liquidée"
+  },
+  "activity_perpsCloseLongLiquidated_success_description": {
+    "message": "Position longue fermée - liquidée"
+  },
+  "activity_perpsCloseLongLiquidated_success_title": {
+    "message": "Position longue fermée - liquidée"
+  },
+  "activity_perpsCloseLongStopLoss_failed_description": {
+    "message": "Fermer une position longue - échec de stop loss"
+  },
+  "activity_perpsCloseLongStopLoss_failed_title": {
+    "message": "Fermer une position longue - échec de stop loss"
+  },
+  "activity_perpsCloseLongStopLoss_pending_description": {
+    "message": "Fermer la position longue - stop loss"
+  },
+  "activity_perpsCloseLongStopLoss_pending_title": {
+    "message": "Fermer la position longue - stop loss"
+  },
+  "activity_perpsCloseLongStopLoss_success_description": {
+    "message": "Position longue fermée - stop loss"
+  },
+  "activity_perpsCloseLongStopLoss_success_title": {
+    "message": "Position longue fermée - stop loss"
+  },
+  "activity_perpsCloseLongTakeProfit_failed_description": {
+    "message": "La fermeture de position longue a échoué"
+  },
+  "activity_perpsCloseLongTakeProfit_failed_title": {
+    "message": "Échec de fermeture de position longue"
+  },
+  "activity_perpsCloseLongTakeProfit_pending_description": {
+    "message": "Fermer la position longue - take profit"
+  },
+  "activity_perpsCloseLongTakeProfit_pending_title": {
+    "message": "Fermer la position longue - take profit"
+  },
+  "activity_perpsCloseLongTakeProfit_success_description": {
+    "message": "Position longue fermée - take profit"
+  },
+  "activity_perpsCloseLongTakeProfit_success_title": {
+    "message": "Position longue fermée - take profit"
+  },
+  "activity_perpsCloseLong_failed_description": {
+    "message": "La fermeture de position longue a échoué"
+  },
+  "activity_perpsCloseLong_failed_title": {
+    "message": "Échec de fermeture de position longue"
+  },
+  "activity_perpsCloseLong_pending_description": {
+    "message": "Fermer la position longue"
+  },
+  "activity_perpsCloseLong_pending_title": {
+    "message": "Fermer la position longue"
+  },
+  "activity_perpsCloseLong_success_description": {
+    "message": "Position longue fermée"
+  },
+  "activity_perpsCloseLong_success_title": {
+    "message": "Position longue fermée"
+  },
+  "activity_perpsCloseShortLiquidated_failed_description": {
+    "message": "Fermer une position courte - échec de liquidation"
+  },
+  "activity_perpsCloseShortLiquidated_failed_title": {
+    "message": "Fermer une position courte - échec de liquidation"
+  },
+  "activity_perpsCloseShortLiquidated_pending_description": {
+    "message": "Fermer la position courte - liquidée"
+  },
+  "activity_perpsCloseShortLiquidated_pending_title": {
+    "message": "Fermer la position courte - liquidée"
+  },
+  "activity_perpsCloseShortLiquidated_success_description": {
+    "message": "Position courte fermée - liquidée"
+  },
+  "activity_perpsCloseShortLiquidated_success_title": {
+    "message": "Position courte fermée - liquidée"
+  },
+  "activity_perpsCloseShortStopLoss_failed_description": {
+    "message": "La fermeture de position courte a échoué"
+  },
+  "activity_perpsCloseShortStopLoss_failed_title": {
+    "message": "Échec de fermeture de position courte"
+  },
+  "activity_perpsCloseShortStopLoss_pending_description": {
+    "message": "Fermer la position courte - stop loss"
+  },
+  "activity_perpsCloseShortStopLoss_pending_title": {
+    "message": "Fermer la position courte - stop loss"
+  },
+  "activity_perpsCloseShortStopLoss_success_description": {
+    "message": "Position courte fermée - stop loss"
+  },
+  "activity_perpsCloseShortStopLoss_success_title": {
+    "message": "Position courte fermée - stop loss"
+  },
+  "activity_perpsCloseShortTakeProfit_failed_description": {
+    "message": "La fermeture de position courte a échoué"
+  },
+  "activity_perpsCloseShortTakeProfit_failed_title": {
+    "message": "Échec de fermeture de position courte"
+  },
+  "activity_perpsCloseShortTakeProfit_pending_description": {
+    "message": "Fermer la position courte - take profit"
+  },
+  "activity_perpsCloseShortTakeProfit_pending_title": {
+    "message": "Fermer la position courte - take profit"
+  },
+  "activity_perpsCloseShortTakeProfit_success_description": {
+    "message": "Position courte fermée - take profit"
+  },
+  "activity_perpsCloseShortTakeProfit_success_title": {
+    "message": "Position courte fermée - take profit"
+  },
+  "activity_perpsCloseShort_failed_description": {
+    "message": "La fermeture de position courte a échoué"
+  },
+  "activity_perpsCloseShort_failed_title": {
+    "message": "Échec de fermeture de position courte"
+  },
+  "activity_perpsCloseShort_pending_description": {
+    "message": "Fermer la position courte"
+  },
+  "activity_perpsCloseShort_pending_title": {
+    "message": "Fermer la position courte"
   },
   "activity_perpsCloseShort_success_description": {
     "message": "Fermer la position courte"
@@ -244,11 +589,77 @@
   "activity_perpsCloseShort_success_title": {
     "message": "Fermer la position courte"
   },
+  "activity_perpsOpenLong_failed_description": {
+    "message": "L’ouverture de position longue a échoué"
+  },
+  "activity_perpsOpenLong_failed_title": {
+    "message": "Échec d’ouverture de position longue"
+  },
+  "activity_perpsOpenLong_pending_description": {
+    "message": "Ouvrir la position longue"
+  },
+  "activity_perpsOpenLong_pending_title": {
+    "message": "Ouvrir la position longue"
+  },
   "activity_perpsOpenLong_success_description": {
     "message": "Position longue ouverte"
   },
   "activity_perpsOpenLong_success_title": {
     "message": "Position longue ouverte"
+  },
+  "activity_perpsOpenShort_failed_description": {
+    "message": "L’ouverture de position longue a échoué"
+  },
+  "activity_perpsOpenShort_failed_title": {
+    "message": "Échec d’ouverture de position longue"
+  },
+  "activity_perpsOpenShort_pending_description": {
+    "message": "Ouvrir la position courte"
+  },
+  "activity_perpsOpenShort_pending_title": {
+    "message": "Ouvrir la position courte"
+  },
+  "activity_perpsOpenShort_success_description": {
+    "message": "Position courte ouverte"
+  },
+  "activity_perpsOpenShort_success_title": {
+    "message": "Position courte ouverte"
+  },
+  "activity_perpsPaidFundingFees_failed_description": {
+    "message": "Le paiement de l’approvisionnement a échoué"
+  },
+  "activity_perpsPaidFundingFees_failed_title": {
+    "message": "Échec de paiement de l’approvisionnement"
+  },
+  "activity_perpsPaidFundingFees_pending_description": {
+    "message": "Payer les frais d’approvisionnement"
+  },
+  "activity_perpsPaidFundingFees_pending_title": {
+    "message": "Payer les frais d’approvisionnement"
+  },
+  "activity_perpsPaidFundingFees_success_description": {
+    "message": "A payé les frais d’approvisionnement"
+  },
+  "activity_perpsPaidFundingFees_success_title": {
+    "message": "Frais d’approvisionnement payés"
+  },
+  "activity_perpsReceivedFundingFees_failed_description": {
+    "message": "Échec de réception des frais"
+  },
+  "activity_perpsReceivedFundingFees_failed_title": {
+    "message": "Échec de réception des frais"
+  },
+  "activity_perpsReceivedFundingFees_pending_description": {
+    "message": "Recevoir des frais d’approvisionnement"
+  },
+  "activity_perpsReceivedFundingFees_pending_title": {
+    "message": "Recevoir des frais d’approvisionnement"
+  },
+  "activity_perpsReceivedFundingFees_success_description": {
+    "message": "A reçu de frais d’approvisionnement"
+  },
+  "activity_perpsReceivedFundingFees_success_title": {
+    "message": "Frais d’approvisionnement reçus"
   },
   "activity_perpsWithdrawFunds_failed_description": {
     "message": "Le retrait a échoué"
@@ -256,17 +667,89 @@
   "activity_perpsWithdrawFunds_failed_title": {
     "message": "Le retrait a échoué"
   },
+  "activity_perpsWithdrawFunds_pending_description": {
+    "message": "Retirer des fonds"
+  },
+  "activity_perpsWithdrawFunds_pending_title": {
+    "message": "Retirer des fonds"
+  },
+  "activity_perpsWithdrawFunds_success_description": {
+    "message": "Retrait sur le perps"
+  },
+  "activity_perpsWithdrawFunds_success_title": {
+    "message": "Retrait sur le perps"
+  },
+  "activity_predictionCashedOut_failed_description": {
+    "message": "L’encaissement a échoué"
+  },
+  "activity_predictionCashedOut_failed_title": {
+    "message": "Échec à l’encaissement"
+  },
+  "activity_predictionCashedOut_pending_description": {
+    "message": "Encaisser"
+  },
+  "activity_predictionCashedOut_pending_title": {
+    "message": "Encaisser"
+  },
   "activity_predictionCashedOut_success_description": {
     "message": "Encaissé"
   },
   "activity_predictionCashedOut_success_title": {
     "message": "Encaissé"
   },
+  "activity_predictionClaimWinnings_failed_description": {
+    "message": "La réclamation a échoué"
+  },
+  "activity_predictionClaimWinnings_failed_title": {
+    "message": "Échec de la réclamation"
+  },
+  "activity_predictionClaimWinnings_pending_description": {
+    "message": "Réclamer les gains"
+  },
+  "activity_predictionClaimWinnings_pending_title": {
+    "message": "Réclamer les gains"
+  },
+  "activity_predictionClaimWinnings_success_description": {
+    "message": "Gains réclamés"
+  },
+  "activity_predictionClaimWinnings_success_title": {
+    "message": "Gains réclamés"
+  },
+  "activity_predictionPlaced_failed_description": {
+    "message": "La prédiction a échoué"
+  },
+  "activity_predictionPlaced_failed_title": {
+    "message": "Échec de la prédiction"
+  },
+  "activity_predictionPlaced_pending_description": {
+    "message": "Placer la prédiction"
+  },
+  "activity_predictionPlaced_pending_title": {
+    "message": "Placer la prédiction"
+  },
   "activity_predictionPlaced_success_description": {
     "message": "Prédiction placée"
   },
   "activity_predictionPlaced_success_title": {
     "message": "Prédiction placée"
+  },
+  "activity_predictionsAddFunds_failed_description": {
+    "message": "L’approvisionnement a échoué"
+  },
+  "activity_predictionsAddFunds_failed_title": {
+    "message": "Échec d’approvisionnement"
+  },
+  "activity_predictionsAddFunds_pending_description": {
+    "message": "Approvisionnement en cours"
+  },
+  "activity_predictionsAddFunds_pending_title": {
+    "message": "Approvisionnement en cours"
+  },
+  "activity_predictionsAddFunds_success_description": {
+    "message": "Compte approvisionné"
+  },
+  "activity_predictionsAddFunds_success_title": {
+    "message": "Compte approvisionné"
   },
   "activity_predictionsWithdrawFunds_failed_description": {
     "message": "Le retrait a échoué"
@@ -280,33 +763,84 @@
   "activity_predictionsWithdrawFunds_pending_title": {
     "message": "Retrait en cours"
   },
+  "activity_predictionsWithdrawFunds_success_description": {
+    "message": "Retrait des prédictions"
+  },
+  "activity_predictionsWithdrawFunds_success_title": {
+    "message": "Retrait des prédictions"
+  },
   "activity_receive_failed_description": {
     "message": "De : $1",
     "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_failed_title": {
+    "message": "Échec de réception"
   },
   "activity_receive_pending_description": {
     "message": "De : $1",
     "description": "$1 is the shortened sender address"
   },
+  "activity_receive_pending_title": {
+    "message": "Recevoir en $1",
+    "description": "$1 is the token symbol"
+  },
   "activity_receive_success_description": {
     "message": "De : $1",
     "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_success_title": {
+    "message": "A reçu en $1",
+    "description": "$1 is the token symbol"
   },
   "activity_revokeSpendingCap_failed_description": {
     "message": "$1 ",
     "description": "$1 is the token symbol"
   },
+  "activity_revokeSpendingCap_failed_title": {
+    "message": "Échec de la révocation"
+  },
   "activity_revokeSpendingCap_pending_description": {
     "message": "$1 ",
     "description": "$1 is the token symbol"
+  },
+  "activity_revokeSpendingCap_pending_title": {
+    "message": "Révoquer le plafond de dépenses"
   },
   "activity_revokeSpendingCap_success_description": {
     "message": "$1 ",
     "description": "$1 is the token symbol"
   },
+  "activity_revokeSpendingCap_success_title": {
+    "message": "Plafond de dépenses révoqué"
+  },
+  "activity_sell_failed_description": {
+    "message": "La vente a échoué"
+  },
+  "activity_sell_failed_title": {
+    "message": "Échec de la vente"
+  },
+  "activity_sell_pending_description": {
+    "message": "Vendre en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_sell_pending_title": {
+    "message": "Vendre en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_sell_success_description": {
+    "message": "Vendu en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_sell_success_title": {
+    "message": "Vendu en $1",
+    "description": "$1 is the token symbol"
+  },
   "activity_send_failed_description": {
     "message": "Vers : $1",
     "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_failed_title": {
+    "message": "Échec de l’envoi"
   },
   "activity_send_pending_description": {
     "message": "Vers : $1",
@@ -324,11 +858,107 @@
     "message": "A envoyé $1",
     "description": "$1 is the token symbol"
   },
+  "activity_smartAccountUpgrade_failed_description": {
+    "message": "La mise à niveau a échoué"
+  },
+  "activity_smartAccountUpgrade_failed_title": {
+    "message": "Échec de la mise à niveau"
+  },
+  "activity_smartAccountUpgrade_pending_description": {
+    "message": "Mettre un compte intelligent à niveau"
+  },
+  "activity_smartAccountUpgrade_pending_title": {
+    "message": "Mettre un compte intelligent à niveau"
+  },
+  "activity_smartAccountUpgrade_success_description": {
+    "message": "A mis un compte intelligent à niveau"
+  },
+  "activity_smartAccountUpgrade_success_title": {
+    "message": "Compte intelligent mis à niveau"
+  },
+  "activity_stopMarketCloseShort_failed_description": {
+    "message": "La fermeture de position courte a échoué"
+  },
+  "activity_stopMarketCloseShort_failed_title": {
+    "message": "Échec de fermeture de position courte"
+  },
+  "activity_stopMarketCloseShort_pending_description": {
+    "message": "Fermer la position courte - stop marché"
+  },
+  "activity_stopMarketCloseShort_pending_title": {
+    "message": "Fermer la position courte - stop marché"
+  },
+  "activity_stopMarketCloseShort_success_description": {
+    "message": "Position courte fermée - stop marché"
+  },
+  "activity_stopMarketCloseShort_success_title": {
+    "message": "Position courte fermée - stop marché"
+  },
   "activity_swapIncomplete_failed_title": {
     "message": "Échec du swap"
   },
+  "activity_swapIncomplete_pending_title": {
+    "message": "Échanger en $1",
+    "description": "$1 is the source token symbol"
+  },
+  "activity_swapIncomplete_success_title": {
+    "message": "Échangé en $1",
+    "description": "$1 is the source token symbol"
+  },
   "activity_swap_failed_title": {
     "message": "Échec du swap"
+  },
+  "activity_swap_pending_title": {
+    "message": "Échanger des $1 contre des $2",
+    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+  },
+  "activity_swap_success_title": {
+    "message": "$1 contre des $2 échangé",
+    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+  },
+  "activity_unwrap_failed_description": {
+    "message": "Le déballage a échoué"
+  },
+  "activity_unwrap_failed_title": {
+    "message": "Échec du déballage"
+  },
+  "activity_unwrap_pending_description": {
+    "message": "Déballer en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_unwrap_pending_title": {
+    "message": "Déballer en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_unwrap_success_description": {
+    "message": "A déballé en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_unwrap_success_title": {
+    "message": "$1 déballé",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_failed_description": {
+    "message": "L’emballage a échoué"
+  },
+  "activity_wrap_failed_title": {
+    "message": "Échec de l’emballage"
+  },
+  "activity_wrap_pending_description": {
+    "message": "Emballer les $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_pending_title": {
+    "message": "Emballer les $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_success_description": {
+    "message": "A emballé en $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_wrap_success_title": {
+    "message": "$1 emballé",
+    "description": "$1 is the token symbol"
   },
   "add": {
     "message": "Ajouter"
@@ -490,6 +1120,15 @@
   "addressMismatchPunycode": {
     "message": "Version Punycode : $1",
     "description": "$1 replaced by punycode version of the URL in confirmation request"
+  },
+  "addressPoisoningBadge": {
+    "message": "Altérées"
+  },
+  "addressPoisoningMessage": {
+    "message": "On dirait vraiment une adresse que vous avez déjà utilisée. Elle a peut-être été créée pour vous inciter à envoyer de l’argent au mauvais destinataire."
+  },
+  "addressPoisoningTitle": {
+    "message": "Empoisonnement d’adresse détecté"
   },
   "addressQrCodeModalDescription": {
     "message": "Utilisez cette adresse pour recevoir des jetons et des objets de collection sur $1",
@@ -1172,15 +1811,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "Vous devrez confirmer 2 transactions sur votre portefeuille matériel :"
   },
-  "bridgeCreateSolanaAccount": {
-    "message": "Créer un compte Solana"
-  },
-  "bridgeCreateSolanaAccountDescription": {
-    "message": "Pour échanger avec le réseau Solana, vous avez besoin d’un compte et d’une adresse de réception."
-  },
-  "bridgeCreateSolanaAccountTitle": {
-    "message": "Vous devez d’abord avoir un compte Solana."
-  },
   "bridgeDetailsTitle": {
     "message": "Détails concernant la passerelle",
     "description": "Title for the modal showing details about a bridge transaction."
@@ -1456,9 +2086,6 @@
   "bridgeSendLoading": {
     "message": "Envoi depuis la chaîne source"
   },
-  "bridgeSolanaAccountCreated": {
-    "message": "Compte Solana créé"
-  },
   "bridgeStatusComplete": {
     "message": "Effectuée",
     "description": "Status text indicating a bridge transaction has successfully completed."
@@ -1725,6 +2352,9 @@
     "message": "Contribution de la communauté",
     "description": "Section heading on the language settings screen for locales maintained by community contributors."
   },
+  "compareAddresses": {
+    "message": "Comparer les adresses"
+  },
   "completed": {
     "message": "Terminé"
   },
@@ -1917,6 +2547,9 @@
   },
   "confirmTitleDescSign": {
     "message": "Vérifiez les détails de la demande avant de la confirmer."
+  },
+  "confirmTitleDescTokenApprovalRevocation": {
+    "message": "Ce site demande l’autorisation de révoquer vos autorisations de jetons."
   },
   "confirmTitlePermission": {
     "message": "Demande d’autorisation"
@@ -2280,12 +2913,6 @@
   "dappConnections": {
     "message": "Connexions aux dapps"
   },
-  "dappScanMaliciousTitle": {
-    "message": "Site web malveillant détecté"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "Ce site web est signalé comme potentiellement dangereux. Si vous divulguez votre phrase secrète de récupération, vous pourriez mettre vos fonds en danger."
-  },
   "dappSuggested": {
     "message": "Suggéré par le site"
   },
@@ -2460,6 +3087,9 @@
   },
   "default": {
     "message": "Par défaut"
+  },
+  "defaultNetworks": {
+    "message": "Réseaux par défaut"
   },
   "defaultRpcUrl": {
     "message": "URL par défaut du RPC"
@@ -2895,6 +3525,9 @@
   "enterYourPasswordSocialLoginFlow": {
     "message": "Saisir le mot de passe MetaMask"
   },
+  "enteredMalicious": {
+    "message": "L’adresse que vous avez saisie"
+  },
   "errorCode": {
     "message": "Code : $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
@@ -3244,6 +3877,18 @@
     "message": "Hebdomadaire",
     "description": "Time period for weekly recurring permissions redemption"
   },
+  "gatorPermissionsAllTokenApprovalRevocationPrimitives": {
+    "message": "Toutes les fonctions de révocation pour les standards ERC-20, ERC-1155 et ERC-721.",
+    "description": "Text shown when all token approval revocation primitives are enabled"
+  },
+  "gatorPermissionsErc20ApproveRevocation": {
+    "message": "ERC-20 approve(spender, 0)",
+    "description": "Token approval revocation method for ERC-20 approve reset"
+  },
+  "gatorPermissionsErc721ApproveRevocation": {
+    "message": "ERC-721 approve(address(0), tokenId)",
+    "description": "Token approval revocation method for ERC-721 single-token approve reset"
+  },
   "gatorPermissionsExpirationDate": {
     "message": "Date d’expiration",
     "description": "Label for the expiration date of a permission"
@@ -3263,6 +3908,22 @@
   "gatorPermissionsMaxAllowance": {
     "message": "Octroi maximal",
     "description": "Label for the max allowance of a permission"
+  },
+  "gatorPermissionsPermit2ApproveRevocation": {
+    "message": "Permit2 approve(token, spender, 0, 0)",
+    "description": "Token approval revocation method for Permit2 approve reset"
+  },
+  "gatorPermissionsPermit2InvalidateNonces": {
+    "message": "Permit2 invalidate nonces",
+    "description": "Token approval revocation method for Permit2 nonce invalidation"
+  },
+  "gatorPermissionsPermit2Lockdown": {
+    "message": "Permit2 lockdown",
+    "description": "Token approval revocation method for Permit2 lockdown"
+  },
+  "gatorPermissionsRevocationMethods": {
+    "message": "Méthodes de révocation",
+    "description": "Label for the enabled token approval revocation methods"
   },
   "gatorPermissionsRevocationPending": {
     "message": "Révocation en attente",
@@ -3654,6 +4315,9 @@
     "message": "Importés",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
+  "includes": {
+    "message": "Comprend"
+  },
   "includesXTransactions": {
     "message": "Inclut $1 transactions"
   },
@@ -3828,6 +4492,9 @@
   },
   "knownAddressRecipient": {
     "message": "Adresse contractuelle connue."
+  },
+  "knownSafeAddress": {
+    "message": "Adresse connue"
   },
   "knownTokenWarning": {
     "message": "Cette action modifiera les jetons déjà présents dans votre portefeuille, et risque de favoriser les tentatives d’hameçonnage. N’approuvez que si vous êtes certain·e de vouloir modifier ce que ces jetons représentent. En savoir plus sur $1"
@@ -4012,6 +4679,15 @@
   "loginErrorSessionExpiredTitle": {
     "message": "La session a expiré"
   },
+  "loginErrorTelegramOutdatedButton": {
+    "message": "Mettre Telegram à jour"
+  },
+  "loginErrorTelegramOutdatedDescription": {
+    "message": "Nous n’avons pas pu nous connecter à Telegram. Cela se produit généralement lorsque votre application Telegram n’est plus à jour. Veuillez la mettre à jour et réessayer."
+  },
+  "loginErrorTelegramOutdatedTitle": {
+    "message": "Connexion impossible avec Telegram"
+  },
   "logo": {
     "message": "logo $1",
     "description": "$1 is the name of the ticker"
@@ -4025,6 +4701,10 @@
   },
   "lowLowercase": {
     "message": "faible"
+  },
+  "lowValueAssets": {
+    "message": "Jetons de faible valeur ($1)",
+    "description": "$1 is the number of low value assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "Réseau principal Ethereum"
@@ -4205,6 +4885,9 @@
   },
   "mismatchedRpcUrl": {
     "message": "Selon nos informations, la valeur de l’URL RPC soumise ne correspond pas à un fournisseur connu pour cet ID de chaîne."
+  },
+  "mmFee": {
+    "message": "$1 % de frais MM."
   },
   "month": {
     "message": "mois"
@@ -4760,9 +5443,6 @@
   "newCustomTokenAdded": {
     "message": "« $1 » a été ajouté avec succès !"
   },
-  "newNFTDetectedInImportNFTsMessageStrongText": {
-    "message": "Paramètres > Sécurité et confidentialité"
-  },
   "newNFTDetectedInImportNFTsMsg": {
     "message": "Pour afficher vos NFT en utilisant Opensea, activez l’option « Afficher les supports NFT » dans $1.",
     "description": "$1 is used for newNFTDetectedInImportNFTsMessageStrongText"
@@ -5267,6 +5947,9 @@
   "openWallet": {
     "message": "Ouvrir le portefeuille"
   },
+  "opensInNewTab": {
+    "message": "s’ouvre dans un nouvel onglet"
+  },
   "options": {
     "message": "Options"
   },
@@ -5294,6 +5977,9 @@
   },
   "otherPermissionsOnSiteTitle": {
     "message": "Autres autorisations sur ce site"
+  },
+  "otherQrWallet": {
+    "message": "Autre portefeuille QR"
   },
   "otherSnaps": {
     "message": "autres Snaps",
@@ -8769,6 +9455,19 @@
     "message": "Vous pouvez coller toute votre phrase de récupération secrète dans n’importe quel champ",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
   },
+  "srpRevealMaliciousBlockBody": {
+    "message": "Des pirates de $1, tentent de vous piéger en vous demandant de leur communiquer votre phrase secrète de récupération. Quiconque dispose de cette phrase peut voler tout le contenu de votre portefeuille.",
+    "description": "Warning message shown when a malicious site is detected. $1 is the hostname of the current tab."
+  },
+  "srpRevealMaliciousBlockDismiss": {
+    "message": "Retour à la sécurité"
+  },
+  "srpRevealMaliciousBlockHeading": {
+    "message": "Vous pourriez être victime d’une arnaque en ce moment même"
+  },
+  "srpRevealMaliciousBlockIconAriaLabel": {
+    "message": "Danger"
+  },
   "srpSecurityQuizGetStarted": {
     "message": "Commencer"
   },
@@ -9548,6 +10247,10 @@
   "transactionIncludesTypes": {
     "message": "Cette transaction comprend : $1."
   },
+  "transactionProtectedByEnforcedSimulations": {
+    "message": "Cette transaction était protégée. Nous l’avons annulée pour éviter toute perte de fonds indésirable.",
+    "description": "Banner shown in the transaction details view when a failed transaction reverted because an enforced-simulations caveat enforcer rejected it."
+  },
   "transactionSettings": {
     "message": "Paramètres de la transaction"
   },
@@ -9718,6 +10421,13 @@
   "unavailable": {
     "message": "Non disponible"
   },
+  "unavailableNetworkConnection": {
+    "message": "Connexion au réseau non disponible"
+  },
+  "unavailableNetworkConnectionDescription": {
+    "message": "La connexion à $1 n’est pas fiable. Vérifiez la configuration de votre connexion réseau avant de continuer ou réessayez plus tard.",
+    "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
+  },
   "unexpectedBehavior": {
     "message": "Ce comportement est inattendu et doit être signalé comme un bogue, même si vos comptes ont été restaurés."
   },
@@ -9744,6 +10454,9 @@
   "unknownNetworkForKeyEntropy": {
     "message": "Réseau inconnu",
     "description": "Displayed on places like Snap install warning when regular name is not available."
+  },
+  "unknownPermissionType": {
+    "message": "Type d’autorisation inconnue"
   },
   "unknownQrCode": {
     "message": "Erreur : nous n’avons pas pu identifier le code QR"
@@ -9921,6 +10634,10 @@
   "viewinExplorer": {
     "message": "Voir $1 dans l’explorateur",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
+  },
+  "vip": {
+    "message": "VIP $1",
+    "description": "$1 is the VIP tier number"
   },
   "visitSite": {
     "message": "Visiter le site"

@@ -118,6 +118,7 @@ jest.mock('../../../../selectors/assets', () => ({
 }));
 
 const CHAIN_ID = '0x1' as Hex;
+const LINEA_CHAIN_ID = '0xe708' as Hex;
 const ACCOUNT_ID = 'account-1';
 
 const lowValueAssetsLabel = (count: number) =>
@@ -304,13 +305,51 @@ describe('TokenList', () => {
     expect(screen.queryByTestId('low-value-assets-toggle')).toBeNull();
   });
 
-  it('does not render zero-balance mUSD imported by token detection', () => {
+  it('hides zero-balance mUSD tokens when hide zero balance tokens is enabled', () => {
+    jest.mocked(getShouldHideZeroBalanceTokens).mockReturnValue(true);
+    jest
+      .mocked(getAllEnabledNetworksForAllNamespaces)
+      .mockReturnValue([CHAIN_ID, LINEA_CHAIN_ID] as ReturnType<
+        typeof getAllEnabledNetworksForAllNamespaces
+      >);
+    jest.mocked(getAssetsBySelectedAccountGroup).mockReturnValue({
+      [CHAIN_ID]: [
+        createAsset({
+          symbol: 'MUSD',
+          address: MUSD_TOKEN_ADDRESS,
+          balance: '0',
+          fiatBalance: 0,
+        }),
+        createAsset({ symbol: 'USDC', fiatBalance: 25 }),
+      ],
+      [LINEA_CHAIN_ID]: [
+        {
+          ...createAsset({
+            symbol: 'MUSD',
+            address: MUSD_TOKEN_ADDRESS,
+            balance: '0',
+            fiatBalance: 0,
+          }),
+          chainId: LINEA_CHAIN_ID,
+        } as Asset,
+      ],
+    });
+
+    render();
+
+    expect(screen.getByTestId('token-cell-USDC')).toBeInTheDocument();
+    expect(screen.queryAllByTestId('token-cell-MUSD')).toHaveLength(0);
+    expect(screen.queryByTestId('low-value-assets-toggle')).toBeNull();
+  });
+
+  it('renders zero-balance mUSD outside the low value bucket when zero-balance tokens are shown', () => {
     jest.mocked(getAssetsBySelectedAccountGroup).mockReturnValue(
       createAccountGroupAssets([
         createAsset({
           symbol: 'MUSD',
           address: MUSD_TOKEN_ADDRESS,
           balance: '0',
+          fiatBalance: 0,
         }),
         createAsset({ symbol: 'USDC', fiatBalance: 25 }),
       ]),
@@ -319,7 +358,8 @@ describe('TokenList', () => {
     render();
 
     expect(screen.getByTestId('token-cell-USDC')).toBeInTheDocument();
-    expect(screen.queryByTestId('token-cell-MUSD')).not.toBeInTheDocument();
+    expect(screen.getByTestId('token-cell-MUSD')).toBeInTheDocument();
+    expect(screen.queryByTestId('low-value-assets-toggle')).toBeNull();
   });
 
   it('renders mUSD when it has a balance', () => {

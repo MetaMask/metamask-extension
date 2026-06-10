@@ -36,7 +36,7 @@ import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 
 type TranslateFunction = (
   key: string,
-  substitutions?: (string | React.JSX.Element)[],
+  substitutions?: (string | JSX.Element)[],
 ) => string;
 
 type Route = {

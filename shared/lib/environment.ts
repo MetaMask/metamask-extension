@@ -1,4 +1,4 @@
-import { ENVIRONMENT } from '../../development/build/constants';
+import { ENVIRONMENT } from '../constants/build';
 
 export const isProduction = (): boolean => {
   return (
@@ -9,13 +9,6 @@ export const isProduction = (): boolean => {
 
 export const getIsSeedlessOnboardingFeatureEnabled = (): boolean => {
   return process.env.SEEDLESS_ONBOARDING_ENABLED?.toString() === 'true';
-};
-
-export const getIsTelegramLoginFeatureEnabled = (): boolean => {
-  return (
-    getIsSeedlessOnboardingFeatureEnabled() &&
-    process.env.TELEGRAM_LOGIN_ENABLED?.toString() === 'true'
-  );
 };
 
 export const getIsMetaMaskShieldFeatureEnabled = (): boolean => {

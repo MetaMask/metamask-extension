@@ -17,7 +17,6 @@ import { t } from '../../../../shared/lib/translate';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import { IconName } from '../../../../ui/components/component-library/icon';
-import { MetaMetricsController } from '../../controllers/metametrics-controller';
 import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
 import {
   getSnapName,
@@ -37,15 +36,6 @@ export type SnapKeyringBuilder = {
 
   (): SnapKeyring;
   type: typeof SnapKeyring.type;
-};
-
-/**
- * Helpers for the Snap keyring implementation.
- */
-export type SnapKeyringHelpers = {
-  trackEvent: MetaMetricsController['trackEvent'];
-  persistKeyringHelper: () => Promise<void>;
-  removeAccountHelper: (address: string) => Promise<void>;
 };
 
 /**
@@ -84,24 +74,8 @@ export async function showAccountCreationDialog(
 export class SnapKeyringImpl implements SnapKeyringCallbacks {
   readonly #messenger: SnapKeyringBuilderMessenger;
 
-  readonly #trackEvent: SnapKeyringHelpers['trackEvent'];
-
-  readonly #persistKeyringHelper: SnapKeyringHelpers['persistKeyringHelper'];
-
-  readonly #removeAccountHelper: SnapKeyringHelpers['removeAccountHelper'];
-
-  constructor(
-    messenger: SnapKeyringBuilderMessenger,
-    {
-      trackEvent,
-      persistKeyringHelper,
-      removeAccountHelper,
-    }: SnapKeyringHelpers,
-  ) {
+  constructor(messenger: SnapKeyringBuilderMessenger) {
     this.#messenger = messenger;
-    this.#trackEvent = trackEvent;
-    this.#persistKeyringHelper = persistKeyringHelper;
-    this.#removeAccountHelper = removeAccountHelper;
   }
 
   async addressExists(address: string) {
@@ -152,7 +126,8 @@ export class SnapKeyringImpl implements SnapKeyringCallbacks {
   }
 
   async saveState() {
-    await this.#persistKeyringHelper();
+    await this.#messenger.call('KeyringController:persistAllKeyrings');
+    await this.#messenger.call('AccountsController:updateAccounts');
   }
 
   async #withApprovalFlow<Return>(
@@ -223,7 +198,7 @@ export class SnapKeyringImpl implements SnapKeyringCallbacks {
     const snapName = getSnapName(snapId, this.#messenger);
 
     const trackSnapAccountEvent = (event: MetaMetricsEventName) => {
-      this.#trackEvent({
+      this.#messenger.call('MetaMetricsController:trackEvent', {
         event,
         category: MetaMetricsEventCategory.Accounts,
         properties: {
@@ -402,7 +377,7 @@ export class SnapKeyringImpl implements SnapKeyringCallbacks {
       'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/how-to-remove-an-account-from-your-metamask-wallet/?utm_source=extension';
 
     const trackSnapAccountEvent = (event: MetaMetricsEventName) => {
-      this.#trackEvent({
+      this.#messenger.call('MetaMetricsController:trackEvent', {
         event,
         category: MetaMetricsEventCategory.Accounts,
         properties: {
@@ -436,7 +411,10 @@ export class SnapKeyringImpl implements SnapKeyringCallbacks {
 
       if (confirmationResult) {
         try {
-          await this.#removeAccountHelper(address);
+          await this.#messenger.call(
+            'LegacyBackgroundApiService:removeAccount',
+            address,
+          );
           await handleUserInput(confirmationResult);
           await this.saveState();
 
@@ -512,18 +490,14 @@ export class SnapKeyringImpl implements SnapKeyringCallbacks {
 /**
  * Constructs a SnapKeyring builder with specified handlers for managing Snap accounts.
  *
- * @param messenger - The messenger instace.
- * @param helpers - Helpers required by the Snap keyring implementation.
+ * @param messenger - The messenger instance.
  * @returns A Snap keyring builder.
  */
-export function snapKeyringBuilder(
-  messenger: SnapKeyringBuilderMessenger,
-  helpers: SnapKeyringHelpers,
-) {
+export function snapKeyringBuilder(messenger: SnapKeyringBuilderMessenger) {
   const SnapKeyringBuilder = (() => {
     return new SnapKeyring({
       messenger,
-      callbacks: new SnapKeyringImpl(messenger, helpers),
+      callbacks: new SnapKeyringImpl(messenger),
       // Enables generic account creation for new chain integration. It's
       // Flask-only since production should use defined account types.
       isAnyAccountTypeAllowed: isFlask(),

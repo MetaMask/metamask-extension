@@ -5,7 +5,10 @@ import * as fs from 'fs/promises';
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { DAPP_PATH } from '../../constants';
 import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
-import { mockTokensV2SupportedNetworks } from '../btc/mocks/tokens-api';
+import {
+  mockTokensV2SupportedNetworks,
+  mockTokensV3Assets,
+} from '../btc/mocks/tokens-api';
 
 /**
  * Holds the actual transaction signature captured from sendTransaction.
@@ -116,8 +119,8 @@ export const commonSolanaAddress =
   '3xTPAZxmpwd8GrNEKApaTw6VH4jqJ31WFXUvQzgwhR7c'; // Disclaimer: This account is intended solely for testing purposes. Do not use or trade any tokens associated with this account in production or live environments.
 
 export const commonSolanaTxConfirmedDetailsFixture = {
-  status: 'Confirmed',
-  amount: '-0.00708 SOL',
+  status: 'confirmed',
+  amount: '-0.007079 SOL',
   networkFee: '0.000005 SOL',
   fromAddress: 'HH9ZzgQvSVmznKcRfwHuEphuxk7zU5f92CkXFDQfVJcq',
   toAddress: '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
@@ -126,7 +129,7 @@ export const commonSolanaTxConfirmedDetailsFixture = {
 };
 
 export const commonSolanaTxFailedDetailsFixture = {
-  status: 'Failed',
+  status: 'failed',
   amount: '0.000000005 SOL',
   networkFee: '-0.000005',
   fromAddress: 's3zTLVvDbrBzbQ36sr2Z4xrzpRHFv3noWChbNi6vcjr',
@@ -258,60 +261,69 @@ export async function mockPriceApiNative(mockServer: Mockttp) {
 }
 
 export async function mockPriceApiSpotPrice(mockServer: Mockttp) {
-  return await mockServer.forGet(SPOT_PRICE_API).thenCallback(() => {
-    return {
-      statusCode: 200,
-      json: {
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
-          id: 'solana',
-          price: 112.87,
-          marketCap: 58245152246,
-          allTimeHigh: 293.31,
-          allTimeLow: 0.500801,
-          totalVolume: 6991628445,
-          high1d: 119.85,
-          low1d: 105.87,
-          circulatingSupply: 515615042.5147497,
-          dilutedMarketCap: 67566552200,
-          marketCapPercentChange1d: 6.43259,
-          priceChange1d: 6.91,
-          pricePercentChange1h: -0.10747351712871725,
-          pricePercentChange1d: 6.517062579985171,
-          pricePercentChange7d: -1.2651850097746231,
-          pricePercentChange14d: -17.42211401987578,
-          pricePercentChange30d: -7.317068682545842,
-          pricePercentChange200d: -22.09390252653303,
-          pricePercentChange1y: -31.856951873653344,
-        },
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:2zMMhcVQEXDtdE6vsFS7S7D5oUodfJHE8vd1gnBouauv':
-          {
-            id: 'usd-coin',
-            price: 0.9999,
-            marketCap: 59878237545,
-            allTimeHigh: 1.17,
-            allTimeLow: 0.877647,
-            totalVolume: 15910794136,
-            high1d: 1.001,
-            low1d: 0.999781,
-            circulatingSupply: 59884477611.62816,
-            dilutedMarketCap: 59993084685,
-            marketCapPercentChange1d: -0.54935,
-            priceChange1d: -0.00000967395266227,
-            pricePercentChange1h: -0.0036230127807169886,
-            pricePercentChange1d: -0.0009674830537401128,
-            pricePercentChange7d: -0.0040353282511238105,
-            pricePercentChange14d: 0.008577550625780632,
-            pricePercentChange30d: 0.004483705121822349,
-            pricePercentChange200d: 0.029482859180996183,
-            pricePercentChange1y: -0.11068819291624574,
+  return await mockServer
+    .forGet(SPOT_PRICE_API)
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+            id: 'solana',
+            price: 112.87,
+            marketCap: 58245152246,
+            allTimeHigh: 293.31,
+            allTimeLow: 0.500801,
+            totalVolume: 6991628445,
+            high1d: 119.85,
+            low1d: 105.87,
+            circulatingSupply: 515615042.5147497,
+            dilutedMarketCap: 67566552200,
+            marketCapPercentChange1d: 6.43259,
+            priceChange1d: 6.91,
+            pricePercentChange1h: -0.10747351712871725,
+            pricePercentChange1d: 6.517062579985171,
+            pricePercentChange7d: -1.2651850097746231,
+            pricePercentChange14d: -17.42211401987578,
+            pricePercentChange30d: -7.317068682545842,
+            pricePercentChange200d: -22.09390252653303,
+            pricePercentChange1y: -31.856951873653344,
           },
-      },
-    };
-  });
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:2zMMhcVQEXDtdE6vsFS7S7D5oUodfJHE8vd1gnBouauv':
+            {
+              id: 'usd-coin',
+              price: 0.9999,
+              marketCap: 59878237545,
+              allTimeHigh: 1.17,
+              allTimeLow: 0.877647,
+              totalVolume: 15910794136,
+              high1d: 1.001,
+              low1d: 0.999781,
+              circulatingSupply: 59884477611.62816,
+              dilutedMarketCap: 59993084685,
+              marketCapPercentChange1d: -0.54935,
+              priceChange1d: -0.00000967395266227,
+              pricePercentChange1h: -0.0036230127807169886,
+              pricePercentChange1d: -0.0009674830537401128,
+              pricePercentChange7d: -0.0040353282511238105,
+              pricePercentChange14d: 0.008577550625780632,
+              pricePercentChange30d: 0.004483705121822349,
+              pricePercentChange200d: 0.029482859180996183,
+              pricePercentChange1y: -0.11068819291624574,
+            },
+          // Localhost chain 1337 — native token uses slip44:1
+          'eip155:1337/slip44:1': {
+            id: 'ethereum',
+            price: 3401,
+            marketCap: 0,
+            pricePercentChange1d: 0,
+          },
+        },
+      };
+    });
 }
 
 export async function mockPriceApiExchangeRates(mockServer: Mockttp) {
-  console.log('mockPriceApiExchangeRates');
   const response = {
     statusCode: 200,
     json: {
@@ -337,6 +349,7 @@ export async function mockPriceApiExchangeRates(mockServer: Mockttp) {
   };
   return await mockServer
     .forGet(SOLANA_EXCHANGE_RATES_PRICE_API)
+    .always()
     .thenCallback(() => {
       return response;
     });
@@ -1908,36 +1921,9 @@ const MOCK_TOKEN_API_TRON_NATIVE_ASSET_ID = 'tron:728126428/slip44:195';
  * (chain 1337), Solana native, USD Coin on Solana, Bitcoin, and Tron native —
  * matching requested `assetIds` query params.
  *
- * When `ASSETS_UNIFIED_STATE_ENABLED` is not `'true'`, reverts to the
- * pre-unified behavior used on main: a static USDC-only response on the exact
- * URL match. Keeps legacy specs (e.g. send-spl-token) behaving identically to
- * main while the unified path's filtered regex response stays intact.
- *
  * @param mockServer - The mockttp server instance.
  */
 export async function mockTokenApiAssets(mockServer: Mockttp) {
-  const isUnifiedAssetsEnabled =
-    process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true';
-
-  if (!isUnifiedAssetsEnabled) {
-    return await mockServer
-      .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
-      .always()
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: [
-          {
-            assetId: USDC_CAIP19,
-            name: 'USD Coin',
-            symbol: 'USDC',
-            decimals: 6,
-            iconUrl:
-              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
-          },
-        ],
-      }));
-  }
-
   return await mockServer
     .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
     .always()
@@ -2153,7 +2139,7 @@ export function buildSolanaTestSpecificMock(options: SolanaMockOptions = {}) {
 
     mockList.push(
       await mockTokensV2SupportedNetworks(mockServer),
-      await mockTokenApiMainnetTest(mockServer),
+      await mockTokensV3Assets(mockServer),
       await mockAccountsApi(mockServer),
       await mockGetMultipleAccounts(mockServer),
       await mockGetAccountInfoDevnet(mockServer),

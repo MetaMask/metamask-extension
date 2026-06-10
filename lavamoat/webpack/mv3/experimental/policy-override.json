@@ -79,13 +79,6 @@
         "SharedArrayBuffer": true
       }
     },
-    "core-js-pure": {
-      "globals": {
-        "navigator.userAgent": true,
-        "MessageChannel": true,
-        "location": true
-      }
-    },
     "ethers>@ethersproject/random": {
       "globals": {
         "crypto.getRandomValues": true
