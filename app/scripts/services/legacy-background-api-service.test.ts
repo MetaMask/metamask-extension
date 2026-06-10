@@ -681,21 +681,21 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         rootMessenger.registerActionHandler(
-          'KeyringController:withKeyring',
-          jest.fn().mockImplementation(({ _address }, callback) =>
-            callback({
+          'KeyringController:withKeyringV2',
+          jest.fn().mockImplementation(({ address }, callback) => {
+            expect(address).toBe('0x123');
+            return callback({
               keyring: {
-                exportAccount: jest
-                  .fn()
-                  .mockResolvedValue(
+                exportAccount: jest.fn().mockResolvedValue({
+                  privateKey:
                     '0000000000000000000000000000000000000000000000000000000000000001',
-                  ),
+                }),
               },
               metadata: {
                 id: 'foo',
               },
-            }),
-          ),
+            });
+          }),
         );
 
         rootMessenger.registerActionHandler(
@@ -719,7 +719,7 @@ describe('LegacyBackgroundApiService', () => {
         ).resolves.toBeUndefined();
 
         expect(callSpy).toHaveBeenCalledWith(
-          'KeyringController:withKeyring',
+          'KeyringController:withKeyringV2',
           { address: '0x123' },
           expect.any(Function),
         );
@@ -795,21 +795,21 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         rootMessenger.registerActionHandler(
-          'KeyringController:withKeyring',
-          jest.fn().mockImplementation(({ _address }, callback) =>
-            callback({
+          'KeyringController:withKeyringV2',
+          jest.fn().mockImplementation(({ address }, callback) => {
+            expect(address).toBe('0x123');
+            return callback({
               keyring: {
-                exportAccount: jest
-                  .fn()
-                  .mockResolvedValue(
+                exportAccount: jest.fn().mockResolvedValue({
+                  privateKey:
                     '0000000000000000000000000000000000000000000000000000000000000001',
-                  ),
+                }),
               },
               metadata: {
                 id: 'foo',
               },
-            }),
-          ),
+            });
+          }),
         );
 
         rootMessenger.registerActionHandler(
@@ -855,21 +855,21 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         rootMessenger.registerActionHandler(
-          'KeyringController:withKeyring',
-          jest.fn().mockImplementation(({ _address }, callback) =>
-            callback({
+          'KeyringController:withKeyringV2',
+          jest.fn().mockImplementation(({ address }, callback) => {
+            expect(address).toBe('0x123');
+            return callback({
               keyring: {
-                exportAccount: jest
-                  .fn()
-                  .mockResolvedValue(
+                exportAccount: jest.fn().mockResolvedValue({
+                  privateKey:
                     '0000000000000000000000000000000000000000000000000000000000000001',
-                  ),
+                }),
               },
               metadata: {
                 id: 'foo',
               },
-            }),
-          ),
+            });
+          }),
         );
 
         rootMessenger.registerActionHandler(
@@ -1230,7 +1230,7 @@ function getMessenger(
       'NetworkController:resetConnection',
       'KeyringController:importAccountWithStrategy',
       'OnboardingController:getIsSocialLoginFlow',
-      'KeyringController:withKeyring',
+      'KeyringController:withKeyringV2',
       'KeyringController:removeAccount',
       'AccountsController:getAccountByAddress',
       'AccountsController:setSelectedAccount',

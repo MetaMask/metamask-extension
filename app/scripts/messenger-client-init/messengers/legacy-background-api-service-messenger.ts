@@ -42,7 +42,7 @@ export function getLegacyBackgroundApiServiceMessenger(
       'NetworkController:resetConnection',
       'KeyringController:importAccountWithStrategy',
       'OnboardingController:getIsSocialLoginFlow',
-      'KeyringController:withKeyring',
+      'KeyringController:withKeyringV2',
       'KeyringController:removeAccount',
       'AccountsController:getAccountByAddress',
       'AccountsController:setSelectedAccount',
