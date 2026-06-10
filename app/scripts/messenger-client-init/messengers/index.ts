@@ -76,8 +76,8 @@ import {
 <<<<<<< HEAD
   getSnapKeyringBuilderMessenger,
   getSnapKeyringBuilderInitMessenger,
-  getSnapKeyringBuilderV2Messenger,
-  getSnapKeyringBuilderV2InitMessenger,
+  getSnapKeyringV2BuilderMessenger,
+  getSnapKeyringV2BuilderInitMessenger,
 =======
 >>>>>>> main
   getSnapAccountServiceMessenger,
@@ -635,9 +635,9 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getSnapKeyringBuilderMessenger,
     getInitMessenger: getSnapKeyringBuilderInitMessenger,
   },
-  SnapKeyringBuilderV2: {
-    getMessenger: getSnapKeyringBuilderV2Messenger,
-    getInitMessenger: getSnapKeyringBuilderV2InitMessenger,
+  SnapKeyringV2Builder: {
+    getMessenger: getSnapKeyringV2BuilderMessenger,
+    getInitMessenger: getSnapKeyringV2BuilderInitMessenger,
   },
 =======
 >>>>>>> main

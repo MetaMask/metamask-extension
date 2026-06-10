@@ -1,47 +1,47 @@
 import { buildControllerInitRequestMock } from '../test/utils';
 import { MessengerClientInitRequest } from '../types';
 import {
-  getSnapKeyringBuilderV2Messenger,
-  getSnapKeyringBuilderV2InitMessenger,
-  SnapKeyringBuilderV2Messenger,
-  SnapKeyringBuilderV2InitMessenger,
+  getSnapKeyringV2BuilderMessenger,
+  getSnapKeyringV2BuilderInitMessenger,
+  SnapKeyringV2BuilderMessenger,
+  SnapKeyringV2BuilderInitMessenger,
 } from '../messengers/accounts';
 import { getRootMessenger } from '../../lib/messenger';
-import { snapKeyringBuilderV2 } from '../../lib/snap-keyring/snap-keyring-v2';
-import { SnapKeyringBuilderV2Init } from './snap-keyring-builder-v2-init';
+import { snapKeyringV2Builder } from '../../lib/snap-keyring/snap-keyring-v2';
+import { SnapKeyringV2BuilderInit } from './snap-keyring-builder-v2-init';
 
 jest.mock('../../lib/snap-keyring/snap-keyring-v2');
 
 function buildInitRequestMock(): jest.Mocked<
   MessengerClientInitRequest<
-    SnapKeyringBuilderV2Messenger,
-    SnapKeyringBuilderV2InitMessenger
+    SnapKeyringV2BuilderMessenger,
+    SnapKeyringV2BuilderInitMessenger
   >
 > {
   const baseControllerMessenger = getRootMessenger();
 
   return {
     ...buildControllerInitRequestMock(),
-    controllerMessenger: getSnapKeyringBuilderV2Messenger(
+    controllerMessenger: getSnapKeyringV2BuilderMessenger(
       baseControllerMessenger,
     ),
-    initMessenger: getSnapKeyringBuilderV2InitMessenger(
+    initMessenger: getSnapKeyringV2BuilderInitMessenger(
       baseControllerMessenger,
     ),
     removeAccount: jest.fn().mockResolvedValue(undefined),
   };
 }
 
-describe('SnapKeyringBuilderV2Init', () => {
+describe('SnapKeyringV2BuilderInit', () => {
   beforeEach(() => {
     jest.resetAllMocks();
   });
 
   it('initializes with correct properties', () => {
     const requestMock = buildInitRequestMock();
-    const result = SnapKeyringBuilderV2Init(requestMock);
+    const result = SnapKeyringV2BuilderInit(requestMock);
 
-    expect(snapKeyringBuilderV2).toHaveBeenCalledWith(
+    expect(snapKeyringV2Builder).toHaveBeenCalledWith(
       requestMock.controllerMessenger,
       {
         persistKeyringHelper: expect.any(Function),
@@ -60,10 +60,10 @@ describe('SnapKeyringBuilderV2Init', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .mockResolvedValue(undefined as any);
 
-    SnapKeyringBuilderV2Init(requestMock);
+    SnapKeyringV2BuilderInit(requestMock);
 
     const { persistKeyringHelper } =
-      jest.mocked(snapKeyringBuilderV2).mock.calls[0][1];
+      jest.mocked(snapKeyringV2Builder).mock.calls[0][1];
     await persistKeyringHelper();
 
     expect(initMessengerCallSpy).toHaveBeenCalledWith(
@@ -76,10 +76,10 @@ describe('SnapKeyringBuilderV2Init', () => {
 
   it('removeAccountHelper delegates to the request removeAccount callback', async () => {
     const requestMock = buildInitRequestMock();
-    SnapKeyringBuilderV2Init(requestMock);
+    SnapKeyringV2BuilderInit(requestMock);
 
     const { removeAccountHelper } =
-      jest.mocked(snapKeyringBuilderV2).mock.calls[0][1];
+      jest.mocked(snapKeyringV2Builder).mock.calls[0][1];
     const address = '0x2a4d4b667D5f12C3F9Bf8F14a7B9f8D8d9b8c8fA';
     await removeAccountHelper(address);
 
@@ -93,9 +93,9 @@ describe('SnapKeyringBuilderV2Init', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .mockReturnValue(undefined as any);
 
-    SnapKeyringBuilderV2Init(requestMock);
+    SnapKeyringV2BuilderInit(requestMock);
 
-    const { trackEvent } = jest.mocked(snapKeyringBuilderV2).mock.calls[0][1];
+    const { trackEvent } = jest.mocked(snapKeyringV2Builder).mock.calls[0][1];
     const event = { event: 'foo', category: 'Accounts' };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     trackEvent(event as any);

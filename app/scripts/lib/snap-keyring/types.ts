@@ -62,4 +62,4 @@ export type SnapKeyringBuilderMessenger = Messenger<
   SnapKeyringBuilderAllowedActions
 >;
 
-export type SnapKeyringBuilderV2Messenger = SnapKeyringBuilderMessenger;
+export type SnapKeyringV2BuilderMessenger = SnapKeyringBuilderMessenger;

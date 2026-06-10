@@ -20,7 +20,6 @@ import {
   LedgerKeyring,
 } from '@metamask/eth-ledger-bridge-keyring';
 import { LedgerKeyring as LedgerKeyringV2 } from '@metamask/eth-ledger-bridge-keyring/v2';
-import { Messenger } from '@metamask/messenger';
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
 import { qrKeyringBuilderFactory } from '../lib/qr-keyring-builder-factory';
 import { TrezorOffscreenBridge } from '../lib/offscreen-bridge/trezor-offscreen-bridge';
@@ -34,7 +33,8 @@ import {
   RootMessengerActions,
   RootMessengerEvents,
 } from '../lib/messenger';
-import { SnapKeyringBuilderMessenger } from '../lib/snap-keyring/types';
+import { getSnapKeyringBuilderMessenger } from '../lib/snap-keyring/snap-keyring';
+import { getSnapKeyringV2BuilderMessenger, snapKeyringV2AdaptedAsV1Builder, snapKeyringV2Builder } from '../lib/snap-keyring/snap-keyring-v2';
 
 /**
  * Constructor signature shared by every V2 hardware-keyring wrapper.
@@ -83,7 +83,7 @@ function buildHardwareV2Builder<Wrapper, Legacy>(
 }
 
 /**
- * Build the list of V2 keyring builders for the hardware wallets.
+ * Build the list of V2 keyring builders for the hardware wallets and Snaps.
  *
  * Each builder wraps the legacy hardware keyring (created by
  * `getKeyringBuilders`) in its V2 wrapper, keyed by the legacy keyring's
@@ -91,18 +91,33 @@ function buildHardwareV2Builder<Wrapper, Legacy>(
  * legacy builders, the V2 wrappers are identical across MV2 and MV3 because
  * `LatticeKeyringOffscreen.type` mirrors `LatticeKeyring.type`.
  *
+ * @param messenger - The root messenger.
  * @returns The V2 keyring builders to register with the `KeyringController`.
  */
-export function getKeyringV2Builders(): KeyringV2Builder[] {
+export function getKeyringV2Builders(
+  messenger: RootMessenger<RootMessengerActions, RootMessengerEvents>,
+): KeyringV2Builder[] {
   return [
     buildHardwareV2Builder(LatticeKeyringV2, LatticeKeyring.type),
     buildHardwareV2Builder(LedgerKeyringV2, LedgerKeyring.type),
     buildHardwareV2Builder(QrKeyringV2, QrKeyring.type),
     buildHardwareV2Builder(TrezorKeyringV2, TrezorKeyring.type),
     buildHardwareV2Builder(OneKeyKeyringV2, OneKeyKeyring.type),
+    // The v2 Snap keyring is registered via `SnapKeyringV1Adapter`, which owns the
+    // inner `SnapKeyring` (v2) instance and exposes a proper v1-compatible face for
+    // KeyringController vault management. The same inner instance is retrieved via
+    // `unwrap()` below so both v1 and v2 entries share the same underlying object —
+    // enabling both `withKeyring` (and v1-interface) and `withKeyringV2`.
+    snapKeyringV2Builder(),
   ];
 }
 
+/**
+ * Build the list of keyring builders for the hardware wallets.
+ *
+ * @param messenger - The root messenger.
+ * @returns The keyring builders to register with the `KeyringController`.
+ */
 export function getKeyringBuilders(
   messenger: RootMessenger<RootMessengerActions, RootMessengerEvents>,
 ) {
@@ -168,7 +183,14 @@ export function getKeyringBuilders(
   }
 
   // @ts-expect-error: `addAccounts` is missing in `SnapKeyring` type.
-  keyrings.push(snapKeyringBuilder(getSnapKeyringMessenger(messenger)));
+  keyrings.push(snapKeyringBuilder(getSnapKeyringBuilderMessenger(messenger)));
+
+  // The v2 Snap keyring is registered via `SnapKeyringV1Adapter`, which owns the
+  // inner `SnapKeyring` (v2) instance and exposes a proper v1-compatible face for
+  // KeyringController vault management. The same inner instance is retrieved via
+  // `unwrap()` below so both v1 and v2 entries share the same underlying object —
+  // enabling both `withKeyring` (and v1-interface) and `withKeyringV2`.
+  keyrings.push(snapKeyringV2AdaptedAsV1Builder(getSnapKeyringV2BuilderMessenger(messenger)));
 
   return keyrings;
 }

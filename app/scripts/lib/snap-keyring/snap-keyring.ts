@@ -33,9 +33,6 @@ import { RootMessenger, RootMessengerActions, RootMessengerEvents } from '../mes
  * Builder type for the Snap keyring.
  */
 export type SnapKeyringBuilder = {
-  name: 'SnapKeyringBuilder';
-  state: null;
-
   (): SnapKeyring;
   type: typeof SnapKeyring.type;
 };
@@ -489,7 +486,14 @@ export class SnapKeyringImpl implements SnapKeyringCallbacks {
   }
 }
 
-export function getSnapKeyringMessenger(messenger: RootMessenger<RootMessengerActions, RootMessengerEvents>) {
+/**
+ * Gets the messenger for the Snap keyring, which is used to handle communication between the Snap keyring
+ * and the rest of the extension.
+ *
+ * @param messenger - The root messenger instance, used to create a child messenger for the Snap keyring and to delegate necessary actions to it.
+ * @returns The Snap keyring messenger instance.
+ */
+export function getSnapKeyringBuilderMessenger(messenger: RootMessenger<RootMessengerActions, RootMessengerEvents>): SnapKeyringBuilderMessenger {
   const snapKeyringMessenger: SnapKeyringBuilderMessenger = new Messenger({
     namespace: 'SnapKeyring',
     parent: messenger,
@@ -544,7 +548,6 @@ export function snapKeyringBuilder(messenger: SnapKeyringBuilderMessenger) {
     });
   }) as SnapKeyringBuilder;
 
-  SnapKeyringBuilder.state = null;
   SnapKeyringBuilder.type = SnapKeyring.type;
 
   return SnapKeyringBuilder;

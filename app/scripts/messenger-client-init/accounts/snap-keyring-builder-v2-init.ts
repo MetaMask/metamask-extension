@@ -1,11 +1,11 @@
 import { MessengerClientInitFunction } from '../types';
 import {
-  SnapKeyringBuilderV2InitMessenger,
-  SnapKeyringBuilderV2Messenger,
+  SnapKeyringV2BuilderInitMessenger,
+  SnapKeyringV2BuilderMessenger,
 } from '../messengers/accounts';
 import {
-  snapKeyringBuilderV2,
-  SnapKeyringBuilderV2,
+  snapKeyringV2Builder,
+  SnapKeyringV2Builder,
 } from '../../lib/snap-keyring/snap-keyring-v2';
 
 /**
@@ -18,12 +18,12 @@ import {
  * @param request.removeAccount
  * @returns The initialized controller.
  */
-export const SnapKeyringBuilderV2Init: MessengerClientInitFunction<
-  SnapKeyringBuilderV2,
-  SnapKeyringBuilderV2Messenger,
-  SnapKeyringBuilderV2InitMessenger
+export const SnapKeyringV2BuilderInit: MessengerClientInitFunction<
+  SnapKeyringV2Builder,
+  SnapKeyringV2BuilderMessenger,
+  SnapKeyringV2BuilderInitMessenger
 > = ({ controllerMessenger, initMessenger, removeAccount }) => {
-  const builder = snapKeyringBuilderV2(controllerMessenger, {
+  const builder = snapKeyringV2Builder(controllerMessenger, {
     persistKeyringHelper: async () => {
       await initMessenger.call('KeyringController:persistAllKeyrings');
       await initMessenger.call('AccountsController:updateAccounts');

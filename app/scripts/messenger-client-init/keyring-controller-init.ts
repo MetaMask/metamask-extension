@@ -113,9 +113,9 @@ export const KeyringControllerInit: MessengerClientInitFunction<
   // KeyringController vault management. The same inner instance is retrieved via
   // `unwrap()` below so both v1 and v2 entries share the same underlying object —
   // enabling both `withKeyring` (and v1-interface) and `withKeyringV2`.
-  const snapKeyringBuilderV2 = getMessengerClient('SnapKeyringBuilderV2');
-  additionalKeyrings.push(snapKeyringBuilderV2.v1Builder);
-  additionalKeyringsV2.push(snapKeyringBuilderV2.v2Builder);
+  const snapKeyringV2Builder = getMessengerClient('SnapKeyringV2Builder');
+  additionalKeyrings.push(snapKeyringV2Builder.v1Builder);
+  additionalKeyringsV2.push(snapKeyringV2Builder.v2Builder);
 
   const messengerClient = new KeyringController({
     state: persistedState.KeyringController,

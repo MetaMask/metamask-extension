@@ -50,9 +50,9 @@ function getInitRequestMock(): jest.Mocked<
   };
 
   requestMock.getMessengerClient.mockImplementation((name) => {
-    if (name === 'SnapKeyringBuilderV2') {
+    if (name === 'SnapKeyringV2Builder') {
       return {
-        name: 'SnapKeyringBuilderV2',
+        name: 'SnapKeyringV2Builder',
         state: null,
         v1Builder: jest.fn(),
         v2Builder: jest.fn(),

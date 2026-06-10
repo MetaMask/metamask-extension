@@ -13,8 +13,8 @@ export type SnapKeyringBuilderInitMessenger = ReturnType<
   typeof getSnapKeyringBuilderInitMessenger
 >;
 
-export type SnapKeyringBuilderV2Messenger = ReturnType<
-  typeof getSnapKeyringBuilderV2Messenger
+export type SnapKeyringV2BuilderMessenger = ReturnType<
+  typeof getSnapKeyringV2BuilderMessenger
 >;
 
 /**
@@ -24,7 +24,7 @@ export type SnapKeyringBuilderV2Messenger = ReturnType<
  * @param messenger - The controller messenger to restrict.
  * @returns The restricted controller messenger.
  */
-export function getSnapKeyringBuilderV2Messenger(
+export function getSnapKeyringV2BuilderMessenger(
   messenger: RootMessenger<
     MessengerActions<SnapKeyringBuilderMessenger>,
     never
@@ -35,8 +35,8 @@ export function getSnapKeyringBuilderV2Messenger(
   return getSnapKeyringBuilderMessenger(messenger);
 }
 
-export type SnapKeyringBuilderV2InitMessenger = ReturnType<
-  typeof getSnapKeyringBuilderV2InitMessenger
+export type SnapKeyringV2BuilderInitMessenger = ReturnType<
+  typeof getSnapKeyringV2BuilderInitMessenger
 >;
 
 /**
@@ -46,7 +46,7 @@ export type SnapKeyringBuilderV2InitMessenger = ReturnType<
  * @param messenger - The base messenger used to create the restricted
  * messenger.
  */
-export function getSnapKeyringBuilderV2InitMessenger(
+export function getSnapKeyringV2BuilderInitMessenger(
   messenger: RootMessenger<
     MessengerActions<SnapKeyringBuilderInitMessenger>,
     never

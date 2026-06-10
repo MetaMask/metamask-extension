@@ -9,18 +9,28 @@ import { KeyringBuilder, KeyringV2Builder } from '@metamask/keyring-controller';
 import { Keyring } from '@metamask/keyring-utils';
 import { assert } from '@metamask/utils';
 import { isFlask } from '../../../../shared/lib/build-types';
-import { SnapKeyringBuilderV2Messenger } from './types';
-import { SnapKeyringImpl } from './snap-keyring';
+import { RootMessenger, RootMessengerActions, RootMessengerEvents } from '../messenger';
+import { SnapKeyringV2BuilderMessenger } from './types';
+import { getSnapKeyringMessenger, SnapKeyringImpl } from './snap-keyring';
 
 /**
- * Builder type for the v2 Snap keyring.
+ * Builder type for the Snap keyring v2 (adapted as v1).
  */
-export type SnapKeyringBuilderV2 = {
-  name: 'SnapKeyringBuilderV2';
-  state: null;
+export type SnapKeyringV2AdaptedAsV1Builder = {
+  (): Keyring;
+  // We use the same keyring type (v2 type here) even for the v1 adapter. Otherwise, that would conflict with
+  // the existing legacy Snap keyring.
+  type: KeyringType.Snap;
+};
 
-  v1Builder: KeyringBuilder;
-  v2Builder: KeyringV2Builder;
+/**
+ * Builder type for the Snap keyring v2.
+ */
+export type SnapKeyringV2Builder = {
+  (keyring: Keyring): SnapKeyringV2;
+  // We use the same keyring type (v2 type here) even for the v1 adapter. Otherwise, that would conflict with
+  // the existing legacy Snap keyring.
+  type: KeyringType.Snap;
 };
 
 export class SnapKeyringV2Impl extends SnapKeyringImpl {
@@ -31,16 +41,26 @@ export class SnapKeyringV2Impl extends SnapKeyringImpl {
 }
 
 /**
+ * Gets the messenger for a Snap keyring (v2), which is used to handle communication between the keyring
+ * and the rest of the extension.
+ *
+ * @param messenger - The root messenger instance, used to create a child messenger for the Snap keyring and to delegate necessary actions to it.
+ * @returns The Snap keyring (v2) messenger instance.
+ */
+export function getSnapKeyringV2BuilderMessenger(messenger: RootMessenger<RootMessengerActions, RootMessengerEvents>): SnapKeyringV2BuilderMessenger {
+  return getSnapKeyringMessenger(messenger);
+}
+
+/**
  * Constructs a v2 SnapKeyring builder with specified handlers for managing Snap accounts.
  *
  * @param messenger - The messenger instance.
- * @param helpers - Helpers required by the v2 Snap keyring implementation.
  * @returns A v2 Snap keyring builder.
  */
-export function snapKeyringBuilderV2(
-  messenger: SnapKeyringBuilderV2Messenger,
-): SnapKeyringBuilderV2 {
-  const SnapKeyringBuilderV2AdapterV1 = () => {
+export function snapKeyringV2AdaptedAsV1Builder(
+  messenger: SnapKeyringV2BuilderMessenger,
+): SnapKeyringV2AdaptedAsV1Builder {
+  const SnapKeyringV2AdaptedAsV1Builder = () => {
     const v2 = new SnapKeyringV2({
       messenger,
       callbacks: new SnapKeyringV2Impl(messenger),
@@ -55,9 +75,18 @@ export function snapKeyringBuilderV2(
     // the other v1 methods!
     return new SnapKeyringV1Adapter(v2) as unknown as Keyring;
   };
-  SnapKeyringBuilderV2AdapterV1.type = KeyringType.Snap;
+  SnapKeyringV2AdaptedAsV1Builder.type = KeyringType.Snap as const;
 
-  const SnapKeyringBuilderV2 = (keyring: Keyring) => {
+  return SnapKeyringV2AdaptedAsV1Builder;
+}
+
+/**
+ * Constructs a v2 SnapKeyring builder with specified handlers for managing Snap accounts.
+ *
+ * @returns A v2 Snap keyring builder.
+ */
+export function snapKeyringV2Builder(): SnapKeyringV2Builder {
+  const SnapKeyringV2Builder = (keyring: Keyring) => {
     assert(
       keyring instanceof KeyringV1Adapter,
       'Expected KeyringV1Adapter instance (that wraps a SnapKeyringV2)',
@@ -67,12 +96,7 @@ export function snapKeyringBuilderV2(
     // builders share the same underlying SnapKeyringV2 instance.
     return keyring.unwrap() as SnapKeyringV2;
   };
-  SnapKeyringBuilderV2.type = KeyringType.Snap;
+  SnapKeyringV2Builder.type = KeyringType.Snap as const;
 
-  return {
-    name: 'SnapKeyringBuilderV2',
-    state: null,
-    v1Builder: SnapKeyringBuilderV2AdapterV1,
-    v2Builder: SnapKeyringBuilderV2,
-  };
+  return SnapKeyringV2Builder;
 }
