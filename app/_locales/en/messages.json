@@ -2075,6 +2075,10 @@
     "message": "I've signed, scan signature",
     "description": "Button label for scanning a QR hardware-wallet signature after the user signs on their device."
   },
+  "bridgeQrHardwareShowQrCode": {
+    "message": "Show QR code",
+    "description": "Button label to go back to showing the QR code from the scanner view."
+  },
   "bridgeQrHardwareSignTitle": {
     "message": "Scan QR code below and sign on your device ($1/$2)",
     "description": "Title for a QR hardware-wallet bridge signature step. $1 is the current signature step and $2 is the total signature count."

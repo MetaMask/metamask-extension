@@ -71,9 +71,24 @@ export function useHwSwapQrState({
 
   const currentQrRequestId = qrSignRequest?.request.requestId;
 
+  const firstStepRequestIdRef = useRef<string | undefined>(undefined);
+
   useEffect(() => {
     setIsReadingQrSignature(false);
   }, [currentQrRequestId]);
+
+  if (
+    signatureState.status ===
+      HardwareWalletSignatureStatus.AwaitingFirstSignature &&
+    currentQrRequestId &&
+    !firstStepRequestIdRef.current
+  ) {
+    firstStepRequestIdRef.current = currentQrRequestId;
+  }
+
+  const isStep2Request =
+    Boolean(firstStepRequestIdRef.current) &&
+    currentQrRequestId !== firstStepRequestIdRef.current;
 
   const showInlineQrSigning =
     Boolean(qrSignRequest) &&
@@ -82,10 +97,25 @@ export function useHwSwapQrState({
       signatureState.status ===
         HardwareWalletSignatureStatus.AwaitingFinalSignature);
 
-  const activeQrStep =
-    showInlineQrSigning && !isReadingQrSignature
-      ? signatureState.status
-      : undefined;
+  const activeQrStep = (() => {
+    if (!showInlineQrSigning) {
+      return undefined;
+    }
+
+    if (isStep2Request) {
+      return HardwareWalletSignatureStatus.AwaitingFinalSignature;
+    }
+
+    if (
+      firstStepRequestIdRef.current &&
+      signatureState.status ===
+        HardwareWalletSignatureStatus.AwaitingFinalSignature
+    ) {
+      return undefined;
+    }
+
+    return signatureState.status;
+  })();
 
   const handleQrScanSuccess = useCallback(
     (response: SerializedUR) => dispatch(completeQrCodeScan(response)),

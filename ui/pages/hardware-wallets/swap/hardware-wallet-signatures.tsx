@@ -215,6 +215,9 @@ export default function HardwareWalletSignatures() {
   } = useHwSwapQrState({
     signatureState,
     confirmationTxData,
+    stepTrackingResetKey: `${lockedQuote?.quote.requestId ?? ''}:${
+      retryGenerationRef.current
+    }`,
   });
 
   useHwSwapNavigation({ signatureState });
@@ -222,7 +225,6 @@ export default function HardwareWalletSignatures() {
   const { cancelCurrentBatch } = useHwSignTracker(
     fromAddress,
     hardwareWalletUsed,
-    needsTwoConfirmations,
     dispatchSignatureEvent,
     { enabled: true, useBatchTracking: isStxEnabled },
     retryGenerationRef,
@@ -524,71 +526,15 @@ export default function HardwareWalletSignatures() {
           {displayedTitle}
         </Text>
         {lockedQuote && (
-          <>
-            {isReadingQrSignature && qrSignRequest && (
-              <Box
-                className="hardware-wallet-signatures__qr-reader"
-                style={{ width: '100%' }}
-                marginBottom={6}
-              >
-                <Reader
-                  cancelQRHardwareSignRequest={handleQrSignatureCancel}
-                  submitQRHardwareSignature={handleQrScanSuccess}
-                  requestId={qrSignRequest.request.requestId}
-                  setErrorTitle={() => undefined}
-                  setErrorActive={() => undefined}
-                />
-              </Box>
-            )}
-            <ul
-              className="hardware-wallet-signatures__steps"
-              data-testid="hardware-wallet-signatures__steps"
-            >
-              {needsTwoConfirmations && (
-                <li>
-                  <SignatureStatusIcon
-                    status={firstStepStatus}
-                    stepNumber={1}
-                  />
-                  <Box
-                    className="min-w-0 flex-1"
-                    flexDirection={BoxFlexDirection.Column}
-                  >
-                    <Text
-                      color={
-                        firstStepStatus === SignatureStepStatus.Rejected ||
-                        firstStepStatus === SignatureStepStatus.Failed ||
-                        firstStepStatus === SignatureStepStatus.Disconnected
-                          ? TextColor.ErrorDefault
-                          : TextColor.TextDefault
-                      }
-                      variant={TextVariant.BodyMd}
-                      fontWeight={FontWeight.Medium}
-                    >
-                      {firstStepLabel}
-                    </Text>
-                    {firstStepDescription && (
-                      <Text
-                        color={TextColor.TextAlternative}
-                        variant={TextVariant.BodyMd}
-                      >
-                        {firstStepDescription}
-                      </Text>
-                    )}
-                    {activeQrStep ===
-                      HardwareWalletSignatureStatus.AwaitingFirstSignature &&
-                      qrSignRequest && (
-                        <QrSignatureCode
-                          payload={qrSignRequest.request.payload}
-                        />
-                      )}
-                  </Box>
-                </li>
-              )}
+          <ul
+            className="hardware-wallet-signatures__steps"
+            data-testid="hardware-wallet-signatures__steps"
+          >
+            {needsTwoConfirmations && (
               <li>
                 <SignatureStatusIcon
-                  status={finalStepStatus}
-                  stepNumber={needsTwoConfirmations ? 2 : 1}
+                  status={firstStepStatus}
+                  stepNumber={1}
                 />
                 <Box
                   className="min-w-0 flex-1"
@@ -596,36 +542,109 @@ export default function HardwareWalletSignatures() {
                 >
                   <Text
                     color={
-                      finalStepStatus === SignatureStepStatus.Rejected ||
-                      finalStepStatus === SignatureStepStatus.Failed ||
-                      finalStepStatus === SignatureStepStatus.Disconnected
+                      firstStepStatus === SignatureStepStatus.Rejected ||
+                      firstStepStatus === SignatureStepStatus.Failed ||
+                      firstStepStatus === SignatureStepStatus.Disconnected
                         ? TextColor.ErrorDefault
                         : TextColor.TextDefault
                     }
                     variant={TextVariant.BodyMd}
                     fontWeight={FontWeight.Medium}
                   >
-                    {finalStepLabel}
+                    {firstStepLabel}
                   </Text>
-                  {finalStepDescription && (
+                  {firstStepDescription && (
                     <Text
                       color={TextColor.TextAlternative}
                       variant={TextVariant.BodyMd}
                     >
-                      {finalStepDescription}
+                      {firstStepDescription}
                     </Text>
                   )}
                   {activeQrStep ===
-                    HardwareWalletSignatureStatus.AwaitingFinalSignature &&
-                    qrSignRequest && (
+                    HardwareWalletSignatureStatus.AwaitingFirstSignature &&
+                    qrSignRequest &&
+                    (isReadingQrSignature ? (
+                      <Box
+                        className="hardware-wallet-signatures__qr-reader"
+                        style={{ width: '100%' }}
+                        marginTop={4}
+                      >
+                        <Reader
+                          key={qrSignRequest.request.requestId}
+                          cancelQRHardwareSignRequest={handleQrSignatureCancel}
+                          submitQRHardwareSignature={handleQrScanSuccess}
+                          requestId={qrSignRequest.request.requestId}
+                          setErrorTitle={() => undefined}
+                          setErrorActive={() => undefined}
+                        />
+                      </Box>
+                    ) : (
                       <QrSignatureCode
+                        key={qrSignRequest.request.requestId}
                         payload={qrSignRequest.request.payload}
                       />
-                    )}
+                    ))}
                 </Box>
               </li>
-            </ul>
-          </>
+            )}
+            <li>
+              <SignatureStatusIcon
+                status={finalStepStatus}
+                stepNumber={needsTwoConfirmations ? 2 : 1}
+              />
+              <Box
+                className="min-w-0 flex-1"
+                flexDirection={BoxFlexDirection.Column}
+              >
+                <Text
+                  color={
+                    finalStepStatus === SignatureStepStatus.Rejected ||
+                    finalStepStatus === SignatureStepStatus.Failed ||
+                    finalStepStatus === SignatureStepStatus.Disconnected
+                      ? TextColor.ErrorDefault
+                      : TextColor.TextDefault
+                  }
+                  variant={TextVariant.BodyMd}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {finalStepLabel}
+                </Text>
+                {finalStepDescription && (
+                  <Text
+                    color={TextColor.TextAlternative}
+                    variant={TextVariant.BodyMd}
+                  >
+                    {finalStepDescription}
+                  </Text>
+                )}
+                {activeQrStep ===
+                  HardwareWalletSignatureStatus.AwaitingFinalSignature &&
+                  qrSignRequest &&
+                  (isReadingQrSignature ? (
+                    <Box
+                      className="hardware-wallet-signatures__qr-reader"
+                      style={{ width: '100%' }}
+                      marginTop={4}
+                    >
+                      <Reader
+                        key={qrSignRequest.request.requestId}
+                        cancelQRHardwareSignRequest={handleQrSignatureCancel}
+                        submitQRHardwareSignature={handleQrScanSuccess}
+                        requestId={qrSignRequest.request.requestId}
+                        setErrorTitle={() => undefined}
+                        setErrorActive={() => undefined}
+                      />
+                    </Box>
+                  ) : (
+                    <QrSignatureCode
+                      key={qrSignRequest.request.requestId}
+                      payload={qrSignRequest.request.payload}
+                    />
+                  ))}
+              </Box>
+            </li>
+          </ul>
         )}
       </Box>
       {showFooter && (
@@ -667,9 +686,13 @@ export default function HardwareWalletSignatures() {
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
               isFullWidth
-              onClick={() => setIsReadingQrSignature(true)}
+              onClick={() =>
+                setIsReadingQrSignature(!isReadingQrSignature)
+              }
             >
-              {t('bridgeQrHardwareScanSignature')}
+              {isReadingQrSignature
+                ? t('bridgeQrHardwareShowQrCode')
+                : t('bridgeQrHardwareScanSignature')}
             </Button>
           )}
           <Button

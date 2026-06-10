@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { SerializedUR } from '@metamask/eth-qr-keyring';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
@@ -20,6 +20,7 @@ import { isQrHardwareSignRequest } from '../../pages/hardware-wallets/swap/hardw
 type UseHardwareWalletQrStateOptions = {
   signatureState: HardwareWalletSignaturesState;
   confirmationTxData: ({ id?: string } & Record<string, unknown>) | undefined;
+  stepTrackingResetKey?: string | number;
 };
 
 /**
@@ -33,6 +34,7 @@ type UseHardwareWalletQrStateOptions = {
  * @param options - Configuration for the QR state hook.
  * @param options.signatureState - The current hardware-wallet signature state-machine state.
  * @param options.confirmationTxData - The current confirmation transaction data (used for cancellation).
+ * @param options.stepTrackingResetKey - Changes when a new signing attempt starts.
  * @returns An object containing:
  * - `isReadingQrSignature` — whether the user is currently scanning a QR signature.
  * - `setIsReadingQrSignature` — setter for the reading state.
@@ -46,6 +48,7 @@ type UseHardwareWalletQrStateOptions = {
 export function useHwSwapQrState({
   signatureState,
   confirmationTxData,
+  stepTrackingResetKey,
 }: UseHardwareWalletQrStateOptions) {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const hardwareWalletType = useSelector(getHardwareWalletType);
@@ -62,23 +65,62 @@ export function useHwSwapQrState({
       ? activeQrCodeScanRequest
       : undefined;
 
+  // Keep cancellation callbacks stable while still using the latest request data.
+  const qrSignRequestRef = useRef(qrSignRequest);
+  qrSignRequestRef.current = qrSignRequest;
+  const confirmationTxDataRef = useRef(confirmationTxData);
+  confirmationTxDataRef.current = confirmationTxData;
+
   const currentQrRequestId = qrSignRequest?.request.requestId;
+  const firstStepRequestIdRef = useRef<string | undefined>(undefined);
+  const stepTrackingResetKeyRef = useRef(stepTrackingResetKey);
 
   useEffect(() => {
     setIsReadingQrSignature(false);
   }, [currentQrRequestId]);
 
-  const showInlineQrSigning =
-    Boolean(qrSignRequest) &&
-    (signatureState.status ===
-      HardwareWalletSignatureStatus.AwaitingFirstSignature ||
-      signatureState.status ===
-        HardwareWalletSignatureStatus.AwaitingFinalSignature);
+  if (stepTrackingResetKeyRef.current !== stepTrackingResetKey) {
+    stepTrackingResetKeyRef.current = stepTrackingResetKey;
+    firstStepRequestIdRef.current = undefined;
+  }
 
-  const activeQrStep =
-    showInlineQrSigning && !isReadingQrSignature
-      ? signatureState.status
-      : undefined;
+  const isAwaitingSignature =
+    signatureState.status ===
+      HardwareWalletSignatureStatus.AwaitingFirstSignature ||
+    signatureState.status ===
+      HardwareWalletSignatureStatus.AwaitingFinalSignature;
+
+  if (!isAwaitingSignature) {
+    firstStepRequestIdRef.current = undefined;
+  }
+
+  if (
+    signatureState.status ===
+      HardwareWalletSignatureStatus.AwaitingFirstSignature &&
+    currentQrRequestId &&
+    !firstStepRequestIdRef.current
+  ) {
+    firstStepRequestIdRef.current = currentQrRequestId;
+  }
+
+  const isFinalStepRequest =
+    Boolean(firstStepRequestIdRef.current) &&
+    currentQrRequestId !== firstStepRequestIdRef.current;
+
+  const showInlineQrSigning =
+    Boolean(qrSignRequest) && isAwaitingSignature;
+
+  const activeQrStep = (() => {
+    if (!showInlineQrSigning) {
+      return undefined;
+    }
+
+    if (isFinalStepRequest) {
+      return HardwareWalletSignatureStatus.AwaitingFinalSignature;
+    }
+
+    return signatureState.status;
+  })();
 
   const handleQrScanSuccess = useCallback(
     async (response: SerializedUR) => dispatch(completeQrCodeScan(response)),
@@ -86,20 +128,24 @@ export function useHwSwapQrState({
   );
 
   const handleQrSignatureCancel = useCallback(() => {
-    if (confirmationTxData?.id) {
+    const currentConfirmationTxData = confirmationTxDataRef.current;
+
+    if (currentConfirmationTxData?.id) {
       dispatch(
         rejectPendingApproval(
-          confirmationTxData.id,
+          currentConfirmationTxData.id,
           serializeError(providerErrors.userRejectedRequest()),
         ),
       );
-      dispatch(cancelTx(confirmationTxData as Parameters<typeof cancelTx>[0]));
+      dispatch(
+        cancelTx(currentConfirmationTxData as Parameters<typeof cancelTx>[0]),
+      );
     }
 
-    if (qrSignRequest) {
+    if (qrSignRequestRef.current) {
       dispatch(cancelQrCodeScan());
     }
-  }, [dispatch, qrSignRequest, confirmationTxData]);
+  }, [dispatch]);
 
   return {
     isReadingQrSignature,

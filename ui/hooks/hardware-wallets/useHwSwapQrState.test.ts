@@ -1,4 +1,5 @@
 import { act, renderHook } from '@testing-library/react-hooks';
+import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import { HardwareKeyringType } from '../../../shared/constants/hardware-wallets';
 import { HardwareWalletSignatureStatus } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 import { createSignatureState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine/test-helpers';
@@ -200,7 +201,7 @@ describe('useHwSwapQrState', () => {
     );
   });
 
-  it('returns undefined activeQrStep when isReadingQrSignature is true', () => {
+  it('keeps activeQrStep when isReadingQrSignature is true', () => {
     const mockQrSignRequest = {
       type: 'SIGN',
       request: {
@@ -226,7 +227,140 @@ describe('useHwSwapQrState', () => {
       result.current.setIsReadingQrSignature(true);
     });
 
-    expect(result.current.activeQrStep).toBeUndefined();
+    expect(result.current.activeQrStep).toBe(
+      HardwareWalletSignatureStatus.AwaitingFirstSignature,
+    );
+  });
+
+  it('shows a later QR request under the final step before the state machine transitions', () => {
+    const firstQrSignRequest = {
+      type: QrScanRequestType.SIGN,
+      request: {
+        requestId: 'approval-request',
+        payload: { type: 'test', cbor: '0x' },
+      },
+    };
+
+    mockGetHardwareWalletType.mockReturnValue(HardwareKeyringType.qr);
+    mockGetActiveQrCodeScanRequest.mockReturnValue(firstQrSignRequest);
+    mockIsQrHardwareSignRequest.mockReturnValue(true);
+
+    const { result, rerender } = renderHook(() =>
+      useHwSwapQrState({
+        signatureState: createSignatureState(
+          HardwareWalletSignatureStatus.AwaitingFirstSignature,
+        ),
+        confirmationTxData: undefined,
+      }),
+    );
+
+    expect(result.current.activeQrStep).toBe(
+      HardwareWalletSignatureStatus.AwaitingFirstSignature,
+    );
+
+    const finalQrSignRequest = {
+      type: QrScanRequestType.SIGN,
+      request: {
+        requestId: 'trade-request',
+        payload: { type: 'test', cbor: '0x' },
+      },
+    };
+
+    mockGetActiveQrCodeScanRequest.mockReturnValue(finalQrSignRequest);
+
+    rerender();
+
+    expect(result.current.activeQrStep).toBe(
+      HardwareWalletSignatureStatus.AwaitingFinalSignature,
+    );
+  });
+
+  it('keeps a new first-step QR request on the first step after a reset', () => {
+    const firstQrSignRequest = {
+      type: QrScanRequestType.SIGN,
+      request: {
+        requestId: 'approval-request',
+        payload: { type: 'test', cbor: '0x' },
+      },
+    };
+
+    mockGetHardwareWalletType.mockReturnValue(HardwareKeyringType.qr);
+    mockGetActiveQrCodeScanRequest.mockReturnValue(firstQrSignRequest);
+    mockIsQrHardwareSignRequest.mockReturnValue(true);
+
+    const { result, rerender } = renderHook(
+      ({ stepTrackingResetKey }: { stepTrackingResetKey: number }) =>
+        useHwSwapQrState({
+          signatureState: createSignatureState(
+            HardwareWalletSignatureStatus.AwaitingFirstSignature,
+          ),
+          confirmationTxData: undefined,
+          stepTrackingResetKey,
+        }),
+      {
+        initialProps: { stepTrackingResetKey: 0 },
+      },
+    );
+
+    expect(result.current.activeQrStep).toBe(
+      HardwareWalletSignatureStatus.AwaitingFirstSignature,
+    );
+
+    const retriedFirstQrSignRequest = {
+      type: QrScanRequestType.SIGN,
+      request: {
+        requestId: 'retried-approval-request',
+        payload: { type: 'test', cbor: '0x' },
+      },
+    };
+
+    mockGetActiveQrCodeScanRequest.mockReturnValue(retriedFirstQrSignRequest);
+
+    rerender({ stepTrackingResetKey: 1 });
+
+    expect(result.current.activeQrStep).toBe(
+      HardwareWalletSignatureStatus.AwaitingFirstSignature,
+    );
+  });
+
+  it('uses the state-machine step when the QR request id has not changed', () => {
+    const firstQrSignRequest = {
+      type: QrScanRequestType.SIGN,
+      request: {
+        requestId: 'approval-request',
+        payload: { type: 'test', cbor: '0x' },
+      },
+    };
+
+    mockGetHardwareWalletType.mockReturnValue(HardwareKeyringType.qr);
+    mockGetActiveQrCodeScanRequest.mockReturnValue(firstQrSignRequest);
+    mockIsQrHardwareSignRequest.mockReturnValue(true);
+
+    type RenderProps = { status: HardwareWalletSignatureStatus };
+    const initialProps: RenderProps = {
+      status: HardwareWalletSignatureStatus.AwaitingFirstSignature,
+    };
+
+    const { result, rerender } = renderHook(
+      ({ status }: RenderProps) =>
+        useHwSwapQrState({
+          signatureState: createSignatureState(status),
+          confirmationTxData: undefined,
+        }),
+      {
+        initialProps,
+      },
+    );
+
+    expect(result.current.activeQrStep).toBe(
+      HardwareWalletSignatureStatus.AwaitingFirstSignature,
+    );
+
+    rerender({ status: HardwareWalletSignatureStatus.AwaitingFinalSignature });
+
+    expect(result.current.activeQrStep).toBe(
+      HardwareWalletSignatureStatus.AwaitingFinalSignature,
+    );
   });
 
   it('resets isReadingQrSignature when currentQrRequestId changes', () => {
@@ -242,7 +376,7 @@ describe('useHwSwapQrState', () => {
     mockGetActiveQrCodeScanRequest.mockReturnValue(mockQrSignRequest);
     mockIsQrHardwareSignRequest.mockReturnValue(true);
 
-    const { result } = renderHook(() =>
+    const { result, rerender } = renderHook(() =>
       useHwSwapQrState({
         signatureState: createSignatureState(
           HardwareWalletSignatureStatus.AwaitingFirstSignature,
@@ -267,7 +401,9 @@ describe('useHwSwapQrState', () => {
 
     mockGetActiveQrCodeScanRequest.mockReturnValue(newQrSignRequest);
 
-    expect(result.current.isReadingQrSignature).toBe(true);
+    rerender();
+
+    expect(result.current.isReadingQrSignature).toBe(false);
   });
 
   describe('handleQrScanSuccess', () => {
