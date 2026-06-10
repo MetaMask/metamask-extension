@@ -3,13 +3,13 @@
  * — the background/service worker, content scripts, or the offscreen document —
  * changes.
  *
- * The UI live-reload client reloads UI pages with `location.reload()`, but that
+ * The UI reload client reloads UI pages with `location.reload()`, but that
  * primitive doesn't work for the privileged surfaces: a service worker can't
  * reload itself meaningfully, and a content script can't even call
  * `runtime.reload`. The only way to pick up changes to them is a full
  * `chrome.runtime.reload()`, which must run from a privileged context.
  *
- * So a tiny reloader client (`runtime/devReloadClient`) is injected into the
+ * So a tiny client (`runtime/background-reload-client`) is injected into the
  * background context, and after each rebuild this module fingerprints the
  * privileged code and announces the fingerprint to all connected clients (and
  * to every client that connects later — so a change built while the client was
@@ -22,7 +22,7 @@
  * page shares the split `js`/`vendor` chunks with the UI pages, so a UI-only
  * edit changes those chunks without changing any code the background actually
  * runs. With module fingerprints, UI-only edits never trigger a reload — the
- * UI live-reload client already handles those, and reloading the extension
+ * UI reload client already handles those, and reloading the extension
  * would needlessly discard background state.
  *
  * All of this is only wired up while the dev server runs (`--watch`), so none
@@ -34,9 +34,9 @@ import { resolve } from 'node:path';
 import type { Compilation, Compiler, Entrypoint, Module } from 'webpack';
 import type WebpackDevServer from 'webpack-dev-server';
 import {
-  DEV_RELOAD_CLIENT_ENTRY_NAME,
-  DEV_RELOAD_MESSAGE_TYPE,
-} from '../runtime/devReloadProtocol';
+  BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
+  BACKGROUND_RELOAD_MESSAGE_TYPE,
+} from '../runtime/background-reload-protocol';
 import { ManifestPlugin } from './plugins/ManifestPlugin';
 
 /**
@@ -169,12 +169,12 @@ const fingerprintCompilation = (
 
 /**
  * Wires up automatic extension reloading on the running dev server. For each
- * compiler it injects the reloader client into the background context (bundled
- * into the MV3 service worker, or registered as a standalone entry that
- * `HtmlBundlerPlugin` injects into the MV2 background page). After every
+ * compiler it injects the background reload client into the background context
+ * (bundled into the MV3 service worker, or registered as a standalone entry
+ * that `HtmlBundlerPlugin` injects into the MV2 background page). After every
  * successful rebuild it fingerprints the privileged code and announces the
- * fingerprint via {@link DEV_RELOAD_MESSAGE_TYPE} — to all connected clients
- * and to every client that connects later. The reloader client decides whether
+ * fingerprint via {@link BACKGROUND_RELOAD_MESSAGE_TYPE} — to all connected
+ * clients and to every client that connects later. The client decides whether
  * to reload by comparing against the fingerprint of its own running code, so
  * there are no reload loops on startup and no missed reloads after a
  * disconnect.
@@ -185,7 +185,7 @@ const fingerprintCompilation = (
  * @param devServer - The running webpack dev server.
  * @param compilers - The compilers attached to the dev server.
  */
-export function setupDevReload(
+export function setupBackgroundReload(
   devServer: WebpackDevServer,
   compilers: Compiler[],
 ): void {
@@ -193,7 +193,7 @@ export function setupDevReload(
   // to the real port by the time `setupMiddlewares` calls this.
   const { host, port } = devServer.options;
   const url = `ws://${host ?? 'localhost'}:${port}/ws`;
-  const reloaderRequest = `${resolve(__dirname, '../runtime/devReloadClient.ts')}?url=${encodeURIComponent(url)}`;
+  const clientRequest = `${resolve(__dirname, '../runtime/background-reload-client.ts')}?url=${encodeURIComponent(url)}`;
 
   // The latest fingerprint per compiler, combined into the announced payload.
   const fingerprints = new Map<Compiler, string>();
@@ -215,7 +215,11 @@ export function setupDevReload(
       // `implementation` is the underlying `ws` server (the default transport).
       server.implementation.on('connection', (socket) => {
         if (announced !== undefined) {
-          devServer.sendMessage([socket], DEV_RELOAD_MESSAGE_TYPE, announced);
+          devServer.sendMessage(
+            [socket],
+            BACKGROUND_RELOAD_MESSAGE_TYPE,
+            announced,
+          );
         }
       });
     }
@@ -226,7 +230,11 @@ export function setupDevReload(
       );
     }
     announced = payload;
-    devServer.sendMessage(server.clients, DEV_RELOAD_MESSAGE_TYPE, payload);
+    devServer.sendMessage(
+      server.clients,
+      BACKGROUND_RELOAD_MESSAGE_TYPE,
+      payload,
+    );
   };
 
   for (const compiler of compilers) {
@@ -239,22 +247,22 @@ export function setupDevReload(
 
     const { EntryPlugin } = compiler.webpack;
     if (serviceWorkerEntryName) {
-      // MV3: the service worker loads exactly one file, so the reloader must be
+      // MV3: the service worker loads exactly one file, so the client must be
       // part of that chunk. Pass only `name` so webpack merges this dependency
       // into the existing entry without a conflicting-entry-option error.
-      new EntryPlugin(compiler.context, reloaderRequest, {
+      new EntryPlugin(compiler.context, clientRequest, {
         name: serviceWorkerEntryName,
       }).apply(compiler);
     } else {
       // MV2: register a standalone entry; `HtmlBundlerPlugin.beforeEmit` injects
       // it as a `<script>` into the background page.
-      new EntryPlugin(compiler.context, reloaderRequest, {
-        name: DEV_RELOAD_CLIENT_ENTRY_NAME,
+      new EntryPlugin(compiler.context, clientRequest, {
+        name: BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
         chunkLoading: false,
       }).apply(compiler);
     }
 
-    compiler.hooks.done.tap('MetaMaskDevReload', (stats) => {
+    compiler.hooks.done.tap('MetaMaskBackgroundReload', (stats) => {
       // Don't announce a broken build; keep the last good fingerprint so the
       // next successful build is compared against it.
       if (stats.hasErrors()) {

@@ -1,9 +1,9 @@
 /**
- * @file Dev-only extension reloader, bundled into the privileged background
- * context (the MV3 service worker or the MV2 background page) by the webpack dev
- * server.
+ * @file The background reload client: a dev-only extension reloader, bundled
+ * into the privileged background context (the MV3 service worker or the MV2
+ * background page) by the webpack dev server.
  *
- * The UI live-reload client reloads UI pages with `location.reload()`, but that
+ * The UI reload client reloads UI pages with `location.reload()`, but that
  * primitive doesn't work for the service worker, background, content scripts,
  * or the offscreen document: a service worker can't reload itself meaningfully,
  * and a content script can't even call `runtime.reload`. The only way to pick
@@ -23,7 +23,7 @@
  * (`--watch`), so it never ships in production builds.
  */
 
-import { DEV_RELOAD_MESSAGE_TYPE } from './devReloadProtocol';
+import { BACKGROUND_RELOAD_MESSAGE_TYPE } from './background-reload-protocol';
 
 // `__resourceQuery` is the query string of the request that pulled this module
 // in as an entry (e.g. `?url=ws%3A%2F%2Flocalhost%3A8080%2Fws`). webpack
@@ -34,7 +34,7 @@ declare const __resourceQuery: string;
 const MAX_RECONNECT_DELAY_MS = 5_000;
 
 /** Storage key holding the fingerprint of the currently running code. */
-const FINGERPRINT_KEY = 'MM_DEV_RELOAD_FINGERPRINT';
+const FINGERPRINT_KEY = 'MM_BACKGROUND_RELOAD_FINGERPRINT';
 
 // `chrome` in Chrome/MV3 service workers; `browser` (with a `chrome` alias) in
 // Firefox. `runtime.reload()` exists on both.
@@ -168,7 +168,7 @@ function connect(url: string, reconnectAttempt = 0): void {
       return;
     }
     if (
-      message.type === DEV_RELOAD_MESSAGE_TYPE &&
+      message.type === BACKGROUND_RELOAD_MESSAGE_TYPE &&
       typeof message.data === 'string'
     ) {
       void onFingerprint(message.data, socket);

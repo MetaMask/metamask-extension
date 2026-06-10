@@ -1,19 +1,11 @@
 import type { Configuration } from 'webpack-dev-server';
-import { getDevServerClientUrl } from './helpers';
-import { setupDevReload } from './devReload';
+import { setupUiReload } from './ui-reload';
+import { setupBackgroundReload } from './background-reload';
 
 export const MODES = {
   PRODUCTION: 'production',
   DEVELOPMENT: 'development',
 } as const;
-
-/**
- * Entry name for the webpack-dev-server client bundle. Used by
- * `DEV_SERVER_OPTIONS.setupMiddlewares` to register the entry, by
- * `ManifestPlugin` to mark it self-contained, and by
- * `HtmlBundlerPlugin.beforeEmit` to look up its output filename for `<script>` injection.
- */
-export const DEV_SERVER_CLIENT_ENTRY_NAME = 'dev-server-client';
 
 export const DEV_SERVER_OPTIONS: Configuration = {
   hot: false,
@@ -34,7 +26,7 @@ export const DEV_SERVER_OPTIONS: Configuration = {
   // we don't need/have a "static" directory, so disable it
   static: false,
   allowedHosts: 'all',
-  // Register dev-server clients here so that we can read the resolved port from
+  // Wire up the reload clients here so that we can read the resolved port from
   // `devServer.options` — by this point `port: 'auto'` has been replaced with
   // the actual numeric port the server is listening on.
   setupMiddlewares: (middlewares, devServer) => {
@@ -42,17 +34,11 @@ export const DEV_SERVER_OPTIONS: Configuration = {
       'compilers' in devServer.compiler
         ? devServer.compiler.compilers
         : [devServer.compiler];
-    for (const compiler of compilers) {
-      // Live-reload client for UI pages (injected by `HtmlBundlerPlugin`).
-      new compiler.webpack.EntryPlugin(
-        compiler.context,
-        getDevServerClientUrl(devServer.options),
-        { name: DEV_SERVER_CLIENT_ENTRY_NAME, chunkLoading: false },
-      ).apply(compiler);
-    }
-    // Auto-reload the whole extension when the background, service worker, or
-    // content scripts change (UI pages reload themselves via the client above).
-    setupDevReload(devServer, compilers);
+    // UI pages reload themselves in place when their code changes; the
+    // background reload restarts the whole extension when the background,
+    // service worker, or content scripts change.
+    setupUiReload(devServer, compilers);
+    setupBackgroundReload(devServer, compilers);
     return middlewares;
   },
 };

@@ -38,8 +38,9 @@ import { getThreadLoader } from './utils/loaders/threadLoader';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import type { BundleSizeCategory } from './utils/plugins/ManifestPlugin/types';
 import { getLatestCommit } from './utils/git';
-import { MODES, DEV_SERVER_CLIENT_ENTRY_NAME } from './utils/constants';
-import { DEV_RELOAD_CLIENT_ENTRY_NAME } from './runtime/devReloadProtocol';
+import { MODES } from './utils/constants';
+import { UI_RELOAD_CLIENT_ENTRY_NAME } from './utils/ui-reload';
+import { BACKGROUND_RELOAD_CLIENT_ENTRY_NAME } from './runtime/background-reload-protocol';
 import { BUNDLE_SIZE_SUMMARY_FILE } from './utils/plugins/ManifestPlugin/stats';
 
 const buildTypes = loadBuildTypesConfig();
@@ -118,7 +119,7 @@ const classifyBundleSizeEntrypoint = (
 /**
  * Injects a dev-server entry's JS output as `<script>` tags into an HTML page,
  * just before `</head>`. Used in watch mode to add dev-only clients (the UI
- * live-reload client, the extension reloader) without touching app source.
+ * reload client, the background reload client) without touching app source.
  *
  * @param content - The HTML page content.
  * @param compilation - The current compilation.
@@ -231,24 +232,25 @@ const plugins: WebpackPluginInstance[] = [
       }
       // UI pages (identified by the `#app-content` React mount point, present
       // via `partial-body.html` on every page that renders the React UI and no
-      // other extension page) get the webpack-dev-server live-reload client,
-      // which reloads just the page — preserving background state.
+      // other extension page) get the UI reload client (webpack-dev-server's
+      // live-reload client), which reloads just the page — preserving
+      // background state.
       if (content.includes('id="app-content"')) {
         return injectEntryScripts(
           content,
           compilation,
-          DEV_SERVER_CLIENT_ENTRY_NAME,
+          UI_RELOAD_CLIENT_ENTRY_NAME,
         );
       }
-      // The MV2 (Firefox) background page gets the extension reloader, which
-      // triggers `chrome.runtime.reload()` only when a background or
-      // content-script bundle changes. (On MV3 the reloader is bundled into the
+      // The MV2 (Firefox) background page gets the background reload client,
+      // which triggers `chrome.runtime.reload()` only when a background or
+      // content-script bundle changes. (On MV3 the client is bundled into the
       // service worker instead, since it loads a single JS file.)
       if (MANIFEST_VERSION === 2 && entry.name === 'background') {
         return injectEntryScripts(
           content,
           compilation,
-          DEV_RELOAD_CLIENT_ENTRY_NAME,
+          BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
         );
       }
       return content;

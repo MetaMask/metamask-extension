@@ -136,9 +136,10 @@ export function ignoreCacheShutdownSignal(process: NodeJS.Process) {
 }
 
 /**
- * Builds the webpack-dev-server client import URL from a
- * dev-server config. webpack preserves the query string as `__resourceQuery`,
- * which the client reads at runtime to know where to connect.
+ * Builds the import URL of the UI reload client (webpack-dev-server's own
+ * live-reload client) from a dev-server config. webpack preserves the query
+ * string as `__resourceQuery`, which the client reads at runtime to know
+ * where to connect.
  *
  * Only fields that are set are forwarded; anything omitted falls back to
  * webpack-dev-server's client defaults at runtime. `protocol=ws` is always
@@ -146,7 +147,7 @@ export function ignoreCacheShutdownSignal(process: NodeJS.Process) {
  * so the client cannot auto-detect a WebSocket protocol.
  *
  * @param config - The webpack-dev-server configuration.
- * @returns The import specifier for the dev-server client.
+ * @returns The import specifier for the UI reload client.
  */
 export const getDevServerClientUrl = (config: Configuration): string => {
   const params = new URLSearchParams({ protocol: 'ws' });

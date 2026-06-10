@@ -17,8 +17,8 @@ import {
   type Manifest,
   type Browser,
 } from '../../helpers';
-import { DEV_SERVER_CLIENT_ENTRY_NAME } from '../../constants';
-import { DEV_RELOAD_CLIENT_ENTRY_NAME } from '../../../runtime/devReloadProtocol';
+import { UI_RELOAD_CLIENT_ENTRY_NAME } from '../../ui-reload';
+import { BACKGROUND_RELOAD_CLIENT_ENTRY_NAME } from '../../../runtime/background-reload-protocol';
 import {
   createBundleSizeCategoryAssets,
   createBundleSizeSummary,
@@ -97,8 +97,8 @@ export class ManifestPlugin<Z extends boolean> {
     'snow.prod',
     'use-snow',
     'bootstrap',
-    DEV_SERVER_CLIENT_ENTRY_NAME,
-    DEV_RELOAD_CLIENT_ENTRY_NAME,
+    UI_RELOAD_CLIENT_ENTRY_NAME,
+    BACKGROUND_RELOAD_CLIENT_ENTRY_NAME,
   ]);
 
   /**
@@ -118,8 +118,9 @@ export class ManifestPlugin<Z extends boolean> {
    * Entry names of every script this plugin registered from the extension
    * manifests: content scripts, MV2 background scripts, the MV3 service
    * worker, and web-accessible `.js` resources. Used by the dev server's
-   * auto-reload (`utils/devReload`) to know which entries require a full
-   * extension reload when they change, without hard-coding manifest contents.
+   * background reload (`utils/background-reload`) to know which entries require
+   * a full extension reload when they change, without hard-coding manifest
+   * contents.
    */
   get manifestScriptEntryNames(): ReadonlySet<string> {
     return this.addedScripts;
