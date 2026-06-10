@@ -46,4 +46,58 @@ export const apiResponses = {
     readable: 'Unidentified Transaction',
     readableExtended: 'Unidentified Transaction',
   },
+  // ERC-20 send where the API also reports a small incoming rebase credit from
+  // the zero address (Aave aToken). The adapter should still classify as send.
+  lineaAaveUsdcSendWithRebaseCredit: {
+    hash: '0xdbd832950b40d6242f99176e8f263473670e6a39ddb00580dfcda67772cc6aae',
+    timestamp: '2026-05-06T13:32:51.000Z',
+    chainId: 59144,
+    accountId: 'eip155:59144:0x699e414873f56c7bb60e54ad63d3bb7b283874df',
+    blockNumber: 30529877,
+    blockHash:
+      '0xdc81c3e6834e5697830aa6cb4bc68ea744f38d72718e080f948c9c2c8d17fb51',
+    gas: 120484,
+    gasUsed: 118377,
+    gasPrice: '50000011',
+    effectiveGasPrice: '50000011',
+    nonce: 43,
+    cumulativeGasUsed: 139377,
+    methodId: '0xa9059cbb',
+    value: '0',
+    to: '0x374d7860c4f2f604de0191298dd393703cce84f3',
+    from: '0x699e414873f56c7bb60e54ad63d3bb7b283874df',
+    isError: false,
+    valueTransfers: [
+      {
+        from: '0x0000000000000000000000000000000000000000',
+        to: '0x699e414873f56c7bb60e54ad63d3bb7b283874df',
+        amount: '13344',
+        decimal: 6,
+        contractAddress: '0x374d7860c4f2f604de0191298dd393703cce84f3',
+        symbol: 'aLinUSDC',
+        name: 'Aave Linea USDC',
+        transferType: 'erc20',
+        iconUrl:
+          'https://static.cx.metamask.io/api/v1/tokenIcons/59144/0x374d7860c4f2f604de0191298dd393703cce84f3.png',
+      },
+      {
+        from: '0x699e414873f56c7bb60e54ad63d3bb7b283874df',
+        to: '0xed8799cd90c48f62d0b4f1bb00876b03f0b71c91',
+        amount: '419402',
+        decimal: 6,
+        contractAddress: '0x374d7860c4f2f604de0191298dd393703cce84f3',
+        symbol: 'aLinUSDC',
+        name: 'Aave Linea USDC',
+        transferType: 'erc20',
+        iconUrl:
+          'https://static.cx.metamask.io/api/v1/tokenIcons/59144/0x374d7860c4f2f604de0191298dd393703cce84f3.png',
+      },
+    ],
+    logs: [],
+    transactionProtocol: 'ERC_20',
+    transactionCategory: 'TRANSFER',
+    transactionType: 'ERC_20_TRANSFER',
+    readable: 'Sent aLinUSDC',
+    readableExtended: 'Sent 0.4194 aLinUSDC',
+  },
 };

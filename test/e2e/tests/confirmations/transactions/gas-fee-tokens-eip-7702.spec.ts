@@ -7,7 +7,7 @@ import { decimalToHex } from '../../../../../shared/lib/conversion.utils';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
-import { createDappTransaction } from '../../../page-objects/flows/transaction';
+import { createDappTransaction } from '../../../page-objects/flows/transaction.flow';
 import GasFeeTokenModal from '../../../page-objects/pages/confirmations/gas-fee-token-modal';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
