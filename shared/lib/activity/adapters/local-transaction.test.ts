@@ -862,7 +862,7 @@ describe('mapLocalTransaction', () => {
     });
   });
 
-  it('maps musdClaim to claimMusdBonus with hash only', () => {
+  it('maps musdClaim to claimMusdBonus with from address', () => {
     const transaction = {
       chainId: CHAIN_IDS.LINEA_MAINNET,
       id: 'musd-claim-id',
@@ -895,6 +895,7 @@ describe('mapLocalTransaction', () => {
       timestamp: 1778633325000,
       data: {
         hash: '0xmusdclaim',
+        from,
       },
     });
   });

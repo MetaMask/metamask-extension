@@ -784,6 +784,7 @@ describe('mapEvmTransactions', () => {
       timestamp: 1778633325000,
       data: {
         hash: '0x875ded271a40278391fca5d71892231afd0cb9592f31bdf3b7c949906cb982c4',
+        from: subjectAddress,
         token: {
           direction: 'in',
           symbol: 'mUSD',

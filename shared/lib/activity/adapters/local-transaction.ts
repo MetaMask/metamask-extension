@@ -479,6 +479,7 @@ export function mapLocalTransaction(
         timestamp,
         data: {
           hash,
+          from,
         },
       };
 

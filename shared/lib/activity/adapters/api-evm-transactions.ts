@@ -235,6 +235,7 @@ export function mapApiEvmTransactions({
       timestamp,
       data: {
         hash,
+        from,
         token: getToken(receivedTransfer, 'in'),
       },
     };
@@ -248,6 +249,7 @@ export function mapApiEvmTransactions({
       timestamp,
       data: {
         hash,
+        from,
         token: getToken(
           receivedTransfer ?? sentTransfer,
           receivedTransfer ? 'in' : 'out',
