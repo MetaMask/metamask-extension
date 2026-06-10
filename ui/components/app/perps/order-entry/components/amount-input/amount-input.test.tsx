@@ -326,6 +326,70 @@ describe('AmountInput', () => {
     });
   });
 
+  describe('100% size flooring (TAT-3312)', () => {
+    // At 100% the size is availableBalance * leverage. Rounding the USD amount up
+    // pushed marginRequired (amount / leverage) above the available balance by a
+    // sub-cent, producing a false "Insufficient funds" error. The amount must be
+    // floored so it never exceeds the affordable budget.
+    it('floors the 100% amount so it never exceeds availableBalance * leverage', () => {
+      const onAmountChange = jest.fn();
+      const availableBalance = 21.3816765;
+      const leverage = 3;
+      renderWithProvider(
+        <AmountInput
+          {...defaultProps}
+          onAmountChange={onAmountChange}
+          availableBalance={availableBalance}
+          leverage={leverage}
+        />,
+        mockStore,
+      );
+
+      const percentInput = screen
+        .getByTestId('balance-percent-input')
+        .querySelector('input');
+      fireEvent.change(percentInput as HTMLInputElement, {
+        target: { value: '100' },
+      });
+
+      // maxSize = 21.3816765 * 3 = 64.1450295. Rounding gives "64.15" (the bug);
+      // flooring gives "64.14".
+      expect(onAmountChange).toHaveBeenCalledWith('64.14');
+
+      const amount = Number.parseFloat(
+        onAmountChange.mock.calls.at(-1)?.[0] as string,
+      );
+      // marginRequired must not exceed the available balance (no false insufficient funds).
+      expect(amount / leverage).toBeLessThanOrEqual(availableBalance);
+    });
+
+    it('floors the 100% amount set via the slider', () => {
+      const onAmountChange = jest.fn();
+      const availableBalance = 21.3816765;
+      const leverage = 3;
+      renderWithProvider(
+        <AmountInput
+          {...defaultProps}
+          onAmountChange={onAmountChange}
+          availableBalance={availableBalance}
+          leverage={leverage}
+        />,
+        mockStore,
+      );
+
+      const slider = screen
+        .getByTestId('amount-slider')
+        .querySelector('input[type="range"]');
+      fireEvent.change(slider as HTMLInputElement, { target: { value: '100' } });
+
+      expect(onAmountChange).toHaveBeenCalledWith('64.14');
+      const amount = Number.parseFloat(
+        onAmountChange.mock.calls.at(-1)?.[0] as string,
+      );
+      expect(amount / leverage).toBeLessThanOrEqual(availableBalance);
+    });
+  });
+
   describe('token input', () => {
     it('converts token amount to USD size and updates percent', () => {
       const onAmountChange = jest.fn();
