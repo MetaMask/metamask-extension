@@ -20,6 +20,7 @@ const socketUrl = new URLSearchParams(__resourceQuery.slice(1)).get('url');
 // persistent, so the in-memory fallback suffices there. The extension's real
 // wallet state lives in `storage.local`, which we deliberately don't touch.
 const sessionStorage = browser.storage?.session;
+
 let memoryFingerprint: string | undefined;
 
 /**
