@@ -381,7 +381,7 @@
     "@metamask/json-rpc-engine": "^10.3.0",
     "@metamask/json-rpc-middleware-stream": "^8.0.4",
     "@metamask/keyring-api": "^23.1.0",
-    "@metamask/keyring-controller": "^26.0.0",
+    "@metamask/keyring-controller": "26.0.0",
     "@metamask/keyring-internal-api": "^11.0.1",
     "@metamask/keyring-snap-client": "^9.0.2",
     "@metamask/keyring-utils": "^3.3.1",
