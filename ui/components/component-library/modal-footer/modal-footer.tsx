@@ -11,6 +11,10 @@ import { Button, ButtonSize, ButtonVariant, type ButtonProps } from '../button';
 import { Container, ContainerMaxWidth } from '../container';
 import { ModalFooterProps, ModalFooterComponent } from './modal-footer.types';
 
+/**
+ * @deprecated Please update your code to use `ModalFooter` from `@metamask/design-system-react`.
+ * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#modalfooter-component | Migration Guide}
+ */
 export const ModalFooter: ModalFooterComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention

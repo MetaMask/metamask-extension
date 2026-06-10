@@ -7,6 +7,7 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
   FontWeight,
+  ModalFooter,
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
@@ -15,7 +16,6 @@ import {
   Modal,
   ModalBody,
   ModalContent,
-  ModalFooter,
   ModalHeader,
   ModalOverlay,
 } from '../../component-library';
@@ -75,11 +75,14 @@ export const AccountRemoveModal = ({
           </BannerAlert>
         </ModalBody>
         <ModalFooter
-          onCancel={onClose}
-          onSubmit={onSubmit}
-          submitButtonProps={{
+          secondaryButtonProps={{
+            children: t('cancel'),
+            onClick: onClose,
+          }}
+          primaryButtonProps={{
             children: t('remove'),
-            danger: true,
+            isDanger: true,
+            onClick: onSubmit,
           }}
         />
       </ModalContent>
