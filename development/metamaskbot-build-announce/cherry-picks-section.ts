@@ -85,6 +85,7 @@ function formatCommitRow(commit: CommitInfo): string {
   const commitLink = `[\`${commit.hash}\`](${REPO_URL}/commit/${commit.hash})`;
   const subject = commit.subject
     .replace(/\r?\n/gu, ' ')
+    .replace(/\\/gu, '\\\\')
     .replace(/\|/gu, '\\|')
     .replace(/\(#(\d+)\)/gu, `([#$1](${REPO_URL}/pull/$1))`);
   return `| ${commitLink} | ${subject} |`;
