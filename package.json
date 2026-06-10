@@ -70,6 +70,7 @@
     "dapp-solana": "node development/static-server.js node_modules/@metamask/test-dapp-solana/dist --port 8080",
     "dapp-bitcoin": "node development/static-server.js node_modules/@metamask/test-dapp-bitcoin/dist --port 8080",
     "dapp-tron": "node development/static-server.js node_modules/@metamask/test-dapp-tron/dist --port 8080",
+    "dapp-stellar": "node development/static-server.js node_modules/@metamask/test-dapp-stellar/dist --port 8080",
     "dapp-chain": "concurrently -k -n anvil,dapp -p '[{time}][{name}]' 'yarn anvil --block-time 2' 'sleep 5 && yarn dapp'",
     "forwarder": "node ./development/static-server.js ./node_modules/@metamask/forwarder/dist/ --port 9010",
     "dapp-forwarder": "concurrently -k -n forwarder,dapp -p '[{time}][{name}]' 'yarn forwarder' 'yarn dapp'",
@@ -644,6 +645,7 @@
     "@metamask/test-dapp-bitcoin": "^0.2.0",
     "@metamask/test-dapp-multichain": "^0.17.0",
     "@metamask/test-dapp-solana": "^0.3.1",
+    "@metamask/test-dapp-stellar": "^0.2.0",
     "@metamask/test-dapp-tron": "^0.3.1",
     "@metamask/test-snaps": "^3.6.0",
     "@noble/ciphers": "^1.3.0",
@@ -884,7 +886,10 @@
       "ethereumjs-util>ethereum-cryptography>secp256k1#4.0.4": false,
       "sass-loader>sass>@parcel/watcher#2.5.6": false,
       "eslint-plugin-import-x>unrs-resolver#1.12.2": false,
-      "@storybook/test-runner>@swc/core#1.16.1": true
+      "@storybook/test-runner>@swc/core#1.16.1": true,
+      "@metamask/test-dapp-stellar>@creit.tech/stellar-wallets-kit>@hot-wallet/sdk>@near-js/crypto>secp256k1#5.0.1": false,
+      "@metamask/test-dapp-stellar>@creit.tech/stellar-wallets-kit>@reown/appkit#1.8.21": false,
+      "@metamask/test-dapp-stellar>@reown/appkit#1.8.24": false
     }
   },
   "packageManager": "yarn@4.14.1+sha256.5c7a0c5ea1c5b690df603c8e16b3742f87169b814d56bb5e63881145e8a84033",
