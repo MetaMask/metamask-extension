@@ -92,7 +92,7 @@ export const ExternalLinkButton = (props: {
     clickType: 'external_link',
   });
 
-  const {externalLink} = notification.data;
+  const { externalLink } = notification.data;
   const externalLinkUrl = externalLink?.externalLinkUrl;
   const [resolvedHref, setResolvedHref] = useState<string | undefined>();
 
@@ -111,7 +111,10 @@ export const ExternalLinkButton = (props: {
         }
       })
       .catch((error) => {
-        console.error('[ExternalLinkButton] error resolving external link', error);
+        console.error(
+          '[ExternalLinkButton] error resolving external link',
+          error,
+        );
         if (isMounted) {
           setResolvedHref(externalLinkUrl);
         }
