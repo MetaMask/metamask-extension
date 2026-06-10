@@ -8,6 +8,7 @@ import {
 import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
 import { LedgerKeyring as LedgerKeyringV2 } from '@metamask/eth-ledger-bridge-keyring/v2';
 import LatticeKeyring from 'eth-lattice-keyring';
+import { KeyringType } from '@metamask/keyring-api/v2';
 import { LatticeKeyringV2 } from '../lib/offscreen-bridge/lattice-keyring-v2';
 import { getKeyringV2Builders } from './keyrings';
 
@@ -39,6 +40,8 @@ describe('getKeyringV2Builders', () => {
       QrKeyring.type,
       TrezorKeyring.type,
       OneKeyKeyring.type,
+      // TODO: We should add a `.type` on `SnapKeyring` (v2).
+      `${KeyringType.Snap}`,
     ]);
   });
 
