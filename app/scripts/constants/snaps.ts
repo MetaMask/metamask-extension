@@ -16,6 +16,11 @@ export const PREINSTALLED_SNAPS_URLS = [
     import.meta.url,
   ),
   new URL(
+    '@metamask-previews/stellar-wallet-snap/dist/preinstalled-snap.json',
+    // @ts-expect-error TS1470: 'import.meta' is not allowed in CommonJS
+    import.meta.url,
+  ),
+  new URL(
     '@metamask/permissions-kernel-snap/dist/preinstalled-snap.json',
     // @ts-expect-error TS1470: 'import.meta' is not allowed in CommonJS
     import.meta.url,

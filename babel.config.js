@@ -37,7 +37,7 @@ module.exports = function (api) {
         ),
         {
           pattern:
-            /^@metamask\/([^/]+)\/dist\/preinstalled-snap\.json(\.gz)?$/u,
+            /^@metamask(?:-previews)?\/([^/]+)\/dist\/preinstalled-snap\.json(\.gz)?$/u,
           rootPath: '/snaps/',
         },
         'import-meta-url-snaps',

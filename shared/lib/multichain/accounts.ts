@@ -2,6 +2,7 @@ import { CaipNamespace, KnownCaipNamespace } from '@metamask/utils';
 import { validate, Network } from 'bitcoin-address-validation';
 import { isAddress } from '@solana/addresses';
 import { isTronAddress as isValidTronAddress } from './addresses/tron';
+import { isStellarAddress as isValidStellarAddress } from './addresses/stellar';
 
 /**
  * Returns whether an address is on the Bitcoin mainnet.
@@ -53,6 +54,16 @@ export const isTronAddress = (address: string): boolean => {
 };
 
 /**
+ * Returns whether an address is a valid Stellar G-address.
+ *
+ * @param address - The address to check.
+ * @returns `true` if the address is a valid Stellar address, `false` otherwise.
+ */
+export const isStellarAddress = (address: string): boolean => {
+  return isValidStellarAddress(address);
+};
+
+/**
  * Returns the associated chain's type for the given address.
  *
  * @param address - The address to check.
@@ -69,6 +80,10 @@ export function getCaipNamespaceFromAddress(address: string): CaipNamespace {
 
   if (isTronAddress(address)) {
     return KnownCaipNamespace.Tron;
+  }
+
+  if (isStellarAddress(address)) {
+    return 'stellar' as CaipNamespace;
   }
 
   // Defaults to "Ethereum" for all other cases for now.

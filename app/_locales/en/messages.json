@@ -11016,5 +11016,8 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "Keep your Secret Recovery Phrase safe!"
+  },
+  "networkNameStellar": {
+    "message": "Stellar"
   }
 }

@@ -7,6 +7,7 @@ import {
 import { addHexPrefix } from 'ethereumjs-util';
 import { NavigateFunction } from 'react-router-dom';
 
+import { BigNumber } from 'bignumber.js';
 import { Numeric, NumericBase } from '../../../../shared/lib/Numeric';
 import {
   addTransactionAndRouteToConfirmationPage,
@@ -316,6 +317,12 @@ export const addLeadingZeroIfNeeded = (value?: string) => {
   return value;
 };
 
+type SnapAmountAsset = {
+  chainId?: string;
+  isNative?: boolean;
+  decimals?: number;
+};
+
 export const normalizeAmount = (value?: string): string => {
   if (!value) {
     return '0';
@@ -329,3 +336,16 @@ export const normalizeAmount = (value?: string): string => {
   }
   return str;
 };
+
+/**
+ * Formats a send amount for multichain snap RPC calls.
+ * Snaps expect human-readable amounts and convert to chain units internally.
+ * @param amount
+ * @param _asset
+ */
+export function formatSnapAmountParam(
+  amount: string,
+  _asset?: SnapAmountAsset,
+): string {
+  return addLeadingZeroIfNeeded(normalizeAmount(amount)) ?? '0';
+}

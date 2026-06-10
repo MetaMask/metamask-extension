@@ -111,6 +111,7 @@ describe('eth_requestAccounts', function () {
           'npm:@metamask/bitcoin-wallet-snap',
           'npm:@metamask/solana-wallet-snap',
           'npm:@metamask/tron-wallet-snap',
+          'npm:@metamask/stellar-wallet-snap',
         ];
         await driver.waitUntil(
           async () => {

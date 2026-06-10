@@ -1,7 +1,13 @@
 import { CaipChainId, Hex } from '@metamask/utils';
 import React, { memo, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { BtcScope, EthScope, SolScope, TrxScope } from '@metamask/keyring-api';
+import {
+  BtcScope,
+  EthScope,
+  SolScope,
+  TrxScope,
+  XlmScope,
+} from '@metamask/keyring-api';
 import { AddNetworkFields } from '@metamask/network-controller';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -48,6 +54,7 @@ import { useNetworkItemCallbacks } from '../../hooks/useNetworkItemCallbacks';
 import { useNetworkManagerState } from '../../hooks/useNetworkManagerState';
 import { AdditionalNetworksInfo } from '../additional-networks-info';
 import { getMultichainIsEvm } from '../../../../../selectors/multichain';
+import { getIsStellarSupportEnabled } from '../../../../../selectors/multichain/feature-flags';
 import {
   getAllEnabledNetworksForAllNamespaces,
   getSelectedMultichainNetworkConfiguration,
@@ -165,6 +172,12 @@ const DefaultNetworks = memo(() => {
   const trxAccountGroup = useSelector((state) =>
     getInternalAccountBySelectedAccountGroupAndCaip(state, TrxScope.Mainnet),
   );
+
+  const xlmAccountGroup = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, XlmScope.Pubnet),
+  );
+
+  const isStellarSupportEnabled = useSelector(getIsStellarSupportEnabled);
 
   // Get blacklisted chain IDs from feature flag
   const blacklistedChainIds = useSelector(
@@ -295,6 +308,12 @@ const DefaultNetworks = memo(() => {
         if (trxAccountGroup && network.chainId === TrxScope.Mainnet) {
           return true;
         }
+        if (
+          (xlmAccountGroup || isStellarSupportEnabled) &&
+          network.chainId === XlmScope.Pubnet
+        ) {
+          return true;
+        }
         return false;
       });
     };
@@ -361,6 +380,8 @@ const DefaultNetworks = memo(() => {
     btcAccountGroup,
     solAccountGroup,
     trxAccountGroup,
+    xlmAccountGroup,
+    isStellarSupportEnabled,
     evmAccountGroup,
     dispatch,
     enabledChainIds,
