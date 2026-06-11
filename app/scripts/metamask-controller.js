@@ -2214,6 +2214,38 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
+    // When Arc is added, automatically import USDC as a custom asset for every
+    // EVM account so the user immediately sees their default Arc balance.
+    this.controllerMessenger.subscribe(
+      'NetworkController:networkAdded',
+      (networkConfiguration) => {
+        if (networkConfiguration?.chainId?.toLowerCase() !== CHAIN_IDS.ARC) {
+          return;
+        }
+        const arcUsdcAssetId =
+          'eip155:5042/erc20:0x3600000000000000000000000000000000000000';
+        const accounts = this.accountsController.listAccounts();
+        for (const account of accounts) {
+          if (!isEvmAccountType(account.type)) {
+            continue;
+          }
+          this.assetsController
+            ?.addCustomAsset(account.id, arcUsdcAssetId, {
+              symbol: 'USDC',
+              name: 'USDC',
+              decimals: 6,
+            })
+            .catch((error) => {
+              log.warn(
+                'Failed to add default Arc USDC for account',
+                account.id,
+                error,
+              );
+            });
+        }
+      },
+    );
+
     this.controllerMessenger.subscribe(
       `${this.snapController.name}:snapInstallStarted`,
       (snapId, origin, isUpdate) => {
