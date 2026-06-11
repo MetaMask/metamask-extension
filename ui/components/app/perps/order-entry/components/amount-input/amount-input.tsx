@@ -145,8 +145,15 @@ export const AmountInput = ({
     return `${formatPositionSize(totalPositionSize, szDecimals)} ${getDisplaySymbol(asset)}`;
   }, [asset, currentPositionSize, szDecimals]);
 
+  // Floor to 2 decimals instead of rounding. At 100% the size is computed as
+  // availableBalance * leverage; rounding up (toFixed) could push the amount
+  // above that budget, so marginRequired (amount / leverage) exceeded the
+  // available balance by a sub-cent and the order form showed a false
+  // "Insufficient funds" error. Flooring guarantees the amount never exceeds
+  // availableBalance * leverage, mirroring mobile's Math.floor in
+  // usePerpsOrderForm (handlePercentageAmount / handleMaxAmount).
   const formatAmount = useCallback(
-    (value: number): string => value.toFixed(2),
+    (value: number): string => (Math.floor(value * 100) / 100).toFixed(2),
     [],
   );
 
