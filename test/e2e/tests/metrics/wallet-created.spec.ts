@@ -8,7 +8,7 @@ import {
   createNewWalletWithSocialLoginOnboardingFlow,
   handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
-import { MOCK_META_METRICS_ID } from '../../constants';
+import { MOCK_ANALYTICS_ID } from '../../constants';
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import { Driver } from '../../webdriver/driver';
@@ -106,7 +106,7 @@ describe('Wallet Created Events', function () {
       {
         fixtures: new FixtureBuilderV2({ onboarding: true })
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
+            analyticsId: MOCK_ANALYTICS_ID,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -115,7 +115,8 @@ describe('Wallet Created Events', function () {
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await completeCreateNewWalletOnboardingFlow({
           driver,
-          participateInMetaMetrics: true,
+          completedMetaMetricsOnboarding: true,
+          optedIn: true,
         });
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 6);
@@ -205,7 +206,7 @@ describe('Wallet Created Events', function () {
       {
         fixtures: new FixtureBuilderV2({ onboarding: true })
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
+            analyticsId: MOCK_ANALYTICS_ID,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -241,15 +242,15 @@ describe('Wallet Created Events', function () {
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         const onboardingOptions: {
           driver: Driver;
-          participateInMetaMetrics?: boolean;
+          optedIn?: boolean;
           dataCollectionForMarketing?: boolean;
         } = {
           driver,
         };
         // If running in Firefox, set the onboarding options to true
-        // Otherwise, `participateInMetaMetrics` is automatically set to true for social login users
+        // Otherwise, `optedIn` is automatically set to true for social login users
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
-          onboardingOptions.participateInMetaMetrics = true;
+          onboardingOptions.optedIn = true;
           onboardingOptions.dataCollectionForMarketing = true;
         }
 
