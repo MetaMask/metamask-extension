@@ -14,7 +14,7 @@ import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 
-import { MOCK_META_METRICS_ID } from '../../constants';
+import { MOCK_ANALYTICS_ID } from '../../constants';
 import { getEventPayloads } from '../../helpers';
 import { mockSegment } from '../metrics/mocks/segment';
 import {
@@ -1287,8 +1287,9 @@ export const getBridgeFixtures = ({
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
     .withMetaMetricsController({
-      metaMetricsId: MOCK_META_METRICS_ID,
-      participateInMetaMetrics: true,
+      analyticsId: MOCK_ANALYTICS_ID,
+      completedMetaMetricsOnboarding: true,
+      optedIn: true,
     })
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withTokensController({
