@@ -55,9 +55,6 @@ export const MarketClosedModal = ({
                 asChild
                 variant={TextVariant.BodyMd}
                 data-testid="market-closed-modal-learn-more"
-                style={{
-                  alignItems: AlignItems.flexStart,
-                }}
               >
                 <a
                   href={MARKET_CLOSED_LEARN_MORE_URL}
