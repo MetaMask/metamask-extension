@@ -25,7 +25,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import ChangePasswordPage from '../../page-objects/pages/settings/change-password-page';
 import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
 
-describe('Unlock wallet - ', function () {
+describe('Unlock wallet - TEST', function () {
   it('handle incorrect password during unlock and login successfully', async function () {
     await withFixtures(
       {
