@@ -6,30 +6,27 @@ import {
   FEATURED_RPCS,
 } from '../../../../../shared/constants/network';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
-import { selectPerpsIsTestnet } from '../../../../selectors/perps-controller';
 import { addNetwork } from '../../../../store/actions';
 import type { MetaMaskReduxDispatch } from '../../../../store/store';
 
 /**
  * Manages the EVM network required for Perps deposits.
  *
- * Hyperliquid deposits settle USDC on Arbitrum, so the controller resolves the
- * deposit transaction against the Arbitrum network client
- * (`PerpsController.depositWithConfirmation`). When that network is not in the
- * wallet the controller throws `Invalid chain ID` ("add the network first") and
- * the deposit silently never starts. Mirror mobile's `usePerpsNetworkManagement`
- * by adding the Arbitrum network (from the curated featured list) before
- * triggering a deposit.
+ * Hyperliquid deposits settle USDC on Arbitrum One. The perps controller's
+ * `DepositService.prepareTransaction` always resolves the deposit route with
+ * `isTestnet: false` (mainnet Arbitrum) and then looks up the network client
+ * for that chain, throwing `Invalid chain ID` ("add the network first") when it
+ * is missing — even while perps is in testnet mode. So the preflight must ensure
+ * the chain the controller actually deposits to, which is always Arbitrum One.
  */
 export const usePerpsNetworkManagement = () => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
-  const isTestnet = useSelector(selectPerpsIsTestnet);
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );
 
   const ensureArbitrumNetworkExists = useCallback(async () => {
-    const chainId = isTestnet ? CHAIN_IDS.ARBITRUM_SEPOLIA : CHAIN_IDS.ARBITRUM;
+    const chainId = CHAIN_IDS.ARBITRUM;
 
     if (networkConfigurationsByChainId[chainId]) {
       return;
@@ -41,7 +38,7 @@ export const usePerpsNetworkManagement = () => {
     }
 
     await dispatch(addNetwork(networkConfig));
-  }, [isTestnet, networkConfigurationsByChainId, dispatch]);
+  }, [networkConfigurationsByChainId, dispatch]);
 
   return { ensureArbitrumNetworkExists };
 };
