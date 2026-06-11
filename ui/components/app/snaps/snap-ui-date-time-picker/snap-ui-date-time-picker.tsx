@@ -3,6 +3,7 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
 } from 'react';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
@@ -26,6 +27,11 @@ export type SnapUIDateTimePickerProps = {
   disablePast?: boolean;
   disableFuture?: boolean;
   disabled?: boolean;
+};
+
+type PickerSnapshot = {
+  pickerValue: DateTime;
+  committed: boolean;
 };
 
 /**
@@ -123,15 +129,27 @@ export const SnapUIDateTimePicker: FunctionComponent<
 
   const [open, setOpen] = React.useState(false);
 
+  const snapshotRef = useRef<PickerSnapshot>({
+    pickerValue:
+      parsedInitialValue ?? (normalizeDate(DateTime.now(), type) as DateTime),
+    committed: hasInitialValue,
+  });
+
   useEffect(() => {
     const parsed = parseInitialIsoValue(initialValue, type);
     if (parsed) {
       setPickerValue(parsed);
       setCommitted(true);
+      snapshotRef.current = { pickerValue: parsed, committed: true };
       return;
     }
+    const defaultPickerValue = normalizeDate(DateTime.now(), type) as DateTime;
     setCommitted(false);
-    setPickerValue(normalizeDate(DateTime.now(), type) as DateTime);
+    setPickerValue(defaultPickerValue);
+    snapshotRef.current = {
+      pickerValue: defaultPickerValue,
+      committed: false,
+    };
   }, [initialValue, type]);
 
   const handleChange = (date: DateTime | null) => {
@@ -143,40 +161,43 @@ export const SnapUIDateTimePicker: FunctionComponent<
     setPickerValue(normalizeDate(date, type) as DateTime);
   };
 
-  const didAcceptRef = React.useRef(false);
-
   const handleAccept = (date: DateTime | null) => {
-    didAcceptRef.current = true;
     if (!date) {
+      const defaultPickerValue = normalizeDate(DateTime.now(), type) as DateTime;
       setCommitted(false);
+      setPickerValue(defaultPickerValue);
       handleInputChange(name, null, form);
+      snapshotRef.current = {
+        pickerValue: defaultPickerValue,
+        committed: false,
+      };
       return;
     }
     const normalizedDate = normalizeDate(date, type) as DateTime;
     setPickerValue(normalizedDate);
     setCommitted(true);
     handleInputChange(name, normalizedDate.toISO(), form);
+    snapshotRef.current = {
+      pickerValue: normalizedDate,
+      committed: true,
+    };
   };
 
   const handleOpen = useCallback(() => {
+    const defaultPickerValue = normalizeDate(DateTime.now(), type) as DateTime;
+    const nextPickerValue = committed ? pickerValue : defaultPickerValue;
+    snapshotRef.current = { pickerValue: nextPickerValue, committed };
     if (!committed) {
-      setPickerValue(normalizeDate(DateTime.now(), type) as DateTime);
+      setPickerValue(defaultPickerValue);
     }
     setOpen(true);
-  }, [committed, type]);
+  }, [committed, pickerValue, type]);
 
   const handleClose = useCallback(() => {
     setOpen(false);
-    if (!didAcceptRef.current) {
-      const currentValue = getValue(name, form) as string | undefined | null;
-      const parsed = parseInitialIsoValue(currentValue, type);
-      setCommitted(parsed !== null);
-      setPickerValue(
-        parsed ?? (normalizeDate(DateTime.now(), type) as DateTime),
-      );
-    }
-    didAcceptRef.current = false;
-  }, [form, getValue, name, type]);
+    setPickerValue(snapshotRef.current.pickerValue);
+    setCommitted(snapshotRef.current.committed);
+  }, []);
 
   const pickerSlotProps = useMemo(
     () => ({
@@ -214,6 +235,17 @@ export const SnapUIDateTimePicker: FunctionComponent<
     [placeholder, committed],
   );
 
+  const sharedPickerProps = {
+    open,
+    onOpen: handleOpen,
+    onClose: handleClose,
+    value: pickerValue,
+    onChange: handleChange,
+    onAccept: handleAccept,
+    disabled,
+    slotProps: pickerSlotProps,
+  };
+
   return (
     <Box
       className={classnames('snap-ui-renderer__date-time-picker', {
@@ -224,49 +256,28 @@ export const SnapUIDateTimePicker: FunctionComponent<
       {type === 'datetime' && (
         <MobileDateTimePicker
           className="snap-ui-renderer__date-time-picker--datetime"
-          open={open}
-          onOpen={handleOpen}
-          onClose={handleClose}
-          value={pickerValue}
-          onChange={handleChange}
-          onAccept={handleAccept}
-          disabled={disabled}
+          {...sharedPickerProps}
           disablePast={disablePast}
           disableFuture={disableFuture}
           localeText={{ toolbarTitle: '' }}
           ampm={false}
-          slotProps={pickerSlotProps}
         />
       )}
       {type === 'date' && (
         <MobileDatePicker
           className="snap-ui-renderer__date-time-picker--date"
-          open={open}
-          onOpen={handleOpen}
-          onClose={handleClose}
-          value={pickerValue}
-          onChange={handleChange}
-          onAccept={handleAccept}
-          disabled={disabled}
+          {...sharedPickerProps}
           disablePast={disablePast}
           disableFuture={disableFuture}
           localeText={{ toolbarTitle: '' }}
-          slotProps={pickerSlotProps}
         />
       )}
       {type === 'time' && (
         <MobileTimePicker
           className="snap-ui-renderer__date-time-picker--time"
-          open={open}
-          onOpen={handleOpen}
-          onClose={handleClose}
-          value={pickerValue}
-          onChange={handleChange}
-          onAccept={handleAccept}
-          disabled={disabled}
+          {...sharedPickerProps}
           ampm={false}
           localeText={{ toolbarTitle: '' }}
-          slotProps={pickerSlotProps}
         />
       )}
       {error && (
