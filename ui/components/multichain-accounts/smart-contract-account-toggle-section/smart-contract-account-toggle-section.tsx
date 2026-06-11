@@ -8,7 +8,6 @@ import {
   FontWeight,
   Text,
   TextButton,
-  TextButtonSize,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
@@ -80,21 +79,15 @@ export const SmartContractAccountToggleSection = ({
         </Text>
         <Text color={TextColor.TextAlternative} variant={TextVariant.BodySm}>
           {t('enableSmartContractAccountDescription')}{' '}
-          <TextButton
-            onClick={() => {
-              global.platform.openTab({
-                url: ZENDESK_URLS.ACCOUNT_UPGRADE,
-              });
-            }}
-            size={TextButtonSize.BodySm}
-            style={{
-              height: '22px',
-              fontSize: '14px',
-              lineHeight: '22px',
-              verticalAlign: 'baseline',
-            }}
-          >
-            {t('learnMoreUpperCase')}
+          <TextButton asChild variant={TextVariant.BodySm}>
+            <a
+              key="change-password__link-text"
+              href={ZENDESK_URLS.ACCOUNT_UPGRADE}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t('learnMoreUpperCase')}
+            </a>
           </TextButton>
         </Text>
       </Box>
