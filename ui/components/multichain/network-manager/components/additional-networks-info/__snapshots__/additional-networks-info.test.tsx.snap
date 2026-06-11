@@ -3,13 +3,13 @@
 exports[`AdditionalNetworksInfo renders correctly 1`] = `
 <div>
   <div
-    class="mm-box mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4"
+    class="pt-4 pr-4 pb-4 pl-4"
   >
     <div
-      class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+      class="justify-between flex"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
+        class="items-center justify-center flex"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
@@ -17,7 +17,7 @@ exports[`AdditionalNetworksInfo renders correctly 1`] = `
           Additional networks
         </p>
         <div
-          class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
+          class="items-center justify-center flex"
         >
           <span
             class="mm-box add-network__warning-icon mm-icon mm-icon--size-md mm-box--margin-left-2 mm-box--display-inline-block mm-box--color-icon-alternative"

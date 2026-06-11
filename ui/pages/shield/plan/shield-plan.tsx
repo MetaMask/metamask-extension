@@ -17,6 +17,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import {
   BadgeWrapper,
   Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
   Button,
   ButtonIcon,
   ButtonIconSize,
@@ -52,11 +56,7 @@ import {
 } from '../../../components/multichain/pages/page';
 import LoadingScreen from '../../../components/ui/loading-screen';
 import {
-  AlignItems,
-  BackgroundColor,
   BorderColor,
-  FlexDirection,
-  JustifyContent,
   TextVariant as OldTextVariant,
 } from '../../../helpers/constants/design-system';
 import {
@@ -471,8 +471,8 @@ const ShieldPlan = () => {
       {loading && !hasApiError && <LoadingScreen />}
       {!loading && hasApiError ? (
         <Content
-          justifyContent={JustifyContent.flexStart}
-          alignItems={AlignItems.center}
+          justifyContent={BoxJustifyContent.Start}
+          alignItems={BoxAlignItems.Center}
         >
           <ApiErrorHandler
             className="shield-plan-page__error-content"
@@ -662,9 +662,9 @@ const ShieldPlan = () => {
             </Content>
             <Footer
               className="shield-plan-page__footer"
-              flexDirection={FlexDirection.Column}
+              flexDirection={BoxFlexDirection.Column}
               gap={3}
-              backgroundColor={BackgroundColor.backgroundMuted}
+              backgroundColor={BoxBackgroundColor.BackgroundMuted}
             >
               {showTestClocksCheckbox && (
                 <Checkbox

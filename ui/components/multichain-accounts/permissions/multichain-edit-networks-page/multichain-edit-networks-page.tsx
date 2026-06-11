@@ -3,6 +3,7 @@ import { CaipChainId } from '@metamask/utils';
 import {
   Box,
   BoxAlignItems,
+  BoxBackgroundColor,
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
@@ -118,7 +119,7 @@ export const MultichainEditNetworksPage = ({
       <Content
         paddingLeft={4}
         paddingRight={4}
-        backgroundColor={BackgroundColor.transparent}
+        backgroundColor={BoxBackgroundColor.Transparent}
       >
         <Box padding={4}>
           <Checkbox

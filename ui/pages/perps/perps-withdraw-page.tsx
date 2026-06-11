@@ -34,7 +34,7 @@ import {
 import { isValidPerpsWithdrawAmount } from '../../components/app/perps/constants';
 import { Content, Footer, Page } from '../../components/multichain/pages/page';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
-import { FlexDirection } from '../../helpers/constants/design-system';
+
 import { getAvatarNetworkColor } from '../../helpers/utils/accounts';
 import {
   CHAIN_IDS,
@@ -500,7 +500,7 @@ const PerpsWithdrawPage = () => {
       </Content>
       <Footer
         className="confirm-footer_page-footer"
-        flexDirection={FlexDirection.Column}
+        flexDirection={BoxFlexDirection.Column}
       >
         <Box flexDirection={BoxFlexDirection.Row} gap={4} className="w-full">
           <Button

@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate, useNavigationType, useParams } from 'react-router-dom';
 import { Nft } from '@metamask/assets-controllers';
 import { toHex } from '@metamask/controller-utils';
+import { BoxJustifyContent } from '@metamask/design-system-react';
 import { getNftImage, getNftImageAlt } from '../../../../../helpers/utils/nfts';
 import { getIpfsGateway } from '../../../../../selectors';
 
@@ -117,7 +118,7 @@ export default function NftFullImage() {
         />
         <Content
           className={`fade-in ${visible ? 'visible' : ''}`}
-          justifyContent={JustifyContent.center}
+          justifyContent={BoxJustifyContent.Center}
         >
           <Box
             display={Display.Flex}

@@ -6,6 +6,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom';
+import { BoxFlexDirection } from '@metamask/design-system-react';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 import { ConfirmAlertModal } from '../../../../../components/app/alert-system/confirm-alert-modal';
@@ -448,7 +449,7 @@ const Footer = () => {
       <ShieldFooterCoverageIndicator />
       <PageFooter
         className="confirm-footer_page-footer"
-        flexDirection={FlexDirection.Column}
+        flexDirection={BoxFlexDirection.Column}
         // box shadow to match the original var(--shadow-size-md) on the footer,
         // but only applied to the bottom of the box, so it doesn't overlap with
         // the shield footer coverage indicator
