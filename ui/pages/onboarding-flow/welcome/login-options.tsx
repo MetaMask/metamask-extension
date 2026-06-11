@@ -125,10 +125,10 @@ export default function LoginOptions({
       loginType: LOGIN_TYPE.TELEGRAM,
       testIdSuffix: 'telegram',
       icon: (
-        <img
-          src="images/icons/telegram.svg"
-          className="options-modal__social-icon"
-          alt=""
+        <Icon
+          name={IconName.Telegram}
+          style={{ color: 'var(--color-telegram-blue)' }}
+          size={IconSize.Lg}
         />
       ),
       btnClass: 'mb-2',

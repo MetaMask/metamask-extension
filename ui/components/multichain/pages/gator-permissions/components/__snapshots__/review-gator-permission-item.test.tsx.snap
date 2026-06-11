@@ -106,7 +106,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           style="flex: 1; align-self: center;"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-8 w-8"
           >
             <div
               class="flex [&>div]:!rounded-none"
@@ -317,7 +317,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           style="flex: 1; align-self: center;"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-8 w-8"
           >
             <div
               class="flex [&>div]:!rounded-none"
@@ -523,7 +523,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           style="flex: 1; align-self: center;"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-8 w-8"
           >
             <div
               class="flex [&>div]:!rounded-none"
@@ -703,7 +703,7 @@ exports[`Permission List Item render ERC20 token permissions renders token appro
           style="flex: 1; align-self: center;"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-8 w-8"
           >
             <div
               class="flex [&>div]:!rounded-none"
@@ -909,7 +909,7 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
           style="flex: 1; align-self: center;"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-8 w-8"
           >
             <div
               class="flex [&>div]:!rounded-none"
@@ -1115,7 +1115,7 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
           style="flex: 1; align-self: center;"
         >
           <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-8 w-8"
           >
             <div
               class="flex [&>div]:!rounded-none"
