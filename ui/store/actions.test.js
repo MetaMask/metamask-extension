@@ -1410,6 +1410,46 @@ describe('Actions', () => {
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
 
+    it('translates Trezor Suite Desktop missing errors during connect', async () => {
+      const store = mockStore();
+      const page = 0;
+      const hdPath = `m/44'/60'/0'/0`;
+
+      background.connectHardware.rejects(
+        Object.assign(new Error('Desktop_ConnectionMissing'), {
+          code: 'Desktop_ConnectionMissing',
+        }),
+      );
+
+      setBackgroundConnection(background);
+
+      const expectedActions = [
+        {
+          type: 'SHOW_LOADING_INDICATION',
+          payload: 'Looking for your Trezor...',
+        },
+        {
+          type: 'DISPLAY_WARNING',
+          payload: 'translated_trezorDesktopAppRequiredError',
+        },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      await expect(
+        store.dispatch(
+          actions.connectHardware(
+            HardwareDeviceNames.trezor,
+            page,
+            hdPath,
+            false,
+            translateHardwareMessage,
+          ),
+        ),
+      ).rejects.toThrow('translated_trezorDesktopAppRequiredError');
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+
     it('handles loadHid=false and skips WebHID request process', async () => {
       const store = mockStore({
         ...defaultState,
