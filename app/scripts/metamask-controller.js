@@ -6854,15 +6854,17 @@ export default class MetamaskController extends EventEmitter {
 
   setUpCookieHandlerCommunication({ connectionStream }) {
     const {
-      metaMetricsId,
+      analyticsId,
       dataCollectionForMarketing,
-      participateInMetaMetrics,
+      completedMetaMetricsOnboarding,
+      optedIn,
     } = this.getState();
 
     if (
-      metaMetricsId &&
+      analyticsId &&
       dataCollectionForMarketing &&
-      participateInMetaMetrics
+      completedMetaMetricsOnboarding &&
+      optedIn
     ) {
       // setup multiplexing
       const mux = setupMultiplex(connectionStream);
