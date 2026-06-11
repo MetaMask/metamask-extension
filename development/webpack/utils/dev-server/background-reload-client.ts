@@ -149,3 +149,26 @@ function connect(url: string, reconnectAttempt = 0): void {
 if (typeof WebSocket !== 'undefined' && socketUrl) {
   connect(socketUrl);
 }
+
+// `runtime.reload()` leaves any open extension tabs orphaned on Firefox: the
+// documents stay rendered but are bound to the torn-down extension instance,
+// so they can never reconnect to this one (Chrome just closes them instead).
+// Reload them so they boot against this instance. MV2 only: its persistent
+// background page starts once per extension lifetime, whereas the MV3 service
+// worker would re-run this on every idle-restart and reload healthy tabs.
+if (browser.runtime.getManifest().manifest_version === 2) {
+  const ownOrigin = browser.runtime.getURL('');
+  browser.tabs
+    .query({})
+    .then((tabs) => {
+      for (const tab of tabs) {
+        if (tab.id !== undefined && tab.url?.startsWith(ownOrigin)) {
+          void browser.tabs.reload(tab.id);
+        }
+      }
+    })
+    .catch(() => {
+      // If the tabs can't be enumerated, the orphaned pages just stay until
+      // manually refreshed — same as without this block.
+    });
+}
