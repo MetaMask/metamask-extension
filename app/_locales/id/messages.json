@@ -3449,9 +3449,6 @@
   "enabled": {
     "message": "Diaktifkan"
   },
-  "enabledNetworks": {
-    "message": "Jaringan yang diaktifkan"
-  },
   "encryptionPublicKeyNotice": {
     "message": "$1 menginginkan kunci enkripsi publik Anda. Dengan menyetujui, situs ini akan dapat membuat pesan terenkripsi untuk Anda.",
     "description": "$1 is the web3 site name"
@@ -10078,9 +10075,6 @@
   },
   "termsOfUseTitle": {
     "message": "Syarat Penggunaan kami telah diperbarui"
-  },
-  "testNetworks": {
-    "message": "Jaringan pengujian"
   },
   "testnets": {
     "message": "Testnet"

@@ -36,8 +36,8 @@ import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
 import { getImageForChainId } from '../../../../selectors/multichain';
-import { TEST_CHAINS } from '../../../../../shared/constants/network';
 import { getShowTestNetworks } from '../../../../selectors/selectors';
+import { getNetworkSections } from '../../../../helpers/utils/network-sections';
 
 // TODO use MultichainNetworkConfiguration type
 type NetworkOption =
@@ -103,22 +103,18 @@ export const AssetPickerModalNetwork = ({
       (networks ?? Object.values(allNetworks) ?? []).sort(
         (a, b) => balanceByChainId[b.chainId] - balanceByChainId[a.chainId],
       ),
-    [],
+    [allNetworks, balanceByChainId, networks],
   );
 
-  const [nonTestNetworks, testNetworks] = useMemo(
+  const networkSections = useMemo(
     () =>
-      networksList.reduce(
-        ([nonTestNetworksList, testNetworksList], networkDetail) => {
-          const isTest = (TEST_CHAINS as string[]).includes(
-            networkDetail.chainId,
-          );
-          (isTest ? testNetworksList : nonTestNetworksList).push(networkDetail);
-          return [nonTestNetworksList, testNetworksList];
-        },
-        [[] as NetworkOption[], [] as NetworkOption[]],
-      ),
-    [networksList],
+      getNetworkSections(
+        networksList,
+        (networkA, networkB) =>
+          (balanceByChainId[networkB.chainId] ?? 0) -
+          (balanceByChainId[networkA.chainId] ?? 0),
+      ).filter((section) => showTestnets || section.key !== 'test'),
+    [balanceByChainId, networksList, showTestnets],
   );
   // Tracks the selection/checked state of each network
   // Initialized with the selectedChainIds if provided
@@ -181,7 +177,10 @@ export const AssetPickerModalNetwork = ({
       className="multichain-asset-picker__network-modal"
     >
       <ModalOverlay />
-      <ModalContent modalDialogProps={{ padding: 0 }}>
+      <ModalContent
+        padding={0}
+        modalDialogProps={{ padding: 0, height: BlockSize.Full }}
+      >
         <ModalHeader
           onBack={network ? onBack : undefined}
           onClose={isMultiselectEnabled ? undefined : onClose}
@@ -240,93 +239,26 @@ export const AssetPickerModalNetwork = ({
           className="multichain-asset-picker__network-list"
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
+          style={{ minHeight: 0, overflowY: 'auto' }}
         >
-          {testNetworks.length > 0 ? (
-            <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
-              padding={4}
-            >
-              {t('enabledNetworks')}
-            </Text>
-          ) : null}
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            width={BlockSize.Full}
-          >
-            {nonTestNetworks.map((networkConfig) => {
-              const { name, chainId } = networkConfig;
-              return (
-                <NetworkListItem
-                  key={chainId}
-                  name={
-                    NETWORK_TO_SHORT_NETWORK_NAME_MAP[
-                      chainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
-                    ] ?? name
-                  }
-                  selected={
-                    // If multiselect is enabled, the checkbox indicates selection
-                    isMultiselectEnabled ? false : network?.chainId === chainId
-                  }
-                  onClick={() => {
-                    if (isMultiselectEnabled) {
-                      handleToggleNetwork(chainId);
-                      return;
-                    }
-                    onNetworkChange(networkConfig);
-                    onBack();
-                  }}
-                  iconSrc={getImageForChainId(chainId)}
-                  iconSize={AvatarNetworkSize.Sm}
-                  focus={false}
-                  disabled={shouldDisableNetwork?.(networkConfig)}
-                  startAccessory={
-                    isMultiselectEnabled ? (
-                      <Checkbox
-                        isChecked={checkedChainIds[chainId]}
-                        name={chainId}
-                      />
-                    ) : undefined
-                  }
-                  chainId={chainId}
-                  showEndAccessory={isMultiselectEnabled}
-                  variant={TextVariant.bodyMdMedium}
-                  endAccessory={
-                    isMultiselectEnabled ? (
-                      <Text variant={TextVariant.bodyMdMedium}>
-                        {formatCurrency(
-                          balanceByChainId[chainId]?.toString(),
-                          currency,
-                        )}
-                      </Text>
-                    ) : undefined
-                  }
-                />
-              );
-            })}
-          </Box>
-        </Box>
-        {showTestnets && testNetworks.length > 0 ? (
-          <Box
-            className="multichain-asset-picker__network-list"
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-          >
-            <Box padding={4}>
-              <Text
-                variant={TextVariant.bodyMd}
-                color={TextColor.textAlternative}
-              >
-                {t('testNetworks')}
-              </Text>
-            </Box>
+          {networkSections.map((section) => (
             <Box
+              key={section.key}
               display={Display.Flex}
               flexDirection={FlexDirection.Column}
               width={BlockSize.Full}
             >
-              {testNetworks.map((networkConfig) => {
+              {section.titleKey ? (
+                <Text
+                  variant={TextVariant.bodyMd}
+                  color={TextColor.textAlternative}
+                  padding={4}
+                  paddingBottom={2}
+                >
+                  {t(section.titleKey)}
+                </Text>
+              ) : null}
+              {section.items.map((networkConfig) => {
                 const { name, chainId } = networkConfig;
                 return (
                   <NetworkListItem
@@ -362,6 +294,7 @@ export const AssetPickerModalNetwork = ({
                         />
                       ) : undefined
                     }
+                    chainId={chainId}
                     showEndAccessory={isMultiselectEnabled}
                     variant={TextVariant.bodyMdMedium}
                     endAccessory={
@@ -378,8 +311,8 @@ export const AssetPickerModalNetwork = ({
                 );
               })}
             </Box>
-          </Box>
-        ) : null}
+          ))}
+        </Box>
       </ModalContent>
     </Modal>
   );

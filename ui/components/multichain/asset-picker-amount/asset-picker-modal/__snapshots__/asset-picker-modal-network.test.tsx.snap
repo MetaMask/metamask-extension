@@ -22,11 +22,11 @@ exports[`AssetPickerModalNetwork renders modal with no network list by default 1
       data-focus-lock-disabled="false"
     >
       <div
-        class="mm-box mm-modal-content mm-box--padding-top-4 mm-box--sm:padding-top-8 mm-box--md:padding-top-12 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--sm:padding-bottom-8 mm-box--md:padding-bottom-12 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-flex-start mm-box--width-screen mm-box--height-screen"
+        class="mm-box mm-modal-content mm-box--padding-0 mm-box--padding-top-4 mm-box--sm:padding-top-8 mm-box--md:padding-top-12 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--sm:padding-bottom-8 mm-box--md:padding-bottom-12 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-flex-start mm-box--width-screen mm-box--height-screen"
       >
         <section
           aria-modal="true"
-          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-0 mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-0 mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default mm-box--rounded-lg"
           role="dialog"
         >
           <header
@@ -58,11 +58,8 @@ exports[`AssetPickerModalNetwork renders modal with no network list by default 1
           </header>
           <div
             class="mm-box multichain-asset-picker__network-list mm-box--display-flex mm-box--flex-direction-column"
-          >
-            <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
-            />
-          </div>
+            style="min-height: 0; overflow-y: auto;"
+          />
         </section>
       </div>
     </div>
@@ -97,11 +94,11 @@ exports[`AssetPickerModalNetwork should not show selected network when network p
       data-focus-lock-disabled="false"
     >
       <div
-        class="mm-box mm-modal-content mm-box--padding-top-4 mm-box--sm:padding-top-8 mm-box--md:padding-top-12 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--sm:padding-bottom-8 mm-box--md:padding-bottom-12 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-flex-start mm-box--width-screen mm-box--height-screen"
+        class="mm-box mm-modal-content mm-box--padding-0 mm-box--padding-top-4 mm-box--sm:padding-top-8 mm-box--md:padding-top-12 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--sm:padding-bottom-8 mm-box--md:padding-bottom-12 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-flex-start mm-box--width-screen mm-box--height-screen"
       >
         <section
           aria-modal="true"
-          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-0 mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-0 mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default mm-box--rounded-lg"
           role="dialog"
         >
           <header
@@ -133,6 +130,7 @@ exports[`AssetPickerModalNetwork should not show selected network when network p
           </header>
           <div
             class="mm-box multichain-asset-picker__network-list mm-box--display-flex mm-box--flex-direction-column"
+            style="min-height: 0; overflow-y: auto;"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
@@ -255,11 +253,11 @@ exports[`AssetPickerModalNetwork should use passed in network as default when ne
       data-focus-lock-disabled="false"
     >
       <div
-        class="mm-box mm-modal-content mm-box--padding-top-4 mm-box--sm:padding-top-8 mm-box--md:padding-top-12 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--sm:padding-bottom-8 mm-box--md:padding-bottom-12 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-flex-start mm-box--width-screen mm-box--height-screen"
+        class="mm-box mm-modal-content mm-box--padding-0 mm-box--padding-top-4 mm-box--sm:padding-top-8 mm-box--md:padding-top-12 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--sm:padding-bottom-8 mm-box--md:padding-bottom-12 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-flex-start mm-box--width-screen mm-box--height-screen"
       >
         <section
           aria-modal="true"
-          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-0 mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-0 mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default mm-box--rounded-lg"
           role="dialog"
         >
           <header
@@ -305,6 +303,7 @@ exports[`AssetPickerModalNetwork should use passed in network as default when ne
           </header>
           <div
             class="mm-box multichain-asset-picker__network-list mm-box--display-flex mm-box--flex-direction-column"
+            style="min-height: 0; overflow-y: auto;"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"

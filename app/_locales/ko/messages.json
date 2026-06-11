@@ -3449,9 +3449,6 @@
   "enabled": {
     "message": "활성화됨"
   },
-  "enabledNetworks": {
-    "message": "활성화된 네트워크"
-  },
   "encryptionPublicKeyNotice": {
     "message": "$1에서 회원님의 공개 암호화 키를 요구합니다. 동의를 받으면 이 사이트에서 암호화된 메시지를 작성하여 회원님에게 전송할 수 있습니다.",
     "description": "$1 is the web3 site name"
@@ -10078,9 +10075,6 @@
   },
   "termsOfUseTitle": {
     "message": "이용약관이 개정되었습니다"
-  },
-  "testNetworks": {
-    "message": "테스트 네트워크"
   },
   "testnets": {
     "message": "테스트넷"
