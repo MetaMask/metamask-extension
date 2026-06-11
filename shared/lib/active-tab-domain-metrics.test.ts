@@ -155,6 +155,12 @@ describe('getActiveTabDomainForMetrics', () => {
         getActiveTabDomainForMetrics('https://user:pass@x.com', allowlist),
       ).toBe('https://x.com');
     });
+
+    it('strips query parameters from the returned origin', () => {
+      expect(
+        getActiveTabDomainForMetrics('https://x.com?q=1', allowlist),
+      ).toBe('https://x.com');
+    });
   });
 
   describe('non-allowlisted origins', () => {

@@ -19,6 +19,7 @@
 import type { Json } from '@metamask/utils';
 import { ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG } from '../../../shared/lib/gator-permissions/feature-flags';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
+import { ACTIVE_TAB_DOMAIN_METRICS_FLAG } from '../../../shared/lib/active-tab-domain-metrics';
 
 // ============================================================================
 // Types
@@ -2130,6 +2131,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     productionDefault: {
       enabled: true,
+      minimumVersion: '0.0.0',
+    },
+    status: FeatureFlagStatus.Active,
+  },
+
+  [ACTIVE_TAB_DOMAIN_METRICS_FLAG]: {
+    name: ACTIVE_TAB_DOMAIN_METRICS_FLAG,
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: {
+      value: ['x.com', 'twitter.com'],
       minimumVersion: '0.0.0',
     },
     status: FeatureFlagStatus.Active,

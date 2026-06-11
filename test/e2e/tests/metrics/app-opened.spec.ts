@@ -5,6 +5,7 @@ import { MOCK_META_METRICS_ID } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { login } from '../../page-objects/flows/login.flow';
+import { ACTIVE_TAB_DOMAIN_METRICS_FLAG } from '../../../../shared/lib/active-tab-domain-metrics';
 
 const MOCK_X_COM_ACTIVE_TAB = {
   id: 1,
@@ -72,6 +73,14 @@ describe('App Opened metric', function () {
           })
           .withAppStateController({
             appActiveTab: MOCK_X_COM_ACTIVE_TAB,
+          })
+          .withRemoteFeatureFlagController({
+            remoteFeatureFlags: {
+              [ACTIVE_TAB_DOMAIN_METRICS_FLAG]: {
+                value: ['x.com', 'twitter.com'],
+                minimumVersion: '0.0.1',
+              },
+            },
           })
           .build(),
         title: this.test?.fullTitle(),
