@@ -16,6 +16,24 @@ import LoginPage from '../pages/login-page';
 import TermsOfUseUpdateModal from '../pages/dialog/terms-of-use-update-modal';
 import { AuthConnection } from '../../../../shared/constants/onboarding';
 
+export type OnboardingMetricsFlowOptions = {
+  /** @deprecated Use `optedIn` instead. */
+  participateInMetaMetrics?: boolean;
+  optedIn?: boolean;
+  completedMetaMetricsOnboarding?: boolean;
+  dataCollectionForMarketing?: boolean;
+};
+
+function resolveOptedIn({
+  participateInMetaMetrics,
+  optedIn,
+}: OnboardingMetricsFlowOptions = {}): boolean {
+  if (optedIn !== undefined) {
+    return optedIn;
+  }
+  return participateInMetaMetrics ?? false;
+}
+
 /**
  * Helper function to handle post-onboarding navigation for sidepanel builds.
  * When sidepanel is enabled, clicking "Done" opens the home page in the sidepanel,
@@ -55,27 +73,25 @@ export const handleSidepanelPostOnboarding = async (
  * @param [options.participateInMetaMetrics] - Whether to participate in MetaMetrics. Defaults to false.
  * @param [options.needNavigateToNewPage] - Indicates whether to navigate to a new page before starting the onboarding flow. Defaults to true.
  * @param [options.dataCollectionForMarketing] - Whether to opt in to data collection for marketing. Defaults to false.
+ * @param options.optedIn
  * @returns A promise that resolves when the onboarding welcome login page is loaded.
  */
 const goToOnboardingWelcomeLoginPage = async ({
   driver,
   participateInMetaMetrics = false,
+  optedIn,
   needNavigateToNewPage = true,
   dataCollectionForMarketing = false,
 }: {
   driver: Driver;
-  participateInMetaMetrics?: boolean;
   needNavigateToNewPage?: boolean;
-  dataCollectionForMarketing?: boolean;
-}) => {
+} & OnboardingMetricsFlowOptions) => {
+  const metricsOptions = { participateInMetaMetrics, optedIn, dataCollectionForMarketing };
   if (needNavigateToNewPage) {
     await driver.navigate();
   }
   if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
-    await onboardingMetricsFlow(driver, {
-      participateInMetaMetrics,
-      dataCollectionForMarketing,
-    });
+    await onboardingMetricsFlow(driver, metricsOptions);
   }
 
   const startOnboardingPage = new StartOnboardingPage(driver);
@@ -340,8 +356,10 @@ export const incompleteCreateNewWalletOnboardingFlow = async ({
  */
 export async function onboardingMetricsFlow(
   driver: Driver,
-  { participateInMetaMetrics = false, dataCollectionForMarketing = false } = {},
+  options: OnboardingMetricsFlowOptions = {},
 ) {
+  const { dataCollectionForMarketing = false } = options;
+  const isOptedIn = resolveOptedIn(options);
   const onboardingMetricsPage = new OnboardingMetricsPage(driver);
   await onboardingMetricsPage.checkPageIsLoaded();
   if (dataCollectionForMarketing) {
@@ -354,19 +372,22 @@ export async function onboardingMetricsFlow(
   // - If opting in (true): do not click; just validate it's checked.
   // - If opting out (false): ensure it's unchecked without assuming its
   //   current state, to avoid accidentally re-checking it.
-  if (participateInMetaMetrics) {
+  if (isOptedIn) {
     await onboardingMetricsPage.validateParticipateInMetaMetricsIsChecked();
   } else {
     await onboardingMetricsPage.ensureParticipateInMetaMetricsIsUnchecked();
   }
 
   await onboardingMetricsPage.clickOnContinueButton();
-  // Wait for the metaMetricsId to be present so subsequent screens track events
+  // Wait for the analytics ID to be present so subsequent screens track events
   // immediately and deterministically.
-  if (participateInMetaMetrics) {
+  if (isOptedIn) {
     await driver.wait(async () => {
       const uiState = await getCleanAppState(driver);
-      return Boolean(uiState?.metamask?.metaMetricsId);
+      return (
+        Boolean(uiState?.metamask?.analyticsId) ||
+        Boolean(uiState?.metamask?.metaMetricsId)
+      );
     }, driver.timeout);
   }
 }
@@ -382,6 +403,7 @@ export async function onboardingMetricsFlow(
  * @param params.participateInMetaMetrics - Whether to participate in MetaMetrics. Defaults to false.
  * @param params.dataCollectionForMarketing - Whether to enable data collection for marketing. Defaults to false.
  * @param params.needNavigateToNewPage - Whether to navigate to a new page before starting. Defaults to true.
+ * @param params.optedIn
  * @returns A promise that resolves when the onboarding flow is complete.
  */
 export const importSRPOnboardingFlow = async ({
@@ -390,6 +412,7 @@ export const importSRPOnboardingFlow = async ({
   password = WALLET_PASSWORD,
   fillSrpWordByWord = false,
   participateInMetaMetrics = false,
+  optedIn,
   dataCollectionForMarketing = false,
   needNavigateToNewPage = true,
 }: {
@@ -397,15 +420,13 @@ export const importSRPOnboardingFlow = async ({
   seedPhrase?: string;
   password?: string;
   fillSrpWordByWord?: boolean;
-  participateInMetaMetrics?: boolean;
-  dataCollectionForMarketing?: boolean;
   needNavigateToNewPage?: boolean;
-}): Promise<void> => {
+} & OnboardingMetricsFlowOptions): Promise<void> => {
+  const metricsOptions = { participateInMetaMetrics, optedIn, dataCollectionForMarketing };
   console.log('Starting the import of SRP onboarding flow');
   const startOnboardingPage = await goToOnboardingWelcomeLoginPage({
     driver,
-    participateInMetaMetrics,
-    dataCollectionForMarketing,
+    ...metricsOptions,
     needNavigateToNewPage,
   });
   await startOnboardingPage.importWallet();
@@ -425,10 +446,7 @@ export const importSRPOnboardingFlow = async ({
   await skipPasskeySetup(driver);
 
   if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
-    await onboardingMetricsFlow(driver, {
-      participateInMetaMetrics,
-      dataCollectionForMarketing,
-    });
+    await onboardingMetricsFlow(driver, metricsOptions);
   }
 };
 
@@ -442,27 +460,28 @@ export const importSRPOnboardingFlow = async ({
  * @param [options.needNavigateToNewPage] - Indicates whether to navigate to a new page before starting the onboarding flow. Defaults to true.
  * @param [options.dataCollectionForMarketing] - Whether to opt in to data collection for marketing. Defaults to false.
  * @param [options.skipSRPBackup] - Whether to skip the SRP backup step. Defaults to false.
+ * @param options.optedIn
  */
 export const completeCreateNewWalletOnboardingFlow = async ({
   driver,
   password = WALLET_PASSWORD,
   participateInMetaMetrics = false,
+  optedIn,
   needNavigateToNewPage = true,
   dataCollectionForMarketing = false,
   skipSRPBackup = false,
 }: {
   driver: Driver;
   password?: string;
-  participateInMetaMetrics?: boolean;
   needNavigateToNewPage?: boolean;
-  dataCollectionForMarketing?: boolean;
   skipSRPBackup?: boolean;
-}): Promise<void> => {
+} & OnboardingMetricsFlowOptions): Promise<void> => {
+  const resolvedOptedIn = resolveOptedIn({ participateInMetaMetrics, optedIn });
   console.log('start to complete create new wallet onboarding flow ');
   await createNewWalletOnboardingFlow({
     driver,
     password,
-    participateInMetaMetrics,
+    participateInMetaMetrics: resolvedOptedIn,
     needNavigateToNewPage,
     dataCollectionForMarketing,
     skipSRPBackup,
@@ -608,6 +627,7 @@ export const completeImportSRPOnboardingWithPasskey = async ({
  * @param [options.participateInMetaMetrics] - Whether to participate in MetaMetrics. Defaults to false.
  * @param [options.dataCollectionForMarketing] - Whether to enable data collection for marketing. Defaults to false.
  * @param [options.needNavigateToNewPage] - Whether to navigate to a new page before starting. Defaults to true.
+ * @param options.optedIn
  * @returns A promise that resolves when the onboarding flow is complete.
  */
 export const completeImportSRPOnboardingFlow = async ({
@@ -616,6 +636,7 @@ export const completeImportSRPOnboardingFlow = async ({
   password = WALLET_PASSWORD,
   fillSrpWordByWord = false,
   participateInMetaMetrics = false,
+  optedIn,
   dataCollectionForMarketing = false,
   needNavigateToNewPage = true,
 }: {
@@ -623,10 +644,8 @@ export const completeImportSRPOnboardingFlow = async ({
   seedPhrase?: string;
   password?: string;
   fillSrpWordByWord?: boolean;
-  participateInMetaMetrics?: boolean;
-  dataCollectionForMarketing?: boolean;
   needNavigateToNewPage?: boolean;
-}): Promise<void> => {
+} & OnboardingMetricsFlowOptions): Promise<void> => {
   console.log('Starting to complete import SRP onboarding flow');
   await importSRPOnboardingFlow({
     driver,
@@ -634,6 +653,7 @@ export const completeImportSRPOnboardingFlow = async ({
     password,
     fillSrpWordByWord,
     participateInMetaMetrics,
+    optedIn,
     dataCollectionForMarketing,
     needNavigateToNewPage,
   });
