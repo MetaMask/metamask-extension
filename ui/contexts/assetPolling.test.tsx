@@ -9,6 +9,7 @@ import useTokenListPolling from '../hooks/useTokenListPolling';
 import useStaticTokensPollingHook from '../hooks/useStaticTokensPolling';
 import useDeFiPolling from '../hooks/defi/useDeFiPolling';
 import useMultichainAssetsRatesPolling from '../hooks/useMultichainAssetsRatesPolling';
+import { useArcDefaultTokens } from '../hooks/useArcDefaultTokens';
 import { AssetPollingProvider } from './assetPolling';
 
 jest.mock('../hooks/useCurrencyRatePolling');
@@ -18,6 +19,9 @@ jest.mock('../hooks/useTokenListPolling');
 jest.mock('../hooks/useStaticTokensPolling');
 jest.mock('../hooks/defi/useDeFiPolling');
 jest.mock('../hooks/useMultichainAssetsRatesPolling');
+jest.mock('../hooks/useArcDefaultTokens', () => ({
+  useArcDefaultTokens: jest.fn(),
+}));
 
 const mockUseCurrencyRatePolling = jest.mocked(useCurrencyRatePolling);
 const mockUseTokenRatesPolling = jest.mocked(useTokenRatesPolling);
@@ -28,6 +32,7 @@ const mockUseDeFiPolling = jest.mocked(useDeFiPolling);
 const mockUseMultichainAssetsRatesPolling = jest.mocked(
   useMultichainAssetsRatesPolling,
 );
+const mockUseArcDefaultTokens = jest.mocked(useArcDefaultTokens);
 
 const renderProvider = (isAssetsUnifyStateEnabled: boolean) => {
   jest.spyOn(redux, 'useSelector').mockReturnValue(isAssetsUnifyStateEnabled);
@@ -53,6 +58,7 @@ describe('AssetPollingProvider', () => {
     (mockUseMultichainAssetsRatesPolling as jest.Mock).mockImplementation(
       () => undefined,
     );
+    (mockUseArcDefaultTokens as jest.Mock).mockImplementation(() => undefined);
   });
 
   it('always renders children regardless of feature flag', () => {
