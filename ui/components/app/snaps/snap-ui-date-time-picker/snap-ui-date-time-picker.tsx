@@ -29,11 +29,6 @@ export type SnapUIDateTimePickerProps = {
   disabled?: boolean;
 };
 
-type PickerSnapshot = {
-  pickerValue: DateTime;
-  committed: boolean;
-};
-
 /**
  * MUI action-bar action keys (order: clear → cancel → accept).
  * Button labels are localized via `LocalizationProvider` in `snap-ui-renderer`.
@@ -54,15 +49,10 @@ function normalizeDate(
   if (!date) {
     return null;
   }
-  switch (type) {
-    case 'date':
-      return date.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
-    case 'time':
-      return date.set({ second: 0, millisecond: 0 });
-    case 'datetime':
-    default:
-      return date.set({ second: 0, millisecond: 0 });
+  if (type === 'date') {
+    return date.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
   }
+  return date.set({ second: 0, millisecond: 0 });
 }
 
 /**
@@ -75,14 +65,11 @@ function parseInitialIsoValue(
   value: string | undefined | null,
   type: 'date' | 'time' | 'datetime',
 ): DateTime | null {
-  if (value === undefined || value === null || value === '') {
+  if (!value) {
     return null;
   }
   const parsed = DateTime.fromISO(value);
-  if (!parsed.isValid) {
-    return null;
-  }
-  return normalizeDate(parsed, type) as DateTime;
+  return parsed.isValid ? (normalizeDate(parsed, type) as DateTime) : null;
 }
 
 /**
@@ -115,88 +102,47 @@ export const SnapUIDateTimePicker: FunctionComponent<
 }) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
   const initialValue = getValue(name, form) as string | undefined | null;
-  const parsedInitialValue = parseInitialIsoValue(initialValue, type);
-  const hasInitialValue = parsedInitialValue !== null;
+  const initialParsed = parseInitialIsoValue(initialValue, type);
 
-  // The date shown inside the picker dialog (always non-null so the
-  // toolbar/calendar never shows dashes). Defaults to "now".
-  const [pickerValue, setPickerValue] = React.useState<DateTime>(
-    parsedInitialValue ?? (normalizeDate(DateTime.now(), type) as DateTime),
-  );
+  // null = no committed value (shows placeholder); non-null = committed value.
+  const [value, setValue] = React.useState<DateTime | null>(initialParsed);
 
-  // Whether the user has committed a selection (or a value was provided).
-  const [committed, setCommitted] = React.useState(hasInitialValue);
+  // Snapshot of value at the moment the picker opens, so handleClose can
+  // discard any draft regardless of whether onAccept fired.
+  const valueAtOpenRef = useRef<DateTime | null>(initialParsed);
 
   const [open, setOpen] = React.useState(false);
 
-  const snapshotRef = useRef<PickerSnapshot>({
-    pickerValue:
-      parsedInitialValue ?? (normalizeDate(DateTime.now(), type) as DateTime),
-    committed: hasInitialValue,
-  });
-
+  // Sync local state when the Snap interface updates this field externally.
   useEffect(() => {
     const parsed = parseInitialIsoValue(initialValue, type);
-    if (parsed) {
-      setPickerValue(parsed);
-      setCommitted(true);
-      snapshotRef.current = { pickerValue: parsed, committed: true };
-      return;
-    }
-    const defaultPickerValue = normalizeDate(DateTime.now(), type) as DateTime;
-    setCommitted(false);
-    setPickerValue(defaultPickerValue);
-    snapshotRef.current = {
-      pickerValue: defaultPickerValue,
-      committed: false,
-    };
+    setValue(parsed);
+    valueAtOpenRef.current = parsed;
   }, [initialValue, type]);
 
-  const handleChange = (date: DateTime | null) => {
-    if (!date) {
-      setCommitted(false);
-      setPickerValue(normalizeDate(DateTime.now(), type) as DateTime);
-      return;
-    }
-    setPickerValue(normalizeDate(date, type) as DateTime);
-  };
-
-  const handleAccept = (date: DateTime | null) => {
-    if (!date) {
-      const defaultPickerValue = normalizeDate(DateTime.now(), type) as DateTime;
-      setCommitted(false);
-      setPickerValue(defaultPickerValue);
-      handleInputChange(name, null, form);
-      snapshotRef.current = {
-        pickerValue: defaultPickerValue,
-        committed: false,
-      };
-      return;
-    }
-    const normalizedDate = normalizeDate(date, type) as DateTime;
-    setPickerValue(normalizedDate);
-    setCommitted(true);
-    handleInputChange(name, normalizedDate.toISO(), form);
-    snapshotRef.current = {
-      pickerValue: normalizedDate,
-      committed: true,
-    };
-  };
-
+  // Capture the current committed value as the snapshot before opening.
   const handleOpen = useCallback(() => {
-    const defaultPickerValue = normalizeDate(DateTime.now(), type) as DateTime;
-    const nextPickerValue = committed ? pickerValue : defaultPickerValue;
-    snapshotRef.current = { pickerValue: nextPickerValue, committed };
-    if (!committed) {
-      setPickerValue(defaultPickerValue);
-    }
+    valueAtOpenRef.current = value;
     setOpen(true);
-  }, [committed, pickerValue, type]);
+  }, [value]);
 
+  // Fires on OK (date) or Clear (date === null). The only place we write to
+  // the Snap interface. Also advances the snapshot so handleClose is a no-op.
+  const handleAccept = useCallback(
+    (date: DateTime | null) => {
+      const normalized = normalizeDate(date, type) as DateTime | null;
+      setValue(normalized);
+      valueAtOpenRef.current = normalized;
+      handleInputChange(name, normalized?.toISO() ?? null, form);
+    },
+    [handleInputChange, name, form, type],
+  );
+
+  // Discard any draft on cancel, backdrop tap, or Escape.
+  // After accept this is a no-op since handleAccept already advanced the snapshot.
   const handleClose = useCallback(() => {
     setOpen(false);
-    setPickerValue(snapshotRef.current.pickerValue);
-    setCommitted(snapshotRef.current.committed);
+    setValue(valueAtOpenRef.current);
   }, []);
 
   const pickerSlotProps = useMemo(
@@ -205,7 +151,9 @@ export const SnapUIDateTimePicker: FunctionComponent<
         inputProps: {
           placeholder,
           readOnly: true,
-          ...(committed ? {} : { value: '' }),
+          // Force empty display when no value is committed so the placeholder
+          // shows instead of MUI rendering dashes for a null value.
+          ...(value === null ? { value: '' } : {}),
         },
         InputProps: {
           disableUnderline: true,
@@ -222,25 +170,29 @@ export const SnapUIDateTimePicker: FunctionComponent<
             fontSize: 'var(--typography-s-body-md-font-size)',
             '& > input': {
               padding: '0 16px',
+              // Prevent the input from receiving focus so MUI v7 cannot apply
+              // section-highlighting on this read-only display trigger.
+              pointerEvents: 'none',
             },
           },
         },
         variant: 'standard' as const,
         fullWidth: true,
       },
-      actionBar: {
-        actions: [...PICKER_ACTION_BAR_ACTIONS],
-      },
+      actionBar: { actions: [...PICKER_ACTION_BAR_ACTIONS] },
     }),
-    [placeholder, committed],
+    [placeholder, value],
   );
+
+  // When no value is committed, default the picker dialog to today so the
+  // calendar opens with a date highlighted rather than showing dashes.
+  const today = normalizeDate(DateTime.now(), type) as DateTime;
 
   const sharedPickerProps = {
     open,
     onOpen: handleOpen,
     onClose: handleClose,
-    value: pickerValue,
-    onChange: handleChange,
+    value: value ?? today,
     onAccept: handleAccept,
     disabled,
     slotProps: pickerSlotProps,

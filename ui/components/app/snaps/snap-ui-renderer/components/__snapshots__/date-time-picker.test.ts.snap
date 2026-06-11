@@ -25,7 +25,7 @@ exports[`SnapUIDateTimePicker can show an error 1`] = `
             class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root snap-ui-renderer__date-time-picker--datetime css-n5zogd-MuiFormControl-root-MuiTextField-root"
           >
             <div
-              class="MuiInputBase-root MuiInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedEnd Mui-readOnly MuiInputBase-readOnly css-1yh8i7y-MuiInputBase-root-MuiInput-root"
+              class="MuiInputBase-root MuiInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedEnd Mui-readOnly MuiInputBase-readOnly css-98pi8w-MuiInputBase-root-MuiInput-root"
             >
               <input
                 aria-invalid="false"
@@ -75,7 +75,7 @@ exports[`SnapUIDateTimePicker renders a date picker 1`] = `
             class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root snap-ui-renderer__date-time-picker--date css-n5zogd-MuiFormControl-root-MuiTextField-root"
           >
             <div
-              class="MuiInputBase-root MuiInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedEnd Mui-readOnly MuiInputBase-readOnly css-1yh8i7y-MuiInputBase-root-MuiInput-root"
+              class="MuiInputBase-root MuiInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedEnd Mui-readOnly MuiInputBase-readOnly css-98pi8w-MuiInputBase-root-MuiInput-root"
             >
               <input
                 aria-invalid="false"
@@ -120,7 +120,7 @@ exports[`SnapUIDateTimePicker renders a date time picker 1`] = `
             class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root snap-ui-renderer__date-time-picker--datetime css-n5zogd-MuiFormControl-root-MuiTextField-root"
           >
             <div
-              class="MuiInputBase-root MuiInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedEnd Mui-readOnly MuiInputBase-readOnly css-1yh8i7y-MuiInputBase-root-MuiInput-root"
+              class="MuiInputBase-root MuiInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedEnd Mui-readOnly MuiInputBase-readOnly css-98pi8w-MuiInputBase-root-MuiInput-root"
             >
               <input
                 aria-invalid="false"
@@ -165,7 +165,7 @@ exports[`SnapUIDateTimePicker renders a time picker 1`] = `
             class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root snap-ui-renderer__date-time-picker--time css-n5zogd-MuiFormControl-root-MuiTextField-root"
           >
             <div
-              class="MuiInputBase-root MuiInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedEnd Mui-readOnly MuiInputBase-readOnly css-1yh8i7y-MuiInputBase-root-MuiInput-root"
+              class="MuiInputBase-root MuiInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedEnd Mui-readOnly MuiInputBase-readOnly css-98pi8w-MuiInputBase-root-MuiInput-root"
             >
               <input
                 aria-invalid="false"
@@ -216,7 +216,7 @@ exports[`SnapUIDateTimePicker renders inside a field 1`] = `
             class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root snap-ui-renderer__date-time-picker--datetime css-n5zogd-MuiFormControl-root-MuiTextField-root"
           >
             <div
-              class="MuiInputBase-root MuiInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedEnd Mui-readOnly MuiInputBase-readOnly css-1yh8i7y-MuiInputBase-root-MuiInput-root"
+              class="MuiInputBase-root MuiInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedEnd Mui-readOnly MuiInputBase-readOnly css-98pi8w-MuiInputBase-root-MuiInput-root"
             >
               <input
                 aria-invalid="false"
