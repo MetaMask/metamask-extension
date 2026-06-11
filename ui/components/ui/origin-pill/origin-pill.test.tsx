@@ -23,5 +23,9 @@ describe('<OriginPill />', () => {
     expect(
       screen.getByTestId(`${defaultProps.dataTestId}-text`),
     ).toHaveTextContent(defaultProps.origin);
+
+    const textElement = screen.getByTestId(`${defaultProps.dataTestId}-text`);
+    expect(textElement).toHaveClass('text-alternative');
+    expect(textElement.tagName).toBe('H6');
   });
 });
