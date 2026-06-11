@@ -3449,9 +3449,6 @@
   "enabled": {
     "message": "Включено"
   },
-  "enabledNetworks": {
-    "message": "Включенные сети"
-  },
   "encryptionPublicKeyNotice": {
     "message": "$1 запрашивает ваш открытый ключ шифрования. После получения вашего согласия на это данный сайт сможет создавать зашифрованные сообщения для отправки в ваш адрес.",
     "description": "$1 is the web3 site name"
@@ -10070,9 +10067,6 @@
   },
   "termsOfUseTitle": {
     "message": "Наши Условия использования обновлены"
-  },
-  "testNetworks": {
-    "message": "Протестировать сети"
   },
   "testnets": {
     "message": "Тестнеты"
