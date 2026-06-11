@@ -20,13 +20,8 @@ jest.mock('../../simulation-details/amount-pill', () => ({
   ),
 }));
 jest.mock('../../simulation-details/asset-pill', () => ({
-  AssetPill: ({ asset }: { asset: { address?: string; standard: string } }) => (
-    <div
-      data-testid="simulation-details-asset-pill"
-      data-standard={asset.standard}
-    >
-      {asset.address}
-    </div>
+  AssetPill: ({ asset }: { asset: { address: string } }) => (
+    <div data-testid="simulation-details-asset-pill">{asset.address}</div>
   ),
 }));
 
@@ -122,22 +117,6 @@ describe('RequiredTokensRow', () => {
     expect(assetPill).toHaveTextContent(
       '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
     );
-    expect(assetPill).toHaveAttribute('data-standard', 'ERC20');
-  });
-
-  it('renders native asset pill when required token is the native asset', () => {
-    const mockToken = createMockRequiredToken({
-      address: '0x0000000000000000000000000000000000000000',
-      chainId: '0x13b2',
-      symbol: 'USDC',
-    });
-
-    useTransactionPayRequiredTokensMock.mockReturnValue([mockToken]);
-
-    const { getByTestId } = render();
-
-    const assetPill = getByTestId('simulation-details-asset-pill');
-    expect(assetPill).toHaveAttribute('data-standard', 'NONE');
   });
 
   it('renders multiple required tokens', () => {

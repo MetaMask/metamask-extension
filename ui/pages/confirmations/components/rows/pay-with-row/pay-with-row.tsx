@@ -2,7 +2,6 @@
 import React, { useCallback, useState } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
-import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 
 import {
@@ -90,8 +89,6 @@ export function PayWithRow({
     getInternalAccountByAddress(state, from ?? ''),
   );
 
-  const isArc = currentConfirmation?.chainId?.toLowerCase() === CHAIN_IDS.ARC;
-
   const canEdit = fromAccount ? !isHardwareAccount(fromAccount) : true;
 
   const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
@@ -105,14 +102,6 @@ export function PayWithRow({
   const handleCloseModal = useCallback(() => {
     setIsModalOpen(false);
   }, []);
-
-  // On Arc, the transaction always pays with the native token — there is no
-  // alternative pay-with route, so skip rendering the row entirely. The
-  // early return must sit *after* all hook calls so every render executes
-  // the same hooks in the same order (Rules of Hooks).
-  if (isArc) {
-    return null;
-  }
 
   const firstRequiredToken = requiredTokens?.[0];
   const displayToken =
