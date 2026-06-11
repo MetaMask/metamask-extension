@@ -78,6 +78,9 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
               style="mask-image: url('./images/icons/check.svg');"
             />
           </button>
+          <hr
+            class="mx-4 mt-2 w-[calc(100%-32px)] border-0 border-t border-border-muted"
+          />
           <div
             class="flex flex-col"
           >
@@ -564,6 +567,9 @@ exports[`BridgeInputGroup should render source networks 1`] = `
               style="mask-image: url('./images/icons/check.svg');"
             />
           </button>
+          <hr
+            class="mx-4 mt-2 w-[calc(100%-32px)] border-0 border-t border-border-muted"
+          />
           <div
             class="flex flex-col"
           >
