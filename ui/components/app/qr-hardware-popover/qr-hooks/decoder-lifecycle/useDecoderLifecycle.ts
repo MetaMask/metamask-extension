@@ -121,6 +121,7 @@ export function useDecoderLifecycle(
             }
             setError(successError as WebcamError);
           });
+          return;
         }
 
         // Progress is only updated for incomplete multi-frame scans.
