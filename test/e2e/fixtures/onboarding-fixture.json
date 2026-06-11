@@ -637,10 +637,6 @@
       "hasSeenOnboardingCompletionPage": false,
       "seedPhraseBackedUp": null
     },
-    "PPOMController": {
-      "storageMetadata": [],
-      "versionInfo": []
-    },
     "PasskeyController": {
       "passkeyRecord": null
     },
