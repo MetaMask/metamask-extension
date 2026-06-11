@@ -19,10 +19,7 @@ import {
   UI_RELOAD_CLIENT_ENTRY_NAME,
   UI_RELOAD_MESSAGE_TYPE,
 } from '../utils/dev-server/reload-protocol';
-import {
-  createAnnouncer,
-  getClientEntry,
-} from '../utils/dev-server/websocket';
+import { createAnnouncer, getClientEntry } from '../utils/dev-server/websocket';
 import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
 
 type EntryPluginCall = {
@@ -554,16 +551,23 @@ describe('./utils/dev-server', () => {
   describe('connectToDevServer', () => {
     it('dispatches parsed dev-server messages and ignores invalid messages', () => {
       withFakeWebSocket(() => {
-        const messages: { type: string; data: unknown; socket: FakeWebSocket }[] =
-          [];
+        const messages: {
+          type: string;
+          data: unknown;
+          socket: FakeWebSocket;
+        }[] = [];
 
-        connectToDevServer('ws://localhost:12345/ws', () => false, (
-          type,
-          data,
-          socket,
-        ) => {
-          messages.push({ type, data, socket: socket as unknown as FakeWebSocket });
-        });
+        connectToDevServer(
+          'ws://localhost:12345/ws',
+          () => false,
+          (type, data, socket) => {
+            messages.push({
+              type,
+              data,
+              socket: socket as unknown as FakeWebSocket,
+            });
+          },
+        );
 
         const socket = FakeWebSocket.sockets[0];
         socket.dispatch('message', {
