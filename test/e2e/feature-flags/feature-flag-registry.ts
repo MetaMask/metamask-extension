@@ -2261,6 +2261,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  perpsSlippageConfig2: {
+    name: 'perpsSlippageConfig2',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: {
+      enabled: true,
+      minimumVersion: '13.30.0',
+    },
+    status: FeatureFlagStatus.Active,
+  },
+
   vipProgramEnabled: {
     name: 'vipProgramEnabled',
     type: FeatureFlagType.Remote,
