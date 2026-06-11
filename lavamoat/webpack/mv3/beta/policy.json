@@ -786,6 +786,13 @@
         "@metamask/claims-controller>@metamask/controller-utils": true
       }
     },
+    "@metamask/compliance-controller": {
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
+        "reselect": true
+      }
+    },
     "@metamask/controller-utils": {
       "globals": {
         "Buffer.from": true,
