@@ -15,7 +15,7 @@ import { useAccountSettingsProps } from '../../hooks/metamask-notifications/useS
 import { useSafeState } from '../../hooks/metamask-notifications/useNotifications';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { NOTIFICATIONS_SETTINGS_ROUTE } from '../../helpers/constants/routes';
-import { useNotificationStoragePreferences } from '../../hooks/metamask-notifications/useNotificationStoragePreferences';
+import { useNotificationPreferences } from '../../hooks/metamask-notifications/useNotificationPreferences';
 import { NotificationsSettingsAllowNotifications } from './notifications-settings-allow-notifications';
 import {
   getNotificationsSettingsSectionConfigs,
@@ -25,12 +25,12 @@ import {
 import { getNotificationWalletGroups } from './notifications-settings-helpers';
 import { NotificationSettingsSection } from './notification-settings-section';
 
-function useNotificationAccountGroups(notificationAddresses: string[]) {
+function useNotificationAccountGroups() {
   const accountGroups = useSelector(getAccountGroupWithInternalAccounts);
 
   return useMemo(
-    () => getNotificationWalletGroups(accountGroups, notificationAddresses),
-    [notificationAddresses, accountGroups],
+    () => getNotificationWalletGroups(accountGroups),
+    [accountGroups],
   );
 }
 
@@ -61,7 +61,7 @@ export function NotificationsSettingsContent() {
     isLoading: isLoadingPreferences,
     updatePreference,
     refetchPreferences,
-  } = useNotificationStoragePreferences();
+  } = useNotificationPreferences();
 
   const sectionConfigs = useMemo(
     () => getNotificationsSettingsSectionConfigs(t),
@@ -74,15 +74,7 @@ export function NotificationsSettingsContent() {
       section.type === selectedSectionType,
   );
 
-  const notificationAddresses = useMemo(
-    () =>
-      preferences?.walletActivity.accounts.map((account) => account.address) ??
-      [],
-    [preferences],
-  );
-  const notificationAccountGroups = useNotificationAccountGroups(
-    notificationAddresses,
-  );
+  const notificationAccountGroups = useNotificationAccountGroups();
   const accountAddresses = useMemo(
     () =>
       notificationAccountGroups.flatMap((walletGroup) =>
@@ -128,6 +120,7 @@ export function NotificationsSettingsContent() {
       <Box
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.Stretch}
+        className="h-full min-h-0"
         paddingTop={3}
         paddingHorizontal={4}
         gap={6}

@@ -16,23 +16,16 @@ export type NotificationWalletGroup = {
 
 export function getNotificationWalletGroups(
   accountGroups: AccountGroupWithInternalAccounts[],
-  notificationAddresses: string[],
 ): NotificationWalletGroup[] {
-  if (accountGroups.length === 0 || notificationAddresses.length === 0) {
+  if (accountGroups.length === 0) {
     return [];
   }
-
-  const notificationAddressSet = new Set(
-    notificationAddresses.map((address) => address.toLowerCase()),
-  );
 
   return accountGroups.reduce<NotificationWalletGroup[]>(
     (walletGroups, accountGroup) => {
       const evmAccount = accountGroup.accounts.find(
         (account) =>
-          Boolean(account.address) &&
-          isEvmAccountType(account.type) &&
-          notificationAddressSet.has(account.address.toLowerCase()),
+          Boolean(account.address) && isEvmAccountType(account.type),
       );
 
       if (!evmAccount?.address) {

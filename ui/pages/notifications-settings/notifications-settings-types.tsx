@@ -13,17 +13,14 @@ import {
   TextColor,
   FontWeight,
 } from '@metamask/design-system-react';
+import type { NotificationPreferences } from '@metamask/authenticated-user-storage';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import type {
-  NotificationStoragePreferences,
-  NotificationStoragePreferenceSection,
-} from '../../hooks/metamask-notifications/useNotificationStoragePreferences';
 import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
 
-export type NotificationsSettingsSectionType = Extract<
-  NotificationStoragePreferenceSection,
-  'walletActivity' | 'perps' | 'marketing'
->;
+export type NotificationsSettingsSectionType =
+  | 'walletActivity'
+  | 'perps'
+  | 'marketing';
 
 export type NotificationsSettingsSectionConfig = {
   type: NotificationsSettingsSectionType;
@@ -33,13 +30,13 @@ export type NotificationsSettingsSectionConfig = {
 };
 
 type NotificationsSettingsTypesProps = {
-  preferences?: NotificationStoragePreferences | null;
+  preferences?: NotificationPreferences | null;
   onSelectSection: (section: NotificationsSettingsSectionConfig) => void;
 };
 
 const getStatusText = (
   t: ReturnType<typeof useI18nContext>,
-  prefs?: NotificationStoragePreferences[NotificationsSettingsSectionType],
+  prefs?: NotificationPreferences[NotificationsSettingsSectionType],
 ) => {
   const active = [];
   if (prefs?.pushNotificationsEnabled) {

@@ -5,7 +5,7 @@ import thunk from 'redux-thunk';
 
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createMockNotificationPreferences } from '../../hooks/metamask-notifications/mocks';
-import { useNotificationStoragePreferences } from '../../hooks/metamask-notifications/useNotificationStoragePreferences';
+import { useNotificationPreferences } from '../../hooks/metamask-notifications/useNotificationPreferences';
 import { useAccountSettingsProps } from '../../hooks/metamask-notifications/useSwitchNotifications';
 import { NotificationsSettingsContent } from './notifications-settings';
 
@@ -36,9 +36,9 @@ jest.mock('../../hooks/metamask-notifications/useSwitchNotifications', () => ({
 }));
 
 jest.mock(
-  '../../hooks/metamask-notifications/useNotificationStoragePreferences',
+  '../../hooks/metamask-notifications/useNotificationPreferences',
   () => ({
-    useNotificationStoragePreferences: jest.fn(),
+    useNotificationPreferences: jest.fn(),
   }),
 );
 
@@ -91,10 +91,11 @@ describe('NotificationsSettingsContent', () => {
       accountsBeingUpdated: [],
       update: jest.fn(),
     });
-    jest.mocked(useNotificationStoragePreferences).mockReturnValue({
+    jest.mocked(useNotificationPreferences).mockReturnValue({
       preferences: createMockNotificationPreferences(),
       hasNotificationPreferences: true,
       isLoading: false,
+      isUpdatingPreferences: false,
       error: null,
       refetchPreferences: jest.fn(),
       updatePreference: jest.fn(),
@@ -246,7 +247,7 @@ describe('NotificationsSettingsContent', () => {
     expect(screen.queryByText('Imported 2')).not.toBeInTheDocument();
   });
 
-  it('hides the account section when there are no notification-eligible accounts', () => {
+  it('renders local EVM accounts when AUS wallet activity accounts are empty', () => {
     const account = createInternalAccount({
       id: 'account-1',
       address: '0x1111111111111111111111111111111111111111',
@@ -291,7 +292,7 @@ describe('NotificationsSettingsContent', () => {
       },
     });
 
-    jest.mocked(useNotificationStoragePreferences).mockReturnValue({
+    jest.mocked(useNotificationPreferences).mockReturnValue({
       preferences: createMockNotificationPreferences({
         walletActivity: {
           pushNotificationsEnabled: true,
@@ -301,6 +302,7 @@ describe('NotificationsSettingsContent', () => {
       }),
       hasNotificationPreferences: true,
       isLoading: false,
+      isUpdatingPreferences: false,
       error: null,
       refetchPreferences: jest.fn(),
       updatePreference: jest.fn(),
@@ -314,8 +316,13 @@ describe('NotificationsSettingsContent', () => {
     );
 
     expect(
-      screen.queryByTestId('notifications-settings-per-account'),
-    ).not.toBeInTheDocument();
-    expect(screen.queryByText('Wallet 1')).not.toBeInTheDocument();
+      screen.getByTestId('notifications-settings-per-account'),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Wallet 1')).toBeInTheDocument();
+    expect(
+      screen.getByTestId(
+        'notifications-settings-account-0x1111111111111111111111111111111111111111',
+      ),
+    ).toBeInTheDocument();
   });
 });

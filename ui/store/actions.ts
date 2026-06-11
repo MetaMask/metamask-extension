@@ -7828,6 +7828,9 @@ export function showConfirmTurnOnMetamaskNotifications(): ThunkAction<
  * This function dispatches a request to the background script to enable MetaMask notifications.
  * If the operation fails, it logs the error message and rethrows the error to ensure it is handled appropriately.
  *
+ * @param options - Options for enabling MetaMask notifications.
+ * @param options.hasMarketingConsent - Indicates if the user has consented to marketing notifications.
+ * @param options.productAnnouncementEnabled - Indicates if product announcement notifications are enabled.
  * @returns A thunk action that, when dispatched, attempts to enable MetaMask notifications.
  */
 export function enableMetamaskNotifications(
