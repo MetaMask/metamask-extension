@@ -417,7 +417,7 @@ exports[`Info renders info section for approve request 1`] = `
             class="mm-box mm-text mm-text--body-sm mm-box--padding-bottom-0 mm-box--color-text-alternative"
             data-testid="gas-fee-token-fee"
           >
-             
+
           </p>
         </div>
       </div>
@@ -772,7 +772,7 @@ exports[`Info renders info section for contract interaction request 1`] = `
             class="mm-box mm-text mm-text--body-sm mm-box--padding-bottom-0 mm-box--color-text-alternative"
             data-testid="gas-fee-token-fee"
           >
-             
+
           </p>
         </div>
       </div>
@@ -1385,7 +1385,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
             class="mm-box mm-text mm-text--body-sm mm-box--padding-bottom-0 mm-box--color-text-alternative"
             data-testid="gas-fee-token-fee"
           >
-             
+
           </p>
         </div>
       </div>
@@ -2354,7 +2354,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           </div>
         </div>
         <div
-          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
         >
           <img
             alt="ETH"
@@ -2415,7 +2415,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           </div>
         </div>
         <div
-          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
         >
           <img
             alt="ETH"
@@ -2546,7 +2546,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           </div>
         </div>
         <div
-          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
         >
           <img
             alt="ETH"
@@ -2607,7 +2607,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           </div>
         </div>
         <div
-          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
         >
           <img
             alt="ETH"
@@ -2668,7 +2668,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           </div>
         </div>
         <div
-          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
         >
           <img
             alt="ETH"

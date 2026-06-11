@@ -44,6 +44,7 @@ import { PerpsFeesDisplay } from '../perps-fees-display';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import type { Position } from '../types';
 import { useVipTier } from '../../../../hooks/rewards/useVipTier';
+import { useSelectedAccountComplianceGate } from '../../compliance';
 
 export type ReversePositionModalProps = {
   isOpen: boolean;
@@ -74,6 +75,7 @@ export const ReversePositionModal = ({
   const t = useI18nContext();
   const { isEligible } = usePerpsEligibility();
   const { track } = usePerpsEventTracking();
+  const { gate } = useSelectedAccountComplianceGate();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
   useEffect(() => {
@@ -139,61 +141,65 @@ export const ReversePositionModal = ({
   );
 
   const handleSave = useCallback(async () => {
-    if (!isEligible) {
-      setIsGeoBlockModalOpen(true);
-      return;
-    }
-
-    setIsSubmitting(true);
-    setError(null);
-
-    replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.REVERSE_IN_PROGRESS });
-
-    try {
-      const flipResult = await submitRequestToBackground<{
-        success: boolean;
-        error?: string;
-      }>('perpsFlipPosition', [
-        {
-          symbol: position.symbol,
-          position: positionForFlip,
-          trackingData: buildPerpsVipTrackingData({
-            totalFee: estimatedFees ?? 0,
-            marketPrice: currentPrice,
-            vipTier,
-            vipDiscount: metamaskFeeRateDiscountPercentage,
-          }),
-        },
-      ]);
-      if (flipResult?.success !== true) {
-        throw new Error(flipResult?.error || 'Failed to flip position');
+    await gate(async () => {
+      if (!isEligible) {
+        setIsGeoBlockModalOpen(true);
+        return;
       }
-      const streamManager = getPerpsStreamManager();
-      const freshPositions = await submitRequestToBackground<PerpsPosition[]>(
-        'perpsGetPositions',
-        [{ skipCache: true }],
-      );
-      streamManager.pushPositionsWithOverrides(freshPositions);
 
-      replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.REVERSE_SUCCESS });
-      onClose();
-    } catch (err) {
-      const raw =
-        err instanceof Error ? err.message : 'An unknown error occurred';
-      track(MetaMetricsEventName.PerpsError, {
-        [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
-        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: raw,
-      });
-      const message = handlePerpsError(err, t as (key: string) => string);
-      setError(message);
-      replacePerpsToastByKey({
-        key: PERPS_TOAST_KEYS.REVERSE_FAILED,
-        description: message,
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
+      setIsSubmitting(true);
+      setError(null);
+
+      replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.REVERSE_IN_PROGRESS });
+
+      try {
+        const flipResult = await submitRequestToBackground<{
+          success: boolean;
+          error?: string;
+        }>('perpsFlipPosition', [
+          {
+            symbol: position.symbol,
+            position: positionForFlip,
+            trackingData: buildPerpsVipTrackingData({
+              totalFee: estimatedFees ?? 0,
+              marketPrice: currentPrice,
+              vipTier,
+              vipDiscount: metamaskFeeRateDiscountPercentage,
+            }),
+          },
+        ]);
+        if (flipResult?.success !== true) {
+          throw new Error(flipResult?.error || 'Failed to flip position');
+        }
+        const streamManager = getPerpsStreamManager();
+        const freshPositions = await submitRequestToBackground<PerpsPosition[]>(
+          'perpsGetPositions',
+          [{ skipCache: true }],
+        );
+        streamManager.pushPositionsWithOverrides(freshPositions);
+
+        replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.REVERSE_SUCCESS });
+        onClose();
+      } catch (err) {
+        const raw =
+          err instanceof Error ? err.message : 'An unknown error occurred';
+        track(MetaMetricsEventName.PerpsError, {
+          [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
+            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: raw,
+        });
+        const message = handlePerpsError(err, t as (key: string) => string);
+        setError(message);
+        replacePerpsToastByKey({
+          key: PERPS_TOAST_KEYS.REVERSE_FAILED,
+          description: message,
+        });
+      } finally {
+        setIsSubmitting(false);
+      }
+    });
   }, [
+    gate,
     isEligible,
     onClose,
     position.symbol,
