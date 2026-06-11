@@ -14,6 +14,11 @@ import {
   createHardwareWalletError,
   HardwareWalletType,
 } from '../../../../contexts/hardware-wallets';
+import type { QrErrorFlowContext } from '../qr-error-content';
+import {
+  ScanErrorCategory,
+  type ScanErrorClassification,
+} from '../qr-utils/qr-utils';
 import {
   CameraReadyState,
   type CameraReadyStateValue,
@@ -84,5 +89,51 @@ export function buildQrCameraRecoveryTrackEventArgs(
       errorTypeViewCount,
       error: syntheticError,
     }),
+  };
+}
+
+/**
+ * Builds a complete `trackEvent` argument for a QR scan-failed event.
+ *
+ * Every category includes `error_category`, `is_ur_format`, and `flow`.
+ * `received_ur_type` is added for `wrong_ur_type`; `raw_message` is added
+ * for `scan_exception`.
+ *
+ * @param classification - The structured scan error from {@link classifyScanResult}.
+ * @param flow - Whether the scan occurred during pairing or signing.
+ * @returns A ready-to-use `trackEvent` argument.
+ */
+export function buildQrScanFailedTrackEventArgs(
+  classification: ScanErrorClassification,
+  flow: QrErrorFlowContext,
+): {
+  category: MetaMetricsEventCategory;
+  event: MetaMetricsEventName;
+  properties: Record<string, Json>;
+} {
+  const properties: Record<string, Json> = {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment analytics payload keys use snake_case
+    device_type: MetaMetricsHardwareWalletDeviceType.QrHardware,
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment analytics payload keys use snake_case
+    error_category: classification.category,
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment analytics payload keys use snake_case
+    is_ur_format: classification.isUrFormat,
+    flow,
+  };
+
+  if (classification.category === ScanErrorCategory.WrongUrType) {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment analytics payload keys use snake_case
+    properties.received_ur_type = classification.receivedUrType;
+  }
+
+  if (classification.category === ScanErrorCategory.ScanException) {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment analytics payload keys use snake_case
+    properties.raw_message = classification.rawMessage;
+  }
+
+  return {
+    category: MetaMetricsEventCategory.Accounts,
+    event: MetaMetricsEventName.QrHardwareScanFailed,
+    properties,
   };
 }

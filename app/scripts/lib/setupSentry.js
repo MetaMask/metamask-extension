@@ -14,8 +14,8 @@ import {
   consensysTracePropagationIntegration,
 } from './sentry-trace-propagation';
 import {
-  getMetaMetricsState,
-  getMetaMetricsStateFromAppState,
+  getAnalyticsState,
+  getAnalyticsStateFromAppState,
   getState,
 } from './sentry-get-state';
 import { makeTransport } from './sentry-make-transport';
@@ -108,7 +108,7 @@ function getClientOptions() {
       shouldCreateSpanForRequest,
     }),
     metaMetricsIntegration({
-      getMetaMetricsState,
+      getAnalyticsState,
       log,
     }),
   ];
@@ -310,9 +310,10 @@ export function beforeBreadcrumb() {
       return null;
     }
     const appState = getState();
-    const state = getMetaMetricsStateFromAppState(appState);
+    const state = getAnalyticsStateFromAppState(appState);
     if (
-      !state?.participateInMetaMetrics ||
+      !state?.completedMetaMetricsOnboarding ||
+      !state?.optedIn ||
       breadcrumb?.category === 'ui.input'
     ) {
       return null;
