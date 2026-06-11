@@ -76,8 +76,7 @@ export default class CarouselPage {
 
       const remaining = maxToDismiss - (i + 1);
       if (remaining > 0) {
-        await this.driver.waitForSelector(this.carouselSlide);
-        await this.driver.waitForSelector(this.currentSlideCloseButton);
+        await this.driver.waitForSelector(this.currentSlide);
       }
     }
   }
