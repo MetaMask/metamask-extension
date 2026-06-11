@@ -62,9 +62,7 @@ const getTestPathsForTestDir = async (testDir: string): Promise<string[]> => {
       testPaths.push(...subDirPaths);
     } else if (
       (fullPath.endsWith('.spec.js') || fullPath.endsWith('.spec.ts')) &&
-      // Playwright specs (`*.pw.spec.ts`) are run by the Playwright runner
-      // (see playwright.config.ts → chrome-e2e / firefox-e2e projects). They
-      // must not be fed to Mocha
+      // TODO: add run-all-pw.mts for Playwright tests mimicking run-all.mts
       !fullPath.endsWith('.pw.spec.ts')
     ) {
       testPaths.push(normalizeTestPath(fullPath));
