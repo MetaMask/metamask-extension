@@ -373,6 +373,7 @@ export const MarketListView = () => {
             alignItems={BoxAlignItems.Center}
             justifyContent={BoxJustifyContent.Center}
             gap={2}
+            data-testid="perps-market-list-no-results"
           >
             <Icon
               name={IconName.Search}

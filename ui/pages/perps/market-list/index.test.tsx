@@ -202,8 +202,11 @@ describe('MarketListView', () => {
       fireEvent.change(searchInput, { target: { value: 'xyznomatch123' } });
 
       await waitFor(() => {
-        expect(screen.getByText(/no markets found/iu)).toBeInTheDocument();
+        expect(
+          screen.getByTestId('perps-market-list-no-results'),
+        ).toBeInTheDocument();
       });
+      expect(screen.getByText(/no markets found/iu)).toBeInTheDocument();
     });
 
     it('hides filter row when searching', async () => {

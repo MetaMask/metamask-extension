@@ -6232,6 +6232,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/controller-utils@npm:^12.2.0":
+  version: 12.2.0
+  resolution: "@metamask/controller-utils@npm:12.2.0"
+  dependencies:
+    "@ethersproject/abi": "npm:^5.7.0"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/ethjs-unit": "npm:^0.3.0"
+    "@metamask/utils": "npm:^11.9.0"
+    "@spruceid/siwe-parser": "npm:2.1.0"
+    "@types/bn.js": "npm:^5.1.5"
+    bignumber.js: "npm:^9.1.2"
+    bn.js: "npm:^5.2.1"
+    cockatiel: "npm:^3.1.2"
+    eth-ens-namehash: "npm:^2.0.8"
+    fast-deep-equal: "npm:^3.1.3"
+    lodash: "npm:^4.17.21"
+  peerDependencies:
+    "@babel/runtime": ^7.0.0
+  checksum: 10/24551cec486319b39e0db6792e5d26bafa7fb87dce63d516cc80a5645f7c185b7911e89d21189e7270d338436074bc6e1e6e0983b008cb130292ee1e1902c28d
+  languageName: node
+  linkType: hard
+
 "@metamask/core-backend@npm:^6.1.1, @metamask/core-backend@npm:^6.2.1, @metamask/core-backend@npm:^6.2.2, @metamask/core-backend@npm:^6.3.0, @metamask/core-backend@npm:^6.3.2":
   version: 6.3.2
   resolution: "@metamask/core-backend@npm:6.3.2"
@@ -7631,13 +7653,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/perps-controller@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@metamask/perps-controller@npm:8.0.0"
+"@metamask/perps-controller@npm:^8.1.0":
+  version: 8.1.0
+  resolution: "@metamask/perps-controller@npm:8.1.0"
   dependencies:
     "@metamask/abi-utils": "npm:^2.0.3"
     "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/controller-utils": "npm:^12.1.0"
+    "@metamask/controller-utils": "npm:^12.2.0"
     "@metamask/messenger": "npm:^1.2.0"
     "@metamask/utils": "npm:^11.9.0"
     "@myx-trade/sdk": "npm:^0.1.265"
@@ -7648,7 +7670,7 @@ __metadata:
   dependenciesMeta:
     "@myx-trade/sdk":
       optional: true
-  checksum: 10/7b06134fbb3a945a44a5349a29a120094069d66f011af9989ae560099e1bd12a4932aa1c5cb66a5a5c40b41f96738d7e633d3332e482b3e01d9b7f52be6363aa
+  checksum: 10/adb4501e0d5fcb8837ea87bdea43bc5c0444838d218d0cdd3d3153fb3dc25307906e5078f7ac38f2799569bb7d82c64c3d352b78d77829da4068275c5dec6849
   languageName: node
   linkType: hard
 
@@ -33557,7 +33579,7 @@ __metadata:
     "@metamask/permission-controller": "npm:^13.0.0"
     "@metamask/permission-log-controller": "npm:^5.0.0"
     "@metamask/permissions-kernel-snap": "npm:^1.3.0"
-    "@metamask/perps-controller": "npm:^8.0.0"
+    "@metamask/perps-controller": "npm:^8.1.0"
     "@metamask/phishing-controller": "npm:^17.2.0"
     "@metamask/phishing-warning": "npm:^5.1.0"
     "@metamask/polling-controller": "npm:^16.0.2"
