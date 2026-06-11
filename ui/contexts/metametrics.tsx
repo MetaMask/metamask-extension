@@ -36,9 +36,9 @@ import {
 } from '../../shared/constants/metametrics';
 import { useSegmentContext } from '../hooks/useSegmentContext';
 import {
-  getIsParticipateInMetaMetricsSet,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
+  getAnalyticsId,
+  getCompletedMetaMetricsOnboarding,
+  getOptedIn,
 } from '../selectors';
 import { submitRequestToBackground } from '../store/background-connection';
 import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
@@ -143,15 +143,16 @@ type MetaMetricsProviderProps = {
 export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
   const location = useLocation();
   const context = useSegmentContext();
-  const isParticipateInMetaMetricsSet = useSelector(
-    getIsParticipateInMetaMetricsSet,
+  const completedMetaMetricsOnboarding = useSelector(
+    getCompletedMetaMetricsOnboarding,
   );
-  const isMetricsEnabled = useSelector(getParticipateInMetaMetrics);
-  const metaMetricsId = useSelector(getMetaMetricsId);
-  const canTrackImmediately = isMetricsEnabled && Boolean(metaMetricsId);
+  const isOptedIn = useSelector(getOptedIn);
+  const analyticsId = useSelector(getAnalyticsId);
+  const isMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
+  const canTrackImmediately = isMetricsEnabled && Boolean(analyticsId);
   // Buffer events until we know whether or not we can submit them.
   const canMaybeTrackLater =
-    !isParticipateInMetaMetricsSet || (isMetricsEnabled && !metaMetricsId);
+    !completedMetaMetricsOnboarding || (isMetricsEnabled && !analyticsId);
 
   const onboardingParentContext = useRef<TraceParentContext>(null);
 
