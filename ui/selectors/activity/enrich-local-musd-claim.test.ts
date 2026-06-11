@@ -145,6 +145,7 @@ describe('enrichLocalMusdClaimActivity', () => {
       timestamp: 1778633325000,
       data: {
         hash: '0xmusdclaim',
+        from,
         token: {
           amount: '5000000',
           direction: 'in',
@@ -223,6 +224,7 @@ describe('enrichLocalMusdClaimActivity', () => {
       timestamp: 1778633400000,
       data: {
         hash: '0xmusdclaimconfirmed',
+        from,
         token: {
           amount: '5000000',
           direction: 'in',
