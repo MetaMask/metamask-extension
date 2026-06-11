@@ -189,11 +189,6 @@ export function setupBackgroundReload(
       });
     }
     const payload = [...fingerprints.values()].sort().join('|');
-    if (announced !== undefined && payload !== announced) {
-      console.error(
-        '🦊 Background or content script changed — reloading extension…',
-      );
-    }
     announced = payload;
     devServer.sendMessage(
       server.clients,
