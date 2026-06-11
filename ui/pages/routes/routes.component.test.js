@@ -76,8 +76,8 @@ jest.mock('./confirmation-router', () => ({
   }),
 }));
 
-jest.mock('../../../app/scripts/lib/util', () => ({
-  ...jest.requireActual('../../../app/scripts/lib/util'),
+jest.mock('../../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../../shared/lib/environment-type'),
   getEnvironmentType: jest.fn(() => 'fullscreen'),
 }));
 
@@ -286,7 +286,7 @@ const render = (pathname, state) => {
 describe('Routes Component', () => {
   useIsOriginalNativeTokenSymbol.mockImplementation(() => true);
   const { getEnvironmentType: mockGetEnvironmentType } = jest.requireMock(
-    '../../../app/scripts/lib/util',
+    '../../../shared/lib/environment-type',
   );
   const mockUseMultichainAccountsIntroModal = jest.mocked(
     useMultichainAccountsIntroModal,
