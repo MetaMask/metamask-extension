@@ -3482,9 +3482,7 @@ export function abortTransactionSigning(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): ThunkAction<Promise<void>, MetaMaskReduxState, any, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('abortTransactionSigning', [
-      transactionId,
-    ]);
+    await submitRequestToBackground('abortTransactionSigning', [transactionId]);
   };
 }
 
