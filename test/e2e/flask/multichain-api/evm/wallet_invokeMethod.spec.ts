@@ -1,9 +1,11 @@
 import { strict as assert } from 'assert';
+import { merge } from 'lodash';
 import { MockttpServer } from 'mockttp';
 import { isHexString } from '@metamask/utils';
 import {
   ACCOUNT_1,
   ACCOUNT_2,
+  DEFAULT_FIXTURE_ACCOUNT,
   DEFAULT_FIXTURE_ACCOUNT_ID,
   DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
   WINDOW_TITLES,
@@ -27,9 +29,12 @@ import {
 import { SECURITY_ALERTS_PROD_API_BASE_URL } from '../../../tests/ppom/constants';
 
 /**
- * Chains 1338 and 1000 are absent from the default fixture's AssetsController.
- * With assets-unify, the native gas balance is read from there, so confirmations
- * otherwise show "Insufficient funds". Pre-populate the missing chain balances.
+ * Triple-node write tests (8545/8546/7777) need cached native balances for 8546
+ * and 7777. default-fixture.json only seeds AccountTracker for 8545 (0x539), so
+ * gas checks see 0 ETH on 0x53a/0x3e8 → "Insufficient funds" → flaky "Review
+ * alert" confirm. Seeds AccountTracker + AssetsController (~25 ETH) and disables
+ * security alerts to avoid Blockaid races. Account 2 included on 0x53a for the
+ * address-matching test on eip155:1338.
  */
 const EXTRA_LOCAL_ANVIL_NATIVE_ETH_INFO = {
   aggregators: [],
@@ -40,8 +45,7 @@ const EXTRA_LOCAL_ANVIL_NATIVE_ETH_INFO = {
   type: 'native' as const,
 };
 
-// Account 2's deterministic UUID (derived from the test seed phrase).
-// Used here because the first test selects Account 2 for scope eip155:1338.
+// Account 2 UUID — used when that test selects Account 2 on eip155:1338.
 const ACCOUNT_2_FIXTURE_ID = 'e9976a84-110e-46c3-9811-e2da7b5528d3';
 
 const EXTRA_LOCAL_ANVIL_ASSETS_CONTROLLER = {
@@ -59,6 +63,44 @@ const EXTRA_LOCAL_ANVIL_ASSETS_CONTROLLER = {
     'eip155:1000/slip44:60': EXTRA_LOCAL_ANVIL_NATIVE_ETH_INFO,
   },
 };
+
+/** ~25 ETH, same as default-fixture.json on 8545. */
+const DEFAULT_LOCAL_ANVIL_ACCOUNT_TRACKER_BALANCE = '0x15af1d78b58c40000';
+
+const EXTRA_LOCAL_ANVIL_ACCOUNT_TRACKER = {
+  accountsByChainId: {
+    '0x53a': {
+      [DEFAULT_FIXTURE_ACCOUNT]: {
+        balance: DEFAULT_LOCAL_ANVIL_ACCOUNT_TRACKER_BALANCE,
+        stakedBalance: '0x0',
+      },
+      [ACCOUNT_2]: {
+        balance: DEFAULT_LOCAL_ANVIL_ACCOUNT_TRACKER_BALANCE,
+        stakedBalance: '0x0',
+      },
+    },
+    '0x3e8': {
+      [DEFAULT_FIXTURE_ACCOUNT]: {
+        balance: DEFAULT_LOCAL_ANVIL_ACCOUNT_TRACKER_BALANCE,
+        stakedBalance: '0x0',
+      },
+    },
+  },
+};
+
+function buildTripleNodeWriteOperationsFixtures() {
+  const fixture = new FixtureBuilderV2()
+    .withNetworkControllerTripleNode()
+    .withAssetsController(EXTRA_LOCAL_ANVIL_ASSETS_CONTROLLER)
+    .withPreferencesController({ securityAlertsEnabled: false })
+    .build();
+
+  merge(fixture.data, {
+    AccountTracker: EXTRA_LOCAL_ANVIL_ACCOUNT_TRACKER,
+  });
+
+  return fixture;
+}
 
 const SECURITY_ALERT_SIGNATURE_REQUEST = {
   method: 'eth_signTypedData_v4',
@@ -297,10 +339,7 @@ describe('Multichain API', function () {
         await withFixtures(
           {
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilderV2()
-              .withNetworkControllerTripleNode()
-              .withAssetsController(EXTRA_LOCAL_ANVIL_ASSETS_CONTROLLER)
-              .build(),
+            fixtures: buildTripleNodeWriteOperationsFixtures(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
           async ({ driver, extensionId }: FixtureCallbackArgs) => {
@@ -403,10 +442,7 @@ describe('Multichain API', function () {
         await withFixtures(
           {
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilderV2()
-              .withNetworkControllerTripleNode()
-              .withAssetsController(EXTRA_LOCAL_ANVIL_ASSETS_CONTROLLER)
-              .build(),
+            fixtures: buildTripleNodeWriteOperationsFixtures(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
           async ({ driver, extensionId }: FixtureCallbackArgs) => {

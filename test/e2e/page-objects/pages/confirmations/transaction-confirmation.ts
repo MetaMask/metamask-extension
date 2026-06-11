@@ -367,7 +367,7 @@ class TransactionConfirmation extends Confirmation {
     await this.driver.assertElementNotPresent(
       { css: this.networkName, text: network },
       {
-        waitAtLeastGuard: 1000,
+        waitAtLeastGuard: 3000,
       },
     );
   }
